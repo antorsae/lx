@@ -1,0 +1,50 @@
+# Measurement data files
+*.mdat
+*.h5
+
+# Output directories (working outputs, not docs)
+output/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude Code
+.claude/
+
+# Extracted data
+*.json
+extraction_debug.png
+verify_extraction.png
+
+# Temporary/debug files
+AGENTS.md
+POLAR_PLOT_UPDATES.md
+file_naming_analysis.md
+
+# Debug/one-off scripts
+debug_*.py
+extract_curves.py
+smart_extract.py
+apply_time_gating.py
+complete_missing_gated.py
+crossover_simulation*.py
+generate_comparison_plot.py
+generate_um_comparison.py
+load_*.py
+regenerate_*.py
+rew_magnitude_reader.py

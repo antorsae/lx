@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LX521 Polar Analysis</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .measurement-sets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        .card-header {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-header .subtitle {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-body h3 {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .link-list {
+            list-style: none;
+        }
+
+        .link-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .link-list a {
+            color: var(--primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0;
+            transition: color 0.2s;
+        }
+
+        .link-list a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .link-list a::before {
+            content: ">";
+            font-weight: bold;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .drivers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .driver-tag {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .highlight {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+        }
+
+        .highlight strong {
+            color: #92400e;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.75rem;
+            }
+
+            .measurement-sets {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>LX521 Polar Analysis</h1>
+        <p>Comprehensive polar response measurements and directivity analysis</p>
+    </header>
+
+    <main>
+        <div class="measurement-sets">
+            <!-- Andres Measurements -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Andres Measurements</h2>
+                    <div class="subtitle">4 Drivers - Front hemisphere (0-90 deg)</div>
+                </div>
+                <div class="card-body">
+                    <h3>Interactive Plots</h3>
+                    <ul class="link-list">
+                        <li><a href="andres/interactive/polar/polar_explorer.html">Polar Explorer</a></li>
+                        <li><a href="andres/interactive/di_comparison.html">Directivity Index</a></li>
+                        <li><a href="andres/interactive/beamwidth_comparison.html">Beamwidth</a></li>
+                        <li><a href="andres/interactive/crossover_120Hz.html">Crossover 120Hz</a></li>
+                        <li><a href="andres/interactive/crossover_1000Hz.html">Crossover 1000Hz</a></li>
+                        <li><a href="andres/interactive/crossover_7000Hz.html">Crossover 7000Hz</a></li>
+                    </ul>
+
+                    <h3 class="section-title">Contour Plots</h3>
+                    <ul class="link-list">
+                        <li><a href="andres/interactive/10F8824_contour_normalized.html">10F8824 (Woofer)</a></li>
+                        <li><a href="andres/interactive/L22MG_contour_normalized.html">L22MG (Lower Mid)</a></li>
+                        <li><a href="andres/interactive/MU10_contour_normalized.html">MU10 (Upper Mid)</a></li>
+                        <li><a href="andres/interactive/SEAS27T_contour_normalized.html">SEAS27T (Tweeter)</a></li>
+                    </ul>
+
+                    <div class="drivers">
+                        <span class="driver-tag">10F8824</span>
+                        <span class="driver-tag">L22MG</span>
+                        <span class="driver-tag">MU10</span>
+                        <span class="driver-tag">SEAS27T</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Juan Measurements -->
+            <div class="card">
+                <div class="card-header" style="background: #059669;">
+                    <h2>Juan Measurements</h2>
+                    <div class="subtitle">1 Driver - Full 360 deg (Front + Rear)</div>
+                </div>
+                <div class="card-body">
+                    <div class="highlight">
+                        <strong>360 deg Coverage:</strong> Includes rear measurements for complete polar pattern visualization.
+                    </div>
+
+                    <h3>Interactive Plots</h3>
+                    <ul class="link-list">
+                        <li><a href="juan/interactive/polar/polar_explorer.html">Polar Explorer (360 deg)</a></li>
+                        <li><a href="juan/interactive/di_comparison.html">Directivity Index</a></li>
+                        <li><a href="juan/interactive/beamwidth_comparison.html">Beamwidth</a></li>
+                    </ul>
+
+                    <h3 class="section-title">Contour Plots</h3>
+                    <ul class="link-list">
+                        <li><a href="juan/interactive/GRS PT6816_contour_normalized.html">GRS PT6816 (Normalized)</a></li>
+                        <li><a href="juan/interactive/GRS PT6816_contour_absolute.html">GRS PT6816 (Absolute)</a></li>
+                    </ul>
+
+                    <div class="drivers">
+                        <span class="driver-tag">GRS PT6816</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Static Plots (PNG)</h2>
+        <div class="measurement-sets">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Andres - Core Analysis</h3>
+                    <ul class="link-list">
+                        <li><a href="andres/static_plots/core/di_comparison.png">DI Comparison</a></li>
+                        <li><a href="andres/static_plots/core/beamwidth_comparison.png">Beamwidth</a></li>
+                        <li><a href="andres/static_plots/core/erdi_comparison.png">ERDI</a></li>
+                        <li><a href="andres/static_plots/core/dipole_null_analysis.png">Dipole Null</a></li>
+                        <li><a href="andres/static_plots/polar/polar_gallery_overlaid.png">Polar Gallery</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h3>Juan - Core Analysis</h3>
+                    <ul class="link-list">
+                        <li><a href="juan/static_plots/core/di_comparison.png">DI Comparison</a></li>
+                        <li><a href="juan/static_plots/core/beamwidth_comparison.png">Beamwidth</a></li>
+                        <li><a href="juan/static_plots/core/erdi_comparison.png">ERDI</a></li>
+                        <li><a href="juan/static_plots/core/dipole_null_analysis.png">Dipole Null</a></li>
+                        <li><a href="juan/static_plots/polar/polar_gallery_overlaid.png">Polar Gallery (360 deg)</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Generated with <a href="https://github.com/anthropics/claude-code">Claude Code</a> |
+           <a href="https://github.com/your-username/lx521-polar">Source Code</a></p>
+    </footer>
+</body>
+</html>
