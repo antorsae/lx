@@ -11,7 +11,7 @@ polar response measurements, including:
 - Early Reflections
 - Spinorama curves
 
-Author: Claude Code
+Author: Andres Torrubia
 Date: 2025-11-23
 """
 

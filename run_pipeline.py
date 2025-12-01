@@ -10,7 +10,7 @@ This script orchestrates the entire analysis workflow:
 5. Saves processed data to HDF5.
 6. Generates Visualization Reports.
 
-Author: Claude Code
+Author: Andres Torrubia
 Date: 2025-11-23
 """
 

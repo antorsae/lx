@@ -12,7 +12,7 @@ This script generates comprehensive polar response analysis visualizations inclu
 
 Refactored to use centralized config.
 
-Author: Claude Code
+Author: Andres Torrubia
 Date: 2025-11-23
 """
 

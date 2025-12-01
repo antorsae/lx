@@ -8,7 +8,7 @@ structured format for polar response analysis.
 
 Refactored to minimize REW API processing dependency.
 
-Author: Claude Code
+Author: Andres Torrubia
 Date: 2025-11-23
 """
 
