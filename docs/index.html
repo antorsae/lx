@@ -1,3 +1,591 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7dec6df39e37c467727c4e1619b23803dd10d1332743d932e2b884e3626d4785
-size 23433
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LX521 Polar Analysis</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --green: #059669;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .measurement-sets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        .card-header {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .card-header.green {
+            background: var(--green);
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-header .subtitle {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-body h3 {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .link-list {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .link-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .link-list a {
+            color: var(--primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0;
+            transition: color 0.2s;
+        }
+
+        .link-list a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .link-list a::before {
+            content: ">";
+            font-weight: bold;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .subsection {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .subsection h4 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .drivers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .driver-tag {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .highlight {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+        }
+
+        .highlight strong {
+            color: #92400e;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .image-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+
+        .image-card:hover {
+            box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
+        }
+
+        .image-card a {
+            display: block;
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .image-card .caption {
+            padding: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--text);
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.75rem;
+            }
+
+            .measurement-sets {
+                grid-template-columns: 1fr;
+            }
+
+            .image-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>LX521 Polar Analysis</h1>
+        <p>Comprehensive polar response measurements and directivity analysis</p>
+    </header>
+
+    <main>
+        <!-- Download Section -->
+        <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--primary);">
+            <div class="card-body">
+                <h3>Download Raw Measurements (REW .mdat files)</h3>
+                <p style="margin-bottom: 1rem; color: var(--text-muted);">
+                    Download the original REW measurement files to run your own analysis.
+                    Available from the <a href="https://github.com/antorsae/lx/releases/latest">latest release</a>.
+                </p>
+                <ul class="link-list">
+                    <li><a href="https://github.com/antorsae/lx/releases/latest/download/andres-measurements.zip">Andres Measurements (4 drivers, 0-90 deg)</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Interactive Plots Section -->
+        <h2 class="section-title">Interactive Plots (HTML)</h2>
+        <div class="measurement-sets">
+            <!-- Andres Measurements -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Andres Measurements</h2>
+                    <div class="subtitle">4 Drivers - Front hemisphere (0-90 deg)</div>
+                </div>
+                <div class="card-body">
+                    <h3>Polar & Directivity</h3>
+                    <ul class="link-list">
+                        <li><a href="andres/interactive/polar/polar_explorer.html">Polar Explorer</a></li>
+                        <li><a href="andres/interactive/di_comparison.html">Directivity Index</a></li>
+                        <li><a href="andres/interactive/beamwidth_comparison.html">Beamwidth</a></li>
+                    </ul>
+
+                    <h3>Crossover Analysis</h3>
+                    <ul class="link-list">
+                        <li><a href="andres/interactive/crossover_120Hz.html">Crossover 120Hz</a></li>
+                        <li><a href="andres/interactive/crossover_1000Hz.html">Crossover 1000Hz</a></li>
+                        <li><a href="andres/interactive/crossover_7000Hz.html">Crossover 7000Hz</a></li>
+                    </ul>
+
+                    <h3>Contour Plots (Normalized)</h3>
+                    <ul class="link-list">
+                        <li><a href="andres/interactive/10F8824_contour_normalized.html">10F8824 (Upper Mid)</a></li>
+                        <li><a href="andres/interactive/L22MG_contour_normalized.html">L22MG (Lower Mid)</a></li>
+                        <li><a href="andres/interactive/MU10_contour_normalized.html">MU10 (Upper Mid)</a></li>
+                        <li><a href="andres/interactive/SEAS27T_contour_normalized.html">SEAS27T (Tweeter)</a></li>
+                    </ul>
+
+                    <h3>Contour Plots (Absolute)</h3>
+                    <ul class="link-list">
+                        <li><a href="andres/interactive/10F8824_contour_absolute.html">10F8824 (Upper Mid)</a></li>
+                        <li><a href="andres/interactive/L22MG_contour_absolute.html">L22MG (Lower Mid)</a></li>
+                        <li><a href="andres/interactive/MU10_contour_absolute.html">MU10 (Upper Mid)</a></li>
+                        <li><a href="andres/interactive/SEAS27T_contour_absolute.html">SEAS27T (Tweeter)</a></li>
+                    </ul>
+
+                    <div class="drivers">
+                        <span class="driver-tag">10F8824</span>
+                        <span class="driver-tag">L22MG</span>
+                        <span class="driver-tag">MU10</span>
+                        <span class="driver-tag">SEAS27T</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Juan Measurements -->
+            <div class="card">
+                <div class="card-header green">
+                    <h2>Juan Measurements</h2>
+                    <div class="subtitle">1 Driver - Full 360 deg (Front + Rear)</div>
+                </div>
+                <div class="card-body">
+                    <div class="highlight">
+                        <strong>360 deg Coverage:</strong> Includes rear measurements for complete polar pattern visualization.
+                    </div>
+
+                    <h3>Polar & Directivity</h3>
+                    <ul class="link-list">
+                        <li><a href="juan/interactive/polar/polar_explorer.html">Polar Explorer (360 deg)</a></li>
+                        <li><a href="juan/interactive/di_comparison.html">Directivity Index</a></li>
+                        <li><a href="juan/interactive/beamwidth_comparison.html">Beamwidth</a></li>
+                    </ul>
+
+                    <h3>Contour Plots</h3>
+                    <ul class="link-list">
+                        <li><a href="juan/interactive/GRS PT6816_contour_normalized.html">GRS PT6816 (Normalized)</a></li>
+                        <li><a href="juan/interactive/GRS PT6816_contour_absolute.html">GRS PT6816 (Absolute)</a></li>
+                    </ul>
+
+                    <div class="drivers">
+                        <span class="driver-tag">GRS PT6816</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Static Plots Section - Andres -->
+        <h2 class="section-title">Static Plots - Andres (PNG)</h2>
+
+        <h3>Core Analysis</h3>
+        <div class="image-grid">
+            <div class="image-card">
+                <a href="andres/static_plots/core/di_comparison.png" target="_blank">
+                    <img src="andres/static_plots/core/di_comparison.png" alt="DI Comparison">
+                    <div class="caption">Directivity Index Comparison</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/core/beamwidth_comparison.png" target="_blank">
+                    <img src="andres/static_plots/core/beamwidth_comparison.png" alt="Beamwidth">
+                    <div class="caption">Beamwidth Comparison</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/core/erdi_comparison.png" target="_blank">
+                    <img src="andres/static_plots/core/erdi_comparison.png" alt="ERDI">
+                    <div class="caption">ERDI Comparison</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/core/dipole_null_analysis.png" target="_blank">
+                    <img src="andres/static_plots/core/dipole_null_analysis.png" alt="Dipole Null">
+                    <div class="caption">Dipole Null Analysis</div>
+                </a>
+            </div>
+        </div>
+
+        <h3>Polar Diagrams</h3>
+        <div class="image-grid">
+            <div class="image-card">
+                <a href="andres/static_plots/polar/polar_gallery_overlaid.png" target="_blank">
+                    <img src="andres/static_plots/polar/polar_gallery_overlaid.png" alt="Polar Gallery">
+                    <div class="caption">All Drivers Overlaid</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/polar/10F8824_polar_circular.png" target="_blank">
+                    <img src="andres/static_plots/polar/10F8824_polar_circular.png" alt="10F8824 Polar">
+                    <div class="caption">10F8824 (Upper Mid)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/polar/L22MG_polar_circular.png" target="_blank">
+                    <img src="andres/static_plots/polar/L22MG_polar_circular.png" alt="L22MG Polar">
+                    <div class="caption">L22MG (Lower Mid)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/polar/MU10_polar_circular.png" target="_blank">
+                    <img src="andres/static_plots/polar/MU10_polar_circular.png" alt="MU10 Polar">
+                    <div class="caption">MU10 (Upper Mid)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/polar/SEAS27T_polar_circular.png" target="_blank">
+                    <img src="andres/static_plots/polar/SEAS27T_polar_circular.png" alt="SEAS27T Polar">
+                    <div class="caption">SEAS27T (Tweeter)</div>
+                </a>
+            </div>
+        </div>
+
+        <h3>Contour Plots (Normalized)</h3>
+        <div class="image-grid">
+            <div class="image-card">
+                <a href="andres/static_plots/core/10F8824_contour_normalized.png" target="_blank">
+                    <img src="andres/static_plots/core/10F8824_contour_normalized.png" alt="10F8824 Contour">
+                    <div class="caption">10F8824 (Upper Mid)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/core/L22MG_contour_normalized.png" target="_blank">
+                    <img src="andres/static_plots/core/L22MG_contour_normalized.png" alt="L22MG Contour">
+                    <div class="caption">L22MG (Lower Mid)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/core/MU10_contour_normalized.png" target="_blank">
+                    <img src="andres/static_plots/core/MU10_contour_normalized.png" alt="MU10 Contour">
+                    <div class="caption">MU10 (Upper Mid)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/core/SEAS27T_contour_normalized.png" target="_blank">
+                    <img src="andres/static_plots/core/SEAS27T_contour_normalized.png" alt="SEAS27T Contour">
+                    <div class="caption">SEAS27T (Tweeter)</div>
+                </a>
+            </div>
+        </div>
+
+        <h3>Contour Plots (Absolute)</h3>
+        <div class="image-grid">
+            <div class="image-card">
+                <a href="andres/static_plots/core/10F8824_contour_absolute.png" target="_blank">
+                    <img src="andres/static_plots/core/10F8824_contour_absolute.png" alt="10F8824 Contour Absolute">
+                    <div class="caption">10F8824 (Upper Mid)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/core/L22MG_contour_absolute.png" target="_blank">
+                    <img src="andres/static_plots/core/L22MG_contour_absolute.png" alt="L22MG Contour Absolute">
+                    <div class="caption">L22MG (Lower Mid)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/core/MU10_contour_absolute.png" target="_blank">
+                    <img src="andres/static_plots/core/MU10_contour_absolute.png" alt="MU10 Contour Absolute">
+                    <div class="caption">MU10 (Upper Mid)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/core/SEAS27T_contour_absolute.png" target="_blank">
+                    <img src="andres/static_plots/core/SEAS27T_contour_absolute.png" alt="SEAS27T Contour Absolute">
+                    <div class="caption">SEAS27T (Tweeter)</div>
+                </a>
+            </div>
+        </div>
+
+        <h3>Spinorama</h3>
+        <div class="image-grid">
+            <div class="image-card">
+                <a href="andres/static_plots/spinorama/10F8824_spinorama.png" target="_blank">
+                    <img src="andres/static_plots/spinorama/10F8824_spinorama.png" alt="10F8824 Spinorama">
+                    <div class="caption">10F8824 (Upper Mid)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/spinorama/L22MG_spinorama.png" target="_blank">
+                    <img src="andres/static_plots/spinorama/L22MG_spinorama.png" alt="L22MG Spinorama">
+                    <div class="caption">L22MG (Lower Mid)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/spinorama/MU10_spinorama.png" target="_blank">
+                    <img src="andres/static_plots/spinorama/MU10_spinorama.png" alt="MU10 Spinorama">
+                    <div class="caption">MU10 (Upper Mid)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/spinorama/SEAS27T_spinorama.png" target="_blank">
+                    <img src="andres/static_plots/spinorama/SEAS27T_spinorama.png" alt="SEAS27T Spinorama">
+                    <div class="caption">SEAS27T (Tweeter)</div>
+                </a>
+            </div>
+        </div>
+
+        <h3>Crossover Analysis</h3>
+        <div class="image-grid">
+            <div class="image-card">
+                <a href="andres/static_plots/crossover/crossover_120Hz.png" target="_blank">
+                    <img src="andres/static_plots/crossover/crossover_120Hz.png" alt="Crossover 120Hz">
+                    <div class="caption">Crossover 120Hz</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/crossover/crossover_1000Hz.png" target="_blank">
+                    <img src="andres/static_plots/crossover/crossover_1000Hz.png" alt="Crossover 1000Hz">
+                    <div class="caption">Crossover 1000Hz</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="andres/static_plots/crossover/crossover_7000Hz.png" target="_blank">
+                    <img src="andres/static_plots/crossover/crossover_7000Hz.png" alt="Crossover 7000Hz">
+                    <div class="caption">Crossover 7000Hz</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Static Plots Section - Juan -->
+        <h2 class="section-title">Static Plots - Juan (PNG) - 360 deg</h2>
+
+        <h3>Core Analysis</h3>
+        <div class="image-grid">
+            <div class="image-card">
+                <a href="juan/static_plots/core/di_comparison.png" target="_blank">
+                    <img src="juan/static_plots/core/di_comparison.png" alt="DI Comparison">
+                    <div class="caption">Directivity Index</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="juan/static_plots/core/beamwidth_comparison.png" target="_blank">
+                    <img src="juan/static_plots/core/beamwidth_comparison.png" alt="Beamwidth">
+                    <div class="caption">Beamwidth</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="juan/static_plots/core/erdi_comparison.png" target="_blank">
+                    <img src="juan/static_plots/core/erdi_comparison.png" alt="ERDI">
+                    <div class="caption">ERDI</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="juan/static_plots/core/dipole_null_analysis.png" target="_blank">
+                    <img src="juan/static_plots/core/dipole_null_analysis.png" alt="Dipole Null">
+                    <div class="caption">Dipole Null Analysis</div>
+                </a>
+            </div>
+        </div>
+
+        <h3>Polar Diagrams (360 deg)</h3>
+        <div class="image-grid">
+            <div class="image-card">
+                <a href="juan/static_plots/polar/polar_gallery_overlaid.png" target="_blank">
+                    <img src="juan/static_plots/polar/polar_gallery_overlaid.png" alt="Polar Gallery">
+                    <div class="caption">Polar Gallery (360 deg)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="juan/static_plots/polar/GRS PT6816_polar_circular.png" target="_blank">
+                    <img src="juan/static_plots/polar/GRS PT6816_polar_circular.png" alt="GRS PT6816 Polar">
+                    <div class="caption">GRS PT6816 (360 deg)</div>
+                </a>
+            </div>
+        </div>
+
+        <h3>Contour & Spinorama</h3>
+        <div class="image-grid">
+            <div class="image-card">
+                <a href="juan/static_plots/core/GRS PT6816_contour_normalized.png" target="_blank">
+                    <img src="juan/static_plots/core/GRS PT6816_contour_normalized.png" alt="Contour Normalized">
+                    <div class="caption">Contour (Normalized)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="juan/static_plots/core/GRS PT6816_contour_absolute.png" target="_blank">
+                    <img src="juan/static_plots/core/GRS PT6816_contour_absolute.png" alt="Contour Absolute">
+                    <div class="caption">Contour (Absolute)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="juan/static_plots/spinorama/GRS PT6816_spinorama.png" target="_blank">
+                    <img src="juan/static_plots/spinorama/GRS PT6816_spinorama.png" alt="Spinorama">
+                    <div class="caption">Spinorama</div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p><a href="https://github.com/antorsae/lx">Source Code</a></p>
+    </footer>
+</body>
+</html>
