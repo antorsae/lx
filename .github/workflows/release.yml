@@ -1,0 +1,30 @@
+name: Create Release with Measurement ZIPs
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout with LFS
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Create ZIP files
+        run: |
+          cd measurements
+          zip -r ../andres-measurements.zip andres/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            andres-measurements.zip
+          generate_release_notes: true

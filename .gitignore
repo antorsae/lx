@@ -1,5 +1,6 @@
-# Measurement data files
+# Measurement data files (except in measurements/ folder)
 *.mdat
+!measurements/**/*.mdat
 *.h5
 
 # Output directories (working outputs, not docs)
