@@ -50,10 +50,10 @@ SAMPLE_RATE = 48000  # Default, will be updated from measurement
 
 
 # Driver Definitions
-DRIVERS = ['10F8824', 'L22MG', 'MU10', 'SEAS27T']
+DRIVERS = ['10F8424', 'L22MG', 'MU10', 'SEAS27T']
 
 DRIVER_COLORS = {
-    '10F8824': '#1f77b4',  # Blue - Woofer
+    '10F8424': '#1f77b4',  # Blue - Woofer
     'L22MG': '#ff7f0e',    # Orange - Lower Mid
     'MU10': '#2ca02c',     # Green - Upper Mid
     'SEAS27T': '#d62728'   # Red - Tweeter
