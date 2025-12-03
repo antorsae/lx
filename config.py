@@ -26,6 +26,14 @@ MEASUREMENT_SETS = {
         "hdf5_file": "polar_data_juan.h5",
         "output_dir": OUTPUT_DIR / "juan",
     },
+    "lx521-system": {
+        "path": Path("/Users/antor/Library/CloudStorage/GoogleDrive-antorsae@gmail.com/My Drive/LX521/Mediciones Juan/LX521 POLARES 0_180 GRADOS"),
+        "pattern_type": "lx521_system",  # {name} {angle} GRADOS {F|REAR}.mdat
+        "angles": [0, 15, 30, 45, 60, 75, 90],
+        "has_rear": True,
+        "hdf5_file": "polar_data_lx521_system.h5",
+        "output_dir": OUTPUT_DIR / "lx521-system",
+    },
 }
 
 DEFAULT_MEASUREMENT_SET = "andres"

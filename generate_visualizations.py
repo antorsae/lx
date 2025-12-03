@@ -67,6 +67,15 @@ class PolarResponseVisualizer:
 
         self.loader = PolarDataLoader(connect_to_rew=False)
         self.data = self.loader.load_from_hdf5(data_path)
+
+        # Extract config (if present) and remove from driver list
+        self.global_config = self.data.pop('_config', {
+            'gate_left_ms': 0.0,
+            'gate_right_ms': 0.0,
+            'smoothing': 0,
+            'smoothing_str': 'None'
+        })
+
         self.drivers = sorted(self.data.keys())
 
         # Calculate directivity metrics for all drivers
@@ -371,25 +380,72 @@ class PolarResponseVisualizer:
                 fig.add_vline(x=freq, line_dash="dot", line_color="lightgray", opacity=0.4, row=row, col=col)
 
     def plot_contour(self, driver, normalized=True, save_static=True, save_interactive=True):
-        """Generate contour/heatmap plot for a driver"""
+        """Generate contour/heatmap plot for a driver
+
+        When rear data is available, displays full 180° range:
+        - Front (0° to 90°) on lower Y axis
+        - Rear (90° to 180°) on upper Y axis (rear 0° = 180°, rear 90° = 90°)
+        """
         print(f"Generating {'normalized' if normalized else 'absolute'} contour plot for {driver}...")
-        
+
         freq = self.calc_results[driver]['frequencies']
         spl_matrix = self.calc_results[driver]['spl_matrix']
         calc = self.calc_results[driver]['calculator']
+        has_rear = self.calc_results[driver].get('has_rear', False)
+        rear_spl_matrix = self.calc_results[driver].get('rear_spl_matrix')
 
-        # Interpolation
-        angles_fine = np.linspace(0, 90, 91)
-        spl_interpolated = calc.interpolate_angles(angles_fine)
+        # Interpolation for front hemisphere
+        angles_fine_front = np.linspace(0, 90, 91)
+        spl_interpolated_front = calc.interpolate_angles(angles_fine_front)
+
+        # Check if we have rear data to include
+        if has_rear and rear_spl_matrix is not None:
+            # Create interpolator for rear data
+            # Rear angles are 0-90, we'll display them as 180 down to 90
+            # rear 0° -> 180°, rear 90° -> 90°
+            rear_angles = self.calc_results[driver]['angles']  # Same angles as front
+            angles_fine_rear = np.linspace(0, 90, 91)
+
+            # Interpolate rear data
+            from scipy.interpolate import interp1d
+            spl_interpolated_rear = np.zeros((len(freq), len(angles_fine_rear)))
+            for i in range(len(freq)):
+                interpolator = interp1d(rear_angles, rear_spl_matrix[i, :],
+                                       kind='cubic', fill_value='extrapolate')
+                spl_interpolated_rear[i, :] = interpolator(angles_fine_rear)
+
+            # Combine: front (0 to 90) + rear (90 to 180)
+            # Rear 0° maps to 180°, rear 90° maps to 90°
+            # So rear angles become: 180 - rear_angle
+            # angles_fine_rear goes 0,1,2...90, so 180-angles = 180,179...90
+            # We need 91,92...180 which is 180-89, 180-88, ... 180-0
+            # That's the reverse of 180-angles_fine_rear
+            angles_fine_rear_mapped = 180 - angles_fine_rear[::-1]  # 90, 91, ..., 180
+            spl_rear_mapped = spl_interpolated_rear[:, ::-1]  # Flip to match 90 to 180 order
+
+            # Combine (skip duplicate 90°)
+            angles_combined = np.concatenate([angles_fine_front, angles_fine_rear_mapped[1:]])
+            spl_combined = np.concatenate([spl_interpolated_front, spl_rear_mapped[:, 1:]], axis=1)
+
+            angles_fine = angles_combined
+            spl_interpolated = spl_combined
+            y_lim = (0, 180)
+            title_360 = " (180°)"
+        else:
+            angles_fine = angles_fine_front
+            spl_interpolated = spl_interpolated_front
+            y_lim = (0, 90)
+            title_360 = ""
 
         if normalized:
-            # Normalize to 0°
-            spl_plot = spl_interpolated - spl_interpolated[:, 0:1]
+            # Normalize to 0° (find index of 0° in combined array)
+            zero_idx = np.abs(angles_fine - 0).argmin()
+            spl_plot = spl_interpolated - spl_interpolated[:, zero_idx:zero_idx+1]
             cbar_label = 'Attenuation (dB)'
             vmax = 3
             vmin = -30
             title_suffix = "Normalized"
-            cmap_name = 'RdYlBu_r' 
+            cmap_name = 'RdYlBu_r'
         else:
             spl_plot = spl_interpolated
             cbar_label = 'SPL (dB)'
@@ -398,20 +454,21 @@ class PolarResponseVisualizer:
             cmap_name = 'RdYlBu_r'
 
         if save_static:
-            fig, ax = plt.subplots(figsize=(14, 8))
-            
+            fig_height = 12 if has_rear and rear_spl_matrix is not None else 8
+            fig, ax = plt.subplots(figsize=(14, fig_height))
+
             if normalized:
                 # Custom colormap with explicit stops to handle >0dB
                 # Range is vmin to vmax (-30 to +3 typically)
                 # We want 0dB to be Red, and positive to be Dark Red
-                
+
                 # Calculate normalized positions (0..1)
                 span = vmax - vmin
                 if span == 0: span = 1
-                
+
                 def get_pos(val):
                     return (val - vmin) / span
-                
+
                 # Define color stops
                 # -30: Dark Blue (#000033)
                 # -15: Blue (#0000FF)
@@ -420,7 +477,7 @@ class PolarResponseVisualizer:
                 # -1:  Yellow (#FFFF00)
                 #  0:  Red (#FF0000)
                 # +3:  Dark Red (#500000)
-                
+
                 stops = [
                     (0.0,  '#000033'), # Bottom
                     (get_pos(-15), '#0000FF'),
@@ -435,7 +492,7 @@ class PolarResponseVisualizer:
                 # Ensure ends are covered
                 if valid_stops[0][0] > 0: valid_stops.insert(0, (0.0, valid_stops[0][1]))
                 if valid_stops[-1][0] < 1: valid_stops.append((1.0, valid_stops[-1][1]))
-                
+
                 cmap = mcolors.LinearSegmentedColormap.from_list('directivity_custom', valid_stops, N=256)
                 levels = np.arange(vmin, vmax + 0.1, 0.2) # Fine steps for smooth gradient
                 extend = 'both'
@@ -445,33 +502,52 @@ class PolarResponseVisualizer:
                 extend = 'both'
 
             contour = ax.contourf(freq, angles_fine, spl_plot.T, levels=levels, cmap=cmap, extend=extend)
-            
+
             if normalized:
                 contour_levels = [-20, -10, -6, -3, 0, 3]
                 # Use dotted lines for contours
-                cs = ax.contour(freq, angles_fine, spl_plot.T, levels=contour_levels, 
+                cs = ax.contour(freq, angles_fine, spl_plot.T, levels=contour_levels,
                           colors='black', linestyles='dotted', linewidths=1.0, alpha=0.6)
                 # Label the contours
                 ax.clabel(cs, inline=True, fmt='%1.0f dB', fontsize=8, colors='black')
+
+            # Add horizontal line at 90° for reference when showing rear data
+            if has_rear and rear_spl_matrix is not None:
+                ax.axhline(90, color='white', linestyle='-', linewidth=1.5, alpha=0.8)
 
             ax.set_xscale('log')
             self._add_static_grid(ax)
             ax.set_xlabel('Frequency (Hz)')
             ax.set_ylabel('Angle (degrees)')
-            ax.set_title(f'{driver} - Polar Response Contour ({title_suffix})', fontweight='bold')
+            ax.set_title(f'{driver} - Polar Response Contour ({title_suffix}){title_360}', fontweight='bold')
             ax.set_xlim(config.FREQ_MIN, config.FREQ_MAX)
-            ax.set_ylim(0, 90)
-            fig.colorbar(contour, ax=ax, label=cbar_label)
-            
+            ax.set_ylim(y_lim)
+            cbar = fig.colorbar(contour, ax=ax, label=cbar_label)
+
+            # Add FRONT/REAR vertical labels on the right side when rear data is shown
+            if has_rear and rear_spl_matrix is not None:
+                # Position labels in figure coordinates, to the right of the plot but left of colorbar
+                # Use ax.transAxes for positioning relative to axes
+                ax.text(1.02, 0.25, 'FRONT', transform=ax.transAxes, fontsize=12, fontweight='bold',
+                       rotation=90, va='center', ha='left', color='#1e40af')
+                ax.text(1.02, 0.75, 'REAR', transform=ax.transAxes, fontsize=12, fontweight='bold',
+                       rotation=90, va='center', ha='left', color='#dc2626')
+
             plt.tight_layout()
             suffix = "normalized" if normalized else "absolute"
             plt.savefig(self.static_plots_dir / f'core/{driver}_contour_{suffix}.png')
             plt.close()
 
         if save_interactive:
+            # Subsample frequencies for interactive plots to reduce file size
+            # (Full resolution kept for static plots, subsampled for interactive)
+            step = 4  # Keep every 4th frequency point
+            freq_sub = freq[::step]
+            spl_sub = spl_plot[::step, :]
+
             fig = go.Figure(data=go.Heatmap(
-                z=spl_plot.T,
-                x=freq,
+                z=spl_sub.T,
+                x=freq_sub,
                 y=angles_fine,
                 colorscale='RdYlBu_r' if not normalized else \
                            [[0, '#000033'], [0.2, '#0000FF'], [0.4, '#00FFFF'],
@@ -480,16 +556,44 @@ class PolarResponseVisualizer:
                 colorbar=dict(title=cbar_label),
                 hovertemplate="Frequency: %{x:.1f} Hz<br>Angle: %{y:.1f}°<br>Level: %{z:.2f} dB<extra></extra>"
             ))
-            
+
+            # Add horizontal line at 90° for reference when showing rear data
+            if has_rear and rear_spl_matrix is not None:
+                fig.add_hline(y=90, line_color="white", line_width=2, opacity=0.8)
+
             self._add_interactive_grid(fig)
             self._configure_interactive_axis(fig)
+
+            # Add FRONT/REAR annotations when rear data is shown
+            annotations = []
+            if has_rear and rear_spl_matrix is not None:
+                annotations = [
+                    dict(
+                        x=1.06, y=0.25, xref='paper', yref='paper',
+                        text='<b>FRONT</b>', showarrow=False,
+                        font=dict(size=14, color='#1e40af'),
+                        textangle=-90
+                    ),
+                    dict(
+                        x=1.06, y=0.75, xref='paper', yref='paper',
+                        text='<b>REAR</b>', showarrow=False,
+                        font=dict(size=14, color='#dc2626'),
+                        textangle=-90
+                    )
+                ]
+
             fig.update_layout(
-                title=f'{driver} - Polar Response Contour ({title_suffix})',
-                yaxis_title='Angle (degrees)'
+                title=f'{driver} - Polar Response Contour ({title_suffix}){title_360}',
+                yaxis_title='Angle (degrees)',
+                yaxis_range=list(y_lim),
+                annotations=annotations
             )
-            
+
             suffix = "normalized" if normalized else "absolute"
-            fig.write_html(self.interactive_plots_dir / f'{driver}_contour_{suffix}.html')
+            fig.write_html(
+                self.interactive_plots_dir / f'{driver}_contour_{suffix}.html',
+                include_plotlyjs='cdn'
+            )
 
     def plot_crossover_analysis(self, save_static=True, save_interactive=True):
         """Generate crossover match analysis"""
@@ -500,17 +604,17 @@ class PolarResponseVisualizer:
         crossovers = [
             {
                 'freq': config.CROSSOVER_FREQUENCIES[0],
-                'drivers': ['10F8824', 'L22MG'],
+                'drivers': ['10F8424', 'L22MG'],
                 'name': 'Crossover 120Hz'
             },
             {
                 'freq': config.CROSSOVER_FREQUENCIES[1],
-                'drivers': ['L22MG', 'MU10', '10F8824'],
+                'drivers': ['L22MG', 'MU10', '10F8424'],
                 'name': 'Crossover 1000Hz'
             },
             {
                 'freq': config.CROSSOVER_FREQUENCIES[2],
-                'drivers': ['MU10', '10F8824', 'SEAS27T'],
+                'drivers': ['MU10', '10F8424', 'SEAS27T'],
                 'name': 'Crossover 7000Hz'
             }
         ]
@@ -990,23 +1094,195 @@ class PolarResponseVisualizer:
         fig = go.Figure(data=initial_traces, layout=layout)
         fig.write_html(self.interactive_plots_dir / "polar/polar_explorer.html")
 
+    def generate_measurement_summary_html(self):
+        """Generate HTML summary of all measurements with metadata"""
+        print("Generating measurement summary HTML...")
+
+        html_parts = []
+
+        # Header
+        html_parts.append("""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Measurement Summary</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+        h1 { color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 0.5rem; }
+        h2 { color: #1e40af; margin-top: 2rem; }
+        .config-box {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0 2rem;
+        }
+        .config-box h3 { margin: 0 0 0.5rem; color: #1e40af; }
+        .config-box p { margin: 0.25rem 0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            background: #1e40af;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) { background: #f1f5f9; }
+        tr:hover { background: #e0f2fe; }
+        .angle-label {
+            font-weight: 600;
+            color: #1e40af;
+        }
+        .front { color: #059669; }
+        .rear { color: #dc2626; }
+        .notes {
+            font-size: 0.875rem;
+            color: #64748b;
+            white-space: pre-line;
+        }
+        .filename { font-family: monospace; font-size: 0.875rem; }
+        .date { font-size: 0.875rem; color: #64748b; }
+        .processing-notes { font-size: 0.875rem; color: #b45309; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <h1>Measurement Summary</h1>
+""")
+
+        # Global config
+        html_parts.append(f"""
+    <div class="config-box">
+        <h3>Processing Configuration</h3>
+        <p><strong>Time Gating:</strong> Left: {self.global_config.get('gate_left_ms', 0):.1f} ms, Right: {self.global_config.get('gate_right_ms', 0):.1f} ms</p>
+        <p><strong>Smoothing:</strong> {self.global_config.get('smoothing_str', 'None')}</p>
+    </div>
+""")
+
+        # For each driver
+        for driver in self.drivers:
+            driver_data = self.data[driver]
+            has_rear = driver_data.get('has_rear', False)
+
+            html_parts.append(f"""
+    <h2>{driver}</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Angle</th>
+                <th>Measurement Name</th>
+                <th>Notes</th>
+                <th>Date</th>
+                <th>Processing Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+""")
+
+            # Front angles
+            for angle in sorted(driver_data['angles'].keys()):
+                angle_data = driver_data['angles'][angle]
+                meta = angle_data.get('metadata', {})
+                title = meta.get('title', '')
+                notes = meta.get('notes', '').replace('\n', '<br>')
+                date = meta.get('date', '')
+
+                # Processing notes (timing correction)
+                processing_notes = ''
+                if angle_data.get('timing_corrected', False):
+                    offset_ms = angle_data.get('timing_offset_ms', 0.0)
+                    processing_notes = f'Peak aligned: {offset_ms:.2f}ms'
+
+                # Show both the REW title and notes
+                # The title is the measurement name in REW
+                html_parts.append(f"""
+            <tr>
+                <td class="angle-label"><span class="front">F{angle}</span></td>
+                <td class="filename">{title}</td>
+                <td class="notes">{notes}</td>
+                <td class="date">{date}</td>
+                <td class="processing-notes">{processing_notes}</td>
+            </tr>
+""")
+
+            # Rear angles if present
+            if has_rear and 'rear_angles' in driver_data:
+                for angle in sorted(driver_data['rear_angles'].keys()):
+                    angle_data = driver_data['rear_angles'][angle]
+                    meta = angle_data.get('metadata', {})
+                    title = meta.get('title', '')
+                    notes = meta.get('notes', '').replace('\n', '<br>')
+                    date = meta.get('date', '')
+
+                    # Processing notes (timing correction)
+                    processing_notes = ''
+                    if angle_data.get('timing_corrected', False):
+                        offset_ms = angle_data.get('timing_offset_ms', 0.0)
+                        processing_notes = f'Peak aligned: {offset_ms:.2f}ms'
+
+                    # Show both the REW title and notes
+                    html_parts.append(f"""
+            <tr>
+                <td class="angle-label"><span class="rear">R{angle}</span></td>
+                <td class="filename">{title}</td>
+                <td class="notes">{notes}</td>
+                <td class="date">{date}</td>
+                <td class="processing-notes">{processing_notes}</td>
+            </tr>
+""")
+
+            html_parts.append("""
+        </tbody>
+    </table>
+""")
+
+        # Footer
+        html_parts.append("""
+</body>
+</html>
+""")
+
+        # Write file
+        output_path = self.interactive_plots_dir / "measurement_summary.html"
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(''.join(html_parts))
+
+        print(f"  Saved to {output_path}")
+
     def generate_all_plots(self):
         """Generate all configured visualizations"""
         self.plot_di_comparison()
         self.plot_beamwidth_comparison()
         self.plot_erdi()
         self.plot_dipole_analysis()
-        
+
         for driver in self.drivers:
             self.plot_contour(driver, normalized=True)
             self.plot_contour(driver, normalized=False)
             self.plot_spinorama(driver)
-            
+
         freqs_polar = [500, 1000, 2000, 4000, 6000, 6500, 7000, 8000, 10000, 15000, 20000]
         self.plot_polar_diagrams(freqs=freqs_polar)
         self.plot_polar_multi_driver_comparison(freqs=freqs_polar)
         self.plot_polar_interactive_slider()
         self.plot_crossover_analysis()
+        self.generate_measurement_summary_html()
         print("\nAll visualizations generated.")
 
 if __name__ == "__main__":

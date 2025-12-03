@@ -227,44 +227,48 @@ class PolarDataLoader:
             
         return frequencies, magnitude, phase
 
-    def _auto_fix_timing(self, measurement_uuid: str):
+    def _auto_fix_timing(self, measurement_uuid: str) -> dict:
         """
-        Detect and fix timing anomalies. 
+        Detect and fix timing anomalies.
         Looks for the earliest significant peak (direct sound) which might be shifted (e.g. -12ms).
         Aligns that peak to t=0 using REW's 'Offset t=0' command.
+
+        Returns:
+            dict with 'corrected' (bool) and 'offset_ms' (float) if correction was applied
         """
+        result = {'corrected': False, 'offset_ms': 0.0}
         try:
             # 1. Get IR Data
             url_ir = f"{config.REW_API_BASE}/measurements/{measurement_uuid}/impulse-response"
             response = requests.get(url_ir, params={"windowed": "false"}, timeout=10)
             response.raise_for_status()
             ir_info = response.json()
-            
+
             if "data" in ir_info:
                 ir_data = self._decode_base64_floats(ir_info["data"])
             elif "left" in ir_info:
                 ir_data = self._decode_base64_floats(ir_info["left"])
             else:
-                return
+                return result
 
             sample_rate = ir_info["sampleRate"]
             start_time_s = ir_info["startTime"]
-            
+
             # 2. Analyze Peaks
             abs_ir = np.abs(ir_data)
             global_max_idx = np.argmax(abs_ir)
             global_max_val = abs_ir[global_max_idx]
-            
+
             # Search for earliest significant peak (10% of max) to catch direct sound
             # if it's earlier than the global max (reflection).
             # However, inspection showed the direct sound IS the max or close to it at -12ms.
             # But we'll be robust.
-            
+
             threshold = global_max_val * 0.1
             candidates = np.where(abs_ir > threshold)[0]
-            
+
             target_peak_idx = global_max_idx
-            
+
             # Simple clustering: Take the first candidate that is a local maximum
             if len(candidates) > 0:
                 for idx in candidates:
@@ -273,28 +277,28 @@ class PolarDataLoader:
                         if abs_ir[idx] > abs_ir[idx-1] and abs_ir[idx] > abs_ir[idx+1]:
                             target_peak_idx = idx
                             break
-            
+
             # Calculate time of the target peak
             peak_time_s = start_time_s + (target_peak_idx / sample_rate)
-            
+
             # If peak is not at 0 (tolerance 0.5ms), shift it
             if abs(peak_time_s) > 0.0005:
                 # To shift Peak to 0, we set t=0 TO the current Peak Time.
                 # REW 'Offset t=0' parameter is "time to become zero".
-                shift_sec = peak_time_s 
-                
+                shift_sec = peak_time_s
+
                 print(f"    ! Aligning Peak: Found at {peak_time_s*1000:.2f} ms. Applying Offset {shift_sec*1000:.2f} ms...")
-                
+
                 url_cmd = f"{config.REW_API_BASE}/measurements/{measurement_uuid}/command"
                 payload = {
-                    "command": "Offset t=0", 
+                    "command": "Offset t=0",
                     "parameters": {
                         "offset": str(shift_sec),
                         "unit": "seconds"
                     }
                 }
                 requests.post(url_cmd, json=payload, timeout=10)
-                
+
                 # Verify the shift
                 time.sleep(0.5) # Wait for command to apply
                 resp_verify = requests.get(url_ir, params={"windowed": "false"}, timeout=10)
@@ -303,7 +307,7 @@ class PolarDataLoader:
                     start_v = info_v["startTime"]
                     peak_time_v = start_v + (target_peak_idx / sample_rate)
                     print(f"    ✓ Verification: Peak is now at {peak_time_v*1000:.2f} ms")
-                    
+
                     if abs(peak_time_v) > 0.1: # If still > 0.1ms off
                         print("    !! WARNING: Correction failed to move peak to 0. Result is still off.")
 
@@ -314,9 +318,15 @@ class PolarDataLoader:
                     settings = resp_win.json()
                     settings["refTimems"] = 0
                     requests.post(url_win, json=settings, timeout=10)
-                
+
+                # Record that correction was applied
+                result['corrected'] = True
+                result['offset_ms'] = shift_sec * 1000
+
         except Exception as e:
             print(f"    Warning: Failed to auto-fix timing: {e}")
+
+        return result
 
     def load_measurement(self, file_path: str, smoothing: Optional[int] = 12,
                         gate_left_ms: float = 0.0, gate_right_ms: float = 3.0) -> Dict:
@@ -345,7 +355,7 @@ class PolarDataLoader:
                 measurement_uuid = measurements[last_key]["uuid"]
 
                 # 0. Auto-fix timing anomalies
-                self._auto_fix_timing(measurement_uuid)
+                timing_correction = self._auto_fix_timing(measurement_uuid)
 
                 # 1. Apply Time Gating via REW API
                 if gate_right_ms > 0 or gate_left_ms > 0:
@@ -364,7 +374,9 @@ class PolarDataLoader:
                     "phase": phase,
                     "unit": "dB SPL",
                     "smoothing": f"1/{smoothing}" if smoothing else "None",
-                    "metadata": measurements[last_key]
+                    "metadata": measurements[last_key],
+                    "timing_corrected": timing_correction['corrected'],
+                    "timing_offset_ms": timing_correction['offset_ms']
                 }
             except requests.exceptions.RequestException as e:
                 print(f"    Warning: API request failed (attempt {attempt+1}/3): {e}")
@@ -506,6 +518,15 @@ class PolarDataLoader:
             if match:
                 return {"driver": match.group(1), "angle": int(match.group(2)), "side": match.group(3)}
 
+        elif self.pattern_type == "lx521_system":
+            # Pattern: {system_name} {angle} GRADOS {F|REAR}
+            match = re.match(r'(.+)\s+(\d+)\s+GRADOS\s+(F|REAR)$', stem)
+            if match:
+                driver = match.group(1)  # "LX521 HIGH MID INV ORIGINAL"
+                angle = int(match.group(2))
+                side = "R" if match.group(3) == "REAR" else "F"
+                return {"driver": driver, "angle": angle, "side": side}
+
         return None
 
     def _detect_drivers(self) -> List[str]:
@@ -542,13 +563,32 @@ class PolarDataLoader:
             return f"F{angle}-{driver_name}.mdat"
         elif self.pattern_type == "juan":
             return f"{driver_name} {angle} {side}.mdat"
+        elif self.pattern_type == "lx521_system":
+            side_str = "REAR" if side == "R" else "F"
+            return f"{driver_name} {angle} GRADOS {side_str}.mdat"
         return ""
 
-    def save_to_hdf5(self, data: Dict, output_path: str):
-        """Save polar data to HDF5 file"""
+    def save_to_hdf5(self, data: Dict, output_path: str,
+                     gate_left_ms: float = 0.0, gate_right_ms: float = 0.0,
+                     smoothing: int = 0):
+        """Save polar data to HDF5 file
+
+        Args:
+            data: Polar measurement data dictionary
+            output_path: Path to save HDF5 file
+            gate_left_ms: Left gate time used (for metadata)
+            gate_right_ms: Right gate time used (for metadata)
+            smoothing: Smoothing factor used (for metadata)
+        """
         Path(output_path).parent.mkdir(parents=True, exist_ok=True)
 
         with h5py.File(output_path, 'w') as f:
+            # Save global config as root attributes
+            f.attrs['gate_left_ms'] = gate_left_ms
+            f.attrs['gate_right_ms'] = gate_right_ms
+            f.attrs['smoothing'] = smoothing
+            f.attrs['smoothing_str'] = f"1/{smoothing}" if smoothing else "None"
+
             for driver_name, driver_data in data.items():
                 driver_group = f.create_group(driver_name)
                 driver_group.attrs['driver_name'] = driver_name
@@ -567,6 +607,18 @@ class PolarDataLoader:
                     angle_group.attrs['unit'] = angle_data['unit']
                     angle_group.attrs['smoothing'] = angle_data['smoothing']
 
+                    # Save metadata if available
+                    if 'metadata' in angle_data:
+                        meta = angle_data['metadata']
+                        angle_group.attrs['title'] = meta.get('title', '')
+                        angle_group.attrs['notes'] = meta.get('notes', '')
+                        angle_group.attrs['date'] = meta.get('date', '')
+                        angle_group.attrs['sampleRate'] = meta.get('sampleRate', 0)
+
+                    # Save timing correction info
+                    angle_group.attrs['timing_corrected'] = angle_data.get('timing_corrected', False)
+                    angle_group.attrs['timing_offset_ms'] = angle_data.get('timing_offset_ms', 0.0)
+
                 # Save rear angles if present
                 if driver_data.get('has_rear') and 'rear_angles' in driver_data:
                     rear_group = driver_group.create_group('rear_angles')
@@ -577,12 +629,36 @@ class PolarDataLoader:
                         angle_group.attrs['unit'] = angle_data['unit']
                         angle_group.attrs['smoothing'] = angle_data['smoothing']
 
+                        # Save metadata if available
+                        if 'metadata' in angle_data:
+                            meta = angle_data['metadata']
+                            angle_group.attrs['title'] = meta.get('title', '')
+                            angle_group.attrs['notes'] = meta.get('notes', '')
+                            angle_group.attrs['date'] = meta.get('date', '')
+                            angle_group.attrs['sampleRate'] = meta.get('sampleRate', 0)
+
+                        # Save timing correction info
+                        angle_group.attrs['timing_corrected'] = angle_data.get('timing_corrected', False)
+                        angle_group.attrs['timing_offset_ms'] = angle_data.get('timing_offset_ms', 0.0)
+
         print(f"Saved polar data to {output_path}")
 
     def load_from_hdf5(self, input_path: str) -> Dict:
-        """Load polar data from HDF5 file"""
+        """Load polar data from HDF5 file
+
+        Returns:
+            Dictionary with 'config' key for global settings and driver names as keys
+        """
         data = {}
         with h5py.File(input_path, 'r') as f:
+            # Load global config
+            data['_config'] = {
+                'gate_left_ms': f.attrs.get('gate_left_ms', 0.0),
+                'gate_right_ms': f.attrs.get('gate_right_ms', 0.0),
+                'smoothing': f.attrs.get('smoothing', 0),
+                'smoothing_str': f.attrs.get('smoothing_str', 'None'),
+            }
+
             for driver_name in f.keys():
                 driver_group = f[driver_name]
                 has_rear = driver_group.attrs.get('has_rear', False)
@@ -598,13 +674,27 @@ class PolarDataLoader:
                 for angle_str in angles_group.keys():
                     angle = int(angle_str)
                     angle_group = angles_group[angle_str]
-                    driver_data['angles'][angle] = {
+                    angle_data = {
                         'frequencies': driver_data['common_frequencies'],
                         'magnitude': np.array(angle_group['magnitude']),
                         'phase': np.array(angle_group['phase']),
                         'unit': angle_group.attrs['unit'],
                         'smoothing': angle_group.attrs['smoothing']
                     }
+                    # Load metadata if available
+                    if 'title' in angle_group.attrs:
+                        angle_data['metadata'] = {
+                            'title': angle_group.attrs.get('title', ''),
+                            'notes': angle_group.attrs.get('notes', ''),
+                            'date': angle_group.attrs.get('date', ''),
+                            'sampleRate': angle_group.attrs.get('sampleRate', 0),
+                        }
+
+                    # Load timing correction info
+                    angle_data['timing_corrected'] = bool(angle_group.attrs.get('timing_corrected', False))
+                    angle_data['timing_offset_ms'] = float(angle_group.attrs.get('timing_offset_ms', 0.0))
+
+                    driver_data['angles'][angle] = angle_data
 
                 # Load rear angles if present
                 if has_rear and 'rear_angles' in driver_group:
@@ -613,13 +703,27 @@ class PolarDataLoader:
                     for angle_str in rear_group.keys():
                         angle = int(angle_str)
                         angle_group = rear_group[angle_str]
-                        driver_data['rear_angles'][angle] = {
+                        angle_data = {
                             'frequencies': driver_data['common_frequencies'],
                             'magnitude': np.array(angle_group['magnitude']),
                             'phase': np.array(angle_group['phase']),
                             'unit': angle_group.attrs['unit'],
                             'smoothing': angle_group.attrs['smoothing']
                         }
+                        # Load metadata if available
+                        if 'title' in angle_group.attrs:
+                            angle_data['metadata'] = {
+                                'title': angle_group.attrs.get('title', ''),
+                                'notes': angle_group.attrs.get('notes', ''),
+                                'date': angle_group.attrs.get('date', ''),
+                                'sampleRate': angle_group.attrs.get('sampleRate', 0),
+                            }
+
+                        # Load timing correction info
+                        angle_data['timing_corrected'] = bool(angle_group.attrs.get('timing_corrected', False))
+                        angle_data['timing_offset_ms'] = float(angle_group.attrs.get('timing_offset_ms', 0.0))
+
+                        driver_data['rear_angles'][angle] = angle_data
 
                 data[driver_name] = driver_data
         return data

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LX521.4 Complete System - Polar Analysis</title>
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #6d28d9;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --green: #059669;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: white;
+            opacity: 0.9;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.1);
+            opacity: 1;
+        }
+
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-header .subtitle {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-body h3 {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .link-list {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .link-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .link-list a {
+            color: var(--primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0;
+            transition: color 0.2s;
+        }
+
+        .link-list a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .link-list a::before {
+            content: ">";
+            font-weight: bold;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .highlight {
+            background: #f3e8ff;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+        }
+
+        .highlight strong {
+            color: var(--primary-dark);
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .image-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+
+        .image-card:hover {
+            box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
+        }
+
+        .image-card a {
+            display: block;
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .image-card .caption {
+            padding: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--text);
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.75rem;
+            }
+
+            .image-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>LX521.4 Complete System</h1>
+        <p>Full system polar response measurements (all drivers summed)</p>
+        <a href="index.html" class="back-link">Back to Main Page</a>
+    </header>
+
+    <main>
+        <!-- Info Section -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Measurement Details</h2>
+                <div class="subtitle">Juan's measurements - Full 360 deg coverage</div>
+            </div>
+            <div class="card-body">
+                <div class="highlight">
+                    <strong>Complete System:</strong> These measurements capture the LX521.4 with all drivers active and crossover applied. This shows the actual system behavior rather than individual driver responses.
+                </div>
+                <p><strong>Configuration:</strong> LX521 HIGH MID INV ORIGINAL</p>
+                <p><strong>Angles:</strong> 0, 15, 30, 45, 60, 75, 90 degrees</p>
+                <p><strong>Coverage:</strong> Front + Rear measurements (full 360 deg)</p>
+            </div>
+        </div>
+
+        <!-- Interactive Plots Section -->
+        <h2 class="section-title">Interactive Plots (HTML)</h2>
+        <div class="card">
+            <div class="card-body">
+                <h3>Polar & Directivity</h3>
+                <ul class="link-list">
+                    <li><a href="lx521-system/interactive/polar/polar_explorer.html">Polar Explorer (360 deg)</a></li>
+                    <li><a href="lx521-system/interactive/di_comparison.html">Directivity Index</a></li>
+                    <li><a href="lx521-system/interactive/beamwidth_comparison.html">Beamwidth</a></li>
+                </ul>
+
+                <h3>Contour Plots</h3>
+                <ul class="link-list">
+                    <li><a href="lx521-system/interactive/LX521 HIGH MID INV ORIGINAL_contour_normalized.html">Contour (Normalized)</a></li>
+                    <li><a href="lx521-system/interactive/LX521 HIGH MID INV ORIGINAL_contour_absolute.html">Contour (Absolute)</a></li>
+                </ul>
+
+                <h3>Measurement Details</h3>
+                <ul class="link-list">
+                    <li><a href="lx521-system/interactive/measurement_summary.html">Measurement Summary (config, notes, dates)</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Static Plots Section -->
+        <h2 class="section-title">Static Plots (PNG)</h2>
+
+        <h3>Core Analysis</h3>
+        <div class="image-grid">
+            <div class="image-card">
+                <a href="lx521-system/static_plots/core/di_comparison.png" target="_blank">
+                    <img src="lx521-system/static_plots/core/di_comparison.png" alt="DI">
+                    <div class="caption">Directivity Index</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="lx521-system/static_plots/core/beamwidth_comparison.png" target="_blank">
+                    <img src="lx521-system/static_plots/core/beamwidth_comparison.png" alt="Beamwidth">
+                    <div class="caption">Beamwidth</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="lx521-system/static_plots/core/erdi_comparison.png" target="_blank">
+                    <img src="lx521-system/static_plots/core/erdi_comparison.png" alt="ERDI">
+                    <div class="caption">ERDI</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="lx521-system/static_plots/core/dipole_null_analysis.png" target="_blank">
+                    <img src="lx521-system/static_plots/core/dipole_null_analysis.png" alt="Dipole Null">
+                    <div class="caption">Dipole Null Analysis</div>
+                </a>
+            </div>
+        </div>
+
+        <h3>Polar Diagrams (360 deg)</h3>
+        <div class="image-grid">
+            <div class="image-card">
+                <a href="lx521-system/static_plots/polar/polar_gallery_overlaid.png" target="_blank">
+                    <img src="lx521-system/static_plots/polar/polar_gallery_overlaid.png" alt="Polar Gallery">
+                    <div class="caption">Polar Gallery (360 deg)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="lx521-system/static_plots/polar/LX521 HIGH MID INV ORIGINAL_polar_circular.png" target="_blank">
+                    <img src="lx521-system/static_plots/polar/LX521 HIGH MID INV ORIGINAL_polar_circular.png" alt="System Polar">
+                    <div class="caption">System Polar (360 deg)</div>
+                </a>
+            </div>
+        </div>
+
+        <h3>Contour & Spinorama</h3>
+        <div class="image-grid">
+            <div class="image-card">
+                <a href="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_contour_normalized.png" target="_blank">
+                    <img src="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_contour_normalized.png" alt="Contour Normalized">
+                    <div class="caption">Contour (Normalized)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_contour_absolute.png" target="_blank">
+                    <img src="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_contour_absolute.png" alt="Contour Absolute">
+                    <div class="caption">Contour (Absolute)</div>
+                </a>
+            </div>
+            <div class="image-card">
+                <a href="lx521-system/static_plots/spinorama/LX521 HIGH MID INV ORIGINAL_spinorama.png" target="_blank">
+                    <img src="lx521-system/static_plots/spinorama/LX521 HIGH MID INV ORIGINAL_spinorama.png" alt="Spinorama">
+                    <div class="caption">Spinorama</div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p><a href="https://github.com/antorsae/lx">Source Code</a> | <a href="index.html">Back to Main Page</a></p>
+    </footer>
+</body>
+</html>

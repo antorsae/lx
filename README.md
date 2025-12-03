@@ -57,7 +57,7 @@ MEASUREMENT_SETS = {
 
 | Pattern | Example | Description |
 |---------|---------|-------------|
-| `andres` | `F45-10F8824.mdat` | Front-only measurements |
+| `andres` | `F45-10F8424.mdat` | Front-only measurements |
 | `juan` | `GRS PT6816 45 F.mdat` | Front (F) and Rear (R) measurements |
 
 ## Usage

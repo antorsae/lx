@@ -69,7 +69,10 @@ def run_pipeline(args):
 
             # Save
             print(f"\n[STEP 2] Saving to {hdf5_path}...")
-            loader.save_to_hdf5(data, str(hdf5_path))
+            loader.save_to_hdf5(data, str(hdf5_path),
+                               gate_left_ms=config.GATE_LEFT_MS,
+                               gate_right_ms=config.GATE_RIGHT_MS,
+                               smoothing=smoothing_val)
 
         except RuntimeError as e:
             print(f"\nFATAL ERROR: {e}")

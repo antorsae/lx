@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Measurement Summary</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+        h1 { color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 0.5rem; }
+        h2 { color: #1e40af; margin-top: 2rem; }
+        .config-box {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0 2rem;
+        }
+        .config-box h3 { margin: 0 0 0.5rem; color: #1e40af; }
+        .config-box p { margin: 0.25rem 0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            background: #1e40af;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) { background: #f1f5f9; }
+        tr:hover { background: #e0f2fe; }
+        .angle-label {
+            font-weight: 600;
+            color: #1e40af;
+        }
+        .front { color: #059669; }
+        .rear { color: #dc2626; }
+        .notes {
+            font-size: 0.875rem;
+            color: #64748b;
+            white-space: pre-line;
+        }
+        .filename { font-family: monospace; font-size: 0.875rem; }
+        .date { font-size: 0.875rem; color: #64748b; }
+    </style>
+</head>
+<body>
+    <h1>Measurement Summary</h1>
+
+    <div class="config-box">
+        <h3>Processing Configuration</h3>
+        <p><strong>Time Gating:</strong> Left: 0.5 ms, Right: 3.0 ms</p>
+        <p><strong>Smoothing:</strong> None</p>
+    </div>
+
+    <h2>GRS PT6816</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Angle</th>
+                <th>Measurement Name</th>
+                <th>Notes</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td class="angle-label"><span class="front">F0</span></td>
+                <td class="filename">GRS PT6816 0 F</td>
+                <td class="notes"></td>
+                <td class="date">2024-Dec-18 21:17:45</td>
+            </tr>
+
+            <tr>
+                <td class="angle-label"><span class="front">F15</span></td>
+                <td class="filename">GRS PT6816 15 F</td>
+                <td class="notes"></td>
+                <td class="date">2024-Dec-18 21:19:17</td>
+            </tr>
+
+            <tr>
+                <td class="angle-label"><span class="front">F30</span></td>
+                <td class="filename">GRS PT6816 30 F</td>
+                <td class="notes"></td>
+                <td class="date">2024-Dec-18 21:21:05</td>
+            </tr>
+
+            <tr>
+                <td class="angle-label"><span class="front">F45</span></td>
+                <td class="filename">GRS PT6816 45 F</td>
+                <td class="notes"></td>
+                <td class="date">2024-Dec-18 21:21:52</td>
+            </tr>
+
+            <tr>
+                <td class="angle-label"><span class="front">F60</span></td>
+                <td class="filename">GRS PT6816 60 F</td>
+                <td class="notes"></td>
+                <td class="date">2024-Dec-18 21:22:40</td>
+            </tr>
+
+            <tr>
+                <td class="angle-label"><span class="front">F75</span></td>
+                <td class="filename">GRS PT6816 75 F</td>
+                <td class="notes"></td>
+                <td class="date">2024-Dec-18 21:23:31</td>
+            </tr>
+
+            <tr>
+                <td class="angle-label"><span class="front">F90</span></td>
+                <td class="filename">GRS PT6816 90 F</td>
+                <td class="notes"></td>
+                <td class="date">2024-Dec-18 21:24:16</td>
+            </tr>
+
+            <tr>
+                <td class="angle-label"><span class="rear">R0</span></td>
+                <td class="filename">GRS PT6816 0 R</td>
+                <td class="notes"></td>
+                <td class="date">2024-Dec-19 12:32:07</td>
+            </tr>
+
+            <tr>
+                <td class="angle-label"><span class="rear">R15</span></td>
+                <td class="filename">GRS PT6816 15 R</td>
+                <td class="notes"></td>
+                <td class="date">2024-Dec-19 12:35:34</td>
+            </tr>
+
+            <tr>
+                <td class="angle-label"><span class="rear">R30</span></td>
+                <td class="filename">GRS PT6816 30 R</td>
+                <td class="notes"></td>
+                <td class="date">2024-Dec-19 12:36:39</td>
+            </tr>
+
+            <tr>
+                <td class="angle-label"><span class="rear">R45</span></td>
+                <td class="filename">GRS PT6816 45 R</td>
+                <td class="notes"></td>
+                <td class="date">2024-Dec-19 12:38:08</td>
+            </tr>
+
+            <tr>
+                <td class="angle-label"><span class="rear">R60</span></td>
+                <td class="filename">GRS PT6816 60 R</td>
+                <td class="notes"></td>
+                <td class="date">2024-Dec-19 12:40:35</td>
+            </tr>
+
+            <tr>
+                <td class="angle-label"><span class="rear">R75</span></td>
+                <td class="filename">GRS PT6816 75 R</td>
+                <td class="notes"></td>
+                <td class="date">2024-Dec-19 12:41:27</td>
+            </tr>
+
+            <tr>
+                <td class="angle-label"><span class="rear">R90</span></td>
+                <td class="filename">GRS PT6816 90 R</td>
+                <td class="notes"></td>
+                <td class="date">2024-Dec-19 12:42:34</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+</body>
+</html>
