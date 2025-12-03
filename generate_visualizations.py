@@ -26,6 +26,9 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 import seaborn as sns
 from pathlib import Path
+import gzip
+import base64
+import json
 
 # Import centralized configuration
 import config
@@ -141,6 +144,71 @@ class PolarResponseVisualizer:
             ticktext=tick_text,
             tickmode="array"
         )
+
+    def _write_compressed_html(self, fig, filepath: Path, title: str = "Plot"):
+        """Write Plotly figure as compressed HTML using pako for browser decompression.
+
+        This significantly reduces file size by:
+        1. Compressing the JSON data with gzip
+        2. Base64 encoding for embedding in HTML
+        3. Using pako.js to decompress in the browser
+
+        Typical compression ratio: 70-85% smaller files.
+        """
+        # Get the figure JSON
+        fig_json = fig.to_json()
+
+        # Compress with gzip
+        compressed = gzip.compress(fig_json.encode('utf-8'), compresslevel=9)
+
+        # Base64 encode
+        b64_data = base64.b64encode(compressed).decode('ascii')
+
+        # HTML template with pako decompression
+        html_template = f'''<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{title}</title>
+    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {{ margin: 0; padding: 0; }}
+        #plot {{ width: 100vw; height: 100vh; }}
+        #loading {{
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: Arial, sans-serif; font-size: 18px;
+        }}
+    </style>
+</head>
+<body>
+    <div id="loading">Loading and decompressing data...</div>
+    <div id="plot"></div>
+    <script>
+        // Compressed data (gzip + base64)
+        const compressedData = "{b64_data}";
+
+        // Decode base64 and decompress
+        const binaryStr = atob(compressedData);
+        const bytes = new Uint8Array(binaryStr.length);
+        for (let i = 0; i < binaryStr.length; i++) {{
+            bytes[i] = binaryStr.charCodeAt(i);
+        }}
+
+        // Decompress using pako
+        const decompressed = pako.inflate(bytes, {{ to: 'string' }});
+        const figData = JSON.parse(decompressed);
+
+        // Hide loading message and render plot
+        document.getElementById('loading').style.display = 'none';
+        Plotly.newPlot('plot', figData.data, figData.layout, {{responsive: true}});
+    </script>
+</body>
+</html>'''
+
+        with open(filepath, 'w') as f:
+            f.write(html_template)
 
     def _build_360_polar_data(self, driver: str, freq_idx: int):
         """Build full 360° polar data for a driver at a specific frequency.
@@ -590,9 +658,11 @@ class PolarResponseVisualizer:
             )
 
             suffix = "normalized" if normalized else "absolute"
-            fig.write_html(
+            title_type = "Normalized" if normalized else "Absolute"
+            self._write_compressed_html(
+                fig,
                 self.interactive_plots_dir / f'{driver}_contour_{suffix}.html',
-                include_plotlyjs='cdn'
+                title=f'{driver} - Contour ({title_type})'
             )
 
     def plot_crossover_analysis(self, save_static=True, save_interactive=True):
