@@ -592,18 +592,21 @@ class PolarResponseVisualizer:
             ax.set_ylim(y_lim)
             cbar = fig.colorbar(contour, ax=ax, label=cbar_label)
 
-            # Add FRONT/REAR vertical labels on the right side when rear data is shown
+            # Add FRONT/REAR vertical labels on the right Y-axis when rear data is shown
             if has_rear and rear_spl_matrix is not None:
-                # Position labels in figure coordinates, to the right of the plot but left of colorbar
-                # Use ax.transAxes for positioning relative to axes
-                ax.text(1.02, 0.25, 'FRONT', transform=ax.transAxes, fontsize=12, fontweight='bold',
-                       rotation=90, va='center', ha='left', color='#1e40af')
-                ax.text(1.02, 0.75, 'REAR', transform=ax.transAxes, fontsize=12, fontweight='bold',
-                       rotation=90, va='center', ha='left', color='#dc2626')
+                # Create secondary Y-axis for labels
+                ax2 = ax.twinx()
+                ax2.set_ylim(y_lim)
+                ax2.set_yticks([45, 135])
+                ax2.set_yticklabels(['FRONT', 'REAR'], fontsize=12, fontweight='bold')
+                ax2.tick_params(axis='y', colors='#1e40af', length=0)
+                # Color the labels differently
+                for i, label in enumerate(ax2.get_yticklabels()):
+                    label.set_color('#1e40af' if i == 0 else '#dc2626')
 
             plt.tight_layout()
             suffix = "normalized" if normalized else "absolute"
-            plt.savefig(self.static_plots_dir / f'core/{driver}_contour_{suffix}.png')
+            plt.savefig(self.static_plots_dir / f'core/{driver}_contour_{suffix}.png', bbox_inches='tight')
             plt.close()
 
         if save_interactive:
