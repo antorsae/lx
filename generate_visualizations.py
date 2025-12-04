@@ -616,10 +616,12 @@ class PolarResponseVisualizer:
             freq_sub = freq[::step]
             spl_sub = spl_plot[::step, :]
 
+            # Convert numpy arrays to lists to avoid Plotly's binary bdata format
+            # which can cause issues with browser rendering
             fig = go.Figure(data=go.Heatmap(
-                z=spl_sub.T,
-                x=freq_sub,
-                y=angles_fine,
+                z=spl_sub.T.tolist(),
+                x=freq_sub.tolist(),
+                y=angles_fine.tolist(),
                 colorscale='RdYlBu_r' if not normalized else \
                            [[0, '#000033'], [0.2, '#0000FF'], [0.4, '#00FFFF'],
                             [0.6, '#00FF00'], [0.8, '#FFFF00'], [1, '#FF0000']],
