@@ -2,6 +2,8 @@
 
 A Python pipeline for processing acoustic polar response measurements from REW (Room EQ Wizard) and generating comprehensive visualizations for speaker driver analysis.
 
+**Live Demo:** [https://antorsae.github.io/lx/](https://antorsae.github.io/lx/)
+
 ## Features
 
 - Load and process `.mdat` measurement files via REW API
@@ -10,8 +12,9 @@ A Python pipeline for processing acoustic polar response measurements from REW (
 - Full 360° polar plots when front and rear measurements are available
 - Generate directivity analysis (DI, beamwidth, ERDI)
 - Spinorama curves (listening window, early reflections, predicted in-room)
-- Interactive HTML plots and static PNG exports
+- Interactive HTML plots (gzip compressed) and static PNG exports
 - Crossover match analysis for multi-driver systems
+- **REW slot management**: Automatic batch unloading prevents hitting REW's ~100 measurement limit
 
 ## Requirements
 
@@ -39,16 +42,23 @@ MEASUREMENT_SETS = {
     "andres": {
         "path": Path("../Mediciones Andres"),
         "pattern_type": "andres",  # F{angle}-{driver}.mdat
-        "angles": list(range(0, 91, 10)),
         "has_rear": False,
         "hdf5_file": "polar_data_andres.h5",
+        "output_dir": OUTPUT_DIR / "andres",
     },
     "juan": {
         "path": Path("../Mediciones Juan/GRS PT6816 A MIC ON AXIS"),
         "pattern_type": "juan",  # {driver} {angle} {side}.mdat
-        "angles": [0, 15, 30, 45, 60, 75, 90],
         "has_rear": True,
         "hdf5_file": "polar_data_juan.h5",
+        "output_dir": OUTPUT_DIR / "juan",
+    },
+    "lx521_system": {
+        "path": Path("../Mediciones Juan/LX521 HIGH MID INV ORIGINAL"),
+        "pattern_type": "lx521_system",  # {name} {angle} GRADOS {F|REAR}.mdat
+        "has_rear": True,
+        "hdf5_file": "polar_data_lx521_system.h5",
+        "output_dir": OUTPUT_DIR / "lx521-system",
     },
 }
 ```
@@ -59,6 +69,7 @@ MEASUREMENT_SETS = {
 |---------|---------|-------------|
 | `andres` | `F45-10F8424.mdat` | Front-only measurements |
 | `juan` | `GRS PT6816 45 F.mdat` | Front (F) and Rear (R) measurements |
+| `lx521_system` | `LX521 HIGH MID INV ORIGINAL 45 GRADOS F.mdat` | Full system measurements with GRADOS notation |
 
 ## Usage
 
@@ -101,15 +112,19 @@ python run_pipeline.py --no-smoothing
 ```
 output/
 ├── data/
-│   ├── polar_data_andres.h5    # Processed data (andres set)
-│   └── polar_data_juan.h5      # Processed data (juan set)
-├── andres/                      # Visualizations for andres set
+│   ├── polar_data_andres.h5       # Processed data (andres set)
+│   ├── polar_data_juan.h5         # Processed data (juan set)
+│   └── polar_data_lx521_system.h5 # Processed data (lx521_system set)
+├── andres/                         # Visualizations for andres set
 │   ├── static_plots/
-│   │   ├── core/               # DI, beamwidth, contour plots
-│   │   ├── polar/              # Polar diagrams
-│   │   └── spinorama/          # Spinorama curves
-│   └── interactive/            # HTML interactive plots
-└── juan/                        # Visualizations for juan set
+│   │   ├── core/                  # DI, beamwidth, contour plots
+│   │   ├── polar/                 # Polar diagrams
+│   │   └── spinorama/             # Spinorama curves
+│   └── interactive/               # HTML interactive plots (gzip compressed)
+├── juan/                           # Visualizations for juan set
+│   ├── static_plots/
+│   └── interactive/
+└── lx521-system/                   # Visualizations for lx521_system set
     ├── static_plots/
     └── interactive/
 ```
@@ -121,8 +136,32 @@ output/
 3. **Auto-fix Timing** - Aligns impulse response peak to t=0
 4. **Apply Time Gating** - Removes room reflections (default: 0.5ms / 3.0ms)
 5. **Get Frequency Response** - Retrieves magnitude/phase data
-6. **Save to HDF5** - Stores processed data for visualization
-7. **Generate Visualizations** - Creates all plots and analysis
+6. **Unload from REW** - Frees REW memory slots after each driver (batch unload)
+7. **Save to HDF5** - Stores processed data for visualization
+8. **Generate Visualizations** - Creates all plots and analysis
+
+## REW Slot Management
+
+REW has a limit of ~100 measurement slots. When processing many drivers, the pipeline automatically unloads measurements after each driver to prevent hitting this limit.
+
+```python
+# Manual control (if needed)
+from polar_data_loader import PolarDataLoader
+
+loader = PolarDataLoader(data_directory="path/to/data")
+
+# Check current count
+print(f"Loaded: {loader.get_measurement_count()}")
+
+# Unload specific measurement
+loader.unload_measurement(uuid)
+
+# Unload all measurements
+loader.unload_all_measurements()
+
+# Disable batch unload (not recommended for large datasets)
+data = loader.load_all_drivers(batch_unload=False)
+```
 
 ## Generated Visualizations
 

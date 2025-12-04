@@ -114,6 +114,56 @@ class PolarDataLoader:
         except requests.exceptions.RequestException as e:
             print(f"Warning: Could not enable blocking mode: {e}")
 
+    def unload_measurement(self, uuid: str) -> bool:
+        """Unload a measurement from REW memory (frees slot, file stays on disk).
+
+        Args:
+            uuid: The UUID of the measurement to unload
+
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            url = f"{config.REW_API_BASE}/measurements/{uuid}"
+            response = requests.delete(url, timeout=10)
+            return response.status_code == 200
+        except requests.exceptions.RequestException as e:
+            print(f"Warning: Failed to unload measurement {uuid}: {e}")
+            return False
+
+    def unload_all_measurements(self) -> bool:
+        """Unload ALL measurements from REW memory.
+
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            url = f"{config.REW_API_BASE}/measurements"
+            response = requests.delete(url, timeout=10)
+            if response.status_code == 200:
+                print("✓ Unloaded all measurements from REW")
+                return True
+            return False
+        except requests.exceptions.RequestException as e:
+            print(f"Warning: Failed to unload all measurements: {e}")
+            return False
+
+    def get_measurement_count(self) -> int:
+        """Get the current number of measurements loaded in REW.
+
+        Returns:
+            Number of measurements, or -1 on error
+        """
+        try:
+            url = f"{config.REW_API_BASE}/measurements"
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            measurements = response.json()
+            return len(measurements)
+        except requests.exceptions.RequestException as e:
+            print(f"Warning: Could not get measurement count: {e}")
+            return -1
+
     def _decode_base64_floats(self, base64_string: str) -> np.ndarray:
         """Decode Base64-encoded float array from REW API"""
         byte_data = base64.b64decode(base64_string)
@@ -376,7 +426,8 @@ class PolarDataLoader:
                     "smoothing": f"1/{smoothing}" if smoothing else "None",
                     "metadata": measurements[last_key],
                     "timing_corrected": timing_correction['corrected'],
-                    "timing_offset_ms": timing_correction['offset_ms']
+                    "timing_offset_ms": timing_correction['offset_ms'],
+                    "_uuid": measurement_uuid  # For tracking/unloading
                 }
             except requests.exceptions.RequestException as e:
                 print(f"    Warning: API request failed (attempt {attempt+1}/3): {e}")
@@ -390,7 +441,8 @@ class PolarDataLoader:
                         smoothing: int = 12,
                         gate_left_ms: float = 0.0,
                         gate_right_ms: float = 3.0,
-                        include_rear: bool = False) -> Dict:
+                        include_rear: bool = False,
+                        batch_unload: bool = True) -> Dict:
         """
         Load complete polar measurements for all drivers
 
@@ -401,6 +453,8 @@ class PolarDataLoader:
             gate_left_ms: Left gate time in ms
             gate_right_ms: Right gate time in ms
             include_rear: Whether to load rear measurements (if available)
+            batch_unload: Unload measurements from REW after each driver (default: True)
+                          This prevents hitting REW's ~100 measurement slot limit.
         """
         if driver_list is None:
             driver_list = self._detect_drivers()
@@ -415,15 +469,28 @@ class PolarDataLoader:
             print("Smoothing: None")
         if include_rear:
             print("Including rear measurements")
+        if batch_unload:
+            print("Batch unload: ON (measurements unloaded after each driver)")
         print("=" * 60)
 
         all_data = {}
 
         for driver in driver_list:
             print(f"\nLoading driver: {driver}")
-            all_data[driver] = self.load_driver_polar_set(
+            driver_data = self.load_driver_polar_set(
                 driver, angles, smoothing, gate_left_ms, gate_right_ms, include_rear
             )
+            all_data[driver] = driver_data
+
+            # Unload this driver's measurements to free REW slots
+            if batch_unload:
+                loaded_uuids = driver_data.get("_loaded_uuids", [])
+                if loaded_uuids:
+                    unload_count = 0
+                    for uuid in loaded_uuids:
+                        if self.unload_measurement(uuid):
+                            unload_count += 1
+                    print(f"  ✓ Unloaded {unload_count}/{len(loaded_uuids)} measurements from REW")
 
         print("\n" + "=" * 60)
         return all_data
@@ -453,6 +520,7 @@ class PolarDataLoader:
                 angles = list(range(0, 91, 10))  # Fallback default
 
         polar_data = {"driver": driver_name, "angles": {}, "has_rear": False}
+        loaded_uuids = []  # Track UUIDs for later unloading
 
         # Load front measurements
         for angle in angles:
@@ -468,6 +536,9 @@ class PolarDataLoader:
                 str(file_path), smoothing, gate_left_ms, gate_right_ms
             )
             polar_data["angles"][angle] = measurement
+            # Track UUID for unloading
+            if "_uuid" in measurement:
+                loaded_uuids.append(measurement["_uuid"])
             time.sleep(2.0)
 
         # Load rear measurements if requested
@@ -490,7 +561,13 @@ class PolarDataLoader:
                         str(file_path), smoothing, gate_left_ms, gate_right_ms
                     )
                     polar_data["rear_angles"][angle] = measurement
+                    # Track UUID for unloading
+                    if "_uuid" in measurement:
+                        loaded_uuids.append(measurement["_uuid"])
                     time.sleep(2.0)
+
+        # Store loaded UUIDs in the polar_data dict
+        polar_data["_loaded_uuids"] = loaded_uuids
 
         # Common frequency grid (using on-axis as reference)
         if polar_data["angles"]:
