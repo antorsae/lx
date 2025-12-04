@@ -6,7 +6,7 @@ This script orchestrates the entire analysis workflow:
 1. Connects to REW API (launches if needed).
 2. Loads measurement files (.mdat).
 3. Applies Time Gating (remove room reflections).
-4. Applies Smoothing (1/12 octave).
+4. Applies optional smoothing (via config.DEFAULT_SMOOTHING).
 5. Saves processed data to HDF5.
 6. Generates Visualization Reports.
 

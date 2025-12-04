@@ -27,6 +27,7 @@ MEASUREMENT_SETS = {
         "output_dir": OUTPUT_DIR / "juan",
     },
     "lx521-system": {
+        # Note: Absolute path specific to developer's Google Drive mount
         "path": Path("/Users/antor/Library/CloudStorage/GoogleDrive-antorsae@gmail.com/My Drive/LX521/Mediciones Juan/LX521 POLARES 0_180 GRADOS"),
         "pattern_type": "lx521_system",  # {name} {angle} GRADOS {F|REAR}.mdat
         "angles": [0, 15, 30, 45, 60, 75, 90],

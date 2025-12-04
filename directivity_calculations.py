@@ -6,10 +6,11 @@ This module provides functions for calculating directivity metrics from
 polar response measurements, including:
 - Directivity Index (DI)
 - Beamwidth (-3dB, -6dB)
-- Sound Power
-- Listening Window
-- Early Reflections
-- Spinorama curves
+- Sound Power (hemispherical integration)
+
+Note: Spinorama curves (LW, ER, PIR) require vertical measurements
+which are not available in this dataset. Only horizontal plane
+measurements are used.
 
 Author: Andres Torrubia
 Date: 2025-11-23
@@ -155,107 +156,6 @@ class DirectivityCalculator:
                 beamwidth[i] = 180
 
         return beamwidth
-
-    def calculate_listening_window(self, angle_weights: Dict[int, float] = None) -> np.ndarray:
-        """
-        Calculate Listening Window response (CEA-2034)
-
-        Typical: Average of 0°, ±10°, ±20°, ±30° with equal weighting
-        For horizontal-only data: Average of 0°, 10°, 20°, 30°
-
-        Args:
-            angle_weights: Dict of {angle: weight}. If None, uses default.
-
-        Returns:
-            Array of listening window SPL (dB) vs frequency
-        """
-        if angle_weights is None:
-            # Default: 0°, 10°, 20°, 30° equally weighted
-            angle_weights = {0: 1.0, 10: 1.0, 20: 1.0, 30: 1.0}
-
-        lw = np.zeros(len(self.frequencies))
-
-        for i in range(len(self.frequencies)):
-            # Energy average (dB average in linear domain)
-            intensities = []
-            weights_list = []
-
-            for angle, weight in angle_weights.items():
-                if angle in self.angles:
-                    angle_idx = np.where(self.angles == angle)[0][0]
-                    intensity = 10 ** (self.spl_matrix[i, angle_idx] / 10)
-                    intensities.append(intensity)
-                    weights_list.append(weight)
-
-            # Weighted energy average
-            weights_array = np.array(weights_list)
-            weights_array /= np.sum(weights_array)  # Normalize
-
-            avg_intensity = np.sum(np.array(intensities) * weights_array)
-            lw[i] = 10 * np.log10(avg_intensity)
-
-        return lw
-
-    def calculate_early_reflections(self, angle_weights: Dict[int, float] = None) -> np.ndarray:
-        """
-        Calculate Early Reflections response (CEA-2034)
-
-        Approximation for horizontal measurements only:
-        Average of 40°, 50°, 60°, 70° representing floor, ceiling, side walls
-
-        Args:
-            angle_weights: Dict of {angle: weight}. If None, uses default.
-
-        Returns:
-            Array of early reflections SPL (dB) vs frequency
-        """
-        if angle_weights is None:
-            # Default: 40°, 50°, 60°, 70° equally weighted
-            angle_weights = {40: 1.0, 50: 1.0, 60: 1.0, 70: 1.0}
-
-        er = np.zeros(len(self.frequencies))
-
-        for i in range(len(self.frequencies)):
-            intensities = []
-            weights_list = []
-
-            for angle, weight in angle_weights.items():
-                if angle in self.angles:
-                    angle_idx = np.where(self.angles == angle)[0][0]
-                    intensity = 10 ** (self.spl_matrix[i, angle_idx] / 10)
-                    intensities.append(intensity)
-                    weights_list.append(weight)
-
-            # Weighted energy average
-            weights_array = np.array(weights_list)
-            weights_array /= np.sum(weights_array)
-
-            avg_intensity = np.sum(np.array(intensities) * weights_array)
-            er[i] = 10 * np.log10(avg_intensity)
-
-        return er
-
-    def calculate_predicted_in_room(self) -> np.ndarray:
-        """
-        Calculate Predicted In-Room Response (CEA-2034)
-
-        PIR = 0.12 × Listening Window + 0.44 × Early Reflections + 0.44 × Sound Power
-
-        Returns:
-            Array of PIR values (dB) vs frequency
-        """
-        lw = self.calculate_listening_window()
-        er = self.calculate_early_reflections()
-        sp = self.calculate_sound_power()
-
-        # Energy-weighted combination
-        pir = 10 * np.log10(
-            0.12 * 10 ** (lw / 10) +
-            0.44 * 10 ** (er / 10) +
-            0.44 * 10 ** (sp / 10)
-        )
-
-        return pir
 
     def interpolate_angles(self, target_angles: np.ndarray) -> np.ndarray:
         """
@@ -434,7 +334,6 @@ def main():
     di = calc.calculate_directivity_index()
     beamwidth = calc.calculate_beamwidth(-6)
     sound_power = calc.calculate_sound_power()
-    lw = calc.calculate_listening_window()
 
     print("Directivity Calculator Test")
     print("=" * 60)

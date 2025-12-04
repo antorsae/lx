@@ -6,8 +6,7 @@ This script generates comprehensive polar response analysis visualizations inclu
 - Directivity Index (DI) plots
 - Beamwidth plots
 - Contour/heatmap plots
-- Polar plots
-- Spinorama curves
+- Polar plots (including interactive 360° explorer)
 - Crossover match analysis
 
 Refactored to use centralized config.
@@ -105,10 +104,7 @@ class PolarResponseVisualizer:
                 'di': calc.calculate_directivity_index(),
                 'beamwidth_6db': calc.calculate_beamwidth(-6),
                 'beamwidth_3db': calc.calculate_beamwidth(-3),
-                'sound_power': calc.calculate_sound_power(),
-                'listening_window': calc.calculate_listening_window(),
-                'early_reflections': calc.calculate_early_reflections(),
-                'predicted_in_room': calc.calculate_predicted_in_room()
+                'sound_power': calc.calculate_sound_power()
             }
 
         # Ensure output directories exist
@@ -116,11 +112,9 @@ class PolarResponseVisualizer:
         (self.static_plots_dir / "core").mkdir(exist_ok=True)
         (self.static_plots_dir / "crossover").mkdir(exist_ok=True)
         (self.static_plots_dir / "polar").mkdir(exist_ok=True)
-        (self.static_plots_dir / "spinorama").mkdir(exist_ok=True)
 
         self.interactive_plots_dir.mkdir(parents=True, exist_ok=True)
         (self.interactive_plots_dir / "polar").mkdir(exist_ok=True)
-        (self.interactive_plots_dir / "spinorama").mkdir(exist_ok=True)
 
     def _configure_interactive_axis(self, fig):
         """Helper to apply custom ticks to plotly figure x-axis"""
@@ -787,33 +781,6 @@ class PolarResponseVisualizer:
 
                 fig.write_html(self.interactive_plots_dir / f'crossover_{xo_freq}Hz.html')
 
-    def plot_spinorama(self, driver, save_static=True, save_interactive=True):
-        """Generate Spinorama curves"""
-        print(f"Generating spinorama for {driver}...")
-        
-        res = self.calc_results[driver]
-        curves = {
-            'On-Axis': (res['spl_matrix'][:, 0], 'black', '-'),
-            'Listening Window': (res['listening_window'], 'blue', '-'),
-            'Early Reflections': (res['early_reflections'], 'green', '-'),
-            'Sound Power': (res['sound_power'], 'red', '-'),
-            'Predicted In-Room': (res['predicted_in_room'], 'purple', '--')
-        }
-        
-        if save_static:
-            fig, ax = plt.subplots(figsize=config.FIG_SIZE_STATIC)
-            for name, (data, color, style) in curves.items():
-                ax.semilogx(res['frequencies'], data, label=name, color=color, linestyle=style)
-                
-            self._add_static_grid(ax)
-            ax.set_title(f'{driver} - Spinorama (CEA-2034)')
-            ax.set_xlim(config.FREQ_MIN, config.FREQ_MAX)
-            ax.legend()
-            
-            plt.tight_layout()
-            plt.savefig(self.static_plots_dir / f'spinorama/{driver}_spinorama.png')
-            plt.close()
-
     def plot_dipole_analysis(self, save_static=True, save_interactive=True):
         """Generate Dipole Null (90deg) Analysis"""
         print("Generating dipole analysis...")
@@ -1344,13 +1311,11 @@ class PolarResponseVisualizer:
         """Generate all configured visualizations"""
         self.plot_di_comparison()
         self.plot_beamwidth_comparison()
-        self.plot_erdi()
         self.plot_dipole_analysis()
 
         for driver in self.drivers:
             self.plot_contour(driver, normalized=True)
             self.plot_contour(driver, normalized=False)
-            self.plot_spinorama(driver)
 
         freqs_polar = [500, 1000, 2000, 4000, 6000, 6500, 7000, 8000, 10000, 15000, 20000]
         self.plot_polar_diagrams(freqs=freqs_polar)

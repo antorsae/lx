@@ -10,8 +10,7 @@ A Python pipeline for processing acoustic polar response measurements from REW (
 - Apply time gating to remove room reflections
 - Support for multiple measurement sets with different naming conventions
 - Full 360° polar plots when front and rear measurements are available
-- Generate directivity analysis (DI, beamwidth, ERDI)
-- Spinorama curves (listening window, early reflections, predicted in-room)
+- Generate directivity analysis (DI, beamwidth)
 - Interactive HTML plots (gzip compressed) and static PNG exports
 - Crossover match analysis for multi-driver systems
 - **REW slot management**: Automatic batch unloading prevents hitting REW's ~100 measurement limit
@@ -53,7 +52,7 @@ MEASUREMENT_SETS = {
         "hdf5_file": "polar_data_juan.h5",
         "output_dir": OUTPUT_DIR / "juan",
     },
-    "lx521_system": {
+    "lx521-system": {
         "path": Path("../Mediciones Juan/LX521 HIGH MID INV ORIGINAL"),
         "pattern_type": "lx521_system",  # {name} {angle} GRADOS {F|REAR}.mdat
         "has_rear": True,
@@ -105,7 +104,7 @@ python run_pipeline.py --no-smoothing
 | `-m, --measurement-set` | Which measurement set to process (default: andres) |
 | `--skip-loading` | Skip REW loading, use existing HDF5 file |
 | `--skip-viz` | Skip visualization generation |
-| `--no-smoothing` | Disable frequency response smoothing |
+| `--no-smoothing` | Disable frequency response smoothing (default: no smoothing) |
 
 ## Output Structure
 
@@ -118,8 +117,7 @@ output/
 ├── andres/                         # Visualizations for andres set
 │   ├── static_plots/
 │   │   ├── core/                  # DI, beamwidth, contour plots
-│   │   ├── polar/                 # Polar diagrams
-│   │   └── spinorama/             # Spinorama curves
+│   │   └── polar/                 # Polar diagrams
 │   └── interactive/               # HTML interactive plots (gzip compressed)
 ├── juan/                           # Visualizations for juan set
 │   ├── static_plots/
@@ -168,10 +166,9 @@ data = loader.load_all_drivers(batch_unload=False)
 ### Static Plots (PNG)
 - Directivity Index (DI) comparison
 - Beamwidth curves (-3dB, -6dB)
-- ERDI (Early Reflections DI)
+- Dipole null analysis
 - Normalized/Absolute contour plots
 - Polar diagrams (single driver and overlaid)
-- Spinorama curves per driver
 - Crossover match analysis
 
 ### Interactive Plots (HTML)
