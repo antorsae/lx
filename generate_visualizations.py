@@ -81,6 +81,8 @@ class PolarResponseVisualizer:
         self.drivers = sorted(self.data.keys())
 
         # Calculate directivity metrics for all drivers
+        # Note: DI/beamwidth/sound power are calculated from front hemisphere only (0-90 deg),
+        # following industry standard practice. Rear data is stored separately for 360-deg polar plots.
         self.calc_results = {}
         for driver in self.drivers:
             freq, angles, spl_matrix = create_polar_matrix_from_dict(self.data[driver])

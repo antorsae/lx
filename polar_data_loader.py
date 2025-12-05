@@ -738,6 +738,12 @@ class PolarDataLoader:
 
             for driver_name in f.keys():
                 driver_group = f[driver_name]
+
+                # Skip drivers without frequency data (empty/misconfigured measurements)
+                if 'frequencies' not in driver_group:
+                    print(f"Warning: Skipping driver '{driver_name}' - no frequency data found")
+                    continue
+
                 has_rear = driver_group.attrs.get('has_rear', False)
                 driver_data = {
                     'driver': driver_name,
