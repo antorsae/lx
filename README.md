@@ -45,15 +45,16 @@ MEASUREMENT_SETS = {
         "hdf5_file": "polar_data_andres.h5",
         "output_dir": OUTPUT_DIR / "andres",
     },
-    "juan": {
-        "path": Path("../Mediciones Juan/GRS PT6816 A MIC ON AXIS"),
+    "juan-baffleless": {
+        # Combined baffleless driver measurements (GRS PT6816 + SS10F8414G10)
+        "path": Path("../Mediciones Juan"),
         "pattern_type": "juan",  # {driver} {angle} {side}.mdat
         "has_rear": True,
-        "hdf5_file": "polar_data_juan.h5",
-        "output_dir": OUTPUT_DIR / "juan",
+        "hdf5_file": "polar_data_juan_baffleless.h5",
+        "output_dir": OUTPUT_DIR / "juan-baffleless",
     },
     "lx521-system": {
-        "path": Path("../Mediciones Juan/LX521 HIGH MID INV ORIGINAL"),
+        "path": Path("../Mediciones Juan/LX521 POLARES 0_180 GRADOS"),
         "pattern_type": "lx521_system",  # {name} {angle} GRADOS {F|REAR}.mdat
         "has_rear": True,
         "hdf5_file": "polar_data_lx521_system.h5",
@@ -68,6 +69,7 @@ MEASUREMENT_SETS = {
 |---------|---------|-------------|
 | `andres` | `F45-10F8424.mdat` | Front-only measurements |
 | `juan` | `GRS PT6816 45 F.mdat` | Front (F) and Rear (R) measurements |
+| `scanspeak` | `SS10F8414G10 45 F.mdat` | Front (F) and Rear (R) measurements |
 | `lx521_system` | `LX521 HIGH MID INV ORIGINAL 45 GRADOS F.mdat` | Full system measurements with GRADOS notation |
 
 ## Usage
@@ -85,10 +87,10 @@ MEASUREMENT_SETS = {
 python run_pipeline.py
 
 # Process specific measurement set
-python run_pipeline.py -m juan
+python run_pipeline.py -m juan-baffleless
 
 # Skip data loading (use existing HDF5)
-python run_pipeline.py -m juan --skip-loading
+python run_pipeline.py -m juan-baffleless --skip-loading
 
 # Skip visualization generation
 python run_pipeline.py --skip-viz
@@ -111,18 +113,18 @@ python run_pipeline.py --no-smoothing
 ```
 output/
 ├── data/
-│   ├── polar_data_andres.h5       # Processed data (andres set)
-│   ├── polar_data_juan.h5         # Processed data (juan set)
-│   └── polar_data_lx521_system.h5 # Processed data (lx521_system set)
-├── andres/                         # Visualizations for andres set
+│   ├── polar_data_andres.h5          # Processed data (andres set)
+│   ├── polar_data_juan_baffleless.h5 # Processed data (juan-baffleless set)
+│   └── polar_data_lx521_system.h5    # Processed data (lx521-system set)
+├── andres/                            # Visualizations for andres set
 │   ├── static_plots/
-│   │   ├── core/                  # DI, beamwidth, contour plots
-│   │   └── polar/                 # Polar diagrams
-│   └── interactive/               # HTML interactive plots (gzip compressed)
-├── juan/                           # Visualizations for juan set
+│   │   ├── core/                     # DI, beamwidth, contour plots
+│   │   └── polar/                    # Polar diagrams
+│   └── interactive/                  # HTML interactive plots (gzip compressed)
+├── juan-baffleless/                   # Visualizations for juan-baffleless set
 │   ├── static_plots/
 │   └── interactive/
-└── lx521-system/                   # Visualizations for lx521_system set
+└── lx521-system/                      # Visualizations for lx521-system set
     ├── static_plots/
     └── interactive/
 ```
