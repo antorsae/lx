@@ -35,6 +35,14 @@ MEASUREMENT_SETS = {
         "hdf5_file": "polar_data_lx521_system.h5",
         "output_dir": OUTPUT_DIR / "lx521-system",
     },
+    "scanspeak": {
+        "path": Path("../Mediciones Juan/ScanSpeak 10F8414G10"),
+        "pattern_type": "scanspeak",  # SS10F8414G10 {angle} {F|R}.mdat
+        "angles": [0, 15, 30, 45, 60, 75, 90],
+        "has_rear": True,
+        "hdf5_file": "polar_data_scanspeak.h5",
+        "output_dir": OUTPUT_DIR / "scanspeak",
+    },
 }
 
 DEFAULT_MEASUREMENT_SET = "andres"

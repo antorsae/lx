@@ -604,6 +604,12 @@ class PolarDataLoader:
                 side = "R" if match.group(3) == "REAR" else "F"
                 return {"driver": driver, "angle": angle, "side": side}
 
+        elif self.pattern_type == "scanspeak":
+            # Pattern: SS10F8414G10 {angle} {F|R}
+            match = re.match(r'(.+)\s+(\d+)\s+([FR])$', stem)
+            if match:
+                return {"driver": match.group(1), "angle": int(match.group(2)), "side": match.group(3)}
+
         return None
 
     def _detect_drivers(self) -> List[str]:
@@ -643,6 +649,8 @@ class PolarDataLoader:
         elif self.pattern_type == "lx521_system":
             side_str = "REAR" if side == "R" else "F"
             return f"{driver_name} {angle} GRADOS {side_str}.mdat"
+        elif self.pattern_type == "scanspeak":
+            return f"{driver_name} {angle} {side}.mdat"
         return ""
 
     def save_to_hdf5(self, data: Dict, output_path: str,
