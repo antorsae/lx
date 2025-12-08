@@ -67,7 +67,9 @@ DRIVER_COLORS = {
     '10F8424': '#1f77b4',  # Blue - Woofer
     'L22MG': '#ff7f0e',    # Orange - Lower Mid
     'MU10': '#2ca02c',     # Green - Upper Mid
-    'SEAS27T': '#d62728'   # Red - Tweeter
+    'SEAS27T': '#d62728',  # Red - Tweeter
+    'GRS PT6816': '#9467bd',     # Purple - Juan baffleless
+    'SS10F8414G10': '#17becf',   # Cyan - Juan baffleless
 }
 
 # Crossover Frequencies (Hz)

@@ -974,8 +974,8 @@ class PolarResponseVisualizer:
         # Check if any driver has rear data for full 360°
         any_has_rear = any(self.calc_results[d].get('has_rear', False) for d in self.drivers)
 
-        # Efficient Frequency Sampling
-        n_steps = 100
+        # Efficient Frequency Sampling - use more steps for smoother slider
+        n_steps = 300
         min_idx = np.abs(freqs - config.FREQ_MIN).argmin()
         max_idx = np.abs(freqs - config.FREQ_MAX).argmin()
         stride = max(1, (max_idx - min_idx) // n_steps)
@@ -1136,7 +1136,114 @@ class PolarResponseVisualizer:
         )
 
         fig = go.Figure(data=initial_traces, layout=layout)
-        fig.write_html(self.interactive_plots_dir / "polar/polar_explorer.html")
+
+        # Generate HTML with custom frequency input
+        html_content = fig.to_html(include_plotlyjs='cdn', full_html=True)
+
+        # Build frequency lookup array for JavaScript
+        freq_values = [freqs[idx] for idx in indices]
+        freq_js_array = ','.join([f'{f:.1f}' for f in freq_values])
+
+        # Custom JavaScript for manual frequency entry
+        custom_js = f'''
+<style>
+.freq-input-container {{
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    font-family: Arial, sans-serif;
+}}
+.freq-input-container label {{
+    font-size: 14px;
+    margin-right: 8px;
+}}
+.freq-input-container input {{
+    width: 80px;
+    padding: 5px 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}}
+.freq-input-container button {{
+    padding: 5px 12px;
+    font-size: 14px;
+    margin-left: 5px;
+    cursor: pointer;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}}
+.freq-input-container button:hover {{
+    background: #1d4ed8;
+}}
+.freq-input-container span {{
+    margin-left: 10px;
+    font-size: 12px;
+    color: #666;
+}}
+</style>
+<div class="freq-input-container">
+    <label for="freqInput">Go to frequency:</label>
+    <input type="number" id="freqInput" min="{config.FREQ_MIN}" max="{config.FREQ_MAX}" placeholder="Hz">
+    <button onclick="goToFrequency()">Go</button>
+    <span>(Range: {config.FREQ_MIN}-{config.FREQ_MAX} Hz)</span>
+</div>
+<script>
+var freqValues = [{freq_js_array}];
+
+function goToFrequency() {{
+    var targetFreq = parseFloat(document.getElementById('freqInput').value);
+    if (isNaN(targetFreq) || targetFreq < {config.FREQ_MIN} || targetFreq > {config.FREQ_MAX}) {{
+        alert('Please enter a frequency between {config.FREQ_MIN} and {config.FREQ_MAX} Hz');
+        return;
+    }}
+
+    // Find closest frequency index
+    var closestIdx = 0;
+    var minDiff = Math.abs(freqValues[0] - targetFreq);
+    for (var i = 1; i < freqValues.length; i++) {{
+        var diff = Math.abs(freqValues[i] - targetFreq);
+        if (diff < minDiff) {{
+            minDiff = diff;
+            closestIdx = i;
+        }}
+    }}
+
+    // Update slider
+    var plotDiv = document.querySelector('.plotly-graph-div');
+    if (plotDiv) {{
+        Plotly.relayout(plotDiv, {{'sliders[0].active': closestIdx}});
+        // Also trigger the restyle to update the plot
+        var slider = plotDiv.layout.sliders[0];
+        if (slider && slider.steps && slider.steps[closestIdx]) {{
+            var step = slider.steps[closestIdx];
+            Plotly.restyle(plotDiv, step.args[0]);
+        }}
+    }}
+}}
+
+// Also allow Enter key to trigger search
+document.getElementById('freqInput').addEventListener('keypress', function(e) {{
+    if (e.key === 'Enter') {{
+        goToFrequency();
+    }}
+}});
+</script>
+'''
+
+        # Insert custom HTML before closing body tag
+        html_content = html_content.replace('</body>', custom_js + '</body>')
+
+        output_path = self.interactive_plots_dir / "polar/polar_explorer.html"
+        with open(output_path, 'w') as f:
+            f.write(html_content)
 
     def generate_measurement_summary_html(self):
         """Generate HTML summary of all measurements with metadata"""
