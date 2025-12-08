@@ -18,13 +18,15 @@ MEASUREMENT_SETS = {
         "hdf5_file": "polar_data_andres.h5",
         "output_dir": OUTPUT_DIR / "andres",
     },
-    "juan": {
-        "path": Path("../Mediciones Juan/GRS PT6816 A MIC ON AXIS"),
+    "juan-baffleless": {
+        # Combined Juan's baffleless driver measurements (GRS PT6816 + SS10F8414G10)
+        # Uses pre-merged HDF5 file - individual sources in separate directories
+        "path": Path("../Mediciones Juan"),  # Parent directory (not used for loading)
         "pattern_type": "juan",  # {driver} {angle} {side}.mdat
         "angles": [0, 15, 30, 45, 60, 75, 90],
         "has_rear": True,
-        "hdf5_file": "polar_data_juan.h5",
-        "output_dir": OUTPUT_DIR / "juan",
+        "hdf5_file": "polar_data_juan_baffleless.h5",
+        "output_dir": OUTPUT_DIR / "juan-baffleless",
     },
     "lx521-system": {
         # Note: Absolute path specific to developer's Google Drive mount
@@ -34,14 +36,6 @@ MEASUREMENT_SETS = {
         "has_rear": True,
         "hdf5_file": "polar_data_lx521_system.h5",
         "output_dir": OUTPUT_DIR / "lx521-system",
-    },
-    "scanspeak": {
-        "path": Path("../Mediciones Juan/ScanSpeak 10F8414G10"),
-        "pattern_type": "scanspeak",  # SS10F8414G10 {angle} {F|R}.mdat
-        "angles": [0, 15, 30, 45, 60, 75, 90],
-        "has_rear": True,
-        "hdf5_file": "polar_data_scanspeak.h5",
-        "output_dir": OUTPUT_DIR / "scanspeak",
     },
 }
 
