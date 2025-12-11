@@ -34,19 +34,32 @@ class DirectivityCalculator:
             angles: Array of measurement angles (degrees, typically 0-90)
             spl_matrix: 2D array [frequency, angle] of SPL values (dB)
         """
-        self.frequencies = frequencies
-        self.angles = np.array(angles)
-        self.spl_matrix = spl_matrix
+        self.frequencies = np.asarray(frequencies)
+        self.angles = np.asarray(angles)
+        self.spl_matrix = np.asarray(spl_matrix)
 
         # Validate dimensions
-        assert spl_matrix.shape[0] == len(frequencies), \
+        assert len(self.spl_matrix.shape) == 2, "SPL matrix must be 2D"
+        assert self.spl_matrix.shape[0] == len(self.frequencies), \
             "SPL matrix first dimension must match frequencies"
-        assert spl_matrix.shape[1] == len(angles), \
+        assert self.spl_matrix.shape[1] == len(self.angles), \
             "SPL matrix second dimension must match angles"
+
+        # Validate angles
+        assert len(self.angles) >= 2, "Need at least 2 angles"
+        assert 0 in self.angles, "Angles must include 0° (on-axis) for DI calculation"
+        assert np.all(np.diff(self.angles) > 0), "Angles must be sorted in ascending order"
+
+        # Store indices for common angles
+        self._idx_0deg = int(np.where(self.angles == 0)[0][0])
+        self._idx_90deg = int(np.where(self.angles == 90)[0][0]) if 90 in self.angles else None
 
     def calculate_sound_power(self, method: str = "hemispherical") -> np.ndarray:
         """
-        Calculate sound power from polar measurements
+        Calculate sound power from polar measurements using proper trapezoidal integration.
+
+        Uses solid-angle weighting: 2π sin(θ) dθ
+        The trapezoidal rule correctly handles non-uniform angular spacing.
 
         Args:
             method: Integration method
@@ -64,23 +77,18 @@ class DirectivityCalculator:
             intensity = 10 ** (self.spl_matrix[i, :] / 10)
 
             if method == "hemispherical":
-                # Weight by solid angle element: sin(θ) dθ dφ
-                # For hemisphere, φ integration gives 2π
+                # Hemispherical integration using trapezoidal rule
                 # Solid angle element: 2π sin(θ) dθ
-                weights = np.sin(angles_rad)
-                weights /= np.sum(weights)  # Normalize
+                # Total hemisphere solid angle integral: ∫₀^(π/2) sin(θ) dθ = 1
+                integrand = intensity * np.sin(angles_rad)
 
-                # Power = weighted average intensity
-                power_linear = np.sum(intensity * weights)
+                # Trapezoidal integration properly handles non-uniform spacing
+                power_linear = np.trapz(integrand, angles_rad)
 
             elif method == "spherical":
-                # Full sphere integration
-                # Assume rear hemisphere mirrors front (dipole)
-                weights = np.sin(angles_rad)
-                weights /= np.sum(weights) * 2  # Normalize for full sphere
-
-                # Power = weighted average (front + rear)
-                power_linear = 2 * np.sum(intensity * weights)
+                # Full sphere: assume rear mirrors front
+                integrand = intensity * np.sin(angles_rad)
+                power_linear = 2 * np.trapz(integrand, angles_rad)
 
             else:
                 raise ValueError(f"Unknown method: {method}")
@@ -97,13 +105,13 @@ class DirectivityCalculator:
         DI = On-axis SPL - Sound Power
 
         Args:
-            on_axis_spl: On-axis (0°) SPL values. If None, uses first column of spl_matrix
+            on_axis_spl: On-axis (0°) SPL values. If None, uses 0° column of spl_matrix
 
         Returns:
             Array of DI values (dB) vs frequency
         """
         if on_axis_spl is None:
-            on_axis_spl = self.spl_matrix[:, 0]  # Assume 0° is first column
+            on_axis_spl = self.spl_matrix[:, self._idx_0deg]
 
         sound_power = self.calculate_sound_power()
         di = on_axis_spl - sound_power
@@ -120,7 +128,7 @@ class DirectivityCalculator:
         Returns:
             Array of beamwidth values (degrees) vs frequency
         """
-        on_axis_spl = self.spl_matrix[:, 0]
+        on_axis_spl = self.spl_matrix[:, self._idx_0deg]
         beamwidth = np.zeros(len(self.frequencies))
 
         for i in range(len(self.frequencies)):

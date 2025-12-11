@@ -79,6 +79,14 @@ def run_pipeline(args):
                         gate_right_ms=config.GATE_RIGHT_MS,
                         include_rear=has_rear
                     )
+                    # Check for collisions before merging
+                    collisions = set(all_data.keys()) & set(src_data.keys())
+                    if collisions:
+                        raise ValueError(
+                            f"Driver name collision detected: {collisions}\n"
+                            f"Source '{src_path}' contains drivers that already exist.\n"
+                            f"Rename drivers or use separate measurement sets."
+                        )
                     # Merge into all_data
                     all_data.update(src_data)
                     print(f"  Loaded drivers: {list(src_data.keys())}")

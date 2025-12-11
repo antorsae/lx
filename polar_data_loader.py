@@ -653,6 +653,64 @@ class PolarDataLoader:
             return f"{driver_name} {angle} {side}.mdat"
         return ""
 
+    # ==================== HDF5 Helper Methods ====================
+
+    def _save_angle_metadata(self, angle_group, angle_data: Dict):
+        """Save metadata and timing info to HDF5 angle group"""
+        if 'metadata' in angle_data:
+            meta = angle_data['metadata']
+            for key in ['title', 'notes', 'date']:
+                angle_group.attrs[key] = meta.get(key, '')
+            angle_group.attrs['sampleRate'] = meta.get('sampleRate', 0)
+        angle_group.attrs['timing_corrected'] = angle_data.get('timing_corrected', False)
+        angle_group.attrs['timing_offset_ms'] = angle_data.get('timing_offset_ms', 0.0)
+
+    def _load_angle_metadata(self, angle_group) -> Dict:
+        """Load metadata and timing info from HDF5 angle group"""
+        result = {}
+        if 'title' in angle_group.attrs:
+            result['metadata'] = {
+                'title': angle_group.attrs.get('title', ''),
+                'notes': angle_group.attrs.get('notes', ''),
+                'date': angle_group.attrs.get('date', ''),
+                'sampleRate': angle_group.attrs.get('sampleRate', 0),
+            }
+        result['timing_corrected'] = bool(angle_group.attrs.get('timing_corrected', False))
+        result['timing_offset_ms'] = float(angle_group.attrs.get('timing_offset_ms', 0.0))
+        return result
+
+    def _save_angles_group(self, parent_group, angles_dict: Dict, group_name: str = 'angles'):
+        """Save angle measurements to HDF5 group"""
+        group = parent_group.create_group(group_name)
+        for angle, angle_data in angles_dict.items():
+            ag = group.create_group(str(angle))
+            ag.create_dataset('magnitude', data=angle_data['magnitude'])
+            ag.create_dataset('phase', data=angle_data['phase'])
+            ag.attrs['unit'] = angle_data['unit']
+            ag.attrs['smoothing'] = angle_data['smoothing']
+            self._save_angle_metadata(ag, angle_data)
+
+    def _load_angles_group(self, parent_group, frequencies: np.ndarray, group_name: str = 'angles') -> Dict:
+        """Load angle measurements from HDF5 group"""
+        if group_name not in parent_group:
+            return {}
+        result = {}
+        group = parent_group[group_name]
+        for angle_str in group.keys():
+            ag = group[angle_str]
+            angle_data = {
+                'frequencies': frequencies,
+                'magnitude': np.array(ag['magnitude']),
+                'phase': np.array(ag['phase']),
+                'unit': ag.attrs['unit'],
+                'smoothing': ag.attrs['smoothing'],
+            }
+            angle_data.update(self._load_angle_metadata(ag))
+            result[int(angle_str)] = angle_data
+        return result
+
+    # ==================== HDF5 Save/Load ====================
+
     def save_to_hdf5(self, data: Dict, output_path: str,
                      gate_left_ms: float = 0.0, gate_right_ms: float = 0.0,
                      smoothing: int = 0):
@@ -684,47 +742,11 @@ class PolarDataLoader:
                                                data=driver_data['common_frequencies'])
 
                 # Save front angles
-                angles_group = driver_group.create_group('angles')
-                for angle, angle_data in driver_data['angles'].items():
-                    angle_group = angles_group.create_group(str(angle))
-                    angle_group.create_dataset('magnitude', data=angle_data['magnitude'])
-                    angle_group.create_dataset('phase', data=angle_data['phase'])
-                    angle_group.attrs['unit'] = angle_data['unit']
-                    angle_group.attrs['smoothing'] = angle_data['smoothing']
-
-                    # Save metadata if available
-                    if 'metadata' in angle_data:
-                        meta = angle_data['metadata']
-                        angle_group.attrs['title'] = meta.get('title', '')
-                        angle_group.attrs['notes'] = meta.get('notes', '')
-                        angle_group.attrs['date'] = meta.get('date', '')
-                        angle_group.attrs['sampleRate'] = meta.get('sampleRate', 0)
-
-                    # Save timing correction info
-                    angle_group.attrs['timing_corrected'] = angle_data.get('timing_corrected', False)
-                    angle_group.attrs['timing_offset_ms'] = angle_data.get('timing_offset_ms', 0.0)
+                self._save_angles_group(driver_group, driver_data['angles'], 'angles')
 
                 # Save rear angles if present
                 if driver_data.get('has_rear') and 'rear_angles' in driver_data:
-                    rear_group = driver_group.create_group('rear_angles')
-                    for angle, angle_data in driver_data['rear_angles'].items():
-                        angle_group = rear_group.create_group(str(angle))
-                        angle_group.create_dataset('magnitude', data=angle_data['magnitude'])
-                        angle_group.create_dataset('phase', data=angle_data['phase'])
-                        angle_group.attrs['unit'] = angle_data['unit']
-                        angle_group.attrs['smoothing'] = angle_data['smoothing']
-
-                        # Save metadata if available
-                        if 'metadata' in angle_data:
-                            meta = angle_data['metadata']
-                            angle_group.attrs['title'] = meta.get('title', '')
-                            angle_group.attrs['notes'] = meta.get('notes', '')
-                            angle_group.attrs['date'] = meta.get('date', '')
-                            angle_group.attrs['sampleRate'] = meta.get('sampleRate', 0)
-
-                        # Save timing correction info
-                        angle_group.attrs['timing_corrected'] = angle_data.get('timing_corrected', False)
-                        angle_group.attrs['timing_offset_ms'] = angle_data.get('timing_offset_ms', 0.0)
+                    self._save_angles_group(driver_group, driver_data['rear_angles'], 'rear_angles')
 
         print(f"Saved polar data to {output_path}")
 
@@ -753,68 +775,19 @@ class PolarDataLoader:
                     continue
 
                 has_rear = driver_group.attrs.get('has_rear', False)
+                frequencies = np.array(driver_group['frequencies'])
                 driver_data = {
                     'driver': driver_name,
-                    'angles': {},
                     'has_rear': has_rear,
-                    'common_frequencies': np.array(driver_group['frequencies'])
+                    'common_frequencies': frequencies,
+                    'angles': self._load_angles_group(driver_group, frequencies, 'angles'),
                 }
 
-                # Load front angles
-                angles_group = driver_group['angles']
-                for angle_str in angles_group.keys():
-                    angle = int(angle_str)
-                    angle_group = angles_group[angle_str]
-                    angle_data = {
-                        'frequencies': driver_data['common_frequencies'],
-                        'magnitude': np.array(angle_group['magnitude']),
-                        'phase': np.array(angle_group['phase']),
-                        'unit': angle_group.attrs['unit'],
-                        'smoothing': angle_group.attrs['smoothing']
-                    }
-                    # Load metadata if available
-                    if 'title' in angle_group.attrs:
-                        angle_data['metadata'] = {
-                            'title': angle_group.attrs.get('title', ''),
-                            'notes': angle_group.attrs.get('notes', ''),
-                            'date': angle_group.attrs.get('date', ''),
-                            'sampleRate': angle_group.attrs.get('sampleRate', 0),
-                        }
-
-                    # Load timing correction info
-                    angle_data['timing_corrected'] = bool(angle_group.attrs.get('timing_corrected', False))
-                    angle_data['timing_offset_ms'] = float(angle_group.attrs.get('timing_offset_ms', 0.0))
-
-                    driver_data['angles'][angle] = angle_data
-
                 # Load rear angles if present
-                if has_rear and 'rear_angles' in driver_group:
-                    driver_data['rear_angles'] = {}
-                    rear_group = driver_group['rear_angles']
-                    for angle_str in rear_group.keys():
-                        angle = int(angle_str)
-                        angle_group = rear_group[angle_str]
-                        angle_data = {
-                            'frequencies': driver_data['common_frequencies'],
-                            'magnitude': np.array(angle_group['magnitude']),
-                            'phase': np.array(angle_group['phase']),
-                            'unit': angle_group.attrs['unit'],
-                            'smoothing': angle_group.attrs['smoothing']
-                        }
-                        # Load metadata if available
-                        if 'title' in angle_group.attrs:
-                            angle_data['metadata'] = {
-                                'title': angle_group.attrs.get('title', ''),
-                                'notes': angle_group.attrs.get('notes', ''),
-                                'date': angle_group.attrs.get('date', ''),
-                                'sampleRate': angle_group.attrs.get('sampleRate', 0),
-                            }
-
-                        # Load timing correction info
-                        angle_data['timing_corrected'] = bool(angle_group.attrs.get('timing_corrected', False))
-                        angle_data['timing_offset_ms'] = float(angle_group.attrs.get('timing_offset_ms', 0.0))
-
-                        driver_data['rear_angles'][angle] = angle_data
+                if has_rear:
+                    rear_angles = self._load_angles_group(driver_group, frequencies, 'rear_angles')
+                    if rear_angles:
+                        driver_data['rear_angles'] = rear_angles
 
                 data[driver_name] = driver_data
         return data

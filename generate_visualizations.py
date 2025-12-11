@@ -31,6 +31,51 @@ import json
 
 # Import centralized configuration
 import config
+
+# ==================== HTML Template Constants ====================
+# Reusable HTML fragments for embedded templates
+
+HTML_DOCTYPE = '<!DOCTYPE html>\n<html lang="en">\n'
+
+HTML_HEAD_START = '''<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+'''
+
+HTML_PLOTLY_SCRIPT = '    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>\n'
+HTML_PAKO_SCRIPT = '    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>\n'
+HTML_YAML_SCRIPT = '    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>\n'
+
+FONT_STACK = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+
+CSS_RESET = f'''* {{ box-sizing: border-box; margin: 0; padding: 0; }}
+body {{ font-family: {FONT_STACK}; background: #f5f5f5; }}
+'''
+
+def build_html_page(title: str, styles: str, body: str, scripts: str = '', extra_head: str = '') -> str:
+    """Build complete HTML page from components.
+
+    Args:
+        title: Page title
+        styles: CSS styles (without <style> tags)
+        body: Body content (without <body> tags)
+        scripts: JavaScript (without <script> tags, but can include multiple script blocks)
+        extra_head: Extra content for <head> (e.g., external script tags)
+
+    Returns:
+        Complete HTML document string
+    """
+    return f'''{HTML_DOCTYPE}{HTML_HEAD_START}    <title>{title}</title>
+{extra_head}    <style>
+{styles}
+    </style>
+</head>
+<body>
+{body}
+{scripts}
+</body>
+</html>'''
+
 from polar_data_loader import PolarDataLoader
 from directivity_calculations import (
     DirectivityCalculator, create_polar_matrix_from_dict,
@@ -151,37 +196,24 @@ class PolarResponseVisualizer:
 
         Typical compression ratio: 70-85% smaller files.
         """
-        # Get the figure JSON
+        # Compress and encode the figure JSON
         fig_json = fig.to_json()
-
-        # Compress with gzip
         compressed = gzip.compress(fig_json.encode('utf-8'), compresslevel=9)
-
-        # Base64 encode
         b64_data = base64.b64encode(compressed).decode('ascii')
 
-        # HTML template with pako decompression
-        html_template = f'''<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>{title}</title>
-    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
-    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-    <style>
-        body {{ margin: 0; padding: 0; }}
-        #plot {{ width: 100vw; height: 100vh; }}
-        #loading {{
+        # Build page using helper
+        styles = '''        body { margin: 0; padding: 0; }
+        #plot { width: 100vw; height: 100vh; }
+        #loading {
             position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             font-family: Arial, sans-serif; font-size: 18px;
-        }}
-    </style>
-</head>
-<body>
-    <div id="loading">Loading and decompressing data...</div>
-    <div id="plot"></div>
-    <script>
+        }'''
+
+        body = '''    <div id="loading">Loading and decompressing data...</div>
+    <div id="plot"></div>'''
+
+        script = f'''    <script>
         // Compressed data (gzip + base64)
         const compressedData = "{b64_data}";
 
@@ -199,12 +231,13 @@ class PolarResponseVisualizer:
         // Hide loading message and render plot
         document.getElementById('loading').style.display = 'none';
         Plotly.newPlot('plot', figData.data, figData.layout, {{responsive: true}});
-    </script>
-</body>
-</html>'''
+    </script>'''
+
+        html = build_html_page(title, styles, body, script,
+                               extra_head=HTML_PAKO_SCRIPT + HTML_PLOTLY_SCRIPT)
 
         with open(filepath, 'w') as f:
-            f.write(html_template)
+            f.write(html)
 
     def _build_360_polar_data(self, driver: str, freq_idx: int):
         """Build full 360° polar data for a driver at a specific frequency.
@@ -320,43 +353,18 @@ class PolarResponseVisualizer:
 
         if save_static:
             fig, ax = plt.subplots(figsize=config.FIG_SIZE_STATIC)
-            for driver in self.drivers:
-                freq = self.calc_results[driver]['frequencies']
-                di = self.calc_results[driver]['di']
-                ax.semilogx(freq, di, label=driver, linewidth=2,
-                           color=config.DRIVER_COLORS.get(driver))
-
-            for xo_freq in config.CROSSOVER_FREQUENCIES:
-                ax.axvline(xo_freq, color='red', linestyle='--', linewidth=1, alpha=0.5)
-                ax.text(xo_freq, ax.get_ylim()[1], f'{xo_freq} Hz',
-                       ha='center', va='bottom', fontsize=8, color='red')
-
-            self._add_static_grid(ax)
-            ax.set_xlabel('Frequency (Hz)')
-            ax.set_ylabel('Directivity Index (dB)')
-            ax.set_title('Directivity Index vs Frequency - All Drivers', fontweight='bold')
-            ax.legend()
-            ax.set_xlim(config.FREQ_MIN, config.FREQ_MAX)
-            
+            self._plot_drivers_static(ax, 'di')
+            self._finalize_static_plot(ax, ylabel='Directivity Index (dB)',
+                                       title='Directivity Index vs Frequency - All Drivers')
             plt.tight_layout()
-            plt.savefig(self.static_plots_dir / 'core/di_comparison.png')
+            plt.savefig(self.static_plots_dir / 'core/di_comparison.png', dpi=config.DPI_STATIC)
             plt.close()
 
         if save_interactive:
             fig = go.Figure()
-            for driver in self.drivers:
-                freq = self.calc_results[driver]['frequencies']
-                di = self.calc_results[driver]['di']
-                fig.add_trace(go.Scatter(x=freq, y=di, name=driver,
-                                       line=dict(width=2, color=config.DRIVER_COLORS.get(driver))))
-
-            for xo_freq in config.CROSSOVER_FREQUENCIES:
-                fig.add_vline(x=xo_freq, line_dash="dash", line_color="red", opacity=0.5)
-
-            self._add_interactive_grid(fig)
-            self._configure_interactive_axis(fig)
-            fig.update_layout(title='Directivity Index vs Frequency',
-                            xaxis_title='Frequency (Hz)', yaxis_title='Directivity Index (dB)')
+            self._plot_drivers_interactive(fig, 'di')
+            self._finalize_interactive_plot(fig, title='Directivity Index vs Frequency',
+                                           ylabel='Directivity Index (dB)')
             fig.write_html(self.interactive_plots_dir / 'di_comparison.html')
 
     def plot_beamwidth_comparison(self, save_static=True, save_interactive=True):
@@ -365,43 +373,20 @@ class PolarResponseVisualizer:
 
         if save_static:
             fig, ax = plt.subplots(figsize=config.FIG_SIZE_STATIC)
-            for driver in self.drivers:
-                freq = self.calc_results[driver]['frequencies']
-                bw = self.calc_results[driver]['beamwidth_6db']
-                ax.semilogx(freq, bw, label=driver, linewidth=2,
-                           color=config.DRIVER_COLORS.get(driver))
-
-            for xo_freq in config.CROSSOVER_FREQUENCIES:
-                ax.axvline(xo_freq, color='red', linestyle='--', linewidth=1, alpha=0.5)
-
-            self._add_static_grid(ax)
-            ax.set_xlabel('Frequency (Hz)')
-            ax.set_ylabel('Beamwidth (degrees)')
-            ax.set_title('-6dB Beamwidth vs Frequency', fontweight='bold')
-            ax.legend()
-            ax.set_xlim(config.FREQ_MIN, config.FREQ_MAX)
+            self._plot_drivers_static(ax, 'beamwidth_6db')
+            self._finalize_static_plot(ax, ylabel='Beamwidth (degrees)',
+                                       title='-6dB Beamwidth vs Frequency')
             ax.set_ylim(0, 180)
-            
             plt.tight_layout()
-            plt.savefig(self.static_plots_dir / 'core/beamwidth_comparison.png')
+            plt.savefig(self.static_plots_dir / 'core/beamwidth_comparison.png', dpi=config.DPI_STATIC)
             plt.close()
 
         if save_interactive:
             fig = go.Figure()
-            for driver in self.drivers:
-                freq = self.calc_results[driver]['frequencies']
-                bw = self.calc_results[driver]['beamwidth_6db']
-                fig.add_trace(go.Scatter(x=freq, y=bw, name=driver,
-                                       line=dict(width=2, color=config.DRIVER_COLORS.get(driver))))
-
-            for xo_freq in config.CROSSOVER_FREQUENCIES:
-                fig.add_vline(x=xo_freq, line_dash="dash", line_color="red", opacity=0.5)
-
-            self._add_interactive_grid(fig)
-            self._configure_interactive_axis(fig)
-            fig.update_layout(title='-6dB Beamwidth vs Frequency',
-                            xaxis_title='Frequency (Hz)', yaxis_title='Beamwidth (degrees)',
-                            yaxis_range=[0, 180])
+            self._plot_drivers_interactive(fig, 'beamwidth_6db')
+            self._finalize_interactive_plot(fig, title='-6dB Beamwidth vs Frequency',
+                                           ylabel='Beamwidth (degrees)')
+            fig.update_layout(yaxis_range=[0, 180])
             fig.write_html(self.interactive_plots_dir / 'beamwidth_comparison.html')
 
     def plot_frequency_response_by_angle(self, save_static=True, save_interactive=True):
@@ -1835,6 +1820,68 @@ class PolarResponseVisualizer:
             if freq <= config.FREQ_MAX:
                 fig.add_vline(x=freq, line_dash="dot", line_color="lightgray", opacity=0.4, row=row, col=col)
 
+    # ==================== Crossover Line Helpers ====================
+
+    def _add_crossover_lines_static(self, ax, with_labels=True):
+        """Add crossover reference lines to matplotlib axes"""
+        for xo_freq in config.CROSSOVER_FREQUENCIES:
+            ax.axvline(xo_freq, color='red', linestyle='--', linewidth=1, alpha=0.5)
+            if with_labels:
+                ax.text(xo_freq, ax.get_ylim()[1], f'{xo_freq} Hz',
+                       ha='center', va='bottom', fontsize=8, color='red')
+
+    def _add_crossover_lines_interactive(self, fig):
+        """Add crossover reference lines to plotly figure"""
+        for xo_freq in config.CROSSOVER_FREQUENCIES:
+            fig.add_vline(x=xo_freq, line_dash="dash", line_color="red", opacity=0.5)
+
+    # ==================== Driver Metric Plot Helpers ====================
+
+    def _plot_drivers_static(self, ax, metric_key, **kwargs):
+        """Add all driver metrics to matplotlib axes"""
+        for driver in self.drivers:
+            freq = self.calc_results[driver]['frequencies']
+            data = self.calc_results[driver][metric_key]
+            ax.semilogx(freq, data, label=driver, linewidth=2,
+                       color=config.DRIVER_COLORS.get(driver), **kwargs)
+
+    def _plot_drivers_interactive(self, fig, metric_key, **kwargs):
+        """Add all driver metrics to plotly figure"""
+        for driver in self.drivers:
+            freq = self.calc_results[driver]['frequencies']
+            data = self.calc_results[driver][metric_key]
+            fig.add_trace(go.Scatter(
+                x=freq, y=data, name=driver,
+                line=dict(width=2, color=config.DRIVER_COLORS.get(driver)), **kwargs
+            ))
+
+    # ==================== Plot Finalization Helpers ====================
+
+    def _finalize_static_plot(self, ax, ylabel=None, title=None, add_crossovers=True):
+        """Apply consistent styling to static matplotlib plot"""
+        self._add_static_grid(ax)
+        ax.set_xlabel('Frequency (Hz)')
+        if ylabel:
+            ax.set_ylabel(ylabel)
+        if title:
+            ax.set_title(title, fontweight='bold')
+        ax.set_xlim(config.FREQ_MIN, config.FREQ_MAX)
+        if add_crossovers:
+            self._add_crossover_lines_static(ax)
+        ax.legend()
+
+    def _finalize_interactive_plot(self, fig, title=None, ylabel=None, add_crossovers=True):
+        """Apply consistent styling to interactive plotly plot"""
+        self._add_interactive_grid(fig)
+        self._configure_interactive_axis(fig)
+        if add_crossovers:
+            self._add_crossover_lines_interactive(fig)
+        fig.update_layout(
+            title=title or '',
+            xaxis_title='Frequency (Hz)',
+            yaxis_title=ylabel or ''
+        )
+
     def plot_contour(self, driver, normalized=True, save_static=True, save_interactive=True):
         """Generate contour/heatmap plot for a driver
 
@@ -2208,35 +2255,6 @@ class PolarResponseVisualizer:
             
             plt.tight_layout()
             plt.savefig(self.static_plots_dir / 'core/dipole_null_analysis.png')
-            plt.close()
-
-    def plot_erdi(self, save_static=True, save_interactive=True):
-        """Generate Early Reflections Directivity Index (ERDI)"""
-        print("Generating ERDI analysis...")
-        
-        if save_static:
-            fig, ax = plt.subplots(figsize=config.FIG_SIZE_STATIC)
-            for driver in self.drivers:
-                freq = self.calc_results[driver]['frequencies']
-                res = self.calc_results[driver]
-                
-                # ERDI = OnAxis - EarlyReflections
-                # Standard DI = SoundPowerDI (already calculated)
-                
-                erdi = res['spl_matrix'][:, 0] - res['early_reflections']
-                
-                ax.semilogx(freq, erdi, label=driver, linewidth=2,
-                           color=config.DRIVER_COLORS.get(driver))
-
-            self._add_static_grid(ax)
-            ax.set_xlabel('Frequency (Hz)')
-            ax.set_ylabel('ERDI (dB)')
-            ax.set_title('Early Reflections Directivity Index (ERDI)', fontweight='bold')
-            ax.legend()
-            ax.set_xlim(config.FREQ_MIN, config.FREQ_MAX)
-            
-            plt.tight_layout()
-            plt.savefig(self.static_plots_dir / 'core/erdi_comparison.png')
             plt.close()
 
     def plot_polar_diagrams(self, freqs=[500, 1000, 2000, 4000], save_static=True):
@@ -2641,89 +2659,70 @@ document.getElementById('freqInput').addEventListener('keypress', function(e) {{
         """Generate HTML summary of all measurements with metadata"""
         print("Generating measurement summary HTML...")
 
-        html_parts = []
-
-        # Header
-        html_parts.append("""<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Measurement Summary</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        # CSS styles for measurement summary
+        styles = f'''        body {{
+            font-family: {FONT_STACK};
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
             background: #f8fafc;
             color: #1e293b;
-        }
-        h1 { color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 0.5rem; }
-        h2 { color: #1e40af; margin-top: 2rem; }
-        .config-box {
+        }}
+        h1 {{ color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 0.5rem; }}
+        h2 {{ color: #1e40af; margin-top: 2rem; }}
+        .config-box {{
             background: #dbeafe;
             border: 1px solid #93c5fd;
             border-radius: 8px;
             padding: 1rem 1.5rem;
             margin: 1rem 0 2rem;
-        }
-        .config-box h3 { margin: 0 0 0.5rem; color: #1e40af; }
-        .config-box p { margin: 0.25rem 0; }
-        table {
+        }}
+        .config-box h3 {{ margin: 0 0 0.5rem; color: #1e40af; }}
+        .config-box p {{ margin: 0.25rem 0; }}
+        table {{
             width: 100%;
             border-collapse: collapse;
             margin: 1rem 0;
             background: white;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        th, td {
+        }}
+        th, td {{
             border: 1px solid #e2e8f0;
             padding: 0.75rem;
             text-align: left;
-        }
-        th {
+        }}
+        th {{
             background: #1e40af;
             color: white;
             font-weight: 600;
-        }
-        tr:nth-child(even) { background: #f1f5f9; }
-        tr:hover { background: #e0f2fe; }
-        .angle-label {
-            font-weight: 600;
-            color: #1e40af;
-        }
-        .front { color: #059669; }
-        .rear { color: #dc2626; }
-        .notes {
-            font-size: 0.875rem;
-            color: #64748b;
-            white-space: pre-line;
-        }
-        .filename { font-family: monospace; font-size: 0.875rem; }
-        .date { font-size: 0.875rem; color: #64748b; }
-        .processing-notes { font-size: 0.875rem; color: #b45309; font-weight: 500; }
-    </style>
-</head>
-<body>
-    <h1>Measurement Summary</h1>
-""")
+        }}
+        tr:nth-child(even) {{ background: #f1f5f9; }}
+        tr:hover {{ background: #e0f2fe; }}
+        .angle-label {{ font-weight: 600; color: #1e40af; }}
+        .front {{ color: #059669; }}
+        .rear {{ color: #dc2626; }}
+        .notes {{ font-size: 0.875rem; color: #64748b; white-space: pre-line; }}
+        .filename {{ font-family: monospace; font-size: 0.875rem; }}
+        .date {{ font-size: 0.875rem; color: #64748b; }}
+        .processing-notes {{ font-size: 0.875rem; color: #b45309; font-weight: 500; }}'''
+
+        # Build body content
+        body_parts = ['    <h1>Measurement Summary</h1>']
 
         # Global config
-        html_parts.append(f"""
+        body_parts.append(f'''
     <div class="config-box">
         <h3>Processing Configuration</h3>
         <p><strong>Time Gating:</strong> Left: {self.global_config.get('gate_left_ms', 0):.1f} ms, Right: {self.global_config.get('gate_right_ms', 0):.1f} ms</p>
         <p><strong>Smoothing:</strong> {self.global_config.get('smoothing_str', 'None')}</p>
-    </div>
-""")
+    </div>''')
 
         # For each driver
         for driver in self.drivers:
             driver_data = self.data[driver]
             has_rear = driver_data.get('has_rear', False)
 
-            html_parts.append(f"""
+            body_parts.append(f'''
     <h2>{driver}</h2>
     <table>
         <thead>
@@ -2735,8 +2734,7 @@ document.getElementById('freqInput').addEventListener('keypress', function(e) {{
                 <th>Processing Notes</th>
             </tr>
         </thead>
-        <tbody>
-""")
+        <tbody>''')
 
             # Front angles
             for angle in sorted(driver_data['angles'].keys()):
@@ -2746,23 +2744,19 @@ document.getElementById('freqInput').addEventListener('keypress', function(e) {{
                 notes = meta.get('notes', '').replace('\n', '<br>')
                 date = meta.get('date', '')
 
-                # Processing notes (timing correction)
                 processing_notes = ''
                 if angle_data.get('timing_corrected', False):
                     offset_ms = angle_data.get('timing_offset_ms', 0.0)
                     processing_notes = f'Peak aligned: {offset_ms:.2f}ms'
 
-                # Show both the REW title and notes
-                # The title is the measurement name in REW
-                html_parts.append(f"""
+                body_parts.append(f'''
             <tr>
                 <td class="angle-label"><span class="front">F{angle}</span></td>
                 <td class="filename">{title}</td>
                 <td class="notes">{notes}</td>
                 <td class="date">{date}</td>
                 <td class="processing-notes">{processing_notes}</td>
-            </tr>
-""")
+            </tr>''')
 
             # Rear angles if present
             if has_rear and 'rear_angles' in driver_data:
@@ -2773,38 +2767,31 @@ document.getElementById('freqInput').addEventListener('keypress', function(e) {{
                     notes = meta.get('notes', '').replace('\n', '<br>')
                     date = meta.get('date', '')
 
-                    # Processing notes (timing correction)
                     processing_notes = ''
                     if angle_data.get('timing_corrected', False):
                         offset_ms = angle_data.get('timing_offset_ms', 0.0)
                         processing_notes = f'Peak aligned: {offset_ms:.2f}ms'
 
-                    # Show both the REW title and notes
-                    html_parts.append(f"""
+                    body_parts.append(f'''
             <tr>
                 <td class="angle-label"><span class="rear">R{angle}</span></td>
                 <td class="filename">{title}</td>
                 <td class="notes">{notes}</td>
                 <td class="date">{date}</td>
                 <td class="processing-notes">{processing_notes}</td>
-            </tr>
-""")
+            </tr>''')
 
-            html_parts.append("""
+            body_parts.append('''
         </tbody>
-    </table>
-""")
+    </table>''')
 
-        # Footer
-        html_parts.append("""
-</body>
-</html>
-""")
+        body = '\n'.join(body_parts)
 
-        # Write file
+        # Build and write HTML using helper
+        html = build_html_page('Measurement Summary', styles, body)
         output_path = self.interactive_plots_dir / "measurement_summary.html"
         with open(output_path, 'w', encoding='utf-8') as f:
-            f.write(''.join(html_parts))
+            f.write(html)
 
         print(f"  Saved to {output_path}")
 
