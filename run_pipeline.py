@@ -31,41 +31,72 @@ def run_pipeline(args):
         sys.exit(1)
 
     mset = config.MEASUREMENT_SETS[mset_name]
-    data_dir = mset["path"]
-    pattern_type = mset["pattern_type"]
     has_rear = mset["has_rear"]
     hdf5_path = config.DATA_DIR / mset["hdf5_file"]
     output_dir = mset["output_dir"]
     static_plots_dir = output_dir / "static_plots"
     interactive_plots_dir = output_dir / "interactive"
 
+    # Check if this is a multi-source measurement set
+    sources = mset.get("sources")
+    data_dir = mset.get("path")
+    pattern_type = mset.get("pattern_type")
+
     print("=" * 60)
     print("LX521 POLAR ANALYSIS PIPELINE")
     print("=" * 60)
     print(f"Measurement set: {mset_name}")
-    print(f"Data directory:  {data_dir}")
+    if sources:
+        print(f"Sources:         {len(sources)} directories")
+        for src in sources:
+            print(f"                 - {src['path']} ({src['pattern_type']})")
+    else:
+        print(f"Data directory:  {data_dir}")
     print(f"Output file:     {hdf5_path}")
     print(f"Output plots:    {output_dir}")
 
     # 1. Load & Process Data
     if not args.skip_loading:
         print("\n[STEP 1] Loading and Processing Data...")
+        smoothing_val = 0 if args.no_smoothing else config.DEFAULT_SMOOTHING
+
         try:
-            loader = PolarDataLoader(
-                data_directory=str(data_dir),
-                pattern_type=pattern_type
-            )
+            if sources:
+                # Multi-source measurement set: load from each source and merge
+                all_data = {}
+                for src in sources:
+                    src_path = src["path"]
+                    src_pattern = src["pattern_type"]
+                    print(f"\n  Loading from {src_path} (pattern: {src_pattern})...")
 
-            # Determine smoothing
-            smoothing_val = 0 if args.no_smoothing else config.DEFAULT_SMOOTHING
+                    loader = PolarDataLoader(
+                        data_directory=str(src_path),
+                        pattern_type=src_pattern
+                    )
+                    src_data = loader.load_all_drivers(
+                        smoothing=smoothing_val,
+                        gate_left_ms=config.GATE_LEFT_MS,
+                        gate_right_ms=config.GATE_RIGHT_MS,
+                        include_rear=has_rear
+                    )
+                    # Merge into all_data
+                    all_data.update(src_data)
+                    print(f"  Loaded drivers: {list(src_data.keys())}")
 
-            # Load, Gate, Smooth
-            data = loader.load_all_drivers(
-                smoothing=smoothing_val,
-                gate_left_ms=config.GATE_LEFT_MS,
-                gate_right_ms=config.GATE_RIGHT_MS,
-                include_rear=has_rear
-            )
+                data = all_data
+                # Use last loader instance for saving (just need HDF5 methods)
+            else:
+                # Single-source measurement set
+                loader = PolarDataLoader(
+                    data_directory=str(data_dir),
+                    pattern_type=pattern_type
+                )
+                data = loader.load_all_drivers(
+                    smoothing=smoothing_val,
+                    gate_left_ms=config.GATE_LEFT_MS,
+                    gate_right_ms=config.GATE_RIGHT_MS,
+                    include_rear=has_rear
+                )
 
             # Save
             print(f"\n[STEP 2] Saving to {hdf5_path}...")

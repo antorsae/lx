@@ -20,9 +20,13 @@ MEASUREMENT_SETS = {
     },
     "juan-baffleless": {
         # Combined Juan's baffleless driver measurements (GRS PT6816 + SS10F8414G10)
-        # Uses pre-merged HDF5 file - individual sources in separate directories
-        "path": Path("../Mediciones Juan"),  # Parent directory (not used for loading)
-        "pattern_type": "juan",  # {driver} {angle} {side}.mdat
+        # This set merges data from multiple source directories
+        "path": None,  # Not used - see 'sources' below
+        "sources": [
+            {"path": Path("../Mediciones Juan/GRS PT6816 A MIC ON AXIS"), "pattern_type": "juan"},
+            {"path": Path("../Mediciones Juan/ScanSpeak 10F8414G10"), "pattern_type": "scanspeak"},
+        ],
+        "pattern_type": "juan",  # Default pattern (not used when sources defined)
         "angles": [0, 15, 30, 45, 60, 75, 90],
         "has_rear": True,
         "hdf5_file": "polar_data_juan_baffleless.h5",

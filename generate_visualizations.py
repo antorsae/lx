@@ -404,6 +404,98 @@ class PolarResponseVisualizer:
                             yaxis_range=[0, 180])
             fig.write_html(self.interactive_plots_dir / 'beamwidth_comparison.html')
 
+    def plot_frequency_response_by_angle(self, save_static=True, save_interactive=True):
+        """Generate frequency response plots for each driver at multiple angles.
+
+        Shows SPL vs frequency with curves for:
+        - 0° (on-axis): black
+        - 30°: green
+        - 60°: red
+        - 90°: pink
+        """
+        print("Generating frequency response by angle plots...")
+
+        # Define the angles and their colors
+        angle_config = [
+            (0, 'black', '0° (on-axis)'),
+            (30, 'green', '30°'),
+            (60, 'red', '60°'),
+            (90, 'hotpink', '90°'),
+        ]
+
+        for driver in self.drivers:
+            res = self.calc_results[driver]
+            freq = res['frequencies']
+            angles = np.array(res['angles'])  # Available angles like [0, 15, 30, 45, 60, 75, 90]
+            spl_matrix = res['spl_matrix']  # Shape: [n_freqs, n_angles]
+
+            if save_static:
+                fig, ax = plt.subplots(figsize=config.FIG_SIZE_STATIC)
+
+                for angle, color, label in angle_config:
+                    angle_matches = np.where(angles == angle)[0]
+                    if len(angle_matches) > 0:
+                        angle_idx = angle_matches[0]
+                        spl = spl_matrix[:, angle_idx]
+                        ax.semilogx(freq, spl, label=label, linewidth=2, color=color)
+
+                self._add_static_grid(ax)
+                ax.set_xlabel('Frequency (Hz)')
+                ax.set_ylabel('SPL (dB)')
+                ax.set_title(f'{driver} - Frequency Response at Multiple Angles', fontweight='bold')
+                ax.legend(loc='lower left')
+                ax.set_xlim(config.FREQ_MIN, config.FREQ_MAX)
+
+                # Add horizontal dotted lines at 5 dB increments
+                y_min, y_max = ax.get_ylim()
+                y_start = int(np.floor(y_min / 5) * 5)
+                y_end = int(np.ceil(y_max / 5) * 5)
+                for y_val in range(y_start, y_end + 1, 5):
+                    ax.axhline(y_val, color='gray', linestyle=':', linewidth=0.8, alpha=0.5)
+
+                plt.tight_layout()
+                plt.savefig(self.static_plots_dir / f'core/{driver}_freq_response_angles.png')
+                plt.close()
+
+            if save_interactive:
+                fig = go.Figure()
+
+                for angle, color, label in angle_config:
+                    angle_matches = np.where(angles == angle)[0]
+                    if len(angle_matches) > 0:
+                        angle_idx = angle_matches[0]
+                        spl = spl_matrix[:, angle_idx]
+                        fig.add_trace(go.Scatter(
+                            x=freq, y=spl, name=label,
+                            line=dict(width=2, color=color)
+                        ))
+
+                self._add_interactive_grid(fig)
+                self._configure_interactive_axis(fig)
+
+                # Add horizontal dotted lines at 5 dB increments
+                # Get data range from all traces
+                all_y = np.concatenate([spl_matrix[:, np.where(angles == a)[0][0]]
+                                        for a, _, _ in angle_config
+                                        if len(np.where(angles == a)[0]) > 0])
+                y_min, y_max = np.min(all_y), np.max(all_y)
+                y_start = int(np.floor(y_min / 5) * 5)
+                y_end = int(np.ceil(y_max / 5) * 5)
+                for y_val in range(y_start, y_end + 1, 5):
+                    fig.add_hline(y=y_val, line_dash="dot", line_color="gray", opacity=0.5)
+
+                fig.update_layout(
+                    title=f'{driver} - Frequency Response at Multiple Angles',
+                    xaxis_title='Frequency (Hz)',
+                    yaxis_title='SPL (dB)',
+                    legend=dict(x=0.02, y=0.02, xanchor='left', yanchor='bottom')
+                )
+                self._write_compressed_html(
+                    fig,
+                    self.interactive_plots_dir / f'{driver}_freq_response_angles.html',
+                    f'{driver} Frequency Response'
+                )
+
     def _add_static_grid(self, ax):
         """Helper to add standard grid to matplotlib axes"""
         # Major bold dotted lines (1k, 10k)
@@ -1421,6 +1513,7 @@ document.getElementById('freqInput').addEventListener('keypress', function(e) {{
         self.plot_di_comparison()
         self.plot_beamwidth_comparison()
         self.plot_dipole_analysis()
+        self.plot_frequency_response_by_angle()
 
         for driver in self.drivers:
             self.plot_contour(driver, normalized=True)
