@@ -463,6 +463,48 @@ class PolarResponseVisualizer:
                 plt.savefig(self.static_plots_dir / f'core/{driver}_freq_response_angles.png')
                 plt.close()
 
+                # Generate NORMALIZED version (on-axis = 0 dB reference)
+                # Find on-axis (0°) data
+                onaxis_matches = np.where(angles == 0)[0]
+                if len(onaxis_matches) > 0:
+                    onaxis_idx = onaxis_matches[0]
+                    onaxis_spl = spl_matrix[:, onaxis_idx]
+
+                    fig_norm, ax_norm = plt.subplots(figsize=config.FIG_SIZE_STATIC)
+
+                    for angle, color, label in angle_config:
+                        angle_matches = np.where(angles == angle)[0]
+                        if len(angle_matches) > 0:
+                            angle_idx = angle_matches[0]
+                            spl = spl_matrix[:, angle_idx]
+                            # Normalize: subtract on-axis response
+                            spl_normalized = spl - onaxis_spl
+                            ax_norm.semilogx(freq, spl_normalized, label=label, linewidth=2, color=color)
+
+                    self._add_static_grid(ax_norm)
+                    ax_norm.set_xlabel('Frequency (Hz)')
+                    ax_norm.set_ylabel('Relative SPL (dB)')
+                    ax_norm.set_title(f'{driver} - Normalized Frequency Response (0° = ref)', fontweight='bold')
+                    ax_norm.legend(loc='lower left')
+                    ax_norm.set_xlim(config.FREQ_MIN, config.FREQ_MAX)
+
+                    # Set Y axis to show deviation from 0 dB
+                    ax_norm.set_ylim(-30, 5)
+
+                    # Add horizontal lines at 5 dB increments
+                    for y_val in range(-30, 6, 5):
+                        if y_val % 10 == 0:
+                            ax_norm.axhline(y_val, color='gray', linestyle='-', linewidth=0.8, alpha=0.6)
+                        else:
+                            ax_norm.axhline(y_val, color='gray', linestyle=':', linewidth=0.5, alpha=0.4)
+
+                    # Add 0 dB reference line (bold)
+                    ax_norm.axhline(0, color='black', linestyle='-', linewidth=1.5, alpha=0.8)
+
+                    plt.tight_layout()
+                    plt.savefig(self.static_plots_dir / f'core/{driver}_freq_response_normalized.png')
+                    plt.close()
+
             if save_interactive:
                 fig = go.Figure()
 
