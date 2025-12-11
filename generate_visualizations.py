@@ -508,6 +508,425 @@ class PolarResponseVisualizer:
                     f'{driver} Frequency Response'
                 )
 
+    def plot_frequency_response_explorer(self):
+        """Generate advanced interactive frequency response explorer.
+
+        Features:
+        - Multi-driver selection (click to toggle, overlay multiple)
+        - All angles available (0-90° in measurement increments)
+        - Per-driver level offset sliders for comparison
+        - Different markers for each driver to distinguish overlaid curves
+        """
+        print("Generating frequency response explorer...")
+
+        # Marker symbols for different drivers
+        markers = ['circle', 'square', 'diamond', 'triangle-up', 'cross', 'x', 'star', 'pentagon']
+
+        # Collect all data
+        all_data = {}
+        all_angles = set()
+
+        for driver in self.drivers:
+            res = self.calc_results[driver]
+            freq = res['frequencies']
+            angles = res['angles']
+            spl_matrix = res['spl_matrix']
+
+            all_data[driver] = {
+                'freq': freq.tolist(),
+                'angles': [int(a) for a in angles],
+                'spl': {int(angles[i]): spl_matrix[:, i].tolist() for i in range(len(angles))}
+            }
+            all_angles.update(angles)
+
+        all_angles = sorted(all_angles)
+
+        # Build the HTML with embedded JavaScript
+        html_content = f'''<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Frequency Response Explorer</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }}
+        .container {{
+            display: flex;
+            height: 100vh;
+        }}
+        .sidebar {{
+            width: 320px;
+            background: white;
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+            flex-shrink: 0;
+        }}
+        .plot-area {{
+            flex: 1;
+            padding: 10px;
+        }}
+        #plot {{
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }}
+        h2 {{
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 8px;
+        }}
+        h3 {{
+            font-size: 0.9rem;
+            margin: 15px 0 10px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }}
+        .driver-list {{
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }}
+        .driver-item {{
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }}
+        .driver-item:hover {{
+            border-color: #2563eb;
+            background: #f8fafc;
+        }}
+        .driver-item.active {{
+            border-color: var(--driver-color);
+            background: color-mix(in srgb, var(--driver-color) 10%, white);
+        }}
+        .driver-color {{
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }}
+        .driver-marker {{
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }}
+        .driver-name {{
+            flex: 1;
+            font-weight: 500;
+        }}
+        .offset-control {{
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+            font-size: 0.85rem;
+        }}
+        .offset-control input[type="range"] {{
+            width: 80px;
+        }}
+        .offset-control input[type="number"] {{
+            width: 50px;
+            padding: 2px 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }}
+        .angle-grid {{
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }}
+        .angle-btn {{
+            padding: 8px 4px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }}
+        .angle-btn:hover {{
+            border-color: #2563eb;
+        }}
+        .angle-btn.active {{
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }}
+        .quick-select {{
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }}
+        .quick-btn {{
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }}
+        .quick-btn:hover {{
+            background: #f0f0f0;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Frequency Response Explorer</h2>
+
+            <h3>Drivers (click to toggle)</h3>
+            <div class="driver-list" id="driverList"></div>
+
+            <h3>Angles</h3>
+            <div class="quick-select">
+                <button class="quick-btn" onclick="selectAngles([0])">0° only</button>
+                <button class="quick-btn" onclick="selectAngles([0,30,60,90])">0/30/60/90</button>
+                <button class="quick-btn" onclick="selectAllAngles()">All</button>
+                <button class="quick-btn" onclick="selectAngles([])">None</button>
+            </div>
+            <div class="angle-grid" id="angleGrid"></div>
+        </div>
+        <div class="plot-area">
+            <div id="plot"></div>
+        </div>
+    </div>
+
+    <script>
+        // Data embedded from Python
+        const allData = {json.dumps(all_data)};
+        const drivers = {json.dumps(self.drivers)};
+        const allAngles = {json.dumps([int(a) for a in all_angles])};
+        const driverColors = {json.dumps(config.DRIVER_COLORS)};
+        const defaultColor = '#888888';
+
+        // Marker symbols for each driver
+        const markerSymbols = ['circle', 'square', 'diamond', 'triangle-up', 'cross', 'x', 'star', 'pentagon'];
+        const markerChars = ['●', '■', '◆', '▲', '+', '×', '★', '⬠'];
+
+        // State
+        let activeDrivers = new Set([drivers[0]]);
+        let activeAngles = new Set([0]);
+        let driverOffsets = {{}};
+        drivers.forEach(d => driverOffsets[d] = 0);
+
+        // Angle colors (gradient from black to light gray)
+        function getAngleColor(angle) {{
+            const t = angle / 90;
+            const gray = Math.round(180 * t);
+            return `rgb(${{gray}},${{gray}},${{gray}})`;
+        }}
+
+        // Initialize UI
+        function initUI() {{
+            const driverList = document.getElementById('driverList');
+            drivers.forEach((driver, idx) => {{
+                const color = driverColors[driver] || defaultColor;
+                const markerChar = markerChars[idx % markerChars.length];
+
+                const item = document.createElement('div');
+                item.className = 'driver-item' + (activeDrivers.has(driver) ? ' active' : '');
+                item.style.setProperty('--driver-color', color);
+                item.innerHTML = `
+                    <div class="driver-color" style="background: ${{color}}"></div>
+                    <div class="driver-marker">${{markerChar}}</div>
+                    <div class="driver-name">${{driver}}</div>
+                `;
+                item.onclick = (e) => {{
+                    if (e.target.tagName === 'INPUT') return;
+                    toggleDriver(driver, item);
+                }};
+
+                // Add offset control
+                const offsetCtrl = document.createElement('div');
+                offsetCtrl.className = 'offset-control';
+                offsetCtrl.innerHTML = `
+                    <span>Offset:</span>
+                    <input type="range" min="-20" max="20" value="0"
+                           onchange="setOffset('${{driver}}', this.value)"
+                           oninput="this.nextElementSibling.value = this.value">
+                    <input type="number" value="0" min="-20" max="20"
+                           onchange="setOffset('${{driver}}', this.value); this.previousElementSibling.value = this.value">
+                    <span>dB</span>
+                `;
+                offsetCtrl.onclick = (e) => e.stopPropagation();
+                item.appendChild(offsetCtrl);
+
+                driverList.appendChild(item);
+            }});
+
+            const angleGrid = document.getElementById('angleGrid');
+            allAngles.forEach(angle => {{
+                const btn = document.createElement('button');
+                btn.className = 'angle-btn' + (activeAngles.has(angle) ? ' active' : '');
+                btn.textContent = angle + '°';
+                btn.onclick = () => toggleAngle(angle, btn);
+                angleGrid.appendChild(btn);
+            }});
+        }}
+
+        function toggleDriver(driver, elem) {{
+            if (activeDrivers.has(driver)) {{
+                activeDrivers.delete(driver);
+                elem.classList.remove('active');
+            }} else {{
+                activeDrivers.add(driver);
+                elem.classList.add('active');
+            }}
+            updatePlot();
+        }}
+
+        function toggleAngle(angle, btn) {{
+            if (activeAngles.has(angle)) {{
+                activeAngles.delete(angle);
+                btn.classList.remove('active');
+            }} else {{
+                activeAngles.add(angle);
+                btn.classList.add('active');
+            }}
+            updatePlot();
+        }}
+
+        function selectAngles(angles) {{
+            activeAngles = new Set(angles);
+            document.querySelectorAll('.angle-btn').forEach(btn => {{
+                const angle = parseInt(btn.textContent);
+                btn.classList.toggle('active', activeAngles.has(angle));
+            }});
+            updatePlot();
+        }}
+
+        function selectAllAngles() {{
+            selectAngles(allAngles);
+        }}
+
+        function setOffset(driver, value) {{
+            driverOffsets[driver] = parseFloat(value) || 0;
+            updatePlot();
+        }}
+
+        function updatePlot() {{
+            const traces = [];
+
+            activeDrivers.forEach(driver => {{
+                const driverIdx = drivers.indexOf(driver);
+                const color = driverColors[driver] || defaultColor;
+                const marker = markerSymbols[driverIdx % markerSymbols.length];
+                const offset = driverOffsets[driver];
+                const data = allData[driver];
+
+                activeAngles.forEach(angle => {{
+                    if (!data.spl[angle]) return;
+
+                    const spl = data.spl[angle].map(v => v + offset);
+                    const angleBrightness = 1 - (angle / 90) * 0.5;
+
+                    traces.push({{
+                        x: data.freq,
+                        y: spl,
+                        name: `${{driver}} @ ${{angle}}°` + (offset !== 0 ? ` (${{offset > 0 ? '+' : ''}}${{offset}}dB)` : ''),
+                        mode: 'lines+markers',
+                        line: {{
+                            color: color,
+                            width: angle === 0 ? 2.5 : 1.5,
+                            dash: angle === 0 ? 'solid' : (angle > 45 ? 'dot' : 'solid')
+                        }},
+                        marker: {{
+                            symbol: marker,
+                            size: angle === 0 ? 6 : 4,
+                            opacity: angleBrightness,
+                            color: color
+                        }},
+                        opacity: angleBrightness
+                    }});
+                }});
+            }});
+
+            // Add grid lines
+            const shapes = [];
+            // Vertical frequency grid
+            [100,200,300,400,500,600,700,800,900,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,20000].forEach(f => {{
+                shapes.push({{
+                    type: 'line', x0: f, x1: f, y0: 0, y1: 1, yref: 'paper',
+                    line: {{ color: f === 1000 || f === 10000 ? '#888' : '#ddd', width: 1, dash: 'dot' }}
+                }});
+            }});
+
+            // Get Y range from data
+            let yMin = 100, yMax = 0;
+            traces.forEach(t => {{
+                t.y.forEach(v => {{
+                    if (v < yMin) yMin = v;
+                    if (v > yMax) yMax = v;
+                }});
+            }});
+            yMin = Math.floor(yMin / 5) * 5 - 5;
+            yMax = Math.ceil(yMax / 5) * 5 + 5;
+
+            // Horizontal dB grid
+            for (let db = yMin; db <= yMax; db += 5) {{
+                shapes.push({{
+                    type: 'line', x0: 0, x1: 1, xref: 'paper', y0: db, y1: db,
+                    line: {{ color: db % 10 === 0 ? '#888' : '#ddd', width: db % 10 === 0 ? 1 : 0.5, dash: db % 10 === 0 ? 'solid' : 'dot' }}
+                }});
+            }}
+
+            const layout = {{
+                title: '<b>Frequency Response Explorer</b>',
+                xaxis: {{
+                    title: 'Frequency (Hz)',
+                    type: 'log',
+                    range: [Math.log10(100), Math.log10(20000)],
+                    gridcolor: 'transparent'
+                }},
+                yaxis: {{
+                    title: 'SPL (dB)',
+                    range: [yMin, yMax],
+                    gridcolor: 'transparent'
+                }},
+                shapes: shapes,
+                legend: {{
+                    x: 1.02,
+                    y: 1,
+                    xanchor: 'left',
+                    font: {{ size: 10 }}
+                }},
+                margin: {{ l: 60, r: 200, t: 50, b: 50 }},
+                hovermode: 'closest'
+            }};
+
+            Plotly.react('plot', traces, layout, {{responsive: true}});
+        }}
+
+        // Initialize
+        initUI();
+        updatePlot();
+    </script>
+</body>
+</html>'''
+
+        # Write the HTML file
+        output_path = self.interactive_plots_dir / 'freq_response_explorer.html'
+        with open(output_path, 'w') as f:
+            f.write(html_content)
+
+        print(f"  Saved to {output_path}")
+
     def _add_static_grid(self, ax):
         """Helper to add standard grid to matplotlib axes"""
         # Major bold dotted lines (1k, 10k)
@@ -1526,6 +1945,7 @@ document.getElementById('freqInput').addEventListener('keypress', function(e) {{
         self.plot_beamwidth_comparison()
         self.plot_dipole_analysis()
         self.plot_frequency_response_by_angle()
+        self.plot_frequency_response_explorer()
 
         for driver in self.drivers:
             self.plot_contour(driver, normalized=True)
