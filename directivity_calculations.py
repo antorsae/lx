@@ -218,6 +218,42 @@ def fractional_octave_smooth(frequencies: np.ndarray, magnitude: np.ndarray,
     return smoothed
 
 
+def fractional_octave_smooth_power_db(
+    frequencies: np.ndarray,
+    magnitude_db: np.ndarray,
+    fraction: int = 3,
+) -> np.ndarray:
+    """Energy-based fractional-octave smoothing.
+
+    This variant averages power (linear) within the 1/N‑octave band and converts
+    back to dB. It matches the smoothing used in the standalone comparison
+    scripts.
+
+    Args:
+        frequencies: Array of frequencies (Hz)
+        magnitude_db: Magnitude values in dB
+        fraction: Octave fraction (3=1/3, 6=1/6, 12=1/12, etc.)
+
+    Returns:
+        Smoothed magnitude array in dB
+    """
+    factor = 2 ** (1.0 / (2 * fraction))
+    mag_power = 10 ** (magnitude_db / 10.0)
+    smoothed = np.zeros_like(magnitude_db, dtype=float)
+
+    for i, f_c in enumerate(frequencies):
+        f_min = f_c / factor
+        f_max = f_c * factor
+        mask = (frequencies >= f_min) & (frequencies <= f_max)
+        if np.any(mask):
+            avg_power = np.mean(mag_power[mask])
+            smoothed[i] = 10 * np.log10(avg_power + 1e-12)
+        else:
+            smoothed[i] = magnitude_db[i]
+
+    return smoothed
+
+
 def normalize_polar_response(spl_matrix: np.ndarray, reference_angle_idx: int = 0) -> np.ndarray:
     """
     Normalize polar response to reference angle at each frequency

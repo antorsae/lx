@@ -27,6 +27,34 @@ import json
 
 import config
 
+
+# ==================== Filename Pattern Definitions ====================
+# "scanspeak" is the same naming convention as "juan"
+_PATTERN_ALIASES = {
+    "scanspeak": "juan",
+}
+
+_PATTERN_DEFS = {
+    "andres": {
+        "regex": re.compile(r"^F(?P<angle>\d+)-(?P<driver>.+)$"),
+        "side_from_match": lambda m: "F",
+        "filename": lambda driver, angle, side: f"F{angle}-{driver}.mdat",
+    },
+    "juan": {
+        "regex": re.compile(r"^(?P<driver>.+)\s+(?P<angle>\d+)\s+(?P<side>[FR])$"),
+        "side_from_match": lambda m: m.group("side"),
+        "filename": lambda driver, angle, side: f"{driver} {angle} {side}.mdat",
+    },
+    "lx521_system": {
+        "regex": re.compile(r"^(?P<driver>.+)\s+(?P<angle>\d+)\s+GRADOS\s+(?P<side>F|REAR)$"),
+        "side_from_match": lambda m: "R" if m.group("side") == "REAR" else "F",
+        "filename": lambda driver, angle, side: (
+            f"{driver} {angle} GRADOS {'REAR' if side == 'R' else 'F'}.mdat"
+        ),
+    },
+}
+
+
 class PolarDataLoader:
     """Load and manage polar response measurements from REW"""
 
@@ -582,35 +610,24 @@ class PolarDataLoader:
         Returns dict with: driver, angle, side ('F' or 'R'), or None if no match
         """
         stem = Path(filename).stem
+        pattern_def = self._get_pattern_def()
+        if not pattern_def:
+            return None
 
-        if self.pattern_type == "andres":
-            # Pattern: F{angle}-{driver}
-            match = re.match(r'F(\d+)-(.+)', stem)
-            if match:
-                return {"angle": int(match.group(1)), "driver": match.group(2), "side": "F"}
+        match = pattern_def["regex"].match(stem)
+        if not match:
+            return None
 
-        elif self.pattern_type == "juan":
-            # Pattern: {driver} {angle} {side}
-            match = re.match(r'(.+)\s+(\d+)\s+([FR])$', stem)
-            if match:
-                return {"driver": match.group(1), "angle": int(match.group(2)), "side": match.group(3)}
+        return {
+            "driver": match.group("driver"),
+            "angle": int(match.group("angle")),
+            "side": pattern_def["side_from_match"](match),
+        }
 
-        elif self.pattern_type == "lx521_system":
-            # Pattern: {system_name} {angle} GRADOS {F|REAR}
-            match = re.match(r'(.+)\s+(\d+)\s+GRADOS\s+(F|REAR)$', stem)
-            if match:
-                driver = match.group(1)  # "LX521 HIGH MID INV ORIGINAL"
-                angle = int(match.group(2))
-                side = "R" if match.group(3) == "REAR" else "F"
-                return {"driver": driver, "angle": angle, "side": side}
-
-        elif self.pattern_type == "scanspeak":
-            # Pattern: SS10F8414G10 {angle} {F|R}
-            match = re.match(r'(.+)\s+(\d+)\s+([FR])$', stem)
-            if match:
-                return {"driver": match.group(1), "angle": int(match.group(2)), "side": match.group(3)}
-
-        return None
+    def _get_pattern_def(self) -> Optional[Dict]:
+        """Resolve pattern type (with aliases) to its definition."""
+        resolved = _PATTERN_ALIASES.get(self.pattern_type, self.pattern_type)
+        return _PATTERN_DEFS.get(resolved)
 
     def _detect_drivers(self) -> List[str]:
         """Auto-detect driver names from .mdat files"""
@@ -642,16 +659,10 @@ class PolarDataLoader:
 
     def _get_filename(self, driver_name: str, angle: int, side: str = "F") -> str:
         """Generate filename for given driver, angle, and side"""
-        if self.pattern_type == "andres":
-            return f"F{angle}-{driver_name}.mdat"
-        elif self.pattern_type == "juan":
-            return f"{driver_name} {angle} {side}.mdat"
-        elif self.pattern_type == "lx521_system":
-            side_str = "REAR" if side == "R" else "F"
-            return f"{driver_name} {angle} GRADOS {side_str}.mdat"
-        elif self.pattern_type == "scanspeak":
-            return f"{driver_name} {angle} {side}.mdat"
-        return ""
+        pattern_def = self._get_pattern_def()
+        if not pattern_def:
+            return ""
+        return pattern_def["filename"](driver_name, angle, side)
 
     # ==================== HDF5 Helper Methods ====================
 

@@ -47,8 +47,13 @@ MEASUREMENT_SETS = {
     },
     "juan-baffleless": {
         # Combined baffleless driver measurements (GRS PT6816 + SS10F8414G10)
-        "path": Path("../Mediciones Juan"),
-        "pattern_type": "juan",  # {driver} {angle} {side}.mdat
+        # Multi-source sets merge multiple directories/patterns.
+        "path": None,
+        "sources": [
+            {"path": Path("../Mediciones Juan/GRS PT6816 A MIC ON AXIS"), "pattern_type": "juan"},
+            {"path": Path("../Mediciones Juan/ScanSpeak 10F8414G10"), "pattern_type": "scanspeak"},
+        ],
+        "pattern_type": "juan",  # default (ignored when sources defined)
         "has_rear": True,
         "hdf5_file": "polar_data_juan_baffleless.h5",
         "output_dir": OUTPUT_DIR / "juan-baffleless",
@@ -69,7 +74,7 @@ MEASUREMENT_SETS = {
 |---------|---------|-------------|
 | `andres` | `F45-10F8424.mdat` | Front-only measurements |
 | `juan` | `GRS PT6816 45 F.mdat` | Front (F) and Rear (R) measurements |
-| `scanspeak` | `SS10F8414G10 45 F.mdat` | Front (F) and Rear (R) measurements |
+| `scanspeak` | `SS10F8414G10 45 F.mdat` | Same convention as `juan` |
 | `lx521_system` | `LX521 HIGH MID INV ORIGINAL 45 GRADOS F.mdat` | Full system measurements with GRADOS notation |
 
 ## Usage
@@ -215,7 +220,7 @@ data = loader.load_all_drivers(batch_unload=False)
 ## Adding New Measurement Sets
 
 1. Add entry to `MEASUREMENT_SETS` in `config.py`
-2. If using a new naming pattern, add parsing logic to `_parse_filename()` in `polar_data_loader.py`
+2. If using a new naming pattern, add an entry to `_PATTERN_DEFS` (and/or `_PATTERN_ALIASES`) in `polar_data_loader.py`
 3. Run: `python run_pipeline.py -m your_new_set`
 
 ## License
