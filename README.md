@@ -108,6 +108,17 @@ python run_pipeline.py --no-smoothing
 | `--skip-viz` | Skip visualization generation |
 | `--no-smoothing` | Disable frequency response smoothing (default: no smoothing) |
 
+### Makefile Automation
+
+```bash
+make all              # Full rebuild: data + viz + sync
+make viz              # Regenerate all visualizations (uses existing HDF5)
+make viz-andres       # Regenerate only andres set
+make sync             # Sync output/ to docs/
+make deploy           # sync + commit + push to GitHub Pages
+make help             # Show all targets
+```
+
 ## Output Structure
 
 ```
@@ -172,13 +183,22 @@ data = loader.load_all_drivers(batch_unload=False)
 - Normalized/Absolute contour plots
 - Polar diagrams (single driver and overlaid)
 - Crossover match analysis
+- Frequency response by angle (absolute and normalized to 0°)
 
 ### Interactive Plots (HTML)
 - DI comparison with hover info
 - Beamwidth comparison
 - Contour heatmaps
-- Polar explorer with frequency slider
+- Polar explorer with frequency slider and manual entry
 - Crossover analysis per frequency
+- **Multi-driver frequency response explorer** with:
+  - Driver overlay comparison with distinct markers
+  - Per-driver level offset sliders
+  - Angle toggle grid with quick-select buttons
+  - **IIR filter editor**: Peaking, HP, LP, Highshelf, Lowshelf filters
+  - Real-time filter simulation on all angles
+  - CamillaDSP-compatible YAML import/export
+  - LocalStorage persistence
 
 ## File Structure
 
@@ -189,6 +209,7 @@ data = loader.load_all_drivers(batch_unload=False)
 | `polar_data_loader.py` | REW API interface and data loading |
 | `generate_visualizations.py` | Plot generation |
 | `directivity_calculations.py` | Acoustic calculations |
+| `Makefile` | Build automation (data → viz → docs → deploy) |
 | `requirements.txt` | Python dependencies |
 
 ## Adding New Measurement Sets
