@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Frequency Response Explorer</title>
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -147,6 +148,130 @@
         .quick-btn:hover {
             background: #f0f0f0;
         }
+        /* Filter section styles */
+        .filter-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid #e0e0e0;
+        }
+        .filter-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .filter-controls button {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .filter-controls button:hover {
+            background: #f0f0f0;
+        }
+        .filter-controls button.primary {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+        .filter-controls button.primary:hover {
+            background: #1d4ed8;
+        }
+        .filter-driver-select {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .filter-driver-select select {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .filter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .filter-card {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .filter-card.disabled {
+            opacity: 0.5;
+        }
+        .filter-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .filter-card-header input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+        }
+        .filter-card-header select {
+            flex: 1;
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .filter-card-header .delete-btn {
+            padding: 2px 8px;
+            border: none;
+            background: #fee2e2;
+            color: #dc2626;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .filter-card-header .delete-btn:hover {
+            background: #fecaca;
+        }
+        .filter-param {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+            font-size: 0.8rem;
+        }
+        .filter-param label {
+            width: 45px;
+            color: #666;
+        }
+        .filter-param input[type="range"] {
+            flex: 1;
+        }
+        .filter-param input[type="number"] {
+            width: 70px;
+            padding: 3px 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: right;
+        }
+        .filter-param span {
+            width: 25px;
+            color: #888;
+        }
+        .no-filters {
+            color: #888;
+            font-size: 0.85rem;
+            font-style: italic;
+            padding: 10px;
+            text-align: center;
+        }
+        input[type="file"] {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -165,6 +290,23 @@
                 <button class="quick-btn" onclick="selectAngles([])">None</button>
             </div>
             <div class="angle-grid" id="angleGrid"></div>
+
+            <div class="filter-section">
+                <h3>Filters (IIR EQ)</h3>
+                <div class="filter-controls">
+                    <button class="primary" onclick="addFilter()">+ Add Filter</button>
+                    <button onclick="document.getElementById('yamlInput').click()">Load YAML</button>
+                    <button onclick="saveFiltersYaml()">Save YAML</button>
+                </div>
+                <input type="file" id="yamlInput" accept=".yaml,.yml" onchange="loadYamlFile(event)">
+                <div class="filter-driver-select">
+                    <label>Driver:</label>
+                    <select id="filterDriverSelect" onchange="selectFilterDriver(this.value)"></select>
+                </div>
+                <div class="filter-list" id="filterList">
+                    <div class="no-filters">No filters defined</div>
+                </div>
+            </div>
         </div>
         <div class="plot-area">
             <div id="plot"></div>
@@ -178,16 +320,142 @@
         const allAngles = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90];
         const driverColors = {"10F8424": "#1f77b4", "L22MG": "#ff7f0e", "MU10": "#2ca02c", "SEAS27T": "#d62728", "GRS PT6816": "#9467bd", "SS10F8414G10": "#17becf"};
         const defaultColor = '#888888';
+        const measurementSetName = 'andres';
 
         // Line style patterns for distinguishing drivers
         const dashPatterns = ['solid', 'dash', 'dot', 'dashdot', 'longdash', 'longdashdot'];
         const dashLabels = ['———', '– – –', '· · ·', '– · –', '—  —', '—  ·'];
+
+        // Filter types
+        const filterTypes = ['Peaking', 'Lowpass', 'Highpass', 'Lowshelf', 'Highshelf'];
+        const filterNeedsGain = {'Peaking': true, 'Lowshelf': true, 'Highshelf': true, 'Lowpass': false, 'Highpass': false};
 
         // State
         let activeDrivers = new Set([drivers[0]]);
         let activeAngles = new Set([0]);
         let driverOffsets = {};
         drivers.forEach(d => driverOffsets[d] = 0);
+
+        // Filter state
+        let driverFilters = {};
+        drivers.forEach(d => driverFilters[d] = []);
+        let selectedFilterDriver = drivers[0];
+        const STORAGE_KEY = 'lx521_filters_' + measurementSetName;
+
+        // ============ BIQUAD IIR CALCULATIONS ============
+        function calcBiquadCoeffs(type, freq, q, gain, sampleRate = 48000) {
+            const w0 = 2 * Math.PI * freq / sampleRate;
+            const cosW0 = Math.cos(w0);
+            const sinW0 = Math.sin(w0);
+            const alpha = sinW0 / (2 * q);
+            const A = Math.pow(10, gain / 40);  // sqrt of linear gain
+
+            let b0, b1, b2, a0, a1, a2;
+
+            switch (type) {
+                case 'Peaking':
+                    b0 = 1 + alpha * A;
+                    b1 = -2 * cosW0;
+                    b2 = 1 - alpha * A;
+                    a0 = 1 + alpha / A;
+                    a1 = -2 * cosW0;
+                    a2 = 1 - alpha / A;
+                    break;
+                case 'Lowpass':
+                    b0 = (1 - cosW0) / 2;
+                    b1 = 1 - cosW0;
+                    b2 = (1 - cosW0) / 2;
+                    a0 = 1 + alpha;
+                    a1 = -2 * cosW0;
+                    a2 = 1 - alpha;
+                    break;
+                case 'Highpass':
+                    b0 = (1 + cosW0) / 2;
+                    b1 = -(1 + cosW0);
+                    b2 = (1 + cosW0) / 2;
+                    a0 = 1 + alpha;
+                    a1 = -2 * cosW0;
+                    a2 = 1 - alpha;
+                    break;
+                case 'Lowshelf':
+                    const sqrtA_ls = Math.sqrt(A);
+                    b0 = A * ((A + 1) - (A - 1) * cosW0 + 2 * sqrtA_ls * alpha);
+                    b1 = 2 * A * ((A - 1) - (A + 1) * cosW0);
+                    b2 = A * ((A + 1) - (A - 1) * cosW0 - 2 * sqrtA_ls * alpha);
+                    a0 = (A + 1) + (A - 1) * cosW0 + 2 * sqrtA_ls * alpha;
+                    a1 = -2 * ((A - 1) + (A + 1) * cosW0);
+                    a2 = (A + 1) + (A - 1) * cosW0 - 2 * sqrtA_ls * alpha;
+                    break;
+                case 'Highshelf':
+                    const sqrtA_hs = Math.sqrt(A);
+                    b0 = A * ((A + 1) + (A - 1) * cosW0 + 2 * sqrtA_hs * alpha);
+                    b1 = -2 * A * ((A - 1) + (A + 1) * cosW0);
+                    b2 = A * ((A + 1) + (A - 1) * cosW0 - 2 * sqrtA_hs * alpha);
+                    a0 = (A + 1) - (A - 1) * cosW0 + 2 * sqrtA_hs * alpha;
+                    a1 = 2 * ((A - 1) - (A + 1) * cosW0);
+                    a2 = (A + 1) - (A - 1) * cosW0 - 2 * sqrtA_hs * alpha;
+                    break;
+                default:
+                    return { b0: 1, b1: 0, b2: 0, a1: 0, a2: 0 };
+            }
+
+            return {
+                b0: b0 / a0, b1: b1 / a0, b2: b2 / a0,
+                a1: a1 / a0, a2: a2 / a0
+            };
+        }
+
+        function biquadMagnitudeDb(coeffs, freq, sampleRate = 48000) {
+            const w = 2 * Math.PI * freq / sampleRate;
+            const cosW = Math.cos(w);
+            const cos2W = Math.cos(2 * w);
+            const sinW = Math.sin(w);
+            const sin2W = Math.sin(2 * w);
+
+            const { b0, b1, b2, a1, a2 } = coeffs;
+
+            const numReal = b0 + b1 * cosW + b2 * cos2W;
+            const numImag = -(b1 * sinW + b2 * sin2W);
+            const denReal = 1 + a1 * cosW + a2 * cos2W;
+            const denImag = -(a1 * sinW + a2 * sin2W);
+
+            const numMag = Math.sqrt(numReal * numReal + numImag * numImag);
+            const denMag = Math.sqrt(denReal * denReal + denImag * denImag);
+
+            return 20 * Math.log10(numMag / denMag);
+        }
+
+        function calcFilterChainResponse(filters, frequencies) {
+            return frequencies.map(freq => {
+                let totalDb = 0;
+                filters.forEach(filter => {
+                    if (!filter.enabled) return;
+                    const coeffs = calcBiquadCoeffs(filter.type, filter.freq, filter.q, filter.gain || 0);
+                    totalDb += biquadMagnitudeDb(coeffs, freq);
+                });
+                return totalDb;
+            });
+        }
+
+        // ============ LOCALSTORAGE ============
+        function saveFiltersToLocalStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(driverFilters));
+        }
+
+        function loadFiltersFromLocalStorage() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    driverFilters = JSON.parse(saved);
+                    // Ensure all drivers have arrays
+                    drivers.forEach(d => {
+                        if (!driverFilters[d]) driverFilters[d] = [];
+                    });
+                } catch (e) {
+                    console.error('Failed to load filters from localStorage:', e);
+                }
+            }
+        }
 
         // Initialize UI
         function initUI() {
@@ -291,6 +559,204 @@
             updatePlot();
         }
 
+        // ============ FILTER UI FUNCTIONS ============
+        function initFilterUI() {
+            // Populate driver select
+            const select = document.getElementById('filterDriverSelect');
+            drivers.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d;
+                opt.textContent = d;
+                select.appendChild(opt);
+            });
+            select.value = selectedFilterDriver;
+            renderFilterList();
+        }
+
+        function selectFilterDriver(driver) {
+            selectedFilterDriver = driver;
+            renderFilterList();
+        }
+
+        function addFilter() {
+            const newFilter = {
+                type: 'Peaking',
+                freq: 1000,
+                q: 1.0,
+                gain: 0,
+                enabled: true
+            };
+            driverFilters[selectedFilterDriver].push(newFilter);
+            saveFiltersToLocalStorage();
+            renderFilterList();
+            updatePlot();
+        }
+
+        function deleteFilter(index) {
+            driverFilters[selectedFilterDriver].splice(index, 1);
+            saveFiltersToLocalStorage();
+            renderFilterList();
+            updatePlot();
+        }
+
+        function updateFilter(index, field, value) {
+            const filter = driverFilters[selectedFilterDriver][index];
+            if (field === 'type') {
+                filter.type = value;
+                // Reset gain if switching to a type that doesn't need it
+                if (!filterNeedsGain[value]) {
+                    filter.gain = 0;
+                }
+            } else if (field === 'enabled') {
+                filter.enabled = value;
+            } else {
+                filter[field] = parseFloat(value) || 0;
+            }
+            saveFiltersToLocalStorage();
+            renderFilterList();
+            updatePlot();
+        }
+
+        function renderFilterList() {
+            const list = document.getElementById('filterList');
+            const filters = driverFilters[selectedFilterDriver] || [];
+
+            if (filters.length === 0) {
+                list.innerHTML = '<div class="no-filters">No filters defined</div>';
+                return;
+            }
+
+            list.innerHTML = '';
+            filters.forEach((filter, idx) => {
+                const card = document.createElement('div');
+                card.className = 'filter-card' + (filter.enabled ? '' : ' disabled');
+
+                const needsGain = filterNeedsGain[filter.type];
+
+                card.innerHTML = `
+                    <div class="filter-card-header">
+                        <input type="checkbox" ${filter.enabled ? 'checked' : ''}
+                               onchange="updateFilter(${idx}, 'enabled', this.checked)">
+                        <select onchange="updateFilter(${idx}, 'type', this.value)">
+                            ${filterTypes.map(t => `<option value="${t}" ${t === filter.type ? 'selected' : ''}>${t}</option>`).join('')}
+                        </select>
+                        <button class="delete-btn" onclick="deleteFilter(${idx})">×</button>
+                    </div>
+                    <div class="filter-param">
+                        <label>Freq:</label>
+                        <input type="range" min="1.3" max="4.3" step="0.01" value="${Math.log10(filter.freq)}"
+                               oninput="this.nextElementSibling.value = Math.round(Math.pow(10, this.value))"
+                               onchange="updateFilter(${idx}, 'freq', Math.pow(10, this.value))">
+                        <input type="number" value="${Math.round(filter.freq)}" min="20" max="20000"
+                               onchange="updateFilter(${idx}, 'freq', this.value); this.previousElementSibling.value = Math.log10(this.value)">
+                        <span>Hz</span>
+                    </div>
+                    <div class="filter-param">
+                        <label>Q:</label>
+                        <input type="range" min="0.1" max="10" step="0.01" value="${filter.q}"
+                               oninput="this.nextElementSibling.value = parseFloat(this.value).toFixed(2)"
+                               onchange="updateFilter(${idx}, 'q', this.value)">
+                        <input type="number" value="${filter.q.toFixed(2)}" min="0.1" max="10" step="0.01"
+                               onchange="updateFilter(${idx}, 'q', this.value); this.previousElementSibling.value = this.value">
+                        <span></span>
+                    </div>
+                    ${needsGain ? `
+                    <div class="filter-param">
+                        <label>Gain:</label>
+                        <input type="range" min="-20" max="20" step="0.1" value="${filter.gain}"
+                               oninput="this.nextElementSibling.value = parseFloat(this.value).toFixed(1)"
+                               onchange="updateFilter(${idx}, 'gain', this.value)">
+                        <input type="number" value="${filter.gain.toFixed(1)}" min="-20" max="20" step="0.1"
+                               onchange="updateFilter(${idx}, 'gain', this.value); this.previousElementSibling.value = this.value">
+                        <span>dB</span>
+                    </div>
+                    ` : ''}
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        // ============ YAML IMPORT/EXPORT ============
+        function loadYamlFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const yaml = jsyaml.load(e.target.result);
+                    const filters = [];
+
+                    for (const [name, def] of Object.entries(yaml.filters || {})) {
+                        if (def.type === 'Biquad' && def.parameters) {
+                            filters.push({
+                                type: def.parameters.type || 'Peaking',
+                                freq: def.parameters.freq || 1000,
+                                q: def.parameters.q || 1.0,
+                                gain: def.parameters.gain || 0,
+                                enabled: true
+                            });
+                        }
+                    }
+
+                    if (filters.length > 0) {
+                        driverFilters[selectedFilterDriver] = filters;
+                        saveFiltersToLocalStorage();
+                        renderFilterList();
+                        updatePlot();
+                        alert(`Loaded ${filters.length} filter(s) for ${selectedFilterDriver}`);
+                    } else {
+                        alert('No valid biquad filters found in YAML');
+                    }
+                } catch (err) {
+                    alert('Error parsing YAML: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';  // Reset input
+        }
+
+        function saveFiltersYaml() {
+            const filters = driverFilters[selectedFilterDriver] || [];
+            if (filters.length === 0) {
+                alert('No filters to save for ' + selectedFilterDriver);
+                return;
+            }
+
+            const yamlObj = { filters: {}, pipeline: [] };
+
+            filters.forEach((f, idx) => {
+                const name = `filter_${idx + 1}`;
+                const params = {
+                    type: f.type,
+                    freq: f.freq,
+                    q: f.q
+                };
+                if (filterNeedsGain[f.type]) {
+                    params.gain = f.gain;
+                }
+                yamlObj.filters[name] = {
+                    type: 'Biquad',
+                    parameters: params
+                };
+            });
+
+            yamlObj.pipeline = [{
+                type: 'Filter',
+                channel: 0,
+                names: Object.keys(yamlObj.filters)
+            }];
+
+            const yamlStr = jsyaml.dump(yamlObj, { indent: 2 });
+            const blob = new Blob([yamlStr], { type: 'text/yaml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${selectedFilterDriver}_filters.yml`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
         function updatePlot() {
             const traces = [];
 
@@ -303,25 +769,66 @@
                 const dashBase = dashPatterns[driverIdx % dashPatterns.length];
                 const offset = driverOffsets[driver];
                 const data = allData[driver];
+                const filters = driverFilters[driver] || [];
+                const hasActiveFilters = filters.some(f => f.enabled);
+
+                // Calculate filter response if there are active filters
+                let filterResponse = null;
+                if (hasActiveFilters) {
+                    filterResponse = calcFilterChainResponse(filters, data.freq);
+                }
 
                 activeAngles.forEach(angle => {
                     if (!data.spl[angle]) return;
 
-                    const spl = data.spl[angle].map(v => v + offset);
+                    const splOriginal = data.spl[angle].map(v => v + offset);
                     const angleBrightness = 1 - (angle / 90) * 0.4;
 
-                    traces.push({
-                        x: data.freq,
-                        y: spl,
-                        name: `${driver} @ ${angle}°` + (offset !== 0 ? ` (${offset > 0 ? '+' : ''}${offset}dB)` : ''),
-                        mode: 'lines',
-                        line: {
-                            color: color,
-                            width: angle === 0 ? 2.5 : 1.5,
-                            dash: dashBase
-                        },
-                        opacity: angleBrightness
-                    });
+                    if (hasActiveFilters) {
+                        // Show original trace (dimmed, dotted)
+                        traces.push({
+                            x: data.freq,
+                            y: splOriginal,
+                            name: `${driver} @ ${angle}° (orig)`,
+                            mode: 'lines',
+                            line: {
+                                color: color,
+                                width: 1,
+                                dash: 'dot'
+                            },
+                            opacity: 0.3,
+                            showlegend: false
+                        });
+
+                        // Show filtered trace (bold)
+                        const splFiltered = splOriginal.map((v, i) => v + filterResponse[i]);
+                        traces.push({
+                            x: data.freq,
+                            y: splFiltered,
+                            name: `${driver} @ ${angle}° (EQ)`,
+                            mode: 'lines',
+                            line: {
+                                color: color,
+                                width: angle === 0 ? 2.5 : 1.5,
+                                dash: dashBase
+                            },
+                            opacity: angleBrightness
+                        });
+                    } else {
+                        // No filters - show original trace only
+                        traces.push({
+                            x: data.freq,
+                            y: splOriginal,
+                            name: `${driver} @ ${angle}°` + (offset !== 0 ? ` (${offset > 0 ? '+' : ''}${offset}dB)` : ''),
+                            mode: 'lines',
+                            line: {
+                                color: color,
+                                width: angle === 0 ? 2.5 : 1.5,
+                                dash: dashBase
+                            },
+                            opacity: angleBrightness
+                        });
+                    }
                 });
             });
 
@@ -382,7 +889,9 @@
         }
 
         // Initialize
+        loadFiltersFromLocalStorage();
         initUI();
+        initFilterUI();
         updatePlot();
     </script>
 </body>
