@@ -446,12 +446,18 @@ class PolarResponseVisualizer:
                 ax.legend(loc='lower left')
                 ax.set_xlim(config.FREQ_MIN, config.FREQ_MAX)
 
-                # Add horizontal dotted lines at 5 dB increments
+                # Add horizontal lines at 5 dB increments
+                # 10 dB increments (20, 30, 40...) are solid/darker, 5 dB (25, 35...) are dotted/lighter
                 y_min, y_max = ax.get_ylim()
                 y_start = int(np.floor(y_min / 5) * 5)
                 y_end = int(np.ceil(y_max / 5) * 5)
                 for y_val in range(y_start, y_end + 1, 5):
-                    ax.axhline(y_val, color='gray', linestyle=':', linewidth=0.8, alpha=0.5)
+                    if y_val % 10 == 0:
+                        # 10 dB increments: solid, darker
+                        ax.axhline(y_val, color='gray', linestyle='-', linewidth=0.8, alpha=0.6)
+                    else:
+                        # 5 dB increments: dotted, lighter
+                        ax.axhline(y_val, color='gray', linestyle=':', linewidth=0.5, alpha=0.4)
 
                 plt.tight_layout()
                 plt.savefig(self.static_plots_dir / f'core/{driver}_freq_response_angles.png')
@@ -473,7 +479,8 @@ class PolarResponseVisualizer:
                 self._add_interactive_grid(fig)
                 self._configure_interactive_axis(fig)
 
-                # Add horizontal dotted lines at 5 dB increments
+                # Add horizontal lines at 5 dB increments
+                # 10 dB increments (20, 30, 40...) are solid/darker, 5 dB (25, 35...) are dotted/lighter
                 # Get data range from all traces
                 all_y = np.concatenate([spl_matrix[:, np.where(angles == a)[0][0]]
                                         for a, _, _ in angle_config
@@ -482,7 +489,12 @@ class PolarResponseVisualizer:
                 y_start = int(np.floor(y_min / 5) * 5)
                 y_end = int(np.ceil(y_max / 5) * 5)
                 for y_val in range(y_start, y_end + 1, 5):
-                    fig.add_hline(y=y_val, line_dash="dot", line_color="gray", opacity=0.5)
+                    if y_val % 10 == 0:
+                        # 10 dB increments: solid, darker
+                        fig.add_hline(y=y_val, line_dash="solid", line_color="gray", opacity=0.6)
+                    else:
+                        # 5 dB increments: dotted, lighter
+                        fig.add_hline(y=y_val, line_dash="dot", line_color="gray", opacity=0.4)
 
                 fig.update_layout(
                     title=f'{driver} - Frequency Response at Multiple Angles',
