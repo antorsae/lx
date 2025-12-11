@@ -516,13 +516,17 @@ class PolarResponseVisualizer:
         - All angles available (0-90° in measurement increments)
         - Per-driver level offset sliders for comparison
         - Different markers for each driver to distinguish overlaid curves
+
+        Performance optimizations:
+        - Decimates data to ~500 log-spaced points (from 50K+)
+        - Uses lines-only mode (no markers) for fast rendering
         """
         print("Generating frequency response explorer...")
 
-        # Marker symbols for different drivers
-        markers = ['circle', 'square', 'diamond', 'triangle-up', 'cross', 'x', 'star', 'pentagon']
+        # Target number of points for interactive display (log-spaced)
+        TARGET_POINTS = 500
 
-        # Collect all data
+        # Collect all data with decimation
         all_data = {}
         all_angles = set()
 
@@ -532,10 +536,21 @@ class PolarResponseVisualizer:
             angles = res['angles']
             spl_matrix = res['spl_matrix']
 
+            # Decimate to TARGET_POINTS using log-spaced indices
+            n_points = len(freq)
+            if n_points > TARGET_POINTS:
+                # Create log-spaced indices
+                log_indices = np.unique(np.logspace(0, np.log10(n_points - 1), TARGET_POINTS).astype(int))
+                freq_dec = freq[log_indices]
+                spl_dec = spl_matrix[log_indices, :]
+            else:
+                freq_dec = freq
+                spl_dec = spl_matrix
+
             all_data[driver] = {
-                'freq': freq.tolist(),
+                'freq': freq_dec.tolist(),
                 'angles': [int(a) for a in angles],
-                'spl': {int(angles[i]): spl_matrix[:, i].tolist() for i in range(len(angles))}
+                'spl': {int(angles[i]): spl_dec[:, i].tolist() for i in range(len(angles))}
             }
             all_angles.update(angles)
 
@@ -715,9 +730,9 @@ class PolarResponseVisualizer:
         const driverColors = {json.dumps(config.DRIVER_COLORS)};
         const defaultColor = '#888888';
 
-        // Marker symbols for each driver
-        const markerSymbols = ['circle', 'square', 'diamond', 'triangle-up', 'cross', 'x', 'star', 'pentagon'];
-        const markerChars = ['●', '■', '◆', '▲', '+', '×', '★', '⬠'];
+        // Line style patterns for distinguishing drivers
+        const dashPatterns = ['solid', 'dash', 'dot', 'dashdot', 'longdash', 'longdashdot'];
+        const dashLabels = ['———', '– – –', '· · ·', '– · –', '—  —', '—  ·'];
 
         // State
         let activeDrivers = new Set([drivers[0]]);
@@ -725,26 +740,19 @@ class PolarResponseVisualizer:
         let driverOffsets = {{}};
         drivers.forEach(d => driverOffsets[d] = 0);
 
-        // Angle colors (gradient from black to light gray)
-        function getAngleColor(angle) {{
-            const t = angle / 90;
-            const gray = Math.round(180 * t);
-            return `rgb(${{gray}},${{gray}},${{gray}})`;
-        }}
-
         // Initialize UI
         function initUI() {{
             const driverList = document.getElementById('driverList');
             drivers.forEach((driver, idx) => {{
                 const color = driverColors[driver] || defaultColor;
-                const markerChar = markerChars[idx % markerChars.length];
+                const dashLabel = dashLabels[idx % dashLabels.length];
 
                 const item = document.createElement('div');
                 item.className = 'driver-item' + (activeDrivers.has(driver) ? ' active' : '');
                 item.style.setProperty('--driver-color', color);
                 item.innerHTML = `
                     <div class="driver-color" style="background: ${{color}}"></div>
-                    <div class="driver-marker">${{markerChar}}</div>
+                    <div class="driver-marker" style="font-family: monospace; letter-spacing: -2px;">${{dashLabel}}</div>
                     <div class="driver-name">${{driver}}</div>
                 `;
                 item.onclick = (e) => {{
@@ -823,10 +831,13 @@ class PolarResponseVisualizer:
         function updatePlot() {{
             const traces = [];
 
+            // Line dash patterns for different drivers (to distinguish when overlaid)
+            const dashPatterns = ['solid', 'dash', 'dot', 'dashdot', 'longdash', 'longdashdot'];
+
             activeDrivers.forEach(driver => {{
                 const driverIdx = drivers.indexOf(driver);
                 const color = driverColors[driver] || defaultColor;
-                const marker = markerSymbols[driverIdx % markerSymbols.length];
+                const dashBase = dashPatterns[driverIdx % dashPatterns.length];
                 const offset = driverOffsets[driver];
                 const data = allData[driver];
 
@@ -834,23 +845,17 @@ class PolarResponseVisualizer:
                     if (!data.spl[angle]) return;
 
                     const spl = data.spl[angle].map(v => v + offset);
-                    const angleBrightness = 1 - (angle / 90) * 0.5;
+                    const angleBrightness = 1 - (angle / 90) * 0.4;
 
                     traces.push({{
                         x: data.freq,
                         y: spl,
                         name: `${{driver}} @ ${{angle}}°` + (offset !== 0 ? ` (${{offset > 0 ? '+' : ''}}${{offset}}dB)` : ''),
-                        mode: 'lines+markers',
+                        mode: 'lines',
                         line: {{
                             color: color,
                             width: angle === 0 ? 2.5 : 1.5,
-                            dash: angle === 0 ? 'solid' : (angle > 45 ? 'dot' : 'solid')
-                        }},
-                        marker: {{
-                            symbol: marker,
-                            size: angle === 0 ? 6 : 4,
-                            opacity: angleBrightness,
-                            color: color
+                            dash: dashBase
                         }},
                         opacity: angleBrightness
                     }});
