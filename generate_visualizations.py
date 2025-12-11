@@ -42,7 +42,7 @@ HTML_HEAD_START = '''<head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 '''
 
-HTML_PLOTLY_SCRIPT = '    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>\n'
+HTML_PLOTLY_SCRIPT = '    <script src="https://cdn.plot.ly/plotly-3.3.0.min.js"></script>\n'
 HTML_PAKO_SCRIPT = '    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>\n'
 HTML_YAML_SCRIPT = '    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>\n'
 
