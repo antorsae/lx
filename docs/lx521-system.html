@@ -6,7 +6,6 @@
     <title>LX521.4 Complete System - Polar Analysis</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <style>
-        /* Purple theme override */
         :root {
             --primary: #7c3aed;
             --primary-dark: #6d28d9;
@@ -24,7 +23,6 @@
     </header>
 
     <main>
-        <!-- Info Section -->
         <div class="card">
             <div class="card-header">
                 <h2>Measurement Details</h2>
@@ -32,7 +30,7 @@
             </div>
             <div class="card-body">
                 <div class="highlight">
-                    <strong>Complete System:</strong> These measurements capture the LX521.4 with all drivers active and crossover applied. This shows the actual system behavior rather than individual driver responses.
+                    <strong>Complete System:</strong> These measurements capture the LX521.4 with all drivers active and crossover applied.
                 </div>
                 <p><strong>Configuration:</strong> LX521 HIGH MID INV ORIGINAL</p>
                 <p><strong>Angles:</strong> 0, 15, 30, 45, 60, 75, 90 degrees</p>
@@ -40,44 +38,41 @@
             </div>
         </div>
 
-        <!-- Interactive Plots Section -->
         <h2 class="section-title">Interactive Plots (HTML)</h2>
         <div class="card">
             <div class="card-body">
-                <h3>Polar & Directivity</h3>
-                <ul class="link-list">
-                    <li><a href="lx521-system/interactive/polar/polar_explorer.html">Polar Explorer (360 deg)</a></li>
-                    <li><a href="lx521-system/interactive/di_comparison.html">Directivity Index</a></li>
-                    <li><a href="lx521-system/interactive/beamwidth_comparison.html">Beamwidth</a></li>
-                </ul>
-
-                <h3>Frequency Response</h3>
-                <ul class="link-list">
-                    <li><a href="lx521-system/interactive/freq_response_explorer.html"><strong>Frequency Response Explorer</strong></a> - Interactive with IIR filter editor</li>
-                    <li><a href="lx521-system/interactive/LX521 HIGH MID INV ORIGINAL_freq_response_angles.html">Frequency Response by Angle</a></li>
-                </ul>
-
-                <h3>Contour Plots</h3>
-                <ul class="link-list">
-                    <li><a href="lx521-system/interactive/LX521 HIGH MID INV ORIGINAL_contour_normalized.html">Contour (Normalized)</a></li>
-                    <li><a href="lx521-system/interactive/LX521 HIGH MID INV ORIGINAL_contour_absolute.html">Contour (Absolute)</a></li>
-                </ul>
-
-                <h3>Measurement Details</h3>
-                <ul class="link-list">
-                    <li><a href="lx521-system/interactive/measurement_summary.html">Measurement Summary (config, notes, dates)</a></li>
-                </ul>
+                    <h3>Polar & Directivity</h3>
+        <ul class="link-list">
+            <li><a href="lx521-system/interactive/polar/polar_explorer.html">Polar Explorer (360 deg)</a></li>
+            <li><a href="lx521-system/interactive/di_comparison.html">Directivity Index</a></li>
+            <li><a href="lx521-system/interactive/beamwidth_comparison.html">Beamwidth</a></li>
+        </ul>
+                    <h3>Frequency Response by Angle</h3>
+        <ul class="link-list">
+            <li><a href="lx521-system/interactive/freq_response_explorer.html"><strong>Multi-Driver Explorer</strong></a></li>
+            <li><a href="lx521-system/interactive/LX521 HIGH MID INV ORIGINAL_freq_response_angles.html">LX521 HIGH MID INV ORIGINAL</a></li>
+        </ul>
+                    <h3>Contour Plots (Normalized)</h3>
+        <ul class="link-list">
+            <li><a href="lx521-system/interactive/LX521 HIGH MID INV ORIGINAL_contour_normalized.html">LX521 HIGH MID INV ORIGINAL</a></li>
+        </ul>
+                    <h3>Contour Plots (Absolute)</h3>
+        <ul class="link-list">
+            <li><a href="lx521-system/interactive/LX521 HIGH MID INV ORIGINAL_contour_absolute.html">LX521 HIGH MID INV ORIGINAL</a></li>
+        </ul>
+                    <h3>Measurement Details</h3>
+        <ul class="link-list">
+            <li><a href="lx521-system/interactive/measurement_summary.html">Measurement Summary</a></li>
+        </ul>
             </div>
         </div>
 
-        <!-- Static Plots Section -->
-        <h2 class="section-title">Static Plots (PNG)</h2>
-
+        <h2 class="section-title">Static Plots - LX521.4 Complete System (PNG) - 360 deg</h2>
         <h3>Core Analysis</h3>
         <div class="image-grid">
             <div class="image-card">
                 <a href="lx521-system/static_plots/core/di_comparison.png" target="_blank">
-                    <img src="lx521-system/static_plots/core/di_comparison.png" alt="DI">
+                    <img src="lx521-system/static_plots/core/di_comparison.png" alt="Directivity Index">
                     <div class="caption">Directivity Index</div>
                 </a>
             </div>
@@ -89,12 +84,11 @@
             </div>
             <div class="image-card">
                 <a href="lx521-system/static_plots/core/dipole_null_analysis.png" target="_blank">
-                    <img src="lx521-system/static_plots/core/dipole_null_analysis.png" alt="Dipole Null">
+                    <img src="lx521-system/static_plots/core/dipole_null_analysis.png" alt="Dipole Null Analysis">
                     <div class="caption">Dipole Null Analysis</div>
                 </a>
             </div>
         </div>
-
         <h3>Polar Diagrams (360 deg)</h3>
         <div class="image-grid">
             <div class="image-card">
@@ -105,40 +99,44 @@
             </div>
             <div class="image-card">
                 <a href="lx521-system/static_plots/polar/LX521 HIGH MID INV ORIGINAL_polar_circular.png" target="_blank">
-                    <img src="lx521-system/static_plots/polar/LX521 HIGH MID INV ORIGINAL_polar_circular.png" alt="System Polar">
-                    <div class="caption">System Polar (360 deg)</div>
+                    <img src="lx521-system/static_plots/polar/LX521 HIGH MID INV ORIGINAL_polar_circular.png" alt="LX521 HIGH MID INV ORIGINAL Polar">
+                    <div class="caption">LX521 HIGH MID INV ORIGINAL (360 deg)</div>
                 </a>
             </div>
         </div>
-
-        <h3>Contour Plots</h3>
+        <h3>Contour Plots (Normalized)</h3>
         <div class="image-grid">
             <div class="image-card">
                 <a href="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_contour_normalized.png" target="_blank">
-                    <img src="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_contour_normalized.png" alt="Contour Normalized">
-                    <div class="caption">Contour (Normalized)</div>
-                </a>
-            </div>
-            <div class="image-card">
-                <a href="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_contour_absolute.png" target="_blank">
-                    <img src="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_contour_absolute.png" alt="Contour Absolute">
-                    <div class="caption">Contour (Absolute)</div>
+                    <img src="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_contour_normalized.png" alt="LX521 HIGH MID INV ORIGINAL_contour_normalized.png">
+                    <div class="caption">LX521 HIGH MID INV ORIGINAL</div>
                 </a>
             </div>
         </div>
-
-        <h3>Frequency Response</h3>
+        <h3>Contour Plots (Absolute)</h3>
+        <div class="image-grid">
+            <div class="image-card">
+                <a href="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_contour_absolute.png" target="_blank">
+                    <img src="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_contour_absolute.png" alt="LX521 HIGH MID INV ORIGINAL_contour_absolute.png">
+                    <div class="caption">LX521 HIGH MID INV ORIGINAL</div>
+                </a>
+            </div>
+        </div>
+        <h3>Frequency Response by Angle</h3>
         <div class="image-grid">
             <div class="image-card">
                 <a href="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_freq_response_angles.png" target="_blank">
-                    <img src="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_freq_response_angles.png" alt="Freq Response by Angle">
-                    <div class="caption">Frequency Response by Angle</div>
+                    <img src="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_freq_response_angles.png" alt="LX521 HIGH MID INV ORIGINAL_freq_response_angles.png">
+                    <div class="caption">LX521 HIGH MID INV ORIGINAL</div>
                 </a>
             </div>
+        </div>
+        <h3>Frequency Response Normalized (0° = ref)</h3>
+        <div class="image-grid">
             <div class="image-card">
                 <a href="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_freq_response_normalized.png" target="_blank">
-                    <img src="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_freq_response_normalized.png" alt="Freq Response Normalized">
-                    <div class="caption">Frequency Response Normalized (0° = ref)</div>
+                    <img src="lx521-system/static_plots/core/LX521 HIGH MID INV ORIGINAL_freq_response_normalized.png" alt="LX521 HIGH MID INV ORIGINAL_freq_response_normalized.png">
+                    <div class="caption">LX521 HIGH MID INV ORIGINAL</div>
                 </a>
             </div>
         </div>
