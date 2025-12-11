@@ -272,6 +272,68 @@
         input[type="file"] {
             display: none;
         }
+        .optimize-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .optimize-section h4 {
+            margin: 0 0 10px 0;
+            font-size: 0.9rem;
+            color: #444;
+        }
+        .optimize-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .opt-param {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+        }
+        .opt-param label {
+            min-width: 90px;
+            color: #666;
+        }
+        .opt-param input[type="number"] {
+            width: 70px;
+            padding: 4px 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: right;
+        }
+        .opt-param select {
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .opt-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        .opt-buttons button {
+            flex: 1;
+        }
+        .opt-status {
+            font-size: 0.8rem;
+            color: #666;
+            padding: 5px 0;
+            font-style: italic;
+        }
+        .opt-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            font-size: 0.7rem;
+            color: #666;
+        }
+        .opt-checkbox input {
+            width: 14px;
+            height: 14px;
+        }
     </style>
 </head>
 <body>
@@ -305,6 +367,26 @@
                 </div>
                 <div class="filter-list" id="filterList">
                     <div class="no-filters">No filters defined</div>
+                </div>
+
+                <div class="optimize-section">
+                    <h4>Auto-Optimize</h4>
+                    <div class="optimize-controls">
+                        <div class="opt-param">
+                            <label>Target Range:</label>
+                            <input type="number" id="optFreqMin" value="200" min="20" max="20000"> Hz to
+                            <input type="number" id="optFreqMax" value="10000" min="20" max="20000"> Hz
+                        </div>
+                        <div class="opt-param">
+                            <label>Reference Angle:</label>
+                            <select id="optRefAngle"></select>
+                        </div>
+                        <div class="opt-buttons">
+                            <button id="optimizeBtn" class="primary" onclick="runOptimization()">Optimize Selected</button>
+                            <button id="undoOptBtn" onclick="undoOptimization()" style="display:none;">Undo</button>
+                        </div>
+                        <div id="optStatus" class="opt-status">Ready</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -435,6 +517,198 @@
                 });
                 return totalDb;
             });
+        }
+
+        // ============ NELDER-MEAD OPTIMIZER ============
+        function nelderMead(objective, x0, bounds, options = {}) {
+            const maxIter = options.maxIter || 300;
+            const tol = options.tol || 1e-6;
+            const alpha = 1.0, gamma = 2.0, rho = 0.5, sigma = 0.5;
+            const n = x0.length;
+            const penalty = 1000;
+
+            function penalizedObjective(x) {
+                let p = 0;
+                for (let i = 0; i < n; i++) {
+                    if (x[i] < bounds.min[i]) p += penalty * Math.pow(bounds.min[i] - x[i], 2);
+                    if (x[i] > bounds.max[i]) p += penalty * Math.pow(x[i] - bounds.max[i], 2);
+                }
+                return objective(x) + p;
+            }
+
+            let simplex = [x0.slice()];
+            for (let i = 0; i < n; i++) {
+                const xi = x0.slice();
+                xi[i] += (bounds.max[i] - bounds.min[i]) * 0.05;
+                simplex.push(xi);
+            }
+
+            let values = simplex.map(penalizedObjective);
+            let lastBestValue = values[0];
+
+            for (let iter = 0; iter < maxIter; iter++) {
+                const order = values.map((v, i) => [v, i]).sort((a, b) => a[0] - b[0]);
+                simplex = order.map(([_, i]) => simplex[i]);
+                values = order.map(([v, _]) => v);
+
+                if (values[n] - values[0] < tol) break;
+
+                const centroid = Array(n).fill(0);
+                for (let i = 0; i < n; i++) {
+                    for (let j = 0; j < n; j++) centroid[j] += simplex[i][j] / n;
+                }
+
+                const xr = centroid.map((c, j) => c + alpha * (c - simplex[n][j]));
+                const fr = penalizedObjective(xr);
+
+                if (fr < values[0]) {
+                    const xe = centroid.map((c, j) => c + gamma * (xr[j] - c));
+                    const fe = penalizedObjective(xe);
+                    simplex[n] = fe < fr ? xe : xr;
+                    values[n] = Math.min(fe, fr);
+                } else if (fr < values[n - 1]) {
+                    simplex[n] = xr;
+                    values[n] = fr;
+                } else {
+                    const xc = centroid.map((c, j) => c + rho * (simplex[n][j] - c));
+                    const fc = penalizedObjective(xc);
+                    if (fc < values[n]) {
+                        simplex[n] = xc;
+                        values[n] = fc;
+                    } else {
+                        for (let i = 1; i <= n; i++) {
+                            simplex[i] = simplex[0].map((s0, j) => s0 + sigma * (simplex[i][j] - s0));
+                            values[i] = penalizedObjective(simplex[i]);
+                        }
+                    }
+                }
+
+                if (options.onIteration && iter % 20 === 0) {
+                    options.onIteration(iter, values[0]);
+                }
+            }
+
+            return { x: simplex[0], value: values[0] };
+        }
+
+        function calcOptimizationObjective(params, filtersToOptimize, allFilters, measuredSpl, frequencies, freqRange) {
+            let paramIdx = 0;
+            const updatedFilters = allFilters.map(f => {
+                if (!filtersToOptimize.includes(f)) return f;
+                const updated = { ...f };
+                updated.freq = params[paramIdx++];
+                updated.q = params[paramIdx++];
+                if (filterNeedsGain[f.type]) {
+                    updated.gain = params[paramIdx++];
+                }
+                return updated;
+            });
+
+            const filterResponse = calcFilterChainResponse(updatedFilters, frequencies);
+            const filteredSpl = measuredSpl.map((spl, i) => spl + filterResponse[i]);
+
+            const inRange = [];
+            for (let i = 0; i < frequencies.length; i++) {
+                if (frequencies[i] >= freqRange.min && frequencies[i] <= freqRange.max) {
+                    inRange.push(i);
+                }
+            }
+
+            if (inRange.length === 0) return 1000;
+
+            const splInRange = inRange.map(i => filteredSpl[i]);
+            const mean = splInRange.reduce((a, b) => a + b, 0) / splInRange.length;
+            const rmse = Math.sqrt(splInRange.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / splInRange.length);
+
+            return rmse;
+        }
+
+        let preOptFilters = null;
+
+        async function runOptimization() {
+            const driver = selectedFilterDriver;
+            const filters = driverFilters[driver];
+            const toOptimize = filters.filter(f => f.optimize && f.enabled);
+
+            if (toOptimize.length === 0) {
+                alert('No filters marked for optimization. Check the "Opt" checkbox on filters you want to optimize.');
+                return;
+            }
+
+            const refAngle = parseInt(document.getElementById('optRefAngle').value);
+            const data = allData[driver];
+            if (!data.spl[refAngle]) {
+                alert('Reference angle ' + refAngle + '° not available for ' + driver);
+                return;
+            }
+            const measuredSpl = data.spl[refAngle].map((v, i) => v + driverOffsets[driver]);
+
+            const freqMin = parseFloat(document.getElementById('optFreqMin').value);
+            const freqMax = parseFloat(document.getElementById('optFreqMax').value);
+
+            const x0 = [], boundsMin = [], boundsMax = [];
+            toOptimize.forEach(f => {
+                x0.push(f.freq);
+                boundsMin.push(f.freq / 2);
+                boundsMax.push(f.freq * 2);
+
+                x0.push(f.q);
+                if (f.type === 'Peaking') {
+                    boundsMin.push(0.2); boundsMax.push(6.0);
+                } else {
+                    boundsMin.push(0.5); boundsMax.push(2.0);
+                }
+
+                if (filterNeedsGain[f.type]) {
+                    x0.push(f.gain);
+                    boundsMin.push(-15); boundsMax.push(15);
+                }
+            });
+
+            preOptFilters = JSON.parse(JSON.stringify(filters));
+
+            const statusEl = document.getElementById('optStatus');
+            const optimizeBtn = document.getElementById('optimizeBtn');
+            statusEl.textContent = 'Optimizing...';
+            optimizeBtn.disabled = true;
+
+            await new Promise(r => setTimeout(r, 10));
+
+            const result = nelderMead(
+                (params) => calcOptimizationObjective(params, toOptimize, filters, measuredSpl, data.freq, { min: freqMin, max: freqMax }),
+                x0,
+                { min: boundsMin, max: boundsMax },
+                { maxIter: 300, onIteration: (i, v) => { statusEl.textContent = `Iteration ${i}... RMSE: ${v.toFixed(3)} dB`; } }
+            );
+
+            let paramIdx = 0;
+            toOptimize.forEach(f => {
+                f.freq = Math.round(result.x[paramIdx++]);
+                f.q = Math.round(result.x[paramIdx++] * 100) / 100;
+                if (filterNeedsGain[f.type]) {
+                    f.gain = Math.round(result.x[paramIdx++] * 10) / 10;
+                }
+            });
+
+            statusEl.textContent = `Done! RMSE: ${result.value.toFixed(3)} dB`;
+            optimizeBtn.disabled = false;
+            document.getElementById('undoOptBtn').style.display = 'inline-block';
+
+            renderFilterList();
+            saveFiltersToLocalStorage();
+            updatePlot();
+        }
+
+        function undoOptimization() {
+            if (preOptFilters) {
+                driverFilters[selectedFilterDriver] = preOptFilters;
+                preOptFilters = null;
+                document.getElementById('undoOptBtn').style.display = 'none';
+                document.getElementById('optStatus').textContent = 'Reverted to previous values';
+                renderFilterList();
+                saveFiltersToLocalStorage();
+                updatePlot();
+            }
         }
 
         // ============ LOCALSTORAGE ============
@@ -570,6 +844,17 @@
                 select.appendChild(opt);
             });
             select.value = selectedFilterDriver;
+
+            // Populate reference angle select for optimization
+            const refAngleSelect = document.getElementById('optRefAngle');
+            allAngles.forEach(a => {
+                const opt = document.createElement('option');
+                opt.value = a;
+                opt.textContent = a + '°';
+                refAngleSelect.appendChild(opt);
+            });
+            refAngleSelect.value = 0;  // Default to on-axis
+
             renderFilterList();
         }
 
@@ -584,7 +869,8 @@
                 freq: 1000,
                 q: 1.0,
                 gain: 0,
-                enabled: true
+                enabled: true,
+                optimize: false
             };
             driverFilters[selectedFilterDriver].push(newFilter);
             saveFiltersToLocalStorage();
@@ -607,8 +893,8 @@
                 if (!filterNeedsGain[value]) {
                     filter.gain = 0;
                 }
-            } else if (field === 'enabled') {
-                filter.enabled = value;
+            } else if (field === 'enabled' || field === 'optimize') {
+                filter[field] = value;
             } else {
                 filter[field] = parseFloat(value) || 0;
             }
@@ -636,7 +922,11 @@
                 card.innerHTML = `
                     <div class="filter-card-header">
                         <input type="checkbox" ${filter.enabled ? 'checked' : ''}
-                               onchange="updateFilter(${idx}, 'enabled', this.checked)">
+                               onchange="updateFilter(${idx}, 'enabled', this.checked)" title="Enable filter">
+                        <label class="opt-checkbox" title="Include in auto-optimization">
+                            <input type="checkbox" ${filter.optimize ? 'checked' : ''}
+                                   onchange="updateFilter(${idx}, 'optimize', this.checked)">Opt
+                        </label>
                         <select onchange="updateFilter(${idx}, 'type', this.value)">
                             ${filterTypes.map(t => `<option value="${t}" ${t === filter.type ? 'selected' : ''}>${t}</option>`).join('')}
                         </select>
@@ -694,7 +984,8 @@
                                 freq: def.parameters.freq || 1000,
                                 q: def.parameters.q || 1.0,
                                 gain: def.parameters.gain || 0,
-                                enabled: true
+                                enabled: true,
+                                optimize: false
                             });
                         }
                     }
