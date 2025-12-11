@@ -50,16 +50,12 @@
         .driver-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
         .driver-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
             padding: 10px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
-            cursor: pointer;
             transition: all 0.2s;
         }
         .driver-item:hover {
@@ -70,16 +66,23 @@
             border-color: var(--driver-color);
             background: color-mix(in srgb, var(--driver-color) 10%, white);
         }
-        .driver-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-            flex-shrink: 0;
+        .driver-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
         }
-        .driver-marker {
-            font-size: 1.2rem;
-            width: 24px;
-            text-align: center;
+        .driver-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--driver-color);
+        }
+        .driver-line {
+            font-family: monospace;
+            font-size: 1.1rem;
+            letter-spacing: -2px;
+            color: var(--driver-color);
         }
         .driver-name {
             flex: 1;
@@ -88,18 +91,23 @@
         .offset-control {
             display: flex;
             align-items: center;
-            gap: 5px;
-            margin-top: 5px;
+            gap: 6px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #eee;
             font-size: 0.85rem;
+            color: #666;
         }
         .offset-control input[type="range"] {
-            width: 80px;
+            flex: 1;
+            min-width: 80px;
         }
         .offset-control input[type="number"] {
-            width: 50px;
-            padding: 2px 5px;
+            width: 55px;
+            padding: 3px 5px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            text-align: center;
         }
         .angle-grid {
             display: grid;
@@ -187,34 +195,48 @@
             drivers.forEach((driver, idx) => {
                 const color = driverColors[driver] || defaultColor;
                 const dashLabel = dashLabels[idx % dashLabels.length];
+                const isActive = activeDrivers.has(driver);
 
                 const item = document.createElement('div');
-                item.className = 'driver-item' + (activeDrivers.has(driver) ? ' active' : '');
+                item.className = 'driver-item' + (isActive ? ' active' : '');
                 item.style.setProperty('--driver-color', color);
+                item.dataset.driver = driver;
+
                 item.innerHTML = `
-                    <div class="driver-color" style="background: ${color}"></div>
-                    <div class="driver-marker" style="font-family: monospace; letter-spacing: -2px;">${dashLabel}</div>
-                    <div class="driver-name">${driver}</div>
+                    <div class="driver-header">
+                        <input type="checkbox" class="driver-checkbox" ${isActive ? 'checked' : ''}>
+                        <span class="driver-line">${dashLabel}</span>
+                        <span class="driver-name">${driver}</span>
+                    </div>
+                    <div class="offset-control">
+                        <span>Offset:</span>
+                        <input type="range" min="-20" max="20" value="0">
+                        <input type="number" value="0" min="-20" max="20">
+                        <span>dB</span>
+                    </div>
                 `;
-                item.onclick = (e) => {
-                    if (e.target.tagName === 'INPUT') return;
-                    toggleDriver(driver, item);
+
+                // Header click toggles driver
+                const header = item.querySelector('.driver-header');
+                const checkbox = item.querySelector('.driver-checkbox');
+                header.onclick = () => {
+                    checkbox.checked = !checkbox.checked;
+                    toggleDriver(driver, item, checkbox.checked);
                 };
 
-                // Add offset control
-                const offsetCtrl = document.createElement('div');
-                offsetCtrl.className = 'offset-control';
-                offsetCtrl.innerHTML = `
-                    <span>Offset:</span>
-                    <input type="range" min="-20" max="20" value="0"
-                           onchange="setOffset('${driver}', this.value)"
-                           oninput="this.nextElementSibling.value = this.value">
-                    <input type="number" value="0" min="-20" max="20"
-                           onchange="setOffset('${driver}', this.value); this.previousElementSibling.value = this.value">
-                    <span>dB</span>
-                `;
-                offsetCtrl.onclick = (e) => e.stopPropagation();
-                item.appendChild(offsetCtrl);
+                // Offset controls
+                const slider = item.querySelector('input[type="range"]');
+                const numInput = item.querySelector('input[type="number"]');
+                slider.oninput = () => {
+                    numInput.value = slider.value;
+                };
+                slider.onchange = () => {
+                    setOffset(driver, slider.value);
+                };
+                numInput.onchange = () => {
+                    slider.value = numInput.value;
+                    setOffset(driver, numInput.value);
+                };
 
                 driverList.appendChild(item);
             });
@@ -229,13 +251,13 @@
             });
         }
 
-        function toggleDriver(driver, elem) {
-            if (activeDrivers.has(driver)) {
-                activeDrivers.delete(driver);
-                elem.classList.remove('active');
-            } else {
+        function toggleDriver(driver, elem, checked) {
+            if (checked) {
                 activeDrivers.add(driver);
                 elem.classList.add('active');
+            } else {
+                activeDrivers.delete(driver);
+                elem.classList.remove('active');
             }
             updatePlot();
         }
