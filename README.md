@@ -119,7 +119,7 @@ python run_pipeline.py --no-smoothing
 make all              # Full rebuild: data + viz + sync
 make viz              # Regenerate all visualizations (uses existing HDF5)
 make viz-andres       # Regenerate only andres set
-make sync             # Sync output/ to docs/
+make sync             # Sync output/ to docs/ + regenerate landing pages
 make deploy           # sync + commit + push to GitHub Pages
 make help             # Show all targets
 ```

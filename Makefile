@@ -9,11 +9,11 @@
 #   make deploy     - sync + commit + push to GitHub
 #   make help       - Show all targets
 
-.PHONY: all data viz sync deploy clean help rew-check rew-wait \
-        data-andres data-juan-baffleless data-lx521-system \
-        viz-andres viz-juan-baffleless viz-lx521-system \
-        sync-andres sync-juan-baffleless sync-lx521-system \
-        commit push
+.PHONY: all data viz sync deploy clean clean-all help rew-check rew-wait \
+        data-% viz-% sync-% docs-pages commit push
+
+# Allow pattern-specific prerequisites using $$* etc.
+.SECONDEXPANSION:
 
 # Configuration
 PYTHON := .venv/bin/python
@@ -28,10 +28,9 @@ OUTPUT_DIR := output
 DOCS_DIR := docs
 DATA_DIR := $(OUTPUT_DIR)/data
 
-# HDF5 files (intermediates)
-HDF5_ANDRES := $(DATA_DIR)/polar_data_andres.h5
-HDF5_JUAN := $(DATA_DIR)/polar_data_juan_baffleless.h5
-HDF5_LX521 := $(DATA_DIR)/polar_data_lx521_system.h5
+# Helper: convert set name to HDF5 slug (hyphens → underscores)
+slug = $(subst -,_,$(1))
+hdf5_for = $(DATA_DIR)/polar_data_$(call slug,$(1)).h5
 
 # ====================
 # Main Targets
@@ -40,13 +39,13 @@ HDF5_LX521 := $(DATA_DIR)/polar_data_lx521_system.h5
 all: data viz sync
 	@echo "✓ Full pipeline complete"
 
-data: data-andres data-juan-baffleless data-lx521-system
+data: $(addprefix data-,$(SETS))
 	@echo "✓ All HDF5 data files generated"
 
-viz: viz-andres viz-juan-baffleless viz-lx521-system
+viz: $(addprefix viz-,$(SETS))
 	@echo "✓ All visualizations generated"
 
-sync: sync-andres sync-juan-baffleless sync-lx521-system
+sync: $(addprefix sync-,$(SETS)) docs-pages
 	@echo "✓ All docs synced"
 
 deploy: sync commit push
@@ -81,64 +80,35 @@ rew-wait:
 # Data Loading (REW API → HDF5)
 # ====================
 
-data-andres: rew-check
-	@echo "Loading andres measurements..."
-	$(PYTHON) run_pipeline.py -m andres --skip-viz
-	@echo "✓ andres data saved to $(HDF5_ANDRES)"
-
-data-juan-baffleless: rew-check
-	@echo "Loading juan-baffleless measurements..."
-	$(PYTHON) run_pipeline.py -m juan-baffleless --skip-viz
-	@echo "✓ juan-baffleless data saved to $(HDF5_JUAN)"
-
-data-lx521-system: rew-check
-	@echo "Loading lx521-system measurements..."
-	$(PYTHON) run_pipeline.py -m lx521-system --skip-viz
-	@echo "✓ lx521-system data saved to $(HDF5_LX521)"
+data-%: rew-check
+	@echo "Loading $* measurements..."
+	$(PYTHON) run_pipeline.py -m $* --skip-viz
+	@echo "✓ $* data saved to $(call hdf5_for,$*)"
 
 # ====================
 # Visualization Generation (HDF5 → plots)
 # ====================
 
-viz-andres: $(HDF5_ANDRES)
-	@echo "Generating andres visualizations..."
-	$(PYTHON) run_pipeline.py -m andres --skip-loading
-	@echo "✓ andres visualizations complete"
-
-viz-juan-baffleless: $(HDF5_JUAN)
-	@echo "Generating juan-baffleless visualizations..."
-	$(PYTHON) run_pipeline.py -m juan-baffleless --skip-loading
-	@echo "✓ juan-baffleless visualizations complete"
-
-viz-lx521-system: $(HDF5_LX521)
-	@echo "Generating lx521-system visualizations..."
-	$(PYTHON) run_pipeline.py -m lx521-system --skip-loading
-	@echo "✓ lx521-system visualizations complete"
+viz-%: $$(call hdf5_for,$$*)
+	@echo "Generating $* visualizations..."
+	$(PYTHON) run_pipeline.py -m $* --skip-loading
+	@echo "✓ $* visualizations complete"
 
 # ====================
 # Sync to docs/ (output/ → docs/)
 # ====================
 
-sync-andres:
-	@echo "Syncing andres to docs/..."
-	@mkdir -p $(DOCS_DIR)/andres/static_plots $(DOCS_DIR)/andres/interactive
-	rsync -av --delete $(OUTPUT_DIR)/andres/static_plots/ $(DOCS_DIR)/andres/static_plots/
-	rsync -av --delete $(OUTPUT_DIR)/andres/interactive/ $(DOCS_DIR)/andres/interactive/
-	@echo "✓ andres synced to docs/"
+sync-%:
+	@echo "Syncing $* to docs/..."
+	@mkdir -p $(DOCS_DIR)/$*/static_plots $(DOCS_DIR)/$*/interactive
+	rsync -av --delete $(OUTPUT_DIR)/$*/static_plots/ $(DOCS_DIR)/$*/static_plots/
+	rsync -av --delete $(OUTPUT_DIR)/$*/interactive/ $(DOCS_DIR)/$*/interactive/
+	@echo "✓ $* synced to docs/"
 
-sync-juan-baffleless:
-	@echo "Syncing juan-baffleless to docs/..."
-	@mkdir -p $(DOCS_DIR)/juan-baffleless/static_plots $(DOCS_DIR)/juan-baffleless/interactive
-	rsync -av --delete $(OUTPUT_DIR)/juan-baffleless/static_plots/ $(DOCS_DIR)/juan-baffleless/static_plots/
-	rsync -av --delete $(OUTPUT_DIR)/juan-baffleless/interactive/ $(DOCS_DIR)/juan-baffleless/interactive/
-	@echo "✓ juan-baffleless synced to docs/"
-
-sync-lx521-system:
-	@echo "Syncing lx521-system to docs/..."
-	@mkdir -p $(DOCS_DIR)/lx521-system/static_plots $(DOCS_DIR)/lx521-system/interactive
-	rsync -av --delete $(OUTPUT_DIR)/lx521-system/static_plots/ $(DOCS_DIR)/lx521-system/static_plots/
-	rsync -av --delete $(OUTPUT_DIR)/lx521-system/interactive/ $(DOCS_DIR)/lx521-system/interactive/
-	@echo "✓ lx521-system synced to docs/"
+docs-pages:
+	@echo "Generating docs landing pages..."
+	$(PYTHON) generate_docs_pages.py
+	@echo "✓ Docs pages generated"
 
 # ====================
 # Git Operations
@@ -178,7 +148,7 @@ help:
 	@echo "  all              Full pipeline: data → viz → sync"
 	@echo "  data             Load all .mdat files via REW API → HDF5"
 	@echo "  viz              Generate all visualizations from HDF5"
-	@echo "  sync             Sync all output/ to docs/"
+	@echo "  sync             Sync output/ to docs/ + regen pages"
 	@echo "  deploy           sync + commit + push to GitHub Pages"
 	@echo ""
 	@echo "Per-Set Targets:"

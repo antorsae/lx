@@ -76,6 +76,25 @@ def build_html_page(title: str, styles: str, body: str, scripts: str = '', extra
 </body>
 </html>'''
 
+
+def format_frequency_label(freq_hz: float) -> str:
+    """Format frequency tick labels consistently across plots."""
+    if freq_hz >= 1000:
+        val = freq_hz / 1000
+        return f'{int(val)}k' if float(val).is_integer() else f'{val}k'
+    return str(int(freq_hz))
+
+
+def get_valid_frequency_ticks(
+    freq_min: float = config.FREQ_MIN,
+    freq_max: float = config.FREQ_MAX,
+):
+    """Return (tick_values, tick_text) within configured range."""
+    all_ticks = sorted(set(config.GRID_FREQS_MAJOR + config.GRID_FREQS_MINOR))
+    valid_ticks = [f for f in all_ticks if freq_min <= f <= freq_max]
+    tick_text = [format_frequency_label(f) for f in valid_ticks]
+    return valid_ticks, tick_text
+
 from polar_data_loader import PolarDataLoader
 from directivity_calculations import (
     DirectivityCalculator, create_polar_matrix_from_dict,
@@ -165,17 +184,7 @@ class PolarResponseVisualizer:
 
     def _configure_interactive_axis(self, fig):
         """Helper to apply custom ticks to plotly figure x-axis"""
-        # Calculate ticks
-        all_ticks = sorted(list(set(config.GRID_FREQS_MAJOR + config.GRID_FREQS_MINOR)))
-        valid_ticks = [f for f in all_ticks if config.FREQ_MIN <= f <= config.FREQ_MAX]
-
-        def format_freq(x):
-            if x >= 1000:
-                val = x / 1000
-                return f'{int(val)}k' if val.is_integer() else f'{val}k'
-            return str(int(x))
-
-        tick_text = [format_freq(f) for f in valid_ticks]
+        valid_ticks, tick_text = get_valid_frequency_ticks()
 
         # Apply to all x-axes in the figure
         fig.update_xaxes(
@@ -584,20 +593,9 @@ class PolarResponseVisualizer:
         all_angles = sorted(all_angles)
 
         # Build the HTML with embedded JavaScript
-        html_content = f'''<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Frequency Response Explorer</title>
-    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
-    <style>
-        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-        body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
-        }}
-        .container {{
+        html_content = f'''{HTML_DOCTYPE}{HTML_HEAD_START}    <title>Frequency Response Explorer</title>
+{HTML_PLOTLY_SCRIPT}{HTML_YAML_SCRIPT}    <style>
+{CSS_RESET}        .container {{
             display: flex;
             height: 100vh;
         }}
@@ -1793,19 +1791,11 @@ class PolarResponseVisualizer:
                 ax.axvline(freq, color='gray', linestyle=':', linewidth=0.8, alpha=0.5)
         
         # Custom ticks
-        all_ticks = sorted(list(set(config.GRID_FREQS_MAJOR + config.GRID_FREQS_MINOR)))
-        valid_ticks = [f for f in all_ticks if config.FREQ_MIN <= f <= config.FREQ_MAX]
-        
-        # Format labels: 100, 200.. 1k, 1.1k etc.
-        def format_freq(x):
-            if x >= 1000:
-                val = x / 1000
-                return f'{int(val)}k' if val.is_integer() else f'{val}k'
-            return str(int(x))
+        valid_ticks, tick_text = get_valid_frequency_ticks()
 
         # Enforce ticks using FixedLocator/FixedFormatter to override LogScale defaults
         ax.xaxis.set_major_locator(ticker.FixedLocator(valid_ticks))
-        ax.xaxis.set_major_formatter(ticker.FixedFormatter([format_freq(f) for f in valid_ticks]))
+        ax.xaxis.set_major_formatter(ticker.FixedFormatter(tick_text))
         ax.xaxis.set_minor_locator(ticker.NullLocator()) # Hide default log minor ticks
         
         plt.setp(ax.get_xticklabels(), rotation=90, fontsize=8)
