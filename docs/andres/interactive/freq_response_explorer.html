@@ -332,6 +332,192 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
             width: 14px;
             height: 14px;
         }
+        /* Visual Crossover Overlay styles */
+        .crossover-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid #e0e0e0;
+        }
+        .crossover-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .crossover-controls button {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .crossover-controls button:hover {
+            background: #f0f0f0;
+        }
+        .crossover-controls button.primary {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+        .crossover-controls button.primary:hover {
+            background: #059669;
+        }
+        .crossover-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .crossover-card {
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #f0fdf4;
+        }
+        .crossover-card.disabled {
+            opacity: 0.5;
+            background: #fafafa;
+        }
+        .crossover-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .crossover-card-header input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+        }
+        .crossover-card-header select {
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            background: white;
+        }
+        .crossover-card-header .delete-btn {
+            padding: 2px 8px;
+            border: none;
+            background: #fee2e2;
+            color: #dc2626;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: auto;
+        }
+        .crossover-card-header .delete-btn:hover {
+            background: #fecaca;
+        }
+        .crossover-param {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+            font-size: 0.8rem;
+        }
+        .crossover-param label {
+            width: 45px;
+            color: #666;
+        }
+        .crossover-param input[type="range"] {
+            flex: 1;
+        }
+        .crossover-param input[type="number"] {
+            width: 70px;
+            padding: 3px 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: right;
+        }
+        .crossover-param span {
+            width: 25px;
+            color: #888;
+        }
+        .crossover-drivers {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #d1d5db;
+        }
+        .crossover-driver-select {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+        }
+        .crossover-driver-select label {
+            color: #666;
+            font-weight: 500;
+        }
+        .crossover-driver-select select {
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            background: white;
+        }
+        .no-crossovers {
+            color: #888;
+            font-size: 0.85rem;
+            font-style: italic;
+            padding: 10px;
+            text-align: center;
+        }
+        .apply-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            font-size: 0.7rem;
+            color: #666;
+            cursor: pointer;
+        }
+        .apply-checkbox input {
+            width: 14px;
+            height: 14px;
+        }
+        /* X-O derived filter styles */
+        .filter-card.from-crossover {
+            background: #f0f9ff;
+            border-color: #7dd3fc;
+        }
+        .filter-card.from-crossover.disabled {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+        .xo-badge {
+            background: #0ea5e9;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .filter-card.disabled .xo-badge {
+            background: #94a3b8;
+        }
+        .xo-filter-type {
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: #334155;
+        }
+        .xo-filter-status {
+            margin-left: auto;
+            font-size: 1rem;
+            color: #22c55e;
+        }
+        .filter-card.disabled .xo-filter-status {
+            color: #cbd5e1;
+        }
+        .filter-param.readonly {
+            padding: 4px 0;
+        }
+        .readonly-value {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #475569;
+        }
     </style>
 </head>
 <body>
@@ -387,6 +573,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
                     </div>
                 </div>
             </div>
+
+            <div class="crossover-section">
+                <h3>Visual Crossover Overlay</h3>
+                <div class="crossover-controls">
+                    <button class="primary" onclick="addCrossover()">+ Add X-O</button>
+                </div>
+                <div class="crossover-list" id="crossoverList">
+                    <div class="no-crossovers">No crossovers defined</div>
+                </div>
+            </div>
         </div>
         <div class="plot-area">
             <div id="plot"></div>
@@ -401,10 +597,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
         const driverColors = {"10F8424": "#1f77b4", "L22MG": "#ff7f0e", "MU10": "#2ca02c", "SEAS27T": "#d62728", "GRS PT6816": "#9467bd", "SS10F8414G10": "#17becf"};
         const defaultColor = '#888888';
         const measurementSetName = 'andres';
-
-        // Line style patterns for distinguishing drivers
-        const dashPatterns = ['solid', 'dash', 'dot', 'dashdot', 'longdash', 'longdashdot'];
-        const dashLabels = ['———', '– – –', '· · ·', '– · –', '—  —', '—  ·'];
 
         // Filter types
         const filterTypes = ['Peaking', 'Lowpass', 'Highpass', 'Lowshelf', 'Highshelf'];
@@ -421,6 +613,21 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
         drivers.forEach(d => driverFilters[d] = []);
         let selectedFilterDriver = drivers[0];
         const STORAGE_KEY = 'lx521_filters_' + measurementSetName;
+
+        // Visual Crossover Overlay state
+        let visualCrossovers = [];
+        const CROSSOVER_STORAGE_KEY = 'lx521_crossovers_' + measurementSetName;
+
+        // Crossover types with their filter specifications and visual fade distance
+        // filters: array of {q: value} for cascaded biquads
+        // fadeOctaves: octaves from Fc to reach -40dB (where curve becomes invisible)
+        const crossoverTypes = {
+            'LR2': { name: 'Linkwitz-Riley 2nd (12dB/oct)', filters: [{q: 0.5}], fadeOctaves: 3.33 },
+            'LR4': { name: 'Linkwitz-Riley 4th (24dB/oct)', filters: [{q: 0.707}, {q: 0.707}], fadeOctaves: 1.67 },
+            'LR8': { name: 'Linkwitz-Riley 8th (48dB/oct)', filters: [{q: 0.707}, {q: 0.707}, {q: 0.707}, {q: 0.707}], fadeOctaves: 0.83 },
+            'BW2': { name: 'Butterworth 2nd (12dB/oct)', filters: [{q: 0.707}], fadeOctaves: 3.33 },
+            'BW4': { name: 'Butterworth 4th (24dB/oct)', filters: [{q: 0.541}, {q: 1.307}], fadeOctaves: 1.67 }
+        };
 
         // ============ BIQUAD IIR CALCULATIONS ============
         function calcBiquadCoeffs(type, freq, q, gain, sampleRate = 48000) {
@@ -515,6 +722,199 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
                 });
                 return totalDb;
             });
+        }
+
+        // ============ CROSSOVER FILTER MANAGEMENT ============
+        // Crossovers generate actual IIR filter entries in driverFilters
+        // These are marked with fromCrossover property and shown as read-only
+
+        function syncCrossoverFilters() {
+            // Remove all existing crossover-derived filters and regenerate from current crossovers
+            drivers.forEach(driver => {
+                // Remove old crossover filters (use !== undefined, not !f.fromCrossover, since 0 is falsy)
+                driverFilters[driver] = (driverFilters[driver] || []).filter(f => f.fromCrossover === undefined);
+
+                // Add new crossover filters
+                visualCrossovers.forEach((xo, xoIdx) => {
+                    if (!xo.enabled) return;
+                    const xoType = crossoverTypes[xo.type];
+                    if (!xoType) return;
+
+                    let filterType = null;
+                    if (xo.lpDriver === driver) filterType = 'Lowpass';
+                    else if (xo.hpDriver === driver) filterType = 'Highpass';
+                    if (!filterType) return;
+
+                    // Create a filter entry for each cascaded biquad stage
+                    xoType.filters.forEach((stage, stageIdx) => {
+                        driverFilters[driver].push({
+                            type: filterType,
+                            freq: xo.freq,
+                            q: stage.q,
+                            gain: 0,
+                            enabled: xo.applyFilters,  // Controlled by X-O "Filt" checkbox
+                            optimize: false,
+                            fromCrossover: xoIdx,      // Mark as X-O derived
+                            xoType: xo.type,
+                            xoStage: stageIdx + 1,
+                            xoTotalStages: xoType.filters.length
+                        });
+                    });
+                });
+            });
+        }
+
+        function hasVisualClippingForDriver(driver) {
+            // Check if driver has any enabled crossover (for visual clipping, regardless of applyFilters)
+            return visualCrossovers.some(xo =>
+                xo.enabled && (xo.lpDriver === driver || xo.hpDriver === driver)
+            );
+        }
+
+        function getDriverFadeInfo(driver, frequencies) {
+            // Get fade information for each frequency point
+            // Returns array of { show: boolean, fadeRatio: 0-1 } where:
+            //   show=false means clip (beyond fadeOctaves)
+            //   fadeRatio=0 means full color, fadeRatio=1 means fully faded to white
+
+            return frequencies.map(freq => {
+                let show = true;
+                let maxFadeRatio = 0;  // Track maximum fade across all crossovers
+
+                visualCrossovers.forEach(xo => {
+                    if (!xo.enabled) return;
+                    const xoType = crossoverTypes[xo.type];
+                    if (!xoType) return;
+
+                    const fadeOctaves = xoType.fadeOctaves || 1.5;
+                    const logFc = Math.log2(xo.freq);
+                    const logF = Math.log2(freq);
+                    const octaveDistance = logF - logFc;  // positive = above Fc, negative = below
+
+                    // LP driver: fade as frequency goes above Fc
+                    if (xo.lpDriver === driver && octaveDistance > 0) {
+                        if (octaveDistance > fadeOctaves) {
+                            show = false;
+                        } else {
+                            // Fade ratio: 0 at Fc, 1 at Fc + fadeOctaves
+                            const ratio = octaveDistance / fadeOctaves;
+                            maxFadeRatio = Math.max(maxFadeRatio, ratio);
+                        }
+                    }
+                    // HP driver: fade as frequency goes below Fc
+                    if (xo.hpDriver === driver && octaveDistance < 0) {
+                        if (octaveDistance < -fadeOctaves) {
+                            show = false;
+                        } else {
+                            // Fade ratio: 0 at Fc, 1 at Fc - fadeOctaves
+                            const ratio = Math.abs(octaveDistance) / fadeOctaves;
+                            maxFadeRatio = Math.max(maxFadeRatio, ratio);
+                        }
+                    }
+                });
+                return { show, fadeRatio: maxFadeRatio };
+            });
+        }
+
+        function interpolateColor(color1, color2, ratio) {
+            // Interpolate between two hex colors
+            // ratio: 0 = color1, 1 = color2
+            const hex = (c) => parseInt(c, 16);
+            const r1 = hex(color1.slice(1, 3)), g1 = hex(color1.slice(3, 5)), b1 = hex(color1.slice(5, 7));
+            const r2 = hex(color2.slice(1, 3)), g2 = hex(color2.slice(3, 5)), b2 = hex(color2.slice(5, 7));
+            const r = Math.round(r1 + (r2 - r1) * ratio);
+            const g = Math.round(g1 + (g2 - g1) * ratio);
+            const b = Math.round(b1 + (b2 - b1) * ratio);
+            return `rgb(${r},${g},${b})`;
+        }
+
+        function getDriverFadeColors(driver, frequencies, baseColor) {
+            // Get per-point colors with fade effect
+            // Returns { colors: array, clipMask: array }
+            const fadeInfo = getDriverFadeInfo(driver, frequencies);
+            const white = '#ffffff';
+            const colors = fadeInfo.map(info => {
+                // Always return a valid color (Plotly needs colors for all points)
+                // Clipped points will be handled by null in y-data
+                if (info.fadeRatio === 0) return baseColor;
+                return interpolateColor(baseColor, white, info.fadeRatio * 0.85);  // Max 85% fade toward white
+            });
+            const clipMask = fadeInfo.map(info => info.show);
+            return { colors, clipMask };
+        }
+
+        function createFadingSegments(xData, yData, fadeColors, clipMask, lineWidth, dashPattern, name, showInLegend) {
+            // Create multiple line segments, each with its own color, to simulate gradient fading
+            // Uses quantized fade levels (10 steps) to avoid too many segments while showing gradient
+            const segments = [];
+
+            // Quantize colors to reduce number of segments
+            // Handles both hex (#rrggbb) and rgb(r,g,b) formats
+            function quantizeColor(color) {
+                let r, g, b;
+
+                // Check for hex format
+                if (color.startsWith('#')) {
+                    r = parseInt(color.slice(1, 3), 16);
+                    g = parseInt(color.slice(3, 5), 16);
+                    b = parseInt(color.slice(5, 7), 16);
+                } else {
+                    // Check for rgb format
+                    const match = color.match(/rgb\((\d+),(\d+),(\d+)\)/);
+                    if (match) {
+                        r = parseInt(match[1]);
+                        g = parseInt(match[2]);
+                        b = parseInt(match[3]);
+                    } else {
+                        return color;  // Unknown format, return as-is
+                    }
+                }
+
+                // Quantize to 10 discrete levels (25.5 = 255/10)
+                r = Math.round(r / 25.5) * 25.5;
+                g = Math.round(g / 25.5) * 25.5;
+                b = Math.round(b / 25.5) * 25.5;
+                return `rgb(${Math.round(r)},${Math.round(g)},${Math.round(b)})`;
+            }
+
+            const quantizedColors = fadeColors.map(quantizeColor);
+            let segStart = 0;
+
+            for (let i = 1; i <= xData.length; i++) {
+                // Check if we need to end a segment (color change, clip boundary, or end of data)
+                const endSegment = i === xData.length ||
+                    quantizedColors[i] !== quantizedColors[i-1] ||
+                    clipMask[i] !== clipMask[i-1];
+
+                if (endSegment && segStart < i) {
+                    // Create segment from segStart to i-1 (inclusive)
+                    // Include next point for continuity (overlap between segments)
+                    const endIdx = Math.min(i + 1, xData.length);
+                    const segX = xData.slice(segStart, endIdx);
+                    const segY = yData.slice(segStart, endIdx);
+
+                    // Only add segment if it should be visible (clipMask)
+                    if (clipMask[segStart]) {
+                        segments.push({
+                            x: segX,
+                            y: segY,
+                            name: name,
+                            mode: 'lines',
+                            line: {
+                                color: quantizedColors[segStart],
+                                width: lineWidth,
+                                dash: dashPattern
+                            },
+                            showlegend: showInLegend && segments.length === 0,  // Only first segment shows in legend
+                            legendgroup: name,
+                            hoverinfo: 'x+y+name'
+                        });
+                    }
+                    segStart = i;
+                }
+            }
+
+            return segments;
         }
 
         // ============ NELDER-MEAD OPTIMIZER ============
@@ -711,7 +1111,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
         // ============ LOCALSTORAGE ============
         function saveFiltersToLocalStorage() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(driverFilters));
+            // Only save user-created filters, not X-O derived ones (they're regenerated from crossovers)
+            const filtersToSave = {};
+            drivers.forEach(d => {
+                filtersToSave[d] = (driverFilters[d] || []).filter(f => f.fromCrossover === undefined);
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(filtersToSave));
         }
 
         function loadFiltersFromLocalStorage() {
@@ -734,7 +1139,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
             const driverList = document.getElementById('driverList');
             drivers.forEach((driver, idx) => {
                 const color = driverColors[driver] || defaultColor;
-                const dashLabel = dashLabels[idx % dashLabels.length];
                 const isActive = activeDrivers.has(driver);
 
                 const item = document.createElement('div');
@@ -745,7 +1149,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
                 item.innerHTML = `
                     <div class="driver-header">
                         <input type="checkbox" class="driver-checkbox" ${isActive ? 'checked' : ''}>
-                        <span class="driver-line">${dashLabel}</span>
+                        <span class="driver-line">———</span>
                         <span class="driver-name">${driver}</span>
                     </div>
                     <div class="offset-control">
@@ -913,53 +1317,75 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
             list.innerHTML = '';
             filters.forEach((filter, idx) => {
                 const card = document.createElement('div');
-                card.className = 'filter-card' + (filter.enabled ? '' : ' disabled');
+                const isFromCrossover = filter.fromCrossover !== undefined;
+                card.className = 'filter-card' + (filter.enabled ? '' : ' disabled') + (isFromCrossover ? ' from-crossover' : '');
 
                 const needsGain = filterNeedsGain[filter.type];
 
-                card.innerHTML = `
-                    <div class="filter-card-header">
-                        <input type="checkbox" ${filter.enabled ? 'checked' : ''}
-                               onchange="updateFilter(${idx}, 'enabled', this.checked)" title="Enable filter">
-                        <label class="opt-checkbox" title="Include in auto-optimization">
-                            <input type="checkbox" ${filter.optimize ? 'checked' : ''}
-                                   onchange="updateFilter(${idx}, 'optimize', this.checked)">Opt
-                        </label>
-                        <select onchange="updateFilter(${idx}, 'type', this.value)">
-                            ${filterTypes.map(t => `<option value="${t}" ${t === filter.type ? 'selected' : ''}>${t}</option>`).join('')}
-                        </select>
-                        <button class="delete-btn" onclick="deleteFilter(${idx})">×</button>
-                    </div>
-                    <div class="filter-param">
-                        <label>Freq:</label>
-                        <input type="range" min="1.3" max="4.3" step="0.01" value="${Math.log10(filter.freq)}"
-                               oninput="this.nextElementSibling.value = Math.round(Math.pow(10, this.value))"
-                               onchange="updateFilter(${idx}, 'freq', Math.pow(10, this.value))">
-                        <input type="number" value="${Math.round(filter.freq)}" min="20" max="20000"
-                               onchange="updateFilter(${idx}, 'freq', this.value); this.previousElementSibling.value = Math.log10(this.value)">
-                        <span>Hz</span>
-                    </div>
-                    <div class="filter-param">
-                        <label>Q:</label>
-                        <input type="range" min="0.1" max="10" step="0.01" value="${filter.q}"
-                               oninput="this.nextElementSibling.value = parseFloat(this.value).toFixed(2)"
-                               onchange="updateFilter(${idx}, 'q', this.value)">
-                        <input type="number" value="${filter.q.toFixed(2)}" min="0.1" max="10" step="0.01"
-                               onchange="updateFilter(${idx}, 'q', this.value); this.previousElementSibling.value = this.value">
-                        <span></span>
-                    </div>
-                    ${needsGain ? `
-                    <div class="filter-param">
-                        <label>Gain:</label>
-                        <input type="range" min="-20" max="20" step="0.1" value="${filter.gain}"
-                               oninput="this.nextElementSibling.value = parseFloat(this.value).toFixed(1)"
-                               onchange="updateFilter(${idx}, 'gain', this.value)">
-                        <input type="number" value="${filter.gain.toFixed(1)}" min="-20" max="20" step="0.1"
-                               onchange="updateFilter(${idx}, 'gain', this.value); this.previousElementSibling.value = this.value">
-                        <span>dB</span>
-                    </div>
-                    ` : ''}
-                `;
+                if (isFromCrossover) {
+                    // Read-only display for crossover-derived filters
+                    const stageLabel = filter.xoTotalStages > 1 ? ` (${filter.xoStage}/${filter.xoTotalStages})` : '';
+                    card.innerHTML = `
+                        <div class="filter-card-header">
+                            <span class="xo-badge" title="From X-O #${filter.fromCrossover + 1}">X-O</span>
+                            <span class="xo-filter-type">${filter.type}${stageLabel}</span>
+                            <span class="xo-filter-status">${filter.enabled ? '●' : '○'}</span>
+                        </div>
+                        <div class="filter-param readonly">
+                            <label>Freq:</label>
+                            <span class="readonly-value">${Math.round(filter.freq)} Hz</span>
+                        </div>
+                        <div class="filter-param readonly">
+                            <label>Q:</label>
+                            <span class="readonly-value">${filter.q.toFixed(3)}</span>
+                        </div>
+                    `;
+                } else {
+                    // Editable filter
+                    card.innerHTML = `
+                        <div class="filter-card-header">
+                            <input type="checkbox" ${filter.enabled ? 'checked' : ''}
+                                   onchange="updateFilter(${idx}, 'enabled', this.checked)" title="Enable filter">
+                            <label class="opt-checkbox" title="Include in auto-optimization">
+                                <input type="checkbox" ${filter.optimize ? 'checked' : ''}
+                                       onchange="updateFilter(${idx}, 'optimize', this.checked)">Opt
+                            </label>
+                            <select onchange="updateFilter(${idx}, 'type', this.value)">
+                                ${filterTypes.map(t => `<option value="${t}" ${t === filter.type ? 'selected' : ''}>${t}</option>`).join('')}
+                            </select>
+                            <button class="delete-btn" onclick="deleteFilter(${idx})">×</button>
+                        </div>
+                        <div class="filter-param">
+                            <label>Freq:</label>
+                            <input type="range" min="1.3" max="4.3" step="0.01" value="${Math.log10(filter.freq)}"
+                                   oninput="this.nextElementSibling.value = Math.round(Math.pow(10, this.value))"
+                                   onchange="updateFilter(${idx}, 'freq', Math.pow(10, this.value))">
+                            <input type="number" value="${Math.round(filter.freq)}" min="20" max="20000"
+                                   onchange="updateFilter(${idx}, 'freq', this.value); this.previousElementSibling.value = Math.log10(this.value)">
+                            <span>Hz</span>
+                        </div>
+                        <div class="filter-param">
+                            <label>Q:</label>
+                            <input type="range" min="0.1" max="10" step="0.01" value="${filter.q}"
+                                   oninput="this.nextElementSibling.value = parseFloat(this.value).toFixed(2)"
+                                   onchange="updateFilter(${idx}, 'q', this.value)">
+                            <input type="number" value="${filter.q.toFixed(2)}" min="0.1" max="10" step="0.01"
+                                   onchange="updateFilter(${idx}, 'q', this.value); this.previousElementSibling.value = this.value">
+                            <span></span>
+                        </div>
+                        ${needsGain ? `
+                        <div class="filter-param">
+                            <label>Gain:</label>
+                            <input type="range" min="-20" max="20" step="0.1" value="${filter.gain}"
+                                   oninput="this.nextElementSibling.value = parseFloat(this.value).toFixed(1)"
+                                   onchange="updateFilter(${idx}, 'gain', this.value)">
+                            <input type="number" value="${filter.gain.toFixed(1)}" min="-20" max="20" step="0.1"
+                                   onchange="updateFilter(${idx}, 'gain', this.value); this.previousElementSibling.value = this.value">
+                            <span>dB</span>
+                        </div>
+                        ` : ''}
+                    `;
+                }
                 list.appendChild(card);
             });
         }
@@ -1046,76 +1472,225 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
             URL.revokeObjectURL(url);
         }
 
+        // ============ VISUAL CROSSOVER UI FUNCTIONS ============
+        function addCrossover() {
+            const newXO = {
+                enabled: true,
+                freq: 1200,
+                type: 'LR4',
+                lpDriver: drivers.length > 0 ? drivers[0] : null,
+                hpDriver: drivers.length > 1 ? drivers[1] : null,
+                applyFilters: true  // Apply filters by default (create IIR entries)
+            };
+            visualCrossovers.push(newXO);
+            saveCrossoversToLocalStorage();
+            syncCrossoverFilters();
+            renderCrossoverList();
+            renderFilterList();
+            updatePlot();
+        }
+
+        function deleteCrossover(index) {
+            visualCrossovers.splice(index, 1);
+            saveCrossoversToLocalStorage();
+            syncCrossoverFilters();
+            renderCrossoverList();
+            renderFilterList();
+            updatePlot();
+        }
+
+        function updateCrossover(index, field, value) {
+            const xo = visualCrossovers[index];
+            if (field === 'enabled') {
+                xo.enabled = value;
+            } else if (field === 'freq') {
+                xo.freq = parseFloat(value) || 1000;
+            } else if (field === 'type') {
+                xo.type = value;
+            } else if (field === 'lpDriver') {
+                xo.lpDriver = value === '' ? null : value;
+            } else if (field === 'hpDriver') {
+                xo.hpDriver = value === '' ? null : value;
+            } else if (field === 'applyFilters') {
+                xo.applyFilters = value;
+            }
+            saveCrossoversToLocalStorage();
+            syncCrossoverFilters();
+            renderCrossoverList();
+            renderFilterList();
+            updatePlot();
+        }
+
+        function renderCrossoverList() {
+            const list = document.getElementById('crossoverList');
+
+            if (visualCrossovers.length === 0) {
+                list.innerHTML = '<div class="no-crossovers">No crossovers defined</div>';
+                return;
+            }
+
+            list.innerHTML = '';
+            visualCrossovers.forEach((xo, idx) => {
+                const card = document.createElement('div');
+                card.className = 'crossover-card' + (xo.enabled ? '' : ' disabled');
+
+                const typeOptions = Object.entries(crossoverTypes).map(([key, val]) =>
+                    `<option value="${key}" ${key === xo.type ? 'selected' : ''}>${key}</option>`
+                ).join('');
+
+                const driverOptionsLP = ['<option value="">(None)</option>'].concat(
+                    drivers.map(d => `<option value="${d}" ${d === xo.lpDriver ? 'selected' : ''}>${d}</option>`)
+                ).join('');
+
+                const driverOptionsHP = ['<option value="">(None)</option>'].concat(
+                    drivers.map(d => `<option value="${d}" ${d === xo.hpDriver ? 'selected' : ''}>${d}</option>`)
+                ).join('');
+
+                card.innerHTML = `
+                    <div class="crossover-card-header">
+                        <input type="checkbox" ${xo.enabled ? 'checked' : ''}
+                               onchange="updateCrossover(${idx}, 'enabled', this.checked)" title="Enable crossover">
+                        <select onchange="updateCrossover(${idx}, 'type', this.value)" title="${crossoverTypes[xo.type]?.name || ''}">
+                            ${typeOptions}
+                        </select>
+                        <label class="apply-checkbox" title="Apply LP/HP filters to response (not just visual clipping)">
+                            <input type="checkbox" ${xo.applyFilters ? 'checked' : ''}
+                                   onchange="updateCrossover(${idx}, 'applyFilters', this.checked)">Filt
+                        </label>
+                        <button class="delete-btn" onclick="deleteCrossover(${idx})">×</button>
+                    </div>
+                    <div class="crossover-param">
+                        <label>Freq:</label>
+                        <input type="range" min="1.3" max="4.3" step="0.01" value="${Math.log10(xo.freq)}"
+                               oninput="this.nextElementSibling.value = Math.round(Math.pow(10, this.value))"
+                               onchange="updateCrossover(${idx}, 'freq', Math.pow(10, this.value))">
+                        <input type="number" value="${Math.round(xo.freq)}" min="20" max="20000"
+                               onchange="updateCrossover(${idx}, 'freq', this.value); this.previousElementSibling.value = Math.log10(this.value)">
+                        <span>Hz</span>
+                    </div>
+                    <div class="crossover-drivers">
+                        <div class="crossover-driver-select">
+                            <label>LP →</label>
+                            <select onchange="updateCrossover(${idx}, 'lpDriver', this.value)">
+                                ${driverOptionsLP}
+                            </select>
+                        </div>
+                        <div class="crossover-driver-select">
+                            <label>HP →</label>
+                            <select onchange="updateCrossover(${idx}, 'hpDriver', this.value)">
+                                ${driverOptionsHP}
+                            </select>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function saveCrossoversToLocalStorage() {
+            localStorage.setItem(CROSSOVER_STORAGE_KEY, JSON.stringify(visualCrossovers));
+        }
+
+        function loadCrossoversFromLocalStorage() {
+            const saved = localStorage.getItem(CROSSOVER_STORAGE_KEY);
+            if (saved) {
+                try {
+                    visualCrossovers = JSON.parse(saved);
+                } catch (e) {
+                    console.error('Failed to load crossovers from localStorage:', e);
+                    visualCrossovers = [];
+                }
+            }
+        }
+
         function updatePlot() {
             const traces = [];
 
-            // Line dash patterns for different drivers (to distinguish when overlaid)
-            const dashPatterns = ['solid', 'dash', 'dot', 'dashdot', 'longdash', 'longdashdot'];
+            // Angle-based dash patterns: progressive density (0° solid, higher angles more dashed)
+            // Maps angle to dash pattern - solid for on-axis, increasingly broken for off-axis
+            function getAngleDash(angle) {
+                if (angle === 0) return 'solid';
+                if (angle <= 10) return '12 4';      // long dash
+                if (angle <= 20) return '8 4';       // medium dash
+                if (angle <= 30) return '5 4';       // short dash
+                if (angle <= 45) return '8 4 2 4';   // dash-dot
+                if (angle <= 60) return '5 4 2 4';   // short dash-dot
+                return '2 4';                         // dotted (90° and beyond)
+            }
 
             activeDrivers.forEach(driver => {
-                const driverIdx = drivers.indexOf(driver);
                 const color = driverColors[driver] || defaultColor;
-                const dashBase = dashPatterns[driverIdx % dashPatterns.length];
                 const offset = driverOffsets[driver];
                 const data = allData[driver];
                 const filters = driverFilters[driver] || [];
-                const hasActiveFilters = filters.some(f => f.enabled);
 
-                // Calculate filter response if there are active filters
+                // Check what's active - X-O filters are now part of driverFilters
+                const hasActiveFilters = filters.some(f => f.enabled);
+                const hasVisualClipping = hasVisualClippingForDriver(driver);  // Any X-O enabled (for freq clipping/fading)
+
+                // Calculate combined filter response (includes both EQ and X-O filters in driverFilters)
                 let filterResponse = null;
                 if (hasActiveFilters) {
                     filterResponse = calcFilterChainResponse(filters, data.freq);
+                }
+
+                // Get fade colors and clip mask for crossover visual effect
+                let fadeColors = null;
+                let clipMask = null;
+                if (hasVisualClipping) {
+                    const fadeInfo = getDriverFadeColors(driver, data.freq, color);
+                    fadeColors = fadeInfo.colors;
+                    clipMask = fadeInfo.clipMask;
                 }
 
                 activeAngles.forEach(angle => {
                     if (!data.spl[angle]) return;
 
                     const splOriginal = data.spl[angle].map(v => v + offset);
-                    const angleBrightness = 1 - (angle / 90) * 0.4;
+                    const lineWidth = angle === 0 ? 2.5 : 1.5;
+                    const dashPattern = getAngleDash(angle);
+                    const traceName = `${driver} @ ${angle}°` + (offset !== 0 ? ` (${offset > 0 ? '+' : ''}${offset}dB)` : '');
 
                     if (hasActiveFilters) {
-                        // Show original trace (dimmed, dotted)
-                        traces.push({
-                            x: data.freq,
-                            y: splOriginal,
-                            name: `${driver} @ ${angle}° (orig)`,
-                            mode: 'lines',
-                            line: {
-                                color: color,
-                                width: 1,
-                                dash: 'dot'
-                            },
-                            opacity: 0.3,
-                            showlegend: false
-                        });
-
-                        // Show filtered trace (bold)
+                        // Filters active - show ONLY filtered trace (NO original curve)
                         const splFiltered = splOriginal.map((v, i) => v + filterResponse[i]);
-                        traces.push({
-                            x: data.freq,
-                            y: splFiltered,
-                            name: `${driver} @ ${angle}° (EQ)`,
-                            mode: 'lines',
-                            line: {
-                                color: color,
-                                width: angle === 0 ? 2.5 : 1.5,
-                                dash: dashBase
-                            },
-                            opacity: angleBrightness
-                        });
+
+                        if (hasVisualClipping) {
+                            // Use segmented lines for color fading effect
+                            const segments = createFadingSegments(
+                                data.freq, splFiltered, fadeColors, clipMask,
+                                lineWidth, dashPattern, `${driver} @ ${angle}°`, true
+                            );
+                            traces.push(...segments);
+                        } else {
+                            traces.push({
+                                x: data.freq,
+                                y: splFiltered,
+                                name: `${driver} @ ${angle}°`,
+                                mode: 'lines',
+                                line: { color: color, width: lineWidth, dash: dashPattern },
+                                connectgaps: false
+                            });
+                        }
+                    } else if (hasVisualClipping) {
+                        // Only visual clipping/fading, no filters - show faded original with segmented lines
+                        const segments = createFadingSegments(
+                            data.freq, splOriginal, fadeColors, clipMask,
+                            lineWidth, dashPattern, traceName, true
+                        );
+                        traces.push(...segments);
                     } else {
-                        // No filters - show original trace only
+                        // No filters or crossovers - show original trace
                         traces.push({
                             x: data.freq,
                             y: splOriginal,
-                            name: `${driver} @ ${angle}°` + (offset !== 0 ? ` (${offset > 0 ? '+' : ''}${offset}dB)` : ''),
+                            name: traceName,
                             mode: 'lines',
                             line: {
                                 color: color,
-                                width: angle === 0 ? 2.5 : 1.5,
-                                dash: dashBase
-                            },
-                            opacity: angleBrightness
+                                width: lineWidth,
+                                dash: dashPattern
+                            }
                         });
                     }
                 });
@@ -1131,10 +1706,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
                 });
             });
 
-            // Get Y range from data
+            // Get Y range from data (ignore null/undefined values)
             let yMin = 100, yMax = 0;
             traces.forEach(t => {
+                if (!t.y) return;
                 t.y.forEach(v => {
+                    if (v === null || v === undefined) return;  // Skip clipped/empty points
                     if (v < yMin) yMin = v;
                     if (v > yMax) yMax = v;
                 });
@@ -1179,8 +1756,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
         // Initialize
         loadFiltersFromLocalStorage();
+        loadCrossoversFromLocalStorage();
+        syncCrossoverFilters();  // Generate IIR filter entries from crossovers
         initUI();
         initFilterUI();
+        renderCrossoverList();
         updatePlot();
     </script>
 </body>
