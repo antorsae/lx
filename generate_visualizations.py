@@ -1749,7 +1749,17 @@ class PolarResponseVisualizer:
                 // Header click toggles driver
                 const header = item.querySelector('.driver-header');
                 const checkbox = item.querySelector('.driver-checkbox');
-                header.onclick = () => {{
+
+                // Make the checkbox itself behave normally (no double-toggle via header click)
+                checkbox.onclick = (e) => {{
+                    e.stopPropagation();
+                }};
+                checkbox.onchange = () => {{
+                    toggleDriver(driver, item, checkbox.checked);
+                }};
+
+                header.onclick = (e) => {{
+                    if (e.target === checkbox) return;
                     checkbox.checked = !checkbox.checked;
                     toggleDriver(driver, item, checkbox.checked);
                 }};
@@ -2002,6 +2012,7 @@ class PolarResponseVisualizer:
 
                     if (filters.length > 0) {{
                         driverFilters[selectedFilterDriver] = filters;
+                        syncCrossoverFilters();  // Re-add any X-O derived filters after import
                         saveFiltersToLocalStorage();
                         renderFilterList();
                         updatePlot();
@@ -2018,9 +2029,10 @@ class PolarResponseVisualizer:
         }}
 
         function saveFiltersYaml() {{
-            const filters = driverFilters[selectedFilterDriver] || [];
+            // Export only user-created filters (exclude X-O derived ones)
+            const filters = (driverFilters[selectedFilterDriver] || []).filter(f => f.fromCrossover === undefined);
             if (filters.length === 0) {{
-                alert('No filters to save for ' + selectedFilterDriver);
+                alert('No user filters to save for ' + selectedFilterDriver);
                 return;
             }}
 
@@ -2245,14 +2257,14 @@ class PolarResponseVisualizer:
                             // Use segmented lines for color fading effect
                             const segments = createFadingSegments(
                                 data.freq, splFiltered, fadeColors, clipMask,
-                                lineWidth, dashPattern, `${{driver}} @ ${{angle}}°`, true
+                                lineWidth, dashPattern, traceName, true
                             );
                             traces.push(...segments);
                         }} else {{
                             traces.push({{
                                 x: data.freq,
                                 y: splFiltered,
-                                name: `${{driver}} @ ${{angle}}°`,
+                                name: traceName,
                                 mode: 'lines',
                                 line: {{ color: color, width: lineWidth, dash: dashPattern }},
                                 connectgaps: false
@@ -2293,17 +2305,28 @@ class PolarResponseVisualizer:
             }});
 
             // Get Y range from data (ignore null/undefined values)
-            let yMin = 100, yMax = 0;
+            let yMin = Infinity, yMax = -Infinity;
             traces.forEach(t => {{
                 if (!t.y) return;
                 t.y.forEach(v => {{
                     if (v === null || v === undefined) return;  // Skip clipped/empty points
+                    if (!Number.isFinite(v)) return;
                     if (v < yMin) yMin = v;
                     if (v > yMax) yMax = v;
                 }});
             }});
-            yMin = Math.floor(yMin / 5) * 5 - 5;
-            yMax = Math.ceil(yMax / 5) * 5 + 5;
+            if (!Number.isFinite(yMin) || !Number.isFinite(yMax) || yMin >= yMax) {{
+                // No traces selected (or invalid data); use a sane default range
+                yMin = 40;
+                yMax = 100;
+            }} else {{
+                yMin = Math.floor(yMin / 5) * 5 - 5;
+                yMax = Math.ceil(yMax / 5) * 5 + 5;
+                if (yMin === yMax) {{
+                    yMin -= 5;
+                    yMax += 5;
+                }}
+            }}
 
             // Horizontal dB grid
             for (let db = yMin; db <= yMax; db += 5) {{
