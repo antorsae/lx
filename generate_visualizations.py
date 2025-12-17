@@ -149,13 +149,14 @@ class PolarResponseVisualizer:
         # following industry standard practice. Rear data is stored separately for 360-deg polar plots.
         self.calc_results = {}
         for driver in self.drivers:
-            freq, angles, spl_matrix = create_polar_matrix_from_dict(self.data[driver])
+            freq, angles, spl_matrix, phase_matrix = create_polar_matrix_from_dict(self.data[driver])
             calc = DirectivityCalculator(freq, angles, spl_matrix)
 
             # Also create rear SPL matrix if available
             rear_spl_matrix = None
+            rear_phase_matrix = None
             if self.data[driver].get('has_rear') and 'rear_angles' in self.data[driver]:
-                _, rear_angles, rear_spl_matrix = create_polar_matrix_from_dict(
+                _, rear_angles, rear_spl_matrix, rear_phase_matrix = create_polar_matrix_from_dict(
                     {'angles': self.data[driver]['rear_angles'],
                      'common_frequencies': self.data[driver]['common_frequencies']}
                 )
@@ -164,7 +165,9 @@ class PolarResponseVisualizer:
                 'frequencies': freq,
                 'angles': angles,
                 'spl_matrix': spl_matrix,
+                'phase_matrix': phase_matrix,
                 'rear_spl_matrix': rear_spl_matrix,
+                'rear_phase_matrix': rear_phase_matrix,
                 'has_rear': self.data[driver].get('has_rear', False),
                 'calculator': calc,
                 'di': calc.calculate_directivity_index(),
@@ -571,6 +574,7 @@ class PolarResponseVisualizer:
             freq = res['frequencies']
             angles = res['angles']
             spl_matrix = res['spl_matrix']
+            phase_matrix = res['phase_matrix']
 
             # Decimate to TARGET_POINTS using log-spaced indices
             n_points = len(freq)
@@ -579,14 +583,17 @@ class PolarResponseVisualizer:
                 log_indices = np.unique(np.logspace(0, np.log10(n_points - 1), TARGET_POINTS).astype(int))
                 freq_dec = freq[log_indices]
                 spl_dec = spl_matrix[log_indices, :]
+                phase_dec = phase_matrix[log_indices, :]
             else:
                 freq_dec = freq
                 spl_dec = spl_matrix
+                phase_dec = phase_matrix
 
             all_data[driver] = {
                 'freq': freq_dec.tolist(),
                 'angles': [int(a) for a in angles],
-                'spl': {int(angles[i]): spl_dec[:, i].tolist() for i in range(len(angles))}
+                'spl': {int(angles[i]): spl_dec[:, i].tolist() for i in range(len(angles))},
+                'phase': {int(angles[i]): phase_dec[:, i].tolist() for i in range(len(angles))}
             }
             all_angles.update(angles)
 
@@ -694,6 +701,21 @@ class PolarResponseVisualizer:
             border-radius: 4px;
             text-align: center;
         }}
+        .delay-control {{
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: #666;
+        }}
+        .delay-control input[type="number"] {{
+            width: 70px;
+            padding: 3px 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }}
         .angle-grid {{
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -731,6 +753,26 @@ class PolarResponseVisualizer:
         }}
         .quick-btn:hover {{
             background: #f0f0f0;
+        }}
+        /* Display options styles */
+        .display-options {{
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+        }}
+        .option-checkbox {{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #444;
+        }}
+        .option-checkbox input {{
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
         }}
         /* Filter section styles */
         .filter-section {{
@@ -1123,14 +1165,25 @@ class PolarResponseVisualizer:
             </div>
             <div class="angle-grid" id="angleGrid"></div>
 
+            <h3>Display Options</h3>
+            <div class="display-options">
+                <label class="option-checkbox">
+                    <input type="checkbox" id="showPhase" onchange="updatePlot()">
+                    Show Phase Response
+                </label>
+            </div>
+
             <div class="filter-section">
                 <h3>Filters (IIR EQ)</h3>
                 <div class="filter-controls">
                     <button class="primary" onclick="addFilter()">+ Add Filter</button>
                     <button onclick="document.getElementById('yamlInput').click()">Load YAML</button>
                     <button onclick="saveFiltersYaml()">Save YAML</button>
+                    <button onclick="document.getElementById('dspInput').click()" title="Load filters from miniDSP .dsp file">Load DSP</button>
+                    <button onclick="resetTimingAdjustments()" title="Reset imported delay/invert phase adjustments">Reset Time</button>
                 </div>
                 <input type="file" id="yamlInput" accept=".yaml,.yml" onchange="loadYamlFile(event)">
+                <input type="file" id="dspInput" accept=".dsp" onchange="handleDspFileLoad(event)" style="display:none">
                 <div class="filter-driver-select">
                     <label>Driver:</label>
                     <select id="filterDriverSelect" onchange="selectFilterDriver(this.value)"></select>
@@ -1185,14 +1238,23 @@ class PolarResponseVisualizer:
         const measurementSetName = '{self.interactive_plots_dir.parent.name}';
 
         // Filter types
-        const filterTypes = ['Peaking', 'Lowpass', 'Highpass', 'Lowshelf', 'Highshelf'];
-        const filterNeedsGain = {{'Peaking': true, 'Lowshelf': true, 'Highshelf': true, 'Lowpass': false, 'Highpass': false}};
+        const filterTypes = ['Peaking', 'Lowpass', 'Highpass', 'Lowshelf', 'Highshelf', 'Allpass'];
+        const filterNeedsGain = {{'Peaking': true, 'Lowshelf': true, 'Highshelf': true, 'Lowpass': false, 'Highpass': false, 'Allpass': false}};
+
+        // Filter response defaults (CamillaDSP-style unless overridden per-filter)
+        const DEFAULT_FILTER_SAMPLE_RATE = 48000;
 
         // State
         let activeDrivers = new Set([drivers[0]]);
         let activeAngles = new Set([0]);
         let driverOffsets = {{}};
-        drivers.forEach(d => driverOffsets[d] = 0);
+        let driverPhaseOffsetsDeg = {{}};
+        let driverDelaysMs = {{}};
+        drivers.forEach(d => {{
+            driverOffsets[d] = 0;
+            driverPhaseOffsetsDeg[d] = 0;
+            driverDelaysMs[d] = 0;
+        }});
 
         // Filter state
         let driverFilters = {{}};
@@ -1214,6 +1276,496 @@ class PolarResponseVisualizer:
             'BW2': {{ name: 'Butterworth 2nd (12dB/oct)', filters: [{{q: 0.707}}], fadeOctaves: 3.33 }},
             'BW4': {{ name: 'Butterworth 4th (24dB/oct)', filters: [{{q: 0.541}}, {{q: 1.307}}], fadeOctaves: 1.67 }}
         }};
+
+        // ============ DSP FILE LOADING ============
+        // Channel mapping: DSP channel -> driver name(s)
+        // Channel 1 = T (SEAS27T), 2 = unused, 3 = UM (10F8424, MU10), 4 = LM (L22MG), 5,6 = unused
+        const DSP_CHANNEL_MAP = {{
+            1: ['SEAS27T'],           // T - tweeter
+            2: null,                   // Unused
+            3: ['10F8424', 'MU10'],    // UM - upper-mid (both drivers get same filters)
+            4: ['L22MG'],              // LM - lower-mid
+            5: null,                   // Unused (W left)
+            6: null                    // Unused (W right)
+        }};
+
+        // DSP filter type codes -> filter type names
+        const DSP_TYPE_MAP = {{
+            0: 'Unity',      // ftUnity - passthrough
+            2: 'Lowpass',    // ftLowPass2
+            4: 'Highpass',   // ftHighPass2
+            6: 'Shelf',      // ftShelf2 (check shelfhl: 0=low, 1=high)
+            8: 'Peaking',    // ftBoostCut
+            10: 'Allpass'    // ftAllPass2
+        }};
+
+	        // Adjacent channel pairs for crossover detection: [HP channel, LP channel, HP drivers, LP drivers]
+	        // Note: for an N-way, the higher-frequency band uses Highpass, the lower-frequency band uses Lowpass.
+	        const DSP_CROSSOVER_PAIRS = [
+	            // LM (ch4) lowpass <-> UM (ch3) highpass
+	            {{ hpCh: 3, lpCh: 4, hpDrivers: ['10F8424', 'MU10'], lpDrivers: ['L22MG'], name: 'LM-UM' }},
+	            // UM (ch3) lowpass <-> T (ch1) highpass
+	            {{ hpCh: 1, lpCh: 3, hpDrivers: ['SEAS27T'], lpDrivers: ['10F8424', 'MU10'], name: 'UM-T' }}
+	        ];
+
+	        function parseDspFile(content) {{
+	            const lines = content.split(/\\r?\\n/);
+	            if (lines.length < 28) {{
+	                throw new Error('Invalid DSP file: too few lines');
+	            }}
+
+	            const measSampleRate = parseFloat(lines[24]) || 48000;
+
+	            // Parse header
+	            const header = {{
+	                productNr: lines[0],
+	                formatVersion: lines[1],
+	                buildNr: lines[2],
+	                measSampleRate: measSampleRate,
+	                sampleRate: parseFloat(lines[25]) || 93750
+	            }};
+
+            const channels = {{}};
+            let lineIdx = 28;
+
+            // Parse each channel (1-6)
+            for (let ch = 1; ch <= 6; ch++) {{
+                // Channels 2-6 have 3 preamble lines
+                if (ch > 1) {{
+                    lineIdx += 3;
+                }}
+
+                // Channel header: 6 lines
+                const biquadCount = parseInt(lines[lineIdx++]) || 15;
+	                const delayRaw = parseFloat(lines[lineIdx++]) || 0;
+	                const gain = parseFloat(lines[lineIdx++]) || 0;
+	                const invert = lines[lineIdx++] === '1';
+	                const enabled = lines[lineIdx++] === '1';
+	                lineIdx++; // extra int
+
+                const filters = [];
+
+                // Parse 15 filters (18 lines each)
+                for (let f = 0; f < 15; f++) {{
+                    const typeCode = parseInt(lines[lineIdx++]) || 0;
+                    const f1 = parseFloat(lines[lineIdx++]) || 1000;
+                    const f2 = parseFloat(lines[lineIdx++]) || 1000;
+                    const filterGain = parseFloat(lines[lineIdx++]) || 0;
+                    const q1 = parseFloat(lines[lineIdx++]) || 0.707;
+                    const q2 = parseFloat(lines[lineIdx++]) || 0.707;
+                    const shelfhl = parseInt(lines[lineIdx++]) || 0;
+
+                    // Read spoles/szeros which indicate filter state
+                    // True Unity: spoles=0, szeros=0
+                    // Disabled filter: type=0 but spoles/szeros preserved from original type
+                    const spoles = parseInt(lines[lineIdx++]) || 0;
+                    const szeros = parseInt(lines[lineIdx++]) || 0;
+                    lineIdx += 2; // zpoles, zzeros
+
+                    // Read biquad coefficients to check for unity (passthrough)
+                    lineIdx += 2; // sconst, zconst
+                    const b0 = parseFloat(lines[lineIdx++]) || 0;
+                    const b1 = parseFloat(lines[lineIdx++]) || 0;
+                    const b2 = parseFloat(lines[lineIdx++]) || 0;
+                    lineIdx += 2; // a1, a2
+
+                    // Filter state detection based on type and spoles/szeros:
+                    // In .dsp format, when a filter is disabled, type becomes 0 but spoles/szeros
+                    // are preserved from the original filter type:
+                    // - ftUnity always has spoles=0, szeros=0
+                    // - ftBoostCut, ftShelf2, etc. have spoles=2, szeros=2
+                    //
+                    // So:
+                    // - type=0 AND spoles=0 AND szeros=0 → was ftUnity → SKIP (not a real filter)
+                    // - type=0 AND (spoles≠0 OR szeros≠0) → was non-Unity but DISABLED
+                    // - type≠0 → ENABLED filter
+
+                    const wasUnity = (spoles === 0 && szeros === 0);
+
+                    // Skip Unity filter slots entirely (they're empty slots, not real filters)
+                    if (typeCode === 0 && wasUnity) {{
+                        continue;
+                    }}
+
+                    // Determine if filter is disabled
+                    // type=0 with non-zero spoles/szeros means it was a real filter that got disabled
+                    const isDisabled = (typeCode === 0 && !wasUnity);
+
+                    // Determine filter type
+                    let filterType = DSP_TYPE_MAP[typeCode] || 'Unknown';
+
+                    // For disabled filters (type=0 but was non-Unity), infer original type
+                    if (isDisabled) {{
+                        // Most disabled filters were Peaking (ftBoostCut) or Shelf
+                        // Use shelfhl to distinguish: shelfhl=1 means it was Highshelf
+                        if (shelfhl === 1) {{
+                            filterType = 'Highshelf';
+                        }} else if (shelfhl === 0 && Math.abs(filterGain) > 0.01) {{
+                            // Has gain, could be Lowshelf or Peaking
+                            // Peaking is more common, but if Q is very low it might be shelf
+                            filterType = 'Peaking';
+                        }} else {{
+                            filterType = 'Peaking';
+                        }}
+                    }}
+
+                    if (filterType === 'Shelf') {{
+                        filterType = shelfhl === 1 ? 'Highshelf' : 'Lowshelf';
+                    }}
+
+                    // Skip remaining Unity filters (no meaningful parameters)
+                    if (filterType === 'Unity') continue;
+
+                    filters.push({{
+                        type: filterType,
+                        freq: f1,
+                        q: q1,
+                        gain: filterGain,
+                        enabled: !isDisabled,
+                        sampleRate: header.sampleRate
+                    }});
+                }}
+
+	                // Hypex .dsp delay values are stored as microseconds.
+	                // Convert to ms so phase adjustment uses correct units.
+	                const delayMs = delayRaw / 1000;
+
+	                channels[ch] = {{
+	                    delay: delayMs,
+	                    delayRaw: delayRaw,
+	                    gain,
+	                    invert,
+	                    enabled,
+	                    filters
+	                }};
+
+                // Skip blank line separator between channels (except after channel 6)
+                if (ch < 6 && lineIdx < lines.length) {{
+                    lineIdx++;
+                }}
+            }}
+
+            return {{ header, channels }};
+        }}
+
+        function detectCrossovers(dspData) {{
+            const detected = [];
+
+            for (const pair of DSP_CROSSOVER_PAIRS) {{
+                const hpFilters = (dspData.channels[pair.hpCh]?.filters || [])
+                    .filter(f => f.type === 'Highpass' && f.enabled !== false);
+                const lpFilters = (dspData.channels[pair.lpCh]?.filters || [])
+                    .filter(f => f.type === 'Lowpass' && f.enabled !== false);
+
+                if (hpFilters.length === 0 || lpFilters.length === 0) continue;
+
+                // Group HP filters by frequency (within 1% tolerance)
+                const hpByFreq = {{}};
+                for (const f of hpFilters) {{
+                    const key = Math.round(f.freq);
+                    if (!hpByFreq[key]) hpByFreq[key] = [];
+                    hpByFreq[key].push(f);
+                }}
+
+                // Group LP filters by frequency
+                const lpByFreq = {{}};
+                for (const f of lpFilters) {{
+                    const key = Math.round(f.freq);
+                    if (!lpByFreq[key]) lpByFreq[key] = [];
+                    lpByFreq[key].push(f);
+                }}
+
+                // Find matching frequencies
+                for (const freqKey in hpByFreq) {{
+                    const hpAtFreq = hpByFreq[freqKey];
+                    // Look for LP at same frequency (±1%)
+                    let lpAtFreq = null;
+                    for (const lpKey in lpByFreq) {{
+                        if (Math.abs(parseInt(lpKey) - parseInt(freqKey)) <= parseInt(freqKey) * 0.01) {{
+                            lpAtFreq = lpByFreq[lpKey];
+                            break;
+                        }}
+                    }}
+
+                    if (!lpAtFreq) continue;
+
+                    // Determine crossover type based on filter count and Q values
+                    const hpCount = hpAtFreq.length;
+                    const lpCount = lpAtFreq.length;
+                    const avgHpQ = hpAtFreq.reduce((s, f) => s + f.q, 0) / hpCount;
+                    const avgLpQ = lpAtFreq.reduce((s, f) => s + f.q, 0) / lpCount;
+
+                    let xoType = null;
+
+                    // LR2: 1 filter each, Q ≈ 0.5
+                    if (hpCount === 1 && lpCount === 1 && Math.abs(avgHpQ - 0.5) < 0.1 && Math.abs(avgLpQ - 0.5) < 0.1) {{
+                        xoType = 'LR2';
+                    }}
+                    // LR4: 2 filters each, Q ≈ 0.707
+                    else if (hpCount === 2 && lpCount === 2 && Math.abs(avgHpQ - 0.707) < 0.1 && Math.abs(avgLpQ - 0.707) < 0.1) {{
+                        xoType = 'LR4';
+                    }}
+                    // LR8: 4 filters each, Q ≈ 0.707
+                    else if (hpCount === 4 && lpCount === 4 && Math.abs(avgHpQ - 0.707) < 0.1 && Math.abs(avgLpQ - 0.707) < 0.1) {{
+                        xoType = 'LR8';
+                    }}
+                    // BW2: 1 filter each, Q ≈ 0.707
+                    else if (hpCount === 1 && lpCount === 1 && Math.abs(avgHpQ - 0.707) < 0.1 && Math.abs(avgLpQ - 0.707) < 0.1) {{
+                        xoType = 'BW2';
+                    }}
+                    // BW4: 2 filters each with Q ≈ 0.541 and 1.307
+                    else if (hpCount === 2 && lpCount === 2) {{
+                        const hpQs = hpAtFreq.map(f => f.q).sort((a, b) => a - b);
+                        const lpQs = lpAtFreq.map(f => f.q).sort((a, b) => a - b);
+                        if (Math.abs(hpQs[0] - 0.541) < 0.1 && Math.abs(hpQs[1] - 1.307) < 0.15 &&
+                            Math.abs(lpQs[0] - 0.541) < 0.1 && Math.abs(lpQs[1] - 1.307) < 0.15) {{
+                            xoType = 'BW4';
+                        }}
+                    }}
+
+	                    // Even if we can't classify it as a standard topology, still surface it as a crossover.
+	                    // We'll treat it as "Custom" and (when loaded) apply the exact DSP HP/LP stages.
+	                    const inferredType = xoType || 'Custom';
+	                    const fadeOctavesHP = hpCount ? (40 / (12 * hpCount)) : 1.5;
+	                    const fadeOctavesLP = lpCount ? (40 / (12 * lpCount)) : 1.5;
+
+	                    detected.push({{
+	                        freq: parseFloat(freqKey),
+	                        type: inferredType,
+	                        hpDrivers: pair.hpDrivers,
+	                        lpDrivers: pair.lpDrivers,
+	                        name: pair.name,
+	                        hpFilters: hpAtFreq,
+	                        lpFilters: lpAtFreq,
+	                        fadeOctavesHP: fadeOctavesHP,
+	                        fadeOctavesLP: fadeOctavesLP,
+	                    }});
+	                }}
+	            }}
+
+            return detected;
+        }}
+
+	        function loadDspFilters(dspData, detectedCrossovers, clearExisting, unsupportedFilters) {{
+	            const dspSampleRate = dspData.header?.sampleRate || DEFAULT_FILTER_SAMPLE_RATE;
+
+	            if (clearExisting) {{
+	                // Clear all existing filters and crossovers
+	                drivers.forEach(d => {{
+	                    driverFilters[d] = [];
+	                    driverOffsets[d] = 0;
+	                    driverPhaseOffsetsDeg[d] = 0;
+	                    driverDelaysMs[d] = 0;
+	                }});
+	                visualCrossovers = [];
+	            }}
+
+	            // Apply channel gains/delay/invert as per-driver offsets
+	            for (let ch = 1; ch <= 6; ch++) {{
+	                const targetDrivers = DSP_CHANNEL_MAP[ch];
+	                if (!targetDrivers) continue;
+
+	                const chData = dspData.channels[ch] || {{}};
+	                const channelGain = chData.gain || 0;
+	                const channelDelayMs = chData.delay || 0;
+	                const channelInvert = !!chData.invert;
+
+	                for (const driver of targetDrivers) {{
+	                    if (!drivers.includes(driver)) continue;
+
+	                    driverOffsets[driver] = channelGain;
+	                    driverDelaysMs[driver] = channelDelayMs;
+	                    driverPhaseOffsetsDeg[driver] = channelInvert ? 180 : 0;
+
+	                    // Update UI slider/input for this driver
+	                    const item = document.querySelector(`.driver-item[data-driver="${{driver}}"]`);
+	                    if (item) {{
+	                        const gainSlider = item.querySelector('.gain-slider');
+	                        const gainInput = item.querySelector('.gain-input');
+	                        const delayInput = item.querySelector('.delay-input');
+	                        if (gainSlider) gainSlider.value = channelGain;
+	                        if (gainInput) gainInput.value = channelGain;
+	                        if (delayInput) delayInput.value = Math.round(channelDelayMs * 1000);
+	                    }}
+	                }}
+	            }}
+
+		            // Build set of filters that are part of crossovers we actually represent
+		            // (only exclude crossover filters if we can create a corresponding visual crossover)
+		            const crossoverFilterSet = new Set();
+		
+		            // Add crossovers to visualCrossovers
+		            for (const xo of detectedCrossovers) {{
+		                const hpDrivers = (xo.hpDrivers || []).filter(d => drivers.includes(d));
+		                const lpDrivers = (xo.lpDrivers || []).filter(d => drivers.includes(d));
+	
+		                if (hpDrivers.length > 0 && lpDrivers.length > 0) {{
+		                    xo.hpFilters.forEach(f => crossoverFilterSet.add(f));
+		                    xo.lpFilters.forEach(f => crossoverFilterSet.add(f));
+		
+			                    visualCrossovers.push({{
+			                        enabled: true,
+			                        freq: xo.freq,
+			                        type: xo.type,
+		                        lpDriver: lpDrivers[0],
+		                        hpDriver: hpDrivers[0],
+		                        lpDrivers: lpDrivers,
+		                        hpDrivers: hpDrivers,
+		                        applyFilters: true,
+		                        sampleRate: dspSampleRate,
+		                        fadeOctavesLP: xo.fadeOctavesLP,
+		                        fadeOctavesHP: xo.fadeOctavesHP,
+		                        // For non-standard / asymmetric crossovers, keep the exact DSP stages so we can apply them.
+		                        lpStages: xo.type === 'Custom' ? xo.lpFilters : null,
+		                        hpStages: xo.type === 'Custom' ? xo.hpFilters : null,
+		                    }});
+			                }}
+			            }}
+
+	            // Add non-crossover filters to drivers
+	            for (let ch = 1; ch <= 6; ch++) {{
+	                const targetDrivers = DSP_CHANNEL_MAP[ch];
+	                if (!targetDrivers) continue;
+
+	                const channelFilters = dspData.channels[ch]?.filters || [];
+
+	                for (const f of channelFilters) {{
+	                    if (crossoverFilterSet.has(f)) continue; // Skip crossover filters
+	                    if (f.enabled === false) continue; // Skip disabled filters
+	                    if (!filterTypes.includes(f.type)) continue; // Skip unsupported types
+
+	                    // Add to all target drivers
+	                    for (const driver of targetDrivers) {{
+	                        if (!drivers.includes(driver)) continue;
+
+                        // Q scaling for Peaking: Q_Hypex = 2 * Q_Camilla
+                        // DSP uses Hypex convention, explorer uses Camilla/REW convention
+                        let q = f.q;
+                        if (f.type === 'Peaking') {{
+                            q = f.q / 2.0;
+                        }}
+
+	                        driverFilters[driver].push({{
+	                            type: f.type,
+	                            freq: f.freq,
+	                            q: q,
+	                            gain: f.gain,
+	                            enabled: true,
+	                            sampleRate: f.sampleRate || dspSampleRate
+	                        }});
+	                    }}
+	                }}
+	            }}
+
+            // Save and update UI
+            saveFiltersToLocalStorage();
+            saveCrossoversToLocalStorage();
+            syncCrossoverFilters();
+            renderFilterList();
+            renderCrossoverList();
+            updatePlot();
+	        }}
+
+	        function resetTimingAdjustments() {{
+	            drivers.forEach(d => {{
+	                driverDelaysMs[d] = 0;
+	                driverPhaseOffsetsDeg[d] = 0;
+	                const item = document.querySelector(`.driver-item[data-driver="${{d}}"]`);
+	                if (item) {{
+	                    const delayInput = item.querySelector('.delay-input');
+	                    if (delayInput) delayInput.value = 0;
+	                }}
+	            }});
+	            updatePlot();
+	        }}
+
+	        async function handleDspFileLoad(event) {{
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {{
+                const content = await file.text();
+                const dspData = parseDspFile(content);
+                const detectedCrossovers = detectCrossovers(dspData);
+
+                // Collect unsupported filters and channel info
+                const unsupportedFilters = [];
+                let summary = 'DSP file loaded:\\n\\n';
+
+                for (let ch = 1; ch <= 6; ch++) {{
+                    const targetDrivers = DSP_CHANNEL_MAP[ch];
+                    const chData = dspData.channels[ch];
+                    const filters = chData?.filters || [];
+	                    const gain = chData?.gain || 0;
+	                    const delayMs = chData?.delay || 0;
+	                    const invert = !!chData?.invert;
+
+                    // Check for unsupported filter types
+                    for (const f of filters) {{
+                        if (f.type === 'Unknown') {{
+                            unsupportedFilters.push(`Ch${{ch}}: Unknown filter type`);
+                        }}
+                    }}
+
+	                    if (targetDrivers && (filters.length > 0 || gain !== 0 || delayMs !== 0 || invert)) {{
+	                        const enabledCount = filters.filter(f => f.enabled !== false).length;
+	                        const disabledCount = filters.length - enabledCount;
+	                        let chInfo = `Channel ${{ch}} (${{targetDrivers.join(', ')}}): ${{enabledCount}} filters`;
+	                        if (disabledCount > 0) chInfo += ` (+${{disabledCount}} disabled)`;
+	                        if (gain !== 0) chInfo += `, gain=${{gain.toFixed(1)}}dB`;
+	                        if (delayMs !== 0) chInfo += `, delay=${{delayMs.toFixed(3)}}ms`;
+	                        if (invert) chInfo += `, invert`;
+	                        summary += chInfo + '\\n';
+	                    }}
+	                }}
+
+                if (detectedCrossovers.length > 0) {{
+                    summary += '\\nDetected crossovers:\\n';
+                    for (const xo of detectedCrossovers) {{
+                        summary += `  ${{xo.name}}: ${{xo.type}} @ ${{xo.freq}} Hz\\n`;
+                    }}
+                }}
+
+                // Warn about unsupported filters
+                if (unsupportedFilters.length > 0) {{
+                    summary += '\\n⚠️ Unsupported filters (will be skipped):\\n';
+                    for (const uf of unsupportedFilters) {{
+                        summary += `  ${{uf}}\\n`;
+                    }}
+                }}
+
+                // Count existing filters/crossovers
+                const existingFilters = Object.values(driverFilters).flat().filter(f => !f.fromCrossover).length;
+                const existingXOs = visualCrossovers.length;
+
+	                let confirmMsg = summary + '\\n';
+	                const hasExisting = existingFilters > 0 || existingXOs > 0;
+	
+	                let clearExisting = true;
+	                if (hasExisting) {{
+	                    confirmMsg += `You have ${{existingFilters}} existing filters and ${{existingXOs}} crossovers.\\n`;
+	                    confirmMsg += 'Clear existing filters and crossovers before loading?';
+	                    clearExisting = confirm(confirmMsg);
+	                }} else {{
+	                    confirmMsg += 'Load these filters?';
+	                    const proceed = confirm(confirmMsg);
+	                    if (!proceed) {{
+	                        event.target.value = '';
+	                        return;
+	                    }}
+	                }}
+	
+	                loadDspFilters(dspData, detectedCrossovers, clearExisting, unsupportedFilters);
+	                const loadedCount = Object.values(driverFilters).flat().filter(f => !f.fromCrossover).length;
+	                alert(`Loaded ${{detectedCrossovers.length}} crossovers and ${{loadedCount}} filters from DSP file.`);
+	            }} catch (err) {{
+	                alert('Error loading DSP file: ' + err.message);
+	                console.error(err);
+	            }}
+
+            // Reset file input
+            event.target.value = '';
+        }}
 
         // ============ BIQUAD IIR CALCULATIONS ============
         function calcBiquadCoeffs(type, freq, q, gain, sampleRate = 48000) {{
@@ -1268,6 +1820,15 @@ class PolarResponseVisualizer:
                     a1 = 2 * ((A - 1) - (A + 1) * cosW0);
                     a2 = (A + 1) - (A - 1) * cosW0 - 2 * sqrtA_hs * alpha;
                     break;
+                case 'Allpass':
+                    // 2nd order allpass filter
+                    b0 = 1 - alpha;
+                    b1 = -2 * cosW0;
+                    b2 = 1 + alpha;
+                    a0 = 1 + alpha;
+                    a1 = -2 * cosW0;
+                    a2 = 1 - alpha;
+                    break;
                 default:
                     return {{ b0: 1, b1: 0, b2: 0, a1: 0, a2: 0 }};
             }}
@@ -1298,64 +1859,145 @@ class PolarResponseVisualizer:
             return 20 * Math.log10(numMag / denMag);
         }}
 
-        function calcFilterChainResponse(filters, frequencies) {{
-            return frequencies.map(freq => {{
-                let totalDb = 0;
-                filters.forEach(filter => {{
-                    if (!filter.enabled) return;
-                    const coeffs = calcBiquadCoeffs(filter.type, filter.freq, filter.q, filter.gain || 0);
-                    totalDb += biquadMagnitudeDb(coeffs, freq);
-                }});
-                return totalDb;
-            }});
+	        function biquadPhaseDeg(coeffs, freq, sampleRate = 48000) {{
+	            // Calculate phase response of biquad filter in degrees
+	            const w = 2 * Math.PI * freq / sampleRate;
+            const cosW = Math.cos(w);
+            const cos2W = Math.cos(2 * w);
+            const sinW = Math.sin(w);
+            const sin2W = Math.sin(2 * w);
+
+            const {{ b0, b1, b2, a1, a2 }} = coeffs;
+
+            const numReal = b0 + b1 * cosW + b2 * cos2W;
+            const numImag = -(b1 * sinW + b2 * sin2W);
+            const denReal = 1 + a1 * cosW + a2 * cos2W;
+            const denImag = -(a1 * sinW + a2 * sin2W);
+
+            // Phase = arg(H) = arg(num) - arg(den)
+            const numPhase = Math.atan2(numImag, numReal);
+            const denPhase = Math.atan2(denImag, denReal);
+
+	            return (numPhase - denPhase) * 180 / Math.PI;
+	        }}
+
+	        function getFilterSampleRate(filter) {{
+	            return filter.sampleRate || DEFAULT_FILTER_SAMPLE_RATE;
+	        }}
+
+	        function calcFilterChainResponse(filters, frequencies) {{
+	            return frequencies.map(freq => {{
+	                let totalDb = 0;
+	                filters.forEach(filter => {{
+	                    if (!filter.enabled) return;
+	                    const sampleRate = getFilterSampleRate(filter);
+	                    const coeffs = calcBiquadCoeffs(filter.type, filter.freq, filter.q, filter.gain || 0, sampleRate);
+	                    totalDb += biquadMagnitudeDb(coeffs, freq, sampleRate);
+	                }});
+	                return totalDb;
+	            }});
+	        }}
+
+	        function calcFilterChainPhaseResponse(filters, frequencies) {{
+	            // Calculate total phase response of filter chain (in degrees)
+	            return frequencies.map(freq => {{
+	                let totalPhase = 0;
+	                filters.forEach(filter => {{
+	                    if (!filter.enabled) return;
+	                    const sampleRate = getFilterSampleRate(filter);
+	                    const coeffs = calcBiquadCoeffs(filter.type, filter.freq, filter.q, filter.gain || 0, sampleRate);
+	                    totalPhase += biquadPhaseDeg(coeffs, freq, sampleRate);
+	                }});
+	                return totalPhase;
+	            }});
+	        }}
+
+        function wrapPhase(phase) {{
+            // Wrap phase to -180 to +180 range
+            while (phase > 180) phase -= 360;
+            while (phase < -180) phase += 360;
+            return phase;
         }}
 
-        // ============ CROSSOVER FILTER MANAGEMENT ============
-        // Crossovers generate actual IIR filter entries in driverFilters
-        // These are marked with fromCrossover property and shown as read-only
+	        // ============ CROSSOVER FILTER MANAGEMENT ============
+	        // Crossovers generate actual IIR filter entries in driverFilters
+	        // These are marked with fromCrossover property and shown as read-only
 
-        function syncCrossoverFilters() {{
-            // Remove all existing crossover-derived filters and regenerate from current crossovers
-            drivers.forEach(driver => {{
+	        function getXoDriverList(xo, side) {{
+	            const list = side === 'lp' ? xo.lpDrivers : xo.hpDrivers;
+	            if (Array.isArray(list) && list.length > 0) return list;
+	            const single = side === 'lp' ? xo.lpDriver : xo.hpDriver;
+	            return single ? [single] : [];
+	        }}
+
+	        function syncCrossoverFilters() {{
+	            // Remove all existing crossover-derived filters and regenerate from current crossovers
+	            drivers.forEach(driver => {{
                 // Remove old crossover filters (use !== undefined, not !f.fromCrossover, since 0 is falsy)
                 driverFilters[driver] = (driverFilters[driver] || []).filter(f => f.fromCrossover === undefined);
 
-                // Add new crossover filters
-                visualCrossovers.forEach((xo, xoIdx) => {{
-                    if (!xo.enabled) return;
-                    const xoType = crossoverTypes[xo.type];
-                    if (!xoType) return;
+		                // Add new crossover filters
+		                visualCrossovers.forEach((xo, xoIdx) => {{
+		                    if (!xo.enabled) return;
 
-                    let filterType = null;
-                    if (xo.lpDriver === driver) filterType = 'Lowpass';
-                    else if (xo.hpDriver === driver) filterType = 'Highpass';
-                    if (!filterType) return;
+		                    let filterType = null;
+		                    if (getXoDriverList(xo, 'lp').includes(driver)) filterType = 'Lowpass';
+		                    else if (getXoDriverList(xo, 'hp').includes(driver)) filterType = 'Highpass';
+		                    if (!filterType) return;
 
-                    // Create a filter entry for each cascaded biquad stage
-                    xoType.filters.forEach((stage, stageIdx) => {{
-                        driverFilters[driver].push({{
-                            type: filterType,
-                            freq: xo.freq,
-                            q: stage.q,
-                            gain: 0,
-                            enabled: xo.applyFilters,  // Controlled by X-O "Filt" checkbox
-                            optimize: false,
-                            fromCrossover: xoIdx,      // Mark as X-O derived
-                            xoType: xo.type,
-                            xoStage: stageIdx + 1,
-                            xoTotalStages: xoType.filters.length
-                        }});
-                    }});
-                }});
-            }});
-        }}
+		                    const sampleRate = xo.sampleRate || DEFAULT_FILTER_SAMPLE_RATE;
 
-        function hasVisualClippingForDriver(driver) {{
-            // Check if driver has any enabled crossover (for visual clipping, regardless of applyFilters)
-            return visualCrossovers.some(xo =>
-                xo.enabled && (xo.lpDriver === driver || xo.hpDriver === driver)
-            );
-        }}
+		                    // If this X-O came from DSP import and has explicit stages, apply them exactly.
+		                    const dspStages = filterType === 'Lowpass' ? xo.lpStages : xo.hpStages;
+		                    if (Array.isArray(dspStages) && dspStages.length > 0) {{
+		                        dspStages.forEach((stage, stageIdx) => {{
+		                            driverFilters[driver].push({{
+		                                type: filterType,
+		                                freq: xo.freq,
+		                                q: stage.q,
+		                                gain: stage.gain || 0,
+		                                enabled: xo.applyFilters,  // Controlled by X-O "Filt" checkbox
+		                                sampleRate: stage.sampleRate || sampleRate,
+		                                optimize: false,
+		                                fromCrossover: xoIdx,      // Mark as X-O derived
+		                                xoType: xo.type,
+		                                xoStage: stageIdx + 1,
+		                                xoTotalStages: dspStages.length
+		                            }});
+		                        }});
+		                        return;
+		                    }}
+
+		                    // Otherwise use the synthetic crossover generator (UI-created X-Os).
+		                    const xoType = crossoverTypes[xo.type];
+		                    if (!xoType) return;
+
+		                    // Create a filter entry for each cascaded biquad stage
+		                    xoType.filters.forEach((stage, stageIdx) => {{
+		                        driverFilters[driver].push({{
+		                            type: filterType,
+		                            freq: xo.freq,
+		                            q: stage.q,
+		                            gain: 0,
+		                            enabled: xo.applyFilters,  // Controlled by X-O "Filt" checkbox
+		                            sampleRate: sampleRate,
+		                            optimize: false,
+		                            fromCrossover: xoIdx,      // Mark as X-O derived
+		                            xoType: xo.type,
+		                            xoStage: stageIdx + 1,
+		                            xoTotalStages: xoType.filters.length
+		                        }});
+		                    }});
+		                }});
+		            }});
+		        }}
+
+	        function hasVisualClippingForDriver(driver) {{
+	            // Check if driver has any enabled crossover (for visual clipping, regardless of applyFilters)
+	            return visualCrossovers.some(xo =>
+	                xo.enabled && (getXoDriverList(xo, 'lp').includes(driver) || getXoDriverList(xo, 'hp').includes(driver))
+	            );
+	        }}
 
         function getDriverFadeInfo(driver, frequencies) {{
             // Get fade information for each frequency point
@@ -1367,37 +2009,36 @@ class PolarResponseVisualizer:
                 let show = true;
                 let maxFadeRatio = 0;  // Track maximum fade across all crossovers
 
-                visualCrossovers.forEach(xo => {{
-                    if (!xo.enabled) return;
-                    const xoType = crossoverTypes[xo.type];
-                    if (!xoType) return;
+	                visualCrossovers.forEach(xo => {{
+	                    if (!xo.enabled) return;
+	                    const xoType = crossoverTypes[xo.type];
+	                    const fadeOctavesLP = xo.fadeOctavesLP || xoType?.fadeOctaves || 1.5;
+	                    const fadeOctavesHP = xo.fadeOctavesHP || xoType?.fadeOctaves || 1.5;
+	                    const logFc = Math.log2(xo.freq);
+	                    const logF = Math.log2(freq);
+		                    const octaveDistance = logF - logFc;  // positive = above Fc, negative = below
 
-                    const fadeOctaves = xoType.fadeOctaves || 1.5;
-                    const logFc = Math.log2(xo.freq);
-                    const logF = Math.log2(freq);
-                    const octaveDistance = logF - logFc;  // positive = above Fc, negative = below
-
-                    // LP driver: fade as frequency goes above Fc
-                    if (xo.lpDriver === driver && octaveDistance > 0) {{
-                        if (octaveDistance > fadeOctaves) {{
-                            show = false;
-                        }} else {{
-                            // Fade ratio: 0 at Fc, 1 at Fc + fadeOctaves
-                            const ratio = octaveDistance / fadeOctaves;
-                            maxFadeRatio = Math.max(maxFadeRatio, ratio);
-                        }}
-                    }}
-                    // HP driver: fade as frequency goes below Fc
-                    if (xo.hpDriver === driver && octaveDistance < 0) {{
-                        if (octaveDistance < -fadeOctaves) {{
-                            show = false;
-                        }} else {{
-                            // Fade ratio: 0 at Fc, 1 at Fc - fadeOctaves
-                            const ratio = Math.abs(octaveDistance) / fadeOctaves;
-                            maxFadeRatio = Math.max(maxFadeRatio, ratio);
-                        }}
-                    }}
-                }});
+		                    // LP driver: fade as frequency goes above Fc
+		                    if (getXoDriverList(xo, 'lp').includes(driver) && octaveDistance > 0) {{
+		                        if (octaveDistance > fadeOctavesLP) {{
+		                            show = false;
+		                        }} else {{
+	                            // Fade ratio: 0 at Fc, 1 at Fc + fadeOctaves
+	                            const ratio = octaveDistance / fadeOctavesLP;
+	                            maxFadeRatio = Math.max(maxFadeRatio, ratio);
+	                        }}
+		                    }}
+		                    // HP driver: fade as frequency goes below Fc
+		                    if (getXoDriverList(xo, 'hp').includes(driver) && octaveDistance < 0) {{
+		                        if (octaveDistance < -fadeOctavesHP) {{
+		                            show = false;
+		                        }} else {{
+	                            // Fade ratio: 0 at Fc, 1 at Fc - fadeOctaves
+	                            const ratio = Math.abs(octaveDistance) / fadeOctavesHP;
+	                            maxFadeRatio = Math.max(maxFadeRatio, ratio);
+	                        }}
+	                    }}
+	                }});
                 return {{ show, fadeRatio: maxFadeRatio }};
             }});
         }}
@@ -1738,13 +2379,18 @@ class PolarResponseVisualizer:
                         <span class="driver-line">———</span>
                         <span class="driver-name">${{driver}}</span>
                     </div>
-                    <div class="offset-control">
-                        <span>Offset:</span>
-                        <input type="range" min="-20" max="20" value="0">
-                        <input type="number" value="0" min="-20" max="20">
-                        <span>dB</span>
-                    </div>
-                `;
+	                    <div class="offset-control">
+	                        <span>Gain:</span>
+	                        <input type="range" class="gain-slider" min="-20" max="20" value="0">
+	                        <input type="number" class="gain-input" value="0" min="-20" max="20">
+	                        <span>dB</span>
+	                    </div>
+	                    <div class="delay-control">
+	                        <span>Delay:</span>
+	                        <input type="number" class="delay-input" value="0" step="1" min="-100000" max="100000">
+	                        <span>µs</span>
+	                    </div>
+	                `;
 
                 // Header click toggles driver
                 const header = item.querySelector('.driver-header');
@@ -1765,18 +2411,22 @@ class PolarResponseVisualizer:
                 }};
 
                 // Offset controls
-                const slider = item.querySelector('input[type="range"]');
-                const numInput = item.querySelector('input[type="number"]');
-                slider.oninput = () => {{
-                    numInput.value = slider.value;
-                }};
-                slider.onchange = () => {{
-                    setOffset(driver, slider.value);
-                }};
-                numInput.onchange = () => {{
-                    slider.value = numInput.value;
-                    setOffset(driver, numInput.value);
-                }};
+	                const gainSlider = item.querySelector('.gain-slider');
+	                const gainInput = item.querySelector('.gain-input');
+	                const delayInput = item.querySelector('.delay-input');
+	                gainSlider.oninput = () => {{
+	                    gainInput.value = gainSlider.value;
+	                }};
+	                gainSlider.onchange = () => {{
+	                    setOffset(driver, gainSlider.value);
+	                }};
+	                gainInput.onchange = () => {{
+	                    gainSlider.value = gainInput.value;
+	                    setOffset(driver, gainInput.value);
+	                }};
+	                delayInput.onchange = () => {{
+	                    setDelayUs(driver, delayInput.value);
+	                }};
 
                 driverList.appendChild(item);
             }});
@@ -1826,10 +2476,16 @@ class PolarResponseVisualizer:
             selectAngles(allAngles);
         }}
 
-        function setOffset(driver, value) {{
-            driverOffsets[driver] = parseFloat(value) || 0;
-            updatePlot();
-        }}
+	        function setOffset(driver, value) {{
+	            driverOffsets[driver] = parseFloat(value) || 0;
+	            updatePlot();
+	        }}
+
+	        function setDelayUs(driver, value) {{
+	            const delayUs = parseFloat(value) || 0;
+	            driverDelaysMs[driver] = delayUs / 1000;
+	            updatePlot();
+	        }}
 
         // ============ FILTER UI FUNCTIONS ============
         function initFilterUI() {{
@@ -1996,11 +2652,18 @@ class PolarResponseVisualizer:
                 try {{
                     const yaml = jsyaml.load(e.target.result);
                     const filters = [];
+                    const unsupported = [];
 
                     for (const [name, def] of Object.entries(yaml.filters || {{}})) {{
                         if (def.type === 'Biquad' && def.parameters) {{
+                            const filterType = def.parameters.type || 'Peaking';
+                            // Check if filter type is supported
+                            if (!filterTypes.includes(filterType)) {{
+                                unsupported.push(`${{name}}: ${{filterType}}`);
+                                continue;
+                            }}
                             filters.push({{
-                                type: def.parameters.type || 'Peaking',
+                                type: filterType,
                                 freq: def.parameters.freq || 1000,
                                 q: def.parameters.q || 1.0,
                                 gain: def.parameters.gain || 0,
@@ -2016,9 +2679,17 @@ class PolarResponseVisualizer:
                         saveFiltersToLocalStorage();
                         renderFilterList();
                         updatePlot();
-                        alert(`Loaded ${{filters.length}} filter(s) for ${{selectedFilterDriver}}`);
+                        let msg = `Loaded ${{filters.length}} filter(s) for ${{selectedFilterDriver}}`;
+                        if (unsupported.length > 0) {{
+                            msg += `\\n\\n⚠️ Skipped ${{unsupported.length}} unsupported filter(s):\\n${{unsupported.join('\\n')}}`;
+                        }}
+                        alert(msg);
                     }} else {{
-                        alert('No valid biquad filters found in YAML');
+                        let msg = 'No valid biquad filters found in YAML';
+                        if (unsupported.length > 0) {{
+                            msg += `\\n\\n⚠️ Found ${{unsupported.length}} unsupported filter(s):\\n${{unsupported.join('\\n')}}`;
+                        }}
+                        alert(msg);
                     }}
                 }} catch (err) {{
                     alert('Error parsing YAML: ' + err.message);
@@ -2070,17 +2741,21 @@ class PolarResponseVisualizer:
             URL.revokeObjectURL(url);
         }}
 
-        // ============ VISUAL CROSSOVER UI FUNCTIONS ============
-        function addCrossover() {{
-            const newXO = {{
-                enabled: true,
-                freq: 1200,
-                type: 'LR4',
-                lpDriver: drivers.length > 0 ? drivers[0] : null,
-                hpDriver: drivers.length > 1 ? drivers[1] : null,
-                applyFilters: true  // Apply filters by default (create IIR entries)
-            }};
-            visualCrossovers.push(newXO);
+	        // ============ VISUAL CROSSOVER UI FUNCTIONS ============
+	        function addCrossover() {{
+	            const lp = drivers.length > 0 ? drivers[0] : null;
+	            const hp = drivers.length > 1 ? drivers[1] : null;
+	            const newXO = {{
+	                enabled: true,
+	                freq: 1200,
+	                type: 'LR4',
+	                lpDriver: lp,
+	                hpDriver: hp,
+	                lpDrivers: lp ? [lp] : [],
+	                hpDrivers: hp ? [hp] : [],
+	                applyFilters: true  // Apply filters by default (create IIR entries)
+	            }};
+	            visualCrossovers.push(newXO);
             saveCrossoversToLocalStorage();
             syncCrossoverFilters();
             renderCrossoverList();
@@ -2097,21 +2772,31 @@ class PolarResponseVisualizer:
             updatePlot();
         }}
 
-        function updateCrossover(index, field, value) {{
-            const xo = visualCrossovers[index];
-            if (field === 'enabled') {{
-                xo.enabled = value;
+	        function updateCrossover(index, field, value) {{
+	            const xo = visualCrossovers[index];
+	            if (field === 'enabled') {{
+	                xo.enabled = value;
             }} else if (field === 'freq') {{
                 xo.freq = parseFloat(value) || 1000;
-            }} else if (field === 'type') {{
-                xo.type = value;
-            }} else if (field === 'lpDriver') {{
-                xo.lpDriver = value === '' ? null : value;
-            }} else if (field === 'hpDriver') {{
-                xo.hpDriver = value === '' ? null : value;
-            }} else if (field === 'applyFilters') {{
-                xo.applyFilters = value;
-            }}
+	            }} else if (field === 'type') {{
+	                xo.type = value;
+	                // If switching away from a DSP-derived custom crossover, drop the explicit stages
+	                // so the UI selection uses the synthetic generator.
+	                if (value !== 'Custom') {{
+	                    xo.lpStages = null;
+	                    xo.hpStages = null;
+	                    xo.fadeOctavesLP = null;
+	                    xo.fadeOctavesHP = null;
+	                }}
+		            }} else if (field === 'lpDriver') {{
+		                xo.lpDriver = value === '' ? null : value;
+		                xo.lpDrivers = xo.lpDriver ? [xo.lpDriver] : [];
+	            }} else if (field === 'hpDriver') {{
+	                xo.hpDriver = value === '' ? null : value;
+	                xo.hpDrivers = xo.hpDriver ? [xo.hpDriver] : [];
+	            }} else if (field === 'applyFilters') {{
+	                xo.applyFilters = value;
+	            }}
             saveCrossoversToLocalStorage();
             syncCrossoverFilters();
             renderCrossoverList();
@@ -2132,9 +2817,12 @@ class PolarResponseVisualizer:
                 const card = document.createElement('div');
                 card.className = 'crossover-card' + (xo.enabled ? '' : ' disabled');
 
-                const typeOptions = Object.entries(crossoverTypes).map(([key, val]) =>
-                    `<option value="${{key}}" ${{key === xo.type ? 'selected' : ''}}>${{key}}</option>`
-                ).join('');
+	                let typeOptions = Object.entries(crossoverTypes).map(([key, val]) =>
+	                    `<option value="${{key}}" ${{key === xo.type ? 'selected' : ''}}>${{key}}</option>`
+	                ).join('');
+	                if (!crossoverTypes[xo.type]) {{
+	                    typeOptions = `<option value="${{xo.type}}" selected>${{xo.type}}</option>` + typeOptions;
+	                }}
 
                 const driverOptionsLP = ['<option value="">(None)</option>'].concat(
                     drivers.map(d => `<option value="${{d}}" ${{d === xo.lpDriver ? 'selected' : ''}}>${{d}}</option>`)
@@ -2216,6 +2904,19 @@ class PolarResponseVisualizer:
                 return '2 4';                         // dotted (90° and beyond)
             }}
 
+            // Phase dash patterns: 2X longer than SPL patterns
+            function getPhaseDash(angle) {{
+                if (angle === 0) return 'solid';
+                if (angle <= 10) return '24 8';      // 2X of '12 4'
+                if (angle <= 20) return '16 8';      // 2X of '8 4'
+                if (angle <= 30) return '10 8';      // 2X of '5 4'
+                if (angle <= 45) return '16 8 4 8';  // 2X of '8 4 2 4'
+                if (angle <= 60) return '10 8 4 8';  // 2X of '5 4 2 4'
+                return '4 8';                         // 2X of '2 4'
+            }}
+
+            const showPhaseTraces = document.getElementById('showPhase')?.checked ?? false;
+
             activeDrivers.forEach(driver => {{
                 const color = driverColors[driver] || defaultColor;
                 const offset = driverOffsets[driver];
@@ -2228,8 +2929,10 @@ class PolarResponseVisualizer:
 
                 // Calculate combined filter response (includes both EQ and X-O filters in driverFilters)
                 let filterResponse = null;
+                let filterPhaseResponse = null;
                 if (hasActiveFilters) {{
                     filterResponse = calcFilterChainResponse(filters, data.freq);
+                    filterPhaseResponse = calcFilterChainPhaseResponse(filters, data.freq);
                 }}
 
                 // Get fade colors and clip mask for crossover visual effect
@@ -2291,6 +2994,52 @@ class PolarResponseVisualizer:
                             }}
                         }});
                     }}
+
+	                    // Add phase trace if enabled and data available
+	                    if (showPhaseTraces && data.phase && data.phase[angle]) {{
+	                        const phaseOriginal = data.phase[angle];
+	                        const phaseDash = getPhaseDash(angle);
+	                        const phaseLineWidth = lineWidth * 0.8;
+	                        const phaseName = `${{driver}} @ ${{angle}}° (φ)`;
+
+	                        const delayMs = driverDelaysMs[driver] || 0;
+	                        const invertDeg = driverPhaseOffsetsDeg[driver] || 0;
+	                        const needsPhaseAdjust = (hasActiveFilters && filterPhaseResponse) || invertDeg !== 0 || delayMs !== 0;
+
+	                        // Apply filter phase response + invert/delay if active
+	                        const phaseData = needsPhaseAdjust
+	                            ? phaseOriginal.map((p, i) => {{
+	                                let phase = p;
+	                                if (hasActiveFilters && filterPhaseResponse) phase += filterPhaseResponse[i];
+	                                if (invertDeg) phase += invertDeg;
+	                                if (delayMs) phase -= 360 * data.freq[i] * (delayMs / 1000);
+	                                return wrapPhase(phase);
+	                            }})
+	                            : phaseOriginal;
+
+	                        if (hasVisualClipping) {{
+	                            // Apply same crossover fading to phase
+	                            const phaseSegments = createFadingSegments(
+                                data.freq, phaseData, fadeColors, clipMask,
+                                phaseLineWidth, phaseDash, phaseName, false
+                            );
+                            // Assign to xaxis2/yaxis2 (bottom subplot)
+                            phaseSegments.forEach(seg => {{ seg.xaxis = 'x2'; seg.yaxis = 'y2'; }});
+                            traces.push(...phaseSegments);
+                        }} else {{
+                            traces.push({{
+                                x: data.freq,
+                                y: phaseData,
+                                name: phaseName,
+                                mode: 'lines',
+                                line: {{ color: color, width: phaseLineWidth, dash: phaseDash }},
+                                xaxis: 'x2',
+                                yaxis: 'y2',
+                                showlegend: false,
+                                hovertemplate: '%{{y:.1f}}°<extra></extra>'
+                            }});
+                        }}
+                    }}
                 }});
             }});
 
@@ -2304,10 +3053,11 @@ class PolarResponseVisualizer:
                 }});
             }});
 
-            // Get Y range from data (ignore null/undefined values)
+            // Get Y range from SPL data only (exclude phase traces on yaxis2)
             let yMin = Infinity, yMax = -Infinity;
             traces.forEach(t => {{
                 if (!t.y) return;
+                if (t.yaxis === 'y2') return;  // Skip phase traces
                 t.y.forEach(v => {{
                     if (v === null || v === undefined) return;  // Skip clipped/empty points
                     if (!Number.isFinite(v)) return;
@@ -2336,18 +3086,49 @@ class PolarResponseVisualizer:
                 }});
             }}
 
+            const showPhase = document.getElementById('showPhase')?.checked ?? false;
+
+            // SPL always in top portion, phase in bottom when enabled
+            const splDomain = showPhase ? [0.38, 1] : [0, 1];
+            const phaseDomain = [0, 0.32];
+
             const layout = {{
                 title: '<b>Frequency Response Explorer</b>',
                 xaxis: {{
+                    title: showPhase ? '' : 'Frequency (Hz)',
+                    type: 'log',
+                    range: [Math.log10(100), Math.log10(20000)],
+                    gridcolor: 'transparent',
+                    domain: [0, 1],
+                    anchor: 'y'
+                }},
+                xaxis2: {{
                     title: 'Frequency (Hz)',
                     type: 'log',
                     range: [Math.log10(100), Math.log10(20000)],
-                    gridcolor: 'transparent'
+                    gridcolor: 'transparent',
+                    domain: [0, 1],
+                    anchor: 'y2',
+                    visible: showPhase
                 }},
                 yaxis: {{
                     title: 'SPL (dB)',
                     range: [yMin, yMax],
-                    gridcolor: 'transparent'
+                    gridcolor: 'transparent',
+                    domain: splDomain
+                }},
+                yaxis2: {{
+                    title: 'Phase (°)',
+                    range: [-180, 180],
+                    dtick: 90,
+                    showgrid: true,
+                    gridcolor: '#f0f0f0',
+                    zeroline: true,
+                    zerolinecolor: '#ccc',
+                    zerolinewidth: 1,
+                    domain: phaseDomain,
+                    anchor: 'x2',
+                    visible: showPhase
                 }},
                 shapes: shapes,
                 legend: {{

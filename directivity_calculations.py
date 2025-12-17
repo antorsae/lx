@@ -335,7 +335,7 @@ def calculate_crossover_match_score(di1: np.ndarray, di2: np.ndarray,
     }
 
 
-def create_polar_matrix_from_dict(driver_data: Dict) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def create_polar_matrix_from_dict(driver_data: Dict) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
     Convert driver polar data dictionary to matrix format for calculations
 
@@ -343,17 +343,19 @@ def create_polar_matrix_from_dict(driver_data: Dict) -> Tuple[np.ndarray, np.nda
         driver_data: Dictionary from PolarDataLoader with 'angles' and 'common_frequencies'
 
     Returns:
-        Tuple of (frequencies, angles, spl_matrix)
+        Tuple of (frequencies, angles, spl_matrix, phase_matrix)
     """
     angles = sorted(driver_data['angles'].keys())
     frequencies = driver_data['common_frequencies']
 
     spl_matrix = np.zeros((len(frequencies), len(angles)))
+    phase_matrix = np.zeros((len(frequencies), len(angles)))
 
     for i, angle in enumerate(angles):
         spl_matrix[:, i] = driver_data['angles'][angle]['magnitude']
+        phase_matrix[:, i] = driver_data['angles'][angle].get('phase', np.zeros(len(frequencies)))
 
-    return frequencies, np.array(angles), spl_matrix
+    return frequencies, np.array(angles), spl_matrix, phase_matrix
 
 
 def main():
