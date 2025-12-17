@@ -716,6 +716,26 @@ class PolarResponseVisualizer:
             border-radius: 4px;
             text-align: center;
         }}
+        .invert-control {{
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: #666;
+        }}
+        .invert-control label {{
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }}
+        .invert-control input[type="checkbox"] {{
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: var(--driver-color);
+        }}
         .angle-grid {{
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -786,6 +806,16 @@ class PolarResponseVisualizer:
             margin-bottom: 10px;
             flex-wrap: wrap;
         }}
+        .timing-controls {{
+            margin-bottom: 15px;
+        }}
+        .io-label {{
+            min-width: 44px;
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }}
         .filter-controls button {{
             padding: 6px 12px;
             border: 1px solid #ddd;
@@ -804,6 +834,14 @@ class PolarResponseVisualizer:
         }}
         .filter-controls button.primary:hover {{
             background: #1d4ed8;
+        }}
+        .filter-controls button.danger {{
+            background: #fee2e2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }}
+        .filter-controls button.danger:hover {{
+            background: #fecaca;
         }}
         .filter-driver-select {{
             display: flex;
@@ -1153,13 +1191,16 @@ class PolarResponseVisualizer:
         <div class="sidebar">
             <h2>Frequency Response Explorer</h2>
 
-            <h3>Drivers (click to toggle)</h3>
-            <div class="driver-list" id="driverList"></div>
-
-            <h3>Angles</h3>
-            <div class="quick-select">
-                <button class="quick-btn" onclick="selectAngles([0])">0° only</button>
-                <button class="quick-btn" onclick="selectAngles([0,30,60,90])">0/30/60/90</button>
+	            <h3>Drivers (click to toggle)</h3>
+	            <div class="driver-list" id="driverList"></div>
+                <div class="filter-controls timing-controls">
+                    <button onclick="resetTimingAdjustments()" title="Clear per-driver delay and invert adjustments">Clear Delay/Invert</button>
+                </div>
+	
+	            <h3>Angles</h3>
+	            <div class="quick-select">
+	                <button class="quick-btn" onclick="selectAngles([0])">0° only</button>
+	                <button class="quick-btn" onclick="selectAngles([0,30,60,90])">0/30/60/90</button>
                 <button class="quick-btn" onclick="selectAllAngles()">All</button>
                 <button class="quick-btn" onclick="selectAngles([])">None</button>
             </div>
@@ -1173,21 +1214,28 @@ class PolarResponseVisualizer:
                 </label>
             </div>
 
-            <div class="filter-section">
-                <h3>Filters (IIR EQ)</h3>
-                <div class="filter-controls">
-                    <button class="primary" onclick="addFilter()">+ Add Filter</button>
-                    <button onclick="document.getElementById('yamlInput').click()">Load YAML</button>
-                    <button onclick="saveFiltersYaml()">Save YAML</button>
-                    <button onclick="document.getElementById('dspInput').click()" title="Load filters from miniDSP .dsp file">Load DSP</button>
-                    <button onclick="resetTimingAdjustments()" title="Reset imported delay/invert phase adjustments">Reset Time</button>
-                </div>
-                <input type="file" id="yamlInput" accept=".yaml,.yml" onchange="loadYamlFile(event)">
-                <input type="file" id="dspInput" accept=".dsp" onchange="handleDspFileLoad(event)" style="display:none">
-                <div class="filter-driver-select">
-                    <label>Driver:</label>
-                    <select id="filterDriverSelect" onchange="selectFilterDriver(this.value)"></select>
-                </div>
+	            <div class="filter-section">
+	                <h3>Filters (IIR EQ)</h3>
+	                <div class="filter-controls">
+	                    <button class="primary" onclick="addFilter()">+ Add Filter</button>
+                        <button class="danger" onclick="clearAllUserFilters()" title="Clear all user EQ filters (keeps crossovers)">Clear Filters</button>
+	                </div>
+                    <div class="filter-controls">
+                        <span class="io-label">YAML:</span>
+	                    <button onclick="document.getElementById('yamlInput').click()">Load</button>
+	                    <button onclick="saveFiltersYaml()">Save</button>
+                    </div>
+                    <div class="filter-controls">
+                        <span class="io-label">DSP:</span>
+	                    <button onclick="document.getElementById('dspInput').click()" title="Load filters from miniDSP .dsp file">Load</button>
+                        <button onclick="saveDspFile()" title="Export current filters/gain/delay/invert to miniDSP .dsp">Save</button>
+                    </div>
+	                <input type="file" id="yamlInput" accept=".yaml,.yml" onchange="loadYamlFile(event)" style="display:none">
+	                <input type="file" id="dspInput" accept=".dsp" onchange="handleDspFileLoad(event)" style="display:none">
+	                <div class="filter-driver-select">
+	                    <label>Driver:</label>
+	                    <select id="filterDriverSelect" onchange="selectFilterDriver(this.value)"></select>
+	                </div>
                 <div class="filter-list" id="filterList">
                     <div class="no-filters">No filters defined</div>
                 </div>
@@ -1256,11 +1304,15 @@ class PolarResponseVisualizer:
             driverDelaysMs[d] = 0;
         }});
 
-        // Filter state
-        let driverFilters = {{}};
-        drivers.forEach(d => driverFilters[d] = []);
-        let selectedFilterDriver = drivers[0];
-        const STORAGE_KEY = 'lx521_filters_' + measurementSetName;
+	        // Filter state
+	        let driverFilters = {{}};
+	        drivers.forEach(d => driverFilters[d] = []);
+	        let selectedFilterDriver = drivers[0];
+	        const STORAGE_KEY = 'lx521_filters_' + measurementSetName;
+
+            // Track last-loaded DSP so we can reuse its header/template (and preserve unmapped channels).
+            let lastLoadedDsp = null;
+            let lastLoadedDspFilename = null;
 
         // Visual Crossover Overlay state
         let visualCrossovers = [];
@@ -1321,27 +1373,38 @@ class PolarResponseVisualizer:
 	                productNr: lines[0],
 	                formatVersion: lines[1],
 	                buildNr: lines[2],
+                    header24: lines[23] ?? '0',
 	                measSampleRate: measSampleRate,
 	                sampleRate: parseFloat(lines[25]) || 93750
 	            }};
 
-            const channels = {{}};
+                const template = {{
+                    channelPreambles: {{}},
+                    channelExtraInt: {{}},
+                    footerFlag2: '0',
+                    anechstop: 65536,
+                    smoothbw: 0.125,
+                }};
+
+                const channels = {{}};
             let lineIdx = 28;
 
             // Parse each channel (1-6)
             for (let ch = 1; ch <= 6; ch++) {{
                 // Channels 2-6 have 3 preamble lines
                 if (ch > 1) {{
+                    template.channelPreambles[ch] = lines.slice(lineIdx, lineIdx + 3);
                     lineIdx += 3;
                 }}
 
                 // Channel header: 6 lines
                 const biquadCount = parseInt(lines[lineIdx++]) || 15;
-	                const delayRaw = parseFloat(lines[lineIdx++]) || 0;
-	                const gain = parseFloat(lines[lineIdx++]) || 0;
-	                const invert = lines[lineIdx++] === '1';
-	                const enabled = lines[lineIdx++] === '1';
-	                lineIdx++; // extra int
+		                const delayRaw = parseFloat(lines[lineIdx++]) || 0;
+		                const gain = parseFloat(lines[lineIdx++]) || 0;
+		                const invert = lines[lineIdx++] === '1';
+		                const enabled = lines[lineIdx++] === '1';
+		                const extraInt = lines[lineIdx++] ?? '0';
+                        template.channelExtraInt[ch] = extraInt;
 
                 const filters = [];
 
@@ -1422,11 +1485,26 @@ class PolarResponseVisualizer:
                         q: q1,
                         gain: filterGain,
                         enabled: !isDisabled,
-                        sampleRate: header.sampleRate
+                        sampleRate: header.sampleRate,
+                        // Keep full raw details for potential round-trip export/debugging
+                        raw: {{
+                            typeCode,
+                            f1,
+                            f2,
+                            gain: filterGain,
+                            q1,
+                            q2,
+                            shelfhl,
+                            spoles,
+                            szeros,
+                            b0,
+                            b1,
+                            b2,
+                        }}
                     }});
                 }}
 
-	                // Hypex .dsp delay values are stored as microseconds.
+		                // Hypex .dsp delay values are stored as microseconds.
 	                // Convert to ms so phase adjustment uses correct units.
 	                const delayMs = delayRaw / 1000;
 
@@ -1445,8 +1523,21 @@ class PolarResponseVisualizer:
                 }}
             }}
 
-            return {{ header, channels }};
-        }}
+                // Parse footer (for template reuse)
+                const footer = lines.slice(lineIdx);
+                if (footer.length >= 6) {{
+                    // Footer structure has a leading blank line, then a 10-line config block
+                    if (footer[1] === '1') {{
+                        template.footerFlag2 = footer[2] ?? '0';
+                    }}
+                    const maybeAnech = parseInt(footer[5], 10);
+                    if (!Number.isNaN(maybeAnech)) template.anechstop = maybeAnech;
+                    const maybeSmooth = parseFloat(footer[9]);
+                    if (Number.isFinite(maybeSmooth)) template.smoothbw = maybeSmooth;
+                }}
+
+                return {{ header, template, channels }};
+	        }}
 
         function detectCrossovers(dspData) {{
             const detected = [];
@@ -1570,25 +1661,27 @@ class PolarResponseVisualizer:
 	                const channelDelayMs = chData.delay || 0;
 	                const channelInvert = !!chData.invert;
 
-	                for (const driver of targetDrivers) {{
-	                    if (!drivers.includes(driver)) continue;
+		                for (const driver of targetDrivers) {{
+		                    if (!drivers.includes(driver)) continue;
 
-	                    driverOffsets[driver] = channelGain;
-	                    driverDelaysMs[driver] = channelDelayMs;
-	                    driverPhaseOffsetsDeg[driver] = channelInvert ? 180 : 0;
+		                    driverOffsets[driver] = channelGain;
+		                    driverDelaysMs[driver] = channelDelayMs;
+		                    driverPhaseOffsetsDeg[driver] = channelInvert ? 180 : 0;
 
-	                    // Update UI slider/input for this driver
-	                    const item = document.querySelector(`.driver-item[data-driver="${{driver}}"]`);
-	                    if (item) {{
-	                        const gainSlider = item.querySelector('.gain-slider');
-	                        const gainInput = item.querySelector('.gain-input');
-	                        const delayInput = item.querySelector('.delay-input');
-	                        if (gainSlider) gainSlider.value = channelGain;
-	                        if (gainInput) gainInput.value = channelGain;
-	                        if (delayInput) delayInput.value = Math.round(channelDelayMs * 1000);
-	                    }}
-	                }}
-	            }}
+		                    // Update UI slider/input for this driver
+		                    const item = document.querySelector(`.driver-item[data-driver="${{driver}}"]`);
+		                    if (item) {{
+		                        const gainSlider = item.querySelector('.gain-slider');
+		                        const gainInput = item.querySelector('.gain-input');
+		                        const delayInput = item.querySelector('.delay-input');
+                                const invertInput = item.querySelector('.invert-checkbox');
+		                        if (gainSlider) gainSlider.value = channelGain;
+		                        if (gainInput) gainInput.value = channelGain;
+		                        if (delayInput) delayInput.value = Math.round(channelDelayMs * 1000);
+                                if (invertInput) invertInput.checked = channelInvert;
+		                    }}
+		                }}
+		            }}
 
 		            // Build set of filters that are part of crossovers we actually represent
 		            // (only exclude crossover filters if we can create a corresponding visual crossover)
@@ -1666,18 +1759,20 @@ class PolarResponseVisualizer:
             updatePlot();
 	        }}
 
-	        function resetTimingAdjustments() {{
-	            drivers.forEach(d => {{
-	                driverDelaysMs[d] = 0;
-	                driverPhaseOffsetsDeg[d] = 0;
-	                const item = document.querySelector(`.driver-item[data-driver="${{d}}"]`);
-	                if (item) {{
-	                    const delayInput = item.querySelector('.delay-input');
-	                    if (delayInput) delayInput.value = 0;
-	                }}
-	            }});
-	            updatePlot();
-	        }}
+		        function resetTimingAdjustments() {{
+		            drivers.forEach(d => {{
+		                driverDelaysMs[d] = 0;
+		                driverPhaseOffsetsDeg[d] = 0;
+		                const item = document.querySelector(`.driver-item[data-driver="${{d}}"]`);
+		                if (item) {{
+		                    const delayInput = item.querySelector('.delay-input');
+                            const invertInput = item.querySelector('.invert-checkbox');
+		                    if (delayInput) delayInput.value = 0;
+                            if (invertInput) invertInput.checked = false;
+		                }}
+		            }});
+		            updatePlot();
+		        }}
 
 	        async function handleDspFileLoad(event) {{
             const file = event.target.files[0];
@@ -1686,6 +1781,8 @@ class PolarResponseVisualizer:
             try {{
                 const content = await file.text();
                 const dspData = parseDspFile(content);
+                lastLoadedDsp = dspData;
+                lastLoadedDspFilename = file.name || null;
                 const detectedCrossovers = detectCrossovers(dspData);
 
                 // Collect unsupported filters and channel info
@@ -1767,8 +1864,8 @@ class PolarResponseVisualizer:
             event.target.value = '';
         }}
 
-        // ============ BIQUAD IIR CALCULATIONS ============
-        function calcBiquadCoeffs(type, freq, q, gain, sampleRate = 48000) {{
+	        // ============ BIQUAD IIR CALCULATIONS ============
+	        function calcBiquadCoeffs(type, freq, q, gain, sampleRate = 48000) {{
             const w0 = 2 * Math.PI * freq / sampleRate;
             const cosW0 = Math.cos(w0);
             const sinW0 = Math.sin(w0);
@@ -1880,6 +1977,370 @@ class PolarResponseVisualizer:
 
 	            return (numPhase - denPhase) * 180 / Math.PI;
 	        }}
+
+            // ============ DSP EXPORT ============
+            function formatDspSci(value) {{
+                const v = Number.isFinite(value) ? value : 0;
+                const isNegZero = Object.is(v, -0);
+                const isNegative = v < 0 || isNegZero;
+                const absExp = Math.abs(v).toExponential(14).replace('e', 'E');
+                const parts = absExp.split('E');
+                const mantissa = (isNegative ? '-' : '') + (parts[0] || '0.00000000000000');
+                const expPart = parts[1] || '+0';
+                const sign = expPart[0] === '-' ? '-' : '+';
+                const digits = expPart.slice(1).padStart(4, '0');
+                const formatted = `${{mantissa}}E${{sign}}${{digits}}`;
+                return isNegative ? formatted : (' ' + formatted);
+            }}
+
+            function downloadTextFile(content, filename, mimeType = 'text/plain') {{
+                const blob = new Blob([content], {{ type: mimeType }});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            }}
+
+            function pickPrimaryDriverForChannel(mappedDrivers) {{
+                if (!Array.isArray(mappedDrivers) || mappedDrivers.length === 0) return null;
+                for (const d of mappedDrivers) {{
+                    if (drivers.includes(d) && activeDrivers.has(d)) return d;
+                }}
+                for (const d of mappedDrivers) {{
+                    if (drivers.includes(d)) return d;
+                }}
+                return null;
+            }}
+
+            function dspTypeCodeForFilterType(type) {{
+                switch (type) {{
+                    case 'Lowpass': return 2;
+                    case 'Highpass': return 4;
+                    case 'Lowshelf':
+                    case 'Highshelf': return 6;
+                    case 'Peaking': return 8;
+                    case 'Allpass': return 10;
+                    default: return 0;
+                }}
+            }}
+
+            function dspShelfHlForFilterType(type) {{
+                if (type === 'Highshelf') return 1;
+                return 0;
+            }}
+
+            function dspPoleZeroCountsForTypeCode(baseTypeCode) {{
+                // Mirrors observed miniDSP exports: Lowpass has szeros=0, others 2.
+                if (baseTypeCode === 0) return {{ spoles: 0, szeros: 0, zpoles: 2, zzeros: 2 }};
+                if (baseTypeCode === 2) return {{ spoles: 2, szeros: 0, zpoles: 2, zzeros: 2 }};
+                return {{ spoles: 2, szeros: 2, zpoles: 2, zzeros: 2 }};
+            }}
+
+            function dspNormalizeZeroSigns(typeCode, b0, b1, b2) {{
+                let outB1 = b1;
+                let outB2 = b2;
+                if (typeCode !== 10 && outB1 === 0) {{
+                    if (typeCode === 0 && b0 < 0) outB1 = 0;
+                    else outB1 = -0;
+                }}
+                if (outB2 === 0) {{
+                    if (typeCode === 10) outB2 = -0;
+                    else if (typeCode === 0 && b0 < 0) outB2 = -0;
+                }}
+                return {{ b1: outB1, b2: outB2 }};
+            }}
+
+            function buildDspFilterBlockLines(filter, sampleRate) {{
+                const baseTypeCode = dspTypeCodeForFilterType(filter.type);
+                if (baseTypeCode === 0) return null;
+
+                const typeCode = filter.enabled ? baseTypeCode : 0;
+                const f1 = filter.freq;
+                const f2 = 1000.0;
+                const gain = filterNeedsGain[filter.type] ? (filter.gain || 0) : 0.0;
+                const q1 = filter.q;
+                const q2 = 0.7;
+                const shelfhl = dspShelfHlForFilterType(filter.type);
+
+                const coeffs = calcBiquadCoeffs(filter.type, f1, Math.max(0.0001, q1), gain, sampleRate);
+                const zconst = coeffs.b0;
+                const counts = dspPoleZeroCountsForTypeCode(baseTypeCode);
+                const zeros = dspNormalizeZeroSigns(typeCode, coeffs.b0, coeffs.b1, coeffs.b2);
+
+                return [
+                    String(typeCode),
+                    formatDspSci(f1),
+                    formatDspSci(f2),
+                    formatDspSci(gain),
+                    formatDspSci(q1),
+                    formatDspSci(q2),
+                    String(shelfhl),
+                    String(counts.spoles),
+                    String(counts.szeros),
+                    String(counts.zpoles),
+                    String(counts.zzeros),
+                    formatDspSci(1.0),         // sconst
+                    formatDspSci(zconst),      // zconst
+                    formatDspSci(coeffs.b0),   // b0
+                    formatDspSci(zeros.b1),    // b1
+                    formatDspSci(zeros.b2),    // b2
+                    formatDspSci(coeffs.a1),   // a1
+                    formatDspSci(coeffs.a2),   // a2
+                ];
+            }}
+
+            function buildDspUnityBlockLines() {{
+                return [
+                    '0',
+                    formatDspSci(1000.0),
+                    formatDspSci(1000.0),
+                    formatDspSci(0.0),
+                    formatDspSci(0.7),
+                    formatDspSci(0.7),
+                    '0',
+                    '0',
+                    '0',
+                    '2',
+                    '2',
+                    formatDspSci(1.0),
+                    formatDspSci(1.0),
+                    formatDspSci(1.0),
+                    formatDspSci(-0),
+                    formatDspSci(0.0),
+                    formatDspSci(0.0),
+                    formatDspSci(0.0),
+                ];
+            }}
+
+            function buildDspFileText(exportHeader, exportTemplate, channelsOut) {{
+                const lines = [];
+
+                const productNr = exportHeader.productNr ?? '3';
+                const formatVersion = exportHeader.formatVersion ?? '2';
+                const buildNr = exportHeader.buildNr ?? '3';
+                const header24 = exportHeader.header24 ?? '0';
+                const measSampleRate = exportHeader.measSampleRate ?? 48000.0;
+                const sampleRate = exportHeader.sampleRate ?? 93750.0;
+
+                // Header (28 lines)
+                lines.push(productNr);
+                lines.push(formatVersion);
+                lines.push(buildNr);
+                lines.push('0', '0', '1', '0', '0');
+                lines.push('6');
+                lines.push('15', '15', '15', '15', '15', '15');
+                lines.push('10', '10', '10', '10', '10', '10');
+                lines.push('1', '0', String(header24));
+                lines.push(formatDspSci(measSampleRate));
+                lines.push(formatDspSci(sampleRate));
+                lines.push(formatDspSci(0.0));
+                lines.push(formatDspSci(65536.0 / 48000.0));
+
+                // Channels (1-6)
+                for (let ch = 1; ch <= 6; ch++) {{
+                    if (ch > 1) {{
+                        const pre = exportTemplate.channelPreambles?.[ch] || ['1', '1', '0'];
+                        lines.push(...pre);
+                    }}
+
+                    const chData = channelsOut[ch] || {{ delayRaw: 0, gain: 0, invert: false, enabled: true, filters: [] }};
+                    const extraInt = exportTemplate.channelExtraInt?.[ch] ?? '0';
+                    const delayRaw = chData.delayRaw || 0;
+                    const gain = chData.gain || 0;
+                    const invert = !!chData.invert;
+                    const enabled = (chData.enabled ?? true) ? '1' : '0';
+
+                    lines.push('15');
+                    lines.push(formatDspSci(delayRaw));
+                    lines.push(formatDspSci(gain));
+                    lines.push(invert ? '1' : '0');
+                    lines.push(enabled);
+                    lines.push(String(extraInt));
+
+                    const filters = Array.isArray(chData.filters) ? chData.filters : [];
+                    for (let i = 0; i < 15; i++) {{
+                        if (i < filters.length) {{
+                            const block = buildDspFilterBlockLines(filters[i], sampleRate);
+                            if (block) lines.push(...block);
+                            else lines.push(...buildDspUnityBlockLines());
+                        }} else {{
+                            lines.push(...buildDspUnityBlockLines());
+                        }}
+                    }}
+
+                    if (ch < 6) lines.push('');
+                }}
+
+                // Footer
+                const footerFlag2 = exportTemplate.footerFlag2 ?? '0';
+                const anechstop = exportTemplate.anechstop ?? 65536;
+                const smoothbw = exportTemplate.smoothbw ?? 0.125;
+
+                lines.push('');
+                lines.push('1');
+                lines.push(String(footerFlag2));
+                lines.push('0');
+                lines.push('0');
+                lines.push(String(anechstop));
+                lines.push('0');
+                lines.push('0');
+                lines.push('1');
+                lines.push(formatDspSci(smoothbw));
+                lines.push('0');
+                lines.push('/N*');
+                lines.push('');
+                lines.push('*N/');
+                for (let i = 0; i < 10; i++) lines.push('-1');
+
+                return lines.join('\\r\\n') + '\\r\\n';
+            }}
+
+            function saveDspFile() {{
+                // Build header/template defaults
+                const baseHeader = lastLoadedDsp?.header || {{
+                    productNr: '3',
+                    formatVersion: '2',
+                    buildNr: '3',
+                    header24: '0',
+                    measSampleRate: 48000.0,
+                    sampleRate: 93750.0,
+                }};
+                const baseTemplate = lastLoadedDsp?.template || {{
+                    channelPreambles: {{}},
+                    channelExtraInt: {{}},
+                    footerFlag2: '0',
+                    anechstop: 65536,
+                    smoothbw: 0.125,
+                }};
+
+                // Warn if we don't have a template (unmapped channels will be unity).
+                if (!lastLoadedDsp) {{
+                    const proceed = confirm(
+                        'No DSP template loaded.\\n\\n' +
+                        'Unmapped channels will be exported as Unity (empty).\\n' +
+                        'If you want to preserve channels not shown in this explorer (e.g. W), load a .dsp first, then export.'
+                    );
+                    if (!proceed) return;
+                }}
+
+                const exportSampleRate = parseFloat(baseHeader.sampleRate) || 93750;
+
+                // Build output channels (1-6)
+                const channelsOut = {{}};
+                const warnings = [];
+
+                for (let ch = 1; ch <= 6; ch++) {{
+                    const mappedDrivers = DSP_CHANNEL_MAP[ch];
+                    const primaryDriver = pickPrimaryDriverForChannel(mappedDrivers);
+
+                    if (primaryDriver) {{
+                        const delayMs = driverDelaysMs[primaryDriver] || 0;
+                        const delayRaw = delayMs * 1000;
+                        const gain = driverOffsets[primaryDriver] || 0;
+                        const phaseOffset = driverPhaseOffsetsDeg[primaryDriver] || 0;
+                        const normPhase = ((phaseOffset % 360) + 360) % 360;
+                        const invert = Math.abs(normPhase - 180) < 1e-6;
+                        if (!(Math.abs(normPhase) < 1e-6 || invert)) {{
+                            warnings.push(
+                                'Channel ' + ch + ': driver ' + primaryDriver +
+                                ' has non-180 phase offset (' + phaseOffset + '°); DSP export supports only invert.'
+                            );
+                        }}
+
+                        const rawFilters = driverFilters[primaryDriver] || [];
+                        const exportFilters = [];
+                        const skipped = [];
+
+                        rawFilters.forEach(f => {{
+                            if (!filterTypes.includes(f.type)) {{
+                                skipped.push(f.type || 'Unknown');
+                                return;
+                            }}
+                            const baseTypeCode = dspTypeCodeForFilterType(f.type);
+                            if (baseTypeCode === 0) {{
+                                skipped.push(f.type);
+                                return;
+                            }}
+
+                            let q = parseFloat(f.q);
+                            if (!Number.isFinite(q) || q <= 0) q = 0.707;
+
+                            // Convert Peaking Q to DSP convention (Hypex/Config.xml)
+                            if (f.type === 'Peaking') q = q * 2.0;
+
+                            exportFilters.push({{
+                                type: f.type,
+                                freq: parseFloat(f.freq) || 1000,
+                                q: q,
+                                gain: parseFloat(f.gain) || 0,
+                                enabled: f.enabled !== false,
+                            }});
+                        }});
+
+                        if (skipped.length > 0) {{
+                            warnings.push('Channel ' + ch + ': skipped unsupported filter types: ' + Array.from(new Set(skipped)).join(', '));
+                        }}
+                        if (exportFilters.length > 15) {{
+                            warnings.push('Channel ' + ch + ': has ' + exportFilters.length + ' filters; only first 15 will be exported.');
+                            exportFilters.length = 15;
+                        }}
+
+                        channelsOut[ch] = {{
+                            delayRaw: delayRaw,
+                            gain: gain,
+                            invert: invert,
+                            enabled: true,
+                            filters: exportFilters,
+                        }};
+                    }} else if (lastLoadedDsp?.channels?.[ch]) {{
+                        // Preserve channels not mapped into this explorer.
+                        const chData = lastLoadedDsp.channels[ch];
+                        const exportFilters = [];
+                        (chData.filters || []).forEach(f => {{
+                            const baseTypeCode = dspTypeCodeForFilterType(f.type);
+                            if (baseTypeCode === 0) return;
+                            exportFilters.push({{
+                                type: f.type,
+                                freq: f.freq,
+                                q: f.q,          // Already in DSP convention
+                                gain: f.gain,
+                                enabled: f.enabled !== false,
+                            }});
+                        }});
+                        channelsOut[ch] = {{
+                            delayRaw: chData.delayRaw || (chData.delay || 0) * 1000,
+                            gain: chData.gain || 0,
+                            invert: !!chData.invert,
+                            enabled: chData.enabled !== false,
+                            filters: exportFilters.slice(0, 15),
+                        }};
+                    }} else {{
+                        // Default empty channel
+                        channelsOut[ch] = {{ delayRaw: 0, gain: 0, invert: false, enabled: true, filters: [] }};
+                    }}
+                }}
+
+                if (warnings.length > 0) {{
+                    const proceed = confirm('DSP export warnings:\\n\\n' + warnings.join('\\n') + '\\n\\nContinue export?');
+                    if (!proceed) return;
+                }}
+
+                const dspText = buildDspFileText(
+                    {{ ...baseHeader, sampleRate: exportSampleRate }},
+                    baseTemplate,
+                    channelsOut
+                );
+
+                const defaultName = lastLoadedDspFilename
+                    ? lastLoadedDspFilename.replace(/\\.dsp$/i, '_export.dsp')
+                    : (measurementSetName + '_export.dsp');
+                const filename = prompt('DSP filename:', defaultName) || defaultName;
+                downloadTextFile(dspText, filename, 'text/plain');
+            }}
 
 	        function getFilterSampleRate(filter) {{
 	            return filter.sampleRate || DEFAULT_FILTER_SAMPLE_RATE;
@@ -2373,24 +2834,30 @@ class PolarResponseVisualizer:
                 item.style.setProperty('--driver-color', color);
                 item.dataset.driver = driver;
 
-                item.innerHTML = `
-                    <div class="driver-header">
-                        <input type="checkbox" class="driver-checkbox" ${{isActive ? 'checked' : ''}}>
-                        <span class="driver-line">———</span>
-                        <span class="driver-name">${{driver}}</span>
-                    </div>
-	                    <div class="offset-control">
-	                        <span>Gain:</span>
-	                        <input type="range" class="gain-slider" min="-20" max="20" value="0">
-	                        <input type="number" class="gain-input" value="0" min="-20" max="20">
-	                        <span>dB</span>
+	                item.innerHTML = `
+	                    <div class="driver-header">
+	                        <input type="checkbox" class="driver-checkbox" ${{isActive ? 'checked' : ''}}>
+	                        <span class="driver-line">———</span>
+	                        <span class="driver-name">${{driver}}</span>
 	                    </div>
-	                    <div class="delay-control">
-	                        <span>Delay:</span>
-	                        <input type="number" class="delay-input" value="0" step="1" min="-100000" max="100000">
-	                        <span>µs</span>
-	                    </div>
-	                `;
+		                    <div class="offset-control">
+		                        <span>Gain:</span>
+		                        <input type="range" class="gain-slider" min="-20" max="20" value="0">
+		                        <input type="number" class="gain-input" value="0" min="-20" max="20">
+		                        <span>dB</span>
+		                    </div>
+		                    <div class="delay-control">
+		                        <span>Delay:</span>
+		                        <input type="number" class="delay-input" value="0" step="1" min="-100000" max="100000">
+		                        <span>µs</span>
+		                    </div>
+                            <div class="invert-control">
+                                <label>
+                                    <input type="checkbox" class="invert-checkbox">
+                                    <span>Invert</span>
+                                </label>
+                            </div>
+		                `;
 
                 // Header click toggles driver
                 const header = item.querySelector('.driver-header');
@@ -2411,22 +2878,29 @@ class PolarResponseVisualizer:
                 }};
 
                 // Offset controls
-	                const gainSlider = item.querySelector('.gain-slider');
-	                const gainInput = item.querySelector('.gain-input');
-	                const delayInput = item.querySelector('.delay-input');
-	                gainSlider.oninput = () => {{
-	                    gainInput.value = gainSlider.value;
-	                }};
-	                gainSlider.onchange = () => {{
-	                    setOffset(driver, gainSlider.value);
-	                }};
-	                gainInput.onchange = () => {{
-	                    gainSlider.value = gainInput.value;
-	                    setOffset(driver, gainInput.value);
-	                }};
-	                delayInput.onchange = () => {{
-	                    setDelayUs(driver, delayInput.value);
-	                }};
+		                const gainSlider = item.querySelector('.gain-slider');
+		                const gainInput = item.querySelector('.gain-input');
+		                const delayInput = item.querySelector('.delay-input');
+                        const invertInput = item.querySelector('.invert-checkbox');
+		                gainSlider.oninput = () => {{
+		                    gainInput.value = gainSlider.value;
+		                }};
+		                gainSlider.onchange = () => {{
+		                    setOffset(driver, gainSlider.value);
+		                }};
+		                gainInput.onchange = () => {{
+		                    gainSlider.value = gainInput.value;
+		                    setOffset(driver, gainInput.value);
+		                }};
+		                delayInput.onchange = () => {{
+		                    setDelayUs(driver, delayInput.value);
+		                }};
+                        if (invertInput) {{
+                            invertInput.checked = (driverPhaseOffsetsDeg[driver] || 0) === 180;
+                            invertInput.onchange = () => {{
+                                setInvert(driver, invertInput.checked);
+                            }};
+                        }}
 
                 driverList.appendChild(item);
             }});
@@ -2487,6 +2961,11 @@ class PolarResponseVisualizer:
 	            updatePlot();
 	        }}
 
+            function setInvert(driver, isInverted) {{
+                driverPhaseOffsetsDeg[driver] = isInverted ? 180 : 0;
+                updatePlot();
+            }}
+
         // ============ FILTER UI FUNCTIONS ============
         function initFilterUI() {{
             // Populate driver select
@@ -2517,25 +2996,53 @@ class PolarResponseVisualizer:
             renderFilterList();
         }}
 
-        function addFilter() {{
-            const newFilter = {{
-                type: 'Peaking',
-                freq: 1000,
-                q: 1.0,
-                gain: 0,
-                enabled: true,
-                optimize: false
-            }};
-            driverFilters[selectedFilterDriver].push(newFilter);
-            saveFiltersToLocalStorage();
-            renderFilterList();
-            updatePlot();
-        }}
+	        function addFilter() {{
+	            const newFilter = {{
+	                type: 'Peaking',
+	                freq: 1000,
+	                q: 1.0,
+	                gain: 0,
+	                enabled: true,
+	                optimize: false
+	            }};
+	            driverFilters[selectedFilterDriver].push(newFilter);
+	            saveFiltersToLocalStorage();
+	            renderFilterList();
+	            updatePlot();
+	        }}
 
-        function deleteFilter(index) {{
-            driverFilters[selectedFilterDriver].splice(index, 1);
-            saveFiltersToLocalStorage();
-            renderFilterList();
+            function clearAllUserFilters() {{
+                const userFilterCount = drivers.reduce((sum, d) => {{
+                    const filters = driverFilters[d] || [];
+                    return sum + filters.filter(f => f.fromCrossover === undefined).length;
+                }}, 0);
+
+                if (userFilterCount === 0) {{
+                    alert('No user filters to clear.');
+                    return;
+                }}
+
+                const proceed = confirm(
+                    'Clear ' + userFilterCount + ' user filter(s) across all drivers?\\n\\n' +
+                    'Crossovers will be kept.'
+                );
+                if (!proceed) return;
+
+                drivers.forEach(d => {{
+                    // Keep crossover-derived filters only; they will be regenerated from visualCrossovers.
+                    driverFilters[d] = (driverFilters[d] || []).filter(f => f.fromCrossover !== undefined);
+                }});
+
+                saveFiltersToLocalStorage();
+                syncCrossoverFilters();
+                renderFilterList();
+                updatePlot();
+            }}
+
+	        function deleteFilter(index) {{
+	            driverFilters[selectedFilterDriver].splice(index, 1);
+	            saveFiltersToLocalStorage();
+	            renderFilterList();
             updatePlot();
         }}
 
