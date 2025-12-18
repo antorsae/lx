@@ -142,15 +142,22 @@ class PolarResponseVisualizer:
             'smoothing_str': 'None'
         })
 
-        self.drivers = sorted(self.data.keys())
+        self.all_drivers = sorted(self.data.keys())
+        self.drivers = []
 
         # Calculate directivity metrics for all drivers
         # Note: DI/beamwidth/sound power are calculated from front hemisphere only (0-90 deg),
         # following industry standard practice. Rear data is stored separately for 360-deg polar plots.
         self.calc_results = {}
-        for driver in self.drivers:
-            freq, angles, spl_matrix, phase_matrix = create_polar_matrix_from_dict(self.data[driver])
-            calc = DirectivityCalculator(freq, angles, spl_matrix)
+        self.skipped_drivers = {}
+        for driver in self.all_drivers:
+            try:
+                freq, angles, spl_matrix, phase_matrix = create_polar_matrix_from_dict(self.data[driver])
+                calc = DirectivityCalculator(freq, angles, spl_matrix)
+            except ValueError as exc:
+                print(f"Warning: Skipping driver '{driver}' due to invalid angle data: {exc}")
+                self.skipped_drivers[driver] = str(exc)
+                continue
 
             # Also create rear SPL matrix if available
             rear_spl_matrix = None
@@ -175,6 +182,12 @@ class PolarResponseVisualizer:
                 'beamwidth_3db': calc.calculate_beamwidth(-3),
                 'sound_power': calc.calculate_sound_power()
             }
+            self.drivers.append(driver)
+
+        if not self.drivers:
+            raise ValueError(
+                "No valid drivers found. Each driver needs at least 2 angles and must include 0°."
+            )
 
         # Ensure output directories exist
         self.static_plots_dir.mkdir(parents=True, exist_ok=True)
@@ -1283,12 +1296,12 @@ class PolarResponseVisualizer:
                     <div class="optimize-controls">
                         <div class="opt-param">
                             <label>Target Range:</label>
-                            <input type="number" id="optFreqMin" value="200" min="20" max="20000"> Hz to
-                            <input type="number" id="optFreqMax" value="10000" min="20" max="20000"> Hz
+                            <input type="number" id="optFreqMin" value="200" min="20" max="20000" onchange="saveUiStateToLocalStorage()"> Hz to
+                            <input type="number" id="optFreqMax" value="10000" min="20" max="20000" onchange="saveUiStateToLocalStorage()"> Hz
                         </div>
                         <div class="opt-param">
                             <label>Reference Angle:</label>
-                            <select id="optRefAngle"></select>
+                            <select id="optRefAngle" onchange="saveUiStateToLocalStorage()"></select>
                         </div>
                         <div class="opt-buttons">
                             <button id="optimizeBtn" class="primary" onclick="runOptimization()">Optimize Selected</button>
@@ -1345,8 +1358,8 @@ class PolarResponseVisualizer:
 	        // Filter state
 	        let driverFilters = {{}};
 	        drivers.forEach(d => driverFilters[d] = []);
-	        let selectedFilterDriver = drivers[0];
-	        const STORAGE_KEY = 'lx521_filters_' + measurementSetName;
+        let selectedFilterDriver = drivers[0];
+        const STORAGE_KEY = 'lx521_filters_' + measurementSetName;
 
             // Track last-loaded DSP so we can reuse its header/template (and preserve unmapped channels).
             let lastLoadedDsp = null;
@@ -1355,6 +1368,8 @@ class PolarResponseVisualizer:
         // Visual Crossover Overlay state
         let visualCrossovers = [];
         const CROSSOVER_STORAGE_KEY = 'lx521_crossovers_' + measurementSetName;
+        const UI_STATE_STORAGE_KEY = 'lx521_ui_state_' + measurementSetName;
+        let savedUiState = null;
 
         // Crossover types with their filter specifications and visual fade distance
         // filters: array of {{q: value}} for cascaded biquads
@@ -2860,6 +2875,115 @@ class PolarResponseVisualizer:
             }}
         }}
 
+        function saveUiStateToLocalStorage() {{
+            const showPhase = document.getElementById('showPhase')?.checked ?? false;
+            const sumMode = document.querySelector('input[name="sumMode"]:checked')?.value || 'off';
+            const optMinInput = document.getElementById('optFreqMin');
+            const optMaxInput = document.getElementById('optFreqMax');
+            const optRefInput = document.getElementById('optRefAngle');
+
+            const offsets = {{}};
+            const delays = {{}};
+            const phases = {{}};
+            drivers.forEach(d => {{
+                offsets[d] = Number.isFinite(driverOffsets[d]) ? driverOffsets[d] : 0;
+                delays[d] = Number.isFinite(driverDelaysMs[d]) ? driverDelaysMs[d] : 0;
+                phases[d] = Number.isFinite(driverPhaseOffsetsDeg[d]) ? driverPhaseOffsetsDeg[d] : 0;
+            }});
+
+            const state = {{
+                activeDrivers: Array.from(activeDrivers),
+                activeAngles: Array.from(activeAngles),
+                driverOffsets: offsets,
+                driverDelaysMs: delays,
+                driverPhaseOffsetsDeg: phases,
+                showPhase,
+                sumMode,
+                selectedFilterDriver,
+                optFreqMin: optMinInput ? parseFloat(optMinInput.value) : null,
+                optFreqMax: optMaxInput ? parseFloat(optMaxInput.value) : null,
+                optRefAngle: optRefInput ? parseFloat(optRefInput.value) : null,
+            }};
+
+            localStorage.setItem(UI_STATE_STORAGE_KEY, JSON.stringify(state));
+        }}
+
+        function loadUiStateFromLocalStorage() {{
+            const saved = localStorage.getItem(UI_STATE_STORAGE_KEY);
+            if (!saved) return;
+            try {{
+                const state = JSON.parse(saved);
+                savedUiState = state;
+
+                if (Array.isArray(state.activeDrivers)) {{
+                    const filtered = state.activeDrivers.filter(d => drivers.includes(d));
+                    if (state.activeDrivers.length === 0) {{
+                        activeDrivers = new Set();
+                    }} else if (filtered.length) {{
+                        activeDrivers = new Set(filtered);
+                    }} else if (drivers.length) {{
+                        activeDrivers = new Set([drivers[0]]);
+                    }}
+                }}
+
+                if (Array.isArray(state.activeAngles)) {{
+                    const filteredAngles = state.activeAngles
+                        .map(a => parseInt(a, 10))
+                        .filter(a => allAngles.includes(a));
+                    if (state.activeAngles.length === 0) {{
+                        activeAngles = new Set();
+                    }} else if (filteredAngles.length) {{
+                        activeAngles = new Set(filteredAngles);
+                    }} else if (allAngles.length) {{
+                        activeAngles = new Set([allAngles[0]]);
+                    }}
+                }}
+
+                if (state.driverOffsets && typeof state.driverOffsets === 'object') {{
+                    drivers.forEach(d => {{
+                        const v = parseFloat(state.driverOffsets[d]);
+                        if (Number.isFinite(v)) driverOffsets[d] = v;
+                    }});
+                }}
+                if (state.driverDelaysMs && typeof state.driverDelaysMs === 'object') {{
+                    drivers.forEach(d => {{
+                        const v = parseFloat(state.driverDelaysMs[d]);
+                        if (Number.isFinite(v)) driverDelaysMs[d] = v;
+                    }});
+                }}
+                if (state.driverPhaseOffsetsDeg && typeof state.driverPhaseOffsetsDeg === 'object') {{
+                    drivers.forEach(d => {{
+                        const v = parseFloat(state.driverPhaseOffsetsDeg[d]);
+                        if (Number.isFinite(v)) driverPhaseOffsetsDeg[d] = v;
+                    }});
+                }}
+
+                const showPhaseEl = document.getElementById('showPhase');
+                if (showPhaseEl && typeof state.showPhase === 'boolean') {{
+                    showPhaseEl.checked = state.showPhase;
+                }}
+                if (state.sumMode) {{
+                    const sumRadio = document.querySelector(`input[name="sumMode"][value="${{state.sumMode}}"]`);
+                    if (sumRadio) sumRadio.checked = true;
+                }}
+
+                if (state.selectedFilterDriver && drivers.includes(state.selectedFilterDriver)) {{
+                    selectedFilterDriver = state.selectedFilterDriver;
+                }}
+
+                const optMinInput = document.getElementById('optFreqMin');
+                if (optMinInput && Number.isFinite(state.optFreqMin)) {{
+                    optMinInput.value = state.optFreqMin;
+                }}
+                const optMaxInput = document.getElementById('optFreqMax');
+                if (optMaxInput && Number.isFinite(state.optFreqMax)) {{
+                    optMaxInput.value = state.optFreqMax;
+                }}
+            }} catch (e) {{
+                console.error('Failed to load UI state from localStorage:', e);
+            }}
+        }}
+
         // Initialize UI
         function initUI() {{
             const driverList = document.getElementById('driverList');
@@ -2916,13 +3040,18 @@ class PolarResponseVisualizer:
                 }};
 
                 // Offset controls
-		                const gainSlider = item.querySelector('.gain-slider');
-		                const gainInput = item.querySelector('.gain-input');
-		                const delayInput = item.querySelector('.delay-input');
+                const gainSlider = item.querySelector('.gain-slider');
+                const gainInput = item.querySelector('.gain-input');
+                const delayInput = item.querySelector('.delay-input');
                         const invertInput = item.querySelector('.invert-checkbox');
-		                gainSlider.oninput = () => {{
-		                    gainInput.value = gainSlider.value;
-		                }};
+                        const savedGain = Number.isFinite(driverOffsets[driver]) ? driverOffsets[driver] : 0;
+                        const savedDelayUs = Number.isFinite(driverDelaysMs[driver]) ? Math.round(driverDelaysMs[driver] * 1000) : 0;
+                        if (gainSlider) gainSlider.value = savedGain;
+                        if (gainInput) gainInput.value = savedGain;
+                        if (delayInput) delayInput.value = savedDelayUs;
+                gainSlider.oninput = () => {{
+                    gainInput.value = gainSlider.value;
+                }};
 		                gainSlider.onchange = () => {{
 		                    setOffset(driver, gainSlider.value);
 		                }};
@@ -3024,7 +3153,21 @@ class PolarResponseVisualizer:
                 opt.textContent = a + '°';
                 refAngleSelect.appendChild(opt);
             }});
-            refAngleSelect.value = 0;  // Default to on-axis
+            const savedRefAngle = savedUiState?.optRefAngle;
+            if (Number.isFinite(savedRefAngle) && allAngles.includes(savedRefAngle)) {{
+                refAngleSelect.value = savedRefAngle;
+            }} else {{
+                refAngleSelect.value = 0;  // Default to on-axis
+            }}
+
+            const optMinInput = document.getElementById('optFreqMin');
+            if (optMinInput && Number.isFinite(savedUiState?.optFreqMin)) {{
+                optMinInput.value = savedUiState.optFreqMin;
+            }}
+            const optMaxInput = document.getElementById('optFreqMax');
+            if (optMaxInput && Number.isFinite(savedUiState?.optFreqMax)) {{
+                optMaxInput.value = savedUiState.optFreqMax;
+            }}
 
             renderFilterList();
         }}
@@ -3032,6 +3175,7 @@ class PolarResponseVisualizer:
         function selectFilterDriver(driver) {{
             selectedFilterDriver = driver;
             renderFilterList();
+            saveUiStateToLocalStorage();
         }}
 
 	        function addFilter() {{
@@ -3463,8 +3607,10 @@ class PolarResponseVisualizer:
 
 		            const showPhaseTraces = document.getElementById('showPhase')?.checked ?? false;
                     const sumMode = document.querySelector('input[name="sumMode"]:checked')?.value || 'off';
-	                const showSumTraces = sumMode !== 'off';
+                const showSumTraces = sumMode !== 'off';
                     const showIndividualDrivers = sumMode !== 'only';
+
+                    saveUiStateToLocalStorage();
 
                     // Keep SUM first in the legend even when SUM traces are drawn last (on top)
                     if (showSumTraces && activeDrivers.size > 0 && activeAngles.size > 0) {{
@@ -3883,6 +4029,7 @@ class PolarResponseVisualizer:
         // Initialize
         loadFiltersFromLocalStorage();
         loadCrossoversFromLocalStorage();
+        loadUiStateFromLocalStorage();
         syncCrossoverFilters();  // Generate IIR filter entries from crossovers
         initUI();
         initFilterUI();

@@ -39,16 +39,20 @@ class DirectivityCalculator:
         self.spl_matrix = np.asarray(spl_matrix)
 
         # Validate dimensions
-        assert len(self.spl_matrix.shape) == 2, "SPL matrix must be 2D"
-        assert self.spl_matrix.shape[0] == len(self.frequencies), \
-            "SPL matrix first dimension must match frequencies"
-        assert self.spl_matrix.shape[1] == len(self.angles), \
-            "SPL matrix second dimension must match angles"
+        if len(self.spl_matrix.shape) != 2:
+            raise ValueError("SPL matrix must be 2D")
+        if self.spl_matrix.shape[0] != len(self.frequencies):
+            raise ValueError("SPL matrix first dimension must match frequencies")
+        if self.spl_matrix.shape[1] != len(self.angles):
+            raise ValueError("SPL matrix second dimension must match angles")
 
         # Validate angles
-        assert len(self.angles) >= 2, "Need at least 2 angles"
-        assert 0 in self.angles, "Angles must include 0° (on-axis) for DI calculation"
-        assert np.all(np.diff(self.angles) > 0), "Angles must be sorted in ascending order"
+        if len(self.angles) < 2:
+            raise ValueError("Need at least 2 angles")
+        if 0 not in self.angles:
+            raise ValueError("Angles must include 0° (on-axis) for DI calculation")
+        if not np.all(np.diff(self.angles) > 0):
+            raise ValueError("Angles must be sorted in ascending order")
 
         # Store indices for common angles
         self._idx_0deg = int(np.where(self.angles == 0)[0][0])

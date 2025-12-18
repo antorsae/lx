@@ -72,6 +72,12 @@ class PolarDataLoader:
         self.measurements = {}
         self._rew_launch_attempted = False
         self.pattern_type = pattern_type
+        if self._get_pattern_def() is None:
+            valid = sorted(set(_PATTERN_DEFS.keys()) | set(_PATTERN_ALIASES.keys()))
+            valid_list = ", ".join(valid)
+            raise ValueError(
+                f"Unknown pattern_type '{pattern_type}'. Expected one of: {valid_list}"
+            )
 
         if connect_to_rew:
             if not self._ensure_rew_running():
