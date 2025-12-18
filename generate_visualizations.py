@@ -781,6 +781,29 @@ class PolarResponseVisualizer:
             gap: 8px;
             margin-bottom: 15px;
         }}
+        .option-radio-row {{
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: #444;
+        }}
+        .option-radio-row .option-label {{
+            font-weight: 600;
+            color: #444;
+        }}
+        .option-radio {{
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }}
+        .option-radio input {{
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }}
         .option-checkbox {{
             display: flex;
             align-items: center;
@@ -1206,13 +1229,28 @@ class PolarResponseVisualizer:
             </div>
             <div class="angle-grid" id="angleGrid"></div>
 
-            <h3>Display Options</h3>
-            <div class="display-options">
-                <label class="option-checkbox">
-                    <input type="checkbox" id="showPhase" onchange="updatePlot()">
-                    Show Phase Response
-                </label>
-            </div>
+	            <h3>Display Options</h3>
+	            <div class="display-options">
+	                <label class="option-checkbox">
+	                    <input type="checkbox" id="showPhase" onchange="updatePlot()">
+	                    Show Phase Response
+	                </label>
+                    <div class="option-radio-row">
+                        <span class="option-label">SUM:</span>
+                        <label class="option-radio" title="Hide SUM trace">
+                            <input type="radio" name="sumMode" value="off" checked onchange="updatePlot()">
+                            Off
+                        </label>
+                        <label class="option-radio" title="Show SUM along with individual drivers">
+                            <input type="radio" name="sumMode" value="overlay" onchange="updatePlot()">
+                            SUM + Drivers
+                        </label>
+                        <label class="option-radio" title="Show SUM only (hide individual drivers)">
+                            <input type="radio" name="sumMode" value="only" onchange="updatePlot()">
+                            SUM Only
+                        </label>
+                    </div>
+	            </div>
 
 	            <div class="filter-section">
 	                <h3>Filters (IIR EQ)</h3>
@@ -3396,8 +3434,9 @@ class PolarResponseVisualizer:
             }}
         }}
 
-        function updatePlot() {{
-            const traces = [];
+	        function updatePlot() {{
+	            const traces = [];
+                const driverSumInfo = {{}};
 
             // Angle-based dash patterns: progressive density (0° solid, higher angles more dashed)
             // Maps angle to dash pattern - solid for on-axis, increasingly broken for off-axis
@@ -3422,13 +3461,64 @@ class PolarResponseVisualizer:
                 return '4 8';                         // 2X of '2 4'
             }}
 
-            const showPhaseTraces = document.getElementById('showPhase')?.checked ?? false;
+		            const showPhaseTraces = document.getElementById('showPhase')?.checked ?? false;
+                    const sumMode = document.querySelector('input[name="sumMode"]:checked')?.value || 'off';
+	                const showSumTraces = sumMode !== 'off';
+                    const showIndividualDrivers = sumMode !== 'only';
 
-            activeDrivers.forEach(driver => {{
-                const color = driverColors[driver] || defaultColor;
-                const offset = driverOffsets[driver];
-                const data = allData[driver];
-                const filters = driverFilters[driver] || [];
+                    // Keep SUM first in the legend even when SUM traces are drawn last (on top)
+                    if (showSumTraces && activeDrivers.size > 0 && activeAngles.size > 0) {{
+                        traces.push({{
+                            x: [],
+                            y: [],
+                            name: 'Σ SUM',
+                            mode: 'lines',
+                            line: {{ color: '#222', width: 3.5 }},
+                            showlegend: true,
+                            legendgroup: 'SUM',
+                            hoverinfo: 'skip',
+                            legendrank: 0
+                        }});
+                    }}
+
+                function parseRgbColor(color) {{
+                    if (!color) return {{ r: 136, g: 136, b: 136 }};
+                    if (color.startsWith('#')) {{
+                        if (color.length === 4) {{
+                            const r = parseInt(color[1] + color[1], 16);
+                            const g = parseInt(color[2] + color[2], 16);
+                            const b = parseInt(color[3] + color[3], 16);
+                            return {{ r, g, b }};
+                        }}
+                        const r = parseInt(color.slice(1, 3), 16);
+                        const g = parseInt(color.slice(3, 5), 16);
+                        const b = parseInt(color.slice(5, 7), 16);
+                        return {{ r, g, b }};
+                    }}
+                    const match = color.match(/rgb\\((\\d+),\\s*(\\d+),\\s*(\\d+)\\)/);
+                    if (match) {{
+                        return {{ r: parseInt(match[1]), g: parseInt(match[2]), b: parseInt(match[3]) }};
+                    }}
+                    return {{ r: 136, g: 136, b: 136 }};
+                }}
+
+                function blendRgb(colorA, colorB, ratioToB) {{
+                    const a = parseRgbColor(colorA);
+                    const b = parseRgbColor(colorB);
+                    const t = Math.min(1, Math.max(0, ratioToB));
+                    const r = Math.round(a.r + (b.r - a.r) * t);
+                    const g = Math.round(a.g + (b.g - a.g) * t);
+                    const bch = Math.round(a.b + (b.b - a.b) * t);
+                    return `rgb(${{r}},${{g}},${{bch}})`;
+                }}
+
+	            activeDrivers.forEach(driver => {{
+	                const color = driverColors[driver] || defaultColor;
+	                const offset = driverOffsets[driver];
+	                const data = allData[driver];
+	                const filters = driverFilters[driver] || [];
+                    const delayMs = driverDelaysMs[driver] || 0;
+                    const invertDeg = driverPhaseOffsetsDeg[driver] || 0;
 
                 // Check what's active - X-O filters are now part of driverFilters
                 const hasActiveFilters = filters.some(f => f.enabled);
@@ -3437,15 +3527,29 @@ class PolarResponseVisualizer:
                 // Calculate combined filter response (includes both EQ and X-O filters in driverFilters)
                 let filterResponse = null;
                 let filterPhaseResponse = null;
-                if (hasActiveFilters) {{
-                    filterResponse = calcFilterChainResponse(filters, data.freq);
-                    filterPhaseResponse = calcFilterChainPhaseResponse(filters, data.freq);
-                }}
+	                if (hasActiveFilters) {{
+	                    filterResponse = calcFilterChainResponse(filters, data.freq);
+	                    filterPhaseResponse = calcFilterChainPhaseResponse(filters, data.freq);
+	                }}
 
-                // Get fade colors and clip mask for crossover visual effect
-                let fadeColors = null;
-                let clipMask = null;
-                if (hasVisualClipping) {{
+                    // Cache per-driver info for SUM calculation
+	                    driverSumInfo[driver] = {{
+	                        color,
+	                        offset,
+	                        data,
+                        hasActiveFilters,
+                        filterResponse,
+                        filterPhaseResponse,
+	                        delayMs,
+	                        invertDeg
+	                    }};
+
+                    if (!showIndividualDrivers) return;
+
+	                // Get fade colors and clip mask for crossover visual effect
+	                let fadeColors = null;
+	                let clipMask = null;
+	                if (hasVisualClipping) {{
                     const fadeInfo = getDriverFadeColors(driver, data.freq, color);
                     fadeColors = fadeInfo.colors;
                     clipMask = fadeInfo.clipMask;
@@ -3503,26 +3607,23 @@ class PolarResponseVisualizer:
                     }}
 
 	                    // Add phase trace if enabled and data available
-	                    if (showPhaseTraces && data.phase && data.phase[angle]) {{
-	                        const phaseOriginal = data.phase[angle];
-	                        const phaseDash = getPhaseDash(angle);
-	                        const phaseLineWidth = lineWidth * 0.8;
-	                        const phaseName = `${{driver}} @ ${{angle}}° (φ)`;
-
-	                        const delayMs = driverDelaysMs[driver] || 0;
-	                        const invertDeg = driverPhaseOffsetsDeg[driver] || 0;
-	                        const needsPhaseAdjust = (hasActiveFilters && filterPhaseResponse) || invertDeg !== 0 || delayMs !== 0;
+		                    if (showPhaseTraces && data.phase && data.phase[angle]) {{
+		                        const phaseOriginal = data.phase[angle];
+		                        const phaseDash = getPhaseDash(angle);
+		                        const phaseLineWidth = lineWidth * 0.8;
+		                        const phaseName = `${{driver}} @ ${{angle}}° (φ)`;
+		                        const needsPhaseAdjust = (hasActiveFilters && filterPhaseResponse) || invertDeg !== 0 || delayMs !== 0;
 
 	                        // Apply filter phase response + invert/delay if active
-	                        const phaseData = needsPhaseAdjust
-	                            ? phaseOriginal.map((p, i) => {{
-	                                let phase = p;
-	                                if (hasActiveFilters && filterPhaseResponse) phase += filterPhaseResponse[i];
-	                                if (invertDeg) phase += invertDeg;
-	                                if (delayMs) phase -= 360 * data.freq[i] * (delayMs / 1000);
-	                                return wrapPhase(phase);
-	                            }})
-	                            : phaseOriginal;
+		                        const phaseData = needsPhaseAdjust
+		                            ? phaseOriginal.map((p, i) => {{
+		                                let phase = p;
+		                                if (hasActiveFilters && filterPhaseResponse) phase += filterPhaseResponse[i];
+		                                if (invertDeg) phase += invertDeg;
+		                                if (delayMs) phase -= 360 * data.freq[i] * (delayMs / 1000);
+		                                return wrapPhase(phase);
+		                            }})
+		                            : phaseOriginal;
 
 	                        if (hasVisualClipping) {{
 	                            // Apply same crossover fading to phase
@@ -3548,10 +3649,138 @@ class PolarResponseVisualizer:
                         }}
                     }}
                 }});
-            }});
+	            }});
 
-            // Add grid lines
-            const shapes = [];
+                // ============ SUM TRACE (selected drivers) ============
+                if (showSumTraces && activeDrivers.size > 0 && activeAngles.size > 0) {{
+                    const selectedDrivers = Array.from(activeDrivers);
+                    const refDriver = selectedDrivers.find(d => driverSumInfo[d]?.data?.freq);
+
+                    if (refDriver) {{
+                        const xFreq = driverSumInfo[refDriver].data.freq;
+                        const n = xFreq.length;
+                        const clipAll = xFreq.map(() => true);
+
+                        function contributionColorAtIndex(powByDriver, idx) {{
+                            let top1Driver = null, top2Driver = null;
+                            let top1 = 0, top2 = 0;
+
+                            selectedDrivers.forEach(d => {{
+                                const p = powByDriver[d]?.[idx] || 0;
+                                if (p > top1) {{
+                                    top2 = top1; top2Driver = top1Driver;
+                                    top1 = p; top1Driver = d;
+                                }} else if (p > top2) {{
+                                    top2 = p; top2Driver = d;
+                                }}
+                            }});
+
+                            const c1 = (top1Driver && driverSumInfo[top1Driver]?.color) ? driverSumInfo[top1Driver].color : defaultColor;
+                            if (!top2Driver || top2 <= 0) return c1;
+
+                            const c2 = driverSumInfo[top2Driver]?.color || defaultColor;
+                            const denom = top1 + top2;
+                            if (denom <= 0) return defaultColor;
+
+                            const w1 = top1 / denom;
+                            const w2 = top2 / denom;
+                            const gamma = 2.0;  // emphasize dominant driver
+                            const w1g = Math.pow(w1, gamma);
+                            const w2g = Math.pow(w2, gamma);
+                            const ratioTo2 = w2g / (w1g + w2g);
+                            return blendRgb(c1, c2, ratioTo2);
+                        }}
+
+                        activeAngles.forEach(angle => {{
+                            // Initialize complex sum and contribution tracking
+                            const sumRe = new Array(n).fill(0);
+                            const sumIm = new Array(n).fill(0);
+                            const powByDriver = {{}};
+                            selectedDrivers.forEach(d => {{ powByDriver[d] = new Array(n).fill(0); }});
+
+                            // Accumulate each driver as complex pressure
+                            selectedDrivers.forEach(driver => {{
+                                const info = driverSumInfo[driver];
+                                if (!info || !info.data) return;
+                                const data = info.data;
+
+                                // Require matching frequency grid for coherent sum
+                                if (!data.freq || data.freq.length !== n) {{
+                                    console.warn('SUM: skipping driver due to freq grid mismatch:', driver);
+                                    return;
+                                }}
+
+                                const splArr = data.spl?.[angle];
+                                if (!splArr) return;
+
+                                const phaseArr = data.phase?.[angle];
+                                const magAdj = (info.hasActiveFilters && info.filterResponse) ? info.filterResponse : null;
+                                const phaseAdj = (info.hasActiveFilters && info.filterPhaseResponse) ? info.filterPhaseResponse : null;
+
+                                for (let i = 0; i < n; i++) {{
+                                    let splDb = splArr[i] + info.offset;
+                                    if (magAdj) splDb += magAdj[i];
+
+                                    const amp = Math.pow(10, splDb / 20);
+                                    powByDriver[driver][i] = amp * amp;
+
+                                    let phaseDeg = (phaseArr ? phaseArr[i] : 0);
+                                    if (phaseAdj) phaseDeg += phaseAdj[i];
+                                    if (info.invertDeg) phaseDeg += info.invertDeg;
+                                    if (info.delayMs) phaseDeg -= 360 * data.freq[i] * (info.delayMs / 1000);
+
+                                    const rad = phaseDeg * Math.PI / 180;
+                                    sumRe[i] += amp * Math.cos(rad);
+                                    sumIm[i] += amp * Math.sin(rad);
+                                }}
+                            }});
+
+                            // Build SPL/phase arrays and per-point colors
+                            const sumSpl = new Array(n);
+                            const sumPhase = new Array(n);
+                            const sumColors = new Array(n);
+
+                            for (let i = 0; i < n; i++) {{
+                                const mag = Math.hypot(sumRe[i], sumIm[i]);
+                                sumSpl[i] = 20 * Math.log10(Math.max(mag, 1e-12));
+                                sumPhase[i] = wrapPhase(Math.atan2(sumIm[i], sumRe[i]) * 180 / Math.PI);
+                                sumColors[i] = contributionColorAtIndex(powByDriver, i);
+                            }}
+
+                            const sumLineWidth = angle === 0 ? 3.5 : 2.2;
+                            const sumDash = getAngleDash(angle);
+	                            const sumName = `Σ SUM @ ${{angle}}°`;
+	                            const sumSegments = createFadingSegments(
+	                                xFreq, sumSpl, sumColors, clipAll,
+	                                sumLineWidth, sumDash, sumName, false
+	                            );
+	                            // Use a consistent legend group so SUM stays together
+	                            sumSegments.forEach(seg => {{ seg.legendgroup = 'SUM'; }});
+	                            traces.push(...sumSegments);
+
+                            // Phase for SUM (optional)
+                            if (showPhaseTraces) {{
+                                const sumPhaseDash = getPhaseDash(angle);
+	                                const sumPhaseName = `Σ SUM @ ${{angle}}° (φ)`;
+	                                const phaseSegments = createFadingSegments(
+	                                    xFreq, sumPhase, sumColors, clipAll,
+	                                    sumLineWidth * 0.8, sumPhaseDash, sumPhaseName, false
+	                                );
+                                phaseSegments.forEach(seg => {{
+                                    seg.xaxis = 'x2';
+                                    seg.yaxis = 'y2';
+                                    seg.showlegend = false;
+                                    seg.legendgroup = 'SUM';
+	                                    seg.hovertemplate = '%{{y:.1f}}°<extra></extra>';
+                                }});
+                                traces.push(...phaseSegments);
+                            }}
+                        }});
+                    }}
+                }}
+
+	            // Add grid lines
+	            const shapes = [];
             // Vertical frequency grid
             [100,200,300,400,500,600,700,800,900,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,20000].forEach(f => {{
                 shapes.push({{
