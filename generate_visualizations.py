@@ -131,6 +131,7 @@ class PolarResponseVisualizer:
         self.static_plots_dir = Path(static_plots_dir) if static_plots_dir else config.STATIC_PLOTS_DIR
         self.interactive_plots_dir = Path(interactive_plots_dir) if interactive_plots_dir else config.INTERACTIVE_PLOTS_DIR
 
+        self.data_path = Path(data_path)
         self.loader = PolarDataLoader(connect_to_rew=False)
         self.data = self.loader.load_from_hdf5(data_path)
 
@@ -372,6 +373,114 @@ class PolarResponseVisualizer:
         angles_rad = np.radians(all_angles)
         return angles_rad, spl_normalized
 
+    def _build_polar_data_from_result(self, res, freq_idx: int, use_rear: bool):
+        front_angles = res['angles']
+        front_spl = res['spl_matrix'][freq_idx, :]
+
+        has_rear = use_rear and res.get('has_rear', False) and res.get('rear_spl_matrix') is not None
+        rear_spl_matrix = res.get('rear_spl_matrix')
+
+        if has_rear and rear_spl_matrix is not None:
+            rear_spl = rear_spl_matrix[freq_idx, :]
+
+            front_angles_arr = np.array(front_angles)
+
+            angles_0_90 = front_angles_arr
+            spl_0_90 = front_spl
+
+            angles_90_180 = 90 + front_angles_arr[1:]
+            spl_90_180 = []
+            for a in angles_90_180:
+                rear_measurement_angle = 180 - a
+                idx = np.abs(front_angles_arr - rear_measurement_angle).argmin()
+                spl_90_180.append(rear_spl[idx])
+            spl_90_180 = np.array(spl_90_180)
+
+            angles_180 = np.array([180])
+            spl_180 = np.array([rear_spl[0]])
+
+            angles_180_270 = 360 - angles_90_180[::-1]
+            spl_180_270 = spl_90_180[::-1]
+
+            angles_270_360 = 360 - front_angles_arr[::-1][:-1]
+            spl_270_360 = front_spl[::-1][:-1]
+
+            all_angles = np.concatenate([angles_0_90, angles_90_180, angles_180, angles_180_270, angles_270_360])
+            all_spl = np.concatenate([spl_0_90, spl_90_180, spl_180, spl_180_270, spl_270_360])
+
+            sort_idx = np.argsort(all_angles)
+            all_angles = all_angles[sort_idx]
+            all_spl = all_spl[sort_idx]
+
+            all_angles = np.append(all_angles, 360)
+            all_spl = np.append(all_spl, all_spl[0])
+        else:
+            angles_full = np.concatenate([[-a for a in reversed(front_angles) if a > 0], front_angles])
+            data_full = np.concatenate([front_spl[::-1][:-1], front_spl])
+            all_angles = angles_full
+            all_spl = data_full
+
+        on_axis_idx = np.abs(all_angles).argmin()
+        spl_normalized = all_spl - all_spl[on_axis_idx]
+        spl_normalized = np.clip(spl_normalized, -40, 10)
+
+        angles_rad = np.radians(all_angles)
+        return angles_rad, spl_normalized
+
+    def _load_extra_set_data(self, set_name: str):
+        mset = config.MEASUREMENT_SETS.get(set_name)
+        if not mset:
+            return None
+        extra_path = config.DATA_DIR / mset.get("hdf5_file", "")
+        if not extra_path.exists():
+            return None
+        try:
+            if extra_path.resolve() == self.data_path.resolve():
+                return None
+        except OSError:
+            pass
+        extra_data = self.loader.load_from_hdf5(str(extra_path))
+        extra_data.pop('_config', None)
+        return extra_data
+
+    def _build_explorer_payload(self, dataset: dict, target_points: int):
+        extra_all_data = {}
+        extra_angles = set()
+        extra_drivers = []
+
+        for driver, driver_data in dataset.items():
+            try:
+                freq, angles, spl_matrix, phase_matrix = create_polar_matrix_from_dict(driver_data)
+            except Exception as exc:
+                print(f"Warning: Skipping extra driver '{driver}' due to invalid data: {exc}")
+                continue
+
+            if len(angles) == 0:
+                continue
+
+            extra_drivers.append(driver)
+
+            n_points = len(freq)
+            if n_points > target_points:
+                log_indices = np.unique(np.logspace(0, np.log10(n_points - 1), target_points).astype(int))
+                freq_dec = freq[log_indices]
+                spl_dec = spl_matrix[log_indices, :]
+                phase_dec = phase_matrix[log_indices, :]
+            else:
+                freq_dec = freq
+                spl_dec = spl_matrix
+                phase_dec = phase_matrix
+
+            extra_all_data[driver] = {
+                'freq': freq_dec.tolist(),
+                'angles': [int(a) for a in angles],
+                'spl': {int(angles[i]): spl_dec[:, i].tolist() for i in range(len(angles))},
+                'phase': {int(angles[i]): phase_dec[:, i].tolist() for i in range(len(angles))}
+            }
+            extra_angles.update(angles)
+
+        return extra_all_data, sorted(extra_angles), extra_drivers
+
     def plot_di_comparison(self, save_static=True, save_interactive=True):
         """Generate DI comparison plot for all drivers"""
         print("Generating DI comparison plot...")
@@ -612,6 +721,30 @@ class PolarResponseVisualizer:
 
         all_angles = sorted(all_angles)
 
+        extra_datasets = {}
+        extra_set_name = "juan-baffleless"
+        extra_data = self._load_extra_set_data(extra_set_name)
+        if extra_data:
+            extra_all_data, extra_angles, extra_drivers = self._build_explorer_payload(
+                extra_data, TARGET_POINTS
+            )
+            if extra_drivers:
+                extra_datasets[extra_set_name] = {
+                    "label": "Juan baffleless drivers",
+                    "drivers": extra_drivers,
+                    "allData": extra_all_data,
+                    "allAngles": [int(a) for a in extra_angles],
+                }
+
+        extra_controls_html = ""
+        if extra_datasets:
+            extra_controls_html = '''
+                <div class="extra-driver-controls">
+                    <button id="loadExtraJuanBtn" onclick="loadExtraDrivers('juan-baffleless')">Load Juan baffleless drivers</button>
+                    <div class="extra-driver-note">Adds: GRS PT6816, SS10F8414G10</div>
+                </div>
+            '''
+
         # Build the HTML with embedded JavaScript
         html_content = f'''{HTML_DOCTYPE}{HTML_HEAD_START}    <title>Frequency Response Explorer</title>
 {HTML_PLOTLY_SCRIPT}{HTML_YAML_SCRIPT}    <style>
@@ -656,6 +789,31 @@ class PolarResponseVisualizer:
             display: flex;
             flex-direction: column;
             gap: 10px;
+        }}
+        .extra-driver-controls {{
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin: 6px 0 12px;
+        }}
+        .extra-driver-controls button {{
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #f8fafc;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }}
+        .extra-driver-controls button:hover {{
+            background: #eef2ff;
+        }}
+        .extra-driver-controls button:disabled {{
+            cursor: default;
+            opacity: 0.6;
+        }}
+        .extra-driver-note {{
+            font-size: 0.75rem;
+            color: #666;
         }}
         .driver-item {{
             padding: 10px;
@@ -1227,8 +1385,9 @@ class PolarResponseVisualizer:
         <div class="sidebar">
             <h2>Frequency Response Explorer</h2>
 
-	            <h3>Drivers (click to toggle)</h3>
-	            <div class="driver-list" id="driverList"></div>
+		            <h3>Drivers (click to toggle)</h3>
+		            <div class="driver-list" id="driverList"></div>
+                    {extra_controls_html}
                 <div class="filter-controls timing-controls">
                     <button onclick="resetTimingAdjustments()" title="Clear per-driver delay and invert adjustments">Clear Delay/Invert</button>
                 </div>
@@ -1335,6 +1494,7 @@ class PolarResponseVisualizer:
         const driverColors = {json.dumps(config.DRIVER_COLORS)};
         const defaultColor = '#888888';
         const measurementSetName = '{self.interactive_plots_dir.parent.name}';
+        const extraDriverDatasets = {json.dumps(extra_datasets)};
 
         // Filter types
         const filterTypes = ['Peaking', 'Lowpass', 'Highpass', 'Lowshelf', 'Highshelf', 'Allpass'];
@@ -2984,10 +3144,12 @@ class PolarResponseVisualizer:
             }}
         }}
 
-        // Initialize UI
-        function initUI() {{
+        function renderDriverList() {{
             const driverList = document.getElementById('driverList');
-            drivers.forEach((driver, idx) => {{
+            if (!driverList) return;
+            driverList.innerHTML = '';
+
+            drivers.forEach((driver) => {{
                 const color = driverColors[driver] || defaultColor;
                 const isActive = activeDrivers.has(driver);
 
@@ -3019,7 +3181,7 @@ class PolarResponseVisualizer:
                                     <span>Invert</span>
                                 </label>
                             </div>
-		                `;
+	                `;
 
                 // Header click toggles driver
                 const header = item.querySelector('.driver-header');
@@ -3040,28 +3202,28 @@ class PolarResponseVisualizer:
                 }};
 
                 // Offset controls
-                const gainSlider = item.querySelector('.gain-slider');
-                const gainInput = item.querySelector('.gain-input');
-                const delayInput = item.querySelector('.delay-input');
+	                const gainSlider = item.querySelector('.gain-slider');
+	                const gainInput = item.querySelector('.gain-input');
+	                const delayInput = item.querySelector('.delay-input');
                         const invertInput = item.querySelector('.invert-checkbox');
                         const savedGain = Number.isFinite(driverOffsets[driver]) ? driverOffsets[driver] : 0;
                         const savedDelayUs = Number.isFinite(driverDelaysMs[driver]) ? Math.round(driverDelaysMs[driver] * 1000) : 0;
                         if (gainSlider) gainSlider.value = savedGain;
                         if (gainInput) gainInput.value = savedGain;
                         if (delayInput) delayInput.value = savedDelayUs;
-                gainSlider.oninput = () => {{
-                    gainInput.value = gainSlider.value;
-                }};
-		                gainSlider.onchange = () => {{
-		                    setOffset(driver, gainSlider.value);
-		                }};
-		                gainInput.onchange = () => {{
-		                    gainSlider.value = gainInput.value;
-		                    setOffset(driver, gainInput.value);
-		                }};
-		                delayInput.onchange = () => {{
-		                    setDelayUs(driver, delayInput.value);
-		                }};
+	                gainSlider.oninput = () => {{
+	                    gainInput.value = gainSlider.value;
+	                }};
+	                gainSlider.onchange = () => {{
+	                    setOffset(driver, gainSlider.value);
+	                }};
+	                gainInput.onchange = () => {{
+	                    gainSlider.value = gainInput.value;
+	                    setOffset(driver, gainInput.value);
+	                }};
+	                delayInput.onchange = () => {{
+	                    setDelayUs(driver, delayInput.value);
+	                }};
                         if (invertInput) {{
                             invertInput.checked = (driverPhaseOffsetsDeg[driver] || 0) === 180;
                             invertInput.onchange = () => {{
@@ -3071,8 +3233,12 @@ class PolarResponseVisualizer:
 
                 driverList.appendChild(item);
             }});
+        }}
 
+        function renderAngleGrid() {{
             const angleGrid = document.getElementById('angleGrid');
+            if (!angleGrid) return;
+            angleGrid.innerHTML = '';
             allAngles.forEach(angle => {{
                 const btn = document.createElement('button');
                 btn.className = 'angle-btn' + (activeAngles.has(angle) ? ' active' : '');
@@ -3080,6 +3246,51 @@ class PolarResponseVisualizer:
                 btn.onclick = () => toggleAngle(angle, btn);
                 angleGrid.appendChild(btn);
             }});
+        }}
+
+        function refreshFilterDriverSelect() {{
+            const select = document.getElementById('filterDriverSelect');
+            if (!select) return;
+            select.innerHTML = '';
+            drivers.forEach(d => {{
+                const opt = document.createElement('option');
+                opt.value = d;
+                opt.textContent = d;
+                select.appendChild(opt);
+            }});
+            if (!drivers.includes(selectedFilterDriver)) {{
+                selectedFilterDriver = drivers[0];
+            }}
+            select.value = selectedFilterDriver;
+        }}
+
+        function refreshOptRefAngleSelect() {{
+            const refAngleSelect = document.getElementById('optRefAngle');
+            if (!refAngleSelect) return;
+            const currentValue = parseInt(refAngleSelect.value);
+            refAngleSelect.innerHTML = '';
+            allAngles.forEach(a => {{
+                const opt = document.createElement('option');
+                opt.value = a;
+                opt.textContent = a + '°';
+                refAngleSelect.appendChild(opt);
+            }});
+
+            if (Number.isFinite(currentValue) && allAngles.includes(currentValue)) {{
+                refAngleSelect.value = currentValue;
+            }} else if (Number.isFinite(savedUiState?.optRefAngle) && allAngles.includes(savedUiState.optRefAngle)) {{
+                refAngleSelect.value = savedUiState.optRefAngle;
+            }} else if (allAngles.includes(0)) {{
+                refAngleSelect.value = 0;
+            }} else if (allAngles.length) {{
+                refAngleSelect.value = allAngles[0];
+            }}
+        }}
+
+        // Initialize UI
+        function initUI() {{
+            renderDriverList();
+            renderAngleGrid();
         }}
 
         function toggleDriver(driver, elem, checked) {{
@@ -3133,32 +3344,75 @@ class PolarResponseVisualizer:
                 updatePlot();
             }}
 
+        function loadExtraDrivers(key) {{
+            const dataset = extraDriverDatasets?.[key];
+            if (!dataset || !dataset.allData) {{
+                alert('Extra drivers not available for this dataset.');
+                return;
+            }}
+            if (dataset.loaded) return;
+
+            const extraDrivers = (dataset.drivers || []).filter(d => !drivers.includes(d));
+            if (!extraDrivers.length) {{
+                dataset.loaded = true;
+                const btn = document.getElementById('loadExtraJuanBtn');
+                if (btn) {{
+                    btn.textContent = 'Juan baffleless drivers loaded';
+                    btn.disabled = true;
+                }}
+                return;
+            }}
+
+            extraDrivers.forEach(d => {{
+                drivers.push(d);
+                if (!driverFilters[d]) driverFilters[d] = [];
+                const savedOffset = savedUiState?.driverOffsets?.[d];
+                const savedDelay = savedUiState?.driverDelaysMs?.[d];
+                const savedPhase = savedUiState?.driverPhaseOffsetsDeg?.[d];
+                driverOffsets[d] = Number.isFinite(savedOffset) ? savedOffset : 0;
+                driverDelaysMs[d] = Number.isFinite(savedDelay) ? savedDelay : 0;
+                driverPhaseOffsetsDeg[d] = Number.isFinite(savedPhase) ? savedPhase : 0;
+            }});
+
+            const savedActiveDrivers = savedUiState?.activeDrivers;
+            if (Array.isArray(savedActiveDrivers)) {{
+                savedActiveDrivers.forEach(d => {{
+                    if (drivers.includes(d)) activeDrivers.add(d);
+                }});
+            }}
+
+            Object.entries(dataset.allData || {{}}).forEach(([driver, data]) => {{
+                allData[driver] = data;
+            }});
+
+            (dataset.allAngles || []).forEach(a => {{
+                if (!allAngles.includes(a)) allAngles.push(a);
+            }});
+            allAngles.sort((a, b) => a - b);
+
+            renderDriverList();
+            renderAngleGrid();
+            refreshFilterDriverSelect();
+            refreshOptRefAngleSelect();
+            renderFilterList();
+            renderCrossoverList();
+            syncCrossoverFilters();
+            saveFiltersToLocalStorage();
+            saveUiStateToLocalStorage();
+            updatePlot();
+
+            dataset.loaded = true;
+            const btn = document.getElementById('loadExtraJuanBtn');
+            if (btn) {{
+                btn.textContent = 'Juan baffleless drivers loaded';
+                btn.disabled = true;
+            }}
+        }}
+
         // ============ FILTER UI FUNCTIONS ============
         function initFilterUI() {{
-            // Populate driver select
-            const select = document.getElementById('filterDriverSelect');
-            drivers.forEach(d => {{
-                const opt = document.createElement('option');
-                opt.value = d;
-                opt.textContent = d;
-                select.appendChild(opt);
-            }});
-            select.value = selectedFilterDriver;
-
-            // Populate reference angle select for optimization
-            const refAngleSelect = document.getElementById('optRefAngle');
-            allAngles.forEach(a => {{
-                const opt = document.createElement('option');
-                opt.value = a;
-                opt.textContent = a + '°';
-                refAngleSelect.appendChild(opt);
-            }});
-            const savedRefAngle = savedUiState?.optRefAngle;
-            if (Number.isFinite(savedRefAngle) && allAngles.includes(savedRefAngle)) {{
-                refAngleSelect.value = savedRefAngle;
-            }} else {{
-                refAngleSelect.value = 0;  // Default to on-axis
-            }}
+            refreshFilterDriverSelect();
+            refreshOptRefAngleSelect();
 
             const optMinInput = document.getElementById('optFreqMin');
             if (optMinInput && Number.isFinite(savedUiState?.optFreqMin)) {{
@@ -4811,6 +5065,167 @@ class PolarResponseVisualizer:
         freq_values = [freqs[idx] for idx in indices]
         freq_js_array = ','.join([f'{f:.1f}' for f in freq_values])
 
+        extra_polar_payload = None
+        extra_set_name = "juan-baffleless"
+        extra_data = self._load_extra_set_data(extra_set_name)
+        if extra_data:
+            extra_results = {}
+            for driver, driver_data in extra_data.items():
+                try:
+                    freq, angles, spl_matrix, phase_matrix = create_polar_matrix_from_dict(driver_data)
+                    DirectivityCalculator(freq, angles, spl_matrix)
+                except ValueError as exc:
+                    print(f"Warning: Skipping extra driver '{driver}' for polar explorer: {exc}")
+                    continue
+
+                rear_spl_matrix = None
+                if driver_data.get('has_rear') and 'rear_angles' in driver_data:
+                    _, _, rear_spl_matrix, _ = create_polar_matrix_from_dict(
+                        {
+                            'angles': driver_data['rear_angles'],
+                            'common_frequencies': driver_data['common_frequencies']
+                        }
+                    )
+
+                extra_results[driver] = {
+                    'frequencies': freq,
+                    'angles': angles,
+                    'spl_matrix': spl_matrix,
+                    'rear_spl_matrix': rear_spl_matrix,
+                    'has_rear': driver_data.get('has_rear', False),
+                }
+
+            if extra_results:
+                extra_drivers = sorted(extra_results.keys())
+                extra_freqs = extra_results[extra_drivers[0]]['frequencies']
+                extra_indices = [int(np.abs(extra_freqs - f).argmin()) for f in freq_values]
+
+                extra_step_data = []
+                for idx in extra_indices:
+                    step = []
+                    for driver in extra_drivers:
+                        res = extra_results[driver]
+                        angles_rad, spl_norm = self._build_polar_data_from_result(res, idx, use_rear=any_has_rear)
+                        step.append({'theta': np.degrees(angles_rad).tolist(), 'r': spl_norm.tolist()})
+                    extra_step_data.append(step)
+
+                extra_polar_payload = {
+                    "label": "Juan baffleless drivers",
+                    "drivers": extra_drivers,
+                    "stepData": extra_step_data,
+                }
+
+        extra_polar_button_html = ""
+        extra_polar_css = ""
+        extra_polar_script = ""
+        if extra_polar_payload:
+            extra_polar_button_html = '''
+<div class="extra-driver-container">
+    <button id="loadExtraPolarBtn" onclick="loadExtraPolarDrivers()">Load Juan baffleless drivers</button>
+</div>
+'''
+            extra_polar_css = '''
+.extra-driver-container {
+    position: absolute;
+    top: 58px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    font-family: Arial, sans-serif;
+}
+.extra-driver-container button {
+    padding: 5px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    background: #eef2ff;
+    color: #1e3a8a;
+    border: 1px solid #c7d2fe;
+    border-radius: 4px;
+}
+.extra-driver-container button:hover {
+    background: #e0e7ff;
+}
+.extra-driver-container button:disabled {
+    cursor: default;
+    opacity: 0.6;
+}
+'''
+            extra_polar_script = f'''
+const extraPolarDataset = {json.dumps(extra_polar_payload)};
+const polarDriverColors = {json.dumps(config.DRIVER_COLORS)};
+
+function rebuildPolarDriverButtons(plotDiv) {{
+    if (!plotDiv?.data) return;
+    const total = plotDiv.data.length;
+    const buttons = [];
+    buttons.push({{
+        label: "All",
+        method: "restyle",
+        args: [{{ "visible": Array(total).fill(true) }}]
+    }});
+    plotDiv.data.forEach((trace, idx) => {{
+        const visibility = Array(total).fill(false);
+        visibility[idx] = true;
+        buttons.push({{
+            label: trace.name,
+            method: "restyle",
+            args: [{{ "visible": visibility }}]
+        }});
+    }});
+    plotDiv.layout.updatemenus[0].buttons = buttons;
+    Plotly.relayout(plotDiv, {{'updatemenus[0].buttons': buttons}});
+}}
+
+function loadExtraPolarDrivers() {{
+    if (!extraPolarDataset || extraPolarDataset.loaded) return;
+    const plotDiv = document.querySelector('.plotly-graph-div');
+    if (!plotDiv) return;
+    const extraDrivers = extraPolarDataset.drivers || [];
+    const stepData = extraPolarDataset.stepData || [];
+    if (!extraDrivers.length || !stepData.length) return;
+
+    const extraTraces = extraDrivers.map((driver, idx) => {{
+        const color = polarDriverColors[driver] || '#2563eb';
+        return {{
+            r: stepData[0][idx].r,
+            theta: stepData[0][idx].theta,
+            mode: 'lines',
+            name: driver,
+            line: {{ width: 3, color: color }}
+        }};
+    }});
+
+    Plotly.addTraces(plotDiv, extraTraces).then(() => {{
+        const steps = plotDiv.layout?.sliders?.[0]?.steps || [];
+        if (steps.length === stepData.length) {{
+            const newSteps = steps.map((step, i) => {{
+                const args0 = step.args[0] || {{}};
+                const newR = (args0.r || []).concat(stepData[i].map(d => d.r));
+                const newTheta = (args0.theta || []).concat(stepData[i].map(d => d.theta));
+                return {{
+                    ...step,
+                    args: [{{ ...args0, r: newR, theta: newTheta }}]
+                }};
+            }});
+            plotDiv.layout.sliders[0].steps = newSteps;
+            Plotly.relayout(plotDiv, {{'sliders[0].steps': newSteps}});
+        }}
+
+        rebuildPolarDriverButtons(plotDiv);
+        extraPolarDataset.loaded = true;
+        const btn = document.getElementById('loadExtraPolarBtn');
+        if (btn) {{
+            btn.textContent = 'Juan baffleless drivers loaded';
+            btn.disabled = true;
+        }}
+    }});
+}}
+'''
+
         # Custom JavaScript for manual frequency entry
         custom_js = f'''
 <style>
@@ -4850,20 +5265,22 @@ class PolarResponseVisualizer:
 .freq-input-container button:hover {{
     background: #1d4ed8;
 }}
-.freq-input-container span {{
-    margin-left: 10px;
-    font-size: 12px;
-    color: #666;
-}}
-</style>
-<div class="freq-input-container">
-    <label for="freqInput">Go to frequency:</label>
-    <input type="number" id="freqInput" min="{config.FREQ_MIN}" max="{config.FREQ_MAX}" placeholder="Hz">
-    <button onclick="goToFrequency()">Go</button>
-    <span>(Range: {config.FREQ_MIN}-{config.FREQ_MAX} Hz)</span>
-</div>
-<script>
-var freqValues = [{freq_js_array}];
+	.freq-input-container span {{
+	    margin-left: 10px;
+	    font-size: 12px;
+	    color: #666;
+	}}
+    {extra_polar_css}
+	</style>
+	<div class="freq-input-container">
+	    <label for="freqInput">Go to frequency:</label>
+	    <input type="number" id="freqInput" min="{config.FREQ_MIN}" max="{config.FREQ_MAX}" placeholder="Hz">
+	    <button onclick="goToFrequency()">Go</button>
+	    <span>(Range: {config.FREQ_MIN}-{config.FREQ_MAX} Hz)</span>
+	</div>
+    {extra_polar_button_html}
+	<script>
+	var freqValues = [{freq_js_array}];
 
 function goToFrequency() {{
     var targetFreq = parseFloat(document.getElementById('freqInput').value);
@@ -4897,13 +5314,14 @@ function goToFrequency() {{
 }}
 
 // Also allow Enter key to trigger search
-document.getElementById('freqInput').addEventListener('keypress', function(e) {{
-    if (e.key === 'Enter') {{
-        goToFrequency();
-    }}
-}});
-</script>
-'''
+	document.getElementById('freqInput').addEventListener('keypress', function(e) {{
+	    if (e.key === 'Enter') {{
+	        goToFrequency();
+	    }}
+	}});
+    {extra_polar_script}
+	</script>
+	'''
 
         # Insert custom HTML before closing body tag
         html_content = html_content.replace('</body>', custom_js + '</body>')
