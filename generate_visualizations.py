@@ -28,6 +28,7 @@ from pathlib import Path
 import gzip
 import base64
 import json
+import html
 
 # Import centralized configuration
 import config
@@ -373,6 +374,61 @@ class PolarResponseVisualizer:
         angles_rad = np.radians(all_angles)
         return angles_rad, spl_normalized
 
+    def _interpolate_angle_grid(self, angles, spl_matrix, phase_matrix, target_angles):
+        base_angles = np.array([int(a) for a in angles], dtype=float)
+        target = np.array([int(a) for a in target_angles], dtype=float)
+
+        base_order = np.argsort(base_angles)
+        base_angles = base_angles[base_order]
+        spl_matrix = spl_matrix[:, base_order]
+        phase_matrix = phase_matrix[:, base_order]
+
+        base_set = {int(a) for a in base_angles.tolist()}
+        missing = [int(a) for a in target.tolist() if int(a) not in base_set]
+
+        if len(base_angles) == len(target) and np.allclose(base_angles, target):
+            return base_angles.astype(int).tolist(), spl_matrix, phase_matrix, missing
+
+        # Interpolate using complex response (mag + unwrapped phase) to avoid phase discontinuities.
+        mag = 10 ** (spl_matrix / 20.0)
+        phase_rad = np.deg2rad(phase_matrix)
+        phase_unwrapped = np.unwrap(phase_rad, axis=1)
+        comp = mag * np.exp(1j * phase_unwrapped)
+
+        comp_interp = np.empty((comp.shape[0], len(target)), dtype=np.complex128)
+        for i in range(comp.shape[0]):
+            real_interp = np.interp(target, base_angles, comp[i].real)
+            imag_interp = np.interp(target, base_angles, comp[i].imag)
+            comp_interp[i] = real_interp + 1j * imag_interp
+
+        mag_interp = np.abs(comp_interp)
+        spl_interp = 20 * np.log10(np.maximum(mag_interp, 1e-12))
+        phase_interp = np.rad2deg(np.angle(comp_interp))
+
+        return target.astype(int).tolist(), spl_interp, phase_interp, missing
+
+    def _format_interpolation_note(self, target_angles, interp_info):
+        target = sorted({int(a) for a in target_angles})
+        if not interp_info:
+            return "No interpolation needed."
+
+        lines = []
+        lines.append(f"Aligned to base grid: {', '.join(map(str, target))}")
+
+        grouped = {}
+        for driver, info in interp_info.items():
+            key = (tuple(info.get("source_angles", [])), tuple(info.get("missing_angles", [])))
+            grouped.setdefault(key, []).append(driver)
+
+        for (source, missing), drivers in grouped.items():
+            source_str = ", ".join(map(str, source)) if source else "none"
+            missing_str = ", ".join(map(str, missing)) if missing else "none"
+            driver_str = ", ".join(drivers)
+            lines.append(f"{driver_str} measured: {source_str}; interpolated: {missing_str}")
+
+        lines.append("Method: linear interpolation of complex response (magnitude + phase, phase unwrapped).")
+        return "\n".join(lines)
+
     def _build_polar_data_from_result(self, res, freq_idx: int, use_rear: bool):
         front_angles = res['angles']
         front_spl = res['spl_matrix'][freq_idx, :]
@@ -443,10 +499,14 @@ class PolarResponseVisualizer:
         extra_data.pop('_config', None)
         return extra_data
 
-    def _build_explorer_payload(self, dataset: dict, target_points: int):
+    def _build_explorer_payload(self, dataset: dict, target_points: int, target_angles=None):
         extra_all_data = {}
         extra_angles = set()
         extra_drivers = []
+        interp_info = {}
+        target_angles_list = sorted({int(a) for a in target_angles}) if target_angles else None
+        if target_angles_list is not None:
+            extra_angles.update(target_angles_list)
 
         for driver, driver_data in dataset.items():
             try:
@@ -471,15 +531,30 @@ class PolarResponseVisualizer:
                 spl_dec = spl_matrix
                 phase_dec = phase_matrix
 
+            source_angles = [int(a) for a in angles]
+            if target_angles_list is not None:
+                interp_angles, spl_dec, phase_dec, missing = self._interpolate_angle_grid(
+                    angles, spl_dec, phase_dec, target_angles_list
+                )
+                angles_used = interp_angles
+                if missing:
+                    interp_info[driver] = {
+                        "source_angles": source_angles,
+                        "missing_angles": missing
+                    }
+            else:
+                angles_used = source_angles
+
             extra_all_data[driver] = {
                 'freq': freq_dec.tolist(),
-                'angles': [int(a) for a in angles],
-                'spl': {int(angles[i]): spl_dec[:, i].tolist() for i in range(len(angles))},
-                'phase': {int(angles[i]): phase_dec[:, i].tolist() for i in range(len(angles))}
+                'angles': angles_used,
+                'spl': {int(angles_used[i]): spl_dec[:, i].tolist() for i in range(len(angles_used))},
+                'phase': {int(angles_used[i]): phase_dec[:, i].tolist() for i in range(len(angles_used))}
             }
-            extra_angles.update(angles)
+            if target_angles_list is None:
+                extra_angles.update(angles_used)
 
-        return extra_all_data, sorted(extra_angles), extra_drivers
+        return extra_all_data, sorted(extra_angles), extra_drivers, interp_info
 
     def plot_di_comparison(self, save_static=True, save_interactive=True):
         """Generate DI comparison plot for all drivers"""
@@ -724,9 +799,10 @@ class PolarResponseVisualizer:
         extra_datasets = {}
         extra_set_name = "juan-baffleless"
         extra_data = self._load_extra_set_data(extra_set_name)
+        extra_interp_note = ""
         if extra_data:
-            extra_all_data, extra_angles, extra_drivers = self._build_explorer_payload(
-                extra_data, TARGET_POINTS
+            extra_all_data, extra_angles, extra_drivers, extra_interp_info = self._build_explorer_payload(
+                extra_data, TARGET_POINTS, target_angles=all_angles
             )
             if extra_drivers:
                 extra_datasets[extra_set_name] = {
@@ -735,12 +811,19 @@ class PolarResponseVisualizer:
                     "allData": extra_all_data,
                     "allAngles": [int(a) for a in extra_angles],
                 }
+                extra_interp_note = self._format_interpolation_note(all_angles, extra_interp_info)
 
         extra_controls_html = ""
         if extra_datasets:
-            extra_controls_html = '''
+            info_html = ""
+            if extra_interp_note:
+                info_html = f'<span class="info-icon" title="{html.escape(extra_interp_note)}">(i)</span>'
+            extra_controls_html = f'''
                 <div class="extra-driver-controls">
-                    <button id="loadExtraJuanBtn" onclick="loadExtraDrivers('juan-baffleless')">Load Juan baffleless drivers</button>
+                    <div class="extra-driver-row">
+                        <button id="loadExtraJuanBtn" onclick="loadExtraDrivers('juan-baffleless')">Load Juan baffleless drivers</button>
+                        {info_html}
+                    </div>
                     <div class="extra-driver-note">Adds: GRS PT6816, SS10F8414G10</div>
                 </div>
             '''
@@ -796,6 +879,11 @@ class PolarResponseVisualizer:
             gap: 6px;
             margin: 6px 0 12px;
         }}
+        .extra-driver-row {{
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }}
         .extra-driver-controls button {{
             padding: 6px 10px;
             border: 1px solid #ddd;
@@ -810,6 +898,19 @@ class PolarResponseVisualizer:
         .extra-driver-controls button:disabled {{
             cursor: default;
             opacity: 0.6;
+        }}
+        .info-icon {{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 1px solid #cbd5e1;
+            color: #64748b;
+            font-size: 0.7rem;
+            cursor: help;
+            background: #fff;
         }}
         .extra-driver-note {{
             font-size: 0.75rem;
@@ -5065,11 +5166,15 @@ class PolarResponseVisualizer:
         freq_values = [freqs[idx] for idx in indices]
         freq_js_array = ','.join([f'{f:.1f}' for f in freq_values])
 
+        base_angles = sorted({int(a) for res in self.calc_results.values() for a in res['angles']})
+
         extra_polar_payload = None
         extra_set_name = "juan-baffleless"
         extra_data = self._load_extra_set_data(extra_set_name)
+        extra_interp_note = ""
         if extra_data:
             extra_results = {}
+            extra_interp_info = {}
             for driver, driver_data in extra_data.items():
                 try:
                     freq, angles, spl_matrix, phase_matrix = create_polar_matrix_from_dict(driver_data)
@@ -5078,19 +5183,31 @@ class PolarResponseVisualizer:
                     print(f"Warning: Skipping extra driver '{driver}' for polar explorer: {exc}")
                     continue
 
+                interp_angles, interp_spl, interp_phase, missing = self._interpolate_angle_grid(
+                    angles, spl_matrix, phase_matrix, base_angles
+                )
+                if missing:
+                    extra_interp_info[driver] = {
+                        "source_angles": [int(a) for a in angles],
+                        "missing_angles": missing
+                    }
+
                 rear_spl_matrix = None
                 if driver_data.get('has_rear') and 'rear_angles' in driver_data:
-                    _, _, rear_spl_matrix, _ = create_polar_matrix_from_dict(
+                    _, rear_angles, rear_spl_matrix, rear_phase_matrix = create_polar_matrix_from_dict(
                         {
                             'angles': driver_data['rear_angles'],
                             'common_frequencies': driver_data['common_frequencies']
                         }
                     )
+                    _, rear_spl_matrix, _, _ = self._interpolate_angle_grid(
+                        rear_angles, rear_spl_matrix, rear_phase_matrix, base_angles
+                    )
 
                 extra_results[driver] = {
                     'frequencies': freq,
-                    'angles': angles,
-                    'spl_matrix': spl_matrix,
+                    'angles': interp_angles,
+                    'spl_matrix': interp_spl,
                     'rear_spl_matrix': rear_spl_matrix,
                     'has_rear': driver_data.get('has_rear', False),
                 }
@@ -5114,14 +5231,21 @@ class PolarResponseVisualizer:
                     "drivers": extra_drivers,
                     "stepData": extra_step_data,
                 }
+                extra_interp_note = self._format_interpolation_note(base_angles, extra_interp_info)
 
         extra_polar_button_html = ""
         extra_polar_css = ""
         extra_polar_script = ""
         if extra_polar_payload:
-            extra_polar_button_html = '''
+            info_html = ""
+            if extra_interp_note:
+                info_html = f'<span class="info-icon" title="{html.escape(extra_interp_note)}">(i)</span>'
+            extra_polar_button_html = f'''
 <div class="extra-driver-container">
-    <button id="loadExtraPolarBtn" onclick="loadExtraPolarDrivers()">Load Juan baffleless drivers</button>
+    <div class="extra-driver-row">
+        <button id="loadExtraPolarBtn" onclick="loadExtraPolarDrivers()">Load Juan baffleless drivers</button>
+        {info_html}
+    </div>
 </div>
 '''
             extra_polar_css = '''
@@ -5152,6 +5276,24 @@ class PolarResponseVisualizer:
 .extra-driver-container button:disabled {
     cursor: default;
     opacity: 0.6;
+}
+.extra-driver-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid #cbd5e1;
+    color: #64748b;
+    font-size: 11px;
+    cursor: help;
+    background: #fff;
 }
 '''
             extra_polar_script = f'''
