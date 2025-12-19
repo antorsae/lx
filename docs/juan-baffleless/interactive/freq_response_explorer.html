@@ -51,6 +51,31 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
             flex-direction: column;
             gap: 10px;
         }
+        .extra-driver-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin: 6px 0 12px;
+        }
+        .extra-driver-controls button {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #f8fafc;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .extra-driver-controls button:hover {
+            background: #eef2ff;
+        }
+        .extra-driver-controls button:disabled {
+            cursor: default;
+            opacity: 0.6;
+        }
+        .extra-driver-note {
+            font-size: 0.75rem;
+            color: #666;
+        }
         .driver-item {
             padding: 10px;
             border: 2px solid #e0e0e0;
@@ -621,8 +646,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
         <div class="sidebar">
             <h2>Frequency Response Explorer</h2>
 
-	            <h3>Drivers (click to toggle)</h3>
-	            <div class="driver-list" id="driverList"></div>
+		            <h3>Drivers (click to toggle)</h3>
+		            <div class="driver-list" id="driverList"></div>
+                    
                 <div class="filter-controls timing-controls">
                     <button onclick="resetTimingAdjustments()" title="Clear per-driver delay and invert adjustments">Clear Delay/Invert</button>
                 </div>
@@ -729,6 +755,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
         const driverColors = {"10F8424": "#1f77b4", "L22MG": "#ff7f0e", "MU10": "#2ca02c", "SEAS27T": "#d62728", "GRS PT6816": "#9467bd", "SS10F8414G10": "#17becf"};
         const defaultColor = '#888888';
         const measurementSetName = 'juan-baffleless';
+        const extraDriverDatasets = {};
 
         // Filter types
         const filterTypes = ['Peaking', 'Lowpass', 'Highpass', 'Lowshelf', 'Highshelf', 'Allpass'];
@@ -2378,10 +2405,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
             }
         }
 
-        // Initialize UI
-        function initUI() {
+        function renderDriverList() {
             const driverList = document.getElementById('driverList');
-            drivers.forEach((driver, idx) => {
+            if (!driverList) return;
+            driverList.innerHTML = '';
+
+            drivers.forEach((driver) => {
                 const color = driverColors[driver] || defaultColor;
                 const isActive = activeDrivers.has(driver);
 
@@ -2413,7 +2442,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
                                     <span>Invert</span>
                                 </label>
                             </div>
-		                `;
+	                `;
 
                 // Header click toggles driver
                 const header = item.querySelector('.driver-header');
@@ -2434,28 +2463,28 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
                 };
 
                 // Offset controls
-                const gainSlider = item.querySelector('.gain-slider');
-                const gainInput = item.querySelector('.gain-input');
-                const delayInput = item.querySelector('.delay-input');
+	                const gainSlider = item.querySelector('.gain-slider');
+	                const gainInput = item.querySelector('.gain-input');
+	                const delayInput = item.querySelector('.delay-input');
                         const invertInput = item.querySelector('.invert-checkbox');
                         const savedGain = Number.isFinite(driverOffsets[driver]) ? driverOffsets[driver] : 0;
                         const savedDelayUs = Number.isFinite(driverDelaysMs[driver]) ? Math.round(driverDelaysMs[driver] * 1000) : 0;
                         if (gainSlider) gainSlider.value = savedGain;
                         if (gainInput) gainInput.value = savedGain;
                         if (delayInput) delayInput.value = savedDelayUs;
-                gainSlider.oninput = () => {
-                    gainInput.value = gainSlider.value;
-                };
-		                gainSlider.onchange = () => {
-		                    setOffset(driver, gainSlider.value);
-		                };
-		                gainInput.onchange = () => {
-		                    gainSlider.value = gainInput.value;
-		                    setOffset(driver, gainInput.value);
-		                };
-		                delayInput.onchange = () => {
-		                    setDelayUs(driver, delayInput.value);
-		                };
+	                gainSlider.oninput = () => {
+	                    gainInput.value = gainSlider.value;
+	                };
+	                gainSlider.onchange = () => {
+	                    setOffset(driver, gainSlider.value);
+	                };
+	                gainInput.onchange = () => {
+	                    gainSlider.value = gainInput.value;
+	                    setOffset(driver, gainInput.value);
+	                };
+	                delayInput.onchange = () => {
+	                    setDelayUs(driver, delayInput.value);
+	                };
                         if (invertInput) {
                             invertInput.checked = (driverPhaseOffsetsDeg[driver] || 0) === 180;
                             invertInput.onchange = () => {
@@ -2465,8 +2494,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
                 driverList.appendChild(item);
             });
+        }
 
+        function renderAngleGrid() {
             const angleGrid = document.getElementById('angleGrid');
+            if (!angleGrid) return;
+            angleGrid.innerHTML = '';
             allAngles.forEach(angle => {
                 const btn = document.createElement('button');
                 btn.className = 'angle-btn' + (activeAngles.has(angle) ? ' active' : '');
@@ -2474,6 +2507,51 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
                 btn.onclick = () => toggleAngle(angle, btn);
                 angleGrid.appendChild(btn);
             });
+        }
+
+        function refreshFilterDriverSelect() {
+            const select = document.getElementById('filterDriverSelect');
+            if (!select) return;
+            select.innerHTML = '';
+            drivers.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d;
+                opt.textContent = d;
+                select.appendChild(opt);
+            });
+            if (!drivers.includes(selectedFilterDriver)) {
+                selectedFilterDriver = drivers[0];
+            }
+            select.value = selectedFilterDriver;
+        }
+
+        function refreshOptRefAngleSelect() {
+            const refAngleSelect = document.getElementById('optRefAngle');
+            if (!refAngleSelect) return;
+            const currentValue = parseInt(refAngleSelect.value);
+            refAngleSelect.innerHTML = '';
+            allAngles.forEach(a => {
+                const opt = document.createElement('option');
+                opt.value = a;
+                opt.textContent = a + '°';
+                refAngleSelect.appendChild(opt);
+            });
+
+            if (Number.isFinite(currentValue) && allAngles.includes(currentValue)) {
+                refAngleSelect.value = currentValue;
+            } else if (Number.isFinite(savedUiState?.optRefAngle) && allAngles.includes(savedUiState.optRefAngle)) {
+                refAngleSelect.value = savedUiState.optRefAngle;
+            } else if (allAngles.includes(0)) {
+                refAngleSelect.value = 0;
+            } else if (allAngles.length) {
+                refAngleSelect.value = allAngles[0];
+            }
+        }
+
+        // Initialize UI
+        function initUI() {
+            renderDriverList();
+            renderAngleGrid();
         }
 
         function toggleDriver(driver, elem, checked) {
@@ -2527,32 +2605,75 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
                 updatePlot();
             }
 
+        function loadExtraDrivers(key) {
+            const dataset = extraDriverDatasets?.[key];
+            if (!dataset || !dataset.allData) {
+                alert('Extra drivers not available for this dataset.');
+                return;
+            }
+            if (dataset.loaded) return;
+
+            const extraDrivers = (dataset.drivers || []).filter(d => !drivers.includes(d));
+            if (!extraDrivers.length) {
+                dataset.loaded = true;
+                const btn = document.getElementById('loadExtraJuanBtn');
+                if (btn) {
+                    btn.textContent = 'Juan baffleless drivers loaded';
+                    btn.disabled = true;
+                }
+                return;
+            }
+
+            extraDrivers.forEach(d => {
+                drivers.push(d);
+                if (!driverFilters[d]) driverFilters[d] = [];
+                const savedOffset = savedUiState?.driverOffsets?.[d];
+                const savedDelay = savedUiState?.driverDelaysMs?.[d];
+                const savedPhase = savedUiState?.driverPhaseOffsetsDeg?.[d];
+                driverOffsets[d] = Number.isFinite(savedOffset) ? savedOffset : 0;
+                driverDelaysMs[d] = Number.isFinite(savedDelay) ? savedDelay : 0;
+                driverPhaseOffsetsDeg[d] = Number.isFinite(savedPhase) ? savedPhase : 0;
+            });
+
+            const savedActiveDrivers = savedUiState?.activeDrivers;
+            if (Array.isArray(savedActiveDrivers)) {
+                savedActiveDrivers.forEach(d => {
+                    if (drivers.includes(d)) activeDrivers.add(d);
+                });
+            }
+
+            Object.entries(dataset.allData || {}).forEach(([driver, data]) => {
+                allData[driver] = data;
+            });
+
+            (dataset.allAngles || []).forEach(a => {
+                if (!allAngles.includes(a)) allAngles.push(a);
+            });
+            allAngles.sort((a, b) => a - b);
+
+            renderDriverList();
+            renderAngleGrid();
+            refreshFilterDriverSelect();
+            refreshOptRefAngleSelect();
+            renderFilterList();
+            renderCrossoverList();
+            syncCrossoverFilters();
+            saveFiltersToLocalStorage();
+            saveUiStateToLocalStorage();
+            updatePlot();
+
+            dataset.loaded = true;
+            const btn = document.getElementById('loadExtraJuanBtn');
+            if (btn) {
+                btn.textContent = 'Juan baffleless drivers loaded';
+                btn.disabled = true;
+            }
+        }
+
         // ============ FILTER UI FUNCTIONS ============
         function initFilterUI() {
-            // Populate driver select
-            const select = document.getElementById('filterDriverSelect');
-            drivers.forEach(d => {
-                const opt = document.createElement('option');
-                opt.value = d;
-                opt.textContent = d;
-                select.appendChild(opt);
-            });
-            select.value = selectedFilterDriver;
-
-            // Populate reference angle select for optimization
-            const refAngleSelect = document.getElementById('optRefAngle');
-            allAngles.forEach(a => {
-                const opt = document.createElement('option');
-                opt.value = a;
-                opt.textContent = a + '°';
-                refAngleSelect.appendChild(opt);
-            });
-            const savedRefAngle = savedUiState?.optRefAngle;
-            if (Number.isFinite(savedRefAngle) && allAngles.includes(savedRefAngle)) {
-                refAngleSelect.value = savedRefAngle;
-            } else {
-                refAngleSelect.value = 0;  // Default to on-axis
-            }
+            refreshFilterDriverSelect();
+            refreshOptRefAngleSelect();
 
             const optMinInput = document.getElementById('optFreqMin');
             if (optMinInput && Number.isFinite(savedUiState?.optFreqMin)) {
