@@ -817,7 +817,8 @@ class PolarResponseVisualizer:
         if extra_datasets:
             info_html = ""
             if extra_interp_note:
-                info_html = f'<span class="info-icon" title="{html.escape(extra_interp_note)}">(i)</span>'
+                note = html.escape(extra_interp_note).replace("\n", "&#10;")
+                info_html = f'<span class="info-icon" title="{note}">(i)</span>'
             extra_controls_html = f'''
                 <div class="extra-driver-controls">
                     <div class="extra-driver-row">
@@ -5043,27 +5044,6 @@ class PolarResponseVisualizer:
             )
             steps.append(step)
 
-        # Create driver selection buttons (updatemenus)
-        # "All" button shows all drivers, individual buttons show only that driver
-        driver_buttons = []
-
-        # "All" button
-        driver_buttons.append(dict(
-            label="All",
-            method="restyle",
-            args=[{"visible": [True] * len(self.drivers)}]
-        ))
-
-        # Individual driver buttons
-        for d_idx, driver in enumerate(self.drivers):
-            visibility = [False] * len(self.drivers)
-            visibility[d_idx] = True
-            driver_buttons.append(dict(
-                label=driver,
-                method="restyle",
-                args=[{"visible": visibility}]
-            ))
-
         # Configure angular axis based on whether we have 360° data
         if any_has_rear:
             angular_axis = dict(
@@ -5107,27 +5087,6 @@ class PolarResponseVisualizer:
                 ),
                 angularaxis=angular_axis
             ),
-            updatemenus=[{
-                "buttons": driver_buttons,
-                "direction": "down",
-                "showactive": True,
-                "x": 1.15,
-                "xanchor": "left",
-                "y": 0.8,
-                "yanchor": "top",
-                "bgcolor": "white",
-                "bordercolor": "lightgray",
-                "font": {"size": 12}
-            }],
-            annotations=[{
-                "text": "Driver:",
-                "x": 1.15,
-                "xref": "paper",
-                "y": 0.85,
-                "yref": "paper",
-                "showarrow": False,
-                "font": {"size": 14, "color": "black"}
-            }],
             sliders=[{
                 "active": 0,
                 "yanchor": "top",
@@ -5161,6 +5120,8 @@ class PolarResponseVisualizer:
 
         # Generate HTML with custom frequency input
         html_content = fig.to_html(include_plotlyjs='cdn', full_html=True)
+        if not html_content.lstrip().lower().startswith('<!doctype html>'):
+            html_content = '<!DOCTYPE html>\n' + html_content
 
         # Build frequency lookup array for JavaScript
         freq_values = [freqs[idx] for idx in indices]
@@ -5173,6 +5134,20 @@ class PolarResponseVisualizer:
         extra_data = self._load_extra_set_data(extra_set_name)
         extra_interp_note = ""
         if extra_data:
+            base_step_data = [
+                [
+                    {
+                        "theta": (entry["theta"].tolist()
+                                  if hasattr(entry["theta"], "tolist")
+                                  else entry["theta"]),
+                        "r": (entry["r"].tolist()
+                              if hasattr(entry["r"], "tolist")
+                              else entry["r"])
+                    }
+                    for entry in step
+                ]
+                for step in all_step_data
+            ]
             extra_results = {}
             extra_interp_info = {}
             for driver, driver_data in extra_data.items():
@@ -5230,6 +5205,8 @@ class PolarResponseVisualizer:
                     "label": "Juan baffleless drivers",
                     "drivers": extra_drivers,
                     "stepData": extra_step_data,
+                    "baseDrivers": self.drivers,
+                    "baseStepData": base_step_data,
                 }
                 extra_interp_note = self._format_interpolation_note(base_angles, extra_interp_info)
 
@@ -5239,9 +5216,10 @@ class PolarResponseVisualizer:
         if extra_polar_payload:
             info_html = ""
             if extra_interp_note:
-                info_html = f'<span class="info-icon" title="{html.escape(extra_interp_note)}">(i)</span>'
+                note = html.escape(extra_interp_note).replace("\n", "&#10;")
+                info_html = f'<span class="info-icon" title="{note}">(i)</span>'
             extra_polar_button_html = f'''
-<div class="extra-driver-container">
+<div class="extra-driver-container" id="extraPolarControl">
     <div class="extra-driver-row">
         <button id="loadExtraPolarBtn" onclick="loadExtraPolarDrivers()">Load Juan baffleless drivers</button>
         {info_html}
@@ -5251,9 +5229,8 @@ class PolarResponseVisualizer:
             extra_polar_css = '''
 .extra-driver-container {
     position: absolute;
-    top: 58px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 0;
+    right: 0;
     z-index: 1000;
     background: white;
     padding: 6px 12px;
@@ -5299,78 +5276,201 @@ class PolarResponseVisualizer:
             extra_polar_script = f'''
 const extraPolarDataset = {json.dumps(extra_polar_payload)};
 const polarDriverColors = {json.dumps(config.DRIVER_COLORS)};
+console.log('[extra-polar] dataset', extraPolarDataset);
 
-function rebuildPolarDriverButtons(plotDiv) {{
-    if (!plotDiv?.data) return;
-    const total = plotDiv.data.length;
-    const buttons = [];
-    buttons.push({{
-        label: "All",
-        method: "restyle",
-        args: [{{ "visible": Array(total).fill(true) }}]
-    }});
-    plotDiv.data.forEach((trace, idx) => {{
-        const visibility = Array(total).fill(false);
-        visibility[idx] = true;
-        buttons.push({{
-            label: trace.name,
-            method: "restyle",
-            args: [{{ "visible": visibility }}]
-        }});
-    }});
-    plotDiv.layout.updatemenus[0].buttons = buttons;
-    Plotly.relayout(plotDiv, {{'updatemenus[0].buttons': buttons}});
-}}
-
-function loadExtraPolarDrivers() {{
-    if (!extraPolarDataset || extraPolarDataset.loaded) return;
-    const plotDiv = document.querySelector('.plotly-graph-div');
-    if (!plotDiv) return;
-    const extraDrivers = extraPolarDataset.drivers || [];
-    const stepData = extraPolarDataset.stepData || [];
-    if (!extraDrivers.length || !stepData.length) return;
-
-    const extraTraces = extraDrivers.map((driver, idx) => {{
+function buildPolarTraces(drivers, stepEntries) {{
+    return drivers.map((driver, idx) => {{
+        const entry = stepEntries[idx];
         const color = polarDriverColors[driver] || '#2563eb';
         return {{
-            r: stepData[0][idx].r,
-            theta: stepData[0][idx].theta,
+            r: entry.r,
+            theta: entry.theta,
             mode: 'lines',
             name: driver,
+            type: 'scatterpolar',
             line: {{ width: 3, color: color }}
         }};
     }});
+}}
+
+function positionExtraPolarControl() {{
+    const plotDiv = document.querySelector('.plotly-graph-div');
+    const control = document.getElementById('extraPolarControl');
+    if (!plotDiv || !control) {{
+        console.warn('[extra-polar] missing plotDiv/control', {{ plotDiv, control }});
+        return;
+    }}
+
+    if (!plotDiv.contains(control)) {{
+        plotDiv.appendChild(control);
+    }}
+    if (!plotDiv.style.position) {{
+        plotDiv.style.position = 'relative';
+    }}
+
+    const plotRect = plotDiv.getBoundingClientRect();
+    const legend = plotDiv.querySelector('.legend');
+    if (legend) {{
+        const legendRect = legend.getBoundingClientRect();
+        const top = Math.max(0, legendRect.bottom - plotRect.top + 8);
+        const right = Math.max(12, plotRect.right - legendRect.right);
+        control.style.top = `${{top}}px`;
+        control.style.right = `${{right}}px`;
+        control.style.left = 'auto';
+        console.log('[extra-polar] positioned via legend', {{ top, right }});
+        return;
+    }}
+
+    const layout = plotDiv._fullLayout;
+    const size = layout?._size;
+    if (layout?.legend && size) {{
+        const legendLayout = layout.legend;
+        const y = legendLayout.y ?? 1;
+        const x = legendLayout.x ?? 1;
+        const fontSize = legendLayout.font?.size || layout.font?.size || 12;
+        const itemHeight = fontSize + 6;
+        const count = (extraPolarDataset?.baseDrivers?.length || 0) + 1;
+        const legendTop = size.t + (1 - y) * size.h;
+        const legendBottom = legendTop + (itemHeight * count);
+        const legendRight = size.l + (x * size.w);
+        const top = Math.max(0, legendBottom + 8);
+        const right = Math.max(12, plotRect.width - legendRight);
+        control.style.top = `${{top}}px`;
+        control.style.right = `${{right}}px`;
+        control.style.left = 'auto';
+        console.log('[extra-polar] positioned via layout fallback', {{ top, right }});
+        return;
+    }}
+
+    control.style.top = '160px';
+    control.style.right = '22px';
+    control.style.left = 'auto';
+    console.warn('[extra-polar] legend not found, using fallback');
+}}
+
+function loadExtraPolarDrivers() {{
+    console.log('[extra-polar] load requested');
+    if (!extraPolarDataset || extraPolarDataset.loaded) {{
+        console.warn('[extra-polar] dataset missing or already loaded');
+        return;
+    }}
+    const plotDiv = document.querySelector('.plotly-graph-div');
+    if (!plotDiv) {{
+        console.warn('[extra-polar] plotDiv not found');
+        return;
+    }}
+    console.log('[extra-polar] plotDiv found', {{
+        hasLayout: !!plotDiv._fullLayout,
+        dataLen: plotDiv.data?.length
+    }});
+    const baseDrivers = extraPolarDataset.baseDrivers || [];
+    const baseSteps = extraPolarDataset.baseStepData || [];
+    const extraDrivers = extraPolarDataset.drivers || [];
+    const extraSteps = extraPolarDataset.stepData || [];
+    if (!baseDrivers.length || !baseSteps.length || !extraDrivers.length || !extraSteps.length) {{
+        console.warn('[extra-polar] missing data', {{
+            baseDrivers: baseDrivers.length,
+            baseSteps: baseSteps.length,
+            extraDrivers: extraDrivers.length,
+            extraSteps: extraSteps.length
+        }});
+        return;
+    }}
+
+    const activeIdx = plotDiv.layout?.sliders?.[0]?.active ?? 0;
+    const stepIdx = Math.max(0, Math.min(activeIdx, extraSteps.length - 1));
+    const extraTraces = buildPolarTraces(extraDrivers, extraSteps[stepIdx] || []);
+    const extraTraceIndices = extraDrivers.map((_, i) => baseDrivers.length + i);
+    console.log('[extra-polar] add traces', {{ activeIdx, stepIdx, extraTraces: extraTraces.length }});
 
     Plotly.addTraces(plotDiv, extraTraces).then(() => {{
-        const steps = plotDiv.layout?.sliders?.[0]?.steps || [];
-        if (steps.length === stepData.length) {{
-            const newSteps = steps.map((step, i) => {{
-                const args0 = step.args[0] || {{}};
-                const newR = (args0.r || []).concat(stepData[i].map(d => d.r));
-                const newTheta = (args0.theta || []).concat(stepData[i].map(d => d.theta));
-                return {{
-                    ...step,
-                    args: [{{ ...args0, r: newR, theta: newTheta }}]
-                }};
+        console.log('[extra-polar] addTraces ok');
+        console.log('[extra-polar] data length after add', plotDiv.data?.length);
+        if (!plotDiv._extraPolarSliderHook) {{
+            plotDiv._extraPolarSliderHook = true;
+            plotDiv.on('plotly_sliderchange', (e) => {{
+                const idx = e?.slider?.active ?? e?.stepIndex ?? plotDiv.layout?.sliders?.[0]?.active ?? 0;
+                const step = extraSteps[Math.max(0, Math.min(idx, extraSteps.length - 1))] || [];
+                Plotly.restyle(plotDiv, {{
+                    r: step.map(d => d.r),
+                    theta: step.map(d => d.theta)
+                }}, extraTraceIndices);
             }});
-            plotDiv.layout.sliders[0].steps = newSteps;
-            Plotly.relayout(plotDiv, {{'sliders[0].steps': newSteps}});
         }}
+        positionExtraPolarControl();
 
-        rebuildPolarDriverButtons(plotDiv);
         extraPolarDataset.loaded = true;
         const btn = document.getElementById('loadExtraPolarBtn');
         if (btn) {{
             btn.textContent = 'Juan baffleless drivers loaded';
             btn.disabled = true;
         }}
+    }}).catch((err) => {{
+        console.error('[extra-polar] addTraces failed', err);
     }});
 }}
+
+function initExtraPolarControl() {{
+    const plotDiv = document.querySelector('.plotly-graph-div');
+    if (!plotDiv) {{
+        console.warn('[extra-polar] plotDiv missing at init');
+        return;
+    }}
+    positionExtraPolarControl();
+    setTimeout(positionExtraPolarControl, 200);
+    setTimeout(positionExtraPolarControl, 600);
+    if (plotDiv.on) {{
+        plotDiv.on('plotly_afterplot', positionExtraPolarControl);
+        plotDiv.on('plotly_relayout', positionExtraPolarControl);
+    }}
+    plotDiv.addEventListener('click', () => {{
+        setTimeout(positionExtraPolarControl, 50);
+    }});
+    if (window.Plotly && Plotly.Plots?.resize) {{
+        Plotly.Plots.resize(plotDiv);
+        setTimeout(() => Plotly.Plots.resize(plotDiv), 150);
+    }}
+}}
+function waitForExtraPolarPlotReady(attempt = 0) {{
+    const plotDiv = document.querySelector('.plotly-graph-div');
+    if (!plotDiv) {{
+        console.warn('[extra-polar] plotDiv missing, retry', attempt);
+        if (attempt < 30) setTimeout(() => waitForExtraPolarPlotReady(attempt + 1), 200);
+        return;
+    }}
+    if (!plotDiv._fullLayout) {{
+        if (attempt % 5 === 0) {{
+            console.log('[extra-polar] waiting for Plotly layout', attempt);
+        }}
+        if (attempt < 30) setTimeout(() => waitForExtraPolarPlotReady(attempt + 1), 200);
+        return;
+    }}
+    console.log('[extra-polar] Plotly ready', {{
+        hasLayout: !!plotDiv._fullLayout,
+        hasLegend: !!plotDiv._fullLayout?.legend,
+        dataLen: plotDiv.data?.length
+    }});
+    initExtraPolarControl();
+}}
+
+waitForExtraPolarPlotReady();
 '''
 
         # Custom JavaScript for manual frequency entry
         custom_js = f'''
 <style>
+html, body {{
+    height: 100%;
+    margin: 0;
+}}
+body > div {{
+    height: 100%;
+}}
+.plotly-graph-div {{
+    width: 100%;
+    height: 100%;
+    min-height: 80vh;
+}}
 .freq-input-container {{
     position: absolute;
     top: 10px;
