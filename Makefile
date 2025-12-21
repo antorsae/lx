@@ -10,7 +10,7 @@
 #   make help       - Show all targets
 
 .PHONY: all data viz sync deploy clean clean-all help rew-check rew-wait \
-        data-% viz-% sync-% docs-pages commit push
+        data-% data-run-% viz-% sync-% docs-pages commit push
 
 # Allow pattern-specific prerequisites using $$* etc.
 .SECONDEXPANSION:
@@ -19,6 +19,7 @@
 PYTHON := .venv/bin/python
 REW_API := http://127.0.0.1:4735
 REW_APP := /Applications/REW/REW.app
+JOBS ?= $(shell sysctl -n hw.ncpu 2>/dev/null || nproc 2>/dev/null || echo 4)
 
 # Measurement sets
 SETS := andres juan-baffleless lx521-system
@@ -36,20 +37,29 @@ hdf5_for = $(DATA_DIR)/polar_data_$(call slug,$(1)).h5
 # Main Targets
 # ====================
 
-all: data viz sync
+all:
+	@$(MAKE) data
+	@$(MAKE) -j$(JOBS) viz
+	@$(MAKE) -j$(JOBS) sync
 	@echo "✓ Full pipeline complete"
 
-data: $(addprefix data-,$(SETS))
+data: rew-check $(addprefix data-run-,$(SETS))
 	@echo "✓ All HDF5 data files generated"
 
 viz: $(addprefix viz-,$(SETS))
 	@echo "✓ All visualizations generated"
 
-sync: $(addprefix sync-,$(SETS)) docs-pages
+sync: $(addprefix sync-,$(SETS))
+	@$(MAKE) docs-pages
 	@echo "✓ All docs synced"
 
-deploy: sync commit push
+deploy:
+	@$(MAKE) sync
+	@$(MAKE) commit
+	@$(MAKE) push
 	@echo "✓ Deployed to GitHub Pages"
+
+.NOTPARALLEL: data data-run-%
 
 # ====================
 # REW API Management
@@ -80,10 +90,54 @@ rew-wait:
 # Data Loading (REW API → HDF5)
 # ====================
 
-data-%: rew-check
-	@echo "Loading $* measurements..."
-	$(PYTHON) run_pipeline.py -m $* --skip-viz
+data-%: rew-check data-run-%
 	@echo "✓ $* data saved to $(call hdf5_for,$*)"
+
+data-run-%:
+	@echo "Loading $* measurements..."
+	@SET_NAME="$*" HDF5_PATH="$(call hdf5_for,$*)" $(PYTHON) - <<-'PY'
+	import os
+	import sys
+	from pathlib import Path
+
+	import config
+
+	set_name = os.environ.get("SET_NAME")
+	hdf5_path = Path(os.environ.get("HDF5_PATH", ""))
+	mset = config.MEASUREMENT_SETS.get(set_name)
+	if not mset:
+	    print(f"Error: Unknown measurement set '{set_name}'")
+	    sys.exit(1)
+
+	sources = mset.get("sources")
+	if sources:
+	    dirs = [src["path"] for src in sources]
+	else:
+	    dirs = [mset.get("path")]
+
+	def needs_reload() -> bool:
+	    if not hdf5_path.exists():
+	        return True
+	    try:
+	        hdf5_mtime = hdf5_path.stat().st_mtime
+	    except OSError:
+	        return True
+	    for d in dirs:
+	        if not d:
+	            continue
+	        for p in Path(d).glob("*.mdat"):
+	            try:
+	                if p.stat().st_mtime > hdf5_mtime:
+	                    return True
+	            except OSError:
+	                continue
+	    return False
+
+	if needs_reload():
+	    os.execv(sys.executable, [sys.executable, "run_pipeline.py", "-m", set_name, "--skip-viz"])
+
+	print(f"✓ {hdf5_path} is up to date (skipping REW load)")
+	PY
 
 # ====================
 # Visualization Generation (HDF5 → plots)

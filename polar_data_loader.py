@@ -78,6 +78,17 @@ class PolarDataLoader:
             raise ValueError(
                 f"Unknown pattern_type '{pattern_type}'. Expected one of: {valid_list}"
             )
+        self._driver_name_aliases = getattr(config, "DRIVER_NAME_ALIASES", {})
+        self._driver_name_reverse = {}
+        for raw_name, canonical_name in self._driver_name_aliases.items():
+            raw = raw_name.strip()
+            canonical = canonical_name.strip()
+            if canonical in self._driver_name_reverse and self._driver_name_reverse[canonical] != raw:
+                raise ValueError(
+                    f"Driver alias collision for '{canonical}': "
+                    f"'{self._driver_name_reverse[canonical]}' and '{raw}'"
+                )
+            self._driver_name_reverse[canonical] = raw
 
         if connect_to_rew:
             if not self._ensure_rew_running():
@@ -494,7 +505,8 @@ class PolarDataLoader:
             driver_list = self._detect_drivers()
 
         print(f"Loading polar data for {len(driver_list)} drivers...")
-        print(f"Drivers: {', '.join(driver_list)}")
+        display_names = [self._normalize_driver_name(name) for name in driver_list]
+        print(f"Drivers: {', '.join(display_names)}")
         print(f"Pattern type: {self.pattern_type}")
         print(f"Gating: {gate_left_ms}ms / {gate_right_ms}ms")
         if smoothing:
@@ -510,11 +522,17 @@ class PolarDataLoader:
         all_data = {}
 
         for driver in driver_list:
-            print(f"\nLoading driver: {driver}")
+            canonical = self._normalize_driver_name(driver)
+            if canonical in all_data:
+                raise ValueError(
+                    f"Driver name collision after normalization: '{canonical}'."
+                )
+            label = canonical if canonical == driver else f"{canonical} (files: {driver})"
+            print(f"\nLoading driver: {label}")
             driver_data = self.load_driver_polar_set(
                 driver, angles, smoothing, gate_left_ms, gate_right_ms, include_rear
             )
-            all_data[driver] = driver_data
+            all_data[canonical] = driver_data
 
             # Unload this driver's measurements to free REW slots
             if batch_unload:
@@ -547,13 +565,14 @@ class PolarDataLoader:
         Returns:
             Dict with driver name, angles, and optionally rear_angles
         """
+        canonical_name = self._normalize_driver_name(driver_name)
         # Auto-detect angles if not provided
         if angles is None:
             angles = self._detect_angles(driver_name, "F")
             if not angles:
                 angles = list(range(0, 91, 10))  # Fallback default
 
-        polar_data = {"driver": driver_name, "angles": {}, "has_rear": False}
+        polar_data = {"driver": canonical_name, "angles": {}, "has_rear": False}
         loaded_uuids = []  # Track UUIDs for later unloading
 
         # Load front measurements
@@ -565,7 +584,7 @@ class PolarDataLoader:
                 print(f"Warning: File not found: {filename}")
                 continue
 
-            print(f"  Loading {driver_name} at {angle}° (Front)...")
+            print(f"  Loading {canonical_name} at {angle}° (Front)...")
             measurement = self.load_measurement(
                 str(file_path), smoothing, gate_left_ms, gate_right_ms
             )
@@ -590,7 +609,7 @@ class PolarDataLoader:
                         print(f"Warning: File not found: {filename}")
                         continue
 
-                    print(f"  Loading {driver_name} at {angle}° (Rear)...")
+                    print(f"  Loading {canonical_name} at {angle}° (Rear)...")
                     measurement = self.load_measurement(
                         str(file_path), smoothing, gate_left_ms, gate_right_ms
                     )
@@ -635,6 +654,14 @@ class PolarDataLoader:
         resolved = _PATTERN_ALIASES.get(self.pattern_type, self.pattern_type)
         return _PATTERN_DEFS.get(resolved)
 
+    def _normalize_driver_name(self, driver_name: str) -> str:
+        return self._driver_name_aliases.get(driver_name, driver_name).strip()
+
+    def _resolve_driver_name_for_files(self, driver_name: str) -> str:
+        if driver_name in self._driver_name_aliases:
+            return driver_name
+        return self._driver_name_reverse.get(driver_name, driver_name)
+
     def _detect_drivers(self) -> List[str]:
         """Auto-detect driver names from .mdat files"""
         files = list(self.data_dir.glob("*.mdat"))
@@ -654,11 +681,12 @@ class PolarDataLoader:
     def _detect_angles(self, driver_name: str, side: str = "F") -> List[int]:
         """Auto-detect available angles for a driver and side"""
         files = list(self.data_dir.glob("*.mdat"))
+        file_driver_name = self._resolve_driver_name_for_files(driver_name)
         angles = set()
 
         for f in files:
             parsed = self._parse_filename(f.name)
-            if parsed and parsed["driver"] == driver_name and parsed["side"] == side:
+            if parsed and parsed["driver"] == file_driver_name and parsed["side"] == side:
                 angles.add(parsed["angle"])
 
         return sorted(list(angles))
@@ -668,7 +696,8 @@ class PolarDataLoader:
         pattern_def = self._get_pattern_def()
         if not pattern_def:
             return ""
-        return pattern_def["filename"](driver_name, angle, side)
+        file_driver_name = self._resolve_driver_name_for_files(driver_name)
+        return pattern_def["filename"](file_driver_name, angle, side)
 
     # ==================== HDF5 Helper Methods ====================
 

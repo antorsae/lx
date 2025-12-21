@@ -25,6 +25,8 @@ MEASUREMENT_SETS = {
         "sources": [
             {"path": Path("../Mediciones Juan/GRS PT6816 A MIC ON AXIS"), "pattern_type": "juan"},
             {"path": Path("../Mediciones Juan/ScanSpeak 10F8414G10"), "pattern_type": "scanspeak"},
+            {"path": Path("../Mediciones Juan/SEAS L22MG NUDE MIC ON AXIS"), "pattern_type": "juan"},
+            {"path": Path("../Mediciones Juan/DAYTON ND25FW4 ANIDADOS 18 MM NUDE"), "pattern_type": "juan"},
         ],
         "pattern_type": "juan",  # Default pattern (not used when sources defined)
         "angles": [0, 15, 30, 45, 60, 75, 90],
@@ -73,6 +75,13 @@ DRIVER_COLORS = {
     'SEAS27T': '#d62728',  # Red - Tweeter
     'GRS PT6816': '#9467bd',     # Purple - Juan baffleless
     'SS10F8414G10': '#17becf',   # Cyan - Juan baffleless
+    'L22MG (nude)': '#e377c2',   # Pink - Juan baffleless
+    'ND25FW4 (nude 18mm)': '#bcbd22',  # Olive - Juan baffleless
+}
+
+DRIVER_NAME_ALIASES = {
+    "SEAS L22MG A": "L22MG (nude)",
+    "ND25 NEST 18 MM": "ND25FW4 (nude 18mm)",
 }
 
 # Crossover Frequencies (Hz)

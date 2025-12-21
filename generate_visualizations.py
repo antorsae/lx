@@ -819,13 +819,17 @@ class PolarResponseVisualizer:
             if extra_interp_note:
                 note = html.escape(extra_interp_note).replace("\n", "&#10;")
                 info_html = f'<span class="info-icon" title="{note}">(i)</span>'
+            extra_driver_note = ""
+            if extra_drivers:
+                driver_list = ", ".join(sorted(extra_drivers))
+                extra_driver_note = f'<div class="extra-driver-note">Adds: {driver_list}</div>'
             extra_controls_html = f'''
                 <div class="extra-driver-controls">
                     <div class="extra-driver-row">
                         <button id="loadExtraJuanBtn" onclick="loadExtraDrivers('juan-baffleless')">Load Juan baffleless drivers</button>
                         {info_html}
                     </div>
-                    <div class="extra-driver-note">Adds: GRS PT6816, SS10F8414G10</div>
+                    {extra_driver_note}
                 </div>
             '''
 
@@ -4014,6 +4018,66 @@ class PolarResponseVisualizer:
                     return `rgb(${{r}},${{g}},${{bch}})`;
                 }}
 
+                const SUM_MIN_DB = -100;
+
+                function buildUnionFrequencyGrid(drivers) {{
+                    const allFreq = [];
+                    drivers.forEach(d => {{
+                        const freq = driverSumInfo[d]?.data?.freq;
+                        if (Array.isArray(freq)) {{
+                            freq.forEach(f => {{
+                                if (Number.isFinite(f)) allFreq.push(f);
+                            }});
+                        }}
+                    }});
+                    if (!allFreq.length) return [];
+                    allFreq.sort((a, b) => a - b);
+                    const merged = [];
+                    const relTol = 1e-6;
+                    const absTol = 1e-3;
+                    for (const f of allFreq) {{
+                        if (!merged.length) {{
+                            merged.push(f);
+                            continue;
+                        }}
+                        const last = merged[merged.length - 1];
+                        const tol = Math.max(absTol, Math.abs(last) * relTol);
+                        if (Math.abs(f - last) > tol) merged.push(f);
+                    }}
+                    return merged;
+                }}
+
+                function interpolateComplexToGrid(freqSrc, reSrc, imSrc, freqTarget) {{
+                    const n = freqTarget.length;
+                    const outRe = new Array(n).fill(0);
+                    const outIm = new Array(n).fill(0);
+                    if (!freqSrc || freqSrc.length < 2) {{
+                        return {{ re: outRe, im: outIm }};
+                    }}
+
+                    let j = 0;
+                    const srcN = freqSrc.length;
+                    const minF = freqSrc[0];
+                    const maxF = freqSrc[srcN - 1];
+
+                    for (let i = 0; i < n; i++) {{
+                        const f = freqTarget[i];
+                        if (!Number.isFinite(f) || f < minF || f > maxF) continue;
+                        while (j < srcN - 2 && freqSrc[j + 1] < f) j++;
+                        const f0 = freqSrc[j];
+                        const f1 = freqSrc[j + 1];
+                        if (f1 === f0) {{
+                            outRe[i] = reSrc[j];
+                            outIm[i] = imSrc[j];
+                            continue;
+                        }}
+                        const t = (f - f0) / (f1 - f0);
+                        outRe[i] = reSrc[j] + (reSrc[j + 1] - reSrc[j]) * t;
+                        outIm[i] = imSrc[j] + (imSrc[j + 1] - imSrc[j]) * t;
+                    }}
+                    return {{ re: outRe, im: outIm }};
+                }}
+
 	            activeDrivers.forEach(driver => {{
 	                const color = driverColors[driver] || defaultColor;
 	                const offset = driverOffsets[driver];
@@ -4156,10 +4220,9 @@ class PolarResponseVisualizer:
                 // ============ SUM TRACE (selected drivers) ============
                 if (showSumTraces && activeDrivers.size > 0 && activeAngles.size > 0) {{
                     const selectedDrivers = Array.from(activeDrivers);
-                    const refDriver = selectedDrivers.find(d => driverSumInfo[d]?.data?.freq);
+                    const xFreq = buildUnionFrequencyGrid(selectedDrivers);
 
-                    if (refDriver) {{
-                        const xFreq = driverSumInfo[refDriver].data.freq;
+                    if (xFreq.length) {{
                         const n = xFreq.length;
                         const clipAll = xFreq.map(() => true);
 
@@ -4205,12 +4268,8 @@ class PolarResponseVisualizer:
                                 const info = driverSumInfo[driver];
                                 if (!info || !info.data) return;
                                 const data = info.data;
-
-                                // Require matching frequency grid for coherent sum
-                                if (!data.freq || data.freq.length !== n) {{
-                                    console.warn('SUM: skipping driver due to freq grid mismatch:', driver);
-                                    return;
-                                }}
+                                const freqSrc = data.freq;
+                                if (!freqSrc || freqSrc.length < 2) return;
 
                                 const splArr = data.spl?.[angle];
                                 if (!splArr) return;
@@ -4219,21 +4278,42 @@ class PolarResponseVisualizer:
                                 const magAdj = (info.hasActiveFilters && info.filterResponse) ? info.filterResponse : null;
                                 const phaseAdj = (info.hasActiveFilters && info.filterPhaseResponse) ? info.filterPhaseResponse : null;
 
-                                for (let i = 0; i < n; i++) {{
+                                const reSrc = new Array(freqSrc.length);
+                                const imSrc = new Array(freqSrc.length);
+
+                                for (let i = 0; i < freqSrc.length; i++) {{
                                     let splDb = splArr[i] + info.offset;
                                     if (magAdj) splDb += magAdj[i];
+                                    if (!Number.isFinite(splDb) || splDb < SUM_MIN_DB) {{
+                                        reSrc[i] = 0;
+                                        imSrc[i] = 0;
+                                        continue;
+                                    }}
 
                                     const amp = Math.pow(10, splDb / 20);
-                                    powByDriver[driver][i] = amp * amp;
 
                                     let phaseDeg = (phaseArr ? phaseArr[i] : 0);
                                     if (phaseAdj) phaseDeg += phaseAdj[i];
                                     if (info.invertDeg) phaseDeg += info.invertDeg;
-                                    if (info.delayMs) phaseDeg -= 360 * data.freq[i] * (info.delayMs / 1000);
+                                    if (info.delayMs) phaseDeg -= 360 * freqSrc[i] * (info.delayMs / 1000);
+                                    if (!Number.isFinite(phaseDeg)) {{
+                                        reSrc[i] = 0;
+                                        imSrc[i] = 0;
+                                        continue;
+                                    }}
 
                                     const rad = phaseDeg * Math.PI / 180;
-                                    sumRe[i] += amp * Math.cos(rad);
-                                    sumIm[i] += amp * Math.sin(rad);
+                                    reSrc[i] = amp * Math.cos(rad);
+                                    imSrc[i] = amp * Math.sin(rad);
+                                }}
+
+                                const interp = interpolateComplexToGrid(freqSrc, reSrc, imSrc, xFreq);
+                                for (let i = 0; i < n; i++) {{
+                                    const re = interp.re[i];
+                                    const im = interp.im[i];
+                                    sumRe[i] += re;
+                                    sumIm[i] += im;
+                                    powByDriver[driver][i] = (re * re) + (im * im);
                                 }}
                             }});
 
@@ -4244,7 +4324,20 @@ class PolarResponseVisualizer:
 
                             for (let i = 0; i < n; i++) {{
                                 const mag = Math.hypot(sumRe[i], sumIm[i]);
-                                sumSpl[i] = 20 * Math.log10(Math.max(mag, 1e-12));
+                                if (!Number.isFinite(mag) || mag <= 0) {{
+                                    sumSpl[i] = null;
+                                    sumPhase[i] = null;
+                                    sumColors[i] = defaultColor;
+                                    continue;
+                                }}
+                                const sumDb = 20 * Math.log10(mag);
+                                if (sumDb < SUM_MIN_DB) {{
+                                    sumSpl[i] = null;
+                                    sumPhase[i] = null;
+                                    sumColors[i] = defaultColor;
+                                    continue;
+                                }}
+                                sumSpl[i] = sumDb;
                                 sumPhase[i] = wrapPhase(Math.atan2(sumIm[i], sumRe[i]) * 180 / Math.PI);
                                 sumColors[i] = contributionColorAtIndex(powByDriver, i);
                             }}
@@ -5051,10 +5144,12 @@ class PolarResponseVisualizer:
                 direction="clockwise",
                 rotation=90,
                 gridcolor='lightgray',
-                tickmode="array",
-                tickvals=[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
-                ticktext=["<b>0°</b>", "30°", "60°", "90°", "120°", "150°",
-                          "180°", "210°", "240°", "270°", "300°", "330°"]
+                tickmode="linear",
+                tick0=0,
+                dtick=30,
+                ticklabelstep=2,
+                ticksuffix="°",
+                tickfont=dict(size=11)
             )
         else:
             angular_axis = dict(
