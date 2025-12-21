@@ -128,7 +128,7 @@ make deploy           # sync + commit + push to GitHub Pages
 make help             # Show all targets
 ```
 
-Use `JOBS=8 make all` to control parallelism for visualization and sync steps.
+`make all` now runs `viz` and `sync` in parallel (default `JOBS=8`). Override with `JOBS=4 make all` or `make -j16 all`.
 
 ## Output Structure
 

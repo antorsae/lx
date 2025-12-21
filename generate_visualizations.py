@@ -5149,7 +5149,8 @@ class PolarResponseVisualizer:
                 dtick=30,
                 ticklabelstep=2,
                 ticksuffix="°",
-                tickfont=dict(size=11)
+                tickfont=dict(size=11),
+                ticks="inside"
             )
         else:
             angular_axis = dict(
@@ -5160,6 +5161,16 @@ class PolarResponseVisualizer:
                 tickvals=[-90, -60, -30, 0, 30, 60, 90],
                 ticktext=["-90°", "-60°", "-30°", "<b>0°</b>", "30°", "60°", "90°"]
             )
+
+        radial_axis = dict(
+            range=[limit_min, limit_max],
+            visible=True,
+            showline=True,
+            gridcolor='lightgray',
+            showticklabels=True
+        )
+        if any_has_rear:
+            radial_axis["ticks"] = "inside"
 
         # Layout
         layout = go.Layout(
@@ -5174,13 +5185,7 @@ class PolarResponseVisualizer:
             font=dict(family="Arial, sans-serif", size=12),
             polar=dict(
                 bgcolor='white',
-                radialaxis=dict(
-                    range=[limit_min, limit_max],
-                    visible=True,
-                    showline=True,
-                    gridcolor='lightgray',
-                    showticklabels=True
-                ),
+                radialaxis=radial_axis,
                 angularaxis=angular_axis
             ),
             sliders=[{
@@ -5204,7 +5209,7 @@ class PolarResponseVisualizer:
                 font=dict(size=14),
                 bgcolor="rgba(255,255,255,0.5)"
             ),
-            margin=dict(l=60, r=150, t=80, b=100),
+            margin=dict(l=60, r=150, t=80, b=100, autoexpand=not any_has_rear),
             paper_bgcolor="white"
         )
 

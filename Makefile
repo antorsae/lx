@@ -19,7 +19,12 @@
 PYTHON := .venv/bin/python
 REW_API := http://127.0.0.1:4735
 REW_APP := /Applications/REW/REW.app
-JOBS ?= $(shell sysctl -n hw.ncpu 2>/dev/null || nproc 2>/dev/null || echo 4)
+JOBS ?= 8
+ifneq ($(filter -j%,$(MAKEFLAGS)),)
+  # jobserver already configured
+else
+  MAKEFLAGS += -j$(JOBS)
+endif
 
 # Measurement sets
 SETS := andres juan-baffleless lx521-system
@@ -39,8 +44,8 @@ hdf5_for = $(DATA_DIR)/polar_data_$(call slug,$(1)).h5
 
 all:
 	@$(MAKE) data
-	@$(MAKE) -j$(JOBS) viz
-	@$(MAKE) -j$(JOBS) sync
+	@$(MAKE) viz
+	@$(MAKE) sync
 	@echo "✓ Full pipeline complete"
 
 data: rew-check $(addprefix data-run-,$(SETS))
@@ -95,49 +100,7 @@ data-%: rew-check data-run-%
 
 data-run-%:
 	@echo "Loading $* measurements..."
-	@SET_NAME="$*" HDF5_PATH="$(call hdf5_for,$*)" $(PYTHON) - <<-'PY'
-	import os
-	import sys
-	from pathlib import Path
-
-	import config
-
-	set_name = os.environ.get("SET_NAME")
-	hdf5_path = Path(os.environ.get("HDF5_PATH", ""))
-	mset = config.MEASUREMENT_SETS.get(set_name)
-	if not mset:
-	    print(f"Error: Unknown measurement set '{set_name}'")
-	    sys.exit(1)
-
-	sources = mset.get("sources")
-	if sources:
-	    dirs = [src["path"] for src in sources]
-	else:
-	    dirs = [mset.get("path")]
-
-	def needs_reload() -> bool:
-	    if not hdf5_path.exists():
-	        return True
-	    try:
-	        hdf5_mtime = hdf5_path.stat().st_mtime
-	    except OSError:
-	        return True
-	    for d in dirs:
-	        if not d:
-	            continue
-	        for p in Path(d).glob("*.mdat"):
-	            try:
-	                if p.stat().st_mtime > hdf5_mtime:
-	                    return True
-	            except OSError:
-	                continue
-	    return False
-
-	if needs_reload():
-	    os.execv(sys.executable, [sys.executable, "run_pipeline.py", "-m", set_name, "--skip-viz"])
-
-	print(f"✓ {hdf5_path} is up to date (skipping REW load)")
-	PY
+	@SET_NAME="$*" HDF5_PATH="$(call hdf5_for,$*)" PYTHONPATH="$(CURDIR)" $(PYTHON) scripts/check_hdf5.py
 
 # ====================
 # Visualization Generation (HDF5 → plots)
