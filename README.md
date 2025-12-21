@@ -12,6 +12,7 @@ A Python pipeline for processing acoustic polar response measurements from REW (
 - Full 360° polar plots when front and rear measurements are available
 - Generate directivity analysis (DI, beamwidth)
 - Interactive HTML plots (gzip compressed) and static PNG exports
+- Interactive frequency response explorer with IIR EQ, per-driver gain/delay/invert, SUM view, and Hypex Filter Design `.dsp` + CamillaDSP YAML I/O (Config.xml conversion via external tools)
 - Crossover match analysis for multi-driver systems
 - **REW slot management**: Automatic batch unloading prevents hitting REW's ~100 measurement limit
 
@@ -46,12 +47,14 @@ MEASUREMENT_SETS = {
         "output_dir": OUTPUT_DIR / "andres",
     },
     "juan-baffleless": {
-        # Combined baffleless driver measurements (GRS PT6816 + SS10F8414G10)
-        # Multi-source sets merge multiple directories/patterns.
+        # Combined baffleless driver measurements (GRS PT6816, SS10F8414G10,
+        # L22MG nude, ND25FW4 nude 18mm). Multi-source sets merge directories.
         "path": None,
         "sources": [
             {"path": Path("../Mediciones Juan/GRS PT6816 A MIC ON AXIS"), "pattern_type": "juan"},
             {"path": Path("../Mediciones Juan/ScanSpeak 10F8414G10"), "pattern_type": "scanspeak"},
+            {"path": Path("../Mediciones Juan/SEAS L22MG NUDE MIC ON AXIS"), "pattern_type": "juan"},
+            {"path": Path("../Mediciones Juan/DAYTON ND25FW4 ANIDADOS 18 MM NUDE"), "pattern_type": "juan"},
         ],
         "pattern_type": "juan",  # default (ignored when sources defined)
         "has_rear": True,
@@ -117,12 +120,15 @@ python run_pipeline.py --no-smoothing
 
 ```bash
 make all              # Full rebuild: data + viz + sync
+make data             # Load REW data → HDF5 (skips when HDF5 is newer than .mdat)
 make viz              # Regenerate all visualizations (uses existing HDF5)
 make viz-andres       # Regenerate only andres set
 make sync             # Sync output/ to docs/ + regenerate landing pages
 make deploy           # sync + commit + push to GitHub Pages
 make help             # Show all targets
 ```
+
+Use `JOBS=8 make all` to control parallelism for visualization and sync steps.
 
 ## Output Structure
 
@@ -198,12 +204,15 @@ data = loader.load_all_drivers(batch_unload=False)
 - Crossover analysis per frequency
 - **Multi-driver frequency response explorer** with:
   - Driver overlay comparison with distinct markers
-  - Per-driver level offset sliders
+  - Per-driver gain offsets, delay (us), and invert toggles
   - Angle toggle grid with quick-select buttons
+  - SUM display (off / overlay / only) with optional phase
   - **IIR filter editor**: Peaking, HP, LP, Highshelf, Lowshelf filters
+  - Visual crossover overlay (LR/BW) and auto-optimize tools
   - Real-time filter simulation on all angles
-  - CamillaDSP-compatible YAML import/export
-  - LocalStorage persistence
+  - Hypex Filter Design `.dsp` import/export (not miniDSP), Config.xml conversion via external tools, and CamillaDSP-compatible YAML import/export
+  - LocalStorage persistence for filters, crossovers, and UI state
+  - Optional extra driver datasets (e.g., Juan baffleless) loaded on demand
 
 ## File Structure
 

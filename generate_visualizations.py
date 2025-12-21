@@ -1543,8 +1543,8 @@ class PolarResponseVisualizer:
                     </div>
                     <div class="filter-controls">
                         <span class="io-label">DSP:</span>
-	                    <button onclick="document.getElementById('dspInput').click()" title="Load filters from miniDSP .dsp file">Load</button>
-                        <button onclick="saveDspFile()" title="Export current filters/gain/delay/invert to miniDSP .dsp">Save</button>
+	                    <button onclick="document.getElementById('dspInput').click()" title="Load filters from Hypex Filter Design .dsp file">Load</button>
+                        <button onclick="saveDspFile()" title="Export current filters/gain/delay/invert to Hypex Filter Design .dsp">Save</button>
                     </div>
 	                <input type="file" id="yamlInput" accept=".yaml,.yml" onchange="loadYamlFile(event)" style="display:none">
 	                <input type="file" id="dspInput" accept=".dsp" onchange="handleDspFileLoad(event)" style="display:none">
@@ -2353,7 +2353,7 @@ class PolarResponseVisualizer:
             }}
 
             function dspPoleZeroCountsForTypeCode(baseTypeCode) {{
-                // Mirrors observed miniDSP exports: Lowpass has szeros=0, others 2.
+                // Mirrors observed Hypex Filter Design exports: Lowpass has szeros=0, others 2.
                 if (baseTypeCode === 0) return {{ spoles: 0, szeros: 0, zpoles: 2, zzeros: 2 }};
                 if (baseTypeCode === 2) return {{ spoles: 2, szeros: 0, zpoles: 2, zzeros: 2 }};
                 return {{ spoles: 2, szeros: 2, zpoles: 2, zzeros: 2 }};
