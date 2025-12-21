@@ -5147,10 +5147,11 @@ class PolarResponseVisualizer:
                 tickmode="linear",
                 tick0=0,
                 dtick=30,
-                ticklabelstep=2,
                 ticksuffix="°",
-                tickfont=dict(size=11),
-                ticks="inside"
+                tickfont=dict(size=9),
+                ticks="inside",
+                showticklabels=True,
+                ticklabelstep=2
             )
         else:
             angular_axis = dict(
@@ -5172,6 +5173,35 @@ class PolarResponseVisualizer:
         if any_has_rear:
             radial_axis["ticks"] = "inside"
 
+        if any_has_rear:
+            legend_cfg = dict(
+                yanchor="top",
+                y=0.98,
+                xanchor="right",
+                x=0.98,
+                font=dict(size=12),
+                bgcolor="rgba(255,255,255,0.7)"
+            )
+            margin_cfg = dict(l=60, r=60, t=80, b=100)
+        else:
+            legend_cfg = dict(
+                yanchor="top",
+                y=1,
+                xanchor="left",
+                x=1.05,
+                font=dict(size=14),
+                bgcolor="rgba(255,255,255,0.5)"
+            )
+            margin_cfg = dict(l=60, r=150, t=80, b=100)
+
+        polar_config = dict(
+            bgcolor='white',
+            radialaxis=radial_axis,
+            angularaxis=angular_axis
+        )
+        if any_has_rear:
+            polar_config["domain"] = dict(x=[0.05, 0.95], y=[0.14, 0.98])
+
         # Layout
         layout = go.Layout(
             title=dict(
@@ -5183,11 +5213,7 @@ class PolarResponseVisualizer:
                 yanchor='top'
             ),
             font=dict(family="Arial, sans-serif", size=12),
-            polar=dict(
-                bgcolor='white',
-                radialaxis=radial_axis,
-                angularaxis=angular_axis
-            ),
+            polar=polar_config,
             sliders=[{
                 "active": 0,
                 "yanchor": "top",
@@ -5201,15 +5227,8 @@ class PolarResponseVisualizer:
                 "y": 0,
                 "steps": steps
             }],
-            legend=dict(
-                yanchor="top",
-                y=1,
-                xanchor="left",
-                x=1.05,
-                font=dict(size=14),
-                bgcolor="rgba(255,255,255,0.5)"
-            ),
-            margin=dict(l=60, r=150, t=80, b=100, autoexpand=not any_has_rear),
+            legend=legend_cfg,
+            margin=margin_cfg,
             paper_bgcolor="white"
         )
 
@@ -5690,6 +5709,15 @@ function syncInputToSlider(idx) {{
     inputEl.value = Math.round(freqValues[idx] || freqValues[0]);
 }}
 
+function schedulePlotResize() {{
+    var plotDiv = document.querySelector('.plotly-graph-div');
+    if (!plotDiv || !window.Plotly || !Plotly.Plots || !Plotly.Plots.resize) {{
+        return;
+    }}
+    Plotly.Plots.resize(plotDiv);
+    setTimeout(function() {{ Plotly.Plots.resize(plotDiv); }}, 150);
+}}
+
 function initFrequencyInput() {{
     var inputEl = document.getElementById('freqInput');
     if (!inputEl) {{
@@ -5729,6 +5757,7 @@ function initFrequencyInput() {{
     }}
 
     hookSliderChanges(0);
+    schedulePlotResize();
     window.addEventListener('resize', function() {{
         setTimeout(positionFrequencyInput, 100);
     }});
