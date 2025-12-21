@@ -257,7 +257,7 @@ class PolarResponseVisualizer:
 
         // Hide loading message and render plot
         document.getElementById('loading').style.display = 'none';
-        Plotly.newPlot('plot', figData.data, figData.layout, {{responsive: true}});
+        Plotly.newPlot('plot', figData.data, figData.layout, {{responsive: true, showTips: false}});
     </script>'''
 
         html = build_html_page(title, styles, body, script,
@@ -5031,6 +5031,7 @@ class PolarResponseVisualizer:
             ))
 
         # Create Slider Steps (Restyle) - update both r and theta
+        base_trace_indices = list(range(len(self.drivers)))
         steps = []
         for i, idx in enumerate(indices):
             f = freqs[idx]
@@ -5039,7 +5040,7 @@ class PolarResponseVisualizer:
                 args=[{
                     "r": [all_step_data[i][d]['r'] for d in range(len(self.drivers))],
                     "theta": [all_step_data[i][d]['theta'] for d in range(len(self.drivers))]
-                }],
+                }, base_trace_indices],
                 label=f"{f:.0f}"
             )
             steps.append(step)
@@ -5092,11 +5093,7 @@ class PolarResponseVisualizer:
                 "yanchor": "top",
                 "xanchor": "left",
                 "currentvalue": {
-                    "font": {"size": 16},
-                    "prefix": "Frequency: ",
-                    "suffix": " Hz",
-                    "visible": True,
-                    "xanchor": "center"
+                    "visible": False
                 },
                 "pad": {"b": 10, "t": 50},
                 "len": 0.9,
@@ -5119,7 +5116,11 @@ class PolarResponseVisualizer:
         fig = go.Figure(data=initial_traces, layout=layout)
 
         # Generate HTML with custom frequency input
-        html_content = fig.to_html(include_plotlyjs='cdn', full_html=True)
+        html_content = fig.to_html(
+            include_plotlyjs='cdn',
+            full_html=True,
+            config={"responsive": True, "showTips": False}
+        )
         if not html_content.lstrip().lower().startswith('<!doctype html>'):
             html_content = '<!DOCTYPE html>\n' + html_content
 
@@ -5127,12 +5128,9 @@ class PolarResponseVisualizer:
         freq_values = [freqs[idx] for idx in indices]
         freq_js_array = ','.join([f'{f:.1f}' for f in freq_values])
 
-        base_angles = sorted({int(a) for res in self.calc_results.values() for a in res['angles']})
-
         extra_polar_payload = None
         extra_set_name = "juan-baffleless"
         extra_data = self._load_extra_set_data(extra_set_name)
-        extra_interp_note = ""
         if extra_data:
             base_step_data = [
                 [
@@ -5149,7 +5147,6 @@ class PolarResponseVisualizer:
                 for step in all_step_data
             ]
             extra_results = {}
-            extra_interp_info = {}
             for driver, driver_data in extra_data.items():
                 try:
                     freq, angles, spl_matrix, phase_matrix = create_polar_matrix_from_dict(driver_data)
@@ -5158,16 +5155,8 @@ class PolarResponseVisualizer:
                     print(f"Warning: Skipping extra driver '{driver}' for polar explorer: {exc}")
                     continue
 
-                interp_angles, interp_spl, interp_phase, missing = self._interpolate_angle_grid(
-                    angles, spl_matrix, phase_matrix, base_angles
-                )
-                if missing:
-                    extra_interp_info[driver] = {
-                        "source_angles": [int(a) for a in angles],
-                        "missing_angles": missing
-                    }
-
                 rear_spl_matrix = None
+                has_rear = False
                 if driver_data.get('has_rear') and 'rear_angles' in driver_data:
                     _, rear_angles, rear_spl_matrix, rear_phase_matrix = create_polar_matrix_from_dict(
                         {
@@ -5175,16 +5164,17 @@ class PolarResponseVisualizer:
                             'common_frequencies': driver_data['common_frequencies']
                         }
                     )
-                    _, rear_spl_matrix, _, _ = self._interpolate_angle_grid(
-                        rear_angles, rear_spl_matrix, rear_phase_matrix, base_angles
-                    )
+                    if np.array_equal(rear_angles, angles):
+                        has_rear = True
+                    else:
+                        rear_spl_matrix = None
 
                 extra_results[driver] = {
                     'frequencies': freq,
-                    'angles': interp_angles,
-                    'spl_matrix': interp_spl,
+                    'angles': angles,
+                    'spl_matrix': spl_matrix,
                     'rear_spl_matrix': rear_spl_matrix,
-                    'has_rear': driver_data.get('has_rear', False),
+                    'has_rear': has_rear,
                 }
 
             if extra_results:
@@ -5208,21 +5198,15 @@ class PolarResponseVisualizer:
                     "baseDrivers": self.drivers,
                     "baseStepData": base_step_data,
                 }
-                extra_interp_note = self._format_interpolation_note(base_angles, extra_interp_info)
 
         extra_polar_button_html = ""
         extra_polar_css = ""
         extra_polar_script = ""
         if extra_polar_payload:
-            info_html = ""
-            if extra_interp_note:
-                note = html.escape(extra_interp_note).replace("\n", "&#10;")
-                info_html = f'<span class="info-icon" title="{note}">(i)</span>'
             extra_polar_button_html = f'''
 <div class="extra-driver-container" id="extraPolarControl">
     <div class="extra-driver-row">
         <button id="loadExtraPolarBtn" onclick="loadExtraPolarDrivers()">Load Juan baffleless drivers</button>
-        {info_html}
     </div>
 </div>
 '''
@@ -5258,19 +5242,6 @@ class PolarResponseVisualizer:
     display: flex;
     align-items: center;
     gap: 6px;
-}
-.info-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    border: 1px solid #cbd5e1;
-    color: #64748b;
-    font-size: 11px;
-    cursor: help;
-    background: #fff;
 }
 '''
             extra_polar_script = f'''
@@ -5381,6 +5352,8 @@ function loadExtraPolarDrivers() {{
     const stepIdx = Math.max(0, Math.min(activeIdx, extraSteps.length - 1));
     const extraTraces = buildPolarTraces(extraDrivers, extraSteps[stepIdx] || []);
     const extraTraceIndices = extraDrivers.map((_, i) => baseDrivers.length + i);
+    plotDiv._extraPolarTraceIndices = extraTraceIndices;
+    plotDiv._extraPolarStepData = extraSteps;
     console.log('[extra-polar] add traces', {{ activeIdx, stepIdx, extraTraces: extraTraces.length }});
 
     Plotly.addTraces(plotDiv, extraTraces).then(() => {{
@@ -5473,64 +5446,43 @@ body > div {{
 }}
 .freq-input-container {{
     position: absolute;
-    top: 10px;
     left: 50%;
     transform: translateX(-50%);
+    top: 0;
     z-index: 1000;
-    background: white;
-    padding: 8px 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }}
 .freq-input-container label {{
-    font-size: 14px;
-    margin-right: 8px;
+    font-size: 13px;
+    margin: 0;
 }}
 .freq-input-container input {{
-    width: 80px;
-    padding: 5px 8px;
-    font-size: 14px;
+    width: 90px;
+    padding: 4px 6px;
+    font-size: 13px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }}
-.freq-input-container button {{
-    padding: 5px 12px;
-    font-size: 14px;
-    margin-left: 5px;
-    cursor: pointer;
-    background: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 4px;
+.freq-input-unit {{
+    font-size: 13px;
+    color: #1f2937;
 }}
-.freq-input-container button:hover {{
-    background: #1d4ed8;
-}}
-	.freq-input-container span {{
-	    margin-left: 10px;
-	    font-size: 12px;
-	    color: #666;
-	}}
     {extra_polar_css}
 	</style>
 	<div class="freq-input-container">
-	    <label for="freqInput">Go to frequency:</label>
+	    <label for="freqInput">Frequency:</label>
 	    <input type="number" id="freqInput" min="{config.FREQ_MIN}" max="{config.FREQ_MAX}" placeholder="Hz">
-	    <button onclick="goToFrequency()">Go</button>
-	    <span>(Range: {config.FREQ_MIN}-{config.FREQ_MAX} Hz)</span>
+        <span class="freq-input-unit">Hz</span>
 	</div>
     {extra_polar_button_html}
 	<script>
+	var baseTraceIndices = Array.from({{length: {len(self.drivers)}}}, (_, i) => i);
 	var freqValues = [{freq_js_array}];
 
-function goToFrequency() {{
-    var targetFreq = parseFloat(document.getElementById('freqInput').value);
-    if (isNaN(targetFreq) || targetFreq < {config.FREQ_MIN} || targetFreq > {config.FREQ_MAX}) {{
-        alert('Please enter a frequency between {config.FREQ_MIN} and {config.FREQ_MAX} Hz');
-        return;
-    }}
-
+function getClosestFreqIndex(targetFreq) {{
     // Find closest frequency index
     var closestIdx = 0;
     var minDiff = Math.abs(freqValues[0] - targetFreq);
@@ -5541,7 +5493,72 @@ function goToFrequency() {{
             closestIdx = i;
         }}
     }}
+    return closestIdx;
+}}
 
+function findSliderElement(plotDiv) {{
+    return (
+        plotDiv.querySelector('.slider-container') ||
+        plotDiv.querySelector('.slider-group') ||
+        plotDiv.querySelector('.slider') ||
+        plotDiv.querySelector('.sliders')
+    );
+}}
+
+function positionFrequencyInput() {{
+    const plotDiv = document.querySelector('.plotly-graph-div');
+    const container = document.querySelector('.freq-input-container');
+    if (!plotDiv || !container) {{
+        return;
+    }}
+
+    if (!plotDiv.contains(container)) {{
+        plotDiv.appendChild(container);
+    }}
+    if (!plotDiv.style.position) {{
+        plotDiv.style.position = 'relative';
+    }}
+
+    const plotRect = plotDiv.getBoundingClientRect();
+    const sliderEl = findSliderElement(plotDiv);
+    if (sliderEl) {{
+        const sliderRect = sliderEl.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const top = Math.max(0, sliderRect.top - plotRect.top - containerRect.height - 6);
+        container.style.top = `${{top}}px`;
+        container.style.bottom = 'auto';
+        return;
+    }}
+
+    const layout = plotDiv._fullLayout;
+    const size = layout?._size;
+    const slider = layout?.sliders?.[0];
+    if (size && slider) {{
+        const padB = slider.pad?.b ?? 0;
+        const sliderTop = size.t + size.h + padB;
+        const containerRect = container.getBoundingClientRect();
+        const top = Math.max(0, sliderTop - containerRect.height - 6);
+        container.style.top = `${{top}}px`;
+        container.style.bottom = 'auto';
+    }}
+}}
+
+function setFrequencyFromInput() {{
+    var inputEl = document.getElementById('freqInput');
+    if (!inputEl) {{
+        return;
+    }}
+    var targetFreq = parseFloat(inputEl.value);
+    if (isNaN(targetFreq)) {{
+        return;
+    }}
+    if (targetFreq < {config.FREQ_MIN}) {{
+        targetFreq = {config.FREQ_MIN};
+    }} else if (targetFreq > {config.FREQ_MAX}) {{
+        targetFreq = {config.FREQ_MAX};
+    }}
+
+    var closestIdx = getClosestFreqIndex(targetFreq);
     // Update slider
     var plotDiv = document.querySelector('.plotly-graph-div');
     if (plotDiv) {{
@@ -5550,17 +5567,74 @@ function goToFrequency() {{
         var slider = plotDiv.layout.sliders[0];
         if (slider && slider.steps && slider.steps[closestIdx]) {{
             var step = slider.steps[closestIdx];
-            Plotly.restyle(plotDiv, step.args[0]);
+            var traceIndices = (step.args && step.args[1]) ? step.args[1] : baseTraceIndices;
+            Plotly.restyle(plotDiv, step.args[0], traceIndices);
+            if (plotDiv._extraPolarTraceIndices && plotDiv._extraPolarStepData) {{
+                var extraStep = plotDiv._extraPolarStepData[Math.max(0, Math.min(closestIdx, plotDiv._extraPolarStepData.length - 1))] || [];
+                Plotly.restyle(plotDiv, {{
+                    r: extraStep.map(d => d.r),
+                    theta: extraStep.map(d => d.theta)
+                }}, plotDiv._extraPolarTraceIndices);
+            }}
         }}
     }}
+
+    inputEl.value = Math.round(freqValues[closestIdx]);
 }}
 
-// Also allow Enter key to trigger search
-	document.getElementById('freqInput').addEventListener('keypress', function(e) {{
-	    if (e.key === 'Enter') {{
-	        goToFrequency();
-	    }}
-	}});
+function syncInputToSlider(idx) {{
+    var inputEl = document.getElementById('freqInput');
+    if (!inputEl) {{
+        return;
+    }}
+    inputEl.value = Math.round(freqValues[idx] || freqValues[0]);
+}}
+
+function initFrequencyInput() {{
+    var inputEl = document.getElementById('freqInput');
+    if (!inputEl) {{
+        return;
+    }}
+    syncInputToSlider(0);
+    positionFrequencyInput();
+    inputEl.addEventListener('change', setFrequencyFromInput);
+    inputEl.addEventListener('blur', setFrequencyFromInput);
+    inputEl.addEventListener('keypress', function(e) {{
+        if (e.key === 'Enter') {{
+            setFrequencyFromInput();
+        }}
+    }});
+
+    function hookSliderChanges(attempt) {{
+        var plotDiv = document.querySelector('.plotly-graph-div');
+        if (!plotDiv || !plotDiv.on) {{
+            if (attempt < 20) {{
+                setTimeout(function() {{ hookSliderChanges(attempt + 1); }}, 200);
+            }}
+            return;
+        }}
+        if (plotDiv._freqInputHook) {{
+            return;
+        }}
+        plotDiv._freqInputHook = true;
+        plotDiv.on('plotly_sliderchange', function(e) {{
+            var idx = (e && e.slider && e.slider.active);
+            if (idx == null) {{
+                idx = (e && e.stepIndex) || 0;
+            }}
+            syncInputToSlider(idx);
+        }});
+        plotDiv.on('plotly_afterplot', positionFrequencyInput);
+        plotDiv.on('plotly_relayout', positionFrequencyInput);
+    }}
+
+    hookSliderChanges(0);
+    window.addEventListener('resize', function() {{
+        setTimeout(positionFrequencyInput, 100);
+    }});
+}}
+
+initFrequencyInput();
     {extra_polar_script}
 	</script>
 	'''
