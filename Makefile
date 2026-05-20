@@ -18,6 +18,7 @@
 # Configuration
 PYTHON := .venv/bin/python
 REW_API := http://127.0.0.1:4735
+REW_READY_ENDPOINT := $(REW_API)/measurements
 REW_APP := /Applications/REW/REW.app
 JOBS ?= 8
 ifneq ($(filter -j%,$(MAKEFLAGS)),)
@@ -72,7 +73,7 @@ deploy:
 
 rew-check:
 	@echo "Checking REW API..."
-	@curl -s --max-time 2 $(REW_API)/application/version > /dev/null 2>&1 && \
+	@curl -s --max-time 2 $(REW_READY_ENDPOINT) > /dev/null 2>&1 && \
 		echo "✓ REW API is running" || \
 		(echo "⚠ REW API not available. Starting REW..." && \
 		 open -a "$(REW_APP)" --args -api && \
@@ -82,7 +83,7 @@ rew-wait:
 	@echo "Waiting for REW API to become available..."
 	@for i in 1 2 3 4 5 6 7 8 9 10 11 12; do \
 		sleep 2; \
-		if curl -s --max-time 2 $(REW_API)/application/version > /dev/null 2>&1; then \
+		if curl -s --max-time 2 $(REW_READY_ENDPOINT) > /dev/null 2>&1; then \
 			echo "✓ REW API ready"; \
 			exit 0; \
 		fi; \

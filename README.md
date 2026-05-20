@@ -40,7 +40,7 @@ Edit `config.py` to configure measurement sets:
 ```python
 MEASUREMENT_SETS = {
     "andres": {
-        "path": Path("../Mediciones Andres"),
+        "path": Path("measurements/andres"),
         "pattern_type": "andres",  # F{angle}-{driver}.mdat
         "has_rear": False,
         "hdf5_file": "polar_data_andres.h5",
@@ -48,13 +48,17 @@ MEASUREMENT_SETS = {
     },
     "juan-baffleless": {
         # Combined baffleless driver measurements (GRS PT6816, SS10F8414G10,
-        # L22MG nude, ND25FW4 nude 18mm). Multi-source sets merge directories.
+        # L22MG nude, ND25FW4 nude 18mm, L10NEO, MU10RB-SL, SS10F8424G00).
+        # Multi-source sets merge directories.
         "path": None,
         "sources": [
-            {"path": Path("../Mediciones Juan/GRS PT6816 A MIC ON AXIS"), "pattern_type": "juan"},
-            {"path": Path("../Mediciones Juan/ScanSpeak 10F8414G10"), "pattern_type": "scanspeak"},
-            {"path": Path("../Mediciones Juan/SEAS L22MG NUDE MIC ON AXIS"), "pattern_type": "juan"},
-            {"path": Path("../Mediciones Juan/DAYTON ND25FW4 ANIDADOS 18 MM NUDE"), "pattern_type": "juan"},
+            {"path": Path("measurements/juan/GRS PT6816 A MIC ON AXIS"), "pattern_type": "juan"},
+            {"path": Path("measurements/juan/ScanSpeak 10F8414G10"), "pattern_type": "scanspeak"},
+            {"path": Path("measurements/juan/SEAS L22MG NUDE MIC ON AXIS"), "pattern_type": "juan"},
+            {"path": Path("measurements/juan/DAYTON ND25FW4 ANIDADOS 18 MM NUDE"), "pattern_type": "juan"},
+            {"path": Path("measurements/juan/POLARES L10NEO"), "pattern_type": "juan"},
+            {"path": Path("measurements/juan/SEAS MU10RB SL POLARES"), "pattern_type": "juan"},
+            {"path": Path("measurements/juan/ScanSpeak 10F8424G00"), "pattern_type": "juan_suffix"},
         ],
         "pattern_type": "juan",  # default (ignored when sources defined)
         "has_rear": True,
@@ -62,7 +66,7 @@ MEASUREMENT_SETS = {
         "output_dir": OUTPUT_DIR / "juan-baffleless",
     },
     "lx521-system": {
-        "path": Path("../Mediciones Juan/LX521 POLARES 0_180 GRADOS"),
+        "path": Path("measurements/juan/LX521 POLARES 0_180 GRADOS"),
         "pattern_type": "lx521_system",  # {name} {angle} GRADOS {F|REAR}.mdat
         "has_rear": True,
         "hdf5_file": "polar_data_lx521_system.h5",
@@ -78,7 +82,10 @@ MEASUREMENT_SETS = {
 | `andres` | `F45-10F8424.mdat` | Front-only measurements |
 | `juan` | `GRS PT6816 45 F.mdat` | Front (F) and Rear (R) measurements |
 | `scanspeak` | `SS10F8414G10 45 F.mdat` | Same convention as `juan` |
+| `juan_suffix` | `SS10F8424G00 45 F sn 074.mdat` | Same as `juan`, allowing text after `F`/`R` |
 | `lx521_system` | `LX521 HIGH MID INV ORIGINAL 45 GRADOS F.mdat` | Full system measurements with GRADOS notation |
+
+Measurement sources may be nested below each configured source directory. This supports source layouts such as `POLARES L10NEO/FRONTALES` and `POLARES L10NEO/TRASERAS`.
 
 ## Usage
 
@@ -231,6 +238,7 @@ data = loader.load_all_drivers(batch_unload=False)
 1. Add entry to `MEASUREMENT_SETS` in `config.py`
 2. If using a new naming pattern, add an entry to `_PATTERN_DEFS` (and/or `_PATTERN_ALIASES`) in `polar_data_loader.py`
 3. Run: `python run_pipeline.py -m your_new_set`
+4. Run `make sync` to publish regenerated output under `docs/`
 
 ## License
 

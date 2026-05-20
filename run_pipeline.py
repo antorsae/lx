@@ -41,6 +41,7 @@ def run_pipeline(args):
     sources = mset.get("sources")
     data_dir = mset.get("path")
     pattern_type = mset.get("pattern_type")
+    angles = mset.get("angles")
 
     print("=" * 60)
     print("LX521 POLAR ANALYSIS PIPELINE")
@@ -74,6 +75,7 @@ def run_pipeline(args):
                         pattern_type=src_pattern
                     )
                     src_data = loader.load_all_drivers(
+                        angles=angles,
                         smoothing=smoothing_val,
                         gate_left_ms=config.GATE_LEFT_MS,
                         gate_right_ms=config.GATE_RIGHT_MS,
@@ -100,6 +102,7 @@ def run_pipeline(args):
                     pattern_type=pattern_type
                 )
                 data = loader.load_all_drivers(
+                    angles=angles,
                     smoothing=smoothing_val,
                     gate_left_ms=config.GATE_LEFT_MS,
                     gate_right_ms=config.GATE_RIGHT_MS,

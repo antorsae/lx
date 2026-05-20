@@ -34,7 +34,9 @@ DRIVER_ROLES = {
     "10F8424": "Upper Mid",
     "L22MG": "Lower Mid",
     "MU10": "Upper Mid",
+    "MU10RB-SL": "Upper Mid",
     "SEAS27T": "Tweeter",
+    "SS10F8424G00": "Upper Mid",
 }
 
 

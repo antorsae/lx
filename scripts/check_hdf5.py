@@ -30,7 +30,7 @@ def needs_reload(hdf5_path: Path, dirs: list[Path]) -> bool:
         d_path = Path(d)
         if not d_path.exists():
             continue
-        for p in d_path.glob("*.mdat"):
+        for p in d_path.rglob("*.mdat"):
             try:
                 if p.stat().st_mtime > hdf5_mtime:
                     return True

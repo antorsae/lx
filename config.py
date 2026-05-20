@@ -11,7 +11,7 @@ DATA_DIR = OUTPUT_DIR / "data"
 # Measurement Set Configurations
 MEASUREMENT_SETS = {
     "andres": {
-        "path": Path("../Mediciones Andres"),
+        "path": Path("measurements/andres"),
         "pattern_type": "andres",  # F{angle}-{driver}.mdat
         "angles": list(range(0, 91, 10)),
         "has_rear": False,
@@ -23,10 +23,13 @@ MEASUREMENT_SETS = {
         # This set merges data from multiple source directories
         "path": None,  # Not used - see 'sources' below
         "sources": [
-            {"path": Path("../Mediciones Juan/GRS PT6816 A MIC ON AXIS"), "pattern_type": "juan"},
-            {"path": Path("../Mediciones Juan/ScanSpeak 10F8414G10"), "pattern_type": "scanspeak"},
-            {"path": Path("../Mediciones Juan/SEAS L22MG NUDE MIC ON AXIS"), "pattern_type": "juan"},
-            {"path": Path("../Mediciones Juan/DAYTON ND25FW4 ANIDADOS 18 MM NUDE"), "pattern_type": "juan"},
+            {"path": Path("measurements/juan/GRS PT6816 A MIC ON AXIS"), "pattern_type": "juan"},
+            {"path": Path("measurements/juan/ScanSpeak 10F8414G10"), "pattern_type": "scanspeak"},
+            {"path": Path("measurements/juan/SEAS L22MG NUDE MIC ON AXIS"), "pattern_type": "juan"},
+            {"path": Path("measurements/juan/DAYTON ND25FW4 ANIDADOS 18 MM NUDE"), "pattern_type": "juan"},
+            {"path": Path("measurements/juan/POLARES L10NEO"), "pattern_type": "juan"},
+            {"path": Path("measurements/juan/SEAS MU10RB SL POLARES"), "pattern_type": "juan"},
+            {"path": Path("measurements/juan/ScanSpeak 10F8424G00"), "pattern_type": "juan_suffix"},
         ],
         "pattern_type": "juan",  # Default pattern (not used when sources defined)
         "angles": [0, 15, 30, 45, 60, 75, 90],
@@ -35,7 +38,7 @@ MEASUREMENT_SETS = {
         "output_dir": OUTPUT_DIR / "juan-baffleless",
     },
     "lx521-system": {
-        "path": Path("../Mediciones Juan/LX521 POLARES 0_180 GRADOS"),
+        "path": Path("measurements/juan/LX521 POLARES 0_180 GRADOS"),
         "pattern_type": "lx521_system",  # {name} {angle} GRADOS {F|REAR}.mdat
         "angles": [0, 15, 30, 45, 60, 75, 90],
         "has_rear": True,
@@ -77,11 +80,17 @@ DRIVER_COLORS = {
     'SS10F8414G10': '#17becf',   # Cyan - Juan baffleless
     'L22MG (nude)': '#e377c2',   # Pink - Juan baffleless
     'ND25FW4 (nude 18mm)': '#bcbd22',  # Olive - Juan baffleless
+    'L10NEO': '#8c564b',          # Brown - Juan baffleless
+    'MU10RB-SL': '#7f7f7f',       # Gray - Juan baffleless
+    'SS10F8424G00': '#1f77b4',    # Blue - Juan baffleless
 }
 
 DRIVER_NAME_ALIASES = {
     "SEAS L22MG A": "L22MG (nude)",
     "ND25 NEST 18 MM": "ND25FW4 (nude 18mm)",
+    "SEAS L10NEO A": "L10NEO",
+    "SEAS MU10RBSL A": "MU10RB-SL",
+    "SEAS MU10RBSLA": "MU10RB-SL",
 }
 
 # Crossover Frequencies (Hz)

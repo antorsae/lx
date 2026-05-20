@@ -21,6 +21,14 @@ from scipy.interpolate import interp1d, RectBivariateSpline
 from typing import Dict, Tuple, Optional, List
 
 
+def _trapezoid_integral(y: np.ndarray, x: np.ndarray) -> float:
+    """Use NumPy's current trapezoid API while retaining older NumPy support."""
+    trapezoid = getattr(np, "trapezoid", None)
+    if trapezoid is not None:
+        return trapezoid(y, x)
+    return np.trapz(y, x)
+
+
 class DirectivityCalculator:
     """Calculate directivity metrics from polar measurements"""
 
@@ -87,12 +95,12 @@ class DirectivityCalculator:
                 integrand = intensity * np.sin(angles_rad)
 
                 # Trapezoidal integration properly handles non-uniform spacing
-                power_linear = np.trapz(integrand, angles_rad)
+                power_linear = _trapezoid_integral(integrand, angles_rad)
 
             elif method == "spherical":
                 # Full sphere: assume rear mirrors front
                 integrand = intensity * np.sin(angles_rad)
-                power_linear = 2 * np.trapz(integrand, angles_rad)
+                power_linear = 2 * _trapezoid_integral(integrand, angles_rad)
 
             else:
                 raise ValueError(f"Unknown method: {method}")

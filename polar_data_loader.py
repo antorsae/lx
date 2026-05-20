@@ -45,6 +45,11 @@ _PATTERN_DEFS = {
         "side_from_match": lambda m: m.group("side"),
         "filename": lambda driver, angle, side: f"{driver} {angle} {side}.mdat",
     },
+    "juan_suffix": {
+        "regex": re.compile(r"^(?P<driver>.+?)\s+(?P<angle>\d+)\s+(?P<side>[FR])(?:\s+.+)?$"),
+        "side_from_match": lambda m: m.group("side"),
+        "filename": lambda driver, angle, side: f"{driver} {angle} {side}.mdat",
+    },
     "lx521_system": {
         "regex": re.compile(r"^(?P<driver>.+)\s+(?P<angle>\d+)\s+GRADOS\s+(?P<side>F|REAR)$"),
         "side_from_match": lambda m: "R" if m.group("side") == "REAR" else "F",
@@ -72,6 +77,7 @@ class PolarDataLoader:
         self.measurements = {}
         self._rew_launch_attempted = False
         self.pattern_type = pattern_type
+        self._file_index = None
         if self._get_pattern_def() is None:
             valid = sorted(set(_PATTERN_DEFS.keys()) | set(_PATTERN_ALIASES.keys()))
             valid_list = ", ".join(valid)
@@ -83,12 +89,7 @@ class PolarDataLoader:
         for raw_name, canonical_name in self._driver_name_aliases.items():
             raw = raw_name.strip()
             canonical = canonical_name.strip()
-            if canonical in self._driver_name_reverse and self._driver_name_reverse[canonical] != raw:
-                raise ValueError(
-                    f"Driver alias collision for '{canonical}': "
-                    f"'{self._driver_name_reverse[canonical]}' and '{raw}'"
-                )
-            self._driver_name_reverse[canonical] = raw
+            self._driver_name_reverse.setdefault(canonical, raw)
 
         if connect_to_rew:
             if not self._ensure_rew_running():
@@ -577,8 +578,12 @@ class PolarDataLoader:
 
         # Load front measurements
         for angle in angles:
-            filename = self._get_filename(driver_name, angle, "F")
-            file_path = self.data_dir / filename
+            file_path = self._find_measurement_file(driver_name, angle, "F")
+            filename = (
+                file_path.relative_to(self.data_dir)
+                if file_path.exists()
+                else self._get_filename(driver_name, angle, "F")
+            )
 
             if not file_path.exists():
                 print(f"Warning: File not found: {filename}")
@@ -602,8 +607,12 @@ class PolarDataLoader:
                 polar_data["has_rear"] = True
 
                 for angle in rear_angles:
-                    filename = self._get_filename(driver_name, angle, "R")
-                    file_path = self.data_dir / filename
+                    file_path = self._find_measurement_file(driver_name, angle, "R")
+                    filename = (
+                        file_path.relative_to(self.data_dir)
+                        if file_path.exists()
+                        else self._get_filename(driver_name, angle, "R")
+                    )
 
                     if not file_path.exists():
                         print(f"Warning: File not found: {filename}")
@@ -628,6 +637,48 @@ class PolarDataLoader:
             polar_data["common_frequencies"] = polar_data["angles"][ref_angle]["frequencies"]
 
         return polar_data
+
+    def _iter_mdat_files(self) -> List[Path]:
+        """Return all .mdat files below the source directory."""
+        return sorted(self.data_dir.rglob("*.mdat"))
+
+    def _get_file_index(self) -> Dict[Tuple[str, int, str], Path]:
+        """Index parsed measurement files by raw driver name, angle, and side."""
+        if self._file_index is not None:
+            return self._file_index
+
+        index = {}
+        for file_path in self._iter_mdat_files():
+            parsed = self._parse_filename(file_path.name)
+            if not parsed:
+                continue
+
+            key = (
+                self._normalize_driver_name(parsed["driver"]),
+                parsed["angle"],
+                parsed["side"],
+            )
+            if key in index:
+                rel_existing = index[key].relative_to(self.data_dir)
+                rel_new = file_path.relative_to(self.data_dir)
+                print(
+                    f"Warning: Duplicate measurement for {key}: "
+                    f"{rel_existing} and {rel_new}. Using {rel_existing}."
+                )
+                continue
+
+            index[key] = file_path
+
+        self._file_index = index
+        return index
+
+    def _find_measurement_file(self, driver_name: str, angle: int, side: str = "F") -> Path:
+        """Find a measurement path, including files in nested source folders."""
+        file_driver_name = self._normalize_driver_name(driver_name)
+        indexed_path = self._get_file_index().get((file_driver_name, angle, side))
+        if indexed_path is not None:
+            return indexed_path
+        return self.data_dir / self._get_filename(driver_name, angle, side)
 
     def _parse_filename(self, filename: str) -> Optional[Dict]:
         """Parse measurement filename based on pattern type.
@@ -664,30 +715,24 @@ class PolarDataLoader:
 
     def _detect_drivers(self) -> List[str]:
         """Auto-detect driver names from .mdat files"""
-        files = list(self.data_dir.glob("*.mdat"))
         drivers = set()
 
-        for f in files:
-            parsed = self._parse_filename(f.name)
-            if parsed:
-                driver = parsed["driver"]
-                # Skip combination measurements for andres pattern
-                if self.pattern_type == "andres" and "con" in driver.lower():
-                    continue
-                drivers.add(driver)
+        for driver, _angle, _side in self._get_file_index().keys():
+            # Skip combination measurements for andres pattern
+            if self.pattern_type == "andres" and "con" in driver.lower():
+                continue
+            drivers.add(driver)
 
         return sorted(list(drivers))
 
     def _detect_angles(self, driver_name: str, side: str = "F") -> List[int]:
         """Auto-detect available angles for a driver and side"""
-        files = list(self.data_dir.glob("*.mdat"))
-        file_driver_name = self._resolve_driver_name_for_files(driver_name)
+        file_driver_name = self._normalize_driver_name(driver_name)
         angles = set()
 
-        for f in files:
-            parsed = self._parse_filename(f.name)
-            if parsed and parsed["driver"] == file_driver_name and parsed["side"] == side:
-                angles.add(parsed["angle"])
+        for driver, angle, file_side in self._get_file_index().keys():
+            if driver == file_driver_name and file_side == side:
+                angles.add(angle)
 
         return sorted(list(angles))
 
