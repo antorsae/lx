@@ -536,10 +536,13 @@ class PolarResponseVisualizer:
         """Build one driver's polar step, empty when the driver has no data there."""
         freq_idx = self._find_driver_freq_index(res, target_freq)
         if freq_idx is None:
-            return {'theta': [], 'r': []}
+            # Plotly drops completely empty scatterpolar traces from the legend.
+            # A null point keeps the driver visible in the legend without
+            # drawing a polar line for frequencies outside its measured range.
+            return {'theta': [0], 'r': [None], 'available': False}
 
         angles_rad, spl_norm = self._build_polar_data_from_result(res, freq_idx, use_rear=use_rear)
-        return {'theta': np.degrees(angles_rad), 'r': spl_norm}
+        return {'theta': np.degrees(angles_rad), 'r': spl_norm, 'available': True}
 
     def _load_extra_set_data(self, set_name: str):
         mset = config.MEASUREMENT_SETS.get(set_name)
@@ -5162,6 +5165,7 @@ class PolarResponseVisualizer:
         # Store all data for slider steps
         # structure: all_step_data[step_index][driver_index] = {'theta': array, 'r': array}
         all_step_data = []
+        unavailable_driver_color = '#cbd5e1'
 
         for target_freq in slider_freqs:
             step_data = []
@@ -5174,13 +5178,21 @@ class PolarResponseVisualizer:
         # Create initial traces
         initial_traces = []
         for d_idx, driver in enumerate(self.drivers):
+            entry = all_step_data[0][d_idx]
+            driver_available = entry.get('available', True)
             initial_traces.append(go.Scatterpolar(
-                r=all_step_data[0][d_idx]['r'],
-                theta=all_step_data[0][d_idx]['theta'],
+                r=entry['r'],
+                theta=entry['theta'],
                 mode='lines',
                 name=driver,
                 visible=True,
-                line=dict(width=3, color=config.DRIVER_COLORS.get(driver, 'blue'))
+                showlegend=True,
+                opacity=1.0 if driver_available else 0.45,
+                line=dict(
+                    width=3,
+                    color=(config.DRIVER_COLORS.get(driver, 'blue')
+                           if driver_available else unavailable_driver_color)
+                )
             ))
 
         # Create Slider Steps (Restyle) - update both r and theta
@@ -5191,7 +5203,17 @@ class PolarResponseVisualizer:
                 method="restyle",
                 args=[{
                     "r": [all_step_data[i][d]['r'] for d in range(len(self.drivers))],
-                    "theta": [all_step_data[i][d]['theta'] for d in range(len(self.drivers))]
+                    "theta": [all_step_data[i][d]['theta'] for d in range(len(self.drivers))],
+                    "line.color": [
+                        config.DRIVER_COLORS.get(self.drivers[d], 'blue')
+                        if all_step_data[i][d].get('available', True)
+                        else unavailable_driver_color
+                        for d in range(len(self.drivers))
+                    ],
+                    "opacity": [
+                        1.0 if all_step_data[i][d].get('available', True) else 0.45
+                        for d in range(len(self.drivers))
+                    ],
                 }, base_trace_indices],
                 label=f"{target_freq:.0f}"
             )
@@ -5320,7 +5342,8 @@ class PolarResponseVisualizer:
                                   else entry["theta"]),
                         "r": (entry["r"].tolist()
                               if hasattr(entry["r"], "tolist")
-                              else entry["r"])
+                              else entry["r"]),
+                        "available": entry.get("available", True),
                     }
                     for entry in step
                 ]
@@ -5369,6 +5392,7 @@ class PolarResponseVisualizer:
                         step.append({
                             'theta': entry['theta'].tolist() if hasattr(entry['theta'], 'tolist') else entry['theta'],
                             'r': entry['r'].tolist() if hasattr(entry['r'], 'tolist') else entry['r'],
+                            'available': entry.get('available', True),
                         })
                     extra_step_data.append(step)
 
@@ -5428,21 +5452,37 @@ class PolarResponseVisualizer:
             extra_polar_script = f'''
 const extraPolarDataset = {json.dumps(extra_polar_payload)};
 const polarDriverColors = {json.dumps(config.DRIVER_COLORS)};
+const unavailablePolarColor = '{unavailable_driver_color}';
 console.log('[extra-polar] dataset', extraPolarDataset);
 
 function buildPolarTraces(drivers, stepEntries) {{
     return drivers.map((driver, idx) => {{
         const entry = stepEntries[idx];
-        const color = polarDriverColors[driver] || '#2563eb';
+        const available = entry?.available !== false;
+        const color = available ? (polarDriverColors[driver] || '#2563eb') : unavailablePolarColor;
         return {{
             r: entry.r,
             theta: entry.theta,
             mode: 'lines',
             name: driver,
             type: 'scatterpolar',
+            showlegend: true,
+            opacity: available ? 1 : 0.45,
             line: {{ width: 3, color: color }}
         }};
     }});
+}}
+
+function polarStepColors(drivers, stepEntries) {{
+    return drivers.map((driver, idx) => (
+        stepEntries[idx]?.available !== false
+            ? (polarDriverColors[driver] || '#2563eb')
+            : unavailablePolarColor
+    ));
+}}
+
+function polarStepOpacity(stepEntries) {{
+    return stepEntries.map(entry => entry?.available !== false ? 1 : 0.45);
 }}
 
 function positionExtraPolarControl() {{
@@ -5547,7 +5587,9 @@ function loadExtraPolarDrivers() {{
                 const step = extraSteps[Math.max(0, Math.min(idx, extraSteps.length - 1))] || [];
                 Plotly.restyle(plotDiv, {{
                     r: step.map(d => d.r),
-                    theta: step.map(d => d.theta)
+                    theta: step.map(d => d.theta),
+                    'line.color': polarStepColors(extraDrivers, step),
+                    opacity: polarStepOpacity(step)
                 }}, extraTraceIndices);
             }});
         }}
@@ -5754,7 +5796,9 @@ function setFrequencyFromInput() {{
                 var extraStep = plotDiv._extraPolarStepData[Math.max(0, Math.min(closestIdx, plotDiv._extraPolarStepData.length - 1))] || [];
                 Plotly.restyle(plotDiv, {{
                     r: extraStep.map(d => d.r),
-                    theta: extraStep.map(d => d.theta)
+                    theta: extraStep.map(d => d.theta),
+                    'line.color': polarStepColors(extraPolarDataset.drivers || [], extraStep),
+                    opacity: polarStepOpacity(extraStep)
                 }}, plotDiv._extraPolarTraceIndices);
             }}
         }}
