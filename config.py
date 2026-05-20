@@ -19,7 +19,7 @@ MEASUREMENT_SETS = {
         "output_dir": OUTPUT_DIR / "andres",
     },
     "juan-baffleless": {
-        # Combined Juan's baffleless driver measurements (GRS PT6816 + SS10F8414G10)
+        # Combined Juan driver measurements.
         # This set merges data from multiple source directories
         "path": None,  # Not used - see 'sources' below
         "sources": [
@@ -30,6 +30,7 @@ MEASUREMENT_SETS = {
             {"path": Path("measurements/juan/POLARES L10NEO"), "pattern_type": "juan"},
             {"path": Path("measurements/juan/SEAS MU10RB SL POLARES"), "pattern_type": "juan"},
             {"path": Path("measurements/juan/ScanSpeak 10F8424G00"), "pattern_type": "juan_suffix"},
+            {"path": Path("measurements/juan/L26RO4Y POLARES EN BAFFLE CILINDRICO VER NOTA"), "pattern_type": "juan"},
         ],
         "pattern_type": "juan",  # Default pattern (not used when sources defined)
         "angles": [0, 15, 30, 45, 60, 75, 90],
@@ -83,6 +84,7 @@ DRIVER_COLORS = {
     'L10NEO': '#8c564b',          # Brown - Juan baffleless
     'MU10RB-SL': '#7f7f7f',       # Gray - Juan baffleless
     'SS10F8424G00': '#1f77b4',    # Blue - Juan baffleless
+    'L26RO4Y': '#ff9896',          # Light red - Juan measurements
 }
 
 DRIVER_NAME_ALIASES = {
@@ -91,6 +93,7 @@ DRIVER_NAME_ALIASES = {
     "SEAS L10NEO A": "L10NEO",
     "SEAS MU10RBSL A": "MU10RB-SL",
     "SEAS MU10RBSLA": "MU10RB-SL",
+    "SEAS L26RO4Y": "L26RO4Y",
 }
 
 # Crossover Frequencies (Hz)

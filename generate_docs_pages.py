@@ -18,20 +18,21 @@ SYSTEM_SET = "lx521-system"
 
 SET_TITLES = {
     "andres": "Andres Measurements",
-    "juan-baffleless": "Juan Baffleless Drivers",
+    "juan-baffleless": "Juan Driver Measurements",
     SYSTEM_SET: "LX521.4 Complete System",
 }
 
 SET_DESCRIPTIONS = {
     "andres": "4 Drivers in the LX521.4 baffle. No EQ/cross-overs applied.",
     "juan-baffleless": (
-        "Baffleless drivers measured in free air. Dipole behavior expected. "
-        "Includes rear measurements for complete polar pattern visualization."
+        "Juan driver measurements with front/rear polar data, including "
+        "baffleless and cylindrical-baffle captures."
     ),
 }
 
 DRIVER_ROLES = {
     "10F8424": "Upper Mid",
+    "L26RO4Y": "Woofer",
     "L22MG": "Lower Mid",
     "MU10": "Upper Mid",
     "MU10RB-SL": "Upper Mid",

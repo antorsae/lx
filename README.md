@@ -47,8 +47,9 @@ MEASUREMENT_SETS = {
         "output_dir": OUTPUT_DIR / "andres",
     },
     "juan-baffleless": {
-        # Combined baffleless driver measurements (GRS PT6816, SS10F8414G10,
-        # L22MG nude, ND25FW4 nude 18mm, L10NEO, MU10RB-SL, SS10F8424G00).
+        # Combined Juan driver measurements (GRS PT6816, SS10F8414G10,
+        # L22MG nude, ND25FW4 nude 18mm, L10NEO, MU10RB-SL,
+        # SS10F8424G00, L26RO4Y).
         # Multi-source sets merge directories.
         "path": None,
         "sources": [
@@ -59,6 +60,7 @@ MEASUREMENT_SETS = {
             {"path": Path("measurements/juan/POLARES L10NEO"), "pattern_type": "juan"},
             {"path": Path("measurements/juan/SEAS MU10RB SL POLARES"), "pattern_type": "juan"},
             {"path": Path("measurements/juan/ScanSpeak 10F8424G00"), "pattern_type": "juan_suffix"},
+            {"path": Path("measurements/juan/L26RO4Y POLARES EN BAFFLE CILINDRICO VER NOTA"), "pattern_type": "juan"},
         ],
         "pattern_type": "juan",  # default (ignored when sources defined)
         "has_rear": True,

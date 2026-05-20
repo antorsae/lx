@@ -483,6 +483,64 @@ class PolarResponseVisualizer:
         angles_rad = np.radians(all_angles)
         return angles_rad, spl_normalized
 
+    def _build_polar_slider_frequencies(self, results: dict, n_steps: int) -> np.ndarray:
+        """Build slider frequencies from the measured ranges of all drivers."""
+        axes = []
+        for res in results.values():
+            freq = np.asarray(res.get('frequencies', []), dtype=float)
+            freq = freq[np.isfinite(freq) & (freq > 0) & (freq <= config.FREQ_MAX)]
+            if len(freq):
+                axes.append(freq)
+
+        if not axes:
+            return np.array([], dtype=float)
+
+        all_freqs = np.unique(np.concatenate(axes))
+        all_freqs.sort()
+        if len(all_freqs) <= n_steps:
+            return all_freqs
+
+        target = np.geomspace(all_freqs[0], all_freqs[-1], n_steps)
+        sampled = []
+        for f in target:
+            idx = int(np.abs(all_freqs - f).argmin())
+            sampled.append(all_freqs[idx])
+
+        sampled = np.unique(np.concatenate(([all_freqs[0]], sampled, [all_freqs[-1]])))
+        sampled.sort()
+        return sampled
+
+    def _find_driver_freq_index(self, res: dict, target_freq: float):
+        """Return closest measured frequency index, or None when outside range."""
+        freq = np.asarray(res.get('frequencies', []), dtype=float)
+        freq = freq[np.isfinite(freq) & (freq > 0)]
+        if len(freq) == 0:
+            return None
+
+        min_freq = freq[0]
+        max_freq = freq[-1]
+        if len(freq) > 1:
+            lower_step = abs(freq[1] - freq[0])
+            upper_step = abs(freq[-1] - freq[-2])
+        else:
+            lower_step = upper_step = 0
+
+        lower_tol = max(min_freq * 0.005, lower_step * 2)
+        upper_tol = max(max_freq * 0.005, upper_step * 2)
+        if target_freq < min_freq - lower_tol or target_freq > max_freq + upper_tol:
+            return None
+
+        return int(np.abs(freq - target_freq).argmin())
+
+    def _build_polar_step_entry(self, res: dict, target_freq: float, use_rear: bool):
+        """Build one driver's polar step, empty when the driver has no data there."""
+        freq_idx = self._find_driver_freq_index(res, target_freq)
+        if freq_idx is None:
+            return {'theta': [], 'r': []}
+
+        angles_rad, spl_norm = self._build_polar_data_from_result(res, freq_idx, use_rear=use_rear)
+        return {'theta': np.degrees(angles_rad), 'r': spl_norm}
+
     def _load_extra_set_data(self, set_name: str):
         mset = config.MEASUREMENT_SETS.get(set_name)
         if not mset:
@@ -4986,8 +5044,14 @@ class PolarResponseVisualizer:
 
                 for i, target_f in enumerate(freqs):
                     ax = axes[i]
-                    # Find nearest freq index
-                    idx = np.abs(f_axis - target_f).argmin()
+                    idx = self._find_driver_freq_index(res, target_f)
+                    if idx is None:
+                        ax.set_title(f'{target_f:.0f} Hz', va='bottom', fontweight='bold')
+                        ax.text(0.5, 0.5, 'No data', transform=ax.transAxes,
+                                ha='center', va='center', color='gray')
+                        ax.set_axis_off()
+                        continue
+
                     actual_f = f_axis[idx]
 
                     # Use helper to build polar data (handles 360° if rear available)
@@ -5041,10 +5105,9 @@ class PolarResponseVisualizer:
 
                 for driver in self.drivers:
                     res = self.calc_results[driver]
-                    f_axis = res['frequencies']
-
-                    # Find nearest freq index
-                    idx = np.abs(f_axis - target_f).argmin()
+                    idx = self._find_driver_freq_index(res, target_f)
+                    if idx is None:
+                        continue
 
                     # Use helper to build polar data (handles 360° if rear available)
                     angles_rad, data_norm = self._build_360_polar_data(driver, idx)
@@ -5063,16 +5126,15 @@ class PolarResponseVisualizer:
                     ax.set_thetamin(0)
                     ax.set_thetamax(360)
 
-                # Legend only on first plot
-                if i == 0:
-                    ax.legend(loc='lower left', bbox_to_anchor=(-0.3, -0.3), fontsize=8)
-
             # Hide empty subplots
             for j in range(i + 1, len(axes)):
                 axes[j].axis('off')
 
             fig.suptitle(f'Multi-Driver Polar Comparison (Normalized)', fontweight='bold', fontsize=16)
-            plt.tight_layout()
+            handles, labels = axes[0].get_legend_handles_labels()
+            fig.legend(handles, labels, loc='lower center',
+                       ncol=min(4, len(self.drivers)), fontsize=8)
+            fig.subplots_adjust(top=0.92, bottom=0.08, hspace=0.45, wspace=0.35)
             plt.savefig(self.static_plots_dir / f'polar/polar_gallery_overlaid.png')
             plt.close()
 
@@ -5084,31 +5146,29 @@ class PolarResponseVisualizer:
         limit_min = -40
         limit_max = 10
 
-        ref_driver = self.drivers[0]
-        freqs = self.calc_results[ref_driver]['frequencies']
-
         # Check if any driver has rear data for full 360°
         any_has_rear = any(self.calc_results[d].get('has_rear', False) for d in self.drivers)
 
-        # Efficient Frequency Sampling - use more steps for smoother slider
+        # Efficient frequency sampling across all measured driver ranges. At a
+        # given target frequency, drivers outside their own range are omitted.
         n_steps = 300
-        min_idx = np.abs(freqs - config.FREQ_MIN).argmin()
-        max_idx = np.abs(freqs - config.FREQ_MAX).argmin()
-        stride = max(1, (max_idx - min_idx) // n_steps)
-        indices = list(range(min_idx, max_idx + 1, stride))
+        slider_freqs = self._build_polar_slider_frequencies(
+            {driver: self.calc_results[driver] for driver in self.drivers},
+            n_steps=n_steps,
+        )
+        if len(slider_freqs) == 0:
+            raise ValueError("No valid measured frequencies found for polar explorer.")
 
         # Store all data for slider steps
         # structure: all_step_data[step_index][driver_index] = {'theta': array, 'r': array}
         all_step_data = []
 
-        for i in indices:
+        for target_freq in slider_freqs:
             step_data = []
             for driver in self.drivers:
-                # Use _build_360_polar_data helper for proper 360° support
-                angles_rad, spl_norm = self._build_360_polar_data(driver, i)
-                # Convert radians to degrees for Plotly
-                angles_deg = np.degrees(angles_rad)
-                step_data.append({'theta': angles_deg, 'r': spl_norm})
+                step_data.append(
+                    self._build_polar_step_entry(self.calc_results[driver], target_freq, use_rear=any_has_rear)
+                )
             all_step_data.append(step_data)
 
         # Create initial traces
@@ -5126,15 +5186,14 @@ class PolarResponseVisualizer:
         # Create Slider Steps (Restyle) - update both r and theta
         base_trace_indices = list(range(len(self.drivers)))
         steps = []
-        for i, idx in enumerate(indices):
-            f = freqs[idx]
+        for i, target_freq in enumerate(slider_freqs):
             step = dict(
                 method="restyle",
                 args=[{
                     "r": [all_step_data[i][d]['r'] for d in range(len(self.drivers))],
                     "theta": [all_step_data[i][d]['theta'] for d in range(len(self.drivers))]
                 }, base_trace_indices],
-                label=f"{f:.0f}"
+                label=f"{target_freq:.0f}"
             )
             steps.append(step)
 
@@ -5244,7 +5303,9 @@ class PolarResponseVisualizer:
             html_content = '<!DOCTYPE html>\n' + html_content
 
         # Build frequency lookup array for JavaScript
-        freq_values = [freqs[idx] for idx in indices]
+        freq_values = slider_freqs.tolist()
+        freq_min = float(slider_freqs[0])
+        freq_max = float(slider_freqs[-1])
         freq_js_array = ','.join([f'{f:.1f}' for f in freq_values])
 
         extra_polar_payload = None
@@ -5298,16 +5359,17 @@ class PolarResponseVisualizer:
 
             if extra_results:
                 extra_drivers = sorted(extra_results.keys())
-                extra_freqs = extra_results[extra_drivers[0]]['frequencies']
-                extra_indices = [int(np.abs(extra_freqs - f).argmin()) for f in freq_values]
 
                 extra_step_data = []
-                for idx in extra_indices:
+                for target_freq in freq_values:
                     step = []
                     for driver in extra_drivers:
                         res = extra_results[driver]
-                        angles_rad, spl_norm = self._build_polar_data_from_result(res, idx, use_rear=any_has_rear)
-                        step.append({'theta': np.degrees(angles_rad).tolist(), 'r': spl_norm.tolist()})
+                        entry = self._build_polar_step_entry(res, target_freq, use_rear=any_has_rear)
+                        step.append({
+                            'theta': entry['theta'].tolist() if hasattr(entry['theta'], 'tolist') else entry['theta'],
+                            'r': entry['r'].tolist() if hasattr(entry['r'], 'tolist') else entry['r'],
+                        })
                     extra_step_data.append(step)
 
                 extra_polar_payload = {
@@ -5593,7 +5655,7 @@ body > div {{
 	</style>
 	<div class="freq-input-container">
 	    <label for="freqInput">Frequency:</label>
-	    <input type="number" id="freqInput" min="{config.FREQ_MIN}" max="{config.FREQ_MAX}" placeholder="Hz">
+	    <input type="number" id="freqInput" min="{freq_min:.3f}" max="{freq_max:.3f}" placeholder="Hz">
         <span class="freq-input-unit">Hz</span>
 	</div>
     {extra_polar_button_html}
@@ -5671,10 +5733,10 @@ function setFrequencyFromInput() {{
     if (isNaN(targetFreq)) {{
         return;
     }}
-    if (targetFreq < {config.FREQ_MIN}) {{
-        targetFreq = {config.FREQ_MIN};
-    }} else if (targetFreq > {config.FREQ_MAX}) {{
-        targetFreq = {config.FREQ_MAX};
+    if (targetFreq < {freq_min:.12g}) {{
+        targetFreq = {freq_min:.12g};
+    }} else if (targetFreq > {freq_max:.12g}) {{
+        targetFreq = {freq_max:.12g};
     }}
 
     var closestIdx = getClosestFreqIndex(targetFreq);
