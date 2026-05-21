@@ -1,6 +1,6 @@
 {
   "title": "Juan Baffleless Synthetic CDSL Design",
-  "generated_at_utc": "2026-05-21T12:31:44+00:00",
+  "generated_at_utc": "2026-05-21T13:07:27+00:00",
   "input_hdf5": {
     "juan_baffleless": "output/data/polar_data_juan_baffleless.h5",
     "lx521_system": "output/data/polar_data_lx521_system.h5",
@@ -67,7 +67,7 @@
       }
     },
     "selected_candidate": {
-      "score": 11.4272,
+      "score": 11.4765,
       "drivers": [
         "L26RO4Y",
         "L22MG (nude)",
@@ -82,14 +82,14 @@
         12000.0
       ],
       "ways": 5,
-      "dipole_front_rms_db": 2.036,
-      "dipole_rear_rms_db": 2.302,
+      "dipole_front_rms_db": 2.04,
+      "dipole_rear_rms_db": 2.343,
       "null_penalty_db": 0.0,
-      "rear0_rms_db": 1.863,
+      "rear0_rms_db": 1.895,
       "xover_mismatch_rms_db": 7.584,
       "validity_penalty": 0.0,
       "prior_penalty": 2.02,
-      "sep_30_60_median_2_10k_db": 6.235,
+      "sep_30_60_median_2_10k_db": 6.236,
       "sep_30_60_p10_2_10k_db": 5.106,
       "front30_median_2_10k_db": -1.931,
       "balanced_rank": 1,
@@ -98,7 +98,7 @@
     },
     "finalists": [
       {
-        "score": 11.4272,
+        "score": 11.4765,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -113,14 +113,14 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.036,
-        "dipole_rear_rms_db": 2.302,
+        "dipole_front_rms_db": 2.04,
+        "dipole_rear_rms_db": 2.343,
         "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.863,
+        "rear0_rms_db": 1.895,
         "xover_mismatch_rms_db": 7.584,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.235,
+        "sep_30_60_median_2_10k_db": 6.236,
         "sep_30_60_p10_2_10k_db": 5.106,
         "front30_median_2_10k_db": -1.931,
         "balanced_rank": 1,
@@ -128,7 +128,7 @@
         "note": "Primary recommendation: best balanced score that avoids splitting two near-identical ScanSpeak 10 cm drivers into adjacent bands."
       },
       {
-        "score": 12.4394,
+        "score": 12.4981,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -143,22 +143,22 @@
           7000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 3.074,
-        "dipole_rear_rms_db": 3.617,
-        "null_penalty_db": 0.805,
-        "rear0_rms_db": 2.37,
+        "dipole_front_rms_db": 3.085,
+        "dipole_rear_rms_db": 3.654,
+        "null_penalty_db": 0.816,
+        "rear0_rms_db": 2.397,
         "xover_mismatch_rms_db": 8.853,
         "validity_penalty": 0.0,
         "prior_penalty": 2.232,
-        "sep_30_60_median_2_10k_db": 8.736,
-        "sep_30_60_p10_2_10k_db": 5.823,
-        "front30_median_2_10k_db": -3.032,
-        "balanced_rank": 103,
+        "sep_30_60_median_2_10k_db": 8.749,
+        "sep_30_60_p10_2_10k_db": 5.821,
+        "front30_median_2_10k_db": -3.037,
+        "balanced_rank": 105,
         "finalist_role": "CTC-constrained",
         "note": "Experimental option: clears the 2-10 kHz 30-to-60 constraint, but uses both ScanSpeak 10 cm variants."
       },
       {
-        "score": 12.4033,
+        "score": 12.4776,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -173,22 +173,22 @@
           8000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 3.248,
-        "dipole_rear_rms_db": 3.8,
-        "null_penalty_db": 1.4,
-        "rear0_rms_db": 2.508,
+        "dipole_front_rms_db": 3.257,
+        "dipole_rear_rms_db": 3.835,
+        "null_penalty_db": 1.444,
+        "rear0_rms_db": 2.537,
         "xover_mismatch_rms_db": 6.597,
         "validity_penalty": 0.0,
         "prior_penalty": 2.52,
-        "sep_30_60_median_2_10k_db": 9.248,
-        "sep_30_60_p10_2_10k_db": 6.339,
-        "front30_median_2_10k_db": -3.11,
-        "balanced_rank": 93,
+        "sep_30_60_median_2_10k_db": 9.263,
+        "sep_30_60_p10_2_10k_db": 6.344,
+        "front30_median_2_10k_db": -3.115,
+        "balanced_rank": 98,
         "finalist_role": "L10NEO alternate",
         "note": "Best L10NEO-flavored candidate with strong 30-to-60 separation and acceptable crossover mismatch."
       },
       {
-        "score": 11.7471,
+        "score": 11.7915,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -201,14 +201,14 @@
           3200.0
         ],
         "ways": 4,
-        "dipole_front_rms_db": 2.143,
-        "dipole_rear_rms_db": 2.639,
-        "null_penalty_db": 0.122,
-        "rear0_rms_db": 2.045,
+        "dipole_front_rms_db": 2.147,
+        "dipole_rear_rms_db": 2.675,
+        "null_penalty_db": 0.124,
+        "rear0_rms_db": 2.074,
         "xover_mismatch_rms_db": 8.776,
         "validity_penalty": 0.0,
         "prior_penalty": 1.887,
-        "sep_30_60_median_2_10k_db": 6.637,
+        "sep_30_60_median_2_10k_db": 6.638,
         "sep_30_60_p10_2_10k_db": 5.233,
         "front30_median_2_10k_db": -2.059,
         "balanced_rank": 9,
@@ -218,7 +218,7 @@
     ],
     "top_candidates": [
       {
-        "score": 11.4272,
+        "score": 11.4765,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -233,19 +233,19 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.036,
-        "dipole_rear_rms_db": 2.302,
+        "dipole_front_rms_db": 2.04,
+        "dipole_rear_rms_db": 2.343,
         "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.863,
+        "rear0_rms_db": 1.895,
         "xover_mismatch_rms_db": 7.584,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.235,
+        "sep_30_60_median_2_10k_db": 6.236,
         "sep_30_60_p10_2_10k_db": 5.106,
         "front30_median_2_10k_db": -1.931
       },
       {
-        "score": 11.518,
+        "score": 11.5687,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -260,19 +260,19 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.048,
-        "dipole_rear_rms_db": 2.305,
+        "dipole_front_rms_db": 2.053,
+        "dipole_rear_rms_db": 2.347,
         "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.867,
+        "rear0_rms_db": 1.899,
         "xover_mismatch_rms_db": 7.788,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
         "sep_30_60_median_2_10k_db": 6.251,
         "sep_30_60_p10_2_10k_db": 5.106,
-        "front30_median_2_10k_db": -1.954
+        "front30_median_2_10k_db": -1.955
       },
       {
-        "score": 11.5263,
+        "score": 11.5725,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -287,19 +287,19 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.158,
-        "dipole_rear_rms_db": 2.539,
-        "null_penalty_db": 0.041,
-        "rear0_rms_db": 1.916,
+        "dipole_front_rms_db": 2.161,
+        "dipole_rear_rms_db": 2.577,
+        "null_penalty_db": 0.043,
+        "rear0_rms_db": 1.947,
         "xover_mismatch_rms_db": 8.072,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.545,
-        "sep_30_60_p10_2_10k_db": 5.221,
+        "sep_30_60_median_2_10k_db": 6.546,
+        "sep_30_60_p10_2_10k_db": 5.222,
         "front30_median_2_10k_db": -2.041
       },
       {
-        "score": 11.5609,
+        "score": 11.6374,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -314,19 +314,19 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.076,
-        "dipole_rear_rms_db": 2.314,
-        "null_penalty_db": 0.044,
-        "rear0_rms_db": 1.873,
+        "dipole_front_rms_db": 2.084,
+        "dipole_rear_rms_db": 2.358,
+        "null_penalty_db": 0.091,
+        "rear0_rms_db": 1.905,
         "xover_mismatch_rms_db": 7.795,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.276,
+        "sep_30_60_median_2_10k_db": 6.285,
         "sep_30_60_p10_2_10k_db": 5.105,
-        "front30_median_2_10k_db": -1.995
+        "front30_median_2_10k_db": -1.998
       },
       {
-        "score": 11.6106,
+        "score": 11.658,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -341,19 +341,19 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.171,
-        "dipole_rear_rms_db": 2.54,
-        "null_penalty_db": 0.04,
-        "rear0_rms_db": 1.92,
+        "dipole_front_rms_db": 2.174,
+        "dipole_rear_rms_db": 2.579,
+        "null_penalty_db": 0.044,
+        "rear0_rms_db": 1.951,
         "xover_mismatch_rms_db": 8.263,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.56,
+        "sep_30_60_median_2_10k_db": 6.563,
         "sep_30_60_p10_2_10k_db": 5.221,
-        "front30_median_2_10k_db": -2.061
+        "front30_median_2_10k_db": -2.062
       },
       {
-        "score": 11.6704,
+        "score": 11.7173,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -368,19 +368,19 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.077,
-        "dipole_rear_rms_db": 2.377,
+        "dipole_front_rms_db": 2.08,
+        "dipole_rear_rms_db": 2.417,
         "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.88,
+        "rear0_rms_db": 1.911,
         "xover_mismatch_rms_db": 8.331,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.372,
+        "sep_30_60_median_2_10k_db": 6.373,
         "sep_30_60_p10_2_10k_db": 5.141,
-        "front30_median_2_10k_db": -1.981
+        "front30_median_2_10k_db": -1.982
       },
       {
-        "score": 11.6806,
+        "score": 11.7351,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -395,19 +395,19 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.2,
-        "dipole_rear_rms_db": 2.546,
-        "null_penalty_db": 0.13,
-        "rear0_rms_db": 1.927,
+        "dipole_front_rms_db": 2.205,
+        "dipole_rear_rms_db": 2.587,
+        "null_penalty_db": 0.145,
+        "rear0_rms_db": 1.959,
         "xover_mismatch_rms_db": 8.27,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.588,
+        "sep_30_60_median_2_10k_db": 6.593,
         "sep_30_60_p10_2_10k_db": 5.22,
-        "front30_median_2_10k_db": -2.099
+        "front30_median_2_10k_db": -2.101
       },
       {
-        "score": 11.7223,
+        "score": 11.7703,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -422,19 +422,19 @@
           10000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.151,
-        "dipole_rear_rms_db": 2.347,
+        "dipole_front_rms_db": 2.154,
+        "dipole_rear_rms_db": 2.387,
         "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.855,
+        "rear0_rms_db": 1.887,
         "xover_mismatch_rms_db": 7.863,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.236,
+        "sep_30_60_median_2_10k_db": 6.237,
         "sep_30_60_p10_2_10k_db": 5.11,
-        "front30_median_2_10k_db": -1.93
+        "front30_median_2_10k_db": -1.931
       },
       {
-        "score": 11.7471,
+        "score": 11.7915,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -447,19 +447,19 @@
           3200.0
         ],
         "ways": 4,
-        "dipole_front_rms_db": 2.143,
-        "dipole_rear_rms_db": 2.639,
-        "null_penalty_db": 0.122,
-        "rear0_rms_db": 2.045,
+        "dipole_front_rms_db": 2.147,
+        "dipole_rear_rms_db": 2.675,
+        "null_penalty_db": 0.124,
+        "rear0_rms_db": 2.074,
         "xover_mismatch_rms_db": 8.776,
         "validity_penalty": 0.0,
         "prior_penalty": 1.887,
-        "sep_30_60_median_2_10k_db": 6.637,
+        "sep_30_60_median_2_10k_db": 6.638,
         "sep_30_60_p10_2_10k_db": 5.233,
         "front30_median_2_10k_db": -2.059
       },
       {
-        "score": 11.7639,
+        "score": 11.8095,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -474,19 +474,19 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.089,
-        "dipole_rear_rms_db": 2.38,
+        "dipole_front_rms_db": 2.093,
+        "dipole_rear_rms_db": 2.421,
         "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.884,
+        "rear0_rms_db": 1.915,
         "xover_mismatch_rms_db": 8.517,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.379,
+        "sep_30_60_median_2_10k_db": 6.382,
         "sep_30_60_p10_2_10k_db": 5.14,
-        "front30_median_2_10k_db": -2.001
+        "front30_median_2_10k_db": -2.003
       },
       {
-        "score": 11.7992,
+        "score": 11.8492,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -501,19 +501,19 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.052,
-        "dipole_rear_rms_db": 2.609,
-        "null_penalty_db": 0.129,
-        "rear0_rms_db": 2.179,
+        "dipole_front_rms_db": 2.056,
+        "dipole_rear_rms_db": 2.635,
+        "null_penalty_db": 0.156,
+        "rear0_rms_db": 2.2,
         "xover_mismatch_rms_db": 7.353,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.235,
+        "sep_30_60_median_2_10k_db": 6.236,
         "sep_30_60_p10_2_10k_db": 5.106,
         "front30_median_2_10k_db": -1.931
       },
       {
-        "score": 11.8168,
+        "score": 11.8665,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -528,19 +528,44 @@
           10000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.163,
-        "dipole_rear_rms_db": 2.35,
+        "dipole_front_rms_db": 2.167,
+        "dipole_rear_rms_db": 2.391,
         "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.859,
+        "rear0_rms_db": 1.891,
         "xover_mismatch_rms_db": 8.059,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
         "sep_30_60_median_2_10k_db": 6.246,
         "sep_30_60_p10_2_10k_db": 5.109,
-        "front30_median_2_10k_db": -1.954
+        "front30_median_2_10k_db": -1.955
       },
       {
-        "score": 11.834,
+        "score": 11.8986,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816"
+        ],
+        "xovers": [
+          120.0,
+          800.0,
+          3200.0
+        ],
+        "ways": 4,
+        "dipole_front_rms_db": 2.16,
+        "dipole_rear_rms_db": 2.677,
+        "null_penalty_db": 0.125,
+        "rear0_rms_db": 2.078,
+        "xover_mismatch_rms_db": 9.01,
+        "validity_penalty": 0.0,
+        "prior_penalty": 1.887,
+        "sep_30_60_median_2_10k_db": 6.653,
+        "sep_30_60_p10_2_10k_db": 5.233,
+        "front30_median_2_10k_db": -2.078
+      },
+      {
+        "score": 11.901,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -555,71 +580,19 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.118,
-        "dipole_rear_rms_db": 2.388,
-        "null_penalty_db": 0.076,
-        "rear0_rms_db": 1.89,
+        "dipole_front_rms_db": 2.125,
+        "dipole_rear_rms_db": 2.431,
+        "null_penalty_db": 0.101,
+        "rear0_rms_db": 1.922,
         "xover_mismatch_rms_db": 8.523,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.4,
+        "sep_30_60_median_2_10k_db": 6.403,
         "sep_30_60_p10_2_10k_db": 5.14,
-        "front30_median_2_10k_db": -2.039
+        "front30_median_2_10k_db": -2.042
       },
       {
-        "score": 11.8519,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816"
-        ],
-        "xovers": [
-          120.0,
-          800.0,
-          3200.0
-        ],
-        "ways": 4,
-        "dipole_front_rms_db": 2.156,
-        "dipole_rear_rms_db": 2.64,
-        "null_penalty_db": 0.121,
-        "rear0_rms_db": 2.049,
-        "xover_mismatch_rms_db": 9.01,
-        "validity_penalty": 0.0,
-        "prior_penalty": 1.887,
-        "sep_30_60_median_2_10k_db": 6.652,
-        "sep_30_60_p10_2_10k_db": 5.233,
-        "front30_median_2_10k_db": -2.078
-      },
-      {
-        "score": 11.856,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          1000.0,
-          2000.0,
-          10000.0
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 2.189,
-        "dipole_rear_rms_db": 2.359,
-        "null_penalty_db": 0.044,
-        "rear0_rms_db": 1.865,
-        "xover_mismatch_rms_db": 8.066,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.272,
-        "sep_30_60_p10_2_10k_db": 5.108,
-        "front30_median_2_10k_db": -1.993
-      },
-      {
-        "score": 11.8771,
+        "score": 11.9248,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -634,19 +607,19 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.173,
-        "dipole_rear_rms_db": 2.82,
-        "null_penalty_db": 0.164,
-        "rear0_rms_db": 2.224,
+        "dipole_front_rms_db": 2.176,
+        "dipole_rear_rms_db": 2.845,
+        "null_penalty_db": 0.191,
+        "rear0_rms_db": 2.245,
         "xover_mismatch_rms_db": 7.855,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.545,
-        "sep_30_60_p10_2_10k_db": 5.221,
+        "sep_30_60_median_2_10k_db": 6.546,
+        "sep_30_60_p10_2_10k_db": 5.222,
         "front30_median_2_10k_db": -2.041
       },
       {
-        "score": 11.886,
+        "score": 11.9266,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -661,19 +634,19 @@
           10000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.267,
-        "dipole_rear_rms_db": 2.58,
-        "null_penalty_db": 0.04,
-        "rear0_rms_db": 1.908,
+        "dipole_front_rms_db": 2.27,
+        "dipole_rear_rms_db": 2.618,
+        "null_penalty_db": 0.043,
+        "rear0_rms_db": 1.939,
         "xover_mismatch_rms_db": 8.334,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.484,
+        "sep_30_60_median_2_10k_db": 6.49,
         "sep_30_60_p10_2_10k_db": 5.224,
-        "front30_median_2_10k_db": -2.04
+        "front30_median_2_10k_db": -2.041
       },
       {
-        "score": 11.8897,
+        "score": 11.9297,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -686,10 +659,10 @@
           4500.0
         ],
         "ways": 4,
-        "dipole_front_rms_db": 2.429,
-        "dipole_rear_rms_db": 3.003,
-        "null_penalty_db": 0.447,
-        "rear0_rms_db": 2.128,
+        "dipole_front_rms_db": 2.432,
+        "dipole_rear_rms_db": 3.035,
+        "null_penalty_db": 0.448,
+        "rear0_rms_db": 2.156,
         "xover_mismatch_rms_db": 9.141,
         "validity_penalty": 0.0,
         "prior_penalty": 1.887,
@@ -698,7 +671,34 @@
         "front30_median_2_10k_db": -2.239
       },
       {
-        "score": 11.8907,
+        "score": 11.9329,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          1000.0,
+          2000.0,
+          10000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.196,
+        "dipole_rear_rms_db": 2.402,
+        "null_penalty_db": 0.091,
+        "rear0_rms_db": 1.897,
+        "xover_mismatch_rms_db": 8.066,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.28,
+        "sep_30_60_p10_2_10k_db": 5.108,
+        "front30_median_2_10k_db": -1.995
+      },
+      {
+        "score": 11.942,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -713,19 +713,19 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.064,
-        "dipole_rear_rms_db": 2.611,
-        "null_penalty_db": 0.128,
-        "rear0_rms_db": 2.182,
+        "dipole_front_rms_db": 2.069,
+        "dipole_rear_rms_db": 2.637,
+        "null_penalty_db": 0.155,
+        "rear0_rms_db": 2.203,
         "xover_mismatch_rms_db": 7.562,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
         "sep_30_60_median_2_10k_db": 6.251,
         "sep_30_60_p10_2_10k_db": 5.106,
-        "front30_median_2_10k_db": -1.954
+        "front30_median_2_10k_db": -1.955
       },
       {
-        "score": 11.9079,
+        "score": 11.9659,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -740,19 +740,19 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.091,
-        "dipole_rear_rms_db": 2.619,
-        "null_penalty_db": 0.135,
-        "rear0_rms_db": 2.187,
+        "dipole_front_rms_db": 2.099,
+        "dipole_rear_rms_db": 2.647,
+        "null_penalty_db": 0.179,
+        "rear0_rms_db": 2.208,
         "xover_mismatch_rms_db": 7.57,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.276,
+        "sep_30_60_median_2_10k_db": 6.285,
         "sep_30_60_p10_2_10k_db": 5.105,
-        "front30_median_2_10k_db": -1.995
+        "front30_median_2_10k_db": -1.998
       },
       {
-        "score": 11.9172,
+        "score": 11.9686,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -765,19 +765,19 @@
           3200.0
         ],
         "ways": 4,
-        "dipole_front_rms_db": 2.186,
-        "dipole_rear_rms_db": 2.644,
-        "null_penalty_db": 0.181,
-        "rear0_rms_db": 2.055,
+        "dipole_front_rms_db": 2.191,
+        "dipole_rear_rms_db": 2.684,
+        "null_penalty_db": 0.195,
+        "rear0_rms_db": 2.085,
         "xover_mismatch_rms_db": 9.019,
         "validity_penalty": 0.0,
         "prior_penalty": 1.887,
-        "sep_30_60_median_2_10k_db": 6.668,
+        "sep_30_60_median_2_10k_db": 6.673,
         "sep_30_60_p10_2_10k_db": 5.232,
-        "front30_median_2_10k_db": -2.116
+        "front30_median_2_10k_db": -2.118
       },
       {
-        "score": 11.9338,
+        "score": 11.9795,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -790,19 +790,19 @@
           2400.0
         ],
         "ways": 4,
-        "dipole_front_rms_db": 2.027,
-        "dipole_rear_rms_db": 2.421,
+        "dipole_front_rms_db": 2.03,
+        "dipole_rear_rms_db": 2.461,
         "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.998,
+        "rear0_rms_db": 2.028,
         "xover_mismatch_rms_db": 9.1,
         "validity_penalty": 0.0,
         "prior_penalty": 1.887,
-        "sep_30_60_median_2_10k_db": 6.374,
+        "sep_30_60_median_2_10k_db": 6.375,
         "sep_30_60_p10_2_10k_db": 5.104,
         "front30_median_2_10k_db": -1.982
       },
       {
-        "score": 11.9375,
+        "score": 11.9841,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -817,19 +817,19 @@
           8000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.273,
-        "dipole_rear_rms_db": 2.407,
+        "dipole_front_rms_db": 2.276,
+        "dipole_rear_rms_db": 2.447,
         "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.853,
+        "rear0_rms_db": 1.885,
         "xover_mismatch_rms_db": 7.239,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 5.992,
-        "sep_30_60_p10_2_10k_db": 5.138,
+        "sep_30_60_median_2_10k_db": 5.994,
+        "sep_30_60_p10_2_10k_db": 5.137,
         "front30_median_2_10k_db": -1.95
       },
       {
-        "score": 11.9437,
+        "score": 11.9944,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -844,19 +844,19 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.127,
-        "dipole_rear_rms_db": 2.334,
+        "dipole_front_rms_db": 2.131,
+        "dipole_rear_rms_db": 2.375,
         "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.899,
+        "rear0_rms_db": 1.931,
         "xover_mismatch_rms_db": 8.623,
         "validity_penalty": 0.0,
         "prior_penalty": 2.135,
         "sep_30_60_median_2_10k_db": 6.405,
         "sep_30_60_p10_2_10k_db": 5.101,
-        "front30_median_2_10k_db": -2.039
+        "front30_median_2_10k_db": -2.04
       },
       {
-        "score": 11.9619,
+        "score": 12.0102,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -871,16 +871,16 @@
           12000.0
         ],
         "ways": 5,
-        "dipole_front_rms_db": 2.185,
-        "dipole_rear_rms_db": 2.821,
-        "null_penalty_db": 0.162,
-        "rear0_rms_db": 2.227,
+        "dipole_front_rms_db": 2.189,
+        "dipole_rear_rms_db": 2.846,
+        "null_penalty_db": 0.191,
+        "rear0_rms_db": 2.248,
         "xover_mismatch_rms_db": 8.051,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
-        "sep_30_60_median_2_10k_db": 6.56,
+        "sep_30_60_median_2_10k_db": 6.563,
         "sep_30_60_p10_2_10k_db": 5.221,
-        "front30_median_2_10k_db": -2.061
+        "front30_median_2_10k_db": -2.062
       }
     ],
     "score_terms": {
@@ -1105,6 +1105,272 @@
       "front90_minus_front0_median_db": -26.853
     }
   ],
+  "filter_topology": {
+    "architecture": "cascaded LR4 split tree with shared high-pass carryover",
+    "diagram": "Input\n  +-- LR4 HP 70 Hz (2 biquads, global boundary)\n    +-- split @ 120 Hz\n        +-- LR4 LP 120 Hz (2 biquads) -> L26RO4Y\n        +-- LR4 HP 120 Hz (2 biquads) -> next split\n      +-- split @ 650 Hz\n          +-- LR4 LP 650 Hz (2 biquads) -> L22MG (nude)\n          +-- LR4 HP 650 Hz (2 biquads) -> next split\n        +-- split @ 2000 Hz\n            +-- LR4 LP 2000 Hz (2 biquads) -> SS10F8414G10\n            +-- LR4 HP 2000 Hz (2 biquads) -> next split\n          +-- split @ 12000 Hz\n              +-- LR4 LP 12000 Hz (2 biquads) -> GRS PT6816\n              +-- LR4 HP 12000 Hz (2 biquads) -> ND25FW4 (nude 18mm)",
+    "stages": [
+      {
+        "stage": 1,
+        "driver": "L26RO4Y",
+        "passband_hz": [
+          70.0,
+          120.0
+        ],
+        "global_boundary_hp_biquads": 2,
+        "inherited_upstream_hp_biquads": 0,
+        "own_branch_hp_biquads": 0,
+        "own_branch_lp_biquads": 2,
+        "effective_lr4_biquads": 4,
+        "flat_eq_biquads": 0,
+        "effective_total_biquads": 4
+      },
+      {
+        "stage": 2,
+        "driver": "L22MG (nude)",
+        "passband_hz": [
+          120.0,
+          650.0
+        ],
+        "global_boundary_hp_biquads": 2,
+        "inherited_upstream_hp_biquads": 0,
+        "own_branch_hp_biquads": 2,
+        "own_branch_lp_biquads": 2,
+        "effective_lr4_biquads": 6,
+        "flat_eq_biquads": 3,
+        "effective_total_biquads": 9
+      },
+      {
+        "stage": 3,
+        "driver": "SS10F8414G10",
+        "passband_hz": [
+          650.0,
+          2000.0
+        ],
+        "global_boundary_hp_biquads": 2,
+        "inherited_upstream_hp_biquads": 2,
+        "own_branch_hp_biquads": 2,
+        "own_branch_lp_biquads": 2,
+        "effective_lr4_biquads": 8,
+        "flat_eq_biquads": 4,
+        "effective_total_biquads": 12
+      },
+      {
+        "stage": 4,
+        "driver": "GRS PT6816",
+        "passband_hz": [
+          2000.0,
+          12000.0
+        ],
+        "global_boundary_hp_biquads": 2,
+        "inherited_upstream_hp_biquads": 4,
+        "own_branch_hp_biquads": 2,
+        "own_branch_lp_biquads": 2,
+        "effective_lr4_biquads": 10,
+        "flat_eq_biquads": 8,
+        "effective_total_biquads": 18
+      },
+      {
+        "stage": 5,
+        "driver": "ND25FW4 (nude 18mm)",
+        "passband_hz": [
+          12000.0,
+          20000.0
+        ],
+        "global_boundary_hp_biquads": 2,
+        "inherited_upstream_hp_biquads": 6,
+        "own_branch_hp_biquads": 2,
+        "own_branch_lp_biquads": 0,
+        "effective_lr4_biquads": 10,
+        "flat_eq_biquads": 4,
+        "effective_total_biquads": 14
+      }
+    ],
+    "summary": {
+      "shared_tree_lr4_biquads": 18,
+      "standalone_channel_lr4_biquads": 38,
+      "flat_eq_biquads": 19,
+      "shared_tree_total_biquads_with_eq": 37,
+      "standalone_channel_total_biquads": 57
+    },
+    "notes": [
+      "Shared-tree count assumes the DSP can route a high-pass bus into the next split stage.",
+      "Standalone-channel count is what is exported per driver when each output channel must contain all inherited upstream filters.",
+      "Gain, delay, and polarity are not counted as biquads."
+    ]
+  },
+  "flatness_optimization": {
+    "target_db": 76.0,
+    "fit_domain_hz": [
+      160.0,
+      18000.0
+    ],
+    "primary_constraint": {
+      "smoothing": "one_third_octave",
+      "band": "200-10k",
+      "max_peak_to_peak_db": 0.7,
+      "max_rms_error_db": 0.25
+    },
+    "constraint_met": true,
+    "optimizer_cost": 3.01,
+    "optimizer_nfev": 19,
+    "filters_tested": 24,
+    "filters_kept": 19,
+    "full_fit_filters_needed": 24,
+    "method": "sparse least-squares: solve full candidate pool, rank by fitted correction magnitude, then keep the smallest ranked set that satisfies the smoothed summed-response constraint",
+    "before": {
+      "raw": {
+        "80-18k": {
+          "median_db": 77.084,
+          "min_error_db": -4.001,
+          "max_error_db": 3.171,
+          "peak_to_peak_db": 7.172,
+          "rms_error_db": 1.636
+        },
+        "200-10k": {
+          "median_db": 77.656,
+          "min_error_db": -4.574,
+          "max_error_db": 2.599,
+          "peak_to_peak_db": 7.172,
+          "rms_error_db": 1.676
+        },
+        "2-10k": {
+          "median_db": 77.485,
+          "min_error_db": -4.403,
+          "max_error_db": 1.779,
+          "peak_to_peak_db": 6.182,
+          "rms_error_db": 1.332
+        }
+      },
+      "one_sixth_octave": {
+        "80-18k": {
+          "median_db": 77.084,
+          "min_error_db": -3.235,
+          "max_error_db": 3.131,
+          "peak_to_peak_db": 6.367,
+          "rms_error_db": 1.594
+        },
+        "200-10k": {
+          "median_db": 77.656,
+          "min_error_db": -3.807,
+          "max_error_db": 2.559,
+          "peak_to_peak_db": 6.367,
+          "rms_error_db": 1.635
+        },
+        "2-10k": {
+          "median_db": 77.485,
+          "min_error_db": -2.604,
+          "max_error_db": 1.624,
+          "peak_to_peak_db": 4.229,
+          "rms_error_db": 1.214
+        }
+      },
+      "one_third_octave": {
+        "80-18k": {
+          "median_db": 76.997,
+          "min_error_db": -3.093,
+          "max_error_db": 3.11,
+          "peak_to_peak_db": 6.203,
+          "rms_error_db": 1.54
+        },
+        "200-10k": {
+          "median_db": 77.656,
+          "min_error_db": -3.752,
+          "max_error_db": 2.451,
+          "peak_to_peak_db": 6.203,
+          "rms_error_db": 1.564
+        },
+        "2-10k": {
+          "median_db": 77.485,
+          "min_error_db": -1.58,
+          "max_error_db": 1.549,
+          "peak_to_peak_db": 3.128,
+          "rms_error_db": 1.021
+        }
+      }
+    },
+    "after": {
+      "raw": {
+        "80-18k": {
+          "median_db": 75.978,
+          "min_error_db": -4.528,
+          "max_error_db": 1.812,
+          "peak_to_peak_db": 6.34,
+          "rms_error_db": 0.805
+        },
+        "200-10k": {
+          "median_db": 75.994,
+          "min_error_db": -2.146,
+          "max_error_db": 0.856,
+          "peak_to_peak_db": 3.002,
+          "rms_error_db": 0.353
+        },
+        "2-10k": {
+          "median_db": 75.965,
+          "min_error_db": -2.117,
+          "max_error_db": 0.885,
+          "peak_to_peak_db": 3.002,
+          "rms_error_db": 0.512
+        }
+      },
+      "one_sixth_octave": {
+        "80-18k": {
+          "median_db": 75.978,
+          "min_error_db": -4.528,
+          "max_error_db": 1.812,
+          "peak_to_peak_db": 6.34,
+          "rms_error_db": 0.768
+        },
+        "200-10k": {
+          "median_db": 75.991,
+          "min_error_db": -1.168,
+          "max_error_db": 0.702,
+          "peak_to_peak_db": 1.87,
+          "rms_error_db": 0.286
+        },
+        "2-10k": {
+          "median_db": 75.965,
+          "min_error_db": -1.141,
+          "max_error_db": 0.729,
+          "peak_to_peak_db": 1.87,
+          "rms_error_db": 0.403
+        }
+      },
+      "one_third_octave": {
+        "80-18k": {
+          "median_db": 75.981,
+          "min_error_db": -4.531,
+          "max_error_db": 1.559,
+          "peak_to_peak_db": 6.089,
+          "rms_error_db": 0.719
+        },
+        "200-10k": {
+          "median_db": 75.994,
+          "min_error_db": -0.313,
+          "max_error_db": 0.384,
+          "peak_to_peak_db": 0.697,
+          "rms_error_db": 0.162
+        },
+        "2-10k": {
+          "median_db": 75.979,
+          "min_error_db": -0.269,
+          "max_error_db": 0.399,
+          "peak_to_peak_db": 0.668,
+          "rms_error_db": 0.208
+        }
+      }
+    }
+  },
+  "upper_mid_side_feature": {
+    "search_band_hz": [
+      1600.0,
+      3200.0
+    ],
+    "min_f90_minus_f0_db": -31.315,
+    "min_frequency_hz": 3163.3,
+    "max_f90_minus_f0_db": -17.775,
+    "max_frequency_hz": 1973.8,
+    "interpretation": "The dark feature at 90 degrees is a side null, not an off-axis SPL peak. It is dominated by the upper-mid crossover/driver transition and should not be filled with on-axis EQ unless the design goal changes."
+  },
   "local_evidence_notes": [
     "Juan's local notes rank 8424 distortion/SPL best, 8414 close behind, and MU10 worst in the upper-mid comparison.",
     "The same notes flag 8424 rear-side directivity and high-angle order as weaker than 8414, especially above 2 kHz.",
@@ -1141,7 +1407,7 @@
         120.0
       ],
       "source": "measurements/juan/L26RO4Y POLARES EN BAFFLE CILINDRICO VER NOTA",
-      "gain_db": -6.92,
+      "gain_db": -10.521,
       "delay_ms": 0.0,
       "polarity": 1,
       "rationale": "Best measured low-frequency candidate, but captured in a cylindrical baffle.",
@@ -1151,28 +1417,28 @@
           "fc_hz": 70.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 boundary high-pass"
+          "source": "LR4 global boundary high-pass"
         },
         {
           "type": "highpass",
           "fc_hz": 70.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 boundary high-pass"
+          "source": "LR4 global boundary high-pass"
         },
         {
           "type": "lowpass",
           "fc_hz": 120.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 branch low-pass"
         },
         {
           "type": "lowpass",
           "fc_hz": 120.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 branch low-pass"
         }
       ]
     },
@@ -1184,59 +1450,73 @@
         650.0
       ],
       "source": "measurements/juan/SEAS L22MG NUDE MIC ON AXIS",
-      "gain_db": 16.906,
-      "delay_ms": -0.06,
+      "gain_db": 15.784,
+      "delay_ms": -1.375,
       "polarity": 1,
       "rationale": "Strong low-mid bridge with nude front/rear data and useful coverage below 500 Hz.",
       "filters": [
         {
           "type": "highpass",
-          "fc_hz": 120.0,
+          "fc_hz": 70.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 global boundary high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 70.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 global boundary high-pass"
         },
         {
           "type": "highpass",
           "fc_hz": 120.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 branch high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 120.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 branch high-pass"
         },
         {
           "type": "lowpass",
           "fc_hz": 650.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 branch low-pass"
         },
         {
           "type": "lowpass",
           "fc_hz": 650.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 branch low-pass"
         },
         {
           "type": "peaking",
-          "fc_hz": 220,
+          "fc_hz": 500.0,
           "q": 1.0,
-          "gain_db": 1.36,
-          "source": "auto-EQ"
+          "gain_db": -5.382,
+          "source": "flat-EQ"
         },
         {
           "type": "peaking",
-          "fc_hz": 330,
+          "fc_hz": 620.0,
           "q": 1.0,
-          "gain_db": -1.175,
-          "source": "auto-EQ"
+          "gain_db": 0.755,
+          "source": "flat-EQ"
         },
         {
           "type": "peaking",
-          "fc_hz": 500,
+          "fc_hz": 150.0,
           "q": 1.0,
-          "gain_db": -5.566,
-          "source": "auto-EQ"
+          "gain_db": 2.033,
+          "source": "flat-EQ"
         }
       ]
     },
@@ -1248,59 +1528,94 @@
         2000.0
       ],
       "source": "measurements/juan/ScanSpeak 10F8414G10",
-      "gain_db": 4.941,
-      "delay_ms": -0.27,
-      "polarity": -1,
+      "gain_db": -3.715,
+      "delay_ms": -0.775,
+      "polarity": 1,
       "rationale": "Good directivity order with local notes rating distortion close to the 8424.",
       "filters": [
         {
           "type": "highpass",
-          "fc_hz": 650.0,
+          "fc_hz": 70.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 global boundary high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 70.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 global boundary high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 120.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 120.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
         },
         {
           "type": "highpass",
           "fc_hz": 650.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 branch high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 650.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 branch high-pass"
         },
         {
           "type": "lowpass",
           "fc_hz": 2000.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 branch low-pass"
         },
         {
           "type": "lowpass",
           "fc_hz": 2000.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 branch low-pass"
         },
         {
           "type": "peaking",
-          "fc_hz": 800,
+          "fc_hz": 1800.0,
           "q": 1.0,
-          "gain_db": 3.222,
-          "source": "auto-EQ"
+          "gain_db": 8.0,
+          "source": "flat-EQ"
         },
         {
           "type": "peaking",
-          "fc_hz": 1200,
+          "fc_hz": 1450.0,
           "q": 1.0,
-          "gain_db": -0.84,
-          "source": "auto-EQ"
+          "gain_db": -3.022,
+          "source": "flat-EQ"
         },
         {
           "type": "peaking",
-          "fc_hz": 1800,
+          "fc_hz": 1150.0,
           "q": 1.0,
-          "gain_db": -6.0,
-          "source": "auto-EQ"
+          "gain_db": -1.851,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 700.0,
+          "q": 1.0,
+          "gain_db": 0.427,
+          "source": "flat-EQ"
         }
       ]
     },
@@ -1312,45 +1627,136 @@
         12000.0
       ],
       "source": "measurements/juan/GRS PT6816 A MIC ON AXIS",
-      "gain_db": -0.076,
-      "delay_ms": -0.035,
-      "polarity": -1,
+      "gain_db": -7.89,
+      "delay_ms": -1.06,
+      "polarity": 1,
       "rationale": "Best local constant-directivity and front/rear symmetry reference.",
       "filters": [
         {
           "type": "highpass",
-          "fc_hz": 2000.0,
+          "fc_hz": 70.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 global boundary high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 70.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 global boundary high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 120.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 120.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 650.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 650.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
         },
         {
           "type": "highpass",
           "fc_hz": 2000.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 branch high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 2000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 branch high-pass"
         },
         {
           "type": "lowpass",
           "fc_hz": 12000.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 branch low-pass"
         },
         {
           "type": "lowpass",
           "fc_hz": 12000.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 branch low-pass"
         },
         {
           "type": "peaking",
-          "fc_hz": 8500,
+          "fc_hz": 2200.0,
           "q": 1.0,
-          "gain_db": -2.58,
-          "source": "auto-EQ"
+          "gain_db": 8.0,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 3500.0,
+          "q": 1.0,
+          "gain_db": -8.0,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 11000.0,
+          "q": 1.0,
+          "gain_db": 6.984,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 4500.0,
+          "q": 1.0,
+          "gain_db": 6.535,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 9000.0,
+          "q": 1.0,
+          "gain_db": -5.389,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 2800.0,
+          "q": 1.0,
+          "gain_db": 4.025,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 5700.0,
+          "q": 1.0,
+          "gain_db": 3.538,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 7200.0,
+          "q": 1.0,
+          "gain_db": -0.77,
+          "source": "flat-EQ"
         }
       ]
     },
@@ -1362,45 +1768,108 @@
         20000.0
       ],
       "source": "measurements/juan/DAYTON ND25FW4 ANIDADOS 18 MM NUDE",
-      "gain_db": 8.349,
-      "delay_ms": -0.015,
+      "gain_db": 13.526,
+      "delay_ms": -1.085,
       "polarity": 1,
       "rationale": "Treble extension candidate; measured 2-10 kHz pattern is wider than the 10 cm candidates.",
       "filters": [
         {
           "type": "highpass",
-          "fc_hz": 12000.0,
+          "fc_hz": 70.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 global boundary high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 70.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 global boundary high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 120.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 120.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 650.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 650.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 2000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 2000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
         },
         {
           "type": "highpass",
           "fc_hz": 12000.0,
           "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR4 crossover"
+          "source": "LR4 branch high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 12000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 branch high-pass"
         },
         {
           "type": "peaking",
-          "fc_hz": 11000,
+          "fc_hz": 12000.0,
           "q": 1.0,
-          "gain_db": -3.806,
-          "source": "auto-EQ"
+          "gain_db": -4.744,
+          "source": "flat-EQ"
         },
         {
           "type": "peaking",
-          "fc_hz": 14000,
+          "fc_hz": 16500.0,
           "q": 1.0,
-          "gain_db": -4.115,
-          "source": "auto-EQ"
+          "gain_db": -3.903,
+          "source": "flat-EQ"
         },
         {
           "type": "peaking",
-          "fc_hz": 18000,
+          "fc_hz": 14000.0,
           "q": 1.0,
-          "gain_db": 1.387,
-          "source": "auto-EQ"
+          "gain_db": -2.961,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "highshelf",
+          "fc_hz": 18000.0,
+          "q": 1.0,
+          "gain_db": -1.649,
+          "source": "flat-EQ"
         }
       ]
     }

@@ -23,6 +23,7 @@ import h5py
 import matplotlib.pyplot as plt
 import numpy as np
 import plotly.graph_objects as go
+from scipy.optimize import least_squares
 from plotly.subplots import make_subplots
 
 from directivity_calculations import DirectivityCalculator
@@ -35,6 +36,12 @@ COMMON_FREQ = np.geomspace(FREQ_MIN, FREQ_MAX, 1200)
 ANGLES = [0, 15, 30, 45, 60, 75, 90]
 PLOT_FREQS = [125, 250, 500, 1000, 2000, 4000, 8000, 12000]
 TARGET_SPL_DB = 76.0
+FLATNESS_FIT_BAND_HZ = (160.0, 18_000.0)
+FLATNESS_PRIMARY_BAND_HZ = "200-10k"
+FLATNESS_PRIMARY_SMOOTHING = "one_third_octave"
+FLATNESS_TARGET_PEAK_TO_PEAK_DB = 0.70
+FLATNESS_TARGET_RMS_DB = 0.25
+FLAT_EQ_PRUNE_DB = 0.25
 
 JUAN_HDF5 = Path("output/data/polar_data_juan_baffleless.h5")
 LX521_HDF5 = Path("output/data/polar_data_lx521_system.h5")
@@ -295,6 +302,33 @@ def biquad_coefficients(flt: Biquad, fs: float = FS_HZ) -> Tuple[np.ndarray, np.
         amp = 10 ** (flt.gain_db / 40.0)
         b = [1 + alpha * amp, -2 * cos_w0, 1 - alpha * amp]
         a = [1 + alpha / amp, -2 * cos_w0, 1 - alpha / amp]
+    elif flt.type in {"lowshelf", "highshelf"}:
+        amp = 10 ** (flt.gain_db / 40.0)
+        sqrt_amp = math.sqrt(amp)
+        shelf_slope = max(float(flt.q), 0.05)
+        shelf_alpha = sin_w0 / 2.0 * math.sqrt((amp + 1.0 / amp) * (1.0 / shelf_slope - 1.0) + 2.0)
+        if flt.type == "lowshelf":
+            b = [
+                amp * ((amp + 1) - (amp - 1) * cos_w0 + 2 * sqrt_amp * shelf_alpha),
+                2 * amp * ((amp - 1) - (amp + 1) * cos_w0),
+                amp * ((amp + 1) - (amp - 1) * cos_w0 - 2 * sqrt_amp * shelf_alpha),
+            ]
+            a = [
+                (amp + 1) + (amp - 1) * cos_w0 + 2 * sqrt_amp * shelf_alpha,
+                -2 * ((amp - 1) + (amp + 1) * cos_w0),
+                (amp + 1) + (amp - 1) * cos_w0 - 2 * sqrt_amp * shelf_alpha,
+            ]
+        else:
+            b = [
+                amp * ((amp + 1) + (amp - 1) * cos_w0 + 2 * sqrt_amp * shelf_alpha),
+                -2 * amp * ((amp - 1) + (amp + 1) * cos_w0),
+                amp * ((amp + 1) + (amp - 1) * cos_w0 - 2 * sqrt_amp * shelf_alpha),
+            ]
+            a = [
+                (amp + 1) - (amp - 1) * cos_w0 + 2 * sqrt_amp * shelf_alpha,
+                2 * ((amp - 1) - (amp + 1) * cos_w0),
+                (amp + 1) - (amp - 1) * cos_w0 - 2 * sqrt_amp * shelf_alpha,
+            ]
     else:
         raise ValueError(f"Unsupported biquad type: {flt.type}")
 
@@ -316,14 +350,30 @@ def add_lr4(filters: List[Biquad], kind: str, fc: float, source: str) -> None:
         filters.append(Biquad(kind, fc, q=0.7071, source=source))
 
 
+def cascaded_lr4_filters(
+    stage_index: int,
+    xovers: List[float],
+    *,
+    include_boundary_highpass: bool = True,
+    source_prefix: str = "LR4",
+) -> List[Biquad]:
+    filters: List[Biquad] = []
+    if include_boundary_highpass:
+        add_lr4(filters, "highpass", FREQ_MIN, f"{source_prefix} global boundary high-pass")
+    for upstream_idx, fc in enumerate(xovers[:stage_index]):
+        label = f"{source_prefix} cascaded upstream high-pass"
+        if upstream_idx == stage_index - 1:
+            label = f"{source_prefix} branch high-pass"
+        add_lr4(filters, "highpass", fc, label)
+    if stage_index < len(xovers):
+        add_lr4(filters, "lowpass", xovers[stage_index], f"{source_prefix} branch low-pass")
+    return filters
+
+
 def add_crossover_filters(design: List[DriverBand]) -> None:
-    for band in design:
-        if band.lo > FREQ_MIN:
-            add_lr4(band.filters, "highpass", band.lo, "LR4 crossover")
-        else:
-            add_lr4(band.filters, "highpass", band.lo, "LR4 boundary high-pass")
-        if band.hi < FREQ_MAX:
-            add_lr4(band.filters, "lowpass", band.hi, "LR4 crossover")
+    xovers = [band.hi for band in design[:-1]]
+    for idx, band in enumerate(design):
+        band.filters.extend(cascaded_lr4_filters(idx, xovers))
 
 
 def crossover_manifest(drivers: List[str], xovers: List[float]) -> List[Dict]:
@@ -381,14 +431,8 @@ def precompute_search_data(data: Dict[str, Dict]) -> Dict[str, Dict]:
     return pre
 
 
-def passband_weight(lo: float, hi: float, freq: np.ndarray = COMMON_FREQ) -> np.ndarray:
-    filters: List[Biquad] = []
-    if lo > FREQ_MIN:
-        add_lr4(filters, "highpass", lo, "search crossover")
-    else:
-        add_lr4(filters, "highpass", lo, "search boundary high-pass")
-    if hi < FREQ_MAX:
-        add_lr4(filters, "lowpass", hi, "search crossover")
+def passband_weight(stage_index: int, xovers: List[float], freq: np.ndarray = COMMON_FREQ) -> np.ndarray:
+    filters = cascaded_lr4_filters(stage_index, xovers, source_prefix="search LR4")
     return np.abs(filter_response(filters, freq))
 
 
@@ -396,7 +440,7 @@ def synthesize_search_norm(pre: Dict[str, Dict], drivers: List[str], xovers: Lis
     edges = [FREQ_MIN, *xovers, FREQ_MAX]
     weights = []
     for idx, driver in enumerate(drivers):
-        w = passband_weight(edges[idx], edges[idx + 1])
+        w = passband_weight(idx, xovers)
         w = np.where(pre[driver]["valid"], w, 0.0)
         weights.append(w)
     weights_arr = np.vstack(weights)
@@ -758,6 +802,14 @@ def octave_smooth(freq: np.ndarray, values: np.ndarray, fraction: float = 3.0) -
     return out
 
 
+def octave_mean_matrix(freq: np.ndarray, fraction: float) -> np.ndarray:
+    logf = np.log2(freq)
+    half_width = 1.0 / (2.0 * fraction)
+    window = np.abs(logf[:, None] - logf[None, :]) <= half_width
+    counts = np.maximum(window.sum(axis=1, keepdims=True), 1)
+    return window.astype(float) / counts
+
+
 def eq_centers_for_band(lo: float, hi: float) -> List[float]:
     if hi <= 220:
         return [85, 120, 165]
@@ -797,6 +849,19 @@ def add_auto_eq_and_gains(data: Dict[str, Dict], design: List[DriverBand]) -> No
         corrected_db = pressure_to_db(corrected)
         gain_region = (COMMON_FREQ >= core_lo) & (COMMON_FREQ <= core_hi)
         median_after = float(np.nanmedian(corrected_db[gain_region])) if np.any(gain_region) else TARGET_SPL_DB
+        band.gain_db = TARGET_SPL_DB - median_after
+
+
+def set_initial_gains(data: Dict[str, Dict], design: List[DriverBand]) -> None:
+    for band in design:
+        raw = interp_complex(data[band.driver], "F", 0, COMMON_FREQ) * filter_response(band.filters, COMMON_FREQ)
+        measured_db = pressure_to_db(raw)
+        core_lo = max(band.lo * 1.15, FREQ_MIN)
+        core_hi = min(band.hi / 1.15, FREQ_MAX)
+        if band.hi >= FREQ_MAX:
+            core_hi = FREQ_MAX / 1.05
+        core = (COMMON_FREQ >= core_lo) & (COMMON_FREQ <= core_hi) & np.isfinite(measured_db)
+        median_after = float(np.nanmedian(measured_db[core])) if np.any(core) else TARGET_SPL_DB
         band.gain_db = TARGET_SPL_DB - median_after
 
 
@@ -864,6 +929,273 @@ def synthesize_system(data: Dict[str, Dict], design: List[DriverBand]) -> Dict:
     return system
 
 
+def synthesize_front0(data: Dict[str, Dict], design: List[DriverBand]) -> np.ndarray:
+    total = np.zeros_like(COMMON_FREQ, dtype=complex)
+    for band in design:
+        total += contribution(data, band, "F", 0, COMMON_FREQ)
+    return total
+
+
+def synthesize_front0_from_raw(raw_front0: Dict[str, np.ndarray], design: List[DriverBand]) -> np.ndarray:
+    total = np.zeros_like(COMMON_FREQ, dtype=complex)
+    for band in design:
+        total += raw_front0[band.driver] * driver_transfer(band, COMMON_FREQ)
+    return total
+
+
+def flatness_summary(values_db: np.ndarray) -> Dict[str, Dict[str, float]]:
+    out: Dict[str, Dict[str, float]] = {}
+    for label, lo, hi in [
+        ("80-18k", 80.0, 18_000.0),
+        ("200-10k", 200.0, 10_000.0),
+        ("2-10k", 2_000.0, 10_000.0),
+    ]:
+        mask = (COMMON_FREQ >= lo) & (COMMON_FREQ <= hi) & np.isfinite(values_db)
+        if not np.any(mask):
+            continue
+        band = values_db[mask]
+        median = float(np.nanmedian(band))
+        err = band - median
+        out[label] = {
+            "median_db": round(median, 3),
+            "min_error_db": round(float(np.nanmin(err)), 3),
+            "max_error_db": round(float(np.nanmax(err)), 3),
+            "peak_to_peak_db": round(float(np.nanmax(err) - np.nanmin(err)), 3),
+            "rms_error_db": round(float(np.sqrt(np.nanmean(err * err))), 3),
+        }
+    return out
+
+
+def flatness_report(data: Dict[str, Dict], design: List[DriverBand]) -> Dict[str, Dict[str, Dict[str, float]]]:
+    front0 = pressure_to_db(synthesize_front0(data, design))
+    return {
+        "raw": flatness_summary(front0),
+        "one_sixth_octave": flatness_summary(octave_smooth(COMMON_FREQ, front0, 6.0)),
+        "one_third_octave": flatness_summary(octave_smooth(COMMON_FREQ, front0, 3.0)),
+    }
+
+
+def flat_eq_candidate_specs(design: List[DriverBand]) -> List[Tuple[DriverBand, Biquad]]:
+    centers = {
+        "L26RO4Y": [("lowshelf", 95.0, 1.0), ("peaking", 110.0, 1.0)],
+        "L22MG (nude)": [("peaking", 150.0, 1.0), ("peaking", 220.0, 1.0), ("peaking", 330.0, 1.0), ("peaking", 500.0, 1.0), ("peaking", 620.0, 1.0)],
+        "SS10F8414G10": [("peaking", 700.0, 1.0), ("peaking", 900.0, 1.0), ("peaking", 1150.0, 1.0), ("peaking", 1450.0, 1.0), ("peaking", 1800.0, 1.0)],
+        "SS10F8424G00": [("peaking", 700.0, 1.0), ("peaking", 950.0, 1.0), ("peaking", 1300.0, 1.0), ("peaking", 1800.0, 1.0), ("peaking", 2400.0, 1.0)],
+        "L10NEO": [("peaking", 900.0, 1.0), ("peaking", 1300.0, 1.0), ("peaking", 1800.0, 1.0), ("peaking", 2600.0, 1.0), ("peaking", 4200.0, 1.0)],
+        "GRS PT6816": [("peaking", 2200.0, 1.0), ("peaking", 2800.0, 1.0), ("peaking", 3500.0, 1.0), ("peaking", 4500.0, 1.0), ("peaking", 5700.0, 1.0), ("peaking", 7200.0, 1.0), ("peaking", 9000.0, 1.0), ("peaking", 11000.0, 1.0)],
+        "ND25FW4 (nude 18mm)": [("peaking", 12000.0, 1.0), ("peaking", 14000.0, 1.0), ("peaking", 16500.0, 1.0), ("highshelf", 18000.0, 1.0)],
+    }
+    candidates: List[Tuple[DriverBand, Biquad]] = []
+    for band in design:
+        for filter_type, center, q in centers.get(band.driver, []):
+            if band.lo * 0.75 <= center <= band.hi * 1.25:
+                flt = Biquad(filter_type, center, q=q, gain_db=0.0, source="flat-EQ")
+                candidates.append((band, flt))
+    return candidates
+
+
+def flat_eq_key(candidate: Tuple[DriverBand, Biquad]) -> str:
+    band, flt = candidate
+    return f"{band.driver}|{flt.type}|{flt.fc:.3f}|{flt.q:.4f}"
+
+
+def restore_filter_selection(
+    design: List[DriverBand],
+    base_filters: Dict[str, List[Biquad]],
+    selected: List[Tuple[DriverBand, Biquad]],
+) -> None:
+    for band in design:
+        band.filters = list(base_filters[band.driver])
+    for band, flt in selected:
+        band.filters.append(flt)
+
+
+def flatness_primary_stats(report: Dict[str, Dict[str, Dict[str, float]]]) -> Dict[str, float]:
+    return report[FLATNESS_PRIMARY_SMOOTHING][FLATNESS_PRIMARY_BAND_HZ]
+
+
+def flatness_constraints_met(report: Dict[str, Dict[str, Dict[str, float]]]) -> bool:
+    stats = flatness_primary_stats(report)
+    return (
+        stats["peak_to_peak_db"] <= FLATNESS_TARGET_PEAK_TO_PEAK_DB
+        and stats["rms_error_db"] <= FLATNESS_TARGET_RMS_DB
+    )
+
+
+def flatness_selection_score(report: Dict[str, Dict[str, Dict[str, float]]], filter_count: int) -> float:
+    primary = flatness_primary_stats(report)
+    sixth = report["one_sixth_octave"][FLATNESS_PRIMARY_BAND_HZ]
+    raw = report["raw"][FLATNESS_PRIMARY_BAND_HZ]
+    excess_p2p = max(0.0, primary["peak_to_peak_db"] - FLATNESS_TARGET_PEAK_TO_PEAK_DB)
+    excess_rms = max(0.0, primary["rms_error_db"] - FLATNESS_TARGET_RMS_DB)
+    return float(
+        10.0 * excess_p2p
+        + 12.0 * excess_rms
+        + 0.65 * primary["rms_error_db"]
+        + 0.20 * sixth["rms_error_db"]
+        + 0.04 * raw["rms_error_db"]
+        + 0.025 * filter_count
+    )
+
+
+def optimize_flatness_selection(
+    data: Dict[str, Dict],
+    design: List[DriverBand],
+    selected: List[Tuple[DriverBand, Biquad]],
+    base_filters: Dict[str, List[Biquad]],
+    base_gains: np.ndarray,
+    *,
+    initial_filter_gains: Optional[Dict[str, float]] = None,
+    max_nfev: int = 50,
+) -> Dict:
+    restore_filter_selection(design, base_filters, selected)
+    fit_lo, fit_hi = FLATNESS_FIT_BAND_HZ
+    fit_freq = COMMON_FREQ[(COMMON_FREQ >= fit_lo) & (COMMON_FREQ <= fit_hi)][::4]
+    raw_front0 = {band.driver: interp_complex(data[band.driver], "F", 0, fit_freq) for band in design}
+    smooth_third = octave_mean_matrix(fit_freq, 3.0)
+    smooth_sixth = octave_mean_matrix(fit_freq, 6.0)
+    weights = np.ones_like(fit_freq)
+    weights[(fit_freq < 220.0) | (fit_freq > 12_000.0)] = 0.5
+
+    def set_params(params: np.ndarray) -> None:
+        for idx, band in enumerate(design):
+            band.gain_db = float(base_gains[idx] + params[idx])
+        offset = len(design)
+        for idx, (_, flt) in enumerate(selected):
+            flt.gain_db = float(params[offset + idx])
+
+    def residual(params: np.ndarray) -> np.ndarray:
+        set_params(params)
+        total = np.zeros_like(fit_freq, dtype=complex)
+        for band in design:
+            total += raw_front0[band.driver] * driver_transfer(band, fit_freq)
+        raw = pressure_to_db(total)
+        one_third = smooth_third @ raw
+        one_sixth = smooth_sixth @ raw
+        return np.concatenate(
+            [
+                0.9 * (one_third - TARGET_SPL_DB) * weights,
+                0.3 * (one_sixth - TARGET_SPL_DB) * weights,
+                0.08 * (raw - TARGET_SPL_DB) * weights,
+                0.03 * params[: len(design)],
+                0.06 * params[len(design) :],
+            ]
+        )
+
+    params0 = np.zeros(len(design) + len(selected), dtype=float)
+    if initial_filter_gains:
+        for idx, candidate in enumerate(selected):
+            params0[len(design) + idx] = initial_filter_gains.get(flat_eq_key(candidate), 0.0)
+    lower = np.concatenate([np.full(len(design), -8.0), np.full(len(selected), -8.0)])
+    upper = np.concatenate([np.full(len(design), 8.0), np.full(len(selected), 8.0)])
+    result = least_squares(residual, params0, bounds=(lower, upper), max_nfev=max_nfev)
+    set_params(result.x)
+    report = flatness_report(data, design)
+    return {
+        "report": report,
+        "optimizer_cost": float(result.cost),
+        "optimizer_nfev": int(result.nfev),
+        "filter_gains": {flat_eq_key(candidate): round(candidate[1].gain_db, 6) for candidate in selected},
+        "selected": selected,
+        "score": flatness_selection_score(report, len(selected)),
+        "constraints_met": flatness_constraints_met(report),
+    }
+
+
+def optimize_system_flatness(data: Dict[str, Dict], design: List[DriverBand]) -> Dict:
+    before = flatness_report(data, design)
+    candidates = flat_eq_candidate_specs(design)
+    base_filters = {band.driver: list(band.filters) for band in design}
+    base_gains = np.asarray([band.gain_db for band in design], dtype=float)
+
+    full = optimize_flatness_selection(
+        data,
+        design,
+        candidates,
+        base_filters,
+        base_gains,
+        max_nfev=90,
+    )
+    full_gains = dict(full["filter_gains"])
+    ranked = sorted(candidates, key=lambda candidate: abs(full_gains.get(flat_eq_key(candidate), 0.0)), reverse=True)
+
+    best_record: Optional[Dict] = None
+    best_unconstrained: Optional[Dict] = None
+    for count in range(len(ranked) + 1):
+        selected = ranked[:count]
+        record = optimize_flatness_selection(
+            data,
+            design,
+            selected,
+            base_filters,
+            base_gains,
+            initial_filter_gains=full_gains,
+            max_nfev=45,
+        )
+        if best_unconstrained is None or record["score"] < best_unconstrained["score"]:
+            best_unconstrained = record
+        if record["constraints_met"]:
+            best_record = record
+            break
+
+    if best_record is None:
+        best_record = best_unconstrained if best_unconstrained is not None else full
+
+    selected = list(best_record["selected"])
+    selected_gains = dict(best_record["filter_gains"])
+    pruned = [candidate for candidate in selected if abs(selected_gains.get(flat_eq_key(candidate), 0.0)) >= FLAT_EQ_PRUNE_DB]
+    if len(pruned) < len(selected):
+        pruned_record = optimize_flatness_selection(
+            data,
+            design,
+            pruned,
+            base_filters,
+            base_gains,
+            initial_filter_gains=selected_gains,
+            max_nfev=60,
+        )
+        if pruned_record["constraints_met"] or not best_record["constraints_met"]:
+            best_record = pruned_record
+
+    restore_filter_selection(design, base_filters, list(best_record["selected"]))
+    for idx, band in enumerate(design):
+        band.gain_db = float(base_gains[idx])
+    final_record = optimize_flatness_selection(
+        data,
+        design,
+        list(best_record["selected"]),
+        base_filters,
+        base_gains,
+        initial_filter_gains=best_record["filter_gains"],
+        max_nfev=80,
+    )
+    kept = list(final_record["selected"])
+    after = final_record["report"]
+
+    return {
+        "target_db": TARGET_SPL_DB,
+        "fit_domain_hz": list(FLATNESS_FIT_BAND_HZ),
+        "primary_constraint": {
+            "smoothing": FLATNESS_PRIMARY_SMOOTHING,
+            "band": FLATNESS_PRIMARY_BAND_HZ,
+            "max_peak_to_peak_db": FLATNESS_TARGET_PEAK_TO_PEAK_DB,
+            "max_rms_error_db": FLATNESS_TARGET_RMS_DB,
+        },
+        "constraint_met": flatness_constraints_met(after),
+        "optimizer_cost": round(float(final_record["optimizer_cost"]), 3),
+        "optimizer_nfev": int(final_record["optimizer_nfev"]),
+        "filters_tested": len(candidates),
+        "filters_kept": len(kept),
+        "full_fit_filters_needed": sum(1 for gain in full_gains.values() if abs(gain) >= FLAT_EQ_PRUNE_DB),
+        "method": (
+            "sparse least-squares: solve full candidate pool, rank by fitted correction magnitude, "
+            "then keep the smallest ranked set that satisfies the smoothed summed-response constraint"
+        ),
+        "before": before,
+        "after": after,
+    }
+
+
 def matrix_from_system(system: Dict, side_name: str = "front") -> np.ndarray:
     return np.column_stack([pressure_to_db(system[side_name][angle]) for angle in ANGLES])
 
@@ -888,6 +1220,28 @@ def rear_front_delta(system_like: Dict, angle: int = 0) -> np.ndarray:
 
 def side_null_delta(system_like: Dict) -> np.ndarray:
     return pressure_to_db(system_like["front"][90]) - pressure_to_db(system_like["front"][0])
+
+
+def upper_mid_side_feature(system_like: Dict) -> Dict[str, float]:
+    rel90 = pressure_to_db(system_like["front"][90]) - pressure_to_db(system_like["front"][0])
+    mask = (COMMON_FREQ >= 1600.0) & (COMMON_FREQ <= 3200.0) & np.isfinite(rel90)
+    if not np.any(mask):
+        return {}
+    local_freq = COMMON_FREQ[mask]
+    local_rel = rel90[mask]
+    min_idx = int(np.nanargmin(local_rel))
+    max_idx = int(np.nanargmax(local_rel))
+    return {
+        "search_band_hz": [1600.0, 3200.0],
+        "min_f90_minus_f0_db": round(float(local_rel[min_idx]), 3),
+        "min_frequency_hz": round(float(local_freq[min_idx]), 1),
+        "max_f90_minus_f0_db": round(float(local_rel[max_idx]), 3),
+        "max_frequency_hz": round(float(local_freq[max_idx]), 1),
+        "interpretation": (
+            "The dark feature at 90 degrees is a side null, not an off-axis SPL peak. "
+            "It is dominated by the upper-mid crossover/driver transition and should not be filled with on-axis EQ unless the design goal changes."
+        ),
+    }
 
 
 def band_stats(freq: np.ndarray, values: np.ndarray, lo: float, hi: float) -> Dict[str, float]:
@@ -1244,17 +1598,87 @@ def write_synthetic_hdf5(system: Dict, config_info: Dict, output_path: Path = SY
                 ag.attrs["timing_offset_ms"] = 0.0
 
 
+def format_hz(value: float) -> str:
+    return f"{value:.0f}"
+
+
+def filter_topology_summary(design: List[DriverBand]) -> Dict:
+    xovers = [band.hi for band in design[:-1]]
+    diagram_lines = [
+        "Input",
+        f"  +-- LR4 HP {format_hz(FREQ_MIN)} Hz (2 biquads, global boundary)",
+    ]
+    for idx, band in enumerate(design[:-1]):
+        fc = xovers[idx]
+        indent = "  " * (idx + 2)
+        diagram_lines.append(f"{indent}+-- split @ {format_hz(fc)} Hz")
+        diagram_lines.append(f"{indent}    +-- LR4 LP {format_hz(fc)} Hz (2 biquads) -> {band.driver}")
+        if idx < len(design) - 2:
+            diagram_lines.append(f"{indent}    +-- LR4 HP {format_hz(fc)} Hz (2 biquads) -> next split")
+        else:
+            diagram_lines.append(f"{indent}    +-- LR4 HP {format_hz(fc)} Hz (2 biquads) -> {design[-1].driver}")
+
+    stages = []
+    total_effective_lr4 = 0
+    total_eq = 0
+    for idx, band in enumerate(design):
+        global_hp = sum(1 for flt in band.filters if "global boundary high-pass" in flt.source)
+        upstream_hp = sum(1 for flt in band.filters if "cascaded upstream high-pass" in flt.source)
+        branch_hp = sum(1 for flt in band.filters if "branch high-pass" in flt.source)
+        branch_lp = sum(1 for flt in band.filters if "branch low-pass" in flt.source)
+        lr4 = sum(1 for flt in band.filters if flt.source.startswith("LR4"))
+        flat_eq = sum(1 for flt in band.filters if flt.source == "flat-EQ")
+        total_effective_lr4 += lr4
+        total_eq += flat_eq
+        stages.append(
+            {
+                "stage": idx + 1,
+                "driver": band.driver,
+                "passband_hz": [band.lo, band.hi],
+                "global_boundary_hp_biquads": global_hp,
+                "inherited_upstream_hp_biquads": upstream_hp,
+                "own_branch_hp_biquads": branch_hp,
+                "own_branch_lp_biquads": branch_lp,
+                "effective_lr4_biquads": lr4,
+                "flat_eq_biquads": flat_eq,
+                "effective_total_biquads": len(band.filters),
+            }
+        )
+
+    shared_tree_lr4 = 2 + 4 * len(xovers)
+    return {
+        "architecture": "cascaded LR4 split tree with shared high-pass carryover",
+        "diagram": "\n".join(diagram_lines),
+        "stages": stages,
+        "summary": {
+            "shared_tree_lr4_biquads": shared_tree_lr4,
+            "standalone_channel_lr4_biquads": total_effective_lr4,
+            "flat_eq_biquads": total_eq,
+            "shared_tree_total_biquads_with_eq": shared_tree_lr4 + total_eq,
+            "standalone_channel_total_biquads": total_effective_lr4 + total_eq,
+        },
+        "notes": [
+            "Shared-tree count assumes the DSP can route a high-pass bus into the next split stage.",
+            "Standalone-channel count is what is exported per driver when each output channel must contain all inherited upstream filters.",
+            "Gain, delay, and polarity are not counted as biquads.",
+        ],
+    }
+
+
 def write_exports(
     root: Path,
     design: List[DriverBand],
     metrics_rows: List[Dict],
     driver_audit_rows: List[Dict],
+    flatness_info: Dict,
+    side_feature_info: Dict,
     config_info: Dict,
     search_results: List[Dict],
     selected_candidate: Dict,
     selection_info: Dict,
     finalists: List[Dict],
 ) -> Dict:
+    topology = filter_topology_summary(design)
     manifest = {
         "title": "Juan Baffleless Synthetic CDSL Design",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -1286,6 +1710,9 @@ def write_exports(
             },
         },
         "driver_directivity_audit": driver_audit_rows,
+        "filter_topology": topology,
+        "flatness_optimization": flatness_info,
+        "upper_mid_side_feature": side_feature_info,
         "local_evidence_notes": [
             "Juan's local notes rank 8424 distortion/SPL best, 8414 close behind, and MU10 worst in the upper-mid comparison.",
             "The same notes flag 8424 rear-side directivity and high-angle order as weaker than 8414, especially above 2 kHz.",
@@ -1333,6 +1760,9 @@ def write_exports(
     (root / "candidate_search_results.json").write_text(json.dumps(search_results, indent=2))
 
     filters = {
+        "_topology": topology,
+        "_drivers": [band.driver for band in design],
+        "drivers": {
         band.driver: {
             "gain_db": round(band.gain_db, 3),
             "delay_ms": round(band.delay_ms, 4),
@@ -1340,10 +1770,17 @@ def write_exports(
             "filters": [flt.manifest() for flt in band.filters],
         }
         for band in design
+        },
     }
     (root / "cdsl_filters.json").write_text(json.dumps(filters, indent=2))
 
-    yaml_lines = ["# Preliminary CamillaDSP-style filter export", "filters:"]
+    yaml_lines = [
+        "# Preliminary CamillaDSP-style filter export",
+        "# Topology: cascaded LR4 split tree; later drivers include upstream high-pass stages in this per-channel export.",
+        "# Diagram:",
+    ]
+    yaml_lines.extend(f"# {line}" for line in topology["diagram"].splitlines())
+    yaml_lines.append("filters:")
     for band in design:
         safe = band.driver.replace(" ", "_").replace("(", "").replace(")", "")
         for idx, flt in enumerate(band.filters, start=1):
@@ -1356,7 +1793,12 @@ def write_exports(
             )
     (root / "cdsl_camilladsp.yaml").write_text("\n".join(yaml_lines) + "\n")
 
-    dsp_lines = ["# Preliminary Hypex-style filter listing generated from the synthetic CDSL model"]
+    dsp_lines = [
+        "# Preliminary Hypex-style filter listing generated from the synthetic CDSL model",
+        "# Topology: cascaded LR4 split tree; later drivers include upstream high-pass stages in this per-channel export.",
+        "# Diagram:",
+    ]
+    dsp_lines.extend(f"# {line}" for line in topology["diagram"].splitlines())
     for band in design:
         dsp_lines.append(f"\n[{band.driver}]")
         dsp_lines.append(f"Gain={band.gain_db:.3f} dB")
@@ -1478,6 +1920,47 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
     )
     evidence_notes = "".join(f"<li>{html.escape(item)}</li>" for item in manifest["local_evidence_notes"])
     mounting_notes = "".join(f"<li>{html.escape(item)}</li>" for item in manifest["mounting_geometry_notes"])
+    flatness_rows = "".join(
+        f"""
+        <tr>
+            <td>{html.escape(stage)}</td>
+            <td>{html.escape(smoothing)}</td>
+            <td>{html.escape(band)}</td>
+            <td>{stats['median_db']:.2f}</td>
+            <td>{stats['min_error_db']:.2f}</td>
+            <td>{stats['max_error_db']:.2f}</td>
+            <td>{stats['peak_to_peak_db']:.2f}</td>
+            <td>{stats['rms_error_db']:.2f}</td>
+        </tr>
+        """
+        for stage, smoothing_data in [
+            ("Before flat-EQ", manifest["flatness_optimization"]["before"]),
+            ("After flat-EQ", manifest["flatness_optimization"]["after"]),
+        ]
+        for smoothing, band_data in smoothing_data.items()
+        for band, stats in band_data.items()
+    )
+    side_feature = manifest.get("upper_mid_side_feature", {})
+    topology = manifest["filter_topology"]
+    topology_summary = topology["summary"]
+    topology_rows = "".join(
+        f"""
+        <tr>
+            <td>{row['stage']}</td>
+            <td>{html.escape(row['driver'])}</td>
+            <td>{row['passband_hz'][0]:.0f}-{row['passband_hz'][1]:.0f}</td>
+            <td>{row['global_boundary_hp_biquads']}</td>
+            <td>{row['inherited_upstream_hp_biquads']}</td>
+            <td>{row['own_branch_hp_biquads']}</td>
+            <td>{row['own_branch_lp_biquads']}</td>
+            <td>{row['effective_lr4_biquads']}</td>
+            <td>{row['flat_eq_biquads']}</td>
+            <td>{row['effective_total_biquads']}</td>
+        </tr>
+        """
+        for row in topology["stages"]
+    )
+    topology_notes = "".join(f"<li>{html.escape(note)}</li>" for note in topology["notes"])
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -1545,6 +2028,15 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
         .note {{
             color: var(--text-muted);
             font-size: 0.95rem;
+        }}
+        pre.topology-diagram {{
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            line-height: 1.45;
+            font-size: 0.9rem;
         }}
     </style>
 </head>
@@ -1626,7 +2118,33 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
 
         <h2 class="section-title">DSP / IIR Filters</h2>
         <div class="card"><div class="card-body">
-            <p class="note">Crossovers are LR4 cascades using two Q=0.7071 biquads per edge. Auto-EQ filters are broad preliminary peaking filters fitted from smoothed on-axis passband response and capped at +/-6 dB.</p>
+            <h3>Cascaded Filter Topology</h3>
+            <p class="note">
+                Architecture: {html.escape(topology['architecture'])}. The higher branch of each split carries the previous high-pass stages into the next split,
+                so later drivers include the first-stage and intermediate high-pass filters before their own branch filters.
+            </p>
+            <pre class="topology-diagram">{html.escape(topology['diagram'])}</pre>
+            <div class="summary-grid">
+                <div class="metric-card"><div class="value">{topology_summary['shared_tree_lr4_biquads']}</div><div class="label">Shared-tree LR4 biquads</div></div>
+                <div class="metric-card"><div class="value">{topology_summary['standalone_channel_lr4_biquads']}</div><div class="label">Per-channel exported LR4 biquads</div></div>
+                <div class="metric-card"><div class="value">{topology_summary['flat_eq_biquads']}</div><div class="label">Flat-EQ biquads</div></div>
+                <div class="metric-card"><div class="value">{topology_summary['shared_tree_total_biquads_with_eq']}</div><div class="label">Shared-tree total with EQ</div></div>
+            </div>
+            <table>
+                <thead><tr><th>Stage</th><th>Driver</th><th>Passband Hz</th><th>Global HP</th><th>Inherited HP</th><th>Own HP</th><th>Own LP</th><th>LR4 Total</th><th>Flat-EQ</th><th>Effective Total</th></tr></thead>
+                <tbody>{topology_rows}</tbody>
+            </table>
+            <ul>{topology_notes}</ul>
+        </div></div>
+
+        <div class="card"><div class="card-body">
+            <p class="note">
+                Crossovers are LR4 cascades using two Q=0.7071 biquads per LR4 edge.
+                The <code>flat-EQ</code> filters are a sparse summed-response least-squares fit assigned per driver.
+                They use {manifest['flatness_optimization']['filters_kept']} active correction filters out of {manifest['flatness_optimization']['filters_tested']} candidates;
+                the unconstrained full fit would keep about {manifest['flatness_optimization']['full_fit_filters_needed']} filters above the pruning threshold.
+                This is still a simulated equalization pass, not a final measured-room/prototype EQ.
+            </p>
             <table>
                 <thead><tr><th>Driver</th><th>Source</th><th>Type</th><th>Fc Hz</th><th>Q</th><th>Gain dB</th></tr></thead>
                 <tbody>{''.join(filter_rows)}</tbody>
@@ -1637,6 +2155,18 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
                 <li>{link('juan-baffleless-cdsl/cdsl_hypex.dsp', 'Hypex-style DSP listing')}</li>
                 <li>{link('juan-baffleless-cdsl/design_manifest.json', 'Design manifest')}</li>
             </ul>
+        </div></div>
+
+        <h2 class="section-title">Flatness Check</h2>
+        <div class="card"><div class="card-body">
+            <p class="note">
+                Target flatness is evaluated on the synthetic front 0-degree sum. The raw gated response still contains narrow features that should not be over-corrected from this preliminary phase model.
+                The more meaningful target here is the smoothed trend before prototype measurement.
+            </p>
+            <table>
+                <thead><tr><th>Stage</th><th>Smoothing</th><th>Band</th><th>Median dB</th><th>Min Err</th><th>Max Err</th><th>Peak-Peak</th><th>RMS Err</th></tr></thead>
+                <tbody>{flatness_rows}</tbody>
+            </table>
         </div></div>
 
         <h2 class="section-title">Model Risks</h2>
@@ -1669,6 +2199,14 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             <img src="juan-baffleless-cdsl/static_plots/core/cdsl_di_beamwidth.png" alt="CDSL DI and beamwidth">
             <img src="juan-baffleless-cdsl/static_plots/core/cdsl_30_vs_60_metric.png" alt="CDSL 30 vs 60 metric">
         </div>
+        <div class="card"><div class="card-body">
+            <p class="note">
+                Upper-mid side-feature diagnostic: in the 1.6-3.2 kHz region, front 90-degree response reaches
+                <strong>{side_feature.get('min_f90_minus_f0_db', float('nan')):.1f} dB</strong> relative to front 0 degrees at
+                <strong>{side_feature.get('min_frequency_hz', float('nan')):.0f} Hz</strong>.
+                This is a side null, not a 90-degree SPL peak. Filling it would reduce the dipole null and the intended CDSL separation.
+            </p>
+        </div></div>
 
         <h2 class="section-title">30-vs-60 Metric</h2>
         <div class="card"><div class="card-body">
@@ -1755,11 +2293,13 @@ def main() -> None:
 
     plot_search_results(search_results, OUTPUT_ROOT, best)
     add_crossover_filters(DESIGN)
-    add_auto_eq_and_gains(juan_data, DESIGN)
+    set_initial_gains(juan_data, DESIGN)
     optimize_delays(juan_data, DESIGN)
+    flatness_info = optimize_system_flatness(juan_data, DESIGN)
 
     system = synthesize_system(juan_data, DESIGN)
     lx = load_lx521(lx_data)
+    side_feature_info = upper_mid_side_feature(system)
 
     system_metrics = directivity_metrics(system)
     lx_metrics = directivity_metrics(lx)
@@ -1804,7 +2344,19 @@ def main() -> None:
         )
 
     driver_audit_rows = measured_driver_directivity_audit(juan_data)
-    manifest = write_exports(OUTPUT_ROOT, DESIGN, metrics_rows, driver_audit_rows, juan_cfg, search_results, best, selection_info, finalists)
+    manifest = write_exports(
+        OUTPUT_ROOT,
+        DESIGN,
+        metrics_rows,
+        driver_audit_rows,
+        flatness_info,
+        side_feature_info,
+        juan_cfg,
+        search_results,
+        best,
+        selection_info,
+        finalists,
+    )
     report = render_report(
         OUTPUT_ROOT,
         manifest,
