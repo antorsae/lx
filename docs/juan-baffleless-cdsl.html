@@ -423,8 +423,143 @@
             <p class="note">
                 Distortion and SPL evidence comes from <code>measurements/juan/UMs desnudos/contexto.txt</code> and its associated screenshots:
             </p>
-            <ul><li>Juan&#x27;s local notes rank 8424 distortion/SPL best, 8414 close behind, and MU10 worst in the upper-mid comparison.</li><li>The same notes flag 8424 rear-side directivity and high-angle order as weaker than 8414, especially above 2 kHz.</li><li>GRS is treated as the measured dipole/directivity-order reference, but it does not provide the largest 30-to-60 separation above 2 kHz.</li><li>L10NEO remains a high-separation alternate. The local distortion/SPL screenshots do not directly compare it against 8414/8424, so it should not be described as distortion-limited versus the ScanSpeaks from the available evidence.</li></ul>
+            <ul><li>Juan&#x27;s screenshot notes rank 8424 distortion/SPL best, 8414 close behind, and MU10 worst among the 8424/8414/MU10 upper-mid comparison.</li><li>Raw REW .mdat THD extraction adds L10NEO to the comparison and does not support describing L10NEO as worse-distortion than the ScanSpeak pair.</li><li>The same notes flag 8424 rear-side directivity and high-angle order as weaker than 8414, especially above 2 kHz.</li><li>GRS is treated as the measured dipole/directivity-order reference, but it does not provide the largest 30-to-60 separation above 2 kHz.</li><li>L10NEO remains a high-separation alternate; it is not selected in the balanced primary due to the composite directivity/crossover score, not because of worse raw THD evidence.</li></ul>
             <p><a href="juan-baffleless-cdsl/driver_directivity_audit.csv">Download measured-driver directivity audit CSV</a></p>
+        </div></div>
+
+        <h2 class="section-title">Raw REW THD / SPL Audit</h2>
+        <div class="card"><div class="card-body">
+            <p class="note">
+                THD and measurement level are extracted directly from the front 0-degree REW <code>.mdat</code> files, not from screenshots.
+                The table shows each driver's fundamental SPL during the distortion sweep plus REW's stored THD trace.
+                This avoids comparing a low-level distortion sweep against a high-level one.
+            </p>
+            <table>
+                <thead><tr><th>Driver</th><th>Sample</th><th>Band</th><th>Fund SPL Med</th><th>Fund SPL P10</th><th>Fund SPL P90</th><th>THD Med dB</th><th>THD Med</th><th>THD P90</th></tr></thead>
+                <tbody>
+        <tr>
+            <td>L10NEO</td>
+            <td>A</td>
+            <td>2-7 kHz</td>
+            <td>86.59</td>
+            <td>84.32</td>
+            <td>87.87</td>
+            <td>-56.11</td>
+            <td>0.157%</td>
+            <td>0.207%</td>
+        </tr>
+
+        <tr>
+            <td>L10NEO</td>
+            <td>A</td>
+            <td>2-10 kHz</td>
+            <td>86.02</td>
+            <td>82.63</td>
+            <td>87.81</td>
+            <td>-55.95</td>
+            <td>0.159%</td>
+            <td>0.224%</td>
+        </tr>
+
+        <tr>
+            <td>SS10F8414G10</td>
+            <td>single</td>
+            <td>2-7 kHz</td>
+            <td>83.55</td>
+            <td>82.73</td>
+            <td>84.25</td>
+            <td>-54.16</td>
+            <td>0.196%</td>
+            <td>0.325%</td>
+        </tr>
+
+        <tr>
+            <td>SS10F8414G10</td>
+            <td>single</td>
+            <td>2-10 kHz</td>
+            <td>83.41</td>
+            <td>82.41</td>
+            <td>84.24</td>
+            <td>-54.16</td>
+            <td>0.196%</td>
+            <td>0.370%</td>
+        </tr>
+
+        <tr>
+            <td>SS10F8424G00</td>
+            <td>sn074</td>
+            <td>2-7 kHz</td>
+            <td>84.44</td>
+            <td>83.02</td>
+            <td>86.33</td>
+            <td>-54.74</td>
+            <td>0.183%</td>
+            <td>0.238%</td>
+        </tr>
+
+        <tr>
+            <td>SS10F8424G00</td>
+            <td>sn074</td>
+            <td>2-10 kHz</td>
+            <td>84.17</td>
+            <td>82.93</td>
+            <td>86.23</td>
+            <td>-54.81</td>
+            <td>0.182%</td>
+            <td>0.251%</td>
+        </tr>
+
+        <tr>
+            <td>SS10F8424G00</td>
+            <td>SN086</td>
+            <td>2-7 kHz</td>
+            <td>84.72</td>
+            <td>83.33</td>
+            <td>86.67</td>
+            <td>-55.06</td>
+            <td>0.177%</td>
+            <td>0.255%</td>
+        </tr>
+
+        <tr>
+            <td>SS10F8424G00</td>
+            <td>SN086</td>
+            <td>2-10 kHz</td>
+            <td>84.52</td>
+            <td>83.35</td>
+            <td>86.52</td>
+            <td>-55.12</td>
+            <td>0.175%</td>
+            <td>0.276%</td>
+        </tr>
+
+        <tr>
+            <td>MU10RB-SL</td>
+            <td>A</td>
+            <td>2-7 kHz</td>
+            <td>82.90</td>
+            <td>80.67</td>
+            <td>84.61</td>
+            <td>-44.72</td>
+            <td>0.581%</td>
+            <td>0.718%</td>
+        </tr>
+
+        <tr>
+            <td>MU10RB-SL</td>
+            <td>A</td>
+            <td>2-10 kHz</td>
+            <td>82.34</td>
+            <td>78.59</td>
+            <td>84.33</td>
+            <td>-44.59</td>
+            <td>0.589%</td>
+            <td>0.738%</td>
+        </tr>
+        </tbody>
+            </table>
+            <ul><li>Raw REW .mdat THD was extracted from each driver&#x27;s front 0-degree measurement; harmData[0] is treated as REW&#x27;s THD trace and harmData[1] as the fundamental SPL trace.</li><li>In the 2-7 kHz THD band, L10NEO&#x27;s median fundamental SPL is 86.6 dB (+3.0 dB vs SS10F8414G10 single, +1.9 dB vs SS10F8424G00 SN086, +3.7 dB vs MU10RB-SL A), so it was not measured at a lower level than the ScanSpeak references.</li><li>L10NEO 2-7 kHz median THD is 0.157% (-56.1 dB), which is not worse than the available 8414/8424 raw REW THD traces.</li><li>These are not perfectly level-matched sweeps; distortion rankings should be treated as measured-at-level evidence, not normalized maximum-SPL evidence.</li></ul>
+            <p><a href="juan-baffleless-cdsl/distortion_thd_audit.csv">Download raw REW THD / SPL audit CSV</a></p>
         </div></div>
 
         <h2 class="section-title">Chosen Drivers</h2>
@@ -1329,7 +1464,7 @@
 
         <h2 class="section-title">Model Risks</h2>
         <div class="card"><div class="card-body">
-            <ul><li>L26RO4Y source is a 25 cm deep / 32 cm diameter cylindrical-baffle measurement, not a nude baffleless capture.</li><li>Processed phase was reconstructed from separately loaded measurements after per-measurement impulse peak alignment; synthetic complex summation is therefore preliminary.</li><li>Rear polarity convention is inherited from the measurement files and existing 0-180 mapping; it has not been independently validated with raw impulse polarity.</li><li>Absolute SPL, distortion ranking, and maximum-SPL claims are limited by the available local evidence; several distortion curves are only JPEG screenshots and notes.</li><li>DI and beamwidth figures match the existing repo convention and use front-horizontal data only, not a full 3D power response.</li><li>Vertical-plane beaming and pseudo-baffle diffraction from the final stacked mounting geometry are not modeled.</li></ul>
+            <ul><li>L26RO4Y source is a 25 cm deep / 32 cm diameter cylindrical-baffle measurement, not a nude baffleless capture.</li><li>Processed phase was reconstructed from separately loaded measurements after per-measurement impulse peak alignment; synthetic complex summation is therefore preliminary.</li><li>Rear polarity convention is inherited from the measurement files and existing 0-180 mapping; it has not been independently validated with raw impulse polarity.</li><li>Absolute SPL and maximum-SPL claims remain limited by the available local evidence; raw THD is extracted for available 0-degree REW files but not normalized to matched drive level.</li><li>DI and beamwidth figures match the existing repo convention and use front-horizontal data only, not a full 3D power response.</li><li>Vertical-plane beaming and pseudo-baffle diffraction from the final stacked mounting geometry are not modeled.</li></ul>
         </div></div>
 
         <h2 class="section-title">Mounting Geometry</h2>
@@ -1441,7 +1576,7 @@
 
         <h2 class="section-title">Reproducibility</h2>
         <div class="card"><div class="card-body">
-            <p><strong>Generated:</strong> 2026-05-21T15:33:50+00:00</p>
+            <p><strong>Generated:</strong> 2026-05-21T15:44:48+00:00</p>
             <p><strong>Inputs:</strong> output/data/polar_data_juan_baffleless.h5, output/data/polar_data_lx521_system.h5</p>
             <p><strong>Synthetic HDF5:</strong> output/data/polar_data_juan_cdsl_synthetic.h5</p>
             <p><strong>Smoothing:</strong> None; <strong>gate:</strong> 0.5 ms / 3.0 ms.</p>

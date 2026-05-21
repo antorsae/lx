@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 
 import h5py
+import javaobj
 import matplotlib.pyplot as plt
 import numpy as np
 import plotly.graph_objects as go
@@ -121,10 +122,9 @@ DESIGN: List[DriverBand] = [
         passband=(2400.0, 10000.0),
         source="measurements/juan/ScanSpeak 10F8414G10",
         rationale=(
-            "Best compromise above 2 kHz: much stronger 30-to-60 deg separation than ND25/GRS, "
-            "with Juan's notes rating rear directivity control better than 8424 and distortion close to it. "
-            "L10NEO scores slightly higher for front-only 30-to-60 separation, but has no directly comparable "
-            "local distortion evidence in the 8414/8424/MU10 screenshot set."
+            "Best balanced-search compromise above 2 kHz: much stronger 30-to-60 deg separation than ND25/GRS, "
+            "with Juan's notes rating rear directivity control better than 8424. "
+            "L10NEO remains a serious alternate because raw REW THD is not worse than the ScanSpeak pair."
         ),
     ),
     DriverBand(
@@ -203,6 +203,41 @@ DRIVER_AUDIT_BANDS = [
     ("650-2000 Hz", 650.0, 2000.0),
     ("2-7 kHz", 2000.0, 7000.0),
     ("2-10 kHz", 2000.0, 10000.0),
+]
+
+DISTORTION_AUDIT_FILES = [
+    {
+        "driver": "L10NEO",
+        "sample": "A",
+        "path": Path("measurements/juan/POLARES L10NEO/FRONTALES/SEAS L10NEO A 0 F.mdat"),
+    },
+    {
+        "driver": "SS10F8414G10",
+        "sample": "single",
+        "path": Path("measurements/juan/ScanSpeak 10F8414G10/SS10F8414G10 0 F.mdat"),
+    },
+    {
+        "driver": "SS10F8424G00",
+        "sample": "sn074",
+        "path": Path("measurements/juan/ScanSpeak 10F8424G00/FRONT/SS10F8424G00 0 F sn 074.mdat"),
+    },
+    {
+        "driver": "SS10F8424G00",
+        "sample": "SN086",
+        "path": Path("measurements/juan/ScanSpeak 10F8424G00/PAIR MATCHING SPL/SS10F8424G00 0 F SN 086.mdat"),
+    },
+    {
+        "driver": "MU10RB-SL",
+        "sample": "A",
+        "path": Path("measurements/juan/SEAS MU10RB SL POLARES/FRONT/SEAS MU10RBSL A 0 F.mdat"),
+    },
+]
+
+DISTORTION_AUDIT_BANDS = [
+    ("1-7 kHz", 1000.0, 7000.0),
+    ("2-7 kHz", 2000.0, 7000.0),
+    ("2-10 kHz", 2000.0, 10000.0),
+    ("7-10 kHz", 7000.0, 10000.0),
 ]
 
 ROLE_NAMES = {
@@ -1302,6 +1337,108 @@ def measured_driver_directivity_audit(data: Dict[str, Dict]) -> List[Dict]:
     return rows
 
 
+def read_rew_mdat_measurement(path: Path):
+    with path.open("rb") as f:
+        unmarshaller = javaobj.JavaObjectUnmarshaller(f, use_numpy_arrays=True)
+        measurement = None
+        for _ in range(5):
+            measurement = unmarshaller.readObject(ignore_remaining_data=True)
+    return measurement
+
+
+def distortion_thd_audit() -> List[Dict]:
+    rows: List[Dict] = []
+    for spec in DISTORTION_AUDIT_FILES:
+        path = spec["path"]
+        if not path.exists():
+            rows.append(
+                {
+                    "driver": spec["driver"],
+                    "sample": spec["sample"],
+                    "band": "missing",
+                    "source_file": str(path),
+                    "has_distortion_data": False,
+                }
+            )
+            continue
+
+        measurement = read_rew_mdat_measurement(path)
+        distortion = getattr(measurement, "distortionData", None)
+        harm_data = getattr(distortion, "harmData", None) if distortion is not None else None
+        if distortion is None or harm_data is None or len(harm_data) < 2:
+            rows.append(
+                {
+                    "driver": spec["driver"],
+                    "sample": spec["sample"],
+                    "band": "missing",
+                    "source_file": str(path),
+                    "measurement": str(getattr(measurement, "shortDesc", "")),
+                    "has_distortion_data": False,
+                }
+            )
+            continue
+
+        freq = np.asarray(distortion.freqs, dtype=float)
+        thd_db = np.asarray(harm_data[0], dtype=float)
+        fundamental_spl = np.asarray(harm_data[1], dtype=float)
+        thd_percent = 100.0 * np.power(10.0, thd_db / 20.0)
+
+        for band_label, lo, hi in DISTORTION_AUDIT_BANDS:
+            mask = (freq >= lo) & (freq <= hi) & np.isfinite(thd_db) & np.isfinite(fundamental_spl)
+            if not np.any(mask):
+                continue
+            rows.append(
+                {
+                    "driver": spec["driver"],
+                    "sample": spec["sample"],
+                    "band": band_label,
+                    "source_file": str(path),
+                    "measurement": str(getattr(measurement, "shortDesc", "")),
+                    "has_distortion_data": True,
+                    "fundamental_spl_median_db": round(float(np.nanmedian(fundamental_spl[mask])), 3),
+                    "fundamental_spl_p10_db": round(float(np.nanpercentile(fundamental_spl[mask], 10)), 3),
+                    "fundamental_spl_p90_db": round(float(np.nanpercentile(fundamental_spl[mask], 90)), 3),
+                    "thd_median_db": round(float(np.nanmedian(thd_db[mask])), 3),
+                    "thd_p90_db": round(float(np.nanpercentile(thd_db[mask], 90)), 3),
+                    "thd_median_percent": round(float(np.nanmedian(thd_percent[mask])), 4),
+                    "thd_p90_percent": round(float(np.nanpercentile(thd_percent[mask], 90)), 4),
+                    "frequency_points": int(np.sum(mask)),
+                }
+            )
+    return rows
+
+
+def distortion_level_notes(rows: List[Dict]) -> List[str]:
+    by_driver = {
+        row["driver"]: row
+        for row in rows
+        if row.get("band") == "2-7 kHz" and row.get("has_distortion_data")
+    }
+    notes: List[str] = [
+        "Raw REW .mdat THD was extracted from each driver's front 0-degree measurement; harmData[0] is treated as REW's THD trace and harmData[1] as the fundamental SPL trace.",
+    ]
+    l10 = by_driver.get("L10NEO")
+    if l10:
+        comparisons = []
+        for driver in ["SS10F8414G10", "SS10F8424G00", "MU10RB-SL"]:
+            peers = [row for row in rows if row.get("band") == "2-7 kHz" and row.get("driver") == driver and row.get("has_distortion_data")]
+            if not peers:
+                continue
+            peer = min(peers, key=lambda row: abs(row["fundamental_spl_median_db"] - l10["fundamental_spl_median_db"]))
+            delta = l10["fundamental_spl_median_db"] - peer["fundamental_spl_median_db"]
+            comparisons.append(f"{delta:+.1f} dB vs {driver} {peer['sample']}")
+        if comparisons:
+            notes.append(
+                "In the 2-7 kHz THD band, L10NEO's median fundamental SPL is "
+                f"{l10['fundamental_spl_median_db']:.1f} dB ({', '.join(comparisons)}), so it was not measured at a lower level than the ScanSpeak references."
+            )
+        notes.append(
+            f"L10NEO 2-7 kHz median THD is {l10['thd_median_percent']:.3f}% ({l10['thd_median_db']:.1f} dB), which is not worse than the available 8414/8424 raw REW THD traces."
+        )
+    notes.append("These are not perfectly level-matched sweeps; distortion rankings should be treated as measured-at-level evidence, not normalized maximum-SPL evidence.")
+    return notes
+
+
 def combine_0_180(front_matrix: np.ndarray, rear_matrix: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     front_angles = np.asarray(ANGLES)
     rear_angles = 180 - np.asarray(ANGLES[::-1])
@@ -1671,6 +1808,7 @@ def write_exports(
     design: List[DriverBand],
     metrics_rows: List[Dict],
     driver_audit_rows: List[Dict],
+    distortion_audit_rows: List[Dict],
     flatness_info: Dict,
     side_feature_info: Dict,
     config_info: Dict,
@@ -1711,14 +1849,17 @@ def write_exports(
             },
         },
         "driver_directivity_audit": driver_audit_rows,
+        "distortion_thd_audit": distortion_audit_rows,
+        "distortion_level_notes": distortion_level_notes(distortion_audit_rows),
         "filter_topology": topology,
         "flatness_optimization": flatness_info,
         "upper_mid_side_feature": side_feature_info,
         "local_evidence_notes": [
-            "Juan's local notes rank 8424 distortion/SPL best, 8414 close behind, and MU10 worst in the upper-mid comparison.",
+            "Juan's screenshot notes rank 8424 distortion/SPL best, 8414 close behind, and MU10 worst among the 8424/8414/MU10 upper-mid comparison.",
+            "Raw REW .mdat THD extraction adds L10NEO to the comparison and does not support describing L10NEO as worse-distortion than the ScanSpeak pair.",
             "The same notes flag 8424 rear-side directivity and high-angle order as weaker than 8414, especially above 2 kHz.",
             "GRS is treated as the measured dipole/directivity-order reference, but it does not provide the largest 30-to-60 separation above 2 kHz.",
-            "L10NEO remains a high-separation alternate. The local distortion/SPL screenshots do not directly compare it against 8414/8424, so it should not be described as distortion-limited versus the ScanSpeaks from the available evidence.",
+            "L10NEO remains a high-separation alternate; it is not selected in the balanced primary due to the composite directivity/crossover score, not because of worse raw THD evidence.",
         ],
         "mounting_geometry_notes": [
             "The synthetic HDF5 is a horizontal 0-180 degree sum of separately suspended driver measurements; it does not model vertical-plane lobing from center-to-center spacing.",
@@ -1731,7 +1872,7 @@ def write_exports(
             "L26RO4Y source is a 25 cm deep / 32 cm diameter cylindrical-baffle measurement, not a nude baffleless capture.",
             "Processed phase was reconstructed from separately loaded measurements after per-measurement impulse peak alignment; synthetic complex summation is therefore preliminary.",
             "Rear polarity convention is inherited from the measurement files and existing 0-180 mapping; it has not been independently validated with raw impulse polarity.",
-            "Absolute SPL, distortion ranking, and maximum-SPL claims are limited by the available local evidence; several distortion curves are only JPEG screenshots and notes.",
+            "Absolute SPL and maximum-SPL claims remain limited by the available local evidence; raw THD is extracted for available 0-degree REW files but not normalized to matched drive level.",
             "DI and beamwidth figures match the existing repo convention and use front-horizontal data only, not a full 3D power response.",
             "Vertical-plane beaming and pseudo-baffle diffraction from the final stacked mounting geometry are not modeled.",
         ],
@@ -1740,6 +1881,7 @@ def write_exports(
             "html_report": str(DOCS_PAGE),
             "asset_root": str(DOCS_ROOT),
             "driver_directivity_audit_csv": str(root / "driver_directivity_audit.csv"),
+            "distortion_thd_audit_csv": str(root / "distortion_thd_audit.csv"),
         },
         "drivers": [
             {
@@ -1821,6 +1963,13 @@ def write_exports(
             writer = csv.DictWriter(f, fieldnames=list(driver_audit_rows[0].keys()), lineterminator="\n")
             writer.writeheader()
             writer.writerows(driver_audit_rows)
+
+    if distortion_audit_rows:
+        fieldnames = sorted({key for row in distortion_audit_rows for key in row.keys()})
+        with (root / "distortion_thd_audit.csv").open("w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
+            writer.writeheader()
+            writer.writerows(distortion_audit_rows)
 
     return manifest
 
@@ -1920,6 +2069,24 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
         for row in manifest["driver_directivity_audit"]
     )
     evidence_notes = "".join(f"<li>{html.escape(item)}</li>" for item in manifest["local_evidence_notes"])
+    distortion_notes = "".join(f"<li>{html.escape(item)}</li>" for item in manifest["distortion_level_notes"])
+    distortion_rows = "".join(
+        f"""
+        <tr>
+            <td>{html.escape(row['driver'])}</td>
+            <td>{html.escape(row['sample'])}</td>
+            <td>{html.escape(row['band'])}</td>
+            <td>{float(row['fundamental_spl_median_db']):.2f}</td>
+            <td>{float(row['fundamental_spl_p10_db']):.2f}</td>
+            <td>{float(row['fundamental_spl_p90_db']):.2f}</td>
+            <td>{float(row['thd_median_db']):.2f}</td>
+            <td>{float(row['thd_median_percent']):.3f}%</td>
+            <td>{float(row['thd_p90_percent']):.3f}%</td>
+        </tr>
+        """
+        for row in manifest["distortion_thd_audit"]
+        if row.get("band") in {"2-7 kHz", "2-10 kHz"} and row.get("has_distortion_data")
+    )
     mounting_notes = "".join(f"<li>{html.escape(item)}</li>" for item in manifest["mounting_geometry_notes"])
     flatness_rows = "".join(
         f"""
@@ -2107,6 +2274,21 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             </p>
             <ul>{evidence_notes}</ul>
             <p>{link('juan-baffleless-cdsl/driver_directivity_audit.csv', 'Download measured-driver directivity audit CSV')}</p>
+        </div></div>
+
+        <h2 class="section-title">Raw REW THD / SPL Audit</h2>
+        <div class="card"><div class="card-body">
+            <p class="note">
+                THD and measurement level are extracted directly from the front 0-degree REW <code>.mdat</code> files, not from screenshots.
+                The table shows each driver's fundamental SPL during the distortion sweep plus REW's stored THD trace.
+                This avoids comparing a low-level distortion sweep against a high-level one.
+            </p>
+            <table>
+                <thead><tr><th>Driver</th><th>Sample</th><th>Band</th><th>Fund SPL Med</th><th>Fund SPL P10</th><th>Fund SPL P90</th><th>THD Med dB</th><th>THD Med</th><th>THD P90</th></tr></thead>
+                <tbody>{distortion_rows}</tbody>
+            </table>
+            <ul>{distortion_notes}</ul>
+            <p>{link('juan-baffleless-cdsl/distortion_thd_audit.csv', 'Download raw REW THD / SPL audit CSV')}</p>
         </div></div>
 
         <h2 class="section-title">Chosen Drivers</h2>
@@ -2345,11 +2527,13 @@ def main() -> None:
         )
 
     driver_audit_rows = measured_driver_directivity_audit(juan_data)
+    distortion_audit_rows = distortion_thd_audit()
     manifest = write_exports(
         OUTPUT_ROOT,
         DESIGN,
         metrics_rows,
         driver_audit_rows,
+        distortion_audit_rows,
         flatness_info,
         side_feature_info,
         juan_cfg,

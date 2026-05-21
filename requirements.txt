@@ -6,3 +6,4 @@ seaborn
 requests
 h5py
 Pillow
+javaobj-py3
