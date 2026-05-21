@@ -123,7 +123,8 @@ DESIGN: List[DriverBand] = [
         rationale=(
             "Best compromise above 2 kHz: much stronger 30-to-60 deg separation than ND25/GRS, "
             "with Juan's notes rating rear directivity control better than 8424 and distortion close to it. "
-            "L10NEO scores slightly higher for front-only 30-to-60 separation, but has weaker local distortion evidence."
+            "L10NEO scores slightly higher for front-only 30-to-60 separation, but has no directly comparable "
+            "local distortion evidence in the 8414/8424/MU10 screenshot set."
         ),
     ),
     DriverBand(
@@ -164,7 +165,7 @@ DRIVER_META = {
     "L10NEO": {
         "source": "measurements/juan/POLARES L10NEO",
         "rationale": "Strongest front-side 30-to-60 degree separation from about 2.5-8 kHz.",
-        "risk_penalty": 0.55,
+        "risk_penalty": 0.35,
     },
     "SS10F8414G10": {
         "source": "measurements/juan/ScanSpeak 10F8414G10",
@@ -1717,7 +1718,7 @@ def write_exports(
             "Juan's local notes rank 8424 distortion/SPL best, 8414 close behind, and MU10 worst in the upper-mid comparison.",
             "The same notes flag 8424 rear-side directivity and high-angle order as weaker than 8414, especially above 2 kHz.",
             "GRS is treated as the measured dipole/directivity-order reference, but it does not provide the largest 30-to-60 separation above 2 kHz.",
-            "L10NEO remains a high-separation alternate; it was not selected as the balanced primary because the local distortion/SPL evidence is less favorable than for the ScanSpeak pair.",
+            "L10NEO remains a high-separation alternate. The local distortion/SPL screenshots do not directly compare it against 8414/8424, so it should not be described as distortion-limited versus the ScanSpeaks from the available evidence.",
         ],
         "mounting_geometry_notes": [
             "The synthetic HDF5 is a horizontal 0-180 degree sum of separately suspended driver measurements; it does not model vertical-plane lobing from center-to-center spacing.",

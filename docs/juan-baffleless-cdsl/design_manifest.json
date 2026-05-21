@@ -1,6 +1,6 @@
 {
   "title": "Juan Baffleless Synthetic CDSL Design",
-  "generated_at_utc": "2026-05-21T13:07:27+00:00",
+  "generated_at_utc": "2026-05-21T15:33:50+00:00",
   "input_hdf5": {
     "juan_baffleless": "output/data/polar_data_juan_baffleless.h5",
     "lx521_system": "output/data/polar_data_lx521_system.h5",
@@ -153,12 +153,12 @@
         "sep_30_60_median_2_10k_db": 8.749,
         "sep_30_60_p10_2_10k_db": 5.821,
         "front30_median_2_10k_db": -3.037,
-        "balanced_rank": 105,
+        "balanced_rank": 128,
         "finalist_role": "CTC-constrained",
         "note": "Experimental option: clears the 2-10 kHz 30-to-60 constraint, but uses both ScanSpeak 10 cm variants."
       },
       {
-        "score": 12.4776,
+        "score": 12.2476,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -179,11 +179,11 @@
         "rear0_rms_db": 2.537,
         "xover_mismatch_rms_db": 6.597,
         "validity_penalty": 0.0,
-        "prior_penalty": 2.52,
+        "prior_penalty": 2.29,
         "sep_30_60_median_2_10k_db": 9.263,
         "sep_30_60_p10_2_10k_db": 6.344,
         "front30_median_2_10k_db": -3.115,
-        "balanced_rank": 98,
+        "balanced_rank": 56,
         "finalist_role": "L10NEO alternate",
         "note": "Best L10NEO-flavored candidate with strong 30-to-60 separation and acceptable crossover mismatch."
       },
@@ -1375,7 +1375,7 @@
     "Juan's local notes rank 8424 distortion/SPL best, 8414 close behind, and MU10 worst in the upper-mid comparison.",
     "The same notes flag 8424 rear-side directivity and high-angle order as weaker than 8414, especially above 2 kHz.",
     "GRS is treated as the measured dipole/directivity-order reference, but it does not provide the largest 30-to-60 separation above 2 kHz.",
-    "L10NEO remains a high-separation alternate; it was not selected as the balanced primary because the local distortion/SPL evidence is less favorable than for the ScanSpeak pair."
+    "L10NEO remains a high-separation alternate. The local distortion/SPL screenshots do not directly compare it against 8414/8424, so it should not be described as distortion-limited versus the ScanSpeaks from the available evidence."
   ],
   "mounting_geometry_notes": [
     "The synthetic HDF5 is a horizontal 0-180 degree sum of separately suspended driver measurements; it does not model vertical-plane lobing from center-to-center spacing.",
