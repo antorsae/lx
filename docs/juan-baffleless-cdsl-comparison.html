@@ -11,6 +11,14 @@
             grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
             gap: 1rem;
         }
+        figure {
+            margin: 0;
+        }
+        figcaption {
+            font-weight: 700;
+            margin: 0 0 0.4rem;
+            color: var(--text, #0f172a);
+        }
         .asset-grid img {
             width: 100%;
             border: 1px solid var(--border);
@@ -41,88 +49,139 @@
     </header>
     <main>
         <div class="card"><div class="card-body">
-            <p>
-                Chosen: L26RO4Y / L22MG (nude) / SS10F8414G10 / GRS PT6816.
-                Baseline: L26RO4Y / L22MG (nude) / GRS PT6816 / ND25FW4 (nude 18mm).
-                Delta is baseline minus chosen.
+            <h2>Which Is Which</h2>
+            <p><strong>Chosen:</strong> L26RO4Y 70-120 Hz / L22MG (nude) 120-650 Hz / SS10F8414G10 650-2000 Hz / GRS PT6816 2000-12000 Hz / ND25FW4 (nude 18mm) &gt;12000 Hz. Crossovers: LR4 120 Hz, LR4 650 Hz, LR2 2000 Hz, LR2 12000 Hz.</p>
+            <p><strong>Baseline:</strong> L26RO4Y 70-200 Hz / L22MG (nude) 200-800 Hz / GRS PT6816 800-2500 Hz / ND25FW4 (nude 18mm) &gt;2500 Hz. Crossovers: LR4 200 Hz, LR4 800 Hz, LR4 2500 Hz.</p>
+            <p class="note">
+                Acoustic factors are weighted 100% total and use broad psychoacoustic frequency weighting centered near 2.6 kHz.
+                The weighting emphasizes 2-7 kHz, still includes the rest of 2-10 kHz, and prevents the suspect 10 kHz/top-octave feature from dominating the decision.
+                Biquad counts and sparse-EQ limits are hard pass/fail filters only.
+                Weighted factor wins: chosen 53%, baseline 42%, insufficient/context 5%.
             </p>
             <ul class="link-list">
                 <li><a href="juan-baffleless-cdsl.html">Open chosen CDSL report</a></li>
                 <li><a href="juan-baffleless-cdsl-baseline.html">Open baseline CDSL report</a></li>
             </ul>
             <table>
-                <thead><tr><th>Metric</th><th>Chosen</th><th>Baseline</th><th>Delta</th><th>Interpretation</th></tr></thead>
+                <thead><tr><th>Factor</th><th>Weight</th><th>Chosen</th><th>Baseline</th><th>Direction</th><th>Winner</th><th>Why it matters</th></tr></thead>
                 <tbody>
         <tr>
-            <td>2-10 kHz SPL30-SPL60 median (dB)</td>
-            <td>7.02</td>
-            <td>5.42</td>
-            <td>-1.60</td>
-            <td>Higher usually means stronger CDSL near/far angular separation.</td>
+            <td>Weighted 2-10 kHz SPL30-SPL60 (dB)</td>
+            <td>28%</td>
+            <td>7.15</td>
+            <td>5.82</td>
+            <td>higher</td>
+            <td>chosen</td>
+            <td>Near/far angular separation is the main CDSL target; weighting emphasizes the ear-sensitive 2-7 kHz center and downweights the suspect top octave.</td>
         </tr>
 
         <tr>
-            <td>2-10 kHz front 90 minus front 0 median (dB)</td>
-            <td>-24.32</td>
-            <td>-26.84</td>
-            <td>-2.52</td>
-            <td>More negative preserves a deeper side null.</td>
+            <td>Crossover-local polar mismatch RMS (dB)</td>
+            <td>18%</td>
+            <td>7.58</td>
+            <td>9.04</td>
+            <td>lower</td>
+            <td>chosen</td>
+            <td>Keeps adjacent driver radiation patterns close through each acoustic handoff, which is why the chosen mixed LR2/LR4 stack is not judged by SPL alone.</td>
         </tr>
 
         <tr>
-            <td>2-10 kHz rear 0 minus front 0 median (dB)</td>
-            <td>-0.85</td>
-            <td>-0.89</td>
-            <td>-0.04</td>
-            <td>Closer to 0 dB is closer front/rear dipole symmetry.</td>
-        </tr>
-
-        <tr>
-            <td>2-10 kHz DI mean (dB)</td>
-            <td>5.96</td>
-            <td>6.09</td>
-            <td>0.12</td>
-            <td>Higher indicates narrower horizontal directivity in this convention.</td>
-        </tr>
-
-        <tr>
-            <td>2-10 kHz -6 dB beamwidth median (deg)</td>
-            <td>97</td>
-            <td>103</td>
-            <td>6</td>
-            <td>Lower indicates narrower front lobe.</td>
-        </tr>
-
-        <tr>
-            <td>Flatness 200-10k 1/3-oct peak-peak (dB)</td>
-            <td>1.70</td>
-            <td>1.94</td>
-            <td>0.24</td>
-            <td>Lower is flatter after the sparse EQ fit.</td>
-        </tr>
-
-        <tr>
-            <td>Flatness 200-10k 1/3-oct RMS error (dB)</td>
-            <td>0.33</td>
-            <td>0.48</td>
+            <td>Weighted 90-degree leakage excess RMS (dB)</td>
+            <td>16%</td>
             <td>0.15</td>
-            <td>Lower is flatter after the sparse EQ fit.</td>
+            <td>0.00</td>
+            <td>lower</td>
+            <td>baseline</td>
+            <td>Penalizes energy above a -18 dB side-null target where crosstalk cancellation is most sensitive.</td>
         </tr>
 
         <tr>
-            <td>Flat-EQ biquads</td>
-            <td>14</td>
-            <td>13</td>
-            <td>-1</td>
-            <td>Lower is simpler.</td>
+            <td>Weighted front dipole polar error RMS (dB)</td>
+            <td>12%</td>
+            <td>3.24</td>
+            <td>2.05</td>
+            <td>lower</td>
+            <td>baseline</td>
+            <td>Keeps the front lobe close to a cosine/dipole shape rather than just maximizing one angle pair.</td>
         </tr>
 
         <tr>
-            <td>Shared-tree total biquads with EQ</td>
-            <td>28</td>
-            <td>27</td>
-            <td>-1</td>
-            <td>Lower is simpler in a cascaded implementation.</td>
+            <td>Weighted rear dipole polar error RMS (dB)</td>
+            <td>8%</td>
+            <td>3.74</td>
+            <td>1.35</td>
+            <td>lower</td>
+            <td>baseline</td>
+            <td>Checks whether the rear radiation stays dipole-like instead of becoming an uncontrolled back lobe.</td>
+        </tr>
+
+        <tr>
+            <td>Weighted rear/front symmetry RMS (dB)</td>
+            <td>6%</td>
+            <td>1.14</td>
+            <td>1.07</td>
+            <td>lower</td>
+            <td>baseline</td>
+            <td>Dipole behavior needs rear 0-degree magnitude close to front 0-degree after filtering.</td>
+        </tr>
+
+        <tr>
+            <td>Weighted 200-10k flatness RMS (dB)</td>
+            <td>7%</td>
+            <td>0.25</td>
+            <td>0.34</td>
+            <td>lower</td>
+            <td>chosen</td>
+            <td>Uses one-third-octave front-sum trend with the same broad psychoacoustic weighting; filter count is only a cap, not a score.</td>
+        </tr>
+
+        <tr>
+            <td>Effective known system THD, 2-7 kHz (%)</td>
+            <td>5%</td>
+            <td>0.07</td>
+            <td>-</td>
+            <td>lower</td>
+            <td>insufficient coverage</td>
+            <td>Uses filtered driver contributions and available REW THD traces; incomplete coverage is reported separately.</td>
+        </tr>
+
+        <tr>
+            <td>Known THD contribution coverage, 2-7 kHz</td>
+            <td>0%</td>
+            <td>0.30</td>
+            <td>0.00</td>
+            <td>higher</td>
+            <td>context</td>
+            <td>Coverage is not a winner metric; it tells how much of the weighted fundamental has measured THD traces.</td>
+        </tr>
+        </tbody>
+            </table>
+            <h2>Hard Filters</h2>
+            <p class="note">
+                These rows answer whether the design is exportable under the 15-biquad/channel limit and sparse flat-EQ target.
+                Passing with fewer filters is not scored as a better acoustic design.
+            </p>
+            <table>
+                <thead><tr><th>Variant</th><th>XO Types</th><th>Max Biquads</th><th>Cap</th><th>Flat RMS</th><th>Flat P-P</th><th>Flatness</th></tr></thead>
+                <tbody>
+        <tr>
+            <td>Chosen</td>
+            <td>LR4 / LR4 / LR2 / LR2</td>
+            <td>12/15</td>
+            <td>pass</td>
+            <td>0.24</td>
+            <td>1.05</td>
+            <td>warn</td>
+        </tr>
+
+        <tr>
+            <td>Baseline</td>
+            <td>LR4 / LR4 / LR4</td>
+            <td>12/15</td>
+            <td>pass</td>
+            <td>0.32</td>
+            <td>1.60</td>
+            <td>warn</td>
         </tr>
         </tbody>
             </table>
@@ -130,18 +189,18 @@
 
         <h2 class="section-title">Acoustic Sum</h2>
         <div class="asset-grid">
-            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_crossover_regions.png" alt="Chosen crossover regions">
-            <img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_crossover_regions.png" alt="Baseline crossover regions">
-            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_freq_response_angles.png" alt="Chosen frequency response">
-            <img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_freq_response_angles.png" alt="Baseline frequency response">
+            <figure><figcaption>Chosen: acoustic contributions</figcaption><img src="juan-baffleless-cdsl/static_plots/core/cdsl_crossover_regions.png" alt="Chosen crossover regions"></figure>
+            <figure><figcaption>Baseline: acoustic contributions</figcaption><img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_crossover_regions.png" alt="Baseline crossover regions"></figure>
+            <figure><figcaption>Chosen: front angles</figcaption><img src="juan-baffleless-cdsl/static_plots/core/cdsl_freq_response_angles.png" alt="Chosen frequency response"></figure>
+            <figure><figcaption>Baseline: front angles</figcaption><img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_freq_response_angles.png" alt="Baseline frequency response"></figure>
         </div>
 
         <h2 class="section-title">Directivity</h2>
         <div class="asset-grid">
-            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_contour_normalized.png" alt="Chosen normalized contour">
-            <img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_contour_normalized.png" alt="Baseline normalized contour">
-            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_30_vs_60_metric.png" alt="Chosen 30 vs 60">
-            <img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_30_vs_60_metric.png" alt="Baseline 30 vs 60">
+            <figure><figcaption>Chosen: normalized contour</figcaption><img src="juan-baffleless-cdsl/static_plots/core/cdsl_contour_normalized.png" alt="Chosen normalized contour"></figure>
+            <figure><figcaption>Baseline: normalized contour</figcaption><img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_contour_normalized.png" alt="Baseline normalized contour"></figure>
+            <figure><figcaption>Chosen: 30-60 separation</figcaption><img src="juan-baffleless-cdsl/static_plots/core/cdsl_30_vs_60_metric.png" alt="Chosen 30 vs 60"></figure>
+            <figure><figcaption>Baseline: 30-60 separation</figcaption><img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_30_vs_60_metric.png" alt="Baseline 30 vs 60"></figure>
         </div>
     </main>
     <footer>

@@ -44,6 +44,7 @@ FLATNESS_TARGET_PEAK_TO_PEAK_DB = 0.70
 FLATNESS_TARGET_RMS_DB = 0.25
 FLAT_EQ_PRUNE_DB = 0.25
 MAX_BIQUADS_PER_DRIVER = 15
+SEARCH_RESULTS_EXPORT_LIMIT = 1000
 
 JUAN_HDF5 = Path("output/data/polar_data_juan_baffleless.h5")
 LX521_HDF5 = Path("output/data/polar_data_lx521_system.h5")
@@ -64,6 +65,7 @@ CHOSEN_TITLE = "Juan Baffleless Synthetic CDSL Design"
 BASELINE_TITLE = "Baseline CDSL Seed Design"
 BASELINE_DRIVERS = ["L26RO4Y", "L22MG (nude)", "GRS PT6816", "ND25FW4 (nude 18mm)"]
 BASELINE_XOVERS = [200.0, 800.0, 2500.0]
+BASELINE_XOVER_ORDERS = [4, 4, 4]
 
 
 @dataclass
@@ -159,6 +161,7 @@ CROSSOVERS = [
     {"frequency_hz": 2400.0, "type": "LR4", "low_driver": "GRS PT6816", "high_driver": "SS10F8414G10"},
     {"frequency_hz": 10000.0, "type": "LR4", "low_driver": "SS10F8414G10", "high_driver": "ND25FW4 (nude 18mm)"},
 ]
+CROSSOVER_ORDERS = [4, 4, 4, 4]
 
 DRIVER_META = {
     "L26RO4Y": {
@@ -395,42 +398,75 @@ def filter_response(filters: Iterable[Biquad], freq: np.ndarray) -> np.ndarray:
     return response
 
 
-def add_lr4(filters: List[Biquad], kind: str, fc: float, source: str) -> None:
-    for _ in range(2):
-        filters.append(Biquad(kind, fc, q=0.7071, source=source))
+def lr_biquad_count(order: int) -> int:
+    if order not in {2, 4}:
+        raise ValueError(f"Unsupported Linkwitz-Riley order: {order}")
+    return order // 2
 
 
-def cascaded_lr4_filters(
+def add_lr_filter(filters: List[Biquad], kind: str, fc: float, order: int, source: str) -> None:
+    if order == 2:
+        filters.append(Biquad(kind, fc, q=0.5, source=source))
+    elif order == 4:
+        for _ in range(2):
+            filters.append(Biquad(kind, fc, q=0.7071, source=source))
+    else:
+        raise ValueError(f"Unsupported Linkwitz-Riley order: {order}")
+
+
+def cascaded_crossover_filters(
     stage_index: int,
     xovers: List[float],
+    xover_orders: Optional[List[int]] = None,
     *,
     include_boundary_highpass: bool = True,
-    source_prefix: str = "LR4",
+    source_prefix: str = "LR",
 ) -> List[Biquad]:
+    if xover_orders is None:
+        xover_orders = [4] * len(xovers)
+    if len(xover_orders) != len(xovers):
+        raise ValueError("xover_orders must match xovers")
     filters: List[Biquad] = []
     if include_boundary_highpass:
-        add_lr4(filters, "highpass", FREQ_MIN, f"{source_prefix} global boundary high-pass")
+        add_lr_filter(filters, "highpass", FREQ_MIN, 4, f"{source_prefix}4 global boundary high-pass")
     for upstream_idx, fc in enumerate(xovers[:stage_index]):
-        label = f"{source_prefix} cascaded upstream high-pass"
+        order = int(xover_orders[upstream_idx])
+        label = f"{source_prefix}{order} cascaded upstream high-pass"
         if upstream_idx == stage_index - 1:
-            label = f"{source_prefix} branch high-pass"
-        add_lr4(filters, "highpass", fc, label)
+            label = f"{source_prefix}{order} branch high-pass"
+        add_lr_filter(filters, "highpass", fc, order, label)
     if stage_index < len(xovers):
-        add_lr4(filters, "lowpass", xovers[stage_index], f"{source_prefix} branch low-pass")
+        order = int(xover_orders[stage_index])
+        add_lr_filter(filters, "lowpass", xovers[stage_index], order, f"{source_prefix}{order} branch low-pass")
     return filters
 
 
-def add_crossover_filters(design: List[DriverBand]) -> None:
+def add_crossover_filters(design: List[DriverBand], xover_orders: Optional[List[int]] = None) -> None:
     xovers = [band.hi for band in design[:-1]]
+    if xover_orders is None:
+        xover_orders = [int(xo.get("order", 4)) for xo in CROSSOVERS]
     for idx, band in enumerate(design):
-        band.filters.extend(cascaded_lr4_filters(idx, xovers))
+        band.filters.extend(cascaded_crossover_filters(idx, xovers, xover_orders))
 
 
-def crossover_manifest(drivers: List[str], xovers: List[float]) -> List[Dict]:
+def apply_crossover_polarity(design: List[DriverBand], xover_orders: Optional[List[int]] = None) -> None:
+    if xover_orders is None:
+        xover_orders = [int(xo.get("order", 4)) for xo in CROSSOVERS]
+    polarity = 1
+    for idx, band in enumerate(design):
+        band.polarity = polarity
+        if idx < len(xover_orders) and int(xover_orders[idx]) == 2:
+            polarity *= -1
+
+
+def crossover_manifest(drivers: List[str], xovers: List[float], xover_orders: Optional[List[int]] = None) -> List[Dict]:
+    if xover_orders is None:
+        xover_orders = [4] * len(xovers)
     return [
         {
             "frequency_hz": float(fc),
-            "type": "LR4",
+            "type": f"LR{int(xover_orders[idx])}",
+            "order": int(xover_orders[idx]),
             "low_driver": drivers[idx],
             "high_driver": drivers[idx + 1],
         }
@@ -481,16 +517,26 @@ def precompute_search_data(data: Dict[str, Dict]) -> Dict[str, Dict]:
     return pre
 
 
-def passband_weight(stage_index: int, xovers: List[float], freq: np.ndarray = COMMON_FREQ) -> np.ndarray:
-    filters = cascaded_lr4_filters(stage_index, xovers, source_prefix="search LR4")
+def passband_weight(
+    stage_index: int,
+    xovers: List[float],
+    xover_orders: Optional[List[int]] = None,
+    freq: np.ndarray = COMMON_FREQ,
+) -> np.ndarray:
+    filters = cascaded_crossover_filters(stage_index, xovers, xover_orders, source_prefix="search LR")
     return np.abs(filter_response(filters, freq))
 
 
-def synthesize_search_norm(pre: Dict[str, Dict], drivers: List[str], xovers: List[float]) -> Dict:
+def synthesize_search_norm(
+    pre: Dict[str, Dict],
+    drivers: List[str],
+    xovers: List[float],
+    xover_orders: Optional[List[int]] = None,
+) -> Dict:
     edges = [FREQ_MIN, *xovers, FREQ_MAX]
     weights = []
     for idx, driver in enumerate(drivers):
-        w = passband_weight(idx, xovers)
+        w = passband_weight(idx, xovers, xover_orders)
         w = np.where(pre[driver]["valid"], w, 0.0)
         weights.append(w)
     weights_arr = np.vstack(weights)
@@ -517,6 +563,70 @@ def rms(values: np.ndarray) -> float:
     if values.size == 0:
         return 100.0
     return float(np.sqrt(np.mean(values * values)))
+
+
+def psychoacoustic_weights(
+    freq: np.ndarray,
+    lo: float = 200.0,
+    hi: float = 10_000.0,
+    *,
+    center_hz: float = 2600.0,
+    sigma_octaves: float = 1.65,
+) -> np.ndarray:
+    """Broad speech-band weighting for comparing design candidates."""
+    freq = np.asarray(freq, dtype=float)
+    weights = np.zeros_like(freq, dtype=float)
+    mask = (freq >= lo) & (freq <= hi) & np.isfinite(freq) & (freq > 0)
+    if not np.any(mask):
+        return weights
+    octaves = np.log2(freq[mask] / center_hz)
+    broad_focus = np.exp(-0.5 * (octaves / sigma_octaves) ** 2)
+    weights[mask] = 0.22 + 0.78 * broad_focus
+    total = float(np.sum(weights))
+    if total > 0:
+        weights /= total
+    return weights
+
+
+def weighted_mean(values: np.ndarray, weights: np.ndarray) -> float:
+    values = np.asarray(values, dtype=float)
+    weights = np.asarray(weights, dtype=float)
+    mask = np.isfinite(values) & np.isfinite(weights) & (weights > 0)
+    if not np.any(mask):
+        return float("nan")
+    return float(np.sum(values[mask] * weights[mask]) / np.sum(weights[mask]))
+
+
+def weighted_rms(values: np.ndarray, weights: np.ndarray) -> float:
+    values = np.asarray(values, dtype=float)
+    weights = np.asarray(weights, dtype=float)
+    mask = np.isfinite(values) & np.isfinite(weights) & (weights > 0)
+    if not np.any(mask):
+        return 100.0
+    return float(np.sqrt(np.sum(values[mask] * values[mask] * weights[mask]) / np.sum(weights[mask])))
+
+
+def weighted_rms_stack(values: List[np.ndarray], weights: np.ndarray) -> float:
+    if not values:
+        return 100.0
+    return weighted_rms(np.concatenate(values), np.tile(weights, len(values)))
+
+
+def weighted_percentile(values: np.ndarray, weights: np.ndarray, percentile: float) -> float:
+    values = np.asarray(values, dtype=float)
+    weights = np.asarray(weights, dtype=float)
+    mask = np.isfinite(values) & np.isfinite(weights) & (weights > 0)
+    if not np.any(mask):
+        return float("nan")
+    vals = values[mask]
+    w = weights[mask]
+    order = np.argsort(vals)
+    vals = vals[order]
+    w = w[order]
+    cumulative = np.cumsum(w)
+    cutoff = np.clip(percentile / 100.0, 0.0, 1.0) * cumulative[-1]
+    idx = min(int(np.searchsorted(cumulative, cutoff, side="left")), len(vals) - 1)
+    return float(vals[idx])
 
 
 def search_xover_mismatch(pre: Dict[str, Dict], drivers: List[str], xovers: List[float]) -> float:
@@ -562,10 +672,12 @@ def candidate_prior_penalty(drivers: List[str]) -> float:
     return penalty
 
 
-def candidate_biquad_budget(drivers: List[str], xovers: List[float]) -> Dict:
+def candidate_biquad_budget(drivers: List[str], xovers: List[float], xover_orders: Optional[List[int]] = None) -> Dict:
+    if xover_orders is None:
+        xover_orders = [4] * len(xovers)
     design = make_design(drivers, xovers)
     xover_counts = {
-        band.driver: len(cascaded_lr4_filters(idx, xovers, source_prefix="search LR4"))
+        band.driver: len(cascaded_crossover_filters(idx, xovers, xover_orders, source_prefix="search LR"))
         for idx, band in enumerate(design)
     }
     flat_candidates = {driver: 0 for driver in drivers}
@@ -601,27 +713,31 @@ def candidate_biquad_budget(drivers: List[str], xovers: List[float]) -> Dict:
         "flat_eq_candidate_shortfall_total": sum(shortfall.values()),
         "crossover_biquads_within_limit": max(xover_counts.values()) <= MAX_BIQUADS_PER_DRIVER,
         "max_biquads_per_driver_limit": MAX_BIQUADS_PER_DRIVER,
+        "xover_orders": [int(order) for order in xover_orders],
+        "xover_types": [f"LR{int(order)}" for order in xover_orders],
     }
 
 
 def candidate_biquad_budget_penalty(budget: Dict) -> float:
     if not budget["crossover_biquads_within_limit"]:
         return 1000.0
-    shortfalls = list(budget["flat_eq_candidate_shortfall_by_driver"].values())
-    max_shortfall = max(shortfalls) if shortfalls else 0
-    min_slots = min(budget["flat_eq_slots_by_driver"].values()) if budget["flat_eq_slots_by_driver"] else 0
-    return float(
-        0.65 * budget["flat_eq_candidate_shortfall_total"]
-        + 0.75 * max_shortfall
-        + 0.20 * max(0, 4 - min_slots)
-    )
+    return 0.0
 
 
-def score_candidate(pre: Dict[str, Dict], drivers: List[str], xovers: List[float]) -> Dict:
-    synth = synthesize_search_norm(pre, drivers, xovers)
+def score_candidate(
+    pre: Dict[str, Dict],
+    drivers: List[str],
+    xovers: List[float],
+    xover_orders: Optional[List[int]] = None,
+) -> Dict:
+    if xover_orders is None:
+        xover_orders = [4] * len(xovers)
+    synth = synthesize_search_norm(pre, drivers, xovers, xover_orders)
     valid = synth["valid"]
-    all_mask = valid & (COMMON_FREQ >= 80) & (COMMON_FREQ <= 18000)
-    high_mask = valid & (COMMON_FREQ >= 2000) & (COMMON_FREQ <= 10000)
+    all_weights = psychoacoustic_weights(COMMON_FREQ, 120.0, 12_000.0)
+    high_weights = psychoacoustic_weights(COMMON_FREQ, 2000.0, 10_000.0)
+    all_weights = np.where(valid, all_weights, 0.0)
+    high_weights = np.where(valid, high_weights, 0.0)
 
     ideal = {
         15: 20 * np.log10(np.cos(np.deg2rad(15))),
@@ -634,20 +750,26 @@ def score_candidate(pre: Dict[str, Dict], drivers: List[str], xovers: List[float
     front_errors = []
     rear_errors = []
     for angle, target in ideal.items():
-        front_errors.append(synth["front"][angle][all_mask] - target)
-        rear_errors.append(synth["rear"][angle][all_mask] - target)
-    dipole_front = rms(np.concatenate(front_errors))
-    dipole_rear = rms(np.concatenate(rear_errors))
+        front_errors.append(synth["front"][angle] - target)
+        rear_errors.append(synth["rear"][angle] - target)
+    dipole_front = weighted_rms_stack(front_errors, all_weights)
+    dipole_rear = weighted_rms_stack(rear_errors, all_weights)
 
-    front90 = synth["front"][90][all_mask]
-    rear90 = synth["rear"][90][all_mask]
-    null_penalty = rms(np.maximum(front90 + 18.0, 0.0)) + 0.6 * rms(np.maximum(rear90 + 18.0, 0.0))
-    rear0_penalty = rms(synth["rear"][0][all_mask] - synth["front"][0][all_mask])
+    front90 = synth["front"][90]
+    rear90 = synth["rear"][90]
+    null_penalty = weighted_rms(np.maximum(front90 + 18.0, 0.0), all_weights) + 0.6 * weighted_rms(np.maximum(rear90 + 18.0, 0.0), all_weights)
+    rear0_penalty = weighted_rms(synth["rear"][0] - synth["front"][0], all_weights)
 
     sep = synth["front"][30] - synth["front"][60]
-    sep_med = float(np.nanmedian(sep[high_mask])) if np.any(high_mask) else 0.0
-    sep_p10 = float(np.nanpercentile(sep[high_mask], 10)) if np.any(high_mask) else 0.0
-    front30_med = float(np.nanmedian(synth["front"][30][high_mask])) if np.any(high_mask) else -99.0
+    sep_med = weighted_percentile(sep, high_weights, 50)
+    sep_p10 = weighted_percentile(sep, high_weights, 10)
+    front30_med = weighted_percentile(synth["front"][30], high_weights, 50)
+    if not np.isfinite(sep_med):
+        sep_med = 0.0
+    if not np.isfinite(sep_p10):
+        sep_p10 = 0.0
+    if not np.isfinite(front30_med):
+        front30_med = -99.0
 
     high_penalty = (
         1.1 * max(0.0, 8.0 - sep_med)
@@ -659,8 +781,10 @@ def score_candidate(pre: Dict[str, Dict], drivers: List[str], xovers: List[float
     xover_penalty = search_xover_mismatch(pre, drivers, xovers)
     validity_penalty = frequency_validity_penalty(pre, drivers, xovers)
     prior_penalty = candidate_prior_penalty(drivers)
-    biquad_budget = candidate_biquad_budget(drivers, xovers)
+    biquad_budget = candidate_biquad_budget(drivers, xovers, xover_orders)
     biquad_budget_penalty = candidate_biquad_budget_penalty(biquad_budget)
+    thd_proxy = candidate_known_thd_proxy(drivers, xovers, xover_orders)
+    thd_penalty = thd_proxy["penalty"]
 
     score = (
         1.25 * dipole_front
@@ -672,12 +796,15 @@ def score_candidate(pre: Dict[str, Dict], drivers: List[str], xovers: List[float
         + validity_penalty
         + prior_penalty
         + biquad_budget_penalty
+        + thd_penalty
     )
 
     return {
         "score": round(float(score), 4),
         "drivers": drivers,
         "xovers": [float(x) for x in xovers],
+        "xover_orders": [int(order) for order in xover_orders],
+        "xover_types": [f"LR{int(order)}" for order in xover_orders],
         "ways": len(drivers),
         "dipole_front_rms_db": round(dipole_front, 3),
         "dipole_rear_rms_db": round(dipole_rear, 3),
@@ -687,6 +814,9 @@ def score_candidate(pre: Dict[str, Dict], drivers: List[str], xovers: List[float
         "validity_penalty": round(validity_penalty, 3),
         "prior_penalty": round(prior_penalty, 3),
         "biquad_budget_penalty": round(biquad_budget_penalty, 3),
+        "known_effective_thd_2_7_percent": round(thd_proxy["known_effective_thd_2_7_percent"], 4),
+        "known_thd_coverage_2_7": round(thd_proxy["known_thd_coverage_2_7"], 3),
+        "thd_penalty": round(thd_penalty, 3),
         "max_biquads_per_driver_limit": MAX_BIQUADS_PER_DRIVER,
         "max_crossover_biquads_per_driver": biquad_budget["max_crossover_biquads_per_driver"],
         "max_possible_biquads_per_driver": biquad_budget["max_possible_biquads_per_driver"],
@@ -702,7 +832,31 @@ def score_candidate(pre: Dict[str, Dict], drivers: List[str], xovers: List[float
     }
 
 
-def iter_candidate_specs() -> Iterable[Tuple[List[str], List[float]]]:
+def xover_order_specs(xover_count: int) -> List[List[int]]:
+    if xover_count == 3:
+        return [
+            [4, 4, 4],
+            [4, 4, 2],
+            [4, 2, 2],
+            [2, 4, 2],
+            [2, 2, 4],
+            [2, 2, 2],
+        ]
+    if xover_count == 4:
+        return [
+            [4, 4, 4, 4],
+            [4, 4, 4, 2],
+            [4, 4, 2, 2],
+            [4, 2, 2, 2],
+            [2, 4, 4, 2],
+            [2, 4, 2, 2],
+            [2, 2, 4, 4],
+            [2, 2, 2, 2],
+        ]
+    return [[4] * xover_count]
+
+
+def iter_candidate_specs() -> Iterable[Tuple[List[str], List[float], List[int]]]:
     low = "L26RO4Y"
     lower_mid = "L22MG (nude)"
     mid_candidates = ["GRS PT6816", "L10NEO", "SS10F8414G10", "SS10F8424G00", "MU10RB-SL"]
@@ -719,7 +873,9 @@ def iter_candidate_specs() -> Iterable[Tuple[List[str], List[float]]]:
                                 drivers = [low, lower_mid, mid, high, top]
                                 if len(set(drivers)) != len(drivers):
                                     continue
-                                yield drivers, [x1, x2, x3, x4]
+                                xovers = [x1, x2, x3, x4]
+                                for orders in xover_order_specs(len(xovers)):
+                                    yield drivers, xovers, orders
 
     upper_candidates = ["GRS PT6816", "L10NEO", "SS10F8414G10", "SS10F8424G00", "MU10RB-SL"]
     for x1 in [120.0, 160.0, 200.0]:
@@ -730,16 +886,18 @@ def iter_candidate_specs() -> Iterable[Tuple[List[str], List[float]]]:
                         drivers = [low, lower_mid, upper, top]
                         if len(set(drivers)) != len(drivers):
                             continue
-                        yield drivers, [x1, x2, x3]
+                        xovers = [x1, x2, x3]
+                        for orders in xover_order_specs(len(xovers)):
+                            yield drivers, xovers, orders
 
 
 def optimize_design_search(data: Dict[str, Dict]) -> List[Dict]:
     pre = precompute_search_data(data)
     results = []
-    for drivers, xovers in iter_candidate_specs():
+    for drivers, xovers, xover_orders in iter_candidate_specs():
         if any(driver not in pre for driver in drivers):
             continue
-        results.append(score_candidate(pre, drivers, xovers))
+        results.append(score_candidate(pre, drivers, xovers, xover_orders))
     results.sort(key=lambda row: row["score"])
     return results
 
@@ -795,7 +953,11 @@ def exactly_one_scanspeak(row: Dict) -> bool:
 
 
 def same_candidate(a: Dict, b: Dict) -> bool:
-    return a["drivers"] == b["drivers"] and a["xovers"] == b["xovers"]
+    return (
+        a["drivers"] == b["drivers"]
+        and a["xovers"] == b["xovers"]
+        and a.get("xover_orders", [4] * len(a["xovers"])) == b.get("xover_orders", [4] * len(b["xovers"]))
+    )
 
 
 def choose_recommended_candidate(search_results: List[Dict]) -> Tuple[Dict, Dict]:
@@ -893,14 +1055,14 @@ def plot_search_results(search_results: List[Dict], root: Path, selected_candida
     if selected_candidate is not None:
         top.append(selected_candidate)
     for row in search_results:
-        if selected_candidate is not None and row["drivers"] == selected_candidate["drivers"] and row["xovers"] == selected_candidate["xovers"]:
+        if selected_candidate is not None and same_candidate(row, selected_candidate):
             continue
         top.append(row)
         if len(top) >= 20:
             break
     labels = [
         f"{'recommended ' if idx == 0 and selected_candidate is not None else ''}{row['ways']}w: {' / '.join(row['drivers'][2:])}\n"
-        f"{' / '.join(f'{x:g}' for x in row['xovers'])} Hz"
+        f"{' / '.join(f'{x:g}' for x in row['xovers'])} Hz; {' / '.join(row.get('xover_types', ['LR4'] * len(row['xovers'])))}"
         for idx, row in enumerate(top)
     ]
     scores = [row["score"] for row in top]
@@ -1019,24 +1181,24 @@ def optimize_delays(data: Dict[str, Dict], design: List[DriverBand]) -> None:
     for idx in range(1, len(design)):
         low = design[idx - 1]
         high = design[idx]
+        stage_polarity = high.polarity
         fc = high.lo
         band_mask = (COMMON_FREQ >= fc / math.sqrt(2.0)) & (COMMON_FREQ <= fc * math.sqrt(2.0))
         low_sig = contribution(data, low, "F", 0, COMMON_FREQ)[band_mask]
         high_base = contribution(data, high, "F", 0, COMMON_FREQ, include_delay=False)[band_mask]
         f = COMMON_FREQ[band_mask]
 
-        best = (float("inf"), 0.0, 1)
-        for polarity in (1, -1):
-            signed = high_base * polarity
-            for delay_ms in delay_grid:
-                delayed = signed * np.exp(-1j * 2.0 * np.pi * f * (delay_ms / 1000.0))
-                summed_db = pressure_to_db(low_sig + delayed)
-                score = float(np.sqrt(np.mean((summed_db - TARGET_SPL_DB) ** 2)))
-                if score < best[0]:
-                    best = (score, float(delay_ms), polarity)
+        best = (float("inf"), 0.0)
+        signed = high_base * stage_polarity
+        for delay_ms in delay_grid:
+            delayed = signed * np.exp(-1j * 2.0 * np.pi * f * (delay_ms / 1000.0))
+            summed_db = pressure_to_db(low_sig + delayed)
+            score = float(np.sqrt(np.mean((summed_db - TARGET_SPL_DB) ** 2)))
+            if score < best[0]:
+                best = (score, float(delay_ms))
 
         high.delay_ms = best[1]
-        high.polarity = best[2]
+        high.polarity = stage_polarity
 
 
 def synthesize_system(data: Dict[str, Dict], design: List[DriverBand]) -> Dict:
@@ -1549,6 +1711,184 @@ def distortion_thd_audit() -> List[Dict]:
     return rows
 
 
+_DISTORTION_TRACE_CACHE: Optional[Dict[str, Dict[str, np.ndarray]]] = None
+
+
+def distortion_trace_cache() -> Dict[str, Dict[str, np.ndarray]]:
+    global _DISTORTION_TRACE_CACHE
+    if _DISTORTION_TRACE_CACHE is not None:
+        return _DISTORTION_TRACE_CACHE
+
+    samples: Dict[str, List[Dict[str, np.ndarray]]] = {}
+    for spec in DISTORTION_AUDIT_FILES:
+        path = spec["path"]
+        if not path.exists():
+            continue
+        measurement = read_rew_mdat_measurement(path)
+        distortion = getattr(measurement, "distortionData", None)
+        harm_data = getattr(distortion, "harmData", None) if distortion is not None else None
+        if distortion is None or harm_data is None or len(harm_data) < 2:
+            continue
+        src_freq = np.asarray(distortion.freqs, dtype=float)
+        thd_db = np.asarray(harm_data[0], dtype=float)
+        fundamental_spl = np.asarray(harm_data[1], dtype=float)
+        valid = (src_freq > 0) & np.isfinite(src_freq) & np.isfinite(thd_db) & np.isfinite(fundamental_spl)
+        if not np.any(valid):
+            continue
+        log_src = np.log(src_freq[valid])
+        log_dst = np.log(COMMON_FREQ)
+        thd_ratio = np.power(10.0, thd_db[valid] / 20.0)
+        samples.setdefault(spec["driver"], []).append(
+            {
+                "thd_ratio": np.interp(log_dst, log_src, thd_ratio, left=np.nan, right=np.nan),
+                "fundamental_spl_db": np.interp(log_dst, log_src, fundamental_spl[valid], left=np.nan, right=np.nan),
+            }
+        )
+
+    cache: Dict[str, Dict[str, np.ndarray]] = {}
+    for driver, driver_samples in samples.items():
+        thd_stack = np.vstack([sample["thd_ratio"] for sample in driver_samples])
+        spl_stack = np.vstack([sample["fundamental_spl_db"] for sample in driver_samples])
+        with np.errstate(all="ignore"):
+            thd_ratio = np.nanmedian(thd_stack, axis=0)
+            spl_db = np.nanmedian(spl_stack, axis=0)
+        cache[driver] = {
+            "thd_ratio": thd_ratio,
+            "fundamental_spl_db": spl_db,
+            "has_trace": np.isfinite(thd_ratio) & np.isfinite(spl_db),
+        }
+    _DISTORTION_TRACE_CACHE = cache
+    return cache
+
+
+def candidate_known_thd_proxy(drivers: List[str], xovers: List[float], xover_orders: Optional[List[int]] = None) -> Dict:
+    traces = distortion_trace_cache()
+    if xover_orders is None:
+        xover_orders = [4] * len(xovers)
+    weights_arr = np.vstack(
+        [passband_weight(idx, xovers, xover_orders) for idx, _ in enumerate(drivers)]
+    )
+    total_amp = np.sum(weights_arr, axis=0)
+    known_amp = np.zeros_like(COMMON_FREQ, dtype=float)
+    distortion_power = np.zeros_like(COMMON_FREQ, dtype=float)
+    known_drivers = []
+    for idx, driver in enumerate(drivers):
+        trace = traces.get(driver)
+        if trace is None:
+            continue
+        known_drivers.append(driver)
+        valid_trace = np.where(trace["has_trace"], 1.0, 0.0)
+        amp = weights_arr[idx] * valid_trace
+        known_amp += amp
+        distortion_power += (amp * np.nan_to_num(trace["thd_ratio"], nan=0.0)) ** 2
+
+    effective_ratio = np.sqrt(distortion_power) / np.maximum(total_amp, 1e-12)
+    coverage = known_amp / np.maximum(total_amp, 1e-12)
+    w = psychoacoustic_weights(COMMON_FREQ, 2000.0, 7000.0)
+    thd_percent = 100.0 * weighted_mean(effective_ratio, w)
+    coverage_weighted = weighted_mean(coverage, w)
+    if not np.isfinite(thd_percent):
+        thd_percent = 0.0
+    if not np.isfinite(coverage_weighted):
+        coverage_weighted = 0.0
+    penalty = 2.5 * max(0.0, thd_percent - 0.20) + 0.25 * max(0.0, 0.35 - coverage_weighted)
+    return {
+        "known_effective_thd_2_7_percent": float(thd_percent),
+        "known_thd_coverage_2_7": float(coverage_weighted),
+        "known_thd_drivers": known_drivers,
+        "penalty": float(penalty),
+    }
+
+
+def effective_system_thd(system: Dict, design: List[DriverBand]) -> List[Dict]:
+    traces = distortion_trace_cache()
+    driver_names = [band.driver for band in design]
+    total_front = np.abs(system["front"][0])
+    sum_amp = np.zeros_like(COMMON_FREQ, dtype=float)
+    known_amp = np.zeros_like(COMMON_FREQ, dtype=float)
+    distortion_power = np.zeros_like(COMMON_FREQ, dtype=float)
+    known_drivers: List[str] = []
+    missing_drivers: List[str] = []
+
+    for band in design:
+        amp = np.abs(system["driver_contributions"][band.driver])
+        sum_amp += amp
+        trace = traces.get(band.driver)
+        if trace is None:
+            missing_drivers.append(band.driver)
+            continue
+        known_drivers.append(band.driver)
+        valid_trace = np.where(trace["has_trace"], 1.0, 0.0)
+        known_amp += amp * valid_trace
+        distortion_power += (amp * valid_trace * np.nan_to_num(trace["thd_ratio"], nan=0.0)) ** 2
+
+    effective_ratio = np.sqrt(distortion_power) / np.maximum(total_front, 1e-12)
+    coverage = known_amp / np.maximum(sum_amp, 1e-12)
+    front_spl = pressure_to_db(system["front"][0])
+    rows = []
+    for label, lo, hi in DISTORTION_AUDIT_BANDS:
+        weights = psychoacoustic_weights(COMMON_FREQ, lo, hi)
+        thd_percent = 100.0 * weighted_mean(effective_ratio, weights)
+        thd_p90 = 100.0 * weighted_percentile(effective_ratio, weights, 90)
+        coverage_weighted = weighted_mean(coverage, weights)
+        spl_median = weighted_percentile(front_spl, weights, 50)
+        if not np.isfinite(coverage_weighted) or coverage_weighted <= 0.01:
+            thd_percent = float("nan")
+            thd_p90 = float("nan")
+        rows.append(
+            {
+                "band": label,
+                "effective_known_thd_percent_weighted": round(float(thd_percent), 4) if np.isfinite(thd_percent) else float("nan"),
+                "effective_known_thd_p90_percent": round(float(thd_p90), 4) if np.isfinite(thd_p90) else float("nan"),
+                "known_fundamental_coverage_weighted": round(float(coverage_weighted), 4) if np.isfinite(coverage_weighted) else 0.0,
+                "front0_spl_weighted_median_db": round(float(spl_median), 3) if np.isfinite(spl_median) else float("nan"),
+                "known_trace_drivers": ", ".join(known_drivers),
+                "missing_trace_drivers": ", ".join(driver for driver in driver_names if driver not in known_drivers),
+                "method": "front 0-degree driver contributions weighted by measured REW THD traces and combined incoherently",
+            }
+        )
+    return rows
+
+
+def l10_scanspeak_rationale(selected_candidate: Dict, search_results: List[Dict], distortion_rows: List[Dict]) -> List[str]:
+    notes: List[str] = []
+    by_driver = {
+        row["driver"]: row
+        for row in distortion_rows
+        if row.get("band") == "2-7 kHz" and row.get("has_distortion_data")
+    }
+    l10 = by_driver.get("L10NEO")
+    if l10:
+        scan_rows = [
+            row for row in distortion_rows
+            if row.get("band") == "2-7 kHz" and row.get("driver", "").startswith("SS10F") and row.get("has_distortion_data")
+        ]
+        if scan_rows:
+            best_scan = min(scan_rows, key=lambda row: row["thd_median_percent"])
+            notes.append(
+                f"Raw REW evidence does not favor ScanSpeak on THD: L10NEO is {l10['thd_median_percent']:.3f}% median THD at {l10['fundamental_spl_median_db']:.1f} dB SPL in 2-7 kHz, while the best available ScanSpeak trace is {best_scan['driver']} {best_scan['sample']} at {best_scan['thd_median_percent']:.3f}% and {best_scan['fundamental_spl_median_db']:.1f} dB SPL."
+            )
+    if str(selected_candidate.get("finalist_role", "")).lower().startswith("baseline"):
+        notes.append("The baseline is a fixed seed, not an optimizer-selected rejection of L10NEO; use it only as the requested reference stack.")
+        notes.append("Conclusion: L10NEO must not be rejected on distortion/SPL evidence; any non-L10 selection has to be justified by directivity/crossover integration, not by the available raw THD traces.")
+        return notes
+
+    selected_uses_l10 = "L10NEO" in selected_candidate.get("drivers", [])
+    best_l10 = next((row for row in search_results if "L10NEO" in row["drivers"]), None)
+    if selected_uses_l10:
+        notes.append("The selected candidate uses L10NEO, so the raw THD evidence and the directivity search point in the same direction for this run.")
+    elif best_l10 is not None:
+        notes.append(
+            "The selected non-L10 candidate wins only on the weighted acoustic search: "
+            f"score {selected_candidate['score']:.2f} vs best L10NEO score {best_l10['score']:.2f}, "
+            f"front dipole RMS {selected_candidate['dipole_front_rms_db']:.2f} vs {best_l10['dipole_front_rms_db']:.2f} dB, "
+            f"XO mismatch {selected_candidate['xover_mismatch_rms_db']:.2f} vs {best_l10['xover_mismatch_rms_db']:.2f} dB, "
+            f"and 30-60 separation {selected_candidate['sep_30_60_median_2_10k_db']:.2f} vs {best_l10['sep_30_60_median_2_10k_db']:.2f} dB."
+        )
+    notes.append("Conclusion: L10NEO must not be rejected on distortion/SPL evidence; any ScanSpeak selection is a directivity/crossover integration choice under the current measured polar data.")
+    return notes
+
+
 def distortion_level_notes(rows: List[Dict]) -> List[str]:
     by_driver = {
         row["driver"]: row
@@ -1615,7 +1955,7 @@ def plot_crossover_regions(system: Dict, design: List[DriverBand], root: Path) -
     for xo in CROSSOVERS:
         ax.axvline(xo["frequency_hz"], color="#64748b", linestyle="--", linewidth=0.9)
         ax.text(xo["frequency_hz"], TARGET_SPL_DB + 8, f'{xo["frequency_hz"]:.0f} Hz', rotation=90, va="top", ha="right", fontsize=8)
-    ax.set_title("Driver acoustic contributions and LR4 crossover regions")
+    ax.set_title("Driver acoustic contributions and mixed LR crossover regions")
     ax.set_xlabel("Frequency (Hz)")
     ax.set_ylabel("SPL (dB)")
     ax.set_xlim(FREQ_MIN, FREQ_MAX)
@@ -1883,22 +2223,28 @@ def format_hz(value: float) -> str:
 
 def filter_topology_summary(design: List[DriverBand]) -> Dict:
     xovers = [band.hi for band in design[:-1]]
+    xover_orders = [int(xo.get("order", 4)) for xo in CROSSOVERS]
     diagram_lines = [
         "Input",
         f"  +-- LR4 HP {format_hz(FREQ_MIN)} Hz (2 biquads, global boundary)",
     ]
     for idx, band in enumerate(design[:-1]):
         fc = xovers[idx]
+        order = xover_orders[idx]
+        count = lr_biquad_count(order)
+        type_label = f"LR{order}"
         indent = "  " * (idx + 2)
-        diagram_lines.append(f"{indent}+-- split @ {format_hz(fc)} Hz")
-        diagram_lines.append(f"{indent}    +-- LR4 LP {format_hz(fc)} Hz (2 biquads) -> {band.driver}")
+        diagram_lines.append(f"{indent}+-- {type_label} split @ {format_hz(fc)} Hz")
+        diagram_lines.append(f"{indent}    +-- {type_label} LP {format_hz(fc)} Hz ({count} biquad{'s' if count != 1 else ''}) -> {band.driver}")
         if idx < len(design) - 2:
-            diagram_lines.append(f"{indent}    +-- LR4 HP {format_hz(fc)} Hz (2 biquads) -> next split")
+            polarity_note = ", invert downstream branch" if order == 2 else ""
+            diagram_lines.append(f"{indent}    +-- {type_label} HP {format_hz(fc)} Hz ({count} biquad{'s' if count != 1 else ''}{polarity_note}) -> next split")
         else:
-            diagram_lines.append(f"{indent}    +-- LR4 HP {format_hz(fc)} Hz (2 biquads) -> {design[-1].driver}")
+            polarity_note = ", inverted" if order == 2 and design[-1].polarity < 0 else ""
+            diagram_lines.append(f"{indent}    +-- {type_label} HP {format_hz(fc)} Hz ({count} biquad{'s' if count != 1 else ''}{polarity_note}) -> {design[-1].driver}")
 
     stages = []
-    total_effective_lr4 = 0
+    total_effective_xover = 0
     total_eq = 0
     max_stage_total = 0
     for idx, band in enumerate(design):
@@ -1906,10 +2252,10 @@ def filter_topology_summary(design: List[DriverBand]) -> Dict:
         upstream_hp = sum(1 for flt in band.filters if "cascaded upstream high-pass" in flt.source)
         branch_hp = sum(1 for flt in band.filters if "branch high-pass" in flt.source)
         branch_lp = sum(1 for flt in band.filters if "branch low-pass" in flt.source)
-        lr4 = sum(1 for flt in band.filters if flt.source.startswith("LR4"))
+        xover_biquads = sum(1 for flt in band.filters if flt.source.startswith("LR"))
         flat_eq = sum(1 for flt in band.filters if flt.source == "flat-EQ")
         max_stage_total = max(max_stage_total, len(band.filters))
-        total_effective_lr4 += lr4
+        total_effective_xover += xover_biquads
         total_eq += flat_eq
         stages.append(
             {
@@ -1920,23 +2266,30 @@ def filter_topology_summary(design: List[DriverBand]) -> Dict:
                 "inherited_upstream_hp_biquads": upstream_hp,
                 "own_branch_hp_biquads": branch_hp,
                 "own_branch_lp_biquads": branch_lp,
-                "effective_lr4_biquads": lr4,
+                "effective_crossover_biquads": xover_biquads,
+                "effective_lr4_biquads": xover_biquads,
                 "flat_eq_biquads": flat_eq,
                 "effective_total_biquads": len(band.filters),
+                "polarity": band.polarity,
             }
         )
 
-    shared_tree_lr4 = 2 + 4 * len(xovers)
+    shared_tree_xover = 2 + sum(xover_orders)
+    order_text = " / ".join(f"LR{order}" for order in xover_orders)
     return {
-        "architecture": "cascaded LR4 split tree with shared high-pass carryover",
+        "architecture": f"cascaded mixed-order Linkwitz-Riley split tree with shared high-pass carryover ({order_text})",
         "diagram": "\n".join(diagram_lines),
         "stages": stages,
         "summary": {
-            "shared_tree_lr4_biquads": shared_tree_lr4,
-            "standalone_channel_lr4_biquads": total_effective_lr4,
+            "xover_types": [f"LR{order}" for order in xover_orders],
+            "xover_orders": xover_orders,
+            "shared_tree_crossover_biquads": shared_tree_xover,
+            "standalone_channel_crossover_biquads": total_effective_xover,
+            "shared_tree_lr4_biquads": shared_tree_xover,
+            "standalone_channel_lr4_biquads": total_effective_xover,
             "flat_eq_biquads": total_eq,
-            "shared_tree_total_biquads_with_eq": shared_tree_lr4 + total_eq,
-            "standalone_channel_total_biquads": total_effective_lr4 + total_eq,
+            "shared_tree_total_biquads_with_eq": shared_tree_xover + total_eq,
+            "standalone_channel_total_biquads": total_effective_xover + total_eq,
             "max_biquads_per_driver_limit": MAX_BIQUADS_PER_DRIVER,
             "max_effective_total_biquads_per_driver": max_stage_total,
             "per_driver_limit_met": max_stage_total <= MAX_BIQUADS_PER_DRIVER,
@@ -1944,6 +2297,7 @@ def filter_topology_summary(design: List[DriverBand]) -> Dict:
         "notes": [
             "Shared-tree count assumes the DSP can route a high-pass bus into the next split stage.",
             "Standalone-channel count is what is exported per driver when each output channel must contain all inherited upstream filters.",
+            "LR2 splits use one Q=0.5 biquad per edge and invert the next/downstream branch; LR4 splits use two Q=0.7071 biquads per edge without a required polarity inversion.",
             f"Flat-EQ is capped after crossover filters so every exported driver channel stays at or below {MAX_BIQUADS_PER_DRIVER} total biquads.",
             "Gain, delay, and polarity are not counted as biquads.",
         ],
@@ -1956,6 +2310,7 @@ def write_exports(
     metrics_rows: List[Dict],
     driver_audit_rows: List[Dict],
     distortion_audit_rows: List[Dict],
+    effective_thd_rows: List[Dict],
     flatness_info: Dict,
     side_feature_info: Dict,
     config_info: Dict,
@@ -1980,7 +2335,7 @@ def write_exports(
         search_results_href = f"{asset_slug}/candidate_search_results.json"
     if summary_search_sentence is None:
         summary_search_sentence = (
-            f"The recommended stack is from {len(search_results)} evaluated 4-way/5-way LR4 combinations. "
+            f"The recommended stack is from {len(search_results)} evaluated 4-way/5-way LR2/LR4 combinations. "
             f"Selection method: {selection_info['method']}."
         )
     manifest = {
@@ -2003,28 +2358,33 @@ def write_exports(
         "crossovers": CROSSOVERS,
         "search": {
             "candidate_count": len(search_results),
+            "candidate_export_count": min(len(search_results), SEARCH_RESULTS_EXPORT_LIMIT) if write_search_results else 0,
             "score_direction": "lower is better",
             "selection": selection_info,
             "selected_candidate": selected_candidate,
             "finalists": finalists,
             "top_candidates": search_results[:25],
             "score_terms": {
-                "dipole_front_rms_db": "front normalized polar fit to cosine dipole for 15-75 degrees",
-                "dipole_rear_rms_db": "rear normalized polar fit to cosine dipole for 15-75 degrees",
-                "null_penalty_db": "penalty for weak 90 degree nulls",
-                "rear0_rms_db": "rear 0 degree magnitude symmetry relative to front 0 degree",
-                "xover_mismatch_rms_db": "adjacent-driver normalized polar mismatch around each LR4 crossover",
-                "sep_30_60_median_2_10k_db": "median front SPL30-SPL60 from 2-10 kHz",
+                "psychoacoustic_weighting": "broad log-frequency weighting centered near 2.6 kHz, limited to the evaluated band and strongly de-emphasizing the top-octave region above 10 kHz",
+                "dipole_front_rms_db": "psychoacoustic-weighted front normalized polar fit to cosine dipole for 15-75 degrees",
+                "dipole_rear_rms_db": "psychoacoustic-weighted rear normalized polar fit to cosine dipole for 15-75 degrees",
+                "null_penalty_db": "psychoacoustic-weighted penalty for weak 90 degree nulls",
+                "rear0_rms_db": "psychoacoustic-weighted rear 0 degree magnitude symmetry relative to front 0 degree",
+                "xover_mismatch_rms_db": "adjacent-driver normalized polar mismatch around each LR2/LR4 crossover",
+                "sep_30_60_median_2_10k_db": "psychoacoustic-weighted median front SPL30-SPL60 from 2-10 kHz",
+                "known_effective_thd_2_7_percent": "passband-weighted system THD proxy from available REW THD traces only",
                 "prior_penalty": "small local evidence penalty for distortion/SPL uncertainty or known caveats",
                 "biquad_budget_penalty": (
-                    "penalty for candidates whose cascaded crossover filters leave insufficient flat-EQ headroom "
-                    f"under the {MAX_BIQUADS_PER_DRIVER}-biquad/channel cap"
+                    "hard rejection only when cascaded crossover filters exceed "
+                    f"the {MAX_BIQUADS_PER_DRIVER}-biquad/channel cap"
                 ),
             },
         },
         "driver_directivity_audit": driver_audit_rows,
         "distortion_thd_audit": distortion_audit_rows,
+        "effective_system_thd": effective_thd_rows,
         "distortion_level_notes": distortion_level_notes(distortion_audit_rows),
+        "l10_scanspeak_rationale": l10_scanspeak_rationale(selected_candidate, search_results, distortion_audit_rows),
         "filter_topology": topology,
         "flatness_optimization": flatness_info,
         "upper_mid_side_feature": side_feature_info,
@@ -2049,6 +2409,7 @@ def write_exports(
             "Absolute SPL and maximum-SPL claims remain limited by the available local evidence; raw THD is extracted for available 0-degree REW files but not normalized to matched drive level.",
             "DI and beamwidth figures match the existing repo convention and use front-horizontal data only, not a full 3D power response.",
             "Vertical-plane beaming and pseudo-baffle diffraction from the final stacked mounting geometry are not modeled.",
+            "The 10 kHz/top-octave behavior is treated as suspect validation territory; search and comparison weights emphasize 2-10 kHz and do not let a narrow top-octave feature decide the design.",
         ],
         "generated_files": {
             "synthetic_hdf5": str(synthetic_hdf5),
@@ -2056,6 +2417,7 @@ def write_exports(
             "asset_root": str(docs_root),
             "driver_directivity_audit_csv": str(root / "driver_directivity_audit.csv"),
             "distortion_thd_audit_csv": str(root / "distortion_thd_audit.csv"),
+            "effective_system_thd_csv": str(root / "effective_system_thd.csv"),
         },
         "drivers": [
             {
@@ -2075,7 +2437,7 @@ def write_exports(
     (root / "design_manifest.json").write_text(json.dumps(manifest, indent=2))
 
     if write_search_results:
-        (root / "candidate_search_results.json").write_text(json.dumps(search_results, indent=2))
+        (root / "candidate_search_results.json").write_text(json.dumps(search_results[:SEARCH_RESULTS_EXPORT_LIMIT], indent=2))
 
     filters = {
         "_topology": topology,
@@ -2094,7 +2456,8 @@ def write_exports(
 
     yaml_lines = [
         "# Preliminary CamillaDSP-style filter export",
-        "# Topology: cascaded LR4 split tree; later drivers include upstream high-pass stages in this per-channel export.",
+        "# Topology: cascaded mixed-order LR split tree; later drivers include upstream high-pass stages in this per-channel export.",
+        "# LR2 splits invert the next/downstream branch; polarity is exported per driver.",
         "# Diagram:",
     ]
     yaml_lines.extend(f"# {line}" for line in topology["diagram"].splitlines())
@@ -2113,7 +2476,8 @@ def write_exports(
 
     dsp_lines = [
         "# Preliminary Hypex-style filter listing generated from the synthetic CDSL model",
-        "# Topology: cascaded LR4 split tree; later drivers include upstream high-pass stages in this per-channel export.",
+        "# Topology: cascaded mixed-order LR split tree; later drivers include upstream high-pass stages in this per-channel export.",
+        "# LR2 splits invert the next/downstream branch; polarity is exported per driver.",
         "# Diagram:",
     ]
     dsp_lines.extend(f"# {line}" for line in topology["diagram"].splitlines())
@@ -2146,6 +2510,13 @@ def write_exports(
             writer.writeheader()
             writer.writerows(distortion_audit_rows)
 
+    if effective_thd_rows:
+        fieldnames = sorted({key for row in effective_thd_rows for key in row.keys()})
+        with (root / "effective_system_thd.csv").open("w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
+            writer.writeheader()
+            writer.writerows(effective_thd_rows)
+
     return manifest
 
 
@@ -2167,32 +2538,60 @@ def value_or_dash(value, fmt: str = ".2f") -> str:
     return html.escape(str(value))
 
 
-def render_report_comparison(rows: List[Dict]) -> str:
+def render_report_comparison(rows: List[Dict], constraints: Optional[List[Dict]] = None) -> str:
     if not rows:
         return ""
+    totals = comparison_weight_totals(rows)
     table_rows = "".join(
         f"""
         <tr>
             <td>{html.escape(row['metric'])}</td>
+            <td>{row.get('weight_percent', 0):.0f}%</td>
             <td>{value_or_dash(row.get('chosen'), row.get('format', '.2f'))}</td>
             <td>{value_or_dash(row.get('baseline'), row.get('format', '.2f'))}</td>
-            <td>{value_or_dash(row.get('baseline_minus_chosen'), row.get('format', '.2f'))}</td>
+            <td>{html.escape(row.get('direction', ''))}</td>
+            <td>{html.escape(row.get('winner', ''))}</td>
             <td>{html.escape(row.get('note', ''))}</td>
         </tr>
         """
         for row in rows
     )
+    constraint_rows = ""
+    for row in constraints or []:
+        constraint_rows += f"""
+        <tr>
+            <td>{html.escape(row['variant'])}</td>
+            <td>{html.escape(row['xover_types'])}</td>
+            <td>{row['max_biquads']}/{row['limit']}</td>
+            <td>{'pass' if row['biquad_cap_met'] else 'fail'}</td>
+            <td>{row['flatness_rms_db']:.2f}</td>
+            <td>{row['flatness_peak_to_peak_db']:.2f}</td>
+            <td>{'pass' if row['flatness_met'] else 'warn'}</td>
+        </tr>
+        """
+    constraints_html = ""
+    if constraint_rows:
+        constraints_html = f"""
+            <h3>Hard Filters</h3>
+            <p class="note">Biquad counts and sparse-EQ limits are acceptance criteria only; they are not scored as acoustic advantages once they pass.</p>
+            <table>
+                <thead><tr><th>Variant</th><th>XO Types</th><th>Max Biquads</th><th>Cap</th><th>Flat RMS</th><th>Flat P-P</th><th>Flatness</th></tr></thead>
+                <tbody>{constraint_rows}</tbody>
+            </table>
+        """
     return f"""
         <h2 class="section-title">Baseline vs Chosen</h2>
         <div class="card"><div class="card-body">
             <p class="note">
                 Baseline is the fixed seed: L26RO4Y below 200 Hz, L22MG 200-800 Hz,
-                GRS PT6816 800-2500 Hz, and ND25FW4 above 2500 Hz. Delta is baseline minus chosen.
+                GRS PT6816 800-2500 Hz, and ND25FW4 above 2500 Hz. Comparison factors use broad psychoacoustic frequency weighting and are separate from hard filter-count constraints.
+                Weighted factor wins: chosen {totals['chosen']:.0f}%, baseline {totals['baseline']:.0f}%, insufficient/context {totals['insufficient']:.0f}%.
             </p>
             <table>
-                <thead><tr><th>Metric</th><th>Chosen</th><th>Baseline</th><th>Delta</th><th>Interpretation</th></tr></thead>
+                <thead><tr><th>Factor</th><th>Weight</th><th>Chosen</th><th>Baseline</th><th>Direction</th><th>Winner</th><th>Why it matters</th></tr></thead>
                 <tbody>{table_rows}</tbody>
             </table>
+            {constraints_html}
             <p>{link('juan-baffleless-cdsl-comparison.html', 'Open side-by-side comparison page')}</p>
         </div></div>
     """
@@ -2204,23 +2603,27 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
     summary_label = manifest.get("summary_label", "Recommended balanced design")
     summary_subtitle = manifest.get(
         "summary_subtitle",
-        f"{len(DESIGN)}-way LR4 synthetic CDSL, generated from complex HDF5 measurements",
+        f"{len(DESIGN)}-way mixed LR2/LR4 synthetic CDSL, generated from complex HDF5 measurements",
     )
     selection_sentence = manifest.get(
         "summary_search_sentence",
         (
-            f"The recommended stack is from {manifest['search']['candidate_count']} evaluated 4-way/5-way LR4 combinations. "
+            f"The recommended stack is from {manifest['search']['candidate_count']} evaluated 4-way/5-way LR2/LR4 combinations. "
             f"Selection method: {manifest['search']['selection']['method']}."
         ),
     )
-    comparison_section = render_report_comparison(manifest.get("baseline_comparison", []))
+    comparison_section = render_report_comparison(
+        manifest.get("baseline_comparison", []),
+        manifest.get("baseline_constraints", []),
+    )
     synthetic_output = manifest.get("input_hdf5", {}).get("synthetic_output", str(SYNTHETIC_HDF5))
     search_results_href = manifest.get("search_results_href", f"{asset_slug}/candidate_search_results.json")
     stack_text = ", ".join(
         f"{band.driver} {band.lo:.0f}-{band.hi:.0f} Hz" if band.hi < FREQ_MAX else f"{band.driver} above {band.lo:.0f} Hz"
         for band in DESIGN
     )
-    xo_text = ", ".join(f"{xo['frequency_hz']:.0f}" for xo in CROSSOVERS)
+    xo_text = ", ".join(f"{xo['type']} {xo['frequency_hz']:.0f}" for xo in CROSSOVERS)
+    xover_type_text = " / ".join(xo["type"] for xo in CROSSOVERS)
     driver_rows = []
     for band in DESIGN:
         driver_href = f"juan-baffleless/interactive/{band.driver}_freq_response_angles.html"
@@ -2273,6 +2676,7 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
     for idx, row in enumerate(manifest["search"]["finalists"]):
         rank = row.get("balanced_rank", idx + 1)
         rank_text = "fixed" if rank in (None, 0, "fixed") else str(rank)
+        row_xover_types = " / ".join(row.get("xover_types", ["LR4"] * len(row["xovers"])))
         finalist_rows += f"""
         <tr>
             <td>{html.escape(row['finalist_role'])}</td>
@@ -2280,12 +2684,13 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             <td>{row['ways']}</td>
             <td>{html.escape(' / '.join(row['drivers']))}</td>
             <td>{html.escape(' / '.join(f'{x:g}' for x in row['xovers']))}</td>
+            <td>{html.escape(row_xover_types)}</td>
             <td>{float(row['score']):.2f}</td>
             <td>{float(row['dipole_front_rms_db']):.2f}</td>
             <td>{float(row['xover_mismatch_rms_db']):.2f}</td>
             <td>{float(row['sep_30_60_median_2_10k_db']):.2f}</td>
-            <td>{float(row.get('biquad_budget_penalty', 0.0)):.2f}</td>
-            <td>{int(row.get('flat_eq_candidate_shortfall_total', 0))}</td>
+            <td>{int(row.get('max_possible_biquads_per_driver', 0))}/{MAX_BIQUADS_PER_DRIVER}</td>
+            <td>{'pass' if row.get('crossover_biquads_within_limit', False) else 'fail'}</td>
             <td>{html.escape(row['note'])}</td>
         </tr>
         """
@@ -2306,6 +2711,7 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
     )
     evidence_notes = "".join(f"<li>{html.escape(item)}</li>" for item in manifest["local_evidence_notes"])
     distortion_notes = "".join(f"<li>{html.escape(item)}</li>" for item in manifest["distortion_level_notes"])
+    l10_scan_notes = "".join(f"<li>{html.escape(item)}</li>" for item in manifest.get("l10_scanspeak_rationale", []))
     distortion_rows = "".join(
         f"""
         <tr>
@@ -2322,6 +2728,20 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
         """
         for row in manifest["distortion_thd_audit"]
         if row.get("band") in {"2-7 kHz", "2-10 kHz"} and row.get("has_distortion_data")
+    )
+    effective_thd_rows = "".join(
+        f"""
+        <tr>
+            <td>{html.escape(row['band'])}</td>
+            <td>{value_or_dash(row.get('effective_known_thd_percent_weighted'), '.3f')}%</td>
+            <td>{value_or_dash(row.get('effective_known_thd_p90_percent'), '.3f')}%</td>
+            <td>{value_or_dash(row.get('known_fundamental_coverage_weighted'), '.2f')}</td>
+            <td>{value_or_dash(row.get('front0_spl_weighted_median_db'), '.2f')}</td>
+            <td>{html.escape(row.get('known_trace_drivers', ''))}</td>
+            <td>{html.escape(row.get('missing_trace_drivers', ''))}</td>
+        </tr>
+        """
+        for row in manifest.get("effective_system_thd", [])
     )
     mounting_notes = "".join(f"<li>{html.escape(item)}</li>" for item in manifest["mounting_geometry_notes"])
     flatness_rows = "".join(
@@ -2357,7 +2777,7 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             <td>{row['inherited_upstream_hp_biquads']}</td>
             <td>{row['own_branch_hp_biquads']}</td>
             <td>{row['own_branch_lp_biquads']}</td>
-            <td>{row['effective_lr4_biquads']}</td>
+            <td>{row['effective_crossover_biquads']}</td>
             <td>{row['flat_eq_biquads']}</td>
             <td>{row['effective_total_biquads']}</td>
         </tr>
@@ -2464,7 +2884,7 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
                 <div class="summary-grid">
                     <div class="metric-card"><div class="value">{cdsl_stats['median']:.1f} dB</div><div class="label">CDSL median SPL30-SPL60, 2-10 kHz</div></div>
                     <div class="metric-card"><div class="value">{lx_stats['median']:.1f} dB</div><div class="label">LX521 measured median SPL30-SPL60, 2-10 kHz</div></div>
-                    <div class="metric-card"><div class="value">LR4</div><div class="label">Topology at {html.escape(xo_text)} Hz</div></div>
+                    <div class="metric-card"><div class="value">{html.escape(xover_type_text)}</div><div class="label">Topology at {html.escape(xo_text)} Hz</div></div>
                     <div class="metric-card"><div class="value">0.5 / 3.0 ms</div><div class="label">Same HDF5 gate condition as Juan LX521 data</div></div>
                 </div>
                 <p class="note">
@@ -2480,19 +2900,19 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
         <h2 class="section-title">Finalists & Candidate Search</h2>
         <div class="card"><div class="card-body">
             <p class="note">
-                The search is not just the preliminary stack. It tries L10NEO, both ScanSpeak 10F variants, GRS, MU10, and ND25 across multiple LR4 crossover grids.
+                The search is not just the preliminary stack. It tries L10NEO, both ScanSpeak 10F variants, GRS, MU10, and ND25 across multiple LR2/LR4 crossover grids.
                 Lower score is better; the score favors cosine/dipole-like front and rear polars, strong side nulls, adjacent-driver pattern match near crossovers,
-                measured-frequency validity, larger 2-10 kHz SPL30-SPL60 separation, and enough flat-EQ headroom under the 15-biquad/channel cap.
+                measured-frequency validity, larger psychoacoustically weighted 2-10 kHz SPL30-SPL60 separation, known in-band THD traces, and the 15-biquad/channel cap as a hard filter.
                 {html.escape(manifest['search']['selection']['reason'])}
             </p>
             <table>
-                <thead><tr><th>Finalist</th><th>Balanced Rank</th><th>Ways</th><th>Drivers</th><th>XOs Hz</th><th>Score</th><th>Front Dipole RMS</th><th>XO Mismatch</th><th>30-60 dB</th><th>Biquad Penalty</th><th>EQ Shortfall</th><th>Note</th></tr></thead>
+                <thead><tr><th>Finalist</th><th>Balanced Rank</th><th>Ways</th><th>Drivers</th><th>XOs Hz</th><th>XO Types</th><th>Score</th><th>Front Dipole RMS</th><th>XO Mismatch</th><th>30-60 dB</th><th>Max Biquads</th><th>Cap</th><th>Note</th></tr></thead>
                 <tbody>{finalist_rows}</tbody>
             </table>
             <div class="asset-grid">
                 <img src="juan-baffleless-cdsl/static_plots/core/cdsl_search_top_candidates.png" alt="Top CDSL candidate search results">
             </div>
-            <p>{link(search_results_href, 'Download full candidate search JSON')}</p>
+            <p>{link(search_results_href, f"Download ranked candidate search JSON (top {manifest['search'].get('candidate_export_count', manifest['search']['candidate_count'])} of {manifest['search']['candidate_count']})")}</p>
         </div></div>
 
         <h2 class="section-title">Driver Tradeoff Audit</h2>
@@ -2525,7 +2945,23 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
                 <tbody>{distortion_rows}</tbody>
             </table>
             <ul>{distortion_notes}</ul>
+            <h3>L10NEO vs ScanSpeak</h3>
+            <ul>{l10_scan_notes}</ul>
             <p>{link('juan-baffleless-cdsl/distortion_thd_audit.csv', 'Download raw REW THD / SPL audit CSV')}</p>
+        </div></div>
+
+        <h2 class="section-title">Effective System THD</h2>
+        <div class="card"><div class="card-body">
+            <p class="note">
+                Effective THD is estimated from the filtered front 0-degree driver contributions.
+                Only drivers with usable REW THD traces contribute distortion data, and harmonic pressures are combined incoherently.
+                The coverage column shows what fraction of the weighted fundamental contribution has THD evidence in each band.
+            </p>
+            <table>
+                <thead><tr><th>Band</th><th>Weighted THD</th><th>P90 THD</th><th>Known Coverage</th><th>Front0 SPL Med</th><th>Known Drivers</th><th>Missing Drivers</th></tr></thead>
+                <tbody>{effective_thd_rows}</tbody>
+            </table>
+            <p>{link('juan-baffleless-cdsl/effective_system_thd.csv', 'Download effective system THD CSV')}</p>
         </div></div>
 
         <h2 class="section-title">Chosen Drivers</h2>
@@ -2545,14 +2981,14 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             </p>
             <pre class="topology-diagram">{html.escape(topology['diagram'])}</pre>
             <div class="summary-grid">
-                <div class="metric-card"><div class="value">{topology_summary['shared_tree_lr4_biquads']}</div><div class="label">Shared-tree LR4 biquads</div></div>
-                <div class="metric-card"><div class="value">{topology_summary['standalone_channel_lr4_biquads']}</div><div class="label">Per-channel exported LR4 biquads</div></div>
+                <div class="metric-card"><div class="value">{topology_summary['shared_tree_crossover_biquads']}</div><div class="label">Shared-tree crossover biquads</div></div>
+                <div class="metric-card"><div class="value">{topology_summary['standalone_channel_crossover_biquads']}</div><div class="label">Per-channel exported crossover biquads</div></div>
                 <div class="metric-card"><div class="value">{topology_summary['flat_eq_biquads']}</div><div class="label">Flat-EQ biquads</div></div>
                 <div class="metric-card"><div class="value">{topology_summary['max_effective_total_biquads_per_driver']}/{topology_summary['max_biquads_per_driver_limit']}</div><div class="label">Max biquads on any driver</div></div>
                 <div class="metric-card"><div class="value">{topology_summary['shared_tree_total_biquads_with_eq']}</div><div class="label">Shared-tree total with EQ</div></div>
             </div>
             <table>
-                <thead><tr><th>Stage</th><th>Driver</th><th>Passband Hz</th><th>Global HP</th><th>Inherited HP</th><th>Own HP</th><th>Own LP</th><th>LR4 Total</th><th>Flat-EQ</th><th>Effective Total</th></tr></thead>
+                <thead><tr><th>Stage</th><th>Driver</th><th>Passband Hz</th><th>Global HP</th><th>Inherited HP</th><th>Own HP</th><th>Own LP</th><th>XO Total</th><th>Flat-EQ</th><th>Effective Total</th></tr></thead>
                 <tbody>{topology_rows}</tbody>
             </table>
             <ul>{topology_notes}</ul>
@@ -2560,11 +2996,11 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
 
         <div class="card"><div class="card-body">
             <p class="note">
-                Crossovers are LR4 cascades using two Q=0.7071 biquads per LR4 edge.
+                Crossovers are mixed LR2/LR4 cascades: LR2 uses one Q=0.5 biquad per edge and inverts the downstream branch, while LR4 uses two Q=0.7071 biquads per edge.
                 The <code>flat-EQ</code> filters are a sparse summed-response least-squares fit assigned per driver.
                 They use {manifest['flatness_optimization']['filters_kept']} active correction filters out of {manifest['flatness_optimization']['filters_tested']} candidates;
                 the unconstrained full fit would keep about {manifest['flatness_optimization']['full_fit_filters_needed']} filters above the pruning threshold.
-                The hard export limit is {manifest['flatness_optimization']['max_biquads_per_driver']} biquads per driver, including cascaded LR4 filters before flat-EQ.
+                The hard export limit is {manifest['flatness_optimization']['max_biquads_per_driver']} biquads per driver, including cascaded crossover filters before flat-EQ.
                 This is still a simulated equalization pass, not a final measured-room/prototype EQ.
             </p>
             <table>
@@ -2736,9 +3172,10 @@ def update_manifest_file(summary: Dict) -> None:
 
 
 def write_variant_report(summary: Dict) -> None:
-    global DESIGN, CROSSOVERS
+    global DESIGN, CROSSOVERS, CROSSOVER_ORDERS
     DESIGN = summary["design"]
     CROSSOVERS = summary["crossovers"]
+    CROSSOVER_ORDERS = summary["xover_orders"]
     update_manifest_file(summary)
     report = render_report(
         summary["output_root"],
@@ -2758,6 +3195,7 @@ def build_variant(
     juan_cfg: Dict,
     drivers: List[str],
     xovers: List[float],
+    xover_orders: Optional[List[int]] = None,
     output_root: Path,
     docs_root: Path,
     docs_page: Path,
@@ -2776,19 +3214,23 @@ def build_variant(
     write_search_results: bool = True,
     search_results_href: Optional[str] = None,
 ) -> Dict:
-    global DESIGN, CROSSOVERS
+    global DESIGN, CROSSOVERS, CROSSOVER_ORDERS
     if output_root.exists():
         shutil.rmtree(output_root)
     ensure_dirs(output_root)
 
     DESIGN = make_design(drivers, xovers)
-    CROSSOVERS = crossover_manifest(drivers, xovers)
+    if xover_orders is None:
+        xover_orders = [4] * len(xovers)
+    apply_crossover_polarity(DESIGN, xover_orders)
+    CROSSOVERS = crossover_manifest(drivers, xovers, xover_orders)
+    CROSSOVER_ORDERS = [int(order) for order in xover_orders]
     missing = [band.driver for band in DESIGN if band.driver not in juan_data]
     if missing:
         raise RuntimeError(f"Missing required drivers in {JUAN_HDF5}: {missing}")
 
     plot_search_results(search_results, output_root, selected_candidate)
-    add_crossover_filters(DESIGN)
+    add_crossover_filters(DESIGN, xover_orders)
     set_initial_gains(juan_data, DESIGN)
     optimize_delays(juan_data, DESIGN)
     flatness_info = optimize_system_flatness(juan_data, DESIGN)
@@ -2796,6 +3238,7 @@ def build_variant(
     system = synthesize_system(juan_data, DESIGN)
     lx = load_lx521(lx_data)
     side_feature_info = upper_mid_side_feature(system)
+    effective_thd_rows = effective_system_thd(system, DESIGN)
     system_metrics = directivity_metrics(system)
     lx_metrics = directivity_metrics(lx)
 
@@ -2816,6 +3259,7 @@ def build_variant(
         metrics_rows,
         driver_audit_rows,
         distortion_audit_rows,
+        effective_thd_rows,
         flatness_info,
         side_feature_info,
         juan_cfg,
@@ -2843,9 +3287,11 @@ def build_variant(
         "synthetic_hdf5": synthetic_hdf5,
         "design": DESIGN,
         "crossovers": CROSSOVERS,
+        "xover_orders": CROSSOVER_ORDERS,
         "manifest": manifest,
         "metrics_rows": metrics_rows,
         "flatness_info": flatness_info,
+        "effective_thd_rows": effective_thd_rows,
         "system": system,
         "lx": lx,
         "system_metrics": system_metrics,
@@ -2858,96 +3304,239 @@ def build_variant(
     return summary
 
 
-def compare_variants(chosen: Dict, baseline: Dict) -> List[Dict]:
-    chosen_2_10 = metrics_band(chosen["metrics_rows"], "2-10 kHz")
-    baseline_2_10 = metrics_band(baseline["metrics_rows"], "2-10 kHz")
-    chosen_flat = chosen["flatness_info"]["after"][FLATNESS_PRIMARY_SMOOTHING][FLATNESS_PRIMARY_BAND_HZ]
-    baseline_flat = baseline["flatness_info"]["after"][FLATNESS_PRIMARY_SMOOTHING][FLATNESS_PRIMARY_BAND_HZ]
-    chosen_topology = chosen["manifest"]["filter_topology"]["summary"]
-    baseline_topology = baseline["manifest"]["filter_topology"]["summary"]
-    rows = [
-        {
-            "metric": "2-10 kHz SPL30-SPL60 median (dB)",
-            "chosen": chosen_2_10["cdsl_30_60_median_db"],
-            "baseline": baseline_2_10["cdsl_30_60_median_db"],
-            "baseline_minus_chosen": baseline_2_10["cdsl_30_60_median_db"] - chosen_2_10["cdsl_30_60_median_db"],
-            "note": "Higher usually means stronger CDSL near/far angular separation.",
-        },
-        {
-            "metric": "2-10 kHz front 90 minus front 0 median (dB)",
-            "chosen": chosen_2_10["cdsl_f90_minus_f0_median_db"],
-            "baseline": baseline_2_10["cdsl_f90_minus_f0_median_db"],
-            "baseline_minus_chosen": baseline_2_10["cdsl_f90_minus_f0_median_db"] - chosen_2_10["cdsl_f90_minus_f0_median_db"],
-            "note": "More negative preserves a deeper side null.",
-        },
-        {
-            "metric": "2-10 kHz rear 0 minus front 0 median (dB)",
-            "chosen": chosen_2_10["cdsl_r0_minus_f0_median_db"],
-            "baseline": baseline_2_10["cdsl_r0_minus_f0_median_db"],
-            "baseline_minus_chosen": baseline_2_10["cdsl_r0_minus_f0_median_db"] - chosen_2_10["cdsl_r0_minus_f0_median_db"],
-            "note": "Closer to 0 dB is closer front/rear dipole symmetry.",
-        },
-        {
-            "metric": "2-10 kHz DI mean (dB)",
-            "chosen": chosen_2_10["cdsl_di_mean_db"],
-            "baseline": baseline_2_10["cdsl_di_mean_db"],
-            "baseline_minus_chosen": baseline_2_10["cdsl_di_mean_db"] - chosen_2_10["cdsl_di_mean_db"],
-            "note": "Higher indicates narrower horizontal directivity in this convention.",
-        },
-        {
-            "metric": "2-10 kHz -6 dB beamwidth median (deg)",
-            "chosen": chosen_2_10["cdsl_beam6_median_deg"],
-            "baseline": baseline_2_10["cdsl_beam6_median_deg"],
-            "baseline_minus_chosen": baseline_2_10["cdsl_beam6_median_deg"] - chosen_2_10["cdsl_beam6_median_deg"],
-            "note": "Lower indicates narrower front lobe.",
-            "format": ".0f",
-        },
-        {
-            "metric": "Flatness 200-10k 1/3-oct peak-peak (dB)",
-            "chosen": chosen_flat["peak_to_peak_db"],
-            "baseline": baseline_flat["peak_to_peak_db"],
-            "baseline_minus_chosen": baseline_flat["peak_to_peak_db"] - chosen_flat["peak_to_peak_db"],
-            "note": "Lower is flatter after the sparse EQ fit.",
-        },
-        {
-            "metric": "Flatness 200-10k 1/3-oct RMS error (dB)",
-            "chosen": chosen_flat["rms_error_db"],
-            "baseline": baseline_flat["rms_error_db"],
-            "baseline_minus_chosen": baseline_flat["rms_error_db"] - chosen_flat["rms_error_db"],
-            "note": "Lower is flatter after the sparse EQ fit.",
-        },
-        {
-            "metric": "Flat-EQ biquads",
-            "chosen": chosen_topology["flat_eq_biquads"],
-            "baseline": baseline_topology["flat_eq_biquads"],
-            "baseline_minus_chosen": baseline_topology["flat_eq_biquads"] - chosen_topology["flat_eq_biquads"],
-            "note": "Lower is simpler.",
-            "format": ".0f",
-        },
-        {
-            "metric": "Shared-tree total biquads with EQ",
-            "chosen": chosen_topology["shared_tree_total_biquads_with_eq"],
-            "baseline": baseline_topology["shared_tree_total_biquads_with_eq"],
-            "baseline_minus_chosen": baseline_topology["shared_tree_total_biquads_with_eq"] - chosen_topology["shared_tree_total_biquads_with_eq"],
-            "note": "Lower is simpler in a cascaded implementation.",
-            "format": ".0f",
-        },
+def weighted_front_flatness_rms(system: Dict) -> float:
+    front0 = pressure_to_db(system["front"][0])
+    smooth = octave_smooth(COMMON_FREQ, front0, 3.0)
+    weights = psychoacoustic_weights(COMMON_FREQ, 200.0, 10_000.0)
+    center = weighted_mean(smooth, weights)
+    return weighted_rms(smooth - center, weights)
+
+
+def effective_thd_band(summary: Dict, band: str = "2-7 kHz") -> Tuple[float, float]:
+    for row in summary.get("effective_thd_rows", []):
+        if row.get("band") == band:
+            return (
+                float(row.get("effective_known_thd_percent_weighted", float("nan"))),
+                float(row.get("known_fundamental_coverage_weighted", 0.0)),
+            )
+    return float("nan"), 0.0
+
+
+def weighted_system_comparison_metrics(summary: Dict) -> Dict[str, float]:
+    system = summary["system"]
+    weights_2_10 = psychoacoustic_weights(COMMON_FREQ, 2000.0, 10_000.0)
+    weights_200_10 = psychoacoustic_weights(COMMON_FREQ, 200.0, 10_000.0)
+
+    sep = pressure_to_db(system["front"][30]) - pressure_to_db(system["front"][60])
+    side_leak = pressure_to_db(system["front"][90]) - pressure_to_db(system["front"][0])
+    rear0_delta = pressure_to_db(system["rear"][0]) - pressure_to_db(system["front"][0])
+
+    ideal = {angle: cosine_target_db(angle) for angle in [15, 30, 45, 60, 75]}
+    front_errors = [
+        pressure_to_db(system["front"][angle]) - pressure_to_db(system["front"][0]) - target
+        for angle, target in ideal.items()
     ]
+    rear_errors = [
+        pressure_to_db(system["rear"][angle]) - pressure_to_db(system["rear"][0]) - target
+        for angle, target in ideal.items()
+    ]
+    thd_percent, thd_coverage = effective_thd_band(summary, "2-7 kHz")
+    return {
+        "sep_30_60_weighted_db": weighted_mean(sep, weights_2_10),
+        "xover_mismatch_rms_db": float(summary["manifest"]["search"]["selected_candidate"].get("xover_mismatch_rms_db", float("nan"))),
+        "side_leak_excess_rms_db": weighted_rms(np.maximum(side_leak + 18.0, 0.0), weights_2_10),
+        "front_dipole_error_rms_db": weighted_rms_stack(front_errors, weights_2_10),
+        "rear_dipole_error_rms_db": weighted_rms_stack(rear_errors, weights_2_10),
+        "rear0_symmetry_rms_db": weighted_rms(rear0_delta, weights_2_10),
+        "flatness_weighted_rms_db": weighted_front_flatness_rms(system),
+        "effective_known_thd_2_7_percent": thd_percent,
+        "known_thd_coverage_2_7": thd_coverage,
+        "weights_sum_2_10": float(np.sum(weights_2_10)),
+        "weights_sum_200_10": float(np.sum(weights_200_10)),
+    }
+
+
+def comparison_winner(chosen_value: float, baseline_value: float, direction: str, tolerance: float = 0.02) -> str:
+    if not np.isfinite(chosen_value) or not np.isfinite(baseline_value):
+        return "insufficient data"
+    delta = chosen_value - baseline_value
+    if abs(delta) <= tolerance:
+        return "tie"
+    if direction == "higher":
+        return "chosen" if delta > 0 else "baseline"
+    return "chosen" if delta < 0 else "baseline"
+
+
+def compare_variants(chosen: Dict, baseline: Dict) -> List[Dict]:
+    chosen_m = weighted_system_comparison_metrics(chosen)
+    baseline_m = weighted_system_comparison_metrics(baseline)
+    specs = [
+        (
+            "Weighted 2-10 kHz SPL30-SPL60 (dB)",
+            "sep_30_60_weighted_db",
+            28,
+            "higher",
+            "Near/far angular separation is the main CDSL target; weighting emphasizes the ear-sensitive 2-7 kHz center and downweights the suspect top octave.",
+        ),
+        (
+            "Crossover-local polar mismatch RMS (dB)",
+            "xover_mismatch_rms_db",
+            18,
+            "lower",
+            "Keeps adjacent driver radiation patterns close through each acoustic handoff, which is why the chosen mixed LR2/LR4 stack is not judged by SPL alone.",
+        ),
+        (
+            "Weighted 90-degree leakage excess RMS (dB)",
+            "side_leak_excess_rms_db",
+            16,
+            "lower",
+            "Penalizes energy above a -18 dB side-null target where crosstalk cancellation is most sensitive.",
+        ),
+        (
+            "Weighted front dipole polar error RMS (dB)",
+            "front_dipole_error_rms_db",
+            12,
+            "lower",
+            "Keeps the front lobe close to a cosine/dipole shape rather than just maximizing one angle pair.",
+        ),
+        (
+            "Weighted rear dipole polar error RMS (dB)",
+            "rear_dipole_error_rms_db",
+            8,
+            "lower",
+            "Checks whether the rear radiation stays dipole-like instead of becoming an uncontrolled back lobe.",
+        ),
+        (
+            "Weighted rear/front symmetry RMS (dB)",
+            "rear0_symmetry_rms_db",
+            6,
+            "lower",
+            "Dipole behavior needs rear 0-degree magnitude close to front 0-degree after filtering.",
+        ),
+        (
+            "Weighted 200-10k flatness RMS (dB)",
+            "flatness_weighted_rms_db",
+            7,
+            "lower",
+            "Uses one-third-octave front-sum trend with the same broad psychoacoustic weighting; filter count is only a cap, not a score.",
+        ),
+        (
+            "Effective known system THD, 2-7 kHz (%)",
+            "effective_known_thd_2_7_percent",
+            5,
+            "lower",
+            "Uses filtered driver contributions and available REW THD traces; incomplete coverage is reported separately.",
+        ),
+    ]
+    rows = []
+    for metric, key, weight, direction, note in specs:
+        chosen_value = chosen_m[key]
+        baseline_value = baseline_m[key]
+        winner = comparison_winner(chosen_value, baseline_value, direction)
+        if key == "effective_known_thd_2_7_percent" and (
+            chosen_m["known_thd_coverage_2_7"] < 0.2 or baseline_m["known_thd_coverage_2_7"] < 0.2
+        ):
+            winner = "insufficient coverage"
+        rows.append(
+            {
+                "metric": metric,
+                "weight_percent": weight,
+                "direction": direction,
+                "chosen": chosen_value,
+                "baseline": baseline_value,
+                "baseline_minus_chosen": baseline_value - chosen_value,
+                "winner": winner,
+                "note": note,
+            }
+        )
+    rows.append(
+        {
+            "metric": "Known THD contribution coverage, 2-7 kHz",
+            "weight_percent": 0,
+            "direction": "higher",
+            "chosen": chosen_m["known_thd_coverage_2_7"],
+            "baseline": baseline_m["known_thd_coverage_2_7"],
+            "baseline_minus_chosen": baseline_m["known_thd_coverage_2_7"] - chosen_m["known_thd_coverage_2_7"],
+            "winner": "context",
+            "note": "Coverage is not a winner metric; it tells how much of the weighted fundamental has measured THD traces.",
+        }
+    )
     return rows
 
 
+def comparison_constraints(chosen: Dict, baseline: Dict) -> List[Dict]:
+    rows = []
+    for label, summary in [("Chosen", chosen), ("Baseline", baseline)]:
+        topology = summary["manifest"]["filter_topology"]["summary"]
+        flatness = summary["flatness_info"]["after"][FLATNESS_PRIMARY_SMOOTHING][FLATNESS_PRIMARY_BAND_HZ]
+        xover_types = " / ".join(topology["xover_types"])
+        rows.append(
+            {
+                "variant": label,
+                "xover_types": xover_types,
+                "max_biquads": topology["max_effective_total_biquads_per_driver"],
+                "limit": topology["max_biquads_per_driver_limit"],
+                "biquad_cap_met": topology["per_driver_limit_met"],
+                "flatness_rms_db": flatness["rms_error_db"],
+                "flatness_peak_to_peak_db": flatness["peak_to_peak_db"],
+                "flatness_met": summary["flatness_info"]["constraint_met"],
+            }
+        )
+    return rows
+
+
+def comparison_weight_totals(rows: List[Dict]) -> Dict[str, float]:
+    totals = {"chosen": 0.0, "baseline": 0.0, "tie": 0.0, "insufficient": 0.0}
+    for row in rows:
+        weight = float(row.get("weight_percent", 0.0))
+        winner = row.get("winner", "")
+        if winner in {"chosen", "baseline", "tie"}:
+            totals[winner] += weight
+        else:
+            totals["insufficient"] += weight
+    return totals
+
+
 def render_comparison_page(comparison_rows: List[Dict], chosen: Dict, baseline: Dict) -> str:
+    constraint_rows = comparison_constraints(chosen, baseline)
+    totals = comparison_weight_totals(comparison_rows)
     rows_html = "".join(
         f"""
         <tr>
             <td>{html.escape(row['metric'])}</td>
+            <td>{row.get('weight_percent', 0):.0f}%</td>
             <td>{value_or_dash(row.get('chosen'), row.get('format', '.2f'))}</td>
             <td>{value_or_dash(row.get('baseline'), row.get('format', '.2f'))}</td>
-            <td>{value_or_dash(row.get('baseline_minus_chosen'), row.get('format', '.2f'))}</td>
+            <td>{html.escape(row.get('direction', ''))}</td>
+            <td>{html.escape(row.get('winner', ''))}</td>
             <td>{html.escape(row.get('note', ''))}</td>
         </tr>
         """
         for row in comparison_rows
+    )
+    constraints_html = "".join(
+        f"""
+        <tr>
+            <td>{html.escape(row['variant'])}</td>
+            <td>{html.escape(row['xover_types'])}</td>
+            <td>{row['max_biquads']}/{row['limit']}</td>
+            <td>{'pass' if row['biquad_cap_met'] else 'fail'}</td>
+            <td>{row['flatness_rms_db']:.2f}</td>
+            <td>{row['flatness_peak_to_peak_db']:.2f}</td>
+            <td>{'pass' if row['flatness_met'] else 'warn'}</td>
+        </tr>
+        """
+        for row in constraint_rows
+    )
+    chosen_xo = ", ".join(f"{xo['type']} {xo['frequency_hz']:.0f} Hz" for xo in chosen["crossovers"])
+    baseline_xo = ", ".join(f"{xo['type']} {xo['frequency_hz']:.0f} Hz" for xo in baseline["crossovers"])
+    chosen_stack = " / ".join(
+        f"{band.driver} {band.lo:.0f}-{band.hi:.0f} Hz" if band.hi < FREQ_MAX else f"{band.driver} >{band.lo:.0f} Hz"
+        for band in chosen["design"]
+    )
+    baseline_stack = " / ".join(
+        f"{band.driver} {band.lo:.0f}-{band.hi:.0f} Hz" if band.hi < FREQ_MAX else f"{band.driver} >{band.lo:.0f} Hz"
+        for band in baseline["design"]
     )
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -2961,6 +3550,14 @@ def render_comparison_page(comparison_rows: List[Dict], chosen: Dict, baseline: 
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
             gap: 1rem;
+        }}
+        figure {{
+            margin: 0;
+        }}
+        figcaption {{
+            font-weight: 700;
+            margin: 0 0 0.4rem;
+            color: var(--text, #0f172a);
         }}
         .asset-grid img {{
             width: 100%;
@@ -2992,35 +3589,48 @@ def render_comparison_page(comparison_rows: List[Dict], chosen: Dict, baseline: 
     </header>
     <main>
         <div class="card"><div class="card-body">
-            <p>
-                Chosen: {html.escape(' / '.join(band.driver for band in chosen['design']))}.
-                Baseline: {html.escape(' / '.join(band.driver for band in baseline['design']))}.
-                Delta is baseline minus chosen.
+            <h2>Which Is Which</h2>
+            <p><strong>Chosen:</strong> {html.escape(chosen_stack)}. Crossovers: {html.escape(chosen_xo)}.</p>
+            <p><strong>Baseline:</strong> {html.escape(baseline_stack)}. Crossovers: {html.escape(baseline_xo)}.</p>
+            <p class="note">
+                Acoustic factors are weighted 100% total and use broad psychoacoustic frequency weighting centered near 2.6 kHz.
+                The weighting emphasizes 2-7 kHz, still includes the rest of 2-10 kHz, and prevents the suspect 10 kHz/top-octave feature from dominating the decision.
+                Biquad counts and sparse-EQ limits are hard pass/fail filters only.
+                Weighted factor wins: chosen {totals['chosen']:.0f}%, baseline {totals['baseline']:.0f}%, insufficient/context {totals['insufficient']:.0f}%.
             </p>
             <ul class="link-list">
                 <li>{link('juan-baffleless-cdsl.html', 'Open chosen CDSL report')}</li>
                 <li>{link('juan-baffleless-cdsl-baseline.html', 'Open baseline CDSL report')}</li>
             </ul>
             <table>
-                <thead><tr><th>Metric</th><th>Chosen</th><th>Baseline</th><th>Delta</th><th>Interpretation</th></tr></thead>
+                <thead><tr><th>Factor</th><th>Weight</th><th>Chosen</th><th>Baseline</th><th>Direction</th><th>Winner</th><th>Why it matters</th></tr></thead>
                 <tbody>{rows_html}</tbody>
+            </table>
+            <h2>Hard Filters</h2>
+            <p class="note">
+                These rows answer whether the design is exportable under the 15-biquad/channel limit and sparse flat-EQ target.
+                Passing with fewer filters is not scored as a better acoustic design.
+            </p>
+            <table>
+                <thead><tr><th>Variant</th><th>XO Types</th><th>Max Biquads</th><th>Cap</th><th>Flat RMS</th><th>Flat P-P</th><th>Flatness</th></tr></thead>
+                <tbody>{constraints_html}</tbody>
             </table>
         </div></div>
 
         <h2 class="section-title">Acoustic Sum</h2>
         <div class="asset-grid">
-            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_crossover_regions.png" alt="Chosen crossover regions">
-            <img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_crossover_regions.png" alt="Baseline crossover regions">
-            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_freq_response_angles.png" alt="Chosen frequency response">
-            <img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_freq_response_angles.png" alt="Baseline frequency response">
+            <figure><figcaption>Chosen: acoustic contributions</figcaption><img src="juan-baffleless-cdsl/static_plots/core/cdsl_crossover_regions.png" alt="Chosen crossover regions"></figure>
+            <figure><figcaption>Baseline: acoustic contributions</figcaption><img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_crossover_regions.png" alt="Baseline crossover regions"></figure>
+            <figure><figcaption>Chosen: front angles</figcaption><img src="juan-baffleless-cdsl/static_plots/core/cdsl_freq_response_angles.png" alt="Chosen frequency response"></figure>
+            <figure><figcaption>Baseline: front angles</figcaption><img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_freq_response_angles.png" alt="Baseline frequency response"></figure>
         </div>
 
         <h2 class="section-title">Directivity</h2>
         <div class="asset-grid">
-            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_contour_normalized.png" alt="Chosen normalized contour">
-            <img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_contour_normalized.png" alt="Baseline normalized contour">
-            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_30_vs_60_metric.png" alt="Chosen 30 vs 60">
-            <img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_30_vs_60_metric.png" alt="Baseline 30 vs 60">
+            <figure><figcaption>Chosen: normalized contour</figcaption><img src="juan-baffleless-cdsl/static_plots/core/cdsl_contour_normalized.png" alt="Chosen normalized contour"></figure>
+            <figure><figcaption>Baseline: normalized contour</figcaption><img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_contour_normalized.png" alt="Baseline normalized contour"></figure>
+            <figure><figcaption>Chosen: 30-60 separation</figcaption><img src="juan-baffleless-cdsl/static_plots/core/cdsl_30_vs_60_metric.png" alt="Chosen 30 vs 60"></figure>
+            <figure><figcaption>Baseline: 30-60 separation</figcaption><img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_30_vs_60_metric.png" alt="Baseline 30 vs 60"></figure>
         </div>
     </main>
     <footer>
@@ -3056,6 +3666,7 @@ def main() -> None:
         juan_cfg=juan_cfg,
         drivers=best["drivers"],
         xovers=best["xovers"],
+        xover_orders=best.get("xover_orders", [4] * len(best["xovers"])),
         output_root=OUTPUT_ROOT,
         docs_root=DOCS_ROOT,
         docs_page=DOCS_PAGE,
@@ -3072,7 +3683,7 @@ def main() -> None:
         distortion_audit_rows=distortion_audit_rows,
     )
 
-    baseline_candidate = score_candidate(precompute_search_data(juan_data), BASELINE_DRIVERS, BASELINE_XOVERS)
+    baseline_candidate = score_candidate(precompute_search_data(juan_data), BASELINE_DRIVERS, BASELINE_XOVERS, BASELINE_XOVER_ORDERS)
     baseline_candidate = with_rank(
         baseline_candidate,
         0,
@@ -3081,7 +3692,7 @@ def main() -> None:
     )
     baseline_selection_info = {
         "method": "fixed baseline seed",
-        "reason": "This baseline is fixed by request and generated with the same gain, delay, cascaded LR4, and sparse flat-EQ process as the chosen design.",
+        "reason": "This baseline is fixed by request and generated with the same gain, delay, mixed-order LR, and sparse flat-EQ process as the chosen design.",
         "fallback_used": False,
     }
     baseline = build_variant(
@@ -3090,6 +3701,7 @@ def main() -> None:
         juan_cfg=juan_cfg,
         drivers=BASELINE_DRIVERS,
         xovers=BASELINE_XOVERS,
+        xover_orders=BASELINE_XOVER_ORDERS,
         output_root=BASELINE_OUTPUT_ROOT,
         docs_root=BASELINE_DOCS_ROOT,
         docs_page=BASELINE_DOCS_PAGE,
@@ -3113,8 +3725,11 @@ def main() -> None:
     )
 
     comparison_rows = compare_variants(chosen, baseline)
+    constraint_rows = comparison_constraints(chosen, baseline)
     chosen["manifest"]["baseline_comparison"] = comparison_rows
+    chosen["manifest"]["baseline_constraints"] = constraint_rows
     baseline["manifest"]["baseline_comparison"] = comparison_rows
+    baseline["manifest"]["baseline_constraints"] = constraint_rows
     write_variant_report(chosen)
     write_variant_report(baseline)
     COMPARISON_DOCS_PAGE.write_text(clean_text(render_comparison_page(comparison_rows, chosen, baseline)))

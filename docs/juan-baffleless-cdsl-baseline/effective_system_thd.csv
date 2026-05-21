@@ -1,0 +1,5 @@
+band,effective_known_thd_p90_percent,effective_known_thd_percent_weighted,front0_spl_weighted_median_db,known_fundamental_coverage_weighted,known_trace_drivers,method,missing_trace_drivers
+1-7 kHz,nan,nan,76.013,0.0,,front 0-degree driver contributions weighted by measured REW THD traces and combined incoherently,"L26RO4Y, L22MG (nude), GRS PT6816, ND25FW4 (nude 18mm)"
+2-7 kHz,nan,nan,75.913,0.0,,front 0-degree driver contributions weighted by measured REW THD traces and combined incoherently,"L26RO4Y, L22MG (nude), GRS PT6816, ND25FW4 (nude 18mm)"
+2-10 kHz,nan,nan,75.942,0.0,,front 0-degree driver contributions weighted by measured REW THD traces and combined incoherently,"L26RO4Y, L22MG (nude), GRS PT6816, ND25FW4 (nude 18mm)"
+7-10 kHz,nan,nan,76.651,0.0,,front 0-degree driver contributions weighted by measured REW THD traces and combined incoherently,"L26RO4Y, L22MG (nude), GRS PT6816, ND25FW4 (nude 18mm)"

@@ -1,7 +1,7 @@
 {
   "_topology": {
-    "architecture": "cascaded LR4 split tree with shared high-pass carryover",
-    "diagram": "Input\n  +-- LR4 HP 70 Hz (2 biquads, global boundary)\n    +-- split @ 200 Hz\n        +-- LR4 LP 200 Hz (2 biquads) -> L26RO4Y\n        +-- LR4 HP 200 Hz (2 biquads) -> next split\n      +-- split @ 800 Hz\n          +-- LR4 LP 800 Hz (2 biquads) -> L22MG (nude)\n          +-- LR4 HP 800 Hz (2 biquads) -> next split\n        +-- split @ 2500 Hz\n            +-- LR4 LP 2500 Hz (2 biquads) -> GRS PT6816\n            +-- LR4 HP 2500 Hz (2 biquads) -> ND25FW4 (nude 18mm)",
+    "architecture": "cascaded mixed-order Linkwitz-Riley split tree with shared high-pass carryover (LR4 / LR4 / LR4)",
+    "diagram": "Input\n  +-- LR4 HP 70 Hz (2 biquads, global boundary)\n    +-- LR4 split @ 200 Hz\n        +-- LR4 LP 200 Hz (2 biquads) -> L26RO4Y\n        +-- LR4 HP 200 Hz (2 biquads) -> next split\n      +-- LR4 split @ 800 Hz\n          +-- LR4 LP 800 Hz (2 biquads) -> L22MG (nude)\n          +-- LR4 HP 800 Hz (2 biquads) -> next split\n        +-- LR4 split @ 2500 Hz\n            +-- LR4 LP 2500 Hz (2 biquads) -> GRS PT6816\n            +-- LR4 HP 2500 Hz (2 biquads) -> ND25FW4 (nude 18mm)",
     "stages": [
       {
         "stage": 1,
@@ -14,9 +14,11 @@
         "inherited_upstream_hp_biquads": 0,
         "own_branch_hp_biquads": 0,
         "own_branch_lp_biquads": 2,
+        "effective_crossover_biquads": 4,
         "effective_lr4_biquads": 4,
-        "flat_eq_biquads": 2,
-        "effective_total_biquads": 6
+        "flat_eq_biquads": 0,
+        "effective_total_biquads": 4,
+        "polarity": 1
       },
       {
         "stage": 2,
@@ -29,9 +31,11 @@
         "inherited_upstream_hp_biquads": 0,
         "own_branch_hp_biquads": 2,
         "own_branch_lp_biquads": 2,
+        "effective_crossover_biquads": 6,
         "effective_lr4_biquads": 6,
-        "flat_eq_biquads": 5,
-        "effective_total_biquads": 11
+        "flat_eq_biquads": 4,
+        "effective_total_biquads": 10,
+        "polarity": 1
       },
       {
         "stage": 3,
@@ -44,9 +48,11 @@
         "inherited_upstream_hp_biquads": 2,
         "own_branch_hp_biquads": 2,
         "own_branch_lp_biquads": 2,
+        "effective_crossover_biquads": 8,
         "effective_lr4_biquads": 8,
-        "flat_eq_biquads": 2,
-        "effective_total_biquads": 10
+        "flat_eq_biquads": 1,
+        "effective_total_biquads": 9,
+        "polarity": 1
       },
       {
         "stage": 4,
@@ -59,17 +65,31 @@
         "inherited_upstream_hp_biquads": 4,
         "own_branch_hp_biquads": 2,
         "own_branch_lp_biquads": 0,
+        "effective_crossover_biquads": 8,
         "effective_lr4_biquads": 8,
         "flat_eq_biquads": 4,
-        "effective_total_biquads": 12
+        "effective_total_biquads": 12,
+        "polarity": 1
       }
     ],
     "summary": {
+      "xover_types": [
+        "LR4",
+        "LR4",
+        "LR4"
+      ],
+      "xover_orders": [
+        4,
+        4,
+        4
+      ],
+      "shared_tree_crossover_biquads": 14,
+      "standalone_channel_crossover_biquads": 26,
       "shared_tree_lr4_biquads": 14,
       "standalone_channel_lr4_biquads": 26,
-      "flat_eq_biquads": 13,
-      "shared_tree_total_biquads_with_eq": 27,
-      "standalone_channel_total_biquads": 39,
+      "flat_eq_biquads": 9,
+      "shared_tree_total_biquads_with_eq": 23,
+      "standalone_channel_total_biquads": 35,
       "max_biquads_per_driver_limit": 15,
       "max_effective_total_biquads_per_driver": 12,
       "per_driver_limit_met": true
@@ -77,6 +97,7 @@
     "notes": [
       "Shared-tree count assumes the DSP can route a high-pass bus into the next split stage.",
       "Standalone-channel count is what is exported per driver when each output channel must contain all inherited upstream filters.",
+      "LR2 splits use one Q=0.5 biquad per edge and invert the next/downstream branch; LR4 splits use two Q=0.7071 biquads per edge without a required polarity inversion.",
       "Flat-EQ is capped after crossover filters so every exported driver channel stays at or below 15 total biquads.",
       "Gain, delay, and polarity are not counted as biquads."
     ]
@@ -89,7 +110,7 @@
   ],
   "drivers": {
     "L26RO4Y": {
-      "gain_db": -7.467,
+      "gain_db": -14.193,
       "delay_ms": 0.0,
       "polarity": 1,
       "filters": [
@@ -120,27 +141,13 @@
           "q": 0.7071,
           "gain_db": 0.0,
           "source": "LR4 branch low-pass"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 110.0,
-          "q": 1.0,
-          "gain_db": -8.0,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "lowshelf",
-          "fc_hz": 95.0,
-          "q": 1.0,
-          "gain_db": -1.464,
-          "source": "flat-EQ"
         }
       ]
     },
     "L22MG (nude)": {
-      "gain_db": 11.244,
-      "delay_ms": -1.36,
-      "polarity": -1,
+      "gain_db": 12.653,
+      "delay_ms": -0.48,
+      "polarity": 1,
       "filters": [
         {
           "type": "highpass",
@@ -186,45 +193,38 @@
         },
         {
           "type": "peaking",
-          "fc_hz": 150.0,
+          "fc_hz": 500.0,
           "q": 1.0,
-          "gain_db": -8.0,
+          "gain_db": -4.342,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 330.0,
           "q": 1.0,
-          "gain_db": 7.426,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 500.0,
-          "q": 1.0,
-          "gain_db": -5.635,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 220.0,
-          "q": 1.0,
-          "gain_db": -4.504,
+          "gain_db": 2.928,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 620.0,
           "q": 1.0,
-          "gain_db": 1.406,
+          "gain_db": -0.753,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 150.0,
+          "q": 1.0,
+          "gain_db": 1.052,
           "source": "flat-EQ"
         }
       ]
     },
     "GRS PT6816": {
-      "gain_db": 1.746,
-      "delay_ms": -0.855,
-      "polarity": -1,
+      "gain_db": 3.924,
+      "delay_ms": 0.025,
+      "polarity": 1,
       "filters": [
         {
           "type": "highpass",
@@ -286,21 +286,14 @@
           "type": "peaking",
           "fc_hz": 2200.0,
           "q": 1.0,
-          "gain_db": 8.0,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 2800.0,
-          "q": 1.0,
-          "gain_db": -8.0,
+          "gain_db": -0.243,
           "source": "flat-EQ"
         }
       ]
     },
     "ND25FW4 (nude 18mm)": {
-      "gain_db": -0.719,
-      "delay_ms": -0.935,
+      "gain_db": 0.856,
+      "delay_ms": -0.125,
       "polarity": 1,
       "filters": [
         {
@@ -361,30 +354,30 @@
         },
         {
           "type": "peaking",
-          "fc_hz": 14000.0,
+          "fc_hz": 16500.0,
           "q": 1.0,
-          "gain_db": -8.0,
+          "gain_db": 8.0,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
-          "fc_hz": 16500.0,
+          "fc_hz": 14000.0,
           "q": 1.0,
-          "gain_db": 7.377,
+          "gain_db": -7.674,
           "source": "flat-EQ"
         },
         {
           "type": "highshelf",
           "fc_hz": 18000.0,
           "q": 1.0,
-          "gain_db": 6.642,
+          "gain_db": 2.578,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 12000.0,
           "q": 1.0,
-          "gain_db": 4.504,
+          "gain_db": 1.816,
           "source": "flat-EQ"
         }
       ]

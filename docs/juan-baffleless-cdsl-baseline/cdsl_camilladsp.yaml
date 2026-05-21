@@ -1,15 +1,16 @@
 # Preliminary CamillaDSP-style filter export
-# Topology: cascaded LR4 split tree; later drivers include upstream high-pass stages in this per-channel export.
+# Topology: cascaded mixed-order LR split tree; later drivers include upstream high-pass stages in this per-channel export.
+# LR2 splits invert the next/downstream branch; polarity is exported per driver.
 # Diagram:
 # Input
 #   +-- LR4 HP 70 Hz (2 biquads, global boundary)
-#     +-- split @ 200 Hz
+#     +-- LR4 split @ 200 Hz
 #         +-- LR4 LP 200 Hz (2 biquads) -> L26RO4Y
 #         +-- LR4 HP 200 Hz (2 biquads) -> next split
-#       +-- split @ 800 Hz
+#       +-- LR4 split @ 800 Hz
 #           +-- LR4 LP 800 Hz (2 biquads) -> L22MG (nude)
 #           +-- LR4 HP 800 Hz (2 biquads) -> next split
-#         +-- split @ 2500 Hz
+#         +-- LR4 split @ 2500 Hz
 #             +-- LR4 LP 2500 Hz (2 biquads) -> GRS PT6816
 #             +-- LR4 HP 2500 Hz (2 biquads) -> ND25FW4 (nude 18mm)
 filters:
@@ -25,12 +26,6 @@ filters:
   L26RO4Y_4:
     type: Biquad
     parameters: {type: lowpass, freq: 200.000, q: 0.7071, gain: 0.000}
-  L26RO4Y_5:
-    type: Biquad
-    parameters: {type: peaking, freq: 110.000, q: 1.0000, gain: -8.000}
-  L26RO4Y_6:
-    type: Biquad
-    parameters: {type: lowshelf, freq: 95.000, q: 1.0000, gain: -1.464}
   L22MG_nude_1:
     type: Biquad
     parameters: {type: highpass, freq: 70.000, q: 0.7071, gain: 0.000}
@@ -51,19 +46,16 @@ filters:
     parameters: {type: lowpass, freq: 800.000, q: 0.7071, gain: 0.000}
   L22MG_nude_7:
     type: Biquad
-    parameters: {type: peaking, freq: 150.000, q: 1.0000, gain: -8.000}
+    parameters: {type: peaking, freq: 500.000, q: 1.0000, gain: -4.342}
   L22MG_nude_8:
     type: Biquad
-    parameters: {type: peaking, freq: 330.000, q: 1.0000, gain: 7.426}
+    parameters: {type: peaking, freq: 330.000, q: 1.0000, gain: 2.928}
   L22MG_nude_9:
     type: Biquad
-    parameters: {type: peaking, freq: 500.000, q: 1.0000, gain: -5.635}
+    parameters: {type: peaking, freq: 620.000, q: 1.0000, gain: -0.753}
   L22MG_nude_10:
     type: Biquad
-    parameters: {type: peaking, freq: 220.000, q: 1.0000, gain: -4.504}
-  L22MG_nude_11:
-    type: Biquad
-    parameters: {type: peaking, freq: 620.000, q: 1.0000, gain: 1.406}
+    parameters: {type: peaking, freq: 150.000, q: 1.0000, gain: 1.052}
   GRS_PT6816_1:
     type: Biquad
     parameters: {type: highpass, freq: 70.000, q: 0.7071, gain: 0.000}
@@ -90,10 +82,7 @@ filters:
     parameters: {type: lowpass, freq: 2500.000, q: 0.7071, gain: 0.000}
   GRS_PT6816_9:
     type: Biquad
-    parameters: {type: peaking, freq: 2200.000, q: 1.0000, gain: 8.000}
-  GRS_PT6816_10:
-    type: Biquad
-    parameters: {type: peaking, freq: 2800.000, q: 1.0000, gain: -8.000}
+    parameters: {type: peaking, freq: 2200.000, q: 1.0000, gain: -0.243}
   ND25FW4_nude_18mm_1:
     type: Biquad
     parameters: {type: highpass, freq: 70.000, q: 0.7071, gain: 0.000}
@@ -120,13 +109,13 @@ filters:
     parameters: {type: highpass, freq: 2500.000, q: 0.7071, gain: 0.000}
   ND25FW4_nude_18mm_9:
     type: Biquad
-    parameters: {type: peaking, freq: 14000.000, q: 1.0000, gain: -8.000}
+    parameters: {type: peaking, freq: 16500.000, q: 1.0000, gain: 8.000}
   ND25FW4_nude_18mm_10:
     type: Biquad
-    parameters: {type: peaking, freq: 16500.000, q: 1.0000, gain: 7.377}
+    parameters: {type: peaking, freq: 14000.000, q: 1.0000, gain: -7.674}
   ND25FW4_nude_18mm_11:
     type: Biquad
-    parameters: {type: highshelf, freq: 18000.000, q: 1.0000, gain: 6.642}
+    parameters: {type: highshelf, freq: 18000.000, q: 1.0000, gain: 2.578}
   ND25FW4_nude_18mm_12:
     type: Biquad
-    parameters: {type: peaking, freq: 12000.000, q: 1.0000, gain: 4.504}
+    parameters: {type: peaking, freq: 12000.000, q: 1.0000, gain: 1.816}
