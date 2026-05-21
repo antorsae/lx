@@ -1,7 +1,7 @@
 {
   "_topology": {
-    "architecture": "cascaded mixed-order Linkwitz-Riley split tree with shared high-pass carryover (LR4 / LR4 / LR2 / LR2)",
-    "diagram": "Input\n  +-- LR4 HP 70 Hz (2 biquads, global boundary)\n    +-- LR4 split @ 120 Hz\n        +-- LR4 LP 120 Hz (2 biquads) -> L26RO4Y\n        +-- LR4 HP 120 Hz (2 biquads) -> next split\n      +-- LR4 split @ 650 Hz\n          +-- LR4 LP 650 Hz (2 biquads) -> L22MG (nude)\n          +-- LR4 HP 650 Hz (2 biquads) -> next split\n        +-- LR2 split @ 2000 Hz\n            +-- LR2 LP 2000 Hz (1 biquad) -> SS10F8414G10\n            +-- LR2 HP 2000 Hz (1 biquad, invert downstream branch) -> next split\n          +-- LR2 split @ 8000 Hz\n              +-- LR2 LP 8000 Hz (1 biquad) -> GRS PT6816\n              +-- LR2 HP 8000 Hz (1 biquad) -> ND25FW4 (nude 18mm)",
+    "architecture": "cascaded mixed-order Linkwitz-Riley split tree with shared high-pass carryover (LR4 / LR4 / LR4 / LR2)",
+    "diagram": "Input\n  +-- LR4 HP 70 Hz (2 biquads, global boundary)\n    +-- LR4 split @ 120 Hz\n        +-- LR4 LP 120 Hz (2 biquads) -> L26RO4Y\n        +-- LR4 HP 120 Hz (2 biquads) -> next split\n      +-- LR4 split @ 650 Hz\n          +-- LR4 LP 650 Hz (2 biquads) -> L22MG (nude)\n          +-- LR4 HP 650 Hz (2 biquads) -> next split\n        +-- LR4 split @ 2000 Hz\n            +-- LR4 LP 2000 Hz (2 biquads) -> SS10F8414G10\n            +-- LR4 HP 2000 Hz (2 biquads) -> next split\n          +-- LR2 split @ 8000 Hz\n              +-- LR2 LP 8000 Hz (1 biquad) -> GRS PT6816\n              +-- LR2 HP 8000 Hz (1 biquad, inverted) -> ND25FW4 (nude 18mm)",
     "stages": [
       {
         "stage": 1,
@@ -16,8 +16,8 @@
         "own_branch_lp_biquads": 2,
         "effective_crossover_biquads": 4,
         "effective_lr4_biquads": 4,
-        "flat_eq_biquads": 0,
-        "effective_total_biquads": 4,
+        "flat_eq_biquads": 1,
+        "effective_total_biquads": 5,
         "polarity": 1
       },
       {
@@ -33,8 +33,8 @@
         "own_branch_lp_biquads": 2,
         "effective_crossover_biquads": 6,
         "effective_lr4_biquads": 6,
-        "flat_eq_biquads": 5,
-        "effective_total_biquads": 11,
+        "flat_eq_biquads": 4,
+        "effective_total_biquads": 10,
         "polarity": 1
       },
       {
@@ -47,10 +47,10 @@
         "global_boundary_hp_biquads": 2,
         "inherited_upstream_hp_biquads": 2,
         "own_branch_hp_biquads": 2,
-        "own_branch_lp_biquads": 1,
-        "effective_crossover_biquads": 7,
-        "effective_lr4_biquads": 7,
-        "flat_eq_biquads": 5,
+        "own_branch_lp_biquads": 2,
+        "effective_crossover_biquads": 8,
+        "effective_lr4_biquads": 8,
+        "flat_eq_biquads": 4,
         "effective_total_biquads": 12,
         "polarity": 1
       },
@@ -63,13 +63,13 @@
         ],
         "global_boundary_hp_biquads": 2,
         "inherited_upstream_hp_biquads": 4,
-        "own_branch_hp_biquads": 1,
+        "own_branch_hp_biquads": 2,
         "own_branch_lp_biquads": 1,
-        "effective_crossover_biquads": 8,
-        "effective_lr4_biquads": 8,
-        "flat_eq_biquads": 7,
+        "effective_crossover_biquads": 9,
+        "effective_lr4_biquads": 9,
+        "flat_eq_biquads": 6,
         "effective_total_biquads": 15,
-        "polarity": -1
+        "polarity": 1
       },
       {
         "stage": 5,
@@ -79,35 +79,35 @@
           20000.0
         ],
         "global_boundary_hp_biquads": 2,
-        "inherited_upstream_hp_biquads": 5,
+        "inherited_upstream_hp_biquads": 6,
         "own_branch_hp_biquads": 1,
         "own_branch_lp_biquads": 0,
-        "effective_crossover_biquads": 8,
-        "effective_lr4_biquads": 8,
-        "flat_eq_biquads": 6,
+        "effective_crossover_biquads": 9,
+        "effective_lr4_biquads": 9,
+        "flat_eq_biquads": 5,
         "effective_total_biquads": 14,
-        "polarity": 1
+        "polarity": -1
       }
     ],
     "summary": {
       "xover_types": [
         "LR4",
         "LR4",
-        "LR2",
+        "LR4",
         "LR2"
       ],
       "xover_orders": [
         4,
         4,
-        2,
+        4,
         2
       ],
-      "shared_tree_crossover_biquads": 14,
-      "standalone_channel_crossover_biquads": 33,
-      "shared_tree_lr4_biquads": 14,
-      "standalone_channel_lr4_biquads": 33,
-      "flat_eq_biquads": 23,
-      "shared_tree_total_biquads_with_eq": 37,
+      "shared_tree_crossover_biquads": 16,
+      "standalone_channel_crossover_biquads": 36,
+      "shared_tree_lr4_biquads": 16,
+      "standalone_channel_lr4_biquads": 36,
+      "flat_eq_biquads": 20,
+      "shared_tree_total_biquads_with_eq": 36,
       "standalone_channel_total_biquads": 56,
       "max_biquads_per_driver_limit": 15,
       "max_effective_total_biquads_per_driver": 15,
@@ -130,7 +130,7 @@
   ],
   "drivers": {
     "L26RO4Y": {
-      "gain_db": -7.843,
+      "gain_db": -9.271,
       "delay_ms": 0.0,
       "polarity": 1,
       "filters": [
@@ -161,11 +161,18 @@
           "q": 0.7071,
           "gain_db": 0.0,
           "source": "LR4 branch low-pass"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 110.0,
+          "q": 1.0,
+          "gain_db": -1.671,
+          "source": "flat-EQ"
         }
       ]
     },
     "L22MG (nude)": {
-      "gain_db": 14.951,
+      "gain_db": 13.462,
       "delay_ms": -1.375,
       "polarity": 1,
       "filters": [
@@ -215,42 +222,35 @@
           "type": "peaking",
           "fc_hz": 500.0,
           "q": 1.0,
-          "gain_db": -5.446,
+          "gain_db": -8.0,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 620.0,
           "q": 1.0,
-          "gain_db": 1.496,
+          "gain_db": 5.108,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 150.0,
           "q": 1.0,
-          "gain_db": 1.377,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 220.0,
-          "q": 1.0,
-          "gain_db": 0.964,
+          "gain_db": 3.82,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 330.0,
           "q": 1.0,
-          "gain_db": 0.293,
+          "gain_db": 1.889,
           "source": "flat-EQ"
         }
       ]
     },
     "SS10F8414G10": {
-      "gain_db": -3.297,
-      "delay_ms": -0.69,
+      "gain_db": -4.867,
+      "delay_ms": -0.775,
       "polarity": 1,
       "filters": [
         {
@@ -298,50 +298,162 @@
         {
           "type": "lowpass",
           "fc_hz": 2000.0,
-          "q": 0.5,
+          "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR2 branch low-pass"
+          "source": "LR4 branch low-pass"
+        },
+        {
+          "type": "lowpass",
+          "fc_hz": 2000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 branch low-pass"
         },
         {
           "type": "peaking",
-          "fc_hz": 1450.0,
+          "fc_hz": 1800.0,
           "q": 1.0,
           "gain_db": 8.0,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
-          "fc_hz": 1800.0,
+          "fc_hz": 700.0,
           "q": 1.0,
-          "gain_db": -5.184,
+          "gain_db": 6.101,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 1150.0,
           "q": 1.0,
-          "gain_db": -2.634,
+          "gain_db": -3.542,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
-          "fc_hz": 900.0,
+          "fc_hz": 1450.0,
           "q": 1.0,
-          "gain_db": -1.761,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 700.0,
-          "q": 1.0,
-          "gain_db": 1.701,
+          "gain_db": -1.505,
           "source": "flat-EQ"
         }
       ]
     },
     "GRS PT6816": {
-      "gain_db": -5.466,
-      "delay_ms": -0.745,
+      "gain_db": -3.936,
+      "delay_ms": -1.06,
+      "polarity": 1,
+      "filters": [
+        {
+          "type": "highpass",
+          "fc_hz": 70.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 global boundary high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 70.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 global boundary high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 120.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 120.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 650.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 650.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 2000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 branch high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 2000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 branch high-pass"
+        },
+        {
+          "type": "lowpass",
+          "fc_hz": 8000.0,
+          "q": 0.5,
+          "gain_db": 0.0,
+          "source": "LR2 branch low-pass"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 3500.0,
+          "q": 1.0,
+          "gain_db": -8.0,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 4500.0,
+          "q": 1.0,
+          "gain_db": 8.0,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 2200.0,
+          "q": 1.0,
+          "gain_db": 4.93,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 10000.0,
+          "q": 2.0,
+          "gain_db": 8.0,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 2800.0,
+          "q": 1.0,
+          "gain_db": 2.056,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 9000.0,
+          "q": 2.0,
+          "gain_db": -2.18,
+          "source": "flat-EQ"
+        }
+      ]
+    },
+    "ND25FW4 (nude 18mm)": {
+      "gain_db": -1.968,
+      "delay_ms": -1.04,
       "polarity": -1,
       "filters": [
         {
@@ -389,111 +501,6 @@
         {
           "type": "highpass",
           "fc_hz": 2000.0,
-          "q": 0.5,
-          "gain_db": 0.0,
-          "source": "LR2 branch high-pass"
-        },
-        {
-          "type": "lowpass",
-          "fc_hz": 8000.0,
-          "q": 0.5,
-          "gain_db": 0.0,
-          "source": "LR2 branch low-pass"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 4500.0,
-          "q": 1.0,
-          "gain_db": 7.874,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 3500.0,
-          "q": 1.0,
-          "gain_db": -6.819,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 2800.0,
-          "q": 1.0,
-          "gain_db": 4.598,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 10000.0,
-          "q": 2.0,
-          "gain_db": -2.492,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 9000.0,
-          "q": 2.0,
-          "gain_db": -1.933,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 8500.0,
-          "q": 2.0,
-          "gain_db": 0.717,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 9000.0,
-          "q": 1.0,
-          "gain_db": 2.5,
-          "source": "flat-EQ"
-        }
-      ]
-    },
-    "ND25FW4 (nude 18mm)": {
-      "gain_db": 4.261,
-      "delay_ms": -0.715,
-      "polarity": 1,
-      "filters": [
-        {
-          "type": "highpass",
-          "fc_hz": 70.0,
-          "q": 0.7071,
-          "gain_db": 0.0,
-          "source": "LR4 global boundary high-pass"
-        },
-        {
-          "type": "highpass",
-          "fc_hz": 70.0,
-          "q": 0.7071,
-          "gain_db": 0.0,
-          "source": "LR4 global boundary high-pass"
-        },
-        {
-          "type": "highpass",
-          "fc_hz": 120.0,
-          "q": 0.7071,
-          "gain_db": 0.0,
-          "source": "LR4 cascaded upstream high-pass"
-        },
-        {
-          "type": "highpass",
-          "fc_hz": 120.0,
-          "q": 0.7071,
-          "gain_db": 0.0,
-          "source": "LR4 cascaded upstream high-pass"
-        },
-        {
-          "type": "highpass",
-          "fc_hz": 650.0,
-          "q": 0.7071,
-          "gain_db": 0.0,
-          "source": "LR4 cascaded upstream high-pass"
-        },
-        {
-          "type": "highpass",
-          "fc_hz": 650.0,
           "q": 0.7071,
           "gain_db": 0.0,
           "source": "LR4 cascaded upstream high-pass"
@@ -501,9 +508,9 @@
         {
           "type": "highpass",
           "fc_hz": 2000.0,
-          "q": 0.5,
+          "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR2 cascaded upstream high-pass"
+          "source": "LR4 cascaded upstream high-pass"
         },
         {
           "type": "highpass",
@@ -514,44 +521,37 @@
         },
         {
           "type": "peaking",
-          "fc_hz": 14000.0,
-          "q": 1.0,
-          "gain_db": -6.413,
+          "fc_hz": 10000.0,
+          "q": 2.0,
+          "gain_db": 2.693,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 16500.0,
           "q": 1.0,
-          "gain_db": 5.217,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 10000.0,
-          "q": 2.0,
-          "gain_db": 4.538,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 9000.0,
-          "q": 2.0,
-          "gain_db": -2.298,
+          "gain_db": 7.319,
           "source": "flat-EQ"
         },
         {
           "type": "highshelf",
           "fc_hz": 18000.0,
           "q": 1.0,
-          "gain_db": 1.652,
+          "gain_db": 6.737,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 12000.0,
           "q": 1.0,
-          "gain_db": 0.263,
+          "gain_db": -4.377,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 9000.0,
+          "q": 2.0,
+          "gain_db": -0.771,
           "source": "flat-EQ"
         }
       ]

@@ -5,7 +5,7 @@
   "summary_search_sentence": "The recommended stack is from 54504 evaluated 4-way/5-way LR2/LR4 combinations. Selection method: balanced recommendation with duplicate-driver guard.",
   "asset_slug": "juan-baffleless-cdsl",
   "search_results_href": "juan-baffleless-cdsl/candidate_search_results.json",
-  "generated_at_utc": "2026-05-21T18:37:50+00:00",
+  "generated_at_utc": "2026-05-21T21:53:26+00:00",
   "input_hdf5": {
     "juan_baffleless": "output/data/polar_data_juan_baffleless.h5",
     "lx521_system": "output/data/polar_data_lx521_system.h5",
@@ -31,6 +31,20 @@
     75,
     90
   ],
+  "xc_configuration": {
+    "ipsi_angle": 43.6,
+    "contra_angle": 45.8,
+    "ipsi_angle_deg": 43.6,
+    "contra_angle_deg": 45.8,
+    "metric": "SPL43.6 - SPL45.8",
+    "ideal_cosine_dipole_separation_db": 0.33,
+    "geometry": {
+      "speaker_to_ipsi_ear_cm": 127.0,
+      "speaker_to_contra_ear_cm": 140.0,
+      "ear_spacing_cm": 14.0,
+      "speaker_to_listener_tilt_deg": 23.5
+    }
+  },
   "target_spl_db": 76.0,
   "crossovers": [
     {
@@ -49,8 +63,8 @@
     },
     {
       "frequency_hz": 2000.0,
-      "type": "LR2",
-      "order": 2,
+      "type": "LR4",
+      "order": 4,
       "low_driver": "SS10F8414G10",
       "high_driver": "GRS PT6816"
     },
@@ -68,16 +82,16 @@
     "score_direction": "lower is better",
     "selection": {
       "method": "balanced recommendation with duplicate-driver guard",
-      "reason": "Selected the best balanced candidate that avoids using both near-identical SS10F8424G00 and SS10F8414G10 in adjacent passbands. This favors dipole consistency, crossover continuity, the 15-biquad/channel cap, and build simplicity over the most aggressive 30-to-60 dB target.",
+      "reason": "Selected the best balanced candidate that avoids using both near-identical SS10F8424G00 and SS10F8414G10 in adjacent passbands. This favors dipole consistency, crossover continuity, the 15-biquad/channel cap, and build simplicity over the most aggressive configured x-c angle separation target.",
       "fallback_used": false,
       "ctc_constrained_selection": {
         "method": "constrained CDSL selection",
-        "reason": "Selected the lowest composite-score candidate that also clears 8 dB median and 5.8 dB 10th-percentile SPL30-SPL60 from 2-10 kHz, while keeping front dipole RMS <=3.2 dB, crossover mismatch <=9.5 dB, and every channel within the 15-biquad export limit.",
+        "reason": "Selected the lowest composite-score candidate that also clears 0.17 dB median and -0.15 dB 10th-percentile SPL43.6 - SPL45.8 from 2-10 kHz, while keeping front dipole RMS <=3.2 dB, crossover mismatch <=9.5 dB, and every channel within the 15-biquad export limit.",
         "fallback_used": false
       }
     },
     "selected_candidate": {
-      "score": 10.7894,
+      "score": 9.791,
       "drivers": [
         "L26RO4Y",
         "L22MG (nude)",
@@ -94,1074 +108,69 @@
       "xover_orders": [
         4,
         4,
-        2,
+        4,
         2
       ],
       "xover_types": [
         "LR4",
         "LR4",
-        "LR2",
+        "LR4",
         "LR2"
       ],
       "ways": 5,
-      "dipole_front_rms_db": 1.733,
-      "dipole_rear_rms_db": 1.722,
+      "dipole_front_rms_db": 1.598,
+      "dipole_rear_rms_db": 1.51,
       "null_penalty_db": 0.0,
-      "rear0_rms_db": 0.98,
+      "rear0_rms_db": 0.897,
       "xover_mismatch_rms_db": 7.239,
       "validity_penalty": 0.0,
       "prior_penalty": 2.02,
       "biquad_budget_penalty": 0.0,
-      "known_effective_thd_2_7_percent": 0.0497,
-      "known_thd_coverage_2_7": 0.249,
-      "thd_penalty": 0.025,
+      "known_effective_thd_2_7_percent": 0.0265,
+      "known_thd_coverage_2_7": 0.142,
+      "thd_penalty": 0.052,
       "hf_polar_ridge_db": 0.0,
-      "hf_polar_slope_excess_db_per_oct": 33.621,
-      "hf_polar_transition_penalty": 0.841,
+      "hf_polar_slope_excess_db_per_oct": 39.815,
+      "hf_polar_transition_penalty": 0.995,
       "max_biquads_per_driver_limit": 15,
-      "max_crossover_biquads_per_driver": 8,
+      "max_crossover_biquads_per_driver": 9,
       "max_possible_biquads_per_driver": 15,
-      "total_flat_eq_slots": 42,
+      "total_flat_eq_slots": 39,
       "total_flat_eq_candidates": 28,
-      "flat_eq_candidate_shortfall_total": 3,
+      "flat_eq_candidate_shortfall_total": 4,
       "flat_eq_slots_by_driver": {
         "L26RO4Y": 11,
         "L22MG (nude)": 9,
-        "SS10F8414G10": 8,
-        "GRS PT6816": 7,
-        "ND25FW4 (nude 18mm)": 7
+        "SS10F8414G10": 7,
+        "GRS PT6816": 6,
+        "ND25FW4 (nude 18mm)": 6
       },
       "flat_eq_candidate_shortfall_by_driver": {
         "L26RO4Y": 0,
         "L22MG (nude)": 0,
         "SS10F8414G10": 0,
-        "GRS PT6816": 3,
+        "GRS PT6816": 4,
         "ND25FW4 (nude 18mm)": 0
       },
       "crossover_biquads_within_limit": true,
-      "sep_30_60_median_2_10k_db": 6.122,
-      "sep_30_60_p10_2_10k_db": 5.466,
-      "front30_median_2_10k_db": -2.087,
+      "ipsi_angle": 43.6,
+      "contra_angle": 45.8,
+      "ipsi_angle_deg": 43.6,
+      "contra_angle_deg": 45.8,
+      "xc_ideal_separation_db": 0.33,
+      "xc_separation_median_2_10k_db": 0.419,
+      "xc_separation_p10_2_10k_db": 0.341,
+      "front_ipsi_median_2_10k_db": -4.299,
+      "sep_30_60_median_2_10k_db": 0.419,
+      "sep_30_60_p10_2_10k_db": 0.341,
+      "front30_median_2_10k_db": -4.299,
       "balanced_rank": 1,
       "finalist_role": "Recommended balanced",
       "note": "Primary recommendation: best balanced score that avoids splitting two near-identical ScanSpeak 10 cm drivers into adjacent bands."
     },
     "finalists": [
       {
-        "score": 10.7894,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          650.0,
-          2000.0,
-          8000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.733,
-        "dipole_rear_rms_db": 1.722,
-        "null_penalty_db": 0.0,
-        "rear0_rms_db": 0.98,
-        "xover_mismatch_rms_db": 7.239,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0497,
-        "known_thd_coverage_2_7": 0.249,
-        "thd_penalty": 0.025,
-        "hf_polar_ridge_db": 0.0,
-        "hf_polar_slope_excess_db_per_oct": 33.621,
-        "hf_polar_transition_penalty": 0.841,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 28,
-        "flat_eq_candidate_shortfall_total": 3,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 7,
-          "ND25FW4 (nude 18mm)": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 3,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.122,
-        "sep_30_60_p10_2_10k_db": 5.466,
-        "front30_median_2_10k_db": -2.087,
-        "balanced_rank": 1,
-        "finalist_role": "Recommended balanced",
-        "note": "Primary recommendation: best balanced score that avoids splitting two near-identical ScanSpeak 10 cm drivers into adjacent bands."
-      },
-      {
-        "score": 13.2666,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "L10NEO",
-          "GRS PT6816",
-          "SS10F8414G10"
-        ],
-        "xovers": [
-          120.0,
-          650.0,
-          3000.0,
-          10000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 2.472,
-        "dipole_rear_rms_db": 2.859,
-        "null_penalty_db": 1.102,
-        "rear0_rms_db": 1.866,
-        "xover_mismatch_rms_db": 9.274,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.29,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0784,
-        "known_thd_coverage_2_7": 0.486,
-        "thd_penalty": 0.0,
-        "hf_polar_ridge_db": 0.314,
-        "hf_polar_slope_excess_db_per_oct": 52.121,
-        "hf_polar_transition_penalty": 1.773,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 21,
-        "flat_eq_candidate_shortfall_total": 3,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "L10NEO": 8,
-          "GRS PT6816": 7,
-          "SS10F8414G10": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "L10NEO": 0,
-          "GRS PT6816": 3,
-          "SS10F8414G10": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 8.007,
-        "sep_30_60_p10_2_10k_db": 6.107,
-        "front30_median_2_10k_db": -2.775,
-        "balanced_rank": 2598,
-        "finalist_role": "CTC-constrained",
-        "note": "Experimental option: clears the 2-10 kHz 30-to-60 constraint, but uses both ScanSpeak 10 cm variants."
-      },
-      {
-        "score": 12.9432,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "L10NEO",
-          "SS10F8414G10",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          160.0,
-          650.0,
-          2000.0,
-          7000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 3.36,
-        "dipole_rear_rms_db": 3.807,
-        "null_penalty_db": 1.295,
-        "rear0_rms_db": 2.085,
-        "xover_mismatch_rms_db": 7.142,
-        "validity_penalty": 0.0,
-        "prior_penalty": 1.905,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.1351,
-        "known_thd_coverage_2_7": 0.817,
-        "thd_penalty": 0.0,
-        "hf_polar_ridge_db": 0.0,
-        "hf_polar_slope_excess_db_per_oct": 30.581,
-        "hf_polar_transition_penalty": 0.765,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 14,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 17,
-        "flat_eq_candidate_shortfall_total": 0,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "L10NEO": 8,
-          "SS10F8414G10": 7,
-          "ND25FW4 (nude 18mm)": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "L10NEO": 0,
-          "SS10F8414G10": 0,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 8.071,
-        "sep_30_60_p10_2_10k_db": 6.362,
-        "front30_median_2_10k_db": -3.297,
-        "balanced_rank": 1886,
-        "finalist_role": "L10NEO alternate",
-        "note": "Best L10NEO-flavored candidate with strong 30-to-60 separation and acceptable crossover mismatch."
-      },
-      {
-        "score": 12.487,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816"
-        ],
-        "xovers": [
-          120.0,
-          650.0,
-          3200.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2"
-        ],
-        "ways": 4,
-        "dipole_front_rms_db": 2.017,
-        "dipole_rear_rms_db": 2.297,
-        "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.198,
-        "xover_mismatch_rms_db": 8.776,
-        "validity_penalty": 0.0,
-        "prior_penalty": 1.887,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0893,
-        "known_thd_coverage_2_7": 0.438,
-        "thd_penalty": 0.0,
-        "hf_polar_ridge_db": 0.599,
-        "hf_polar_slope_excess_db_per_oct": 44.218,
-        "hf_polar_transition_penalty": 2.004,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 7,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 36,
-        "total_flat_eq_candidates": 22,
-        "flat_eq_candidate_shortfall_total": 2,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 8
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 2
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.77,
-        "sep_30_60_p10_2_10k_db": 5.559,
-        "front30_median_2_10k_db": -2.287,
-        "balanced_rank": 1157,
-        "finalist_role": "Simple 4-way",
-        "note": "Simplest high-confidence 4-way variant using one ScanSpeak 10 cm driver plus GRS."
-      }
-    ],
-    "top_candidates": [
-      {
-        "score": 10.7894,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          650.0,
-          2000.0,
-          8000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.733,
-        "dipole_rear_rms_db": 1.722,
-        "null_penalty_db": 0.0,
-        "rear0_rms_db": 0.98,
-        "xover_mismatch_rms_db": 7.239,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0497,
-        "known_thd_coverage_2_7": 0.249,
-        "thd_penalty": 0.025,
-        "hf_polar_ridge_db": 0.0,
-        "hf_polar_slope_excess_db_per_oct": 33.621,
-        "hf_polar_transition_penalty": 0.841,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 28,
-        "flat_eq_candidate_shortfall_total": 3,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 7,
-          "ND25FW4 (nude 18mm)": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 3,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.122,
-        "sep_30_60_p10_2_10k_db": 5.466,
-        "front30_median_2_10k_db": -2.087
-      },
-      {
-        "score": 10.8173,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          650.0,
-          2000.0,
-          12000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.687,
-        "dipole_rear_rms_db": 1.733,
-        "null_penalty_db": 0.0,
-        "rear0_rms_db": 0.989,
-        "xover_mismatch_rms_db": 7.584,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0497,
-        "known_thd_coverage_2_7": 0.249,
-        "thd_penalty": 0.025,
-        "hf_polar_ridge_db": 0.157,
-        "hf_polar_slope_excess_db_per_oct": 30.206,
-        "hf_polar_transition_penalty": 0.991,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 29,
-        "flat_eq_candidate_shortfall_total": 4,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 7,
-          "ND25FW4 (nude 18mm)": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 4,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.338,
-        "sep_30_60_p10_2_10k_db": 5.399,
-        "front30_median_2_10k_db": -2.066
-      },
-      {
-        "score": 10.8785,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          650.0,
-          2000.0,
-          10000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.699,
-        "dipole_rear_rms_db": 1.717,
-        "null_penalty_db": 0.0,
-        "rear0_rms_db": 0.982,
-        "xover_mismatch_rms_db": 7.863,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0497,
-        "known_thd_coverage_2_7": 0.249,
-        "thd_penalty": 0.025,
-        "hf_polar_ridge_db": 0.059,
-        "hf_polar_slope_excess_db_per_oct": 30.647,
-        "hf_polar_transition_penalty": 0.854,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 29,
-        "flat_eq_candidate_shortfall_total": 4,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 7,
-          "ND25FW4 (nude 18mm)": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 4,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.283,
-        "sep_30_60_p10_2_10k_db": 5.399,
-        "front30_median_2_10k_db": -2.061
-      },
-      {
-        "score": 10.9063,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          650.0,
-          2000.0,
-          8000.0
-        ],
-        "xover_orders": [
-          4,
-          2,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR2",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.834,
-        "dipole_rear_rms_db": 1.793,
-        "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.06,
-        "xover_mismatch_rms_db": 7.239,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0476,
-        "known_thd_coverage_2_7": 0.237,
-        "thd_penalty": 0.028,
-        "hf_polar_ridge_db": 0.0,
-        "hf_polar_slope_excess_db_per_oct": 32.801,
-        "hf_polar_transition_penalty": 0.82,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 7,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 46,
-        "total_flat_eq_candidates": 28,
-        "flat_eq_candidate_shortfall_total": 2,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 10,
-          "SS10F8414G10": 9,
-          "GRS PT6816": 8,
-          "ND25FW4 (nude 18mm)": 8
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 2,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.195,
-        "sep_30_60_p10_2_10k_db": 5.445,
-        "front30_median_2_10k_db": -2.148
-      },
-      {
-        "score": 10.915,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          800.0,
-          2000.0,
-          8000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.756,
-        "dipole_rear_rms_db": 1.731,
-        "null_penalty_db": 0.0,
-        "rear0_rms_db": 0.991,
-        "xover_mismatch_rms_db": 7.452,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0495,
-        "known_thd_coverage_2_7": 0.247,
-        "thd_penalty": 0.026,
-        "hf_polar_ridge_db": 0.0,
-        "hf_polar_slope_excess_db_per_oct": 33.619,
-        "hf_polar_transition_penalty": 0.84,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 28,
-        "flat_eq_candidate_shortfall_total": 3,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 7,
-          "ND25FW4 (nude 18mm)": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 3,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.13,
-        "sep_30_60_p10_2_10k_db": 5.465,
-        "front30_median_2_10k_db": -2.086
-      },
-      {
-        "score": 10.9195,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          650.0,
-          2000.0,
-          12000.0
-        ],
-        "xover_orders": [
-          4,
-          2,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR2",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.789,
-        "dipole_rear_rms_db": 1.801,
-        "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.066,
-        "xover_mismatch_rms_db": 7.584,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0476,
-        "known_thd_coverage_2_7": 0.237,
-        "thd_penalty": 0.028,
-        "hf_polar_ridge_db": 0.156,
-        "hf_polar_slope_excess_db_per_oct": 29.828,
-        "hf_polar_transition_penalty": 0.979,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 7,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 46,
-        "total_flat_eq_candidates": 29,
-        "flat_eq_candidate_shortfall_total": 3,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 10,
-          "SS10F8414G10": 9,
-          "GRS PT6816": 8,
-          "ND25FW4 (nude 18mm)": 8
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 3,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.424,
-        "sep_30_60_p10_2_10k_db": 5.385,
-        "front30_median_2_10k_db": -2.143
-      },
-      {
-        "score": 10.9205,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          160.0,
-          650.0,
-          2000.0,
-          8000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.736,
-        "dipole_rear_rms_db": 1.834,
-        "null_penalty_db": 0.105,
-        "rear0_rms_db": 1.168,
-        "xover_mismatch_rms_db": 6.996,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0497,
-        "known_thd_coverage_2_7": 0.249,
-        "thd_penalty": 0.025,
-        "hf_polar_ridge_db": 0.0,
-        "hf_polar_slope_excess_db_per_oct": 33.621,
-        "hf_polar_transition_penalty": 0.841,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 28,
-        "flat_eq_candidate_shortfall_total": 3,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 7,
-          "ND25FW4 (nude 18mm)": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 3,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.122,
-        "sep_30_60_p10_2_10k_db": 5.466,
-        "front30_median_2_10k_db": -2.087
-      },
-      {
-        "score": 10.9515,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          800.0,
-          2000.0,
-          12000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.71,
-        "dipole_rear_rms_db": 1.742,
-        "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.0,
-        "xover_mismatch_rms_db": 7.788,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0495,
-        "known_thd_coverage_2_7": 0.247,
-        "thd_penalty": 0.026,
-        "hf_polar_ridge_db": 0.157,
-        "hf_polar_slope_excess_db_per_oct": 30.204,
-        "hf_polar_transition_penalty": 0.991,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 29,
-        "flat_eq_candidate_shortfall_total": 4,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 7,
-          "ND25FW4 (nude 18mm)": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 4,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.337,
-        "sep_30_60_p10_2_10k_db": 5.399,
-        "front30_median_2_10k_db": -2.067
-      },
-      {
-        "score": 10.9525,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          160.0,
-          650.0,
-          2000.0,
-          12000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.69,
-        "dipole_rear_rms_db": 1.844,
-        "null_penalty_db": 0.105,
-        "rear0_rms_db": 1.176,
-        "xover_mismatch_rms_db": 7.353,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0497,
-        "known_thd_coverage_2_7": 0.249,
-        "thd_penalty": 0.025,
-        "hf_polar_ridge_db": 0.157,
-        "hf_polar_slope_excess_db_per_oct": 30.206,
-        "hf_polar_transition_penalty": 0.991,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 29,
-        "flat_eq_candidate_shortfall_total": 4,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 7,
-          "ND25FW4 (nude 18mm)": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 4,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.338,
-        "sep_30_60_p10_2_10k_db": 5.399,
-        "front30_median_2_10k_db": -2.066
-      },
-      {
-        "score": 10.9739,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          800.0,
-          2000.0,
-          10000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.722,
-        "dipole_rear_rms_db": 1.726,
-        "null_penalty_db": 0.0,
-        "rear0_rms_db": 0.993,
-        "xover_mismatch_rms_db": 8.059,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0495,
-        "known_thd_coverage_2_7": 0.247,
-        "thd_penalty": 0.026,
-        "hf_polar_ridge_db": 0.059,
-        "hf_polar_slope_excess_db_per_oct": 30.645,
-        "hf_polar_transition_penalty": 0.854,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 29,
-        "flat_eq_candidate_shortfall_total": 4,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 7,
-          "ND25FW4 (nude 18mm)": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 4,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.309,
-        "sep_30_60_p10_2_10k_db": 5.399,
-        "front30_median_2_10k_db": -2.063
-      },
-      {
-        "score": 10.9876,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          650.0,
-          2000.0,
-          10000.0
-        ],
-        "xover_orders": [
-          4,
-          2,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR2",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.8,
-        "dipole_rear_rms_db": 1.787,
-        "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.06,
-        "xover_mismatch_rms_db": 7.863,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0476,
-        "known_thd_coverage_2_7": 0.237,
-        "thd_penalty": 0.028,
-        "hf_polar_ridge_db": 0.058,
-        "hf_polar_slope_excess_db_per_oct": 30.078,
-        "hf_polar_transition_penalty": 0.839,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 7,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 46,
-        "total_flat_eq_candidates": 29,
-        "flat_eq_candidate_shortfall_total": 3,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 10,
-          "SS10F8414G10": 9,
-          "GRS PT6816": 8,
-          "ND25FW4 (nude 18mm)": 8
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 3,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.361,
-        "sep_30_60_p10_2_10k_db": 5.386,
-        "front30_median_2_10k_db": -2.144
-      },
-      {
-        "score": 10.9912,
+        "score": 9.791,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -1223,24 +232,35 @@
           "ND25FW4 (nude 18mm)": 0
         },
         "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 5.998,
-        "sep_30_60_p10_2_10k_db": 5.187,
-        "front30_median_2_10k_db": -1.994
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.419,
+        "xc_separation_p10_2_10k_db": 0.341,
+        "front_ipsi_median_2_10k_db": -4.299,
+        "sep_30_60_median_2_10k_db": 0.419,
+        "sep_30_60_p10_2_10k_db": 0.341,
+        "front30_median_2_10k_db": -4.299,
+        "balanced_rank": 1,
+        "finalist_role": "Recommended balanced",
+        "note": "Primary recommendation: best balanced score that avoids splitting two near-identical ScanSpeak 10 cm drivers into adjacent bands."
       },
       {
-        "score": 11.0187,
+        "score": 11.3193,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
-          "SS10F8414G10",
+          "L10NEO",
           "GRS PT6816",
           "ND25FW4 (nude 18mm)"
         ],
         "xovers": [
-          160.0,
+          120.0,
           650.0,
           2000.0,
-          10000.0
+          8000.0
         ],
         "xover_orders": [
           4,
@@ -1255,26 +275,472 @@
           "LR2"
         ],
         "ways": 5,
-        "dipole_front_rms_db": 1.702,
-        "dipole_rear_rms_db": 1.829,
+        "dipole_front_rms_db": 1.817,
+        "dipole_rear_rms_db": 2.012,
+        "null_penalty_db": 0.688,
+        "rear0_rms_db": 1.327,
+        "xover_mismatch_rms_db": 7.693,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.192,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0436,
+        "known_thd_coverage_2_7": 0.249,
+        "thd_penalty": 0.025,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 35.586,
+        "hf_polar_transition_penalty": 0.89,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 8,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 42,
+        "total_flat_eq_candidates": 26,
+        "flat_eq_candidate_shortfall_total": 3,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "L10NEO": 8,
+          "GRS PT6816": 7,
+          "ND25FW4 (nude 18mm)": 7
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "L10NEO": 0,
+          "GRS PT6816": 3,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.471,
+        "xc_separation_p10_2_10k_db": 0.359,
+        "front_ipsi_median_2_10k_db": -4.871,
+        "sep_30_60_median_2_10k_db": 0.471,
+        "sep_30_60_p10_2_10k_db": 0.359,
+        "front30_median_2_10k_db": -4.871,
+        "balanced_rank": 452,
+        "finalist_role": "L10NEO alternate",
+        "note": "Best L10NEO-flavored candidate with strong configured x-c separation and acceptable crossover mismatch."
+      },
+      {
+        "score": 12.2882,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          2400.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          4
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR4"
+        ],
+        "ways": 4,
+        "dipole_front_rms_db": 1.687,
+        "dipole_rear_rms_db": 1.871,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 1.015,
+        "xover_mismatch_rms_db": 9.1,
+        "validity_penalty": 0.0,
+        "prior_penalty": 1.887,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0434,
+        "known_thd_coverage_2_7": 0.229,
+        "thd_penalty": 0.03,
+        "hf_polar_ridge_db": 0.709,
+        "hf_polar_slope_excess_db_per_oct": 52.511,
+        "hf_polar_transition_penalty": 2.377,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 8,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 34,
+        "total_flat_eq_candidates": 23,
+        "flat_eq_candidate_shortfall_total": 4,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "SS10F8414G10": 7,
+          "GRS PT6816": 7
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "SS10F8414G10": 0,
+          "GRS PT6816": 4
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.44,
+        "xc_separation_p10_2_10k_db": 0.344,
+        "front_ipsi_median_2_10k_db": -4.378,
+        "sep_30_60_median_2_10k_db": 0.44,
+        "sep_30_60_p10_2_10k_db": 0.344,
+        "front30_median_2_10k_db": -4.378,
+        "balanced_rank": 1464,
+        "finalist_role": "Simple 4-way",
+        "note": "Simplest high-confidence 4-way variant using one ScanSpeak 10 cm driver plus GRS."
+      }
+    ],
+    "top_candidates": [
+      {
+        "score": 9.791,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          2000.0,
+          8000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          4,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR4",
+          "LR2"
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 1.598,
+        "dipole_rear_rms_db": 1.51,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 0.897,
+        "xover_mismatch_rms_db": 7.239,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0265,
+        "known_thd_coverage_2_7": 0.142,
+        "thd_penalty": 0.052,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 39.815,
+        "hf_polar_transition_penalty": 0.995,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 9,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 39,
+        "total_flat_eq_candidates": 28,
+        "flat_eq_candidate_shortfall_total": 4,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "SS10F8414G10": 7,
+          "GRS PT6816": 6,
+          "ND25FW4 (nude 18mm)": 6
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "SS10F8414G10": 0,
+          "GRS PT6816": 4,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.419,
+        "xc_separation_p10_2_10k_db": 0.341,
+        "front_ipsi_median_2_10k_db": -4.299,
+        "sep_30_60_median_2_10k_db": 0.419,
+        "sep_30_60_p10_2_10k_db": 0.341,
+        "front30_median_2_10k_db": -4.299
+      },
+      {
+        "score": 9.9299,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          800.0,
+          2000.0,
+          8000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          4,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR4",
+          "LR2"
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 1.623,
+        "dipole_rear_rms_db": 1.52,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 0.908,
+        "xover_mismatch_rms_db": 7.452,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0264,
+        "known_thd_coverage_2_7": 0.141,
+        "thd_penalty": 0.052,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 39.811,
+        "hf_polar_transition_penalty": 0.995,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 9,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 39,
+        "total_flat_eq_candidates": 28,
+        "flat_eq_candidate_shortfall_total": 4,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "SS10F8414G10": 7,
+          "GRS PT6816": 6,
+          "ND25FW4 (nude 18mm)": 6
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "SS10F8414G10": 0,
+          "GRS PT6816": 4,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.42,
+        "xc_separation_p10_2_10k_db": 0.341,
+        "front_ipsi_median_2_10k_db": -4.297,
+        "sep_30_60_median_2_10k_db": 0.42,
+        "sep_30_60_p10_2_10k_db": 0.341,
+        "front30_median_2_10k_db": -4.297
+      },
+      {
+        "score": 9.9398,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          160.0,
+          650.0,
+          2000.0,
+          8000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          4,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR4",
+          "LR2"
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 1.601,
+        "dipole_rear_rms_db": 1.636,
         "null_penalty_db": 0.105,
-        "rear0_rms_db": 1.17,
-        "xover_mismatch_rms_db": 7.64,
+        "rear0_rms_db": 1.099,
+        "xover_mismatch_rms_db": 6.996,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0265,
+        "known_thd_coverage_2_7": 0.142,
+        "thd_penalty": 0.052,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 39.815,
+        "hf_polar_transition_penalty": 0.995,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 9,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 39,
+        "total_flat_eq_candidates": 28,
+        "flat_eq_candidate_shortfall_total": 4,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "SS10F8414G10": 7,
+          "GRS PT6816": 6,
+          "ND25FW4 (nude 18mm)": 6
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "SS10F8414G10": 0,
+          "GRS PT6816": 4,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.419,
+        "xc_separation_p10_2_10k_db": 0.341,
+        "front_ipsi_median_2_10k_db": -4.299,
+        "sep_30_60_median_2_10k_db": 0.419,
+        "sep_30_60_p10_2_10k_db": 0.341,
+        "front30_median_2_10k_db": -4.299
+      },
+      {
+        "score": 9.9552,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          7000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR2"
+        ],
+        "ways": 4,
+        "dipole_front_rms_db": 1.48,
+        "dipole_rear_rms_db": 1.299,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 0.862,
+        "xover_mismatch_rms_db": 8.518,
+        "validity_penalty": 0.0,
+        "prior_penalty": 1.79,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0,
+        "known_thd_coverage_2_7": 0.0,
+        "thd_penalty": 0.087,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 43.909,
+        "hf_polar_transition_penalty": 1.098,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 7,
+        "max_possible_biquads_per_driver": 14,
+        "total_flat_eq_slots": 36,
+        "total_flat_eq_candidates": 20,
+        "flat_eq_candidate_shortfall_total": 0,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "GRS PT6816": 8,
+          "ND25FW4 (nude 18mm)": 8
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "GRS PT6816": 0,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.403,
+        "xc_separation_p10_2_10k_db": 0.343,
+        "front_ipsi_median_2_10k_db": -4.158,
+        "sep_30_60_median_2_10k_db": 0.403,
+        "sep_30_60_p10_2_10k_db": 0.343,
+        "front30_median_2_10k_db": -4.158
+      },
+      {
+        "score": 9.9746,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          2000.0,
+          8000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          2,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR2",
+          "LR2"
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 1.733,
+        "dipole_rear_rms_db": 1.722,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 0.98,
+        "xover_mismatch_rms_db": 7.239,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
         "biquad_budget_penalty": 0.0,
         "known_effective_thd_2_7_percent": 0.0497,
         "known_thd_coverage_2_7": 0.249,
         "thd_penalty": 0.025,
-        "hf_polar_ridge_db": 0.059,
-        "hf_polar_slope_excess_db_per_oct": 30.647,
-        "hf_polar_transition_penalty": 0.854,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 33.621,
+        "hf_polar_transition_penalty": 0.841,
         "max_biquads_per_driver_limit": 15,
         "max_crossover_biquads_per_driver": 8,
         "max_possible_biquads_per_driver": 15,
         "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 29,
-        "flat_eq_candidate_shortfall_total": 4,
+        "total_flat_eq_candidates": 28,
+        "flat_eq_candidate_shortfall_total": 3,
         "flat_eq_slots_by_driver": {
           "L26RO4Y": 11,
           "L22MG (nude)": 9,
@@ -1286,16 +752,168 @@
           "L26RO4Y": 0,
           "L22MG (nude)": 0,
           "SS10F8414G10": 0,
-          "GRS PT6816": 4,
+          "GRS PT6816": 3,
           "ND25FW4 (nude 18mm)": 0
         },
         "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.283,
-        "sep_30_60_p10_2_10k_db": 5.399,
-        "front30_median_2_10k_db": -2.061
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.427,
+        "xc_separation_p10_2_10k_db": 0.362,
+        "front_ipsi_median_2_10k_db": -4.492,
+        "sep_30_60_median_2_10k_db": 0.427,
+        "sep_30_60_p10_2_10k_db": 0.362,
+        "front30_median_2_10k_db": -4.492
       },
       {
-        "score": 11.023,
+        "score": 9.9843,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          10000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR2"
+        ],
+        "ways": 4,
+        "dipole_front_rms_db": 1.406,
+        "dipole_rear_rms_db": 1.289,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 0.866,
+        "xover_mismatch_rms_db": 9.051,
+        "validity_penalty": 0.0,
+        "prior_penalty": 1.79,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0,
+        "known_thd_coverage_2_7": 0.0,
+        "thd_penalty": 0.087,
+        "hf_polar_ridge_db": 0.076,
+        "hf_polar_slope_excess_db_per_oct": 34.882,
+        "hf_polar_transition_penalty": 0.986,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 7,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 36,
+        "total_flat_eq_candidates": 24,
+        "flat_eq_candidate_shortfall_total": 3,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "GRS PT6816": 8,
+          "ND25FW4 (nude 18mm)": 8
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "GRS PT6816": 3,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.412,
+        "xc_separation_p10_2_10k_db": 0.337,
+        "front_ipsi_median_2_10k_db": -4.095,
+        "sep_30_60_median_2_10k_db": 0.412,
+        "sep_30_60_p10_2_10k_db": 0.337,
+        "front30_median_2_10k_db": -4.095
+      },
+      {
+        "score": 10.01,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          2000.0,
+          7000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          4,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR4",
+          "LR2"
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 1.629,
+        "dipole_rear_rms_db": 1.522,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 0.899,
+        "xover_mismatch_rms_db": 7.403,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0265,
+        "known_thd_coverage_2_7": 0.142,
+        "thd_penalty": 0.052,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 43.647,
+        "hf_polar_transition_penalty": 1.091,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 9,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 39,
+        "total_flat_eq_candidates": 25,
+        "flat_eq_candidate_shortfall_total": 1,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "SS10F8414G10": 7,
+          "GRS PT6816": 6,
+          "ND25FW4 (nude 18mm)": 6
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "SS10F8414G10": 0,
+          "GRS PT6816": 1,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.415,
+        "xc_separation_p10_2_10k_db": 0.345,
+        "front_ipsi_median_2_10k_db": -4.283,
+        "sep_30_60_median_2_10k_db": 0.415,
+        "sep_30_60_p10_2_10k_db": 0.345,
+        "front30_median_2_10k_db": -4.283
+      },
+      {
+        "score": 10.0104,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -1357,414 +975,20 @@
           "ND25FW4 (nude 18mm)": 0
         },
         "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.184,
-        "sep_30_60_p10_2_10k_db": 5.116,
-        "front30_median_2_10k_db": -1.962
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.427,
+        "xc_separation_p10_2_10k_db": 0.34,
+        "front_ipsi_median_2_10k_db": -4.259,
+        "sep_30_60_median_2_10k_db": 0.427,
+        "sep_30_60_p10_2_10k_db": 0.34,
+        "front30_median_2_10k_db": -4.259
       },
       {
-        "score": 11.026,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          1000.0,
-          2000.0,
-          8000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.812,
-        "dipole_rear_rms_db": 1.757,
-        "null_penalty_db": 0.054,
-        "rear0_rms_db": 1.011,
-        "xover_mismatch_rms_db": 7.459,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.049,
-        "known_thd_coverage_2_7": 0.245,
-        "thd_penalty": 0.026,
-        "hf_polar_ridge_db": 0.0,
-        "hf_polar_slope_excess_db_per_oct": 33.612,
-        "hf_polar_transition_penalty": 0.84,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 27,
-        "flat_eq_candidate_shortfall_total": 3,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 7,
-          "ND25FW4 (nude 18mm)": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 3,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.151,
-        "sep_30_60_p10_2_10k_db": 5.464,
-        "front30_median_2_10k_db": -2.084
-      },
-      {
-        "score": 11.0288,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          1000.0,
-          2000.0,
-          12000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.768,
-        "dipole_rear_rms_db": 1.767,
-        "null_penalty_db": 0.054,
-        "rear0_rms_db": 1.02,
-        "xover_mismatch_rms_db": 7.795,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.049,
-        "known_thd_coverage_2_7": 0.245,
-        "thd_penalty": 0.026,
-        "hf_polar_ridge_db": 0.157,
-        "hf_polar_slope_excess_db_per_oct": 30.201,
-        "hf_polar_transition_penalty": 0.991,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 28,
-        "flat_eq_candidate_shortfall_total": 4,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 7,
-          "ND25FW4 (nude 18mm)": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 4,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.383,
-        "sep_30_60_p10_2_10k_db": 5.398,
-        "front30_median_2_10k_db": -2.071
-      },
-      {
-        "score": 11.0469,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          160.0,
-          800.0,
-          2000.0,
-          8000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.759,
-        "dipole_rear_rms_db": 1.842,
-        "null_penalty_db": 0.104,
-        "rear0_rms_db": 1.177,
-        "xover_mismatch_rms_db": 7.216,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0495,
-        "known_thd_coverage_2_7": 0.247,
-        "thd_penalty": 0.026,
-        "hf_polar_ridge_db": 0.0,
-        "hf_polar_slope_excess_db_per_oct": 33.619,
-        "hf_polar_transition_penalty": 0.84,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 28,
-        "flat_eq_candidate_shortfall_total": 3,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 7,
-          "ND25FW4 (nude 18mm)": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 3,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.13,
-        "sep_30_60_p10_2_10k_db": 5.465,
-        "front30_median_2_10k_db": -2.086
-      },
-      {
-        "score": 11.0532,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          650.0,
-          2000.0,
-          7000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.763,
-        "dipole_rear_rms_db": 1.735,
-        "null_penalty_db": 0.0,
-        "rear0_rms_db": 0.983,
-        "xover_mismatch_rms_db": 7.403,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0497,
-        "known_thd_coverage_2_7": 0.249,
-        "thd_penalty": 0.025,
-        "hf_polar_ridge_db": 0.0,
-        "hf_polar_slope_excess_db_per_oct": 36.053,
-        "hf_polar_transition_penalty": 0.901,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 25,
-        "flat_eq_candidate_shortfall_total": 0,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 7,
-          "ND25FW4 (nude 18mm)": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 0,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.04,
-        "sep_30_60_p10_2_10k_db": 5.501,
-        "front30_median_2_10k_db": -2.097
-      },
-      {
-        "score": 11.0537,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          160.0,
-          650.0,
-          2000.0,
-          8000.0
-        ],
-        "xover_orders": [
-          4,
-          2,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR2",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.837,
-        "dipole_rear_rms_db": 1.907,
-        "null_penalty_db": 0.131,
-        "rear0_rms_db": 1.243,
-        "xover_mismatch_rms_db": 6.996,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0476,
-        "known_thd_coverage_2_7": 0.237,
-        "thd_penalty": 0.028,
-        "hf_polar_ridge_db": 0.0,
-        "hf_polar_slope_excess_db_per_oct": 32.801,
-        "hf_polar_transition_penalty": 0.82,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 7,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 46,
-        "total_flat_eq_candidates": 28,
-        "flat_eq_candidate_shortfall_total": 2,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 10,
-          "SS10F8414G10": 9,
-          "GRS PT6816": 8,
-          "ND25FW4 (nude 18mm)": 8
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 2,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.195,
-        "sep_30_60_p10_2_10k_db": 5.445,
-        "front30_median_2_10k_db": -2.148
-      },
-      {
-        "score": 11.0561,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          800.0,
-          2000.0,
-          8000.0
-        ],
-        "xover_orders": [
-          4,
-          2,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR2",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.896,
-        "dipole_rear_rms_db": 1.834,
-        "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.104,
-        "xover_mismatch_rms_db": 7.452,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0465,
-        "known_thd_coverage_2_7": 0.231,
-        "thd_penalty": 0.03,
-        "hf_polar_ridge_db": 0.0,
-        "hf_polar_slope_excess_db_per_oct": 32.405,
-        "hf_polar_transition_penalty": 0.81,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 7,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 46,
-        "total_flat_eq_candidates": 28,
-        "flat_eq_candidate_shortfall_total": 2,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 10,
-          "SS10F8414G10": 9,
-          "GRS PT6816": 8,
-          "ND25FW4 (nude 18mm)": 8
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 2,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.248,
-        "sep_30_60_p10_2_10k_db": 5.44,
-        "front30_median_2_10k_db": -2.206
-      },
-      {
-        "score": 11.0647,
+        "score": 10.0147,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -1826,12 +1050,971 @@
           "ND25FW4 (nude 18mm)": 0
         },
         "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.132,
-        "sep_30_60_p10_2_10k_db": 5.154,
-        "front30_median_2_10k_db": -1.961
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.424,
+        "xc_separation_p10_2_10k_db": 0.339,
+        "front_ipsi_median_2_10k_db": -4.268,
+        "sep_30_60_median_2_10k_db": 0.424,
+        "sep_30_60_p10_2_10k_db": 0.339,
+        "front30_median_2_10k_db": -4.268
       },
       {
-        "score": 11.0714,
+        "score": 10.0792,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          160.0,
+          800.0,
+          2000.0,
+          8000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          4,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR4",
+          "LR2"
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 1.625,
+        "dipole_rear_rms_db": 1.645,
+        "null_penalty_db": 0.104,
+        "rear0_rms_db": 1.107,
+        "xover_mismatch_rms_db": 7.216,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0264,
+        "known_thd_coverage_2_7": 0.141,
+        "thd_penalty": 0.052,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 39.811,
+        "hf_polar_transition_penalty": 0.995,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 9,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 39,
+        "total_flat_eq_candidates": 28,
+        "flat_eq_candidate_shortfall_total": 4,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "SS10F8414G10": 7,
+          "GRS PT6816": 6,
+          "ND25FW4 (nude 18mm)": 6
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "SS10F8414G10": 0,
+          "GRS PT6816": 4,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.42,
+        "xc_separation_p10_2_10k_db": 0.341,
+        "front_ipsi_median_2_10k_db": -4.297,
+        "sep_30_60_median_2_10k_db": 0.42,
+        "sep_30_60_p10_2_10k_db": 0.341,
+        "front30_median_2_10k_db": -4.297
+      },
+      {
+        "score": 10.1057,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          160.0,
+          650.0,
+          2000.0,
+          8000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          2,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR2",
+          "LR2"
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 1.736,
+        "dipole_rear_rms_db": 1.834,
+        "null_penalty_db": 0.105,
+        "rear0_rms_db": 1.168,
+        "xover_mismatch_rms_db": 6.996,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0497,
+        "known_thd_coverage_2_7": 0.249,
+        "thd_penalty": 0.025,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 33.621,
+        "hf_polar_transition_penalty": 0.841,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 8,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 42,
+        "total_flat_eq_candidates": 28,
+        "flat_eq_candidate_shortfall_total": 3,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "SS10F8414G10": 8,
+          "GRS PT6816": 7,
+          "ND25FW4 (nude 18mm)": 7
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "SS10F8414G10": 0,
+          "GRS PT6816": 3,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.427,
+        "xc_separation_p10_2_10k_db": 0.362,
+        "front_ipsi_median_2_10k_db": -4.492,
+        "sep_30_60_median_2_10k_db": 0.427,
+        "sep_30_60_p10_2_10k_db": 0.362,
+        "front30_median_2_10k_db": -4.492
+      },
+      {
+        "score": 10.1076,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          160.0,
+          650.0,
+          7000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR2"
+        ],
+        "ways": 4,
+        "dipole_front_rms_db": 1.483,
+        "dipole_rear_rms_db": 1.444,
+        "null_penalty_db": 0.105,
+        "rear0_rms_db": 1.07,
+        "xover_mismatch_rms_db": 8.243,
+        "validity_penalty": 0.0,
+        "prior_penalty": 1.79,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0,
+        "known_thd_coverage_2_7": 0.0,
+        "thd_penalty": 0.087,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 43.909,
+        "hf_polar_transition_penalty": 1.098,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 7,
+        "max_possible_biquads_per_driver": 14,
+        "total_flat_eq_slots": 36,
+        "total_flat_eq_candidates": 20,
+        "flat_eq_candidate_shortfall_total": 0,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "GRS PT6816": 8,
+          "ND25FW4 (nude 18mm)": 8
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "GRS PT6816": 0,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.403,
+        "xc_separation_p10_2_10k_db": 0.343,
+        "front_ipsi_median_2_10k_db": -4.158,
+        "sep_30_60_median_2_10k_db": 0.403,
+        "sep_30_60_p10_2_10k_db": 0.343,
+        "front30_median_2_10k_db": -4.158
+      },
+      {
+        "score": 10.1086,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          1000.0,
+          2000.0,
+          8000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          4,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR4",
+          "LR2"
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 1.683,
+        "dipole_rear_rms_db": 1.548,
+        "null_penalty_db": 0.106,
+        "rear0_rms_db": 0.928,
+        "xover_mismatch_rms_db": 7.459,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.026,
+        "known_thd_coverage_2_7": 0.139,
+        "thd_penalty": 0.053,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 39.802,
+        "hf_polar_transition_penalty": 0.995,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 9,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 39,
+        "total_flat_eq_candidates": 27,
+        "flat_eq_candidate_shortfall_total": 4,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "SS10F8414G10": 7,
+          "GRS PT6816": 6,
+          "ND25FW4 (nude 18mm)": 6
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "SS10F8414G10": 0,
+          "GRS PT6816": 4,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.422,
+        "xc_separation_p10_2_10k_db": 0.341,
+        "front_ipsi_median_2_10k_db": -4.342,
+        "sep_30_60_median_2_10k_db": 0.422,
+        "sep_30_60_p10_2_10k_db": 0.341,
+        "front30_median_2_10k_db": -4.342
+      },
+      {
+        "score": 10.1103,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          800.0,
+          2000.0,
+          8000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          2,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR2",
+          "LR2"
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 1.756,
+        "dipole_rear_rms_db": 1.731,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 0.991,
+        "xover_mismatch_rms_db": 7.452,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0495,
+        "known_thd_coverage_2_7": 0.247,
+        "thd_penalty": 0.026,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 33.619,
+        "hf_polar_transition_penalty": 0.84,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 8,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 42,
+        "total_flat_eq_candidates": 28,
+        "flat_eq_candidate_shortfall_total": 3,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "SS10F8414G10": 8,
+          "GRS PT6816": 7,
+          "ND25FW4 (nude 18mm)": 7
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "SS10F8414G10": 0,
+          "GRS PT6816": 3,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.43,
+        "xc_separation_p10_2_10k_db": 0.362,
+        "front_ipsi_median_2_10k_db": -4.493,
+        "sep_30_60_median_2_10k_db": 0.43,
+        "sep_30_60_p10_2_10k_db": 0.362,
+        "front30_median_2_10k_db": -4.493
+      },
+      {
+        "score": 10.1322,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          7000.0
+        ],
+        "xover_orders": [
+          4,
+          2,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR2",
+          "LR2"
+        ],
+        "ways": 4,
+        "dipole_front_rms_db": 1.581,
+        "dipole_rear_rms_db": 1.378,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 0.92,
+        "xover_mismatch_rms_db": 8.518,
+        "validity_penalty": 0.0,
+        "prior_penalty": 1.79,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0,
+        "known_thd_coverage_2_7": 0.0,
+        "thd_penalty": 0.087,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 42.582,
+        "hf_polar_transition_penalty": 1.065,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 6,
+        "max_possible_biquads_per_driver": 13,
+        "total_flat_eq_slots": 39,
+        "total_flat_eq_candidates": 20,
+        "flat_eq_candidate_shortfall_total": 0,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 10,
+          "GRS PT6816": 9,
+          "ND25FW4 (nude 18mm)": 9
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "GRS PT6816": 0,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.417,
+        "xc_separation_p10_2_10k_db": 0.342,
+        "front_ipsi_median_2_10k_db": -4.173,
+        "sep_30_60_median_2_10k_db": 0.417,
+        "sep_30_60_p10_2_10k_db": 0.342,
+        "front30_median_2_10k_db": -4.173
+      },
+      {
+        "score": 10.1448,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          160.0,
+          650.0,
+          10000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR2"
+        ],
+        "ways": 4,
+        "dipole_front_rms_db": 1.41,
+        "dipole_rear_rms_db": 1.436,
+        "null_penalty_db": 0.105,
+        "rear0_rms_db": 1.074,
+        "xover_mismatch_rms_db": 8.793,
+        "validity_penalty": 0.0,
+        "prior_penalty": 1.79,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0,
+        "known_thd_coverage_2_7": 0.0,
+        "thd_penalty": 0.087,
+        "hf_polar_ridge_db": 0.076,
+        "hf_polar_slope_excess_db_per_oct": 34.882,
+        "hf_polar_transition_penalty": 0.986,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 7,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 36,
+        "total_flat_eq_candidates": 24,
+        "flat_eq_candidate_shortfall_total": 3,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "GRS PT6816": 8,
+          "ND25FW4 (nude 18mm)": 8
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "GRS PT6816": 3,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.412,
+        "xc_separation_p10_2_10k_db": 0.337,
+        "front_ipsi_median_2_10k_db": -4.095,
+        "sep_30_60_median_2_10k_db": 0.412,
+        "sep_30_60_p10_2_10k_db": 0.337,
+        "front30_median_2_10k_db": -4.095
+      },
+      {
+        "score": 10.1456,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          800.0,
+          2000.0,
+          12000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          4,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR4",
+          "LR2"
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 1.578,
+        "dipole_rear_rms_db": 1.543,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 0.921,
+        "xover_mismatch_rms_db": 7.788,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0264,
+        "known_thd_coverage_2_7": 0.141,
+        "thd_penalty": 0.052,
+        "hf_polar_ridge_db": 0.179,
+        "hf_polar_slope_excess_db_per_oct": 32.984,
+        "hf_polar_transition_penalty": 1.093,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 9,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 39,
+        "total_flat_eq_candidates": 29,
+        "flat_eq_candidate_shortfall_total": 5,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "SS10F8414G10": 7,
+          "GRS PT6816": 6,
+          "ND25FW4 (nude 18mm)": 6
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "SS10F8414G10": 0,
+          "GRS PT6816": 5,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.428,
+        "xc_separation_p10_2_10k_db": 0.34,
+        "front_ipsi_median_2_10k_db": -4.266,
+        "sep_30_60_median_2_10k_db": 0.428,
+        "sep_30_60_p10_2_10k_db": 0.34,
+        "front30_median_2_10k_db": -4.266
+      },
+      {
+        "score": 10.1462,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          800.0,
+          2000.0,
+          7000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          4,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR4",
+          "LR2"
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 1.653,
+        "dipole_rear_rms_db": 1.531,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 0.91,
+        "xover_mismatch_rms_db": 7.611,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0264,
+        "known_thd_coverage_2_7": 0.141,
+        "thd_penalty": 0.052,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 43.643,
+        "hf_polar_transition_penalty": 1.091,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 9,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 39,
+        "total_flat_eq_candidates": 25,
+        "flat_eq_candidate_shortfall_total": 1,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "SS10F8414G10": 7,
+          "GRS PT6816": 6,
+          "ND25FW4 (nude 18mm)": 6
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "SS10F8414G10": 0,
+          "GRS PT6816": 1,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.417,
+        "xc_separation_p10_2_10k_db": 0.345,
+        "front_ipsi_median_2_10k_db": -4.285,
+        "sep_30_60_median_2_10k_db": 0.417,
+        "sep_30_60_p10_2_10k_db": 0.345,
+        "front30_median_2_10k_db": -4.285
+      },
+      {
+        "score": 10.1467,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          800.0,
+          2000.0,
+          10000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          4,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR4",
+          "LR2"
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 1.588,
+        "dipole_rear_rms_db": 1.52,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 0.911,
+        "xover_mismatch_rms_db": 8.059,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0264,
+        "known_thd_coverage_2_7": 0.141,
+        "thd_penalty": 0.052,
+        "hf_polar_ridge_db": 0.075,
+        "hf_polar_slope_excess_db_per_oct": 34.738,
+        "hf_polar_transition_penalty": 0.981,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 9,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 39,
+        "total_flat_eq_candidates": 29,
+        "flat_eq_candidate_shortfall_total": 5,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "SS10F8414G10": 7,
+          "GRS PT6816": 6,
+          "ND25FW4 (nude 18mm)": 6
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "SS10F8414G10": 0,
+          "GRS PT6816": 5,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.425,
+        "xc_separation_p10_2_10k_db": 0.339,
+        "front_ipsi_median_2_10k_db": -4.274,
+        "sep_30_60_median_2_10k_db": 0.425,
+        "sep_30_60_p10_2_10k_db": 0.339,
+        "front30_median_2_10k_db": -4.274
+      },
+      {
+        "score": 10.157,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          10000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          4
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR4"
+        ],
+        "ways": 4,
+        "dipole_front_rms_db": 1.438,
+        "dipole_rear_rms_db": 1.343,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 0.873,
+        "xover_mismatch_rms_db": 9.051,
+        "validity_penalty": 0.0,
+        "prior_penalty": 1.79,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0,
+        "known_thd_coverage_2_7": 0.0,
+        "thd_penalty": 0.087,
+        "hf_polar_ridge_db": 0.076,
+        "hf_polar_slope_excess_db_per_oct": 38.468,
+        "hf_polar_transition_penalty": 1.076,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 8,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 34,
+        "total_flat_eq_candidates": 24,
+        "flat_eq_candidate_shortfall_total": 4,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "GRS PT6816": 7,
+          "ND25FW4 (nude 18mm)": 7
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "GRS PT6816": 4,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.417,
+        "xc_separation_p10_2_10k_db": 0.337,
+        "front_ipsi_median_2_10k_db": -4.073,
+        "sep_30_60_median_2_10k_db": 0.417,
+        "sep_30_60_p10_2_10k_db": 0.337,
+        "front30_median_2_10k_db": -4.073
+      },
+      {
+        "score": 10.1579,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          2000.0,
+          7000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          2,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR2",
+          "LR2"
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 1.763,
+        "dipole_rear_rms_db": 1.735,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 0.983,
+        "xover_mismatch_rms_db": 7.403,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0497,
+        "known_thd_coverage_2_7": 0.249,
+        "thd_penalty": 0.025,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 36.053,
+        "hf_polar_transition_penalty": 0.901,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 8,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 42,
+        "total_flat_eq_candidates": 25,
+        "flat_eq_candidate_shortfall_total": 0,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "SS10F8414G10": 8,
+          "GRS PT6816": 7,
+          "ND25FW4 (nude 18mm)": 7
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "SS10F8414G10": 0,
+          "GRS PT6816": 0,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.423,
+        "xc_separation_p10_2_10k_db": 0.364,
+        "front_ipsi_median_2_10k_db": -4.536,
+        "sep_30_60_median_2_10k_db": 0.423,
+        "sep_30_60_p10_2_10k_db": 0.364,
+        "front30_median_2_10k_db": -4.536
+      },
+      {
+        "score": 10.1604,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          160.0,
+          650.0,
+          2000.0,
+          7000.0
+        ],
+        "xover_orders": [
+          4,
+          4,
+          4,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR4",
+          "LR2"
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 1.632,
+        "dipole_rear_rms_db": 1.647,
+        "null_penalty_db": 0.105,
+        "rear0_rms_db": 1.101,
+        "xover_mismatch_rms_db": 7.166,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0265,
+        "known_thd_coverage_2_7": 0.142,
+        "thd_penalty": 0.052,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 43.647,
+        "hf_polar_transition_penalty": 1.091,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 9,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 39,
+        "total_flat_eq_candidates": 25,
+        "flat_eq_candidate_shortfall_total": 1,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "SS10F8414G10": 7,
+          "GRS PT6816": 6,
+          "ND25FW4 (nude 18mm)": 6
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "SS10F8414G10": 0,
+          "GRS PT6816": 1,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.415,
+        "xc_separation_p10_2_10k_db": 0.345,
+        "front_ipsi_median_2_10k_db": -4.283,
+        "sep_30_60_median_2_10k_db": 0.415,
+        "sep_30_60_p10_2_10k_db": 0.345,
+        "front30_median_2_10k_db": -4.283
+      },
+      {
+        "score": 10.1621,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -1847,6 +2030,81 @@
         ],
         "xover_orders": [
           4,
+          4,
+          4,
+          2
+        ],
+        "xover_types": [
+          "LR4",
+          "LR4",
+          "LR4",
+          "LR2"
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 1.556,
+        "dipole_rear_rms_db": 1.658,
+        "null_penalty_db": 0.105,
+        "rear0_rms_db": 1.11,
+        "xover_mismatch_rms_db": 7.353,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "biquad_budget_penalty": 0.0,
+        "known_effective_thd_2_7_percent": 0.0265,
+        "known_thd_coverage_2_7": 0.142,
+        "thd_penalty": 0.052,
+        "hf_polar_ridge_db": 0.179,
+        "hf_polar_slope_excess_db_per_oct": 32.985,
+        "hf_polar_transition_penalty": 1.093,
+        "max_biquads_per_driver_limit": 15,
+        "max_crossover_biquads_per_driver": 9,
+        "max_possible_biquads_per_driver": 15,
+        "total_flat_eq_slots": 39,
+        "total_flat_eq_candidates": 29,
+        "flat_eq_candidate_shortfall_total": 5,
+        "flat_eq_slots_by_driver": {
+          "L26RO4Y": 11,
+          "L22MG (nude)": 9,
+          "SS10F8414G10": 7,
+          "GRS PT6816": 6,
+          "ND25FW4 (nude 18mm)": 6
+        },
+        "flat_eq_candidate_shortfall_by_driver": {
+          "L26RO4Y": 0,
+          "L22MG (nude)": 0,
+          "SS10F8414G10": 0,
+          "GRS PT6816": 5,
+          "ND25FW4 (nude 18mm)": 0
+        },
+        "crossover_biquads_within_limit": true,
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.427,
+        "xc_separation_p10_2_10k_db": 0.34,
+        "front_ipsi_median_2_10k_db": -4.259,
+        "sep_30_60_median_2_10k_db": 0.427,
+        "sep_30_60_p10_2_10k_db": 0.34,
+        "front30_median_2_10k_db": -4.259
+      },
+      {
+        "score": 10.1701,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          2000.0,
+          8000.0
+        ],
+        "xover_orders": [
+          4,
           2,
           2,
           2
@@ -1858,26 +2116,26 @@
           "LR2"
         ],
         "ways": 5,
-        "dipole_front_rms_db": 1.792,
-        "dipole_rear_rms_db": 1.914,
-        "null_penalty_db": 0.131,
-        "rear0_rms_db": 1.248,
-        "xover_mismatch_rms_db": 7.353,
+        "dipole_front_rms_db": 1.834,
+        "dipole_rear_rms_db": 1.793,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 1.06,
+        "xover_mismatch_rms_db": 7.239,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
         "biquad_budget_penalty": 0.0,
         "known_effective_thd_2_7_percent": 0.0476,
         "known_thd_coverage_2_7": 0.237,
         "thd_penalty": 0.028,
-        "hf_polar_ridge_db": 0.156,
-        "hf_polar_slope_excess_db_per_oct": 29.828,
-        "hf_polar_transition_penalty": 0.979,
+        "hf_polar_ridge_db": 0.0,
+        "hf_polar_slope_excess_db_per_oct": 32.801,
+        "hf_polar_transition_penalty": 0.82,
         "max_biquads_per_driver_limit": 15,
         "max_crossover_biquads_per_driver": 7,
         "max_possible_biquads_per_driver": 15,
         "total_flat_eq_slots": 46,
-        "total_flat_eq_candidates": 29,
-        "flat_eq_candidate_shortfall_total": 3,
+        "total_flat_eq_candidates": 28,
+        "flat_eq_candidate_shortfall_total": 2,
         "flat_eq_slots_by_driver": {
           "L26RO4Y": 11,
           "L22MG (nude)": 10,
@@ -1889,83 +2147,24 @@
           "L26RO4Y": 0,
           "L22MG (nude)": 0,
           "SS10F8414G10": 0,
-          "GRS PT6816": 3,
+          "GRS PT6816": 2,
           "ND25FW4 (nude 18mm)": 0
         },
         "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.424,
-        "sep_30_60_p10_2_10k_db": 5.385,
-        "front30_median_2_10k_db": -2.143
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.434,
+        "xc_separation_p10_2_10k_db": 0.359,
+        "front_ipsi_median_2_10k_db": -4.552,
+        "sep_30_60_median_2_10k_db": 0.434,
+        "sep_30_60_p10_2_10k_db": 0.359,
+        "front30_median_2_10k_db": -4.552
       },
       {
-        "score": 11.0747,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          1000.0,
-          2000.0,
-          10000.0
-        ],
-        "xover_orders": [
-          4,
-          4,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR4",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.779,
-        "dipole_rear_rms_db": 1.751,
-        "null_penalty_db": 0.054,
-        "rear0_rms_db": 1.013,
-        "xover_mismatch_rms_db": 8.066,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.049,
-        "known_thd_coverage_2_7": 0.245,
-        "thd_penalty": 0.026,
-        "hf_polar_ridge_db": 0.059,
-        "hf_polar_slope_excess_db_per_oct": 30.641,
-        "hf_polar_transition_penalty": 0.854,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
-        "total_flat_eq_candidates": 28,
-        "flat_eq_candidate_shortfall_total": 4,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 7,
-          "ND25FW4 (nude 18mm)": 7
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 4,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.337,
-        "sep_30_60_p10_2_10k_db": 5.398,
-        "front30_median_2_10k_db": -2.066
-      },
-      {
-        "score": 11.0872,
+        "score": 10.1722,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
@@ -1975,128 +2174,69 @@
         ],
         "xovers": [
           160.0,
-          800.0,
+          650.0,
           2000.0,
-          12000.0
+          10000.0
         ],
         "xover_orders": [
           4,
           4,
-          2,
+          4,
           2
         ],
         "xover_types": [
           "LR4",
           "LR4",
-          "LR2",
+          "LR4",
           "LR2"
         ],
         "ways": 5,
-        "dipole_front_rms_db": 1.713,
-        "dipole_rear_rms_db": 1.852,
-        "null_penalty_db": 0.104,
-        "rear0_rms_db": 1.184,
-        "xover_mismatch_rms_db": 7.562,
+        "dipole_front_rms_db": 1.565,
+        "dipole_rear_rms_db": 1.637,
+        "null_penalty_db": 0.105,
+        "rear0_rms_db": 1.102,
+        "xover_mismatch_rms_db": 7.64,
         "validity_penalty": 0.0,
         "prior_penalty": 2.02,
         "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0495,
-        "known_thd_coverage_2_7": 0.247,
-        "thd_penalty": 0.026,
-        "hf_polar_ridge_db": 0.157,
-        "hf_polar_slope_excess_db_per_oct": 30.204,
-        "hf_polar_transition_penalty": 0.991,
+        "known_effective_thd_2_7_percent": 0.0265,
+        "known_thd_coverage_2_7": 0.142,
+        "thd_penalty": 0.052,
+        "hf_polar_ridge_db": 0.075,
+        "hf_polar_slope_excess_db_per_oct": 34.74,
+        "hf_polar_transition_penalty": 0.981,
         "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 8,
+        "max_crossover_biquads_per_driver": 9,
         "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 42,
+        "total_flat_eq_slots": 39,
         "total_flat_eq_candidates": 29,
-        "flat_eq_candidate_shortfall_total": 4,
+        "flat_eq_candidate_shortfall_total": 5,
         "flat_eq_slots_by_driver": {
           "L26RO4Y": 11,
           "L22MG (nude)": 9,
-          "SS10F8414G10": 8,
-          "GRS PT6816": 7,
-          "ND25FW4 (nude 18mm)": 7
+          "SS10F8414G10": 7,
+          "GRS PT6816": 6,
+          "ND25FW4 (nude 18mm)": 6
         },
         "flat_eq_candidate_shortfall_by_driver": {
           "L26RO4Y": 0,
           "L22MG (nude)": 0,
           "SS10F8414G10": 0,
-          "GRS PT6816": 4,
+          "GRS PT6816": 5,
           "ND25FW4 (nude 18mm)": 0
         },
         "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.337,
-        "sep_30_60_p10_2_10k_db": 5.399,
-        "front30_median_2_10k_db": -2.067
-      },
-      {
-        "score": 11.1051,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816",
-          "ND25FW4 (nude 18mm)"
-        ],
-        "xovers": [
-          120.0,
-          800.0,
-          2000.0,
-          12000.0
-        ],
-        "xover_orders": [
-          4,
-          2,
-          2,
-          2
-        ],
-        "xover_types": [
-          "LR4",
-          "LR2",
-          "LR2",
-          "LR2"
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 1.852,
-        "dipole_rear_rms_db": 1.84,
-        "null_penalty_db": 0.0,
-        "rear0_rms_db": 1.109,
-        "xover_mismatch_rms_db": 7.788,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.02,
-        "biquad_budget_penalty": 0.0,
-        "known_effective_thd_2_7_percent": 0.0465,
-        "known_thd_coverage_2_7": 0.231,
-        "thd_penalty": 0.03,
-        "hf_polar_ridge_db": 0.155,
-        "hf_polar_slope_excess_db_per_oct": 29.648,
-        "hf_polar_transition_penalty": 0.974,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 7,
-        "max_possible_biquads_per_driver": 15,
-        "total_flat_eq_slots": 46,
-        "total_flat_eq_candidates": 29,
-        "flat_eq_candidate_shortfall_total": 3,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 10,
-          "SS10F8414G10": 9,
-          "GRS PT6816": 8,
-          "ND25FW4 (nude 18mm)": 8
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 3,
-          "ND25FW4 (nude 18mm)": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.456,
-        "sep_30_60_p10_2_10k_db": 5.368,
-        "front30_median_2_10k_db": -2.207
+        "ipsi_angle": 43.6,
+        "contra_angle": 45.8,
+        "ipsi_angle_deg": 43.6,
+        "contra_angle_deg": 45.8,
+        "xc_ideal_separation_db": 0.33,
+        "xc_separation_median_2_10k_db": 0.424,
+        "xc_separation_p10_2_10k_db": 0.339,
+        "front_ipsi_median_2_10k_db": -4.268,
+        "sep_30_60_median_2_10k_db": 0.424,
+        "sep_30_60_p10_2_10k_db": 0.339,
+        "front30_median_2_10k_db": -4.268
       }
     ],
     "score_terms": {
@@ -2107,7 +2247,7 @@
       "rear0_rms_db": "psychoacoustic-weighted rear 0 degree magnitude symmetry relative to front 0 degree",
       "xover_mismatch_rms_db": "adjacent-driver normalized polar mismatch around each LR2/LR4 crossover",
       "hf_polar_transition_penalty": "8-12 kHz penalty for narrow normalized-contour ridges and steep frequency-axis changes at side/rear angles",
-      "sep_30_60_median_2_10k_db": "psychoacoustic-weighted median front SPL30-SPL60 from 2-10 kHz",
+      "xc_separation_median_2_10k_db": "psychoacoustic-weighted median front SPL43.6 - SPL45.8 from 2-10 kHz",
       "known_effective_thd_2_7_percent": "passband-weighted system THD proxy from available REW THD traces only",
       "prior_penalty": "small local evidence penalty for distortion/SPL uncertainty or known caveats",
       "biquad_budget_penalty": "hard rejection only when cascaded crossover filters exceed the 15-biquad/channel cap"
@@ -2119,8 +2259,10 @@
       "band": "650-2000 Hz",
       "front_dipole_rms_db": 4.411,
       "rear_dipole_rms_db": 2.101,
-      "sep_30_60_median_db": 7.509,
-      "sep_30_60_p10_db": 4.953,
+      "xc_separation_median_db": 0.517,
+      "xc_separation_p10_db": 0.341,
+      "sep_30_60_median_db": 0.517,
+      "sep_30_60_p10_db": 0.341,
       "rear0_minus_front0_median_db": -0.746,
       "front90_minus_front0_median_db": -14.52
     },
@@ -2129,8 +2271,10 @@
       "band": "2-7 kHz",
       "front_dipole_rms_db": 7.422,
       "rear_dipole_rms_db": 8.022,
-      "sep_30_60_median_db": 4.208,
-      "sep_30_60_p10_db": -2.878,
+      "xc_separation_median_db": 0.516,
+      "xc_separation_p10_db": -0.353,
+      "sep_30_60_median_db": 0.516,
+      "sep_30_60_p10_db": -0.353,
       "rear0_minus_front0_median_db": -7.915,
       "front90_minus_front0_median_db": -19.256
     },
@@ -2139,8 +2283,10 @@
       "band": "2-10 kHz",
       "front_dipole_rms_db": 7.229,
       "rear_dipole_rms_db": 7.579,
-      "sep_30_60_median_db": 3.932,
-      "sep_30_60_p10_db": -3.462,
+      "xc_separation_median_db": 0.376,
+      "xc_separation_p10_db": -0.411,
+      "sep_30_60_median_db": 0.376,
+      "sep_30_60_p10_db": -0.411,
       "rear0_minus_front0_median_db": -7.516,
       "front90_minus_front0_median_db": -17.906
     },
@@ -2149,8 +2295,10 @@
       "band": "650-2000 Hz",
       "front_dipole_rms_db": 0.633,
       "rear_dipole_rms_db": 0.247,
-      "sep_30_60_median_db": 5.34,
-      "sep_30_60_p10_db": 5.13,
+      "xc_separation_median_db": 0.367,
+      "xc_separation_p10_db": 0.351,
+      "sep_30_60_median_db": 0.367,
+      "sep_30_60_p10_db": 0.351,
       "rear0_minus_front0_median_db": -0.529,
       "front90_minus_front0_median_db": -37.905
     },
@@ -2159,8 +2307,10 @@
       "band": "2-7 kHz",
       "front_dipole_rms_db": 1.459,
       "rear_dipole_rms_db": 1.2,
-      "sep_30_60_median_db": 5.865,
-      "sep_30_60_p10_db": 4.933,
+      "xc_separation_median_db": 0.406,
+      "xc_separation_p10_db": 0.329,
+      "sep_30_60_median_db": 0.406,
+      "sep_30_60_p10_db": 0.329,
       "rear0_minus_front0_median_db": -0.42,
       "front90_minus_front0_median_db": -35.392
     },
@@ -2169,8 +2319,10 @@
       "band": "2-10 kHz",
       "front_dipole_rms_db": 1.725,
       "rear_dipole_rms_db": 1.72,
-      "sep_30_60_median_db": 6.052,
-      "sep_30_60_p10_db": 5.056,
+      "xc_separation_median_db": 0.418,
+      "xc_separation_p10_db": 0.337,
+      "sep_30_60_median_db": 0.418,
+      "sep_30_60_p10_db": 0.337,
       "rear0_minus_front0_median_db": -0.446,
       "front90_minus_front0_median_db": -34.87
     },
@@ -2179,8 +2331,10 @@
       "band": "650-2000 Hz",
       "front_dipole_rms_db": 0.837,
       "rear_dipole_rms_db": 1.928,
-      "sep_30_60_median_db": 5.254,
-      "sep_30_60_p10_db": 4.095,
+      "xc_separation_median_db": 0.361,
+      "xc_separation_p10_db": 0.285,
+      "sep_30_60_median_db": 0.361,
+      "sep_30_60_p10_db": 0.285,
       "rear0_minus_front0_median_db": -1.995,
       "front90_minus_front0_median_db": -17.008
     },
@@ -2189,8 +2343,10 @@
       "band": "2-7 kHz",
       "front_dipole_rms_db": 7.185,
       "rear_dipole_rms_db": 4.27,
-      "sep_30_60_median_db": 11.234,
-      "sep_30_60_p10_db": 7.348,
+      "xc_separation_median_db": 0.806,
+      "xc_separation_p10_db": 0.544,
+      "sep_30_60_median_db": 0.806,
+      "sep_30_60_p10_db": 0.544,
       "rear0_minus_front0_median_db": -3.151,
       "front90_minus_front0_median_db": -16.97
     },
@@ -2199,8 +2355,10 @@
       "band": "2-10 kHz",
       "front_dipole_rms_db": 6.751,
       "rear_dipole_rms_db": 4.617,
-      "sep_30_60_median_db": 10.99,
-      "sep_30_60_p10_db": 6.424,
+      "xc_separation_median_db": 0.792,
+      "xc_separation_p10_db": 0.448,
+      "sep_30_60_median_db": 0.792,
+      "sep_30_60_p10_db": 0.448,
       "rear0_minus_front0_median_db": -3.444,
       "front90_minus_front0_median_db": -17.123
     },
@@ -2209,8 +2367,10 @@
       "band": "650-2000 Hz",
       "front_dipole_rms_db": 1.343,
       "rear_dipole_rms_db": 0.503,
-      "sep_30_60_median_db": 5.797,
-      "sep_30_60_p10_db": 5.459,
+      "xc_separation_median_db": 0.397,
+      "xc_separation_p10_db": 0.376,
+      "sep_30_60_median_db": 0.397,
+      "sep_30_60_p10_db": 0.376,
       "rear0_minus_front0_median_db": -0.471,
       "front90_minus_front0_median_db": -24.804
     },
@@ -2219,8 +2379,10 @@
       "band": "2-7 kHz",
       "front_dipole_rms_db": 5.971,
       "rear_dipole_rms_db": 4.511,
-      "sep_30_60_median_db": 9.936,
-      "sep_30_60_p10_db": 5.782,
+      "xc_separation_median_db": 0.719,
+      "xc_separation_p10_db": 0.414,
+      "sep_30_60_median_db": 0.719,
+      "sep_30_60_p10_db": 0.414,
       "rear0_minus_front0_median_db": -2.807,
       "front90_minus_front0_median_db": -20.332
     },
@@ -2229,8 +2391,10 @@
       "band": "2-10 kHz",
       "front_dipole_rms_db": 5.987,
       "rear_dipole_rms_db": 4.999,
-      "sep_30_60_median_db": 10.155,
-      "sep_30_60_p10_db": 5.616,
+      "xc_separation_median_db": 0.729,
+      "xc_separation_p10_db": 0.412,
+      "sep_30_60_median_db": 0.729,
+      "sep_30_60_p10_db": 0.412,
       "rear0_minus_front0_median_db": -3.25,
       "front90_minus_front0_median_db": -20.174
     },
@@ -2239,8 +2403,10 @@
       "band": "650-2000 Hz",
       "front_dipole_rms_db": 2.033,
       "rear_dipole_rms_db": 0.459,
-      "sep_30_60_median_db": 6.187,
-      "sep_30_60_p10_db": 5.778,
+      "xc_separation_median_db": 0.425,
+      "xc_separation_p10_db": 0.396,
+      "sep_30_60_median_db": 0.425,
+      "sep_30_60_p10_db": 0.396,
       "rear0_minus_front0_median_db": -0.393,
       "front90_minus_front0_median_db": -25.102
     },
@@ -2249,8 +2415,10 @@
       "band": "2-7 kHz",
       "front_dipole_rms_db": 5.224,
       "rear_dipole_rms_db": 5.373,
-      "sep_30_60_median_db": 8.741,
-      "sep_30_60_p10_db": 5.605,
+      "xc_separation_median_db": 0.623,
+      "xc_separation_p10_db": 0.397,
+      "sep_30_60_median_db": 0.623,
+      "sep_30_60_p10_db": 0.397,
       "rear0_minus_front0_median_db": -4.627,
       "front90_minus_front0_median_db": -23.241
     },
@@ -2259,8 +2427,10 @@
       "band": "2-10 kHz",
       "front_dipole_rms_db": 5.601,
       "rear_dipole_rms_db": 6.022,
-      "sep_30_60_median_db": 9.18,
-      "sep_30_60_p10_db": 5.912,
+      "xc_separation_median_db": 0.657,
+      "xc_separation_p10_db": 0.423,
+      "sep_30_60_median_db": 0.657,
+      "sep_30_60_p10_db": 0.423,
       "rear0_minus_front0_median_db": -4.799,
       "front90_minus_front0_median_db": -21.101
     },
@@ -2269,8 +2439,10 @@
       "band": "650-2000 Hz",
       "front_dipole_rms_db": 0.937,
       "rear_dipole_rms_db": 2.579,
-      "sep_30_60_median_db": 5.102,
-      "sep_30_60_p10_db": 3.726,
+      "xc_separation_median_db": 0.349,
+      "xc_separation_p10_db": 0.259,
+      "sep_30_60_median_db": 0.349,
+      "sep_30_60_p10_db": 0.259,
       "rear0_minus_front0_median_db": -1.297,
       "front90_minus_front0_median_db": -15.897
     },
@@ -2279,8 +2451,10 @@
       "band": "2-7 kHz",
       "front_dipole_rms_db": 6.282,
       "rear_dipole_rms_db": 4.371,
-      "sep_30_60_median_db": 10.393,
-      "sep_30_60_p10_db": 8.55,
+      "xc_separation_median_db": 0.738,
+      "xc_separation_p10_db": 0.604,
+      "sep_30_60_median_db": 0.738,
+      "sep_30_60_p10_db": 0.604,
       "rear0_minus_front0_median_db": -3.381,
       "front90_minus_front0_median_db": -18.344
     },
@@ -2289,8 +2463,10 @@
       "band": "2-10 kHz",
       "front_dipole_rms_db": 5.811,
       "rear_dipole_rms_db": 5.224,
-      "sep_30_60_median_db": 10.212,
-      "sep_30_60_p10_db": 6.796,
+      "xc_separation_median_db": 0.723,
+      "xc_separation_p10_db": 0.497,
+      "sep_30_60_median_db": 0.723,
+      "sep_30_60_p10_db": 0.497,
       "rear0_minus_front0_median_db": -3.952,
       "front90_minus_front0_median_db": -18.749
     },
@@ -2299,8 +2475,10 @@
       "band": "650-2000 Hz",
       "front_dipole_rms_db": 1.113,
       "rear_dipole_rms_db": 0.386,
-      "sep_30_60_median_db": 5.753,
-      "sep_30_60_p10_db": 5.344,
+      "xc_separation_median_db": 0.396,
+      "xc_separation_p10_db": 0.366,
+      "sep_30_60_median_db": 0.396,
+      "sep_30_60_p10_db": 0.366,
       "rear0_minus_front0_median_db": -0.247,
       "front90_minus_front0_median_db": -25.301
     },
@@ -2309,8 +2487,10 @@
       "band": "2-7 kHz",
       "front_dipole_rms_db": 1.82,
       "rear_dipole_rms_db": 0.913,
-      "sep_30_60_median_db": 5.76,
-      "sep_30_60_p10_db": 4.953,
+      "xc_separation_median_db": 0.395,
+      "xc_separation_p10_db": 0.344,
+      "sep_30_60_median_db": 0.395,
+      "sep_30_60_p10_db": 0.344,
       "rear0_minus_front0_median_db": -0.774,
       "front90_minus_front0_median_db": -28.125
     },
@@ -2319,8 +2499,10 @@
       "band": "2-10 kHz",
       "front_dipole_rms_db": 1.875,
       "rear_dipole_rms_db": 1.118,
-      "sep_30_60_median_db": 5.643,
-      "sep_30_60_p10_db": 4.381,
+      "xc_separation_median_db": 0.391,
+      "xc_separation_p10_db": 0.314,
+      "sep_30_60_median_db": 0.391,
+      "sep_30_60_p10_db": 0.314,
       "rear0_minus_front0_median_db": -0.847,
       "front90_minus_front0_median_db": -26.853
     }
@@ -2650,40 +2832,40 @@
   "effective_system_thd": [
     {
       "band": "1-7 kHz",
-      "effective_known_thd_percent_weighted": 0.0773,
-      "effective_known_thd_p90_percent": 0.1227,
-      "known_fundamental_coverage_weighted": 0.3863,
-      "front0_spl_weighted_median_db": 75.967,
+      "effective_known_thd_percent_weighted": 0.0863,
+      "effective_known_thd_p90_percent": 0.2154,
+      "known_fundamental_coverage_weighted": 0.3625,
+      "front0_spl_weighted_median_db": 75.998,
       "known_trace_drivers": "SS10F8414G10",
       "missing_trace_drivers": "L26RO4Y, L22MG (nude), GRS PT6816, ND25FW4 (nude 18mm)",
       "method": "front 0-degree driver contributions weighted by measured REW THD traces and combined incoherently"
     },
     {
       "band": "2-7 kHz",
-      "effective_known_thd_percent_weighted": 0.0698,
-      "effective_known_thd_p90_percent": 0.1171,
-      "known_fundamental_coverage_weighted": 0.2979,
-      "front0_spl_weighted_median_db": 75.984,
+      "effective_known_thd_percent_weighted": 0.0572,
+      "effective_known_thd_p90_percent": 0.1725,
+      "known_fundamental_coverage_weighted": 0.2091,
+      "front0_spl_weighted_median_db": 76.004,
       "known_trace_drivers": "SS10F8414G10",
       "missing_trace_drivers": "L26RO4Y, L22MG (nude), GRS PT6816, ND25FW4 (nude 18mm)",
       "method": "front 0-degree driver contributions weighted by measured REW THD traces and combined incoherently"
     },
     {
       "band": "2-10 kHz",
-      "effective_known_thd_percent_weighted": 0.0598,
-      "effective_known_thd_p90_percent": 0.1102,
-      "known_fundamental_coverage_weighted": 0.2535,
-      "front0_spl_weighted_median_db": 76.079,
+      "effective_known_thd_percent_weighted": 0.0474,
+      "effective_known_thd_p90_percent": 0.1514,
+      "known_fundamental_coverage_weighted": 0.1733,
+      "front0_spl_weighted_median_db": 75.996,
       "known_trace_drivers": "SS10F8414G10",
       "missing_trace_drivers": "L26RO4Y, L22MG (nude), GRS PT6816, ND25FW4 (nude 18mm)",
       "method": "front 0-degree driver contributions weighted by measured REW THD traces and combined incoherently"
     },
     {
       "band": "7-10 kHz",
-      "effective_known_thd_percent_weighted": 0.0121,
-      "effective_known_thd_p90_percent": 0.0199,
-      "known_fundamental_coverage_weighted": 0.0421,
-      "front0_spl_weighted_median_db": 76.415,
+      "effective_known_thd_percent_weighted": NaN,
+      "effective_known_thd_p90_percent": NaN,
+      "known_fundamental_coverage_weighted": 0.0022,
+      "front0_spl_weighted_median_db": 75.95,
       "known_trace_drivers": "SS10F8414G10",
       "missing_trace_drivers": "L26RO4Y, L22MG (nude), GRS PT6816, ND25FW4 (nude 18mm)",
       "method": "front 0-degree driver contributions weighted by measured REW THD traces and combined incoherently"
@@ -2697,12 +2879,12 @@
   ],
   "l10_scanspeak_rationale": [
     "Raw REW evidence does not favor ScanSpeak on THD: L10NEO is 0.157% median THD at 86.6 dB SPL in 2-7 kHz, while the best available ScanSpeak trace is SS10F8424G00 SN086 at 0.177% and 84.7 dB SPL.",
-    "The selected non-L10 candidate wins only on the weighted acoustic search: score 10.79 vs best L10NEO score 11.46, front dipole RMS 1.73 vs 1.82 dB, XO mismatch 7.24 vs 7.69 dB, and 30-60 separation 6.12 vs 6.67 dB.",
+    "The selected non-L10 candidate wins only on the weighted acoustic search: score 9.79 vs best L10NEO score 11.32, front dipole RMS 1.60 vs 1.82 dB, XO mismatch 7.24 vs 7.69 dB, and configured x-c separation 0.42 vs 0.47 dB.",
     "Conclusion: L10NEO must not be rejected on distortion/SPL evidence; any ScanSpeak selection is a directivity/crossover integration choice under the current measured polar data."
   ],
   "filter_topology": {
-    "architecture": "cascaded mixed-order Linkwitz-Riley split tree with shared high-pass carryover (LR4 / LR4 / LR2 / LR2)",
-    "diagram": "Input\n  +-- LR4 HP 70 Hz (2 biquads, global boundary)\n    +-- LR4 split @ 120 Hz\n        +-- LR4 LP 120 Hz (2 biquads) -> L26RO4Y\n        +-- LR4 HP 120 Hz (2 biquads) -> next split\n      +-- LR4 split @ 650 Hz\n          +-- LR4 LP 650 Hz (2 biquads) -> L22MG (nude)\n          +-- LR4 HP 650 Hz (2 biquads) -> next split\n        +-- LR2 split @ 2000 Hz\n            +-- LR2 LP 2000 Hz (1 biquad) -> SS10F8414G10\n            +-- LR2 HP 2000 Hz (1 biquad, invert downstream branch) -> next split\n          +-- LR2 split @ 8000 Hz\n              +-- LR2 LP 8000 Hz (1 biquad) -> GRS PT6816\n              +-- LR2 HP 8000 Hz (1 biquad) -> ND25FW4 (nude 18mm)",
+    "architecture": "cascaded mixed-order Linkwitz-Riley split tree with shared high-pass carryover (LR4 / LR4 / LR4 / LR2)",
+    "diagram": "Input\n  +-- LR4 HP 70 Hz (2 biquads, global boundary)\n    +-- LR4 split @ 120 Hz\n        +-- LR4 LP 120 Hz (2 biquads) -> L26RO4Y\n        +-- LR4 HP 120 Hz (2 biquads) -> next split\n      +-- LR4 split @ 650 Hz\n          +-- LR4 LP 650 Hz (2 biquads) -> L22MG (nude)\n          +-- LR4 HP 650 Hz (2 biquads) -> next split\n        +-- LR4 split @ 2000 Hz\n            +-- LR4 LP 2000 Hz (2 biquads) -> SS10F8414G10\n            +-- LR4 HP 2000 Hz (2 biquads) -> next split\n          +-- LR2 split @ 8000 Hz\n              +-- LR2 LP 8000 Hz (1 biquad) -> GRS PT6816\n              +-- LR2 HP 8000 Hz (1 biquad, inverted) -> ND25FW4 (nude 18mm)",
     "stages": [
       {
         "stage": 1,
@@ -2717,8 +2899,8 @@
         "own_branch_lp_biquads": 2,
         "effective_crossover_biquads": 4,
         "effective_lr4_biquads": 4,
-        "flat_eq_biquads": 0,
-        "effective_total_biquads": 4,
+        "flat_eq_biquads": 1,
+        "effective_total_biquads": 5,
         "polarity": 1
       },
       {
@@ -2734,8 +2916,8 @@
         "own_branch_lp_biquads": 2,
         "effective_crossover_biquads": 6,
         "effective_lr4_biquads": 6,
-        "flat_eq_biquads": 5,
-        "effective_total_biquads": 11,
+        "flat_eq_biquads": 4,
+        "effective_total_biquads": 10,
         "polarity": 1
       },
       {
@@ -2748,10 +2930,10 @@
         "global_boundary_hp_biquads": 2,
         "inherited_upstream_hp_biquads": 2,
         "own_branch_hp_biquads": 2,
-        "own_branch_lp_biquads": 1,
-        "effective_crossover_biquads": 7,
-        "effective_lr4_biquads": 7,
-        "flat_eq_biquads": 5,
+        "own_branch_lp_biquads": 2,
+        "effective_crossover_biquads": 8,
+        "effective_lr4_biquads": 8,
+        "flat_eq_biquads": 4,
         "effective_total_biquads": 12,
         "polarity": 1
       },
@@ -2764,13 +2946,13 @@
         ],
         "global_boundary_hp_biquads": 2,
         "inherited_upstream_hp_biquads": 4,
-        "own_branch_hp_biquads": 1,
+        "own_branch_hp_biquads": 2,
         "own_branch_lp_biquads": 1,
-        "effective_crossover_biquads": 8,
-        "effective_lr4_biquads": 8,
-        "flat_eq_biquads": 7,
+        "effective_crossover_biquads": 9,
+        "effective_lr4_biquads": 9,
+        "flat_eq_biquads": 6,
         "effective_total_biquads": 15,
-        "polarity": -1
+        "polarity": 1
       },
       {
         "stage": 5,
@@ -2780,35 +2962,35 @@
           20000.0
         ],
         "global_boundary_hp_biquads": 2,
-        "inherited_upstream_hp_biquads": 5,
+        "inherited_upstream_hp_biquads": 6,
         "own_branch_hp_biquads": 1,
         "own_branch_lp_biquads": 0,
-        "effective_crossover_biquads": 8,
-        "effective_lr4_biquads": 8,
-        "flat_eq_biquads": 6,
+        "effective_crossover_biquads": 9,
+        "effective_lr4_biquads": 9,
+        "flat_eq_biquads": 5,
         "effective_total_biquads": 14,
-        "polarity": 1
+        "polarity": -1
       }
     ],
     "summary": {
       "xover_types": [
         "LR4",
         "LR4",
-        "LR2",
+        "LR4",
         "LR2"
       ],
       "xover_orders": [
         4,
         4,
-        2,
+        4,
         2
       ],
-      "shared_tree_crossover_biquads": 14,
-      "standalone_channel_crossover_biquads": 33,
-      "shared_tree_lr4_biquads": 14,
-      "standalone_channel_lr4_biquads": 33,
-      "flat_eq_biquads": 23,
-      "shared_tree_total_biquads_with_eq": 37,
+      "shared_tree_crossover_biquads": 16,
+      "standalone_channel_crossover_biquads": 36,
+      "shared_tree_lr4_biquads": 16,
+      "standalone_channel_lr4_biquads": 36,
+      "flat_eq_biquads": 20,
+      "shared_tree_total_biquads_with_eq": 36,
       "standalone_channel_total_biquads": 56,
       "max_biquads_per_driver_limit": 15,
       "max_effective_total_biquads_per_driver": 15,
@@ -2835,199 +3017,189 @@
       "max_rms_error_db": 0.25
     },
     "constraint_met": false,
-    "optimizer_cost": 2.702,
-    "optimizer_nfev": 27,
+    "optimizer_cost": 3.446,
+    "optimizer_nfev": 29,
     "filters_tested": 28,
     "max_biquads_per_driver": 15,
     "flat_eq_capacity_by_driver": {
       "L26RO4Y": 11,
       "L22MG (nude)": 9,
-      "SS10F8414G10": 8,
-      "GRS PT6816": 7,
-      "ND25FW4 (nude 18mm)": 7
-    },
-    "flat_eq_used_by_driver": {
-      "L22MG (nude)": 5,
-      "SS10F8414G10": 5,
-      "GRS PT6816": 7,
+      "SS10F8414G10": 7,
+      "GRS PT6816": 6,
       "ND25FW4 (nude 18mm)": 6
     },
+    "flat_eq_used_by_driver": {
+      "L26RO4Y": 1,
+      "L22MG (nude)": 4,
+      "SS10F8414G10": 4,
+      "GRS PT6816": 6,
+      "ND25FW4 (nude 18mm)": 5
+    },
     "final_biquads_by_driver": {
-      "L26RO4Y": 4,
-      "L22MG (nude)": 11,
+      "L26RO4Y": 5,
+      "L22MG (nude)": 10,
       "SS10F8414G10": 12,
       "GRS PT6816": 15,
       "ND25FW4 (nude 18mm)": 14
     },
     "max_flat_eq_filters_allowed": 28,
-    "filters_kept": 23,
-    "front_sum_flat_eq_filters_kept": 22,
+    "filters_kept": 20,
+    "front_sum_flat_eq_filters_kept": 20,
     "high_frequency_polar_eq": {
       "before": {
         "hf_polar_ridge_db": 0.0,
-        "hf_polar_slope_excess_db_per_oct": 49.9498,
-        "hf_polar_transition_penalty": 1.2487
+        "hf_polar_slope_excess_db_per_oct": 92.1568,
+        "hf_polar_transition_penalty": 2.3039
       },
       "after": {
         "hf_polar_ridge_db": 0.0,
-        "hf_polar_slope_excess_db_per_oct": 47.6603,
-        "hf_polar_transition_penalty": 1.1915
+        "hf_polar_slope_excess_db_per_oct": 92.1568,
+        "hf_polar_transition_penalty": 2.3039
       },
-      "accepted_filters": [
-        {
-          "driver": "GRS PT6816",
-          "type": "peaking",
-          "fc_hz": 9000.0,
-          "q": 1.0,
-          "gain_db": 2.5,
-          "hf_penalty_improvement": 0.0572,
-          "flatness_rms_db": 0.231,
-          "flatness_peak_to_peak_db": 1.017
-        }
-      ],
+      "accepted_filters": [],
       "method": "grid-search optional +/- PEQ cuts/boosts around 7.5-12.5 kHz, accepted only if the front-sum flatness degradation stays within a small tolerance"
     },
-    "full_fit_filters_needed": 25,
+    "full_fit_filters_needed": 28,
     "method": "sparse least-squares: solve full candidate pool, rank by fitted correction magnitude, then try the smallest ranked sets against the smoothed summed-response constraint; if no capped set satisfies it, keep the best-scored set while capping every exported driver channel at 15 total biquads; then try optional +/- high-frequency PEQs for 8-12 kHz polar smoothness only if they do not materially degrade front-sum flatness",
     "before": {
       "raw": {
         "80-18k": {
-          "median_db": 77.732,
-          "min_error_db": -4.934,
-          "max_error_db": 7.564,
-          "peak_to_peak_db": 12.498,
-          "rms_error_db": 2.938
+          "median_db": 77.686,
+          "min_error_db": -4.491,
+          "max_error_db": 2.475,
+          "peak_to_peak_db": 6.966,
+          "rms_error_db": 1.763
         },
         "200-10k": {
-          "median_db": 78.634,
-          "min_error_db": -4.805,
-          "max_error_db": 6.662,
-          "peak_to_peak_db": 11.467,
-          "rms_error_db": 2.875
+          "median_db": 78.06,
+          "min_error_db": -4.231,
+          "max_error_db": 2.101,
+          "peak_to_peak_db": 6.332,
+          "rms_error_db": 1.631
         },
         "2-10k": {
-          "median_db": 80.085,
-          "min_error_db": -5.584,
-          "max_error_db": 5.211,
-          "peak_to_peak_db": 10.795,
-          "rms_error_db": 2.425
+          "median_db": 78.408,
+          "min_error_db": -3.158,
+          "max_error_db": 1.444,
+          "peak_to_peak_db": 4.602,
+          "rms_error_db": 1.15
         }
       },
       "one_sixth_octave": {
         "80-18k": {
-          "median_db": 77.77,
-          "min_error_db": -4.359,
-          "max_error_db": 7.344,
-          "peak_to_peak_db": 11.703,
-          "rms_error_db": 2.916
+          "median_db": 77.735,
+          "min_error_db": -4.032,
+          "max_error_db": 2.384,
+          "peak_to_peak_db": 6.416,
+          "rms_error_db": 1.751
         },
         "200-10k": {
-          "median_db": 78.634,
-          "min_error_db": -4.785,
-          "max_error_db": 6.479,
-          "peak_to_peak_db": 11.265,
-          "rms_error_db": 2.868
+          "median_db": 78.042,
+          "min_error_db": -4.194,
+          "max_error_db": 2.077,
+          "peak_to_peak_db": 6.27,
+          "rms_error_db": 1.614
         },
         "2-10k": {
-          "median_db": 80.085,
-          "min_error_db": -5.584,
-          "max_error_db": 5.028,
-          "peak_to_peak_db": 10.612,
-          "rms_error_db": 2.41
+          "median_db": 78.429,
+          "min_error_db": -2.915,
+          "max_error_db": 1.303,
+          "peak_to_peak_db": 4.217,
+          "rms_error_db": 1.118
         }
       },
       "one_third_octave": {
         "80-18k": {
-          "median_db": 77.691,
-          "min_error_db": -4.482,
-          "max_error_db": 6.988,
-          "peak_to_peak_db": 11.47,
-          "rms_error_db": 2.879
+          "median_db": 77.768,
+          "min_error_db": -4.271,
+          "max_error_db": 2.23,
+          "peak_to_peak_db": 6.501,
+          "rms_error_db": 1.721
         },
         "200-10k": {
-          "median_db": 78.647,
-          "min_error_db": -4.743,
-          "max_error_db": 6.032,
-          "peak_to_peak_db": 10.776,
-          "rms_error_db": 2.835
+          "median_db": 78.06,
+          "min_error_db": -4.156,
+          "max_error_db": 1.938,
+          "peak_to_peak_db": 6.094,
+          "rms_error_db": 1.577
         },
         "2-10k": {
-          "median_db": 80.085,
-          "min_error_db": -4.823,
-          "max_error_db": 4.594,
-          "peak_to_peak_db": 9.417,
-          "rms_error_db": 2.36
+          "median_db": 78.408,
+          "min_error_db": -2.291,
+          "max_error_db": 1.266,
+          "peak_to_peak_db": 3.557,
+          "rms_error_db": 0.991
         }
       }
     },
     "after": {
       "raw": {
         "80-18k": {
-          "median_db": 76.007,
-          "min_error_db": -2.074,
-          "max_error_db": 1.068,
-          "peak_to_peak_db": 3.142,
-          "rms_error_db": 0.402
+          "median_db": 75.968,
+          "min_error_db": -4.687,
+          "max_error_db": 1.336,
+          "peak_to_peak_db": 6.023,
+          "rms_error_db": 0.92
         },
         "200-10k": {
-          "median_db": 76.003,
-          "min_error_db": -0.757,
-          "max_error_db": 1.072,
-          "peak_to_peak_db": 1.829,
-          "rms_error_db": 0.322
+          "median_db": 75.991,
+          "min_error_db": -1.964,
+          "max_error_db": 1.313,
+          "peak_to_peak_db": 3.276,
+          "rms_error_db": 0.326
         },
         "2-10k": {
-          "median_db": 76.157,
-          "min_error_db": -0.839,
-          "max_error_db": 0.918,
-          "peak_to_peak_db": 1.757,
-          "rms_error_db": 0.417
+          "median_db": 75.989,
+          "min_error_db": -1.962,
+          "max_error_db": 1.314,
+          "peak_to_peak_db": 3.276,
+          "rms_error_db": 0.445
         }
       },
       "one_sixth_octave": {
         "80-18k": {
-          "median_db": 76.009,
-          "min_error_db": -2.077,
-          "max_error_db": 0.9,
-          "peak_to_peak_db": 2.977,
-          "rms_error_db": 0.371
+          "median_db": 75.973,
+          "min_error_db": -4.693,
+          "max_error_db": 0.832,
+          "peak_to_peak_db": 5.524,
+          "rms_error_db": 0.896
         },
         "200-10k": {
-          "median_db": 76.005,
-          "min_error_db": -0.687,
-          "max_error_db": 0.905,
-          "peak_to_peak_db": 1.592,
-          "rms_error_db": 0.293
+          "median_db": 75.989,
+          "min_error_db": -0.743,
+          "max_error_db": 0.815,
+          "peak_to_peak_db": 1.558,
+          "rms_error_db": 0.27
         },
         "2-10k": {
-          "median_db": 76.235,
-          "min_error_db": -0.816,
-          "max_error_db": 0.674,
-          "peak_to_peak_db": 1.491,
-          "rms_error_db": 0.381
+          "median_db": 75.988,
+          "min_error_db": -0.742,
+          "max_error_db": 0.817,
+          "peak_to_peak_db": 1.558,
+          "rms_error_db": 0.348
         }
       },
       "one_third_octave": {
         "80-18k": {
-          "median_db": 76.004,
-          "min_error_db": -2.071,
-          "max_error_db": 0.673,
-          "peak_to_peak_db": 2.745,
-          "rms_error_db": 0.332
+          "median_db": 75.989,
+          "min_error_db": -4.708,
+          "max_error_db": 0.441,
+          "peak_to_peak_db": 5.149,
+          "rms_error_db": 0.878
         },
         "200-10k": {
-          "median_db": 76.004,
-          "min_error_db": -0.489,
-          "max_error_db": 0.528,
-          "peak_to_peak_db": 1.017,
-          "rms_error_db": 0.231
+          "median_db": 75.999,
+          "min_error_db": -0.388,
+          "max_error_db": 0.43,
+          "peak_to_peak_db": 0.818,
+          "rms_error_db": 0.166
         },
         "2-10k": {
-          "median_db": 76.094,
-          "min_error_db": -0.575,
-          "max_error_db": 0.438,
-          "peak_to_peak_db": 1.013,
-          "rms_error_db": 0.295
+          "median_db": 76.009,
+          "min_error_db": -0.397,
+          "max_error_db": 0.421,
+          "peak_to_peak_db": 0.818,
+          "rms_error_db": 0.177
         }
       }
     }
@@ -3037,17 +3209,17 @@
       1600.0,
       3200.0
     ],
-    "min_f90_minus_f0_db": -26.495,
-    "min_frequency_hz": 1681.4,
-    "max_f90_minus_f0_db": -19.842,
-    "max_frequency_hz": 2406.2,
+    "min_f90_minus_f0_db": -29.583,
+    "min_frequency_hz": 3163.3,
+    "max_f90_minus_f0_db": -17.728,
+    "max_frequency_hz": 1973.8,
     "interpretation": "The dark feature at 90 degrees is a side null, not an off-axis SPL peak. It is dominated by the upper-mid crossover/driver transition and should not be filled with on-axis EQ unless the design goal changes."
   },
   "local_evidence_notes": [
     "Juan's screenshot notes rank 8424 distortion/SPL best, 8414 close behind, and MU10 worst among the 8424/8414/MU10 upper-mid comparison.",
     "Raw REW .mdat THD extraction adds L10NEO to the comparison and does not support describing L10NEO as worse-distortion than the ScanSpeak pair.",
     "The same notes flag 8424 rear-side directivity and high-angle order as weaker than 8414, especially above 2 kHz.",
-    "GRS is treated as the measured dipole/directivity-order reference, but it does not provide the largest 30-to-60 separation above 2 kHz.",
+    "GRS is treated as the measured dipole/directivity-order reference, but it does not provide the largest configured x-c angle separation above 2 kHz.",
     "L10NEO remains a high-separation alternate; it is not selected in the balanced primary due to the composite directivity/crossover score, not because of worse raw THD evidence.",
     "Driver contribution peaks are not automatically flattened when they are helping the complex 0-degree sum; the search now separately penalizes narrow 8-12 kHz normalized-contour ridges and steep side/rear polar transitions."
   ],
@@ -3084,7 +3256,7 @@
         120.0
       ],
       "source": "measurements/juan/L26RO4Y POLARES EN BAFFLE CILINDRICO VER NOTA",
-      "gain_db": -7.843,
+      "gain_db": -9.271,
       "delay_ms": 0.0,
       "polarity": 1,
       "rationale": "Best measured low-frequency candidate, but captured in a cylindrical baffle.",
@@ -3116,6 +3288,13 @@
           "q": 0.7071,
           "gain_db": 0.0,
           "source": "LR4 branch low-pass"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 110.0,
+          "q": 1.0,
+          "gain_db": -1.671,
+          "source": "flat-EQ"
         }
       ]
     },
@@ -3127,7 +3306,7 @@
         650.0
       ],
       "source": "measurements/juan/SEAS L22MG NUDE MIC ON AXIS",
-      "gain_db": 14.951,
+      "gain_db": 13.462,
       "delay_ms": -1.375,
       "polarity": 1,
       "rationale": "Strong low-mid bridge with nude front/rear data and useful coverage below 500 Hz.",
@@ -3178,35 +3357,28 @@
           "type": "peaking",
           "fc_hz": 500.0,
           "q": 1.0,
-          "gain_db": -5.446,
+          "gain_db": -8.0,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 620.0,
           "q": 1.0,
-          "gain_db": 1.496,
+          "gain_db": 5.108,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 150.0,
           "q": 1.0,
-          "gain_db": 1.377,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 220.0,
-          "q": 1.0,
-          "gain_db": 0.964,
+          "gain_db": 3.82,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 330.0,
           "q": 1.0,
-          "gain_db": 0.293,
+          "gain_db": 1.889,
           "source": "flat-EQ"
         }
       ]
@@ -3219,8 +3391,8 @@
         2000.0
       ],
       "source": "measurements/juan/ScanSpeak 10F8414G10",
-      "gain_db": -3.297,
-      "delay_ms": -0.69,
+      "gain_db": -4.867,
+      "delay_ms": -0.775,
       "polarity": 1,
       "rationale": "Good directivity order with local notes rating distortion close to the 8424.",
       "filters": [
@@ -3269,43 +3441,43 @@
         {
           "type": "lowpass",
           "fc_hz": 2000.0,
-          "q": 0.5,
+          "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR2 branch low-pass"
+          "source": "LR4 branch low-pass"
+        },
+        {
+          "type": "lowpass",
+          "fc_hz": 2000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 branch low-pass"
         },
         {
           "type": "peaking",
-          "fc_hz": 1450.0,
+          "fc_hz": 1800.0,
           "q": 1.0,
           "gain_db": 8.0,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
-          "fc_hz": 1800.0,
+          "fc_hz": 700.0,
           "q": 1.0,
-          "gain_db": -5.184,
+          "gain_db": 6.101,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 1150.0,
           "q": 1.0,
-          "gain_db": -2.634,
+          "gain_db": -3.542,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
-          "fc_hz": 900.0,
+          "fc_hz": 1450.0,
           "q": 1.0,
-          "gain_db": -1.761,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 700.0,
-          "q": 1.0,
-          "gain_db": 1.701,
+          "gain_db": -1.505,
           "source": "flat-EQ"
         }
       ]
@@ -3318,9 +3490,9 @@
         8000.0
       ],
       "source": "measurements/juan/GRS PT6816 A MIC ON AXIS",
-      "gain_db": -5.466,
-      "delay_ms": -0.745,
-      "polarity": -1,
+      "gain_db": -3.936,
+      "delay_ms": -1.06,
+      "polarity": 1,
       "rationale": "Best local constant-directivity and front/rear symmetry reference.",
       "filters": [
         {
@@ -3368,9 +3540,16 @@
         {
           "type": "highpass",
           "fc_hz": 2000.0,
-          "q": 0.5,
+          "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR2 branch high-pass"
+          "source": "LR4 branch high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 2000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 branch high-pass"
         },
         {
           "type": "lowpass",
@@ -3381,51 +3560,44 @@
         },
         {
           "type": "peaking",
-          "fc_hz": 4500.0,
-          "q": 1.0,
-          "gain_db": 7.874,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
           "fc_hz": 3500.0,
           "q": 1.0,
-          "gain_db": -6.819,
+          "gain_db": -8.0,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
-          "fc_hz": 2800.0,
+          "fc_hz": 4500.0,
           "q": 1.0,
-          "gain_db": 4.598,
+          "gain_db": 8.0,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 2200.0,
+          "q": 1.0,
+          "gain_db": 4.93,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 10000.0,
           "q": 2.0,
-          "gain_db": -2.492,
+          "gain_db": 8.0,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
-          "fc_hz": 9000.0,
-          "q": 2.0,
-          "gain_db": -1.933,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 8500.0,
-          "q": 2.0,
-          "gain_db": 0.717,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 9000.0,
+          "fc_hz": 2800.0,
           "q": 1.0,
-          "gain_db": 2.5,
+          "gain_db": 2.056,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 9000.0,
+          "q": 2.0,
+          "gain_db": -2.18,
           "source": "flat-EQ"
         }
       ]
@@ -3438,9 +3610,9 @@
         20000.0
       ],
       "source": "measurements/juan/DAYTON ND25FW4 ANIDADOS 18 MM NUDE",
-      "gain_db": 4.261,
-      "delay_ms": -0.715,
-      "polarity": 1,
+      "gain_db": -1.968,
+      "delay_ms": -1.04,
+      "polarity": -1,
       "rationale": "Treble extension candidate; measured 2-10 kHz pattern is wider than the 10 cm candidates.",
       "filters": [
         {
@@ -3488,9 +3660,16 @@
         {
           "type": "highpass",
           "fc_hz": 2000.0,
-          "q": 0.5,
+          "q": 0.7071,
           "gain_db": 0.0,
-          "source": "LR2 cascaded upstream high-pass"
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 2000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
         },
         {
           "type": "highpass",
@@ -3501,44 +3680,37 @@
         },
         {
           "type": "peaking",
-          "fc_hz": 14000.0,
-          "q": 1.0,
-          "gain_db": -6.413,
+          "fc_hz": 10000.0,
+          "q": 2.0,
+          "gain_db": 2.693,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 16500.0,
           "q": 1.0,
-          "gain_db": 5.217,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 10000.0,
-          "q": 2.0,
-          "gain_db": 4.538,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 9000.0,
-          "q": 2.0,
-          "gain_db": -2.298,
+          "gain_db": 7.319,
           "source": "flat-EQ"
         },
         {
           "type": "highshelf",
           "fc_hz": 18000.0,
           "q": 1.0,
-          "gain_db": 1.652,
+          "gain_db": 6.737,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 12000.0,
           "q": 1.0,
-          "gain_db": 0.263,
+          "gain_db": -4.377,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 9000.0,
+          "q": 2.0,
+          "gain_db": -0.771,
           "source": "flat-EQ"
         }
       ]
@@ -3546,14 +3718,14 @@
   ],
   "baseline_comparison": [
     {
-      "metric": "Weighted 2-10 kHz SPL30-SPL60 (dB)",
+      "metric": "Weighted 2-10 kHz SPL43.6 - SPL45.8 (dB)",
       "weight_percent": 22,
       "direction": "higher",
-      "chosen": 6.7114741268911615,
-      "baseline": 5.821764074441817,
-      "baseline_minus_chosen": -0.8897100524493444,
+      "chosen": 0.43628741601328397,
+      "baseline": 0.40431990072665236,
+      "baseline_minus_chosen": -0.03196751528663161,
       "winner": "chosen",
-      "note": "Near/far angular separation is the main CDSL target; weighting emphasizes the ear-sensitive 2-7 kHz center and downweights the suspect top octave."
+      "note": "Ipsi/contra angular separation is the main CDSL target; weighting emphasizes the ear-sensitive 2-7 kHz center and downweights the suspect top octave."
     },
     {
       "metric": "Crossover-local polar mismatch RMS (dB)",
@@ -3569,29 +3741,29 @@
       "metric": "8-12 kHz polar transition/ridge penalty",
       "weight_percent": 16,
       "direction": "lower",
-      "chosen": 1.1915062656638982,
+      "chosen": 2.3039204849943355,
       "baseline": 1.9143373120568807,
-      "baseline_minus_chosen": 0.7228310463929826,
-      "winner": "chosen",
+      "baseline_minus_chosen": -0.3895831729374548,
+      "winner": "baseline",
       "note": "Penalizes narrow contour ridges and steep frequency-axis changes at side/rear angles, so a bright 10 kHz side-energy stripe is not accepted as benign."
     },
     {
       "metric": "Weighted 90-degree leakage excess RMS (dB)",
       "weight_percent": 13,
       "direction": "lower",
-      "chosen": 0.0,
+      "chosen": 0.025009254265610115,
       "baseline": 0.0,
-      "baseline_minus_chosen": 0.0,
-      "winner": "tie",
+      "baseline_minus_chosen": -0.025009254265610115,
+      "winner": "baseline",
       "note": "Penalizes energy above a -18 dB side-null target where crosstalk cancellation is most sensitive."
     },
     {
       "metric": "Weighted front dipole polar error RMS (dB)",
       "weight_percent": 10,
       "direction": "lower",
-      "chosen": 3.0835800403582763,
+      "chosen": 2.1138301368031147,
       "baseline": 2.055277595683166,
-      "baseline_minus_chosen": -1.0283024446751101,
+      "baseline_minus_chosen": -0.058552541119948565,
       "winner": "baseline",
       "note": "Keeps the front lobe close to a cosine/dipole shape rather than just maximizing one angle pair."
     },
@@ -3599,9 +3771,9 @@
       "metric": "Weighted rear dipole polar error RMS (dB)",
       "weight_percent": 7,
       "direction": "lower",
-      "chosen": 3.212363774836989,
+      "chosen": 2.3511867009629275,
       "baseline": 1.3514230336855213,
-      "baseline_minus_chosen": -1.8609407411514678,
+      "baseline_minus_chosen": -0.9997636672774062,
       "winner": "baseline",
       "note": "Checks whether the rear radiation stays dipole-like instead of becoming an uncontrolled back lobe."
     },
@@ -3609,9 +3781,9 @@
       "metric": "Weighted rear/front symmetry RMS (dB)",
       "weight_percent": 5,
       "direction": "lower",
-      "chosen": 1.1791554398822286,
+      "chosen": 2.105757082970072,
       "baseline": 1.0673326994304677,
-      "baseline_minus_chosen": -0.11182274045176088,
+      "baseline_minus_chosen": -1.038424383539604,
       "winner": "baseline",
       "note": "Dipole behavior needs rear 0-degree magnitude close to front 0-degree after filtering."
     },
@@ -3619,17 +3791,17 @@
       "metric": "Weighted 200-10k flatness RMS (dB)",
       "weight_percent": 6,
       "direction": "lower",
-      "chosen": 0.2555856903035795,
+      "chosen": 0.18218952773483213,
       "baseline": 0.21146733484085659,
-      "baseline_minus_chosen": -0.04411835546272294,
-      "winner": "baseline",
+      "baseline_minus_chosen": 0.029277807106024456,
+      "winner": "chosen",
       "note": "Uses one-third-octave front-sum trend with the same broad psychoacoustic weighting; filter count is only a cap, not a score."
     },
     {
       "metric": "Effective known system THD, 2-7 kHz (%)",
       "weight_percent": 4,
       "direction": "lower",
-      "chosen": 0.0698,
+      "chosen": 0.0572,
       "baseline": NaN,
       "baseline_minus_chosen": NaN,
       "winner": "insufficient coverage",
@@ -3639,9 +3811,9 @@
       "metric": "Known THD contribution coverage, 2-7 kHz",
       "weight_percent": 0,
       "direction": "higher",
-      "chosen": 0.2979,
+      "chosen": 0.2091,
       "baseline": 0.0,
-      "baseline_minus_chosen": -0.2979,
+      "baseline_minus_chosen": -0.2091,
       "winner": "context",
       "note": "Coverage is not a winner metric; it tells how much of the weighted fundamental has measured THD traces."
     }
@@ -3649,12 +3821,12 @@
   "baseline_constraints": [
     {
       "variant": "Chosen",
-      "xover_types": "LR4 / LR4 / LR2 / LR2",
+      "xover_types": "LR4 / LR4 / LR4 / LR2",
       "max_biquads": 15,
       "limit": 15,
       "biquad_cap_met": true,
-      "flatness_rms_db": 0.231,
-      "flatness_peak_to_peak_db": 1.017,
+      "flatness_rms_db": 0.166,
+      "flatness_peak_to_peak_db": 0.818,
       "flatness_met": false
     },
     {

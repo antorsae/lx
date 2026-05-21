@@ -35,6 +35,14 @@ FREQ_MIN = 70.0
 FREQ_MAX = 20_000.0
 COMMON_FREQ = np.geomspace(FREQ_MIN, FREQ_MAX, 1200)
 ANGLES = [0, 15, 30, 45, 60, 75, 90]
+IPSI_ANGLE_DEG = 43.6
+CONTRA_ANGLE_DEG = 45.8
+XC_GEOMETRY = {
+    "speaker_to_ipsi_ear_cm": 127.0,
+    "speaker_to_contra_ear_cm": 140.0,
+    "ear_spacing_cm": 14.0,
+    "speaker_to_listener_tilt_deg": 23.5,
+}
 PLOT_FREQS = [125, 250, 500, 1000, 2000, 4000, 8000, 12000]
 TARGET_SPL_DB = 76.0
 FLATNESS_FIT_BAND_HZ = (160.0, 18_000.0)
@@ -138,7 +146,7 @@ DESIGN: List[DriverBand] = [
         passband=(2400.0, 10000.0),
         source="measurements/juan/ScanSpeak 10F8414G10",
         rationale=(
-            "Best balanced-search compromise above 2 kHz: much stronger 30-to-60 deg separation than ND25/GRS, "
+            "Best balanced-search compromise above 2 kHz: stronger configured x-c angle separation than ND25/GRS, "
             "with Juan's notes rating rear directivity control better than 8424. "
             "L10NEO remains a serious alternate because raw REW THD is not worse than the ScanSpeak pair."
         ),
@@ -150,7 +158,7 @@ DESIGN: List[DriverBand] = [
         source="measurements/juan/DAYTON ND25FW4 ANIDADOS 18 MM NUDE",
         rationale=(
             "Used only above the 2-10 kHz crosstalk-critical band to extend the top octave "
-            "without relaxing the 2-10 kHz 30-to-60 deg target."
+            "without relaxing the configured 2-10 kHz x-c angle target."
         ),
     ),
 ]
@@ -181,7 +189,7 @@ DRIVER_META = {
     },
     "L10NEO": {
         "source": "measurements/juan/POLARES L10NEO",
-        "rationale": "Strongest front-side 30-to-60 degree separation from about 2.5-8 kHz.",
+        "rationale": "Strong front-side separation at the configured x-c angles from about 2.5-8 kHz.",
         "risk_penalty": 0.35,
     },
     "SS10F8414G10": {
@@ -310,6 +318,49 @@ def db_to_pressure(db: np.ndarray) -> np.ndarray:
 
 def pressure_to_db(pressure: np.ndarray, floor: float = 1e-12) -> np.ndarray:
     return 20.0 * np.log10(np.maximum(np.abs(pressure), floor))
+
+
+def format_angle(angle_deg: float) -> str:
+    return f"{angle_deg:.1f}".rstrip("0").rstrip(".")
+
+
+def xc_metric_label() -> str:
+    return f"SPL{format_angle(IPSI_ANGLE_DEG)} - SPL{format_angle(CONTRA_ANGLE_DEG)}"
+
+
+def ideal_xc_separation_db() -> float:
+    ipsi = max(math.cos(math.radians(IPSI_ANGLE_DEG)), 1e-6)
+    contra = max(math.cos(math.radians(CONTRA_ANGLE_DEG)), 1e-6)
+    return 20.0 * math.log10(ipsi / contra)
+
+
+def interpolate_angle_curve(curves: Dict[int, np.ndarray], angle_deg: float) -> np.ndarray:
+    angles = sorted(curves.keys())
+    if not angles:
+        raise ValueError("Cannot interpolate an empty angle map")
+    for angle in angles:
+        if abs(float(angle) - angle_deg) < 1e-9:
+            return curves[angle]
+    if angle_deg <= angles[0]:
+        return curves[angles[0]]
+    if angle_deg >= angles[-1]:
+        return curves[angles[-1]]
+
+    lower = max(angle for angle in angles if angle < angle_deg)
+    upper = min(angle for angle in angles if angle > angle_deg)
+    frac = (angle_deg - lower) / (upper - lower)
+    return curves[lower] + frac * (curves[upper] - curves[lower])
+
+
+def spl_curve_at_angle(curves: Dict[int, np.ndarray], angle_deg: float) -> np.ndarray:
+    sample = next(iter(curves.values()))
+    if np.iscomplexobj(sample):
+        return interpolate_angle_curve({angle: pressure_to_db(value) for angle, value in curves.items()}, angle_deg)
+    return interpolate_angle_curve(curves, angle_deg)
+
+
+def xc_separation_curve(curves: Dict[int, np.ndarray]) -> np.ndarray:
+    return spl_curve_at_angle(curves, IPSI_ANGLE_DEG) - spl_curve_at_angle(curves, CONTRA_ANGLE_DEG)
 
 
 def interp_complex(driver_data: Dict, side: str, angle: int, freq: np.ndarray) -> np.ndarray:
@@ -783,22 +834,26 @@ def score_candidate(
     null_penalty = weighted_rms(np.maximum(front90 + 18.0, 0.0), all_weights) + 0.6 * weighted_rms(np.maximum(rear90 + 18.0, 0.0), all_weights)
     rear0_penalty = weighted_rms(synth["rear"][0] - synth["front"][0], all_weights)
 
-    sep = synth["front"][30] - synth["front"][60]
+    front_ipsi = interpolate_angle_curve(synth["front"], IPSI_ANGLE_DEG)
+    front_contra = interpolate_angle_curve(synth["front"], CONTRA_ANGLE_DEG)
+    sep = front_ipsi - front_contra
     sep_med = weighted_percentile(sep, high_weights, 50)
     sep_p10 = weighted_percentile(sep, high_weights, 10)
-    front30_med = weighted_percentile(synth["front"][30], high_weights, 50)
+    front_ipsi_med = weighted_percentile(front_ipsi, high_weights, 50)
     if not np.isfinite(sep_med):
         sep_med = 0.0
     if not np.isfinite(sep_p10):
         sep_p10 = 0.0
-    if not np.isfinite(front30_med):
-        front30_med = -99.0
+    if not np.isfinite(front_ipsi_med):
+        front_ipsi_med = -99.0
+
+    xc_target = ideal_xc_separation_db()
 
     high_penalty = (
-        1.1 * max(0.0, 8.0 - sep_med)
-        + 0.8 * max(0.0, 5.5 - sep_p10)
-        + 0.5 * max(0.0, -5.0 - front30_med)
-        - 0.22 * min(sep_med, 12.0)
+        1.1 * max(0.0, xc_target - sep_med)
+        + 0.8 * max(0.0, -0.15 - sep_p10)
+        + 0.5 * max(0.0, -5.0 - front_ipsi_med)
+        - 0.16 * min(max(sep_med, 0.0), max(1.0, 2.0 * xc_target))
     )
 
     xover_penalty = search_xover_mismatch(pre, drivers, xovers)
@@ -854,9 +909,17 @@ def score_candidate(
         "flat_eq_slots_by_driver": biquad_budget["flat_eq_slots_by_driver"],
         "flat_eq_candidate_shortfall_by_driver": biquad_budget["flat_eq_candidate_shortfall_by_driver"],
         "crossover_biquads_within_limit": biquad_budget["crossover_biquads_within_limit"],
+        "ipsi_angle": IPSI_ANGLE_DEG,
+        "contra_angle": CONTRA_ANGLE_DEG,
+        "ipsi_angle_deg": IPSI_ANGLE_DEG,
+        "contra_angle_deg": CONTRA_ANGLE_DEG,
+        "xc_ideal_separation_db": round(xc_target, 3),
+        "xc_separation_median_2_10k_db": round(sep_med, 3),
+        "xc_separation_p10_2_10k_db": round(sep_p10, 3),
+        "front_ipsi_median_2_10k_db": round(front_ipsi_med, 3),
         "sep_30_60_median_2_10k_db": round(sep_med, 3),
         "sep_30_60_p10_2_10k_db": round(sep_p10, 3),
-        "front30_median_2_10k_db": round(front30_med, 3),
+        "front30_median_2_10k_db": round(front_ipsi_med, 3),
     }
 
 
@@ -931,10 +994,12 @@ def optimize_design_search(data: Dict[str, Dict]) -> List[Dict]:
 
 
 def choose_final_candidate(search_results: List[Dict]) -> Tuple[Dict, Dict]:
+    median_constraint = max(0.0, 0.5 * ideal_xc_separation_db())
+    p10_constraint = -0.15
     for idx, row in enumerate(search_results, start=1):
         if (
-            row["sep_30_60_median_2_10k_db"] >= 8.0
-            and row["sep_30_60_p10_2_10k_db"] >= 5.8
+            row["xc_separation_median_2_10k_db"] >= median_constraint
+            and row["xc_separation_p10_2_10k_db"] >= p10_constraint
             and row["dipole_front_rms_db"] <= 3.2
             and row["xover_mismatch_rms_db"] <= 9.5
             and row["validity_penalty"] <= 0.2
@@ -946,7 +1011,8 @@ def choose_final_candidate(search_results: List[Dict]) -> Tuple[Dict, Dict]:
                 "method": "constrained CDSL selection",
                 "reason": (
                     "Selected the lowest composite-score candidate that also clears "
-                    "8 dB median and 5.8 dB 10th-percentile SPL30-SPL60 from 2-10 kHz, "
+                    f"{median_constraint:.2f} dB median and {p10_constraint:.2f} dB 10th-percentile "
+                    f"{xc_metric_label()} from 2-10 kHz, "
                     "while keeping front dipole RMS <=3.2 dB, crossover mismatch <=9.5 dB, "
                     "and every channel within the 15-biquad export limit."
                 ),
@@ -1011,7 +1077,7 @@ def choose_recommended_candidate(search_results: List[Dict]) -> Tuple[Dict, Dict
                     "Selected the best balanced candidate that avoids using both near-identical "
                     "SS10F8424G00 and SS10F8414G10 in adjacent passbands. This favors dipole consistency, "
                     "crossover continuity, the 15-biquad/channel cap, and build simplicity over the most aggressive "
-                    "30-to-60 dB target."
+                    "configured x-c angle separation target."
                 ),
                 "fallback_used": False,
             }
@@ -1038,20 +1104,21 @@ def choose_finalists(search_results: List[Dict]) -> Tuple[Dict, Dict, List[Dict]
         constrained,
         constrained.get("balanced_rank", search_results.index(next(r for r in search_results if same_candidate(r, constrained))) + 1),
         "CTC-constrained",
-        "Experimental option: clears the 2-10 kHz 30-to-60 constraint, but uses both ScanSpeak 10 cm variants.",
+        "Experimental option: clears the 2-10 kHz configured x-c angle constraint, but uses both ScanSpeak 10 cm variants.",
     )
 
+    l10_sep_threshold = max(0.0, 0.45 * ideal_xc_separation_db())
     l10 = first_candidate(
         search_results,
         lambda row: (
             "L10NEO" in row["drivers"]
-            and row["sep_30_60_median_2_10k_db"] >= 7.5
+            and row["xc_separation_median_2_10k_db"] >= l10_sep_threshold
             and row["xover_mismatch_rms_db"] <= 9.5
             and row["validity_penalty"] <= 0.2
             and row["crossover_biquads_within_limit"]
         ),
         "L10NEO alternate",
-        "Best L10NEO-flavored candidate with strong 30-to-60 separation and acceptable crossover mismatch.",
+        "Best L10NEO-flavored candidate with strong configured x-c separation and acceptable crossover mismatch.",
     )
     single_scan = first_candidate(
         search_results,
@@ -1677,8 +1744,8 @@ def load_lx521(data: Dict[str, Dict]) -> Dict:
     return out
 
 
-def metric_30_60(curves: Dict[int, np.ndarray]) -> np.ndarray:
-    return pressure_to_db(curves[30]) - pressure_to_db(curves[60])
+def metric_xc(curves: Dict[int, np.ndarray]) -> np.ndarray:
+    return xc_separation_curve(curves)
 
 
 def rear_front_delta(system_like: Dict, angle: int = 0) -> np.ndarray:
@@ -1764,7 +1831,7 @@ def measured_driver_directivity_audit(data: Dict[str, Dict]) -> List[Dict]:
                 if np.any(np.isfinite(rear[0][mask])):
                     rear_errors.append(rear[angle][mask] - rear[0][mask] - target)
 
-            sep = front[30][mask] - front[60][mask]
+            sep = (interpolate_angle_curve(front, IPSI_ANGLE_DEG) - interpolate_angle_curve(front, CONTRA_ANGLE_DEG))[mask]
             rear0_delta = rear[0][mask] - front[0][mask]
             side_null = front[90][mask] - front[0][mask]
             rows.append(
@@ -1773,6 +1840,8 @@ def measured_driver_directivity_audit(data: Dict[str, Dict]) -> List[Dict]:
                     "band": band_label,
                     "front_dipole_rms_db": round(rms(np.concatenate(front_errors)), 3),
                     "rear_dipole_rms_db": round(rms(np.concatenate(rear_errors)), 3) if rear_errors else float("nan"),
+                    "xc_separation_median_db": round(float(np.nanmedian(sep)), 3),
+                    "xc_separation_p10_db": round(float(np.nanpercentile(sep, 10)), 3),
                     "sep_30_60_median_db": round(float(np.nanmedian(sep)), 3),
                     "sep_30_60_p10_db": round(float(np.nanpercentile(sep, 10)), 3),
                     "rear0_minus_front0_median_db": round(float(np.nanmedian(rear0_delta)), 3),
@@ -2025,7 +2094,7 @@ def l10_scanspeak_rationale(selected_candidate: Dict, search_results: List[Dict]
             f"score {selected_candidate['score']:.2f} vs best L10NEO score {best_l10['score']:.2f}, "
             f"front dipole RMS {selected_candidate['dipole_front_rms_db']:.2f} vs {best_l10['dipole_front_rms_db']:.2f} dB, "
             f"XO mismatch {selected_candidate['xover_mismatch_rms_db']:.2f} vs {best_l10['xover_mismatch_rms_db']:.2f} dB, "
-            f"and 30-60 separation {selected_candidate['sep_30_60_median_2_10k_db']:.2f} vs {best_l10['sep_30_60_median_2_10k_db']:.2f} dB."
+            f"and configured x-c separation {selected_candidate['xc_separation_median_2_10k_db']:.2f} vs {best_l10['xc_separation_median_2_10k_db']:.2f} dB."
         )
     notes.append("Conclusion: L10NEO must not be rejected on distortion/SPL evidence; any ScanSpeak selection is a directivity/crossover integration choice under the current measured polar data.")
     return notes
@@ -2204,10 +2273,11 @@ def plot_di_beam(system_metrics: Dict, lx_metrics: Dict, root: Path) -> None:
         plt.close(fig)
 
 
-def plot_30_60(system: Dict, lx: Dict, root: Path) -> Tuple[np.ndarray, np.ndarray]:
-    cdsl_metric = metric_30_60(system["front"])
-    lx_metric = metric_30_60(lx["front"])
-    ideal = 20.0 * np.log10(np.cos(np.deg2rad(30.0)) / np.cos(np.deg2rad(60.0)))
+def plot_xc_metric(system: Dict, lx: Dict, root: Path) -> Tuple[np.ndarray, np.ndarray]:
+    cdsl_metric = metric_xc(system["front"])
+    lx_metric = metric_xc(lx["front"])
+    ideal = ideal_xc_separation_db()
+    metric = xc_metric_label()
 
     fig, ax = plt.subplots(figsize=(12, 5.5))
     ax.semilogx(COMMON_FREQ, cdsl_metric, label="Synthetic CDSL", linewidth=2)
@@ -2216,11 +2286,13 @@ def plot_30_60(system: Dict, lx: Dict, root: Path) -> Tuple[np.ndarray, np.ndarr
     ax.axvspan(2000, 10000, color="#ccfbf1", alpha=0.28, label="2-10 kHz target band")
     ax.set_xlim(FREQ_MIN, FREQ_MAX)
     ax.set_xlabel("Frequency (Hz)")
-    ax.set_ylabel("SPL30 - SPL60 (dB)")
-    ax.set_title("30-to-60 degree separation")
+    ax.set_ylabel(f"{metric} (dB)")
+    ax.set_title(f"Ipsi-to-contra separation: {metric}")
     ax.grid(True, which="both", alpha=0.3)
     ax.legend(ncol=2)
     fig.tight_layout()
+    fig.savefig(root / "static_plots/core/cdsl_xc_metric.png", dpi=180)
+    fig.savefig(root / "static_plots/core/cdsl_vs_lx521_xc_metric.png", dpi=180)
     fig.savefig(root / "static_plots/core/cdsl_30_vs_60_metric.png", dpi=180)
     fig.savefig(root / "static_plots/core/cdsl_vs_lx521_30_vs_60.png", dpi=180)
     plt.close(fig)
@@ -2274,8 +2346,9 @@ def plot_polar(system: Dict, lx: Dict, root: Path) -> None:
     plt.close(fig)
 
 
-def write_plotly_pages(system: Dict, lx: Dict, metrics: Dict, lx_metrics: Dict, cdsl_30_60: np.ndarray, lx_30_60: np.ndarray, root: Path) -> None:
+def write_plotly_pages(system: Dict, lx: Dict, metrics: Dict, lx_metrics: Dict, cdsl_xc: np.ndarray, lx_xc: np.ndarray, root: Path) -> None:
     freq = COMMON_FREQ
+    metric = xc_metric_label()
 
     fig = go.Figure()
     for band in DESIGN:
@@ -2285,14 +2358,14 @@ def write_plotly_pages(system: Dict, lx: Dict, metrics: Dict, lx_metrics: Dict, 
     fig.update_layout(title="Synthetic CDSL IIR filter transfer", template="plotly_white")
     fig.write_html(root / "interactive/cdsl_filter_transfer.html", include_plotlyjs="cdn")
 
-    fig = make_subplots(rows=2, cols=1, shared_xaxes=True, subplot_titles=("Frequency response", "30-to-60 degree separation"))
+    fig = make_subplots(rows=2, cols=1, shared_xaxes=True, subplot_titles=("Frequency response", "Configured x-c angle separation"))
     for angle in ANGLES:
         fig.add_trace(go.Scatter(x=freq, y=pressure_to_db(system["front"][angle]), name=f"F{angle} deg"), row=1, col=1)
-    fig.add_trace(go.Scatter(x=freq, y=cdsl_30_60, name="CDSL 30-60", line=dict(width=2)), row=2, col=1)
-    fig.add_trace(go.Scatter(x=freq, y=lx_30_60, name="LX521 30-60", line=dict(width=1.5, dash="dot")), row=2, col=1)
+    fig.add_trace(go.Scatter(x=freq, y=cdsl_xc, name=f"CDSL {metric}", line=dict(width=2)), row=2, col=1)
+    fig.add_trace(go.Scatter(x=freq, y=lx_xc, name=f"LX521 {metric}", line=dict(width=1.5, dash="dot")), row=2, col=1)
     fig.update_xaxes(type="log", title="Frequency (Hz)", row=2, col=1)
     fig.update_yaxes(title="SPL (dB)", row=1, col=1)
-    fig.update_yaxes(title="SPL30 - SPL60 (dB)", row=2, col=1)
+    fig.update_yaxes(title=f"{metric} (dB)", row=2, col=1)
     fig.update_layout(title="Synthetic CDSL design explorer", template="plotly_white", height=820)
     fig.write_html(root / "interactive/cdsl_design_explorer.html", include_plotlyjs="cdn")
 
@@ -2496,6 +2569,15 @@ def write_exports(
         "measurement_conditions": config_info,
         "frequency_grid_hz": {"min": FREQ_MIN, "max": FREQ_MAX, "points": int(len(COMMON_FREQ))},
         "angles_degrees": ANGLES,
+        "xc_configuration": {
+            "ipsi_angle": IPSI_ANGLE_DEG,
+            "contra_angle": CONTRA_ANGLE_DEG,
+            "ipsi_angle_deg": IPSI_ANGLE_DEG,
+            "contra_angle_deg": CONTRA_ANGLE_DEG,
+            "metric": xc_metric_label(),
+            "ideal_cosine_dipole_separation_db": round(ideal_xc_separation_db(), 3),
+            "geometry": XC_GEOMETRY,
+        },
         "target_spl_db": TARGET_SPL_DB,
         "crossovers": CROSSOVERS,
         "search": {
@@ -2514,7 +2596,7 @@ def write_exports(
                 "rear0_rms_db": "psychoacoustic-weighted rear 0 degree magnitude symmetry relative to front 0 degree",
                 "xover_mismatch_rms_db": "adjacent-driver normalized polar mismatch around each LR2/LR4 crossover",
                 "hf_polar_transition_penalty": "8-12 kHz penalty for narrow normalized-contour ridges and steep frequency-axis changes at side/rear angles",
-                "sep_30_60_median_2_10k_db": "psychoacoustic-weighted median front SPL30-SPL60 from 2-10 kHz",
+                "xc_separation_median_2_10k_db": f"psychoacoustic-weighted median front {xc_metric_label()} from 2-10 kHz",
                 "known_effective_thd_2_7_percent": "passband-weighted system THD proxy from available REW THD traces only",
                 "prior_penalty": "small local evidence penalty for distortion/SPL uncertainty or known caveats",
                 "biquad_budget_penalty": (
@@ -2535,7 +2617,7 @@ def write_exports(
             "Juan's screenshot notes rank 8424 distortion/SPL best, 8414 close behind, and MU10 worst among the 8424/8414/MU10 upper-mid comparison.",
             "Raw REW .mdat THD extraction adds L10NEO to the comparison and does not support describing L10NEO as worse-distortion than the ScanSpeak pair.",
             "The same notes flag 8424 rear-side directivity and high-angle order as weaker than 8414, especially above 2 kHz.",
-            "GRS is treated as the measured dipole/directivity-order reference, but it does not provide the largest 30-to-60 separation above 2 kHz.",
+            "GRS is treated as the measured dipole/directivity-order reference, but it does not provide the largest configured x-c angle separation above 2 kHz.",
             "L10NEO remains a high-separation alternate; it is not selected in the balanced primary due to the composite directivity/crossover score, not because of worse raw THD evidence.",
             "Driver contribution peaks are not automatically flattened when they are helping the complex 0-degree sum; the search now separately penalizes narrow 8-12 kHz normalized-contour ridges and steep side/rear polar transitions.",
         ],
@@ -2741,6 +2823,37 @@ def render_report_comparison(rows: List[Dict], constraints: Optional[List[Dict]]
     """
 
 
+def render_xc_geometry_diagram() -> str:
+    geo = XC_GEOMETRY
+    return f"""
+        <svg class="xc-geometry" viewBox="0 0 520 330" role="img" aria-label="Configured x-c speaker and ear geometry">
+            <defs>
+                <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                    <path d="M0,0 L8,4 L0,8 Z" fill="#0f766e"></path>
+                </marker>
+            </defs>
+            <rect x="1" y="1" width="518" height="328" rx="8" fill="#ffffff" stroke="#cbd5e1"></rect>
+            <line x1="250" y1="82" x2="205" y2="260" stroke="#64748b" stroke-width="2"></line>
+            <line x1="250" y1="82" x2="315" y2="260" stroke="#64748b" stroke-width="2"></line>
+            <line x1="205" y1="260" x2="315" y2="260" stroke="#334155" stroke-width="3"></line>
+            <line x1="250" y1="82" x2="286" y2="214" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow)"></line>
+            <line x1="250" y1="82" x2="250" y2="214" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 5"></line>
+            <circle cx="250" cy="82" r="16" fill="#0f766e"></circle>
+            <text x="250" y="88" text-anchor="middle" fill="#ffffff" font-weight="700">S</text>
+            <circle cx="205" cy="260" r="14" fill="#1e293b"></circle>
+            <text x="205" y="266" text-anchor="middle" fill="#ffffff" font-weight="700">L</text>
+            <circle cx="315" cy="260" r="14" fill="#1e293b"></circle>
+            <text x="315" y="266" text-anchor="middle" fill="#ffffff" font-weight="700">R</text>
+            <text x="192" y="168" text-anchor="end" fill="#334155">SL {geo['speaker_to_ipsi_ear_cm']:.0f} cm</text>
+            <text x="328" y="168" text-anchor="start" fill="#334155">SR {geo['speaker_to_contra_ear_cm']:.0f} cm</text>
+            <text x="260" y="291" text-anchor="middle" fill="#334155">LR {geo['ear_spacing_cm']:.0f} cm</text>
+            <text x="337" y="144" fill="#0f766e" font-weight="700">aim tilt {geo['speaker_to_listener_tilt_deg']:.1f} deg</text>
+            <text x="260" y="36" text-anchor="middle" fill="#334155" font-weight="700">x-c angle model: ipsi {IPSI_ANGLE_DEG:.1f} deg, contra {CONTRA_ANGLE_DEG:.1f} deg</text>
+            <text x="260" y="313" text-anchor="middle" fill="#64748b">schematic only; distance labels are the configured geometry</text>
+        </svg>
+    """
+
+
 def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_stats: Dict, lx_stats: Dict) -> str:
     title = manifest.get("title", CHOSEN_TITLE)
     asset_slug = manifest.get("asset_slug", CHOSEN_ASSET_SLUG)
@@ -2756,6 +2869,10 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             f"Selection method: {manifest['search']['selection']['method']}."
         ),
     )
+    xc_config = manifest.get("xc_configuration", {})
+    xc_label = xc_config.get("metric", xc_metric_label())
+    xc_ideal = xc_config.get("ideal_cosine_dipole_separation_db", ideal_xc_separation_db())
+    xc_geometry_diagram = render_xc_geometry_diagram()
     comparison_section = render_report_comparison(
         manifest.get("baseline_comparison", []),
         manifest.get("baseline_constraints", []),
@@ -2807,8 +2924,8 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
         f"""
         <tr>
             <td>{row['band']}</td>
-            <td>{float(row['cdsl_30_60_median_db']):.2f}</td>
-            <td>{float(row['lx521_30_60_median_db']):.2f}</td>
+            <td>{float(row['cdsl_xc_median_db']):.2f}</td>
+            <td>{float(row['lx521_xc_median_db']):.2f}</td>
             <td>{float(row['cdsl_di_mean_db']):.2f}</td>
             <td>{float(row['cdsl_beam6_median_deg']):.0f}</td>
         </tr>
@@ -2832,7 +2949,7 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             <td>{float(row['score']):.2f}</td>
             <td>{float(row['dipole_front_rms_db']):.2f}</td>
             <td>{float(row['xover_mismatch_rms_db']):.2f}</td>
-            <td>{float(row['sep_30_60_median_2_10k_db']):.2f}</td>
+            <td>{float(row['xc_separation_median_2_10k_db']):.2f}</td>
             <td>{int(row.get('max_possible_biquads_per_driver', 0))}/{MAX_BIQUADS_PER_DRIVER}</td>
             <td>{'pass' if row.get('crossover_biquads_within_limit', False) else 'fail'}</td>
             <td>{html.escape(row['note'])}</td>
@@ -2845,8 +2962,8 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             <td>{html.escape(row['band'])}</td>
             <td>{float(row['front_dipole_rms_db']):.2f}</td>
             <td>{float(row['rear_dipole_rms_db']):.2f}</td>
-            <td>{float(row['sep_30_60_median_db']):.2f}</td>
-            <td>{float(row['sep_30_60_p10_db']):.2f}</td>
+            <td>{float(row['xc_separation_median_db']):.2f}</td>
+            <td>{float(row['xc_separation_p10_db']):.2f}</td>
             <td>{float(row['rear0_minus_front0_median_db']):.2f}</td>
             <td>{float(row['front90_minus_front0_median_db']):.2f}</td>
         </tr>
@@ -3026,6 +3143,12 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             line-height: 1.45;
             font-size: 0.9rem;
         }}
+        .xc-geometry {{
+            width: min(100%, 720px);
+            height: auto;
+            display: block;
+            margin: 1rem auto 0;
+        }}
     </style>
 </head>
 <body>
@@ -3046,8 +3169,8 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
                     <strong>{html.escape(summary_label)}:</strong> {html.escape(stack_text)}.
                 </div>
                 <div class="summary-grid">
-                    <div class="metric-card"><div class="value">{cdsl_stats['median']:.1f} dB</div><div class="label">CDSL median SPL30-SPL60, 2-10 kHz</div></div>
-                    <div class="metric-card"><div class="value">{lx_stats['median']:.1f} dB</div><div class="label">LX521 measured median SPL30-SPL60, 2-10 kHz</div></div>
+                    <div class="metric-card"><div class="value">{cdsl_stats['median']:.1f} dB</div><div class="label">CDSL median {html.escape(xc_label)}, 2-10 kHz</div></div>
+                    <div class="metric-card"><div class="value">{lx_stats['median']:.1f} dB</div><div class="label">LX521 measured median {html.escape(xc_label)}, 2-10 kHz</div></div>
                     <div class="metric-card"><div class="value">{html.escape(xover_type_text)}</div><div class="label">Topology at {html.escape(xo_text)} Hz</div></div>
                     <div class="metric-card"><div class="value">0.5 / 3.0 ms</div><div class="label">Same HDF5 gate condition as Juan LX521 data</div></div>
                 </div>
@@ -3066,11 +3189,11 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             <p class="note">
                 The search is not just the preliminary stack. It tries L10NEO, both ScanSpeak 10F variants, GRS, MU10, and ND25 across multiple LR2/LR4 crossover grids.
                 Lower score is better; the score favors cosine/dipole-like front and rear polars, strong side nulls, adjacent-driver pattern match near crossovers,
-                measured-frequency validity, larger psychoacoustically weighted 2-10 kHz SPL30-SPL60 separation, known in-band THD traces, and the 15-biquad/channel cap as a hard filter.
+                measured-frequency validity, larger psychoacoustically weighted 2-10 kHz {html.escape(xc_label)} separation, known in-band THD traces, and the 15-biquad/channel cap as a hard filter.
                 {html.escape(manifest['search']['selection']['reason'])}
             </p>
             <table>
-                <thead><tr><th>Finalist</th><th>Balanced Rank</th><th>Ways</th><th>Drivers</th><th>XOs Hz</th><th>XO Types</th><th>Score</th><th>Front Dipole RMS</th><th>XO Mismatch</th><th>30-60 dB</th><th>Max Biquads</th><th>Cap</th><th>Note</th></tr></thead>
+                <thead><tr><th>Finalist</th><th>Balanced Rank</th><th>Ways</th><th>Drivers</th><th>XOs Hz</th><th>XO Types</th><th>Score</th><th>Front Dipole RMS</th><th>XO Mismatch</th><th>XC dB</th><th>Max Biquads</th><th>Cap</th><th>Note</th></tr></thead>
                 <tbody>{finalist_rows}</tbody>
             </table>
             <div class="asset-grid">
@@ -3083,11 +3206,11 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
         <div class="card"><div class="card-body">
             <p class="note">
                 These rows are measured-driver diagnostics from Juan's baffleless HDF5 data before synthetic crossover summation.
-                They explain the upper-band tradeoff: GRS is closest to a clean dipole shape, L10NEO and the 10F ScanSpeaks provide more 30-to-60 separation,
+                They explain the upper-band tradeoff: GRS is closest to a clean dipole shape, L10NEO and the 10F ScanSpeaks provide more configured x-c angle separation,
                 and the dual-ScanSpeak split is kept as an experimental finalist because it adds a crossover between two near-identical radiators.
             </p>
             <table>
-                <thead><tr><th>Driver</th><th>Band</th><th>Front Dipole RMS</th><th>Rear Dipole RMS</th><th>30-60 Median</th><th>30-60 P10</th><th>Rear0-Front0</th><th>Front90-Front0</th></tr></thead>
+                <thead><tr><th>Driver</th><th>Band</th><th>Front Dipole RMS</th><th>Rear Dipole RMS</th><th>XC Median</th><th>XC P10</th><th>Rear0-Front0</th><th>Front90-Front0</th></tr></thead>
                 <tbody>{audit_rows}</tbody>
             </table>
             <p class="note">
@@ -3208,6 +3331,16 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             <ul>{warning_items}</ul>
         </div></div>
 
+        <h2 class="section-title">Cross-Cancellation Geometry</h2>
+        <div class="card"><div class="card-body">
+            <p class="note">
+                The x-c metric is now configurable and uses <strong>{html.escape(xc_label)}</strong>.
+                For a cosine dipole, these angles imply {float(xc_ideal):.2f} dB ideal separation, so the optimizer no longer uses the old fixed 30/60-angle threshold.
+                The speaker aim is modeled as tilted 23.5 deg toward the listener, not perpendicular to the ear line.
+            </p>
+            {xc_geometry_diagram}
+        </div></div>
+
         <h2 class="section-title">Mounting Geometry</h2>
         <div class="card"><div class="card-body">
             <p class="note">
@@ -3231,7 +3364,7 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             <img src="juan-baffleless-cdsl/static_plots/core/cdsl_contour_normalized.png" alt="CDSL normalized contour">
             <img src="juan-baffleless-cdsl/static_plots/core/cdsl_contour_absolute.png" alt="CDSL absolute contour">
             <img src="juan-baffleless-cdsl/static_plots/core/cdsl_di_beamwidth.png" alt="CDSL DI and beamwidth">
-            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_30_vs_60_metric.png" alt="CDSL 30 vs 60 metric">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_xc_metric.png" alt="CDSL configured x-c metric">
         </div>
         <div class="card"><div class="card-body">
             <p class="note">
@@ -3242,11 +3375,11 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             </p>
         </div></div>
 
-        <h2 class="section-title">30-vs-60 Metric</h2>
+        <h2 class="section-title">Configured X-C Metric</h2>
         <div class="card"><div class="card-body">
             <p>
-                Metric definition: <strong>Delta30-60 = SPL30 - SPL60</strong>. A cosine dipole gives 4.77 dB;
-                higher values above 2 kHz indicate more separation between the near-ear and far-ear angles for CDSL/crosstalk-cancellation use.
+                Metric definition: <strong>{html.escape(xc_label)}</strong>. A cosine dipole gives {float(xc_ideal):.2f} dB with the current angles;
+                higher values above 2 kHz indicate more separation between the ipsilateral and contralateral angles for CDSL/crosstalk-cancellation use.
             </p>
             <table>
                 <thead><tr><th>Band</th><th>CDSL median dB</th><th>LX521 median dB</th><th>CDSL mean DI dB</th><th>CDSL median -6 dB beamwidth</th></tr></thead>
@@ -3259,7 +3392,7 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
         <div class="asset-grid">
             <img src="juan-baffleless-cdsl/static_plots/core/cdsl_vs_lx521_di.png" alt="CDSL vs LX521 DI">
             <img src="juan-baffleless-cdsl/static_plots/core/cdsl_vs_lx521_beamwidth.png" alt="CDSL vs LX521 beamwidth">
-            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_vs_lx521_30_vs_60.png" alt="CDSL vs LX521 30 vs 60">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_vs_lx521_xc_metric.png" alt="CDSL vs LX521 configured x-c metric">
             <img src="juan-baffleless-cdsl/static_plots/polar/cdsl_vs_lx521_polar_circular.png" alt="CDSL vs LX521 polar">
         </div>
         <p style="margin-top: 1rem;">{link('lx521-system.html', 'Open Juan LX521.4 measured system page')}</p>
@@ -3312,11 +3445,11 @@ METRIC_BANDS = [
 ]
 
 
-def compute_metrics_rows(system: Dict, lx: Dict, system_metrics: Dict, cdsl_30_60: np.ndarray, lx_30_60: np.ndarray) -> List[Dict]:
+def compute_metrics_rows(system: Dict, lx: Dict, system_metrics: Dict, cdsl_xc: np.ndarray, lx_xc: np.ndarray) -> List[Dict]:
     rows: List[Dict] = []
     for label, lo, hi in METRIC_BANDS:
-        cdsl_stats = band_stats(COMMON_FREQ, cdsl_30_60, lo, hi)
-        lx_stats = band_stats(COMMON_FREQ, lx_30_60, lo, hi)
+        cdsl_stats = band_stats(COMMON_FREQ, cdsl_xc, lo, hi)
+        lx_stats = band_stats(COMMON_FREQ, lx_xc, lo, hi)
         di_stats = band_stats(COMMON_FREQ, system_metrics["di"], lo, hi)
         beam_stats = band_stats(COMMON_FREQ, system_metrics["beam_6"], lo, hi)
         rear0_stats = band_stats(COMMON_FREQ, rear_front_delta(system, 0), lo, hi)
@@ -3324,6 +3457,10 @@ def compute_metrics_rows(system: Dict, lx: Dict, system_metrics: Dict, cdsl_30_6
         rows.append(
             {
                 "band": label,
+                "cdsl_xc_mean_db": round(cdsl_stats["mean"], 3),
+                "cdsl_xc_median_db": round(cdsl_stats["median"], 3),
+                "lx521_xc_mean_db": round(lx_stats["mean"], 3),
+                "lx521_xc_median_db": round(lx_stats["median"], 3),
                 "cdsl_30_60_mean_db": round(cdsl_stats["mean"], 3),
                 "cdsl_30_60_median_db": round(cdsl_stats["median"], 3),
                 "lx521_30_60_mean_db": round(lx_stats["mean"], 3),
@@ -3421,12 +3558,12 @@ def build_variant(
     plot_freq_response(system, output_root)
     plot_contours(system, output_root)
     plot_di_beam(system_metrics, lx_metrics, output_root)
-    cdsl_30_60, lx_30_60 = plot_30_60(system, lx, output_root)
+    cdsl_xc, lx_xc = plot_xc_metric(system, lx, output_root)
     plot_polar(system, lx, output_root)
-    write_plotly_pages(system, lx, system_metrics, lx_metrics, cdsl_30_60, lx_30_60, output_root)
+    write_plotly_pages(system, lx, system_metrics, lx_metrics, cdsl_xc, lx_xc, output_root)
     write_synthetic_hdf5(system, juan_cfg, synthetic_hdf5)
 
-    metrics_rows = compute_metrics_rows(system, lx, system_metrics, cdsl_30_60, lx_30_60)
+    metrics_rows = compute_metrics_rows(system, lx, system_metrics, cdsl_xc, lx_xc)
     manifest = write_exports(
         output_root,
         DESIGN,
@@ -3469,10 +3606,12 @@ def build_variant(
         "system": system,
         "lx": lx,
         "system_metrics": system_metrics,
-        "cdsl_30_60": cdsl_30_60,
-        "lx_30_60": lx_30_60,
-        "cdsl_stats": band_stats(COMMON_FREQ, cdsl_30_60, 2000, 10000),
-        "lx_stats": band_stats(COMMON_FREQ, lx_30_60, 2000, 10000),
+        "cdsl_xc": cdsl_xc,
+        "lx_xc": lx_xc,
+        "cdsl_30_60": cdsl_xc,
+        "lx_30_60": lx_xc,
+        "cdsl_stats": band_stats(COMMON_FREQ, cdsl_xc, 2000, 10000),
+        "lx_stats": band_stats(COMMON_FREQ, lx_xc, 2000, 10000),
     }
     write_variant_report(summary)
     return summary
@@ -3502,7 +3641,7 @@ def weighted_system_comparison_metrics(summary: Dict) -> Dict[str, float]:
     weights_200_10 = psychoacoustic_weights(COMMON_FREQ, 200.0, 10_000.0)
     hf_transition = high_frequency_polar_transition_metrics(system)
 
-    sep = pressure_to_db(system["front"][30]) - pressure_to_db(system["front"][60])
+    sep = metric_xc(system["front"])
     side_leak = pressure_to_db(system["front"][90]) - pressure_to_db(system["front"][0])
     rear0_delta = pressure_to_db(system["rear"][0]) - pressure_to_db(system["front"][0])
 
@@ -3517,6 +3656,7 @@ def weighted_system_comparison_metrics(summary: Dict) -> Dict[str, float]:
     ]
     thd_percent, thd_coverage = effective_thd_band(summary, "2-7 kHz")
     return {
+        "xc_separation_weighted_db": weighted_mean(sep, weights_2_10),
         "sep_30_60_weighted_db": weighted_mean(sep, weights_2_10),
         "xover_mismatch_rms_db": float(summary["manifest"]["search"]["selected_candidate"].get("xover_mismatch_rms_db", float("nan"))),
         "hf_polar_transition_penalty": hf_transition["hf_polar_transition_penalty"],
@@ -3550,11 +3690,11 @@ def compare_variants(chosen: Dict, baseline: Dict) -> List[Dict]:
     baseline_m = weighted_system_comparison_metrics(baseline)
     specs = [
         (
-            "Weighted 2-10 kHz SPL30-SPL60 (dB)",
-            "sep_30_60_weighted_db",
+            f"Weighted 2-10 kHz {xc_metric_label()} (dB)",
+            "xc_separation_weighted_db",
             22,
             "higher",
-            "Near/far angular separation is the main CDSL target; weighting emphasizes the ear-sensitive 2-7 kHz center and downweights the suspect top octave.",
+            "Ipsi/contra angular separation is the main CDSL target; weighting emphasizes the ear-sensitive 2-7 kHz center and downweights the suspect top octave.",
         ),
         (
             "Crossover-local polar mismatch RMS (dB)",
@@ -3814,8 +3954,8 @@ def render_comparison_page(comparison_rows: List[Dict], chosen: Dict, baseline: 
         <div class="asset-grid">
             <figure><figcaption>Chosen: normalized contour</figcaption><img src="juan-baffleless-cdsl/static_plots/core/cdsl_contour_normalized.png" alt="Chosen normalized contour"></figure>
             <figure><figcaption>Baseline: normalized contour</figcaption><img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_contour_normalized.png" alt="Baseline normalized contour"></figure>
-            <figure><figcaption>Chosen: 30-60 separation</figcaption><img src="juan-baffleless-cdsl/static_plots/core/cdsl_30_vs_60_metric.png" alt="Chosen 30 vs 60"></figure>
-            <figure><figcaption>Baseline: 30-60 separation</figcaption><img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_30_vs_60_metric.png" alt="Baseline 30 vs 60"></figure>
+            <figure><figcaption>Chosen: configured x-c separation</figcaption><img src="juan-baffleless-cdsl/static_plots/core/cdsl_xc_metric.png" alt="Chosen configured x-c metric"></figure>
+            <figure><figcaption>Baseline: configured x-c separation</figcaption><img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_xc_metric.png" alt="Baseline configured x-c metric"></figure>
         </div>
     </main>
     <footer>
