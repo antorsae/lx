@@ -1,0 +1,233 @@
+{
+  "L26RO4Y": {
+    "gain_db": -6.92,
+    "delay_ms": 0.0,
+    "polarity": 1,
+    "filters": [
+      {
+        "type": "highpass",
+        "fc_hz": 70.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 boundary high-pass"
+      },
+      {
+        "type": "highpass",
+        "fc_hz": 70.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 boundary high-pass"
+      },
+      {
+        "type": "lowpass",
+        "fc_hz": 120.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      },
+      {
+        "type": "lowpass",
+        "fc_hz": 120.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      }
+    ]
+  },
+  "L22MG (nude)": {
+    "gain_db": 16.906,
+    "delay_ms": -0.06,
+    "polarity": 1,
+    "filters": [
+      {
+        "type": "highpass",
+        "fc_hz": 120.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      },
+      {
+        "type": "highpass",
+        "fc_hz": 120.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      },
+      {
+        "type": "lowpass",
+        "fc_hz": 650.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      },
+      {
+        "type": "lowpass",
+        "fc_hz": 650.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      },
+      {
+        "type": "peaking",
+        "fc_hz": 220,
+        "q": 1.0,
+        "gain_db": 1.36,
+        "source": "auto-EQ"
+      },
+      {
+        "type": "peaking",
+        "fc_hz": 330,
+        "q": 1.0,
+        "gain_db": -1.175,
+        "source": "auto-EQ"
+      },
+      {
+        "type": "peaking",
+        "fc_hz": 500,
+        "q": 1.0,
+        "gain_db": -5.566,
+        "source": "auto-EQ"
+      }
+    ]
+  },
+  "SS10F8414G10": {
+    "gain_db": 4.941,
+    "delay_ms": -0.27,
+    "polarity": -1,
+    "filters": [
+      {
+        "type": "highpass",
+        "fc_hz": 650.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      },
+      {
+        "type": "highpass",
+        "fc_hz": 650.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      },
+      {
+        "type": "lowpass",
+        "fc_hz": 2000.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      },
+      {
+        "type": "lowpass",
+        "fc_hz": 2000.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      },
+      {
+        "type": "peaking",
+        "fc_hz": 800,
+        "q": 1.0,
+        "gain_db": 3.222,
+        "source": "auto-EQ"
+      },
+      {
+        "type": "peaking",
+        "fc_hz": 1200,
+        "q": 1.0,
+        "gain_db": -0.84,
+        "source": "auto-EQ"
+      },
+      {
+        "type": "peaking",
+        "fc_hz": 1800,
+        "q": 1.0,
+        "gain_db": -6.0,
+        "source": "auto-EQ"
+      }
+    ]
+  },
+  "GRS PT6816": {
+    "gain_db": -0.076,
+    "delay_ms": -0.035,
+    "polarity": -1,
+    "filters": [
+      {
+        "type": "highpass",
+        "fc_hz": 2000.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      },
+      {
+        "type": "highpass",
+        "fc_hz": 2000.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      },
+      {
+        "type": "lowpass",
+        "fc_hz": 12000.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      },
+      {
+        "type": "lowpass",
+        "fc_hz": 12000.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      },
+      {
+        "type": "peaking",
+        "fc_hz": 8500,
+        "q": 1.0,
+        "gain_db": -2.58,
+        "source": "auto-EQ"
+      }
+    ]
+  },
+  "ND25FW4 (nude 18mm)": {
+    "gain_db": 8.349,
+    "delay_ms": -0.015,
+    "polarity": 1,
+    "filters": [
+      {
+        "type": "highpass",
+        "fc_hz": 12000.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      },
+      {
+        "type": "highpass",
+        "fc_hz": 12000.0,
+        "q": 0.7071,
+        "gain_db": 0.0,
+        "source": "LR4 crossover"
+      },
+      {
+        "type": "peaking",
+        "fc_hz": 11000,
+        "q": 1.0,
+        "gain_db": -3.806,
+        "source": "auto-EQ"
+      },
+      {
+        "type": "peaking",
+        "fc_hz": 14000,
+        "q": 1.0,
+        "gain_db": -4.115,
+        "source": "auto-EQ"
+      },
+      {
+        "type": "peaking",
+        "fc_hz": 18000,
+        "q": 1.0,
+        "gain_db": 1.387,
+        "source": "auto-EQ"
+      }
+    ]
+  }
+}

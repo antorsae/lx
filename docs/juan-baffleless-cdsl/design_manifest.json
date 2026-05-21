@@ -1,0 +1,1408 @@
+{
+  "title": "Juan Baffleless Synthetic CDSL Design",
+  "generated_at_utc": "2026-05-21T12:31:44+00:00",
+  "input_hdf5": {
+    "juan_baffleless": "output/data/polar_data_juan_baffleless.h5",
+    "lx521_system": "output/data/polar_data_lx521_system.h5",
+    "synthetic_output": "output/data/polar_data_juan_cdsl_synthetic.h5"
+  },
+  "measurement_conditions": {
+    "gate_left_ms": 0.5,
+    "gate_right_ms": 3.0,
+    "smoothing": 0,
+    "smoothing_str": "None"
+  },
+  "frequency_grid_hz": {
+    "min": 70.0,
+    "max": 20000.0,
+    "points": 1200
+  },
+  "angles_degrees": [
+    0,
+    15,
+    30,
+    45,
+    60,
+    75,
+    90
+  ],
+  "target_spl_db": 76.0,
+  "crossovers": [
+    {
+      "frequency_hz": 120.0,
+      "type": "LR4",
+      "low_driver": "L26RO4Y",
+      "high_driver": "L22MG (nude)"
+    },
+    {
+      "frequency_hz": 650.0,
+      "type": "LR4",
+      "low_driver": "L22MG (nude)",
+      "high_driver": "SS10F8414G10"
+    },
+    {
+      "frequency_hz": 2000.0,
+      "type": "LR4",
+      "low_driver": "SS10F8414G10",
+      "high_driver": "GRS PT6816"
+    },
+    {
+      "frequency_hz": 12000.0,
+      "type": "LR4",
+      "low_driver": "GRS PT6816",
+      "high_driver": "ND25FW4 (nude 18mm)"
+    }
+  ],
+  "search": {
+    "candidate_count": 7068,
+    "score_direction": "lower is better",
+    "selection": {
+      "method": "balanced recommendation with duplicate-driver guard",
+      "reason": "Selected the best balanced candidate that avoids using both near-identical SS10F8424G00 and SS10F8414G10 in adjacent passbands. This favors dipole consistency, crossover continuity, and build simplicity over the most aggressive 30-to-60 dB target.",
+      "fallback_used": false,
+      "ctc_constrained_selection": {
+        "method": "constrained CDSL selection",
+        "reason": "Selected the lowest composite-score candidate that also clears 8 dB median and 5.8 dB 10th-percentile SPL30-SPL60 from 2-10 kHz, while keeping front dipole RMS <=3.2 dB and crossover mismatch <=9.5 dB.",
+        "fallback_used": false
+      }
+    },
+    "selected_candidate": {
+      "score": 11.4272,
+      "drivers": [
+        "L26RO4Y",
+        "L22MG (nude)",
+        "SS10F8414G10",
+        "GRS PT6816",
+        "ND25FW4 (nude 18mm)"
+      ],
+      "xovers": [
+        120.0,
+        650.0,
+        2000.0,
+        12000.0
+      ],
+      "ways": 5,
+      "dipole_front_rms_db": 2.036,
+      "dipole_rear_rms_db": 2.302,
+      "null_penalty_db": 0.0,
+      "rear0_rms_db": 1.863,
+      "xover_mismatch_rms_db": 7.584,
+      "validity_penalty": 0.0,
+      "prior_penalty": 2.02,
+      "sep_30_60_median_2_10k_db": 6.235,
+      "sep_30_60_p10_2_10k_db": 5.106,
+      "front30_median_2_10k_db": -1.931,
+      "balanced_rank": 1,
+      "finalist_role": "Recommended balanced",
+      "note": "Primary recommendation: best balanced score that avoids splitting two near-identical ScanSpeak 10 cm drivers into adjacent bands."
+    },
+    "finalists": [
+      {
+        "score": 11.4272,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          2000.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.036,
+        "dipole_rear_rms_db": 2.302,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 1.863,
+        "xover_mismatch_rms_db": 7.584,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.235,
+        "sep_30_60_p10_2_10k_db": 5.106,
+        "front30_median_2_10k_db": -1.931,
+        "balanced_rank": 1,
+        "finalist_role": "Recommended balanced",
+        "note": "Primary recommendation: best balanced score that avoids splitting two near-identical ScanSpeak 10 cm drivers into adjacent bands."
+      },
+      {
+        "score": 12.4394,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8424G00",
+          "SS10F8414G10",
+          "GRS PT6816"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          2000.0,
+          7000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 3.074,
+        "dipole_rear_rms_db": 3.617,
+        "null_penalty_db": 0.805,
+        "rear0_rms_db": 2.37,
+        "xover_mismatch_rms_db": 8.853,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.232,
+        "sep_30_60_median_2_10k_db": 8.736,
+        "sep_30_60_p10_2_10k_db": 5.823,
+        "front30_median_2_10k_db": -3.032,
+        "balanced_rank": 103,
+        "finalist_role": "CTC-constrained",
+        "note": "Experimental option: clears the 2-10 kHz 30-to-60 constraint, but uses both ScanSpeak 10 cm variants."
+      },
+      {
+        "score": 12.4033,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "L10NEO",
+          "SS10F8414G10",
+          "GRS PT6816"
+        ],
+        "xovers": [
+          120.0,
+          800.0,
+          2000.0,
+          8000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 3.248,
+        "dipole_rear_rms_db": 3.8,
+        "null_penalty_db": 1.4,
+        "rear0_rms_db": 2.508,
+        "xover_mismatch_rms_db": 6.597,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.52,
+        "sep_30_60_median_2_10k_db": 9.248,
+        "sep_30_60_p10_2_10k_db": 6.339,
+        "front30_median_2_10k_db": -3.11,
+        "balanced_rank": 93,
+        "finalist_role": "L10NEO alternate",
+        "note": "Best L10NEO-flavored candidate with strong 30-to-60 separation and acceptable crossover mismatch."
+      },
+      {
+        "score": 11.7471,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          3200.0
+        ],
+        "ways": 4,
+        "dipole_front_rms_db": 2.143,
+        "dipole_rear_rms_db": 2.639,
+        "null_penalty_db": 0.122,
+        "rear0_rms_db": 2.045,
+        "xover_mismatch_rms_db": 8.776,
+        "validity_penalty": 0.0,
+        "prior_penalty": 1.887,
+        "sep_30_60_median_2_10k_db": 6.637,
+        "sep_30_60_p10_2_10k_db": 5.233,
+        "front30_median_2_10k_db": -2.059,
+        "balanced_rank": 9,
+        "finalist_role": "Simple 4-way",
+        "note": "Simplest high-confidence 4-way variant using one ScanSpeak 10 cm driver plus GRS."
+      }
+    ],
+    "top_candidates": [
+      {
+        "score": 11.4272,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          2000.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.036,
+        "dipole_rear_rms_db": 2.302,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 1.863,
+        "xover_mismatch_rms_db": 7.584,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.235,
+        "sep_30_60_p10_2_10k_db": 5.106,
+        "front30_median_2_10k_db": -1.931
+      },
+      {
+        "score": 11.518,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          800.0,
+          2000.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.048,
+        "dipole_rear_rms_db": 2.305,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 1.867,
+        "xover_mismatch_rms_db": 7.788,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.251,
+        "sep_30_60_p10_2_10k_db": 5.106,
+        "front30_median_2_10k_db": -1.954
+      },
+      {
+        "score": 11.5263,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          3000.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.158,
+        "dipole_rear_rms_db": 2.539,
+        "null_penalty_db": 0.041,
+        "rear0_rms_db": 1.916,
+        "xover_mismatch_rms_db": 8.072,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.545,
+        "sep_30_60_p10_2_10k_db": 5.221,
+        "front30_median_2_10k_db": -2.041
+      },
+      {
+        "score": 11.5609,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          1000.0,
+          2000.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.076,
+        "dipole_rear_rms_db": 2.314,
+        "null_penalty_db": 0.044,
+        "rear0_rms_db": 1.873,
+        "xover_mismatch_rms_db": 7.795,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.276,
+        "sep_30_60_p10_2_10k_db": 5.105,
+        "front30_median_2_10k_db": -1.995
+      },
+      {
+        "score": 11.6106,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          800.0,
+          3000.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.171,
+        "dipole_rear_rms_db": 2.54,
+        "null_penalty_db": 0.04,
+        "rear0_rms_db": 1.92,
+        "xover_mismatch_rms_db": 8.263,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.56,
+        "sep_30_60_p10_2_10k_db": 5.221,
+        "front30_median_2_10k_db": -2.061
+      },
+      {
+        "score": 11.6704,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          2400.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.077,
+        "dipole_rear_rms_db": 2.377,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 1.88,
+        "xover_mismatch_rms_db": 8.331,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.372,
+        "sep_30_60_p10_2_10k_db": 5.141,
+        "front30_median_2_10k_db": -1.981
+      },
+      {
+        "score": 11.6806,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          1000.0,
+          3000.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.2,
+        "dipole_rear_rms_db": 2.546,
+        "null_penalty_db": 0.13,
+        "rear0_rms_db": 1.927,
+        "xover_mismatch_rms_db": 8.27,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.588,
+        "sep_30_60_p10_2_10k_db": 5.22,
+        "front30_median_2_10k_db": -2.099
+      },
+      {
+        "score": 11.7223,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          2000.0,
+          10000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.151,
+        "dipole_rear_rms_db": 2.347,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 1.855,
+        "xover_mismatch_rms_db": 7.863,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.236,
+        "sep_30_60_p10_2_10k_db": 5.11,
+        "front30_median_2_10k_db": -1.93
+      },
+      {
+        "score": 11.7471,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          3200.0
+        ],
+        "ways": 4,
+        "dipole_front_rms_db": 2.143,
+        "dipole_rear_rms_db": 2.639,
+        "null_penalty_db": 0.122,
+        "rear0_rms_db": 2.045,
+        "xover_mismatch_rms_db": 8.776,
+        "validity_penalty": 0.0,
+        "prior_penalty": 1.887,
+        "sep_30_60_median_2_10k_db": 6.637,
+        "sep_30_60_p10_2_10k_db": 5.233,
+        "front30_median_2_10k_db": -2.059
+      },
+      {
+        "score": 11.7639,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          800.0,
+          2400.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.089,
+        "dipole_rear_rms_db": 2.38,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 1.884,
+        "xover_mismatch_rms_db": 8.517,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.379,
+        "sep_30_60_p10_2_10k_db": 5.14,
+        "front30_median_2_10k_db": -2.001
+      },
+      {
+        "score": 11.7992,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          160.0,
+          650.0,
+          2000.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.052,
+        "dipole_rear_rms_db": 2.609,
+        "null_penalty_db": 0.129,
+        "rear0_rms_db": 2.179,
+        "xover_mismatch_rms_db": 7.353,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.235,
+        "sep_30_60_p10_2_10k_db": 5.106,
+        "front30_median_2_10k_db": -1.931
+      },
+      {
+        "score": 11.8168,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          800.0,
+          2000.0,
+          10000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.163,
+        "dipole_rear_rms_db": 2.35,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 1.859,
+        "xover_mismatch_rms_db": 8.059,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.246,
+        "sep_30_60_p10_2_10k_db": 5.109,
+        "front30_median_2_10k_db": -1.954
+      },
+      {
+        "score": 11.834,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          1000.0,
+          2400.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.118,
+        "dipole_rear_rms_db": 2.388,
+        "null_penalty_db": 0.076,
+        "rear0_rms_db": 1.89,
+        "xover_mismatch_rms_db": 8.523,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.4,
+        "sep_30_60_p10_2_10k_db": 5.14,
+        "front30_median_2_10k_db": -2.039
+      },
+      {
+        "score": 11.8519,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816"
+        ],
+        "xovers": [
+          120.0,
+          800.0,
+          3200.0
+        ],
+        "ways": 4,
+        "dipole_front_rms_db": 2.156,
+        "dipole_rear_rms_db": 2.64,
+        "null_penalty_db": 0.121,
+        "rear0_rms_db": 2.049,
+        "xover_mismatch_rms_db": 9.01,
+        "validity_penalty": 0.0,
+        "prior_penalty": 1.887,
+        "sep_30_60_median_2_10k_db": 6.652,
+        "sep_30_60_p10_2_10k_db": 5.233,
+        "front30_median_2_10k_db": -2.078
+      },
+      {
+        "score": 11.856,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          1000.0,
+          2000.0,
+          10000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.189,
+        "dipole_rear_rms_db": 2.359,
+        "null_penalty_db": 0.044,
+        "rear0_rms_db": 1.865,
+        "xover_mismatch_rms_db": 8.066,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.272,
+        "sep_30_60_p10_2_10k_db": 5.108,
+        "front30_median_2_10k_db": -1.993
+      },
+      {
+        "score": 11.8771,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          160.0,
+          650.0,
+          3000.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.173,
+        "dipole_rear_rms_db": 2.82,
+        "null_penalty_db": 0.164,
+        "rear0_rms_db": 2.224,
+        "xover_mismatch_rms_db": 7.855,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.545,
+        "sep_30_60_p10_2_10k_db": 5.221,
+        "front30_median_2_10k_db": -2.041
+      },
+      {
+        "score": 11.886,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          3000.0,
+          10000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.267,
+        "dipole_rear_rms_db": 2.58,
+        "null_penalty_db": 0.04,
+        "rear0_rms_db": 1.908,
+        "xover_mismatch_rms_db": 8.334,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.484,
+        "sep_30_60_p10_2_10k_db": 5.224,
+        "front30_median_2_10k_db": -2.04
+      },
+      {
+        "score": 11.8897,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          4500.0
+        ],
+        "ways": 4,
+        "dipole_front_rms_db": 2.429,
+        "dipole_rear_rms_db": 3.003,
+        "null_penalty_db": 0.447,
+        "rear0_rms_db": 2.128,
+        "xover_mismatch_rms_db": 9.141,
+        "validity_penalty": 0.0,
+        "prior_penalty": 1.887,
+        "sep_30_60_median_2_10k_db": 7.158,
+        "sep_30_60_p10_2_10k_db": 5.52,
+        "front30_median_2_10k_db": -2.239
+      },
+      {
+        "score": 11.8907,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          160.0,
+          800.0,
+          2000.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.064,
+        "dipole_rear_rms_db": 2.611,
+        "null_penalty_db": 0.128,
+        "rear0_rms_db": 2.182,
+        "xover_mismatch_rms_db": 7.562,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.251,
+        "sep_30_60_p10_2_10k_db": 5.106,
+        "front30_median_2_10k_db": -1.954
+      },
+      {
+        "score": 11.9079,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          160.0,
+          1000.0,
+          2000.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.091,
+        "dipole_rear_rms_db": 2.619,
+        "null_penalty_db": 0.135,
+        "rear0_rms_db": 2.187,
+        "xover_mismatch_rms_db": 7.57,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.276,
+        "sep_30_60_p10_2_10k_db": 5.105,
+        "front30_median_2_10k_db": -1.995
+      },
+      {
+        "score": 11.9172,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816"
+        ],
+        "xovers": [
+          120.0,
+          1000.0,
+          3200.0
+        ],
+        "ways": 4,
+        "dipole_front_rms_db": 2.186,
+        "dipole_rear_rms_db": 2.644,
+        "null_penalty_db": 0.181,
+        "rear0_rms_db": 2.055,
+        "xover_mismatch_rms_db": 9.019,
+        "validity_penalty": 0.0,
+        "prior_penalty": 1.887,
+        "sep_30_60_median_2_10k_db": 6.668,
+        "sep_30_60_p10_2_10k_db": 5.232,
+        "front30_median_2_10k_db": -2.116
+      },
+      {
+        "score": 11.9338,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          2400.0
+        ],
+        "ways": 4,
+        "dipole_front_rms_db": 2.027,
+        "dipole_rear_rms_db": 2.421,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 1.998,
+        "xover_mismatch_rms_db": 9.1,
+        "validity_penalty": 0.0,
+        "prior_penalty": 1.887,
+        "sep_30_60_median_2_10k_db": 6.374,
+        "sep_30_60_p10_2_10k_db": 5.104,
+        "front30_median_2_10k_db": -1.982
+      },
+      {
+        "score": 11.9375,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          2000.0,
+          8000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.273,
+        "dipole_rear_rms_db": 2.407,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 1.853,
+        "xover_mismatch_rms_db": 7.239,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 5.992,
+        "sep_30_60_p10_2_10k_db": 5.138,
+        "front30_median_2_10k_db": -1.95
+      },
+      {
+        "score": 11.9437,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8424G00",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          120.0,
+          650.0,
+          2000.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.127,
+        "dipole_rear_rms_db": 2.334,
+        "null_penalty_db": 0.0,
+        "rear0_rms_db": 1.899,
+        "xover_mismatch_rms_db": 8.623,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.135,
+        "sep_30_60_median_2_10k_db": 6.405,
+        "sep_30_60_p10_2_10k_db": 5.101,
+        "front30_median_2_10k_db": -2.039
+      },
+      {
+        "score": 11.9619,
+        "drivers": [
+          "L26RO4Y",
+          "L22MG (nude)",
+          "SS10F8414G10",
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
+        ],
+        "xovers": [
+          160.0,
+          800.0,
+          3000.0,
+          12000.0
+        ],
+        "ways": 5,
+        "dipole_front_rms_db": 2.185,
+        "dipole_rear_rms_db": 2.821,
+        "null_penalty_db": 0.162,
+        "rear0_rms_db": 2.227,
+        "xover_mismatch_rms_db": 8.051,
+        "validity_penalty": 0.0,
+        "prior_penalty": 2.02,
+        "sep_30_60_median_2_10k_db": 6.56,
+        "sep_30_60_p10_2_10k_db": 5.221,
+        "front30_median_2_10k_db": -2.061
+      }
+    ],
+    "score_terms": {
+      "dipole_front_rms_db": "front normalized polar fit to cosine dipole for 15-75 degrees",
+      "dipole_rear_rms_db": "rear normalized polar fit to cosine dipole for 15-75 degrees",
+      "null_penalty_db": "penalty for weak 90 degree nulls",
+      "rear0_rms_db": "rear 0 degree magnitude symmetry relative to front 0 degree",
+      "xover_mismatch_rms_db": "adjacent-driver normalized polar mismatch around each LR4 crossover",
+      "sep_30_60_median_2_10k_db": "median front SPL30-SPL60 from 2-10 kHz",
+      "prior_penalty": "small local evidence penalty for distortion/SPL uncertainty or known caveats"
+    }
+  },
+  "driver_directivity_audit": [
+    {
+      "driver": "L22MG (nude)",
+      "band": "650-2000 Hz",
+      "front_dipole_rms_db": 4.411,
+      "rear_dipole_rms_db": 2.101,
+      "sep_30_60_median_db": 7.509,
+      "sep_30_60_p10_db": 4.953,
+      "rear0_minus_front0_median_db": -0.746,
+      "front90_minus_front0_median_db": -14.52
+    },
+    {
+      "driver": "L22MG (nude)",
+      "band": "2-7 kHz",
+      "front_dipole_rms_db": 7.422,
+      "rear_dipole_rms_db": 8.022,
+      "sep_30_60_median_db": 4.208,
+      "sep_30_60_p10_db": -2.878,
+      "rear0_minus_front0_median_db": -7.915,
+      "front90_minus_front0_median_db": -19.256
+    },
+    {
+      "driver": "L22MG (nude)",
+      "band": "2-10 kHz",
+      "front_dipole_rms_db": 7.229,
+      "rear_dipole_rms_db": 7.579,
+      "sep_30_60_median_db": 3.932,
+      "sep_30_60_p10_db": -3.462,
+      "rear0_minus_front0_median_db": -7.516,
+      "front90_minus_front0_median_db": -17.906
+    },
+    {
+      "driver": "GRS PT6816",
+      "band": "650-2000 Hz",
+      "front_dipole_rms_db": 0.633,
+      "rear_dipole_rms_db": 0.247,
+      "sep_30_60_median_db": 5.34,
+      "sep_30_60_p10_db": 5.13,
+      "rear0_minus_front0_median_db": -0.529,
+      "front90_minus_front0_median_db": -37.905
+    },
+    {
+      "driver": "GRS PT6816",
+      "band": "2-7 kHz",
+      "front_dipole_rms_db": 1.459,
+      "rear_dipole_rms_db": 1.2,
+      "sep_30_60_median_db": 5.865,
+      "sep_30_60_p10_db": 4.933,
+      "rear0_minus_front0_median_db": -0.42,
+      "front90_minus_front0_median_db": -35.392
+    },
+    {
+      "driver": "GRS PT6816",
+      "band": "2-10 kHz",
+      "front_dipole_rms_db": 1.725,
+      "rear_dipole_rms_db": 1.72,
+      "sep_30_60_median_db": 6.052,
+      "sep_30_60_p10_db": 5.056,
+      "rear0_minus_front0_median_db": -0.446,
+      "front90_minus_front0_median_db": -34.87
+    },
+    {
+      "driver": "L10NEO",
+      "band": "650-2000 Hz",
+      "front_dipole_rms_db": 0.837,
+      "rear_dipole_rms_db": 1.928,
+      "sep_30_60_median_db": 5.254,
+      "sep_30_60_p10_db": 4.095,
+      "rear0_minus_front0_median_db": -1.995,
+      "front90_minus_front0_median_db": -17.008
+    },
+    {
+      "driver": "L10NEO",
+      "band": "2-7 kHz",
+      "front_dipole_rms_db": 7.185,
+      "rear_dipole_rms_db": 4.27,
+      "sep_30_60_median_db": 11.234,
+      "sep_30_60_p10_db": 7.348,
+      "rear0_minus_front0_median_db": -3.151,
+      "front90_minus_front0_median_db": -16.97
+    },
+    {
+      "driver": "L10NEO",
+      "band": "2-10 kHz",
+      "front_dipole_rms_db": 6.751,
+      "rear_dipole_rms_db": 4.617,
+      "sep_30_60_median_db": 10.99,
+      "sep_30_60_p10_db": 6.424,
+      "rear0_minus_front0_median_db": -3.444,
+      "front90_minus_front0_median_db": -17.123
+    },
+    {
+      "driver": "SS10F8414G10",
+      "band": "650-2000 Hz",
+      "front_dipole_rms_db": 1.343,
+      "rear_dipole_rms_db": 0.503,
+      "sep_30_60_median_db": 5.797,
+      "sep_30_60_p10_db": 5.459,
+      "rear0_minus_front0_median_db": -0.471,
+      "front90_minus_front0_median_db": -24.804
+    },
+    {
+      "driver": "SS10F8414G10",
+      "band": "2-7 kHz",
+      "front_dipole_rms_db": 5.971,
+      "rear_dipole_rms_db": 4.511,
+      "sep_30_60_median_db": 9.936,
+      "sep_30_60_p10_db": 5.782,
+      "rear0_minus_front0_median_db": -2.807,
+      "front90_minus_front0_median_db": -20.332
+    },
+    {
+      "driver": "SS10F8414G10",
+      "band": "2-10 kHz",
+      "front_dipole_rms_db": 5.987,
+      "rear_dipole_rms_db": 4.999,
+      "sep_30_60_median_db": 10.155,
+      "sep_30_60_p10_db": 5.616,
+      "rear0_minus_front0_median_db": -3.25,
+      "front90_minus_front0_median_db": -20.174
+    },
+    {
+      "driver": "SS10F8424G00",
+      "band": "650-2000 Hz",
+      "front_dipole_rms_db": 2.033,
+      "rear_dipole_rms_db": 0.459,
+      "sep_30_60_median_db": 6.187,
+      "sep_30_60_p10_db": 5.778,
+      "rear0_minus_front0_median_db": -0.393,
+      "front90_minus_front0_median_db": -25.102
+    },
+    {
+      "driver": "SS10F8424G00",
+      "band": "2-7 kHz",
+      "front_dipole_rms_db": 5.224,
+      "rear_dipole_rms_db": 5.373,
+      "sep_30_60_median_db": 8.741,
+      "sep_30_60_p10_db": 5.605,
+      "rear0_minus_front0_median_db": -4.627,
+      "front90_minus_front0_median_db": -23.241
+    },
+    {
+      "driver": "SS10F8424G00",
+      "band": "2-10 kHz",
+      "front_dipole_rms_db": 5.601,
+      "rear_dipole_rms_db": 6.022,
+      "sep_30_60_median_db": 9.18,
+      "sep_30_60_p10_db": 5.912,
+      "rear0_minus_front0_median_db": -4.799,
+      "front90_minus_front0_median_db": -21.101
+    },
+    {
+      "driver": "MU10RB-SL",
+      "band": "650-2000 Hz",
+      "front_dipole_rms_db": 0.937,
+      "rear_dipole_rms_db": 2.579,
+      "sep_30_60_median_db": 5.102,
+      "sep_30_60_p10_db": 3.726,
+      "rear0_minus_front0_median_db": -1.297,
+      "front90_minus_front0_median_db": -15.897
+    },
+    {
+      "driver": "MU10RB-SL",
+      "band": "2-7 kHz",
+      "front_dipole_rms_db": 6.282,
+      "rear_dipole_rms_db": 4.371,
+      "sep_30_60_median_db": 10.393,
+      "sep_30_60_p10_db": 8.55,
+      "rear0_minus_front0_median_db": -3.381,
+      "front90_minus_front0_median_db": -18.344
+    },
+    {
+      "driver": "MU10RB-SL",
+      "band": "2-10 kHz",
+      "front_dipole_rms_db": 5.811,
+      "rear_dipole_rms_db": 5.224,
+      "sep_30_60_median_db": 10.212,
+      "sep_30_60_p10_db": 6.796,
+      "rear0_minus_front0_median_db": -3.952,
+      "front90_minus_front0_median_db": -18.749
+    },
+    {
+      "driver": "ND25FW4 (nude 18mm)",
+      "band": "650-2000 Hz",
+      "front_dipole_rms_db": 1.113,
+      "rear_dipole_rms_db": 0.386,
+      "sep_30_60_median_db": 5.753,
+      "sep_30_60_p10_db": 5.344,
+      "rear0_minus_front0_median_db": -0.247,
+      "front90_minus_front0_median_db": -25.301
+    },
+    {
+      "driver": "ND25FW4 (nude 18mm)",
+      "band": "2-7 kHz",
+      "front_dipole_rms_db": 1.82,
+      "rear_dipole_rms_db": 0.913,
+      "sep_30_60_median_db": 5.76,
+      "sep_30_60_p10_db": 4.953,
+      "rear0_minus_front0_median_db": -0.774,
+      "front90_minus_front0_median_db": -28.125
+    },
+    {
+      "driver": "ND25FW4 (nude 18mm)",
+      "band": "2-10 kHz",
+      "front_dipole_rms_db": 1.875,
+      "rear_dipole_rms_db": 1.118,
+      "sep_30_60_median_db": 5.643,
+      "sep_30_60_p10_db": 4.381,
+      "rear0_minus_front0_median_db": -0.847,
+      "front90_minus_front0_median_db": -26.853
+    }
+  ],
+  "local_evidence_notes": [
+    "Juan's local notes rank 8424 distortion/SPL best, 8414 close behind, and MU10 worst in the upper-mid comparison.",
+    "The same notes flag 8424 rear-side directivity and high-angle order as weaker than 8414, especially above 2 kHz.",
+    "GRS is treated as the measured dipole/directivity-order reference, but it does not provide the largest 30-to-60 separation above 2 kHz.",
+    "L10NEO remains a high-separation alternate; it was not selected as the balanced primary because the local distortion/SPL evidence is less favorable than for the ScanSpeak pair."
+  ],
+  "mounting_geometry_notes": [
+    "The synthetic HDF5 is a horizontal 0-180 degree sum of separately suspended driver measurements; it does not model vertical-plane lobing from center-to-center spacing.",
+    "Non-GRS cone/dome drivers are assumed approximately axisymmetric when reasoning about vertical behavior, but the GRS planar is not axisymmetric and needs measured or modeled vertical data.",
+    "A first-order vertical lobing model is feasible if driver coordinates and acoustic-center offsets are supplied, but it would only cover source interference, not pseudo-baffle diffraction.",
+    "The pseudo-baffle/diffraction from a vertical mounting spine, neighboring motor structures, wiring, and driver frames is not identifiable from the current individual-driver HDF5 data; it needs CAD/BEM or assembly measurements.",
+    "Recommendation: use this synthetic model for driver/filter shortlisting, then measure the actual stacked fixture horizontally and vertically before treating the crossover as final."
+  ],
+  "validation_warnings": [
+    "L26RO4Y source is a 25 cm deep / 32 cm diameter cylindrical-baffle measurement, not a nude baffleless capture.",
+    "Processed phase was reconstructed from separately loaded measurements after per-measurement impulse peak alignment; synthetic complex summation is therefore preliminary.",
+    "Rear polarity convention is inherited from the measurement files and existing 0-180 mapping; it has not been independently validated with raw impulse polarity.",
+    "Absolute SPL, distortion ranking, and maximum-SPL claims are limited by the available local evidence; several distortion curves are only JPEG screenshots and notes.",
+    "DI and beamwidth figures match the existing repo convention and use front-horizontal data only, not a full 3D power response.",
+    "Vertical-plane beaming and pseudo-baffle diffraction from the final stacked mounting geometry are not modeled."
+  ],
+  "generated_files": {
+    "synthetic_hdf5": "output/data/polar_data_juan_cdsl_synthetic.h5",
+    "html_report": "docs/juan-baffleless-cdsl.html",
+    "asset_root": "docs/juan-baffleless-cdsl",
+    "driver_directivity_audit_csv": "output/juan-baffleless-cdsl/driver_directivity_audit.csv"
+  },
+  "drivers": [
+    {
+      "role": "Low",
+      "driver": "L26RO4Y",
+      "passband_hz": [
+        70.0,
+        120.0
+      ],
+      "source": "measurements/juan/L26RO4Y POLARES EN BAFFLE CILINDRICO VER NOTA",
+      "gain_db": -6.92,
+      "delay_ms": 0.0,
+      "polarity": 1,
+      "rationale": "Best measured low-frequency candidate, but captured in a cylindrical baffle.",
+      "filters": [
+        {
+          "type": "highpass",
+          "fc_hz": 70.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 boundary high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 70.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 boundary high-pass"
+        },
+        {
+          "type": "lowpass",
+          "fc_hz": 120.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        },
+        {
+          "type": "lowpass",
+          "fc_hz": 120.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        }
+      ]
+    },
+    {
+      "role": "Lower mid",
+      "driver": "L22MG (nude)",
+      "passband_hz": [
+        120.0,
+        650.0
+      ],
+      "source": "measurements/juan/SEAS L22MG NUDE MIC ON AXIS",
+      "gain_db": 16.906,
+      "delay_ms": -0.06,
+      "polarity": 1,
+      "rationale": "Strong low-mid bridge with nude front/rear data and useful coverage below 500 Hz.",
+      "filters": [
+        {
+          "type": "highpass",
+          "fc_hz": 120.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 120.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        },
+        {
+          "type": "lowpass",
+          "fc_hz": 650.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        },
+        {
+          "type": "lowpass",
+          "fc_hz": 650.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 220,
+          "q": 1.0,
+          "gain_db": 1.36,
+          "source": "auto-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 330,
+          "q": 1.0,
+          "gain_db": -1.175,
+          "source": "auto-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 500,
+          "q": 1.0,
+          "gain_db": -5.566,
+          "source": "auto-EQ"
+        }
+      ]
+    },
+    {
+      "role": "Mid",
+      "driver": "SS10F8414G10",
+      "passband_hz": [
+        650.0,
+        2000.0
+      ],
+      "source": "measurements/juan/ScanSpeak 10F8414G10",
+      "gain_db": 4.941,
+      "delay_ms": -0.27,
+      "polarity": -1,
+      "rationale": "Good directivity order with local notes rating distortion close to the 8424.",
+      "filters": [
+        {
+          "type": "highpass",
+          "fc_hz": 650.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 650.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        },
+        {
+          "type": "lowpass",
+          "fc_hz": 2000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        },
+        {
+          "type": "lowpass",
+          "fc_hz": 2000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 800,
+          "q": 1.0,
+          "gain_db": 3.222,
+          "source": "auto-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 1200,
+          "q": 1.0,
+          "gain_db": -0.84,
+          "source": "auto-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 1800,
+          "q": 1.0,
+          "gain_db": -6.0,
+          "source": "auto-EQ"
+        }
+      ]
+    },
+    {
+      "role": "High/directivity band",
+      "driver": "GRS PT6816",
+      "passband_hz": [
+        2000.0,
+        12000.0
+      ],
+      "source": "measurements/juan/GRS PT6816 A MIC ON AXIS",
+      "gain_db": -0.076,
+      "delay_ms": -0.035,
+      "polarity": -1,
+      "rationale": "Best local constant-directivity and front/rear symmetry reference.",
+      "filters": [
+        {
+          "type": "highpass",
+          "fc_hz": 2000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 2000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        },
+        {
+          "type": "lowpass",
+          "fc_hz": 12000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        },
+        {
+          "type": "lowpass",
+          "fc_hz": 12000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 8500,
+          "q": 1.0,
+          "gain_db": -2.58,
+          "source": "auto-EQ"
+        }
+      ]
+    },
+    {
+      "role": "Top",
+      "driver": "ND25FW4 (nude 18mm)",
+      "passband_hz": [
+        12000.0,
+        20000.0
+      ],
+      "source": "measurements/juan/DAYTON ND25FW4 ANIDADOS 18 MM NUDE",
+      "gain_db": 8.349,
+      "delay_ms": -0.015,
+      "polarity": 1,
+      "rationale": "Treble extension candidate; measured 2-10 kHz pattern is wider than the 10 cm candidates.",
+      "filters": [
+        {
+          "type": "highpass",
+          "fc_hz": 12000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 12000.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 crossover"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 11000,
+          "q": 1.0,
+          "gain_db": -3.806,
+          "source": "auto-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 14000,
+          "q": 1.0,
+          "gain_db": -4.115,
+          "source": "auto-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 18000,
+          "q": 1.0,
+          "gain_db": 1.387,
+          "source": "auto-EQ"
+        }
+      ]
+    }
+  ]
+}

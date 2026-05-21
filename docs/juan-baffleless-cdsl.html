@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juan Baffleless Synthetic CDSL Design</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        :root {
+            --primary: #0f766e;
+            --primary-dark: #115e59;
+            --highlight-bg: #ccfbf1;
+            --highlight-border: #0f766e;
+            --highlight-text: #115e59;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin: 1.25rem 0;
+        }
+        .metric-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        .metric-card .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            line-height: 1.2;
+        }
+        .metric-card .label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.92rem;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 0.55rem 0.65rem;
+            vertical-align: top;
+        }
+        th {
+            background: #f1f5f9;
+            text-align: left;
+        }
+        .asset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+        .asset-grid img {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: white;
+        }
+        .note {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Juan Baffleless Synthetic CDSL Design</h1>
+        <p>Filtered synthetic sum from Juan driver measurements, compared with LX521.4</p>
+        <a href="index.html" class="back-link">Back to Main Page</a>
+    </header>
+
+    <main>
+        <div class="card">
+            <div class="card-header">
+                <h2>Executive Summary</h2>
+                <div class="subtitle">5-way LR4 synthetic CDSL, generated from complex HDF5 measurements</div>
+            </div>
+            <div class="card-body">
+                <div class="highlight">
+                    <strong>Recommended balanced design:</strong> L26RO4Y 70-120 Hz, L22MG (nude) 120-650 Hz, SS10F8414G10 650-2000 Hz, GRS PT6816 2000-12000 Hz, ND25FW4 (nude 18mm) above 12000 Hz.
+                </div>
+                <div class="summary-grid">
+                    <div class="metric-card"><div class="value">6.7 dB</div><div class="label">CDSL median SPL30-SPL60, 2-10 kHz</div></div>
+                    <div class="metric-card"><div class="value">5.1 dB</div><div class="label">LX521 measured median SPL30-SPL60, 2-10 kHz</div></div>
+                    <div class="metric-card"><div class="value">LR4</div><div class="label">Topology at 120, 650, 2000, 12000 Hz</div></div>
+                    <div class="metric-card"><div class="value">0.5 / 3.0 ms</div><div class="label">Same HDF5 gate condition as Juan LX521 data</div></div>
+                </div>
+                <p class="note">
+                    The model sums measured complex pressure by angle and side after explicit digital biquad filters, gain, polarity, and delay.
+                    SPL calibration, physical driver offsets, cabinet diffraction, and distortion under equalized drive remain assumptions.
+                    The recommended stack is from 7068 evaluated 4-way/5-way LR4 combinations.
+                    Selection method: balanced recommendation with duplicate-driver guard.
+                </p>
+            </div>
+        </div>
+
+        <h2 class="section-title">Finalists & Candidate Search</h2>
+        <div class="card"><div class="card-body">
+            <p class="note">
+                The search is not just the preliminary stack. It tries L10NEO, both ScanSpeak 10F variants, GRS, MU10, and ND25 across multiple LR4 crossover grids.
+                Lower score is better; the score favors cosine/dipole-like front and rear polars, strong side nulls, adjacent-driver pattern match near crossovers,
+                measured-frequency validity, and larger 2-10 kHz SPL30-SPL60 separation.
+                Selected the best balanced candidate that avoids using both near-identical SS10F8424G00 and SS10F8414G10 in adjacent passbands. This favors dipole consistency, crossover continuity, and build simplicity over the most aggressive 30-to-60 dB target.
+            </p>
+            <table>
+                <thead><tr><th>Finalist</th><th>Balanced Rank</th><th>Ways</th><th>Drivers</th><th>XOs Hz</th><th>Score</th><th>Front Dipole RMS</th><th>XO Mismatch</th><th>30-60 dB</th><th>Note</th></tr></thead>
+                <tbody>
+        <tr>
+            <td>Recommended balanced</td>
+            <td>1</td>
+            <td>5</td>
+            <td>L26RO4Y / L22MG (nude) / SS10F8414G10 / GRS PT6816 / ND25FW4 (nude 18mm)</td>
+            <td>120 / 650 / 2000 / 12000</td>
+            <td>11.43</td>
+            <td>2.04</td>
+            <td>7.58</td>
+            <td>6.24</td>
+            <td>Primary recommendation: best balanced score that avoids splitting two near-identical ScanSpeak 10 cm drivers into adjacent bands.</td>
+        </tr>
+
+        <tr>
+            <td>CTC-constrained</td>
+            <td>103</td>
+            <td>5</td>
+            <td>L26RO4Y / L22MG (nude) / SS10F8424G00 / SS10F8414G10 / GRS PT6816</td>
+            <td>120 / 650 / 2000 / 7000</td>
+            <td>12.44</td>
+            <td>3.07</td>
+            <td>8.85</td>
+            <td>8.74</td>
+            <td>Experimental option: clears the 2-10 kHz 30-to-60 constraint, but uses both ScanSpeak 10 cm variants.</td>
+        </tr>
+
+        <tr>
+            <td>L10NEO alternate</td>
+            <td>93</td>
+            <td>5</td>
+            <td>L26RO4Y / L22MG (nude) / L10NEO / SS10F8414G10 / GRS PT6816</td>
+            <td>120 / 800 / 2000 / 8000</td>
+            <td>12.40</td>
+            <td>3.25</td>
+            <td>6.60</td>
+            <td>9.25</td>
+            <td>Best L10NEO-flavored candidate with strong 30-to-60 separation and acceptable crossover mismatch.</td>
+        </tr>
+
+        <tr>
+            <td>Simple 4-way</td>
+            <td>9</td>
+            <td>4</td>
+            <td>L26RO4Y / L22MG (nude) / SS10F8414G10 / GRS PT6816</td>
+            <td>120 / 650 / 3200</td>
+            <td>11.75</td>
+            <td>2.14</td>
+            <td>8.78</td>
+            <td>6.64</td>
+            <td>Simplest high-confidence 4-way variant using one ScanSpeak 10 cm driver plus GRS.</td>
+        </tr>
+        </tbody>
+            </table>
+            <div class="asset-grid">
+                <img src="juan-baffleless-cdsl/static_plots/core/cdsl_search_top_candidates.png" alt="Top CDSL candidate search results">
+            </div>
+            <p><a href="juan-baffleless-cdsl/candidate_search_results.json">Download full candidate search JSON</a></p>
+        </div></div>
+
+        <h2 class="section-title">Driver Tradeoff Audit</h2>
+        <div class="card"><div class="card-body">
+            <p class="note">
+                These rows are measured-driver diagnostics from Juan's baffleless HDF5 data before synthetic crossover summation.
+                They explain the upper-band tradeoff: GRS is closest to a clean dipole shape, L10NEO and the 10F ScanSpeaks provide more 30-to-60 separation,
+                and the dual-ScanSpeak split is kept as an experimental finalist because it adds a crossover between two near-identical radiators.
+            </p>
+            <table>
+                <thead><tr><th>Driver</th><th>Band</th><th>Front Dipole RMS</th><th>Rear Dipole RMS</th><th>30-60 Median</th><th>30-60 P10</th><th>Rear0-Front0</th><th>Front90-Front0</th></tr></thead>
+                <tbody>
+        <tr>
+            <td>L22MG (nude)</td>
+            <td>650-2000 Hz</td>
+            <td>4.41</td>
+            <td>2.10</td>
+            <td>7.51</td>
+            <td>4.95</td>
+            <td>-0.75</td>
+            <td>-14.52</td>
+        </tr>
+
+        <tr>
+            <td>L22MG (nude)</td>
+            <td>2-7 kHz</td>
+            <td>7.42</td>
+            <td>8.02</td>
+            <td>4.21</td>
+            <td>-2.88</td>
+            <td>-7.92</td>
+            <td>-19.26</td>
+        </tr>
+
+        <tr>
+            <td>L22MG (nude)</td>
+            <td>2-10 kHz</td>
+            <td>7.23</td>
+            <td>7.58</td>
+            <td>3.93</td>
+            <td>-3.46</td>
+            <td>-7.52</td>
+            <td>-17.91</td>
+        </tr>
+
+        <tr>
+            <td>GRS PT6816</td>
+            <td>650-2000 Hz</td>
+            <td>0.63</td>
+            <td>0.25</td>
+            <td>5.34</td>
+            <td>5.13</td>
+            <td>-0.53</td>
+            <td>-37.91</td>
+        </tr>
+
+        <tr>
+            <td>GRS PT6816</td>
+            <td>2-7 kHz</td>
+            <td>1.46</td>
+            <td>1.20</td>
+            <td>5.87</td>
+            <td>4.93</td>
+            <td>-0.42</td>
+            <td>-35.39</td>
+        </tr>
+
+        <tr>
+            <td>GRS PT6816</td>
+            <td>2-10 kHz</td>
+            <td>1.73</td>
+            <td>1.72</td>
+            <td>6.05</td>
+            <td>5.06</td>
+            <td>-0.45</td>
+            <td>-34.87</td>
+        </tr>
+
+        <tr>
+            <td>L10NEO</td>
+            <td>650-2000 Hz</td>
+            <td>0.84</td>
+            <td>1.93</td>
+            <td>5.25</td>
+            <td>4.09</td>
+            <td>-2.00</td>
+            <td>-17.01</td>
+        </tr>
+
+        <tr>
+            <td>L10NEO</td>
+            <td>2-7 kHz</td>
+            <td>7.18</td>
+            <td>4.27</td>
+            <td>11.23</td>
+            <td>7.35</td>
+            <td>-3.15</td>
+            <td>-16.97</td>
+        </tr>
+
+        <tr>
+            <td>L10NEO</td>
+            <td>2-10 kHz</td>
+            <td>6.75</td>
+            <td>4.62</td>
+            <td>10.99</td>
+            <td>6.42</td>
+            <td>-3.44</td>
+            <td>-17.12</td>
+        </tr>
+
+        <tr>
+            <td>SS10F8414G10</td>
+            <td>650-2000 Hz</td>
+            <td>1.34</td>
+            <td>0.50</td>
+            <td>5.80</td>
+            <td>5.46</td>
+            <td>-0.47</td>
+            <td>-24.80</td>
+        </tr>
+
+        <tr>
+            <td>SS10F8414G10</td>
+            <td>2-7 kHz</td>
+            <td>5.97</td>
+            <td>4.51</td>
+            <td>9.94</td>
+            <td>5.78</td>
+            <td>-2.81</td>
+            <td>-20.33</td>
+        </tr>
+
+        <tr>
+            <td>SS10F8414G10</td>
+            <td>2-10 kHz</td>
+            <td>5.99</td>
+            <td>5.00</td>
+            <td>10.15</td>
+            <td>5.62</td>
+            <td>-3.25</td>
+            <td>-20.17</td>
+        </tr>
+
+        <tr>
+            <td>SS10F8424G00</td>
+            <td>650-2000 Hz</td>
+            <td>2.03</td>
+            <td>0.46</td>
+            <td>6.19</td>
+            <td>5.78</td>
+            <td>-0.39</td>
+            <td>-25.10</td>
+        </tr>
+
+        <tr>
+            <td>SS10F8424G00</td>
+            <td>2-7 kHz</td>
+            <td>5.22</td>
+            <td>5.37</td>
+            <td>8.74</td>
+            <td>5.61</td>
+            <td>-4.63</td>
+            <td>-23.24</td>
+        </tr>
+
+        <tr>
+            <td>SS10F8424G00</td>
+            <td>2-10 kHz</td>
+            <td>5.60</td>
+            <td>6.02</td>
+            <td>9.18</td>
+            <td>5.91</td>
+            <td>-4.80</td>
+            <td>-21.10</td>
+        </tr>
+
+        <tr>
+            <td>MU10RB-SL</td>
+            <td>650-2000 Hz</td>
+            <td>0.94</td>
+            <td>2.58</td>
+            <td>5.10</td>
+            <td>3.73</td>
+            <td>-1.30</td>
+            <td>-15.90</td>
+        </tr>
+
+        <tr>
+            <td>MU10RB-SL</td>
+            <td>2-7 kHz</td>
+            <td>6.28</td>
+            <td>4.37</td>
+            <td>10.39</td>
+            <td>8.55</td>
+            <td>-3.38</td>
+            <td>-18.34</td>
+        </tr>
+
+        <tr>
+            <td>MU10RB-SL</td>
+            <td>2-10 kHz</td>
+            <td>5.81</td>
+            <td>5.22</td>
+            <td>10.21</td>
+            <td>6.80</td>
+            <td>-3.95</td>
+            <td>-18.75</td>
+        </tr>
+
+        <tr>
+            <td>ND25FW4 (nude 18mm)</td>
+            <td>650-2000 Hz</td>
+            <td>1.11</td>
+            <td>0.39</td>
+            <td>5.75</td>
+            <td>5.34</td>
+            <td>-0.25</td>
+            <td>-25.30</td>
+        </tr>
+
+        <tr>
+            <td>ND25FW4 (nude 18mm)</td>
+            <td>2-7 kHz</td>
+            <td>1.82</td>
+            <td>0.91</td>
+            <td>5.76</td>
+            <td>4.95</td>
+            <td>-0.77</td>
+            <td>-28.12</td>
+        </tr>
+
+        <tr>
+            <td>ND25FW4 (nude 18mm)</td>
+            <td>2-10 kHz</td>
+            <td>1.88</td>
+            <td>1.12</td>
+            <td>5.64</td>
+            <td>4.38</td>
+            <td>-0.85</td>
+            <td>-26.85</td>
+        </tr>
+        </tbody>
+            </table>
+            <p class="note">
+                Distortion and SPL evidence comes from <code>measurements/juan/UMs desnudos/contexto.txt</code> and its associated screenshots:
+            </p>
+            <ul><li>Juan&#x27;s local notes rank 8424 distortion/SPL best, 8414 close behind, and MU10 worst in the upper-mid comparison.</li><li>The same notes flag 8424 rear-side directivity and high-angle order as weaker than 8414, especially above 2 kHz.</li><li>GRS is treated as the measured dipole/directivity-order reference, but it does not provide the largest 30-to-60 separation above 2 kHz.</li><li>L10NEO remains a high-separation alternate; it was not selected as the balanced primary because the local distortion/SPL evidence is less favorable than for the ScanSpeak pair.</li></ul>
+            <p><a href="juan-baffleless-cdsl/driver_directivity_audit.csv">Download measured-driver directivity audit CSV</a></p>
+        </div></div>
+
+        <h2 class="section-title">Chosen Drivers</h2>
+        <div class="card"><div class="card-body">
+            <table>
+                <thead><tr><th>Role</th><th>Driver</th><th>Passband Hz</th><th>Gain dB</th><th>Delay ms</th><th>Polarity</th><th>Rationale</th></tr></thead>
+                <tbody>
+            <tr>
+                <td>Low</td>
+                <td><a href="juan-baffleless/interactive/L26RO4Y_freq_response_angles.html">L26RO4Y</a></td>
+                <td>70-120</td>
+                <td>-6.92</td>
+                <td>+0.000</td>
+                <td>normal</td>
+                <td>Best measured low-frequency candidate, but captured in a cylindrical baffle.</td>
+            </tr>
+
+            <tr>
+                <td>Lower mid</td>
+                <td><a href="juan-baffleless/interactive/L22MG (nude)_freq_response_angles.html">L22MG (nude)</a></td>
+                <td>120-650</td>
+                <td>+16.91</td>
+                <td>-0.060</td>
+                <td>normal</td>
+                <td>Strong low-mid bridge with nude front/rear data and useful coverage below 500 Hz.</td>
+            </tr>
+
+            <tr>
+                <td>Mid</td>
+                <td><a href="juan-baffleless/interactive/SS10F8414G10_freq_response_angles.html">SS10F8414G10</a></td>
+                <td>650-2000</td>
+                <td>+4.94</td>
+                <td>-0.270</td>
+                <td>inverted</td>
+                <td>Good directivity order with local notes rating distortion close to the 8424.</td>
+            </tr>
+
+            <tr>
+                <td>High/directivity band</td>
+                <td><a href="juan-baffleless/interactive/GRS PT6816_freq_response_angles.html">GRS PT6816</a></td>
+                <td>2000-12000</td>
+                <td>-0.08</td>
+                <td>-0.035</td>
+                <td>inverted</td>
+                <td>Best local constant-directivity and front/rear symmetry reference.</td>
+            </tr>
+
+            <tr>
+                <td>Top</td>
+                <td><a href="juan-baffleless/interactive/ND25FW4 (nude 18mm)_freq_response_angles.html">ND25FW4 (nude 18mm)</a></td>
+                <td>12000-20000</td>
+                <td>+8.35</td>
+                <td>-0.015</td>
+                <td>normal</td>
+                <td>Treble extension candidate; measured 2-10 kHz pattern is wider than the 10 cm candidates.</td>
+            </tr>
+            </tbody>
+            </table>
+        </div></div>
+
+        <h2 class="section-title">DSP / IIR Filters</h2>
+        <div class="card"><div class="card-body">
+            <p class="note">Crossovers are LR4 cascades using two Q=0.7071 biquads per edge. Auto-EQ filters are broad preliminary peaking filters fitted from smoothed on-axis passband response and capped at +/-6 dB.</p>
+            <table>
+                <thead><tr><th>Driver</th><th>Source</th><th>Type</th><th>Fc Hz</th><th>Q</th><th>Gain dB</th></tr></thead>
+                <tbody>
+                <tr>
+                    <td>L26RO4Y</td>
+                    <td>LR4 boundary high-pass</td>
+                    <td>highpass</td>
+                    <td>70.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>L26RO4Y</td>
+                    <td>LR4 boundary high-pass</td>
+                    <td>highpass</td>
+                    <td>70.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>L26RO4Y</td>
+                    <td>LR4 crossover</td>
+                    <td>lowpass</td>
+                    <td>120.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>L26RO4Y</td>
+                    <td>LR4 crossover</td>
+                    <td>lowpass</td>
+                    <td>120.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>L22MG (nude)</td>
+                    <td>LR4 crossover</td>
+                    <td>highpass</td>
+                    <td>120.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>L22MG (nude)</td>
+                    <td>LR4 crossover</td>
+                    <td>highpass</td>
+                    <td>120.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>L22MG (nude)</td>
+                    <td>LR4 crossover</td>
+                    <td>lowpass</td>
+                    <td>650.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>L22MG (nude)</td>
+                    <td>LR4 crossover</td>
+                    <td>lowpass</td>
+                    <td>650.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>L22MG (nude)</td>
+                    <td>auto-EQ</td>
+                    <td>peaking</td>
+                    <td>220.0</td>
+                    <td>1.000</td>
+                    <td>+1.36</td>
+                </tr>
+
+                <tr>
+                    <td>L22MG (nude)</td>
+                    <td>auto-EQ</td>
+                    <td>peaking</td>
+                    <td>330.0</td>
+                    <td>1.000</td>
+                    <td>-1.17</td>
+                </tr>
+
+                <tr>
+                    <td>L22MG (nude)</td>
+                    <td>auto-EQ</td>
+                    <td>peaking</td>
+                    <td>500.0</td>
+                    <td>1.000</td>
+                    <td>-5.57</td>
+                </tr>
+
+                <tr>
+                    <td>SS10F8414G10</td>
+                    <td>LR4 crossover</td>
+                    <td>highpass</td>
+                    <td>650.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>SS10F8414G10</td>
+                    <td>LR4 crossover</td>
+                    <td>highpass</td>
+                    <td>650.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>SS10F8414G10</td>
+                    <td>LR4 crossover</td>
+                    <td>lowpass</td>
+                    <td>2000.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>SS10F8414G10</td>
+                    <td>LR4 crossover</td>
+                    <td>lowpass</td>
+                    <td>2000.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>SS10F8414G10</td>
+                    <td>auto-EQ</td>
+                    <td>peaking</td>
+                    <td>800.0</td>
+                    <td>1.000</td>
+                    <td>+3.22</td>
+                </tr>
+
+                <tr>
+                    <td>SS10F8414G10</td>
+                    <td>auto-EQ</td>
+                    <td>peaking</td>
+                    <td>1200.0</td>
+                    <td>1.000</td>
+                    <td>-0.84</td>
+                </tr>
+
+                <tr>
+                    <td>SS10F8414G10</td>
+                    <td>auto-EQ</td>
+                    <td>peaking</td>
+                    <td>1800.0</td>
+                    <td>1.000</td>
+                    <td>-6.00</td>
+                </tr>
+
+                <tr>
+                    <td>GRS PT6816</td>
+                    <td>LR4 crossover</td>
+                    <td>highpass</td>
+                    <td>2000.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>GRS PT6816</td>
+                    <td>LR4 crossover</td>
+                    <td>highpass</td>
+                    <td>2000.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>GRS PT6816</td>
+                    <td>LR4 crossover</td>
+                    <td>lowpass</td>
+                    <td>12000.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>GRS PT6816</td>
+                    <td>LR4 crossover</td>
+                    <td>lowpass</td>
+                    <td>12000.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>GRS PT6816</td>
+                    <td>auto-EQ</td>
+                    <td>peaking</td>
+                    <td>8500.0</td>
+                    <td>1.000</td>
+                    <td>-2.58</td>
+                </tr>
+
+                <tr>
+                    <td>ND25FW4 (nude 18mm)</td>
+                    <td>LR4 crossover</td>
+                    <td>highpass</td>
+                    <td>12000.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>ND25FW4 (nude 18mm)</td>
+                    <td>LR4 crossover</td>
+                    <td>highpass</td>
+                    <td>12000.0</td>
+                    <td>0.707</td>
+                    <td>+0.00</td>
+                </tr>
+
+                <tr>
+                    <td>ND25FW4 (nude 18mm)</td>
+                    <td>auto-EQ</td>
+                    <td>peaking</td>
+                    <td>11000.0</td>
+                    <td>1.000</td>
+                    <td>-3.81</td>
+                </tr>
+
+                <tr>
+                    <td>ND25FW4 (nude 18mm)</td>
+                    <td>auto-EQ</td>
+                    <td>peaking</td>
+                    <td>14000.0</td>
+                    <td>1.000</td>
+                    <td>-4.11</td>
+                </tr>
+
+                <tr>
+                    <td>ND25FW4 (nude 18mm)</td>
+                    <td>auto-EQ</td>
+                    <td>peaking</td>
+                    <td>18000.0</td>
+                    <td>1.000</td>
+                    <td>+1.39</td>
+                </tr>
+                </tbody>
+            </table>
+            <ul class="link-list">
+                <li><a href="juan-baffleless-cdsl/cdsl_filters.json">Filter JSON</a></li>
+                <li><a href="juan-baffleless-cdsl/cdsl_camilladsp.yaml">CamillaDSP-style YAML</a></li>
+                <li><a href="juan-baffleless-cdsl/cdsl_hypex.dsp">Hypex-style DSP listing</a></li>
+                <li><a href="juan-baffleless-cdsl/design_manifest.json">Design manifest</a></li>
+            </ul>
+        </div></div>
+
+        <h2 class="section-title">Model Risks</h2>
+        <div class="card"><div class="card-body">
+            <ul><li>L26RO4Y source is a 25 cm deep / 32 cm diameter cylindrical-baffle measurement, not a nude baffleless capture.</li><li>Processed phase was reconstructed from separately loaded measurements after per-measurement impulse peak alignment; synthetic complex summation is therefore preliminary.</li><li>Rear polarity convention is inherited from the measurement files and existing 0-180 mapping; it has not been independently validated with raw impulse polarity.</li><li>Absolute SPL, distortion ranking, and maximum-SPL claims are limited by the available local evidence; several distortion curves are only JPEG screenshots and notes.</li><li>DI and beamwidth figures match the existing repo convention and use front-horizontal data only, not a full 3D power response.</li><li>Vertical-plane beaming and pseudo-baffle diffraction from the final stacked mounting geometry are not modeled.</li></ul>
+        </div></div>
+
+        <h2 class="section-title">Mounting Geometry</h2>
+        <div class="card"><div class="card-body">
+            <p class="note">
+                The suspended-driver data is most reliable for choosing drivers and horizontal crossover behavior.
+                It is not a complete model of the final physical stack. Vertically aligned drivers can create vertical lobing,
+                and a narrow support spine or neighboring driver motors can behave like a thin diffracting baffle.
+            </p>
+            <ul><li>The synthetic HDF5 is a horizontal 0-180 degree sum of separately suspended driver measurements; it does not model vertical-plane lobing from center-to-center spacing.</li><li>Non-GRS cone/dome drivers are assumed approximately axisymmetric when reasoning about vertical behavior, but the GRS planar is not axisymmetric and needs measured or modeled vertical data.</li><li>A first-order vertical lobing model is feasible if driver coordinates and acoustic-center offsets are supplied, but it would only cover source interference, not pseudo-baffle diffraction.</li><li>The pseudo-baffle/diffraction from a vertical mounting spine, neighboring motor structures, wiring, and driver frames is not identifiable from the current individual-driver HDF5 data; it needs CAD/BEM or assembly measurements.</li><li>Recommendation: use this synthetic model for driver/filter shortlisting, then measure the actual stacked fixture horizontally and vertically before treating the crossover as final.</li></ul>
+        </div></div>
+
+        <h2 class="section-title">Synthetic Acoustic Sum</h2>
+        <div class="asset-grid">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_crossover_regions.png" alt="CDSL crossover regions">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_freq_response_angles.png" alt="CDSL frequency response by angle">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_filter_transfer.png" alt="CDSL filter transfer">
+            <img src="juan-baffleless-cdsl/static_plots/polar/cdsl_polar_circular.png" alt="CDSL polar circular plots">
+        </div>
+
+        <h2 class="section-title">Directivity Results</h2>
+        <div class="asset-grid">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_contour_normalized.png" alt="CDSL normalized contour">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_contour_absolute.png" alt="CDSL absolute contour">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_di_beamwidth.png" alt="CDSL DI and beamwidth">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_30_vs_60_metric.png" alt="CDSL 30 vs 60 metric">
+        </div>
+
+        <h2 class="section-title">30-vs-60 Metric</h2>
+        <div class="card"><div class="card-body">
+            <p>
+                Metric definition: <strong>Delta30-60 = SPL30 - SPL60</strong>. A cosine dipole gives 4.77 dB;
+                higher values above 2 kHz indicate more separation between the near-ear and far-ear angles for CDSL/crosstalk-cancellation use.
+            </p>
+            <table>
+                <thead><tr><th>Band</th><th>CDSL median dB</th><th>LX521 median dB</th><th>CDSL mean DI dB</th><th>CDSL median -6 dB beamwidth</th></tr></thead>
+                <tbody>
+        <tr>
+            <td>70-200 Hz</td>
+            <td>7.30</td>
+            <td>0.00</td>
+            <td>5.22</td>
+            <td>107</td>
+        </tr>
+
+        <tr>
+            <td>200-800 Hz</td>
+            <td>3.91</td>
+            <td>4.76</td>
+            <td>4.64</td>
+            <td>125</td>
+        </tr>
+
+        <tr>
+            <td>800-2500 Hz</td>
+            <td>3.96</td>
+            <td>4.86</td>
+            <td>5.82</td>
+            <td>102</td>
+        </tr>
+
+        <tr>
+            <td>2-10 kHz</td>
+            <td>6.67</td>
+            <td>5.15</td>
+            <td>5.65</td>
+            <td>100</td>
+        </tr>
+
+        <tr>
+            <td>10-20 kHz</td>
+            <td>9.25</td>
+            <td>7.15</td>
+            <td>8.89</td>
+            <td>65</td>
+        </tr>
+        </tbody>
+            </table>
+            <p><a href="juan-baffleless-cdsl/metrics.csv">Download metrics CSV</a></p>
+        </div></div>
+
+        <h2 class="section-title">Comparison To LX521</h2>
+        <div class="asset-grid">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_vs_lx521_di.png" alt="CDSL vs LX521 DI">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_vs_lx521_beamwidth.png" alt="CDSL vs LX521 beamwidth">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_vs_lx521_30_vs_60.png" alt="CDSL vs LX521 30 vs 60">
+            <img src="juan-baffleless-cdsl/static_plots/polar/cdsl_vs_lx521_polar_circular.png" alt="CDSL vs LX521 polar">
+        </div>
+        <p style="margin-top: 1rem;"><a href="lx521-system.html">Open Juan LX521.4 measured system page</a></p>
+
+        <h2 class="section-title">Interactive Views</h2>
+        <div class="card"><div class="card-body">
+            <ul class="link-list">
+                <li><a href="juan-baffleless-cdsl/interactive/cdsl_design_explorer.html">CDSL design explorer</a></li>
+                <li><a href="juan-baffleless-cdsl/interactive/cdsl_filter_transfer.html">Filter transfer dashboard</a></li>
+                <li><a href="juan-baffleless-cdsl/interactive/cdsl_directivity_dashboard.html">Directivity dashboard</a></li>
+                <li><a href="juan-baffleless-cdsl/interactive/cdsl_vs_lx521_dashboard.html">CDSL vs LX521 dashboard</a></li>
+                <li><a href="juan-baffleless-cdsl/interactive/polar/cdsl_polar_explorer.html">Polar explorer</a></li>
+            </ul>
+        </div></div>
+
+        <h2 class="section-title">Reproducibility</h2>
+        <div class="card"><div class="card-body">
+            <p><strong>Generated:</strong> 2026-05-21T12:31:44+00:00</p>
+            <p><strong>Inputs:</strong> output/data/polar_data_juan_baffleless.h5, output/data/polar_data_lx521_system.h5</p>
+            <p><strong>Synthetic HDF5:</strong> output/data/polar_data_juan_cdsl_synthetic.h5</p>
+            <p><strong>Smoothing:</strong> None; <strong>gate:</strong> 0.5 ms / 3.0 ms.</p>
+            <p class="note">This is a synthetic, equalized pressure sum. It is not a replacement for a measured prototype with final driver spacing and baffle geometry.</p>
+        </div></div>
+    </main>
+
+    <footer>
+        <p><a href="https://github.com/antorsae/lx">Source Code</a> | <a href="index.html">Back to Main Page</a></p>
+    </footer>
+</body>
+</html>

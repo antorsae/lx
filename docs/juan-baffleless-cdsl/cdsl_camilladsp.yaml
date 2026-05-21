@@ -1,0 +1,86 @@
+# Preliminary CamillaDSP-style filter export
+filters:
+  L26RO4Y_1:
+    type: Biquad
+    parameters: {type: highpass, freq: 70.000, q: 0.7071, gain: 0.000}
+  L26RO4Y_2:
+    type: Biquad
+    parameters: {type: highpass, freq: 70.000, q: 0.7071, gain: 0.000}
+  L26RO4Y_3:
+    type: Biquad
+    parameters: {type: lowpass, freq: 120.000, q: 0.7071, gain: 0.000}
+  L26RO4Y_4:
+    type: Biquad
+    parameters: {type: lowpass, freq: 120.000, q: 0.7071, gain: 0.000}
+  L22MG_nude_1:
+    type: Biquad
+    parameters: {type: highpass, freq: 120.000, q: 0.7071, gain: 0.000}
+  L22MG_nude_2:
+    type: Biquad
+    parameters: {type: highpass, freq: 120.000, q: 0.7071, gain: 0.000}
+  L22MG_nude_3:
+    type: Biquad
+    parameters: {type: lowpass, freq: 650.000, q: 0.7071, gain: 0.000}
+  L22MG_nude_4:
+    type: Biquad
+    parameters: {type: lowpass, freq: 650.000, q: 0.7071, gain: 0.000}
+  L22MG_nude_5:
+    type: Biquad
+    parameters: {type: peaking, freq: 220.000, q: 1.0000, gain: 1.360}
+  L22MG_nude_6:
+    type: Biquad
+    parameters: {type: peaking, freq: 330.000, q: 1.0000, gain: -1.175}
+  L22MG_nude_7:
+    type: Biquad
+    parameters: {type: peaking, freq: 500.000, q: 1.0000, gain: -5.566}
+  SS10F8414G10_1:
+    type: Biquad
+    parameters: {type: highpass, freq: 650.000, q: 0.7071, gain: 0.000}
+  SS10F8414G10_2:
+    type: Biquad
+    parameters: {type: highpass, freq: 650.000, q: 0.7071, gain: 0.000}
+  SS10F8414G10_3:
+    type: Biquad
+    parameters: {type: lowpass, freq: 2000.000, q: 0.7071, gain: 0.000}
+  SS10F8414G10_4:
+    type: Biquad
+    parameters: {type: lowpass, freq: 2000.000, q: 0.7071, gain: 0.000}
+  SS10F8414G10_5:
+    type: Biquad
+    parameters: {type: peaking, freq: 800.000, q: 1.0000, gain: 3.222}
+  SS10F8414G10_6:
+    type: Biquad
+    parameters: {type: peaking, freq: 1200.000, q: 1.0000, gain: -0.840}
+  SS10F8414G10_7:
+    type: Biquad
+    parameters: {type: peaking, freq: 1800.000, q: 1.0000, gain: -6.000}
+  GRS_PT6816_1:
+    type: Biquad
+    parameters: {type: highpass, freq: 2000.000, q: 0.7071, gain: 0.000}
+  GRS_PT6816_2:
+    type: Biquad
+    parameters: {type: highpass, freq: 2000.000, q: 0.7071, gain: 0.000}
+  GRS_PT6816_3:
+    type: Biquad
+    parameters: {type: lowpass, freq: 12000.000, q: 0.7071, gain: 0.000}
+  GRS_PT6816_4:
+    type: Biquad
+    parameters: {type: lowpass, freq: 12000.000, q: 0.7071, gain: 0.000}
+  GRS_PT6816_5:
+    type: Biquad
+    parameters: {type: peaking, freq: 8500.000, q: 1.0000, gain: -2.580}
+  ND25FW4_nude_18mm_1:
+    type: Biquad
+    parameters: {type: highpass, freq: 12000.000, q: 0.7071, gain: 0.000}
+  ND25FW4_nude_18mm_2:
+    type: Biquad
+    parameters: {type: highpass, freq: 12000.000, q: 0.7071, gain: 0.000}
+  ND25FW4_nude_18mm_3:
+    type: Biquad
+    parameters: {type: peaking, freq: 11000.000, q: 1.0000, gain: -3.806}
+  ND25FW4_nude_18mm_4:
+    type: Biquad
+    parameters: {type: peaking, freq: 14000.000, q: 1.0000, gain: -4.115}
+  ND25FW4_nude_18mm_5:
+    type: Biquad
+    parameters: {type: peaking, freq: 18000.000, q: 1.0000, gain: 1.387}
