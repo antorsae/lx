@@ -1,15 +1,15 @@
 {
-  "title": "Juan Baffleless Synthetic CDSL Design",
-  "variant_label": "recommended balanced design",
-  "summary_label": "Recommended balanced design",
-  "summary_search_sentence": "The recommended stack is from 7068 evaluated 4-way/5-way LR4 combinations. Selection method: balanced recommendation with duplicate-driver guard.",
-  "asset_slug": "juan-baffleless-cdsl",
+  "title": "Baseline CDSL Seed Design",
+  "variant_label": "baseline CDSL seed",
+  "summary_label": "Baseline CDSL seed",
+  "summary_search_sentence": "This baseline is fixed by request and was not chosen by the optimizer; the full candidate search is shown only as context.",
+  "asset_slug": "juan-baffleless-cdsl-baseline",
   "search_results_href": "juan-baffleless-cdsl/candidate_search_results.json",
-  "generated_at_utc": "2026-05-21T16:07:29+00:00",
+  "generated_at_utc": "2026-05-21T16:07:34+00:00",
   "input_hdf5": {
     "juan_baffleless": "output/data/polar_data_juan_baffleless.h5",
     "lx521_system": "output/data/polar_data_lx521_system.h5",
-    "synthetic_output": "output/data/polar_data_juan_cdsl_synthetic.h5"
+    "synthetic_output": "output/data/polar_data_juan_cdsl_baseline_synthetic.h5"
   },
   "measurement_conditions": {
     "gate_left_ms": 0.5,
@@ -34,237 +34,128 @@
   "target_spl_db": 76.0,
   "crossovers": [
     {
-      "frequency_hz": 120.0,
+      "frequency_hz": 200.0,
       "type": "LR4",
       "low_driver": "L26RO4Y",
       "high_driver": "L22MG (nude)"
     },
     {
-      "frequency_hz": 650.0,
+      "frequency_hz": 800.0,
       "type": "LR4",
       "low_driver": "L22MG (nude)",
-      "high_driver": "SS10F8414G10"
+      "high_driver": "GRS PT6816"
     },
     {
-      "frequency_hz": 3200.0,
+      "frequency_hz": 2500.0,
       "type": "LR4",
-      "low_driver": "SS10F8414G10",
-      "high_driver": "GRS PT6816"
+      "low_driver": "GRS PT6816",
+      "high_driver": "ND25FW4 (nude 18mm)"
     }
   ],
   "search": {
     "candidate_count": 7068,
     "score_direction": "lower is better",
     "selection": {
-      "method": "balanced recommendation with duplicate-driver guard",
-      "reason": "Selected the best balanced candidate that avoids using both near-identical SS10F8424G00 and SS10F8414G10 in adjacent passbands. This favors dipole consistency, crossover continuity, the 15-biquad/channel cap, and build simplicity over the most aggressive 30-to-60 dB target.",
-      "fallback_used": false,
-      "ctc_constrained_selection": {
-        "method": "constrained CDSL selection",
-        "reason": "Selected the lowest composite-score candidate that also clears 8 dB median and 5.8 dB 10th-percentile SPL30-SPL60 from 2-10 kHz, while keeping front dipole RMS <=3.2 dB, crossover mismatch <=9.5 dB, and every channel within the 15-biquad export limit.",
-        "fallback_used": false
-      }
+      "method": "fixed baseline seed",
+      "reason": "This baseline is fixed by request and generated with the same gain, delay, cascaded LR4, and sparse flat-EQ process as the chosen design.",
+      "fallback_used": false
     },
     "selected_candidate": {
-      "score": 11.7915,
+      "score": 15.3115,
       "drivers": [
         "L26RO4Y",
         "L22MG (nude)",
-        "SS10F8414G10",
-        "GRS PT6816"
+        "GRS PT6816",
+        "ND25FW4 (nude 18mm)"
       ],
       "xovers": [
-        120.0,
-        650.0,
-        3200.0
+        200.0,
+        800.0,
+        2500.0
       ],
       "ways": 4,
-      "dipole_front_rms_db": 2.147,
-      "dipole_rear_rms_db": 2.675,
-      "null_penalty_db": 0.124,
-      "rear0_rms_db": 2.074,
-      "xover_mismatch_rms_db": 8.776,
+      "dipole_front_rms_db": 2.504,
+      "dipole_rear_rms_db": 2.994,
+      "null_penalty_db": 1.339,
+      "rear0_rms_db": 2.463,
+      "xover_mismatch_rms_db": 9.038,
       "validity_penalty": 0.0,
-      "prior_penalty": 1.887,
+      "prior_penalty": 1.79,
       "biquad_budget_penalty": 0.0,
       "max_biquads_per_driver_limit": 15,
       "max_crossover_biquads_per_driver": 8,
-      "max_possible_biquads_per_driver": 15,
+      "max_possible_biquads_per_driver": 12,
       "total_flat_eq_slots": 34,
-      "total_flat_eq_candidates": 19,
+      "total_flat_eq_candidates": 13,
       "flat_eq_candidate_shortfall_total": 0,
       "flat_eq_slots_by_driver": {
         "L26RO4Y": 11,
         "L22MG (nude)": 9,
-        "SS10F8414G10": 7,
-        "GRS PT6816": 7
+        "GRS PT6816": 7,
+        "ND25FW4 (nude 18mm)": 7
       },
       "flat_eq_candidate_shortfall_by_driver": {
         "L26RO4Y": 0,
         "L22MG (nude)": 0,
-        "SS10F8414G10": 0,
-        "GRS PT6816": 0
+        "GRS PT6816": 0,
+        "ND25FW4 (nude 18mm)": 0
       },
       "crossover_biquads_within_limit": true,
-      "sep_30_60_median_2_10k_db": 6.638,
-      "sep_30_60_p10_2_10k_db": 5.233,
-      "front30_median_2_10k_db": -2.059,
-      "balanced_rank": 1,
-      "finalist_role": "Recommended balanced",
-      "note": "Primary recommendation: best balanced score that avoids splitting two near-identical ScanSpeak 10 cm drivers into adjacent bands."
+      "sep_30_60_median_2_10k_db": 5.739,
+      "sep_30_60_p10_2_10k_db": 4.406,
+      "front30_median_2_10k_db": -2.143,
+      "balanced_rank": 0,
+      "finalist_role": "Baseline fixed seed",
+      "note": "Requested baseline: L26RO4Y below 200 Hz, L22MG 200-800 Hz, GRS 800-2500 Hz, ND25FW above 2500 Hz."
     },
     "finalists": [
       {
-        "score": 11.7915,
+        "score": 15.3115,
         "drivers": [
           "L26RO4Y",
           "L22MG (nude)",
-          "SS10F8414G10",
-          "GRS PT6816"
+          "GRS PT6816",
+          "ND25FW4 (nude 18mm)"
         ],
         "xovers": [
-          120.0,
-          650.0,
-          3200.0
+          200.0,
+          800.0,
+          2500.0
         ],
         "ways": 4,
-        "dipole_front_rms_db": 2.147,
-        "dipole_rear_rms_db": 2.675,
-        "null_penalty_db": 0.124,
-        "rear0_rms_db": 2.074,
-        "xover_mismatch_rms_db": 8.776,
+        "dipole_front_rms_db": 2.504,
+        "dipole_rear_rms_db": 2.994,
+        "null_penalty_db": 1.339,
+        "rear0_rms_db": 2.463,
+        "xover_mismatch_rms_db": 9.038,
         "validity_penalty": 0.0,
-        "prior_penalty": 1.887,
+        "prior_penalty": 1.79,
         "biquad_budget_penalty": 0.0,
         "max_biquads_per_driver_limit": 15,
         "max_crossover_biquads_per_driver": 8,
-        "max_possible_biquads_per_driver": 15,
+        "max_possible_biquads_per_driver": 12,
         "total_flat_eq_slots": 34,
-        "total_flat_eq_candidates": 19,
+        "total_flat_eq_candidates": 13,
         "flat_eq_candidate_shortfall_total": 0,
         "flat_eq_slots_by_driver": {
           "L26RO4Y": 11,
           "L22MG (nude)": 9,
-          "SS10F8414G10": 7,
-          "GRS PT6816": 7
+          "GRS PT6816": 7,
+          "ND25FW4 (nude 18mm)": 7
         },
         "flat_eq_candidate_shortfall_by_driver": {
           "L26RO4Y": 0,
           "L22MG (nude)": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 0
+          "GRS PT6816": 0,
+          "ND25FW4 (nude 18mm)": 0
         },
         "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 6.638,
-        "sep_30_60_p10_2_10k_db": 5.233,
-        "front30_median_2_10k_db": -2.059,
-        "balanced_rank": 1,
-        "finalist_role": "Recommended balanced",
-        "note": "Primary recommendation: best balanced score that avoids splitting two near-identical ScanSpeak 10 cm drivers into adjacent bands."
-      },
-      {
-        "score": 12.4981,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "SS10F8424G00",
-          "SS10F8414G10",
-          "GRS PT6816"
-        ],
-        "xovers": [
-          120.0,
-          650.0,
-          2000.0,
-          7000.0
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 3.085,
-        "dipole_rear_rms_db": 3.654,
-        "null_penalty_db": 0.816,
-        "rear0_rms_db": 2.397,
-        "xover_mismatch_rms_db": 8.853,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.232,
-        "biquad_budget_penalty": 0.0,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 10,
-        "max_possible_biquads_per_driver": 14,
-        "total_flat_eq_slots": 37,
-        "total_flat_eq_candidates": 17,
-        "flat_eq_candidate_shortfall_total": 0,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "SS10F8424G00": 7,
-          "SS10F8414G10": 5,
-          "GRS PT6816": 5
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "SS10F8424G00": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 8.749,
-        "sep_30_60_p10_2_10k_db": 5.821,
-        "front30_median_2_10k_db": -3.037,
-        "balanced_rank": 45,
-        "finalist_role": "CTC-constrained",
-        "note": "Experimental option: clears the 2-10 kHz 30-to-60 constraint, but uses both ScanSpeak 10 cm variants."
-      },
-      {
-        "score": 12.2476,
-        "drivers": [
-          "L26RO4Y",
-          "L22MG (nude)",
-          "L10NEO",
-          "SS10F8414G10",
-          "GRS PT6816"
-        ],
-        "xovers": [
-          120.0,
-          800.0,
-          2000.0,
-          8000.0
-        ],
-        "ways": 5,
-        "dipole_front_rms_db": 3.257,
-        "dipole_rear_rms_db": 3.835,
-        "null_penalty_db": 1.444,
-        "rear0_rms_db": 2.537,
-        "xover_mismatch_rms_db": 6.597,
-        "validity_penalty": 0.0,
-        "prior_penalty": 2.29,
-        "biquad_budget_penalty": 0.0,
-        "max_biquads_per_driver_limit": 15,
-        "max_crossover_biquads_per_driver": 10,
-        "max_possible_biquads_per_driver": 13,
-        "total_flat_eq_slots": 37,
-        "total_flat_eq_candidates": 14,
-        "flat_eq_candidate_shortfall_total": 0,
-        "flat_eq_slots_by_driver": {
-          "L26RO4Y": 11,
-          "L22MG (nude)": 9,
-          "L10NEO": 7,
-          "SS10F8414G10": 5,
-          "GRS PT6816": 5
-        },
-        "flat_eq_candidate_shortfall_by_driver": {
-          "L26RO4Y": 0,
-          "L22MG (nude)": 0,
-          "L10NEO": 0,
-          "SS10F8414G10": 0,
-          "GRS PT6816": 0
-        },
-        "crossover_biquads_within_limit": true,
-        "sep_30_60_median_2_10k_db": 9.263,
-        "sep_30_60_p10_2_10k_db": 6.344,
-        "front30_median_2_10k_db": -3.115,
-        "balanced_rank": 12,
-        "finalist_role": "L10NEO alternate",
-        "note": "Best L10NEO-flavored candidate with strong 30-to-60 separation and acceptable crossover mismatch."
+        "sep_30_60_median_2_10k_db": 5.739,
+        "sep_30_60_p10_2_10k_db": 4.406,
+        "front30_median_2_10k_db": -2.143,
+        "balanced_rank": 0,
+        "finalist_role": "Baseline fixed seed",
+        "note": "Requested baseline: L26RO4Y below 200 Hz, L22MG 200-800 Hz, GRS 800-2500 Hz, ND25FW above 2500 Hz."
       }
     ],
     "top_candidates": [
@@ -1975,58 +1866,58 @@
   ],
   "filter_topology": {
     "architecture": "cascaded LR4 split tree with shared high-pass carryover",
-    "diagram": "Input\n  +-- LR4 HP 70 Hz (2 biquads, global boundary)\n    +-- split @ 120 Hz\n        +-- LR4 LP 120 Hz (2 biquads) -> L26RO4Y\n        +-- LR4 HP 120 Hz (2 biquads) -> next split\n      +-- split @ 650 Hz\n          +-- LR4 LP 650 Hz (2 biquads) -> L22MG (nude)\n          +-- LR4 HP 650 Hz (2 biquads) -> next split\n        +-- split @ 3200 Hz\n            +-- LR4 LP 3200 Hz (2 biquads) -> SS10F8414G10\n            +-- LR4 HP 3200 Hz (2 biquads) -> GRS PT6816",
+    "diagram": "Input\n  +-- LR4 HP 70 Hz (2 biquads, global boundary)\n    +-- split @ 200 Hz\n        +-- LR4 LP 200 Hz (2 biquads) -> L26RO4Y\n        +-- LR4 HP 200 Hz (2 biquads) -> next split\n      +-- split @ 800 Hz\n          +-- LR4 LP 800 Hz (2 biquads) -> L22MG (nude)\n          +-- LR4 HP 800 Hz (2 biquads) -> next split\n        +-- split @ 2500 Hz\n            +-- LR4 LP 2500 Hz (2 biquads) -> GRS PT6816\n            +-- LR4 HP 2500 Hz (2 biquads) -> ND25FW4 (nude 18mm)",
     "stages": [
       {
         "stage": 1,
         "driver": "L26RO4Y",
         "passband_hz": [
           70.0,
-          120.0
+          200.0
         ],
         "global_boundary_hp_biquads": 2,
         "inherited_upstream_hp_biquads": 0,
         "own_branch_hp_biquads": 0,
         "own_branch_lp_biquads": 2,
         "effective_lr4_biquads": 4,
-        "flat_eq_biquads": 0,
-        "effective_total_biquads": 4
+        "flat_eq_biquads": 2,
+        "effective_total_biquads": 6
       },
       {
         "stage": 2,
         "driver": "L22MG (nude)",
         "passband_hz": [
-          120.0,
-          650.0
+          200.0,
+          800.0
         ],
         "global_boundary_hp_biquads": 2,
         "inherited_upstream_hp_biquads": 0,
         "own_branch_hp_biquads": 2,
         "own_branch_lp_biquads": 2,
         "effective_lr4_biquads": 6,
-        "flat_eq_biquads": 3,
-        "effective_total_biquads": 9
+        "flat_eq_biquads": 5,
+        "effective_total_biquads": 11
       },
       {
         "stage": 3,
-        "driver": "SS10F8414G10",
+        "driver": "GRS PT6816",
         "passband_hz": [
-          650.0,
-          3200.0
+          800.0,
+          2500.0
         ],
         "global_boundary_hp_biquads": 2,
         "inherited_upstream_hp_biquads": 2,
         "own_branch_hp_biquads": 2,
         "own_branch_lp_biquads": 2,
         "effective_lr4_biquads": 8,
-        "flat_eq_biquads": 5,
-        "effective_total_biquads": 13
+        "flat_eq_biquads": 2,
+        "effective_total_biquads": 10
       },
       {
         "stage": 4,
-        "driver": "GRS PT6816",
+        "driver": "ND25FW4 (nude 18mm)",
         "passband_hz": [
-          3200.0,
+          2500.0,
           20000.0
         ],
         "global_boundary_hp_biquads": 2,
@@ -2034,18 +1925,18 @@
         "own_branch_hp_biquads": 2,
         "own_branch_lp_biquads": 0,
         "effective_lr4_biquads": 8,
-        "flat_eq_biquads": 6,
-        "effective_total_biquads": 14
+        "flat_eq_biquads": 4,
+        "effective_total_biquads": 12
       }
     ],
     "summary": {
       "shared_tree_lr4_biquads": 14,
       "standalone_channel_lr4_biquads": 26,
-      "flat_eq_biquads": 14,
-      "shared_tree_total_biquads_with_eq": 28,
-      "standalone_channel_total_biquads": 40,
+      "flat_eq_biquads": 13,
+      "shared_tree_total_biquads_with_eq": 27,
+      "standalone_channel_total_biquads": 39,
       "max_biquads_per_driver_limit": 15,
-      "max_effective_total_biquads_per_driver": 14,
+      "max_effective_total_biquads_per_driver": 12,
       "per_driver_limit_met": true
     },
     "notes": [
@@ -2068,170 +1959,171 @@
       "max_rms_error_db": 0.25
     },
     "constraint_met": false,
-    "optimizer_cost": 19.492,
-    "optimizer_nfev": 13,
-    "filters_tested": 19,
+    "optimizer_cost": 19.771,
+    "optimizer_nfev": 12,
+    "filters_tested": 13,
     "max_biquads_per_driver": 15,
     "flat_eq_capacity_by_driver": {
       "L26RO4Y": 11,
       "L22MG (nude)": 9,
-      "SS10F8414G10": 7,
-      "GRS PT6816": 7
+      "GRS PT6816": 7,
+      "ND25FW4 (nude 18mm)": 7
     },
     "flat_eq_used_by_driver": {
-      "SS10F8414G10": 5,
-      "GRS PT6816": 6,
-      "L22MG (nude)": 3
+      "L26RO4Y": 2,
+      "L22MG (nude)": 5,
+      "GRS PT6816": 2,
+      "ND25FW4 (nude 18mm)": 4
     },
     "final_biquads_by_driver": {
-      "L26RO4Y": 4,
-      "L22MG (nude)": 9,
-      "SS10F8414G10": 13,
-      "GRS PT6816": 14
+      "L26RO4Y": 6,
+      "L22MG (nude)": 11,
+      "GRS PT6816": 10,
+      "ND25FW4 (nude 18mm)": 12
     },
-    "max_flat_eq_filters_allowed": 19,
-    "filters_kept": 14,
-    "full_fit_filters_needed": 19,
+    "max_flat_eq_filters_allowed": 13,
+    "filters_kept": 13,
+    "full_fit_filters_needed": 13,
     "method": "sparse least-squares: solve full candidate pool, rank by fitted correction magnitude, then try the smallest ranked sets against the smoothed summed-response constraint; if no capped set satisfies it, keep the best-scored set while capping every exported driver channel at 15 total biquads",
     "before": {
       "raw": {
         "80-18k": {
-          "median_db": 76.789,
-          "min_error_db": -9.266,
-          "max_error_db": 4.659,
-          "peak_to_peak_db": 13.924,
-          "rms_error_db": 1.997
+          "median_db": 76.263,
+          "min_error_db": -6.096,
+          "max_error_db": 2.785,
+          "peak_to_peak_db": 8.881,
+          "rms_error_db": 1.563
         },
         "200-10k": {
-          "median_db": 76.984,
-          "min_error_db": -3.794,
-          "max_error_db": 4.464,
-          "peak_to_peak_db": 8.258,
-          "rms_error_db": 1.601
+          "median_db": 76.461,
+          "min_error_db": -1.757,
+          "max_error_db": 2.587,
+          "peak_to_peak_db": 4.344,
+          "rms_error_db": 1.127
         },
         "2-10k": {
-          "median_db": 76.789,
-          "min_error_db": -3.6,
-          "max_error_db": 4.658,
-          "peak_to_peak_db": 8.258,
-          "rms_error_db": 1.688
+          "median_db": 76.302,
+          "min_error_db": -1.598,
+          "max_error_db": 0.942,
+          "peak_to_peak_db": 2.54,
+          "rms_error_db": 0.806
         }
       },
       "one_sixth_octave": {
         "80-18k": {
-          "median_db": 76.789,
-          "min_error_db": -9.232,
-          "max_error_db": 4.423,
-          "peak_to_peak_db": 13.654,
-          "rms_error_db": 1.964
+          "median_db": 76.275,
+          "min_error_db": -5.647,
+          "max_error_db": 2.737,
+          "peak_to_peak_db": 8.384,
+          "rms_error_db": 1.547
         },
         "200-10k": {
-          "median_db": 76.984,
-          "min_error_db": -3.135,
-          "max_error_db": 4.228,
-          "peak_to_peak_db": 7.363,
-          "rms_error_db": 1.563
+          "median_db": 76.485,
+          "min_error_db": -1.753,
+          "max_error_db": 2.527,
+          "peak_to_peak_db": 4.28,
+          "rms_error_db": 1.112
         },
         "2-10k": {
-          "median_db": 76.789,
-          "min_error_db": -1.404,
-          "max_error_db": 4.422,
-          "peak_to_peak_db": 5.826,
-          "rms_error_db": 1.605
+          "median_db": 76.35,
+          "min_error_db": -1.618,
+          "max_error_db": 0.771,
+          "peak_to_peak_db": 2.389,
+          "rms_error_db": 0.789
         }
       },
       "one_third_octave": {
         "80-18k": {
-          "median_db": 76.862,
-          "min_error_db": -9.299,
-          "max_error_db": 3.769,
-          "peak_to_peak_db": 13.068,
-          "rms_error_db": 1.922
+          "median_db": 76.302,
+          "min_error_db": -5.858,
+          "max_error_db": 2.602,
+          "peak_to_peak_db": 8.461,
+          "rms_error_db": 1.533
         },
         "200-10k": {
-          "median_db": 77.018,
-          "min_error_db": -3.114,
-          "max_error_db": 3.613,
-          "peak_to_peak_db": 6.727,
-          "rms_error_db": 1.505
+          "median_db": 76.426,
+          "min_error_db": -1.651,
+          "max_error_db": 2.478,
+          "peak_to_peak_db": 4.129,
+          "rms_error_db": 1.107
         },
         "2-10k": {
-          "median_db": 76.903,
-          "min_error_db": -1.292,
-          "max_error_db": 3.728,
-          "peak_to_peak_db": 5.02,
-          "rms_error_db": 1.46
+          "median_db": 76.343,
+          "min_error_db": -1.567,
+          "max_error_db": 0.719,
+          "peak_to_peak_db": 2.286,
+          "rms_error_db": 0.766
         }
       }
     },
     "after": {
       "raw": {
         "80-18k": {
-          "median_db": 75.992,
-          "min_error_db": -5.005,
-          "max_error_db": 2.463,
-          "peak_to_peak_db": 7.469,
-          "rms_error_db": 0.984
+          "median_db": 75.902,
+          "min_error_db": -7.181,
+          "max_error_db": 1.34,
+          "peak_to_peak_db": 8.52,
+          "rms_error_db": 1.721
         },
         "200-10k": {
-          "median_db": 76.008,
-          "min_error_db": -5.021,
-          "max_error_db": 1.748,
-          "peak_to_peak_db": 6.768,
-          "rms_error_db": 0.632
+          "median_db": 75.951,
+          "min_error_db": -1.37,
+          "max_error_db": 1.198,
+          "peak_to_peak_db": 2.568,
+          "rms_error_db": 0.536
         },
         "2-10k": {
-          "median_db": 76.019,
-          "min_error_db": -5.032,
-          "max_error_db": 1.736,
-          "peak_to_peak_db": 6.768,
-          "rms_error_db": 0.921
+          "median_db": 75.87,
+          "min_error_db": -1.289,
+          "max_error_db": 1.207,
+          "peak_to_peak_db": 2.496,
+          "rms_error_db": 0.637
         }
       },
       "one_sixth_octave": {
         "80-18k": {
-          "median_db": 75.99,
-          "min_error_db": -3.744,
-          "max_error_db": 2.14,
-          "peak_to_peak_db": 5.884,
-          "rms_error_db": 0.906
+          "median_db": 75.91,
+          "min_error_db": -7.189,
+          "max_error_db": 1.225,
+          "peak_to_peak_db": 8.414,
+          "rms_error_db": 1.716
         },
         "200-10k": {
-          "median_db": 76.002,
-          "min_error_db": -2.941,
-          "max_error_db": 1.513,
-          "peak_to_peak_db": 4.454,
-          "rms_error_db": 0.527
+          "median_db": 75.963,
+          "min_error_db": -1.048,
+          "max_error_db": 1.157,
+          "peak_to_peak_db": 2.205,
+          "rms_error_db": 0.513
         },
         "2-10k": {
-          "median_db": 76.001,
-          "min_error_db": -2.941,
-          "max_error_db": 1.513,
-          "peak_to_peak_db": 4.454,
-          "rms_error_db": 0.749
+          "median_db": 75.928,
+          "min_error_db": -1.013,
+          "max_error_db": 1.095,
+          "peak_to_peak_db": 2.108,
+          "rms_error_db": 0.595
         }
       },
       "one_third_octave": {
         "80-18k": {
-          "median_db": 75.988,
-          "min_error_db": -3.742,
-          "max_error_db": 2.03,
-          "peak_to_peak_db": 5.772,
-          "rms_error_db": 0.79
+          "median_db": 75.888,
+          "min_error_db": -7.166,
+          "max_error_db": 1.147,
+          "peak_to_peak_db": 8.313,
+          "rms_error_db": 1.7
         },
         "200-10k": {
-          "median_db": 76.001,
-          "min_error_db": -0.733,
-          "max_error_db": 0.967,
-          "peak_to_peak_db": 1.7,
-          "rms_error_db": 0.333
+          "median_db": 75.951,
+          "min_error_db": -0.86,
+          "max_error_db": 1.084,
+          "peak_to_peak_db": 1.944,
+          "rms_error_db": 0.485
         },
         "2-10k": {
-          "median_db": 75.989,
-          "min_error_db": -0.721,
-          "max_error_db": 0.979,
-          "peak_to_peak_db": 1.7,
-          "rms_error_db": 0.437
+          "median_db": 75.87,
+          "min_error_db": -0.779,
+          "max_error_db": 1.125,
+          "peak_to_peak_db": 1.904,
+          "rms_error_db": 0.568
         }
       }
     }
@@ -2241,10 +2133,10 @@
       1600.0,
       3200.0
     ],
-    "min_f90_minus_f0_db": -24.997,
-    "min_frequency_hz": 1681.4,
-    "max_f90_minus_f0_db": -15.435,
-    "max_frequency_hz": 2406.2,
+    "min_f90_minus_f0_db": -34.104,
+    "min_frequency_hz": 2865.0,
+    "max_f90_minus_f0_db": -25.751,
+    "max_frequency_hz": 3193.3,
     "interpretation": "The dark feature at 90 degrees is a side null, not an off-axis SPL peak. It is dominated by the upper-mid crossover/driver transition and should not be filled with on-axis EQ unless the design goal changes."
   },
   "local_evidence_notes": [
@@ -2270,11 +2162,11 @@
     "Vertical-plane beaming and pseudo-baffle diffraction from the final stacked mounting geometry are not modeled."
   ],
   "generated_files": {
-    "synthetic_hdf5": "output/data/polar_data_juan_cdsl_synthetic.h5",
-    "html_report": "docs/juan-baffleless-cdsl.html",
-    "asset_root": "docs/juan-baffleless-cdsl",
-    "driver_directivity_audit_csv": "output/juan-baffleless-cdsl/driver_directivity_audit.csv",
-    "distortion_thd_audit_csv": "output/juan-baffleless-cdsl/distortion_thd_audit.csv"
+    "synthetic_hdf5": "output/data/polar_data_juan_cdsl_baseline_synthetic.h5",
+    "html_report": "docs/juan-baffleless-cdsl-baseline.html",
+    "asset_root": "docs/juan-baffleless-cdsl-baseline",
+    "driver_directivity_audit_csv": "output/juan-baffleless-cdsl-baseline/driver_directivity_audit.csv",
+    "distortion_thd_audit_csv": "output/juan-baffleless-cdsl-baseline/distortion_thd_audit.csv"
   },
   "drivers": [
     {
@@ -2282,10 +2174,10 @@
       "driver": "L26RO4Y",
       "passband_hz": [
         70.0,
-        120.0
+        200.0
       ],
       "source": "measurements/juan/L26RO4Y POLARES EN BAFFLE CILINDRICO VER NOTA",
-      "gain_db": -9.856,
+      "gain_db": -7.467,
       "delay_ms": 0.0,
       "polarity": 1,
       "rationale": "Best measured low-frequency candidate, but captured in a cylindrical baffle.",
@@ -2306,17 +2198,31 @@
         },
         {
           "type": "lowpass",
-          "fc_hz": 120.0,
+          "fc_hz": 200.0,
           "q": 0.7071,
           "gain_db": 0.0,
           "source": "LR4 branch low-pass"
         },
         {
           "type": "lowpass",
-          "fc_hz": 120.0,
+          "fc_hz": 200.0,
           "q": 0.7071,
           "gain_db": 0.0,
           "source": "LR4 branch low-pass"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 110.0,
+          "q": 1.0,
+          "gain_db": -8.0,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "lowshelf",
+          "fc_hz": 95.0,
+          "q": 1.0,
+          "gain_db": -1.464,
+          "source": "flat-EQ"
         }
       ]
     },
@@ -2324,13 +2230,13 @@
       "role": "Lower mid",
       "driver": "L22MG (nude)",
       "passband_hz": [
-        120.0,
-        650.0
+        200.0,
+        800.0
       ],
       "source": "measurements/juan/SEAS L22MG NUDE MIC ON AXIS",
-      "gain_db": 17.785,
-      "delay_ms": -1.375,
-      "polarity": 1,
+      "gain_db": 11.244,
+      "delay_ms": -1.36,
+      "polarity": -1,
       "rationale": "Strong low-mid bridge with nude front/rear data and useful coverage below 500 Hz.",
       "filters": [
         {
@@ -2349,171 +2255,79 @@
         },
         {
           "type": "highpass",
-          "fc_hz": 120.0,
+          "fc_hz": 200.0,
           "q": 0.7071,
           "gain_db": 0.0,
           "source": "LR4 branch high-pass"
         },
         {
           "type": "highpass",
-          "fc_hz": 120.0,
+          "fc_hz": 200.0,
           "q": 0.7071,
           "gain_db": 0.0,
           "source": "LR4 branch high-pass"
         },
         {
           "type": "lowpass",
-          "fc_hz": 650.0,
+          "fc_hz": 800.0,
           "q": 0.7071,
           "gain_db": 0.0,
           "source": "LR4 branch low-pass"
         },
         {
           "type": "lowpass",
-          "fc_hz": 650.0,
+          "fc_hz": 800.0,
           "q": 0.7071,
           "gain_db": 0.0,
           "source": "LR4 branch low-pass"
         },
         {
           "type": "peaking",
-          "fc_hz": 500.0,
+          "fc_hz": 150.0,
           "q": 1.0,
-          "gain_db": -3.698,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 620.0,
-          "q": 1.0,
-          "gain_db": -2.723,
+          "gain_db": -8.0,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 330.0,
           "q": 1.0,
-          "gain_db": -1.214,
+          "gain_db": 7.426,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 500.0,
+          "q": 1.0,
+          "gain_db": -5.635,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 220.0,
+          "q": 1.0,
+          "gain_db": -4.504,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 620.0,
+          "q": 1.0,
+          "gain_db": 1.406,
           "source": "flat-EQ"
         }
       ]
     },
     {
       "role": "Upper/directivity band",
-      "driver": "SS10F8414G10",
-      "passband_hz": [
-        650.0,
-        3200.0
-      ],
-      "source": "measurements/juan/ScanSpeak 10F8414G10",
-      "gain_db": -4.576,
-      "delay_ms": -0.69,
-      "polarity": 1,
-      "rationale": "Good directivity order with local notes rating distortion close to the 8424.",
-      "filters": [
-        {
-          "type": "highpass",
-          "fc_hz": 70.0,
-          "q": 0.7071,
-          "gain_db": 0.0,
-          "source": "LR4 global boundary high-pass"
-        },
-        {
-          "type": "highpass",
-          "fc_hz": 70.0,
-          "q": 0.7071,
-          "gain_db": 0.0,
-          "source": "LR4 global boundary high-pass"
-        },
-        {
-          "type": "highpass",
-          "fc_hz": 120.0,
-          "q": 0.7071,
-          "gain_db": 0.0,
-          "source": "LR4 cascaded upstream high-pass"
-        },
-        {
-          "type": "highpass",
-          "fc_hz": 120.0,
-          "q": 0.7071,
-          "gain_db": 0.0,
-          "source": "LR4 cascaded upstream high-pass"
-        },
-        {
-          "type": "highpass",
-          "fc_hz": 650.0,
-          "q": 0.7071,
-          "gain_db": 0.0,
-          "source": "LR4 branch high-pass"
-        },
-        {
-          "type": "highpass",
-          "fc_hz": 650.0,
-          "q": 0.7071,
-          "gain_db": 0.0,
-          "source": "LR4 branch high-pass"
-        },
-        {
-          "type": "lowpass",
-          "fc_hz": 3200.0,
-          "q": 0.7071,
-          "gain_db": 0.0,
-          "source": "LR4 branch low-pass"
-        },
-        {
-          "type": "lowpass",
-          "fc_hz": 3200.0,
-          "q": 0.7071,
-          "gain_db": 0.0,
-          "source": "LR4 branch low-pass"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 1450.0,
-          "q": 1.0,
-          "gain_db": 8.0,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 1800.0,
-          "q": 1.0,
-          "gain_db": -5.02,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 700.0,
-          "q": 1.0,
-          "gain_db": -5.595,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 1150.0,
-          "q": 1.0,
-          "gain_db": -1.882,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 900.0,
-          "q": 1.0,
-          "gain_db": -0.721,
-          "source": "flat-EQ"
-        }
-      ]
-    },
-    {
-      "role": "Top",
       "driver": "GRS PT6816",
       "passband_hz": [
-        3200.0,
-        20000.0
+        800.0,
+        2500.0
       ],
       "source": "measurements/juan/GRS PT6816 A MIC ON AXIS",
-      "gain_db": 5.039,
-      "delay_ms": -0.6,
+      "gain_db": 1.746,
+      "delay_ms": -0.855,
       "polarity": -1,
       "rationale": "Best local constant-directivity and front/rear symmetry reference.",
       "filters": [
@@ -2533,86 +2347,157 @@
         },
         {
           "type": "highpass",
-          "fc_hz": 120.0,
+          "fc_hz": 200.0,
           "q": 0.7071,
           "gain_db": 0.0,
           "source": "LR4 cascaded upstream high-pass"
         },
         {
           "type": "highpass",
-          "fc_hz": 120.0,
+          "fc_hz": 200.0,
           "q": 0.7071,
           "gain_db": 0.0,
           "source": "LR4 cascaded upstream high-pass"
         },
         {
           "type": "highpass",
-          "fc_hz": 650.0,
-          "q": 0.7071,
-          "gain_db": 0.0,
-          "source": "LR4 cascaded upstream high-pass"
-        },
-        {
-          "type": "highpass",
-          "fc_hz": 650.0,
-          "q": 0.7071,
-          "gain_db": 0.0,
-          "source": "LR4 cascaded upstream high-pass"
-        },
-        {
-          "type": "highpass",
-          "fc_hz": 3200.0,
+          "fc_hz": 800.0,
           "q": 0.7071,
           "gain_db": 0.0,
           "source": "LR4 branch high-pass"
         },
         {
           "type": "highpass",
-          "fc_hz": 3200.0,
+          "fc_hz": 800.0,
           "q": 0.7071,
           "gain_db": 0.0,
           "source": "LR4 branch high-pass"
         },
         {
-          "type": "peaking",
-          "fc_hz": 3500.0,
-          "q": 1.0,
-          "gain_db": -8.0,
-          "source": "flat-EQ"
+          "type": "lowpass",
+          "fc_hz": 2500.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 branch low-pass"
+        },
+        {
+          "type": "lowpass",
+          "fc_hz": 2500.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 branch low-pass"
         },
         {
           "type": "peaking",
-          "fc_hz": 7200.0,
+          "fc_hz": 2200.0,
           "q": 1.0,
-          "gain_db": -8.0,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 11000.0,
-          "q": 1.0,
-          "gain_db": -8.0,
-          "source": "flat-EQ"
-        },
-        {
-          "type": "peaking",
-          "fc_hz": 9000.0,
-          "q": 1.0,
-          "gain_db": 3.69,
+          "gain_db": 8.0,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
           "fc_hz": 2800.0,
           "q": 1.0,
-          "gain_db": 3.71,
+          "gain_db": -8.0,
+          "source": "flat-EQ"
+        }
+      ]
+    },
+    {
+      "role": "Top",
+      "driver": "ND25FW4 (nude 18mm)",
+      "passband_hz": [
+        2500.0,
+        20000.0
+      ],
+      "source": "measurements/juan/DAYTON ND25FW4 ANIDADOS 18 MM NUDE",
+      "gain_db": -0.719,
+      "delay_ms": -0.935,
+      "polarity": 1,
+      "rationale": "Treble extension candidate; measured 2-10 kHz pattern is wider than the 10 cm candidates.",
+      "filters": [
+        {
+          "type": "highpass",
+          "fc_hz": 70.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 global boundary high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 70.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 global boundary high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 200.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 200.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 800.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 800.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 cascaded upstream high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 2500.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 branch high-pass"
+        },
+        {
+          "type": "highpass",
+          "fc_hz": 2500.0,
+          "q": 0.7071,
+          "gain_db": 0.0,
+          "source": "LR4 branch high-pass"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 14000.0,
+          "q": 1.0,
+          "gain_db": -8.0,
           "source": "flat-EQ"
         },
         {
           "type": "peaking",
-          "fc_hz": 5700.0,
+          "fc_hz": 16500.0,
           "q": 1.0,
-          "gain_db": 2.482,
+          "gain_db": 7.377,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "highshelf",
+          "fc_hz": 18000.0,
+          "q": 1.0,
+          "gain_db": 6.642,
+          "source": "flat-EQ"
+        },
+        {
+          "type": "peaking",
+          "fc_hz": 12000.0,
+          "q": 1.0,
+          "gain_db": 4.504,
           "source": "flat-EQ"
         }
       ]

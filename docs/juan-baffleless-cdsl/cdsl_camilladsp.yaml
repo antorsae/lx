@@ -9,12 +9,9 @@
 #       +-- split @ 650 Hz
 #           +-- LR4 LP 650 Hz (2 biquads) -> L22MG (nude)
 #           +-- LR4 HP 650 Hz (2 biquads) -> next split
-#         +-- split @ 2000 Hz
-#             +-- LR4 LP 2000 Hz (2 biquads) -> SS10F8414G10
-#             +-- LR4 HP 2000 Hz (2 biquads) -> next split
-#           +-- split @ 12000 Hz
-#               +-- LR4 LP 12000 Hz (2 biquads) -> GRS PT6816
-#               +-- LR4 HP 12000 Hz (2 biquads) -> ND25FW4 (nude 18mm)
+#         +-- split @ 3200 Hz
+#             +-- LR4 LP 3200 Hz (2 biquads) -> SS10F8414G10
+#             +-- LR4 HP 3200 Hz (2 biquads) -> GRS PT6816
 filters:
   L26RO4Y_1:
     type: Biquad
@@ -48,13 +45,13 @@ filters:
     parameters: {type: lowpass, freq: 650.000, q: 0.7071, gain: 0.000}
   L22MG_nude_7:
     type: Biquad
-    parameters: {type: peaking, freq: 500.000, q: 1.0000, gain: -5.382}
+    parameters: {type: peaking, freq: 500.000, q: 1.0000, gain: -3.698}
   L22MG_nude_8:
     type: Biquad
-    parameters: {type: peaking, freq: 620.000, q: 1.0000, gain: 0.755}
+    parameters: {type: peaking, freq: 620.000, q: 1.0000, gain: -2.723}
   L22MG_nude_9:
     type: Biquad
-    parameters: {type: peaking, freq: 150.000, q: 1.0000, gain: 2.033}
+    parameters: {type: peaking, freq: 330.000, q: 1.0000, gain: -1.214}
   SS10F8414G10_1:
     type: Biquad
     parameters: {type: highpass, freq: 70.000, q: 0.7071, gain: 0.000}
@@ -75,22 +72,25 @@ filters:
     parameters: {type: highpass, freq: 650.000, q: 0.7071, gain: 0.000}
   SS10F8414G10_7:
     type: Biquad
-    parameters: {type: lowpass, freq: 2000.000, q: 0.7071, gain: 0.000}
+    parameters: {type: lowpass, freq: 3200.000, q: 0.7071, gain: 0.000}
   SS10F8414G10_8:
     type: Biquad
-    parameters: {type: lowpass, freq: 2000.000, q: 0.7071, gain: 0.000}
+    parameters: {type: lowpass, freq: 3200.000, q: 0.7071, gain: 0.000}
   SS10F8414G10_9:
     type: Biquad
-    parameters: {type: peaking, freq: 1800.000, q: 1.0000, gain: 8.000}
+    parameters: {type: peaking, freq: 1450.000, q: 1.0000, gain: 8.000}
   SS10F8414G10_10:
     type: Biquad
-    parameters: {type: peaking, freq: 1450.000, q: 1.0000, gain: -3.022}
+    parameters: {type: peaking, freq: 1800.000, q: 1.0000, gain: -5.020}
   SS10F8414G10_11:
     type: Biquad
-    parameters: {type: peaking, freq: 1150.000, q: 1.0000, gain: -1.851}
+    parameters: {type: peaking, freq: 700.000, q: 1.0000, gain: -5.595}
   SS10F8414G10_12:
     type: Biquad
-    parameters: {type: peaking, freq: 700.000, q: 1.0000, gain: 0.427}
+    parameters: {type: peaking, freq: 1150.000, q: 1.0000, gain: -1.882}
+  SS10F8414G10_13:
+    type: Biquad
+    parameters: {type: peaking, freq: 900.000, q: 1.0000, gain: -0.721}
   GRS_PT6816_1:
     type: Biquad
     parameters: {type: highpass, freq: 70.000, q: 0.7071, gain: 0.000}
@@ -111,79 +111,25 @@ filters:
     parameters: {type: highpass, freq: 650.000, q: 0.7071, gain: 0.000}
   GRS_PT6816_7:
     type: Biquad
-    parameters: {type: highpass, freq: 2000.000, q: 0.7071, gain: 0.000}
+    parameters: {type: highpass, freq: 3200.000, q: 0.7071, gain: 0.000}
   GRS_PT6816_8:
     type: Biquad
-    parameters: {type: highpass, freq: 2000.000, q: 0.7071, gain: 0.000}
+    parameters: {type: highpass, freq: 3200.000, q: 0.7071, gain: 0.000}
   GRS_PT6816_9:
     type: Biquad
-    parameters: {type: lowpass, freq: 12000.000, q: 0.7071, gain: 0.000}
+    parameters: {type: peaking, freq: 3500.000, q: 1.0000, gain: -8.000}
   GRS_PT6816_10:
     type: Biquad
-    parameters: {type: lowpass, freq: 12000.000, q: 0.7071, gain: 0.000}
+    parameters: {type: peaking, freq: 7200.000, q: 1.0000, gain: -8.000}
   GRS_PT6816_11:
     type: Biquad
-    parameters: {type: peaking, freq: 2200.000, q: 1.0000, gain: 8.000}
+    parameters: {type: peaking, freq: 11000.000, q: 1.0000, gain: -8.000}
   GRS_PT6816_12:
     type: Biquad
-    parameters: {type: peaking, freq: 3500.000, q: 1.0000, gain: -8.000}
+    parameters: {type: peaking, freq: 9000.000, q: 1.0000, gain: 3.690}
   GRS_PT6816_13:
     type: Biquad
-    parameters: {type: peaking, freq: 11000.000, q: 1.0000, gain: 6.984}
+    parameters: {type: peaking, freq: 2800.000, q: 1.0000, gain: 3.710}
   GRS_PT6816_14:
     type: Biquad
-    parameters: {type: peaking, freq: 4500.000, q: 1.0000, gain: 6.535}
-  GRS_PT6816_15:
-    type: Biquad
-    parameters: {type: peaking, freq: 9000.000, q: 1.0000, gain: -5.389}
-  GRS_PT6816_16:
-    type: Biquad
-    parameters: {type: peaking, freq: 2800.000, q: 1.0000, gain: 4.025}
-  GRS_PT6816_17:
-    type: Biquad
-    parameters: {type: peaking, freq: 5700.000, q: 1.0000, gain: 3.538}
-  GRS_PT6816_18:
-    type: Biquad
-    parameters: {type: peaking, freq: 7200.000, q: 1.0000, gain: -0.770}
-  ND25FW4_nude_18mm_1:
-    type: Biquad
-    parameters: {type: highpass, freq: 70.000, q: 0.7071, gain: 0.000}
-  ND25FW4_nude_18mm_2:
-    type: Biquad
-    parameters: {type: highpass, freq: 70.000, q: 0.7071, gain: 0.000}
-  ND25FW4_nude_18mm_3:
-    type: Biquad
-    parameters: {type: highpass, freq: 120.000, q: 0.7071, gain: 0.000}
-  ND25FW4_nude_18mm_4:
-    type: Biquad
-    parameters: {type: highpass, freq: 120.000, q: 0.7071, gain: 0.000}
-  ND25FW4_nude_18mm_5:
-    type: Biquad
-    parameters: {type: highpass, freq: 650.000, q: 0.7071, gain: 0.000}
-  ND25FW4_nude_18mm_6:
-    type: Biquad
-    parameters: {type: highpass, freq: 650.000, q: 0.7071, gain: 0.000}
-  ND25FW4_nude_18mm_7:
-    type: Biquad
-    parameters: {type: highpass, freq: 2000.000, q: 0.7071, gain: 0.000}
-  ND25FW4_nude_18mm_8:
-    type: Biquad
-    parameters: {type: highpass, freq: 2000.000, q: 0.7071, gain: 0.000}
-  ND25FW4_nude_18mm_9:
-    type: Biquad
-    parameters: {type: highpass, freq: 12000.000, q: 0.7071, gain: 0.000}
-  ND25FW4_nude_18mm_10:
-    type: Biquad
-    parameters: {type: highpass, freq: 12000.000, q: 0.7071, gain: 0.000}
-  ND25FW4_nude_18mm_11:
-    type: Biquad
-    parameters: {type: peaking, freq: 12000.000, q: 1.0000, gain: -4.744}
-  ND25FW4_nude_18mm_12:
-    type: Biquad
-    parameters: {type: peaking, freq: 16500.000, q: 1.0000, gain: -3.903}
-  ND25FW4_nude_18mm_13:
-    type: Biquad
-    parameters: {type: peaking, freq: 14000.000, q: 1.0000, gain: -2.961}
-  ND25FW4_nude_18mm_14:
-    type: Biquad
-    parameters: {type: highshelf, freq: 18000.000, q: 1.0000, gain: -1.649}
+    parameters: {type: peaking, freq: 5700.000, q: 1.0000, gain: 2.482}

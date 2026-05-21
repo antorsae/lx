@@ -43,6 +43,7 @@ FLATNESS_PRIMARY_SMOOTHING = "one_third_octave"
 FLATNESS_TARGET_PEAK_TO_PEAK_DB = 0.70
 FLATNESS_TARGET_RMS_DB = 0.25
 FLAT_EQ_PRUNE_DB = 0.25
+MAX_BIQUADS_PER_DRIVER = 15
 
 JUAN_HDF5 = Path("output/data/polar_data_juan_baffleless.h5")
 LX521_HDF5 = Path("output/data/polar_data_lx521_system.h5")
@@ -50,6 +51,19 @@ SYNTHETIC_HDF5 = Path("output/data/polar_data_juan_cdsl_synthetic.h5")
 OUTPUT_ROOT = Path("output/juan-baffleless-cdsl")
 DOCS_ROOT = Path("docs/juan-baffleless-cdsl")
 DOCS_PAGE = Path("docs/juan-baffleless-cdsl.html")
+
+BASELINE_SYNTHETIC_HDF5 = Path("output/data/polar_data_juan_cdsl_baseline_synthetic.h5")
+BASELINE_OUTPUT_ROOT = Path("output/juan-baffleless-cdsl-baseline")
+BASELINE_DOCS_ROOT = Path("docs/juan-baffleless-cdsl-baseline")
+BASELINE_DOCS_PAGE = Path("docs/juan-baffleless-cdsl-baseline.html")
+COMPARISON_DOCS_PAGE = Path("docs/juan-baffleless-cdsl-comparison.html")
+
+CHOSEN_ASSET_SLUG = "juan-baffleless-cdsl"
+BASELINE_ASSET_SLUG = "juan-baffleless-cdsl-baseline"
+CHOSEN_TITLE = "Juan Baffleless Synthetic CDSL Design"
+BASELINE_TITLE = "Baseline CDSL Seed Design"
+BASELINE_DRIVERS = ["L26RO4Y", "L22MG (nude)", "GRS PT6816", "ND25FW4 (nude 18mm)"]
+BASELINE_XOVERS = [200.0, 800.0, 2500.0]
 
 
 @dataclass
@@ -548,6 +562,61 @@ def candidate_prior_penalty(drivers: List[str]) -> float:
     return penalty
 
 
+def candidate_biquad_budget(drivers: List[str], xovers: List[float]) -> Dict:
+    design = make_design(drivers, xovers)
+    xover_counts = {
+        band.driver: len(cascaded_lr4_filters(idx, xovers, source_prefix="search LR4"))
+        for idx, band in enumerate(design)
+    }
+    flat_candidates = {driver: 0 for driver in drivers}
+    for band, _ in flat_eq_candidate_specs(design):
+        flat_candidates[band.driver] = flat_candidates.get(band.driver, 0) + 1
+
+    flat_slots = {
+        driver: max(0, MAX_BIQUADS_PER_DRIVER - xover_counts[driver])
+        for driver in drivers
+    }
+    flat_used_cap = {
+        driver: min(flat_candidates.get(driver, 0), flat_slots.get(driver, 0))
+        for driver in drivers
+    }
+    shortfall = {
+        driver: max(0, flat_candidates.get(driver, 0) - flat_slots.get(driver, 0))
+        for driver in drivers
+    }
+    max_possible_totals = {
+        driver: xover_counts[driver] + flat_used_cap[driver]
+        for driver in drivers
+    }
+    return {
+        "xover_biquads_by_driver": xover_counts,
+        "flat_eq_candidates_by_driver": flat_candidates,
+        "flat_eq_slots_by_driver": flat_slots,
+        "flat_eq_candidate_shortfall_by_driver": shortfall,
+        "max_possible_biquads_by_driver": max_possible_totals,
+        "max_crossover_biquads_per_driver": max(xover_counts.values()),
+        "max_possible_biquads_per_driver": max(max_possible_totals.values()),
+        "total_flat_eq_slots": sum(flat_slots.values()),
+        "total_flat_eq_candidates": sum(flat_candidates.values()),
+        "flat_eq_candidate_shortfall_total": sum(shortfall.values()),
+        "crossover_biquads_within_limit": max(xover_counts.values()) <= MAX_BIQUADS_PER_DRIVER,
+        "max_biquads_per_driver_limit": MAX_BIQUADS_PER_DRIVER,
+    }
+
+
+def candidate_biquad_budget_penalty(budget: Dict) -> float:
+    if not budget["crossover_biquads_within_limit"]:
+        return 1000.0
+    shortfalls = list(budget["flat_eq_candidate_shortfall_by_driver"].values())
+    max_shortfall = max(shortfalls) if shortfalls else 0
+    min_slots = min(budget["flat_eq_slots_by_driver"].values()) if budget["flat_eq_slots_by_driver"] else 0
+    return float(
+        0.65 * budget["flat_eq_candidate_shortfall_total"]
+        + 0.75 * max_shortfall
+        + 0.20 * max(0, 4 - min_slots)
+    )
+
+
 def score_candidate(pre: Dict[str, Dict], drivers: List[str], xovers: List[float]) -> Dict:
     synth = synthesize_search_norm(pre, drivers, xovers)
     valid = synth["valid"]
@@ -590,6 +659,8 @@ def score_candidate(pre: Dict[str, Dict], drivers: List[str], xovers: List[float
     xover_penalty = search_xover_mismatch(pre, drivers, xovers)
     validity_penalty = frequency_validity_penalty(pre, drivers, xovers)
     prior_penalty = candidate_prior_penalty(drivers)
+    biquad_budget = candidate_biquad_budget(drivers, xovers)
+    biquad_budget_penalty = candidate_biquad_budget_penalty(biquad_budget)
 
     score = (
         1.25 * dipole_front
@@ -600,6 +671,7 @@ def score_candidate(pre: Dict[str, Dict], drivers: List[str], xovers: List[float
         + high_penalty
         + validity_penalty
         + prior_penalty
+        + biquad_budget_penalty
     )
 
     return {
@@ -614,6 +686,16 @@ def score_candidate(pre: Dict[str, Dict], drivers: List[str], xovers: List[float
         "xover_mismatch_rms_db": round(xover_penalty, 3),
         "validity_penalty": round(validity_penalty, 3),
         "prior_penalty": round(prior_penalty, 3),
+        "biquad_budget_penalty": round(biquad_budget_penalty, 3),
+        "max_biquads_per_driver_limit": MAX_BIQUADS_PER_DRIVER,
+        "max_crossover_biquads_per_driver": biquad_budget["max_crossover_biquads_per_driver"],
+        "max_possible_biquads_per_driver": biquad_budget["max_possible_biquads_per_driver"],
+        "total_flat_eq_slots": biquad_budget["total_flat_eq_slots"],
+        "total_flat_eq_candidates": biquad_budget["total_flat_eq_candidates"],
+        "flat_eq_candidate_shortfall_total": biquad_budget["flat_eq_candidate_shortfall_total"],
+        "flat_eq_slots_by_driver": biquad_budget["flat_eq_slots_by_driver"],
+        "flat_eq_candidate_shortfall_by_driver": biquad_budget["flat_eq_candidate_shortfall_by_driver"],
+        "crossover_biquads_within_limit": biquad_budget["crossover_biquads_within_limit"],
         "sep_30_60_median_2_10k_db": round(sep_med, 3),
         "sep_30_60_p10_2_10k_db": round(sep_p10, 3),
         "front30_median_2_10k_db": round(front30_med, 3),
@@ -670,6 +752,7 @@ def choose_final_candidate(search_results: List[Dict]) -> Tuple[Dict, Dict]:
             and row["dipole_front_rms_db"] <= 3.2
             and row["xover_mismatch_rms_db"] <= 9.5
             and row["validity_penalty"] <= 0.2
+            and row["crossover_biquads_within_limit"]
         ):
             selected = dict(row)
             selected["balanced_rank"] = idx
@@ -678,7 +761,8 @@ def choose_final_candidate(search_results: List[Dict]) -> Tuple[Dict, Dict]:
                 "reason": (
                     "Selected the lowest composite-score candidate that also clears "
                     "8 dB median and 5.8 dB 10th-percentile SPL30-SPL60 from 2-10 kHz, "
-                    "while keeping front dipole RMS <=3.2 dB and crossover mismatch <=9.5 dB."
+                    "while keeping front dipole RMS <=3.2 dB, crossover mismatch <=9.5 dB, "
+                    "and every channel within the 15-biquad export limit."
                 ),
                 "fallback_used": False,
             }
@@ -721,6 +805,7 @@ def choose_recommended_candidate(search_results: List[Dict]) -> Tuple[Dict, Dict
             and row["validity_penalty"] <= 0.2
             and row["dipole_front_rms_db"] <= 2.5
             and row["xover_mismatch_rms_db"] <= 9.5
+            and row["crossover_biquads_within_limit"]
         ):
             return with_rank(
                 row,
@@ -735,7 +820,8 @@ def choose_recommended_candidate(search_results: List[Dict]) -> Tuple[Dict, Dict
                 "reason": (
                     "Selected the best balanced candidate that avoids using both near-identical "
                     "SS10F8424G00 and SS10F8414G10 in adjacent passbands. This favors dipole consistency, "
-                    "crossover continuity, and build simplicity over the most aggressive 30-to-60 dB target."
+                    "crossover continuity, the 15-biquad/channel cap, and build simplicity over the most aggressive "
+                    "30-to-60 dB target."
                 ),
                 "fallback_used": False,
             }
@@ -772,6 +858,7 @@ def choose_finalists(search_results: List[Dict]) -> Tuple[Dict, Dict, List[Dict]
             and row["sep_30_60_median_2_10k_db"] >= 7.5
             and row["xover_mismatch_rms_db"] <= 9.5
             and row["validity_penalty"] <= 0.2
+            and row["crossover_biquads_within_limit"]
         ),
         "L10NEO alternate",
         "Best L10NEO-flavored candidate with strong 30-to-60 separation and acceptable crossover mismatch.",
@@ -783,6 +870,7 @@ def choose_finalists(search_results: List[Dict]) -> Tuple[Dict, Dict, List[Dict]
             and exactly_one_scanspeak(row)
             and "GRS PT6816" in row["drivers"]
             and row["validity_penalty"] <= 0.2
+            and row["crossover_biquads_within_limit"]
         ),
         "Simple 4-way",
         "Simplest high-confidence 4-way variant using one ScanSpeak 10 cm driver plus GRS.",
@@ -1046,6 +1134,38 @@ def restore_filter_selection(
         band.filters.append(flt)
 
 
+def flat_eq_capacity(base_filters: Dict[str, List[Biquad]]) -> Dict[str, int]:
+    return {
+        driver: max(0, MAX_BIQUADS_PER_DRIVER - len(filters))
+        for driver, filters in base_filters.items()
+    }
+
+
+def cap_flat_eq_selection(
+    ranked: List[Tuple[DriverBand, Biquad]],
+    count: int,
+    capacity: Dict[str, int],
+) -> List[Tuple[DriverBand, Biquad]]:
+    selected: List[Tuple[DriverBand, Biquad]] = []
+    used = {driver: 0 for driver in capacity}
+    for candidate in ranked:
+        driver = candidate[0].driver
+        if used.get(driver, 0) >= capacity.get(driver, 0):
+            continue
+        selected.append(candidate)
+        used[driver] = used.get(driver, 0) + 1
+        if len(selected) >= count:
+            break
+    return selected
+
+
+def flat_eq_usage(selected: List[Tuple[DriverBand, Biquad]]) -> Dict[str, int]:
+    usage: Dict[str, int] = {}
+    for band, _ in selected:
+        usage[band.driver] = usage.get(band.driver, 0) + 1
+    return usage
+
+
 def flatness_primary_stats(report: Dict[str, Dict[str, Dict[str, float]]]) -> Dict[str, float]:
     return report[FLATNESS_PRIMARY_SMOOTHING][FLATNESS_PRIMARY_BAND_HZ]
 
@@ -1143,6 +1263,8 @@ def optimize_system_flatness(data: Dict[str, Dict], design: List[DriverBand]) ->
     candidates = flat_eq_candidate_specs(design)
     base_filters = {band.driver: list(band.filters) for band in design}
     base_gains = np.asarray([band.gain_db for band in design], dtype=float)
+    capacity = flat_eq_capacity(base_filters)
+    max_flat_eq_count = min(len(candidates), sum(capacity.values()))
 
     full = optimize_flatness_selection(
         data,
@@ -1157,8 +1279,13 @@ def optimize_system_flatness(data: Dict[str, Dict], design: List[DriverBand]) ->
 
     best_record: Optional[Dict] = None
     best_unconstrained: Optional[Dict] = None
-    for count in range(len(ranked) + 1):
-        selected = ranked[:count]
+    seen_selections = set()
+    for count in range(max_flat_eq_count + 1):
+        selected = cap_flat_eq_selection(ranked, count, capacity)
+        selection_key = tuple(flat_eq_key(candidate) for candidate in selected)
+        if selection_key in seen_selections:
+            continue
+        seen_selections.add(selection_key)
         record = optimize_flatness_selection(
             data,
             design,
@@ -1207,6 +1334,13 @@ def optimize_system_flatness(data: Dict[str, Dict], design: List[DriverBand]) ->
     )
     kept = list(final_record["selected"])
     after = final_record["report"]
+    final_usage = flat_eq_usage(kept)
+    final_totals = {
+        band.driver: len([flt for flt in band.filters])
+        for band in design
+    }
+    if any(total > MAX_BIQUADS_PER_DRIVER for total in final_totals.values()):
+        raise RuntimeError(f"Flat-EQ exceeded {MAX_BIQUADS_PER_DRIVER} biquads per driver: {final_totals}")
 
     return {
         "target_db": TARGET_SPL_DB,
@@ -1221,11 +1355,18 @@ def optimize_system_flatness(data: Dict[str, Dict], design: List[DriverBand]) ->
         "optimizer_cost": round(float(final_record["optimizer_cost"]), 3),
         "optimizer_nfev": int(final_record["optimizer_nfev"]),
         "filters_tested": len(candidates),
+        "max_biquads_per_driver": MAX_BIQUADS_PER_DRIVER,
+        "flat_eq_capacity_by_driver": capacity,
+        "flat_eq_used_by_driver": final_usage,
+        "final_biquads_by_driver": final_totals,
+        "max_flat_eq_filters_allowed": max_flat_eq_count,
         "filters_kept": len(kept),
         "full_fit_filters_needed": sum(1 for gain in full_gains.values() if abs(gain) >= FLAT_EQ_PRUNE_DB),
         "method": (
             "sparse least-squares: solve full candidate pool, rank by fitted correction magnitude, "
-            "then keep the smallest ranked set that satisfies the smoothed summed-response constraint"
+            "then try the smallest ranked sets against the smoothed summed-response constraint; "
+            f"if no capped set satisfies it, keep the best-scored set while capping every exported driver "
+            f"channel at {MAX_BIQUADS_PER_DRIVER} total biquads"
         ),
         "before": before,
         "after": after,
@@ -1759,6 +1900,7 @@ def filter_topology_summary(design: List[DriverBand]) -> Dict:
     stages = []
     total_effective_lr4 = 0
     total_eq = 0
+    max_stage_total = 0
     for idx, band in enumerate(design):
         global_hp = sum(1 for flt in band.filters if "global boundary high-pass" in flt.source)
         upstream_hp = sum(1 for flt in band.filters if "cascaded upstream high-pass" in flt.source)
@@ -1766,6 +1908,7 @@ def filter_topology_summary(design: List[DriverBand]) -> Dict:
         branch_lp = sum(1 for flt in band.filters if "branch low-pass" in flt.source)
         lr4 = sum(1 for flt in band.filters if flt.source.startswith("LR4"))
         flat_eq = sum(1 for flt in band.filters if flt.source == "flat-EQ")
+        max_stage_total = max(max_stage_total, len(band.filters))
         total_effective_lr4 += lr4
         total_eq += flat_eq
         stages.append(
@@ -1794,10 +1937,14 @@ def filter_topology_summary(design: List[DriverBand]) -> Dict:
             "flat_eq_biquads": total_eq,
             "shared_tree_total_biquads_with_eq": shared_tree_lr4 + total_eq,
             "standalone_channel_total_biquads": total_effective_lr4 + total_eq,
+            "max_biquads_per_driver_limit": MAX_BIQUADS_PER_DRIVER,
+            "max_effective_total_biquads_per_driver": max_stage_total,
+            "per_driver_limit_met": max_stage_total <= MAX_BIQUADS_PER_DRIVER,
         },
         "notes": [
             "Shared-tree count assumes the DSP can route a high-pass bus into the next split stage.",
             "Standalone-channel count is what is exported per driver when each output channel must contain all inherited upstream filters.",
+            f"Flat-EQ is capped after crossover filters so every exported driver channel stays at or below {MAX_BIQUADS_PER_DRIVER} total biquads.",
             "Gain, delay, and polarity are not counted as biquads.",
         ],
     }
@@ -1816,15 +1963,38 @@ def write_exports(
     selected_candidate: Dict,
     selection_info: Dict,
     finalists: List[Dict],
+    *,
+    title: str = CHOSEN_TITLE,
+    docs_page: Path = DOCS_PAGE,
+    docs_root: Path = DOCS_ROOT,
+    synthetic_hdf5: Path = SYNTHETIC_HDF5,
+    asset_slug: str = CHOSEN_ASSET_SLUG,
+    variant_label: str = "Recommended balanced design",
+    summary_label: str = "Recommended balanced design",
+    summary_search_sentence: Optional[str] = None,
+    write_search_results: bool = True,
+    search_results_href: Optional[str] = None,
 ) -> Dict:
     topology = filter_topology_summary(design)
+    if search_results_href is None:
+        search_results_href = f"{asset_slug}/candidate_search_results.json"
+    if summary_search_sentence is None:
+        summary_search_sentence = (
+            f"The recommended stack is from {len(search_results)} evaluated 4-way/5-way LR4 combinations. "
+            f"Selection method: {selection_info['method']}."
+        )
     manifest = {
-        "title": "Juan Baffleless Synthetic CDSL Design",
+        "title": title,
+        "variant_label": variant_label,
+        "summary_label": summary_label,
+        "summary_search_sentence": summary_search_sentence,
+        "asset_slug": asset_slug,
+        "search_results_href": search_results_href,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "input_hdf5": {
             "juan_baffleless": str(JUAN_HDF5),
             "lx521_system": str(LX521_HDF5),
-            "synthetic_output": str(SYNTHETIC_HDF5),
+            "synthetic_output": str(synthetic_hdf5),
         },
         "measurement_conditions": config_info,
         "frequency_grid_hz": {"min": FREQ_MIN, "max": FREQ_MAX, "points": int(len(COMMON_FREQ))},
@@ -1846,6 +2016,10 @@ def write_exports(
                 "xover_mismatch_rms_db": "adjacent-driver normalized polar mismatch around each LR4 crossover",
                 "sep_30_60_median_2_10k_db": "median front SPL30-SPL60 from 2-10 kHz",
                 "prior_penalty": "small local evidence penalty for distortion/SPL uncertainty or known caveats",
+                "biquad_budget_penalty": (
+                    "penalty for candidates whose cascaded crossover filters leave insufficient flat-EQ headroom "
+                    f"under the {MAX_BIQUADS_PER_DRIVER}-biquad/channel cap"
+                ),
             },
         },
         "driver_directivity_audit": driver_audit_rows,
@@ -1877,9 +2051,9 @@ def write_exports(
             "Vertical-plane beaming and pseudo-baffle diffraction from the final stacked mounting geometry are not modeled.",
         ],
         "generated_files": {
-            "synthetic_hdf5": str(SYNTHETIC_HDF5),
-            "html_report": str(DOCS_PAGE),
-            "asset_root": str(DOCS_ROOT),
+            "synthetic_hdf5": str(synthetic_hdf5),
+            "html_report": str(docs_page),
+            "asset_root": str(docs_root),
             "driver_directivity_audit_csv": str(root / "driver_directivity_audit.csv"),
             "distortion_thd_audit_csv": str(root / "distortion_thd_audit.csv"),
         },
@@ -1900,7 +2074,8 @@ def write_exports(
     }
     (root / "design_manifest.json").write_text(json.dumps(manifest, indent=2))
 
-    (root / "candidate_search_results.json").write_text(json.dumps(search_results, indent=2))
+    if write_search_results:
+        (root / "candidate_search_results.json").write_text(json.dumps(search_results, indent=2))
 
     filters = {
         "_topology": topology,
@@ -1982,7 +2157,65 @@ def clean_text(text: str) -> str:
     return "\n".join(line.rstrip() for line in text.splitlines()) + "\n"
 
 
+def value_or_dash(value, fmt: str = ".2f") -> str:
+    if value is None:
+        return "-"
+    if isinstance(value, (int, float)):
+        if not np.isfinite(value):
+            return "-"
+        return format(float(value), fmt)
+    return html.escape(str(value))
+
+
+def render_report_comparison(rows: List[Dict]) -> str:
+    if not rows:
+        return ""
+    table_rows = "".join(
+        f"""
+        <tr>
+            <td>{html.escape(row['metric'])}</td>
+            <td>{value_or_dash(row.get('chosen'), row.get('format', '.2f'))}</td>
+            <td>{value_or_dash(row.get('baseline'), row.get('format', '.2f'))}</td>
+            <td>{value_or_dash(row.get('baseline_minus_chosen'), row.get('format', '.2f'))}</td>
+            <td>{html.escape(row.get('note', ''))}</td>
+        </tr>
+        """
+        for row in rows
+    )
+    return f"""
+        <h2 class="section-title">Baseline vs Chosen</h2>
+        <div class="card"><div class="card-body">
+            <p class="note">
+                Baseline is the fixed seed: L26RO4Y below 200 Hz, L22MG 200-800 Hz,
+                GRS PT6816 800-2500 Hz, and ND25FW4 above 2500 Hz. Delta is baseline minus chosen.
+            </p>
+            <table>
+                <thead><tr><th>Metric</th><th>Chosen</th><th>Baseline</th><th>Delta</th><th>Interpretation</th></tr></thead>
+                <tbody>{table_rows}</tbody>
+            </table>
+            <p>{link('juan-baffleless-cdsl-comparison.html', 'Open side-by-side comparison page')}</p>
+        </div></div>
+    """
+
+
 def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_stats: Dict, lx_stats: Dict) -> str:
+    title = manifest.get("title", CHOSEN_TITLE)
+    asset_slug = manifest.get("asset_slug", CHOSEN_ASSET_SLUG)
+    summary_label = manifest.get("summary_label", "Recommended balanced design")
+    summary_subtitle = manifest.get(
+        "summary_subtitle",
+        f"{len(DESIGN)}-way LR4 synthetic CDSL, generated from complex HDF5 measurements",
+    )
+    selection_sentence = manifest.get(
+        "summary_search_sentence",
+        (
+            f"The recommended stack is from {manifest['search']['candidate_count']} evaluated 4-way/5-way LR4 combinations. "
+            f"Selection method: {manifest['search']['selection']['method']}."
+        ),
+    )
+    comparison_section = render_report_comparison(manifest.get("baseline_comparison", []))
+    synthetic_output = manifest.get("input_hdf5", {}).get("synthetic_output", str(SYNTHETIC_HDF5))
+    search_results_href = manifest.get("search_results_href", f"{asset_slug}/candidate_search_results.json")
     stack_text = ", ".join(
         f"{band.driver} {band.lo:.0f}-{band.hi:.0f} Hz" if band.hi < FREQ_MAX else f"{band.driver} above {band.lo:.0f} Hz"
         for band in DESIGN
@@ -2036,11 +2269,14 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
         for row in metrics_rows
     )
     warning_items = "".join(f"<li>{html.escape(item)}</li>" for item in manifest["validation_warnings"])
-    finalist_rows = "".join(
-        f"""
+    finalist_rows = ""
+    for idx, row in enumerate(manifest["search"]["finalists"]):
+        rank = row.get("balanced_rank", idx + 1)
+        rank_text = "fixed" if rank in (None, 0, "fixed") else str(rank)
+        finalist_rows += f"""
         <tr>
             <td>{html.escape(row['finalist_role'])}</td>
-            <td>{row.get('balanced_rank', idx + 1)}</td>
+            <td>{html.escape(rank_text)}</td>
             <td>{row['ways']}</td>
             <td>{html.escape(' / '.join(row['drivers']))}</td>
             <td>{html.escape(' / '.join(f'{x:g}' for x in row['xovers']))}</td>
@@ -2048,11 +2284,11 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             <td>{float(row['dipole_front_rms_db']):.2f}</td>
             <td>{float(row['xover_mismatch_rms_db']):.2f}</td>
             <td>{float(row['sep_30_60_median_2_10k_db']):.2f}</td>
+            <td>{float(row.get('biquad_budget_penalty', 0.0)):.2f}</td>
+            <td>{int(row.get('flat_eq_candidate_shortfall_total', 0))}</td>
             <td>{html.escape(row['note'])}</td>
         </tr>
         """
-        for idx, row in enumerate(manifest["search"]["finalists"])
-    )
     audit_rows = "".join(
         f"""
         <tr>
@@ -2130,12 +2366,12 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
     )
     topology_notes = "".join(f"<li>{html.escape(note)}</li>" for note in topology["notes"])
 
-    return f"""<!DOCTYPE html>
+    report = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juan Baffleless Synthetic CDSL Design</title>
+    <title>{html.escape(title)}</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <style>
         :root {{
@@ -2210,7 +2446,7 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
 </head>
 <body>
     <header>
-        <h1>Juan Baffleless Synthetic CDSL Design</h1>
+        <h1>{html.escape(title)}</h1>
         <p>Filtered synthetic sum from Juan driver measurements, compared with LX521.4</p>
         <a href="index.html" class="back-link">Back to Main Page</a>
     </header>
@@ -2219,11 +2455,11 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
         <div class="card">
             <div class="card-header">
                 <h2>Executive Summary</h2>
-                <div class="subtitle">5-way LR4 synthetic CDSL, generated from complex HDF5 measurements</div>
+                <div class="subtitle">{html.escape(summary_subtitle)}</div>
             </div>
             <div class="card-body">
                 <div class="highlight">
-                    <strong>Recommended balanced design:</strong> {html.escape(stack_text)}.
+                    <strong>{html.escape(summary_label)}:</strong> {html.escape(stack_text)}.
                 </div>
                 <div class="summary-grid">
                     <div class="metric-card"><div class="value">{cdsl_stats['median']:.1f} dB</div><div class="label">CDSL median SPL30-SPL60, 2-10 kHz</div></div>
@@ -2234,28 +2470,29 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
                 <p class="note">
                     The model sums measured complex pressure by angle and side after explicit digital biquad filters, gain, polarity, and delay.
                     SPL calibration, physical driver offsets, cabinet diffraction, and distortion under equalized drive remain assumptions.
-                    The recommended stack is from {manifest['search']['candidate_count']} evaluated 4-way/5-way LR4 combinations.
-                    Selection method: {html.escape(manifest['search']['selection']['method'])}.
+                    {html.escape(selection_sentence)}
                 </p>
             </div>
         </div>
+
+{comparison_section}
 
         <h2 class="section-title">Finalists & Candidate Search</h2>
         <div class="card"><div class="card-body">
             <p class="note">
                 The search is not just the preliminary stack. It tries L10NEO, both ScanSpeak 10F variants, GRS, MU10, and ND25 across multiple LR4 crossover grids.
                 Lower score is better; the score favors cosine/dipole-like front and rear polars, strong side nulls, adjacent-driver pattern match near crossovers,
-                measured-frequency validity, and larger 2-10 kHz SPL30-SPL60 separation.
+                measured-frequency validity, larger 2-10 kHz SPL30-SPL60 separation, and enough flat-EQ headroom under the 15-biquad/channel cap.
                 {html.escape(manifest['search']['selection']['reason'])}
             </p>
             <table>
-                <thead><tr><th>Finalist</th><th>Balanced Rank</th><th>Ways</th><th>Drivers</th><th>XOs Hz</th><th>Score</th><th>Front Dipole RMS</th><th>XO Mismatch</th><th>30-60 dB</th><th>Note</th></tr></thead>
+                <thead><tr><th>Finalist</th><th>Balanced Rank</th><th>Ways</th><th>Drivers</th><th>XOs Hz</th><th>Score</th><th>Front Dipole RMS</th><th>XO Mismatch</th><th>30-60 dB</th><th>Biquad Penalty</th><th>EQ Shortfall</th><th>Note</th></tr></thead>
                 <tbody>{finalist_rows}</tbody>
             </table>
             <div class="asset-grid">
                 <img src="juan-baffleless-cdsl/static_plots/core/cdsl_search_top_candidates.png" alt="Top CDSL candidate search results">
             </div>
-            <p>{link('juan-baffleless-cdsl/candidate_search_results.json', 'Download full candidate search JSON')}</p>
+            <p>{link(search_results_href, 'Download full candidate search JSON')}</p>
         </div></div>
 
         <h2 class="section-title">Driver Tradeoff Audit</h2>
@@ -2311,6 +2548,7 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
                 <div class="metric-card"><div class="value">{topology_summary['shared_tree_lr4_biquads']}</div><div class="label">Shared-tree LR4 biquads</div></div>
                 <div class="metric-card"><div class="value">{topology_summary['standalone_channel_lr4_biquads']}</div><div class="label">Per-channel exported LR4 biquads</div></div>
                 <div class="metric-card"><div class="value">{topology_summary['flat_eq_biquads']}</div><div class="label">Flat-EQ biquads</div></div>
+                <div class="metric-card"><div class="value">{topology_summary['max_effective_total_biquads_per_driver']}/{topology_summary['max_biquads_per_driver_limit']}</div><div class="label">Max biquads on any driver</div></div>
                 <div class="metric-card"><div class="value">{topology_summary['shared_tree_total_biquads_with_eq']}</div><div class="label">Shared-tree total with EQ</div></div>
             </div>
             <table>
@@ -2326,6 +2564,7 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
                 The <code>flat-EQ</code> filters are a sparse summed-response least-squares fit assigned per driver.
                 They use {manifest['flatness_optimization']['filters_kept']} active correction filters out of {manifest['flatness_optimization']['filters_tested']} candidates;
                 the unconstrained full fit would keep about {manifest['flatness_optimization']['full_fit_filters_needed']} filters above the pruning threshold.
+                The hard export limit is {manifest['flatness_optimization']['max_biquads_per_driver']} biquads per driver, including cascaded LR4 filters before flat-EQ.
                 This is still a simulated equalization pass, not a final measured-room/prototype EQ.
             </p>
             <table>
@@ -2345,6 +2584,8 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             <p class="note">
                 Target flatness is evaluated on the synthetic front 0-degree sum. The raw gated response still contains narrow features that should not be over-corrected from this preliminary phase model.
                 The more meaningful target here is the smoothed trend before prototype measurement.
+                Primary flatness target met under the {manifest['flatness_optimization']['max_biquads_per_driver']}-biquad-per-driver cap:
+                <strong>{'yes' if manifest['flatness_optimization']['constraint_met'] else 'no'}</strong>.
             </p>
             <table>
                 <thead><tr><th>Stage</th><th>Smoothing</th><th>Band</th><th>Median dB</th><th>Min Err</th><th>Max Err</th><th>Peak-Peak</th><th>RMS Err</th></tr></thead>
@@ -2428,7 +2669,7 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
         <div class="card"><div class="card-body">
             <p><strong>Generated:</strong> {html.escape(manifest['generated_at_utc'])}</p>
             <p><strong>Inputs:</strong> {html.escape(str(JUAN_HDF5))}, {html.escape(str(LX521_HDF5))}</p>
-            <p><strong>Synthetic HDF5:</strong> {html.escape(str(SYNTHETIC_HDF5))}</p>
+            <p><strong>Synthetic HDF5:</strong> {html.escape(str(synthetic_output))}</p>
             <p><strong>Smoothing:</strong> {html.escape(manifest['measurement_conditions']['smoothing_str'])}; <strong>gate:</strong> {manifest['measurement_conditions']['gate_left_ms']} ms / {manifest['measurement_conditions']['gate_right_ms']} ms.</p>
             <p class="note">This is a synthetic, equalized pressure sum. It is not a replacement for a measured prototype with final driver spacing and baffle geometry.</p>
         </div></div>
@@ -2440,6 +2681,10 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
 </body>
 </html>
 """
+    if asset_slug != CHOSEN_ASSET_SLUG:
+        report = report.replace(f"{CHOSEN_ASSET_SLUG}/", f"{asset_slug}/")
+        report = report.replace(f"{asset_slug}/candidate_search_results.json", search_results_href)
+    return report
 
 
 def copy_to_docs(output_root: Path, docs_root: Path) -> None:
@@ -2448,71 +2693,25 @@ def copy_to_docs(output_root: Path, docs_root: Path) -> None:
     shutil.copytree(output_root, docs_root)
 
 
-def main() -> None:
-    global DESIGN, CROSSOVERS
+METRIC_BANDS = [
+    ("70-200 Hz", 70, 200),
+    ("200-800 Hz", 200, 800),
+    ("800-2500 Hz", 800, 2500),
+    ("2-10 kHz", 2000, 10000),
+    ("10-20 kHz", 10000, 20000),
+]
 
-    if not JUAN_HDF5.exists():
-        raise FileNotFoundError(f"Missing {JUAN_HDF5}")
-    if not LX521_HDF5.exists():
-        raise FileNotFoundError(f"Missing {LX521_HDF5}")
 
-    if OUTPUT_ROOT.exists():
-        shutil.rmtree(OUTPUT_ROOT)
-    ensure_dirs(OUTPUT_ROOT)
-    juan_data, juan_cfg = load_hdf5(JUAN_HDF5)
-    lx_data, lx_cfg = load_hdf5(LX521_HDF5)
-
-    search_results = optimize_design_search(juan_data)
-    if not search_results:
-        raise RuntimeError("No valid candidate designs were scored")
-
-    best, selection_info, finalists = choose_finalists(search_results)
-    DESIGN = make_design(best["drivers"], best["xovers"])
-    CROSSOVERS = crossover_manifest(best["drivers"], best["xovers"])
-
-    missing = [band.driver for band in DESIGN if band.driver not in juan_data]
-    if missing:
-        raise RuntimeError(f"Missing required drivers in {JUAN_HDF5}: {missing}")
-
-    plot_search_results(search_results, OUTPUT_ROOT, best)
-    add_crossover_filters(DESIGN)
-    set_initial_gains(juan_data, DESIGN)
-    optimize_delays(juan_data, DESIGN)
-    flatness_info = optimize_system_flatness(juan_data, DESIGN)
-
-    system = synthesize_system(juan_data, DESIGN)
-    lx = load_lx521(lx_data)
-    side_feature_info = upper_mid_side_feature(system)
-
-    system_metrics = directivity_metrics(system)
-    lx_metrics = directivity_metrics(lx)
-
-    plot_filter_transfer(DESIGN, OUTPUT_ROOT)
-    plot_crossover_regions(system, DESIGN, OUTPUT_ROOT)
-    plot_freq_response(system, OUTPUT_ROOT)
-    plot_contours(system, OUTPUT_ROOT)
-    plot_di_beam(system_metrics, lx_metrics, OUTPUT_ROOT)
-    cdsl_30_60, lx_30_60 = plot_30_60(system, lx, OUTPUT_ROOT)
-    plot_polar(system, lx, OUTPUT_ROOT)
-    write_plotly_pages(system, lx, system_metrics, lx_metrics, cdsl_30_60, lx_30_60, OUTPUT_ROOT)
-    write_synthetic_hdf5(system, juan_cfg)
-
-    bands = [
-        ("70-200 Hz", 70, 200),
-        ("200-800 Hz", 200, 800),
-        ("800-2500 Hz", 800, 2500),
-        ("2-10 kHz", 2000, 10000),
-        ("10-20 kHz", 10000, 20000),
-    ]
-    metrics_rows: List[Dict] = []
-    for label, lo, hi in bands:
+def compute_metrics_rows(system: Dict, lx: Dict, system_metrics: Dict, cdsl_30_60: np.ndarray, lx_30_60: np.ndarray) -> List[Dict]:
+    rows: List[Dict] = []
+    for label, lo, hi in METRIC_BANDS:
         cdsl_stats = band_stats(COMMON_FREQ, cdsl_30_60, lo, hi)
         lx_stats = band_stats(COMMON_FREQ, lx_30_60, lo, hi)
         di_stats = band_stats(COMMON_FREQ, system_metrics["di"], lo, hi)
         beam_stats = band_stats(COMMON_FREQ, system_metrics["beam_6"], lo, hi)
         rear0_stats = band_stats(COMMON_FREQ, rear_front_delta(system, 0), lo, hi)
         null_stats = band_stats(COMMON_FREQ, side_null_delta(system), lo, hi)
-        metrics_rows.append(
+        rows.append(
             {
                 "band": label,
                 "cdsl_30_60_mean_db": round(cdsl_stats["mean"], 3),
@@ -2525,11 +2724,94 @@ def main() -> None:
                 "cdsl_f90_minus_f0_median_db": round(null_stats["median"], 3),
             }
         )
+    return rows
 
-    driver_audit_rows = measured_driver_directivity_audit(juan_data)
-    distortion_audit_rows = distortion_thd_audit()
+
+def metrics_band(rows: List[Dict], band: str) -> Dict:
+    return next(row for row in rows if row["band"] == band)
+
+
+def update_manifest_file(summary: Dict) -> None:
+    (summary["output_root"] / "design_manifest.json").write_text(json.dumps(summary["manifest"], indent=2))
+
+
+def write_variant_report(summary: Dict) -> None:
+    global DESIGN, CROSSOVERS
+    DESIGN = summary["design"]
+    CROSSOVERS = summary["crossovers"]
+    update_manifest_file(summary)
+    report = render_report(
+        summary["output_root"],
+        summary["manifest"],
+        summary["metrics_rows"],
+        summary["cdsl_stats"],
+        summary["lx_stats"],
+    )
+    copy_to_docs(summary["output_root"], summary["docs_root"])
+    summary["docs_page"].write_text(clean_text(report))
+
+
+def build_variant(
+    *,
+    juan_data: Dict[str, Dict],
+    lx_data: Dict[str, Dict],
+    juan_cfg: Dict,
+    drivers: List[str],
+    xovers: List[float],
+    output_root: Path,
+    docs_root: Path,
+    docs_page: Path,
+    synthetic_hdf5: Path,
+    title: str,
+    asset_slug: str,
+    variant_label: str,
+    summary_label: str,
+    search_results: List[Dict],
+    selected_candidate: Dict,
+    selection_info: Dict,
+    finalists: List[Dict],
+    driver_audit_rows: List[Dict],
+    distortion_audit_rows: List[Dict],
+    summary_search_sentence: Optional[str] = None,
+    write_search_results: bool = True,
+    search_results_href: Optional[str] = None,
+) -> Dict:
+    global DESIGN, CROSSOVERS
+    if output_root.exists():
+        shutil.rmtree(output_root)
+    ensure_dirs(output_root)
+
+    DESIGN = make_design(drivers, xovers)
+    CROSSOVERS = crossover_manifest(drivers, xovers)
+    missing = [band.driver for band in DESIGN if band.driver not in juan_data]
+    if missing:
+        raise RuntimeError(f"Missing required drivers in {JUAN_HDF5}: {missing}")
+
+    plot_search_results(search_results, output_root, selected_candidate)
+    add_crossover_filters(DESIGN)
+    set_initial_gains(juan_data, DESIGN)
+    optimize_delays(juan_data, DESIGN)
+    flatness_info = optimize_system_flatness(juan_data, DESIGN)
+
+    system = synthesize_system(juan_data, DESIGN)
+    lx = load_lx521(lx_data)
+    side_feature_info = upper_mid_side_feature(system)
+    system_metrics = directivity_metrics(system)
+    lx_metrics = directivity_metrics(lx)
+
+    plot_filter_transfer(DESIGN, output_root)
+    plot_crossover_regions(system, DESIGN, output_root)
+    plot_freq_response(system, output_root)
+    plot_contours(system, output_root)
+    plot_di_beam(system_metrics, lx_metrics, output_root)
+    cdsl_30_60, lx_30_60 = plot_30_60(system, lx, output_root)
+    plot_polar(system, lx, output_root)
+    write_plotly_pages(system, lx, system_metrics, lx_metrics, cdsl_30_60, lx_30_60, output_root)
+    write_synthetic_hdf5(system, juan_cfg, synthetic_hdf5)
+
+    metrics_rows = compute_metrics_rows(system, lx, system_metrics, cdsl_30_60, lx_30_60)
     manifest = write_exports(
-        OUTPUT_ROOT,
+        output_root,
         DESIGN,
         metrics_rows,
         driver_audit_rows,
@@ -2538,23 +2820,312 @@ def main() -> None:
         side_feature_info,
         juan_cfg,
         search_results,
-        best,
+        selected_candidate,
         selection_info,
         finalists,
+        title=title,
+        docs_page=docs_page,
+        docs_root=docs_root,
+        synthetic_hdf5=synthetic_hdf5,
+        asset_slug=asset_slug,
+        variant_label=variant_label,
+        summary_label=summary_label,
+        summary_search_sentence=summary_search_sentence,
+        write_search_results=write_search_results,
+        search_results_href=search_results_href,
     )
-    report = render_report(
-        OUTPUT_ROOT,
-        manifest,
-        metrics_rows,
-        band_stats(COMMON_FREQ, cdsl_30_60, 2000, 10000),
-        band_stats(COMMON_FREQ, lx_30_60, 2000, 10000),
+    summary = {
+        "title": title,
+        "asset_slug": asset_slug,
+        "output_root": output_root,
+        "docs_root": docs_root,
+        "docs_page": docs_page,
+        "synthetic_hdf5": synthetic_hdf5,
+        "design": DESIGN,
+        "crossovers": CROSSOVERS,
+        "manifest": manifest,
+        "metrics_rows": metrics_rows,
+        "flatness_info": flatness_info,
+        "system": system,
+        "lx": lx,
+        "system_metrics": system_metrics,
+        "cdsl_30_60": cdsl_30_60,
+        "lx_30_60": lx_30_60,
+        "cdsl_stats": band_stats(COMMON_FREQ, cdsl_30_60, 2000, 10000),
+        "lx_stats": band_stats(COMMON_FREQ, lx_30_60, 2000, 10000),
+    }
+    write_variant_report(summary)
+    return summary
+
+
+def compare_variants(chosen: Dict, baseline: Dict) -> List[Dict]:
+    chosen_2_10 = metrics_band(chosen["metrics_rows"], "2-10 kHz")
+    baseline_2_10 = metrics_band(baseline["metrics_rows"], "2-10 kHz")
+    chosen_flat = chosen["flatness_info"]["after"][FLATNESS_PRIMARY_SMOOTHING][FLATNESS_PRIMARY_BAND_HZ]
+    baseline_flat = baseline["flatness_info"]["after"][FLATNESS_PRIMARY_SMOOTHING][FLATNESS_PRIMARY_BAND_HZ]
+    chosen_topology = chosen["manifest"]["filter_topology"]["summary"]
+    baseline_topology = baseline["manifest"]["filter_topology"]["summary"]
+    rows = [
+        {
+            "metric": "2-10 kHz SPL30-SPL60 median (dB)",
+            "chosen": chosen_2_10["cdsl_30_60_median_db"],
+            "baseline": baseline_2_10["cdsl_30_60_median_db"],
+            "baseline_minus_chosen": baseline_2_10["cdsl_30_60_median_db"] - chosen_2_10["cdsl_30_60_median_db"],
+            "note": "Higher usually means stronger CDSL near/far angular separation.",
+        },
+        {
+            "metric": "2-10 kHz front 90 minus front 0 median (dB)",
+            "chosen": chosen_2_10["cdsl_f90_minus_f0_median_db"],
+            "baseline": baseline_2_10["cdsl_f90_minus_f0_median_db"],
+            "baseline_minus_chosen": baseline_2_10["cdsl_f90_minus_f0_median_db"] - chosen_2_10["cdsl_f90_minus_f0_median_db"],
+            "note": "More negative preserves a deeper side null.",
+        },
+        {
+            "metric": "2-10 kHz rear 0 minus front 0 median (dB)",
+            "chosen": chosen_2_10["cdsl_r0_minus_f0_median_db"],
+            "baseline": baseline_2_10["cdsl_r0_minus_f0_median_db"],
+            "baseline_minus_chosen": baseline_2_10["cdsl_r0_minus_f0_median_db"] - chosen_2_10["cdsl_r0_minus_f0_median_db"],
+            "note": "Closer to 0 dB is closer front/rear dipole symmetry.",
+        },
+        {
+            "metric": "2-10 kHz DI mean (dB)",
+            "chosen": chosen_2_10["cdsl_di_mean_db"],
+            "baseline": baseline_2_10["cdsl_di_mean_db"],
+            "baseline_minus_chosen": baseline_2_10["cdsl_di_mean_db"] - chosen_2_10["cdsl_di_mean_db"],
+            "note": "Higher indicates narrower horizontal directivity in this convention.",
+        },
+        {
+            "metric": "2-10 kHz -6 dB beamwidth median (deg)",
+            "chosen": chosen_2_10["cdsl_beam6_median_deg"],
+            "baseline": baseline_2_10["cdsl_beam6_median_deg"],
+            "baseline_minus_chosen": baseline_2_10["cdsl_beam6_median_deg"] - chosen_2_10["cdsl_beam6_median_deg"],
+            "note": "Lower indicates narrower front lobe.",
+            "format": ".0f",
+        },
+        {
+            "metric": "Flatness 200-10k 1/3-oct peak-peak (dB)",
+            "chosen": chosen_flat["peak_to_peak_db"],
+            "baseline": baseline_flat["peak_to_peak_db"],
+            "baseline_minus_chosen": baseline_flat["peak_to_peak_db"] - chosen_flat["peak_to_peak_db"],
+            "note": "Lower is flatter after the sparse EQ fit.",
+        },
+        {
+            "metric": "Flatness 200-10k 1/3-oct RMS error (dB)",
+            "chosen": chosen_flat["rms_error_db"],
+            "baseline": baseline_flat["rms_error_db"],
+            "baseline_minus_chosen": baseline_flat["rms_error_db"] - chosen_flat["rms_error_db"],
+            "note": "Lower is flatter after the sparse EQ fit.",
+        },
+        {
+            "metric": "Flat-EQ biquads",
+            "chosen": chosen_topology["flat_eq_biquads"],
+            "baseline": baseline_topology["flat_eq_biquads"],
+            "baseline_minus_chosen": baseline_topology["flat_eq_biquads"] - chosen_topology["flat_eq_biquads"],
+            "note": "Lower is simpler.",
+            "format": ".0f",
+        },
+        {
+            "metric": "Shared-tree total biquads with EQ",
+            "chosen": chosen_topology["shared_tree_total_biquads_with_eq"],
+            "baseline": baseline_topology["shared_tree_total_biquads_with_eq"],
+            "baseline_minus_chosen": baseline_topology["shared_tree_total_biquads_with_eq"] - chosen_topology["shared_tree_total_biquads_with_eq"],
+            "note": "Lower is simpler in a cascaded implementation.",
+            "format": ".0f",
+        },
+    ]
+    return rows
+
+
+def render_comparison_page(comparison_rows: List[Dict], chosen: Dict, baseline: Dict) -> str:
+    rows_html = "".join(
+        f"""
+        <tr>
+            <td>{html.escape(row['metric'])}</td>
+            <td>{value_or_dash(row.get('chosen'), row.get('format', '.2f'))}</td>
+            <td>{value_or_dash(row.get('baseline'), row.get('format', '.2f'))}</td>
+            <td>{value_or_dash(row.get('baseline_minus_chosen'), row.get('format', '.2f'))}</td>
+            <td>{html.escape(row.get('note', ''))}</td>
+        </tr>
+        """
+        for row in comparison_rows
     )
-    copy_to_docs(OUTPUT_ROOT, DOCS_ROOT)
-    DOCS_PAGE.write_text(clean_text(report))
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDSL Chosen vs Baseline Comparison</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        .asset-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 1rem;
+        }}
+        .asset-grid img {{
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: white;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }}
+        th, td {{
+            border: 1px solid var(--border);
+            padding: 0.55rem 0.65rem;
+            vertical-align: top;
+        }}
+        th {{
+            background: #f1f5f9;
+            text-align: left;
+        }}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CDSL Chosen vs Baseline Comparison</h1>
+        <p>Chosen optimized stack against the fixed baseline CDSL seed</p>
+        <a href="index.html" class="back-link">Back to Main Page</a>
+    </header>
+    <main>
+        <div class="card"><div class="card-body">
+            <p>
+                Chosen: {html.escape(' / '.join(band.driver for band in chosen['design']))}.
+                Baseline: {html.escape(' / '.join(band.driver for band in baseline['design']))}.
+                Delta is baseline minus chosen.
+            </p>
+            <ul class="link-list">
+                <li>{link('juan-baffleless-cdsl.html', 'Open chosen CDSL report')}</li>
+                <li>{link('juan-baffleless-cdsl-baseline.html', 'Open baseline CDSL report')}</li>
+            </ul>
+            <table>
+                <thead><tr><th>Metric</th><th>Chosen</th><th>Baseline</th><th>Delta</th><th>Interpretation</th></tr></thead>
+                <tbody>{rows_html}</tbody>
+            </table>
+        </div></div>
+
+        <h2 class="section-title">Acoustic Sum</h2>
+        <div class="asset-grid">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_crossover_regions.png" alt="Chosen crossover regions">
+            <img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_crossover_regions.png" alt="Baseline crossover regions">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_freq_response_angles.png" alt="Chosen frequency response">
+            <img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_freq_response_angles.png" alt="Baseline frequency response">
+        </div>
+
+        <h2 class="section-title">Directivity</h2>
+        <div class="asset-grid">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_contour_normalized.png" alt="Chosen normalized contour">
+            <img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_contour_normalized.png" alt="Baseline normalized contour">
+            <img src="juan-baffleless-cdsl/static_plots/core/cdsl_30_vs_60_metric.png" alt="Chosen 30 vs 60">
+            <img src="juan-baffleless-cdsl-baseline/static_plots/core/cdsl_30_vs_60_metric.png" alt="Baseline 30 vs 60">
+        </div>
+    </main>
+    <footer>
+        <p><a href="https://github.com/antorsae/lx">Source Code</a> | <a href="index.html">Back to Main Page</a></p>
+    </footer>
+</body>
+</html>
+"""
+
+
+def main() -> None:
+    global DESIGN, CROSSOVERS
+
+    if not JUAN_HDF5.exists():
+        raise FileNotFoundError(f"Missing {JUAN_HDF5}")
+    if not LX521_HDF5.exists():
+        raise FileNotFoundError(f"Missing {LX521_HDF5}")
+
+    juan_data, juan_cfg = load_hdf5(JUAN_HDF5)
+    lx_data, lx_cfg = load_hdf5(LX521_HDF5)
+
+    search_results = optimize_design_search(juan_data)
+    if not search_results:
+        raise RuntimeError("No valid candidate designs were scored")
+
+    best, selection_info, finalists = choose_finalists(search_results)
+    driver_audit_rows = measured_driver_directivity_audit(juan_data)
+    distortion_audit_rows = distortion_thd_audit()
+
+    chosen = build_variant(
+        juan_data=juan_data,
+        lx_data=lx_data,
+        juan_cfg=juan_cfg,
+        drivers=best["drivers"],
+        xovers=best["xovers"],
+        output_root=OUTPUT_ROOT,
+        docs_root=DOCS_ROOT,
+        docs_page=DOCS_PAGE,
+        synthetic_hdf5=SYNTHETIC_HDF5,
+        title=CHOSEN_TITLE,
+        asset_slug=CHOSEN_ASSET_SLUG,
+        variant_label="recommended balanced design",
+        summary_label="Recommended balanced design",
+        search_results=search_results,
+        selected_candidate=best,
+        selection_info=selection_info,
+        finalists=finalists,
+        driver_audit_rows=driver_audit_rows,
+        distortion_audit_rows=distortion_audit_rows,
+    )
+
+    baseline_candidate = score_candidate(precompute_search_data(juan_data), BASELINE_DRIVERS, BASELINE_XOVERS)
+    baseline_candidate = with_rank(
+        baseline_candidate,
+        0,
+        "Baseline fixed seed",
+        "Requested baseline: L26RO4Y below 200 Hz, L22MG 200-800 Hz, GRS 800-2500 Hz, ND25FW above 2500 Hz.",
+    )
+    baseline_selection_info = {
+        "method": "fixed baseline seed",
+        "reason": "This baseline is fixed by request and generated with the same gain, delay, cascaded LR4, and sparse flat-EQ process as the chosen design.",
+        "fallback_used": False,
+    }
+    baseline = build_variant(
+        juan_data=juan_data,
+        lx_data=lx_data,
+        juan_cfg=juan_cfg,
+        drivers=BASELINE_DRIVERS,
+        xovers=BASELINE_XOVERS,
+        output_root=BASELINE_OUTPUT_ROOT,
+        docs_root=BASELINE_DOCS_ROOT,
+        docs_page=BASELINE_DOCS_PAGE,
+        synthetic_hdf5=BASELINE_SYNTHETIC_HDF5,
+        title=BASELINE_TITLE,
+        asset_slug=BASELINE_ASSET_SLUG,
+        variant_label="baseline CDSL seed",
+        summary_label="Baseline CDSL seed",
+        search_results=search_results,
+        selected_candidate=baseline_candidate,
+        selection_info=baseline_selection_info,
+        finalists=[baseline_candidate],
+        driver_audit_rows=driver_audit_rows,
+        distortion_audit_rows=distortion_audit_rows,
+        summary_search_sentence=(
+            "This baseline is fixed by request and was not chosen by the optimizer; "
+            "the full candidate search is shown only as context."
+        ),
+        write_search_results=False,
+        search_results_href=f"{CHOSEN_ASSET_SLUG}/candidate_search_results.json",
+    )
+
+    comparison_rows = compare_variants(chosen, baseline)
+    chosen["manifest"]["baseline_comparison"] = comparison_rows
+    baseline["manifest"]["baseline_comparison"] = comparison_rows
+    write_variant_report(chosen)
+    write_variant_report(baseline)
+    COMPARISON_DOCS_PAGE.write_text(clean_text(render_comparison_page(comparison_rows, chosen, baseline)))
 
     print(f"Wrote {OUTPUT_ROOT}")
     print(f"Wrote {DOCS_ROOT}")
     print(f"Wrote {DOCS_PAGE}")
+    print(f"Wrote {BASELINE_OUTPUT_ROOT}")
+    print(f"Wrote {BASELINE_DOCS_ROOT}")
+    print(f"Wrote {BASELINE_DOCS_PAGE}")
+    print(f"Wrote {COMPARISON_DOCS_PAGE}")
 
 
 if __name__ == "__main__":

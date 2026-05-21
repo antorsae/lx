@@ -355,6 +355,8 @@ def write_index():
                 </p>
                 <ul class="link-list">
                     <li><a href="juan-baffleless-cdsl.html">Juan Baffleless Synthetic CDSL Design</a></li>
+                    <li><a href="juan-baffleless-cdsl-baseline.html">Baseline CDSL Seed Design</a></li>
+                    <li><a href="juan-baffleless-cdsl-comparison.html">CDSL Chosen vs Baseline Comparison</a></li>
                 </ul>
             </div>
         </div>
