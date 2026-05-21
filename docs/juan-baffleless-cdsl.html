@@ -91,12 +91,12 @@
             </div>
             <div class="card-body">
                 <div class="highlight">
-                    <strong>Recommended balanced design:</strong> L26RO4Y 70-120 Hz, L22MG (nude) 120-650 Hz, SS10F8414G10 650-2000 Hz, GRS PT6816 2000-12000 Hz, ND25FW4 (nude 18mm) above 12000 Hz.
+                    <strong>Recommended balanced design:</strong> L26RO4Y 70-120 Hz, L22MG (nude) 120-650 Hz, SS10F8414G10 650-2000 Hz, GRS PT6816 2000-8000 Hz, ND25FW4 (nude 18mm) above 8000 Hz.
                 </div>
                 <div class="summary-grid">
-                    <div class="metric-card"><div class="value">6.7 dB</div><div class="label">CDSL median SPL30-SPL60, 2-10 kHz</div></div>
+                    <div class="metric-card"><div class="value">6.3 dB</div><div class="label">CDSL median SPL30-SPL60, 2-10 kHz</div></div>
                     <div class="metric-card"><div class="value">5.1 dB</div><div class="label">LX521 measured median SPL30-SPL60, 2-10 kHz</div></div>
-                    <div class="metric-card"><div class="value">LR4 / LR4 / LR2 / LR2</div><div class="label">Topology at LR4 120, LR4 650, LR2 2000, LR2 12000 Hz</div></div>
+                    <div class="metric-card"><div class="value">LR4 / LR4 / LR2 / LR2</div><div class="label">Topology at LR4 120, LR4 650, LR2 2000, LR2 8000 Hz</div></div>
                     <div class="metric-card"><div class="value">0.5 / 3.0 ms</div><div class="label">Same HDF5 gate condition as Juan LX521 data</div></div>
                 </div>
                 <p class="note">
@@ -113,15 +113,15 @@
             <p class="note">
                 Baseline is the fixed seed: L26RO4Y below 200 Hz, L22MG 200-800 Hz,
                 GRS PT6816 800-2500 Hz, and ND25FW4 above 2500 Hz. Comparison factors use broad psychoacoustic frequency weighting and are separate from hard filter-count constraints.
-                Weighted factor wins: chosen 53%, baseline 42%, insufficient/context 5%.
+                Weighted factor wins: chosen 55%, baseline 28%, insufficient/context 4%.
             </p>
             <table>
                 <thead><tr><th>Factor</th><th>Weight</th><th>Chosen</th><th>Baseline</th><th>Direction</th><th>Winner</th><th>Why it matters</th></tr></thead>
                 <tbody>
         <tr>
             <td>Weighted 2-10 kHz SPL30-SPL60 (dB)</td>
-            <td>28%</td>
-            <td>7.15</td>
+            <td>22%</td>
+            <td>6.71</td>
             <td>5.82</td>
             <td>higher</td>
             <td>chosen</td>
@@ -130,8 +130,8 @@
 
         <tr>
             <td>Crossover-local polar mismatch RMS (dB)</td>
-            <td>18%</td>
-            <td>7.58</td>
+            <td>17%</td>
+            <td>7.24</td>
             <td>9.04</td>
             <td>lower</td>
             <td>chosen</td>
@@ -139,20 +139,30 @@
         </tr>
 
         <tr>
-            <td>Weighted 90-degree leakage excess RMS (dB)</td>
+            <td>8-12 kHz polar transition/ridge penalty</td>
             <td>16%</td>
-            <td>0.15</td>
+            <td>1.19</td>
+            <td>1.91</td>
+            <td>lower</td>
+            <td>chosen</td>
+            <td>Penalizes narrow contour ridges and steep frequency-axis changes at side/rear angles, so a bright 10 kHz side-energy stripe is not accepted as benign.</td>
+        </tr>
+
+        <tr>
+            <td>Weighted 90-degree leakage excess RMS (dB)</td>
+            <td>13%</td>
+            <td>0.00</td>
             <td>0.00</td>
             <td>lower</td>
-            <td>baseline</td>
+            <td>tie</td>
             <td>Penalizes energy above a -18 dB side-null target where crosstalk cancellation is most sensitive.</td>
         </tr>
 
         <tr>
             <td>Weighted front dipole polar error RMS (dB)</td>
-            <td>12%</td>
-            <td>3.24</td>
-            <td>2.05</td>
+            <td>10%</td>
+            <td>3.08</td>
+            <td>2.06</td>
             <td>lower</td>
             <td>baseline</td>
             <td>Keeps the front lobe close to a cosine/dipole shape rather than just maximizing one angle pair.</td>
@@ -160,8 +170,8 @@
 
         <tr>
             <td>Weighted rear dipole polar error RMS (dB)</td>
-            <td>8%</td>
-            <td>3.74</td>
+            <td>7%</td>
+            <td>3.21</td>
             <td>1.35</td>
             <td>lower</td>
             <td>baseline</td>
@@ -170,8 +180,8 @@
 
         <tr>
             <td>Weighted rear/front symmetry RMS (dB)</td>
-            <td>6%</td>
-            <td>1.14</td>
+            <td>5%</td>
+            <td>1.18</td>
             <td>1.07</td>
             <td>lower</td>
             <td>baseline</td>
@@ -180,17 +190,17 @@
 
         <tr>
             <td>Weighted 200-10k flatness RMS (dB)</td>
-            <td>7%</td>
-            <td>0.25</td>
-            <td>0.34</td>
+            <td>6%</td>
+            <td>0.26</td>
+            <td>0.21</td>
             <td>lower</td>
-            <td>chosen</td>
+            <td>baseline</td>
             <td>Uses one-third-octave front-sum trend with the same broad psychoacoustic weighting; filter count is only a cap, not a score.</td>
         </tr>
 
         <tr>
             <td>Effective known system THD, 2-7 kHz (%)</td>
-            <td>5%</td>
+            <td>4%</td>
             <td>0.07</td>
             <td>-</td>
             <td>lower</td>
@@ -218,20 +228,20 @@
         <tr>
             <td>Chosen</td>
             <td>LR4 / LR4 / LR2 / LR2</td>
-            <td>12/15</td>
+            <td>15/15</td>
             <td>pass</td>
-            <td>0.24</td>
-            <td>1.05</td>
+            <td>0.23</td>
+            <td>1.02</td>
             <td>warn</td>
         </tr>
 
         <tr>
             <td>Baseline</td>
             <td>LR4 / LR4 / LR4</td>
-            <td>12/15</td>
+            <td>14/15</td>
             <td>pass</td>
-            <td>0.32</td>
-            <td>1.60</td>
+            <td>0.19</td>
+            <td>0.78</td>
             <td>warn</td>
         </tr>
         </tbody>
@@ -257,12 +267,12 @@
             <td>1</td>
             <td>5</td>
             <td>L26RO4Y / L22MG (nude) / SS10F8414G10 / GRS PT6816 / ND25FW4 (nude 18mm)</td>
-            <td>120 / 650 / 2000 / 12000</td>
+            <td>120 / 650 / 2000 / 8000</td>
             <td>LR4 / LR4 / LR2 / LR2</td>
-            <td>9.83</td>
-            <td>1.69</td>
-            <td>7.58</td>
-            <td>6.34</td>
+            <td>10.79</td>
+            <td>1.73</td>
+            <td>7.24</td>
+            <td>6.12</td>
             <td>15/15</td>
             <td>pass</td>
             <td>Primary recommendation: best balanced score that avoids splitting two near-identical ScanSpeak 10 cm drivers into adjacent bands.</td>
@@ -270,12 +280,12 @@
 
         <tr>
             <td>CTC-constrained</td>
-            <td>1325</td>
+            <td>2598</td>
             <td>5</td>
             <td>L26RO4Y / L22MG (nude) / L10NEO / GRS PT6816 / SS10F8414G10</td>
             <td>120 / 650 / 3000 / 10000</td>
             <td>LR4 / LR4 / LR2 / LR2</td>
-            <td>11.49</td>
+            <td>13.27</td>
             <td>2.47</td>
             <td>9.27</td>
             <td>8.01</td>
@@ -286,15 +296,15 @@
 
         <tr>
             <td>L10NEO alternate</td>
-            <td>623</td>
-            <td>4</td>
-            <td>L26RO4Y / L22MG (nude) / L10NEO / GRS PT6816</td>
-            <td>120 / 800 / 3200</td>
-            <td>LR4 / LR4 / LR2</td>
-            <td>11.08</td>
-            <td>2.24</td>
-            <td>8.92</td>
-            <td>7.51</td>
+            <td>1886</td>
+            <td>5</td>
+            <td>L26RO4Y / L22MG (nude) / L10NEO / SS10F8414G10 / ND25FW4 (nude 18mm)</td>
+            <td>160 / 650 / 2000 / 7000</td>
+            <td>LR4 / LR4 / LR2 / LR2</td>
+            <td>12.94</td>
+            <td>3.36</td>
+            <td>7.14</td>
+            <td>8.07</td>
             <td>14/15</td>
             <td>pass</td>
             <td>Best L10NEO-flavored candidate with strong 30-to-60 separation and acceptable crossover mismatch.</td>
@@ -302,16 +312,16 @@
 
         <tr>
             <td>Simple 4-way</td>
-            <td>123</td>
+            <td>1157</td>
             <td>4</td>
             <td>L26RO4Y / L22MG (nude) / SS10F8414G10 / GRS PT6816</td>
             <td>120 / 650 / 3200</td>
             <td>LR4 / LR4 / LR2</td>
-            <td>10.48</td>
+            <td>12.49</td>
             <td>2.02</td>
             <td>8.78</td>
             <td>6.77</td>
-            <td>14/15</td>
+            <td>15/15</td>
             <td>pass</td>
             <td>Simplest high-confidence 4-way variant using one ScanSpeak 10 cm driver plus GRS.</td>
         </tr>
@@ -568,7 +578,7 @@
             <p class="note">
                 Distortion and SPL evidence comes from <code>measurements/juan/UMs desnudos/contexto.txt</code> and its associated screenshots:
             </p>
-            <ul><li>Juan&#x27;s screenshot notes rank 8424 distortion/SPL best, 8414 close behind, and MU10 worst among the 8424/8414/MU10 upper-mid comparison.</li><li>Raw REW .mdat THD extraction adds L10NEO to the comparison and does not support describing L10NEO as worse-distortion than the ScanSpeak pair.</li><li>The same notes flag 8424 rear-side directivity and high-angle order as weaker than 8414, especially above 2 kHz.</li><li>GRS is treated as the measured dipole/directivity-order reference, but it does not provide the largest 30-to-60 separation above 2 kHz.</li><li>L10NEO remains a high-separation alternate; it is not selected in the balanced primary due to the composite directivity/crossover score, not because of worse raw THD evidence.</li></ul>
+            <ul><li>Juan&#x27;s screenshot notes rank 8424 distortion/SPL best, 8414 close behind, and MU10 worst among the 8424/8414/MU10 upper-mid comparison.</li><li>Raw REW .mdat THD extraction adds L10NEO to the comparison and does not support describing L10NEO as worse-distortion than the ScanSpeak pair.</li><li>The same notes flag 8424 rear-side directivity and high-angle order as weaker than 8414, especially above 2 kHz.</li><li>GRS is treated as the measured dipole/directivity-order reference, but it does not provide the largest 30-to-60 separation above 2 kHz.</li><li>L10NEO remains a high-separation alternate; it is not selected in the balanced primary due to the composite directivity/crossover score, not because of worse raw THD evidence.</li><li>Driver contribution peaks are not automatically flattened when they are helping the complex 0-degree sum; the search now separately penalizes narrow 8-12 kHz normalized-contour ridges and steep side/rear polar transitions.</li></ul>
             <p><a href="juan-baffleless-cdsl/driver_directivity_audit.csv">Download measured-driver directivity audit CSV</a></p>
         </div></div>
 
@@ -705,7 +715,7 @@
             </table>
             <ul><li>Raw REW .mdat THD was extracted from each driver&#x27;s front 0-degree measurement; harmData[0] is treated as REW&#x27;s THD trace and harmData[1] as the fundamental SPL trace.</li><li>In the 2-7 kHz THD band, L10NEO&#x27;s median fundamental SPL is 86.6 dB (+3.0 dB vs SS10F8414G10 single, +1.9 dB vs SS10F8424G00 SN086, +3.7 dB vs MU10RB-SL A), so it was not measured at a lower level than the ScanSpeak references.</li><li>L10NEO 2-7 kHz median THD is 0.157% (-56.1 dB), which is not worse than the available 8414/8424 raw REW THD traces.</li><li>These are not perfectly level-matched sweeps; distortion rankings should be treated as measured-at-level evidence, not normalized maximum-SPL evidence.</li></ul>
             <h3>L10NEO vs ScanSpeak</h3>
-            <ul><li>Raw REW evidence does not favor ScanSpeak on THD: L10NEO is 0.157% median THD at 86.6 dB SPL in 2-7 kHz, while the best available ScanSpeak trace is SS10F8424G00 SN086 at 0.177% and 84.7 dB SPL.</li><li>The selected non-L10 candidate wins only on the weighted acoustic search: score 9.83 vs best L10NEO score 10.51, front dipole RMS 1.69 vs 1.94 dB, XO mismatch 7.58 vs 8.49 dB, and 30-60 separation 6.34 vs 7.28 dB.</li><li>Conclusion: L10NEO must not be rejected on distortion/SPL evidence; any ScanSpeak selection is a directivity/crossover integration choice under the current measured polar data.</li></ul>
+            <ul><li>Raw REW evidence does not favor ScanSpeak on THD: L10NEO is 0.157% median THD at 86.6 dB SPL in 2-7 kHz, while the best available ScanSpeak trace is SS10F8424G00 SN086 at 0.177% and 84.7 dB SPL.</li><li>The selected non-L10 candidate wins only on the weighted acoustic search: score 10.79 vs best L10NEO score 11.46, front dipole RMS 1.73 vs 1.82 dB, XO mismatch 7.24 vs 7.69 dB, and 30-60 separation 6.12 vs 6.67 dB.</li><li>Conclusion: L10NEO must not be rejected on distortion/SPL evidence; any ScanSpeak selection is a directivity/crossover integration choice under the current measured polar data.</li></ul>
             <p><a href="juan-baffleless-cdsl/distortion_thd_audit.csv">Download raw REW THD / SPL audit CSV</a></p>
         </div></div>
 
@@ -722,39 +732,39 @@
         <tr>
             <td>1-7 kHz</td>
             <td>0.077%</td>
-            <td>0.128%</td>
-            <td>0.38</td>
-            <td>75.98</td>
+            <td>0.123%</td>
+            <td>0.39</td>
+            <td>75.97</td>
             <td>SS10F8414G10</td>
             <td>L26RO4Y, L22MG (nude), GRS PT6816, ND25FW4 (nude 18mm)</td>
         </tr>
 
         <tr>
             <td>2-7 kHz</td>
-            <td>0.071%</td>
-            <td>0.123%</td>
+            <td>0.070%</td>
+            <td>0.117%</td>
             <td>0.30</td>
-            <td>76.01</td>
+            <td>75.98</td>
             <td>SS10F8414G10</td>
             <td>L26RO4Y, L22MG (nude), GRS PT6816, ND25FW4 (nude 18mm)</td>
         </tr>
 
         <tr>
             <td>2-10 kHz</td>
-            <td>0.061%</td>
-            <td>0.116%</td>
+            <td>0.060%</td>
+            <td>0.110%</td>
             <td>0.25</td>
-            <td>76.03</td>
+            <td>76.08</td>
             <td>SS10F8414G10</td>
             <td>L26RO4Y, L22MG (nude), GRS PT6816, ND25FW4 (nude 18mm)</td>
         </tr>
 
         <tr>
             <td>7-10 kHz</td>
-            <td>0.013%</td>
-            <td>0.021%</td>
-            <td>0.03</td>
-            <td>76.09</td>
+            <td>0.012%</td>
+            <td>0.020%</td>
+            <td>0.04</td>
+            <td>76.42</td>
             <td>SS10F8414G10</td>
             <td>L26RO4Y, L22MG (nude), GRS PT6816, ND25FW4 (nude 18mm)</td>
         </tr>
@@ -772,7 +782,7 @@
                 <td>Low</td>
                 <td><a href="juan-baffleless/interactive/L26RO4Y_freq_response_angles.html">L26RO4Y</a></td>
                 <td>70-120</td>
-                <td>-7.79</td>
+                <td>-7.84</td>
                 <td>+0.000</td>
                 <td>normal</td>
                 <td>Best measured low-frequency candidate, but captured in a cylindrical baffle.</td>
@@ -782,7 +792,7 @@
                 <td>Lower mid</td>
                 <td><a href="juan-baffleless/interactive/L22MG (nude)_freq_response_angles.html">L22MG (nude)</a></td>
                 <td>120-650</td>
-                <td>+16.93</td>
+                <td>+14.95</td>
                 <td>-1.375</td>
                 <td>normal</td>
                 <td>Strong low-mid bridge with nude front/rear data and useful coverage below 500 Hz.</td>
@@ -801,9 +811,9 @@
             <tr>
                 <td>High/directivity band</td>
                 <td><a href="juan-baffleless/interactive/GRS PT6816_freq_response_angles.html">GRS PT6816</a></td>
-                <td>2000-12000</td>
-                <td>-6.10</td>
-                <td>-0.730</td>
+                <td>2000-8000</td>
+                <td>-5.47</td>
+                <td>-0.745</td>
                 <td>inverted</td>
                 <td>Best local constant-directivity and front/rear symmetry reference.</td>
             </tr>
@@ -811,9 +821,9 @@
             <tr>
                 <td>Top</td>
                 <td><a href="juan-baffleless/interactive/ND25FW4 (nude 18mm)_freq_response_angles.html">ND25FW4 (nude 18mm)</a></td>
-                <td>12000-20000</td>
-                <td>+8.70</td>
-                <td>-0.700</td>
+                <td>8000-20000</td>
+                <td>+4.26</td>
+                <td>-0.715</td>
                 <td>normal</td>
                 <td>Treble extension candidate; measured 2-10 kHz pattern is wider than the 10 cm candidates.</td>
             </tr>
@@ -839,15 +849,15 @@
         +-- LR2 split @ 2000 Hz
             +-- LR2 LP 2000 Hz (1 biquad) -&gt; SS10F8414G10
             +-- LR2 HP 2000 Hz (1 biquad, invert downstream branch) -&gt; next split
-          +-- LR2 split @ 12000 Hz
-              +-- LR2 LP 12000 Hz (1 biquad) -&gt; GRS PT6816
-              +-- LR2 HP 12000 Hz (1 biquad) -&gt; ND25FW4 (nude 18mm)</pre>
+          +-- LR2 split @ 8000 Hz
+              +-- LR2 LP 8000 Hz (1 biquad) -&gt; GRS PT6816
+              +-- LR2 HP 8000 Hz (1 biquad) -&gt; ND25FW4 (nude 18mm)</pre>
             <div class="summary-grid">
                 <div class="metric-card"><div class="value">14</div><div class="label">Shared-tree crossover biquads</div></div>
                 <div class="metric-card"><div class="value">33</div><div class="label">Per-channel exported crossover biquads</div></div>
-                <div class="metric-card"><div class="value">9</div><div class="label">Flat-EQ biquads</div></div>
-                <div class="metric-card"><div class="value">12/15</div><div class="label">Max biquads on any driver</div></div>
-                <div class="metric-card"><div class="value">23</div><div class="label">Shared-tree total with EQ</div></div>
+                <div class="metric-card"><div class="value">23</div><div class="label">Flat-EQ biquads</div></div>
+                <div class="metric-card"><div class="value">15/15</div><div class="label">Max biquads on any driver</div></div>
+                <div class="metric-card"><div class="value">37</div><div class="label">Shared-tree total with EQ</div></div>
             </div>
             <table>
                 <thead><tr><th>Stage</th><th>Driver</th><th>Passband Hz</th><th>Global HP</th><th>Inherited HP</th><th>Own HP</th><th>Own LP</th><th>XO Total</th><th>Flat-EQ</th><th>Effective Total</th></tr></thead>
@@ -874,8 +884,8 @@
             <td>2</td>
             <td>2</td>
             <td>6</td>
-            <td>1</td>
-            <td>7</td>
+            <td>5</td>
+            <td>11</td>
         </tr>
 
         <tr>
@@ -887,34 +897,34 @@
             <td>2</td>
             <td>1</td>
             <td>7</td>
-            <td>3</td>
-            <td>10</td>
+            <td>5</td>
+            <td>12</td>
         </tr>
 
         <tr>
             <td>4</td>
             <td>GRS PT6816</td>
-            <td>2000-12000</td>
+            <td>2000-8000</td>
             <td>2</td>
             <td>4</td>
             <td>1</td>
             <td>1</td>
             <td>8</td>
-            <td>4</td>
-            <td>12</td>
+            <td>7</td>
+            <td>15</td>
         </tr>
 
         <tr>
             <td>5</td>
             <td>ND25FW4 (nude 18mm)</td>
-            <td>12000-20000</td>
+            <td>8000-20000</td>
             <td>2</td>
             <td>5</td>
             <td>1</td>
             <td>0</td>
             <td>8</td>
-            <td>1</td>
-            <td>9</td>
+            <td>6</td>
+            <td>14</td>
         </tr>
         </tbody>
             </table>
@@ -925,8 +935,8 @@
             <p class="note">
                 Crossovers are mixed LR2/LR4 cascades: LR2 uses one Q=0.5 biquad per edge and inverts the downstream branch, while LR4 uses two Q=0.7071 biquads per edge.
                 The <code>flat-EQ</code> filters are a sparse summed-response least-squares fit assigned per driver.
-                They use 9 active correction filters out of 24 candidates;
-                the unconstrained full fit would keep about 23 filters above the pruning threshold.
+                They use 23 active correction filters out of 28 candidates;
+                the unconstrained full fit would keep about 25 filters above the pruning threshold.
                 The hard export limit is 15 biquads per driver, including cascaded crossover filters before flat-EQ.
                 This is still a simulated equalization pass, not a final measured-room/prototype EQ.
             </p>
@@ -1029,7 +1039,43 @@
                     <td>peaking</td>
                     <td>500.0</td>
                     <td>1.000</td>
-                    <td>-5.96</td>
+                    <td>-5.45</td>
+                </tr>
+
+                <tr>
+                    <td>L22MG (nude)</td>
+                    <td>flat-EQ</td>
+                    <td>peaking</td>
+                    <td>620.0</td>
+                    <td>1.000</td>
+                    <td>+1.50</td>
+                </tr>
+
+                <tr>
+                    <td>L22MG (nude)</td>
+                    <td>flat-EQ</td>
+                    <td>peaking</td>
+                    <td>150.0</td>
+                    <td>1.000</td>
+                    <td>+1.38</td>
+                </tr>
+
+                <tr>
+                    <td>L22MG (nude)</td>
+                    <td>flat-EQ</td>
+                    <td>peaking</td>
+                    <td>220.0</td>
+                    <td>1.000</td>
+                    <td>+0.96</td>
+                </tr>
+
+                <tr>
+                    <td>L22MG (nude)</td>
+                    <td>flat-EQ</td>
+                    <td>peaking</td>
+                    <td>330.0</td>
+                    <td>1.000</td>
+                    <td>+0.29</td>
                 </tr>
 
                 <tr>
@@ -1101,7 +1147,7 @@
                     <td>peaking</td>
                     <td>1450.0</td>
                     <td>1.000</td>
-                    <td>+4.59</td>
+                    <td>+8.00</td>
                 </tr>
 
                 <tr>
@@ -1110,7 +1156,25 @@
                     <td>peaking</td>
                     <td>1800.0</td>
                     <td>1.000</td>
-                    <td>-2.84</td>
+                    <td>-5.18</td>
+                </tr>
+
+                <tr>
+                    <td>SS10F8414G10</td>
+                    <td>flat-EQ</td>
+                    <td>peaking</td>
+                    <td>1150.0</td>
+                    <td>1.000</td>
+                    <td>-2.63</td>
+                </tr>
+
+                <tr>
+                    <td>SS10F8414G10</td>
+                    <td>flat-EQ</td>
+                    <td>peaking</td>
+                    <td>900.0</td>
+                    <td>1.000</td>
+                    <td>-1.76</td>
                 </tr>
 
                 <tr>
@@ -1119,7 +1183,7 @@
                     <td>peaking</td>
                     <td>700.0</td>
                     <td>1.000</td>
-                    <td>-5.79</td>
+                    <td>+1.70</td>
                 </tr>
 
                 <tr>
@@ -1189,7 +1253,7 @@
                     <td>GRS PT6816</td>
                     <td>LR2 branch low-pass</td>
                     <td>lowpass</td>
-                    <td>12000.0</td>
+                    <td>8000.0</td>
                     <td>0.500</td>
                     <td>+0.00</td>
                 </tr>
@@ -1200,7 +1264,7 @@
                     <td>peaking</td>
                     <td>4500.0</td>
                     <td>1.000</td>
-                    <td>+7.06</td>
+                    <td>+7.87</td>
                 </tr>
 
                 <tr>
@@ -1209,16 +1273,7 @@
                     <td>peaking</td>
                     <td>3500.0</td>
                     <td>1.000</td>
-                    <td>-7.01</td>
-                </tr>
-
-                <tr>
-                    <td>GRS PT6816</td>
-                    <td>flat-EQ</td>
-                    <td>peaking</td>
-                    <td>11000.0</td>
-                    <td>1.000</td>
-                    <td>+8.00</td>
+                    <td>-6.82</td>
                 </tr>
 
                 <tr>
@@ -1227,7 +1282,43 @@
                     <td>peaking</td>
                     <td>2800.0</td>
                     <td>1.000</td>
-                    <td>+6.50</td>
+                    <td>+4.60</td>
+                </tr>
+
+                <tr>
+                    <td>GRS PT6816</td>
+                    <td>flat-EQ</td>
+                    <td>peaking</td>
+                    <td>10000.0</td>
+                    <td>2.000</td>
+                    <td>-2.49</td>
+                </tr>
+
+                <tr>
+                    <td>GRS PT6816</td>
+                    <td>flat-EQ</td>
+                    <td>peaking</td>
+                    <td>9000.0</td>
+                    <td>2.000</td>
+                    <td>-1.93</td>
+                </tr>
+
+                <tr>
+                    <td>GRS PT6816</td>
+                    <td>flat-EQ</td>
+                    <td>peaking</td>
+                    <td>8500.0</td>
+                    <td>2.000</td>
+                    <td>+0.72</td>
+                </tr>
+
+                <tr>
+                    <td>GRS PT6816</td>
+                    <td>flat-EQ</td>
+                    <td>peaking</td>
+                    <td>9000.0</td>
+                    <td>1.000</td>
+                    <td>+2.50</td>
                 </tr>
 
                 <tr>
@@ -1297,7 +1388,7 @@
                     <td>ND25FW4 (nude 18mm)</td>
                     <td>LR2 branch high-pass</td>
                     <td>highpass</td>
-                    <td>12000.0</td>
+                    <td>8000.0</td>
                     <td>0.500</td>
                     <td>+0.00</td>
                 </tr>
@@ -1308,7 +1399,52 @@
                     <td>peaking</td>
                     <td>14000.0</td>
                     <td>1.000</td>
-                    <td>-3.56</td>
+                    <td>-6.41</td>
+                </tr>
+
+                <tr>
+                    <td>ND25FW4 (nude 18mm)</td>
+                    <td>flat-EQ</td>
+                    <td>peaking</td>
+                    <td>16500.0</td>
+                    <td>1.000</td>
+                    <td>+5.22</td>
+                </tr>
+
+                <tr>
+                    <td>ND25FW4 (nude 18mm)</td>
+                    <td>flat-EQ</td>
+                    <td>peaking</td>
+                    <td>10000.0</td>
+                    <td>2.000</td>
+                    <td>+4.54</td>
+                </tr>
+
+                <tr>
+                    <td>ND25FW4 (nude 18mm)</td>
+                    <td>flat-EQ</td>
+                    <td>peaking</td>
+                    <td>9000.0</td>
+                    <td>2.000</td>
+                    <td>-2.30</td>
+                </tr>
+
+                <tr>
+                    <td>ND25FW4 (nude 18mm)</td>
+                    <td>flat-EQ</td>
+                    <td>highshelf</td>
+                    <td>18000.0</td>
+                    <td>1.000</td>
+                    <td>+1.65</td>
+                </tr>
+
+                <tr>
+                    <td>ND25FW4 (nude 18mm)</td>
+                    <td>flat-EQ</td>
+                    <td>peaking</td>
+                    <td>12000.0</td>
+                    <td>1.000</td>
+                    <td>+0.26</td>
                 </tr>
                 </tbody>
             </table>
@@ -1335,198 +1471,219 @@
             <td>Before flat-EQ</td>
             <td>raw</td>
             <td>80-18k</td>
-            <td>78.02</td>
-            <td>-5.89</td>
-            <td>6.92</td>
-            <td>12.81</td>
-            <td>2.76</td>
+            <td>77.73</td>
+            <td>-4.93</td>
+            <td>7.56</td>
+            <td>12.50</td>
+            <td>2.94</td>
         </tr>
 
         <tr>
             <td>Before flat-EQ</td>
             <td>raw</td>
             <td>200-10k</td>
-            <td>78.69</td>
-            <td>-5.35</td>
-            <td>6.25</td>
-            <td>11.61</td>
-            <td>2.66</td>
+            <td>78.63</td>
+            <td>-4.80</td>
+            <td>6.66</td>
+            <td>11.47</td>
+            <td>2.88</td>
         </tr>
 
         <tr>
             <td>Before flat-EQ</td>
             <td>raw</td>
             <td>2-10k</td>
-            <td>79.61</td>
-            <td>-6.28</td>
-            <td>5.33</td>
-            <td>11.61</td>
-            <td>2.12</td>
+            <td>80.08</td>
+            <td>-5.58</td>
+            <td>5.21</td>
+            <td>10.79</td>
+            <td>2.42</td>
         </tr>
 
         <tr>
             <td>Before flat-EQ</td>
             <td>one_sixth_octave</td>
             <td>80-18k</td>
-            <td>78.03</td>
-            <td>-4.55</td>
-            <td>6.73</td>
-            <td>11.28</td>
-            <td>2.73</td>
+            <td>77.77</td>
+            <td>-4.36</td>
+            <td>7.34</td>
+            <td>11.70</td>
+            <td>2.92</td>
         </tr>
 
         <tr>
             <td>Before flat-EQ</td>
             <td>one_sixth_octave</td>
+            <td>200-10k</td>
+            <td>78.63</td>
+            <td>-4.79</td>
+            <td>6.48</td>
+            <td>11.27</td>
+            <td>2.87</td>
+        </tr>
+
+        <tr>
+            <td>Before flat-EQ</td>
+            <td>one_sixth_octave</td>
+            <td>2-10k</td>
+            <td>80.08</td>
+            <td>-5.58</td>
+            <td>5.03</td>
+            <td>10.61</td>
+            <td>2.41</td>
+        </tr>
+
+        <tr>
+            <td>Before flat-EQ</td>
+            <td>one_third_octave</td>
+            <td>80-18k</td>
+            <td>77.69</td>
+            <td>-4.48</td>
+            <td>6.99</td>
+            <td>11.47</td>
+            <td>2.88</td>
+        </tr>
+
+        <tr>
+            <td>Before flat-EQ</td>
+            <td>one_third_octave</td>
             <td>200-10k</td>
             <td>78.65</td>
-            <td>-5.18</td>
-            <td>6.11</td>
-            <td>11.28</td>
-            <td>2.66</td>
-        </tr>
-
-        <tr>
-            <td>Before flat-EQ</td>
-            <td>one_sixth_octave</td>
-            <td>2-10k</td>
-            <td>79.61</td>
-            <td>-6.13</td>
-            <td>5.15</td>
-            <td>11.28</td>
-            <td>2.11</td>
-        </tr>
-
-        <tr>
-            <td>Before flat-EQ</td>
-            <td>one_third_octave</td>
-            <td>80-18k</td>
-            <td>78.03</td>
-            <td>-4.12</td>
-            <td>6.26</td>
-            <td>10.39</td>
-            <td>2.65</td>
-        </tr>
-
-        <tr>
-            <td>Before flat-EQ</td>
-            <td>one_third_octave</td>
-            <td>200-10k</td>
-            <td>78.67</td>
-            <td>-4.77</td>
-            <td>5.62</td>
-            <td>10.39</td>
-            <td>2.61</td>
+            <td>-4.74</td>
+            <td>6.03</td>
+            <td>10.78</td>
+            <td>2.83</td>
         </tr>
 
         <tr>
             <td>Before flat-EQ</td>
             <td>one_third_octave</td>
             <td>2-10k</td>
-            <td>79.61</td>
-            <td>-4.14</td>
-            <td>4.68</td>
-            <td>8.82</td>
-            <td>2.00</td>
+            <td>80.08</td>
+            <td>-4.82</td>
+            <td>4.59</td>
+            <td>9.42</td>
+            <td>2.36</td>
         </tr>
 
         <tr>
             <td>After flat-EQ</td>
             <td>raw</td>
             <td>80-18k</td>
-            <td>75.99</td>
-            <td>-5.00</td>
-            <td>2.67</td>
-            <td>7.67</td>
-            <td>0.80</td>
-        </tr>
-
-        <tr>
-            <td>After flat-EQ</td>
-            <td>raw</td>
-            <td>200-10k</td>
-            <td>75.94</td>
-            <td>-3.90</td>
-            <td>1.95</td>
-            <td>5.85</td>
-            <td>0.46</td>
-        </tr>
-
-        <tr>
-            <td>After flat-EQ</td>
-            <td>raw</td>
-            <td>2-10k</td>
-            <td>76.04</td>
-            <td>-4.01</td>
-            <td>1.84</td>
-            <td>5.85</td>
-            <td>0.62</td>
-        </tr>
-
-        <tr>
-            <td>After flat-EQ</td>
-            <td>one_sixth_octave</td>
-            <td>80-18k</td>
-            <td>76.00</td>
-            <td>-2.82</td>
-            <td>2.16</td>
-            <td>4.98</td>
-            <td>0.69</td>
-        </tr>
-
-        <tr>
-            <td>After flat-EQ</td>
-            <td>one_sixth_octave</td>
-            <td>200-10k</td>
-            <td>75.94</td>
-            <td>-2.76</td>
-            <td>1.30</td>
-            <td>4.06</td>
+            <td>76.01</td>
+            <td>-2.07</td>
+            <td>1.07</td>
+            <td>3.14</td>
             <td>0.40</td>
         </tr>
 
         <tr>
             <td>After flat-EQ</td>
+            <td>raw</td>
+            <td>200-10k</td>
+            <td>76.00</td>
+            <td>-0.76</td>
+            <td>1.07</td>
+            <td>1.83</td>
+            <td>0.32</td>
+        </tr>
+
+        <tr>
+            <td>After flat-EQ</td>
+            <td>raw</td>
+            <td>2-10k</td>
+            <td>76.16</td>
+            <td>-0.84</td>
+            <td>0.92</td>
+            <td>1.76</td>
+            <td>0.42</td>
+        </tr>
+
+        <tr>
+            <td>After flat-EQ</td>
+            <td>one_sixth_octave</td>
+            <td>80-18k</td>
+            <td>76.01</td>
+            <td>-2.08</td>
+            <td>0.90</td>
+            <td>2.98</td>
+            <td>0.37</td>
+        </tr>
+
+        <tr>
+            <td>After flat-EQ</td>
+            <td>one_sixth_octave</td>
+            <td>200-10k</td>
+            <td>76.00</td>
+            <td>-0.69</td>
+            <td>0.91</td>
+            <td>1.59</td>
+            <td>0.29</td>
+        </tr>
+
+        <tr>
+            <td>After flat-EQ</td>
             <td>one_sixth_octave</td>
             <td>2-10k</td>
-            <td>76.06</td>
-            <td>-2.88</td>
-            <td>1.18</td>
-            <td>4.06</td>
-            <td>0.52</td>
+            <td>76.23</td>
+            <td>-0.82</td>
+            <td>0.67</td>
+            <td>1.49</td>
+            <td>0.38</td>
         </tr>
 
         <tr>
             <td>After flat-EQ</td>
             <td>one_third_octave</td>
             <td>80-18k</td>
-            <td>75.99</td>
-            <td>-1.88</td>
-            <td>1.83</td>
-            <td>3.71</td>
-            <td>0.52</td>
+            <td>76.00</td>
+            <td>-2.07</td>
+            <td>0.67</td>
+            <td>2.75</td>
+            <td>0.33</td>
         </tr>
 
         <tr>
             <td>After flat-EQ</td>
             <td>one_third_octave</td>
             <td>200-10k</td>
-            <td>75.96</td>
-            <td>-0.43</td>
-            <td>0.61</td>
-            <td>1.05</td>
-            <td>0.24</td>
+            <td>76.00</td>
+            <td>-0.49</td>
+            <td>0.53</td>
+            <td>1.02</td>
+            <td>0.23</td>
         </tr>
 
         <tr>
             <td>After flat-EQ</td>
             <td>one_third_octave</td>
             <td>2-10k</td>
-            <td>76.04</td>
-            <td>-0.42</td>
-            <td>0.53</td>
-            <td>0.95</td>
-            <td>0.22</td>
+            <td>76.09</td>
+            <td>-0.57</td>
+            <td>0.44</td>
+            <td>1.01</td>
+            <td>0.29</td>
+        </tr>
+        </tbody>
+            </table>
+            <h3>Optional High-Frequency PEQ</h3>
+            <p class="note">
+                PEQ filters can boost or cut. After the front-sum flatness fit, the generator tries a small set of +/- PEQ candidates around 7.5-12.5 kHz
+                and accepts them only when the 8-12 kHz polar-transition penalty improves without materially degrading front-sum flatness.
+                Penalty before/after: 1.249 -> 1.192.
+            </p>
+            <table>
+                <thead><tr><th>Driver</th><th>Type</th><th>Fc Hz</th><th>Q</th><th>Gain dB</th><th>HF Improvement</th><th>Flat RMS</th><th>Flat P-P</th></tr></thead>
+                <tbody>
+        <tr>
+            <td>GRS PT6816</td>
+            <td>peaking</td>
+            <td>9000.0</td>
+            <td>1.00</td>
+            <td>+2.50</td>
+            <td>0.057</td>
+            <td>0.231</td>
+            <td>1.017</td>
         </tr>
         </tbody>
             </table>
@@ -1565,8 +1722,8 @@
         <div class="card"><div class="card-body">
             <p class="note">
                 Upper-mid side-feature diagnostic: in the 1.6-3.2 kHz region, front 90-degree response reaches
-                <strong>-25.9 dB</strong> relative to front 0 degrees at
-                <strong>1697 Hz</strong>.
+                <strong>-26.5 dB</strong> relative to front 0 degrees at
+                <strong>1681 Hz</strong>.
                 This is a side null, not a 90-degree SPL peak. Filling it would reduce the dipole null and the intended CDSL separation.
             </p>
         </div></div>
@@ -1584,13 +1741,13 @@
             <td>70-200 Hz</td>
             <td>5.47</td>
             <td>0.00</td>
-            <td>4.46</td>
+            <td>4.43</td>
             <td>118</td>
         </tr>
 
         <tr>
             <td>200-800 Hz</td>
-            <td>4.14</td>
+            <td>4.15</td>
             <td>4.76</td>
             <td>4.31</td>
             <td>125</td>
@@ -1598,26 +1755,26 @@
 
         <tr>
             <td>800-2500 Hz</td>
-            <td>6.01</td>
+            <td>6.02</td>
             <td>4.86</td>
-            <td>6.00</td>
+            <td>5.99</td>
             <td>102</td>
         </tr>
 
         <tr>
             <td>2-10 kHz</td>
-            <td>6.68</td>
+            <td>6.32</td>
             <td>5.15</td>
-            <td>6.25</td>
-            <td>94</td>
+            <td>6.61</td>
+            <td>92</td>
         </tr>
 
         <tr>
             <td>10-20 kHz</td>
-            <td>6.35</td>
+            <td>9.60</td>
             <td>7.15</td>
-            <td>8.06</td>
-            <td>70</td>
+            <td>9.34</td>
+            <td>65</td>
         </tr>
         </tbody>
             </table>
@@ -1646,7 +1803,7 @@
 
         <h2 class="section-title">Reproducibility</h2>
         <div class="card"><div class="card-body">
-            <p><strong>Generated:</strong> 2026-05-21T16:56:00+00:00</p>
+            <p><strong>Generated:</strong> 2026-05-21T18:37:50+00:00</p>
             <p><strong>Inputs:</strong> output/data/polar_data_juan_baffleless.h5, output/data/polar_data_lx521_system.h5</p>
             <p><strong>Synthetic HDF5:</strong> output/data/polar_data_juan_cdsl_synthetic.h5</p>
             <p><strong>Smoothing:</strong> None; <strong>gate:</strong> 0.5 ms / 3.0 ms.</p>

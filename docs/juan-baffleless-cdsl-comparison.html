@@ -50,13 +50,13 @@
     <main>
         <div class="card"><div class="card-body">
             <h2>Which Is Which</h2>
-            <p><strong>Chosen:</strong> L26RO4Y 70-120 Hz / L22MG (nude) 120-650 Hz / SS10F8414G10 650-2000 Hz / GRS PT6816 2000-12000 Hz / ND25FW4 (nude 18mm) &gt;12000 Hz. Crossovers: LR4 120 Hz, LR4 650 Hz, LR2 2000 Hz, LR2 12000 Hz.</p>
+            <p><strong>Chosen:</strong> L26RO4Y 70-120 Hz / L22MG (nude) 120-650 Hz / SS10F8414G10 650-2000 Hz / GRS PT6816 2000-8000 Hz / ND25FW4 (nude 18mm) &gt;8000 Hz. Crossovers: LR4 120 Hz, LR4 650 Hz, LR2 2000 Hz, LR2 8000 Hz.</p>
             <p><strong>Baseline:</strong> L26RO4Y 70-200 Hz / L22MG (nude) 200-800 Hz / GRS PT6816 800-2500 Hz / ND25FW4 (nude 18mm) &gt;2500 Hz. Crossovers: LR4 200 Hz, LR4 800 Hz, LR4 2500 Hz.</p>
             <p class="note">
                 Acoustic factors are weighted 100% total and use broad psychoacoustic frequency weighting centered near 2.6 kHz.
                 The weighting emphasizes 2-7 kHz, still includes the rest of 2-10 kHz, and prevents the suspect 10 kHz/top-octave feature from dominating the decision.
                 Biquad counts and sparse-EQ limits are hard pass/fail filters only.
-                Weighted factor wins: chosen 53%, baseline 42%, insufficient/context 5%.
+                Weighted factor wins: chosen 55%, baseline 28%, insufficient/context 4%.
             </p>
             <ul class="link-list">
                 <li><a href="juan-baffleless-cdsl.html">Open chosen CDSL report</a></li>
@@ -67,8 +67,8 @@
                 <tbody>
         <tr>
             <td>Weighted 2-10 kHz SPL30-SPL60 (dB)</td>
-            <td>28%</td>
-            <td>7.15</td>
+            <td>22%</td>
+            <td>6.71</td>
             <td>5.82</td>
             <td>higher</td>
             <td>chosen</td>
@@ -77,8 +77,8 @@
 
         <tr>
             <td>Crossover-local polar mismatch RMS (dB)</td>
-            <td>18%</td>
-            <td>7.58</td>
+            <td>17%</td>
+            <td>7.24</td>
             <td>9.04</td>
             <td>lower</td>
             <td>chosen</td>
@@ -86,20 +86,30 @@
         </tr>
 
         <tr>
-            <td>Weighted 90-degree leakage excess RMS (dB)</td>
+            <td>8-12 kHz polar transition/ridge penalty</td>
             <td>16%</td>
-            <td>0.15</td>
+            <td>1.19</td>
+            <td>1.91</td>
+            <td>lower</td>
+            <td>chosen</td>
+            <td>Penalizes narrow contour ridges and steep frequency-axis changes at side/rear angles, so a bright 10 kHz side-energy stripe is not accepted as benign.</td>
+        </tr>
+
+        <tr>
+            <td>Weighted 90-degree leakage excess RMS (dB)</td>
+            <td>13%</td>
+            <td>0.00</td>
             <td>0.00</td>
             <td>lower</td>
-            <td>baseline</td>
+            <td>tie</td>
             <td>Penalizes energy above a -18 dB side-null target where crosstalk cancellation is most sensitive.</td>
         </tr>
 
         <tr>
             <td>Weighted front dipole polar error RMS (dB)</td>
-            <td>12%</td>
-            <td>3.24</td>
-            <td>2.05</td>
+            <td>10%</td>
+            <td>3.08</td>
+            <td>2.06</td>
             <td>lower</td>
             <td>baseline</td>
             <td>Keeps the front lobe close to a cosine/dipole shape rather than just maximizing one angle pair.</td>
@@ -107,8 +117,8 @@
 
         <tr>
             <td>Weighted rear dipole polar error RMS (dB)</td>
-            <td>8%</td>
-            <td>3.74</td>
+            <td>7%</td>
+            <td>3.21</td>
             <td>1.35</td>
             <td>lower</td>
             <td>baseline</td>
@@ -117,8 +127,8 @@
 
         <tr>
             <td>Weighted rear/front symmetry RMS (dB)</td>
-            <td>6%</td>
-            <td>1.14</td>
+            <td>5%</td>
+            <td>1.18</td>
             <td>1.07</td>
             <td>lower</td>
             <td>baseline</td>
@@ -127,17 +137,17 @@
 
         <tr>
             <td>Weighted 200-10k flatness RMS (dB)</td>
-            <td>7%</td>
-            <td>0.25</td>
-            <td>0.34</td>
+            <td>6%</td>
+            <td>0.26</td>
+            <td>0.21</td>
             <td>lower</td>
-            <td>chosen</td>
+            <td>baseline</td>
             <td>Uses one-third-octave front-sum trend with the same broad psychoacoustic weighting; filter count is only a cap, not a score.</td>
         </tr>
 
         <tr>
             <td>Effective known system THD, 2-7 kHz (%)</td>
-            <td>5%</td>
+            <td>4%</td>
             <td>0.07</td>
             <td>-</td>
             <td>lower</td>
@@ -167,20 +177,20 @@
         <tr>
             <td>Chosen</td>
             <td>LR4 / LR4 / LR2 / LR2</td>
-            <td>12/15</td>
+            <td>15/15</td>
             <td>pass</td>
-            <td>0.24</td>
-            <td>1.05</td>
+            <td>0.23</td>
+            <td>1.02</td>
             <td>warn</td>
         </tr>
 
         <tr>
             <td>Baseline</td>
             <td>LR4 / LR4 / LR4</td>
-            <td>12/15</td>
+            <td>14/15</td>
             <td>pass</td>
-            <td>0.32</td>
-            <td>1.60</td>
+            <td>0.19</td>
+            <td>0.78</td>
             <td>warn</td>
         </tr>
         </tbody>

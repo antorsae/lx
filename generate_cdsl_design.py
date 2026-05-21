@@ -629,6 +629,29 @@ def weighted_percentile(values: np.ndarray, weights: np.ndarray, percentile: flo
     return float(vals[idx])
 
 
+def high_frequency_polar_transition_penalty(front_norm: Dict[int, np.ndarray], rear_norm: Dict[int, np.ndarray], valid: np.ndarray) -> Dict[str, float]:
+    """Penalize narrow high-frequency contour ridges and abrupt angular-field changes."""
+    weights = psychoacoustic_weights(COMMON_FREQ, 8000.0, 12_000.0, center_hz=9500.0, sigma_octaves=0.45)
+    weights = np.where(valid, weights, 0.0)
+    log_freq = np.log2(COMMON_FREQ)
+    ridge_terms = []
+    slope_terms = []
+    for curves in [front_norm, rear_norm]:
+        for angle in [30, 45, 60, 75, 90]:
+            arr = curves[angle]
+            target = -18.0 if angle == 90 else cosine_target_db(angle)
+            ridge_terms.append(np.maximum(arr - target - 2.5, 0.0))
+            slope_terms.append(np.maximum(np.abs(np.gradient(arr, log_freq)) - 24.0, 0.0))
+
+    ridge = weighted_rms_stack(ridge_terms, weights)
+    slope = weighted_rms_stack(slope_terms, weights)
+    return {
+        "hf_polar_ridge_db": ridge,
+        "hf_polar_slope_excess_db_per_oct": slope,
+        "hf_polar_transition_penalty": 1.5 * ridge + 0.025 * slope,
+    }
+
+
 def search_xover_mismatch(pre: Dict[str, Dict], drivers: List[str], xovers: List[float]) -> float:
     errors = []
     for idx, fc in enumerate(xovers):
@@ -785,6 +808,7 @@ def score_candidate(
     biquad_budget_penalty = candidate_biquad_budget_penalty(biquad_budget)
     thd_proxy = candidate_known_thd_proxy(drivers, xovers, xover_orders)
     thd_penalty = thd_proxy["penalty"]
+    hf_transition = high_frequency_polar_transition_penalty(synth["front"], synth["rear"], valid)
 
     score = (
         1.25 * dipole_front
@@ -792,6 +816,7 @@ def score_candidate(
         + 0.65 * null_penalty
         + 0.45 * rear0_penalty
         + 0.45 * xover_penalty
+        + hf_transition["hf_polar_transition_penalty"]
         + high_penalty
         + validity_penalty
         + prior_penalty
@@ -817,6 +842,9 @@ def score_candidate(
         "known_effective_thd_2_7_percent": round(thd_proxy["known_effective_thd_2_7_percent"], 4),
         "known_thd_coverage_2_7": round(thd_proxy["known_thd_coverage_2_7"], 3),
         "thd_penalty": round(thd_penalty, 3),
+        "hf_polar_ridge_db": round(hf_transition["hf_polar_ridge_db"], 3),
+        "hf_polar_slope_excess_db_per_oct": round(hf_transition["hf_polar_slope_excess_db_per_oct"], 3),
+        "hf_polar_transition_penalty": round(hf_transition["hf_polar_transition_penalty"], 3),
         "max_biquads_per_driver_limit": MAX_BIQUADS_PER_DRIVER,
         "max_crossover_biquads_per_driver": biquad_budget["max_crossover_biquads_per_driver"],
         "max_possible_biquads_per_driver": biquad_budget["max_possible_biquads_per_driver"],
@@ -1268,8 +1296,16 @@ def flat_eq_candidate_specs(design: List[DriverBand]) -> List[Tuple[DriverBand, 
         "SS10F8414G10": [("peaking", 700.0, 1.0), ("peaking", 900.0, 1.0), ("peaking", 1150.0, 1.0), ("peaking", 1450.0, 1.0), ("peaking", 1800.0, 1.0)],
         "SS10F8424G00": [("peaking", 700.0, 1.0), ("peaking", 950.0, 1.0), ("peaking", 1300.0, 1.0), ("peaking", 1800.0, 1.0), ("peaking", 2400.0, 1.0)],
         "L10NEO": [("peaking", 900.0, 1.0), ("peaking", 1300.0, 1.0), ("peaking", 1800.0, 1.0), ("peaking", 2600.0, 1.0), ("peaking", 4200.0, 1.0)],
-        "GRS PT6816": [("peaking", 2200.0, 1.0), ("peaking", 2800.0, 1.0), ("peaking", 3500.0, 1.0), ("peaking", 4500.0, 1.0), ("peaking", 5700.0, 1.0), ("peaking", 7200.0, 1.0), ("peaking", 9000.0, 1.0), ("peaking", 11000.0, 1.0)],
-        "ND25FW4 (nude 18mm)": [("peaking", 12000.0, 1.0), ("peaking", 14000.0, 1.0), ("peaking", 16500.0, 1.0), ("highshelf", 18000.0, 1.0)],
+        "GRS PT6816": [
+            ("peaking", 2200.0, 1.0), ("peaking", 2800.0, 1.0), ("peaking", 3500.0, 1.0),
+            ("peaking", 4500.0, 1.0), ("peaking", 5700.0, 1.0), ("peaking", 7200.0, 1.0),
+            ("peaking", 8500.0, 2.0), ("peaking", 9000.0, 1.0), ("peaking", 9000.0, 2.0),
+            ("peaking", 10000.0, 2.0), ("peaking", 11000.0, 1.0),
+        ],
+        "ND25FW4 (nude 18mm)": [
+            ("peaking", 9000.0, 2.0), ("peaking", 10000.0, 2.0), ("peaking", 12000.0, 1.0),
+            ("peaking", 14000.0, 1.0), ("peaking", 16500.0, 1.0), ("highshelf", 18000.0, 1.0),
+        ],
     }
     candidates: List[Tuple[DriverBand, Biquad]] = []
     for band in design:
@@ -1326,6 +1362,94 @@ def flat_eq_usage(selected: List[Tuple[DriverBand, Biquad]]) -> Dict[str, int]:
     for band, _ in selected:
         usage[band.driver] = usage.get(band.driver, 0) + 1
     return usage
+
+
+def eq_usage_from_design(design: List[DriverBand]) -> Dict[str, int]:
+    usage: Dict[str, int] = {}
+    for band in design:
+        count = sum(1 for flt in band.filters if flt.source == "flat-EQ")
+        if count:
+            usage[band.driver] = count
+    return usage
+
+
+def improve_high_frequency_polar_eq(data: Dict[str, Dict], design: List[DriverBand]) -> Dict:
+    """Try a few high-frequency PEQs, accepting only changes that preserve summed flatness."""
+    base_report = flatness_report(data, design)
+    base_flat = flatness_primary_stats(base_report)
+    base_metrics = high_frequency_polar_transition_metrics(synthesize_system(data, design))
+    current_penalty = base_metrics["hf_polar_transition_penalty"]
+    accepted: List[Dict] = []
+
+    existing = {
+        (band.driver, flt.type, round(flt.fc, 3), round(flt.q, 4))
+        for band in design
+        for flt in band.filters
+    }
+    candidates = [
+        (band, flt)
+        for band, flt in flat_eq_candidate_specs(design)
+        if band.driver in {"GRS PT6816", "ND25FW4 (nude 18mm)"}
+        and 7500.0 <= flt.fc <= 12_500.0
+        and (band.driver, flt.type, round(flt.fc, 3), round(flt.q, 4)) not in existing
+        and len(band.filters) < MAX_BIQUADS_PER_DRIVER
+    ]
+    candidates.sort(key=lambda item: abs(math.log2(item[1].fc / 9500.0)))
+
+    for band, candidate in candidates:
+        if len(band.filters) >= MAX_BIQUADS_PER_DRIVER or len(accepted) >= 3:
+            continue
+        best = None
+        band.filters.append(candidate)
+        for gain in np.linspace(-6.0, 6.0, 25):
+            if abs(gain) < 0.25:
+                continue
+            candidate.gain_db = float(gain)
+            report = flatness_report(data, design)
+            flat = flatness_primary_stats(report)
+            if (
+                flat["rms_error_db"] > base_flat["rms_error_db"] + 0.06
+                or flat["peak_to_peak_db"] > base_flat["peak_to_peak_db"] + 0.15
+            ):
+                continue
+            metrics = high_frequency_polar_transition_metrics(synthesize_system(data, design))
+            improvement = current_penalty - metrics["hf_polar_transition_penalty"]
+            if improvement <= 0.05:
+                continue
+            score = metrics["hf_polar_transition_penalty"] + 0.35 * flat["rms_error_db"] + 0.08 * abs(gain)
+            if best is None or score < best["score"]:
+                best = {
+                    "score": score,
+                    "gain_db": float(gain),
+                    "metrics": metrics,
+                    "flatness": flat,
+                    "improvement": improvement,
+                }
+        if best is None:
+            band.filters.pop()
+            candidate.gain_db = 0.0
+            continue
+        candidate.gain_db = best["gain_db"]
+        current_penalty = best["metrics"]["hf_polar_transition_penalty"]
+        accepted.append(
+            {
+                "driver": band.driver,
+                "type": candidate.type,
+                "fc_hz": round(candidate.fc, 3),
+                "q": round(candidate.q, 4),
+                "gain_db": round(candidate.gain_db, 3),
+                "hf_penalty_improvement": round(best["improvement"], 4),
+                "flatness_rms_db": best["flatness"]["rms_error_db"],
+                "flatness_peak_to_peak_db": best["flatness"]["peak_to_peak_db"],
+            }
+        )
+
+    return {
+        "before": {key: round(value, 4) for key, value in base_metrics.items()},
+        "after": {key: round(value, 4) for key, value in high_frequency_polar_transition_metrics(synthesize_system(data, design)).items()},
+        "accepted_filters": accepted,
+        "method": "grid-search optional +/- PEQ cuts/boosts around 7.5-12.5 kHz, accepted only if the front-sum flatness degradation stays within a small tolerance",
+    }
 
 
 def flatness_primary_stats(report: Dict[str, Dict[str, Dict[str, float]]]) -> Dict[str, float]:
@@ -1495,8 +1619,9 @@ def optimize_system_flatness(data: Dict[str, Dict], design: List[DriverBand]) ->
         max_nfev=80,
     )
     kept = list(final_record["selected"])
-    after = final_record["report"]
-    final_usage = flat_eq_usage(kept)
+    polar_eq_info = improve_high_frequency_polar_eq(data, design)
+    after = flatness_report(data, design)
+    final_usage = eq_usage_from_design(design)
     final_totals = {
         band.driver: len([flt for flt in band.filters])
         for band in design
@@ -1522,13 +1647,16 @@ def optimize_system_flatness(data: Dict[str, Dict], design: List[DriverBand]) ->
         "flat_eq_used_by_driver": final_usage,
         "final_biquads_by_driver": final_totals,
         "max_flat_eq_filters_allowed": max_flat_eq_count,
-        "filters_kept": len(kept),
+        "filters_kept": sum(final_usage.values()),
+        "front_sum_flat_eq_filters_kept": len(kept),
+        "high_frequency_polar_eq": polar_eq_info,
         "full_fit_filters_needed": sum(1 for gain in full_gains.values() if abs(gain) >= FLAT_EQ_PRUNE_DB),
         "method": (
             "sparse least-squares: solve full candidate pool, rank by fitted correction magnitude, "
             "then try the smallest ranked sets against the smoothed summed-response constraint; "
             f"if no capped set satisfies it, keep the best-scored set while capping every exported driver "
-            f"channel at {MAX_BIQUADS_PER_DRIVER} total biquads"
+            f"channel at {MAX_BIQUADS_PER_DRIVER} total biquads; then try optional +/- high-frequency PEQs "
+            "for 8-12 kHz polar smoothness only if they do not materially degrade front-sum flatness"
         ),
         "before": before,
         "after": after,
@@ -1559,6 +1687,20 @@ def rear_front_delta(system_like: Dict, angle: int = 0) -> np.ndarray:
 
 def side_null_delta(system_like: Dict) -> np.ndarray:
     return pressure_to_db(system_like["front"][90]) - pressure_to_db(system_like["front"][0])
+
+
+def high_frequency_polar_transition_metrics(system_like: Dict) -> Dict[str, float]:
+    front0 = pressure_to_db(system_like["front"][0])
+    valid = np.isfinite(front0)
+    front_norm = {
+        angle: pressure_to_db(system_like["front"][angle]) - front0
+        for angle in ANGLES
+    }
+    rear_norm = {
+        angle: pressure_to_db(system_like["rear"][angle]) - front0
+        for angle in ANGLES
+    }
+    return high_frequency_polar_transition_penalty(front_norm, rear_norm, valid)
 
 
 def upper_mid_side_feature(system_like: Dict) -> Dict[str, float]:
@@ -2371,6 +2513,7 @@ def write_exports(
                 "null_penalty_db": "psychoacoustic-weighted penalty for weak 90 degree nulls",
                 "rear0_rms_db": "psychoacoustic-weighted rear 0 degree magnitude symmetry relative to front 0 degree",
                 "xover_mismatch_rms_db": "adjacent-driver normalized polar mismatch around each LR2/LR4 crossover",
+                "hf_polar_transition_penalty": "8-12 kHz penalty for narrow normalized-contour ridges and steep frequency-axis changes at side/rear angles",
                 "sep_30_60_median_2_10k_db": "psychoacoustic-weighted median front SPL30-SPL60 from 2-10 kHz",
                 "known_effective_thd_2_7_percent": "passband-weighted system THD proxy from available REW THD traces only",
                 "prior_penalty": "small local evidence penalty for distortion/SPL uncertainty or known caveats",
@@ -2394,6 +2537,7 @@ def write_exports(
             "The same notes flag 8424 rear-side directivity and high-angle order as weaker than 8414, especially above 2 kHz.",
             "GRS is treated as the measured dipole/directivity-order reference, but it does not provide the largest 30-to-60 separation above 2 kHz.",
             "L10NEO remains a high-separation alternate; it is not selected in the balanced primary due to the composite directivity/crossover score, not because of worse raw THD evidence.",
+            "Driver contribution peaks are not automatically flattened when they are helping the complex 0-degree sum; the search now separately penalizes narrow 8-12 kHz normalized-contour ridges and steep side/rear polar transitions.",
         ],
         "mounting_geometry_notes": [
             "The synthetic HDF5 is a horizontal 0-180 degree sum of separately suspended driver measurements; it does not model vertical-plane lobing from center-to-center spacing.",
@@ -2764,6 +2908,26 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
         for smoothing, band_data in smoothing_data.items()
         for band, stats in band_data.items()
     )
+    polar_eq = manifest["flatness_optimization"].get("high_frequency_polar_eq", {})
+    polar_eq_rows = "".join(
+        f"""
+        <tr>
+            <td>{html.escape(row['driver'])}</td>
+            <td>{html.escape(row['type'])}</td>
+            <td>{row['fc_hz']:.1f}</td>
+            <td>{row['q']:.2f}</td>
+            <td>{row['gain_db']:+.2f}</td>
+            <td>{row['hf_penalty_improvement']:.3f}</td>
+            <td>{row['flatness_rms_db']:.3f}</td>
+            <td>{row['flatness_peak_to_peak_db']:.3f}</td>
+        </tr>
+        """
+        for row in polar_eq.get("accepted_filters", [])
+    )
+    if not polar_eq_rows:
+        polar_eq_rows = '<tr><td colspan="8">No optional high-frequency PEQ was accepted under the flatness guard.</td></tr>'
+    polar_before = polar_eq.get("before", {})
+    polar_after = polar_eq.get("after", {})
     side_feature = manifest.get("upper_mid_side_feature", {})
     topology = manifest["filter_topology"]
     topology_summary = topology["summary"]
@@ -3026,6 +3190,16 @@ def render_report(root: Path, manifest: Dict, metrics_rows: List[Dict], cdsl_sta
             <table>
                 <thead><tr><th>Stage</th><th>Smoothing</th><th>Band</th><th>Median dB</th><th>Min Err</th><th>Max Err</th><th>Peak-Peak</th><th>RMS Err</th></tr></thead>
                 <tbody>{flatness_rows}</tbody>
+            </table>
+            <h3>Optional High-Frequency PEQ</h3>
+            <p class="note">
+                PEQ filters can boost or cut. After the front-sum flatness fit, the generator tries a small set of +/- PEQ candidates around 7.5-12.5 kHz
+                and accepts them only when the 8-12 kHz polar-transition penalty improves without materially degrading front-sum flatness.
+                Penalty before/after: {value_or_dash(polar_before.get('hf_polar_transition_penalty'), '.3f')} -> {value_or_dash(polar_after.get('hf_polar_transition_penalty'), '.3f')}.
+            </p>
+            <table>
+                <thead><tr><th>Driver</th><th>Type</th><th>Fc Hz</th><th>Q</th><th>Gain dB</th><th>HF Improvement</th><th>Flat RMS</th><th>Flat P-P</th></tr></thead>
+                <tbody>{polar_eq_rows}</tbody>
             </table>
         </div></div>
 
@@ -3326,6 +3500,7 @@ def weighted_system_comparison_metrics(summary: Dict) -> Dict[str, float]:
     system = summary["system"]
     weights_2_10 = psychoacoustic_weights(COMMON_FREQ, 2000.0, 10_000.0)
     weights_200_10 = psychoacoustic_weights(COMMON_FREQ, 200.0, 10_000.0)
+    hf_transition = high_frequency_polar_transition_metrics(system)
 
     sep = pressure_to_db(system["front"][30]) - pressure_to_db(system["front"][60])
     side_leak = pressure_to_db(system["front"][90]) - pressure_to_db(system["front"][0])
@@ -3344,6 +3519,9 @@ def weighted_system_comparison_metrics(summary: Dict) -> Dict[str, float]:
     return {
         "sep_30_60_weighted_db": weighted_mean(sep, weights_2_10),
         "xover_mismatch_rms_db": float(summary["manifest"]["search"]["selected_candidate"].get("xover_mismatch_rms_db", float("nan"))),
+        "hf_polar_transition_penalty": hf_transition["hf_polar_transition_penalty"],
+        "hf_polar_ridge_db": hf_transition["hf_polar_ridge_db"],
+        "hf_polar_slope_excess_db_per_oct": hf_transition["hf_polar_slope_excess_db_per_oct"],
         "side_leak_excess_rms_db": weighted_rms(np.maximum(side_leak + 18.0, 0.0), weights_2_10),
         "front_dipole_error_rms_db": weighted_rms_stack(front_errors, weights_2_10),
         "rear_dipole_error_rms_db": weighted_rms_stack(rear_errors, weights_2_10),
@@ -3374,56 +3552,63 @@ def compare_variants(chosen: Dict, baseline: Dict) -> List[Dict]:
         (
             "Weighted 2-10 kHz SPL30-SPL60 (dB)",
             "sep_30_60_weighted_db",
-            28,
+            22,
             "higher",
             "Near/far angular separation is the main CDSL target; weighting emphasizes the ear-sensitive 2-7 kHz center and downweights the suspect top octave.",
         ),
         (
             "Crossover-local polar mismatch RMS (dB)",
             "xover_mismatch_rms_db",
-            18,
+            17,
             "lower",
             "Keeps adjacent driver radiation patterns close through each acoustic handoff, which is why the chosen mixed LR2/LR4 stack is not judged by SPL alone.",
         ),
         (
+            "8-12 kHz polar transition/ridge penalty",
+            "hf_polar_transition_penalty",
+            16,
+            "lower",
+            "Penalizes narrow contour ridges and steep frequency-axis changes at side/rear angles, so a bright 10 kHz side-energy stripe is not accepted as benign.",
+        ),
+        (
             "Weighted 90-degree leakage excess RMS (dB)",
             "side_leak_excess_rms_db",
-            16,
+            13,
             "lower",
             "Penalizes energy above a -18 dB side-null target where crosstalk cancellation is most sensitive.",
         ),
         (
             "Weighted front dipole polar error RMS (dB)",
             "front_dipole_error_rms_db",
-            12,
+            10,
             "lower",
             "Keeps the front lobe close to a cosine/dipole shape rather than just maximizing one angle pair.",
         ),
         (
             "Weighted rear dipole polar error RMS (dB)",
             "rear_dipole_error_rms_db",
-            8,
+            7,
             "lower",
             "Checks whether the rear radiation stays dipole-like instead of becoming an uncontrolled back lobe.",
         ),
         (
             "Weighted rear/front symmetry RMS (dB)",
             "rear0_symmetry_rms_db",
-            6,
+            5,
             "lower",
             "Dipole behavior needs rear 0-degree magnitude close to front 0-degree after filtering.",
         ),
         (
             "Weighted 200-10k flatness RMS (dB)",
             "flatness_weighted_rms_db",
-            7,
+            6,
             "lower",
             "Uses one-third-octave front-sum trend with the same broad psychoacoustic weighting; filter count is only a cap, not a score.",
         ),
         (
             "Effective known system THD, 2-7 kHz (%)",
             "effective_known_thd_2_7_percent",
-            5,
+            4,
             "lower",
             "Uses filtered driver contributions and available REW THD traces; incomplete coverage is reported separately.",
         ),
