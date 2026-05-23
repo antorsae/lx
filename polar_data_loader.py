@@ -34,6 +34,15 @@ _PATTERN_ALIASES = {
     "scanspeak": "juan",
 }
 
+_ANGLE_METADATA_ATTRS = (
+    "title",
+    "notes",
+    "date",
+    "measurement_distance_m",
+    "measurement_height_m",
+    "measurement_height_reference",
+)
+
 _PATTERN_DEFS = {
     "andres": {
         "regex": re.compile(r"^F(?P<angle>\d+)-(?P<driver>.+)$"),
@@ -64,7 +73,8 @@ class PolarDataLoader:
     """Load and manage polar response measurements from REW"""
 
     def __init__(self, data_directory: str = ".", connect_to_rew: bool = True,
-                 pattern_type: str = "andres"):
+                 pattern_type: str = "andres",
+                 driver_name_aliases: Optional[Dict[str, str]] = None):
         """
         Initialize data loader
 
@@ -84,7 +94,10 @@ class PolarDataLoader:
             raise ValueError(
                 f"Unknown pattern_type '{pattern_type}'. Expected one of: {valid_list}"
             )
-        self._driver_name_aliases = getattr(config, "DRIVER_NAME_ALIASES", {})
+        self._driver_name_aliases = {
+            **getattr(config, "DRIVER_NAME_ALIASES", {}),
+            **(driver_name_aliases or {}),
+        }
         self._driver_name_reverse = {}
         for raw_name, canonical_name in self._driver_name_aliases.items():
             raw = raw_name.strip()
@@ -750,8 +763,9 @@ class PolarDataLoader:
         """Save metadata and timing info to HDF5 angle group"""
         if 'metadata' in angle_data:
             meta = angle_data['metadata']
-            for key in ['title', 'notes', 'date']:
-                angle_group.attrs[key] = meta.get(key, '')
+            for key in _ANGLE_METADATA_ATTRS:
+                if key in meta:
+                    angle_group.attrs[key] = meta.get(key, '')
             angle_group.attrs['sampleRate'] = meta.get('sampleRate', 0)
         angle_group.attrs['timing_corrected'] = angle_data.get('timing_corrected', False)
         angle_group.attrs['timing_offset_ms'] = angle_data.get('timing_offset_ms', 0.0)
@@ -759,13 +773,13 @@ class PolarDataLoader:
     def _load_angle_metadata(self, angle_group) -> Dict:
         """Load metadata and timing info from HDF5 angle group"""
         result = {}
-        if 'title' in angle_group.attrs:
+        if any(key in angle_group.attrs for key in _ANGLE_METADATA_ATTRS):
             result['metadata'] = {
-                'title': angle_group.attrs.get('title', ''),
-                'notes': angle_group.attrs.get('notes', ''),
-                'date': angle_group.attrs.get('date', ''),
-                'sampleRate': angle_group.attrs.get('sampleRate', 0),
+                key: angle_group.attrs.get(key, '')
+                for key in _ANGLE_METADATA_ATTRS
+                if key in angle_group.attrs
             }
+            result['metadata']['sampleRate'] = angle_group.attrs.get('sampleRate', 0)
         result['timing_corrected'] = bool(angle_group.attrs.get('timing_corrected', False))
         result['timing_offset_ms'] = float(angle_group.attrs.get('timing_offset_ms', 0.0))
         return result

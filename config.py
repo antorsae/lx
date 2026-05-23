@@ -38,6 +38,68 @@ MEASUREMENT_SETS = {
         "hdf5_file": "polar_data_juan_baffleless.h5",
         "output_dir": OUTPUT_DIR / "juan-baffleless",
     },
+    "juan-lx521-top-raw": {
+        # Raw/no-crossover driver captures mounted in the LX521 top baffle.
+        # Source-local aliases keep these mounted measurements distinct from
+        # the naked/baffleless source captures that reuse the same REW names.
+        "path": None,
+        "sources": [
+            {
+                "path": Path("measurements/juan/SEAS L22MG EN TOP BAFFLE LX521"),
+                "pattern_type": "juan",
+                "driver_name_aliases": {
+                    "SEAS L22MG A": "L22MG (LX521 top raw)",
+                },
+            },
+            {
+                "path": Path("measurements/juan/SEAS L10NEO EN TOP BAFFLE LX521"),
+                "pattern_type": "juan",
+                "driver_name_aliases": {
+                    "SEAS L10NEO A": "L10NEO (LX521 top raw)",
+                },
+            },
+            {
+                "path": Path(
+                    "measurements/juan/SEAS L22MG + L10NEO + TWEETERS NO XOVER EN TOP BAFFLE LX521"
+                ),
+                "pattern_type": "juan",
+                "driver_name_aliases": {
+                    "SEAS L22MG A": "L22MG+L10NEO+Tweeters (LX521 top raw)",
+                },
+            },
+        ],
+        "pattern_type": "juan",
+        "angles": [0, 15, 30, 45, 60, 75, 90],
+        "has_rear": True,
+        "hdf5_file": "polar_data_juan_lx521_top_raw.h5",
+        "output_dir": OUTPUT_DIR / "juan-lx521-top-raw",
+        "measurement_metadata_overrides": {
+            "L22MG (LX521 top raw)": {
+                "measurement_distance_m": 0.50,
+                "measurement_height_reference": "measured_driver",
+                "notes": (
+                    "Measurement distance: 50 cm. Mic height: measured driver. "
+                    "LX521 top baffle mounted; raw/no crossover/no EQ."
+                ),
+            },
+            "L10NEO (LX521 top raw)": {
+                "measurement_distance_m": 0.50,
+                "measurement_height_reference": "measured_driver",
+                "notes": (
+                    "Measurement distance: 50 cm. Mic height: measured driver. "
+                    "LX521 top baffle mounted; raw/no crossover/no EQ."
+                ),
+            },
+            "L22MG+L10NEO+Tweeters (LX521 top raw)": {
+                "measurement_distance_m": 0.50,
+                "measurement_height_reference": "l22mg",
+                "notes": (
+                    "Measurement distance: 50 cm. Mic height: L22MG. "
+                    "L22MG + L10NEO + tweeters on LX521 top baffle; raw/no crossover/no EQ."
+                ),
+            },
+        },
+    },
     "lx521-system": {
         "path": Path("measurements/juan/LX521 POLARES 0_180 GRADOS"),
         "pattern_type": "lx521_system",  # {name} {angle} GRADOS {F|REAR}.mdat
@@ -85,6 +147,9 @@ DRIVER_COLORS = {
     'MU10RB-SL': '#7f7f7f',       # Gray - Juan baffleless
     'SS10F8424G00': '#1f77b4',    # Blue - Juan baffleless
     'L26RO4Y': '#ff9896',          # Light red - Juan measurements
+    'L22MG (LX521 top raw)': '#ff7f0e',  # Orange - mounted raw
+    'L10NEO (LX521 top raw)': '#8c564b',  # Brown - mounted raw
+    'L22MG+L10NEO+Tweeters (LX521 top raw)': '#111827',  # Black - mounted raw stack
 }
 
 DRIVER_NAME_ALIASES = {

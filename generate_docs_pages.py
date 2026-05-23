@@ -19,6 +19,7 @@ SYSTEM_SET = "lx521-system"
 SET_TITLES = {
     "andres": "Andres Measurements",
     "juan-baffleless": "Juan Driver Measurements",
+    "juan-lx521-top-raw": "Juan LX521 Top-Baffle Raw Measurements",
     SYSTEM_SET: "LX521.4 Complete System",
 }
 
@@ -27,6 +28,11 @@ SET_DESCRIPTIONS = {
     "juan-baffleless": (
         "Juan driver measurements with front/rear polar data, including "
         "baffleless and cylindrical-baffle captures."
+    ),
+    "juan-lx521-top-raw": (
+        "50 cm front/rear polar measurements of L22MG and L10NEO mounted in the "
+        "LX521 top baffle with no crossover/EQ, plus a raw L22MG+L10NEO+tweeter stack "
+        "captured at L22MG microphone height."
     ),
 }
 
@@ -38,6 +44,9 @@ DRIVER_ROLES = {
     "MU10RB-SL": "Upper Mid",
     "SEAS27T": "Tweeter",
     "SS10F8424G00": "Upper Mid",
+    "L22MG (LX521 top raw)": "Lower Mid - mounted raw",
+    "L10NEO (LX521 top raw)": "Upper Mid - mounted raw",
+    "L22MG+L10NEO+Tweeters (LX521 top raw)": "Raw top-baffle stack",
 }
 
 

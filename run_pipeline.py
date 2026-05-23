@@ -22,6 +22,32 @@ import config
 from polar_data_loader import PolarDataLoader
 from generate_visualizations import PolarResponseVisualizer
 
+
+def apply_measurement_metadata_overrides(data, overrides):
+    """Apply configured measurement metadata to loaded driver angle records."""
+
+    for driver_name, driver_override in (overrides or {}).items():
+        driver_data = data.get(driver_name)
+        if not driver_data:
+            print(f"Warning: metadata override skipped; driver '{driver_name}' was not loaded")
+            continue
+
+        note = str(driver_override.get("notes", "")).strip()
+        extra_attrs = {
+            key: value
+            for key, value in driver_override.items()
+            if key != "notes"
+        }
+        for side_key in ("angles", "rear_angles"):
+            for angle_data in driver_data.get(side_key, {}).values():
+                metadata = angle_data.setdefault("metadata", {})
+                if note:
+                    existing = str(metadata.get("notes", "")).strip()
+                    if note not in existing:
+                        metadata["notes"] = f"{existing}\n{note}" if existing else note
+                metadata.update(extra_attrs)
+
+
 def run_pipeline(args):
     # Get measurement set configuration
     mset_name = args.measurement_set
@@ -72,7 +98,8 @@ def run_pipeline(args):
 
                     loader = PolarDataLoader(
                         data_directory=str(src_path),
-                        pattern_type=src_pattern
+                        pattern_type=src_pattern,
+                        driver_name_aliases=src.get("driver_name_aliases"),
                     )
                     src_data = loader.load_all_drivers(
                         angles=angles,
@@ -99,7 +126,8 @@ def run_pipeline(args):
                 # Single-source measurement set
                 loader = PolarDataLoader(
                     data_directory=str(data_dir),
-                    pattern_type=pattern_type
+                    pattern_type=pattern_type,
+                    driver_name_aliases=mset.get("driver_name_aliases"),
                 )
                 data = loader.load_all_drivers(
                     angles=angles,
@@ -108,6 +136,11 @@ def run_pipeline(args):
                     gate_right_ms=config.GATE_RIGHT_MS,
                     include_rear=has_rear
                 )
+
+            apply_measurement_metadata_overrides(
+                data,
+                mset.get("measurement_metadata_overrides"),
+            )
 
             # Save
             print(f"\n[STEP 2] Saving to {hdf5_path}...")

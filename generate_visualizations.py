@@ -857,40 +857,82 @@ class PolarResponseVisualizer:
 
         all_angles = sorted(all_angles)
 
+        extra_set_specs = [
+            ("juan-baffleless", "Juan baffleless drivers", "loadExtraJuanBafflelessBtn"),
+            ("juan-lx521-top-raw", "Juan top-baffle raw drivers", "loadExtraJuanTopBaffleBtn"),
+        ]
         extra_datasets = {}
-        extra_set_name = "juan-baffleless"
-        extra_data = self._load_extra_set_data(extra_set_name)
-        extra_interp_note = ""
-        if extra_data:
+        for extra_set_name, extra_label, extra_button_id in extra_set_specs:
+            mset = config.MEASUREMENT_SETS.get(extra_set_name, {})
+            extra_path = config.DATA_DIR / mset.get("hdf5_file", "")
+            is_current_set = False
+            if extra_path.exists():
+                try:
+                    is_current_set = extra_path.resolve() == self.data_path.resolve()
+                except OSError:
+                    is_current_set = False
+            if is_current_set:
+                extra_datasets[extra_set_name] = {
+                    "label": extra_label,
+                    "buttonId": extra_button_id,
+                    "loadedText": f"{extra_label} already loaded",
+                    "drivers": list(self.drivers),
+                    "allData": {},
+                    "allAngles": [int(a) for a in all_angles],
+                    "alreadyPresent": True,
+                    "interpolationNote": "",
+                }
+                continue
+
+            extra_data = self._load_extra_set_data(extra_set_name)
+            if not extra_data:
+                continue
             extra_all_data, extra_angles, extra_drivers, extra_interp_info = self._build_explorer_payload(
                 extra_data, TARGET_POINTS, target_angles=all_angles
             )
             if extra_drivers:
                 extra_datasets[extra_set_name] = {
-                    "label": "Juan baffleless drivers",
+                    "label": extra_label,
+                    "buttonId": extra_button_id,
+                    "loadedText": f"{extra_label} loaded",
                     "drivers": extra_drivers,
                     "allData": extra_all_data,
                     "allAngles": [int(a) for a in extra_angles],
+                    "interpolationNote": self._format_interpolation_note(all_angles, extra_interp_info),
                 }
-                extra_interp_note = self._format_interpolation_note(all_angles, extra_interp_info)
 
         extra_controls_html = ""
         if extra_datasets:
-            info_html = ""
-            if extra_interp_note:
-                note = html.escape(extra_interp_note).replace("\n", "&#10;")
-                info_html = f'<span class="info-icon" title="{note}">(i)</span>'
-            extra_driver_note = ""
-            if extra_drivers:
-                driver_list = ", ".join(sorted(extra_drivers))
-                extra_driver_note = f'<div class="extra-driver-note">Adds: {driver_list}</div>'
-            extra_controls_html = f'''
-                <div class="extra-driver-controls">
+            control_lines = []
+            for extra_key, extra_dataset in extra_datasets.items():
+                info_html = ""
+                extra_interp_note = extra_dataset.get("interpolationNote", "")
+                if extra_interp_note:
+                    note = html.escape(extra_interp_note).replace("\n", "&#10;")
+                    info_html = f'<span class="info-icon" title="{note}">(i)</span>'
+                driver_list = ", ".join(sorted(extra_dataset.get("drivers", [])))
+                if extra_dataset.get("alreadyPresent"):
+                    extra_driver_note = '<div class="extra-driver-note">Current page dataset</div>'
+                    button_text = extra_dataset.get("loadedText", extra_dataset["label"])
+                else:
+                    extra_driver_note = f'<div class="extra-driver-note">Adds: {html.escape(driver_list)}</div>'
+                    button_text = f'Load {extra_dataset["label"]}'
+                disabled_attr = " disabled" if extra_dataset.get("alreadyPresent") else ""
+                title_attr = (
+                    ' title="This driver set is already the current page dataset."'
+                    if extra_dataset.get("alreadyPresent")
+                    else ""
+                )
+                control_lines.append(f'''
                     <div class="extra-driver-row">
-                        <button id="loadExtraJuanBtn" onclick="loadExtraDrivers('juan-baffleless')">Load Juan baffleless drivers</button>
+                        <button id="{html.escape(extra_dataset["buttonId"])}" onclick="loadExtraDrivers('{html.escape(extra_key)}')"{disabled_attr}{title_attr}>{html.escape(button_text)}</button>
                         {info_html}
                     </div>
                     {extra_driver_note}
+                ''')
+            extra_controls_html = f'''
+                <div class="extra-driver-controls">
+                    {''.join(control_lines)}
                 </div>
             '''
 
@@ -3522,9 +3564,9 @@ class PolarResponseVisualizer:
             const extraDrivers = (dataset.drivers || []).filter(d => !drivers.includes(d));
             if (!extraDrivers.length) {{
                 dataset.loaded = true;
-                const btn = document.getElementById('loadExtraJuanBtn');
+                const btn = document.getElementById(dataset.buttonId || '');
                 if (btn) {{
-                    btn.textContent = 'Juan baffleless drivers loaded';
+                    btn.textContent = dataset.loadedText || `${{dataset.label || 'Extra drivers'}} loaded`;
                     btn.disabled = true;
                 }}
                 return;
@@ -3569,9 +3611,9 @@ class PolarResponseVisualizer:
             updatePlot();
 
             dataset.loaded = true;
-            const btn = document.getElementById('loadExtraJuanBtn');
+            const btn = document.getElementById(dataset.buttonId || '');
             if (btn) {{
-                btn.textContent = 'Juan baffleless drivers loaded';
+                btn.textContent = dataset.loadedText || `${{dataset.label || 'Extra drivers'}} loaded`;
                 btn.disabled = true;
             }}
         }}
@@ -5330,25 +5372,51 @@ class PolarResponseVisualizer:
         freq_max = float(slider_freqs[-1])
         freq_js_array = ','.join([f'{f:.1f}' for f in freq_values])
 
-        extra_polar_payload = None
-        extra_set_name = "juan-baffleless"
-        extra_data = self._load_extra_set_data(extra_set_name)
-        if extra_data:
-            base_step_data = [
-                [
-                    {
-                        "theta": (entry["theta"].tolist()
-                                  if hasattr(entry["theta"], "tolist")
-                                  else entry["theta"]),
-                        "r": (entry["r"].tolist()
-                              if hasattr(entry["r"], "tolist")
-                              else entry["r"]),
-                        "available": entry.get("available", True),
-                    }
-                    for entry in step
-                ]
-                for step in all_step_data
+        extra_polar_payloads = {}
+        extra_set_specs = [
+            ("juan-baffleless", "Juan baffleless drivers", "loadExtraPolarJuanBafflelessBtn"),
+            ("juan-lx521-top-raw", "Juan top-baffle raw drivers", "loadExtraPolarJuanTopBaffleBtn"),
+        ]
+        base_step_data = [
+            [
+                {
+                    "theta": (entry["theta"].tolist()
+                              if hasattr(entry["theta"], "tolist")
+                              else entry["theta"]),
+                    "r": (entry["r"].tolist()
+                          if hasattr(entry["r"], "tolist")
+                          else entry["r"]),
+                    "available": entry.get("available", True),
+                }
+                for entry in step
             ]
+            for step in all_step_data
+        ]
+        for extra_set_name, extra_label, extra_button_id in extra_set_specs:
+            mset = config.MEASUREMENT_SETS.get(extra_set_name, {})
+            extra_path = config.DATA_DIR / mset.get("hdf5_file", "")
+            is_current_set = False
+            if extra_path.exists():
+                try:
+                    is_current_set = extra_path.resolve() == self.data_path.resolve()
+                except OSError:
+                    is_current_set = False
+            if is_current_set:
+                extra_polar_payloads[extra_set_name] = {
+                    "label": extra_label,
+                    "buttonId": extra_button_id,
+                    "loadedText": f"{extra_label} already loaded",
+                    "drivers": list(self.drivers),
+                    "stepData": [],
+                    "baseDrivers": self.drivers,
+                    "baseStepData": base_step_data,
+                    "alreadyPresent": True,
+                }
+                continue
+
+            extra_data = self._load_extra_set_data(extra_set_name)
+            if not extra_data:
+                continue
             extra_results = {}
             for driver, driver_data in extra_data.items():
                 try:
@@ -5396,8 +5464,10 @@ class PolarResponseVisualizer:
                         })
                     extra_step_data.append(step)
 
-                extra_polar_payload = {
-                    "label": "Juan baffleless drivers",
+                extra_polar_payloads[extra_set_name] = {
+                    "label": extra_label,
+                    "buttonId": extra_button_id,
+                    "loadedText": f"{extra_label} loaded",
                     "drivers": extra_drivers,
                     "stepData": extra_step_data,
                     "baseDrivers": self.drivers,
@@ -5407,12 +5477,30 @@ class PolarResponseVisualizer:
         extra_polar_button_html = ""
         extra_polar_css = ""
         extra_polar_script = ""
-        if extra_polar_payload:
+        if extra_polar_payloads:
+            button_lines = []
+            for extra_key, extra_payload in extra_polar_payloads.items():
+                disabled_attr = " disabled" if extra_payload.get("alreadyPresent") else ""
+                title_attr = (
+                    ' title="This driver set is already the current page dataset."'
+                    if extra_payload.get("alreadyPresent")
+                    else ""
+                )
+                button_text = (
+                    extra_payload.get("loadedText", extra_payload["label"])
+                    if extra_payload.get("alreadyPresent")
+                    else f'Load {extra_payload["label"]}'
+                )
+                button_lines.append(
+                    f'<div class="extra-driver-row">'
+                    f'<button id="{html.escape(extra_payload["buttonId"])}" '
+                    f'onclick="loadExtraPolarDrivers(\'{html.escape(extra_key)}\')"'
+                    f'{disabled_attr}{title_attr}>{html.escape(button_text)}</button>'
+                    f'</div>'
+                )
             extra_polar_button_html = f'''
 <div class="extra-driver-container" id="extraPolarControl">
-    <div class="extra-driver-row">
-        <button id="loadExtraPolarBtn" onclick="loadExtraPolarDrivers()">Load Juan baffleless drivers</button>
-    </div>
+    {''.join(button_lines)}
 </div>
 '''
             extra_polar_css = '''
@@ -5426,6 +5514,9 @@ class PolarResponseVisualizer:
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 .extra-driver-container button {
     padding: 5px 12px;
@@ -5435,6 +5526,8 @@ class PolarResponseVisualizer:
     color: #1e3a8a;
     border: 1px solid #c7d2fe;
     border-radius: 4px;
+    width: 100%;
+    text-align: center;
 }
 .extra-driver-container button:hover {
     background: #e0e7ff;
@@ -5447,13 +5540,14 @@ class PolarResponseVisualizer:
     display: flex;
     align-items: center;
     gap: 6px;
+    width: 100%;
 }
 '''
             extra_polar_script = f'''
-const extraPolarDataset = {json.dumps(extra_polar_payload)};
+const extraPolarDatasets = {json.dumps(extra_polar_payloads)};
 const polarDriverColors = {json.dumps(config.DRIVER_COLORS)};
 const unavailablePolarColor = '{unavailable_driver_color}';
-console.log('[extra-polar] dataset', extraPolarDataset);
+console.log('[extra-polar] datasets', extraPolarDatasets);
 
 function buildPolarTraces(drivers, stepEntries) {{
     return drivers.map((driver, idx) => {{
@@ -5483,6 +5577,22 @@ function polarStepColors(drivers, stepEntries) {{
 
 function polarStepOpacity(stepEntries) {{
     return stepEntries.map(entry => entry?.available !== false ? 1 : 0.45);
+}}
+
+function loadedExtraPolarEntries(plotDiv) {{
+    return Object.values(plotDiv?._extraPolarDatasets || {{}});
+}}
+
+function extraPolarBaseDriverCount() {{
+    const firstDataset = Object.values(extraPolarDatasets || {{}})[0];
+    return firstDataset?.baseDrivers?.length || 0;
+}}
+
+function loadedExtraPolarDriverCount(plotDiv) {{
+    return loadedExtraPolarEntries(plotDiv).reduce(
+        (count, entry) => count + (entry.drivers?.length || 0),
+        0
+    );
 }}
 
 function positionExtraPolarControl() {{
@@ -5521,7 +5631,7 @@ function positionExtraPolarControl() {{
         const x = legendLayout.x ?? 1;
         const fontSize = legendLayout.font?.size || layout.font?.size || 12;
         const itemHeight = fontSize + 6;
-        const count = (extraPolarDataset?.baseDrivers?.length || 0) + 1;
+        const count = extraPolarBaseDriverCount() + loadedExtraPolarDriverCount(plotDiv) + 1;
         const legendTop = size.t + (1 - y) * size.h;
         const legendBottom = legendTop + (itemHeight * count);
         const legendRight = size.l + (x * size.w);
@@ -5540,10 +5650,11 @@ function positionExtraPolarControl() {{
     console.warn('[extra-polar] legend not found, using fallback');
 }}
 
-function loadExtraPolarDrivers() {{
-    console.log('[extra-polar] load requested');
-    if (!extraPolarDataset || extraPolarDataset.loaded) {{
-        console.warn('[extra-polar] dataset missing or already loaded');
+function loadExtraPolarDrivers(key) {{
+    const dataset = extraPolarDatasets?.[key];
+    console.log('[extra-polar] load requested', key);
+    if (!dataset || dataset.loaded) {{
+        console.warn('[extra-polar] dataset missing or already loaded', key);
         return;
     }}
     const plotDiv = document.querySelector('.plotly-graph-div');
@@ -5555,10 +5666,10 @@ function loadExtraPolarDrivers() {{
         hasLayout: !!plotDiv._fullLayout,
         dataLen: plotDiv.data?.length
     }});
-    const baseDrivers = extraPolarDataset.baseDrivers || [];
-    const baseSteps = extraPolarDataset.baseStepData || [];
-    const extraDrivers = extraPolarDataset.drivers || [];
-    const extraSteps = extraPolarDataset.stepData || [];
+    const baseDrivers = dataset.baseDrivers || [];
+    const baseSteps = dataset.baseStepData || [];
+    const extraDrivers = (dataset.drivers || []).filter(d => !((plotDiv.data || []).some(trace => trace.name === d)));
+    const extraSteps = dataset.stepData || [];
     if (!baseDrivers.length || !baseSteps.length || !extraDrivers.length || !extraSteps.length) {{
         console.warn('[extra-polar] missing data', {{
             baseDrivers: baseDrivers.length,
@@ -5566,15 +5677,34 @@ function loadExtraPolarDrivers() {{
             extraDrivers: extraDrivers.length,
             extraSteps: extraSteps.length
         }});
+        if (!extraDrivers.length) {{
+            dataset.loaded = true;
+            const btn = document.getElementById(dataset.buttonId || '');
+            if (btn) {{
+                btn.textContent = dataset.loadedText || `${{dataset.label || 'Extra drivers'}} loaded`;
+                btn.disabled = true;
+            }}
+        }}
         return;
     }}
 
     const activeIdx = plotDiv.layout?.sliders?.[0]?.active ?? 0;
     const stepIdx = Math.max(0, Math.min(activeIdx, extraSteps.length - 1));
-    const extraTraces = buildPolarTraces(extraDrivers, extraSteps[stepIdx] || []);
-    const extraTraceIndices = extraDrivers.map((_, i) => baseDrivers.length + i);
-    plotDiv._extraPolarTraceIndices = extraTraceIndices;
-    plotDiv._extraPolarStepData = extraSteps;
+    const fullStep = extraSteps[stepIdx] || [];
+    const fullDrivers = dataset.drivers || [];
+    const keptIndexes = extraDrivers.map(driver => fullDrivers.indexOf(driver));
+    const currentStep = keptIndexes.map(idx => fullStep[idx]).filter(Boolean);
+    const extraTraces = buildPolarTraces(extraDrivers, currentStep);
+    const startIndex = plotDiv.data?.length || baseDrivers.length;
+    const extraTraceIndices = extraDrivers.map((_, i) => startIndex + i);
+    plotDiv._extraPolarDatasets = plotDiv._extraPolarDatasets || {{}};
+    plotDiv._extraPolarDatasets[key] = {{
+        traceIndices: extraTraceIndices,
+        stepData: extraSteps,
+        drivers: extraDrivers,
+        sourceDrivers: fullDrivers,
+        sourceIndexes: keptIndexes,
+    }};
     console.log('[extra-polar] add traces', {{ activeIdx, stepIdx, extraTraces: extraTraces.length }});
 
     Plotly.addTraces(plotDiv, extraTraces).then(() => {{
@@ -5584,21 +5714,24 @@ function loadExtraPolarDrivers() {{
             plotDiv._extraPolarSliderHook = true;
             plotDiv.on('plotly_sliderchange', (e) => {{
                 const idx = e?.slider?.active ?? e?.stepIndex ?? plotDiv.layout?.sliders?.[0]?.active ?? 0;
-                const step = extraSteps[Math.max(0, Math.min(idx, extraSteps.length - 1))] || [];
-                Plotly.restyle(plotDiv, {{
-                    r: step.map(d => d.r),
-                    theta: step.map(d => d.theta),
-                    'line.color': polarStepColors(extraDrivers, step),
-                    opacity: polarStepOpacity(step)
-                }}, extraTraceIndices);
+                loadedExtraPolarEntries(plotDiv).forEach((loaded) => {{
+                    const sourceStep = loaded.stepData[Math.max(0, Math.min(idx, loaded.stepData.length - 1))] || [];
+                    const step = loaded.sourceIndexes.map(sourceIdx => sourceStep[sourceIdx]).filter(Boolean);
+                    Plotly.restyle(plotDiv, {{
+                        r: step.map(d => d.r),
+                        theta: step.map(d => d.theta),
+                        'line.color': polarStepColors(loaded.drivers, step),
+                        opacity: polarStepOpacity(step)
+                    }}, loaded.traceIndices);
+                }});
             }});
         }}
         positionExtraPolarControl();
 
-        extraPolarDataset.loaded = true;
-        const btn = document.getElementById('loadExtraPolarBtn');
+        dataset.loaded = true;
+        const btn = document.getElementById(dataset.buttonId || '');
         if (btn) {{
-            btn.textContent = 'Juan baffleless drivers loaded';
+            btn.textContent = dataset.loadedText || `${{dataset.label || 'Extra drivers'}} loaded`;
             btn.disabled = true;
         }}
     }}).catch((err) => {{
@@ -5792,14 +5925,19 @@ function setFrequencyFromInput() {{
             var step = slider.steps[closestIdx];
             var traceIndices = (step.args && step.args[1]) ? step.args[1] : baseTraceIndices;
             Plotly.restyle(plotDiv, step.args[0], traceIndices);
-            if (plotDiv._extraPolarTraceIndices && plotDiv._extraPolarStepData) {{
-                var extraStep = plotDiv._extraPolarStepData[Math.max(0, Math.min(closestIdx, plotDiv._extraPolarStepData.length - 1))] || [];
-                Plotly.restyle(plotDiv, {{
-                    r: extraStep.map(d => d.r),
-                    theta: extraStep.map(d => d.theta),
-                    'line.color': polarStepColors(extraPolarDataset.drivers || [], extraStep),
-                    opacity: polarStepOpacity(extraStep)
-                }}, plotDiv._extraPolarTraceIndices);
+            if (plotDiv._extraPolarDatasets) {{
+                loadedExtraPolarEntries(plotDiv).forEach(function(loaded) {{
+                    var sourceStep = loaded.stepData[Math.max(0, Math.min(closestIdx, loaded.stepData.length - 1))] || [];
+                    var extraStep = loaded.sourceIndexes.map(function(sourceIdx) {{
+                        return sourceStep[sourceIdx];
+                    }}).filter(Boolean);
+                    Plotly.restyle(plotDiv, {{
+                        r: extraStep.map(d => d.r),
+                        theta: extraStep.map(d => d.theta),
+                        'line.color': polarStepColors(loaded.drivers || [], extraStep),
+                        opacity: polarStepOpacity(extraStep)
+                    }}, loaded.traceIndices);
+                }});
             }}
         }}
     }}
