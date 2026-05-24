@@ -1,0 +1,2 @@
+target_label,target_hdf5,angle_deg,min_frequency_hz,min_norm_db,cluster_start_hz,cluster_end_hz,cluster_width_hz,cluster_point_count,local_window_octaves,same_angle_local_median_db,same_angle_local_contrast_db,adjacent_angle_median_db,adjacent_angle_contrast_db,deep_threshold_db
+juan-top-l22,output/data/polar_data_juan_lx521_top_raw.h5,75.0,300.2929915487766,-29.894390106201172,300.2929915487766,383.4228811264038,83.12988957762718,228,0.16666666666666666,-30.48385238647461,-0.5894622802734375,-12.579395294189453,17.31499481201172,-25.0
