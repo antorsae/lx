@@ -26,6 +26,7 @@ from typing import Dict, List, Tuple, Optional
 import json
 
 import config
+from lx521_l22mg_baffle.metadata import parse_distance_m, parse_height_m, parse_height_reference
 
 
 # ==================== Filename Pattern Definitions ====================
@@ -69,12 +70,103 @@ _PATTERN_DEFS = {
 }
 
 
+def select_direct_ir_peak(
+    abs_ir: np.ndarray,
+    start_time_s: float,
+    sample_rate_hz: float,
+    threshold_fraction: float = 0.10,
+    reference_window_s: float = 0.002,
+    policy: str = "first-strong",
+    first_lobe_threshold_fraction: float = 0.50,
+    first_lobe_window_s: tuple[float, float] = (-0.0005, 0.0008),
+) -> Dict:
+    """Select the direct-arrival IR peak near the acoustic timing reference."""
+
+    abs_ir = np.asarray(abs_ir, dtype=float)
+    policy = str(policy).replace("_", "-")
+    if policy not in {"strongest", "first-strong"}:
+        raise ValueError(f"Unknown direct IR peak policy: {policy}")
+
+    global_max_idx = int(np.nanargmax(abs_ir))
+    global_max_val = float(abs_ir[global_max_idx])
+    global_peak_time_s = float(start_time_s) + (global_max_idx / float(sample_rate_hz))
+
+    threshold = global_max_val * float(threshold_fraction)
+    local_peak_mask = np.zeros_like(abs_ir, dtype=bool)
+    local_peak_mask[1:-1] = (abs_ir[1:-1] > abs_ir[:-2]) & (abs_ir[1:-1] > abs_ir[2:])
+    significant_peaks = np.where(local_peak_mask & (abs_ir > threshold))[0]
+    peak_times_s = float(start_time_s) + (significant_peaks / float(sample_rate_hz))
+    reference_window = np.abs(peak_times_s) <= float(reference_window_s)
+    first_lobe_threshold = global_max_val * float(first_lobe_threshold_fraction)
+    first_lobe_start_s, first_lobe_end_s = first_lobe_window_s
+    first_lobe_window = (
+        (peak_times_s >= float(first_lobe_start_s))
+        & (peak_times_s <= float(first_lobe_end_s))
+        & (abs_ir[significant_peaks] >= first_lobe_threshold)
+    )
+    first_lobe_peaks = significant_peaks[first_lobe_window]
+    first_lobe_idx = int(first_lobe_peaks[np.argmin(peak_times_s[first_lobe_window])]) if len(first_lobe_peaks) else None
+
+    base = {
+        "global_index": global_max_idx,
+        "global_peak_time_s": global_peak_time_s,
+        "significant_peaks": significant_peaks,
+        "policy": policy,
+        "first_lobe_index": first_lobe_idx,
+        "first_lobe_threshold_fraction": float(first_lobe_threshold_fraction),
+        "first_lobe_window_s": (float(first_lobe_start_s), float(first_lobe_end_s)),
+    }
+
+    if policy == "first-strong":
+        if first_lobe_idx is not None:
+            return {
+                **base,
+                "index": first_lobe_idx,
+                "reason": "first strong near-reference lobe",
+                "rejected": False,
+            }
+        return {
+            **base,
+            "index": None,
+            "reason": "no first strong near-reference lobe",
+            "rejected": True,
+        }
+
+    if np.any(reference_window):
+        window_peaks = significant_peaks[reference_window]
+        target_peak_idx = int(window_peaks[np.argmax(abs_ir[window_peaks])])
+        return {
+            **base,
+            "index": target_peak_idx,
+            "reason": "strongest significant peak inside reference window",
+            "rejected": False,
+        }
+    if abs(global_peak_time_s) <= float(reference_window_s):
+        return {
+            **base,
+            "index": global_max_idx,
+            "reason": "global peak inside reference window",
+            "rejected": False,
+        }
+    return {
+        **base,
+        "index": None,
+        "reason": "no significant reference-window peak; global peak outside reference window",
+        "rejected": True,
+    }
+
+
 class PolarDataLoader:
     """Load and manage polar response measurements from REW"""
 
-    def __init__(self, data_directory: str = ".", connect_to_rew: bool = True,
-                 pattern_type: str = "andres",
-                 driver_name_aliases: Optional[Dict[str, str]] = None):
+    def __init__(
+        self,
+        data_directory: str = ".",
+        connect_to_rew: bool = True,
+        pattern_type: str = "andres",
+        direct_ir_peak_policy: str | None = None,
+        driver_name_aliases: Dict[str, str] | None = None,
+    ):
         """
         Initialize data loader
 
@@ -87,6 +179,19 @@ class PolarDataLoader:
         self.measurements = {}
         self._rew_launch_attempted = False
         self.pattern_type = pattern_type
+        self.direct_ir_peak_policy = str(direct_ir_peak_policy or config.DIRECT_IR_PEAK_POLICY).replace("_", "-")
+        if self.direct_ir_peak_policy not in {"strongest", "first-strong", "ir-start"}:
+            raise ValueError(f"Unknown direct IR peak policy: {self.direct_ir_peak_policy}")
+        if (
+            self.direct_ir_peak_policy == "strongest"
+            and not config.ALLOW_UNSAFE_STRONGEST_IR_PEAK_POLICY
+        ):
+            raise ValueError(
+                "direct_ir_peak_policy='strongest' is unsafe for high-angle validation because "
+                "the absolute peak can be a reflected/scattered lobe rather than the direct "
+                "arrival. Use the default 'first-strong' policy, or set "
+                "ALLOW_UNSAFE_STRONGEST_IR_PEAK_POLICY=1 only for legacy diagnostics."
+            )
         self._file_index = None
         if self._get_pattern_def() is None:
             valid = sorted(set(_PATTERN_DEFS.keys()) | set(_PATTERN_ALIASES.keys()))
@@ -112,7 +217,7 @@ class PolarDataLoader:
     def _ensure_rew_running(self):
         """Check if REW is running, launch it if not (only once)"""
         url = f"{config.REW_API_BASE}/measurements"
-        
+
         # Initial check - robust retry loop
         for i in range(3):
             try:
@@ -128,7 +233,7 @@ class PolarDataLoader:
                 if i < 2:
                     time.sleep(1)
 
-        # API is not responding. 
+        # API is not responding.
         # Attempt to launch/activate REW with API enabled (even if running)
         if not self._rew_launch_attempted:
             self._rew_launch_attempted = True
@@ -153,7 +258,7 @@ class PolarDataLoader:
                     except requests.exceptions.RequestException:
                         print(f"  Waiting for API... ({i+1}/5)")
                         time.sleep(3)
-                
+
                 print("WARNING: REW launched but API not responding.")
                 return False
 
@@ -230,19 +335,31 @@ class PolarDataLoader:
         floats = struct.unpack(f'>{num_floats}f', byte_data)
         return np.array(floats)
 
-    def _set_ir_window(self, measurement_uuid: str, left_ms: float, right_ms: float):
-        """Set IR window settings via REW API, preserving Ref Time"""
+    def _set_ir_window(
+        self,
+        measurement_uuid: str,
+        left_ms: float,
+        right_ms: float,
+        ref_time_ms: Optional[float] = None,
+    ):
+        """Set IR window settings via REW API.
+
+        When a direct-arrival peak has been selected, force REW's window
+        reference to that peak instead of inheriting a possibly stale ref time.
+        """
         url = f"{config.REW_API_BASE}/measurements/{measurement_uuid}/ir-windows"
-        
+
         try:
             # 1. Get current settings
             response = requests.get(url, timeout=10)
             response.raise_for_status()
             current_settings = response.json()
-            
+
             # 2. Update widths
             current_settings["leftWindowWidthms"] = left_ms
             current_settings["rightWindowWidthms"] = right_ms
+            if ref_time_ms is not None:
+                current_settings["refTimems"] = float(ref_time_ms)
             # Ensure we use Tukey 0.25 as desired/default if not set
             if "leftWindowType" not in current_settings:
                  current_settings["leftWindowType"] = "Tukey 0.25"
@@ -252,7 +369,7 @@ class PolarDataLoader:
             # 3. Post back
             response = requests.post(url, json=current_settings, timeout=10)
             response.raise_for_status()
-            
+
         except requests.exceptions.RequestException as e:
             print(f"    Warning: Failed to set IR window: {e}")
             # Fallback to simple set if GET failed (unlikely but safe)
@@ -261,7 +378,7 @@ class PolarDataLoader:
                 "rightWindowType": "Tukey 0.25",
                 "leftWindowWidthms": left_ms,
                 "rightWindowWidthms": right_ms,
-                "refTimems": 0, # Fallback default
+                "refTimems": float(ref_time_ms) if ref_time_ms is not None else 0,
                 "addFDW": False
             }
             requests.post(url, json=payload, timeout=10)
@@ -279,7 +396,7 @@ class PolarDataLoader:
 
     def _get_frequency_response(self, measurement_uuid: str, smoothing: int = 12) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Get frequency response from REW API"""
-        
+
         # Determine the correct smoothing string
         if smoothing:
             smoothing_str = f"1/{smoothing}"
@@ -288,27 +405,27 @@ class PolarDataLoader:
             choices = self._get_smoothing_choices()
             # Common variants for "No Smoothing" in REW
             candidates = ["No smoothing", "None", "0", ""]
-            
+
             smoothing_str = "None" # Default fallback
-            
+
             # Case-insensitive match from available choices
             for choice in choices:
                 if choice.lower() in [c.lower() for c in candidates]:
                     smoothing_str = choice
                     break
-            
+
             if not choices:
                  print("    Warning: Using default 'None' for no smoothing (could not verify choices).")
 
         # print(f"    Requesting smoothing: '{smoothing_str}'")
-        
+
         url = f"{config.REW_API_BASE}/measurements/{measurement_uuid}/frequency-response"
         params = {"smoothing": smoothing_str}
-        
+
         response = requests.get(url, params=params, timeout=30)
         response.raise_for_status()
         data = response.json()
-        
+
         magnitude = self._decode_base64_floats(data["magnitude"])
         # API returns phase in "phase" field
         if "phase" in data:
@@ -319,7 +436,7 @@ class PolarDataLoader:
         # Reconstruct frequency array
         start_freq = data["startFreq"]
         num_points = len(magnitude)
-        
+
         if "ppo" in data and data["ppo"]:
             # Log-spaced data
             ppo = data["ppo"]
@@ -333,19 +450,46 @@ class PolarDataLoader:
             # Fallback if neither (shouldn't happen with REW API)
             print("Warning: Could not determine frequency spacing, assuming linear 1Hz")
             frequencies = start_freq + np.arange(num_points)
-            
+
         return frequencies, magnitude, phase
 
-    def _auto_fix_timing(self, measurement_uuid: str) -> dict:
+    def _auto_fix_timing(self, measurement_uuid: str, measurement_metadata: Optional[Dict] = None) -> dict:
         """
         Detect and fix timing anomalies.
-        Looks for the earliest significant peak (direct sound) which might be shifted (e.g. -12ms).
-        Aligns that peak to t=0 using REW's 'Offset t=0' command.
+        Prefer the first strong lobe near the acoustic timing reference. This
+        avoids aligning t=0 to early pre-response artifacts or later/larger
+        high-angle lobes.
 
         Returns:
             dict with 'corrected' (bool) and 'offset_ms' (float) if correction was applied
         """
         result = {'corrected': False, 'offset_ms': 0.0}
+        if self.direct_ir_peak_policy == "ir-start":
+            meta = measurement_metadata or {}
+            if "timeOfIRStartSeconds" not in meta:
+                result["peak_selection_failed"] = True
+                result["timing_error"] = "REW metadata did not include timeOfIRStartSeconds"
+                return result
+            try:
+                ir_start_ms = float(meta["timeOfIRStartSeconds"]) * 1000.0
+            except (TypeError, ValueError) as exc:
+                result["peak_selection_failed"] = True
+                result["timing_error"] = f"Invalid REW timeOfIRStartSeconds: {exc}"
+                return result
+            if not np.isfinite(ir_start_ms):
+                result["peak_selection_failed"] = True
+                result["timing_error"] = "REW timeOfIRStartSeconds is not finite"
+                return result
+            result["selected_peak_time_ms"] = ir_start_ms
+            result["selected_peak_reason"] = "REW stored IR start time"
+            result["direct_ir_peak_policy"] = "ir-start"
+            result["first_lobe_time_ms"] = float("nan")
+            result["selected_is_first_lobe"] = False
+            result["first_lobe_threshold_fraction"] = float("nan")
+            result["first_lobe_window_start_ms"] = float("nan")
+            result["first_lobe_window_end_ms"] = float("nan")
+            result["rew_ir_start_time_ms"] = ir_start_ms
+            return result
         try:
             # 1. Get IR Data
             url_ir = f"{config.REW_API_BASE}/measurements/{measurement_uuid}/impulse-response"
@@ -358,6 +502,8 @@ class PolarDataLoader:
             elif "left" in ir_info:
                 ir_data = self._decode_base64_floats(ir_info["left"])
             else:
+                result["peak_selection_failed"] = True
+                result["timing_error"] = "Impulse response payload did not contain data or left channel"
                 return result
 
             sample_rate = ir_info["sampleRate"]
@@ -365,30 +511,79 @@ class PolarDataLoader:
 
             # 2. Analyze Peaks
             abs_ir = np.abs(ir_data)
-            global_max_idx = np.argmax(abs_ir)
-            global_max_val = abs_ir[global_max_idx]
 
-            # Search for earliest significant peak (10% of max) to catch direct sound
-            # if it's earlier than the global max (reflection).
-            # However, inspection showed the direct sound IS the max or close to it at -12ms.
-            # But we'll be robust.
+            # Prefer a strong peak close to the acoustic timing reference. The
+            # previous "earliest >10% of max" rule could grab a pre-response
+            # artifact at deep side-null angles and then gate around that event.
+            peak_selection = select_direct_ir_peak(
+                abs_ir,
+                start_time_s,
+                sample_rate,
+                policy=self.direct_ir_peak_policy,
+                first_lobe_threshold_fraction=config.DIRECT_IR_FIRST_LOBE_THRESHOLD_FRACTION,
+                first_lobe_window_s=(
+                    config.DIRECT_IR_FIRST_LOBE_START_MS / 1000.0,
+                    config.DIRECT_IR_FIRST_LOBE_END_MS / 1000.0,
+                ),
+            )
+            if peak_selection["rejected"]:
+                if peak_selection["reason"] == "no first strong near-reference lobe":
+                    detail = (
+                        "no peak above "
+                        f"{config.DIRECT_IR_FIRST_LOBE_THRESHOLD_FRACTION:.2f}x global peak "
+                        f"inside {config.DIRECT_IR_FIRST_LOBE_START_MS:.2f}.."
+                        f"{config.DIRECT_IR_FIRST_LOBE_END_MS:.2f} ms"
+                    )
+                else:
+                    detail = (
+                        f"global peak at {peak_selection['global_peak_time_s']*1000:.2f} ms "
+                        "because it may be a reflection"
+                    )
+                print(
+                    "    !! WARNING: No acceptable direct IR lobe found near the acoustic timing "
+                    "reference; refusing to align to uncertain timing "
+                    f"({detail})."
+                )
+                result["peak_selection_failed"] = True
+                result["global_peak_time_ms"] = peak_selection["global_peak_time_s"] * 1000.0
+                result["selected_peak_reason"] = str(peak_selection["reason"])
+                return result
 
-            threshold = global_max_val * 0.1
-            candidates = np.where(abs_ir > threshold)[0]
-
-            target_peak_idx = global_max_idx
-
-            # Simple clustering: Take the first candidate that is a local maximum
-            if len(candidates) > 0:
-                for idx in candidates:
-                    # Check local max condition
-                    if idx > 0 and idx < len(abs_ir)-1:
-                        if abs_ir[idx] > abs_ir[idx-1] and abs_ir[idx] > abs_ir[idx+1]:
-                            target_peak_idx = idx
-                            break
+            target_peak_idx = int(peak_selection["index"])
+            peak_reason = str(peak_selection["reason"])
+            global_peak_time_s = float(peak_selection["global_peak_time_s"])
+            first_lobe_idx = peak_selection.get("first_lobe_index")
+            significant_peaks = np.asarray(peak_selection["significant_peaks"], dtype=int)
+            if len(significant_peaks) > 0:
+                earliest_idx = int(significant_peaks[0])
+                earliest_time_s = start_time_s + (earliest_idx / sample_rate)
+                target_time_preview_s = start_time_s + (target_peak_idx / sample_rate)
+                if earliest_time_s < target_time_preview_s - 0.005:
+                    print(
+                        "    Timing note: ignored early significant IR event at "
+                        f"{earliest_time_s*1000:.2f} ms; using peak near reference at "
+                        f"{target_time_preview_s*1000:.2f} ms."
+                    )
 
             # Calculate time of the target peak
             peak_time_s = start_time_s + (target_peak_idx / sample_rate)
+            result["selected_peak_time_ms"] = peak_time_s * 1000.0
+            result["selected_peak_reason"] = peak_reason
+            result["global_peak_time_ms"] = global_peak_time_s * 1000.0
+            result["direct_ir_peak_policy"] = str(peak_selection["policy"])
+            result["first_lobe_threshold_fraction"] = float(
+                peak_selection["first_lobe_threshold_fraction"]
+            )
+            first_lobe_window_s = peak_selection["first_lobe_window_s"]
+            result["first_lobe_window_start_ms"] = float(first_lobe_window_s[0]) * 1000.0
+            result["first_lobe_window_end_ms"] = float(first_lobe_window_s[1]) * 1000.0
+            if first_lobe_idx is not None:
+                first_lobe_time_s = start_time_s + (int(first_lobe_idx) / sample_rate)
+                result["first_lobe_time_ms"] = first_lobe_time_s * 1000.0
+                result["selected_is_first_lobe"] = int(first_lobe_idx) == target_peak_idx
+            else:
+                result["first_lobe_time_ms"] = float("nan")
+                result["selected_is_first_lobe"] = False
 
             # If peak is not at 0 (tolerance 0.5ms), shift it
             if abs(peak_time_s) > 0.0005:
@@ -406,7 +601,8 @@ class PolarDataLoader:
                         "unit": "seconds"
                     }
                 }
-                requests.post(url_cmd, json=payload, timeout=10)
+                resp_cmd = requests.post(url_cmd, json=payload, timeout=10)
+                resp_cmd.raise_for_status()
 
                 # Verify the shift
                 time.sleep(0.5) # Wait for command to apply
@@ -417,10 +613,18 @@ class PolarDataLoader:
                     peak_time_v = start_v + (target_peak_idx / sample_rate)
                     print(f"    ✓ Verification: Peak is now at {peak_time_v*1000:.2f} ms")
 
-                    if abs(peak_time_v) > 0.1: # If still > 0.1ms off
+                    if abs(peak_time_v) > 0.0001: # If still > 0.1ms off
                         print("    !! WARNING: Correction failed to move peak to 0. Result is still off.")
+                        result["peak_selection_failed"] = True
+                        result["timing_error"] = "Peak offset verification failed"
+                        return result
+                else:
+                    result["peak_selection_failed"] = True
+                    result["timing_error"] = "Could not verify peak offset"
+                    return result
 
-                # Reset Ref Time to 0
+                # Reset Ref Time to 0 because the selected direct peak has
+                # just been shifted to t=0.
                 url_win = f"{config.REW_API_BASE}/measurements/{measurement_uuid}/ir-windows"
                 resp_win = requests.get(url_win)
                 if resp_win.ok:
@@ -431,9 +635,12 @@ class PolarDataLoader:
                 # Record that correction was applied
                 result['corrected'] = True
                 result['offset_ms'] = shift_sec * 1000
+                result["selected_peak_time_after_correction_ms"] = 0.0
 
         except Exception as e:
             print(f"    Warning: Failed to auto-fix timing: {e}")
+            result["peak_selection_failed"] = True
+            result["timing_error"] = str(e)
 
         return result
 
@@ -464,17 +671,38 @@ class PolarDataLoader:
                 measurement_uuid = measurements[last_key]["uuid"]
 
                 # 0. Auto-fix timing anomalies
-                timing_correction = self._auto_fix_timing(measurement_uuid)
+                timing_correction = self._auto_fix_timing(measurement_uuid, measurements[last_key])
+                if timing_correction.get("peak_selection_failed", False):
+                    detail = timing_correction.get("timing_error") or (
+                        f"global peak at {timing_correction.get('global_peak_time_ms'):.2f} ms"
+                        if "global_peak_time_ms" in timing_correction
+                        else "unknown timing failure"
+                    )
+                    raise RuntimeError(
+                        "Could not identify a direct IR peak near the acoustic timing reference "
+                        f"for {file_path}; refusing to generate frequency response from uncertain timing "
+                        f"({detail})."
+                    )
 
                 # 1. Apply Time Gating via REW API
                 if gate_right_ms > 0 or gate_left_ms > 0:
                     # print(f"    Gating (REW): {gate_left_ms}ms / {gate_right_ms}ms")
-                    self._set_ir_window(measurement_uuid, gate_left_ms, gate_right_ms)
-                
+                    gate_ref_time_ms = (
+                        0.0
+                        if timing_correction.get("corrected", False)
+                        else timing_correction.get("selected_peak_time_ms")
+                    )
+                    self._set_ir_window(
+                        measurement_uuid,
+                        gate_left_ms,
+                        gate_right_ms,
+                        ref_time_ms=gate_ref_time_ms,
+                    )
+
                 # 2. Get Frequency Response from REW (Smoothing applied by REW)
                 # if smoothing:
                 #     print(f"    Smoothing (REW): 1/{smoothing} octave")
-                
+
                 frequencies, magnitude, phase = self._get_frequency_response(measurement_uuid, smoothing)
 
                 return {
@@ -486,6 +714,18 @@ class PolarDataLoader:
                     "metadata": measurements[last_key],
                     "timing_corrected": timing_correction['corrected'],
                     "timing_offset_ms": timing_correction['offset_ms'],
+                    "timing_peak_time_ms": timing_correction.get("selected_peak_time_ms", 0.0),
+                    "timing_peak_selection_reason": timing_correction.get("selected_peak_reason", ""),
+                    "timing_peak_policy": timing_correction.get("direct_ir_peak_policy", self.direct_ir_peak_policy),
+                    "timing_first_strong_near_ref_lobe_time_ms": timing_correction.get("first_lobe_time_ms", float("nan")),
+                    "timing_selected_is_first_strong_near_ref_lobe": timing_correction.get("selected_is_first_lobe", False),
+                    "timing_first_lobe_threshold_fraction": timing_correction.get("first_lobe_threshold_fraction", config.DIRECT_IR_FIRST_LOBE_THRESHOLD_FRACTION),
+                    "timing_first_lobe_window_start_ms": timing_correction.get("first_lobe_window_start_ms", config.DIRECT_IR_FIRST_LOBE_START_MS),
+                    "timing_first_lobe_window_end_ms": timing_correction.get("first_lobe_window_end_ms", config.DIRECT_IR_FIRST_LOBE_END_MS),
+                    "timing_rew_ir_start_time_ms": timing_correction.get(
+                        "rew_ir_start_time_ms",
+                        float(measurements[last_key].get("timeOfIRStartSeconds", float("nan"))) * 1000.0,
+                    ),
                     "_uuid": measurement_uuid  # For tracking/unloading
                 }
             except requests.exceptions.RequestException as e:
@@ -766,22 +1006,83 @@ class PolarDataLoader:
             for key in _ANGLE_METADATA_ATTRS:
                 if key in meta:
                     angle_group.attrs[key] = meta.get(key, '')
+            notes = str(meta.get("notes", ""))
+            if notes:
+                if "measurement_distance_m" not in angle_group.attrs:
+                    distance_m = parse_distance_m(notes)
+                    if distance_m is not None:
+                        angle_group.attrs["measurement_distance_m"] = distance_m
+                if "measurement_height_m" not in angle_group.attrs:
+                    height_m = parse_height_m(notes)
+                    if height_m is not None:
+                        angle_group.attrs["measurement_height_m"] = height_m
+                if "measurement_height_reference" not in angle_group.attrs:
+                    height_reference = parse_height_reference(notes)
+                    if height_reference is not None:
+                        angle_group.attrs["measurement_height_reference"] = height_reference
             angle_group.attrs['sampleRate'] = meta.get('sampleRate', 0)
         angle_group.attrs['timing_corrected'] = angle_data.get('timing_corrected', False)
         angle_group.attrs['timing_offset_ms'] = angle_data.get('timing_offset_ms', 0.0)
+        angle_group.attrs['timing_peak_time_ms'] = angle_data.get('timing_peak_time_ms', 0.0)
+        angle_group.attrs['timing_peak_selection_reason'] = angle_data.get('timing_peak_selection_reason', '')
+        angle_group.attrs['timing_peak_policy'] = angle_data.get('timing_peak_policy', '')
+        angle_group.attrs['timing_first_strong_near_ref_lobe_time_ms'] = angle_data.get(
+            'timing_first_strong_near_ref_lobe_time_ms',
+            float('nan'),
+        )
+        angle_group.attrs['timing_selected_is_first_strong_near_ref_lobe'] = angle_data.get(
+            'timing_selected_is_first_strong_near_ref_lobe',
+            False,
+        )
+        angle_group.attrs['timing_first_lobe_threshold_fraction'] = angle_data.get(
+            'timing_first_lobe_threshold_fraction',
+            float('nan'),
+        )
+        angle_group.attrs['timing_first_lobe_window_start_ms'] = angle_data.get(
+            'timing_first_lobe_window_start_ms',
+            float('nan'),
+        )
+        angle_group.attrs['timing_first_lobe_window_end_ms'] = angle_data.get(
+            'timing_first_lobe_window_end_ms',
+            float('nan'),
+        )
+        angle_group.attrs['timing_rew_ir_start_time_ms'] = angle_data.get(
+            'timing_rew_ir_start_time_ms',
+            float('nan'),
+        )
 
     def _load_angle_metadata(self, angle_group) -> Dict:
         """Load metadata and timing info from HDF5 angle group"""
         result = {}
-        if any(key in angle_group.attrs for key in _ANGLE_METADATA_ATTRS):
+        if 'title' in angle_group.attrs:
             result['metadata'] = {
                 key: angle_group.attrs.get(key, '')
                 for key in _ANGLE_METADATA_ATTRS
-                if key in angle_group.attrs
             }
             result['metadata']['sampleRate'] = angle_group.attrs.get('sampleRate', 0)
         result['timing_corrected'] = bool(angle_group.attrs.get('timing_corrected', False))
         result['timing_offset_ms'] = float(angle_group.attrs.get('timing_offset_ms', 0.0))
+        result['timing_peak_time_ms'] = float(angle_group.attrs.get('timing_peak_time_ms', 0.0))
+        result['timing_peak_selection_reason'] = str(angle_group.attrs.get('timing_peak_selection_reason', ''))
+        result['timing_peak_policy'] = str(angle_group.attrs.get('timing_peak_policy', ''))
+        result['timing_first_strong_near_ref_lobe_time_ms'] = float(
+            angle_group.attrs.get('timing_first_strong_near_ref_lobe_time_ms', float('nan'))
+        )
+        result['timing_selected_is_first_strong_near_ref_lobe'] = bool(
+            angle_group.attrs.get('timing_selected_is_first_strong_near_ref_lobe', False)
+        )
+        result['timing_first_lobe_threshold_fraction'] = float(
+            angle_group.attrs.get('timing_first_lobe_threshold_fraction', float('nan'))
+        )
+        result['timing_first_lobe_window_start_ms'] = float(
+            angle_group.attrs.get('timing_first_lobe_window_start_ms', float('nan'))
+        )
+        result['timing_first_lobe_window_end_ms'] = float(
+            angle_group.attrs.get('timing_first_lobe_window_end_ms', float('nan'))
+        )
+        result['timing_rew_ir_start_time_ms'] = float(
+            angle_group.attrs.get('timing_rew_ir_start_time_ms', float('nan'))
+        )
         return result
 
     def _save_angles_group(self, parent_group, angles_dict: Dict, group_name: str = 'angles'):
@@ -836,6 +1137,23 @@ class PolarDataLoader:
             f.attrs['gate_right_ms'] = gate_right_ms
             f.attrs['smoothing'] = smoothing
             f.attrs['smoothing_str'] = f"1/{smoothing}" if smoothing else "None"
+            f.attrs['direct_ir_peak_policy'] = self.direct_ir_peak_policy
+            if self.direct_ir_peak_policy == "strongest":
+                f.attrs['target_kind'] = "legacy_strongest_lobe_diagnostic"
+                f.attrs['diagnostic_only'] = True
+                f.attrs['not_acceptance_target'] = True
+                f.attrs['acceptance_note'] = (
+                    "Unsafe strongest-peak timing policy: high-angle absolute peaks can be "
+                    "reflected/scattered lobes, so this HDF5 is diagnostic-only."
+                )
+            elif self.pattern_type == "andres":
+                f.attrs['target_kind'] = "andres_first_lobe_diagnostic"
+                f.attrs['diagnostic_only'] = True
+                f.attrs['not_acceptance_target'] = True
+                f.attrs['acceptance_note'] = (
+                    "Regenerated Andres first-strong-lobe HDF5 is diagnostic-only unless the "
+                    "published polar explorer is regenerated from this same HDF5 in the same commit."
+                )
 
             for driver_name, driver_data in data.items():
                 driver_group = f.create_group(driver_name)

@@ -16,6 +16,7 @@ Date: 2025-11-23
 
 import sys
 import argparse
+import os
 from pathlib import Path
 
 import config
@@ -58,16 +59,33 @@ def run_pipeline(args):
 
     mset = config.MEASUREMENT_SETS[mset_name]
     has_rear = mset["has_rear"]
-    hdf5_path = config.DATA_DIR / mset["hdf5_file"]
+    hdf5_override = args.hdf5_output or os.environ.get("HDF5_PATH")
+    hdf5_path = Path(hdf5_override) if hdf5_override else config.DATA_DIR / mset["hdf5_file"]
+    if (
+        mset_name == "andres"
+        and not args.skip_loading
+        and hdf5_path.name == "polar_data_andres_early_peak_legacy.h5"
+        and not args.allow_published_parity_hdf5_overwrite
+    ):
+        raise SystemExit(
+            "Refusing to regenerate the Andres published-parity HDF5 from the current loader. "
+            "Use --skip-loading to visualize the canonical published data, write a diagnostic HDF5 "
+            "with --hdf5-output, or pass --allow-published-parity-hdf5-overwrite only when the "
+            "published explorer is regenerated from that same HDF5 in the same commit."
+        )
     output_dir = mset["output_dir"]
     static_plots_dir = output_dir / "static_plots"
     interactive_plots_dir = output_dir / "interactive"
+    peak_policy = args.peak_policy or mset.get("direct_ir_peak_policy") or config.DIRECT_IR_PEAK_POLICY
 
     # Check if this is a multi-source measurement set
     sources = mset.get("sources")
     data_dir = mset.get("path")
     pattern_type = mset.get("pattern_type")
     angles = mset.get("angles")
+    driver_list = None
+    if args.drivers:
+        driver_list = [driver.strip() for driver in args.drivers.split(",") if driver.strip()]
 
     print("=" * 60)
     print("LX521 POLAR ANALYSIS PIPELINE")
@@ -81,6 +99,10 @@ def run_pipeline(args):
         print(f"Data directory:  {data_dir}")
     print(f"Output file:     {hdf5_path}")
     print(f"Output plots:    {output_dir}")
+    print(f"Peak policy:     {peak_policy}")
+    if args.allow_unsafe_strongest_peak_policy:
+        config.ALLOW_UNSAFE_STRONGEST_IR_PEAK_POLICY = True
+        print("Peak policy note: strongest allowed for legacy diagnostic output only")
 
     # 1. Load & Process Data
     if not args.skip_loading:
@@ -99,9 +121,11 @@ def run_pipeline(args):
                     loader = PolarDataLoader(
                         data_directory=str(src_path),
                         pattern_type=src_pattern,
+                        direct_ir_peak_policy=peak_policy,
                         driver_name_aliases=src.get("driver_name_aliases"),
                     )
                     src_data = loader.load_all_drivers(
+                        driver_list=driver_list,
                         angles=angles,
                         smoothing=smoothing_val,
                         gate_left_ms=config.GATE_LEFT_MS,
@@ -127,9 +151,11 @@ def run_pipeline(args):
                 loader = PolarDataLoader(
                     data_directory=str(data_dir),
                     pattern_type=pattern_type,
+                    direct_ir_peak_policy=peak_policy,
                     driver_name_aliases=mset.get("driver_name_aliases"),
                 )
                 data = loader.load_all_drivers(
+                    driver_list=driver_list,
                     angles=angles,
                     smoothing=smoothing_val,
                     gate_left_ms=config.GATE_LEFT_MS,
@@ -186,6 +212,32 @@ if __name__ == "__main__":
     parser.add_argument("--skip-loading", action="store_true", help="Skip REW loading/processing, use existing HDF5")
     parser.add_argument("--skip-viz", action="store_true", help="Skip visualization generation")
     parser.add_argument("--no-smoothing", action="store_true", help="Disable smoothing (raw data)")
+    parser.add_argument("--hdf5-output", type=Path, default=None, help="Override the processed HDF5 output path")
+    parser.add_argument(
+        "--allow-published-parity-hdf5-overwrite",
+        action="store_true",
+        help=(
+            "Permit overwriting polar_data_andres_early_peak_legacy.h5. Use only when regenerating "
+            "the published polar explorer from the same HDF5 in the same commit."
+        ),
+    )
+    parser.add_argument("--drivers", default=None, help="Comma-separated driver names to load")
+    parser.add_argument(
+        "--peak-policy",
+        default=None,
+        choices=["strongest", "first-strong", "ir-start"],
+        help=(
+            "IR timing selector used before gating. Defaults to the measurement-set "
+            "policy, then config.DIRECT_IR_PEAK_POLICY. 'strongest' is unsafe for "
+            "high-angle validation and requires --allow-unsafe-strongest-peak-policy; "
+            "'ir-start' uses REW's stored timeOfIRStartSeconds as the window reference."
+        ),
+    )
+    parser.add_argument(
+        "--allow-unsafe-strongest-peak-policy",
+        action="store_true",
+        help="Permit legacy strongest-peak HDF5 regeneration; outputs are marked diagnostic-only.",
+    )
 
     args = parser.parse_args()
     run_pipeline(args)

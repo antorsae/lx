@@ -2,6 +2,7 @@
 Configuration settings for LX521 Polar Analysis
 """
 
+import os
 from pathlib import Path
 
 # Paths
@@ -15,7 +16,10 @@ MEASUREMENT_SETS = {
         "pattern_type": "andres",  # F{angle}-{driver}.mdat
         "angles": list(range(0, 91, 10)),
         "has_rear": False,
-        "hdf5_file": "polar_data_andres.h5",
+        # Keep validation in parity with the already-published polar explorer.
+        # First-lobe/direct-gate/strongest-lobe variants are diagnostics unless
+        # the explorer is regenerated from the same HDF5 in the same commit.
+        "hdf5_file": "polar_data_andres_early_peak_legacy.h5",
         "output_dir": OUTPUT_DIR / "andres",
     },
     "juan-baffleless": {
@@ -37,11 +41,20 @@ MEASUREMENT_SETS = {
         "has_rear": True,
         "hdf5_file": "polar_data_juan_baffleless.h5",
         "output_dir": OUTPUT_DIR / "juan-baffleless",
+        "direct_ir_peak_policy": "ir-start",
+        "measurement_metadata_overrides": {
+            "L22MG (nude)": {
+                "measurement_distance_m": 0.50,
+                "measurement_height_reference": "l22mg",
+                "notes": "Measurement distance: 50 cm from driver. Mic height: L22MG/LM.",
+            },
+        },
     },
     "juan-lx521-top-raw": {
         # Raw/no-crossover driver captures mounted in the LX521 top baffle.
-        # Source-local aliases keep these mounted measurements distinct from
-        # the naked/baffleless source captures that reuse the same REW names.
+        # The source files intentionally reuse names such as "SEAS L22MG A";
+        # source-local aliases keep these mounted measurements distinct from
+        # the naked/baffleless source captures.
         "path": None,
         "sources": [
             {
@@ -73,20 +86,23 @@ MEASUREMENT_SETS = {
         "has_rear": True,
         "hdf5_file": "polar_data_juan_lx521_top_raw.h5",
         "output_dir": OUTPUT_DIR / "juan-lx521-top-raw",
+        # Match REW's stored IR-start window reference for the mounted raw
+        # Juan top-baffle driver captures.
+        "direct_ir_peak_policy": "ir-start",
         "measurement_metadata_overrides": {
             "L22MG (LX521 top raw)": {
                 "measurement_distance_m": 0.50,
-                "measurement_height_reference": "measured_driver",
+                "measurement_height_reference": "l22mg",
                 "notes": (
-                    "Measurement distance: 50 cm. Mic height: measured driver. "
+                    "Measurement distance: 50 cm. Mic height: L22MG/LM. "
                     "LX521 top baffle mounted; raw/no crossover/no EQ."
                 ),
             },
             "L10NEO (LX521 top raw)": {
                 "measurement_distance_m": 0.50,
-                "measurement_height_reference": "measured_driver",
+                "measurement_height_reference": "l22mg",
                 "notes": (
-                    "Measurement distance: 50 cm. Mic height: measured driver. "
+                    "Measurement distance: 50 cm. Mic height: L22MG/LM. "
                     "LX521 top baffle mounted; raw/no crossover/no EQ."
                 ),
             },
@@ -129,6 +145,22 @@ GATE_LEFT_MS = 0.5
 GATE_RIGHT_MS = 3.0
 SAMPLE_RATE = 48000  # Default, will be updated from measurement
 
+# Direct-arrival IR selection for regenerated diagnostic HDF5s. The canonical
+# Andres validation target is the published-parity HDF5 above, not a regenerated
+# first-lobe/direct-gate substitute. "first-strong" remains the safe selector
+# for side/null diagnostic work because a later larger lobe/reflection cannot
+# silently anchor the gate.
+DIRECT_IR_PEAK_POLICY = os.environ.get("DIRECT_IR_PEAK_POLICY", "first-strong")
+ALLOW_UNSAFE_STRONGEST_IR_PEAK_POLICY = os.environ.get(
+    "ALLOW_UNSAFE_STRONGEST_IR_PEAK_POLICY",
+    "",
+).strip().lower() in {"1", "true", "yes"}
+DIRECT_IR_FIRST_LOBE_THRESHOLD_FRACTION = float(
+    os.environ.get("DIRECT_IR_FIRST_LOBE_THRESHOLD_FRACTION", "0.50")
+)
+DIRECT_IR_FIRST_LOBE_START_MS = float(os.environ.get("DIRECT_IR_FIRST_LOBE_START_MS", "-0.50"))
+DIRECT_IR_FIRST_LOBE_END_MS = float(os.environ.get("DIRECT_IR_FIRST_LOBE_END_MS", "0.80"))
+
 
 
 # Driver Definitions
@@ -169,8 +201,8 @@ FREQ_MIN = 100
 FREQ_MAX = 20000
 GRID_FREQS_MAJOR = [1000, 10000]
 GRID_FREQS_MINOR = (
-    list(range(100, 1000, 100)) + 
-    list(range(1000, 10000, 1000)) + 
+    list(range(100, 1000, 100)) +
+    list(range(1000, 10000, 1000)) +
     list(range(10000, 21000, 1000))
 )
 

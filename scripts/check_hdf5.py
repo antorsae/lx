@@ -14,11 +14,20 @@ import sys
 from pathlib import Path
 
 import config
+import h5py
 
 
-def needs_reload(hdf5_path: Path, dirs: list[Path]) -> bool:
+def needs_reload(hdf5_path: Path, dirs: list[Path], expected_peak_policy: str | None = None) -> bool:
     if not hdf5_path.exists():
         return True
+    if expected_peak_policy:
+        try:
+            with h5py.File(hdf5_path, "r") as h5:
+                actual = str(h5.attrs.get("direct_ir_peak_policy", ""))
+        except OSError:
+            return True
+        if actual != expected_peak_policy:
+            return True
     try:
         hdf5_mtime = hdf5_path.stat().st_mtime
     except OSError:
@@ -61,7 +70,8 @@ def main() -> int:
         dirs = [mset.get("path")]
 
     hdf5_path = Path(hdf5_env)
-    if needs_reload(hdf5_path, dirs):
+    expected_peak_policy = mset.get("direct_ir_peak_policy")
+    if needs_reload(hdf5_path, dirs, expected_peak_policy=expected_peak_policy):
         os.execv(sys.executable, [sys.executable, "run_pipeline.py", "-m", set_name, "--skip-viz"])
 
     print(f"OK: {hdf5_path} is up to date (skipping REW load)")
