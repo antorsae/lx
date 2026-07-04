@@ -16,11 +16,13 @@ from the PDF, not redrawn). Overall 304.8 × 468.31 × 18.3 mm.
 | `top_baffle_nd25fw4_b2.py` | B2: constant wall around the 10F -- flare and chamfer keep the LM tilts but are both tangent to the r=50.83 circle about the UM center (9.8 mm wall at the D82, 2.1 mm to the D97.5 flange at both tangential points). Chamfer runs from the flare corner (+/-60.65, 391.71; max width 121.3 mm) to the crescent's D102.11 arc extended to (+/-10.08, 418.18); waist (+/-38.1, 315.95). |
 | `top_baffle_nd25fw4_b2_split.py` | 4-piece print split of variant B2 (the universal base set), shown assembled |
 | `export_piece_stls.py` | Exports the print-ready piece STLs (`--outdir`) |
+| `export_steps.py` | Exports a module's `gen_step()` to STEP via build123d's native exporter (`<module.py> --output <path>`) — no CAD-skill dependency |
 | `Makefile` | `make -j8` generates STEPs/STLs/PNGs for BOTH stand-foot states into `floor_stand/` and `no_floor_stand/` (see "Generated artifact layout") |
 | `<variant>/stl/lx521_top_*.stl` | Print-ready pieces (flat, Z = thickness, front face up): 4 base + 4 addon-A + 2 addon-B1 |
 
-Regenerate everything: `make -j8 PYTHON=<venv>/bin/python` (needs
-`build123d`, `shapely`, and the CAD skill's `cadpy`).
+Regenerate everything: `make -j8 PYTHON=<venv>/bin/python`. Self-contained
+— the only dependencies are the pip packages `build123d`, `shapely`,
+`matplotlib`, and `numpy` (no external CAD tooling).
 
 ## Key dimensions (from the drawing, verified against printed dims)
 
