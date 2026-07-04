@@ -1,0 +1,280 @@
+# LX521.4 top baffle — ND25FW-4 face-to-face mod (V2)
+
+3D-printable version of the modified top baffle from
+`plano top baffle con anidados V2.pdf` (exact 1:1 vector geometry extracted
+from the PDF, not redrawn). Overall 304.8 × 468.31 × 18.3 mm.
+
+## Files
+
+| File | What |
+|---|---|
+| `top_baffle_nd25fw4.py` | Geometry library (drawing outline, holes, pilots); its own gen_step is the un-compromised aligned drawing (no artifacts kept) |
+| `top_baffle_nd25fw4_a_comp.py` | Variant A-comp: straight-sided tower — vertical flanks at ±60.65 (tangent to B2's flare crest) from the extended top edge down to the LM chamfer-extension; tweeter section at the B2 drop. Buildable as B2 pieces + 4 shoulder pieces |
+| `top_baffle_nd25fw4_attachments.py` / `.step` | The 6 attachment pieces (exact boolean complements): 2+2 A-comp shoulders (top/bottom per side, split at the crest tangent), 2 B1 wings |
+| `top_baffle_nd25fw4_b.py` | Shared B-family builder: mini-LM upper-mid vase (no shelf corners) + tweeter section lowered 9.0 mm. Governing clearance is on the FRONT face: the lower tweeter faces forward (stock LX521.4 arrangement), so its D104 faceplate shares the front plane with the 10F's D97.5 flange -- axis spacing 102.84 mm vs 100.75 mm contact leaves a 2.1 mm edge gap (drawing spacing allows an 11.1 mm drop max). Scallop-to-flange 14.1 mm; scallop-to-D82 web 21.9 mm. Total height 459.3 mm. Below the y=306 seam identical to A. |
+| `top_baffle_nd25fw4_b1.py` | B1: flank is ONE straight line from the crescent horn corner (36.8, 432.9) through the max-width point (83.8, 399.6) to the V-waist at (+/-56.12, 306.5) -- extended to the horn so the top magnet site lands in the B1 wing |
+| `top_baffle_nd25fw4_b2.py` | B2: constant wall around the 10F -- flare and chamfer keep the LM tilts but are both tangent to the r=50.83 circle about the UM center (9.8 mm wall at the D82, 2.1 mm to the D97.5 flange at both tangential points). Chamfer runs from the flare corner (+/-60.65, 391.71; max width 121.3 mm) to the crescent's D102.11 arc extended to (+/-10.08, 418.18); waist (+/-38.1, 315.95). |
+| `top_baffle_nd25fw4_b2_split.py` | 4-piece print split of variant B2 (the universal base set), shown assembled |
+| `export_piece_stls.py` | Exports the print-ready piece STLs (`--outdir`) |
+| `Makefile` | `make -j8` generates STEPs/STLs/PNGs for BOTH stand-foot states into `floor_stand/` and `no_floor_stand/` (see "Generated artifact layout") |
+| `<variant>/stl/lx521_top_*.stl` | Print-ready pieces (flat, Z = thickness, front face up): 4 base + 4 addon-A + 2 addon-B1 |
+
+Regenerate everything: `make -j8 PYTHON=<venv>/bin/python` (needs
+`build123d`, `shapely`, and the CAD skill's `cadpy`).
+
+## Key dimensions (from the drawing, verified against printed dims)
+
+- Outline: bottom 152.4 → ±152.4 @ y≈256.1 → neck 114.3 (y 306–409) →
+  121.84 across the tweeter prongs; top scallop cut from Ø78.50,
+  corner arcs from Ø102.11 (both centered ≈ (0, 483.05) = rear tweeter axis).
+- Lower-mid cutout Ø190 @ (0, 200.98); upper-mid Ø82 @ (0, 366.08) — the
+  drawing had it at 371.94; all variants now align the UM (and tweeter
+  section, and the perimeter above the neck) to the stock LX521.4 baffle
+  (`lx521 baffle metric.dxf`, UM at 368.3 with LM at 203.2, LM-aligned).
+- 4 bridge screw holes @ (±20.0, 20.0 / 70.0) — measured on the actual
+  bridge (40.0 × 50.0 pattern, M5-threaded wood holes; the V2 plano's
+  positions were wrong). Ø5.5 through + 90° countersink Ø10.4 on the front
+  face for 5 mm slotted raised-countersunk wood screws.
+- 2 corner holes Ø4.5 @ (±66.2, 10.0) — OPTIONAL, disabled by default
+  (set CORNER_HOLES_ENABLED = True in top_baffle_nd25fw4.py to cut them).
+  When enabled: M5 machine screws thread-form through the full 18.3 mm
+  (pre-run the screw once to cut the threads).
+- Blind driver mounts, front face only:
+  - Upper mid (Scan-Speak 10F/8424G00, 4 x D3.8 flange holes on pitch
+    D89.5): 4 x Ø5.8 bores at 45/135/225/315 deg, 11.0 mm deep, for
+    M3-M6 x 10 thread adapters (M3 screws pass the D3.8 flange holes
+    natively). CAUTION: the ring sits 3.75 from the D82 cutout wall, so
+    each bore keeps only 0.85 mm on its inboard side -- hidden behind
+    the driver; install the inserts gently with CA on the outer thread.
+    The T flank lanes pass under this ring in plan (unavoidable), so the
+    T ducts run at z=3.7: the 1.7 mm floor under the crossings is a
+    no-load membrane (insert bottoms float 1 mm above it; M3 x 12
+    engages ~8.8 mm and never exits the socket).
+  - Lower mid (SEAS W22EX001, 6 x D5.0 flange holes + D8.8 head recess on
+    pitch D209.5, measured from E0022_W22EX001.stp): 6 x Ø7.8 bores,
+    11.0 mm deep, aligned VERTICALLY (30/90/...330 deg), for M5-M8 x 10
+    thread adapters -- the M8 outer thread forms into the wall over its
+    full 10 mm; M5 screws pass the D5.0 flange holes natively and seat
+    in the D8.8 recesses. Handled consequences: seam C offset to x=-5.6
+    (its dovetail clears the 90-deg bore by 1.55 mm), the LM duct drifts
+    to x=-10.5 past the 270-deg bore (2.3 mm wall), the UM duct crosses
+    the ring between the 30- and 90-deg bores. Verified clear of all
+    seams, dovetails, and ducts (in plan).
+- 2 tweeter-clamp holes @ (±32.56, 451.24) — drawing Ø4.0, printed Ø4.4
+  for M4 clearance. The face-to-face ND25FW-4 pair bolts through these,
+  sandwiching the baffle crescent between the two faceplates; the pair's
+  upper two holes are joined by standoffs above the baffle.
+- CRESCENT REAR TAPER: the horseshoe that carries the tweeter pair
+  thins from the REAR (the front face stays a full plane): 18.3 at the
+  bottom of the scallop, 4.0 at the clamp pass-throughs, feathering to
+  ~0.4 at the horn tips. Thickness follows the arc angle about the
+  scallop center through two C1 smoothstep segments (zero slope at the
+  bottom blend AND across the clamp ring, so the rear faceplate gets a
+  locally flat 4 mm seat); cut as a loft of radial sections. Each
+  section holds full cut depth from r=36 out to a knee r=51.5 (covering
+  the D102.11 arc joint at r≈51.05), then SMOOTHSTEP-FADES the cut back
+  to 0 by r=63. The fade carries the SAME taper across the arc joint
+  into the crescent's outboard neighbours — the A-comp TOP SHOULDERS
+  and B1 WINGS — so when they are glued on, their rear faces are FLUSH
+  with the tapered crescent (no proud step), then ramp back to full
+  18.3 depth before their outboard vertical flank/top edges (which stay
+  full for the silhouette) and before the crest (y=391.71, where the
+  top shoulder meets the full-depth bottom shoulder). Beside the horn
+  tips, where the crescent feathers to ~0.4 mm, the shoulder feathers
+  with it; the chamfer/flare walls at larger r keep full depth.
+  Consequences handled: the T duct tails keep a >=1.3 mm floor where
+  the taper starts (cut only ~0.5 deep there); the upper magnet site
+  moved down-arc (see the magnet section); the bottom shoulders are
+  untouched (full depth).
+
+## Print split (256×256×256 bed)
+
+- Seam A: y=165 (two ~37 mm lands beside the Ø190 cutout), 2 dovetails
+  (±97, neck 7 / head 9 / depth 5 — slim, inboard of the O8.6 UM duct).
+- piece_bottom carries a FUSED stand foot (STAND_FOOT flag in
+  top_baffle_nd25fw4.py). The foot starts as the baffle's own bottom
+  strip (18.3 tall, side faces continuing the flank slopes: ±76.2 at
+  the floor widening to ±81.6, sharing the floor plane with the plate
+  -- no step), runs 150 mm rearward, and TAPERS in plan continuously
+  (one straight line per side, from the strip corners to 38 wide at
+  the panel inner face, z=-146). The plate/foot inner corner is a
+  plain 90-deg joint (no rib -- printed front-face-down the joint is
+  continuous perimeter walls, plenty strong). The dressed baffle's CG
+  sits ~52 mm behind the front face, so it stands upright with no
+  front toe.
+  The foot's far end carries a minimal 38 × 44 × 4 panel wall for a
+  Neutrik NL8MPXX-BAG speakON: Ø31 cutout centered at (0, 20.5) plus
+  4 × Ø3.2 screw pass-throughs on the 29.2 × 29.2 pattern (flange is
+  38.7 sq -- 0.35 mm/side overhang past the 38 panel, cosmetic). The
+  tongue center is channeled to a 4.0 floor between 2.0-thick side
+  rails (interior 34 wide: >=1.75 around the Ø30.5 body, which reaches
+  ~z=-113); the channel's step face sits at z=-99.
+  With the flag ON: the four bridge pass-throughs (and countersinks)
+  are omitted, and the cable ducts no longer break the rear face --
+  each continues down the plate, drifts to its packed foot lane, takes
+  a 90-deg vertical-plane elbow (R14 -- the largest radius that wraps
+  the plate/foot inner corner with >=1.4 mm clearance), and runs
+  rearward at y=10.5 (LM x=-5.45, UM x=+5.4) / y=5.5 (T1 x=+13.9,
+  T2 x=-13.9), exiting through FOUR holes in the channel's step face
+  -- ~40 mm of open channel between the cable outs and the connector
+  tabs for dressing/Faston access. (Lanes are packed by Δx alone --
+  8.45 + 10.85 + 8.5 webs -- because each pair of descent curves
+  crosses in the (y,z) plane.) The driver-side exit bores into the
+  Ø190/Ø82 cutouts are unchanged. With the flag OFF: the original flat
+  piece, bridge holes, and rear-face breakouts aimed at the SUPPORT
+  WINDOW -- the stock support plate has a Ø20 hole (center (0, 60):
+  horizontally centered, top edge tangent to the upper screw line
+  y=70) that all four cables must pass. Best-effort packing (two
+  Ø9.3/9.4 bores alone span 19.75 of the 20): LM/UM breakouts side by
+  side FULLY INSIDE the window (steep ~55° ramps crossing z=0 at
+  (∓5.2, 60.5), tips tucked in their mains at (∓6.1, 66.9, 9.15));
+  T1/T2 at the window's lower edge (~64° ramps, ovals centered
+  (±3.85, 52.2), far tips poke ~1 mm past the rim -- the floppy AWG24
+  pairs duck in), each main running dead straight from the tip
+  (±5.5, 51.5) to ONE exact R12 fillet tangent onto its fan line at
+  (±24.3, 54.7) -- a single bend, no S. Near the rear face the
+  four openings converge: the LM–UM lip is ~1 mm at the surface, and
+  each T mouth shares a ~2 mm-deep vestibule with its big neighbour
+  before the bores separate (full 1.5 mm webs from z≈2.5 -- harmless
+  behind the support plate). LM/UM entry is steeper than the old 23°
+  ramps: fish these with the plate off the support.
+  Print orientation: plate flat FRONT FACE DOWN (rotate 180 deg about X;
+  foot rises as an 18.3-thick wall, the panel just widens its top --
+  no supports: the step face looks upward and the NL8 holes print as
+  vertical-axis circles) or standing on the foot for the strongest
+  joint.
+- Seam B: y=315.95, exactly through B2's waist kinks, 2 dovetails
+  (left -19, right +21.5; neck 10 / head 14 / depth 6 — the right one
+  outboard so the UM corridor passes at x=8.3 and the T elbow at x=33). Both pieces get OBTUSE corners at
+  this seam (top foot ≈107° against the flare, mids ≈152° against the
+  chamfer) — no brittle knife-tips — and the glue line hides in the crease.
+- Seam C: x=-5.6 between A and B (~20 mm land above the cutout; offset
+  left so its dovetail pocket clears the 90-deg W22 insert bore by
+  1.55 mm), 1 dovetail (neck 6 / head 8 / depth 4 at y=300.5).
+- Dovetails are through-thickness, 0.10 mm clearance on female sides.
+
+### Generated artifact layout
+
+`make -j8` (see the Makefile; `PYTHON=<venv>/bin/python` to pick an
+interpreter) builds BOTH stand-foot states in parallel:
+
+    floor_stand/      LX_STAND_FOOT=1: fused foot + NL8 panel, no
+      stl/  *.step  *.png     bridge holes, cables through the foot
+    no_floor_stand/   LX_STAND_FOOT=0: flat piece_bottom, bridge
+      stl/  *.step  *.png     pass-throughs, rear-face cable breakouts
+
+Each folder is a complete print set (only piece_bottom's STL actually
+differs); `attachments.step` is flag-independent and stays at the top
+level. The STAND_FOOT flag is the `LX_STAND_FOOT` env var (default 1).
+
+| STL in `<variant>/stl/` | Footprint (mm) | Used by |
+|---|---|---|
+| lx521_top_base_1of4_bottom | 250.6 × 168.3 (fused stand foot; flip front-face-down or stand on the foot — see above) | all variants |
+| lx521_top_base_2of4_mid_left | 152.3 × 156.8 | all variants |
+| lx521_top_base_3of4_mid_right | 157.4 × 156.8 | all variants |
+| lx521_top_base_4of4_vase_b2 | 121.3 × 137.4 | all variants |
+| lx521_top_addonA_1..2of4_shoulder_top_l/r | 50.6 × 61.8 | A-comp only |
+| lx521_top_addonA_3..4of4_shoulder_bottom_l/r | 22.5 × 87.6 | A-comp only |
+| lx521_top_addonB1_1..2of2_wing_l/r | 73.7 × 129.9 | B1 only |
+
+Building the variants: B2 = the four base pieces. A-comp = B2 + the four
+shoulder pieces. B1 = B2 + the two wings. Attachments are edge-glued onto
+piece_top_b2's flanks (zero designed clearance); the kinks, notch corner,
+and crescent arc on their inner faces self-register them. The A bottom
+shoulders and the B1 wings extend below seam B (bonding ~9-12 mm onto the
+mids), so they also splint the top-to-mid glue line.
+
+## Internal cable ducts
+
+FOUR fully internal spline pipes: LM and UM are big mid-plane bores
+(z=9.15) sized for TWISTED pairs; T1/T2 run deeper at z=4.5 (see pilot
+note below) -- each tweeter of
+the face-to-face pair carries its own AWG24 pair. Entries: four oblique
+bores breaking the REAR face at y~47 between the bridge screws (hidden by
+the bridge), left to right: T2 (-16), LM (-8.2), UM (+4), T1 (+16); the T
+ramps are tilted in plan along their fan direction, so those ducts start
+diagonally right off the breakout. No duct
+intersects any hole or pocket (blind included) in plan. Exits into
+driver-cutout walls -- invisible with drivers mounted:
+
+| Driver | Cable | Duct | Route |
+|---|---|---|---|
+| LM (W22) | 2x 2.5 mm^2 twisted | D8.5 | enters at x=-8.6, drifts to x=-10.5 past the 270-deg insert bore (2.3 mm wall), planar z=9.15; 23-deg entry, ~7-deg diving exit bore -> D190-rim opening at z~6.6 -- push-through |
+| UM (10F) | twisted pair (2x2.0 mm^2 comfortable, 2x2.5 snug) | D8.6 mid-plane | fully buried: inner right arc r=115.5, spirals into the lane between the W22 pilot circle and the D190 rim (crossing the ring between the 30- and 90-deg pilots), rounds the rim's upper right at r~102.2, then ONE continuous R28.8 arc tangent to the lane, entering the D82 rim near-radially at (4, 325) -- no straights or S-bends on the way out |
+| T1 (front ND25) | 2x AWG24 | D3.8 | one dead-straight diagonal from the breakout, exactly tangent to the OUTER arc r=124 at theta=-47.3 (14.2 mm from the (20,70) hole), arc to theta=41, outboard transition, R12 elbow at x=33 through the waist corridor, right flank lane, R20 crest fillet, then dives to the middle of the crescent band (>=2.2 mm from the neck corner) and pierces the D78.5 scallop rim bottom head-on at ~(3.3, 430), deep under the tweeter faceplate |
+| T2 (rear ND25) | 2x AWG24 | D3.8 | mirror of T1 on the left, pierces the scallop rim at ~(-3.3, 430) |
+
+Min bend: one exact R12 fillet per T route at the waist corridor (the
+outline kink physically caps it there; seam B cuts through this elbow so
+cables are laid in through the open seam face at assembly), R20 fillets
+at the crests, R23+ everywhere on the UM route; everything else R40+.
+Min walls: 1.6 mm to the chamfer edge on the T routes, 2.0 mm at the D82
+tangents, 2.1 mm to the seam-B dovetail pockets, 2.35 mm between the two
+right-side arcs and to the D190 rim along the UM lane. Verified
+centerline separations: every duct pair >= its two radii + 1.5 mm
+(UM-T1 minimum 6.66 vs 6.15 required); every W22 pilot >= bore radius +
+duct radius + 1.5 mm in plan. The ducts cross the glue seams -- fish
+each cable (or a pull string) through each piece's short open segment
+during assembly.
+Seam-A dovetails sit at +/-99.75 (n9/h12/d6, between the D190 rim and the
+inner cable arc); seam-C dovetail at (300.5, n6/h8/d4).
+
+## Magnet attachment (swappable shoulders/wings)
+
+Attachments mount with neodymium N52 D5 x 2 disc magnets (superimanes
+ref D-05-02-N52, 0.68 kg/pair; 12 needed + spares) so B2 <-> A-comp <->
+B1 are interchangeable without glue. TWO sites per flank side (4 magnets
+in the base total), both PIN type (base magnet glued 1.0 mm proud,
+doubling as a shear dowel; the outline kinks self-register the rest).
+Pockets: base D5.4 x 1.0; attachment receivers D5.8 x 3.5. Polarity: neo
+stacks ship uniformly oriented -- sharpie-dot the top face of each as
+you peel; dots face OUT in the base, IN in the attachments:
+
+| Site (right; left mirrored) | Wall | Serves | Placement rationale |
+|---|---|---|---|
+| (40.0, 322.4) | flare, waist-kink end | A bottom shoulder, B1 wing lower end | the flank's farthest point from the UM driver (59.2 mm); pin pocket 2.0 deep keeps 3.6 mm to the T duct |
+| (16.62, 419.91) | crescent arc, theta=-71 deg | A top shoulder, B1 wing top end | farthest down-arc point where the crescent rear taper still leaves ~12.9 mm of wall; bore raised to z=10.0 (1.9 mm behind it to the taper surface); 9.2 mm clear of the T ducts, 22.9 from the clamp hole, 56.3 from the UM driver (interference margins ~500x) |
+
+At pin sites the proud base magnet enters the receiver and acts as a
+shear dowel. Magnet count per baffle: 4 base + 4 per attachment set
+(12 with both sets; 24 for a stereo pair).
+
+Gluing: epoxy or CA, magnets degreased. Polarity discipline: use the
+"MARCADO NORTE" batch on the base with NORTH facing out, and mount all
+attachment magnets SOUTH out (check each against a marked one before
+gluing). Glue the base pin magnets first, use them to locate the mating
+receivers' magnets. The other inventory magnets are not suitable here:
+D18 exceeds the 18.3 mm wall, adhesive tape magnets are too weak for a
+structural joint, D10x5 only fits the receiver side.
+
+If you prefer permanent assembly, the same pockets take glue (fill with
+epoxy and clamp); the pin magnets still register the parts.
+
+## Printing
+
+- Flat on the bed, no supports needed (all holes are vertical through-holes).
+- PETG or PLA; 5–6 perimeters, 40–50 % gyroid/cubic infill, 5 top/bottom
+  layers — the baffle carries three drivers, err stiff. ~945 cm³ solid
+  volume total (≈1.1–1.3 kg at these settings).
+- piece_bottom is 250.6 mm wide: orient it square to the bed axes.
+
+## Assembly
+
+1. Dry-fit all seams first; if a dovetail binds, warm-file the male flanks
+   (clearance is 0.15 mm — one filament width).
+2. Glue order: mid_left + mid_right (seam C), then the mid pair onto
+   bottom (seam A), then top onto the mids (seam B). Epoxy (30 min) or
+   polyurethane glue preferred; CA works on PLA but is brittle in shock.
+3. Assemble on a flat surface, front face down, so the seams cure flush.
+   Clamp lightly across each seam; check the Ø190 rim stays circular where
+   seams A and C cross it (the driver flange will bridge these seams).
+4. After cure, optionally lay a bead of epoxy along the rear seam lines and
+   the rear rim of the Ø190 cutout as a fillet — the L22 flange clamps the
+   front face, so rear-side reinforcement is invisible.
+5. Mount the W22EX001 lower-mid with M5 screws and the 10F/8424G00 upper-mid
+   with M3 screws into the blind front-face pilots (run each screw in once
+   without the driver first to pre-form the threads), then bolt the
+   ND25FW-4 pair through the (±32.56, 451.24) holes with M4 screws and cut
+   the inter-faceplate standoffs to the printed thickness (18.3 mm).
+6. Screw to the bridge through the four countersunk holes (5 mm oval-head
+   wood screws, from the front).
