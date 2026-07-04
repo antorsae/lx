@@ -187,19 +187,24 @@ mids), so they also splint the top-to-mid glue line.
 ## Internal cable ducts
 
 FOUR fully internal spline pipes: LM and UM are big mid-plane bores
-(z=9.15) sized for TWISTED pairs; T1/T2 run deeper at z=4.5 (see pilot
-note below) -- each tweeter of
-the face-to-face pair carries its own AWG24 pair. Entries: four oblique
-bores breaking the REAR face at y~47 between the bridge screws (hidden by
-the bridge), left to right: T2 (-16), LM (-8.2), UM (+4), T1 (+16); the T
-ramps are tilted in plan along their fan direction, so those ducts start
-diagonally right off the breakout. No duct
-intersects any hole or pocket (blind included) in plan. Exits into
-driver-cutout walls -- invisible with drivers mounted:
+(z=9.15) sized for TWISTED pairs; T1/T2 run deeper at z=3.7 (they pass
+under the 10F pilot ring -- see the pilot note above) -- each tweeter of
+the face-to-face pair carries its own AWG24 pair. No duct intersects any
+hole or pocket (blind included) in plan.
+
+The in-plane MAIN of each duct (the routing in the table below) is common
+to both variants; only the ENTRY and the driver-side EXIT differ:
+- Entries depend on STAND_FOOT (see the Print-split section). Flag ON:
+  each duct drops down the plate, takes a 90-deg R14 elbow, and runs
+  through the foot to exit the connector-channel step face. Flag OFF:
+  four oblique bores break the REAR face, packed into the support
+  plate's Ø20 window (LM/UM inside it, T1/T2 at its lower edge).
+- Exits are common to both: oblique bores into the driver-cutout walls,
+  invisible with drivers mounted:
 
 | Driver | Cable | Duct | Route |
 |---|---|---|---|
-| LM (W22) | 2x 2.5 mm^2 twisted | D8.5 | enters at x=-8.6, drifts to x=-10.5 past the 270-deg insert bore (2.3 mm wall), planar z=9.15; 23-deg entry, ~7-deg diving exit bore -> D190-rim opening at z~6.6 -- push-through |
+| LM (W22) | 2x 2.5 mm^2 twisted | D8.5 | planar z=9.15, drifting past the 270-deg insert bore (2.3 mm wall); ~7-deg diving exit bore -> D190-rim opening at z~6.6 (push-through) |
 | UM (10F) | twisted pair (2x2.0 mm^2 comfortable, 2x2.5 snug) | D8.6 mid-plane | fully buried: inner right arc r=115.5, spirals into the lane between the W22 pilot circle and the D190 rim (crossing the ring between the 30- and 90-deg pilots), rounds the rim's upper right at r~102.2, then ONE continuous R28.8 arc tangent to the lane, entering the D82 rim near-radially at (4, 325) -- no straights or S-bends on the way out |
 | T1 (front ND25) | 2x AWG24 | D3.8 | one dead-straight diagonal from the breakout, exactly tangent to the OUTER arc r=124 at theta=-47.3 (14.2 mm from the (20,70) hole), arc to theta=41, outboard transition, R12 elbow at x=33 through the waist corridor, right flank lane, R20 crest fillet, then dives to the middle of the crescent band (>=2.2 mm from the neck corner) and pierces the D78.5 scallop rim bottom head-on at ~(3.3, 430), deep under the tweeter faceplate |
 | T2 (rear ND25) | 2x AWG24 | D3.8 | mirror of T1 on the left, pierces the scallop rim at ~(-3.3, 430) |
@@ -216,8 +221,8 @@ centerline separations: every duct pair >= its two radii + 1.5 mm
 duct radius + 1.5 mm in plan. The ducts cross the glue seams -- fish
 each cable (or a pull string) through each piece's short open segment
 during assembly.
-Seam-A dovetails sit at +/-99.75 (n9/h12/d6, between the D190 rim and the
-inner cable arc); seam-C dovetail at (300.5, n6/h8/d4).
+Seam-A dovetails sit at +/-97 (n7/h9/d5, slim and inboard of the UM duct
+arc); seam-C dovetail at (300.5, n6/h8/d4).
 
 ## Magnet attachment (swappable shoulders/wings)
 
@@ -261,7 +266,7 @@ epoxy and clamp); the pin magnets still register the parts.
 ## Assembly
 
 1. Dry-fit all seams first; if a dovetail binds, warm-file the male flanks
-   (clearance is 0.15 mm — one filament width).
+   (designed clearance is 0.10 mm on the female sides).
 2. Glue order: mid_left + mid_right (seam C), then the mid pair onto
    bottom (seam A), then top onto the mids (seam B). Epoxy (30 min) or
    polyurethane glue preferred; CA works on PLA but is brittle in shock.
