@@ -200,11 +200,13 @@ VARIANTS = [
 ]
 
 if __name__ == "__main__":
-    fig, axes = plt.subplots(1, 3, figsize=(16, 9.5), dpi=150)
+    fig, axes = plt.subplots(1, 3, figsize=(16, 10.2), dpi=150)
     for ax, (outline, title, joint) in zip(axes, VARIANTS):
         draw(ax, outline, TWEETER_DROP_MM, title, labels=(ax is axes[0]), joint_outline=joint)
+        ax.set_xlabel("mm")
+    axes[0].set_ylabel("mm")
     fig.suptitle("LX521.4 top baffle variants - dashed driver silhouettes", fontsize=13, y=0.995)
-    fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.965))
+    fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.97))
     fig.savefig("baffle_variants_drivers.png")
     plt.close(fig)
     print("wrote baffle_variants_drivers.png")
