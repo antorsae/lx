@@ -149,12 +149,15 @@ def _grown(poly: Polygon) -> Polygon:
 
 
 def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
-           shape_cuts=(), shape_adds=()) -> dict:
+           shape_cuts=(), shape_adds=(), magnet_pockets=True,
+           crescent_front_mm=None, crescent_rear_mm=0.0) -> dict:
     """Split the (optionally re-shaped) baffle into the four print
     pieces. ``shape_cuts``/``shape_adds`` are applied before the ducts
     are cut -- used by variant C7 (LM knife-edge taper + T-duct ribs);
     the ducts then re-cut through any added material."""
-    baffle = baffle_solid(outline, tweeter_drop_mm)
+    baffle = baffle_solid(outline, tweeter_drop_mm,
+                          crescent_front_mm or THICKNESS_MM,
+                          crescent_rear_mm)
     for cutter in shape_cuts:
         baffle -= cutter
     for add in shape_adds:
@@ -211,8 +214,9 @@ def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
     rest = baffle - _prism(_grown(below_a))
     mids = rest & _prism(below_b)
     top = rest - _prism(_grown(below_b))
-    for cutter in magnet_base_cutters():  # D5 pin-magnet base pockets
-        top -= cutter
+    if magnet_pockets:
+        for cutter in magnet_base_cutters():  # D5 pin-magnet base pockets
+            top -= cutter
     mid_right = mids & _prism(right_c)
     mid_left = mids - _prism(_grown(right_c))
 

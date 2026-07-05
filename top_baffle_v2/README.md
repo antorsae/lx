@@ -273,6 +273,44 @@ rear-skinned T ducts).
 - Concept sheet: `gen_lm_knife_draft.py` ->
   `baffle_lm_knife_draft.png`.
 
+## Variant V0 — minimalist UM vase (front slide)
+
+An alternate piece_top for the low-crossover (3-4 kHz) experiments:
+a REAR-side knife bevel (same side and philosophy as the C7 LM taper;
+front plane fully intact) -- 18.3 -> ~0.5 over the last 4 mm inside
+the flare/chamfer outline, fading out at the seam-B land and blending
+into the crescent's rear taper above y~400. The band is capped at
+4 mm by the T flank lanes (z=3.7, 4 mm inside the walls; they cannot
+be raised -- the 45-deg 10F pilot leaves no corridor at higher z).
+ALL duct routing identical; V0 mixes with B2 or C7 bottom/mids
+freely. One D5 x 2 pin magnet per side (the SAME magnets as all
+attachments) in a vertical rear-face pocket at (+-46, 324); scarf
+attachments add receivers + register on the outline kinks. The
+B2-family shoulders/wings do NOT fit V0. Guarded by
+test_v0_duct_corridor (`make check`); STL: lx521_top_v0_4of4_vase
+(--variant v0).
+
+## Variant V1 — 11.5 mm UM vase (minimum-thickness field)
+
+The vase field thinned to t=11.5 -- the absolute practical minimum
+with all buried routing kept (binding constraint: the O7.8 UM exit
+tail needs z 0.2..11.2; the T lanes alone would allow 7.2). Front-side
+cut, REAR plane and ALL ducts untouched; sharp step exactly at seam B
+(keys auto-trim to 11.5 on both sides); the WHOLE top is flush at
+11.5: the crescent taper re-derives on the 11.5 slab (same 4.0 clamp
+seat / 0.4 tips), the tweeter pair clamps an 11.5 septum (shorter
+standoffs; pair front-rear spacing -6.8, which raises the pair's
+dipole peak -- helpful for the 3-4 kHz XO), and the 10F + tweeters
+share one front plane 6.8 behind the LM section (realign in DSP). 10F mounting: 4 x O4.6 x 4.0 bores from
+the new front for M3 x 3 x O5 brass heat-sets (floor z=7.5 stays 1.9
+above the T-lane roofs at the ring crossings). One D5 x 2 pin magnet
+per side in a vertical rear-face pocket at (+-46, 324); B2 wall
+pockets are skipped (B2 attachments do not fit V1). Guarded by
+test_v1_field (`make check`); STL: lx521_top_v1_4of4_vase
+(--variant v1). Thinner is possible only by externalizing cables to
+rear-face grooves (~7) or through-bolting the 10F (~5-6) -- see the
+constraint ladder in the V0/V1 discussion.
+
 ## Magnet attachment (swappable shoulders/wings)
 
 Attachments mount with neodymium N52 D5 x 2 disc magnets (superimanes

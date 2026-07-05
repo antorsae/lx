@@ -197,6 +197,53 @@ def test_magnet_pockets_vs_t_ducts():
                 f"magnet pocket ({x},{y}) to T duct {clear:.2f} < 0.8")
 
 
+def test_v0_duct_corridor():
+    """Variant V0's REAR bevel vs the ducts (z-containment, same rule
+    as C7): the rear cut must stay below z_bottom - 1.6. Pin pockets
+    (rear face, z 0..1) must be plan-clear of every duct."""
+    import top_baffle_nd25fw4_v0 as v0
+    from top_baffle_nd25fw4_cables import CABLE_D
+
+    for name, pts in _routes(True).items():
+        r = CABLE_D[name] / 2.0
+        for x, y, z in pts:
+            if not 316.0 < y < 419.0:
+                continue
+            allowed = z - r - 1.6
+            cut = v0.rear_cut_at(x, y)
+            assert cut <= allowed + 0.001, (
+                f"{name}: V0 rear cut {cut:.2f} > {allowed:.2f} "
+                f"at ({x:.1f},{y:.1f})")
+        for sx in (1, -1):
+            for mx, my in v0.V0_MAGNET_SITES:
+                m = min(math.dist((sx*mx, my), (x, y)) for x, y, _ in pts)
+                assert m >= 2.7 + r + 1.5, (
+                    f"V0 pocket ({sx*mx},{my}) {m:.2f} from {name}")
+    print("  V0 rear bevel: every duct floor covered; pockets clear")
+
+
+def test_v1_field():
+    """V1 front-flush: material z 6.8..18.3 in the vase -- every duct
+    window (floor AND roof) must fit inside it with 1.6 skins; the
+    global short pilot floors (z=14.3) clear the raised lane roofs."""
+    import top_baffle_nd25fw4_v1 as v1
+    from top_baffle_nd25fw4 import THICKNESS_MM, UM_PILOT_DEPTH_MM
+    from top_baffle_nd25fw4_cables import CABLE_D
+
+    assert (THICKNESS_MM - UM_PILOT_DEPTH_MM) - (10.7 + 1.9) >= 1.5
+    for name, pts in _routes(True).items():
+        r = CABLE_D[name] / 2.0
+        for x, y, z in pts:
+            if v1.Y_STEP + 0.6 < y < 434.0:
+                assert z - r - 1.6 >= v1.REAR_MM - 0.001, (
+                    f"{name} floor {z-r:.1f} below the V1 rear at "
+                    f"({x:.1f},{y:.1f})")
+                assert z + r + 1.6 <= THICKNESS_MM + 0.001, (
+                    f"{name} roof {z+r:.1f} above the front at "
+                    f"({x:.1f},{y:.1f})")
+    print("  V1 front-flush: duct windows inside z 6.8..18.3; pilots clear")
+
+
 def test_seam_keys_vs_ducts():
     """Every seam dovetail (grown female pocket) must keep a wall to
     every duct crossing its seam -- the check that was missing when the
@@ -281,6 +328,8 @@ if __name__ == "__main__":
         test_duct_duct_separation,
         test_c7_duct_corridor,
         test_seam_keys_vs_ducts,
+        test_v0_duct_corridor,
+        test_v1_field,
     ]
     failed = []
     for check in checks:

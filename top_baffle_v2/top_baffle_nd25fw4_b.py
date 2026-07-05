@@ -142,7 +142,8 @@ MAG_PIN_RECEIVER_DEPTH_MM = 3.2  # 2.0 magnet + 1.0 pin + 0.2 clearance
 # 2.2 mm below the pocket floor; 21.7 from the clamp hole, 57.2 from
 # the UM center. All checked by test_clearances.py (make check).
 MAGNET_SITES = [
-    (40.0, 322.4, 0.95853, -0.28518, True, THICKNESS_MM / 2.0),
+    (40.0, 322.4, 0.95853, -0.28518, True, 5.0),  # zc low: the raised
+    # vase-side T lane (z=10.7) passes above this wall site
     (17.880, 420.371, 0.35021, -0.93667, True, 10.7),
 ]
 

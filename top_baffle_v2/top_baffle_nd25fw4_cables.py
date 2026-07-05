@@ -61,7 +61,9 @@ R_T = 124.0
 # 1.8, roof 5.6); the D4.6 x 7.0 10F heat-set bores (floor z=11.3)
 # keep a solid 5.7 mm floor above them at the lane crossings.
 # The O8.5 LM duct runs at mid-plane (skins 4.9 both sides).
-DUCT_Z = {"lm": 9.15, "um": 5.7, "t1": 5.7, "t2": 5.7}  # T: below-seam plane; above seam B they drop to 3.7
+DUCT_Z = {"lm": 9.15, "um": 5.7, "t1": 5.7, "t2": 5.7}  # below-seam
+# planes; above seam B the ducts STEP to the FRONT half (T 10.7,
+# UM 12.3) so thin vases can share the FRONT plane (V1 flush mount)
 EDGE_OFFSET = 6.16  # duct center 5.9 mm inside the flare/chamfer walls
 
 # LM carries 2 x 2.5 mm^2 (twisted pair ~O7.8) -> O8.5 duct, mid-plane.
@@ -168,7 +170,10 @@ def _elbow_points():
     return pts
 
 
-T_STEP = ((34.0, 313.0, 5.7), (33.2, 317.5, 3.7))  # short, near-inline
+UM_STEP = ((8.6, 306.5, 5.7), (6.5, 316.5, 12.55))  # UM's own
+# seam z-step bore (O8.6) to the front-half vase plane
+T_STEP = ((34.5, 311.0, 5.7), (33.2, 316.2, 10.7))  # rises to the
+# front-half vase plane through the open seam-B elbow corridor
 # bore stepping the T main 5.7 -> 3.7 through the open seam-B elbow
 # z-step (2.3 wall to the waist kink and the seam-B pocket)
 
@@ -248,7 +253,7 @@ BIG_RAMPS = {
 # depth (z~1/4) natively.
 EXIT_RAMPS = {
     "lm": ((-9.9, 86.0, 9.15), (-10.6, 119.0, 5.2), 9.3),
-    "um": ((7.2, 310.5, 5.7), (2.95, 332.4, 6.2), 8.6),
+    "um": ((5.3, 320.5, 12.55), (2.95, 332.4, 12.0), 8.6),
 }
 
 
@@ -297,11 +302,12 @@ def route_points(name):
                                (58.63, 119.11), (0.81310, 0.58210), 26.0)
                 + _arc(100.7, [-54.39, -42, -30, -18, -6, 6, 18, 30,
                                42, 54, 64, 72, 78])
-                + [(16.0, 300.9), (11.5, 303.2), (8.6, 306.5),
-                   (7.2, 310.5)],
+                + [(16.0, 300.9), (11.5, 303.2), (8.6, 306.5)],
                 [(0, 5.7), (9999, 5.7)])
-            + [(6.56, 315.95, 5.7), (5.3, 319.5, 5.7),
-               (4.9, 321.5, 5.7)]
+            + [tuple(UM_STEP[0][i] + f * (UM_STEP[1][i] - UM_STEP[0][i])
+                     for i in range(3)) for f in (0.34, 0.67, 1.0)]
+            + [(6.3, 318.5, 12.55), (5.3, 320.5, 12.55),
+               (4.9, 322.0, 12.55)]
         )
     if name == "t1":
         step = [tuple(T_STEP[0][i] + f * (T_STEP[1][i] - T_STEP[0][i])
@@ -309,7 +315,7 @@ def route_points(name):
                 for f in (0.25, 0.5, 0.75, 1.0)]  # straight, like the bore
         return (_with_z(_t1_route(), [(0, 5.7), (9999, 5.7)])
                 + step
-                + _with_z(_t1_upper(), [(0, 3.7), (9999, 3.7)]))
+                + _with_z(_t1_upper(), [(0, 10.7), (9999, 10.7)]))
     if name == "t2":
         return [(-p[0], *p[1:]) for p in route_points("t1")]
     raise ValueError(name)
@@ -334,15 +340,23 @@ def _entry_ramp(p0, p1, dia):
 
 def cable_cutters():
     cutters = []
-    for name in ("lm", "um"):
+    for name in ("lm",):
         dia = CABLE_D[name]
         path = Spline(*route_points(name))
         section = Plane(origin=path @ 0, z_dir=path % 0) * Circle(dia / 2.0)
         cutters.append(sweep(section, path=path))
+    # UM: lower main + seam z-step bore + front-half vase main
+    um_pts = route_points("um")
+    for pts in (um_pts[:-6], um_pts[-3:]):
+        path = Spline(*pts)
+        section = (Plane(origin=path @ 0, z_dir=path % 0)
+                   * Circle(CABLE_D["um"] / 2.0))
+        cutters.append(sweep(section, path=path))
+    cutters.append(_entry_ramp(UM_STEP[0], UM_STEP[1], CABLE_D["um"] + 0.8))
     for sign in (1.0, -1.0):  # T: lower + upper mains + seam-B z-step
         dia = CABLE_D["t1"]
         for pts in (_with_z(_t1_route(), [(0, 5.7), (9999, 5.7)]),
-                    _with_z(_t1_upper(), [(0, 3.7), (9999, 3.7)])):
+                    _with_z(_t1_upper(), [(0, 10.7), (9999, 10.7)])):
             path = Spline(*[(sign * x, y, z) for x, y, z in pts])
             section = (Plane(origin=path @ 0, z_dir=path % 0)
                        * Circle(dia / 2.0))

@@ -60,17 +60,17 @@ PILOT_DEPTH_MM = THICKNESS_MM / 2.0  # 9.15
 
 # Upper mid: Scan-Speak 10F/8424G00 -- 4 x D3.80 flange holes on pitch
 # D89.5 (datasheet 10f-8424g00.pdf). Mounted with BRASS HEAT-SET
-# inserts M3 x 6 long x D5 OD: bore D4.6 x 7.0 (6.0 insert + 1.0 melt
-# room), set with a soldering iron. M3 screws pass the D3.8 flange
-# holes natively. The ring sits 3.75 from the D82 cutout wall; the
-# slimmer bore keeps 1.45 mm on its inboard side (was 0.85 with the
-# old D5.8 adapters). The T flank lanes pass under this ring in plan;
-# with the shallow floor (z=11.3) the crossings keep a 5.7 mm floor --
-# solid structure, no membrane caveat.
+# inserts M3 x 3 long x D5 OD: bore D4.6 x 4.0 (3.0 insert + 1.0 melt
+# room; 4 x ~250 N pull-out vs the 0.43 kg 10F). M3 screws pass the
+# D3.8 flange holes natively; inboard wall to the D82 is 1.45. The
+# SHORT bores (floor z=14.3) let the vase-side ducts run in the FRONT
+# half (T lanes z=10.7, roof 12.6: 1.7 clear of the floors where the
+# lanes cross the ring) -- which is what allows variant V1 to thin the
+# vase from the REAR and mount FRONT-FLUSH with the LM section.
 UM_PILOT_D_MM = 4.6
 UM_PILOT_PCD_MM = 89.5
 UM_PILOT_ANGLES_DEG = (45.0, 135.0, 225.0, 315.0)
-UM_PILOT_DEPTH_MM = 7.0
+UM_PILOT_DEPTH_MM = 4.0
 
 # Lower mid: SEAS W22EX001 -- 6 x D5.0 flange holes (D8.8 head recess) on
 # pitch D209.5 (measured from E0022_W22EX001.stp). Mounted with BRASS
@@ -226,18 +226,23 @@ def _smoothstep(t: float) -> float:
     return 3.0 * t * t - 2.0 * t * t * t
 
 
-def _crescent_taper_depth(theta_deg: float) -> float:
+def _crescent_taper_depth(theta_deg: float,
+                          front_mm: float = THICKNESS_MM) -> float:
     """Rear cut depth at arc angle theta (0 at the bottom of the scallop,
-    THICKNESS-4 at the clamp holes, THICKNESS-0.4 past the horn tips)."""
+    front-4 at the clamp holes, front-0.4 past the horn tips). front_mm
+    lets thinned variants (V1) keep the SAME seat/tip thicknesses on a
+    thinner slab."""
     th_b, th_h, th_e = CRESCENT_TAPER_THETA_DEG
-    d_h = THICKNESS_MM - CRESCENT_TAPER_T_HOLES_MM
-    d_e = THICKNESS_MM - CRESCENT_TAPER_T_TIP_MM
+    d_h = front_mm - CRESCENT_TAPER_T_HOLES_MM
+    d_e = front_mm - CRESCENT_TAPER_T_TIP_MM
     if theta_deg <= th_h:
         return d_h * _smoothstep((theta_deg - th_b) / (th_h - th_b))
     return d_h + (d_e - d_h) * _smoothstep((theta_deg - th_h) / (th_e - th_h))
 
 
-def _crescent_taper_cutters(tweeter_drop_mm: float):
+def _crescent_taper_cutters(tweeter_drop_mm: float,
+                            front_mm: float = THICKNESS_MM,
+                            rear_mm: float = 0.0):
     cy = CRESCENT_SCALLOP_CY - tweeter_drop_mm
     r0, r_k, r_f = CRESCENT_TAPER_R_MM
     n_fade = 8
@@ -246,16 +251,16 @@ def _crescent_taper_cutters(tweeter_drop_mm: float):
         sections = []
         for i in range(20):
             th = -87.0 + 4.0 * i  # -87 deg .. -11 deg
-            d = _crescent_taper_depth(th)
+            d = _crescent_taper_depth(th, front_mm - rear_mm)
             # section profile in (r, z): floor at z=-0.5, cut depth = d for
             # r0..r_k, then smoothstep-faded d->0 across r_k..r_f
-            pts = [(r0, -0.5), (r_f, -0.5)]
+            pts = [(r0, rear_mm - 0.5), (r_f, rear_mm - 0.5)]
             for k in range(n_fade + 1):
                 rr = r_f - (r_f - r_k) * k / n_fade   # r_f .. r_k
                 frac = (rr - r_k) / (r_f - r_k)        # 1 .. 0
-                pts.append((rr, d * (1.0 - _smoothstep(frac))))
-            pts.append((r0, d))
-            pts.append((r0, -0.5))
+                pts.append((rr, rear_mm + d * (1.0 - _smoothstep(frac))))
+            pts.append((r0, rear_mm + d))
+            pts.append((r0, rear_mm - 0.5))
             a = radians(th)
             pl = Plane(
                 origin=(0.0, cy, 0.0),
@@ -267,7 +272,9 @@ def _crescent_taper_cutters(tweeter_drop_mm: float):
     return cutters
 
 
-def baffle_solid(outline=OUTLINE, tweeter_drop_mm: float = 0.0):
+def baffle_solid(outline=OUTLINE, tweeter_drop_mm: float = 0.0,
+                 crescent_front_mm: float = THICKNESS_MM,
+                 crescent_rear_mm: float = 0.0):
     part = extrude(Plane.XY * baffle_face(outline, tweeter_drop_mm), amount=THICKNESS_MM)
     pilots = [
         (UM_CUTOUT[:2], UM_PILOT_PCD_MM, UM_PILOT_ANGLES_DEG, UM_PILOT_D_MM,
@@ -280,7 +287,9 @@ def baffle_solid(outline=OUTLINE, tweeter_drop_mm: float = 0.0):
             part -= Pos(px, py, THICKNESS_MM - depth / 2.0) * Cylinder(
                 dia / 2.0, depth
             )
-    for cutter in _crescent_taper_cutters(tweeter_drop_mm):
+    for cutter in _crescent_taper_cutters(tweeter_drop_mm,
+                                          crescent_front_mm,
+                                          crescent_rear_mm):
         part -= cutter
     # 90 deg countersinks for the bridge screws, front face
     csk_depth = (BRIDGE_CSK_D_MM - BRIDGE_HOLE_D_MM) / 2.0
