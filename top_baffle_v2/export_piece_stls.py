@@ -41,11 +41,21 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--outdir", type=Path, default=OUT_DIR,
                     help="directory for the STLs (default: stl/)")
-    out_dir = ap.parse_args().outdir
+    ap.add_argument("--variant", choices=("b2", "c7"), default="b2",
+                    help="b2: base pieces + attachments; c7: the four "
+                         "LM-knife-taper base pieces (attachments and "
+                         "piece_top are shared with b2)")
+    args = ap.parse_args()
+    out_dir = args.outdir
     out_dir.mkdir(parents=True, exist_ok=True)
-    parts = dict(pieces())
-    parts.update(attachments())
-    parts = {STL_NAMES[k]: v for k, v in parts.items()}
+    if args.variant == "c7":
+        from top_baffle_nd25fw4_c7_split import pieces_c7
+        parts = {STL_NAMES[k].replace("lx521_top_base_", "lx521_top_c7base_"):
+                 v for k, v in pieces_c7().items()}
+    else:
+        parts = dict(pieces())
+        parts.update(attachments())
+        parts = {STL_NAMES[k]: v for k, v in parts.items()}
     misfits = []
     for name, solid in parts.items():
         bb = solid.bounding_box()

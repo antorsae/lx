@@ -59,33 +59,33 @@ TWEETER_DROP_A_MM = UM_ALIGN_DY_MM
 PILOT_DEPTH_MM = THICKNESS_MM / 2.0  # 9.15
 
 # Upper mid: Scan-Speak 10F/8424G00 -- 4 x D3.80 flange holes on pitch
-# D89.5 (datasheet 10f-8424g00.pdf). Mounted with M3-M6 x 10 thread
-# adapters (inner M3, outer M6 forms into the wall): bore D5.8 x 11.
-# M3 screws pass the D3.8 flange holes natively. CAUTION: the ring sits
-# 3.75 from the D82 cutout wall, so the bore's inboard side keeps only
-# 0.85 mm -- hidden behind the driver; install inserts gently (+ CA).
-# The T flank lanes pass under this ring in plan (unavoidable), so the
-# T ducts run at z=3.7: the 1.7 mm floor under the crossings is a
-# no-load membrane (insert bottom floats 1 mm above it; an M3 x 12
-# engages ~8.8 mm and never exits the socket).
-UM_PILOT_D_MM = 5.8
+# D89.5 (datasheet 10f-8424g00.pdf). Mounted with BRASS HEAT-SET
+# inserts M3 x 6 long x D5 OD: bore D4.6 x 7.0 (6.0 insert + 1.0 melt
+# room), set with a soldering iron. M3 screws pass the D3.8 flange
+# holes natively. The ring sits 3.75 from the D82 cutout wall; the
+# slimmer bore keeps 1.45 mm on its inboard side (was 0.85 with the
+# old D5.8 adapters). The T flank lanes pass under this ring in plan;
+# with the shallow floor (z=11.3) the crossings keep a 5.7 mm floor --
+# solid structure, no membrane caveat.
+UM_PILOT_D_MM = 4.6
 UM_PILOT_PCD_MM = 89.5
 UM_PILOT_ANGLES_DEG = (45.0, 135.0, 225.0, 315.0)
-UM_PILOT_DEPTH_MM = 11.0
+UM_PILOT_DEPTH_MM = 7.0
 
 # Lower mid: SEAS W22EX001 -- 6 x D5.0 flange holes (D8.8 head recess) on
-# pitch D209.5 (measured from E0022_W22EX001.stp). Mounted with
-# M5-M8 x 10 thread adapters (inner M5, outer M8 forms into the wall over
-# its full length): bore D7.8 x 11. M5 screws pass the D5.0 flange holes
-# natively; heads seat in the D8.8 recesses. Pattern aligned VERTICALLY
-# (12 and 6 o'clock). Handled consequences: seam C sits at x=-5.6 so its
-# dovetail clears the 90-deg bore by 1.55; the LM duct drifts to x=-10.5
-# past the 270-deg bore (2.3 wall); the UM duct crosses the ring between
-# the 30- and 90-deg bores (>=1.15 beyond its clearance requirement).
-L22_PILOT_D_MM = 7.8
+# pitch D209.5 (measured from E0022_W22EX001.stp). Mounted with BRASS
+# HEAT-SET inserts M5 x 6 long x D7 OD (ruthex-style): bore D6.4 x 7.0
+# (6.0 insert + 1.0 melt room), set with a soldering iron. M5 screws
+# pass the D5.0 flange holes natively; heads seat in the D8.8 recesses.
+# Pattern aligned VERTICALLY (12 and 6 o'clock). The shallow floor
+# (z=11.3) lets the O7.8 UM duct pass UNDER the ring at z=5.7 with a
+# 1.7 mm no-load membrane (same construction as the T ducts under the
+# 10F ring); seam C clears the 90-deg bore by 2.25 and the LM duct
+# keeps 3.05 to the 270-deg bore.
+L22_PILOT_D_MM = 6.4
 L22_PILOT_PCD_MM = 209.5
 L22_PILOT_ANGLES_DEG = (30.0, 90.0, 150.0, 210.0, 270.0, 330.0)
-L22_PILOT_DEPTH_MM = 11.0
+L22_PILOT_DEPTH_MM = 7.0
 
 # STAND_FOOT: piece_bottom carries a fused stand foot (see the split
 # module). With the foot there is no bridge, so the four bridge screw

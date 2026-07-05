@@ -54,9 +54,9 @@ from top_baffle_nd25fw4_cables import (
 
 STYLE = {
     "lm": ("tab:blue", "LM 2x2.5mm2, duct D8.5 (mid-plane)"),
-    "um": ("tab:green", "UM twisted pair, duct D8.6 (mid-plane)"),
-    "t1": ("gold", "T1 2xAWG24, duct D3.8"),
-    "t2": ("tab:red", "T2 2xAWG24, duct D3.8"),
+    "um": ("tab:green", "UM 2x2.0mm2, duct D7.8 (deep z=5.7)"),
+    "t1": ("gold", "T1 2xAWG24, duct D3.8 (z=5.7/3.7)"),
+    "t2": ("tab:red", "T2 2xAWG24, duct D3.8 (z=5.7/3.7)"),
 }
 TOP_Y = 468.314 - TWEETER_DROP_MM       # B2 top edge (453.46)
 TAPER_CY = CRESCENT_SCALLOP_CY - TWEETER_DROP_MM
@@ -139,8 +139,8 @@ def draw_side_view(ax):
                                        depth, dia, fc="white", ec="0.45",
                                        ls=":", lw=0.8, zorder=3))
     if STAND_FOOT:
-        ax.annotate("blind pilot bores x11 deep\n(T ducts pass under the\n"
-                    "10F ring: 1.7 floor)", (7.3, 334.4), (-148, 320),
+        ax.annotate("blind heat-set pilot bores\n(T ducts pass under the\n"
+                    "10F ring: 5.7 floor)", (7.3, 334.4), (-148, 320),
                     fontsize=8, color="0.3",
                     arrowprops=dict(arrowstyle="-", color="0.5"))
     # duct mains (true z from the swept splines)

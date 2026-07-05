@@ -15,6 +15,8 @@ from the PDF, not redrawn). Overall 304.8 × 468.31 × 18.3 mm.
 | `top_baffle_nd25fw4_b1.py` | B1: flank is ONE straight line from the crescent horn corner (36.8, 432.9) through the max-width point (83.8, 399.6) to the V-waist at (+/-56.12, 306.5) -- extended to the horn so the top magnet site lands in the B1 wing |
 | `top_baffle_nd25fw4_b2.py` | B2: constant wall around the 10F -- flare and chamfer keep the LM tilts but are both tangent to the r=50.83 circle about the UM center (9.8 mm wall at the D82, 2.1 mm to the D97.5 flange at both tangential points). Chamfer runs from the flare corner (+/-60.65, 391.71; max width 121.3 mm) to the crescent's D102.11 arc extended to (+/-10.08, 418.18); waist (+/-38.1, 315.95). |
 | `top_baffle_nd25fw4_b2_split.py` | 4-piece print split of variant B2 (the universal base set), shown assembled |
+| `top_baffle_nd25fw4_c7.py` | Variant C7: B2 with the LM section rear-tapered to a ~0.5 knife edge over the last 19 mm inside the flank/chamfer outline (front face stays a full plane). Full-depth land kept at the bottom strip (foot/bridge) and before seam B; half-round ribs (r=5.4) carry the T ducts across the band. See "Variant C7" below |
+| `top_baffle_nd25fw4_c7_split.py` | C7 print split: same seams/dovetails/ducts as B2 -- the three LM pieces are drop-in replacements, piece_top and all attachments are shared |
 | `export_piece_stls.py` | Exports the print-ready piece STLs (`--outdir`) |
 | `export_steps.py` | Exports a module's `gen_step()` to STEP via build123d's native exporter (`<module.py> --output <path>`) — no CAD-skill dependency |
 | `Makefile` | `make -j8` generates STEPs/STLs/PNGs for BOTH stand-foot states into `floor_stand/` and `no_floor_stand/` (see "Generated artifact layout") |
@@ -46,25 +48,24 @@ walls, and the variant-outline splice assertions.
   (pre-run the screw once to cut the threads).
 - Blind driver mounts, front face only:
   - Upper mid (Scan-Speak 10F/8424G00, 4 x D3.8 flange holes on pitch
-    D89.5): 4 x Ø5.8 bores at 45/135/225/315 deg, 11.0 mm deep, for
-    M3-M6 x 10 thread adapters (M3 screws pass the D3.8 flange holes
-    natively). CAUTION: the ring sits 3.75 from the D82 cutout wall, so
-    each bore keeps only 0.85 mm on its inboard side -- hidden behind
-    the driver; install the inserts gently with CA on the outer thread.
-    The T flank lanes pass under this ring in plan (unavoidable), so the
-    T ducts run at z=3.7: the 1.7 mm floor under the crossings is a
-    no-load membrane (insert bottoms float 1 mm above it; M3 x 12
-    engages ~8.8 mm and never exits the socket).
+    D89.5): 4 x Ø4.6 bores at 45/135/225/315 deg, 7.0 mm deep, for
+    BRASS HEAT-SET inserts M3 x 6 long x Ø5 OD (soldering-iron set;
+    M3 screws pass the D3.8 flange holes natively). The ring sits 3.75
+    from the D82 cutout wall; the slim bore keeps 1.45 mm on its
+    inboard side (was 0.85 with the old D5.8 adapters). The T flank
+    lanes pass under this ring at z=3.7 with a solid 5.7 mm floor
+    (pilot floor z=11.3) -- the old 1.7 mm membrane caveat is gone.
   - Lower mid (SEAS W22EX001, 6 x D5.0 flange holes + D8.8 head recess on
-    pitch D209.5, measured from E0022_W22EX001.stp): 6 x Ø7.8 bores,
-    11.0 mm deep, aligned VERTICALLY (30/90/...330 deg), for M5-M8 x 10
-    thread adapters -- the M8 outer thread forms into the wall over its
-    full 10 mm; M5 screws pass the D5.0 flange holes natively and seat
-    in the D8.8 recesses. Handled consequences: seam C offset to x=-5.6
-    (its dovetail clears the 90-deg bore by 1.55 mm), the LM duct drifts
-    to x=-10.5 past the 270-deg bore (2.3 mm wall), the UM duct crosses
-    the ring between the 30- and 90-deg bores. Verified clear of all
-    seams, dovetails, and ducts (in plan).
+    pitch D209.5, measured from E0022_W22EX001.stp): 6 x Ø6.4 bores,
+    7.0 mm deep, aligned VERTICALLY (30/90/...330 deg), for BRASS
+    HEAT-SET inserts M5 x 6 long x Ø7 OD (set with a soldering iron;
+    6 x ~700 N pull-out holds the 2.6 kg driver with a wide margin and
+    survives unlimited R&R). M5 screws pass the D5.0 flange holes
+    natively and seat in the D8.8 recesses. The shallow floor (z=11.3)
+    lets the Ø7.8 UM duct pass UNDER the whole ring at z=5.7 with a
+    1.7 mm no-load membrane (same construction as the T ducts under
+    the 10F ring); seam C clears the 90-deg bore by 2.25 mm and the
+    LM duct keeps 3.05 mm to the 270-deg bore.
 - 2 tweeter-clamp holes @ (±32.56, 451.24) — drawing Ø4.0, printed Ø4.4
   for M4 clearance. The face-to-face ND25FW-4 pair bolts through these,
   sandwiching the baffle crescent between the two faceplates; the pair's
@@ -96,8 +97,11 @@ walls, and the variant-outline splice assertions.
 
 ## Print split (256×256×256 bed)
 
-- Seam A: y=165 (two ~37 mm lands beside the Ø190 cutout), 2 dovetails
-  (±97, neck 7 / head 9 / depth 5 — slim, inboard of the O8.6 UM duct).
+- Seam A: y=120 (two ~58 mm lands beside the Ø190 cutout), 2 dovetails
+  (±89, neck 7 / head 9 / depth 5) — in the full-depth window between
+  the T duct arc (crosses seam A at x≈72.6; UM at x≈66) and the C7
+  taper boundary (x≈92): keys clear of every duct and fully OUT of the
+  C7 taper in all variants.
 - piece_bottom carries a FUSED stand foot (STAND_FOOT flag in
   top_baffle_nd25fw4.py). The foot starts as the baffle's own bottom
   strip (18.3 tall, side faces continuing the flank slopes: ±76.2 at
@@ -187,6 +191,9 @@ STAND_FOOT flag is the `LX_STAND_FOOT` env var (default 1).
 | lx521_top_addonA_1..2of4_shoulder_top_l/r | 50.6 × 61.8 | A-comp only |
 | lx521_top_addonA_3..4of4_shoulder_bottom_l/r | 22.5 × 85.9 | A-comp only |
 | lx521_top_addonB1_1..2of2_wing_l/r | 73.7 × 125.1 | B1 only |
+| lx521_top_c7base_1of4_bottom | as base 1of4 | C7 (LM knife taper) |
+| lx521_top_c7base_2..3of4_mid_l/r | as base 2/3of4 | C7 (LM knife taper) |
+| lx521_top_c7base_4of4_vase_b2 | same part as base 4of4 (re-tessellated file) | C7 = same vase |
 
 Building the variants: B2 = the four base pieces. A-comp = B2 + the four
 shoulder pieces. B1 = B2 + the two wings. Attachments are edge-glued onto
@@ -216,8 +223,8 @@ to both variants; only the ENTRY and the driver-side EXIT differ:
 | Driver | Cable | Duct | Route |
 |---|---|---|---|
 | LM (W22) | 2x 2.5 mm^2 twisted | D8.5 | planar z=9.15, drifting past the 270-deg insert bore (2.3 mm wall); ~7-deg diving exit bore -> D190-rim opening at z~6.6 (push-through) |
-| UM (10F) | twisted pair (2x2.0 mm^2 comfortable, 2x2.5 snug) | D8.6 mid-plane | fully buried: inner right arc r=115.5, spirals into the lane between the W22 pilot circle and the D190 rim (crossing the ring between the 30- and 90-deg pilots), rounds the rim's upper right at r~102.2, then ONE continuous R28.8 arc tangent to the lane, entering the D82 rim near-radially at (4, 325) -- no straights or S-bends on the way out |
-| T1 (front ND25) | 2x AWG24 | D3.8 | one dead-straight diagonal from the breakout, exactly tangent to the OUTER arc r=124 at theta=-47.3 (14.2 mm from the (20,70) hole), arc to theta=41, outboard transition, R12 elbow at x=33 through the waist corridor, right flank lane, R20 crest fillet, then dives to the middle of the crescent band (>=2.2 mm from the neck corner) and pierces the D78.5 scallop rim bottom head-on at ~(3.3, 430), deep under the tweeter faceplate |
+| UM (10F) | twisted 2x2.0 mm^2 pair (~O7.0; 2x2.5 no longer fits) | D7.8 DEEP (z=5.7) | fully buried in the C7 core: fan onto ONE constant arc r=100.7 hugging the D190 rim (1.8 mm wall), passing UNDER the M5 heat-set W22 pilot ring (floor z=11.3, 1.7 mm membrane), then the exit tail into the D82 rim at (4, 325) -- never within 10 mm of the taper band; ONE routing shared by ALL piece variants |
+| T1 (front ND25) | 2x AWG24 | D3.8, two planar mains | LOWER (z=5.7): fan line tangent onto the r=110 arc, fully buried in the C7 core beside the UM's r=100.7 rim arc; a straight z-step bore (5.7→3.7) crosses the open seam-B elbow corridor; UPPER (z=3.7, vase unchanged): right flank lane under the 10F ring (1.7 membrane), R20 crest fillet, head-on pierce of the D78.5 scallop rim at ~(3.3, 430) |
 | T2 (rear ND25) | 2x AWG24 | D3.8 | mirror of T1 on the left, pierces the scallop rim at ~(-3.3, 430) |
 
 Min bend: one exact R12 fillet per T route at the waist corridor (the
@@ -232,8 +239,39 @@ centerline separations (`make check` re-measures them): every duct pair
 UM-T1 at 8.6 vs 6.2); every W22 pilot >= bore radius + duct radius +
 1.5 mm in plan. The ducts cross the glue seams -- fish each cable (or a
 pull string) through each piece's short open segment during assembly.
-Seam-A dovetails sit at +/-97 (n7/h9/d5, slim and inboard of the UM duct
-arc); seam-C dovetail at (300.5, n6/h8/d4).
+Seam-A dovetails sit at +/-89 (n7/h9/d5, full-depth, clear of both arcs);
+seam-C dovetail at (300.5, n6/h8/d4).
+
+## Variant C7 — LM knife-edge taper
+
+An experimental replacement for the three LM-section pieces: full
+18.3 mm around the W22, then the REAR face tapers (smoothstep over the
+last 19 mm inside the flank/chamfer outline) down to a ~0.5 mm knife at
+the edge -- the front face stays a full plane, exactly like the
+crescent rear taper. It tests SL's "ideally the baffle would be even
+thinner" in the band where the LM section's edges act (upper LM /
+lower UM octaves), removing ~70 cm³ net (taper minus the T ribs).
+The ducts sit at FIXED z from the rear face, so the binding rule is
+z-interval containment: the rear cut over a duct must stay above
+z_duct - r - skin (3.25 for the mid-plane mains; ~0 for the
+rear-skinned T ducts).
+
+- The cut fades in above the bottom strip (y 52..70: foot/bridge
+  interface keeps full depth) and fades out toward seam B (y 270..~304:
+  full-depth land, flush joint to the shared vase piece, dovetails at
+  full section). Seam-A dovetails (±97) sit inboard of the band --
+  full depth.
+- The common cable routing (see the duct table) is shared by ALL
+  variants, so B2 and C7 pieces mix freely across the seams. ALL four
+  ducts stay buried in the full-depth core (UM at r=100.7 and the T
+  lower mains at r=110, both deep at z=5.7 under the heat-set pilot
+  ring) -- the tapered rear face carries no ribs or marks. Asserted by
+  test_c7_duct_corridor (`make check`) and verified with duct-envelope
+  probes on the built piece solids.
+- Print: same bed footprints as the B2 pieces; the taper prints
+  front-face-down with layers shrinking as they rise (support-free).
+- Concept sheet: `gen_lm_knife_draft.py` ->
+  `baffle_lm_knife_draft.png`.
 
 ## Magnet attachment (swappable shoulders/wings)
 
@@ -288,9 +326,10 @@ epoxy and clamp); the pin magnets still register the parts.
 4. After cure, optionally lay a bead of epoxy along the rear seam lines and
    the rear rim of the Ø190 cutout as a fillet — the L22 flange clamps the
    front face, so rear-side reinforcement is invisible.
-5. Mount the W22EX001 lower-mid with M5 screws and the 10F/8424G00 upper-mid
-   with M3 screws into the blind front-face pilots (run each screw in once
-   without the driver first to pre-form the threads), then bolt the
+5. Set the brass heat-set inserts with a soldering iron (flush,
+   square): six M5 x 6 x Ø7 in the W22 pilots, four M3 x 6 x Ø5 in the
+   10F pilots. Mount the W22EX001 lower-mid with M5 screws and the
+   10F/8424G00 upper-mid with M3 screws into the inserts, then bolt the
    ND25FW-4 pair through the (±32.56, 451.24) holes with M4 screws and cut
    the inter-faceplate standoffs to the printed thickness (18.3 mm).
 6. Screw to the bridge through the four countersunk holes (5 mm oval-head

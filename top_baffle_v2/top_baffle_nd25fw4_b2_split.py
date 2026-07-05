@@ -4,8 +4,8 @@ The one-piece baffle (304.8 x 453.5 x 18.3 mm) exceeds a 256 mm print bed,
 so it is split into four flat pieces joined by through-thickness dovetail
 keys:
 
-  seam A  y = 165   full-width horizontal cut (crosses the D190 cutout, so
-                    only two short ~37 mm land segments are actually joined)
+  seam A  y = 120   full-width horizontal cut (crosses the D190 cutout, so
+                    two ~58 mm land segments are actually joined)
   seam B  y = 315.95  horizontal cut exactly through B2's waist kinks, so
                     the seam hides in the outline crease and BOTH pieces get
                     obtuse corners there (top foot ~107 deg vs the flare,
@@ -16,9 +16,9 @@ keys:
                     the 90-deg W22 insert bore at (0, 305.7) by 1.55 mm.
 
 Pieces (all fit a 256 x 256 bed lying flat):
-  piece_bottom     ~250.6 x 170 mm   (male dovetails up into the mids)
-  piece_mid_left   ~146.7 x 157 mm   (male dovetail up into the top)
-  piece_mid_right  ~162.0 x 157 mm   (male dovetails up + into mid_left)
+  piece_bottom     ~250.6 x 125 mm   (male dovetails up into the mids)
+  piece_mid_left   ~146.7 x 202 mm   (male dovetail up into the top)
+  piece_mid_right  ~162.0 x 202 mm   (male dovetails up + into mid_left)
   piece_top_b2     ~121.3 x 138 mm   (the whole B2 mini-vase + crescent)
 
 Female sides are opened up by CLEARANCE_MM using a mitred 2D polygon offset,
@@ -78,14 +78,17 @@ NL8_CUTOUT_D = 31.0
 NL8_SCREW_D = 3.2
 NL8_SCREW_PITCH = 29.2
 
-SEAM_A_Y = 165.0
+SEAM_A_Y = 120.0
 SEAM_B_Y = 315.95  # exactly at B2's waist kinks -> obtuse seam corners
 
 # Dovetail keys: (center along seam, neck width, head width, depth).
-# A-tabs slimmed/inboard so the O8.6 UM duct arc clears them by 3.6;
-# the RIGHT B-tab sits outboard (cx=21.5) clearing the UM corridor,
-# with the T elbow at x=33 between it and the waist kink.
-DOVETAILS_A = [(-97.0, 7.0, 9.0, 5.0), (97.0, 7.0, 9.0, 5.0)]
+# Seam A sits at y=120 so its keys at +-89 live in the 16 mm-wide
+# FULL-DEPTH window between the T arc (r=110, crossing at x~72.6) and
+# the C7 taper boundary (x~92) -- keys clear of every duct AND fully
+# out of the taper in all variants. The RIGHT B-tab sits outboard
+# (cx=21.5) clearing the UM exit tail, with the T z-step corridor
+# between it and the waist kink.
+DOVETAILS_A = [(-89.0, 7.0, 9.0, 5.0), (89.0, 7.0, 9.0, 5.0)]
 DOVETAILS_B = [(-19.0, 10.0, 14.0, 6.0), (21.5, 10.0, 14.0, 6.0)]
 # small and low so the near-center cable vias pass beside it
 DOVETAIL_C = (300.5, 6.0, 8.0, 4.0)
@@ -145,8 +148,17 @@ def _grown(poly: Polygon) -> Polygon:
     return poly.buffer(CLEARANCE_MM, join_style=2, mitre_limit=10.0)
 
 
-def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM) -> dict:
+def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
+           shape_cuts=(), shape_adds=()) -> dict:
+    """Split the (optionally re-shaped) baffle into the four print
+    pieces. ``shape_cuts``/``shape_adds`` are applied before the ducts
+    are cut -- used by variant C7 (LM knife-edge taper + T-duct ribs);
+    the ducts then re-cut through any added material."""
     baffle = baffle_solid(outline, tweeter_drop_mm)
+    for cutter in shape_cuts:
+        baffle -= cutter
+    for add in shape_adds:
+        baffle += add
     ducts = cable_cutters()  # internal cable ducts (LM/UM/T)
     for duct in ducts:
         baffle -= duct

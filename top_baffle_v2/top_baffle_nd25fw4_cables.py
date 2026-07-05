@@ -7,17 +7,20 @@ planar because every inline z-eased spline variant broke OCC booleans:
     LM (blue):  2 x 2.5 mm^2 twisted pair, O8.5 at mid-plane z=9.15;
         straight plan line drifting x=-8.6 -> -10.5 past the 270-deg
         W22 pilot (2.3 mm wall).
-    UM (green): twisted pair (2 x 2.0 mm^2 comfortable, 2 x 2.5 snug),
-        O8.6 at z=9.15: R26 fan fillet, tangent line to the r=115.5
-        arc, ring-crossing between the 30- and 90-deg W22 pilots, lane
-        at r~102.2, one R28.8 arc entering the D82 rim near-radially.
-    T1/T2 (yellow/red): 2 x AWG24 each, O3.8 at z=3.7 (the flank lanes
-        pass under the 10F insert bores, D5.8 x 11: the 1.7 mm floor
-        above the duct roof is a no-load membrane -- see the note in
-        top_baffle_nd25fw4.py). Straight fan line tangent to the r=124
-        arc, outboard transition, exact R12 elbow at x=33, flank lane,
-        R20 crest fillet, head-on pierce of the D78.5 scallop rim (that
-        opening faces the tweeter pole gap -- open front-to-back).
+    UM (green): twisted 2 x 2.0 mm^2 pair (~O7.0 bundle), O7.8 DEEP
+        at z=5.7: R26 fan fillet, tangent line onto ONE constant arc
+        r=100.7 hugging the D190 rim (wall 1.8), passing UNDER the M5
+        heat-set W22 pilots (floor z=11.3, 1.7 mm no-load membrane --
+        same construction as the T ducts under the 10F ring), then the
+        exit tail. Entirely inside the C7 full-depth core, so ALL
+        piece variants share one routing. 2 x 2.5 mm^2 no longer fits.
+    T1/T2 (yellow/red): 2 x AWG24 each, O3.8, in TWO planar mains
+        joined by a straight z-step bore at the seam-B elbow corridor
+        (T_STEP, 5.7 -> 3.7). LOWER (z=5.7): fan line tangent onto the
+        r=110 arc -- fully buried in the C7 core, no ribs. UPPER
+        (z=3.7, vase unchanged): flank lane under the 10F heat-set
+        bores (D4.6 x 7.0: 5.7 mm floor), R20 crest fillet, head-on
+        pierce of the D78.5 scallop rim (faces the tweeter pole gap).
 
   ENTRIES (state-dependent): with STAND_FOOT the mains continue down
     the plate into packed foot lanes (FOOT_LANES: 90-deg R14 vertical-
@@ -53,13 +56,12 @@ from top_baffle_nd25fw4 import STAND_FOOT
 LM_Y = 200.981
 UM_Y = 366.081
 
-R_GREEN = 115.5
 R_T = 124.0
-# Duct plane depth per route. The T ducts run at z=3.7 (rear skin 1.8,
-# roof 5.6) so the D5.8 x 11 10F insert bores (floor z=7.3) keep a
-# 1.7 mm no-load membrane above them at the lane crossings.
+# Duct plane depth per route. The T uppers run at z=3.7 (rear skin
+# 1.8, roof 5.6); the D4.6 x 7.0 10F heat-set bores (floor z=11.3)
+# keep a solid 5.7 mm floor above them at the lane crossings.
 # The O8.5 LM duct runs at mid-plane (skins 4.9 both sides).
-DUCT_Z = {"lm": 9.15, "um": 9.15, "t1": 3.7, "t2": 3.7}
+DUCT_Z = {"lm": 9.15, "um": 5.7, "t1": 5.7, "t2": 5.7}  # T: below-seam plane; above seam B they drop to 3.7
 EDGE_OFFSET = 6.16  # duct center 5.9 mm inside the flare/chamfer walls
 
 # LM carries 2 x 2.5 mm^2 (twisted pair ~O7.8) -> O8.5 duct, mid-plane.
@@ -68,7 +70,7 @@ EDGE_OFFSET = 6.16  # duct center 5.9 mm inside the flare/chamfer walls
 # dovetail at cx=21.5 with the T elbow at x=33, and slimmer seam-A
 # dovetails). Comfortable for twisted 2 x 2.0 mm^2 (bundle ~O7);
 # 2 x 2.5 mm^2 twisted (~O7.8) is snug. T = 2 x AWG24.
-CABLE_D = {"lm": 8.5, "um": 8.6, "t1": 3.8, "t2": 3.8}
+CABLE_D = {"lm": 8.5, "um": 7.8, "t1": 3.8, "t2": 3.8}
 
 # Mains are planar constant-z sweeps; entries and exits are separate
 # straight oblique bores that OVERLAP the mains (see cable_cutters) --
@@ -166,36 +168,36 @@ def _elbow_points():
     return pts
 
 
+T_STEP = ((34.0, 313.0, 5.7), (33.2, 317.5, 3.7))  # short, near-inline
+# bore stepping the T main 5.7 -> 3.7 through the open seam-B elbow
+# z-step (2.3 wall to the waist kink and the seam-B pocket)
+
+
 def _t1_route():
-    # one dead-straight line, exactly tangent to the r=124 arc at
-    # theta=-47.3 (14.2 mm from the (20,70) hole, 8.4 from the UM arc).
-    # This main duct is strictly PLANAR (z=3.7): planar paths sweep with
-    # a fixed frame, which the tight R12 elbow needs. The z-eased entry
-    # is a separate overlapping bore (see _t_entry_pts).
+    # LOWER T main (planar z=5.7): fan line tangent onto the r=110 arc
+    # -- fully inside the C7 core (>=20 from the taper edges at the
+    # pinch), 9.3 outboard of the UM rim arc, over the W22 pilots with
+    # the z membrane. Ends at the seam-B z-step bore (T_STEP).
     if STAND_FOOT:
-        # drift to the packed foot lane (x=13.85), then a planar R15
-        # fillet from vertical x=16 onto the tangent fan line
         line = ([(13.9, 22.0), (14.4, 27.0), (15.4, 33.0)]
                 + _line_arc_line((16.0, 38.0), (0.0, 1.0),
-                                 (84.055, 109.874), (0.7339, 0.6783), 15.0))
+                                 (82.97, 128.74), (0.6570, 0.7540), 15.0))
     else:
-        # from the ramp tip at the support window's edge (5.5, 51.5):
-        # dead straight rightward, then ONE exact R12 fillet tangent
-        # onto the fan line at (24.3, 54.7) -- single bend, easy fishing
         line = _line_arc_line((5.5, 51.5), (1.0, 0.0),
-                              (84.055, 109.874), (0.7339, 0.6783), 12.0)
+                              (82.97, 128.74), (0.6570, 0.7540), 12.0)
     return (
         line
-        + _arc(R_T, [-47.3, -36, -24, -12, 0, 12, 24, 36, 41])
-        # transition to the waist corridor (>=8.2 outboard of the UM
-        # spiral), easing onto the elbow fillet's 250-deg tangent line
-        + [(80.5, 289.5), (70.5, 294.2), (67.22, 296.14),
-           (59.7, 298.88), (53.12, 301.27), (46.54, 303.67)]
-        # approach line + exact R12 fillet into the flare lane, sampled
-        # densely so the spline tracks the true geometry. The outline kink
-        # caps this elbow at ~R12; seam B cuts through it, so cables are
-        # laid in through the open seam face during assembly.
-        + _elbow_points()
+        + _arc(110.0, [-41.05, -30, -18, -6, 6, 18, 30, 42, 50, 58, 64])
+        + [(44.0, 302.0), (40.0, 304.5), (37.0, 307.5), (35.0, 310.5),
+           (34.0, 313.0)]
+    )
+
+
+def _t1_upper():
+    # UPPER T main (planar z=3.7, vase geometry unchanged): from the
+    # old elbow lean-out up the flank lane, crest, crescent tail
+    return (
+        [(33.1, 319.5), (33.8, 322.8), (34.9, 326.3), (35.9, 330.0)]
         + [(_flare_offset_r(y), y) for y in (334, 342, 352, 360)]
         # R20 fillet at the crest (tangent to both offset lines)
         + [(48.94, 373.05), (49.68, 379.89), (48.11, 386.62),
@@ -230,14 +232,14 @@ SUPPORT_WINDOW = (0.0, 60.0, 20.0)  # cx, cy, D of the support-plate hole
 # same axis so the ramp lances THROUGH the main tube -- ~4 mm of shared
 # void; p0 pulled left so the ramp's plan direction is nearly along the
 # main: the fishing bend at the tip is one ~66 deg turn, no compound S)
-T_RAMP = ((1.0, 53.4, -6.4), (6.175, 51.215, 5.215))
+T_RAMP = ((1.0, 53.4, -6.4), (6.175, 51.215, 7.515))
 
 
 # LM/UM entries: straight oblique ramps (p0 behind the rear face ->
 # tip inside the planar main), O0.8 over their ducts.
 BIG_RAMPS = {
-    "lm": ((-4.6, 56.0, -6.4), (-6.1, 66.9, 9.15)),
-    "um": ((4.6, 56.0, -6.4), (6.1, 66.9, 9.15)),
+    "lm": ((-4.6, 56.0, -6.4), (-8.0, 68.5, 9.15)),
+    "um": ((4.8, 55.5, -6.4), (4.2, 67.0, 5.7)),
 }
 # Lowered exits (drivers occlude the cutout walls from mid-depth toward
 # the front): straight oblique bores DIVING 6-10 deg from the planar
@@ -246,7 +248,7 @@ BIG_RAMPS = {
 # depth (z~1/4) natively.
 EXIT_RAMPS = {
     "lm": ((-9.9, 86.0, 9.15), (-10.6, 119.0, 5.2), 9.3),
-    "um": ((10.2, 308.5, 9.15), (2.95, 332.4, 4.9), 9.4),
+    "um": ((7.2, 310.5, 5.7), (2.95, 332.4, 6.2), 8.6),
 }
 
 
@@ -259,9 +261,9 @@ EXIT_RAMPS = {
 # inside plate+foot -- there is no corner rib to tunnel through.
 FOOT_LANES = {
     "lm": (-5.45, 9.15, 10.5, 14.0, 9.3),
-    "um": (5.4, 9.15, 10.5, 14.0, 9.4),
-    "t1": (13.9, 3.7, 5.5, 14.0, 4.6),
-    "t2": (-13.9, 3.7, 5.5, 14.0, 4.6),
+    "um": (5.4, 5.7, 10.5, 14.0, 8.6),
+    "t1": (13.9, 5.7, 5.5, 14.0, 4.6),
+    "t2": (-13.9, 5.7, 5.5, 14.0, 4.6),
 }
 
 
@@ -273,42 +275,43 @@ def route_points(name):
         # x=-10.5 past the 270-deg W22 insert bore (D7.8: 2.3 mm wall).
         # The lowered exit is a straight oblique bore (EXIT_RAMPS).
         lead = ([(-5.45, 30.0, 9.15), (-6.2, 38.0, 9.15),
-                 (-7.3, 48.0, 9.15)] if STAND_FOOT else [])
-        return lead + [(-8.6, 63.0, 9.15), (-9.3, 76.0, 9.15),
-                       (-10.1, 89.0, 9.15), (-10.5, 98.0, 9.15),
+                 (-7.3, 48.0, 9.15), (-7.7, 58.0, 9.15)]
+                if STAND_FOOT else [])
+        return lead + [(-8.0, 68.0, 9.15), (-9.0, 78.0, 9.15),
+                       (-10.0, 90.0, 9.15), (-10.5, 98.0, 9.15),
                        (-10.5, 103.0, 9.15)]
     if name == "um":
-        # O8.6 bore, mid-plane: inner right arc, ring-crossing between
-        # the 30- and 90-deg W22 pilots, lane at r~102.2 (rim wall 2.9),
-        # then ONE continuous R28.8 exit arc (center (32.7, 328.1))
-        # tangent to the lane, entering the D82 rim near-radially at
-        # (4, 325.3) -- >=10.8 from the 90-deg pilot, 2.4 mm wall to the
-        # seam-B tab corner. No intermediate straights or S-bends.
-        spiral = [(46, 112.0), (52, 107.5), (58, 104.3), (63, 102.6),
-                  (68, 102.25), (72, 102.2)]
-        # main duct: fully PLANAR at z=9.15 (any inline 3D easing
-        # corrupts OCC booleans); the raised exit is a straight oblique
-        # bore (EXIT_RAMPS).
+        # O7.8 bore, DEEP at z=5.7: the M5 heat-set pilots (floor
+        # z=11.3) let the duct pass UNDER the whole W22 pilot ring with
+        # a 1.7 mm no-load membrane, so it hugs the D190 rim on one
+        # constant arc r=100.7 (rim wall 1.8) -- entirely inside the C7
+        # full-depth core, no taper interaction anywhere. The main
+        # starts at (4, 60) so the fan keeps >=8.6 to the T mains
+        # (UM-T z split is only 2.0 now). Fully PLANAR; the exit is a
+        # near-level oblique bore (EXIT_RAMPS).
         return (
             _with_z(
-                ([(5.4, 30.0), (5.0, 38.0), (4.4, 47.0)]
+                ([(5.4, 30.0), (5.0, 38.0), (4.4, 47.0), (4.1, 56.0)]
                  if STAND_FOOT else [])
-                + _line_arc_line((4.0, 58.0), (0.0, 1.0),
-                               (46.98, 95.49), (0.9135, 0.4067), 26.0)
-                + _arc(R_GREEN, [-66, -54, -42, -30, -18, -6, 6, 18, 30, 40])
-                + [(r * math.cos(math.radians(t)),
-                    LM_Y + r * math.sin(math.radians(t))) for t, r in spiral]
-                + [(27.78, 299.43), (23.76, 300.73), (20.49, 302.02),
-                   (16.14, 304.53), (12.29, 307.75), (9.07, 311.60)],
-                [(0, 9.15), (9999, 9.15)])
-            + [(6.56, 315.95, 9.15), (5.3, 319.5, 9.15),
-               (4.9, 321.5, 9.15)]
+                + _line_arc_line((4.0, 60.0), (0.0, 1.0),
+                               (58.63, 119.11), (0.81310, 0.58210), 26.0)
+                + _arc(100.7, [-54.39, -42, -30, -18, -6, 6, 18, 30,
+                               42, 54, 64, 72, 78])
+                + [(16.0, 300.9), (11.5, 303.2), (8.6, 306.5),
+                   (7.2, 310.5)],
+                [(0, 5.7), (9999, 5.7)])
+            + [(6.56, 315.95, 5.7), (5.3, 319.5, 5.7),
+               (4.9, 321.5, 5.7)]
         )
     if name == "t1":
-        return _with_z(_t1_route(), [(0, 3.7), (9999, 3.7)])
+        step = [tuple(T_STEP[0][i] + f * (T_STEP[1][i] - T_STEP[0][i])
+                      for i in range(3))
+                for f in (0.25, 0.5, 0.75, 1.0)]  # straight, like the bore
+        return (_with_z(_t1_route(), [(0, 5.7), (9999, 5.7)])
+                + step
+                + _with_z(_t1_upper(), [(0, 3.7), (9999, 3.7)]))
     if name == "t2":
-        return [(-p[0], *p[1:])
-                for p in _with_z(_t1_route(), [(0, 3.7), (9999, 3.7)])]
+        return [(-p[0], *p[1:]) for p in route_points("t1")]
     raise ValueError(name)
 
 
@@ -331,11 +334,22 @@ def _entry_ramp(p0, p1, dia):
 
 def cable_cutters():
     cutters = []
-    for name in ("lm", "um", "t1", "t2"):
+    for name in ("lm", "um"):
         dia = CABLE_D[name]
         path = Spline(*route_points(name))
         section = Plane(origin=path @ 0, z_dir=path % 0) * Circle(dia / 2.0)
         cutters.append(sweep(section, path=path))
+    for sign in (1.0, -1.0):  # T: lower + upper mains + seam-B z-step
+        dia = CABLE_D["t1"]
+        for pts in (_with_z(_t1_route(), [(0, 5.7), (9999, 5.7)]),
+                    _with_z(_t1_upper(), [(0, 3.7), (9999, 3.7)])):
+            path = Spline(*[(sign * x, y, z) for x, y, z in pts])
+            section = (Plane(origin=path @ 0, z_dir=path % 0)
+                       * Circle(dia / 2.0))
+            cutters.append(sweep(section, path=path))
+        p0 = (sign * T_STEP[0][0], *T_STEP[0][1:])
+        p1 = (sign * T_STEP[1][0], *T_STEP[1][1:])
+        cutters.append(_entry_ramp(p0, p1, 4.6))
     # LM/UM raised exits: straight oblique bores through the rim walls
     # (driver-side breakouts -- needed with or without the stand foot)
     for name, (p0, p1, dia) in EXIT_RAMPS.items():

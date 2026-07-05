@@ -197,6 +197,72 @@ def test_magnet_pockets_vs_t_ducts():
                 f"magnet pocket ({x},{y}) to T duct {clear:.2f} < 0.8")
 
 
+def test_seam_keys_vs_ducts():
+    """Every seam dovetail (grown female pocket) must keep a wall to
+    every duct crossing its seam -- the check that was missing when the
+    deep reroute ran the UM arc straight through the old +-97 A-keys."""
+    from top_baffle_nd25fw4_b2_split import (DOVETAIL_C, DOVETAILS_A,
+                                             DOVETAILS_B, SEAM_A_Y,
+                                             SEAM_B_Y, SEAM_C_X)
+    from top_baffle_nd25fw4_cables import CABLE_D
+
+    rects = []  # (x0, x1, y0, y1) grown pockets, both directions
+    for cx, _n, h, d in DOVETAILS_A:
+        rects.append((cx - h / 2 - 0.1, cx + h / 2 + 0.1,
+                      SEAM_A_Y - d - 0.1, SEAM_A_Y + d + 0.1))
+    for cx, _n, h, d in DOVETAILS_B:
+        rects.append((cx - h / 2 - 0.1, cx + h / 2 + 0.1,
+                      SEAM_B_Y - d - 0.1, SEAM_B_Y + d + 0.1))
+    cy, _n, h, d = DOVETAIL_C
+    rects.append((SEAM_C_X - d - 0.1, SEAM_C_X + d + 0.1,
+                  cy - h / 2 - 0.1, cy + h / 2 + 0.1))
+    for stand_foot in (True, False):
+        for name, pts in _routes(stand_foot).items():
+            r = CABLE_D[name] / 2.0
+            for x, y, _z in pts:
+                for x0, x1, y0, y1 in rects:
+                    dx = max(x0 - x, 0.0, x - x1)
+                    dy = max(y0 - y, 0.0, y - y1)
+                    dd = (dx * dx + dy * dy) ** 0.5 - r
+                    assert dd >= 1.4, (
+                        f"{name} duct {dd:.2f} from seam key "
+                        f"[{x0:.1f}..{x1:.1f}]x[{y0:.1f}..{y1:.1f}] "
+                        f"at ({x:.1f},{y:.1f})")
+    print("  seam keys: every duct keeps >=1.4 to every grown pocket")
+
+
+def test_c7_duct_corridor():
+    """Variant C7's LM knife taper vs the ducts. The ducts sit at FIXED
+    z from the rear face and the taper cuts the rear, so the criterion
+    is z-interval containment: the local rear surface (18.3 - t) must
+    stay below z_duct - r - skin. The T mains (z=3.7) tolerate no cut
+    at all and must be covered by their ribs wherever the taper bites;
+    a rib keeps material to z = 3.7 + sqrt(5.4^2 - dx^2) >= 7.2 on-axis."""
+    import top_baffle_nd25fw4_c7 as c7
+    from top_baffle_nd25fw4 import THICKNESS_MM
+    from top_baffle_nd25fw4_cables import CABLE_D, DUCT_Z
+
+    skin = 1.6
+    routes = _routes(True)  # below-seam mains are state-independent
+    for name, pts in routes.items():
+        z_floor_need = DUCT_Z[name] - CABLE_D[name] / 2.0 - skin
+        for x, y, _z in pts:
+            if not 45.0 < y < 312.0:
+                continue
+            rear_z = THICKNESS_MM - c7.thickness_at(x, y)
+            if rear_z <= z_floor_need + 0.001:
+                continue  # duct fully inside the tapered plate
+            assert name in ("t1", "t2"), (
+                f"{name}: rear surface z={rear_z:.2f} > allowed "
+                f"{z_floor_need:.2f} at ({x:.1f},{y:.1f}) -- duct breaks "
+                "out of the taper")
+            assert (c7.RIB_Y_SPAN[0] - 0.1 <= y <= c7.RIB_Y_SPAN[1] + 0.1), (
+                f"{name}: taper bites (rear z={rear_z:.2f}) at "
+                f"({x:.1f},{y:.1f}) outside the rib span {c7.RIB_Y_SPAN}")
+    print("  C7 corridor (z-containment): big mains stay buried; every "
+          "T bite is inside the rib span")
+
+
 def test_variant_outlines_splice():
     for name in ("top_baffle_nd25fw4_b1", "top_baffle_nd25fw4_b2",
                  "top_baffle_nd25fw4_a_comp"):
@@ -213,6 +279,8 @@ if __name__ == "__main__":
         test_magnet_pockets_vs_t_ducts,
         test_duct_vs_w22_pilots,
         test_duct_duct_separation,
+        test_c7_duct_corridor,
+        test_seam_keys_vs_ducts,
     ]
     failed = []
     for check in checks:
