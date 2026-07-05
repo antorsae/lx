@@ -1,30 +1,45 @@
-"""Internal cable ducts -- four routes, one per driver voice:
+"""Internal cable ducts -- four routes, one per driver voice.
 
-  LM (blue):  2 x 2.5 mm^2 twisted pair, O8.5 bore. Straight plan line at
-      x=-8.6 (2.25 mm to the 270-deg W22 pilot). One continuous 3D
-      spline: z eases 18 deg at the rear-face pierce -> ~9 deg -> exit
-      into the D190 rim with the opening centered at exit_z (basket-ring
-      occlusion sits at mid-depth).
-  UM (green): twisted pair (2 x 2.0 mm^2 comfortable, 2 x 2.5 snug),
-      O8.6 bore, one continuous 3D spline: eased entry like LM, R26 fan
-      fillet, tangent line to the r=115.5 arc, ring-crossing between the
-      30- and 90-deg W22 pilots, lane at r~102.2, one R28.8 exit arc
-      entering the D82 rim near-radially, opening at exit_z.
-  T1/T2 (yellow/red): 2 x AWG24 each, O3.8 planar ducts at z=3.7 (the
-      flank lanes pass under the 10F insert bores, D5.8 x 11: the 1.7 mm
-      floor above the duct roof is a no-load membrane -- see the note in
-      top_baffle_nd25fw4.py). Straight fan line tangent
-      to the r=124 arc, outboard transition, exact R12 elbow at x=33,
-      flank lane, R20 crest fillet, head-on pierce of the D78.5 scallop
-      rim (that opening faces the tweeter pole gap -- open front-to-back,
-      so no z-rise is needed). Entries: straight 19-deg oblique ramps
-      (O4.6) -- every z-eased spline variant broke OCC booleans here.
+Each route is up to three OVERLAPPING cutters; the mains are strictly
+planar because every inline z-eased spline variant broke OCC booleans:
 
-Rear breakouts sit at y~47 between the bridge screws (hidden by the
-bridge): x = -16 (T2), -8.6 (LM), +4 (UM), +16 (T1). The ducts cross the
-glue seams; cables are laid/fished through each piece's open segments
-during assembly. All plan clearances (pilots, holes, seam tabs, edges,
-duct-duct) and z walls are verified by the analytic suite + solid probes.
+  MAINS (planar spline sweeps, common to both stand-foot states):
+    LM (blue):  2 x 2.5 mm^2 twisted pair, O8.5 at mid-plane z=9.15;
+        straight plan line drifting x=-8.6 -> -10.5 past the 270-deg
+        W22 pilot (2.3 mm wall).
+    UM (green): twisted pair (2 x 2.0 mm^2 comfortable, 2 x 2.5 snug),
+        O8.6 at z=9.15: R26 fan fillet, tangent line to the r=115.5
+        arc, ring-crossing between the 30- and 90-deg W22 pilots, lane
+        at r~102.2, one R28.8 arc entering the D82 rim near-radially.
+    T1/T2 (yellow/red): 2 x AWG24 each, O3.8 at z=3.7 (the flank lanes
+        pass under the 10F insert bores, D5.8 x 11: the 1.7 mm floor
+        above the duct roof is a no-load membrane -- see the note in
+        top_baffle_nd25fw4.py). Straight fan line tangent to the r=124
+        arc, outboard transition, exact R12 elbow at x=33, flank lane,
+        R20 crest fillet, head-on pierce of the D78.5 scallop rim (that
+        opening faces the tweeter pole gap -- open front-to-back).
+
+  ENTRIES (state-dependent): with STAND_FOOT the mains continue down
+    the plate into packed foot lanes (FOOT_LANES: 90-deg R14 vertical-
+    plane elbows, then rearward to the connector channel's step face
+    at z=-99). Without it, straight oblique ramp bores (BIG_RAMPS /
+    T_RAMP) pierce the rear face inside the support plate's D20 window:
+    LM/UM breakouts at (-/+5.2, 60.5), T1/T2 ovals at (+/-3.85, 52.2).
+
+  EXITS (both states): straight oblique bores (EXIT_RAMPS) dive from
+    the planar mains through the driver-cutout walls; openings center
+    at z~6.2, in the rear quarter that the drivers' baskets do not
+    occlude. The T mains already run at ~1/4 depth and exit head-on.
+
+The ducts cross the glue seams; cables are laid/fished through each
+piece's open segments during assembly. Clearances (duct-duct, W22
+pilots, magnet pockets, foot-lane webs) are checked by
+test_clearances.py (make check).
+
+NOTE: the STAND_FOOT entry knots feed the same interpolating spline as
+the shared main, which shifts the shared tail by <0.05 mm between the
+two flag states -- far under the 0.10 seam clearance, but the mid/top
+STLs are not byte-identical between floor_stand/ and no_floor_stand/.
 """
 
 from __future__ import annotations
@@ -45,15 +60,6 @@ R_T = 124.0
 # 1.7 mm no-load membrane above them at the lane crossings.
 # The O8.5 LM duct runs at mid-plane (skins 4.9 both sides).
 DUCT_Z = {"lm": 9.15, "um": 9.15, "t1": 3.7, "t2": 3.7}
-# Exit openings sit at EXIT_Z_FRAC of the thickness (REAR quarter: the
-# drivers' baskets occlude the cutout walls from mid-depth toward the
-# front), clamped so the oblique opening keeps a >= 1.8 mm rear lip.
-EXIT_Z_FRAC = 0.25
-THICK = 18.3
-
-
-def exit_z(name):
-    return max(EXIT_Z_FRAC * THICK, 1.8 + CABLE_D[name] / 2.0 + 0.15)
 EDGE_OFFSET = 6.16  # duct center 5.9 mm inside the flare/chamfer walls
 
 # LM carries 2 x 2.5 mm^2 (twisted pair ~O7.8) -> O8.5 duct, mid-plane.
@@ -63,13 +69,11 @@ EDGE_OFFSET = 6.16  # duct center 5.9 mm inside the flare/chamfer walls
 # dovetails). Comfortable for twisted 2 x 2.0 mm^2 (bundle ~O7);
 # 2 x 2.5 mm^2 twisted (~O7.8) is snug. T = 2 x AWG24.
 CABLE_D = {"lm": 8.5, "um": 8.6, "t1": 3.8, "t2": 3.8}
-ENTRY_X = {"lm": -8.6, "um": 4.0, "t1": 16.0, "t2": -16.0}
 
-# Each duct is ONE continuous 3D spline: no separate entry-ramp bores.
-# z follows a smooth eased profile along the route (piecewise knots in
-# cumulative path length, smoothed by the spline): 18 deg only at the
-# rear-face pierce (compact oval), easing to ~9 deg, then <1 deg drift.
-# Breakouts (z=0 crossings) sit at y~47: x = -16, -8.6, +4, +16.
+# Mains are planar constant-z sweeps; entries and exits are separate
+# straight oblique bores that OVERLAP the mains (see cable_cutters) --
+# a continuous void without 3D-eased splines, which OCC can't boolean
+# reliably against this solid.
 
 
 def _with_z(pts2d, knots):

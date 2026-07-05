@@ -63,7 +63,7 @@ def attachments() -> dict:
     pockets = magnet_attachment_cutters()
 
     def _pocketed(diff):
-        for cutter in pockets:  # D10x3 magnet pockets on the mating walls
+        for cutter in pockets:  # D5 magnet pockets on the mating walls
             diff -= cutter
         return diff
 

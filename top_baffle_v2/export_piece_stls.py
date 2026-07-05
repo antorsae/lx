@@ -1,14 +1,16 @@
-"""Export print-ready STLs: the four B2 baffle pieces plus the four
+"""Export print-ready STLs: the four B2 baffle pieces plus the six
 attachment pieces that turn the B2 set into variant A-comp or B1.
 
 Run:  python export_piece_stls.py
 Each part is translated so its bounding box starts at the origin (still
 lying flat, thickness along Z, front face up) and written to stl/<name>.stl.
+Exits nonzero if any piece stops fitting the print bed.
 """
 
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 
 from build123d import Pos, export_stl
@@ -44,10 +46,13 @@ def main() -> None:
     parts = dict(pieces())
     parts.update(attachments())
     parts = {STL_NAMES[k]: v for k, v in parts.items()}
+    misfits = []
     for name, solid in parts.items():
         bb = solid.bounding_box()
         size = bb.size
         fits = size.X <= BED_MM and size.Y <= BED_MM
+        if not fits:
+            misfits.append(name)
         moved = Pos(-bb.min.X, -bb.min.Y, -bb.min.Z) * solid
         path = out_dir / f"{name}.stl"
         export_stl(moved, str(path), tolerance=0.05, angular_tolerance=0.2)
@@ -56,6 +61,9 @@ def main() -> None:
             f"volume {solid.volume / 1000.0:7.1f} cm3  "
             f"bed fit: {'OK' if fits else 'DOES NOT FIT'}  -> {path.name}"
         )
+    if misfits:
+        sys.exit(f"ERROR: piece(s) exceed the {BED_MM:.0f} mm bed: "
+                 + ", ".join(misfits))
 
 
 if __name__ == "__main__":

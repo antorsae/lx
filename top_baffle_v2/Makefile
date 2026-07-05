@@ -19,6 +19,9 @@
 #   make -j8                 everything, parallel
 #   make -j8 floor_stand     one variant
 #   make PYTHON=/path/venv/bin/python -j8
+#   make check               analytic clearance suite (test_clearances.py)
+#
+# Needs GNU make >= 4.3 (grouped targets "&:" for the overlay PNGs).
 
 PYTHON ?= python3
 SRCS := $(wildcard top_baffle_nd25fw4*.py)
@@ -27,14 +30,21 @@ GENS := top_baffle_nd25fw4_b2_split top_baffle_nd25fw4_b2 \
         top_baffle_nd25fw4_b1 top_baffle_nd25fw4_a_comp \
         top_baffle_nd25fw4_b1_assembled top_baffle_nd25fw4_a_comp_assembled
 
-VARIANT_TARGETS = $(1)/stl/.stamp $(addprefix $(1)/,$(addsuffix .step,$(GENS))) \
-                  $(1)/baffle_cable_routing.png $(1)/baffle_b1_drivers.png
+OVERLAY_PNGS = baffle_b1_drivers.png baffle_b2_drivers.png \
+               baffle_variants_drivers.png
 
-.PHONY: all floor_stand no_floor_stand common clean
+VARIANT_TARGETS = $(1)/stl/.stamp $(addprefix $(1)/,$(addsuffix .step,$(GENS))) \
+                  $(1)/baffle_cable_routing.png \
+                  $(addprefix $(1)/,$(OVERLAY_PNGS))
+
+.PHONY: all floor_stand no_floor_stand common check clean
 all: floor_stand no_floor_stand common
 floor_stand: $(call VARIANT_TARGETS,floor_stand)
 no_floor_stand: $(call VARIANT_TARGETS,no_floor_stand)
 common: top_baffle_nd25fw4_attachments.step
+
+check: test_clearances.py $(SRCS)
+	$(PYTHON) test_clearances.py
 
 top_baffle_nd25fw4_attachments.step: $(SRCS) export_steps.py
 	PYTHONPATH=. $(PYTHON) export_steps.py top_baffle_nd25fw4_attachments.py \
@@ -54,7 +64,7 @@ $(1)/baffle_cable_routing.png: $(SRCS) gen_cable_routing.py gen_driver_overlay.p
 	@mkdir -p $(1)
 	cd $(1) && LX_STAND_FOOT=$(2) PYTHONPATH=.. $(PYTHON) ../gen_cable_routing.py
 
-$(1)/baffle_b1_drivers.png: $(SRCS) gen_driver_overlay.py
+$(addprefix $(1)/,$(OVERLAY_PNGS)) &: $(SRCS) gen_driver_overlay.py
 	@mkdir -p $(1)
 	cd $(1) && LX_STAND_FOOT=$(2) PYTHONPATH=.. $(PYTHON) ../gen_driver_overlay.py
 endef
@@ -63,4 +73,5 @@ $(eval $(call RULES,floor_stand,1))
 $(eval $(call RULES,no_floor_stand,0))
 
 clean:
-	rm -rf floor_stand no_floor_stand
+	rm -rf floor_stand no_floor_stand __pycache__ \
+	    top_baffle_nd25fw4_attachments.step

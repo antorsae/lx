@@ -7,3 +7,5 @@ requests
 h5py
 Pillow
 javaobj-py3
+build123d
+shapely

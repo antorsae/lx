@@ -3,8 +3,8 @@
 Flare and chamfer keep the LM tilts but are both tangent to the r=50.83
 circle about the UM center: 9.83 mm wall at the D82 cutout and 2.1 mm to
 the D97.5 flange at both tangential points. The chamfer runs from the
-flare corner (+/-60.65, 397.57; max width 121.3 mm) up to the crescent's
-D102.11 arc, which extends past the old prong base to (+/-10.08, 424.03).
+flare corner (+/-60.65, 391.71; max width 121.3 mm) up to the crescent's
+D102.11 arc, which extends past the old prong base to (+/-10.08, 418.18).
 See top_baffle_nd25fw4_b.py for the shared geometry and clearance notes."""
 
 from __future__ import annotations

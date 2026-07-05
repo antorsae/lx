@@ -34,7 +34,6 @@ from top_baffle_nd25fw4 import OUTLINE, THICKNESS_MM, baffle_solid
 
 # 9.0 (front-face T/UM clearance) + 5.857 (stock UM alignment)
 TWEETER_DROP_MM = 14.857
-PRONG_BASE_Y = 439.046 - TWEETER_DROP_MM
 
 # B1 flank: the wing now extends UP to the crescent horn corner
 # (36.813, 432.866) -- one straight line from the horn to the max-width
@@ -110,12 +109,16 @@ A_COMP_CREST_Y = 391.709  # split plane between top and bottom shoulders
 #   flare-wall site at the wall's BOTTOM end -- the one spot on that wall
 #     farther from the UM driver (58.7 mm vs ~51 anywhere mid-wall); holds
 #     the A bottom shoulder and the B1 wing's lower end. Pin pocket only
-#     2.0 deep, keeping 2.3 mm laterally to the T duct that parallels the
-#     wall 4.26 mm inside (the wall's one unavoidable wire proximity).
-#   crescent-arc site, shifted up-arc so its pocket sits 9.2 mm clear of
-#     the T exit ducts; holds the A top shoulder and the wing's top end.
-#     (Any point of this wall is ~51 mm from the tweeter center -- the
-#     wall is an arc about it -- so no driver-distance freedom exists.)
+#     1.0 deep (the 2.0 magnet sits 1.0 proud); the T duct parallels the
+#     wall ~4 mm inside (the wall's one unavoidable wire proximity --
+#     measured clearances in test_clearances.py).
+#   crescent-arc site, as far down-arc as the RECEIVER allows: its bore
+#     lives in the narrowing wedge between the arc and the chamfer face
+#     that the A top shoulder / B1 wing mate against B2, and the wall at
+#     its bottom corner is the binding constraint (1.3 mm); holds the A
+#     top shoulder and the wing's top end. (Any point of this wall is
+#     ~51 mm from the tweeter center -- the wall is an arc about it --
+#     so no driver-distance freedom exists.)
 # Both sites are 'pin' type: the base magnet is glued 1.0 mm PROUD and
 # enters a deeper receiver pocket in the attachment -> each magnet also
 # acts as a shear dowel; the outline kinks/corners self-register the rest.
@@ -126,19 +129,21 @@ MAG_POCKET_D_MM = 5.4            # glued magnet, snug
 MAG_RECEIVER_D_MM = 5.8          # receives the proud pin magnet
 MAG_FLUSH_DEPTH_MM = 2.1
 MAG_PIN_BASE_DEPTH_MM = 1.0      # 2.0 magnet -> 1.0 proud
-MAG_PIN_RECEIVER_DEPTH_MM = 3.5  # 2.0 magnet + 1.0 pin + clearance
+MAG_PIN_RECEIVER_DEPTH_MM = 3.2  # 2.0 magnet + 1.0 pin + 0.2 clearance
 
 # (x, y, nx, ny, pin, zc) on the right flank; the left flank is
 # mirrored. zc is the bore height (mid-thickness unless the crescent
 # rear taper forces it forward). Bottom site at the waist-kink end of
 # the flare wall (59.2 from the UM center). Top site on the crescent
-# arc at theta=-71 deg -- the farthest down-arc point where the rear
-# taper still leaves ~12.9 mm of wall (pocket at zc=10.0 keeps 1.9 mm
-# behind it); 9.2 mm clear of the T ducts, 22.9 from the clamp hole,
-# 56.3 from the UM center (interference margins are ~500x, see README).
+# arc at theta=-69.5 deg, the balance point of the apex wedge: the
+# receiver's bottom corner keeps 1.3 mm to the shoulder/wing's chamfer
+# mating face, while the rear taper still leaves ~12.2 mm of wall (bore
+# raised to zc=10.7: ~1.7 mm behind the pocket floor). T ducts pass
+# 2.2 mm below the pocket floor; 21.7 from the clamp hole, 57.2 from
+# the UM center. All checked by test_clearances.py (make check).
 MAGNET_SITES = [
     (40.0, 322.4, 0.95853, -0.28518, True, THICKNESS_MM / 2.0),
-    (16.62, 419.91, 0.32557, -0.94552, True, 10.0),
+    (17.880, 420.371, 0.35021, -0.93667, True, 10.7),
 ]
 
 
@@ -195,49 +200,53 @@ def _dropped(pt):
     return (pt[0], pt[1] - TWEETER_DROP_MM)
 
 
-def variant_outline(flank=None, *, right_segs=None, left_segs=None, extra_drop_starts=()):
+def variant_outline(*, right_segs, left_segs, extra_drop_starts=()):
     """Splice mini-LM flanks into the exact variant-A outline and translate
     the retained tweeter section down by the tweeter drop.
 
-    Flanks are given either as ``flank`` (max point + waist kinks, straight
-    lines from the prong bases) or as explicit ``right_segs``/``left_segs``
-    outline segments in post-drop coordinates.
+    ``right_segs``/``left_segs`` are explicit outline segments in post-drop
+    coordinates. Segments are matched against OUTLINE by their exact start
+    coordinates; every anchor must be consumed, so an edit to OUTLINE that
+    silently misses an anchor raises instead of producing a self-
+    intersecting outline.
     """
-    if flank is not None:
-        max_pt, waist_r, waist_l = flank
-        right_down = [(36.813, PRONG_BASE_Y), max_pt, waist_r, (152.401, 256.120)]
-        left_up = [(-152.401, 256.155), waist_l, (-max_pt[0], max_pt[1]), (-36.811, PRONG_BASE_Y)]
-        right_segs = [("L", a, b) for a, b in zip(right_down, right_down[1:])]
-        left_segs = [("L", a, b) for a, b in zip(left_up, left_up[1:])]
-    drop_left_starts = {
+    pending = {
         (-57.149, 371.938),   # neck top transition arc
         (-57.110, 374.027),   # neck upper straight
         (-57.048, 409.062),   # flare
         (-60.918, 439.046),   # shelf
         (-57.151, 306.016),   # neck lower arc (trailing)
-    }
-    drop_right_starts = {
         (60.921, 439.046),    # flare
         (57.046, 409.062),    # neck upper straight
         (57.111, 374.071),    # neck transition arc
         (57.151, 371.938),    # neck straight
         (57.151, 305.981),    # chamfer (absorbed into the waist line)
-    }
+    } | set(extra_drop_starts)
+    spliced_right = spliced_left = False
     outline = []
     for seg in OUTLINE:
         start, end = seg[1], seg[-1]
-        if start in drop_left_starts or start in drop_right_starts or start in set(extra_drop_starts):
+        if start in pending:
+            pending.discard(start)
             continue
         if start == (36.813, 439.046) and end == (60.921, 439.046):
             outline.extend(right_segs)
+            spliced_right = True
             continue
         if start == (-152.401, 256.155) and end == (-57.151, 306.016):
             outline.extend(left_segs)
+            spliced_left = True
             continue
         if min(pt[1] for pt in seg[1:]) >= 439.0:  # tweeter section: shift down
             outline.append((seg[0], *[_dropped(pt) for pt in seg[1:]]))
             continue
         outline.append(seg)
+    if pending or not (spliced_right and spliced_left):
+        raise RuntimeError(
+            "variant_outline: outline anchors out of sync -- unmatched drop "
+            f"starts {sorted(pending)}, spliced right/left = "
+            f"{spliced_right}/{spliced_left}"
+        )
     return outline
 
 

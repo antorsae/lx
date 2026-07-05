@@ -16,9 +16,9 @@ keys:
                     the 90-deg W22 insert bore at (0, 305.7) by 1.55 mm.
 
 Pieces (all fit a 256 x 256 bed lying flat):
-  piece_bottom     ~250.6 x 172 mm   (male dovetails up into the mids)
-  piece_mid_left   ~152.3 x 158 mm   (male dovetail up into the top)
-  piece_mid_right  ~156.4 x 158 mm   (male dovetails up + into mid_left)
+  piece_bottom     ~250.6 x 170 mm   (male dovetails up into the mids)
+  piece_mid_left   ~146.7 x 157 mm   (male dovetail up into the top)
+  piece_mid_right  ~162.0 x 157 mm   (male dovetails up + into mid_left)
   piece_top_b2     ~121.3 x 138 mm   (the whole B2 mini-vase + crescent)
 
 Female sides are opened up by CLEARANCE_MM using a mitred 2D polygon offset,
@@ -147,7 +147,8 @@ def _grown(poly: Polygon) -> Polygon:
 
 def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM) -> dict:
     baffle = baffle_solid(outline, tweeter_drop_mm)
-    for duct in cable_cutters():  # internal cable ducts (LM/UM/T)
+    ducts = cable_cutters()  # internal cable ducts (LM/UM/T)
+    for duct in ducts:
         baffle -= duct
 
     below_a = _below_region(SEAM_A_Y, DOVETAILS_A)
@@ -193,12 +194,12 @@ def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM) -> dict
         ]:
             bottom -= Pos(cx, cy, -FOOT_DEPTH_REAR + PANEL_T / 2) * Cylinder(
                 d / 2, PANEL_T + 2)
-        for duct in cable_cutters():  # re-cut: foot tunnels cross the union
+        for duct in ducts:  # re-cut: the foot tunnels cross the union
             bottom -= duct
     rest = baffle - _prism(_grown(below_a))
     mids = rest & _prism(below_b)
     top = rest - _prism(_grown(below_b))
-    for cutter in magnet_base_cutters():  # D10x3 base magnet pockets
+    for cutter in magnet_base_cutters():  # D5 pin-magnet base pockets
         top -= cutter
     mid_right = mids & _prism(right_c)
     mid_left = mids - _prism(_grown(right_c))

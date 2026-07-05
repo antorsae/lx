@@ -22,7 +22,6 @@ from math import cos, radians, sin
 from build123d import (
     Bezier,
     Circle,
-    Compound,
     Cone,
     Cylinder,
     Face,
@@ -92,8 +91,8 @@ L22_PILOT_DEPTH_MM = 11.0
 # module). With the foot there is no bridge, so the four bridge screw
 # pass-throughs (and their countersinks) are omitted, and the cable
 # ducts route down through the foot instead of breaking the rear face.
-# Driven by the LX_STAND_FOOT env var (default ON) so generate_all.py
-# can emit both artifact sets (floor_stand/ and no_floor_stand/).
+# Driven by the LX_STAND_FOOT env var (default ON) so the Makefile can
+# emit both artifact sets (floor_stand/ and no_floor_stand/).
 STAND_FOOT = os.environ.get("LX_STAND_FOOT", "1") != "0"
 
 # Four bridge mounting holes, per the measured bridge (M5-threaded wood
@@ -212,14 +211,14 @@ def _pilot_centers(center_xy, pcd: float, angles_deg) -> list[tuple[float, float
 # of the cut back to 0 by r_f. The fade carries the SAME taper into the
 # crescent's outboard neighbours (the A-comp top shoulders and B1 wings,
 # which sit just outside the arc), so their rear faces stay flush across
-# the glue joint; the fade reaches 0 before the vertical flank (r~62.4),
-# so the outboard flank/top edges -- and the chamfer walls at larger r --
-# return to full 18.3 depth.
+# the glue joint; the fade completes at r_f=62.0, inside the vertical
+# flank's top corner (r~62.4), so the outboard flank/top edges -- and
+# the chamfer walls at larger r -- return to full 18.3 depth.
 CRESCENT_SCALLOP_CY = 483.05     # scallop center, un-dropped drawing frame
 CRESCENT_TAPER_T_HOLES_MM = 4.0
 CRESCENT_TAPER_T_TIP_MM = 0.4    # feather floor: protects the front face
 CRESCENT_TAPER_THETA_DEG = (-90.0, -44.33, -16.68)  # bottom, clamps, tips
-CRESCENT_TAPER_R_MM = (36.0, 51.5, 63.0)  # inner, knee, fade-out
+CRESCENT_TAPER_R_MM = (36.0, 51.5, 62.0)  # inner, knee, fade-out
 
 
 def _smoothstep(t: float) -> float:

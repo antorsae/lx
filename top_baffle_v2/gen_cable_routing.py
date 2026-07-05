@@ -61,7 +61,7 @@ def draw_foot_top_view(ax2):
         PANEL_T, TONGUE_HALF_W)
     h = TONGUE_HALF_W
     zp = -FOOT_DEPTH_REAR + PANEL_T  # panel inner face
-    # plate band (piece_bottom silhouette from above) + corner rib
+    # plate band (piece_bottom silhouette from above)
     ax2.add_patch(plt.Rectangle((-126, 0), 252, 18.3, fc="0.94", ec="0.5",
                                 lw=0.8, zorder=0))
     # foot plan: one continuous taper, strip corners -> 38-wide panel

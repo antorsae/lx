@@ -23,6 +23,9 @@ from the PDF, not redrawn). Overall 304.8 × 468.31 × 18.3 mm.
 Regenerate everything: `make -j8 PYTHON=<venv>/bin/python`. Self-contained
 — the only dependencies are the pip packages `build123d`, `shapely`,
 `matplotlib`, and `numpy` (no external CAD tooling).
+`make check` runs the analytic clearance suite (`test_clearances.py`):
+duct-duct and duct-pilot separations, foot-lane webs, magnet-pocket
+walls, and the variant-outline splice assertions.
 
 ## Key dimensions (from the drawing, verified against printed dims)
 
@@ -75,7 +78,8 @@ Regenerate everything: `make -j8 PYTHON=<venv>/bin/python`. Self-contained
   locally flat 4 mm seat); cut as a loft of radial sections. Each
   section holds full cut depth from r=36 out to a knee r=51.5 (covering
   the D102.11 arc joint at r≈51.05), then SMOOTHSTEP-FADES the cut back
-  to 0 by r=63. The fade carries the SAME taper across the arc joint
+  to 0 by r=62 (just inside the flank's top corner at r≈62.4). The fade
+  carries the SAME taper across the arc joint
   into the crescent's outboard neighbours — the A-comp TOP SHOULDERS
   and B1 WINGS — so when they are glued on, their rear faces are FLUSH
   with the tapered crescent (no proud step), then ramp back to full
@@ -86,7 +90,8 @@ Regenerate everything: `make -j8 PYTHON=<venv>/bin/python`. Self-contained
   with it; the chamfer/flare walls at larger r keep full depth.
   Consequences handled: the T duct tails keep a >=1.3 mm floor where
   the taper starts (cut only ~0.5 deep there); the upper magnet site
-  moved down-arc (see the magnet section); the bottom shoulders are
+  sits where the taper, the T ducts, and the shoulder's chamfer mating
+  face balance (see the magnet section); the bottom shoulders are
   untouched (full depth).
 
 ## Print split (256×256×256 bed)
@@ -165,19 +170,23 @@ interpreter) builds BOTH stand-foot states in parallel:
     no_floor_stand/   LX_STAND_FOOT=0: flat piece_bottom, bridge
       stl/  *.step  *.png     pass-throughs, rear-face cable breakouts
 
-Each folder is a complete print set (only piece_bottom's STL actually
-differs); `attachments.step` is flag-independent and stays at the top
-level. The STAND_FOOT flag is the `LX_STAND_FOOT` env var (default 1).
+Each folder is a complete print set. piece_bottom is the only
+functionally different piece; the other base STLs differ between the
+folders by <0.05 mm of duct-wall position (the stand-foot entry knots
+shift the shared duct splines microscopically — well under the 0.10
+seam clearance, but the files are not byte-identical).
+`attachments.step` is flag-independent and stays at the top level. The
+STAND_FOOT flag is the `LX_STAND_FOOT` env var (default 1).
 
 | STL in `<variant>/stl/` | Footprint (mm) | Used by |
 |---|---|---|
-| lx521_top_base_1of4_bottom | 250.6 × 168.3 (fused stand foot; flip front-face-down or stand on the foot — see above) | all variants |
-| lx521_top_base_2of4_mid_left | 152.3 × 156.8 | all variants |
-| lx521_top_base_3of4_mid_right | 157.4 × 156.8 | all variants |
+| lx521_top_base_1of4_bottom | 250.6 × 170.0, 168.3 tall (fused stand foot; flip front-face-down or stand on the foot — see above) | all variants |
+| lx521_top_base_2of4_mid_left | 146.7 × 156.9 | all variants |
+| lx521_top_base_3of4_mid_right | 162.0 × 156.9 | all variants |
 | lx521_top_base_4of4_vase_b2 | 121.3 × 137.4 | all variants |
 | lx521_top_addonA_1..2of4_shoulder_top_l/r | 50.6 × 61.8 | A-comp only |
-| lx521_top_addonA_3..4of4_shoulder_bottom_l/r | 22.5 × 87.6 | A-comp only |
-| lx521_top_addonB1_1..2of2_wing_l/r | 73.7 × 129.9 | B1 only |
+| lx521_top_addonA_3..4of4_shoulder_bottom_l/r | 22.5 × 85.9 | A-comp only |
+| lx521_top_addonB1_1..2of2_wing_l/r | 73.7 × 125.1 | B1 only |
 
 Building the variants: B2 = the four base pieces. A-comp = B2 + the four
 shoulder pieces. B1 = B2 + the two wings. Attachments are edge-glued onto
@@ -218,11 +227,11 @@ at the crests, R23+ everywhere on the UM route; everything else R40+.
 Min walls: 1.6 mm to the chamfer edge on the T routes, 2.0 mm at the D82
 tangents, 2.1 mm to the seam-B dovetail pockets, 2.35 mm between the two
 right-side arcs and to the D190 rim along the UM lane. Verified
-centerline separations: every duct pair >= its two radii + 1.5 mm
-(UM-T1 minimum 6.66 vs 6.15 required); every W22 pilot >= bore radius +
-duct radius + 1.5 mm in plan. The ducts cross the glue seams -- fish
-each cable (or a pull string) through each piece's short open segment
-during assembly.
+centerline separations (`make check` re-measures them): every duct pair
+>= its two radii + 1.5 mm (tightest: T1-T2 at 6.4 vs 5.3 required,
+UM-T1 at 8.6 vs 6.2); every W22 pilot >= bore radius + duct radius +
+1.5 mm in plan. The ducts cross the glue seams -- fish each cable (or a
+pull string) through each piece's short open segment during assembly.
 Seam-A dovetails sit at +/-97 (n7/h9/d5, slim and inboard of the UM duct
 arc); seam-C dovetail at (300.5, n6/h8/d4).
 
@@ -233,14 +242,15 @@ ref D-05-02-N52, 0.68 kg/pair; 12 needed + spares) so B2 <-> A-comp <->
 B1 are interchangeable without glue. TWO sites per flank side (4 magnets
 in the base total), both PIN type (base magnet glued 1.0 mm proud,
 doubling as a shear dowel; the outline kinks self-register the rest).
-Pockets: base D5.4 x 1.0; attachment receivers D5.8 x 3.5. Polarity: neo
-stacks ship uniformly oriented -- sharpie-dot the top face of each as
-you peel; dots face OUT in the base, IN in the attachments:
+Pockets: base D5.4 x 1.0; attachment receivers D5.8 x 3.2 (2.0 magnet +
+1.0 pin + 0.2 clearance). Polarity: neo stacks ship uniformly oriented
+-- sharpie-dot the top face of each as you peel; dots face OUT in the
+base, IN in the attachments:
 
 | Site (right; left mirrored) | Wall | Serves | Placement rationale |
 |---|---|---|---|
-| (40.0, 322.4) | flare, waist-kink end | A bottom shoulder, B1 wing lower end | the flank's farthest point from the UM driver (59.2 mm); pin pocket 2.0 deep keeps 3.6 mm to the T duct |
-| (16.62, 419.91) | crescent arc, theta=-71 deg | A top shoulder, B1 wing top end | farthest down-arc point where the crescent rear taper still leaves ~12.9 mm of wall; bore raised to z=10.0 (1.9 mm behind it to the taper surface); 9.2 mm clear of the T ducts, 22.9 from the clamp hole, 56.3 from the UM driver (interference margins ~500x) |
+| (40.0, 322.4) | flare, waist-kink end | A bottom shoulder, B1 wing lower end | the flank's farthest point from the UM driver (59.2 mm); pin pocket 1.0 deep, 2.6 mm 3D clearance to the T duct |
+| (17.88, 420.37) | crescent arc, theta=-69.5 deg | A top shoulder, B1 wing top end | as far down-arc as the RECEIVER allows: its bore sits in the narrowing wedge between the arc and the chamfer face the shoulder/wing mates against B2, and its bottom corner keeps 1.3 mm to that face; the rear taper leaves ~12.2 mm of wall (bore raised to z=10.7: 1.7 mm behind the pocket floor); 6.2 mm to the T ducts, 21.7 from the clamp hole, 57.2 from the UM driver (all re-measured by `make check`) |
 
 At pin sites the proud base magnet enters the receiver and acts as a
 shear dowel. Magnet count per baffle: 4 base + 4 per attachment set
