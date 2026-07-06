@@ -58,9 +58,10 @@ a clean front face; textured PEI gives uniform grain — either works.
 * **Dimensional fits** (dovetails run 0.1 mm working clearance;
   insert bores are sized exact): *Precise wall: on*,
   **elephant-foot compensation 0.15 mm**, X-Y hole compensation
-  starting at **+0.05**. Print a 20-minute coupon first — one B-key
-  male/female pair plus one O6.4 and one O4.6 bore — and tune hole
-  compensation before committing the big pieces.
+  starting at **+0.05**. Print `stl/lx521_coupon.stl` first (20 min): a B-key
+  male/female pair, the O6.4 and O4.6 insert bores, AND the V1
+  upper-pocket wall section (1.2 front / 1.6 floor walls) — tune hole
+  compensation and verify that wall before committing the big pieces.
 * **Internal voids:** the cable ducts (O3.8–9.3, arched ceilings)
   self-support — no supports on any flat piece. For the floor-stand
   bottom, preview the foot: the connector channel's internal ceiling
@@ -88,6 +89,6 @@ a clean front face; textured PEI gives uniform grain — either works.
 * After the first loud listening session, re-torque all driver screws
   once — that is when the PLA under the flanges finishes settling.
 * For V1/V1L: knock-test the assembled trunk before trusting the W22
-  on the 12.3 mm section long-term. At ~30 % of stock bending
+  on the 11.5 mm section long-term. At ~25 % of stock bending
   stiffness the PLA+ Tough damping helps, but verify — SL's bridge
   exists precisely to keep the baffle from being excited.

@@ -4,7 +4,7 @@ to cut the ducts (no re-smoothing) plus the straight ramp axes.
 
   front view (x-y)   duct mains + breakout/exit markers over the outline
   side view  (y-z)   full-height depth story, sharing y with the front
-                     view: duct planes (LM/UM z=9.15, T z=3.7), entry
+                     view: duct planes (LM/UM z=12.55, TS z=11.5, feeders 3.7/9.5), entry
                      ramps / foot elbows, exit dives, blind pilot-bore
                      bands, the crescent rear taper (clamp-arc section),
                      and the stand foot with the NL8 channel
@@ -53,7 +53,7 @@ from top_baffle_nd25fw4_cables import (
 )
 
 STYLE = {
-    "lm": ("tab:blue", "LM 2x2.5mm2, duct D8.5 (z=12.15)"),
+    "lm": ("tab:blue", "LM 2x2.5mm2, duct D8.2 (z=12.55)"),
     "um": ("tab:green", "UM 2x2.0mm2, duct D7.8 (z=12.55)"),
     "ts": ("gold", "T1+T2 shared, 2x(2xAWG24), duct D6.0 (z=11.5)"),
     "t1f": ("tab:red", "T pair feeders, D3.8 (z=3.7, strip)"),

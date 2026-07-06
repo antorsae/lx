@@ -1,17 +1,15 @@
 """Variant V0: minimalist UM vase, REAR-side knife bevel (same side
-and philosophy as the C7 LM taper: front plane fully intact). The T
-flank lanes run at z=3.7 only 4 mm inside the vase walls -- and they
-cannot be raised (the 45-deg 10F pilot pins them: between the D82 rim
-and the pilot keep-out there is no corridor at any higher z) -- so the
-rear bevel is a REGULAR ~4 mm knife band along the flare/chamfer
-outline: 18.3 -> ~0.5 over W=4, fading out at the seam-B land
+and philosophy as the C7 LM taper: front plane fully intact). The
+shared O6.0 T duct (z=11.5) hugs the LEFT vase walls 5.1 inside, so
+the rear bevel is a REGULAR ~2.8 mm knife band along the flare/chamfer
+outline: 18.3 -> ~0.5 over W=2.8, fading out at the seam-B land
 (flush joint to the mids) and blending into the crescent's own rear
 taper above y~400. No other keeps needed: the flange seat and M3
 pilots are front-side features.
 
 Magnet interface: one D5.4 x 1.0 pin pocket per side, bored vertically
 into the REAR face on the lower corner triangle at (+-46, 324) --
-plan-clear of the T elbow/step (>=12) and of the bevel band; scarf
+plan-clear of every duct (>=1.5 past radii) and of the bevel band; scarf
 attachments add a receiver there plus outline-kink registration.
 Checked by test_v0_duct_corridor (rear z-containment)."""
 

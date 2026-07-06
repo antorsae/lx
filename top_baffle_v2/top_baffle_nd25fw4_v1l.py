@@ -1,9 +1,9 @@
 """Variant V1L: the LM section (piece_bottom + both mids) thinned to
-t=11.5 and mounted FRONT-FLUSH: material z 6.0..18.3 above the foot
+t=11.5 and mounted FRONT-FLUSH: material z 6.8..18.3 above the foot
 strip, so the whole plate shares the front plane. Enabled by the
-round-4 "front-datum" routing (LM z=12.15 -- the 11.5 binder -- UM
-z=12.55 outside the W22 ring, shared T duct z=11.5 on the left; the
-strip feeders at z=3.7 live in the KEEP).
+round-4 "front-datum" routing (LM O8.2 z=12.55 -- the 11.5 binder --
+UM z=12.55 outside the W22 ring, shared T duct z=11.5 on the left;
+the strip feeders at z=3.7/9.5 live in the KEEP).
 
 Keeps at full 18.3: the bottom strip (fused foot, bridge/support
 hardware incl. the washer seats behind the top pass-throughs at
@@ -11,7 +11,7 @@ hardware incl. the washer seats behind the top pass-throughs at
 transition is a SMOOTHSTEP ramp from full at y=78 to the thin field
 at y=96 -- ending 10 mm short of the D190 cutout edge (y=105.98). The rear plane MATCHES the V1 vase (both 6.8): NO step at seam B.
 W22 mounting unchanged: M5 x 6 x O7 heat-sets, floor z=11.3 keeps a
-5.3 wall over the new rear. Combine V1L bottom+mids with the V1 vase
+4.5 wall over the new rear. Combine V1L bottom+mids with the V1 vase
 for the complete ~12 mm front-flush baffle."""
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ from build123d import Box, Plane, Polyline, Pos, Wire, loft, make_face
 from top_baffle_nd25fw4 import THICKNESS_MM
 
 T_FIELD_MM = 11.5
-REAR_MM = THICKNESS_MM - T_FIELD_MM   # 6.0
+REAR_MM = THICKNESS_MM - T_FIELD_MM   # 6.8
 RAMP_Y0, RAMP_Y1 = 78.0, 96.0
 Y_END = 315.95                        # seam B
 

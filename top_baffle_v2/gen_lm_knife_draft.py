@@ -42,7 +42,7 @@ T_FULL = THICKNESS_MM       # 18.3
 T_EDGE = 0.5                # knife feather (protects the front skin)
 W_TAPER = 19.0            # taper band width (matches top_baffle_nd25fw4_c7)
 Y_KEEP_BOTTOM = 60.0        # flank taper starts above this (foot/bridge)
-T_CORRIDOR_BIG = 15.05      # z-containment: mains at z=9.15 allow a rear cut of 3.25
+T_CORRIDOR_BIG = 15.05      # historical concept-sheet constant (pre-round-4 routing)
 T_CORRIDOR_T = 7.0          # min t for the O3.8 T ducts (rib covers the rest)
 Y_REC0, Y_REC1 = 270.0, 308.0   # seam-B recovery (matches the C7 module)
                                 # land before seam B (y=315.95)

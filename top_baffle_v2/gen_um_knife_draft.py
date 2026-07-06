@@ -1,7 +1,7 @@
 """DRAFT: the super-minimalist UM vase ("V0"): the FRONT face slides
 (C5-style single bevel, knife on the rear plane) from full 18.3 inside
 the flange/pilot land down to a ~0.5 knife at the vase outline. The
-REAR plane stays intact, so the T upper lanes (z=3.7) and the UM exit
+REAR plane stays intact, so the duct lanes (round-4 z) and the UM exit
 tail keep their routing untouched -- no duct changes at all. Magnet
 pin pockets bore NORMAL to the slide face; attachments (any depth)
 scarf onto the slide. Draft only; no geometry code touched.

@@ -368,10 +368,9 @@ def test_seam_keys_vs_ducts():
 def test_c7_duct_corridor():
     """Variant C7's LM knife taper vs the ducts. The ducts sit at FIXED
     z from the rear face and the taper cuts the rear, so the criterion
-    is z-interval containment: the local rear surface (18.3 - t) must
-    stay below z_duct - r - skin. The T mains (z=3.7) tolerate no cut
-    at all and must be covered by their ribs wherever the taper bites;
-    a rib keeps material to z = 3.7 + sqrt(5.4^2 - dx^2) >= 7.2 on-axis."""
+    is plain z-interval containment for EVERY route: the local rear
+    surface (18.3 - t) must stay below z_duct - r - skin. With the
+    round-4 front-half mains no ribs are needed or modeled."""
     import top_baffle_nd25fw4_c7 as c7
     from top_baffle_nd25fw4 import THICKNESS_MM
     from top_baffle_nd25fw4_cables import CABLE_D, DUCT_Z
@@ -400,6 +399,68 @@ def test_variant_outlines_splice():
     print("  variant outlines splice cleanly")
 
 
+def test_margin_dashboard():
+    """Report-only: the tightest margins project-wide, sorted. Erosion
+    shows up here before it becomes a red assert somewhere else."""
+    from top_baffle_nd25fw4 import (L22_CUTOUT, L22_PILOT_ANGLES_DEG,
+                                    L22_PILOT_D_MM, L22_PILOT_PCD_MM,
+                                    UM_CUTOUT, UM_PILOT_ANGLES_DEG,
+                                    UM_PILOT_D_MM, UM_PILOT_PCD_MM,
+                                    _pilot_centers)
+    from top_baffle_nd25fw4_cables import CABLE_D
+
+    entries = []
+    routes = _routes(True)
+    # duct-duct
+    names = ("lm", "um", "ts", "t1f", "t2f")
+    merged = ({"ts", "t1f"}, {"ts", "t2f"}, {"t1f", "t2f"})
+    for i, a in enumerate(names):
+        for b in names[i + 1:]:
+            if {a, b} in merged:
+                continue
+            req = (CABLE_D.get(a, 3.8) + CABLE_D.get(b, 3.8)) / 2 + 1.5
+            entries.append((_min_dist(routes[a], routes[b]) - req,
+                            f"duct {a}-{b} separation"))
+    # pilots (plan)
+    for label, pilots, pd in (
+            ("W22", _pilot_centers(L22_CUTOUT[:2], L22_PILOT_PCD_MM,
+                                   L22_PILOT_ANGLES_DEG), L22_PILOT_D_MM),
+            ("10F", _pilot_centers(UM_CUTOUT[:2], UM_PILOT_PCD_MM,
+                                   UM_PILOT_ANGLES_DEG), UM_PILOT_D_MM)):
+        for name, pts in routes.items():
+            req = pd / 2 + CABLE_D.get(name, 3.8) / 2 + 1.5
+            for px, py in pilots:
+                d = float(np.min(np.hypot(pts[:, 0] - px, pts[:, 1] - py)))
+                entries.append((d - req, f"{name} vs {label} pilot "
+                                f"({px:.0f},{py:.0f})"))
+    # thin-family z-window skins (rear 6.8 / front 18.3, y>96)
+    for name, pts in routes.items():
+        r = CABLE_D.get(name, 3.8) / 2
+        m = (pts[:, 1] > 96) & (pts[:, 1] < 434)
+        if m.any():
+            entries.append((float((pts[m, 2] - r).min()) - 6.8 - 1.6,
+                            f"{name} thin-family floor skin"))
+            entries.append((18.3 - float((pts[m, 2] + r).max()) - 1.6,
+                            f"{name} thin-family roof skin"))
+    # smoothness headroom
+    floors = {"lm": 25.0, "um": 10.0, "ts": 4.5, "t1f": 6.0, "t2f": 6.0}
+    for name, pts in routes.items():
+        d1 = np.gradient(pts, axis=0)
+        d2 = np.gradient(d1, axis=0)
+        kap = (np.linalg.norm(np.cross(d1, d2), axis=1)
+               / np.maximum(np.linalg.norm(d1, axis=1) ** 3, 1e-12))
+        entries.append((1.0 / kap[20:-20].max() - floors[name],
+                        f"{name} bend radius over floor"))
+    # V1 upper-pocket walls (site2 zc=14.4, local rear ~10.1)
+    entries.append((18.3 - (14.4 + 2.7) - 1.0, "V1 upper pocket front wall (-1.0 rule)"))
+    entries.append((14.4 - 2.7 - 10.1 - 1.4, "V1 upper pocket floor wall (-1.4 rule)"))
+    entries.sort()
+    print("  tightest margins (mm over the rule):")
+    for m, label in entries[:15]:
+        print(f"   {m:+6.2f}  {label}")
+    assert entries[0][0] > -0.001, f"negative margin: {entries[0]}"
+
+
 if __name__ == "__main__":
     checks = [
         test_foot_lane_webs,
@@ -415,6 +476,7 @@ if __name__ == "__main__":
         test_v1_field,
         test_route_smoothness,
         test_cutter_health,
+        test_margin_dashboard,
     ]
     failed = []
     for check in checks:

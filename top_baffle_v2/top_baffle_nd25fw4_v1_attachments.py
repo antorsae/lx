@@ -6,11 +6,11 @@ field cut to z=6.8 above seam B), so every attachment comes out 11.5
 deep with the V1-scaled taper carried through -- flush front, flat
 rear at z=6.8.
 
-Anchoring: BOTH B2 site plan positions, re-bored at one uniform
-zc=12.5. At the upper (crescent-arc) site the V1-scaled taper leaves
-too little material, so base and attachment each carry a small O8+
-rear BOSS around the pocket/receiver axis (hidden on the sculpted
-rear) -- no lips, no hooks.
+Anchoring: BOTH B2 site plan positions -- lower flare site at
+zc=12.5, upper crescent-arc site at zc=14.4, bored INSIDE the
+as-tapered wall (thin ~1.2 front walls: internal and no-load). No
+lips, no hooks, no bosses. Wing bottoms are trimmed parallel to the
+chamfer-extension edge (+2.2), dropping the collapsed B1-B2 wedge.
 """
 
 from __future__ import annotations

@@ -34,9 +34,10 @@ with the LM section and mount flush:
     plane elbows, then rearward to the connector channel's step face
     at z=-99). Without it, straight oblique ramp bores (BIG_RAMPS /
     T_RAMP) pierce the rear face inside the support plate's D20
-    window: LM/UM breakouts at (-/+5.2, 60.5); twin T ovals at
-    (+/-3.85, ~52.3) into the strip feeders (far lips ~0.8 past the
-    window rim -- the floppy AWG24 pairs duck in).
+    window: LM/UM breakouts at (-/+5.2, 60.5); twin T ramp ovals at
+    (+3.8, 52.2) / (-3.1, 52.7) into the strip feeders (t1f z=3.7 /
+    t2f z=9.5; far lips up to ~1.4 past the window rim -- the floppy
+    AWG24 pairs duck in).
 
   EXITS (both states): straight near-level oblique bores (EXIT_RAMPS)
     from the planar mains through the driver-cutout walls; openings
@@ -68,12 +69,12 @@ UM_Y = 366.081
 
 # Duct plane depth per route -- ALL in the front half (front-datum):
 # the O8.2 LM window is 6.85..18.25 (the uniform-11.5 binder), UM 8.65..16.45,
-# TS 8.5..14.5. Floors stay >=1.6 above the V1L rear plane (z=6.0) and
-# >=1.7 above the V1 vase rear (z=6.8).
+# TS 8.5..14.5. Floors stay >=1.6 above the thin-family rear plane
+# (z=6.8 -- V1 vase and V1L mids alike).
 DUCT_Z = {"lm": 12.55, "um": 12.55, "ts": 11.5}
 LANE_OFFSET = 5.11  # TS lane center this far inside the vase wall lines
 
-# LM carries 2 x 2.5 mm^2 (twisted ~O7.8) -> O8.5. UM carries a twisted
+# LM carries 2 x 2.5 mm^2 (twisted ~O7.8) -> O8.2. UM carries a twisted
 # 2 x 2.0 mm^2 pair (~O7.0) -> O7.8 (2 x 2.5 no longer fits). TS
 # carries BOTH tweeter pairs side by side (~5.2 across) -> O6.0, the
 # largest bore the notch corridor between the D82 rim and the vase
@@ -154,11 +155,12 @@ def _line_arc_line(p0, d0, p1, d1, r, step_mm=6.0, step_deg=6.0):
     return pts
 
 
-# The T pairs cross the bottom strip at the OLD tweeter plane z=3.7 --
-# the strip stays full-depth (18.3) in every variant (it carries the
-# foot/bridge), and at z=3.7 the feeders pass 8.8-9.9 (3D) under the
-# LM/UM columns, which no front-half z could do. A short z-step bore
-# (TS_STEP, O4.6) rises to the shared main west of the LM column.
+# The T pairs cross the bottom strip below the mains (t1f at z=3.7,
+# t2f at z=9.5) -- the strip stays full-depth (18.3) in every variant
+# (it carries the foot/bridge), and down there the feeders pass the
+# LM/UM columns with >=7.3 (3D), which no front-half z could do. A
+# short O6.8 z-step bore rises to the shared main west of the LM
+# column.
 TS_STEP = ((-14.0, 55.0, 3.7), (-16.8, 58.8, 11.5))  # O6.8 bore
 # (both pair-channels merge into it; their caps bury inside)
 
@@ -177,7 +179,7 @@ def _t1_feeder():
 
 
 def _t2_feeder():
-    """T2's pair: left entry to the same z-step (z=3.7)."""
+    """T2's pair: left entry to the same z-step (z=9.5)."""
     # T2 always runs at z=9.5 -- 5.8 of z-separation from t1f (z=3.7)
     # wherever their plans shadow or converge (coplanar near-tangent
     # pipes poison OCC booleans) -- and merges into the O6.8 step at
@@ -216,9 +218,9 @@ def _ts_route():
 # Without the stand foot the baffle bolts to the stock support via the
 # four pass-throughs, and all cables must pass a D20 hole in the
 # support plate: center (0, 60). Packing: LM/UM breakouts side by side
-# (steep ~55 deg ramps crossing z=0 at (-/+5.2, 60.5)); ONE shared T
-# breakout O6.8 at ~(0.2, 52) whose far lip sits ~1.4 past the rim
-# (the floppy AWG24 pairs duck in). The T ramp lances into the feeder.
+# (steep ramps crossing z=0 at (-/+5.2, 60.5)); twin O4.6 T ramps
+# breaking out at (+3.8, 52.2) / (-3.1, 52.7) into the strip feeders,
+# far lips up to ~1.4 past the rim (the floppy AWG24 pairs duck in).
 SUPPORT_WINDOW = (0.0, 60.0, 20.0)  # cx, cy, D of the support-plate hole
 T_RAMP = ((1.0, 53.4, -6.4), (6.0, 51.3, 5.0))  # right pair
 T_RAMP_L = ((-1.0, 53.4, -6.4), (-6.3, 51.7, 9.5))  # left pair,
@@ -238,7 +240,7 @@ BIG_RAMPS = {
 # opening with a basket window at assembly). TS exits head-on through
 # the scallop rim -- no ramp needed.
 EXIT_RAMPS = {
-    "lm": ((-9.9, 86.0, 12.55), (-10.6, 119.0, 12.0), 9.3),
+    "lm": ((-9.9, 86.0, 12.55), (-10.6, 119.0, 12.0), 9.0),
     "um": ((5.3, 320.5, 12.55), (2.95, 332.4, 12.0), 8.6),
 }
 

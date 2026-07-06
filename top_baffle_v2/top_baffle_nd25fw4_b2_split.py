@@ -86,7 +86,7 @@ SEAM_B_Y = 315.95  # exactly at B2's waist kinks -> obtuse seam corners
 # FULL-DEPTH window between the T arc (r=110, crossing at x~72.6) and
 # the C7 taper boundary (x~92) -- keys clear of every duct AND fully
 # out of the taper in all variants. The RIGHT B-tab sits outboard
-# (cx=21.5) clearing the UM exit tail, with the T z-step corridor
+# right B-key at cx=28 clearing the UM window bend (>=1.4 to the
 # between it and the waist kink.
 DOVETAILS_A = [(-63.0, 7.0, 9.0, 5.0), (63.0, 7.0, 9.0, 5.0)]
 DOVETAILS_B = [(-19.0, 10.0, 14.0, 6.0), (28.0, 10.0, 14.0, 6.0)]

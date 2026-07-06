@@ -37,7 +37,7 @@ GENS := top_baffle_nd25fw4_b2_split top_baffle_nd25fw4_b2 \
 OVERLAY_PNGS = baffle_b1_drivers.png baffle_b2_drivers.png \
                baffle_variants_drivers.png
 
-VARIANT_TARGETS = $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)/stl/.stamp_v0 $(1)/stl/.stamp_v1 $(1)/stl/.stamp_v1l \
+VARIANT_TARGETS = $(1)/stl/lx521_coupon.stl $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)/stl/.stamp_v0 $(1)/stl/.stamp_v1 $(1)/stl/.stamp_v1l \
                   $(addprefix $(1)/,$(addsuffix .step,$(GENS))) \
                   $(1)/baffle_cable_routing.png \
                   $(addprefix $(1)/,$(OVERLAY_PNGS))
@@ -80,6 +80,9 @@ $(1)/stl/.stamp_v1l: $(SRCS) export_piece_stls.py
 	LX_STAND_FOOT=$(2) $(PYTHON) export_piece_stls.py --variant v1l \
 	    --outdir $(1)/stl
 	@touch $$@
+
+$(1)/stl/lx521_coupon.stl: export_coupon.py $(SRCS)
+	$(PYTHON) export_coupon.py
 
 $(1)/%.step: %.py $(SRCS) export_steps.py
 	@mkdir -p $(1)

@@ -48,13 +48,14 @@ walls, and the variant-outline splice assertions.
   (pre-run the screw once to cut the threads).
 - Blind driver mounts, front face only:
   - Upper mid (Scan-Speak 10F/8424G00, 4 x D3.8 flange holes on pitch
-    D89.5): 4 x Ø4.6 bores at 45/135/225/315 deg, 7.0 mm deep, for
-    BRASS HEAT-SET inserts M3 x 6 long x Ø5 OD (soldering-iron set;
-    M3 screws pass the D3.8 flange holes natively). The ring sits 3.75
-    from the D82 cutout wall; the slim bore keeps 1.45 mm on its
-    inboard side (was 0.85 with the old D5.8 adapters). The T flank
-    lanes pass under this ring at z=3.7 with a solid 5.7 mm floor
-    (pilot floor z=11.3) -- the old 1.7 mm membrane caveat is gone.
+    D89.5): 4 x Ø4.6 bores at 58/148/238/328 deg (a square clocked
+    +13 deg from 45 -- 45/90 grids are geometrically impossible, see
+    VARIANTS.md), 4.0 mm deep, for BRASS HEAT-SET inserts M3 x 3 long
+    x Ø5 OD (soldering-iron set; M3 screws pass the D3.8 flange holes
+    natively). The ring sits 3.75 from the D82 cutout wall; the slim
+    bore keeps 1.45 mm on its inboard side. The shared TS duct
+    (z=11.5) clears the rotated pattern IN PLAN (>=6.8 to every bore;
+    pilot floor z=14.3).
   - Lower mid (SEAS W22EX001, 6 x D5.0 flange holes + D8.8 head recess on
     pitch D209.5, measured from E0022_W22EX001.stp): 6 x Ø6.4 bores,
     7.0 mm deep, aligned VERTICALLY (30/90/...330 deg), for BRASS
@@ -135,20 +136,14 @@ walls, and the variant-outline splice assertions.
   piece, bridge holes, and rear-face breakouts aimed at the SUPPORT
   WINDOW -- the stock support plate has a Ø20 hole (center (0, 60):
   horizontally centered, top edge tangent to the upper screw line
-  y=70) that all four cables must pass. Best-effort packing (two
-  Ø9.3/9.4 bores alone span 19.75 of the 20): LM/UM breakouts side by
-  side FULLY INSIDE the window (steep ~55° ramps crossing z=0 at
-  (∓5.2, 60.5), tips tucked in their mains at (∓6.1, 66.9, 9.15));
-  T1/T2 at the window's lower edge (~64° ramps, ovals centered
-  (±3.85, 52.2), far tips poke ~1 mm past the rim -- the floppy AWG24
-  pairs duck in), each main running dead straight from the tip
-  (±5.5, 51.5) to ONE exact R12 fillet tangent onto its fan line at
-  (±24.3, 54.7) -- a single bend, no S. Near the rear face the
-  four openings converge: the LM–UM lip is ~1 mm at the surface, and
-  each T mouth shares a ~2 mm-deep vestibule with its big neighbour
-  before the bores separate (full 1.5 mm webs from z≈2.5 -- harmless
-  behind the support plate). LM/UM entry is steeper than the old 23°
-  ramps: fish these with the plate off the support.
+  y=70) that all four cables must pass. Packing: LM/UM breakouts side
+  by side (steep ramps crossing z=0 at (∓5.2, 60.5), tips lancing
+  their mains at (−8, 68.5, 12.55) / (+8, 60, 12.55)); twin Ø4.6 T
+  ramps at the window's lower edge, breakouts (+3.8, 52.2) /
+  (−3.1, 52.7) with far lips up to ~1.4 past the rim (the floppy
+  AWG24 pairs duck in), lancing the strip feeders (t1f z=3.7 /
+  t2f z=9.5) that merge into the Ø6.8 z-step west of the LM column.
+  Fish the LM/UM steep ramps with the plate off the support.
   Print orientation: plate flat FRONT FACE DOWN (rotate 180 deg about X;
   foot rises as an 18.3-thick wall, the panel just widens its top --
   no supports: the step face looks upward and the NL8 holes print as
@@ -184,9 +179,9 @@ STAND_FOOT flag is the `LX_STAND_FOOT` env var (default 1).
 
 | STL in `<variant>/stl/` | Footprint (mm) | Used by |
 |---|---|---|
-| lx521_top_base_1of4_bottom | 250.6 × 170.0, 168.3 tall (fused stand foot; flip front-face-down or stand on the foot — see above) | all variants |
-| lx521_top_base_2of4_mid_left | 146.7 × 156.9 | all variants |
-| lx521_top_base_3of4_mid_right | 162.0 × 156.9 | all variants |
+| lx521_top_base_1of4_bottom | 223.8 × 125.0, 168.3 tall (fused stand foot; flip front-face-down or stand on the foot — see above) | all variants |
+| lx521_top_base_2of4_mid_left | 146.7 × 201.9 | all variants |
+| lx521_top_base_3of4_mid_right | 162.0 × 201.9 | all variants |
 | lx521_top_base_4of4_vase_b2 | 121.3 × 137.4 | all variants |
 | lx521_top_addonA_1..2of4_shoulder_top_l/r | 50.6 × 61.8 | A-comp only |
 | lx521_top_addonA_3..4of4_shoulder_bottom_l/r | 22.5 × 85.9 | A-comp only |
@@ -222,22 +217,19 @@ to both variants; only the ENTRY and the driver-side EXIT differ:
 
 | Driver | Cable | Duct | Route |
 |---|---|---|---|
-| LM (W22) | 2x 2.5 mm^2 twisted | D8.5 | planar z=9.15, drifting past the 270-deg insert bore (2.3 mm wall); ~7-deg diving exit bore -> D190-rim opening at z~6.6 (push-through) |
-| UM (10F) | twisted 2x2.0 mm^2 pair (~O7.0; 2x2.5 no longer fits) | D7.8 DEEP (z=5.7) | fully buried in the C7 core: fan onto ONE constant arc r=100.7 hugging the D190 rim (1.8 mm wall), passing UNDER the M5 heat-set W22 pilot ring (floor z=11.3, 1.7 mm membrane), then the exit tail into the D82 rim at (4, 325) -- never within 10 mm of the taper band; ONE routing shared by ALL piece variants |
-| T1 (front ND25) | 2x AWG24 | D3.8, two planar mains | LOWER (z=5.7): fan line tangent onto the r=110 arc, fully buried in the C7 core beside the UM's r=100.7 rim arc; a straight z-step bore (5.7→3.7) crosses the open seam-B elbow corridor; UPPER (z=3.7, vase unchanged): right flank lane under the 10F ring (1.7 membrane), R20 crest fillet, head-on pierce of the D78.5 scallop rim at ~(3.3, 430) |
-| T2 (rear ND25) | 2x AWG24 | D3.8 | mirror of T1 on the left, pierces the scallop rim at ~(-3.3, 430) |
+| LM (W22) | 2x 2.5 mm^2 twisted | D8.2 | planar z=12.55, drifting past the 270-deg insert bore (plan-clear 3.0); near-level exit bore -> D190-rim opening at z~12 |
+| UM (10F) | twisted 2x2.0 mm^2 pair (~O7.0; 2x2.5 no longer fits) | D7.8 | planar z=12.55 END-TO-END: R26 fan fillet, ONE arc r=119.5 OUTSIDE the W22 pilot ring, R50 fillet onto a straight diagonal tangent to the 30-deg pilot keep-out, one R~10 window bend, vase tail; exit into the D82 rim at z~12; ONE routing shared by ALL piece variants |
+| T1+T2 (both ND25) | 2x (2x AWG24) | D6.0 shared ("ts") | planar z=11.5 up the LEFT flank: strip feeders (t1f z=3.7 from the right, t2f z=9.5) merge in a Ø6.8 z-step, tangent line onto the r=114 arc outside the pilot ring, left vase flank lane 5.1 inside the walls, crest transition, notch-corridor dive (the largest bore that corridor admits), SINGLE head-on pierce of the D78.5 scallop rim at ~(−3.3, 430); both pairs dress to their tweeters through the open scallop void |
 
-Min bend: one exact R12 fillet per T route at the waist corridor (the
-outline kink physically caps it there; seam B cuts through this elbow so
-cables are laid in through the open seam face at assembly), R20 fillets
-at the crests, R23+ everywhere on the UM route; everything else R40+.
-Min walls: 1.6 mm to the chamfer edge on the T routes, 2.0 mm at the D82
-tangents, 2.1 mm to the seam-B dovetail pockets, 2.35 mm between the two
-right-side arcs and to the D190 rim along the UM lane. Verified
-centerline separations (`make check` re-measures them): every duct pair
->= its two radii + 1.5 mm (tightest: T1-T2 at 6.4 vs 5.3 required,
-UM-T1 at 8.6 vs 6.2); every W22 pilot >= bore radius + duct radius +
-1.5 mm in plan. The ducts cross the glue seams -- fish each cable (or a
+Min bend (enforced by test_route_smoothness on the real splines):
+LM >= 25, UM >= 10 (the window bend between the 90-deg pilot and the
+right B-key), TS >= 4.5 (the crest transition), feeders >= 6.
+Min walls: >=1.6 mm skins everywhere (the TS lane runs 5.1 inside the
+vase walls; the notch-corridor dive keeps >=1.6 to the D82 rim and the
+chamfer edge -- the corridor is consumed exactly). Verified centerline
+separations (`make check` re-measures them): every duct pair >= its
+two radii + 1.5 mm; every W22 AND 10F pilot >= bore radius + duct
+radius + 1.5 mm in plan. The ducts cross the glue seams -- fish each cable (or a
 pull string) through each piece's short open segment during assembly.
 Seam-A dovetails sit at +/-89 (n7/h9/d5, full-depth, clear of both arcs);
 seam-C dovetail at (300.5, n6/h8/d4).
@@ -313,27 +305,27 @@ test_v1_field (`make check`); STL: lx521_top_v1_4of4_vase
 rear-face grooves (~7) or through-bolting the 10F (~5-6) -- see the
 constraint ladder in the V0/V1 discussion.
 
-## Variant V1L — 12.3 mm LM section (front-flush)
+## Variant V1L — 11.5 mm LM section (front-flush)
 
-The bottom + both mids thinned to t=11.5 (material z 6.0..18.3 above
+The bottom + both mids thinned to t=11.5 (material z 6.8..18.3 above
 the foot strip): the ENTIRE baffle then shares one front plane (use
-with the V1 vase; the rear step between them is 0.8, hidden). Binding
+with the V1 vase -- same rear plane, NO step at seam B). Binding
 constraint: the O8.2 LM duct window. The bottom strip keeps full 18.3 (smoothstep ramp
 y=78 -> 96: full past the top pass-through seats +5, thin 10 short
 of the D190 edge) for the fused foot / bridge hardware / cable
-feeders; W22 heat-sets unchanged (floor keeps a 5.3 wall). Enabled by
+feeders; W22 heat-sets unchanged (floor keeps a 4.5 wall). Enabled by
 the round-4 "front-datum" routing shared by ALL variants:
 
-* LM O8.5 at z=12.15 (plan unchanged).
+* LM O8.2 at z=12.55 (plan unchanged).
 * UM O7.8 at z=12.55 END-TO-END on ONE arc r=119.5 OUTSIDE the W22
   pilot ring, then a diagonal threading the 0.9 mm window between the
-  90-deg pilot keep-out and the right seam-B key (moved to cx=24).
+  90-deg pilot keep-out and the right seam-B key (moved to cx=28).
 * T1+T2 SHARE one O6.0 duct ("ts") at z=11.5 up the LEFT flank -- the
   largest bore the notch corridor (D82 rim vs vase chamfer) admits --
   with a SINGLE scallop exit at (-3.3, 430); both pairs dress to their
-  tweeters through the open scallop void. Pair feeders (O3.8, z=3.7)
-  cross the full-depth strip under the LM/UM columns and rise via a
-  z-step west of the LM column. 10F pilot pattern rotated to
+  tweeters through the open scallop void. Pair feeders (O3.8, t1f
+  z=3.7 / t2f z=9.5) cross the full-depth strip under the LM/UM
+  columns and merge into a O6.8 z-step west of the LM column. 10F pilot pattern rotated to
   (58/148/238/328) so its left pair clears the lane and dive.
 * Seam-A keys at +-63 (full-depth in every variant, clear of both
   crossings); the RIGHT vase flank carries no duct at all.
@@ -362,7 +354,7 @@ base, IN in the attachments:
 | Site (right; left mirrored) | Wall | Serves | Placement rationale |
 |---|---|---|---|
 | (40.0, 322.4) | flare, waist-kink end | A bottom shoulder, B1 wing lower end | the flank's farthest point from the UM driver (59.2 mm); pin pocket 1.0 deep, 2.6 mm 3D clearance to the T duct |
-| (17.88, 420.37) | crescent arc, theta=-69.5 deg | A top shoulder, B1 wing top end | as far down-arc as the RECEIVER allows: its bore sits in the narrowing wedge between the arc and the chamfer face the shoulder/wing mates against B2, and its bottom corner keeps 1.3 mm to that face; the rear taper leaves ~12.2 mm of wall (bore raised to z=10.7: 1.7 mm behind the pocket floor); 6.2 mm to the T ducts, 21.7 from the clamp hole, 57.2 from the UM driver (all re-measured by `make check`) |
+| (17.88, 420.37) | crescent arc, theta=-69.5 deg | A top shoulder, B1 wing top end | as far down-arc as the RECEIVER allows: its bore sits in the narrowing wedge between the arc and the chamfer face the shoulder/wing mates against B2, and its bottom corner keeps 1.3 mm to that face; the rear taper leaves ~12.2 mm of wall (bore raised to z=10.7: 1.7 mm behind the pocket floor); ~7.9 mm to the TS duct, 21.7 from the clamp hole, 57.2 from the UM driver (all re-measured by `make check`) |
 
 At pin sites the proud base magnet enters the receiver and acts as a
 shear dowel. Magnet count per baffle: 4 base + 4 per attachment set

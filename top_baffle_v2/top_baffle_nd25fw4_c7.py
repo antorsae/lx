@@ -17,11 +17,10 @@ Kept full thickness: the core inside the taper band, the bottom strip
 (y<~64, stand-foot / bridge interface -- the taper fades in over
 y 52..70), and a recovery fade toward seam B (the cut scales to zero
 over y 270..~304) so the joint to the vase piece is flush and the
-seam-B dovetails keep their full section. The T ducts (rear-skinned at
-z=3.7) cannot survive ANY rear cut, so a half-round RIB (r=5.4 about
-each T axis, i.e. >=3.5 mm of skin) rides on the tapered rear face
-along the T path's whole in-band length (y 105..305, fan + arc + funnel);
-both rib ends emerge inside effectively-full-thickness material.
+seam-B dovetails keep their full section. All duct mains now run in
+the FRONT half (round-4 routing: LM/UM z=12.55, TS z=11.5), so the
+rear taper clears every duct with no ribs -- verified by
+test_c7_duct_corridor (plain z-containment).
 
 Clearances are asserted by test_clearances.py (make check).
 """
@@ -30,23 +29,18 @@ from __future__ import annotations
 
 import math
 
-from build123d import (Box, Circle, Plane, Polyline, Pos, Spline, Wire,
-                       loft, make_face, mirror, sweep)
+from build123d import Plane, Polyline, Wire, loft, make_face, mirror
 
 from top_baffle_nd25fw4 import THICKNESS_MM, baffle_solid
 from top_baffle_nd25fw4_b import TWEETER_DROP_MM
 from top_baffle_nd25fw4_b2 import OUTLINE_B2
 
 T_EDGE_MM = 0.5          # knife feather (protects the front skin)
-W_TAPER_MM = 19.0        # taper band width: keeps the O8.5/8.6 mains (z=9.15)
+W_TAPER_MM = 19.0        # taper band width: keeps the front-half mains
                          # fully covered -- the ducts sit at FIXED z, so the
                          # rear-side cut must stay above z_duct-r-skin
 Y_REC0, Y_REC1 = 270.0, 308.0   # seam-B recovery fade of the cut
 Y_BOT0, Y_BOT1 = 52.0, 70.0     # bottom fade-in (foot/bridge strip)
-RIB_R_MM = 5.4           # T-duct rib radius (1.9 bore + 3.5 skin)
-RIB_Y_SPAN = (105.0, 305.0)  # start on the fan line: the first arc knot
-                             # is at y~128, the sweep must bridge to it
-
 # tapered edges (right side; mirrored): lower flank + LM chamfer
 _FLANK_A, _FLANK_B = (76.2, 0.0), (152.401, 256.120)
 _CHAMF_A, _CHAMF_B = (152.401, 256.120), (38.113, 315.947)
@@ -153,22 +147,6 @@ def taper_cutters():
              + loft(corner_secs, ruled=True)
              + loft(corner_secs[-1:] + chamf_secs, ruled=True))
     return [right, mirror(right, about=Plane.YZ)]
-
-
-def rib_solids():
-    """Half-round beads riding the tapered rear face along the T arcs
-    (material within RIB_R of each T axis, clipped to the plate)."""
-    from top_baffle_nd25fw4_cables import DUCT_Z, route_points
-
-    ribs = []
-    plate = Pos(0, 250, THICKNESS_MM / 2) * Box(500, 700, THICKNESS_MM)
-    for name in ("t1", "t2"):
-        pts = [p for p in route_points(name)
-               if RIB_Y_SPAN[0] <= p[1] <= RIB_Y_SPAN[1]]
-        path = Spline(*pts)
-        section = Plane(origin=path @ 0, z_dir=path % 0) * Circle(RIB_R_MM)
-        ribs.append(sweep(section, path=path) & plate)
-    return ribs
 
 
 def c7_solid():

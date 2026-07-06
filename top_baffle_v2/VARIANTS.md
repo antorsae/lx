@@ -30,12 +30,12 @@ other family's pieces (see matrix).
 |---|---|---|---|
 | **A-comp shoulders** (18.3) | 4: `addonA_1..4of4` | B2 vase only | 2 pin magnets/side: flare wall zc=5.0 + crescent arc zc=10.7; outline kinks register |
 | **B1 wings** (18.3) | 2: `addonB1_1..2of2` | B2 vase only | same two sites |
-| **V1 A-shoulders** (11.5) | 4: `v1addonA_*` | V1 vase (V1L sets) | TWO pins/side at one uniform zc=12.5 (upper site gets small rear bosses on base + attachment) |
-| **V1 B1-wings** (11.5) | 2: `v1addonB1_*` | V1 vase (V1L sets) | two pins/side at zc=12.5 (upper via rear bosses) |
+| **V1 A-shoulders** (11.5) | 4: `v1addonA_*` | V1 vase (V1L sets) | TWO pins/side: lower zc=12.5, upper zc=14.4 (in-wall, no bosses) |
+| **V1 B1-wings** (11.5) | 2: `v1addonB1_*` | V1 vase (V1L sets) | two pins/side: lower zc=12.5, upper zc=14.4 (in-wall, no bosses) |
 | V0 scarf family | (designed, not built) | V0 | would scarf onto the knife band; pending |
 
 B2 addons on V0/V1: NO (knife/thin walls — no receiver seats).
-V1 addons on B2/V0: NO (zc=12.5 pockets exist only on the V1 vase).
+V1 addons on B2/V0: NO (the zc=12.5/14.4 pockets exist only on the V1 vase).
 
 ## Compatibility matrix (bottom+mids x vase)
 
