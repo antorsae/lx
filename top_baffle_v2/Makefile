@@ -32,7 +32,7 @@ GENS := top_baffle_nd25fw4_b2_split top_baffle_nd25fw4_b2 \
         top_baffle_nd25fw4_c7 top_baffle_nd25fw4_c7_split \
         top_baffle_nd25fw4_v0 top_baffle_nd25fw4_v0_split \
         top_baffle_nd25fw4_v1 top_baffle_nd25fw4_v1_split \
-        top_baffle_nd25fw4_v1l_split
+        top_baffle_nd25fw4_v1l_split top_baffle_nd25fw4_v1_attachments
 
 OVERLAY_PNGS = baffle_b1_drivers.png baffle_b2_drivers.png \
                baffle_variants_drivers.png

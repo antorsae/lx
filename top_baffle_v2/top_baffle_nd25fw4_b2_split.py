@@ -158,10 +158,10 @@ def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
     baffle = baffle_solid(outline, tweeter_drop_mm,
                           crescent_front_mm or THICKNESS_MM,
                           crescent_rear_mm)
-    for cutter in shape_cuts:
-        baffle -= cutter
     for add in shape_adds:
         baffle += add
+    for cutter in shape_cuts:
+        baffle -= cutter
     ducts = cable_cutters()  # internal cable ducts (LM/UM/T)
     for duct in ducts:
         baffle -= duct

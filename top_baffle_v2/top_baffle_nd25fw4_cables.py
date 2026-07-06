@@ -6,7 +6,7 @@ thin variants (V1 vase, V1L bottom/mids) can share the FRONT plane
 with the LM section and mount flush:
 
   MAINS (planar spline sweeps, common to both stand-foot states):
-    LM (blue):  2 x 2.5 mm^2 twisted pair, O8.5 at z=12.15; straight
+    LM (blue):  2 x 2.5 mm^2 twisted pair, O8.2 at z=12.55; straight
         plan line drifting x=-8.6 -> -10.5 past the 270-deg W22 pilot
         (plan-clear 3.0).
     UM (green): twisted 2 x 2.0 mm^2 pair (~O7.0 bundle), O7.8 at
@@ -67,10 +67,10 @@ LM_Y = 200.981
 UM_Y = 366.081
 
 # Duct plane depth per route -- ALL in the front half (front-datum):
-# the O8.5 LM window is 6.3..18.0 (the V1L=12.3 binder), UM 8.65..16.45,
+# the O8.2 LM window is 6.85..18.25 (the uniform-11.5 binder), UM 8.65..16.45,
 # TS 8.5..14.5. Floors stay >=1.6 above the V1L rear plane (z=6.0) and
 # >=1.7 above the V1 vase rear (z=6.8).
-DUCT_Z = {"lm": 12.15, "um": 12.55, "ts": 11.5}
+DUCT_Z = {"lm": 12.55, "um": 12.55, "ts": 11.5}
 LANE_OFFSET = 5.11  # TS lane center this far inside the vase wall lines
 
 # LM carries 2 x 2.5 mm^2 (twisted ~O7.8) -> O8.5. UM carries a twisted
@@ -78,7 +78,9 @@ LANE_OFFSET = 5.11  # TS lane center this far inside the vase wall lines
 # carries BOTH tweeter pairs side by side (~5.2 across) -> O6.0, the
 # largest bore the notch corridor between the D82 rim and the vase
 # chamfer admits.
-CABLE_D = {"lm": 8.5, "um": 7.8, "ts": 6.0}
+CABLE_D = {"lm": 8.2, "um": 7.8, "ts": 6.0}  # LM O8.2: the
+# uniform-11.5 window binder; ~0.4 over the twisted 2x2.5 bundle --
+# snug fishing (leader + lube), chosen over dropping to 2x2.0 wire
 
 
 def _with_z(pts2d, knots):
@@ -226,7 +228,7 @@ T_RAMP_L = ((-1.0, 53.4, -6.4), (-6.3, 51.7, 9.5))  # left pair,
 # LM/UM entries: straight oblique ramps (p0 behind the rear face ->
 # tip inside the planar main), O0.8 over their ducts.
 BIG_RAMPS = {
-    "lm": ((-4.6, 56.0, -6.4), (-8.0, 68.5, 12.15)),
+    "lm": ((-4.6, 56.0, -6.4), (-8.0, 68.5, 12.55)),
     "um": ((2.0, 56.0, -6.4), (8.0, 60.0, 12.55)),  # 69-deg ramp
     # lancing the fan arc; breakout (4.0, 57.4) inside the D20 window
 }
@@ -236,7 +238,7 @@ BIG_RAMPS = {
 # opening with a basket window at assembly). TS exits head-on through
 # the scallop rim -- no ramp needed.
 EXIT_RAMPS = {
-    "lm": ((-9.9, 86.0, 12.15), (-10.6, 119.0, 12.0), 9.3),
+    "lm": ((-9.9, 86.0, 12.55), (-10.6, 119.0, 12.0), 9.3),
     "um": ((5.3, 320.5, 12.55), (2.95, 332.4, 12.0), 8.6),
 }
 
@@ -245,7 +247,7 @@ EXIT_RAMPS = {
 # Four lanes persist (one per NL8 pair); the two T lanes feed the
 # shared duct via the feeder/lead. Webs come from Dx alone.
 FOOT_LANES = {
-    "lm": (-5.45, 12.15, 10.5, 14.0, 9.3),
+    "lm": (-5.45, 12.55, 10.5, 14.0, 9.0),
     "um": (5.4, 12.55, 10.5, 14.0, 8.6),
     "t1": (13.9, 3.7, 5.5, 14.0, 4.6),
     "t2": (-14.9, 9.5, 5.5, 14.0, 4.6),  # outboard: at z=9.5
@@ -260,15 +262,15 @@ def route_points(name):
     if name == "t2f":
         return _with_z(_t2_feeder(), [(0, 9.5), (9999, 9.5)])
     if name == "lm":
-        # Planar z=12.15; the line drifts from the x=-8.6 entry column
+        # Planar z=12.55; the line drifts from the x=-8.6 entry column
         # to x=-10.5 past the 270-deg W22 insert bore (plan-clear 3.0).
         # The exit is a near-level oblique bore (EXIT_RAMPS).
-        lead = ([(-5.45, 30.0, 12.15), (-6.2, 38.0, 12.15),
-                 (-7.3, 48.0, 12.15), (-7.7, 58.0, 12.15)]
+        lead = ([(-5.45, 30.0, 12.55), (-6.2, 38.0, 12.55),
+                 (-7.3, 48.0, 12.55), (-7.7, 58.0, 12.55)]
                 if STAND_FOOT else [])
-        return lead + [(-8.0, 68.0, 12.15), (-9.0, 78.0, 12.15),
-                       (-10.0, 90.0, 12.15), (-10.5, 98.0, 12.15),
-                       (-10.5, 103.0, 12.15)]
+        return lead + [(-8.0, 68.0, 12.55), (-9.0, 78.0, 12.55),
+                       (-10.0, 90.0, 12.55), (-10.5, 98.0, 12.55),
+                       (-10.5, 103.0, 12.55)]
     if name == "um":
         # O7.8 at z=12.55 END-TO-END: fan, tangent onto r=119.5 OUTSIDE
         # the W22 pilot ring, arc, diagonal to the seam-B crossing at

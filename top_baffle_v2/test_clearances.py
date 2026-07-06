@@ -244,7 +244,9 @@ def test_v1_field():
     for name, pts in _routes(True).items():
         r = CABLE_D.get(name, 3.8) / 2.0
         for x, y, z in pts:
-            if v1.Y_STEP + 0.6 < y < 434.0:
+            if not 96.0 < y < 434.0:
+                continue
+            if True:
                 assert z - r - 1.6 >= v1.REAR_MM - 0.001, (
                     f"{name} floor {z-r:.1f} below the V1 rear at "
                     f"({x:.1f},{y:.1f})")

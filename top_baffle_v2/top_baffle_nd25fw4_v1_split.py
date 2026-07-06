@@ -6,11 +6,12 @@ from __future__ import annotations
 from build123d import Compound
 
 from top_baffle_nd25fw4_b2_split import pieces
-from top_baffle_nd25fw4_v1 import REAR_MM, all_cutters
+from top_baffle_nd25fw4_v1 import REAR_MM, all_cutters, magnet_boss_adds
 
 
 def pieces_v1() -> dict:
-    return pieces(shape_cuts=all_cutters(), magnet_pockets=False,
+    return pieces(shape_cuts=all_cutters(),
+                  shape_adds=magnet_boss_adds(), magnet_pockets=False,
                   crescent_rear_mm=REAR_MM)
 
 

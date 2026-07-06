@@ -53,8 +53,12 @@ def main() -> None:
         parts = {STL_NAMES[k].replace("lx521_top_base_", "lx521_top_v1l_"):
                  v for k, v in pieces_v1l().items()}
     elif args.variant == "v1":
+        from top_baffle_nd25fw4_v1_attachments import v1_attachments
         from top_baffle_nd25fw4_v1_split import pieces_v1
         parts = {"lx521_top_v1_4of4_vase": pieces_v1()["piece_top_b2"]}
+        parts.update({k.replace("attach_v1a_", "lx521_top_v1addonA_")
+                       .replace("attach_v1b1_", "lx521_top_v1addonB1_"): v
+                      for k, v in v1_attachments().items()})
     elif args.variant == "v0":
         from top_baffle_nd25fw4_v0_split import pieces_v0
         parts = {"lx521_top_v0_4of4_vase":

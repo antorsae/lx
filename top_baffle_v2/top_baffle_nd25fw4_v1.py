@@ -14,6 +14,8 @@ O7.8 UM vase main (z=12.3 needs 8.4..16.2 + skins)."""
 
 from __future__ import annotations
 
+import math
+
 from build123d import Box, Cylinder, Pos
 
 from top_baffle_nd25fw4 import THICKNESS_MM, baffle_solid
@@ -34,9 +36,31 @@ def field_cutters():
 
 
 def magnet_pocket_cutters():
-    """Vertical D5.4 x 1.0 pin pockets in the new rear face (z=6.8)."""
-    return [Pos(sx * x, y, REAR_MM + 1.0) * Cylinder(2.7, 4.0)
-            for sx in (1.0, -1.0) for x, y in V1_MAGNET_SITES]
+    """Vertical D5.4 x 1.0 pin pockets in the new rear face (z=6.8),
+    plus the LOWER wall pin pockets (B2's flare-wall sites) re-bored at
+    zc=12.5 -- the only zc whose D5.4 envelope fits the 6.8..18.3 wall
+    (left: 2.3 wall to the ts funnel behind a 1.0 pocket). The upper
+    (crescent-arc) sites cannot exist on the thin crescent (~0.5 front
+    wall at any legal zc); V1 attachments anchor lower + rear."""
+    from top_baffle_nd25fw4_b import (MAG_PIN_BASE_DEPTH_MM,
+                                      MAG_POCKET_D_MM, MAGNET_SITES,
+                                      _magnet_pocket)
+    cutters = [Pos(sx * x, y, REAR_MM + 1.0) * Cylinder(2.7, 4.0)
+               for sx in (1.0, -1.0) for x, y in V1_MAGNET_SITES]
+    for site, zc in ((MAGNET_SITES[0], 12.5), (MAGNET_SITES[1], 14.4)):
+        x, y, nx, ny, _pin, _zc = site
+        for sx in (1.0, -1.0):
+            cutters.append(_magnet_pocket(sx * x, y, sx * nx, ny, zc,
+                                          MAG_POCKET_D_MM,
+                                          MAG_PIN_BASE_DEPTH_MM, True))
+    return cutters
+
+
+def magnet_boss_adds():
+    """No bosses: the top site sits at zc=14.4, inside the as-tapered
+    wall (floor 1.6 over the local rear, 1.2 front) -- thin but
+    internal walls beat any visible pad on the sculpted rear."""
+    return []
 
 
 def all_cutters():
@@ -46,6 +70,8 @@ def all_cutters():
 def v1_solid():
     part = baffle_solid(OUTLINE_B2, TWEETER_DROP_MM,
                         crescent_rear_mm=REAR_MM)
+    for a in magnet_boss_adds():
+        part += a
     for c in all_cutters():
         part -= c
     return part

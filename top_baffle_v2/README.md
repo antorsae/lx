@@ -315,10 +315,10 @@ constraint ladder in the V0/V1 discussion.
 
 ## Variant V1L — 12.3 mm LM section (front-flush)
 
-The bottom + both mids thinned to t=12.3 (material z 6.0..18.3 above
+The bottom + both mids thinned to t=11.5 (material z 6.0..18.3 above
 the foot strip): the ENTIRE baffle then shares one front plane (use
 with the V1 vase; the rear step between them is 0.8, hidden). Binding
-constraint: the O8.5 LM duct window. The bottom strip keeps full 18.3 (smoothstep ramp
+constraint: the O8.2 LM duct window. The bottom strip keeps full 18.3 (smoothstep ramp
 y=78 -> 96: full past the top pass-through seats +5, thin 10 short
 of the D190 edge) for the fused foot / bridge hardware / cable
 feeders; W22 heat-sets unchanged (floor keeps a 5.3 wall). Enabled by
@@ -343,7 +343,8 @@ STLs: lx521_top_v1l_{1of4_bottom,2of4_mid_left,3of4_mid_right}
 stock bending stiffness -- measure assembly modes before trusting the
 W22 on it.
 
-See PRINTING.md for filament choice, print settings, fastener
+See VARIANTS.md for the variant/add-on catalog and the
+compatibility matrix, and PRINTING.md for filament choice, print settings, fastener
 torques, and insert installation.
 
 ## Magnet attachment (swappable shoulders/wings)
