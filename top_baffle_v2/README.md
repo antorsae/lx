@@ -277,11 +277,11 @@ rear-skinned T ducts).
 
 An alternate piece_top for the low-crossover (3-4 kHz) experiments:
 a REAR-side knife bevel (same side and philosophy as the C7 LM taper;
-front plane fully intact) -- 18.3 -> ~0.5 over the last 4 mm inside
+front plane fully intact) -- 18.3 -> ~0.5 over the last 2.8 mm inside
 the flare/chamfer outline, fading out at the seam-B land and blending
 into the crescent's rear taper above y~400. The band is capped at
-4 mm by the T flank lanes (z=3.7, 4 mm inside the walls; they cannot
-be raised -- the 45-deg 10F pilot leaves no corridor at higher z).
+2.8 mm by the shared O6.0 T duct (z=11.5) hugging the left vase
+walls at ~1.6.
 ALL duct routing identical; V0 mixes with B2 or C7 bottom/mids
 freely. One D5 x 2 pin magnet per side (the SAME magnets as all
 attachments) in a vertical rear-face pocket at (+-46, 324); scarf
@@ -297,11 +297,13 @@ with all buried routing kept (binding constraint: the O7.8 UM exit
 tail needs z 0.2..11.2; the T lanes alone would allow 7.2). Front-side
 cut, REAR plane and ALL ducts untouched; sharp step exactly at seam B
 (keys auto-trim to 11.5 on both sides); the WHOLE top is flush at
-11.5: the crescent taper re-derives on the 11.5 slab (same 4.0 clamp
-seat / 0.4 tips), the tweeter pair clamps an 11.5 septum (shorter
-standoffs; pair front-rear spacing -6.8, which raises the pair's
-dipole peak -- helpful for the 3-4 kHz XO), and the 10F + tweeters
-share one front plane 6.8 behind the LM section (realign in DSP). 10F mounting: 4 x O4.6 x 4.0 bores from
+11.5: the crescent taper re-derives on the 6.8..18.3 slab (same 4.0
+clamp seat / 0.4 tips), the tweeter pair clamps an 11.5 septum
+(shorter standoffs; pair spacing -6.8, which raises the pair's dipole
+peak -- helpful for the 3-4 kHz XO). With the round-4 front-datum
+routing the vase thins from the REAR, so V1 mounts FRONT-FLUSH with
+the LM section -- no driver misalignment. Pair with V1L for the
+complete thin baffle. 10F mounting: 4 x O4.6 x 4.0 bores from
 the new front for M3 x 3 x O5 brass heat-sets (floor z=7.5 stays 1.9
 above the T-lane roofs at the ring crossings). One D5 x 2 pin magnet
 per side in a vertical rear-face pocket at (+-46, 324); B2 wall
@@ -310,6 +312,38 @@ test_v1_field (`make check`); STL: lx521_top_v1_4of4_vase
 (--variant v1). Thinner is possible only by externalizing cables to
 rear-face grooves (~7) or through-bolting the 10F (~5-6) -- see the
 constraint ladder in the V0/V1 discussion.
+
+## Variant V1L — 12.3 mm LM section (front-flush)
+
+The bottom + both mids thinned to t=12.3 (material z 6.0..18.3 above
+the foot strip): the ENTIRE baffle then shares one front plane (use
+with the V1 vase; the rear step between them is 0.8, hidden). Binding
+constraint: the O8.5 LM duct window. The bottom strip (y<70, faded by
+85) keeps full 18.3 for the fused foot / bridge hardware / cable
+feeders; W22 heat-sets unchanged (floor keeps a 5.3 wall). Enabled by
+the round-4 "front-datum" routing shared by ALL variants:
+
+* LM O8.5 at z=12.15 (plan unchanged).
+* UM O7.8 at z=12.55 END-TO-END on ONE arc r=119.5 OUTSIDE the W22
+  pilot ring, then a diagonal threading the 0.9 mm window between the
+  90-deg pilot keep-out and the right seam-B key (moved to cx=24).
+* T1+T2 SHARE one O6.0 duct ("ts") at z=11.5 up the LEFT flank -- the
+  largest bore the notch corridor (D82 rim vs vase chamfer) admits --
+  with a SINGLE scallop exit at (-3.3, 430); both pairs dress to their
+  tweeters through the open scallop void. Pair feeders (O3.8, z=3.7)
+  cross the full-depth strip under the LM/UM columns and rise via a
+  z-step west of the LM column. 10F pilot pattern rotated to
+  (58/148/238/328) so its left pair clears the lane and dive.
+* Seam-A keys at +-63 (full-depth in every variant, clear of both
+  crossings); the RIGHT vase flank carries no duct at all.
+
+STLs: lx521_top_v1l_{1of4_bottom,2of4_mid_left,3of4_mid_right}
+(--variant v1l) + lx521_top_v1_4of4_vase. Structural note: ~30% of
+stock bending stiffness -- measure assembly modes before trusting the
+W22 on it.
+
+See PRINTING.md for filament choice, print settings, fastener
+torques, and insert installation.
 
 ## Magnet attachment (swappable shoulders/wings)
 

@@ -31,12 +31,13 @@ GENS := top_baffle_nd25fw4_b2_split top_baffle_nd25fw4_b2 \
         top_baffle_nd25fw4_b1_assembled top_baffle_nd25fw4_a_comp_assembled \
         top_baffle_nd25fw4_c7 top_baffle_nd25fw4_c7_split \
         top_baffle_nd25fw4_v0 top_baffle_nd25fw4_v0_split \
-        top_baffle_nd25fw4_v1 top_baffle_nd25fw4_v1_split
+        top_baffle_nd25fw4_v1 top_baffle_nd25fw4_v1_split \
+        top_baffle_nd25fw4_v1l_split
 
 OVERLAY_PNGS = baffle_b1_drivers.png baffle_b2_drivers.png \
                baffle_variants_drivers.png
 
-VARIANT_TARGETS = $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)/stl/.stamp_v0 $(1)/stl/.stamp_v1 \
+VARIANT_TARGETS = $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)/stl/.stamp_v0 $(1)/stl/.stamp_v1 $(1)/stl/.stamp_v1l \
                   $(addprefix $(1)/,$(addsuffix .step,$(GENS))) \
                   $(1)/baffle_cable_routing.png \
                   $(addprefix $(1)/,$(OVERLAY_PNGS))
@@ -72,6 +73,11 @@ $(1)/stl/.stamp_v0: $(SRCS) export_piece_stls.py
 
 $(1)/stl/.stamp_v1: $(SRCS) export_piece_stls.py
 	LX_STAND_FOOT=$(2) $(PYTHON) export_piece_stls.py --variant v1 \
+	    --outdir $(1)/stl
+	@touch $$@
+
+$(1)/stl/.stamp_v1l: $(SRCS) export_piece_stls.py
+	LX_STAND_FOOT=$(2) $(PYTHON) export_piece_stls.py --variant v1l \
 	    --outdir $(1)/stl
 	@touch $$@
 

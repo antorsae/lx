@@ -85,7 +85,7 @@ for j, y in enumerate(ys):
             cc[j, i] = c
 ax.contourf(xs, ys, cc, levels=np.linspace(0.25, T, 12), cmap="Oranges",
             alpha=0.8, zorder=5)
-for name, col in (("t1", "gold"), ("t2", "tab:red"), ("um", "tab:green")):
+for name, col in (("ts", "gold"), ("um", "tab:green")):
     p = np.array([q[:2] for q in route_points(name)])
     ax.plot(p[:, 0], p[:, 1], color=col, lw=CABLE_D[name]*0.6, alpha=0.35,
             zorder=6)
@@ -119,7 +119,7 @@ for k, (y0, ttl) in enumerate(((391.0, "section y=391 (crest): slide to knife"),
     axs.text(0.01, 0.06, "rear plane (kept intact: all ducts unchanged)",
              transform=axs.transAxes, fontsize=7, color="0.35")
     # ducts at true positions
-    for name, col in (("t1", "gold"), ("t2", "tab:red"), ("um", "tab:green")):
+    for name, col in (("ts", "gold"), ("um", "tab:green")):
         pts = [q for q in route_points(name)]
         for a, b in zip(pts, pts[1:]):
             if (a[1]-y0)*(b[1]-y0) <= 0 and a[1] != b[1]:

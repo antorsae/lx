@@ -55,8 +55,9 @@ from top_baffle_nd25fw4_cables import (
 STYLE = {
     "lm": ("tab:blue", "LM 2x2.5mm2, duct D8.5 (mid-plane)"),
     "um": ("tab:green", "UM 2x2.0mm2, duct D7.8 (deep z=5.7)"),
-    "t1": ("gold", "T1 2xAWG24, duct D3.8 (z=5.7/3.7)"),
-    "t2": ("tab:red", "T2 2xAWG24, duct D3.8 (z=5.7/3.7)"),
+    "ts": ("gold", "T1+T2 shared, 2x(2xAWG24), duct D6.0 (z=11.5)"),
+    "t1f": ("tab:red", "T pair feeders, D3.8 (z=3.7, strip)"),
+    "t2f": ("tab:red", ""),
 }
 TOP_Y = 468.314 - TWEETER_DROP_MM       # B2 top edge (453.46)
 TAPER_CY = CRESCENT_SCALLOP_CY - TWEETER_DROP_MM
@@ -80,7 +81,7 @@ def breakout_xy(name):
 def _ramp(name):
     if name in BIG_RAMPS:
         return BIG_RAMPS[name]
-    sign = 1.0 if name == "t1" else -1.0
+    sign = 1.0 if name == "t1f" else -1.0
     return (tuple(sign * v if i == 0 else v for i, v in enumerate(p))
             for p in T_RAMP)
 
@@ -146,16 +147,16 @@ def draw_side_view(ax):
     # duct mains (true z from the swept splines)
     for name, (color, _) in STYLE.items():
         pts = duct_xyz(name)
-        ax.plot(pts[:, 2], pts[:, 1], color=color, lw=CABLE_D[name] * 0.8,
+        ax.plot(pts[:, 2], pts[:, 1], color=color, lw=CABLE_D.get(name, 3.8) * 0.8,
                 alpha=0.55, solid_capstyle="round", zorder=6)
     # exit dives into the driver cutouts (both states)
     for name, (p0, p1, _dia) in EXIT_RAMPS.items():
         color = STYLE[name][0]
         ax.plot([p0[2], p1[2]], [p0[1], p1[1]], color=color, ls=":",
-                lw=CABLE_D[name] * 0.6, alpha=0.8, zorder=7)
+                lw=CABLE_D.get(name, 3.8) * 0.6, alpha=0.8, zorder=7)
         ax.plot(p1[2], p1[1], marker="o", ms=6, mfc="white", mec=color,
                 zorder=8)
-    ax.plot(3.7, 433.5, marker="o", ms=5, mfc="white", mec=STYLE["t1"][0],
+    ax.plot(3.7, 433.5, marker="o", ms=5, mfc="white", mec=STYLE["ts"][0],
             zorder=8)  # T scallop-rim exits (head-on at duct depth)
     if STAND_FOOT:
         # foot slab, NL8 panel, connector channel, lanes
@@ -169,11 +170,14 @@ def draw_side_view(ax):
                                    ec="0.35", ls=":", lw=1.0, zorder=4))
         ax.plot([-99, -99], [4, 18.3], color="0.4", lw=1.2, zorder=3)
         for name, (color, _) in STYLE.items():
-            lane = _foot_lane_yz(name)
+            lane_key = {"t1f": "t1", "t2f": "t2"}.get(name, name)
+            if lane_key not in FOOT_LANES:
+                continue
+            lane = _foot_lane_yz(lane_key)
             ax.plot(lane[:, 1], lane[:, 0], color=color,
-                    lw=FOOT_LANES[name][4] * 0.8, alpha=0.45,
+                    lw=FOOT_LANES[lane_key][4] * 0.8, alpha=0.45,
                     solid_capstyle="round", zorder=6)
-            ax.plot(-101, FOOT_LANES[name][2], marker="o", ms=5,
+            ax.plot(-101, FOOT_LANES[lane_key][2], marker="o", ms=5,
                     mfc="white", mec=color, zorder=8)
         ax.annotate("R14 elbows", (-5, 22), (-70, 40), fontsize=8,
                     color="0.3", arrowprops=dict(arrowstyle="-",
@@ -187,7 +191,7 @@ def draw_side_view(ax):
             p0, p1 = _ramp(name)
             color = STYLE[name][0]
             ax.plot([p0[2], p1[2]], [p0[1], p1[1]], color=color, ls=":",
-                    lw=CABLE_D[name] * 0.6, alpha=0.8, zorder=7)
+                    lw=CABLE_D.get(name, 3.8) * 0.6, alpha=0.8, zorder=7)
             bo = breakout_xy(name)
             ax.plot(0, bo[1], marker="s", ms=5, mfc=color, mec="0.2",
                     zorder=8)
@@ -238,7 +242,10 @@ def draw_foot_top_view(ax2):
     # duct runs: dotted through the elbow dive, solid along the foot,
     # open ends 4 mm past the step face
     for name, (color, _) in STYLE.items():
-        x, z_d, y_f, r, dia = FOOT_LANES[name]
+        lane_key = {"t1f": "t1", "t2f": "t2"}.get(name, name)
+        if lane_key not in FOOT_LANES:
+            continue
+        x, z_d, y_f, r, dia = FOOT_LANES[lane_key]
         ax2.plot([x, x], [z_d, z_d - r], color=color, ls=":",
                  lw=dia * 0.6, alpha=0.55, zorder=6)
         ax2.plot([x, x], [z_d - r, CHANNEL_STEP_Z - 4.0], color=color,
@@ -282,20 +289,27 @@ if __name__ == "__main__":
     draw(ax, OUTLINE_B2, TWEETER_DROP_MM, "B2 - internal cable ducts (as modeled)")
     for name, (color, label) in STYLE.items():
         pts = duct_xyz(name)
-        ax.plot(pts[:, 0], pts[:, 1], color=color, lw=CABLE_D[name], alpha=0.55,
-                solid_capstyle="round", zorder=7, label=label)
+        ax.plot(pts[:, 0], pts[:, 1], color=color, lw=CABLE_D.get(name, 3.8), alpha=0.55,
+                solid_capstyle="round", zorder=7, label=label or None)
         ax.plot(*pts[-1][:2], marker="o", ms=7, mfc="white", mec=color, zorder=8)
         if STAND_FOOT:
             # elbow dive + run rearward through the foot (into the page),
-            # exiting the channel step face just short of the NL8 panel
-            x, _, y_f, _, _ = FOOT_LANES[name]
+            # exiting the channel step face just short of the NL8 panel.
+            # The shared TS main has no lane of its own (it starts at the
+            # z-step); the pair feeders map onto the t1/t2 lanes.
+            lane = {"t1f": "t1", "t2f": "t2"}.get(name, name)
+            if lane not in FOOT_LANES:
+                continue
+            x, _, y_f, _, _ = FOOT_LANES[lane]
             ax.plot([pts[0][0], x], [pts[0][1], y_f], color=color, ls=":",
-                    lw=CABLE_D[name] * 0.6, alpha=0.55, zorder=7)
+                    lw=CABLE_D.get(name, 3.8) * 0.6, alpha=0.55, zorder=7)
             ax.plot(x, y_f, marker="v", ms=6, mfc=color, mec="0.2", zorder=8)
         else:
+            if name == "ts":
+                continue
             bo = breakout_xy(name)
             ax.plot([bo[0], pts[0][0]], [bo[1], pts[0][1]], color=color,
-                    lw=CABLE_D[name], alpha=0.55, solid_capstyle="round",
+                    lw=CABLE_D.get(name, 3.8), alpha=0.55, solid_capstyle="round",
                     zorder=7)
             ax.plot(*bo, marker="s", ms=6, mfc=color, mec="0.2", zorder=8)
     if STAND_FOOT:

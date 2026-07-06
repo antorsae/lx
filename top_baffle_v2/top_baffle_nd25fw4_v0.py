@@ -26,7 +26,8 @@ from top_baffle_nd25fw4_b import TWEETER_DROP_MM
 from top_baffle_nd25fw4_b2 import OUTLINE_B2
 
 T_EDGE_MM = 0.5
-W_SLIDE_MM = 4.0
+W_SLIDE_MM = 2.8  # capped by the shared
+# O6.0 T duct (z=11.5) hugging the left walls at ~1.6
 _FLARE = ((38.113, 315.947), (60.654, 391.709))
 _CHAMF = ((60.654, 391.709), (10.081, 418.176))
 V0_MAGNET_SITES = [(46.0, 324.0)]   # right side; mirrored

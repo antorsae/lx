@@ -69,7 +69,9 @@ PILOT_DEPTH_MM = THICKNESS_MM / 2.0  # 9.15
 # vase from the REAR and mount FRONT-FLUSH with the LM section.
 UM_PILOT_D_MM = 4.6
 UM_PILOT_PCD_MM = 89.5
-UM_PILOT_ANGLES_DEG = (45.0, 135.0, 225.0, 315.0)
+UM_PILOT_ANGLES_DEG = (58.0, 148.0, 238.0, 328.0)  # rotated:
+# the LEFT pair clears the shared T duct's flank lane and notch dive;
+# the right pair faces no ducts at all (round-4 layout)
 UM_PILOT_DEPTH_MM = 4.0
 
 # Lower mid: SEAS W22EX001 -- 6 x D5.0 flange holes (D8.8 head recess) on

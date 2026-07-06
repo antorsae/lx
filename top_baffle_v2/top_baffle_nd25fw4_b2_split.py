@@ -88,8 +88,8 @@ SEAM_B_Y = 315.95  # exactly at B2's waist kinks -> obtuse seam corners
 # out of the taper in all variants. The RIGHT B-tab sits outboard
 # (cx=21.5) clearing the UM exit tail, with the T z-step corridor
 # between it and the waist kink.
-DOVETAILS_A = [(-89.0, 7.0, 9.0, 5.0), (89.0, 7.0, 9.0, 5.0)]
-DOVETAILS_B = [(-19.0, 10.0, 14.0, 6.0), (21.5, 10.0, 14.0, 6.0)]
+DOVETAILS_A = [(-63.0, 7.0, 9.0, 5.0), (63.0, 7.0, 9.0, 5.0)]
+DOVETAILS_B = [(-19.0, 10.0, 14.0, 6.0), (24.0, 10.0, 14.0, 6.0)]
 # small and low so the near-center cable vias pass beside it
 DOVETAIL_C = (300.5, 6.0, 8.0, 4.0)
 SEAM_C_X = -5.6  # clears the 90-deg W22 insert bore (edge at x=-3.9)

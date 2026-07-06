@@ -49,7 +49,11 @@ def _routes(stand_foot: bool) -> dict[str, np.ndarray]:
     from build123d import Spline
 
     out = {}
-    for name in ("lm", "um", "t1", "t2"):
+    for name in ("lm", "um", "ts"):
+        path = Spline(*cab.route_points(name))
+        pts = [path @ (i / SAMPLES_N) for i in range(SAMPLES_N + 1)]
+        out[name] = np.array([[p.X, p.Y, p.Z] for p in pts])
+    for name in ("t1f", "t2f"):
         path = Spline(*cab.route_points(name))
         pts = [path @ (i / SAMPLES_N) for i in range(SAMPLES_N + 1)]
         out[name] = np.array([[p.X, p.Y, p.Z] for p in pts])
@@ -68,12 +72,17 @@ def _min_dist(a: np.ndarray, b: np.ndarray) -> float:
 def test_duct_duct_separation():
     from top_baffle_nd25fw4_cables import CABLE_D
 
-    names = ("lm", "um", "t1", "t2")
+    names = ("lm", "um", "ts", "t1f", "t2f")
+    merged = ({"ts", "t1f"}, {"ts", "t2f"}, {"t1f", "t2f"})
     for stand_foot in (True, False):
         routes = _routes(stand_foot)
         for i, a in enumerate(names):
             for b in names[i + 1:]:
-                required = (CABLE_D[a] + CABLE_D[b]) / 2.0 + 1.5
+                if {a, b} in merged:
+                    continue  # they merge at the z-step by design
+                r_a = CABLE_D.get(a, 3.8)
+                r_b = CABLE_D.get(b, 3.8)
+                required = (r_a + r_b) / 2.0 + 1.5
                 measured = _min_dist(routes[a], routes[b])
                 print(f"  duct-duct {a}-{b} (foot={stand_foot}): "
                       f"{measured:.2f} >= {required:.2f} + slack")
@@ -94,10 +103,12 @@ def test_duct_vs_w22_pilots():
     for stand_foot in (True, False):
         routes = _routes(stand_foot)
         for name, pts in routes.items():
-            duct_top_z = DUCT_Z[name] + CABLE_D[name] / 2.0
+            duct_top_z = (DUCT_Z.get(name, 3.7)
+                          + CABLE_D.get(name, 3.8) / 2.0)
             if duct_top_z <= pilot_floor_z - 1.5:
                 continue  # T ducts pass fully below the pilot floor
-            required = L22_PILOT_D_MM / 2.0 + CABLE_D[name] / 2.0 + 1.5
+            required = (L22_PILOT_D_MM / 2.0
+                        + CABLE_D.get(name, 3.8) / 2.0 + 1.5)
             for px, py in pilots:
                 measured = float(np.min(np.hypot(pts[:, 0] - px,
                                                  pts[:, 1] - py)))
@@ -177,10 +188,10 @@ def test_magnet_pockets_vs_t_ducts():
         MAGNET_SITES)
     from top_baffle_nd25fw4_cables import CABLE_D
 
-    t_r = CABLE_D["t1"] / 2.0
+    t_r = CABLE_D["ts"] / 2.0
     pocket_r = MAG_RECEIVER_D_MM / 2.0
     for stand_foot in (True, False):
-        t1 = _routes(stand_foot)["t1"]
+        t1 = _routes(stand_foot)["ts"]
         for x, y, nx, ny, _pin, zc in MAGNET_SITES:
             # combined pocket envelope: base bore + receiver, one segment
             a = np.array([x - MAG_PIN_BASE_DEPTH_MM * nx,
@@ -191,7 +202,7 @@ def test_magnet_pockets_vs_t_ducts():
             t = np.clip((t1 - a) @ ab / (ab @ ab), 0.0, 1.0)
             d = np.linalg.norm(t1 - (a + t[:, None] * ab), axis=1)
             clear = float(d.min()) - pocket_r - t_r
-            print(f"  magnet site ({x:.1f},{y:.1f}) vs T1 duct "
+            print(f"  magnet site ({x:.1f},{y:.1f}) vs TS duct "
                   f"(foot={stand_foot}): {clear:.2f} mm")
             assert clear >= 0.8, (
                 f"magnet pocket ({x},{y}) to T duct {clear:.2f} < 0.8")
@@ -205,7 +216,7 @@ def test_v0_duct_corridor():
     from top_baffle_nd25fw4_cables import CABLE_D
 
     for name, pts in _routes(True).items():
-        r = CABLE_D[name] / 2.0
+        r = CABLE_D.get(name, 3.8) / 2.0
         for x, y, z in pts:
             if not 316.0 < y < 419.0:
                 continue
@@ -227,12 +238,11 @@ def test_v1_field():
     window (floor AND roof) must fit inside it with 1.6 skins; the
     global short pilot floors (z=14.3) clear the raised lane roofs."""
     import top_baffle_nd25fw4_v1 as v1
-    from top_baffle_nd25fw4 import THICKNESS_MM, UM_PILOT_DEPTH_MM
+    from top_baffle_nd25fw4 import THICKNESS_MM
     from top_baffle_nd25fw4_cables import CABLE_D
 
-    assert (THICKNESS_MM - UM_PILOT_DEPTH_MM) - (10.7 + 1.9) >= 1.5
     for name, pts in _routes(True).items():
-        r = CABLE_D[name] / 2.0
+        r = CABLE_D.get(name, 3.8) / 2.0
         for x, y, z in pts:
             if v1.Y_STEP + 0.6 < y < 434.0:
                 assert z - r - 1.6 >= v1.REAR_MM - 0.001, (
@@ -242,6 +252,58 @@ def test_v1_field():
                     f"{name} roof {z+r:.1f} above the front at "
                     f"({x:.1f},{y:.1f})")
     print("  V1 front-flush: duct windows inside z 6.8..18.3; pilots clear")
+
+
+def test_duct_vs_um_pilots():
+    """The rotated 10F pilot bores (D4.6 x 4.0 from the front, floor
+    z=14.3) vs the shared TS duct (roof 14.5): they z-overlap, so plan
+    clearance >= 2.3 + 3.0 + 1.5 is required everywhere."""
+    from top_baffle_nd25fw4 import (UM_CUTOUT, UM_PILOT_ANGLES_DEG,
+                                    UM_PILOT_D_MM, UM_PILOT_PCD_MM,
+                                    _pilot_centers)
+    from top_baffle_nd25fw4_cables import CABLE_D
+
+    pilots = _pilot_centers(UM_CUTOUT[:2], UM_PILOT_PCD_MM,
+                            UM_PILOT_ANGLES_DEG)
+    for stand_foot in (True, False):
+        for name, pts in _routes(stand_foot).items():
+            required = (UM_PILOT_D_MM + CABLE_D.get(name, 3.8)) / 2.0 + 1.5
+            for px, py in pilots:
+                measured = float(np.min(np.hypot(pts[:, 0] - px,
+                                                 pts[:, 1] - py)))
+                assert measured >= required + SAMPLING_SLACK, (
+                    f"{name} vs 10F pilot ({px:.1f},{py:.1f}): plan "
+                    f"{measured:.2f} < {required + SAMPLING_SLACK:.2f}")
+    print("  10F pilots (rotated) vs all ducts: plan clearances OK")
+
+
+def test_cutter_health():
+    """Every duct cutter must be a valid, positive-volume, sane-bbox
+    solid, and subtracting all of them must leave the baffle VALID --
+    an inside-out or tangent-sick sweep passes is_valid alone but
+    poisons the split booleans (the 2026-07-06 250 GB OOM)."""
+    import importlib as il
+    import os as _os
+    for mode in ("0", "1"):
+        _os.environ["LX_STAND_FOOT"] = mode
+        for m in ("top_baffle_nd25fw4", "top_baffle_nd25fw4_cables"):
+            il.reload(sys.modules[m]) if m in sys.modules \
+                else il.import_module(m)
+        cab = sys.modules["top_baffle_nd25fw4_cables"]
+        base_mod = sys.modules["top_baffle_nd25fw4"]
+        from top_baffle_nd25fw4_b import TWEETER_DROP_MM
+        from top_baffle_nd25fw4_b2 import OUTLINE_B2
+        base = base_mod.baffle_solid(OUTLINE_B2, TWEETER_DROP_MM)
+        for i, c in enumerate(cab.cable_cutters()):
+            bb = c.bounding_box().size
+            assert c.is_valid and c.volume > 0 and bb.X < 500, (
+                f"cutter {i} sick (foot={mode}): valid={c.is_valid} "
+                f"vol={c.volume/1000:.1f}")
+            base -= c
+            assert base.is_valid and base.volume > 0, (
+                f"boolean poisoned by cutter {i} (foot={mode})")
+        print(f"  cutters healthy + booleans clean (foot={mode}, "
+              f"vol={base.volume/1000:.1f})")
 
 
 def test_seam_keys_vs_ducts():
@@ -265,7 +327,7 @@ def test_seam_keys_vs_ducts():
                   cy - h / 2 - 0.1, cy + h / 2 + 0.1))
     for stand_foot in (True, False):
         for name, pts in _routes(stand_foot).items():
-            r = CABLE_D[name] / 2.0
+            r = CABLE_D.get(name, 3.8) / 2.0
             for x, y, _z in pts:
                 for x0, x1, y0, y1 in rects:
                     dx = max(x0 - x, 0.0, x - x1)
@@ -292,22 +354,17 @@ def test_c7_duct_corridor():
     skin = 1.6
     routes = _routes(True)  # below-seam mains are state-independent
     for name, pts in routes.items():
-        z_floor_need = DUCT_Z[name] - CABLE_D[name] / 2.0 - skin
+        z_floor_need = DUCT_Z.get(name, 3.7) - CABLE_D.get(name, 3.8) / 2.0 - skin
         for x, y, _z in pts:
             if not 45.0 < y < 312.0:
                 continue
             rear_z = THICKNESS_MM - c7.thickness_at(x, y)
-            if rear_z <= z_floor_need + 0.001:
-                continue  # duct fully inside the tapered plate
-            assert name in ("t1", "t2"), (
+            assert rear_z <= z_floor_need + 0.001, (
                 f"{name}: rear surface z={rear_z:.2f} > allowed "
                 f"{z_floor_need:.2f} at ({x:.1f},{y:.1f}) -- duct breaks "
                 "out of the taper")
-            assert (c7.RIB_Y_SPAN[0] - 0.1 <= y <= c7.RIB_Y_SPAN[1] + 0.1), (
-                f"{name}: taper bites (rear z={rear_z:.2f}) at "
-                f"({x:.1f},{y:.1f}) outside the rib span {c7.RIB_Y_SPAN}")
-    print("  C7 corridor (z-containment): big mains stay buried; every "
-          "T bite is inside the rib span")
+    print("  C7 corridor (z-containment): all front-half mains stay "
+          "buried under the taper")
 
 
 def test_variant_outlines_splice():
@@ -326,10 +383,12 @@ if __name__ == "__main__":
         test_magnet_pockets_vs_t_ducts,
         test_duct_vs_w22_pilots,
         test_duct_duct_separation,
+        test_duct_vs_um_pilots,
         test_c7_duct_corridor,
         test_seam_keys_vs_ducts,
         test_v0_duct_corridor,
         test_v1_field,
+        test_cutter_health,
     ]
     failed = []
     for check in checks:

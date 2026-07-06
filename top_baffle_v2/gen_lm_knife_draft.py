@@ -130,7 +130,7 @@ def front_view(ax):
     # the (rerouted) common duct mains -- the T arcs cross the band on
     # their half-round ribs
     for name, color in (("lm", "tab:blue"), ("um", "tab:green"),
-                        ("t1", "gold"), ("t2", "tab:red")):
+                        ("ts", "gold")):
         pts = np.array([p[:2] for p in route_points(name)])
         ax.plot(pts[:, 0], pts[:, 1], color=color, lw=CABLE_D[name] * 0.7,
                 alpha=0.30, zorder=6)
@@ -175,7 +175,7 @@ def section(ax, y0, title):
     # duct positions in this section: interpolate each route's crossing
     # of y=y0 (the raw knots can straddle it by >10 mm on the arcs)
     for name, color in (("lm", "tab:blue"), ("um", "tab:green"),
-                        ("t1", "gold"), ("t2", "tab:red")):
+                        ("ts", "gold")):
         pts = np.array([p[:3] for p in route_points(name)])
         crossings = []
         for a, b in zip(pts, pts[1:]):
