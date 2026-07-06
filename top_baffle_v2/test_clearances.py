@@ -277,6 +277,29 @@ def test_duct_vs_um_pilots():
     print("  10F pilots (rotated) vs all ducts: plan clearances OK")
 
 
+def test_route_smoothness():
+    """Minimum bend radius of every duct centerline (sampled from the
+    REAL interpolated spline): routes must stay fishable and free of
+    gratuitous wiggles. Floors reflect each route's genuine pinch
+    (the UM window bend, the TS crest transition); anything tighter
+    is sloppy geometry, anything near the bore radius risks a
+    self-intersecting (inside-out) pipe."""
+    FLOORS = {"lm": 25.0, "um": 10.0, "ts": 4.5, "t1f": 6.0, "t2f": 6.0}
+    for stand_foot in (True, False):
+        for name, pts in _routes(stand_foot).items():
+            d1 = np.gradient(pts, axis=0)
+            d2 = np.gradient(d1, axis=0)
+            kappa = (np.linalg.norm(np.cross(d1, d2), axis=1)
+                     / np.maximum(np.linalg.norm(d1, axis=1) ** 3, 1e-12))
+            # ignore the first/last few samples: open spline ends have
+            # unconstrained tangents (the ramps take over there)
+            r_min = float(1.0 / max(kappa[20:-20].max(), 1e-12))
+            assert r_min >= FLOORS[name], (
+                f"{name} min bend radius {r_min:.1f} < {FLOORS[name]} "
+                f"(foot={stand_foot})")
+        print(f"  route smoothness OK (foot={stand_foot})")
+
+
 def test_cutter_health():
     """Every duct cutter must be a valid, positive-volume, sane-bbox
     solid, and subtracting all of them must leave the baffle VALID --
@@ -388,6 +411,7 @@ if __name__ == "__main__":
         test_seam_keys_vs_ducts,
         test_v0_duct_corridor,
         test_v1_field,
+        test_route_smoothness,
         test_cutter_health,
     ]
     failed = []

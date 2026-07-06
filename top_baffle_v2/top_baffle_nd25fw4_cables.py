@@ -163,11 +163,14 @@ TS_STEP = ((-14.0, 55.0, 3.7), (-16.8, 58.8, 11.5))  # O6.8 bore
 
 def _t1_feeder():
     """T1's pair: right entry across the strip to the z-step (z=3.7)."""
-    lead = ([(13.9, 27.0), (14.0, 34.0), (14.1, 42.0)]
-            if STAND_FOOT else [])
+    # foot lead rounds the down-the-plate corner at R~7.5 (was a sharp
+    # R2.3 elbow -- caught by test_route_smoothness)
+    lead = ([(13.9, 27.0), (14.0, 34.0), (13.9, 41.0), (13.2, 45.5),
+             (11.5, 48.9), (8.9, 51.0)]
+            if STAND_FOOT else [(13.9, 50.0)])
     # runs 1.9 past the z-step mouth so its end cap is buried inside
     # the TS_STEP bore (coincident caps poison OCC booleans)
-    return lead + [(13.9, 50.0), (6.0, 51.3), (0.0, 51.8), (-6.0, 52.8),
+    return lead + [(5.8, 51.9), (0.0, 51.8), (-6.0, 52.8),
                    (-10.0, 53.6), (-14.0, 55.0), (-15.8, 55.5)]
 
 
@@ -282,11 +285,17 @@ def route_points(name):
             ([(5.4, 30.0), (4.9, 37.0), (4.35, 43.0)]
              if STAND_FOOT else [])
             + fan + [(40.9, 84.6)]
-            + _arc(119.5, [-56.29, -44, -32, -20, -8, 4, 16, 24, 30, 34])
-            + [(79.0, 268.0), (64.0, 276.5), (50.0, 284.0),
-               (38.0, 290.5), (28.0, 296.0), (20.0, 300.5), (14.0, 303.8),
-               (11.5, 306.3), (10.0, 308.6), (9.4, 311.0), (8.8, 313.6),
-               (7.4, 316.5), (6.3, 318.8), (5.3, 320.7), (4.9, 322.0)],
+            + _arc(119.5, [-56.29, -44, -32, -20, -8, 4, 12, 20])
+            # R50 fillet off the arc onto a straight diagonal TANGENT
+            # to a r=13.5 keep-out about the 30-deg pilot (smooth by
+            # construction; no kink); then one R~12 window bend between
+            # the 90-deg pilot and the right B-key (cx=28), and the
+            # vase tail. Guarded by test_route_smoothness.
+            + [(108.01, 251.03), (102.45, 258.63), (95.57, 265.04),
+               (87.60, 270.06)]
+            + [(61.76, 283.11), (35.92, 296.16)]
+            + [(18.5, 304.7), (14.5, 306.9), (11.6, 309.1), (9.7, 311.7),
+               (8.5, 314.6), (7.4, 317.4), (6.2, 320.0), (4.9, 322.0)],
             [(0, 12.55), (9999, 12.55)])
     if name == "ts":
         return _with_z(_ts_route(), [(0, 11.5), (9999, 11.5)])

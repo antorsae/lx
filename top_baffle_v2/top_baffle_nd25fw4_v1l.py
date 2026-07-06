@@ -5,8 +5,11 @@ round-4 "front-datum" routing (LM z=12.15 -- the 12.3 binder -- UM
 z=12.55 outside the W22 ring, shared T duct z=11.5 on the left; the
 strip feeders at z=3.7 live in the KEEP).
 
-Keeps at full 18.3: the bottom strip y<70 (fused foot, bridge/support
-hardware, cable feeders + z-step), faded out by y=85. The rear step at
+Keeps at full 18.3: the bottom strip (fused foot, bridge/support
+hardware incl. the washer seats behind the top pass-throughs at
+(+-20, 70) + 5 mm margin, cable feeders + z-step). The thickness
+transition is a SMOOTHSTEP ramp from full at y=78 to the thin field
+at y=96 -- ending 10 mm short of the D190 cutout edge (y=105.98). The rear step at
 seam B to a V1 vase (rear 6.8) is 0.8 -- both on the hidden side.
 W22 mounting unchanged: M5 x 6 x O7 heat-sets, floor z=11.3 keeps a
 5.3 wall over the new rear. Combine V1L bottom+mids with the V1 vase
@@ -20,7 +23,7 @@ from top_baffle_nd25fw4 import THICKNESS_MM
 
 T_FIELD_MM = 12.3
 REAR_MM = THICKNESS_MM - T_FIELD_MM   # 6.0
-Y_KEEP, Y_FADE = 70.0, 85.0
+RAMP_Y0, RAMP_Y1 = 78.0, 96.0
 Y_END = 315.95                        # seam B
 
 
@@ -31,10 +34,23 @@ def _rect(y, z_top):
     return pl * make_face(Wire(Polyline(*pts).edges()))
 
 
+def _smoothstep(u):
+    u = max(0.0, min(1.0, u))
+    return 3 * u * u - 2 * u * u * u
+
+
 def field_cutters():
-    fade = loft([_rect(Y_KEEP, 0.05), _rect(Y_FADE, REAR_MM)], ruled=True)
-    body = Pos(0, (Y_FADE + Y_END) / 2, (REAR_MM - 0.7) / 2) * Box(
-        320.0, Y_END - Y_FADE, REAR_MM + 0.7)
+    """Sigmoid thickness ramp (smoothstep sections lofted ruled) from
+    full 18.3 at y=RAMP_Y0 to the thin field at y=RAMP_Y1."""
+    n = 9
+    secs = []
+    for i in range(n + 1):
+        y = RAMP_Y0 + (RAMP_Y1 - RAMP_Y0) * i / n
+        z_top = max(0.05, REAR_MM * _smoothstep(i / n))
+        secs.append(_rect(y, z_top))
+    fade = loft(secs, ruled=True)
+    body = Pos(0, (RAMP_Y1 + Y_END) / 2, (REAR_MM - 0.7) / 2) * Box(
+        320.0, Y_END - RAMP_Y1, REAR_MM + 0.7)
     return [fade, body]
 
 

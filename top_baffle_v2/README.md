@@ -318,8 +318,9 @@ constraint ladder in the V0/V1 discussion.
 The bottom + both mids thinned to t=12.3 (material z 6.0..18.3 above
 the foot strip): the ENTIRE baffle then shares one front plane (use
 with the V1 vase; the rear step between them is 0.8, hidden). Binding
-constraint: the O8.5 LM duct window. The bottom strip (y<70, faded by
-85) keeps full 18.3 for the fused foot / bridge hardware / cable
+constraint: the O8.5 LM duct window. The bottom strip keeps full 18.3 (smoothstep ramp
+y=78 -> 96: full past the top pass-through seats +5, thin 10 short
+of the D190 edge) for the fused foot / bridge hardware / cable
 feeders; W22 heat-sets unchanged (floor keeps a 5.3 wall). Enabled by
 the round-4 "front-datum" routing shared by ALL variants:
 
