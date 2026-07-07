@@ -49,9 +49,10 @@ def coupon() -> list:
     # front wall 18.3-(14.4+2.7)=1.2, floor wall 14.4-2.7-10.1=1.6
     plate -= Pos(28.0, 5.0, 10.1 / 2.0 - 0.5) * Box(24.0, 12.0, 10.1 + 1.0)
     plate -= (Pos(28.0, 0.55, 14.4) * Rot(X=90.0) * Cylinder(2.7, 3.1))
-    # loose male key (no clearance -- the pocket carries it)
-    male = _poly_prism(_trapezoid_up(28.0, -26.0, NECK, HEAD, DEPTH), t)
-    male += Pos(28.0, -32.0, t / 2.0) * Box(20.0, 12.0, t)
+    # loose male key (no clearance -- the pocket carries it), parked in
+    # its own clear cell right of the fishing grid
+    male = _poly_prism(_trapezoid_up(90.0, -92.0, NECK, HEAD, DEPTH), t)
+    male += Pos(90.0, -98.0, t / 2.0) * Box(20.0, 12.0, t)
     return [plate, male]
 
 
@@ -66,11 +67,14 @@ def _fishing_blocks():
     import os
     import sys
 
+    # (region box, placement of the region's LOWER-LEFT corner). Blocks
+    # are laid on a grid below the plate (plate occupies y 0..40), each
+    # in its own 44 x 44 cell with >=6 mm gaps -- no fusion.
     regions = {
-        "0": [((-24.0, 42.0, 14.0, 70.0), (0.0, -150.0)),
-              ((-2.0, 296.0, 24.0, 330.0), (40.0, -390.0)),
-              ((-44.0, 390.0, 0.0, 434.0), (120.0, -480.0))],
-        "1": [((-20.0, 2.0, 20.0, 32.0), (64.0, -110.0))],
+        "0": [((-24.0, 42.0, 14.0, 70.0), (-90.0, -60.0)),    # entry cluster
+              ((-2.0, 296.0, 24.0, 330.0), (-30.0, -60.0)),   # UM window bend
+              ((-44.0, 390.0, 0.0, 434.0), (30.0, -60.0))],   # TS notch dive
+        "1": [((-20.0, 2.0, 20.0, 32.0), (-90.0, -120.0))],   # foot R14 elbow
     }
     blocks = []
     for mode, regs in regions.items():
@@ -83,13 +87,14 @@ def _fishing_blocks():
         cab = sys.modules["top_baffle_nd25fw4_cables"]
         cutters = cab.cable_cutters()
         z0 = -22.0 if mode == "1" else 0.0
-        for (x0, y0, x1, y1), (dx, dy) in regs:
+        for (x0, y0, x1, y1), (px, py) in regs:
             blk = Pos((x0 + x1) / 2.0, (y0 + y1) / 2.0,
                       (z0 + THICKNESS_MM) / 2.0) * Box(
                 x1 - x0, y1 - y0, THICKNESS_MM - z0)
             for c in cutters:
                 blk -= c
-            blocks.append(Pos(dx, dy, -z0) * blk)
+            # move region's lower-left (x0,y0,rear) to the grid cell (px,py)
+            blocks.append(Pos(px - x0, py - y0, -z0) * blk)
     return blocks
 
 
