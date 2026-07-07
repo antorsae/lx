@@ -378,15 +378,22 @@ def test_c7_duct_corridor():
     skin = 1.6
     routes = _routes(True)  # below-seam mains are state-independent
     for name, pts in routes.items():
-        z_floor_need = DUCT_Z.get(name, 3.7) - CABLE_D.get(name, 3.8) / 2.0 - skin
-        for x, y, _z in pts:
+        r = CABLE_D.get(name, 3.8) / 2.0
+        z_d = DUCT_Z.get(name, 3.7)
+        d1 = np.gradient(pts, axis=0)
+        for (x, y, z), t in zip(pts, d1):
             if not 45.0 < y < 312.0:
                 continue
-            rear_z = THICKNESS_MM - c7.thickness_at(x, y)
-            assert rear_z <= z_floor_need + 0.001, (
-                f"{name}: rear surface z={rear_z:.2f} > allowed "
-                f"{z_floor_need:.2f} at ({x:.1f},{y:.1f}) -- duct breaks "
-                "out of the taper")
+            # FULL-WIDTH containment: the taper crosses bores laterally
+            n = np.hypot(t[0], t[1])
+            nx, ny = (-t[1] / n, t[0] / n) if n else (1.0, 0.0)
+            for o in (-r, -0.7 * r, 0.0, 0.7 * r, r):
+                rear_z = THICKNESS_MM - c7.thickness_at(x + o * nx,
+                                                        y + o * ny)
+                allowed = z_d - math.sqrt(max(r * r - o * o, 0.0)) - skin
+                assert rear_z <= allowed + 0.02, (
+                    f"{name}: rear z={rear_z:.2f} > {allowed:.2f} at "
+                    f"({x:.1f},{y:.1f}) offset {o:+.1f} -- lateral breach")
     print("  C7 corridor (z-containment): all front-half mains stay "
           "buried under the taper")
 

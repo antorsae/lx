@@ -73,12 +73,40 @@ def rec_fade(y: float) -> float:
     return top * bot
 
 
+# Duct corridors the taper must not breach LATERALLY: the slope
+# crosses each bore sideways, so containment must hold across the
+# duct's full plan width, not just under the centerline (the c7
+# mid_right exposed-slot bug). (arc_r about LM center, duct z, bore r,
+# side: +1 right / -1 left.)
+_DUCT_ARCS = ((119.5, 12.55, 3.9, 1.0), (114.0, 11.5, 3.0, -1.0))
+_LM_C = (0.0, 200.981)
+
+
+def _duct_min_t(x: float, y: float) -> float:
+    """Minimum thickness so the rear surface clears every duct's
+    circular envelope (+1.6 skin) at this plan point."""
+    need = 0.0
+    for arc_r, z_d, r, side in _DUCT_ARCS:
+        if x * side < 0 or not 45.0 < y < 316.0:
+            continue
+        o = abs(math.dist((x, y), _LM_C) - arc_r)
+        if o >= r + 2.0:
+            continue
+        # 2.0 skin in the LAW nets >=1.6 on the SOLID (ruled-loft
+        # interpolation between stations undercuts the moving
+        # envelope by ~0.35 through the pinch)
+        drop = math.sqrt(max(r * r - o * o, 0.0)) if o < r else 0.0
+        need = max(need, THICKNESS_MM - (z_d - drop - 2.0))
+    return need
+
+
 def thickness_at(x: float, y: float) -> float:
-    """C7 local plate thickness by the taper law (rib NOT included)."""
+    """C7 local plate thickness: taper law clamped by the duct
+    corridors (see _duct_min_t)."""
     p = (abs(x), y)
     d = min(_d_seg(p, _FLANK_A, _FLANK_B), _d_seg(p, _CHAMF_A, _CHAMF_B))
     cut = (THICKNESS_MM - t_of_d(d)) * rec_fade(y)
-    return THICKNESS_MM - cut
+    return max(THICKNESS_MM - cut, _duct_min_t(x, y))
 
 
 def _flank_pt(y):
@@ -90,13 +118,17 @@ def _chamf_pt(y):
     return (152.401 - 114.288 * f, y)
 
 
-def _profile_pts(scale: float, n: int = 12):
+def _profile_pts(pt, inboard, scale: float, n: int = 24):
     """Closed section polyline in (inboard u, global z): the material
-    removed from the rear (z=0) side, depth (18.3 - t(u)) * scale."""
+    removed from the rear (z=0) side. Depth sampled from the CLAMPED
+    law at the true plan point (duct-corridor aware)."""
     pts = [(-6.0, -0.6), (-6.0, (THICKNESS_MM - T_EDGE_MM) * scale)]
     for i in range(n + 1):
         u = W_TAPER_MM * i / n
-        pts.append((u, (THICKNESS_MM - t_of_d(u)) * scale))
+        px, py = pt[0] + inboard[0] * u, pt[1] + inboard[1] * u
+        base = (THICKNESS_MM - t_of_d(u)) * scale
+        cut = min(base, THICKNESS_MM - _duct_min_t(px, py))
+        pts.append((u, max(cut, -0.3)))
     pts.append((W_TAPER_MM + 2.0, -0.6))
     pts.append((-6.0, -0.6))
     return pts
@@ -109,7 +141,8 @@ def _station(pt2d, inboard2d, tangent2d, scale, sign):
     if tx * ny - ty * nx < 0:   # keep the plane's y-axis at +Z so the
         tx, ty = -tx, -ty       # profile's depth maps to global z up
     pl = Plane(origin=(x, y, 0.0), x_dir=(nx, ny, 0.0), z_dir=(tx, ty, 0.0))
-    return pl * make_face(Wire(Polyline(*_profile_pts(scale)).edges()))
+    return pl * make_face(Wire(Polyline(
+        *_profile_pts((x, y), (nx, ny), scale)).edges()))
 
 
 def taper_cutters():
@@ -136,7 +169,8 @@ def taper_cutters():
     # section wires directly twists (opposite winding).
     sign = 1.0
     flank_secs = [_station(_flank_pt(y), n_fl, t_fl, rec_fade(y), sign)
-                  for y in (52.0, 58.0, 64.0, 72.0, 120.0, 180.0,
+                  for y in (52.0, 58.0, 64.0, 72.0, 100.0, 125.0,
+                            140.0, 152.0, 164.0, 176.0, 190.0, 210.0,
                             235.0, 252.0)]
     corner_secs = [corner_sec(f, sign) for f in (0.0, 0.25, 0.5, 0.75, 1.0)]
     chamf_secs = [_station(_chamf_pt(y), n_ch, t_ch,

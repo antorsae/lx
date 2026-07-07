@@ -22,11 +22,21 @@ BED_MM = 256.0
 ROUTING_REV = "R4"  # bump when the common routing changes
 
 # safe embossing anchors (flat local rear, clear of pockets/thin zones)
+# (x, y, rot_deg, font, short_label) -- verified flat-rear spots. The
+# TOP shoulders are crescent-tapered to a knife over most of their
+# rear: only the full-thickness corner past the horn tips fits text,
+# with a shortened family+position code at font 2.6.
 EMBOSS_XY = {
-    "1of4_bottom": (70.0, 40.0),
-    "2of4_mid_left": (-95.0, 160.0),
-    "3of4_mid_right": (95.0, 160.0),
-    "4of4_vase": (0.0, 320.6),
+    "1of4_bottom": (70.0, 40.0, 0.0, 4.0, False),
+    "2of4_mid_left": (-95.0, 160.0, 0.0, 4.0, False),
+    "3of4_mid_right": (95.0, 160.0, 0.0, 4.0, False),
+    "4of4_vase": (0.0, 320.6, 0.0, 4.0, False),
+    "shoulder_top_left": (-44.0, 412.0, 0.0, 3.2, False),
+    "shoulder_top_right": (44.0, 412.0, 0.0, 3.2, False),
+    "shoulder_bottom_left": (-55.0, 345.0, 90.0, 3.2, False),
+    "shoulder_bottom_right": (55.0, 345.0, 90.0, 3.2, False),
+    "wing_left": (-71.0, 388.0, -73.5, 4.0, False),
+    "wing_right": (71.0, 388.0, 73.5, 4.0, False),
 }
 
 
@@ -52,17 +62,25 @@ def _emboss(solid, name):
     looking AT the rear; rotated 90 deg on narrow pieces."""
     from build123d import Rot, mirror
 
-    for suffix, (ax, ay) in EMBOSS_XY.items():
+    for suffix, (ax, ay, rot, font, short) in EMBOSS_XY.items():
         if suffix in name:
             break
     else:
-        c = solid.bounding_box().center()
-        ax, ay = c.X, c.Y
-    bb = solid.bounding_box()
-    rot = 90.0 if (bb.size.X < 34.0) else 0.0
-    zr = bb.min.Z
-    txt = mirror(Text(_label(name), font_size=4.0), Plane.YZ)
+        raise SystemExit(f"no emboss anchor for {name}")
+    zr = solid.bounding_box().min.Z
+    if zr < -1.0:
+        zr = 0.0  # foot piece: the plate rear, not the foot tip
+    label = _label(name)
+    if short:
+        label = label.split(" ")[0]
+    txt = mirror(Text(label, font_size=font), Plane.YZ)
     cutter = extrude(Pos(ax, ay, zr - 0.4) * Rot(Z=rot) * txt, amount=0.8)
+    inter = solid & cutter
+    carved = inter.volume if inter is not None else 0.0
+    if carved < 0.42 * cutter.volume:
+        raise SystemExit(
+            f"emboss on {name} not fully in material "
+            f"({carved:.0f}/{cutter.volume:.0f} mm3) -- move the anchor")
     return solid - cutter
 OUT_DIR = Path(__file__).parent / "stl"
 

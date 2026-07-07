@@ -341,7 +341,15 @@ SEAM_CROSSINGS = (
 
 
 def seam_relief_cutters():
-    return [Pos(x, y, z) * Cylinder(r + 1.0, 2.0 * r)
+    # squashed SPHERES (plan r+1.0, z-semi r-0.4): smooth everywhere,
+    # so no wall/cap grazing against the bore -- flat-capped cylinders
+    # left near-tangent slivers the mesher dropped (open STL edges
+    # that read as an exposed duct; the c7 mid_right bug), and the
+    # foot-mode spline's <0.05 lateral shift made it intermittent.
+    # Poles stay inside the bore (z-semi < r); z skins untouched.
+    from build123d import Sphere, scale
+    return [Pos(x, y, z) * scale(Sphere(r + 1.0),
+                                 (1.0, 1.0, (r - 0.4) / (r + 1.0)))
             for x, y, z, r in SEAM_CROSSINGS]
 
 

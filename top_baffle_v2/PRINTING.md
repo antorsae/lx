@@ -58,10 +58,14 @@ a clean front face; textured PEI gives uniform grain — either works.
 * **Dimensional fits** (dovetails run 0.1 mm working clearance;
   insert bores are sized exact): *Precise wall: on*,
   **elephant-foot compensation 0.15 mm**, X-Y hole compensation
-  starting at **+0.05**. Print `stl/lx521_coupon.stl` first (20 min): a B-key
+  starting at **+0.05**. Print `stl/lx521_coupon.stl` first (~90 min at 8 % infill): a B-key
   male/female pair, the O6.4 and O4.6 insert bores, AND the V1
-  upper-pocket wall section (1.2 front / 1.6 floor walls) — tune hole
-  compensation and verify that wall before committing the big pieces.
+  upper-pocket wall section (1.2 front / 1.6 floor walls), plus FOUR
+  fishing-rehearsal blocks carved with the real duct geometry: the
+  entry cluster + O6.8 Y-step, the UM window bend + exit, the TS
+  notch dive, and a stand-foot R14 elbow pair. Tune hole compensation,
+  verify the thin wall, and dry-fish the blocks before committing the
+  big pieces.
 * **Internal voids:** the cable ducts (O3.8–9.3, arched ceilings)
   self-support — no supports on any flat piece. For the floor-stand
   bottom, preview the foot: the connector channel's internal ceiling

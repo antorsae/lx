@@ -55,8 +55,46 @@ def coupon() -> list:
     return [plate, male]
 
 
+def _fishing_blocks():
+    """Real duct geometry carved from region boxes -- fishing rehearsal
+    before the real pieces: (A) the no-foot entry cluster with the twin
+    T ramps, feeders and the O6.8 Y-step; (C) the UM window bend + exit
+    (the hardest pull); (D) the TS notch dive; (B) a stand-foot R14
+    elbow pair. Print with 2 walls / ~8 % infill -- these are practice
+    holes, not structure."""
+    import importlib
+    import os
+    import sys
+
+    regions = {
+        "0": [((-24.0, 42.0, 14.0, 70.0), (0.0, -150.0)),
+              ((-2.0, 296.0, 24.0, 330.0), (40.0, -390.0)),
+              ((-44.0, 390.0, 0.0, 434.0), (120.0, -480.0))],
+        "1": [((-20.0, 2.0, 20.0, 32.0), (64.0, -110.0))],
+    }
+    blocks = []
+    for mode, regs in regions.items():
+        os.environ["LX_STAND_FOOT"] = mode
+        for m in ("top_baffle_nd25fw4", "top_baffle_nd25fw4_cables"):
+            if m in sys.modules:
+                importlib.reload(sys.modules[m])
+            else:
+                importlib.import_module(m)
+        cab = sys.modules["top_baffle_nd25fw4_cables"]
+        cutters = cab.cable_cutters()
+        z0 = -22.0 if mode == "1" else 0.0
+        for (x0, y0, x1, y1), (dx, dy) in regs:
+            blk = Pos((x0 + x1) / 2.0, (y0 + y1) / 2.0,
+                      (z0 + THICKNESS_MM) / 2.0) * Box(
+                x1 - x0, y1 - y0, THICKNESS_MM - z0)
+            for c in cutters:
+                blk -= c
+            blocks.append(Pos(dx, dy, -z0) * blk)
+    return blocks
+
+
 def main() -> None:
-    solids = coupon()
+    solids = coupon() + _fishing_blocks()
     part = solids[0]
     for s in solids[1:]:
         part += s
