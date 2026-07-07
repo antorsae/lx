@@ -56,9 +56,12 @@ def _fit_pieces() -> dict:
     # front wall 18.3-(14.4+2.7)=1.2, floor wall 14.4-2.7-10.1=1.6
     plate -= Pos(28.0, 5.0, 10.1 / 2.0 - 0.5) * Box(24.0, 12.0, 10.1 + 1.0)
     plate -= (Pos(28.0, 0.55, 14.4) * Rot(X=90.0) * Cylinder(2.7, 3.1))
-    # one clean extrusion (trapezoid head + handle rect), z 0..t
+    # one clean extrusion, z 0..t: trapezoid + a grip handle on the
+    # HEAD (wide) side, so when the key drops into the plate's edge
+    # slot the handle sticks OUT past the edge (a neck-side handle would
+    # ram into the plate body -- it cannot then be inserted).
     key2d = unary_union([_trapezoid_up(0.0, 0.0, NECK, HEAD, DEPTH),
-                         sbox(-10.0, -12.0, 10.0, 0.01)])
+                         sbox(-10.0, DEPTH - 0.01, 10.0, DEPTH + 12.0)])
     kface = make_face(Wire(Polyline(*key2d.exterior.coords).edges()))
     male = extrude(Plane.XY * kface, amount=t)
     return {"1_fit_plate": plate, "2_fit_key": male}
