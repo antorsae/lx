@@ -81,6 +81,25 @@ a clean front face; textured PEI gives uniform grain — either works.
   the joint cross-section solid (~5x the bending margin) for ~60 g.
   Handle the finished speaker by the FOOT, not the baffle top.
 
+## Cable fishing protocol
+
+Nobody ever pulls a full route: every duct is open at each seam face,
+so the worst single segment is ~200 mm (a mid piece).
+
+1. **Dry-fish each piece right after printing** — it is the per-piece
+   QC (a collapsed bore costs one reprint now, a rebuild later).
+2. **Thread seam by seam at glue-up**, bottom -> mids -> vase. The
+   dovetail keys align mating duct mouths to <=0.1 mm, and every
+   crossing has a 1 mm lateral funnel relief on both faces.
+3. **Leader**: ~1.5 mm nylon trimmer line or a guitar string, SOLDERED
+   and heat-shrunk to the pair (no taped lumps — the LM pull has only
+   0.4 mm of slack). Talc or silicone grease helps the long UM pull.
+4. **Shared T duct**: fish the T2 pair first (it enters higher,
+   z=9.5), then the T1 pair alongside it through the O6.8 step.
+5. Hardest moments, in order: the UM window bend (R~10, end of its
+   ~500 mm route), the LM snug section (~50 mm at 0.4 slack), the
+   second pair past the T step junction.
+
 ## Assembly notes that interact with the material
 
 * Glue the seams with 5–30 min **epoxy** (open time to seat the

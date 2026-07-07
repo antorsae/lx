@@ -326,8 +326,28 @@ def _entry_ramp(p0, p1, dia):
     )
 
 
+# Duct crossings of the glue seams: (x, y, z, duct r). A vertical
+# relief cylinder (r+1.0, bore-height) at each crossing widens the
+# mouth LATERALLY by 1 mm on both mating faces -- a funnel for the
+# cross-seam fishing hand-off. Lateral only: z skins are untouched
+# (the planar routing already guarantees vertical alignment). Nearest
+# grown key pocket stays >=3.7 clear (seam B TS crossing binds).
+SEAM_CROSSINGS = (
+    (87.94, 120.0, 12.55, 3.9),    # UM x seam A
+    (-80.24, 120.0, 11.5, 3.0),    # TS x seam A
+    (6.45, 315.95, 12.55, 3.9),    # UM x seam B
+    (-33.89, 315.95, 11.5, 3.0),   # TS x seam B
+)
+
+
+def seam_relief_cutters():
+    return [Pos(x, y, z) * Cylinder(r + 1.0, 2.0 * r)
+            for x, y, z, r in SEAM_CROSSINGS]
+
+
 def cable_cutters():
     cutters = []
+    cutters += seam_relief_cutters()
     for name in ("lm", "um", "ts"):
         dia = CABLE_D[name]
         path = Spline(*route_points(name))
