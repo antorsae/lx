@@ -1,19 +1,23 @@
-"""Export the 20-minute print-calibration coupon (lx521_coupon.stl).
+"""Export the print-calibration coupon as SIX separate, print-ready
+STL files (lx521_coupon_*.stl) -- one body per file, each laid flat on
+the bed so the slicer places it without reorientation.
 
-One plate + one loose key exercising every fit that matters before
-committing kilograms of filament:
+  1 fit_plate    dovetail female pocket (grown by the working
+                 CLEARANCE_MM = 0.10) + O6.4 x 7.0 (W22) and O4.6 x 4.0
+                 (10F) heat-set bores opening UP + the V1 upper-pocket
+                 wall section (8.2 wall, O5.4 x 1.0 pin pocket: 1.2
+                 front / 1.6 floor walls)
+  2 fit_key      loose male dovetail key (no clearance) -- tune X-Y
+                 hole compensation until it slides snug into the plate
+  3 fish_entry   the no-foot entry cluster: twin T ramps, feeders and
+                 the O6.8 Y-step
+  4 fish_um_bend the UM window bend + exit -- the hardest single pull
+  5 fish_ts_dive the TS notch dive
+  6 fish_foot    a stand-foot R14 elbow pair
 
-  * dovetail: a female seam-B pocket (grown by the working CLEARANCE_MM
-    = 0.10) in the plate edge + a loose male key -- tune X-Y hole
-    compensation until it slides snugly by hand;
-  * O6.4 x 7.0 bore (W22 M5 heat-set) and O4.6 x 4.0 bore (10F M3
-    heat-set) -- test insert setting;
-  * the V1 UPPER-POCKET WALL SECTION: a ledge replicating the site-2
-    geometry exactly -- 8.2 mm local wall, horizontal O5.4 x 1.0 pin
-    pocket with the 1.2 front wall and 1.6 floor wall. If this chips
-    or prints porous, revisit before trusting 8 of them.
-
-Print flat (plate face down), same profile as the real pieces.
+Fit pieces: same profile as the real parts. Fishing blocks: 2 walls /
+~8 % infill (practice holes, not structure). Dry-fish 3-6 before
+committing kilograms.
 """
 
 from __future__ import annotations
@@ -22,6 +26,9 @@ from pathlib import Path
 
 from build123d import (Box, Cylinder, Plane, Polyline, Pos, Rot, Wire,
                        export_stl, extrude, make_face)
+
+from shapely import box as sbox
+from shapely.ops import unary_union
 
 from top_baffle_nd25fw4 import THICKNESS_MM
 from top_baffle_nd25fw4_b2_split import CLEARANCE_MM, _grown, _trapezoid_up
@@ -35,13 +42,13 @@ def _poly_prism(poly, h):
     return extrude(Plane.XY.offset(-0.5) * face, amount=h + 1.0)
 
 
-def coupon() -> list:
+def _fit_pieces() -> dict:
     t = THICKNESS_MM
     plate = Pos(0.0, 20.0, t / 2.0) * Box(92.0, 40.0, t)
     # female dovetail pocket in the y=40 edge (grown like the real seams)
     pocket = _grown(_trapezoid_up(-28.0, 40.0 - DEPTH, NECK, HEAD, DEPTH))
     plate -= _poly_prism(pocket, t)
-    # heat-set bores from the front (z=t face)
+    # heat-set bores from the top face (open UP for easy insert setting)
     plate -= Pos(0.0, 20.0, t - 3.5) * Cylinder(3.2, 7.2)
     plate -= Pos(14.0, 20.0, t - 2.0) * Cylinder(2.3, 4.2)
     # V1 upper-pocket wall section: ledge with local rear at z=10.1
@@ -49,35 +56,30 @@ def coupon() -> list:
     # front wall 18.3-(14.4+2.7)=1.2, floor wall 14.4-2.7-10.1=1.6
     plate -= Pos(28.0, 5.0, 10.1 / 2.0 - 0.5) * Box(24.0, 12.0, 10.1 + 1.0)
     plate -= (Pos(28.0, 0.55, 14.4) * Rot(X=90.0) * Cylinder(2.7, 3.1))
-    # loose male key (no clearance -- the pocket carries it), parked in
-    # its own clear cell right of the fishing grid
-    male = _poly_prism(_trapezoid_up(90.0, -92.0, NECK, HEAD, DEPTH), t)
-    male += Pos(90.0, -98.0, t / 2.0) * Box(20.0, 12.0, t)
-    return [plate, male]
+    # one clean extrusion (trapezoid head + handle rect), z 0..t
+    key2d = unary_union([_trapezoid_up(0.0, 0.0, NECK, HEAD, DEPTH),
+                         sbox(-10.0, -12.0, 10.0, 0.01)])
+    kface = make_face(Wire(Polyline(*key2d.exterior.coords).edges()))
+    male = extrude(Plane.XY * kface, amount=t)
+    return {"1_fit_plate": plate, "2_fit_key": male}
 
 
-def _fishing_blocks():
-    """Real duct geometry carved from region boxes -- fishing rehearsal
-    before the real pieces: (A) the no-foot entry cluster with the twin
-    T ramps, feeders and the O6.8 Y-step; (C) the UM window bend + exit
-    (the hardest pull); (D) the TS notch dive; (B) a stand-foot R14
-    elbow pair. Print with 2 walls / ~8 % infill -- these are practice
-    holes, not structure."""
+def _fishing_pieces() -> dict:
+    """Real duct geometry carved from a region box, one body per hard
+    fishing spot."""
     import importlib
     import os
     import sys
 
-    # (region box, placement of the region's LOWER-LEFT corner). Blocks
-    # are laid on a grid below the plate (plate occupies y 0..40), each
-    # in its own 44 x 44 cell with >=6 mm gaps -- no fusion.
-    regions = {
-        "0": [((-24.0, 42.0, 14.0, 70.0), (-90.0, -60.0)),    # entry cluster
-              ((-2.0, 296.0, 24.0, 330.0), (-30.0, -60.0)),   # UM window bend
-              ((-44.0, 390.0, 0.0, 434.0), (30.0, -60.0))],   # TS notch dive
-        "1": [((-20.0, 2.0, 20.0, 32.0), (-90.0, -120.0))],   # foot R14 elbow
+    # name -> (LX_STAND_FOOT, region box, rear z0)
+    specs = {
+        "3_fish_entry": ("0", (-24.0, 42.0, 14.0, 70.0), 0.0),
+        "4_fish_um_bend": ("0", (-2.0, 296.0, 24.0, 330.0), 0.0),
+        "5_fish_ts_dive": ("0", (-44.0, 390.0, 0.0, 434.0), 0.0),
+        "6_fish_foot": ("1", (-20.0, 2.0, 20.0, 32.0), -22.0),
     }
-    blocks = []
-    for mode, regs in regions.items():
+    out = {}
+    for name, (mode, (x0, y0, x1, y1), z0) in specs.items():
         os.environ["LX_STAND_FOOT"] = mode
         for m in ("top_baffle_nd25fw4", "top_baffle_nd25fw4_cables"):
             if m in sys.modules:
@@ -85,29 +87,42 @@ def _fishing_blocks():
             else:
                 importlib.import_module(m)
         cab = sys.modules["top_baffle_nd25fw4_cables"]
-        cutters = cab.cable_cutters()
-        z0 = -22.0 if mode == "1" else 0.0
-        for (x0, y0, x1, y1), (px, py) in regs:
-            blk = Pos((x0 + x1) / 2.0, (y0 + y1) / 2.0,
-                      (z0 + THICKNESS_MM) / 2.0) * Box(
-                x1 - x0, y1 - y0, THICKNESS_MM - z0)
-            for c in cutters:
-                blk -= c
-            # move region's lower-left (x0,y0,rear) to the grid cell (px,py)
-            blocks.append(Pos(px - x0, py - y0, -z0) * blk)
-    return blocks
+        blk = Pos((x0 + x1) / 2.0, (y0 + y1) / 2.0,
+                  (z0 + THICKNESS_MM) / 2.0) * Box(
+            x1 - x0, y1 - y0, THICKNESS_MM - z0)
+        for c in cab.cable_cutters():
+            blk -= c
+        out[name] = blk
+    return out
+
+
+def _lay_flat(solid):
+    """Rotate onto the flattest footprint (min Z height), preferring the
+    native pose on ties, then drop bbox-min to the origin."""
+    best_h = solid.bounding_box().size.Z
+    best = solid
+    for rx, ry in ((90.0, 0.0), (0.0, 90.0), (180.0, 0.0)):
+        cand = Rot(X=rx, Y=ry) * solid
+        h = cand.bounding_box().size.Z
+        if h < best_h - 0.5:
+            best_h, best = h, cand
+    bb = best.bounding_box()
+    return Pos(-bb.min.X, -bb.min.Y, -bb.min.Z) * best
 
 
 def main() -> None:
-    solids = coupon() + _fishing_blocks()
-    part = solids[0]
-    for s in solids[1:]:
-        part += s
+    pieces = {**_fit_pieces(), **_fishing_pieces()}
     for d in ("floor_stand", "no_floor_stand"):
-        out = Path(__file__).parent / d / "stl" / "lx521_coupon.stl"
-        out.parent.mkdir(parents=True, exist_ok=True)
-        export_stl(part, str(out), tolerance=0.05, angular_tolerance=0.2)
-        print(f"wrote {out}")
+        stl_dir = Path(__file__).parent / d / "stl"
+        stl_dir.mkdir(parents=True, exist_ok=True)
+        old = stl_dir / "lx521_coupon.stl"
+        if old.exists():
+            old.unlink()
+        for name, solid in pieces.items():
+            out = stl_dir / f"lx521_coupon_{name}.stl"
+            export_stl(_lay_flat(solid), str(out),
+                       tolerance=0.05, angular_tolerance=0.2)
+            print(f"wrote {out.name}")
 
 
 if __name__ == "__main__":

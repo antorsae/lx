@@ -58,7 +58,8 @@ a clean front face; textured PEI gives uniform grain — either works.
 * **Dimensional fits** (dovetails run 0.1 mm working clearance;
   insert bores are sized exact): *Precise wall: on*,
   **elephant-foot compensation 0.15 mm**, X-Y hole compensation
-  starting at **+0.05**. Print `stl/lx521_coupon.stl` first (~90 min at 8 % infill): a B-key
+  starting at **+0.05**. Print the six `stl/lx521_coupon_*.stl` files first (~90 min at
+  8 % infill; each arrives laid flat, one body per file): a B-key
   male/female pair, the O6.4 and O4.6 insert bores, AND the V1
   upper-pocket wall section (1.2 front / 1.6 floor walls), plus FOUR
   fishing-rehearsal blocks carved with the real duct geometry: the
