@@ -71,14 +71,26 @@ def v1_attachments() -> dict:
                "attach_v1a_shoulder_top", out)
 
     b1 = _v1_base(OUTLINE_B1) & keep
-    # NO bottom trim: the raw (b1 - b2) wing already has its inner edge
-    # exactly on the B2 flank -- flush with the V1L mid -- and tapers
-    # naturally to a point where B1 meets B2 (~y=304), with no outline
-    # step. A parallel-offset trim here shaved the inner edge by
-    # 2.2/sin(27.6 deg) = 4.75 mm in X and opened a gap to the mid; a
-    # horizontal cut left a 4.5 mm inward notch. The natural taper has
-    # neither. (`keep` = _box(303, 500) already drops the sub-y=303 dust.)
-    diff = _receivers(b1 - b2, MAGNET_SITES[:2])
+    # Blunt the fragile feather where B1 meets B2 (~y=306.5) with a cut
+    # PERPENDICULAR to the flank through a point ON the B2 line -- so the
+    # inner edge stays exactly on B2 (flush with the V1L mid, no gap) and
+    # the bottom becomes a short blunt end normal to the taper (no thin
+    # line). A horizontal cut would notch, a flank-parallel offset would
+    # shave the inner edge (2.2/sin27.6 = 4.75 mm gap) -- this does
+    # neither. Cut point on the B2 flank at y=CUT_Y.
+    from build123d import Plane
+    CUT_Y = 309.5
+    fdir = (0.88592, -0.46375)         # down-flank (LM chamfer dir)
+    bx = 38.113 + (315.947 - CUT_Y) / 59.827 * 114.288  # B2 x at CUT_Y
+    wing = b1 - b2
+    for sgn in (1.0, -1.0):
+        # half-space plane through the B2 point, normal = down-flank
+        # (mirrored on x); the box fills the removed (down-flank) side
+        n = (sgn * fdir[0], fdir[1], 0.0)
+        cut = (Plane(origin=(sgn * bx, CUT_Y, 9.15), z_dir=n)
+               * Pos(0, 0, 30.0) * Box(140.0, 140.0, 60.0))
+        wing -= cut
+    diff = _receivers(wing, MAGNET_SITES[:2])
     _two_sides(diff, "attach_v1b1_wing", out)
     return out
 
