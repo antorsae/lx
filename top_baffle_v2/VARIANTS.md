@@ -28,7 +28,7 @@ other family's pieces (see matrix).
 
 | Family | Pieces | Fits | Anchoring |
 |---|---|---|---|
-| **A-comp shoulders** (18.3) | 4: `addonA_1..4of4` | B2 vase only | 2 pin magnets/side: flare wall zc=5.0 + crescent arc zc=10.7; outline kinks register |
+| **A-comp shoulders** (18.3) | 4: `addonA_1..4of4` | B2 vase only | 2 FLUSH magnets/side: flare wall zc=5.0 + crescent arc zc=10.7; outline kinks register |
 | **B1 wings** (18.3) | 2: `addonB1_1..2of2` | B2 vase only | same two sites |
 | **V1 A-shoulders** (11.5) | 4: `v1addonA_*` | V1 vase (V1L sets) | TWO pins/side: lower zc=12.5, upper zc=14.4 (in-wall, no bosses) |
 | **V1 B1-wings** (11.5) | 2: `v1addonB1_*` | V1 vase (V1L sets) | two pins/side: lower zc=12.5, upper zc=14.4 (in-wall, no bosses) |
@@ -63,7 +63,7 @@ cosmetic). Tweeter through-bolt length follows the vase septum (18.3:
   azimuth ~137 deg; 180/270 sit on the lane/UM tail).
 * Tweeter pair: M4 through-bolts + nyloc, clamping the crescent.
 * Magnets: D5 x 2 N52 pins everywhere (base pockets 1.0 deep, magnet
-  1.0 proud; receivers 3.2 deep in the attachments).
+  flush; receivers also 2.0 deep -- the two magnets meet level).
 
 See PRINTING.md for print settings and torques; `make check` guards
 clearances, seam keys, route smoothness, and cutter health.

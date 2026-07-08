@@ -274,7 +274,7 @@ into the crescent's rear taper above y~400. The band is capped at
 2.8 mm by the shared O6.0 T duct (z=11.5) hugging the left vase
 walls at ~1.6.
 ALL duct routing identical; V0 mixes with B2 or C7 bottom/mids
-freely. One D5 x 2 pin magnet per side (the SAME magnets as all
+freely. One D5 x 2 FLUSH magnet per side (the SAME magnets as all
 attachments) in a vertical rear-face pocket at (+-46, 324); scarf
 attachments add receivers + register on the outline kinks. The
 B2-family shoulders/wings do NOT fit V0. Guarded by
@@ -296,8 +296,8 @@ routing the vase thins from the REAR, so V1 mounts FRONT-FLUSH with
 the LM section -- no driver misalignment. Pair with V1L for the
 complete thin baffle. 10F mounting: 4 x O4.6 x 4.0 bores from
 the new front for M3 x 3 x O5 brass heat-sets (floor z=7.5 stays 1.9
-above the T-lane roofs at the ring crossings). One D5 x 2 pin magnet
-per side in a vertical rear-face pocket at (+-46, 324); B2 wall
+above the T-lane roofs at the ring crossings). Two D5 x 2 FLUSH
+magnets per side in the flank walls (zc 12.5/14.4); B2 wall
 pockets are skipped (B2 attachments do not fit V1). Guarded by
 test_v1_field (`make check`); STL: lx521_top_v1_4of4_vase
 (--variant v1). Thinner is possible only by externalizing cables to
@@ -343,32 +343,31 @@ torques, and insert installation.
 Attachments mount with neodymium N52 D5 x 2 disc magnets (superimanes
 ref D-05-02-N52, 0.68 kg/pair; 12 needed + spares) so B2 <-> A-comp <->
 B1 are interchangeable without glue. TWO sites per flank side (4 magnets
-in the base total), both PIN type (base magnet glued 1.0 mm proud,
-doubling as a shear dowel; the outline kinks self-register the rest).
-Pockets: base D5.4 x 1.0; attachment receivers D5.8 x 3.2 (2.0 magnet +
-1.0 pin + 0.2 clearance). Polarity: neo stacks ship uniformly oriented
+in the base total), all FLUSH (a 2.0 mm disc in a 2.0 mm pocket on
+BOTH faces, meeting level; the outline kinks/corners self-register --
+a flush disc gives no shear key). Pockets: base and receiver both
+D5.4 x 2.0. Polarity: neo stacks ship uniformly oriented
 -- sharpie-dot the top face of each as you peel; dots face OUT in the
 base, IN in the attachments:
 
 | Site (right; left mirrored) | Wall | Serves | Placement rationale |
 |---|---|---|---|
-| (40.0, 322.4) | flare, waist-kink end | A bottom shoulder, B1 wing lower end | the flank's farthest point from the UM driver (59.2 mm); pin pocket 1.0 deep, 2.6 mm 3D clearance to the T duct |
+| (40.0, 322.4) | flare, waist-kink end | A bottom shoulder, B1 wing lower end | the flank's farthest point from the UM driver (59.2 mm); flush pocket 2.0 deep, ample clearance to the T duct |
 | (17.88, 420.37) | crescent arc, theta=-69.5 deg | A top shoulder, B1 wing top end | as far down-arc as the RECEIVER allows: its bore sits in the narrowing wedge between the arc and the chamfer face the shoulder/wing mates against B2, and its bottom corner keeps 1.3 mm to that face; the rear taper leaves ~12.2 mm of wall (bore raised to z=10.7: 1.7 mm behind the pocket floor); ~7.9 mm to the TS duct, 21.7 from the clamp hole, 57.2 from the UM driver (all re-measured by `make check`) |
 
-At pin sites the proud base magnet enters the receiver and acts as a
-shear dowel. Magnet count per baffle: 4 base + 4 per attachment set
+Magnet count per baffle: 4 base + 4 per attachment set
 (12 with both sets; 24 for a stereo pair).
 
 Gluing: epoxy or CA, magnets degreased. Polarity discipline: use the
 "MARCADO NORTE" batch on the base with NORTH facing out, and mount all
 attachment magnets SOUTH out (check each against a marked one before
-gluing). Glue the base pin magnets first, use them to locate the mating
+gluing). Glue the base magnets first, use them to locate the mating
 receivers' magnets. The other inventory magnets are not suitable here:
 D18 exceeds the 18.3 mm wall, adhesive tape magnets are too weak for a
 structural joint, D10x5 only fits the receiver side.
 
 If you prefer permanent assembly, the same pockets take glue (fill with
-epoxy and clamp); the pin magnets still register the parts.
+epoxy and clamp); the outline kinks register the parts.
 
 ## Printing
 

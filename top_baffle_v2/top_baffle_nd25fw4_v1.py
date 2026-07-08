@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import math
 
-from build123d import Box, Cylinder, Pos
+from build123d import Box, Pos
 
 from top_baffle_nd25fw4 import THICKNESS_MM, baffle_solid
 from top_baffle_nd25fw4_b import TWEETER_DROP_MM
@@ -27,7 +27,6 @@ from top_baffle_nd25fw4_b2 import OUTLINE_B2
 T_FIELD_MM = 11.5
 REAR_MM = THICKNESS_MM - T_FIELD_MM   # 6.8: new rear plane of the vase
 Y_STEP = 315.95
-V1_MAGNET_SITES = [(46.0, 324.0)]
 
 
 def field_cutters():
@@ -38,17 +37,15 @@ def field_cutters():
 
 
 def magnet_pocket_cutters():
-    """Vertical D5.4 x 1.0 pin pockets in the new rear face (z=6.8),
-    plus BOTH wall pin pockets at the B2 site plan positions: the lower
-    flare site at zc=12.5 (left: 2.3 wall to the ts funnel behind a
-    1.0 pocket) and the upper crescent-arc site at zc=14.4 -- inside
-    the as-tapered wall (1.6 floor, ~1.2 front: thin but internal, and
-    pin magnets carry no load)."""
+    """The two FLUSH wall pin pockets at the B2 site plan positions:
+    the lower flare site at zc=12.5 and the upper crescent-arc site at
+    zc=14.4 (inside the as-tapered wall). No rear pockets: the earlier
+    (+-46, 324) rear holes were orphaned (no attachment mates them) and
+    are removed."""
     from top_baffle_nd25fw4_b import (MAG_PIN_BASE_DEPTH_MM,
                                       MAG_POCKET_D_MM, MAGNET_SITES,
                                       _magnet_pocket)
-    cutters = [Pos(sx * x, y, REAR_MM + 1.0) * Cylinder(2.7, 4.0)
-               for sx in (1.0, -1.0) for x, y in V1_MAGNET_SITES]
+    cutters = []
     for site, zc in ((MAGNET_SITES[0], 12.5), (MAGNET_SITES[1], 14.4)):
         x, y, nx, ny, _pin, _zc = site
         for sx in (1.0, -1.0):
@@ -58,13 +55,6 @@ def magnet_pocket_cutters():
     return cutters
 
 
-def magnet_boss_adds():
-    """No bosses: the top site sits at zc=14.4, inside the as-tapered
-    wall (floor 1.6 over the local rear, 1.2 front) -- thin but
-    internal walls beat any visible pad on the sculpted rear."""
-    return []
-
-
 def all_cutters():
     return field_cutters() + magnet_pocket_cutters()
 
@@ -72,8 +62,6 @@ def all_cutters():
 def v1_solid():
     part = baffle_solid(OUTLINE_B2, TWEETER_DROP_MM,
                         crescent_rear_mm=REAR_MM)
-    for a in magnet_boss_adds():
-        part += a
     for c in all_cutters():
         part -= c
     return part

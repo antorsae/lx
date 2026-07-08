@@ -179,7 +179,11 @@ def test_magnet_top_site_walls():
     w_front = THICKNESS_MM - (zc + MAG_RECEIVER_D_MM / 2.0)
     print(f"  receiver front-face wall: {w_front:.2f} mm")
     assert w_front >= 3.0, f"front wall {w_front:.2f} < 3.0"
-    assert MAG_PIN_BASE_DEPTH_MM < MAG_PIN_RECEIVER_DEPTH_MM
+    # FLUSH scheme: base and receiver pockets are equal depth (2.0 =
+    # magnet thickness), so both magnets sit level with their faces.
+    assert MAG_PIN_BASE_DEPTH_MM == MAG_PIN_RECEIVER_DEPTH_MM == 2.0, (
+        f"magnets not flush: base {MAG_PIN_BASE_DEPTH_MM}, "
+        f"receiver {MAG_PIN_RECEIVER_DEPTH_MM}")
 
 
 def test_magnet_pockets_vs_t_ducts():

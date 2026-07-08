@@ -119,17 +119,18 @@ A_COMP_CREST_Y = 391.709  # split plane between top and bottom shoulders
 #     top shoulder and the wing's top end. (Any point of this wall is
 #     ~51 mm from the tweeter center -- the wall is an arc about it --
 #     so no driver-distance freedom exists.)
-# Both sites are 'pin' type: the base magnet is glued 1.0 mm PROUD and
-# enters a deeper receiver pocket in the attachment -> each magnet also
-# acts as a shear dowel; the outline kinks/corners self-register the rest.
+# All magnets are FLUSH: a 2.0 mm disc in a 2.0 mm pocket on BOTH faces,
+# so the two magnets meet face-to-face when the attachment mates the
+# base (no proud pin, no buried receiver). The outline kinks/corners do
+# the shear registration (a flush disc gives no shear key).
 # Pockets are bored at mid-thickness with the axis normal to the wall.
 MAGNET_D_MM = 5.0
 MAGNET_T_MM = 2.0
 MAG_POCKET_D_MM = 5.4            # glued magnet, snug
-MAG_RECEIVER_D_MM = 5.8          # receives the proud pin magnet
-MAG_FLUSH_DEPTH_MM = 2.1
-MAG_PIN_BASE_DEPTH_MM = 1.0      # 2.0 magnet -> 1.0 proud
-MAG_PIN_RECEIVER_DEPTH_MM = 3.2  # 2.0 magnet + 1.0 pin + 0.2 clearance
+MAG_RECEIVER_D_MM = 5.4          # flush magnet, snug (no proud pin)
+MAG_FLUSH_DEPTH_MM = 2.0         # magnet 2.0 -> FLUSH
+MAG_PIN_BASE_DEPTH_MM = 2.0      # magnet 2.0 -> FLUSH
+MAG_PIN_RECEIVER_DEPTH_MM = 2.0  # magnet 2.0 -> FLUSH (was a deep receiver)
 
 # (x, y, nx, ny, pin, zc) on the right flank; the left flank is
 # mirrored. zc is the bore height (mid-thickness unless the crescent

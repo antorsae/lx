@@ -7,7 +7,7 @@ outline: 18.3 -> ~0.5 over W=2.8, fading out at the seam-B land
 taper above y~400. No other keeps needed: the flange seat and M3
 pilots are front-side features.
 
-Magnet interface: one D5.4 x 1.0 pin pocket per side, bored vertically
+Magnet interface: one D5.4 x 2.0 FLUSH pocket per side, bored vertically
 into the REAR face on the lower corner triangle at (+-46, 324) --
 plan-clear of every duct (>=1.5 past radii) and of the bevel band; scarf
 attachments add a receiver there plus outline-kink registration.
@@ -82,8 +82,9 @@ def slide_cutters():
 
 
 def magnet_pocket_cutters():
-    """Vertical D5.4 x 1.0 pin pockets in the REAR face (z 0..1)."""
-    return [Pos(sx * x, y, 1.0) * Cylinder(2.7, 4.0)
+    """Vertical D5.4 x 2.0 FLUSH pockets in the REAR face (z 0..2), for
+    the pending scarf attachments (magnet sits level with the rear)."""
+    return [Pos(sx * x, y, 1.0) * Cylinder(2.7, 3.0)  # z -0.5..2.5 -> 2.0 deep
             for sx in (1.0, -1.0) for x, y in V0_MAGNET_SITES]
 
 

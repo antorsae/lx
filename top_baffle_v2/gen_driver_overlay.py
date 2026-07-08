@@ -136,10 +136,10 @@ def draw(ax, outline, drop, title, labels=True, joint_outline=None):
         jp = outline_polygon(joint_outline)
         ax.plot(jp[:, 0], jp[:, 1], color="0.55", lw=0.9, ls=(0, (4, 2, 1, 2)), zorder=5)
 
-    # D5 x 2 magnets seen edge-on: discs sit in the flank walls with their
-    # axes IN-PLANE (normal to the wall). Solid bar = base magnet in
-    # piece_top_b2 (pin sites protrude 1 mm); lighter bar = the mating
-    # attachment magnet (drawn only for composite variants).
+    # D5 x 2 magnets seen edge-on: discs sit FLUSH in the flank walls
+    # with their axes IN-PLANE (normal to the wall). Solid bar = base
+    # magnet in piece_top_b2 (flush); lighter bar = the mating
+    # attachment magnet, also flush (drawn only for composite variants).
     def mag_bar(px, py, nx, ny, a, b, alpha):
         tx, ty = -ny, nx  # wall tangent
         r = MAGNET_D_MM / 2.0
@@ -154,9 +154,9 @@ def draw(ax, outline, drop, title, labels=True, joint_outline=None):
         for sx in (1, -1):
             px, py, nx, ny = sx * mx, my, sx * mnx, mny
             if pin:
-                mag_bar(px, py, nx, ny, -2.0, 1.0, 0.9)     # base, 1 mm proud
+                mag_bar(px, py, nx, ny, -2.0, 0.0, 0.9)     # base, flush
                 if joint_outline is not None:
-                    mag_bar(px, py, nx, ny, 1.2, 3.2, 0.45)  # attachment side
+                    mag_bar(px, py, nx, ny, 0.0, 2.0, 0.45)  # attachment, flush
             else:
                 mag_bar(px, py, nx, ny, -3.1, -0.1, 0.9)
                 if joint_outline is not None:
