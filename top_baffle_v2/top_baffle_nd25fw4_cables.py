@@ -39,11 +39,13 @@ with the LM section and mount flush:
     t2f z=9.5; far lips up to ~1.4 past the window rim -- the floppy
     AWG24 pairs duck in).
 
-  EXITS (both states): straight near-level oblique bores (EXIT_RAMPS)
-    from the planar mains through the driver-cutout walls; openings
-    center at z~12, through the basket spoke-window zone of each
-    driver. The TS main exits head-on through the scallop rim (the
-    tweeter pole-gap void cannot be occluded).
+  EXITS (both states): straight-back bores (EXIT_RAMPS) from the mains
+    to the REAR face, opening BEHIND each driver so the cable comes out
+    the back and plugs into the rear terminals -- NOT into the cutout
+    cavity (which fouled the basket on assembly). LM exits below its
+    cutout; UM exits just below seam B (in the mid, under the vase).
+    The TS main exits head-on through the scallop rim into the
+    face-to-face tweeter pole gap (its terminal region).
 
 The ducts cross the glue seams; cables are laid/fished through each
 piece's open segments during assembly. Clearances (duct-duct, pilots,
@@ -239,9 +241,18 @@ BIG_RAMPS = {
 # mains a rear-quarter opening is no longer reachable; align the
 # opening with a basket window at assembly). TS exits head-on through
 # the scallop rim -- no ramp needed.
+# Driver-cable exits: straight-back bores from the main to the REAR
+# face (z 12.55 -> -2), opening BEHIND the driver so the cable comes
+# out the back and plugs into the rear terminals -- NOT into the driver
+# cutout cavity (the old exits dumped the cable at z~12 inside the hole,
+# fouling the basket). LM opens below its cutout (y=98, 8.5 mm clear);
+# UM opens just below seam B (y=309, in the mid, 7 mm below the seam and
+# 12 mm from both cutouts -- the vase's own seam-B/cutout band is too
+# tight for a safe rear bore, so the 10F cable emerges at the back just
+# under the vase and dresses up to the 10F terminals).
 EXIT_RAMPS = {
-    "lm": ((-9.9, 86.0, 12.55), (-10.6, 119.0, 12.0), 9.0),
-    "um": ((5.3, 320.5, 12.55), (2.95, 332.4, 12.0), 8.6),
+    "lm": ((-10.5, 98.0, 12.55), (-10.5, 98.0, -2.0), 9.0),
+    "um": ((11.6, 309.1, 12.55), (11.6, 309.1, -2.0), 7.8),
 }
 
 
@@ -271,8 +282,7 @@ def route_points(name):
                  (-7.3, 48.0, 12.55), (-7.7, 58.0, 12.55)]
                 if STAND_FOOT else [])
         return lead + [(-8.0, 68.0, 12.55), (-9.0, 78.0, 12.55),
-                       (-10.0, 90.0, 12.55), (-10.5, 98.0, 12.55),
-                       (-10.5, 103.0, 12.55)]
+                       (-10.0, 90.0, 12.55), (-10.5, 98.0, 12.55)]
     if name == "um":
         # O7.8 at z=12.55 END-TO-END: fan, tangent onto r=119.5 OUTSIDE
         # the W22 pilot ring, arc, diagonal to the seam-B crossing at
@@ -298,8 +308,7 @@ def route_points(name):
             + [(108.01, 251.03), (102.45, 258.63), (95.57, 265.04),
                (87.60, 270.06)]
             + [(61.76, 283.11), (35.92, 296.16)]
-            + [(18.5, 304.7), (14.5, 306.9), (11.6, 309.1), (9.7, 311.7),
-               (8.5, 314.6), (7.4, 317.4), (6.2, 320.0), (4.9, 322.0)],
+            + [(18.5, 304.7), (14.5, 306.9), (11.6, 309.1)],
             [(0, 12.55), (9999, 12.55)])
     if name == "ts":
         return _with_z(_ts_route(), [(0, 11.5), (9999, 11.5)])
@@ -335,8 +344,7 @@ def _entry_ramp(p0, p1, dia):
 SEAM_CROSSINGS = (
     (87.94, 120.0, 12.55, 3.9),    # UM x seam A
     (-80.24, 120.0, 11.5, 3.0),    # TS x seam A
-    (6.45, 315.95, 12.55, 3.9),    # UM x seam B
-    (-33.89, 315.95, 11.5, 3.0),   # TS x seam B
+    (-33.89, 315.95, 11.5, 3.0),   # TS x seam B (UM no longer reaches B)
 )
 
 
@@ -367,7 +375,7 @@ def cable_cutters():
         section = Plane(origin=path @ 0, z_dir=path % 0) * Circle(1.9)
         cutters.append(sweep(section, path=path))
     cutters.append(_entry_ramp(TS_STEP[0], TS_STEP[1], 6.8))
-    # near-level exits through the driver-cutout walls
+    # straight-back exits to the rear face (behind each driver)
     for name, (p0, p1, dia) in EXIT_RAMPS.items():
         cutters.append(_entry_ramp(p0, p1, dia))
     if STAND_FOOT:
