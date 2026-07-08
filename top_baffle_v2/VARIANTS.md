@@ -56,7 +56,7 @@ cosmetic). Tweeter through-bolt length follows the vase septum (18.3:
 
 ## Common hardware (all variants)
 
-* W22: 6x M5 x 6 x O7 heat-sets (bore O6.4 x 7.0).
+* W22: 6x M5 x 5.8 x O6.3 heat-sets (bore O6.4 x 6.8).
 * 10F: 4x M3 x 3 x O5 heat-sets (bore O4.6 x 4.0), pattern clocked to
   (58/148/238/328) — a square rotated +13 deg from 45; 45/90 grids are
   geometrically impossible (the notch dive crosses the pilot ring at

@@ -3,7 +3,7 @@ STL files (lx521_coupon_*.stl) -- one body per file, each laid flat on
 the bed so the slicer places it without reorientation.
 
   1 fit_plate    dovetail female pocket (grown by the working
-                 CLEARANCE_MM = 0.10) + O6.4 x 7.0 (W22) and O4.6 x 4.0
+                 CLEARANCE_MM = 0.10) + O6.4 x 6.8 (W22) and O4.6 x 4.0
                  (10F) heat-set bores opening UP + the V1 upper-pocket
                  wall section (8.2 wall, O5.4 x 1.0 pin pocket: 1.2
                  front / 1.6 floor walls)
@@ -49,7 +49,7 @@ def _fit_pieces() -> dict:
     pocket = _grown(_trapezoid_up(-28.0, 40.0 - DEPTH, NECK, HEAD, DEPTH))
     plate -= _poly_prism(pocket, t)
     # heat-set bores from the top face (open UP for easy insert setting)
-    plate -= Pos(0.0, 20.0, t - 3.5) * Cylinder(3.2, 7.2)
+    plate -= Pos(0.0, 20.0, t - 3.2) * Cylinder(3.2, 7.2)  # O6.4 x 6.8
     plate -= Pos(14.0, 20.0, t - 2.0) * Cylinder(2.3, 4.2)
     # V1 upper-pocket wall section: ledge with local rear at z=10.1
     # (8.2 wall), O5.4 x 1.0 pocket at zc=14.4 bored from the y=0 edge:

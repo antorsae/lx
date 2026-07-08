@@ -10,8 +10,8 @@ hardware incl. the washer seats behind the top pass-throughs at
 (+-20, 70) + 5 mm margin, cable feeders + z-step). The thickness
 transition is a SMOOTHSTEP ramp from full at y=78 to the thin field
 at y=96 -- ending 10 mm short of the D190 cutout edge (y=105.98). The rear plane MATCHES the V1 vase (both 6.8): NO step at seam B.
-W22 mounting unchanged: M5 x 6 x O7 heat-sets, floor z=11.3 keeps a
-4.5 wall over the new rear. Combine V1L bottom+mids with the V1 vase
+W22 mounting: M5 x 5.8 x O6.3 heat-sets, floor z=11.5 keeps a
+4.7 wall over the new rear. Combine V1L bottom+mids with the V1 vase
 for the complete ~12 mm front-flush baffle."""
 
 from __future__ import annotations

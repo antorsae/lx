@@ -58,15 +58,14 @@ walls, and the variant-outline splice assertions.
     pilot floor z=14.3).
   - Lower mid (SEAS W22EX001, 6 x D5.0 flange holes + D8.8 head recess on
     pitch D209.5, measured from E0022_W22EX001.stp): 6 x Ø6.4 bores,
-    7.0 mm deep, aligned VERTICALLY (30/90/...330 deg), for BRASS
-    HEAT-SET inserts M5 x 6 long x Ø7 OD (set with a soldering iron;
-    6 x ~700 N pull-out holds the 2.6 kg driver with a wide margin and
-    survives unlimited R&R). M5 screws pass the D5.0 flange holes
-    natively and seat in the D8.8 recesses. The shallow floor (z=11.3)
-    lets the Ø7.8 UM duct pass UNDER the whole ring at z=5.7 with a
-    1.7 mm no-load membrane (same construction as the T ducts under
-    the 10F ring); seam C clears the 90-deg bore by 2.25 mm and the
-    LM duct keeps 3.05 mm to the 270-deg bore.
+    6.8 mm deep, aligned VERTICALLY (30/90/...330 deg), for BRASS
+    HEAT-SET inserts M5 x 5.8 long x Ø6.3 OD (recommended hole Ø6.4;
+    set with a soldering iron; ~700 N pull-out each holds the 2.6 kg
+    driver with a wide margin and survives unlimited R&R). M5 screws
+    pass the D5.0 flange holes natively and seat in the D8.8 recesses.
+    Floor z=11.5; the ring is plan-clear of every front-half duct
+    (seam C clears the 90-deg bore by 2.25 mm, the LM duct keeps
+    3.05 mm to the 270-deg bore).
 - 2 tweeter-clamp holes @ (±32.56, 451.24) — drawing Ø4.0, printed Ø4.4
   for M4 clearance. The face-to-face ND25FW-4 pair bolts through these,
   sandwiching the baffle crescent between the two faceplates; the pair's
@@ -393,7 +392,7 @@ epoxy and clamp); the pin magnets still register the parts.
    the rear rim of the Ø190 cutout as a fillet — the L22 flange clamps the
    front face, so rear-side reinforcement is invisible.
 5. Set the brass heat-set inserts with a soldering iron (flush,
-   square): six M5 x 6 x Ø7 in the W22 pilots, four M3 x 6 x Ø5 in the
+   square): six M5 x 5.8 x Ø6.3 in the W22 pilots, four M3 x 3 x Ø5 in the
    10F pilots. Mount the W22EX001 lower-mid with M5 screws and the
    10F/8424G00 upper-mid with M3 screws into the inserts, then bolt the
    ND25FW-4 pair through the (±32.56, 451.24) holes with M4 screws and cut

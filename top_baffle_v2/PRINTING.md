@@ -12,13 +12,13 @@ sculpted/stepped rears), and PLA's one real weakness for this job:
 The baffle carries ~3.2 kg of drivers: W22 ~2.6 kg on six inserts,
 10F 0.43 kg on four, the ND25 pair ~0.2 kg clamped. Static load per
 W22 insert is ~5 N against >=600 N conservative pull-out for an
-M5 x 6 x O7 heat-set in PLA (published tests: 900-1400 N) — retention
+M5 x 5.8 x O6.3 heat-set in PLA (published tests: 900-1400 N) — retention
 margin is >100x everywhere. The governing effect is instead that PLA
 relaxes 30-50 % of bolt preload over the first days.
 
 | Fastener | Spec | Torque | Notes |
 |---|---|---|---|
-| W22 | M5 x 14 pan + flat washer into M5 x 6 x O7 heat-set (bore O6.4 x 7.0) | 0.8–1.0 N·m | wave washers; re-torque at 24 h and ~2 weeks |
+| W22 | M5 x 14 pan + flat washer into M5 x 5.8 x O6.3 heat-set (bore O6.4 x 6.8) | 0.8–1.0 N·m | wave washers; re-torque at 24 h and ~2 weeks |
 | 10F | M3 x 8 into M3 x 3 x O5 heat-set (bore O4.6 x 4.0) | 0.30–0.40 N·m | short engagement — do not overdrive |
 | Tweeter pair | M4 through-bolts + nyloc + wave washer; length = septum + faceplates (stock 18.3 septum → ~M4 x 35; V1's 11.5 → ~M4 x 30 — verify stacked) | snug, ~0.5 N·m | clamps the 4.0 mm crescent seat; recheck after a week |
 

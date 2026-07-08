@@ -76,18 +76,17 @@ UM_PILOT_DEPTH_MM = 4.0
 
 # Lower mid: SEAS W22EX001 -- 6 x D5.0 flange holes (D8.8 head recess) on
 # pitch D209.5 (measured from E0022_W22EX001.stp). Mounted with BRASS
-# HEAT-SET inserts M5 x 6 long x D7 OD (ruthex-style): bore D6.4 x 7.0
-# (6.0 insert + 1.0 melt room), set with a soldering iron. M5 screws
-# pass the D5.0 flange holes natively; heads seat in the D8.8 recesses.
-# Pattern aligned VERTICALLY (12 and 6 o'clock). The shallow floor
-# (z=11.3) lets the O7.8 UM duct pass UNDER the ring at z=5.7 with a
-# 1.7 mm no-load membrane (same construction as the T ducts under the
-# 10F ring); seam C clears the 90-deg bore by 2.25 and the LM duct
-# keeps 3.05 to the 270-deg bore.
+# HEAT-SET inserts M5 x 5.8 long x D6.3 OD: bore D6.4 x 6.8 (5.8
+# insert + 1.0 melt room; manufacturer's recommended hole), set with a
+# soldering iron. M5 screws pass the D5.0 flange holes natively; heads
+# seat in the D8.8 recesses. Pattern aligned VERTICALLY (30/90/...330
+# deg). Floor z=11.5; the ring is plan-clear of every front-half duct
+# (LM keeps 3.05 to the 270-deg bore, seam C clears the 90-deg bore by
+# 2.25) -- checked by the suite.
 L22_PILOT_D_MM = 6.4
 L22_PILOT_PCD_MM = 209.5
 L22_PILOT_ANGLES_DEG = (30.0, 90.0, 150.0, 210.0, 270.0, 330.0)
-L22_PILOT_DEPTH_MM = 7.0
+L22_PILOT_DEPTH_MM = 6.8
 
 # STAND_FOOT: piece_bottom carries a fused stand foot (see the split
 # module). With the foot there is no bridge, so the four bridge screw
