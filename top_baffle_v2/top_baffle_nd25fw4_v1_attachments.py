@@ -71,21 +71,14 @@ def v1_attachments() -> dict:
                "attach_v1a_shoulder_top", out)
 
     b1 = _v1_base(OUTLINE_B1) & keep
-    # trim the wing bottom PARALLEL to its native lower edge (the LM
-    # chamfer-extension line), 2.2 above it: drops the knife fin where
-    # the B1-B2 wedge collapses, with no flat-cut corner dent
-    from build123d import Rot
-    ang = math.degrees(math.atan2(9.966, -19.038))
-    n = (0.46375, 0.88592)
-    lp = (57.151 + 2.2 * n[0], 305.981 + 2.2 * n[1])
-    wing_trim = (Pos(lp[0] - 30 * n[0], lp[1] - 30 * n[1], 9.15)
-                 * Rot(Z=ang) * Box(90.0, 60.0, 50.0))
-    trims = [wing_trim, Pos(-lp[0] + 30 * n[0], lp[1] - 30 * n[1], 9.15)
-             * Rot(Z=180.0 - ang) * Box(90.0, 60.0, 50.0)]
-    wing = b1 - b2
-    for t in trims:
-        wing -= t
-    diff = _receivers(wing, MAGNET_SITES[:2])
+    # NO bottom trim: the raw (b1 - b2) wing already has its inner edge
+    # exactly on the B2 flank -- flush with the V1L mid -- and tapers
+    # naturally to a point where B1 meets B2 (~y=304), with no outline
+    # step. A parallel-offset trim here shaved the inner edge by
+    # 2.2/sin(27.6 deg) = 4.75 mm in X and opened a gap to the mid; a
+    # horizontal cut left a 4.5 mm inward notch. The natural taper has
+    # neither. (`keep` = _box(303, 500) already drops the sub-y=303 dust.)
+    diff = _receivers(b1 - b2, MAGNET_SITES[:2])
     _two_sides(diff, "attach_v1b1_wing", out)
     return out
 
