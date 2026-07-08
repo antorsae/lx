@@ -38,10 +38,13 @@ walls, and the variant-outline splice assertions.
   drawing had it at 371.94; all variants now align the UM (and tweeter
   section, and the perimeter above the neck) to the stock LX521.4 baffle
   (`lx521 baffle metric.dxf`, UM at 368.3 with LM at 203.2, LM-aligned).
-- 4 bridge screw holes @ (±20.0, 20.0 / 70.0) — measured on the actual
-  bridge (40.0 × 50.0 pattern, M5-threaded wood holes; the V2 plano's
-  positions were wrong). Ø5.5 through + 90° countersink Ø10.4 on the front
-  face for 5 mm slotted raised-countersunk wood screws.
+- 4 bridge mounting points @ (±20.0, 20.0 / 70.0) — measured on the
+  actual bridge (40.0 × 50.0 pattern; the V2 plano's positions were
+  wrong). BRASS HEAT-SET inserts identical to the W22/LM (bore Ø6.4 ×
+  6.8, M5 × 5.8 × Ø6.3), but bored BLIND from the REAR face (opposite
+  the front-mounted driver inserts): the stock bridge screws in from
+  behind with M5 machine screws. no-stand only. Front face stays solid
+  (no through-hole, no countersink).
 - 2 corner holes Ø4.5 @ (±66.2, 10.0) — OPTIONAL, disabled by default
   (set CORNER_HOLES_ENABLED = True in top_baffle_nd25fw4.py to cut them).
   When enabled: M5 machine screws thread-form through the full 18.3 mm

@@ -22,7 +22,6 @@ from math import cos, radians, sin
 from build123d import (
     Bezier,
     Circle,
-    Cone,
     Cylinder,
     Face,
     Line,
@@ -96,13 +95,15 @@ L22_PILOT_DEPTH_MM = 6.8
 # emit both artifact sets (floor_stand/ and no_floor_stand/).
 STAND_FOOT = os.environ.get("LX_STAND_FOOT", "1") != "0"
 
-# Four bridge mounting holes, per the measured bridge (M5-threaded wood
-# holes, 40.0 x 50.0 pattern, rows 20/70 above the bottom edge). The V2
-# plano's positions/diameter were wrong and are replaced. Fastener: 5 mm
-# slotted raised-countersunk wood screw from the front -> D5.5 clearance
-# through-hole + 90 deg countersink D10.4 on the front face.
-BRIDGE_HOLE_D_MM = 5.5
-BRIDGE_CSK_D_MM = 10.4
+# Four bridge mounting points, per the measured bridge (40.0 x 50.0
+# pattern, rows 20/70 above the bottom edge). Fastener: M5 machine
+# screw from the BRIDGE (behind) into a BRASS HEAT-SET insert -- the
+# SAME insert as the W22/LM (bore D_L22_PILOT x L22_PILOT_DEPTH), but
+# bored BLIND from the REAR face (z=0), i.e. the OPPOSITE side from the
+# front-mounted driver inserts. no-stand only (the stand foot replaces
+# the bridge). See BRIDGE_INSERT_* below (aliased to the L22 pilot).
+BRIDGE_INSERT_D_MM = L22_PILOT_D_MM        # same insert as the W22/LM
+BRIDGE_INSERT_DEPTH_MM = L22_PILOT_DEPTH_MM
 BRIDGE_HOLE_XY = [
     (-20.0, 20.0),
     (20.0, 20.0),
@@ -184,8 +185,8 @@ def baffle_face(outline=OUTLINE, tweeter_drop_mm: float = 0.0) -> Face:
     face = outline_face(outline)
     for cx, cy, dia in (L22_CUTOUT, UM_CUTOUT):
         face -= Pos(cx, cy) * Circle(dia / 2.0)
-    for cx, cy in (BRIDGE_HOLE_XY if not STAND_FOOT else []):
-        face -= Pos(cx, cy) * Circle(BRIDGE_HOLE_D_MM / 2.0)
+    # (bridge mounts are now blind REAR heat-set bores, cut in the 3D
+    # solid -- no through-hole in the 2D face)
     if CORNER_HOLES_ENABLED:
         for cx, cy in CORNER_HOLE_XY:
             face -= Pos(cx, cy) * Circle(CORNER_HOLE_D_MM / 2.0)
@@ -292,13 +293,12 @@ def baffle_solid(outline=OUTLINE, tweeter_drop_mm: float = 0.0,
                                           crescent_front_mm,
                                           crescent_rear_mm):
         part -= cutter
-    # 90 deg countersinks for the bridge screws, front face
-    csk_depth = (BRIDGE_CSK_D_MM - BRIDGE_HOLE_D_MM) / 2.0
-    cone_h = csk_depth + 1.0  # overshoot 1 mm above the face
+    # Bridge mounting: M5 heat-set inserts (same bore as the W22/LM),
+    # BLIND from the REAR face (z=0..depth) -- the opposite side from the
+    # front-mounted driver inserts. The bridge screws in from behind.
     for cx, cy in (BRIDGE_HOLE_XY if not STAND_FOOT else []):
-        part -= Pos(cx, cy, THICKNESS_MM - csk_depth + cone_h / 2.0) * Cone(
-            BRIDGE_HOLE_D_MM / 2.0, BRIDGE_CSK_D_MM / 2.0 + 1.0, cone_h
-        )
+        part -= Pos(cx, cy, BRIDGE_INSERT_DEPTH_MM / 2.0) * Cylinder(
+            BRIDGE_INSERT_D_MM / 2.0, BRIDGE_INSERT_DEPTH_MM)
     return part
 
 

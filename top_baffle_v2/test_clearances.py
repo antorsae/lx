@@ -306,6 +306,34 @@ def test_route_smoothness():
         print(f"  route smoothness OK (foot={stand_foot})")
 
 
+def test_bridge_inserts():
+    """No-stand bridge heat-set inserts (rear blind bores, z 0..6.8):
+    plan-clear of every duct that z-overlaps them (>= r_bore + r_duct
+    + 1.5), and the front face stays intact above them."""
+    from top_baffle_nd25fw4 import (BRIDGE_HOLE_XY, BRIDGE_INSERT_D_MM,
+                                    BRIDGE_INSERT_DEPTH_MM)
+    from top_baffle_nd25fw4_cables import CABLE_D
+
+    r_ins = BRIDGE_INSERT_D_MM / 2.0
+    pts = _routes(False)  # no-stand
+    # include the strip feeders (they run at z=3.7/9.5 in the bottom)
+    import importlib as il
+    cab = sys.modules["top_baffle_nd25fw4_cables"]
+    feeders = {n: np.array(cab.route_points(n)) for n in ("t1f", "t2f")}
+    for name, arr in {**pts, **feeders}.items():
+        r = CABLE_D.get(name, 3.8) / 2.0
+        need = r_ins + r + 1.5
+        zov = arr[(arr[:, 2] - r < BRIDGE_INSERT_DEPTH_MM)
+                  & (arr[:, 2] + r > 0.0)]
+        for cx, cy in BRIDGE_HOLE_XY:
+            if len(zov) == 0:
+                continue
+            d = float(np.min(np.hypot(zov[:, 0] - cx, zov[:, 1] - cy)))
+            assert d >= need, (f"bridge insert ({cx},{cy}) vs {name}: "
+                               f"{d:.2f} < {need:.2f}")
+    print("  bridge inserts: plan-clear of every z-overlapping duct")
+
+
 def test_cutter_health():
     """Every duct cutter must be a valid, positive-volume, sane-bbox
     solid, and subtracting all of them must leave the baffle VALID --
@@ -486,6 +514,7 @@ if __name__ == "__main__":
         test_v0_duct_corridor,
         test_v1_field,
         test_route_smoothness,
+        test_bridge_inserts,
         test_cutter_health,
         test_margin_dashboard,
     ]

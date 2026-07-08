@@ -20,8 +20,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 from top_baffle_nd25fw4 import (
-    BRIDGE_CSK_D_MM,
-    BRIDGE_HOLE_D_MM,
+    BRIDGE_INSERT_D_MM,
     BRIDGE_HOLE_XY,
     CORNER_HOLE_D_MM,
     CORNER_HOLE_XY,
@@ -116,11 +115,12 @@ def draw(ax, outline, drop, title, labels=True, joint_outline=None):
         th = np.linspace(0, 2 * np.pi, 181)
         ax.fill(cx + dia / 2 * np.cos(th), cy + dia / 2 * np.sin(th), color="white", zorder=2)
         circle(cx, cy, dia, color="0.25", lw=1.0, zorder=3)
-    if not STAND_FOOT:  # bridge screws (absent with the fused foot)
+    if not STAND_FOOT:  # bridge heat-set inserts, REAR face (dashed)
         for cx, cy in BRIDGE_HOLE_XY:
-            circle(cx, cy, BRIDGE_HOLE_D_MM, color="0.25", lw=0.8, zorder=3)
-        for cx, cy in BRIDGE_HOLE_XY:  # front-face countersinks (D10.4)
-            circle(cx, cy, BRIDGE_CSK_D_MM, color="0.45", lw=0.6, zorder=3)
+            th = np.linspace(0, 2 * np.pi, 61)
+            ax.plot(cx + BRIDGE_INSERT_D_MM / 2 * np.cos(th),
+                    cy + BRIDGE_INSERT_D_MM / 2 * np.sin(th),
+                    color="0.4", lw=0.8, ls=(0, (3, 2)), zorder=3)
     if CORNER_HOLES_ENABLED:  # M5 thread-forming corner holes (D4.5)
         for cx, cy in CORNER_HOLE_XY:
             circle(cx, cy, CORNER_HOLE_D_MM, color="0.25", lw=0.8, zorder=3)
