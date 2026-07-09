@@ -89,7 +89,11 @@ SEAM_B_Y = 315.95  # exactly at B2's waist kinks -> obtuse seam corners
 # out of the taper in all variants. The RIGHT B-tab sits outboard
 # right B-key at cx=28 clearing the UM window bend (>=1.4 to the
 # between it and the waist kink.
-DOVETAILS_A = [(-63.0, 7.0, 9.0, 5.0), (63.0, 7.0, 9.0, 5.0)]
+# TWO per mid (was one each) so neither half pivots on a single
+# tab. Spread across the flank band, straddling the duct
+# crossings (TS at x=-80, UM at x=+88).
+DOVETAILS_A = [(-103.0, 6.0, 7.0, 5.0), (-63.0, 7.0, 9.0, 5.0),
+               (63.0, 7.0, 9.0, 5.0), (103.0, 6.0, 7.0, 5.0)]
 DOVETAILS_B = [(-19.0, 10.0, 14.0, 6.0), (28.0, 10.0, 14.0, 6.0)]
 # TWO teeth in the ~20 mm mid-mid neck (the only place mid_left and
 # mid_right touch -- the W22 cutout is between them below y=296), so
