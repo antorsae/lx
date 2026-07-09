@@ -21,7 +21,8 @@ Pieces (all fit a 256 x 256 bed lying flat):
   piece_mid_right  ~162.0 x 202 mm   (male dovetails up + into mid_left)
   piece_top_b2     ~121.3 x 138 mm   (the whole B2 mini-vase + crescent)
 
-Female sides are opened up by CLEARANCE_MM using a mitred 2D polygon offset,
+Female sides are opened up by CLEARANCE_MM (0.05, a snug fit --
+tune X-Y hole compensation on the coupon first) via a mitred offset,
 so every mating surface has a uniform assembly gap.
 """
 
@@ -46,7 +47,7 @@ from top_baffle_nd25fw4_b import TWEETER_DROP_MM, magnet_base_cutters
 from top_baffle_nd25fw4_b2 import OUTLINE_B2
 from top_baffle_nd25fw4_cables import cable_cutters
 
-CLEARANCE_MM = 0.10
+CLEARANCE_MM = 0.05
 
 # Fused stand foot on piece_bottom (STAND_FOOT flag lives in the base
 # module -- it also removes the bridge pass-throughs and reroutes the
@@ -90,8 +91,12 @@ SEAM_B_Y = 315.95  # exactly at B2's waist kinks -> obtuse seam corners
 # between it and the waist kink.
 DOVETAILS_A = [(-63.0, 7.0, 9.0, 5.0), (63.0, 7.0, 9.0, 5.0)]
 DOVETAILS_B = [(-19.0, 10.0, 14.0, 6.0), (28.0, 10.0, 14.0, 6.0)]
-# small and low so the near-center cable vias pass beside it
-DOVETAIL_C = (300.5, 6.0, 8.0, 4.0)
+# TWO teeth in the ~20 mm mid-mid neck (the only place mid_left and
+# mid_right touch -- the W22 cutout is between them below y=296), so
+# the halves cannot pivot and the joint isn't a single fragile nub.
+# neck 7 (beefed from 6), heads 8.5, spaced with >=1 mm to the cutout
+# (y~295.5), seam B (316), and each other. mid_right carries the tabs.
+DOVETAILS_C = [(300.75, 7.0, 8.5, 4.0), (310.75, 7.0, 8.5, 4.0)]
 SEAM_C_X = -5.6  # clears the 90-deg W22 insert bore (edge at x=-3.9)
 
 XMAX = 200.0  # anything beyond the baffle outline
@@ -125,17 +130,16 @@ def _above_region(seam_y: float, dovetails) -> Polygon:
 
 
 def _right_region() -> Polygon:
-    cy, neck, head, depth = DOVETAIL_C
     s = SEAM_C_X
-    tab = Polygon(
-        [
+    parts = [box(s, 50.0, XMAX, 400.0)]
+    for cy, neck, head, depth in DOVETAILS_C:
+        parts.append(Polygon([
             (s, cy - neck / 2.0),
             (s, cy + neck / 2.0),
             (s - depth, cy + head / 2.0),
             (s - depth, cy - head / 2.0),
-        ]
-    )
-    return unary_union([box(s, 50.0, XMAX, 400.0), tab])
+        ]))
+    return unary_union(parts)
 
 
 def _prism(poly: Polygon):

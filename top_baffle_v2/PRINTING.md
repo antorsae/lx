@@ -56,7 +56,8 @@ a clean front face; textured PEI gives uniform grain — either works.
   (overhang fan 100 %), outer wall <=120 mm/s, keep the filament
   profile's volumetric limit (~12–16 mm³/s). Strength lives in layer
   adhesion, not speed.
-* **Dimensional fits** (dovetails run 0.1 mm working clearance;
+* **Dimensional fits** (dovetails run a SNUG 0.05 mm clearance --
+  tune hole compensation on the coupon until the key slides firmly;
   insert bores are sized exact): *Precise wall: on*,
   **elephant-foot compensation 0.15 mm**, X-Y hole compensation
   starting at **+0.05**. Print the six `stl/lx521_coupon_*.stl` files first (~90 min at
@@ -95,7 +96,7 @@ so the worst single segment is ~200 mm (a mid piece).
 1. **Dry-fish each piece right after printing** — it is the per-piece
    QC (a collapsed bore costs one reprint now, a rebuild later).
 2. **Thread seam by seam at glue-up**, bottom -> mids -> vase. The
-   dovetail keys align mating duct mouths to <=0.1 mm, and every
+   dovetail keys align mating duct mouths to <=0.05 mm, and every
    crossing has a 1 mm lateral funnel relief on both faces.
 3. **Leader**: ~1.5 mm nylon trimmer line or a guitar string, SOLDERED
    and heat-shrunk to the pair (no taped lumps — the LM pull has only

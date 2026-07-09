@@ -367,7 +367,7 @@ def test_seam_keys_vs_ducts():
     """Every seam dovetail (grown female pocket) must keep a wall to
     every duct crossing its seam -- the check that was missing when the
     deep reroute ran the UM arc straight through the old +-97 A-keys."""
-    from top_baffle_nd25fw4_b2_split import (DOVETAIL_C, DOVETAILS_A,
+    from top_baffle_nd25fw4_b2_split import (DOVETAILS_A, DOVETAILS_C,
                                              DOVETAILS_B, SEAM_A_Y,
                                              SEAM_B_Y, SEAM_C_X)
     from top_baffle_nd25fw4_cables import CABLE_D
@@ -379,9 +379,9 @@ def test_seam_keys_vs_ducts():
     for cx, _n, h, d in DOVETAILS_B:
         rects.append((cx - h / 2 - 0.1, cx + h / 2 + 0.1,
                       SEAM_B_Y - d - 0.1, SEAM_B_Y + d + 0.1))
-    cy, _n, h, d = DOVETAIL_C
-    rects.append((SEAM_C_X - d - 0.1, SEAM_C_X + d + 0.1,
-                  cy - h / 2 - 0.1, cy + h / 2 + 0.1))
+    for cy, _n, h, d in DOVETAILS_C:
+        rects.append((SEAM_C_X - d - 0.1, SEAM_C_X + d + 0.1,
+                      cy - h / 2 - 0.1, cy + h / 2 + 0.1))
     for stand_foot in (True, False):
         for name, pts in _routes(stand_foot).items():
             r = CABLE_D.get(name, 3.8) / 2.0
