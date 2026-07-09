@@ -92,15 +92,15 @@ SEAM_B_Y = 315.95  # exactly at B2's waist kinks -> obtuse seam corners
 # TWO per mid (was one each) so neither half pivots on a single
 # tab. Spread across the flank band, straddling the duct
 # crossings (TS at x=-80, UM at x=+88).
-DOVETAILS_A = [(-103.0, 6.0, 7.0, 5.0), (-63.0, 7.0, 9.0, 5.0),
-               (63.0, 7.0, 9.0, 5.0), (103.0, 6.0, 7.0, 5.0)]
+# inner teeth SHALLOW (depth 3) and at +-66 so the wall to the LM
+# cutout (which bulges to x=57 at the seam-band top) stays ~7 mm, not
+# ~1.5; outer teeth (+-103, depth 5) are the main anchor.
+DOVETAILS_A = [(-103.0, 6.0, 7.0, 5.0), (-66.0, 7.0, 9.0, 3.0),
+               (66.0, 7.0, 9.0, 3.0), (103.0, 6.0, 7.0, 5.0)]
 DOVETAILS_B = [(-19.0, 10.0, 14.0, 6.0), (28.0, 10.0, 14.0, 6.0)]
-# TWO teeth in the ~20 mm mid-mid neck (the only place mid_left and
-# mid_right touch -- the W22 cutout is between them below y=296), so
-# the halves cannot pivot and the joint isn't a single fragile nub.
-# neck 7 (beefed from 6), heads 8.5, spaced with >=1 mm to the cutout
-# (y~295.5), seam B (316), and each other. mid_right carries the tabs.
-DOVETAILS_C = [(300.75, 7.0, 8.5, 4.0), (310.75, 7.0, 8.5, 4.0)]
+# ONE tooth in the ~20 mm mid-mid neck (per user preference), centered
+# and beefed (neck 7, head 8.5). mid_right carries the tab.
+DOVETAILS_C = [(305.0, 7.0, 8.5, 4.0)]
 SEAM_C_X = -5.6  # clears the 90-deg W22 insert bore (edge at x=-3.9)
 
 XMAX = 200.0  # anything beyond the baffle outline
