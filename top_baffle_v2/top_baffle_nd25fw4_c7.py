@@ -78,7 +78,7 @@ def rec_fade(y: float) -> float:
 # duct's full plan width, not just under the centerline (the c7
 # mid_right exposed-slot bug). (arc_r about LM center, duct z, bore r,
 # side: +1 right / -1 left.)
-_DUCT_ARCS = ((119.5, 12.55, 3.9, 1.0), (114.0, 11.5, 3.0, -1.0))
+_DUCT_ARCS = ((119.5, 12.55, 3.9, 1.0), (116.5, 11.5, 3.0, -1.0))
 _LM_C = (0.0, 200.981)
 
 

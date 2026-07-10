@@ -4,11 +4,19 @@ The baffle prints as four pieces joined at three seams: **piece_bottom**
 (1of4, carries the fused stand foot or the bridge holes),
 **piece_mid_left / piece_mid_right** (2-3of4) — together the "LM
 section" — and **piece_top** (4of4, the "vase": 10F + tweeter pair).
-Every variant below shares ONE routing (round-4 front-datum: LM O8.2 @
-z=12.55, UM O7.8 @ 12.55, shared T O6.0 @ 11.5 + strip feeders), one
-seam system (A: y=120 keys +-63; B: y=315.95 keys -19/+28; C: x=-5.6),
-and one fastener set — that is what makes the pieces interchangeable.
-All exist in `floor_stand/` and `no_floor_stand/` builds.
+Every variant below shares ONE routing (round-5 flush-ready: LM O8.2 @
+z=12.55 ending y=84, UM O7.8 @ 12.55 riding its r=119.5 arc to a rear
+exit at (78.4, 291), shared T @ 11.5 up the r=116.5 arc — O6.0 except
+a W6.6 x H4.4 oval at zc=10.45 through the vase, where it passes UNDER
+the MU10 flange seat + strip feeders), one seam system (A: y=120 keys
++-66/+-103; B: y=315.95 keys -19/+28; C: x=-5.6), and one fastener set
+— that is what makes the pieces interchangeable. All exist in
+`floor_stand/` and `no_floor_stand/` builds.
+
+Drivers (LX521.4 production): LM = SEAS **U22REX/P-SL** (H1659-08,
+flange O220.6 x 6.0 measured); UM = SEAS **MU10RB-SL** (H1658-04,
+flange O98 x 4.0 measured). Older comments naming the LX521 prototype
+drivers (W22EX001 / 10F) refer to the same cutout/pilot geometry.
 
 ## Base variants
 
@@ -19,6 +27,7 @@ All exist in `floor_stand/` and `no_floor_stand/` builds.
 | **V0** | vase | Rear knife band: REAR-side 18.3 -> 0.5 over the last 2.8 mm of the vase outline (same sculpted side as C7); front intact. | `lx521_top_v0_4of4_vase` |
 | **V1** | vase | Thin FLUSH vase: 11.5 (material z 6.8..18.3). Crescent re-derived (4.0 clamp seat at stock z); tweeter septum 11.5 (shorter standoffs, pair spacing -6.8); one shared front plane. | `lx521_top_v1_4of4_vase` |
 | **V1L** | bottom + mids | Thin FLUSH LM section: 11.5 (z 6.8..18.3 -- SAME plane as the V1 vase: no seam-B step), smoothstep ramp y=78..96 to the full strip. O8.2 LM duct is the 11.5 binder (snug 2x2.5 fishing). | `lx521_top_v1l_1..3of4` (its `--variant v1l` export bundles the V1 vase = the complete ~12 mm baffle) |
+| **V1LF** | all 4 | **V1L + FLUSH drivers**: front flange recesses (U22 O221.2 x 6.0, MU10 O98.6 x 4.0 — depths = owner-measured flange thicknesses, `RECESS_CLR_MM` 0.6) so both mids sit dead-level with the front plane. Insert bores re-cut from the seats at 6.2 (the owner's M5 x 5.8 inserts + 0.4 settle; use **M5 x 12** screws here); six straight O9.6 pad buttons on the rear (1.5 proud, chamfered rim, uncut plate material, concentric with the bores) restore the U22 insert stack -- irreducible: the 5.5 wall under the seat cannot swallow a 5.8 insert. Seam-A inner keys and the seat floor share the flange band — the steel flange clamps across seam A on assembly. Seam-B keys are FLIPPED in this set (tabs hang down from the vase into mid pockets BELOW the seam, left tooth at x=-23.6 head 9): the stock up-keys straddle the MU10 seat ring and would put the flange on the dovetail joint. SL: mids "must not be recessed" — this is a deliberate experiment arm vs that voicing (DSP re-EQ per configuration). | `lx521_top_v1lf_1..4of4` |
 
 **V1 vs V1L:** V1 = thin TOP piece; V1L = thin BOTTOM+MIDS. Pair them
 for the full front-flush thin baffle; either also works alone on the
@@ -53,6 +62,15 @@ Notes: mixed-thickness key joints mate on the thinner piece's depth
 (the through-pockets leave a shallow open notch on the hidden rear —
 cosmetic). Tweeter through-bolt length follows the vase septum (18.3:
 ~M4x35; 11.5: ~M4x30).
+
+**V1LF is a complete 4-piece set** (recessed seats span seam A and
+live on both mids + vase), so it does NOT mix with other families:
+its seam-A inner keys are height-shaved under the U22 seat and its
+pilot bores sit deeper. Everything proud-mounted above mixes freely.
+Flush vs proud on the SAME V1L geometry (V1L set vs V1LF set) is the
+cleanest flange-diffraction A/B this project offers — SL voiced the
+LX521 with proud flanges and straight un-chamfered holes, so treat
+V1L as the as-designed reference arm.
 
 ## Common hardware (all variants)
 

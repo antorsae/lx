@@ -98,6 +98,16 @@ SEAM_B_Y = 315.95  # exactly at B2's waist kinks -> obtuse seam corners
 DOVETAILS_A = [(-103.0, 6.0, 7.0, 5.0), (-66.0, 7.0, 9.0, 3.0),
                (66.0, 7.0, 9.0, 3.0), (103.0, 6.0, 7.0, 5.0)]
 DOVETAILS_B = [(-19.0, 10.0, 14.0, 6.0), (28.0, 10.0, 14.0, 6.0)]
+# V1LF flips seam B: tabs hang DOWN from the vase into mid pockets
+# BELOW the seam. The stock up-tabs/pockets straddle the MU10
+# flange-recess ring (its bottom reaches y=316.8), which would seat
+# the flange partly ON the dovetail joint; below the seam both
+# flange seats stay monolithic. The left tooth threads between the
+# U22 recess ring (pocket inner edge |x| >= 18.9 at 6 deep) and the
+# TS seam-B crossing relief (grown-pocket gap 1.75); the right tooth
+# clears the ring as-is. V1LF is a non-mixing 4-piece set, so the
+# flipped keys break no cross-family compatibility.
+DOVETAILS_B_V1LF = [(-23.6, 7.0, 9.0, 6.0), (28.0, 10.0, 14.0, 6.0)]
 # ONE tooth in the ~20 mm mid-mid neck (per user preference), centered
 # and beefed (neck 7, head 8.5). mid_right carries the tab.
 DOVETAILS_C = [(305.0, 7.0, 8.5, 4.0)]
@@ -117,10 +127,31 @@ def _trapezoid_up(cx: float, y: float, neck: float, head: float, depth: float) -
     )
 
 
-def _below_region(seam_y: float, dovetails) -> Polygon:
-    parts = [box(-XMAX, -20.0, XMAX, seam_y)]
-    parts += [_trapezoid_up(cx, seam_y, n, h, d) for cx, n, h, d in dovetails]
-    return unary_union(parts)
+def _trapezoid_down(cx: float, y: float, neck: float, head: float, depth: float) -> Polygon:
+    return Polygon(
+        [
+            (cx - neck / 2.0, y),
+            (cx + neck / 2.0, y),
+            (cx + head / 2.0, y - depth),
+            (cx - head / 2.0, y - depth),
+        ]
+    )
+
+
+def _below_region(seam_y: float, dovetails, tabs_up: bool = True) -> Polygon:
+    """tabs_up: the below piece carries up-tabs (stock). Otherwise the
+    below piece carries POCKETS (down-trapezoid notches) and the piece
+    above inherits down-tabs via the same complement/grow machinery --
+    growing a notched polygon shrinks the notches, which lands the
+    0.05 clearance on the male side instead of the female (same fit)."""
+    below = box(-XMAX, -20.0, XMAX, seam_y)
+    if tabs_up:
+        return unary_union(
+            [below] + [_trapezoid_up(cx, seam_y, n, h, d)
+                       for cx, n, h, d in dovetails])
+    for cx, n, h, d in dovetails:
+        below = below.difference(_trapezoid_down(cx, seam_y, n, h, d))
+    return below
 
 
 def _above_region(seam_y: float, dovetails) -> Polygon:
@@ -158,11 +189,13 @@ def _grown(poly: Polygon) -> Polygon:
 
 def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
            shape_cuts=(), shape_adds=(), magnet_pockets=True,
-           crescent_front_mm=None, crescent_rear_mm=0.0) -> dict:
+           crescent_front_mm=None, crescent_rear_mm=0.0,
+           seam_b_dovetails=None, seam_b_tabs_up: bool = True) -> dict:
     """Split the (optionally re-shaped) baffle into the four print
     pieces. ``shape_cuts``/``shape_adds`` are applied before the ducts
     are cut -- used by variant C7 (LM knife-edge taper + T-duct ribs);
-    the ducts then re-cut through any added material."""
+    the ducts then re-cut through any added material. V1LF overrides
+    the seam-B keys (DOVETAILS_B_V1LF, tabs DOWN from the vase)."""
     baffle = baffle_solid(outline, tweeter_drop_mm,
                           crescent_front_mm or THICKNESS_MM,
                           crescent_rear_mm)
@@ -175,7 +208,9 @@ def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
         baffle -= duct
 
     below_a = _below_region(SEAM_A_Y, DOVETAILS_A)
-    below_b = _below_region(SEAM_B_Y, DOVETAILS_B)
+    below_b = _below_region(SEAM_B_Y,
+                            seam_b_dovetails or DOVETAILS_B,
+                            tabs_up=seam_b_tabs_up)
     right_c = _right_region()
 
     bottom = baffle - _prism(_above_region(SEAM_A_Y, DOVETAILS_A))

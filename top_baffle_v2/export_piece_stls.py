@@ -19,7 +19,10 @@ from top_baffle_nd25fw4_attachments import attachments
 from top_baffle_nd25fw4_b2_split import pieces
 
 BED_MM = 256.0
-ROUTING_REV = "R4"  # bump when the common routing changes
+ROUTING_REV = "R5"  # bump when the common routing changes
+# R5: flush-recess-ready routing -- TS arc r=116.5, LM tail ends y=85,
+# UM rides its r=119.5 arc to +49 deg, TS vase stretch is a flattened
+# oval under the MU10 flange seat. See the cables module docstring.
 
 # safe embossing anchors (flat local rear, clear of pockets/thin zones)
 # (x, y, rot_deg, font, short_label) -- verified flat-rear spots. The
@@ -43,8 +46,8 @@ EMBOSS_XY = {
 def _label(name):
     """Short provenance code, e.g. B2-1, V1L-3, V1A-TL, B1-WL."""
     n = name.replace("lx521_top_", "")
-    fam = {"base": "B2", "c7base": "C7", "v1l": "V1L", "v1": "V1",
-           "addonA": "A", "addonB1": "B1", "v1addonA": "V1A",
+    fam = {"base": "B2", "c7base": "C7", "v1l": "V1L", "v1lf": "V1LF",
+           "v1": "V1", "addonA": "A", "addonB1": "B1", "v1addonA": "V1A",
            "v1addonB1": "V1B1"}
     head = n.split("_")[0]
     code = fam.get(head, head.upper())
@@ -67,7 +70,14 @@ def _emboss(solid, name):
             break
     else:
         raise SystemExit(f"no emboss anchor for {name}")
-    zr = solid.bounding_box().min.Z
+    # rear z AT the anchor, not the piece's global min (V1LF pad
+    # buttons and the stand foot both undercut the plate rear)
+    from build123d import Cylinder
+
+    pin = solid & (Pos(ax, ay, 0.0) * Cylinder(0.6, 400.0))
+    if pin is None or not pin.volume:
+        raise SystemExit(f"emboss anchor for {name} is off the solid")
+    zr = pin.bounding_box().min.Z
     if zr < -1.0:
         zr = 0.0  # foot piece: the plate rear, not the foot tip
     label = _label(name)
@@ -104,14 +114,19 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--outdir", type=Path, default=OUT_DIR,
                     help="directory for the STLs (default: stl/)")
-    ap.add_argument("--variant", choices=("b2", "c7", "v0", "v1", "v1l"), default="b2",
+    ap.add_argument("--variant", choices=("b2", "c7", "v0", "v1", "v1l", "v1lf"),
+                    default="b2",
                     help="b2: base pieces + attachments; c7: the four "
                          "LM-knife-taper base pieces (attachments and "
                          "piece_top are shared with b2)")
     args = ap.parse_args()
     out_dir = args.outdir
     out_dir.mkdir(parents=True, exist_ok=True)
-    if args.variant == "v1l":
+    if args.variant == "v1lf":
+        from top_baffle_nd25fw4_v1lf_split import pieces_v1lf
+        parts = {STL_NAMES[k].replace("lx521_top_base_", "lx521_top_v1lf_"):
+                 v for k, v in pieces_v1lf().items()}
+    elif args.variant == "v1l":
         from top_baffle_nd25fw4_v1l_split import pieces_v1l
         parts = {STL_NAMES[k].replace("lx521_top_base_", "lx521_top_v1l_"):
                  v for k, v in pieces_v1l().items()}

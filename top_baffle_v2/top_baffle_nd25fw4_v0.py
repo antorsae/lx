@@ -43,15 +43,56 @@ def _d_seg(p, a, b):
     return math.dist(p, (a[0] + t * vx, a[1] + t * vy))
 
 
+def _ts_corridor_pts():
+    """Plan knots of the shared T duct through the crest transition /
+    notch entry (mirrored to +x: the band law is |x|-symmetric, so the
+    clamp relieves BOTH sides -- the right one purely cosmetically).
+    Round-5's oval (zc=10.45, edge at zero height) runs closer to the
+    bevel than the old round duct did; without this clamp the band
+    cuts to z~14 across the tube's outboard edge near y=398."""
+    from top_baffle_nd25fw4_cables import _ts_route
+    return [(abs(x), y) for x, y in _ts_route() if 378.0 <= y <= 424.0]
+
+
+_TS_CLAMP_PTS = None
+
+
+def _duct_clamp_cut(x, y):
+    """Max REAR removal over the T-duct corridor: cut <= zc - drop - 1.8
+    (LAW skin 1.8 nets >=1.4 on the ruled-loft solid, the same
+    law-vs-solid allowance as C7's 2.0 -> 1.6). Fades 2.2 past the
+    tube edge."""
+    global _TS_CLAMP_PTS
+    if _TS_CLAMP_PTS is None:
+        _TS_CLAMP_PTS = _ts_corridor_pts()
+    from top_baffle_nd25fw4_cables import ts_section
+    p = (abs(x), y)
+    d = min(_d_seg(p, a, b)
+            for a, b in zip(_TS_CLAMP_PTS, _TS_CLAMP_PTS[1:]))
+    w2, h2, zc = ts_section(y)
+    if d >= w2 + 3.0:
+        return THICKNESS_MM
+    drop = h2 * math.sqrt(max(1.0 - min(d / w2, 1.0) ** 2, 0.0))
+    base = zc - drop - 1.8
+    if d > w2 + 1.5:  # 1.5 shelf past the edge, then smooth fade-out
+        f = _smoothstep((d - w2 - 1.5) / 1.5)
+        return base + f * (THICKNESS_MM - base)
+    return base
+
+
 def rear_cut_at(x, y):
-    """REAR-side removal depth of the V0 bevel (front plane intact)."""
+    """REAR-side removal depth of the V0 bevel (front plane intact),
+    clamped along the T-duct corridor (crest transition/notch entry)."""
     if not (315.9 < y < 419.0):
         return 0.0
     d = min(_d_seg((abs(x), y), *_FLARE), _d_seg((abs(x), y), *_CHAMF))
     target = T_EDGE_MM + (THICKNESS_MM - T_EDGE_MM) * _smoothstep(d / W_SLIDE_MM)
     keep = 1.0 - _smoothstep((y - 318.0) / 6.0)      # seam-B land
     keep = max(keep, _smoothstep((y - 400.0) / 8.0))  # crescent blend
-    return (THICKNESS_MM - target) * (1.0 - keep)
+    cut = (THICKNESS_MM - target) * (1.0 - keep)
+    if 378.0 < y < 419.0:
+        cut = min(cut, _duct_clamp_cut(x, y))
+    return cut
 
 
 def _wall_x(y):
@@ -76,7 +117,8 @@ def _ysection(y, n=14):
 
 def slide_cutters():
     ys = (316.5, 319.0, 322.0, 326.0, 332.0, 340.0, 350.0, 360.0,
-          370.0, 380.0, 388.0, 392.0, 396.0, 400.0, 404.0, 408.0)
+          370.0, 380.0, 386.0, 390.0, 392.0, 394.0, 396.0, 398.0,
+          400.0, 402.0, 404.0, 406.0, 408.0)
     right = loft([_ysection(y) for y in ys], ruled=True)
     return [right, mirror(right, about=Plane.YZ)]
 

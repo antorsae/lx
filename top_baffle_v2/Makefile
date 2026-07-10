@@ -32,18 +32,29 @@ GENS := top_baffle_nd25fw4_b2_split top_baffle_nd25fw4_b2 \
         top_baffle_nd25fw4_c7 top_baffle_nd25fw4_c7_split \
         top_baffle_nd25fw4_v0 top_baffle_nd25fw4_v0_split \
         top_baffle_nd25fw4_v1 top_baffle_nd25fw4_v1_split \
-        top_baffle_nd25fw4_v1l_split top_baffle_nd25fw4_v1_attachments
+        top_baffle_nd25fw4_v1l_split top_baffle_nd25fw4_v1lf_split \
+        top_baffle_nd25fw4_v1_attachments
 
 OVERLAY_PNGS = baffle_b1_drivers.png baffle_b2_drivers.png \
                baffle_variants_drivers.png
 
-VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)/stl/.stamp_v0 $(1)/stl/.stamp_v1 $(1)/stl/.stamp_v1l \
+VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)/stl/.stamp_v0 $(1)/stl/.stamp_v1 $(1)/stl/.stamp_v1l $(1)/stl/.stamp_v1lf \
                   $(addprefix $(1)/,$(addsuffix .step,$(GENS))) \
                   $(1)/baffle_cable_routing.png \
                   $(addprefix $(1)/,$(OVERLAY_PNGS))
 
-.PHONY: all floor_stand no_floor_stand common check clean
+.PHONY: all floor_stand no_floor_stand common check manifold clean
 all: floor_stand no_floor_stand common
+	$(PYTHON) check_manifold.py
+
+manifold: check_manifold.py
+	$(PYTHON) check_manifold.py
+
+# polar-measurement turntable (mates under the floor-stand foot only)
+floor_stand: floor_stand/stl/.stamp_polar
+floor_stand/stl/.stamp_polar: polar_index_base.py
+	$(PYTHON) polar_index_base.py
+	@touch $@
 floor_stand: $(call VARIANT_TARGETS,floor_stand)
 no_floor_stand: $(call VARIANT_TARGETS,no_floor_stand)
 common: top_baffle_nd25fw4_attachments.step
@@ -78,6 +89,11 @@ $(1)/stl/.stamp_v1: $(SRCS) export_piece_stls.py
 
 $(1)/stl/.stamp_v1l: $(SRCS) export_piece_stls.py
 	LX_STAND_FOOT=$(2) $(PYTHON) export_piece_stls.py --variant v1l \
+	    --outdir $(1)/stl
+	@touch $$@
+
+$(1)/stl/.stamp_v1lf: $(SRCS) export_piece_stls.py
+	LX_STAND_FOOT=$(2) $(PYTHON) export_piece_stls.py --variant v1lf \
 	    --outdir $(1)/stl
 	@touch $$@
 

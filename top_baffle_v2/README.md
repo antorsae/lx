@@ -19,15 +19,22 @@ from the PDF, not redrawn). Overall 304.8 × 468.31 × 18.3 mm.
 | `top_baffle_nd25fw4_c7_split.py` | C7 print split: same seams/dovetails/ducts as B2 -- the three LM pieces are drop-in replacements, piece_top and all attachments are shared |
 | `export_piece_stls.py` | Exports the print-ready piece STLs (`--outdir`) |
 | `export_steps.py` | Exports a module's `gen_step()` to STEP via build123d's native exporter (`<module.py> --output <path>`) — no CAD-skill dependency |
-| `Makefile` | `make -j8` generates STEPs/STLs/PNGs for BOTH stand-foot states into `floor_stand/` and `no_floor_stand/` (see "Generated artifact layout") |
+| `Makefile` | `make -j16` generates STEPs/STLs/PNGs for BOTH stand-foot states into `floor_stand/` and `no_floor_stand/` (see "Generated artifact layout"). Parallel builds are safe again since the 2026-07 OOM root cause (degenerate sweep geometry ballooning OCC booleans) was fixed and is guarded by `test_cutter_health`; run under `ulimit -v` anyway |
 | `<variant>/stl/lx521_top_*.stl` | Print-ready pieces (flat, Z = thickness, front face up): 4 base + 4 addon-A + 2 addon-B1 |
 
-Regenerate everything: `make -j8 PYTHON=<venv>/bin/python`. Self-contained
-— the only dependencies are the pip packages `build123d`, `shapely`,
-`matplotlib`, and `numpy` (no external CAD tooling).
-`make check` runs the analytic clearance suite (`test_clearances.py`):
-duct-duct and duct-pilot separations, foot-lane webs, magnet-pocket
-walls, and the variant-outline splice assertions.
+Regenerate everything (memory-capped as a guard):
+
+    bash -c 'ulimit -v 419430400; exec make -j16 PYTHON=<venv>/bin/python'
+
+Self-contained — the only dependencies are the pip packages
+`build123d`, `shapely`, `matplotlib`, and `numpy` (no external CAD
+tooling). `make check` runs the analytic clearance suite
+(`test_clearances.py`, 18 checks): duct-duct/pilot separations,
+flange-recess ring containment, V1LF envelope, V0/C7 corridor lateral
+probes, attachment mating flushness, route smoothness, cutter health,
+and the margin dashboard. `make manifold` (also run at the end of
+`make all`) sweeps every exported STL for open/over-shared mesh edges
+— the exposed-duct failure class.
 
 ## Key dimensions (from the drawing, verified against printed dims)
 
@@ -163,8 +170,8 @@ walls, and the variant-outline splice assertions.
 
 ### Generated artifact layout
 
-`make -j8` (see the Makefile; `PYTHON=<venv>/bin/python` to pick an
-interpreter) builds BOTH stand-foot states in parallel:
+`make -j1` (see the Makefile; `PYTHON=<venv>/bin/python` to pick an
+interpreter) builds BOTH stand-foot states:
 
     floor_stand/      LX_STAND_FOOT=1: fused foot + NL8 panel, no
       stl/  *.step  *.png     bridge holes, cables through the foot
@@ -191,6 +198,10 @@ STAND_FOOT flag is the `LX_STAND_FOOT` env var (default 1).
 | lx521_top_c7base_1of4_bottom | as base 1of4 | C7 (LM knife taper) |
 | lx521_top_c7base_2..3of4_mid_l/r | as base 2/3of4 | C7 (LM knife taper) |
 | lx521_top_c7base_4of4_vase_b2 | same part as base 4of4 (re-tessellated file) | C7 = same vase |
+| lx521_top_v0_4of4_vase / v1_4of4_vase | as base 4of4 | V0 / V1 vase experiments |
+| lx521_top_v1l_1..4of4 / v1lf_1..4of4 | as base 1..4of4 | V1L thin family / V1LF flush-driver family (see VARIANTS.md) |
+| lx521_coupon_1..8 | small blocks | print-calibration + fishing rehearsal (PRINTING.md) |
+| lx521_polar_base_1..2of2 | Ø216 / 169×185 | polar-measurement turntable under the stand foot (floor_stand only) |
 
 Building the variants: B2 = the four base pieces. A-comp = B2 + the four
 shoulder pieces. B1 = B2 + the two wings. Attachments are edge-glued onto
@@ -200,6 +211,14 @@ shoulders and the B1 wings extend below seam B (bonding ~9-12 mm onto the
 mids), so they also splint the top-to-mid glue line.
 
 ## Internal cable ducts
+
+Routing revision **R5** ("flush-ready") — see the cables module
+docstring for the authoritative description: three front-half mains
+(LM O8.2 / UM O7.8 at z=12.55, shared T at z=11.5 with a flattened
+W6.6 x H4.4 oval through the vase under the MU10 flange seat), strip
+feeders, straight-back rear exits behind each driver, and every duct
+clear of the V1LF flange-recess rings. The paragraph below predates
+round-4/5 and is kept only for the fishing notes:
 
 FOUR fully internal spline pipes: LM and UM are big mid-plane bores
 (z=9.15) sized for TWISTED pairs; T1/T2 run deeper at z=3.7 (they pass

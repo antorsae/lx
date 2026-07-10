@@ -69,6 +69,28 @@ def _min_dist(a: np.ndarray, b: np.ndarray) -> float:
     return best
 
 
+def _cab():
+    """The (reloaded) cables module -- valid after any _routes() call;
+    section laws and constants are stand-state independent."""
+    return sys.modules["top_baffle_nd25fw4_cables"]
+
+
+def _section_at(name, y, z):
+    """(w2, h2, zc) of a duct at height y: TS follows its oval law
+    (round/oval/morph per ts_section), everything else is the round
+    CABLE_D bore centered at the sampled z."""
+    if name == "ts":
+        return _cab().ts_section(y)
+    r = _cab().CABLE_D.get(name, 3.8) / 2.0
+    return r, r, z
+
+
+def _ts_floor_skin(name, h2):
+    """Floor-skin rule: 1.6 everywhere except the TS oval span (1.45
+    by design -- the price of passing under the MU10 flange seat)."""
+    return 1.4 if (name == "ts" and h2 < 2.9) else 1.6
+
+
 def test_duct_duct_separation():
     from top_baffle_nd25fw4_cables import CABLE_D
 
@@ -220,21 +242,30 @@ def test_v0_duct_corridor():
     from top_baffle_nd25fw4_cables import CABLE_D
 
     for name, pts in _routes(True).items():
-        r = CABLE_D.get(name, 3.8) / 2.0
-        for x, y, z in pts:
+        d1 = np.gradient(pts, axis=0)
+        for (x, y, z), t in zip(pts, d1):
             if not 316.0 < y < 419.0:
                 continue
-            allowed = z - r - 1.6
-            cut = v0.rear_cut_at(x, y)
-            assert cut <= allowed + 0.001, (
-                f"{name}: V0 rear cut {cut:.2f} > {allowed:.2f} "
-                f"at ({x:.1f},{y:.1f})")
+            w2, h2, zc = _section_at(name, y, z)
+            skin = _ts_floor_skin(name, h2)
+            n = math.hypot(t[0], t[1]) or 1.0
+            nx, ny = -t[1] / n, t[0] / n
+            for o in (-w2, -0.7 * w2, 0.0, 0.7 * w2, w2):
+                drop = h2 * math.sqrt(max(1.0 - (o / w2) ** 2, 0.0))
+                allowed = zc - drop - skin
+                cut = v0.rear_cut_at(x + o * nx, y + o * ny)
+                assert cut <= allowed + 0.02, (
+                    f"{name}: V0 rear cut {cut:.2f} > {allowed:.2f} "
+                    f"at ({x + o * nx:.1f},{y + o * ny:.1f}) (o={o:+.1f})")
+        r = max(CABLE_D.get(name, 3.8) / 2.0,
+                _cab().TS_OVAL["w2"] if name == "ts" else 0.0)
         for sx in (1, -1):
             for mx, my in v0.V0_MAGNET_SITES:
                 m = min(math.dist((sx*mx, my), (x, y)) for x, y, _ in pts)
                 assert m >= 2.7 + r + 1.5, (
                     f"V0 pocket ({sx*mx},{my}) {m:.2f} from {name}")
-    print("  V0 rear bevel: every duct floor covered; pockets clear")
+    print("  V0 rear bevel: duct floors covered (5 lateral offsets); "
+          "pockets clear")
 
 
 def test_v1_field():
@@ -246,18 +277,19 @@ def test_v1_field():
     from top_baffle_nd25fw4_cables import CABLE_D
 
     for name, pts in _routes(True).items():
-        r = CABLE_D.get(name, 3.8) / 2.0
         for x, y, z in pts:
             if not 96.0 < y < 434.0:
                 continue
-            if True:
-                assert z - r - 1.6 >= v1.REAR_MM - 0.001, (
-                    f"{name} floor {z-r:.1f} below the V1 rear at "
-                    f"({x:.1f},{y:.1f})")
-                assert z + r + 1.6 <= THICKNESS_MM + 0.001, (
-                    f"{name} roof {z+r:.1f} above the front at "
-                    f"({x:.1f},{y:.1f})")
-    print("  V1 front-flush: duct windows inside z 6.8..18.3; pilots clear")
+            w2, h2, zc = _section_at(name, y, z)
+            skin = _ts_floor_skin(name, h2)
+            assert zc - h2 - skin >= v1.REAR_MM - 0.02, (
+                f"{name} floor {zc-h2:.2f} below the V1 rear at "
+                f"({x:.1f},{y:.1f})")
+            assert zc + h2 + 1.6 <= THICKNESS_MM + 0.001, (
+                f"{name} roof {zc+h2:.2f} above the front at "
+                f"({x:.1f},{y:.1f})")
+    print("  V1 front-flush: duct windows inside z 6.8..18.3 "
+          "(TS oval floor on the 1.4 rule); pilots clear")
 
 
 def test_duct_vs_um_pilots():
@@ -273,14 +305,20 @@ def test_duct_vs_um_pilots():
                             UM_PILOT_ANGLES_DEG)
     for stand_foot in (True, False):
         for name, pts in _routes(stand_foot).items():
-            required = (UM_PILOT_D_MM + CABLE_D.get(name, 3.8)) / 2.0 + 1.5
+            if name == "ts":  # oval span widens w2 to 3.3 (per-point)
+                w2 = np.array([_section_at(name, y, z)[0]
+                               for _x, y, z in pts])
+            else:
+                w2 = CABLE_D.get(name, 3.8) / 2.0
             for px, py in pilots:
-                measured = float(np.min(np.hypot(pts[:, 0] - px,
-                                                 pts[:, 1] - py)))
-                assert measured >= required + SAMPLING_SLACK, (
-                    f"{name} vs 10F pilot ({px:.1f},{py:.1f}): plan "
-                    f"{measured:.2f} < {required + SAMPLING_SLACK:.2f}")
-    print("  10F pilots (rotated) vs all ducts: plan clearances OK")
+                margin = (np.hypot(pts[:, 0] - px, pts[:, 1] - py)
+                          - (UM_PILOT_D_MM / 2.0 + w2 + 1.5))
+                measured = float(np.min(margin))
+                assert measured >= SAMPLING_SLACK, (
+                    f"{name} vs MU10 pilot ({px:.1f},{py:.1f}): plan "
+                    f"margin {measured:.2f} < {SAMPLING_SLACK:.2f}")
+    print("  MU10 pilots (rotated) vs all ducts: plan clearances OK "
+          "(section-aware; V1LF bores reach z=10.3)")
 
 
 def test_route_smoothness():
@@ -379,6 +417,10 @@ def test_seam_keys_vs_ducts():
     for cx, _n, h, d in DOVETAILS_B:
         rects.append((cx - h / 2 - 0.1, cx + h / 2 + 0.1,
                       SEAM_B_Y - d - 0.1, SEAM_B_Y + d + 0.1))
+    from top_baffle_nd25fw4_b2_split import DOVETAILS_B_V1LF
+    for cx, _n, h, d in DOVETAILS_B_V1LF:  # V1LF: flipped (tabs down)
+        rects.append((cx - h / 2 - 0.1, cx + h / 2 + 0.1,
+                      SEAM_B_Y - d - 0.1, SEAM_B_Y + d + 0.1))
     for cy, _n, h, d in DOVETAILS_C:
         rects.append((SEAM_C_X - d - 0.1, SEAM_C_X + d + 0.1,
                       cy - h / 2 - 0.1, cy + h / 2 + 0.1))
@@ -438,6 +480,148 @@ def test_variant_outlines_splice():
     print("  variant outlines splice cleanly")
 
 
+def test_attachment_flushness():
+    """Every wing/shoulder must meet the B2 walls at exactly
+    wall + CLEARANCE (the printed-wing 4.75 mm gap bug class): thin
+    horizontal slices of each attachment, inner-face |x| vs the
+    outline law. Straight flare/chamfer spans only."""
+    _routes(True)  # normalize the reload state
+    from build123d import Box, Pos
+
+    from top_baffle_nd25fw4_attachments import attachments
+    from top_baffle_nd25fw4_v1_attachments import v1_attachments
+    wall_x = _cab()._wall_x
+
+    # Attachments mate at EXACT fit (variant - b2, no grown clearance).
+    # Expected inner-face offsets vs the cables _wall_x LAW (calibrated
+    # 2026-07-10; the law simplifies the true B2 outline): flare spans
+    # sit at -0.089, upper-chamfer spans at -0.573 -- identically on
+    # every piece, side and family. Any drift is the printed-wing
+    # 4.75 mm gap bug class.
+    FLARE = ((320.0, 330.0, 350.0, 370.0, 381.0), -0.089)
+    CHAMF = ((396.0, 402.0, 408.0, 414.0), -0.573)
+    probes = {"wing": (FLARE, CHAMF),
+              "shoulder_bottom": (FLARE,),
+              "shoulder_top": (CHAMF,)}
+    for src in (attachments, v1_attachments):
+        for name, solid in src().items():
+            kind = next((k for k in probes if k in name), None)
+            if kind is None:
+                continue
+            sgn = -1.0 if "left" in name else 1.0
+            hits = 0
+            for ys, law_off in probes[kind]:
+                for y in ys:
+                    slab = solid & (Pos(sgn * 100.0, y, 9.15)
+                                    * Box(200.0, 0.6, 40.0))
+                    if slab is None or getattr(slab, "volume", 0.0) < 1.0:
+                        continue
+                    bb = slab.bounding_box()
+                    inner = bb.min.X if sgn > 0 else -bb.max.X
+                    want = wall_x(y) + law_off
+                    assert abs(inner - want) <= 0.03, (
+                        f"{name} inner face at y={y}: |x|={inner:.3f} "
+                        f"vs expected {want:.3f}")
+                    hits += 1
+            assert hits >= 3, f"{name}: only {hits} probe slices hit"
+    print("  attachment mating faces flush on the calibrated outline "
+          "offsets (exact fit)")
+
+
+def test_flush_recess_rings():
+    """Round-5 invariant: every duct clears BOTH V1LF flange-recess
+    rings. Per lateral offset o, the probe point must sit outside the
+    rim by >=1.6 OR its local tube top must stay >=1.6 under the seat
+    (the TS oval passes UNDER the MU10 ring; everything else stays
+    outside both rims). Both stand modes; fixed exit/step bores too."""
+    import top_baffle_nd25fw4_flush as fl
+
+    rings = ((( 0.0, 200.981), fl.LM_RECESS_R, fl.LM_SEAT_Z, "U22"),
+             ((0.0, 366.081), fl.UM_RECESS_R, fl.UM_SEAT_Z, "MU10"))
+    for stand_foot in (True, False):
+        for name, pts in _routes(stand_foot).items():
+            d1 = np.gradient(pts, axis=0)
+            for (x, y, z), t in zip(pts, d1):
+                w2, h2, zc = _section_at(name, y, z)
+                n = math.hypot(t[0], t[1]) or 1.0
+                nx, ny = -t[1] / n, t[0] / n
+                for (cx, cy), rr, seat, tag in rings:
+                    if math.dist((x, y), (cx, cy)) > rr + w2 + 2.0:
+                        continue
+                    for o in (-w2, -0.7 * w2, 0.0, 0.7 * w2, w2):
+                        po = (x + o * nx, y + o * ny)
+                        top = zc + h2 * math.sqrt(
+                            max(1.0 - (o / w2) ** 2, 0.0))
+                        lat = math.dist(po, (cx, cy)) - rr
+                        assert lat >= 1.6 - 0.02 or top <= seat - 1.6 + 0.02, (
+                            f"{name} in the {tag} recess ring at "
+                            f"({po[0]:.1f},{po[1]:.1f}): lateral "
+                            f"{lat:.2f}, top {top:.2f} vs seat {seat}")
+        # fixed bores: exits (fatter than their ducts) + the TS z-step
+        cab = _cab()
+        probes = [("lm exit", *cab.EXIT_RAMPS["lm"][0][:2],
+                   cab.EXIT_RAMPS["lm"][2] / 2.0),
+                  ("um exit", *cab.EXIT_RAMPS["um"][0][:2],
+                   cab.EXIT_RAMPS["um"][2] / 2.0),
+                  ("ts step", *cab.TS_STEP[1][:2], 3.4)]
+        for tag, bx, by, br in probes:
+            for (cx, cy), rr, _seat, ring_tag in rings:
+                lat = math.dist((bx, by), (cx, cy)) - br - rr
+                assert lat >= 1.6 - 0.001, (
+                    f"{tag} bore vs {ring_tag} rim: {lat:.2f} < 1.6")
+    print("  flush recess rings: all ducts pass under or clear the "
+          "rims (5 lateral offsets, both modes)")
+
+
+def test_v1lf_envelope():
+    """V1LF corridor: every duct window fits between the V1L floor
+    (full strip below the ramp, sigmoid ramp, thin rear 6.8) and the
+    flush ceiling (recess seats inside the rings, front plane
+    elsewhere), with 1.6 skins (1.4 floor precedent along the TS
+    oval). 5 lateral offsets; pads proven clear of the exits."""
+    import top_baffle_nd25fw4_flush as fl
+    import top_baffle_nd25fw4_v1l as v1l
+
+    def rear_at(y):
+        if y <= v1l.RAMP_Y0:
+            return 0.0
+        if y >= v1l.RAMP_Y1:
+            return v1l.REAR_MM
+        u = (y - v1l.RAMP_Y0) / (v1l.RAMP_Y1 - v1l.RAMP_Y0)
+        return v1l.REAR_MM * (3.0 * u * u - 2.0 * u ** 3)
+
+    for stand_foot in (True, False):
+        for name, pts in _routes(stand_foot).items():
+            d1 = np.gradient(pts, axis=0)
+            for (x, y, z), t in zip(pts, d1):
+                if not 40.0 < y < 434.0:
+                    continue  # below: foot/entry plumbing, by design
+                w2, h2, zc = _section_at(name, y, z)
+                skin = _ts_floor_skin(name, h2)
+                n = math.hypot(t[0], t[1]) or 1.0
+                nx, ny = -t[1] / n, t[0] / n
+                for o in (-w2, -0.7 * w2, 0.0, 0.7 * w2, w2):
+                    po = (x + o * nx, y + o * ny)
+                    lift = h2 * math.sqrt(max(1.0 - (o / w2) ** 2, 0.0))
+                    ceil = fl.ceiling_at(*po)
+                    assert zc + lift + 1.6 <= ceil + 0.02, (
+                        f"{name} roof {zc+lift:.2f} vs V1LF ceiling "
+                        f"{ceil:.1f} at ({po[0]:.1f},{po[1]:.1f})")
+                    assert zc - lift - skin >= rear_at(po[1]) - 0.02, (
+                        f"{name} floor {zc-lift:.2f} vs V1L rear "
+                        f"{rear_at(po[1]):.2f} at ({po[0]:.1f},{po[1]:.1f})")
+    # exits (the only bores reaching pad depth) vs the pad buttons
+    cab = _cab()
+    for tag, (p0, _p1, dia) in cab.EXIT_RAMPS.items():
+        for px, py in fl.PAD_XY:
+            gap = (math.dist(p0[:2], (px, py))
+                   - fl.PAD_D_MM / 2.0 - dia / 2.0)
+            assert gap >= 1.5, (
+                f"{tag} exit vs pad ({px:.1f},{py:.1f}): {gap:.2f} < 1.5")
+    print("  V1LF envelope: duct windows fit floor/ceiling everywhere "
+          "(5 lateral offsets); exits clear the insert pads")
+
+
 def test_margin_dashboard():
     """Report-only: the tightest margins project-wide, sorted. Erosion
     shows up here before it becomes a red assert somewhere else."""
@@ -472,15 +656,18 @@ def test_margin_dashboard():
                 d = float(np.min(np.hypot(pts[:, 0] - px, pts[:, 1] - py)))
                 entries.append((d - req, f"{name} vs {label} pilot "
                                 f"({px:.0f},{py:.0f})"))
-    # thin-family z-window skins (rear 6.8 / front 18.3, y>96)
+    # thin-family z-window skins (rear 6.8 / front 18.3, y>96) --
+    # section-aware: the TS oval runs on the 1.4 floor rule
     for name, pts in routes.items():
-        r = CABLE_D.get(name, 3.8) / 2
         m = (pts[:, 1] > 96) & (pts[:, 1] < 434)
         if m.any():
-            entries.append((float((pts[m, 2] - r).min()) - 6.8 - 1.6,
-                            f"{name} thin-family floor skin"))
-            entries.append((18.3 - float((pts[m, 2] + r).max()) - 1.6,
-                            f"{name} thin-family roof skin"))
+            floors, roofs = [], []
+            for _x, y, z in pts[m]:
+                w2, h2, zc = _section_at(name, y, z)
+                floors.append(zc - h2 - 6.8 - _ts_floor_skin(name, h2))
+                roofs.append(18.3 - (zc + h2) - 1.6)
+            entries.append((min(floors), f"{name} thin-family floor skin"))
+            entries.append((min(roofs), f"{name} thin-family roof skin"))
     # smoothness headroom
     floors = {"lm": 25.0, "um": 10.0, "ts": 4.5, "t1f": 6.0, "t2f": 6.0}
     for name, pts in routes.items():
@@ -493,6 +680,48 @@ def test_margin_dashboard():
     # V1 upper-pocket walls (site2 zc=14.4, local rear ~10.1)
     entries.append((18.3 - (14.4 + 2.7) - 1.0, "V1 upper pocket front wall (-1.0 rule)"))
     entries.append((14.4 - 2.7 - 10.1 - 1.4, "V1 upper pocket floor wall (-1.4 rule)"))
+    # V1LF flush recesses (round-5)
+    import top_baffle_nd25fw4_flush as fl
+    cabm = _cab()
+    ov = cabm.TS_OVAL
+    entries.append((fl.UM_SEAT_Z - (ov["zc"] + ov["h2"]) - 1.6,
+                    "TS oval under the MU10 seat (-1.6 rule)"))
+    entries.append((ov["zc"] - ov["h2"] - 6.8 - 1.4,
+                    "TS oval thin-family floor (-1.4 rule)"))
+    for ring_c, rr, seat, tag in (((0.0, 200.981), fl.LM_RECESS_R,
+                                   fl.LM_SEAT_Z, "U22"),
+                                  ((0.0, 366.081), fl.UM_RECESS_R,
+                                   fl.UM_SEAT_Z, "MU10")):
+        for name, pts in routes.items():
+            # per-offset OR-margin, mirroring test_flush_recess_rings:
+            # a probe passes by lateral wall OR by ducking the seat
+            d1 = np.gradient(pts, axis=0)
+            worst = math.inf
+            for (x, y, z), t in zip(pts, d1):
+                w2, h2, zc = _section_at(name, y, z)
+                if math.dist((x, y), ring_c) > rr + w2 + 4.0:
+                    continue
+                n = math.hypot(t[0], t[1]) or 1.0
+                nx, ny = -t[1] / n, t[0] / n
+                for o in (-w2, -0.7 * w2, 0.0, 0.7 * w2, w2):
+                    po = (x + o * nx, y + o * ny)
+                    top = zc + h2 * math.sqrt(max(1 - (o / w2) ** 2, 0.0))
+                    m = max(math.dist(po, ring_c) - rr - 1.6,
+                            seat - 1.6 - top)
+                    worst = min(worst, m)
+            if worst < 6.0:
+                entries.append((worst,
+                                f"{name} vs {tag} recess ring (OR-rule)"))
+    lm_exit, um_exit = cabm.EXIT_RAMPS["lm"], cabm.EXIT_RAMPS["um"]
+    entries.append((math.dist(lm_exit[0][:2], (0.0, 200.981))
+                    - lm_exit[2] / 2.0 - fl.LM_RECESS_R - 1.6,
+                    "LM exit bore vs U22 recess rim (-1.6 rule)"))
+    ex, ey = um_exit[0][:2]
+    outline_x = 38.113 + (315.947 - ey) * 1.9103
+    entries.append((outline_x - (ex + um_exit[2] / 2.0) - 1.6,
+                    "UM exit bore vs B2 outline (-1.6 rule)"))
+    entries.append((fl.LM_SEAT_Z - fl.PAD_FACE_Z - fl.LM_BORE_DEPTH_MM
+                    - 0.75, "V1LF insert stack over pad (-0.75 rule)"))
     entries.sort()
     print("  tightest margins (mm over the rule):")
     for m, label in entries[:15]:
@@ -513,9 +742,12 @@ if __name__ == "__main__":
         test_seam_keys_vs_ducts,
         test_v0_duct_corridor,
         test_v1_field,
+        test_flush_recess_rings,
+        test_v1lf_envelope,
         test_route_smoothness,
         test_bridge_inserts,
         test_cutter_health,
+        test_attachment_flushness,
         test_margin_dashboard,
     ]
     failed = []
