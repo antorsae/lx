@@ -9,7 +9,7 @@ O8.5/8.6 mains at z=9.15 tolerate a cut of 3.25; the T ducts at z=3.7
 tolerate ~0.2, i.e. none).
 
 Shares EVERYTHING with B2: outline, drivers, magnet interface, seams,
-and the (rerouted) common cable ducts -- C7 pieces are drop-in
+and the proud-family R6P cable ducts -- C7 pieces are drop-in
 replacements for the three LM-section pieces (bottom + both mids);
 piece_top_b2 and all attachments are the same physical parts.
 
@@ -17,8 +17,9 @@ Kept full thickness: the core inside the taper band, the bottom strip
 (y<~64, stand-foot / bridge interface -- the taper fades in over
 y 52..70), and a recovery fade toward seam B (the cut scales to zero
 over y 270..~304) so the joint to the vase piece is flush and the
-seam-B dovetails keep their full section. All duct mains now run in
-the FRONT half (round-4 routing: LM/UM z=12.55, TS z=11.5), so the
+seam-B dovetails keep their full section. The planar duct spans run in
+the FRONT half (LM/UM z=12.55, TS z=11.5); the UM route then uses its
+intentional R14 rear opening below seam B. The
 rear taper clears every duct with no ribs -- verified by
 test_c7_duct_corridor (plain z-containment).
 
@@ -78,7 +79,7 @@ def rec_fade(y: float) -> float:
 # duct's full plan width, not just under the centerline (the c7
 # mid_right exposed-slot bug). (arc_r about LM center, duct z, bore r,
 # side: +1 right / -1 left.)
-_DUCT_ARCS = ((119.5, 12.55, 3.9, 1.0), (116.5, 11.5, 3.0, -1.0))
+_DUCT_ARCS = ((119.5, 12.55, 4.1, 1.0), (116.5, 11.5, 3.0, -1.0))
 _LM_C = (0.0, 200.981)
 
 

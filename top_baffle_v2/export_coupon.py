@@ -1,25 +1,23 @@
-"""Export the print-calibration coupon as EIGHT separate, print-ready
+"""Export print-calibration and physical-fit coupons as separate STLs.
 STL files (lx521_coupon_*.stl) -- one body per file, each laid flat on
 the bed so the slicer places it without reorientation.
 
   1 fit_plate    dovetail female pocket (grown by the working
                  CLEARANCE_MM) + O6.4 x 6.8 (W22) and O4.6 x 4.0
                  (10F) heat-set bores opening UP + the V1 upper-pocket
-                 wall section (8.2 wall, O5.4 x 1.0 pin pocket: 1.2
-                 front / 1.6 floor walls)
+                 wall section (8.2 wall, O5.2 x 2.2 magnet pocket: 1.3
+                 front / 1.7 floor walls)
   2 fit_key      loose male dovetail key (no clearance) -- tune X-Y
                  hole compensation until it slides snug into the plate
   3 fish_entry   the no-foot entry cluster: twin T ramps, feeders and
                  the O6.8 Y-step
-  4 fish_um_exit the top of the UM arc + its straight-back exit bore
-                 (round-5; the old window-bend region carries no duct)
-  5 fish_ts_dive the TS notch dive at full 18.3 depth (B2/C7/V0
-                 family; the duct is the round-5 oval there too)
+  4 um_outlet_proud  real B2 outline + the complete R6P R14 outlet
+  5 fish_ts_dive the proud R6P TS notch/oval at full 18.3 depth
   6 fish_foot    a stand-foot R14 elbow pair
-  7 recess_seat  V1LF: a U22REX/P-SL recess-seat SECTOR (~46 deg of
-                 seat arc) with ~25 mm of through-void inboard of the
-                 D190 cutout edge, the 270-deg insert bore over its
-                 rear pad, and the LM exit. METHOD -- you never lower
+  7 recess_seat  V1LF core: a U22REX/P-SL recess-seat sector with
+                 ~25 mm of through-void inboard of the
+                 D190 cutout edge, the rotated 240-deg insert bore over its
+                 rear pad. METHOD -- you never lower
                  the driver into the block: sit the driver CONE-UP on
                  its magnet on the table and FLIP THE BLOCK front-
                  face-down onto it, so the seat drops over the flange
@@ -28,15 +26,13 @@ the bed so the slicer places it without reorientation.
                  vs flange top = flushness; rotate the driver so a
                  flange hole meets the block's pilot for a REAL
                  M5 x 12 clamp test into the insert-on-pad stack.
-                 Verify seat depth = true flange-edge thickness
-                 (owner measured 6.0) BEFORE printing pieces
-  8 fish_um_oval V1LF: the whole vase run -- morph, lane, crest, notch
-                 under the MU10 recess, exit morph -- the worst pull
-                 in the project; dry-fish both tweeter pairs here.
-                 The block also carries the LEFT arc of the MU10 seat
-                 with the cutout void inboard: same flip-onto-driver
-                 method as block 7 (MU10 cone-up on its magnet;
-                 measure vs its 5.4 datasheet / 4.0 measured flange!)
+                 Verify the owner's 6.0 mm seat depth before printing.
+  8 fish_ts_oval_proud  proud-family tweeter oval/morph rehearsal
+ 9 um_faston_clocking  D104 clocking gauge: screw marks 238/328 and
+                 terminal witness at their exact 283 degree midpoint
+ 12 v1lf_closed_bore_bump  state-specific R6F LM-collar sector at the
+                 300-deg axis: continuous D8.2 tunnel cover, preserved
+                 pad/clearance, and the complete smooth rear Z bump
 
 Fit pieces: same profile as the real parts. Fishing blocks: 2 walls /
 ~8 % infill (practice holes, not structure). Dry-fish 3-8 before
@@ -45,27 +41,91 @@ committing kilograms.
 
 from __future__ import annotations
 
+import argparse
+import importlib
+import os
 from pathlib import Path
-
-from build123d import (Box, Cylinder, Plane, Polyline, Pos, Rot, Wire,
-                       export_stl, extrude, make_face)
-
-from shapely import box as sbox
-from shapely.ops import unary_union
-
-from top_baffle_nd25fw4 import THICKNESS_MM
-from top_baffle_nd25fw4_b2_split import CLEARANCE_MM, _grown, _trapezoid_up
+import struct
+import subprocess
+import sys
+import tempfile
 
 NECK, HEAD, DEPTH = 10.0, 14.0, 6.0   # seam-B key proportions
+BED_MM = 256.0
+
+
+def _validate_binary_stl(path: Path) -> None:
+    with path.open("rb") as stream:
+        header = stream.read(84)
+    if len(header) != 84:
+        raise RuntimeError(f"temporary coupon STL is truncated: {path}")
+    triangles = struct.unpack_from("<I", header, 80)[0]
+    expected = 84 + 50 * triangles
+    if triangles < 1 or path.stat().st_size != expected:
+        raise RuntimeError(
+            f"temporary coupon STL invalid: triangles={triangles} "
+            f"bytes={path.stat().st_size} expected={expected}")
+
+COUPON_GROUPS = (
+    "fit_1_2",
+    "fish_3",
+    "outlet_4",
+    "fish_5",
+    "fish_6",
+    "seat_7",
+    "fish_8",
+    "clock_9",
+    "bump_12",
+)
+
+_STATEFUL_MODULES = (
+    "top_baffle_nd25fw4_v1lf_attachments",
+    "top_baffle_nd25fw4_v1lf_assembled",
+    "top_baffle_nd25fw4_v1lf_split",
+    "top_baffle_nd25fw4_v1lf",
+    "top_baffle_nd25fw4_v1lf_route",
+    "top_baffle_nd25fw4_v1lf_bridge",
+    "top_baffle_nd25fw4_um_fit",
+    "top_baffle_nd25fw4_flush",
+    "top_baffle_nd25fw4_cables",
+    "top_baffle_nd25fw4",
+)
+
+
+def _set_state(mode: str, profile: str):
+    """Purge the complete flag-dependent graph before importing geometry."""
+    os.environ["LX_STAND_FOOT"] = mode
+    os.environ["LX_ROUTING_PROFILE"] = profile
+    for module in _STATEFUL_MODULES:
+        sys.modules.pop(module, None)
+    importlib.invalidate_caches()
 
 
 def _poly_prism(poly, h):
+    from build123d import Plane, Polyline, Wire, extrude, make_face
+
     pts = list(poly.exterior.coords)
     face = make_face(Wire(Polyline(*pts).edges()))
     return extrude(Plane.XY.offset(-0.5) * face, amount=h + 1.0)
 
 
 def _fit_pieces() -> dict:
+    from build123d import (
+        Box, Cylinder, Plane, Polyline, Pos, Wire, extrude, make_face,
+    )
+    from shapely import box as sbox
+    from shapely.ops import unary_union
+    from top_baffle_nd25fw4 import THICKNESS_MM
+    from top_baffle_nd25fw4_b2_split import (
+        _grown,
+        _trapezoid_up,
+    )
+    from top_baffle_nd25fw4_b import (
+        MAG_PIN_BASE_DEPTH_MM,
+        MAG_POCKET_D_MM,
+        _magnet_pocket,
+    )
+
     t = THICKNESS_MM
     plate = Pos(0.0, 20.0, t / 2.0) * Box(92.0, 40.0, t)
     # female dovetail pocket in the y=40 edge (grown like the real seams)
@@ -75,10 +135,15 @@ def _fit_pieces() -> dict:
     plate -= Pos(0.0, 20.0, t - 3.2) * Cylinder(3.2, 7.2)  # O6.4 x 6.8
     plate -= Pos(14.0, 20.0, t - 2.0) * Cylinder(2.3, 4.2)
     # V1 upper-pocket wall section: ledge with local rear at z=10.1
-    # (8.2 wall), O5.4 x 1.0 pocket at zc=14.4 bored from the y=0 edge:
-    # front wall 18.3-(14.4+2.7)=1.2, floor wall 14.4-2.7-10.1=1.6
+    # (8.2 wall), O5.2 x 2.2 pocket at zc=14.4 bored from the y=0 edge:
+    # front wall 18.3-(14.4+2.6)=1.3, floor wall 14.4-2.6-10.1=1.7.
+    # Its 0.2 mm axial allowance is for adhesive; set the D5x2 magnet
+    # flush with the face rather than bottoming it.
     plate -= Pos(28.0, 5.0, 10.1 / 2.0 - 0.5) * Box(24.0, 12.0, 10.1 + 1.0)
-    plate -= (Pos(28.0, 0.55, 14.4) * Rot(X=90.0) * Cylinder(2.7, 3.1))
+    plate -= _magnet_pocket(
+        28.0, 0.0, 0.0, -1.0, 14.4,
+        MAG_POCKET_D_MM, MAG_PIN_BASE_DEPTH_MM, into_base=True,
+    )
     # one clean extrusion, z 0..t: trapezoid + a grip handle on the
     # HEAD (wide) side, so when the key drops into the plate's edge
     # slot the handle sticks OUT past the edge (a neck-side handle would
@@ -90,52 +155,54 @@ def _fit_pieces() -> dict:
     return {"1_fit_plate": plate, "2_fit_key": male}
 
 
-def _fishing_pieces() -> dict:
+def _fishing_pieces(target_mode: str, only: str | None = None) -> dict:
     """Real duct geometry carved from a region box, one body per hard
     fishing spot."""
-    import importlib
-    import os
-    import sys
-
-    # name -> (LX_STAND_FOOT, region box, rear z0, V1LF-flush state)
+    # name -> (LX_STAND_FOOT, region box, rear z0, special geometry)
     specs = {
-        "3_fish_entry": ("0", (-24.0, 42.0, 14.0, 70.0), 0.0, False),
-        "4_fish_um_exit": ("1", (70.0, 266.0, 102.0, 298.0), 0.0, False),
-        "5_fish_ts_dive": ("0", (-44.0, 390.0, 0.0, 434.0), 0.0, False),
-        "6_fish_foot": ("1", (-20.0, 2.0, 20.0, 32.0), -22.0, False),
-        "7_recess_seat": ("1", (-40.0, 78.0, 40.0, 131.0), 0.0, True),
-        "8_fish_um_oval": ("1", (-58.0, 318.0, 2.0, 430.0), 0.0, True),
+        "3_fish_entry": ("0", (-24.0, 42.0, 14.0, 70.0), 0.0, None),
+        "4_um_outlet_proud": ("1", (-6.0, 292.0, 38.0, 323.0),
+                               0.0, "real_outline"),
+        "5_fish_ts_dive": ("0", (-44.0, 390.0, 0.0, 434.0), 0.0, None),
+        "6_fish_foot": ("1", (-20.0, 2.0, 20.0, 32.0), -22.0, None),
+        # Seat/pad geometry is state-invariant; force bridge-free floor
+        # ownership so this fit block never inherits the no-floor tail.
+        "7_recess_seat": ("1", (-82.0, 84.0, -22.0, 141.0),
+                           0.0, "lm_core"),
+        "8_fish_ts_oval_proud": ("1", (-58.0, 318.0, 2.0, 430.0),
+                                   0.0, None),
+        "12_v1lf_closed_bore_bump": (
+            target_mode, (62.0, 118.0, 122.0, 180.0),
+            -14.0 if target_mode == "1" else -7.0, "v1lf_bump"),
     }
     out = {}
-    for name, (mode, (x0, y0, x1, y1), z0, flush) in specs.items():
-        os.environ["LX_STAND_FOOT"] = mode
-        for m in ("top_baffle_nd25fw4", "top_baffle_nd25fw4_cables"):
-            if m in sys.modules:
-                importlib.reload(sys.modules[m])
-            else:
-                importlib.import_module(m)
-        cab = sys.modules["top_baffle_nd25fw4_cables"]
-        blk = Pos((x0 + x1) / 2.0, (y0 + y1) / 2.0,
-                  (z0 + THICKNESS_MM) / 2.0) * Box(
+    for name, (mode, (x0, y0, x1, y1), z0, special) in specs.items():
+        if only is not None and name != only:
+            continue
+        profile = ("v1lf" if special in
+                   {"lm_core", "v1lf_bump", "um_core"} else "proud")
+        _set_state(mode, profile)
+        from build123d import Box, Pos
+        from top_baffle_nd25fw4 import THICKNESS_MM
+
+        cab = importlib.import_module("top_baffle_nd25fw4_cables")
+        crop = Pos((x0 + x1) / 2.0, (y0 + y1) / 2.0,
+                   (z0 + THICKNESS_MM) / 2.0) * Box(
             x1 - x0, y1 - y0, THICKNESS_MM - z0)
-        if flush:  # replicate the V1LF state: thin field with pad
-            # reliefs, vase slab, flange recesses, deepened pilots --
-            # AND the driver cutouts, which in the real pieces come
-            # from baffle_face, not from any cutter (without them the
-            # blocks had no hole to take a driver: the flange could
-            # never reach its seat)
-            import top_baffle_nd25fw4_flush as fl
-            import top_baffle_nd25fw4_v1 as v1
-            from top_baffle_nd25fw4 import L22_CUTOUT, UM_CUTOUT
-            for ccx, ccy, ccd in (L22_CUTOUT, UM_CUTOUT):
-                blk -= Pos(ccx, ccy, THICKNESS_MM / 2.0) * Cylinder(
-                    ccd / 2.0, THICKNESS_MM + 4.0)
-            for c in (list(fl.v1lf_field_cutters())
-                      + list(v1.field_cutters())
-                      + fl.recess_cutters() + fl.deep_pilot_cutters()):
+        if special == "real_outline":
+            from top_baffle_nd25fw4 import baffle_solid
+            from top_baffle_nd25fw4_b import TWEETER_DROP_MM
+            from top_baffle_nd25fw4_b2 import OUTLINE_B2
+            blk = baffle_solid(OUTLINE_B2, TWEETER_DROP_MM) & crop
+        elif special in {"lm_core", "v1lf_bump", "um_core"}:
+            from top_baffle_nd25fw4_v1lf import lm_carrier, um_carrier
+            blk = (um_carrier() if special == "um_core"
+                   else lm_carrier()) & crop
+        else:
+            blk = crop
+        if special not in {"lm_core", "v1lf_bump", "um_core"}:
+            for c in cab.cable_cutters():
                 blk -= c
-        for c in cab.cable_cutters():
-            blk -= c
         out[name] = blk
     return out
 
@@ -143,6 +210,8 @@ def _fishing_pieces() -> dict:
 def _lay_flat(solid):
     """Rotate onto the flattest footprint (min Z height), preferring the
     native pose on ties, then drop bbox-min to the origin."""
+    from build123d import Pos, Rot
+
     best_h = solid.bounding_box().size.Z
     best = solid
     for rx, ry in ((90.0, 0.0), (0.0, 90.0), (180.0, 0.0)):
@@ -154,20 +223,193 @@ def _lay_flat(solid):
     return Pos(-bb.min.X, -bb.min.Y, -bb.min.Z) * best
 
 
+def _clocking_piece(target_mode: str):
+    """Terminal clocking gauge at the exact 238/283/328-degree axes."""
+    import math
+    from build123d import Box, Cylinder, Pos, Rot
+
+    _set_state(target_mode, "v1lf")
+
+    from top_baffle_nd25fw4 import (UM_PILOT_D_MM, UM_PILOT_PCD_MM,
+                                    UM_TERMINAL_CLOCK_DEG)
+
+    gauge = Pos(0.0, 0.0, 1.0) * Cylinder(52.0, 2.0)
+    gauge -= Pos(0.0, 0.0, 1.0) * Cylinder(40.0, 3.0)
+    for a in (238.0, 328.0):
+        x = UM_PILOT_PCD_MM / 2.0 * math.cos(math.radians(a))
+        y = UM_PILOT_PCD_MM / 2.0 * math.sin(math.radians(a))
+        gauge -= Pos(x, y, 1.0) * Cylinder(UM_PILOT_D_MM / 2.0, 3.0)
+    a = math.radians(UM_TERMINAL_CLOCK_DEG)
+    mx, my = 49.0 * math.cos(a), 49.0 * math.sin(a)
+    gauge -= Pos(mx, my, 1.0) * Rot(Z=UM_TERMINAL_CLOCK_DEG) * Box(
+        8.0, 1.2, 3.0)
+
+    return {"9_um_faston_clocking": gauge}
+
+
+_FISHING_GROUPS = {
+    "fish_3": "3_fish_entry",
+    "outlet_4": "4_um_outlet_proud",
+    "fish_5": "5_fish_ts_dive",
+    "fish_6": "6_fish_foot",
+    "seat_7": "7_recess_seat",
+    "fish_8": "8_fish_ts_oval_proud",
+    "bump_12": "12_v1lf_closed_bore_bump",
+}
+
+_EXPECTED_COUPON_FILES = {
+    "lx521_coupon_1_fit_plate.stl",
+    "lx521_coupon_2_fit_key.stl",
+    "lx521_coupon_3_fish_entry.stl",
+    "lx521_coupon_4_um_outlet_proud.stl",
+    "lx521_coupon_5_fish_ts_dive.stl",
+    "lx521_coupon_6_fish_foot.stl",
+    "lx521_coupon_7_recess_seat.stl",
+    "lx521_coupon_8_fish_ts_oval_proud.stl",
+    "lx521_coupon_9_um_faston_clocking.stl",
+    "lx521_coupon_12_v1lf_closed_bore_bump.stl",
+}
+
+
+def _pieces_for_group(group: str, target_mode: str):
+    if group == "fit_1_2":
+        _set_state(target_mode, "proud")
+        return _fit_pieces()
+    if group in _FISHING_GROUPS:
+        return _fishing_pieces(target_mode, _FISHING_GROUPS[group])
+    if group == "clock_9":
+        return _clocking_piece(target_mode)
+    raise ValueError(group)
+
+
+def _prune_legacy_coupon_outputs(stl_dir: Path) -> None:
+    stale = {
+        "lx521_coupon.stl",
+        "lx521_coupon_4_fish_um_bend.stl",
+        "lx521_coupon_4_fish_um_exit.stl",
+        "lx521_coupon_8_fish_um_oval.stl",
+        "lx521_coupon_12_v1lf_open_bore_jump.stl",
+        "lx521_coupon_13_v1lf_crown_crossover.stl",
+        "lx521_coupon_10_um_split_grommet_half_a.stl",
+        "lx521_coupon_11_um_split_grommet_half_b.stl",
+        "lx521_coupon_14_v1lf_grommet_receiver.stl",
+    }
+    for name in stale:
+        path = stl_dir / name
+        if path.exists():
+            path.unlink()
+
+
+def _run_group_guarded(group: str, stl_dir: Path, target_mode: str) -> None:
+    env = os.environ.copy()
+    env["LX_STAND_FOOT"] = target_mode
+    # The group builder selects V1LF only for R6F coupons. Start from the
+    # proud profile so inherited shell state can never trip proud imports.
+    env["LX_ROUTING_PROFILE"] = "proud"
+    guard = Path(__file__).with_name("run_memory_guarded.py")
+    subprocess.run(
+        [sys.executable, str(guard), "--", sys.executable,
+         str(Path(__file__).resolve()), "--outdir", str(stl_dir),
+         "--group", group],
+        env=env, check=True)
+
+
+def _export_group(group: str, stl_dir: Path, target_mode: str) -> None:
+    from build123d import export_stl
+
+    pieces = _pieces_for_group(group, target_mode)
+    for name, solid in pieces.items():
+        raw_solids = list(solid.solids())
+        if (not solid.is_valid or len(raw_solids) != 1
+                or raw_solids[0].volume <= 0.01):
+            raise RuntimeError(
+                f"coupon {name}: expected one valid source solid; "
+                f"valid={solid.is_valid} volumes="
+                f"{[item.volume for item in raw_solids]}")
+        laid = _lay_flat(solid)
+        laid_solids = list(laid.solids())
+        size = laid.bounding_box().size
+        if (not laid.is_valid or len(laid_solids) != 1
+                or laid_solids[0].volume <= 0.01):
+            raise RuntimeError(
+                f"coupon {name}: lay-flat transform damaged topology")
+        if max(size.X, size.Y, size.Z) > BED_MM:
+            raise RuntimeError(
+                f"coupon {name}: {size.X:.2f} x {size.Y:.2f} x "
+                f"{size.Z:.2f} exceeds {BED_MM:.0f} mm bed envelope")
+        out = stl_dir / f"lx521_coupon_{name}.stl"
+        temporary = out.with_name(
+            f".{out.stem}.{os.getpid()}.tmp.stl")
+        try:
+            export_stl(
+                laid, str(temporary), tolerance=0.05,
+                angular_tolerance=0.2)
+            _validate_binary_stl(temporary)
+            temporary.replace(out)
+        finally:
+            temporary.unlink(missing_ok=True)
+        print(
+            f"wrote {out.name}: {size.X:.2f} x {size.Y:.2f} x "
+            f"{size.Z:.2f} mm")
+
+
 def main() -> None:
-    pieces = {**_fit_pieces(), **_fishing_pieces()}
-    for d in ("floor_stand", "no_floor_stand"):
-        stl_dir = Path(__file__).parent / d / "stl"
-        stl_dir.mkdir(parents=True, exist_ok=True)
-        for stale in ("lx521_coupon.stl", "lx521_coupon_4_fish_um_bend.stl"):
-            old = stl_dir / stale
-            if old.exists():
-                old.unlink()
-        for name, solid in pieces.items():
-            out = stl_dir / f"lx521_coupon_{name}.stl"
-            export_stl(_lay_flat(solid), str(out),
-                       tolerance=0.05, angular_tolerance=0.2)
-            print(f"wrote {out.name}")
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--outdir", type=Path,
+                    help="write one state directory (default: both state trees)")
+    ap.add_argument("--group", choices=COUPON_GROUPS,
+                    help=argparse.SUPPRESS)
+    args = ap.parse_args()
+    if args.outdir is None:
+        # Keep the convenience dual export, but isolate OCC and module
+        # state in one fresh child per stand mode.
+        for mode, state in (("1", "floor_stand"),
+                            ("0", "no_floor_stand")):
+            env = os.environ.copy()
+            env["LX_STAND_FOOT"] = mode
+            env["LX_ROUTING_PROFILE"] = "proud"
+            guard = Path(__file__).with_name("run_memory_guarded.py")
+            subprocess.run(
+                [sys.executable, str(guard), "--", sys.executable,
+                 str(Path(__file__).resolve()), "--outdir",
+                 str(Path(__file__).parent / state / "stl")],
+                env=env, check=True)
+        return
+
+    target_mode = os.environ.get("LX_STAND_FOOT", "1")
+    if target_mode not in {"0", "1"}:
+        raise SystemExit("LX_STAND_FOOT must be 0 or 1")
+    stl_dir = args.outdir
+    stl_dir.mkdir(parents=True, exist_ok=True)
+    if args.group is None:
+        # Build the complete coupon family off to the side. Only after every
+        # fresh guarded OCC child succeeds do same-filesystem atomic replaces
+        # publish the new set. Generation failures preserve the prior set; an
+        # interruption during the short per-file publication loop remains
+        # fail-closed because Make removed the stamp and the hash manifest can
+        # no longer certify a mixed generation.
+        with tempfile.TemporaryDirectory(
+                prefix=".coupon-stage-", dir=stl_dir) as stage_name:
+            stage_dir = Path(stage_name)
+            for group in COUPON_GROUPS:
+                _run_group_guarded(group, stage_dir, target_mode)
+            actual = {path.name for path in stage_dir.glob("*.stl")}
+            if actual != _EXPECTED_COUPON_FILES:
+                raise RuntimeError(
+                    "staged coupon set mismatch: "
+                    f"missing={sorted(_EXPECTED_COUPON_FILES - actual)} "
+                    f"extra={sorted(actual - _EXPECTED_COUPON_FILES)}")
+            for name in sorted(_EXPECTED_COUPON_FILES):
+                (stage_dir / name).replace(stl_dir / name)
+        _prune_legacy_coupon_outputs(stl_dir)
+        return
+    import run_memory_guarded as memory_guard
+    if not memory_guard.is_guarded_process():
+        # Even the hidden one-group entry point is safe when invoked by hand;
+        # no spoofable environment sentinel can bypass the outer guard.
+        _run_group_guarded(args.group, stl_dir, target_mode)
+        return
+    _export_group(args.group, stl_dir, target_mode)
 
 
 if __name__ == "__main__":

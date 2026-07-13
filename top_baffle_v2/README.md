@@ -3,6 +3,8 @@
 3D-printable version of the modified top baffle from
 `plano top baffle con anidados V2.pdf` (exact 1:1 vector geometry extracted
 from the PDF, not redrawn). Overall 304.8 × 468.31 × 18.3 mm.
+That envelope describes the R6P proud family; the R6F V1LF experiment
+deliberately removes the full outline and retains only two collars.
 
 ## Files
 
@@ -14,27 +16,107 @@ from the PDF, not redrawn). Overall 304.8 × 468.31 × 18.3 mm.
 | `top_baffle_nd25fw4_b.py` | Shared B-family builder: mini-LM upper-mid vase (no shelf corners) + tweeter section lowered 9.0 mm. Governing clearance is on the FRONT face: the lower tweeter faces forward (stock LX521.4 arrangement), so its D104 faceplate shares the front plane with the 10F's D97.5 flange -- axis spacing 102.84 mm vs 100.75 mm contact leaves a 2.1 mm edge gap (drawing spacing allows an 11.1 mm drop max). Scallop-to-flange 14.1 mm; scallop-to-D82 web 21.9 mm. Total height 459.3 mm. Below the y=306 seam identical to A. |
 | `top_baffle_nd25fw4_b1.py` | B1: flank is ONE straight line from the crescent horn corner (36.8, 432.9) through the max-width point (83.8, 399.6) to the V-waist at (+/-56.12, 306.5) -- extended to the horn so the top magnet site lands in the B1 wing |
 | `top_baffle_nd25fw4_b2.py` | B2: constant wall around the 10F -- flare and chamfer keep the LM tilts but are both tangent to the r=50.83 circle about the UM center (9.8 mm wall at the D82, 2.1 mm to the D97.5 flange at both tangential points). Chamfer runs from the flare corner (+/-60.65, 391.71; max width 121.3 mm) to the crescent's D102.11 arc extended to (+/-10.08, 418.18); waist (+/-38.1, 315.95). |
-| `top_baffle_nd25fw4_b2_split.py` | 4-piece print split of variant B2 (the universal base set), shown assembled |
+| `top_baffle_nd25fw4_b2_split.py` | 4-piece print split of variant B2 (the universal **R6P proud-family** base set), shown assembled |
 | `top_baffle_nd25fw4_c7.py` | Variant C7: B2 with the LM section rear-tapered to a ~0.5 knife edge over the last 19 mm inside the flank/chamfer outline (front face stays a full plane). Full-depth land kept at the bottom strip (foot/bridge) and before seam B; half-round ribs (r=5.4) carry the T ducts across the band. See "Variant C7" below |
 | `top_baffle_nd25fw4_c7_split.py` | C7 print split: same seams/dovetails/ducts as B2 -- the three LM pieces are drop-in replacements, piece_top and all attachments are shared |
-| `export_piece_stls.py` | Exports the print-ready piece STLs (`--outdir`) |
+| `top_baffle_nd25fw4_cables.py` | Proud-family **R6P** subtractive routing and routing-profile dispatch: standard B2/C7/V0/V1 UM tail plus the keyed V1L-only 283-degree alternate |
+| `top_baffle_nd25fw4_v1l.py` / `_split.py` | Thin R6P bottom+mids; its alternate UM tail and rear-face exit remain wholly in `piece_mid_right`, so the shared top/vase is unchanged |
+| `top_baffle_nd25fw4_v1lf.py` / `_split.py` | Extreme V1LF core: LM/UM flush-driver collars, rounded LM-to-UM M3 half-laps, six flush-buried lip magnets (four LM, two UM), an UM route buried only in the LM carrier, a T route buried in the LM/UM carriers, free rear UM/tweeter spans, a free LM cable span, and—only without the floor stand—the softly blended monolithic stock-bridge plate |
+| `top_baffle_nd25fw4_v1lf_route.py` | Exact R6F printed-owner segments and physical cable continuations: 0.8 mm minimum walls and 0.85 mm seat roof on the surviving buried UM/T spans, full-width longitudinal burial webs plus solid roof-to-bore saddles at every named insert-bypass Z bump, free UM cable behind the UM carrier, free T cable behind the tweeter crescent, and the 82.67° physical crown crossing |
+| `top_baffle_nd25fw4_v1lf_bridge.py` | Immutable four-hole bridge datum, fused 62 mm insert core with soft cubic shoulders and two centered rear cable entries at the deepest existing LM-pad depth (no separate keel or rear ribs), hardware proxies, and an opening-aware biaxial 4 kg sustained-1g/3g/5g structural screen; floor mode has no plate |
+| `top_baffle_nd25fw4_v1lf_attachments.py` | Separate floor/NL8 support (required in floor state) and optional direct blind-M3 tweeter crescent; any cable retention is external/non-modeled, and magnets receive zero structural load credit |
+| `top_baffle_nd25fw4_v1lf_assembled.py` | Review assembly containing the R6F core, selected add-ons, and the explicitly non-manufacturing terminal/Faston proxy |
+| `top_baffle_nd25fw4_um_fit.py` | 283-degree MU terminal service model: terminal-less MU body, hash-pinned W22 reference and declared-placement conservative rear keepout, independent low-profile flag-Faston pull states, physical OD8/OD4 Y-breakout harness, and the proud/V1L split strain reliefs; `PHYSICAL_MEASURE_REQUIRED` remains true |
+| `export_piece_stls.py` | Exports the print-ready proud-family or V1LF core/add-on STLs (`--variant`, `--outdir`) |
 | `export_steps.py` | Exports a module's `gen_step()` to STEP via build123d's native exporter (`<module.py> --output <path>`) — no CAD-skill dependency |
-| `Makefile` | `make -j16` generates STEPs/STLs/PNGs for BOTH stand-foot states into `floor_stand/` and `no_floor_stand/` (see "Generated artifact layout"). Parallel builds are safe again since the 2026-07 OOM root cause (degenerate sweep geometry ballooning OCC booleans) was fixed and is guarded by `test_cutter_health`; run under `ulimit -v` anyway |
+| `Makefile` | Generates STEPs/STLs/PNGs for both stand states into `floor_stand/` and `no_floor_stand/` (see "Generated artifact layout"). Local OCC jobs are serial; the remote executor uses bounded parallel slots, and every CAD subprocess runs through `run_memory_guarded.py`. |
+| `remote_cad.py` / `cad-remote-requirements.lock` | Content-addressed SSH executor, resumable job control, verified artifact return, and exact remote Python environment |
 | `<variant>/stl/lx521_top_*.stl` | Print-ready pieces (flat, Z = thickness, front face up): 4 base + 4 addon-A + 2 addon-B1 |
 
-Regenerate everything (memory-capped as a guard):
+Regenerate through the remote executor (the default):
 
-    bash -c 'ulimit -v 419430400; exec make -j16 PYTHON=<venv>/bin/python'
+    make
+    make floor_stand
 
-Self-contained — the only dependencies are the pip packages
-`build123d`, `shapely`, `matplotlib`, and `numpy` (no external CAD
-tooling). `make check` runs the analytic clearance suite
-(`test_clearances.py`, 18 checks): duct-duct/pilot separations,
-flange-recess ring containment, V1LF envelope, V0/C7 corridor lateral
-probes, attachment mating flushness, route smoothness, cutter health,
-and the margin dashboard. `make manifold` (also run at the end of
-`make all`) sweeps every exported STL for open/over-shared mesh edges
-— the exposed-duct failure class.
+`make` snapshots the exact current working-tree inputs, runs in an isolated
+job on `osado.lan`, and promotes only hash-verified artifacts back into this
+directory. The pinned Python 3.12.12 environment is content-addressed and
+reused remotely. Jobs survive a lost SSH connection; the printed job id can
+be inspected or resumed with:
+
+    python3 remote_cad.py status JOB_ID
+    python3 remote_cad.py resume JOB_ID
+    python3 remote_cad.py cancel JOB_ID
+
+For a deliberately detached launch use
+`python3 remote_cad.py run --detach TARGET`; ordinary `make` waits and fetches
+automatically, while Ctrl-C detaches without killing the remote cgroup.
+
+The client accepts only documented public Make targets; Make-variable
+assignments and private file targets are rejected. `make manifold` includes
+the current local candidate in its content-addressed snapshot so osado checks
+those exact files. `make clean` mirrors the local target and preserves
+`review/` snapshots.
+
+The remote job has a hard 512 GiB aggregate systemd cgroup limit and a 64 GiB
+host-free floor. It uses four parallel guarded recipe slots by default, with
+the remaining 448 GiB divided equally (112 GiB each). Set
+`LX_CAD_REMOTE_JOBS=N` to tune the slot count; the aggregate cap cannot be
+relaxed. `LX_CAD_REMOTE_HOST` and `LX_CAD_REMOTE_ROOT` override `osado.lan`
+and `~/temp/lx-cad` respectively.
+
+The osado profile also removes workstation-only computational fragmentation:
+the clearance and R6F suites fan out across the selected guarded slots; R6F
+uses direct final-LM construction plus complete shell/cable/service witnesses;
+V1L builds its shared split geometry once; and each state's V1L/V1LF STLs are
+meshed in one guarded process. Physical print-bed splits and mating interfaces
+remain unchanged. Explicit local mode keeps the segmented, one-heavy-part-at-
+a-time implementations needed by the 8 GiB/0.5 GiB workstation limits.
+
+Before launch, the executor measures and hashes the actual Linux x86_64
+Python ABI, interpreter binary, uv version and complete installed-package
+freeze. The running job attests its real cgroup-v2 `memory.max` and zero-swap
+limit. Download, source-drift rechecks, both state-directory swaps and the
+local portable manifold check form one locked promotion transaction; any
+failure restores the prior floor/no-floor pair.
+
+Running OCC on the current machine requires an explicit opt-in:
+
+    LX_CAD_EXECUTION=local make PYTHON=<venv>/bin/python
+
+The generated directories are **candidate packages**, not physical-release
+authorization. Even the Make target named `release` performs CAD, artifact
+and manifold checks only; while the state manifests say
+`release_authorized: false`, neither state may be put into service. Complete
+and sign the state-specific physical qualification record separately.
+Each candidate also retains `.v1lf_stage/`: the hash-validated native BREP
+transaction behind its V1LF STEP/STL exports. Its manifest records the exact
+Python/package identity, selected memory profile, per-tree cap, free-memory
+floor, guard-slot count and any remote aggregate cgroup cap. Those records are
+portable, so the local checker can verify a promoted osado build without
+pretending it was generated under the macOS profile. It is provenance
+evidence, not a printable part, and the strict checker intentionally requires
+it.
+
+Do not bypass the guard with direct bulk Python invocations. The local profile
+stops a CAD process tree above 8 GiB RSS or when immediately reclaimable
+system memory falls below 0.5 GiB; on macOS that conservative counter is free
++ speculative + purgeable pages (not inactive/compressed). Local builds stay
+serialized. The high-memory profile refuses to load on non-Linux or
+undersized hosts and is selected by the remote executor only. Limit variables
+can tighten their selected profile but cannot relax it.
+
+Self-contained — the direct pip dependencies are
+`build123d`, `shapely`, `matplotlib`, `numpy`, and `Pillow` (no external CAD
+tooling). `make check` runs `test_clearances.py` for proud-family
+regressions and `test_v1lf_r6f.py` for guarded R6F BREP contracts.
+Together they cover duct/pilot separation, flange-seat containment,
+service envelopes, R6P grommet regressions, complete-route smoothness, exact
+normal/eroded-outline containment, closed assembled shells, hardware
+clearance, and structural/bed screens. `make manifold` (also run at the
+end of `make all`) proves candidate-mesh topology; final R6F BREP shell
+tests, rather than manifoldness alone, prove that no rear cable window
+is present.
 
 ## Key dimensions (from the drawing, verified against printed dims)
 
@@ -57,22 +139,23 @@ and the margin dashboard. `make manifold` (also run at the end of
   When enabled: M5 machine screws thread-form through the full 18.3 mm
   (pre-run the screw once to cut the threads).
 - Blind driver mounts, front face only:
-  - Upper mid (Scan-Speak 10F/8424G00, 4 x D3.8 flange holes on pitch
-    D89.5): 4 x Ø4.6 bores at 58/148/238/328 deg (a square clocked
+  - Upper mid (production SEAS MU10RB-SL H1658-04, historically called
+    “10F” in this project; four-hole flange on pitch D89.5): 4 x Ø4.6
+    bores at 58/148/238/328 deg (a square clocked
     +13 deg from 45 -- 45/90 grids are geometrically impossible, see
     VARIANTS.md), 4.0 mm deep, for BRASS HEAT-SET inserts M3 x 3 long
-    x Ø5 OD (soldering-iron set; M3 screws pass the D3.8 flange holes
-    natively). The ring sits 3.75 from the D82 cutout wall; the slim
-    bore keeps 1.45 mm on its inboard side. The shared TS duct
+    x Ø5 OD (soldering-iron set). The ring sits 3.75 from the D82 cutout
+    wall; the slim bore keeps 1.45 mm on its inboard side. The shared TS duct
     (z=11.5) clears the rotated pattern IN PLAN (>=6.8 to every bore;
     pilot floor z=14.3).
-  - Lower mid (SEAS W22EX001, 6 x D5.0 flange holes + D8.8 head recess on
-    pitch D209.5, measured from E0022_W22EX001.stp): 6 x Ø6.4 bores,
-    6.8 mm deep, aligned VERTICALLY (30/90/...330 deg), for BRASS
-    HEAT-SET inserts M5 x 5.8 long x Ø6.3 OD (recommended hole Ø6.4;
-    set with a soldering iron; ~700 N pull-out each holds the 2.6 kg
-    driver with a wide margin and survives unlimited R&R). M5 screws
-    pass the D5.0 flange holes natively and seat in the D8.8 recesses.
+  - Lower mid (production SEAS U22REX/P-SL H1659-08; the hash-pinned
+    W22EX001 shrinkwrap supplies the reference mounting template): 6 x
+    D5.0 flange holes with D8.8 head recesses on pitch D209.5 and 6 x
+    Ø6.4 × 6.8 bores, aligned VERTICALLY (30/90/...330 deg), for BRASS
+    HEAT-SET inserts M5 x 5.8 long x Ø6.3 OD. The structural screen assumes
+    600 N pull-out per correctly installed insert; it does not qualify the
+    actual print process, creep, reuse cycles or unlimited removal/refit.
+    M5 screws pass the D5.0 flange holes natively and seat in the D8.8 recesses.
     Floor z=11.5; the ring is plan-clear of every front-half duct
     (seam C clears the 90-deg bore by 2.25 mm, the LM duct keeps
     3.05 mm to the 270-deg bore).
@@ -107,11 +190,11 @@ and the margin dashboard. `make manifold` (also run at the end of
 
 ## Print split (256×256×256 bed)
 
-- Seam A: y=120 (two ~58 mm lands beside the Ø190 cutout), 2 dovetails
-  (±89, neck 7 / head 9 / depth 5) — in the full-depth window between
-  the T duct arc (crosses seam A at x≈72.6; UM at x≈66) and the C7
-  taper boundary (x≈92): keys clear of every duct and fully OUT of the
-  C7 taper in all variants.
+- Seam A: y=120 (two ~58 mm lands beside the Ø190 cutout), 4 dovetails:
+  shallow inner teeth at x=±66 (neck 7 / head 9 / depth 3) and main
+  outer teeth at x=±103 (neck 6 / head 7 / depth 5). They straddle the
+  R6P duct crossings and remain in full-depth material outside the C7
+  taper.
 - piece_bottom carries a FUSED stand foot (STAND_FOOT flag in
   top_baffle_nd25fw4.py). The foot starts as the baffle's own bottom
   strip (18.3 tall, side faces continuing the flank slopes: ±76.2 at
@@ -120,7 +203,8 @@ and the margin dashboard. `make manifold` (also run at the end of
   (one straight line per side, from the strip corners to 38 wide at
   the panel inner face, z=-146). The plate/foot inner corner is a
   plain 90-deg joint (no rib -- printed front-face-down the joint is
-  continuous perimeter walls, plenty strong). The dressed baffle's CG
+  continuous perimeter walls, but it still requires the solid-infill
+  modifier and proof procedure in PRINTING.md). The dressed baffle's CG
   sits ~52 mm behind the front face, so it stands upright with no
   front toe.
   The foot's far end carries a minimal 38 × 44 × 4 panel wall for a
@@ -140,9 +224,12 @@ and the margin dashboard. `make manifold` (also run at the end of
   -- ~40 mm of open channel between the cable outs and the connector
   tabs for dressing/Faston access. (Lanes are packed by Δx alone --
   8.45 + 10.85 + 8.5 webs -- because each pair of descent curves
-  crosses in the (y,z) plane.) The driver-side exit bores into the
-  Ø190/Ø82 cutouts are unchanged. With the flag OFF: the original flat
-  piece, bridge holes, and rear-face breakouts aimed at the SUPPORT
+  crosses in the (y,z) plane.) At the driver end, LM retains its rear
+  outlet below the Ø190 opening and TS pierces the open tweeter scallop. The proud-family UM
+  route instead stays Ø8.2 through one continuous G1 R14 turn and
+  leaves the rear face at (33.446, 301.492); there is no separate UM bore
+  into the Ø82 opening. With the flag OFF: the original flat piece,
+  bridge holes, and rear-face breakouts aimed at the SUPPORT
   WINDOW -- the stock support plate has a Ø20 hole (center (0, 60):
   horizontally centered, top edge tangent to the upper screw line
   y=70) that all four cables must pass. Packing: LM/UM breakouts side
@@ -159,39 +246,45 @@ and the margin dashboard. `make manifold` (also run at the end of
   vertical-axis circles) or standing on the foot for the strongest
   joint.
 - Seam B: y=315.95, exactly through B2's waist kinks, 2 dovetails
-  (left -19, right +21.5; neck 10 / head 14 / depth 6 — the right one
-  outboard so the UM corridor passes at x=8.3 and the T elbow at x=33). Both pieces get OBTUSE corners at
+  (left -19, right +30; neck 10 / head 14 / depth 6). Both pieces get
+  OBTUSE corners at
   this seam (top foot ≈107° against the flare, mids ≈152° against the
   chamfer) — no brittle knife-tips — and the glue line hides in the crease.
 - Seam C: x=-5.6 between A and B (~20 mm land above the cutout; offset
-  left so its dovetail pocket clears the 90-deg W22 insert bore by
-  1.55 mm), 1 dovetail (neck 6 / head 8 / depth 4 at y=300.5).
+  left so its dovetail pocket clears the 90-deg W22 insert bore),
+  1 dovetail (neck 7 / head 8.5 / depth 4 at y=305.0).
 - Dovetails are through-thickness, 0.10 mm clearance on female sides.
+
+These seams and the foot/bridge behavior apply only to the R6P proud
+family. V1LF R6F is not a thinned four-piece shell: its mandatory core
+print set is the two collars described below. The floor support is a
+separate add-on artifact but is required in the floor-stand state; the
+no-floor bridge is fused into the LM core.
 
 ### Generated artifact layout
 
-`make -j1` (see the Makefile; `PYTHON=<venv>/bin/python` to pick an
-interpreter) builds BOTH stand-foot states:
+The default remote `make` builds BOTH stand-foot states. Use
+`LX_CAD_EXECUTION=local make -j1` only for an intentional local build:
 
-    floor_stand/      LX_STAND_FOOT=1: fused foot + NL8 panel, no
-      stl/  *.step  *.png     bridge holes, cables through the foot
-    no_floor_stand/   LX_STAND_FOOT=0: flat piece_bottom, bridge
-      stl/  *.step  *.png     pass-throughs, rear-face cable breakouts
+    floor_stand/      LX_STAND_FOOT=1: R6P fused foot + NL8 panel;
+      stl/  *.step  *.png     R6F required open-rail floor/NL8 support add-on
+    no_floor_stand/   LX_STAND_FOOT=0: R6P flat piece_bottom + bridge;
+      stl/  *.step  *.png     R6F solid bridge web fused into the LM core
 
-Each folder is a complete print set. piece_bottom is the only
-functionally different piece; the other base STLs differ between the
-folders by <0.05 mm of duct-wall position (the stand-foot entry knots
-shift the shared duct splines microscopically — well under the 0.10
-seam clearance, but the files are not byte-identical).
-`attachments.step` is flag-independent and stays at the top level. The
-STAND_FOOT flag is the `LX_STAND_FOOT` env var (default 1).
+Each folder contains all proud-family variants and the matching V1LF
+core/add-on set. In R6P, `piece_bottom` is the only functionally
+different base piece; the other base STLs can differ by <0.05 mm as
+the foot-entry knots move. In R6F, the UM core is state-independent. The
+floor LM has no tail; the no-floor LM owns the fused bridge web.
+`top_baffle_nd25fw4_attachments.step` is flag-independent and stays at
+the top level. The `LX_STAND_FOOT` environment flag defaults to 1.
 
 | STL in `<variant>/stl/` | Footprint (mm) | Used by |
 |---|---|---|
-| lx521_top_base_1of4_bottom | 223.8 × 125.0, 168.3 tall (fused stand foot; flip front-face-down or stand on the foot — see above) | all variants |
-| lx521_top_base_2of4_mid_left | 146.7 × 201.9 | all variants |
-| lx521_top_base_3of4_mid_right | 162.0 × 201.9 | all variants |
-| lx521_top_base_4of4_vase_b2 | 121.3 × 137.4 | all variants |
+| lx521_top_base_1of4_bottom | 223.8 × 125.0, 168.3 tall (fused stand foot; flip front-face-down or stand on the foot — see above) | R6P proud family |
+| lx521_top_base_2of4_mid_left | 146.7 × 201.9 | R6P proud family |
+| lx521_top_base_3of4_mid_right | 162.0 × 201.9 | R6P proud family |
+| lx521_top_base_4of4_vase_b2 | 121.3 × 137.4 | R6P proud family |
 | lx521_top_addonA_1..2of4_shoulder_top_l/r | 50.6 × 61.8 | A-comp only |
 | lx521_top_addonA_3..4of4_shoulder_bottom_l/r | 22.5 × 85.9 | A-comp only |
 | lx521_top_addonB1_1..2of2_wing_l/r | 73.7 × 125.1 | B1 only |
@@ -199,9 +292,26 @@ STAND_FOOT flag is the `LX_STAND_FOOT` env var (default 1).
 | lx521_top_c7base_2..3of4_mid_l/r | as base 2/3of4 | C7 (LM knife taper) |
 | lx521_top_c7base_4of4_vase_b2 | same part as base 4of4 (re-tessellated file) | C7 = same vase |
 | lx521_top_v0_4of4_vase / v1_4of4_vase | as base 4of4 | V0 / V1 vase experiments |
-| lx521_top_v1l_1..4of4 / v1lf_1..4of4 | as base 1..4of4 | V1L thin family / V1LF flush-driver family (see VARIANTS.md) |
-| lx521_coupon_1..8 | small blocks | print-calibration + fishing rehearsal (PRINTING.md) |
+| `lx521_top_v1l_1..3of4_*` + re-exported 4of4 vase | as proud base 1..4of4 | keyed V1L bottom/mids; its 283-degree alternate is confined to 3of4 `mid_right`, while 4of4 is the unchanged V1 vase |
+| `lx521_top_v1lf_core_1of2_lm_carrier.stl` | Ø226 collar, rotated 0/60/120/180/240/300° inserts, two rounded LM-to-UM ears, four flush-buried R113-lip magnets, and the LM-owned buried UM/T route segments; the D7.8 LM lead is free, and the no-floor file includes the softly blended front-flush bridge plate with centered rear UM/T entries | mandatory R6F LM core |
+| `lx521_top_v1lf_core_2of2_um_carrier.stl` | Ø103.4 collar, two rounded LM-to-UM ears, direct tweeter-joint halves, two flush-buried magnets, and the buried T continuation with fully solid-webbed 328°/58° insert bypasses; the UM cable is free behind this carrier and has no printed rear duct | mandatory R6F UM core |
+| `lx521_top_v1lf_addon_mount_floor_support.stl` | floor state only | required open-rail floor/NL8 support add-on on the rotated 180/240/300° W22 axes; it has no obsolete LM magnet cups/arms and retains only physical-cable-plus-clearance space for the free LM lead |
+| `lx521_top_v1lf_addon_tweeter_crescent.stl` | cropped V1 crescent + direct blind-M3 half-laps; no printed T-cable arc or conduit | optional R6F face-to-face tweeter carrier; attaches at x=±24, y=421.5, with the T cable free behind it |
+| `lx521_top_proud_addon_um_grommet_half_{a,b}.stl` | split TPU insert with short curved shank | standard B2/C7/V0/V1 R14-bore strain relief; not V1L |
+| `lx521_top_v1l_addon_um_grommet_half_{a,b}.stl` | keyed split TPU D8 curved shank, D7.1 bore, D13 × 2 flange | V1L-only strain relief; seats at Q on the z=6.8 rear face and follows the alternate R14 |
+| `lx521_coupon_*` | small blocks/gauges | calibration, routing, and clocking checks (PRINTING.md) |
 | lx521_polar_base_1..2of2 | Ø216 / 169×185 | polar-measurement turntable under the stand foot (floor_stand only) |
+
+Stable routing/fit review files in each state folder are
+`top_baffle_nd25fw4_v1lf_split.step` (mandatory two-piece core),
+`top_baffle_nd25fw4_v1lf_attachments.step` (separate add-ons, including
+the required floor-state support),
+`top_baffle_nd25fw4_v1lf_assembled.step` (review assembly), and
+`top_baffle_nd25fw4_um_fit.step` (non-manufacturing Faston proxy,
+standard/V1L/V1LF UM Ø7 cable references, and the proud/V1L profile-fitted
+split inserts). V1LF has no printed grommet. The V1L grommet halves are also exported as the stable
+STLs listed above.
+The assembled R6F STEP also shows the independent LM Ø7.8 reference.
 
 Building the variants: B2 = the four base pieces. A-comp = B2 + the four
 shoulder pieces. B1 = B2 + the two wings. Attachments are edge-glued onto
@@ -210,50 +320,171 @@ and crescent arc on their inner faces self-register them. The A bottom
 shoulders and the B1 wings extend below seam B (bonding ~9-12 mm onto the
 mids), so they also splint the top-to-mid glue line.
 
-## Internal cable ducts
+## Cable routing: R6P proud (standard + V1L) vs R6F V1LF
 
-Routing revision **R5** ("flush-ready") — see the cables module
-docstring for the authoritative description: three front-half mains
-(LM O8.2 / UM O7.8 at z=12.55, shared T at z=11.5 with a flattened
-W6.6 x H4.4 oval through the vase under the MU10 flange seat), strip
-feeders, straight-back rear exits behind each driver, and every duct
-clear of the V1LF flange-recess rings. The paragraph below predates
-round-4/5 and is kept only for the fishing notes:
+Routing is now deliberately split into two physically incompatible
+profiles. Generate and review both sheets; the generic routing image no
+longer exists:
 
-FOUR fully internal spline pipes: LM and UM are big mid-plane bores
-(z=9.15) sized for TWISTED pairs; T1/T2 run deeper at z=3.7 (they pass
-under the 10F pilot ring -- see the pilot note above) -- each tweeter of
-the face-to-face pair carries its own AWG24 pair. No duct intersects any
-hole or pocket (blind included) in plan.
+- `baffle_cable_routing_proud.png` documents **R6P**. It shows the
+  normal B2/C7/V0/V1 UM path and, on the same sheet, the clearly
+  labeled V1L-only 283-degree alternate tail.
+- `baffle_cable_routing_v1lf.png` documents **R6F**, the surviving buried
+  UM/T owner segments, the free rear UM and tweeter spans, the short
+  un-ducted LM free span, solid-backed insert-bypass bumps, the physical
+  T-over-UM crown crossing, state-specific support, and optional tweeter
+  carrier. In addition to
+  plan routing, it contains the true longitudinal side profiles and local
+  nominal diametric u-z sections with authoritative vertical limits through
+  representative UM and T bump/pilot axes.
 
-The in-plane MAIN of each duct (the routing in the table below) is common
-to both variants; only the ENTRY and the driver-side EXIT differ:
-- Entries depend on STAND_FOOT (see the Print-split section). Flag ON:
-  each duct drops down the plate, takes a 90-deg R14 elbow, and runs
-  through the foot to exit the connector-channel step face. Flag OFF:
-  four oblique bores break the REAR face, packed into the support
-  plate's Ø20 window (LM/UM inside it, T1/T2 at its lower edge).
-- Exits are common to both: oblique bores into the driver-cutout walls,
-  invisible with drivers mounted:
+R6P keeps the UM cable space **Ø8.2 end-to-end**. For B2/C7/V0/V1, the
+planar main follows the outer U22 arc, returns through the broad lower
+neck, and joins an analytic R14 three-dimensional quarter-turn with
+constrained G1 tangency. The same sweep reaches a vertical rear tangent
+and leaves the rear face at **(33.446, 301.492)**; it is not assembled
+from intersecting planar and vertical cylinders. For the estimated Ø7
+cable this provides 0.6 mm nominal radial slack. Its 297.376-degree
+bearing remains between mounting screws 238 and 328 degrees but is
+14.376 degrees away from the 283-degree Faston pull axis. The
+conservative D7 rear continuation and profile-fitted curved grommet are
+collision-checked against the full 32 × 40 × 10 mm outboard service envelope.
 
-| Driver | Cable | Duct | Route |
+V1L is the keyed R6P exception. Its complete UM cutter substitutes an
+alternate tail wholly inside `piece_mid_right`; it does not branch from
+or retain the normal R14 outlet. The physical aperture is centered at
+**Q = (13.497063, 307.618796, 6.8)**, where the V1L rear face intersects
+the exact 283-degree terminal axis at radius 60.0 mm. The nominal cutter
+continuation ends outside the part at **(11.080158, 308.797599, −2.0)**,
+2.689 mm farther in XY along the tail; that nominal endpoint is not the
+aperture center. The route stays below seam B and never enters the
+top/vase, so B2/C7/V0/V1 geometry and every top-piece route remain
+unchanged. The reference MU mesh still omits its terminal tabs, so the
+real driver, Fastons, boots, pull-off stroke, and the supplied
+`lx521_top_v1l_addon_um_grommet_half_{a,b}.stl` strain relief require a
+physical dry fit before release.
+
+The V1L grommet has a Ø8 curved body around a Ø7.1 nominal cable bore,
+inserts 2.5 mm into the keyed R14, and seats a Ø13 × 2 mm flange against
+the z=6.8 rear face. Its printed solid clears the conservative Faston
+motion box; the installed cable intentionally enters that box because it
+is the functional terminal handoff. Do not treat cable/envelope overlap
+as a collision or grommet/envelope clearance as proof of real hardware
+fit.
+
+R6F rotates only its six LM inserts to **0/60/120/180/240/300°** on the
+unchanged Ø209.5 PCD, leaving the 90° crown clear. The physical UM and T
+cable envelopes are Ø7.0/Ø5.2. The UM cable uses an Ø8.2 buried passage only
+inside the LM carrier, then runs free behind the UM carrier. The T cable uses
+an Ø6.0 buried passage through the LM and UM carriers, then runs free behind
+the tweeter crescent; the crescent owns no printed cable arc. The
+independent D7.8 LM lead instead floats over a short 20.15 mm radial span at
+269.5° behind the carrier: there is no printed micro-duct, cover, or cutter.
+Its center rises smoothly from z=0.40 to 3.80, beginning at R103 where local
+rear clearance permits (before the R95/D190 mouth), and its outer station
+retains 1.00 mm clearance to the deepest z=5.3 pad/web rear datum. The floor
+support subtracts only the physical cable plus 0.4 mm air
+clearance. The UM route rises in the right LM arc and exits the LM-owned
+passage before continuing as free cable behind the UM carrier. The tweeter
+route rises in the left LM arc, stays buried through the UM carrier, passes
+the 328° and 58° pilots on shallow covered Z bumps, and exits before the
+tweeter crescent. At the crown the physical routes cross at **82.67°**: T is
+the higher +Z cable and UM the lower cable, with **1.85 mm** between their
+physical envelopes. This is no longer a two-printed-duct crossover and has
+no separator-web claim.
+
+The free UM cable follows the modeled R15 terminal approach to the immutable
+283° service axis with a clockwise circumferential **193° tangent** at z=2.7,
+then continues with exact G1 continuity through R20, clearing
+the known Ø60 motor and terminal-carrier proxy before reaching the named
+Y breakout. That breakout has a 4 mm-long OD8 collar with two OD4 branch
+sleeves. Two provisional Ø3.2 conductors use R8-minimum slack paths into
+separate provisional low-profile flag Fastons (8.5 mm receptacle / 9.5 mm
+boot at 11 mm pitch). The review states move one connector at a time
+through **0/3/6/9/12 mm** while the other remains installed.
+
+Every surviving printed UM/T owner segment is continuously covered and has no
+cable window. The
+non-load-bearing wall is two complete 0.4 mm extrusion widths (**0.8 mm
+minimum**); the seat roof is 0.85 mm to avoid a tangent BREP union. Insert
+bypasses move only in Z and retain at least 0.4 mm to the complete
+pad/bore envelope. Each of the eight named bypasses has a local full-width
+solid saddle from the conduit roof to the applicable blind-bore floor; there
+is no hollow trapped between the duct and bore, and the saddle never extends
+behind the existing conduit bump. The LM-owned UM/T low runs and the
+UM-owned T low run also have continuous full-width longitudinal webs from
+the rear half of the conduit to the seat membrane. Those webs close both
+shoulder cavities on either side of the 328°/58° UM bypasses while retaining
+only the functional D6 lumen, blind insert bores, flush-magnet pockets and
+half-lap mating clearances. In floor mode the 300/240/180° saddles
+retain only the exact grown support-boss and shank clearances (Ø12.4 at
+z=−1.4..7.0 around the mating Ø11.6 printed boss, and Ø5.8 at
+z=4.4..6.5); all surrounding saddle volume is solid. The support boss
+retains a 2.6 mm radial wall around its Ø6.4 heat-set cavity. The routing
+PNG's nominal diametric u-z sections show the authoritative
+vertical saddle limits without pretending to be exact octagonal BREP slices.
+V1LF deliberately exports no printed grommet or tunnel clip. Keep any
+external cable retention outside the modeled buried-route, free-cable,
+driver and Faston
+service envelopes, and qualify it with the measured cable.
+
+The conservative W22 keepout records the placement of the hash-pinned
+manufacturer reference shrinkwrap `E0022_W22EX001.stp`, SHA-256
+`7fc2be551c86006e11c32a570b046772987cb86dcf65350f77c6e34709aa5ab6`.
+Its declared native-to-world transform rotates +90° about X (native +Y
+to world +Z and native +Z to world -Y), then translates by
+`(0, 200.981, -47.498931)`. Native bounds
+`(-110.5,-37,-110.5)..(110.5,65.798931,110.5)` therefore map to world
+`(-110.5,90.481,-84.498931)..(110.5,311.481,18.3)`, with the LM centre at
+`(0,200.981)` and native max-Y on the front datum z=18.3. These are cached,
+hash-bound placement facts for the conservative proxy, not a runtime proof
+that it contains every surface of the STEP or the installed U22. The
+physical U22 and service harness still require the recorded fit check.
+
+`PHYSICAL_MEASURE_REQUIRED = True`; qualification remains pending. The
+MU reference omits both terminals and the datasheet leaves their carrier
+and withdrawal geometry un-dimensioned. The maximum modeled pull is
+12 mm, exactly the provisional exposed-tab length, so it has **zero
+positive release overtravel margin**. The real MU, both Fastons and boots,
+one-at-a-time withdrawal, cable, Y breakout, and selected external retention
+must pass and record a physical dry fit before release. The completed record
+must also bind each state to its exact candidate artifacts and document the
+required 1g/3g/5g structural proof. Record all evidence and per-state signoff
+in `V1LF_PHYSICAL_QUALIFICATION.md`; its current pending record and checksum
+are bound into every R6F candidate manifest.
+
+The proud-family route set is:
+
+| Driver | Cable | Duct | R6P route |
 |---|---|---|---|
-| LM (W22) | 2x 2.5 mm^2 twisted | D8.2 | planar z=12.55, drifting past the 270-deg insert bore (plan-clear 3.0); near-level exit bore -> D190-rim opening at z~12 |
-| UM (10F) | twisted 2x2.0 mm^2 pair (~O7.0; 2x2.5 no longer fits) | D7.8 | planar z=12.55 END-TO-END: R26 fan fillet, ONE arc r=119.5 OUTSIDE the W22 pilot ring, R50 fillet onto a straight diagonal tangent to the 30-deg pilot keep-out, one R~10 window bend, vase tail; exit into the D82 rim at z~12; ONE routing shared by ALL piece variants |
-| T1+T2 (both ND25) | 2x (2x AWG24) | D6.0 shared ("ts") | planar z=11.5 up the LEFT flank: strip feeders (t1f z=3.7 from the right, t2f z=9.5) merge in a Ø6.8 z-step, tangent line onto the r=114 arc outside the pilot ring, left vase flank lane 5.1 inside the walls, crest transition, notch-corridor dive (the largest bore that corridor admits), SINGLE head-on pierce of the D78.5 scallop rim at ~(−3.3, 430); both pairs dress to their tweeters through the open scallop void |
+| LM (U22/W22) | 2 × 2.5 mm² twisted | Ø8.2 | z=12.55 main past the 270-degree insert, then the retained rear outlet below the Ø190 opening |
+| UM (MU10/10F) | estimated Ø7 twisted pair | Ø8.2 | B2/C7/V0/V1: outer U22 arc, broad-neck return, continuous G1 R14 handoff to (33.446, 301.492). V1L only: keyed alternate tail to the 283-degree rear-face aperture Q=(13.497063, 307.618796, 6.8) in `piece_mid_right` |
+| T1+T2 (both ND25) | 2 × (2 × AWG24) | shared Ø6.0, flattened to W6.6 × H4.4 under the MU seat | strip feeders merge through the Ø6.8 step, rise along the left vase flank, and make one head-on scallop pierce near (−3.3, 430) |
 
-Min bend (enforced by test_route_smoothness on the real splines):
-LM >= 25, UM >= 10 (the window bend between the 90-deg pilot and the
-right B-key), TS >= 4.5 (the crest transition), feeders >= 6.
-Min walls: >=1.6 mm skins everywhere (the TS lane runs 5.1 inside the
-vase walls; the notch-corridor dive keeps >=1.6 to the D82 rim and the
-chamfer edge -- the corridor is consumed exactly). Verified centerline
-separations (`make check` re-measures them): every duct pair >= its
-two radii + 1.5 mm; every W22 AND 10F pilot >= bore radius + duct
-radius + 1.5 mm in plan. The ducts cross the glue seams -- fish each cable (or a
-pull string) through each piece's short open segment during assembly.
-Seam-A dovetails sit at +/-89 (n7/h9/d5, full-depth, clear of both arcs);
-seam-C dovetail at (300.5, n6/h8/d4).
+The route suites sample the complete physical centerlines, including the
+standard proud R14 handoff, the V1L alternate tail and rear-face handoff,
+every R6F covered Z bump, physical crown crossing, printed-to-free owner
+handoffs, independent LM lead, free rear UM/tweeter spans, and the R6F
+cable's review-only G1 R20 turn to its Y breakout. Two separate Ø3.2 conductors then
+retain R8-minimum slack paths into non-overlapping low-profile flag-Faston
+boots and one-at-a-time 0/3/6/9/12 mm pull states. The printed terminal
+approach is R15 and the exact G1 free continuation is R20; Ø3.2/R8 remains
+provisional until the physical lead and manufacturer bend requirement are
+measured.
+For R6P, `test_um_eroded_outline_containment` erodes the exact outline by
+duct radius plus the 1.6 mm proud-family skin, tests the complete
+interpolated route `LineString` for containment (not just sampled
+vertices), and reports true normal distance to the boundary. R6F instead
+uses its state-specific 0.8 mm wall/0.85 mm roof checks plus final assembled
+BREP shell subtraction and an independent 0.76..0.90 mm manufactured-BREP
+normal-wall bracket. The former horizontal-gap approximation is not used
+in either family.
+Pilot and duct-pair checks retain the 1.5 mm separation rule. R6P ducts
+cross its glue seams, so fish a cable or pull string through each open
+segment during assembly. R6F UM/T cables must be dry-fished through their
+buried owner segments and rehearsed across their free rear spans, while the
+LM cable must be rehearsed over its free rear span and any floor-support
+clearance, before driver installation.
 
 ## Variant C7 — LM knife-edge taper
 
@@ -272,13 +503,12 @@ rear-skinned T ducts).
 - The cut fades in above the bottom strip (y 52..70: foot/bridge
   interface keeps full depth) and fades out toward seam B (y 270..~304:
   full-depth land, flush joint to the shared vase piece, dovetails at
-  full section). Seam-A dovetails (±97) sit inboard of the band --
-  full depth.
-- The common cable routing (see the duct table) is shared by ALL
-  variants, so B2 and C7 pieces mix freely across the seams. ALL four
-  ducts stay buried in the full-depth core (UM at r=100.7 and the T
-  lower mains at r=110, both deep at z=5.7 under the heat-set pilot
-  ring) -- the tapered rear face carries no ribs or marks. Asserted by
+  full section). The four seam-A teeth at ±66/±103 stay in full-depth
+  lands.
+- The standard R6P routing is shared by B2 and C7, so those pieces mix
+  freely across the seams. Every duct remains inside the protected
+  full-depth corridor; the tapered rear face carries no ribs or marks.
+  This is asserted by
   test_c7_duct_corridor (`make check`) and verified with duct-envelope
   probes on the built piece solids.
 - Print: same bed footprints as the B2 pieces; the taper prints
@@ -295,9 +525,10 @@ the flare/chamfer outline, fading out at the seam-B land and blending
 into the crescent's rear taper above y~400. The band is capped at
 2.8 mm by the shared O6.0 T duct (z=11.5) hugging the left vase
 walls at ~1.6.
-ALL duct routing identical; V0 mixes with B2 or C7 bottom/mids
-freely. One D5 x 2 FLUSH magnet per side (the SAME magnets as all
-attachments) in a vertical rear-face pocket at (+-46, 324); scarf
+The standard top-piece routing remains identical for B2/C7/V0/V1; V0
+mixes with B2 or C7 bottom/mids freely. One D5 x 2 FLUSH magnet per side
+(the SAME magnets as all attachments) in a global Ø5.2 × 2.2 vertical
+rear-face pocket at (+-46, 324); scarf
 attachments add receivers + register on the outline kinks. The
 B2-family shoulders/wings do NOT fit V0. Guarded by
 test_v0_duct_corridor (`make check`); STL: lx521_top_v0_4of4_vase
@@ -305,21 +536,22 @@ test_v0_duct_corridor (`make check`); STL: lx521_top_v0_4of4_vase
 
 ## Variant V1 — 11.5 mm UM vase (minimum-thickness field)
 
-The vase field thinned to t=11.5 -- the absolute practical minimum
-with all buried routing kept (binding constraint: the O7.8 UM exit
-tail needs z 0.2..11.2; the T lanes alone would allow 7.2). Front-side
-cut, REAR plane and ALL ducts untouched; sharp step exactly at seam B
-(keys auto-trim to 11.5 on both sides); the WHOLE top is flush at
-11.5: the crescent taper re-derives on the 6.8..18.3 slab (same 4.0
-clamp seat / 0.4 tips), the tweeter pair clamps an 11.5 septum
-(shorter standoffs; pair spacing -6.8, which raises the pair's dipole
-peak -- helpful for the 3-4 kHz XO). With the round-4 front-datum
-routing the vase thins from the REAR, so V1 mounts FRONT-FLUSH with
-the LM section -- no driver misalignment. Pair with V1L for the
-complete thin baffle. 10F mounting: 4 x O4.6 x 4.0 bores from
+The vase field is thinned to t=11.5 while retaining the standard
+B2/C7/V0/V1 R6P route. The UM main hands off below seam B, so it does
+not enter the vase; the
+binding buried passage here is the shared tweeter duct, flattened to
+W6.6 × H4.4 under the MU seat. The rear plane and all ducts are
+unchanged, with a sharp step exactly at seam B (keys auto-trim to 11.5
+on both sides). The whole top is flush at 11.5: the crescent taper is
+re-derived on the 6.8..18.3 slab (same 4.0 clamp seat / 0.4 tips), and
+the tweeter pair clamps an 11.5 septum (shorter standoffs; pair spacing
+−6.8). The front-datum geometry keeps V1 front-flush with the LM
+section. Pair with V1L for the complete thin proud-family baffle. 10F
+mounting: 4 × Ø4.6 × 4.0 bores from
 the new front for M3 x 3 x O5 brass heat-sets (floor z=7.5 stays 1.9
 above the T-lane roofs at the ring crossings). Two D5 x 2 FLUSH
-magnets per side in the flank walls (zc 12.5/14.4); B2 wall
+magnets per side in global Ø5.2 × 2.2 flank-wall pockets (zc 12.5/14.4);
+B2 wall
 pockets are skipped (B2 attachments do not fit V1). Guarded by
 test_v1_field (`make check`); STL: lx521_top_v1_4of4_vase
 (--variant v1). Thinner is possible only by externalizing cables to
@@ -331,16 +563,22 @@ constraint ladder in the V0/V1 discussion.
 The bottom + both mids thinned to t=11.5 (material z 6.8..18.3 above
 the foot strip): the ENTIRE baffle then shares one front plane (use
 with the V1 vase -- same rear plane, NO step at seam B). Binding
-constraint: the O8.2 LM duct window. The bottom strip keeps full 18.3 (smoothstep ramp
+constraint: the Ø8.2 LM/UM z-window. The bottom strip keeps full 18.3 (smoothstep ramp
 y=78 -> 96: full past the top pass-through seats +5, thin 10 short
 of the D190 edge) for the fused foot / bridge hardware / cable
-feeders; W22 heat-sets unchanged (floor keeps a 4.5 wall). Enabled by
-the round-4 "front-datum" routing shared by ALL variants:
+feeders; W22 heat-sets unchanged (floor keeps a 4.5 wall). It preserves
+the common R6P entries, LM route, and tweeter route, but its UM outlet is
+a keyed V1L-only alternate:
 
-* LM O8.2 at z=12.55 (plan unchanged).
-* UM O7.8 at z=12.55 END-TO-END on ONE arc r=119.5 OUTSIDE the W22
-  pilot ring, then a diagonal threading the 0.9 mm window between the
-  90-deg pilot keep-out and the right seam-B key (moved to cx=28).
+* LM Ø8.2 at z=12.55 follows the established plan and retained rear
+  outlet below the LM opening.
+* UM Ø8.2 at z=12.55 follows the r=119.5 outer U22 arc and broad-neck
+  return, then substitutes the V1L alternate tail for the normal R14
+  outlet. Its physical exit is centered at Q=(13.497063, 307.618796,
+  6.8), radius 60.0 mm on the 283-degree terminal axis. The nominal
+  outside continuation ends at (11.080158, 308.797599, −2.0). The
+  entire alternate stays in `piece_mid_right`, below seam B; neither
+  seam B nor the top/vase changes.
 * T1+T2 SHARE one O6.0 duct ("ts") at z=11.5 up the LEFT flank -- the
   largest bore the notch corridor (D82 rim vs vase chamfer) admits --
   with a SINGLE scallop exit at (-3.3, 430); both pairs dress to their
@@ -348,13 +586,147 @@ the round-4 "front-datum" routing shared by ALL variants:
   z=3.7 / t2f z=9.5) cross the full-depth strip under the LM/UM
   columns and merge into a O6.8 z-step west of the LM column. 10F pilot pattern rotated to
   (58/148/238/328) so its left pair clears the lane and dive.
-* Seam-A keys at +-63 (full-depth in every variant, clear of both
-  crossings); the RIGHT vase flank carries no duct at all.
+* Seam-A teeth at ±66/±103 stay in full-depth material and clear the
+  crossings. Both seam-B male teeth project 6 mm into the V1 vase and
+  are therefore trimmed by the vase-side rear slab as well: their rear
+  plane is z=6.8, never the stock z=0 depth. The alternate tail never
+  reaches seam B, and the right vase flank still carries no duct.
 
 STLs: lx521_top_v1l_{1of4_bottom,2of4_mid_left,3of4_mid_right}
 (--variant v1l) + lx521_top_v1_4of4_vase. Structural note: ~30% of
 stock bending stiffness -- measure assembly modes before trusting the
-W22 on it.
+W22 on it. The standard proud R14 coupon/grommet does not validate this
+exit: dry-fish the printed V1L `mid_right` with the real cable and prove
+the physical terminals, boots, measured withdrawal, and the dedicated V1L
+split TPU grommet before final assembly.
+
+## Variant V1LF R6F — extreme two-collar barebone
+
+V1LF is no longer a flush-recessed copy of the full outline. Its
+mandatory geometry is only:
+
+- an LM flush carrier with Ø190 opening, Ø221.2 seat, and **R113.0**
+  outside radius;
+- an UM flush carrier with Ø82 opening, Ø98.6 seat, and **R51.7**
+  outside radius;
+- two compact Ø9 teardrop half-lap ears at x=±32.0, y=315.770 that
+  establish the 165.100 mm driver-center spacing without entering
+  either flange seat;
+- exactly six radial D5×2 alignment/anti-rattle interfaces in Ø5.2×2.2
+  pockets: four LM and two UM. The existing upper LM pair remains buried
+  flush directly in the R113 lip at world polar 64°/116° (±26° from top),
+  has no proud ear, and retains at least 2.2 mm pocket-edge to the nearest
+  insert-pad edge and 0.86 mm to its route covers. Two new lower LM magnets
+  are likewise face-flush at 224°/316° and retain at least 23.0 mm to the
+  nearest insert edge. The 224° site remains at z=12.55; the route-adjacent
+  316° site uses the Z-preferred z=15.40 position and retains a closed
+  0.30 mm front skin. Both clear the lower inserts, buried routes, and
+  bridge/support load path. The UM pair is
+  flush-buried
+  at 50.5°/129.5° and z=15.1 in the R51.7 lip, clearing the conservative T
+  cover by at least 1.1 mm with a 0.2 mm radial floor and 0.6 mm front skin.
+  The pocket's extra 0.2 mm depth is adhesive allowance: hold each magnet
+  flush while bonding rather than bottoming it. All six have
+  **zero structural load credit**;
+- six V1LF-only LM axes at 0/60/120/180/240/300° on radius 104.75 mm,
+  leaving the crown clear; no-floor owns six carrier inserts, while floor
+  owns three upper carrier inserts plus three support inserts reached
+  through lower carrier clearances;
+- two compact direct UM-to-tweeter half-lap ears at **x=±24,
+  y=421.5**, with rear-driven M3 screws and blind crescent inserts so
+  no fastener breaks the acoustic front; and
+- an Ø8.2 UM passage buried only in the LM carrier and an Ø6.0 T passage
+  buried in the LM and UM carriers, each with 0.8 mm minimum walls and a
+  0.85 mm seat roof on its printed span. The UM cable exits the LM passage
+  and remains free behind the UM carrier; there is no printed UM-carrier rear
+  duct or D82 mouth. T exits the UM passage and remains free behind the
+  tweeter crescent; the crescent has no printed cable arc. Their physical
+  centerlines still cross at 82.67° with T above UM. The D7.8 LM lead is a
+  modeled free span behind the carrier with no micro-duct/cover/cutter.
+
+The outer lips extend just 2.4 mm past the flange-seat radii, and the
+two collar envelopes leave a nominal 0.4 mm gap. The LM's six
+insert-pad buttons, both pilot patterns, and flush seats remain; the old
+5.5/7.5 mm annular floors and perimeter skin have been removed. Each seat
+keeps only a 0.85 mm two-extrusion membrane. Narrow outer lips, local
+blind-insert floors/bosses, calculated spokes, surviving buried-route covers, and
+the explicit mechanical interfaces are the retained material.
+
+Everything else is a separate add-on artifact: the floor-state open-rail
+floor/NL8 support (required to complete the floor-state six-axis W22
+fastening and stand load path), the optional V1 face-to-face tweeter
+crescent with its direct blind-M3 half-laps and no printed T-cable arc.
+V1LF has no printed grommet; selected external cable retention remains a
+physical-fit item, and cable load must never reach the MU tabs. No-floor
+support is not an add-on: a 62 mm insert-bearing plate with soft cubic
+shoulders is fused into the LM carrier around the unchanged holes at
+(±20,20)/(±20,70). Two rear-facing cable mouths at x=±5, y=82 enter flush at
+z=5.3 and rise internally; the acoustic front stays solid. The plate occupies z=5.3..18.3, flush
+with the acoustic front and no deeper than the six existing LM insert-pad rear
+faces. It has no X-frame, acoustic-front window, rear rib, or other depth structure. Its four
+Ø6.4 × 6.8 bores open from the rear and leave a 6.2 mm solid front floor.
+No bridge geometry extends behind the existing LM pad envelope. Floor mode
+has no plate and retains the supported ring entries. No add-on is needed to print or
+inspect the two-collar core and there is no separate no-floor keel. The
+floor LM has no tail; its floor support is mandatory before a floor-state
+assembly carries drivers. Select the tweeter module and an independently
+qualified external retention method required by the installation.
+
+The conservative room-temperature PLA Tough+ screen assumes a 4.0 kg
+installed mass, y=230 mm center of mass, and 70 mm rear offset. The 62 mm
+insert core is reduced by the complete Ø8.2 and Ø6.0 entry lumens, with no
+thin-skin credit, to a conservative **47.8 mm** design section. Exact 0.01 mm
+sampled cuts through the soft outline retain at least 53.5 mm. At 13.0 mm
+depth the credited section's in-plane/rear moduli are **4950.5/1346.4 mm³**.
+Conservatively summing in-plane and rear bending gives approximately
+**3.28/9.84/16.41 MPa** and safety factors **2.44/1.83/1.10** at sustained
+1g/8 MPa, transient 3g/18 MPa, and transient 5g/18 MPa. Its 68° lower-ring fusion cradle physically follows the plate
+to z=5.3, but the existing ring lip begins at z=6.8, so the load screen
+credits only the actual 11.5 mm-deep monolithic interface. That interface
+retains 118.5 mm effective width after deducting one Ø8.2 UM tunnel plus the
+complete Ø6.0 tweeter tunnel. Its in-plane/rear section moduli are
+**26908.4/2611.6 mm³**, with biaxial factors about **6.37/4.78/2.87**. The
+combined normal/rear 5g insert reaction is 434.2 N, giving 1.38 pull-out
+safety factor under the same assumed 600 N per insert; magnets contribute
+exactly 0 N. These are design calculations, not certification: the
+floor support is screened separately with a 456.9 mm³ minimum U-section
+(about 3.57/2.67/1.60 safety factor at 1g/3g/5g), and its three LM
+transfer spokes screen at about 17.1/12.9/7.7 in direct shear. The two-ear
+upper joints use the actual 0.43 kg MU + 0.20 kg tweeters plus carrier,
+crescent, wire, and hardware allowance: 0.85 kg total over conservative
+120 mm plan and 70 mm rear levers. Their governing contact factors are
+about 2.82/2.12/1.27, with M3 tension factor about 1.17 at 5g.
+Magnets receive no credit in any case. The
+finished print, inserts, screws, stock bridge, and installation substrate
+remain
+inside the physical proof-test boundary. The factors apply only near
+room temperature; direct sun, a closed vehicle, or any service
+approaching Bambu's published 61 °C heat-deflection temperature
+invalidates them.
+
+The terminal service reference lies on the **283-degree axis**, exactly
+midway between mounting screws 238 and 328 degrees; coupon 9 is the
+physical clocking witness—there is no cosmetic collar engraving. Printed
+UM conduit stops at the LM owner boundary; the Ø7.0 cable is free behind the
+UM carrier, follows the modeled R15 approach to the 283° reference, and
+continues through the R20 service turn to
+a Y breakout comprising a 4 mm-long OD8 collar and two OD4 branch sleeves.
+Two provisional Ø3.2/R8 slack leads enter separate provisional low-profile
+flag Fastons. Service states pull one connector at a time through
+0/3/6/9/12 mm while the other remains installed. The STEP fit model adds
+closed Ø98/Ø80/Ø60 MU and conservative stepped W22 rear-body keep-outs.
+The W22 source and transform are hash-pinned and recorded above.
+
+`PHYSICAL_MEASURE_REQUIRED = True`, so terminal qualification remains
+pending. The raw MU reference is an open acoustic surface and omits the
+terminals; the datasheet also does not dimension them. The 12 mm maximum
+pull exactly equals the provisional exposed-tab length and has zero
+positive release overtravel margin. Measure and record carrier radius,
+tab pitch/projection, 8.5/9.5 mm proxy body widths, flag orientation,
+polarity, real withdrawal, cable/Y fit, and the selected external cable
+retention before committing a full print. The proxy is a keep-clear aid,
+not manufacturer
+geometry or release proof.
 
 See VARIANTS.md for the variant/add-on catalog and the
 compatibility matrix, and PRINTING.md for filament choice, print settings, fastener
@@ -365,17 +737,19 @@ torques, and insert installation.
 Attachments mount with neodymium N52 D5 x 2 disc magnets (superimanes
 ref D-05-02-N52, 0.68 kg/pair; 12 needed + spares) so B2 <-> A-comp <->
 B1 are interchangeable without glue. TWO sites per flank side (4 magnets
-in the base total), all FLUSH (a 2.0 mm disc in a 2.0 mm pocket on
-BOTH faces, meeting level; the outline kinks/corners self-register --
-a flush disc gives no shear key). Pockets: base and receiver both
-D5.4 x 2.0. Polarity: neo stacks ship uniformly oriented
+in the base total), all FLUSH. Base and receiver pockets are both
+Ø5.2 × 2.2 for the actual Ø5 × 2 discs. The extra 0.2 mm depth is an
+adhesive allowance, not a seating datum: fixture every magnet level with
+its mating face while the adhesive cures; do not bottom it 0.2 mm below
+the face. The outline kinks/corners self-register—a flush disc gives no
+shear key. Polarity: neo stacks ship uniformly oriented
 -- sharpie-dot the top face of each as you peel; dots face OUT in the
 base, IN in the attachments:
 
 | Site (right; left mirrored) | Wall | Serves | Placement rationale |
 |---|---|---|---|
-| (40.0, 322.4) | flare, waist-kink end | A bottom shoulder, B1 wing lower end | the flank's farthest point from the UM driver (59.2 mm); flush pocket 2.0 deep, ample clearance to the T duct |
-| (17.88, 420.37) | crescent arc, theta=-69.5 deg | A top shoulder, B1 wing top end | as far down-arc as the RECEIVER allows: its bore sits in the narrowing wedge between the arc and the chamfer face the shoulder/wing mates against B2, and its bottom corner keeps 1.3 mm to that face; the rear taper leaves ~12.2 mm of wall (bore raised to z=10.7: 1.7 mm behind the pocket floor); ~7.9 mm to the TS duct, 21.7 from the clamp hole, 57.2 from the UM driver (all re-measured by `make check`) |
+| (40.0, 322.4) | flare, waist-kink end | A bottom shoulder, B1 wing lower end | the flank's farthest point from the UM driver (59.2 mm); Ø5.2 × 2.2 pocket, magnet bonded flush, ample clearance to the T duct |
+| (17.88, 420.37) | crescent arc, theta=-69.5 deg | A top shoulder, B1 wing top end | as far down-arc as the receiver permits: the exact D5.2 × 2.2 envelope keeps 2.16 mm from the chamfer mating face, 2.04 mm behind each pocket floor to the rear taper, and 5.00 mm to the front face; its nearest TS-duct clearance is 15.06 mm in both stand states (all re-measured by `make check`) |
 
 Magnet count per baffle: 4 base + 4 per attachment set
 (12 with both sets; 24 for a stereo pair).
@@ -393,30 +767,48 @@ epoxy and clamp); the outline kinks register the parts.
 
 ## Printing
 
-- Flat on the bed, no supports needed (all holes are vertical through-holes).
-- PETG or PLA; 5–6 perimeters, 40–50 % gyroid/cubic infill, 5 top/bottom
-  layers — the baffle carries three drivers, err stiff. ~945 cm³ solid
-  volume total (≈1.1–1.3 kg at these settings).
-- piece_bottom is 250.6 mm wide: orient it square to the bed axes.
+- Follow PRINTING.md and run the applicable coupons first.
+- R6P baffle pieces print front-face-down; use the documented support
+  blockers for internal ducts and the floor-foot strength modifier.
+- The floor R6F collars print front-face-down with support kept out of
+  buried-route mouths and free-cable paths. The longer no-floor LM+solid-web core uses the
+  validated out-of-plane orientation recorded by the exporter. Preview
+  every closed bump and optional add-on separately.
 
 ## Assembly
 
-1. Dry-fit all seams first; if a dovetail binds, warm-file the male flanks
-   (designed clearance is 0.10 mm on the female sides).
-2. Glue order: mid_left + mid_right (seam C), then the mid pair onto
-   bottom (seam A), then top onto the mids (seam B). Epoxy (30 min) or
-   polyurethane glue preferred; CA works on PLA but is brittle in shock.
-3. Assemble on a flat surface, front face down, so the seams cure flush.
-   Clamp lightly across each seam; check the Ø190 rim stays circular where
-   seams A and C cross it (the driver flange will bridge these seams).
-4. After cure, optionally lay a bead of epoxy along the rear seam lines and
-   the rear rim of the Ø190 cutout as a fillet — the L22 flange clamps the
-   front face, so rear-side reinforcement is invisible.
-5. Set the brass heat-set inserts with a soldering iron (flush,
-   square): six M5 x 5.8 x Ø6.3 in the W22 pilots, four M3 x 3 x Ø5 in the
-   10F pilots. Mount the W22EX001 lower-mid with M5 screws and the
-   10F/8424G00 upper-mid with M3 screws into the inserts, then bolt the
-   ND25FW-4 pair through the (±32.56, 451.24) holes with M4 screws and cut
-   the inter-faceplate standoffs to the printed thickness (18.3 mm).
-6. Screw to the bridge through the four countersunk holes (5 mm oval-head
-   wood screws, from the front).
+**R6P:** dry-fit and tune the coupon before gluing. Assemble seam C,
+then A, then B on a flat front-face datum; fish each cable segment as
+its seam closes. Set the driver and rear bridge inserts square, mount
+the drivers at the low torques in PRINTING.md, and re-torque after the
+first preload-settling interval. For V1L, dry-fish the actual keyed
+`mid_right` alternate outlet before glue-up; confirm that its aperture
+is centered at the 283-degree rear-face witness and physically rehearse
+the real Fastons, boots, service loop, dedicated split TPU grommet, and
+measured withdrawal before installing the MU.
+
+**R6F:** first prove the real MU terminal/Faston fit with coupon 9 and
+the review STEP. Bolt the two collars together at the rounded x=±32.0,
+y=315.770 half-lap ears on a flat front-face datum and verify the
+165.100 mm axis spacing. Place the LM cable in its short free span, dry-fish
+the UM and shared tweeter cables through their buried owner segments, and
+rehearse the free UM span behind the UM carrier and free T span behind the
+tweeter crescent. Confirm the physical T-over-UM crown crossing and covered
+328°/58° T-route bumps are unobstructed. In floor mode, pass the
+three long driver-side M5 screws through the 180/240/300° carrier
+clearances into the rear-installed support heat-sets; in no-floor mode,
+bolt the stock bridge directly to the four rear-entry inserts in the fused
+front-flush LM web. The floor support has no LM magnet cups or magnet arms;
+its three threaded W22-axis joints carry the load and its LM opening is cable
+clearance only. Fit only the selected add-ons;
+fasten the crescent at x=±24, y=421.5 with rear-driven M3 screws into
+its blind inserts. V1LF has no TPU tunnel clip; keep the selected external
+cable retention clear of the buried-route mouths, free cable, and service
+envelope. Clock the physical terminals between screws 238/328 on the 283°
+coupon-9 service axis. Confirm each measured flag Faston fits separately,
+its lead follows the polarity-specific slack path, and each one-at-a-time
+0/3/6/9/12 mm review state clears the installed opposite connector and
+both drivers before final driver installation. This is still not release
+proof: the 12 mm state has zero positive overtravel beyond the provisional
+12 mm exposed tab. The numbered procedure and hardware
+cautions are in PRINTING.md.

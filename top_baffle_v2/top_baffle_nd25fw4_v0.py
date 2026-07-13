@@ -7,7 +7,7 @@ outline: 18.3 -> ~0.5 over W=2.8, fading out at the seam-B land
 taper above y~400. No other keeps needed: the flange seat and M3
 pilots are front-side features.
 
-Magnet interface: one D5.4 x 2.0 FLUSH pocket per side, bored vertically
+Magnet interface: one D5.2 x 2.2 FLUSH pocket per side, bored vertically
 into the REAR face on the lower corner triangle at (+-46, 324) --
 plan-clear of every duct (>=1.5 past radii) and of the bevel band; scarf
 attachments add a receiver there plus outline-kink registration.
@@ -20,7 +20,11 @@ import math
 from build123d import Cylinder, Plane, Polyline, Pos, Wire, loft, make_face, mirror
 
 from top_baffle_nd25fw4 import THICKNESS_MM, baffle_solid
-from top_baffle_nd25fw4_b import TWEETER_DROP_MM
+from top_baffle_nd25fw4_b import (
+    MAG_FLUSH_DEPTH_MM,
+    MAG_POCKET_D_MM,
+    TWEETER_DROP_MM,
+)
 from top_baffle_nd25fw4_b2 import OUTLINE_B2
 
 T_EDGE_MM = 0.5
@@ -47,7 +51,7 @@ def _ts_corridor_pts():
     """Plan knots of the shared T duct through the crest transition /
     notch entry (mirrored to +x: the band law is |x|-symmetric, so the
     clamp relieves BOTH sides -- the right one purely cosmetically).
-    Round-5's oval (zc=10.45, edge at zero height) runs closer to the
+    The proud R6P TS oval (zc=10.45 at full drop) runs closer to the
     bevel than the old round duct did; without this clamp the band
     cuts to z~14 across the tube's outboard edge near y=398."""
     from top_baffle_nd25fw4_cables import _ts_route
@@ -124,9 +128,16 @@ def slide_cutters():
 
 
 def magnet_pocket_cutters():
-    """Vertical D5.4 x 2.0 FLUSH pockets in the REAR face (z 0..2), for
-    the pending scarf attachments (magnet sits level with the rear)."""
-    return [Pos(sx * x, y, 1.0) * Cylinder(2.7, 3.0)  # z -0.5..2.5 -> 2.0 deep
+    """Vertical D5.2 x 2.2 pockets in the rear face for D5x2 magnets.
+
+    The 0.2 mm axial allowance is an adhesive bed; hold each magnet flush
+    with the rear face while it cures instead of bottoming it.
+    """
+    overshoot = 0.5
+    length = MAG_FLUSH_DEPTH_MM + overshoot
+    center_z = (MAG_FLUSH_DEPTH_MM - overshoot) / 2.0
+    return [Pos(sx * x, y, center_z) * Cylinder(
+                MAG_POCKET_D_MM / 2.0, length)
             for sx in (1.0, -1.0) for x, y in V0_MAGNET_SITES]
 
 

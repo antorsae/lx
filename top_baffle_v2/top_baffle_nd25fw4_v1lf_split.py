@@ -1,38 +1,33 @@
-"""V1LF print split: V1L (thin bottom + mids + V1 vase) with FLUSH
-driver mounting -- front flange recesses for the U22REX/P-SL and
-MU10RB-SL, deepened insert bores, and rear pad buttons under the six
-W22-ring inserts (uncut plate material via pad-punched field cutters;
-see the flush module). Routing round-5 keeps every duct clear of the
-recess rings, so the four pieces split cleanly on the same seams."""
+"""R6F V1LF core-only STEP entry point.
+
+The historical four-piece, full-outline V1LF was intentionally removed.
+The print split is intrinsic: one LM carrier and one UM carrier,
+registered by two rounded M3 half-lap ears.  Every non-driver function is an add-on
+from ``top_baffle_nd25fw4_v1lf_attachments``.
+
+In no-floor state the immutable stock-bridge XY interface sits in one
+front-flush solid web fused into the LM carrier; it is not a third print
+part. Floor state has no such web.
+"""
 
 from __future__ import annotations
 
 from build123d import Compound
 
-from top_baffle_nd25fw4_b2_split import DOVETAILS_B_V1LF, pieces
-from top_baffle_nd25fw4_flush import (
-    deep_pilot_cutters,
-    recess_cutters,
-    v1lf_field_cutters,
-)
-from top_baffle_nd25fw4_v1 import REAR_MM as V1_VASE_REAR_MM
-from top_baffle_nd25fw4_v1 import all_cutters as v1_vase_cutters
+from top_baffle_nd25fw4 import STAND_FOOT
+from top_baffle_nd25fw4_cables import ROUTING_PROFILE
+from top_baffle_nd25fw4_v1lf import core_parts
+
+if ROUTING_PROFILE != "v1lf":
+    raise RuntimeError(
+        "V1LF requires LX_ROUTING_PROFILE=v1lf (R6F); proud-family "
+        "routing is physically incompatible with the flush collars"
+    )
 
 
-def pieces_v1lf() -> dict:
-    """All four flush pieces in one build: pad-relieved V1L field cuts,
-    the V1 vase cuts, both flange recesses, and full-depth pilot
-    re-bores -- applied to the parent solid BEFORE the seam split, so
-    tabs and pockets inherit the recess shaves consistently."""
-    cuts = (list(v1lf_field_cutters()) + list(v1_vase_cutters())
-            + recess_cutters() + deep_pilot_cutters())
-    # seam-B keys flipped (tabs DOWN from the vase, mid pockets below
-    # the seam) so neither flange-recess seat lands on a dovetail
-    # joint -- see DOVETAILS_B_V1LF in the split module
-    return pieces(shape_cuts=cuts, magnet_pockets=False,
-                  crescent_rear_mm=V1_VASE_REAR_MM,
-                  seam_b_dovetails=DOVETAILS_B_V1LF,
-                  seam_b_tabs_up=False)
+def pieces_v1lf():
+    """Compatibility name used by the STL exporter: the two core parts."""
+    return core_parts()
 
 
 def gen_step():
@@ -41,5 +36,6 @@ def gen_step():
         solid.label = label
         children.append(solid)
     assembly = Compound(children=children)
-    assembly.label = "lx521_4_top_baffle_nd25fw4_v1lf_split"
+    state = "floor" if STAND_FOOT else "no_floor_fused_solid_web"
+    assembly.label = f"lx521_v1lf_r6f_core_2piece_{state}"
     return assembly

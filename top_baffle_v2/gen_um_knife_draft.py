@@ -1,15 +1,13 @@
-"""DRAFT: the super-minimalist UM vase ("V0"): the FRONT face slides
-(C5-style single bevel, knife on the rear plane) from full 18.3 inside
-the flange/pilot land down to a ~0.5 knife at the vase outline. The
-REAR plane stays intact, so the duct lanes (round-4 z) and the UM exit
-tail keep their routing untouched -- no duct changes at all. Magnet
-pin pockets bore NORMAL to the slide face; attachments (any depth)
-scarf onto the slide. Draft only; no geometry code touched.
+"""ARCHIVED concept sheet -- not current geometry or routing guidance.
 
-Keeps at full depth: flange+pilot disc (r<=49.3 about the UM), seam-B
-band (y<=324) incl. the dovetail pockets and the UM exit corridor
-(|x|<=14, y<=340), and a recovery before the crescent zone (y>=400,
-which keeps its own rear taper + clamp seat).
+This front-bevel V0 sketch was superseded by the implemented REAR-side
+V0 bevel and by R6P/R6F routing.  In particular, there is no current
+cutout-wall or vase-corridor exit: proud R6P
+ends below seam B in a continuous R14 rear outlet. Skeletal V1LF prints its
+UM passage only through LM and its T passage only through LM/UM, with free
+spans behind UM and the tweeter crescent and covered local Z bumps around
+inserts. The generated
+PNG is watermarked so it cannot be mistaken for a manufacturing drawing.
 
 Run: python gen_um_knife_draft.py -> baffle_um_knife_draft.png
 """
@@ -65,7 +63,7 @@ def front_cut(x, y):
     keep = max(keep, 1-S((r-49.3)/4.0))          # flange + M3 pilot land
     keep = max(keep, 1-S((y-324.0)/8.0))          # seam-B band + keys
     if abs(x) < 14:
-        keep = max(keep, 1-S((y-332.0)/8.0))      # UM exit corridor
+        keep = max(keep, 1-S((y-332.0)/8.0))      # archived center keep band
     keep = max(keep, S((y-400.0)/10.0))           # crescent recovery
     return (T - target) * (1.0 - keep)
 
@@ -95,8 +93,8 @@ for sx in (1, -1):  # magnet pins ON the slide (normal to the slide face)
 ax.annotate("pin magnets bored NORMAL\nto the slide face; attachments\n"
             "scarf onto the slide", (47, 345), (75, 300), fontsize=8,
             color="0.25", arrowprops=dict(arrowstyle="-", color="0.5"))
-ax.annotate("full-depth keeps: flange+pilot land,\nseam-B band + UM exit, "
-            "crescent zone", (0, 366), (-160, 250), fontsize=8, color="0.25",
+ax.annotate("historical concept keeps only —\nnot the R6 outlet geometry",
+            (0, 366), (-160, 250), fontsize=8, color="0.25",
             arrowprops=dict(arrowstyle="-", color="0.5"))
 ax.set_xlim(-170, 170); ax.set_ylim(290, 470)
 ax.set_xlabel("mm"); ax.set_ylabel("mm")
@@ -134,9 +132,10 @@ for k, (y0, ttl) in enumerate(((391.0, "section y=391 (crest): slide to knife"),
     axs.set_aspect("equal"); axs.set_xlim(-66, 66); axs.set_ylim(-2, 21)
     axs.set_title(ttl, fontsize=9); axs.grid(lw=0.3, alpha=0.4)
     axs.tick_params(labelsize=7)
-fig.suptitle("V0: minimalist UM vase — front bevel (C5), rear plane and ALL "
-             "duct routing untouched; flange/pilot land full depth",
+fig.suptitle("ARCHIVED / SUPERSEDED: front-bevel V0 concept — do not build",
              fontsize=12, y=0.99)
+fig.text(0.50, 0.50, "ARCHIVED — NOT R6 ROUTING", ha="center", va="center",
+         fontsize=34, color="crimson", alpha=0.18, rotation=28)
 fig.tight_layout()
 fig.savefig("baffle_um_knife_draft.png", bbox_inches="tight")
 print("wrote baffle_um_knife_draft.png")

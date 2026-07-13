@@ -30,7 +30,21 @@ module, easy by hand. Print both parts flat, no supports; PLA+.
 from __future__ import annotations
 
 import math
+import os
 from pathlib import Path
+import subprocess
+import struct
+import sys
+
+if __name__ == "__main__":
+    import run_memory_guarded as memory_guard
+
+    if not memory_guard.is_guarded_process():
+        guard = Path(__file__).with_name("run_memory_guarded.py")
+        raise SystemExit(subprocess.run(
+            [sys.executable, str(guard), "--", sys.executable,
+             str(Path(__file__).resolve()), *sys.argv[1:]],
+            check=False).returncode)
 
 from build123d import (Box, Cone, Cylinder, Plane, Pos, Rot, Text,
                        export_stl, extrude, mirror)
@@ -54,6 +68,19 @@ NL8_GAP_W = 46.0          # rear-center fence gap for the NL8 plug
 ROTOR_W = FOOT_W + POCKET_CLR + 2 * FENCE_W + 8.0    # 169.2
 ROTOR_D = FOOT_D + POCKET_CLR + 2 * FENCE_W + 8.0    # 185.1
 BASE_D = 216.0
+
+
+def _validate_binary_stl(path: Path) -> None:
+    with path.open("rb") as stream:
+        header = stream.read(84)
+    if len(header) != 84:
+        raise RuntimeError(f"temporary polar STL is truncated: {path}")
+    triangles = struct.unpack_from("<I", header, 80)[0]
+    expected = 84 + 50 * triangles
+    if triangles < 1 or path.stat().st_size != expected:
+        raise RuntimeError(
+            f"temporary polar STL invalid: triangles={triangles} "
+            f"bytes={path.stat().st_size} expected={expected}")
 
 
 def base_plate():
@@ -129,8 +156,15 @@ def main():
     for name, solid in (("lx521_polar_base_1of2_base", base_plate()),
                         ("lx521_polar_base_2of2_rotor", rotor_plate())):
         path = out_dir / f"{name}.stl"
-        export_stl(solid, str(path), tolerance=0.05,
-                   angular_tolerance=0.2)
+        temporary = path.with_name(
+            f".{path.stem}.{os.getpid()}.tmp.stl")
+        try:
+            export_stl(solid, str(temporary), tolerance=0.05,
+                       angular_tolerance=0.2)
+            _validate_binary_stl(temporary)
+            temporary.replace(path)
+        finally:
+            temporary.unlink(missing_ok=True)
         print(f"wrote {path.name}")
 
 

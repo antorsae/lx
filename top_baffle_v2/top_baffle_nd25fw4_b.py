@@ -108,10 +108,9 @@ A_COMP_CREST_Y = 391.709  # split plane between top and bottom shoulders
 # TWO sites per flank side (minimized), all on piece_top_b2's edge walls:
 #   flare-wall site at the wall's BOTTOM end -- the one spot on that wall
 #     farther from the UM driver (58.7 mm vs ~51 anywhere mid-wall); holds
-#     the A bottom shoulder and the B1 wing's lower end. Pin pocket only
-#     1.0 deep (the 2.0 magnet sits 1.0 proud); the T duct parallels the
-#     wall ~4 mm inside (the wall's one unavoidable wire proximity --
-#     measured clearances in test_clearances.py).
+#     the A bottom shoulder and the B1 wing's lower end. The T duct
+#     parallels the wall ~4 mm inside (the wall's one unavoidable wire
+#     proximity -- measured clearances in test_clearances.py).
 #   crescent-arc site, as far down-arc as the RECEIVER allows: its bore
 #     lives in the narrowing wedge between the arc and the chamfer face
 #     that the A top shoulder / B1 wing mate against B2, and the wall at
@@ -119,18 +118,20 @@ A_COMP_CREST_Y = 391.709  # split plane between top and bottom shoulders
 #     top shoulder and the wing's top end. (Any point of this wall is
 #     ~51 mm from the tweeter center -- the wall is an arc about it --
 #     so no driver-distance freedom exists.)
-# All magnets are FLUSH: a 2.0 mm disc in a 2.0 mm pocket on BOTH faces,
-# so the two magnets meet face-to-face when the attachment mates the
-# base (no proud pin, no buried receiver). The outline kinks/corners do
-# the shear registration (a flush disc gives no shear key).
+# All magnets are FLUSH: a 2.0 mm disc is held at the face of a 2.2 mm
+# pocket on BOTH faces, leaving 0.2 mm for adhesive. Do not bottom the
+# magnet during bonding. The two magnets then meet face-to-face when the
+# attachment mates the base (no proud pin, no buried receiver). The
+# outline kinks/corners do the shear registration (a flush disc gives no
+# shear key).
 # Pockets are bored at mid-thickness with the axis normal to the wall.
 MAGNET_D_MM = 5.0
 MAGNET_T_MM = 2.0
-MAG_POCKET_D_MM = 5.4            # glued magnet, snug
-MAG_RECEIVER_D_MM = 5.4          # flush magnet, snug (no proud pin)
-MAG_FLUSH_DEPTH_MM = 2.0         # magnet 2.0 -> FLUSH
-MAG_PIN_BASE_DEPTH_MM = 2.0      # magnet 2.0 -> FLUSH
-MAG_PIN_RECEIVER_DEPTH_MM = 2.0  # magnet 2.0 -> FLUSH (was a deep receiver)
+MAG_POCKET_D_MM = 5.2            # D5 magnet: 0.1 radial adhesive clearance
+MAG_RECEIVER_D_MM = 5.2          # same flush magnet pocket on attachments
+MAG_FLUSH_DEPTH_MM = 2.2         # D5x2 magnet + 0.2 adhesive allowance
+MAG_PIN_BASE_DEPTH_MM = 2.2      # hold magnet flush while adhesive cures
+MAG_PIN_RECEIVER_DEPTH_MM = 2.2  # hold magnet flush while adhesive cures
 
 # (x, y, nx, ny, pin, zc) on the right flank; the left flank is
 # mirrored. zc is the bore height (mid-thickness unless the crescent
@@ -174,7 +175,7 @@ def _mirrored_sites():
 
 
 def magnet_base_cutters():
-    """Pockets for piece_top_b2 (glued base magnets; pin sites shallower)."""
+    """Standard D5.2 x 2.2 pockets for piece_top_b2's D5x2 magnets."""
     return [
         _magnet_pocket(
             x, y, nx, ny, zc, MAG_POCKET_D_MM,
@@ -186,7 +187,7 @@ def magnet_base_cutters():
 
 
 def magnet_attachment_cutters():
-    """Pockets for the attachments (deeper, wider receivers at pin sites)."""
+    """Standard D5.2 x 2.2 pockets for the attachment-side magnets."""
     return [
         _magnet_pocket(
             x, y, nx, ny, zc,

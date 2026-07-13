@@ -1,18 +1,17 @@
 """Variant V1: the UM vase thinned to t=11.5 and mounted FRONT-FLUSH:
-material occupies z 6.8..18.3, so the 10F, the tweeter pair, and the
+material occupies z 6.8..18.3, so the MU10, tweeter pair, and the
 LM section all share ONE front plane -- the thinning is taken from the
-REAR, enabled by the round-4 front-datum routing (UM O7.8 planar at
-z=12.55, shared T O6.0 at z=11.5; UM exit opening z=12 through the
-10F basket window zone) and the short M3 x 3 x O5 pilot inserts
-(global). Any rear step at seam B (vs full-depth B2/C7 mids; none vs
+REAR. Proud R6P's D8.2 UM route and R14 rear outlet finish below seam B;
+only the shared T O6.0/oval traverses this vase at z~11.5. Short M3 x 3
+x O5 pilot inserts remain front-blind. Any rear step at seam B (vs
+full-depth B2/C7 mids; none vs
 V1L) is on the hidden sculpted side; keys auto-trim on both sides.
 
 The crescent taper re-derives on the 6.8..18.3 slab (same 4.0 clamp
 seat position at z 14.3..18.3 as stock, 0.4 tips); standoffs cut to
-11.5. Magnets per side: one vertical rear-face pin pocket at
-(+-46, 324) plus two wall pin pockets (zc=12.5 lower flare site,
-zc=14.4 upper crescent-arc site). Binding constraint for 11.5: the
-O7.8 UM vase main (z=12.55 needs 8.65..16.45 + skins)."""
+11.5. The binding cable constraint is the shared TS oval under the
+MU10 seat; the UM main is no longer in the vase. Magnets use the two
+wall pockets described below."""
 
 from __future__ import annotations
 

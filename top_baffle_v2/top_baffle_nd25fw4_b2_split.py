@@ -45,7 +45,13 @@ from shapely.ops import unary_union
 from top_baffle_nd25fw4 import STAND_FOOT, THICKNESS_MM, baffle_solid
 from top_baffle_nd25fw4_b import TWEETER_DROP_MM, magnet_base_cutters
 from top_baffle_nd25fw4_b2 import OUTLINE_B2
-from top_baffle_nd25fw4_cables import cable_cutters
+from top_baffle_nd25fw4_cables import ROUTING_PROFILE, cable_cutters
+
+if ROUTING_PROFILE != "proud":
+    raise RuntimeError(
+        "B2/C7/V0/V1/V1L pieces require LX_ROUTING_PROFILE=proud; "
+        "V1LF has a separate skeletal builder"
+    )
 
 CLEARANCE_MM = 0.05
 
@@ -86,9 +92,8 @@ SEAM_B_Y = 315.95  # exactly at B2's waist kinks -> obtuse seam corners
 # Seam A sits at y=120 so its keys at +-89 live in the 16 mm-wide
 # FULL-DEPTH window between the T arc (r=110, crossing at x~72.6) and
 # the C7 taper boundary (x~92) -- keys clear of every duct AND fully
-# out of the taper in all variants. The RIGHT B-tab sits outboard
-# right B-key at cx=28 clearing the UM window bend (>=1.4 to the
-# between it and the waist kink.
+# out of the taper in all variants. Seam-B teeth occupy the clear
+# lands between the proud R6P return corridor and the waist kink.
 # TWO per mid (was one each) so neither half pivots on a single
 # tab. Spread across the flank band, straddling the duct
 # crossings (TS at x=-80, UM at x=+88).
@@ -97,17 +102,7 @@ SEAM_B_Y = 315.95  # exactly at B2's waist kinks -> obtuse seam corners
 # ~1.5; outer teeth (+-103, depth 5) are the main anchor.
 DOVETAILS_A = [(-103.0, 6.0, 7.0, 5.0), (-66.0, 7.0, 9.0, 3.0),
                (66.0, 7.0, 9.0, 3.0), (103.0, 6.0, 7.0, 5.0)]
-DOVETAILS_B = [(-19.0, 10.0, 14.0, 6.0), (28.0, 10.0, 14.0, 6.0)]
-# V1LF flips seam B: tabs hang DOWN from the vase into mid pockets
-# BELOW the seam. The stock up-tabs/pockets straddle the MU10
-# flange-recess ring (its bottom reaches y=316.8), which would seat
-# the flange partly ON the dovetail joint; below the seam both
-# flange seats stay monolithic. The left tooth threads between the
-# U22 recess ring (pocket inner edge |x| >= 18.9 at 6 deep) and the
-# TS seam-B crossing relief (grown-pocket gap 1.75); the right tooth
-# clears the ring as-is. V1LF is a non-mixing 4-piece set, so the
-# flipped keys break no cross-family compatibility.
-DOVETAILS_B_V1LF = [(-23.6, 7.0, 9.0, 6.0), (28.0, 10.0, 14.0, 6.0)]
+DOVETAILS_B = [(-19.0, 10.0, 14.0, 6.0), (30.0, 10.0, 14.0, 6.0)]
 # ONE tooth in the ~20 mm mid-mid neck (per user preference), centered
 # and beefed (neck 7, head 8.5). mid_right carries the tab.
 DOVETAILS_C = [(305.0, 7.0, 8.5, 4.0)]
@@ -190,12 +185,31 @@ def _grown(poly: Polygon) -> Polygon:
 def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
            shape_cuts=(), shape_adds=(), magnet_pockets=True,
            crescent_front_mm=None, crescent_rear_mm=0.0,
-           seam_b_dovetails=None, seam_b_tabs_up: bool = True) -> dict:
+           seam_b_dovetails=None, seam_b_tabs_up: bool = True,
+           um_handoff_key: str = "proud",
+           only: str | None = None,
+           cable_routes=None,
+           cable_y_range=None) -> dict:
     """Split the (optionally re-shaped) baffle into the four print
     pieces. ``shape_cuts``/``shape_adds`` are applied before the ducts
     are cut -- used by variant C7 (LM knife-edge taper + T-duct ribs);
-    the ducts then re-cut through any added material. V1LF overrides
-    the seam-B keys (DOVETAILS_B_V1LF, tabs DOWN from the vase)."""
+    the ducts then re-cut through any added material. V1LF is a separate
+    two-carrier R6F core and never passes through this four-piece builder.
+    ``um_handoff_key`` is explicit so V1L can select its rear-plane axis
+    handoff while every other proud-family caller keeps the default.
+    ``only`` constructs one requested split solid without retaining the
+    other three OCC trees; guarded validation/export uses this to keep
+    immediately-free macOS memory above its 0.5 GiB floor. ``cable_routes``
+    may further omit cutters spatially disjoint from that one piece; the
+    default still builds the complete cable set. ``cable_y_range`` trims
+    the high-face-count TS loft on its original section grid for a known
+    split band."""
+    piece_order = (
+        "piece_bottom", "piece_mid_left", "piece_mid_right", "piece_top_b2")
+    if only is not None and only not in piece_order:
+        raise ValueError(f"unknown split piece {only!r}; choose {piece_order}")
+    requested = set(piece_order if only is None else (only,))
+
     baffle = baffle_solid(outline, tweeter_drop_mm,
                           crescent_front_mm or THICKNESS_MM,
                           crescent_rear_mm)
@@ -203,72 +217,86 @@ def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
         baffle += add
     for cutter in shape_cuts:
         baffle -= cutter
-    ducts = cable_cutters()  # internal cable ducts (LM/UM/T)
+    ducts = cable_cutters(
+        um_handoff_key=um_handoff_key,
+        route_names=cable_routes,
+        ts_y_range=cable_y_range)  # internal cable ducts (LM/UM/T)
     for duct in ducts:
         baffle -= duct
 
     below_a = _below_region(SEAM_A_Y, DOVETAILS_A)
-    below_b = _below_region(SEAM_B_Y,
-                            seam_b_dovetails or DOVETAILS_B,
-                            tabs_up=seam_b_tabs_up)
-    right_c = _right_region()
+    result = {}
 
-    bottom = baffle - _prism(_above_region(SEAM_A_Y, DOVETAILS_A))
-    if STAND_FOOT:
-        w0 = 76.2
-        w1 = 76.2 + FLANK_SLOPE * FOOT_THICK
-        strip = make_face(Wire(Polyline(
-            (-w0, 0.0), (w0, 0.0), (w1, FOOT_THICK), (-w1, FOOT_THICK),
-            (-w0, 0.0)
-        ).edges()))
-        strip_prism = extrude(Plane.XY.offset(-FOOT_DEPTH_REAR - 1) * strip,
-                              amount=FOOT_DEPTH_REAR + 1)
-        h = TONGUE_HALF_W
-        zp = -FOOT_DEPTH_REAR + PANEL_T  # panel inner face
-        plan = make_face(Wire(Polyline(
-            (-82.0, 0.5), (82.0, 0.5), (h, zp),
-            (h, -FOOT_DEPTH_REAR), (-h, -FOOT_DEPTH_REAR), (-h, zp),
-            (-82.0, 0.5)
-        ).edges()))
-        plan_prism = extrude(
-            Plane((0, FOOT_THICK + 1.0, 0), x_dir=(1, 0, 0), z_dir=(0, -1, 0))
-            * plan,
-            amount=FOOT_THICK + 2.0)
-        foot = strip_prism & plan_prism
-        panel = Pos(0, PANEL_H / 2,
-                    -FOOT_DEPTH_REAR + PANEL_T / 2) * Box(
-            2 * TONGUE_HALF_W, PANEL_H, PANEL_T)
-        bottom = bottom + foot + panel
-        # connector channel between the side rails (step face at z=-99)
-        bottom -= Pos(0, (CHANNEL_FLOOR + PANEL_H + 6) / 2,
-                      (CHANNEL_STEP_Z + (-FOOT_DEPTH_REAR + PANEL_T)) / 2) * Box(
-            2 * CHANNEL_HALF_W, PANEL_H + 6 - CHANNEL_FLOOR,
-            -(-FOOT_DEPTH_REAR + PANEL_T) + CHANNEL_STEP_Z)
-        # NL8 cutout + screw pass-throughs
-        for cx, cy, d in [(0.0, NL8_CENTER_Y, NL8_CUTOUT_D)] + [
-            (sx * NL8_SCREW_PITCH / 2, NL8_CENTER_Y + sy * NL8_SCREW_PITCH / 2,
-             NL8_SCREW_D)
-            for sx in (1, -1) for sy in (1, -1)
-        ]:
-            bottom -= Pos(cx, cy, -FOOT_DEPTH_REAR + PANEL_T / 2) * Cylinder(
-                d / 2, PANEL_T + 2)
-        for duct in ducts:  # re-cut: the foot tunnels cross the union
-            bottom -= duct
-    rest = baffle - _prism(_grown(below_a))
-    mids = rest & _prism(below_b)
-    top = rest - _prism(_grown(below_b))
-    if magnet_pockets:
-        for cutter in magnet_base_cutters():  # D5 pin-magnet base pockets
-            top -= cutter
-    mid_right = mids & _prism(right_c)
-    mid_left = mids - _prism(_grown(right_c))
+    if "piece_bottom" in requested:
+        bottom = baffle - _prism(_above_region(SEAM_A_Y, DOVETAILS_A))
+        if STAND_FOOT:
+            w0 = 76.2
+            w1 = 76.2 + FLANK_SLOPE * FOOT_THICK
+            strip = make_face(Wire(Polyline(
+                (-w0, 0.0), (w0, 0.0), (w1, FOOT_THICK),
+                (-w1, FOOT_THICK), (-w0, 0.0)
+            ).edges()))
+            strip_prism = extrude(
+                Plane.XY.offset(-FOOT_DEPTH_REAR - 1) * strip,
+                amount=FOOT_DEPTH_REAR + 1)
+            h = TONGUE_HALF_W
+            zp = -FOOT_DEPTH_REAR + PANEL_T  # panel inner face
+            plan = make_face(Wire(Polyline(
+                (-82.0, 0.5), (82.0, 0.5), (h, zp),
+                (h, -FOOT_DEPTH_REAR), (-h, -FOOT_DEPTH_REAR), (-h, zp),
+                (-82.0, 0.5)
+            ).edges()))
+            plan_prism = extrude(
+                Plane((0, FOOT_THICK + 1.0, 0),
+                      x_dir=(1, 0, 0), z_dir=(0, -1, 0)) * plan,
+                amount=FOOT_THICK + 2.0)
+            foot = strip_prism & plan_prism
+            panel = Pos(0, PANEL_H / 2,
+                        -FOOT_DEPTH_REAR + PANEL_T / 2) * Box(
+                2 * TONGUE_HALF_W, PANEL_H, PANEL_T)
+            bottom = bottom + foot + panel
+            # connector channel between the side rails (step face z=-99)
+            bottom -= Pos(
+                0, (CHANNEL_FLOOR + PANEL_H + 6) / 2,
+                (CHANNEL_STEP_Z + (-FOOT_DEPTH_REAR + PANEL_T)) / 2
+            ) * Box(
+                2 * CHANNEL_HALF_W, PANEL_H + 6 - CHANNEL_FLOOR,
+                -(-FOOT_DEPTH_REAR + PANEL_T) + CHANNEL_STEP_Z)
+            for cx, cy, d in [(0.0, NL8_CENTER_Y, NL8_CUTOUT_D)] + [
+                (sx * NL8_SCREW_PITCH / 2,
+                 NL8_CENTER_Y + sy * NL8_SCREW_PITCH / 2, NL8_SCREW_D)
+                for sx in (1, -1) for sy in (1, -1)
+            ]:
+                bottom -= Pos(
+                    cx, cy, -FOOT_DEPTH_REAR + PANEL_T / 2
+                ) * Cylinder(d / 2, PANEL_T + 2)
+            for duct in ducts:  # re-cut: foot tunnels cross the union
+                bottom -= duct
+        result["piece_bottom"] = bottom
 
-    return {
-        "piece_bottom": bottom,
-        "piece_mid_left": mid_left,
-        "piece_mid_right": mid_right,
-        "piece_top_b2": top,
-    }
+    upper_requested = requested - {"piece_bottom"}
+    if upper_requested:
+        below_b = _below_region(
+            SEAM_B_Y, seam_b_dovetails or DOVETAILS_B,
+            tabs_up=seam_b_tabs_up)
+        rest = baffle - _prism(_grown(below_a))
+        if "piece_top_b2" in upper_requested:
+            top = rest - _prism(_grown(below_b))
+            if magnet_pockets:
+                for cutter in magnet_base_cutters():
+                    top -= cutter
+            result["piece_top_b2"] = top
+        mids_requested = upper_requested & {
+            "piece_mid_left", "piece_mid_right"}
+        if mids_requested:
+            mids = rest & _prism(below_b)
+            right_c = _right_region()
+            if "piece_mid_right" in mids_requested:
+                result["piece_mid_right"] = mids & _prism(right_c)
+            if "piece_mid_left" in mids_requested:
+                result["piece_mid_left"] = mids - _prism(_grown(right_c))
+
+    return {name: result[name] for name in piece_order if name in result}
 
 
 def gen_step():

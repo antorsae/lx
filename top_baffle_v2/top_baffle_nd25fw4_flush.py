@@ -1,6 +1,11 @@
-"""Flush driver mounting (V1LF): front-face flange recesses so both
-mid drivers sit dead-flush with the front plane, per the owner's
-measured flange thicknesses.
+"""Shared flush-seat, pilot and LM-pad dimensions for skeletal V1LF.
+
+R6F builds the two carrier rings directly in
+``top_baffle_nd25fw4_v1lf.py``; it no longer thins a complete B2/V1L
+field. Its LM-owned UM passage and LM/UM-owned T passage segments, including
+their covered Z bumps, are owned by
+``top_baffle_nd25fw4_v1lf_route.py``.  The field-cutter
+helpers at the bottom remain only for opening pre-R6 artifacts/coupons.
 
 Drivers (LX521.4 production, SEAS "-SL" customs -- NOT the LX521
 prototype W22EX001 / 10F/8424G00 some older comments name):
@@ -17,16 +22,18 @@ LX521.4 was voiced with proud flanges. V1LF is a deliberate
 experiment arm against that baseline (DSP re-EQ per configuration),
 not a build error.
 
-Feasibility note: the V1L vase is 11.5 thick (z 6.8..18.3). Under the
-UM seat the shared tweeter duct survives only as a flattened oval
-(see TS_OVAL in the cables module); that works while the UM recess is
-<= ~4.5 deep. If the real MU10RB-SL flange measures deeper than that,
-flush-UM on V1L is geometrically dead -- re-measure before printing.
+The core rear is z=6.8 and each surviving printed R6F passage ends in a plain,
+service-accessible flush mouth at its owner boundary. Insert bypasses within
+those printed spans are continuously covered. The UM cable then floats behind
+UM and T floats behind the tweeter crescent; no V1LF printed grommet or split
+clip is modeled. Re-measure both physical flange edges before printing;
+owner-measured values still override the nominal datasheet thicknesses below.
 
 The W22-ring insert bores would break through the 11.5 plate once the
 seat drops the front face to z=12.3 (bore floor 5.5 < rear plane 6.8),
-so V1LF keeps six pad buttons of UNCUT plate material on the rear
-(z 4.3..6.8): the V1L field cutters are pre-punched with pad-shaped
+so V1LF keeps six pad buttons of material on the rear (nominal lower
+face z=5.3, joining the carrier at z=6.8): the legacy V1L field cutters
+are pre-punched with pad-shaped
 reliefs rather than unioning bosses on afterwards (monolithic, no
 glue-line-like union seams). Pilot bores are re-cut deeper here; the
 base module's stock front-blind bores become 0.8 stubs inside the
@@ -41,7 +48,6 @@ from build123d import Cylinder, Pos
 
 from top_baffle_nd25fw4 import (
     L22_CUTOUT,
-    L22_PILOT_ANGLES_DEG,
     L22_PILOT_D_MM,
     L22_PILOT_DEPTH_MM,
     L22_PILOT_PCD_MM,
@@ -84,9 +90,19 @@ PAD_FLOOR_MM = 0.8
 PAD_D_MM = 9.6
 PAD_FACE_Z = 18.3 - LM_FLANGE_T_MM - LM_BORE_DEPTH_MM - PAD_FLOOR_MM  # 5.3
 PAD_CHAMFER_MM = 0.6
+# R6F's thinned UM seat membrane needs local insert bosses. D8 retains a
+# 1.7-mm radial wall around the D4.6 heat-set bore; a short spoke carries it
+# to the structural outer lip. Two extrusion widths remain behind the blind
+# 4.0-mm receiver; starting a boss at the bore bottom would leave it open.
+UM_PAD_D_MM = 8.0
+UM_PAD_FLOOR_MM = 0.8
 
 _LM_C = (L22_CUTOUT[0], L22_CUTOUT[1])
 _UM_C = (UM_CUTOUT[0], UM_CUTOUT[1])
+
+# V1LF alone rotates the W22 pattern by -30 degrees.  Proud/V1L keep
+# the production 30/90/... clock from ``top_baffle_nd25fw4.py``.
+V1LF_LM_PILOT_ANGLES_DEG = (0.0, 60.0, 120.0, 180.0, 240.0, 300.0)
 
 
 def _pilot_xy(center, pcd, angles):
@@ -95,7 +111,8 @@ def _pilot_xy(center, pcd, angles):
              center[1] + r * math.sin(math.radians(a))) for a in angles]
 
 
-LM_PILOT_XY = _pilot_xy(_LM_C, L22_PILOT_PCD_MM, L22_PILOT_ANGLES_DEG)
+LM_PILOT_XY = _pilot_xy(
+    _LM_C, L22_PILOT_PCD_MM, V1LF_LM_PILOT_ANGLES_DEG)
 UM_PILOT_XY = _pilot_xy(_UM_C, UM_PILOT_PCD_MM, UM_PILOT_ANGLES_DEG)
 
 

@@ -1,9 +1,16 @@
 """Variant V1L: the LM section (piece_bottom + both mids) thinned to
 t=11.5 and mounted FRONT-FLUSH: material z 6.8..18.3 above the foot
-strip, so the whole plate shares the front plane. Enabled by the
-round-4 "front-datum" routing (LM O8.2 z=12.55 -- the 11.5 binder --
-UM z=12.55 outside the W22 ring, shared T duct z=11.5 on the left;
-the strip feeders at z=3.7/9.5 live in the KEEP).
+strip, so the whole plate shares the front plane. Proud R6P keeps
+LM/UM D8.2 at z=12.55 through their planar spans and the shared T duct
+at z=11.5 on the left. B2/C7/V0/V1 retain the standard G1 R14 UM
+outlet. V1L is the keyed exception: its alternate UM tail stays wholly
+inside piece_mid_right and centers the physical rear-face exit at
+Q=(13.497063, 307.618796, 6.8), exactly 60.0 mm from the MU axis on the
+283-degree terminal line. The cutter continues outside to nominal XY
+(11.080158, 308.797599), z=-2.0. It never reaches seam B or the top/vase.
+The dedicated V1L split TPU grommet follows that keyed R14 and seats on
+the z=6.8 rear face; it is an add-on, not carrier material. The strip
+feeders at z=3.7/9.5 live in the full-depth keep.
 
 Keeps at full 18.3: the bottom strip (fused foot, bridge/support
 hardware incl. the washer seats behind the top pass-throughs at

@@ -57,24 +57,26 @@ TWEETER_DROP_A_MM = UM_ALIGN_DY_MM
 # (z = THICKNESS_MM) only -- the rear face stays closed.
 PILOT_DEPTH_MM = THICKNESS_MM / 2.0  # 9.15
 
-# Upper mid: Scan-Speak 10F/8424G00 -- 4 x D3.80 flange holes on pitch
-# D89.5 (datasheet 10f-8424g00.pdf). Mounted with BRASS HEAT-SET
-# inserts M3 x 3 long x D5 OD: bore D4.6 x 4.0 (3.0 insert + 1.0 melt
-# room; 4 x ~250 N pull-out vs the 0.43 kg 10F). M3 screws pass the
-# D3.8 flange holes natively; inboard wall to the D82 is 1.45. The
-# SHORT bores (floor z=14.3) let the vase-side ducts run in the FRONT
-# half (T lanes z=10.7, roof 12.6: 1.7 clear of the floors where the
-# lanes cross the ring) -- which is what allows variant V1 to thin the
-# vase from the REAR and mount FRONT-FLUSH with the LM section.
+# Upper mid: production SEAS MU10RB-SL (H1658-04), 4-hole D89.5
+# pattern. Mounted with brass M3 x 3 heat-set inserts in D4.6 x 4.0
+# bores. M3 screws pass the flange holes; the inboard wall to the D82
+# cutout is 1.45. The reference/acoustic mesh intentionally omits the
+# electrical terminals, so terminal fit is represented separately by
+# top_baffle_nd25fw4_um_fit.py and still requires a hardware trial.
 UM_PILOT_D_MM = 4.6
 UM_PILOT_PCD_MM = 89.5
 UM_PILOT_ANGLES_DEG = (58.0, 148.0, 238.0, 328.0)  # rotated:
-# the LEFT pair clears the shared T duct's flank lane and notch dive;
-# the right pair faces no ducts at all (round-4 layout)
+# The terminal carrier is clocked BETWEEN the lower screws: the allowed
+# gap is 238..328 deg and its exact midpoint axis is 283 deg.
+# The left pair also clears the proud-family shared tweeter lane.
+UM_TERMINAL_GAP_DEG = (238.0, 328.0)
+UM_TERMINAL_CLOCK_DEG = 283.0
 UM_PILOT_DEPTH_MM = 4.0
 
-# Lower mid: SEAS W22EX001 -- 6 x D5.0 flange holes (D8.8 head recess) on
-# pitch D209.5 (measured from E0022_W22EX001.stp). Mounted with BRASS
+# Lower mid: production SEAS U22REX/P-SL -- 6 x D5.0 flange holes
+# (D8.8 head recess) on D209.5 pitch, cross-checked against the
+# E0022_W22EX001 reference STEP used to establish the mounting template.
+# Mounted with BRASS
 # HEAT-SET inserts M5 x 5.8 long x D6.3 OD: bore D6.4 x 6.8 (5.8
 # insert + 1.0 melt room; manufacturer's recommended hole), set with a
 # soldering iron. M5 screws pass the D5.0 flange holes natively; heads

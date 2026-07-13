@@ -1,8 +1,8 @@
 """Render front-view PNGs of the baffle variants with all drivers overlaid
 as dashed outer silhouettes:
 
-  * SEAS W22EX001 lower mid, D221 flange, aligned by its 6 M5 pilots
-  * Scan-Speak 10F/8424G00 upper mid, D97.5 flange, aligned by its 4 M3 pilots
+  * SEAS U22REX/P-SL lower mid, D220.6 flange, aligned by 6 M5 pilots
+  * SEAS MU10RB-SL upper mid, D98 flange, aligned by 4 M3 pilots
   * ND25FW-4 tweeter pair, D104 faceplates, on the clamp-hole-derived axes
     (front tweeter = lower, on the front face; rear tweeter on standoffs)
 
@@ -13,11 +13,27 @@ Run:  python gen_driver_overlay.py
 
 from __future__ import annotations
 
+import os
+from pathlib import Path
+import subprocess
+import sys
+
+if __name__ == "__main__":
+    import run_memory_guarded as memory_guard
+
+    if not memory_guard.is_guarded_process():
+        guard = Path(__file__).with_name("run_memory_guarded.py")
+        raise SystemExit(subprocess.run(
+            [sys.executable, str(guard), "--", sys.executable,
+             str(Path(__file__).resolve()), *sys.argv[1:]],
+            check=False).returncode)
+
 import numpy as np
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from PIL import Image
 
 from top_baffle_nd25fw4 import (
     BRIDGE_INSERT_D_MM,
@@ -43,14 +59,41 @@ from top_baffle_nd25fw4_b import MAGNET_D_MM, MAGNET_SITES, TWEETER_DROP_MM
 from top_baffle_nd25fw4_b1 import OUTLINE_B1
 from top_baffle_nd25fw4_b2 import OUTLINE_B2
 
-W22_FLANGE_D_MM = 221.0   # from E0022_W22EX001.stp
-TENF_FLANGE_D_MM = 97.5   # from 10f-8424g00.pdf
+LM_FLANGE_D_MM = 220.6    # U22REX/P-SL datasheet
+UM_FLANGE_D_MM = 98.0     # MU10RB-SL datasheet
 ND25_FACE_D_MM = 104.0    # from nd25fw-4-spec-sheet.pdf
 # Tweeter axes per the V2 drawing (drop = 0): the lower tweeter faces
 # FORWARD (faceplate on the front face, bolted through the clamp holes);
 # the upper one faces rearward on standoffs.
 T_FRONT_AXIS_Y = 483.78
 T_REAR_AXIS_Y = 549.05
+
+
+def _save_overlay_figure(fig, output: str) -> None:
+    """Failure-atomic PNG with explicit state provenance."""
+    output_path = Path(output)
+    state = "floor_stand" if STAND_FOOT else "no_floor_stand"
+    token = f"LX521_OVERLAY_R6F_{state}"
+    temporary = output_path.with_name(
+        f".{output_path.stem}.{os.getpid()}.tmp.png")
+    try:
+        fig.savefig(
+            temporary,
+            metadata={
+                "Title": token,
+                "Description": (
+                    f"{token}; LX_STAND_FOOT={int(STAND_FOOT)}"),
+            },
+        )
+        with Image.open(temporary) as image:
+            image.verify()
+        with Image.open(temporary) as image:
+            image.load()
+            if image.width < 1 or image.height < 1:
+                raise RuntimeError("temporary overlay PNG has no pixels")
+        temporary.replace(output_path)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 # Stock LX521.4 top baffle from "lx521 baffle metric.dxf" (centerline at
 # x=152.4 in the DXF), aligned to the variants by the LM driver center:
@@ -136,7 +179,9 @@ def draw(ax, outline, drop, title, labels=True, joint_outline=None):
         jp = outline_polygon(joint_outline)
         ax.plot(jp[:, 0], jp[:, 1], color="0.55", lw=0.9, ls=(0, (4, 2, 1, 2)), zorder=5)
 
-    # D5 x 2 magnets seen edge-on: discs sit FLUSH in the flank walls
+    # Actual D5 x 2 magnets seen edge-on: discs are bonded FLUSH in the
+    # global D5.2 x 2.2 pockets. The bars intentionally draw the physical
+    # 2.0 mm magnets, not the extra 0.2 mm adhesive allowance.
     # with their axes IN-PLANE (normal to the wall). Solid bar = base
     # magnet in piece_top_b2 (flush); lighter bar = the mating
     # attachment magnet, also flush (drawn only for composite variants).
@@ -169,15 +214,15 @@ def draw(ax, outline, drop, title, labels=True, joint_outline=None):
     for hx, hy, hdia in STOCK_HOLES:
         circle(hx, hy + STOCK_DY, hdia, color="0.45", lw=1.0, ls=(0, (1, 2)), zorder=5)
 
-    circle(*L22_CUTOUT[:2], W22_FLANGE_D_MM, color="tab:blue", lw=1.5, ls=(0, (6, 4)), zorder=4)
-    circle(*UM_CUTOUT[:2], TENF_FLANGE_D_MM, color="tab:red", lw=1.5, ls=(0, (6, 4)), zorder=4)
+    circle(*L22_CUTOUT[:2], LM_FLANGE_D_MM, color="tab:blue", lw=1.5, ls=(0, (6, 4)), zorder=4)
+    circle(*UM_CUTOUT[:2], UM_FLANGE_D_MM, color="tab:red", lw=1.5, ls=(0, (6, 4)), zorder=4)
     circle(0, T_FRONT_AXIS_Y - drop, ND25_FACE_D_MM, color="tab:green", lw=1.5, ls=(0, (6, 4)), zorder=4)
     circle(0, T_REAR_AXIS_Y - drop, ND25_FACE_D_MM, color="tab:purple", lw=1.3, ls=(0, (2, 3)), zorder=4)
 
     if labels:
-        ax.text(0, L22_CUTOUT[1] - W22_FLANGE_D_MM / 2 - 7, "W22EX001\nD221",
+        ax.text(0, L22_CUTOUT[1] - LM_FLANGE_D_MM / 2 - 7, "U22REX/P-SL\nD220.6",
                 color="tab:blue", ha="center", va="top", fontsize=8)
-        ax.text(-115, UM_CUTOUT[1], "10F/8424G00\nD97.5",
+        ax.text(-115, UM_CUTOUT[1], "MU10RB-SL\nD98",
                 color="tab:red", ha="center", va="center", fontsize=8)
         ax.text(115, T_FRONT_AXIS_Y - drop, "ND25FW-4\nfront D104",
                 color="tab:green", ha="center", va="center", fontsize=8)
@@ -207,7 +252,7 @@ if __name__ == "__main__":
     axes[0].set_ylabel("mm")
     fig.suptitle("LX521.4 top baffle variants - dashed driver silhouettes", fontsize=13, y=0.995)
     fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.97))
-    fig.savefig("baffle_variants_drivers.png")
+    _save_overlay_figure(fig, "baffle_variants_drivers.png")
     plt.close(fig)
     print("wrote baffle_variants_drivers.png")
 
@@ -219,6 +264,6 @@ if __name__ == "__main__":
         draw(ax, outline, TWEETER_DROP_MM, title, joint_outline=joint)
         ax.set_xlabel("mm"); ax.set_ylabel("mm")
         fig.tight_layout()
-        fig.savefig(name)
+        _save_overlay_figure(fig, name)
         plt.close(fig)
         print("wrote", name)
