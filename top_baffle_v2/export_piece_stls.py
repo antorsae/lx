@@ -4,7 +4,9 @@ attachment pieces that turn the B2 set into variant A-comp or B1.
 Run:  python export_piece_stls.py
 Each part is translated so its bounding box starts at the origin (still
 lying flat, thickness along Z, front face up) and written to stl/<name>.stl.
-Exits nonzero if any piece stops fitting the print bed.
+Exits nonzero if any bed-targeted piece stops fitting.  The retained
+monolithic floor-state V1LF LM is an explicit large-format reference; its
+two optional keyed replacement prints remain strictly bed-checked.
 """
 
 from __future__ import annotations
@@ -51,9 +53,9 @@ BED_ROT_Z = {
     "v1lf_core_1of2_lm_carrier": 28.0,
     "v1lf_optional_lm_keyed_1of2_bottom": 26.0,
     "v1lf_optional_lm_keyed_2of2_top": 45.0,
-    "v1lf_addon_mount_floor_support": 70.0,
 }
 V1LF_NO_FLOOR_LM_TILT_X_DEG = 45.0
+V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG = -90.0
 
 
 def _validate_binary_stl(path: Path) -> None:
@@ -251,7 +253,7 @@ def main() -> None:
                          "piece_top are shared with b2)")
     ap.add_argument(
         "--v1lf-part",
-        choices=("lm", "lm_split", "um", "support", "tweeter"),
+        choices=("lm", "lm_split", "um", "tweeter"),
         help="export one staged R6F group; omit on osado to mesh the whole "
              "state in one guarded process")
     ap.add_argument(
@@ -284,9 +286,6 @@ def main() -> None:
         ap.error(
             "--variant v1lf requires --v1lf-stage-manifest; direct "
             "monolithic carrier generation is intentionally disabled")
-    if (args.variant == "v1lf" and args.v1lf_part == "support"
-            and stand_mode == "0"):
-        ap.error("the floor-support add-on does not exist in no-floor state")
     profile = "v1lf" if args.variant == "v1lf" else "proud"
     os.environ["LX_ROUTING_PROFILE"] = profile
     out_dir = args.outdir
@@ -325,8 +324,6 @@ def main() -> None:
             "lx521_top_v1lf_optional_lm_keyed_2of2_top.stl",
             "lx521_top_v1lf_addon_tweeter_crescent.stl",
         }
-        if stand_mode == "1":
-            expected.add("lx521_top_v1lf_addon_mount_floor_support.stl")
         for legacy in out_dir.glob("lx521_top_v1lf_addon_*.stl"):
             if legacy.name not in expected:
                 legacy.unlink()
@@ -387,12 +384,27 @@ def main() -> None:
         no_floor_lm_tilt = (
             "v1lf_core_1of2_lm_carrier" in name
             and os.environ.get("LX_STAND_FOOT", "1") == "0")
+        floor_lm_split_bottom_tilt = (
+            "v1lf_optional_lm_keyed_1of2_bottom" in name
+            and os.environ.get("LX_STAND_FOOT", "1") == "1")
+        floor_canonical_lm_large_format = (
+            "v1lf_core_1of2_lm_carrier" in name
+            and os.environ.get("LX_STAND_FOOT", "1") == "1")
         bed_rotation = next((angle for key, angle in BED_ROT_Z.items()
                              if key in name), 0.0)
         orientation = ""
         if no_floor_lm_tilt:
             solid = Rot(X=V1LF_NO_FLOOR_LM_TILT_X_DEG) * solid
             orientation = f" @ X{V1LF_NO_FLOOR_LM_TILT_X_DEG:g}deg"
+        elif floor_lm_split_bottom_tilt:
+            # The integral stand runs along world Z.  Lay it into the bed
+            # plane.  Do not reuse the no-floor 26-degree packing rotation:
+            # after this X lay-down the exact envelope is already about
+            # 218.7 x 168.3 mm, while Z26 would expand it beyond 220 mm.
+            solid = Rot(X=V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG) * solid
+            orientation = (
+                f" @ X{V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG:g}deg; "
+                "in-bed Z0deg")
         elif bed_rotation:
             solid = Rot(Z=bed_rotation) * solid
             orientation = f" @ Z{bed_rotation:g}deg"
@@ -401,10 +413,18 @@ def main() -> None:
         bed_limit = (
             V1LF_OPTIONAL_LM_SPLIT_BED_MM
             if "v1lf_optional_lm_keyed_" in name else BED_MM)
-        fits = (size.X <= bed_limit and size.Y <= bed_limit
+        fits = (
+            floor_canonical_lm_large_format
+            or (size.X <= bed_limit and size.Y <= bed_limit
                 and size.Z <= bed_limit)
+        )
         if not fits:
             misfits.append(name)
+        bed_status = (
+            "LARGE-FORMAT CANONICAL (split option is bed-checked)"
+            if floor_canonical_lm_large_format
+            else ("OK" if fits else "DOES NOT FIT")
+        )
         moved = Pos(-bb.min.X, -bb.min.Y, -bb.min.Z) * solid
         moved_solids = list(moved.solids())
         if (not moved.is_valid or len(moved_solids) != 1
@@ -423,11 +443,10 @@ def main() -> None:
                 moved, str(temporary), tolerance=0.05,
                 angular_tolerance=0.2)
             _validate_binary_stl(temporary)
-            # The exact-float seam is specific to the no-floor LM's X tilt
-            # print transform.  Keep every other mesh byte-for-byte faithful
-            # to the ordinary OCC export and let the strict contract reject
-            # any unrelated topology defect.
-            if no_floor_lm_tilt:
+            # X-axis print transforms can express exact zero coordinates as
+            # face-local floating-point noise. Keep all other meshes
+            # byte-for-byte faithful to the ordinary OCC export.
+            if no_floor_lm_tilt or floor_lm_split_bottom_tilt:
                 canonicalized_zeros = _canonicalize_transform_zeros(temporary)
             mesh_facts = _strict_mesh_facts(temporary)
             temporary.replace(path)
@@ -437,7 +456,7 @@ def main() -> None:
             f"{name:22s} {size.X:7.2f} x {size.Y:7.2f} x {size.Z:5.2f} mm  "
             f"volume {solid.volume / 1000.0:7.1f} cm3  "
             f"bed fit <= {bed_limit:g}: "
-            f"{'OK' if fits else 'DOES NOT FIT'}"
+            f"{bed_status}"
             f"{orientation}"
             f"  mesh {mesh_facts['triangles']} tris/strict"
             f"  transform-zero fixes {canonicalized_zeros}"

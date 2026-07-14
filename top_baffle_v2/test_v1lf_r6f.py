@@ -28,7 +28,7 @@ import time
 import numpy as np
 
 LM_CUTTER_GROUP_COUNT = 20
-R6F_NATIVE_STAGE_SCHEMA_VERSION = 6
+R6F_NATIVE_STAGE_SCHEMA_VERSION = 7
 R6F_CHECK_LAUNCH_HEADROOM_MB = 2500.0
 R6F_CABLE_WORKER_HEADROOM_MB = 3500.0
 R6F_HEADROOM_WAIT_TIMEOUT_S = 300.0
@@ -357,9 +357,23 @@ def test_route_contract():
     assert memory_guard.MAX_RSS_MB <= memory_guard.PROFILE_MAX_RSS_MB
     assert memory_guard.MIN_FREE_MB >= memory_guard.PROFILE_MIN_FREE_MB
     assert memory_guard.GUARD_SLOTS <= memory_guard.PROFILE_MAX_GUARD_SLOTS
-    assert staged.SCHEMA_VERSION == R6F_NATIVE_STAGE_SCHEMA_VERSION == 6
-    assert release_manifest.FORMAT_VERSION == 6
+    assert staged.SCHEMA_VERSION == R6F_NATIVE_STAGE_SCHEMA_VERSION == 7
+    assert release_manifest.FORMAT_VERSION == 7
     assert staged.ATTACHMENT_KEYS_BASE == ("addon_tweeter_crescent",)
+    assert set(staged.PRINT_PART_SPECS) == {
+        "core_lm_carrier",
+        "core_um_carrier",
+        "optional_lm_keyed_1of2_bottom",
+        "optional_lm_keyed_2of2_top",
+        "addon_tweeter_crescent",
+    }
+    assert staged._expected_print_keys(True) == (
+        "core_lm_carrier",
+        "core_um_carrier",
+        "optional_lm_keyed_1of2_bottom",
+        "optional_lm_keyed_2of2_top",
+        "addon_tweeter_crescent",
+    )
     assert staged.OPTIONAL_LM_SPLIT_KEYS == (
         "optional_lm_keyed_1of2_bottom",
         "optional_lm_keyed_2of2_top",
@@ -430,8 +444,6 @@ def test_route_contract():
     assert facts["solid_backfill_floor_hardware_exceptions"] == ()
     assert all(record["filled_height_mm"] > 0.5
                for record in facts["solid_backfill_records"])
-    assert all(not record["floor_hardware_clearance"]
-               for record in facts["solid_backfill_records"])
     assert set(facts["lm_burial_webs"]) == {"UM", "T"}
     assert facts["lm_burial_web_count"] >= 2
     assert facts["lm_burial_web_growth_upper_bound_mm3"] > 0.0
@@ -470,10 +482,10 @@ def test_route_contract():
     assert facts["functional_lm_feed_count"] == 2
     assert facts["functional_lm_feed_mode"] == (
         "bridge_rear_face_shallow_rise")
-    assert facts["no_floor_bridge_feed_xy"] == (
+    assert facts["central_owner_feed_xy"] == (
         (5.0, 82.0), (-5.0, 82.0))
     assert math.isclose(
-        facts["no_floor_bridge_feed_rear_z_mm"], 5.3, abs_tol=1e-9)
+        facts["central_owner_feed_rear_z_mm"], 5.3, abs_tol=1e-9)
     assert np.allclose(
         facts["functional_lm_feed_points"],
         ((5.0, 82.0, 5.3), (-5.0, 82.0, 5.3)), atol=1e-9)
@@ -648,12 +660,17 @@ def test_floor_route_smoothness():
     facts = route.route_facts()
     assert facts["open_bore_jump_count"] == 0
     assert facts["solid_backfill_count"] == 8
-    assert set(facts["solid_backfill_floor_hardware_exceptions"]) == {
-        "lm_pilot_300", "lm_pilot_240", "lm_pilot_180"}
-    assert math.isclose(
-        facts["lm_burial_web_floor_hardware_clear_d_mm"],
-        route.FLOOR_SUPPORT_BACKFILL_INSERT_CLEAR_D, abs_tol=1e-12)
+    assert facts["solid_backfill_floor_hardware_exceptions"] == ()
+    assert facts["lm_burial_web_floor_hardware_clear_d_mm"] is None
     assert facts["solid_backfill_added_rear_depth_mm"] == 0.0
+    assert facts["functional_lm_feed_mode"] == (
+        "integrated_stem_rear_face_shallow_rise")
+    assert facts["functional_lm_feed_points"] == (
+        (5.0, 82.0, route.PAD_FACE_Z),
+        (-5.0, 82.0, route.PAD_FACE_Z),
+    )
+    assert facts["central_owner_feed_xy"] == (
+        (5.0, 82.0), (-5.0, 82.0))
     assert (facts["crossover_nominal_void_gap_mm"]
             >= route.CROSSOVER_MIN_CLEARANCE)
     assert facts["crossover_free_um_to_t_cover_gap_mm"] >= 0.25
@@ -665,14 +682,18 @@ def test_floor_route_smoothness():
         assert radius >= 14.0, f"floor {name} bend radius {radius:.3f}"
         assert _max_turn_deg(points) <= 2.0
     assert math.isclose(
+        facts["main_min_z_mm"],
         min(bump.low_z for bump in route.MAIN_COVERED_BUMPS),
-        -6.35, abs_tol=1e-9)
+        abs_tol=0.02)
     assert math.isclose(
+        facts["ts_min_z_mm"],
         min(bump.low_z for bump in route.T_COVERED_BUMPS),
-        -5.45, abs_tol=1e-9)
-    assert 18.00 <= facts["main_max_rear_protrusion_mm"] <= 18.10
-    assert 16.00 <= facts["ts_max_rear_protrusion_mm"] <= 16.10
-    print("  floor-state deep covered bumps retain complete-route R14/G1")
+        abs_tol=0.02)
+    assert facts["main_max_rear_protrusion_mm"] > 0.0
+    assert facts["ts_max_rear_protrusion_mm"] > 0.0
+    print(
+        "  floor-state central stem feeds and all covered bumps retain "
+        "complete-route R14/G1")
 
 
 def test_no_floor_route_smoothness():
@@ -728,16 +749,8 @@ def _bump_brep_clearance(stand_foot):
         assert clearance >= route.INSERT_COVER_CLEAR - 0.03, (
             f"{label} BREP clearance {clearance:.3f} mm")
 
-    if stand_foot:
-        import top_baffle_nd25fw4_v1lf_attachments as addons
-        hardware = addons.structural_hardware_proxies()
-        for cover, label in ((main_outer, "UM"), (t_outer, "T")):
-            clearance = cover.distance_to(hardware)
-            assert clearance >= route.SUPPORT_TUNNEL_GAP - 0.03, (
-                f"floor {label} cover/hardware clearance "
-                f"{clearance:.3f} mm")
     state = "floor" if stand_foot else "no-floor"
-    print(f"  {state}: exact outer-cover BREPs clear inserts and hardware")
+    print(f"  {state}: exact outer-cover BREPs clear all driver inserts")
 
 
 def test_bump_brep_clearance():
@@ -802,16 +815,11 @@ def _final_bump_backfill_contract(stand_foot):
         ) > 0.98 * expected_solid.volume
 
         # Independent cross-section probes span the route-to-pilot saddle;
-        # they do not reuse the convex-hull BREP builder. Skip only the exact
-        # floor hardware cylinder, never a broad plan band.
+        # they do not reuse the convex-hull BREP builder.
         route_xy = np.asarray(spec.route_xyz[:2], dtype=float)
         pilot_xy = np.asarray(spec.pilot_xy, dtype=float)
         for fraction in (0.15, 0.50, 0.85):
             xy = route_xy + fraction * (pilot_xy - route_xy)
-            if (spec.floor_hardware_clearance
-                    and np.linalg.norm(xy - pilot_xy)
-                    < route.FLOOR_SUPPORT_BACKFILL_INSERT_CLEAR_D / 2.0):
-                continue
             z0 = spec.bottom_z + 0.10
             z1 = spec.top_z - 0.10
             probe = Pos(float(xy[0]), float(xy[1]), (z0 + z1) / 2.0) * (
@@ -821,15 +829,11 @@ def _final_bump_backfill_contract(stand_foot):
                 f"{spec.name} hollow at saddle fraction {fraction:.2f}: "
                 f"{hit:.4f}/{probe.volume:.4f} mm3")
 
-    expected_exceptions = (
-        route.FLOOR_SUPPORT_BUMP_NAMES if stand_foot else frozenset())
-    assert {spec.name for spec in specs if spec.floor_hardware_clearance} == (
-        expected_exceptions)
     state = "floor" if stand_foot else "no-floor"
     print(
         f"  {state}: all eight final-BREP duct bumps are solid-backed to "
-        "their bore floors; only exact duct-clearance and floor-hardware "
-        "envelopes remain")
+        "their blind-bore floors; only exact duct-clearance envelopes "
+        "remain")
 
 
 def test_bump_backfill_contract():
@@ -845,9 +849,8 @@ def _final_lm_burial_web_contract(stand_foot):
     _state(stand_foot)
     staged = _stage_shell_contract_breps(
         stand_foot, "LM", tempfile.gettempdir(), shell_keys=())
-    from build123d import Box, Cylinder, Pos, import_brep
+    from build123d import Cylinder, Pos, import_brep
     import top_baffle_nd25fw4_flush as flush
-    import top_baffle_nd25fw4_v1lf as core
     import top_baffle_nd25fw4_v1lf_route as route
 
     lm = import_brep(staged["lm"])
@@ -874,40 +877,17 @@ def _final_lm_burial_web_contract(stand_foot):
             (0.0, 60.0, 120.0, 180.0, 240.0, 300.0),
             flush.LM_PILOT_XY)
     }
-    structural = (
-        route.FLOOR_SUPPORT_BUMP_NAMES if stand_foot else frozenset())
     probe_radius = 0.14
     functional_voids = []
-    for name, pilot_xy in pilot_by_name.items():
+    for pilot_xy in pilot_by_name.values():
         x, y = map(float, pilot_xy)
-        if name in structural:
-            z0, z1 = route.FLOOR_SUPPORT_BACKFILL_INSERT_CLEAR_Z
-            functional_voids.append(
-                Pos(x, y, (z0 + z1) / 2.0) * Cylinder(
-                    route.FLOOR_SUPPORT_BACKFILL_INSERT_CLEAR_D / 2.0,
-                    z1 - z0))
-            z0, z1 = route.FLOOR_SUPPORT_BACKFILL_SHANK_CLEAR_Z
-            functional_voids.append(
-                Pos(x, y, (z0 + z1) / 2.0) * Cylinder(
-                    route.FLOOR_SUPPORT_BACKFILL_SHANK_CLEAR_D / 2.0,
-                    z1 - z0))
-            functional_voids.append(
-                Pos(
-                    x, y,
-                    (flush.PAD_FACE_Z - 0.20
-                     + flush.LM_SEAT_Z + 0.15) / 2.0
-                ) * Cylinder(
-                    core.STRUCT_MOUNT_CLEAR_D / 2.0,
-                    flush.LM_SEAT_Z + 0.15
-                    - (flush.PAD_FACE_Z - 0.20)))
-        else:
-            bore_z0 = flush.LM_SEAT_Z - flush.LM_BORE_DEPTH_MM
-            functional_voids.append(
-                Pos(
-                    x, y, (bore_z0 + flush.LM_SEAT_Z + 0.15) / 2.0
-                ) * Cylinder(
-                    flush.L22_PILOT_D_MM / 2.0,
-                    flush.LM_SEAT_Z + 0.15 - bore_z0))
+        bore_z0 = flush.LM_SEAT_Z - flush.LM_BORE_DEPTH_MM
+        functional_voids.append(
+            Pos(
+                x, y, (bore_z0 + flush.LM_SEAT_Z + 0.15) / 2.0
+            ) * Cylinder(
+                flush.L22_PILOT_D_MM / 2.0,
+                flush.LM_SEAT_Z + 0.15 - bore_z0))
 
     tested = {}
     tested_ends = {}
@@ -955,7 +935,7 @@ def _final_lm_burial_web_contract(stand_foot):
                 ) * Cylinder(probe_radius, z1 - z0)
                 # The requested shoulder is solid over the complete web
                 # height except for the exact cable lumen and exact final
-                # pilot/support hardware. Subtract those functional voids;
+                # pilot insert. Subtract those functional voids;
                 # never move the probe above the shoulder defect.
                 expected = probe - duct_void
                 for functional_void in functional_voids:
@@ -1017,17 +997,16 @@ def _final_lm_burial_web_contract(stand_foot):
             tested[bump.name] = count
             tested_ends[bump.name] = ends
 
-            if bump.name not in structural:
-                bore_floor_z = flush.LM_SEAT_Z - flush.LM_BORE_DEPTH_MM
-                floor = Pos(
-                    float(pilot_xy[0]), float(pilot_xy[1]),
-                    (flush.PAD_FACE_Z + 0.12 + bore_floor_z - 0.12) / 2.0
-                ) * Cylinder(
-                    0.55, bore_floor_z - flush.PAD_FACE_Z - 0.24)
-                retained = _intersection_volume(lm, floor)
-                assert retained > 0.96 * floor.volume, (
-                    f"{bump.name} lost its blind-bore floor: "
-                    f"{retained:.4f}/{floor.volume:.4f} mm3")
+            bore_floor_z = flush.LM_SEAT_Z - flush.LM_BORE_DEPTH_MM
+            floor = Pos(
+                float(pilot_xy[0]), float(pilot_xy[1]),
+                (flush.PAD_FACE_Z + 0.12 + bore_floor_z - 0.12) / 2.0
+            ) * Cylinder(
+                0.55, bore_floor_z - flush.PAD_FACE_Z - 0.24)
+            retained = _intersection_volume(lm, floor)
+            assert retained > 0.96 * floor.volume, (
+                f"{bump.name} lost its blind-bore floor: "
+                f"{retained:.4f}/{floor.volume:.4f} mm3")
 
         # Probe each actual low-run boundary as well as the bump transitions.
         # At a natural-burial transition the production web includes one
@@ -1080,18 +1059,16 @@ def _final_lm_burial_web_contract(stand_foot):
     assert facts["functional_lm_feed_count"] == 2
     assert facts["functional_lm_feed_web_omitted"]
     # The per-bump check above is authoritative: every geometrically
-    # applicable longitudinal end must be present.  In no-floor state the
-    # centered bridge feed reaches the 300-degree bypass before either end,
-    # while the floor route begins at that same bypass and therefore has no
-    # predecessor-side shoulder to bury.
-    assert tested_ends["lm_pilot_300"] == (
-        {1} if stand_foot else {-1, 1})
+    # applicable longitudinal end must be present. Both carrier states now
+    # use the same centered feed geometry, so both ends of the 300-degree
+    # bypass remain buried in both states.
+    assert tested_ends["lm_pilot_300"] == {-1, 1}
     assert boundary_probe_count > sum(len(ends) for ends in tested_ends.values())
     state = "floor" if stand_foot else "no-floor"
     print(
         f"  {state}: all six LM bump runs are closed full-width at every "
         "applicable longitudinal end; station-zero feeds and only exact "
-        "blind-bores/floor hardware remain")
+        "blind insert bores remain")
 
 
 def test_lm_burial_web_contract():
@@ -1373,84 +1350,66 @@ def _final_feed_and_flush_mouth_contract(stand_foot):
     # Cutter extension is a global ruled-loft phase input, not merely an
     # endpoint allowance. Only the two core owners retain printed T cover.
     phase_source = route.ts_cable_points(1.8)
-    for owner, expected_extension in (
-            ("lm", (route.NO_FLOOR_FEED_CUTTER_EXTENSION
-                    if not stand_foot
-                    else route.STANDARD_CUTTER_EXTENSION)),
-            ("um", (route.NO_FLOOR_FEED_CUTTER_EXTENSION
-                    if not stand_foot
-                    else route.STANDARD_CUTTER_EXTENSION))):
+    for owner in ("lm", "um"):
         phased = route._owner_cutter_points(phase_source, owner)
         assert math.isclose(
             np.linalg.norm(phased[0] - phase_source[0]),
-            expected_extension, abs_tol=1e-9)
+            route.NO_FLOOR_FEED_CUTTER_EXTENSION, abs_tol=1e-9)
         assert math.isclose(
             np.linalg.norm(phased[-1] - phase_source[-1]),
-            expected_extension, abs_tol=1e-9)
+            route.NO_FLOOR_FEED_CUTTER_EXTENSION, abs_tol=1e-9)
 
-    if stand_foot:
-        assert facts["functional_lm_feed_mode"] == "supported_ring_lateral"
-        expected_main_xy = np.asarray(
-            L22_CUTOUT[:2], dtype=float) + 114.0 * np.asarray((
-                math.cos(math.radians(300.0)),
-                math.sin(math.radians(300.0))))
-        expected_t_xy = np.asarray(
-            L22_CUTOUT[:2], dtype=float) + 114.0 * np.asarray((
-                math.cos(math.radians(240.0)),
-                math.sin(math.radians(240.0))))
-        assert np.allclose(main[0, :2], expected_main_xy, atol=1e-8)
-        assert np.allclose(ts[0, :2], expected_t_xy, atol=1e-8)
-        assert not np.allclose(main[0], (5.0, 82.0, 5.3), atol=1e-8)
-        assert not np.allclose(ts[0], (-5.0, 82.0, 5.3), atol=1e-8)
-    else:
-        assert facts["functional_lm_feed_mode"] == (
-            "bridge_rear_face_shallow_rise")
-        assert np.allclose(main[0], (5.0, 82.0, 5.3), atol=1e-9)
-        assert np.allclose(ts[0], (-5.0, 82.0, 5.3), atol=1e-9)
-        assert tuple(facts["no_floor_bridge_feed_rise_lengths_mm"]) == (
-            24.0, 27.5)
-        assert route.NO_FLOOR_FEED_START_BEARING_DEG == 65.0
+    expected_mode = (
+        "integrated_stem_rear_face_shallow_rise" if stand_foot
+        else "bridge_rear_face_shallow_rise")
+    assert facts["functional_lm_feed_mode"] == expected_mode
+    assert np.allclose(main[0], (5.0, 82.0, 5.3), atol=1e-9)
+    assert np.allclose(ts[0], (-5.0, 82.0, 5.3), atol=1e-9)
+    assert tuple(facts["central_owner_feed_rise_lengths_mm"]) == (
+        24.0, 27.5)
+    assert route.NO_FLOOR_FEED_START_BEARING_DEG == 65.0
 
-        feed_specs = (
-            ("UM", main, route.CUTTER_R, route.MAIN_OUTER_R,
-             route.route_cable_points(1.8),
-             route.LM_MAIN_CUTTER_SEGMENT_COUNT),
-            ("T", ts, route.TS_CUTTER_R, route.TS_OUTER_R,
-             route.ts_cable_points(1.8),
-             route.LM_T_CUTTER_SEGMENT_COUNT),
-        )
-        front_domain = Pos(0.0, 220.0, 52.65) * Box(
-            600.0, 600.0, 94.7)
-        for (label, points, cutter_radius, outer_radius,
-             production_points, segment_count) in feed_specs:
-            local = points[:20]
-            lumen = route._round_tube_global_segment(
-                route._owner_cutter_points(production_points, "lm"),
-                cutter_radius - 0.15, 0, segment_count)
-            assert _intersection_volume(owners["lm"], lumen) < 0.02, (
-                f"{label} bridge rear feed is capped")
-            outer = route._round_tube(local, cutter_radius + 0.55)
-            inner = route._round_tube(
-                route._extended_points(local, 1.0),
-                cutter_radius + 0.15)
-            skin = (outer - inner) & front_domain
-            retained = _intersection_volume(owners["lm"], skin)
-            assert retained > 0.995 * skin.volume, (
-                f"{label} bridge feed skin incomplete: "
-                f"{retained:.4f}/{skin.volume:.4f} mm3")
-            rear = route._polygon_prism(
-                Point(*points[0, :2]).buffer(
-                    outer_radius + 0.30, resolution=32),
-                -20.0, route.NO_FLOOR_FEED_REAR_Z - 0.02)
-            assert _intersection_volume(owners["lm"], rear) < 0.02, (
-                f"{label} bridge feed projects behind z=5.3")
+    feed_specs = (
+        ("UM", main, route.CUTTER_R, route.MAIN_OUTER_R,
+         route.route_cable_points(1.8),
+         route.LM_MAIN_CUTTER_SEGMENT_COUNT),
+        ("T", ts, route.TS_CUTTER_R, route.TS_OUTER_R,
+         route.ts_cable_points(1.8),
+         route.LM_T_CUTTER_SEGMENT_COUNT),
+    )
+    front_domain = Pos(0.0, 220.0, 52.65) * Box(
+        600.0, 600.0, 94.7)
+    for (label, points, cutter_radius, outer_radius,
+         production_points, segment_count) in feed_specs:
+        local = points[:20]
+        lumen = route._round_tube_global_segment(
+            route._owner_cutter_points(production_points, "lm"),
+            cutter_radius - 0.15, 0, segment_count)
+        assert _intersection_volume(owners["lm"], lumen) < 0.02, (
+            f"{label} central rear feed is capped")
+        outer = route._round_tube(local, cutter_radius + 0.55)
+        inner = route._round_tube(
+            route._extended_points(local, 1.0),
+            cutter_radius + 0.15)
+        skin = (outer - inner) & front_domain
+        retained = _intersection_volume(owners["lm"], skin)
+        assert retained > 0.995 * skin.volume, (
+            f"{label} central feed skin incomplete: "
+            f"{retained:.4f}/{skin.volume:.4f} mm3")
+        rear = route._polygon_prism(
+            Point(*points[0, :2]).buffer(
+                outer_radius + 0.30, resolution=32),
+            -20.0, route.NO_FLOOR_FEED_REAR_Z - 0.02)
+        assert _intersection_volume(owners["lm"], rear) < 0.02, (
+            f"{label} central feed projects behind z=5.3")
 
-        # The two lumens share the bridge center without touching each other
-        # or any of the immutable four blind insert envelopes.
-        feed_lumen_web = (
-            np.linalg.norm(main[0] - ts[0])
-            - route.CUTTER_R - route.TS_CUTTER_R)
-        assert feed_lumen_web >= route.CROSSOVER_MIN_CLEARANCE
+    # The two central lumens do not touch each other. In no-floor state they
+    # also clear the immutable four blind bridge insert envelopes.
+    feed_lumen_web = (
+        np.linalg.norm(main[0] - ts[0])
+        - route.CUTTER_R - route.TS_CUTTER_R)
+    assert feed_lumen_web >= route.CROSSOVER_MIN_CLEARANCE
+    if not stand_foot:
         for label, points, outer_radius in (
                 ("UM", main, route.MAIN_OUTER_R),
                 ("T", ts, route.TS_OUTER_R)):
@@ -1544,13 +1503,6 @@ def _final_feed_and_flush_mouth_contract(stand_foot):
         main[:, :2] - np.asarray(L22_CUTOUT[:2], dtype=float), axis=1)
     main_lm_crossings = transition_indices(main_lm_r <= core.LM_CORE_R)
     assert main_lm_crossings
-    if stand_foot:
-        # Floor retains the legacy R114 centerline, but printed cover stops
-        # at the native R113 ring; the outer millimetre is a free entry span.
-        assert_flush_mouth(
-            "floor UM native-ring feed", "lm", main,
-            main_lm_crossings[0], route.CUTTER_R, route.MAIN_OUTER_R,
-            lm_allowed, lm_forbidden)
     # The user-visible upper outlet is a native R113 flush mouth. No socket,
     # tongue, collar or point horn may survive beyond the LM ring.
     assert_flush_mouth(
@@ -1561,9 +1513,8 @@ def _final_feed_and_flush_mouth_contract(stand_foot):
     t_lm_r = np.linalg.norm(
         ts[:, :2] - np.asarray(L22_CUTOUT[:2], dtype=float), axis=1)
     lm_crossings = transition_indices(t_lm_r <= core.LM_CORE_R)
-    # No-floor begins inside R113 at the bridge rear mouth; floor begins at
-    # its legacy R114 ring feed and therefore has an additional inward
-    # crossing. The removed point horn is always the final outward crossing.
+    # Both states use the same central lower feed. The removed point horn is
+    # always the final outward crossing.
     assert lm_crossings
     assert_flush_mouth(
         "LM T outer mouth", "lm", ts, lm_crossings[-1],
@@ -1604,7 +1555,7 @@ def _final_feed_and_flush_mouth_contract(stand_foot):
     state = "floor" if stand_foot else "no-floor"
     staging.cleanup()
     print(
-        f"  {state}: bridge/ring feeds and native LM/UM T mouths retain "
+        f"  {state}: central feeds and native LM/UM T mouths retain "
         "full lumens/skins; LM UM outlet is R113-flush and both deleted "
         "suffixes remain collision-free cable only")
 
@@ -1854,10 +1805,6 @@ def test_joint_load_contract():
     assert spokes["lm_sf_1g"] >= 6.0
     assert spokes["lm_sf_3g"] >= 4.0
     assert spokes["lm_sf_5g"] >= 4.0
-    assert spokes["lm_floor_three_spoke_area_mm2"] == 84.0
-    assert spokes["lm_floor_sf_1g"] >= 17.0
-    assert spokes["lm_floor_sf_3g"] >= 12.0
-    assert spokes["lm_floor_sf_5g"] >= 7.5
     assert spokes["um_sf_1g"] >= 8.0
     assert spokes["um_sf_3g"] >= 4.0
     assert spokes["um_sf_5g"] >= 4.0
@@ -1868,38 +1815,28 @@ def test_joint_load_contract():
         f"M3 shear SF5g {load['m3_shear_sf_5g']:.2f}")
 
 
-def _assert_lm_mount_bores(lm, core, flush, stand_foot):
+def _assert_lm_mount_bores(lm, core, flush):
     """Probe all six exact rotated mount axes, including retained floors."""
     from build123d import Cylinder, Pos
 
-    structural = set(core.STRUCT_MOUNT_ANGLES) if stand_foot else set()
     for angle, (x, y) in zip(
             flush.V1LF_LM_PILOT_ANGLES_DEG, flush.LM_PILOT_XY):
-        if angle in structural:
-            void = Pos(
-                x, y, (flush.PAD_FACE_Z + flush.LM_SEAT_Z) / 2.0
-            ) * Cylinder(
-                core.STRUCT_MOUNT_CLEAR_D / 2.0,
-                flush.LM_SEAT_Z - flush.PAD_FACE_Z + 0.3)
-            assert _intersection_volume(lm, void) < 0.02, (
-                f"{angle:g}deg structural clearance is obstructed")
-        else:
-            bore_z0 = flush.LM_SEAT_Z - flush.LM_BORE_DEPTH_MM
-            # Keep the clearance witness wholly inside the specified blind
-            # bore.  Extending it below ``bore_z0`` would classify the
-            # deliberately retained printed floor as an obstruction.
-            bore_z1 = flush.LM_SEAT_Z + 0.1
-            bore = Pos(x, y, (bore_z0 + bore_z1) / 2.0) * Cylinder(
-                core.L22_PILOT_D_MM / 2.0,
-                bore_z1 - bore_z0)
-            assert _intersection_volume(lm, bore) < 0.02, (
-                f"{angle:g}deg blind insert bore is obstructed")
-            floor_h = bore_z0 - flush.PAD_FACE_Z - 0.2
-            floor = Pos(
-                x, y, flush.PAD_FACE_Z + 0.1 + floor_h / 2.0
-            ) * Cylinder(1.0, floor_h)
-            assert _intersection_volume(lm, floor) > 0.90 * floor.volume, (
-                f"{angle:g}deg blind insert lost its printed floor")
+        bore_z0 = flush.LM_SEAT_Z - flush.LM_BORE_DEPTH_MM
+        # Keep the clearance witness wholly inside the specified blind bore.
+        # Extending it below ``bore_z0`` would classify the deliberately
+        # retained printed floor as an obstruction.
+        bore_z1 = flush.LM_SEAT_Z + 0.1
+        bore = Pos(x, y, (bore_z0 + bore_z1) / 2.0) * Cylinder(
+            core.L22_PILOT_D_MM / 2.0,
+            bore_z1 - bore_z0)
+        assert _intersection_volume(lm, bore) < 0.02, (
+            f"{angle:g}deg blind insert bore is obstructed")
+        floor_h = bore_z0 - flush.PAD_FACE_Z - 0.2
+        floor = Pos(
+            x, y, flush.PAD_FACE_Z + 0.1 + floor_h / 2.0
+        ) * Cylinder(1.0, floor_h)
+        assert _intersection_volume(lm, floor) > 0.90 * floor.volume, (
+            f"{angle:g}deg blind insert lost its printed floor")
 
 
 def test_floor_lm_core():
@@ -1909,35 +1846,35 @@ def test_floor_lm_core():
     from build123d import Cylinder, Pos, Rot, import_brep
     from export_piece_stls import BED_MM, BED_ROT_Z
     import top_baffle_nd25fw4_v1lf as core
-    import top_baffle_nd25fw4_v1lf_route as route
+    import top_baffle_nd25fw4_v1lf_floor as floor
 
     lm = import_brep(staged["lm"])
     assert lm.is_valid and len(lm.solids()) == 1
     minimum_edge_mm = min(float(edge.length) for edge in lm.edges())
     assert minimum_edge_mm >= 1.0e-5, (
-        "no-floor LM contains a micron-scale coincident-feature edge: "
+        "floor LM contains a micron-scale coincident-feature edge: "
         f"{minimum_edge_mm:.9g} mm")
-    burial_growth_ceiling = route.route_facts()[
-        "lm_burial_web_growth_upper_bound_mm3"]
-    # 45 cm3 brackets the prior minimal floor carrier. Add only the gross
-    # full-width-web loft volume, which deliberately overcounts its overlap
-    # with the round covers, carrier membrane and existing bore saddles.
-    assert lm.volume < 45000.0 + burial_growth_ceiling, (
-        f"floor LM exceeds minimal-material budget: {lm.volume:.1f} mm3")
-    assert lm.bounding_box().min.Y > 80.0, "floor LM inherited bridge tail"
+    bounds = lm.bounding_box()
+    assert math.isclose(bounds.min.Y, floor.FLOOR_Y_MM, abs_tol=0.02)
+    assert math.isclose(bounds.min.Z, floor.FOOT_REAR_Z_MM, abs_tol=0.02)
+    assert math.isclose(bounds.max.Z, floor.FOOT_FRONT_Z_MM, abs_tol=0.02)
+    assert lm.volume > 150000.0, (
+        f"floor LM lost its integral full-depth stem/foot: {lm.volume:.1f}")
     # Empty witness below the 0.85-mm seat membrane, away from spokes and
     # all three routes. A retained annular slab fills this probe.
     membrane_void = Pos(0.0, 300.981, 9.0) * Cylinder(1.0, 2.0)
     assert _intersection_volume(lm, membrane_void) < 0.01
     assert BED_MM == 256.0
     import top_baffle_nd25fw4_flush as flush
-    _assert_lm_mount_bores(lm, core, flush, True)
+    _assert_lm_mount_bores(lm, core, flush)
     rotated = Rot(Z=BED_ROT_Z["v1lf_core_1of2_lm_carrier"]) * lm
     bb = rotated.bounding_box().size
-    assert max(bb.X, bb.Y, bb.Z) <= BED_MM, (
-        f"floor LM bed footprint {bb.X:.2f} x {bb.Y:.2f} x "
-        f"{bb.Z:.2f} exceeds {BED_MM:.1f} mm")
-    print(f"  floor LM: no tail; flat-bed footprint {bb.X:.2f} x {bb.Y:.2f}")
+    assert max(bb.X, bb.Y, bb.Z) > BED_MM, (
+        "canonical monolithic floor LM unexpectedly fits the standard bed; "
+        "the separately checked keyed option is the <=220-mm print path")
+    print(
+        f"  floor LM: integral Y=0 foot; intentional large-format reference "
+        f"{bb.X:.2f} x {bb.Y:.2f} x {bb.Z:.2f}")
 
 
 def test_no_floor_lm_core():
@@ -1977,7 +1914,7 @@ def test_no_floor_lm_core():
         f"no-floor LM exceeds minimal-material budget: {lm.volume:.1f} mm3")
     assert BED_MM == 256.0
     assert lm.bounding_box().min.Y < 16.0, "no-floor LM lost fused tail"
-    _assert_lm_mount_bores(lm, core, flush, False)
+    _assert_lm_mount_bores(lm, core, flush)
     for x, y in BRIDGE_HOLE_XY:
         bore = Pos(
             x, y, BRIDGE_WEB_REAR_Z + BRIDGE_INSERT_DEPTH_MM / 2.0
@@ -2102,6 +2039,7 @@ def _assert_lm_keyed_split(stand_foot):
     from shapely.geometry import box
     from export_piece_stls import (
         BED_ROT_Z,
+        V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG,
         V1LF_OPTIONAL_LM_SPLIT_BED_MM,
     )
     import top_baffle_nd25fw4_v1lf as core
@@ -2204,16 +2142,16 @@ def _assert_lm_keyed_split(stand_foot):
     assert facts["physical_load_qualification_required"] is True
     assert V1LF_OPTIONAL_LM_SPLIT_BED_MM == facts[
         "target_square_bed_mm"] == 220.0
+    assert facts["floor_bottom_print_rotation_x_deg"] == -90.0
+    assert facts["floor_bottom_in_bed_rotation_deg"] == 0.0
 
-    orientations = {
-        "optional_lm_keyed_1of2_bottom":
-            BED_ROT_Z["v1lf_optional_lm_keyed_1of2_bottom"],
-        "optional_lm_keyed_2of2_top":
-            BED_ROT_Z["v1lf_optional_lm_keyed_2of2_top"],
-    }
     footprints = {}
     for name, part in parts.items():
-        oriented = Rot(Z=orientations[name]) * part
+        if stand_foot and name == "optional_lm_keyed_1of2_bottom":
+            assert V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG == -90.0
+            oriented = Rot(X=V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG) * part
+        else:
+            oriented = Rot(Z=BED_ROT_Z[f"v1lf_{name}"]) * part
         size = oriented.bounding_box().size
         footprints[name] = (size.X, size.Y, size.Z)
         assert max(size.X, size.Y, size.Z) <= 220.0, (
@@ -2221,7 +2159,16 @@ def _assert_lm_keyed_split(stand_foot):
             f"{size.Z:.2f} exceeds the 220-mm option contract")
 
     if stand_foot:
-        assert bottom.bounding_box().min.Y > 80.0
+        import top_baffle_nd25fw4_v1lf_floor as floor
+
+        bottom_bounds = bottom.bounding_box()
+        assert math.isclose(
+            bottom_bounds.min.Y, floor.FLOOR_Y_MM, abs_tol=0.02)
+        assert math.isclose(
+            bottom_bounds.min.Z, floor.FOOT_REAR_Z_MM, abs_tol=0.02)
+        assert math.isclose(
+            bottom_bounds.max.Z, floor.FOOT_FRONT_Z_MM, abs_tol=0.02)
+        assert top.bounding_box().min.Y > floor.STEM_TOP_Y_MM
     else:
         assert bottom.bounding_box().min.Y < 16.0
     state = "floor" if stand_foot else "no-floor"
@@ -2870,196 +2817,362 @@ def test_floor_um_cable_clearance():
     _carrier_cable_clearance("um", True)
 
 
-def test_floor_support():
+def test_floor_integrated_mount():
+    """Validate the one-piece floor load path, services and strength gate."""
     _state(True)
     staged = _stage_shell_contract_breps(
         True, "LM", tempfile.gettempdir(), shell_keys=())
-    support_path = Path(staged["lm"]).parent / "floor_support.brep"
-    if not support_path.is_file() or support_path.stat().st_size == 0:
-        _wait_for_worker_headroom("floor support", 3200.0)
-        temporary = support_path.with_name(
-            f".{support_path.stem}.{os.getpid()}.partial.brep")
-        env = os.environ.copy()
-        env.pop("LX_R6F_SINGLE_CHECK", None)
-        env["LX_R6F_EXPORT_SUPPORT"] = "1"
-        env["LX_R6F_EXPORT_PATH"] = str(temporary)
-        env["LX_STAND_FOOT"] = "1"
-        proc = subprocess.run(
-            _cad_worker_command(Path(__file__).resolve()),
-            env=env, text=True, capture_output=True)
-        assert proc.returncode == 0, (
-            f"isolated floor support build failed\nstdout:\n{proc.stdout}\n"
-            f"stderr:\n{proc.stderr}")
-        assert temporary.is_file() and temporary.stat().st_size > 0
-        temporary.replace(support_path)
-        print(proc.stdout, end="", flush=True)
-    from build123d import Rot, import_brep
-    from export_piece_stls import BED_MM, BED_ROT_Z
-    import top_baffle_nd25fw4_v1lf as core
-    import top_baffle_nd25fw4_v1lf_attachments as addons
+    from build123d import Box, Cylinder, Pos, Rot, import_brep
+    from export_piece_stls import (
+        BED_MM,
+        BED_ROT_Z,
+        V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG,
+        V1LF_OPTIONAL_LM_SPLIT_BED_MM,
+    )
+    import top_baffle_nd25fw4_v1lf_floor as floor
+    import top_baffle_nd25fw4_v1lf_floor_strength as strength
+    import top_baffle_nd25fw4_v1lf_lm_split as lm_split
     import top_baffle_nd25fw4_v1lf_route as route
 
-    support = import_brep(support_path)
-    assert support.is_valid and len(support.solids()) == 1
-    assert tuple(site["angle_deg"] for site in core.structural_mount_sites()) == (
-        180.0, 240.0, 300.0)
     lm = import_brep(staged["lm"])
-    collision = support & lm
-    assert collision is None or collision.volume < 0.02, (
-        f"floor support collides with LM by {collision.volume:.3f} mm3")
-    assert math.isclose(
-        addons.STRUCT_INSERT_FRONT_Z - addons.STRUCT_INSERT_REAR_Z,
-        addons.STRUCT_INSERT_DEPTH, abs_tol=1e-12)
-    assert math.isclose(
-        addons.STRUCT_INSERT_HARDWARE_FRONT_Z
-        - addons.STRUCT_INSERT_REAR_Z,
-        addons.STRUCT_INSERT_HARDWARE_LENGTH, abs_tol=1e-12)
-    assert addons.STRUCT_INSERT_HARDWARE_LENGTH == 5.8
-    assert route.FLOOR_SUPPORT_INSERT_REAR_Z == addons.STRUCT_INSERT_REAR_Z
-    assert (route.FLOOR_SUPPORT_INSERT_HARDWARE_LENGTH
-            == addons.STRUCT_INSERT_HARDWARE_LENGTH)
-    assert route.FLOOR_SUPPORT_SHANK_D == addons.STRUCT_SCREW_SHANK_D
-    assert math.isclose(
-        route.FLOOR_SUPPORT_INSERT_BOSS_D,
-        addons.STRUCT_INSERT_BOSS_D, abs_tol=1e-12)
-    assert math.isclose(
-        route.FLOOR_SUPPORT_INSERT_BOSS_FRONT_Z,
-        addons.SUPPORT_FLANGE_Z[1], abs_tol=1e-12)
-    assert math.isclose(
-        route.FLOOR_SUPPORT_BACKFILL_INSERT_CLEAR_D,
-        addons.STRUCT_INSERT_BOSS_D + 2.0 * route.SUPPORT_TUNNEL_GAP,
-        abs_tol=1e-12)
-    assert all(math.isclose(actual, expected, abs_tol=1e-12)
-               for actual, expected in zip(
-                   route.FLOOR_SUPPORT_BACKFILL_INSERT_CLEAR_Z,
-                   (addons.STRUCT_INSERT_REAR_Z
-                    - route.SUPPORT_TUNNEL_GAP,
-                    addons.SUPPORT_FLANGE_Z[1]
-                    + route.SUPPORT_TUNNEL_GAP)))
-    assert math.isclose(
-        (addons.STRUCT_INSERT_BOSS_D - addons.STRUCT_INSERT_D) / 2.0,
-        2.6, abs_tol=1e-12)
-    assert math.isclose(
-        route.FLOOR_SUPPORT_BACKFILL_SHANK_CLEAR_D,
-        addons.STRUCT_SCREW_SHANK_D + 2.0 * route.SUPPORT_TUNNEL_GAP,
-        abs_tol=1e-12)
-    assert math.isclose(
-        addons.STRUCT_RECEIVER_D - core.STRUCT_MOUNT_KEY_D,
-        0.4, abs_tol=1e-12)
-    engagement = (min(core.CORE_REAR_Z, addons.SUPPORT_FLANGE_Z[1])
-                  - max(core.STRUCT_MOUNT_KEY_Z[0],
-                        addons.STRUCT_RECEIVER_FLOOR_Z))
-    assert engagement >= 1.25
-    from build123d import Cylinder, Pos
-    # The lower routes deliberately cross all three support axes and the
-    # carrier owns an outward radial spoke at each key.  Compare the final
-    # support with that exact, intentionally relieved envelope; an unrelieved
-    # D20-minus-D10 annulus is not physically available in this assembly.
-    exact_route_covers = tuple(route.route_outer_covers("lm"))
-    route_clearance_cutters = tuple(route.support_floor_clearance_cutters())
-    spoke_clearance_cutters = addons.structural_spoke_clearance_cutters()
-    intentional_socket_reliefs = (
-        exact_route_covers
-        + route_clearance_cutters
-        + spoke_clearance_cutters)
-    boss_wall_fractions = []
-    socket_ring_fractions = []
-    relieved_socket_fractions = []
-    for site in core.structural_mount_sites():
-        x, y = site["xy"]
-        receiver = Pos(
-            x, y,
-            (addons.STRUCT_RECEIVER_FLOOR_Z
-             + addons.SUPPORT_FLANGE_Z[1] + 0.2) / 2.0
-        ) * Cylinder(
-            addons.STRUCT_RECEIVER_D / 2.0,
-            addons.SUPPORT_FLANGE_Z[1]
-            - addons.STRUCT_RECEIVER_FLOOR_Z + 0.2)
-        assert _intersection_volume(support, receiver) < 0.02
-        socket_ring = Pos(
-            x, y,
-            (addons.STRUCT_RECEIVER_FLOOR_Z
-             + addons.SUPPORT_FLANGE_Z[1]) / 2.0
-        ) * Cylinder(
-            addons.STRUCT_LUG_D / 2.0,
-            addons.SUPPORT_FLANGE_Z[1]
-            - addons.STRUCT_RECEIVER_FLOOR_Z)
-        socket_ring -= receiver
-        socket_retained = _intersection_volume(support, socket_ring)
-        socket_ring_fractions.append(socket_retained / socket_ring.volume)
-        relieved_socket = socket_ring
-        for cutter in intentional_socket_reliefs:
-            relieved_socket -= cutter
-        assert relieved_socket is not None and relieved_socket.volume > 0.01
-        relieved_retained = _intersection_volume(support, relieved_socket)
-        relieved_socket_fractions.append(
-            relieved_retained / relieved_socket.volume)
-        # Independent final-BREP witnesses: the carrier must expose nearly
-        # the complete D12.4 boss envelope below its z=5.3 pad, while the
-        # support must retain a substantial connected annulus around the
-        # D6.4 heat-set cavity. These do not reuse the backfill-plan builder.
-        z0 = addons.STRUCT_INSERT_REAR_Z + 0.2
-        z1 = addons.STRUCT_INSERT_HARDWARE_FRONT_Z - 0.2
-        carrier_clearance = Pos(x, y, (z0 + z1) / 2.0) * Cylinder(
-            route.FLOOR_SUPPORT_BACKFILL_INSERT_CLEAR_D / 2.0 - 0.1,
-            z1 - z0)
-        assert _intersection_volume(lm, carrier_clearance) < 0.02, (
-            f"floor carrier failed D12.4 boss clearance at {site}")
-        boss_wall = Pos(x, y, (z0 + z1) / 2.0) * Cylinder(
-            addons.STRUCT_INSERT_BOSS_D / 2.0 - 0.1, z1 - z0)
-        boss_wall -= Pos(x, y, (z0 + z1) / 2.0) * Cylinder(
-            addons.STRUCT_INSERT_D / 2.0 + 0.1, z1 - z0)
-        retained = _intersection_volume(support, boss_wall)
-        boss_wall_fractions.append(retained / boss_wall.volume)
-        assert retained > 0.75 * boss_wall.volume, (
-            f"support heat-set boss wall retained only "
-            f"{retained / boss_wall.volume:.1%} at {site}")
-    assert min(relieved_socket_fractions) > 0.98, (
-        "support retention of intentionally relieved D20 key-socket "
-        "envelopes by 180/240/300-degree site: "
-        f"{[f'{fraction:.1%}' for fraction in relieved_socket_fractions]}; "
-        "raw unrelieved fractions (diagnostic only): "
-        f"{[f'{fraction:.1%}' for fraction in socket_ring_fractions]}")
-    for cable in _physical_tubes(route).values():
-        hit = support & cable
-        assert hit is None or hit.volume < 0.10
-    for keepout in route_clearance_cutters:
-        hit = support & keepout
-        assert hit is None or hit.volume < 0.05
-    hardware = addons.structural_hardware_proxies()
-    for printed, label in ((support, "support"), (lm, "LM")):
-        hit = hardware & printed
-        assert hit is None or hit.volume < 0.05, (
-            f"floor hardware envelope intersects {label} by "
-            f"{hit.volume:.3f} mm3")
-    for cable in _physical_tubes(route).values():
-        hit = hardware & cable
-        assert hit is None or hit.volume < 0.05
-    load = addons.structural_load_facts()
-    assert load["design_mass_kg"] == 4.0
-    assert load["design_y_cg_mm"] == 230.0
-    assert load["rear_cg_mm"] == 70.0
-    assert load["creep_allow_mpa"] == 8.0
-    assert load["short_allow_mpa"] == 18.0
-    assert load["insert_pullout_n"] == 600.0
-    assert load["member_span_mm"] == 110.0
-    assert load["magnet_load_credit_n"] == 0.0
-    assert load["combined_insert_5g_n"] > load["normal_insert_5g_n"]
-    assert load["actual_section_mm3"] >= load["required_section_5g_mm3"]
-    assert load["member_sf_static_creep"] >= 2.0
-    assert load["member_sf_3g"] >= 1.5
-    assert load["member_sf_5g"] >= 1.05
-    assert load["insert_sf_5g"] >= 1.9
-    rotated = Rot(Z=BED_ROT_Z["v1lf_addon_mount_floor_support"]) * support
-    bb = rotated.bounding_box().size
+    assert lm.is_valid and len(lm.solids()) == 1
+    facts = floor.integrated_floor_facts()
+    assert facts["ownership"] == (
+        "floor_core_lm_and_optional_keyed_bottom")
+    assert facts["feature_group_count"] == 5
+    assert facts["floor_y_mm"] == 0.0
+    assert facts["lm_axis_y_mm"] == 200.981
+    assert facts["lm_axis_to_floor_mm"] == 200.981
+    assert facts["foot_width_mm"] == 64.0
+    assert facts["foot_height_mm"] == 18.3
+    assert facts["foot_z_mm"] == (-150.0, 18.3)
+    assert facts["stem_z_mm"] == (0.0, 18.3)
+    assert facts["root_fillet_r_mm"] == 12.0
+    assert facts["panel_z_mm"] == (-150.0, -146.0)
+    assert facts["panel_height_mm"] == 44.0
+    assert facts["nl8_center_y_mm"] == 22.0
+    assert facts["nl8_cutout_d_mm"] == 31.0
+    assert facts["nl8_screw_d_mm"] == 3.2
+    assert facts["nl8_screw_pitch_mm"] == 29.2
+    assert facts["floor_lane_count"] == 3
+    assert set(facts["floor_lanes"]) == {"lm", "um", "t"}
+    assert {
+        name: record["diameter_mm"]
+        for name, record in facts["floor_lanes"].items()
+    } == {"lm": 9.0, "um": 8.2, "t": 6.0}
+    assert all(
+        record["bend_radius_mm"] >= 14.0
+        for record in facts["floor_lanes"].values())
+
+    bounds = lm.bounding_box()
+    assert math.isclose(bounds.min.Y, 0.0, abs_tol=0.02)
+    assert math.isclose(bounds.min.Z, -150.0, abs_tol=0.02)
+    assert math.isclose(bounds.max.Z, 18.3, abs_tol=0.02)
+
+    # Independent final-BREP material probes cover the full-depth W64 foot,
+    # stem and the R12 internal root transition without reusing their builders.
+    foot_witness = Pos(28.0, 9.0, -65.85) * Box(2.0, 2.0, 160.0)
+    stem_witness = Pos(28.0, 45.0, 9.15) * Box(2.0, 20.0, 17.0)
+    root_witness = Pos(28.0, 20.0, -2.0) * Box(1.0, 1.0, 1.0)
+    for label, witness in (
+            ("foot", foot_witness),
+            ("stem", stem_witness),
+            ("R12 root", root_witness)):
+        retained = _intersection_volume(lm, witness)
+        assert retained > 0.97 * witness.volume, (
+            f"integral {label} retained only "
+            f"{retained / witness.volume:.1%}")
+
+    # The rear connector panel is real, with a bounded service scoop behind
+    # it and the exact NL8 plus four-hole pattern open through the panel.
+    cavity_x, cavity_y, cavity_z = facts["service_cavity_xyz_mm"]
+    cavity_probe = Pos(
+        sum(cavity_x) / 2.0,
+        sum(cavity_y) / 2.0,
+        sum(cavity_z) / 2.0,
+    ) * Box(
+        cavity_x[1] - cavity_x[0] - 0.4,
+        cavity_y[1] - cavity_y[0] - 0.4,
+        cavity_z[1] - cavity_z[0] - 0.4,
+    )
+    assert _intersection_volume(lm, cavity_probe) < 0.05
+    panel_z = sum(facts["panel_z_mm"]) / 2.0
+    panel_h = facts["panel_z_mm"][1] - facts["panel_z_mm"][0]
+    panel_voids = [
+        Pos(0.0, facts["nl8_center_y_mm"], panel_z)
+        * Cylinder(facts["nl8_cutout_d_mm"] / 2.0 - 0.15, panel_h + 0.2),
+    ]
+    for sx in (-1.0, 1.0):
+        for sy in (-1.0, 1.0):
+            panel_voids.append(
+                Pos(
+                    sx * facts["nl8_screw_pitch_mm"] / 2.0,
+                    facts["nl8_center_y_mm"]
+                    + sy * facts["nl8_screw_pitch_mm"] / 2.0,
+                    panel_z,
+                ) * Cylinder(
+                    facts["nl8_screw_d_mm"] / 2.0 - 0.10,
+                    panel_h + 0.2))
+    assert all(_intersection_volume(lm, void) < 0.02
+               for void in panel_voids)
+
+    # Each service continuation is buried through the floor member, retains
+    # a local wall and opens at full diameter into the connector cavity. The
+    # radius check samples every edge of the production composite wire--not
+    # its dependency-light preview/control polygon.
+    lane_radii = {}
+    for name, record in facts["floor_lanes"].items():
+        x = record["x_mm"]
+        y = record["floor_y_mm"]
+        radius = record["diameter_mm"] / 2.0
+        lumen = Pos(x, y, -90.0) * Cylinder(radius - 0.15, 10.0)
+        assert _intersection_volume(lm, lumen) < 0.02, (
+            f"{name} floor lumen is obstructed")
+        wall = (
+            Pos(x, y, -90.0) * Cylinder(radius + 0.55, 8.0)
+            - Pos(x, y, -90.0) * Cylinder(radius + 0.10, 8.0)
+        )
+        retained = _intersection_volume(lm, wall)
+        assert retained > 0.97 * wall.volume, (
+            f"{name} floor lumen is not fully buried: "
+            f"{retained / wall.volume:.1%} wall retained")
+
+        connector_margin = min(
+            x - radius - cavity_x[0],
+            cavity_x[1] - (x + radius),
+            y - radius - cavity_y[0],
+            cavity_y[1] - (y + radius),
+        )
+        assert connector_margin >= 0.49, (
+            f"{name} full connector opening margin "
+            f"{connector_margin:.3f} mm")
+        connector_opening = Pos(
+            x, y, cavity_z[1] + 0.50
+        ) * Cylinder(radius - 0.10, 0.60)
+        assert _intersection_volume(lm, connector_opening) < 0.02, (
+            f"{name} connector-side full-diameter opening is capped")
+
+        path = floor.floor_lane_path(name)
+        assert path.is_valid and not path.is_closed
+        edges = tuple(path.edges())
+        assert len(edges) == (5 if name == "lm" else 4)
+
+        def xyz(edge, parameter):
+            point = edge @ parameter
+            return np.asarray((point.X, point.Y, point.Z), dtype=float)
+
+        def tangent(edge, parameter):
+            vector = edge % parameter
+            out = np.asarray((vector.X, vector.Y, vector.Z), dtype=float)
+            return out / np.linalg.norm(out)
+
+        actual_samples = []
+        edge_radii = []
+        for edge_index, edge in enumerate(edges):
+            points = np.asarray([
+                xyz(edge, index / 160.0) for index in range(161)])
+            edge_radii.append(_min_three_point_radius(points))
+            actual_samples.extend(
+                points if edge_index == 0 else points[1:])
+        for left, right in zip(edges[:-1], edges[1:]):
+            gap = float(np.linalg.norm(xyz(left, 1.0) - xyz(right, 0.0)))
+            alignment = float(np.dot(
+                tangent(left, 1.0), tangent(right, 0.0)))
+            assert gap <= 1.0e-6, (
+                f"{name} composite wire has {gap:.9f}-mm edge gap")
+            assert alignment >= 0.999999, (
+                f"{name} composite wire join is not G1: {alignment:.9f}")
+        actual_samples = np.asarray(actual_samples)
+        lane_radii[name] = min(
+            min(edge_radii), _min_three_point_radius(actual_samples))
+        assert lane_radii[name] >= 14.0 - 0.03, (
+            f"{name} integral-floor lane radius "
+            f"{lane_radii[name]:.3f} mm")
+        assert _max_turn_deg(actual_samples) <= 2.0, (
+            f"{name} composite wire has a sampled direction cusp")
+
+        if name == "lm":
+            assert record["handoff_mode"] == "rear_open_float"
+            assert record["route_overlap_mm"] == 0.0
+            assert np.allclose(
+                xyz(edges[-1], 1.0), record["feed_xyz_mm"], atol=1e-9)
+            assert tangent(edges[-1], 1.0)[2] < -0.999999
+            # The second exact R14 arc crosses the full-depth stem's z=0
+            # rear face just before its external lead. Probe that calculated
+            # crossing rather than accepting a hidden capped endpoint at z=-6.
+            rear_center_z = record["stem_z_mm"] - floor.FLOOR_LANE_BEND_R_MM
+            rear_mouth_y = 68.0 + math.sqrt(
+                floor.FLOOR_LANE_BEND_R_MM ** 2 - rear_center_z ** 2)
+            rear_mouth = Pos(
+                x, rear_mouth_y, 0.0
+            ) * Cylinder(radius - 0.10, 0.60)
+            assert _intersection_volume(lm, rear_mouth) < 0.02, (
+                "LM floating-lead rear mouth is capped at the stem face")
+            continue
+
+        assert record["handoff_mode"] == "buried_route_overlap"
+        assert record["route_overlap_mm"] == 3.0
+        annular = (
+            route.route_cable_points(0.02) if name == "um"
+            else route.ts_cable_points(0.02))
+        feed = np.asarray(record["feed_xyz_mm"], dtype=float)
+        assert np.allclose(annular[0], feed, atol=1e-9)
+        assert np.allclose(xyz(edges[-1], 0.0), feed, atol=1e-9)
+        floor_tangent = tangent(edges[-1], 0.0)
+        annular_tangent = annular[1] - annular[0]
+        annular_tangent /= np.linalg.norm(annular_tangent)
+        assert float(np.dot(floor_tangent, annular_tangent)) >= 0.999, (
+            f"{name} floor/annular handoff is not G1")
+        overlap_points = np.asarray([
+            xyz(edges[-1], index / 30.0) for index in range(31)])
+        centerline_gaps = np.linalg.norm(
+            overlap_points[:, None, :] - annular[None, :, :], axis=2)
+        max_overlap_gap = float(centerline_gaps.min(axis=1).max())
+        # The 3-mm terminal is tangent-straight while the annular route has
+        # finite curvature. A 0.35-mm centerline allowance remains far below
+        # either cutter radius, so it proves positive full-lumen overlap
+        # without pretending the two centerlines are coincident curves.
+        assert max_overlap_gap <= 0.35, (
+            f"{name} nominal 3-mm overlap departs annular centerline by "
+            f"{max_overlap_gap:.3f} mm")
+
+    # The monolithic carrier is intentionally retained as the canonical
+    # large-format reference. The bottom keyed option owns the complete stand
+    # and, laid X=-90 with no inherited in-bed rotation, fits <=220 mm.
+    canonical = Rot(Z=BED_ROT_Z["v1lf_core_1of2_lm_carrier"]) * lm
+    canonical_size = canonical.bounding_box().size
     assert BED_MM == 256.0
-    assert max(bb.X, bb.Y, bb.Z) <= BED_MM, (
-        f"floor support bed footprint {bb.X:.2f} x {bb.Y:.2f} x "
-        f"{bb.Z:.2f} exceeds {BED_MM:.1f} mm")
+    assert max(canonical_size.X, canonical_size.Y, canonical_size.Z) > BED_MM
+    keyed = lm_split.lm_carrier_split_parts(lm)
+    bottom = keyed["optional_lm_keyed_1of2_bottom"]
+    top = keyed["optional_lm_keyed_2of2_top"]
+    assert math.isclose(bottom.bounding_box().min.Y, 0.0, abs_tol=0.02)
+    assert math.isclose(bottom.bounding_box().min.Z, -150.0, abs_tol=0.02)
+    assert top.bounding_box().min.Y > facts["stem_top_y_mm"]
+    assert V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG == -90.0
+    bottom_print = Rot(X=V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG) * bottom
+    bottom_size = bottom_print.bounding_box().size
+    assert V1LF_OPTIONAL_LM_SPLIT_BED_MM == 220.0
+    assert max(bottom_size.X, bottom_size.Y, bottom_size.Z) <= 220.0, (
+        f"integral keyed bottom footprint {bottom_size.X:.2f} x "
+        f"{bottom_size.Y:.2f} x {bottom_size.Z:.2f} exceeds 220 mm")
+
+    # Closed-form simulation uses the exact net section, an explicit root/
+    # lumen stress factor, and both vertical and anchored lateral 1/3/5g
+    # cases. It never substitutes for the still-pending physical gate.
+    screen = strength.integral_floor_strength_facts()
+    assert screen["schema_version"] == 2
+    assert screen["analysis_kind"] == (
+        "closed_form_net_section_screen_not_fea")
+    geometry = screen["geometry"]
+    assert geometry["floor_y_mm"] == 0.0
+    assert geometry["lm_axis_y_mm"] == 200.981
+    assert geometry["lm_axis_to_floor_mm"] == 200.981
+    assert geometry["foot_width_mm"] == 64.0
+    assert geometry["foot_height_mm"] == 18.3
+    assert geometry["foot_z_mm"] == (-150.0, 18.3)
+    assert geometry["root_fillet_r_mm"] == 12.0
+    assert geometry["root_stress_concentration_factor"] == 1.25
+    assert {
+        item["name"]: item["diameter_mm"]
+        for item in screen["net_root_section"]["lumens"]
+    } == {"lm": 9.0, "um": 8.2, "t": 6.0}
+    assert set(screen["loads"]) == {"1", "3", "5"}
+    assert set(screen["anchored_lateral_loads"]) == {"1", "3", "5"}
+    assert all(
+        screen["anchored_lateral_loads"][str(g)][
+            "bending_stress_design_mpa"] > 0.0
+        for g in (1, 3, 5))
+    shoulder = screen["shoulder_ring_junction"]
+    assert shoulder["analysis_kind"] == (
+        "conservative_unreinforced_outer_lip_lower_bound_diagnostic")
+    shoulder_section = shoulder["section"]
+    assert shoulder_section["plane_y_mm"] == 105.981
+    assert shoulder_section["radial_ordinate_mm"] == 95.0
+    assert shoulder_section["lip_inner_radius_mm"] == 110.6
+    assert shoulder_section["lip_outer_radius_mm"] == 113.0
+    assert shoulder_section["ligament_count"] == 2
+    assert math.isclose(
+        shoulder_section["half_ligament_width_mm"],
+        4.554675207314091, abs_tol=1e-12)
+    assert shoulder_section["depth_mm"] == 11.5
+    assert math.isclose(
+        shoulder_section["net_area_mm2"],
+        104.75752976822409, abs_tol=1e-10)
+    assert math.isclose(
+        shoulder_section["second_moment_x_mm4"],
+        1154.5152759873029, abs_tol=1e-9)
+    assert math.isclose(
+        shoulder_section["governing_section_modulus_mm3"],
+        200.78526538909614, abs_tol=1e-10)
+    shoulder_interpretation = shoulder["interpretation"]
+    assert shoulder_interpretation[
+        "changes_root_analytical_screen_pass"] is False
+    assert shoulder_interpretation[
+        "complete_assembly_failure_prediction"] is False
+    assert shoulder_interpretation["installed_lm_flange_required"] is True
+    assert shoulder_interpretation[
+        "physical_proof_and_creep_gate_required"] is True
+    assert shoulder_interpretation["threshold_result"] == (
+        "DIAGNOSTIC_LOWER_BOUND_BELOW_THRESHOLDS")
+    assert set(shoulder["materials"]) == set(screen["materials"])
+    assert all(
+        record["lower_bound_meets_root_thresholds"] is False
+        for record in shoulder["materials"].values())
+    thresholds = screen["acceptance_thresholds"]
+    assert thresholds["min_sf_1g_sustained"] == 2.0
+    assert thresholds["min_sf_3g_transient"] == 1.5
+    assert thresholds["min_sf_5g_transient"] == 1.05
+    expected_result = {
+        "Bambu PLA Tough+": True,
+        "Bambu PLA Basic": True,
+        "Bambu PLA Lite": False,
+        "Bambu PLA Matte": True,
+        "Bambu PLA Silk+": True,
+    }
+    assert set(screen["materials"]) == set(expected_result)
+    for name, expected_pass in expected_result.items():
+        material = screen["materials"][name]
+        assert material["sf_1g_sustained"] >= (
+            thresholds["min_sf_1g_sustained"])
+        assert material["sf_3g_transient"] >= (
+            thresholds["min_sf_3g_transient"])
+        if expected_pass:
+            assert material["sf_5g_transient"] >= (
+                thresholds["min_sf_5g_transient"])
+            assert material["anchored_lateral_sf_1g_sustained"] >= (
+                thresholds["min_sf_1g_sustained"])
+            assert material["anchored_lateral_sf_3g_transient"] >= (
+                thresholds["min_sf_3g_transient"])
+            assert material["anchored_lateral_sf_5g_transient"] >= (
+                thresholds["min_sf_5g_transient"])
+        else:
+            assert name == "Bambu PLA Lite"
+            assert material["provisional"] is True
+            assert material["sf_5g_transient"] < (
+                thresholds["min_sf_5g_transient"])
+        assert material["analytical_screen_pass"] is expected_pass
+        assert material["physical_qualification"] == "PENDING"
+    assert screen["physical_gate"]["status"] == "PENDING"
+    assert screen["design_load"]["magnet_load_credit_n"] == 0.0
+    assert screen["design_load"][
+        "concealed_split_key_load_credit_n"] == 0.0
+    assert screen["split_configuration"][
+        "concealed_key_structural_credit_n"] == 0.0
+    assert screen["split_configuration"][
+        "installed_driver_flange_required_to_bridge_seam"] is True
+    stability = screen["stability"]
+    assert math.isclose(
+        stability["lateral_tip_acceleration_g"],
+        32.0 / 230.0, abs_tol=1e-12)
+    assert stability["lateral_tip_acceleration_g"] < 1.0
+    assert "anchor" in stability["warning"].lower()
     print(
-        f"  floor support: three support heat-sets, min boss-wall witness "
-        f"{min(boss_wall_fractions):.1%}, 1/3/5g section screen, "
-        f"bed {bb.X:.2f} x {bb.Y:.2f}")
+        "  integral floor: exact Y=0 / 200.981-mm datum, W64 x H18.3 "
+        "full-depth root, NL8 service panel and three buried R14 lanes; "
+        f"keyed bottom {bottom_size.X:.2f} x {bottom_size.Y:.2f} x "
+        f"{bottom_size.Z:.2f}; 4/5 PLA analytical passes, physical gate "
+        "PENDING and anti-tip required")
 
 
 def _tweeter_and_service_legacy_monolithic(stand_foot):
@@ -4159,7 +4272,7 @@ CHECKS = [
     test_um_cable_clearance,
     test_floor_lm_cable_clearance,
     test_floor_um_cable_clearance,
-    test_floor_support,
+    test_floor_integrated_mount,
     test_tweeter_and_service,
     test_floor_tweeter_and_service,
 ]
@@ -4281,7 +4394,6 @@ def main():
     carrier_export = os.environ.get("LX_R6F_EXPORT_CARRIER")
     shell_export = os.environ.get("LX_R6F_EXPORT_SHELL")
     tweeter_export = os.environ.get("LX_R6F_EXPORT_TWEETER")
-    support_export = os.environ.get("LX_R6F_EXPORT_SUPPORT")
     subtract_input = os.environ.get("LX_R6F_SUBTRACT_INPUT")
     shell_validation = os.environ.get("LX_R6F_VALIDATE_SHELL")
     cable_validation = os.environ.get("LX_R6F_VALIDATE_CABLE")
@@ -4508,7 +4620,7 @@ def main():
             f"missing={missing_volume:.9g}{bbox_text}", flush=True)
         return
 
-    if carrier_export or shell_export or tweeter_export or support_export:
+    if carrier_export or shell_export or tweeter_export:
         import run_memory_guarded as memory_guard
         if not memory_guard.is_guarded_process():
             raise SystemExit(
@@ -4606,10 +4718,6 @@ def main():
             import top_baffle_nd25fw4_v1lf_attachments as addons
             part = addons.tweeter_crescent()
             label = "tweeter crescent"
-        else:
-            import top_baffle_nd25fw4_v1lf_attachments as addons
-            part = addons.floor_support()
-            label = "floor support"
         if not export_brep(part, target):
             raise SystemExit(f"failed to export isolated {label} BREP")
         print(f"isolated {label}: {part.volume:.1f} mm3", flush=True)
@@ -4635,7 +4743,7 @@ def main():
         # Starting a complete check exactly at a profile's hard floor can
         # force the guard to kill a later in-process BREP comparison. Admit
         # every check only after the host has recovered a measured 2500 MiB;
-        # carrier/shell/support workers retain their 3200 MiB gate and the
+        # carrier and shell workers retain their 3200 MiB gate and the
         # segmented cable workers retain 3500 MiB. This is launch hysteresis,
         # not a relaxation of the selected profile's kill floor.
         _wait_for_worker_headroom(

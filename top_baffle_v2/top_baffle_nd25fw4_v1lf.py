@@ -9,8 +9,8 @@ This module starts from the irreducible interfaces instead:
 * six radial magnet interfaces provide four LM and two UM alignment sites;
   the original upper LM pair stays at +/-26 degrees from top and a second
   lower LM pair is added without moving it;
-* floor mode bolts its required separate support to three rotated lower
-  W22 axes; no-floor mode owns a shallow front-flush four-hole solid web;
+* floor mode owns a full-depth integral W64 stem and rectangular floor foot;
+  no-floor mode owns a shallow front-flush four-hole solid web;
 * the D8.2 UM path is buried only in LM and exits flush at R113 before its
   free span behind UM; D6 is buried only in LM/UM before floating behind the
   crescent; the short LM lead also floats without a printed micro-duct;
@@ -18,8 +18,9 @@ This module starts from the irreducible interfaces instead:
 
 The outer lips are only 2.4 mm beyond the flange-recess radii. The LM
 rear insert pads, driver pilots and flush seats remain unchanged. The
-floor support and tweeter crescent are separate printed add-ons; any selected
-cable retention is external and not modeled. The support is required for a loaded floor-state assembly;
+only the tweeter crescent is a separate printed add-on.  The floor stem,
+foot, NL8 panel and buried continuations are monolithic LM geometry;
+there is no floor-support add-on or support hardware.
 the no-floor bridge web is the sole core exception: it is
 mandatory, monolithic LM-core geometry in that state.
 The printed cable passage is irreducible core geometry only inside its LM/UM
@@ -71,7 +72,6 @@ def _require_guarded_build():
 from top_baffle_nd25fw4 import (
     L22_CUTOUT,
     L22_PILOT_D_MM,
-    L22_PILOT_PCD_MM,
     STAND_FOOT,
     THICKNESS_MM,
     UM_CUTOUT,
@@ -91,7 +91,6 @@ from top_baffle_nd25fw4_flush import (
     UM_PAD_FLOOR_MM,
     UM_RECESS_R,
     UM_SEAT_Z,
-    V1LF_LM_PILOT_ANGLES_DEG,
 )
 from top_baffle_nd25fw4_v1lf_route import (
     CROSSOVER_T_Z,
@@ -103,6 +102,11 @@ from top_baffle_nd25fw4_v1lf_route import (
     route_outer_covers,
 )
 from top_baffle_nd25fw4_v1lf_bridge import fused_bridge_tail
+from top_baffle_nd25fw4_v1lf_floor import (
+    apply_integrated_floor_feature_group,
+    integrated_floor_addition,
+    integrated_floor_feature_group_count,
+)
 
 CORE_REAR_Z = 6.8
 LM_CORE_R = LM_RECESS_R + 2.4       # 113.0
@@ -136,8 +140,8 @@ STRUCT_SHORT_ALLOW_MPA = 18.0
 # so neither carrier has a proud magnet ear. D5x2 magnets use D5.2 x 2.2 radial
 # pockets; the extra 0.2-mm depth is adhesive allowance, so each magnet must be
 # held flush while bonding rather than bottomed. They carry alignment/anti-
-# rattle load only. The rotated lower W22-axis support heat-sets carry floor
-# load; the four stock bridge holes carry no-floor load.
+# rattle load only. The monolithic W64 stem/root carries floor load; the four
+# stock bridge holes carry no-floor load.
 SIDE_EAR_D = 7.8
 SIDE_EAR_IN = 0.7
 SIDE_EAR_OUT = 3.3
@@ -207,19 +211,6 @@ TWEETER_JOINT_INSERT_BORE_D = 4.6
 TWEETER_CORE_JOINT_Z = (CORE_REAR_Z, 12.20)
 TWEETER_ADDON_JOINT_Z = (12.40, THICKNESS_MM)
 TWEETER_JOINT_CLEAR = 0.10
-
-# The required floor-state support add-on reuses the three lower V1LF W22 axes at
-# 180/240/300 degrees. Their D9.6 rear pads are locating keys and their
-# D5.5 through-clearances pass the normal long driver-side M5 screws into
-# rear-installed heat-sets owned by the support. The upper three carrier
-# sites remain ordinary blind heat-sets. No nut or rear screw head is
-# assumed, and magnets receive zero structural load credit.
-STRUCT_MOUNT_R = L22_PILOT_PCD_MM / 2.0
-STRUCT_MOUNT_ANGLES = (180.0, 240.0, 300.0)
-STRUCT_MOUNT_KEY_D = PAD_D_MM
-STRUCT_MOUNT_KEY_Z = (PAD_FACE_Z, CORE_REAR_Z)
-STRUCT_MOUNT_INSERT_D = L22_PILOT_D_MM
-STRUCT_MOUNT_CLEAR_D = 5.5
 
 # Conservative screen for both two-ear interfaces. The datasheet/printing
 # ledger gives 0.43 kg UM + 0.20 kg tweeter pair; 0.85 kg retains margin for
@@ -309,8 +300,6 @@ def carrier_spoke_load_facts():
     gravity = 9.80665
     lm_area = (len(LM_PILOT_XY) * LM_STRUCT_SPOKE_W
                * (LM_SEAT_Z - PAD_FACE_Z))
-    lm_floor_area = (len(STRUCT_MOUNT_ANGLES) * LM_STRUCT_SPOKE_W
-                     * (LM_SEAT_Z - PAD_FACE_Z))
     um_floor = UM_SEAT_Z - UM_PILOT_DEPTH_MM - UM_PAD_FLOOR_MM
     um_area = (len(UM_PILOT_XY) * UM_STRUCT_SPOKE_W
                * (UM_SEAT_Z - um_floor))
@@ -322,12 +311,6 @@ def carrier_spoke_load_facts():
     lm_1g, lm_sf_1g = record(lm_area, 1.0, STRUCT_CREEP_ALLOW_MPA)
     lm_3g, lm_sf_3g = record(lm_area, 3.0, STRUCT_SHORT_ALLOW_MPA)
     lm_5g, lm_sf_5g = record(lm_area, 5.0, STRUCT_SHORT_ALLOW_MPA)
-    floor_1g, floor_sf_1g = record(
-        lm_floor_area, 1.0, STRUCT_CREEP_ALLOW_MPA)
-    floor_3g, floor_sf_3g = record(
-        lm_floor_area, 3.0, STRUCT_SHORT_ALLOW_MPA)
-    floor_5g, floor_sf_5g = record(
-        lm_floor_area, 5.0, STRUCT_SHORT_ALLOW_MPA)
     um_1g, um_sf_1g = record(um_area, 1.0, STRUCT_CREEP_ALLOW_MPA)
     um_3g, um_sf_3g = record(um_area, 3.0, STRUCT_SHORT_ALLOW_MPA)
     um_5g, um_sf_5g = record(um_area, 5.0, STRUCT_SHORT_ALLOW_MPA)
@@ -337,7 +320,6 @@ def carrier_spoke_load_facts():
         "short_allow_mpa": STRUCT_SHORT_ALLOW_MPA,
         "lm_spoke_area_mm2": lm_area,
         "um_spoke_area_mm2": um_area,
-        "lm_floor_three_spoke_area_mm2": lm_floor_area,
         "lm_stress_1g_mpa": lm_1g,
         "lm_stress_3g_mpa": lm_3g,
         "lm_stress_5g_mpa": lm_5g,
@@ -347,12 +329,6 @@ def carrier_spoke_load_facts():
         "lm_sf_1g": lm_sf_1g,
         "lm_sf_3g": lm_sf_3g,
         "lm_sf_5g": lm_sf_5g,
-        "lm_floor_stress_1g_mpa": floor_1g,
-        "lm_floor_stress_3g_mpa": floor_3g,
-        "lm_floor_stress_5g_mpa": floor_5g,
-        "lm_floor_sf_1g": floor_sf_1g,
-        "lm_floor_sf_3g": floor_sf_3g,
-        "lm_floor_sf_5g": floor_sf_5g,
         "um_sf_1g": um_sf_1g,
         "um_sf_3g": um_sf_3g,
         "um_sf_5g": um_sf_5g,
@@ -470,16 +446,6 @@ def _add_side_magnet_ears(part, driver: str):
     return _cut_side_magnet_pockets(part, driver)
 
 
-def structural_mount_sites():
-    return [
-        {
-            "angle_deg": angle,
-            "xy": _polar_xy(L22_CUTOUT[:2], STRUCT_MOUNT_R, angle),
-        }
-        for angle in STRUCT_MOUNT_ANGLES
-    ]
-
-
 def joint_load_facts():
     """Upper-joint direct, moment-contact and M3 screen at 1/3/5g."""
     gravity = 9.80665
@@ -576,17 +542,11 @@ def joint_load_facts():
 
 
 def _cut_lm_mount_holes(part):
-    """Blind upper inserts; floor mode uses three lower clearances."""
-    structural_angles = set(STRUCT_MOUNT_ANGLES) if STAND_FOOT else set()
-    for angle, (x, y) in zip(V1LF_LM_PILOT_ANGLES_DEG, LM_PILOT_XY):
-        if angle in structural_angles:
-            part -= _cylinder_at(
-                x, y, STRUCT_MOUNT_CLEAR_D / 2.0,
-                PAD_FACE_Z - 0.20, LM_SEAT_Z + 0.15)
-        else:
-            part -= _cylinder_at(
-                x, y, L22_PILOT_D_MM / 2.0,
-                LM_SEAT_Z - LM_BORE_DEPTH_MM, LM_SEAT_Z + 0.15)
+    """All six W22 sites remain ordinary blind driver inserts."""
+    for x, y in LM_PILOT_XY:
+        part -= _cylinder_at(
+            x, y, L22_PILOT_D_MM / 2.0,
+            LM_SEAT_Z - LM_BORE_DEPTH_MM, LM_SEAT_Z + 0.15)
     return part
 
 
@@ -668,12 +628,20 @@ def lm_carrier_outer_blank():
         part = _fuse_attached(
             part, cover, f"LM closed tunnel cover component {index}")
 
+    # The central route covers are established first, then absorbed into the
+    # state-owned solid.  This preserves the same native rear-face mouth
+    # contract for the integral floor stem and the no-floor bridge.
+    if STAND_FOOT:
+        part = _fuse_attached(
+            part, integrated_floor_addition(),
+            "integral floor stem/foot/NL8 body")
+
     # In no-floor mode fuse the shallow solid bridge web before hollowing
     # the combined carrier. Hollowing the carrier and web independently and
     # then fusing their coincident tunnel walls can make OCC discard an
     # otherwise valid
     # 0.8-mm branch.  One cutter pass is set-equivalent, cheaper, and leaves
-    # no same-domain internal faces.  Floor mode has no bridge tail.
+    # no same-domain internal faces.
     if not STAND_FOOT:
         part = _fuse_attached(
             part, fused_bridge_tail(), "fused no-floor solid bridge web")
@@ -711,6 +679,9 @@ def finalize_lm_carrier(part, *, routes_already_cut=False):
     if not routes_already_cut:
         for index in range(route_inner_cutter_group_count("lm")):
             part = apply_lm_route_cutter(part, index)
+    if STAND_FOOT:
+        for index in range(integrated_floor_feature_group_count()):
+            part = apply_integrated_floor_feature_group(part, index)
     # Reassert the functional driver interfaces after every cover union;
     # no crossover/anchor material may re-enter the flange seat.
     part -= _cylinder_at(cx, cy, LM_RECESS_R,

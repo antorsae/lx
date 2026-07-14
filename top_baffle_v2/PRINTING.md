@@ -1,7 +1,8 @@
-# Printing the top baffle — PLA+ Tough (Bambu Studio)
+# Printing the top baffle — Bambu PLA families (Bambu Studio)
 
 Settings and engineering numbers for printing the piece sets in
-Bambu PLA Tough+ on a 0.4 mm nozzle, for both `floor_stand/` and
+Bambu PLA Tough+, PLA Basic, PLA Lite, PLA Matte, or PLA Silk+ on a 0.4 mm
+nozzle, for both `floor_stand/` and
 `no_floor_stand/`. R6P proud-family pieces and the R6F V1LF collars are
 covered separately where their geometry diverges. Everything here
 combines manufacturer data, published reference tests, conservative
@@ -27,15 +28,14 @@ bridge-web load case is treated explicitly below. PLA still relaxes
 | Fastener | Spec | Torque | Notes |
 |---|---|---|---|
 | W22 | M5 x 14 pan + flat washer into M5 x 5.8 x O6.3 heat-set (bore O6.4 x 6.8) | 0.8–1.0 N·m | wave washers; re-torque at 24 h and ~2 weeks |
-| W22 on **V1LF** | **M5 x 12** pan + flat washer into carrier heat-sets | 0.8–1.0 N·m | all six sites in no-floor; floor keeps carrier inserts only at 0/60/120° |
-| W22 + R6F floor support, 180/240/300° sites | long driver-side M5 screw through the carrier's Ø5.5 clearance into a rear-installed Ø6.4 × 6.8 support heat-set | set only after a physical stack mock-up | floor state only; no rear head/front nut and no double-used insert; qualify actual screw engagement |
+| W22 on **V1LF** | **M5 x 12** pan + flat washer into carrier heat-sets | 0.8–1.0 N·m | all six 0/60/120/180/240/300° sites are ordinary blind carrier inserts in both states; floor mode has no secondary support inserts or long through-screws |
 | 10F | M3 x 8 into M3 x 3 x O5 heat-set (bore O4.6 x 4.0) | 0.30–0.40 N·m | short engagement — do not overdrive |
 | R6P bridge (no-stand) | M5 machine screw from the bridge (behind) into M5 x 5.8 x O6.3 heat-set (bore O6.4 x 6.8, REAR face) | hand-snug | 4 off; same insert as the W22, set from the rear |
 | R6F collar half-laps | 2 x M3 through-bolts + washers/nuts; choose length against the printed 11.5 mm stack | hand-snug | structural UM/tweeter-to-LM load path; tighten evenly on a flat front-face datum |
 | R6F fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening Ø6.4 × 6.8 inserts | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders, centered rear UM/T entries at x=±5/y=82/z=5.3, solid acoustic front, immutable 40 × 50 pattern, and no geometry behind the existing LM pads; magnets receive zero load credit |
 | R6F optional LM keyed seam | one concealed right-hand straight rounded tongue/blind-socket pair wholly inside the existing R110.6..R113 lip; world Y=172.481 mm, zero-gap planar butt; tongue width 0.8 mm, engagement 3.5 mm along the tangential insertion axis (~75.23° from +X) | registration only | mutually exclusive replacement print form for the canonical monolithic LM; no external protrusion, envelope growth, extra screw, or standalone retention/load credit. Assemble front-face-down on a flat datum; the installed LM driver flange and its normal fasteners are the structural splice. |
 | R6F UM-to-tweeter half-laps | 2 x rear-driven M3 screws at x=±24, y=421.5 into blind M3 x 3 inserts in Ø4.6 x 4.0 receivers | hand-snug | no front bolt head; keep the acoustic face uninterrupted |
-| R6F alignment magnets | Six D5 × 2 N52 magnets in Ø5.2 × 2.2 radial pockets | — | LM has four: preserve the upper flush 64°/116° pair with its verified 2.2 mm insert and 0.86 mm route-cover gaps, and add a lower face-flush pair at 224°/316° with at least 23.0 mm nearest-insert edge clearance. The 224° pocket remains at z=12.55; the route-adjacent 316° pocket moves only in Z to 15.40 and retains a closed 0.30 mm front skin. Both clear buried routes and the bridge/support load path. UM keeps its flush 50.5°/129.5° pair at z=15.1, with at least 1.1 mm insert/T-cover gap, 0.2 mm radial floor and 0.6 mm front skin. Fixture all six flush during cure—0.2 mm extra pocket depth is adhesive allowance; no proud ears; alignment/anti-rattle only, **zero structural load credit** |
+| R6F alignment magnets | Six D5 × 2 N52 magnets in Ø5.2 × 2.2 radial pockets | — | LM has four: preserve the upper flush 64°/116° pair with its verified 2.2 mm insert and 0.86 mm route-cover gaps, and add a lower face-flush pair at 224°/316° with at least 23.0 mm nearest-insert edge clearance. The 224° pocket remains at z=12.55; the route-adjacent 316° pocket moves only in Z to 15.40 and retains a closed 0.30 mm front skin. Both clear buried routes and the bridge/integral-stand load path. UM keeps its flush 50.5°/129.5° pair at z=15.1, with at least 1.1 mm insert/T-cover gap, 0.2 mm radial floor and 0.6 mm front skin. Fixture all six flush during cure—0.2 mm extra pocket depth is adhesive allowance; no proud ears; alignment/anti-rattle only, **zero structural load credit** |
 | Tweeter pair | M4 through-bolts + nyloc + wave washer; length = septum + faceplates (stock 18.3 septum → ~M4 x 35; V1/R6F crescent → ~M4 x 30 — verify stacked) | snug, ~0.5 N·m | clamps the 4.0 mm crescent seat; recheck after a week |
 
 **Installing the inserts:** soldering iron at 230–250 °C, press
@@ -69,22 +69,49 @@ normal-plus-rear worst insert reaction is **434.2 N** at 5g, retaining
 material-property reference is the
 [Bambu PLA Tough+ data sheet](https://us.store.bambulab.com/products/pla-tough-upgrade?id=624483921975980068).
 
-The floor support uses a separately derived **456.9 mm³** narrowest
-10×6 flange/twin-4×12-web section. Its required section is approximately
-**128.1/170.8/284.7 mm³** at 1g/3g/5g, for safety factors about
-**3.57/2.67/1.60**; the three support inserts retain about **2.00**
-combined-axis assumed pull-out safety factor at 5g. The two collar ears and the two
-tweeter-interface ears carry only the upper assembly, not the LM/bridge.
+The floor state has no separate support. Its LM carrier owns a full-depth W64
+stem, W64 × 18.3 foot over z=−150..18.3, R12 root, three buried lanes and
+rear NL8 panel. World floor Y=0 puts the LM axis exactly **200.981 mm** above
+the floor. A closed-form rectangle-minus-lumens screen deducts the complete
+Ø9 LM, Ø8.2 UM and Ø6 shared-T lane sections from the root and uses the
+same 4.0 kg/y=230/rear-offset=70 mm load model:
+
+| Material | Vertical 1g/3g/5g SF | Anchored lateral 1g/3g/5g SF | 1g diagnostic deflection | Result |
+|---|---:|---:|---:|---|
+| Bambu PLA Tough+ | 3.05 / 1.97 / 1.18 | 4.22 / 2.73 / 1.64 | 1.18 mm | analytical pass |
+| Bambu PLA Basic | 4.39 / 2.78 / 1.67 | 6.09 / 3.85 / 2.31 | 1.05 mm | analytical pass |
+| Bambu PLA Lite | 2.69 / 1.73 / **1.04** | 3.73 / 2.40 / 1.44 | 1.40 mm | **FAIL at vertical 5g; provisional data** |
+| Bambu PLA Matte | 2.78 / 1.79 / 1.08 | 3.85 / 2.49 / 1.49 | 1.49 mm | analytical pass |
+| Bambu PLA Silk+ | 3.23 / 2.09 / 1.25 | 4.47 / 2.90 / 1.74 | 1.17 mm | analytical pass |
+
+These use deliberately derated project allowables, not unmodified Bambu
+coupon values. PLA Lite is provisional because no product-specific official
+TDS was available. Source records are Bambu's
+[Tough+ V3](https://store.bblcdn.eu/s8/default/f0874452d01249dba4ab6fc68ca972e4/BambuPLA_Tough_TechnicalData_Sheet_%282%29.pdf),
+[Basic V3](https://store.bblcdn.eu/s8/default/073e722a4aa44f7cbfdc419d597475cc/Bambu_PLA_Basic_Technical_Data_Sheet.pdf),
+[Matte V3](https://store.bblcdn.eu/s8/default/82bab351a9494e318ab485f7c31a01b3/Bambu_PLA_Matte_Technical_Data_Sheet.pdf),
+[Silk+ V1](https://store.bblcdn.eu/s8/default/d0de0f57694b406dbf3e9b2345b7dbb9/Bambu_PLA_Silk__Technical_Data_Sheet.pdf),
+and the provisional
+[PLA Pure comparison sheet](https://store.bblcdn.com/s7/default/ecb663b46ebb4fb984786d33befb8d2f/PLA_Pure_TDS.pdf)
+used as a fail-closed Lite proxy. The screen is **closed-form analytical work, not FEA,
+certification, or release authority**. All stresses include an explicit
+**1.25 root geometry/model factor**. PLA Lite fails the 1.05 vertical-5g
+threshold and is not accepted; the other four meet the 2.0/1.5/1.05 at
+1g/3g/5g and ≤2.0 mm at 1g only with the required **100% local-solid modifier
+through the complete stem/root**. Sparse infill receives no structural credit.
+Magnets and the optional concealed split key receive 0 N structural credit.
+
+The two collar ears and the two tweeter-interface ears carry only the upper
+assembly, not the LM/stand.
 The ledgered 0.43 kg MU + 0.20 kg tweeters plus printed/hardware allowance
 gives a **0.85 kg** case over conservative 120 mm plan and 70 mm rear
 levers. Governing contact factors are about **2.82/2.12/1.27** at
-1g/3g/5g; M3 tension factor is about **1.17** at 5g. The three floor-load
-LM spokes screen at about **17.1/12.9/7.7** in direct shear. Magnets
-contribute 0 N to every calculation.
+1g/3g/5g; M3 tension factor is about **1.17** at 5g. Magnets contribute
+0 N to every calculation.
 
-These screens cover the modeled bridge/floor insert reactions, minimum
+These screens cover the modeled bridge/integral-root reactions, minimum
 printed transfer sections, ear neck/net/bearing areas and M3 shear. They
-do **not** independently qualify the floor rails/NL8 panel, stock bridge,
+do **not** independently qualify the NL8 panel, stock bridge,
 installation substrate, real insert process, or a changed print orientation.
 Those items remain inside the system proof-test boundary.
 
@@ -99,7 +126,7 @@ This calculation is a screening model, not permission to hang drivers
 from an untested print. Before service, every final combination of
 filament batch, slicer settings, frame, carrier, inserts, and bolts must
 pass a documented physical proof test through the distributed 4 kg
-sustained-1g, 3g and 5g bridge/support cases in the governing normal and
+sustained-1g, 3g and 5g bridge/integral-stand cases in the governing normal and
 rear-moment directions. The upper joints must simultaneously carry their
 actual 0.85 kg distributed mass at the stated lever arms.
 Prefer a dummy mass rather than valuable drivers. Apply **39.23 / 117.68 /
@@ -110,7 +137,10 @@ does not reproduce the screened moments. Record load, fixture, duration,
 temperature, deflection, insert motion, cracks, and post-test torque.
 Ramp each load over at least 10 s; hold sustained 1g for 24 h, 3g for
 60 s, and 5g for 10 s before the unloaded inspection; reject any
-permanent movement or damage.
+permanent movement or damage. The integral floor candidate must additionally
+hold **2× service load for 24 h at 35 °C**, with no crack or whitening and
+unloaded residual set no greater than **0.5 mm or 10% of loaded deflection**,
+then hold **1.5× service load for at least 168 h** for the creep gate.
 Record the exact per-state candidate identity, print/insert process,
 fixture, load history, temperature, deflection, damage inspection and
 release signoff in `V1LF_PHYSICAL_QUALIFICATION.md`.
@@ -127,6 +157,13 @@ and repeat the structural proof test at the actual maximum service
 temperature; substituting PETG/ASA does not preserve the PLA calculation
 automatically.
 
+**Anti-tip is mandatory.** The W64 foot reaches material-strength limits only
+after the assembly has already become unstable: calculated free-standing tip
+thresholds are about **0.139g lateral, 0.348g rearward, and 0.384g forward**.
+Install a positively attached tether or anchor before fitting valuable
+drivers or putting the speaker into service. The foot and magnets are not a
+safety restraint.
+
 ## Orientation — the setting that matters most
 
 **R6P:** print every baffle piece front face down. The front plane is
@@ -135,25 +172,25 @@ floor-stand `piece_bottom` (223.8 × 125 × 168.3), front-down leaves the
 150 mm foot rising as a self-standing wall. Smooth/satin PEI gives a
 clean front; textured PEI gives uniform grain.
 
-**R6F:** floor-state collars print front-face-down so their mounting
-planes share the bed datum. The monolithic no-floor LM+bridge web is
+**R6F:** the canonical floor-state LM+integral stand is a large-format part;
+use the exact validated orientation emitted by the exporter. The monolithic
+no-floor LM+bridge web is
 too long for any flat Z rotation on 256 × 256 mm; its exporter therefore
 uses the validated **45° X tilt**. Preserve that orientation and review
 supports, interface faces, and the complete Z height before slicing.
-The optional LM keyed split replaces that monolithic LM with two flat prints:
-the authoritative measured Z26° bottom footprint is
-**198.79 × 138.22 mm** in floor state or **198.79 × 205.51 mm** in no-floor
-state; the authoritative measured Z45° top is **210.47 × 210.47 mm** in either
-state. Print both front-face-down; the single right-hand straight rounded
+The optional LM keyed split replaces that monolithic LM with two prints. In
+floor state the bottom owns the complete stem/foot/NL8 panel: lay its world-Y
+floor face down with X=−90° and Z=0°. The no-floor bottom
+uses Z=26° and measures **198.79 × 205.51 mm**; the Z45° top measures
+**210.47 × 210.47 mm** in either state. The exporter rejects either optional
+part if an in-bed axis exceeds 220 mm. The single right-hand straight rounded
 0.8 mm tongue and blind socket remain concealed inside the existing lip and
 add no envelope growth. The tongue engages 3.5 mm along its tangential insertion axis
 (~75.23° from +X). Never mix either half with the monolithic LM.
-Place the separate floor support (required for a floor-state assembly) on
-its broad rear face. The UM route is covered only in LM, T is covered in
+The UM route is covered only in LM, T is covered in
 LM/UM, and their specified rear continuations are free; the short LM lead is
 also intentionally free. Keep generated support out of functional buried-route
-mouths/free-cable clearance and inspect every rear bump. Floor LM uses 28° Z rotation and
-the floor/NL8 support uses 70°.
+mouths/free-cable clearance, the NL8 service cavity, and every rear bump.
 
 ## Bambu Studio profile (0.4 nozzle)
 
@@ -164,7 +201,10 @@ the floor/NL8 support uses 70°.
 * **Infill:** gyroid, **30 %** for R6P mids/vase and the R6F collars,
   **40 % for the R6P piece_bottom in both stand states** (foot standing
   moment ~8 N·m, or bridge bolts), and **40 % for the R6F fused bridge
-  web, required floor support add-on, and tweeter crescent/direct joint ears**. *Detect narrow internal solid
+  web and tweeter crescent/direct joint ears**. For the integral floor LM,
+  use at least six walls and a **100% local-solid modifier** through the
+  complete W64 stem/root; do not depend on nominal infill through the root or around
+  the three buried lanes. *Detect narrow internal solid
   infill: on.*
 * **Strength tuning:** nozzle 225 °C (top-middle of the Tough range —
   hotter = better layer adhesion), bed 55–60 °C, **max fan 60 %**
@@ -206,9 +246,8 @@ large parts:
    actual tabs, boots, and carrier land.
 12. `lx521_coupon_12_v1lf_closed_bore_bump.stl` — state-specific R6F
     LM-collar sector around the 300° axis, including the enclosed tunnel and
-    full-width solid saddle from conduit roof to bore floor. The floor copy
-    removes only its exact grown insert/shank hardware clearance; there is no
-    trapped hollow and no cable is exposed.
+    full-width solid saddle from conduit roof to the ordinary blind insert
+    floor; there is no trapped hollow and no cable is exposed.
 R6P uses a short curved split grommet that follows the final R14 bore;
 print `lx521_top_proud_addon_um_grommet_half_{a,b}.stl` and test it with
 coupon 4. That grommet fits B2/C7/V0/V1 only; do not fit it to V1L.
@@ -253,8 +292,8 @@ mouth, free cable, driver and Faston service envelopes with the measured UM cabl
   LM lead is different: it floats over a short 20.15 mm span behind the carrier
   with no printed micro-duct, cover, or cutter. Confirm its z=0.40..3.80
   centerline and 1.00 mm outer clearance to the deepest z=5.3 pad/web rear
-  datum, and keep the floor support's
-  physical-cable-plus-0.4 mm clearance open. Block support from every
+  datum. In floor state verify its buried continuation through the integral
+  stem. Block support from every
   functional mouth/free-cable span and
   inspect the complete solid-backed rear bumps. Use the routing PNG's nominal
   diametric u-z sections—not only its longitudinal station plot—to confirm each
@@ -262,9 +301,9 @@ mouth, free cable, driver and Faston service envelopes with the measured UM cabl
   physical crown crossing has T above UM and retains the 1.85 mm
   physical-cable gap; there is no two-duct separator web to inspect. Then
   follow T around the covered 328°/58° UM-carrier bumps to its flush exit,
-  after which it remains free behind the crescent. Floor-state 300/240/180° support
-  crossings retain only the modeled hardware-clearance cylinders; all
-  surrounding saddle material remains solid. Any support strand
+  after which it remains free behind the crescent. All six LM insert bypasses
+  retain ordinary blind-bore floors and all surrounding saddle material
+  remains solid. Any support strand
   left in a tunnel reduces cable space. Measure the actual cables before
   relying on a retainer or strain relief.
 * **R6F terminal gate:** do not treat the STEP proxy as hardware CAD.
@@ -361,11 +400,11 @@ working area:
 
 1. Place the measured D7.8 LM cable over the modeled 20.15 mm free span at 269.5°
    behind the carrier; do not add a printed micro-duct. Confirm it floats clear
-   of the LM/web and passes through the floor support's cable-only clearance
-   when that support is fitted. Add external retention that does not refill
+   of the LM/web and, in floor state, pulls freely through its Ø9 buried
+   integral-stem continuation. Add external retention that does not refill
    the modeled clearance or load the cable termination.
 2. In no-floor mode, begin the UM cable at the centered bridge rear mouth
-   `(5,82,5.3)`; floor mode retains the supported ring mouth. Fish it through
+   `(5,82,5.3)`; floor mode begins in the Ø8.2 buried stem lane. Fish it through
    each covered LM-owned pad bump, then let it exit to a free span behind the
    UM carrier. Confirm the UM carrier has no printed rear duct or D82 mouth.
    Keep the free Ø7.0 cable below the physical crown crossing, follow its R15
@@ -376,7 +415,7 @@ working area:
    0/3/6/9/12 mm while the other stays installed, without loading either
    tab.
 3. In no-floor mode, begin the tweeter bundle at `(-5,82,5.3)`; floor mode
-   keeps its supported ring mouth. Fish it through the crown above the UM
+   begins in the Ø6 buried stem lane. Fish it through the crown above the UM
    cable and the covered 328°/58° pilot bumps. Confirm the LM-to-UM T
    ownership mouths are flush, then let T exit the UM-owned passage and run
    free behind the tweeter crescent. The crescent has no printed cable arc,
@@ -411,7 +450,7 @@ connector or revise the service geometry.
   once — that is when the PLA under the flanges finishes settling.
 * For V1/V1L: knock-test the assembled trunk before trusting the W22
   on the 11.5 mm section long-term. At ~25 % of stock bending
-  stiffness the bridge/support remains important.
+  stiffness the bridge or integral stand remains important.
 * For V1L specifically: inspect and dry-fish its keyed 283-degree outlet
   before seam glue or driver installation. The real MU terminal tabs are
   absent from the reference mesh, so the physical Fastons, boots,
@@ -447,10 +486,9 @@ Do not load an unspliced split LM.
 1. Complete coupons 7, 9, and 12, then measure the real MU
    terminal carrier, tabs, boots, and cable. Stop if the physical parts
    exceed the modeled service space.
-2. Install all six rotated LM carrier inserts in no-floor mode. In floor
-   mode install carrier inserts only at 0/60/120°; install the other three
-   heat-sets from the rear into the support bosses at 180/240/300° and
-   leave the matching carrier holes as Ø5.5 clearances. Install four UM
+2. Install all six rotated LM carrier inserts at 0/60/120/180/240/300° in
+   both states; every site is an ordinary blind carrier bore. Floor mode has
+   no secondary support heat-sets or through-clearance sites. Install four UM
    inserts and the two blind M3 inserts in the crescent half-laps. No-floor
    additionally owns four rear-opening bridge inserts in the 62 mm solid web;
    each Ø6.4 × 6.8 bore starts at z=5.3 and leaves a 6.2 mm front floor. Set every
@@ -459,7 +497,7 @@ Do not load an unspliced split LM.
    preserve the upper flush 64°/116° pair and its at-least-2.2 mm nearest
    insert gap, then fit the new lower face-flush pair at approximately
    224°/316° only after confirming clearance from lower inserts, buried
-   routes, and the bridge/support load path. UM keeps the flush
+   routes, and the bridge/integral-stand load path. UM keeps the flush
    50.5°/129.5° pair centered at z=15.1; verify the 0.2 mm radial pocket
    floors, 0.6 mm front skins and 1.1 mm minimum T-cover gap. Hold each
    magnet flush while the adhesive cures; do not bottom it into the
@@ -471,12 +509,11 @@ Do not load an unspliced split LM.
    through-bolts,
    and tighten evenly while holding both front faces coplanar. Verify
    the 165.100 mm driver-center spacing before loading the drivers.
-5. In floor mode, install the required support add-on: seat its receivers
-   at 180/240/300° and run all three long driver-side M5 screws through
-   the carrier into the support heat-sets with verified engagement.
-   The support has no obsolete LM magnet cups/arms; its LM opening is solely
-   physical-cable-plus-clearance space for the free lead.
-   In no-floor mode, bolt the stock bridge directly to the immutable
+5. In floor mode, inspect the integral W64 stem/foot and R12 root, fish all
+   three buried floor lanes, fit the NL8 receptacle through the rear panel and
+   confirm the service cavity remains usable. Install a positive anti-tip
+   tether or anchor before loading the assembly; the W64 foot is not a safety
+   restraint. In no-floor mode, bolt the stock bridge directly to the immutable
    (±20,20)/(±20,70) pattern in the fused front-flush web; there is no separate
    no-floor keel. Feed UM/T through the plate's centered rear mouths before
    the bridge blocks access. The floor LM has no bridge tail. Confirm every closed
@@ -510,11 +547,13 @@ Do not load an unspliced split LM.
    chosen retention/strain relief (one form is mandatory) and connect the
    Fastons only after this inspection. Cable load must be reacted away
    from the MU tabs.
-8. Before entrusting drivers to the support, proof-test the finished
-   carrier/web-or-support/insert/bolt system with a dummy 4.0 kg mass through the
+8. Before entrusting drivers to the carrier, proof-test the finished
+   carrier/web-or-integral-stand/insert/bolt system with a dummy 4.0 kg mass through the
    sustained-1g, 3g, and 5g cases in the governing normal and
    rear-moment directions. Follow the documentation and rejection
    criteria in “R6F structural screens”; magnets receive no credit.
+   For floor mode, also complete the 2×/24 h/35 °C proof and the
+   1.5×/≥168 h creep gate, and record the installed anti-tip anchor/tether.
    For the optional LM split, install the representative LM driver or an
    equivalent flange-and-all-fasteners splice during the complete 1g/3g/5g
    proof; give the concealed tongue/socket no standalone retention or load credit

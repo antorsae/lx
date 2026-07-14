@@ -74,7 +74,8 @@ JOB_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$")
 HOST_RE = re.compile(r"^(?:[A-Za-z0-9_.-]+@)?[A-Za-z0-9_.-]+$")
 TARGET_RE = re.compile(r"^[A-Za-z0-9_./:+%-]+$")
 REMOTE_MAKE_TARGETS = {
-    "all", "candidate", "release", "floor_stand", "no_floor_stand",
+    "all", "candidate", "release", "floor_stand", "floor_v1lf",
+    "no_floor_stand",
     "common", "check", "check_v1lf", "check_v1lf_shells",
     "check_v1lf_t_shells", "check_v1lf_mouths", "check_v1lf_burial",
     "check_v1lf_um_burial",
@@ -85,7 +86,8 @@ REMOTE_MAKE_TARGETS = {
     "check_floor_v1lf_burial", "check_no_floor_v1lf_burial",
     "check_floor_v1lf_um_burial", "check_no_floor_v1lf_um_burial",
     "check_floor_v1lf_backfills", "check_no_floor_v1lf_backfills",
-    "check_route_contract", "check_bump_brep", "check_floor_support",
+    "check_route_contract", "check_bump_brep",
+    "check_floor_integrated_mount",
     "check_no_floor_lm_mesh", "check_v1lf_lm_split",
     "manifold", "clean",
     "validate_v1lf_stages",

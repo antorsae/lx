@@ -20,10 +20,7 @@ from top_baffle_nd25fw4_um_fit import (
     v1lf_ts_cable_envelope,
 )
 from top_baffle_nd25fw4_v1lf import core_parts
-from top_baffle_nd25fw4_v1lf_attachments import (
-    structural_hardware_proxies,
-    v1lf_attachments,
-)
+from top_baffle_nd25fw4_v1lf_attachments import v1lf_attachments
 from top_baffle_nd25fw4_v1lf_bridge import bridge_fastener_head_envelopes
 
 if ROUTING_PROFILE != "v1lf":
@@ -73,12 +70,10 @@ def gen_step():
     ts_cable.label = (
         "REFERENCE_TS_D5p2_LM_UM_printed_then_free_behind_tweeter")
     children.append(ts_cable)
-    hardware = (structural_hardware_proxies() if STAND_FOOT
-                else bridge_fastener_head_envelopes())
-    hardware.label = (
-        "KEEP_CLEAR_three_floor_support_inserts_shanks_driver_heads"
-        if STAND_FOOT else "KEEP_CLEAR_four_stock_bridge_M5_heads")
-    children.append(hardware)
+    if not STAND_FOOT:
+        hardware = bridge_fastener_head_envelopes()
+        hardware.label = "KEEP_CLEAR_four_stock_bridge_M5_heads"
+        children.append(hardware)
     assembly = Compound(children=children)
     state = "floor" if STAND_FOOT else "no_floor_fused_solid_web"
     assembly.label = f"lx521_v1lf_r6f_assembled_{state}"

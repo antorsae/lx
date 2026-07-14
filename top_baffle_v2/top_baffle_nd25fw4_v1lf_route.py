@@ -50,6 +50,11 @@ from top_baffle_nd25fw4_flush import (
     UM_PAD_FLOOR_MM,
     UM_SEAT_Z,
 )
+from top_baffle_nd25fw4_v1lf_floor import (
+    STEM_HALF_WIDTH_MM,
+    STEM_TOP_Y_MM,
+    STEM_Z_MM,
+)
 
 
 def _require_guarded_build():
@@ -83,7 +88,6 @@ SIDE_WALL = TUNNEL_SKIN
 TS_SIDE_WALL = TUNNEL_SKIN
 TUNNEL_CABLE_CLEAR = 0.05
 TUNNEL_FUSE_OVERLAP = 0.55
-SUPPORT_TUNNEL_GAP = 0.40
 MAIN_OUTER_R = CUTTER_R + TUNNEL_SKIN
 TS_OUTER_R = TS_CUTTER_R + TUNNEL_SKIN
 TUNNEL_ROOF_SKIN = 0.85  # 0.05 mm avoids a tangent seat-plane union
@@ -156,44 +160,11 @@ UM_PILOT_FLOOR_Z = (
 UM_TS_BUMP_Z = (
     UM_PILOT_FLOOR_Z - INSERT_COVER_CLEAR - TS_OUTER_R
     - BOOLEAN_CLEARANCE_MARGIN)
-# The support heat-sets begin at z=-1.0. The floor dips place the grown
-# support-clearance cutter 0.05 mm below that face: exactly 0.40 mm physical
-# cover-to-hardware clearance plus a non-coplanar Boolean margin.
-FLOOR_SUPPORT_INSERT_REAR_Z = -1.0
-FLOOR_MAIN_SUPPORT_BUMP_Z = (
-    FLOOR_SUPPORT_INSERT_REAR_Z - SUPPORT_TUNNEL_GAP - MAIN_OUTER_R
-    - BOOLEAN_CLEARANCE_MARGIN)
-FLOOR_T_SUPPORT_BUMP_Z = (
-    FLOOR_SUPPORT_INSERT_REAR_Z - SUPPORT_TUNNEL_GAP - TS_OUTER_R
-    - BOOLEAN_CLEARANCE_MARGIN - 0.20)
-
 # Every named insert bypass gets a local full-width solid saddle from the
 # conduit roof to the blind-bore floor.  The saddle overlaps the existing
 # round cover by 0.55 mm but never extends below it, so it closes the old
-# 0.45..0.85-mm trapped cavity without increasing rear bump depth.  At the
-# three floor-support axes only the exact grown printed-boss and screw-shank
-# envelopes remain void. The mating support fills the boss envelope in the
-# assembly; all surrounding carrier material is still backfilled.
+# 0.45..0.85-mm trapped cavity without increasing rear bump depth.
 BUMP_BACKFILL_TUBE_OVERLAP = TUNNEL_FUSE_OVERLAP
-FLOOR_SUPPORT_INSERT_HARDWARE_LENGTH = 5.8
-FLOOR_SUPPORT_INSERT_BOSS_D = 11.6
-FLOOR_SUPPORT_INSERT_BOSS_FRONT_Z = 6.6
-FLOOR_SUPPORT_SHANK_D = 5.0
-FLOOR_SUPPORT_BACKFILL_INSERT_CLEAR_D = (
-    FLOOR_SUPPORT_INSERT_BOSS_D + 2.0 * SUPPORT_TUNNEL_GAP)
-FLOOR_SUPPORT_BACKFILL_SHANK_CLEAR_D = (
-    FLOOR_SUPPORT_SHANK_D + 2.0 * SUPPORT_TUNNEL_GAP)
-FLOOR_SUPPORT_BACKFILL_INSERT_CLEAR_Z = (
-    FLOOR_SUPPORT_INSERT_REAR_Z - SUPPORT_TUNNEL_GAP,
-    FLOOR_SUPPORT_INSERT_BOSS_FRONT_Z + SUPPORT_TUNNEL_GAP,
-)
-FLOOR_SUPPORT_BACKFILL_SHANK_CLEAR_Z = (
-    FLOOR_SUPPORT_INSERT_REAR_Z + FLOOR_SUPPORT_INSERT_HARDWARE_LENGTH
-    - SUPPORT_TUNNEL_GAP,
-    LM_SEAT_Z - LM_BORE_DEPTH_MM + SUPPORT_TUNNEL_GAP,
-)
-FLOOR_SUPPORT_BUMP_NAMES = frozenset((
-    "lm_pilot_300", "lm_pilot_240", "lm_pilot_180"))
 
 # Plan intent from concept preview v3.
 LM_ROUTE_R = 104.75
@@ -201,13 +172,14 @@ LM_ROUTE_START_DEG = 300.0
 LM_ROUTE_ARC_START_DEG = 315.0
 LM_ROUTE_END_DEG = 58.0
 
-# In the no-floor state the solid bridge web itself carries both entry
-# lumens.  Put their rear-facing mouths symmetrically in the clear central
-# zone between the immutable four-hole pattern, then rise gently into the
-# nominal buried layers before reaching the LM annulus.  Floor mode has no
-# bridge web and therefore retains the established supported-ring feeds.
+# Both state-owned solids carry the same central rear-facing feed mouths:
+# the integral floor stem in floor mode and the fused bridge web otherwise.
+# This deletes the former lateral R114/support-hardware detour while keeping
+# the proven symmetric shallow rise into the LM annulus.
 NO_FLOOR_MAIN_FEED_XY = np.asarray((5.0, 82.0), dtype=float)
 NO_FLOOR_T_FEED_XY = np.asarray((-5.0, 82.0), dtype=float)
+CENTRAL_MAIN_FEED_XY = NO_FLOOR_MAIN_FEED_XY
+CENTRAL_T_FEED_XY = NO_FLOOR_T_FEED_XY
 NO_FLOOR_FEED_REAR_Z = PAD_FACE_Z
 NO_FLOOR_MAIN_FEED_RISE_LENGTH = 24.0
 NO_FLOOR_T_FEED_RISE_LENGTH = 27.5
@@ -217,6 +189,9 @@ STANDARD_CUTTER_EXTENSION = 1.5
 # bridge.py imports this route module, so the equality is bound by tests
 # rather than a circular source import.
 NO_FLOOR_BRIDGE_CORE_BOUNDS = (-31.0, 14.0, 31.0, 90.25)
+FLOOR_STEM_CORE_BOUNDS = (
+    -STEM_HALF_WIDTH_MM, 0.0,
+    STEM_HALF_WIDTH_MM, STEM_TOP_Y_MM)
 NO_FLOOR_FEED_START_HANDLE = 32.0
 # Splay the two internal entry handles away from the R94 W22 rear body while
 # keeping their rear mouths symmetric. The mirrored 65/115-degree bearings
@@ -330,23 +305,19 @@ def _station_near(plan, point):
 
 
 # -- main UM path -----------------------------------------------------
-_MAIN_FEED = (
-    _polar(L22_CUTOUT[:2], 114.0, LM_ROUTE_START_DEG)
-    if STAND_FOOT else NO_FLOOR_MAIN_FEED_XY.copy())
+_MAIN_FEED = CENTRAL_MAIN_FEED_XY.copy()
 _MAIN_ARC_START = _polar(
     L22_CUTOUT[:2], LM_ROUTE_R, LM_ROUTE_ARC_START_DEG)
 _MAIN_FEED_START_DIRECTION = np.asarray((
-    0.0, 1.0)) if STAND_FOOT else np.asarray((
         math.cos(math.radians(NO_FLOOR_FEED_START_BEARING_DEG)),
         math.sin(math.radians(NO_FLOOR_FEED_START_BEARING_DEG)),
     ))
 _MAIN_ENTRY = _cubic(
     np.linspace(0.0, 1.0, 801),
     _MAIN_FEED,
-    _MAIN_FEED + _MAIN_FEED_START_DIRECTION * (
-        12.0 if STAND_FOOT else NO_FLOOR_FEED_START_HANDLE),
+    _MAIN_FEED + _MAIN_FEED_START_DIRECTION * NO_FLOOR_FEED_START_HANDLE,
     _MAIN_ARC_START - np.asarray((math.sqrt(0.5), math.sqrt(0.5))) * (
-        10.0 if STAND_FOOT else NO_FLOOR_FEED_END_HANDLE),
+        NO_FLOOR_FEED_END_HANDLE),
     _MAIN_ARC_START,
 )
 _MAIN_ARC = _arc(
@@ -436,23 +407,19 @@ MAIN_UM_ENTRY_S = ROUTE_LENGTH - THROAT_LENGTH
 
 
 # -- tweeter path -----------------------------------------------------
-_TS_FEED = (
-    _polar(L22_CUTOUT[:2], 114.0, TS_LM_ROUTE_START_DEG)
-    if STAND_FOOT else NO_FLOOR_T_FEED_XY.copy())
+_TS_FEED = CENTRAL_T_FEED_XY.copy()
 _TS_LM_ARC_START = _polar(
     L22_CUTOUT[:2], LM_ROUTE_R, TS_LM_ARC_START_DEG)
 _TS_FEED_START_DIRECTION = np.asarray((
-    0.0, 1.0)) if STAND_FOOT else np.asarray((
         math.cos(math.radians(180.0 - NO_FLOOR_FEED_START_BEARING_DEG)),
         math.sin(math.radians(180.0 - NO_FLOOR_FEED_START_BEARING_DEG)),
     ))
 _TS_ENTRY = _cubic(
     np.linspace(0.0, 1.0, 801),
     _TS_FEED,
-    _TS_FEED + _TS_FEED_START_DIRECTION * (
-        12.0 if STAND_FOOT else NO_FLOOR_FEED_START_HANDLE),
+    _TS_FEED + _TS_FEED_START_DIRECTION * NO_FLOOR_FEED_START_HANDLE,
     _TS_LM_ARC_START - np.asarray((-math.sqrt(0.5), math.sqrt(0.5))) * (
-        10.0 if STAND_FOOT else NO_FLOOR_FEED_END_HANDLE),
+        NO_FLOOR_FEED_END_HANDLE),
     _TS_LM_ARC_START,
 )
 _TS_LM_ARC = _arc(
@@ -568,9 +535,7 @@ _UM_PILOT_BY_ANGLE = dict(zip((58.0, 148.0, 238.0, 328.0), UM_PILOT_XY))
 
 MAIN_COVERED_BUMPS = _named_bumps(_MAIN_PLAN, (
     ("lm_pilot_300", _LM_PILOT_BY_ANGLE[300.0],
-     FLOOR_MAIN_SUPPORT_BUMP_Z if STAND_FOOT else (
-         LM_MAIN_BUMP_Z - NO_FLOOR_MAIN_PAD_BUMP_RELIEF),
-     42.0 if STAND_FOOT else 34.0),
+     LM_MAIN_BUMP_Z - NO_FLOOR_MAIN_PAD_BUMP_RELIEF, 34.0),
     ("lm_pilot_0", _LM_PILOT_BY_ANGLE[0.0],
      LM_MAIN_BUMP_Z - 0.40, 32.0),
     ("lm_pilot_60", _LM_PILOT_BY_ANGLE[60.0],
@@ -578,12 +543,9 @@ MAIN_COVERED_BUMPS = _named_bumps(_MAIN_PLAN, (
 ))
 T_COVERED_BUMPS = _named_bumps(_TS_PLAN, (
     ("lm_pilot_240", _LM_PILOT_BY_ANGLE[240.0],
-     FLOOR_T_SUPPORT_BUMP_Z if STAND_FOOT else (
-         LM_TS_BUMP_Z - NO_FLOOR_T_PAD_BUMP_RELIEF),
-     42.0 if STAND_FOOT else 32.0),
+     LM_TS_BUMP_Z - NO_FLOOR_T_PAD_BUMP_RELIEF, 32.0),
     ("lm_pilot_180", _LM_PILOT_BY_ANGLE[180.0],
-     FLOOR_T_SUPPORT_BUMP_Z if STAND_FOOT else LM_TS_BUMP_Z - 0.40,
-     42.0 if STAND_FOOT else 32.0),
+     LM_TS_BUMP_Z - 0.40, 32.0),
     ("lm_pilot_120", _LM_PILOT_BY_ANGLE[120.0],
      LM_TS_BUMP_Z - 0.40, 32.0),
     ("um_pilot_328", _UM_PILOT_BY_ANGLE[328.0], UM_TS_BUMP_Z, 22.0),
@@ -605,26 +567,28 @@ T_ANCHOR_KEEPOUTS = (
 )
 
 
-def _no_floor_rear_feed_rise(stations, nominal_z, rise_length):
-    """Rear-face mouth to buried layer with an R14-safe shallow ramp.
+def _central_rear_feed_rise(stations, nominal_z, rise_length):
+    """State-owned rear-face mouth to buried layer with a shallow ramp.
 
-    The start slope is approximately 45 degrees rather than an abrupt
-    planar/straight-back 90-degree junction.  A cubic ease-out reaches zero
-    Z slope and zero Z curvature at the nominal buried layer, so it joins the
-    remaining route G2 in Z.  The solid bridge supplies the surrounding wall;
-    no separate printed cover is added over this initial span.
+    The integral floor continuation arrives tangent to the XY feed bearing,
+    so floor mode uses a quintic zero-slope/zero-curvature rise at both ends.
+    That makes the connector continuation and annular route G2 in Z while
+    retaining the common feed mouth.  The already-released no-floor bridge
+    keeps its cubic ease-out and therefore its exact geometry.  In both
+    states the owner supplies the surrounding wall; no separate external
+    raceway is added.
     """
     stations = np.asarray(stations, dtype=float)
-    if STAND_FOOT:
-        return np.full(len(stations), nominal_z, dtype=float)
     u = np.clip(stations / rise_length, 0.0, 1.0)
     rise = nominal_z - NO_FLOOR_FEED_REAR_Z
+    if STAND_FOOT:
+        return NO_FLOOR_FEED_REAR_Z + rise * _smooth01(u)
     return NO_FLOOR_FEED_REAR_Z + rise * (1.0 - (1.0 - u) ** 3)
 
 
 def _main_xyz(spacing_mm):
     stations, xy = _resample(_MAIN_PLAN, spacing_mm)
-    z = _no_floor_rear_feed_rise(
+    z = _central_rear_feed_rise(
         stations, TRENCH_CENTER_Z, NO_FLOOR_MAIN_FEED_RISE_LENGTH)
     final_bump = next(jump for jump in MAIN_COVERED_BUMPS
                       if jump.name == "lm_pilot_60")
@@ -665,14 +629,12 @@ def _ts_xyz(spacing_mm):
     transition = _smooth01((stations - TS_UM_ENTRY_S) / 24.0)
     nominal_z = TS_TRENCH_CENTER_Z + transition * (
         TS_UM_CENTER_Z - TS_TRENCH_CENTER_Z)
-    z = nominal_z.copy()
-    if not STAND_FOOT:
-        feed_z = _no_floor_rear_feed_rise(
-            stations, TS_TRENCH_CENTER_Z,
-            NO_FLOOR_T_FEED_RISE_LENGTH)
-        # The rear-feed rise is complete long before the UM transition.
-        z = np.where(
-            stations < NO_FLOOR_T_FEED_RISE_LENGTH, feed_z, nominal_z)
+    feed_z = _central_rear_feed_rise(
+        stations, TS_TRENCH_CENTER_Z,
+        NO_FLOOR_T_FEED_RISE_LENGTH)
+    # The rear-feed rise is complete long before the UM transition.
+    z = np.where(
+        stations < NO_FLOOR_T_FEED_RISE_LENGTH, feed_z, nominal_z)
     for bump in T_COVERED_BUMPS:
         _local_min(z, stations, bump.station, bump.low_z,
                    bump.half_length)
@@ -709,7 +671,6 @@ class BumpBackfillSpec:
     pilot_support_radius: float
     bottom_z: float
     top_z: float
-    floor_hardware_clearance: bool
 
 
 def _interp_xyz(stations, points, station):
@@ -748,8 +709,6 @@ def bump_backfill_specs():
                 bottom_z=(route_xyz[2] + outer_radius
                           - BUMP_BACKFILL_TUBE_OVERLAP),
                 top_z=top_z,
-                floor_hardware_clearance=(
-                    STAND_FOOT and bump.name in FLOOR_SUPPORT_BUMP_NAMES),
             ))
     return tuple(specs)
 
@@ -789,14 +748,6 @@ def _bump_backfill(spec, clearance=0.0):
         _lm_ring_outer_crop(fill)
         if spec.owner == "lm"
         else _um_owner_crop(fill))
-    if spec.floor_hardware_clearance:
-        x, y = spec.pilot_xy
-        z0, z1 = FLOOR_SUPPORT_BACKFILL_INSERT_CLEAR_Z
-        fill -= Pos(x, y, (z0 + z1) / 2.0) * Cylinder(
-            FLOOR_SUPPORT_BACKFILL_INSERT_CLEAR_D / 2.0, z1 - z0)
-        z0, z1 = FLOOR_SUPPORT_BACKFILL_SHANK_CLEAR_Z
-        fill -= Pos(x, y, (z0 + z1) / 2.0) * Cylinder(
-            FLOOR_SUPPORT_BACKFILL_SHANK_CLEAR_D / 2.0, z1 - z0)
     fill = fill.clean()
     solids = tuple(fill.solids())
     if (not fill.is_valid or not solids
@@ -1225,22 +1176,6 @@ def _burial_web_masks(
     return low & allowed, allowed
 
 
-def _floor_hardware_recut(shape):
-    """Remove only the three authoritative floor-support envelopes."""
-    if not STAND_FOOT:
-        return shape
-    for name in FLOOR_SUPPORT_BUMP_NAMES:
-        angle = float(name.rsplit("_", 1)[-1])
-        x, y = _LM_PILOT_BY_ANGLE[angle]
-        z0, z1 = FLOOR_SUPPORT_BACKFILL_INSERT_CLEAR_Z
-        shape -= Pos(x, y, (z0 + z1) / 2.0) * Cylinder(
-            FLOOR_SUPPORT_BACKFILL_INSERT_CLEAR_D / 2.0, z1 - z0)
-        z0, z1 = FLOOR_SUPPORT_BACKFILL_SHANK_CLEAR_Z
-        shape -= Pos(x, y, (z0 + z1) / 2.0) * Cylinder(
-            FLOOR_SUPPORT_BACKFILL_SHANK_CLEAR_D / 2.0, z1 - z0)
-    return shape.clean()
-
-
 def _burial_web(
         points, outer_radius, anchor_base_z, clearance=0.0):
     """Full conduit-width web from below centerline to the seat membrane.
@@ -1303,7 +1238,7 @@ def _burial_web_components(
         points, outer_radius, *, anchor_base_z=LM_SEAT_MEMBRANE_BOTTOM_Z,
         omit_crossover=False, clearance=0.0,
         support_domains=("lm",)):
-    """Closed full-width owner burial webs with exact hardware recuts."""
+    """Closed full-width owner burial webs."""
     points = np.asarray(points, dtype=float)
     keep, allowed = _burial_web_masks(
         points, outer_radius, anchor_base_z=anchor_base_z,
@@ -1311,12 +1246,11 @@ def _burial_web_components(
         support_domains=support_domains)
     components = []
     for run in _point_runs_with_boundary_overlap(points, keep, allowed):
-        web = _floor_hardware_recut(
-            _burial_web(run, outer_radius, anchor_base_z, clearance))
+        web = _burial_web(run, outer_radius, anchor_base_z, clearance)
         solids = tuple(web.solids())
         if (not web.is_valid or any(solid.volume <= 0.01 for solid in solids)):
             raise RuntimeError(
-                "route burial web failed exact hardware recuts; "
+                "route burial web failed; "
                 f"valid={web.is_valid} volumes="
                 f"{[solid.volume for solid in solids]}")
         components.extend(solids)
@@ -1391,18 +1325,15 @@ def _owner_cutter_extension(owner):
     """Return the state-authoritative endpoint overshoot for one owner."""
     if owner not in ("lm", "um"):
         raise ValueError(owner)
-    return (
-        NO_FLOOR_FEED_CUTTER_EXTENSION
-        if not STAND_FOOT and owner in ("lm", "um")
-        else STANDARD_CUTTER_EXTENSION)
+    return NO_FLOOR_FEED_CUTTER_EXTENSION
 
 
 def _owner_cutter_points(points, owner):
     """Return the exact cutter path used by one printed route owner.
 
-    The no-floor LM feed starts inside the bridge plate, so both core
-    carriers use the longer 8-mm cutter overshoot. Keeping this state/owner
-    choice in one helper is essential:
+    The central feed starts inside the state-owned stem/bridge, so both core
+    carriers use the longer 8-mm cutter overshoot. Keeping this owner choice
+    in one helper is essential:
     changing the extension changes the global ruled-section phase along the
     complete path, not only its endpoint caps.
     """
@@ -1426,14 +1357,25 @@ def _lm_ring_outer_crop(shape, *, cutter=False):
     return shape & owner
 
 
+def _lm_state_tail_crop(shape):
+    """Crop route material to the integral stem or no-floor bridge owner."""
+    if STAND_FOOT:
+        bounds = FLOOR_STEM_CORE_BOUNDS
+        z0 = STEM_Z_MM[0]
+    else:
+        bounds = NO_FLOOR_BRIDGE_CORE_BOUNDS
+        z0 = PAD_FACE_Z
+    owner = _polygon_prism(box(*bounds), z0, 100.0)
+    return shape & owner
+
+
 def _lm_printed_owner_crop(shape, *, cutter=False):
     """Restrict one LM route solid to actual printed LM material.
 
-    Positive covers stop at the native R113 ring.  Negative cutters receive
-    only the 1-mm radial overshoot required to open that mouth; they must not
-    continue through the free-cable span toward UM.  No-floor additionally
-    owns the monolithic bridge plate, whose rear face is a second legitimate
-    route mouth.
+    Positive covers stop at the native R113 ring except for the central feed
+    span owned by the integral floor stem or no-floor bridge.  Negative
+    cutters receive only the required owner-mouth overshoot and never enter
+    the free-cable span toward UM.
     """
     ring_component = _lm_ring_outer_crop(shape, cutter=cutter)
     components = []
@@ -1441,16 +1383,11 @@ def _lm_printed_owner_crop(shape, *, cutter=False):
         components.extend(
             solid for solid in ring_component.solids()
             if solid.volume > 1e-9)
-    if not STAND_FOOT:
-        # The no-floor feed is buried directly in the solid bridge web.  Do
-        # not extend either cover or cutter outside this exact printed owner.
-        bridge_owner = _polygon_prism(
-            box(*NO_FLOOR_BRIDGE_CORE_BOUNDS), PAD_FACE_Z, 100.0)
-        bridge_component = shape & bridge_owner
-        if bridge_component is not None:
-            components.extend(
-                solid for solid in bridge_component.solids()
-                if solid.volume > 1e-9)
+    tail_component = _lm_state_tail_crop(shape)
+    if tail_component is not None:
+        components.extend(
+            solid for solid in tail_component.solids()
+            if solid.volume > 1e-9)
     if not components:
         return None
     combined = components[0].fuse(*components[1:]).clean()
@@ -1485,17 +1422,11 @@ def _t_flush_owner_components(shape):
             core_pieces.extend(
                 solid for solid in component.solids()
                 if solid.volume > 1e-9)
-    if not STAND_FOOT:
-        # Route-side copy of the opening-free bridge core.  Its physical rear
-        # face is the functional cable mouth; no round shell is required in
-        # the empty z<PAD_FACE_Z half-space behind that face.
-        bridge_owner = _polygon_prism(
-            box(*NO_FLOOR_BRIDGE_CORE_BOUNDS), PAD_FACE_Z, 100.0)
-        bridge = shape & bridge_owner
-        if bridge is not None:
-            core_pieces.extend(
-                solid for solid in bridge.solids()
-                if solid.volume > 1e-9)
+    tail = _lm_state_tail_crop(shape)
+    if tail is not None:
+        core_pieces.extend(
+            solid for solid in tail.solids()
+            if solid.volume > 1e-9)
     core = (None if not core_pieces else
             core_pieces[0].fuse(*core_pieces[1:]).clean())
     return (("core", core),)
@@ -1744,30 +1675,6 @@ def route_inner_cutters(which):
         yield from route_inner_cutter_group(which, index)
 
 
-def support_floor_clearance_cutters():
-    """LM covers and full burial webs, all grown by the support gap."""
-    _require_guarded_build()
-    out = []
-    out.extend(_anchored_cover_components(
-        route_cable_points(2.0), MAIN_OUTER_R,
-        clearance=SUPPORT_TUNNEL_GAP,
-        hardware_keepouts=MAIN_ANCHOR_KEEPOUTS,
-        full_burial_web=True))
-    # The LM lead is intentionally un-ducted. Keep only its physical cable
-    # plus the requested air gap out of the independent floor support.
-    out.append(_round_tube(
-        lm_cable_points(1.2),
-        LM_CABLE_D_EST / 2.0 + SUPPORT_TUNNEL_GAP))
-    out.extend(_anchored_cover_components(
-        ts_cable_points(2.0), TS_OUTER_R,
-        omit_crossover=True, clearance=SUPPORT_TUNNEL_GAP,
-        hardware_keepouts=T_ANCHOR_KEEPOUTS,
-        full_burial_web=True))
-    for spec in bump_backfill_specs():
-        out.extend(_bump_backfill(spec, clearance=SUPPORT_TUNNEL_GAP))
-    return tuple(out)
-
-
 def route_material_plan():
     """Analytic assembled XY design outline used by plan containment.
 
@@ -1789,14 +1696,11 @@ def route_material_plan():
                 UM_CUTOUT[2] / 2.0, resolution=96))
     lm_domain = Point(*L22_CUTOUT[:2]).buffer(LM_CORE_R, resolution=96)
     um_domain = Point(*UM_CUTOUT[:2]).buffer(UM_CORE_R, resolution=96)
-    bridge_domain = (
-        box(*NO_FLOOR_BRIDGE_CORE_BOUNDS) if not STAND_FOOT else None)
-    main_domain = (lm_domain if bridge_domain is None else
-                   unary_union((lm_domain, bridge_domain)))
-    t_domain = unary_union(
-        (lm_domain, um_domain)
-        if bridge_domain is None else
-        (lm_domain, um_domain, bridge_domain))
+    tail_domain = box(*(
+        FLOOR_STEM_CORE_BOUNDS if STAND_FOOT
+        else NO_FLOOR_BRIDGE_CORE_BOUNDS))
+    main_domain = unary_union((lm_domain, tail_domain))
+    t_domain = unary_union((lm_domain, um_domain, tail_domain))
     main_cover = LineString(_MAIN_PLAN).buffer(
         MAIN_OUTER_R, resolution=48, cap_style=1, join_style=1
     ).intersection(main_domain)
@@ -1806,8 +1710,7 @@ def route_material_plan():
         TS_OUTER_R, resolution=48, cap_style=1, join_style=1
     ).intersection(t_domain)
     bases = [lm_annulus, um_annulus, main_cover, t_cover]
-    if bridge_domain is not None:
-        bases.append(bridge_domain)
+    bases.append(tail_domain)
     return unary_union(bases)
 
 
@@ -2208,7 +2111,6 @@ def route_facts():
         "bore_floor_z_mm": spec.top_z,
         "filled_height_mm": spec.top_z - spec.bottom_z,
         "tube_overlap_mm": BUMP_BACKFILL_TUBE_OVERLAP,
-        "floor_hardware_clearance": spec.floor_hardware_clearance,
     } for spec in backfills)
 
     plan = route_plan_containment_facts()
@@ -2237,17 +2139,14 @@ def route_facts():
         "solid_backfill_records": backfill_records,
         "solid_backfill_tube_overlap_mm": BUMP_BACKFILL_TUBE_OVERLAP,
         "solid_backfill_added_rear_depth_mm": 0.0,
-        "solid_backfill_floor_hardware_exceptions": tuple(
-            record["name"] for record in backfill_records
-            if record["floor_hardware_clearance"]),
+        "solid_backfill_floor_hardware_exceptions": (),
         "lm_burial_webs": burial_records,
         "lm_burial_web_count": sum(
             record["run_count"] for record in burial_records.values()),
         "lm_burial_web_growth_upper_bound_mm3": sum(
             record["estimated_growth_upper_bound_mm3"]
             for record in burial_records.values()),
-        "lm_burial_web_floor_hardware_clear_d_mm": (
-            FLOOR_SUPPORT_BACKFILL_INSERT_CLEAR_D if STAND_FOOT else None),
+        "lm_burial_web_floor_hardware_clear_d_mm": None,
         "um_burial_webs": um_burial_records,
         "um_burial_web_count": sum(
             record["run_count"] for record in um_burial_records.values()),
@@ -2256,20 +2155,19 @@ def route_facts():
             for record in um_burial_records.values()),
         "functional_lm_feed_count": 2,
         "functional_lm_feed_mode": (
-            "supported_ring_lateral" if STAND_FOOT
+            "integrated_stem_rear_face_shallow_rise" if STAND_FOOT
             else "bridge_rear_face_shallow_rise"),
         "functional_lm_feed_points": (
             tuple(map(float, main[0])), tuple(map(float, ts[0]))),
-        "no_floor_bridge_feed_xy": (
+        "central_owner_feed_xy": (
             tuple(map(float, NO_FLOOR_MAIN_FEED_XY)),
             tuple(map(float, NO_FLOOR_T_FEED_XY))),
-        "no_floor_bridge_feed_rear_z_mm": NO_FLOOR_FEED_REAR_Z,
-        "no_floor_bridge_feed_rise_lengths_mm": (
+        "central_owner_feed_rear_z_mm": NO_FLOOR_FEED_REAR_Z,
+        "central_owner_feed_rise_lengths_mm": (
             NO_FLOOR_MAIN_FEED_RISE_LENGTH,
             NO_FLOOR_T_FEED_RISE_LENGTH),
         "functional_lm_feed_web_omitted": bool(
-            (not STAND_FOOT)
-            or (not main_feed_keep[0] and not main_feed_allowed[0]
+            (not main_feed_keep[0] and not main_feed_allowed[0]
                 and not t_feed_keep[0] and not t_feed_allowed[0])),
         "main_min_z_mm": float(main[:, 2].min()),
         "ts_min_z_mm": float(ts[:, 2].min()),

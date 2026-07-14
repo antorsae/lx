@@ -59,6 +59,9 @@ def _restore_project(originals) -> None:
 
 def test_target_contract() -> None:
     assert remote._validate_targets([]) == ["all"]
+    assert "check_floor_integrated_mount" in remote.REMOTE_MAKE_TARGETS
+    assert "floor_v1lf" in remote.REMOTE_MAKE_TARGETS
+    assert "check_floor_support" not in remote.REMOTE_MAKE_TARGETS
     for target in remote.REMOTE_MAKE_TARGETS:
         assert remote._validate_targets([target]) == [target]
     for targets in (["all", "clean"], ["clean", "clean"],
@@ -571,8 +574,9 @@ def test_profile_specific_stl_dag() -> None:
         env=os.environ.copy(),
     )
     assert local_result.stdout.count("--v1l-piece") == 5
-    assert local_result.stdout.count("--v1lf-part") == 5
+    assert local_result.stdout.count("--v1lf-part") == 4
     assert "--v1lf-part lm_split" in local_result.stdout
+    assert "--v1lf-part support" not in local_result.stdout
 
 
 def test_local_checker_interpreter() -> None:

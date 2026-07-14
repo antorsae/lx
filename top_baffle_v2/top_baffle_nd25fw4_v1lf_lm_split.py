@@ -3,11 +3,12 @@
 The authoritative ``core_lm_carrier`` remains a single printable solid.
 This module derives a mutually-exclusive top/bottom print option from that
 *final* carrier, after its route lumens, insert bores, magnet pockets and
-state-specific bridge/support interfaces have all been cut.
+state-specific no-floor bridge or integral-floor geometry have all been cut.
 
 The seam is 28.5 mm below the LM centre.  That location makes both halves fit
-a conservative 220 mm square print envelope after an in-plane rotation and
-keeps the seam away from every LM insert and magnet axis.  Both buried cable
+a conservative 220 mm square print envelope; the floor bottom is laid onto
+its world-Y floor face at X=-90/Z=0.  The seam stays away from
+every LM insert and magnet axis.  Both buried cable
 passages necessarily cross any useful top/bottom ring seam; deriving the
 halves from the final BREP preserves their exact open lumen sections.
 
@@ -197,6 +198,8 @@ def registration_fit_facts() -> dict:
             insertion_overlaps),
         "envelope_growth_mm": 0.0,
         "target_square_bed_mm": LM_SPLIT_TARGET_BED_MM,
+        "floor_bottom_print_rotation_x_deg": -90.0,
+        "floor_bottom_in_bed_rotation_deg": 0.0,
         "installed_structural_load_credit_n": 0.0,
         "standalone_retention_credit_n": 0.0,
         "z_registration": "assemble_front_faces_on_flat_datum_then_driver",
@@ -220,7 +223,9 @@ def lm_carrier_split_parts(source=None) -> dict:
     """Derive the optional bottom/top pair from one final LM carrier BREP."""
     carrier = source if source is not None else lm_carrier()
     carrier = _one_solid(carrier, "source LM carrier")
-    clip_z = (-100.0, 100.0)
+    # Floor mode owns the complete z=-150 connector foot.  The former
+    # +/-100 clip silently truncated it before the optional split.
+    clip_z = (-200.0, 100.0)
     bottom_region = box(
         -400.0, -400.0, 400.0,
         LM_SPLIT_SEAM_Y - LM_SPLIT_GAP_MM / 2.0)

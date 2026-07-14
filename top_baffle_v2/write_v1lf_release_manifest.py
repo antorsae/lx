@@ -19,7 +19,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
-FORMAT_VERSION = 6
+FORMAT_VERSION = 7
 QUALIFICATION_RECORD = ROOT / "V1LF_PHYSICAL_QUALIFICATION.md"
 
 REQUIRED_REFERENCE_PATHS = (
@@ -126,9 +126,10 @@ def expected_artifact_names(stand_foot: bool) -> tuple[str, ...]:
         "stl/lx521_top_v1lf_optional_lm_keyed_2of2_top.stl",
         "stl/lx521_top_v1lf_addon_tweeter_crescent.stl",
     ]
-    if stand_foot:
-        v1lf_stls.append(
-            "stl/lx521_top_v1lf_addon_mount_floor_support.stl")
+    strength_reports = (
+        "v1lf_integrated_floor_strength.json",
+        "v1lf_integrated_floor_strength.md",
+    ) if stand_foot else ()
     coupons = [
         f"stl/lx521_coupon_{name}.stl"
         for name in (
@@ -144,13 +145,16 @@ def expected_artifact_names(stand_foot: bool) -> tuple[str, ...]:
             "12_v1lf_closed_bore_bump",
         )
     ]
-    return tuple(sorted((*review, *v1lf_stls, *coupons)))
+    return tuple(sorted((
+        *review, *v1lf_stls, *strength_reports, *coupons)))
 
 
-def qualification_record() -> dict:
+def qualification_record(stand_foot: bool) -> dict:
     """Current fail-closed, configuration-specific physical gate."""
-    return {
-        "status": "pending_physical_fit",
+    record = {
+        "status": (
+            "pending_physical_fit_and_structural_proof"
+            if stand_foot else "pending_physical_fit"),
         "release_authorized": False,
         "physical_measure_required": True,
         "authorization_scope": "all_shipped_lm_print_forms",
@@ -158,11 +162,16 @@ def qualification_record() -> dict:
         "record_sha256": sha256_file(QUALIFICATION_RECORD),
         "reason": (
             "MU reference omits terminals; modeled 12 mm pull has "
-            "zero positive release overtravel margin"),
+            "zero positive release overtravel margin"
+            + ("; integral floor geometry has only an analytical screen "
+               "until its material-specific proof and creep tests pass"
+               if stand_foot else "")),
         "configurations": {
             "monolithic_lm": {
                 "release_authorized": False,
-                "status": "pending_physical_fit",
+                "status": (
+                    "pending_physical_fit_and_floor_load_test"
+                    if stand_foot else "pending_physical_fit"),
             },
             "optional_lm_keyed_split": {
                 "release_authorized": False,
@@ -174,6 +183,17 @@ def qualification_record() -> dict:
             },
         },
     }
+    if stand_foot:
+        record["integral_floor_stand"] = {
+            "analytical_report": "v1lf_integrated_floor_strength.json",
+            "physical_status": "pending_proof_creep_and_anti_tip",
+            "free_standing_use_authorized": False,
+            "required_evidence": (
+                "100% local-solid production print, 2x 24 h proof at 35 C, "
+                "1.5x 168 h creep test, connector pull test and installed "
+                "anti-tip/anchor verification"),
+        }
+    return record
 
 
 def build_manifest(state_dir: Path, stand_foot: bool) -> dict:
@@ -205,7 +225,7 @@ def build_manifest(state_dir: Path, stand_foot: bool) -> dict:
         "routing_profile": "v1lf",
         "state": expected_state,
         "stand_foot": stand_foot,
-        "qualification": qualification_record(),
+        "qualification": qualification_record(stand_foot),
         "sources": source_hashes(),
         "native_stage": stage,
         "artifacts": artifacts,

@@ -1,8 +1,8 @@
 # V1LF R6F final CAD brief
 
 - Model: source modification of the two-carrier V1LF LM/UM core,
-  its state-specific support interface, required floor-support add-on,
-  optional tweeter/retention add-ons,
+  its state-specific integral bridge/floor geometry, optional
+  tweeter/retention add-ons,
   and their review assembly.
 - Inputs: `review/v1lf_routing_concept_preview_v3.png` is the plan-routing
   authority. Numeric requirements in the active goal override image
@@ -21,16 +21,16 @@
   nearest insert-pad edge. Add a lower LM pair face-flush at 224/316 deg with
   at least 23.0 mm nearest-insert edge clearance. Keep 224 deg at z=12.55;
   use the Z-preferred z=15.40 position at 316 deg, retaining a closed 0.30 mm
-  front skin. Both clear buried routes and the bridge/support load path. The
+  front skin. Both clear buried routes and the bridge/integral-stand load path. The
   UM pair is also earless and flush at 50.5/129.5 deg, z=15.1, with
   1.1 mm T-cover clearance, 0.2 mm radial floor and 0.6 mm front skin. The
   D7.8 LM lead is a modeled free span with no printed micro-duct. The UM cable
   is free behind the UM carrier with no printed rear duct; T is free behind
   the tweeter crescent, which owns no printed cable arc.
-  No-floor mode additionally
-  owns one monolithic fused bridge-interface tail; there is no separate
-  no-floor keel. Everything else is a separate add-on. The floor support
-  add-on is mandatory in the floor state, and the floor LM has no tail.
+  No-floor mode additionally owns one monolithic fused bridge-interface tail;
+  there is no separate no-floor keel. Floor mode instead owns a full-height
+  integral W64 stem/foot, R12 root, three buried floor lanes and rear NL8
+  panel. There is no separate floor-support add-on or support fastener.
 - Optional LM print form: the authoritative LM carrier remains one monolithic
   solid. A mutually exclusive two-print option is derived from that finalized,
   state-specific solid at world `Y=172.481 mm` with an exact zero-gap planar
@@ -44,18 +44,19 @@
   retention/load credit. Assemble both front faces down on one flat datum and
   verify tongue/socket fit, full seating, coplanarity and route-seam continuity.
   The installed LM driver flange and all normal LM fasteners are the service
-  splice across the seam. The authoritative measured Z26/Z45 X×Y footprints
-  are floor `198.79×138.22 / 210.47×210.47 mm` and no-floor
-  `198.79×205.51 / 210.47×210.47 mm`; both remain within 220 mm. Both buried
+  splice across the seam. The no-floor measured Z26/Z45 X×Y footprints are
+  `198.79×205.51 / 210.47×210.47 mm`. The floor bottom inherits the complete
+  stand and is oriented X=−90° onto its world-Y floor face with Z=0°
+  in-bed; generated validation requires both in-bed axes to remain ≤220 mm.
+  The top remains Z45° and ≤220 mm. Both buried
   cable lumens cross
   the seam and retain their final open sections.
 - Minimal carrier section: non-load annular slabs are deleted. Each driver
   seat retains only a 0.85 mm two-extrusion membrane; narrow outer lips,
   local blind-insert bosses/floors and calculated radial spokes carry load.
 - V1LF LM axes: six sites at `0/60/120/180/240/300 deg` on the unchanged
-  209.5 mm PCD. No-floor owns six carrier heat-sets. Floor owns upper
-  carrier heat-sets at 0/60/120 plus lower Ø5.5 clearances leading to
-  rear-installed support heat-sets at 180/240/300. Proud/V1L families
+  209.5 mm PCD. Both states own six ordinary blind carrier heat-sets; floor
+  mode has no secondary support inserts or through-clearance sites. Proud/V1L families
   retain their existing `30/90/.../330 deg` pattern.
 - Bridge datum: global hole centres `(-20,20)`, `(20,20)`, `(-20,70)`,
   `(20,70)` are immutable. They preserve the 40 x 50 mm pattern and,
@@ -66,9 +67,8 @@
   LM insert-pad envelope; it has no X, hollow opening, rear rib, or additional
   rear-depth structure. Four rear-opening Ø6.4 x 6.8 bores leave a 6.2 mm solid front
   floor, and no bridge geometry extends behind the existing LM-pad envelope.
-  Floor mode has no bridge web and requires the independent floor/NL8
-  add-on to complete its lower three threaded W22 axes and qualified load
-  path. The no-floor web extends through a 68° lower-ring cradle; because the
+  Floor mode replaces this bridge web with its monolithic stand described
+  below. The no-floor web extends through a 68° lower-ring cradle; because the
   existing annular ring lip starts at z=6.8, only the actual z=6.8..18.3
   monolithic interface is credited structurally.
   The 4 kg biaxial PLA Tough+ screen uses a conservative 47.8 × 13.0 mm
@@ -82,6 +82,37 @@
   26908.4/2611.6 mm³, and its factors are 6.37/4.78/2.87. The combined 5g
   insert reaction is 434.2 N, for 1.38
   assumed pull-out safety factor at 600 N per insert. Magnets receive 0 N.
+- Integral floor datum and envelope: floor world `Y=0`; LM axis world
+  `Y=200.981`, therefore exact LM-axis-to-floor **200.981 mm**. The LM owns a
+  full-depth W64 stem softly integrated into the lower cap, a W64 × 18.3 mm
+  rectangular foot spanning `z=-150..18.3`, and a true R12 internal root.
+  A W64 × 44 × 4 mm rear panel spans `z=-150..-146`; its Ø31 NL8 cutout is
+  centered at `(0,22)` and four Ø3.2 holes use a 29.2 mm square. A necessary
+  connector service cavity occupies x=±18, y=4..48, z=-146.2..-104. The
+  only other outer-foot subtractions are three buried continuation lumens:
+  LM Ø9, UM Ø8.2, and shared T Ø6, each with a minimum R14 turn. There is
+  no yoke, open rail, secondary floor-support print, support screw, or support
+  insert. The canonical floor LM is intentionally large-format; the optional
+  keyed bottom inherits the entire stand.
+- Integral floor strength screen: closed-form exact rectangle-minus-circles
+  root section, 4.0 kg mass at y=230 mm and 70 mm rear eccentricity, checked
+  at 1g/3g/5g. This is **not FEA, certification, or physical qualification**.
+  All stresses include an explicit 1.25 root geometry/model factor.
+  Project-allowable vertical 1g/3g/5g safety factors and 1g diagnostic
+  deflections are Bambu PLA Tough+ 3.05/1.97/1.18 and 1.18 mm; PLA Basic
+  4.39/2.78/1.67 and 1.05 mm; PLA Lite 2.69/1.73/**1.04** and 1.40 mm; PLA
+  Matte 2.78/1.79/1.08 and 1.49 mm; PLA Silk+ 3.23/2.09/1.25 and 1.17 mm.
+  Lite is provisional pending a product-specific official TDS and fails the
+  vertical-5g threshold, so it is not accepted by this screen. The section
+  result requires a 100% local-solid modifier through the complete stem/root;
+  sparse infill gets no structural credit. Magnets and the concealed split
+  key receive 0 N credit. Analytical pass does not authorize service:
+  physical gates are
+  2× service load for 24 h at 35 °C with no crack/whitening and residual set
+  ≤0.5 mm or ≤10% of loaded deflection, plus 1.5× service load for at
+  least 168 h. Free-standing tip thresholds are only 0.139g lateral, 0.348g
+  rearward, and 0.384g forward, so a positively attached anti-tip tether or
+  anchor is mandatory.
 - Cable voids: the printed UM passage is nominal Ø8.2 and exists only in the
   LM carrier. The printed T passage is nominal Ø6.0 and exists in the LM and
   UM carriers only. Their complete physical validation solids remain UM Ø7.0
@@ -92,10 +123,8 @@
   from z=0.40 to 3.80, beginning at R103 before the R95/D190 mouth, and
   retains 1.00 mm clearance to the deepest z=5.3 pad/web rear datum at the
   outer station.
-  Floor support removes only the physical LM cable plus 0.4 mm clearance. At
-  its three threaded axes, Ø11.6 connected printed bosses sit inside Ø12.4
-  carrier clearances and retain 2.6 mm radial wall around Ø6.4 heat-set
-  cavities. UM rises inside the right LM arc, exits the LM-owned buried
+  Floor state continues LM/UM/T into the three buried integral-stem lanes.
+  UM rises inside the right LM arc, exits the LM-owned buried
   passage, and continues free behind the UM carrier. T rises inside the left
   LM arc, remains buried through the UM carrier, then exits and continues
   free behind the tweeter crescent. Their physical centerlines cross at
@@ -109,9 +138,7 @@
   UM/T low runs and the UM-owned T low run to their seat membranes; in
   particular, neither longitudinal shoulder at the UM 328°/58° bypasses may
   contain a trapped cavity outside the exact D6 lumen, blind-bore,
-  flush-magnet and half-lap interface voids. At the floor-state 300/240/180° axes only the exact grown support
-  insert/shank hardware clearances remain void; all surrounding saddle
-  material is solid. Every surviving buried span retains a 0.8 mm minimum
+  flush-magnet and half-lap interface voids. Every surviving buried span retains a 0.8 mm minimum
   wall and 0.85 mm seat roof; no trapped roof-to-bore cavity, bore-jump, or
   unintended rear cable window is permitted. Printed ownership ends in
   plain flush mouths: UM becomes free after its LM-owned passage, and T
@@ -163,7 +190,11 @@
   fail-closed pending tongue/socket fit, full-seat, coplanarity and route-seam
   evidence, physical cable pull-through, and driver-installed 1g/3g/5g proof;
   monolithic-LM evidence does not qualify it by inheritance.
-- Manufacturing assumptions: Bambu PLA Tough+; 0.4 mm nozzle. A
+- Manufacturing assumptions: Bambu PLA Tough+, PLA Basic, PLA Lite, PLA
+  Matte, or PLA Silk+; 0.4 mm nozzle; at least six walls and a **100% local-
+  solid modifier through the complete integral floor stem/root**.
+  Material/process selection remains subject to its own
+  qualification record. A
   non-load-bearing skin on every surviving buried route starts at two full extrusion widths
   (0.8 mm). Structural rails/bosses use separately calculated sections.
 - Primary paths: `top_baffle_nd25fw4_v1lf*.py`; generated STEP files in
@@ -183,25 +214,29 @@
   face-flush bonding, preservation of the upper 64/116 deg LM pair, addition
   of the lower 224/316 deg LM pair, including at least 23.0 mm nearest-insert
   edge clearance and the 316 deg z=15.40 route bypass, and at least 2.2 mm
-  upper-LM nearest-insert edge gap; absence of LM proud ears and floor-support LM magnet cups/arms;
-  free D7.8 LM span clearance with zero printed micro-duct and cable-only floor
-  support clearance;
+  upper-LM nearest-insert edge gap; absence of LM proud ears;
+  free D7.8 LM span clearance with zero printed micro-duct and correct floor
+  lane continuation;
   physical-cable containment; insert/head/terminal/service clearance;
   minimum normal wall and eroded-outline containment on printed-owner spans;
   positive absence of a printed UM-carrier rear duct and crescent-owned T
   arc; free-cable clearance, crossover separation and angle; G1 continuity
   and bend radii across printed-to-free handoffs;
-  final-BREP solid saddle continuity from conduit roof to bore floor at all
-  eight named bumps, with only the exact floor hardware exceptions;
+  final-BREP solid saddle continuity from conduit roof to ordinary blind-bore
+  floor at all eight named bumps;
   optional-LM seam Y/zero-gap butt, final-lumen preservation and non-overlapping
   halves; exactly one concealed right-hand straight rounded tongue/socket pair
   wholly inside the existing lip, 0.8 mm tongue width, 3.5 mm engagement along
   the ~75.23° tangential insertion axis, positive socket walls and driver
   clearance, full seating,
   zero envelope growth, no external feature, and zero standalone
-  retention/load credit; authoritative measured Z26/Z45 optional footprints
-  within 220 mm;
-  combined-axis 4 kg sustained-1g/3g/5g bridge/support screen, plus the
+  retention/load credit; floor-bottom X=−90°/Z=0° and all optional
+  split footprints within 220 mm;
+  exact floor Y=0 and LM-axis-to-floor 200.981 mm; integral W64 stem/foot,
+  R12 root, NL8 panel/service cavity and three buried continuations; positive
+  absence of a separate floor-support artifact; combined-axis 4 kg
+  sustained-1g/3g/5g bridge/integral-stand screen for all five named Bambu
+  materials, plus the
   actual 0.85 kg upper-joint load case; 256 mm bed fit; one valid
   solid per print part; and zero open or over-shared STL edges.
 - Review handoff: state-specific snapshots of the two-carrier core, optional

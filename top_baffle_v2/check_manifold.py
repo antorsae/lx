@@ -260,7 +260,7 @@ def _release_manifest_errors(state_dir: Path) -> list[str]:
             errors.append(
                 f"{state}: manifest {key}={data.get(key)!r}, "
                 f"expected {expected!r}")
-    expected_qualification = qualification_record()
+    expected_qualification = qualification_record(stand_foot)
     if data.get("qualification") != expected_qualification:
         errors.append(
             f"{state}: manifest physical qualification record/status is stale")
@@ -311,6 +311,77 @@ def _release_manifest_errors(state_dir: Path) -> list[str]:
             errors.append(f"{state}: manifested size mismatch: {name}")
         if record.get("sha256") != sha256_file(artifact):
             errors.append(f"{state}: manifested hash mismatch: {name}")
+    return errors
+
+
+def _floor_strength_report_errors(state_dir: Path) -> list[str]:
+    """Validate the hash-bound analytical screen, not merely its presence."""
+    state = state_dir.name
+    json_path = state_dir / "v1lf_integrated_floor_strength.json"
+    markdown_path = state_dir / "v1lf_integrated_floor_strength.md"
+    if state != "floor_stand":
+        stale = [path.name for path in (json_path, markdown_path)
+                 if path.exists()]
+        return ([f"{state}: stale floor-strength report(s): "
+                 + ", ".join(stale)] if stale else [])
+    missing = [path.name for path in (json_path, markdown_path)
+               if not path.is_file()]
+    if missing:
+        return [f"{state}: missing integral-floor strength report(s): "
+                + ", ".join(missing)]
+    try:
+        payload = json.loads(json_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return [f"{state}: unreadable integral-floor strength JSON: {exc}"]
+    from top_baffle_nd25fw4_v1lf_floor_strength import (
+        integral_floor_strength_facts,
+    )
+    # Compare the report in its actual wire format.  The analytical facts
+    # intentionally use tuples for immutable dimensions, while JSON decodes
+    # those arrays as lists; comparing the raw Python objects falsely marks
+    # every nested tuple-bearing field stale even when the serialized values
+    # are byte-for-byte current.
+    expected = json.loads(json.dumps(integral_floor_strength_facts()))
+    errors = []
+    for key, value in expected.items():
+        if payload.get(key) != value:
+            errors.append(
+                f"{state}: floor-strength analytical field is stale: {key}")
+    if set(payload) != {*expected, "production_geometry"}:
+        errors.append(
+            f"{state}: floor-strength JSON field set is malformed")
+    geometry = payload.get("production_geometry")
+    records = geometry.get("artifacts") if isinstance(geometry, dict) else None
+    expected_steps = (
+        "top_baffle_nd25fw4_v1lf_split.step",
+        "top_baffle_nd25fw4_v1lf_lm_split.step",
+    )
+    if (not isinstance(records, list) or len(records) != 2
+            or not isinstance(geometry.get("derivation"), str)):
+        errors.append(
+            f"{state}: floor-strength production-geometry binding malformed")
+        records = []
+    by_name = {
+        Path(record.get("path", "")).name: record
+        for record in records if isinstance(record, dict)
+    }
+    for name in expected_steps:
+        step = state_dir / name
+        record = by_name.get(name)
+        if (not step.is_file() or not isinstance(record, dict)
+                or record.get("bytes") != step.stat().st_size
+                or record.get("sha256") != sha256_file(step)):
+            errors.append(
+                f"{state}: floor-strength STEP hash binding failed: {name}")
+    markdown = markdown_path.read_text(encoding="utf-8", errors="replace")
+    if ("not FEA or physical qualification" not in markdown
+            or "Free-standing lateral tip threshold" not in markdown
+            or "PENDING" not in markdown
+            or any(record.get("sha256", "") not in markdown
+                   for record in records if isinstance(record, dict))):
+        errors.append(
+            f"{state}: floor-strength Markdown omits required limitations "
+            "or geometry hashes")
     return errors
 
 
@@ -377,6 +448,8 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
                     f"{token}; LX_STAND_FOOT={expected_mode}; "
                     f"LX_ROUTING_PROFILE={profile.lower()}"
                     + ("; LX_V1LF_SIDE_SECTION=roof_to_bore_solid_backfill"
+                       "; LX_V1LF_VIEWS=front_xy,side_yz,top_xz"
+                       "; LX_V1LF_SEPARATE_FLOOR_SUPPORT=0"
                        if profile == "V1LF" else ""))
             if (png["title"] != token
                     or png["description"] != expected_description):
@@ -395,21 +468,28 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
     if attachments.is_file():
         has_support = _contains_bytes(
             attachments, b"addon_mount_floor_support")
-        if has_support != (state == "floor_stand"):
+        if has_support:
             errors.append(
-                f"{state}: attachments STEP has wrong floor-support state")
+                f"{state}: attachments STEP retains deleted floor-support "
+                "child")
         token_error = _state_token_error(
             attachments,
-            (b"lx521_v1lf_r6f_required_floor_support_and_optional_addons_floor"
+            (b"lx521_v1lf_r6f_optional_addons_floor_integrated_mount"
              if state == "floor_stand"
              else b"lx521_v1lf_r6f_optional_addons_no_floor"),
             (b"lx521_v1lf_r6f_optional_addons_no_floor"
              if state == "floor_stand"
              else
-             b"lx521_v1lf_r6f_required_floor_support_and_optional_addons_floor"),
+             b"lx521_v1lf_r6f_optional_addons_floor_integrated_mount"),
             "attachments STEP")
         if token_error:
             errors.append(token_error)
+        if _contains_bytes(
+                attachments,
+                b"lx521_v1lf_r6f_required_floor_support_and_optional_addons_floor"):
+            errors.append(
+                f"{state}: attachments STEP retains obsolete required-"
+                "floor-support root label")
         for removed in (
                 b"addon_um_grommet_half_a",
                 b"addon_um_grommet_half_b"):
@@ -497,16 +577,22 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
                 errors.append(
                     f"{state}: assembled STEP lacks independent Faston "
                     f"pull sweep {token.decode('ascii')}")
-        expected = (b"KEEP_CLEAR_three_floor_support"
-                    if state == "floor_stand"
-                    else b"KEEP_CLEAR_four_stock_bridge")
-        opposite = (b"KEEP_CLEAR_four_stock_bridge"
-                    if state == "floor_stand"
-                    else b"KEEP_CLEAR_three_floor_support")
-        if (not _contains_bytes(assembled, expected)
-                or _contains_bytes(assembled, opposite)):
+        support_hardware = _contains_bytes(
+            assembled, b"KEEP_CLEAR_three_floor_support")
+        bridge_hardware = _contains_bytes(
+            assembled, b"KEEP_CLEAR_four_stock_bridge")
+        if support_hardware:
             errors.append(
-                f"{state}: assembled STEP lacks state-specific hardware")
+                f"{state}: assembled STEP retains deleted floor-support "
+                "hardware")
+        if state == "floor_stand":
+            if bridge_hardware:
+                errors.append(
+                    f"{state}: assembled STEP contains no-floor bridge "
+                    "hardware")
+        elif not bridge_hardware:
+            errors.append(
+                f"{state}: assembled STEP lacks stock-bridge hardware")
         token_error = _state_token_error(
             assembled,
             (b"lx521_v1lf_r6f_assembled_floor"
@@ -519,12 +605,13 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
         if token_error:
             errors.append(token_error)
         for removed in (
+                b"addon_mount_floor_support",
                 b"addon_um_grommet_half_a",
                 b"addon_um_grommet_half_b"):
             if _contains_bytes(assembled, removed):
                 errors.append(
                     f"{state}: assembled STEP retains removed V1LF "
-                    f"grommet child {removed.decode('ascii')}")
+                    f"child {removed.decode('ascii')}")
         for optional in (
                 b"optional_lm_keyed_1of2_bottom",
                 b"optional_lm_keyed_2of2_top"):
@@ -541,11 +628,13 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
                 errors.append(
                     f"{state}: UM-fit STEP retains removed V1LF "
                     f"grommet child {removed.decode('ascii')}")
+    errors.extend(_floor_strength_report_errors(state_dir))
     errors.extend(_release_manifest_errors(state_dir))
     return errors
 
 
-def _v1lf_manifest_errors(root: Path) -> list[str]:
+def _v1lf_manifest_errors(
+        root: Path, *, v1lf_only: bool = False) -> list[str]:
     state = root.parent.name
     if state not in {"floor_stand", "no_floor_stand"}:
         return []
@@ -557,8 +646,6 @@ def _v1lf_manifest_errors(root: Path) -> list[str]:
         "lx521_top_v1lf_optional_lm_keyed_2of2_top.stl",
         "lx521_top_v1lf_addon_tweeter_crescent.stl",
     }
-    if state == "floor_stand":
-        expected.add("lx521_top_v1lf_addon_mount_floor_support.stl")
     errors = []
     missing = sorted(expected - actual)
     extra = sorted(actual - expected)
@@ -567,6 +654,7 @@ def _v1lf_manifest_errors(root: Path) -> list[str]:
     if extra:
         errors.append(f"{state}: stale/extra V1LF artifacts: {', '.join(extra)}")
     forbidden_v1lf = {
+        "lx521_top_v1lf_addon_mount_floor_support.stl",
         "lx521_top_v1lf_addon_um_grommet_half_a.stl",
         "lx521_top_v1lf_addon_um_grommet_half_b.stl",
         "lx521_coupon_10_um_split_grommet_half_a.stl",
@@ -578,7 +666,7 @@ def _v1lf_manifest_errors(root: Path) -> list[str]:
         if path.name in forbidden_v1lf)
     if stale_v1lf:
         errors.append(
-            f"{state}: removed V1LF grommet artifacts remain: "
+            f"{state}: removed V1LF artifacts remain: "
             f"{', '.join(stale_v1lf)}")
     stale_stage = sorted(
         path.name for path in (root.parent / ".v1lf_stage").glob(
@@ -587,6 +675,18 @@ def _v1lf_manifest_errors(root: Path) -> list[str]:
         errors.append(
             f"{state}: removed V1LF staged grommet BREPs remain: "
             f"{', '.join(stale_stage)}")
+    stale_floor_stage = [
+        name for name in (
+            "addon_mount_floor_support.brep",
+            "review_state_hardware.brep",
+        )
+        if (state == "floor_stand"
+            and (root.parent / ".v1lf_stage" / name).exists())
+    ]
+    if stale_floor_stage:
+        errors.append(
+            f"{state}: deleted floor-support staged BREPs remain: "
+            f"{', '.join(stale_floor_stage)}")
     expected_coupons = {
         Path(name).name
         for name in expected_artifact_names(state == "floor_stand")
@@ -635,8 +735,10 @@ def _v1lf_manifest_errors(root: Path) -> list[str]:
         "lx521_top_v1l_addon_um_grommet_half_a.stl",
         "lx521_top_v1l_addon_um_grommet_half_b.stl",
     }
-    complete_expected = common_release | expected | expected_coupons
-    if state == "floor_stand":
+    complete_expected = expected | expected_coupons
+    if not v1lf_only:
+        complete_expected |= common_release
+    if state == "floor_stand" and not v1lf_only:
         complete_expected |= {
             "lx521_polar_base_1of2_base.stl",
             "lx521_polar_base_2of2_rotor.stl",
@@ -658,9 +760,13 @@ def _v1lf_manifest_errors(root: Path) -> list[str]:
 def main() -> int:
     arguments = list(sys.argv[1:])
     require_release_authorized = False
+    v1lf_only = False
     if "--require-release-authorized" in arguments:
         arguments.remove("--require-release-authorized")
         require_release_authorized = True
+    if "--v1lf-only" in arguments:
+        arguments.remove("--v1lf-only")
+        v1lf_only = True
     unknown_options = [arg for arg in arguments if arg.startswith("-")]
     if unknown_options:
         print(
@@ -701,8 +807,9 @@ def main() -> int:
             f"{facts['components']} component(s), "
             f"signed volume {facts['signed_volume']:.2f} mm3")
 
-    manifest_errors = [error for root in roots
-                       for error in _v1lf_manifest_errors(root)]
+    manifest_errors = [
+        error for root in roots
+        for error in _v1lf_manifest_errors(root, v1lf_only=v1lf_only)]
     if require_release_authorized:
         for root in roots:
             manifest_path = root.parent / "v1lf_release_manifest.json"

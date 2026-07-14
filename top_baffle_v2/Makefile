@@ -1,7 +1,7 @@
 # Generates every flag-dependent artifact for BOTH stand-foot states:
 #
-#   floor_stand/      LX_STAND_FOOT=1  fused foot + NL8 panel, no bridge
-#                     holes; loaded V1LF requires its floor-support add-on
+#   floor_stand/      LX_STAND_FOOT=1  fused foot + NL8 panel; V1LF carries
+#                     its integral floor mount in the LM carrier
 #   no_floor_stand/   LX_STAND_FOOT=0  flat piece_bottom, bridge
 #                     pass-throughs; V1LF LM owns a front-flush solid web
 #
@@ -9,8 +9,7 @@
 # five documentation PNGs (three overlays + two routing profiles).
 # Proud attachments.step is flag-independent and stays at the top level.
 # V1LF LM core and its attachment manifest differ by stand state; the floor
-# support is a required load-path part, while the remaining attachments are
-# optional.
+# mount is integral LM material, while the remaining attachments are optional.
 #
 # Self-contained: STLs/PNGs use build123d/shapely/matplotlib/numpy and
 # STEPs use build123d's native exporter via export_steps.py -- no
@@ -19,7 +18,8 @@
 #
 # Usage:
 #   make                     remote build on osado.lan (default)
-#   make floor_stand         remote build of one stand state
+#   make floor_stand         remote build of every floor-state variant
+#   make floor_v1lf          focused remote V1LF floor release + QA
 #   LX_CAD_EXECUTION=local make PYTHON=/path/venv/bin/python
 #   make check               proud regression + final V1LF R6F suites
 #   make candidate           checks + regenerated candidate artifacts + QA
@@ -117,6 +117,8 @@ GENS := top_baffle_nd25fw4_b2_split top_baffle_nd25fw4_b2 \
 
 OVERLAY_PNGS = baffle_b1_drivers.png baffle_b2_drivers.png \
                baffle_variants_drivers.png
+FLOOR_STRENGTH_REPORTS = floor_stand/v1lf_integrated_floor_strength.json \
+                         floor_stand/v1lf_integrated_floor_strength.md
 
 VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)/stl/.stamp_v0 $(1)/stl/.stamp_v1 $(1)/stl/.stamp_v1l $(1)/stl/.stamp_v1lf \
                   $(addprefix $(1)/,$(addsuffix .step,$(GENS))) \
@@ -127,7 +129,7 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
 
 .PHONY: all candidate release validate_v1lf_stages \
         validate_floor_v1lf_stage validate_no_floor_v1lf_stage \
-        floor_stand no_floor_stand common check check_v1lf \
+        floor_stand floor_v1lf no_floor_stand common check check_v1lf \
         check_v1lf_shells check_v1lf_t_shells \
         check_v1lf_mouths check_v1lf_burial check_v1lf_backfills \
         check_v1lf_um_burial \
@@ -138,7 +140,7 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
         check_floor_v1lf_burial check_no_floor_v1lf_burial \
         check_floor_v1lf_um_burial check_no_floor_v1lf_um_burial \
         check_floor_v1lf_backfills check_no_floor_v1lf_backfills \
-        check_route_contract check_bump_brep check_floor_support \
+        check_route_contract check_bump_brep check_floor_integrated_mount \
         check_no_floor_lm_mesh check_v1lf_lm_split manifold clean
 all: validate_v1lf_stages floor_stand no_floor_stand common
 	$(RUN) check_manifold.py
@@ -186,8 +188,14 @@ floor_stand/stl/.stamp_polar: polar_index_base.py
 	@rm -f $@
 	$(RUN) polar_index_base.py
 	@touch $@
-floor_stand: $(call VARIANT_TARGETS,floor_stand)
+floor_stand: $(call VARIANT_TARGETS,floor_stand) $(FLOOR_STRENGTH_REPORTS)
 	$(RUN) check_manifold.py floor_stand/stl
+# Focused, atomic V1LF floor release.  This avoids rebuilding unrelated B/C/
+# V0/V1/V1L pieces while still producing every V1LF STEP/STL/PNG, the coupon
+# set, overlays, hash-bound strength report, release manifest and strict QA.
+floor_v1lf: validate_floor_v1lf_stage \
+        floor_stand/v1lf_release_manifest.json
+	$(RUN) check_manifold.py --v1lf-only floor_stand/stl
 no_floor_stand: validate_no_floor_v1lf_stage \
         $(call VARIANT_TARGETS,no_floor_stand)
 	$(RUN) check_manifold.py no_floor_stand/stl
@@ -274,11 +282,11 @@ check_no_floor_um_shell check_no_floor_t_shell: test_v1lf_r6f.py $(SRCS)
 	LX_R6F_SINGLE_CHECK=test_$(patsubst check_%,%,$@) \
 	    $(RUN) test_v1lf_r6f.py
 
-# Focused exact-BREP floor-load-path diagnostic.  This target is intentionally
-# single-check so socket/boss regressions can be measured without rebuilding
-# or rerunning the full V1LF service matrix.
-check_floor_support: test_v1lf_r6f.py $(SRCS)
-	LX_R6F_SINGLE_CHECK=test_floor_support $(RUN) test_v1lf_r6f.py
+# Focused exact-BREP integral floor-load-path diagnostic. This target is
+# intentionally single-check so mount/root regressions can be measured
+# without rebuilding or rerunning the full V1LF service matrix.
+check_floor_integrated_mount: test_v1lf_r6f.py $(SRCS)
+	LX_R6F_SINGLE_CHECK=test_floor_integrated_mount $(RUN) test_v1lf_r6f.py
 
 # Focused source-BREP plus strict-STL gate for the monolithic no-floor LM.
 # It catches feature-coincidence slivers before a complete candidate export.
@@ -364,7 +372,6 @@ else
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=v1lf $(RUN) export_piece_stls.py --variant v1lf --v1lf-part lm --v1lf-stage-manifest $(1)/.v1lf_stage/manifest.json --outdir $(1)/stl
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=v1lf $(RUN) export_piece_stls.py --variant v1lf --v1lf-part lm_split --v1lf-stage-manifest $(1)/.v1lf_stage/manifest.json --outdir $(1)/stl
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=v1lf $(RUN) export_piece_stls.py --variant v1lf --v1lf-part um --v1lf-stage-manifest $(1)/.v1lf_stage/manifest.json --outdir $(1)/stl
-	$(if $(filter 1,$(2)),LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=v1lf $(RUN) export_piece_stls.py --variant v1lf --v1lf-part support --v1lf-stage-manifest $(1)/.v1lf_stage/manifest.json --outdir $(1)/stl,@:)
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=v1lf $(RUN) export_piece_stls.py --variant v1lf --v1lf-part tweeter --v1lf-stage-manifest $(1)/.v1lf_stage/manifest.json --outdir $(1)/stl
 endif
 	@touch $$@
@@ -420,6 +427,7 @@ $(1)/v1lf_release_manifest.json: $(V1LF_RELEASE_SRCS) \
         $(1)/top_baffle_nd25fw4_um_fit.step \
         $(1)/baffle_cable_routing_proud.png \
         $(1)/baffle_cable_routing_v1lf.png \
+        $(if $(filter 1,$(2)),$(FLOOR_STRENGTH_REPORTS)) \
         $(addprefix $(1)/,$(OVERLAY_PNGS))
 	@rm -f $$@
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=v1lf $(RUN) \
@@ -442,6 +450,22 @@ endef
 
 $(eval $(call RULES,floor_stand,1))
 $(eval $(call RULES,no_floor_stand,0))
+
+floor_stand/.stamp_v1lf_integrated_floor_strength: \
+        top_baffle_nd25fw4_v1lf_floor_strength.py \
+        floor_stand/top_baffle_nd25fw4_v1lf_split.step \
+        floor_stand/top_baffle_nd25fw4_v1lf_lm_split.step
+	@rm -f $@ $(FLOOR_STRENGTH_REPORTS)
+	$(RUN) top_baffle_nd25fw4_v1lf_floor_strength.py \
+	    --json floor_stand/v1lf_integrated_floor_strength.json \
+	    --markdown floor_stand/v1lf_integrated_floor_strength.md \
+	    --step floor_stand/top_baffle_nd25fw4_v1lf_split.step \
+	    --step floor_stand/top_baffle_nd25fw4_v1lf_lm_split.step
+	@touch $@
+
+$(FLOOR_STRENGTH_REPORTS): floor_stand/.stamp_v1lf_integrated_floor_strength
+	@test -f $@ || { rm -f floor_stand/.stamp_v1lf_integrated_floor_strength; \
+	    $(MAKE) floor_stand/.stamp_v1lf_integrated_floor_strength; test -f $@; }
 
 clean:
 	rm -rf floor_stand no_floor_stand __pycache__ \

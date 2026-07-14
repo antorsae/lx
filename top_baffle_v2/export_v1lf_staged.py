@@ -43,7 +43,7 @@ import run_memory_guarded as memory_guard
 
 SCRIPT = Path(__file__).resolve()
 ROOT = SCRIPT.parent
-SCHEMA_VERSION = 6
+SCHEMA_VERSION = 7
 EXPECTED_LM_CUTTER_GROUP_COUNT = 20
 FIXED_TIMESTAMP = "2020-01-01T00:00:00"
 WORKER_HEADROOM_MIB = 3200.0
@@ -149,12 +149,6 @@ PRINT_PART_SPECS = {
         "label": "optional_lm_keyed_2of2_top",
         "stl_name": "lx521_top_v1lf_optional_lm_keyed_2of2_top",
         "group": "lm_split",
-    },
-    "addon_mount_floor_support": {
-        "filename": "addon_mount_floor_support.brep",
-        "label": "addon_mount_floor_support",
-        "stl_name": "lx521_top_v1lf_addon_mount_floor_support",
-        "group": "support",
     },
     "addon_tweeter_crescent": {
         "filename": "addon_tweeter_crescent.brep",
@@ -371,10 +365,16 @@ def _validate_brep_transaction(path: Path) -> None:
 
 def _expected_print_keys(stand_foot: bool) -> tuple[str, ...]:
     keys = [*CORE_KEYS, *OPTIONAL_LM_SPLIT_KEYS]
-    if stand_foot:
-        keys.append("addon_mount_floor_support")
     keys.extend(ATTACHMENT_KEYS_BASE)
     return tuple(keys)
+
+
+def _expected_review_keys(stand_foot: bool) -> tuple[str, ...]:
+    """State-local review set after deleting separate floor hardware."""
+    return tuple(
+        key for key in REVIEW_KEYS
+        if not (stand_foot and key == "state_hardware")
+    )
 
 
 def _record_for(path: Path, label: str | None, relative_to: Path) -> dict:
@@ -453,7 +453,8 @@ def load_stage_manifest(
             for key in _expected_print_keys(stand_foot)
         },
         "review_parts": {
-            key: REVIEW_PART_SPECS[key] for key in REVIEW_KEYS
+            key: REVIEW_PART_SPECS[key]
+            for key in _expected_review_keys(stand_foot)
         },
     }
     for section, expected_specs in expected_sections.items():
@@ -627,11 +628,6 @@ def _worker_print_group(group: str, output_dir: Path) -> None:
     if group == "um":
         from top_baffle_nd25fw4_v1lf import um_carrier
         parts = {"core_um_carrier": um_carrier()}
-    elif group == "support":
-        if not _stand_foot():
-            raise RuntimeError("no-floor V1LF has no floor-support add-on")
-        from top_baffle_nd25fw4_v1lf_attachments import floor_support
-        parts = {"addon_mount_floor_support": floor_support()}
     elif group == "tweeter":
         from top_baffle_nd25fw4_v1lf_attachments import tweeter_crescent
         parts = {"addon_tweeter_crescent": tweeter_crescent()}
@@ -704,15 +700,12 @@ def _worker_review_group(group: str, output_dir: Path) -> None:
         parts = {"reference_ts_cable": v1lf_ts_cable_envelope()}
     elif group == "hardware":
         if _stand_foot():
-            from top_baffle_nd25fw4_v1lf_attachments import (
-                structural_hardware_proxies,
-            )
-            hardware = structural_hardware_proxies()
-        else:
-            from top_baffle_nd25fw4_v1lf_bridge import (
-                bridge_fastener_head_envelopes,
-            )
-            hardware = bridge_fastener_head_envelopes()
+            raise RuntimeError(
+                "integral floor V1LF has no separate support hardware")
+        from top_baffle_nd25fw4_v1lf_bridge import (
+            bridge_fastener_head_envelopes,
+        )
+        hardware = bridge_fastener_head_envelopes()
         parts = {"state_hardware": hardware}
     else:
         raise RuntimeError(f"unknown V1LF review group: {group}")
@@ -735,14 +728,13 @@ def _worker_all_groups_direct(output_dir: Path) -> None:
     if not _large_host_execution():
         raise RuntimeError(
             "whole-stage group construction requires osado large-host mode")
-    groups = ["um"]
-    if _stand_foot():
-        groups.append("support")
-    groups.append("tweeter")
+    groups = ["um", "tweeter"]
     for group in groups:
         _worker_print_group(group, output_dir)
-    for group in ("static", "um_service", "lm_cable", "ts_cable",
-                  "hardware"):
+    review_groups = ["static", "um_service", "lm_cable", "ts_cable"]
+    if not _stand_foot():
+        review_groups.append("hardware")
+    for group in review_groups:
         _worker_review_group(group, output_dir)
 
 
@@ -755,8 +747,6 @@ def _worker_step(manifest_path: Path, kind: str, output: Path) -> None:
     review_records = payload["review_parts"]
 
     attachment_keys = list(ATTACHMENT_KEYS_BASE)
-    if stand_foot:
-        attachment_keys.insert(0, "addon_mount_floor_support")
     if kind == "split":
         keys = list(CORE_KEYS)
         root_label = (
@@ -771,7 +761,7 @@ def _worker_step(manifest_path: Path, kind: str, output: Path) -> None:
     elif kind == "attachments":
         keys = attachment_keys
         root_label = (
-            "lx521_v1lf_r6f_required_floor_support_and_optional_addons_floor"
+            "lx521_v1lf_r6f_optional_addons_floor_integrated_mount"
             if stand_foot else
             "lx521_v1lf_r6f_optional_addons_no_floor")
     elif kind == "assembled":
@@ -790,16 +780,13 @@ def _worker_step(manifest_path: Path, kind: str, output: Path) -> None:
         shape.label = record["label"]
         children.append(shape)
     if kind == "assembled":
-        for key in REVIEW_KEYS:
+        for key in _expected_review_keys(stand_foot):
             record = review_records[key]
             shape = import_brep(str(_resolved_record_path(
                 manifest_path, record)))
             label = record["label"]
             if key == "state_hardware":
-                label = (
-                    "KEEP_CLEAR_three_floor_support_inserts_shanks_"
-                    "driver_heads" if stand_foot else
-                    "KEEP_CLEAR_four_stock_bridge_M5_heads")
+                label = "KEEP_CLEAR_four_stock_bridge_M5_heads"
             shape.label = label
             children.append(shape)
 
@@ -890,16 +877,16 @@ def _stage(manifest_path: Path) -> None:
             _run_worker("all non-LM print/review groups", [
                 "groups-direct", "--output-dir", str(temporary_dir)])
         else:
-            print_groups = ["um"]
-            if stand_foot:
-                print_groups.append("support")
-            print_groups.append("tweeter")
+            print_groups = ["um", "tweeter"]
             for group in print_groups:
                 _run_worker(f"print group {group}", [
                     "print-group", "--group", group,
                     "--output-dir", str(temporary_dir)])
-            for group in ("static", "um_service", "lm_cable",
-                          "ts_cable", "hardware"):
+            review_groups = [
+                "static", "um_service", "lm_cable", "ts_cable"]
+            if not stand_foot:
+                review_groups.append("hardware")
+            for group in review_groups:
                 _run_worker(f"review group {group}", [
                     "review-group", "--group", group,
                     "--output-dir", str(temporary_dir)])
@@ -912,7 +899,8 @@ def _stage(manifest_path: Path) -> None:
             print_records[key] = _record_for(
                 source, spec["label"], temporary_dir)
         review_records = {}
-        for key, spec in REVIEW_PART_SPECS.items():
+        for key in _expected_review_keys(stand_foot):
+            spec = REVIEW_PART_SPECS[key]
             source = temporary_dir / spec["filename"]
             _validate_brep_transaction(source)
             review_records[key] = _record_for(
@@ -1014,7 +1002,7 @@ def _parser() -> argparse.ArgumentParser:
         "print-group", help=argparse.SUPPRESS)
     print_group.add_argument(
         "--group", required=True,
-        choices=("um", "support", "tweeter"))
+        choices=("um", "tweeter"))
     print_group.add_argument("--output-dir", required=True, type=Path)
     review_group = workers.add_parser(
         "review-group", help=argparse.SUPPRESS)
