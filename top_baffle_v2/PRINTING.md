@@ -33,6 +33,7 @@ bridge-web load case is treated explicitly below. PLA still relaxes
 | R6P bridge (no-stand) | M5 machine screw from the bridge (behind) into M5 x 5.8 x O6.3 heat-set (bore O6.4 x 6.8, REAR face) | hand-snug | 4 off; same insert as the W22, set from the rear |
 | R6F collar half-laps | 2 x M3 through-bolts + washers/nuts; choose length against the printed 11.5 mm stack | hand-snug | structural UM/tweeter-to-LM load path; tighten evenly on a flat front-face datum |
 | R6F fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening Ø6.4 × 6.8 inserts | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders, centered rear UM/T entries at x=±5/y=82/z=5.3, solid acoustic front, immutable 40 × 50 pattern, and no geometry behind the existing LM pads; magnets receive zero load credit |
+| R6F optional LM keyed seam | one concealed right-hand straight rounded tongue/blind-socket pair wholly inside the existing R110.6..R113 lip; world Y=172.481 mm, zero-gap planar butt; tongue width 0.8 mm, engagement 3.5 mm along the tangential insertion axis (~75.23° from +X) | registration only | mutually exclusive replacement print form for the canonical monolithic LM; no external protrusion, envelope growth, extra screw, or standalone retention/load credit. Assemble front-face-down on a flat datum; the installed LM driver flange and its normal fasteners are the structural splice. |
 | R6F UM-to-tweeter half-laps | 2 x rear-driven M3 screws at x=±24, y=421.5 into blind M3 x 3 inserts in Ø4.6 x 4.0 receivers | hand-snug | no front bolt head; keep the acoustic face uninterrupted |
 | R6F alignment magnets | Six D5 × 2 N52 magnets in Ø5.2 × 2.2 radial pockets | — | LM has four: preserve the upper flush 64°/116° pair with its verified 2.2 mm insert and 0.86 mm route-cover gaps, and add a lower face-flush pair at 224°/316° with at least 23.0 mm nearest-insert edge clearance. The 224° pocket remains at z=12.55; the route-adjacent 316° pocket moves only in Z to 15.40 and retains a closed 0.30 mm front skin. Both clear buried routes and the bridge/support load path. UM keeps its flush 50.5°/129.5° pair at z=15.1, with at least 1.1 mm insert/T-cover gap, 0.2 mm radial floor and 0.6 mm front skin. Fixture all six flush during cure—0.2 mm extra pocket depth is adhesive allowance; no proud ears; alignment/anti-rattle only, **zero structural load credit** |
 | Tweeter pair | M4 through-bolts + nyloc + wave washer; length = septum + faceplates (stock 18.3 septum → ~M4 x 35; V1/R6F crescent → ~M4 x 30 — verify stacked) | snug, ~0.5 N·m | clamps the 4.0 mm crescent seat; recheck after a week |
@@ -87,6 +88,13 @@ do **not** independently qualify the floor rails/NL8 panel, stock bridge,
 installation substrate, real insert process, or a changed print orientation.
 Those items remain inside the system proof-test boundary.
 
+They also do not transfer automatically from the canonical monolithic LM to
+the optional LM keyed split. Its one concealed right-hand tongue/socket pair is a
+registration aid with no standalone retention/load credit. That
+print form remains pending until tongue/socket fit, full seating, front-datum
+coplanarity, UM/T route-seam continuity and cable pull-through, and the
+complete driver-installed 1g/3g/5g proof have passed and been recorded.
+
 This calculation is a screening model, not permission to hang drivers
 from an untested print. Before service, every final combination of
 filament batch, slicer settings, frame, carrier, inserts, and bolts must
@@ -132,12 +140,20 @@ planes share the bed datum. The monolithic no-floor LM+bridge web is
 too long for any flat Z rotation on 256 × 256 mm; its exporter therefore
 uses the validated **45° X tilt**. Preserve that orientation and review
 supports, interface faces, and the complete Z height before slicing.
+The optional LM keyed split replaces that monolithic LM with two flat prints:
+the authoritative measured Z26° bottom footprint is
+**198.79 × 138.22 mm** in floor state or **198.79 × 205.51 mm** in no-floor
+state; the authoritative measured Z45° top is **210.47 × 210.47 mm** in either
+state. Print both front-face-down; the single right-hand straight rounded
+0.8 mm tongue and blind socket remain concealed inside the existing lip and
+add no envelope growth. The tongue engages 3.5 mm along its tangential insertion axis
+(~75.23° from +X). Never mix either half with the monolithic LM.
 Place the separate floor support (required for a floor-state assembly) on
 its broad rear face. The UM route is covered only in LM, T is covered in
 LM/UM, and their specified rear continuations are free; the short LM lead is
 also intentionally free. Keep generated support out of functional buried-route
 mouths/free-cable clearance and inspect every rear bump. Floor LM uses 28° Z rotation and
-the floor/NL8 support uses 65.5°.
+the floor/NL8 support uses 70°.
 
 ## Bambu Studio profile (0.4 nozzle)
 
@@ -406,11 +422,27 @@ connector or revise the service geometry.
 
 Before hardware assembly, inspect
 `top_baffle_nd25fw4_v1lf_split.step` for the mandatory core,
+`top_baffle_nd25fw4_v1lf_lm_split.step` if the optional two-print LM form is
+selected,
 `top_baffle_nd25fw4_v1lf_attachments.step` for the selected printed
 modules, and `top_baffle_nd25fw4_v1lf_assembled.step` with
 `top_baffle_nd25fw4_um_fit.step` for the service keep-clear. The last
 two contain reference geometry and are not an instruction to print the
 Faston proxy.
+
+Choose exactly one LM print form for each state: either the canonical
+`lx521_top_v1lf_core_1of2_lm_carrier.stl`, or both
+`lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl` and
+`lx521_top_v1lf_optional_lm_keyed_2of2_top.stl`. The optional seam is at world
+Y=172.481 mm with a closed zero-gap planar butt. Before step 4, place both
+front faces down on one flat datum and fully seat the bottom half's single
+concealed right-hand straight rounded tongue in the top half's blind socket.
+Inspect tongue/socket fit, full seating, coplanarity and route-seam continuity,
+then pull the actual UM/T cables through both preserved lumen handoffs. The tongue/socket
+adds no external protrusion, extra screw, or standalone retention/load credit.
+Hold registration when lifting the LM from the datum for driver fit-up; the
+installed flange and all normal LM fasteners provide the structural splice.
+Do not load an unspliced split LM.
 
 1. Complete coupons 7, 9, and 12, then measure the real MU
    terminal carrier, tabs, boots, and cable. Stop if the physical parts
@@ -483,6 +515,11 @@ Faston proxy.
    sustained-1g, 3g, and 5g cases in the governing normal and
    rear-moment directions. Follow the documentation and rejection
    criteria in “R6F structural screens”; magnets receive no credit.
+   For the optional LM split, install the representative LM driver or an
+   equivalent flange-and-all-fasteners splice during the complete 1g/3g/5g
+   proof; give the concealed tongue/socket no standalone retention or load credit
+   and record the prior tongue/socket fit, full-seat, coplanarity, route-seam and
+   cable-pull-through evidence with the result.
    Repeat after any filament, slicer, material, insert-process, or
    service-temperature change.
 9. Mount the drivers, apply the same low torques in the table, and

@@ -86,7 +86,7 @@ REMOTE_MAKE_TARGETS = {
     "check_floor_v1lf_um_burial", "check_no_floor_v1lf_um_burial",
     "check_floor_v1lf_backfills", "check_no_floor_v1lf_backfills",
     "check_route_contract", "check_bump_brep", "check_floor_support",
-    "check_no_floor_lm_mesh",
+    "check_no_floor_lm_mesh", "check_v1lf_lm_split",
     "manifold", "clean",
     "validate_v1lf_stages",
     "validate_floor_v1lf_stage", "validate_no_floor_v1lf_stage",

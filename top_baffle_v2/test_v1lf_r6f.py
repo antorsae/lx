@@ -28,7 +28,7 @@ import time
 import numpy as np
 
 LM_CUTTER_GROUP_COUNT = 20
-R6F_NATIVE_STAGE_SCHEMA_VERSION = 5
+R6F_NATIVE_STAGE_SCHEMA_VERSION = 6
 R6F_CHECK_LAUNCH_HEADROOM_MB = 2500.0
 R6F_CABLE_WORKER_HEADROOM_MB = 3500.0
 R6F_HEADROOM_WAIT_TIMEOUT_S = 300.0
@@ -357,9 +357,17 @@ def test_route_contract():
     assert memory_guard.MAX_RSS_MB <= memory_guard.PROFILE_MAX_RSS_MB
     assert memory_guard.MIN_FREE_MB >= memory_guard.PROFILE_MIN_FREE_MB
     assert memory_guard.GUARD_SLOTS <= memory_guard.PROFILE_MAX_GUARD_SLOTS
-    assert staged.SCHEMA_VERSION == R6F_NATIVE_STAGE_SCHEMA_VERSION == 5
-    assert release_manifest.FORMAT_VERSION == 5
+    assert staged.SCHEMA_VERSION == R6F_NATIVE_STAGE_SCHEMA_VERSION == 6
+    assert release_manifest.FORMAT_VERSION == 6
     assert staged.ATTACHMENT_KEYS_BASE == ("addon_tweeter_crescent",)
+    assert staged.OPTIONAL_LM_SPLIT_KEYS == (
+        "optional_lm_keyed_1of2_bottom",
+        "optional_lm_keyed_2of2_top",
+    )
+    assert {
+        staged.PRINT_PART_SPECS[key]["group"]
+        for key in staged.OPTIONAL_LM_SPLIT_KEYS
+    } == {"lm_split"}
     assert all(
         "grommet" not in key
         for stand_foot in (False, True)
@@ -2064,6 +2072,171 @@ def test_no_floor_lm_core():
         "  no-floor LM: fused front-flush four-hole solid web; "
         f"X{V1LF_NO_FLOOR_LM_TILT_X_DEG:g} footprint "
         f"{bb.X:.2f} x {bb.Y:.2f} x {bb.Z:.2f}")
+
+
+def _load_lm_keyed_parts(stand_foot):
+    """Load the exact hash-validated release stage for the split gate."""
+    _state(stand_foot)
+    from build123d import import_brep
+    from export_v1lf_staged import load_stage_manifest, staged_part_paths
+
+    state_name = "floor_stand" if stand_foot else "no_floor_stand"
+    manifest = Path(__file__).resolve().parent / state_name / (
+        ".v1lf_stage/manifest.json")
+    payload = load_stage_manifest(manifest)
+    paths = staged_part_paths(manifest, payload)
+    lm = import_brep(str(paths["core_lm_carrier"]))
+    parts = {
+        key: import_brep(str(paths[key]))
+        for key in (
+            "optional_lm_keyed_1of2_bottom",
+            "optional_lm_keyed_2of2_top",
+        )
+    }
+    return lm, parts
+
+
+def _assert_lm_keyed_split(stand_foot):
+    _state(stand_foot)
+    from build123d import Rot
+    from shapely.geometry import box
+    from export_piece_stls import (
+        BED_ROT_Z,
+        V1LF_OPTIONAL_LM_SPLIT_BED_MM,
+    )
+    import top_baffle_nd25fw4_v1lf as core
+    import top_baffle_nd25fw4_v1lf_lm_split as lm_split
+    import top_baffle_nd25fw4_v1lf_route as route
+
+    lm, parts = _load_lm_keyed_parts(stand_foot)
+    expected_keys = {
+        "optional_lm_keyed_1of2_bottom",
+        "optional_lm_keyed_2of2_top",
+    }
+    assert set(parts) == expected_keys
+    bottom = parts["optional_lm_keyed_1of2_bottom"]
+    top = parts["optional_lm_keyed_2of2_top"]
+    for name, part in parts.items():
+        assert part.is_valid and len(part.solids()) == 1, name
+        assert part.volume > 0.01
+    assert _intersection_volume(bottom, top) < 0.02
+
+    # The hidden registration is made only by reassigning/cutting source
+    # material. Neither half may grow beyond the monolithic LM envelope.
+    for name, part in parts.items():
+        extra = part - lm
+        assert (0.0 if extra is None else extra.volume) < 0.03, name
+
+    # The only intentional source loss is the local female fit relief not
+    # occupied by the male key. Everywhere else, including both route-cover
+    # sections, the union equals the monolithic carrier exactly.
+    male_tool = lm_split.male_registration_key_tool()
+    socket_tool = lm_split.female_registration_socket_tool()
+    top_clip = core._plan_prism(
+        box(-400.0, lm_split.LM_SPLIT_SEAM_Y, 400.0, 600.0),
+        -100.0, 100.0)
+    expected_relief = lm & socket_tool
+    expected_relief = expected_relief & top_clip
+    expected_relief = expected_relief - male_tool
+    missing = lm - bottom
+    missing = missing - top
+    unexpected_missing = missing - expected_relief
+    uncut_relief = expected_relief - missing
+    assert (0.0 if unexpected_missing is None
+            else unexpected_missing.volume) < 0.05
+    assert (0.0 if uncut_relief is None
+            else uncut_relief.volume) < 0.05
+    assert _intersection_volume(bottom, male_tool) >= (
+        male_tool.volume - 0.03)
+    assert _intersection_volume(top, male_tool) < 0.03
+    male_outside_socket = male_tool - socket_tool
+    assert (0.0 if male_outside_socket is None
+            else male_outside_socket.volume) < 0.03
+
+    # Because the split is derived after hollowing, every exact nominal
+    # cutter remains unobstructed on both sides of the butt handoff. This is
+    # the diameter/normal-section gate: no internal alignment sleeve is
+    # permitted in the already tight D8.2 and D6 lumens.
+    for cutter in route.route_inner_cutters("lm"):
+        assert _intersection_volume(bottom, cutter) < 0.03
+        assert _intersection_volume(top, cutter) < 0.03
+        assert _intersection_volume(socket_tool, cutter) < 0.03
+    # Independently generated nominal acoustic shells must also remain
+    # untouched: a socket that misses the lumen but thins its cover is still
+    # an unacceptable hidden resonance/leak risk.
+    for route_name in ("UM", "T"):
+        for shell in route.required_assembled_shell_components(route_name):
+            assert _intersection_volume(socket_tool, shell) < 0.03, (
+                f"LM registration socket cuts the {route_name} route shell")
+    seam = lm_split.LM_SPLIT_SEAM_Y
+    for label, points in (
+            ("UM", route.route_cable_points(0.5)),
+            ("T", route.ts_cable_points(0.5))):
+        local = points[np.abs(points[:, 1] - seam) <= 5.0]
+        assert len(local) >= 3, f"{label} has no sampled seam handoff"
+        assert local[:, 1].min() < seam - lm_split.LM_SPLIT_GAP_MM / 2.0
+        assert local[:, 1].max() > seam + lm_split.LM_SPLIT_GAP_MM / 2.0
+
+    facts = lm_split.registration_fit_facts()
+    assert facts["registration_pair_count"] == 1
+    assert facts["registration_side"] == "right"
+    assert facts["registration_is_keyed"] is True
+    assert facts["registration_form"] == (
+        "single_straight_rounded_tongue")
+    assert facts["registration_tongue_width_mm"] == 0.80
+    assert 70.0 <= facts["registration_insertion_angle_deg"] <= 80.0
+    assert facts["assembly_motion"] == (
+        "top_half_approaches_along_negative_registration_axis")
+    assert facts["sampled_insertion_max_plan_overlap_mm2"] < 1e-7
+    assert facts["assembly_gap_mm"] == 0.0
+    assert facts["buried_route_joint"] == "closed_zero_gap_planar_butt"
+    assert facts["male_volume_mm3"] >= 15.0
+    assert facts["engagement_depth_mm"] >= 3.4
+    assert facts["socket_inner_wall_mm"] >= 0.65
+    assert facts["socket_outer_wall_mm"] >= 0.60
+    assert facts["driver_radial_clearance_mm"] >= 0.74
+    assert facts["registered_plan_play_mm"] <= 0.25
+    assert facts["registered_z_play_mm"] <= 0.30
+    assert facts["envelope_growth_mm"] == 0.0
+    assert facts["installed_structural_load_credit_n"] == 0.0
+    assert facts["standalone_retention_credit_n"] == 0.0
+    assert facts["physical_coupon_required"] is True
+    assert facts["physical_load_qualification_required"] is True
+    assert V1LF_OPTIONAL_LM_SPLIT_BED_MM == facts[
+        "target_square_bed_mm"] == 220.0
+
+    orientations = {
+        "optional_lm_keyed_1of2_bottom":
+            BED_ROT_Z["v1lf_optional_lm_keyed_1of2_bottom"],
+        "optional_lm_keyed_2of2_top":
+            BED_ROT_Z["v1lf_optional_lm_keyed_2of2_top"],
+    }
+    footprints = {}
+    for name, part in parts.items():
+        oriented = Rot(Z=orientations[name]) * part
+        size = oriented.bounding_box().size
+        footprints[name] = (size.X, size.Y, size.Z)
+        assert max(size.X, size.Y, size.Z) <= 220.0, (
+            f"{name} footprint {size.X:.2f} x {size.Y:.2f} x "
+            f"{size.Z:.2f} exceeds the 220-mm option contract")
+
+    if stand_foot:
+        assert bottom.bounding_box().min.Y > 80.0
+    else:
+        assert bottom.bounding_box().min.Y < 16.0
+    state = "floor" if stand_foot else "no-floor"
+    print(
+        f"  {state} optional LM keyed split: zero-gap route butt, "
+        f"one concealed source-volume registration key, no envelope growth; "
+        f"220-mm footprints {footprints}")
+
+
+def test_floor_lm_keyed_split():
+    _assert_lm_keyed_split(True)
+
+
+def test_no_floor_lm_keyed_split():
+    _assert_lm_keyed_split(False)
 
 
 def _intersection_volume(a, b):
@@ -3976,6 +4149,8 @@ CHECKS = [
     test_joint_load_contract,
     test_floor_lm_core,
     test_no_floor_lm_core,
+    test_floor_lm_keyed_split,
+    test_no_floor_lm_keyed_split,
     test_floor_um_shell,
     test_floor_t_shell,
     test_no_floor_um_shell,

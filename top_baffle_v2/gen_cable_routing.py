@@ -1266,7 +1266,8 @@ def render_v1lf():
         main_lm_end_xyz[:2], (126, 353), ha="right", fontsize=7.2,
         color="#1b5741",
         arrowprops=dict(arrowstyle="-", color="#1b5741"))
-    ax.annotate(f"two-piece mandatory core\nrounded bolted joint ears; "
+    ax.annotate(f"two-carrier mandatory core\nrounded bolted joint ears; "
+                "LM may use optional hidden-key subdivision; "
                 f"magnets {magnet_count_text}\n"
                 f"all flush in D{SIDE_MAGNET_POCKET_D:.1f} x "
                 f"{SIDE_MAGNET_DEPTH:.1f} pockets — no proud ears",

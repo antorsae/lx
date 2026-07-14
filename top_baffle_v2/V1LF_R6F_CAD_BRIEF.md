@@ -1,6 +1,6 @@
 # V1LF R6F final CAD brief
 
-- Model: source modification of the two-piece V1LF LM/UM carrier core,
+- Model: source modification of the two-carrier V1LF LM/UM core,
   its state-specific support interface, required floor-support add-on,
   optional tweeter/retention add-ons,
   and their review assembly.
@@ -31,6 +31,24 @@
   owns one monolithic fused bridge-interface tail; there is no separate
   no-floor keel. Everything else is a separate add-on. The floor support
   add-on is mandatory in the floor state, and the floor LM has no tail.
+- Optional LM print form: the authoritative LM carrier remains one monolithic
+  solid. A mutually exclusive two-print option is derived from that finalized,
+  state-specific solid at world `Y=172.481 mm` with an exact zero-gap planar
+  butt; use both optional halves or the monolithic LM, never a mixture. One
+  concealed right-hand straight rounded tongue/blind-socket pair is carved
+  wholly inside the existing R110.6..R113 lip. The bottom owns the 0.8 mm-wide
+  tongue at `z=12.00..16.60`, with 3.5 mm engagement along its tangential
+  insertion axis approximately 75.23° from +X; the top owns its blind socket
+  with 0.12 mm plan, 0.25 mm end and 0.15 mm Z clearances.
+  It adds no external protrusion, envelope growth, extra screw, or standalone
+  retention/load credit. Assemble both front faces down on one flat datum and
+  verify tongue/socket fit, full seating, coplanarity and route-seam continuity.
+  The installed LM driver flange and all normal LM fasteners are the service
+  splice across the seam. The authoritative measured Z26/Z45 X×Y footprints
+  are floor `198.79×138.22 / 210.47×210.47 mm` and no-floor
+  `198.79×205.51 / 210.47×210.47 mm`; both remain within 220 mm. Both buried
+  cable lumens cross
+  the seam and retain their final open sections.
 - Minimal carrier section: non-load annular slabs are deleted. Each driver
   seat retains only a 0.85 mm two-extrusion membrane; narrow outer lips,
   local blind-insert bosses/floors and calculated radial spokes carry load.
@@ -141,12 +159,17 @@
   pending a recorded real-driver dry fit. Floor and no-floor candidates also
   require separate artifact/process identity, coupon evidence, documented
   1g/3g/5g structural proof and signed release decisions; neither state may
-  inherit the other's evidence.
+  inherit the other's evidence. The optional LM split additionally remains
+  fail-closed pending tongue/socket fit, full-seat, coplanarity and route-seam
+  evidence, physical cable pull-through, and driver-installed 1g/3g/5g proof;
+  monolithic-LM evidence does not qualify it by inheritance.
 - Manufacturing assumptions: Bambu PLA Tough+; 0.4 mm nozzle. A
   non-load-bearing skin on every surviving buried route starts at two full extrusion widths
   (0.8 mm). Structural rails/bosses use separately calculated sections.
 - Primary paths: `top_baffle_nd25fw4_v1lf*.py`; generated STEP files in
   `floor_stand/` and `no_floor_stand/`; print meshes in each `stl/` tree;
+  optional split review at `*/top_baffle_nd25fw4_v1lf_lm_split.step` and its
+  two `lx521_top_v1lf_optional_lm_keyed_*` meshes;
   routing sheets at `*/baffle_cable_routing_v1lf.png`, including plan,
   longitudinal side profiles, and nominal diametric u-z sections with exact
   vertical backfill limits through
@@ -170,11 +193,20 @@
   and bend radii across printed-to-free handoffs;
   final-BREP solid saddle continuity from conduit roof to bore floor at all
   eight named bumps, with only the exact floor hardware exceptions;
+  optional-LM seam Y/zero-gap butt, final-lumen preservation and non-overlapping
+  halves; exactly one concealed right-hand straight rounded tongue/socket pair
+  wholly inside the existing lip, 0.8 mm tongue width, 3.5 mm engagement along
+  the ~75.23° tangential insertion axis, positive socket walls and driver
+  clearance, full seating,
+  zero envelope growth, no external feature, and zero standalone
+  retention/load credit; authoritative measured Z26/Z45 optional footprints
+  within 220 mm;
   combined-axis 4 kg sustained-1g/3g/5g bridge/support screen, plus the
   actual 0.85 kg upper-joint load case; 256 mm bed fit; one valid
   solid per print part; and zero open or over-shared STL edges.
-- Review handoff: state-specific snapshots of the split core, attachments,
-  assembled carrier and terminal-fit STEP, plus live CAD Viewer links. Routing
+- Review handoff: state-specific snapshots of the two-carrier core, optional
+  LM keyed split, attachments, assembled carrier and terminal-fit STEP, plus
+  live CAD Viewer links. Routing
   diagrams are not substitutes for rendered STEP review.
 - Generation safety: ordinary Make targets execute on `osado.lan` in one
   512 GiB/no-swap systemd cgroup with a 64 GiB host-available floor. The

@@ -19,7 +19,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
-FORMAT_VERSION = 5
+FORMAT_VERSION = 6
 QUALIFICATION_RECORD = ROOT / "V1LF_PHYSICAL_QUALIFICATION.md"
 
 REQUIRED_REFERENCE_PATHS = (
@@ -109,6 +109,7 @@ def native_stage_record(
 def expected_artifact_names(stand_foot: bool) -> tuple[str, ...]:
     review = (
         "top_baffle_nd25fw4_v1lf_split.step",
+        "top_baffle_nd25fw4_v1lf_lm_split.step",
         "top_baffle_nd25fw4_v1lf_attachments.step",
         "top_baffle_nd25fw4_v1lf_assembled.step",
         "top_baffle_nd25fw4_um_fit.step",
@@ -121,6 +122,8 @@ def expected_artifact_names(stand_foot: bool) -> tuple[str, ...]:
     v1lf_stls = [
         "stl/lx521_top_v1lf_core_1of2_lm_carrier.stl",
         "stl/lx521_top_v1lf_core_2of2_um_carrier.stl",
+        "stl/lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl",
+        "stl/lx521_top_v1lf_optional_lm_keyed_2of2_top.stl",
         "stl/lx521_top_v1lf_addon_tweeter_crescent.stl",
     ]
     if stand_foot:
@@ -142,6 +145,35 @@ def expected_artifact_names(stand_foot: bool) -> tuple[str, ...]:
         )
     ]
     return tuple(sorted((*review, *v1lf_stls, *coupons)))
+
+
+def qualification_record() -> dict:
+    """Current fail-closed, configuration-specific physical gate."""
+    return {
+        "status": "pending_physical_fit",
+        "release_authorized": False,
+        "physical_measure_required": True,
+        "authorization_scope": "all_shipped_lm_print_forms",
+        "record": QUALIFICATION_RECORD.name,
+        "record_sha256": sha256_file(QUALIFICATION_RECORD),
+        "reason": (
+            "MU reference omits terminals; modeled 12 mm pull has "
+            "zero positive release overtravel margin"),
+        "configurations": {
+            "monolithic_lm": {
+                "release_authorized": False,
+                "status": "pending_physical_fit",
+            },
+            "optional_lm_keyed_split": {
+                "release_authorized": False,
+                "status": "pending_key_fit_and_installed_load_test",
+                "registration_structural_load_credit_n": 0.0,
+                "required_evidence": (
+                    "printed key/socket coupon, cable pull-through, and "
+                    "driver-installed 1g/3g/5g proof"),
+            },
+        },
+    }
 
 
 def build_manifest(state_dir: Path, stand_foot: bool) -> dict:
@@ -173,16 +205,7 @@ def build_manifest(state_dir: Path, stand_foot: bool) -> dict:
         "routing_profile": "v1lf",
         "state": expected_state,
         "stand_foot": stand_foot,
-        "qualification": {
-            "status": "pending_physical_fit",
-            "release_authorized": False,
-            "physical_measure_required": True,
-            "record": QUALIFICATION_RECORD.name,
-            "record_sha256": sha256_file(QUALIFICATION_RECORD),
-            "reason": (
-                "MU reference omits terminals; modeled 12 mm pull has "
-                "zero positive release overtravel margin"),
-        },
+        "qualification": qualification_record(),
         "sources": source_hashes(),
         "native_stage": stage,
         "artifacts": artifacts,

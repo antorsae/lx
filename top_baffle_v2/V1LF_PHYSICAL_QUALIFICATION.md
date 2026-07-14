@@ -20,6 +20,29 @@ and evidence reference, every rejection criterion passes, and the named
 release approver signs that state. `PENDING`, a blank field, `N/A` without a
 written justification, or a failed row keeps that state unauthorized.
 
+Each state release manifest ships both the canonical monolithic LM carrier and
+both halves of the optional keyed LM form. Although an installed assembly uses
+exactly one form, release qualification must authorize **both shipped forms
+independently**. Authorization of one form does not authorize the other, and
+`N/A` is not permitted for either shipped form's identity, required evidence,
+or print-form decision. A state remains unauthorized until both print-form
+decisions pass. The keyed form is cut at world `Y=172.481 mm` with a zero-gap
+planar butt; neither keyed half may be combined with the monolithic carrier in
+an installed assembly. One concealed right-hand straight rounded tongue/blind-socket
+registration pair is carved wholly inside the existing R110.6..R113 LM lip.
+The tongue is 0.8 mm wide and engages 3.5 mm along its tangential insertion
+axis, approximately 75.23° from +X. It adds no external protrusion,
+envelope growth, extra screw, or standalone retention/load credit. Its
+installed load path exists only after the LM driver flange and all
+normal LM fasteners splice the seam.
+
+The keyed socket's current CAD contract retains at least **0.65 mm inner wall**
+and **0.60 mm outer wall**. Both are below the usual 0.8 mm printed-wall
+convention, so positive CAD wall checks are not release evidence by themselves.
+The candidate slicer preview must show continuous intended extrusion paths at
+both walls, and a state/process-matched printed tongue/socket coupon must pass
+before the keyed form can be authorized.
+
 ## Per-state hardware and process identity
 
 Record each state explicitly even when both use the same item; “same as other
@@ -62,7 +85,10 @@ both the manifest and this qualification record.
 | Candidate generation date | PENDING | PENDING |
 | Inspector and inspection date | PENDING | PENDING |
 | Candidate artifact-inventory path / SHA-256, excluding manifest and this record | PENDING | PENDING |
-| LM carrier STL SHA-256 | PENDING | PENDING |
+| Canonical monolithic LM carrier STL SHA-256 — mandatory shipped form | PENDING | PENDING |
+| Keyed LM bottom `lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl` SHA-256 — mandatory shipped form | PENDING | PENDING |
+| Keyed LM top `lx521_top_v1lf_optional_lm_keyed_2of2_top.stl` SHA-256 — mandatory shipped form | PENDING | PENDING |
+| Keyed split authoritative measured X×Y footprints (bottom / top) | 198.79×138.22 / 210.47×210.47 mm | 198.79×205.51 / 210.47×210.47 mm |
 | UM carrier STL SHA-256 | PENDING | PENDING |
 | Tweeter crescent STL SHA-256, if fitted | PENDING | PENDING |
 | Selected external cable-retention identity, if fitted | PENDING | PENDING |
@@ -83,6 +109,13 @@ than recording only “looks good.”
 | Coupon 7: physical U22 seat, M5 insert/pad and flushness | PENDING | PENDING |
 | Coupon 9: terminal clock midway between 238° and 328° screws | PENDING | PENDING |
 | Coupon 12: state-specific closed bore bump, full solid roof-to-bore saddle, cable passage and exact hardware clearance | PENDING | PENDING |
+| Monolithic LM form physical fit: actual U22 seat/flange, all normal LM fasteners, insert access, front-datum seating and surrounding-clearance inspection on the printed monolithic carrier | PENDING | PENDING |
+| Monolithic LM form cable check: actual UM/T cables fished through the intact buried lumens, free LM lead placed, cable service repeated without snag or insulation damage, and continuity/insulation verified | PENDING | PENDING |
+| Keyed LM form physical fit: both printed halves fully seated front-face-down, actual U22 flange and all normal LM fasteners installed, front-datum coplanarity and post-fit crack/damage inspection | PENDING | PENDING |
+| Keyed LM dedicated tongue/socket coupon: candidate material/process, assembly force, full seating of the straight rounded 0.8 mm tongue through its 3.5 mm engagement in the blind right-hand socket, socket clearance and straight tangential insertion along the ~75.23° axis | PENDING | PENDING |
+| Keyed LM socket thin-wall acceptance: CAD minima confirmed at ≥0.65 mm inner and ≥0.60 mm outer, candidate slicer preview shows continuous intended extrusion paths at both sub-0.8 mm walls, and the state/process-matched printed coupon has no gaps, delamination or breakage | PENDING | PENDING |
+| Keyed LM seam metrology: world Y=172.481 mm, closed zero-gap planar butt, no volumetric half overlap, both front faces registered on one flat datum, and continuous UM/T route seams | PENDING | PENDING |
+| Keyed LM physical UM/T cable pull-through across both preserved seam lumens without snag, insulation damage or support intrusion, followed by continuity/insulation verification | PENDING | PENDING |
 | Terminal carrier radius and rear Z | PENDING | PENDING |
 | Terminal pitch, tab width/thickness and exposed length | PENDING | PENDING |
 | Polarity order | PENDING | PENDING |
@@ -129,17 +162,30 @@ z=6.8..18.3 (11.5 mm) ring-lip overlap, giving a 2.87 factor at 5g. This
 calculation remains screening context only and
 does not change any PENDING field below into physical evidence.
 
+For the optional LM split, analytical tongue/socket fit and containment checks
+are registration checks only and the monolithic carrier calculation is not
+transferable release evidence.
+Perform the complete proof with the LM driver or an equivalent flange using
+all normal LM fasteners across the seam. Give the concealed pair no standalone
+retention or load credit and keep the flange splice installed through
+sustained 1g, transient 3g and transient 5g loading.
+
 | Required evidence | `floor_stand` result / evidence | `no_floor_stand` result / evidence |
 |---|---|---|
 | Fixture drawing/ID, load-cell ID/calibration and evidence-file hashes | PENDING | PENDING |
 | Actual load application coordinates and direction | PENDING | PENDING |
 | Pre-test temperature, dimensions, insert positions and fastener torques | PENDING | PENDING |
+| Keyed LM dedicated proof setup: driver flange/all normal LM fasteners installed across the seam, tongue fully seated, front faces coplanar, and tongue/socket standalone retention/load credit recorded as 0 N | PENDING | PENDING |
 | 1g: load, 24 h duration, temperature and maximum deflection | PENDING | PENDING |
 | 1g: unloaded residual deflection, insert movement, cracks and post-test torque | PENDING | PENDING |
 | 3g: load, 60 s duration, temperature and maximum deflection | PENDING | PENDING |
 | 3g: unloaded residual deflection, insert movement, cracks and post-test torque | PENDING | PENDING |
 | 5g: load, 10 s duration, temperature and maximum deflection | PENDING | PENDING |
 | 5g: unloaded residual deflection, insert movement, cracks and post-test torque | PENDING | PENDING |
+| Keyed LM dedicated driver-installed 1g proof: 24 h load/time history, temperature, maximum and residual deflection, fastener/insert movement, seam/socket damage and post-test torque | PENDING | PENDING |
+| Keyed LM dedicated driver-installed 3g proof: 60 s load/time history, temperature, maximum and residual deflection, fastener/insert movement, seam/socket damage and post-test torque | PENDING | PENDING |
+| Keyed LM dedicated driver-installed 5g proof: 10 s load/time history, temperature, maximum and residual deflection, fastener/insert movement, seam/socket damage and post-test torque | PENDING | PENDING |
+| Keyed LM post-proof cable pull-through, service, continuity and insulation repeated successfully with the driver flange splice installed | PENDING | PENDING |
 | Upper LM-to-UM and UM-to-tweeter joint proof at the documented 0.85 kg case | PENDING | PENDING |
 | Three lower W22-axis support screws, rails and NL8 panel remain sound | PENDING | N/A — no floor support in this state |
 | Front-flush solid four-hole web, stock bridge and installation substrate remain sound | N/A — no stock bridge in this state | PENDING |
@@ -153,6 +199,9 @@ does not change any PENDING field below into physical evidence.
 | Evidence item | `floor_stand` path / SHA-256 | `no_floor_stand` path / SHA-256 |
 |---|---|---|
 | Dimension and coupon report | PENDING | PENDING |
+| Monolithic LM physical fit and cable-service evidence | PENDING | PENDING |
+| Keyed LM physical fit, tongue/socket coupon, socket-wall slicer preview, full-seat/coplanarity, route-seam metrology and cable-pull-through evidence | PENDING | PENDING |
+| Keyed LM dedicated driver-installed 1g/3g/5g fixture, load-time history and post-proof cable-service evidence | PENDING | PENDING |
 | Terminal service photographs/video | PENDING | PENDING |
 | External cable-retention installation/load/removal evidence | PENDING | PENDING |
 | Structural fixture and load-time history | PENDING | PENDING |
@@ -161,12 +210,20 @@ does not change any PENDING field below into physical evidence.
 
 ## State-specific release signoff
 
+The two LM print-form decisions below are mandatory for every state manifest.
+The final state decision may be `PASS — RELEASE AUTHORIZED` only when both form
+decisions pass and every shared state requirement also passes.
+
 | Signoff field | `floor_stand` | `no_floor_stand` |
 |---|---|---|
 | Evidence reviewed by / date | PENDING | PENDING |
 | Mechanical proof witnessed by / date | PENDING | PENDING |
 | Terminal/electrical service witnessed by / date | PENDING | PENDING |
 | Deviations and operating limits accepted by | PENDING | PENDING |
+| Monolithic LM form evidence reviewed by / date | PENDING | PENDING |
+| Monolithic LM form authorization: `PASS — FORM AUTHORIZED` or `FAIL/PENDING` | FAIL / PENDING | FAIL / PENDING |
+| Keyed LM form evidence reviewed by / date | PENDING | PENDING |
+| Keyed LM form authorization: `PASS — FORM AUTHORIZED` or `FAIL/PENDING` | FAIL / PENDING | FAIL / PENDING |
 | Release approver printed name / role | PENDING | PENDING |
 | Release approver signature / date | PENDING | PENDING |
 | Final state decision: `PASS — RELEASE AUTHORIZED` or `FAIL/PENDING` | FAIL / PENDING | FAIL / PENDING |

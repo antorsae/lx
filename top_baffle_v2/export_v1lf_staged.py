@@ -1,5 +1,10 @@
 """Guarded native-BREP staging for V1LF R6F release artifacts.
 
+The canonical LM carrier remains monolithic.  The same finalized LM BREP is
+also subdivided into a mutually-exclusive top/bottom hidden-keyed print
+option, so route lumens and every state-specific interface remain identical
+to the one-piece source.
+
 The local macOS profile cannot reliably build and hollow the face-rich LM
 carrier in one OCC process.  A lightweight, stdlib-only parent therefore
 runs its outer blank, every exact route-cutter group, and final functional
@@ -38,7 +43,7 @@ import run_memory_guarded as memory_guard
 
 SCRIPT = Path(__file__).resolve()
 ROOT = SCRIPT.parent
-SCHEMA_VERSION = 5
+SCHEMA_VERSION = 6
 EXPECTED_LM_CUTTER_GROUP_COUNT = 20
 FIXED_TIMESTAMP = "2020-01-01T00:00:00"
 WORKER_HEADROOM_MIB = 3200.0
@@ -132,6 +137,18 @@ PRINT_PART_SPECS = {
         "label": "core_um_carrier",
         "stl_name": "lx521_top_v1lf_core_2of2_um_carrier",
         "group": "um",
+    },
+    "optional_lm_keyed_1of2_bottom": {
+        "filename": "optional_lm_keyed_1of2_bottom.brep",
+        "label": "optional_lm_keyed_1of2_bottom",
+        "stl_name": "lx521_top_v1lf_optional_lm_keyed_1of2_bottom",
+        "group": "lm_split",
+    },
+    "optional_lm_keyed_2of2_top": {
+        "filename": "optional_lm_keyed_2of2_top.brep",
+        "label": "optional_lm_keyed_2of2_top",
+        "stl_name": "lx521_top_v1lf_optional_lm_keyed_2of2_top",
+        "group": "lm_split",
     },
     "addon_mount_floor_support": {
         "filename": "addon_mount_floor_support.brep",
@@ -250,6 +267,10 @@ REVIEW_PART_SPECS = {
 
 
 CORE_KEYS = ("core_lm_carrier", "core_um_carrier")
+OPTIONAL_LM_SPLIT_KEYS = (
+    "optional_lm_keyed_1of2_bottom",
+    "optional_lm_keyed_2of2_top",
+)
 ATTACHMENT_KEYS_BASE = (
     "addon_tweeter_crescent",
 )
@@ -349,7 +370,7 @@ def _validate_brep_transaction(path: Path) -> None:
 
 
 def _expected_print_keys(stand_foot: bool) -> tuple[str, ...]:
-    keys = list(CORE_KEYS)
+    keys = [*CORE_KEYS, *OPTIONAL_LM_SPLIT_KEYS]
     if stand_foot:
         keys.append("addon_mount_floor_support")
     keys.extend(ATTACHMENT_KEYS_BASE)
@@ -563,15 +584,43 @@ def _worker_lm_finalize(input_path: Path, output: Path) -> None:
     _export_brep_transaction(part, output, require_single_solid=True)
 
 
-def _worker_lm_direct(output: Path) -> None:
-    """Build the complete LM carrier without native-BREP cutter handoffs."""
+def _worker_lm_direct(output_dir: Path) -> None:
+    """Build one final LM, then derive both optional split prints from it."""
     if not _large_host_execution():
         raise RuntimeError(
             "direct LM construction requires the osado large-host workflow")
     from top_baffle_nd25fw4_v1lf import lm_carrier
+    from top_baffle_nd25fw4_v1lf_lm_split import lm_carrier_split_parts
 
+    lm = lm_carrier()
     _export_brep_transaction(
-        lm_carrier(), output, require_single_solid=True)
+        lm, output_dir / PRINT_PART_SPECS["core_lm_carrier"]["filename"],
+        require_single_solid=True)
+    split_parts = lm_carrier_split_parts(lm)
+    if set(split_parts) != set(OPTIONAL_LM_SPLIT_KEYS):
+        raise RuntimeError(
+            "optional LM split part set mismatch: "
+            f"{sorted(split_parts)} != {sorted(OPTIONAL_LM_SPLIT_KEYS)}")
+    for key, shape in split_parts.items():
+        _export_brep_transaction(
+            shape, output_dir / PRINT_PART_SPECS[key]["filename"],
+            require_single_solid=True)
+
+
+def _worker_lm_split(input_path: Path, output_dir: Path) -> None:
+    """Derive the optional pair from an already-finalized native LM BREP."""
+    from build123d import import_brep
+    from top_baffle_nd25fw4_v1lf_lm_split import lm_carrier_split_parts
+
+    parts = lm_carrier_split_parts(import_brep(str(input_path)))
+    if set(parts) != set(OPTIONAL_LM_SPLIT_KEYS):
+        raise RuntimeError(
+            "optional LM split part set mismatch: "
+            f"{sorted(parts)} != {sorted(OPTIONAL_LM_SPLIT_KEYS)}")
+    for key, shape in parts.items():
+        _export_brep_transaction(
+            shape, output_dir / PRINT_PART_SPECS[key]["filename"],
+            require_single_solid=True)
 
 
 def _worker_print_group(group: str, output_dir: Path) -> None:
@@ -713,6 +762,12 @@ def _worker_step(manifest_path: Path, kind: str, output: Path) -> None:
         root_label = (
             "lx521_v1lf_r6f_core_2piece_floor" if stand_foot else
             "lx521_v1lf_r6f_core_2piece_no_floor_fused_solid_web")
+    elif kind == "lm_split":
+        keys = list(OPTIONAL_LM_SPLIT_KEYS)
+        root_label = (
+            "lx521_v1lf_r6f_optional_lm_keyed_split_floor"
+            if stand_foot else
+            "lx521_v1lf_r6f_optional_lm_keyed_split_no_floor")
     elif kind == "attachments":
         keys = attachment_keys
         root_label = (
@@ -807,8 +862,8 @@ def _stage(manifest_path: Path) -> None:
             print(
                 "[v1lf-stage] LM execution=direct-full (osado)",
                 flush=True)
-            _run_worker("LM direct full carrier", [
-                "lm-direct", "--output", str(lm_final)])
+            _run_worker("LM direct full carrier and optional split", [
+                "lm-direct", "--output-dir", str(temporary_dir)])
         else:
             print(
                 "[v1lf-stage] LM execution=segmented (local)",
@@ -827,6 +882,9 @@ def _stage(manifest_path: Path) -> None:
                 "lm-final", "--input", str(previous),
                 "--output", str(lm_final)])
             previous.unlink()
+            _run_worker("optional LM keyed split", [
+                "lm-split", "--input", str(lm_final),
+                "--output-dir", str(temporary_dir)])
 
         if _large_host_execution():
             _run_worker("all non-LM print/review groups", [
@@ -907,7 +965,9 @@ def _worker(args) -> None:
     elif args.worker_kind == "lm-final":
         _worker_lm_finalize(args.input, args.output)
     elif args.worker_kind == "lm-direct":
-        _worker_lm_direct(args.output)
+        _worker_lm_direct(args.output_dir)
+    elif args.worker_kind == "lm-split":
+        _worker_lm_split(args.input, args.output_dir)
     elif args.worker_kind == "print-group":
         _worker_print_group(args.group, args.output_dir)
     elif args.worker_kind == "review-group":
@@ -929,7 +989,7 @@ def _parser() -> argparse.ArgumentParser:
     step.add_argument("--manifest", required=True, type=Path)
     step.add_argument(
         "--kind", required=True,
-        choices=("split", "attachments", "assembled"))
+        choices=("split", "lm_split", "attachments", "assembled"))
     step.add_argument("--output", required=True, type=Path)
 
     worker = commands.add_parser("worker", help=argparse.SUPPRESS)
@@ -946,7 +1006,10 @@ def _parser() -> argparse.ArgumentParser:
     lm_final.add_argument("--input", required=True, type=Path)
     lm_final.add_argument("--output", required=True, type=Path)
     lm_direct = workers.add_parser("lm-direct", help=argparse.SUPPRESS)
-    lm_direct.add_argument("--output", required=True, type=Path)
+    lm_direct.add_argument("--output-dir", required=True, type=Path)
+    lm_split = workers.add_parser("lm-split", help=argparse.SUPPRESS)
+    lm_split.add_argument("--input", required=True, type=Path)
+    lm_split.add_argument("--output-dir", required=True, type=Path)
     print_group = workers.add_parser(
         "print-group", help=argparse.SUPPRESS)
     print_group.add_argument(
@@ -967,7 +1030,7 @@ def _parser() -> argparse.ArgumentParser:
     step_worker.add_argument("--manifest", required=True, type=Path)
     step_worker.add_argument(
         "--kind", required=True,
-        choices=("split", "attachments", "assembled"))
+        choices=("split", "lm_split", "attachments", "assembled"))
     step_worker.add_argument("--output", required=True, type=Path)
     return parser
 

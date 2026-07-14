@@ -23,7 +23,8 @@ There are now two intentionally isolated systems:
   web into the LM core and has no separate keel.
   Floor mode has no bridge tail and requires its separate bolted floor
   support before carrying drivers; tweeter, outline, and retention remain
-  selectable add-ons.
+  selectable add-ons. The canonical LM is monolithic; an optional two-print
+  keyed split may replace it, but is never added to it.
 
 Both systems are generated in `floor_stand/` and `no_floor_stand/`.
 Their review sheets are `baffle_cable_routing_proud.png` (normal R6P
@@ -45,6 +46,25 @@ drivers (W22EX001 / 10F) refer to the same cutout/pilot geometry.
 | **V1** | vase | Thin FLUSH vase: 11.5 (material z 6.8..18.3). Crescent re-derived (4.0 clamp seat at stock z); tweeter septum 11.5 (shorter standoffs, pair spacing -6.8); one shared front plane. | `lx521_top_v1_4of4_vase` |
 | **V1L** | bottom + mids | Thin FLUSH LM section: 11.5 (z 6.8..18.3 -- SAME plane as the V1 vase: no seam-B step), including both 6-mm seam-B male teeth that project into the vase. Smoothstep ramp y=78..96 to the full strip. Ø8.2 LM duct is the 11.5 binder. Its keyed Ø8.2 UM alternate exits `mid_right` at Q=(13.497063, 307.618796, 6.8) on the 283° axis; seam B/top are untouched. | `lx521_top_v1l_1..3of4` (its `--variant v1l` export bundles the unchanged V1 vase = the complete ~12 mm baffle) |
 | **V1LF R6F** | legacy four-piece baffle; replaced by two mandatory carriers plus add-ons | **Extreme barebone flush carriers**: LM Ø190 opening / Ø221.2 seat / nominal R113.0 lip; UM Ø82 opening / Ø98.6 seat / R51.7 outside. Two Ø9 rounded M3 half-lap ears at x=±32.0 set the 165.100 mm spacing. V1LF-only LM axes rotate to 0/60/120/180/240/300° on the unchanged Ø209.5 PCD. Six actual Ø5×2 magnets use global Ø5.2×2.2 pockets: preserve the flush upper LM pair at 64°/116°, add a flush lower LM pair at 224°/316° with at least 23.0 mm nearest-insert edge clearance, and keep the UM pair flush at 50.5°/129.5°, z=15.1. The LM 224° pocket remains at z=12.55; the route-adjacent 316° pocket uses the Z-preferred z=15.40 site and retains a closed 0.30 mm front skin. Hold all six magnets flush during bonding; the extra 0.2 mm pocket depth is adhesive allowance, not a bottoming datum. Neither carrier has proud magnet ears. Direct UM-to-tweeter ears sit at x=±24, y=421.5. UM is buried in an Ø8.2 passage only inside LM, then runs free behind UM with no printed UM-carrier rear duct. T is buried in an Ø6.0 passage through LM/UM, then runs free behind the tweeter crescent, which has no printed cable arc. Every surviving named insert bypass has a deep full-width burial web; the D7.8 LM lead is a free span without a printed micro-duct. The physical T/UM routes cross at 82.67° with no two-duct separator-web claim. No-floor LM includes the front-flush bridge plate at z=5.3..18.3, with a soft cubic blend into R113, four unchanged rear insert bores, two centered rear cable mouths at x=±5/y=82, 6.2 mm front floors, and no geometry behind the existing LM-pad envelope; the floor LM has no bridge plate and keeps supported ring feeds. The tweeter carrier is a separate add-on; V1LF has no printed grommet. | `lx521_top_v1lf_core_1of2_lm_carrier.stl`, `lx521_top_v1lf_core_2of2_um_carrier.stl` |
+
+The V1LF LM print form is a separate choice inside the same R6F variant. The
+canonical `lx521_top_v1lf_core_1of2_lm_carrier.stl` is one solid. On a 220 mm
+square bed, replace it with **both**
+`lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl` and
+`lx521_top_v1lf_optional_lm_keyed_2of2_top.stl`; never combine either half with
+the monolithic carrier. Their state-specific final geometry is cut at world
+Y=172.481 mm with a zero-gap planar butt. The authoritative measured Z26°/Z45°
+X×Y footprints are 198.79×138.22 / 210.47×210.47 mm in floor state and
+198.79×205.51 / 210.47×210.47 mm in no-floor state. One concealed right-hand
+straight rounded tongue/blind-socket pair is carved wholly inside the existing
+R110.6..R113 lip. The tongue is 0.8 mm wide and engages 3.5 mm along its
+tangential insertion axis, approximately 75.23° from +X. It adds no external
+protrusion, envelope growth, or extra screw, and registers the loose halves but
+has no
+standalone retention/load credit; the installed LM driver flange
+and all normal LM fasteners provide the structural splice. This optional form
+remains pending tongue/socket fit, full-seat, coplanarity, route-seam,
+cable-pull-through, and driver-installed 1g/3g/5g proof.
 
 **V1 vs V1L:** V1 = thin TOP piece; V1L = thin BOTTOM+MIDS. Pair them
 for the full front-flush thin baffle; either also works alone on the
@@ -195,6 +215,11 @@ identity, coupon evidence, structural proof and signed authorization in
   rotation that puts the terminal carrier at the 283-degree witness.
 * R6F collar structural joint: 2x M3 through-bolts through the half-laps;
   choose length, washers, and nuts against the printed 11.5 mm stack.
+* R6F optional LM split: assemble both front faces down on one flat datum and
+  fully seat the bottom half's one concealed right-hand straight rounded tongue
+  in the top half's blind socket. The pair registers alignment only; assign it no
+  standalone retention/load credit. The LM flange and all normal
+  LM fasteners provide the installed splice across the Y=172.481 mm seam.
 * R6F floor support: use long driver-side M5 screws through the rotated
   180/240/300° carrier clearances into three rear-installed support
   heat-sets. It has no LM magnet cups/arms; the free LM-lead opening is only
@@ -273,6 +298,13 @@ published 61 °C heat-deflection temperature is not an assembly service
 rating; direct sun, a closed vehicle, or another hot environment
 requires a suitable material and a proof test at the actual maximum
 service temperature.
+
+The monolithic-LM screen does not qualify the optional keyed split by
+inheritance. Its concealed tongue/socket remains at zero standalone retention and
+structural credit; separately record tongue/socket fit, full seating,
+coplanarity, route-seam continuity, cable pull-through, and
+driver-flange-installed 1g/3g/5g proof for each selected floor/no-floor split
+candidate.
 Record the complete floor/no-floor candidate identity, print and insert
 process, load fixture/history, measurements, evidence hashes and independent
 release signoff in `V1LF_PHYSICAL_QUALIFICATION.md`. Evidence from one state
@@ -283,6 +315,10 @@ does not authorize the other.
 Each stand-state folder contains:
 
 - `top_baffle_nd25fw4_v1lf_split.step` — mandatory two-collar core;
+- `top_baffle_nd25fw4_v1lf_lm_split.step` — optional two-print LM form,
+  mutually exclusive with the monolithic LM carrier;
+- `stl/lx521_top_v1lf_optional_lm_keyed_{1of2_bottom,2of2_top}.stl` —
+  the two parts required when that optional LM form is selected;
 - `top_baffle_nd25fw4_v1lf_attachments.step` — state-owned printable
   attachments; its floor support is required in floor state, while the
   remaining modules are optional;

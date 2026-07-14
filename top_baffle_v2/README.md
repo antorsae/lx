@@ -22,6 +22,7 @@ deliberately removes the full outline and retains only two collars.
 | `top_baffle_nd25fw4_cables.py` | Proud-family **R6P** subtractive routing and routing-profile dispatch: standard B2/C7/V0/V1 UM tail plus the keyed V1L-only 283-degree alternate |
 | `top_baffle_nd25fw4_v1l.py` / `_split.py` | Thin R6P bottom+mids; its alternate UM tail and rear-face exit remain wholly in `piece_mid_right`, so the shared top/vase is unchanged |
 | `top_baffle_nd25fw4_v1lf.py` / `_split.py` | Extreme V1LF core: LM/UM flush-driver collars, rounded LM-to-UM M3 half-laps, six flush-buried lip magnets (four LM, two UM), an UM route buried only in the LM carrier, a T route buried in the LM/UM carriers, free rear UM/tweeter spans, a free LM cable span, and—only without the floor stand—the softly blended monolithic stock-bridge plate |
+| `top_baffle_nd25fw4_v1lf_lm_split.py` | Optional, mutually exclusive two-print form of the finalized V1LF LM carrier: exact zero-gap world-Y butt seam and one concealed right-hand straight rounded tongue/blind-socket registration pair carved wholly inside the existing LM lip. The 0.8 mm tongue engages 3.5 mm along its tangential insertion axis (~75.23° from +X). It adds no external protrusion, extra fastener, envelope growth, or standalone retention/load credit; the monolithic LM remains canonical. |
 | `top_baffle_nd25fw4_v1lf_route.py` | Exact R6F printed-owner segments and physical cable continuations: 0.8 mm minimum walls and 0.85 mm seat roof on the surviving buried UM/T spans, full-width longitudinal burial webs plus solid roof-to-bore saddles at every named insert-bypass Z bump, free UM cable behind the UM carrier, free T cable behind the tweeter crescent, and the 82.67° physical crown crossing |
 | `top_baffle_nd25fw4_v1lf_bridge.py` | Immutable four-hole bridge datum, fused 62 mm insert core with soft cubic shoulders and two centered rear cable entries at the deepest existing LM-pad depth (no separate keel or rear ribs), hardware proxies, and an opening-aware biaxial 4 kg sustained-1g/3g/5g structural screen; floor mode has no plate |
 | `top_baffle_nd25fw4_v1lf_attachments.py` | Separate floor/NL8 support (required in floor state) and optional direct blind-M3 tweeter crescent; any cable retention is external/non-modeled, and magnets receive zero structural load credit |
@@ -293,7 +294,9 @@ the top level. The `LX_STAND_FOOT` environment flag defaults to 1.
 | lx521_top_c7base_4of4_vase_b2 | same part as base 4of4 (re-tessellated file) | C7 = same vase |
 | lx521_top_v0_4of4_vase / v1_4of4_vase | as base 4of4 | V0 / V1 vase experiments |
 | `lx521_top_v1l_1..3of4_*` + re-exported 4of4 vase | as proud base 1..4of4 | keyed V1L bottom/mids; its 283-degree alternate is confined to 3of4 `mid_right`, while 4of4 is the unchanged V1 vase |
-| `lx521_top_v1lf_core_1of2_lm_carrier.stl` | Ø226 collar, rotated 0/60/120/180/240/300° inserts, two rounded LM-to-UM ears, four flush-buried R113-lip magnets, and the LM-owned buried UM/T route segments; the D7.8 LM lead is free, and the no-floor file includes the softly blended front-flush bridge plate with centered rear UM/T entries | mandatory R6F LM core |
+| `lx521_top_v1lf_core_1of2_lm_carrier.stl` | Ø226 collar, rotated 0/60/120/180/240/300° inserts, two rounded LM-to-UM ears, four flush-buried R113-lip magnets, and the LM-owned buried UM/T route segments; the D7.8 LM lead is free, and the no-floor file includes the softly blended front-flush bridge plate with centered rear UM/T entries | canonical print form of the mandatory R6F LM carrier; print this **or** both optional keyed halves, never both forms |
+| `lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl` | authoritative measured Z26° footprint: floor **198.79 × 138.22**; no-floor **198.79 × 205.51** | optional replacement print form for the canonical LM; requires the matching top half |
+| `lx521_top_v1lf_optional_lm_keyed_2of2_top.stl` | authoritative measured Z45° footprint: **210.47 × 210.47** in both states | optional replacement print form for the canonical LM; requires the matching bottom half |
 | `lx521_top_v1lf_core_2of2_um_carrier.stl` | Ø103.4 collar, two rounded LM-to-UM ears, direct tweeter-joint halves, two flush-buried magnets, and the buried T continuation with fully solid-webbed 328°/58° insert bypasses; the UM cable is free behind this carrier and has no printed rear duct | mandatory R6F UM core |
 | `lx521_top_v1lf_addon_mount_floor_support.stl` | floor state only | required open-rail floor/NL8 support add-on on the rotated 180/240/300° W22 axes; it has no obsolete LM magnet cups/arms and retains only physical-cable-plus-clearance space for the free LM lead |
 | `lx521_top_v1lf_addon_tweeter_crescent.stl` | cropped V1 crescent + direct blind-M3 half-laps; no printed T-cable arc or conduit | optional R6F face-to-face tweeter carrier; attaches at x=±24, y=421.5, with the T cable free behind it |
@@ -303,7 +306,9 @@ the top level. The `LX_STAND_FOOT` environment flag defaults to 1.
 | lx521_polar_base_1..2of2 | Ø216 / 169×185 | polar-measurement turntable under the stand foot (floor_stand only) |
 
 Stable routing/fit review files in each state folder are
-`top_baffle_nd25fw4_v1lf_split.step` (mandatory two-piece core),
+`top_baffle_nd25fw4_v1lf_split.step` (mandatory two-carrier core),
+`top_baffle_nd25fw4_v1lf_lm_split.step` (the optional two-print LM form;
+mutually exclusive with the monolithic LM carrier),
 `top_baffle_nd25fw4_v1lf_attachments.step` (separate add-ons, including
 the required floor-state support),
 `top_baffle_nd25fw4_v1lf_assembled.step` (review assembly), and
@@ -652,6 +657,29 @@ keeps only a 0.85 mm two-extrusion membrane. Narrow outer lips, local
 blind-insert floors/bosses, calculated spokes, surviving buried-route covers, and
 the explicit mechanical interfaces are the retained material.
 
+The canonical LM carrier remains one monolithic print. For a 220 mm square
+bed, it may instead be printed as the mutually exclusive pair
+`lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl` and
+`lx521_top_v1lf_optional_lm_keyed_2of2_top.stl`; do not install either half
+with the monolithic LM. The pair is cut from the finalized state-specific LM
+at world **Y=172.481 mm** with an exact **zero-gap planar butt**, so both buried
+route lumens cross the seam without being redrawn. One concealed right-hand pair is
+carved wholly inside the existing R110.6..R113 lip: the bottom owns one
+straight rounded 0.8 mm tongue and the top owns its blind socket. The tongue
+engages 3.5 mm along a tangential insertion axis approximately 75.23° from
++X. It creates no external protrusion, envelope growth, extra screw, or
+standalone retention/load credit.
+Assemble the two front faces down on one flat datum and confirm full tongue
+seating, coplanarity, and route-seam continuity, then install the LM driver:
+its flange and all normal LM fasteners are the installed structural splice
+across the seam. The authoritative measured X×Y footprints are
+**198.79×138.22 mm** (floor bottom), **198.79×205.51 mm** (no-floor bottom),
+and **210.47×210.47 mm** (top in either state), using the recorded Z26°/Z45°
+rotations. This option is still **PENDING** until tongue/socket fit, full-seat
+and coplanarity evidence, route-seam inspection, cable pull-through, and driver-installed
+1g/3g/5g proof are recorded; monolithic-LM evidence does not qualify the split
+form.
+
 Everything else is a separate add-on artifact: the floor-state open-rail
 floor/NL8 support (required to complete the floor-state six-axis W22
 fastening and stand load path), the optional V1 face-to-face tweeter
@@ -774,6 +802,12 @@ epoxy and clamp); the outline kinks register the parts.
   buried-route mouths and free-cable paths. The longer no-floor LM+solid-web core uses the
   validated out-of-plane orientation recorded by the exporter. Preview
   every closed bump and optional add-on separately.
+- If the optional V1LF LM keyed split is selected instead, print both halves
+  flat and use the exporter's Z26° bottom / Z45° top rotations; it replaces,
+  rather than accompanies, the monolithic LM. The concealed tongue/socket
+  remains
+  inside the existing lip, so it creates no external protrusion or envelope
+  growth.
 
 ## Assembly
 
@@ -788,7 +822,14 @@ the real Fastons, boots, service loop, dedicated split TPU grommet, and
 measured withdrawal before installing the MU.
 
 **R6F:** first prove the real MU terminal/Faston fit with coupon 9 and
-the review STEP. Bolt the two collars together at the rounded x=±32.0,
+the review STEP. If the optional LM print split is selected, use both halves
+and omit the monolithic LM. With both front faces down on one flat datum, seat
+the bottom half's single concealed right-hand straight rounded tongue fully in
+the top half's blind socket; verify full seating, coplanarity, the closed route
+seam, and unobstructed UM/T cable pull-through. Hold that registration while lifting the
+LM for driver fit-up. The tongue/socket has no standalone retention or load
+credit; only the installed LM flange and its normal fasteners splice the seam.
+Bolt the two carriers together at the rounded x=±32.0,
 y=315.770 half-lap ears on a flat front-face datum and verify the
 165.100 mm axis spacing. Place the LM cable in its short free span, dry-fish
 the UM and shared tweeter cables through their buried owner segments, and

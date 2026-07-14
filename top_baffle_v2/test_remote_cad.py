@@ -571,7 +571,8 @@ def test_profile_specific_stl_dag() -> None:
         env=os.environ.copy(),
     )
     assert local_result.stdout.count("--v1l-piece") == 5
-    assert local_result.stdout.count("--v1lf-part") == 4
+    assert local_result.stdout.count("--v1lf-part") == 5
+    assert "--v1lf-part lm_split" in local_result.stdout
 
 
 def test_local_checker_interpreter() -> None:

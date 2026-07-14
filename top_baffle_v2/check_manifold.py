@@ -38,6 +38,7 @@ from write_v1lf_release_manifest import (
     QUALIFICATION_RECORD,
     expected_artifact_names,
     native_stage_record,
+    qualification_record,
     sha256_file,
     source_hashes,
 )
@@ -259,16 +260,7 @@ def _release_manifest_errors(state_dir: Path) -> list[str]:
             errors.append(
                 f"{state}: manifest {key}={data.get(key)!r}, "
                 f"expected {expected!r}")
-    expected_qualification = {
-        "status": "pending_physical_fit",
-        "release_authorized": False,
-        "physical_measure_required": True,
-        "record": QUALIFICATION_RECORD.name,
-        "record_sha256": sha256_file(QUALIFICATION_RECORD),
-        "reason": (
-            "MU reference omits terminals; modeled 12 mm pull has "
-            "zero positive release overtravel margin"),
-    }
+    expected_qualification = qualification_record()
     if data.get("qualification") != expected_qualification:
         errors.append(
             f"{state}: manifest physical qualification record/status is stale")
@@ -326,6 +318,7 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
     state = state_dir.name
     required = {
         "top_baffle_nd25fw4_v1lf_split.step",
+        "top_baffle_nd25fw4_v1lf_lm_split.step",
         "top_baffle_nd25fw4_v1lf_attachments.step",
         "top_baffle_nd25fw4_v1lf_assembled.step",
         "top_baffle_nd25fw4_um_fit.step",
@@ -397,6 +390,7 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
 
     attachments = state_dir / "top_baffle_nd25fw4_v1lf_attachments.step"
     split = state_dir / "top_baffle_nd25fw4_v1lf_split.step"
+    lm_split = state_dir / "top_baffle_nd25fw4_v1lf_lm_split.step"
     assembled = state_dir / "top_baffle_nd25fw4_v1lf_assembled.step"
     if attachments.is_file():
         has_support = _contains_bytes(
@@ -435,6 +429,37 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
             "core STEP")
         if token_error:
             errors.append(token_error)
+        for optional in (
+                b"optional_lm_keyed_1of2_bottom",
+                b"optional_lm_keyed_2of2_top"):
+            if _contains_bytes(split, optional):
+                errors.append(
+                    f"{state}: canonical core STEP contains mutually "
+                    f"exclusive LM split child {optional.decode('ascii')}")
+    if lm_split.is_file():
+        token_error = _state_token_error(
+            lm_split,
+            (b"lx521_v1lf_r6f_optional_lm_keyed_split_floor"
+             if state == "floor_stand" else
+             b"lx521_v1lf_r6f_optional_lm_keyed_split_no_floor"),
+            (b"lx521_v1lf_r6f_optional_lm_keyed_split_no_floor"
+             if state == "floor_stand" else
+             b"lx521_v1lf_r6f_optional_lm_keyed_split_floor"),
+            "optional LM split STEP")
+        if token_error:
+            errors.append(token_error)
+        for child in (
+                b"optional_lm_keyed_1of2_bottom",
+                b"optional_lm_keyed_2of2_top"):
+            if not _contains_bytes(lm_split, child):
+                errors.append(
+                    f"{state}: optional LM split STEP lacks child "
+                    f"{child.decode('ascii')}")
+        for canonical in (b"core_lm_carrier", b"core_um_carrier"):
+            if _contains_bytes(lm_split, canonical):
+                errors.append(
+                    f"{state}: optional LM split STEP contains canonical "
+                    f"core child {canonical.decode('ascii')}")
     if assembled.is_file():
         free_lm_token = b"REFERENCE_LM_D7p8_short_free_span_no_micro_duct"
         obsolete_lm_token = b"REFERENCE_LM_D7p8_integral_270deg_lead"
@@ -500,6 +525,13 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
                 errors.append(
                     f"{state}: assembled STEP retains removed V1LF "
                     f"grommet child {removed.decode('ascii')}")
+        for optional in (
+                b"optional_lm_keyed_1of2_bottom",
+                b"optional_lm_keyed_2of2_top"):
+            if _contains_bytes(assembled, optional):
+                errors.append(
+                    f"{state}: canonical assembled STEP contains mutually "
+                    f"exclusive LM split child {optional.decode('ascii')}")
     fit_step = state_dir / "top_baffle_nd25fw4_um_fit.step"
     if fit_step.is_file():
         for removed in (
@@ -521,6 +553,8 @@ def _v1lf_manifest_errors(root: Path) -> list[str]:
     expected = {
         "lx521_top_v1lf_core_1of2_lm_carrier.stl",
         "lx521_top_v1lf_core_2of2_um_carrier.stl",
+        "lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl",
+        "lx521_top_v1lf_optional_lm_keyed_2of2_top.stl",
         "lx521_top_v1lf_addon_tweeter_crescent.stl",
     }
     if state == "floor_stand":
@@ -686,6 +720,19 @@ def main() -> int:
                 manifest_errors.append(
                     f"{root.parent.name}: physical qualification is pending; "
                     "candidate artifacts must not be released")
+                continue
+            configurations = qualification.get("configurations")
+            if (qualification.get("authorization_scope")
+                    != "all_shipped_lm_print_forms"
+                    or not isinstance(configurations, dict)
+                    or not configurations
+                    or any(
+                        not isinstance(record, dict)
+                        or record.get("release_authorized") is not True
+                        for record in configurations.values())):
+                manifest_errors.append(
+                    f"{root.parent.name}: every shipped LM print form must "
+                    "be independently authorized before release")
     for error in manifest_errors:
         print(f"  DEFECT {error}")
     bad += len(manifest_errors)
@@ -696,6 +743,7 @@ def main() -> int:
         if floor and no_floor:
             for name in (
                     "top_baffle_nd25fw4_v1lf_split.step",
+                    "top_baffle_nd25fw4_v1lf_lm_split.step",
                     "top_baffle_nd25fw4_v1lf_attachments.step",
                     "top_baffle_nd25fw4_v1lf_assembled.step",
                     "top_baffle_nd25fw4_um_fit.step"):
@@ -729,6 +777,7 @@ def main() -> int:
                             f"identical: {name}")
             for name in (
                     "stl/lx521_top_v1lf_core_1of2_lm_carrier.stl",
+                    "stl/lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl",
                     "stl/lx521_coupon_12_v1lf_closed_bore_bump.stl"):
                 a, b = floor / name, no_floor / name
                 if (a.is_file() and b.is_file()

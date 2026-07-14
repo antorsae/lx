@@ -32,6 +32,7 @@ if __name__ == "__main__":
 from build123d import Plane, Pos, Rot, Text, export_stl, extrude, import_brep
 
 BED_MM = 256.0
+V1LF_OPTIONAL_LM_SPLIT_BED_MM = 220.0
 
 # A rigid OCC Location can leave mathematically-zero coordinates as tiny
 # nonzero values on only one of two adjacent face triangulations.  Binary
@@ -48,6 +49,8 @@ STL_TRANSFORM_ZERO_EPSILON_MM = 2.0e-7
 # rotation can fit the complete three-dimensional envelope.
 BED_ROT_Z = {
     "v1lf_core_1of2_lm_carrier": 28.0,
+    "v1lf_optional_lm_keyed_1of2_bottom": 26.0,
+    "v1lf_optional_lm_keyed_2of2_top": 45.0,
     "v1lf_addon_mount_floor_support": 70.0,
 }
 V1LF_NO_FLOOR_LM_TILT_X_DEG = 45.0
@@ -247,7 +250,8 @@ def main() -> None:
                          "LM-knife-taper base pieces (attachments and "
                          "piece_top are shared with b2)")
     ap.add_argument(
-        "--v1lf-part", choices=("lm", "um", "support", "tweeter"),
+        "--v1lf-part",
+        choices=("lm", "lm_split", "um", "support", "tweeter"),
         help="export one staged R6F group; omit on osado to mesh the whole "
              "state in one guarded process")
     ap.add_argument(
@@ -317,6 +321,8 @@ def main() -> None:
         expected = {
             "lx521_top_v1lf_core_1of2_lm_carrier.stl",
             "lx521_top_v1lf_core_2of2_um_carrier.stl",
+            "lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl",
+            "lx521_top_v1lf_optional_lm_keyed_2of2_top.stl",
             "lx521_top_v1lf_addon_tweeter_crescent.stl",
         }
         if stand_mode == "1":
@@ -392,8 +398,11 @@ def main() -> None:
             orientation = f" @ Z{bed_rotation:g}deg"
         bb = solid.bounding_box()
         size = bb.size
-        fits = (size.X <= BED_MM and size.Y <= BED_MM
-                and size.Z <= BED_MM)
+        bed_limit = (
+            V1LF_OPTIONAL_LM_SPLIT_BED_MM
+            if "v1lf_optional_lm_keyed_" in name else BED_MM)
+        fits = (size.X <= bed_limit and size.Y <= bed_limit
+                and size.Z <= bed_limit)
         if not fits:
             misfits.append(name)
         moved = Pos(-bb.min.X, -bb.min.Y, -bb.min.Z) * solid
@@ -427,14 +436,15 @@ def main() -> None:
         print(
             f"{name:22s} {size.X:7.2f} x {size.Y:7.2f} x {size.Z:5.2f} mm  "
             f"volume {solid.volume / 1000.0:7.1f} cm3  "
-            f"bed fit: {'OK' if fits else 'DOES NOT FIT'}"
+            f"bed fit <= {bed_limit:g}: "
+            f"{'OK' if fits else 'DOES NOT FIT'}"
             f"{orientation}"
             f"  mesh {mesh_facts['triangles']} tris/strict"
             f"  transform-zero fixes {canonicalized_zeros}"
             f"  -> {path.name}"
         )
     if misfits:
-        sys.exit(f"ERROR: piece(s) exceed the {BED_MM:.0f} mm bed: "
+        sys.exit("ERROR: piece(s) exceed their configured bed envelope: "
                  + ", ".join(misfits))
 
 

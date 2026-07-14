@@ -1,8 +1,11 @@
 """R6F V1LF core-only STEP entry point.
 
 The historical four-piece, full-outline V1LF was intentionally removed.
-The print split is intrinsic: one LM carrier and one UM carrier,
-registered by two rounded M3 half-lap ears.  Every non-driver function is an add-on
+The mandatory core is intrinsically two-carrier: one LM carrier and one UM
+carrier, registered by two rounded M3 half-lap ears.  The LM remains
+available as this monolithic carrier; a mutually-exclusive top/bottom
+hidden-keyed print option is exported by
+``top_baffle_nd25fw4_v1lf_lm_split``. Every non-driver function is an add-on
 from ``top_baffle_nd25fw4_v1lf_attachments``.
 
 In no-floor state the immutable stock-bridge XY interface sits in one

@@ -109,6 +109,7 @@ GENS := top_baffle_nd25fw4_b2_split top_baffle_nd25fw4_b2 \
         top_baffle_nd25fw4_v0 top_baffle_nd25fw4_v0_split \
         top_baffle_nd25fw4_v1 top_baffle_nd25fw4_v1_split \
         top_baffle_nd25fw4_v1l_split top_baffle_nd25fw4_v1lf_split \
+        top_baffle_nd25fw4_v1lf_lm_split \
         top_baffle_nd25fw4_v1lf_attachments \
         top_baffle_nd25fw4_v1lf_assembled \
         top_baffle_nd25fw4_um_fit \
@@ -138,7 +139,7 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
         check_floor_v1lf_um_burial check_no_floor_v1lf_um_burial \
         check_floor_v1lf_backfills check_no_floor_v1lf_backfills \
         check_route_contract check_bump_brep check_floor_support \
-        check_no_floor_lm_mesh manifold clean
+        check_no_floor_lm_mesh check_v1lf_lm_split manifold clean
 all: validate_v1lf_stages floor_stand no_floor_stand common
 	$(RUN) check_manifold.py
 
@@ -285,6 +286,16 @@ check_no_floor_lm_mesh: test_v1lf_r6f.py $(SRCS) $(STL_EXPORT_SRCS)
 	LX_R6F_SINGLE_CHECK=test_no_floor_lm_core $(RUN) test_v1lf_r6f.py
 	$(MAKE) --no-print-directory no_floor_stand/stl/.stamp_v1lf
 
+# Focused two-state gate for the optional no-extra-fastener LM subdivision.
+# builds the authoritative native stages first, verifies both exact split
+# BREPs, exports strict STLs, and writes the state-labelled review STEP.
+check_v1lf_lm_split: validate_v1lf_stages \
+        floor_stand/stl/.stamp_v1lf no_floor_stand/stl/.stamp_v1lf \
+        floor_stand/top_baffle_nd25fw4_v1lf_lm_split.step \
+        no_floor_stand/top_baffle_nd25fw4_v1lf_lm_split.step
+	LX_R6F_SINGLE_CHECK=test_floor_lm_keyed_split $(RUN) test_v1lf_r6f.py
+	LX_R6F_SINGLE_CHECK=test_no_floor_lm_keyed_split $(RUN) test_v1lf_r6f.py
+
 # Lightweight focused gate for deterministic route dimensions and policy.
 # Keep it remotely guarded because importing the final CAD modules initializes
 # OCC even though this check itself performs no heavy Boolean construction.
@@ -351,6 +362,7 @@ ifeq ($(LX_CAD_EXECUTION),remote-worker)
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=v1lf $(RUN) export_piece_stls.py --variant v1lf --v1lf-stage-manifest $(1)/.v1lf_stage/manifest.json --outdir $(1)/stl
 else
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=v1lf $(RUN) export_piece_stls.py --variant v1lf --v1lf-part lm --v1lf-stage-manifest $(1)/.v1lf_stage/manifest.json --outdir $(1)/stl
+	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=v1lf $(RUN) export_piece_stls.py --variant v1lf --v1lf-part lm_split --v1lf-stage-manifest $(1)/.v1lf_stage/manifest.json --outdir $(1)/stl
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=v1lf $(RUN) export_piece_stls.py --variant v1lf --v1lf-part um --v1lf-stage-manifest $(1)/.v1lf_stage/manifest.json --outdir $(1)/stl
 	$(if $(filter 1,$(2)),LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=v1lf $(RUN) export_piece_stls.py --variant v1lf --v1lf-part support --v1lf-stage-manifest $(1)/.v1lf_stage/manifest.json --outdir $(1)/stl,@:)
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=v1lf $(RUN) export_piece_stls.py --variant v1lf --v1lf-part tweeter --v1lf-stage-manifest $(1)/.v1lf_stage/manifest.json --outdir $(1)/stl
@@ -402,6 +414,7 @@ $(1)/baffle_cable_routing_v1lf.png: $(SRCS) gen_cable_routing.py \
 $(1)/v1lf_release_manifest.json: $(V1LF_RELEASE_SRCS) \
         $(1)/stl/.stamp_v1lf $(1)/stl/.stamp_coupon \
         $(1)/top_baffle_nd25fw4_v1lf_split.step \
+        $(1)/top_baffle_nd25fw4_v1lf_lm_split.step \
         $(1)/top_baffle_nd25fw4_v1lf_attachments.step \
         $(1)/top_baffle_nd25fw4_v1lf_assembled.step \
         $(1)/top_baffle_nd25fw4_um_fit.step \
