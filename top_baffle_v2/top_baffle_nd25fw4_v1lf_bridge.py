@@ -1,11 +1,17 @@
-"""Monolithic no-floor V1LF front-flush bridge web and load screen.
+"""Universal V1LF LM-lower front profile and no-floor bridge load screen.
 
 The four stock bridge XY datums are immutable.  In no-floor mode they are
 carried by one solid, shallow web fused directly into the LM carrier.  The
 web occupies exactly the deepest existing LM carrier envelope (the z=5.3
 insert-pad rear datum through the z=18.3 front): it is flush with the front,
 has no rear X-frame or separate depth ribs, and exposes four blind insert
-bores from the rear. Floor mode imports the contract but adds none of it.
+bores from the rear.
+
+Floor and no-floor carriers share one exact wing-contact outline: the union
+of the historic integral-floor stem and no-floor bridge outlines.  The
+no-floor web owns that complete shallow plan.  Floor mode adds only its
+missing shoulder delta through the normal z=6.8..18.3 wing-contact depth, so
+the deep floor leg and the four no-floor blind inserts remain state-specific.
 """
 
 from __future__ import annotations
@@ -40,6 +46,7 @@ from top_baffle_nd25fw4_v1lf_route import (
     TS_DUCT_D,
     TS_LM_ARC_START_DEG,
 )
+from top_baffle_nd25fw4_v1lf_floor import integral_stem_plan_points
 
 # The web matches the deepest existing LM carrier datum: the six insert-pad
 # rear faces at z=5.3. It never reaches the old global z=0 sheet and adds no
@@ -98,6 +105,13 @@ BRIDGE_FUSION_INTERFACE_T = (
     BRIDGE_FUSION_INTERFACE_Z[1] - BRIDGE_FUSION_INTERFACE_Z[0])
 BRIDGE_FUSION_TUNNEL_DEDUCTION_MM = DUCT_D + TS_DUCT_D
 
+# The wing itself occupies z=6.8..18.3.  Both stand states must therefore
+# expose exactly the same external LM-lower plan through this complete depth.
+# A 0.10-mm inward strip makes the floor-only compatibility addition a robust
+# positive-volume union without changing the shared exterior silhouette.
+LM_WING_CONTACT_Z = BRIDGE_FUSION_INTERFACE_Z
+LM_WING_CONTACT_FUSION_OVERLAP_MM = 0.10
+
 # The old panel met the annular cradle through a short rounded top edge. Its
 # two near-vertical corners read as a separate rounded square. The finished
 # silhouette now leaves each x=+/-31 side with a vertical tangent at y=60,
@@ -105,8 +119,8 @@ BRIDGE_FUSION_TUNNEL_DEDUCTION_MM = DUCT_D + TS_DUCT_D
 # The symmetric tangencies sit at 270+/-46 degrees. Filling the complete
 # lower-circle region between those curves creates a continuous, gently
 # flared load path; it adds no rear depth and does not move any insert axis.
-# A 0.5-degree dephase from the 224/316-degree lower magnet axes prevents a
-# tangential pocket/blend coincidence from creating micron-scale BREP edges.
+# The lower LM magnets now live on the straight W64 base sides, so this
+# shoulder tangency is independent of every magnet pocket.
 BRIDGE_BLEND_START_Y = 60.0
 BRIDGE_BLEND_RING_OFFSET_DEG = 45.5
 BRIDGE_BLEND_RIGHT_ANGLE_DEG = (
@@ -246,8 +260,8 @@ def bridge_fusion_cradle_plan():
     return Polygon((*outer, *inner))
 
 
-def bridge_face_plan():
-    """Complete front-flush web silhouette; deliberately no openings/X."""
+def native_bridge_face_plan():
+    """Historic no-floor bridge outline before universal-profile growth."""
     plan = unary_union((
         bridge_solid_web_plan(),
         bridge_soft_blend_plan(),
@@ -274,6 +288,88 @@ def bridge_face_plan():
         raise RuntimeError(
             "front-flush bridge plan pinhole repair failed")
     return plan
+
+
+def common_lm_wing_contact_plan():
+    """State-independent LM-lower outline used by both carriers and wings.
+
+    The union removes no existing material: it preserves the broad no-floor
+    cubic shoulder and the floor stem's complete Y=0 lower tongue.  It is a
+    single opening-free exterior plan; state-specific holes, lumens and deep
+    floor geometry are applied after this common interface is established.
+    """
+    floor_stem = Polygon(integral_stem_plan_points()).buffer(0)
+    plan = unary_union((native_bridge_face_plan(), floor_stem)).buffer(0)
+    if plan.geom_type != "Polygon" or not plan.is_valid or plan.is_empty:
+        raise RuntimeError(
+            "universal LM wing-contact union must be one valid polygon")
+    # The two historic shoulders cross twice per side, enclosing one small
+    # transition pocket on each side.  A universal *exterior* is represented
+    # by the filled outer boundary; the normal R110.6 driver-seat cutter later
+    # removes both pockets because they lie wholly inside that flange recess.
+    # Guard the expected two-pocket topology so this exterior operation cannot
+    # silently hide a future opening outside the driver keepout.
+    if plan.interiors:
+        pocket_areas = tuple(Polygon(ring).area for ring in plan.interiors)
+        if (len(pocket_areas) != 2
+                or not all(18.0 <= area <= 19.0 for area in pocket_areas)):
+            raise RuntimeError(
+                "universal LM wing-contact union developed unexpected "
+                f"pockets: {pocket_areas}")
+        plan = Polygon(plan.exterior)
+    if not plan.is_valid or plan.is_empty or plan.interiors:
+        raise RuntimeError(
+            "universal LM wing-contact exterior must be opening-free")
+    return plan
+
+
+def bridge_face_plan():
+    """Complete universal no-floor front web and wing-contact silhouette."""
+    return common_lm_wing_contact_plan()
+
+
+def floor_wing_contact_profile_addition_plan():
+    """Plan delta that grows the floor stem to the universal front profile.
+
+    The inward owner offset provides a positive fusion strip.  The addition
+    remains inside the universal exterior and is one connected perimeter
+    polygon.  Its sole interior is intentional: that region is already solid
+    floor-stem material, not a cavity in the finished carrier.
+    """
+    floor_stem = Polygon(integral_stem_plan_points()).buffer(0)
+    retained_owner = floor_stem.buffer(
+        -LM_WING_CONTACT_FUSION_OVERLAP_MM, join_style=1)
+    plan = common_lm_wing_contact_plan().difference(
+        retained_owner).buffer(0)
+    if plan.geom_type != "Polygon" or not plan.is_valid or plan.is_empty:
+        raise RuntimeError(
+            "floor LM wing-contact delta must be one valid polygon")
+    if len(plan.interiors) != 1:
+        raise RuntimeError(
+            "floor LM wing-contact delta must retain exactly one existing-"
+            f"stem owner opening; count={len(plan.interiors)}")
+    owner_opening = Polygon(plan.interiors[0])
+    if owner_opening.symmetric_difference(retained_owner).area > 1e-6:
+        raise RuntimeError(
+            "floor LM wing-contact delta owner opening drifted from the "
+            "positive-overlap stem datum")
+    return plan
+
+
+def floor_wing_contact_profile_addition():
+    """Solid floor-profile delta through the wing's z=6.8..18.3 depth.
+
+    The integral W64 stem/foot remains the sole deep floor load path.
+    """
+    plan = floor_wing_contact_profile_addition_plan()
+    addition = _plan_prism(plan, *LM_WING_CONTACT_Z).clean()
+    solids = list(addition.solids())
+    if (not addition.is_valid or len(solids) != 1
+            or solids[0].volume <= 0.01):
+        raise RuntimeError(
+            "floor LM wing-contact delta must be one valid solid; "
+            f"valid={addition.is_valid} solids={len(solids)}")
+    return Part([solids[0]])
 
 
 def _no_floor_feed_lumen_plan():
@@ -556,6 +652,11 @@ def bridge_plan_facts():
     center = L22_CUTOUT[:2]
     vectors = [(x - center[0], y - center[1]) for x, y in BRIDGE_HOLE_XY]
     face_plan = bridge_face_plan()
+    native_plan = native_bridge_face_plan()
+    floor_stem_plan = Polygon(integral_stem_plan_points()).buffer(0)
+    raw_union = unary_union((native_plan, floor_stem_plan)).buffer(0)
+    transition_pocket_areas = tuple(
+        float(Polygon(ring).area) for ring in raw_union.interiors)
     web_plan = bridge_solid_web_plan()
     cradle_plan = bridge_fusion_cradle_plan()
     blend_plan = bridge_soft_blend_plan()
@@ -571,6 +672,22 @@ def bridge_plan_facts():
         "face_opening_count": len(face_plan.interiors),
         "face_outline": tuple(
             (float(x), float(y)) for x, y in face_plan.exterior.coords),
+        "universal_wing_contact_profile": True,
+        "universal_wing_contact_bounds": tuple(map(float, face_plan.bounds)),
+        "universal_wing_contact_area_mm2": float(face_plan.area),
+        "native_bridge_bounds": tuple(map(float, native_plan.bounds)),
+        "native_floor_stem_bounds": tuple(map(
+            float, floor_stem_plan.bounds)),
+        "floor_profile_added_area_mm2": float(
+            face_plan.difference(floor_stem_plan).area),
+        "no_floor_profile_added_area_mm2": float(
+            face_plan.difference(native_plan).area),
+        "transition_pocket_fill_count": len(transition_pocket_areas),
+        "transition_pocket_fill_area_mm2": sum(
+            transition_pocket_areas),
+        "wing_contact_z": LM_WING_CONTACT_Z,
+        "wing_contact_fusion_overlap_mm": (
+            LM_WING_CONTACT_FUSION_OVERLAP_MM),
         "solid_web_plan_area_mm2": float(web_plan.area),
         "solid_web_bounds": tuple(map(float, web_plan.bounds)),
         "solid_web_width_mm": BRIDGE_WEB_WIDTH,

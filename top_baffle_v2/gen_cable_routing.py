@@ -794,6 +794,15 @@ def render_v1lf():
         "um": STYLE["um"][0],
         "t": STYLE["ts"][0],
     }
+    magnet_sites = tuple(side_magnet_sites())
+    if (sum(site["driver"] == "lm" for site in magnet_sites) != 4
+            or sum(site["driver"] == "um" for site in magnet_sites) != 2
+            or any(not site["flush_buried"] for site in magnet_sites)
+            or not math.isclose(SIDE_MAGNET_POCKET_D, 5.2)
+            or not math.isclose(SIDE_MAGNET_DEPTH, 2.2)):
+        raise RuntimeError(
+            "routing view requires four LM and two UM flush D5.2x2.2 "
+            "magnet pockets")
 
     def masked(values, mask):
         return np.ma.masked_where(~mask, values)
@@ -839,6 +848,38 @@ def render_v1lf():
                 color=color, lw=max(1.8, spec["diameter_mm"] * 0.48),
                 alpha=0.92, ls=buried_dash,
                 dash_capstyle="round", zorder=6)
+
+    def draw_magnet_projection(ax, axes):
+        """Project every exact carrier pocket axis into an orthographic view."""
+        for site in magnet_sites:
+            normal = np.asarray(site["normal"], dtype=float)
+            face = np.asarray((
+                site["face"][0], site["face"][1], site["z_mm"]),
+                dtype=float)
+            inner = face.copy()
+            inner[:2] -= SIDE_MAGNET_DEPTH * normal
+            projected = np.asarray((
+                face[axes[0]] - inner[axes[0]],
+                face[axes[1]] - inner[axes[1]],
+            ))
+            if np.linalg.norm(projected) <= 1e-9:
+                # An axis normal to the projection plane is a true circular
+                # D5.2 section, not an ambiguous point marker.  The mirrored
+                # lower LM pockets coincide in YZ and are intentionally drawn
+                # twice at the same exact datum.
+                ax.add_patch(plt.Circle(
+                    (face[axes[0]], face[axes[1]]),
+                    SIDE_MAGNET_POCKET_D / 2.0,
+                    fc="none", ec="tab:orange", lw=1.25, zorder=10))
+                ax.plot(
+                    face[axes[0]], face[axes[1]], marker=".", ms=2.6,
+                    color="tab:orange", zorder=10.2)
+            else:
+                ax.plot(
+                    [inner[axes[0]], face[axes[0]]],
+                    [inner[axes[1]], face[axes[1]]],
+                    color="tab:orange", lw=2.4, marker="o", ms=3.2,
+                    solid_capstyle="butt", zorder=10)
 
     def draw_core_front(ax):
         for (cx, cy, cut_d), outer, recess, color in (
@@ -894,15 +935,6 @@ def render_v1lf():
                 (x, TWEETER_JOINT_Y), TWEETER_JOINT_HOLE_D / 2.0,
                 fc="white", ec="#76538f", lw=0.8, zorder=8))
 
-        magnet_sites = tuple(side_magnet_sites())
-        if (sum(site["driver"] == "lm" for site in magnet_sites) != 4
-                or sum(site["driver"] == "um" for site in magnet_sites) != 2
-                or any(not site["flush_buried"] for site in magnet_sites)
-                or not math.isclose(SIDE_MAGNET_POCKET_D, 5.2)
-                or not math.isclose(SIDE_MAGNET_DEPTH, 2.2)):
-            raise RuntimeError(
-                "routing view requires four LM and two UM flush D5.2x2.2 "
-                "magnet pockets")
         for site in magnet_sites:
             nx, ny = site["normal"]
             face = np.asarray(site["face"], dtype=float)
@@ -1001,6 +1033,12 @@ def render_v1lf():
             (31.0, 58.0), (128, 40),
             ha="right", fontsize=7.8, color="#31485f",
             arrowprops=dict(arrowstyle="-", color="#31485f"))
+    ax_front.annotate(
+        "lower LM magnets: shared base sides\n"
+        "x=+/-32, y=18, z=12.55; matching Ac/Ae LM-lower receivers",
+        (32.0, 18.0), (104, 72), ha="right",
+        fontsize=7.1, color="tab:orange",
+        arrowprops=dict(arrowstyle="-", color="tab:orange"))
     ax_front.annotate(
         "all route bypass bumps are closed and solid-backed\n"
         "ordinary blind driver bores; zero open windows/cavities",
@@ -1122,6 +1160,12 @@ def render_v1lf():
         lm_lead[:, 2], lm_lead[:, 1],
         color=route_colors["lm"], lw=2.0,
         solid_capstyle="round", zorder=8)
+    draw_magnet_projection(ax_side, (2, 1))
+    ax_side.annotate(
+        "2x lower LM pockets\nD5.2 section; axes +/-X",
+        (12.55, 18.0), (-70.0, 42.0), fontsize=6.9,
+        color="tab:orange",
+        arrowprops=dict(arrowstyle="-", color="tab:orange", lw=0.8))
     ax_side.axvline(0.0, color="0.20", lw=0.7, ls=":", zorder=0)
     ax_side.set_xlim(-158, 24)
     ax_side.set_ylim(-7, 462)
@@ -1211,6 +1255,7 @@ def render_v1lf():
         lm_lead[:, 0], lm_lead[:, 2],
         color=route_colors["lm"], lw=2.0,
         solid_capstyle="round", zorder=8)
+    draw_magnet_projection(ax_top, (0, 2))
     ax_top.axhline(0.0, color="0.20", lw=0.7, ls=":", zorder=0)
     ax_top.set_xlim(-120, 120)
     ax_top.set_ylim(-158 if STAND_FOOT else -8, 24)
@@ -1236,6 +1281,8 @@ def render_v1lf():
         Line2D([0], [0], color=support_color, lw=7, alpha=0.55,
                label=("integral LM-owned floor body"
                       if STAND_FOOT else "fused no-floor bridge web")),
+        Line2D([0], [0], color="tab:orange", lw=3, marker="o",
+               label="flush D5.2 x 2.2 magnet pockets; lower LM at base"),
     ]
     if STAND_FOOT:
         legend.extend([

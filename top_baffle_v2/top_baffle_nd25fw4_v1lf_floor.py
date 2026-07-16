@@ -70,9 +70,34 @@ ROOT_FUSION_OVERLAP_MM = 0.10
 
 FLOOR_LANE_BEND_R_MM = 14.0
 FLOOR_LANE_SERVICE_START_Z_MM = -108.0
-FLOOR_LANE_ROUTE_OVERLAP_MM = 3.0
+# The body-only UM/T sweep stops before the annular feed.  After fusion, the
+# globally phased owner cutter reaches 8 mm backward through this temporary
+# solid bridge, yielding 7.2 mm of final lumen overlap.  This avoids duplicate
+# coincident sweeps at the thin feed wall.  A short forward continuation is
+# retained only in the dependency-light installed-centerline drawing.
+FLOOR_LANE_INSTALLED_PREVIEW_FORWARD_MM = 3.0
+FLOOR_LANE_PREFUSION_HANDOFF_GAP_MM = 0.8
+FLOOR_ROUTE_OWNER_BACKREACH_MM = 8.0
+FLOOR_LANE_EFFECTIVE_OVERLAP_MM = (
+    FLOOR_ROUTE_OWNER_BACKREACH_MM
+    - FLOOR_LANE_PREFUSION_HANDOFF_GAP_MM)
 FLOOR_LANE_BEZIER_START_HANDLE_MM = 20.0
 FLOOR_LANE_BEZIER_END_HANDLE_MM = 25.0
+# UM/T enter the integral stem through native rear mouths at z=5.3.  The
+# floor body must be absent behind the complete printed cover envelope, not
+# merely behind the nominal lumen.  A 0.05-mm Boolean allowance is applied
+# outside the 0.30-mm final-BREP contract probe; it does not enlarge the
+# functional lumen in front of the mouth plane.
+FLOOR_FEED_MOUTH_SHELL_MM = 0.8
+FLOOR_FEED_MOUTH_CONTRACT_CLEARANCE_MM = 0.30
+FLOOR_FEED_MOUTH_BOOLEAN_MARGIN_MM = 0.05
+FLOOR_FEED_MOUTH_RELIEF_Z_MM = (-0.20, PAD_FACE_Z)
+# The free LM lead does not need to approach the centered UM/T feed mouths.
+# Its second R14 turn begins directly where the first R14 turn ends, so the
+# D9 lane reaches its rear mouth at y=38.5 without crossing either long
+# floor-body lane.  The former y=82 endpoint grazed both feed skins; merely
+# moving it to y=74.5 instead crossed the complete UM/T approach cubics.
+FLOOR_LM_FLOAT_FEED_Y_MM = 38.5
 FLOOR_LANE_SPECS = {
     "lm": {
         "x_mm": 0.0,
@@ -81,26 +106,26 @@ FLOOR_LANE_SPECS = {
         "diameter_mm": 9.0,
         # The short LM lead intentionally floats from this rear-facing
         # opening; it does not join either printed annular route.
-        "feed_xyz_mm": (0.0, 82.0, -6.0),
+        "feed_xyz_mm": (0.0, FLOOR_LM_FLOAT_FEED_Y_MM, -6.0),
         "handoff_mode": "rear_open_float",
     },
     "um": {
-        "x_mm": 11.0,
+        "x_mm": 12.0,
         "floor_y_mm": 10.5,
         "stem_z_mm": 12.55,
         "diameter_mm": 8.2,
-        "feed_xyz_mm": (5.0, 82.0, PAD_FACE_Z),
+        "feed_xyz_mm": (8.0, 82.0, PAD_FACE_Z),
         "feed_bearing_deg": 65.0,
         "handoff_mode": "buried_route_overlap",
     },
     "t": {
-        "x_mm": -11.0,
+        "x_mm": -12.0,
         # y=7.5 keeps the complete D6 opening inside the service cavity's
         # y>=4 boundary.  The old y=5.5 station clipped the connector cap.
         "floor_y_mm": 7.5,
         "stem_z_mm": 6.20,
         "diameter_mm": 6.0,
-        "feed_xyz_mm": (-5.0, 82.0, PAD_FACE_Z),
+        "feed_xyz_mm": (-8.0, 82.0, PAD_FACE_Z),
         "feed_bearing_deg": 115.0,
         "handoff_mode": "buried_route_overlap",
     },
@@ -268,17 +293,19 @@ def _floor_lane_overlap_end(name: str):
     feed = spec["feed_xyz_mm"]
     bearing = math.radians(spec["feed_bearing_deg"])
     return (
-        feed[0] + FLOOR_LANE_ROUTE_OVERLAP_MM * math.cos(bearing),
-        feed[1] + FLOOR_LANE_ROUTE_OVERLAP_MM * math.sin(bearing),
+        feed[0] + FLOOR_LANE_INSTALLED_PREVIEW_FORWARD_MM * math.cos(bearing),
+        feed[1] + FLOOR_LANE_INSTALLED_PREVIEW_FORWARD_MM * math.sin(bearing),
         feed[2],
     )
 
 
 def floor_lane_path(name: str):
-    """Production composite path with true R14 arcs and G1 joins.
+    """Floor-body cutter path with true R14 arcs and G1 joins.
 
-    UM and T overlap the corresponding annular route by 3 mm.  LM instead
-    makes a second exact R14 turn through the rear face at y=82, leaving the
+    UM/T stop on their authoritative cubic 0.8 mm before the feed; the later
+    8-mm annular owner-cutter backreach creates the final overlap through
+    ordinary solid body material.  LM instead makes a second exact R14 turn
+    through the rear face before the centered y=82 UM/T feeds, leaving the
     deliberately short terminal lead free rather than recreating a
     micro-duct.
     """
@@ -292,8 +319,10 @@ def floor_lane_path(name: str):
         ThreePointArc(arc_start, arc_mid, arc_end),
     ]
     if spec["handoff_mode"] == "rear_open_float":
-        exit_start = (spec["x_mm"], 68.0, spec["stem_z_mm"])
         radius = FLOOR_LANE_BEND_R_MM
+        exit_start = (
+            spec["x_mm"], spec["feed_xyz_mm"][1] - radius,
+            spec["stem_z_mm"])
         exit_center = (
             spec["x_mm"], exit_start[1], exit_start[2] - radius)
         exit_mid = (
@@ -306,17 +335,14 @@ def floor_lane_path(name: str):
             exit_start[1] + radius,
             exit_start[2] - radius,
         )
+        if math.dist(arc_end, exit_start) > 1.0e-9:
+            edges.append(Line(arc_end, exit_start))
         edges.extend((
-            Line(arc_end, exit_start),
             ThreePointArc(exit_start, exit_mid, exit_end),
             Line(exit_end, spec["feed_xyz_mm"]),
         ))
     else:
-        feed = spec["feed_xyz_mm"]
-        edges.extend((
-            Bezier(*_floor_lane_bezier_points(name)),
-            Line(feed, _floor_lane_overlap_end(name)),
-        ))
+        edges.append(Bezier(*_prefusion_cubic_controls(name)))
     return Wire(edges)
 
 
@@ -330,8 +356,55 @@ def _cubic_point(points, u: float):
         for index in range(3))
 
 
+def _left_cubic_controls(points, u: float):
+    """Exact De Casteljau controls for the cubic interval [0,u]."""
+    p0, p1, p2, p3 = points
+
+    def lerp(left, right):
+        return tuple(
+            (1.0 - u) * left[index] + u * right[index]
+            for index in range(3))
+
+    a = lerp(p0, p1)
+    b = lerp(p1, p2)
+    c = lerp(p2, p3)
+    d = lerp(a, b)
+    e = lerp(b, c)
+    endpoint = lerp(d, e)
+    return p0, a, d, endpoint
+
+
+def _prefusion_cubic_controls(name: str):
+    """Truncate an UM/T cubic at the exact pre-fusion feed setback."""
+    cubic = _floor_lane_bezier_points(name)
+    feed = cubic[-1]
+    target = FLOOR_LANE_PREFUSION_HANDOFF_GAP_MM
+    lower = 0.50
+    upper = 1.0
+    if math.dist(_cubic_point(cubic, lower), feed) <= target:
+        raise RuntimeError(
+            f"{name} floor-lane cubic is too short for its handoff gap")
+    for _index in range(60):
+        parameter = 0.5 * (lower + upper)
+        if math.dist(_cubic_point(cubic, parameter), feed) > target:
+            lower = parameter
+        else:
+            upper = parameter
+    controls = _left_cubic_controls(cubic, 0.5 * (lower + upper))
+    endpoint_gap = math.dist(controls[-1], feed)
+    if not math.isclose(endpoint_gap, target, abs_tol=1.0e-9):
+        raise RuntimeError(
+            f"{name} floor-lane handoff gap drifted to {endpoint_gap:.9f}")
+    return controls
+
+
 def floor_lane_control_points(name: str):
-    """Dependency-light dense preview of the exact production path."""
+    """Dependency-light preview of the installed continuous centerline.
+
+    UM/T include a short forward visual continuation from the unchanged feed;
+    the actual body-only cutter stops 0.8 mm early and the annular owner cutter
+    supplies the final 7.2-mm backreaching overlap.
+    """
     try:
         spec = FLOOR_LANE_SPECS[name]
     except KeyError as exc:
@@ -349,8 +422,11 @@ def floor_lane_control_points(name: str):
             center_z + radius * math.sin(angle),
         ))
     if spec["handoff_mode"] == "rear_open_float":
-        exit_start = (spec["x_mm"], 68.0, spec["stem_z_mm"])
-        points.append(exit_start)
+        exit_start = (
+            spec["x_mm"], spec["feed_xyz_mm"][1] - radius,
+            spec["stem_z_mm"])
+        if math.dist(points[-1], exit_start) > 1.0e-9:
+            points.append(exit_start)
         exit_center_z = spec["stem_z_mm"] - radius
         for index in range(1, 17):
             angle = 0.5 * math.pi * (1.0 - index / 16.0)
@@ -375,6 +451,22 @@ def _floor_lane_cutter(name: str):
     section = Plane(origin=path @ 0, z_dir=path % 0) * Circle(
         spec["diameter_mm"] / 2.0)
     return sweep(section, path=path)
+
+
+def _floor_feed_mouth_relief(name: str):
+    """Shallow rear counter-relief outside one UM/T cover envelope."""
+    spec = FLOOR_LANE_SPECS[name]
+    if spec["handoff_mode"] != "buried_route_overlap":
+        raise ValueError(f"{name} has no annular-route feed mouth")
+    radius = (
+        spec["diameter_mm"] / 2.0
+        + FLOOR_FEED_MOUTH_SHELL_MM
+        + FLOOR_FEED_MOUTH_CONTRACT_CLEARANCE_MM
+        + FLOOR_FEED_MOUTH_BOOLEAN_MARGIN_MM)
+    z0, z1 = FLOOR_FEED_MOUTH_RELIEF_Z_MM
+    feed = spec["feed_xyz_mm"]
+    return Pos(feed[0], feed[1], (z0 + z1) / 2.0) * Cylinder(
+        radius, z1 - z0)
 
 
 def integrated_floor_feature_group(index: int):
@@ -413,7 +505,10 @@ def integrated_floor_feature_group(index: int):
     lane_names = ("lm", "um", "t")
     if 2 <= index < 2 + len(lane_names):
         name = lane_names[index - 2]
-        return f"floor_lane_{name}", (_floor_lane_cutter(name),)
+        cutters = [_floor_lane_cutter(name)]
+        if FLOOR_LANE_SPECS[name]["handoff_mode"] == "buried_route_overlap":
+            cutters.append(_floor_feed_mouth_relief(name))
+        return f"floor_lane_{name}", tuple(cutters)
     raise IndexError(index)
 
 
@@ -447,8 +542,23 @@ def integrated_floor_facts() -> dict:
             "bend_radius_mm": FLOOR_LANE_BEND_R_MM,
             "service_start_z_mm": FLOOR_LANE_SERVICE_START_Z_MM,
             "route_overlap_mm": (
-                FLOOR_LANE_ROUTE_OVERLAP_MM
+                FLOOR_LANE_EFFECTIVE_OVERLAP_MM
                 if spec["handoff_mode"] == "buried_route_overlap" else 0.0),
+            "prefusion_handoff_gap_mm": (
+                FLOOR_LANE_PREFUSION_HANDOFF_GAP_MM
+                if spec["handoff_mode"] == "buried_route_overlap" else 0.0),
+            "owner_cutter_backreach_mm": (
+                FLOOR_ROUTE_OWNER_BACKREACH_MM
+                if spec["handoff_mode"] == "buried_route_overlap" else 0.0),
+            "rear_mouth_relief_radius_mm": (
+                spec["diameter_mm"] / 2.0
+                + FLOOR_FEED_MOUTH_SHELL_MM
+                + FLOOR_FEED_MOUTH_CONTRACT_CLEARANCE_MM
+                + FLOOR_FEED_MOUTH_BOOLEAN_MARGIN_MM
+                if spec["handoff_mode"] == "buried_route_overlap" else 0.0),
+            "rear_mouth_relief_z_mm": (
+                FLOOR_FEED_MOUTH_RELIEF_Z_MM
+                if spec["handoff_mode"] == "buried_route_overlap" else None),
             "preview_points": floor_lane_control_points(name),
         }
     return {

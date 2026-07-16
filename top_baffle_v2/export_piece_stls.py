@@ -17,8 +17,8 @@ import struct
 import sys
 from pathlib import Path
 
-# Direct CLI use gets the same process-tree and free-memory protection as
-# Make recipes. Imports from an already guarded test/export process do not
+# Direct CLI use gets the same process-tree guard policy as Make recipes.
+# Imports from an already guarded test/export process do not
 # re-exec, and ordinary module imports remain side-effect free.
 if __name__ == "__main__":
     import subprocess
@@ -266,7 +266,7 @@ def main() -> None:
                  "piece_top_b2", "grommet"),
         help="build one V1L split piece or its terminal grommet pair; "
              "serial use releases OCC geometry between groups and "
-             "protects the macOS free-memory floor")
+             "reduces the local process-tree RSS peak")
     args = ap.parse_args()
     if args.v1lf_part and args.variant != "v1lf":
         ap.error("--v1lf-part requires --variant v1lf")

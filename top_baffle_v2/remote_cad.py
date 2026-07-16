@@ -53,13 +53,13 @@ MAX_REMOTE_JOBS = 16
 DEFAULT_HOST = "osado.lan"
 DEFAULT_REMOTE_ROOT = "~/temp/lx-cad"
 STATE_OUTPUT_ROOTS = ("floor_stand", "no_floor_stand")
-ARTIFACT_SCAN_ROOTS = (*STATE_OUTPUT_ROOTS, "review")
+ARTIFACT_SCAN_ROOTS = (*STATE_OUTPUT_ROOTS, "review", "wings")
 GENERATED_SUFFIXES = {
     ".3mf", ".brep", ".glb", ".json", ".png", ".step", ".stl",
 }
 SOURCE_EXCLUDED_DIRS = {
     ".remote-cad", "__pycache__", "floor_stand", "no_floor_stand",
-    "review",
+    "review", "wings",
 }
 SOURCE_EXCLUDED_SUFFIXES = {
     ".3mf", ".brep", ".glb", ".png", ".pyc", ".step", ".stl",
@@ -75,7 +75,9 @@ HOST_RE = re.compile(r"^(?:[A-Za-z0-9_.-]+@)?[A-Za-z0-9_.-]+$")
 TARGET_RE = re.compile(r"^[A-Za-z0-9_./:+%-]+$")
 REMOTE_MAKE_TARGETS = {
     "all", "candidate", "release", "floor_stand", "floor_v1lf",
-    "no_floor_stand",
+    "no_floor_stand", "no_floor_v1lf", "v1lf_release",
+    "wing_concepts", "v1lf_basic_variants",
+    "v1lf_basic_wings", "check_v1lf_basic_variants",
     "common", "check", "check_v1lf", "check_v1lf_shells",
     "check_v1lf_t_shells", "check_v1lf_mouths", "check_v1lf_burial",
     "check_v1lf_um_burial",
@@ -89,6 +91,7 @@ REMOTE_MAKE_TARGETS = {
     "check_route_contract", "check_bump_brep",
     "check_floor_integrated_mount",
     "check_no_floor_lm_mesh", "check_v1lf_lm_split",
+    "check_v1lf_lm_profile",
     "manifold", "clean",
     "validate_v1lf_stages",
     "validate_floor_v1lf_stage", "validate_no_floor_v1lf_stage",
@@ -1280,8 +1283,13 @@ def _verify_and_extract_artifacts(local_dir: Path, metadata: dict) -> Path:
 def _full_output_roots(targets: list[str]) -> set[str]:
     full = set()
     if any(target in {"all", "candidate", "release"} for target in targets):
-        full.update(("floor_stand", "no_floor_stand"))
+        full.update(("floor_stand", "no_floor_stand", "wings"))
     full.update(target for target in targets if target in {"floor_stand", "no_floor_stand"})
+    if any(target in {
+            "v1lf_release", "v1lf_basic_variants", "v1lf_basic_wings",
+            "check_v1lf_basic_variants",
+    } for target in targets):
+        full.add("wings")
     return full
 
 
@@ -1326,11 +1334,18 @@ def _local_promotion_lock():
 def _check_promoted_roots(full_roots: set[str]) -> None:
     if not full_roots:
         return
-    command = [sys.executable, str(BAFFLE_DIR / "check_manifold.py")]
-    if len(full_roots) == 1:
-        state = next(iter(full_roots))
-        command.append(str(BAFFLE_DIR / state / "stl"))
-    subprocess.run(command, cwd=BAFFLE_DIR, check=True)
+    checker = [sys.executable, str(BAFFLE_DIR / "check_manifold.py")]
+    state_roots = sorted(full_roots & set(STATE_OUTPUT_ROOTS))
+    if state_roots:
+        subprocess.run(
+            checker + [str(BAFFLE_DIR / state / "stl")
+                       for state in state_roots],
+            cwd=BAFFLE_DIR, check=True)
+    if "wings" in full_roots:
+        subprocess.run(
+            checker + [str(BAFFLE_DIR / "wings" / slug / "stl")
+                       for slug in ("ac", "ae")],
+            cwd=BAFFLE_DIR, check=True)
 
 
 class _PromotionInterrupted(RuntimeError):
@@ -1633,6 +1648,7 @@ def _promote_artifacts(incoming: Path, metadata: dict) -> int:
     if targets == ["clean"]:
         clean_paths = [
             *(BAFFLE_DIR / name for name in STATE_OUTPUT_ROOTS),
+            BAFFLE_DIR / "wings",
             BAFFLE_DIR / "__pycache__",
             BAFFLE_DIR / "top_baffle_nd25fw4_attachments.step",
         ]

@@ -68,12 +68,14 @@ def _runtime_identity() -> dict:
 
 
 def _guard_policy() -> dict:
+    worker_headroom = (
+        WORKER_HEADROOM_MIB if memory_guard.MIN_FREE_MB else 0.0)
     return {
         "memory_profile": memory_guard.MEMORY_PROFILE,
         "max_process_tree_rss_mib": memory_guard.MAX_RSS_MB,
         "min_immediately_reclaimable_mib": memory_guard.MIN_FREE_MB,
         "guard_slots": memory_guard.GUARD_SLOTS,
-        "worker_launch_headroom_mib": WORKER_HEADROOM_MIB,
+        "worker_launch_headroom_mib": worker_headroom,
         "aggregate_cgroup_max_mib": memory_guard.CGROUP_MEMORY_MAX_MIB,
     }
 
@@ -95,6 +97,7 @@ def _validate_guard_policy_record(policy: object) -> dict:
     slots = policy["guard_slots"]
     headroom = policy["worker_launch_headroom_mib"]
     aggregate = policy["aggregate_cgroup_max_mib"]
+    expected_headroom = WORKER_HEADROOM_MIB if floor else 0.0
     if (type(maximum) is not int or not 0 < maximum <= profile["max_rss_mb"]
             or type(floor) is not int or floor < profile["min_free_mb"]
             or type(slots) is not int
@@ -102,7 +105,7 @@ def _validate_guard_policy_record(policy: object) -> dict:
             or not isinstance(headroom, (int, float))
             or isinstance(headroom, bool)
             or not math.isfinite(float(headroom))
-            or float(headroom) != WORKER_HEADROOM_MIB):
+            or float(headroom) != expected_headroom):
         raise RuntimeError("V1LF stage guard-policy limits are impossible")
     if profile_name == "local-macos":
         if slots != 1 or aggregate is not None:
@@ -500,6 +503,8 @@ def _wait_for_worker_headroom(label: str) -> None:
     """Wait for the proven launch envelope without changing guard policy."""
     import run_memory_guarded as memory_guard
 
+    if memory_guard.MIN_FREE_MB == 0:
+        return
     deadline = time.monotonic() + 60.0
     while True:
         free_mib = memory_guard._free_memory_mib()

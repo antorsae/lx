@@ -20,6 +20,7 @@
 #   make                     remote build on osado.lan (default)
 #   make floor_stand         remote build of every floor-state variant
 #   make floor_v1lf          focused remote V1LF floor release + QA
+#   make v1lf_release        both V1LF states + Ac/Ae, concurrent on osado
 #   LX_CAD_EXECUTION=local make PYTHON=/path/venv/bin/python
 #   make check               proud regression + final V1LF R6F suites
 #   make candidate           checks + regenerated candidate artifacts + QA
@@ -119,6 +120,33 @@ OVERLAY_PNGS = baffle_b1_drivers.png baffle_b2_drivers.png \
                baffle_variants_drivers.png
 FLOOR_STRENGTH_REPORTS = floor_stand/v1lf_integrated_floor_strength.json \
                          floor_stand/v1lf_integrated_floor_strength.md
+WING_CONCEPT_SLUGS = solid_lx solid_mid perforated_4k graded_1k_4k \
+                     open_honeycomb tortuous_aperiodic \
+                     vertical_aperture_gradient vertical_path_gradient \
+                     bimodal_apertures radial_edge_loaded \
+                     radial_edge_released solid_chirped_edge \
+                     perimeter_frame solid_radial_leak_slots
+WING_CONCEPT_PNGS = $(addprefix review/v1lf_wing_,\
+                    $(addsuffix _concept.png,$(WING_CONCEPT_SLUGS))) \
+                    review/v1lf_wing_concepts_index.png
+V1LF_BASIC_VARIANTS_PNG = baffle_variants_drivers_v1lf.png
+V1LF_BASIC_WING_SLUGS = ac ae
+V1LF_BASIC_WING_STAMPS = $(addprefix wings/.stamp_,$(V1LF_BASIC_WING_SLUGS))
+V1LF_BASIC_WING_INPUTS = cad-remote-requirements.lock \
+        V1LF_ACOUSTIC_WINGS_SPEC.md gen_driver_overlay.py \
+        export_v1lf_staged.py \
+        top_baffle_nd25fw4.py top_baffle_nd25fw4_b.py \
+        top_baffle_nd25fw4_b1.py top_baffle_nd25fw4_b2.py \
+        top_baffle_nd25fw4_cables.py top_baffle_nd25fw4_flush.py \
+        top_baffle_nd25fw4_v1.py top_baffle_nd25fw4_v1lf.py \
+        top_baffle_nd25fw4_v1lf_attachments.py \
+        top_baffle_nd25fw4_v1lf_route.py top_baffle_nd25fw4_a_comp.py \
+        top_baffle_nd25fw4_v1lf_bridge.py \
+        top_baffle_nd25fw4_v1lf_floor.py \
+        top_baffle_nd25fw4_v1lf_floor_strength.py \
+        top_baffle_nd25fw4_v1lf_lm_split.py \
+        floor_stand/.v1lf_stage/manifest.json \
+        no_floor_stand/.v1lf_stage/manifest.json
 
 VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)/stl/.stamp_v0 $(1)/stl/.stamp_v1 $(1)/stl/.stamp_v1l $(1)/stl/.stamp_v1lf \
                   $(addprefix $(1)/,$(addsuffix .step,$(GENS))) \
@@ -129,7 +157,10 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
 
 .PHONY: all candidate release validate_v1lf_stages \
         validate_floor_v1lf_stage validate_no_floor_v1lf_stage \
-        floor_stand floor_v1lf no_floor_stand common check check_v1lf \
+        floor_stand floor_v1lf no_floor_stand no_floor_v1lf v1lf_release \
+        v1lf_release wing_concepts \
+        v1lf_basic_variants v1lf_basic_wings check_v1lf_basic_variants \
+        common check check_v1lf \
         check_v1lf_shells check_v1lf_t_shells \
         check_v1lf_mouths check_v1lf_burial check_v1lf_backfills \
         check_v1lf_um_burial \
@@ -141,8 +172,12 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
         check_floor_v1lf_um_burial check_no_floor_v1lf_um_burial \
         check_floor_v1lf_backfills check_no_floor_v1lf_backfills \
         check_route_contract check_bump_brep check_floor_integrated_mount \
-        check_no_floor_lm_mesh check_v1lf_lm_split manifold clean
-all: validate_v1lf_stages floor_stand no_floor_stand common
+        check_no_floor_lm_mesh check_v1lf_lm_split \
+        check_floor_v1lf_lm_split check_no_floor_v1lf_lm_split \
+        check_v1lf_lm_profile check_v1lf_lm_profile_plan \
+        check_v1lf_lm_profile_brep manifold clean
+all: validate_v1lf_stages floor_stand no_floor_stand common \
+        v1lf_basic_variants
 	$(RUN) check_manifold.py
 
 # Runtime package versions are part of the native-stage fingerprint but not
@@ -196,6 +231,87 @@ floor_stand: $(call VARIANT_TARGETS,floor_stand) $(FLOOR_STRENGTH_REPORTS)
 floor_v1lf: validate_floor_v1lf_stage \
         floor_stand/v1lf_release_manifest.json
 	$(RUN) check_manifold.py --v1lf-only floor_stand/stl
+
+# Symmetric focused release for the no-floor carrier.  Keep this narrower than
+# no_floor_stand: it emits the complete hash-backed V1LF family without
+# rebuilding unrelated proud/C/V0/V1/V1L print sets.
+no_floor_v1lf: validate_no_floor_v1lf_stage \
+        no_floor_stand/v1lf_release_manifest.json
+	$(RUN) check_manifold.py --v1lf-only no_floor_stand/stl
+
+# One public remote target owns the complete two-state V1LF release, Ac/Ae
+# magnetic attachments and the focused final-BREP interface checks.  A single
+# Make DAG lets osado share both native stages and fan independent state,
+# wing and validation recipes across its bounded jobserver slots.
+v1lf_release: floor_v1lf no_floor_v1lf v1lf_basic_variants \
+        check_route_contract check_v1lf_lm_split check_v1lf_shells \
+        check_v1lf_route_boundaries check_floor_integrated_mount
+
+# Review-only W1-W14 specimen plates.  The generator is deliberately pure 2D:
+# it does not import build123d/OCC or modify released carrier geometry.
+wing_concepts: $(WING_CONCEPT_PNGS)
+
+review/.stamp_v1lf_wing_concepts: gen_v1lf_wing_concepts.py \
+        V1LF_ACOUSTIC_WINGS_SPEC.md
+	@rm -f $@ $(WING_CONCEPT_PNGS)
+	@mkdir -p review
+	$(RUN) gen_v1lf_wing_concepts.py --output-dir review
+	@for png in $(WING_CONCEPT_PNGS); do test -s $$png || exit 1; done
+	@touch $@
+
+$(WING_CONCEPT_PNGS): review/.stamp_v1lf_wing_concepts
+	@test -s $@ || { rm -f review/.stamp_v1lf_wing_concepts; \
+	    $(MAKE) review/.stamp_v1lf_wing_concepts; test -s $@; }
+
+# Source-linked, dimensioned A/B1/B2 attachment layout for the V1LF carrier.
+# Ac and Ae are full STEP-first implementations of the approved A plan.  Their
+# independent stamps let osado build both slug trees concurrently; each tree is
+# one atomic, hash-backed transaction containing STEP, STL, facts and review
+# images.  The PNG remains the shared analytic contract and is regenerated
+# before either solid model.
+v1lf_basic_variants: $(V1LF_BASIC_VARIANTS_PNG) v1lf_basic_wings
+
+v1lf_basic_wings: $(V1LF_BASIC_WING_STAMPS) check_v1lf_basic_variants
+
+wings/.stamp_ac: export_v1lf_basic_wings.py v1lf_basic_wings_cad.py \
+        gen_v1lf_basic_variants.py $(V1LF_BASIC_VARIANTS_PNG) \
+        check_manifold.py $(V1LF_BASIC_WING_INPUTS)
+	@rm -f $@
+	@mkdir -p wings
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=v1lf PYTHONPATH=. $(RUN) \
+	    export_v1lf_basic_wings.py --slug ac --output-root wings
+	@test -s wings/ac/top_baffle_nd25fw4_v1lf_wing_ac.step
+	@test -s wings/ac/top_baffle_nd25fw4_v1lf_wing_ac_assembled.step
+	@touch $@
+
+wings/.stamp_ae: export_v1lf_basic_wings.py v1lf_basic_wings_cad.py \
+        gen_v1lf_basic_variants.py $(V1LF_BASIC_VARIANTS_PNG) \
+        check_manifold.py $(V1LF_BASIC_WING_INPUTS)
+	@rm -f $@
+	@mkdir -p wings
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=v1lf PYTHONPATH=. $(RUN) \
+	    export_v1lf_basic_wings.py --slug ae --output-root wings
+	@test -s wings/ae/top_baffle_nd25fw4_v1lf_wing_ae.step
+	@test -s wings/ae/top_baffle_nd25fw4_v1lf_wing_ae_assembled.step
+	@touch $@
+
+check_v1lf_basic_variants: $(V1LF_BASIC_WING_STAMPS) \
+        test_v1lf_basic_wings.py
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=v1lf PYTHONPATH=. $(RUN) \
+	    test_v1lf_basic_wings.py --artifact-root wings
+	$(RUN) check_manifold.py wings/ac/stl wings/ae/stl
+
+$(V1LF_BASIC_VARIANTS_PNG): gen_v1lf_basic_variants.py \
+        gen_driver_overlay.py top_baffle_nd25fw4_a_comp.py \
+        top_baffle_nd25fw4_b.py top_baffle_nd25fw4_b1.py \
+        top_baffle_nd25fw4_b2.py top_baffle_nd25fw4_v1lf.py \
+        top_baffle_nd25fw4_v1lf_bridge.py \
+        top_baffle_nd25fw4_v1lf_floor.py
+	@rm -f $@
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=v1lf PYTHONPATH=. $(RUN) \
+	    gen_v1lf_basic_variants.py --output $@
+	@test -s $@
+
 no_floor_stand: validate_no_floor_v1lf_stage \
         $(call VARIANT_TARGETS,no_floor_stand)
 	$(RUN) check_manifold.py no_floor_stand/stl
@@ -295,14 +411,33 @@ check_no_floor_lm_mesh: test_v1lf_r6f.py $(SRCS) $(STL_EXPORT_SRCS)
 	$(MAKE) --no-print-directory no_floor_stand/stl/.stamp_v1lf
 
 # Focused two-state gate for the optional no-extra-fastener LM subdivision.
-# builds the authoritative native stages first, verifies both exact split
-# BREPs, exports strict STLs, and writes the state-labelled review STEP.
-check_v1lf_lm_split: validate_v1lf_stages \
-        floor_stand/stl/.stamp_v1lf no_floor_stand/stl/.stamp_v1lf \
-        floor_stand/top_baffle_nd25fw4_v1lf_lm_split.step \
-        no_floor_stand/top_baffle_nd25fw4_v1lf_lm_split.step
+# State-specific prerequisites keep both exact split BREP/STL checks eligible
+# for separate osado jobserver slots while sharing their release-stage nodes.
+check_v1lf_lm_split: check_floor_v1lf_lm_split \
+                     check_no_floor_v1lf_lm_split
+
+check_floor_v1lf_lm_split: validate_floor_v1lf_stage \
+        floor_stand/stl/.stamp_v1lf \
+        floor_stand/top_baffle_nd25fw4_v1lf_lm_split.step
 	LX_R6F_SINGLE_CHECK=test_floor_lm_keyed_split $(RUN) test_v1lf_r6f.py
+
+check_no_floor_v1lf_lm_split: validate_no_floor_v1lf_stage \
+        no_floor_stand/stl/.stamp_v1lf \
+        no_floor_stand/top_baffle_nd25fw4_v1lf_lm_split.step
 	LX_R6F_SINGLE_CHECK=test_no_floor_lm_keyed_split $(RUN) test_v1lf_r6f.py
+
+# Fast source-plan plus native-BREP regression for the universal LM-lower
+# wing-contact profile.  Keep the two guarded workers independent so osado can
+# validate the analytic union and its blind-bored no-floor realization in
+# parallel before a complete carrier/wing export.
+check_v1lf_lm_profile: check_v1lf_lm_profile_plan \
+                       check_v1lf_lm_profile_brep
+
+check_v1lf_lm_profile_plan: test_v1lf_r6f.py $(SRCS)
+	LX_R6F_SINGLE_CHECK=test_bridge_contract $(RUN) test_v1lf_r6f.py
+
+check_v1lf_lm_profile_brep: test_v1lf_r6f.py $(SRCS)
+	LX_R6F_SINGLE_CHECK=test_bridge_geometry $(RUN) test_v1lf_r6f.py
 
 # Lightweight focused gate for deterministic route dimensions and policy.
 # Keep it remotely guarded because importing the final CAD modules initializes
@@ -468,7 +603,7 @@ $(FLOOR_STRENGTH_REPORTS): floor_stand/.stamp_v1lf_integrated_floor_strength
 	    $(MAKE) floor_stand/.stamp_v1lf_integrated_floor_strength; test -f $@; }
 
 clean:
-	rm -rf floor_stand no_floor_stand __pycache__ \
+	rm -rf floor_stand no_floor_stand wings __pycache__ \
 	    top_baffle_nd25fw4_attachments.step
 
 endif

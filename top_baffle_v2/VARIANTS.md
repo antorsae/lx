@@ -47,7 +47,7 @@ drivers (W22EX001 / 10F) refer to the same cutout/pilot geometry.
 | **V0** | vase | Rear knife band: REAR-side 18.3 -> 0.5 over the last 2.8 mm of the vase outline (same sculpted side as C7); front intact. | `lx521_top_v0_4of4_vase` |
 | **V1** | vase | Thin FLUSH vase: 11.5 (material z 6.8..18.3). Crescent re-derived (4.0 clamp seat at stock z); tweeter septum 11.5 (shorter standoffs, pair spacing -6.8); one shared front plane. | `lx521_top_v1_4of4_vase` |
 | **V1L** | bottom + mids | Thin FLUSH LM section: 11.5 (z 6.8..18.3 -- SAME plane as the V1 vase: no seam-B step), including both 6-mm seam-B male teeth that project into the vase. Smoothstep ramp y=78..96 to the full strip. Ø8.2 LM duct is the 11.5 binder. Its keyed Ø8.2 UM alternate exits `mid_right` at Q=(13.497063, 307.618796, 6.8) on the 283° axis; seam B/top are untouched. | `lx521_top_v1l_1..3of4` (its `--variant v1l` export bundles the unchanged V1 vase = the complete ~12 mm baffle) |
-| **V1LF R6F** | legacy four-piece baffle; replaced by two mandatory carriers plus add-ons | **Extreme barebone flush carriers**: LM Ø190 opening / Ø221.2 seat / nominal R113.0 lip; UM Ø82 opening / Ø98.6 seat / R51.7 outside. Two Ø9 rounded M3 half-lap ears at x=±32.0 set the 165.100 mm spacing. V1LF-only LM axes rotate to 0/60/120/180/240/300° on the unchanged Ø209.5 PCD; all six are ordinary blind carrier insert bores in both states. Six actual Ø5×2 magnets use global Ø5.2×2.2 pockets: preserve the flush upper LM pair at 64°/116°, add a flush lower LM pair at 224°/316° with at least 23.0 mm nearest-insert edge clearance, and keep the UM pair flush at 50.5°/129.5°, z=15.1. The LM 224° pocket remains at z=12.55; the route-adjacent 316° pocket uses the Z-preferred z=15.40 site and retains a closed 0.30 mm front skin. Hold all six magnets flush during bonding; the extra 0.2 mm pocket depth is adhesive allowance, not a bottoming datum. Neither carrier has proud magnet ears. Direct UM-to-tweeter ears sit at x=±24, y=421.5. UM is buried in an Ø8.2 passage only inside LM, then runs free behind UM with no printed UM-carrier rear duct. T is buried in an Ø6.0 passage through LM/UM, then runs free behind the tweeter crescent, which has no printed cable arc. Every surviving named insert bypass has a deep full-width burial web; the D7.8 LM lead is a free span without a printed micro-duct. The physical T/UM routes cross at 82.67° with no two-duct separator-web claim. No-floor LM includes the unchanged front-flush bridge plate at z=5.3..18.3. Floor LM instead owns the complete W64 × 18.3 stem/foot from z=−150..18.3, R12 root, three buried floor continuations, connector service cavity and rear NL8 panel; floor Y=0 keeps the LM axis exactly 200.981 mm above the floor. The tweeter carrier is a separate add-on; V1LF has no printed grommet. | `lx521_top_v1lf_core_1of2_lm_carrier.stl`, `lx521_top_v1lf_core_2of2_um_carrier.stl` |
+| **V1LF R6F** | legacy four-piece baffle; replaced by two mandatory carriers plus add-ons | **Extreme barebone flush carriers**: LM Ø190 opening / Ø221.2 seat / nominal R113.0 lip; UM Ø82 opening / Ø98.6 seat / R51.7 outside. Two Ø9 rounded M3 half-lap ears at x=±32.0 set the 165.100 mm spacing. V1LF-only LM axes rotate to 0/60/120/180/240/300° on the unchanged Ø209.5 PCD; all six are ordinary blind carrier insert bores in both states. Six actual Ø5×2 magnets use global Ø5.2×2.2 pockets: preserve the flush upper LM ring-radial pair at 64°/116°; place the lower LM pair flush in the straight base side faces at `(x,y,z)=(±32,18,12.55)` with outward ±X normals; and keep the UM pair ring-radial and flush at 50.5°/129.5°, z=15.1. The shared floor/no-floor lower profile makes the two base-side datums identical in both states. Hold all six magnets flush during bonding; the extra 0.2 mm pocket depth is adhesive allowance, not a bottoming datum. Neither carrier has proud magnet ears. Ac/Ae provide three matching receivers per physical side: LM lower, LM upper, and UM. Direct UM-to-tweeter ears sit at x=±24, y=421.5. UM is buried in an Ø8.2 passage only inside LM, then runs free behind UM with no printed UM-carrier rear duct. T is buried in an Ø6.0 passage through LM/UM, then runs free behind the tweeter crescent, which has no printed cable arc. Every surviving named insert bypass has a deep full-width burial web; the D7.8 LM lead is a free span without a printed micro-duct. The physical T/UM routes cross at 82.67° with no two-duct separator-web claim. No-floor LM includes the unchanged front-flush bridge plate at z=5.3..18.3. Floor LM instead owns the complete W64 × 18.3 stem/foot from z=−150..18.3, R12 root, three buried floor continuations, connector service cavity and rear NL8 panel; floor Y=0 keeps the LM axis exactly 200.981 mm above the floor. The tweeter carrier is a separate add-on; V1LF has no printed grommet. | `lx521_top_v1lf_core_1of2_lm_carrier.stl`, `lx521_top_v1lf_core_2of2_um_carrier.stl` |
 
 The V1LF LM print form is a separate choice inside the same R6F variant. The
 canonical `lx521_top_v1lf_core_1of2_lm_carrier.stl` is one solid. On a 220 mm
@@ -230,20 +230,22 @@ identity, coupon evidence, structural proof and signed authorization in
 * R6F tweeter crescent: 2x rear-driven M3 screws at x=±24, y=421.5 into
   blind Ø4.6 × 4.0 insert receivers in the crescent half-laps. The
   acoustic front remains uninterrupted.
-* R6F alignment: 6x D5 × 2 N52 magnets in the core's radial Ø5.2 × 2.2
-  pockets (four LM + two UM; three total per physical side). Preserve the
-  upper flush LM sites at 64°/116° with at least 2.2 mm insert gap, and add
-  the lower LM sites face-flush at 224°/316° with at least 23.0 mm nearest-
-  insert edge clearance. The 224° site remains at z=12.55 and the route-
-  adjacent 316° site uses z=15.40 with a closed 0.30 mm front skin; both have
-  verified buried-route and bridge/integral-stand clearance. UM keeps its
+* R6F alignment: 6x D5 × 2 N52 magnets in the core's surface-normal
+  Ø5.2 × 2.2 pockets (four LM + two UM; three total per physical side).
+  Preserve the upper flush LM ring sites at 64°/116° with at least 2.2 mm
+  insert gap. The lower LM sites are face-flush in the shared straight base
+  faces at `(x,y,z)=(±32,18,12.55)`, with left/right outward normals
+  `(-1,0)`/`(1,0)` and verified buried-route and bridge/integral-stand
+  clearance. UM keeps its
   flush 50.5°/129.5° sites at z=15.1 to keep
   at least 1.1 mm from the conservative T-cover envelope, a 0.2 mm radial
   floor and a 0.6 mm front skin. Hold every magnet flush during bonding;
   the extra 0.2 mm pocket depth is adhesive allowance, not a bottoming datum.
   No site has a proud ear. Keep a marked polarity standard:
   core pole OUT, add-on pole IN. Magnets are alignment/anti-rattle
-  devices only and receive **zero structural load credit**.
+  devices only and receive **zero structural load credit**. Ac/Ae use all
+  three sites on each side through matching LM-lower, LM-upper, and UM
+  receivers.
 * Tweeter pair (when its carrier is fitted): M4 through-bolts + nyloc,
   clamping the crescent.
 * R6P magnets: D5 x 2 N52 discs in Ø5.2 × 2.2 base and receiver
@@ -254,7 +256,7 @@ identity, coupon evidence, structural proof and signed authorization in
 
 The fused four-hole bridge interface has a 62 mm insert core and soft cubic
 shoulders occupying z=5.3..18.3, exactly the deepest existing LM-pad envelope.
-Two centered rear cable lumens enter at x=±5/y=82 while the acoustic front
+Two centered rear cable lumens enter at x=±8/y=82 while the acoustic front
 remains solid. It has no X-frame or additional rear-depth structure and is screened
 conservatively for a 4.0 kg installed assembly, y=230 mm center of mass and
 70 mm rear offset. The conservative member width is **47.8 mm**: the 62 mm

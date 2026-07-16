@@ -6,9 +6,9 @@ This module starts from the irreducible interfaces instead:
 * LM carrier: D190 opening, D221.2 flush seat, R113.0 outside.
 * UM carrier: D82 opening, D98.6 flush seat, R51.7 outside.
 * two rounded M3 through-bolted half-lap ears establish 165.100 mm;
-* six radial magnet interfaces provide four LM and two UM alignment sites;
-  the original upper LM pair stays at +/-26 degrees from top and a second
-  lower LM pair is added without moving it;
+* six flush magnet interfaces provide four LM and two UM alignment sites;
+  the original upper LM pair stays at +/-26 degrees from top while the lower
+  LM pair mates horizontally through the shared W64 base sides;
 * floor mode owns a full-depth integral W64 stem and rectangular floor foot;
   no-floor mode owns a shallow front-flush four-hole solid web;
 * the D8.2 UM path is buried only in LM and exits flush at R113 before its
@@ -101,7 +101,10 @@ from top_baffle_nd25fw4_v1lf_route import (
     route_inner_cutters,
     route_outer_covers,
 )
-from top_baffle_nd25fw4_v1lf_bridge import fused_bridge_tail
+from top_baffle_nd25fw4_v1lf_bridge import (
+    floor_wing_contact_profile_addition,
+    fused_bridge_tail,
+)
 from top_baffle_nd25fw4_v1lf_floor import (
     apply_integrated_floor_feature_group,
     integrated_floor_addition,
@@ -127,18 +130,18 @@ STRUCT_DESIGN_MASS_KG = 4.0
 STRUCT_CREEP_ALLOW_MPA = 8.0
 STRUCT_SHORT_ALLOW_MPA = 18.0
 
-# Exactly two LM and one UM radial magnets per physical side. There are no rear
-# attachment bores. The upper LM pair remains at +/-26 degrees from the top
-# centreline (world polar 116/64 degrees). The added lower pair sits near
-# +/-45 degrees from the bottom centreline (world polar 224/316 degrees).
-# Left remains at the common z=12.55 datum. Right uses the Z-preferred
-# z=15.40 site to clear the buried route without walking farther around the
-# ring; its 0.30-mm front skin is the deliberate extreme-minimum result.
-# All four are buried directly in the R113 lip: their exposed faces are flush
-# with the ring, with no ear or proud material. The UM pair uses flush
-# 129.5/50.5-degree sites at z=15.1 in its R51.7 lip to clear the upper T cover,
-# so neither carrier has a proud magnet ear. D5x2 magnets use D5.2 x 2.2 radial
-# pockets; the extra 0.2-mm depth is adhesive allowance, so each magnet must be
+# Exactly two LM and one UM magnets per physical side. There are no rear
+# attachment bores. The upper LM pair remains radial at +/-26 degrees from the
+# top centreline (world polar 116/64 degrees). The lower pair is no longer in
+# the R113 lip: it is mirrored through the straight sides of the shared W64
+# lower tongue at x=+/-32, y=18, with horizontal outward normals. Both lower
+# sites use the common z=12.55 datum, so floor/no-floor carriers and the Ac/Ae
+# lm_lower prints share one exact receiver axis. All four LM sites are flush
+# with their owning surfaces, with no ear or proud material. The UM pair uses
+# flush 129.5/50.5-degree sites at z=15.1 in its R51.7 lip to clear the upper
+# T cover, so neither carrier has a proud magnet ear. D5x2 magnets use
+# D5.2 x 2.2 axis-normal pockets; the extra 0.2-mm depth is adhesive allowance,
+# so each magnet must be
 # held flush while bonding rather than bottomed. They carry alignment/anti-
 # rattle load only. The monolithic W64 stem/root carries floor load; the four
 # stock bridge holes carry no-floor load.
@@ -155,18 +158,13 @@ SIDE_MAGNET_Z = {
     # front skin. The inward radial pocket floor is 0.2 mm at R49.3.
     "um": 15.10,
 }
-SIDE_MAGNET_Z_OVERRIDES = {
-    # Exact final-owner sweeps in both stand states: the 316-degree keepout
-    # is route-free at z=15.40 while retaining a closed 0.30-mm front skin.
-    ("lm", 316.0): 15.40,
-}
 SIDE_INTERFACE_GAP = 0.20
 SIDE_MAGNET_ANGLES = {
     # The upper pair is one degree crownward of the adjacent 120/60-degree W22
     # inserts, retaining its exact 2.251-mm D5.2-pocket-capsule to D9.6-boss
-    # edge gap. The lower 224/316-degree pair retains 23.191 mm to the nearest
-    # insert boss while exactly clearing the buried T/UM feeds and bridge.
-    "lm": (116.0, 64.0, 224.0, 316.0),
+    # edge gap. Lower LM sites are explicit base-side records below rather
+    # than fake polar positions on the R113 ring.
+    "lm": (116.0, 64.0),
     # Symmetric top-side sites clear the T arc, D8 insert pads and direct
     # tweeter ears; the former 45-degree site cut through the T cover.
     "um": (129.5, 50.5),
@@ -175,6 +173,9 @@ SIDE_MAGNET_FACE_OFFSET = {
     "lm": 0.0,
     "um": 0.0,
 }
+LM_BASE_MAGNET_FACE_X = 32.0
+LM_BASE_MAGNET_Y = 18.0
+LM_BASE_MAGNET_Z = 12.55
 
 # Two compact Z-axis bolted *rounded ears*.  The old rectangular tabs
 # projected into the MU flange seating region.  Each replacement is a
@@ -402,11 +403,33 @@ def side_magnet_sites(driver: str | None = None):
                 "face": face, "center": center, "radius": radius,
                 "clock_from_top_deg": 90.0 - angle,
                 "face_offset_mm": face_offset,
-                "z_mm": SIDE_MAGNET_Z_OVERRIDES.get(
-                    (key, angle), SIDE_MAGNET_Z[key]),
+                "z_mm": SIDE_MAGNET_Z[key],
+                "interface_kind": "ring",
                 "flush_buried": face_offset == 0.0,
                 "proud_ear_added": face_offset > 0.0,
             })
+        if key == "lm":
+            for side, face_x, normal_x, angle in (
+                    ("left", -LM_BASE_MAGNET_FACE_X, -1.0, 180.0),
+                    ("right", LM_BASE_MAGNET_FACE_X, 1.0, 0.0)):
+                records.append({
+                    "name": f"lm_lower_{side}",
+                    "driver": "lm",
+                    "angle_deg": angle,
+                    "normal": (normal_x, 0.0),
+                    "face": (face_x, LM_BASE_MAGNET_Y),
+                    # These compatibility fields describe the horizontal
+                    # base-side datum; receiver construction must key from
+                    # interface_kind rather than treating it as an R113 arc.
+                    "center": (0.0, LM_BASE_MAGNET_Y),
+                    "radius": LM_BASE_MAGNET_FACE_X,
+                    "clock_from_top_deg": 90.0 - angle,
+                    "face_offset_mm": 0.0,
+                    "z_mm": LM_BASE_MAGNET_Z,
+                    "interface_kind": "base_side",
+                    "flush_buried": True,
+                    "proud_ear_added": False,
+                })
     return records
 
 
@@ -422,7 +445,7 @@ def _axis_cylinder(face, normal, zc: float, diameter: float,
 
 
 def _cut_side_magnet_pockets(part, driver: str):
-    """Reassert final radial pockets after every possible cover union."""
+    """Reassert final surface-normal pockets after every possible union."""
     for site in side_magnet_sites(driver):
         part -= _axis_cylinder(
             site["face"], site["normal"], site["z_mm"],
@@ -621,20 +644,31 @@ def lm_carrier_outer_blank():
                              THICKNESS_MM + 0.2)
     part = _add_side_magnet_ears(part, "lm")
 
-    # One continuous outer sweep per route is fused before the nominal
-    # voids are cut.  This keeps every Z bump covered and avoids the old
-    # fragmented coplanar rear-floor topology.
+    # One continuous outer sweep per route is fused before the nominal voids
+    # are cut.  This keeps every Z bump covered and avoids the old fragmented
+    # coplanar rear-floor topology.
     for index, cover in enumerate(route_outer_covers("lm")):
         part = _fuse_attached(
             part, cover, f"LM closed tunnel cover component {index}")
 
-    # The central route covers are established first, then absorbed into the
-    # state-owned solid.  This preserves the same native rear-face mouth
-    # contract for the integral floor stem and the no-floor bridge.
+    # Floor features are cut only from their massive owner before that body
+    # touches the thin covers.  Each buried floor lane deliberately stops
+    # short of its feed during this pre-fusion cut; the normal 8-mm owner
+    # cutter below opens the final G1 overlap through solid body material.
+    # This avoids both coincident lumen walls and the destructive late T-lane
+    # subtraction that otherwise detaches OCC's unrelated main-cover branch.
     if STAND_FOOT:
+        floor_body = integrated_floor_addition()
+        for index in range(integrated_floor_feature_group_count()):
+            floor_body = apply_integrated_floor_feature_group(
+                floor_body, index)
         part = _fuse_attached(
-            part, integrated_floor_addition(),
+            part, floor_body,
             "integral floor stem/foot/NL8 body")
+        del floor_body
+        part = _fuse_attached(
+            part, floor_wing_contact_profile_addition(),
+            "universal LM-lower floor wing-contact shoulder")
 
     # In no-floor mode fuse the shallow solid bridge web before hollowing
     # the combined carrier. Hollowing the carrier and web independently and
@@ -679,9 +713,6 @@ def finalize_lm_carrier(part, *, routes_already_cut=False):
     if not routes_already_cut:
         for index in range(route_inner_cutter_group_count("lm")):
             part = apply_lm_route_cutter(part, index)
-    if STAND_FOOT:
-        for index in range(integrated_floor_feature_group_count()):
-            part = apply_integrated_floor_feature_group(part, index)
     # Reassert the functional driver interfaces after every cover union;
     # no crossover/anchor material may re-enter the flange seat.
     part -= _cylinder_at(cx, cy, LM_RECESS_R,

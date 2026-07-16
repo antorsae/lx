@@ -1,11 +1,12 @@
-"""Run one CAD command without allowing it to starve the workstation.
+"""Run one CAD command without allowing its process tree to escape limits.
 
 The default ``local-macos`` profile terminates the complete child process
-group above 8 GiB RSS or below 0.5 GiB immediately reclaimable memory.  The
+group above 8 GiB RSS and has no host-free-memory floor.  A positive
+``LX_CAD_MIN_FREE_MB`` may opt local execution into such a floor.  The
 ``osado-512g`` profile is valid only on an appropriately large Linux host;
 the remote dispatcher tightens its per-worker limit and puts all workers in
-one 512 GiB cgroup.  Environment settings may make a selected profile
-stricter, never relax it.
+one 512 GiB cgroup with a mandatory 64 GiB host-free floor.  Environment
+settings may make a selected profile stricter, never relax it.
 """
 
 from __future__ import annotations
@@ -27,7 +28,7 @@ import time
 MEMORY_PROFILES = {
     "local-macos": {
         "max_rss_mb": 8192,
-        "min_free_mb": 512,
+        "min_free_mb": 0,
         "max_guard_slots": 1,
     },
     "osado-512g": {
@@ -57,12 +58,22 @@ def _positive_environment_int(name: str, default: int) -> int:
     return value
 
 
+def _nonnegative_environment_int(name: str, default: int) -> int:
+    try:
+        value = int(os.environ.get(name, str(default)))
+    except ValueError as exc:
+        raise RuntimeError(f"{name} must be an integer") from exc
+    if value < 0:
+        raise RuntimeError(f"{name} must be nonnegative")
+    return value
+
+
 MAX_RSS_MB = min(
     _positive_environment_int("LX_CAD_MAX_RSS_MB", PROFILE_MAX_RSS_MB),
     PROFILE_MAX_RSS_MB,
 )
 MIN_FREE_MB = max(
-    _positive_environment_int("LX_CAD_MIN_FREE_MB", PROFILE_MIN_FREE_MB),
+    _nonnegative_environment_int("LX_CAD_MIN_FREE_MB", PROFILE_MIN_FREE_MB),
     PROFILE_MIN_FREE_MB,
 )
 GUARD_SLOTS = min(
@@ -444,23 +455,24 @@ def main(argv: list[str] | None = None) -> int:
         os.environ.pop(_GUARD_MARKER, None)
         os.environ.pop(_GUARD_PID, None)
 
-    # Refuse before spawning OCC/Python when the workstation is already
-    # below the requested safety floor.  The loop below still enforces the
-    # same limit continuously after a successful launch.
-    free_mib = _measured(_free_memory_mib)
-    if free_mib is None:
-        print(
-            "CAD memory guard refusing to start command: cannot measure "
-            "host free memory", file=sys.stderr, flush=True)
-        return 99
-    if free_mib < MIN_FREE_MB:
-        print(
-            "CAD memory guard refusing to start command: "
-            f"free memory {free_mib:.0f} MiB < {MIN_FREE_MB} MiB",
-            file=sys.stderr,
-            flush=True,
-        )
-        return 99
+    # A zero floor disables host-free-memory admission and monitoring.  RSS
+    # accounting remains fail-closed below.  Positive floors (mandatory for
+    # osado, optional locally) are checked both before launch and at runtime.
+    if MIN_FREE_MB:
+        free_mib = _measured(_free_memory_mib)
+        if free_mib is None:
+            print(
+                "CAD memory guard refusing to start command: cannot measure "
+                "host free memory", file=sys.stderr, flush=True)
+            return 99
+        if free_mib < MIN_FREE_MB:
+            print(
+                "CAD memory guard refusing to start command: "
+                f"free memory {free_mib:.0f} MiB < {MIN_FREE_MB} MiB",
+                file=sys.stderr,
+                flush=True,
+            )
+            return 99
 
     try:
         lock = _acquire_workspace_lock()
@@ -518,13 +530,16 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 rss_kib = _measured(
                     lambda: _process_tree_rss_kib(process.pid))
-                free_mib = _measured(_free_memory_mib)
-                if rss_kib is None or free_mib is None:
-                    reason = "cannot measure RSS/free memory"
+                free_mib = (
+                    _measured(_free_memory_mib) if MIN_FREE_MB else None)
+                if rss_kib is None:
+                    reason = "cannot measure RSS"
+                elif MIN_FREE_MB and free_mib is None:
+                    reason = "cannot measure host free memory"
                 elif rss_kib / 1024.0 > MAX_RSS_MB:
                     rss_mib = rss_kib / 1024.0
                     reason = f"RSS {rss_mib:.0f} MiB > {MAX_RSS_MB} MiB"
-                elif free_mib < MIN_FREE_MB:
+                elif MIN_FREE_MB and free_mib < MIN_FREE_MB:
                     reason = (f"free memory {free_mib:.0f} MiB < "
                               f"{MIN_FREE_MB} MiB")
             if reason:

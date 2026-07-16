@@ -9,8 +9,8 @@ from __future__ import annotations
 
 # The module owns its own fresh-process, memory-guarded runner below.
 # Prevent a generic pytest invocation from collecting all OCC-heavy tests
-# into one long-lived process and bypassing both the 8 GiB tree cap and the
-# 0.5 GiB immediately-reclaimable macOS floor.
+# into one long-lived process and bypassing the local 8 GiB tree cap and
+# fresh-process isolation.
 __test__ = False
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -214,6 +214,8 @@ def test_route_contract():
     from shapely.geometry import LineString, Point
     _state(False)
     from top_baffle_nd25fw4 import (
+        BRIDGE_HOLE_XY,
+        BRIDGE_INSERT_D_MM,
         L22_CUTOUT,
         L22_PILOT_ANGLES_DEG,
         L22_PILOT_PCD_MM,
@@ -222,6 +224,8 @@ def test_route_contract():
     import top_baffle_nd25fw4_flush as flush
     import top_baffle_nd25fw4_b as proud
     import top_baffle_nd25fw4_v1lf as core
+    import top_baffle_nd25fw4_v1lf_bridge as bridge
+    import top_baffle_nd25fw4_v1lf_floor as floor
     import top_baffle_nd25fw4_v1lf_route as route
     import run_memory_guarded as memory_guard
     import export_v1lf_staged as staged
@@ -242,20 +246,74 @@ def test_route_contract():
     assert sum(site["name"].endswith("right") for site in magnet_sites) == 3
     assert {site["driver"] for site in magnet_sites} == {"lm", "um"}
     lm_magnets = [site for site in magnet_sites if site["driver"] == "lm"]
-    assert {site["angle_deg"] for site in lm_magnets} == {
-        64.0, 116.0, 224.0, 316.0}
-    assert {site["clock_from_top_deg"] for site in lm_magnets} == {
-        -26.0, 26.0, -134.0, -226.0}
+    assert {site["name"] for site in lm_magnets} == {
+        "lm_upper_left", "lm_upper_right",
+        "lm_lower_left", "lm_lower_right"}
     assert all(site["flush_buried"] for site in lm_magnets)
     assert all(site["face_offset_mm"] == 0.0 for site in lm_magnets)
-    assert {
-        site["angle_deg"]: site["z_mm"] for site in lm_magnets
-    } == {64.0: 12.55, 116.0: 12.55, 224.0: 12.55, 316.0: 15.40}
+    lm_by_name = {site["name"]: site for site in lm_magnets}
+    assert {name: lm_by_name[name]["angle_deg"] for name in lm_by_name} == {
+        "lm_upper_left": 116.0, "lm_upper_right": 64.0,
+        "lm_lower_left": 180.0, "lm_lower_right": 0.0}
+    assert {name: lm_by_name[name]["z_mm"] for name in lm_by_name} == {
+        "lm_upper_left": 12.55, "lm_upper_right": 12.55,
+        "lm_lower_left": 12.55, "lm_lower_right": 12.55}
+    assert lm_by_name["lm_lower_left"]["face"] == (-32.0, 18.0)
+    assert lm_by_name["lm_lower_right"]["face"] == (32.0, 18.0)
+    assert lm_by_name["lm_lower_left"]["normal"] == (-1.0, 0.0)
+    assert lm_by_name["lm_lower_right"]["normal"] == (1.0, 0.0)
+    assert all(
+        lm_by_name[name]["interface_kind"] == "base_side"
+        for name in ("lm_lower_left", "lm_lower_right"))
+    assert math.isclose(core.LM_BASE_MAGNET_FACE_X, 32.0, abs_tol=1e-12)
+    assert math.isclose(core.LM_BASE_MAGNET_Y, 18.0, abs_tol=1e-12)
     assert math.isclose(
         core.THICKNESS_MM
-        - (core.SIDE_MAGNET_Z_OVERRIDES[("lm", 316.0)]
-           + core.SIDE_MAGNET_POCKET_D / 2.0),
-        0.30, abs_tol=1e-12)
+        - (core.LM_BASE_MAGNET_Z + core.SIDE_MAGNET_POCKET_D / 2.0),
+        3.15, abs_tol=1e-12)
+
+    # Conservative XZ section screen through y=18, where the two new
+    # surface-normal pockets notch the shared W64 lower tongue.  A complete
+    # D5.2 x 2.2 rectangle is deducted per side even though the real circular
+    # cutter removes less material away from its equator.  The floor carrier
+    # owns z=0..18.3 here; the no-floor bridge owns z=5.3..18.3.  Both must
+    # retain more net area than the already qualified 47.8 x 13 governing
+    # bridge section, without taking strength credit for either magnet.
+    assert math.isclose(
+        core.LM_BASE_MAGNET_FACE_X, floor.STEM_HALF_WIDTH_MM,
+        abs_tol=1e-12)
+    local_width_mm = 2.0 * floor.STEM_HALF_WIDTH_MM
+    pocket_radius_mm = core.SIDE_MAGNET_POCKET_D / 2.0
+    pocket_z_min_mm = core.LM_BASE_MAGNET_Z - pocket_radius_mm
+    pocket_z_max_mm = core.LM_BASE_MAGNET_Z + pocket_radius_mm
+    two_pocket_notch_area_mm2 = (
+        2.0 * core.SIDE_MAGNET_DEPTH * core.SIDE_MAGNET_POCKET_D)
+    governing_bridge_area_mm2 = (
+        bridge.BRIDGE_GOVERNING_NECK_WIDTH_MM * bridge.BRIDGE_WEB_T)
+    assert math.isclose(governing_bridge_area_mm2, 621.4, abs_tol=1e-9)
+    section_states = {
+        "floor": (floor.STEM_Z_MM[0], floor.STEM_Z_MM[1],
+                  9.95, 3.15, 1148.32),
+        "no_floor": (bridge.BRIDGE_WEB_REAR_Z,
+                     bridge.BRIDGE_WEB_FRONT_Z,
+                     4.65, 3.15, 809.12),
+    }
+    for state, (rear_z, front_z, expected_rear_skin,
+                expected_front_skin, expected_net_area) in (
+            section_states.items()):
+        rear_skin_mm = pocket_z_min_mm - rear_z
+        front_skin_mm = front_z - pocket_z_max_mm
+        gross_area_mm2 = local_width_mm * (front_z - rear_z)
+        net_area_mm2 = gross_area_mm2 - two_pocket_notch_area_mm2
+        assert math.isclose(
+            rear_skin_mm, expected_rear_skin, abs_tol=1e-12), state
+        assert math.isclose(
+            front_skin_mm, expected_front_skin, abs_tol=1e-12), state
+        assert math.isclose(
+            net_area_mm2, expected_net_area, abs_tol=1e-9), state
+        assert net_area_mm2 > governing_bridge_area_mm2, state
+    assert (
+        section_states["no_floor"][4] / governing_bridge_area_mm2 > 1.30)
     um_magnets = [site for site in magnet_sites if site["driver"] == "um"]
     assert {site["angle_deg"] for site in um_magnets} == {50.5, 129.5}
     assert {site["clock_from_top_deg"] for site in um_magnets} == {
@@ -303,16 +361,72 @@ def test_route_contract():
             for xy in flush.LM_PILOT_XY)
     assert min(lm_magnet_insert_gaps) >= 2.2
     for site in lm_magnets:
-        if site["angle_deg"] not in (224.0, 316.0):
+        if not site["name"].startswith("lm_lower"):
             continue
         normal = np.asarray(site["normal"], dtype=float)
         face = np.asarray(site["face"], dtype=float)
         axis = LineString((
             face - core.SIDE_MAGNET_DEPTH * normal, face))
+        # The relocated base pockets are deliberately adjacent to the
+        # no-floor bridge plate. Preserve a positive conservative capsule
+        # gap to both its D6.4 insert bore and its D9.6 load-bearing boss.
+        bridge_bore_gap = min(
+            axis.distance(Point(*xy))
+            - core.SIDE_MAGNET_POCKET_D / 2.0 - 3.2
+            for xy in BRIDGE_HOLE_XY)
+        bridge_boss_gap = min(
+            axis.distance(Point(*xy))
+            - core.SIDE_MAGNET_POCKET_D / 2.0 - flush.PAD_D_MM / 2.0
+            for xy in BRIDGE_HOLE_XY)
+        assert bridge_bore_gap >= 4.0
+        assert bridge_boss_gap >= 2.5
         assert min(
             axis.distance(Point(*xy))
             - core.SIDE_MAGNET_POCKET_D / 2.0 - flush.PAD_D_MM / 2.0
-            for xy in flush.LM_PILOT_XY) >= 23.0
+            for xy in flush.LM_PILOT_XY) >= 20.0
+
+    # State-specific nearest-insert screen.  Floor mode has no bridge
+    # inserts, so its nearest actual insert is one of the six LM flange
+    # inserts.  No-floor mode additionally owns the 40 x 50 bridge pattern;
+    # its lower same-side insert is the governing neighbour.  Use the full
+    # inward pocket axis plus the D5.2 radius, and screen both the D6.4 bore
+    # and the conservative D9.6 load-bearing envelope.  Mirrored sites must
+    # match exactly.
+    lower_lm_sites = tuple(
+        site for site in lm_magnets
+        if site["interface_kind"] == "base_side")
+    insert_sets = {
+        "floor": tuple(flush.LM_PILOT_XY),
+        "no_floor": tuple(flush.LM_PILOT_XY) + tuple(BRIDGE_HOLE_XY),
+    }
+    state_insert_gaps = {}
+    for state, insert_xy in insert_sets.items():
+        bore_gaps = []
+        boss_gaps = []
+        for site in lower_lm_sites:
+            normal = np.asarray(site["normal"], dtype=float)
+            face = np.asarray(site["face"], dtype=float)
+            axis = LineString((
+                face - core.SIDE_MAGNET_DEPTH * normal, face))
+            bore_gaps.append(min(
+                axis.distance(Point(*xy))
+                - pocket_radius_mm - BRIDGE_INSERT_D_MM / 2.0
+                for xy in insert_xy))
+            boss_gaps.append(min(
+                axis.distance(Point(*xy))
+                - pocket_radius_mm - flush.PAD_D_MM / 2.0
+                for xy in insert_xy))
+        assert math.isclose(bore_gaps[0], bore_gaps[1], abs_tol=1e-9)
+        assert math.isclose(boss_gaps[0], boss_gaps[1], abs_tol=1e-9)
+        state_insert_gaps[state] = (bore_gaps[0], boss_gaps[0])
+    assert state_insert_gaps["floor"][0] > 80.0
+    assert state_insert_gaps["floor"][1] > 80.0
+    assert math.isclose(
+        state_insert_gaps["no_floor"][0], 4.201999800039991,
+        abs_tol=1e-9)
+    assert math.isclose(
+        state_insert_gaps["no_floor"][1], 2.6019998000399918,
+        abs_tol=1e-9)
     um_magnet_insert_gaps = []
     for site in um_magnets:
         normal = np.asarray(site["normal"], dtype=float)
@@ -346,7 +460,7 @@ def test_route_contract():
         20.0 ** 2 - (route.TUBE_SECTION_SPACING / 2.0) ** 2)) < 0.20
     assert memory_guard.MEMORY_PROFILES["local-macos"] == {
         "max_rss_mb": 8192,
-        "min_free_mb": 512,
+        "min_free_mb": 0,
         "max_guard_slots": 1,
     }
     assert memory_guard.MEMORY_PROFILES["osado-512g"] == {
@@ -392,10 +506,11 @@ def test_route_contract():
     assert guard_policy["min_immediately_reclaimable_mib"] == (
         memory_guard.MIN_FREE_MB)
     assert guard_policy["guard_slots"] == memory_guard.GUARD_SLOTS
-    assert guard_policy["worker_launch_headroom_mib"] == 3200.0
+    assert guard_policy["worker_launch_headroom_mib"] == (
+        3200.0 if memory_guard.MIN_FREE_MB else 0.0)
     if memory_guard.MEMORY_PROFILE == "local-macos":
         assert 0 < memory_guard.MAX_RSS_MB <= 8192
-        assert memory_guard.MIN_FREE_MB >= 512
+        assert memory_guard.MIN_FREE_MB >= 0
         assert memory_guard.GUARD_SLOTS == 1
         assert guard_policy["aggregate_cgroup_max_mib"] is None
     else:
@@ -483,12 +598,12 @@ def test_route_contract():
     assert facts["functional_lm_feed_mode"] == (
         "bridge_rear_face_shallow_rise")
     assert facts["central_owner_feed_xy"] == (
-        (5.0, 82.0), (-5.0, 82.0))
+        (8.0, 82.0), (-8.0, 82.0))
     assert math.isclose(
         facts["central_owner_feed_rear_z_mm"], 5.3, abs_tol=1e-9)
     assert np.allclose(
         facts["functional_lm_feed_points"],
-        ((5.0, 82.0, 5.3), (-5.0, 82.0, 5.3)), atol=1e-9)
+        ((8.0, 82.0, 5.3), (-8.0, 82.0, 5.3)), atol=1e-9)
     assert facts["functional_lm_feed_web_omitted"]
     assert facts["printed_lm_tunnel_count"] == 0
     assert facts["lm_lead_mode"] == "short_free_span_no_micro_duct"
@@ -666,11 +781,11 @@ def test_floor_route_smoothness():
     assert facts["functional_lm_feed_mode"] == (
         "integrated_stem_rear_face_shallow_rise")
     assert facts["functional_lm_feed_points"] == (
-        (5.0, 82.0, route.PAD_FACE_Z),
-        (-5.0, 82.0, route.PAD_FACE_Z),
+        (8.0, 82.0, route.PAD_FACE_Z),
+        (-8.0, 82.0, route.PAD_FACE_Z),
     )
     assert facts["central_owner_feed_xy"] == (
-        (5.0, 82.0), (-5.0, 82.0))
+        (8.0, 82.0), (-8.0, 82.0))
     assert (facts["crossover_nominal_void_gap_mm"]
             >= route.CROSSOVER_MIN_CLEARANCE)
     assert facts["crossover_free_um_to_t_cover_gap_mm"] >= 0.25
@@ -1363,11 +1478,26 @@ def _final_feed_and_flush_mouth_contract(stand_foot):
         "integrated_stem_rear_face_shallow_rise" if stand_foot
         else "bridge_rear_face_shallow_rise")
     assert facts["functional_lm_feed_mode"] == expected_mode
-    assert np.allclose(main[0], (5.0, 82.0, 5.3), atol=1e-9)
-    assert np.allclose(ts[0], (-5.0, 82.0, 5.3), atol=1e-9)
+    assert np.allclose(main[0], (8.0, 82.0, 5.3), atol=1e-9)
+    assert np.allclose(ts[0], (-8.0, 82.0, 5.3), atol=1e-9)
     assert tuple(facts["central_owner_feed_rise_lengths_mm"]) == (
         24.0, 27.5)
     assert route.NO_FLOOR_FEED_START_BEARING_DEG == 65.0
+    if stand_foot:
+        import top_baffle_nd25fw4_v1lf_floor as floor
+
+        floor_facts = floor.integrated_floor_facts()["floor_lanes"]
+        for name, outer_radius in (("um", route.MAIN_OUTER_R),
+                                   ("t", route.TS_OUTER_R)):
+            record = floor_facts[name]
+            assert record["rear_mouth_relief_z_mm"] == (
+                -0.20, route.NO_FLOOR_FEED_REAR_Z)
+            assert math.isclose(
+                record["rear_mouth_relief_radius_mm"],
+                outer_radius
+                + floor.FLOOR_FEED_MOUTH_CONTRACT_CLEARANCE_MM
+                + floor.FLOOR_FEED_MOUTH_BOOLEAN_MARGIN_MM,
+                abs_tol=1e-12)
 
     feed_specs = (
         ("UM", main, route.CUTTER_R, route.MAIN_OUTER_R,
@@ -1393,9 +1523,24 @@ def _final_feed_and_flush_mouth_contract(stand_foot):
             cutter_radius + 0.15)
         skin = (outer - inner) & front_domain
         retained = _intersection_volume(owners["lm"], skin)
+        missing_skin = skin - owners["lm"]
+        missing_skin_components = []
+        if missing_skin is not None:
+            for component in missing_skin.solids():
+                bounds = component.bounding_box()
+                missing_skin_components.append({
+                    "volume_mm3": float(component.volume),
+                    "min_xyz_mm": (
+                        float(bounds.min.X), float(bounds.min.Y),
+                        float(bounds.min.Z)),
+                    "max_xyz_mm": (
+                        float(bounds.max.X), float(bounds.max.Y),
+                        float(bounds.max.Z)),
+                })
         assert retained > 0.995 * skin.volume, (
             f"{label} central feed skin incomplete: "
-            f"{retained:.4f}/{skin.volume:.4f} mm3")
+            f"{retained:.4f}/{skin.volume:.4f} mm3; "
+            f"missing={missing_skin_components}")
         rear = route._polygon_prism(
             Point(*points[0, :2]).buffer(
                 outer_radius + 0.30, resolution=32),
@@ -1619,9 +1764,18 @@ def test_bridge_contract():
         BRIDGE_WEB_WIDTH,
         BRIDGE_WEB_X,
         BRIDGE_WEB_Y,
+        LM_WING_CONTACT_FUSION_OVERLAP_MM,
+        LM_WING_CONTACT_Z,
         bridge_load_facts,
+        bridge_face_plan,
         bridge_plan_facts,
+        common_lm_wing_contact_plan,
+        floor_wing_contact_profile_addition_plan,
+        native_bridge_face_plan,
     )
+    from shapely.geometry import Polygon
+    from shapely.ops import unary_union
+    from top_baffle_nd25fw4_v1lf_floor import integral_stem_plan_points
     import top_baffle_nd25fw4_v1lf_route as route
 
     plan = bridge_plan_facts()
@@ -1675,6 +1829,40 @@ def test_bridge_contract():
     assert math.isclose(
         plan["face_exterior_area_mm2"], plan["face_plan_area_mm2"],
         abs_tol=1e-6)
+
+    # One exact front outline now owns both stand states.  The floor state
+    # adds only its missing shoulder delta; no-floor directly uses the common
+    # plan and retains its state-specific rear-entry insert bores.
+    floor_stem = Polygon(integral_stem_plan_points()).buffer(0)
+    native_bridge = native_bridge_face_plan()
+    universal = common_lm_wing_contact_plan()
+    raw_union = unary_union((floor_stem, native_bridge)).buffer(0)
+    assert raw_union.geom_type == "Polygon" and len(raw_union.interiors) == 2
+    expected = Polygon(raw_union.exterior)
+    assert universal.symmetric_difference(expected).area <= 1e-8
+    assert bridge_face_plan().symmetric_difference(universal).area <= 1e-8
+    floor_effective = unary_union((
+        floor_stem, floor_wing_contact_profile_addition_plan())).buffer(0)
+    assert floor_effective.symmetric_difference(universal).area <= 1e-8
+    assert floor_effective.hausdorff_distance(universal) <= 1e-9
+    for actual, expected_bound in zip(
+            universal.bounds,
+            (-80.59730075442252, 0.0,
+             80.59730075442253, 121.77825313411685), strict=True):
+        assert math.isclose(actual, expected_bound, abs_tol=1e-9)
+    assert plan["universal_wing_contact_profile"] is True
+    assert plan["universal_wing_contact_bounds"] == tuple(
+        map(float, universal.bounds))
+    assert plan["native_bridge_bounds"][1] == 14.0
+    assert plan["native_floor_stem_bounds"][1] == 0.0
+    assert plan["floor_profile_added_area_mm2"] > 599.0
+    assert plan["no_floor_profile_added_area_mm2"] > 2164.0
+    assert plan["transition_pocket_fill_count"] == 2
+    assert 36.0 < plan["transition_pocket_fill_area_mm2"] < 38.0
+    assert plan["wing_contact_z"] == LM_WING_CONTACT_Z == (6.8, 18.3)
+    assert math.isclose(
+        plan["wing_contact_fusion_overlap_mm"],
+        LM_WING_CONTACT_FUSION_OVERLAP_MM, abs_tol=1e-12)
 
     load = bridge_load_facts()
     assert load["design_mass_kg"] == 4.0
@@ -1746,6 +1934,7 @@ def test_bridge_geometry():
     tail = fused_bridge_tail()
     assert tail.is_valid and len(tail.solids()) == 1
     bb = tail.bounding_box()
+    assert math.isclose(bb.min.Y, 0.0, abs_tol=1e-6)
     assert math.isclose(bb.min.Z, BRIDGE_WEB_REAR_Z, abs_tol=1e-6)
     assert math.isclose(bb.max.Z, BRIDGE_WEB_FRONT_Z, abs_tol=1e-6)
     assert all(math.isclose(actual, expected, abs_tol=1e-12)
@@ -1754,7 +1943,9 @@ def test_bridge_geometry():
 
     # Every representative region that used to be an open frame/X cell is
     # now solid at the front face.
-    for x, y in ((0.0, 45.0), (-12.0, 35.0), (12.0, 55.0), (0.0, 82.0)):
+    for x, y in (
+            (0.0, 5.0), (0.0, 45.0),
+            (-12.0, 35.0), (12.0, 55.0), (0.0, 82.0)):
         probe = Pos(x, y, 17.5) * Cylinder(0.45, 0.8)
         assert _intersection_volume(tail, probe) > 0.95 * probe.volume
 
@@ -1882,7 +2073,7 @@ def test_no_floor_lm_core():
     staged = _stage_shell_contract_breps(
         False, "LM", tempfile.gettempdir(), shell_keys=())
     from build123d import Cylinder, Pos, Rot, import_brep
-    from shapely.geometry import LineString
+    from shapely.geometry import LineString, Point
     from export_piece_stls import BED_MM, V1LF_NO_FLOOR_LM_TILT_X_DEG
     from top_baffle_nd25fw4 import BRIDGE_HOLE_XY, BRIDGE_INSERT_D_MM
     import top_baffle_nd25fw4_v1lf as core
@@ -1892,6 +2083,7 @@ def test_no_floor_lm_core():
         BRIDGE_FACE_Z,
         BRIDGE_FUSION_CRADLE_Z,
         BRIDGE_INSERT_DEPTH_MM,
+        BRIDGE_WEB_T,
         BRIDGE_WEB_FRONT_Z,
         BRIDGE_WEB_REAR_Z,
         bridge_fastener_head_envelopes,
@@ -1899,21 +2091,27 @@ def test_no_floor_lm_core():
         bridge_fusion_cradle_plan,
         bridge_fusion_interface_facts,
         bridge_load_facts,
+        bridge_plan_facts,
         bridge_solid_web_plan,
     )
 
     lm = import_brep(staged["lm"])
     assert lm.is_valid and len(lm.solids()) == 1
-    # The measured pinned-osado baseline is 102,784.6 mm3. Permit only the
-    # conservative gross burial-web volume above that narrow 103,000 mm3
-    # bracket; actual growth must be smaller because the gross estimate does
-    # not subtract its round-cover/backfill/carrier overlap.
+    # The measured pre-compatibility pinned-osado baseline is 102,784.6 mm3.
+    # Permit only the conservative gross burial-web volume plus the exact
+    # common-profile growth above that narrow 103,000 mm3 bracket; actual
+    # growth remains smaller because neither estimate subtracts overlaps.
     burial_growth_ceiling = route.route_facts()[
         "lm_burial_web_growth_upper_bound_mm3"]
-    assert lm.volume < 103000.0 + burial_growth_ceiling, (
+    profile_growth_ceiling = (
+        bridge_plan_facts()["no_floor_profile_added_area_mm2"]
+        * BRIDGE_WEB_T)
+    assert lm.volume < (
+            103000.0 + burial_growth_ceiling + profile_growth_ceiling), (
         f"no-floor LM exceeds minimal-material budget: {lm.volume:.1f} mm3")
     assert BED_MM == 256.0
-    assert lm.bounding_box().min.Y < 16.0, "no-floor LM lost fused tail"
+    assert math.isclose(lm.bounding_box().min.Y, 0.0, abs_tol=0.02), (
+        "no-floor LM lost the universal Y=0 front tongue")
     _assert_lm_mount_bores(lm, core, flush)
     for x, y in BRIDGE_HOLE_XY:
         bore = Pos(
@@ -1945,8 +2143,14 @@ def test_no_floor_lm_core():
         web.bounding_box().min.Z, BRIDGE_WEB_REAR_Z, abs_tol=1e-9)
     assert math.isclose(
         web.bounding_box().max.Z, BRIDGE_WEB_FRONT_Z, abs_tol=1e-9)
+    # `bridge_face_plan` is the universal *outer* profile.  Remove the
+    # immutable R110.6 flange recess before asking for solid material: its
+    # intersection is 1195.63 mm2 and is deliberately cut from both states.
+    front_material_plan = bridge_face_plan().difference(
+        Point(*core.L22_CUTOUT[:2]).buffer(
+            core.LM_RECESS_R, resolution=256)).buffer(0)
     front_contract = core._plan_prism(
-        bridge_face_plan(), BRIDGE_WEB_FRONT_Z - 0.35,
+        front_material_plan, BRIDGE_WEB_FRONT_Z - 0.35,
         BRIDGE_WEB_FRONT_Z - 0.05)
     front_missing = front_contract - lm
     front_missing_volume = 0.0 if front_missing is None else sum(
@@ -2033,6 +2237,78 @@ def _load_lm_keyed_parts(stand_foot):
     return lm, parts
 
 
+def _assert_lower_base_magnet_split_ownership(
+        lm, lm_lower, lm_upper, core, lm_split, state):
+    """Keep both relocated base pockets wholly in the lower LM print.
+
+    The split pieces are derived from the finalized canonical carrier, so a
+    void-only cutter check is insufficient: an accidentally detached pocket
+    neighborhood would also appear unobstructed.  Compare a positive-volume
+    collar and the solid inward pocket backstop against the canonical BREP,
+    while proving that the upper print owns no material in either witness.
+    """
+    lower_sites = {
+        site["name"]: site
+        for site in core.side_magnet_sites("lm")
+        if site["interface_kind"] == "base_side"
+    }
+    assert set(lower_sites) == {"lm_lower_left", "lm_lower_right"}
+
+    seam = lm_split.LM_SPLIT_SEAM_Y
+    for name, site in lower_sites.items():
+        nx, ny = site["normal"]
+        assert site["face"][1] + core.SIDE_MAGNET_POCKET_D / 2.0 < seam
+
+        pocket = core._axis_cylinder(
+            site["face"], site["normal"], site["z_mm"],
+            core.SIDE_MAGNET_POCKET_D,
+            core.SIDE_MAGNET_DEPTH, 0.8)
+        assert _intersection_volume(lm, pocket) < 0.02, (
+            f"{state} canonical {name} base pocket is obstructed")
+        assert _intersection_volume(lm_lower, pocket) < 0.02, (
+            f"{state} lm_lower lost the open {name} base pocket")
+        assert _intersection_volume(lm_upper, pocket) < 0.02, (
+            f"{state} lm_upper intrudes into the {name} base pocket")
+
+        # A larger local cylinder contains both the annular pocket rim and
+        # solid material immediately inward of the 2.2-mm blind pocket.  Its
+        # complete canonical intersection must be reproduced by lm_lower;
+        # lm_upper must own none of this positive-volume neighborhood.
+        collar = core._axis_cylinder(
+            site["face"], site["normal"], site["z_mm"],
+            core.SIDE_MAGNET_POCKET_D + 1.2,
+            core.SIDE_MAGNET_DEPTH + 0.8, 0.4)
+        canonical_collar = _intersection_volume(lm, collar)
+        lower_collar = _intersection_volume(lm_lower, collar)
+        upper_collar = _intersection_volume(lm_upper, collar)
+        assert canonical_collar > 5.0, (
+            f"{state} canonical {name} has no retained pocket collar")
+        assert abs(lower_collar - canonical_collar) < 0.03, (
+            f"{state} {name} collar is not wholly owned by lm_lower: "
+            f"{lower_collar:.3f}/{canonical_collar:.3f} mm3")
+        assert upper_collar < 0.02, (
+            f"{state} {name} collar leaked into lm_upper by "
+            f"{upper_collar:.3f} mm3")
+
+        backstop_face = (
+            site["face"][0]
+            - (core.SIDE_MAGNET_DEPTH + 0.15) * nx,
+            site["face"][1]
+            - (core.SIDE_MAGNET_DEPTH + 0.15) * ny,
+        )
+        backstop = core._axis_cylinder(
+            backstop_face, site["normal"], site["z_mm"],
+            core.SIDE_MAGNET_POCKET_D - 0.4, 0.05, 0.05)
+        canonical_backstop = _intersection_volume(lm, backstop)
+        assert canonical_backstop > 0.90 * backstop.volume, (
+            f"{state} canonical {name} lost its solid inward backstop")
+        assert _intersection_volume(
+            lm_lower, backstop) > 0.90 * backstop.volume, (
+                f"{state} lm_lower lost the {name} inward backstop")
+        assert _intersection_volume(lm_upper, backstop) < 0.02, (
+            f"{state} lm_upper owns the {name} inward backstop")
+
+
 def _assert_lm_keyed_split(stand_foot):
     _state(stand_foot)
     from build123d import Rot
@@ -2064,6 +2340,10 @@ def _assert_lm_keyed_split(stand_foot):
     for name, part in parts.items():
         extra = part - lm
         assert (0.0 if extra is None else extra.volume) < 0.03, name
+
+    state = "floor" if stand_foot else "no-floor"
+    _assert_lower_base_magnet_split_ownership(
+        lm, bottom, top, core, lm_split, state)
 
     # The only intentional source loss is the local female fit relief not
     # occupied by the male key. Everywhere else, including both route-cover
@@ -2170,8 +2450,9 @@ def _assert_lm_keyed_split(stand_foot):
             bottom_bounds.max.Z, floor.FOOT_FRONT_Z_MM, abs_tol=0.02)
         assert top.bounding_box().min.Y > floor.STEM_TOP_Y_MM
     else:
-        assert bottom.bounding_box().min.Y < 16.0
-    state = "floor" if stand_foot else "no-floor"
+        assert math.isclose(
+            bottom.bounding_box().min.Y, 0.0, abs_tol=0.02), (
+                "no-floor LM lower lost the universal Y=0 front tongue")
     print(
         f"  {state} optional LM keyed split: zero-gap route butt, "
         f"one concealed source-volume registration key, no envelope growth; "
@@ -2239,9 +2520,10 @@ def _assert_core_interface_breps(lm, um, core):
             core.SIDE_MAGNET_POCKET_D, core.SIDE_MAGNET_DEPTH, 0.8)
         assert _intersection_volume(owner[site["driver"]], pocket) < 0.02
 
-        # The 2.2-mm radial pocket leaves only a 0.2-mm floor before the
-        # driver recess. Probe the center of that floor in the final BREP so
-        # a coincident Boolean cannot silently delete it.
+        # Probe solid material immediately inward of every blind pocket. The
+        # ring sites retain their designed thin radial floor; the relocated
+        # lower LM sites instead terminate in the thick shared W64 tongue.
+        # Both interfaces require a positive backstop after final Booleans.
         nx, ny = site["normal"]
         floor_face = (
             site["face"][0] - (core.SIDE_MAGNET_DEPTH + 0.10) * nx,
@@ -2253,7 +2535,7 @@ def _assert_core_interface_breps(lm, um, core):
         floor_fill = _intersection_volume(
             owner[site["driver"]], floor_probe)
         assert floor_fill > 0.90 * floor_probe.volume, (
-            f"{site['name']} lost its 0.2-mm radial pocket floor: "
+            f"{site['name']} lost its inward pocket backstop: "
             f"{floor_fill:.4f}/{floor_probe.volume:.4f} mm3 remains")
 
         if site["driver"] == "um":
@@ -2304,9 +2586,11 @@ def _assert_core_interface_breps(lm, um, core):
 
 
 def _wait_for_worker_headroom(label, minimum_mb=2500.0):
-    """Require measured launch headroom without relaxing the floor guard."""
+    """Require launch headroom only when host-free monitoring is enabled."""
     import run_memory_guarded as memory_guard
 
+    if memory_guard.MIN_FREE_MB == 0:
+        return
     deadline = time.monotonic() + R6F_HEADROOM_WAIT_TIMEOUT_S
     while True:
         free_mb = memory_guard._free_memory_mib()
@@ -2468,8 +2752,8 @@ def _stage_shell_contract_breps_unlocked(
         # export each already-disjoint required solid directly (no compound
         # re-intersection). The selected profile guard continuously samples
         # the complete process tree. This admission threshold matters on the
-        # local 8 GiB/0.5 GiB profile and is trivially satisfied behind
-        # osado's 64 GiB host-free floor.
+        # local 8 GiB profile and is trivially satisfied behind osado's
+        # mandatory 64 GiB host-free floor.
         launch_headroom = 3200.0
         _wait_for_worker_headroom(label, launch_headroom)
         temporary = target.with_name(
@@ -2833,6 +3117,15 @@ def test_floor_integrated_mount():
     import top_baffle_nd25fw4_v1lf_floor_strength as strength
     import top_baffle_nd25fw4_v1lf_lm_split as lm_split
     import top_baffle_nd25fw4_v1lf_route as route
+    import top_baffle_nd25fw4_v1lf as core
+    from shapely.geometry import Point, Polygon
+    from top_baffle_nd25fw4 import L22_CUTOUT
+    from top_baffle_nd25fw4_flush import LM_RECESS_R
+    from top_baffle_nd25fw4_v1lf_bridge import (
+        LM_WING_CONTACT_Z,
+        common_lm_wing_contact_plan,
+    )
+    from top_baffle_nd25fw4_v1lf_floor import integral_stem_plan_points
 
     lm = import_brep(staged["lm"])
     assert lm.is_valid and len(lm.solids()) == 1
@@ -2868,6 +3161,33 @@ def test_floor_integrated_mount():
     assert math.isclose(bounds.min.Y, 0.0, abs_tol=0.02)
     assert math.isclose(bounds.min.Z, -150.0, abs_tol=0.02)
     assert math.isclose(bounds.max.Z, 18.3, abs_tol=0.02)
+
+    # Probe only the newly added universal-profile shoulder.  The complete
+    # common plan also contains legitimate driver, route and carrier cavities;
+    # demanding it all be solid would test a filled baffle, not exterior wing
+    # compatibility.  The live Ac/Ae gate independently compares the exact
+    # final front-section exteriors of both stand states.
+    native_floor_plan = Polygon(integral_stem_plan_points()).buffer(0)
+    shared_shoulder_plan = common_lm_wing_contact_plan().difference(
+        native_floor_plan).buffer(0)
+    # The two historic transition pockets are wholly inside the R110.6 driver
+    # flange recess and are therefore removed from both finished carriers by
+    # the ordinary seat cutter.  Wing compatibility concerns the material
+    # outside that immutable driver keepout.
+    shared_shoulder_plan = shared_shoulder_plan.difference(
+        Point(*L22_CUTOUT[:2]).buffer(LM_RECESS_R, resolution=256)
+    ).buffer(0)
+    shared_front = core._plan_prism(
+        shared_shoulder_plan,
+        LM_WING_CONTACT_Z[1] - 0.35,
+        LM_WING_CONTACT_Z[1] - 0.05)
+    shared_front_missing = shared_front - lm
+    shared_front_missing_volume = (
+        0.0 if shared_front_missing is None else sum(
+            solid.volume for solid in shared_front_missing.solids()))
+    assert shared_front_missing_volume < 0.05, (
+        "floor LM lacks universal wing-contact shoulder material: "
+        f"{shared_front_missing_volume:.3f} mm3")
 
     # Independent final-BREP material probes cover the full-depth W64 foot,
     # stem and the R12 internal root transition without reusing their builders.
@@ -2921,6 +3241,7 @@ def test_floor_integrated_mount():
     # radius check samples every edge of the production composite wire--not
     # its dependency-light preview/control polygon.
     lane_radii = {}
+    lane_centerlines = {}
     for name, record in facts["floor_lanes"].items():
         x = record["x_mm"]
         y = record["floor_y_mm"]
@@ -2955,7 +3276,7 @@ def test_floor_integrated_mount():
         path = floor.floor_lane_path(name)
         assert path.is_valid and not path.is_closed
         edges = tuple(path.edges())
-        assert len(edges) == (5 if name == "lm" else 4)
+        assert len(edges) == (4 if name == "lm" else 3)
 
         def xyz(edge, parameter):
             point = edge @ parameter
@@ -2983,6 +3304,7 @@ def test_floor_integrated_mount():
             assert alignment >= 0.999999, (
                 f"{name} composite wire join is not G1: {alignment:.9f}")
         actual_samples = np.asarray(actual_samples)
+        lane_centerlines[name] = actual_samples
         lane_radii[name] = min(
             min(edge_radii), _min_three_point_radius(actual_samples))
         assert lane_radii[name] >= 14.0 - 0.03, (
@@ -2994,6 +3316,8 @@ def test_floor_integrated_mount():
         if name == "lm":
             assert record["handoff_mode"] == "rear_open_float"
             assert record["route_overlap_mm"] == 0.0
+            assert record["prefusion_handoff_gap_mm"] == 0.0
+            assert record["owner_cutter_backreach_mm"] == 0.0
             assert np.allclose(
                 xyz(edges[-1], 1.0), record["feed_xyz_mm"], atol=1e-9)
             assert tangent(edges[-1], 1.0)[2] < -0.999999
@@ -3001,7 +3325,9 @@ def test_floor_integrated_mount():
             # rear face just before its external lead. Probe that calculated
             # crossing rather than accepting a hidden capped endpoint at z=-6.
             rear_center_z = record["stem_z_mm"] - floor.FLOOR_LANE_BEND_R_MM
-            rear_mouth_y = 68.0 + math.sqrt(
+            rear_turn_start_y = (
+                record["feed_xyz_mm"][1] - floor.FLOOR_LANE_BEND_R_MM)
+            rear_mouth_y = rear_turn_start_y + math.sqrt(
                 floor.FLOOR_LANE_BEND_R_MM ** 2 - rear_center_z ** 2)
             rear_mouth = Pos(
                 x, rear_mouth_y, 0.0
@@ -3011,30 +3337,111 @@ def test_floor_integrated_mount():
             continue
 
         assert record["handoff_mode"] == "buried_route_overlap"
-        assert record["route_overlap_mm"] == 3.0
+        assert record["prefusion_handoff_gap_mm"] == 0.8
+        assert record["owner_cutter_backreach_mm"] == 8.0
+        assert math.isclose(
+            record["owner_cutter_backreach_mm"],
+            route.NO_FLOOR_FEED_CUTTER_EXTENSION, abs_tol=1e-9)
+        assert math.isclose(
+            record["route_overlap_mm"], 7.2, abs_tol=1e-9)
         annular = (
             route.route_cable_points(0.02) if name == "um"
             else route.ts_cable_points(0.02))
         feed = np.asarray(record["feed_xyz_mm"], dtype=float)
         assert np.allclose(annular[0], feed, atol=1e-9)
-        assert np.allclose(xyz(edges[-1], 0.0), feed, atol=1e-9)
-        floor_tangent = tangent(edges[-1], 0.0)
+        body_endpoint = xyz(edges[-1], 1.0)
+        assert math.isclose(
+            float(np.linalg.norm(feed - body_endpoint)),
+            record["prefusion_handoff_gap_mm"], abs_tol=1e-6)
+        floor_tangent = tangent(edges[-1], 1.0)
         annular_tangent = annular[1] - annular[0]
         annular_tangent /= np.linalg.norm(annular_tangent)
         assert float(np.dot(floor_tangent, annular_tangent)) >= 0.999, (
             f"{name} floor/annular handoff is not G1")
-        overlap_points = np.asarray([
-            xyz(edges[-1], index / 30.0) for index in range(31)])
-        centerline_gaps = np.linalg.norm(
-            overlap_points[:, None, :] - annular[None, :, :], axis=2)
-        max_overlap_gap = float(centerline_gaps.min(axis=1).max())
-        # The 3-mm terminal is tangent-straight while the annular route has
-        # finite curvature. A 0.35-mm centerline allowance remains far below
-        # either cutter radius, so it proves positive full-lumen overlap
-        # without pretending the two centerlines are coincident curves.
-        assert max_overlap_gap <= 0.35, (
-            f"{name} nominal 3-mm overlap departs annular centerline by "
-            f"{max_overlap_gap:.3f} mm")
+        owner_start = (
+            feed
+            - record["owner_cutter_backreach_mm"] * annular_tangent)
+        overlap_vector = body_endpoint - owner_start
+        axial_overlap = float(np.dot(overlap_vector, annular_tangent))
+        lateral_gap = float(np.linalg.norm(
+            overlap_vector - axial_overlap * annular_tangent))
+        assert math.isclose(
+            axial_overlap, record["route_overlap_mm"], abs_tol=0.03), (
+            f"{name} effective final overlap is {axial_overlap:.3f} mm")
+        assert lateral_gap <= 0.03, (
+            f"{name} setback/owner cutter axes miss by "
+            f"{lateral_gap:.3f} mm")
+
+    # Screen complete production centerlines, not just their deceptively
+    # well-separated endpoints.  The original LM y=82 turn and a trial
+    # y=74.5 turn both crossed the UM/T approach cubics.  The immediate
+    # second R14 LM turn plus x=+/-12 service tracks retain a real wall along
+    # every complete floor-body lane pair.
+    lane_radii_mm = {
+        name: record["diameter_mm"] / 2.0
+        for name, record in facts["floor_lanes"].items()
+    }
+    for left, right in (("lm", "um"), ("lm", "t"), ("um", "t")):
+        center_distance = float(np.min(np.linalg.norm(
+            lane_centerlines[left][:, None, :]
+            - lane_centerlines[right][None, :, :], axis=2)))
+        lumen_wall = (
+            center_distance - lane_radii_mm[left] - lane_radii_mm[right])
+        assert lumen_wall >= route.TUNNEL_SKIN - 0.02, (
+            f"{left.upper()}/{right.upper()} complete floor lanes leave "
+            f"only {lumen_wall:.3f} mm wall")
+
+    # Also screen every non-mating floor lane against the first 12 mm of
+    # each annular feed.  Own lane/feed pairs intentionally overlap by the
+    # separately gated 7.2 mm handoff; all other pairs must remain distinct.
+    annular_feeds = {}
+    for name, annular, radius in (
+            ("um", route.route_cable_points(0.10), route.CUTTER_R),
+            ("t", route.ts_cable_points(0.10), route.TS_CUTTER_R)):
+        annular = np.asarray(annular, dtype=float)
+        stations = np.concatenate((
+            [0.0], np.cumsum(np.linalg.norm(
+                np.diff(annular, axis=0), axis=1))))
+        annular_feeds[name] = (annular[stations <= 12.0 + 1e-9], radius)
+    for lane_name, lane_points in lane_centerlines.items():
+        for feed_name, (feed_points, feed_radius) in annular_feeds.items():
+            if lane_name == feed_name:
+                continue
+            center_distance = float(np.min(np.linalg.norm(
+                lane_points[:, None, :] - feed_points[None, :, :], axis=2)))
+            lumen_wall = (
+                center_distance - lane_radii_mm[lane_name] - feed_radius)
+            assert lumen_wall >= route.TUNNEL_SKIN - 0.02, (
+                f"{lane_name.upper()} floor lane leaves only "
+                f"{lumen_wall:.3f} mm to {feed_name.upper()} annular feed")
+    feed_distance = float(np.min(np.linalg.norm(
+        annular_feeds["um"][0][:, None, :]
+        - annular_feeds["t"][0][None, :, :], axis=2)))
+    feed_wall = (
+        feed_distance - annular_feeds["um"][1] - annular_feeds["t"][1])
+    assert feed_wall >= route.TUNNEL_SKIN - 0.02, (
+        f"UM/T nominal annular feeds leave only {feed_wall:.3f} mm wall")
+
+    # The globally phased 8-mm owner backreach is part of the installed
+    # floor lumens, not merely a Boolean allowance.  Sample both complete
+    # backreach segments so the widened x=+/-8 mouths remain independently
+    # printable passages rather than merging behind their rear-face feeds.
+    backreach_segments = {}
+    for name, points in (
+            ("um", route.route_cable_points(1.8)),
+            ("t", route.ts_cable_points(1.8))):
+        extended = route._owner_cutter_points(points, "lm")
+        u = np.linspace(0.0, 1.0, 161)[:, None]
+        backreach_segments[name] = (
+            extended[0] + u * (extended[1] - extended[0]))
+    backreach_distance = float(np.min(np.linalg.norm(
+        backreach_segments["um"][:, None, :]
+        - backreach_segments["t"][None, :, :], axis=2)))
+    backreach_wall = (
+        backreach_distance - route.CUTTER_R - route.TS_CUTTER_R)
+    assert backreach_wall >= route.TUNNEL_SKIN - 0.02, (
+        f"UM/T 8-mm owner backreaches leave only "
+        f"{backreach_wall:.3f} mm wall")
 
     # The monolithic carrier is intentionally retained as the canonical
     # large-format reference. The bottom keyed option owns the complete stand

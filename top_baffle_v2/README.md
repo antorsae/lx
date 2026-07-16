@@ -21,13 +21,16 @@ deliberately removes the full outline and retains only two collars.
 | `top_baffle_nd25fw4_c7_split.py` | C7 print split: same seams/dovetails/ducts as B2 -- the three LM pieces are drop-in replacements, piece_top and all attachments are shared |
 | `top_baffle_nd25fw4_cables.py` | Proud-family **R6P** subtractive routing and routing-profile dispatch: standard B2/C7/V0/V1 UM tail plus the keyed V1L-only 283-degree alternate |
 | `top_baffle_nd25fw4_v1l.py` / `_split.py` | Thin R6P bottom+mids; its alternate UM tail and rear-face exit remain wholly in `piece_mid_right`, so the shared top/vase is unchanged |
-| `top_baffle_nd25fw4_v1lf.py` / `_split.py` | Extreme V1LF core: LM/UM flush-driver collars, rounded LM-to-UM M3 half-laps, six flush-buried lip magnets (four LM, two UM), an UM route buried only in the LM carrier, a T route buried in the LM/UM carriers, free rear UM/tweeter spans, a free LM cable span, and a state-owned LM extension: the softly blended stock-bridge plate without a floor stand or the integral W64 floor stem/foot and NL8 panel in floor state |
+| `top_baffle_nd25fw4_v1lf.py` / `_split.py` | Extreme V1LF core: LM/UM flush-driver collars, rounded LM-to-UM M3 half-laps, six flush-buried magnets (two upper LM ring-radial, two lower LM base-side, and two UM ring-radial), buried UM/T route spans, and free rear cable continuations. Floor and no-floor share one exact lower-LM front/wing-contact outline from Y=0 through the broad ring shoulder; only rear/deep structure differs (integral W64 stand/NL8 panel versus shallow four-insert bridge). |
 | `top_baffle_nd25fw4_v1lf_lm_split.py` | Optional, mutually exclusive two-print form of the finalized V1LF LM carrier: exact zero-gap world-Y butt seam and one concealed right-hand straight rounded tongue/blind-socket registration pair carved wholly inside the existing LM lip. The 0.8 mm tongue engages 3.5 mm along its tangential insertion axis (~75.23° from +X). It adds no external protrusion, extra fastener, envelope growth, or standalone retention/load credit; the monolithic LM remains canonical. |
 | `top_baffle_nd25fw4_v1lf_route.py` | Exact R6F printed-owner segments and physical cable continuations: 0.8 mm minimum walls and 0.85 mm seat roof on the surviving buried UM/T spans, full-width longitudinal burial webs plus solid roof-to-bore saddles at every named insert-bypass Z bump, free UM cable behind the UM carrier, free T cable behind the tweeter crescent, and the 82.67° physical crown crossing |
-| `top_baffle_nd25fw4_v1lf_bridge.py` | Immutable no-floor four-hole bridge datum, fused 62 mm insert core with soft cubic shoulders and two centered rear cable entries at the deepest existing LM-pad depth (no separate keel or rear ribs), hardware proxies, and an opening-aware biaxial 4 kg sustained-1g/3g/5g structural screen |
+| `top_baffle_nd25fw4_v1lf_bridge.py` | Universal lower-LM front profile (filled exterior union of the historical floor stem and no-floor bridge), immutable no-floor four-hole datum, fused 62 mm insert core with soft cubic shoulders and two centered rear cable entries at the deepest existing LM-pad depth (no separate keel or rear ribs), hardware proxies, and an opening-aware biaxial 4 kg sustained-1g/3g/5g structural screen |
 | `top_baffle_nd25fw4_v1lf_floor.py` / `_floor_strength.py` | Floor-only integral W64 full-depth stem/foot, R12 root, rear NL8 panel/service cavity and three buried cable continuations; closed-form five-material net-section screen. This is part of the LM carrier, not an add-on, and the analysis is not FEA or physical qualification. |
 | `top_baffle_nd25fw4_v1lf_attachments.py` | Optional direct blind-M3 tweeter crescent only; any cable retention is external/non-modeled, and magnets receive zero structural load credit |
 | `top_baffle_nd25fw4_v1lf_assembled.py` | Review assembly containing the R6F core, selected add-ons, and the explicitly non-manufacturing terminal/Faston proxy |
+| `v1lf_basic_wings_cad.py` | STEP-first Ac/Ae V1LF acoustic attachments: one canonical monolith per side, three exact surface-normal Ø5.2 × 2.2 magnet receivers per side (LM lower, LM upper, and UM), one saddle compatible with the shared floor/no-floor lower-LM front profile, the approved constant-depth Ac or monotonic LM/UM/T-weighted Ae rear, and three exact-mask print intersections per side. Each physical side has one V1L-style through-local-thickness XY dovetail at the lower→middle interface (lower male, neck/head/depth 7/9/4 mm) and one at the middle→UM interface (middle male, 7/8.5/4 mm); female clearance is 0.05 mm, the exposed split clearance closes over the final 2 mm at both endpoints, and the keys add no envelope growth. They register/interlock in XY but provide no independent Z retention. Ae’s complete internal protected-land perimeter is accepted only when paired actual-BREP probes show a C0 jump ≤0.03 mm |
+| `export_v1lf_basic_wings.py` | Transactional Ac/Ae exporter: canonical/assembled STEP, six strict STLs, facts, hash manifest, and CAD-derived QA renders under `wings/ac/` or `wings/ae/`; every review PNG uses hash-validated staged BREPs for a neutral no-floor LM-upper/UM/tweeter reference plus the two coincident LM-lower outlines—blue dash-dot for no-floor and green dotted for floor stand; the side view keeps its useful acoustic-depth scale and includes a complete-depth floor inset |
+| `test_v1lf_basic_wings.py` | Remote-only Ac/Ae BREP, print-inventory, STEP, STL, mirror, depth, receiver, dovetail/clearance, endpoint-closure, bed-fit, provenance, render, and exact dual-state lower-LM front-profile gates |
 | `top_baffle_nd25fw4_um_fit.py` | 283-degree MU terminal service model: terminal-less MU body, hash-pinned W22 reference and declared-placement conservative rear keepout, independent low-profile flag-Faston pull states, physical OD8/OD4 Y-breakout harness, and the proud/V1L split strain reliefs; `PHYSICAL_MEASURE_REQUIRED` remains true |
 | `export_piece_stls.py` | Exports the print-ready proud-family or V1LF core/add-on STLs (`--variant`, `--outdir`) |
 | `export_steps.py` | Exports a module's `gen_step()` to STEP via build123d's native exporter (`<module.py> --output <path>`) — no CAD-skill dependency |
@@ -40,6 +43,8 @@ Regenerate through the remote executor (the default):
     make
     make floor_stand
     make floor_v1lf  # focused integral-floor V1LF release and strict QA
+    make v1lf_release  # both V1LF states + Ac/Ae, concurrent on osado
+    make v1lf_basic_variants  # Ac + Ae STEP/STL families, built concurrently
 
 `make` snapshots the exact current working-tree inputs, runs in an isolated
 job on `osado.lan`, and promotes only hash-verified artifacts back into this
@@ -74,7 +79,7 @@ uses direct final-LM construction plus complete shell/cable/service witnesses;
 V1L builds its shared split geometry once; and each state's V1L/V1LF STLs are
 meshed in one guarded process. Physical print-bed splits and mating interfaces
 remain unchanged. Explicit local mode keeps the segmented, one-heavy-part-at-
-a-time implementations needed by the 8 GiB/0.5 GiB workstation limits.
+a-time implementations needed by the 8 GiB workstation process-tree cap.
 
 Before launch, the executor measures and hashes the actual Linux x86_64
 Python ABI, interpreter binary, uv version and complete installed-package
@@ -99,15 +104,16 @@ floor, guard-slot count and any remote aggregate cgroup cap. Those records are
 portable, so the local checker can verify a promoted osado build without
 pretending it was generated under the macOS profile. It is provenance
 evidence, not a printable part, and the strict checker intentionally requires
-it.
+it. A recorded free-memory floor of `0` means that host-free monitoring was
+disabled; RSS monitoring remains active.
 
 Do not bypass the guard with direct bulk Python invocations. The local profile
-stops a CAD process tree above 8 GiB RSS or when immediately reclaimable
-system memory falls below 0.5 GiB; on macOS that conservative counter is free
-+ speculative + purgeable pages (not inactive/compressed). Local builds stay
-serialized. The high-memory profile refuses to load on non-Linux or
-undersized hosts and is selected by the remote executor only. Limit variables
-can tighten their selected profile but cannot relax it.
+stops a CAD process tree above 8 GiB RSS, has no host-free-memory floor, and
+keeps local builds serialized. Set a positive `LX_CAD_MIN_FREE_MB` to opt a
+local invocation into a stricter floor. The high-memory profile refuses to
+load on non-Linux or undersized hosts, retains its mandatory 64 GiB host-free
+floor, and is selected by the remote executor only. Limit variables can
+tighten their selected profile but cannot relax it.
 
 Self-contained — the direct pip dependencies are
 `build123d`, `shapely`, `matplotlib`, `numpy`, and `Pillow` (no external CAD
@@ -279,7 +285,8 @@ Each folder contains all proud-family variants and the matching V1LF
 core/add-on set. In R6P, `piece_bottom` is the only functionally
 different base piece; the other base STLs can differ by <0.05 mm as
 the foot-entry knots move. In R6F, the UM core is state-independent. The
-floor LM owns the integral stand; the no-floor LM owns the fused bridge web.
+floor LM owns the integral stand; the no-floor LM owns the fused bridge web,
+but their front wing-contact outlines are identical through z=6.8..18.3.
 `top_baffle_nd25fw4_attachments.step` is flag-independent and stays at
 the top level. The `LX_STAND_FOOT` environment flag defaults to 1.
 
@@ -297,7 +304,7 @@ the top level. The `LX_STAND_FOOT` environment flag defaults to 1.
 | lx521_top_c7base_4of4_vase_b2 | same part as base 4of4 (re-tessellated file) | C7 = same vase |
 | lx521_top_v0_4of4_vase / v1_4of4_vase | as base 4of4 | V0 / V1 vase experiments |
 | `lx521_top_v1l_1..3of4_*` + re-exported 4of4 vase | as proud base 1..4of4 | keyed V1L bottom/mids; its 283-degree alternate is confined to 3of4 `mid_right`, while 4of4 is the unchanged V1 vase |
-| `lx521_top_v1lf_core_1of2_lm_carrier.stl` | Ø226 collar, six ordinary blind LM insert bores at 0/60/120/180/240/300°, two rounded LM-to-UM ears, four flush-buried R113-lip magnets, and the LM-owned buried UM/T route segments; the D7.8 LM lead is free. The floor-state file additionally owns the full-height W64 stem/foot and NL8 panel; the no-floor file retains the softly blended front-flush bridge plate. | canonical large-format print form of the mandatory R6F LM carrier; print this **or** both optional keyed halves, never both forms |
+| `lx521_top_v1lf_core_1of2_lm_carrier.stl` | Ø226 collar, six ordinary blind LM insert bores at 0/60/120/180/240/300°, two rounded LM-to-UM ears, two flush-buried upper R113-lip magnets plus two flush-buried lower base-side magnets at `(x,y,z)=(±32,18,12.55)`, and the LM-owned buried UM/T route segments; the D7.8 LM lead is free. Both states have the same broad lower shoulder and Y=0 front tongue, so the lower pocket faces and outward ±X normals coincide. Behind it, floor state owns the full-height W64 stem/foot and NL8 panel while no-floor owns the shallow four-insert bridge. | canonical large-format print form of the mandatory R6F LM carrier; print this **or** both optional keyed halves, never both forms |
 | `lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl` | floor: lay the world-Y floor face down with X=−90° and Z=0°; no-floor: Z=26° | optional replacement print form for the canonical LM; in floor state it inherits the **entire** stem/foot/NL8 panel and the exported footprint must remain ≤220 × 220 mm; requires the matching top half |
 | `lx521_top_v1lf_optional_lm_keyed_2of2_top.stl` | authoritative measured Z45° footprint: **210.47 × 210.47** in both states | optional replacement print form for the canonical LM; requires the matching bottom half |
 | `lx521_top_v1lf_core_2of2_um_carrier.stl` | Ø103.4 collar, two rounded LM-to-UM ears, direct tweeter-joint halves, two flush-buried magnets, and the buried T continuation with fully solid-webbed 328°/58° insert bypasses; the UM cable is free behind this carrier and has no printed rear duct | mandatory R6F UM core |
@@ -616,22 +623,25 @@ mandatory geometry is only:
 - two compact Ø9 teardrop half-lap ears at x=±32.0, y=315.770 that
   establish the 165.100 mm driver-center spacing without entering
   either flange seat;
-- exactly six radial D5×2 alignment/anti-rattle interfaces in Ø5.2×2.2
-  pockets: four LM and two UM. The existing upper LM pair remains buried
+- exactly six surface-normal D5×2 alignment/anti-rattle interfaces in
+  Ø5.2×2.2 pockets: four LM and two UM. The existing upper LM pair remains buried
   flush directly in the R113 lip at world polar 64°/116° (±26° from top),
   has no proud ear, and retains at least 2.2 mm pocket-edge to the nearest
-  insert-pad edge and 0.86 mm to its route covers. Two new lower LM magnets
-  are likewise face-flush at 224°/316° and retain at least 23.0 mm to the
-  nearest insert edge. The 224° site remains at z=12.55; the route-adjacent
-  316° site uses the Z-preferred z=15.40 position and retains a closed
-  0.30 mm front skin. Both clear the lower inserts, buried routes, and
-  bridge/integral-stand load path. The UM pair is
+  insert-pad edge and 0.86 mm to its route covers. The lower LM pair is
+  buried in the two straight base side faces at
+  **`(x,y,z)=(±32,18,12.55)`**, with outward normals `(-1,0)` on the left
+  and `(1,0)` on the right. These base-side pockets are identical in the
+  floor and no-floor carriers and clear the lower inserts, buried routes,
+  and bridge/integral-stand load path. The UM pair is
   flush-buried
   at 50.5°/129.5° and z=15.1 in the R51.7 lip, clearing the conservative T
   cover by at least 1.1 mm with a 0.2 mm radial floor and 0.6 mm front skin.
   The pocket's extra 0.2 mm depth is adhesive allowance: hold each magnet
   flush while bonding rather than bottoming it. All six have
   **zero structural load credit**;
+- Ac and Ae provide three coaxial Ø5.2×2.2 receivers on each physical
+  side—one at LM lower, one at LM upper, and one at UM—so all six carrier
+  magnet axes have matching wing pockets;
 - six V1LF-only LM axes at 0/60/120/180/240/300° on radius 104.75 mm,
   leaving the crown clear; both states own six ordinary blind carrier
   inserts;
@@ -671,7 +681,7 @@ Assemble the two front faces down on one flat datum and confirm full tongue
 seating, coplanarity, and route-seam continuity, then install the LM driver:
 its flange and all normal LM fasteners are the installed structural splice
 across the seam. The authoritative measured no-floor footprints are
-**198.79×205.51 mm** (bottom) and **210.47×210.47 mm** (top). The floor
+**202.65×219.88 mm** (bottom) and **210.47×210.47 mm** (top). The floor
 bottom includes the complete stand and uses the exporter's X=−90°
 floor-face-down, Z=0° orientation; the generated-bed check,
 rather than a stale pre-integration dimension, is authoritative and requires
@@ -695,13 +705,21 @@ There is no yoke, open rail, support fastener, or
 `lx521_top_v1lf_addon_mount_floor_support` file. All six LM driver insert
 bores are ordinary blind carrier bores in both states.
 
+The floor and no-floor state geometry intentionally diverges only behind the
+wing-contact face. Their lower-LM front exterior is one common profile: the
+union of the former broad no-floor cubic shoulder and the former floor stem,
+continued to world Y=0. This removes the old 25.57 mm width discrepancy near
+Y=94.665 and the old 14 mm height discrepancy. Ac and Ae therefore use one
+unchanged saddle and sit flush on either state; the floor's deep load path and
+the no-floor bridge's four blind inserts remain independent.
+
 The optional V1 face-to-face tweeter crescent remains a separate add-on with
 direct blind-M3 half-laps and no printed T-cable arc.
 V1LF has no printed grommet; selected external cable retention remains a
 physical-fit item, and cable load must never reach the MU tabs. No-floor
 support is not an add-on: a 62 mm insert-bearing plate with soft cubic
 shoulders is fused into the LM carrier around the unchanged holes at
-(±20,20)/(±20,70). Two rear-facing cable mouths at x=±5, y=82 enter flush at
+(±20,20)/(±20,70). Two rear-facing cable mouths at x=±8, y=82 enter flush at
 z=5.3 and rise internally; the acoustic front stays solid. The plate occupies z=5.3..18.3, flush
 with the acoustic front and no deeper than the six existing LM insert-pad rear
 faces. It has no X-frame, acoustic-front window, rear rib, or other depth structure. Its four
@@ -852,6 +870,14 @@ epoxy and clamp); the outline kinks register the parts.
   remains
   inside the existing lip, so it creates no external protrusion or envelope
   growth.
+- Ac and Ae wing sides each print as lower, middle, and UM segments cut from
+  the finalized monolith. The lower segment owns the 7/9/4 mm male dovetail
+  into the middle segment; the middle segment owns the 7/8.5/4 mm male
+  dovetail into the UM segment. Both female complements use 0.05 mm clearance.
+  The clearance collapses to exact closure over the final 2 mm at each exposed
+  split endpoint, and neither key may grow the installed plan or depth
+  envelope. Both complete keys retain at least 2.0 mm measured exterior plan
+  ligament. Qualify the fit on a process-matched coupon before a complete wing.
 
 ## Assembly
 
@@ -897,3 +923,12 @@ both drivers before final driver installation. This is still not release
 proof: the 12 mm state has zero positive overtravel beyond the provisional
 12 mm exposed tab. The numbered procedure and hardware
 cautions are in PRINTING.md.
+
+**Ac/Ae wing segments:** slide each through-local-thickness dovetail along
+local Z while holding the acoustic front faces on a common datum. The two keys
+provide XY registration and in-plane interlock only; they do not independently
+retain the segments against Z separation and carry no structural-retention
+claim. If handling or the experiment requires Z retention, use the same
+documented rear tape or light-bond method on every compared wing. This Ac/Ae
+contract supersedes their former wavy butt-glue/epoxy seams only; it does not
+change the adhesive instructions for legacy R6P attachments or other splits.

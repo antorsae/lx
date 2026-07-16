@@ -18,10 +18,11 @@
   magnets must be held flush rather than bottomed during bonding. Preserve the
   upper LM pair buried flush directly in the R113 lip at world polar 64/116
   deg (±26 deg from top), with no ear and at least 2.2 mm pocket-edge to
-  nearest insert-pad edge. Add a lower LM pair face-flush at 224/316 deg with
-  at least 23.0 mm nearest-insert edge clearance. Keep 224 deg at z=12.55;
-  use the Z-preferred z=15.40 position at 316 deg, retaining a closed 0.30 mm
-  front skin. Both clear buried routes and the bridge/integral-stand load path. The
+  nearest insert-pad edge. Place the lower LM pair face-flush in the common
+  straight base side faces at `(x,y,z)=(±32,18,12.55)`, with left/right
+  outward normals `(-1,0)`/`(1,0)`. Both stand states expose those exact
+  base-side datums, and both pockets clear buried routes and the
+  bridge/integral-stand load path. The
   UM pair is also earless and flush at 50.5/129.5 deg, z=15.1, with
   1.1 mm T-cover clearance, 0.2 mm radial floor and 0.6 mm front skin. The
   D7.8 LM lead is a modeled free span with no printed micro-duct. The UM cable
@@ -31,6 +32,11 @@
   there is no separate no-floor keel. Floor mode instead owns a full-height
   integral W64 stem/foot, R12 root, three buried floor lanes and rear NL8
   panel. There is no separate floor-support add-on or support fastener.
+  Both modes expose one identical LM-lower front/wing-contact outline: the
+  opening-free union of the W64 floor stem and the broad cubic no-floor bridge
+  shoulder. It begins at world `Y=0`, reaches the same R113 tangencies in both
+  states, and is identical through the complete wing depth `z=6.8..18.3`.
+  Only geometry behind that common contact depth remains state-specific.
 - Optional LM print form: the authoritative LM carrier remains one monolithic
   solid. A mutually exclusive two-print option is derived from that finalized,
   state-specific solid at world `Y=172.481 mm` with an exact zero-gap planar
@@ -61,14 +67,17 @@
 - Bridge datum: global hole centres `(-20,20)`, `(20,20)`, `(-20,70)`,
   `(20,70)` are immutable. They preserve the 40 x 50 mm pattern and,
   relative to the LM centre, the existing 182.083 mm lower-row and
-  132.499 mm upper-row radii. No-floor mode fuses a 62 mm-wide rounded,
-  opening-free solid web around these holes into the LM carrier. The web is
+  132.499 mm upper-row radii. No-floor mode retains a 62 mm-wide rounded
+  insert-bearing core around these holes, but its opening-free front web grows
+  to the universal LM-lower contact outline shared with floor mode. The web is
   flush with the front and occupies `z=5.3..18.3`, exactly the deepest existing
   LM insert-pad envelope; it has no X, hollow opening, rear rib, or additional
   rear-depth structure. Four rear-opening Ø6.4 x 6.8 bores leave a 6.2 mm solid front
   floor, and no bridge geometry extends behind the existing LM-pad envelope.
-  Floor mode replaces this bridge web with its monolithic stand described
-  below. The no-floor web extends through a 68° lower-ring cradle; because the
+  Floor mode owns the monolithic stand described below plus only the shallow
+  missing shoulder delta needed to reach the same universal contact outline;
+  it does not acquire the four bridge bores. The no-floor web extends through
+  a 68° lower-ring cradle; because the
   existing annular ring lip starts at z=6.8, only the actual z=6.8..18.3
   monolithic interface is credited structurally.
   The 4 kg biaxial PLA Tough+ screen uses a conservative 47.8 × 13.0 mm
@@ -93,7 +102,8 @@
   LM Ø9, UM Ø8.2, and shared T Ø6, each with a minimum R14 turn. There is
   no yoke, open rail, secondary floor-support print, support screw, or support
   insert. The canonical floor LM is intentionally large-format; the optional
-  keyed bottom inherits the entire stand.
+  keyed bottom inherits the entire stand. Its broad universal front shoulder
+  is limited to `z=6.8..18.3`; the W64 stem remains the sole deep load path.
 - Integral floor strength screen: closed-form exact rectangle-minus-circles
   root section, 4.0 kg mass at y=230 mm and 70 mm rear eccentricity, checked
   at 1g/3g/5g. This is **not FEA, certification, or physical qualification**.
@@ -210,11 +220,15 @@
   signoff in `V1LF_PHYSICAL_QUALIFICATION.md`.
 - Validation: exact insert and bridge coordinates; opening-free front web,
   rear-entry bore/front-floor depth, and zero rear protrusion; state isolation;
-  six global Ø5.2 x 2.2 magnet pockets, four LM/two UM polar positions and
-  face-flush bonding, preservation of the upper 64/116 deg LM pair, addition
-  of the lower 224/316 deg LM pair, including at least 23.0 mm nearest-insert
-  edge clearance and the 316 deg z=15.40 route bypass, and at least 2.2 mm
-  upper-LM nearest-insert edge gap; absence of LM proud ears;
+  exact floor/no-floor LM-lower exterior equality at the front and throughout
+  `z=6.8..18.3`, common world `Y=0` lower extent, coincident station widths,
+  and equal 0.20 mm wing saddle clearance in both states;
+  six global Ø5.2 x 2.2 surface-normal magnet pockets and face-flush
+  bonding; preservation of the upper 64/116 deg LM ring pair; exact lower-LM
+  base-side faces at `(x,y,z)=(±32,18,12.55)` with outward ±X normals in
+  both stand states; at least 2.2 mm upper-LM nearest-insert edge gap; absence
+  of LM proud ears; and three matching Ac/Ae receivers per physical side at
+  LM lower, LM upper, and UM;
   free D7.8 LM span clearance with zero printed micro-duct and correct floor
   lane continuation;
   physical-cable containment; insert/head/terminal/service clearance;
@@ -249,6 +263,5 @@
   That profile uses concurrent check processes, direct final-part builds and
   full route witnesses; it does not inherit macOS-only cutter/route tiling.
   Explicit `LX_CAD_EXECUTION=local` remains serial with an 8 GiB process-tree
-  RSS ceiling and a 0.5 GiB macOS immediately reclaimable-memory
-  launch/runtime floor (free + speculative + purgeable; inactive/compressed
-  excluded).
+  RSS ceiling and no host-free-memory floor. A positive
+  `LX_CAD_MIN_FREE_MB` may opt a local invocation into a stricter floor.

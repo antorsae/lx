@@ -176,8 +176,8 @@ LM_ROUTE_END_DEG = 58.0
 # the integral floor stem in floor mode and the fused bridge web otherwise.
 # This deletes the former lateral R114/support-hardware detour while keeping
 # the proven symmetric shallow rise into the LM annulus.
-NO_FLOOR_MAIN_FEED_XY = np.asarray((5.0, 82.0), dtype=float)
-NO_FLOOR_T_FEED_XY = np.asarray((-5.0, 82.0), dtype=float)
+NO_FLOOR_MAIN_FEED_XY = np.asarray((8.0, 82.0), dtype=float)
+NO_FLOOR_T_FEED_XY = np.asarray((-8.0, 82.0), dtype=float)
 CENTRAL_MAIN_FEED_XY = NO_FLOOR_MAIN_FEED_XY
 CENTRAL_T_FEED_XY = NO_FLOOR_T_FEED_XY
 NO_FLOOR_FEED_REAR_Z = PAD_FACE_Z
@@ -1357,11 +1357,18 @@ def _lm_ring_outer_crop(shape, *, cutter=False):
     return shape & owner
 
 
-def _lm_state_tail_crop(shape):
-    """Crop route material to the integral stem or no-floor bridge owner."""
+def _lm_state_tail_crop(shape, *, cutter=False):
+    """Crop route material to the integral stem or no-floor bridge owner.
+
+    The floor carrier's rear feed mouths are native openings at z=5.3.  Its
+    positive round covers therefore begin at that plane, while the negative
+    lumen cutters retain the complete z=0..5.3 owner overlap needed to open
+    the already-solid integral stem.  The no-floor bridge itself begins at
+    z=5.3, so both of its domains use the same bound.
+    """
     if STAND_FOOT:
         bounds = FLOOR_STEM_CORE_BOUNDS
-        z0 = STEM_Z_MM[0]
+        z0 = STEM_Z_MM[0] if cutter else PAD_FACE_Z
     else:
         bounds = NO_FLOOR_BRIDGE_CORE_BOUNDS
         z0 = PAD_FACE_Z
@@ -1383,7 +1390,7 @@ def _lm_printed_owner_crop(shape, *, cutter=False):
         components.extend(
             solid for solid in ring_component.solids()
             if solid.volume > 1e-9)
-    tail_component = _lm_state_tail_crop(shape)
+    tail_component = _lm_state_tail_crop(shape, cutter=cutter)
     if tail_component is not None:
         components.extend(
             solid for solid in tail_component.solids()

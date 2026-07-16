@@ -32,10 +32,10 @@ bridge-web load case is treated explicitly below. PLA still relaxes
 | 10F | M3 x 8 into M3 x 3 x O5 heat-set (bore O4.6 x 4.0) | 0.30–0.40 N·m | short engagement — do not overdrive |
 | R6P bridge (no-stand) | M5 machine screw from the bridge (behind) into M5 x 5.8 x O6.3 heat-set (bore O6.4 x 6.8, REAR face) | hand-snug | 4 off; same insert as the W22, set from the rear |
 | R6F collar half-laps | 2 x M3 through-bolts + washers/nuts; choose length against the printed 11.5 mm stack | hand-snug | structural UM/tweeter-to-LM load path; tighten evenly on a flat front-face datum |
-| R6F fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening Ø6.4 × 6.8 inserts | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders, centered rear UM/T entries at x=±5/y=82/z=5.3, solid acoustic front, immutable 40 × 50 pattern, and no geometry behind the existing LM pads; magnets receive zero load credit |
+| R6F fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening Ø6.4 × 6.8 inserts | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders, centered rear UM/T entries at x=±8/y=82/z=5.3, solid acoustic front, immutable 40 × 50 pattern, and no geometry behind the existing LM pads; magnets receive zero load credit |
 | R6F optional LM keyed seam | one concealed right-hand straight rounded tongue/blind-socket pair wholly inside the existing R110.6..R113 lip; world Y=172.481 mm, zero-gap planar butt; tongue width 0.8 mm, engagement 3.5 mm along the tangential insertion axis (~75.23° from +X) | registration only | mutually exclusive replacement print form for the canonical monolithic LM; no external protrusion, envelope growth, extra screw, or standalone retention/load credit. Assemble front-face-down on a flat datum; the installed LM driver flange and its normal fasteners are the structural splice. |
 | R6F UM-to-tweeter half-laps | 2 x rear-driven M3 screws at x=±24, y=421.5 into blind M3 x 3 inserts in Ø4.6 x 4.0 receivers | hand-snug | no front bolt head; keep the acoustic face uninterrupted |
-| R6F alignment magnets | Six D5 × 2 N52 magnets in Ø5.2 × 2.2 radial pockets | — | LM has four: preserve the upper flush 64°/116° pair with its verified 2.2 mm insert and 0.86 mm route-cover gaps, and add a lower face-flush pair at 224°/316° with at least 23.0 mm nearest-insert edge clearance. The 224° pocket remains at z=12.55; the route-adjacent 316° pocket moves only in Z to 15.40 and retains a closed 0.30 mm front skin. Both clear buried routes and the bridge/integral-stand load path. UM keeps its flush 50.5°/129.5° pair at z=15.1, with at least 1.1 mm insert/T-cover gap, 0.2 mm radial floor and 0.6 mm front skin. Fixture all six flush during cure—0.2 mm extra pocket depth is adhesive allowance; no proud ears; alignment/anti-rattle only, **zero structural load credit** |
+| R6F alignment magnets | Six D5 × 2 N52 magnets in Ø5.2 × 2.2 surface-normal pockets | — | LM has four: preserve the upper flush ring-radial 64°/116° pair with its verified 2.2 mm insert and 0.86 mm route-cover gaps; install the lower pair flush in the straight base side faces at `(x,y,z)=(±32,18,12.55)`, with outward normals `(-1,0)` left and `(1,0)` right. The shared lower profile makes these base datums identical in floor and no-floor carriers, and both clear buried routes and the bridge/integral-stand load path. UM keeps its flush ring-radial 50.5°/129.5° pair at z=15.1, with at least 1.1 mm insert/T-cover gap, 0.2 mm radial floor and 0.6 mm front skin. Fixture all six flush during cure—0.2 mm extra pocket depth is adhesive allowance; no proud ears; alignment/anti-rattle only, **zero structural load credit**. Ac/Ae have matching LM-lower, LM-upper, and UM receivers on each side. |
 | Tweeter pair | M4 through-bolts + nyloc + wave washer; length = septum + faceplates (stock 18.3 septum → ~M4 x 35; V1/R6F crescent → ~M4 x 30 — verify stacked) | snug, ~0.5 N·m | clamps the 4.0 mm crescent seat; recheck after a week |
 
 **Installing the inserts:** soldering iron at 230–250 °C, press
@@ -493,17 +493,20 @@ Do not load an unspliced split LM.
    additionally owns four rear-opening bridge inserts in the 62 mm solid web;
    each Ø6.4 × 6.8 bore starts at z=5.3 and leaves a 6.2 mm front floor. Set every
    insert square and reject any cracked, loose, or over-melted boss.
-3. Glue six D5×2 magnets into the Ø5.2×2.2 radial pockets. LM uses four:
-   preserve the upper flush 64°/116° pair and its at-least-2.2 mm nearest
-   insert gap, then fit the new lower face-flush pair at approximately
-   224°/316° only after confirming clearance from lower inserts, buried
-   routes, and the bridge/integral-stand load path. UM keeps the flush
+3. Glue six D5×2 magnets into the Ø5.2×2.2 surface-normal pockets. LM uses
+   four: preserve the upper flush ring-radial 64°/116° pair and its
+   at-least-2.2 mm nearest insert gap, then fit the lower face-flush pair at
+   `(x,y,z)=(±32,18,12.55)` in the straight base sides, with outward normals
+   `(-1,0)` left and `(1,0)` right. Confirm that these shared floor/no-floor
+   datums remain clear of lower inserts, buried routes, and the
+   bridge/integral-stand load path. UM keeps the flush
    50.5°/129.5° pair centered at z=15.1; verify the 0.2 mm radial pocket
    floors, 0.6 mm front skins and 1.1 mm minimum T-cover gap. Hold each
    magnet flush while the adhesive cures; do not bottom it into the
    0.2 mm adhesive allowance. No site has a proud ear. Use the marked polarity standard (core pole OUT,
    mating add-on pole IN). These magnets align and suppress rattle only;
-   assign them **zero load capacity** in every assembly and test.
+   assign them **zero load capacity** in every assembly and test. For Ac/Ae,
+   verify three coaxial receiver pairs per side: LM lower, LM upper, and UM.
 4. Put both collars front-face-down on one flat reference. Engage the
    two rounded half-lap ears at x=±32.0, y=315.770, insert the two M3
    through-bolts,

@@ -29,6 +29,8 @@ def _transaction_fixture(root: Path):
     for state in remote.STATE_OUTPUT_ROOTS:
         _write(baffle / state / "marker", f"old-{state}")
         _write(incoming / "top_baffle_v2" / state / "marker", f"new-{state}")
+    _write(baffle / "wings" / "marker", "old-wings")
+    _write(incoming / "top_baffle_v2" / "wings" / "marker", "new-wings")
     _write(baffle / "top_baffle_nd25fw4_attachments.step", "old-common")
     _write(
         incoming / "top_baffle_v2" / "top_baffle_nd25fw4_attachments.step",
@@ -61,7 +63,21 @@ def test_target_contract() -> None:
     assert remote._validate_targets([]) == ["all"]
     assert "check_floor_integrated_mount" in remote.REMOTE_MAKE_TARGETS
     assert "floor_v1lf" in remote.REMOTE_MAKE_TARGETS
+    assert "no_floor_v1lf" in remote.REMOTE_MAKE_TARGETS
+    assert "v1lf_release" in remote.REMOTE_MAKE_TARGETS
+    assert "wing_concepts" in remote.REMOTE_MAKE_TARGETS
+    assert "v1lf_basic_variants" in remote.REMOTE_MAKE_TARGETS
+    assert "v1lf_basic_wings" in remote.REMOTE_MAKE_TARGETS
+    assert "check_v1lf_basic_variants" in remote.REMOTE_MAKE_TARGETS
+    assert "check_v1lf_lm_profile" in remote.REMOTE_MAKE_TARGETS
     assert "check_floor_support" not in remote.REMOTE_MAKE_TARGETS
+    assert remote._full_output_roots(["v1lf_basic_variants"]) == {"wings"}
+    assert remote._full_output_roots(["check_v1lf_basic_variants"]) == {
+        "wings"}
+    assert remote._full_output_roots(["v1lf_release"]) == {"wings"}
+    assert remote._full_output_roots(["no_floor_v1lf"]) == set()
+    assert remote._full_output_roots(["all"]) == {
+        "floor_stand", "no_floor_stand", "wings"}
     for target in remote.REMOTE_MAKE_TARGETS:
         assert remote._validate_targets([target]) == [target]
     for targets in (["all", "clean"], ["clean", "clean"],
@@ -312,9 +328,10 @@ def test_atomic_promotion_and_rollback() -> None:
         _repo, baffle, incoming, originals = _with_fake_project(Path(text))
         try:
             promoted = remote._promote_artifacts(incoming, metadata)
-            assert promoted == 3
+            assert promoted == 4
             for state in remote.STATE_OUTPUT_ROOTS:
                 assert (baffle / state / "marker").read_text() == f"new-{state}"
+            assert (baffle / "wings" / "marker").read_text() == "new-wings"
             assert (baffle / "top_baffle_nd25fw4_attachments.step").read_text() == (
                 "new-common")
             assert (baffle / "review" / "keep.png").read_text() == "keep-review"
@@ -334,6 +351,7 @@ def test_atomic_promotion_and_rollback() -> None:
                 raise AssertionError("synthetic QA failure did not roll back")
             for state in remote.STATE_OUTPUT_ROOTS:
                 assert (baffle / state / "marker").read_text() == f"old-{state}"
+            assert (baffle / "wings" / "marker").read_text() == "old-wings"
             assert (baffle / "top_baffle_nd25fw4_attachments.step").read_text() == (
                 "old-common")
         finally:
@@ -480,6 +498,8 @@ def test_promotion_signals_roll_back() -> None:
                 for state in remote.STATE_OUTPUT_ROOTS:
                     assert baffle.joinpath(state, "marker").read_text() == (
                         f"old-{state}")
+                assert baffle.joinpath("wings", "marker").read_text() == (
+                    "old-wings")
                 assert baffle.joinpath(
                     "top_baffle_nd25fw4_attachments.step").read_text() == (
                         "old-common")
@@ -501,6 +521,7 @@ def test_remote_clean_preserves_review() -> None:
             remote._promote_artifacts(incoming, metadata)
             assert not (baffle / "floor_stand").exists()
             assert not (baffle / "no_floor_stand").exists()
+            assert not (baffle / "wings").exists()
             assert not (baffle / "top_baffle_nd25fw4_attachments.step").exists()
             assert (baffle / "review" / "keep.png").read_text() == "keep-review"
         finally:
@@ -524,6 +545,8 @@ def test_remote_clean_preserves_review() -> None:
             for state in remote.STATE_OUTPUT_ROOTS:
                 assert baffle.joinpath(state, "marker").read_text() == (
                     f"old-{state}")
+            assert baffle.joinpath("wings", "marker").read_text() == (
+                "old-wings")
             assert baffle.joinpath(
                 "top_baffle_nd25fw4_attachments.step").read_text() == (
                     "old-common")
@@ -544,6 +567,67 @@ def test_parallel_stage_dag() -> None:
         env={**os.environ, "LX_CAD_GUARD_SLOTS": "4"},
     )
     assert result.stdout.count("export_v1lf_staged.py stage") == 2
+
+
+def test_v1lf_basic_wing_parallel_dag() -> None:
+    result = subprocess.run(
+        ["make", "-n", "-B", "-j4", "LX_CAD_EXECUTION=remote-worker",
+         f"PYTHON={sys.executable}", "v1lf_basic_wings"],
+        cwd=Path(__file__).resolve().parent, text=True,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True,
+        env={**os.environ, "LX_CAD_GUARD_SLOTS": "4"},
+    )
+    assert result.stdout.count(
+        "export_v1lf_basic_wings.py --slug ac --output-root wings") == 1
+    assert result.stdout.count(
+        "export_v1lf_basic_wings.py --slug ae --output-root wings") == 1
+    assert result.stdout.count(
+        "test_v1lf_basic_wings.py --artifact-root wings") == 1
+
+
+def test_v1lf_release_parallel_dag() -> None:
+    result = subprocess.run(
+        ["make", "-n", "-B", "-j4", "LX_CAD_EXECUTION=remote-worker",
+         f"PYTHON={sys.executable}", "v1lf_release"],
+        cwd=Path(__file__).resolve().parent, text=True,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True,
+        env={**os.environ, "LX_CAD_GUARD_SLOTS": "4"},
+    )
+    output = result.stdout
+    assert output.count("export_v1lf_staged.py stage") == 2
+    assert output.count(
+        "export_piece_stls.py --variant v1lf "
+        "--v1lf-stage-manifest") == 2
+    assert output.count(
+        "cd floor_stand && LX_STAND_FOOT=1 LX_ROUTING_PROFILE=v1lf "
+        "PYTHONPATH=..") == 1
+    assert output.count(
+        "cd no_floor_stand && LX_STAND_FOOT=0 LX_ROUTING_PROFILE=v1lf "
+        "PYTHONPATH=..") == 1
+    assert output.count(
+        "export_v1lf_basic_wings.py --slug ac --output-root wings") == 1
+    assert output.count(
+        "export_v1lf_basic_wings.py --slug ae --output-root wings") == 1
+    assert output.count(
+        "write_v1lf_release_manifest.py --state-dir floor_stand") == 1
+    assert output.count(
+        "write_v1lf_release_manifest.py --state-dir no_floor_stand") == 1
+    for check in (
+            "test_route_contract", "test_floor_lm_keyed_split",
+            "test_no_floor_lm_keyed_split", "test_floor_um_shell",
+            "test_floor_t_shell", "test_no_floor_um_shell",
+            "test_no_floor_t_shell",
+            "test_floor_feed_and_flush_mouth_contract",
+            "test_feed_and_flush_mouth_contract",
+            "test_floor_lm_burial_web_contract",
+            "test_lm_burial_web_contract",
+            "test_floor_um_burial_web_contract",
+            "test_um_burial_web_contract",
+            "test_floor_bump_backfill_contract",
+            "test_bump_backfill_contract",
+            "test_floor_integrated_mount"):
+        assert output.count(f"LX_R6F_SINGLE_CHECK={check}") == 1
+    assert "export_piece_stls.py --variant v1l --outdir" not in output
 
 
 def test_profile_specific_stl_dag() -> None:
@@ -586,6 +670,79 @@ def test_local_checker_interpreter() -> None:
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
+def test_local_memory_profile_has_no_host_free_floor() -> None:
+    root = Path(__file__).resolve().parent
+    env = os.environ.copy()
+    env["LX_CAD_MEMORY_PROFILE"] = "local-macos"
+    env.pop("LX_CAD_MIN_FREE_MB", None)
+    env.pop("LX_CAD_MEMORY_GUARDED", None)
+    env.pop("LX_CAD_MEMORY_GUARD_PID", None)
+    probe = (
+        "import json, run_memory_guarded as guard; "
+        "print(json.dumps({"
+        "'max_rss_mb': guard.MAX_RSS_MB, "
+        "'min_free_mb': guard.MIN_FREE_MB, "
+        "'local_profile': guard.MEMORY_PROFILES['local-macos'], "
+        "'remote_profile': guard.MEMORY_PROFILES['osado-512g']}))"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", probe], cwd=root, env=env, check=True,
+        text=True, stdout=subprocess.PIPE)
+    policy = json.loads(result.stdout)
+    assert policy["max_rss_mb"] == 8192
+    assert policy["min_free_mb"] == 0
+    assert policy["local_profile"] == {
+        "max_rss_mb": 8192,
+        "min_free_mb": 0,
+        "max_guard_slots": 1,
+    }
+    assert policy["remote_profile"]["min_free_mb"] == 64 * 1024
+    assert remote.REMOTE_MEMORY_FLOOR_MIB == 64 * 1024
+    assert remote.REMOTE_MEMORY_MAX_MIB == 512 * 1024
+
+    # Prove a disabled local floor never samples the host-free metric. RSS
+    # monitoring remains live while the short child sleeps.
+    no_floor_probe = (
+        "import run_memory_guarded as guard, sys; "
+        "guard._free_memory_mib=lambda: (_ for _ in ()).throw("
+        "AssertionError('disabled free-memory sampler was called')); "
+        "raise SystemExit(guard.main([sys.executable, '-c', "
+        "'import time; time.sleep(0.2)']))"
+    )
+    subprocess.run(
+        [sys.executable, "-c", no_floor_probe], cwd=root, env=env,
+        check=True)
+
+    rss_probe = (
+        "import run_memory_guarded as guard, sys; "
+        "guard._free_memory_mib=lambda: (_ for _ in ()).throw("
+        "AssertionError('disabled free-memory sampler was called')); "
+        "guard._process_tree_rss_kib=lambda _pid: "
+        "(guard.MAX_RSS_MB + 1) * 1024; "
+        "raise SystemExit(guard.main([sys.executable, '-c', "
+        "'import time; time.sleep(5)']))"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", rss_probe], cwd=root, env=env)
+    assert result.returncode == 99
+
+    # Local callers may opt into a stricter positive floor.
+    env["LX_CAD_MIN_FREE_MB"] = "777"
+    result = subprocess.run(
+        [sys.executable, "-c",
+         "import run_memory_guarded as guard; print(guard.MIN_FREE_MB)"],
+        cwd=root, env=env, check=True, text=True, stdout=subprocess.PIPE)
+    assert result.stdout.strip() == "777"
+    floor_probe = (
+        "import run_memory_guarded as guard, sys; "
+        "guard._free_memory_mib=lambda: 776.0; "
+        "raise SystemExit(guard.main([sys.executable, '-c', 'pass']))"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", floor_probe], cwd=root, env=env)
+    assert result.returncode == 99
+
+
 def test_step_label_line_wrapping() -> None:
     with tempfile.TemporaryDirectory() as text:
         step = Path(text) / "wrapped.step"
@@ -626,8 +783,11 @@ def main() -> None:
     test_promotion_signals_roll_back()
     test_remote_clean_preserves_review()
     test_parallel_stage_dag()
+    test_v1lf_basic_wing_parallel_dag()
+    test_v1lf_release_parallel_dag()
     test_profile_specific_stl_dag()
     test_local_checker_interpreter()
+    test_local_memory_profile_has_no_host_free_floor()
     test_step_label_line_wrapping()
     print("all remote CAD transport checks passed")
 

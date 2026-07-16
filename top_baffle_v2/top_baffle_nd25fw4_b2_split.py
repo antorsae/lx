@@ -198,8 +198,8 @@ def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
     ``um_handoff_key`` is explicit so V1L can select its rear-plane axis
     handoff while every other proud-family caller keeps the default.
     ``only`` constructs one requested split solid without retaining the
-    other three OCC trees; guarded validation/export uses this to keep
-    immediately-free macOS memory above its 0.5 GiB floor. ``cable_routes``
+    other three OCC trees; guarded validation/export uses this to reduce the
+    local process-tree RSS peak. ``cable_routes``
     may further omit cutters spatially disjoint from that one piece; the
     default still builds the complete cable set. ``cable_y_range`` trims
     the high-face-count TS loft on its original section grid for a known
