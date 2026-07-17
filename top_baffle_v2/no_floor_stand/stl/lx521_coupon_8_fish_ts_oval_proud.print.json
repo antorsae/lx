@@ -1,0 +1,49 @@
+{
+  "part": "lx521_coupon_8_fish_ts_oval_proud",
+  "pre_translation_bbox_min_mm": [
+    -58.0000001,
+    -430.0000001,
+    -18.300000099999963
+  ],
+  "print_orientation": "front_face_down",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      58.0000001
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      430.0000001
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999963
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "lx521_coupon_8_fish_ts_oval_proud.stl",
+  "stl_bytes": 147284,
+  "stl_origin_translation_mm": [
+    58.0000001,
+    430.0000001,
+    18.300000099999963
+  ],
+  "stl_sha256": "896bcdfb89e1d54b82cb400082b0f24a46a52d38e28d069a76078ece04c0969d",
+  "variant_export": "coupon"
+}

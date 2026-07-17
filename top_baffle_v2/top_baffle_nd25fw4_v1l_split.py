@@ -1,16 +1,24 @@
 """V1L print split: bottom + mids thinned front-flush (see _v1l.py);
-combine with the V1 vase for the full ~12 mm front-flush baffle."""
+combine with the V1 vase for the full ~12 mm front-flush baffle.  Its TS
+centreline shares V1's smooth 0.20-mm local captive-land detour while the
+duct section remains unchanged.  The captive-magnet top piece prints
+front-face-down."""
 
 from __future__ import annotations
 
 from build123d import Compound
 
 from top_baffle_nd25fw4_b2_split import pieces
-from top_baffle_nd25fw4_cables import UM_V1L_HANDOFF_KEY
-from top_baffle_nd25fw4_v1 import all_cutters as v1_vase_cutters
+from top_baffle_nd25fw4_cables import (
+    TS_ROUTE_V1_CAPTIVE,
+    UM_V1L_HANDOFF_KEY,
+)
+from top_baffle_nd25fw4_v1 import apply_v1_base_magnets
 from top_baffle_nd25fw4_v1 import field_cutters as v1_vase_field_cutters
 from top_baffle_nd25fw4_v1 import REAR_MM as V1_VASE_REAR_MM
 from top_baffle_nd25fw4_v1l import field_cutters
+
+PRINT_ORIENTATION = "front-face-down"
 
 
 def pieces_v1l(only: str | None = None,
@@ -25,7 +33,7 @@ def pieces_v1l(only: str | None = None,
     # is the serial export path used to preserve the macOS free-memory
     # floor; full-assembly callers still receive the complete build.
     if only == "piece_top_b2":
-        shape_cuts = list(v1_vase_cutters())
+        shape_cuts = list(v1_vase_field_cutters())
     elif only in {"piece_mid_left", "piece_mid_right"}:
         # Both mids own a seam-B male dovetail that projects 6 mm into
         # the vase (y > 315.95).  The V1L field slab stops on the seam,
@@ -38,7 +46,7 @@ def pieces_v1l(only: str | None = None,
     elif only is not None:
         shape_cuts = list(field_cutters())
     else:
-        shape_cuts = list(field_cutters()) + list(v1_vase_cutters())
+        shape_cuts = list(field_cutters()) + list(v1_vase_field_cutters())
     route_subset = {
         "piece_bottom": None,
         "piece_mid_left": {"ts"},
@@ -57,13 +65,18 @@ def pieces_v1l(only: str | None = None,
         "piece_mid_right": None,
         "piece_top_b2": (310.0, 1.0e6),
     }.get(only)
-    return pieces(shape_cuts=shape_cuts,
-                  magnet_pockets=False,
-                  crescent_rear_mm=V1_VASE_REAR_MM,
-                  um_handoff_key=UM_V1L_HANDOFF_KEY,
-                  only=only,
-                  cable_routes=route_subset,
-                  cable_y_range=ts_y_range)
+    result = pieces(shape_cuts=shape_cuts,
+                    magnet_cavities=False,
+                    crescent_rear_mm=V1_VASE_REAR_MM,
+                    um_handoff_key=UM_V1L_HANDOFF_KEY,
+                    only=only,
+                    cable_routes=route_subset,
+                    cable_y_range=ts_y_range,
+                    ts_route_key=TS_ROUTE_V1_CAPTIVE)
+    if "piece_top_b2" in result:
+        result["piece_top_b2"] = apply_v1_base_magnets(
+            result["piece_top_b2"])
+    return result
 
 
 def gen_step():

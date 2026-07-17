@@ -3,8 +3,10 @@
 The UM and tweeter voids are cut from continuous swept outer-cover solids.
 Every insert bypass is a smooth local Z excursion inside that closed cover;
 full-width longitudinal webs and local roof-to-bore saddles leave no trapped
-shoulder cavities. The short LM terminal lead intentionally floats behind
-the carrier with no printed micro-duct.
+shoulder cavities. The short LM terminal lead intentionally floats behind the
+carrier with no printed micro-duct. Its existing centerline is preserved by a
+minimal rear-open clearance relief through whichever LM-lower owner overlaps
+that free span; the relief is a subtraction, never a conduit or cover.
 The tweeter route crosses the physical UM cable once near the LM crown,
 near orthogonally, with T above UM in +Z and explicit cable/cover clearance.
 """
@@ -73,6 +75,13 @@ CUTTER_SIDES = 32
 CABLE_D_EST = 7.0
 CABLE_R_EST = CABLE_D_EST / 2.0
 LM_CABLE_D_EST = 7.8
+# The free LM lead is not enclosed by a printed conduit, but the universal
+# no-floor web and integral floor stem both overlap its physical centerline.
+# A 0.06-mm radial allowance clears the independent physical-radius +0.05-mm
+# witness while retaining 0.01 mm of Boolean margin. The centerline is fixed.
+LM_FREE_LEAD_RELIEF_RADIAL_CLEAR_MM = 0.06
+LM_FREE_LEAD_RELIEF_R = (
+    LM_CABLE_D_EST / 2.0 + LM_FREE_LEAD_RELIEF_RADIAL_CLEAR_MM)
 
 TS_DUCT_D = 6.0
 TS_DUCT_R = TS_DUCT_D / 2.0
@@ -556,7 +565,7 @@ MAIN_ANCHOR_KEEPOUTS = tuple((np.asarray(xy), 5.0)
                              for xy in LM_PILOT_XY)
 T_ANCHOR_KEEPOUTS = (
     *tuple((np.asarray(xy), 5.0) for xy in LM_PILOT_XY),
-    # The flush UM magnet at 50.5 degrees sits between the continuous T tube
+    # The captive UM magnet at 50.5 degrees sits between the continuous T tube
     # and the 58-degree insert boss. The round tube retains >2.4 mm beyond
     # its 0.8-mm grown pocket keepout, but the optional membrane anchor fin
     # would enter that pocket. Grow only this anchor-mask exclusion; the
@@ -792,12 +801,11 @@ def lm_cable_points(spacing_mm: float = 0.5):
         L22_CUTOUT[1] + radii * math.sin(angle),
     ))
     # No printed micro-duct remains. A 0.5-degree plan dogleg and 0.4-mm rear
-    # center height float the lead between the two centered bridge-duct exits
-    # with 1.0 mm clearance below the deepest z=5.3 carrier datum. Then begin
-    # a gentle circular rise at R103 where the local rear clearance allows it.
-    # The full
-    # D7.8 envelope therefore floats clear of printed LM material over this
-    # short service span; it begins rising before the R95/D190 mouth.
+    # center height place the lead between the two centered bridge-duct exits
+    # with 1.0 mm clearance below the deepest z=5.3 carrier datum at its outer
+    # station. A gentle circular rise begins at R103 before the R95/D190 mouth.
+    # Where the universal LM-lower owners overlap the inner rise, the separate
+    # rear-open subtractive relief keeps this same D7.8 envelope clear.
     travel = np.clip(
         LM_FREE_CABLE_RISE_START_R - radii, 0.0,
         LM_FREE_CABLE_RISE_START_R - LM_LEAD_INNER_R)
@@ -807,6 +815,17 @@ def lm_cable_points(spacing_mm: float = 0.5):
     z = (LM_FREE_CABLE_OUTER_Z + rise_radius
          - np.sqrt(np.maximum(rise_radius ** 2 - travel ** 2, 0.0)))
     return np.column_stack((xy, z))
+
+
+def lm_free_lead_relief_cutter():
+    """Continuous rear-open clearance for the un-ducted D7.8 LM lead.
+
+    This is deliberately a bare subtractive relief around the immutable
+    reference centerline. Its circular envelope crosses the rear exterior
+    plane in both stand states, so it cannot become a sealed micro-duct.
+    """
+    _require_guarded_build()
+    return _round_tube(lm_cable_points(1.0), LM_FREE_LEAD_RELIEF_R)
 
 
 def _slice_points(points, total, start, stop, spacing_mm=1.8):
@@ -2014,6 +2033,7 @@ def required_handoff_shell_components(route_name, owner_filter=None):
 def route_facts():
     main_s, main = _main_xyz(0.20)
     ts_s, ts = _ts_xyz(0.20)
+    lm_free = lm_cable_points(0.20)
     main_cross_z = float(np.interp(CROSSOVER_MAIN_S, main_s, main[:, 2]))
     ts_cross_z = float(np.interp(CROSSOVER_TS_S, ts_s, ts[:, 2]))
     void_web = ts_cross_z - main_cross_z - CUTTER_R - TS_CUTTER_R
@@ -2021,6 +2041,14 @@ def route_facts():
                     - CABLE_R_EST - TS_CABLE_D_EST / 2.0)
     free_um_to_t_cover_gap = (
         ts_cross_z - main_cross_z - CABLE_R_EST - TS_OUTER_R)
+    lm_relief_lower_z = lm_free[:, 2] - LM_FREE_LEAD_RELIEF_R
+    lm_relief_upper_z = lm_free[:, 2] + LM_FREE_LEAD_RELIEF_R
+    lm_relief_floor_rear_open_margin = (
+        STEM_Z_MM[0] - float(lm_relief_lower_z.max()))
+    lm_relief_no_floor_rear_open_margin = (
+        PAD_FACE_Z - float(lm_relief_lower_z.max()))
+    lm_relief_seat_membrane_margin = (
+        LM_SEAT_MEMBRANE_BOTTOM_Z - float(lm_relief_upper_z.max()))
 
     # Length of the short plan overlap where the two nominal voids are
     # closer than the sum of radii.  This is diagnostic; Z separation is
@@ -2215,7 +2243,20 @@ def route_facts():
         "um_pilot_bump_names": ("um_pilot_328", "um_pilot_58"),
         "anchor_legs": anchor_records,
         "printed_lm_tunnel_count": 0,
-        "lm_lead_mode": "short_free_span_no_micro_duct",
+        "lm_lead_mode": "short_free_span_rear_open_relief_no_micro_duct",
+        "lm_free_lead_relief_kind": "subtractive_rear_open_not_a_duct",
+        "lm_free_lead_relief_radial_clearance_mm": (
+            LM_FREE_LEAD_RELIEF_RADIAL_CLEAR_MM),
+        "lm_free_lead_relief_radius_mm": LM_FREE_LEAD_RELIEF_R,
+        "lm_free_lead_relief_floor_rear_open_margin_mm": (
+            lm_relief_floor_rear_open_margin),
+        "lm_free_lead_relief_no_floor_rear_open_margin_mm": (
+            lm_relief_no_floor_rear_open_margin),
+        "lm_free_lead_relief_seat_membrane_margin_mm": (
+            lm_relief_seat_membrane_margin),
+        "lm_free_lead_relief_rear_open_both_states": bool(
+            lm_relief_floor_rear_open_margin > 0.0
+            and lm_relief_no_floor_rear_open_margin > 0.0),
         "lm_free_cable_outer_z_mm": LM_FREE_CABLE_OUTER_Z,
         "lm_free_cable_inner_z_mm": LM_FREE_CABLE_INNER_Z,
         "lm_free_cable_rear_clearance_mm": LM_FREE_CABLE_REAR_CLEARANCE,

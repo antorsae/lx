@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "backend": "BambuStudio",
+  "printer": "Bambu Lab P2S 0.4 nozzle",
+  "process": "0.16mm High Quality @BBL P2S",
+  "filament": "Bambu PLA Tough+ @BBL P2S",
+  "vendor": "BBL",
+  "machine_preset": "machine/Bambu Lab P2S 0.4 nozzle.json",
+  "process_preset": "process/0.16mm High Quality @BBL P2S.json",
+  "filament_preset": "filament/Bambu PLA Tough+ @BBL P2S.json",
+  "requirements": {
+    "printer_model": "Bambu Lab P2S",
+    "nozzle_diameter_mm": 0.4,
+    "layer_height_mm": 0.16,
+    "first_layer_height_mm": 0.2,
+    "wall_generator": "classic",
+    "outer_wall_line_width_mm": 0.42,
+    "inner_wall_line_width_mm": 0.45,
+    "support_enabled": false,
+    "print_orientation": "front_face_down"
+  },
+  "machine_bounds_mm": {
+    "x": [0.0, 256.0],
+    "y": [0.0, 256.0],
+    "z": [0.0, 256.0]
+  },
+  "slicing": {
+    "arrange": true,
+    "auto_orient": false,
+    "allow_rotations": false,
+    "timeout_seconds": 7200
+  }
+}

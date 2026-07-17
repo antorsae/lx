@@ -17,9 +17,11 @@ import json
 import os
 from pathlib import Path
 
+from front_down_contract import validate_print_sidecar
+
 
 ROOT = Path(__file__).resolve().parent
-FORMAT_VERSION = 7
+FORMAT_VERSION = 9
 QUALIFICATION_RECORD = ROOT / "V1LF_PHYSICAL_QUALIFICATION.md"
 
 REQUIRED_REFERENCE_PATHS = (
@@ -43,14 +45,17 @@ def generation_source_paths() -> tuple[Path, ...]:
     """Complete deterministic source set for the R6F release artifacts."""
     paths = set(ROOT.glob("top_baffle_nd25fw4*.py"))
     required_generators = tuple(ROOT / name for name in (
+            "captive_magnets.py",
             "export_steps.py",
             "export_v1lf_staged.py",
             "export_piece_stls.py",
             "export_coupon.py",
+            "front_down_contract.py",
             "gen_cable_routing.py",
             "gen_driver_overlay.py",
             "run_memory_guarded.py",
             "check_manifold.py",
+            "test_captive_magnets.py",
             "test_clearances.py",
             "test_v1lf_r6f.py",
             "test_remote_cad.py",
@@ -126,6 +131,15 @@ def expected_artifact_names(stand_foot: bool) -> tuple[str, ...]:
         "stl/lx521_top_v1lf_optional_lm_keyed_2of2_top.stl",
         "stl/lx521_top_v1lf_addon_tweeter_crescent.stl",
     ]
+    # Print orientation is part of the release, not an informal slicer note.
+    # Bind every installed V1LF STL to the hash-backed X180/front-down plus
+    # optional in-bed-Z transform emitted by export_piece_stls.py.  Include
+    # the nonmagnetic tweeter crescent as well so all visible installed pieces
+    # retain the same build-plate texture contract.
+    v1lf_print_sidecars = [
+        name.removesuffix(".stl") + ".print.json"
+        for name in v1lf_stls
+    ]
     strength_reports = (
         "v1lf_integrated_floor_strength.json",
         "v1lf_integrated_floor_strength.md",
@@ -145,8 +159,13 @@ def expected_artifact_names(stand_foot: bool) -> tuple[str, ...]:
             "12_v1lf_closed_bore_bump",
         )
     ]
+    coupon_print_sidecars = [
+        name.removesuffix(".stl") + ".print.json"
+        for name in coupons
+    ]
     return tuple(sorted((
-        *review, *v1lf_stls, *strength_reports, *coupons)))
+        *review, *v1lf_stls, *v1lf_print_sidecars,
+        *strength_reports, *coupons, *coupon_print_sidecars)))
 
 
 def qualification_record(stand_foot: bool) -> dict:
@@ -205,8 +224,9 @@ def build_manifest(state_dir: Path, stand_foot: bool) -> dict:
         state_dir, stand_foot, require_active_environment=True)
     stage_mtime_ns = (
         state_dir / stage["path"]).stat().st_mtime_ns
+    expected_names = expected_artifact_names(stand_foot)
     artifacts = {}
-    for name in expected_artifact_names(stand_foot):
+    for name in expected_names:
         path = state_dir / name
         if not path.is_file():
             raise FileNotFoundError(f"missing required R6F artifact: {path}")
@@ -218,6 +238,23 @@ def build_manifest(state_dir: Path, stand_foot: bool) -> dict:
             "bytes": path.stat().st_size,
             "sha256": sha256_file(path),
         }
+    # The manifest must never bless a self-consistent but stale or malformed
+    # orientation sidecar. Every printable STL in this V1LF transaction has
+    # exactly one adjacent, hash-bound front-down authority record.
+    stl_names = tuple(name for name in expected_names if name.endswith(".stl"))
+    expected_sidecars = {
+        name.removesuffix(".stl") + ".print.json" for name in stl_names
+    }
+    actual_sidecars = {
+        name for name in expected_names if name.endswith(".print.json")
+    }
+    if actual_sidecars != expected_sidecars:
+        raise RuntimeError(
+            "V1LF manifest print-sidecar inventory is not exactly adjacent: "
+            f"missing={sorted(expected_sidecars - actual_sidecars)} "
+            f"extra={sorted(actual_sidecars - expected_sidecars)}")
+    for name in stl_names:
+        validate_print_sidecar(state_dir / name)
     return {
         "format_version": FORMAT_VERSION,
         "variant": "V1LF",

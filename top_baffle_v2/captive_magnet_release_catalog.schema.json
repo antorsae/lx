@@ -1,0 +1,297 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lx521.local/schemas/captive-magnet-release-catalog-v1.json",
+  "title": "LX521 captive-magnet release catalog",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version", "schema_sha256", "catalog_kind", "generated_by", "print_contract",
+    "geometry", "inventory", "exclusions", "source_revision", "artifacts"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "schema_sha256": {
+      "type": "string", "pattern": "^[0-9a-f]{64}$"
+    },
+    "catalog_kind": {"const": "released_pause_and_bury_captive_magnets"},
+    "generated_by": {"type": "string", "minLength": 1},
+    "print_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope", "orientation", "allowed_additional_rotation", "reason",
+        "slicer", "pause_authority", "printer_contact", "oversize_policy"
+      ],
+      "properties": {
+        "scope": {"const": "every_released_acoustic_part"},
+        "orientation": {"const": "front_face_down"},
+        "allowed_additional_rotation": {"const": "in_bed_Z_only"},
+        "reason": {"const": "consistent acoustic-front build-plate texture"},
+        "slicer": {"const": "Bambu Studio P2S 0.4 mm / 0.16 mm Classic"},
+        "pause_authority": {
+          "const": "actual sliced G-code first-closing layer"
+        },
+        "printer_contact": {"const": "forbidden; offline slicing only"},
+        "oversize_policy": {
+          "const": "never scale, tilt, clip, or virtual-bed an oversized STL; the V1LF LM monolith is explicitly not P2S-printable and its cavity G-code is covered only by exact same-state keyed split artifacts"
+        }
+      }
+    },
+    "geometry": {"type": "object"},
+    "inventory": {"type": "object"},
+    "exclusions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "reason"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "source_revision": {
+      "type": "string", "pattern": "^[0-9a-f]{64}$"
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/artifact"}
+    }
+  },
+  "$defs": {
+    "vec3": {
+      "type": "array",
+      "prefixItems": [
+        {"type": "number"}, {"type": "number"}, {"type": "number"}
+      ],
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "matrix4": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "array",
+        "minItems": 4,
+        "maxItems": 4,
+        "items": {"type": "number"}
+      }
+    },
+    "printSpace": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "cavity_center_xyz_mm", "seated_magnet_center_xyz_mm",
+        "marked_pole_axis_xyz", "insertion_direction_xyz"
+      ],
+      "properties": {
+        "cavity_center_xyz_mm": {"$ref": "#/$defs/vec3"},
+        "seated_magnet_center_xyz_mm": {"$ref": "#/$defs/vec3"},
+        "actual_face_xyz_mm": {"$ref": "#/$defs/vec3"},
+        "material_inward_xyz": {"$ref": "#/$defs/vec3"},
+        "marked_pole_axis_xyz": {"$ref": "#/$defs/vec3"},
+        "insertion_direction_xyz": {"$ref": "#/$defs/vec3"}
+      }
+    },
+    "site": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "name", "closure_kind",
+        "cavity_bury_roof_start_print_z_mm", "roof_apex_print_z_mm",
+        "magnet_diameter_mm", "magnet_depth_mm",
+        "cavity_diameter_mm", "cavity_depth_mm",
+        "face_skin_mm", "inner_skin_mm", "captive_land_mm",
+        "interface_gap_mm", "paired_magnet_face_separation_mm",
+        "roof_angle_deg", "classic_retaining_path_mm",
+        "polarity_instruction", "installed_marked_pole_axis_xyz",
+        "magnet_count", "structural_load_credit_n",
+        "cavity_center_xyz_mm", "seated_magnet_center_xyz_mm",
+        "marked_pole_axis_xyz", "insertion_direction_xyz", "print_space"
+      ],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "closure_kind": {
+          "enum": [
+            "transverse_gable_45deg",
+            "axis_parallel_conical_45deg",
+            "axis_opposed_conical_45deg"
+          ]
+        },
+        "cavity_bury_roof_start_print_z_mm": {"type": "number"},
+        "roof_apex_print_z_mm": {"type": "number"},
+        "expected_pause_marker_z_mm": {"type": ["number", "null"]},
+        "magnet_diameter_mm": {"const": 5.0},
+        "magnet_depth_mm": {"const": 2.0},
+        "cavity_diameter_mm": {"type": "number", "exclusiveMinimum": 0},
+        "cavity_depth_mm": {"type": "number", "exclusiveMinimum": 0},
+        "face_skin_mm": {"type": "number", "exclusiveMinimum": 0},
+        "inner_skin_mm": {"type": "number", "exclusiveMinimum": 0},
+        "captive_land_mm": {"const": 3.0},
+        "interface_gap_mm": {"const": 0.05},
+        "paired_magnet_face_separation_mm": {"const": 0.95},
+        "roof_angle_deg": {"type": "number", "exclusiveMinimum": 0},
+        "classic_retaining_path_mm": {"const": 0.42},
+        "polarity_instruction": {"type": "string", "minLength": 1},
+        "installed_marked_pole_axis_xyz": {"$ref": "#/$defs/vec3"},
+        "magnet_count": {"const": 1},
+        "structural_load_credit_n": {"const": 0.0},
+        "cavity_center_xyz_mm": {"$ref": "#/$defs/vec3"},
+        "seated_magnet_center_xyz_mm": {"$ref": "#/$defs/vec3"},
+        "actual_face_xyz_mm": {"$ref": "#/$defs/vec3"},
+        "material_inward_xyz": {"$ref": "#/$defs/vec3"},
+        "marked_pole_axis_xyz": {"$ref": "#/$defs/vec3"},
+        "insertion_direction_xyz": {"$ref": "#/$defs/vec3"},
+        "print_space": {"$ref": "#/$defs/printSpace"}
+      },
+      "anyOf": [
+        {
+          "required": [
+            "cavity_center_xyz_mm", "seated_magnet_center_xyz_mm",
+            "marked_pole_axis_xyz", "insertion_direction_xyz"
+          ]
+        },
+        {"required": ["print_space"]}
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {"closure_kind": {"const": "transverse_gable_45deg"}}
+          },
+          "then": {
+            "anyOf": [
+              {"required": ["actual_face_xyz_mm", "material_inward_xyz"]},
+              {
+                "required": ["print_space"],
+                "properties": {
+                  "print_space": {
+                    "required": ["actual_face_xyz_mm", "material_inward_xyz"]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "cavityAuditProxy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["site", "artifact_id", "proxy_site"],
+      "properties": {
+        "site": {"type": "string", "minLength": 1},
+        "artifact_id": {"type": "string", "minLength": 1},
+        "proxy_site": {"type": "string", "minLength": 1}
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "id", "state", "variant", "part", "stl",
+        "stl_sha256", "print_sidecar", "print_sidecar_sha256", "source_files",
+        "source_file_sha256",
+        "print_orientation", "rotation_deg", "source_to_stl_matrix", "sites"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "state": {"type": "string", "minLength": 1},
+        "variant": {"type": "string", "minLength": 1},
+        "part": {"type": "string", "minLength": 1},
+        "stl": {"type": "string", "minLength": 1},
+        "stl_sha256": {
+          "type": "string", "pattern": "^[0-9a-f]{64}$"
+        },
+        "print_sidecar": {"type": "string", "minLength": 1},
+        "print_sidecar_sha256": {
+          "type": "string", "pattern": "^[0-9a-f]{64}$"
+        },
+        "print_orientation": {"const": "front_face_down"},
+        "rotation_deg": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "z"],
+          "properties": {
+            "x": {"const": 180.0},
+            "z": {"type": "number"}
+          }
+        },
+        "source_files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "source_file_sha256": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string", "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "transaction_manifest": {"type": "string", "minLength": 1},
+        "transaction_manifest_sha256": {
+          "type": "string", "pattern": "^[0-9a-f]{64}$"
+        },
+        "facts": {"type": "string", "minLength": 1},
+        "facts_sha256": {
+          "type": "string", "pattern": "^[0-9a-f]{64}$"
+        },
+        "stage_manifest": {"type": "string", "minLength": 1},
+        "stage_manifest_sha256": {
+          "type": "string", "pattern": "^[0-9a-f]{64}$"
+        },
+        "p2s_printability": {
+          "enum": ["not_printable_oversize"]
+        },
+        "cavity_audit_proxies": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/cavityAuditProxy"}
+        },
+        "source_to_stl_matrix": {"$ref": "#/$defs/matrix4"},
+        "sites": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/site"}
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "p2s_printability": {"const": "not_printable_oversize"}
+            },
+            "required": ["p2s_printability"]
+          },
+          "then": {"required": ["cavity_audit_proxies"]}
+        },
+        {
+          "if": {
+            "properties": {
+              "variant": {"enum": ["V1LF-Ac", "V1LF-Ae"]}
+            },
+            "required": ["variant"]
+          },
+          "then": {
+            "required": [
+              "transaction_manifest", "transaction_manifest_sha256",
+              "facts", "facts_sha256"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "variant": {"enum": ["V1LF", "V1LF-split"]}
+            },
+            "required": ["variant"]
+          },
+          "then": {
+            "required": ["stage_manifest", "stage_manifest_sha256"]
+          }
+        }
+      ]
+    }
+  }
+}

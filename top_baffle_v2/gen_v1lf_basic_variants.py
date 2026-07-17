@@ -71,6 +71,12 @@ from top_baffle_nd25fw4_v1lf import (
     tweeter_joint_polygon,
 )
 from top_baffle_nd25fw4_v1lf_bridge import common_lm_wing_contact_plan
+from captive_magnets import (
+    CAPTIVE_LAND_MM,
+    CAVITY_DIAMETER_MM,
+    INTERFACE_GAP_MM,
+    SIDE_WALL_MARGIN_MM,
+)
 
 
 OUTPUT_NAME = "baffle_variants_drivers_v1lf.png"
@@ -84,12 +90,11 @@ T_CRESCENT_CENTER = np.array((0.0, 483.05 - TWEETER_DROP_MM))
 DEPTH_MM = THICKNESS_MM - CORE_REAR_Z
 FRONT_SKIN_MM = 1.20
 FULL_RIB_MM = 2.40
-SADDLE_CLEAR_MM = 0.20
-# The wing root starts on the exact V1LF carrier face.  Zero modeled air gap
-# makes the physical receiver mouth and its reported D5.2 x 2.2 seat agree;
-# assembly clearance belongs in the magnet/adhesive fit, not hidden plan
-# growth that turns the pocket into an unreported 2.25-mm cavity.
-MAGNET_FACE_GAP_MM = 0.0
+SADDLE_CLEAR_MM = INTERFACE_GAP_MM
+# Carrier and attachment faces retain an exact 0.05-mm assembly gap.  With a
+# 0.45-mm captive skin on each part, nominal magnet-face separation is
+# 0.95 mm; the old zero-gap/exposed-pocket assumption is deliberately gone.
+MAGNET_FACE_GAP_MM = INTERFACE_GAP_MM
 # Ac is the exact constant-depth reference.  Ae keeps the same flat front
 # datum but replaces the rear slab with a constrained, single-valued feather.
 # The documented project profile is 0.20-mm layers on a 0.4-mm nozzle.  Because
@@ -163,6 +168,11 @@ A_TAPER_CAP_MIN_WIDTH_MM = 1.20
 # so Ae retains one continuous constant-thickness acoustic knife edge.
 DOVETAIL_CLEARANCE_MM = 0.05
 DOVETAIL_ENDPOINT_TAPER_MM = 2.0
+# Embed the nominal seam neck this far into the male partition.  The overlap
+# is entirely inside already-solid male material, adds no envelope or mating
+# growth, and prevents a floating key when Shapely's field/seam intersection
+# differs by machine epsilon after captive-land outline changes.
+DOVETAIL_ROOT_OVERLAP_MM = 0.05
 # The upper A band reaches 2.047 mm with the canonical 7/8.5/4 V1L key; a
 # 2.0-mm gate preserves that proven profile without clipping or shrinking it.
 DOVETAIL_MIN_LIGAMENT_MM = 2.0
@@ -435,13 +445,13 @@ def _rounded_oriented_pad(face, normal, radial, tangential) -> Polygon:
 
 
 def _pocket_plan(site) -> Polygon:
-    """XY projection of the outward surface-normal receiver pocket."""
+    """XY projection of the complete outward captive receiver land."""
     face = np.asarray(site["face"], dtype=float)
     normal = np.asarray(site["normal"], dtype=float)
     tangent = np.array((-normal[1], normal[0]))
     mouth = face + MAGNET_FACE_GAP_MM * normal
-    outer = mouth + SIDE_MAGNET_DEPTH * normal
-    half = SIDE_MAGNET_POCKET_D / 2.0
+    outer = mouth + CAPTIVE_LAND_MM * normal
+    half = CAVITY_DIAMETER_MM / 2.0 + SIDE_WALL_MARGIN_MM
     return Polygon((
         tuple(mouth - half * tangent),
         tuple(outer - half * tangent),
@@ -451,12 +461,12 @@ def _pocket_plan(site) -> Polygon:
 
 
 def _carrier_pocket_plan(site) -> Polygon:
-    """XY projection of the inward surface-normal pocket in V1LF."""
+    """XY projection of the complete inward captive carrier land."""
     face = np.asarray(site["face"], dtype=float)
     normal = np.asarray(site["normal"], dtype=float)
     tangent = np.array((-normal[1], normal[0]))
-    inner = face - SIDE_MAGNET_DEPTH * normal
-    half = SIDE_MAGNET_POCKET_D / 2.0
+    inner = face - CAPTIVE_LAND_MM * normal
+    half = CAVITY_DIAMETER_MM / 2.0 + SIDE_WALL_MARGIN_MM
     return Polygon((
         tuple(inner - half * tangent),
         tuple(face - half * tangent),
@@ -537,6 +547,15 @@ def _common_keepout_parts() -> dict[str, Polygon]:
     for x in (-24.0, 24.0):
         parts[f"t_joint_{x:+.0f}"] = tweeter_joint_polygon(
             x, SADDLE_CLEAR_MM)
+    for site in side_magnet_sites():
+        # The four ring stations have a 0.60-mm local backing boss because
+        # the native lip is only 2.40 mm deep.  Keep the wing outside that
+        # exact boss plus the same 0.05-mm assembly gap.  Lower base sites
+        # are already contained by the common LM contact outline.
+        if site.get("interface_kind") == "ring":
+            parts[f"captive_boss_{site['name']}"] = (
+                _carrier_pocket_plan(site).buffer(
+                    SADDLE_CLEAR_MM, resolution=16, join_style=1))
     return parts
 
 
@@ -566,8 +585,13 @@ def _receiver_root(profile: Polygon, site, key: str) -> tuple[Polygon, Polygon]:
         # the carrier and hide the intended flush x=+/-32 interface.
         carrier = common_lm_wing_contact_plan()
     else:
-        carrier = Point(*site["center"]).buffer(
-            site["radius"], resolution=160)
+        carrier = unary_union((
+            Point(*site["center"]).buffer(
+                site["radius"], resolution=160),
+            _carrier_pocket_plan(site),
+        )).buffer(0)
+    carrier = carrier.buffer(
+        MAGNET_FACE_GAP_MM, resolution=16, join_style=1)
     pad = pad.difference(carrier)
     correction = Polygon()
     if is_um:
@@ -678,10 +702,11 @@ def _dovetail_polygon(
         profile_mm: tuple[float, float, float]) -> Polygon:
     """V1L-style male trapezoid, pointing into the next-higher print."""
     neck, head, penetration = profile_mm
+    root_center = center - DOVETAIL_ROOT_OVERLAP_MM * normal
     head_center = center + penetration * normal
     return Polygon((
-        center - 0.5 * neck * tangent,
-        center + 0.5 * neck * tangent,
+        root_center - 0.5 * neck * tangent,
+        root_center + 0.5 * neck * tangent,
         head_center + 0.5 * head * tangent,
         head_center - 0.5 * head * tangent,
     )).buffer(0)
@@ -734,6 +759,7 @@ def _select_dovetail_key(
         "neck_mm": float(neck),
         "head_mm": float(head),
         "penetration_mm": float(penetration),
+        "root_overlap_mm": DOVETAIL_ROOT_OVERLAP_MM,
         "ligament_mm": ligament,
         "male_owner": male_owner,
         "female_owner": female_owner,
@@ -1015,15 +1041,18 @@ def _validate_layout(layout: VariantLayout) -> None:
         radial_extent = float(np.ptp(coords @ normal))
         tangential_extent = float(np.ptp(coords @ tangent))
         center_delta = np.asarray(pocket.centroid.coords[0]) - face
-        if (not math.isclose(radial_extent, SIDE_MAGNET_DEPTH,
+        if (not math.isclose(radial_extent, CAPTIVE_LAND_MM,
                              abs_tol=0.002)
                 or not math.isclose(tangential_extent,
-                                    SIDE_MAGNET_POCKET_D, abs_tol=0.002)
+                                    (CAVITY_DIAMETER_MM
+                                     + 2.0 * SIDE_WALL_MARGIN_MM),
+                                    abs_tol=0.002)
                 or float(center_delta @ normal) <= 0.0
                 or abs(float(center_delta @ tangent)) > 0.002):
             raise RuntimeError(
                 f"{layout.definition.key} {name} receiver is not axis-aligned: "
-                f"axial/tangent={radial_extent:.3f}/{tangential_extent:.3f}")
+                f"land axial/tangent={radial_extent:.3f}/"
+                f"{tangential_extent:.3f}")
     outside = layout.field_right.difference(layout.profile.buffer(0.02))
     if layout.definition.key != "B2" and outside.area > 0.15:
         raise RuntimeError(
@@ -1591,7 +1620,7 @@ def _draw_magnets(ax, show_labels=False):
                          site.get("interface_kind") == "base_side"
                          else "radial")
             label = (f"active {interface} {site['driver'].upper()} receiver\n"
-                     "XY: 2.2 axial x 5.2 transverse")
+                     "XY: 2.10 axial x 5.20 transverse")
             ax.annotate(label, xy=site["face"],
                         xytext=(site["face"][0] + 18, site["face"][1] - 4),
                         fontsize=6.8, color=color,
@@ -1926,7 +1955,7 @@ def _draw_ae_depth_map(
             f"red outer line = constant t={solution.edge_depth_mm:.2f}; "
             "magenta top = localized tweeter-contact blend\n"
             "hatched protected zones = every V1LF mating band + receivers\n"
-            "magenta rectangles = surface-normal D5.2 x 2.2 receivers\n"
+            "magenta rectangles = captive D5.20 x 2.10 receivers\n"
             "black dashed = V1L-style dovetail seams; no depth reserve\n"
             "LM/UM/T weights="
             f"{solution.retention_scales[0]:.2f}/"
@@ -2035,7 +2064,7 @@ def _draw_b2_detail(ax, layout: VariantLayout):
                 color=COLORS["historic"],
                 arrowprops=dict(arrowstyle="->", color=COLORS["historic"],
                                 lw=0.8))
-    ax.annotate("D5.2 x 2.2 receiver\nfor D5 x 2 magnet",
+    ax.annotate("captive D5.20 x 2.10 receiver\nfor D5 x 2 magnet",
                 xy=face + 1.1 * normal, xytext=(44.5, 414.5), fontsize=6.8,
                 ha="right", color=COLORS["active_mag"],
                 arrowprops=dict(arrowstyle="->", color=COLORS["active_mag"],
@@ -2085,7 +2114,7 @@ def _draw_depth_and_table(
     ax.add_patch(Rectangle((x0, cy - mag_h / 2.0), pocket_w, mag_h,
                            facecolor=COLORS["active_mag"], edgecolor="white",
                            lw=0.5, alpha=0.9))
-    ax.text(x0 + 1.0, cy, "UM pocket\nzc=15.10", fontsize=6.4,
+    ax.text(x0 + 1.0, cy, "UM captive cavity\nzc=15.10", fontsize=6.4,
             color="white", va="center")
     ax.text(x0 + w / 2.0, y0 + 3.0,
             "full-depth Ae protected root\n0.60 front / 5.70 rear skin",
@@ -2191,7 +2220,7 @@ def _draw_depth_and_table(
             f"{depth_field.joint_area_mm2[1]:.0f} mm2; rear mismatch "
             f"{max(depth_field.joint_rear_mismatch_mm):.2f} mm. All prints "
             "fit 220x220 front-down.\n"
-            "Edge, fit clearance, pocket roof and both dovetail joints require "
+            "Edge, fit clearance, cavity roof and both dovetail joints require "
             "coupon/proof tests.",
             fontsize=5.15, va="bottom", color="#30383f")
 
@@ -2259,7 +2288,7 @@ def render(output: Path):
         "orange: Ae material\n"
         "red: smooth rear target\n"
         "blue dashed: Ac rear z=6.8\n"
-        "magenta: D5.2 pocket\n\n"
+        "magenta: captive D5.20 x 2.10 cavity\n\n"
         "All V1LF mating bands and receiver axes stay t=11.5.\n"
         "S1-S4 run interface -> free edge and are monotonicity-gated.\n"
         "S5 crosses the sole exception: actual T-seat contact stays "

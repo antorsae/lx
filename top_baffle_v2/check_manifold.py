@@ -3,7 +3,9 @@
 The primary contract remains explicit: every undirected mesh edge is
 shared by exactly two oppositely wound triangles.  The checker also
 rejects malformed binary length, repeated/zero-area triangles, duplicate
-facets and stale state-incompatible V1LF artifacts.
+facets and stale state-incompatible V1LF artifacts.  A printable solid may
+have one outward boundary plus inward-wound, fully nested cavity boundaries;
+those are voids in one material body, not disconnected printable bodies.
 """
 
 from __future__ import annotations
@@ -31,8 +33,10 @@ import json
 import struct
 from collections import Counter
 
-from PIL import Image
-
+from front_down_contract import (
+    FrontDownContractError,
+    validate_print_sidecar,
+)
 from write_v1lf_release_manifest import (
     FORMAT_VERSION,
     QUALIFICATION_RECORD,
@@ -44,7 +48,133 @@ from write_v1lf_release_manifest import (
 )
 
 
-def stl_diagnostics(path: Path) -> dict[str, int | float]:
+FLOOR_POLAR_SIDECAR_EXCLUSIONS = frozenset({
+    "lx521_polar_base_1of2_base.stl",
+    "lx521_polar_base_2of2_rotor.stl",
+})
+WING_SLUGS = ("ac", "ae")
+WING_SIDES = ("left", "right")
+WING_ROLES = ("lm_lower", "lm_upper", "um")
+EXPECTED_NONPOLAR_STATE_STL_COUNT = 45
+EXPECTED_WING_STL_COUNT = 6
+
+
+def expected_wing_stl_names(slug: str) -> frozenset[str]:
+    if slug not in WING_SLUGS:
+        raise ValueError(f"unknown released wing slug: {slug}")
+    names = frozenset(
+        f"lx521_top_v1lf_wing_{slug}_{side}_{order}of3_{role}.stl"
+        for side in WING_SIDES
+        for order, role in enumerate(WING_ROLES, start=1)
+    )
+    if len(names) != EXPECTED_WING_STL_COUNT:
+        raise RuntimeError(
+            f"{slug}: released wing inventory count drifted to {len(names)}")
+    return names
+
+
+def _print_sidecar_inventory_errors(
+        root: Path, expected_stl_names: set[str] | frozenset[str], *,
+        excluded_stl_names: set[str] | frozenset[str] = frozenset(),
+        label: str | None = None) -> list[str]:
+    """Validate one exact STL-to-adjacent-sidecar release inventory."""
+    scope = label or root.as_posix()
+    expected_stls = set(expected_stl_names)
+    excluded = set(excluded_stl_names)
+    errors = []
+    unknown_exclusions = sorted(excluded - expected_stls)
+    if unknown_exclusions:
+        errors.append(
+            f"{scope}: print-sidecar exclusions are not released STLs: "
+            f"{', '.join(unknown_exclusions)}")
+    expected_sidecars = {
+        Path(name).with_suffix(".print.json").name
+        for name in expected_stls - excluded
+    }
+    actual_sidecars = {
+        path.name for path in root.glob("*.print.json") if path.is_file()
+    }
+    missing = sorted(expected_sidecars - actual_sidecars)
+    extra = sorted(actual_sidecars - expected_sidecars)
+    if missing:
+        errors.append(
+            f"{scope}: missing adjacent print sidecars: {', '.join(missing)}")
+    if extra:
+        errors.append(
+            f"{scope}: stale/extra print sidecars: {', '.join(extra)}")
+    for stl_name in sorted(expected_stls - excluded):
+        stl = root / stl_name
+        sidecar = stl.with_suffix(".print.json")
+        # Missing release STLs and sidecars are reported by their exact
+        # inventory gates. Validate only complete pairs so one absence does
+        # not obscure the remaining independent defects.
+        if not stl.is_file() or not sidecar.is_file():
+            continue
+        try:
+            validate_print_sidecar(stl)
+        except (FrontDownContractError, OSError) as exc:
+            errors.append(
+                f"{scope}: invalid print sidecar for {stl_name}: {exc}")
+    return errors
+
+
+def _wing_print_sidecar_errors(root: Path, slug: str) -> list[str]:
+    """Gate exactly six front-down STL/sidecar pairs for one Ac/Ae wing."""
+    expected = expected_wing_stl_names(slug)
+    actual_stls = {path.name for path in root.glob("*.stl") if path.is_file()}
+    errors = []
+    missing = sorted(expected - actual_stls)
+    extra = sorted(actual_stls - expected)
+    if missing:
+        errors.append(f"wings/{slug}: missing wing STLs: {', '.join(missing)}")
+    if extra:
+        errors.append(
+            f"wings/{slug}: stale/extra wing STLs: {', '.join(extra)}")
+    errors.extend(_print_sidecar_inventory_errors(
+        root, expected, label=f"wings/{slug}"))
+    return errors
+
+
+def _triangle_vertices(data: bytes, triangle: int):
+    """Return the three exact float32 vertices from one binary STL facet."""
+    raw = struct.unpack_from("<9f", data, 84 + triangle * 50 + 12)
+    return tuple(tuple(raw[i:i + 3]) for i in (0, 3, 6))
+
+
+def _triangle_signed_volume(tri) -> float:
+    return (
+        tri[0][0] * (tri[1][1] * tri[2][2] - tri[1][2] * tri[2][1])
+        - tri[0][1] * (tri[1][0] * tri[2][2] - tri[1][2] * tri[2][0])
+        + tri[0][2] * (tri[1][0] * tri[2][1] - tri[1][1] * tri[2][0])
+    ) / 6.0
+
+
+def _solid_angle(tri, point) -> float:
+    """Signed solid angle of ``tri`` at ``point`` (Van Oosterom-Strackee)."""
+    vectors = tuple(tuple(vertex[i] - point[i] for i in range(3))
+                    for vertex in tri)
+    a, b, c = vectors
+    lengths = tuple(math.sqrt(sum(value * value for value in vector))
+                    for vector in vectors)
+    if min(lengths) <= 1e-12:
+        # A nested cavity witness must never lie on the outer boundary.
+        return math.nan
+    cross_bc = (
+        b[1] * c[2] - b[2] * c[1],
+        b[2] * c[0] - b[0] * c[2],
+        b[0] * c[1] - b[1] * c[0],
+    )
+    numerator = sum(a[i] * cross_bc[i] for i in range(3))
+    denominator = (
+        lengths[0] * lengths[1] * lengths[2]
+        + sum(a[i] * b[i] for i in range(3)) * lengths[2]
+        + sum(b[i] * c[i] for i in range(3)) * lengths[0]
+        + sum(c[i] * a[i] for i in range(3)) * lengths[1]
+    )
+    return 2.0 * math.atan2(numerator, denominator)
+
+
+def stl_diagnostics(path: Path) -> dict[str, object]:
     data = path.read_bytes()
     if len(data) < 84:
         raise ValueError(f"{path}: shorter than binary STL header")
@@ -62,8 +192,7 @@ def stl_diagnostics(path: Path) -> dict[str, int | float]:
     signed_volume = 0.0
     offset = 84
     for _ in range(triangles):
-        raw = struct.unpack_from("<9f", data, offset + 12)
-        tri = tuple(tuple(raw[i:i + 3]) for i in (0, 3, 6))
+        tri = _triangle_vertices(data, (offset - 84) // 50)
         if not all(math.isfinite(value) for vertex in tri for value in vertex):
             nonfinite += 1
             degenerate += 1
@@ -82,11 +211,7 @@ def stl_diagnostics(path: Path) -> dict[str, int | float]:
             )
             if math.sqrt(sum(value * value for value in cross)) <= 1e-9:
                 degenerate += 1
-            signed_volume += (
-                tri[0][0] * (tri[1][1] * tri[2][2] - tri[1][2] * tri[2][1])
-                - tri[0][1] * (tri[1][0] * tri[2][2] - tri[1][2] * tri[2][0])
-                + tri[0][2] * (tri[1][0] * tri[2][1] - tri[1][1] * tri[2][0])
-            ) / 6.0
+            signed_volume += _triangle_signed_volume(tri)
         for a, b in ((0, 1), (1, 2), (2, 0)):
             start, stop = tri[a], tri[b]
             if start == stop:
@@ -109,8 +234,10 @@ def stl_diagnostics(path: Path) -> dict[str, int | float]:
     duplicate_facets = sum(count - 1 for count in facets.values() if count > 1)
     del facets, orientation_balance
 
-    # One printable STL must be one connected surface shell. Reuse the
-    # canonical edge keys already resident in memory and union their vertices.
+    # Reuse the canonical edge keys already resident in memory and union their
+    # vertices into connected *boundary* components. A solid with buried
+    # cavities legitimately has more than one boundary component: exactly one
+    # outward-wound outer shell and zero or more inward-wound nested shells.
     parent = {}
 
     def find(vertex):
@@ -129,7 +256,109 @@ def stl_diagnostics(path: Path) -> dict[str, int | float]:
 
     for a, b in undirected:
         union(a, b)
-    components = len({find(vertex) for vertex in parent}) if parent else 0
+    roots = {find(vertex) for vertex in parent}
+    components = len(roots) if parent else 0
+
+    component_stats = {
+        root: {
+            "signed_volume": 0.0,
+            "triangles": 0,
+            "minimum": [math.inf, math.inf, math.inf],
+            "maximum": [-math.inf, -math.inf, -math.inf],
+            "witness": None,
+        }
+        for root in roots
+    }
+    for triangle in range(triangles):
+        tri = _triangle_vertices(data, triangle)
+        if not all(math.isfinite(value) for vertex in tri for value in vertex):
+            continue
+        if tri[0] not in parent:
+            # A fully collapsed facet has no real edge and therefore no
+            # boundary component. It is already rejected as degenerate.
+            continue
+        root = find(tri[0])
+        stats = component_stats[root]
+        stats["signed_volume"] += _triangle_signed_volume(tri)
+        stats["triangles"] += 1
+        if stats["witness"] is None:
+            stats["witness"] = tuple(
+                sum(vertex[axis] for vertex in tri) / 3.0
+                for axis in range(3))
+        for vertex in tri:
+            for axis in range(3):
+                stats["minimum"][axis] = min(
+                    stats["minimum"][axis], vertex[axis])
+                stats["maximum"][axis] = max(
+                    stats["maximum"][axis], vertex[axis])
+
+    volume_epsilon = 1e-6
+    positive_roots = [
+        root for root, stats in component_stats.items()
+        if stats["signed_volume"] > volume_epsilon
+    ]
+    negative_roots = [
+        root for root, stats in component_stats.items()
+        if stats["signed_volume"] < -volume_epsilon
+    ]
+    zero_roots = [
+        root for root, stats in component_stats.items()
+        if abs(stats["signed_volume"]) <= volume_epsilon
+    ]
+    outer_root = positive_roots[0] if len(positive_roots) == 1 else None
+    nested_void_roots = []
+    nonnested_void_roots = []
+    if outer_root is not None:
+        outer = component_stats[outer_root]
+        bbox_epsilon = 1e-6
+        candidates = []
+        for root in negative_roots:
+            stats = component_stats[root]
+            bbox_nested = all(
+                stats["minimum"][axis]
+                > outer["minimum"][axis] + bbox_epsilon
+                and stats["maximum"][axis]
+                < outer["maximum"][axis] - bbox_epsilon
+                for axis in range(3))
+            if bbox_nested and stats["witness"] is not None:
+                candidates.append(root)
+            else:
+                nonnested_void_roots.append(root)
+
+        # Generalized winding/solid-angle containment is streamed over the
+        # outer shell. This rejects a reversed loose shell merely located
+        # inside the outer bounding box without retaining dense triangles.
+        angles = {root: 0.0 for root in candidates}
+        for triangle in range(triangles):
+            tri = _triangle_vertices(data, triangle)
+            if not all(math.isfinite(value)
+                       for vertex in tri for value in vertex):
+                continue
+            if tri[0] not in parent:
+                continue
+            if find(tri[0]) != outer_root:
+                continue
+            for root in candidates:
+                angles[root] += _solid_angle(
+                    tri, component_stats[root]["witness"])
+        for root in candidates:
+            angle = angles[root]
+            if math.isfinite(angle) and abs(angle) > 2.0 * math.pi:
+                nested_void_roots.append(root)
+            else:
+                nonnested_void_roots.append(root)
+
+    disconnected_material_components = max(0, len(positive_roots) - 1)
+    component_error = int(
+        outer_root is None
+        or bool(zero_roots)
+        or bool(nonnested_void_roots)
+        or len(nested_void_roots) != len(negative_roots)
+    )
+    ordered_component_volumes = list(sorted(
+        (float(stats["signed_volume"])
+         for stats in component_stats.values()),
+        reverse=True))
     return {
         "triangles": triangles,
         "open": open_edges,
@@ -142,7 +371,13 @@ def stl_diagnostics(path: Path) -> dict[str, int | float]:
         "zero_volume": int(abs(signed_volume) <= 1e-6),
         "negative_volume": int(signed_volume < -1e-6),
         "components": components,
-        "component_error": int(components != 1),
+        "outer_components": len(positive_roots),
+        "nested_void_components": len(nested_void_roots),
+        "nonnested_void_components": len(nonnested_void_roots),
+        "zero_volume_components": len(zero_roots),
+        "disconnected_material_components": disconnected_material_components,
+        "component_signed_volumes": ordered_component_volumes,
+        "component_error": component_error,
     }
 
 
@@ -192,6 +427,8 @@ def _png_has_trailer(path: Path) -> bool:
 
 def _png_diagnostics(path: Path) -> dict:
     """Decode pixels and parsed text metadata, not just raw PNG bytes."""
+    from PIL import Image
+
     with Image.open(path) as image:
         metadata = dict(image.info)
         image.verify()
@@ -636,6 +873,9 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
 def _v1lf_manifest_errors(
         root: Path, *, v1lf_only: bool = False) -> list[str]:
     state = root.parent.name
+    if (root.name == "stl" and state in WING_SLUGS
+            and root.parent.parent.name == "wings"):
+        return _wing_print_sidecar_errors(root, state)
     if state not in {"floor_stand", "no_floor_stand"}:
         return []
     actual = {path.name for path in root.glob("lx521_top_v1lf_*.stl")}
@@ -690,7 +930,8 @@ def _v1lf_manifest_errors(
     expected_coupons = {
         Path(name).name
         for name in expected_artifact_names(state == "floor_stand")
-        if name.startswith("stl/lx521_coupon_")
+        if (name.startswith("stl/lx521_coupon_")
+            and name.endswith(".stl"))
     }
     actual_coupons = {path.name for path in root.glob("lx521_coupon_*.stl")}
     if actual_coupons != expected_coupons:
@@ -753,6 +994,20 @@ def _v1lf_manifest_errors(
         if extra:
             errors.append(
                 f"{state}: stale/extra release STLs: {', '.join(extra)}")
+    polar_exclusions = (
+        FLOOR_POLAR_SIDECAR_EXCLUSIONS
+        if state == "floor_stand" and not v1lf_only else frozenset()
+    )
+    if (not v1lf_only
+            and len(complete_expected - set(polar_exclusions))
+            != EXPECTED_NONPOLAR_STATE_STL_COUNT):
+        errors.append(
+            f"{state}: nonpolar release STL count drifted from "
+            f"{EXPECTED_NONPOLAR_STATE_STL_COUNT} to "
+            f"{len(complete_expected - set(polar_exclusions))}")
+    errors.extend(_print_sidecar_inventory_errors(
+        root, complete_expected, excluded_stl_names=polar_exclusions,
+        label=state))
     errors.extend(_review_artifact_errors(root.parent))
     return errors
 
@@ -804,7 +1059,8 @@ def main() -> int:
             f"{facts['over_shared']} over-shared, "
             f"{facts['winding']} winding, {facts['degenerate']} degenerate, "
             f"{facts['duplicates']} duplicate, {facts['nonfinite']} nonfinite, "
-            f"{facts['components']} component(s), "
+            f"{facts['components']} boundary component(s) "
+            f"({facts['nested_void_components']} nested void), "
             f"signed volume {facts['signed_volume']:.2f} mm3")
 
     manifest_errors = [

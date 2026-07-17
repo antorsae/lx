@@ -81,6 +81,26 @@ UM_Y = 366.081
 DUCT_Z = {"lm": 12.55, "um": 12.55, "ts": 11.5}
 LANE_OFFSET = 5.11  # TS lane center this far inside the vase wall lines
 
+# V1/V1L raise the lower left captive-magnet station into the TS duct's
+# source-Z window.  At the released y=322.4 station the unchanged R6P
+# centerline leaves only about 0.325 mm of the helper's nominal 0.45-mm inner
+# retaining skin, which Bambu Classic cannot carry as one continuous wall.
+# Keep the complete D6 lumen and the released magnet datum by moving only
+# this short span of the V1/V1L TS centerline up to 0.20 mm toward x=0.
+# Smoothstep ramps make the nudge tangent-continuous at both ends; all
+# standard-family routes remain byte-for-byte unchanged.
+TS_ROUTE_STANDARD = "standard"
+TS_ROUTE_V1_CAPTIVE = "v1_captive_keepout"
+TS_V1_CAPTIVE_NUDGE_MAX_MM = 0.20
+TS_V1_CAPTIVE_NUDGE_KNOTS = (
+    (313.202641, 0.00),
+    (317.145618, 0.10),
+    (320.500000, 0.20),
+    (324.000000, 0.20),
+    (327.500000, 0.10),
+    (330.800000, 0.00),
+)
+
 # LM carries 2 x 2.5 mm^2 (twisted ~O7.8) -> O8.2. UM carries a twisted
 # 2 x 2.0 mm^2 pair (~O7.0) -> O8.2 (0.6 radial nominal slack). TS
 # carries BOTH tweeter pairs side by side (~5.2 across) -> O6.0, the
@@ -229,7 +249,32 @@ def _t2_feeder():
     return [(-6.3, 51.7), (-10.0, 53.2), (-13.5, 54.8), (-15.5, 55.9)]
 
 
-def _ts_route():
+def _smoothstep01(value: float) -> float:
+    value = max(0.0, min(1.0, float(value)))
+    return value * value * (3.0 - 2.0 * value)
+
+
+def _ts_v1_captive_nudge_mm(y: float) -> float:
+    """Positive-X V1/V1L TS detour preserving the full D6 lumen.
+
+    The left TS lane lies at negative X, so positive X is toward the baffle
+    centreline and away from the lower-left captive land.  The short plateau
+    brackets the released magnet station; both ramps have zero end slope.
+    """
+    if y <= TS_V1_CAPTIVE_NUDGE_KNOTS[0][0]:
+        return 0.0
+    if y >= TS_V1_CAPTIVE_NUDGE_KNOTS[-1][0]:
+        return 0.0
+    for (y0, x0), (y1, x1) in zip(
+            TS_V1_CAPTIVE_NUDGE_KNOTS,
+            TS_V1_CAPTIVE_NUDGE_KNOTS[1:]):
+        if y <= y1:
+            weight = _smoothstep01((y - y0) / (y1 - y0))
+            return x0 + weight * (x1 - x0)
+    raise AssertionError("unreachable V1 TS nudge interval")
+
+
+def _ts_route(ts_route_key: str = TS_ROUTE_STANDARD):
     """The shared tweeter duct: left tangent+arc r=116.5 (outside the
     W22 pilot ring AND the U22 recess rim, surface-to-rim 2.9), the
     left vase flank lane, crest transition (bowed 1 mm outboard of
@@ -240,7 +285,7 @@ def _ts_route():
     # straight run to the arc tangent point: keep the knots SPARSE --
     # long runs of collinear spline knots degenerate OCC's pipe frame
     line = [(-16.8, 58.8), (-48.9, 88.0)]
-    return (
+    route = (
         line
         + _arc(116.5, [-133.99, -142, -152, -162, -172, -182, -192,
                        -202, -212])
@@ -266,6 +311,16 @@ def _ts_route():
            (-15.5, 410.0), (-10.4, 412.8), (-5.5, 417.5), (-4.3, 420.5),
            (-3.5, 424.0), (-3.3, 427.0), (-3.3, 430.0), (-3.4, 433.0)]
     )
+    if ts_route_key == TS_ROUTE_STANDARD:
+        return route
+    if ts_route_key == TS_ROUTE_V1_CAPTIVE:
+        return [
+            (x + _ts_v1_captive_nudge_mm(y), y)
+            for x, y in route
+        ]
+    raise ValueError(
+        f"unknown TS route key {ts_route_key!r}; choose "
+        f"{TS_ROUTE_STANDARD!r} or {TS_ROUTE_V1_CAPTIVE!r}")
 
 
 # Without the stand foot the baffle bolts to the stock support via the
@@ -390,11 +445,13 @@ FOOT_LANES = {
 }
 
 
-def route_points(name, um_handoff_key: str = "proud"):
+def route_points(name, um_handoff_key: str = "proud",
+                 ts_route_key: str = TS_ROUTE_STANDARD):
     """Planar duct centerline (z=DUCT_Z[name]) for the three routes.
 
     ``um_handoff_key`` changes only the terminal span of the UM route;
-    the default preserves the standard proud-family geometry.
+    ``ts_route_key`` changes only the short V1/V1L lower-left captive
+    keepout span.  Both defaults preserve the standard proud geometry.
     """
     if name == "t1f":
         return _with_z(_t1_feeder(), [(0, 3.7), (9999, 3.7)])
@@ -440,7 +497,8 @@ def route_points(name, um_handoff_key: str = "proud"):
                    handoff["start"][:2]])
         return _with_z(plan, [(0, 12.55), (9999, 12.55)])
     if name == "ts":
-        return [(x, y, ts_section(y)[2]) for x, y in _ts_route()]
+        return [(x, y, ts_section(y)[2])
+                for x, y in _ts_route(ts_route_key=ts_route_key)]
     raise ValueError(name)
 
 
@@ -498,7 +556,8 @@ def um_path_wire(um_handoff_key: str = "proud"):
 
 def route_centerline_points(name: str, spacing_mm: float = 2.0,
                             raceway_only: bool = False,
-                            um_handoff_key: str = "proud"):
+                            um_handoff_key: str = "proud",
+                            ts_route_key: str = TS_ROUTE_STANDARD):
     """Dense samples of the *complete* physical centerline.
 
     For V1LF UM, delegate to the exact integral core route.  The former
@@ -516,7 +575,7 @@ def route_centerline_points(name: str, spacing_mm: float = 2.0,
         return [tuple(map(float, p))
                 for p in route_cable_points(spacing_mm=spacing_mm)]
     if name != "um":
-        path = Spline(*route_points(name))
+        path = Spline(*route_points(name, ts_route_key=ts_route_key))
         n = max(8, int(path.length / spacing_mm))
         return [tuple(path @ (i / n)) for i in range(n + 1)]
     path = _um_plan_spline(um_handoff_key=um_handoff_key)
@@ -580,7 +639,7 @@ def um_tube(raceway_only: bool = False, radial_extra_mm: float = 0.0,
 
 
 
-def _ts_cutter(y_range=None):
+def _ts_cutter(y_range=None, ts_route_key: str = TS_ROUTE_STANDARD):
     """The TS duct as ONE ruled loft: vertical elliptical sections
     every ~2.4 mm along the interpolating spline of the route, sized
     and positioned by ts_section(y). Outside the vase every section
@@ -590,7 +649,7 @@ def _ts_cutter(y_range=None):
     leaves near-tangent sliver faces at the join -- the exposed-duct/
     open-STL-edge failure class. Sections are 24-gons (inscribed:
     bore ~1% under nominal -- wall margins stay conservative)."""
-    path = Spline(*route_points("ts"))
+    path = Spline(*route_points("ts", ts_route_key=ts_route_key))
     n_st = max(6, int(path.length / 2.4))
     indices = list(range(n_st + 1))
     if y_range is not None:
@@ -677,14 +736,16 @@ def seam_relief_cutters(route_names=None):
 
 
 def cable_cutters(um_handoff_key: str = "proud", route_names=None,
-                  ts_y_range=None):
+                  ts_y_range=None,
+                  ts_route_key: str = TS_ROUTE_STANDARD):
     """Build all proud cutters, or a spatially proven route subset.
 
     ``route_names`` is the low-memory split/export hook.  The default
     remains byte-for-byte the complete LM/UM/TS/t1f/t2f cutter set;
     callers may select only routes that can intersect one already-known
     split region so OCC never constructs the unrelated 4,800-face TS
-    loft while exporting V1L mid-right.
+    loft while exporting V1L mid-right. ``ts_route_key`` preserves the
+    complete section and changes only the explicitly selected centerline.
     """
     if ROUTING_PROFILE != "proud":
         raise RuntimeError(
@@ -706,7 +767,8 @@ def cable_cutters(um_handoff_key: str = "proud", route_names=None,
     if "um" in selected:
         cutters.append(um_tube(um_handoff_key=um_handoff_key))
     if "ts" in selected:
-        cutters.append(_ts_cutter(y_range=ts_y_range))
+        cutters.append(_ts_cutter(
+            y_range=ts_y_range, ts_route_key=ts_route_key))
     # the two O3.8 pair-feeders in the strip + the z-step bore
     for fname in ("t1f", "t2f"):
         if fname not in selected:

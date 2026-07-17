@@ -6,3 +6,22 @@
 
 # Local metadata, resumable logs, and verified incoming remote artifacts
 .remote-cad/
+
+# Plain G-code and per-STL slicer workspaces are reproducible but large.  The
+# hash-backed JSON/CSV/Markdown summaries beside this directory remain
+# reviewable release artifacts.
+review/captive_magnet_slice_audit/slices/
+
+# Release inputs/summaries are JSON by design; the repository root otherwise
+# ignores generic extraction JSON files.
+!captive_magnet_slicing_profile.json
+!captive_magnet_release_catalog.schema.json
+!review/captive_magnet_release_catalog.json
+!review/captive_magnet_slice_audit/captive_magnet_pause_manifest.json
+
+# Adjacent front-down print authorities are part of every released STL.  The
+# repository root ignores generic JSON, so explicitly keep all three release
+# trees trackable rather than relying on force-add during promotion/commit.
+!floor_stand/stl/*.print.json
+!no_floor_stand/stl/*.print.json
+!wings/*/stl/*.print.json

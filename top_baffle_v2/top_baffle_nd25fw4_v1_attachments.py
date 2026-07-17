@@ -6,16 +6,18 @@ field cut to z=6.8 above seam B), so every attachment comes out 11.5
 deep with the V1-scaled taper carried through -- flush front, flat
 rear at z=6.8.
 
-Anchoring: BOTH B2 site plan positions -- lower flare site at
-zc=12.5, upper crescent-arc site at zc=14.4, bored INSIDE the
-as-tapered wall (thin ~1.2 front walls: internal and no-load). No
-lips, no hooks, no bosses. Wing bottoms are trimmed parallel to the
-chamfer-extension edge (+2.2), dropping the collapsed B1-B2 wedge.
+Anchoring: BOTH B2 site plan positions -- lower flare site at zc=12.5,
+upper crescent-arc site at zc=14.4 -- use closed pause-and-bury cavities
+behind 0.45-mm skins.  Receiver faces carry the local 0.05-mm air gap;
+their marked/N vectors follow the base-to-receiver pair axis, so their
+interface-facing poles are opposite the base's and attract.  The curved
+upper host is relieved by at most
+0.184666 mm to mate the base's qualified tangent land; there are no lips,
+hooks, or attachment-side proud bosses. Wing bottoms are trimmed parallel
+to the chamfer-extension edge (+2.2), dropping the collapsed B1-B2 wedge.
 """
 
 from __future__ import annotations
-
-import math
 
 from build123d import Box, Compound, Pos
 
@@ -24,17 +26,14 @@ from top_baffle_nd25fw4_a_comp import OUTLINE_A_COMP
 from top_baffle_nd25fw4_attachments import MIN_SOLID_MM3, _box, _two_sides
 from top_baffle_nd25fw4_b import (
     A_COMP_CREST_Y,
-    MAG_PIN_RECEIVER_DEPTH_MM,
-    MAG_RECEIVER_D_MM,
-    MAGNET_SITES,
     TWEETER_DROP_MM,
-    _magnet_pocket,
+    apply_magnet_attachment_cavities,
 )
 from top_baffle_nd25fw4_b1 import OUTLINE_B1
 from top_baffle_nd25fw4_b2 import OUTLINE_B2
-from top_baffle_nd25fw4_v1 import REAR_MM, Y_STEP
+from top_baffle_nd25fw4_v1 import REAR_MM, V1_MAGNET_ZC, Y_STEP
 
-V1_SITE_ZC = 12.5  # one pocket height everywhere on V1
+PRINT_ORIENTATION = "front-face-down"
 
 
 def _v1_base(outline):
@@ -53,18 +52,14 @@ def _v1_base(outline):
 def v1_attachments() -> dict:
     b2 = _v1_base(OUTLINE_B2)
     keep = _box(303.0, 500.0)
-    def _receivers(solid, sites):
-        for site, zc in zip(sites, (12.5, 14.4)):
-            x, y, nx, ny, _pin, _zc = site
-            for sx in (1.0, -1.0):
-                solid -= _magnet_pocket(sx * x, y, sx * nx, ny, zc,
-                                        MAG_RECEIVER_D_MM,
-                                        MAG_PIN_RECEIVER_DEPTH_MM, False)
-        return solid
+    def _receivers(solid):
+        return apply_magnet_attachment_cavities(
+            solid, site_zc=V1_MAGNET_ZC, lower_rear_caps=False,
+            name_prefix="v1")
 
     out: dict = {}
     a_comp = _v1_base(OUTLINE_A_COMP) & keep
-    diff = _receivers(a_comp - b2, MAGNET_SITES[:2])
+    diff = _receivers(a_comp - b2)
     _two_sides(diff & _box(303.0, A_COMP_CREST_Y),
                "attach_v1a_shoulder_bottom", out)
     _two_sides(diff & _box(A_COMP_CREST_Y, 500.0),
@@ -90,7 +85,7 @@ def v1_attachments() -> dict:
         cut = (Plane(origin=(sgn * bx, CUT_Y, 9.15), z_dir=n)
                * Pos(0, 0, 30.0) * Box(140.0, 140.0, 60.0))
         wing -= cut
-    diff = _receivers(wing, MAGNET_SITES[:2])
+    diff = _receivers(wing)
     _two_sides(diff, "attach_v1b1_wing", out)
     return out
 

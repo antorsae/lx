@@ -35,6 +35,11 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from PIL import Image
 
+from captive_magnets import (
+    FACE_SKIN_MM,
+    INTERFACE_GAP_MM,
+    MAGNET_DEPTH_MM,
+)
 from top_baffle_nd25fw4 import (
     BRIDGE_INSERT_D_MM,
     BRIDGE_HOLE_XY,
@@ -179,12 +184,11 @@ def draw(ax, outline, drop, title, labels=True, joint_outline=None):
         jp = outline_polygon(joint_outline)
         ax.plot(jp[:, 0], jp[:, 1], color="0.55", lw=0.9, ls=(0, (4, 2, 1, 2)), zorder=5)
 
-    # Actual D5 x 2 magnets seen edge-on: discs are bonded FLUSH in the
-    # global D5.2 x 2.2 pockets. The bars intentionally draw the physical
-    # 2.0 mm magnets, not the extra 0.2 mm adhesive allowance.
-    # with their axes IN-PLANE (normal to the wall). Solid bar = base
-    # magnet in piece_top_b2 (flush); lighter bar = the mating
-    # attachment magnet, also flush (drawn only for composite variants).
+    # Actual D5 x 2 magnets seen edge-on, fully captive in D5.20 x 2.10
+    # cavities behind 0.45-mm skins. The bars draw the purchased magnets,
+    # not the diametral/axial cavity allowance. Their axes are IN-PLANE
+    # (normal to the wall). Solid bar = base magnet; lighter bar = its mating
+    # receiver magnet (drawn only for composite variants).
     def mag_bar(px, py, nx, ny, a, b, alpha):
         tx, ty = -ny, nx  # wall tangent
         r = MAGNET_D_MM / 2.0
@@ -195,17 +199,19 @@ def draw(ax, outline, drop, title, labels=True, joint_outline=None):
         ax.fill(xs, ys, color="tab:orange", alpha=alpha, lw=0.6,
                 edgecolor="tab:orange", zorder=6)
 
-    for mx, my, mnx, mny, pin, _zc in MAGNET_SITES:
+    base_inner = -(FACE_SKIN_MM + MAGNET_DEPTH_MM)
+    base_outer = -FACE_SKIN_MM
+    receiver_inner = INTERFACE_GAP_MM + FACE_SKIN_MM
+    receiver_outer = receiver_inner + MAGNET_DEPTH_MM
+    for mx, my, mnx, mny, _pin, _zc in MAGNET_SITES:
         for sx in (1, -1):
             px, py, nx, ny = sx * mx, my, sx * mnx, mny
-            if pin:
-                mag_bar(px, py, nx, ny, -2.0, 0.0, 0.9)     # base, flush
-                if joint_outline is not None:
-                    mag_bar(px, py, nx, ny, 0.0, 2.0, 0.45)  # attachment, flush
-            else:
-                mag_bar(px, py, nx, ny, -3.1, -0.1, 0.9)
-                if joint_outline is not None:
-                    mag_bar(px, py, nx, ny, 0.1, 3.1, 0.45)
+            mag_bar(
+                px, py, nx, ny, base_inner, base_outer, 0.9)
+            if joint_outline is not None:
+                mag_bar(
+                    px, py, nx, ny,
+                    receiver_inner, receiver_outer, 0.45)
 
     # stock LX521.4 baffle, dotted gray, LM-aligned
     sx = [p[0] for p in STOCK_OUTLINE] + [STOCK_OUTLINE[0][0]]

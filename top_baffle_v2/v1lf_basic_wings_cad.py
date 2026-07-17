@@ -72,6 +72,15 @@ from top_baffle_nd25fw4_v1lf import (
     _plan_prism,
     side_magnet_sites,
 )
+from captive_magnets import (
+    CAPTIVE_LAND_MM,
+    CAVITY_DEPTH_MM,
+    CAVITY_DIAMETER_MM,
+    FACE_SKIN_MM,
+    INNER_SKIN_MM,
+    NOMINAL_PAIRED_FACE_SEPARATION_MM,
+    wall_cavity_tools,
+)
 
 
 VARIANT_IDS = ("ac", "ae")
@@ -83,8 +92,9 @@ REAR_LIMIT_Z_MM = float(CORE_REAR_Z)
 FULL_DEPTH_MM = float(contract.DEPTH_MM)
 AE_EDGE_DEPTH_MM = float(contract.AE_EDGE_DEPTH_MM)
 MAGNET_FACE_GAP_MM = float(contract.MAGNET_FACE_GAP_MM)
-MAGNET_POCKET_DIAMETER_MM = float(SIDE_MAGNET_POCKET_D)
-MAGNET_POCKET_DEPTH_MM = float(SIDE_MAGNET_DEPTH)
+MAGNET_POCKET_DIAMETER_MM = float(CAVITY_DIAMETER_MM)
+MAGNET_POCKET_DEPTH_MM = float(CAVITY_DEPTH_MM)
+MAGNET_CAPTIVE_LAND_MM = float(CAPTIVE_LAND_MM)
 
 AE_SURFACE_GRID_X = 145
 AE_SURFACE_GRID_Y = 361
@@ -265,53 +275,82 @@ def _selected_sites(side: str) -> tuple[dict, ...]:
 
 
 def receiver_facts(side: str) -> tuple[dict, ...]:
-    """Serializable contract for base-LM, radial-LM and radial-UM receivers."""
+    """Serializable captive contract for all three receivers on one side."""
     records = []
     for site in _selected_sites(side):
-        nx, ny = (float(value) for value in site["normal"])
-        face_x, face_y = (float(value) for value in site["face"])
-        mouth = (
-            face_x + MAGNET_FACE_GAP_MM * nx,
-            face_y + MAGNET_FACE_GAP_MM * ny,
+        tools = wall_cavity_tools(
+            name=str(site["name"]),
+            face=site["face"],
+            outward=(*site["normal"], 0.0),
+            owner="wing",
+            axis_z=float(site["z_mm"]),
+            print_up=(0.0, 0.0, -1.0),
+            front_z=FRONT_Z_MM,
+            interface_gap_mm=MAGNET_FACE_GAP_MM,
         )
-        records.append({
-            "name": str(site["name"]),
+        record = dict(tools.facts())
+        record.update({
             "driver": str(site["driver"]),
-            "axis_normal_xy": [nx, ny],
-            "carrier_face_xy_mm": [face_x, face_y],
-            "receiver_mouth_xy_mm": [mouth[0], mouth[1]],
-            "axis_z_mm": float(site["z_mm"]),
-            "pocket_diameter_mm": MAGNET_POCKET_DIAMETER_MM,
-            "pocket_depth_mm": MAGNET_POCKET_DEPTH_MM,
+            "axis_normal_xy": [float(value) for value in site["normal"]],
+            "carrier_face_xy_mm": [float(value) for value in site["face"]],
+            "receiver_mouth_xy_mm": list(tools.actual_face_xyz[:2]),
+            "axis_z_mm": tools.actual_face_xyz[2],
+            "cavity_diameter_mm": MAGNET_POCKET_DIAMETER_MM,
+            "cavity_depth_mm": MAGNET_POCKET_DEPTH_MM,
+            "captive_land_mm": MAGNET_CAPTIVE_LAND_MM,
             "carrier_to_receiver_face_gap_mm": MAGNET_FACE_GAP_MM,
+            "paired_magnet_face_separation_mm": (
+                NOMINAL_PAIRED_FACE_SEPARATION_MM),
             "orientation": (
                 "horizontal_base_axis_vertical_diameter"
                 if site.get("interface_kind") == "base_side"
                 else "radial_axis_tangential_diameter"),
             "interface_kind": str(site.get("interface_kind", "ring")),
-            "carrier_magnet_flush_buried": bool(site["flush_buried"]),
+            "carrier_magnet_fully_buried": True,
+            "receiver_magnet_fully_buried": True,
         })
+        records.append(record)
     return tuple(records)
 
 
 def receiver_pockets(side: str) -> dict[str, object]:
-    """Return the three exact D5.2 x 2.2 receiver cutters for one side."""
+    """Return unioned coupon-style cutter groups for one side."""
     _require_guarded_build()
     result = {}
     for site in _selected_sites(side):
-        nx, ny = site["normal"]
-        mouth = (
-            site["face"][0] + MAGNET_FACE_GAP_MM * nx,
-            site["face"][1] + MAGNET_FACE_GAP_MM * ny,
+        tools = wall_cavity_tools(
+            name=str(site["name"]),
+            face=site["face"],
+            outward=(*site["normal"], 0.0),
+            owner="wing",
+            axis_z=float(site["z_mm"]),
+            print_up=(0.0, 0.0, -1.0),
+            front_z=FRONT_Z_MM,
+            interface_gap_mm=MAGNET_FACE_GAP_MM,
         )
-        # The cutter overlaps 0.15 mm inward of the declared mouth for robust
-        # Boolean opening.  The functional radial seat from that mouth outward
-        # remains exactly 2.2 mm deep.
-        result[site["name"]] = _axis_cylinder(
-            mouth, site["normal"], site["z_mm"],
-            MAGNET_POCKET_DIAMETER_MM,
-            inward=0.15, outward=MAGNET_POCKET_DEPTH_MM)
+        cutter = tools.cutters[0]
+        for component in tools.cutters[1:]:
+            cutter = cutter.fuse(component)
+        result[site["name"]] = cutter.clean()
     return result
+
+
+def receiver_required_lands(side: str) -> dict[str, object]:
+    """Return minimum local receiver backing for the qualified cavities."""
+    _require_guarded_build()
+    return {
+        str(site["name"]): wall_cavity_tools(
+            name=str(site["name"]),
+            face=site["face"],
+            outward=(*site["normal"], 0.0),
+            owner="wing",
+            axis_z=float(site["z_mm"]),
+            print_up=(0.0, 0.0, -1.0),
+            front_z=FRONT_Z_MM,
+            interface_gap_mm=MAGNET_FACE_GAP_MM,
+        ).required_land
+        for site in _selected_sites(side)
+    }
 
 
 def _normalize_xy(points: Iterable) -> np.ndarray:
@@ -1289,12 +1328,12 @@ def _ae_smooth_body() -> Part:
         edge_cutter, "Ae laterally oversized exact-edge cutter")
     blank = _plan_prism(exact_plan, REAR_LIMIT_Z_MM, FRONT_Z_MM)
     blank = _one_solid(blank, "Ae pristine exact-plan blank")
-    carved = blank - relief_cutter
-    if carved is None:
+    relief_probe = blank - relief_cutter
+    if relief_probe is None:
         raise RuntimeError("Ae smooth rear-relief subtraction returned no body")
-    carved = _one_solid(
-        carved.clean(), "Ae blank after smooth rear-relief subtraction")
-    relief_removed_volume = float(blank.volume - carved.volume)
+    relief_probe = _one_solid(
+        relief_probe.clean(), "Ae blank after smooth rear-relief subtraction")
+    relief_removed_volume = float(blank.volume - relief_probe.volume)
     if relief_removed_volume <= 100.0:
         cutter_bounds = relief_cutter.bounding_box()
         blank_bounds = blank.bounding_box()
@@ -1311,9 +1350,19 @@ def _ae_smooth_body() -> Part:
             f"{blank_bounds.min.Y:.6f}..{blank_bounds.max.Y:.6f}, "
             f"blank_z={blank_bounds.min.Z:.6f}.."
             f"{blank_bounds.max.Z:.6f}")
-    carved = carved - edge_cutter
+    # Subtract the positively overlapping rear and edge tools as one Boolean
+    # set.  Sequential subtraction can leave a coincident BREP partition at
+    # z=FRONT_Z-AE_EDGE_DEPTH when the protected captive-land outline changes;
+    # union-before-cut is set-theoretically identical while preserving the
+    # exact 0.24-mm edge and one connected printable body.
+    combined_cutter = relief_cutter.fuse(edge_cutter)
+    if combined_cutter is None:
+        raise RuntimeError("Ae combined rear/edge cutter fusion returned no tool")
+    combined_cutter = _strict_single_solid(
+        combined_cutter.clean(), "Ae positively overlapping rear/edge cutter")
+    carved = blank - combined_cutter
     if carved is None:
-        raise RuntimeError("Ae exact-edge subtraction returned no body")
+        raise RuntimeError("Ae combined rear/edge subtraction returned no body")
     body = _one_solid(
         carved.clean(),
         "Ae exact blank after protected rear/edge relief subtraction")
@@ -1348,6 +1397,13 @@ def _one_solid(shape, label: str) -> Part:
 
 
 def _cut_receivers(part, side: str) -> Part:
+    for name, land in receiver_required_lands(side).items():
+        fused = part.fuse(land)
+        if fused is None:
+            raise RuntimeError(
+                f"{side} receiver backing fusion {name} returned no shape")
+        part = _one_solid(
+            fused.clean(), f"{side} {name} captive receiver backing")
     for name, cutter in receiver_pockets(side).items():
         part = part - cutter
         if part is None:
@@ -1940,6 +1996,8 @@ def wing_facts(variant_id: str) -> dict:
             "endpoint_taper_mm": float(
                 contract.DOVETAIL_ENDPOINT_TAPER_MM),
             "endpoint_taper_location": "both_seam_endpoints",
+            "male_root_overlap_mm": float(
+                contract.DOVETAIL_ROOT_OVERLAP_MM),
             "male_owners": [key["male_owner"]
                               for key in layout.dovetail_keys],
             "female_owners": [key["female_owner"]
@@ -2020,6 +2078,7 @@ __all__ = (
     "PRINT_PART_KEYS",
     "receiver_facts",
     "receiver_pockets",
+    "receiver_required_lands",
     "wing_plan",
     "wing_print_plan_parts",
     "wing_depth_at",

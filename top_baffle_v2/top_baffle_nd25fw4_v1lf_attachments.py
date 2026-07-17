@@ -1,8 +1,9 @@
 """Optional R6F add-ons for the extreme two-carrier V1LF core.
 
 The floor-state stem, foot and connector are integral LM geometry.  This
-module therefore exports only the optional tweeter crescent.  Six face-flush
-side magnets remain alignment/anti-rattle interfaces with zero load credit.
+module therefore exports only the optional tweeter crescent.  Six fully
+buried captive side-magnet interfaces remain alignment/anti-rattle features
+with zero load credit.
 """
 
 from __future__ import annotations

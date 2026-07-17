@@ -25,6 +25,10 @@ variants, so comparisons are unaffected even uncorrected.
 Detents: two arms x 72 sockets = 5-deg steps, both arms engaged at
 every step (even ring). Break-away ~0.4 N-m: firm under the ~3.2 kg
 module, easy by hand. Print both parts flat, no supports; PLA+.
+
+This measurement jig has no acoustic/front datum and is not a baffle piece.
+Its functional orientation is therefore outside the baffle front-face-down
+texture contract: X180 would put the spigot/noses or fence into the bed.
 """
 
 from __future__ import annotations

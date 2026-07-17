@@ -1,0 +1,58 @@
+{
+  "artifact_family": "v1lf_basic_wings",
+  "assembly_label": "v1lf_wing_ae_left_3of3_um",
+  "mesh": {
+    "angular_tolerance": 0.03,
+    "tolerance_mm": 0.002
+  },
+  "order": 3,
+  "part": "lx521_top_v1lf_wing_ae_left_3of3_um",
+  "pre_translation_bbox_min_mm": [
+    97.54607329726362,
+    374.1489017684623,
+    -18.30000009999996
+  ],
+  "print_orientation": "front_face_down",
+  "role": "um",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 169.47068197969213
+  },
+  "schema_version": 1,
+  "side": "left",
+  "source_to_stl_matrix": [
+    [
+      -0.9831615296572087,
+      0.18273862920055373,
+      0.0,
+      -97.54607329726362
+    ],
+    [
+      0.18273862920055373,
+      0.9831615296572087,
+      0.0,
+      -374.1489017684623
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.30000009999996
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "lx521_top_v1lf_wing_ae_left_3of3_um.stl",
+  "stl_bytes": 4477284,
+  "stl_origin_translation_mm": [
+    -97.54607329726362,
+    -374.1489017684623,
+    18.30000009999996
+  ],
+  "stl_sha256": "dcd522b14b9f65bcd573b748cb78bd88ae6a9d4d99a9bab9d6ac0b42c3629209",
+  "variant_slug": "ae"
+}

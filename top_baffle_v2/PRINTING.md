@@ -35,7 +35,7 @@ bridge-web load case is treated explicitly below. PLA still relaxes
 | R6F fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening Ø6.4 × 6.8 inserts | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders, centered rear UM/T entries at x=±8/y=82/z=5.3, solid acoustic front, immutable 40 × 50 pattern, and no geometry behind the existing LM pads; magnets receive zero load credit |
 | R6F optional LM keyed seam | one concealed right-hand straight rounded tongue/blind-socket pair wholly inside the existing R110.6..R113 lip; world Y=172.481 mm, zero-gap planar butt; tongue width 0.8 mm, engagement 3.5 mm along the tangential insertion axis (~75.23° from +X) | registration only | mutually exclusive replacement print form for the canonical monolithic LM; no external protrusion, envelope growth, extra screw, or standalone retention/load credit. Assemble front-face-down on a flat datum; the installed LM driver flange and its normal fasteners are the structural splice. |
 | R6F UM-to-tweeter half-laps | 2 x rear-driven M3 screws at x=±24, y=421.5 into blind M3 x 3 inserts in Ø4.6 x 4.0 receivers | hand-snug | no front bolt head; keep the acoustic face uninterrupted |
-| R6F alignment magnets | Six D5 × 2 N52 magnets in Ø5.2 × 2.2 surface-normal pockets | — | LM has four: preserve the upper flush ring-radial 64°/116° pair with its verified 2.2 mm insert and 0.86 mm route-cover gaps; install the lower pair flush in the straight base side faces at `(x,y,z)=(±32,18,12.55)`, with outward normals `(-1,0)` left and `(1,0)` right. The shared lower profile makes these base datums identical in floor and no-floor carriers, and both clear buried routes and the bridge/integral-stand load path. UM keeps its flush ring-radial 50.5°/129.5° pair at z=15.1, with at least 1.1 mm insert/T-cover gap, 0.2 mm radial floor and 0.6 mm front skin. Fixture all six flush during cure—0.2 mm extra pocket depth is adhesive allowance; no proud ears; alignment/anti-rattle only, **zero structural load credit**. Ac/Ae have matching LM-lower, LM-upper, and UM receivers on each side. |
+| R6F alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and lower straight-base sites at `(x,y,z)=(±32,18,12.55)` with outward normals `(-1,0)` left and `(1,0)` right. UM keeps its 50.5°/129.5° axes at z=15.1. Every station has 0.45 mm axial skins and a 45° support-free roof; ring sites use only the validated +0.60 mm outward local backing boss required to avoid the flange seat. Magnets are fully buried at the manifest pause, never glued or externally accessible. Ac/Ae have matching captive LM-lower, LM-upper, and UM receivers. Alignment/anti-rattle only: **zero structural load credit**. |
 | Tweeter pair | M4 through-bolts + nyloc + wave washer; length = septum + faceplates (stock 18.3 septum → ~M4 x 35; V1/R6F crescent → ~M4 x 30 — verify stacked) | snug, ~0.5 N·m | clamps the 4.0 mm crescent seat; recheck after a week |
 
 **Installing the inserts:** soldering iron at 230–250 °C, press
@@ -172,27 +172,43 @@ floor-stand `piece_bottom` (223.8 × 125 × 168.3), front-down leaves the
 150 mm foot rising as a self-standing wall. Smooth/satin PEI gives a
 clean front; textured PEI gives uniform grain.
 
-**R6F:** the canonical floor-state LM+integral stand is a large-format part;
-use the exact validated orientation emitted by the exporter. The monolithic
-no-floor LM+bridge web is
-too long for any flat Z rotation on 256 × 256 mm; its exporter therefore
-uses the validated **45° X tilt**. Preserve that orientation and review
-supports, interface faces, and the complete Z height before slicing.
-The optional LM keyed split replaces that monolithic LM with two prints. In
-floor state the bottom owns the complete stem/foot/NL8 panel: lay its world-Y
-floor face down with X=−90° and Z=0°. The no-floor bottom
-uses Z=26° and measures **198.79 × 205.51 mm**; the Z45° top measures
-**210.47 × 210.47 mm** in either state. The exporter rejects either optional
-part if an in-bed axis exceeds 220 mm. The single right-hand straight rounded
+**R6F:** every released printable baffle/acoustic part also prints
+front-face-down. This includes the floor/no-floor monolithic LM, both optional
+keyed LM halves, the UM carrier, tweeter crescent, and Ac/Ae segments. Only an
+in-plane XY rotation about the bed normal may be used; the former 45° X tilt
+and floor-face-down keyed-bottom
+orientations are not valid for captive-magnet insertion. The floor-state
+LM+integral stand is therefore a large-format print. Revalidate the actual
+front-down footprint against the selected printer instead of relying on the
+obsolete ≤220 mm tilted-orientation figures. The optional LM keyed split
+replaces that monolithic LM with two front-down prints. On a P2S, this split
+is mandatory: both canonical LM monoliths are approximately 235.61 x 313.35 mm
+front-face-down and are not P2S-printable. Do not scale, clip, tilt, or use a
+virtual bed. The single right-hand straight rounded
 0.8 mm tongue and blind socket remain concealed inside the existing lip and
 add no envelope growth. The tongue engages 3.5 mm along its tangential insertion axis
 (~75.23° from +X). Never mix either half with the monolithic LM.
 The UM route is covered only in LM, T is covered in
 LM/UM, and their specified rear continuations are free; the short LM lead is
-also intentionally free. Keep generated support out of functional buried-route
+also intentionally free inside a rear-open subtractive clearance, not a
+printed micro-duct. Keep generated support out of functional buried-route
 mouths/free-cable clearance, the NL8 service cavity, and every rear bump.
 
+Every released nonpolar STL—including all ten production coupons and every
+Ac/Ae segment—must travel with its exact adjacent `<stem>.print.json`. That
+record hash-binds the mesh to its X180 plus optional in-bed-Z transform and
+origin translation. Treat a missing, extra/orphaned, hash-stale, tilted, or
+translation-inconsistent sidecar as a hard stop; run `check_manifold.py` on
+the release STL directory before slicing. Do not substitute a sidecar from
+another state or a similarly named piece.
+
 ## Bambu Studio profile (0.4 nozzle)
+
+The settings below are the general structural profile. For every captive-
+magnet part, the authoritative pause audit overrides the general layer height:
+use the pinned **P2S 0.4 mm / 0.16 mm High Quality / Classic wall** profile and
+the exact first-closing-layer Z values in the generated pause manifest. Do not
+reuse a 0.20-mm pause height or derive one by scaling.
 
 * **Layer height** 0.20 mm.
 * **Walls: 6 loops** (2.4 mm) — makes the material around every
@@ -216,14 +232,68 @@ mouths/free-cable clearance, the NL8 service cavity, and every rear bump.
   are nominal. Use *Precise wall: on*, **elephant-foot compensation
   0.15 mm**, and start X-Y hole compensation at **+0.05**.
 
+### Captive-magnet pause procedure
+
+All released magnet-bearing parts print **front-face-down**. The approved
+system encloses each actual D5.0 × 2.0 disc in an Ø5.20 × 2.10 cavity with
+0.45 mm plastic at each axial face, a vertically open loading cradle, and a
+self-supporting 45° roof. There is no magnet glue and no external access
+opening. The approximately 0.05 mm mating air gap remains, so two opposing
+0.45 mm skins put the nominal magnet faces **0.95 mm apart**.
+
+Use the exact part/variant rows in
+[`CAPTIVE_MAGNET_PAUSE_MANIFEST.md`](review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md). Pause at the listed
+Bambu Studio marker—the first layer whose toolpath begins closing the roof,
+after the last completely open layer—not at a height inferred from CAD alone.
+Before starting, mark one pole of every magnet and stage each site in manifest
+order. At the pause:
+
+1. From above the paused part (its print +Z side), insert exactly the listed
+   count vertically downward along print -Z
+   (`print_insertion_direction_xyz = [0, 0, -1]`), with the listed
+   local-axis polarity.
+2. Confirm every disc lies fully seated below the completed layer and cannot
+   protrude into the next-layer nozzle path.
+3. Remove tools and loose magnets from the build volume, then resume.
+
+Polarity cannot be inspected or corrected after burial. Mirrored parts do not
+automatically use the same visible face. The physically validated coupon
+regressions for the P2S 0.4 mm nozzle / 0.16 mm profile are **UM Z=5.96 mm**
+and **LM Z=8.52 mm**; never reuse those markers for a different geometry or
+orientation. V0 also prints front-face-down. Its legacy orphan sites at
+`(±46.000, 324.000)` were completely detached from the B2 flare, so—there
+being no released mate—the first correction moved both along the exact flare
+normal to `(±37.697, 326.470)`. Do not use that rejected mirrored pair: the
+left station was only 2.605 mm from the T centerline, not the required 8.000
+mm. The release keeps the right station at `(37.697, 326.470)` and moves only
+the left station to `(-7.250, 321.200)`, below the D82 cutout and between the
+seam-B dovetails. Its qualified residual margins are 1.263 mm to the cutout,
+12.363 mm to the nearest pilot, 0.549 mm beyond the grown seam rule, and
+18.014 mm beyond the T-route rule. The rear axes and provisional marked-pole
+directions remain unchanged.
+Contained full-depth R3.20 keeps support the 45° conical closures and both
+0.45 mm skins without changing the front outline, driver seat, or insert
+bores. V0 still has no released mating part or pairing polarity.
+
+The floor and no-floor canonical V1LF LM monoliths intentionally have no P2S
+pause rows: neither fits the bed front-face-down. The manifest identifies each
+as not P2S-printable and binds its four source-identical cavity contracts to
+the same-state keyed bottom/top halves. Use only the actual keyed-half pause
+rows on a P2S. A monolith proxy-coverage row is not a G-code pause and must
+never be entered manually in Bambu Studio.
+
 Print the applicable stable `stl/lx521_coupon_*.stl` files before the
 large parts:
 
 1. `lx521_coupon_1_fit_plate.stl` — female dovetail, Ø6.4/Ø4.6 insert
-   bores, and the global Ø5.2 × 2.2 magnet pocket in the V1 upper-pocket
-   wall. Use it to establish a face-flush adhesive fixture; do not bottom
-   the Ø5 × 2 magnet.
-2. `lx521_coupon_2_fit_key.stl` — matching loose male dovetail.
+   bores, and the released V1-upper captive-magnet regression station. Print
+   it front-face-down and use the exact pause generated for its own sliced
+   G-code; its former exposed-pocket inspection notch has been deleted so the
+   45° roof retains the full post-apex seal. This is an **unpaired** regression
+   station: install the marked/N pole along source -Y, which is print +Y under
+   its X180/Z0 transform. There is no mating magnet and no attraction claim.
+2. `lx521_coupon_2_fit_key.stl` — matching loose male dovetail. It contains
+   no magnet and does not define a polarity pair with coupon 1.
 3. `lx521_coupon_3_fish_entry.stl` — no-foot entry cluster and Ø6.8
    tweeter-pair merge.
 4. `lx521_coupon_4_um_outlet_proud.stl` — the real B2 outline and the
@@ -248,6 +318,10 @@ large parts:
     LM-collar sector around the 300° axis, including the enclosed tunnel and
     full-width solid saddle from conduit roof to the ordinary blind insert
     floor; there is no trapped hollow and no cable is exposed.
+
+Before any captive-magnet production run, also print and slice the dedicated
+reference in `coupons/v1lf_ae_embed/`. Its source and README define the proven
+cradle/skin/roof implementation and the 5.96/8.52 mm regression markers.
 R6P uses a short curved split grommet that follows the final R14 bore;
 print `lx521_top_proud_addon_um_grommet_half_{a,b}.stl` and test it with
 coupon 4. That grommet fits B2/C7/V0/V1 only; do not fit it to V1L.
@@ -290,10 +364,11 @@ mouth, free cable, driver and Faston service envelopes with the measured UM cabl
   no crescent-owned printed arc. The true minimum non-load wall on each
   surviving buried span is 0.8 mm and the seat roof is 0.85 mm. The D7.8
   LM lead is different: it floats over a short 20.15 mm span behind the carrier
-  with no printed micro-duct, cover, or cutter. Confirm its z=0.40..3.80
-  centerline and 1.00 mm outer clearance to the deepest z=5.3 pad/web rear
-  datum. In floor state verify its buried continuation through the integral
-  stem. Block support from every
+  with no printed micro-duct or cover. The carrier has only a minimum-radius
+  3.96 mm rear-open subtractive clearance around its unchanged z=0.40..3.80
+  centerline; the 1.00 mm clearance to the deepest z=5.3 pad/web rear datum
+  applies at the outer station before the rise. In floor state verify its
+  buried continuation through the integral stem. Block support from every
   functional mouth/free-cable span and
   inspect the complete solid-backed rear bumps. Use the routing PNG's nominal
   diametric u-z sections—not only its longitudinal station plot—to confirm each
@@ -358,6 +433,12 @@ in post with r = 84.15 if you want absolute polars, or ignore it for
 variant-vs-variant comparisons (identical bias). Double-side tape the
 base to the stand; mark tape position for cross-session repeats.
 
+These are non-acoustic measurement-jig parts with no baffle/front-face datum;
+they are outside the acoustic build-plate texture contract. Do not X180 either
+jig part: that would put the base spigot/detent noses or rotor fence into the
+build plate. Accordingly these two floor-only polar STLs are the sole release
+exception and intentionally have no `.print.json` sidecars.
+
 ## Cable fishing protocol
 
 ### R6P proud family
@@ -399,8 +480,9 @@ lead. Rehearse every cable before the drivers or optional modules hide the
 working area:
 
 1. Place the measured D7.8 LM cable over the modeled 20.15 mm free span at 269.5°
-   behind the carrier; do not add a printed micro-duct. Confirm it floats clear
-   of the LM/web and, in floor state, pulls freely through its Ø9 buried
+   behind the carrier; do not add a printed micro-duct. Confirm it seats in the
+   rear-open subtractive clearance, remains clear of the LM/web and, in floor
+   state, pulls freely through its Ø9 buried
    integral-stem continuation. Add external retention that does not refill
    the modeled clearance or load the cable termination.
 2. In no-floor mode, begin the UM cable at the centered bridge rear mouth
@@ -441,10 +523,8 @@ connector or revise the service geometry.
 ### R6P proud family
 
 * Glue the seams with 5–30 min **epoxy** (open time to seat the
-  dovetail keys); CA gel is fine for the magnets. Every version uses
-  Ø5.2 × 2.2 pockets for the actual Ø5 × 2 discs. The extra 0.2 mm depth
-  is adhesive allowance: fixture each disc flush with its mating face
-  during cure and do not bottom it. No solvent
+  dovetail keys). Magnets are not glued: they must already be captive under
+  their printed roofs using the manifest pause procedure above. No solvent
   bonding — PLA ignores acetone.
 * After the first loud listening session, re-torque all driver screws
   once — that is when the PLA under the flanges finishes settling.
@@ -483,6 +563,12 @@ Hold registration when lifting the LM from the datum for driver fit-up; the
 installed flange and all normal LM fasteners provide the structural splice.
 Do not load an unspliced split LM.
 
+For the P2S, choose the two keyed halves: the canonical monolith is retained
+for a verified larger-format printer only and is not sliced by the P2S captive
+magnet pipeline. The split stations are exact same-state cavity-audit proxies
+for the monolith as well as the actual P2S prints; follow their own G-code
+pause rows. No monolith pause is synthesized.
+
 1. Complete coupons 7, 9, and 12, then measure the real MU
    terminal carrier, tabs, boots, and cable. Stop if the physical parts
    exceed the modeled service space.
@@ -493,18 +579,20 @@ Do not load an unspliced split LM.
    additionally owns four rear-opening bridge inserts in the 62 mm solid web;
    each Ø6.4 × 6.8 bore starts at z=5.3 and leaves a 6.2 mm front floor. Set every
    insert square and reject any cracked, loose, or over-melted boss.
-3. Glue six D5×2 magnets into the Ø5.2×2.2 surface-normal pockets. LM uses
-   four: preserve the upper flush ring-radial 64°/116° pair and its
-   at-least-2.2 mm nearest insert gap, then fit the lower face-flush pair at
+3. During printing, bury six D5×2 magnets in the Ø5.20×2.10
+   surface-normal captive cavities at the exact manifest pauses. LM uses
+   four: preserve the upper ring-radial 64°/116° axes and the validated
+   nearest-insert/route clearances, then fit the lower captive pair at
    `(x,y,z)=(±32,18,12.55)` in the straight base sides, with outward normals
    `(-1,0)` left and `(1,0)` right. Confirm that these shared floor/no-floor
    datums remain clear of lower inserts, buried routes, and the
-   bridge/integral-stand load path. UM keeps the flush
-   50.5°/129.5° pair centered at z=15.1; verify the 0.2 mm radial pocket
-   floors, 0.6 mm front skins and 1.1 mm minimum T-cover gap. Hold each
-   magnet flush while the adhesive cures; do not bottom it into the
-   0.2 mm adhesive allowance. No site has a proud ear. Use the marked polarity standard (core pole OUT,
-   mating add-on pole IN). These magnets align and suppress rattle only;
+   bridge/integral-stand load path. UM keeps the 50.5°/129.5° axes centered
+   at z=15.1. Ring sites receive the local +0.60 mm outward backing boss needed
+   to keep the captive envelope out of the flange seat. Verify 0.45 mm axial
+   skins, a continuous loading cradle, and the support-free 45° closing roof in
+   sliced preview. Use the manifest's marked local-axis polarity for every
+   carrier and mating receiver; do not infer it from mirroring. These magnets
+   align and suppress rattle only;
    assign them **zero load capacity** in every assembly and test. For Ac/Ae,
    verify three coaxial receiver pairs per side: LM lower, LM upper, and UM.
 4. Put both collars front-face-down on one flat reference. Engage the

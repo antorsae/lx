@@ -9,8 +9,8 @@ final V1LF R6F source and OCC acceptance gates live in
     intentionally converge at the support window / foot lanes)
   * every W22 pilot bore vs every duct, in plan (or fully z-separated)
   * foot-lane packing webs >= 1.5 (Dx alone, per the packing note)
-  * magnet pockets: receiver wall to the shoulder/wing chamfer mating
-    face, rear-crescent-taper wall behind pocket floors, front-face
+  * captive magnet cavities: receiver wall to the shoulder/wing chamfer
+    mating face, rear-crescent-taper wall behind cavity cradles, front-face
     wall, and 3D clearance to the T ducts
   * variant outlines still splice (variant_outline raises on unmatched
     anchors)
@@ -146,6 +146,13 @@ def _ts_floor_skin(name, h2):
 
 def test_duct_duct_separation():
     from top_baffle_nd25fw4_cables import CABLE_D
+    from top_baffle_nd25fw4 import (
+        UM_CUTOUT,
+        UM_PILOT_ANGLES_DEG,
+        UM_PILOT_D_MM,
+        UM_PILOT_PCD_MM,
+        _pilot_centers,
+    )
 
     names = ("lm", "um", "ts", "t1f", "t2f")
     merged = ({"ts", "t1f"}, {"ts", "t2f"}, {"t1f", "t2f"})
@@ -235,20 +242,26 @@ def test_magnet_top_site_walls():
     from top_baffle_nd25fw4 import (
         CRESCENT_SCALLOP_CY, THICKNESS_MM, _crescent_taper_depth)
     from top_baffle_nd25fw4_b import (
-        MAG_FLUSH_DEPTH_MM, MAG_PIN_BASE_DEPTH_MM,
-        MAG_PIN_RECEIVER_DEPTH_MM, MAG_POCKET_D_MM, MAG_RECEIVER_D_MM,
-        MAGNET_D_MM, MAGNET_SITES, MAGNET_T_MM, TWEETER_DROP_MM)
+        MAG_CAVITY_D_MM, MAG_CAVITY_DEPTH_MM, MAG_FACE_SKIN_MM,
+        MAG_INNER_SKIN_MM, MAG_INTERFACE_GAP_MM, MAG_LAND_DEPTH_MM,
+        MAGNET_D_MM, MAGNET_SITES, MAGNET_T_MM,
+        TWEETER_DROP_MM)
 
     # One fit standard applies to every generated variant: the purchased
-    # magnet remains D5 x 2 while all base/receiver pockets are D5.2 x 2.2.
-    # The extra 0.2 mm depth is adhesive allowance, not a bottoming datum.
+    # magnet remains D5 x 2 while all base/receiver cavities are D5.2 x 2.1,
+    # buried between one printable 0.45 mm extrusion at each axial face.
     assert MAGNET_D_MM == 5.0
     assert MAGNET_T_MM == 2.0
-    assert MAG_POCKET_D_MM == MAG_RECEIVER_D_MM == 5.2
-    assert (MAG_FLUSH_DEPTH_MM == MAG_PIN_BASE_DEPTH_MM
-            == MAG_PIN_RECEIVER_DEPTH_MM == 2.2)
+    assert MAG_CAVITY_D_MM == 5.2
+    assert MAG_CAVITY_DEPTH_MM == 2.10
+    assert MAG_FACE_SKIN_MM == MAG_INNER_SKIN_MM == 0.45
+    assert MAG_INTERFACE_GAP_MM == 0.05
     assert math.isclose(
-        MAG_PIN_BASE_DEPTH_MM - MAGNET_T_MM, 0.2, abs_tol=1e-12)
+        MAG_CAVITY_DEPTH_MM - MAGNET_T_MM, 0.10, abs_tol=1e-12)
+    assert math.isclose(MAG_LAND_DEPTH_MM, 3.0, abs_tol=1e-12)
+    assert math.isclose(
+        2.0 * MAG_FACE_SKIN_MM + MAG_INTERFACE_GAP_MM,
+        0.95, abs_tol=1e-12)
 
     x, y, nx, ny, _pin, zc = MAGNET_SITES[1]
     p0, nc = _chamfer_plane()
@@ -256,71 +269,582 @@ def test_magnet_top_site_walls():
     def wall(px, py):
         return (px - p0[0]) * nc[0] + (py - p0[1]) * nc[1]
 
-    # receiver: D x depth bore along +n; its down-arc bottom corner is
-    # the closest approach to the chamfer mating face (at z = zc)
-    r = MAG_RECEIVER_D_MM / 2.0
+    # Receiver cavity begins behind its 0.45-mm face skin and the local
+    # 0.05-mm air gap. Its down-arc bottom corner is the closest approach
+    # to the chamfer mating face (at z = zc).
+    r = MAG_CAVITY_D_MM / 2.0
     tx, ty = -ny, nx  # up-arc tangent
-    bx = x + MAG_PIN_RECEIVER_DEPTH_MM * nx - r * tx
-    by = y + MAG_PIN_RECEIVER_DEPTH_MM * ny - r * ty
+    receiver_far = (MAG_INTERFACE_GAP_MM + MAG_FACE_SKIN_MM
+                    + MAG_CAVITY_DEPTH_MM)
+    bx = x + receiver_far * nx - r * tx
+    by = y + receiver_far * ny - r * ty
     w = wall(bx, by)
     print(f"  receiver bottom corner -> chamfer face: {w:.2f} mm")
     assert w >= 1.0, f"receiver wall to chamfer face {w:.2f} < 1.0"
 
-    # rear-crescent-taper walls behind the pocket floors (pocket mouths
+    # rear-crescent-taper walls behind the cavity floors (cavity mouths
     # sit at r < r_k, i.e. in the full-depth zone -- no radial fade)
     cy_dropped = CRESCENT_SCALLOP_CY - TWEETER_DROP_MM
     theta = math.degrees(math.atan2(y - cy_dropped, x))
     cut = _crescent_taper_depth(theta)
-    for label, dia in (("receiver", MAG_RECEIVER_D_MM),
-                       ("base pocket", MAG_POCKET_D_MM)):
+    for label, dia in (("receiver", MAG_CAVITY_D_MM),
+                       ("base cavity", MAG_CAVITY_D_MM)):
         floor_z = zc - dia / 2.0
         w = floor_z - cut
         print(f"  {label} floor z={floor_z:.2f} vs taper cut {cut:.2f}: "
               f"wall {w:.2f} mm")
         assert w >= 1.4, f"{label} rear taper wall {w:.2f} < 1.4"
 
-    w_front = THICKNESS_MM - (zc + MAG_RECEIVER_D_MM / 2.0)
+    w_front = THICKNESS_MM - (zc + MAG_CAVITY_D_MM / 2.0)
     print(f"  receiver front-face wall: {w_front:.2f} mm")
     assert w_front >= 3.0, f"front wall {w_front:.2f} < 3.0"
-    # Equal 2.2 mm base/receiver pockets include a 0.2 mm adhesive allowance.
-    # Assembly must fixture each 2.0 mm magnet at the mating face; bottoming
-    # it would recess the magnet and defeat the flush-interface contract.
+    # Both cavities are closed after their insertion pause.  There is no
+    # adhesive allowance or post-print access to either magnet.
 
 
-def test_magnet_pockets_vs_t_ducts():
+def test_magnet_cavities_vs_t_ducts():
     from top_baffle_nd25fw4_b import (
-        MAG_PIN_BASE_DEPTH_MM, MAG_PIN_RECEIVER_DEPTH_MM, MAG_RECEIVER_D_MM,
-        MAGNET_SITES)
+        MAG_CAVITY_D_MM, MAG_CAVITY_DEPTH_MM, MAG_FACE_SKIN_MM,
+        MAG_INTERFACE_GAP_MM, MAGNET_SITES)
     from top_baffle_nd25fw4_cables import CABLE_D
 
     t_r = CABLE_D["ts"] / 2.0
-    pocket_r = MAG_RECEIVER_D_MM / 2.0
+    cavity_r = MAG_CAVITY_D_MM / 2.0
     for stand_foot in (True, False):
         t1 = _routes(stand_foot)["ts"]
         for x, y, nx, ny, _pin, zc in MAGNET_SITES:
-            # combined pocket envelope: base bore + receiver, one segment
-            a = np.array([x - MAG_PIN_BASE_DEPTH_MM * nx,
-                          y - MAG_PIN_BASE_DEPTH_MM * ny, zc])
-            b = np.array([x + MAG_PIN_RECEIVER_DEPTH_MM * nx,
-                          y + MAG_PIN_RECEIVER_DEPTH_MM * ny, zc])
+            # Combined captive-void envelope.  Solid face skins are not part
+            # of the void, but they offset both cavities from the interface.
+            base_far = MAG_FACE_SKIN_MM + MAG_CAVITY_DEPTH_MM
+            receiver_far = (MAG_INTERFACE_GAP_MM + MAG_FACE_SKIN_MM
+                            + MAG_CAVITY_DEPTH_MM)
+            a = np.array([x - base_far * nx,
+                          y - base_far * ny, zc])
+            b = np.array([x + receiver_far * nx,
+                          y + receiver_far * ny, zc])
             ab = b - a
             t = np.clip((t1 - a) @ ab / (ab @ ab), 0.0, 1.0)
             d = np.linalg.norm(t1 - (a + t[:, None] * ab), axis=1)
-            clear = float(d.min()) - pocket_r - t_r
+            clear = float(d.min()) - cavity_r - t_r
             print(f"  magnet site ({x:.1f},{y:.1f}) vs TS duct "
                   f"(foot={stand_foot}): {clear:.2f} mm")
             assert clear >= 0.8, (
-                f"magnet pocket ({x},{y}) to T duct {clear:.2f} < 0.8")
+                f"magnet cavity ({x},{y}) to T duct {clear:.2f} < 0.8")
+
+
+def test_v1_ts_captive_keepout_nudge():
+    """V1/V1L retain D6 while restoring the lower-left inner skin.
+
+    The standard route is immutable.  The thin variants select one short,
+    smooth positive-X detour; at the left station that direction projects
+    inward by 0.1917 mm, raising the measured ~0.325-mm web beyond the
+    nominal 0.45-mm captive skin without changing any duct section.
+    """
+    from build123d import Spline
+    from top_baffle_nd25fw4_b import MAGNET_SITES
+
+    cab = _cab(True, "proud")
+    standard = cab._ts_route(cab.TS_ROUTE_STANDARD)
+    protected = cab._ts_route(cab.TS_ROUTE_V1_CAPTIVE)
+    assert len(standard) == len(protected)
+
+    for (x0, y0), (x1, y1) in zip(standard, protected):
+        assert math.isclose(y1, y0, abs_tol=1.0e-12)
+        expected = cab._ts_v1_captive_nudge_mm(y0)
+        assert math.isclose(x1 - x0, expected, abs_tol=1.0e-12)
+        assert 0.0 <= expected <= cab.TS_V1_CAPTIVE_NUDGE_MAX_MM
+        assert cab.ts_section(y1) == cab.ts_section(y0)
+
+    protected_by_y = {y: x for x, y in protected}
+    standard_by_y = {y: x for x, y in standard}
+    for y, expected in cab.TS_V1_CAPTIVE_NUDGE_KNOTS:
+        assert math.isclose(
+            protected_by_y[y] - standard_by_y[y], expected,
+            abs_tol=1.0e-12)
+
+    _x, _y, lower_nx, _lower_ny, _pin, _zc = MAGNET_SITES[0]
+    restored_normal_web = (
+        cab.TS_V1_CAPTIVE_NUDGE_MAX_MM * lower_nx)
+    assert restored_normal_web >= 0.19
+
+    path = Spline(*cab.route_points(
+        "ts", ts_route_key=cab.TS_ROUTE_V1_CAPTIVE))
+    points = np.asarray([
+        tuple(path @ (index / SAMPLES_N))
+        for index in range(SAMPLES_N + 1)
+    ])
+    assert _min_three_point_radius(points) >= 4.5
+    print("  V1/V1L TS captive keepout: D6 unchanged; "
+          f"normal nudge={restored_normal_web:.3f} mm")
+
+
+def test_standard_captive_magnet_contract():
+    """Pair geometry, polarity, roof fit, and local backing adaptations."""
+    from captive_magnets import pair_facts, wall_cavity_tools
+    from top_baffle_nd25fw4 import THICKNESS_MM
+    from top_baffle_nd25fw4_b import (
+        B2_RIGHT_SEGS, LOWER_INTERFACE_BASE_EXCESS_MAX_MM,
+        LOWER_MAGNET_REAR_CAP_MM, MAGNET_LOCAL_BACKING_WIDTH_MM,
+        MAGNET_SITES, UPPER_INTERFACE_BASE_BOSS_AREA_MM2,
+        UPPER_INTERFACE_BASE_BOSS_MAX_MM,
+        UPPER_INTERFACE_RECEIVER_RELIEF_MAX_MM)
+    from top_baffle_nd25fw4_v1 import REAR_MM, V1_MAGNET_ZC
+
+    for index, (x, y, nx, ny, _pin, zc) in enumerate(MAGNET_SITES):
+        for side, sx in (("right", 1.0), ("left", -1.0)):
+            kwargs = {
+                "face": (sx * x, y, zc),
+                "outward": (sx * nx, ny, 0.0),
+                "print_up": (0.0, 0.0, -1.0),
+                "bed_datum": (0.0, 0.0, THICKNESS_MM),
+            }
+            base = wall_cavity_tools(
+                name=f"standard_{index}_{side}_base", owner="base",
+                **kwargs)
+            receiver = wall_cavity_tools(
+                name=f"standard_{index}_{side}_receiver",
+                owner="receiver", **kwargs)
+            pair = pair_facts(base, receiver)
+            assert math.isclose(
+                pair["interface_gap_mm"], 0.05, abs_tol=1e-9)
+            assert math.isclose(
+                pair["nominal_magnet_face_separation_mm"],
+                0.95, abs_tol=1e-9)
+            assert (pair["base_marked_pole_axis_xyz"]
+                    == pair["receiver_marked_pole_axis_xyz"])
+            if index == 0:
+                # Grid snapping moves the raw z=-0.20 apex to z=-0.30.
+                # The local cap then carries the proven 0.45-mm sealing skin
+                # beyond the apex, without moving interface or magnet axis.
+                cap_top_print_z = THICKNESS_MM + LOWER_MAGNET_REAR_CAP_MM
+                assert math.isclose(
+                    base.required_min_part_top_print_z_mm,
+                    cap_top_print_z, abs_tol=1e-9)
+                assert math.isclose(
+                    base.roof_apex_print_z_mm + base.spec.inner_skin_mm,
+                    cap_top_print_z, abs_tol=1e-9)
+            else:
+                assert base.roof_apex_print_z_mm < THICKNESS_MM
+
+    # V1/V1L have the same XY axes at raised source-Z sites.  Their complete
+    # roof+closure requirements fit inside the 11.5-mm front-down slab, so
+    # they must not inherit the standard rear cap.
+    thin_print_height = THICKNESS_MM - REAR_MM
+    for index, ((x, y, nx, ny, _pin, _zc), zc) in enumerate(
+            zip(MAGNET_SITES, V1_MAGNET_ZC)):
+        tools = wall_cavity_tools(
+            name=f"v1_{index}_right_base",
+            face=(x, y, zc), outward=(nx, ny, 0.0), owner="base",
+            print_up=(0.0, 0.0, -1.0),
+            bed_datum=(0.0, 0.0, THICKNESS_MM))
+        assert tools.required_min_part_top_print_z_mm <= (
+            thin_print_height + 1.0e-9)
+
+    # Derive the two tiny datum adaptations from the released outline rather
+    # than accepting magic margins.  The upper numerical integration is the
+    # exact area between the real ThreePointArc and the tangent land.
+    lower_a, lower_b = B2_RIGHT_SEGS[2][1:]
+    lx, ly, lnx, lny, _pin, _zc = MAGNET_SITES[0]
+    line_dx, line_dy = (
+        lower_b[0] - lower_a[0], lower_b[1] - lower_a[1])
+    line_len = math.hypot(line_dx, line_dy)
+    exact_n = (line_dy / line_len, -line_dx / line_len)
+    normal_len = math.hypot(lnx, lny)
+    normal = (lnx / normal_len, lny / normal_len)
+    tangent = (-normal[1], normal[0])
+    half = MAGNET_LOCAL_BACKING_WIDTH_MM / 2.0
+
+    def line_boundary_u(t):
+        px = lx + t * tangent[0]
+        py = ly + t * tangent[1]
+        signed = ((px - lower_a[0]) * exact_n[0]
+                  + (py - lower_a[1]) * exact_n[1])
+        return -signed / (normal[0] * exact_n[0]
+                          + normal[1] * exact_n[1])
+
+    lower_excess = max(line_boundary_u(-half), line_boundary_u(half))
+    assert math.isclose(
+        lower_excess, LOWER_INTERFACE_BASE_EXCESS_MAX_MM,
+        abs_tol=1.0e-6)
+
+    _arc, p1, p2, p3 = B2_RIGHT_SEGS[0]
+
+    def circle_three(a, b, c):
+        ax, ay = a
+        bx, by = b
+        cx, cy = c
+        det = 2.0 * (
+            ax * (by - cy) + bx * (cy - ay) + cx * (ay - by))
+        ux = (((ax * ax + ay * ay) * (by - cy)
+               + (bx * bx + by * by) * (cy - ay)
+               + (cx * cx + cy * cy) * (ay - by)) / det)
+        uy = (((ax * ax + ay * ay) * (cx - bx)
+               + (bx * bx + by * by) * (ax - cx)
+               + (cx * cx + cy * cy) * (bx - ax)) / det)
+        return ux, uy, math.hypot(ax - ux, ay - uy)
+
+    cx, cy, radius = circle_three(p1, p2, p3)
+    ux, uy, unx, uny, _pin, _uz = MAGNET_SITES[1]
+    upper_n_len = math.hypot(unx, uny)
+    upper_n = (unx / upper_n_len, uny / upper_n_len)
+    upper_t = (-upper_n[1], upper_n[0])
+
+    def arc_boundary_u(t):
+        ax = ux + t * upper_t[0] - cx
+        ay = uy + t * upper_t[1] - cy
+        linear = upper_n[0] * ax + upper_n[1] * ay
+        constant = ax * ax + ay * ay - radius * radius
+        return -linear + math.sqrt(linear * linear - constant)
+
+    upper_boss = max(-arc_boundary_u(-half), -arc_boundary_u(half))
+    assert math.isclose(
+        upper_boss, UPPER_INTERFACE_BASE_BOSS_MAX_MM,
+        abs_tol=1.0e-6)
+    assert math.isclose(
+        upper_boss + 0.05, UPPER_INTERFACE_RECEIVER_RELIEF_MAX_MM,
+        abs_tol=1.0e-6)
+
+    intervals = 2000
+    step = 2.0 * half / intervals
+    area_sum = 0.0
+    for index in range(intervals + 1):
+        t = -half + index * step
+        height = max(0.0, -arc_boundary_u(t))
+        weight = 1 if index in (0, intervals) else (4 if index % 2 else 2)
+        area_sum += weight * height
+    boss_area = area_sum * step / 3.0
+    assert math.isclose(
+        boss_area, UPPER_INTERFACE_BASE_BOSS_AREA_MM2,
+        abs_tol=1.0e-6)
+
+
+def test_standard_local_magnet_backing():
+    """Both standard local backing adaptations remain tightly bounded.
+
+    Check both right stations against the actual tapered B2 base and both
+    released receiver outlines; left is its exact mirror.  Each backing must
+    contain the helper-required land and produce a valid cavity.  The lower
+    cap may grow only 0.75 mm behind the original envelope; the upper taper
+    restoration must remain completely inside that envelope.
+    """
+    import gc
+    from build123d import Plane, Pos, extrude
+
+    from captive_magnets import apply_wall_cavity, wall_cavity_tools
+    from top_baffle_nd25fw4 import (
+        THICKNESS_MM, _crescent_taper_depth, baffle_face, baffle_solid)
+    from top_baffle_nd25fw4_a_comp import OUTLINE_A_COMP
+    from top_baffle_nd25fw4_b import (
+        LOWER_MAGNET_REAR_CAP_MM,
+        LOWER_INTERFACE_BASE_EXCESS_MAX_MM,
+        MAGNET_LOCAL_BACKING_WIDTH_MM, MAGNET_SITES,
+        MAG_LAND_DEPTH_MM, TWEETER_DROP_MM,
+        UPPER_INTERFACE_BASE_BOSS_AREA_MM2,
+        UPPER_INTERFACE_BASE_BOSS_MAX_MM,
+        UPPER_INTERFACE_RECEIVER_RELIEF_MAX_MM,
+        UPPER_MAGNET_BACKFILL_FRONT_Z_MM,
+        UPPER_MAGNET_BACKFILL_REAR_Z_MM,
+        _local_lower_base_relief, _local_rear_cap,
+        _local_upper_receiver_relief)
+    from top_baffle_nd25fw4_b1 import OUTLINE_B1
+    from top_baffle_nd25fw4_b2 import OUTLINE_B2
+
+    b2 = baffle_solid(OUTLINE_B2, TWEETER_DROP_MM)
+    a = baffle_solid(OUTLINE_A_COMP, TWEETER_DROP_MM)
+    b1 = baffle_solid(OUTLINE_B1, TWEETER_DROP_MM)
+    b2_envelope = extrude(
+        Plane.XY * baffle_face(OUTLINE_B2, TWEETER_DROP_MM),
+        amount=THICKNESS_MM)
+    a_envelope = extrude(
+        Plane.XY * baffle_face(OUTLINE_A_COMP, TWEETER_DROP_MM),
+        amount=THICKNESS_MM)
+    b1_envelope = extrude(
+        Plane.XY * baffle_face(OUTLINE_B1, TWEETER_DROP_MM),
+        amount=THICKNESS_MM)
+
+    x, y, nx, ny, _pin, zc = MAGNET_SITES[1]
+    common = {
+        "face": (x, y, zc),
+        "outward": (nx, ny, 0.0),
+        "print_up": (0.0, 0.0, -1.0),
+        "bed_datum": (0.0, 0.0, THICKNESS_MM),
+    }
+    owners = (
+        ("base", b2, b2_envelope),
+        ("receiver_a", a - b2, a_envelope - b2_envelope),
+        ("receiver_b1", b1 - b2, b1_envelope - b2_envelope),
+    )
+
+    # The lower station's snapped apex is 0.30 mm outside the historical
+    # rear plane.  Its cap extends another 0.45 mm to retain a real sealed
+    # layer, but nowhere outside the existing owner plan footprint.
+    lx, ly, lnx, lny, _pin, lzc = MAGNET_SITES[0]
+    lower_common = {
+        "face": (lx, ly, lzc),
+        "outward": (lnx, lny, 0.0),
+        "print_up": (0.0, 0.0, -1.0),
+        "bed_datum": (0.0, 0.0, THICKNESS_MM),
+    }
+    expected_cap_volume = (
+        MAG_LAND_DEPTH_MM * MAGNET_LOCAL_BACKING_WIDTH_MM
+        * LOWER_MAGNET_REAR_CAP_MM)
+    for label, host, envelope in owners:
+        owner = "base" if label == "base" else "receiver"
+        patch = _local_rear_cap(lx, ly, lnx, lny, owner)
+        extended_envelope = envelope.fuse(
+            Pos(0.0, 0.0, -LOWER_MAGNET_REAR_CAP_MM) * envelope
+        ).clean()
+        outside = patch - extended_envelope
+        outside_volume = 0.0 if outside is None else outside.volume
+        assert outside_volume < 0.02, (
+            f"{label} lower cap leaves owner plan by "
+            f"{outside_volume:.4f} mm3")
+
+        tools = wall_cavity_tools(
+            name=f"standard_lower_right_{owner}", owner=owner,
+            **lower_common)
+        prepared = host
+        if owner == "base":
+            prepared = (
+                host - _local_lower_base_relief(
+                    lx, ly, lnx, lny, tools)
+            ).clean()
+            assert host.volume - prepared.volume > 0.5, (
+                f"{label} lower base tangent relief removed nothing")
+        backed = prepared.fuse(patch).clean()
+        missing = tools.required_land - backed
+        missing_volume = 0.0 if missing is None else missing.volume
+        assert missing_volume < 0.02, (
+            f"{label} lower cap lacks {missing_volume:.4f} mm3 of land")
+        added = backed.volume - prepared.volume
+        assert math.isclose(
+            added, expected_cap_volume, abs_tol=0.05), (
+            f"{label} lower cap added {added:.4f} vs expected "
+            f"{expected_cap_volume:.4f} mm3")
+
+        final, _ = apply_wall_cavity(
+            prepared, name=f"standard_lower_right_{owner}", owner=owner,
+            backing_additions=(patch,), **lower_common)
+        assert final.is_valid and final.volume > 1.0, (
+            f"{label} lower captive Boolean invalid")
+        eb, fb = envelope.bounding_box(), final.bounding_box()
+        assert (fb.min.X >= eb.min.X - 0.02
+                and fb.max.X <= eb.max.X + 0.02
+                and fb.min.Y >= eb.min.Y - 0.02
+                and fb.max.Y <= eb.max.Y + 0.02
+                and math.isclose(
+                    fb.min.Z, -LOWER_MAGNET_REAR_CAP_MM, abs_tol=0.02)
+                and fb.max.Z <= eb.max.Z + 0.02), (
+            f"{label} lower cap grew outside its qualified envelope")
+
+    # Upper station: the exact coupon land creates one qualified local
+    # tangent-plane boss on the base.  The receiver is correspondingly
+    # relieved to +0.05, preserving the full land without overlap.
+    added_volumes = {}
+    upper_finals = {}
+    for label, host, envelope in owners:
+        owner = "base" if label == "base" else "receiver"
+        tools = wall_cavity_tools(
+            name=f"standard_upper_right_{owner}", owner=owner, **common)
+        patch = tools.required_land
+        outside = patch - envelope
+        outside_volume = 0.0 if outside is None else outside.volume
+        if owner == "base":
+            land_height = patch.bounding_box().size.Z
+            expected_boss_volume = (
+                UPPER_INTERFACE_BASE_BOSS_AREA_MM2 * land_height)
+            assert math.isclose(
+                outside_volume, expected_boss_volume, abs_tol=0.02), (
+                f"{label} upper boss {outside_volume:.4f} vs expected "
+                f"{expected_boss_volume:.4f} mm3")
+        else:
+            assert outside_volume < 0.02, (
+                f"{label} receiver land leaves attachment envelope by "
+                f"{outside_volume:.4f} mm3")
+
+        prepared = host
+        if owner == "receiver":
+            prepared = (
+                host - _local_upper_receiver_relief(
+                    x, y, nx, ny, tools)
+            ).clean()
+            assert host.volume - prepared.volume > 1.0, (
+                f"{label} curved receiver relief removed nothing")
+        backed = prepared.fuse(patch).clean()
+        missing = tools.required_land - backed
+        missing_volume = 0.0 if missing is None else missing.volume
+        assert missing_volume < 0.02, (
+            f"{label} lacks {missing_volume:.4f} mm3 of required land")
+        added = backed.volume - prepared.volume
+        assert added > 1.0, f"{label} upper taper backfill added nothing"
+        added_volumes[label] = added
+
+        final, _ = apply_wall_cavity(
+            prepared, name=f"standard_upper_right_{owner}", owner=owner,
+            backing_additions=(patch,), **common)
+        assert final.is_valid and final.volume > 1.0, (
+            f"{label} upper captive Boolean invalid")
+        upper_finals[label] = final
+        eb, fb = envelope.bounding_box(), final.bounding_box()
+        assert (fb.min.X >= eb.min.X - 0.02
+                and fb.max.X <= eb.max.X + 0.02
+                and fb.min.Y >= eb.min.Y - 0.02
+                and fb.max.Y <= eb.max.Y + 0.02
+                and fb.min.Z >= eb.min.Z - 0.02
+                and fb.max.Z <= eb.max.Z + 0.02), (
+            f"{label} upper backfill grew the release envelope")
+
+    for receiver_label in ("receiver_a", "receiver_b1"):
+        overlap = upper_finals["base"] & upper_finals[receiver_label]
+        overlap_volume = 0.0 if overlap is None else overlap.volume
+        assert overlap_volume < 0.02, (
+            f"upper base overlaps {receiver_label} by "
+            f"{overlap_volume:.4f} mm3")
+
+    # Exact maximum restored thickness occurs at the high-angle/inboard
+    # corner of the base land.  The taper is angle-controlled and this
+    # corner remains inside its full-depth radial zone.
+    tx, ty = -ny, nx
+    px = x - MAG_LAND_DEPTH_MM * nx + (
+        MAGNET_LOCAL_BACKING_WIDTH_MM / 2.0) * tx
+    py = y - MAG_LAND_DEPTH_MM * ny + (
+        MAGNET_LOCAL_BACKING_WIDTH_MM / 2.0) * ty
+    from top_baffle_nd25fw4 import CRESCENT_SCALLOP_CY
+    theta = math.degrees(math.atan2(
+        py - (CRESCENT_SCALLOP_CY - TWEETER_DROP_MM), px))
+    max_restored = max(
+        0.0,
+        _crescent_taper_depth(theta) - UPPER_MAGNET_BACKFILL_REAR_Z_MM)
+    assert 2.7 < max_restored < 2.9
+    assert math.isclose(
+        UPPER_MAGNET_BACKFILL_FRONT_Z_MM, zc + 3.20,
+        abs_tol=1e-12)
+    print("  standard upper taper backfill: max restored "
+          f"{max_restored:.4f} mm; added volumes "
+          + ", ".join(f"{k}={v:.3f} mm3"
+                      for k, v in added_volumes.items()))
+    del b2, a, b1, b2_envelope, a_envelope, b1_envelope, owners
+    gc.collect()
 
 
 def test_v0_duct_corridor():
     """Variant V0's REAR bevel vs the ducts (z-containment, same rule
-    as C7): the rear cut must stay below z_bottom - 1.6. Pin pockets
-    (rear face, z 0..2.2) must be plan-clear of every duct."""
+    as C7): the rear cut must stay below z_bottom - 1.6.  Its front-down
+    captive stations require a full R3.20 x 5.60-mm axial land.  The invalid
+    legacy plan sites were entirely outside the B2 flare.  The first mirrored
+    correction connected both lands, but its left station failed the T-route
+    rule; the final asymmetric adaptation retains the clear right station and
+    moves only the orphan left station inward."""
     import top_baffle_nd25fw4_v0 as v0
+    from top_baffle_nd25fw4 import (
+        UM_CUTOUT,
+        UM_PILOT_ANGLES_DEG,
+        UM_PILOT_D_MM,
+        UM_PILOT_PCD_MM,
+        _pilot_centers,
+    )
     from top_baffle_nd25fw4_cables import CABLE_D
 
-    for name, pts in _routes(True).items():
+    assert v0.PRINT_ORIENTATION == "front-face-down"
+    assert set(v0.V0_LEGACY_MAGNET_SITES) == {"right", "left"}
+    assert set(v0.V0_FIRST_CORRECTION_MAGNET_SITES) == {"right", "left"}
+    assert set(v0.V0_MAGNET_SITES) == {"right", "left"}
+    assert math.isclose(
+        v0.V0_LEGACY_SITE_OUTSIDE_MM, 5.2630363132, abs_tol=1e-9)
+    assert math.isclose(
+        v0.V0_LEGACY_CAVITY_DETACHMENT_MM, 2.6630363132,
+        abs_tol=1e-9)
+    assert math.isclose(
+        v0.V0_LEGACY_LAND_DETACHMENT_MM, 2.0630363132,
+        abs_tol=1e-9)
+    assert math.isclose(
+        v0.V0_CAPTIVE_LAND_RADIUS_MM, 3.20, abs_tol=1e-12)
+    assert math.isclose(
+        v0.V0_LEGACY_TO_FIRST_SHIFT_MM, 8.6630363132, abs_tol=1e-9)
+    assert math.isclose(
+        math.dist(v0.V0_LEGACY_MAGNET_SITES["right"],
+                  v0.V0_FIRST_CORRECTION_MAGNET_SITES["right"]),
+        v0.V0_LEGACY_TO_FIRST_SHIFT_MM, abs_tol=1e-6)
+    assert np.allclose(
+        v0.V0_FIRST_CORRECTION_MAGNET_SITES["right"],
+        (37.696679, 326.470436), atol=1e-6)
+    assert np.allclose(
+        v0.V0_FIRST_CORRECTION_MAGNET_SITES["left"],
+        (-37.696679, 326.470436), atol=1e-6)
+    assert np.allclose(
+        v0.V0_MAGNET_SITES["right"],
+        (37.696679, 326.470436), atol=1e-6)
+    assert np.allclose(
+        v0.V0_MAGNET_SITES["left"],
+        (-7.250000, 321.200000), atol=1e-6)
+    assert math.isclose(
+        v0.V0_REJECTED_LEFT_TO_FINAL_SHIFT_MM,
+        30.8994782765, abs_tol=1e-9)
+    assert math.isclose(
+        v0.V0_MAGNET_LAND_OUTLINE_CLEARANCE_MM["right"],
+        v0.V0_CAPTIVE_LAND_OUTLINE_MARGIN_MM,
+        abs_tol=1e-6)
+    assert v0.V0_MAGNET_LAND_OUTLINE_CLEARANCE_MM["left"] > 27.8
+    assert math.isclose(
+        v0.V0_TS_REQUIRED_CENTER_CLEARANCE_MM, 8.0, abs_tol=1e-12)
+    from shapely.geometry import Point
+    from top_baffle_nd25fw4_b2_split import (
+        DOVETAILS_B, SEAM_B_Y, _below_region, _grown)
+    top_female_keepout = _grown(_below_region(SEAM_B_Y, DOVETAILS_B))
+    um_pilots = _pilot_centers(
+        UM_CUTOUT[:2], UM_PILOT_PCD_MM, UM_PILOT_ANGLES_DEG)
+    cutout_margins = {}
+    pilot_margins = {}
+    seam_margins = {}
+    for side, (x, y) in v0.V0_MAGNET_SITES.items():
+        cutout_margins[side] = (
+            math.dist((x, y), UM_CUTOUT[:2])
+            - UM_CUTOUT[2] / 2.0
+            - v0.V0_CAPTIVE_LAND_RADIUS_MM)
+        pilot_margins[side] = min(
+            math.dist((x, y), center)
+            - UM_PILOT_D_MM / 2.0
+            - v0.V0_CAPTIVE_LAND_RADIUS_MM
+            for center in um_pilots)
+        split_clearance = (
+            Point(x, y).distance(top_female_keepout)
+            - v0.V0_CAPTIVE_LAND_RADIUS_MM)
+        seam_margins[side] = split_clearance - 1.0
+        assert cutout_margins[side] >= (
+            v0.V0_KEEPOUT_QUALIFICATION_ALLOWANCE_MM - 1e-6), (
+            f"V0 {side} captive land enters the D82 cutout by "
+            f"{-cutout_margins[side]:.3f} mm")
+        assert pilot_margins[side] >= (
+            v0.V0_KEEPOUT_QUALIFICATION_ALLOWANCE_MM - 1e-6), (
+            f"V0 {side} captive land/pilot margin only "
+            f"{pilot_margins[side]:.3f} mm")
+        assert seam_margins[side] >= (
+            v0.V0_KEEPOUT_QUALIFICATION_ALLOWANCE_MM - 1e-6), (
+            f"V0 {side} captive land only {split_clearance:.3f} mm "
+            "from the grown seam-B female dovetail")
+    assert 1.25 < cutout_margins["left"] < 1.27
+    assert 12.35 < pilot_margins["left"] < 12.38
+    assert 0.54 < seam_margins["left"] < 0.56
+    assert math.isclose(
+        v0.V0_CAPTIVE_MAGNET_CENTER_Z_MM, 4.10, abs_tol=1e-12)
+    assert math.isclose(
+        v0.V0_MAGNET_INWARD_SHIFT_MM, 3.10, abs_tol=1e-12)
+
+    routes = _routes(True)
+    rejected_left_ts_distance = min(
+        math.dist(v0.V0_FIRST_CORRECTION_MAGNET_SITES["left"], (x, y))
+        for x, y, _z in routes["ts"])
+    final_left_ts_distance = min(
+        math.dist(v0.V0_MAGNET_SITES["left"], (x, y))
+        for x, y, _z in routes["ts"])
+    assert 2.60 < rejected_left_ts_distance < 2.61
+    assert rejected_left_ts_distance < v0.V0_TS_REQUIRED_CENTER_CLEARANCE_MM
+    assert final_left_ts_distance >= (
+        v0.V0_TS_REQUIRED_CENTER_CLEARANCE_MM
+        + v0.V0_KEEPOUT_QUALIFICATION_ALLOWANCE_MM)
+    assert 26.00 < final_left_ts_distance < 26.03
+
+    for name, pts in routes.items():
         d1 = np.gradient(pts, axis=0)
         for (x, y, z), t in zip(pts, d1):
             if not 316.0 < y < 419.0:
@@ -338,13 +862,136 @@ def test_v0_duct_corridor():
                     f"at ({x + o * nx:.1f},{y + o * ny:.1f}) (o={o:+.1f})")
         r = max(CABLE_D.get(name, 3.8) / 2.0,
                 _cab().TS_OVAL["w2"] if name == "ts" else 0.0)
-        for sx in (1, -1):
-            for mx, my in v0.V0_MAGNET_SITES:
-                m = min(math.dist((sx*mx, my), (x, y)) for x, y, _ in pts)
-                assert m >= v0.MAG_POCKET_D_MM / 2.0 + r + 1.5, (
-                    f"V0 pocket ({sx*mx},{my}) {m:.2f} from {name}")
+        for side, (mx, my) in v0.V0_MAGNET_SITES.items():
+            m = min(math.dist((mx, my), (x, y)) for x, y, _ in pts)
+            required = v0.V0_CAPTIVE_LAND_RADIUS_MM + r + 1.5
+            assert m >= (required
+                         + v0.V0_KEEPOUT_QUALIFICATION_ALLOWANCE_MM
+                         - 1e-6), (
+                f"V0 {side} captive land ({mx},{my}) "
+                f"{m:.2f} from {name}; need {required:.2f} + "
+                f"{v0.V0_KEEPOUT_QUALIFICATION_ALLOWANCE_MM:.2f}")
     print("  V0 rear bevel: duct floors covered (5 lateral offsets); "
-          "pockets clear")
+          f"front-down R{v0.V0_CAPTIVE_LAND_RADIUS_MM:.2f} captive "
+          f"stations clear; rejected left TS={rejected_left_ts_distance:.3f}, "
+          f"final left TS={final_left_ts_distance:.3f} mm")
+
+
+def test_v0_captive_geometry():
+    """The corrected V0 sites own real connected, closed cavity solids.
+
+    This is deliberately a final-BREP gate, not another coordinate check:
+    the full-depth local keep must stay inside the original B2 envelope and
+    its driver/pilot voids, overlap the post-bevel host, contain the helper's
+    complete land, and leave both 0.45-mm skins after the actual Boolean.
+    The same ``apply_v0_magnets`` function is imported by the split release.
+    """
+    import gc
+
+    from build123d import Align, Cylinder, Pos
+
+    from generate_captive_magnet_catalog import _v0_sites
+    from top_baffle_nd25fw4 import THICKNESS_MM, baffle_solid
+    from top_baffle_nd25fw4_b import TWEETER_DROP_MM
+    from top_baffle_nd25fw4_b2 import OUTLINE_B2
+    import top_baffle_nd25fw4_v0 as v0
+    import top_baffle_nd25fw4_v0_split as v0_split
+
+    def volume(shape):
+        return 0.0 if shape is None else float(shape.volume)
+
+    # The pre-bevel B2 solid already contains the true outline, D82 cutout,
+    # and every front insert bore.  Containment by this exact solid therefore
+    # proves that the keep changes none of those unrelated release features.
+    release_base = baffle_solid(OUTLINE_B2, TWEETER_DROP_MM)
+    host = release_base
+    for cutter in v0.slide_cutters():
+        host = (host - cutter).clean()
+    assert host.is_valid and len(host.solids()) == 1
+
+    backed = host
+    backings = []
+    for side, (x, y) in v0.V0_MAGNET_SITES.items():
+        backing = v0.v0_magnet_backing(x, y)
+        backings.append(backing)
+        outside_release = backing - release_base
+        assert volume(outside_release) < 0.02, (
+            f"V0 {side} backing changed outline/seat/pilot void by "
+            f"{volume(outside_release):.4f} mm3")
+        # A rear-only island would have zero intersection here.  The full-
+        # depth keep overlaps the connected post-bevel host substantially.
+        connection = backing & host
+        assert volume(connection) > 50.0, (
+            f"V0 {side} backing is not connected to the bevel host")
+        backed = backed.fuse(backing).clean()
+        assert backed.is_valid and len(backed.solids()) == 1
+
+    final, tools_by_side = v0.apply_v0_magnets(host)
+    assert final.is_valid and len(final.solids()) == 1
+    assert backed.volume - final.volume > 80.0, (
+        "V0 captive Booleans removed no meaningful cavity volume")
+    assert len(tools_by_side) == 2
+    release_bb, final_bb = release_base.bounding_box(), final.bounding_box()
+    assert (final_bb.min.X >= release_bb.min.X - 0.02
+            and final_bb.max.X <= release_bb.max.X + 0.02
+            and final_bb.min.Y >= release_bb.min.Y - 0.02
+            and final_bb.max.Y <= release_bb.max.Y + 0.02
+            and final_bb.min.Z >= release_bb.min.Z - 0.02
+            and final_bb.max.Z <= release_bb.max.Z + 0.02), (
+        "V0 captive adaptation grew the released acoustic envelope")
+
+    catalog = _v0_sites()
+    assert set(catalog) == {"right", "left"}
+    tool_by_name = {tools.name.rsplit("_", 1)[-1]: tools
+                    for tools in tools_by_side}
+    for side, (x, y) in v0.V0_MAGNET_SITES.items():
+        tools = tool_by_name[side]
+        assert tools.closure_kind == "axis_opposed_conical_45deg"
+        assert np.allclose(tools.pair_axis_xyz, (0.0, 0.0, -1.0))
+        assert np.allclose(tools.material_inward_xyz, (0.0, 0.0, 1.0))
+        assert np.allclose(tools.print_frame.print_up, (0.0, 0.0, -1.0))
+        assert np.allclose(tools.actual_face_xyz, (x, y, 0.0))
+        assert np.allclose(
+            tools.seated_magnet_center_xyz, (x, y, 4.10))
+        assert math.isclose(tools.spec.face_skin_mm, 0.45, abs_tol=1e-12)
+        assert math.isclose(tools.spec.inner_skin_mm, 0.45, abs_tol=1e-12)
+        assert math.isclose(tools.spec.roof_angle_deg, 45.0, abs_tol=1e-12)
+        assert np.allclose(
+            catalog[side]["actual_face_xyz_mm"], (x, y, 0.0))
+        assert np.allclose(
+            catalog[side]["marked_pole_axis_xyz"], (0.0, 0.0, -1.0))
+
+        missing_land = tools.required_land - backed
+        assert volume(missing_land) < 0.02, (
+            f"V0 {side} lacks {volume(missing_land):.4f} mm3 of the "
+            "required pre-cut captive land")
+        assert volume(final & tools.nominal_magnet) < 0.02, (
+            f"V0 {side} nominal D5x2 magnet was not actually subtracted")
+        for index, cutter in enumerate(tools.cutters):
+            assert volume(final & cutter) < 0.05, (
+                f"V0 {side} cutter {index} remains in the final solid")
+
+        # Probe material strictly inside both qualified axial skins.  These
+        # checks fail if the cavity breaks out to the rear or through its
+        # inner face even when a nominal-magnet intersection happens to pass.
+        for label, z0 in (("rear", 0.05), ("inner", 5.20)):
+            probe = Pos(x, y, z0) * Cylinder(
+                2.40, 0.35,
+                align=(Align.CENTER, Align.CENTER, Align.MIN),
+            )
+            missing_skin = probe - final
+            assert volume(missing_skin) < 0.01, (
+                f"V0 {side} {label} captive skin is open by "
+                f"{volume(missing_skin):.4f} mm3")
+
+    # The split top imports the exact production applicator rather than
+    # owning a second, potentially stale pocket implementation.
+    assert v0_split.apply_v0_magnets is v0.apply_v0_magnets
+    print(
+        "  V0 captive BREP: corrected sites connected; complete R3.20 "
+        "lands, D5x2 voids, rear/inner skins and catalog datums verified")
+    del release_base, host, backed, final, backings, tools_by_side
+    gc.collect()
 
 
 def test_v1_field():
@@ -877,10 +1524,10 @@ def test_variant_outlines_splice():
 
 
 def test_attachment_flushness():
-    """Every wing/shoulder must meet the B2 walls at exactly
-    wall + CLEARANCE (the printed-wing 4.75 mm gap bug class): thin
-    horizontal slices of each attachment, inner-face |x| vs the
-    outline law. Straight flare/chamfer spans only."""
+    """Every wing/shoulder retains the calibrated B2 outline datum outside
+    the small 0.05-mm captive-magnet relief windows (the printed-wing
+    4.75-mm gap bug class): thin horizontal slices of each attachment,
+    inner-face |x| vs the outline law. Straight flare/chamfer spans only."""
     _routes(True)  # normalize the reload state
     from build123d import Box, Pos
 
@@ -888,13 +1535,17 @@ def test_attachment_flushness():
     from top_baffle_nd25fw4_v1_attachments import v1_attachments
     wall_x = _cab()._wall_x
 
-    # Attachments mate at EXACT fit (variant - b2, no grown clearance).
+    # Surrounding attachment outlines mate at exact fit (variant - b2, no
+    # grown clearance); the helper owns the separately tested local 0.05 gap.
     # Expected inner-face offsets vs the cables _wall_x LAW (calibrated
     # 2026-07-10; the law simplifies the true B2 outline): flare spans
     # sit at -0.089, upper-chamfer spans at -0.573 -- identically on
     # every piece, side and family. Any drift is the printed-wing
     # 4.75 mm gap bug class.
-    FLARE = ((320.0, 330.0, 350.0, 370.0, 381.0), -0.089)
+    # The former y=320 probe crossed the lower receiver relief centred at
+    # y=322.4 (its 6.4-mm tangent land reaches to y~=319.3).  Start at 330
+    # so this test measures the unchanged outline datum it documents.
+    FLARE = ((330.0, 350.0, 370.0, 381.0), -0.089)
     CHAMF = ((396.0, 402.0, 408.0, 414.0), -0.573)
     probes = {"wing": (FLARE, CHAMF),
               "shoulder_bottom": (FLARE,),
@@ -920,8 +1571,8 @@ def test_attachment_flushness():
                         f"vs expected {want:.3f}")
                     hits += 1
             assert hits >= 3, f"{name}: only {hits} probe slices hit"
-    print("  attachment mating faces flush on the calibrated outline "
-          "offsets (exact fit)")
+    print("  attachment outline datums flush outside the local captive "
+          "0.05-mm relief windows")
 
 
 def test_v1l_service_envelope():
@@ -1006,7 +1657,7 @@ def test_margin_dashboard():
                                     UM_PILOT_D_MM, UM_PILOT_PCD_MM,
                                     _pilot_centers)
     from top_baffle_nd25fw4_cables import CABLE_D
-    from top_baffle_nd25fw4_b import MAG_POCKET_D_MM
+    from top_baffle_nd25fw4_b import MAG_CAVITY_D_MM
 
     entries = []
     routes = _routes(True)
@@ -1053,12 +1704,12 @@ def test_margin_dashboard():
         probe = pts if name == "um" else pts[20:-20]
         entries.append((_min_three_point_radius(probe) - floors[name],
                         f"{name} bend radius over floor"))
-    # V1 upper-pocket walls (site2 zc=14.4, local rear ~10.1)
-    pocket_r = MAG_POCKET_D_MM / 2.0
-    entries.append((18.3 - (14.4 + pocket_r) - 1.0,
-                    "V1 upper pocket front wall (-1.0 rule)"))
-    entries.append((14.4 - pocket_r - 10.1 - 1.4,
-                    "V1 upper pocket floor wall (-1.4 rule)"))
+    # V1 upper captive-cavity walls (site2 zc=14.4, local rear ~10.1)
+    cavity_r = MAG_CAVITY_D_MM / 2.0
+    entries.append((18.3 - (14.4 + cavity_r) - 1.0,
+                    "V1 upper cavity front wall (-1.0 rule)"))
+    entries.append((14.4 - cavity_r - 10.1 - 1.4,
+                    "V1 upper cavity floor wall (-1.4 rule)"))
     # R6F core facts and proud exact normal-distance outlet margin.
     import top_baffle_nd25fw4_flush as fl
     import top_baffle_nd25fw4_v1lf as core
@@ -1132,13 +1783,17 @@ if __name__ == "__main__":
         test_emboss_driver_keepouts,
         test_attachment_flushness,
         test_magnet_top_site_walls,
-        test_magnet_pockets_vs_t_ducts,
+        test_magnet_cavities_vs_t_ducts,
+        test_v1_ts_captive_keepout_nudge,
+        test_standard_captive_magnet_contract,
+        test_standard_local_magnet_backing,
         test_duct_vs_w22_pilots,
         test_duct_duct_separation,
         test_duct_vs_um_pilots,
         test_c7_duct_corridor,
         test_seam_keys_vs_ducts,
         test_v0_duct_corridor,
+        test_v0_captive_geometry,
         test_v1_field,
         test_route_smoothness,
         test_v1l_um_terminal_axis_handoff,

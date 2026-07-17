@@ -1,0 +1,49 @@
+{
+  "part": "lx521_coupon_1_fit_plate",
+  "pre_translation_bbox_min_mm": [
+    -46.0,
+    -40.000000000000014,
+    -18.3
+  ],
+  "print_orientation": "front_face_down",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      46.0
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      40.000000000000014
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.3
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "lx521_coupon_1_fit_plate.stl",
+  "stl_bytes": 34084,
+  "stl_origin_translation_mm": [
+    46.0,
+    40.000000000000014,
+    18.3
+  ],
+  "stl_sha256": "6a03913ab3fbab8a6a0db747ebd553e1058a23cc221b7758a5cee0737f0894a5",
+  "variant_export": "coupon"
+}

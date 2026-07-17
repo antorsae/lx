@@ -1,0 +1,49 @@
+{
+  "part": "lx521_coupon_7_recess_seat",
+  "pre_translation_bbox_min_mm": [
+    -82.00000010000001,
+    -141.0000001,
+    -18.30000009999999
+  ],
+  "print_orientation": "front_face_down",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      82.00000010000001
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      141.0000001
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.30000009999999
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "lx521_coupon_7_recess_seat.stl",
+  "stl_bytes": 93984,
+  "stl_origin_translation_mm": [
+    82.00000010000001,
+    141.0000001,
+    18.30000009999999
+  ],
+  "stl_sha256": "fc92fb4ada9a48516ad695608009bc2fca03fa3a8c1e69fca9a97095949b0cf3",
+  "variant_export": "coupon"
+}

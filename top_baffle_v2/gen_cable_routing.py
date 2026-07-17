@@ -7,7 +7,7 @@ labeled V1L-only alternate tail to its 283-degree rear-face aperture.
 The V1LF sheet shows fully covered local Z bumps, their full-width burial
 webs and solid roof-to-blind-bore backfill, the short crown crossover with T
 above UM, the short free LM lead (no micro-duct), deliberately free cable
-handoffs, six flush-buried LM/UM magnets, and the 283 degree terminal clock.
+handoffs, six fully buried LM/UM magnets, and the 283 degree terminal clock.
 Each state is rendered in three actual orthographic projections.  Floor mode
 shows the integral LM-owned stem/foot/connector body and its three buried
 continuation lumens; no-floor mode shows the fused front-flush bridge web.
@@ -797,12 +797,13 @@ def render_v1lf():
     magnet_sites = tuple(side_magnet_sites())
     if (sum(site["driver"] == "lm" for site in magnet_sites) != 4
             or sum(site["driver"] == "um" for site in magnet_sites) != 2
-            or any(not site["flush_buried"] for site in magnet_sites)
+            or any(not site["magnet_fully_buried"]
+                   for site in magnet_sites)
             or not math.isclose(SIDE_MAGNET_POCKET_D, 5.2)
-            or not math.isclose(SIDE_MAGNET_DEPTH, 2.2)):
+            or not math.isclose(SIDE_MAGNET_DEPTH, 2.1)):
         raise RuntimeError(
-            "routing view requires four LM and two UM flush D5.2x2.2 "
-            "magnet pockets")
+            "routing view requires four LM and two UM captive D5.20x2.10 "
+            "magnet cavities")
 
     def masked(values, mask):
         return np.ma.masked_where(~mask, values)
@@ -1162,7 +1163,7 @@ def render_v1lf():
         solid_capstyle="round", zorder=8)
     draw_magnet_projection(ax_side, (2, 1))
     ax_side.annotate(
-        "2x lower LM pockets\nD5.2 section; axes +/-X",
+        "2x lower LM captive cavities\nD5.20 section; axes +/-X",
         (12.55, 18.0), (-70.0, 42.0), fontsize=6.9,
         color="tab:orange",
         arrowprops=dict(arrowstyle="-", color="tab:orange", lw=0.8))
@@ -1282,7 +1283,7 @@ def render_v1lf():
                label=("integral LM-owned floor body"
                       if STAND_FOOT else "fused no-floor bridge web")),
         Line2D([0], [0], color="tab:orange", lw=3, marker="o",
-               label="flush D5.2 x 2.2 magnet pockets; lower LM at base"),
+               label="buried D5.20 x 2.10 cavities; lower LM at base"),
     ]
     if STAND_FOOT:
         legend.extend([

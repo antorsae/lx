@@ -12,7 +12,7 @@ interfaces, or tweeter crescent.
 ## 1. Purpose
 
 V1LF deliberately reduces the LX521.4 upper assembly to nearly baffleless LM
-and UM carriers. Six flush surface-normal magnets were retained—four
+and UM carriers. Six captive surface-normal magnet stations are retained—four
 ring-radial and two lower-LM base-side—so removable shoulders or wings can be
 attached without rebuilding the load-bearing core.
 
@@ -197,6 +197,10 @@ data reveal a dominant high-Q feature.
   honeycomb render as acoustic qualification.
 - Sealed internal air pockets, uncontrolled quarter-wave tubes, or hollow
   trapped volumes.
+- Treating concept-only sheets, `review/V1LF_NEXTGEN_SIMPLIFIED.md`, historical
+  diagnostic renders, or legacy fit coupons as released magnet-bearing parts.
+  The dedicated `coupons/v1lf_ae_embed/` coupon is reference evidence, not an
+  installed wing component.
 
 ## 5. Authoritative geometry and coordinate system
 
@@ -228,7 +232,8 @@ outline comparator, but must not silently replace B2 in the required variants.
 There is one measured geometric exception required for realizability. At the
 UM side-magnet axes (129.5 and 50.5 degrees), the R51.7 V1LF carrier lies
 outside the historic B2 side outline. A receiver constrained literally to B2
-has essentially zero radial land and cannot contain a D5.2 x 2.2 pocket. Every
+has essentially zero radial land and cannot contain the captive D5 x 2
+envelope. Every
 variant therefore uses the same **common physical-envelope correction**:
 
 - an 18.0 mm radial annular side lobe outside the UM carrier, clipped by the LM,
@@ -236,6 +241,12 @@ variant therefore uses the same **common physical-envelope correction**:
 - one enlarged UM receiver pad and carrier-following arc bridge per side; and
 - one outboard inter-carrier spine joining the LM-upper and UM root systems
   without crossing either carrier.
+
+The released carrier side also needs one local construction adaptation at
+each V1LF ring-radial station: add **+0.60 mm outward backing** for the captive
+cavity and roof. An inward offset would intersect the LM/UM flange seat. This
+does not move the interface-plane site or magnet axis, and it must not become a
+variant-specific acoustic lobe.
 
 `OUTLINE_B2` remains the acoustic comparator and the limit for the variant
 field away from this named correction. The lobe/root/spine correction is
@@ -265,7 +276,7 @@ state-specific wing acoustics unless a later experiment explicitly requests it.
 Each physical side has three surface-normal magnetic stations. Obtain their
 exact face points and outward normals from `side_magnet_sites()`.
 
-| Side | Carrier station | Carrier face datum | Outward XY normal | Pocket center Z |
+| Side | Carrier station | Carrier face datum | Outward XY normal | Cavity center Z |
 |---|---|---|---:|---:|
 | Left | LM upper | R113 lip at 116.0 deg | radial | 12.55 |
 | Left | LM lower | `(-32, 18)` base side | `(-1, 0)` | 12.55 |
@@ -274,31 +285,41 @@ exact face points and outward normals from `side_magnet_sites()`.
 | Right | LM lower | `(32, 18)` base side | `(1, 0)` | 12.55 |
 | Right | UM | R51.7 lip at 50.5 deg | radial | 15.10 |
 
-Carrier pockets are immutable `diameter 5.2 x 2.2 deep` pockets along each
-listed outward surface normal for actual `diameter 5 x 2` magnets. Carrier
-magnets remain flush, never proud. The two lower base-side datums are identical
-in the floor and no-floor LM carriers.
+The station points and axes are immutable. Every released carrier and wing
+uses the coupon-proven pause-and-bury cavity for an actual `diameter 5.0 x 2.0`
+magnet:
 
-Each wing shall provide a matching inward-facing coaxial pocket at every
+- internal cylindrical cavity `diameter 5.20 x 2.10 deep` along the listed
+  surface normal;
+- `0.45` mm captive plastic skin at each axial magnet face;
+- vertically open loading cradle with continuous retaining extrusion on both
+  axial sides;
+- self-supporting 45-degree closing roof; and
+- no glue and no external access opening after the roof closes.
+
+The two lower base-side datums are identical in the floor and no-floor LM
+carriers. Ring-radial carrier sites use the shared +0.60 mm outward local
+backing defined in Section 5 because an inward cavity would enter the flange
+seat. This is the smallest permitted local adaptation; the axis does not move.
+
+Each wing shall provide a matching inward-facing coaxial captive cavity at every
 station on its side. Ac and Ae therefore have exactly three receivers per
 physical side: LM lower, LM upper, and UM.
 
-- Pocket: `diameter 5.2 x 2.2 deep`.
-- Actual magnet: `diameter 5 x 2`.
-- Wing magnet face flush with the wing's carrier-facing datum.
-- Exact CAD axis coincidence with the carrier pocket axis.
+- Cavity: `diameter 5.20 x 2.10 deep`.
+- Actual magnet: `diameter 5.0 x 2.0`.
+- Both finished magnet faces remain behind `0.45` mm skins.
+- Exact CAD axis coincidence with the carrier cavity axis.
 - Nominal nonmagnetic arc-saddle clearance: `0.20`.
-- Exact modeled carrier-to-wing datum gap: `0.00`. A physical assembly may
-  measure 0.00 to 0.05 after seating and adhesive cure. Do not
-  accidentally inherit the 0.20 mm arc clearance at the magnetic faces; that
-  would unnecessarily weaken retention.
-- Extra 0.2 mm pocket depth is adhesive allowance, not a bottoming datum.
-- Bond polarity must be established against the actual marked carrier; never
+- Exact modeled carrier-to-wing mating air gap: `0.05`. With two 0.45 mm
+  skins, nominal magnet-to-magnet separation is `0.95`, not `0.05`. Do not
+  accidentally inherit the 0.20 mm arc clearance at the magnetic interface.
+- Polarity must be established against the actual marked carrier and the
+  pause manifest; never
   infer polarity from left/right mirroring.
-- Receiver material outside the pocket must remain positive and printable.
-- Preserve the source carrier's retained skin at every pocket; in particular,
-  retain the 3.15 mm front skin at each lower base-side site and the 0.60 mm
-  front skin at each UM site.
+- Receiver material outside the cavity must remain positive and printable.
+- Preserve both axial 0.45 mm skins and the continuous open-layer cradle at
+  every site. Sliced toolpaths, not CAD appearance alone, prove the side walls.
 - No magnet, cup, pod, handle, or registration feature may protrude beyond the
   selected **physical** plan envelope (B2/mid/chirped field plus the common
   correction defined in Section 5) or in front of `z = 18.3`.
@@ -306,9 +327,8 @@ physical side: LM lower, LM upper, and UM.
 The inner edge of each wing shall include shallow carrier-conforming ring and
 straight-base saddles with nominal 0.20 mm normal clearance away from the
 magnetic roots.
-Locally relieve or step those saddles so each opposing magnet pair closes to
-the exact zero-gap CAD datum without plastic interference; 0.00-0.05 mm is
-only the accepted physical seated result. The nonparallel
+Locally relieve or step those saddles so each opposing station closes to the
+0.05 mm mating-air-gap datum without plastic interference. The nonparallel
 three-station geometry and the arc saddles provide registration. Do not add
 carrier holes or external snap handles. If a compliant seal is used, make it an
 identical, replaceable, documented part for every compared variant; it must not
@@ -369,9 +389,9 @@ explicitly stricter.
   spine. The spine, common outer perimeter band, and every root-to-field or
   root-to-band tie are nominally 2.40 mm wide. They may grow where required by
   Boolean robustness or stress, but shall not be narrowed privately for a
-  pattern. Preserve at least 1.20 mm positive printed ligament around pockets,
+  pattern. Preserve at least 1.20 mm positive printed ligament around cavities,
   apertures, split joints, and all load paths unless the immutable restrictive
-  pocket-floor allowance in Section 6 explicitly governs a smaller front skin.
+  captive-skin allowance in Section 6 explicitly governs a smaller local skin.
 - The common skeleton must remain connected after its projected XY geometry is
   eroded inward by 0.60 mm. The eroded result on each physical side must be one
   connected component touching all three root-pad witness regions and the
@@ -400,7 +420,7 @@ explicitly stricter.
   footprint of every round hole, slot, louvre, dog-leg mouth, cell wall, and end
   radius--never only its center point, pitch line, or nominal bounding cell.
 - Maintain at least 1.20 mm ligament from every aperture footprint to the common
-  skeleton, root pocket, structural tie, split joint, and adjacent aperture
+  skeleton, root cavity, structural tie, split joint, and adjacent aperture
   where that ligament transfers structure. The explicit 0.80 mm minimum is
   allowed only for non-load-bearing local cell walls declared by the variant.
 - All apertures and channels must open to both sides or to a documented vent.
@@ -527,7 +547,7 @@ only the decorative macro-cell dimensions.
   percent in the structurally dense UM lobe, outside roots, common skeleton,
   ties, and edge bands. Target 65 to 80 percent over the combined active field
   and record `phi_gross`, which will be materially lower. The upper range is a
-  declared consequence of the realizable D5.2 receiver/spine reserves.
+  declared consequence of the realizable captive D5 receiver/spine reserves.
 - Straight-through open cells; no continuous acoustic skin.
 - Minimum wall: 0.80 mm.
 - Preferred pitch: 4 to 8 mm for a nominal 4 kHz control. Any region above
@@ -819,7 +839,7 @@ Never redraw the acoustic field independently in each segment.
 - Use the minimum segment count that fits; two segments per side are preferred,
   but a third is allowed when required by the actual B2 outline.
 - Put seams through a solid web, never through a minimum-wall pore field,
-  magnet pocket, knife edge, high-curvature outline feature, or service keep-out.
+  magnet cavity, knife edge, high-curvature outline feature, or service keep-out.
 - Use concealed straight cylindrical pins or a rounded tongue/blind-socket
   wholly inside the existing envelope. No external snap handle, latch, screw
   boss, or envelope growth is permitted.
@@ -879,14 +899,17 @@ receiver, protected Ae land, carrier contact, or knife edge is cut.
 
 - Material baseline: Bambu PLA Tough+.
 - Nozzle: 0.4 mm.
-- Acoustic front prints face-down where practical.
+- Every released acoustic part prints front-face-down, whether or not it
+  contains a magnet; only in-bed rotation about Z is permitted.
 - Minimum ordinary wall: two extrusion widths, 0.80 mm.
 - Continuous acoustic skin baseline: 1.20 mm.
-- Magnet pockets remain `diameter 5.2 x 2.2` for actual `diameter 5 x 2`
-  magnets everywhere.
-- Hold magnets flush during bonding; do not bottom them in the adhesive-depth
-  allowance.
-- Keep magnet polarity controlled with a marked master magnet and a bonding jig.
+- Magnet cavities remain `diameter 5.20 x 2.10` for actual
+  `diameter 5.0 x 2.0` magnets, with 0.45 mm axial skins and a 45-degree roof.
+- Use `review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md`; insert each marked magnet fully below the
+  completed layer at the first roof-closing pause and verify nozzle clearance
+  before resuming. Polarity cannot be corrected after burial.
+- Keep magnet polarity controlled with a marked master magnet and the
+  site-specific local-axis table; do not infer it from a mirrored view.
 - Pores and tortuous passages must be slicer-resolvable without internal
   support. Validate sliced previews, not only CAD openings.
 - Print all acoustic-comparison wings with the same material lot, orientation,
@@ -924,6 +947,13 @@ top_baffle_v2/review/v1lf_wing_<slug>_floor_assembly.png
 top_baffle_v2/review/v1lf_wing_<slug>_no_floor_assembly.png
 ```
 
+Every released wing STL must also have a row in the project-level
+`review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md` derived from its actual Bambu layer schedule. Record
+the last fully open layer, cavity/roof-start plane, first closing layer, pause
+marker, grouped magnet count, local-axis polarity, and front-face-down
+orientation. Do not copy the coupon's 5.96/8.52 mm regression markers into an
+unrelated wing.
+
 Generate printable process coupons for W3-W11 and W14. Coupon geometry must use
 the exact same aperture-footprint/field generator, print Z orientation, wall,
 and channel construction as the corresponding wing. W7 coupons cover both
@@ -957,7 +987,8 @@ The facts JSON must include:
 - outer driver-to-edge distance versus angle;
 - relevant feature-to-wavelength ratios at 1, 3.5, 4, 7, and 10 kHz and
   quarter-/half-wave estimates for every path family;
-- magnet axes, gaps, polarity record placeholder, and retained skin;
+- magnet axes, 0.05 mm mating gaps, 0.95 mm magnet separation, per-site
+  polarity, authoritative sliced pause layers, and both retained skins;
 - predicted knee ranges and `f*l_eff/phi_active` comparisons clearly labeled
   as first-order estimates;
 - modal/acoustic measurement placeholders.
@@ -971,10 +1002,12 @@ Required checks:
    solid or a deliberately labeled compound of valid solids.
 2. Installed left/right wings mirror exactly in plan and acoustic field.
 3. All six mating magnet axes coincide with `side_magnet_sites()` and use exact
-   `diameter 5.2 x 2.2` pockets.
+   `diameter 5.20 x 2.10` captive cavities with 0.45 mm axial skins,
+   continuous printable cradles and 45-degree roofs. Each interface preserves
+   the 0.05 mm air gap and 0.95 mm nominal magnet separation.
 4. The one shared skeleton reports nominal LM pads of 8.8 x 6.0 mm and UM pads
    of 13.0 x 8.0 mm, with no post-Boolean land below their respective hard
-   7.6 x 3.4 and 11.8 x 5.4 mm projected minima. Every relevant pocket/slice
+   7.6 x 3.4 and 11.8 x 5.4 mm projected minima. Every relevant cavity/slice
    retains its specified 1.20 mm ligament or the explicit Section 6 restrictive
    skin allowance.
 5. Eroding each side's projected skeleton inward by 0.60 mm leaves exactly one
@@ -990,7 +1023,7 @@ Required checks:
 8. No geometry lies behind `z = 6.8` or in front of `z = 18.3`.
 9. Material front faces lie on `z = 18.3`; outer knife edges are at least
    0.80 mm thick.
-10. Minimum wall, skin, root ligaments, pocket floors, and split-joint walls are
+10. Minimum wall, skin, root ligaments, cavity skins/backing, and split-joint walls are
    positive and meet their variant limits.
 11. Every aperture, slot, louvre, cell, and channel-mouth test uses its exact
     projected footprint including rounded ends and position modulation. No
@@ -1151,7 +1184,8 @@ Minimum gates before a wing can be called a qualified V1LF option:
 1. All CAD, collision, printability, manifold, and fit checks pass.
 2. The common skeleton passes exact-footprint ligament, 0.60 mm eroded
    connectivity, three-root, and both-acoustic-zone checks on each side.
-3. Actual magnets seat flush with no polarity error, rocking, slide, or buzz.
+3. Actual magnets are fully captive below intact skins, have the manifest
+   polarity, and exhibit no rocking, slide, or buzz.
 4. Wing survives repeated installation and removal without carrier damage.
 5. No new passband structural/acoustic resonance remains unexplained.
 6. Front and rear polar measurements are complete for each active driver.
@@ -1175,7 +1209,7 @@ An implementation LLM shall work in this order:
 3. Implement the shared interface, acoustic-zone, and facts functions using
    `side_magnet_sites()` and exact source keep-outs.
 4. Build `wing_common_skeleton()` once: nominal/hard root pads, 2.40 mm
-   spine/band/ties, 1.20 mm ligaments, and exact receiver pockets. Before any
+   spine/band/ties, 1.20 mm ligaments, and exact receiver cavities. Before any
    acoustic field exists, prove 0.60 mm eroded connectivity from LM lower
    through LM upper to UM and the outer band on each side.
 5. Build and validate W1 around that skeleton. Its keep-outs, receiver roots,
@@ -1218,8 +1252,9 @@ The initial design pass is complete when:
 - all fourteen required variants exist as parameterized monolithic left/right STEP
   geometry;
 - every side has bed-fitting derived print segments and manifold STLs;
-- all use the unchanged six V1LF stations with flush `diameter 5.2 x 2.2`
-  mating pockets;
+- all use the unchanged six V1LF station axes with captive
+  `diameter 5.20 x 2.10` mating cavities, 0.45 mm axial skins, a 45-degree
+  roof, a 0.05 mm mating gap, and 0.95 mm nominal magnet separation;
 - all use the one shared LM 8.8 x 6.0 mm / UM 13.0 x 8.0 mm root system, the
   exact common UM lobe/arc/inter-carrier correction, and 2.40 mm minimum
   spine/band/ties; each side passes the 0.60 mm eroded-connectivity test across

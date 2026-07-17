@@ -9,15 +9,17 @@ Exact booleans against the B2 solid:
 
   attach_a_shoulder_bottom_left/right = (A-comp minus B2), below the crest
       the wedge between the vertical flank and B2's flare, running down to
-      the LM chamfer-extension line (~y=304.15). Its lower ~12 mm bonds to
-      the mids, so it also splints seam B.
+      the LM chamfer-extension line (~y=304.15). Its lower ~12 mm mates to
+      the mids and spans seam B.
 
   attach_b1_wing_left/right = B1 minus B2
-      long wings (~127 mm) restoring B1's full mini-LM flare; they bond
+      long wings (~127 mm) restoring B1's full mini-LM flare; they mate
       along B2's flare/chamfer/arc flank and reach ~9 mm below seam B.
 
-All six are flat 18.3 mm extrusions (print front face up, no supports).
-Glue with zero designed clearance -- these are edge-bonded, not inserted.
+All six are flat 18.3 mm extrusions.  Print front-face-down and pause for
+the captive D5x2 magnets before their 45-degree roofs close.  The helper
+cuts a local 0.05 mm interface gap on each receiver; the surrounding outline
+kinks remain the shear/alignment datums.
 """
 
 from __future__ import annotations
@@ -29,10 +31,12 @@ from top_baffle_nd25fw4_a_comp import OUTLINE_A_COMP
 from top_baffle_nd25fw4_b import (
     A_COMP_CREST_Y,
     TWEETER_DROP_MM,
-    magnet_attachment_cutters,
+    apply_magnet_attachment_cavities,
 )
 from top_baffle_nd25fw4_b1 import OUTLINE_B1
 from top_baffle_nd25fw4_b2 import OUTLINE_B2
+
+PRINT_ORIENTATION = "front-face-down"
 
 MIN_SOLID_MM3 = 500.0  # ignore boolean dust
 
@@ -60,14 +64,10 @@ def attachments() -> dict:
     keep = _box(303.0, 500.0)
     out = {}
 
-    pockets = magnet_attachment_cutters()
+    def _captive(diff):
+        return apply_magnet_attachment_cavities(diff)
 
-    def _pocketed(diff):
-        for cutter in pockets:  # D5 magnet pockets on the mating walls
-            diff -= cutter
-        return diff
-
-    a_diff = _pocketed((baffle_solid(OUTLINE_A_COMP, TWEETER_DROP_MM) - b2) & keep)
+    a_diff = _captive((baffle_solid(OUTLINE_A_COMP, TWEETER_DROP_MM) - b2) & keep)
     # top and bottom shoulders touch only at the crest tangent point; split
     # there. The bottom shoulder's 16.6 deg feather toward the crest is
     # blunted at y=390 (~0.45 mm wide, ~1 perimeter -- printable flat);
@@ -77,7 +77,9 @@ def attachments() -> dict:
 
     # The wing feathers to zero at B1's waist kink (y=306.5) where its two
     # boundary lines become coincident; blunt it at y=307.8 (~2.8 mm wide).
-    b1_diff = _pocketed((baffle_solid(OUTLINE_B1, TWEETER_DROP_MM) - b2) & _box(307.8, 500.0))
+    b1_diff = _captive(
+        (baffle_solid(OUTLINE_B1, TWEETER_DROP_MM) - b2)
+        & _box(307.8, 500.0))
     _two_sides(b1_diff, "attach_b1_wing", out)
     return out
 

@@ -11,17 +11,20 @@ The crescent taper re-derives on the 6.8..18.3 slab (same 4.0 clamp
 seat position at z 14.3..18.3 as stock, 0.4 tips); standoffs cut to
 11.5. The binding cable constraint is the shared TS oval under the
 MU10 seat; the UM main is no longer in the vase. Magnets use the two
-wall pockets described below."""
+pause-and-bury wall stations described below."""
 
 from __future__ import annotations
-
-import math
 
 from build123d import Box, Pos
 
 from top_baffle_nd25fw4 import THICKNESS_MM, baffle_solid
-from top_baffle_nd25fw4_b import TWEETER_DROP_MM
+from top_baffle_nd25fw4_b import (
+    TWEETER_DROP_MM,
+    apply_magnet_base_cavities,
+)
 from top_baffle_nd25fw4_b2 import OUTLINE_B2
+
+PRINT_ORIENTATION = "front-face-down"
 
 T_FIELD_MM = 11.5
 REAR_MM = THICKNESS_MM - T_FIELD_MM   # 6.8: new rear plane of the vase
@@ -35,35 +38,30 @@ def field_cutters():
         160.0, 462.0 - Y_STEP, REAR_MM + 0.7)]
 
 
-def magnet_pocket_cutters():
-    """The two FLUSH wall pin pockets at the B2 site plan positions:
-    the lower flare site at zc=12.5 and the upper crescent-arc site at
-    zc=14.4 (inside the as-tapered wall). No rear pockets: the earlier
-    (+-46, 324) rear holes were orphaned (no attachment mates them) and
-    are removed."""
-    from top_baffle_nd25fw4_b import (MAG_PIN_BASE_DEPTH_MM,
-                                      MAG_POCKET_D_MM, MAGNET_SITES,
-                                      _magnet_pocket)
-    cutters = []
-    for site, zc in ((MAGNET_SITES[0], 12.5), (MAGNET_SITES[1], 14.4)):
-        x, y, nx, ny, _pin, _zc = site
-        for sx in (1.0, -1.0):
-            cutters.append(_magnet_pocket(sx * x, y, sx * nx, ny, zc,
-                                          MAG_POCKET_D_MM,
-                                          MAG_PIN_BASE_DEPTH_MM, True))
-    return cutters
+V1_MAGNET_ZC = (12.5, 14.4)
 
 
-def all_cutters():
-    return field_cutters() + magnet_pocket_cutters()
+def apply_v1_base_magnets(part):
+    """Bury four V1/V1L base magnets at the released site heights.
+
+    Both 45-degree roofs fit inside the z=6.8..18.3 vase without the local
+    rear cap needed by the standard zc=5.0 lower station.  The upper curved
+    site still receives the common <=0.134666-mm tangent-plane land boss,
+    paired to the attachment relief; the lower straight site is locally
+    trimmed to its released datum.  Marked poles point OUT along the
+    mirrored base-to-attachment normals.
+    """
+    return apply_magnet_base_cavities(
+        part, site_zc=V1_MAGNET_ZC, lower_rear_caps=False,
+        name_prefix="v1")
 
 
 def v1_solid():
     part = baffle_solid(OUTLINE_B2, TWEETER_DROP_MM,
                         crescent_rear_mm=REAR_MM)
-    for c in all_cutters():
+    for c in field_cutters():
         part -= c
-    return part
+    return apply_v1_base_magnets(part)
 
 
 def gen_step():

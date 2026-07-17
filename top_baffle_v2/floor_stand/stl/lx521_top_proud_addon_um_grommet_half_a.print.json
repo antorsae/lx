@@ -1,0 +1,72 @@
+{
+  "mesh": {
+    "collapsed_apex_facets_removed": 0,
+    "component_error": 0,
+    "component_signed_volumes": [
+      107.7651293606217
+    ],
+    "components": 1,
+    "degenerate": 0,
+    "disconnected_material_components": 0,
+    "duplicates": 0,
+    "negative_volume": 0,
+    "nested_void_components": 0,
+    "nonfinite": 0,
+    "nonnested_void_components": 0,
+    "open": 0,
+    "outer_components": 1,
+    "over_shared": 0,
+    "signed_volume": 107.7651293606217,
+    "triangles": 1230,
+    "winding": 0,
+    "zero_volume": 0,
+    "zero_volume_components": 0
+  },
+  "part": "lx521_top_proud_addon_um_grommet_half_a",
+  "pre_translation_bbox_min_mm": [
+    26.945853899999996,
+    -304.2507677080332,
+    -3.6282187058831714
+  ],
+  "print_orientation": "front_face_down",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      -26.945853899999996
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      304.2507677080332
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      3.6282187058831714
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "lx521_top_proud_addon_um_grommet_half_a.stl",
+  "stl_bytes": 61584,
+  "stl_origin_translation_mm": [
+    -26.945853899999996,
+    304.2507677080332,
+    3.6282187058831714
+  ],
+  "stl_sha256": "04967ac4dd547f7da8cda15c69db97a5d0bd2c687fa1c335bbf0fb5ff23e089f",
+  "variant_export": "b2"
+}

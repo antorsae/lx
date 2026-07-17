@@ -78,7 +78,8 @@ REMOTE_MAKE_TARGETS = {
     "no_floor_stand", "no_floor_v1lf", "v1lf_release",
     "wing_concepts", "v1lf_basic_variants",
     "v1lf_basic_wings", "check_v1lf_basic_variants",
-    "common", "check", "check_v1lf", "check_v1lf_shells",
+    "common", "check", "check_captive_magnets", "check_v1lf",
+    "check_v1lf_shells",
     "check_v1lf_t_shells", "check_v1lf_mouths", "check_v1lf_burial",
     "check_v1lf_um_burial",
     "check_v1lf_backfills", "check_v1lf_route_boundaries",
@@ -1012,6 +1013,11 @@ def _execute_job(args: argparse.Namespace) -> int:
             temporary.mkdir(exist_ok=True)
             env.update({
                 "LX_CAD_EXECUTION": "remote-worker",
+                # Bind generated release metadata to the exact immutable
+                # source snapshot that this worker is executing.  Catalog
+                # producers must not infer provenance from a mutable checkout
+                # after artifacts have been promoted back to the Mac.
+                "LX_CAD_SOURCE_SHA256": metadata["source_sha256"],
                 "LX_CAD_ALLOW_PARALLEL": "1",
                 "LX_CAD_GUARD_SLOTS": str(metadata["parallel_jobs"]),
                 "LX_CAD_MEMORY_PROFILE": REMOTE_MEMORY_PROFILE,
@@ -1282,11 +1288,13 @@ def _verify_and_extract_artifacts(local_dir: Path, metadata: dict) -> Path:
 
 def _full_output_roots(targets: list[str]) -> set[str]:
     full = set()
-    if any(target in {"all", "candidate", "release"} for target in targets):
+    if any(target in {
+            "all", "candidate", "release", "v1lf_release",
+    } for target in targets):
         full.update(("floor_stand", "no_floor_stand", "wings"))
     full.update(target for target in targets if target in {"floor_stand", "no_floor_stand"})
     if any(target in {
-            "v1lf_release", "v1lf_basic_variants", "v1lf_basic_wings",
+            "v1lf_basic_variants", "v1lf_basic_wings",
             "check_v1lf_basic_variants",
     } for target in targets):
         full.add("wings")

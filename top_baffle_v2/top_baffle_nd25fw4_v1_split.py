@@ -1,17 +1,29 @@
 """V1 print split: piece_top thinned to 11.5 (see _v1.py); seams and
-ducts identical to B2 -- mixes with B2 or C7 bottom/mids."""
+duct sections remain identical to B2.  Only the TS centerline gets a smooth
+0.20-mm local captive-land detour, so the set still mixes with B2/C7
+bottom/mids.  The magnet-bearing top piece prints front-face-down."""
 
 from __future__ import annotations
 
 from build123d import Compound
 
 from top_baffle_nd25fw4_b2_split import pieces
-from top_baffle_nd25fw4_v1 import REAR_MM, all_cutters
+from top_baffle_nd25fw4_cables import TS_ROUTE_V1_CAPTIVE
+from top_baffle_nd25fw4_v1 import (
+    REAR_MM,
+    apply_v1_base_magnets,
+    field_cutters,
+)
+
+PRINT_ORIENTATION = "front-face-down"
 
 
 def pieces_v1() -> dict:
-    return pieces(shape_cuts=all_cutters(), magnet_pockets=False,
-                  crescent_rear_mm=REAR_MM)
+    result = pieces(shape_cuts=field_cutters(), magnet_cavities=False,
+                    crescent_rear_mm=REAR_MM,
+                    ts_route_key=TS_ROUTE_V1_CAPTIVE)
+    result["piece_top_b2"] = apply_v1_base_magnets(result["piece_top_b2"])
+    return result
 
 
 def gen_step():

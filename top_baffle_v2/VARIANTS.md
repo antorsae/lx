@@ -18,7 +18,8 @@ There are now two intentionally isolated systems:
   carrier and is free behind UM; T is buried through LM/UM and is free behind
   the tweeter crescent. The surviving printed spans retain 0.8 mm minimum
   walls, a 0.85 mm seat roof, and covered Z bumps backed by solid roof-to-bore
-  saddles. The short LM lead is a free D7.8 span with no printed micro-duct.
+  saddles. The short LM lead is a free D7.8 span in a minimum-radius 3.96 mm
+  rear-open subtractive clearance, with no printed micro-duct.
   No-floor mode fuses the stock four-hole solid front
   web into the LM core and has no separate keel.
   Floor mode instead fuses the full-height W64 stem/foot, R12 root, buried
@@ -47,7 +48,7 @@ drivers (W22EX001 / 10F) refer to the same cutout/pilot geometry.
 | **V0** | vase | Rear knife band: REAR-side 18.3 -> 0.5 over the last 2.8 mm of the vase outline (same sculpted side as C7); front intact. | `lx521_top_v0_4of4_vase` |
 | **V1** | vase | Thin FLUSH vase: 11.5 (material z 6.8..18.3). Crescent re-derived (4.0 clamp seat at stock z); tweeter septum 11.5 (shorter standoffs, pair spacing -6.8); one shared front plane. | `lx521_top_v1_4of4_vase` |
 | **V1L** | bottom + mids | Thin FLUSH LM section: 11.5 (z 6.8..18.3 -- SAME plane as the V1 vase: no seam-B step), including both 6-mm seam-B male teeth that project into the vase. Smoothstep ramp y=78..96 to the full strip. Ø8.2 LM duct is the 11.5 binder. Its keyed Ø8.2 UM alternate exits `mid_right` at Q=(13.497063, 307.618796, 6.8) on the 283° axis; seam B/top are untouched. | `lx521_top_v1l_1..3of4` (its `--variant v1l` export bundles the unchanged V1 vase = the complete ~12 mm baffle) |
-| **V1LF R6F** | legacy four-piece baffle; replaced by two mandatory carriers plus add-ons | **Extreme barebone flush carriers**: LM Ø190 opening / Ø221.2 seat / nominal R113.0 lip; UM Ø82 opening / Ø98.6 seat / R51.7 outside. Two Ø9 rounded M3 half-lap ears at x=±32.0 set the 165.100 mm spacing. V1LF-only LM axes rotate to 0/60/120/180/240/300° on the unchanged Ø209.5 PCD; all six are ordinary blind carrier insert bores in both states. Six actual Ø5×2 magnets use global Ø5.2×2.2 pockets: preserve the flush upper LM ring-radial pair at 64°/116°; place the lower LM pair flush in the straight base side faces at `(x,y,z)=(±32,18,12.55)` with outward ±X normals; and keep the UM pair ring-radial and flush at 50.5°/129.5°, z=15.1. The shared floor/no-floor lower profile makes the two base-side datums identical in both states. Hold all six magnets flush during bonding; the extra 0.2 mm pocket depth is adhesive allowance, not a bottoming datum. Neither carrier has proud magnet ears. Ac/Ae provide three matching receivers per physical side: LM lower, LM upper, and UM. Direct UM-to-tweeter ears sit at x=±24, y=421.5. UM is buried in an Ø8.2 passage only inside LM, then runs free behind UM with no printed UM-carrier rear duct. T is buried in an Ø6.0 passage through LM/UM, then runs free behind the tweeter crescent, which has no printed cable arc. Every surviving named insert bypass has a deep full-width burial web; the D7.8 LM lead is a free span without a printed micro-duct. The physical T/UM routes cross at 82.67° with no two-duct separator-web claim. No-floor LM includes the unchanged front-flush bridge plate at z=5.3..18.3. Floor LM instead owns the complete W64 × 18.3 stem/foot from z=−150..18.3, R12 root, three buried floor continuations, connector service cavity and rear NL8 panel; floor Y=0 keeps the LM axis exactly 200.981 mm above the floor. The tweeter carrier is a separate add-on; V1LF has no printed grommet. | `lx521_top_v1lf_core_1of2_lm_carrier.stl`, `lx521_top_v1lf_core_2of2_um_carrier.stl` |
+| **V1LF R6F** | legacy four-piece baffle; replaced by two mandatory carriers plus add-ons | **Extreme barebone flush carriers**: LM Ø190 opening / Ø221.2 seat / nominal R113.0 lip; UM Ø82 opening / Ø98.6 seat / R51.7 outside. Two Ø9 rounded M3 half-lap ears at x=±32.0 set the 165.100 mm spacing. V1LF-only LM axes rotate to 0/60/120/180/240/300° on the unchanged Ø209.5 PCD; all six are ordinary blind carrier insert bores in both states. Six actual Ø5×2 magnets use captive Ø5.20×2.10 cavities with 0.45 mm axial skins and a 45° closing roof: preserve the upper LM ring-radial axes at 64°/116°; place the lower LM pair in the straight base side faces at `(x,y,z)=(±32,18,12.55)` with outward ±X normals; and keep the UM pair ring-radial at 50.5°/129.5°, z=15.1. The shared floor/no-floor lower profile makes the two base-side datums identical in both states. The V1LF ring-radial stations use a local +0.60 mm outward backing boss because moving the captive envelope inward would collide with the flange seat. Magnets are inserted at the authoritative pause and permanently buried, with no glue or external opening. Neither carrier has proud magnet ears. Ac/Ae provide three matching captive receivers per physical side: LM lower, LM upper, and UM. The preserved 0.05 mm mating gap plus two skins gives 0.95 mm nominal magnet separation. Direct UM-to-tweeter ears sit at x=±24, y=421.5. UM is buried in an Ø8.2 passage only inside LM, then runs free behind UM with no printed UM-carrier rear duct. T is buried in an Ø6.0 passage through LM/UM, then runs free behind the tweeter crescent, which has no printed cable arc. Every surviving named insert bypass has a deep full-width burial web; the D7.8 LM lead is a free span in a minimum-radius 3.96 mm rear-open subtractive clearance without a printed micro-duct. The physical T/UM routes cross at 82.67° with no two-duct separator-web claim. No-floor LM includes the unchanged front-flush bridge plate at z=5.3..18.3. Floor LM instead owns the complete W64 × 18.3 stem/foot from z=−150..18.3, R12 root, three buried floor continuations, connector service cavity and rear NL8 panel; floor Y=0 keeps the LM axis exactly 200.981 mm above the floor. The tweeter carrier is a separate add-on; V1LF has no printed grommet. | `lx521_top_v1lf_core_1of2_lm_carrier.stl`, `lx521_top_v1lf_core_2of2_um_carrier.stl` |
 
 The V1LF LM print form is a separate choice inside the same R6F variant. The
 canonical `lx521_top_v1lf_core_1of2_lm_carrier.stl` is one solid. On a 220 mm
@@ -55,11 +56,11 @@ square bed, replace it with **both**
 `lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl` and
 `lx521_top_v1lf_optional_lm_keyed_2of2_top.stl`; never combine either half with
 the monolithic carrier. Their state-specific final geometry is cut at world
-Y=172.481 mm with a zero-gap planar butt. The no-floor Z26°/Z45° X×Y
-footprints are 198.79×205.51 / 210.47×210.47 mm. In floor state the bottom
-owns the entire stand and is laid onto its world-Y floor face (X=−90°),
-with Z=0°; generated validation requires both in-bed axes to be
-≤220 mm. The top remains Z45° and ≤220 mm. One concealed right-hand
+Y=172.481 mm with a zero-gap planar butt. Both halves in both stand states
+print front-face-down with only in-plane bed rotation. The former no-floor
+Z26°/Z45° and floor-bottom X=−90° footprints are obsolete because those
+out-of-plane orientations do not permit the captive-magnet pause. Revalidate
+each actual front-down footprint against the selected printer. One concealed right-hand
 straight rounded tongue/blind-socket pair is carved wholly inside the existing
 R110.6..R113 lip. The tongue is 0.8 mm wide and engages 3.5 mm along its
 tangential insertion axis, approximately 75.23° from +X. It adds no external
@@ -79,17 +80,17 @@ its keyed `mid_right`; it does not create a V1L-specific top.
 
 | Family | Pieces | Fits | Anchoring |
 |---|---|---|---|
-| **A-comp shoulders** (18.3) | 4: `addonA_1..4of4` | B2 vase only | 2 FLUSH magnets/side: flare wall zc=5.0 + crescent arc zc=10.7; outline kinks register |
+| **A-comp shoulders** (18.3) | 4: `addonA_1..4of4` | B2 vase only | 2 captive magnets/side: flare wall zc=5.0 + crescent arc zc=10.7; outline kinks register |
 | **B1 wings** (18.3) | 2: `addonB1_1..2of2` | B2 vase only | same two sites |
-| **V1 A-shoulders** (11.5) | 4: `v1addonA_*` | V1 vase (V1L sets) | TWO pins/side: lower zc=12.5, upper zc=14.4 (in-wall, no bosses) |
-| **V1 B1-wings** (11.5) | 2: `v1addonB1_*` | V1 vase (V1L sets) | two pins/side: lower zc=12.5, upper zc=14.4 (in-wall, no bosses) |
-| V0 scarf family | (designed, not built) | V0 | would scarf onto the knife band; pending |
+| **V1 A-shoulders** (11.5) | 4: `v1addonA_*` | V1 vase (V1L sets) | two captive stations/side: lower zc=12.5, upper zc=14.4; common curved-interface tangent land is <=0.134666 mm on the base and receiver-relieved to the real 0.05 mm gap |
+| **V1 B1-wings** (11.5) | 2: `v1addonB1_*` | V1 vase (V1L sets) | same captive stations and microscopic qualified tangent-land adaptation |
+| V0 scarf family | (concept only; no released print) | V0 | no released mate or pairing polarity; V0's orphan rear-axis base cavities alone are migrated and print front-face-down. Detached `(±46,324)` was first moved to connected `(±37.697,326.470)`, but the mirrored-left site failed T-route clearance (2.605 < 8.000 mm). Final release sites are right `(37.697,326.470)` and left `(-7.250,321.200)`; the latter clears the D82 cutout, all UM pilots, grown seam-B keepout, and all ducts. |
 | **R6F tweeter crescent** | `lx521_top_v1lf_addon_tweeter_crescent.stl` | V1LF UM collar only | direct rounded half-laps at x=±24, y=421.5; rear-driven M3 screws enter blind crescent inserts; no printed T-cable arc or conduit, so T remains free behind the crescent |
 | **R6P split grommet** | `lx521_top_proud_addon_um_grommet_half_{a,b}.stl` | standard B2/C7/V0/V1 R14 outlet; **not V1L** | TPU; short curved D8 shank follows the final bore and seats at rear z=0 |
 | **V1L split grommet** | `lx521_top_v1l_addon_um_grommet_half_{a,b}.stl` | keyed V1L 283° outlet only | TPU; Ø8 curved body / Ø7.1 bore / 2.5 mm insertion / Ø13 × 2 flange seated at rear z=6.8; no fastener |
 
 B2 addons on V0/V1: NO (knife/thin walls — no receiver seats).
-V1 addons on B2/V0: NO (the zc=12.5/14.4 pockets exist only on the V1 vase).
+V1 addons on B2/V0: NO (the zc=12.5/14.4 captive stations exist only on the V1 vase).
 R6F add-ons fit only V1LF interfaces and never fit R6P parts. The floor stem,
 foot and NL8 panel are state-owned LM geometry, not an add-on.
 No acoustic perimeter skin is emitted in R6F: that absence is the
@@ -98,6 +99,17 @@ defined alignment or threaded interfaces as an optional module, must
 not obstruct any buried tunnel or covered Z bump, and may
 not add material back to the mandatory collars. Magnets may register a
 module but may never be counted in its structural load path.
+
+All released magnet-bearing variants now share the coupon-proven captive
+system: D5.0 × 2.0 magnet, Ø5.20 × 2.10 internal cavity, 0.45 mm axial skin on
+both faces, vertically open loading cradle, and support-free 45° roof. Every
+part prints front-face-down. Exact pause heights, grouped sites, local-axis
+polarity, and counts live in
+[`CAPTIVE_MAGNET_PAUSE_MANIFEST.md`](review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md); STL files cannot carry
+pause markers. Concept-only drawings, diagnostic renders, historical fit
+coupons, and the unreleased V0 scarf mate are not release outputs and are not
+converted as production parts. The `coupons/v1lf_ae_embed/` coupon remains the
+reference implementation rather than an installed assembly component.
 
 ## Compatibility matrix (bottom+mids x vase)
 
@@ -142,7 +154,9 @@ confirmation.
 The V1LF LM/UM/T physical cables are Ø7.8/Ø7.0/Ø5.2. UM uses a printed
 Ø8.2 passage only through LM; T uses a printed Ø6.0 passage through LM and
 UM. The LM cable floats over a short 20.15 mm radial
-span at 269.5° behind the carrier with no printed micro-duct, cover, or cutter;
+span at 269.5° behind the carrier with no printed micro-duct or cover; a
+minimum-radius 3.96 mm rear-open relief is subtracted from the LM carrier
+without moving the cable centerline;
 No-floor UM/T cables enter through two centered rear bridge-plate mouths at
 `(+5,82,5.3)` and `(-5,82,5.3)` and rise internally before the LM ring;
 floor mode continues LM/UM/T through the three buried integral-stem lanes.
@@ -160,7 +174,7 @@ and each has a full-width solid saddle from its conduit roof to the applicable
 blind-bore floor with no added rear depth. Continuous full-width longitudinal
 webs back the LM-owned low runs and the UM-owned T low run to their seat
 membranes, eliminating both shoulder cavities beside the 328°/58° UM
-bypasses outside the exact D6 lumen, blind-bore, flush-magnet and half-lap
+bypasses outside the exact D6 lumen, blind-bore, captive-magnet and half-lap
 interface voids. Every surviving
 buried span retains a 0.8 mm minimum wall and 0.85 mm seat roof. There are no
 cable windows in those printed spans; the specified UM and T free spans are
@@ -230,27 +244,27 @@ identity, coupon evidence, structural proof and signed authorization in
 * R6F tweeter crescent: 2x rear-driven M3 screws at x=±24, y=421.5 into
   blind Ø4.6 × 4.0 insert receivers in the crescent half-laps. The
   acoustic front remains uninterrupted.
-* R6F alignment: 6x D5 × 2 N52 magnets in the core's surface-normal
-  Ø5.2 × 2.2 pockets (four LM + two UM; three total per physical side).
-  Preserve the upper flush LM ring sites at 64°/116° with at least 2.2 mm
-  insert gap. The lower LM sites are face-flush in the shared straight base
+* R6F alignment: 6x D5 × 2 N52 magnets in the core's surface-normal captive
+  Ø5.20 × 2.10 cavities (four LM + two UM; three total per physical side).
+  Preserve the upper LM ring axes at 64°/116° with the validated insert/route
+  clearances. The lower LM sites remain in the shared straight base
   faces at `(x,y,z)=(±32,18,12.55)`, with left/right outward normals
   `(-1,0)`/`(1,0)` and verified buried-route and bridge/integral-stand
-  clearance. UM keeps its
-  flush 50.5°/129.5° sites at z=15.1 to keep
-  at least 1.1 mm from the conservative T-cover envelope, a 0.2 mm radial
-  floor and a 0.6 mm front skin. Hold every magnet flush during bonding;
-  the extra 0.2 mm pocket depth is adhesive allowance, not a bottoming datum.
-  No site has a proud ear. Keep a marked polarity standard:
-  core pole OUT, add-on pole IN. Magnets are alignment/anti-rattle
+  clearance. UM keeps its 50.5°/129.5° axes at z=15.1. Ring-radial stations
+  use the local +0.60 mm outward backing boss required to avoid the flange
+  seat. Every magnet is inserted at its manifest pause and buried between two
+  0.45 mm skins under a 45° roof; there is no glue, access hole, or proud ear.
+  Keep a marked polarity standard and use the manifest's local-axis table for
+  mirrored parts. Magnets are alignment/anti-rattle
   devices only and receive **zero structural load credit**. Ac/Ae use all
   three sites on each side through matching LM-lower, LM-upper, and UM
-  receivers.
+  receivers. The 0.05 mm mating gap and two skins give 0.95 mm nominal
+  magnet-face separation.
 * Tweeter pair (when its carrier is fitted): M4 through-bolts + nyloc,
   clamping the crescent.
-* R6P magnets: D5 x 2 N52 discs in Ø5.2 × 2.2 base and receiver
-  pockets. Fixture both magnets flush while bonding so they meet level;
-  bottoming either disc would leave it recessed by the 0.2 mm adhesive allowance.
+* R6P magnets: D5 x 2 N52 discs in the same Ø5.20 × 2.10 captive base
+  and receiver cavities. Print front-face-down, insert them only at the
+  manifest pauses, and verify seating and polarity before the roof is closed.
 
 ## R6F structural screen and release gate
 

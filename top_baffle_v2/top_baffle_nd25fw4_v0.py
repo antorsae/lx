@@ -7,32 +7,148 @@ outline: 18.3 -> ~0.5 over W=2.8, fading out at the seam-B land
 taper above y~400. No other keeps needed: the flange seat and M3
 pilots are front-side features.
 
-Magnet interface: one D5.2 x 2.2 FLUSH pocket per side, bored vertically
-into the REAR face on the lower corner triangle at (+-46, 324) --
-plan-clear of every duct (>=1.5 past radii) and of the bevel band; scarf
-attachments add a receiver there plus outline-kink registration.
-Checked by test_v0_duct_corridor (rear z-containment)."""
+Magnet interface: one fully buried D5.2 x 2.10 cavity per side.  The legacy
+rear-axis XY sites (+-46, 324) were invalid: their centres sat 5.263 mm
+outside the B2 flare, leaving even the complete cavity detached.  The first
+correction moved both sites along the exact flare inward normal to
+(+-37.697, 326.470), leaving the R3.20 captive land 0.20 mm inside the
+unchanged acoustic outline.  Final route inspection rejected its mirrored
+left station: it was only 2.605 mm from the T centerline, versus the required
+8.0 mm (R3.20 land + 3.30-mm T half-width + 1.50-mm web).  V0 has no released
+mate, so the safe final adaptation retains the already-clear right station
+and moves only the left station to (-7.250, 321.200), below the D82 cutout and
+between the seam-B dovetails.  The all-constraint optimizer's shorter
+(-7.500, 322.300) candidate left only 0.219 mm beyond the cutout rule and
+0.241 mm beyond the seam rule.  The selected point is only 0.416 mm farther
+from the rejected station (30.899 mm total), but raises those margins to
+1.263 and 0.549 mm respectively; its nearest pilot margin is 12.363 mm and
+its sampled T-route margin is 18.014 mm.  A local full-depth circular
+keep restores only each land through the rear bevel; both keeps are wholly
+contained by the original B2 solid, so they neither grow the front outline
+nor fill the UM cutout or an insert bore.  V0 prints front-face-down:
+the 0.45-mm rear skin occupies z=0..0.45, a 45-degree conical closure
+occupies z=0.45..3.05, and the cylindrical cavity occupies z=3.05..5.15.
+This shifts the magnet centre from the former flush-pocket z=1.00 datum to
+z=4.10 (+3.10 mm inward) while keeping the +Z axis.  The final sites are
+plan-clear of every duct; the local keeps prevent the rear bevel from
+interrupting their printable land.  No released V0 mate exists;
+marked-pole direction is provisionally outward/rear (-Z).
+Checked by test_v0_duct_corridor (rear z-containment) and
+test_v0_captive_geometry (final BREP land/cavity/skin containment)."""
 
 from __future__ import annotations
 
 import math
 
-from build123d import Cylinder, Plane, Polyline, Pos, Wire, loft, make_face, mirror
+from build123d import (
+    Align,
+    Cylinder,
+    Plane,
+    Polyline,
+    Pos,
+    Wire,
+    loft,
+    make_face,
+    mirror,
+)
 
 from top_baffle_nd25fw4 import THICKNESS_MM, baffle_solid
-from top_baffle_nd25fw4_b import (
-    MAG_FLUSH_DEPTH_MM,
-    MAG_POCKET_D_MM,
-    TWEETER_DROP_MM,
-)
+from top_baffle_nd25fw4_b import TWEETER_DROP_MM
 from top_baffle_nd25fw4_b2 import OUTLINE_B2
+from captive_magnets import (
+    CAVITY_DIAMETER_MM,
+    DEFAULT_SPEC,
+    apply_axial_cavity,
+)
+
+PRINT_ORIENTATION = "front-face-down"
 
 T_EDGE_MM = 0.5
 W_SLIDE_MM = 2.8  # capped by the shared
 # O6.0 T duct (z=11.5) hugging the left walls at ~1.6
 _FLARE = ((38.113, 315.947), (60.654, 391.709))
 _CHAMF = ((60.654, 391.709), (10.081, 418.176))
-V0_MAGNET_SITES = [(46.0, 324.0)]   # right side; mirrored
+
+# The former centres did not intersect the flare at all: their perpendicular
+# distance outside the exact B2 line was 5.263036 mm, so even the R2.60
+# cavity remained detached by 2.663036 mm and the qualified R3.20 land by
+# 2.063036 mm.  There is no released V0 mate whose XY must be preserved.
+# The first correction translated both along the exact inward normal just far
+# enough to put the complete land inside the existing outline with 0.20 mm of
+# Boolean/print connection.  That was geometrically connected but not route-
+# safe on the mirrored left: its center was only 2.605 mm from the T route.
+# With no released mate, retain the clear right site and shift only the left
+# site to the connected strip below the D82 cutout and between the seam-B
+# dovetails.  A 0.10-mm all-constraint grid found the minimum-displacement
+# 0.20-mm-qualified candidate at (-7.50, 322.30), but its cutout/seam margins
+# were only 0.219/0.241 mm.  Select (-7.25, 321.20): only 0.416 mm more travel,
+# with 1.263/0.549 mm cutout/seam margins, 12.363 mm beyond the nearest-pilot
+# rule and 18.014 mm beyond the T-route rule.  Each full-depth circular keep
+# stays inside the old B2 volume;
+# unlike a rear-only boss it cannot start as an unsupported island when the
+# part is printed front-face-down.
+V0_LEGACY_MAGNET_SITES = {
+    "right": (46.0, 324.0),
+    "left": (-46.0, 324.0),
+}
+V0_CAPTIVE_LAND_RADIUS_MM = (
+    CAVITY_DIAMETER_MM / 2.0 + DEFAULT_SPEC.side_wall_margin_mm)
+V0_CAPTIVE_LAND_OUTLINE_MARGIN_MM = 0.20
+
+
+def _flare_outward_normal():
+    (x0, y0), (x1, y1) = _FLARE
+    dx, dy = x1 - x0, y1 - y0
+    length = math.hypot(dx, dy)
+    return dy / length, -dx / length
+
+
+def _flare_signed_distance(point):
+    """Positive outside the right flare, negative inside the baffle."""
+    nx, ny = _flare_outward_normal()
+    return ((point[0] - _FLARE[0][0]) * nx
+            + (point[1] - _FLARE[0][1]) * ny)
+
+
+V0_LEGACY_SITE_OUTSIDE_MM = _flare_signed_distance(
+    V0_LEGACY_MAGNET_SITES["right"])
+V0_LEGACY_CAVITY_DETACHMENT_MM = (
+    V0_LEGACY_SITE_OUTSIDE_MM - CAVITY_DIAMETER_MM / 2.0)
+V0_LEGACY_LAND_DETACHMENT_MM = (
+    V0_LEGACY_SITE_OUTSIDE_MM - V0_CAPTIVE_LAND_RADIUS_MM)
+V0_LEGACY_TO_FIRST_SHIFT_MM = (
+    V0_LEGACY_SITE_OUTSIDE_MM
+    + V0_CAPTIVE_LAND_RADIUS_MM
+    + V0_CAPTIVE_LAND_OUTLINE_MARGIN_MM)
+_V0_FLARE_NX, _V0_FLARE_NY = _flare_outward_normal()
+_V0_FIRST_RIGHT = (
+    round(V0_LEGACY_MAGNET_SITES["right"][0]
+          - V0_LEGACY_TO_FIRST_SHIFT_MM * _V0_FLARE_NX, 6),
+    round(V0_LEGACY_MAGNET_SITES["right"][1]
+          - V0_LEGACY_TO_FIRST_SHIFT_MM * _V0_FLARE_NY, 6),
+)
+V0_FIRST_CORRECTION_MAGNET_SITES = {
+    "right": _V0_FIRST_RIGHT,
+    "left": (-_V0_FIRST_RIGHT[0], _V0_FIRST_RIGHT[1]),
+}
+V0_MAGNET_SITES = {
+    "right": V0_FIRST_CORRECTION_MAGNET_SITES["right"],
+    "left": (-7.250, 321.200),
+}
+V0_REJECTED_LEFT_TO_FINAL_SHIFT_MM = math.dist(
+    V0_FIRST_CORRECTION_MAGNET_SITES["left"], V0_MAGNET_SITES["left"])
+V0_MAGNET_LAND_OUTLINE_CLEARANCE_MM = {
+    side: (-_flare_signed_distance((abs(x), y))
+           - V0_CAPTIVE_LAND_RADIUS_MM)
+    for side, (x, y) in V0_MAGNET_SITES.items()
+}
+V0_TS_REQUIRED_CENTER_CLEARANCE_MM = (
+    V0_CAPTIVE_LAND_RADIUS_MM + 3.30 + 1.50)
+V0_KEEPOUT_QUALIFICATION_ALLOWANCE_MM = 0.20
+V0_OLD_FLUSH_MAGNET_CENTER_Z_MM = 1.00
+V0_CAPTIVE_MAGNET_CENTER_Z_MM = 4.10
+V0_MAGNET_INWARD_SHIFT_MM = (
+    V0_CAPTIVE_MAGNET_CENTER_Z_MM - V0_OLD_FLUSH_MAGNET_CENTER_Z_MM)
 
 
 def _smoothstep(u):
@@ -127,25 +243,52 @@ def slide_cutters():
     return [right, mirror(right, about=Plane.YZ)]
 
 
-def magnet_pocket_cutters():
-    """Vertical D5.2 x 2.2 pockets in the rear face for D5x2 magnets.
+def v0_magnet_backing(x, y):
+    """Full-depth printable keep for one final captive station.
 
-    The 0.2 mm axial allowance is an adhesive bed; hold each magnet flush
-    with the rear face while it cures instead of bottoming it.
+    The R3.20 cylinder is exactly the helper-required axial plan land.  The
+    retained right station has the minimum 0.20-mm outline inset; the route-
+    corrected left station is farther inboard.  Both broadly overlap the
+    un-bevelled inner field, making one connected, front-supported solid;
+    each keep only restores material that ``slide_cutters`` removes from the
+    rear.
     """
-    overshoot = 0.5
-    length = MAG_FLUSH_DEPTH_MM + overshoot
-    center_z = (MAG_FLUSH_DEPTH_MM - overshoot) / 2.0
-    return [Pos(sx * x, y, center_z) * Cylinder(
-                MAG_POCKET_D_MM / 2.0, length)
-            for sx in (1.0, -1.0) for x, y in V0_MAGNET_SITES]
+    return Pos(x, y, 0.0) * Cylinder(
+        V0_CAPTIVE_LAND_RADIUS_MM,
+        THICKNESS_MM,
+        align=(Align.CENTER, Align.CENTER, Align.MIN),
+    )
+
+
+def apply_v0_magnets(part):
+    """Apply the two front-down, rear-axis captive V0 cavities.
+
+    V0 has no released mating print, so ``pair_axis=-Z`` records the
+    provisional marked-pole-outward/rear convention without claiming a
+    validated attraction pair.
+    """
+    result = part
+    records = []
+    for side, (x, y) in V0_MAGNET_SITES.items():
+        result, tools = apply_axial_cavity(
+            result,
+            name=f"v0_rear_axis_{side}",
+            face=(x, y, 0.0),
+            inward=(0.0, 0.0, 1.0),
+            pair_axis=(0.0, 0.0, -1.0),
+            print_up=(0.0, 0.0, -1.0),
+            bed_datum=(0.0, 0.0, THICKNESS_MM),
+            backing_additions=(v0_magnet_backing(x, y),),
+        )
+        records.append(tools)
+    return result, tuple(records)
 
 
 def v0_solid():
     part = baffle_solid(OUTLINE_B2, TWEETER_DROP_MM)
-    for c in slide_cutters() + magnet_pocket_cutters():
+    for c in slide_cutters():
         part -= c
-    return part
+    return apply_v0_magnets(part)[0]
 
 
 def gen_step():

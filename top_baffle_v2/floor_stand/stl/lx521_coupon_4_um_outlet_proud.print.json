@@ -1,0 +1,49 @@
+{
+  "part": "lx521_coupon_4_um_outlet_proud",
+  "pre_translation_bbox_min_mm": [
+    -6.0000001000034375,
+    -323.0000001,
+    -18.300000099999966
+  ],
+  "print_orientation": "front_face_down",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      6.0000001000034375
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      323.0000001
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999966
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "lx521_coupon_4_um_outlet_proud.stl",
+  "stl_bytes": 140084,
+  "stl_origin_translation_mm": [
+    6.0000001000034375,
+    323.0000001,
+    18.300000099999966
+  ],
+  "stl_sha256": "7c1a63a3b0448f1a62dd6b5a154b03f976806b54e7113e249350bceb49eb3628",
+  "variant_export": "coupon"
+}

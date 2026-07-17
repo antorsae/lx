@@ -1,12 +1,13 @@
 """Export print-calibration and physical-fit coupons as separate STLs.
-STL files (lx521_coupon_*.stl) -- one body per file, each laid flat on
-the bed so the slicer places it without reorientation.
+STL files (lx521_coupon_*.stl) -- one body per file, each transformed by the
+same source X=180-degree front-face-down process orientation as the released
+baffle pieces. The slicer may translate/arrange them but must not reorient.
 
   1 fit_plate    dovetail female pocket (grown by the working
                  CLEARANCE_MM) + O6.4 x 6.8 (W22) and O4.6 x 4.0
-                 (10F) heat-set bores opening UP + the V1 upper-pocket
-                 wall section (8.2 wall, O5.2 x 2.2 magnet pocket: 1.3
-                 front / 1.7 floor walls)
+                 (10F) heat-set bores opening UP + the V1 upper captive
+                 magnet wall section (D5.20 x 2.10 cavity, 0.45-mm
+                 interface/inner skins and a 45-degree closing roof)
   2 fit_key      loose male dovetail key (no clearance) -- tune X-Y
                  hole compensation until it slides snug into the plate
   3 fish_entry   the no-foot entry cluster: twin T ramps, feeders and
@@ -50,8 +51,18 @@ import subprocess
 import sys
 import tempfile
 
+from front_down_contract import sidecar_path_for_stl, write_print_sidecar
+
 NECK, HEAD, DEPTH = 10.0, 14.0, 6.0   # seam-B key proportions
 BED_MM = 256.0
+
+# Rot(X=180) can leave a mathematically-zero coordinate as tiny, face-local
+# float noise in OCC's binary STL tessellation.  Exact edge-parity then sees
+# an artificial seam even though the source BREP is a valid solid.  Keep this
+# identical to the production piece/wing exporters: 0.2 nm is 250,000 times
+# below the 0.05-mm mesh deflection, so this is rigid-transform
+# canonicalization, never vertex welding or generic mesh repair.
+STL_TRANSFORM_ZERO_EPSILON_MM = 2.0e-7
 
 
 def _validate_binary_stl(path: Path) -> None:
@@ -65,6 +76,55 @@ def _validate_binary_stl(path: Path) -> None:
         raise RuntimeError(
             f"temporary coupon STL invalid: triangles={triangles} "
             f"bytes={path.stat().st_size} expected={expected}")
+
+
+def _canonicalize_transform_zeros(
+        path: Path, epsilon_mm: float = STL_TRANSFORM_ZERO_EPSILON_MM) -> int:
+    """Replace only sub-nanometre transform roundoff with exact +0.0."""
+    if epsilon_mm <= 0.0:
+        raise ValueError("STL transform-zero epsilon must be positive")
+    data = bytearray(path.read_bytes())
+    if len(data) < 84:
+        raise RuntimeError(f"temporary coupon STL is truncated: {path}")
+    triangles = struct.unpack_from("<I", data, 80)[0]
+    expected = 84 + 50 * triangles
+    if len(data) != expected:
+        raise RuntimeError(
+            f"temporary coupon STL invalid: triangles={triangles} "
+            f"bytes={len(data)} expected={expected}")
+    changed = 0
+    for triangle in range(triangles):
+        vertex_base = 84 + 50 * triangle + 12
+        for coordinate in range(9):
+            offset = vertex_base + 4 * coordinate
+            value = struct.unpack_from("<f", data, offset)[0]
+            if value != 0.0 and abs(value) <= epsilon_mm:
+                struct.pack_into("<f", data, offset, 0.0)
+                changed += 1
+    if changed:
+        path.write_bytes(data)
+    return changed
+
+
+def _strict_mesh_facts(path: Path) -> dict[str, int | float]:
+    """Apply the unchanged release topology gate before publication."""
+    # Lazy import keeps ordinary source discovery free of checker work while
+    # retaining one authoritative edge/component implementation.
+    from check_manifold import stl_diagnostics
+
+    facts = stl_diagnostics(path)
+    defect_keys = (
+        "open", "over_shared", "winding", "degenerate", "duplicates",
+        "nonfinite", "zero_volume", "negative_volume", "component_error",
+    )
+    defects = {key: facts[key] for key in defect_keys if facts[key]}
+    if defects:
+        raise RuntimeError(
+            f"temporary coupon STL fails strict manifold contract: "
+            f"{path.name}: {defects}; triangles={facts['triangles']} "
+            f"components={facts['components']}")
+    return facts
+
 
 COUPON_GROUPS = (
     "fit_1_2",
@@ -120,11 +180,7 @@ def _fit_pieces() -> dict:
         _grown,
         _trapezoid_up,
     )
-    from top_baffle_nd25fw4_b import (
-        MAG_PIN_BASE_DEPTH_MM,
-        MAG_POCKET_D_MM,
-        _magnet_pocket,
-    )
+    from captive_magnets import apply_wall_cavity
 
     t = THICKNESS_MM
     plate = Pos(0.0, 20.0, t / 2.0) * Box(92.0, 40.0, t)
@@ -134,15 +190,21 @@ def _fit_pieces() -> dict:
     # heat-set bores from the top face (open UP for easy insert setting)
     plate -= Pos(0.0, 20.0, t - 3.2) * Cylinder(3.2, 7.2)  # O6.4 x 6.8
     plate -= Pos(14.0, 20.0, t - 2.0) * Cylinder(2.3, 4.2)
-    # V1 upper-pocket wall section: ledge with local rear at z=10.1
-    # (8.2 wall), O5.2 x 2.2 pocket at zc=14.4 bored from the y=0 edge:
-    # front wall 18.3-(14.4+2.6)=1.3, floor wall 14.4-2.6-10.1=1.7.
-    # Its 0.2 mm axial allowance is for adhesive; set the D5x2 magnet
-    # flush with the face rather than bottoming it.
-    plate -= Pos(28.0, 5.0, 10.1 / 2.0 - 0.5) * Box(24.0, 12.0, 10.1 + 1.0)
-    plate -= _magnet_pocket(
-        28.0, 0.0, 0.0, -1.0, 14.4,
-        MAG_POCKET_D_MM, MAG_PIN_BASE_DEPTH_MM, into_base=True,
+    # V1 upper wall station, kept as a release regression coupon.  It now
+    # uses the exact production pause-and-bury cradle/roof rather than an
+    # externally accessible glue pocket.
+    # Do not retain the old exposed-pocket inspection notch here.  The
+    # qualified loading chimney already keeps the cavity open through the
+    # insertion layer; removing the rear slab through z=10.1 would delete
+    # the gable apex at z=9.1 and its complete 0.45-mm post-apex seal.
+    plate, _coupon_tools = apply_wall_cavity(
+        plate,
+        name="coupon1_v1_upper_base",
+        face=(28.0, 0.0, 14.4),
+        outward=(0.0, -1.0, 0.0),
+        owner="base",
+        print_up=(0.0, 0.0, -1.0),
+        bed_datum=(0.0, 0.0, t),
     )
     # one clean extrusion, z 0..t: trapezoid + a grip handle on the
     # HEAD (wide) side, so when the key drops into the plate's edge
@@ -198,6 +260,10 @@ def _fishing_pieces(target_mode: str, only: str | None = None) -> dict:
             from top_baffle_nd25fw4_v1lf import lm_carrier, um_carrier
             blk = (um_carrier() if special == "um_core"
                    else lm_carrier()) & crop
+            # Coupon 7's current x=-82..-22/y=84..141 seat crop contains no
+            # released captive site (the lower LM pair is at y=18).  Keep the
+            # diagnostic crop unchanged and do not add disconnected fill
+            # lands outside it.
         else:
             blk = crop
         if special not in {"lm_core", "v1lf_bump", "um_core"}:
@@ -207,20 +273,28 @@ def _fishing_pieces(target_mode: str, only: str | None = None) -> dict:
     return out
 
 
-def _lay_flat(solid):
-    """Rotate onto the flattest footprint (min Z height), preferring the
-    native pose on ties, then drop bbox-min to the origin."""
+def _front_face_down(solid):
+    """Return a coupon and its exact production front-down transform."""
     from build123d import Pos, Rot
 
-    best_h = solid.bounding_box().size.Z
-    best = solid
-    for rx, ry in ((90.0, 0.0), (0.0, 90.0), (180.0, 0.0)):
-        cand = Rot(X=rx, Y=ry) * solid
-        h = cand.bounding_box().size.Z
-        if h < best_h - 0.5:
-            best_h, best = h, cand
-    bb = best.bounding_box()
-    return Pos(-bb.min.X, -bb.min.Y, -bb.min.Z) * best
+    oriented = Rot(X=180.0) * solid
+    bb = oriented.bounding_box()
+    translation = (
+        -float(bb.min.X), -float(bb.min.Y), -float(bb.min.Z))
+    transform = {
+        "print_orientation": "front_face_down",
+        "source_to_stl_matrix": [
+            [1.0, 0.0, 0.0, translation[0]],
+            [0.0, -1.0, 0.0, translation[1]],
+            [0.0, 0.0, -1.0, translation[2]],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+        "rotation_deg": {"x": 180.0, "z": 0.0},
+        "pre_translation_bbox_min_mm": [
+            float(bb.min.X), float(bb.min.Y), float(bb.min.Z)],
+        "stl_origin_translation_mm": list(translation),
+    }
+    return Pos(*translation) * oriented, transform
 
 
 def _clocking_piece(target_mode: str):
@@ -270,6 +344,10 @@ _EXPECTED_COUPON_FILES = {
     "lx521_coupon_12_v1lf_closed_bore_bump.stl",
 }
 
+_EXPECTED_COUPON_SIDECARS = {
+    sidecar_path_for_stl(name).name for name in _EXPECTED_COUPON_FILES
+}
+
 
 def _pieces_for_group(group: str, target_mode: str):
     if group == "fit_1_2":
@@ -295,9 +373,9 @@ def _prune_legacy_coupon_outputs(stl_dir: Path) -> None:
         "lx521_coupon_14_v1lf_grommet_receiver.stl",
     }
     for name in stale:
-        path = stl_dir / name
-        if path.exists():
-            path.unlink()
+        stl_path = stl_dir / name
+        for path in (stl_path, sidecar_path_for_stl(stl_path)):
+            path.unlink(missing_ok=True)
 
 
 def _run_group_guarded(group: str, stl_dir: Path, target_mode: str) -> None:
@@ -326,13 +404,13 @@ def _export_group(group: str, stl_dir: Path, target_mode: str) -> None:
                 f"coupon {name}: expected one valid source solid; "
                 f"valid={solid.is_valid} volumes="
                 f"{[item.volume for item in raw_solids]}")
-        laid = _lay_flat(solid)
+        laid, print_transform = _front_face_down(solid)
         laid_solids = list(laid.solids())
         size = laid.bounding_box().size
         if (not laid.is_valid or len(laid_solids) != 1
                 or laid_solids[0].volume <= 0.01):
             raise RuntimeError(
-                f"coupon {name}: lay-flat transform damaged topology")
+                f"coupon {name}: front-down transform damaged topology")
         if max(size.X, size.Y, size.Z) > BED_MM:
             raise RuntimeError(
                 f"coupon {name}: {size.X:.2f} x {size.Y:.2f} x "
@@ -340,17 +418,28 @@ def _export_group(group: str, stl_dir: Path, target_mode: str) -> None:
         out = stl_dir / f"lx521_coupon_{name}.stl"
         temporary = out.with_name(
             f".{out.stem}.{os.getpid()}.tmp.stl")
+        canonicalized_zeros = 0
         try:
             export_stl(
                 laid, str(temporary), tolerance=0.05,
                 angular_tolerance=0.2)
             _validate_binary_stl(temporary)
+            canonicalized_zeros = _canonicalize_transform_zeros(temporary)
+            mesh_facts = _strict_mesh_facts(temporary)
             temporary.replace(out)
         finally:
             temporary.unlink(missing_ok=True)
+        write_print_sidecar(
+            out,
+            part=out.stem,
+            transform=print_transform,
+            extra={"variant_export": "coupon"},
+        )
         print(
             f"wrote {out.name}: {size.X:.2f} x {size.Y:.2f} x "
-            f"{size.Z:.2f} mm")
+            f"{size.Z:.2f} mm; "
+            f"mesh {mesh_facts['triangles']} tris/strict; "
+            f"transform-zero fixes {canonicalized_zeros}")
 
 
 def main() -> None:
@@ -399,7 +488,15 @@ def main() -> None:
                     "staged coupon set mismatch: "
                     f"missing={sorted(_EXPECTED_COUPON_FILES - actual)} "
                     f"extra={sorted(actual - _EXPECTED_COUPON_FILES)}")
-            for name in sorted(_EXPECTED_COUPON_FILES):
+            actual_sidecars = {
+                path.name for path in stage_dir.glob("*.print.json")}
+            if actual_sidecars != _EXPECTED_COUPON_SIDECARS:
+                raise RuntimeError(
+                    "staged coupon print-sidecar set mismatch: "
+                    f"missing={sorted(_EXPECTED_COUPON_SIDECARS - actual_sidecars)} "
+                    f"extra={sorted(actual_sidecars - _EXPECTED_COUPON_SIDECARS)}")
+            for name in sorted(
+                    _EXPECTED_COUPON_FILES | _EXPECTED_COUPON_SIDECARS):
                 (stage_dir / name).replace(stl_dir / name)
         _prune_legacy_coupon_outputs(stl_dir)
         return

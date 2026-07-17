@@ -1,0 +1,49 @@
+{
+  "part": "lx521_coupon_6_fish_foot",
+  "pre_translation_bbox_min_mm": [
+    -20.0000001,
+    -32.18090184122213,
+    -18.3000001
+  ],
+  "print_orientation": "front_face_down",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      20.0000001
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      32.18090184122213
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.3000001
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "lx521_coupon_6_fish_foot.stl",
+  "stl_bytes": 567084,
+  "stl_origin_translation_mm": [
+    20.0000001,
+    32.18090184122213,
+    18.3000001
+  ],
+  "stl_sha256": "4862b7c422716202a865e3c1d71cb56df449e5703d04a8be8f966fd253f3e325",
+  "variant_export": "coupon"
+}

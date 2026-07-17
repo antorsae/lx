@@ -1,0 +1,49 @@
+{
+  "part": "lx521_coupon_12_v1lf_closed_bore_bump",
+  "pre_translation_bbox_min_mm": [
+    61.99999989999998,
+    -180.00000010000005,
+    -18.300000099999984
+  ],
+  "print_orientation": "front_face_down",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      -61.99999989999998
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      180.00000010000005
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999984
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "lx521_coupon_12_v1lf_closed_bore_bump.stl",
+  "stl_bytes": 38184,
+  "stl_origin_translation_mm": [
+    -61.99999989999998,
+    180.00000010000005,
+    18.300000099999984
+  ],
+  "stl_sha256": "f3d1af4a5c38322618fd9162d3e81d177ff2216bdb61b0480cd4aaed22d11e88",
+  "variant_export": "coupon"
+}

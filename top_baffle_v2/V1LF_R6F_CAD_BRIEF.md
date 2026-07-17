@@ -10,22 +10,33 @@
 - Units and frame: millimetres; existing baffle XY frame is preserved;
   the LM centre is `(0, 200.981)` and the UM centre is `(0, 366.081)`;
   +Z points toward the acoustic/front face.
+- Print orientation: every released printable R6F piece, magnet-bearing or
+  not, prints front-face-down, with only in-plane bed rotation. Pause heights
+  and polarity for magnet-bearing pieces come from
+  `review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md`, not
+  nominal CAD Z arithmetic.
 - Mandatory core: minimum LM and UM load-bearing rings, two pairs of tiny
   rounded bolted ears, six magnet sites used only for alignment, an UM route
-  buried only in LM, and a T route buried only in LM/UM. Actual Ø5 x 2
-  magnets use the global
-  Ø5.2 x 2.2 pockets; their extra 0.2 mm depth is adhesive allowance and the
-  magnets must be held flush rather than bottomed during bonding. Preserve the
-  upper LM pair buried flush directly in the R113 lip at world polar 64/116
-  deg (±26 deg from top), with no ear and at least 2.2 mm pocket-edge to
-  nearest insert-pad edge. Place the lower LM pair face-flush in the common
+  buried only in LM, and a T route buried only in LM/UM. Actual Ø5.0 x 2.0
+  magnets use the global pause-and-bury captive system: Ø5.20 x 2.10 internal
+  cavity, 0.45 mm plastic skin at each axial face, vertically open loading
+  cradle, and self-supporting 45-degree roof. The finished magnet has no glue
+  or external access opening. Preserve the upper LM pair at world polar 64/116
+  deg (±26 deg from top), with no ear and at least 2.2 mm cavity-edge to
+  nearest insert-pad edge. Preserve the lower LM pair axes in the common
   straight base side faces at `(x,y,z)=(±32,18,12.55)`, with left/right
   outward normals `(-1,0)`/`(1,0)`. Both stand states expose those exact
-  base-side datums, and both pockets clear buried routes and the
+  base-side datums, and both cavities clear buried routes and the
   bridge/integral-stand load path. The
-  UM pair is also earless and flush at 50.5/129.5 deg, z=15.1, with
-  1.1 mm T-cover clearance, 0.2 mm radial floor and 0.6 mm front skin. The
-  D7.8 LM lead is a modeled free span with no printed micro-duct. The UM cable
+  UM pair is also earless at 50.5/129.5 deg, z=15.1. LM-upper and UM
+  ring-radial stations use a local +0.60 mm outward backing boss because an
+  inward captive envelope would collide with the corresponding flange seat.
+  This preserves the interface-plane site and axis. Opposing 0.45 mm skins
+  across the preserved 0.05 mm mating air gap put the nominal magnet faces
+  0.95 mm apart. Magnets receive zero structural-load credit. The
+  D7.8 LM lead is a modeled free span with no printed micro-duct; the LM
+  carrier has only a minimum-radius 3.96 mm rear-open subtractive clearance
+  around that immutable centerline. The UM cable
   is free behind the UM carrier with no printed rear duct; T is free behind
   the tweeter crescent, which owns no printed cable arc.
   No-floor mode additionally owns one monolithic fused bridge-interface tail;
@@ -50,11 +61,11 @@
   retention/load credit. Assemble both front faces down on one flat datum and
   verify tongue/socket fit, full seating, coplanarity and route-seam continuity.
   The installed LM driver flange and all normal LM fasteners are the service
-  splice across the seam. The no-floor measured Z26/Z45 X×Y footprints are
-  `198.79×205.51 / 210.47×210.47 mm`. The floor bottom inherits the complete
-  stand and is oriented X=−90° onto its world-Y floor face with Z=0°
-  in-bed; generated validation requires both in-bed axes to remain ≤220 mm.
-  The top remains Z45° and ≤220 mm. Both buried
+  splice across the seam. Both optional halves in both stand states print
+  front-face-down with in-plane bed rotation only. Former Z26°/Z45° and
+  floor-bottom X=−90° footprint qualifications are superseded because
+  out-of-plane orientation cannot support the captive-magnet pause. Validate
+  each generated front-down footprint against the selected printer. Both buried
   cable lumens cross
   the seam and retain their final open sections.
 - Minimal carrier section: non-load annular slabs are deleted. Each driver
@@ -127,9 +138,11 @@
   LM carrier. The printed T passage is nominal Ø6.0 and exists in the LM and
   UM carriers only. Their complete physical validation solids remain UM Ø7.0
   and T Ø5.2 across both buried and free spans. The LM physical envelope is
-  Ø7.8, but it has no printed duct.
+  Ø7.8, but it has no printed duct: only a rear-open subtractive clearance
+  of radius 3.96 mm where the universal LM-lower owners overlap the free span.
 - Routing intent: LM uses a short 20.15 mm free radial span at 269.5 deg behind the
-  carrier with no printed micro-duct, cover, or cutter. Its centerline rises
+  carrier with no printed micro-duct or cover. A minimum-radius 3.96 mm
+  rear-open relief is subtracted without moving the cable centerline. It rises
   from z=0.40 to 3.80, beginning at R103 before the R95/D190 mouth, and
   retains 1.00 mm clearance to the deepest z=5.3 pad/web rear datum at the
   outer station.
@@ -148,7 +161,7 @@
   UM/T low runs and the UM-owned T low run to their seat membranes; in
   particular, neither longitudinal shoulder at the UM 328°/58° bypasses may
   contain a trapped cavity outside the exact D6 lumen, blind-bore,
-  flush-magnet and half-lap interface voids. Every surviving buried span retains a 0.8 mm minimum
+  captive-magnet and half-lap interface voids. Every surviving buried span retains a 0.8 mm minimum
   wall and 0.85 mm seat roof; no trapped roof-to-bore cavity, bore-jump, or
   unintended rear cable window is permitted. Printed ownership ends in
   plain flush mouths: UM becomes free after its LM-owned passage, and T
@@ -184,9 +197,10 @@
   the transform/bounds, and proves the transformed reference is contained by
   the stepped service proxy. This qualifies only the pinned W22 reference,
   not the installed custom U22. The final
-  V1LF emits no printed grommet or relief; the lead is already free behind
-  the UM carrier. Cable retention and physical terminal fit remain physical
-  checks.
+  V1LF emits no printed grommet or positive strain-relief component; the UM
+  lead is already free behind the UM carrier. That absence is distinct from
+  the short LM lead's minimal subtractive rear-open cable clearance. Cable
+  retention and physical terminal fit remain physical checks.
 - Qualification status: `PHYSICAL_MEASURE_REQUIRED = True`. The MU
   reference omits both terminals and the datasheet leaves their carrier
   and withdrawal geometry un-dimensioned. The modeled 12 mm pull equals
@@ -216,21 +230,25 @@
   vertical backfill limits through
   representative surviving UM/T conduit-plus-pilot bumps and explicit free
   rear UM/tweeter spans; candidate provenance
-  in each `v1lf_release_manifest.json`; physical evidence and per-state
+  in each `v1lf_release_manifest.json`; authoritative print pauses and
+  polarity in `review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md`; physical evidence and per-state
   signoff in `V1LF_PHYSICAL_QUALIFICATION.md`.
 - Validation: exact insert and bridge coordinates; opening-free front web,
   rear-entry bore/front-floor depth, and zero rear protrusion; state isolation;
   exact floor/no-floor LM-lower exterior equality at the front and throughout
   `z=6.8..18.3`, common world `Y=0` lower extent, coincident station widths,
   and equal 0.20 mm wing saddle clearance in both states;
-  six global Ø5.2 x 2.2 surface-normal magnet pockets and face-flush
-  bonding; preservation of the upper 64/116 deg LM ring pair; exact lower-LM
+  six global Ø5.20 x 2.10 surface-normal captive magnet cavities with 0.45 mm
+  axial skins, continuous printable cradles and 45-degree roofs; preservation
+  of the upper 64/116 deg LM ring pair and its +0.60 mm outward local backing;
+  exact lower-LM
   base-side faces at `(x,y,z)=(±32,18,12.55)` with outward ±X normals in
   both stand states; at least 2.2 mm upper-LM nearest-insert edge gap; absence
-  of LM proud ears; and three matching Ac/Ae receivers per physical side at
-  LM lower, LM upper, and UM;
-  free D7.8 LM span clearance with zero printed micro-duct and correct floor
-  lane continuation;
+  of LM proud ears; three matching Ac/Ae receivers per physical side at
+  LM lower, LM upper, and UM; preserved 0.05 mm mating gap and 0.95 mm nominal
+  magnet separation; manifest-derived pauses and mirrored polarity;
+  free D7.8 LM span clearance with zero printed micro-duct, an exact rear-open
+  subtractive relief, and correct floor lane continuation;
   physical-cable containment; insert/head/terminal/service clearance;
   minimum normal wall and eroded-outline containment on printed-owner spans;
   positive absence of a printed UM-carrier rear duct and crescent-owned T
@@ -244,8 +262,8 @@
   the ~75.23° tangential insertion axis, positive socket walls and driver
   clearance, full seating,
   zero envelope growth, no external feature, and zero standalone
-  retention/load credit; floor-bottom X=−90°/Z=0° and all optional
-  split footprints within 220 mm;
+  retention/load credit; front-face-down orientation and selected-printer
+  footprint clearance for all optional split parts;
   exact floor Y=0 and LM-axis-to-floor 200.981 mm; integral W64 stem/foot,
   R12 root, NL8 panel/service cavity and three buried continuations; positive
   absence of a separate floor-support artifact; combined-axis 4 kg

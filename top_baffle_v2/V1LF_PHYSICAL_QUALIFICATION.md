@@ -49,6 +49,20 @@ The candidate slicer preview must show continuous intended extrusion paths at
 both walls, and a state/process-matched printed tongue/socket coupon must pass
 before the keyed form can be authorized.
 
+Every released acoustic candidate prints front-face-down, whether or not it
+contains a magnet. The authoritative pause
+and polarity record is `review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md`; an STL alone is not a valid
+magnet-print instruction. At every pause, verify the marked pole and count,
+seat each disc below the completed layer, clear the future roof toolpath, and
+only then resume. A buried polarity error is irreversible and rejects the part.
+Magnets remain alignment/anti-rattle devices and receive zero structural-load
+credit even after this process passes.
+
+The approved station uses an actual D5.0 × 2.0 disc in an Ø5.20 × 2.10 cavity,
+0.45 mm axial skins on both faces, and a support-free 45° roof. No glue or
+external access is permitted. Across a 0.05 mm mating air gap, opposing magnet
+faces are nominally 0.95 mm apart.
+
 ## Per-state hardware and process identity
 
 Record each state explicitly even when both use the same item; “same as other
@@ -71,6 +85,8 @@ state” is acceptable only with the shared lot/serial/evidence identifier.
 | Slicer name / version and project-file hash | PENDING | PENDING |
 | Layer height, line width, wall count, top/bottom layers and infill; floor must record 100% local-solid modifier through complete stem/root | PENDING | PENDING |
 | Printed orientation and support settings for every qualified part | PENDING | PENDING |
+| `review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md` revision / SHA-256 and applied pause markers | PENDING | PENDING |
+| D5 × 2 magnet supplier, grade, lot and marked-pole convention | PENDING | PENDING |
 | Heat-set manufacturer, part number and lot for M3 and M5 inserts | PENDING | PENDING |
 | Insert tool, set temperature, dwell/process and operator | PENDING | PENDING |
 | Bolt, washer, nut, stock-bridge hardware, and floor anti-tip tether/anchor specification | PENDING | PENDING |
@@ -94,7 +110,7 @@ both the manifest and this qualification record.
 | Canonical monolithic LM carrier STL SHA-256 — mandatory shipped form | PENDING | PENDING |
 | Keyed LM bottom `lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl` SHA-256 — mandatory shipped form | PENDING | PENDING |
 | Keyed LM top `lx521_top_v1lf_optional_lm_keyed_2of2_top.stl` SHA-256 — mandatory shipped form | PENDING | PENDING |
-| Keyed split print orientation and verified in-bed footprint (bottom / top) | Floor bottom X=−90°, Z=0°; top Z=45°; record measured values, each axis ≤220 mm | Z26° bottom 198.79×205.51 mm / Z45° top 210.47×210.47 mm |
+| Keyed split print orientation and verified in-bed footprint (bottom / top) | Both front-face-down with in-plane rotation only; record actual selected-printer clearances | Both front-face-down with in-plane rotation only; record actual selected-printer clearances |
 | UM carrier STL SHA-256 | PENDING | PENDING |
 | Tweeter crescent STL SHA-256, if fitted | PENDING | PENDING |
 | Selected external cable-retention identity, if fitted | PENDING | PENDING |
@@ -103,6 +119,7 @@ both the manifest and this qualification record.
 | Stock bridge serial/revision and installation substrate | N/A — integral LM owns this load path | PENDING |
 | Floor anti-tip tether/anchor make, attachment points, rating and installation record | PENDING | N/A — no integral floor stand in this state |
 | Final slicer project / G-code / print-job hashes | PENDING | PENDING |
+| G-code evidence that each pause is the first roof-closing layer after the last fully open layer | PENDING | PENDING |
 | As-built mass and measured LM/UM centre spacing | PENDING | PENDING |
 | Deviations from candidate CAD, hardware or documented process | PENDING | PENDING |
 
@@ -133,7 +150,7 @@ than recording only “looks good.”
 | One-at-a-time pull at 0/3/6/9/12 mm with opposite side installed | PENDING | PENDING |
 | Installed LM / UM / T cable outer diameters | PENDING | PENDING |
 | Cable-manufacturer minimum static and repeated-flex bend radii | PENDING | PENDING |
-| Free D7.8 LM lead follows the 20.15 mm / 269.5° rear span without a printed micro-duct; center z=0.40..3.80 and 1.00 mm outer clearance to the deepest z=5.3 pad/web rear datum; floor state continues through the Ø9 buried integral-stem lane | PENDING | PENDING |
+| Free D7.8 LM lead follows the 20.15 mm / 269.5° rear span without a printed micro-duct; the LM carrier has a minimum-radius 3.96 mm rear-open subtractive clearance around center z=0.40..3.80, with 1.00 mm outer-station clearance to the deepest z=5.3 pad/web rear datum; floor state continues through the Ø9 buried integral-stem lane | PENDING | PENDING |
 | Finished OD8 bundle and both OD4 branch heat-shrink dimensions | PENDING | PENDING |
 | Y-junction continuity, insulation, strain transfer and polarity labels | PENDING | PENDING |
 | Selected external retention dimensions, material and buried-route/free-cable/service-envelope clearance | PENDING | PENDING |
@@ -143,7 +160,9 @@ than recording only “looks good.”
 | Final free-LM placement plus UM/T buried-span fishing and free-span placement, electrical continuity and insulation test | PENDING | PENDING |
 | Final strain-relief pull transfers cable load away from MU tabs | PENDING | PENDING |
 | No-floor bridge plate has a soft cubic blend into R113 and occupies z=5.3..18.3; four rear Ø6.4 x 6.8 insert bores retain a 6.2 mm front floor, the centered UM/T mouths at x=±8/y=82 open only at rear z=5.3, and no geometry extends behind the existing LM-pad envelope | N/A — integral stand/lane geometry replaces it | PENDING |
-| Six actual Ø5 x 2 magnets are bonded face-flush—not bottomed—in Ø5.2 x 2.2 surface-normal pockets: preserve the upper LM ring-radial sites at 64°/116° with at least 2.2 mm insert gap and 0.86 mm route-cover gap; verify the lower LM base-side sites at `(x,y,z)=(±32,18,12.55)`, with outward normals `(-1,0)` left and `(1,0)` right, coincide in floor/no-floor carriers and clear buried routes plus bridge/integral-stand structure; retain UM ring-radial sites at 50.5°/129.5°, z=15.1, with at least 1.1 mm insert/T-cover gap, 0.2 mm radial floor and 0.6 mm front skin; verify Ac/Ae provide matching LM-lower, LM-upper, and UM receivers on each side; no proud ears | PENDING | PENDING |
+| Six actual Ø5 x 2 magnets are pause-inserted and fully buried in Ø5.20 x 2.10 surface-normal cavities with continuous 0.45 mm axial skins and support-free 45° roofs: preserve upper LM axes 64°/116°, lower LM base-side sites `(x,y,z)=(±32,18,12.55)` with outward normals `(-1,0)`/`(1,0)`, and UM axes 50.5°/129.5° at z=15.1; verify every V1LF ring site has only the +0.60 mm outward backing adaptation required to clear the flange seat; verify floor/no-floor station coincidence, route/insert/structure keepouts, three matching Ac/Ae receivers per side, 0.05 mm mating gap, 0.95 mm nominal magnet separation, no glue, no external access and no proud ears | PENDING | PENDING |
+| Every released acoustic STL printed front-face-down; for each magnet-bearing STL, sliced preview/G-code records the lowest open, representative open, last fully open, first closing and fully sealed layers; retaining walls remain continuous; each disc was inserted with manifest polarity, fully seated below the completed layer and clear of the resumed nozzle path | PENDING | PENDING |
+| Coupon-equivalent regression markers on the tested P2S 0.4 mm / 0.16 mm profile remain UM Z=5.96 mm and LM Z=8.52 mm; unrelated parts use their own sliced schedules rather than these values | PENDING | PENDING |
 | UM passage is buried only in LM and ends in a flush free-cable handoff; the UM carrier has no printed rear UM duct or D82 mouth, and the physical cable remains clear behind UM through its R15/R20 service path | PENDING | PENDING |
 | T passage is buried only in LM/UM and ends in a flush free-cable handoff; the tweeter crescent has no printed T arc, conduit, socket, or horn, and the free cable remains clear behind the crescent | PENDING | PENDING |
 | Physical UM/T centerlines cross at 82.67° with T above UM and retain the documented physical-envelope gap; no two-printed-duct separator web is claimed or required | PENDING | PENDING |

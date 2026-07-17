@@ -6,14 +6,16 @@ This module starts from the irreducible interfaces instead:
 * LM carrier: D190 opening, D221.2 flush seat, R113.0 outside.
 * UM carrier: D82 opening, D98.6 flush seat, R51.7 outside.
 * two rounded M3 through-bolted half-lap ears establish 165.100 mm;
-* six flush magnet interfaces provide four LM and two UM alignment sites;
+* six fully buried captive magnet interfaces provide four LM and two UM
+  alignment sites;
   the original upper LM pair stays at +/-26 degrees from top while the lower
   LM pair mates horizontally through the shared W64 base sides;
 * floor mode owns a full-depth integral W64 stem and rectangular floor foot;
   no-floor mode owns a shallow front-flush four-hole solid web;
 * the D8.2 UM path is buried only in LM and exits flush at R113 before its
   free span behind UM; D6 is buried only in LM/UM before floating behind the
-  crescent; the short LM lead also floats without a printed micro-duct;
+  crescent; the short LM lead floats in a minimal rear-open relief without a
+  printed micro-duct;
 * two compact direct half-lap ears attach the optional tweeter crescent.
 
 The outer lips are only 2.4 mm beyond the flange-recess radii. The LM
@@ -96,6 +98,7 @@ from top_baffle_nd25fw4_v1lf_route import (
     CROSSOVER_T_Z,
     TS_CUTTER_R,
     TUNNEL_ROOF_SKIN,
+    lm_free_lead_relief_cutter,
     route_inner_cutter_group,
     route_inner_cutter_group_count,
     route_inner_cutters,
@@ -109,6 +112,15 @@ from top_baffle_nd25fw4_v1lf_floor import (
     apply_integrated_floor_feature_group,
     integrated_floor_addition,
     integrated_floor_feature_group_count,
+)
+from captive_magnets import (
+    CAPTIVE_LAND_MM,
+    CAVITY_DEPTH_MM,
+    CAVITY_DIAMETER_MM,
+    FACE_SKIN_MM,
+    INNER_SKIN_MM,
+    INTERFACE_GAP_MM,
+    wall_cavity_tools,
 )
 
 CORE_REAR_Z = 6.8
@@ -136,32 +148,36 @@ STRUCT_SHORT_ALLOW_MPA = 18.0
 # the R113 lip: it is mirrored through the straight sides of the shared W64
 # lower tongue at x=+/-32, y=18, with horizontal outward normals. Both lower
 # sites use the common z=12.55 datum, so floor/no-floor carriers and the Ac/Ae
-# lm_lower prints share one exact receiver axis. All four LM sites are flush
-# with their owning surfaces, with no ear or proud material. The UM pair uses
-# flush 129.5/50.5-degree sites at z=15.1 in its R51.7 lip to clear the upper
-# T cover, so neither carrier has a proud magnet ear. D5x2 magnets use
-# D5.2 x 2.2 axis-normal pockets; the extra 0.2-mm depth is adhesive allowance,
-# so each magnet must be
-# held flush while bonding rather than bottomed. They carry alignment/anti-
-# rattle load only. The monolithic W64 stem/root carries floor load; the four
-# stock bridge holes carry no-floor load.
+# lm_lower prints share one exact receiver axis.  D5x2 magnets are completely
+# captive in D5.20 x 2.10 cavities behind 0.45-mm skins, with a printable
+# circular cradle and self-supporting 45-degree roof.  The lower pair stays on
+# the exact W64 side faces.  The four 2.40-mm ring lips need a local 0.60-mm
+# outward backing boss to contain the qualified 3.00-mm land without entering
+# either flange recess.  These are sealed interface pads, never exposed magnet
+# ears.  Magnets carry alignment/anti-rattle load only.  The monolithic W64
+# stem/root carries floor load; the four stock bridge holes carry no-floor
+# load.
 SIDE_EAR_D = 7.8
 SIDE_EAR_IN = 0.7
 SIDE_EAR_OUT = 3.3
 SIDE_MAGNET_D = 5.0
-SIDE_MAGNET_POCKET_D = 5.2
-SIDE_MAGNET_DEPTH = 2.2
+SIDE_MAGNET_POCKET_D = CAVITY_DIAMETER_MM
+SIDE_MAGNET_DEPTH = CAVITY_DEPTH_MM
+SIDE_MAGNET_CAPTIVE_LAND = CAPTIVE_LAND_MM
+SIDE_MAGNET_FACE_SKIN = FACE_SKIN_MM
+SIDE_MAGNET_INNER_SKIN = INNER_SKIN_MM
 SIDE_MAGNET_Z = {
     "lm": 12.55,
-    # Raised within the R51.7 lip so the flush pocket keeps at least 1.1 mm
-    # from the conservative upper-T cover envelope while retaining 0.6 mm
-    # front skin. The inward radial pocket floor is 0.2 mm at R49.3.
+    # Raised within the R51.7 lip so the complete captive envelope keeps at
+    # least 1.1 mm from the conservative upper-T cover envelope.  The local
+    # +0.60-mm backing makes room for both qualified 0.45-mm axial skins; the
+    # inward skin ends exactly at the immutable R49.3 recess datum.
     "um": 15.10,
 }
-SIDE_INTERFACE_GAP = 0.20
+SIDE_INTERFACE_GAP = INTERFACE_GAP_MM
 SIDE_MAGNET_ANGLES = {
     # The upper pair is one degree crownward of the adjacent 120/60-degree W22
-    # inserts, retaining its exact 2.251-mm D5.2-pocket-capsule to D9.6-boss
+    # inserts, retaining its exact 2.251-mm D5.2 captive-envelope to D9.6-boss
     # edge gap. Lower LM sites are explicit base-side records below rather
     # than fake polar positions on the R113 ring.
     "lm": (116.0, 64.0),
@@ -170,8 +186,12 @@ SIDE_MAGNET_ANGLES = {
     "um": (129.5, 50.5),
 }
 SIDE_MAGNET_FACE_OFFSET = {
-    "lm": 0.0,
-    "um": 0.0,
+    # The immutable flange-recess leaves only a 2.40-mm radial lip.  Shift
+    # the local interface face outward by the missing 0.60 mm so the entire
+    # qualified 3.00-mm captive land ends exactly at, never inside, the
+    # recess.  This is a local backing boss, not an exposed magnet ear.
+    "lm": CAPTIVE_LAND_MM - (LM_CORE_R - LM_RECESS_R),
+    "um": CAPTIVE_LAND_MM - (UM_CORE_R - UM_RECESS_R),
 }
 LM_BASE_MAGNET_FACE_X = 32.0
 LM_BASE_MAGNET_Y = 18.0
@@ -405,8 +425,9 @@ def side_magnet_sites(driver: str | None = None):
                 "face_offset_mm": face_offset,
                 "z_mm": SIDE_MAGNET_Z[key],
                 "interface_kind": "ring",
-                "flush_buried": face_offset == 0.0,
-                "proud_ear_added": face_offset > 0.0,
+                "magnet_fully_buried": True,
+                "local_captive_backing_boss_mm": face_offset,
+                "proud_ear_added": False,
             })
         if key == "lm":
             for side, face_x, normal_x, angle in (
@@ -427,7 +448,8 @@ def side_magnet_sites(driver: str | None = None):
                     "face_offset_mm": 0.0,
                     "z_mm": LM_BASE_MAGNET_Z,
                     "interface_kind": "base_side",
-                    "flush_buried": True,
+                    "magnet_fully_buried": True,
+                    "local_captive_backing_boss_mm": 0.0,
                     "proud_ear_added": False,
                 })
     return records
@@ -445,28 +467,79 @@ def _axis_cylinder(face, normal, zc: float, diameter: float,
 
 
 def _cut_side_magnet_pockets(part, driver: str):
-    """Reassert final surface-normal pockets after every possible union."""
+    """Reassert sealed coupon-style cavities after every possible union."""
     for site in side_magnet_sites(driver):
-        part -= _axis_cylinder(
-            site["face"], site["normal"], site["z_mm"],
-            SIDE_MAGNET_POCKET_D, SIDE_MAGNET_DEPTH, 1.0)
+        tools = wall_cavity_tools(
+            name=site["name"],
+            face=site["face"],
+            outward=(*site["normal"], 0.0),
+            owner="carrier",
+            axis_z=site["z_mm"],
+            print_up=(0.0, 0.0, -1.0),
+            front_z=THICKNESS_MM,
+            interface_gap_mm=SIDE_INTERFACE_GAP,
+        )
+        for cutter in tools.cutters:
+            part -= cutter
+        # Clean after each complete cradle/chimney/roof group.  Feeding all
+        # six tools into one deferred clean left OCC with same-domain seam
+        # fragments at the straight LM side faces and an invalid final shell.
+        part = part.clean()
+        solids = list(part.solids())
+        if (not part.is_valid or len(solids) != 1
+                or solids[0].volume <= 0.01):
+            raise RuntimeError(
+                f"{site['name']} captive cavity invalidated {driver} "
+                f"carrier: valid={part.is_valid} "
+                f"volumes={[solid.volume for solid in solids]}")
     return part
 
 
-def _add_side_magnet_ears(part, driver: str):
+def _add_side_magnet_ears(part, driver: str,
+                          interface_kinds: set[str] | None = None):
+    """Add only the exact local land required by each captive station.
+
+    Existing carrier material absorbs the land at the lower LM sites.  The
+    four 2.40-mm ring lips gain only the 0.60-mm local boss needed to reach
+    the helper's qualified 3.00-mm land; magnets remain completely buried.
+    """
     for site in side_magnet_sites(driver):
-        normal = site["normal"]
-        face_offset = site["face_offset_mm"]
-        if face_offset > 0.0:
-            # Retained as a generic fallback for any future proud interface;
-            # both present V1LF carriers deliberately use zero offset.
-            wall = (site["face"][0] - face_offset * normal[0],
-                    site["face"][1] - face_offset * normal[1])
-            ear = _axis_cylinder(
-                wall, normal, site["z_mm"], SIDE_EAR_D,
-                SIDE_EAR_IN, face_offset)
-            part += ear
-    return _cut_side_magnet_pockets(part, driver)
+        if (interface_kinds is not None
+                and site["interface_kind"] not in interface_kinds):
+            continue
+        tools = wall_cavity_tools(
+            name=site["name"],
+            face=site["face"],
+            outward=(*site["normal"], 0.0),
+            owner="carrier",
+            axis_z=site["z_mm"],
+            print_up=(0.0, 0.0, -1.0),
+            front_z=THICKNESS_MM,
+            interface_gap_mm=SIDE_INTERFACE_GAP,
+        )
+        part = _ensure_shell_contained(
+            part, tools.required_land,
+            f"{site['name']} captive-magnet minimum land")
+        if site["interface_kind"] == "ring":
+            # The qualified 3.00-mm land ends exactly on the immutable
+            # circular flange-seat datum.  Give the later authoritative
+            # recess cutter one helper-epsilon of sacrificial material to
+            # cross instead of asking OCC to subtract at a tangent/coplanar
+            # terminal face.  Translation toward material-inward extends
+            # only the construction-side end; the installed interface face
+            # and its 0.60-mm local boss do not move.  The final recess recut
+            # removes this overlap completely, so released geometry retains
+            # the exact recess radius and the full 0.45-mm inner skin.
+            overlap = tools.spec.boolean_epsilon_mm
+            inward = tools.material_inward_xyz
+            sacrificial_land = (
+                Pos(*(overlap * component for component in inward))
+                * tools.required_land
+            )
+            part = _ensure_shell_contained(
+                part, sacrificial_land,
+                f"{site['name']} recess-recut construction overlap")
+    return part
 
 
 def joint_load_facts():
@@ -642,8 +715,6 @@ def lm_carrier_outer_blank():
         part -= _cylinder_at(x, JOINT_EAR_Y, JOINT_HOLE_D / 2.0,
                              CORE_REAR_Z - JOINT_BORE_REAR_OVERSHOOT,
                              THICKNESS_MM + 0.2)
-    part = _add_side_magnet_ears(part, "lm")
-
     # One continuous outer sweep per route is fused before the nominal voids
     # are cut.  This keeps every Z bump covered and avoids the old fragmented
     # coplanar rear-floor topology.
@@ -680,6 +751,14 @@ def lm_carrier_outer_blank():
         part = _fuse_attached(
             part, fused_bridge_tail(), "fused no-floor solid bridge web")
 
+    # Both state bodies now own the exact x=+/-32 lower datums.  Add/qualify
+    # every captive land only after that massive owner is present: doing so
+    # avoids both detached lower tangent solids and making the subsequent
+    # large body union operate on the four small ring-land splitters.  Ring
+    # interfaces retain only their explicit 0.60-mm local outward boss;
+    # lower lands point entirely inward and add no proud material.
+    part = _add_side_magnet_ears(part, "lm")
+
     part = part.clean()
     solids = list(part.solids())
     if (not part.is_valid or len(solids) != 1
@@ -710,28 +789,58 @@ def finalize_lm_carrier(part, *, routes_already_cut=False):
     """Hollow and functionally recut one native-BREP LM outer blank."""
     _require_guarded_build()
     cx, cy, cut_d = L22_CUTOUT
+
+    def clean_stage(candidate, label: str):
+        candidate = candidate.clean()
+        stage_solids = list(candidate.solids())
+        if (not candidate.is_valid or len(stage_solids) != 1
+                or stage_solids[0].volume <= 0.01):
+            raise RuntimeError(
+                f"LM {label} invalidated carrier: "
+                f"valid={candidate.is_valid} "
+                f"volumes={[solid.volume for solid in stage_solids]}")
+        return Part([stage_solids[0]])
+
     if not routes_already_cut:
         for index in range(route_inner_cutter_group_count("lm")):
             part = apply_lm_route_cutter(part, index)
+    # The short D7.8 LM lead remains a free cable, not a printed tunnel. The
+    # universal no-floor web and integral floor stem nevertheless overlap its
+    # immutable centerline, so remove the route authority's minimal rear-open
+    # clearance before any captive cavity or functional-interface recut.
+    part -= lm_free_lead_relief_cutter()
+    part = clean_stage(part, "rear-open free-LM-lead relief")
+    # Cut the transverse captive stations while their qualified backing
+    # lands still belong to the continuous outer blank.  Recutting the
+    # circular flange seat first leaves the ring lands tangent to that seat;
+    # OCC can then retain a zero-width same-domain seam when the gable group
+    # is subtracted.  The two functional driver cylinders immediately below
+    # remain authoritative and remove any construction overlap/fill after
+    # the cavities have been established.
+    part = _cut_side_magnet_pockets(part, "lm")
     # Reassert the functional driver interfaces after every cover union;
     # no crossover/anchor material may re-enter the flange seat.
     part -= _cylinder_at(cx, cy, LM_RECESS_R,
                          LM_SEAT_Z, THICKNESS_MM + 0.5)
+    part = clean_stage(part, "flange-recess recut")
     part -= _cylinder_at(cx, cy, cut_d / 2.0,
                          CORE_REAR_Z - 12.0, THICKNESS_MM + 1.0)
+    part = clean_stage(part, "driver-opening recut")
     part = _cut_lm_mount_holes(part)
+    part = clean_stage(part, "mount-hole recut")
     for x in JOINT_EAR_X:
         part = _receiver_notch(part, "um", x, UM_JOINT_Z)
         part -= _cylinder_at(x, JOINT_EAR_Y, JOINT_HOLE_D / 2.0,
                              CORE_REAR_Z - JOINT_BORE_REAR_OVERSHOOT,
                              THICKNESS_MM + 0.2)
+    part = clean_stage(part, "first joint receiver recut")
     # Recut the complementary UM half-laps after every route Boolean.
     for x in JOINT_EAR_X:
         part = _receiver_notch(part, "um", x, UM_JOINT_Z)
         part -= _cylinder_at(x, JOINT_EAR_Y, JOINT_HOLE_D / 2.0,
                              CORE_REAR_Z - JOINT_BORE_REAR_OVERSHOOT,
                              THICKNESS_MM + 0.2)
-    part = _cut_side_magnet_pockets(part, "lm")
+    part = clean_stage(part, "final joint receiver recut")
 
     part = part.clean()
     solids = list(part.solids())

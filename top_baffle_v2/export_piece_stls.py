@@ -2,8 +2,10 @@
 attachment pieces that turn the B2 set into variant A-comp or B1.
 
 Run:  python export_piece_stls.py
-Each part is translated so its bounding box starts at the origin (still
-lying flat, thickness along Z, front face up) and written to stl/<name>.stl.
+Each part is rotated front-face-down, translated so its bounding box starts
+at the origin, and written to stl/<name>.stl.  Only an in-bed Z rotation may
+follow the common X180 process orientation; no released piece is printed on
+an acoustic edge or rear face.
 Exits nonzero if any bed-targeted piece stops fitting.  The retained
 monolithic floor-state V1LF LM is an explicit large-format reference; its
 two optional keyed replacement prints remain strictly bed-checked.
@@ -12,6 +14,7 @@ two optional keyed replacement prints remain strictly bed-checked.
 from __future__ import annotations
 
 import argparse
+import math
 import os
 import struct
 import sys
@@ -32,6 +35,7 @@ if __name__ == "__main__":
             check=False).returncode)
 
 from build123d import Plane, Pos, Rot, Text, export_stl, extrude, import_brep
+from front_down_contract import sidecar_path_for_stl, write_print_sidecar
 
 BED_MM = 256.0
 V1LF_OPTIONAL_LM_SPLIT_BED_MM = 220.0
@@ -39,23 +43,19 @@ V1LF_OPTIONAL_LM_SPLIT_BED_MM = 220.0
 # A rigid OCC Location can leave mathematically-zero coordinates as tiny
 # nonzero values on only one of two adjacent face triangulations.  Binary
 # STL stores vertices face-by-face, so that harmless transform noise becomes
-# an exact-edge seam to downstream slicers/checkers.  OCC's X45-plus-origin
-# placement leaves the no-floor bridge datum at about 1e-7 mm on the two
-# adjacent faces, differing by only 7.1e-15 mm.  This 0.2-nm threshold is
+# an exact-edge seam to downstream slicers/checkers.  Front-down plus in-bed
+# Z placement can leave a shared datum at about 1e-7 mm on adjacent faces,
+# differing by only a few femtometres.  This 0.2-nm threshold is
 # still 250,000 times below the 0.05 mm mesh deflection; it canonicalizes
 # rigid-transform roundoff only and is neither vertex welding nor CAD repair.
 STL_TRANSFORM_ZERO_EPSILON_MM = 2.0e-7
 
-# Slicer orientations for intentionally skeletal R6F pieces whose
-# global-axis bounding boxes exceed the bed even though a supported
-# rotation can fit the complete three-dimensional envelope.
+# In-bed rotations preserve the common front-down process direction.
 BED_ROT_Z = {
     "v1lf_core_1of2_lm_carrier": 28.0,
     "v1lf_optional_lm_keyed_1of2_bottom": 26.0,
     "v1lf_optional_lm_keyed_2of2_top": 45.0,
 }
-V1LF_NO_FLOOR_LM_TILT_X_DEG = 45.0
-V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG = -90.0
 
 
 def _validate_binary_stl(path: Path) -> None:
@@ -107,6 +107,52 @@ def _canonicalize_transform_zeros(
     return changed
 
 
+def _remove_collapsed_apex_facets(path: Path) -> int:
+    """Drop only exact zero-area facets collapsed onto a real mesh edge.
+
+    A mathematically sharp conical cavity apex is a valid BREP vertex, but
+    OCC may serialize one triangle there with its second and third vertices
+    identical.  That facet has exactly zero area and contributes no surface;
+    retaining it merely counts its remaining edge twice.  Removing the
+    collapsed record preserves every nonzero triangle and the exact CAD
+    surface.  The subsequent strict topology gate must still prove the result
+    closed, two-manifold, consistently wound, and free of every defect.
+
+    Collinear triangles whose three vertices are distinct are deliberately
+    untouched and remain a hard failure in ``_strict_mesh_facts``.
+    """
+    data = path.read_bytes()
+    if len(data) < 84:
+        raise RuntimeError(f"temporary STL is truncated: {path}")
+    triangles = struct.unpack_from("<I", data, 80)[0]
+    expected = 84 + 50 * triangles
+    if len(data) != expected:
+        raise RuntimeError(
+            f"temporary STL transaction invalid: triangles={triangles} "
+            f"bytes={len(data)} expected={expected}")
+
+    kept = []
+    removed = 0
+    for triangle in range(triangles):
+        offset = 84 + 50 * triangle
+        record = data[offset:offset + 50]
+        coordinates = struct.unpack_from("<9f", record, 12)
+        vertices = tuple(
+            tuple(coordinates[3 * index:3 * index + 3])
+            for index in range(3))
+        if len(set(vertices)) < 3:
+            removed += 1
+        else:
+            kept.append(record)
+    if removed:
+        repaired = bytearray(data[:80])
+        repaired.extend(struct.pack("<I", len(kept)))
+        repaired.extend(b"".join(kept))
+        path.write_bytes(repaired)
+        _validate_binary_stl(path)
+    return removed
+
+
 def _strict_mesh_facts(path: Path) -> dict[str, int | float]:
     """Run the release edge contract before atomically promoting an STL."""
     # Keep the authoritative implementation in one place.  The import is
@@ -126,6 +172,54 @@ def _strict_mesh_facts(path: Path) -> dict[str, int | float]:
             f"{defects}; triangles={facts['triangles']} "
             f"components={facts['components']}")
     return facts
+
+
+def _write_print_transform_sidecar(
+        path: Path, *, name: str, variant: str, z_rotation_deg: float,
+        oriented_bbox, mesh_facts: dict[str, int | float]) -> None:
+    """Bind one STL to its exact front-down rigid source transform."""
+    angle = math.radians(float(z_rotation_deg))
+    cosine, sine = math.cos(angle), math.sin(angle)
+    # Rz(angle) * Rx(180).  Translation then drops the oriented BREP's
+    # bounding-box minimum to STL origin.
+    matrix = (
+        (cosine, sine, 0.0, -float(oriented_bbox.min.X)),
+        (sine, -cosine, 0.0, -float(oriented_bbox.min.Y)),
+        (0.0, 0.0, -1.0, -float(oriented_bbox.min.Z)),
+        (0.0, 0.0, 0.0, 1.0),
+    )
+    transform = {
+        "print_orientation": "front_face_down",
+        "source_to_stl_matrix": [list(row) for row in matrix],
+        "rotation_deg": {"x": 180.0, "z": float(z_rotation_deg)},
+        "pre_translation_bbox_min_mm": [
+            float(oriented_bbox.min.X), float(oriented_bbox.min.Y),
+            float(oriented_bbox.min.Z),
+        ],
+        "stl_origin_translation_mm": [
+            -float(oriented_bbox.min.X), -float(oriented_bbox.min.Y),
+            -float(oriented_bbox.min.Z),
+        ],
+    }
+    write_print_sidecar(
+        path,
+        part=name,
+        transform=transform,
+        extra={"variant_export": variant, "mesh": mesh_facts},
+    )
+
+
+def _unlink_print_pair(path: Path) -> None:
+    """Remove one generated STL and its adjacent print-contract sidecar."""
+    if path.name.endswith(".print.json"):
+        stl = path.with_name(
+            path.name.removesuffix(".print.json") + ".stl")
+    elif path.suffix.lower() == ".stl":
+        stl = path
+    else:
+        raise ValueError(f"not a generated STL or print sidecar: {path}")
+    stl.unlink(missing_ok=True)
+    sidecar_path_for_stl(stl).unlink(missing_ok=True)
 
 
 def _routing_rev():
@@ -315,8 +409,10 @@ def main() -> None:
         # Prune artifacts owned by superseded V1LF generators.  In
         # particular this removes the deleted external R14 raceway and
         # right alignment link from incremental output directories.
-        for legacy in out_dir.glob("lx521_top_v1lf_[1-4]of4_*.stl"):
-            legacy.unlink()
+        for legacy in (
+                *out_dir.glob("lx521_top_v1lf_[1-4]of4_*.stl"),
+                *out_dir.glob("lx521_top_v1lf_[1-4]of4_*.print.json")):
+            _unlink_print_pair(legacy)
         expected = {
             "lx521_top_v1lf_core_1of2_lm_carrier.stl",
             "lx521_top_v1lf_core_2of2_um_carrier.stl",
@@ -324,9 +420,14 @@ def main() -> None:
             "lx521_top_v1lf_optional_lm_keyed_2of2_top.stl",
             "lx521_top_v1lf_addon_tweeter_crescent.stl",
         }
-        for legacy in out_dir.glob("lx521_top_v1lf_addon_*.stl"):
-            if legacy.name not in expected:
-                legacy.unlink()
+        for legacy in (
+                *out_dir.glob("lx521_top_v1lf_addon_*.stl"),
+                *out_dir.glob("lx521_top_v1lf_addon_*.print.json")):
+            stl_name = (
+                legacy.name.removesuffix(".print.json") + ".stl"
+                if legacy.name.endswith(".print.json") else legacy.name)
+            if stl_name not in expected:
+                _unlink_print_pair(legacy)
     elif args.variant == "v1l":
         from top_baffle_nd25fw4_v1l_split import pieces_v1l
         parts = {}
@@ -381,40 +482,28 @@ def main() -> None:
                 or embossed_solids[0].volume <= 0.01):
             raise RuntimeError(
                 f"{name}: emboss/finalization damaged source topology")
-        no_floor_lm_tilt = (
-            "v1lf_core_1of2_lm_carrier" in name
-            and os.environ.get("LX_STAND_FOOT", "1") == "0")
-        floor_lm_split_bottom_tilt = (
-            "v1lf_optional_lm_keyed_1of2_bottom" in name
-            and os.environ.get("LX_STAND_FOOT", "1") == "1")
-        floor_canonical_lm_large_format = (
-            "v1lf_core_1of2_lm_carrier" in name
-            and os.environ.get("LX_STAND_FOOT", "1") == "1")
+        # One print-side contract for the complete release: put the acoustic
+        # front on the build plate.  Besides making the visible texture
+        # consistent, this is the process direction used by every captive
+        # loading chimney.  The former V1LF X26/X90 packing rotations made
+        # those chimneys run sideways; the optional floor LM lower still fits
+        # the 220-mm envelope front-down (about 218.7 x 175.9 mm).
+        solid = Rot(X=180.0) * solid
+        canonical_lm_large_format = (
+            "v1lf_core_1of2_lm_carrier" in name)
         bed_rotation = next((angle for key, angle in BED_ROT_Z.items()
                              if key in name), 0.0)
-        orientation = ""
-        if no_floor_lm_tilt:
-            solid = Rot(X=V1LF_NO_FLOOR_LM_TILT_X_DEG) * solid
-            orientation = f" @ X{V1LF_NO_FLOOR_LM_TILT_X_DEG:g}deg"
-        elif floor_lm_split_bottom_tilt:
-            # The integral stand runs along world Z.  Lay it into the bed
-            # plane.  Do not reuse the no-floor 26-degree packing rotation:
-            # after this X lay-down the exact envelope is already about
-            # 218.7 x 168.3 mm, while Z26 would expand it beyond 220 mm.
-            solid = Rot(X=V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG) * solid
-            orientation = (
-                f" @ X{V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG:g}deg; "
-                "in-bed Z0deg")
-        elif bed_rotation:
+        orientation = " @ X180deg front-down"
+        if bed_rotation:
             solid = Rot(Z=bed_rotation) * solid
-            orientation = f" @ Z{bed_rotation:g}deg"
+            orientation += f" @ Z{bed_rotation:g}deg"
         bb = solid.bounding_box()
         size = bb.size
         bed_limit = (
             V1LF_OPTIONAL_LM_SPLIT_BED_MM
             if "v1lf_optional_lm_keyed_" in name else BED_MM)
         fits = (
-            floor_canonical_lm_large_format
+            canonical_lm_large_format
             or (size.X <= bed_limit and size.Y <= bed_limit
                 and size.Z <= bed_limit)
         )
@@ -422,7 +511,7 @@ def main() -> None:
             misfits.append(name)
         bed_status = (
             "LARGE-FORMAT CANONICAL (split option is bed-checked)"
-            if floor_canonical_lm_large_format
+            if canonical_lm_large_format
             else ("OK" if fits else "DOES NOT FIT")
         )
         moved = Pos(-bb.min.X, -bb.min.Y, -bb.min.Z) * solid
@@ -438,6 +527,7 @@ def main() -> None:
         temporary = path.with_name(
             f".{path.stem}.{os.getpid()}.tmp.stl")
         canonicalized_zeros = 0
+        collapsed_apex_facets = 0
         try:
             export_stl(
                 moved, str(temporary), tolerance=0.05,
@@ -446,12 +536,18 @@ def main() -> None:
             # X-axis print transforms can express exact zero coordinates as
             # face-local floating-point noise. Keep all other meshes
             # byte-for-byte faithful to the ordinary OCC export.
-            if no_floor_lm_tilt or floor_lm_split_bottom_tilt:
-                canonicalized_zeros = _canonicalize_transform_zeros(temporary)
+            canonicalized_zeros = _canonicalize_transform_zeros(temporary)
+            collapsed_apex_facets = _remove_collapsed_apex_facets(temporary)
             mesh_facts = _strict_mesh_facts(temporary)
+            mesh_facts["collapsed_apex_facets_removed"] = (
+                collapsed_apex_facets)
             temporary.replace(path)
         finally:
             temporary.unlink(missing_ok=True)
+        _write_print_transform_sidecar(
+            path, name=name, variant=args.variant,
+            z_rotation_deg=bed_rotation, oriented_bbox=bb,
+            mesh_facts=mesh_facts)
         print(
             f"{name:22s} {size.X:7.2f} x {size.Y:7.2f} x {size.Z:5.2f} mm  "
             f"volume {solid.volume / 1000.0:7.1f} cm3  "
@@ -460,6 +556,7 @@ def main() -> None:
             f"{orientation}"
             f"  mesh {mesh_facts['triangles']} tris/strict"
             f"  transform-zero fixes {canonicalized_zeros}"
+            f"  collapsed-apex facets {collapsed_apex_facets}"
             f"  -> {path.name}"
         )
     if misfits:

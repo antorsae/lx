@@ -215,7 +215,7 @@ def _pilot_centers(center_xy, pcd: float, angles_deg) -> list[tuple[float, float
 # of the cut back to 0 by r_f. The fade carries the SAME taper into the
 # crescent's outboard neighbours (the A-comp top shoulders and B1 wings,
 # which sit just outside the arc), so their rear faces stay flush across
-# the glue joint; the fade completes at r_f=62.0, inside the vertical
+# the detachable interface; the fade completes at r_f=62.0, inside the vertical
 # flank's top corner (r~62.4), so the outboard flank/top edges -- and
 # the chamfer walls at larger r -- return to full 18.3 depth.
 CRESCENT_SCALLOP_CY = 483.05     # scallop center, un-dropped drawing frame

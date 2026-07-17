@@ -2,13 +2,13 @@
 
 The authoritative ``core_lm_carrier`` remains a single printable solid.
 This module derives a mutually-exclusive top/bottom print option from that
-*final* carrier, after its route lumens, insert bores, magnet pockets and
+*final* carrier, after its route lumens, insert bores, captive magnet cavities and
 state-specific no-floor bridge or integral-floor geometry have all been cut.
 
 The seam is 28.5 mm below the LM centre.  That location makes both halves fit
-a conservative 220 mm square print envelope; the floor bottom is laid onto
-its world-Y floor face at X=-90/Z=0.  The seam stays away from
-every LM insert and magnet axis.  Both buried cable
+a conservative 220 mm square print envelope in the common front-face-down
+orientation, using only an in-bed Z rotation where required.  The seam stays
+away from every LM insert and magnet axis.  Both buried cable
 passages necessarily cross any useful top/bottom ring seam; deriving the
 halves from the final BREP preserves their exact open lumen sections.
 
@@ -198,8 +198,9 @@ def registration_fit_facts() -> dict:
             insertion_overlaps),
         "envelope_growth_mm": 0.0,
         "target_square_bed_mm": LM_SPLIT_TARGET_BED_MM,
-        "floor_bottom_print_rotation_x_deg": -90.0,
-        "floor_bottom_in_bed_rotation_deg": 0.0,
+        "floor_bottom_print_rotation_x_deg": 180.0,
+        "print_orientation": "front_face_down_all_pieces",
+        "floor_bottom_in_bed_rotation_deg": 26.0,
         "installed_structural_load_credit_n": 0.0,
         "standalone_retention_credit_n": 0.0,
         "z_registration": "assemble_front_faces_on_flat_datum_then_driver",

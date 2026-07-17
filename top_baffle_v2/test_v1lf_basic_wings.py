@@ -21,6 +21,11 @@ import re
 import subprocess
 import sys
 
+from front_down_contract import (
+    validate_front_down_transform,
+    validate_print_sidecar,
+)
+
 
 ROOT = Path(__file__).resolve().parent
 NO_FLOOR_STAGE_MANIFEST = (
@@ -41,6 +46,15 @@ AE_LAND_BOUNDARY_MAX_JUMP_MM = 0.03
 DOVETAIL_CLEARANCE_MM = 0.05
 DOVETAIL_ENDPOINT_TAPER_MM = 2.0
 DOVETAIL_MIN_LIGAMENT_MM = 2.0
+DOVETAIL_ROOT_OVERLAP_MM = 0.05
+MAGNET_CAVITY_DIAMETER_MM = 5.20
+MAGNET_CAVITY_DEPTH_MM = 2.10
+MAGNET_FACE_SKIN_MM = 0.45
+MAGNET_INNER_SKIN_MM = 0.45
+MAGNET_CAPTIVE_LAND_MM = 3.00
+MAGNET_INTERFACE_GAP_MM = 0.05
+MAGNET_FACE_SEPARATION_MM = 0.95
+MAGNET_ROOF_ANGLE_DEG = 45.0
 DOVETAIL_PROFILES_MM = (
     {"neck": 7.0, "head": 9.0, "depth": 4.0},
     {"neck": 7.0, "head": 8.5, "depth": 4.0},
@@ -217,6 +231,8 @@ def _expected_stl_names(slug: str) -> tuple[str, ...]:
 
 def _variant_paths(slug: str) -> dict[str, Path | tuple[Path, ...]]:
     directory = _artifact_root() / slug
+    stls = tuple(
+        directory / "stl" / name for name in _expected_stl_names(slug))
     return {
         "directory": directory,
         "canonical_step": (
@@ -226,8 +242,8 @@ def _variant_paths(slug: str) -> dict[str, Path | tuple[Path, ...]]:
             / f"top_baffle_nd25fw4_v1lf_wing_{slug}_assembled.step"),
         "facts": directory / f"v1lf_wing_{slug}_facts.json",
         "manifest": directory / f"v1lf_wing_{slug}_print_manifest.json",
-        "stls": tuple(
-            directory / "stl" / name for name in _expected_stl_names(slug)),
+        "stls": stls,
+        "sidecars": tuple(path.with_suffix(".print.json") for path in stls),
     }
 
 
@@ -252,7 +268,10 @@ def _assert_strict_stl(path: Path) -> dict:
             "nonfinite", "zero_volume", "negative_volume",
             "component_error"):
         assert facts[key] == 0, f"{path}: {key}={facts[key]}"
-    assert facts["components"] == 1, f"{path}: disconnected mesh"
+    assert facts["outer_components"] == 1, f"{path}: no unique outer shell"
+    assert facts["components"] == 1 + facts["nested_void_components"], (
+        f"{path}: boundary component is neither outer material nor a "
+        "fully nested cavity")
     assert facts["signed_volume"] > 1.0, f"{path}: implausible volume"
     return facts
 
@@ -456,11 +475,14 @@ def test_exported_artifact_contract() -> None:
         facts_path = paths["facts"]
         manifest_path = paths["manifest"]
         stls = paths["stls"]
+        sidecars = paths["sidecars"]
         assert isinstance(canonical_step, Path)
         assert isinstance(assembled_step, Path)
         assert isinstance(facts_path, Path)
         assert isinstance(manifest_path, Path)
         assert isinstance(stls, tuple)
+        assert isinstance(sidecars, tuple)
+        assert len(stls) == len(sidecars) == 6
 
         review_paths = tuple(
             directory / "review" / f"v1lf_wing_{slug}_{kind}.png"
@@ -472,6 +494,7 @@ def test_exported_artifact_contract() -> None:
             facts_path.relative_to(directory).as_posix(),
             manifest_path.relative_to(directory).as_posix(),
             *(path.relative_to(directory).as_posix() for path in stls),
+            *(path.relative_to(directory).as_posix() for path in sidecars),
             *(path.relative_to(directory).as_posix() for path in review_paths),
         }
         actual_relative = {
@@ -502,7 +525,7 @@ def test_exported_artifact_contract() -> None:
         facts = _read_json_object(facts_path)
         manifest = _read_json_object(manifest_path)
         for document, name in ((facts, "facts"), (manifest, "manifest")):
-            assert document.get("schema_version") == 1, (
+            assert document.get("schema_version") == 2, (
                 f"{slug} {name}: schema version drifted")
             assert document.get("artifact_family") == "v1lf_basic_wings", (
                 f"{slug} {name}: artifact family drifted")
@@ -563,15 +586,50 @@ def test_exported_artifact_contract() -> None:
             assert {receiver.get("name") for receiver in receivers} == {
                 f"lm_lower_{side}", f"lm_upper_{side}", f"um_{side}"}
             for receiver in receivers:
-                assert math.isclose(receiver.get("pocket_diameter_mm"),
-                                    5.2, abs_tol=1e-9)
-                assert math.isclose(receiver.get("pocket_depth_mm"),
-                                    2.2, abs_tol=1e-9)
+                assert receiver.get("closure_kind") == (
+                    "transverse_gable_45deg")
+                assert math.isclose(
+                    receiver.get("cavity_diameter_mm"),
+                    MAGNET_CAVITY_DIAMETER_MM, abs_tol=1e-9)
+                assert math.isclose(
+                    receiver.get("cavity_depth_mm"),
+                    MAGNET_CAVITY_DEPTH_MM, abs_tol=1e-9)
+                assert math.isclose(
+                    receiver.get("face_skin_mm"), MAGNET_FACE_SKIN_MM,
+                    abs_tol=1e-9)
+                assert math.isclose(
+                    receiver.get("inner_skin_mm"), MAGNET_INNER_SKIN_MM,
+                    abs_tol=1e-9)
+                assert math.isclose(
+                    receiver.get("captive_land_mm"),
+                    MAGNET_CAPTIVE_LAND_MM, abs_tol=1e-9)
+                assert math.isclose(
+                    receiver.get("roof_angle_deg"),
+                    MAGNET_ROOF_ANGLE_DEG, abs_tol=1e-9)
                 assert math.isclose(
                     receiver.get("carrier_to_receiver_face_gap_mm"),
-                    0.0, abs_tol=1e-9)
-                assert receiver.get("receiver_mouth_xy_mm") == (
-                    receiver.get("carrier_face_xy_mm"))
+                    MAGNET_INTERFACE_GAP_MM, abs_tol=1e-9)
+                assert math.isclose(
+                    receiver.get("interface_gap_mm"),
+                    MAGNET_INTERFACE_GAP_MM, abs_tol=1e-9)
+                assert math.isclose(
+                    receiver.get("paired_magnet_face_separation_mm"),
+                    MAGNET_FACE_SEPARATION_MM, abs_tol=1e-9)
+                assert receiver.get("carrier_magnet_fully_buried") is True
+                assert receiver.get("receiver_magnet_fully_buried") is True
+                assert all(math.isclose(actual, expected, abs_tol=1e-12)
+                           for actual, expected in zip(
+                               receiver.get("marked_pole_axis_xyz"),
+                               [*receiver.get("axis_normal_xy"), 0.0]))
+                carrier_face = receiver.get("carrier_face_xy_mm")
+                mouth = receiver.get("receiver_mouth_xy_mm")
+                normal = receiver.get("axis_normal_xy")
+                assert all(math.isclose(
+                    mouth[index],
+                    carrier_face[index]
+                    + MAGNET_INTERFACE_GAP_MM * normal[index],
+                    abs_tol=1e-9) for index in range(2))
+                assert receiver.get("print_up_source_xyz") == [0.0, 0.0, -1.0]
             serialized_lower = next(
                 receiver for receiver in receivers
                 if receiver.get("name") == f"lm_lower_{side}")
@@ -591,6 +649,8 @@ def test_exported_artifact_contract() -> None:
             dovetails.get("clearance_mm"), 0.05, abs_tol=1e-9)
         assert math.isclose(
             dovetails.get("endpoint_taper_mm"), 2.0, abs_tol=1e-9)
+        assert math.isclose(
+            dovetails.get("male_root_overlap_mm"), 0.05, abs_tol=1e-9)
         assert dovetails.get("key_count_per_side") == 2
         assert dovetails.get("male_owners") == ["lm_lower", "lm_upper"]
         assert dovetails.get("lower_profile_mm") == {
@@ -647,7 +707,7 @@ def test_exported_artifact_contract() -> None:
                 f"{slug}: stale hash for {relative}")
             assert record.get("kind") in {
                 "canonical_step", "assembled_step", "print_stl",
-                "facts_json", "review_png"}, (
+                "print_sidecar", "facts_json", "review_png"}, (
                 f"{slug}: invalid artifact kind for {relative}")
             if relative == canonical_relative:
                 expected_kind = "canonical_step"
@@ -655,7 +715,9 @@ def test_exported_artifact_contract() -> None:
                 expected_kind = "assembled_step"
             elif relative == facts_relative:
                 expected_kind = "facts_json"
-            elif relative.startswith("stl/"):
+            elif relative.endswith(".print.json"):
+                expected_kind = "print_sidecar"
+            elif relative.startswith("stl/") and relative.endswith(".stl"):
                 expected_kind = "print_stl"
             else:
                 expected_kind = "review_png"
@@ -681,6 +743,12 @@ def test_exported_artifact_contract() -> None:
         assert manifest.get("print_parts") == [
             record["path"] for record in print_records], (
                 f"{slug}: facts/manifest print inventory differs")
+        assert manifest.get("print_sidecars") == [
+            record["print_sidecar"] for record in print_records], (
+                f"{slug}: facts/manifest sidecar inventory differs")
+        assert set(manifest["print_sidecars"]) == {
+            path.relative_to(directory).as_posix() for path in sidecars
+        }, f"{slug}: manifest does not bind exactly six real sidecars"
 
         for side, role, order in sorted(expected_keys):
             record = record_map[(side, role, order)]
@@ -721,6 +789,62 @@ def test_exported_artifact_contract() -> None:
                     and transform["x"] == 180.0
                     and isinstance(transform["z"], (int, float))), (
                 f"{slug} {side}/{role}: invalid print transform")
+            structured_transform = record.get("print_transform")
+            assert isinstance(structured_transform, dict), (
+                f"{slug} {side}/{role}: missing exact print transform")
+            validate_front_down_transform(
+                structured_transform,
+                label=f"{slug} {side}/{role} print transform",
+            )
+            assert structured_transform["rotation_deg"] == transform, (
+                f"{slug} {side}/{role}: print transform metadata disagrees")
+            matrix = structured_transform["source_to_stl_matrix"]
+            front_print_z = (
+                float(matrix[2][2]) * FRONT_Z_MM + float(matrix[2][3]))
+            assert math.isclose(front_print_z, 0.0, abs_tol=1e-6), (
+                f"{slug} {side}/{role}: acoustic front is not on the bed")
+            expected_sidecar_relative = Path(
+                expected_relative_path).with_suffix(".print.json").as_posix()
+            sidecar_relative = record.get("print_sidecar")
+            assert sidecar_relative == expected_sidecar_relative, (
+                f"{slug} {side}/{role}: non-sibling print sidecar")
+            sidecar = _resolve_variant_relative(
+                directory, sidecar_relative)
+            sidecar_payload = validate_print_sidecar(
+                directory / relative, sidecar)
+            assert record.get("print_sidecar_sha256") == _sha256_file(
+                sidecar), (
+                    f"{slug} {side}/{role}: stale sidecar hash in facts")
+            assert sidecar_payload.get("stl_sha256") == _sha256_file(
+                directory / relative), (
+                    f"{slug} {side}/{role}: sidecar does not bind its STL")
+            assert sidecar_payload.get("part") == Path(expected_name).stem, (
+                f"{slug} {side}/{role}: sidecar part identity drifted")
+            assert {
+                key: sidecar_payload.get(key)
+                for key in (
+                    "artifact_family", "variant_slug", "assembly_label",
+                    "side", "order", "role", "mesh")
+            } == {
+                "artifact_family": "v1lf_basic_wings",
+                "variant_slug": slug,
+                "assembly_label": record["label"],
+                "side": side,
+                "order": order,
+                "role": role,
+                "mesh": {
+                    "tolerance_mm": expected_mesh_tolerance,
+                    "angular_tolerance": expected_angular_tolerance,
+                },
+            }, f"{slug} {side}/{role}: sidecar release metadata drifted"
+            validate_front_down_transform(
+                sidecar_payload,
+                label=f"{slug} {side}/{role} print sidecar",
+            )
+            assert {
+                key: sidecar_payload.get(key) for key in structured_transform
+            } == structured_transform, (
+                f"{slug} {side}/{role}: sidecar/facts transform differs")
             _assert_print_bbox(record, f"{slug} {side}/{role}")
             mesh = _assert_strict_stl(directory / relative)
             _mesh_facts_match(
@@ -853,6 +977,9 @@ def _assert_plan_dovetail_contract(cad) -> None:
             record.get("head_mm"), profile["head"], abs_tol=1e-9)
         assert math.isclose(
             record.get("penetration_mm"), profile["depth"], abs_tol=1e-9)
+        assert math.isclose(
+            record.get("root_overlap_mm"), DOVETAIL_ROOT_OVERLAP_MM,
+            abs_tol=1e-9)
 
         polygon = record.get("polygon")
         assert polygon is not None and not polygon.is_empty
@@ -881,6 +1008,17 @@ def _assert_plan_dovetail_contract(cad) -> None:
         center = record.get("center_xy_mm")
         assert isinstance(center, (list, tuple)) and len(center) == 2
         assert polygon.buffer(1.0e-6).covers(Point(*center))
+        center_xy = np.asarray(center, dtype=float)
+        vertices = np.asarray(polygon.exterior.coords, dtype=float)[:-1]
+        normal_offsets = (vertices - center_xy) @ normal
+        assert math.isclose(
+            float(np.min(normal_offsets)), -DOVETAIL_ROOT_OVERLAP_MM,
+            rel_tol=0.0, abs_tol=1.0e-8), (
+                f"dovetail {index}: male root overlap is not geometric")
+        assert math.isclose(
+            float(np.max(normal_offsets)), profile["depth"],
+            rel_tol=0.0, abs_tol=1.0e-8), (
+                f"dovetail {index}: male penetration is not geometric")
 
         assert gap.is_valid and not gap.is_empty and gap.area > 0.001
         assert gap.difference(layout.field_right.buffer(1.0e-6)).area <= 1e-6
@@ -917,6 +1055,7 @@ def test_live_brep_geometry_contract() -> None:
 
     import numpy as np
     from build123d import Plane, mirror
+    from captive_magnets import DEFAULT_SPEC, pair_facts, wall_cavity_tools
     import export_v1lf_basic_wings as exporter
     import v1lf_basic_wings_cad as cad
 
@@ -980,11 +1119,10 @@ def test_live_brep_geometry_contract() -> None:
         "floor/no-floor LM-lower station widths differ by "
         f"{maximum_station_width_delta:.6f} mm")
 
-    # Probe the complete carrier-side pocket, not only the shared source
-    # datum.  Each staged lower print must be empty along the same D5.2 x 2.2
-    # base-side axis used by the Ac/Ae receiver.  This catches a lost,
-    # rotated, or state-specific pocket after the carrier and keyed-split
-    # Booleans while keeping the gate local to the small interface feature.
+    # Probe the complete carrier-side captive system, not merely the shared
+    # datum.  Each staged lower print must retain both sealed skins and the
+    # positive cradle/roof land while leaving every functional cutter empty
+    # on the same unchanged base-side axis used by the Ac/Ae receiver.
     lower_carriers = {
         key: context_parts[key]["shape"]
         for key in ("lm_lower_floor", "lm_lower_no_floor")
@@ -993,21 +1131,52 @@ def test_live_brep_geometry_contract() -> None:
         site = next(
             site for site in cad._selected_sites(side)
             if site["name"] == f"lm_lower_{side}")
-        carrier_pocket_witness = cad._axis_cylinder(
-            site["face"], site["normal"], site["z_mm"],
-            cad.MAGNET_POCKET_DIAMETER_MM,
-            inward=cad.MAGNET_POCKET_DEPTH_MM, outward=0.15)
+        assert site["face_offset_mm"] == 0.0
+        carrier_tools = wall_cavity_tools(
+            name=site["name"], face=site["face"],
+            outward=(*site["normal"], 0.0), owner="carrier",
+            axis_z=site["z_mm"], print_up=(0.0, 0.0, -1.0),
+            front_z=FRONT_Z_MM,
+            interface_gap_mm=MAGNET_INTERFACE_GAP_MM)
+        qualified_solid = carrier_tools.required_land
+        for cutter in carrier_tools.cutters:
+            qualified_solid = qualified_solid - cutter
+        nx, ny = site["normal"]
+        skin_diameter = 4.60
+        face_skin = cad._axis_cylinder(
+            site["face"], site["normal"], site["z_mm"], skin_diameter,
+            inward=DEFAULT_SPEC.face_skin_mm - 0.03, outward=0.0)
+        inner_face = (
+            site["face"][0]
+            - (DEFAULT_SPEC.face_skin_mm
+               + DEFAULT_SPEC.cavity_depth_mm) * nx,
+            site["face"][1]
+            - (DEFAULT_SPEC.face_skin_mm
+               + DEFAULT_SPEC.cavity_depth_mm) * ny,
+        )
+        inner_skin = cad._axis_cylinder(
+            inner_face, site["normal"], site["z_mm"], skin_diameter,
+            inward=DEFAULT_SPEC.inner_skin_mm - 0.03, outward=0.0)
         for state_key, carrier in lower_carriers.items():
-            residual = _intersection_volume(
-                carrier, carrier_pocket_witness)
-            assert residual <= 0.03, (
-                f"{state_key}/{side}: lower LM carrier pocket is not open "
-                f"on the Ac/Ae receiver axis; residual={residual:.4f} mm3")
+            for cutter_index, cutter in enumerate(carrier_tools.cutters):
+                residual = _intersection_volume(carrier, cutter)
+                assert residual <= 0.03, (
+                    f"{state_key}/{side}: lower LM captive cutter "
+                    f"{cutter_index} is obstructed by {residual:.4f} mm3")
+            retained = _intersection_volume(carrier, qualified_solid)
+            assert retained >= 0.98 * qualified_solid.volume, (
+                f"{state_key}/{side}: captive land incomplete: "
+                f"{retained:.3f}/{qualified_solid.volume:.3f} mm3")
+            for skin_label, skin in (("interface", face_skin),
+                                     ("inner", inner_skin)):
+                fill = _intersection_volume(carrier, skin)
+                assert fill >= 0.97 * skin.volume, (
+                    f"{state_key}/{side}: {skin_label} skin is not sealed")
     print(
         "  dual-state LM-lower front profile: exact common Y=0 outline, "
         f"sampled BREP Hausdorff={outline_hausdorff:.4f} mm, "
         f"max width delta={maximum_station_width_delta:.4f} mm; "
-        "both D5.2 x 2.2 lower pocket axes open",
+        "both lower D5.20 x 2.10 captive stations sealed",
         flush=True)
     del context_records
     del context_parts
@@ -1023,6 +1192,14 @@ def test_live_brep_geometry_contract() -> None:
         assert math.isclose(left_bounds[1][2], FRONT_Z_MM, abs_tol=0.005)
         assert right_bounds[0][2] >= REAR_Z_MM - 0.005
         assert left_bounds[0][2] >= REAR_Z_MM - 0.005
+        for side, monolith in (("right", right), ("left", left)):
+            plan_envelope = cad._plan_prism(
+                cad.wing_plan(slug, side),
+                REAR_Z_MM - 0.5, FRONT_Z_MM + 0.5)
+            outside_plan = _difference_volume(monolith, plan_envelope)
+            assert outside_plan <= 0.03, (
+                f"{slug}/{side}: finalized monolith grows outside exact "
+                f"wing plan by {outside_plan:.6f} mm3")
         right_volume = cad.adaptive_volume_mm3(right)
         left_volume = cad.adaptive_volume_mm3(left)
         assert math.isclose(right_volume, left_volume, rel_tol=1e-9,
@@ -1065,17 +1242,79 @@ def test_live_brep_geometry_contract() -> None:
         assert lower_receiver["interface_kind"] == "base_side"
         assert lower_receiver["axis_normal_xy"] == [1.0, 0.0]
         assert lower_receiver["carrier_face_xy_mm"] == [32.0, 18.0]
-        assert lower_receiver["receiver_mouth_xy_mm"] == [32.0, 18.0]
+        assert lower_receiver["receiver_mouth_xy_mm"] == [32.05, 18.0]
         assert math.isclose(
             lower_receiver["axis_z_mm"], 12.55, abs_tol=1e-9)
         for record in receiver_records:
-            assert math.isclose(record["pocket_diameter_mm"], 5.2,
-                                abs_tol=1e-9)
-            assert math.isclose(record["pocket_depth_mm"], 2.2,
-                                abs_tol=1e-9)
+            assert record["closure_kind"] == "transverse_gable_45deg"
+            assert math.isclose(
+                record["cavity_diameter_mm"],
+                MAGNET_CAVITY_DIAMETER_MM, abs_tol=1e-9)
+            assert math.isclose(
+                record["cavity_depth_mm"],
+                MAGNET_CAVITY_DEPTH_MM, abs_tol=1e-9)
+            assert math.isclose(
+                record["face_skin_mm"], MAGNET_FACE_SKIN_MM,
+                abs_tol=1e-9)
+            assert math.isclose(
+                record["inner_skin_mm"], MAGNET_INNER_SKIN_MM,
+                abs_tol=1e-9)
+            assert math.isclose(
+                record["captive_land_mm"], MAGNET_CAPTIVE_LAND_MM,
+                abs_tol=1e-9)
+            assert math.isclose(
+                record["roof_angle_deg"], MAGNET_ROOF_ANGLE_DEG,
+                abs_tol=1e-9)
             assert math.isclose(
                 record["carrier_to_receiver_face_gap_mm"],
-                0.0, abs_tol=1e-9)
+                MAGNET_INTERFACE_GAP_MM, abs_tol=1e-9)
+            assert math.isclose(
+                record["paired_magnet_face_separation_mm"],
+                MAGNET_FACE_SEPARATION_MM, abs_tol=1e-9)
+            assert record["carrier_magnet_fully_buried"] is True
+            assert record["receiver_magnet_fully_buried"] is True
+
+            site = next(
+                site for site in cad._selected_sites("right")
+                if site["name"] == record["name"])
+            base_tools = wall_cavity_tools(
+                name=site["name"], face=site["face"],
+                outward=(*site["normal"], 0.0), owner="carrier",
+                axis_z=site["z_mm"], print_up=(0.0, 0.0, -1.0),
+                front_z=FRONT_Z_MM,
+                interface_gap_mm=MAGNET_INTERFACE_GAP_MM)
+            receiver_tools = wall_cavity_tools(
+                name=site["name"], face=site["face"],
+                outward=(*site["normal"], 0.0), owner="wing",
+                axis_z=site["z_mm"], print_up=(0.0, 0.0, -1.0),
+                front_z=FRONT_Z_MM,
+                interface_gap_mm=MAGNET_INTERFACE_GAP_MM)
+            pair = pair_facts(base_tools, receiver_tools)
+            assert math.isclose(
+                pair["interface_gap_mm"], MAGNET_INTERFACE_GAP_MM,
+                abs_tol=1e-9)
+            assert math.isclose(
+                pair["nominal_magnet_face_separation_mm"],
+                MAGNET_FACE_SEPARATION_MM, abs_tol=1e-9)
+            expected_pole_axis = np.asarray(
+                (*site["normal"], 0.0), dtype=float)
+            expected_pole_axis /= np.linalg.norm(expected_pole_axis)
+            for pole_key in (
+                    "base_marked_pole_axis_xyz",
+                    "receiver_marked_pole_axis_xyz"):
+                actual_pole_axis = np.asarray(pair[pole_key], dtype=float)
+                assert np.all(np.isfinite(actual_pole_axis))
+                assert math.isclose(
+                    float(np.linalg.norm(actual_pole_axis)), 1.0,
+                    rel_tol=0.0, abs_tol=1.0e-12)
+                alignment = float(np.dot(
+                    actual_pole_axis, expected_pole_axis))
+                assert alignment >= 1.0 - 1.0e-12, (
+                    f"{slug}/{record['name']}: {pole_key} is reversed or "
+                    f"misaligned; dot={alignment:.16g}")
+                assert np.allclose(
+                    actual_pole_axis, expected_pole_axis,
+                    rtol=0.0, atol=1.0e-12)
         for name, cutter in cad.receiver_pockets("right").items():
             assert _intersection_volume(right, cutter) <= 0.03, (
                 f"{slug}: receiver cutter still intersects material: {name}")
@@ -1098,59 +1337,136 @@ def test_live_brep_geometry_contract() -> None:
                 mirrored_piece, left_pieces[role]) <= 0.02, (
                     f"{slug}/{role}: mirrored right print solid differs")
 
-        # The lower receiver is an exact zero-gap D5.2 x 2.2 blind seat in
-        # lm_lower, not merely a shared coordinate record.  Probe its full
-        # void, a smaller positive backstop immediately beyond 2.2 mm, and a
-        # larger retained collar on both mirrored sides.  No upper print may
-        # own material in either positive witness.
+        for key in cad._layout().dovetail_keys:
+            male_role = key["male_owner"]
+            female_role = key["female_owner"]
+            for side, monolith, side_pieces in (
+                    ("right", right, pieces),
+                    ("left", left, left_pieces)):
+                key_plan = (key["polygon"] if side == "right"
+                            else cad._mirror_plan(key["polygon"]))
+                key_tool = cad._plan_prism(
+                    key_plan, REAR_Z_MM - 0.5, FRONT_Z_MM + 0.5)
+                key_material = monolith & key_tool
+                assert key_material is not None
+                key_volume = _adaptive_volume_mm3(key_material)
+                assert key_volume > 1.0, (
+                    f"{slug}/{side}/{key['name']}: empty key envelope")
+                missing = _difference_volume(
+                    key_material, side_pieces[male_role])
+                assert missing <= 0.03, (
+                    f"{slug}/{side}/{key['name']}: male {male_role} misses "
+                    f"{missing:.6f} mm3 of finalized key material")
+                female_intrusion = _intersection_volume(
+                    key_material, side_pieces[female_role])
+                assert female_intrusion <= 0.03, (
+                    f"{slug}/{side}/{key['name']}: female {female_role} "
+                    f"owns {female_intrusion:.6f} mm3 of male key")
+
+        # The lower receiver is a real 0.05-mm-gapped, fully sealed captive
+        # station in lm_lower, not merely a coordinate record.  Probe the
+        # cradle/chimney/roof voids, both 0.45-mm skins, the complete 3.00-mm
+        # positive land, and the locally empty interface gap on both mirrors.
+        # No upper print may own any positive station material.
         for side, side_pieces in (
                 ("right", pieces), ("left", left_pieces)):
             site = next(
                 record for record in cad._selected_sites(side)
                 if record["name"] == f"lm_lower_{side}")
-            pocket = cad.receiver_pockets(side)[site["name"]]
+            tools = wall_cavity_tools(
+                name=site["name"], face=site["face"],
+                outward=(*site["normal"], 0.0), owner="wing",
+                axis_z=site["z_mm"], print_up=(0.0, 0.0, -1.0),
+                front_z=FRONT_Z_MM,
+                interface_gap_mm=MAGNET_INTERFACE_GAP_MM)
+            for cutter_index, cutter in enumerate(tools.cutters):
+                assert _intersection_volume(
+                    side_pieces["lm_lower"], cutter) <= 0.03, (
+                        f"{slug}/{side}: receiver cutter {cutter_index} "
+                        "is obstructed")
             assert _intersection_volume(
-                side_pieces["lm_lower"], pocket) <= 0.03, (
-                    f"{slug}/{side}: lower receiver seat is obstructed")
-            functional_seat = cad._axis_cylinder(
-                site["face"], site["normal"], site["z_mm"],
-                cad.MAGNET_POCKET_DIAMETER_MM,
-                inward=0.0, outward=cad.MAGNET_POCKET_DEPTH_MM)
-            assert _intersection_volume(
-                side_pieces["lm_lower"], functional_seat) <= 0.02, (
-                    f"{slug}/{side}: exact D5.2 x 2.2 functional seat "
-                    "is obstructed")
-            outer_face = (
-                site["face"][0]
-                + cad.MAGNET_POCKET_DEPTH_MM * site["normal"][0],
-                site["face"][1]
-                + cad.MAGNET_POCKET_DEPTH_MM * site["normal"][1],
+                side_pieces["lm_lower"], tools.nominal_magnet) <= 0.02
+
+            qualified_solid = tools.required_land
+            for cutter in tools.cutters:
+                qualified_solid = qualified_solid - cutter
+            retained = _intersection_volume(
+                side_pieces["lm_lower"], qualified_solid)
+            assert retained >= 0.98 * qualified_solid.volume, (
+                f"{slug}/{side}: lower receiver captive land incomplete: "
+                f"{retained:.3f}/{qualified_solid.volume:.3f} mm3")
+
+            nx, ny = site["normal"]
+            actual_face = tools.actual_face_xyz[:2]
+            skin_diameter = 4.60
+            face_skin = cad._axis_cylinder(
+                actual_face, site["normal"], site["z_mm"], skin_diameter,
+                inward=0.0, outward=DEFAULT_SPEC.face_skin_mm - 0.03)
+            inner_face = (
+                actual_face[0]
+                + (DEFAULT_SPEC.face_skin_mm
+                   + DEFAULT_SPEC.cavity_depth_mm) * nx,
+                actual_face[1]
+                + (DEFAULT_SPEC.face_skin_mm
+                   + DEFAULT_SPEC.cavity_depth_mm) * ny,
             )
-            backstop = cad._axis_cylinder(
-                outer_face, site["normal"], site["z_mm"],
-                4.0, inward=0.0, outward=0.45)
-            collar_outer = cad._axis_cylinder(
-                site["face"], site["normal"], site["z_mm"],
-                cad.MAGNET_POCKET_DIAMETER_MM + 1.2,
-                inward=0.0, outward=cad.MAGNET_POCKET_DEPTH_MM)
-            collar = collar_outer - functional_seat
+            inner_skin = cad._axis_cylinder(
+                inner_face, site["normal"], site["z_mm"], skin_diameter,
+                inward=0.0, outward=DEFAULT_SPEC.inner_skin_mm - 0.03)
+            local_gap = cad._axis_cylinder(
+                site["face"], site["normal"], site["z_mm"], skin_diameter,
+                inward=0.0, outward=MAGNET_INTERFACE_GAP_MM - 0.01)
             assert _intersection_volume(
-                side_pieces["lm_lower"], backstop
-            ) >= 0.90 * backstop.volume, (
-                    f"{slug}/{side}: lower receiver lacks a solid backstop")
-            assert _intersection_volume(
-                side_pieces["lm_lower"], collar
-            ) >= 0.90 * collar.volume, (
-                    f"{slug}/{side}: lower receiver lacks a retained collar")
+                side_pieces["lm_lower"], local_gap) <= 0.02, (
+                    f"{slug}/{side}: 0.05-mm interface gap is not real")
+            for skin_label, skin in (("interface", face_skin),
+                                     ("inner", inner_skin)):
+                fill = _intersection_volume(side_pieces["lm_lower"], skin)
+                assert fill >= 0.97 * skin.volume, (
+                    f"{slug}/{side}: {skin_label} skin is not sealed")
             for other_role in ("lm_upper", "um"):
                 assert _intersection_volume(
-                    side_pieces[other_role], backstop) <= 0.03, (
+                    side_pieces[other_role], qualified_solid) <= 0.03, (
                         f"{slug}/{side}: {other_role} intrudes into the "
-                        "lower receiver backstop")
-                assert _intersection_volume(
-                    side_pieces[other_role], collar) <= 0.03, (
-                        f"{slug}/{side}: {other_role} owns lower receiver "
-                        "collar material")
+                        "lower captive receiver land")
+
+            # The two ring receivers obey the same sealed geometry and are
+            # wholly owned by their corresponding split prints.  Their shared
+            # carrier datum includes the deliberate local +0.60-mm V1LF boss.
+            for ring_site in (
+                    candidate for candidate in cad._selected_sites(side)
+                    if candidate["interface_kind"] == "ring"):
+                assert math.isclose(
+                    ring_site["face_offset_mm"], 0.60, abs_tol=1e-12)
+                ring_role = (
+                    "lm_upper" if ring_site["driver"] == "lm" else "um")
+                ring_tools = wall_cavity_tools(
+                    name=ring_site["name"], face=ring_site["face"],
+                    outward=(*ring_site["normal"], 0.0), owner="wing",
+                    axis_z=ring_site["z_mm"], print_up=(0.0, 0.0, -1.0),
+                    front_z=FRONT_Z_MM,
+                    interface_gap_mm=MAGNET_INTERFACE_GAP_MM)
+                for cutter_index, cutter in enumerate(ring_tools.cutters):
+                    assert _intersection_volume(
+                        side_pieces[ring_role], cutter) <= 0.03, (
+                            f"{slug}/{side}/{ring_role}: ring cutter "
+                            f"{cutter_index} is obstructed")
+                ring_solid = ring_tools.required_land
+                for cutter in ring_tools.cutters:
+                    ring_solid = ring_solid - cutter
+                ring_retained = _intersection_volume(
+                    side_pieces[ring_role], ring_solid)
+                assert ring_retained >= 0.98 * ring_solid.volume, (
+                    f"{slug}/{side}/{ring_role}: captive ring land "
+                    f"incomplete: {ring_retained:.3f}/"
+                    f"{ring_solid.volume:.3f} mm3")
+                for other_role in (
+                        role for role in PRINT_PART_ROLES
+                        if role != ring_role):
+                    assert _intersection_volume(
+                        side_pieces[other_role], ring_solid) <= 0.03, (
+                            f"{slug}/{side}: {other_role} owns "
+                            f"{ring_site['name']} captive land")
         roles = list(PRINT_PART_ROLES)
         for index, first in enumerate(roles):
             for second in roles[index + 1:]:
@@ -1169,17 +1485,17 @@ def test_live_brep_geometry_contract() -> None:
     ac_depth_sampler = cad._VerticalDepthSampler(ac)
     ac_plan = cad.wing_plan("ac", "right")
     ac_raw_volume = float(ac_plan.area) * FULL_DEPTH_MM
-    pocket_removed = ac_raw_volume - float(ac.volume)
+    cavity_removed = ac_raw_volume - float(ac.volume)
     uncut_ac = cad._plan_prism(ac_plan, REAR_Z_MM, FRONT_Z_MM)
-    expected_pocket_volume = sum(
+    expected_cavity_volume = sum(
         _intersection_volume(uncut_ac, cutter)
         for cutter in cad.receiver_pockets("right").values())
     assert math.isclose(
-        pocket_removed, expected_pocket_volume,
+        cavity_removed, expected_cavity_volume,
         rel_tol=1e-5, abs_tol=0.03), (
             "Ac receiver removal does not match the exact clipped "
-            "D5.2 x 2.2 cutters: "
-            f"{pocket_removed:.3f} vs {expected_pocket_volume:.3f} mm3")
+            "D5.20 x 2.10 cradle/chimney/45-degree-roof cutters: "
+            f"{cavity_removed:.3f} vs {expected_cavity_volume:.3f} mm3")
     for role, plan_piece in cad.wing_print_plan_parts(
             "ac", "right").items():
         witness = plan_piece.representative_point()

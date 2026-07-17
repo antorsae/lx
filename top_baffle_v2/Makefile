@@ -77,11 +77,14 @@ MU10_REFS := ../linkwitz/H1658-04_MU10RB-SL_driver.stl \
              ../linkwitz/H1658-04_MU10RB-SL_driver_STL_notes.md \
              ../linkwitz/H1658-04_MU10RB-SL_Datasheet.pdf
 W22_REFS := ../E0022_W22EX001.stp
-SRCS := $(wildcard top_baffle_nd25fw4*.py) run_memory_guarded.py Makefile \
+SRCS := $(wildcard top_baffle_nd25fw4*.py) captive_magnets.py \
+        front_down_contract.py \
+        run_memory_guarded.py Makefile \
         $(MU10_REFS) $(W22_REFS)
 V1LF_RELEASE_SRCS := $(SRCS) export_steps.py export_v1lf_staged.py \
         export_piece_stls.py export_coupon.py gen_cable_routing.py \
-        gen_driver_overlay.py check_manifold.py test_clearances.py \
+        gen_driver_overlay.py check_manifold.py test_captive_magnets.py \
+        test_clearances.py \
         test_v1lf_r6f.py test_remote_cad.py \
         write_v1lf_release_manifest.py V1LF_PHYSICAL_QUALIFICATION.md \
         remote_cad.py cad-remote-requirements.lock
@@ -132,8 +135,10 @@ WING_CONCEPT_PNGS = $(addprefix review/v1lf_wing_,\
 V1LF_BASIC_VARIANTS_PNG = baffle_variants_drivers_v1lf.png
 V1LF_BASIC_WING_SLUGS = ac ae
 V1LF_BASIC_WING_STAMPS = $(addprefix wings/.stamp_,$(V1LF_BASIC_WING_SLUGS))
+CAPTIVE_MAGNET_CATALOG = review/captive_magnet_release_catalog.json
 V1LF_BASIC_WING_INPUTS = cad-remote-requirements.lock \
-        V1LF_ACOUSTIC_WINGS_SPEC.md gen_driver_overlay.py \
+        V1LF_ACOUSTIC_WINGS_SPEC.md captive_magnets.py \
+        front_down_contract.py gen_driver_overlay.py \
         export_v1lf_staged.py \
         top_baffle_nd25fw4.py top_baffle_nd25fw4_b.py \
         top_baffle_nd25fw4_b1.py top_baffle_nd25fw4_b2.py \
@@ -160,7 +165,7 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
         floor_stand floor_v1lf no_floor_stand no_floor_v1lf v1lf_release \
         v1lf_release wing_concepts \
         v1lf_basic_variants v1lf_basic_wings check_v1lf_basic_variants \
-        common check check_v1lf \
+        common check check_captive_magnets check_v1lf \
         check_v1lf_shells check_v1lf_t_shells \
         check_v1lf_mouths check_v1lf_burial check_v1lf_backfills \
         check_v1lf_um_burial \
@@ -177,8 +182,28 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
         check_v1lf_lm_profile check_v1lf_lm_profile_plan \
         check_v1lf_lm_profile_brep manifold clean
 all: validate_v1lf_stages floor_stand no_floor_stand common \
-        v1lf_basic_variants
+        v1lf_basic_variants $(CAPTIVE_MAGNET_CATALOG)
 	$(RUN) check_manifold.py
+
+# This catalog is generated only after all 56 released magnet-bearing meshes
+# and their exact front-down print transforms exist.  It is the CAD-side
+# authority consumed by the local, no-printer-contact Bambu slicing audit.
+$(CAPTIVE_MAGNET_CATALOG): generate_captive_magnet_catalog.py \
+        captive_magnet_release_catalog.schema.json slice_captive_magnets.py \
+        json_schema_subset.py \
+        captive_magnets.py \
+        floor_stand/stl/.stamp floor_stand/stl/.stamp_c7 \
+        floor_stand/stl/.stamp_v0 floor_stand/stl/.stamp_v1 \
+        floor_stand/stl/.stamp_v1l floor_stand/stl/.stamp_v1lf \
+        floor_stand/stl/.stamp_coupon \
+        no_floor_stand/stl/.stamp no_floor_stand/stl/.stamp_c7 \
+        no_floor_stand/stl/.stamp_v0 no_floor_stand/stl/.stamp_v1 \
+        no_floor_stand/stl/.stamp_v1l no_floor_stand/stl/.stamp_v1lf \
+        no_floor_stand/stl/.stamp_coupon $(V1LF_BASIC_WING_STAMPS)
+	@mkdir -p review
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=v1lf PYTHONPATH=. $(RUN) \
+	    generate_captive_magnet_catalog.py --output $@
+	@test -s $@
 
 # Runtime package versions are part of the native-stage fingerprint but not
 # filesystem prerequisites. Validate first on every build; the stage command
@@ -243,9 +268,12 @@ no_floor_v1lf: validate_no_floor_v1lf_stage \
 # magnetic attachments and the focused final-BREP interface checks.  A single
 # Make DAG lets osado share both native stages and fan independent state,
 # wing and validation recipes across its bounded jobserver slots.
-v1lf_release: floor_v1lf no_floor_v1lf v1lf_basic_variants \
+v1lf_release: floor_stand no_floor_stand v1lf_basic_variants \
+        $(CAPTIVE_MAGNET_CATALOG) \
         check_route_contract check_v1lf_lm_split check_v1lf_shells \
         check_v1lf_route_boundaries check_floor_integrated_mount
+	$(RUN) check_manifold.py floor_stand/stl no_floor_stand/stl \
+	    wings/ac/stl wings/ae/stl
 
 # Review-only W1-W14 specimen plates.  The generator is deliberately pure 2D:
 # it does not import build123d/OCC or modify released carrier geometry.
@@ -261,7 +289,8 @@ review/.stamp_v1lf_wing_concepts: gen_v1lf_wing_concepts.py \
 
 $(WING_CONCEPT_PNGS): review/.stamp_v1lf_wing_concepts
 	@test -s $@ || { rm -f review/.stamp_v1lf_wing_concepts; \
-	    $(MAKE) review/.stamp_v1lf_wing_concepts; test -s $@; }
+	    make --no-print-directory review/.stamp_v1lf_wing_concepts; \
+	    test -s $@; }
 
 # Source-linked, dimensioned A/B1/B2 attachment layout for the V1LF carrier.
 # Ac and Ae are full STEP-first implementations of the approved A plan.  Their
@@ -317,9 +346,18 @@ no_floor_stand: validate_no_floor_v1lf_stage \
 	$(RUN) check_manifold.py no_floor_stand/stl
 common: top_baffle_nd25fw4_attachments.step
 
-check: test_clearances.py test_v1lf_r6f.py test_remote_cad.py remote_cad.py \
+check: validate_v1lf_stages \
+        test_captive_magnets.py test_slice_captive_magnets.py \
+        test_release_metadata.py \
+        slice_captive_magnets.py json_schema_subset.py \
+        captive_magnet_slicing_profile.json \
+        test_clearances.py test_v1lf_r6f.py \
+        test_remote_cad.py remote_cad.py \
         $(SRCS)
 	$(PYTHON_RUN) test_remote_cad.py
+	$(PYTHON_RUN) test_release_metadata.py
+	$(PYTHON_RUN) test_slice_captive_magnets.py
+	$(RUN) test_captive_magnets.py
 	# Keep the lightweight clearance orchestrator outside OCC so every heavy
 	# check establishes a fresh authenticated guard. Clear the private selector
 	# so inherited shell state cannot silently reduce the release suite.
@@ -330,10 +368,13 @@ check: test_clearances.py test_v1lf_r6f.py test_remote_cad.py remote_cad.py \
 	env -u LX_R6F_SINGLE_CHECK -u LX_R6F_SERVICE_START_PHASE \
 	    -u LX_R6F_SERVICE_STOP_AFTER_PHASE $(PYTHON_RUN) test_v1lf_r6f.py
 
+check_captive_magnets: test_captive_magnets.py captive_magnets.py
+	$(RUN) test_captive_magnets.py
+
 # Focused remote iteration gate. The parent still fans out its OCC-heavy
 # checks across the configured remote slots; this avoids rerunning unrelated
 # proud/V1L clearance checks while refining V1LF final-BREP contracts.
-check_v1lf: test_v1lf_r6f.py $(SRCS)
+check_v1lf: validate_v1lf_stages test_v1lf_r6f.py $(SRCS)
 	env -u LX_R6F_SINGLE_CHECK -u LX_R6F_SERVICE_START_PHASE \
 	    -u LX_R6F_SERVICE_STOP_AFTER_PHASE $(PYTHON_RUN) test_v1lf_r6f.py
 
@@ -511,7 +552,8 @@ else
 endif
 	@touch $$@
 
-$(1)/stl/.stamp_coupon: export_coupon.py $(SRCS) \
+$(1)/stl/.stamp_coupon: export_coupon.py check_manifold.py \
+        write_v1lf_release_manifest.py $(SRCS) \
         $(1)/.v1lf_stage/manifest.json
 	@rm -f $$@
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=proud $(RUN) export_coupon.py --outdir $(1)/stl
@@ -580,7 +622,7 @@ $(1)/.stamp_overlays: $(SRCS) gen_driver_overlay.py \
 
 $(addprefix $(1)/,$(OVERLAY_PNGS)): $(1)/.stamp_overlays
 	@test -f $$@ || { rm -f $(1)/.stamp_overlays; \
-	    $(MAKE) $(1)/.stamp_overlays; test -f $$@; }
+	    make --no-print-directory $(1)/.stamp_overlays; test -f $$@; }
 endef
 
 $(eval $(call RULES,floor_stand,1))
@@ -600,7 +642,8 @@ floor_stand/.stamp_v1lf_integrated_floor_strength: \
 
 $(FLOOR_STRENGTH_REPORTS): floor_stand/.stamp_v1lf_integrated_floor_strength
 	@test -f $@ || { rm -f floor_stand/.stamp_v1lf_integrated_floor_strength; \
-	    $(MAKE) floor_stand/.stamp_v1lf_integrated_floor_strength; test -f $@; }
+	    make --no-print-directory floor_stand/.stamp_v1lf_integrated_floor_strength; \
+	    test -f $@; }
 
 clean:
 	rm -rf floor_stand no_floor_stand wings __pycache__ \

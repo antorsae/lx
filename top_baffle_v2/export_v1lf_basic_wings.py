@@ -22,6 +22,12 @@ import subprocess
 import sys
 from typing import Any, Iterable
 
+from front_down_contract import (
+    sidecar_path_for_stl,
+    validate_print_sidecar,
+    write_print_sidecar,
+)
+
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 GEOMETRY_MODULE = "v1lf_basic_wings_cad"
@@ -32,6 +38,8 @@ NO_FLOOR_STAGE_MANIFEST = (
 FLOOR_STAGE_MANIFEST = SCRIPT_DIR / "floor_stand/.v1lf_stage/manifest.json"
 INTERFACE_SOURCES = (
     SCRIPT_DIR / "cad-remote-requirements.lock",
+    SCRIPT_DIR / "captive_magnets.py",
+    SCRIPT_DIR / "front_down_contract.py",
     SCRIPT_DIR / "V1LF_ACOUSTIC_WINGS_SPEC.md",
     SCRIPT_DIR / "gen_driver_overlay.py",
     SCRIPT_DIR / "export_v1lf_staged.py",
@@ -317,10 +325,35 @@ def _best_print_orientation(shape, Rot) -> tuple[Any, float, dict[str, Any]]:
             "wing print part exceeds 220 mm bed after rotation: "
             f"{size.X:.3f} x {size.Y:.3f} x {size.Z:.3f} mm at "
             f"X180/Z{angle:.2f}")
+    translation = (
+        -float(best_bbox.min.X),
+        -float(best_bbox.min.Y),
+        -float(best_bbox.min.Z),
+    )
     moved = (importlib.import_module("build123d").Pos(
-        -best_bbox.min.X, -best_bbox.min.Y, -best_bbox.min.Z) * best_shape)
+        *translation) * best_shape)
     _require_solids(moved, 1, "print-oriented part")
-    return moved, float(angle), _bbox_facts(moved)
+    radians = math.radians(float(angle))
+    cosine, sine = math.cos(radians), math.sin(radians)
+    transform = {
+        "print_orientation": "front_face_down",
+        "rotation_deg": {"x": 180.0, "z": float(angle)},
+        "pre_translation_bbox_min_mm": [
+            float(best_bbox.min.X), float(best_bbox.min.Y),
+            float(best_bbox.min.Z),
+        ],
+        "stl_origin_translation_mm": list(translation),
+        "source_to_stl_matrix": [
+            [cosine, sine, 0.0, translation[0]],
+            [sine, -cosine, 0.0, translation[1]],
+            [0.0, 0.0, -1.0, translation[2]],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+    }
+    return moved, float(angle), {
+        "bbox_mm": _bbox_facts(moved),
+        "transform": transform,
+    }
 
 
 def _mesh_records(parts: dict[tuple[str, str], Any]) -> list[dict[str, Any]]:
@@ -819,6 +852,8 @@ def _draw_magnet_root_review(
     fig, axes = plt.subplots(
         1, 3, figsize=(16.0, 7.5), dpi=150, facecolor="white")
     receiver_color = "#d83b91"
+    cavity_color = "#d9f0f3"
+    retaining_color = "#183b4e"
     for ax, receiver in zip(axes, receivers, strict=True):
         role = receiver["name"].removesuffix("_right")
         record = by_role.get(("right", role))
@@ -847,20 +882,63 @@ def _draw_magnet_root_review(
         tangent = np.asarray((-normal[1], normal[0]), dtype=float)
         mouth = np.asarray(receiver["receiver_mouth_xy_mm"], dtype=float)
         carrier_face = np.asarray(receiver["carrier_face_xy_mm"], dtype=float)
-        diameter = float(receiver["pocket_diameter_mm"])
-        depth = float(receiver["pocket_depth_mm"])
+        # Receiver facts are the same captive-cavity authority consumed by
+        # the release catalog.  Do not retain aliases for the retired exposed
+        # glue-pocket schema: a stale review must fail with the production
+        # field names rather than silently describing D5.2 x 2.2 geometry.
+        diameter = float(receiver["cavity_diameter_mm"])
+        depth = float(receiver["cavity_depth_mm"])
+        magnet_diameter = float(receiver["magnet_diameter_mm"])
+        magnet_depth = float(receiver["magnet_depth_mm"])
+        face_skin = float(receiver["face_skin_mm"])
+        inner_skin = float(receiver["inner_skin_mm"])
+        captive_land = float(receiver["captive_land_mm"])
         gap = float(receiver["carrier_to_receiver_face_gap_mm"])
-        back = mouth + depth * normal
+        cavity_start = mouth + face_skin * normal
+        cavity_end = cavity_start + depth * normal
+        land_end = mouth + captive_land * normal
+        inner_end = cavity_end + inner_skin * normal
+        if not np.allclose(inner_end, land_end, atol=1.0e-9, rtol=0.0):
+            raise RuntimeError(
+                f"{receiver['name']}: captive land does not equal face skin "
+                "+ cavity depth + inner skin")
+        magnet_start = cavity_start
+        magnet_end = magnet_start + magnet_depth * normal
         half_diameter = 0.5 * diameter
-        pocket = np.vstack((
-            mouth - half_diameter * tangent,
-            mouth + half_diameter * tangent,
-            back + half_diameter * tangent,
-            back - half_diameter * tangent,
-        ))
+        half_magnet = 0.5 * magnet_diameter
+
+        def axial_band(start, end, half_width):
+            return np.vstack((
+                start - half_width * tangent,
+                start + half_width * tangent,
+                end + half_width * tangent,
+                end - half_width * tangent,
+            ))
+
+        cavity = axial_band(cavity_start, cavity_end, half_diameter)
+        face_retainer = axial_band(mouth, cavity_start, half_diameter)
+        inner_retainer = axial_band(cavity_end, inner_end, half_diameter)
+        magnet = axial_band(magnet_start, magnet_end, half_magnet)
         ax.add_patch(PolygonPatch(
-            pocket, closed=True, facecolor=receiver_color, alpha=0.52,
-            edgecolor="#8d145c", linewidth=2.0, zorder=7))
+            cavity, closed=True, facecolor=cavity_color, alpha=0.82,
+            edgecolor="#2b7a87", linestyle="--", linewidth=1.4, zorder=7))
+        # These two 0.45-mm strips are the physically printed retaining walls.
+        # The previous plot covered the full land with a magenta cavity/magnet
+        # envelope and therefore hid both skins even though the STEP contained
+        # them.  Keep them opaque and above both the wing mesh and cavity.
+        for wall in (face_retainer, inner_retainer):
+            ax.add_patch(PolygonPatch(
+                wall, closed=True, facecolor=retaining_color, alpha=0.96,
+                edgecolor="white", linewidth=0.75, hatch="////", zorder=9))
+        ax.add_patch(PolygonPatch(
+            magnet, closed=True, facecolor=receiver_color, alpha=0.55,
+            edgecolor="#8d145c", linewidth=1.5, zorder=8))
+        ax.plot(
+            [land_end[0] - half_diameter * tangent[0],
+             land_end[0] + half_diameter * tangent[0]],
+            [land_end[1] - half_diameter * tangent[1],
+             land_end[1] + half_diameter * tangent[1]],
+            color=retaining_color, lw=1.2, zorder=10)
         ax.scatter(*carrier_face, s=72, facecolor="white", edgecolor="#1e2a33",
                    linewidth=1.4, zorder=9)
         ax.scatter(*mouth, s=42, facecolor=receiver_color, edgecolor="white",
@@ -870,7 +948,7 @@ def _draw_magnet_root_review(
             arrowprops={"arrowstyle": "->", "color": "#8d145c",
                         "lw": 1.8}, zorder=10)
 
-        centre = 0.5 * (mouth + back)
+        centre = 0.5 * (mouth + land_end)
         half_view = 12.0
         ax.set_xlim(centre[0] - half_view, centre[0] + half_view)
         ax.set_ylim(centre[1] - half_view, centre[1] + half_view)
@@ -886,6 +964,7 @@ def _draw_magnet_root_review(
         ax.text(
             0.035, 0.965,
             f"Ø{diameter:.1f} × {depth:.1f} mm\n"
+            f"skins {face_skin:.2f} / {inner_skin:.2f} mm\n"
             f"carrier gap {gap:.2f} mm\n"
             f"axis z={float(receiver['axis_z_mm']):.2f} mm",
             transform=ax.transAxes, va="top", ha="left", fontsize=9,
@@ -925,8 +1004,12 @@ def _draw_magnet_root_review(
             Patch(facecolor="#4f9bd7", label="LM-lower wing material"),
             Patch(facecolor="#62b77b", label="LM-upper wing material"),
             Patch(facecolor="#efa43a", label="UM/top wing material"),
-            Patch(facecolor=receiver_color, alpha=0.52,
-                  label="D5.2 × 2.2 matching receiver"),
+            Patch(facecolor=cavity_color, edgecolor="#2b7a87",
+                  label="D5.20 × 2.10 internal cavity"),
+            Patch(facecolor=retaining_color, edgecolor="white", hatch="////",
+                  label="0.45-mm captive retaining skin"),
+            Patch(facecolor=receiver_color, alpha=0.55,
+                  label="nominal D5 × 2 magnet"),
         ]
     if context_records:
         legend_handles.extend(_context_legend_handles(context_records))
@@ -939,8 +1022,9 @@ def _draw_magnet_root_review(
         bbox_to_anchor=(0.5, 0.045))
     fig.text(
         0.5, 0.105,
-        "Magenta rectangle is the functional receiver envelope in plan; "
-        "arrow follows the exact outward carrier-magnet axis.",
+        "Dark hatched strips are the two continuous 0.45-mm retaining skins; "
+        "cyan is the cavity, magenta the seated magnet. The 45° roof closes "
+        "in Z and is therefore outside this XY plan view.",
         ha="center", fontsize=9, color="#44515c")
     fig.subplots_adjust(left=0.07, right=0.97, bottom=0.18, top=0.87, wspace=0.24)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -948,7 +1032,8 @@ def _draw_magnet_root_review(
         path, dpi=150, facecolor="white",
         metadata={"Title": title,
                   "Description": (
-                      "Dimensioned V1LF D5.2 x 2.2 receivers with dual-"
+                      "Dimensioned V1LF captive D5.20 x 2.10 receivers, visible "
+                      "0.45-mm axial retaining skins, and dual-"
                       "state V1LF LM-lower silhouettes: coincident common "
                       "profile, blue dash-dot no-floor and green dotted "
                       "floor stand")})
@@ -1156,6 +1241,7 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
 
         part_facts = []
         stl_relatives = []
+        sidecar_relatives = []
         for side in SIDES:
             for order, role in enumerate(PART_ORDER, start=1):
                 shape = print_parts[(side, role)]
@@ -1165,7 +1251,7 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
                 mesh_angular_tolerance = (
                     AE_MESH_ANGULAR_TOLERANCE
                     if slug == "ae" else MESH_ANGULAR_TOLERANCE)
-                moved, z_angle, print_bbox = _best_print_orientation(shape, Rot)
+                moved, z_angle, print_facts = _best_print_orientation(shape, Rot)
                 name = _stl_name(slug, side, order, role)
                 relative = Path("stl") / name
                 path = slug_stage / relative
@@ -1175,6 +1261,43 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
                 _validate_binary_stl(path)
                 zero_fixes = _canonicalize_transform_zeros(path)
                 mesh_facts = _strict_mesh_facts(path)
+                sidecar_relative = relative.with_suffix(".print.json")
+                sidecar_path = sidecar_path_for_stl(path)
+                if sidecar_path != slug_stage / sidecar_relative:
+                    raise RuntimeError(
+                        f"non-canonical print sidecar path for {relative}: "
+                        f"{sidecar_path}")
+                write_print_sidecar(
+                    path,
+                    part=path.stem,
+                    transform=print_facts["transform"],
+                    extra={
+                        "artifact_family": "v1lf_basic_wings",
+                        "variant_slug": slug,
+                        "assembly_label": shape.label,
+                        "side": side,
+                        "order": order,
+                        "role": role,
+                        "mesh": {
+                            "tolerance_mm": mesh_tolerance,
+                            "angular_tolerance": mesh_angular_tolerance,
+                        },
+                    },
+                )
+                sidecar_payload = validate_print_sidecar(
+                    path, sidecar_path)
+                sidecar_transform = {
+                    key: sidecar_payload.get(key)
+                    for key in print_facts["transform"]
+                }
+                if sidecar_transform != print_facts["transform"]:
+                    raise RuntimeError(
+                        f"print sidecar transform drifted from exporter: "
+                        f"{sidecar_path}")
+                if sidecar_payload.get("stl_sha256") != _sha256(path):
+                    raise RuntimeError(
+                        f"print sidecar does not bind its STL: "
+                        f"{sidecar_path}")
                 entry = {
                     "label": shape.label,
                     "path": relative.as_posix(),
@@ -1182,11 +1305,14 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
                     "order": order,
                     "role": role,
                     "assembly_bbox_mm": _bbox_facts(shape),
-                    "print_bbox_mm": print_bbox,
+                    "print_bbox_mm": print_facts["bbox_mm"],
                     "volume_mm3": geometry.adaptive_volume_mm3(shape),
                     "volume_integration": "BRepGProp_adaptive_2d_Gauss",
                     "bed_limit_mm": BED_LIMIT_MM,
                     "print_transform_deg": {"x": 180.0, "z": z_angle},
+                    "print_transform": print_facts["transform"],
+                    "print_sidecar": sidecar_relative.as_posix(),
+                    "print_sidecar_sha256": _sha256(sidecar_path),
                     "mesh_tolerance_mm": mesh_tolerance,
                     "mesh_angular_tolerance": mesh_angular_tolerance,
                     "transform_zero_fixes": zero_fixes,
@@ -1194,6 +1320,7 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
                 }
                 part_facts.append(entry)
                 stl_relatives.append(relative)
+                sidecar_relatives.append(sidecar_relative)
 
         review_paths, review_context = _render_reviews(
             slug, print_parts, review_stage, geometry.receiver_facts("right"),
@@ -1204,7 +1331,7 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
         facts_rel = Path(FACTS_TEMPLATE.format(slug=slug))
         facts_path = slug_stage / facts_rel
         facts_payload = {
-            "schema_version": 1,
+            "schema_version": 2,
             "artifact_family": "v1lf_basic_wings",
             "variant_slug": slug,
             "source": source,
@@ -1233,6 +1360,8 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
             (canonical_rel, "canonical_step"),
             (assembled_rel, "assembled_step"),
             *((relative, "print_stl") for relative in stl_relatives),
+            *((relative, "print_sidecar")
+              for relative in sidecar_relatives),
             (facts_rel, "facts_json"),
             *((relative, "review_png") for relative in review_relatives),
         ]
@@ -1244,7 +1373,7 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
         manifest_rel = Path(MANIFEST_TEMPLATE.format(slug=slug))
         manifest_path = slug_stage / manifest_rel
         manifest_payload = {
-            "schema_version": 1,
+            "schema_version": 2,
             "artifact_family": "v1lf_basic_wings",
             "variant_slug": slug,
             "source": source,
@@ -1253,6 +1382,8 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
             "canonical_step_path": canonical_rel.as_posix(),
             "assembled_step_path": assembled_rel.as_posix(),
             "print_parts": [entry["path"] for entry in part_facts],
+            "print_sidecars": [
+                entry["print_sidecar"] for entry in part_facts],
             "review_pngs": [path.as_posix() for path in review_relatives],
             "artifacts": artifacts,
         }
@@ -1264,6 +1395,7 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
             "canonical_step": _result_path(final_slug / canonical_rel),
             "assembled_step": _result_path(final_slug / assembled_rel),
             "stl_count": len(stl_relatives),
+            "print_sidecar_count": len(sidecar_relatives),
             "facts": _result_path(final_slug / facts_rel),
             "manifest": _result_path(final_slug / manifest_rel),
             "review_pngs": [

@@ -69,12 +69,14 @@ def test_target_contract() -> None:
     assert "v1lf_basic_variants" in remote.REMOTE_MAKE_TARGETS
     assert "v1lf_basic_wings" in remote.REMOTE_MAKE_TARGETS
     assert "check_v1lf_basic_variants" in remote.REMOTE_MAKE_TARGETS
+    assert "check_captive_magnets" in remote.REMOTE_MAKE_TARGETS
     assert "check_v1lf_lm_profile" in remote.REMOTE_MAKE_TARGETS
     assert "check_floor_support" not in remote.REMOTE_MAKE_TARGETS
     assert remote._full_output_roots(["v1lf_basic_variants"]) == {"wings"}
     assert remote._full_output_roots(["check_v1lf_basic_variants"]) == {
         "wings"}
-    assert remote._full_output_roots(["v1lf_release"]) == {"wings"}
+    assert remote._full_output_roots(["v1lf_release"]) == {
+        "floor_stand", "no_floor_stand", "wings"}
     assert remote._full_output_roots(["no_floor_v1lf"]) == set()
     assert remote._full_output_roots(["all"]) == {
         "floor_stand", "no_floor_stand", "wings"}
@@ -97,6 +99,12 @@ def test_target_contract() -> None:
             pass
         else:
             raise AssertionError(f"unsafe target accepted: {target}")
+
+
+def test_remote_worker_exports_source_snapshot_identity() -> None:
+    """Generated release metadata must name the immutable input snapshot."""
+    source = Path(remote.__file__).read_text(encoding="utf-8")
+    assert '"LX_CAD_SOURCE_SHA256": metadata["source_sha256"]' in source
 
 
 def test_protocol_rejection() -> None:
@@ -585,6 +593,20 @@ def test_v1lf_basic_wing_parallel_dag() -> None:
         "test_v1lf_basic_wings.py --artifact-root wings") == 1
 
 
+def test_v1lf_basic_wing_contract_dependency() -> None:
+    result = subprocess.run(
+        ["make", "-np", "LX_CAD_EXECUTION=remote-worker",
+         f"PYTHON={sys.executable}", "wings/.stamp_ac"],
+        cwd=Path(__file__).resolve().parent, text=True,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True,
+        env={**os.environ, "LX_CAD_GUARD_SLOTS": "4"},
+    )
+    rule = next(
+        line for line in result.stdout.splitlines()
+        if line.startswith("wings/.stamp_ac:"))
+    assert "front_down_contract.py" in rule
+
+
 def test_v1lf_release_parallel_dag() -> None:
     result = subprocess.run(
         ["make", "-n", "-B", "-j4", "LX_CAD_EXECUTION=remote-worker",
@@ -627,7 +649,24 @@ def test_v1lf_release_parallel_dag() -> None:
             "test_bump_backfill_contract",
             "test_floor_integrated_mount"):
         assert output.count(f"LX_R6F_SINGLE_CHECK={check}") == 1
-    assert "export_piece_stls.py --variant v1l --outdir" not in output
+    # The captive catalog is project-wide, so the public release target now
+    # regenerates both states of every magnet-bearing family before writing
+    # its 56-STL inventory.  V1L therefore appears once per stand state.
+    assert output.count(
+        "export_piece_stls.py --variant v1l --outdir") == 2
+    assert output.count(
+        "generate_captive_magnet_catalog.py --output ") == 1
+    assert "check_manifold.py --v1lf-only" not in output
+    assert output.count("check_manifold.py floor_stand/stl") >= 1
+    assert output.count("check_manifold.py no_floor_stand/stl") >= 1
+    assert output.count(
+        "check_manifold.py floor_stand/stl no_floor_stand/stl ") == 1
+    assert output.count("wings/ac/stl wings/ae/stl") >= 2
+    final_check = output.rfind(
+        "check_manifold.py floor_stand/stl no_floor_stand/stl ")
+    assert final_check > output.rfind(
+        "generate_captive_magnet_catalog.py --output ")
+    assert output.find("wings/ac/stl wings/ae/stl", final_check) >= 0
 
 
 def test_profile_specific_stl_dag() -> None:
@@ -769,6 +808,7 @@ def test_step_label_line_wrapping() -> None:
 
 def main() -> None:
     test_target_contract()
+    test_remote_worker_exports_source_snapshot_identity()
     test_protocol_rejection()
     test_dead_job_reconciliation_record()
     test_launch_uses_snapshot_transition()
@@ -784,6 +824,7 @@ def main() -> None:
     test_remote_clean_preserves_review()
     test_parallel_stage_dag()
     test_v1lf_basic_wing_parallel_dag()
+    test_v1lf_basic_wing_contract_dependency()
     test_v1lf_release_parallel_dag()
     test_profile_specific_stl_dag()
     test_local_checker_interpreter()

@@ -15,7 +15,7 @@ keys:
                     Offset left of center so its dovetail pocket clears
                     the 90-deg W22 insert bore at (0, 305.7) by 1.55 mm.
 
-Pieces (all fit a 256 x 256 bed lying flat):
+Pieces (all fit a 256 x 256 bed front-face-down):
   piece_bottom     ~250.6 x 125 mm   (male dovetails up into the mids)
   piece_mid_left   ~146.7 x 202 mm   (male dovetail up into the top)
   piece_mid_right  ~162.0 x 202 mm   (male dovetails up + into mid_left)
@@ -43,9 +43,15 @@ from shapely.geometry import Polygon, box
 from shapely.ops import unary_union
 
 from top_baffle_nd25fw4 import STAND_FOOT, THICKNESS_MM, baffle_solid
-from top_baffle_nd25fw4_b import TWEETER_DROP_MM, magnet_base_cutters
+from top_baffle_nd25fw4_b import (
+    TWEETER_DROP_MM,
+    apply_magnet_base_cavities,
+)
 from top_baffle_nd25fw4_b2 import OUTLINE_B2
 from top_baffle_nd25fw4_cables import ROUTING_PROFILE, cable_cutters
+from top_baffle_nd25fw4_cables import TS_ROUTE_STANDARD
+
+PRINT_ORIENTATION = "front-face-down"
 
 if ROUTING_PROFILE != "proud":
     raise RuntimeError(
@@ -183,13 +189,14 @@ def _grown(poly: Polygon) -> Polygon:
 
 
 def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
-           shape_cuts=(), shape_adds=(), magnet_pockets=True,
+           shape_cuts=(), shape_adds=(), magnet_cavities=True,
            crescent_front_mm=None, crescent_rear_mm=0.0,
            seam_b_dovetails=None, seam_b_tabs_up: bool = True,
            um_handoff_key: str = "proud",
            only: str | None = None,
            cable_routes=None,
-           cable_y_range=None) -> dict:
+           cable_y_range=None,
+           ts_route_key: str = TS_ROUTE_STANDARD) -> dict:
     """Split the (optionally re-shaped) baffle into the four print
     pieces. ``shape_cuts``/``shape_adds`` are applied before the ducts
     are cut -- used by variant C7 (LM knife-edge taper + T-duct ribs);
@@ -203,7 +210,8 @@ def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
     may further omit cutters spatially disjoint from that one piece; the
     default still builds the complete cable set. ``cable_y_range`` trims
     the high-face-count TS loft on its original section grid for a known
-    split band."""
+    split band. ``ts_route_key`` is the V1/V1L-only captive-land keepout;
+    standard/B2/C7/V0 callers retain the default centerline."""
     piece_order = (
         "piece_bottom", "piece_mid_left", "piece_mid_right", "piece_top_b2")
     if only is not None and only not in piece_order:
@@ -220,7 +228,8 @@ def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
     ducts = cable_cutters(
         um_handoff_key=um_handoff_key,
         route_names=cable_routes,
-        ts_y_range=cable_y_range)  # internal cable ducts (LM/UM/T)
+        ts_y_range=cable_y_range,
+        ts_route_key=ts_route_key)  # internal cable ducts (LM/UM/T)
     for duct in ducts:
         baffle -= duct
 
@@ -282,9 +291,8 @@ def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
         rest = baffle - _prism(_grown(below_a))
         if "piece_top_b2" in upper_requested:
             top = rest - _prism(_grown(below_b))
-            if magnet_pockets:
-                for cutter in magnet_base_cutters():
-                    top -= cutter
+            if magnet_cavities:
+                top = apply_magnet_base_cavities(top)
             result["piece_top_b2"] = top
         mids_requested = upper_requested & {
             "piece_mid_left", "piece_mid_right"}

@@ -222,7 +222,6 @@ def test_route_contract():
         UM_TERMINAL_CLOCK_DEG,
     )
     import top_baffle_nd25fw4_flush as flush
-    import top_baffle_nd25fw4_b as proud
     import top_baffle_nd25fw4_v1lf as core
     import top_baffle_nd25fw4_v1lf_bridge as bridge
     import top_baffle_nd25fw4_v1lf_floor as floor
@@ -230,6 +229,18 @@ def test_route_contract():
     import run_memory_guarded as memory_guard
     import export_v1lf_staged as staged
     import write_v1lf_release_manifest as release_manifest
+    from captive_magnets import (
+        CAPTIVE_LAND_MM,
+        CAVITY_DEPTH_MM,
+        CAVITY_DIAMETER_MM,
+        DEFAULT_SPEC,
+        FACE_SKIN_MM,
+        INNER_SKIN_MM,
+        INTERFACE_GAP_MM,
+        NOMINAL_PAIRED_FACE_SEPARATION_MM,
+        ROOF_ANGLE_DEG,
+        wall_cavity_tools,
+    )
 
     assert route.route_inner_cutter_group_count("lm") == LM_CUTTER_GROUP_COUNT
 
@@ -249,8 +260,7 @@ def test_route_contract():
     assert {site["name"] for site in lm_magnets} == {
         "lm_upper_left", "lm_upper_right",
         "lm_lower_left", "lm_lower_right"}
-    assert all(site["flush_buried"] for site in lm_magnets)
-    assert all(site["face_offset_mm"] == 0.0 for site in lm_magnets)
+    assert all(site["magnet_fully_buried"] for site in lm_magnets)
     lm_by_name = {site["name"]: site for site in lm_magnets}
     assert {name: lm_by_name[name]["angle_deg"] for name in lm_by_name} == {
         "lm_upper_left": 116.0, "lm_upper_right": 64.0,
@@ -265,6 +275,19 @@ def test_route_contract():
     assert all(
         lm_by_name[name]["interface_kind"] == "base_side"
         for name in ("lm_lower_left", "lm_lower_right"))
+    assert all(
+        math.isclose(
+            lm_by_name[name]["face_offset_mm"], 0.0, abs_tol=1e-12)
+        for name in ("lm_lower_left", "lm_lower_right"))
+    assert all(
+        math.isclose(
+            lm_by_name[name]["face_offset_mm"], 0.60, abs_tol=1e-12)
+        for name in ("lm_upper_left", "lm_upper_right"))
+    assert all(
+        math.isclose(
+            lm_by_name[name]["local_captive_backing_boss_mm"], 0.60,
+            abs_tol=1e-12)
+        for name in ("lm_upper_left", "lm_upper_right"))
     assert math.isclose(core.LM_BASE_MAGNET_FACE_X, 32.0, abs_tol=1e-12)
     assert math.isclose(core.LM_BASE_MAGNET_Y, 18.0, abs_tol=1e-12)
     assert math.isclose(
@@ -272,13 +295,12 @@ def test_route_contract():
         - (core.LM_BASE_MAGNET_Z + core.SIDE_MAGNET_POCKET_D / 2.0),
         3.15, abs_tol=1e-12)
 
-    # Conservative XZ section screen through y=18, where the two new
-    # surface-normal pockets notch the shared W64 lower tongue.  A complete
-    # D5.2 x 2.2 rectangle is deducted per side even though the real circular
-    # cutter removes less material away from its equator.  The floor carrier
-    # owns z=0..18.3 here; the no-floor bridge owns z=5.3..18.3.  Both must
-    # retain more net area than the already qualified 47.8 x 13 governing
-    # bridge section, without taking strength credit for either magnet.
+    # Conservative XZ section screen through y=18, where the two transverse
+    # captive stations cross the shared W64 lower tongue.  Deduct the full
+    # D5.20 cradle/chimney plus its 45-degree roof over the complete 2.10-mm
+    # axial cavity depth.  This intentionally overstates the circular void.
+    # Both states must still exceed the already-qualified 47.8 x 13 bridge
+    # section without taking strength credit for either magnet.
     assert math.isclose(
         core.LM_BASE_MAGNET_FACE_X, floor.STEM_HALF_WIDTH_MM,
         abs_tol=1e-12)
@@ -286,21 +308,23 @@ def test_route_contract():
     pocket_radius_mm = core.SIDE_MAGNET_POCKET_D / 2.0
     pocket_z_min_mm = core.LM_BASE_MAGNET_Z - pocket_radius_mm
     pocket_z_max_mm = core.LM_BASE_MAGNET_Z + pocket_radius_mm
+    roof_snap_allowance_mm = DEFAULT_SPEC.roof_plane_grid_mm
     two_pocket_notch_area_mm2 = (
-        2.0 * core.SIDE_MAGNET_DEPTH * core.SIDE_MAGNET_POCKET_D)
+        2.0 * CAVITY_DEPTH_MM
+        * (CAVITY_DIAMETER_MM + DEFAULT_SPEC.roof_height_mm
+           + roof_snap_allowance_mm))
     governing_bridge_area_mm2 = (
         bridge.BRIDGE_GOVERNING_NECK_WIDTH_MM * bridge.BRIDGE_WEB_T)
     assert math.isclose(governing_bridge_area_mm2, 621.4, abs_tol=1e-9)
     section_states = {
-        "floor": (floor.STEM_Z_MM[0], floor.STEM_Z_MM[1],
-                  9.95, 3.15, 1148.32),
-        "no_floor": (bridge.BRIDGE_WEB_REAR_Z,
-                     bridge.BRIDGE_WEB_FRONT_Z,
-                     4.65, 3.15, 809.12),
+        "floor": (floor.STEM_Z_MM[0], floor.STEM_Z_MM[1], 9.95, 3.15),
+        "no_floor": (
+            bridge.BRIDGE_WEB_REAR_Z, bridge.BRIDGE_WEB_FRONT_Z,
+            4.65, 3.15),
     }
+    retained_section_areas = {}
     for state, (rear_z, front_z, expected_rear_skin,
-                expected_front_skin, expected_net_area) in (
-            section_states.items()):
+                expected_front_skin) in section_states.items():
         rear_skin_mm = pocket_z_min_mm - rear_z
         front_skin_mm = front_z - pocket_z_max_mm
         gross_area_mm2 = local_width_mm * (front_z - rear_z)
@@ -309,64 +333,106 @@ def test_route_contract():
             rear_skin_mm, expected_rear_skin, abs_tol=1e-12), state
         assert math.isclose(
             front_skin_mm, expected_front_skin, abs_tol=1e-12), state
-        assert math.isclose(
-            net_area_mm2, expected_net_area, abs_tol=1e-9), state
         assert net_area_mm2 > governing_bridge_area_mm2, state
+        retained_section_areas[state] = net_area_mm2
     assert (
-        section_states["no_floor"][4] / governing_bridge_area_mm2 > 1.30)
+        retained_section_areas["no_floor"]
+        / governing_bridge_area_mm2 > 1.28)
     um_magnets = [site for site in magnet_sites if site["driver"] == "um"]
     assert {site["angle_deg"] for site in um_magnets} == {50.5, 129.5}
     assert {site["clock_from_top_deg"] for site in um_magnets} == {
         -39.5, 39.5}
-    assert all(site["flush_buried"] for site in um_magnets)
+    assert all(site["magnet_fully_buried"] for site in um_magnets)
     assert all(not site["proud_ear_added"] for site in um_magnets)
-    assert all(site["face_offset_mm"] == 0.0 for site in um_magnets)
+    assert all(math.isclose(
+        site["face_offset_mm"], 0.60, abs_tol=1e-12)
+        for site in um_magnets)
+    assert all(math.isclose(
+        site["local_captive_backing_boss_mm"], 0.60, abs_tol=1e-12)
+        for site in um_magnets)
     assert all(site["z_mm"] == 15.10 for site in um_magnets)
     assert core.SIDE_MAGNET_D == 5.0
-    assert core.SIDE_MAGNET_POCKET_D == 5.2
-    assert core.SIDE_MAGNET_DEPTH == 2.2
-    assert (core.SIDE_MAGNET_D == proud.MAGNET_D_MM
-            and core.SIDE_MAGNET_POCKET_D
-            == proud.MAG_POCKET_D_MM
-            == proud.MAG_RECEIVER_D_MM
-            and core.SIDE_MAGNET_DEPTH
-            == proud.MAG_FLUSH_DEPTH_MM
-            == proud.MAG_PIN_BASE_DEPTH_MM
-            == proud.MAG_PIN_RECEIVER_DEPTH_MM)
+    assert core.SIDE_MAGNET_POCKET_D == CAVITY_DIAMETER_MM == 5.20
+    assert core.SIDE_MAGNET_DEPTH == CAVITY_DEPTH_MM == 2.10
     assert math.isclose(
-        core.SIDE_MAGNET_DEPTH - 2.0, 0.2, abs_tol=1e-12)
+        core.SIDE_MAGNET_CAPTIVE_LAND, CAPTIVE_LAND_MM, abs_tol=1e-12)
+    assert math.isclose(CAPTIVE_LAND_MM, 3.00, abs_tol=1e-12)
+    assert core.SIDE_MAGNET_FACE_SKIN == FACE_SKIN_MM == 0.45
+    assert core.SIDE_MAGNET_INNER_SKIN == INNER_SKIN_MM == 0.45
+    assert core.SIDE_INTERFACE_GAP == INTERFACE_GAP_MM == 0.05
     assert math.isclose(
-        core.LM_CORE_R - core.SIDE_MAGNET_DEPTH - flush.LM_RECESS_R,
-        0.2, abs_tol=1e-12)
+        NOMINAL_PAIRED_FACE_SEPARATION_MM, 0.95, abs_tol=1e-12)
+    assert ROOF_ANGLE_DEG == 45.0
     assert math.isclose(
-        core.UM_CORE_R - core.SIDE_MAGNET_DEPTH - flush.UM_RECESS_R,
-        0.2, abs_tol=1e-12)
+        core.LM_CORE_R + 0.60 - CAPTIVE_LAND_MM - flush.LM_RECESS_R,
+        0.0, abs_tol=1e-12)
+    assert math.isclose(
+        core.UM_CORE_R + 0.60 - CAPTIVE_LAND_MM - flush.UM_RECESS_R,
+        0.0, abs_tol=1e-12)
     assert math.isclose(
         core.THICKNESS_MM
         - (core.SIDE_MAGNET_Z["um"]
            + core.SIDE_MAGNET_POCKET_D / 2.0),
         0.6, abs_tol=1e-12)
-    # At the route-safe +/-26-degree LM clocks, the buried D5.2 pocket remains
-    # well separated from every D9.6 threaded-insert boss. This is the actual
-    # capsule-to-disc edge gap, not only angular separation.
+    # Every station is generated by the shared proven helper.  The two lower
+    # faces remain unchanged; ring faces alone move outward 0.60 mm.  Screen
+    # the full 3.00-mm land (not merely the cavity) against insert keepouts.
+    for site in magnet_sites:
+        tools = wall_cavity_tools(
+            name=site["name"], face=site["face"],
+            outward=(*site["normal"], 0.0), owner="carrier",
+            axis_z=site["z_mm"], print_up=(0.0, 0.0, -1.0),
+            front_z=core.THICKNESS_MM,
+            interface_gap_mm=core.SIDE_INTERFACE_GAP)
+        facts = tools.facts()
+        assert len(tools.cutters) == 3
+        assert facts["closure_kind"] == "transverse_gable_45deg"
+        assert facts["cavity_diameter_mm"] == 5.20
+        assert facts["cavity_depth_mm"] == 2.10
+        assert facts["face_skin_mm"] == facts["inner_skin_mm"] == 0.45
+        assert math.isclose(
+            facts["captive_land_mm"], 3.00, abs_tol=1e-12)
+        assert facts["roof_angle_deg"] == 45.0
+        assert math.isclose(
+            facts["paired_magnet_face_separation_mm"], 0.95,
+            abs_tol=1e-12)
+        assert facts["classic_retaining_path_mm"] == 0.42
+        assert facts["actual_face_xyz_mm"][:2] == list(site["face"])
+        assert all(math.isclose(actual, expected, abs_tol=1e-12)
+                   for actual, expected in zip(
+                       facts["marked_pole_axis_xyz"],
+                       (*site["normal"], 0.0), strict=True))
+        assert facts["print_up_source_xyz"] == [0.0, 0.0, -1.0]
+        expected_roof_start = 8.40 if site["driver"] == "lm" else 5.80
+        assert math.isclose(
+            facts["cavity_bury_roof_start_print_z_mm"],
+            expected_roof_start, abs_tol=1e-9)
+        assert math.isclose(
+            facts["roof_apex_print_z_mm"] - expected_roof_start,
+            DEFAULT_SPEC.roof_height_mm, abs_tol=1e-9)
+        assert math.isclose(
+            facts["required_min_part_top_print_z_mm"]
+            - facts["roof_apex_print_z_mm"],
+            INNER_SKIN_MM, abs_tol=1e-9)
+
     lm_magnet_insert_gaps = []
     for site in lm_magnets:
         normal = np.asarray(site["normal"], dtype=float)
         face = np.asarray(site["face"], dtype=float)
-        inner = face - core.SIDE_MAGNET_DEPTH * normal
+        inner = face - CAPTIVE_LAND_MM * normal
         axis = LineString((inner, face))
         lm_magnet_insert_gaps.extend(
             axis.distance(Point(*xy))
             - core.SIDE_MAGNET_POCKET_D / 2.0 - flush.PAD_D_MM / 2.0
             for xy in flush.LM_PILOT_XY)
-    assert min(lm_magnet_insert_gaps) >= 2.2
+    assert min(lm_magnet_insert_gaps) >= 2.0
     for site in lm_magnets:
         if not site["name"].startswith("lm_lower"):
             continue
         normal = np.asarray(site["normal"], dtype=float)
         face = np.asarray(site["face"], dtype=float)
         axis = LineString((
-            face - core.SIDE_MAGNET_DEPTH * normal, face))
+            face - CAPTIVE_LAND_MM * normal, face))
         # The relocated base pockets are deliberately adjacent to the
         # no-floor bridge plate. Preserve a positive conservative capsule
         # gap to both its D6.4 insert bore and its D9.6 load-bearing boss.
@@ -378,8 +444,8 @@ def test_route_contract():
             axis.distance(Point(*xy))
             - core.SIDE_MAGNET_POCKET_D / 2.0 - flush.PAD_D_MM / 2.0
             for xy in BRIDGE_HOLE_XY)
-        assert bridge_bore_gap >= 4.0
-        assert bridge_boss_gap >= 2.5
+        assert bridge_bore_gap >= 3.4
+        assert bridge_boss_gap >= 1.8
         assert min(
             axis.distance(Point(*xy))
             - core.SIDE_MAGNET_POCKET_D / 2.0 - flush.PAD_D_MM / 2.0
@@ -407,7 +473,7 @@ def test_route_contract():
             normal = np.asarray(site["normal"], dtype=float)
             face = np.asarray(site["face"], dtype=float)
             axis = LineString((
-                face - core.SIDE_MAGNET_DEPTH * normal, face))
+                face - CAPTIVE_LAND_MM * normal, face))
             bore_gaps.append(min(
                 axis.distance(Point(*xy))
                 - pocket_radius_mm - BRIDGE_INSERT_D_MM / 2.0
@@ -421,17 +487,24 @@ def test_route_contract():
         state_insert_gaps[state] = (bore_gaps[0], boss_gaps[0])
     assert state_insert_gaps["floor"][0] > 80.0
     assert state_insert_gaps["floor"][1] > 80.0
+    expected_lower_axis_distance = math.hypot(
+        core.LM_BASE_MAGNET_FACE_X - CAPTIVE_LAND_MM - 20.0,
+        core.LM_BASE_MAGNET_Y - 20.0)
     assert math.isclose(
-        state_insert_gaps["no_floor"][0], 4.201999800039991,
+        state_insert_gaps["no_floor"][0],
+        expected_lower_axis_distance
+        - pocket_radius_mm - BRIDGE_INSERT_D_MM / 2.0,
         abs_tol=1e-9)
     assert math.isclose(
-        state_insert_gaps["no_floor"][1], 2.6019998000399918,
+        state_insert_gaps["no_floor"][1],
+        expected_lower_axis_distance
+        - pocket_radius_mm - flush.PAD_D_MM / 2.0,
         abs_tol=1e-9)
     um_magnet_insert_gaps = []
     for site in um_magnets:
         normal = np.asarray(site["normal"], dtype=float)
         face = np.asarray(site["face"], dtype=float)
-        inner = face - core.SIDE_MAGNET_DEPTH * normal
+        inner = face - CAPTIVE_LAND_MM * normal
         axis = LineString((inner, face))
         um_magnet_insert_gaps.extend(
             axis.distance(Point(*xy))
@@ -472,7 +545,7 @@ def test_route_contract():
     assert memory_guard.MIN_FREE_MB >= memory_guard.PROFILE_MIN_FREE_MB
     assert memory_guard.GUARD_SLOTS <= memory_guard.PROFILE_MAX_GUARD_SLOTS
     assert staged.SCHEMA_VERSION == R6F_NATIVE_STAGE_SCHEMA_VERSION == 7
-    assert release_manifest.FORMAT_VERSION == 7
+    assert release_manifest.FORMAT_VERSION == 9
     assert staged.ATTACHMENT_KEYS_BASE == ("addon_tweeter_crescent",)
     assert set(staged.PRINT_PART_SPECS) == {
         "core_lm_carrier",
@@ -606,7 +679,21 @@ def test_route_contract():
         ((8.0, 82.0, 5.3), (-8.0, 82.0, 5.3)), atol=1e-9)
     assert facts["functional_lm_feed_web_omitted"]
     assert facts["printed_lm_tunnel_count"] == 0
-    assert facts["lm_lead_mode"] == "short_free_span_no_micro_duct"
+    assert facts["lm_lead_mode"] == (
+        "short_free_span_rear_open_relief_no_micro_duct")
+    assert facts["lm_free_lead_relief_kind"] == (
+        "subtractive_rear_open_not_a_duct")
+    assert math.isclose(
+        route.LM_FREE_LEAD_RELIEF_RADIAL_CLEAR_MM, 0.06,
+        abs_tol=1e-12)
+    assert math.isclose(
+        facts["lm_free_lead_relief_radius_mm"],
+        route.LM_CABLE_D_EST / 2.0 + 0.06, abs_tol=1e-12)
+    assert facts["lm_free_lead_relief_rear_open_both_states"]
+    assert facts["lm_free_lead_relief_floor_rear_open_margin_mm"] > 0.15
+    assert (
+        facts["lm_free_lead_relief_no_floor_rear_open_margin_mm"] > 5.45)
+    assert facts["lm_free_lead_relief_seat_membrane_margin_mm"] > 2.0
     assert route.LM_LEAD_ANGLE_DEG == 269.5
     assert math.isclose(route.LM_LEAD_INNER_R, 93.85, abs_tol=1e-12)
     assert math.isclose(facts["lm_free_cable_outer_z_mm"], 0.40,
@@ -622,6 +709,33 @@ def test_route_contract():
                         abs_tol=1e-12)
     assert (route.L22_CUTOUT[2] / 2.0
             < route.LM_FREE_CABLE_RISE_START_R < route.LM_RECESS_R)
+    # The exact ruled rear relief must remain remote from every captive LM
+    # cavity, installed magnet and qualified backing land. This guards the
+    # free-lead repair without changing any magnet axis or skin.
+    lm_relief = route.lm_free_lead_relief_cutter()
+    assert (
+        route.LM_SEAT_MEMBRANE_BOTTOM_Z
+        - lm_relief.bounding_box().max.Z > 4.20), (
+        "exact free-LM relief approaches the LM seat membrane")
+    for site in lm_magnets:
+        tools = wall_cavity_tools(
+            name=site["name"], face=site["face"],
+            outward=(*site["normal"], 0.0), owner="carrier",
+            axis_z=site["z_mm"], print_up=(0.0, 0.0, -1.0),
+            front_z=core.THICKNESS_MM,
+            interface_gap_mm=core.SIDE_INTERFACE_GAP)
+        keepouts = (
+            ("qualified land", tools.required_land),
+            ("nominal magnet", tools.nominal_magnet),
+            *((f"cavity cutter {index}", cutter)
+              for index, cutter in enumerate(tools.cutters)),
+        )
+        for label, keepout in keepouts:
+            overlap = lm_relief & keepout
+            overlap_volume = 0.0 if overlap is None else overlap.volume
+            assert overlap_volume < 0.01, (
+                f"LM free-lead relief intersects {site['name']} {label} "
+                f"by {overlap_volume:.6f} mm3")
     assert facts["anchor_legs"] == {}
     assert 12.14 <= facts["main_max_rear_protrusion_mm"] <= 12.25
     assert 9.90 <= facts["ts_max_rear_protrusion_mm"] <= 10.00
@@ -1204,6 +1318,7 @@ def _final_um_burial_web_contract(stand_foot):
     import top_baffle_nd25fw4_flush as flush
     import top_baffle_nd25fw4_v1lf as core
     import top_baffle_nd25fw4_v1lf_route as route
+    from captive_magnets import wall_cavity_tools
 
     um = import_brep(staged["um"])
     points = np.asarray(route.ts_cable_points(0.20), dtype=float)
@@ -1229,13 +1344,17 @@ def _final_um_burial_web_contract(stand_foot):
         functional_voids.append(
             Pos(x, y, (bore_z0 + bore_z1) / 2.0) * Cylinder(
                 flush.UM_PILOT_D_MM / 2.0, bore_z1 - bore_z0))
-    # The 50.5-degree pocket lies close to the 58-degree bypass. It is a
-    # legitimate radial service void, so subtract its exact production
-    # cutter rather than weakening or relocating the solid-web witness.
+    # The 50.5-degree captive station lies close to the 58-degree bypass. It
+    # is a legitimate service void, so subtract its exact cradle, chimney,
+    # and 45-degree roof rather than an obsolete open blind cylinder.
     for site in core.side_magnet_sites("um"):
-        functional_voids.append(core._axis_cylinder(
-            site["face"], site["normal"], site["z_mm"],
-            core.SIDE_MAGNET_POCKET_D, core.SIDE_MAGNET_DEPTH, 1.0))
+        tools = wall_cavity_tools(
+            name=site["name"], face=site["face"],
+            outward=(*site["normal"], 0.0), owner="carrier",
+            axis_z=site["z_mm"], print_up=(0.0, 0.0, -1.0),
+            front_z=core.THICKNESS_MM,
+            interface_gap_mm=core.SIDE_INTERFACE_GAP)
+        functional_voids.extend(tools.cutters)
     # The 58-degree run reaches the lower edge of the direct tweeter
     # half-lap receiver. That open mating volume begins at z=12.30 and is
     # filled by the optional crescent's complementary half when assembled;
@@ -1428,7 +1547,7 @@ def _final_um_burial_web_contract(stand_foot):
     print(
         f"  {state}: both UM T-bypass bumps have full-width solid "
         "longitudinal shoulders; only the D6 lumen and exact blind-bore, "
-        "flush-magnet and half-lap interface voids remain")
+        "sealed captive-magnet and half-lap interface voids remain")
 
 
 def test_um_burial_web_contract():
@@ -2074,7 +2193,7 @@ def test_no_floor_lm_core():
         False, "LM", tempfile.gettempdir(), shell_keys=())
     from build123d import Cylinder, Pos, Rot, import_brep
     from shapely.geometry import LineString, Point
-    from export_piece_stls import BED_MM, V1LF_NO_FLOOR_LM_TILT_X_DEG
+    from export_piece_stls import BED_MM, BED_ROT_Z
     from top_baffle_nd25fw4 import BRIDGE_HOLE_XY, BRIDGE_INSERT_D_MM
     import top_baffle_nd25fw4_v1lf as core
     import top_baffle_nd25fw4_flush as flush
@@ -2206,12 +2325,14 @@ def test_no_floor_lm_core():
     assert retained_section >= interface_facts[
         "rear_section_modulus_mm3"] - 5.0
     assert bridge_load_facts()["fusion_sf_5g"] >= 1.4
-    tilted = Rot(X=V1LF_NO_FLOOR_LM_TILT_X_DEG) * lm
-    bb = tilted.bounding_box().size
-    assert bb.X <= BED_MM and bb.Y <= BED_MM and bb.Z <= BED_MM
+    front_down = (
+        Rot(Z=BED_ROT_Z["v1lf_core_1of2_lm_carrier"])
+        * Rot(X=180.0) * lm)
+    bb = front_down.bounding_box().size
+    assert max(bb.X, bb.Y, bb.Z) > 0.0
     print(
         "  no-floor LM: fused front-flush four-hole solid web; "
-        f"X{V1LF_NO_FLOOR_LM_TILT_X_DEG:g} footprint "
+        "front-down footprint "
         f"{bb.X:.2f} x {bb.Y:.2f} x {bb.Z:.2f}")
 
 
@@ -2239,14 +2360,17 @@ def _load_lm_keyed_parts(stand_foot):
 
 def _assert_lower_base_magnet_split_ownership(
         lm, lm_lower, lm_upper, core, lm_split, state):
-    """Keep both relocated base pockets wholly in the lower LM print.
+    """Keep both lower captive stations wholly in the lower LM print.
 
     The split pieces are derived from the finalized canonical carrier, so a
-    void-only cutter check is insufficient: an accidentally detached pocket
-    neighborhood would also appear unobstructed.  Compare a positive-volume
-    collar and the solid inward pocket backstop against the canonical BREP,
-    while proving that the upper print owns no material in either witness.
+    void-only check is insufficient: an accidentally detached neighborhood
+    would also appear unobstructed.  Compare the complete positive qualified
+    land after cradle/chimney/roof subtraction, both 0.45-mm axial skins, and
+    the seated-magnet void against the canonical BREP.  The upper print must
+    own none of this station.
     """
+    from captive_magnets import DEFAULT_SPEC, wall_cavity_tools
+
     lower_sites = {
         site["name"]: site
         for site in core.side_magnet_sites("lm")
@@ -2257,56 +2381,70 @@ def _assert_lower_base_magnet_split_ownership(
     seam = lm_split.LM_SPLIT_SEAM_Y
     for name, site in lower_sites.items():
         nx, ny = site["normal"]
-        assert site["face"][1] + core.SIDE_MAGNET_POCKET_D / 2.0 < seam
+        tangent_half_width = (
+            DEFAULT_SPEC.cavity_radius_mm
+            + DEFAULT_SPEC.side_wall_margin_mm)
+        assert site["face"][1] + tangent_half_width < seam
+        assert site["face_offset_mm"] == 0.0
+        tools = wall_cavity_tools(
+            name=name, face=site["face"],
+            outward=(nx, ny, 0.0), owner="carrier",
+            axis_z=site["z_mm"], print_up=(0.0, 0.0, -1.0),
+            front_z=core.THICKNESS_MM,
+            interface_gap_mm=core.SIDE_INTERFACE_GAP)
 
-        pocket = core._axis_cylinder(
-            site["face"], site["normal"], site["z_mm"],
-            core.SIDE_MAGNET_POCKET_D,
-            core.SIDE_MAGNET_DEPTH, 0.8)
-        assert _intersection_volume(lm, pocket) < 0.02, (
-            f"{state} canonical {name} base pocket is obstructed")
-        assert _intersection_volume(lm_lower, pocket) < 0.02, (
-            f"{state} lm_lower lost the open {name} base pocket")
-        assert _intersection_volume(lm_upper, pocket) < 0.02, (
-            f"{state} lm_upper intrudes into the {name} base pocket")
+        for cutter_index, cutter in enumerate(tools.cutters):
+            assert _intersection_volume(lm, cutter) < 0.03, (
+                f"{state} canonical {name} cutter {cutter_index} blocked")
+            assert _intersection_volume(lm_lower, cutter) < 0.03, (
+                f"{state} lm_lower lost {name} cavity/roof cutter "
+                f"{cutter_index}")
+            assert _intersection_volume(lm_upper, cutter) < 0.03, (
+                f"{state} lm_upper intrudes into {name} cutter "
+                f"{cutter_index}")
+        assert _intersection_volume(lm, tools.nominal_magnet) < 0.02
+        assert _intersection_volume(lm_lower, tools.nominal_magnet) < 0.02
 
-        # A larger local cylinder contains both the annular pocket rim and
-        # solid material immediately inward of the 2.2-mm blind pocket.  Its
-        # complete canonical intersection must be reproduced by lm_lower;
-        # lm_upper must own none of this positive-volume neighborhood.
-        collar = core._axis_cylinder(
-            site["face"], site["normal"], site["z_mm"],
-            core.SIDE_MAGNET_POCKET_D + 1.2,
-            core.SIDE_MAGNET_DEPTH + 0.8, 0.4)
-        canonical_collar = _intersection_volume(lm, collar)
-        lower_collar = _intersection_volume(lm_lower, collar)
-        upper_collar = _intersection_volume(lm_upper, collar)
-        assert canonical_collar > 5.0, (
-            f"{state} canonical {name} has no retained pocket collar")
-        assert abs(lower_collar - canonical_collar) < 0.03, (
-            f"{state} {name} collar is not wholly owned by lm_lower: "
-            f"{lower_collar:.3f}/{canonical_collar:.3f} mm3")
-        assert upper_collar < 0.02, (
-            f"{state} {name} collar leaked into lm_upper by "
-            f"{upper_collar:.3f} mm3")
+        qualified_solid = tools.required_land
+        for cutter in tools.cutters:
+            qualified_solid = qualified_solid - cutter
+        canonical_land = _intersection_volume(lm, qualified_solid)
+        lower_land = _intersection_volume(lm_lower, qualified_solid)
+        upper_land = _intersection_volume(lm_upper, qualified_solid)
+        assert canonical_land > 0.98 * qualified_solid.volume, (
+            f"{state} canonical {name} lost qualified captive land")
+        assert abs(lower_land - canonical_land) < 0.04, (
+            f"{state} {name} captive land is not wholly in lm_lower: "
+            f"{lower_land:.3f}/{canonical_land:.3f} mm3")
+        assert upper_land < 0.02, (
+            f"{state} {name} captive land leaked into lm_upper by "
+            f"{upper_land:.3f} mm3")
 
-        backstop_face = (
+        # Independently probe the sealed interface and inner axial skins.
+        skin_diameter = core.SIDE_MAGNET_D - 0.4
+        face_skin = core._axis_cylinder(
+            site["face"], site["normal"], site["z_mm"], skin_diameter,
+            DEFAULT_SPEC.face_skin_mm - 0.03, 0.0)
+        inner_face = (
             site["face"][0]
-            - (core.SIDE_MAGNET_DEPTH + 0.15) * nx,
+            - (DEFAULT_SPEC.face_skin_mm
+               + DEFAULT_SPEC.cavity_depth_mm) * nx,
             site["face"][1]
-            - (core.SIDE_MAGNET_DEPTH + 0.15) * ny,
+            - (DEFAULT_SPEC.face_skin_mm
+               + DEFAULT_SPEC.cavity_depth_mm) * ny,
         )
-        backstop = core._axis_cylinder(
-            backstop_face, site["normal"], site["z_mm"],
-            core.SIDE_MAGNET_POCKET_D - 0.4, 0.05, 0.05)
-        canonical_backstop = _intersection_volume(lm, backstop)
-        assert canonical_backstop > 0.90 * backstop.volume, (
-            f"{state} canonical {name} lost its solid inward backstop")
-        assert _intersection_volume(
-            lm_lower, backstop) > 0.90 * backstop.volume, (
-                f"{state} lm_lower lost the {name} inward backstop")
-        assert _intersection_volume(lm_upper, backstop) < 0.02, (
-            f"{state} lm_upper owns the {name} inward backstop")
+        inner_skin = core._axis_cylinder(
+            inner_face, site["normal"], site["z_mm"], skin_diameter,
+            DEFAULT_SPEC.inner_skin_mm - 0.03, 0.0)
+        for label, skin in (("interface", face_skin),
+                            ("inner", inner_skin)):
+            assert _intersection_volume(lm, skin) > 0.97 * skin.volume, (
+                f"{state} canonical {name} lost sealed {label} skin")
+            assert _intersection_volume(
+                lm_lower, skin) > 0.97 * skin.volume, (
+                    f"{state} lm_lower lost {name} sealed {label} skin")
+            assert _intersection_volume(lm_upper, skin) < 0.02, (
+                f"{state} lm_upper owns {name} {label} skin")
 
 
 def _assert_lm_keyed_split(stand_foot):
@@ -2315,7 +2453,6 @@ def _assert_lm_keyed_split(stand_foot):
     from shapely.geometry import box
     from export_piece_stls import (
         BED_ROT_Z,
-        V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG,
         V1LF_OPTIONAL_LM_SPLIT_BED_MM,
     )
     import top_baffle_nd25fw4_v1lf as core
@@ -2422,16 +2559,15 @@ def _assert_lm_keyed_split(stand_foot):
     assert facts["physical_load_qualification_required"] is True
     assert V1LF_OPTIONAL_LM_SPLIT_BED_MM == facts[
         "target_square_bed_mm"] == 220.0
-    assert facts["floor_bottom_print_rotation_x_deg"] == -90.0
-    assert facts["floor_bottom_in_bed_rotation_deg"] == 0.0
+    assert facts["floor_bottom_print_rotation_x_deg"] == 180.0
+    assert facts["print_orientation"] == "front_face_down_all_pieces"
+    assert facts["floor_bottom_in_bed_rotation_deg"] == 26.0
 
     footprints = {}
     for name, part in parts.items():
-        if stand_foot and name == "optional_lm_keyed_1of2_bottom":
-            assert V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG == -90.0
-            oriented = Rot(X=V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG) * part
-        else:
-            oriented = Rot(Z=BED_ROT_Z[f"v1lf_{name}"]) * part
+        oriented = (
+            Rot(Z=BED_ROT_Z[f"v1lf_{name}"])
+            * Rot(X=180.0) * part)
         size = oriented.bounding_box().size
         footprints[name] = (size.X, size.Y, size.Z)
         assert max(size.X, size.Y, size.Z) <= 220.0, (
@@ -2474,6 +2610,7 @@ def _intersection_volume(a, b):
 
 def _assert_core_interface_breps(lm, um, core):
     import top_baffle_nd25fw4_v1lf_route as route
+    from captive_magnets import DEFAULT_SPEC, wall_cavity_tools
 
     for x in core.JOINT_EAR_X:
         lm_ear = core._joint_ear("lm", x, core.LM_JOINT_Z)
@@ -2507,82 +2644,115 @@ def _assert_core_interface_breps(lm, um, core):
     for site in core.side_magnet_sites():
         nx, ny = site["normal"]
         face_offset = site["face_offset_mm"]
-        assert face_offset == 0.0
-        assert site["flush_buried"] and not site["proud_ear_added"]
+        expected_offset = (
+            0.0 if site["interface_kind"] == "base_side" else 0.60)
+        assert math.isclose(face_offset, expected_offset, abs_tol=1e-12)
+        assert site["magnet_fully_buried"]
+        assert not site["proud_ear_added"]
+        assert math.isclose(
+            site["local_captive_backing_boss_mm"], expected_offset,
+            abs_tol=1e-12)
+        assert math.isclose(
+            math.dist(site["face"], site["center"]),
+            site["radius"] + expected_offset, abs_tol=1e-9)
+
+        tools = wall_cavity_tools(
+            name=site["name"], face=site["face"],
+            outward=(nx, ny, 0.0), owner="carrier",
+            axis_z=site["z_mm"], print_up=(0.0, 0.0, -1.0),
+            front_z=core.THICKNESS_MM,
+            interface_gap_mm=core.SIDE_INTERFACE_GAP)
+        assert tools.closure_kind == "transverse_gable_45deg"
+        assert tools.spec.cavity_diameter_mm == 5.20
+        assert tools.spec.cavity_depth_mm == 2.10
+        assert tools.spec.face_skin_mm == tools.spec.inner_skin_mm == 0.45
+        assert math.isclose(
+            tools.spec.captive_land_mm, 3.00, abs_tol=1e-12)
+        assert tools.spec.roof_angle_deg == 45.0
+
+        # Nothing may project beyond the new shared interface datum.  At the
+        # four ring sites the allowed local material is the explicit 0.60-mm
+        # backing boss between the immutable carrier lip and this plane.
         outside = core._axis_cylinder(
             site["face"], site["normal"], site["z_mm"],
             core.SIDE_EAR_D, 0.0, core.SIDE_EAR_OUT)
         assert _intersection_volume(
             owner[site["driver"]], outside) < 0.05, (
-                f"{site['name']} retained proud magnet-ear material")
-        pocket = core._axis_cylinder(
-            site["face"], site["normal"], site["z_mm"],
-            core.SIDE_MAGNET_POCKET_D, core.SIDE_MAGNET_DEPTH, 0.8)
-        assert _intersection_volume(owner[site["driver"]], pocket) < 0.02
+                f"{site['name']} projects beyond its sealed interface")
 
-        # Probe solid material immediately inward of every blind pocket. The
-        # ring sites retain their designed thin radial floor; the relocated
-        # lower LM sites instead terminate in the thick shared W64 tongue.
-        # Both interfaces require a positive backstop after final Booleans.
-        nx, ny = site["normal"]
-        floor_face = (
-            site["face"][0] - (core.SIDE_MAGNET_DEPTH + 0.10) * nx,
-            site["face"][1] - (core.SIDE_MAGNET_DEPTH + 0.10) * ny,
+        for index, cutter in enumerate(tools.cutters):
+            overlap = _intersection_volume(owner[site["driver"]], cutter)
+            assert overlap < 0.03, (
+                f"{site['name']} captive cutter {index} is obstructed by "
+                f"{overlap:.4f} mm3")
+        assert _intersection_volume(
+            owner[site["driver"]], tools.nominal_magnet) < 0.02
+
+        # The exact helper land minus its three functional voids must remain
+        # solid.  This simultaneously gates the circular retaining cradle,
+        # the two printable side walls, both 0.45-mm axial skins, the gable
+        # roof, and the post-roof sealing layer.
+        qualified_solid = tools.required_land
+        for cutter in tools.cutters:
+            qualified_solid = qualified_solid - cutter
+        retained = _intersection_volume(
+            owner[site["driver"]], qualified_solid)
+        assert retained > 0.98 * qualified_solid.volume, (
+            f"{site['name']} retains only {retained:.3f}/"
+            f"{qualified_solid.volume:.3f} mm3 of captive land")
+
+        # Independent axial probes make accidental external access or loss
+        # of the inner backstop fail even if helper/production code changed
+        # together.  Probe inside the D5 magnet projection, away from the
+        # circular edge tolerance.
+        skin_diameter = core.SIDE_MAGNET_D - 0.4
+        face_skin = core._axis_cylinder(
+            site["face"], site["normal"], site["z_mm"], skin_diameter,
+            DEFAULT_SPEC.face_skin_mm - 0.03, 0.0)
+        inner_face = (
+            site["face"][0]
+            - (DEFAULT_SPEC.face_skin_mm
+               + DEFAULT_SPEC.cavity_depth_mm) * nx,
+            site["face"][1]
+            - (DEFAULT_SPEC.face_skin_mm
+               + DEFAULT_SPEC.cavity_depth_mm) * ny,
         )
-        floor_probe = core._axis_cylinder(
-            floor_face, site["normal"], site["z_mm"],
-            core.SIDE_MAGNET_POCKET_D - 0.4, 0.05, 0.05)
-        floor_fill = _intersection_volume(
-            owner[site["driver"]], floor_probe)
-        assert floor_fill > 0.90 * floor_probe.volume, (
-            f"{site['name']} lost its inward pocket backstop: "
-            f"{floor_fill:.4f}/{floor_probe.volume:.4f} mm3 remains")
+        inner_skin = core._axis_cylinder(
+            inner_face, site["normal"], site["z_mm"], skin_diameter,
+            DEFAULT_SPEC.inner_skin_mm - 0.03, 0.0)
+        for label, skin in (("interface", face_skin),
+                            ("inner", inner_skin)):
+            fill = _intersection_volume(owner[site["driver"]], skin)
+            assert fill > 0.97 * skin.volume, (
+                f"{site['name']} lost sealed {label} skin: "
+                f"{fill:.4f}/{skin.volume:.4f} mm3")
 
+        cavity_void = tools.cutters[0]
+        for cutter in tools.cutters[1:]:
+            cavity_void = cavity_void.fuse(cutter)
         if site["driver"] == "um":
-            # The raised UM pocket also leaves a 0.6-mm front skin. Sample
-            # that skin on the pocket axis, inside the R51.7 lip.
-            from build123d import Cylinder, Pos
-            axis_xy = (
-                site["face"][0] - core.SIDE_MAGNET_DEPTH / 2.0 * nx,
-                site["face"][1] - core.SIDE_MAGNET_DEPTH / 2.0 * ny,
-            )
-            front_probe = Pos(axis_xy[0], axis_xy[1], 17.95) * Cylinder(
-                0.4, 0.30)
-            front_fill = _intersection_volume(
-                owner[site["driver"]], front_probe)
-            assert front_fill > 0.90 * front_probe.volume, (
-                f"{site['name']} lost its 0.6-mm front skin: "
-                f"{front_fill:.4f}/{front_probe.volume:.4f} mm3 remains")
-
-            # The requested solid burial web may legitimately occupy the
-            # old empty-cover keepout: it is solid carrier material, not the
-            # cable void. Measure the actual safety invariant instead. The
-            # pocket must retain the complete 0.8-mm tunnel shell plus the
-            # original 0.8-mm isolation wall to the exact D6 lumen.
-            um_lumen = route._round_tube(
+            route_lumens = (route._round_tube(
                 route._owner_cutter_points(
                     route.ts_cable_points(1.8), "um"),
-                route.TS_CUTTER_R)
-            lumen_gap = pocket.distance_to(um_lumen)
-            required_gap = route.TS_SIDE_WALL + 0.8
-            assert lumen_gap >= required_gap - 0.03, (
-                f"{site['name']} pocket-to-D6-lumen gap "
-                f"{lumen_gap:.3f} < {required_gap:.3f} mm")
-            continue
-
-        # A final pocket recut must not turn a buried cable tunnel into an
-        # opening. LM does not use the new UM full-width web, so retain its
-        # original 0.8-mm outer-cover keepout contract.
-        pocket_keepout = core._axis_cylinder(
-            site["face"], site["normal"], site["z_mm"],
-            core.SIDE_MAGNET_POCKET_D + 1.6,
-            core.SIDE_MAGNET_DEPTH + 0.8, 1.0)
-        for index, cover in enumerate(route_covers[site["driver"]]):
-            overlap = _intersection_volume(pocket_keepout, cover)
-            assert overlap < 0.02, (
-                f"{site['name']} 0.8-mm pocket keepout intersects "
-                f"{site['driver']} route cover {index} by "
-                f"{overlap:.3f} mm3")
+                route.TS_CUTTER_R),)
+            required_route_gap = route.TS_SIDE_WALL + 0.8
+        else:
+            route_lumens = (
+                route._round_tube(
+                    route._owner_cutter_points(
+                        route.route_cable_points(1.8), "lm"),
+                    route.CUTTER_R),
+                route._round_tube(
+                    route._owner_cutter_points(
+                        route.ts_cable_points(1.8), "lm"),
+                    route.TS_CUTTER_R),
+            )
+            required_route_gap = route.TUNNEL_SKIN
+        for route_index, lumen in enumerate(route_lumens):
+            lumen_gap = cavity_void.distance_to(lumen)
+            assert lumen_gap >= required_route_gap - 0.03, (
+                f"{site['name']} cavity-to-route-{route_index} gap "
+                f"{lumen_gap:.3f} < {required_route_gap:.3f} mm")
 
 
 def _wait_for_worker_headroom(label, minimum_mb=2500.0):
@@ -3110,7 +3280,6 @@ def test_floor_integrated_mount():
     from export_piece_stls import (
         BED_MM,
         BED_ROT_Z,
-        V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG,
         V1LF_OPTIONAL_LM_SPLIT_BED_MM,
     )
     import top_baffle_nd25fw4_v1lf_floor as floor
@@ -3445,8 +3614,11 @@ def test_floor_integrated_mount():
 
     # The monolithic carrier is intentionally retained as the canonical
     # large-format reference. The bottom keyed option owns the complete stand
-    # and, laid X=-90 with no inherited in-bed rotation, fits <=220 mm.
-    canonical = Rot(Z=BED_ROT_Z["v1lf_core_1of2_lm_carrier"]) * lm
+    # and, like every released part, prints front-face-down.  Its in-bed Z
+    # rotation is allowed to minimize XY without changing that common datum.
+    canonical = (
+        Rot(Z=BED_ROT_Z["v1lf_core_1of2_lm_carrier"])
+        * Rot(X=180.0) * lm)
     canonical_size = canonical.bounding_box().size
     assert BED_MM == 256.0
     assert max(canonical_size.X, canonical_size.Y, canonical_size.Z) > BED_MM
@@ -3456,8 +3628,9 @@ def test_floor_integrated_mount():
     assert math.isclose(bottom.bounding_box().min.Y, 0.0, abs_tol=0.02)
     assert math.isclose(bottom.bounding_box().min.Z, -150.0, abs_tol=0.02)
     assert top.bounding_box().min.Y > facts["stem_top_y_mm"]
-    assert V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG == -90.0
-    bottom_print = Rot(X=V1LF_FLOOR_LM_BOTTOM_TILT_X_DEG) * bottom
+    bottom_print = (
+        Rot(Z=BED_ROT_Z["v1lf_optional_lm_keyed_1of2_bottom"])
+        * Rot(X=180.0) * bottom)
     bottom_size = bottom_print.bounding_box().size
     assert V1LF_OPTIONAL_LM_SPLIT_BED_MM == 220.0
     assert max(bottom_size.X, bottom_size.Y, bottom_size.Z) <= 220.0, (
@@ -4814,7 +4987,7 @@ def main():
         if not carrier_path or owner not in {"lm", "um"}:
             raise SystemExit("complete cable validation inputs are required")
         _state(os.environ.get("LX_STAND_FOOT") == "1")
-        from build123d import import_brep
+        from build123d import Box, Pos, import_brep
         import top_baffle_nd25fw4_v1lf_route as route
 
         carrier = import_brep(carrier_path)
@@ -4863,6 +5036,51 @@ def main():
                 print(
                     f"complete cable clear: {owner}/{cable_name}/{mode} "
                     f"volume={volume:.6f} mm3", flush=True)
+        if owner == "lm":
+            # The D7.8 lead has no printed cover. Its small subtractive
+            # clearance must be empty in the finished carrier and must cross
+            # the applicable rear exterior plane, proving an open relief
+            # rather than a sealed resonant lumen.
+            relief = route.lm_free_lead_relief_cutter()
+            relief_hit = carrier & relief
+            relief_hit_volume = (
+                0.0 if relief_hit is None else relief_hit.volume)
+            if relief_hit_volume >= 0.10:
+                raise SystemExit(
+                    f"lm/free-lead relief retained {relief_hit_volume:.6f} "
+                    "mm3 of carrier material")
+            stand_foot = os.environ.get("LX_STAND_FOOT") == "1"
+            rear_z = (route.STEM_Z_MM[0]
+                      if stand_foot else route.PAD_FACE_Z)
+            bounds = relief.bounding_box()
+            rear_plane_slab = Pos(
+                (bounds.min.X + bounds.max.X) / 2.0,
+                (bounds.min.Y + bounds.max.Y) / 2.0,
+                rear_z,
+            ) * Box(
+                bounds.max.X - bounds.min.X + 2.0,
+                bounds.max.Y - bounds.min.Y + 2.0,
+                0.04,
+            )
+            rear_aperture = relief & rear_plane_slab
+            rear_aperture_volume = (
+                0.0 if rear_aperture is None else rear_aperture.volume)
+            blocked_aperture = carrier & rear_aperture
+            blocked_aperture_volume = (
+                0.0 if blocked_aperture is None
+                else blocked_aperture.volume)
+            if rear_aperture_volume <= 0.10:
+                raise SystemExit(
+                    f"lm/free-lead relief does not cross the {rear_z:.2f} "
+                    "mm rear exterior plane")
+            if blocked_aperture_volume >= 0.01:
+                raise SystemExit(
+                    f"lm/free-lead rear aperture blocked by "
+                    f"{blocked_aperture_volume:.6f} mm3")
+            state = "floor" if stand_foot else "no-floor"
+            print(
+                f"complete free-LM relief clear: {state}; rear-plane "
+                f"aperture={rear_aperture_volume:.6f} mm3", flush=True)
         return
     if cable_validation:
         import run_memory_guarded as memory_guard

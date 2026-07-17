@@ -1,0 +1,49 @@
+{
+  "part": "lx521_coupon_9_um_faston_clocking",
+  "pre_translation_bbox_min_mm": [
+    -52.0,
+    -52.0,
+    -2.000000000000006
+  ],
+  "print_orientation": "front_face_down",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      52.0
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      52.0
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      2.000000000000006
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "lx521_coupon_9_um_faston_clocking.stl",
+  "stl_bytes": 51684,
+  "stl_origin_translation_mm": [
+    52.0,
+    52.0,
+    2.000000000000006
+  ],
+  "stl_sha256": "bbe52af5443c66ddea04095e927c609622bf2a21bd4965df85259fbdce5e9bfd",
+  "variant_export": "coupon"
+}

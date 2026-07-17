@@ -120,7 +120,7 @@ LM_WING_CONTACT_FUSION_OVERLAP_MM = 0.10
 # lower-circle region between those curves creates a continuous, gently
 # flared load path; it adds no rear depth and does not move any insert axis.
 # The lower LM magnets now live on the straight W64 base sides, so this
-# shoulder tangency is independent of every magnet pocket.
+# shoulder tangency is independent of every captive magnet cavity.
 BRIDGE_BLEND_START_Y = 60.0
 BRIDGE_BLEND_RING_OFFSET_DEG = 45.5
 BRIDGE_BLEND_RIGHT_ANGLE_DEG = (
