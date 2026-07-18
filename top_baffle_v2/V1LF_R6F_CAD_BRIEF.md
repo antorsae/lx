@@ -51,15 +51,22 @@
 - Optional LM print form: the authoritative LM carrier remains one monolithic
   solid. A mutually exclusive two-print option is derived from that finalized,
   state-specific solid at world `Y=172.481 mm` with an exact zero-gap planar
-  butt; use both optional halves or the monolithic LM, never a mixture. One
-  concealed right-hand straight rounded tongue/blind-socket pair is carved
-  wholly inside the existing R110.6..R113 lip. The bottom owns the 0.8 mm-wide
-  tongue at `z=12.00..16.60`, with 3.5 mm engagement along its tangential
-  insertion axis approximately 75.23° from +X; the top owns its blind socket
-  with 0.12 mm plan, 0.25 mm end and 0.15 mm Z clearances.
+  butt; use both optional halves or the monolithic LM, never a mixture. The
+  bottom owns two symmetric Ø0.80 cylindrical pins at `x=±108.243`,
+  `z=14.30`; both point world +Y normal to the seam, overlap the root by
+  0.50 mm, and engage the top by 0.80 mm. The top owns two 1.05 mm-deep blind
+  sockets with 0.12 mm radial and 0.25 mm end clearance: right is round Ø1.04,
+  while left is X-relieved to 1.16 × 1.04 mm. This round-plus-relieved
+  constraint accepts ±0.30 mm relative pitch error across the 216.486 mm
+  spacing instead of binding like two round sockets. Minimum final radial
+  walls are 0.564 mm round and 0.506 mm relieved, with 0.587 mm driver
+  clearance.
   It adds no external protrusion, envelope growth, extra screw, or standalone
-  retention/load credit. Assemble both front faces down on one flat datum and
-  verify tongue/socket fit, full seating, coplanarity and route-seam continuity.
+  retention/load credit. Print and assemble both front faces down on one flat
+  datum, move the top straight along world -Y so both pins enter together, and
+  verify two-pin/socket fit, full seating, coplanarity and route-seam continuity.
+  Each horizontal pin is only two nominal 0.4 mm nozzle widths; require a
+  process-matched coupon and slicer proof of both pins and all minimum walls.
   The installed LM driver flange and all normal LM fasteners are the service
   splice across the seam. Both optional halves in both stand states print
   front-face-down with in-plane bed rotation only. Former Z26°/Z45° and
@@ -167,6 +174,17 @@
   plain flush mouths: UM becomes free after its LM-owned passage, and T
   becomes free after its UM-owned passage. No telescoping printed handoff,
   UM-carrier rear duct, or crescent cable arc is permitted.
+- Junction closure intent: the LM–UM and T–UM cusp regions are filled by
+  complementary plan-split solids spanning the complete z=6.8..18.3 depth.
+  LM owns lower LM–UM, UM owns upper LM–UM plus lower T–UM, and the tweeter
+  crescent owns upper T–UM. Owners overlap their own ring/crescent by 0.40 mm
+  while every local anti-void lens has a separate 0.45 mm slicable fusion
+  land; Boolean shards below 0.05 mm² are rejected. The complementary owners
+  preserve the 0.05 mm assembly seam. Their front faces are exactly coplanar
+  at z=18.3; no shallow patch or rear cavity is allowed. Fixed-window/frozen-
+  silhouette acceptance runs at every 0.16 mm print layer and both sides of
+  every half-lap transition. The central ±6 mm T free-cable mouth is the sole
+  non-functional open span.
 - Terminal intent: MU terminal clock remains 283 deg, midway between the
   238/328 deg screws. With no printed UM-carrier rear duct or D82 mouth, the
   free Ø7 jacket follows the modeled R15 terminal approach to that immutable
@@ -211,7 +229,8 @@
   require separate artifact/process identity, coupon evidence, documented
   1g/3g/5g structural proof and signed release decisions; neither state may
   inherit the other's evidence. The optional LM split additionally remains
-  fail-closed pending tongue/socket fit, full-seat, coplanarity and route-seam
+  fail-closed pending two-pin/socket fit, slicer-path proof, full-seat,
+  coplanarity and route-seam
   evidence, physical cable pull-through, and driver-installed 1g/3g/5g proof;
   monolithic-LM evidence does not qualify it by inheritance.
 - Manufacturing assumptions: Bambu PLA Tough+, PLA Basic, PLA Lite, PLA
@@ -257,10 +276,11 @@
   final-BREP solid saddle continuity from conduit roof to ordinary blind-bore
   floor at all eight named bumps;
   optional-LM seam Y/zero-gap butt, final-lumen preservation and non-overlapping
-  halves; exactly one concealed right-hand straight rounded tongue/socket pair
-  wholly inside the existing lip, 0.8 mm tongue width, 3.5 mm engagement along
-  the ~75.23° tangential insertion axis, positive socket walls and driver
-  clearance, full seating,
+  halves; two symmetric concealed Ø0.80 world-+Y cylindrical pins, 0.80 mm
+  engagement, right Ø1.04 round and left 1.16 × 1.04 X-relieved blind sockets,
+  0.12 mm radial/0.25 mm end clearances, ≥0.564/≥0.506 mm socket walls,
+  ≥0.587 mm driver clearance, round-plus-relieved pitch tolerance, complete
+  two-nozzle-width sliced pin/wall paths, process-matched fit and full seating,
   zero envelope growth, no external feature, and zero standalone
   retention/load credit; front-face-down orientation and selected-printer
   footprint clearance for all optional split parts;
@@ -277,7 +297,7 @@
   diagrams are not substitutes for rendered STEP review.
 - Generation safety: ordinary Make targets execute on `osado.lan` in one
   512 GiB/no-swap systemd cgroup with a 64 GiB host-available floor. The
-  default four guarded recipe slots are capped at 112 GiB per process tree.
+  default eight guarded recipe slots are capped at 56 GiB per process tree.
   That profile uses concurrent check processes, direct final-part builds and
   full route witnesses; it does not inherit macOS-only cutter/route tiling.
   Explicit `LX_CAD_EXECUTION=local` remains serial with an 8 GiB process-tree

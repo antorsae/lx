@@ -1016,24 +1016,50 @@ def main() -> int:
     arguments = list(sys.argv[1:])
     require_release_authorized = False
     v1lf_only = False
+    stl_only = False
+    metadata_only = False
     if "--require-release-authorized" in arguments:
         arguments.remove("--require-release-authorized")
         require_release_authorized = True
     if "--v1lf-only" in arguments:
         arguments.remove("--v1lf-only")
         v1lf_only = True
+    if "--stl-only" in arguments:
+        arguments.remove("--stl-only")
+        stl_only = True
+    if "--metadata-only" in arguments:
+        arguments.remove("--metadata-only")
+        metadata_only = True
+    if stl_only and metadata_only:
+        print(
+            "--stl-only and --metadata-only are mutually exclusive",
+            file=sys.stderr)
+        return 2
+    if stl_only and (require_release_authorized or v1lf_only):
+        print(
+            "--stl-only cannot be combined with manifest options",
+            file=sys.stderr)
+        return 2
     unknown_options = [arg for arg in arguments if arg.startswith("-")]
     if unknown_options:
         print(
             "unknown option(s): " + ", ".join(unknown_options),
             file=sys.stderr)
         return 2
-    roots = ([Path(arg) for arg in arguments] if arguments else
-             [Path(__file__).parent / state / "stl"
-              for state in ("floor_stand", "no_floor_stand")])
-    files = sorted(path for root in roots if root.is_dir()
-                   for path in root.glob("*.stl"))
-    if not files:
+    default_roots = [
+        Path(__file__).parent / state / "stl"
+        for state in ("floor_stand", "no_floor_stand")
+    ]
+    if stl_only:
+        roots = []
+        files = sorted(Path(arg) for arg in arguments)
+    else:
+        roots = ([Path(arg) for arg in arguments]
+                 if arguments else default_roots)
+        files = ([] if metadata_only else sorted(
+            path for root in roots if root.is_dir()
+            for path in root.glob("*.stl")))
+    if not files and not metadata_only:
         print("no STLs found", file=sys.stderr)
         return 1
 
@@ -1063,9 +1089,9 @@ def main() -> int:
             f"({facts['nested_void_components']} nested void), "
             f"signed volume {facts['signed_volume']:.2f} mm3")
 
-    manifest_errors = [
+    manifest_errors = ([] if stl_only else [
         error for root in roots
-        for error in _v1lf_manifest_errors(root, v1lf_only=v1lf_only)]
+        for error in _v1lf_manifest_errors(root, v1lf_only=v1lf_only)])
     if require_release_authorized:
         for root in roots:
             manifest_path = root.parent / "v1lf_release_manifest.json"
@@ -1099,7 +1125,7 @@ def main() -> int:
     for error in manifest_errors:
         print(f"  DEFECT {error}")
     bad += len(manifest_errors)
-    if len(roots) == 2:
+    if not stl_only and len(roots) == 2:
         state_dirs = {root.parent.name: root.parent for root in roots}
         floor = state_dirs.get("floor_stand")
         no_floor = state_dirs.get("no_floor_stand")

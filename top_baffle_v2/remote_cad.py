@@ -42,13 +42,15 @@ REQUIREMENTS_SOURCE_PATH = "top_baffle_v2/cad-remote-requirements.lock"
 PROTOCOL_VERSION = 3
 ENVIRONMENT_ATTESTATION_VERSION = 3
 PROMOTION_TRANSACTION_VERSION = 1
+BUILD_CACHE_VERSION = 1
 REMOTE_PYTHON_VERSION = "3.12.12"
 REMOTE_MEMORY_PROFILE = "osado-512g"
 REMOTE_MEMORY_MAX_MIB = 512 * 1024
 REMOTE_MEMORY_FLOOR_MIB = 64 * 1024
 REMOTE_MEMORY_MAX_SYSTEMD = "512G"
-DEFAULT_REMOTE_JOBS = 4
+DEFAULT_REMOTE_JOBS = 16
 MAX_REMOTE_JOBS = 16
+LOCAL_PROMOTION_JOBS = 8
 
 DEFAULT_HOST = "osado.lan"
 DEFAULT_REMOTE_ROOT = "~/temp/lx-cad"
@@ -57,6 +59,23 @@ ARTIFACT_SCAN_ROOTS = (*STATE_OUTPUT_ROOTS, "review", "wings")
 GENERATED_SUFFIXES = {
     ".3mf", ".brep", ".glb", ".json", ".png", ".step", ".stl",
 }
+COMMON_ARTIFACT = "top_baffle_v2/top_baffle_nd25fw4_attachments.step"
+V1LF_BASIC_VARIANTS_ARTIFACT = (
+    "top_baffle_v2/baffle_variants_drivers_v1lf.png")
+CAPTIVE_MAGNET_CATALOG_ARTIFACT = (
+    "top_baffle_v2/review/captive_magnet_release_catalog.json")
+WING_CONCEPT_SLUGS = (
+    "solid_lx", "solid_mid", "perforated_4k", "graded_1k_4k",
+    "open_honeycomb", "tortuous_aperiodic",
+    "vertical_aperture_gradient", "vertical_path_gradient",
+    "bimodal_apertures", "radial_edge_loaded", "radial_edge_released",
+    "solid_chirped_edge", "perimeter_frame", "solid_radial_leak_slots",
+)
+WING_CONCEPT_ARTIFACTS = (
+    *(f"top_baffle_v2/review/v1lf_wing_{slug}_concept.png"
+      for slug in WING_CONCEPT_SLUGS),
+    "top_baffle_v2/review/v1lf_wing_concepts_index.png",
+)
 SOURCE_EXCLUDED_DIRS = {
     ".remote-cad", "__pycache__", "floor_stand", "no_floor_stand",
     "review", "wings",
@@ -64,6 +83,10 @@ SOURCE_EXCLUDED_DIRS = {
 SOURCE_EXCLUDED_SUFFIXES = {
     ".3mf", ".brep", ".glb", ".png", ".pyc", ".step", ".stl",
 }
+# BambuStudio writes this transient status payload beside the invoked model.
+# It is neither an input nor a release artifact, and including it made an
+# otherwise identical snapshot miss the verified Make cache after slicing.
+SOURCE_EXCLUDED_NAMES = {"result.json"}
 REFERENCE_INPUTS = (
     REPO_ROOT / "E0022_W22EX001.stp",
     REPO_ROOT / "linkwitz" / "H1658-04_MU10RB-SL_driver.stl",
@@ -80,7 +103,9 @@ REMOTE_MAKE_TARGETS = {
     "v1lf_basic_wings", "check_v1lf_basic_variants",
     "common", "check", "check_captive_magnets", "check_v1lf",
     "check_v1lf_shells",
-    "check_v1lf_t_shells", "check_v1lf_mouths", "check_v1lf_burial",
+    "check_v1lf_t_shells", "check_v1lf_service",
+    "check_v1lf_closure_focus",
+    "check_v1lf_mouths", "check_v1lf_burial",
     "check_v1lf_um_burial",
     "check_v1lf_backfills", "check_v1lf_route_boundaries",
     "check_floor_um_shell", "check_floor_t_shell",
@@ -92,7 +117,9 @@ REMOTE_MAKE_TARGETS = {
     "check_route_contract", "check_bump_brep",
     "check_floor_integrated_mount",
     "check_no_floor_lm_mesh", "check_v1lf_lm_split",
-    "check_v1lf_lm_profile",
+    "check_v1lf_lm_profile", "check_v1lf_junction_closure_plans",
+    "check_v1lf_junction_closures",
+    "check_v1lf_lm_split_two_pin_static",
     "manifold", "clean",
     "validate_v1lf_stages",
     "validate_floor_v1lf_stage", "validate_no_floor_v1lf_stage",
@@ -165,6 +192,8 @@ def _source_paths(*, include_candidate_outputs: bool = False) -> tuple[Path, ...
         if any(part in SOURCE_EXCLUDED_DIRS for part in relative.parts):
             continue
         if any(part.startswith(".") for part in relative.parts):
+            continue
+        if relative.name in SOURCE_EXCLUDED_NAMES:
             continue
         if path.suffix.lower() in SOURCE_EXCLUDED_SUFFIXES:
             continue
@@ -430,6 +459,318 @@ def _verify_source(root: Path, expected_hash: str, allow_extra: bool) -> dict:
         if actual_paths != expected_paths:
             raise RuntimeError("immutable source snapshot has unexpected files")
     return manifest
+
+
+def _tree_records(root: Path) -> list[dict]:
+    """Hash one cache tree, including the mtimes consumed by GNU Make.
+
+    The cache is only a byte-for-byte seed for a fresh isolated job.  It has
+    no dependency logic of its own: after the exact source overlay below,
+    GNU Make remains the sole authority deciding which targets are stale.
+    Binding mtimes as well as bytes prevents a damaged cache entry from
+    silently making an old target look newer than its prerequisites.
+    """
+    records = []
+    for path in sorted(root.rglob("*")):
+        if path.is_symlink():
+            raise RuntimeError(f"build cache may not contain symlinks: {path}")
+        if not path.is_file():
+            continue
+        stat_result = path.stat()
+        records.append({
+            "path": path.relative_to(root).as_posix(),
+            "size": stat_result.st_size,
+            "sha256": _sha256_file(path),
+            "mode": stat_result.st_mode & 0o777,
+            "mtime_ns": stat_result.st_mtime_ns,
+        })
+    return records
+
+
+def _validated_tree_records(records: object) -> dict[str, dict]:
+    if not isinstance(records, list):
+        raise RuntimeError("build cache has no file record list")
+    validated = {}
+    for record in records:
+        if (not isinstance(record, dict)
+                or set(record) != {
+                    "path", "size", "sha256", "mode", "mtime_ns"}
+                or not isinstance(record.get("path"), str)
+                or type(record.get("size")) is not int
+                or record["size"] < 0
+                or not isinstance(record.get("sha256"), str)
+                or not re.fullmatch(r"[0-9a-f]{64}", record["sha256"])
+                or type(record.get("mode")) is not int
+                or not 0 <= record["mode"] <= 0o777
+                or type(record.get("mtime_ns")) is not int
+                or record["mtime_ns"] < 0
+                or record["path"] in validated):
+            raise RuntimeError("invalid/duplicate build-cache file record")
+        # Apply the same traversal/absolute-path rejection as archive input.
+        _safe_member_path(Path("/tmp/lx-cad-cache-record-root"), record["path"])
+        validated[record["path"]] = record
+    return validated
+
+
+def _verify_tree_records(root: Path, records: object) -> dict[str, dict]:
+    expected = _validated_tree_records(records)
+    actual_paths = {}
+    for path in root.rglob("*"):
+        if path.is_symlink():
+            raise RuntimeError(f"build cache may not contain symlinks: {path}")
+        if path.is_file():
+            actual_paths[path.relative_to(root).as_posix()] = path
+    if set(actual_paths) != set(expected):
+        raise RuntimeError("build-cache tree differs from its manifest")
+    for relative, path in actual_paths.items():
+        record = expected[relative]
+        stat_result = path.stat()
+        if (stat_result.st_size != record["size"]
+                or (stat_result.st_mode & 0o777) != record["mode"]
+                or stat_result.st_mtime_ns != record["mtime_ns"]
+                or _sha256_file(path) != record["sha256"]):
+            raise RuntimeError(f"build-cache file mismatch: {relative}")
+    return expected
+
+
+def _build_cache_entry(
+        remote_root: Path, environment_hash: str,
+        environment_attestation_hash: str) -> Path:
+    if (not re.fullmatch(r"[0-9a-f]{64}", environment_hash)
+            or not re.fullmatch(
+                r"[0-9a-f]{64}", environment_attestation_hash)):
+        raise RuntimeError("invalid build-cache environment identity")
+    identity = f"{environment_hash}-{environment_attestation_hash}"
+    return remote_root / "cache" / "make" / identity
+
+
+@contextmanager
+def _build_cache_lock(
+        remote_root: Path, environment_hash: str,
+        environment_attestation_hash: str):
+    identity = f"{environment_hash}-{environment_attestation_hash}"
+    lock_path = (
+        remote_root / "locks" / f"make-cache-{identity}.lock")
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open("a+b") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        yield
+
+
+def _copy_tree(source: Path, destination: Path) -> None:
+    """Copy a cache tree, using Linux reflinks when the host supports them."""
+    if destination.exists():
+        raise FileExistsError(destination)
+    destination.mkdir(parents=True)
+    if sys.platform == "linux" and shutil.which("cp"):
+        try:
+            subprocess.run(
+                ["cp", "-a", "--reflink=auto", f"{source}/.",
+                 str(destination)],
+                check=True, stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL)
+            return
+        except (OSError, subprocess.CalledProcessError):
+            shutil.rmtree(destination, ignore_errors=True)
+            destination.mkdir(parents=True)
+    shutil.copytree(
+        source, destination, dirs_exist_ok=True,
+        copy_function=shutil.copy2)
+
+
+def _copy_missing_tree_files(
+        source: Path, destination: Path, *,
+        excluded_prefixes: tuple[Path, ...] = ()) -> tuple[str, ...]:
+    """Add only paths absent from an already copied exact-source worktree.
+
+    Cache publication uses this to retain the union of successful Make target
+    coverage for one immutable source snapshot.  Existing paths belong to the
+    job with the newer completion timestamp and are never overwritten by an
+    older/sparser publisher.
+    """
+    added = []
+    for path in sorted(source.rglob("*")):
+        if path.is_symlink():
+            raise RuntimeError(f"build cache may not contain symlinks: {path}")
+        if not path.is_file():
+            continue
+        relative = path.relative_to(source)
+        if any(relative == prefix or prefix in relative.parents
+               for prefix in excluded_prefixes):
+            continue
+        target = destination / relative
+        if target.exists() or target.is_symlink():
+            if not target.is_file() or target.is_symlink():
+                raise RuntimeError(
+                    f"build-cache union path-type collision: {relative}")
+            continue
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(path, target)
+        added.append(relative.as_posix())
+    return tuple(added)
+
+
+def _verify_build_cache_entry(
+        entry: Path, environment_hash: str,
+        environment_attestation_hash: str) -> tuple[dict, dict[str, dict]]:
+    marker = _read_json(entry / "cache.json")
+    if (marker.get("format_version") != BUILD_CACHE_VERSION
+            or marker.get("environment_sha256") != environment_hash
+            or marker.get("environment_attestation_sha256")
+            != environment_attestation_hash
+            or not re.fullmatch(
+                r"[0-9a-f]{64}", str(marker.get("source_sha256", "")))
+            or not JOB_ID_RE.fullmatch(
+                str(marker.get("published_from_job", "")))
+            or type(marker.get("build_completed_ns")) is not int
+            or marker["build_completed_ns"] <= 0
+            or not re.fullmatch(
+                r"[0-9a-f]{64}",
+                str(marker.get("artifact_manifest_sha256", "")))):
+        raise RuntimeError("build-cache marker is malformed")
+    work = entry / "work"
+    records = _verify_tree_records(work, marker.get("files"))
+    source = _verify_source(
+        work, marker["source_sha256"], allow_extra=True)
+    if source.get("source_sha256") != marker["source_sha256"]:
+        raise RuntimeError("build-cache source binding is inconsistent")
+    return marker, records
+
+
+def _overlay_source_snapshot(
+        cached_work: Path, current_work: Path,
+        current_source_hash: str) -> tuple[str, ...]:
+    """Overlay exact sources while retaining mtimes for unchanged inputs.
+
+    Checksums identify only which source bytes changed between immutable
+    snapshots.  Changed/new source mtimes advance beyond every cached target;
+    unchanged source mtimes and all generated target mtimes remain untouched.
+    Make then performs the actual dependency traversal.
+    """
+    old_manifest = _verify_source(
+        cached_work,
+        _read_json(cached_work / ".lx-cad-source.json")["source_sha256"],
+        allow_extra=True)
+    current_manifest = _verify_source(
+        current_work, current_source_hash, allow_extra=False)
+    old_records = {
+        record["path"]: record for record in old_manifest["files"]}
+    current_records = {
+        record["path"]: record for record in current_manifest["files"]}
+
+    removed = sorted(set(old_records) - set(current_records))
+    if removed:
+        raise RuntimeError(
+            "build-cache source overlay may not retain outputs across "
+            f"deleted inputs: {', '.join(removed)}")
+
+    maximum_cached_mtime = max(
+        (path.stat().st_mtime_ns for path in cached_work.rglob("*")
+         if path.is_file() and not path.is_symlink()),
+        default=0)
+    advanced_mtime = max(time.time_ns(), maximum_cached_mtime + 1)
+    changed = []
+    for relative, record in sorted(current_records.items()):
+        old = old_records.get(relative)
+        if (old is not None
+                and old["size"] == record["size"]
+                and old["sha256"] == record["sha256"]):
+            continue
+        source = _safe_member_path(current_work, relative)
+        destination = _safe_member_path(cached_work, relative)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        temporary = destination.with_name(
+            f".{destination.name}.{os.getpid()}.source-overlay")
+        try:
+            shutil.copyfile(source, temporary)
+            os.chmod(temporary, source.stat().st_mode & 0o777)
+            os.utime(temporary, ns=(advanced_mtime, advanced_mtime))
+            temporary.replace(destination)
+        finally:
+            temporary.unlink(missing_ok=True)
+        changed.append(relative)
+
+    # The manifest is control metadata, not a Make prerequisite.  Replace it
+    # after the content overlay and bind it to the current immutable source.
+    shutil.copy2(
+        current_work / ".lx-cad-source.json",
+        cached_work / ".lx-cad-source.json")
+    _verify_source(cached_work, current_source_hash, allow_extra=True)
+    return tuple(changed)
+
+
+def _seed_build_cache(job: Path, metadata: dict) -> dict | None:
+    """Atomically replace a source-only job worktree with a verified seed."""
+    if metadata.get("include_candidate_outputs"):
+        return None
+    remote_root = Path(metadata["remote_root"])
+    environment_hash = metadata["environment_sha256"]
+    attestation_hash = metadata["environment_attestation_sha256"]
+    entry = _build_cache_entry(
+        remote_root, environment_hash, attestation_hash)
+    with _build_cache_lock(
+            remote_root, environment_hash, attestation_hash):
+        if not entry.is_dir():
+            return None
+        try:
+            marker, cache_records = _verify_build_cache_entry(
+                entry, environment_hash, attestation_hash)
+        except (OSError, ValueError, RuntimeError):
+            # A cache is never authoritative.  Remove a damaged entry under
+            # its exclusive lock and continue with the exact cold snapshot.
+            shutil.rmtree(entry, ignore_errors=True)
+            return None
+
+        source_work = job / "work"
+        # Make can determine which declared targets are stale after a source
+        # edit or addition, but it cannot generically infer which generated
+        # files belonged exclusively to a now-deleted source.  Reject reuse
+        # before cloning so the fresh source-only job remains a true cold
+        # build with no stale generated artifacts to inherit.
+        cached_source = _read_json(entry / "work" / ".lx-cad-source.json")
+        current_source = _verify_source(
+            source_work, metadata["source_sha256"], allow_extra=False)
+        cached_paths = {
+            record["path"] for record in cached_source["files"]}
+        current_paths = {
+            record["path"] for record in current_source["files"]}
+        removed_sources = sorted(cached_paths - current_paths)
+        if removed_sources:
+            return None
+
+        temporary = job / f".work-cache-seed-{os.getpid()}"
+        backup = job / f".work-source-only-{os.getpid()}"
+        shutil.rmtree(temporary, ignore_errors=True)
+        shutil.rmtree(backup, ignore_errors=True)
+        try:
+            _copy_tree(entry / "work", temporary)
+            changed = _overlay_source_snapshot(
+                temporary, source_work, metadata["source_sha256"])
+            # The baseline lets artifact packaging exclude inherited cache
+            # files from focused jobs.  Complete output-root targets still
+            # publish their entire declared roots.
+            _atomic_json(job / "cache-seed.json", {
+                "format_version": BUILD_CACHE_VERSION,
+                "cache_source_sha256": marker["source_sha256"],
+                "cache_build_completed_ns": marker["build_completed_ns"],
+                "changed_source_paths": list(changed),
+                "files": list(cache_records.values()),
+            })
+            source_work.replace(backup)
+            try:
+                temporary.replace(source_work)
+            except BaseException:
+                backup.replace(source_work)
+                raise
+            shutil.rmtree(backup, ignore_errors=True)
+        finally:
+            shutil.rmtree(temporary, ignore_errors=True)
+            shutil.rmtree(backup, ignore_errors=True)
+        return {
+            "source_sha256": marker["source_sha256"],
+            "build_completed_ns": marker["build_completed_ns"],
+            "changed_source_paths": changed,
+        }
 
 
 class Remote:
@@ -837,7 +1178,84 @@ def _write_status(job: Path, state: str, **facts: object) -> None:
     })
 
 
-def _artifact_paths(work: Path) -> list[Path]:
+def _v1lf_release_artifact_relatives(
+        work: Path, state: str) -> set[str]:
+    """Return the public files promised by one focused V1LF release target.
+
+    A cache seed may make every Make prerequisite a no-op, so output delivery
+    cannot be inferred from files whose bytes changed during this particular
+    job.  The hash-bound state manifest is already the release inventory
+    authority; use its artifact keys and include the manifest itself.  Native
+    BREP staging remains an internal cache and is intentionally not promoted
+    as part of the focused printable release contract.
+    """
+    if state not in STATE_OUTPUT_ROOTS:
+        raise ValueError(f"unknown V1LF release state: {state!r}")
+    state_root = work / "top_baffle_v2" / state
+    manifest = state_root / "v1lf_release_manifest.json"
+    payload = _read_json(manifest)
+    records = payload.get("artifacts")
+    if not isinstance(records, dict) or not records:
+        raise RuntimeError(
+            f"{state} V1LF release manifest has no artifact inventory")
+    required = {manifest.relative_to(work).as_posix()}
+    seen = set()
+    for relative in records:
+        if (not isinstance(relative, str) or not relative
+                or relative in seen):
+            raise RuntimeError(
+                f"{state} V1LF release manifest has an invalid artifact key")
+        seen.add(relative)
+        path = _safe_member_path(state_root, relative)
+        required.add(path.relative_to(work).as_posix())
+    return required
+
+
+def _target_required_artifact_relatives(
+        work: Path, targets: list[str]) -> set[str]:
+    """Exact cached outputs that a public target must always return.
+
+    Complete state/wing roots are handled separately by
+    :func:`_full_output_roots`.  This registry covers outputs outside those
+    roots and focused state targets whose public result is a manifest-defined
+    subset.  Keeping these paths in every artifact bundle makes warm-cache
+    execution equivalent to a cold build even when the local output tree is
+    absent or stale.
+    """
+    targets = _validate_targets(list(targets))
+    target = targets[0]
+    required: set[str] = set()
+    if target in {"all", "candidate", "release"}:
+        required.update({
+            COMMON_ARTIFACT,
+            V1LF_BASIC_VARIANTS_ARTIFACT,
+            CAPTIVE_MAGNET_CATALOG_ARTIFACT,
+        })
+    elif target == "v1lf_release":
+        required.update({
+            V1LF_BASIC_VARIANTS_ARTIFACT,
+            CAPTIVE_MAGNET_CATALOG_ARTIFACT,
+        })
+
+    if target in {
+            "v1lf_basic_variants", "v1lf_basic_wings",
+            "check_v1lf_basic_variants"}:
+        required.add(V1LF_BASIC_VARIANTS_ARTIFACT)
+    elif target == "common":
+        required.add(COMMON_ARTIFACT)
+    elif target == "wing_concepts":
+        required.update(WING_CONCEPT_ARTIFACTS)
+    elif target == "floor_v1lf":
+        required.update(_v1lf_release_artifact_relatives(
+            work, "floor_stand"))
+    elif target == "no_floor_v1lf":
+        required.update(_v1lf_release_artifact_relatives(
+            work, "no_floor_stand"))
+    return required
+
+
+def _artifact_paths(job: Path, metadata: dict) -> list[Path]:
+    work = job / "work"
     source = _read_json(work / ".lx-cad-source.json")
     source_paths = {record["path"] for record in source["files"]}
     paths: set[Path] = set()
@@ -856,13 +1274,77 @@ def _artifact_paths(work: Path) -> list[Path]:
                 and path.relative_to(work).as_posix() not in source_paths
                 and path.suffix.lower() in GENERATED_SUFFIXES):
             paths.add(path)
-    return sorted(paths, key=lambda item: item.relative_to(work).as_posix())
+
+    by_relative = {
+        path.relative_to(work).as_posix(): path for path in paths}
+    required_relatives = _target_required_artifact_relatives(
+        work, metadata["targets"])
+    missing_required = sorted(required_relatives - set(by_relative))
+    if missing_required:
+        raise RuntimeError(
+            "remote Make target omitted required artifact(s): "
+            + ", ".join(missing_required))
+    required_paths = {by_relative[relative]
+                      for relative in required_relatives}
+
+    seed_path = job / "cache-seed.json"
+    if not seed_path.is_file():
+        return sorted(
+            paths, key=lambda item: item.relative_to(work).as_posix())
+    seed = _read_json(seed_path)
+    if seed.get("format_version") != BUILD_CACHE_VERSION:
+        raise RuntimeError("unsupported build-cache seed protocol")
+    baseline = _validated_tree_records(seed.get("files"))
+    full_roots = _full_output_roots(metadata["targets"])
+    current_paths = {
+        path.relative_to(work).as_posix() for path in paths}
+    if metadata["targets"] != ["clean"]:
+        missing = []
+        for relative in baseline:
+            if relative in source_paths or relative in current_paths:
+                continue
+            parts = Path(relative).parts
+            under_scan_root = (
+                len(parts) >= 3 and parts[0] == "top_baffle_v2"
+                and parts[1] in ARTIFACT_SCAN_ROOTS)
+            top_level_generated = (
+                len(parts) == 2 and parts[0] == "top_baffle_v2"
+                and Path(parts[1]).suffix.lower() in GENERATED_SUFFIXES)
+            if not (under_scan_root or top_level_generated):
+                continue
+            if under_scan_root and parts[1] in full_roots:
+                # A complete-root promotion replaces the directory, so an
+                # omitted old member is an intentional, represented deletion.
+                continue
+            missing.append(relative)
+        if missing:
+            raise RuntimeError(
+                "focused cached build removed generated artifacts without "
+                "a representable promotion deletion: " + ", ".join(missing))
+    selected = set(required_paths)
+    for path in paths:
+        relative = path.relative_to(work).as_posix()
+        parts = Path(relative).parts
+        if (len(parts) >= 2 and parts[0] == "top_baffle_v2"
+                and parts[1] in full_roots):
+            selected.add(path)
+            continue
+        previous = baseline.get(relative)
+        if previous is None:
+            selected.add(path)
+            continue
+        stat_result = path.stat()
+        if (stat_result.st_size != previous["size"]
+                or _sha256_file(path) != previous["sha256"]):
+            selected.add(path)
+    return sorted(
+        selected, key=lambda item: item.relative_to(work).as_posix())
 
 
 def _create_artifact_bundle(job: Path, metadata: dict) -> None:
     work = job / "work"
     _verify_source(work, metadata["source_sha256"], allow_extra=True)
-    paths = _artifact_paths(work)
+    paths = _artifact_paths(job, metadata)
     records = [{
         "path": path.relative_to(work).as_posix(),
         "size": path.stat().st_size,
@@ -896,9 +1378,170 @@ def _create_artifact_bundle(job: Path, metadata: dict) -> None:
             "cgroup_attestation": metadata["cgroup_attestation"],
         },
         "created_utc": _utc_now(),
+        "build_completed_ns": time.time_ns(),
         "archive_sha256": _sha256_file(archive),
         "files": records,
     })
+
+
+def _validated_completed_job_for_cache(job: Path) -> tuple[dict, dict]:
+    metadata = _read_json(job / "job.json")
+    status = _read_json(job / "status.json")
+    if (metadata.get("protocol_version") != PROTOCOL_VERSION
+            or status.get("protocol_version") != PROTOCOL_VERSION
+            or status.get("state") != "succeeded"
+            or status.get("exit_code") != 0
+            or (job / "exit_code").read_text(encoding="ascii").strip()
+            != "0"):
+        raise RuntimeError("only a succeeded remote job may publish a cache")
+    if metadata.get("include_candidate_outputs"):
+        raise RuntimeError("manifold-only source jobs do not publish a cache")
+    work = job / "work"
+    _verify_source(work, metadata["source_sha256"], allow_extra=True)
+    artifacts_path = job / "artifacts.json"
+    artifacts = _read_json(artifacts_path)
+    for field in (
+            "protocol_version", "job_id", "source_sha256",
+            "environment_sha256", "environment_attestation_sha256",
+            "targets"):
+        expected = (PROTOCOL_VERSION if field == "protocol_version"
+                    else metadata.get(field))
+        if artifacts.get(field) != expected:
+            raise RuntimeError(
+                f"cache artifact provenance mismatch: {field}")
+    completed_ns = artifacts.get("build_completed_ns")
+    if type(completed_ns) is not int or completed_ns <= 0:
+        raise RuntimeError("cache artifact completion order is missing")
+    archive = job / "artifacts.tar.gz"
+    if _sha256_file(archive) != artifacts.get("archive_sha256"):
+        raise RuntimeError("cache artifact archive hash mismatch")
+    records = artifacts.get("files")
+    if not isinstance(records, list):
+        raise RuntimeError("cache artifact manifest has no file list")
+    seen = set()
+    for record in records:
+        if (not isinstance(record, dict)
+                or set(record) != {"path", "size", "sha256"}
+                or not isinstance(record.get("path"), str)
+                or type(record.get("size")) is not int
+                or record["size"] < 0
+                or not re.fullmatch(
+                    r"[0-9a-f]{64}", str(record.get("sha256", "")))
+                or record["path"] in seen):
+            raise RuntimeError("invalid cache artifact record")
+        seen.add(record["path"])
+        path = _safe_member_path(work, record["path"])
+        if (not path.is_file() or path.is_symlink()
+                or path.stat().st_size != record["size"]
+                or _sha256_file(path) != record["sha256"]):
+            raise RuntimeError(
+                f"cache artifact/work mismatch: {record['path']}")
+    expected_artifacts = {
+        path.relative_to(work).as_posix()
+        for path in _artifact_paths(job, metadata)}
+    if seen != expected_artifacts:
+        raise RuntimeError(
+            "cache artifact manifest is not the exact generated delta: "
+            f"manifest={sorted(seen)}, expected={sorted(expected_artifacts)}")
+    return metadata, artifacts
+
+
+def _publish_build_cache(job: Path) -> bool:
+    """Publish this locally accepted job as the next Make cache seed.
+
+    This transition is invoked by the local fetcher only after artifact
+    archive verification, promoted-root QA and atomic promotion all succeed.
+    The remote job is revalidated before publication.  Completion ordering
+    prevents a delayed fetch of an older job from replacing a newer cache.
+    For one exact source snapshot, a later focused job retains missing files
+    from the previous verified seed so narrow target coverage cannot evict a
+    richer cache.  The later worktree always wins overlapping paths.
+    """
+    metadata, artifacts = _validated_completed_job_for_cache(job)
+    remote_root = Path(metadata["remote_root"])
+    environment_hash = metadata["environment_sha256"]
+    attestation_hash = metadata["environment_attestation_sha256"]
+    entry = _build_cache_entry(
+        remote_root, environment_hash, attestation_hash)
+    with _build_cache_lock(
+            remote_root, environment_hash, attestation_hash):
+        supplement_work = None
+        excluded_prefixes: tuple[Path, ...] = ()
+        if entry.is_dir():
+            try:
+                current, _records = _verify_build_cache_entry(
+                    entry, environment_hash, attestation_hash)
+            except (OSError, ValueError, RuntimeError):
+                shutil.rmtree(entry, ignore_errors=True)
+            else:
+                if current["build_completed_ns"] >= (
+                        artifacts["build_completed_ns"]):
+                    return False
+                if (current["source_sha256"] == metadata["source_sha256"]
+                        and metadata["targets"] != ["clean"]):
+                    supplement_work = entry / "work"
+                    # A complete-root target represents deletion by replacing
+                    # that root during local promotion.  Do not resurrect an
+                    # omitted old member while retaining unrelated coverage.
+                    excluded_prefixes = tuple(
+                        Path("top_baffle_v2") / root
+                        for root in sorted(
+                            _full_output_roots(metadata["targets"])))
+
+        parent = entry.parent
+        parent.mkdir(parents=True, exist_ok=True)
+        temporary = parent / f".{entry.name}.{os.getpid()}.tmp"
+        previous = parent / f".{entry.name}.{os.getpid()}.previous"
+        shutil.rmtree(temporary, ignore_errors=True)
+        shutil.rmtree(previous, ignore_errors=True)
+        try:
+            temporary.mkdir()
+            _copy_tree(job / "work", temporary / "work")
+            retained = ()
+            if supplement_work is not None:
+                retained = _copy_missing_tree_files(
+                    supplement_work, temporary / "work",
+                    excluded_prefixes=excluded_prefixes)
+            records = _tree_records(temporary / "work")
+            marker = {
+                "format_version": BUILD_CACHE_VERSION,
+                "environment_sha256": environment_hash,
+                "environment_attestation_sha256": attestation_hash,
+                "source_sha256": metadata["source_sha256"],
+                "published_from_job": metadata["job_id"],
+                "build_completed_ns": artifacts["build_completed_ns"],
+                "artifact_manifest_sha256": _sha256_file(
+                    job / "artifacts.json"),
+                "created_utc": _utc_now(),
+                "files": records,
+            }
+            if supplement_work is not None:
+                marker["coverage_union"] = {
+                    "exact_source": True,
+                    "retained_file_count": len(retained),
+                }
+            _atomic_json(temporary / "cache.json", marker)
+            _verify_build_cache_entry(
+                temporary, environment_hash, attestation_hash)
+            if entry.exists():
+                entry.replace(previous)
+            try:
+                temporary.replace(entry)
+            except BaseException:
+                if previous.exists():
+                    previous.replace(entry)
+                raise
+            shutil.rmtree(previous, ignore_errors=True)
+        finally:
+            shutil.rmtree(temporary, ignore_errors=True)
+            shutil.rmtree(previous, ignore_errors=True)
+    return True
+
+
+def _publish_cache_command(args: argparse.Namespace) -> int:
+    published = _publish_build_cache(Path(args.job_dir))
+    print("published" if published else "retained-newer-cache")
+    return 0
 
 
 def _execute_job(args: argparse.Namespace) -> int:
@@ -952,6 +1595,28 @@ def _execute_job(args: argparse.Namespace) -> int:
             fcntl.flock(environment_lock, fcntl.LOCK_SH)
             if not python.is_file():
                 raise RuntimeError("remote Python environment is incomplete")
+            # Cache seeding is an optimization, never an input authority.  A
+            # verified source-only job tree is still present until the seed
+            # swap completes atomically, so any copy/filesystem failure can
+            # safely fall back to the cold build.
+            try:
+                cache_seed = _seed_build_cache(job, metadata)
+            except (OSError, ValueError, RuntimeError) as exc:
+                cache_seed = None
+                print(
+                    f"make-cache=unavailable cold-fallback reason={exc}",
+                    file=log,
+                )
+            if cache_seed is None:
+                print("make-cache=cold", file=log)
+            else:
+                print(
+                    "make-cache=verified "
+                    f"source={cache_seed['source_sha256']} "
+                    f"changed_sources="
+                    f"{len(cache_seed['changed_source_paths'])}",
+                    file=log,
+                )
             source_manifest = _verify_source(
                 job / "work", metadata["source_sha256"], allow_extra=True)
             _validate_transport_provenance(metadata, source_manifest)
@@ -1342,18 +2007,30 @@ def _local_promotion_lock():
 def _check_promoted_roots(full_roots: set[str]) -> None:
     if not full_roots:
         return
-    checker = [sys.executable, str(BAFFLE_DIR / "check_manifold.py")]
+
+    def make_check(roots: list[str]) -> None:
+        if not roots:
+            return
+        # Promotion itself is already one authenticated local-macos guard
+        # process capped at 8 GiB aggregate RSS.  A fresh stamp root forces a
+        # complete post-download sweep while GNU Make's inherited jobserver
+        # fans only the pure STL diagnostics; local OCC remains serial-only.
+        with tempfile.TemporaryDirectory(
+                prefix="lx-promoted-manifold-") as stamp_text:
+            subprocess.run(
+                ["make", "--no-print-directory",
+                 f"-j{LOCAL_PROMOTION_JOBS}",
+                 "LX_CAD_EXECUTION=local-manifold",
+                 f"PYTHON={sys.executable}",
+                 "_manifold_parallel",
+                 "MANIFOLD_ROOTS=" + " ".join(roots),
+                 f"MANIFOLD_STAMP_DIR={stamp_text}"],
+                cwd=BAFFLE_DIR, check=True)
+
     state_roots = sorted(full_roots & set(STATE_OUTPUT_ROOTS))
-    if state_roots:
-        subprocess.run(
-            checker + [str(BAFFLE_DIR / state / "stl")
-                       for state in state_roots],
-            cwd=BAFFLE_DIR, check=True)
+    make_check([f"{state}/stl" for state in state_roots])
     if "wings" in full_roots:
-        subprocess.run(
-            checker + [str(BAFFLE_DIR / "wings" / slug / "stl")
-                       for slug in ("ac", "ae")],
-            cwd=BAFFLE_DIR, check=True)
+        make_check([f"wings/{slug}/stl" for slug in ("ac", "ae")])
 
 
 class _PromotionInterrupted(RuntimeError):
@@ -1822,6 +2499,26 @@ def _fetch(remote: Remote, metadata: dict) -> int:
             promoted = _run_guarded_local_promotion(incoming, local_dir)
         finally:
             shutil.rmtree(incoming, ignore_errors=True)
+        # A cache is performance-only and becomes eligible only after the
+        # downloaded archive, promoted-root QA and atomic local promotion all
+        # succeeded.  Failure to publish cannot invalidate already-promoted
+        # artifacts; the next remote job simply starts cold or from the last
+        # older verified entry.
+        try:
+            publish_result = _remote_python(
+                remote, _job_executor_path(metadata), "_publish-cache",
+                "--job-dir",
+                f"{metadata['remote_root']}/jobs/{metadata['job_id']}",
+            )
+            cache_state = publish_result.stdout.strip().splitlines()
+            if cache_state:
+                print(f"Remote Make cache: {cache_state[-1]}.")
+        except (OSError, subprocess.CalledProcessError, RuntimeError) as exc:
+            print(
+                f"Warning: verified artifacts were promoted, but the remote "
+                f"Make cache was not updated: {exc}",
+                file=sys.stderr,
+            )
     print(
         f"Remote CAD job {metadata['job_id']} succeeded; "
         f"verified/promoted {promoted} artifact files."
@@ -2268,6 +2965,9 @@ def _parser() -> argparse.ArgumentParser:
     execute = commands.add_parser("_execute-job")
     execute.add_argument("--job-dir", required=True)
     execute.set_defaults(function=_execute_job)
+    publish_cache = commands.add_parser("_publish-cache")
+    publish_cache.add_argument("--job-dir", required=True)
+    publish_cache.set_defaults(function=_publish_cache_command)
     launch_job = commands.add_parser("_launch-job")
     launch_job.add_argument("--job-dir", required=True)
     launch_job.set_defaults(function=_launch_job_transition)

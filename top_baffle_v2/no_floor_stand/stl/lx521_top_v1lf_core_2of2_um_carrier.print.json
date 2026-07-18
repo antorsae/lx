@@ -3,23 +3,24 @@
     "collapsed_apex_facets_removed": 0,
     "component_error": 0,
     "component_signed_volumes": [
-      16777.14683332504,
-      -64.85309788309051,
-      -64.85312959816702
+      18673.01681907368,
+      -0.0011868814328497047,
+      -64.85310221652854,
+      -64.85313407491488
     ],
-    "components": 3,
+    "components": 4,
     "degenerate": 0,
     "disconnected_material_components": 0,
     "duplicates": 0,
     "negative_volume": 0,
-    "nested_void_components": 2,
+    "nested_void_components": 3,
     "nonfinite": 0,
     "nonnested_void_components": 0,
     "open": 0,
     "outer_components": 1,
     "over_shared": 0,
-    "signed_volume": 16647.4406058438,
-    "triangles": 7446,
+    "signed_volume": 18543.309395900807,
+    "triangles": 6884,
     "winding": 0,
     "zero_volume": 0,
     "zero_volume_components": 0
@@ -27,7 +28,7 @@
   "part": "lx521_top_v1lf_core_2of2_um_carrier",
   "pre_translation_bbox_min_mm": [
     -51.7000001,
-    -426.0000001,
+    -421.47500010000005,
     -18.300000099999963
   ],
   "print_orientation": "front_face_down",
@@ -47,7 +48,7 @@
       0.0,
       -1.0,
       0.0,
-      426.0000001
+      421.47500010000005
     ],
     [
       0.0,
@@ -63,12 +64,12 @@
     ]
   ],
   "stl": "lx521_top_v1lf_core_2of2_um_carrier.stl",
-  "stl_bytes": 372384,
+  "stl_bytes": 344284,
   "stl_origin_translation_mm": [
     51.7000001,
-    426.0000001,
+    421.47500010000005,
     18.300000099999963
   ],
-  "stl_sha256": "75b993471ca2f79ae78b69aff9da2f990a878c0bc18e0083b67fdbb9417695be",
+  "stl_sha256": "fc753bc2b86f0977a49819552731c963ab2224fbeec77aa8b816e627167ba485",
   "variant_export": "v1lf"
 }

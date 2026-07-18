@@ -1373,13 +1373,14 @@ def _final_um_burial_web_contract(stand_foot):
             core.THICKNESS_MM + 0.2))
     for x in core.TWEETER_JOINT_X:
         functional_voids.append(core._plan_prism(
-            core.tweeter_joint_polygon(x, core.TWEETER_JOINT_CLEAR),
+            core._owned_tweeter_joint_plan(
+                "tweeter", x, core.TWEETER_JOINT_CLEAR),
             core.TWEETER_ADDON_JOINT_Z[0] - core.TWEETER_JOINT_CLEAR,
             core.TWEETER_ADDON_JOINT_Z[1] + 0.2))
         functional_voids.append(core._cylinder_at(
             x, core.TWEETER_JOINT_Y, core.TWEETER_JOINT_HOLE_D / 2.0,
             core.TWEETER_CORE_JOINT_Z[0] - 0.2,
-            core.TWEETER_CORE_JOINT_Z[1] + 0.3))
+            core.TWEETER_CORE_BORE_TOP_Z))
 
     probe_radius = 0.14
     tested = {}
@@ -1705,6 +1706,14 @@ def _final_feed_and_flush_mouth_contract(stand_foot):
     def transition_indices(mask):
         return list(np.flatnonzero(mask[1:] != mask[:-1]) + 1)
 
+    declared_closure_allowances = {
+        "lm": (core._junction_closure_web("lm_um", "lm"),),
+        "um": (
+            core._junction_closure_web("lm_um", "um"),
+            core._junction_closure_web("t_um", "um"),
+        ),
+    }
+
     def assert_flush_mouth(
             label, owner_name, points, index, cutter_radius, outer_radius,
             allowed, forbidden):
@@ -1715,6 +1724,17 @@ def _final_feed_and_flush_mouth_contract(stand_foot):
         corridor = route._round_tube(local, outer_radius + 0.20)
         protrusion = corridor & forbidden
         protruding_owner = owners[owner_name] & protrusion
+        # The new full-depth junction webs intentionally occupy part of the
+        # former outside-of-ring domain.  Remove only those exact source-owned
+        # solids from this legacy horn diagnostic; the lumen and middle-wall
+        # checks below still prove that the route handoff itself is flush and
+        # open, while any undeclared cover tongue remains a failure.
+        for allowance in declared_closure_allowances.get(owner_name, ()):
+            if (protruding_owner is None
+                    or protruding_owner.volume <= 1.0e-9):
+                protruding_owner = None
+                break
+            protruding_owner = protruding_owner - allowance
         hit = 0.0 if protruding_owner is None else protruding_owner.volume
         protruding_facts = []
         if hit >= 0.02:
@@ -1767,8 +1787,9 @@ def _final_feed_and_flush_mouth_contract(stand_foot):
         main[:, :2] - np.asarray(L22_CUTOUT[:2], dtype=float), axis=1)
     main_lm_crossings = transition_indices(main_lm_r <= core.LM_CORE_R)
     assert main_lm_crossings
-    # The user-visible upper outlet is a native R113 flush mouth. No socket,
-    # tongue, collar or point horn may survive beyond the LM ring.
+    # The user-visible upper outlet remains a flush handoff. Outside R113,
+    # only the exact LM-owned full-depth closure web is legitimate; no route
+    # socket, collar or point horn may survive beyond that authority.
     assert_flush_mouth(
         "LM UM free-cable exit", "lm", main, main_lm_crossings[-1],
         route.CUTTER_R, route.MAIN_OUTER_R,
@@ -2338,15 +2359,9 @@ def test_no_floor_lm_core():
 
 def _load_lm_keyed_parts(stand_foot):
     """Load the exact hash-validated release stage for the split gate."""
-    _state(stand_foot)
     from build123d import import_brep
-    from export_v1lf_staged import load_stage_manifest, staged_part_paths
 
-    state_name = "floor_stand" if stand_foot else "no_floor_stand"
-    manifest = Path(__file__).resolve().parent / state_name / (
-        ".v1lf_stage/manifest.json")
-    payload = load_stage_manifest(manifest)
-    paths = staged_part_paths(manifest, payload)
+    paths = _validated_v1lf_stage_paths(stand_foot)
     lm = import_brep(str(paths["core_lm_carrier"]))
     parts = {
         key: import_brep(str(paths[key]))
@@ -2356,6 +2371,23 @@ def _load_lm_keyed_parts(stand_foot):
         )
     }
     return lm, parts
+
+
+def _validated_v1lf_stage_paths(stand_foot):
+    """Return only the Make-owned, hash-validated V1LF native stage.
+
+    Every R6F Make node depends on ``validate_v1lf_stages``.  Consumers must
+    therefore reuse that single source/runtime/guard-bound transaction rather
+    than constructing a second private copy of the LM, UM, or tweeter BREP.
+    """
+    _state(stand_foot)
+    from export_v1lf_staged import load_stage_manifest, staged_part_paths
+
+    state_name = "floor_stand" if stand_foot else "no_floor_stand"
+    manifest = Path(__file__).resolve().parent / state_name / (
+        ".v1lf_stage/manifest.json")
+    payload = load_stage_manifest(manifest, stand_foot=stand_foot)
+    return staged_part_paths(manifest, payload)
 
 
 def _assert_lower_base_magnet_split_ownership(
@@ -2482,9 +2514,9 @@ def _assert_lm_keyed_split(stand_foot):
     _assert_lower_base_magnet_split_ownership(
         lm, bottom, top, core, lm_split, state)
 
-    # The only intentional source loss is the local female fit relief not
-    # occupied by the male key. Everywhere else, including both route-cover
-    # sections, the union equals the monolithic carrier exactly.
+    # The only intentional source loss is the two local female fit reliefs
+    # not occupied by their male pins. Everywhere else, including both
+    # route-cover sections, the union equals the monolithic carrier exactly.
     male_tool = lm_split.male_registration_key_tool()
     socket_tool = lm_split.female_registration_socket_tool()
     top_clip = core._plan_prism(
@@ -2504,7 +2536,8 @@ def _assert_lm_keyed_split(stand_foot):
     assert _intersection_volume(bottom, male_tool) >= (
         male_tool.volume - 0.03)
     assert _intersection_volume(top, male_tool) < 0.03
-    male_outside_socket = male_tool - socket_tool
+    male_protrusions = male_tool & top_clip
+    male_outside_socket = male_protrusions - socket_tool
     assert (0.0 if male_outside_socket is None
             else male_outside_socket.volume) < 0.03
 
@@ -2533,25 +2566,54 @@ def _assert_lm_keyed_split(stand_foot):
         assert local[:, 1].max() > seam + lm_split.LM_SPLIT_GAP_MM / 2.0
 
     facts = lm_split.registration_fit_facts()
-    assert facts["registration_pair_count"] == 1
-    assert facts["registration_side"] == "right"
+    assert facts["registration_pair_count"] == 2
+    assert facts["registration_sides"] == ("left", "right")
     assert facts["registration_is_keyed"] is True
     assert facts["registration_form"] == (
-        "single_straight_rounded_tongue")
-    assert facts["registration_tongue_width_mm"] == 0.80
-    assert 70.0 <= facts["registration_insertion_angle_deg"] <= 80.0
+        "two_symmetric_cylindrical_pins_round_plus_relief_sockets")
+    assert facts["registration_axis_world_xyz"] == (0.0, 1.0, 0.0)
+    assert facts["registration_axis_normal_to_horizontal_seam"] is True
+    assert facts["registration_symmetry_error_mm"] < 1e-9
+    assert 216.0 <= facts["registration_center_spacing_mm"] <= 217.0
     assert facts["assembly_motion"] == (
-        "top_half_approaches_along_negative_registration_axis")
-    assert facts["sampled_insertion_max_plan_overlap_mm2"] < 1e-7
+        "top_half_approaches_along_negative_world_y")
     assert facts["assembly_gap_mm"] == 0.0
     assert facts["buried_route_joint"] == "closed_zero_gap_planar_butt"
-    assert facts["male_volume_mm3"] >= 15.0
-    assert facts["engagement_depth_mm"] >= 3.4
-    assert facts["socket_inner_wall_mm"] >= 0.65
-    assert facts["socket_outer_wall_mm"] >= 0.60
-    assert facts["driver_radial_clearance_mm"] >= 0.74
-    assert facts["registered_plan_play_mm"] <= 0.25
-    assert facts["registered_z_play_mm"] <= 0.30
+    assert facts["pin_diameter_mm"] == 0.80
+    assert facts["pin_root_overlap_mm"] == 0.50
+    assert facts["male_pin_length_mm"] == 1.30
+    assert 1.30 <= facts["male_total_volume_mm3"] <= 1.31
+    assert facts["engagement_depth_mm"] == 0.80
+    assert math.isclose(
+        facts["socket_round_diameter_mm"], 1.04, abs_tol=1e-12)
+    assert facts["socket_radial_clearance_mm"] == 0.12
+    assert facts["socket_end_clearance_mm"] == 0.25
+    assert facts["socket_blind_depth_mm"] == 1.05
+    assert facts["round_socket_side"] == "right"
+    assert facts["relieved_socket_side"] == "left"
+    assert facts["relieved_socket_x_extra_each_side_mm"] == 0.06
+    assert math.isclose(
+        facts["relieved_socket_x_span_mm"], 1.16, abs_tol=1e-12)
+    assert math.isclose(
+        facts["registered_round_diametral_play_mm"], 0.24,
+        abs_tol=1e-12)
+    assert math.isclose(
+        facts["relative_pin_pitch_error_capacity_mm"], 0.30,
+        abs_tol=1e-12)
+    assert facts["round_socket_inner_wall_mm"] >= 0.56
+    assert facts["round_socket_outer_wall_mm"] >= 0.56
+    assert facts["relieved_socket_inner_wall_mm"] >= 0.50
+    assert facts["relieved_socket_outer_wall_mm"] >= 0.50
+    assert facts["minimum_socket_radial_wall_mm"] >= 0.50
+    assert facts["driver_radial_clearance_mm"] >= 0.58
+    assert facts["two_round_socket_design_rejected"] is True
+    assert facts["tolerance_strategy"] == (
+        "right_round_locator_left_x_relief_round_and_diamond")
+    assert "bind" in facts["binding_drawback"]
+    assert facts["nominal_nozzle_diameter_mm"] == 0.40
+    assert facts["pin_nominal_nozzle_width_count"] == 2.0
+    assert facts["pin_and_socket_slicer_gate_required"] is True
+    assert "no load credit" in facts["printability_drawback"]
     assert facts["envelope_growth_mm"] == 0.0
     assert facts["installed_structural_load_credit_n"] == 0.0
     assert facts["standalone_retention_credit_n"] == 0.0
@@ -2591,7 +2653,8 @@ def _assert_lm_keyed_split(stand_foot):
                 "no-floor LM lower lost the universal Y=0 front tongue")
     print(
         f"  {state} optional LM keyed split: zero-gap route butt, "
-        f"one concealed source-volume registration key, no envelope growth; "
+        f"two concealed +Y pins with round+relieved sockets, no envelope "
+        f"growth; "
         f"220-mm footprints {footprints}")
 
 
@@ -2608,13 +2671,46 @@ def _intersection_volume(a, b):
     return 0.0 if hit is None else hit.volume
 
 
+def _owned_tweeter_joint_witnesses(core, x):
+    """Exact complementary T--UM half-lap material and functional voids."""
+    core_ear = core._plan_prism(
+        core._owned_tweeter_joint_plan("um", x),
+        *core.TWEETER_CORE_JOINT_Z)
+    addon_ear = core._plan_prism(
+        core._owned_tweeter_joint_plan("tweeter", x),
+        *core.TWEETER_ADDON_JOINT_Z)
+    core_bolt = core._cylinder_at(
+        x, core.TWEETER_JOINT_Y,
+        core.TWEETER_JOINT_HOLE_D / 2.0,
+        core.TWEETER_CORE_JOINT_Z[0] - 0.2,
+        core.TWEETER_CORE_BORE_TOP_Z)
+    insert = core._cylinder_at(
+        x, core.TWEETER_JOINT_Y,
+        core.TWEETER_JOINT_INSERT_BORE_D / 2.0,
+        core.TWEETER_ADDON_JOINT_Z[0] - 0.2,
+        core.TWEETER_ADDON_JOINT_Z[0] + 4.0)
+    return {
+        "core_ear": core_ear,
+        "addon_ear": addon_ear,
+        "core_required": core_ear - core_bolt,
+        "addon_required": addon_ear - insert,
+        "core_bolt": core_bolt,
+        "insert": insert,
+    }
+
+
 def _assert_core_interface_breps(lm, um, core):
     import top_baffle_nd25fw4_v1lf_route as route
     from captive_magnets import DEFAULT_SPEC, wall_cavity_tools
 
     for x in core.JOINT_EAR_X:
-        lm_ear = core._joint_ear("lm", x, core.LM_JOINT_Z)
-        um_ear = core._joint_ear("um", x, core.UM_JOINT_Z)
+        # The full-depth closure split intentionally trims each legacy raw
+        # ear wherever the complementary plan owner or its terminal fit drain
+        # takes precedence.  Qualify the exact printable ear authority here;
+        # the independent analytic closure test freezes the permitted raw-to-
+        # owned clipping so this BREP witness cannot shrink itself to pass.
+        lm_ear = core._owned_joint_ear("lm", x, core.LM_JOINT_Z)
+        um_ear = core._owned_joint_ear("um", x, core.UM_JOINT_Z)
         bore = core._cylinder_at(
             x, core.JOINT_EAR_Y, core.JOINT_HOLE_D / 2.0,
             core.CORE_REAR_Z - core.JOINT_BORE_REAR_OVERSHOOT,
@@ -2623,13 +2719,15 @@ def _assert_core_interface_breps(lm, um, core):
         expected_um_ear = um_ear - bore
         assert (_intersection_volume(lm, expected_lm_ear)
                 > 0.995 * expected_lm_ear.volume), (
-                    f"LM half-lap at x={x:g} was gouged outside its bore")
+                    f"owned LM half-lap at x={x:g} was gouged outside "
+                    "its bore and declared plan clip")
         overlap = _intersection_volume(um, lm_ear)
         assert overlap < 0.02, (
             f"UM overlaps LM half-lap at x={x:g} by {overlap:.3f} mm3")
         assert (_intersection_volume(um, expected_um_ear)
                 > 0.995 * expected_um_ear.volume), (
-                    f"UM half-lap at x={x:g} was gouged outside its bore")
+                    f"owned UM half-lap at x={x:g} was gouged outside "
+                    "its bore and declared plan clip")
         overlap = _intersection_volume(lm, um_ear)
         assert overlap < 0.02, (
             f"LM overlaps UM half-lap at x={x:g} by {overlap:.3f} mm3")
@@ -2797,15 +2895,14 @@ def _cad_worker_command(script):
 
 def _stage_shell_contract_breps_unlocked(
         stand_foot, route_name, directory,
-        shell_keys=("nominal", "lower", "upper"), *,
-        include_carriers=True, seed_targets=None):
-    """Build carriers and shell contracts in isolated descendants.
+        shell_keys=("nominal", "lower", "upper"), *, seed_targets):
+    """Build only route-shell chunks in isolated descendants.
 
-    Explicit local execution retains the workstation-safe cutter/segment
-    chain. The osado profile has enough guarded memory to construct the final
-    LM and each complete shell contract directly. Native BREP keeps the
-    validation handoff lossless in both profiles, and every descendant
-    remains inside the active memory guard.
+    Carrier and tweeter BREPs come exclusively from the Make-owned validated
+    stage supplied in ``seed_targets``.  The private content-addressed cache
+    remains useful for these test-only shell chunks, which are not release
+    artifacts.  Native BREP keeps the validation handoff lossless in both
+    profiles, and every descendant remains inside the active memory guard.
     """
     script_path = Path(__file__).resolve()
     script = str(script_path)
@@ -2834,12 +2931,9 @@ def _stage_shell_contract_breps_unlocked(
     digest.update(b"\0full-host" if large_host else b"\0segmented-host")
     cache_root = (Path(tempfile.gettempdir()) / "lx-v1lf-r6f-brep-cache"
                   / digest.hexdigest()[:24] / state_name)
-    carrier_cache = cache_root / (
-        "carriers_full" if large_host else "carriers_segmented")
     shell_cache = cache_root / (
         f"shell_{route_name}_full" if large_host
         else f"shell_{route_name}_segmented")
-    carrier_cache.mkdir(parents=True, exist_ok=True)
     shell_cache.mkdir(parents=True, exist_ok=True)
 
     def cached_shell_chunks(manifest):
@@ -2853,27 +2947,8 @@ def _stage_shell_contract_breps_unlocked(
             return ()
         return chunks
 
-    targets = dict(seed_targets or {})
-    if not include_carriers:
-        jobs = []
-    elif large_host:
-        # osado builds the final carrier directly. The outer+20-cut+finalize
-        # chain exists only to cap retained OCC memory on a workstation.
-        jobs = [
-            ("um", {"LX_R6F_EXPORT_CARRIER": "um"}),
-            ("lm", {"LX_R6F_EXPORT_CARRIER": "lm"}),
-        ]
-    else:
-        jobs = [
-            ("um", {"LX_R6F_EXPORT_CARRIER": "um"}),
-            ("lm_outer", {"LX_R6F_EXPORT_CARRIER": "lm_outer"}),
-            *((f"lm_cut_{index}", {
-                "LX_R6F_EXPORT_CARRIER": f"lm_cut_{index}"})
-              for index in range(LM_CUTTER_GROUP_COUNT)),
-            ("lm", {"LX_R6F_EXPORT_CARRIER": "lm_finalize"}),
-        ]
-    if include_carriers and route_name == "T":
-        jobs.insert(1, ("tweeter", {"LX_R6F_EXPORT_TWEETER": "1"}))
+    targets = dict(seed_targets)
+    assert {"lm", "um", "tweeter"} <= set(targets)
     shell_segment_count = (
         1 if large_host else {"LM": 2, "UM": 8, "T": 12}[route_name])
     shell_jobs = {}
@@ -2898,32 +2973,23 @@ def _stage_shell_contract_breps_unlocked(
             entries.append((label, updates))
         shell_jobs[shell_key] = tuple(entries)
     assert set(shell_keys) <= set(shell_jobs)
-    jobs.extend(
-        job for key in shell_keys for job in shell_jobs[key])
+    jobs = [job for key in shell_keys for job in shell_jobs[key]]
     for label, updates in jobs:
-        is_shell = "LX_R6F_EXPORT_SHELL" in updates
-        suffix = ".manifest" if is_shell else ".brep"
-        cache_dir = shell_cache if is_shell else carrier_cache
-        target = cache_dir / f"{label}{suffix}"
-        if is_shell:
-            chunks = cached_shell_chunks(target)
-            if chunks:
-                targets[label] = chunks
-                print(f"isolated {label}: reused hash-keyed native BREP cache",
-                      flush=True)
-                continue
-        elif target.is_file() and target.stat().st_size > 0:
-            targets[label] = target
+        assert "LX_R6F_EXPORT_SHELL" in updates
+        suffix = ".manifest"
+        target = shell_cache / f"{label}{suffix}"
+        chunks = cached_shell_chunks(target)
+        if chunks:
+            targets[label] = chunks
             print(f"isolated {label}: reused hash-keyed native BREP cache",
                   flush=True)
             continue
 
-        # Carrier construction is the dominant isolated peak. Shell workers
-        # export each already-disjoint required solid directly (no compound
-        # re-intersection). The selected profile guard continuously samples
-        # the complete process tree. This admission threshold matters on the
-        # local 8 GiB profile and is trivially satisfied behind osado's
-        # mandatory 64 GiB host-free floor.
+        # Shell workers export each already-disjoint required solid directly
+        # (no compound re-intersection). The selected profile guard
+        # continuously samples the complete process tree. This admission
+        # threshold matters on the local profile and is trivially satisfied
+        # behind osado's mandatory host-free floor.
         launch_headroom = 3200.0
         _wait_for_worker_headroom(label, launch_headroom)
         temporary = target.with_name(
@@ -2931,17 +2997,6 @@ def _stage_shell_contract_breps_unlocked(
         env = os.environ.copy()
         env.pop("LX_R6F_SINGLE_CHECK", None)
         env.update(updates)
-        if label.startswith("lm_cut_"):
-            index = int(label.rsplit("_", 1)[1])
-            input_label = "lm_outer" if index == 0 else f"lm_cut_{index - 1}"
-            input_path = carrier_cache / f"{input_label}.brep"
-            assert input_path.is_file() and input_path.stat().st_size > 0
-            env["LX_R6F_LM_INPUT_PATH"] = str(input_path)
-        elif label == "lm" and not large_host:
-            input_path = carrier_cache / (
-                f"lm_cut_{LM_CUTTER_GROUP_COUNT - 1}.brep")
-            assert input_path.is_file() and input_path.stat().st_size > 0
-            env["LX_R6F_LM_INPUT_PATH"] = str(input_path)
         env["LX_R6F_EXPORT_PATH"] = str(temporary)
         env["LX_STAND_FOOT"] = "1" if stand_foot else "0"
         proc = subprocess.run(
@@ -2951,17 +3006,13 @@ def _stage_shell_contract_breps_unlocked(
             f"isolated {label} build failed\n"
             f"stdout:\n{proc.stdout}\nstderr:\n{proc.stderr}")
         assert temporary.is_file() and temporary.stat().st_size > 0
-        if is_shell:
-            chunks = tuple(Path(line) for line in temporary.read_text(
-                encoding="utf-8").splitlines() if line)
-            assert chunks and all(
-                path.is_file() and path.stat().st_size > 0
-                for path in chunks)
-            temporary.replace(target)
-            targets[label] = chunks
-        else:
-            temporary.replace(target)
-            targets[label] = target
+        chunks = tuple(Path(line) for line in temporary.read_text(
+            encoding="utf-8").splitlines() if line)
+        assert chunks and all(
+            path.is_file() and path.stat().st_size > 0
+            for path in chunks)
+        temporary.replace(target)
+        targets[label] = chunks
         print(proc.stdout, end="", flush=True)
     for shell_key in shell_keys:
         chunks = []
@@ -2974,18 +3025,20 @@ def _stage_shell_contract_breps_unlocked(
 def _stage_shell_contract_breps(
         stand_foot, route_name, directory,
         shell_keys=("nominal", "lower", "upper")):
-    """Publish shared carriers once, then stage each route concurrently."""
+    """Seed from the validated release stage, then cache test-only shells."""
+    paths = _validated_v1lf_stage_paths(stand_foot)
+    carriers = {
+        "lm": paths["core_lm_carrier"],
+        "um": paths["core_um_carrier"],
+        "tweeter": paths["addon_tweeter_crescent"],
+    }
+    if not shell_keys:
+        return carriers
+
     lock_root = (Path(tempfile.gettempdir())
                  / "lx-v1lf-r6f-brep-cache" / "locks")
     lock_root.mkdir(parents=True, exist_ok=True)
     state_name = "floor" if stand_foot else "no_floor"
-    carrier_lock_path = lock_root / f"{state_name}-carriers.lock"
-    with carrier_lock_path.open("a+b") as lock:
-        fcntl.flock(lock, fcntl.LOCK_EX)
-        carriers = _stage_shell_contract_breps_unlocked(
-            stand_foot, route_name, directory, shell_keys=())
-    if not shell_keys:
-        return carriers
     mode = "full" if _large_host_execution() else "segmented"
     shell_lock_path = lock_root / (
         f"{state_name}-{route_name.lower()}-{mode}-shells.lock")
@@ -2993,7 +3046,7 @@ def _stage_shell_contract_breps(
         fcntl.flock(lock, fcntl.LOCK_EX)
         return _stage_shell_contract_breps_unlocked(
             stand_foot, route_name, directory, shell_keys=shell_keys,
-            include_carriers=False, seed_targets=carriers)
+            seed_targets=carriers)
 
 
 def _validate_staged_shell(staged, shell_key, route_name):
@@ -3983,20 +4036,21 @@ def _tweeter_and_service_legacy_monolithic(stand_foot):
         raise AssertionError("V1LF must not generate printed grommet parts")
 
     for x in core.TWEETER_JOINT_X:
-        core_ear = core._plan_prism(
-            core.tweeter_joint_polygon(x), *core.TWEETER_CORE_JOINT_Z)
-        addon_ear = core._plan_prism(
-            core.tweeter_joint_polygon(x), *core.TWEETER_ADDON_JOINT_Z)
-        assert _intersection_volume(um, core_ear) > 0.45 * core_ear.volume
-        assert _intersection_volume(tweeter, core_ear) < 0.02
-        assert _intersection_volume(tweeter, addon_ear) > 0.45 * addon_ear.volume
-        assert _intersection_volume(um, addon_ear) < 0.02
-        insert = core._cylinder_at(
-            x, core.TWEETER_JOINT_Y,
-            core.TWEETER_JOINT_INSERT_BORE_D / 2.0,
-            core.TWEETER_ADDON_JOINT_Z[0] - 0.1,
-            core.TWEETER_ADDON_JOINT_Z[0] + 4.0)
-        assert _intersection_volume(tweeter, insert) < 0.02
+        witness = _owned_tweeter_joint_witnesses(core, x)
+        assert (_intersection_volume(um, witness["core_required"])
+                > 0.995 * witness["core_required"].volume)
+        assert _intersection_volume(tweeter, witness["core_ear"]) < 0.02
+        assert (_intersection_volume(tweeter, witness["addon_required"])
+                > 0.995 * witness["addon_required"].volume)
+        assert _intersection_volume(um, witness["addon_ear"]) < 0.02
+        bolt_hit = _intersection_volume(tweeter, witness["core_bolt"])
+        insert_hit = _intersection_volume(tweeter, witness["insert"])
+        assert bolt_hit < 0.02, (
+            f"tweeter refills rear M3 bore at x={x:g} by "
+            f"{bolt_hit:.4f} mm3")
+        assert insert_hit < 0.02, (
+            f"tweeter refills blind insert receiver at x={x:g} by "
+            f"{insert_hit:.4f} mm3")
     state = "floor" if stand_foot else "no-floor"
     staging.cleanup()
     print(
@@ -4608,42 +4662,35 @@ def _service_joint(fit, paths, name):
         assert actual_overlap < 0.02, (
             f"actual UM/tweeter print collision {actual_overlap:.4f} mm3")
     for x in core.TWEETER_JOINT_X:
-        core_ear = core._plan_prism(
-            core.tweeter_joint_polygon(x), *core.TWEETER_CORE_JOINT_Z)
-        addon_ear = core._plan_prism(
-            core.tweeter_joint_polygon(x), *core.TWEETER_ADDON_JOINT_Z)
-        core_hit = _intersection_volume(part, core_ear)
-        addon_hit = _intersection_volume(part, addon_ear)
+        witness = _owned_tweeter_joint_witnesses(core, x)
         if name == "um":
-            assert core_hit > 0.45 * core_ear.volume, (
-                f"UM/core tweeter ear at x={x:g}: {core_hit:.4f}/"
-                f"{core_ear.volume:.4f} mm3")
+            core_hit = _intersection_volume(
+                part, witness["core_required"])
+            assert core_hit > 0.995 * witness["core_required"].volume, (
+                f"UM/core owned tweeter ear at x={x:g}: {core_hit:.4f}/"
+                f"{witness['core_required'].volume:.4f} mm3")
+            addon_hit = _intersection_volume(part, witness["addon_ear"])
             assert addon_hit < 0.02, (
                 f"UM enters add-on tweeter ear at x={x:g} by "
                 f"{addon_hit:.4f} mm3")
         else:
-            # The closed T conduit may occupy a tiny rear corner of the
-            # analytic ear prism where the final UM has already been radially
-            # relieved. Exact print/print and bolt-envelope checks govern;
-            # retain a hard bound so that this cannot grow into the joint.
-            assert core_hit < 1.0, (
-                f"tweeter nominal core-ear intrusion at x={x:g} is "
+            core_hit = _intersection_volume(part, witness["core_ear"])
+            assert core_hit < 0.02, (
+                f"tweeter owned core-ear intrusion at x={x:g} is "
                 f"{core_hit:.4f} mm3")
-            assert addon_hit > 0.45 * addon_ear.volume, (
-                f"tweeter/add-on ear at x={x:g}: {addon_hit:.4f}/"
-                f"{addon_ear.volume:.4f} mm3")
-            core_bolt = core._cylinder_at(
-                x, core.TWEETER_JOINT_Y,
-                core.TWEETER_JOINT_HOLE_D / 2.0,
-                core.TWEETER_CORE_JOINT_Z[0] - 0.2,
-                core.TWEETER_CORE_JOINT_Z[1] + 0.3)
-            assert _intersection_volume(part, core_bolt) < 0.02
-            insert = core._cylinder_at(
-                x, core.TWEETER_JOINT_Y,
-                core.TWEETER_JOINT_INSERT_BORE_D / 2.0,
-                core.TWEETER_ADDON_JOINT_Z[0] - 0.1,
-                core.TWEETER_ADDON_JOINT_Z[0] + 4.0)
-            assert _intersection_volume(part, insert) < 0.02
+            addon_hit = _intersection_volume(
+                part, witness["addon_required"])
+            assert addon_hit > 0.995 * witness["addon_required"].volume, (
+                f"tweeter/add-on owned ear at x={x:g}: {addon_hit:.4f}/"
+                f"{witness['addon_required'].volume:.4f} mm3")
+            bolt_hit = _intersection_volume(part, witness["core_bolt"])
+            insert_hit = _intersection_volume(part, witness["insert"])
+            assert bolt_hit < 0.02, (
+                f"tweeter refills rear M3 bore at x={x:g} by "
+                f"{bolt_hit:.4f} mm3")
+            assert insert_hit < 0.02, (
+                f"tweeter refills blind insert receiver at x={x:g} by "
+                f"{insert_hit:.4f} mm3")
 
 
 def _service_phase_worker(phase, paths, stand_foot):

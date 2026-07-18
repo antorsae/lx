@@ -268,6 +268,17 @@ including:
 - every printed route and modeled free-cable/service envelope;
 - the UM terminal/service-fit model.
 
+The optional LM envelope above uses two internal symmetric Ø0.80 cylindrical
+pins normal to its world-Y seam: bottom pins point +Y and engage 0.80 mm; the
+top has a right Ø1.04 round blind socket and a left 1.16 × 1.04 mm X-relieved
+blind socket, both with 0.12 mm radial and 0.25 mm end clearance. These
+features remain wholly inside the common monolithic/split carrier envelope and
+receive zero structural credit, so wing contact geometry must not depend on or
+cut into them. Both LM halves and every wing segment still print
+front-face-down. Qualifying a wing against the split form requires the LM
+two-pin/socket slicer and physical-fit gates; the Ø0.80 horizontal pins are
+only two nominal 0.4 mm nozzle widths.
+
 One wing family must fit both stand states and both LM print forms. Do not make
 state-specific wing acoustics unless a later experiment explicitly requests it.
 

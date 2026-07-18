@@ -194,11 +194,14 @@ def qualification_record(stand_foot: bool) -> dict:
             },
             "optional_lm_keyed_split": {
                 "release_authorized": False,
-                "status": "pending_key_fit_and_installed_load_test",
+                "status": "pending_two_pin_fit_and_installed_load_test",
                 "registration_structural_load_credit_n": 0.0,
                 "required_evidence": (
-                    "printed key/socket coupon, cable pull-through, and "
-                    "driver-installed 1g/3g/5g proof"),
+                    "front-face-down print proving both complete D0.80 pin "
+                    "toolpaths, the right round and left X-relieved socket "
+                    "walls, simultaneous straight insertion, full seating, "
+                    "assembled front coplanarity, cable pull-through/route "
+                    "continuity, and driver-installed 1g/3g/5g proof"),
             },
         },
     }

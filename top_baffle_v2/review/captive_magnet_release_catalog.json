@@ -1752,7 +1752,7 @@
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_b2_split.py": "d95f5f4317773fa2f04171bd06a29653ee8b4f5daa090506c1305f6d9fa3489d"
+        "../top_baffle_nd25fw4_b2_split.py": "a7edae40ed045f7e6d4ca7e692b3449cf6a013e03e135dae61528abcc44ae9e9"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -2730,7 +2730,7 @@
         "../top_baffle_nd25fw4_a_comp.py": "1259d0099742606f0648795566b660f7c30366d49aad84c561591d7c7257d03d",
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
         "../top_baffle_nd25fw4_v1_attachments.py": "6110797cd74c64a243ac0cf3d977ea96a2d5300b58bfe3113937e7b91efd44bb"
       },
       "source_files": [
@@ -2907,7 +2907,7 @@
         "../top_baffle_nd25fw4_a_comp.py": "1259d0099742606f0648795566b660f7c30366d49aad84c561591d7c7257d03d",
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
         "../top_baffle_nd25fw4_v1_attachments.py": "6110797cd74c64a243ac0cf3d977ea96a2d5300b58bfe3113937e7b91efd44bb"
       },
       "source_files": [
@@ -3084,7 +3084,7 @@
         "../top_baffle_nd25fw4_a_comp.py": "1259d0099742606f0648795566b660f7c30366d49aad84c561591d7c7257d03d",
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
         "../top_baffle_nd25fw4_v1_attachments.py": "6110797cd74c64a243ac0cf3d977ea96a2d5300b58bfe3113937e7b91efd44bb"
       },
       "source_files": [
@@ -3261,7 +3261,7 @@
         "../top_baffle_nd25fw4_a_comp.py": "1259d0099742606f0648795566b660f7c30366d49aad84c561591d7c7257d03d",
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
         "../top_baffle_nd25fw4_v1_attachments.py": "6110797cd74c64a243ac0cf3d977ea96a2d5300b58bfe3113937e7b91efd44bb"
       },
       "source_files": [
@@ -3552,7 +3552,7 @@
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b1.py": "5fca2fccc638fd6d3f284d146efe4ba538c95cec50da3c6991de009068b40166",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
         "../top_baffle_nd25fw4_v1_attachments.py": "6110797cd74c64a243ac0cf3d977ea96a2d5300b58bfe3113937e7b91efd44bb"
       },
       "source_files": [
@@ -3843,7 +3843,7 @@
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b1.py": "5fca2fccc638fd6d3f284d146efe4ba538c95cec50da3c6991de009068b40166",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
         "../top_baffle_nd25fw4_v1_attachments.py": "6110797cd74c64a243ac0cf3d977ea96a2d5300b58bfe3113937e7b91efd44bb"
       },
       "source_files": [
@@ -3892,7 +3892,7 @@
       "part": "lx521_top_v1_4of4_vase",
       "print_orientation": "front_face_down",
       "print_sidecar": "../floor_stand/stl/lx521_top_v1_4of4_vase.print.json",
-      "print_sidecar_sha256": "676ceaa779b2aa006c18340930e4a3cb7f13e3557eadb18d2b19a5b2eea0de7b",
+      "print_sidecar_sha256": "94bc20fc5d823b290e7ad8717b0506cc4b12dbc52729cd52b32548760b1368fc",
       "rotation_deg": {
         "x": 180.0,
         "z": 0.0
@@ -4361,8 +4361,8 @@
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
-        "../top_baffle_nd25fw4_v1_split.py": "ec0a7021cac3e1a7f80caf8eb175b3d549437fdf63e3e005e7d6c9476cb216f7"
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
+        "../top_baffle_nd25fw4_v1_split.py": "515e420ab3ef815a777104a7eed9b3bfb883bd8f0d8b143cb5f6ce2b6692b496"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -4401,7 +4401,7 @@
       ],
       "state": "floor_stand",
       "stl": "../floor_stand/stl/lx521_top_v1_4of4_vase.stl",
-      "stl_sha256": "703f25ce927fe1f724c282d9498fdc07b6d3d5fff543b917715fe3ac7af12be4",
+      "stl_sha256": "e336329b9eb68d01ee976fc5f016bbfdc128f1547fb67358e76000b8f8b21cfe",
       "variant": "V1"
     },
     {
@@ -4409,7 +4409,7 @@
       "part": "lx521_top_v1l_4of4_vase_b2",
       "print_orientation": "front_face_down",
       "print_sidecar": "../floor_stand/stl/lx521_top_v1l_4of4_vase_b2.print.json",
-      "print_sidecar_sha256": "817b68afa30f78899fb4c8aef3e5b59c69cbd34e3198acb31eff57cb15acee84",
+      "print_sidecar_sha256": "e18c23a2905047145008db32441b257b74645724f5d7c885eac879420719d969",
       "rotation_deg": {
         "x": 180.0,
         "z": 0.0
@@ -4878,9 +4878,9 @@
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
         "../top_baffle_nd25fw4_v1l.py": "923d75bf14b2f6c9d05420767237a132a625a2f033a0a46db1cc2db164995d65",
-        "../top_baffle_nd25fw4_v1l_split.py": "b2930883e3c3b14d97c61fe77ffb8f5175356afb5f5e4eecfae2a0bbcbb7e4a2"
+        "../top_baffle_nd25fw4_v1l_split.py": "bbd080018a1d0a62fcc86aaa353eaa4484f5222eeb46d8c591ad1d9d5dbd28bc"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -4920,7 +4920,7 @@
       ],
       "state": "floor_stand",
       "stl": "../floor_stand/stl/lx521_top_v1l_4of4_vase_b2.stl",
-      "stl_sha256": "4a659bb53c617e0501c6b1a426baaaeeddbf1177c36f3397a85af91040f3f5ed",
+      "stl_sha256": "7f5a21217a5afbb91b1e40c1a6e55c0da0f74eb0e327a9455f3fc09c3b0f95fe",
       "variant": "V1L"
     },
     {
@@ -4928,7 +4928,7 @@
       "part": "lx521_top_v1lf_optional_lm_keyed_1of2_bottom",
       "print_orientation": "front_face_down",
       "print_sidecar": "../floor_stand/stl/lx521_top_v1lf_optional_lm_keyed_1of2_bottom.print.json",
-      "print_sidecar_sha256": "6ade63bd5f0f46ef702f9fef0bcd339a525d0a4797ab333272a16b67fe7c90dd",
+      "print_sidecar_sha256": "1cf60561a14176f4c9df13d0fc61e7735b14c62adfb61ab79d6f2a7e8ac28e91",
       "rotation_deg": {
         "x": 180.0,
         "z": 26.0
@@ -5002,12 +5002,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               7.890680642203403,
-              172.75326336525802,
+              173.16379595081787,
               5.750000099999983
             ],
             "cavity_center_xyz_mm": [
               9.238871711652152,
-              173.41082008544163,
+              173.82135267100148,
               5.750000099999983
             ],
             "insertion_direction_xyz": [
@@ -5027,7 +5027,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               9.193932009337196,
-              173.3889015281022,
+              173.79943411366204,
               5.750000099999983
             ]
           },
@@ -5117,12 +5117,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               65.4134996053501,
-              200.80901675975898,
+              201.21954934531882,
               5.750000099999983
             ],
             "cavity_center_xyz_mm": [
               64.06530853590135,
-              200.15146003957537,
+              200.56199262513522,
               5.750000099999983
             ],
             "insertion_direction_xyz": [
@@ -5142,7 +5142,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               64.1102482382163,
-              200.17337859691483,
+              200.58391118247468,
               5.750000099999983
             ]
           },
@@ -5169,10 +5169,10 @@
         "../captive_magnets.py": "900d1c432bec891092db0618c7707cc639a47b729f98062bd3ee18226f91021c",
         "../export_piece_stls.py": "98cbbf3a5541fe14039c1d4cb087e80a4a2dd784986c26fd0885f214cc9b57b8",
         "../export_v1lf_staged.py": "5fe90fc9e0ef6dca0706069270675c186ae087efe4d9caac75cf7e10cad8b895",
-        "../floor_stand/.v1lf_stage/manifest.json": "8c75edb7ea3f18d55a81459d23f935d0f59136a83373a86a149e11c3b8e62961",
+        "../floor_stand/.v1lf_stage/manifest.json": "ad318da788a00afc69347b0d35b6f01766868cb004ffc52940726de6a55ba49d",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
-        "../top_baffle_nd25fw4_v1lf_lm_split.py": "4a8755df2a3fd4b2ff3a81be423448ac203ee8b324435c1c52dc2b11c5c5e118"
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
+        "../top_baffle_nd25fw4_v1lf_lm_split.py": "12616c10d18fc4e4d5aeef6c95e99a51686bd9c2b75efb3e24d7773be9accc6b"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -5194,7 +5194,7 @@
           0.4383711467890774,
           -0.898794046299167,
           0.0,
-          202.9594328958935
+          203.36996548145336
         ],
         [
           0.0,
@@ -5210,10 +5210,10 @@
         ]
       ],
       "stage_manifest": "../floor_stand/.v1lf_stage/manifest.json",
-      "stage_manifest_sha256": "8c75edb7ea3f18d55a81459d23f935d0f59136a83373a86a149e11c3b8e62961",
+      "stage_manifest_sha256": "ad318da788a00afc69347b0d35b6f01766868cb004ffc52940726de6a55ba49d",
       "state": "floor_stand",
       "stl": "../floor_stand/stl/lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl",
-      "stl_sha256": "c2b8425f5c719ec03bd1ae30408610b6b61110fc1c22f26efa360370d80edc11",
+      "stl_sha256": "d27b5c989fb82d5654f5624f506550e154d91ca06e8e80dd1eaf46e5398275d0",
       "variant": "V1LF-split"
     },
     {
@@ -5221,7 +5221,7 @@
       "part": "lx521_top_v1lf_optional_lm_keyed_2of2_top",
       "print_orientation": "front_face_down",
       "print_sidecar": "../floor_stand/stl/lx521_top_v1lf_optional_lm_keyed_2of2_top.print.json",
-      "print_sidecar_sha256": "ceef9d1358952e406eaff708f7e66328c1b08b328ea8b2f6aae191708a2ae45f",
+      "print_sidecar_sha256": "eed2ec2ec0e874e833d6a1966028dd9058abf663b592e1826c5f32a779819231",
       "rotation_deg": {
         "x": 180.0,
         "z": 45.0
@@ -5294,12 +5294,12 @@
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              134.45703785705686,
+              134.4570378570566,
               5.589089911917597,
               5.750000099999983
             ],
             "cavity_center_xyz_mm": [
-              133.9686856253711,
+              133.96868562537085,
               7.007367775316595,
               5.750000099999983
             ],
@@ -5319,7 +5319,7 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              133.984964033094,
+              133.98496403309375,
               6.9600918465366135,
               5.750000099999983
             ]
@@ -5409,12 +5409,12 @@
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              204.8834056988063,
+              204.88340569880606,
               76.01545775366696,
               5.750000099999983
             ],
             "cavity_center_xyz_mm": [
-              203.46512783540732,
+              203.46512783540706,
               76.50380998535272,
               5.750000099999983
             ],
@@ -5434,7 +5434,7 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              203.5124037641873,
+              203.51240376418704,
               76.48753157762985,
               5.750000099999983
             ]
@@ -5462,10 +5462,10 @@
         "../captive_magnets.py": "900d1c432bec891092db0618c7707cc639a47b729f98062bd3ee18226f91021c",
         "../export_piece_stls.py": "98cbbf3a5541fe14039c1d4cb087e80a4a2dd784986c26fd0885f214cc9b57b8",
         "../export_v1lf_staged.py": "5fe90fc9e0ef6dca0706069270675c186ae087efe4d9caac75cf7e10cad8b895",
-        "../floor_stand/.v1lf_stage/manifest.json": "8c75edb7ea3f18d55a81459d23f935d0f59136a83373a86a149e11c3b8e62961",
+        "../floor_stand/.v1lf_stage/manifest.json": "ad318da788a00afc69347b0d35b6f01766868cb004ffc52940726de6a55ba49d",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
-        "../top_baffle_nd25fw4_v1lf_lm_split.py": "4a8755df2a3fd4b2ff3a81be423448ac203ee8b324435c1c52dc2b11c5c5e118"
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
+        "../top_baffle_nd25fw4_v1lf_lm_split.py": "12616c10d18fc4e4d5aeef6c95e99a51686bd9c2b75efb3e24d7773be9accc6b"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -5481,7 +5481,7 @@
           0.7071067811865476,
           0.7071067811865475,
           0.0,
-          -44.64253247892959
+          -44.64253247892983
         ],
         [
           0.7071067811865475,
@@ -5503,10 +5503,10 @@
         ]
       ],
       "stage_manifest": "../floor_stand/.v1lf_stage/manifest.json",
-      "stage_manifest_sha256": "8c75edb7ea3f18d55a81459d23f935d0f59136a83373a86a149e11c3b8e62961",
+      "stage_manifest_sha256": "ad318da788a00afc69347b0d35b6f01766868cb004ffc52940726de6a55ba49d",
       "state": "floor_stand",
       "stl": "../floor_stand/stl/lx521_top_v1lf_optional_lm_keyed_2of2_top.stl",
-      "stl_sha256": "103b335db98ed91a641c3d3e953cdbe9bb535b675bf864826988b86f720e7744",
+      "stl_sha256": "7e35f83f185696ef8c1b722aee04e5ecd891e4672501cf9d38bae15c9a5282fa",
       "variant": "V1LF-split"
     },
     {
@@ -5537,7 +5537,7 @@
       "part": "lx521_top_v1lf_core_1of2_lm_carrier",
       "print_orientation": "front_face_down",
       "print_sidecar": "../floor_stand/stl/lx521_top_v1lf_core_1of2_lm_carrier.print.json",
-      "print_sidecar_sha256": "82a299a3c8aeedd196d3ff1a7eec8fcf2d60acd437e9408943d656c967ee94d9",
+      "print_sidecar_sha256": "5c43f8bd1e4e2cb38b309abd18fe1cca2820849ed493ebfaeebf7f973fae18d1",
       "rotation_deg": {
         "x": 180.0,
         "z": 28.0
@@ -5611,12 +5611,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               8.450488130146045,
-              267.41538417705533,
+              265.0056551069726,
               5.750000099999987
             ],
             "cavity_center_xyz_mm": [
               9.774909519434434,
-              268.11959152123416,
+              265.7098624511514,
               5.750000099999987
             ],
             "insertion_direction_xyz": [
@@ -5636,7 +5636,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               9.730762139791487,
-              268.0961179430949,
+              265.6863888730121,
               5.750000099999987
             ]
           },
@@ -5726,12 +5726,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               64.95913407311737,
-              297.46156419535237,
+              295.0518351252696,
               5.750000099999987
             ],
             "cavity_center_xyz_mm": [
               63.63471268382898,
-              296.7573568511735,
+              294.34762778109075,
               5.750000099999987
             ],
             "insertion_direction_xyz": [
@@ -5751,7 +5751,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               63.67886006347193,
-              296.7808304293128,
+              294.37110135923007,
               5.750000099999987
             ]
           },
@@ -5841,12 +5841,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               126.57376995716088,
-              7.345042747915215,
+              4.935313677832482,
               5.750000099999987
             ],
             "cavity_center_xyz_mm": [
               126.52142071210712,
-              8.844128988443913,
+              6.43439991836118,
               5.750000099999987
             ],
             "insertion_direction_xyz": [
@@ -5866,7 +5866,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               126.52316568694228,
-              8.794159447092966,
+              6.384430377010233,
               5.750000099999987
             ]
           },
@@ -5956,12 +5956,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               214.51351769275084,
-              54.10343603685956,
+              51.69370696677683,
               5.750000099999987
             ],
             "cavity_center_xyz_mm": [
               213.29999220118842,
-              54.985113915298285,
+              52.57538484521555,
               5.750000099999987
             ],
             "insertion_direction_xyz": [
@@ -5981,7 +5981,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               213.34044305090717,
-              54.955724652683614,
+              52.54599558260088,
               5.750000099999987
             ]
           },
@@ -6008,9 +6008,9 @@
         "../captive_magnets.py": "900d1c432bec891092db0618c7707cc639a47b729f98062bd3ee18226f91021c",
         "../export_piece_stls.py": "98cbbf3a5541fe14039c1d4cb087e80a4a2dd784986c26fd0885f214cc9b57b8",
         "../export_v1lf_staged.py": "5fe90fc9e0ef6dca0706069270675c186ae087efe4d9caac75cf7e10cad8b895",
-        "../floor_stand/.v1lf_stage/manifest.json": "8c75edb7ea3f18d55a81459d23f935d0f59136a83373a86a149e11c3b8e62961",
+        "../floor_stand/.v1lf_stage/manifest.json": "ad318da788a00afc69347b0d35b6f01766868cb004ffc52940726de6a55ba49d",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95"
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -6031,7 +6031,7 @@
           0.4694715627858908,
           -0.882947592858927,
           0.0,
-          298.3315308576645
+          295.9218017875818
         ],
         [
           0.0,
@@ -6047,10 +6047,10 @@
         ]
       ],
       "stage_manifest": "../floor_stand/.v1lf_stage/manifest.json",
-      "stage_manifest_sha256": "8c75edb7ea3f18d55a81459d23f935d0f59136a83373a86a149e11c3b8e62961",
+      "stage_manifest_sha256": "ad318da788a00afc69347b0d35b6f01766868cb004ffc52940726de6a55ba49d",
       "state": "floor_stand",
       "stl": "../floor_stand/stl/lx521_top_v1lf_core_1of2_lm_carrier.stl",
-      "stl_sha256": "ea188a96e67b7c4e1df55f0e583ed70e7a24daada023b21d07f8a43b56f4ec2c",
+      "stl_sha256": "8a3effe4d8bb2afe8506237f0a065024ecf58e0212ab26b162a0dc6ee8c023a0",
       "variant": "V1LF"
     },
     {
@@ -6058,7 +6058,7 @@
       "part": "lx521_top_v1lf_core_2of2_um_carrier",
       "print_orientation": "front_face_down",
       "print_sidecar": "../floor_stand/stl/lx521_top_v1lf_core_2of2_um_carrier.print.json",
-      "print_sidecar_sha256": "3e287b4bf38b736ecde2d93e48e8a7baed0e2b613983fa6292dd2d4076e3cd8a",
+      "print_sidecar_sha256": "e7fffe16fb62cd76d1dee6d09e8062eea04f6882dc9dc718b60990a6c2c12957",
       "rotation_deg": {
         "x": 180.0,
         "z": 0.0
@@ -6132,12 +6132,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               18.433109179472936,
-              19.563034388822246,
+              15.038034388822268,
               3.200000099999963
             ],
             "cavity_center_xyz_mm": [
               19.38722650988958,
-              20.720471263903846,
+              16.19547126390387,
               3.200000099999963
             ],
             "insertion_direction_xyz": [
@@ -6157,7 +6157,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               19.35542259887569,
-              20.681890034734465,
+              16.156890034734488,
               3.200000099999963
             ]
           },
@@ -6247,12 +6247,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               84.96689102052704,
-              19.563034388822246,
+              15.038034388822268,
               3.200000099999963
             ],
             "cavity_center_xyz_mm": [
               84.01277369011041,
-              20.720471263903846,
+              16.19547126390387,
               3.200000099999963
             ],
             "insertion_direction_xyz": [
@@ -6272,7 +6272,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               84.0445776011243,
-              20.681890034734465,
+              16.156890034734488,
               3.200000099999963
             ]
           },
@@ -6299,9 +6299,9 @@
         "../captive_magnets.py": "900d1c432bec891092db0618c7707cc639a47b729f98062bd3ee18226f91021c",
         "../export_piece_stls.py": "98cbbf3a5541fe14039c1d4cb087e80a4a2dd784986c26fd0885f214cc9b57b8",
         "../export_v1lf_staged.py": "5fe90fc9e0ef6dca0706069270675c186ae087efe4d9caac75cf7e10cad8b895",
-        "../floor_stand/.v1lf_stage/manifest.json": "8c75edb7ea3f18d55a81459d23f935d0f59136a83373a86a149e11c3b8e62961",
+        "../floor_stand/.v1lf_stage/manifest.json": "ad318da788a00afc69347b0d35b6f01766868cb004ffc52940726de6a55ba49d",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95"
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -6322,7 +6322,7 @@
           0.0,
           -1.0,
           0.0,
-          426.0000001
+          421.47500010000005
         ],
         [
           0.0,
@@ -6338,10 +6338,10 @@
         ]
       ],
       "stage_manifest": "../floor_stand/.v1lf_stage/manifest.json",
-      "stage_manifest_sha256": "8c75edb7ea3f18d55a81459d23f935d0f59136a83373a86a149e11c3b8e62961",
+      "stage_manifest_sha256": "ad318da788a00afc69347b0d35b6f01766868cb004ffc52940726de6a55ba49d",
       "state": "floor_stand",
       "stl": "../floor_stand/stl/lx521_top_v1lf_core_2of2_um_carrier.stl",
-      "stl_sha256": "ae456b10691c02c1438ca03de0e0e8c763381c9280ad78d75a498642063e45ae",
+      "stl_sha256": "f035df2d69f917bcbdf97ff8f3c18b20c477c32de55922f772b105c8cb97450b",
       "variant": "V1LF"
     },
     {
@@ -6474,7 +6474,7 @@
         "../captive_magnets.py": "900d1c432bec891092db0618c7707cc639a47b729f98062bd3ee18226f91021c",
         "../export_coupon.py": "d251c48aacfefa0a787f2203929e01332a70b36d6952f47c15f1e5e8740dde94",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
-        "../top_baffle_nd25fw4_b2_split.py": "d95f5f4317773fa2f04171bd06a29653ee8b4f5daa090506c1305f6d9fa3489d"
+        "../top_baffle_nd25fw4_b2_split.py": "a7edae40ed045f7e6d4ca7e692b3449cf6a013e03e135dae61528abcc44ae9e9"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -8265,7 +8265,7 @@
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_b2_split.py": "d95f5f4317773fa2f04171bd06a29653ee8b4f5daa090506c1305f6d9fa3489d"
+        "../top_baffle_nd25fw4_b2_split.py": "a7edae40ed045f7e6d4ca7e692b3449cf6a013e03e135dae61528abcc44ae9e9"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -9243,7 +9243,7 @@
         "../top_baffle_nd25fw4_a_comp.py": "1259d0099742606f0648795566b660f7c30366d49aad84c561591d7c7257d03d",
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
         "../top_baffle_nd25fw4_v1_attachments.py": "6110797cd74c64a243ac0cf3d977ea96a2d5300b58bfe3113937e7b91efd44bb"
       },
       "source_files": [
@@ -9420,7 +9420,7 @@
         "../top_baffle_nd25fw4_a_comp.py": "1259d0099742606f0648795566b660f7c30366d49aad84c561591d7c7257d03d",
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
         "../top_baffle_nd25fw4_v1_attachments.py": "6110797cd74c64a243ac0cf3d977ea96a2d5300b58bfe3113937e7b91efd44bb"
       },
       "source_files": [
@@ -9597,7 +9597,7 @@
         "../top_baffle_nd25fw4_a_comp.py": "1259d0099742606f0648795566b660f7c30366d49aad84c561591d7c7257d03d",
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
         "../top_baffle_nd25fw4_v1_attachments.py": "6110797cd74c64a243ac0cf3d977ea96a2d5300b58bfe3113937e7b91efd44bb"
       },
       "source_files": [
@@ -9774,7 +9774,7 @@
         "../top_baffle_nd25fw4_a_comp.py": "1259d0099742606f0648795566b660f7c30366d49aad84c561591d7c7257d03d",
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
         "../top_baffle_nd25fw4_v1_attachments.py": "6110797cd74c64a243ac0cf3d977ea96a2d5300b58bfe3113937e7b91efd44bb"
       },
       "source_files": [
@@ -10065,7 +10065,7 @@
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b1.py": "5fca2fccc638fd6d3f284d146efe4ba538c95cec50da3c6991de009068b40166",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
         "../top_baffle_nd25fw4_v1_attachments.py": "6110797cd74c64a243ac0cf3d977ea96a2d5300b58bfe3113937e7b91efd44bb"
       },
       "source_files": [
@@ -10356,7 +10356,7 @@
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b1.py": "5fca2fccc638fd6d3f284d146efe4ba538c95cec50da3c6991de009068b40166",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
         "../top_baffle_nd25fw4_v1_attachments.py": "6110797cd74c64a243ac0cf3d977ea96a2d5300b58bfe3113937e7b91efd44bb"
       },
       "source_files": [
@@ -10405,7 +10405,7 @@
       "part": "lx521_top_v1_4of4_vase",
       "print_orientation": "front_face_down",
       "print_sidecar": "../no_floor_stand/stl/lx521_top_v1_4of4_vase.print.json",
-      "print_sidecar_sha256": "676ceaa779b2aa006c18340930e4a3cb7f13e3557eadb18d2b19a5b2eea0de7b",
+      "print_sidecar_sha256": "94bc20fc5d823b290e7ad8717b0506cc4b12dbc52729cd52b32548760b1368fc",
       "rotation_deg": {
         "x": 180.0,
         "z": 0.0
@@ -10874,8 +10874,8 @@
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
-        "../top_baffle_nd25fw4_v1_split.py": "ec0a7021cac3e1a7f80caf8eb175b3d549437fdf63e3e005e7d6c9476cb216f7"
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
+        "../top_baffle_nd25fw4_v1_split.py": "515e420ab3ef815a777104a7eed9b3bfb883bd8f0d8b143cb5f6ce2b6692b496"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -10914,7 +10914,7 @@
       ],
       "state": "no_floor_stand",
       "stl": "../no_floor_stand/stl/lx521_top_v1_4of4_vase.stl",
-      "stl_sha256": "703f25ce927fe1f724c282d9498fdc07b6d3d5fff543b917715fe3ac7af12be4",
+      "stl_sha256": "e336329b9eb68d01ee976fc5f016bbfdc128f1547fb67358e76000b8f8b21cfe",
       "variant": "V1"
     },
     {
@@ -10922,7 +10922,7 @@
       "part": "lx521_top_v1l_4of4_vase_b2",
       "print_orientation": "front_face_down",
       "print_sidecar": "../no_floor_stand/stl/lx521_top_v1l_4of4_vase_b2.print.json",
-      "print_sidecar_sha256": "817b68afa30f78899fb4c8aef3e5b59c69cbd34e3198acb31eff57cb15acee84",
+      "print_sidecar_sha256": "e18c23a2905047145008db32441b257b74645724f5d7c885eac879420719d969",
       "rotation_deg": {
         "x": 180.0,
         "z": 0.0
@@ -11391,9 +11391,9 @@
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../top_baffle_nd25fw4_b.py": "b0a5597797f562f7cf19558ebf1e28c10be7f3b5dcf73f98cb9a7377f7b01f77",
         "../top_baffle_nd25fw4_b2.py": "475440fb63c32b2a1dbc6a229ab870a396f322df615f8f782181788f404fa28a",
-        "../top_baffle_nd25fw4_v1.py": "6ac3630d5c5be0194acc1a067195eb5893a394bdd6fafb6370666c265151990e",
+        "../top_baffle_nd25fw4_v1.py": "7ef236f94e6081ef2f8417b14c2e402f922a37cdc6d8eaa1c32e38dacbc35af6",
         "../top_baffle_nd25fw4_v1l.py": "923d75bf14b2f6c9d05420767237a132a625a2f033a0a46db1cc2db164995d65",
-        "../top_baffle_nd25fw4_v1l_split.py": "b2930883e3c3b14d97c61fe77ffb8f5175356afb5f5e4eecfae2a0bbcbb7e4a2"
+        "../top_baffle_nd25fw4_v1l_split.py": "bbd080018a1d0a62fcc86aaa353eaa4484f5222eeb46d8c591ad1d9d5dbd28bc"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -11433,7 +11433,7 @@
       ],
       "state": "no_floor_stand",
       "stl": "../no_floor_stand/stl/lx521_top_v1l_4of4_vase_b2.stl",
-      "stl_sha256": "4a659bb53c617e0501c6b1a426baaaeeddbf1177c36f3397a85af91040f3f5ed",
+      "stl_sha256": "7f5a21217a5afbb91b1e40c1a6e55c0da0f74eb0e327a9455f3fc09c3b0f95fe",
       "variant": "V1L"
     },
     {
@@ -11441,7 +11441,7 @@
       "part": "lx521_top_v1lf_optional_lm_keyed_1of2_bottom",
       "print_orientation": "front_face_down",
       "print_sidecar": "../no_floor_stand/stl/lx521_top_v1lf_optional_lm_keyed_1of2_bottom.print.json",
-      "print_sidecar_sha256": "3178eec58c39224040eb23c689408650f698e74bf7faa8d3467f936d7644812a",
+      "print_sidecar_sha256": "2f1eb77d85f7b3036ab81978cbb396b37e7377286ef5555528e6deb9564043f6",
       "rotation_deg": {
         "x": 180.0,
         "z": 26.0
@@ -11515,12 +11515,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               7.8906807422033935,
-              172.75326336525802,
+              173.16379595081787,
               5.750000099999983
             ],
             "cavity_center_xyz_mm": [
               9.238871811652142,
-              173.41082008544163,
+              173.82135267100148,
               5.750000099999983
             ],
             "insertion_direction_xyz": [
@@ -11540,7 +11540,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               9.193932109337187,
-              173.3889015281022,
+              173.79943411366204,
               5.750000099999983
             ]
           },
@@ -11630,12 +11630,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               65.41349970535009,
-              200.80901675975898,
+              201.21954934531882,
               5.750000099999983
             ],
             "cavity_center_xyz_mm": [
               64.06530863590135,
-              200.15146003957537,
+              200.56199262513522,
               5.750000099999983
             ],
             "insertion_direction_xyz": [
@@ -11655,7 +11655,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               64.1102483382163,
-              200.17337859691483,
+              200.58391118247468,
               5.750000099999983
             ]
           },
@@ -11683,9 +11683,9 @@
         "../export_piece_stls.py": "98cbbf3a5541fe14039c1d4cb087e80a4a2dd784986c26fd0885f214cc9b57b8",
         "../export_v1lf_staged.py": "5fe90fc9e0ef6dca0706069270675c186ae087efe4d9caac75cf7e10cad8b895",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
-        "../no_floor_stand/.v1lf_stage/manifest.json": "5d0779fa353c27e4ca174707ce1fb7b6ab8ceea78fe5bd50b590584f7fd2bfc3",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
-        "../top_baffle_nd25fw4_v1lf_lm_split.py": "4a8755df2a3fd4b2ff3a81be423448ac203ee8b324435c1c52dc2b11c5c5e118"
+        "../no_floor_stand/.v1lf_stage/manifest.json": "0bc57054cebfc9a2e4a8a43886b3bd63be369110d673e20c21e1b7c628dee683",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
+        "../top_baffle_nd25fw4_v1lf_lm_split.py": "12616c10d18fc4e4d5aeef6c95e99a51686bd9c2b75efb3e24d7773be9accc6b"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -11707,7 +11707,7 @@
           0.4383711467890774,
           -0.898794046299167,
           0.0,
-          202.9594328958935
+          203.36996548145336
         ],
         [
           0.0,
@@ -11723,10 +11723,10 @@
         ]
       ],
       "stage_manifest": "../no_floor_stand/.v1lf_stage/manifest.json",
-      "stage_manifest_sha256": "5d0779fa353c27e4ca174707ce1fb7b6ab8ceea78fe5bd50b590584f7fd2bfc3",
+      "stage_manifest_sha256": "0bc57054cebfc9a2e4a8a43886b3bd63be369110d673e20c21e1b7c628dee683",
       "state": "no_floor_stand",
       "stl": "../no_floor_stand/stl/lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl",
-      "stl_sha256": "cd396676fad886813273c589d6e73b2e377e801934f220d3b5f26a64d0e48e88",
+      "stl_sha256": "9b9c736662dc80d923c94aaf161e7f4d31690b3faf67b34239555f32c1d976e2",
       "variant": "V1LF-split"
     },
     {
@@ -11734,7 +11734,7 @@
       "part": "lx521_top_v1lf_optional_lm_keyed_2of2_top",
       "print_orientation": "front_face_down",
       "print_sidecar": "../no_floor_stand/stl/lx521_top_v1lf_optional_lm_keyed_2of2_top.print.json",
-      "print_sidecar_sha256": "7447554fe0f36c65b81b40507cb197e31734ca6620cbb18ccac107b399cc52dd",
+      "print_sidecar_sha256": "cdfbecb9b9c83f7ec5c9562f4e62c9d71cc386afbc20f0519787ac4430faa891",
       "rotation_deg": {
         "x": 180.0,
         "z": 45.0
@@ -11807,13 +11807,13 @@
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              134.4570378570568,
-              5.589089911917597,
+              134.45703785705683,
+              5.5890899119175685,
               5.750000099999983
             ],
             "cavity_center_xyz_mm": [
-              133.96868562537105,
-              7.007367775316595,
+              133.96868562537108,
+              7.007367775316567,
               5.750000099999983
             ],
             "insertion_direction_xyz": [
@@ -11832,8 +11832,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              133.98496403309395,
-              6.9600918465366135,
+              133.98496403309397,
+              6.960091846536585,
               5.750000099999983
             ]
           },
@@ -11922,13 +11922,13 @@
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              204.88340569880626,
-              76.01545775366696,
+              204.88340569880629,
+              76.01545775366694,
               5.750000099999983
             ],
             "cavity_center_xyz_mm": [
-              203.46512783540726,
-              76.50380998535272,
+              203.4651278354073,
+              76.50380998535269,
               5.750000099999983
             ],
             "insertion_direction_xyz": [
@@ -11947,8 +11947,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              203.51240376418724,
-              76.48753157762985,
+              203.51240376418727,
+              76.48753157762982,
               5.750000099999983
             ]
           },
@@ -11976,9 +11976,9 @@
         "../export_piece_stls.py": "98cbbf3a5541fe14039c1d4cb087e80a4a2dd784986c26fd0885f214cc9b57b8",
         "../export_v1lf_staged.py": "5fe90fc9e0ef6dca0706069270675c186ae087efe4d9caac75cf7e10cad8b895",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
-        "../no_floor_stand/.v1lf_stage/manifest.json": "5d0779fa353c27e4ca174707ce1fb7b6ab8ceea78fe5bd50b590584f7fd2bfc3",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
-        "../top_baffle_nd25fw4_v1lf_lm_split.py": "4a8755df2a3fd4b2ff3a81be423448ac203ee8b324435c1c52dc2b11c5c5e118"
+        "../no_floor_stand/.v1lf_stage/manifest.json": "0bc57054cebfc9a2e4a8a43886b3bd63be369110d673e20c21e1b7c628dee683",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
+        "../top_baffle_nd25fw4_v1lf_lm_split.py": "12616c10d18fc4e4d5aeef6c95e99a51686bd9c2b75efb3e24d7773be9accc6b"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -11994,13 +11994,13 @@
           0.7071067811865476,
           0.7071067811865475,
           0.0,
-          -44.642532478929645
+          -44.6425324789296
         ],
         [
           0.7071067811865475,
           -0.7071067811865476,
           0.0,
-          255.1150280896535
+          255.11502808965346
         ],
         [
           0.0,
@@ -12016,10 +12016,10 @@
         ]
       ],
       "stage_manifest": "../no_floor_stand/.v1lf_stage/manifest.json",
-      "stage_manifest_sha256": "5d0779fa353c27e4ca174707ce1fb7b6ab8ceea78fe5bd50b590584f7fd2bfc3",
+      "stage_manifest_sha256": "0bc57054cebfc9a2e4a8a43886b3bd63be369110d673e20c21e1b7c628dee683",
       "state": "no_floor_stand",
       "stl": "../no_floor_stand/stl/lx521_top_v1lf_optional_lm_keyed_2of2_top.stl",
-      "stl_sha256": "aa5f06936133037934fa8f021fd2692573ec166c651cfc07a175314866726924",
+      "stl_sha256": "af51cc0e19be3ce7f50362dccfd0c173a6269ec311b655b22af4b4a2ce78d363",
       "variant": "V1LF-split"
     },
     {
@@ -12050,7 +12050,7 @@
       "part": "lx521_top_v1lf_core_1of2_lm_carrier",
       "print_orientation": "front_face_down",
       "print_sidecar": "../no_floor_stand/stl/lx521_top_v1lf_core_1of2_lm_carrier.print.json",
-      "print_sidecar_sha256": "071ce326d06fb33442b41ea03e4a010ca87c400914181a6723e90e58d38f97e9",
+      "print_sidecar_sha256": "3f552abf85adc2c972cdcd8bf4c51ac943f57996d7f4fff02091fdcf3521d37f",
       "rotation_deg": {
         "x": 180.0,
         "z": 28.0
@@ -12124,12 +12124,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               8.450488230146036,
-              267.41538417705533,
+              265.0056551069726,
               5.750000099999987
             ],
             "cavity_center_xyz_mm": [
               9.774909619434425,
-              268.11959152123416,
+              265.7098624511514,
               5.750000099999987
             ],
             "insertion_direction_xyz": [
@@ -12149,7 +12149,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               9.730762239791478,
-              268.0961179430949,
+              265.6863888730121,
               5.750000099999987
             ]
           },
@@ -12239,12 +12239,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               64.95913417311736,
-              297.46156419535237,
+              295.0518351252696,
               5.750000099999987
             ],
             "cavity_center_xyz_mm": [
               63.634712783828974,
-              296.7573568511735,
+              294.34762778109075,
               5.750000099999987
             ],
             "insertion_direction_xyz": [
@@ -12264,7 +12264,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               63.67886016347192,
-              296.7808304293128,
+              294.37110135923007,
               5.750000099999987
             ]
           },
@@ -12354,12 +12354,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               126.57377005716086,
-              7.345042747915215,
+              4.935313677832482,
               5.750000099999987
             ],
             "cavity_center_xyz_mm": [
               126.5214208121071,
-              8.844128988443913,
+              6.43439991836118,
               5.750000099999987
             ],
             "insertion_direction_xyz": [
@@ -12379,7 +12379,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               126.52316578694226,
-              8.794159447092966,
+              6.384430377010233,
               5.750000099999987
             ]
           },
@@ -12469,12 +12469,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               214.51351779275083,
-              54.10343603685956,
+              51.69370696677683,
               5.750000099999987
             ],
             "cavity_center_xyz_mm": [
               213.2999923011884,
-              54.985113915298285,
+              52.57538484521555,
               5.750000099999987
             ],
             "insertion_direction_xyz": [
@@ -12494,7 +12494,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               213.34044315090716,
-              54.955724652683614,
+              52.54599558260088,
               5.750000099999987
             ]
           },
@@ -12522,8 +12522,8 @@
         "../export_piece_stls.py": "98cbbf3a5541fe14039c1d4cb087e80a4a2dd784986c26fd0885f214cc9b57b8",
         "../export_v1lf_staged.py": "5fe90fc9e0ef6dca0706069270675c186ae087efe4d9caac75cf7e10cad8b895",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
-        "../no_floor_stand/.v1lf_stage/manifest.json": "5d0779fa353c27e4ca174707ce1fb7b6ab8ceea78fe5bd50b590584f7fd2bfc3",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95"
+        "../no_floor_stand/.v1lf_stage/manifest.json": "0bc57054cebfc9a2e4a8a43886b3bd63be369110d673e20c21e1b7c628dee683",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -12544,7 +12544,7 @@
           0.4694715627858908,
           -0.882947592858927,
           0.0,
-          298.3315308576645
+          295.9218017875818
         ],
         [
           0.0,
@@ -12560,10 +12560,10 @@
         ]
       ],
       "stage_manifest": "../no_floor_stand/.v1lf_stage/manifest.json",
-      "stage_manifest_sha256": "5d0779fa353c27e4ca174707ce1fb7b6ab8ceea78fe5bd50b590584f7fd2bfc3",
+      "stage_manifest_sha256": "0bc57054cebfc9a2e4a8a43886b3bd63be369110d673e20c21e1b7c628dee683",
       "state": "no_floor_stand",
       "stl": "../no_floor_stand/stl/lx521_top_v1lf_core_1of2_lm_carrier.stl",
-      "stl_sha256": "95fdfb744591a7ed806c3dd246a4a9a7578a7491e3ae6d8d9463034b8c26da7e",
+      "stl_sha256": "dfa5bb6a6fe328511cc1477b645b1cc6b385ea1fa2a955c611e5bc59b1c55b3f",
       "variant": "V1LF"
     },
     {
@@ -12571,7 +12571,7 @@
       "part": "lx521_top_v1lf_core_2of2_um_carrier",
       "print_orientation": "front_face_down",
       "print_sidecar": "../no_floor_stand/stl/lx521_top_v1lf_core_2of2_um_carrier.print.json",
-      "print_sidecar_sha256": "5861321282a44bf55b81e4e1b5ddb89ca3bc9ccc9cc51e9f9abeb3ab5f8e5218",
+      "print_sidecar_sha256": "ba3ec062595f5f699d1c5adaf7b0b78317f7e1bb0da2c8f9d91ae9f18ce82052",
       "rotation_deg": {
         "x": 180.0,
         "z": 0.0
@@ -12645,12 +12645,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               18.433109179472936,
-              19.563034388822246,
+              15.038034388822268,
               3.200000099999963
             ],
             "cavity_center_xyz_mm": [
               19.38722650988958,
-              20.720471263903846,
+              16.19547126390387,
               3.200000099999963
             ],
             "insertion_direction_xyz": [
@@ -12670,7 +12670,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               19.35542259887569,
-              20.681890034734465,
+              16.156890034734488,
               3.200000099999963
             ]
           },
@@ -12760,12 +12760,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               84.96689102052704,
-              19.563034388822246,
+              15.038034388822268,
               3.200000099999963
             ],
             "cavity_center_xyz_mm": [
               84.01277369011041,
-              20.720471263903846,
+              16.19547126390387,
               3.200000099999963
             ],
             "insertion_direction_xyz": [
@@ -12785,7 +12785,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               84.0445776011243,
-              20.681890034734465,
+              16.156890034734488,
               3.200000099999963
             ]
           },
@@ -12813,8 +12813,8 @@
         "../export_piece_stls.py": "98cbbf3a5541fe14039c1d4cb087e80a4a2dd784986c26fd0885f214cc9b57b8",
         "../export_v1lf_staged.py": "5fe90fc9e0ef6dca0706069270675c186ae087efe4d9caac75cf7e10cad8b895",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
-        "../no_floor_stand/.v1lf_stage/manifest.json": "5d0779fa353c27e4ca174707ce1fb7b6ab8ceea78fe5bd50b590584f7fd2bfc3",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95"
+        "../no_floor_stand/.v1lf_stage/manifest.json": "0bc57054cebfc9a2e4a8a43886b3bd63be369110d673e20c21e1b7c628dee683",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -12835,7 +12835,7 @@
           0.0,
           -1.0,
           0.0,
-          426.0000001
+          421.47500010000005
         ],
         [
           0.0,
@@ -12851,10 +12851,10 @@
         ]
       ],
       "stage_manifest": "../no_floor_stand/.v1lf_stage/manifest.json",
-      "stage_manifest_sha256": "5d0779fa353c27e4ca174707ce1fb7b6ab8ceea78fe5bd50b590584f7fd2bfc3",
+      "stage_manifest_sha256": "0bc57054cebfc9a2e4a8a43886b3bd63be369110d673e20c21e1b7c628dee683",
       "state": "no_floor_stand",
       "stl": "../no_floor_stand/stl/lx521_top_v1lf_core_2of2_um_carrier.stl",
-      "stl_sha256": "75b993471ca2f79ae78b69aff9da2f990a878c0bc18e0083b67fdbb9417695be",
+      "stl_sha256": "fc753bc2b86f0977a49819552731c963ab2224fbeec77aa8b816e627167ba485",
       "variant": "V1LF"
     },
     {
@@ -12987,7 +12987,7 @@
         "../captive_magnets.py": "900d1c432bec891092db0618c7707cc639a47b729f98062bd3ee18226f91021c",
         "../export_coupon.py": "d251c48aacfefa0a787f2203929e01332a70b36d6952f47c15f1e5e8740dde94",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
-        "../top_baffle_nd25fw4_b2_split.py": "d95f5f4317773fa2f04171bd06a29653ee8b4f5daa090506c1305f6d9fa3489d"
+        "../top_baffle_nd25fw4_b2_split.py": "a7edae40ed045f7e6d4ca7e692b3449cf6a013e03e135dae61528abcc44ae9e9"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -13028,7 +13028,7 @@
     },
     {
       "facts": "../wings/ac/v1lf_wing_ac_facts.json",
-      "facts_sha256": "6c333e4a5368ec41ee908d88fa44380feaea21de002a6ba68b44a19eb343f230",
+      "facts_sha256": "a7c797b0df41364538713db0cff13ef67020184c93b6737daebf4f96c0d3256c",
       "id": "shared:V1LF-Ac:v1lf_wing_ac_left_1of3_lm_lower",
       "part": "v1lf_wing_ac_left_1of3_lm_lower",
       "print_orientation": "front_face_down",
@@ -13179,7 +13179,7 @@
         "../export_v1lf_basic_wings.py": "ddc1f10ccfb12db721800cef1c90dcc714fb86bb76403440db76aed958bf749e",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../gen_v1lf_basic_variants.py": "8f7e167415e42b05789a7c43c89957ac7391f982e01498a48f2efacf8bea49af",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
         "../v1lf_basic_wings_cad.py": "9c4df965b61e2c9bb63f97843106bc1d5ca68c7fccb90ef27f7afafea4863902"
       },
       "source_files": [
@@ -13220,12 +13220,12 @@
       "stl": "../wings/ac/stl/lx521_top_v1lf_wing_ac_left_1of3_lm_lower.stl",
       "stl_sha256": "88f478e83215864a12f1175a6ae4dd4929df6b603e4603ddc79a1b56cadc720c",
       "transaction_manifest": "../wings/ac/v1lf_wing_ac_print_manifest.json",
-      "transaction_manifest_sha256": "a5d1b06dd0fd95cce7b3bd6ea5699a518b356d3e515ac7ef974a0ec2fa0d929c",
+      "transaction_manifest_sha256": "8861c18ccb3d1c1b9db499f1b4b121c254c2c6245ee17648706703fa802eb7a5",
       "variant": "V1LF-Ac"
     },
     {
       "facts": "../wings/ac/v1lf_wing_ac_facts.json",
-      "facts_sha256": "6c333e4a5368ec41ee908d88fa44380feaea21de002a6ba68b44a19eb343f230",
+      "facts_sha256": "a7c797b0df41364538713db0cff13ef67020184c93b6737daebf4f96c0d3256c",
       "id": "shared:V1LF-Ac:v1lf_wing_ac_left_2of3_lm_upper",
       "part": "v1lf_wing_ac_left_2of3_lm_upper",
       "print_orientation": "front_face_down",
@@ -13376,7 +13376,7 @@
         "../export_v1lf_basic_wings.py": "ddc1f10ccfb12db721800cef1c90dcc714fb86bb76403440db76aed958bf749e",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../gen_v1lf_basic_variants.py": "8f7e167415e42b05789a7c43c89957ac7391f982e01498a48f2efacf8bea49af",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
         "../v1lf_basic_wings_cad.py": "9c4df965b61e2c9bb63f97843106bc1d5ca68c7fccb90ef27f7afafea4863902"
       },
       "source_files": [
@@ -13417,12 +13417,12 @@
       "stl": "../wings/ac/stl/lx521_top_v1lf_wing_ac_left_2of3_lm_upper.stl",
       "stl_sha256": "a72da8dbce9ba97a18453f7599e7e85601a29c657ba3bcb0343cdd1657b666e2",
       "transaction_manifest": "../wings/ac/v1lf_wing_ac_print_manifest.json",
-      "transaction_manifest_sha256": "a5d1b06dd0fd95cce7b3bd6ea5699a518b356d3e515ac7ef974a0ec2fa0d929c",
+      "transaction_manifest_sha256": "8861c18ccb3d1c1b9db499f1b4b121c254c2c6245ee17648706703fa802eb7a5",
       "variant": "V1LF-Ac"
     },
     {
       "facts": "../wings/ac/v1lf_wing_ac_facts.json",
-      "facts_sha256": "6c333e4a5368ec41ee908d88fa44380feaea21de002a6ba68b44a19eb343f230",
+      "facts_sha256": "a7c797b0df41364538713db0cff13ef67020184c93b6737daebf4f96c0d3256c",
       "id": "shared:V1LF-Ac:v1lf_wing_ac_left_3of3_um",
       "part": "v1lf_wing_ac_left_3of3_um",
       "print_orientation": "front_face_down",
@@ -13573,7 +13573,7 @@
         "../export_v1lf_basic_wings.py": "ddc1f10ccfb12db721800cef1c90dcc714fb86bb76403440db76aed958bf749e",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../gen_v1lf_basic_variants.py": "8f7e167415e42b05789a7c43c89957ac7391f982e01498a48f2efacf8bea49af",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
         "../v1lf_basic_wings_cad.py": "9c4df965b61e2c9bb63f97843106bc1d5ca68c7fccb90ef27f7afafea4863902"
       },
       "source_files": [
@@ -13614,12 +13614,12 @@
       "stl": "../wings/ac/stl/lx521_top_v1lf_wing_ac_left_3of3_um.stl",
       "stl_sha256": "5b84329a6c322912df1fa987d1e00ebd706b2f78fd8fbd1635d3e72a0ced2ed2",
       "transaction_manifest": "../wings/ac/v1lf_wing_ac_print_manifest.json",
-      "transaction_manifest_sha256": "a5d1b06dd0fd95cce7b3bd6ea5699a518b356d3e515ac7ef974a0ec2fa0d929c",
+      "transaction_manifest_sha256": "8861c18ccb3d1c1b9db499f1b4b121c254c2c6245ee17648706703fa802eb7a5",
       "variant": "V1LF-Ac"
     },
     {
       "facts": "../wings/ac/v1lf_wing_ac_facts.json",
-      "facts_sha256": "6c333e4a5368ec41ee908d88fa44380feaea21de002a6ba68b44a19eb343f230",
+      "facts_sha256": "a7c797b0df41364538713db0cff13ef67020184c93b6737daebf4f96c0d3256c",
       "id": "shared:V1LF-Ac:v1lf_wing_ac_right_1of3_lm_lower",
       "part": "v1lf_wing_ac_right_1of3_lm_lower",
       "print_orientation": "front_face_down",
@@ -13770,7 +13770,7 @@
         "../export_v1lf_basic_wings.py": "ddc1f10ccfb12db721800cef1c90dcc714fb86bb76403440db76aed958bf749e",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../gen_v1lf_basic_variants.py": "8f7e167415e42b05789a7c43c89957ac7391f982e01498a48f2efacf8bea49af",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
         "../v1lf_basic_wings_cad.py": "9c4df965b61e2c9bb63f97843106bc1d5ca68c7fccb90ef27f7afafea4863902"
       },
       "source_files": [
@@ -13811,12 +13811,12 @@
       "stl": "../wings/ac/stl/lx521_top_v1lf_wing_ac_right_1of3_lm_lower.stl",
       "stl_sha256": "aaf1c11072566c110f10c8ed1dc5af7feda00b66a6bf0a7a6fceedf60296c3d6",
       "transaction_manifest": "../wings/ac/v1lf_wing_ac_print_manifest.json",
-      "transaction_manifest_sha256": "a5d1b06dd0fd95cce7b3bd6ea5699a518b356d3e515ac7ef974a0ec2fa0d929c",
+      "transaction_manifest_sha256": "8861c18ccb3d1c1b9db499f1b4b121c254c2c6245ee17648706703fa802eb7a5",
       "variant": "V1LF-Ac"
     },
     {
       "facts": "../wings/ac/v1lf_wing_ac_facts.json",
-      "facts_sha256": "6c333e4a5368ec41ee908d88fa44380feaea21de002a6ba68b44a19eb343f230",
+      "facts_sha256": "a7c797b0df41364538713db0cff13ef67020184c93b6737daebf4f96c0d3256c",
       "id": "shared:V1LF-Ac:v1lf_wing_ac_right_2of3_lm_upper",
       "part": "v1lf_wing_ac_right_2of3_lm_upper",
       "print_orientation": "front_face_down",
@@ -13967,7 +13967,7 @@
         "../export_v1lf_basic_wings.py": "ddc1f10ccfb12db721800cef1c90dcc714fb86bb76403440db76aed958bf749e",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../gen_v1lf_basic_variants.py": "8f7e167415e42b05789a7c43c89957ac7391f982e01498a48f2efacf8bea49af",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
         "../v1lf_basic_wings_cad.py": "9c4df965b61e2c9bb63f97843106bc1d5ca68c7fccb90ef27f7afafea4863902"
       },
       "source_files": [
@@ -14008,12 +14008,12 @@
       "stl": "../wings/ac/stl/lx521_top_v1lf_wing_ac_right_2of3_lm_upper.stl",
       "stl_sha256": "9e30dc31afb58dfc1887a5967171c7585e47c4aa16e7cab2092c64ddfa0cc471",
       "transaction_manifest": "../wings/ac/v1lf_wing_ac_print_manifest.json",
-      "transaction_manifest_sha256": "a5d1b06dd0fd95cce7b3bd6ea5699a518b356d3e515ac7ef974a0ec2fa0d929c",
+      "transaction_manifest_sha256": "8861c18ccb3d1c1b9db499f1b4b121c254c2c6245ee17648706703fa802eb7a5",
       "variant": "V1LF-Ac"
     },
     {
       "facts": "../wings/ac/v1lf_wing_ac_facts.json",
-      "facts_sha256": "6c333e4a5368ec41ee908d88fa44380feaea21de002a6ba68b44a19eb343f230",
+      "facts_sha256": "a7c797b0df41364538713db0cff13ef67020184c93b6737daebf4f96c0d3256c",
       "id": "shared:V1LF-Ac:v1lf_wing_ac_right_3of3_um",
       "part": "v1lf_wing_ac_right_3of3_um",
       "print_orientation": "front_face_down",
@@ -14164,7 +14164,7 @@
         "../export_v1lf_basic_wings.py": "ddc1f10ccfb12db721800cef1c90dcc714fb86bb76403440db76aed958bf749e",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../gen_v1lf_basic_variants.py": "8f7e167415e42b05789a7c43c89957ac7391f982e01498a48f2efacf8bea49af",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
         "../v1lf_basic_wings_cad.py": "9c4df965b61e2c9bb63f97843106bc1d5ca68c7fccb90ef27f7afafea4863902"
       },
       "source_files": [
@@ -14205,12 +14205,12 @@
       "stl": "../wings/ac/stl/lx521_top_v1lf_wing_ac_right_3of3_um.stl",
       "stl_sha256": "e651b7cd44736013978b3e2cd12aac8038436cdd233b18f87b2a0dd82ab9903f",
       "transaction_manifest": "../wings/ac/v1lf_wing_ac_print_manifest.json",
-      "transaction_manifest_sha256": "a5d1b06dd0fd95cce7b3bd6ea5699a518b356d3e515ac7ef974a0ec2fa0d929c",
+      "transaction_manifest_sha256": "8861c18ccb3d1c1b9db499f1b4b121c254c2c6245ee17648706703fa802eb7a5",
       "variant": "V1LF-Ac"
     },
     {
       "facts": "../wings/ae/v1lf_wing_ae_facts.json",
-      "facts_sha256": "ee0c6bc4d1af27c25d2fd20b4b7a648391a8ff7517f67a7060fc92026c0bc8b9",
+      "facts_sha256": "6301862ec0cef61926b7ba9975a3a5897cd13784e36bee9b1dc8b6a625b8a249",
       "id": "shared:V1LF-Ae:v1lf_wing_ae_left_1of3_lm_lower",
       "part": "v1lf_wing_ae_left_1of3_lm_lower",
       "print_orientation": "front_face_down",
@@ -14361,7 +14361,7 @@
         "../export_v1lf_basic_wings.py": "ddc1f10ccfb12db721800cef1c90dcc714fb86bb76403440db76aed958bf749e",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../gen_v1lf_basic_variants.py": "8f7e167415e42b05789a7c43c89957ac7391f982e01498a48f2efacf8bea49af",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
         "../v1lf_basic_wings_cad.py": "9c4df965b61e2c9bb63f97843106bc1d5ca68c7fccb90ef27f7afafea4863902"
       },
       "source_files": [
@@ -14402,12 +14402,12 @@
       "stl": "../wings/ae/stl/lx521_top_v1lf_wing_ae_left_1of3_lm_lower.stl",
       "stl_sha256": "d69015b8846787c0da98203a513aef1d3815bc99b5029991fd4fa14ae55d6bd3",
       "transaction_manifest": "../wings/ae/v1lf_wing_ae_print_manifest.json",
-      "transaction_manifest_sha256": "2d0e7ae2264b4a0346ab50e2601904673fa3915a80cc66e92bd14a43c96cc273",
+      "transaction_manifest_sha256": "59bbba26c950553389d8e13c63629a5a0d43446f66ba094f79d0e7649ec6b688",
       "variant": "V1LF-Ae"
     },
     {
       "facts": "../wings/ae/v1lf_wing_ae_facts.json",
-      "facts_sha256": "ee0c6bc4d1af27c25d2fd20b4b7a648391a8ff7517f67a7060fc92026c0bc8b9",
+      "facts_sha256": "6301862ec0cef61926b7ba9975a3a5897cd13784e36bee9b1dc8b6a625b8a249",
       "id": "shared:V1LF-Ae:v1lf_wing_ae_left_2of3_lm_upper",
       "part": "v1lf_wing_ae_left_2of3_lm_upper",
       "print_orientation": "front_face_down",
@@ -14558,7 +14558,7 @@
         "../export_v1lf_basic_wings.py": "ddc1f10ccfb12db721800cef1c90dcc714fb86bb76403440db76aed958bf749e",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../gen_v1lf_basic_variants.py": "8f7e167415e42b05789a7c43c89957ac7391f982e01498a48f2efacf8bea49af",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
         "../v1lf_basic_wings_cad.py": "9c4df965b61e2c9bb63f97843106bc1d5ca68c7fccb90ef27f7afafea4863902"
       },
       "source_files": [
@@ -14599,12 +14599,12 @@
       "stl": "../wings/ae/stl/lx521_top_v1lf_wing_ae_left_2of3_lm_upper.stl",
       "stl_sha256": "afdff68dbef1cfb1a2657154ba14aec4bf4d2ccf891753975f560f6166d1e6bc",
       "transaction_manifest": "../wings/ae/v1lf_wing_ae_print_manifest.json",
-      "transaction_manifest_sha256": "2d0e7ae2264b4a0346ab50e2601904673fa3915a80cc66e92bd14a43c96cc273",
+      "transaction_manifest_sha256": "59bbba26c950553389d8e13c63629a5a0d43446f66ba094f79d0e7649ec6b688",
       "variant": "V1LF-Ae"
     },
     {
       "facts": "../wings/ae/v1lf_wing_ae_facts.json",
-      "facts_sha256": "ee0c6bc4d1af27c25d2fd20b4b7a648391a8ff7517f67a7060fc92026c0bc8b9",
+      "facts_sha256": "6301862ec0cef61926b7ba9975a3a5897cd13784e36bee9b1dc8b6a625b8a249",
       "id": "shared:V1LF-Ae:v1lf_wing_ae_left_3of3_um",
       "part": "v1lf_wing_ae_left_3of3_um",
       "print_orientation": "front_face_down",
@@ -14755,7 +14755,7 @@
         "../export_v1lf_basic_wings.py": "ddc1f10ccfb12db721800cef1c90dcc714fb86bb76403440db76aed958bf749e",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../gen_v1lf_basic_variants.py": "8f7e167415e42b05789a7c43c89957ac7391f982e01498a48f2efacf8bea49af",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
         "../v1lf_basic_wings_cad.py": "9c4df965b61e2c9bb63f97843106bc1d5ca68c7fccb90ef27f7afafea4863902"
       },
       "source_files": [
@@ -14796,12 +14796,12 @@
       "stl": "../wings/ae/stl/lx521_top_v1lf_wing_ae_left_3of3_um.stl",
       "stl_sha256": "dcd522b14b9f65bcd573b748cb78bd88ae6a9d4d99a9bab9d6ac0b42c3629209",
       "transaction_manifest": "../wings/ae/v1lf_wing_ae_print_manifest.json",
-      "transaction_manifest_sha256": "2d0e7ae2264b4a0346ab50e2601904673fa3915a80cc66e92bd14a43c96cc273",
+      "transaction_manifest_sha256": "59bbba26c950553389d8e13c63629a5a0d43446f66ba094f79d0e7649ec6b688",
       "variant": "V1LF-Ae"
     },
     {
       "facts": "../wings/ae/v1lf_wing_ae_facts.json",
-      "facts_sha256": "ee0c6bc4d1af27c25d2fd20b4b7a648391a8ff7517f67a7060fc92026c0bc8b9",
+      "facts_sha256": "6301862ec0cef61926b7ba9975a3a5897cd13784e36bee9b1dc8b6a625b8a249",
       "id": "shared:V1LF-Ae:v1lf_wing_ae_right_1of3_lm_lower",
       "part": "v1lf_wing_ae_right_1of3_lm_lower",
       "print_orientation": "front_face_down",
@@ -14952,7 +14952,7 @@
         "../export_v1lf_basic_wings.py": "ddc1f10ccfb12db721800cef1c90dcc714fb86bb76403440db76aed958bf749e",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../gen_v1lf_basic_variants.py": "8f7e167415e42b05789a7c43c89957ac7391f982e01498a48f2efacf8bea49af",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
         "../v1lf_basic_wings_cad.py": "9c4df965b61e2c9bb63f97843106bc1d5ca68c7fccb90ef27f7afafea4863902"
       },
       "source_files": [
@@ -14993,12 +14993,12 @@
       "stl": "../wings/ae/stl/lx521_top_v1lf_wing_ae_right_1of3_lm_lower.stl",
       "stl_sha256": "56de4a709f038bfcc53ebfdd94ceeaf3a7ca36024980517e9656bf5f7e58d25f",
       "transaction_manifest": "../wings/ae/v1lf_wing_ae_print_manifest.json",
-      "transaction_manifest_sha256": "2d0e7ae2264b4a0346ab50e2601904673fa3915a80cc66e92bd14a43c96cc273",
+      "transaction_manifest_sha256": "59bbba26c950553389d8e13c63629a5a0d43446f66ba094f79d0e7649ec6b688",
       "variant": "V1LF-Ae"
     },
     {
       "facts": "../wings/ae/v1lf_wing_ae_facts.json",
-      "facts_sha256": "ee0c6bc4d1af27c25d2fd20b4b7a648391a8ff7517f67a7060fc92026c0bc8b9",
+      "facts_sha256": "6301862ec0cef61926b7ba9975a3a5897cd13784e36bee9b1dc8b6a625b8a249",
       "id": "shared:V1LF-Ae:v1lf_wing_ae_right_2of3_lm_upper",
       "part": "v1lf_wing_ae_right_2of3_lm_upper",
       "print_orientation": "front_face_down",
@@ -15149,7 +15149,7 @@
         "../export_v1lf_basic_wings.py": "ddc1f10ccfb12db721800cef1c90dcc714fb86bb76403440db76aed958bf749e",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../gen_v1lf_basic_variants.py": "8f7e167415e42b05789a7c43c89957ac7391f982e01498a48f2efacf8bea49af",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
         "../v1lf_basic_wings_cad.py": "9c4df965b61e2c9bb63f97843106bc1d5ca68c7fccb90ef27f7afafea4863902"
       },
       "source_files": [
@@ -15190,12 +15190,12 @@
       "stl": "../wings/ae/stl/lx521_top_v1lf_wing_ae_right_2of3_lm_upper.stl",
       "stl_sha256": "a041b4c93359cdc5c10e0aca17ea7d8b7e0eea808a40363d7cb38002277197fa",
       "transaction_manifest": "../wings/ae/v1lf_wing_ae_print_manifest.json",
-      "transaction_manifest_sha256": "2d0e7ae2264b4a0346ab50e2601904673fa3915a80cc66e92bd14a43c96cc273",
+      "transaction_manifest_sha256": "59bbba26c950553389d8e13c63629a5a0d43446f66ba094f79d0e7649ec6b688",
       "variant": "V1LF-Ae"
     },
     {
       "facts": "../wings/ae/v1lf_wing_ae_facts.json",
-      "facts_sha256": "ee0c6bc4d1af27c25d2fd20b4b7a648391a8ff7517f67a7060fc92026c0bc8b9",
+      "facts_sha256": "6301862ec0cef61926b7ba9975a3a5897cd13784e36bee9b1dc8b6a625b8a249",
       "id": "shared:V1LF-Ae:v1lf_wing_ae_right_3of3_um",
       "part": "v1lf_wing_ae_right_3of3_um",
       "print_orientation": "front_face_down",
@@ -15346,7 +15346,7 @@
         "../export_v1lf_basic_wings.py": "ddc1f10ccfb12db721800cef1c90dcc714fb86bb76403440db76aed958bf749e",
         "../front_down_contract.py": "6d8a8a5f5d80f6b04c6e03c71c044ce5afcd1b0a3a8c3280e397dc45adfc0c78",
         "../gen_v1lf_basic_variants.py": "8f7e167415e42b05789a7c43c89957ac7391f982e01498a48f2efacf8bea49af",
-        "../top_baffle_nd25fw4_v1lf.py": "55ee20e304e5f626c8e097d8b288f0b858d2b6e1c01a6374a99f664ffc87ef95",
+        "../top_baffle_nd25fw4_v1lf.py": "5c340872debc2bca894dbebd08e8955c45cf876a2388c1147322e0f378312057",
         "../v1lf_basic_wings_cad.py": "9c4df965b61e2c9bb63f97843106bc1d5ca68c7fccb90ef27f7afafea4863902"
       },
       "source_files": [
@@ -15387,7 +15387,7 @@
       "stl": "../wings/ae/stl/lx521_top_v1lf_wing_ae_right_3of3_um.stl",
       "stl_sha256": "b475338bdf1f05c88ab365b147b14c2f4f256e2146cda7118efd1bb5a4e6230d",
       "transaction_manifest": "../wings/ae/v1lf_wing_ae_print_manifest.json",
-      "transaction_manifest_sha256": "2d0e7ae2264b4a0346ab50e2601904673fa3915a80cc66e92bd14a43c96cc273",
+      "transaction_manifest_sha256": "59bbba26c950553389d8e13c63629a5a0d43446f66ba094f79d0e7649ec6b688",
       "variant": "V1LF-Ae"
     }
   ],
@@ -15559,5 +15559,5 @@
   },
   "schema_sha256": "6752ab951979e3e6e0a4343bde07958a44f9b08c83544133ad977e61993c945a",
   "schema_version": 1,
-  "source_revision": "025bc20966f348e2184fd620eedeffd45cf32c3575a52e4056913facb7f92820"
+  "source_revision": "3f06b3794043dfa151df22ea8fe4747d3fd2eff80eb0bd57c76fc98367525a9f"
 }

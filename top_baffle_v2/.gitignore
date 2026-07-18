@@ -3,6 +3,10 @@
 
 # Makefile build stamps
 */stl/.stamp
+*/.stamp_*
+*/.v1lf_stage/
+.manifold-stamps/
+.check-stamps/
 
 # Local metadata, resumable logs, and verified incoming remote artifacts
 .remote-cad/

@@ -56,12 +56,22 @@ def apply_v1_base_magnets(part):
         name_prefix="v1")
 
 
-def v1_solid():
+def v1_magnet_free_solid():
+    """Return the released V1 body before its four captive base cavities.
+
+    V1LF reuses only the rear-tapered acoustic crescent and has its own M3
+    T--UM half-laps.  Keeping this explicit source authority prevents those
+    downstream crops from inheriting sealed, functionless V1 magnet voids.
+    """
     part = baffle_solid(OUTLINE_B2, TWEETER_DROP_MM,
                         crescent_rear_mm=REAR_MM)
     for c in field_cutters():
         part -= c
-    return apply_v1_base_magnets(part)
+    return part
+
+
+def v1_solid():
+    return apply_v1_base_magnets(v1_magnet_free_solid())
 
 
 def gen_step():

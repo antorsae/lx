@@ -12,8 +12,8 @@ This is a conservative closed-form net-section screen, not FEA or physical quali
 
 ## Bound production geometry
 
-- `floor_stand/top_baffle_nd25fw4_v1lf_split.step` — SHA-256 `477e4800539a3cc0d385b9b81af116fc62d27119d08d3636c87b8cd4fa88949c`
-- `floor_stand/top_baffle_nd25fw4_v1lf_lm_split.step` — SHA-256 `b44fabab541b6b7e6fc9a48bedea16f10648dc1360df0873f7e839ebb58afc72`
+- `floor_stand/top_baffle_nd25fw4_v1lf_split.step` — SHA-256 `af0001e27d02b6a915cd2748908ac97bfe47870a6e34853bd8323254ad107ae9`
+- `floor_stand/top_baffle_nd25fw4_v1lf_lm_split.step` — SHA-256 `62c4cf81d3a4570c69141653d3366d9a807be5e8c0b676dd3aefbac1677df840`
 
 ## Shoulder-to-LM-ring diagnostic
 

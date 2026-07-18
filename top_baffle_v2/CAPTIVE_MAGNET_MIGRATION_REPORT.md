@@ -295,7 +295,7 @@ manifest are authoritative.
   envelope remain a physical-fit check; the current 12 mm proxy pull equals
   the provisional exposed-tab length and has no positive overtravel margin.
 - The optional V1LF keyed LM split still requires a process-matched physical
-  coupon/full print proving the thin socket walls, tongue/socket seating,
+  coupon/full print proving the thin socket walls, two-pin/socket seating,
   coplanar front faces, route-seam continuity, and repeated assembly fit.
 - The canonical V1LF LM monoliths cannot be printed on a P2S in the mandatory
   orientation. Use the exact keyed alternative or a verified larger-format

@@ -696,6 +696,7 @@ def render_v1lf():
     )
     from top_baffle_nd25fw4_v1lf import (
         CORE_REAR_Z,
+        JUNCTION_WEB_Z,
         JOINT_EAR_X,
         JOINT_EAR_Y,
         LM_CORE_R,
@@ -705,6 +706,7 @@ def render_v1lf():
         TWEETER_JOINT_X,
         TWEETER_JOINT_Y,
         UM_CORE_R,
+        junction_closure_polygons,
         joint_ear_polygon,
         side_magnet_sites,
         tweeter_joint_polygon,
@@ -795,6 +797,12 @@ def render_v1lf():
         "t": STYLE["ts"][0],
     }
     magnet_sites = tuple(side_magnet_sites())
+    closure_plans = junction_closure_polygons()
+    closure_colors = {
+        "lm": "#6f9fba",
+        "um": "#8eb8c9",
+        "tweeter": "#b695cc",
+    }
     if (sum(site["driver"] == "lm" for site in magnet_sites) != 4
             or sum(site["driver"] == "um" for site in magnet_sites) != 2
             or any(not site["magnet_fully_buried"]
@@ -882,6 +890,37 @@ def render_v1lf():
                     color="tab:orange", lw=2.4, marker="o", ms=3.2,
                     solid_capstyle="butt", zorder=10)
 
+    def draw_closure_projection(ax, axes):
+        """Show the full-depth owned webs in true YZ/XZ projection."""
+        for junction in ("lm_um", "t_um"):
+            for owner in (("lm", "um") if junction == "lm_um"
+                          else ("um", "tweeter")):
+                plan = closure_plans[junction][owner]
+                if plan.is_empty:
+                    continue
+                color = closure_colors[owner]
+                pieces = ((plan,) if plan.geom_type == "Polygon"
+                          else tuple(plan.geoms))
+                for piece in pieces:
+                    min_x, min_y, max_x, max_y = piece.bounds
+                    if axes == (2, 1):
+                        rect = plt.Rectangle(
+                            (JUNCTION_WEB_Z[0], min_y),
+                            JUNCTION_WEB_Z[1] - JUNCTION_WEB_Z[0],
+                            max_y - min_y,
+                            fc=color, ec=color, lw=0.65, alpha=0.24,
+                            hatch="..", zorder=2.4)
+                    elif axes == (0, 2):
+                        rect = plt.Rectangle(
+                            (min_x, JUNCTION_WEB_Z[0]),
+                            max_x - min_x,
+                            JUNCTION_WEB_Z[1] - JUNCTION_WEB_Z[0],
+                            fc=color, ec=color, lw=0.65, alpha=0.24,
+                            hatch="..", zorder=2.4)
+                    else:
+                        raise ValueError(axes)
+                    ax.add_patch(rect)
+
     def draw_core_front(ax):
         for (cx, cy, cut_d), outer, recess, color in (
                 (L22_CUTOUT, LM_CORE_R, LM_RECESS_R, "#b8bec7"),
@@ -906,6 +945,23 @@ def render_v1lf():
             ax.add_patch(plt.Circle(
                 (px, py), UM_PILOT_D_MM / 2.0, fc="white",
                 ec="tab:orange", lw=0.75, zorder=5))
+
+        # Full-depth plan owners close the former red cusp islands.  Their
+        # fine white boundaries are the complementary 0.05-mm assembly
+        # seams, not shallow skins or rear cavities.
+        for junction in ("lm_um", "t_um"):
+            for owner in (("lm", "um") if junction == "lm_um"
+                          else ("um", "tweeter")):
+                plan = closure_plans[junction][owner]
+                pieces = ((plan,) if plan.geom_type == "Polygon"
+                          else tuple(plan.geoms))
+                for poly in pieces:
+                    if poly.is_empty:
+                        continue
+                    ex, ey = poly.exterior.xy
+                    ax.fill(
+                        ex, ey, fc=closure_colors[owner], ec="white",
+                        lw=0.42, alpha=0.90, zorder=3.2)
         for x in JOINT_EAR_X:
             for owner, color in (("lm", "#858d98"), ("um", "#a0a7b1")):
                 ear = joint_ear_polygon(owner, x)
@@ -1046,6 +1102,12 @@ def render_v1lf():
         (route[0, 0], route[0, 1]), (-130, 116),
         fontsize=7.4, color="#31485f",
         arrowprops=dict(arrowstyle="-", color="#31485f"))
+    ax_front.annotate(
+        "full-depth plan-split closure webs\n"
+        "only central T free-cable mouth remains open",
+        (0.0, 418.0), (-126, 438),
+        fontsize=7.2, color=closure_colors["um"],
+        arrowprops=dict(arrowstyle="-", color=closure_colors["um"]))
     ax_front.set_xlim(-140, 140)
     ax_front.set_ylim(-7, 462)
     ax_front.set_aspect("equal", adjustable="box")
@@ -1161,6 +1223,7 @@ def render_v1lf():
         lm_lead[:, 2], lm_lead[:, 1],
         color=route_colors["lm"], lw=2.0,
         solid_capstyle="round", zorder=8)
+    draw_closure_projection(ax_side, (2, 1))
     draw_magnet_projection(ax_side, (2, 1))
     ax_side.annotate(
         "2x lower LM captive cavities\nD5.20 section; axes +/-X",
@@ -1256,6 +1319,7 @@ def render_v1lf():
         lm_lead[:, 0], lm_lead[:, 2],
         color=route_colors["lm"], lw=2.0,
         solid_capstyle="round", zorder=8)
+    draw_closure_projection(ax_top, (0, 2))
     draw_magnet_projection(ax_top, (0, 2))
     ax_top.axhline(0.0, color="0.20", lw=0.7, ls=":", zorder=0)
     ax_top.set_xlim(-120, 120)
@@ -1282,6 +1346,8 @@ def render_v1lf():
         Line2D([0], [0], color=support_color, lw=7, alpha=0.55,
                label=("integral LM-owned floor body"
                       if STAND_FOOT else "fused no-floor bridge web")),
+        Line2D([0], [0], color=closure_colors["um"], lw=7, alpha=0.75,
+               label="full-depth plan-split LM–UM / T–UM closure webs"),
         Line2D([0], [0], color="tab:orange", lw=3, marker="o",
                label="buried D5.20 x 2.10 cavities; lower LM at base"),
     ]

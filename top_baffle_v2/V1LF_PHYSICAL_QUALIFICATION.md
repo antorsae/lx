@@ -34,20 +34,26 @@ independently**. Authorization of one form does not authorize the other, and
 or print-form decision. A state remains unauthorized until both print-form
 decisions pass. The keyed form is cut at world `Y=172.481 mm` with a zero-gap
 planar butt; neither keyed half may be combined with the monolithic carrier in
-an installed assembly. One concealed right-hand straight rounded tongue/blind-socket
-registration pair is carved wholly inside the existing R110.6..R113 LM lip.
-The tongue is 0.8 mm wide and engages 3.5 mm along its tangential insertion
-axis, approximately 75.23° from +X. It adds no external protrusion,
-envelope growth, extra screw, or standalone retention/load credit. Its
-installed load path exists only after the LM driver flange and all
-normal LM fasteners splice the seam.
+an installed assembly. The bottom owns two symmetric concealed Ø0.80
+cylindrical pins at `x=±108.243 mm`, `z=14.30 mm`; both point world +Y normal
+to the seam, have 0.50 mm root overlap, and engage the top by 0.80 mm. The top
+owns 1.05 mm-deep blind sockets with 0.12 mm radial and 0.25 mm end clearance:
+right is round Ø1.04, while left is X-relieved to 1.16 × 1.04 mm. This
+round-plus-relieved constraint accepts ±0.30 mm relative pitch error across
+the 216.486 mm spacing instead of binding like two tight round sockets. It adds
+no external protrusion, envelope growth, extra screw, or standalone
+retention/load credit. Its installed load path exists only after the LM driver
+flange and all normal LM fasteners splice the seam.
 
-The keyed socket's current CAD contract retains at least **0.65 mm inner wall**
-and **0.60 mm outer wall**. Both are below the usual 0.8 mm printed-wall
-convention, so positive CAD wall checks are not release evidence by themselves.
-The candidate slicer preview must show continuous intended extrusion paths at
-both walls, and a state/process-matched printed tongue/socket coupon must pass
-before the keyed form can be authorized.
+The keyed sockets' current CAD contract retains at least **0.564 mm inner and
+outer wall at the round socket** and **0.506 mm inner and outer wall at the
+X-relieved socket**, with at least **0.587 mm driver-flange clearance**. Each
+horizontal pin is only two nominal 0.4 mm nozzle widths, so positive CAD wall
+checks are not release evidence by themselves. The candidate slicer preview
+must show both complete pin toolpaths, both open blind mouths, and continuous
+intended extrusion paths at all four minimum socket walls. A state/process-
+matched two-pin/socket coupon must pass before the keyed form can be
+authorized.
 
 Every released acoustic candidate prints front-face-down, whether or not it
 contains a magnet. The authoritative pause
@@ -136,11 +142,12 @@ than recording only “looks good.”
 | Coupon 12: state-specific closed bore bump, full solid roof-to-ordinary-blind-bore saddle, and cable passage | PENDING | PENDING |
 | Monolithic LM form physical fit: actual U22 seat/flange, all normal LM fasteners, insert access, front-datum seating and surrounding-clearance inspection on the printed monolithic carrier | PENDING | PENDING |
 | Monolithic LM form cable check: actual UM/T cables fished through the intact buried lumens, free LM lead placed, cable service repeated without snag or insulation damage, and continuity/insulation verified | PENDING | PENDING |
-| Keyed LM form physical fit: both printed halves fully seated front-face-down, actual U22 flange and all normal LM fasteners installed, front-datum coplanarity and post-fit crack/damage inspection | PENDING | PENDING |
-| Keyed LM dedicated tongue/socket coupon: candidate material/process, assembly force, full seating of the straight rounded 0.8 mm tongue through its 3.5 mm engagement in the blind right-hand socket, socket clearance and straight tangential insertion along the ~75.23° axis | PENDING | PENDING |
-| Keyed LM socket thin-wall acceptance: CAD minima confirmed at ≥0.65 mm inner and ≥0.60 mm outer, candidate slicer preview shows continuous intended extrusion paths at both sub-0.8 mm walls, and the state/process-matched printed coupon has no gaps, delamination or breakage | PENDING | PENDING |
+| Keyed LM form physical fit: both printed halves front-face-down on one flat datum; top translated straight along world -Y so the two pins enter together without flex/twist; actual U22 flange and all normal LM fasteners installed; full seating, front-datum coplanarity and post-fit crack/damage inspection | PENDING | PENDING |
+| Keyed LM dedicated two-pin/socket coupon: candidate material/process; two symmetric Ø0.80 +Y pins, 0.80 mm engagement; right Ø1.04 round and left 1.16 × 1.04 X-relieved blind sockets; assembly force; simultaneous straight -Y insertion; no pin used as a hinge | PENDING | PENDING |
+| Keyed LM pin/socket slicer and thin-wall acceptance: CAD minima confirmed at ≥0.564 mm round and ≥0.506 mm relieved; candidate preview shows both complete two-nozzle-width horizontal pins, both blind mouths and continuous intended paths at all minimum walls; state/process-matched coupon has no gaps, droop, delamination or breakage | PENDING | PENDING |
 | Keyed LM seam metrology: world Y=172.481 mm, closed zero-gap planar butt, no volumetric half overlap, both front faces registered on one flat datum, and continuous UM/T route seams | PENDING | PENDING |
 | Keyed LM physical UM/T cable pull-through across both preserved seam lumens without snag, insulation damage or slicer-support residue, followed by continuity/insulation verification | PENDING | PENDING |
+| Assembled LM–UM and T–UM closure-web inspection: all owners front-face-down on one flat datum; z=18.3 faces coplanar; solid tangent-blended webs seated across the 0.05 mm plan seams; each anti-void lens retains a continuous 0.45 mm fusion land and a visible Classic wall path; no triangular/cusp opening, bounded front-plane void island, thin front skin, rear hollow, or sub-resolution detached shard; only the declared T cable mouth and functional fastener/interface/route clearances remain | PENDING | PENDING |
 | Terminal carrier radius and rear Z | PENDING | PENDING |
 | Terminal pitch, tab width/thickness and exposed length | PENDING | PENDING |
 | Polarity order | PENDING | PENDING |
@@ -200,7 +207,7 @@ product-specific official TDS and fails the vertical-5g threshold; it is not
 accepted by this screen. The section result is valid only with a **100% local-
 solid modifier through the complete stem/root**; sparse infill receives no
 structural credit. These numbers do not complete any row below. Magnets and
-the concealed keyed-split registration feature receive 0 N.
+both concealed keyed-split pins/sockets receive 0 N.
 
 For every selected floor material/process, add a **2× service load for 24 h
 at 35 °C** gate: reject crack, whitening, insert movement, or unloaded
@@ -211,12 +218,12 @@ thresholds are only 0.139g lateral, 0.348g rearward, and 0.384g forward. A
 positively attached anti-tip tether or anchor is mandatory and must remain
 installed throughout floor-state testing and service.
 
-For the optional LM split, analytical tongue/socket fit and containment checks
-are registration checks only and the monolithic carrier calculation is not
-transferable release evidence.
+For the optional LM split, analytical two-pin/socket fit and containment
+checks are registration checks only and the monolithic carrier calculation is
+not transferable release evidence.
 Perform the complete proof with the LM driver or an equivalent flange using
-all normal LM fasteners across the seam. Give the concealed pair no standalone
-retention or load credit and keep the flange splice installed through
+all normal LM fasteners across the seam. Give both concealed pins/sockets no
+standalone retention or load credit and keep the flange splice installed through
 sustained 1g, transient 3g and transient 5g loading.
 
 | Required evidence | `floor_stand` result / evidence | `no_floor_stand` result / evidence |
@@ -224,7 +231,7 @@ sustained 1g, transient 3g and transient 5g loading.
 | Fixture drawing/ID, load-cell ID/calibration and evidence-file hashes | PENDING | PENDING |
 | Actual load application coordinates and direction | PENDING | PENDING |
 | Pre-test temperature, dimensions, insert positions and fastener torques | PENDING | PENDING |
-| Keyed LM dedicated proof setup: driver flange/all normal LM fasteners installed across the seam, tongue fully seated, front faces coplanar, and tongue/socket standalone retention/load credit recorded as 0 N | PENDING | PENDING |
+| Keyed LM dedicated proof setup: driver flange/all normal LM fasteners installed across the seam, both pins fully seated in their identified right-round/left-relieved sockets, front faces coplanar, and pin/socket standalone retention/load credit recorded as 0 N | PENDING | PENDING |
 | 1g: load, 24 h duration, temperature and maximum deflection | PENDING | PENDING |
 | 1g: unloaded residual deflection, insert movement, cracks and post-test torque | PENDING | PENDING |
 | 3g: load, 60 s duration, temperature and maximum deflection | PENDING | PENDING |
@@ -234,9 +241,9 @@ sustained 1g, transient 3g and transient 5g loading.
 | Floor 2× service load: 24 h at 35 °C, maximum deflection, crack/whitening inspection, unloaded residual ≤0.5 mm or ≤10% | PENDING | N/A — no integral stand in this state |
 | Floor 1.5× service load: ≥168 h creep history at worst credible room temperature, residual set and damage inspection | PENDING | N/A — no integral stand in this state |
 | Positively attached anti-tip tether/anchor installed, proof-loaded, and retained during all tests | PENDING | N/A — no integral stand in this state |
-| Keyed LM dedicated driver-installed 1g proof: 24 h load/time history, temperature, maximum and residual deflection, fastener/insert movement, seam/socket damage and post-test torque | PENDING | PENDING |
-| Keyed LM dedicated driver-installed 3g proof: 60 s load/time history, temperature, maximum and residual deflection, fastener/insert movement, seam/socket damage and post-test torque | PENDING | PENDING |
-| Keyed LM dedicated driver-installed 5g proof: 10 s load/time history, temperature, maximum and residual deflection, fastener/insert movement, seam/socket damage and post-test torque | PENDING | PENDING |
+| Keyed LM dedicated driver-installed 1g proof: 24 h load/time history, temperature, maximum and residual deflection, fastener/insert movement, seam/pin/socket damage and post-test torque | PENDING | PENDING |
+| Keyed LM dedicated driver-installed 3g proof: 60 s load/time history, temperature, maximum and residual deflection, fastener/insert movement, seam/pin/socket damage and post-test torque | PENDING | PENDING |
+| Keyed LM dedicated driver-installed 5g proof: 10 s load/time history, temperature, maximum and residual deflection, fastener/insert movement, seam/pin/socket damage and post-test torque | PENDING | PENDING |
 | Keyed LM post-proof cable pull-through, service, continuity and insulation repeated successfully with the driver flange splice installed | PENDING | PENDING |
 | Upper LM-to-UM and UM-to-tweeter joint proof at the documented 0.85 kg case | PENDING | PENDING |
 | Integral W64 stem/foot, R12 root, three buried lanes, service cavity and NL8 panel remain sound | PENDING | N/A — no integral stand in this state |
@@ -252,7 +259,7 @@ sustained 1g, transient 3g and transient 5g loading.
 |---|---|---|
 | Dimension and coupon report | PENDING | PENDING |
 | Monolithic LM physical fit and cable-service evidence | PENDING | PENDING |
-| Keyed LM physical fit, tongue/socket coupon, socket-wall slicer preview, full-seat/coplanarity, route-seam metrology and cable-pull-through evidence | PENDING | PENDING |
+| Keyed LM physical fit, two-pin/socket coupon, pin/socket-wall slicer preview, full-seat/coplanarity, route-seam metrology and cable-pull-through evidence | PENDING | PENDING |
 | Keyed LM dedicated driver-installed 1g/3g/5g fixture, load-time history and post-proof cable-service evidence | PENDING | PENDING |
 | Terminal service photographs/video | PENDING | PENDING |
 | External cable-retention installation/load/removal evidence | PENDING | PENDING |

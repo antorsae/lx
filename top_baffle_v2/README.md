@@ -22,7 +22,7 @@ deliberately removes the full outline and retains only two collars.
 | `top_baffle_nd25fw4_cables.py` | Proud-family **R6P** subtractive routing and routing-profile dispatch: standard B2/C7/V0/V1 UM tail plus the keyed V1L-only 283-degree alternate |
 | `top_baffle_nd25fw4_v1l.py` / `_split.py` | Thin R6P bottom+mids; its alternate UM tail and rear-face exit remain wholly in `piece_mid_right`, so the shared top/vase is unchanged |
 | `top_baffle_nd25fw4_v1lf.py` / `_split.py` | Extreme V1LF core: LM/UM flush-driver collars, rounded LM-to-UM M3 half-laps, six pause-and-bury captive magnet stations (two upper LM ring-radial, two lower LM base-side, and two UM ring-radial), buried UM/T route spans, and free rear cable continuations. Floor and no-floor share one exact lower-LM front/wing-contact outline from Y=0 through the broad ring shoulder; only rear/deep structure differs (integral W64 stand/NL8 panel versus shallow four-insert bridge). |
-| `top_baffle_nd25fw4_v1lf_lm_split.py` | Optional, mutually exclusive two-print form of the finalized V1LF LM carrier: exact zero-gap world-Y butt seam and one concealed right-hand straight rounded tongue/blind-socket registration pair carved wholly inside the existing LM lip. The 0.8 mm tongue engages 3.5 mm along its tangential insertion axis (~75.23° from +X). It adds no external protrusion, extra fastener, envelope growth, or standalone retention/load credit; the monolithic LM remains canonical. |
+| `top_baffle_nd25fw4_v1lf_lm_split.py` | Optional, mutually exclusive two-print form of the finalized V1LF LM carrier: exact zero-gap world-Y butt seam plus two symmetric concealed Ø0.80 cylindrical pins normal to the seam (world +Y). The pins engage 0.80 mm; the right blind socket is round Ø1.04 and the left is X-relieved to 1.16 × 1.04 mm so the 216.486 mm pitch cannot bind like two tight round fits. Both sockets retain 0.12 mm radial and 0.25 mm end clearance, at least 0.506 mm final radial wall, and zero external protrusion, extra fastener, envelope growth, or standalone retention/load credit; the monolithic LM remains canonical. |
 | `top_baffle_nd25fw4_v1lf_route.py` | Exact R6F printed-owner segments and physical cable continuations: 0.8 mm minimum walls and 0.85 mm seat roof on the surviving buried UM/T spans, full-width longitudinal burial webs plus solid roof-to-bore saddles at every named insert-bypass Z bump, free UM cable behind the UM carrier, free T cable behind the tweeter crescent, and the 82.67° physical crown crossing |
 | `top_baffle_nd25fw4_v1lf_bridge.py` | Universal lower-LM front profile (filled exterior union of the historical floor stem and no-floor bridge), immutable no-floor four-hole datum, fused 62 mm insert core with soft cubic shoulders and two centered rear cable entries at the deepest existing LM-pad depth (no separate keel or rear ribs), hardware proxies, and an opening-aware biaxial 4 kg sustained-1g/3g/5g structural screen |
 | `top_baffle_nd25fw4_v1lf_floor.py` / `_floor_strength.py` | Floor-only integral W64 full-depth stem/foot, R12 root, rear NL8 panel/service cavity and three buried cable continuations; closed-form five-material net-section screen. This is part of the LM carrier, not an add-on, and the analysis is not FEA or physical qualification. |
@@ -68,19 +68,83 @@ those exact files. `make clean` mirrors the local target and preserves
 `review/` snapshots.
 
 The remote job has a hard 512 GiB aggregate systemd cgroup limit and a 64 GiB
-host-free floor. It uses four parallel guarded recipe slots by default, with
-the remaining 448 GiB divided equally (112 GiB each). Set
+host-free floor. It uses sixteen parallel guarded recipe slots by default,
+with the remaining 448 GiB divided equally (28 GiB each). Set
 `LX_CAD_REMOTE_JOBS=N` to tune the slot count; the aggregate cap cannot be
 relaxed. `LX_CAD_REMOTE_HOST` and `LX_CAD_REMOTE_ROOT` override `osado.lan`
 and `~/temp/lx-cad` respectively.
 
+Successful remote builds are incremental across isolated jobs.  After an
+artifact archive has passed hash verification, local promoted-root QA and the
+atomic local promotion transaction, its complete remote worktree is published
+as a verified Make-cache seed keyed by both the environment lock identity and
+the measured Python/runtime attestation.  A
+fresh job clones that seed (using a filesystem reflink when available), checks
+every cached byte, mode and mtime, then overlays the exact immutable source
+snapshot.  Unchanged source mtimes are retained; changed/new sources are made
+newer than every cached target; a removed source rejects the seed and leaves
+the job's source-only cold tree intact.  GNU Make remains the sole dependency
+engine—checksums only establish a trustworthy input tree.
+
+The first build for an environment is cold.  Later no-change builds reuse
+generated CAD and the remote-only selector `.ok` targets; a source edit
+invalidates only the Make prerequisite groups it reaches.  V1LF-only carrier,
+attachment, bridge and split edits no longer invalidate legacy-family CAD.
+Focused jobs return generated files whose bytes changed plus the explicit
+public result of the requested target.  In particular, `floor_v1lf` and
+`no_floor_v1lf` always return every file named by their hash-bound release
+manifest, `common` always returns its STEP, and `wing_concepts` always returns
+its complete PNG set; a warm-cache Make no-op therefore also reconstructs a
+fresh or locally deleted output tree.  Complete targets return their declared
+output roots in full and always include their top-level PNG/STEP/catalog
+outputs.  Cache corruption is deleted and falls back to the source-only cold
+snapshot.  For the exact same immutable source hash, a newer successful
+focused job publishes a coverage union: its own files, modes and mtimes win,
+while files absent from it are retained from the previous verified seed.  A
+narrow concurrent job therefore cannot evict richer CAD or check coverage.
+Complete-root targets remain authoritative for their roots, `clean` never
+unions, and source-hash changes replace rather than combine cache worktrees, so
+represented deletions are not resurrected.  Any source-file deletion also
+forces a true cold build, because generic Make prerequisites cannot prove which
+inherited generated files belonged only to that source.  A focused job that
+removes an inherited generated artifact fails closed instead of publishing an
+unrepresentable per-file deletion, and cache publication recomputes the exact
+artifact delta.  Failed, canceled, unfetched or locally rejected jobs never
+publish a cache, and completion ordering prevents a late fetch from replacing
+a newer seed.  This does not change job IDs, snapshot immutability,
+status/resume/cancel behavior, artifact hashing or promotion rollback
+semantics.
+
+After verified download, promoted STL topology is checked again locally. That
+defense-in-depth pass uses eight Make-jobserver workers inside the existing
+single 8 GiB aggregate promotion guard. This private mesh-only path cannot run
+CAD/OCC targets; ordinary `LX_CAD_EXECUTION=local` remains strictly serial.
+
 The osado profile also removes workstation-only computational fragmentation:
-the clearance and R6F suites fan out across the selected guarded slots; R6F
-uses direct final-LM construction plus complete shell/cable/service witnesses;
+the clearance and R6F selectors are ordinary Make prerequisites, so the same
+jobserver bounds checks and artifact writers together. R6F imports LM, UM and
+tweeter BREPs only from each state's Make-owned, hash-validated native stage;
+its private cache contains only test-only shell witnesses absent from that
+stage, so assertion-only edits cannot rebuild carriers. R6F then evaluates
+complete shell/cable/service witnesses. The exact assembled-junction sweep
+still checks every Bambu 0.20/0.16-mm layer in both stand states, but Make
+owns sixteen complementary state/junction/layer-shard stamps so those
+expensive BREP sections keep the same sixteen guarded slots full instead of
+running serially;
 V1L builds its shared split geometry once; and each state's V1L/V1LF STLs are
 meshed in one guarded process. Physical print-bed splits and mating interfaces
 remain unchanged. Explicit local mode keeps the segmented, one-heavy-part-at-
 a-time implementations needed by the 8 GiB workstation process-tree cap.
+
+Strict STL topology QA is likewise one GNU Make stamp target per mesh, so
+osado checks independent meshes concurrently through that same jobserver.
+Each state's sweep starts as soon as that state's last artifact lands, so its
+47 floor or 45 no-floor mesh checks can overlap remaining work in the other
+state. The final combined node does metadata only: it still validates exact
+inventories, print sidecars, review artifacts, manifests, and cross-state
+differences every time without repeating any of the 92 state mesh checks.
+Focused `floor_v1lf`/`no_floor_v1lf` sweeps expand only `*v1lf*.stl` Make
+nodes, so verified legacy meshes inherited by a warm cache are not rechecked.
 
 Before launch, the executor measures and hashes the actual Linux x86_64
 Python ABI, interpreter binary, uv version and complete installed-package
@@ -673,6 +737,16 @@ mandatory geometry is only:
 - two compact direct UM-to-tweeter half-lap ears at **x=±24,
   y=421.5**, with rear-driven M3 screws and blind crescent inserts so
   no fastener breaks the acoustic front; and
+- complementary, tangent-blended **full-depth** closure webs at both
+  LM–UM and T–UM junctions. LM owns the lower LM–UM web, UM owns the upper
+  LM–UM and lower T–UM webs, and the tweeter crescent owns the upper T–UM
+  webs. Every owner spans z=6.8..18.3 and overlaps its own ring/crescent by
+  0.40 mm; the local anti-void lens fills retain a separate 0.45 mm
+  Classic-wall fusion land. Sub-resolution Boolean shards are discarded,
+  while the independently printed owners retain the normal 0.05 mm plan
+  seam. These are solid members behind the common z=18.3 front plane,
+  not front skins over cavities; the only non-functional opening between the
+  upper rings is the central ±6 mm T free-cable mouth; and
 - an Ø8.2 UM passage buried only in the LM carrier and an Ø6.0 T passage
   buried in the LM and UM carriers, each with 0.8 mm minimum walls and a
   0.85 mm seat roof on its printed span. The UM cable exits the LM passage
@@ -690,6 +764,16 @@ insert-pad buttons, both pilot patterns, and flush seats remain; the old
 keeps only a 0.85 mm two-extrusion membrane. Narrow outer lips, local
 blind-insert floors/bosses, calculated spokes, surviving buried-route covers, and
 the explicit mechanical interfaces are the retained material.
+The guarded closure acceptance clips the actual independently printable
+LM/UM/crescent BREPs through fixed physical windows, not a window generated
+from the closure target. It checks the actual front-face-down Bambu schedule
+(0.20 mm first layer, then 0.16 mm layers) plus both sides of
+each half-lap transition against frozen conservative front silhouettes,
+rejects exact 3-D owner overlap and proud material above z=18.3, and rejects
+any bounded residual void component beyond the declared fit seams, fastener
+interfaces, route lumen, and T cable mouth. Thus a self-shrunk target, an open
+cusp connected to a driver aperture, or a thin front skin over a rear cavity
+cannot satisfy the release gate.
 
 The canonical LM carrier remains one monolithic large-format release part.
 Its mandatory front-face-down footprint is approximately 235.61 x 313.35 mm
@@ -699,24 +783,33 @@ printed as the mutually exclusive pair
 `lx521_top_v1lf_optional_lm_keyed_2of2_top.stl`; do not install either half
 with the monolithic LM. The pair is cut from the finalized state-specific LM
 at world **Y=172.481 mm** with an exact **zero-gap planar butt**, so both buried
-route lumens cross the seam without being redrawn. One concealed right-hand pair is
-carved wholly inside the existing R110.6..R113 lip: the bottom owns one
-straight rounded 0.8 mm tongue and the top owns its blind socket. The tongue
-engages 3.5 mm along a tangential insertion axis approximately 75.23° from
-+X. It creates no external protrusion, envelope growth, extra screw, or
+route lumens cross the seam without being redrawn. The bottom owns two
+symmetric Ø0.80 cylindrical pins at `x=±108.243`, `z=14.30`; each points world
++Y normal to the seam, has 0.50 mm root overlap, and engages the top by
+0.80 mm. The top owns two 1.05 mm-deep blind sockets with 0.12 mm radial and
+0.25 mm end clearance: right is round Ø1.04, while left is X-relieved to
+1.16 × 1.04 mm. This round-plus-relieved constraint tolerates ±0.30 mm
+relative pitch error across the 216.486 mm spacing instead of binding like
+two tight round sockets. Calculated final radial walls are at least 0.564 mm
+at the round socket and 0.506 mm at the relieved socket, without entering the
+driver recess or growing the envelope. The pins create no extra screw or
 standalone retention/load credit.
-Assemble the two front faces down on one flat datum and confirm full tongue
-seating, coplanarity, and route-seam continuity, then install the LM driver:
+Print both halves front-face-down. Assemble them front-face-down on one flat
+datum, bring the top toward the bottom along world -Y so both pins enter
+together without flexing, and confirm full seating, coplanarity, and
+route-seam continuity. Then install the LM driver:
 its flange and all normal LM fasteners are the installed structural splice
 across the seam. Both keyed halves now print front-face-down with only
 in-plane bed rotation. The former Z26°/Z45° and floor-bottom X=−90° footprint
 figures are obsolete because those out-of-plane orientations cannot support
 the captive-magnet pause. Revalidate the generated front-down footprint on the
-selected printer. This option is still **PENDING** until
-tongue/socket fit, full-seat
-and coplanarity evidence, route-seam inspection, cable pull-through, and driver-installed
-1g/3g/5g proof are recorded; monolithic-LM evidence does not qualify the split
-form.
+selected printer. Each horizontal Ø0.80 pin is only two nominal 0.4 mm nozzle
+widths: release requires a process-matched coupon and sliced preview proving
+both complete pin paths, both blind mouths, and continuous minimum-wall paths.
+This option is still **PENDING** until two-pin/socket fit, full-seat and
+coplanarity evidence, route-seam inspection, cable pull-through, and
+driver-installed 1g/3g/5g proof are recorded; monolithic-LM evidence does not
+qualify the split form.
 
 The captive-magnet release audit does not create monolith G-code or a fake
 monolith pause. Instead, every monolith station is source-contract matched to
@@ -798,8 +891,8 @@ The integral floor stem has its own conservative closed-form
 rectangle-minus-lumens screen. It is explicitly **not FEA, certification, or
 physical release evidence**. The 4.0 kg load model uses `y=230 mm`, a 70 mm
 rear eccentricity, and 1g/3g/5g load cases. The net W64 × 18.3 root deducts
-the complete Ø9/Ø8.2/Ø6 lane sections; magnets and the optional concealed
-split key receive 0 N credit. Current project-allowable results are:
+the complete Ø9/Ø8.2/Ø6 lane sections; magnets and both optional concealed
+split pins/sockets receive 0 N credit. Current project-allowable results are:
 
 | Material | Vertical 1g/3g/5g SF | Anchored lateral 1g/3g/5g SF | 1g diagnostic deflection | Result |
 |---|---:|---:|---:|---|
@@ -956,10 +1049,12 @@ scarf mate is also excluded because no printable mate has been released.
 - If the optional V1LF LM keyed split is selected instead, print both halves
   front-face-down with in-plane rotation only. Recheck each generated
   footprint against the actual printer; this is the required P2S form. It replaces,
-  rather than accompanies, the monolithic LM. The concealed tongue/socket
-  remains
-  inside the existing lip, so it creates no external protrusion or envelope
-  growth.
+  rather than accompanies, the monolithic LM. Its two concealed Ø0.80 +Y
+  pins and right-round/left-X-relieved blind sockets remain inside the
+  existing lip, so they create no external protrusion or envelope growth.
+  Preview the two-nozzle-width horizontal pins and ≥0.506 mm socket walls,
+  then qualify their simultaneous straight-pull fit with a process-matched
+  coupon.
 - Ac and Ae wing sides each print as lower, middle, and UM segments cut from
   the finalized monolith. The lower segment owns the 7/9/4 mm male dovetail
   into the middle segment; the middle segment owns the 7/8.5/4 mm male
@@ -984,11 +1079,13 @@ measured withdrawal before installing the MU.
 **R6F:** first prove the real MU terminal/Faston fit with coupon 9 and
 the review STEP. If the optional LM print split is selected, use both halves
 and omit the monolithic LM. With both front faces down on one flat datum, seat
-the bottom half's single concealed right-hand straight rounded tongue fully in
-the top half's blind socket; verify full seating, coplanarity, the closed route
-seam, and unobstructed UM/T cable pull-through. Hold that registration while lifting the
-LM for driver fit-up. The tongue/socket has no standalone retention or load
-credit; only the installed LM flange and its normal fasteners splice the seam.
+the bottom half's two symmetric Ø0.80 +Y pins simultaneously in the top
+half's right round and left X-relieved blind sockets by bringing the top along
+world -Y without flexing or twisting. Verify full seating, coplanarity, the
+closed route seam, and unobstructed UM/T cable pull-through. Hold that
+registration while lifting the LM for driver fit-up. The pins/sockets have no
+standalone retention or load credit; only the installed LM flange and its
+normal fasteners splice the seam.
 Bolt the two carriers together at the rounded x=±32.0,
 y=315.770 half-lap ears on a flat front-face datum and verify the
 165.100 mm axis spacing. Place the LM cable in its short free span, dry-fish

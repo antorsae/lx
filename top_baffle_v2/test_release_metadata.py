@@ -15,6 +15,7 @@ import types
 from unittest import mock
 
 import write_v1lf_release_manifest as release_manifest
+import check_manifold as manifold_checker
 from check_manifold import (
     EXPECTED_NONPOLAR_STATE_STL_COUNT,
     EXPECTED_WING_STL_COUNT,
@@ -587,9 +588,178 @@ def test_check_waits_for_both_v1lf_native_stages() -> None:
     assert "validate_v1lf_stages" in targets["check_v1lf"]
 
 
+def test_r6f_carriers_reuse_make_stage_across_assertion_edits() -> None:
+    """R6F assertions must never own a second carrier build/cache key.
+
+    The Make prerequisites already publish source/runtime/hash-validated
+    carrier BREPs.  Keep assertion code outside carrier identity entirely:
+    an assertion-only edit may invalidate test-only shell chunks, but cannot
+    rebuild LM, UM, or tweeter geometry.
+    """
+    module_name = "_r6f_stage_reuse_static_test"
+    path = ROOT / "test_v1lf_r6f.py"
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    assert spec is not None and spec.loader is not None
+    r6f = importlib.util.module_from_spec(spec)
+    with mock.patch.dict(sys.modules, {module_name: r6f}):
+        spec.loader.exec_module(r6f)
+
+    # Exercise the adapter itself without importing OCC or requiring a built
+    # stage.  This freezes both state selection and the two authenticated
+    # manifest APIs: R6F must not regress to a raw path read or a private
+    # carrier exporter when an assertion changes.
+    import export_v1lf_staged as staged_export
+
+    for stand_foot, state_name in (
+            (False, "no_floor_stand"), (True, "floor_stand")):
+        manifest = ROOT / state_name / ".v1lf_stage/manifest.json"
+        payload = {"authenticated": state_name}
+        resolved = {"core_lm_carrier": Path(f"/{state_name}/lm.brep")}
+        with mock.patch.object(r6f, "_state") as select_state, \
+                mock.patch.object(
+                    staged_export, "load_stage_manifest",
+                    return_value=payload) as load_manifest, \
+                mock.patch.object(
+                    staged_export, "staged_part_paths",
+                    return_value=resolved) as resolve_parts:
+            assert r6f._validated_v1lf_stage_paths(stand_foot) is resolved
+        select_state.assert_called_once_with(stand_foot)
+        load_manifest.assert_called_once_with(
+            manifest, stand_foot=stand_foot)
+        resolve_parts.assert_called_once_with(manifest, payload)
+
+    stage = {
+        "core_lm_carrier": Path("/validated/core_lm_carrier.brep"),
+        "core_um_carrier": Path("/validated/core_um_carrier.brep"),
+        "addon_tweeter_crescent": Path(
+            "/validated/addon_tweeter_crescent.brep"),
+    }
+    expected = {
+        "lm": stage["core_lm_carrier"],
+        "um": stage["core_um_carrier"],
+        "tweeter": stage["addon_tweeter_crescent"],
+    }
+    with mock.patch.object(
+            r6f, "_validated_v1lf_stage_paths", return_value=stage), \
+            mock.patch.object(
+                r6f, "_stage_shell_contract_breps_unlocked",
+                side_effect=AssertionError("carrier path entered shell CAD")):
+        assert r6f._stage_shell_contract_breps(
+            False, "LM", Path("unused"), shell_keys=()) == expected
+
+    captured = {}
+
+    def fake_shell_stage(
+            stand_foot, route_name, directory, shell_keys, *, seed_targets):
+        captured.update({
+            "stand_foot": stand_foot,
+            "route_name": route_name,
+            "directory": directory,
+            "shell_keys": shell_keys,
+            "seed_targets": dict(seed_targets),
+        })
+        return {**seed_targets, "shell_nominal": (Path("shell.brep"),)}
+
+    with tempfile.TemporaryDirectory() as directory_name, \
+            mock.patch.object(
+                r6f, "_validated_v1lf_stage_paths", return_value=stage), \
+            mock.patch.object(
+                r6f, "_stage_shell_contract_breps_unlocked",
+                side_effect=fake_shell_stage), \
+            mock.patch.object(
+                r6f.tempfile, "gettempdir", return_value=directory_name):
+        result = r6f._stage_shell_contract_breps(
+            True, "UM", Path("unused"), shell_keys=("nominal",))
+    assert captured["seed_targets"] == expected
+    assert captured["shell_keys"] == ("nominal",)
+    assert result["lm"] == stage["core_lm_carrier"]
+
+    source = path.read_text(encoding="utf-8")
+    tree = ast.parse(source, filename=str(path))
+    unlocked = next(
+        node for node in tree.body
+        if isinstance(node, ast.FunctionDef)
+        and node.name == "_stage_shell_contract_breps_unlocked")
+    unlocked_source = ast.get_source_segment(source, unlocked)
+    assert unlocked_source is not None
+    assert "LX_R6F_EXPORT_CARRIER" not in unlocked_source
+    assert "LX_R6F_EXPORT_TWEETER" not in unlocked_source
+    assert "carrier_cache" not in unlocked_source
+
+    # The authenticated stage identity and its Make producers are geometry
+    # authorities, not assertion authorities.  Otherwise changing only this
+    # test would still force the very carrier rebuild eliminated above.
+    staged_source = (ROOT / "export_v1lf_staged.py").read_text(
+        encoding="utf-8")
+    staged_tree = ast.parse(
+        staged_source, filename=str(ROOT / "export_v1lf_staged.py"))
+    fingerprint = next(
+        node for node in staged_tree.body
+        if isinstance(node, ast.FunctionDef)
+        and node.name == "_source_fingerprint")
+    fingerprint_source = ast.get_source_segment(staged_source, fingerprint)
+    assert fingerprint_source is not None
+    assert 'glob("top_baffle_nd25fw4*.py")' in fingerprint_source
+    assert "test_v1lf_r6f.py" not in fingerprint_source
+
+    makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
+    targets = {
+        line.split(":", 1)[0]: line.split(":", 1)[1]
+        for line in _logical_make_lines(makefile)
+        if ":" in line and not line.startswith(("#", "\t"))
+    }
+    for target in (
+            "validate_floor_v1lf_stage",
+            "validate_no_floor_v1lf_stage"):
+        assert "$(V1LF_SRCS)" in targets[target]
+        assert "test_v1lf_r6f.py" not in targets[target]
+
+
 def test_coupon_mesh_inventory_excludes_print_sidecars() -> None:
     source = (ROOT / "check_manifold.py").read_text(encoding="utf-8")
     assert 'and name.endswith(".stl")' in source
+
+
+def test_manifold_cli_splits_mesh_and_metadata_phases() -> None:
+    facts = {
+        "triangles": 4,
+        "open": 0,
+        "over_shared": 0,
+        "winding": 0,
+        "degenerate": 0,
+        "duplicates": 0,
+        "nonfinite": 0,
+        "signed_volume": 1.0,
+        "zero_volume": 0,
+        "negative_volume": 0,
+        "components": 1,
+        "nested_void_components": 0,
+        "component_error": 0,
+    }
+    with tempfile.TemporaryDirectory() as text:
+        root = Path(text)
+        mesh = root / "part.stl"
+        mesh.write_bytes(b"placeholder")
+        with mock.patch.object(
+                manifold_checker, "stl_diagnostics", return_value=facts), \
+                mock.patch.object(
+                    manifold_checker, "_v1lf_manifest_errors",
+                    side_effect=AssertionError("STL-only read metadata")), \
+                mock.patch.object(
+                    sys, "argv",
+                    ["check_manifold.py", "--stl-only", str(mesh)]):
+            assert manifold_checker.main() == 0
+
+        with mock.patch.object(
+                manifold_checker, "stl_diagnostics",
+                side_effect=AssertionError("metadata-only read a mesh")), \
+                mock.patch.object(
+                    manifold_checker, "_v1lf_manifest_errors",
+                    return_value=[]), \
+                mock.patch.object(
+                    sys, "argv",
+                    ["check_manifold.py", "--metadata-only", str(root)]):
+            assert manifold_checker.main() == 0
 
 
 def test_physical_reference_coupon_freezes_zero_interface_gap() -> None:
@@ -1113,7 +1283,9 @@ def main() -> None:
         test_receiver_polarity_docs_match_pair_axis_convention,
         test_v1lf_release_target_requires_captive_catalog,
         test_check_waits_for_both_v1lf_native_stages,
+        test_r6f_carriers_reuse_make_stage_across_assertion_edits,
         test_coupon_mesh_inventory_excludes_print_sidecars,
+        test_manifold_cli_splits_mesh_and_metadata_phases,
         test_physical_reference_coupon_freezes_zero_interface_gap,
         test_every_export_pipeline_is_x180_plus_z_only,
         test_docs_do_not_describe_generated_stls_front_up,

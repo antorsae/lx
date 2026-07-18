@@ -3,7 +3,7 @@
     "collapsed_apex_facets_removed": 0,
     "component_error": 0,
     "component_signed_volumes": [
-      48943.584969230906,
+      48941.7681359969,
       -64.85309247622585,
       -64.85310808637963,
       -65.94510782857965,
@@ -20,7 +20,7 @@
     "open": 0,
     "outer_components": 1,
     "over_shared": 0,
-    "signed_volume": 48681.9885528128,
+    "signed_volume": 48680.1717195788,
     "triangles": 8294,
     "winding": 0,
     "zero_volume": 0,
@@ -71,6 +71,6 @@
     453.4570001,
     18.300000099999966
   ],
-  "stl_sha256": "4a659bb53c617e0501c6b1a426baaaeeddbf1177c36f3397a85af91040f3f5ed",
+  "stl_sha256": "7f5a21217a5afbb91b1e40c1a6e55c0da0f74eb0e327a9455f3fc09c3b0f95fe",
   "variant_export": "v1l"
 }

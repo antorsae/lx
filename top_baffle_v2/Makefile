@@ -29,8 +29,8 @@
 # Compatible with the macOS-provided GNU make 3.81.
 
 LX_CAD_EXECUTION ?= remote
-ifeq ($(filter $(LX_CAD_EXECUTION),remote local remote-worker),)
-$(error LX_CAD_EXECUTION must be remote, local, or remote-worker)
+ifeq ($(filter $(LX_CAD_EXECUTION),remote local local-manifold remote-worker),)
+$(error LX_CAD_EXECUTION must be remote, local, local-manifold, or remote-worker)
 endif
 
 # The ordinary interface is intentionally remote-first. The remote executor
@@ -56,6 +56,16 @@ ifeq ($(LX_CAD_EXECUTION),local)
 override LX_CAD_MEMORY_PROFILE := local-macos
 override LX_CAD_GUARD_SLOTS := 1
 override LX_CAD_ALLOW_PARALLEL := 0
+else ifeq ($(LX_CAD_EXECUTION),local-manifold)
+# Private promotion-only mode.  It can fan pure STL diagnostics under the
+# already-authenticated 8-GiB aggregate promotion guard, but cannot be used
+# to make any CAD-producing public target parallel on the workstation.
+ifneq ($(strip $(MAKECMDGOALS)),_manifold_parallel)
+$(error local-manifold accepts only the private _manifold_parallel target)
+endif
+override LX_CAD_MEMORY_PROFILE := local-macos
+override LX_CAD_GUARD_SLOTS := 1
+override LX_CAD_ALLOW_PARALLEL := 1
 else
 override LX_CAD_MEMORY_PROFILE := osado-512g
 override LX_CAD_ALLOW_PARALLEL := 1
@@ -77,21 +87,38 @@ MU10_REFS := ../linkwitz/H1658-04_MU10RB-SL_driver.stl \
              ../linkwitz/H1658-04_MU10RB-SL_driver_STL_notes.md \
              ../linkwitz/H1658-04_MU10RB-SL_Datasheet.pdf
 W22_REFS := ../E0022_W22EX001.stp
-SRCS := $(wildcard top_baffle_nd25fw4*.py) captive_magnets.py \
-        front_down_contract.py \
-        run_memory_guarded.py Makefile \
-        $(MU10_REFS) $(W22_REFS)
-V1LF_RELEASE_SRCS := $(SRCS) export_steps.py export_v1lf_staged.py \
+CAD_SRCS_ALL := $(wildcard top_baffle_nd25fw4*.py)
+# These modules are consumed only by the V1LF release family.  Keep the
+# legacy/common dependency set conservative (it still contains the shared
+# V1LF route/floor stack reached through top_baffle_nd25fw4_cables.py), while
+# preventing a carrier/web/split-only edit from invalidating every B/C/V0/V1/
+# V1L STEP and STL.  GNU Make remains the dependency authority.
+V1LF_EXCLUSIVE_CAD_SRCS := \
+        top_baffle_nd25fw4_v1lf.py \
+        top_baffle_nd25fw4_v1lf_assembled.py \
+        top_baffle_nd25fw4_v1lf_attachments.py \
+        top_baffle_nd25fw4_v1lf_bridge.py \
+        top_baffle_nd25fw4_v1lf_lm_split.py \
+        top_baffle_nd25fw4_v1lf_split.py
+SRCS := $(filter-out $(V1LF_EXCLUSIVE_CAD_SRCS),$(CAD_SRCS_ALL)) \
+        captive_magnets.py Makefile $(MU10_REFS) $(W22_REFS)
+V1LF_SRCS := $(SRCS) $(V1LF_EXCLUSIVE_CAD_SRCS)
+EXECUTION_SRCS := run_memory_guarded.py
+PRINT_CONTRACT_SRCS := front_down_contract.py
+V1LF_RELEASE_SRCS := $(V1LF_SRCS) $(EXECUTION_SRCS) $(PRINT_CONTRACT_SRCS) \
+        export_steps.py export_v1lf_staged.py \
         export_piece_stls.py export_coupon.py gen_cable_routing.py \
         gen_driver_overlay.py check_manifold.py test_captive_magnets.py \
         test_clearances.py \
-        test_v1lf_r6f.py test_remote_cad.py \
+        test_v1lf_r6f.py test_v1lf_junction_closure_webs.py \
+        test_v1lf_lm_split_two_pin_static.py test_remote_cad.py \
         write_v1lf_release_manifest.py V1LF_PHYSICAL_QUALIFICATION.md \
         remote_cad.py cad-remote-requirements.lock
 # export_piece_stls imports the strict checker after meshing, and that checker
 # imports the release-manifest helpers at module load.  Keep every STL stamp
 # source-complete so a checker/contract change cannot reuse a stale mesh stamp.
 STL_EXPORT_SRCS := export_piece_stls.py check_manifold.py \
+        $(PRINT_CONTRACT_SRCS) \
         write_v1lf_release_manifest.py
 # Command-line Make variables must not turn a candidate/release recipe into
 # an unguarded OCC process. PYTHON remains selectable, but every invocation
@@ -102,7 +129,7 @@ override RUN := $(PYTHON_RUN) $(GUARD) -- $(PYTHON_RUN)
 # Local builds remain strictly serial. The remote executor may opt into
 # several guarded slots only under the large-host profile; the enclosing
 # systemd cgroup still limits their aggregate memory to 512 GiB.
-ifneq ($(LX_CAD_EXECUTION),remote-worker)
+ifeq ($(LX_CAD_EXECUTION),local)
 .NOTPARALLEL:
 endif
 
@@ -153,6 +180,206 @@ V1LF_BASIC_WING_INPUTS = cad-remote-requirements.lock \
         floor_stand/.v1lf_stage/manifest.json \
         no_floor_stand/.v1lf_stage/manifest.json
 
+# Strict STL topology is embarrassingly parallel, but the former checker ran
+# every mesh in one Python process.  A recursive submake is used deliberately:
+# it reparses only after the producer targets have populated the requested
+# roots, inherits GNU Make's jobserver, and exposes one ordinary stamp target
+# per STL.  There is no second scheduler or opaque cache.  The final phony
+# node retains the manifest/review/cross-state gate after all mesh stamps pass.
+MANIFOLD_ROOTS ?= floor_stand/stl no_floor_stand/stl
+MANIFOLD_V1LF_ONLY ?= 0
+MANIFOLD_STAMP_DIR ?= .manifold-stamps
+CHECK_STAMP_DIR ?= .check-stamps
+ifeq ($(MANIFOLD_V1LF_ONLY),1)
+# A warm focused V1LF job inherits verified legacy meshes from the Make cache.
+# Expand only filenames that actually belong to V1LF; the metadata-only join
+# still enforces the V1LF inventory.  GNU Make remains the only scheduler.
+MANIFOLD_STLS := $(foreach root,$(MANIFOLD_ROOTS),\
+        $(wildcard $(root)/*v1lf*.stl))
+else
+MANIFOLD_STLS := $(foreach root,$(MANIFOLD_ROOTS),$(wildcard $(root)/*.stl))
+endif
+manifold_stamp = $(MANIFOLD_STAMP_DIR)/$(1).ok
+MANIFOLD_STAMPS := $(foreach stl,$(MANIFOLD_STLS),$(call manifold_stamp,$(stl)))
+
+# These names mirror the authoritative Python registries.  Exposing every
+# selector as an ordinary Make node lets the GNU Make jobserver own total
+# concurrency across regression checks and artifact writers.  The Python
+# suite-level ThreadPool runners remain useful for direct CLI use, but are not
+# invoked by `make check`/`make candidate`.
+CLEARANCE_CHECK_NAMES := \
+        test_foot_lane_webs \
+        test_variant_outlines_splice \
+        test_v1l_service_envelope \
+        test_emboss_driver_keepouts \
+        test_attachment_flushness \
+        test_magnet_top_site_walls \
+        test_magnet_cavities_vs_t_ducts \
+        test_v1_ts_captive_keepout_nudge \
+        test_standard_captive_magnet_contract \
+        test_standard_local_magnet_backing \
+        test_duct_vs_w22_pilots \
+        test_duct_duct_separation \
+        test_duct_vs_um_pilots \
+        test_c7_duct_corridor \
+        test_seam_keys_vs_ducts \
+        test_v0_duct_corridor \
+        test_v0_captive_geometry \
+        test_v1_field \
+        test_route_smoothness \
+        test_v1l_um_terminal_axis_handoff \
+        test_um_eroded_outline_containment \
+        test_ts_eroded_outline_containment \
+        test_bridge_inserts \
+        test_margin_dashboard \
+        test_cutter_health \
+        test_v1l_mid_right_terminal_duct_topology \
+        test_v1l_upper_dovetail_depth_mid_left \
+        test_v1l_upper_dovetail_depth_mid_right
+
+R6F_CHECK_NAMES := \
+        test_route_contract \
+        test_w22_reference_step_geometry \
+        test_insert_bump_clearance \
+        test_floor_insert_bump_clearance \
+        test_no_floor_route_smoothness \
+        test_floor_route_smoothness \
+        test_bump_brep_clearance \
+        test_floor_bump_brep_clearance \
+        test_bump_backfill_contract \
+        test_floor_bump_backfill_contract \
+        test_lm_burial_web_contract \
+        test_floor_lm_burial_web_contract \
+        test_um_burial_web_contract \
+        test_floor_um_burial_web_contract \
+        test_feed_and_flush_mouth_contract \
+        test_floor_feed_and_flush_mouth_contract \
+        test_crossover_brep \
+        test_floor_crossover_brep \
+        test_bridge_contract \
+        test_bridge_geometry \
+        test_joint_load_contract \
+        test_floor_lm_core \
+        test_no_floor_lm_core \
+        test_floor_lm_keyed_split \
+        test_no_floor_lm_keyed_split \
+        test_floor_um_shell \
+        test_floor_t_shell \
+        test_no_floor_um_shell \
+        test_no_floor_t_shell \
+        test_lm_cable_clearance \
+        test_um_cable_clearance \
+        test_floor_lm_cable_clearance \
+        test_floor_um_cable_clearance \
+        test_floor_integrated_mount \
+        test_tweeter_and_service \
+        test_floor_tweeter_and_service
+
+R6F_SERVICE_CHECK_NAMES := test_tweeter_and_service \
+                           test_floor_tweeter_and_service
+R6F_PRIVATE_ENV_NAMES := \
+        LX_R6F_EXPORT_CARRIER LX_R6F_EXPORT_PATH LX_R6F_EXPORT_SHELL \
+        LX_R6F_EXPORT_SHELL_SEGMENT LX_R6F_EXPORT_SHELL_SEGMENT_COUNT \
+        LX_R6F_EXPORT_SHELL_WALL LX_R6F_EXPORT_TWEETER \
+        LX_R6F_LM_INPUT_PATH LX_R6F_SERVICE_COMPONENT_CHUNK_COUNT \
+        LX_R6F_SERVICE_COMPONENT_COLLISION LX_R6F_SERVICE_COMPONENT_EXPORT \
+        LX_R6F_SERVICE_COMPONENT_PATH LX_R6F_SERVICE_COMPONENT_SELECTOR \
+        LX_R6F_SERVICE_PHASE LX_R6F_SERVICE_PRINTED_PATH \
+        LX_R6F_SERVICE_START_PHASE LX_R6F_SERVICE_STOP_AFTER_PHASE \
+        LX_R6F_SINGLE_CHECK LX_R6F_SUBTRACT_INPUT LX_R6F_SUBTRACT_OUTPUT \
+        LX_R6F_SUBTRACT_PART LX_R6F_VALIDATE_CABLE \
+        LX_R6F_VALIDATE_CABLE_MODE LX_R6F_VALIDATE_CABLE_SEGMENT \
+        LX_R6F_VALIDATE_CABLE_SEGMENT_COUNT LX_R6F_VALIDATE_CARRIER_OWNER \
+        LX_R6F_VALIDATE_CARRIER_PATH LX_R6F_VALIDATE_PART_PATHS \
+        LX_R6F_VALIDATE_SHELL LX_R6F_VALIDATE_SHELL_PATH \
+        LX_R6F_VALIDATE_SHELL_PATHS
+R6F_CLEAN_ENV = env $(foreach name,$(R6F_PRIVATE_ENV_NAMES),-u $(name))
+CLEARANCE_CHECK_TARGETS := $(addprefix _check_clearance_,$(CLEARANCE_CHECK_NAMES))
+R6F_CHECK_TARGETS := $(addprefix _check_r6f_,$(R6F_CHECK_NAMES))
+clearance_check_stamp = $(CHECK_STAMP_DIR)/clearance/$(1).ok
+r6f_check_stamp = $(CHECK_STAMP_DIR)/r6f/$(1).ok
+CLEARANCE_CHECK_STAMPS := $(foreach name,$(CLEARANCE_CHECK_NAMES),\
+        $(call clearance_check_stamp,$(name)))
+R6F_CHECK_STAMPS := $(foreach name,$(R6F_CHECK_NAMES),\
+        $(call r6f_check_stamp,$(name)))
+JUNCTION_CLOSURE_STAMP := $(CHECK_STAMP_DIR)/v1lf_junction_closures.ok
+JUNCTION_CLOSURE_BASE_STAMP := \
+        $(CHECK_STAMP_DIR)/v1lf_junction_closures/base.ok
+JUNCTION_CLOSURE_DENSE_CASES := \
+        no_floor_lm_um floor_lm_um no_floor_t_um floor_t_um
+JUNCTION_CLOSURE_DENSE_SHARDS := 0 1 2 3
+junction_closure_dense_stamp = \
+        $(CHECK_STAMP_DIR)/v1lf_junction_closures/$(1)_$(2).ok
+JUNCTION_CLOSURE_DENSE_STAMPS := \
+        $(foreach name,$(JUNCTION_CLOSURE_DENSE_CASES),\
+        $(foreach shard,$(JUNCTION_CLOSURE_DENSE_SHARDS),\
+        $(call junction_closure_dense_stamp,$(name),$(shard))))
+
+# A remote cache is keyed by the attested Python environment, verifies the
+# entire seeded tree, and overlays changed sources newer than all targets.
+# Therefore its check stamps are safe ordinary Make targets.  Local trees can
+# outlive an environment change outside Make's prerequisite graph, so retain
+# the conservative always-revalidate behavior there.
+ifeq ($(LX_CAD_EXECUTION),remote-worker)
+CHECK_REVALIDATE :=
+else
+.PHONY: _force_check_revalidation
+CHECK_REVALIDATE := _force_check_revalidation
+endif
+
+define MANIFOLD_STL_RULE
+$(call manifold_stamp,$(1)): $(1) check_manifold.py \
+        $(PRINT_CONTRACT_SRCS) write_v1lf_release_manifest.py Makefile
+	@mkdir -p $$(@D)
+	$(RUN) check_manifold.py --stl-only $(1)
+	@touch $$@
+endef
+
+$(foreach stl,$(MANIFOLD_STLS),$(eval $(call MANIFOLD_STL_RULE,$(stl))))
+
+define CLEARANCE_CHECK_RULE
+_check_clearance_$(1): $(call clearance_check_stamp,$(1))
+$(call clearance_check_stamp,$(1)): test_clearances.py $(V1LF_SRCS) \
+        $(EXECUTION_SRCS) $(CHECK_REVALIDATE)
+	@mkdir -p $$(@D)
+	LX_CLEARANCE_SINGLE_CHECK=$(1) $(RUN) test_clearances.py
+	@touch $$@
+endef
+
+define R6F_CHECK_RULE
+_check_r6f_$(1): $(call r6f_check_stamp,$(1))
+$(call r6f_check_stamp,$(1)): test_v1lf_r6f.py $(V1LF_SRCS) \
+		$(EXECUTION_SRCS) $(CHECK_REVALIDATE) | \
+		floor_stand/.v1lf_stage/manifest.json \
+		no_floor_stand/.v1lf_stage/manifest.json
+	@mkdir -p $$(@D)
+	$(R6F_CLEAN_ENV) LX_R6F_SINGLE_CHECK=$(1) $(RUN) test_v1lf_r6f.py
+	@touch $$@
+endef
+
+# On a workstation these two checks deliberately remain lightweight parent
+# orchestrators so every service substep gets a fresh guarded lifecycle.  On
+# osado the selected process self-wraps once and performs the full large-host
+# matrix under that one Make token.
+define R6F_SERVICE_CHECK_RULE
+_check_r6f_$(1): $(call r6f_check_stamp,$(1))
+$(call r6f_check_stamp,$(1)): test_v1lf_r6f.py $(V1LF_SRCS) \
+		$(EXECUTION_SRCS) $(CHECK_REVALIDATE) | \
+		floor_stand/.v1lf_stage/manifest.json \
+		no_floor_stand/.v1lf_stage/manifest.json
+	@mkdir -p $$(@D)
+	$(R6F_CLEAN_ENV) LX_R6F_SINGLE_CHECK=$(1) \
+	    $(PYTHON_RUN) test_v1lf_r6f.py
+	@touch $$@
+endef
+
+$(foreach name,$(CLEARANCE_CHECK_NAMES),\
+    $(eval $(call CLEARANCE_CHECK_RULE,$(name))))
+$(foreach name,$(filter-out $(R6F_SERVICE_CHECK_NAMES),$(R6F_CHECK_NAMES)),\
+    $(eval $(call R6F_CHECK_RULE,$(name))))
+$(foreach name,$(R6F_SERVICE_CHECK_NAMES),\
+    $(eval $(call R6F_SERVICE_CHECK_RULE,$(name))))
+
 VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)/stl/.stamp_v0 $(1)/stl/.stamp_v1 $(1)/stl/.stamp_v1l $(1)/stl/.stamp_v1lf \
                   $(addprefix $(1)/,$(addsuffix .step,$(GENS))) \
                   $(1)/baffle_cable_routing_proud.png \
@@ -162,11 +389,16 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
 
 .PHONY: all candidate release validate_v1lf_stages \
         validate_floor_v1lf_stage validate_no_floor_v1lf_stage \
-        floor_stand floor_v1lf no_floor_stand no_floor_v1lf v1lf_release \
+        floor_stand floor_stand_artifacts floor_v1lf \
+        no_floor_stand no_floor_stand_artifacts no_floor_v1lf v1lf_release \
         v1lf_release wing_concepts \
         v1lf_basic_variants v1lf_basic_wings check_v1lf_basic_variants \
-        common check check_captive_magnets check_v1lf \
+        common check check_static check_remote_transport \
+        check_release_metadata check_slice_metadata \
+        check_clearance_suite check_r6f_suite \
+        check_captive_magnets check_v1lf \
         check_v1lf_shells check_v1lf_t_shells \
+        check_v1lf_service check_v1lf_closure_focus \
         check_v1lf_mouths check_v1lf_burial check_v1lf_backfills \
         check_v1lf_um_burial \
         check_v1lf_route_boundaries \
@@ -178,12 +410,19 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
         check_floor_v1lf_backfills check_no_floor_v1lf_backfills \
         check_route_contract check_bump_brep check_floor_integrated_mount \
         check_no_floor_lm_mesh check_v1lf_lm_split \
+        check_v1lf_lm_split_two_pin_static \
+        check_v1lf_junction_closure_plans check_v1lf_junction_closures \
         check_floor_v1lf_lm_split check_no_floor_v1lf_lm_split \
         check_v1lf_lm_profile check_v1lf_lm_profile_plan \
-        check_v1lf_lm_profile_brep manifold clean
-all: validate_v1lf_stages floor_stand no_floor_stand common \
+        check_v1lf_lm_profile_brep manifold _manifold_parallel clean \
+        $(CLEARANCE_CHECK_TARGETS) $(R6F_CHECK_TARGETS)
+all: validate_v1lf_stages floor_stand_artifacts no_floor_stand_artifacts common \
         v1lf_basic_variants $(CAPTIVE_MAGNET_CATALOG)
-	$(RUN) check_manifold.py
+	# Each state already completed its one-node-per-STL sweep while the other
+	# state was still eligible to use the shared jobserver.  Keep only the
+	# inexpensive cross-state manifest/review consistency gate on the join.
+	$(RUN) check_manifold.py --metadata-only \
+	    floor_stand/stl no_floor_stand/stl
 
 # This catalog is generated only after all 56 released magnet-bearing meshes
 # and their exact front-down print transforms exist.  It is the CAD-side
@@ -210,13 +449,13 @@ $(CAPTIVE_MAGNET_CATALOG): generate_captive_magnet_catalog.py \
 # is a no-write fast path when current and atomically rebuilds only on drift.
 validate_v1lf_stages: validate_floor_v1lf_stage validate_no_floor_v1lf_stage
 
-validate_floor_v1lf_stage: export_v1lf_staged.py $(SRCS)
+validate_floor_v1lf_stage: export_v1lf_staged.py $(V1LF_SRCS)
 	@mkdir -p floor_stand/.v1lf_stage
 	LX_STAND_FOOT=1 LX_ROUTING_PROFILE=v1lf PYTHONPATH=. $(RUN) \
 	    export_v1lf_staged.py stage \
 	    --manifest floor_stand/.v1lf_stage/manifest.json
 
-validate_no_floor_v1lf_stage: export_v1lf_staged.py $(SRCS)
+validate_no_floor_v1lf_stage: export_v1lf_staged.py $(V1LF_SRCS)
 	@mkdir -p no_floor_stand/.v1lf_stage
 	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=v1lf PYTHONPATH=. $(RUN) \
 	    export_v1lf_staged.py stage \
@@ -230,50 +469,70 @@ floor_stand/.v1lf_stage/manifest.json: validate_floor_v1lf_stage
 no_floor_stand/.v1lf_stage/manifest.json: validate_no_floor_v1lf_stage
 	@test -f $@
 
-candidate: check
-	# The candidate gate is a barrier: regression checks must finish before
-	# artifact writers start, while the recursive all build may still use the
-	# bounded remote jobserver slots internally.
-	$(MAKE) --no-print-directory all
+candidate: check all
 
 release: candidate
-	$(RUN) check_manifold.py --require-release-authorized
+	# Candidate already completed the strict mesh sweep.  Release adds only the
+	# fail-closed physical-authorization and metadata gate.
+	$(RUN) check_manifold.py --metadata-only --require-release-authorized
 
 manifold: check_manifold.py
-	$(RUN) check_manifold.py
+	$(MAKE) --no-print-directory _manifold_parallel \
+	    MANIFOLD_ROOTS='floor_stand/stl no_floor_stand/stl'
+
+_manifold_parallel: $(MANIFOLD_STAMPS)
+	@test -n "$(strip $(MANIFOLD_STLS))" || { \
+	    echo "no STLs found under: $(MANIFOLD_ROOTS)" >&2; exit 1; }
+	$(RUN) check_manifold.py --metadata-only \
+	    $(if $(filter 1,$(MANIFOLD_V1LF_ONLY)),--v1lf-only) \
+	    $(MANIFOLD_ROOTS)
+	@echo "$(words $(MANIFOLD_STLS))/$(words $(MANIFOLD_STLS)) STLs strict-manifold (Make-parallel)"
 
 # polar-measurement turntable (mates under the floor-stand foot only)
-floor_stand: validate_floor_v1lf_stage floor_stand/stl/.stamp_polar
+floor_stand_artifacts: validate_floor_v1lf_stage floor_stand/stl/.stamp_polar
 floor_stand/stl/.stamp_polar: polar_index_base.py
 	@rm -f $@
 	$(RUN) polar_index_base.py
 	@touch $@
-floor_stand: $(call VARIANT_TARGETS,floor_stand) $(FLOOR_STRENGTH_REPORTS)
-	$(RUN) check_manifold.py floor_stand/stl
+floor_stand_artifacts: $(call VARIANT_TARGETS,floor_stand) \
+        $(FLOOR_STRENGTH_REPORTS)
+	# Start this state's topology fan-out as soon as its final artifact lands;
+	# the recursive Make inherits the enclosing GNU Make jobserver.
+	$(MAKE) --no-print-directory _manifold_parallel \
+	    MANIFOLD_ROOTS='floor_stand/stl'
+floor_stand: floor_stand_artifacts
 # Focused, atomic V1LF floor release.  This avoids rebuilding unrelated B/C/
 # V0/V1/V1L pieces while still producing every V1LF STEP/STL/PNG, the coupon
 # set, overlays, hash-bound strength report, release manifest and strict QA.
 floor_v1lf: validate_floor_v1lf_stage \
         floor_stand/v1lf_release_manifest.json
-	$(RUN) check_manifold.py --v1lf-only floor_stand/stl
+	$(MAKE) --no-print-directory _manifold_parallel \
+	    MANIFOLD_ROOTS='floor_stand/stl' MANIFOLD_V1LF_ONLY=1
 
 # Symmetric focused release for the no-floor carrier.  Keep this narrower than
 # no_floor_stand: it emits the complete hash-backed V1LF family without
 # rebuilding unrelated proud/C/V0/V1/V1L print sets.
 no_floor_v1lf: validate_no_floor_v1lf_stage \
         no_floor_stand/v1lf_release_manifest.json
-	$(RUN) check_manifold.py --v1lf-only no_floor_stand/stl
+	$(MAKE) --no-print-directory _manifold_parallel \
+	    MANIFOLD_ROOTS='no_floor_stand/stl' MANIFOLD_V1LF_ONLY=1
 
 # One public remote target owns the complete two-state V1LF release, Ac/Ae
 # magnetic attachments and the focused final-BREP interface checks.  A single
 # Make DAG lets osado share both native stages and fan independent state,
 # wing and validation recipes across its bounded jobserver slots.
-v1lf_release: floor_stand no_floor_stand v1lf_basic_variants \
+v1lf_release: floor_stand_artifacts no_floor_stand_artifacts \
+        v1lf_basic_variants \
         $(CAPTIVE_MAGNET_CATALOG) \
         check_route_contract check_v1lf_lm_split check_v1lf_shells \
-        check_v1lf_route_boundaries check_floor_integrated_mount
-	$(RUN) check_manifold.py floor_stand/stl no_floor_stand/stl \
-	    wings/ac/stl wings/ae/stl
+        check_v1lf_route_boundaries check_floor_integrated_mount \
+        check_v1lf_lm_split_two_pin_static \
+        check_v1lf_junction_closures
+	# Ac/Ae already pass their own final gate through v1lf_basic_variants.
+	# State-local sweeps already ran exactly once through the artifact nodes;
+	# retain only the inexpensive cross-state metadata gate on this join.
+	$(RUN) check_manifold.py --metadata-only \
+	    floor_stand/stl no_floor_stand/stl
 
 # Review-only W1-W14 specimen plates.  The generator is deliberately pure 2D:
 # it does not import build123d/OCC or modify released carrier geometry.
@@ -328,7 +587,8 @@ check_v1lf_basic_variants: $(V1LF_BASIC_WING_STAMPS) \
         test_v1lf_basic_wings.py
 	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=v1lf PYTHONPATH=. $(RUN) \
 	    test_v1lf_basic_wings.py --artifact-root wings
-	$(RUN) check_manifold.py wings/ac/stl wings/ae/stl
+	$(MAKE) --no-print-directory _manifold_parallel \
+	    MANIFOLD_ROOTS='wings/ac/stl wings/ae/stl'
 
 $(V1LF_BASIC_VARIANTS_PNG): gen_v1lf_basic_variants.py \
         gen_driver_overlay.py top_baffle_nd25fw4_a_comp.py \
@@ -341,42 +601,119 @@ $(V1LF_BASIC_VARIANTS_PNG): gen_v1lf_basic_variants.py \
 	    gen_v1lf_basic_variants.py --output $@
 	@test -s $@
 
-no_floor_stand: validate_no_floor_v1lf_stage \
+no_floor_stand_artifacts: validate_no_floor_v1lf_stage \
         $(call VARIANT_TARGETS,no_floor_stand)
-	$(RUN) check_manifold.py no_floor_stand/stl
+	# Symmetric with the floor state: expose this sweep while independent
+	# floor-state artifact work can continue under the same Make jobserver.
+	$(MAKE) --no-print-directory _manifold_parallel \
+	    MANIFOLD_ROOTS='no_floor_stand/stl'
+no_floor_stand: no_floor_stand_artifacts
 common: top_baffle_nd25fw4_attachments.step
 
-check: validate_v1lf_stages \
-        test_captive_magnets.py test_slice_captive_magnets.py \
-        test_release_metadata.py \
-        slice_captive_magnets.py json_schema_subset.py \
-        captive_magnet_slicing_profile.json \
-        test_clearances.py test_v1lf_r6f.py \
-        test_remote_cad.py remote_cad.py \
-        $(SRCS)
+check: validate_v1lf_stages check_static check_clearance_suite check_r6f_suite \
+        check_v1lf_junction_closures
+
+check_static: check_remote_transport check_release_metadata \
+        check_slice_metadata check_captive_magnets \
+        check_v1lf_lm_split_two_pin_static
+
+check_remote_transport: test_remote_cad.py remote_cad.py Makefile
 	$(PYTHON_RUN) test_remote_cad.py
+
+check_release_metadata: test_release_metadata.py check_manifold.py \
+        $(PRINT_CONTRACT_SRCS) write_v1lf_release_manifest.py Makefile
 	$(PYTHON_RUN) test_release_metadata.py
+
+check_slice_metadata: test_slice_captive_magnets.py \
+        slice_captive_magnets.py json_schema_subset.py \
+        captive_magnet_slicing_profile.json $(PRINT_CONTRACT_SRCS)
 	$(PYTHON_RUN) test_slice_captive_magnets.py
-	$(RUN) test_captive_magnets.py
-	# Keep the lightweight clearance orchestrator outside OCC so every heavy
-	# check establishes a fresh authenticated guard. Clear the private selector
-	# so inherited shell state cannot silently reduce the release suite.
-	env -u LX_CLEARANCE_SINGLE_CHECK $(PYTHON_RUN) test_clearances.py
-	# The R6F parent is a lightweight stdlib/numpy orchestrator. It gives each
-	# OCC-heavy check its own authenticated guard; wrapping the parent here
-	# would collapse the long service matrix back into one accumulating group.
-	env -u LX_R6F_SINGLE_CHECK -u LX_R6F_SERVICE_START_PHASE \
-	    -u LX_R6F_SERVICE_STOP_AFTER_PHASE $(PYTHON_RUN) test_v1lf_r6f.py
+
+check_clearance_suite: $(CLEARANCE_CHECK_STAMPS)
+	@echo "all clearance checks passed (Make-jobserver isolated)"
+
+check_r6f_suite: $(R6F_CHECK_STAMPS)
+	@echo "all final V1LF R6F checks passed (Make-jobserver isolated)"
 
 check_captive_magnets: test_captive_magnets.py captive_magnets.py
 	$(RUN) test_captive_magnets.py
 
-# Focused remote iteration gate. The parent still fans out its OCC-heavy
-# checks across the configured remote slots; this avoids rerunning unrelated
-# proud/V1L clearance checks while refining V1LF final-BREP contracts.
-check_v1lf: validate_v1lf_stages test_v1lf_r6f.py $(SRCS)
-	env -u LX_R6F_SINGLE_CHECK -u LX_R6F_SERVICE_START_PHASE \
-	    -u LX_R6F_SERVICE_STOP_AFTER_PHASE $(PYTHON_RUN) test_v1lf_r6f.py
+check_v1lf_lm_split_two_pin_static: \
+        test_v1lf_lm_split_two_pin_static.py \
+        top_baffle_nd25fw4_v1lf_lm_split.py
+	$(PYTHON_RUN) test_v1lf_lm_split_two_pin_static.py
+
+# Seconds-scale topology gate for closure iteration.  It deliberately uses
+# the same Make/remote guard authority as production but does not rebuild the
+# two carrier stages until the analytic tangent/ownership plans pass.
+check_v1lf_junction_closure_plans: \
+		test_v1lf_junction_closure_webs.py \
+		top_baffle_nd25fw4_v1lf.py \
+		top_baffle_nd25fw4_v1lf_attachments.py \
+		$(V1LF_SRCS) $(EXECUTION_SRCS)
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=v1lf PYTHONPATH=. \
+	    LX_V1LF_CLOSURE_PLAN_ONLY=1 $(RUN) \
+	    test_v1lf_junction_closure_webs.py
+
+# Full analytic and actual-BREP sections for the two independently assembled
+# junctions.  The dense layer matrix is sixteen ordinary Make nodes (the four
+# floor/no-floor × LM-UM/T-UM cases, each split into four complementary layer
+# shards) so GNU Make's inherited jobserver keeps all sixteen remote slots
+# busy
+# when the LM sections outlive the lighter T sections.  The shard union retains
+# every physical Bambu layer and assertion;
+# Python does not own a second scheduler.  The explicit full-test flag makes a
+# missing authenticated guard fail closed instead of silently running only the
+# source contract.
+check_v1lf_junction_closures: $(JUNCTION_CLOSURE_STAMP)
+
+$(JUNCTION_CLOSURE_STAMP): $(JUNCTION_CLOSURE_BASE_STAMP) \
+		$(JUNCTION_CLOSURE_DENSE_STAMPS)
+	@mkdir -p $(@D)
+	@touch $@
+
+$(JUNCTION_CLOSURE_BASE_STAMP): \
+		$(call r6f_check_stamp,test_floor_feed_and_flush_mouth_contract) \
+		$(call r6f_check_stamp,test_feed_and_flush_mouth_contract) \
+		test_v1lf_junction_closure_webs.py \
+		top_baffle_nd25fw4_v1lf.py \
+		top_baffle_nd25fw4_v1lf_attachments.py \
+		$(V1LF_SRCS) $(EXECUTION_SRCS) $(CHECK_REVALIDATE) | \
+		floor_stand/.v1lf_stage/manifest.json \
+		no_floor_stand/.v1lf_stage/manifest.json
+	@mkdir -p $(@D)
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=v1lf PYTHONPATH=. \
+	    LX_V1LF_CLOSURE_FULL_TEST=1 \
+	    LX_V1LF_CLOSURE_BASE_ONLY=1 $(RUN) \
+	    test_v1lf_junction_closure_webs.py
+	@touch $@
+
+define JUNCTION_CLOSURE_DENSE_RULE
+$(call junction_closure_dense_stamp,$(1),$(2)): \
+		$$(call r6f_check_stamp,test_floor_feed_and_flush_mouth_contract) \
+		$$(call r6f_check_stamp,test_feed_and_flush_mouth_contract) \
+		test_v1lf_junction_closure_webs.py \
+		top_baffle_nd25fw4_v1lf.py \
+		top_baffle_nd25fw4_v1lf_attachments.py \
+		$$(V1LF_SRCS) $$(EXECUTION_SRCS) $$(CHECK_REVALIDATE) | \
+		floor_stand/.v1lf_stage/manifest.json \
+		no_floor_stand/.v1lf_stage/manifest.json
+	@mkdir -p $$(@D)
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=v1lf PYTHONPATH=. \
+	    LX_V1LF_CLOSURE_FULL_TEST=1 \
+	    LX_V1LF_CLOSURE_DENSE_CASE=$(1) \
+	    LX_V1LF_CLOSURE_DENSE_SHARD=$(2)/4 $$(RUN) \
+	    test_v1lf_junction_closure_webs.py
+	@touch $$@
+endef
+
+$(foreach name,$(JUNCTION_CLOSURE_DENSE_CASES),\
+        $(foreach shard,$(JUNCTION_CLOSURE_DENSE_SHARDS),\
+        $(eval $(call JUNCTION_CLOSURE_DENSE_RULE,$(name),$(shard)))))
+
+# Focused remote iteration gate.  Reuse the ordinary one-selector-per-node
+# Make DAG; do not re-enter the Python suite's direct-CLI thread scheduler.
+check_v1lf: validate_v1lf_stages check_r6f_suite
 
 # Focused final-BREP shell gate.  The four independent state/route checks are
 # separate prerequisites so the large remote host can run them concurrently.
@@ -384,6 +721,22 @@ check_v1lf_shells: check_floor_um_shell check_floor_t_shell \
                    check_no_floor_um_shell check_no_floor_t_shell
 
 check_v1lf_t_shells: check_floor_t_shell check_no_floor_t_shell
+
+# Focused two-state UM/tweeter joint and terminal-service gate.  Keep this as
+# a normal Make join over the existing isolated selector nodes so osado can
+# validate both stand states concurrently without re-entering a Python-owned
+# scheduler or rebuilding unrelated release artifacts.
+check_v1lf_service: _check_r6f_test_tweeter_and_service \
+                    _check_r6f_test_floor_tweeter_and_service
+
+# One public, remotely whitelisted regression join for closure iteration.
+# These are the exact selector/stage nodes affected by junction ownership,
+# route handoff, service-ear, and optional split changes; GNU Make retains
+# sole staleness and jobserver authority across the otherwise independent
+# workers.
+check_v1lf_closure_focus: check_v1lf_shells check_v1lf_service \
+                          check_v1lf_lm_split \
+                          check_v1lf_junction_closures
 
 # Focused native-mouth/burial gates.  These retain the same isolated guarded
 # workers as the release suite while allowing the large remote host to check
@@ -402,52 +755,56 @@ check_v1lf_backfills: check_floor_v1lf_backfills \
 check_v1lf_route_boundaries: check_v1lf_mouths check_v1lf_burial \
                              check_v1lf_backfills
 
-check_floor_v1lf_mouths: test_v1lf_r6f.py $(SRCS)
-	LX_R6F_SINGLE_CHECK=test_floor_feed_and_flush_mouth_contract \
-	    $(RUN) test_v1lf_r6f.py
+check_floor_v1lf_mouths: \
+        _check_r6f_test_floor_feed_and_flush_mouth_contract
 
-check_no_floor_v1lf_mouths: test_v1lf_r6f.py $(SRCS)
-	LX_R6F_SINGLE_CHECK=test_feed_and_flush_mouth_contract \
-	    $(RUN) test_v1lf_r6f.py
+check_no_floor_v1lf_mouths: \
+        _check_r6f_test_feed_and_flush_mouth_contract
 
-check_floor_v1lf_burial: test_v1lf_r6f.py $(SRCS)
+check_floor_v1lf_burial: test_v1lf_r6f.py $(V1LF_SRCS)
 	LX_R6F_SINGLE_CHECK=test_floor_lm_burial_web_contract \
 	    $(RUN) test_v1lf_r6f.py
 
-check_no_floor_v1lf_burial: test_v1lf_r6f.py $(SRCS)
+check_no_floor_v1lf_burial: test_v1lf_r6f.py $(V1LF_SRCS)
 	LX_R6F_SINGLE_CHECK=test_lm_burial_web_contract \
 	    $(RUN) test_v1lf_r6f.py
 
-check_floor_v1lf_um_burial: test_v1lf_r6f.py $(SRCS)
+check_floor_v1lf_um_burial: test_v1lf_r6f.py $(V1LF_SRCS)
 	LX_R6F_SINGLE_CHECK=test_floor_um_burial_web_contract \
 	    $(RUN) test_v1lf_r6f.py
 
-check_no_floor_v1lf_um_burial: test_v1lf_r6f.py $(SRCS)
+check_no_floor_v1lf_um_burial: test_v1lf_r6f.py $(V1LF_SRCS)
 	LX_R6F_SINGLE_CHECK=test_um_burial_web_contract \
 	    $(RUN) test_v1lf_r6f.py
 
-check_floor_v1lf_backfills: test_v1lf_r6f.py $(SRCS)
+check_floor_v1lf_backfills: test_v1lf_r6f.py $(V1LF_SRCS)
 	LX_R6F_SINGLE_CHECK=test_floor_bump_backfill_contract \
 	    $(RUN) test_v1lf_r6f.py
 
-check_no_floor_v1lf_backfills: test_v1lf_r6f.py $(SRCS)
+check_no_floor_v1lf_backfills: test_v1lf_r6f.py $(V1LF_SRCS)
 	LX_R6F_SINGLE_CHECK=test_bump_backfill_contract \
 	    $(RUN) test_v1lf_r6f.py
 
-check_floor_um_shell check_floor_t_shell \
-check_no_floor_um_shell check_no_floor_t_shell: test_v1lf_r6f.py $(SRCS)
+check_floor_um_shell check_floor_t_shell: test_v1lf_r6f.py $(V1LF_SRCS) | \
+		floor_stand/.v1lf_stage/manifest.json
+	LX_R6F_SINGLE_CHECK=test_$(patsubst check_%,%,$@) \
+	    $(RUN) test_v1lf_r6f.py
+
+check_no_floor_um_shell check_no_floor_t_shell: \
+		test_v1lf_r6f.py $(V1LF_SRCS) | \
+		no_floor_stand/.v1lf_stage/manifest.json
 	LX_R6F_SINGLE_CHECK=test_$(patsubst check_%,%,$@) \
 	    $(RUN) test_v1lf_r6f.py
 
 # Focused exact-BREP integral floor-load-path diagnostic. This target is
 # intentionally single-check so mount/root regressions can be measured
 # without rebuilding or rerunning the full V1LF service matrix.
-check_floor_integrated_mount: test_v1lf_r6f.py $(SRCS)
+check_floor_integrated_mount: test_v1lf_r6f.py $(V1LF_SRCS)
 	LX_R6F_SINGLE_CHECK=test_floor_integrated_mount $(RUN) test_v1lf_r6f.py
 
 # Focused source-BREP plus strict-STL gate for the monolithic no-floor LM.
 # It catches feature-coincidence slivers before a complete candidate export.
-check_no_floor_lm_mesh: test_v1lf_r6f.py $(SRCS) $(STL_EXPORT_SRCS)
+check_no_floor_lm_mesh: test_v1lf_r6f.py $(V1LF_SRCS) $(STL_EXPORT_SRCS)
 	LX_R6F_SINGLE_CHECK=test_no_floor_lm_core $(RUN) test_v1lf_r6f.py
 	$(MAKE) --no-print-directory no_floor_stand/stl/.stamp_v1lf
 
@@ -474,20 +831,20 @@ check_no_floor_v1lf_lm_split: validate_no_floor_v1lf_stage \
 check_v1lf_lm_profile: check_v1lf_lm_profile_plan \
                        check_v1lf_lm_profile_brep
 
-check_v1lf_lm_profile_plan: test_v1lf_r6f.py $(SRCS)
+check_v1lf_lm_profile_plan: test_v1lf_r6f.py $(V1LF_SRCS)
 	LX_R6F_SINGLE_CHECK=test_bridge_contract $(RUN) test_v1lf_r6f.py
 
-check_v1lf_lm_profile_brep: test_v1lf_r6f.py $(SRCS)
+check_v1lf_lm_profile_brep: test_v1lf_r6f.py $(V1LF_SRCS)
 	LX_R6F_SINGLE_CHECK=test_bridge_geometry $(RUN) test_v1lf_r6f.py
 
 # Lightweight focused gate for deterministic route dimensions and policy.
 # Keep it remotely guarded because importing the final CAD modules initializes
 # OCC even though this check itself performs no heavy Boolean construction.
-check_route_contract: test_v1lf_r6f.py $(SRCS)
+check_route_contract: test_v1lf_r6f.py $(V1LF_SRCS)
 	LX_R6F_SINGLE_CHECK=test_route_contract $(RUN) test_v1lf_r6f.py
 
 # Focused exact-BREP route-to-insert clearance check for both stand states.
-check_bump_brep: test_v1lf_r6f.py $(SRCS)
+check_bump_brep: test_v1lf_r6f.py $(V1LF_SRCS)
 	LX_R6F_SINGLE_CHECK=test_no_floor_route_smoothness $(RUN) test_v1lf_r6f.py
 	LX_R6F_SINGLE_CHECK=test_bump_backfill_contract $(RUN) test_v1lf_r6f.py
 	LX_R6F_SINGLE_CHECK=test_bump_brep_clearance $(RUN) test_v1lf_r6f.py
@@ -537,7 +894,7 @@ else
 endif
 	@touch $$@
 
-$(1)/stl/.stamp_v1lf: $(SRCS) $(STL_EXPORT_SRCS) \
+$(1)/stl/.stamp_v1lf: $(V1LF_SRCS) $(STL_EXPORT_SRCS) \
         $(1)/.v1lf_stage/manifest.json
 	@rm -f $$@
 ifeq ($(LX_CAD_EXECUTION),remote-worker)
@@ -553,7 +910,8 @@ endif
 	@touch $$@
 
 $(1)/stl/.stamp_coupon: export_coupon.py check_manifold.py \
-        write_v1lf_release_manifest.py $(SRCS) \
+		$(PRINT_CONTRACT_SRCS) \
+		write_v1lf_release_manifest.py $(V1LF_SRCS) \
         $(1)/.v1lf_stage/manifest.json
 	@rm -f $$@
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=proud $(RUN) export_coupon.py --outdir $(1)/stl
@@ -562,8 +920,8 @@ $(1)/stl/.stamp_coupon: export_coupon.py check_manifold.py \
 # R6F STEP targets import only the state-local, hash-verified native BREPs.
 # Direct generator-module export is fail-closed in export_steps.py.
 $(1)/top_baffle_nd25fw4_v1lf_%.step: \
-        $(1)/.v1lf_stage/manifest.json export_v1lf_staged.py \
-        export_steps.py $(SRCS)
+		$(1)/.v1lf_stage/manifest.json export_v1lf_staged.py \
+		export_steps.py $(V1LF_SRCS)
 	@mkdir -p $(1)
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=v1lf PYTHONPATH=. $(RUN) \
 	    export_v1lf_staged.py step \
@@ -590,7 +948,7 @@ $(1)/baffle_cable_routing_proud.png: $(SRCS) gen_cable_routing.py \
 	@mkdir -p $(1)
 	cd $(1) && LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=proud PYTHONPATH=.. $(RUN) ../gen_cable_routing.py
 
-$(1)/baffle_cable_routing_v1lf.png: $(SRCS) gen_cable_routing.py \
+$(1)/baffle_cable_routing_v1lf.png: $(V1LF_SRCS) gen_cable_routing.py \
         gen_driver_overlay.py $(1)/.v1lf_stage/manifest.json
 	@mkdir -p $(1)
 	cd $(1) && LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=v1lf PYTHONPATH=.. $(RUN) ../gen_cable_routing.py
@@ -646,7 +1004,8 @@ $(FLOOR_STRENGTH_REPORTS): floor_stand/.stamp_v1lf_integrated_floor_strength
 	    test -f $@; }
 
 clean:
-	rm -rf floor_stand no_floor_stand wings __pycache__ \
+	rm -rf floor_stand no_floor_stand wings .manifold-stamps .check-stamps \
+	    __pycache__ \
 	    top_baffle_nd25fw4_attachments.step
 
 endif
