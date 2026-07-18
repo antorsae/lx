@@ -60,22 +60,10 @@ GENERATED_SUFFIXES = {
     ".3mf", ".brep", ".glb", ".json", ".png", ".step", ".stl",
 }
 COMMON_ARTIFACT = "top_baffle_v2/top_baffle_nd25fw4_attachments.step"
-V1LF_BASIC_VARIANTS_ARTIFACT = (
-    "top_baffle_v2/baffle_variants_drivers_v1lf.png")
+OBIWAN_WING_DESIGN_MAP_ARTIFACT = (
+    "top_baffle_v2/obiwan_wing_design_map.png")
 CAPTIVE_MAGNET_CATALOG_ARTIFACT = (
     "top_baffle_v2/review/captive_magnet_release_catalog.json")
-WING_CONCEPT_SLUGS = (
-    "solid_lx", "solid_mid", "perforated_4k", "graded_1k_4k",
-    "open_honeycomb", "tortuous_aperiodic",
-    "vertical_aperture_gradient", "vertical_path_gradient",
-    "bimodal_apertures", "radial_edge_loaded", "radial_edge_released",
-    "solid_chirped_edge", "perimeter_frame", "solid_radial_leak_slots",
-)
-WING_CONCEPT_ARTIFACTS = (
-    *(f"top_baffle_v2/review/v1lf_wing_{slug}_concept.png"
-      for slug in WING_CONCEPT_SLUGS),
-    "top_baffle_v2/review/v1lf_wing_concepts_index.png",
-)
 SOURCE_EXCLUDED_DIRS = {
     ".remote-cad", "__pycache__", "floor_stand", "no_floor_stand",
     "review", "wings",
@@ -97,32 +85,32 @@ JOB_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$")
 HOST_RE = re.compile(r"^(?:[A-Za-z0-9_.-]+@)?[A-Za-z0-9_.-]+$")
 TARGET_RE = re.compile(r"^[A-Za-z0-9_./:+%-]+$")
 REMOTE_MAKE_TARGETS = {
-    "all", "candidate", "release", "floor_stand", "floor_v1lf",
-    "no_floor_stand", "no_floor_v1lf", "v1lf_release",
-    "wing_concepts", "v1lf_basic_variants",
-    "v1lf_basic_wings", "check_v1lf_basic_variants",
-    "common", "check", "check_captive_magnets", "check_v1lf",
-    "check_v1lf_shells",
-    "check_v1lf_t_shells", "check_v1lf_service",
-    "check_v1lf_closure_focus",
-    "check_v1lf_mouths", "check_v1lf_burial",
-    "check_v1lf_um_burial",
-    "check_v1lf_backfills", "check_v1lf_route_boundaries",
+    "all", "candidate", "release", "floor_stand", "floor_obiwan",
+    "no_floor_stand", "no_floor_obiwan", "obiwan_release",
+    "obiwan_wings",
+    "obiwan_wing_artifacts", "check_obiwan_wings",
+    "common", "check", "check_captive_magnets", "check_obiwan",
+    "check_obiwan_shells",
+    "check_obiwan_t_shells", "check_obiwan_service",
+    "check_obiwan_closure_focus",
+    "check_obiwan_mouths", "check_obiwan_burial",
+    "check_obiwan_um_burial",
+    "check_obiwan_backfills", "check_obiwan_route_boundaries",
     "check_floor_um_shell", "check_floor_t_shell",
     "check_no_floor_um_shell", "check_no_floor_t_shell",
-    "check_floor_v1lf_mouths", "check_no_floor_v1lf_mouths",
-    "check_floor_v1lf_burial", "check_no_floor_v1lf_burial",
-    "check_floor_v1lf_um_burial", "check_no_floor_v1lf_um_burial",
-    "check_floor_v1lf_backfills", "check_no_floor_v1lf_backfills",
+    "check_floor_obiwan_mouths", "check_no_floor_obiwan_mouths",
+    "check_floor_obiwan_burial", "check_no_floor_obiwan_burial",
+    "check_floor_obiwan_um_burial", "check_no_floor_obiwan_um_burial",
+    "check_floor_obiwan_backfills", "check_no_floor_obiwan_backfills",
     "check_route_contract", "check_bump_brep",
     "check_floor_integrated_mount",
-    "check_no_floor_lm_mesh", "check_v1lf_lm_split",
-    "check_v1lf_lm_profile", "check_v1lf_junction_closure_plans",
-    "check_v1lf_junction_closures",
-    "check_v1lf_lm_split_two_pin_static",
+    "check_no_floor_lm_mesh", "check_obiwan_lm_split",
+    "check_obiwan_lm_profile", "check_obiwan_junction_closure_plans",
+    "check_obiwan_junction_closures",
+    "check_obiwan_lm_split_two_pin_static",
     "manifold", "clean",
-    "validate_v1lf_stages",
-    "validate_floor_v1lf_stage", "validate_no_floor_v1lf_stage",
+    "validate_obiwan_stages",
+    "validate_floor_obiwan_stage", "validate_no_floor_obiwan_stage",
 }
 
 
@@ -1178,9 +1166,9 @@ def _write_status(job: Path, state: str, **facts: object) -> None:
     })
 
 
-def _v1lf_release_artifact_relatives(
+def _obiwan_release_artifact_relatives(
         work: Path, state: str) -> set[str]:
-    """Return the public files promised by one focused V1LF release target.
+    """Return the public files promised by one focused Obi-Wan release target.
 
     A cache seed may make every Make prerequisite a no-op, so output delivery
     cannot be inferred from files whose bytes changed during this particular
@@ -1190,21 +1178,21 @@ def _v1lf_release_artifact_relatives(
     as part of the focused printable release contract.
     """
     if state not in STATE_OUTPUT_ROOTS:
-        raise ValueError(f"unknown V1LF release state: {state!r}")
+        raise ValueError(f"unknown Obi-Wan release state: {state!r}")
     state_root = work / "top_baffle_v2" / state
-    manifest = state_root / "v1lf_release_manifest.json"
+    manifest = state_root / "obiwan_release_manifest.json"
     payload = _read_json(manifest)
     records = payload.get("artifacts")
     if not isinstance(records, dict) or not records:
         raise RuntimeError(
-            f"{state} V1LF release manifest has no artifact inventory")
+            f"{state} Obi-Wan release manifest has no artifact inventory")
     required = {manifest.relative_to(work).as_posix()}
     seen = set()
     for relative in records:
         if (not isinstance(relative, str) or not relative
                 or relative in seen):
             raise RuntimeError(
-                f"{state} V1LF release manifest has an invalid artifact key")
+                f"{state} Obi-Wan release manifest has an invalid artifact key")
         seen.add(relative)
         path = _safe_member_path(state_root, relative)
         required.add(path.relative_to(work).as_posix())
@@ -1228,28 +1216,26 @@ def _target_required_artifact_relatives(
     if target in {"all", "candidate", "release"}:
         required.update({
             COMMON_ARTIFACT,
-            V1LF_BASIC_VARIANTS_ARTIFACT,
+            OBIWAN_WING_DESIGN_MAP_ARTIFACT,
             CAPTIVE_MAGNET_CATALOG_ARTIFACT,
         })
-    elif target == "v1lf_release":
+    elif target == "obiwan_release":
         required.update({
-            V1LF_BASIC_VARIANTS_ARTIFACT,
+            OBIWAN_WING_DESIGN_MAP_ARTIFACT,
             CAPTIVE_MAGNET_CATALOG_ARTIFACT,
         })
 
     if target in {
-            "v1lf_basic_variants", "v1lf_basic_wings",
-            "check_v1lf_basic_variants"}:
-        required.add(V1LF_BASIC_VARIANTS_ARTIFACT)
+            "obiwan_wings", "obiwan_wing_artifacts",
+            "check_obiwan_wings"}:
+        required.add(OBIWAN_WING_DESIGN_MAP_ARTIFACT)
     elif target == "common":
         required.add(COMMON_ARTIFACT)
-    elif target == "wing_concepts":
-        required.update(WING_CONCEPT_ARTIFACTS)
-    elif target == "floor_v1lf":
-        required.update(_v1lf_release_artifact_relatives(
+    elif target == "floor_obiwan":
+        required.update(_obiwan_release_artifact_relatives(
             work, "floor_stand"))
-    elif target == "no_floor_v1lf":
-        required.update(_v1lf_release_artifact_relatives(
+    elif target == "no_floor_obiwan":
+        required.update(_obiwan_release_artifact_relatives(
             work, "no_floor_stand"))
     return required
 
@@ -1954,13 +1940,13 @@ def _verify_and_extract_artifacts(local_dir: Path, metadata: dict) -> Path:
 def _full_output_roots(targets: list[str]) -> set[str]:
     full = set()
     if any(target in {
-            "all", "candidate", "release", "v1lf_release",
+            "all", "candidate", "release", "obiwan_release",
     } for target in targets):
         full.update(("floor_stand", "no_floor_stand", "wings"))
     full.update(target for target in targets if target in {"floor_stand", "no_floor_stand"})
     if any(target in {
-            "v1lf_basic_variants", "v1lf_basic_wings",
-            "check_v1lf_basic_variants",
+            "obiwan_wings", "obiwan_wing_artifacts",
+            "check_obiwan_wings",
     } for target in targets):
         full.add("wings")
     return full

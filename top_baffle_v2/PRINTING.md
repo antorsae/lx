@@ -3,7 +3,7 @@
 Settings and engineering numbers for printing the piece sets in
 Bambu PLA Tough+, PLA Basic, PLA Lite, PLA Matte, or PLA Silk+ on a 0.4 mm
 nozzle, for both `floor_stand/` and
-`no_floor_stand/`. R6P proud-family pieces and the R6F V1LF collars are
+`no_floor_stand/`. R6P proud-family pieces and the R6F Obi-Wan collars are
 covered separately where their geometry diverges. Everything here
 combines manufacturer data, published reference tests, conservative
 assumptions and analytical screens. None substitutes for owner-specific
@@ -15,7 +15,7 @@ coupon and assembly proof. PLA's governing weakness for this job is
 Drivers are the LX521.4 production SEAS customs: "W22" rows = the
 U22REX/P-SL (H1659-08), "10F" rows = the MU10RB-SL (H1658-04) — same
 cutout/pilot geometry, real flanges O220.6 x 6.0 / O98 x 4.0
-(owner-measured; see the V1LF recess note below).
+(owner-measured; see the Obi-Wan recess note below).
 
 The baffle carries ~3.2 kg of drivers: W22 ~2.6 kg on six inserts,
 10F 0.43 kg on four, and the ND25 pair ~0.2 kg clamped. Static load per
@@ -28,7 +28,7 @@ bridge-web load case is treated explicitly below. PLA still relaxes
 | Fastener | Spec | Torque | Notes |
 |---|---|---|---|
 | W22 | M5 x 14 pan + flat washer into M5 x 5.8 x O6.3 heat-set (bore O6.4 x 6.8) | 0.8–1.0 N·m | wave washers; re-torque at 24 h and ~2 weeks |
-| W22 on **V1LF** | **M5 x 12** pan + flat washer into carrier heat-sets | 0.8–1.0 N·m | all six 0/60/120/180/240/300° sites are ordinary blind carrier inserts in both states; floor mode has no secondary support inserts or long through-screws |
+| W22 on **Obi-Wan** | **M5 x 12** pan + flat washer into carrier heat-sets | 0.8–1.0 N·m | all six 0/60/120/180/240/300° sites are ordinary blind carrier inserts in both states; floor mode has no secondary support inserts or long through-screws |
 | 10F | M3 x 8 into M3 x 3 x O5 heat-set (bore O4.6 x 4.0) | 0.30–0.40 N·m | short engagement — do not overdrive |
 | R6P bridge (no-stand) | M5 machine screw from the bridge (behind) into M5 x 5.8 x O6.3 heat-set (bore O6.4 x 6.8, REAR face) | hand-snug | 4 off; same insert as the W22, set from the rear |
 | R6F collar half-laps | 2 x M3 through-bolts + washers/nuts; choose length against the printed 11.5 mm stack | hand-snug | structural UM/tweeter-to-LM load path; tighten evenly on a flat front-face datum |
@@ -147,7 +147,7 @@ unloaded residual set no greater than **0.5 mm or 10% of loaded deflection**,
 then hold **1.5× service load for at least 168 h** for the creep gate.
 Record the exact per-state candidate identity, print/insert process,
 fixture, load history, temperature, deflection, damage inspection and
-release signoff in `V1LF_PHYSICAL_QUALIFICATION.md`.
+release signoff in `obiwan_physical_qualification.md`.
 
 **Temperature limit:** Bambu publishes a **61 °C heat-deflection
 temperature (0.45 MPa)** for PLA Tough+; that is not a guaranteed Tg or
@@ -283,7 +283,7 @@ Contained full-depth R3.20 keeps support the 45° conical closures and both
 0.45 mm skins without changing the front outline, driver seat, or insert
 bores. V0 still has no released mating part or pairing polarity.
 
-The floor and no-floor canonical V1LF LM monoliths intentionally have no P2S
+The floor and no-floor canonical Obi-Wan LM monoliths intentionally have no P2S
 pause rows: neither fits the bed front-face-down. The manifest identifies each
 as not P2S-printable and binds its four source-identical cavity contracts to
 the same-state keyed bottom/top halves. Use only the actual keyed-half pause
@@ -310,7 +310,7 @@ large parts:
 5. `lx521_coupon_5_fish_ts_dive.stl` — proud-family tweeter notch
    passage.
 6. `lx521_coupon_6_fish_foot.stl` — stand-foot R14 elbow pair.
-7. `lx521_coupon_7_recess_seat.stl` — actual V1LF LM-core seat sector
+7. `lx521_coupon_7_recess_seat.stl` — actual Obi-Wan LM-core seat sector
    and rear insert pad.
    Put the U22 cone-up on its magnet and
    lower the coupon front-face-down over the flange edge; check
@@ -322,13 +322,13 @@ large parts:
    238/328-degree mounting screws and their 283-degree terminal
    midpoint. Place it against the physical MU and record where the
    actual tabs, boots, and carrier land.
-12. `lx521_coupon_12_v1lf_closed_bore_bump.stl` — state-specific R6F
+12. `lx521_coupon_12_obiwan_closed_bore_bump.stl` — state-specific R6F
     LM-collar sector around the 300° axis, including the enclosed tunnel and
     full-width solid saddle from conduit roof to the ordinary blind insert
     floor; there is no trapped hollow and no cable is exposed.
 
 Before any captive-magnet production run, also print and slice the dedicated
-reference in `coupons/v1lf_ae_embed/`. Its source and README define the proven
+reference in `coupons/obiwan_ae_embed/`. Its source and README define the proven
 cradle/skin/roof implementation and the 5.96/8.52 mm regression markers.
 R6P uses a short curved split grommet that follows the final R14 bore;
 print `lx521_top_proud_addon_um_grommet_half_{a,b}.stl` and test it with
@@ -341,7 +341,7 @@ halves. The V1L TPU insert follows the keyed R14 with a Ø8 body around a
 face. Test both halves around the measured cable and in the printed
 `mid_right`; the analytic model clears the Faston motion box, but the
 real terminals and boots remain the release gate.
-V1LF has no printed grommet or tunnel clip. Any selected external cable
+Obi-Wan has no printed grommet or tunnel clip. Any selected external cable
 retention remains **physical-fit pending** and must clear the buried-route
 mouth, free cable, driver and Faston service envelopes with the measured UM cable.
 
@@ -350,7 +350,7 @@ mouth, free cable, driver and Faston service envelopes with the measured UM cabl
   the connector channel's ~38 mm ceiling; use build-plate-only tree
   supports only if the preview shows an unsafe bridge, and paint
   support blockers over every duct bore.
-* **V1LF collar recesses (front-down = seat floor is a ceiling over
+* **Obi-Wan collar recesses (front-down = seat floor is a ceiling over
   the bed):** the LM and UM annuli bridge 6.0 / 4.0 mm above the bed.
   Add **normal supports painted into the two seat rings only**
   (support/raft gap 0.2, 2 dense interface
@@ -411,7 +411,7 @@ mouth, free cable, driver and Faston service envelopes with the measured UM cabl
   `PHYSICAL_MEASURE_REQUIRED = True`. The 12 mm maximum modeled pull
   equals the provisional exposed-tab length, so it has zero positive
   release overtravel margin and qualification remains pending.
-  Complete `V1LF_PHYSICAL_QUALIFICATION.md` against the real hardware and
+  Complete `obiwan_physical_qualification.md` against the real hardware and
   structural proof loads for each stand state; the pending record is
   checksum-bound into generated candidate manifests but authorizes no release.
 * **R6P seam:** align it on the outline's rear/hidden edges —
@@ -480,7 +480,7 @@ exception and intentionally have no `.print.json` sidecars.
    tail is wholly in `piece_mid_right`, so no special fishing or
    modification of the top/vase is required.
 
-### R6F V1LF
+### R6F Obi-Wan
 
 R6F has a UM passage buried only in LM, a T passage buried in LM/UM, free
 rear spans behind UM and the tweeter crescent, and a separate un-ducted LM
@@ -518,7 +518,7 @@ central T free-cable mouth is intentional and must remain unobstructed.
    conduit, socket, or horn. If the crescent is used, position the free cable
    before bolting the direct ears at x=±24, y=421.5; do not trap it behind the
    blind-M3 joint.
-4. V1LF has no printed UM grommet. Fit only the selected external cable
+4. Obi-Wan has no printed UM grommet. Fit only the selected external cable
    retention after successful dry-fishing, and keep it out of the buried-route
    mouths, free cable paths, and Faston pull envelope.
 
@@ -551,22 +551,22 @@ connector or revise the service geometry.
   removal stroke, cable, and dedicated V1L split grommet remain
   mandatory release checks even when the analytic route checks pass.
 
-### R6F V1LF barebone
+### R6F Obi-Wan barebone
 
 Before hardware assembly, inspect
-`top_baffle_nd25fw4_v1lf_split.step` for the mandatory core,
-`top_baffle_nd25fw4_v1lf_lm_split.step` if the optional two-print LM form is
+`top_baffle_nd25fw4_obiwan_split.step` for the mandatory core,
+`top_baffle_nd25fw4_obiwan_lm_split.step` if the optional two-print LM form is
 selected,
-`top_baffle_nd25fw4_v1lf_attachments.step` for the selected printed
-modules, and `top_baffle_nd25fw4_v1lf_assembled.step` with
+`top_baffle_nd25fw4_obiwan_attachments.step` for the selected printed
+modules, and `top_baffle_nd25fw4_obiwan_assembled.step` with
 `top_baffle_nd25fw4_um_fit.step` for the service keep-clear. The last
 two contain reference geometry and are not an instruction to print the
 Faston proxy.
 
 Choose exactly one LM print form for each state: either the canonical
-`lx521_top_v1lf_core_1of2_lm_carrier.stl`, or both
-`lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl` and
-`lx521_top_v1lf_optional_lm_keyed_2of2_top.stl`. The optional seam is at world
+`lx521_top_obiwan_core_1of2_lm_carrier.stl`, or both
+`lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl` and
+`lx521_top_obiwan_optional_lm_keyed_2of2_top.stl`. The optional seam is at world
 Y=172.481 mm with a closed zero-gap planar butt. Before step 4, place both
 front faces down on one flat datum. With the bottom stationary, move the top
 straight along world -Y and seat both bottom-owned Ø0.80 +Y pins together—one
@@ -629,7 +629,7 @@ pause rows. No monolith pause is synthesized.
    optional modules needed. Attach the tweeter
    crescent directly at x=±24, y=421.5
    with two rear-driven M3 screws into its blind inserts; no bolt head
-   may break the acoustic front. V1LF has no printed grommet; keep the
+   may break the acoustic front. Obi-Wan has no printed grommet; keep the
    selected external cable retention outside the buried-route mouths and free
    cable paths; do not rely on it until its physical cable/retention fit passes.
    Keep every module clear of all driver, service, buried-route, and free

@@ -3,7 +3,7 @@
 This front-bevel V0 sketch was superseded by the implemented REAR-side
 V0 bevel and by R6P/R6F routing.  In particular, there is no current
 cutout-wall or vase-corridor exit: proud R6P
-ends below seam B in a continuous R14 rear outlet. Skeletal V1LF prints its
+ends below seam B in a continuous R14 rear outlet. Skeletal Obi-Wan prints its
 UM passage only through LM and its T passage only through LM/UM, with free
 spans behind UM and the tweeter crescent and covered local Z bumps around
 inserts. The generated

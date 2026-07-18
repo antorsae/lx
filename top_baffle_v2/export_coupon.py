@@ -15,7 +15,7 @@ baffle pieces. The slicer may translate/arrange them but must not reorient.
   4 um_outlet_proud  real B2 outline + the complete R6P R14 outlet
   5 fish_ts_dive the proud R6P TS notch/oval at full 18.3 depth
   6 fish_foot    a stand-foot R14 elbow pair
-  7 recess_seat  V1LF core: a U22REX/P-SL recess-seat sector with
+  7 recess_seat  Obi-Wan core: a U22REX/P-SL recess-seat sector with
                  ~25 mm of through-void inboard of the
                  D190 cutout edge, the rotated 240-deg insert bore over its
                  rear pad. METHOD -- you never lower
@@ -31,7 +31,7 @@ baffle pieces. The slicer may translate/arrange them but must not reorient.
   8 fish_ts_oval_proud  proud-family tweeter oval/morph rehearsal
  9 um_faston_clocking  D104 clocking gauge: screw marks 238/328 and
                  terminal witness at their exact 283 degree midpoint
- 12 v1lf_closed_bore_bump  state-specific R6F LM-collar sector at the
+ 12 obiwan_closed_bore_bump  state-specific R6F LM-collar sector at the
                  300-deg axis: continuous D8.2 tunnel cover, preserved
                  pad/clearance, and the complete smooth rear Z bump
 
@@ -139,12 +139,12 @@ COUPON_GROUPS = (
 )
 
 _STATEFUL_MODULES = (
-    "top_baffle_nd25fw4_v1lf_attachments",
-    "top_baffle_nd25fw4_v1lf_assembled",
-    "top_baffle_nd25fw4_v1lf_split",
-    "top_baffle_nd25fw4_v1lf",
-    "top_baffle_nd25fw4_v1lf_route",
-    "top_baffle_nd25fw4_v1lf_bridge",
+    "top_baffle_nd25fw4_obiwan_attachments",
+    "top_baffle_nd25fw4_obiwan_assembled",
+    "top_baffle_nd25fw4_obiwan_split",
+    "top_baffle_nd25fw4_obiwan",
+    "top_baffle_nd25fw4_obiwan_route",
+    "top_baffle_nd25fw4_obiwan_bridge",
     "top_baffle_nd25fw4_um_fit",
     "top_baffle_nd25fw4_flush",
     "top_baffle_nd25fw4_cables",
@@ -233,16 +233,16 @@ def _fishing_pieces(target_mode: str, only: str | None = None) -> dict:
                            0.0, "lm_core"),
         "8_fish_ts_oval_proud": ("1", (-58.0, 318.0, 2.0, 430.0),
                                    0.0, None),
-        "12_v1lf_closed_bore_bump": (
+        "12_obiwan_closed_bore_bump": (
             target_mode, (62.0, 118.0, 122.0, 180.0),
-            -14.0 if target_mode == "1" else -7.0, "v1lf_bump"),
+            -14.0 if target_mode == "1" else -7.0, "obiwan_bump"),
     }
     out = {}
     for name, (mode, (x0, y0, x1, y1), z0, special) in specs.items():
         if only is not None and name != only:
             continue
-        profile = ("v1lf" if special in
-                   {"lm_core", "v1lf_bump", "um_core"} else "proud")
+        profile = ("obiwan" if special in
+                   {"lm_core", "obiwan_bump", "um_core"} else "proud")
         _set_state(mode, profile)
         from build123d import Box, Pos
         from top_baffle_nd25fw4 import THICKNESS_MM
@@ -256,8 +256,8 @@ def _fishing_pieces(target_mode: str, only: str | None = None) -> dict:
             from top_baffle_nd25fw4_b import TWEETER_DROP_MM
             from top_baffle_nd25fw4_b2 import OUTLINE_B2
             blk = baffle_solid(OUTLINE_B2, TWEETER_DROP_MM) & crop
-        elif special in {"lm_core", "v1lf_bump", "um_core"}:
-            from top_baffle_nd25fw4_v1lf import lm_carrier, um_carrier
+        elif special in {"lm_core", "obiwan_bump", "um_core"}:
+            from top_baffle_nd25fw4_obiwan import lm_carrier, um_carrier
             blk = (um_carrier() if special == "um_core"
                    else lm_carrier()) & crop
             # Coupon 7's current x=-82..-22/y=84..141 seat crop contains no
@@ -266,7 +266,7 @@ def _fishing_pieces(target_mode: str, only: str | None = None) -> dict:
             # lands outside it.
         else:
             blk = crop
-        if special not in {"lm_core", "v1lf_bump", "um_core"}:
+        if special not in {"lm_core", "obiwan_bump", "um_core"}:
             for c in cab.cable_cutters():
                 blk -= c
         out[name] = blk
@@ -302,7 +302,7 @@ def _clocking_piece(target_mode: str):
     import math
     from build123d import Box, Cylinder, Pos, Rot
 
-    _set_state(target_mode, "v1lf")
+    _set_state(target_mode, "obiwan")
 
     from top_baffle_nd25fw4 import (UM_PILOT_D_MM, UM_PILOT_PCD_MM,
                                     UM_TERMINAL_CLOCK_DEG)
@@ -328,7 +328,7 @@ _FISHING_GROUPS = {
     "fish_6": "6_fish_foot",
     "seat_7": "7_recess_seat",
     "fish_8": "8_fish_ts_oval_proud",
-    "bump_12": "12_v1lf_closed_bore_bump",
+    "bump_12": "12_obiwan_closed_bore_bump",
 }
 
 _EXPECTED_COUPON_FILES = {
@@ -341,7 +341,7 @@ _EXPECTED_COUPON_FILES = {
     "lx521_coupon_7_recess_seat.stl",
     "lx521_coupon_8_fish_ts_oval_proud.stl",
     "lx521_coupon_9_um_faston_clocking.stl",
-    "lx521_coupon_12_v1lf_closed_bore_bump.stl",
+    "lx521_coupon_12_obiwan_closed_bore_bump.stl",
 }
 
 _EXPECTED_COUPON_SIDECARS = {
@@ -366,11 +366,11 @@ def _prune_legacy_coupon_outputs(stl_dir: Path) -> None:
         "lx521_coupon_4_fish_um_bend.stl",
         "lx521_coupon_4_fish_um_exit.stl",
         "lx521_coupon_8_fish_um_oval.stl",
-        "lx521_coupon_12_v1lf_open_bore_jump.stl",
-        "lx521_coupon_13_v1lf_crown_crossover.stl",
+        "lx521_coupon_12_obiwan_open_bore_jump.stl",
+        "lx521_coupon_13_obiwan_crown_crossover.stl",
         "lx521_coupon_10_um_split_grommet_half_a.stl",
         "lx521_coupon_11_um_split_grommet_half_b.stl",
-        "lx521_coupon_14_v1lf_grommet_receiver.stl",
+        "lx521_coupon_14_obiwan_grommet_receiver.stl",
     }
     for name in stale:
         stl_path = stl_dir / name
@@ -381,7 +381,7 @@ def _prune_legacy_coupon_outputs(stl_dir: Path) -> None:
 def _run_group_guarded(group: str, stl_dir: Path, target_mode: str) -> None:
     env = os.environ.copy()
     env["LX_STAND_FOOT"] = target_mode
-    # The group builder selects V1LF only for R6F coupons. Start from the
+    # The group builder selects Obi-Wan only for R6F coupons. Start from the
     # proud profile so inherited shell state can never trip proud imports.
     env["LX_ROUTING_PROFILE"] = "proud"
     guard = Path(__file__).with_name("run_memory_guarded.py")

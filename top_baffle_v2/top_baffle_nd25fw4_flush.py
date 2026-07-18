@@ -1,10 +1,10 @@
-"""Shared flush-seat, pilot and LM-pad dimensions for skeletal V1LF.
+"""Shared flush-seat, pilot and LM-pad dimensions for skeletal Obi-Wan.
 
 R6F builds the two carrier rings directly in
-``top_baffle_nd25fw4_v1lf.py``; it no longer thins a complete B2/V1L
+``top_baffle_nd25fw4_obiwan.py``; it no longer thins a complete B2/V1L
 field. Its LM-owned UM passage and LM/UM-owned T passage segments, including
 their covered Z bumps, are owned by
-``top_baffle_nd25fw4_v1lf_route.py``.  The field-cutter
+``top_baffle_nd25fw4_obiwan_route.py``.  The field-cutter
 helpers at the bottom remain only for opening pre-R6 artifacts/coupons.
 
 Drivers (LX521.4 production, SEAS "-SL" customs -- NOT the LX521
@@ -18,20 +18,20 @@ before printing full pieces (a too-deep seat sinks the flange and
 re-introduces a diffraction step at the rim).
 
 SL's construction notes say the mids "must not be recessed" -- the
-LX521.4 was voiced with proud flanges. V1LF is a deliberate
+LX521.4 was voiced with proud flanges. Obi-Wan is a deliberate
 experiment arm against that baseline (DSP re-EQ per configuration),
 not a build error.
 
 The core rear is z=6.8 and each surviving printed R6F passage ends in a plain,
 service-accessible flush mouth at its owner boundary. Insert bypasses within
 those printed spans are continuously covered. The UM cable then floats behind
-UM and T floats behind the tweeter crescent; no V1LF printed grommet or split
+UM and T floats behind the tweeter crescent; no Obi-Wan printed grommet or split
 clip is modeled. Re-measure both physical flange edges before printing;
 owner-measured values still override the nominal datasheet thicknesses below.
 
 The W22-ring insert bores would break through the 11.5 plate once the
 seat drops the front face to z=12.3 (bore floor 5.5 < rear plane 6.8),
-so V1LF keeps six pad buttons of material on the rear (nominal lower
+so Obi-Wan keeps six pad buttons of material on the rear (nominal lower
 face z=5.3, joining the carrier at z=6.8): the legacy V1L field cutters
 are pre-punched with pad-shaped
 reliefs rather than unioning bosses on afterwards (monolithic, no
@@ -83,7 +83,7 @@ UM_RECESS_R = (UM_FLANGE_D_MM + RECESS_CLR_MM) / 2.0   # 49.3
 # 0.8 -- the earlier flared/offset O13 version breached the seam
 # plane and got sliced at the piece edge. NOTE: the shallower bore
 # means an M5 x 14 + washer can bottom out before clamping -- use
-# M5 x 12 at the U22 on V1LF (see PRINTING.md).
+# M5 x 12 at the U22 on Obi-Wan (see PRINTING.md).
 LM_INSERT_L_MM = 5.8
 LM_BORE_DEPTH_MM = LM_INSERT_L_MM + 0.4    # 6.2
 PAD_FLOOR_MM = 0.8
@@ -100,9 +100,9 @@ UM_PAD_FLOOR_MM = 0.8
 _LM_C = (L22_CUTOUT[0], L22_CUTOUT[1])
 _UM_C = (UM_CUTOUT[0], UM_CUTOUT[1])
 
-# V1LF alone rotates the W22 pattern by -30 degrees.  Proud/V1L keep
+# Obi-Wan alone rotates the W22 pattern by -30 degrees.  Proud/V1L keep
 # the production 30/90/... clock from ``top_baffle_nd25fw4.py``.
-V1LF_LM_PILOT_ANGLES_DEG = (0.0, 60.0, 120.0, 180.0, 240.0, 300.0)
+OBIWAN_LM_PILOT_ANGLES_DEG = (0.0, 60.0, 120.0, 180.0, 240.0, 300.0)
 
 
 def _pilot_xy(center, pcd, angles):
@@ -112,7 +112,7 @@ def _pilot_xy(center, pcd, angles):
 
 
 LM_PILOT_XY = _pilot_xy(
-    _LM_C, L22_PILOT_PCD_MM, V1LF_LM_PILOT_ANGLES_DEG)
+    _LM_C, L22_PILOT_PCD_MM, OBIWAN_LM_PILOT_ANGLES_DEG)
 UM_PILOT_XY = _pilot_xy(_UM_C, UM_PILOT_PCD_MM, UM_PILOT_ANGLES_DEG)
 
 
@@ -169,7 +169,7 @@ def pad_relief_cylinders():
     return out
 
 
-def v1lf_field_cutters():
+def obiwan_field_cutters():
     """V1L bottom/mids field cutters with the pad reliefs punched out
     (ramp loft included -- the bottom pad straddles the ramp end)."""
     import top_baffle_nd25fw4_v1l as v1l
@@ -183,7 +183,7 @@ def v1lf_field_cutters():
 
 
 def ceiling_at(x, y):
-    """Front-side duct ceiling in V1LF: the recess seats replace the
+    """Front-side duct ceiling in Obi-Wan: the recess seats replace the
     front plane inside the flange rings."""
     if math.dist((x, y), _LM_C) <= LM_RECESS_R:
         return LM_SEAT_Z

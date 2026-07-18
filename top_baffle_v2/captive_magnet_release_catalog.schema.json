@@ -33,7 +33,7 @@
         },
         "printer_contact": {"const": "forbidden; offline slicing only"},
         "oversize_policy": {
-          "const": "never scale, tilt, clip, or virtual-bed an oversized STL; the V1LF LM monolith is explicitly not P2S-printable and its cavity G-code is covered only by exact same-state keyed split artifacts"
+          "const": "never scale, tilt, clip, or virtual-bed an oversized STL; the Obi-Wan LM monolith is explicitly not P2S-printable and its cavity G-code is covered only by exact same-state keyed split artifacts"
         }
       }
     },
@@ -269,7 +269,7 @@
         {
           "if": {
             "properties": {
-              "variant": {"enum": ["V1LF-Ac", "V1LF-Ae"]}
+              "variant": {"enum": ["Obi-Wan-Ac", "Obi-Wan-Ae"]}
             },
             "required": ["variant"]
           },
@@ -283,7 +283,7 @@
         {
           "if": {
             "properties": {
-              "variant": {"enum": ["V1LF", "V1LF-split"]}
+              "variant": {"enum": ["Obi-Wan", "Obi-Wan-split"]}
             },
             "required": ["variant"]
           },

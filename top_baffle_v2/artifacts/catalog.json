@@ -1,0 +1,29 @@
+{
+  "products": [
+    {
+      "file_count": 35,
+      "manifest": "standard/manifest.json",
+      "manifest_sha256": "4d3b16206ac1157766941799511bfc7f213115cddc6657fac8ae1651af63f744",
+      "product": "standard",
+      "release_authorized": null,
+      "status": "canonical_cad"
+    },
+    {
+      "file_count": 31,
+      "manifest": "slim/manifest.json",
+      "manifest_sha256": "0d3c81cd33795ca4079421cf291b7a0859401afbd2f5d980790fc73dbbb35294",
+      "product": "slim",
+      "release_authorized": false,
+      "status": "experimental_cad"
+    },
+    {
+      "file_count": 86,
+      "manifest": "obiwan/manifest.json",
+      "manifest_sha256": "80dec8b4a3b3576d23b80132b6943e3d35ac38514391178bc545943879cc6dd4",
+      "product": "obiwan",
+      "release_authorized": false,
+      "status": "candidate_not_release_authorized"
+    }
+  ],
+  "schema_version": 1
+}

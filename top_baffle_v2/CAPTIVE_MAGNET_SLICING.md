@@ -5,7 +5,7 @@ D5 x 2 magnet system. It resolves the installed Bambu presets, slices every
 catalogued STL that fits the P2S bed in its mandatory front-face-down
 orientation, reads the actual G-code layer schedule, checks the open cradle
 and closing roof toolpaths, and writes the authoritative pause manifest. The
-two canonical V1LF LM monoliths are catalogued release artifacts but are
+two canonical Obi-Wan LM monoliths are catalogued release artifacts but are
 explicitly classified as not P2S-printable; their cavity audits are supplied
 by exact same-state keyed halves as described below.
 
@@ -36,8 +36,8 @@ The remote CAD build writes
 `captive_magnet_release_catalog.schema.json`.
 
 The catalog records the 64-hex content-addressed osado source snapshot and a
-SHA-256 for every listed artifact source. V1LF records additionally bind the
-exact state `.v1lf_stage/manifest.json`; Ac/Ae records bind their facts and
+SHA-256 for every listed artifact source. Obi-Wan records additionally bind the
+exact state `.obiwan_stage/manifest.json`; Ac/Ae records bind their facts and
 transaction manifests. The catalog itself is rendered beside the current
 authority, normalized against the checked-in schema, and checked against all
 artifact bindings before one atomic replacement. A failed generation cannot
@@ -55,10 +55,10 @@ segments. A count change is a source-level release change, not something the
 generator silently accepts. Non-print compound STEP review packages are not
 separate prints; their constituent STLs are present in this inventory.
 
-### Oversized canonical V1LF LM policy
+### Oversized canonical Obi-Wan LM policy
 
 The floor and no-floor canonical
-`lx521_top_v1lf_core_1of2_lm_carrier.stl` monoliths each have an approximately
+`lx521_top_obiwan_core_1of2_lm_carrier.stl` monoliths each have an approximately
 235.61 x 313.35 mm mandatory front-face-down footprint. They therefore do not
 fit the P2S 256 x 256 mm bed. They remain valid large-format release CAD/STL,
 but the P2S audit does **not** slice them, generate G-code for them, or publish
@@ -67,8 +67,8 @@ or tilts a monolith to manufacture a passing result.
 
 Each of the monolith's four cavity stations maps one-to-one to the matching
 station in the **same floor state** on
-`lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl` or
-`lx521_top_v1lf_optional_lm_keyed_2of2_top.stl`. Before accepting that mapping,
+`lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl` or
+`lx521_top_obiwan_optional_lm_keyed_2of2_top.stl`. Before accepting that mapping,
 the consumer requires an identical source-space cavity contract: station and
 closure kind, cavity and seated centers, installed/marked axes, actual face
 and material-inward direction where applicable, magnet/cavity dimensions,
@@ -95,12 +95,12 @@ exclusions, and complete artifact IDs):
   "schema_version": 1,
   "source_revision": "0000000000000000000000000000000000000000000000000000000000000000",
   "artifacts": [{
-    "id": "no_floor_stand:V1LF:lx521_top_v1lf_core_1of2_lm_carrier",
+    "id": "no_floor_stand:Obi-Wan:lx521_top_obiwan_core_1of2_lm_carrier",
     "state": "no_floor_stand",
-    "variant": "V1LF",
-    "part": "lx521_top_v1lf_core_1of2_lm_carrier",
-    "stl": "../no_floor_stand/stl/lx521_top_v1lf_core_1of2_lm_carrier.stl",
-    "source_files": ["../top_baffle_nd25fw4_v1lf.py"],
+    "variant": "Obi-Wan",
+    "part": "lx521_top_obiwan_core_1of2_lm_carrier",
+    "stl": "../no_floor_stand/stl/lx521_top_obiwan_core_1of2_lm_carrier.stl",
+    "source_files": ["../top_baffle_nd25fw4_obiwan.py"],
     "print_orientation": "front_face_down",
     "source_to_stl_matrix": [
       [1, 0, 0, 0],
@@ -167,12 +167,12 @@ python3 slice_captive_magnets.py --jobs 2
 # Resume a complete run with the content-addressed cache. A filtered run is
 # diagnostic only: it writes subset_slice_results.json and can never replace
 # the authoritative release-wide JSON/CSV/Markdown manifests.
-python3 slice_captive_magnets.py --only '*V1LF*' --jobs 2
+python3 slice_captive_magnets.py --only '*Obi-Wan*' --jobs 2
 ```
 
 Canonical publication is fail-closed and release-wide. The slicer first
 copies the exact catalog, schema, STL, adjacent print sidecar, source files,
-V1LF stage manifest, and Ac/Ae facts/transaction manifest into a read-only
+Obi-Wan stage manifest, and Ac/Ae facts/transaction manifest into a read-only
 staging tree. It slices those frozen STL bytes, then rechecks the live and
 staged hashes, resolved profiles, and Bambu Studio binary. Only exact coverage
 of all 56 artifacts / 102 stations with zero failures may transactionally

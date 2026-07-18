@@ -3,7 +3,7 @@
     "collapsed_apex_facets_removed": 0,
     "component_error": 0,
     "component_signed_volumes": [
-      105.62741593591157
+      105.62741551247329
     ],
     "components": 1,
     "degenerate": 0,
@@ -16,7 +16,7 @@
     "open": 0,
     "outer_components": 1,
     "over_shared": 0,
-    "signed_volume": 105.62741593591157,
+    "signed_volume": 105.62741551247329,
     "triangles": 1152,
     "winding": 0,
     "zero_volume": 0,
@@ -26,7 +26,7 @@
   "pre_translation_bbox_min_mm": [
     7.6994300672208595,
     -314.1187962128859,
-    -12.370468699981
+    -12.37046869998099
   ],
   "print_orientation": "front_face_down",
   "rotation_deg": {
@@ -51,7 +51,7 @@
       0.0,
       0.0,
       -1.0,
-      12.370468699981
+      12.37046869998099
     ],
     [
       0.0,
@@ -65,8 +65,8 @@
   "stl_origin_translation_mm": [
     -7.6994300672208595,
     314.1187962128859,
-    12.370468699981
+    12.37046869998099
   ],
-  "stl_sha256": "088a357b79b047c0047492783ccf699f3f782c45629737602b3abffd70e594ea",
+  "stl_sha256": "6892d4af87de0b0fa4000c66bc7c5b625bde5f953f1c61febcc1578767ce5fe3",
   "variant_export": "v1l"
 }

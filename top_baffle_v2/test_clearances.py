@@ -1,8 +1,8 @@
 """Analytic clearance regression suite for the top-baffle geometry.
 
 Checks the proud/V1L clearances the README/module comments promise. The
-final V1LF R6F source and OCC acceptance gates live in
-``test_v1lf_r6f.py`` so superseded route experiments cannot define release.
+final Obi-Wan R6F source and OCC acceptance gates live in
+``test_obiwan_r6f.py`` so superseded route experiments cannot define release.
 
   * duct-duct 3D centerline separation >= r_a + r_b + 1.5 (both
     LX_STAND_FOOT states; planar MAINS only -- the entry-ramp mouths
@@ -56,7 +56,7 @@ def _routes(stand_foot: bool, routing_profile: str = "proud",
 
     ``um_handoff_key`` is intentionally independent of
     ``LX_ROUTING_PROFILE``: V1L remains in the subtractive proud family
-    but selects its own terminal-axis handoff.  V1LF still owns its
+    but selects its own terminal-axis handoff.  Obi-Wan still owns its
     separate integral route and therefore rejects a keyed proud tail.
     """
     if routing_profile != "proud" and um_handoff_key != "proud":
@@ -1088,8 +1088,8 @@ def test_route_smoothness():
                 f"(foot={stand_foot})")
         print(f"  route smoothness OK (foot={stand_foot})")
 
-    # Proud's full outlet must remain here. V1LF's closed Z-first paths
-    # are owned by the guarded final R6F suite in test_v1lf_r6f.py.
+    # Proud's full outlet must remain here. Obi-Wan's closed Z-first paths
+    # are owned by the guarded final R6F suite in test_obiwan_r6f.py.
     cab = _cab(False, "proud")
     handoff_r = _min_three_point_radius(
         np.asarray(cab.um_handoff_points(n=160)))
@@ -1456,7 +1456,7 @@ def test_seam_keys_vs_ducts():
     for cx, _n, h, d in DOVETAILS_B:
         rects.append((cx - h / 2 - 0.1, cx + h / 2 + 0.1,
                       SEAM_B_Y - d - 0.1, SEAM_B_Y + d + 0.1))
-    # R6F V1LF is two rings with half-laps; it has no B2 seam keys.
+    # R6F Obi-Wan is two rings with half-laps; it has no B2 seam keys.
     for cy, _n, h, d in DOVETAILS_C:
         rects.append((SEAM_C_X - d - 0.1, SEAM_C_X + d + 0.1,
                       cy - h / 2 - 0.1, cy + h / 2 + 0.1))
@@ -1712,8 +1712,8 @@ def test_margin_dashboard():
                     "V1 upper cavity floor wall (-1.4 rule)"))
     # R6F core facts and proud exact normal-distance outlet margin.
     import top_baffle_nd25fw4_flush as fl
-    import top_baffle_nd25fw4_v1lf as core
-    import top_baffle_nd25fw4_v1lf_route as vroute
+    import top_baffle_nd25fw4_obiwan as core
+    import top_baffle_nd25fw4_obiwan_route as vroute
     from shapely.geometry import LineString, Polygon
     from gen_driver_overlay import outline_polygon
     from top_baffle_nd25fw4_b2 import OUTLINE_B2
@@ -1753,21 +1753,21 @@ def test_margin_dashboard():
                     "V1L UM terminal-span bend over R12.5"))
     facts = vroute.route_facts()
     entries.append((facts["min_plan_normal_wall_mm"] - 0.8,
-                    "V1LF exact plan-normal tunnel wall (-0.8)"))
+                    "Obi-Wan exact plan-normal tunnel wall (-0.8)"))
     entries.append((facts["lm_roof_mm"] - 0.8,
-                    "V1LF UM tunnel seat roof (-0.8)"))
+                    "Obi-Wan UM tunnel seat roof (-0.8)"))
     entries.append((facts["bridge_side_wall_mm"] - 0.8,
-                    "V1LF UM closed-cover skin (-0.8)"))
+                    "Obi-Wan UM closed-cover skin (-0.8)"))
     entries.append((facts["ts_lm_roof_mm"] - 0.8,
-                    "V1LF tweeter tunnel roof (-0.8)"))
+                    "Obi-Wan tweeter tunnel roof (-0.8)"))
     entries.append((facts["ts_bridge_side_wall_mm"] - 0.8,
-                    "V1LF tweeter closed-cover skin (-0.8)"))
+                    "Obi-Wan tweeter closed-cover skin (-0.8)"))
     entries.append((core.LM_CORE_R - fl.LM_RECESS_R - 2.4,
-                    "V1LF LM outer lip (-2.4 rule)"))
+                    "Obi-Wan LM outer lip (-2.4 rule)"))
     entries.append((core.UM_CORE_R - fl.UM_RECESS_R - 2.4,
-                    "V1LF UM outer lip (-2.4 rule)"))
+                    "Obi-Wan UM outer lip (-2.4 rule)"))
     entries.append((fl.LM_SEAT_Z - fl.PAD_FACE_Z - fl.LM_BORE_DEPTH_MM
-                    - 0.75, "V1LF insert stack over pad (-0.75 rule)"))
+                    - 0.75, "Obi-Wan insert stack over pad (-0.75 rule)"))
     entries.sort()
     print("  tightest margins (mm over the rule):")
     for m, label in entries[:15]:

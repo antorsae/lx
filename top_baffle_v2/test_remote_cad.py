@@ -184,11 +184,11 @@ def _cached_public_output_fixture(root: Path) -> tuple[Path, dict[str, Path]]:
         return path
 
     floor_artifacts = {
-        "stl/v1lf-print.stl": {"sha256": "fixture"},
-        "baffle_cable_routing_v1lf.png": {"sha256": "fixture"},
+        "stl/obiwan-print.stl": {"sha256": "fixture"},
+        "baffle_cable_routing_obiwan.png": {"sha256": "fixture"},
     }
     output(
-        "top_baffle_v2/floor_stand/v1lf_release_manifest.json",
+        "top_baffle_v2/floor_stand/obiwan_release_manifest.json",
         json.dumps({"artifacts": floor_artifacts}))
     for relative in floor_artifacts:
         output(f"top_baffle_v2/floor_stand/{relative}")
@@ -196,10 +196,8 @@ def _cached_public_output_fixture(root: Path) -> tuple[Path, dict[str, Path]]:
     output("top_baffle_v2/no_floor_stand/stl/no-floor.stl")
     output("top_baffle_v2/wings/ac/stl/wing.stl")
     output(remote.COMMON_ARTIFACT)
-    output(remote.V1LF_BASIC_VARIANTS_ARTIFACT)
+    output(remote.OBIWAN_WING_DESIGN_MAP_ARTIFACT)
     output(remote.CAPTIVE_MAGNET_CATALOG_ARTIFACT, "{}\n")
-    for relative in remote.WING_CONCEPT_ARTIFACTS:
-        output(relative)
 
     _write(job / "cache-seed.json", json.dumps({
         "format_version": remote.BUILD_CACHE_VERSION,
@@ -286,33 +284,30 @@ def _restore_project(originals) -> None:
 
 
 def test_target_contract() -> None:
-    assert remote.WING_CONCEPT_SLUGS == _make_variable_words(
-        "WING_CONCEPT_SLUGS")
     assert remote._validate_targets([]) == ["all"]
     assert "check_floor_integrated_mount" in remote.REMOTE_MAKE_TARGETS
-    assert "floor_v1lf" in remote.REMOTE_MAKE_TARGETS
-    assert "no_floor_v1lf" in remote.REMOTE_MAKE_TARGETS
-    assert "v1lf_release" in remote.REMOTE_MAKE_TARGETS
-    assert "wing_concepts" in remote.REMOTE_MAKE_TARGETS
-    assert "v1lf_basic_variants" in remote.REMOTE_MAKE_TARGETS
-    assert "v1lf_basic_wings" in remote.REMOTE_MAKE_TARGETS
-    assert "check_v1lf_basic_variants" in remote.REMOTE_MAKE_TARGETS
+    assert "floor_obiwan" in remote.REMOTE_MAKE_TARGETS
+    assert "no_floor_obiwan" in remote.REMOTE_MAKE_TARGETS
+    assert "obiwan_release" in remote.REMOTE_MAKE_TARGETS
+    assert "obiwan_wings" in remote.REMOTE_MAKE_TARGETS
+    assert "obiwan_wing_artifacts" in remote.REMOTE_MAKE_TARGETS
+    assert "check_obiwan_wings" in remote.REMOTE_MAKE_TARGETS
     assert "check_captive_magnets" in remote.REMOTE_MAKE_TARGETS
-    assert "check_v1lf_lm_profile" in remote.REMOTE_MAKE_TARGETS
-    assert "check_v1lf_junction_closure_plans" in (
+    assert "check_obiwan_lm_profile" in remote.REMOTE_MAKE_TARGETS
+    assert "check_obiwan_junction_closure_plans" in (
         remote.REMOTE_MAKE_TARGETS)
-    assert "check_v1lf_junction_closures" in remote.REMOTE_MAKE_TARGETS
-    assert "check_v1lf_service" in remote.REMOTE_MAKE_TARGETS
-    assert "check_v1lf_closure_focus" in remote.REMOTE_MAKE_TARGETS
-    assert "check_v1lf_lm_split_two_pin_static" in (
+    assert "check_obiwan_junction_closures" in remote.REMOTE_MAKE_TARGETS
+    assert "check_obiwan_service" in remote.REMOTE_MAKE_TARGETS
+    assert "check_obiwan_closure_focus" in remote.REMOTE_MAKE_TARGETS
+    assert "check_obiwan_lm_split_two_pin_static" in (
         remote.REMOTE_MAKE_TARGETS)
     assert "check_floor_support" not in remote.REMOTE_MAKE_TARGETS
-    assert remote._full_output_roots(["v1lf_basic_variants"]) == {"wings"}
-    assert remote._full_output_roots(["check_v1lf_basic_variants"]) == {
+    assert remote._full_output_roots(["obiwan_wings"]) == {"wings"}
+    assert remote._full_output_roots(["check_obiwan_wings"]) == {
         "wings"}
-    assert remote._full_output_roots(["v1lf_release"]) == {
+    assert remote._full_output_roots(["obiwan_release"]) == {
         "floor_stand", "no_floor_stand", "wings"}
-    assert remote._full_output_roots(["no_floor_v1lf"]) == set()
+    assert remote._full_output_roots(["no_floor_obiwan"]) == set()
     assert remote._full_output_roots(["all"]) == {
         "floor_stand", "no_floor_stand", "wings"}
     for target in remote.REMOTE_MAKE_TARGETS:
@@ -890,7 +885,7 @@ def test_verified_make_cache_seed_and_checksum_overlay() -> None:
             **old_metadata,
             "job_id": "cache-current",
             "source_sha256": current_hash,
-            "targets": ["check_v1lf_junction_closures"],
+            "targets": ["check_obiwan_junction_closures"],
         }
         seed = remote._seed_build_cache(current, current_metadata)
         assert seed is not None
@@ -950,16 +945,14 @@ def test_warm_cache_always_bundles_public_target_outputs() -> None:
             }
 
         floor_required = {
-            "top_baffle_v2/floor_stand/v1lf_release_manifest.json",
-            "top_baffle_v2/floor_stand/stl/v1lf-print.stl",
-            "top_baffle_v2/floor_stand/baffle_cable_routing_v1lf.png",
+            "top_baffle_v2/floor_stand/obiwan_release_manifest.json",
+            "top_baffle_v2/floor_stand/stl/obiwan-print.stl",
+            "top_baffle_v2/floor_stand/baffle_cable_routing_obiwan.png",
         }
-        assert selected("floor_v1lf") == floor_required
+        assert selected("floor_obiwan") == floor_required
         assert "top_baffle_v2/floor_stand/stl/unrelated-legacy.stl" not in (
-            selected("floor_v1lf"))
+            selected("floor_obiwan"))
         assert selected("common") == {remote.COMMON_ARTIFACT}
-        assert selected("wing_concepts") == set(
-            remote.WING_CONCEPT_ARTIFACTS)
 
         complete_roots = {
             relative for relative in outputs
@@ -971,7 +964,7 @@ def test_warm_cache_always_bundles_public_target_outputs() -> None:
         }
         expected_all = complete_roots | {
             remote.COMMON_ARTIFACT,
-            remote.V1LF_BASIC_VARIANTS_ARTIFACT,
+            remote.OBIWAN_WING_DESIGN_MAP_ARTIFACT,
             remote.CAPTIVE_MAGNET_CATALOG_ARTIFACT,
         }
         assert selected("all") == expected_all
@@ -980,7 +973,7 @@ def test_warm_cache_always_bundles_public_target_outputs() -> None:
 
 def test_warm_cache_outputs_promote_into_fresh_local_trees() -> None:
     """Selected cached outputs survive extraction/promotion when local is empty."""
-    for target in ("all", "floor_v1lf", "common", "wing_concepts"):
+    for target in ("all", "floor_obiwan", "common"):
         with tempfile.TemporaryDirectory() as text:
             root = Path(text)
             job, _outputs = _cached_public_output_fixture(root / "remote")
@@ -995,8 +988,6 @@ def test_warm_cache_outputs_promote_into_fresh_local_trees() -> None:
             repo = root / "local" / "lx"
             baffle = repo / "top_baffle_v2"
             baffle.mkdir(parents=True)
-            if target == "wing_concepts":
-                _write(baffle / "review" / "keep.png", "keep\n")
             originals = (
                 remote.REPO_ROOT, remote.BAFFLE_DIR, remote.LOCAL_STATE,
                 remote._current_source_identity,
@@ -1022,22 +1013,18 @@ def test_warm_cache_outputs_promote_into_fresh_local_trees() -> None:
                     assert (baffle / "wings").is_dir()
                     for relative in (
                             remote.COMMON_ARTIFACT,
-                            remote.V1LF_BASIC_VARIANTS_ARTIFACT,
+                            remote.OBIWAN_WING_DESIGN_MAP_ARTIFACT,
                             remote.CAPTIVE_MAGNET_CATALOG_ARTIFACT):
                         assert (repo / relative).is_file()
-                elif target == "floor_v1lf":
+                elif target == "floor_obiwan":
                     assert (baffle / "floor_stand"
-                            / "v1lf_release_manifest.json").is_file()
+                            / "obiwan_release_manifest.json").is_file()
                     assert (baffle / "floor_stand" / "stl"
-                            / "v1lf-print.stl").is_file()
+                            / "obiwan-print.stl").is_file()
                     assert not (baffle / "floor_stand" / "stl"
                                 / "unrelated-legacy.stl").exists()
                 elif target == "common":
                     assert (repo / remote.COMMON_ARTIFACT).is_file()
-                else:
-                    assert (baffle / "review" / "keep.png").is_file()
-                    for relative in remote.WING_CONCEPT_ARTIFACTS:
-                        assert (repo / relative).is_file()
             finally:
                 _restore_project(originals)
 
@@ -1070,7 +1057,7 @@ def test_source_deletion_forces_true_cold_cache_fallback() -> None:
             **metadata,
             "job_id": "cache-source-delete-current",
             "source_sha256": current_hash,
-            "targets": ["check_v1lf_junction_closures"],
+            "targets": ["check_obiwan_junction_closures"],
         }
         assert remote._seed_build_cache(
             current_job, current_metadata) is None
@@ -1365,30 +1352,30 @@ def test_cache_publication_follows_verified_local_promotion() -> None:
 def test_parallel_stage_dag() -> None:
     result = subprocess.run(
         ["make", "-n", "-j4", "LX_CAD_EXECUTION=remote-worker",
-         f"PYTHON={sys.executable}", "validate_v1lf_stages",
-         "floor_stand/.v1lf_stage/manifest.json",
-         "no_floor_stand/.v1lf_stage/manifest.json"],
+         f"PYTHON={sys.executable}", "validate_obiwan_stages",
+         "floor_stand/.obiwan_stage/manifest.json",
+         "no_floor_stand/.obiwan_stage/manifest.json"],
         cwd=Path(__file__).resolve().parent, text=True,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True,
         env={**os.environ, "LX_CAD_GUARD_SLOTS": "4"},
     )
-    assert result.stdout.count("export_v1lf_staged.py stage") == 2
+    assert result.stdout.count("export_obiwan_staged.py stage") == 2
 
 
-def test_v1lf_basic_wing_parallel_dag() -> None:
+def test_obiwan_basic_wing_parallel_dag() -> None:
     result = subprocess.run(
         ["make", "-n", "-B", "-j4", "LX_CAD_EXECUTION=remote-worker",
-         f"PYTHON={sys.executable}", "v1lf_basic_wings"],
+         f"PYTHON={sys.executable}", "obiwan_wing_artifacts"],
         cwd=Path(__file__).resolve().parent, text=True,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True,
         env={**os.environ, "LX_CAD_GUARD_SLOTS": "4"},
     )
     assert result.stdout.count(
-        "export_v1lf_basic_wings.py --slug ac --output-root wings") == 1
+        "export_obiwan_wings.py --slug ac --output-root wings") == 1
     assert result.stdout.count(
-        "export_v1lf_basic_wings.py --slug ae --output-root wings") == 1
+        "export_obiwan_wings.py --slug ae --output-root wings") == 1
     assert result.stdout.count(
-        "test_v1lf_basic_wings.py --artifact-root wings") == 1
+        "test_obiwan_wings.py --artifact-root wings") == 1
 
 
 def test_make_parallel_manifold_dag() -> None:
@@ -1423,7 +1410,7 @@ def test_make_parallel_manifold_dag() -> None:
         assert str(stamp_root) in output
 
 
-def test_make_v1lf_only_manifold_filters_warm_legacy_meshes() -> None:
+def test_make_obiwan_only_manifold_filters_warm_legacy_meshes() -> None:
     with tempfile.TemporaryDirectory() as text:
         root = Path(text)
         floor_root = root / "floor_stand" / "stl"
@@ -1436,17 +1423,17 @@ def test_make_v1lf_only_manifold_filters_warm_legacy_meshes() -> None:
                 _write(path, "cached legacy mesh")
                 legacy.append(path)
             for name in (
-                    "lx521_top_v1lf_core_1of2_lm_carrier.stl",
-                    "lx521_top_v1lf_core_2of2_um_carrier.stl",
-                    "lx521_coupon_12_v1lf_closed_bore_bump.stl"):
+                    "lx521_top_obiwan_core_1of2_lm_carrier.stl",
+                    "lx521_top_obiwan_core_2of2_um_carrier.stl",
+                    "lx521_coupon_12_obiwan_closed_bore_bump.stl"):
                 path = state_root / name
-                _write(path, "focused v1lf mesh")
+                _write(path, "focused obiwan mesh")
                 expected.append(path)
 
         result = subprocess.run(
             ["make", "-n", "-B", "-j8",
              "LX_CAD_EXECUTION=remote-worker", f"PYTHON={sys.executable}",
-             "_manifold_parallel", "MANIFOLD_V1LF_ONLY=1",
+             "_manifold_parallel", "MANIFOLD_OBIWAN_ONLY=1",
              f"MANIFOLD_ROOTS={floor_root} {no_floor_root}",
              f"MANIFOLD_STAMP_DIR={root / 'stamps'}"],
             cwd=Path(__file__).resolve().parent, text=True,
@@ -1463,7 +1450,7 @@ def test_make_v1lf_only_manifold_filters_warm_legacy_meshes() -> None:
         for path in legacy:
             assert str(path) not in output
         assert output.count("check_manifold.py --metadata-only") == 1
-        assert output.count("--v1lf-only") == 1
+        assert output.count("--obiwan-only") == 1
 
 
 def test_candidate_is_one_flat_make_dag() -> None:
@@ -1487,7 +1474,7 @@ def test_candidate_is_one_flat_make_dag() -> None:
         "floor_stand_artifacts: $(call VARIANT_TARGETS,floor_stand)", 1,
     )[1].split("\nfloor_stand:", 1)[0]
     no_floor_block = makefile.split(
-        "no_floor_stand_artifacts: validate_no_floor_v1lf_stage", 1,
+        "no_floor_stand_artifacts: validate_no_floor_obiwan_stage", 1,
     )[1].split("\nno_floor_stand:", 1)[0]
     assert floor_block.count(
         "MANIFOLD_ROOTS='floor_stand/stl'") == 1
@@ -1513,7 +1500,7 @@ def test_candidate_is_one_flat_make_dag() -> None:
 def test_make_check_registries_match_python_and_do_not_fan_out() -> None:
     root = Path(__file__).resolve().parent
     clearance = _ast_function_registry(root / "test_clearances.py", "checks")
-    r6f = _ast_function_registry(root / "test_v1lf_r6f.py", "CHECKS")
+    r6f = _ast_function_registry(root / "test_obiwan_r6f.py", "CHECKS")
     assert _make_variable_words("CLEARANCE_CHECK_NAMES") == clearance
     assert _make_variable_words("R6F_CHECK_NAMES") == r6f
 
@@ -1525,14 +1512,14 @@ def test_make_check_registries_match_python_and_do_not_fan_out() -> None:
         env={**os.environ, "LX_CAD_GUARD_SLOTS": "8"},
     )
     commands = result.stdout
-    assert commands.count("export_v1lf_staged.py stage") == 2
+    assert commands.count("export_obiwan_staged.py stage") == 2
     assert commands.count("LX_CLEARANCE_SINGLE_CHECK=") == len(clearance)
     assert commands.count("LX_R6F_SINGLE_CHECK=") == len(r6f)
     invoked = [line.strip() for line in commands.splitlines()]
     clearance_commands = [
         line for line in invoked if line.endswith("test_clearances.py")]
     r6f_commands = [
-        line for line in invoked if line.endswith("test_v1lf_r6f.py")]
+        line for line in invoked if line.endswith("test_obiwan_r6f.py")]
     assert len(clearance_commands) == len(clearance)
     assert len(r6f_commands) == len(r6f)
     assert all("LX_CLEARANCE_SINGLE_CHECK=" in line
@@ -1556,7 +1543,7 @@ def test_public_shell_targets_wait_for_their_validated_stage() -> None:
         )
         commands = result.stdout
         stage = commands.index(
-            f"--manifest {state}/.v1lf_stage/manifest.json")
+            f"--manifest {state}/.obiwan_stage/manifest.json")
         shell = commands.index(f"LX_R6F_SINGLE_CHECK={selector}")
         assert stage < shell
 
@@ -1574,7 +1561,7 @@ def test_make_check_stamps_skip_unchanged_selector_work() -> None:
                 path = stamps / group / f"{name}.ok"
                 _write(path, "verified\n")
                 os.utime(path, (future, future))
-        closure = stamps / "v1lf_junction_closures.ok"
+        closure = stamps / "obiwan_junction_closures.ok"
         _write(closure, "verified\n")
         os.utime(closure, (future, future))
 
@@ -1589,7 +1576,7 @@ def test_make_check_stamps_skip_unchanged_selector_work() -> None:
         commands = result.stdout
         assert "LX_CLEARANCE_SINGLE_CHECK=" not in commands
         assert "LX_R6F_SINGLE_CHECK=" not in commands
-        assert "LX_V1LF_JUNCTION_CLOSURE_FULL=1" not in commands
+        assert "LX_OBIWAN_JUNCTION_CLOSURE_FULL=1" not in commands
 
         # A persistent workstation environment is not attestation-keyed like
         # the remote cache, so local mode conservatively reruns selectors.
@@ -1604,17 +1591,17 @@ def test_make_check_stamps_skip_unchanged_selector_work() -> None:
             clearance)
 
 
-def test_make_uses_scoped_v1lf_prerequisite_group() -> None:
+def test_make_uses_scoped_obiwan_prerequisite_group() -> None:
     root = Path(__file__).resolve().parent
-    exclusive = _make_variable_words("V1LF_EXCLUSIVE_CAD_SRCS")
-    assert "top_baffle_nd25fw4_v1lf.py" in exclusive
-    assert "top_baffle_nd25fw4_v1lf_lm_split.py" in exclusive
-    assert "top_baffle_nd25fw4_v1lf_route.py" not in exclusive
+    exclusive = _make_variable_words("OBIWAN_EXCLUSIVE_CAD_SRCS")
+    assert "top_baffle_nd25fw4_obiwan.py" in exclusive
+    assert "top_baffle_nd25fw4_obiwan_lm_split.py" in exclusive
+    assert "top_baffle_nd25fw4_obiwan_route.py" not in exclusive
 
     result = subprocess.run(
         ["make", "-np", "LX_CAD_EXECUTION=remote-worker",
          f"PYTHON={sys.executable}", "floor_stand/stl/.stamp",
-         "floor_stand/stl/.stamp_v1lf"],
+         "floor_stand/stl/.stamp_obiwan"],
         cwd=root, text=True, stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT, check=True,
         env={**os.environ, "LX_CAD_GUARD_SLOTS": "8"},
@@ -1622,12 +1609,12 @@ def test_make_uses_scoped_v1lf_prerequisite_group() -> None:
     ordinary = next(
         line for line in result.stdout.splitlines()
         if line.startswith("floor_stand/stl/.stamp:"))
-    v1lf = next(
+    obiwan = next(
         line for line in result.stdout.splitlines()
-        if line.startswith("floor_stand/stl/.stamp_v1lf:"))
+        if line.startswith("floor_stand/stl/.stamp_obiwan:"))
     for path in exclusive:
         assert path not in ordinary
-        assert path in v1lf
+        assert path in obiwan
 
 
 def test_local_manifold_mode_is_private() -> None:
@@ -1666,7 +1653,7 @@ def test_promoted_roots_use_make_parallel_full_sweeps() -> None:
     assert "MANIFOLD_ROOTS=wings/ac/stl wings/ae/stl" in calls[1][0]
 
 
-def test_v1lf_basic_wing_contract_dependency() -> None:
+def test_obiwan_basic_wing_contract_dependency() -> None:
     result = subprocess.run(
         ["make", "-np", "LX_CAD_EXECUTION=remote-worker",
          f"PYTHON={sys.executable}", "wings/.stamp_ac"],
@@ -1680,33 +1667,33 @@ def test_v1lf_basic_wing_contract_dependency() -> None:
     assert "front_down_contract.py" in rule
 
 
-def test_v1lf_release_parallel_dag() -> None:
+def test_obiwan_release_parallel_dag() -> None:
     result = subprocess.run(
         ["make", "-n", "-B", "-j4", "LX_CAD_EXECUTION=remote-worker",
-         f"PYTHON={sys.executable}", "v1lf_release"],
+         f"PYTHON={sys.executable}", "obiwan_release"],
         cwd=Path(__file__).resolve().parent, text=True,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True,
         env={**os.environ, "LX_CAD_GUARD_SLOTS": "4"},
     )
     output = result.stdout
-    assert output.count("export_v1lf_staged.py stage") == 2
+    assert output.count("export_obiwan_staged.py stage") == 2
     assert output.count(
-        "export_piece_stls.py --variant v1lf "
-        "--v1lf-stage-manifest") == 2
+        "export_piece_stls.py --variant obiwan "
+        "--obiwan-stage-manifest") == 2
     assert output.count(
-        "cd floor_stand && LX_STAND_FOOT=1 LX_ROUTING_PROFILE=v1lf "
+        "cd floor_stand && LX_STAND_FOOT=1 LX_ROUTING_PROFILE=obiwan "
         "PYTHONPATH=..") == 1
     assert output.count(
-        "cd no_floor_stand && LX_STAND_FOOT=0 LX_ROUTING_PROFILE=v1lf "
+        "cd no_floor_stand && LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan "
         "PYTHONPATH=..") == 1
     assert output.count(
-        "export_v1lf_basic_wings.py --slug ac --output-root wings") == 1
+        "export_obiwan_wings.py --slug ac --output-root wings") == 1
     assert output.count(
-        "export_v1lf_basic_wings.py --slug ae --output-root wings") == 1
+        "export_obiwan_wings.py --slug ae --output-root wings") == 1
     assert output.count(
-        "write_v1lf_release_manifest.py --state-dir floor_stand") == 1
+        "write_obiwan_release_manifest.py --state-dir floor_stand") == 1
     assert output.count(
-        "write_v1lf_release_manifest.py --state-dir no_floor_stand") == 1
+        "write_obiwan_release_manifest.py --state-dir no_floor_stand") == 1
     for check in (
             "test_route_contract", "test_floor_lm_keyed_split",
             "test_no_floor_lm_keyed_split", "test_floor_um_shell",
@@ -1729,7 +1716,7 @@ def test_v1lf_release_parallel_dag() -> None:
         "export_piece_stls.py --variant v1l --outdir") == 2
     assert output.count(
         "generate_captive_magnet_catalog.py --output ") == 1
-    assert "check_manifold.py --v1lf-only" not in output
+    assert "check_manifold.py --obiwan-only" not in output
     # Fresh remote snapshots intentionally contain no generated roots, so a
     # dry-run cannot discover per-STL submake nodes.  The 92-node fixture test
     # above proves that expansion independently.  Metadata runs once per
@@ -1749,7 +1736,7 @@ def test_profile_specific_stl_dag() -> None:
     root = Path(__file__).resolve().parent
     targets = (
         "floor_stand/stl/.stamp_v1l",
-        "floor_stand/stl/.stamp_v1lf",
+        "floor_stand/stl/.stamp_obiwan",
     )
     remote_result = subprocess.run(
         ["make", "-n", "-B", "LX_CAD_EXECUTION=remote-worker",
@@ -1761,9 +1748,9 @@ def test_profile_specific_stl_dag() -> None:
     assert remote_result.stdout.count(
         "export_piece_stls.py --variant v1l --outdir") == 1
     assert remote_result.stdout.count(
-        "export_piece_stls.py --variant v1lf --v1lf-stage-manifest") == 1
+        "export_piece_stls.py --variant obiwan --obiwan-stage-manifest") == 1
     assert "--v1l-piece" not in remote_result.stdout
-    assert "--v1lf-part" not in remote_result.stdout
+    assert "--obiwan-part" not in remote_result.stdout
 
     local_result = subprocess.run(
         ["make", "-n", "-B", "LX_CAD_EXECUTION=local",
@@ -1773,9 +1760,9 @@ def test_profile_specific_stl_dag() -> None:
         env=os.environ.copy(),
     )
     assert local_result.stdout.count("--v1l-piece") == 5
-    assert local_result.stdout.count("--v1lf-part") == 4
-    assert "--v1lf-part lm_split" in local_result.stdout
-    assert "--v1lf-part support" not in local_result.stdout
+    assert local_result.stdout.count("--obiwan-part") == 4
+    assert "--obiwan-part lm_split" in local_result.stdout
+    assert "--obiwan-part support" not in local_result.stdout
 
 
 def test_local_checker_interpreter() -> None:
@@ -1910,18 +1897,18 @@ def main() -> None:
     test_make_cache_publication_order_and_damage_fallback()
     test_cache_publication_follows_verified_local_promotion()
     test_parallel_stage_dag()
-    test_v1lf_basic_wing_parallel_dag()
+    test_obiwan_basic_wing_parallel_dag()
     test_make_parallel_manifold_dag()
-    test_make_v1lf_only_manifold_filters_warm_legacy_meshes()
+    test_make_obiwan_only_manifold_filters_warm_legacy_meshes()
     test_candidate_is_one_flat_make_dag()
     test_make_check_registries_match_python_and_do_not_fan_out()
     test_public_shell_targets_wait_for_their_validated_stage()
     test_make_check_stamps_skip_unchanged_selector_work()
-    test_make_uses_scoped_v1lf_prerequisite_group()
+    test_make_uses_scoped_obiwan_prerequisite_group()
     test_local_manifold_mode_is_private()
     test_promoted_roots_use_make_parallel_full_sweeps()
-    test_v1lf_basic_wing_contract_dependency()
-    test_v1lf_release_parallel_dag()
+    test_obiwan_basic_wing_contract_dependency()
+    test_obiwan_release_parallel_dag()
     test_profile_specific_stl_dag()
     test_local_checker_interpreter()
     test_local_memory_profile_has_no_host_free_floor()

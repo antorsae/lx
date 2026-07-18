@@ -1,9 +1,9 @@
-"""Strict release sweep for every exported STL and V1LF manifest.
+"""Strict release sweep for every exported STL and Obi-Wan manifest.
 
 The primary contract remains explicit: every undirected mesh edge is
 shared by exactly two oppositely wound triangles.  The checker also
 rejects malformed binary length, repeated/zero-area triangles, duplicate
-facets and stale state-incompatible V1LF artifacts.  A printable solid may
+facets and stale state-incompatible Obi-Wan artifacts.  A printable solid may
 have one outward boundary plus inward-wound, fully nested cavity boundaries;
 those are voids in one material body, not disconnected printable bodies.
 """
@@ -37,7 +37,7 @@ from front_down_contract import (
     FrontDownContractError,
     validate_print_sidecar,
 )
-from write_v1lf_release_manifest import (
+from write_obiwan_release_manifest import (
     FORMAT_VERSION,
     QUALIFICATION_RECORD,
     expected_artifact_names,
@@ -63,7 +63,7 @@ def expected_wing_stl_names(slug: str) -> frozenset[str]:
     if slug not in WING_SLUGS:
         raise ValueError(f"unknown released wing slug: {slug}")
     names = frozenset(
-        f"lx521_top_v1lf_wing_{slug}_{side}_{order}of3_{role}.stl"
+        f"lx521_top_obiwan_wing_{slug}_{side}_{order}of3_{role}.stl"
         for side in WING_SIDES
         for order, role in enumerate(WING_ROLES, start=1)
     )
@@ -476,19 +476,19 @@ def _release_manifest_errors(state_dir: Path) -> list[str]:
     """Verify one exact, source-bound floor/no-floor artifact transaction."""
     state = state_dir.name
     stand_foot = state == "floor_stand"
-    path = state_dir / "v1lf_release_manifest.json"
+    path = state_dir / "obiwan_release_manifest.json"
     if not path.is_file():
-        return [f"{state}: missing hash-backed V1LF release manifest"]
+        return [f"{state}: missing hash-backed Obi-Wan release manifest"]
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-        return [f"{state}: unreadable V1LF release manifest: {exc}"]
+        return [f"{state}: unreadable Obi-Wan release manifest: {exc}"]
     errors = []
     expected_header = {
         "format_version": FORMAT_VERSION,
-        "variant": "V1LF",
+        "variant": "Obi-Wan",
         "routing_revision": "R6F",
-        "routing_profile": "v1lf",
+        "routing_profile": "obiwan",
         "state": state,
         "stand_foot": stand_foot,
     }
@@ -554,8 +554,8 @@ def _release_manifest_errors(state_dir: Path) -> list[str]:
 def _floor_strength_report_errors(state_dir: Path) -> list[str]:
     """Validate the hash-bound analytical screen, not merely its presence."""
     state = state_dir.name
-    json_path = state_dir / "v1lf_integrated_floor_strength.json"
-    markdown_path = state_dir / "v1lf_integrated_floor_strength.md"
+    json_path = state_dir / "obiwan_integrated_floor_strength.json"
+    markdown_path = state_dir / "obiwan_integrated_floor_strength.md"
     if state != "floor_stand":
         stale = [path.name for path in (json_path, markdown_path)
                  if path.exists()]
@@ -570,7 +570,7 @@ def _floor_strength_report_errors(state_dir: Path) -> list[str]:
         payload = json.loads(json_path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         return [f"{state}: unreadable integral-floor strength JSON: {exc}"]
-    from top_baffle_nd25fw4_v1lf_floor_strength import (
+    from top_baffle_nd25fw4_obiwan_floor_strength import (
         integral_floor_strength_facts,
     )
     # Compare the report in its actual wire format.  The analytical facts
@@ -590,8 +590,8 @@ def _floor_strength_report_errors(state_dir: Path) -> list[str]:
     geometry = payload.get("production_geometry")
     records = geometry.get("artifacts") if isinstance(geometry, dict) else None
     expected_steps = (
-        "top_baffle_nd25fw4_v1lf_split.step",
-        "top_baffle_nd25fw4_v1lf_lm_split.step",
+        "top_baffle_nd25fw4_obiwan_split.step",
+        "top_baffle_nd25fw4_obiwan_lm_split.step",
     )
     if (not isinstance(records, list) or len(records) != 2
             or not isinstance(geometry.get("derivation"), str)):
@@ -625,13 +625,13 @@ def _floor_strength_report_errors(state_dir: Path) -> list[str]:
 def _review_artifact_errors(state_dir: Path) -> list[str]:
     state = state_dir.name
     required = {
-        "top_baffle_nd25fw4_v1lf_split.step",
-        "top_baffle_nd25fw4_v1lf_lm_split.step",
-        "top_baffle_nd25fw4_v1lf_attachments.step",
-        "top_baffle_nd25fw4_v1lf_assembled.step",
+        "top_baffle_nd25fw4_obiwan_split.step",
+        "top_baffle_nd25fw4_obiwan_lm_split.step",
+        "top_baffle_nd25fw4_obiwan_attachments.step",
+        "top_baffle_nd25fw4_obiwan_assembled.step",
         "top_baffle_nd25fw4_um_fit.step",
         "baffle_cable_routing_proud.png",
-        "baffle_cable_routing_v1lf.png",
+        "baffle_cable_routing_obiwan.png",
         "baffle_variants_drivers.png",
         "baffle_b1_drivers.png",
         "baffle_b2_drivers.png",
@@ -677,17 +677,17 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
                 expected_description = (
                     f"{token}; LX_STAND_FOOT={expected_mode}")
             else:
-                profile, revision = (
-                    ("V1LF", "R6F") if "v1lf" in name
-                    else ("PROUD", "R6P"))
-                token = f"LX521_{profile}_{revision}_{state}"
+                profile_token, profile_slug, revision = (
+                    ("Obi-Wan", "obiwan", "R6F") if "obiwan" in name
+                    else ("PROUD", "proud", "R6P"))
+                token = f"LX521_{profile_token}_{revision}_{state}"
                 expected_description = (
                     f"{token}; LX_STAND_FOOT={expected_mode}; "
-                    f"LX_ROUTING_PROFILE={profile.lower()}"
-                    + ("; LX_V1LF_SIDE_SECTION=roof_to_bore_solid_backfill"
-                       "; LX_V1LF_VIEWS=front_xy,side_yz,top_xz"
-                       "; LX_V1LF_SEPARATE_FLOOR_SUPPORT=0"
-                       if profile == "V1LF" else ""))
+                    f"LX_ROUTING_PROFILE={profile_slug}"
+                    + ("; LX_OBIWAN_SIDE_SECTION=roof_to_bore_solid_backfill"
+                       "; LX_OBIWAN_VIEWS=front_xy,side_yz,top_xz"
+                       "; LX_OBIWAN_SEPARATE_FLOOR_SUPPORT=0"
+                       if profile_slug == "obiwan" else ""))
             if (png["title"] != token
                     or png["description"] != expected_description):
                 errors.append(
@@ -698,10 +698,10 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
             if png["chromatic_fraction"] < 0.001:
                 errors.append(f"{state}: review PNG lacks route/driver color: {name}")
 
-    attachments = state_dir / "top_baffle_nd25fw4_v1lf_attachments.step"
-    split = state_dir / "top_baffle_nd25fw4_v1lf_split.step"
-    lm_split = state_dir / "top_baffle_nd25fw4_v1lf_lm_split.step"
-    assembled = state_dir / "top_baffle_nd25fw4_v1lf_assembled.step"
+    attachments = state_dir / "top_baffle_nd25fw4_obiwan_attachments.step"
+    split = state_dir / "top_baffle_nd25fw4_obiwan_split.step"
+    lm_split = state_dir / "top_baffle_nd25fw4_obiwan_lm_split.step"
+    assembled = state_dir / "top_baffle_nd25fw4_obiwan_assembled.step"
     if attachments.is_file():
         has_support = _contains_bytes(
             attachments, b"addon_mount_floor_support")
@@ -711,19 +711,19 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
                 "child")
         token_error = _state_token_error(
             attachments,
-            (b"lx521_v1lf_r6f_optional_addons_floor_integrated_mount"
+            (b"lx521_obiwan_r6f_optional_addons_floor_integrated_mount"
              if state == "floor_stand"
-             else b"lx521_v1lf_r6f_optional_addons_no_floor"),
-            (b"lx521_v1lf_r6f_optional_addons_no_floor"
+             else b"lx521_obiwan_r6f_optional_addons_no_floor"),
+            (b"lx521_obiwan_r6f_optional_addons_no_floor"
              if state == "floor_stand"
              else
-             b"lx521_v1lf_r6f_optional_addons_floor_integrated_mount"),
+             b"lx521_obiwan_r6f_optional_addons_floor_integrated_mount"),
             "attachments STEP")
         if token_error:
             errors.append(token_error)
         if _contains_bytes(
                 attachments,
-                b"lx521_v1lf_r6f_required_floor_support_and_optional_addons_floor"):
+                b"lx521_obiwan_r6f_required_floor_support_and_optional_addons_floor"):
             errors.append(
                 f"{state}: attachments STEP retains obsolete required-"
                 "floor-support root label")
@@ -732,17 +732,17 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
                 b"addon_um_grommet_half_b"):
             if _contains_bytes(attachments, removed):
                 errors.append(
-                    f"{state}: attachments STEP retains removed V1LF "
+                    f"{state}: attachments STEP retains removed Obi-Wan "
                     f"grommet child {removed.decode('ascii')}")
     if split.is_file():
         token_error = _state_token_error(
             split,
-            (b"lx521_v1lf_r6f_core_2piece_floor"
+            (b"lx521_obiwan_r6f_core_2piece_floor"
              if state == "floor_stand"
-             else b"lx521_v1lf_r6f_core_2piece_no_floor_fused_solid_web"),
-            (b"lx521_v1lf_r6f_core_2piece_no_floor_fused_solid_web"
+             else b"lx521_obiwan_r6f_core_2piece_no_floor_fused_solid_web"),
+            (b"lx521_obiwan_r6f_core_2piece_no_floor_fused_solid_web"
              if state == "floor_stand"
-             else b"lx521_v1lf_r6f_core_2piece_floor"),
+             else b"lx521_obiwan_r6f_core_2piece_floor"),
             "core STEP")
         if token_error:
             errors.append(token_error)
@@ -756,12 +756,12 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
     if lm_split.is_file():
         token_error = _state_token_error(
             lm_split,
-            (b"lx521_v1lf_r6f_optional_lm_keyed_split_floor"
+            (b"lx521_obiwan_r6f_optional_lm_keyed_split_floor"
              if state == "floor_stand" else
-             b"lx521_v1lf_r6f_optional_lm_keyed_split_no_floor"),
-            (b"lx521_v1lf_r6f_optional_lm_keyed_split_no_floor"
+             b"lx521_obiwan_r6f_optional_lm_keyed_split_no_floor"),
+            (b"lx521_obiwan_r6f_optional_lm_keyed_split_no_floor"
              if state == "floor_stand" else
-             b"lx521_v1lf_r6f_optional_lm_keyed_split_floor"),
+             b"lx521_obiwan_r6f_optional_lm_keyed_split_floor"),
             "optional LM split STEP")
         if token_error:
             errors.append(token_error)
@@ -804,7 +804,7 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
         ]
         if missing_route_tokens or retained_route_tokens:
             errors.append(
-                f"{state}: assembled STEP has stale V1LF UM/T route labels "
+                f"{state}: assembled STEP has stale Obi-Wan UM/T route labels "
                 f"(missing={[token.decode('ascii') for token in missing_route_tokens]}, "
                 f"obsolete={[token.decode('ascii') for token in retained_route_tokens]})")
         for token in (
@@ -832,12 +832,12 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
                 f"{state}: assembled STEP lacks stock-bridge hardware")
         token_error = _state_token_error(
             assembled,
-            (b"lx521_v1lf_r6f_assembled_floor"
+            (b"lx521_obiwan_r6f_assembled_floor"
              if state == "floor_stand"
-             else b"lx521_v1lf_r6f_assembled_no_floor_fused_solid_web"),
-            (b"lx521_v1lf_r6f_assembled_no_floor_fused_solid_web"
+             else b"lx521_obiwan_r6f_assembled_no_floor_fused_solid_web"),
+            (b"lx521_obiwan_r6f_assembled_no_floor_fused_solid_web"
              if state == "floor_stand"
-             else b"lx521_v1lf_r6f_assembled_floor"),
+             else b"lx521_obiwan_r6f_assembled_floor"),
             "assembled STEP")
         if token_error:
             errors.append(token_error)
@@ -847,7 +847,7 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
                 b"addon_um_grommet_half_b"):
             if _contains_bytes(assembled, removed):
                 errors.append(
-                    f"{state}: assembled STEP retains removed V1LF "
+                    f"{state}: assembled STEP retains removed Obi-Wan "
                     f"child {removed.decode('ascii')}")
         for optional in (
                 b"optional_lm_keyed_1of2_bottom",
@@ -859,61 +859,61 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
     fit_step = state_dir / "top_baffle_nd25fw4_um_fit.step"
     if fit_step.is_file():
         for removed in (
-                b"v1lf_um_grommet_half_a_TPU_PRINT_PART",
-                b"v1lf_um_grommet_half_b_TPU_PRINT_PART"):
+                b"obiwan_um_grommet_half_a_TPU_PRINT_PART",
+                b"obiwan_um_grommet_half_b_TPU_PRINT_PART"):
             if _contains_bytes(fit_step, removed):
                 errors.append(
-                    f"{state}: UM-fit STEP retains removed V1LF "
+                    f"{state}: UM-fit STEP retains removed Obi-Wan "
                     f"grommet child {removed.decode('ascii')}")
     errors.extend(_floor_strength_report_errors(state_dir))
     errors.extend(_release_manifest_errors(state_dir))
     return errors
 
 
-def _v1lf_manifest_errors(
-        root: Path, *, v1lf_only: bool = False) -> list[str]:
+def _obiwan_manifest_errors(
+        root: Path, *, obiwan_only: bool = False) -> list[str]:
     state = root.parent.name
     if (root.name == "stl" and state in WING_SLUGS
             and root.parent.parent.name == "wings"):
         return _wing_print_sidecar_errors(root, state)
     if state not in {"floor_stand", "no_floor_stand"}:
         return []
-    actual = {path.name for path in root.glob("lx521_top_v1lf_*.stl")}
+    actual = {path.name for path in root.glob("lx521_top_obiwan_*.stl")}
     expected = {
-        "lx521_top_v1lf_core_1of2_lm_carrier.stl",
-        "lx521_top_v1lf_core_2of2_um_carrier.stl",
-        "lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl",
-        "lx521_top_v1lf_optional_lm_keyed_2of2_top.stl",
-        "lx521_top_v1lf_addon_tweeter_crescent.stl",
+        "lx521_top_obiwan_core_1of2_lm_carrier.stl",
+        "lx521_top_obiwan_core_2of2_um_carrier.stl",
+        "lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
+        "lx521_top_obiwan_optional_lm_keyed_2of2_top.stl",
+        "lx521_top_obiwan_addon_tweeter_crescent.stl",
     }
     errors = []
     missing = sorted(expected - actual)
     extra = sorted(actual - expected)
     if missing:
-        errors.append(f"{state}: missing V1LF artifacts: {', '.join(missing)}")
+        errors.append(f"{state}: missing Obi-Wan artifacts: {', '.join(missing)}")
     if extra:
-        errors.append(f"{state}: stale/extra V1LF artifacts: {', '.join(extra)}")
-    forbidden_v1lf = {
-        "lx521_top_v1lf_addon_mount_floor_support.stl",
-        "lx521_top_v1lf_addon_um_grommet_half_a.stl",
-        "lx521_top_v1lf_addon_um_grommet_half_b.stl",
+        errors.append(f"{state}: stale/extra Obi-Wan artifacts: {', '.join(extra)}")
+    forbidden_obiwan = {
+        "lx521_top_obiwan_addon_mount_floor_support.stl",
+        "lx521_top_obiwan_addon_um_grommet_half_a.stl",
+        "lx521_top_obiwan_addon_um_grommet_half_b.stl",
         "lx521_coupon_10_um_split_grommet_half_a.stl",
         "lx521_coupon_11_um_split_grommet_half_b.stl",
-        "lx521_coupon_14_v1lf_grommet_receiver.stl",
+        "lx521_coupon_14_obiwan_grommet_receiver.stl",
     }
-    stale_v1lf = sorted(
+    stale_obiwan = sorted(
         path.name for path in root.iterdir()
-        if path.name in forbidden_v1lf)
-    if stale_v1lf:
+        if path.name in forbidden_obiwan)
+    if stale_obiwan:
         errors.append(
-            f"{state}: removed V1LF artifacts remain: "
-            f"{', '.join(stale_v1lf)}")
+            f"{state}: removed Obi-Wan artifacts remain: "
+            f"{', '.join(stale_obiwan)}")
     stale_stage = sorted(
-        path.name for path in (root.parent / ".v1lf_stage").glob(
+        path.name for path in (root.parent / ".obiwan_stage").glob(
             "addon_um_grommet_half_*.brep"))
     if stale_stage:
         errors.append(
-            f"{state}: removed V1LF staged grommet BREPs remain: "
+            f"{state}: removed Obi-Wan staged grommet BREPs remain: "
             f"{', '.join(stale_stage)}")
     stale_floor_stage = [
         name for name in (
@@ -921,7 +921,7 @@ def _v1lf_manifest_errors(
             "review_state_hardware.brep",
         )
         if (state == "floor_stand"
-            and (root.parent / ".v1lf_stage" / name).exists())
+            and (root.parent / ".obiwan_stage" / name).exists())
     ]
     if stale_floor_stage:
         errors.append(
@@ -941,7 +941,7 @@ def _v1lf_manifest_errors(
             errors.append(f"{state}: missing coupons: {', '.join(missing)}")
         if extra:
             errors.append(f"{state}: stale/extra coupons: {', '.join(extra)}")
-    forbidden_coupon = root / "lx521_coupon_12_v1lf_open_bore_jump.stl"
+    forbidden_coupon = root / "lx521_coupon_12_obiwan_open_bore_jump.stl"
     if forbidden_coupon.exists():
         errors.append(f"{state}: stale open-window coupon remains")
     common_release = {
@@ -977,9 +977,9 @@ def _v1lf_manifest_errors(
         "lx521_top_v1l_addon_um_grommet_half_b.stl",
     }
     complete_expected = expected | expected_coupons
-    if not v1lf_only:
+    if not obiwan_only:
         complete_expected |= common_release
-    if state == "floor_stand" and not v1lf_only:
+    if state == "floor_stand" and not obiwan_only:
         complete_expected |= {
             "lx521_polar_base_1of2_base.stl",
             "lx521_polar_base_2of2_rotor.stl",
@@ -996,9 +996,9 @@ def _v1lf_manifest_errors(
                 f"{state}: stale/extra release STLs: {', '.join(extra)}")
     polar_exclusions = (
         FLOOR_POLAR_SIDECAR_EXCLUSIONS
-        if state == "floor_stand" and not v1lf_only else frozenset()
+        if state == "floor_stand" and not obiwan_only else frozenset()
     )
-    if (not v1lf_only
+    if (not obiwan_only
             and len(complete_expected - set(polar_exclusions))
             != EXPECTED_NONPOLAR_STATE_STL_COUNT):
         errors.append(
@@ -1015,15 +1015,15 @@ def _v1lf_manifest_errors(
 def main() -> int:
     arguments = list(sys.argv[1:])
     require_release_authorized = False
-    v1lf_only = False
+    obiwan_only = False
     stl_only = False
     metadata_only = False
     if "--require-release-authorized" in arguments:
         arguments.remove("--require-release-authorized")
         require_release_authorized = True
-    if "--v1lf-only" in arguments:
-        arguments.remove("--v1lf-only")
-        v1lf_only = True
+    if "--obiwan-only" in arguments:
+        arguments.remove("--obiwan-only")
+        obiwan_only = True
     if "--stl-only" in arguments:
         arguments.remove("--stl-only")
         stl_only = True
@@ -1035,7 +1035,7 @@ def main() -> int:
             "--stl-only and --metadata-only are mutually exclusive",
             file=sys.stderr)
         return 2
-    if stl_only and (require_release_authorized or v1lf_only):
+    if stl_only and (require_release_authorized or obiwan_only):
         print(
             "--stl-only cannot be combined with manifest options",
             file=sys.stderr)
@@ -1091,10 +1091,10 @@ def main() -> int:
 
     manifest_errors = ([] if stl_only else [
         error for root in roots
-        for error in _v1lf_manifest_errors(root, v1lf_only=v1lf_only)])
+        for error in _obiwan_manifest_errors(root, obiwan_only=obiwan_only)])
     if require_release_authorized:
         for root in roots:
-            manifest_path = root.parent / "v1lf_release_manifest.json"
+            manifest_path = root.parent / "obiwan_release_manifest.json"
             try:
                 manifest = json.loads(manifest_path.read_text(
                     encoding="utf-8"))
@@ -1131,10 +1131,10 @@ def main() -> int:
         no_floor = state_dirs.get("no_floor_stand")
         if floor and no_floor:
             for name in (
-                    "top_baffle_nd25fw4_v1lf_split.step",
-                    "top_baffle_nd25fw4_v1lf_lm_split.step",
-                    "top_baffle_nd25fw4_v1lf_attachments.step",
-                    "top_baffle_nd25fw4_v1lf_assembled.step",
+                    "top_baffle_nd25fw4_obiwan_split.step",
+                    "top_baffle_nd25fw4_obiwan_lm_split.step",
+                    "top_baffle_nd25fw4_obiwan_attachments.step",
+                    "top_baffle_nd25fw4_obiwan_assembled.step",
                     "top_baffle_nd25fw4_um_fit.step"):
                 a, b = floor / name, no_floor / name
                 if (a.is_file() and b.is_file()
@@ -1146,7 +1146,7 @@ def main() -> int:
                         f"{name}")
             for name in (
                     "baffle_cable_routing_proud.png",
-                    "baffle_cable_routing_v1lf.png",
+                    "baffle_cable_routing_obiwan.png",
                     "baffle_variants_drivers.png",
                     "baffle_b1_drivers.png",
                     "baffle_b2_drivers.png"):
@@ -1165,9 +1165,9 @@ def main() -> int:
                             "  DEFECT floor/no-floor decoded PNG pixels are "
                             f"identical: {name}")
             for name in (
-                    "stl/lx521_top_v1lf_core_1of2_lm_carrier.stl",
-                    "stl/lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl",
-                    "stl/lx521_coupon_12_v1lf_closed_bore_bump.stl"):
+                    "stl/lx521_top_obiwan_core_1of2_lm_carrier.stl",
+                    "stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
+                    "stl/lx521_coupon_12_obiwan_closed_bore_bump.stl"):
                 a, b = floor / name, no_floor / name
                 if (a.is_file() and b.is_file()
                         and a.stat().st_size == b.stat().st_size
@@ -1177,12 +1177,12 @@ def main() -> int:
                         "  DEFECT state-dependent meshes are identical: "
                         f"{name}")
             for state_dir in (floor, no_floor):
-                v1lf = state_dir / "baffle_cable_routing_v1lf.png"
+                obiwan = state_dir / "baffle_cable_routing_obiwan.png"
                 proud = state_dir / "baffle_cable_routing_proud.png"
-                if v1lf.is_file() and proud.is_file():
+                if obiwan.is_file() and proud.is_file():
                     try:
                         identical = (
-                            _png_diagnostics(v1lf)["pixel_sha256"]
+                            _png_diagnostics(obiwan)["pixel_sha256"]
                             == _png_diagnostics(proud)["pixel_sha256"])
                     except Exception:
                         identical = False
@@ -1191,7 +1191,7 @@ def main() -> int:
                 if identical:
                     bad += 1
                     print(
-                        f"  DEFECT {state_dir.name}: proud and V1LF routing "
+                        f"  DEFECT {state_dir.name}: proud and Obi-Wan routing "
                         "PNGs are identical")
     print(f"{good}/{len(files)} STLs strict-manifold; "
           f"manifest errors {len(manifest_errors)}")

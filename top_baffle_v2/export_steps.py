@@ -50,12 +50,12 @@ def main() -> None:
     args = ap.parse_args()
 
     source_stem = Path(args.source).stem
-    if source_stem.startswith("top_baffle_nd25fw4_v1lf"):
+    if source_stem.startswith("top_baffle_nd25fw4_obiwan"):
         raise SystemExit(
-            "direct V1LF STEP generation is disabled because it retains "
-            "the complete LM OCC build tree; use export_v1lf_staged.py")
+            "direct Obi-Wan STEP generation is disabled because it retains "
+            "the complete LM OCC build tree; use export_obiwan_staged.py")
 
-    # Delay the CAD-kernel import until after the fail-closed V1LF gate.
+    # Delay the CAD-kernel import until after the fail-closed Obi-Wan gate.
     from build123d import export_step
 
     module = importlib.import_module(source_stem)

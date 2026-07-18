@@ -6,7 +6,7 @@ The production source migration is implemented: every discovered released,
 printable magnet station is represented by the shared pause-and-bury captive
 system instead of an externally accessible glue pocket. The fail-closed
 inventory contains **56 magnet-bearing STLs and 102 per-STL magnet stations**.
-This count includes both stand-state copies and the mutually exclusive V1LF LM
+This count includes both stand-state copies and the mutually exclusive Obi-Wan LM
 monolith/split alternatives.
 
 This document is not the final release authority until the content-addressed
@@ -16,7 +16,7 @@ contract, and remaining physical risks below are final static facts. The only
 intentionally unfinished fields are labeled `FINALIZE AFTER PROMOTION`.
 
 - Promoted source snapshot SHA-256: **`[FINALIZE AFTER PROMOTION: 64-hex source hash]`**
-- Actual complete-slice totals and V1LF regression observations:
+- Actual complete-slice totals and Obi-Wan regression observations:
   **`[FINALIZE AFTER PROMOTION: passed/failed STLs, actual pause stations,
   exact-split proxy coverage, observed UM 5.96 / LM 8.52 results]`**
 - Authoritative catalog/pause/polarity manifest paths:
@@ -49,7 +49,7 @@ No magnet receives structural-load credit. The release contract remains
 The cavity bottom follows the circular D5 magnet profile. Its upper loading
 region remains vertically open until insertion, with continuous retaining
 extrusion on both axial sides. The production helper is derived from the
-physically tested `coupons/v1lf_ae_embed` implementation; the earlier 0.30 mm
+physically tested `coupons/obiwan_ae_embed` implementation; the earlier 0.30 mm
 skin was rejected because Bambu Studio Classic omitted it with the qualified
 0.4 mm nozzle process.
 
@@ -68,20 +68,20 @@ The family counts below are enforced in code and must not change silently.
 | V1-A | 8 | 8 | Four `lx521_top_v1addonA_shoulder_*` receivers per stand state |
 | V1-B1 | 4 | 8 | Two `lx521_top_v1addonB1_wing_*` receivers per stand state |
 | V1L | 2 | 8 | `lx521_top_v1l_4of4_vase_b2`, one per stand state |
-| V1LF | 4 | 12 | LM monolith and UM carrier in both stand states |
-| V1LF-split | 4 | 8 | Keyed LM lower and upper alternatives in both stand states |
-| V1LF-Ac | 6 | 6 | Left/right LM-lower, LM-upper, and UM wing segments |
-| V1LF-Ae | 6 | 6 | Left/right LM-lower, LM-upper, and UM wing segments |
+| Obi-Wan | 4 | 12 | LM monolith and UM carrier in both stand states |
+| Obi-Wan-split | 4 | 8 | Keyed LM lower and upper alternatives in both stand states |
+| Obi-Wan-Ac | 6 | 6 | Left/right LM-lower, LM-upper, and UM wing segments |
+| Obi-Wan-Ae | 6 | 6 | Left/right LM-lower, LM-upper, and UM wing segments |
 | coupon1 | 2 | 2 | `lx521_coupon_1_fit_plate`, one per stand state |
 | **Total** | **56** | **102** | Exact fail-closed catalog |
 
 State accounting is 22 magnet-bearing STLs / 45 stations in
 `floor_stand`, 22 / 45 in `no_floor_stand`, and 12 / 12 shared Ac/Ae wing
-segments. A V1LF LM monolith and its two keyed substitutes are alternative
+segments. A Obi-Wan LM monolith and its two keyed substitutes are alternative
 ways to print one installed carrier; both forms are release artifacts and are
 therefore deliberately counted in the catalog.
 
-The two canonical V1LF LM monoliths have an approximately
+The two canonical Obi-Wan LM monoliths have an approximately
 235.61 x 313.35 mm mandatory front-down footprint and do not fit a P2S
 256 x 256 mm bed. They remain valid large-format release outputs. Their eight
 site contracts are audited on the exact, same-state keyed lower/upper
@@ -93,11 +93,11 @@ geometry; that proxy coverage is not a fabricated monolith G-code pause.
   in-plane site positions, axes, mating datums, and approximately 0.05 mm
   interface clearance. Only the local material needed for the 3.00 mm captive
   land and roof is added.
-- V1LF upper/lower LM and UM sites retain their existing interface-plane
+- Obi-Wan upper/lower LM and UM sites retain their existing interface-plane
   positions and radial/base-side axes. Ring-radial sites use a local 0.60 mm
   outward backing addition because moving the captive envelope inward would
   collide with the driver flange seat. This backing is not a proud magnet ear.
-- V1LF Ac/Ae receivers use the matching pair axes and protected local lands.
+- Obi-Wan Ac/Ae receivers use the matching pair axes and protected local lands.
   Existing outlines, acoustic depth laws, three-piece splits, and dovetail
   geometry remain authoritative.
 - V0 has two rear-axis stations and no released mate. Its front-down axial
@@ -132,7 +132,7 @@ records:
 - the exact STL hash and size.
 
 A missing, orphaned, stale-hash, tilted, or translation-inconsistent sidecar
-is a release failure. The large V1LF monoliths must also remain front-face-down
+is a release failure. The large Obi-Wan monoliths must also remain front-face-down
 on a sufficiently large machine; tilting one to force it onto a P2S is not an
 approved workaround.
 
@@ -154,7 +154,7 @@ provide the part/variant, sites, orientation, last fully open layer, CAD
 bury/roof-start plane, first closing layer, Bambu pause-marker Z, count, and
 site-specific polarity vector.
 
-Required V1LF coupon-equivalent regressions for the tested P2S 0.4 mm /
+Required Obi-Wan coupon-equivalent regressions for the tested P2S 0.4 mm /
 0.16 mm High Quality / Classic profile are UM **Z = 5.96 mm** and LM
 **Z = 8.52 mm**. These are regression requirements, not global pause values.
 Every unrelated station gets its pause from the actual generated G-code layer
@@ -205,13 +205,13 @@ No file in this migration uploads to a printer or starts a print.
 | Category | Changed/new authorities |
 |---|---|
 | Reusable geometry | `captive_magnets.py` |
-| Standard and variant CAD | `top_baffle_nd25fw4.py`, `top_baffle_nd25fw4_b.py`, `top_baffle_nd25fw4_{b2,c7,v0,v1,v1l}_split.py`, `top_baffle_nd25fw4_{v0,v1,v1lf}.py` |
-| Attachments and V1LF alternatives | `top_baffle_nd25fw4_attachments.py`, `top_baffle_nd25fw4_v1_attachments.py`, `top_baffle_nd25fw4_v1lf_{attachments,bridge,lm_split,route}.py`, `v1lf_basic_wings_cad.py` |
-| Front-down/STL exporters | `front_down_contract.py`, `export_piece_stls.py`, `export_coupon.py`, `export_v1lf_basic_wings.py` |
+| Standard and variant CAD | `top_baffle_nd25fw4.py`, `top_baffle_nd25fw4_b.py`, `top_baffle_nd25fw4_{b2,c7,v0,v1,v1l}_split.py`, `top_baffle_nd25fw4_{v0,v1,obiwan}.py` |
+| Attachments and Obi-Wan alternatives | `top_baffle_nd25fw4_attachments.py`, `top_baffle_nd25fw4_v1_attachments.py`, `top_baffle_nd25fw4_obiwan_{attachments,bridge,lm_split,route}.py`, `obiwan_wings_cad.py` |
+| Front-down/STL exporters | `front_down_contract.py`, `export_piece_stls.py`, `export_coupon.py`, `export_obiwan_wings.py` |
 | Catalog and slicing | `generate_captive_magnet_catalog.py`, `captive_magnet_release_catalog.schema.json`, `slice_captive_magnets.py`, `captive_magnet_slicing_profile.json`, `json_schema_subset.py` |
-| Build and promotion | `Makefile`, `remote_cad.py`, `write_v1lf_release_manifest.py`, `check_manifold.py` |
-| Tests | `test_captive_magnets.py`, `test_release_metadata.py`, `test_slice_captive_magnets.py`, plus updated clearance, V1LF, wing, and remote-CAD tests |
-| Documentation/diagrams | `README.md`, `PRINTING.md`, `VARIANTS.md`, `V1LF_ACOUSTIC_WINGS_SPEC.md`, `V1LF_PHYSICAL_QUALIFICATION.md`, `V1LF_R6F_CAD_BRIEF.md`, and updated routing/overlay generators |
+| Build and promotion | `Makefile`, `remote_cad.py`, `write_obiwan_release_manifest.py`, `check_manifold.py` |
+| Tests | `test_captive_magnets.py`, `test_release_metadata.py`, `test_slice_captive_magnets.py`, plus updated clearance, Obi-Wan, wing, and remote-CAD tests |
+| Documentation/diagrams | `README.md`, `PRINTING.md`, `VARIANTS.md`, `obiwan_acoustic_wings_spec.md`, `obiwan_physical_qualification.md`, `obiwan_r6f_cad_brief.md`, and updated routing/overlay generators |
 
 ### Generated release categories
 
@@ -221,7 +221,7 @@ No file in this migration uploads to a printer or starts a print.
   including the 22 magnet-bearing pairs in each state.
 - Six Ac and six Ae wing STL/`.print.json` pairs, their STEP masters and
   assemblies, facts, transactional manifests, and review images.
-- V1LF staged-build manifests, release manifests, cable-routing PNGs, and
+- Obi-Wan staged-build manifests, release manifests, cable-routing PNGs, and
   driver/variant overlays whose magnet depictions now show the captive skins
   and 0.95 mm paired separation.
 - The hash-bound captive-magnet release catalog, Bambu profile provenance,
@@ -233,13 +233,10 @@ No file in this migration uploads to a printer or starts a print.
 | Excluded category | Reason |
 |---|---|
 | Oversized one-piece STEP masters, `*_assembled.step`, `*_attachments.step`, and other STEP review packages | Geometry authorities or review containers, not additional prints; their released constituent STLs are inventoried |
-| `coupons/v1lf_ae_embed` | Physically validated geometry/process reference, not a production baffle print; retained as regression authority |
+| `coupons/obiwan_ae_embed` | Physically validated geometry/process reference, not a production baffle print; retained as regression authority |
 | `lx521_coupon_7_recess_seat.stl` in each stand state | Diagnostic driver-seat crop whose current XY region contains no captive site |
-| `review/v1lf_wing_*_concept.png` and `gen_v1lf_wing_concepts.py` | Raster concepts with no released printable solid |
-| B1/B2 panels from `gen_v1lf_basic_variants.py` and `baffle_variants_drivers_v1lf.png` | Feasibility/layout studies; Ac and Ae are the implemented printable wing families |
-| `gen_c_variants.py` and `baffle_C_variants_drivers.png` | C1-C6 concept-only magnet-boss studies |
+| `gen_c_variants.py` | C1-C6 concept-only magnet-boss study generator; its one-off raster is not retained |
 | `gen_um_knife_draft.py` | Obsolete pin-magnet slide drawing; no released solid |
-| `review/V1LF_NEXTGEN_SIMPLIFIED.md` | Future/concept note, not release geometry |
 | Hypothetical V0 mating attachment | No released printable mate exists; V0 remains explicitly unpaired |
 | Legacy exposed-pocket generated artifacts | Obsolete bytes superseded in place by the 56 hash-bound captive STLs |
 
@@ -253,7 +250,7 @@ legacy or concept artifacts: they are valid non-acoustic measurement tools.
 - Slicer/catalog/toolpath unit tests: **35 passed**.
 - Remote-CAD transport, guard, and promotion tests passed, including expected
   simulated guard failures.
-- Remote native/source suites, standard clearances, V1LF R6F geometry,
+- Remote native/source suites, standard clearances, Obi-Wan R6F geometry,
   terminal/Faston/Y-boot service matrices, exact cable envelopes, buried
   backs, route contracts, floor datum, and analytical structure gates passed
   before artifact publication.
@@ -274,8 +271,8 @@ manifest are authoritative.
 
 | Review target | CAD Viewer URL |
 |---|---|
-| No-floor V1LF assembled carrier/attachments | `[FINALIZE AFTER PROMOTION: viewer URL]` |
-| Floor V1LF assembled carrier/integral stand | `[FINALIZE AFTER PROMOTION: viewer URL]` |
+| No-floor Obi-Wan assembled carrier/attachments | `[FINALIZE AFTER PROMOTION: viewer URL]` |
+| Floor Obi-Wan assembled carrier/integral stand | `[FINALIZE AFTER PROMOTION: viewer URL]` |
 | V0 axial captive stations | `[FINALIZE AFTER PROMOTION: viewer URL]` |
 | Ac assembled wing and receivers | `[FINALIZE AFTER PROMOTION: viewer URL]` |
 | Ae assembled wing and receivers | `[FINALIZE AFTER PROMOTION: viewer URL]` |
@@ -294,10 +291,10 @@ manifest are authoritative.
   between-screw terminal clocking, Faston bodies, lead slack, and removal
   envelope remain a physical-fit check; the current 12 mm proxy pull equals
   the provisional exposed-tab length and has no positive overtravel margin.
-- The optional V1LF keyed LM split still requires a process-matched physical
+- The optional Obi-Wan keyed LM split still requires a process-matched physical
   coupon/full print proving the thin socket walls, two-pin/socket seating,
   coplanar front faces, route-seam continuity, and repeated assembly fit.
-- The canonical V1LF LM monoliths cannot be printed on a P2S in the mandatory
+- The canonical Obi-Wan LM monoliths cannot be printed on a P2S in the mandatory
   orientation. Use the exact keyed alternative or a verified larger-format
   printer; do not scale, crop, or tilt them.
 - The integral floor version has analytical strength results, not completed

@@ -14,7 +14,7 @@ import tempfile
 import types
 from unittest import mock
 
-import write_v1lf_release_manifest as release_manifest
+import write_obiwan_release_manifest as release_manifest
 import check_manifold as manifold_checker
 from check_manifold import (
     EXPECTED_NONPOLAR_STATE_STL_COUNT,
@@ -64,8 +64,8 @@ def _load_catalog_generator_without_cad():
             "top_baffle_nd25fw4_v0", V0_MAGNET_SITES=()),
         "top_baffle_nd25fw4_v1": _stub_module(
             "top_baffle_nd25fw4_v1", V1_MAGNET_ZC=()),
-        "top_baffle_nd25fw4_v1lf": _stub_module(
-            "top_baffle_nd25fw4_v1lf",
+        "top_baffle_nd25fw4_obiwan": _stub_module(
+            "top_baffle_nd25fw4_obiwan",
             SIDE_INTERFACE_GAP=0.05,
             side_magnet_sites=lambda *_args, **_kwargs: (),
         ),
@@ -176,13 +176,13 @@ def _logical_make_lines(text: str) -> tuple[str, ...]:
     return tuple(lines)
 
 
-def test_v1lf_release_manifest_binds_print_sidecars() -> None:
-    expected_v1lf = {
-        "stl/lx521_top_v1lf_core_1of2_lm_carrier.print.json",
-        "stl/lx521_top_v1lf_core_2of2_um_carrier.print.json",
-        "stl/lx521_top_v1lf_optional_lm_keyed_1of2_bottom.print.json",
-        "stl/lx521_top_v1lf_optional_lm_keyed_2of2_top.print.json",
-        "stl/lx521_top_v1lf_addon_tweeter_crescent.print.json",
+def test_obiwan_release_manifest_binds_print_sidecars() -> None:
+    expected_obiwan = {
+        "stl/lx521_top_obiwan_core_1of2_lm_carrier.print.json",
+        "stl/lx521_top_obiwan_core_2of2_um_carrier.print.json",
+        "stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json",
+        "stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.print.json",
+        "stl/lx521_top_obiwan_addon_tweeter_crescent.print.json",
         *(
             f"stl/lx521_coupon_{name}.print.json"
             for name in (
@@ -195,14 +195,14 @@ def test_v1lf_release_manifest_binds_print_sidecars() -> None:
                 "7_recess_seat",
                 "8_fish_ts_oval_proud",
                 "9_um_faston_clocking",
-                "12_v1lf_closed_bore_bump",
+                "12_obiwan_closed_bore_bump",
             )
         ),
     }
     for stand_foot in (False, True):
         names = set(release_manifest.expected_artifact_names(stand_foot))
         actual_sidecars = {name for name in names if name.endswith(".print.json")}
-        assert actual_sidecars == expected_v1lf
+        assert actual_sidecars == expected_obiwan
         assert len(actual_sidecars) == 15
         assert len(names) == (42 if stand_foot else 40)
         stls = {name for name in names if name.endswith(".stl")}
@@ -312,7 +312,7 @@ def test_catalog_source_freezes_56_stls_and_102_stations() -> None:
     assert sum(counts[1] for counts in families.values()) == 102
     assert set(families) == {
         "B2", "C7", "A", "B1", "V0", "V1", "V1-A", "V1-B1",
-        "V1L", "V1LF", "V1LF-split", "V1LF-Ac", "V1LF-Ae",
+        "V1L", "Obi-Wan", "Obi-Wan-split", "Obi-Wan-Ac", "Obi-Wan-Ae",
         "coupon1",
     }
 
@@ -320,12 +320,12 @@ def test_catalog_source_freezes_56_stls_and_102_stations() -> None:
 def test_wing_catalog_identity_preserves_frozen_release_case() -> None:
     """Filesystem slugs stay lowercase; released family IDs must not."""
     generator = _load_catalog_generator_without_cad()
-    expected = {"ac": "V1LF-Ac", "ae": "V1LF-Ae"}
+    expected = {"ac": "Obi-Wan-Ac", "ae": "Obi-Wan-Ae"}
     assert generator.RELEASED_WING_VARIANTS == expected
     for slug, variant in expected.items():
         assert generator._released_wing_variant(slug) == variant
         assert variant in generator.EXPECTED_FAMILY_COUNTS
-        assert variant != f"V1LF-{slug}"
+        assert variant != f"Obi-Wan-{slug}"
     try:
         generator._released_wing_variant("unknown")
     except RuntimeError as exc:
@@ -337,7 +337,7 @@ def test_wing_catalog_identity_preserves_frozen_release_case() -> None:
         encoding="utf-8")
     assert '"id": f"shared:{wing_variant}:{entry[\'label\']}"' in source
     assert '"variant": wing_variant' in source
-    assert 'f"V1LF-{slug}"' not in source
+    assert 'f"Obi-Wan-{slug}"' not in source
 
 
 def test_catalog_generator_uses_release_wide_acoustic_print_contract() -> None:
@@ -547,11 +547,11 @@ def test_catalog_source_file_hash_map_exactly_covers_source_files() -> None:
             root / "nested" / "two.json")
 
 
-def test_v1lf_catalog_binds_staged_exporter_and_state_manifest() -> None:
+def test_obiwan_catalog_binds_staged_exporter_and_state_manifest() -> None:
     source = (ROOT / "generate_captive_magnet_catalog.py").read_text(
         encoding="utf-8")
-    assert '"export_v1lf_staged.py"' in source
-    assert 'f"{state}/.v1lf_stage/manifest.json"' in source
+    assert '"export_obiwan_staged.py"' in source
+    assert 'f"{state}/.obiwan_stage/manifest.json"' in source
     assert "stage_manifest=stage_manifest" in source
     assert '"stage_manifest_sha256": _sha256(manifest_path)' in source
 
@@ -566,17 +566,17 @@ def test_receiver_polarity_docs_match_pair_axis_convention() -> None:
         assert "marked poles point in" not in text
 
 
-def test_v1lf_release_target_requires_captive_catalog() -> None:
+def test_obiwan_release_target_requires_captive_catalog() -> None:
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
     targets = {
         line.split(":", 1)[0]: line.split(":", 1)[1]
         for line in _logical_make_lines(makefile)
         if ":" in line and not line.startswith(("#", "\t"))
     }
-    assert "$(CAPTIVE_MAGNET_CATALOG)" in targets["v1lf_release"]
+    assert "$(CAPTIVE_MAGNET_CATALOG)" in targets["obiwan_release"]
 
 
-def test_check_waits_for_both_v1lf_native_stages() -> None:
+def test_check_waits_for_both_obiwan_native_stages() -> None:
     """Parallel R6F keyed-split checks must never race stage creation."""
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
     targets = {
@@ -584,8 +584,8 @@ def test_check_waits_for_both_v1lf_native_stages() -> None:
         for line in _logical_make_lines(makefile)
         if ":" in line and not line.startswith(("#", "\t"))
     }
-    assert "validate_v1lf_stages" in targets["check"]
-    assert "validate_v1lf_stages" in targets["check_v1lf"]
+    assert "validate_obiwan_stages" in targets["check"]
+    assert "validate_obiwan_stages" in targets["check_obiwan"]
 
 
 def test_r6f_carriers_reuse_make_stage_across_assertion_edits() -> None:
@@ -597,7 +597,7 @@ def test_r6f_carriers_reuse_make_stage_across_assertion_edits() -> None:
     rebuild LM, UM, or tweeter geometry.
     """
     module_name = "_r6f_stage_reuse_static_test"
-    path = ROOT / "test_v1lf_r6f.py"
+    path = ROOT / "test_obiwan_r6f.py"
     spec = importlib.util.spec_from_file_location(module_name, path)
     assert spec is not None and spec.loader is not None
     r6f = importlib.util.module_from_spec(spec)
@@ -608,11 +608,11 @@ def test_r6f_carriers_reuse_make_stage_across_assertion_edits() -> None:
     # stage.  This freezes both state selection and the two authenticated
     # manifest APIs: R6F must not regress to a raw path read or a private
     # carrier exporter when an assertion changes.
-    import export_v1lf_staged as staged_export
+    import export_obiwan_staged as staged_export
 
     for stand_foot, state_name in (
             (False, "no_floor_stand"), (True, "floor_stand")):
-        manifest = ROOT / state_name / ".v1lf_stage/manifest.json"
+        manifest = ROOT / state_name / ".obiwan_stage/manifest.json"
         payload = {"authenticated": state_name}
         resolved = {"core_lm_carrier": Path(f"/{state_name}/lm.brep")}
         with mock.patch.object(r6f, "_state") as select_state, \
@@ -622,7 +622,7 @@ def test_r6f_carriers_reuse_make_stage_across_assertion_edits() -> None:
                 mock.patch.object(
                     staged_export, "staged_part_paths",
                     return_value=resolved) as resolve_parts:
-            assert r6f._validated_v1lf_stage_paths(stand_foot) is resolved
+            assert r6f._validated_obiwan_stage_paths(stand_foot) is resolved
         select_state.assert_called_once_with(stand_foot)
         load_manifest.assert_called_once_with(
             manifest, stand_foot=stand_foot)
@@ -640,7 +640,7 @@ def test_r6f_carriers_reuse_make_stage_across_assertion_edits() -> None:
         "tweeter": stage["addon_tweeter_crescent"],
     }
     with mock.patch.object(
-            r6f, "_validated_v1lf_stage_paths", return_value=stage), \
+            r6f, "_validated_obiwan_stage_paths", return_value=stage), \
             mock.patch.object(
                 r6f, "_stage_shell_contract_breps_unlocked",
                 side_effect=AssertionError("carrier path entered shell CAD")):
@@ -662,7 +662,7 @@ def test_r6f_carriers_reuse_make_stage_across_assertion_edits() -> None:
 
     with tempfile.TemporaryDirectory() as directory_name, \
             mock.patch.object(
-                r6f, "_validated_v1lf_stage_paths", return_value=stage), \
+                r6f, "_validated_obiwan_stage_paths", return_value=stage), \
             mock.patch.object(
                 r6f, "_stage_shell_contract_breps_unlocked",
                 side_effect=fake_shell_stage), \
@@ -689,10 +689,10 @@ def test_r6f_carriers_reuse_make_stage_across_assertion_edits() -> None:
     # The authenticated stage identity and its Make producers are geometry
     # authorities, not assertion authorities.  Otherwise changing only this
     # test would still force the very carrier rebuild eliminated above.
-    staged_source = (ROOT / "export_v1lf_staged.py").read_text(
+    staged_source = (ROOT / "export_obiwan_staged.py").read_text(
         encoding="utf-8")
     staged_tree = ast.parse(
-        staged_source, filename=str(ROOT / "export_v1lf_staged.py"))
+        staged_source, filename=str(ROOT / "export_obiwan_staged.py"))
     fingerprint = next(
         node for node in staged_tree.body
         if isinstance(node, ast.FunctionDef)
@@ -700,7 +700,7 @@ def test_r6f_carriers_reuse_make_stage_across_assertion_edits() -> None:
     fingerprint_source = ast.get_source_segment(staged_source, fingerprint)
     assert fingerprint_source is not None
     assert 'glob("top_baffle_nd25fw4*.py")' in fingerprint_source
-    assert "test_v1lf_r6f.py" not in fingerprint_source
+    assert "test_obiwan_r6f.py" not in fingerprint_source
 
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
     targets = {
@@ -709,10 +709,10 @@ def test_r6f_carriers_reuse_make_stage_across_assertion_edits() -> None:
         if ":" in line and not line.startswith(("#", "\t"))
     }
     for target in (
-            "validate_floor_v1lf_stage",
-            "validate_no_floor_v1lf_stage"):
-        assert "$(V1LF_SRCS)" in targets[target]
-        assert "test_v1lf_r6f.py" not in targets[target]
+            "validate_floor_obiwan_stage",
+            "validate_no_floor_obiwan_stage"):
+        assert "$(OBIWAN_SRCS)" in targets[target]
+        assert "test_obiwan_r6f.py" not in targets[target]
 
 
 def test_coupon_mesh_inventory_excludes_print_sidecars() -> None:
@@ -743,7 +743,7 @@ def test_manifold_cli_splits_mesh_and_metadata_phases() -> None:
         with mock.patch.object(
                 manifold_checker, "stl_diagnostics", return_value=facts), \
                 mock.patch.object(
-                    manifold_checker, "_v1lf_manifest_errors",
+                    manifold_checker, "_obiwan_manifest_errors",
                     side_effect=AssertionError("STL-only read metadata")), \
                 mock.patch.object(
                     sys, "argv",
@@ -754,7 +754,7 @@ def test_manifold_cli_splits_mesh_and_metadata_phases() -> None:
                 manifold_checker, "stl_diagnostics",
                 side_effect=AssertionError("metadata-only read a mesh")), \
                 mock.patch.object(
-                    manifold_checker, "_v1lf_manifest_errors",
+                    manifold_checker, "_obiwan_manifest_errors",
                     return_value=[]), \
                 mock.patch.object(
                     sys, "argv",
@@ -764,7 +764,7 @@ def test_manifold_cli_splits_mesh_and_metadata_phases() -> None:
 
 def test_physical_reference_coupon_freezes_zero_interface_gap() -> None:
     """Do not let the production 0.05-mm gap mutate the tested coupon."""
-    path = ROOT / "coupons/v1lf_ae_embed/v1lf_ae_embed_coupon.py"
+    path = ROOT / "coupons/obiwan_ae_embed/obiwan_ae_embed_coupon.py"
     source = path.read_text(encoding="utf-8")
     tree = ast.parse(source, filename=str(path))
     constants = {
@@ -820,9 +820,9 @@ def _rotation_keywords(path: Path, function_name: str) -> tuple[tuple[str, objec
 def test_every_export_pipeline_is_x180_plus_z_only() -> None:
     pipelines = (
         (ROOT / "export_piece_stls.py", "main", True),
-        (ROOT / "export_v1lf_basic_wings.py", "_best_print_orientation", True),
+        (ROOT / "export_obiwan_wings.py", "_best_print_orientation", True),
         (ROOT / "export_coupon.py", "_front_face_down", False),
-        (ROOT / "coupons/v1lf_ae_embed/v1lf_ae_embed_coupon.py",
+        (ROOT / "coupons/obiwan_ae_embed/obiwan_ae_embed_coupon.py",
          "_front_down", False),
     )
     for path, function_name, allow_z in pipelines:
@@ -885,7 +885,7 @@ def test_v1_ts_captive_detour_is_smooth_full_lumen_and_wired() -> None:
 
 
 def test_wing_review_uses_captive_cavity_schema() -> None:
-    source = (ROOT / "export_v1lf_basic_wings.py").read_text(
+    source = (ROOT / "export_obiwan_wings.py").read_text(
         encoding="utf-8")
     assert 'receiver["cavity_diameter_mm"]' in source
     assert 'receiver["cavity_depth_mm"]' in source
@@ -894,7 +894,7 @@ def test_wing_review_uses_captive_cavity_schema() -> None:
 
 
 def test_ae_unions_overlapping_relief_tools_before_final_cut() -> None:
-    source = (ROOT / "v1lf_basic_wings_cad.py").read_text(encoding="utf-8")
+    source = (ROOT / "obiwan_wings_cad.py").read_text(encoding="utf-8")
     assert "combined_cutter = relief_cutter.fuse(edge_cutter)" in source
     assert "carved = blank - combined_cutter" in source
     assert "carved = carved - edge_cutter" not in source
@@ -1261,12 +1261,20 @@ def test_coupon_export_canonicalizes_only_transform_zeros_then_gates() -> None:
         if line.startswith("$(1)/stl/.stamp_coupon:"))
     assert "export_coupon.py" in coupon_target
     assert "check_manifold.py" in coupon_target
-    assert "write_v1lf_release_manifest.py" in coupon_target
+    assert "write_obiwan_release_manifest.py" in coupon_target
+
+
+def test_routing_metadata_keeps_human_name_and_machine_slug_distinct() -> None:
+    generator = (ROOT / "gen_cable_routing.py").read_text(encoding="utf-8")
+    checker = (ROOT / "check_manifold.py").read_text(encoding="utf-8")
+    assert '"Obi-Wan" if ROUTING_PROFILE == "obiwan"' in generator
+    assert '("Obi-Wan", "obiwan", "R6F")' in checker
+    assert 'f"LX_ROUTING_PROFILE={profile_slug}"' in checker
 
 
 def main() -> None:
     tests = (
-        test_v1lf_release_manifest_binds_print_sidecars,
+        test_obiwan_release_manifest_binds_print_sidecars,
         test_catalog_schema_requires_x180_plus_numeric_z,
         test_catalog_source_freezes_56_stls_and_102_stations,
         test_wing_catalog_identity_preserves_frozen_release_case,
@@ -1279,10 +1287,10 @@ def main() -> None:
         test_catalog_candidate_runs_normalize_then_every_binding_gate,
         test_catalog_source_revision_is_mandatory_immutable_snapshot_hash,
         test_catalog_source_file_hash_map_exactly_covers_source_files,
-        test_v1lf_catalog_binds_staged_exporter_and_state_manifest,
+        test_obiwan_catalog_binds_staged_exporter_and_state_manifest,
         test_receiver_polarity_docs_match_pair_axis_convention,
-        test_v1lf_release_target_requires_captive_catalog,
-        test_check_waits_for_both_v1lf_native_stages,
+        test_obiwan_release_target_requires_captive_catalog,
+        test_check_waits_for_both_obiwan_native_stages,
         test_r6f_carriers_reuse_make_stage_across_assertion_edits,
         test_coupon_mesh_inventory_excludes_print_sidecars,
         test_manifold_cli_splits_mesh_and_metadata_phases,
@@ -1298,6 +1306,7 @@ def main() -> None:
         test_mesh_gate_accepts_only_nested_inward_cavity_shells,
         test_collapsed_apex_sanitizer_is_lossless_and_fail_closed,
         test_coupon_export_canonicalizes_only_transform_zeros_then_gates,
+        test_routing_metadata_keeps_human_name_and_machine_slug_distinct,
     )
     for test in tests:
         test()

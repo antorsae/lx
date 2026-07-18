@@ -7,7 +7,7 @@ at the origin, and written to stl/<name>.stl.  Only an in-bed Z rotation may
 follow the common X180 process orientation; no released piece is printed on
 an acoustic edge or rear face.
 Exits nonzero if any bed-targeted piece stops fitting.  The retained
-monolithic floor-state V1LF LM is an explicit large-format reference; its
+monolithic floor-state Obi-Wan LM is an explicit large-format reference; its
 two optional keyed replacement prints remain strictly bed-checked.
 """
 
@@ -38,7 +38,7 @@ from build123d import Plane, Pos, Rot, Text, export_stl, extrude, import_brep
 from front_down_contract import sidecar_path_for_stl, write_print_sidecar
 
 BED_MM = 256.0
-V1LF_OPTIONAL_LM_SPLIT_BED_MM = 220.0
+OBIWAN_OPTIONAL_LM_SPLIT_BED_MM = 220.0
 
 # A rigid OCC Location can leave mathematically-zero coordinates as tiny
 # nonzero values on only one of two adjacent face triangulations.  Binary
@@ -52,9 +52,9 @@ STL_TRANSFORM_ZERO_EPSILON_MM = 2.0e-7
 
 # In-bed rotations preserve the common front-down process direction.
 BED_ROT_Z = {
-    "v1lf_core_1of2_lm_carrier": 28.0,
-    "v1lf_optional_lm_keyed_1of2_bottom": 26.0,
-    "v1lf_optional_lm_keyed_2of2_top": 45.0,
+    "obiwan_core_1of2_lm_carrier": 28.0,
+    "obiwan_optional_lm_keyed_1of2_bottom": 26.0,
+    "obiwan_optional_lm_keyed_2of2_top": 45.0,
 }
 
 
@@ -223,7 +223,7 @@ def _unlink_print_pair(path: Path) -> None:
 
 
 def _routing_rev():
-    return {"proud": "R6P", "v1lf": "R6F"}.get(
+    return {"proud": "R6P", "obiwan": "R6F"}.get(
         os.environ.get("LX_ROUTING_PROFILE", "proud"), "R6P")
 
 # safe embossing anchors (flat local rear, clear of pockets/thin zones)
@@ -252,12 +252,12 @@ EMBOSS_XY = {
 
 def _label(name):
     """Short provenance code, e.g. B2-1, V1L-3, V1A-TL, B1-WL."""
-    if "v1lf_core_1of2_lm" in name:
-        return f"V1LF-LM {_routing_rev()}"
-    if "v1lf_core_2of2_um" in name:
-        return f"V1LF-UM {_routing_rev()}"
+    if "obiwan_core_1of2_lm" in name:
+        return f"Obi-Wan-LM {_routing_rev()}"
+    if "obiwan_core_2of2_um" in name:
+        return f"Obi-Wan-UM {_routing_rev()}"
     n = name.replace("lx521_top_", "")
-    fam = {"base": "B2", "c7base": "C7", "v1l": "V1L", "v1lf": "V1LF",
+    fam = {"base": "B2", "c7base": "C7", "v1l": "V1L", "obiwan": "Obi-Wan",
            "v1": "V1", "addonA": "A", "addonB1": "B1", "v1addonA": "V1A",
            "v1addonB1": "V1B1"}
     head = n.split("_")[0]
@@ -279,7 +279,7 @@ def _emboss(solid, name):
     # R6F is deliberately material-minimal. Identity stays in filenames
     # and STEP labels; no rear engraving is allowed to partition a thin
     # tunnel cover or the fused front-flush bridge web.
-    if "v1lf_" in name or "grommet" in name:
+    if "obiwan_" in name or "grommet" in name:
         return solid
 
     for suffix, (ax, ay, rot, font, short) in EMBOSS_XY.items():
@@ -287,7 +287,7 @@ def _emboss(solid, name):
             break
     else:
         raise SystemExit(f"no emboss anchor for {name}")
-    # rear z AT the anchor, not the piece's global min (V1LF pad
+    # rear z AT the anchor, not the piece's global min (Obi-Wan pad
     # buttons and the stand foot both undercut the plate rear)
     from build123d import Cylinder
 
@@ -340,20 +340,20 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--outdir", type=Path, default=OUT_DIR,
                     help="directory for the STLs (default: stl/)")
-    ap.add_argument("--variant", choices=("b2", "c7", "v0", "v1", "v1l", "v1lf"),
+    ap.add_argument("--variant", choices=("b2", "c7", "v0", "v1", "v1l", "obiwan"),
                     default="b2",
                     help="b2: base pieces + attachments; c7: the four "
                          "LM-knife-taper base pieces (attachments and "
                          "piece_top are shared with b2)")
     ap.add_argument(
-        "--v1lf-part",
+        "--obiwan-part",
         choices=("lm", "lm_split", "um", "tweeter"),
         help="export one staged R6F group; omit on osado to mesh the whole "
              "state in one guarded process")
     ap.add_argument(
-        "--v1lf-stage-manifest", type=Path,
+        "--obiwan-stage-manifest", type=Path,
         help="hash-verified native-BREP stage manifest produced by "
-             "export_v1lf_staged.py; required for every V1LF export")
+             "export_obiwan_staged.py; required for every Obi-Wan export")
     ap.add_argument(
         "--v1l-piece",
         choices=("piece_bottom", "piece_mid_left", "piece_mid_right",
@@ -362,67 +362,67 @@ def main() -> None:
              "serial use releases OCC geometry between groups and "
              "reduces the local process-tree RSS peak")
     args = ap.parse_args()
-    if args.v1lf_part and args.variant != "v1lf":
-        ap.error("--v1lf-part requires --variant v1lf")
-    if args.v1lf_stage_manifest and args.variant != "v1lf":
-        ap.error("--v1lf-stage-manifest requires --variant v1lf")
+    if args.obiwan_part and args.variant != "obiwan":
+        ap.error("--obiwan-part requires --variant obiwan")
+    if args.obiwan_stage_manifest and args.variant != "obiwan":
+        ap.error("--obiwan-stage-manifest requires --variant obiwan")
     if args.v1l_piece and args.variant != "v1l":
         ap.error("--v1l-piece requires --variant v1l")
     stand_mode = os.environ.get("LX_STAND_FOOT", "1")
     if stand_mode not in {"0", "1"}:
         ap.error("LX_STAND_FOOT must be 0 or 1")
-    if (args.variant == "v1lf" and args.v1lf_part is None
+    if (args.variant == "obiwan" and args.obiwan_part is None
             and not _large_host_execution()):
         ap.error(
-            "local --variant v1lf requires one --v1lf-part so every OCC "
+            "local --variant obiwan requires one --obiwan-part so every OCC "
             "group runs in a fresh guarded process")
-    if args.variant == "v1lf" and args.v1lf_stage_manifest is None:
+    if args.variant == "obiwan" and args.obiwan_stage_manifest is None:
         ap.error(
-            "--variant v1lf requires --v1lf-stage-manifest; direct "
+            "--variant obiwan requires --obiwan-stage-manifest; direct "
             "monolithic carrier generation is intentionally disabled")
-    profile = "v1lf" if args.variant == "v1lf" else "proud"
+    profile = "obiwan" if args.variant == "obiwan" else "proud"
     os.environ["LX_ROUTING_PROFILE"] = profile
     out_dir = args.outdir
     out_dir.mkdir(parents=True, exist_ok=True)
-    if args.variant == "v1lf":
-        from export_v1lf_staged import (
+    if args.variant == "obiwan":
+        from export_obiwan_staged import (
             PRINT_PART_SPECS,
             load_stage_manifest,
             staged_part_paths,
         )
 
-        payload = load_stage_manifest(args.v1lf_stage_manifest)
-        staged = staged_part_paths(args.v1lf_stage_manifest, payload)
+        payload = load_stage_manifest(args.obiwan_stage_manifest)
+        staged = staged_part_paths(args.obiwan_stage_manifest, payload)
         keys = tuple(
             key for key, spec in PRINT_PART_SPECS.items()
             if key in staged and (
-                args.v1lf_part is None
-                or spec["group"] == args.v1lf_part))
+                args.obiwan_part is None
+                or spec["group"] == args.obiwan_part))
         if not keys:
             ap.error(
                 f"the staged {payload['state']} manifest has no "
-                f"{args.v1lf_part!r} print group")
+                f"{args.obiwan_part!r} print group")
         parts = {
             PRINT_PART_SPECS[key]["stl_name"]: import_brep(str(staged[key]))
             for key in keys
         }
-        # Prune artifacts owned by superseded V1LF generators.  In
+        # Prune artifacts owned by superseded Obi-Wan generators.  In
         # particular this removes the deleted external R14 raceway and
         # right alignment link from incremental output directories.
         for legacy in (
-                *out_dir.glob("lx521_top_v1lf_[1-4]of4_*.stl"),
-                *out_dir.glob("lx521_top_v1lf_[1-4]of4_*.print.json")):
+                *out_dir.glob("lx521_top_obiwan_[1-4]of4_*.stl"),
+                *out_dir.glob("lx521_top_obiwan_[1-4]of4_*.print.json")):
             _unlink_print_pair(legacy)
         expected = {
-            "lx521_top_v1lf_core_1of2_lm_carrier.stl",
-            "lx521_top_v1lf_core_2of2_um_carrier.stl",
-            "lx521_top_v1lf_optional_lm_keyed_1of2_bottom.stl",
-            "lx521_top_v1lf_optional_lm_keyed_2of2_top.stl",
-            "lx521_top_v1lf_addon_tweeter_crescent.stl",
+            "lx521_top_obiwan_core_1of2_lm_carrier.stl",
+            "lx521_top_obiwan_core_2of2_um_carrier.stl",
+            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
+            "lx521_top_obiwan_optional_lm_keyed_2of2_top.stl",
+            "lx521_top_obiwan_addon_tweeter_crescent.stl",
         }
         for legacy in (
-                *out_dir.glob("lx521_top_v1lf_addon_*.stl"),
-                *out_dir.glob("lx521_top_v1lf_addon_*.print.json")):
+                *out_dir.glob("lx521_top_obiwan_addon_*.stl"),
+                *out_dir.glob("lx521_top_obiwan_addon_*.print.json")):
             stl_name = (
                 legacy.name.removesuffix(".print.json") + ".stl"
                 if legacy.name.endswith(".print.json") else legacy.name)
@@ -485,12 +485,12 @@ def main() -> None:
         # One print-side contract for the complete release: put the acoustic
         # front on the build plate.  Besides making the visible texture
         # consistent, this is the process direction used by every captive
-        # loading chimney.  The former V1LF X26/X90 packing rotations made
+        # loading chimney.  The former Obi-Wan X26/X90 packing rotations made
         # those chimneys run sideways; the optional floor LM lower still fits
         # the 220-mm envelope front-down (about 218.7 x 175.9 mm).
         solid = Rot(X=180.0) * solid
         canonical_lm_large_format = (
-            "v1lf_core_1of2_lm_carrier" in name)
+            "obiwan_core_1of2_lm_carrier" in name)
         bed_rotation = next((angle for key, angle in BED_ROT_Z.items()
                              if key in name), 0.0)
         orientation = " @ X180deg front-down"
@@ -500,8 +500,8 @@ def main() -> None:
         bb = solid.bounding_box()
         size = bb.size
         bed_limit = (
-            V1LF_OPTIONAL_LM_SPLIT_BED_MM
-            if "v1lf_optional_lm_keyed_" in name else BED_MM)
+            OBIWAN_OPTIONAL_LM_SPLIT_BED_MM
+            if "obiwan_optional_lm_keyed_" in name else BED_MM)
         fits = (
             canonical_lm_large_format
             or (size.X <= bed_limit and size.Y <= bed_limit

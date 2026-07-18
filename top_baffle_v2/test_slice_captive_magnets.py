@@ -48,10 +48,10 @@ def _catalog_document(artifacts: list[dict]) -> dict:
         artifact.setdefault("source_files", ["source.py"])
         artifact.setdefault("source_file_sha256", {
             value: "c" * 64 for value in artifact["source_files"]})
-        if artifact.get("variant") in ("V1LF", "V1LF-split"):
+        if artifact.get("variant") in ("Obi-Wan", "Obi-Wan-split"):
             artifact.setdefault("stage_manifest", "stage_manifest.json")
             artifact.setdefault("stage_manifest_sha256", "e" * 64)
-        if artifact.get("variant") in ("V1LF-Ac", "V1LF-Ae"):
+        if artifact.get("variant") in ("Obi-Wan-Ac", "Obi-Wan-Ae"):
             artifact.setdefault("transaction_manifest", "transaction.json")
             artifact.setdefault("transaction_manifest_sha256", "f" * 64)
             artifact.setdefault("facts", "facts.json")
@@ -964,7 +964,7 @@ def test_generator_style_source_matrix_is_consumed(tmp_path: Path):
     # generate_captive_magnet_catalog.py: source-space helper facts plus one
     # artifact-level source-to-STL matrix, not nested print-space facts.
     catalog = _catalog_document([{
-            "id": "state:V1LF:part", "part": "part", "variant": "V1LF",
+            "id": "state:Obi-Wan:part", "part": "part", "variant": "Obi-Wan",
             "state": "state", "stl": "part.stl",
             "print_orientation": "front_face_down",
             "rotation_deg": {"x": 180.0, "z": 90.0},
@@ -1305,7 +1305,7 @@ def _exact_split_proxy_catalog() -> dict:
 
     lower = site("lm_lower_left", -32.0)
     upper = site("lm_upper_left", -75.0)
-    monolith = artifact("floor:V1LF:mono", "V1LF", "mono", [lower, upper])
+    monolith = artifact("floor:Obi-Wan:mono", "Obi-Wan", "mono", [lower, upper])
     monolith["p2s_printability"] = "not_printable_oversize"
     monolith["cavity_audit_proxies"] = [
         {"site": "lm_lower_left", "artifact_id": "floor:split:bottom",
@@ -1315,8 +1315,8 @@ def _exact_split_proxy_catalog() -> dict:
     ]
     return _catalog_document([
         monolith,
-        artifact("floor:split:bottom", "V1LF-split", "bottom", [lower]),
-        artifact("floor:split:top", "V1LF-split", "top", [upper]),
+        artifact("floor:split:bottom", "Obi-Wan-split", "bottom", [lower]),
+        artifact("floor:split:top", "Obi-Wan-split", "top", [upper]),
     ])
 
 
@@ -1393,8 +1393,8 @@ def test_catalog_schema_rejects_invalid_generated_by_and_exclusion(
 def test_wing_facts_and_transaction_manifest_are_hash_bound(
         tmp_path: Path) -> None:
     raw = {
-        "id": "shared:V1LF-Ac:wing", "part": "wing",
-        "variant": "V1LF-Ac", "state": "shared", "stl": "wing.stl",
+        "id": "shared:Obi-Wan-Ac:wing", "part": "wing",
+        "variant": "Obi-Wan-Ac", "state": "shared", "stl": "wing.stl",
         "print_orientation": "front_face_down",
         "rotation_deg": {"x": 180.0, "z": 0.0},
         "source_to_stl_matrix": [
@@ -1500,7 +1500,7 @@ def test_oversize_proxy_contract_is_exact_same_state_and_complete(
     path.write_text(json.dumps(payload), encoding="utf-8")
     catalog = audit.normalize_catalog(path, enforce_release_inventory=False)
     monolith = next(item for item in catalog["artifacts"]
-                    if item["id"] == "floor:V1LF:mono")
+                    if item["id"] == "floor:Obi-Wan:mono")
     assert monolith["p2s_printability"] == "not_printable_oversize"
     assert len(monolith["cavity_audit_proxies"]) == 2
     assert {item["site"] for item in monolith["cavity_audit_proxies"]} == {
@@ -1552,7 +1552,7 @@ endsolid oversize
     catalog = audit.normalize_catalog(
         catalog_path, enforce_release_inventory=False)
     by_id = {item["id"]: item for item in catalog["artifacts"]}
-    monolith = by_id["floor:V1LF:mono"]
+    monolith = by_id["floor:Obi-Wan:mono"]
     def proxy_record(artifact_id: str) -> dict:
         artifact = by_id[artifact_id]
         site = artifact["sites"][0]

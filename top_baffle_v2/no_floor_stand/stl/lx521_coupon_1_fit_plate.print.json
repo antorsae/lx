@@ -2,7 +2,7 @@
   "part": "lx521_coupon_1_fit_plate",
   "pre_translation_bbox_min_mm": [
     -46.0,
-    -40.000000000000014,
+    -40.00000000000001,
     -18.3
   ],
   "print_orientation": "front_face_down",
@@ -22,7 +22,7 @@
       0.0,
       -1.0,
       0.0,
-      40.000000000000014
+      40.00000000000001
     ],
     [
       0.0,
@@ -41,9 +41,9 @@
   "stl_bytes": 34084,
   "stl_origin_translation_mm": [
     46.0,
-    40.000000000000014,
+    40.00000000000001,
     18.3
   ],
-  "stl_sha256": "6a03913ab3fbab8a6a0db747ebd553e1058a23cc221b7758a5cee0737f0894a5",
+  "stl_sha256": "ab50a1edea599cf2f045e56b7bbbea6767f1b363bcf1d9137ba6cff33599b729",
   "variant_export": "coupon"
 }

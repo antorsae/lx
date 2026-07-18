@@ -59,7 +59,7 @@ def apply_v1_base_magnets(part):
 def v1_magnet_free_solid():
     """Return the released V1 body before its four captive base cavities.
 
-    V1LF reuses only the rear-tapered acoustic crescent and has its own M3
+    Obi-Wan reuses only the rear-tapered acoustic crescent and has its own M3
     T--UM half-laps.  Keeping this explicit source authority prevents those
     downstream crops from inheriting sealed, functionless V1 magnet voids.
     """

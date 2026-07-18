@@ -1,7 +1,7 @@
 """Reusable pause-and-bury geometry for captive D5 x 2 disc magnets.
 
 This module is the production geometry authority derived from the physically
-validated ``coupons/v1lf_ae_embed`` coupon.  It deliberately owns no baffle
+validated ``coupons/obiwan_ae_embed`` coupon.  It deliberately owns no baffle
 outline, driver, route, insert, or backing-pad geometry.  Callers provide an
 installed interface datum and, where the existing host is thinner than the
 3.00 mm captive land, explicit local backing additions.
@@ -783,7 +783,7 @@ def design_facts() -> dict[str, object]:
 
     return {
         "system": "pause_and_bury_captive_disc_magnet",
-        "reference": "coupons/v1lf_ae_embed",
+        "reference": "coupons/obiwan_ae_embed",
         "normal_print_orientation": "front_face_down",
         "wall_closure": "circular cradle + chimney + 45deg gable",
         "axial_closure": "circular cavity + chimney + 45deg cone",

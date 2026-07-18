@@ -39,7 +39,7 @@ from top_baffle_nd25fw4 import THICKNESS_MM
 from top_baffle_nd25fw4_b import MAGNET_SITES
 from top_baffle_nd25fw4_v0 import V0_MAGNET_SITES
 from top_baffle_nd25fw4_v1 import V1_MAGNET_ZC
-from top_baffle_nd25fw4_v1lf import (
+from top_baffle_nd25fw4_obiwan import (
     SIDE_INTERFACE_GAP,
     side_magnet_sites,
 )
@@ -66,15 +66,15 @@ EXPECTED_FAMILY_COUNTS = {
     "V1-A": (8, 8),
     "V1-B1": (4, 8),
     "V1L": (2, 8),
-    "V1LF": (4, 12),
-    "V1LF-split": (4, 8),
-    "V1LF-Ac": (6, 6),
-    "V1LF-Ae": (6, 6),
+    "Obi-Wan": (4, 12),
+    "Obi-Wan-split": (4, 8),
+    "Obi-Wan-Ac": (6, 6),
+    "Obi-Wan-Ae": (6, 6),
     "coupon1": (2, 2),
 }
 RELEASED_WING_VARIANTS = {
-    "ac": "V1LF-Ac",
-    "ae": "V1LF-Ae",
+    "ac": "Obi-Wan-Ac",
+    "ae": "Obi-Wan-Ae",
 }
 
 SOURCE_REVISION_ENV = "LX_CAD_SOURCE_SHA256"
@@ -358,7 +358,7 @@ def _v0_sites() -> dict[str, dict[str, Any]]:
     return records
 
 
-def _v1lf_sites(*, owner: str, driver: str) -> dict[str, dict[str, Any]]:
+def _obiwan_sites(*, owner: str, driver: str) -> dict[str, dict[str, Any]]:
     records: dict[str, dict[str, Any]] = {}
     for site in side_magnet_sites(driver):
         tools = wall_cavity_tools(
@@ -373,7 +373,7 @@ def _v1lf_sites(*, owner: str, driver: str) -> dict[str, dict[str, Any]]:
         )
         expected = 8.52 if driver == "lm" else 5.96
         records[str(site["name"])] = _site_record(
-            tools, family="v1lf", expected_pause=expected)
+            tools, family="obiwan", expected_pause=expected)
     return records
 
 
@@ -459,8 +459,8 @@ def _state_artifacts(state: str, output: Path) -> list[dict[str, Any]]:
     v1_receiver = _standard_sites(
         owner="receiver", z_centres=V1_MAGNET_ZC, family="v1")
     v0 = _v0_sites()
-    v1lf_lm = _v1lf_sites(owner="carrier", driver="lm")
-    v1lf_um = _v1lf_sites(owner="carrier", driver="um")
+    obiwan_lm = _obiwan_sites(owner="carrier", driver="lm")
+    obiwan_um = _obiwan_sites(owner="carrier", driver="um")
 
     result: list[dict[str, Any]] = []
 
@@ -537,35 +537,35 @@ def _state_artifacts(state: str, output: Path) -> list[dict[str, Any]]:
          "top_baffle_nd25fw4_v1.py", "top_baffle_nd25fw4_v1l.py",
          "top_baffle_nd25fw4_v1l_split.py"))
 
-    lm_lower = tuple(v1lf_lm[name] for name in (
+    lm_lower = tuple(obiwan_lm[name] for name in (
         "lm_lower_left", "lm_lower_right"))
-    lm_upper = tuple(v1lf_lm[name] for name in (
+    lm_upper = tuple(obiwan_lm[name] for name in (
         "lm_upper_left", "lm_upper_right"))
-    v1lf_stage_manifest = f"{state}/.v1lf_stage/manifest.json"
-    v1lf_sources = (
-        "captive_magnets.py", "top_baffle_nd25fw4_v1lf.py",
-        "export_v1lf_staged.py",
+    obiwan_stage_manifest = f"{state}/.obiwan_stage/manifest.json"
+    obiwan_sources = (
+        "captive_magnets.py", "top_baffle_nd25fw4_obiwan.py",
+        "export_obiwan_staged.py",
     )
-    lm_monolith = add("V1LF", "lx521_top_v1lf_core_1of2_lm_carrier",
+    lm_monolith = add("Obi-Wan", "lx521_top_obiwan_core_1of2_lm_carrier",
         (*lm_lower, *lm_upper),
-        v1lf_sources, stage_manifest=v1lf_stage_manifest)
-    add("V1LF", "lx521_top_v1lf_core_2of2_um_carrier",
-        v1lf_um.values(),
-        v1lf_sources, stage_manifest=v1lf_stage_manifest)
-    add("V1LF-split", "lx521_top_v1lf_optional_lm_keyed_1of2_bottom",
+        obiwan_sources, stage_manifest=obiwan_stage_manifest)
+    add("Obi-Wan", "lx521_top_obiwan_core_2of2_um_carrier",
+        obiwan_um.values(),
+        obiwan_sources, stage_manifest=obiwan_stage_manifest)
+    add("Obi-Wan-split", "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
         lm_lower,
-        (*v1lf_sources, "top_baffle_nd25fw4_v1lf_lm_split.py"),
-        stage_manifest=v1lf_stage_manifest)
-    add("V1LF-split", "lx521_top_v1lf_optional_lm_keyed_2of2_top",
+        (*obiwan_sources, "top_baffle_nd25fw4_obiwan_lm_split.py"),
+        stage_manifest=obiwan_stage_manifest)
+    add("Obi-Wan-split", "lx521_top_obiwan_optional_lm_keyed_2of2_top",
         lm_upper,
-        (*v1lf_sources, "top_baffle_nd25fw4_v1lf_lm_split.py"),
-        stage_manifest=v1lf_stage_manifest)
+        (*obiwan_sources, "top_baffle_nd25fw4_obiwan_lm_split.py"),
+        stage_manifest=obiwan_stage_manifest)
     split_bottom_id = (
-        f"{state}:V1LF-split:"
-        "lx521_top_v1lf_optional_lm_keyed_1of2_bottom")
+        f"{state}:Obi-Wan-split:"
+        "lx521_top_obiwan_optional_lm_keyed_1of2_bottom")
     split_top_id = (
-        f"{state}:V1LF-split:"
-        "lx521_top_v1lf_optional_lm_keyed_2of2_top")
+        f"{state}:Obi-Wan-split:"
+        "lx521_top_obiwan_optional_lm_keyed_2of2_top")
     lm_monolith["p2s_printability"] = "not_printable_oversize"
     lm_monolith["cavity_audit_proxies"] = [
         {
@@ -592,8 +592,8 @@ def _state_artifacts(state: str, output: Path) -> list[dict[str, Any]]:
 def _wing_artifacts(slug: str, output: Path) -> list[dict[str, Any]]:
     wing_variant = _released_wing_variant(slug)
     root = HERE / "wings" / slug
-    facts_path = root / f"v1lf_wing_{slug}_facts.json"
-    manifest_path = root / f"v1lf_wing_{slug}_print_manifest.json"
+    facts_path = root / f"obiwan_wing_{slug}_facts.json"
+    manifest_path = root / f"obiwan_wing_{slug}_print_manifest.json"
     facts = _read_json(facts_path)
     manifest = _read_json(manifest_path)
     if facts.get("schema_version") != 2:
@@ -610,10 +610,10 @@ def _wing_artifacts(slug: str, output: Path) -> list[dict[str, Any]]:
     wing_source_files, wing_source_hashes = _source_provenance((
         "captive_magnets.py",
         "front_down_contract.py",
-        "top_baffle_nd25fw4_v1lf.py",
-        "gen_v1lf_basic_variants.py",
-        "v1lf_basic_wings_cad.py",
-        "export_v1lf_basic_wings.py",
+        "top_baffle_nd25fw4_obiwan.py",
+        "gen_obiwan_wing_design_map.py",
+        "obiwan_wings_cad.py",
+        "export_obiwan_wings.py",
     ), output)
     receivers = facts["geometry"]["interface_contract"]["receivers"]
     parts = facts["exports"]["print_parts"]
@@ -642,7 +642,7 @@ def _wing_artifacts(slug: str, output: Path) -> list[dict[str, Any]]:
             site = dict(receiver_by_name[expected_name])
             site["installed_marked_pole_axis_xyz"] = site[
                 "marked_pole_axis_xyz"]
-            site["polarity_instruction"] = _polarity("wing", "v1lf")
+            site["polarity_instruction"] = _polarity("wing", "obiwan")
             site["magnet_count"] = 1
             site["structural_load_credit_n"] = 0.0
             site["expected_pause_marker_z_mm"] = (
@@ -691,7 +691,7 @@ def _wing_artifacts(slug: str, output: Path) -> list[dict[str, Any]]:
                     f"{slug}: print sidecar assembly identity drifted: "
                     f"{sidecar}")
             expected_release_metadata = {
-                "artifact_family": "v1lf_basic_wings",
+                "artifact_family": "obiwan_wing_artifacts",
                 "variant_slug": slug,
                 "side": side,
                 "order": entry.get("order"),
@@ -852,8 +852,8 @@ def generate(output: Path) -> dict[str, Any]:
             },
             "families": [
                 "B2", "C7", "A", "B1", "V0", "V1", "V1-A",
-                "V1-B1", "V1L", "V1LF", "V1LF-split",
-                "V1LF-Ac", "V1LF-Ae", "coupon1",
+                "V1-B1", "V1L", "Obi-Wan", "Obi-Wan-split",
+                "Obi-Wan-Ac", "Obi-Wan-Ae", "coupon1",
             ],
         },
         "exclusions": [
@@ -868,7 +868,7 @@ def generate(output: Path) -> dict[str, Any]:
                     "master/container is not a separate print"),
             },
             {
-                "path": "coupons/v1lf_ae_embed",
+                "path": "coupons/obiwan_ae_embed",
                 "reason": (
                     "physically validated reference implementation, not a "
                     "production/released baffle STL; retained unchanged as "
@@ -887,42 +887,16 @@ def generate(output: Path) -> dict[str, Any]:
                     "contains no released captive site and needs no pause"),
             },
             {
-                "path": "review/v1lf_wing_*_concept.png",
-                "reason": "concept-only raster studies; no printable solid",
-            },
-            {
-                "path": "gen_v1lf_wing_concepts.py",
+                "path": "gen_c_variants.py",
                 "reason": (
-                    "concept-only raster generator; it emits no released "
-                    "printable solid or magnet cavity"),
-            },
-            {
-                "path": (
-                    "gen_v1lf_basic_variants.py B1/B2 layout panels and "
-                    "baffle_variants_drivers_v1lf.png"),
-                "reason": (
-                    "dimensioned feasibility/layout studies only; Ac and "
-                    "Ae are the two implemented STEP-first V1LF wing "
-                    "families and all twelve of their print segments are "
-                    "catalogued"),
-            },
-            {
-                "path": "gen_c_variants.py and baffle_C_variants_drivers.png",
-                "reason": (
-                    "C1-C6 concept-only magnet-boss drawings; no released "
-                    "printable solid is generated"),
+                    "C1-C6 concept-only magnet-boss generator; its one-off "
+                    "raster is not a released printable artifact"),
             },
             {
                 "path": "gen_um_knife_draft.py",
                 "reason": (
                     "obsolete pin-magnet slide concept drawing only; it "
                     "emits no released printable solid"),
-            },
-            {
-                "path": "review/V1LF_NEXTGEN_SIMPLIFIED.md",
-                "reason": (
-                    "future/concept design note only; explicitly does not "
-                    "define released printable geometry"),
             },
             {
                 "path": "top_baffle_nd25fw4_v0.py future mating attachment",

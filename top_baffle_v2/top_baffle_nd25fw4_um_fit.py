@@ -14,7 +14,7 @@ that an attached cable can be absent.  The V1L split TPU strain relief
 must still remain outside the box and seats on V1L's real rear plane at
 z=6.8 rather than the proud family's z=0 face.
 
-The V1LF printed UM passage ends flush at the LM carrier's native R113
+The Obi-Wan printed UM passage ends flush at the LM carrier's native R113
 boundary. Its physical Ø7 cable then runs free behind UM, crosses the
 283-degree D82 reference with a circumferential tangent at z=2.7, and turns
 through a true R20 (above the R14 minimum) to a Y breakout; two explicit Ø3.2,
@@ -138,15 +138,15 @@ V1L_CABLE_REMOVAL_OVERLAP_INTENTIONAL = True
 REMOVAL_ENVELOPE_CABLE_POLICY = {
     "proud": "must_clear",
     "v1l": "intentional_terminal_handoff_overlap",
-    "v1lf": "independent_flag_faston_pull_with_slack_leads",
+    "obiwan": "independent_flag_faston_pull_with_slack_leads",
 }
 REMOVAL_ENVELOPE_GROMMET_POLICY = {
     "proud": "must_clear",
     "v1l": "must_clear",
 }
 
-V1LF_TERMINATED_HANDOFF_R = 20.0
-V1LF_TERMINATED_HANDOFF_STEPS = 40
+OBIWAN_TERMINATED_HANDOFF_R = 20.0
+OBIWAN_TERMINATED_HANDOFF_STEPS = 40
 MU10_BODY_MODEL_TOLERANCE_MM = 0.40
 MU10_MIN_PRINTED_BODY_CLEARANCE_MM = 0.25
 
@@ -169,7 +169,7 @@ MU10_INTERMEDIATE_OUTER_R = 31.0
 MU10_INTERMEDIATE_INNER_R = 20.0
 MU10_STRUT_WIDTH_DEG = 12.0
 MU10_WORLD_STRUT_ANGLES = (13.0, 103.0, 193.0, 283.0)
-MU10_RAW_TO_V1LF_ROT_Z_DEG = 58.0
+MU10_RAW_TO_OBIWAN_ROT_Z_DEG = 58.0
 
 # Conservative stepped LM-driver rear keepout derived from the local
 # E0022_W22EX001 shrinkwrap bounds. It deliberately fills basket gaps: the
@@ -280,7 +280,7 @@ def _uniform_pull_state(pull_mm: float) -> dict[int, float]:
     return {terminal_id: pull_mm for terminal_id in FASTON_TERMINAL_IDS}
 
 
-def v1lf_independent_pull_state(
+def obiwan_independent_pull_state(
         terminal_id: int, pull_mm: float) -> dict[int, float]:
     """One-terminal service composition; the opposite Faston stays home.
 
@@ -303,7 +303,7 @@ def v1lf_independent_pull_state(
     }
 
 
-def v1lf_independent_pull_states():
+def obiwan_independent_pull_states():
     """Structured one-at-a-time states for both terminals and all stations."""
     states = []
     for terminal_id in FASTON_TERMINAL_IDS:
@@ -316,7 +316,7 @@ def v1lf_independent_pull_states():
                 "active_terminal_id": terminal_id,
                 "installed_terminal_id": other_id,
                 "station_mm": station_mm,
-                "pull_by_terminal_mm": v1lf_independent_pull_state(
+                "pull_by_terminal_mm": obiwan_independent_pull_state(
                     terminal_id, station_mm),
                 "other_terminal_remains_installed": True,
                 "physical_measure_required": PHYSICAL_MEASURE_REQUIRED,
@@ -354,7 +354,7 @@ def faston_proxy_parts_by_terminal(
 
 def faston_proxy_parts_for_terminal_pull(terminal_id: int, pull_mm: float):
     return faston_proxy_parts_by_terminal(
-        v1lf_independent_pull_state(terminal_id, pull_mm))
+        obiwan_independent_pull_state(terminal_id, pull_mm))
 
 
 def faston_proxy_parts(pull_mm: float = 0.0):
@@ -382,7 +382,7 @@ def faston_boot_proxy_parts_by_terminal(
 def faston_boot_proxy_parts_for_terminal_pull(
         terminal_id: int, pull_mm: float):
     return faston_boot_proxy_parts_by_terminal(
-        v1lf_independent_pull_state(terminal_id, pull_mm))
+        obiwan_independent_pull_state(terminal_id, pull_mm))
 
 
 def faston_boot_proxy_parts(pull_mm: float = 0.0):
@@ -658,7 +658,7 @@ def rear_cable_envelope(routing_profile: str):
     Proud retains the vertical continuation behind its rear outlet.  V1L
     returns the exact complete keyed route -- planar main, terminal refit,
     R14 handoff and rear continuation.  That installed V1L continuation
-    intentionally enters the Faston service-motion envelope. V1LF has no
+    intentionally enters the Faston service-motion envelope. Obi-Wan has no
     UM-carrier outlet: return its complete physical harness, which leaves the
     LM-owned printed passage at R113 and continues freely behind UM through
     the D82 terminal reference and breakout.
@@ -694,12 +694,12 @@ def rear_cable_envelope(routing_profile: str):
             outlet_z - V1L_REAR_CABLE_Z_MIN,
         )
         return complete.fuse(continuation)
-    if routing_profile == "v1lf":
-        return Compound(children=list(v1lf_terminal_harness_parts().values()))
+    if routing_profile == "obiwan":
+        return Compound(children=list(obiwan_terminal_harness_parts().values()))
     raise ValueError(routing_profile)
 
 
-def v1lf_terminated_cable_points():
+def obiwan_terminated_cable_points():
     """Complete D7 bundle through its G1 R20 terminal breakout.
 
     The printed duct ends flush at the LM carrier's native R113 boundary.
@@ -710,7 +710,7 @@ def v1lf_terminated_cable_points():
     heat-shrink breakout; the D7
     solid is never falsely intersected with both connector bodies.
     """
-    from top_baffle_nd25fw4_v1lf_route import (
+    from top_baffle_nd25fw4_obiwan_route import (
         UM_MOUTH_TANGENT,
         route_cable_points,
     )
@@ -722,12 +722,12 @@ def v1lf_terminated_cable_points():
     vx, vy = (UM_MOUTH_TANGENT[0] / plan_length,
               UM_MOUTH_TANGENT[1] / plan_length)
     arc = []
-    for index in range(1, V1LF_TERMINATED_HANDOFF_STEPS + 1):
+    for index in range(1, OBIWAN_TERMINATED_HANDOFF_STEPS + 1):
         phi = (math.pi * 0.5 * index
-               / V1LF_TERMINATED_HANDOFF_STEPS)
-        z = (start[2] - V1LF_TERMINATED_HANDOFF_R
+               / OBIWAN_TERMINATED_HANDOFF_STEPS)
+        z = (start[2] - OBIWAN_TERMINATED_HANDOFF_R
              * (1.0 - math.cos(phi)))
-        tangential = V1LF_TERMINATED_HANDOFF_R * math.sin(phi)
+        tangential = OBIWAN_TERMINATED_HANDOFF_R * math.sin(phi)
         arc.append((start[0] + tangential * vx,
                     start[1] + tangential * vy, z))
     return route + arc
@@ -776,7 +776,7 @@ def _suffix_by_length(points, distance_mm: float):
 def _lead_local_specs():
     a = math.radians(UM_TERMINAL_CLOCK_DEG)
     vx, vy = -math.sin(a), math.cos(a)
-    breakout = v1lf_terminated_cable_points()[-1]
+    breakout = obiwan_terminated_cable_points()[-1]
     breakout_t = (
         (breakout[0] - UM_CUTOUT[0]) * vx
         + (breakout[1] - UM_CUTOUT[1]) * vy)
@@ -799,7 +799,7 @@ def _lead_local_specs():
 def _solved_lead_local_points(
         split_t, entry_t, end_tangent, installed_start_h, end_h, pull_mm):
     """Fixed-length cubic lead at one radial Faston pull station."""
-    breakout_z = v1lf_terminated_cable_points()[-1][2]
+    breakout_z = obiwan_terminated_cable_points()[-1][2]
     p0 = (TERMINAL_CONTACT_RADIUS, split_t, breakout_z)
 
     def curve(start_h, pull):
@@ -840,7 +840,7 @@ def _solved_lead_local_points(
     return points, solved, target
 
 
-def v1lf_terminal_lead_points_by_terminal(
+def obiwan_terminal_lead_points_by_terminal(
         pull_by_terminal_mm: Mapping[int, float]):
     """Two fixed-length D3.2 leads at independent pull positions.
 
@@ -875,26 +875,26 @@ def v1lf_terminal_lead_points_by_terminal(
     return leads
 
 
-def v1lf_terminal_lead_points_for_terminal_pull(
+def obiwan_terminal_lead_points_for_terminal_pull(
         terminal_id: int, pull_mm: float):
-    return v1lf_terminal_lead_points_by_terminal(
-        v1lf_independent_pull_state(terminal_id, pull_mm))
+    return obiwan_terminal_lead_points_by_terminal(
+        obiwan_independent_pull_state(terminal_id, pull_mm))
 
 
-def v1lf_terminal_lead_points(pull_mm: float = 0.0):
+def obiwan_terminal_lead_points(pull_mm: float = 0.0):
     """Legacy scalar composition: both fixed-length leads move together."""
-    return v1lf_terminal_lead_points_by_terminal(
+    return obiwan_terminal_lead_points_by_terminal(
         _uniform_pull_state(pull_mm))
 
 
-V1LF_TERMINAL_HARNESS_PART_NAMES = (
-    "v1lf_D7_bundle_to_Y_breakout",
-    "v1lf_terminal_lead_1_D3p2",
-    "v1lf_terminal_lead_2_D3p2",
+OBIWAN_TERMINAL_HARNESS_PART_NAMES = (
+    "obiwan_D7_bundle_to_Y_breakout",
+    "obiwan_terminal_lead_1_D3p2",
+    "obiwan_terminal_lead_2_D3p2",
 )
 
 
-def v1lf_terminal_harness_part_by_terminal(
+def obiwan_terminal_harness_part_by_terminal(
         part_name: str, pull_by_terminal_mm: Mapping[int, float]):
     """Build one physical harness solid for bounded-memory validation."""
     from top_baffle_nd25fw4_cables import _tube_loft
@@ -904,91 +904,91 @@ def v1lf_terminal_harness_part_by_terminal(
                      / math.cos(math.pi / 24.0))
     lead_radius = ((FASTON_LEAD_D / 2.0)
                    / math.cos(math.pi / 24.0))
-    if part_name == "v1lf_D7_bundle_to_Y_breakout":
+    if part_name == "obiwan_D7_bundle_to_Y_breakout":
         return _tube_loft(
-            v1lf_terminated_cable_points(), bundle_radius, sides=24)
-    lead_name = part_name.removeprefix("v1lf_").removesuffix("_D3p2")
-    if part_name not in V1LF_TERMINAL_HARNESS_PART_NAMES:
-        raise ValueError(f"unknown V1LF harness part: {part_name}")
-    points = v1lf_terminal_lead_points_by_terminal(pulls)[lead_name]
+            obiwan_terminated_cable_points(), bundle_radius, sides=24)
+    lead_name = part_name.removeprefix("obiwan_").removesuffix("_D3p2")
+    if part_name not in OBIWAN_TERMINAL_HARNESS_PART_NAMES:
+        raise ValueError(f"unknown Obi-Wan harness part: {part_name}")
+    points = obiwan_terminal_lead_points_by_terminal(pulls)[lead_name]
     return _tube_loft(points, lead_radius, sides=24)
 
 
-def v1lf_terminal_harness_parts_by_terminal(
+def obiwan_terminal_harness_parts_by_terminal(
         pull_by_terminal_mm: Mapping[int, float]):
     """Physical D7 jacket plus independently positioned D3.2 leads."""
     pulls = _pulls_by_terminal(pull_by_terminal_mm)
     return {
-        name: v1lf_terminal_harness_part_by_terminal(name, pulls)
-        for name in V1LF_TERMINAL_HARNESS_PART_NAMES
+        name: obiwan_terminal_harness_part_by_terminal(name, pulls)
+        for name in OBIWAN_TERMINAL_HARNESS_PART_NAMES
     }
 
 
-def v1lf_terminal_harness_parts_for_terminal_pull(
+def obiwan_terminal_harness_parts_for_terminal_pull(
         terminal_id: int, pull_mm: float):
-    return v1lf_terminal_harness_parts_by_terminal(
-        v1lf_independent_pull_state(terminal_id, pull_mm))
+    return obiwan_terminal_harness_parts_by_terminal(
+        obiwan_independent_pull_state(terminal_id, pull_mm))
 
 
-def v1lf_terminal_harness_parts(pull_mm: float = 0.0):
+def obiwan_terminal_harness_parts(pull_mm: float = 0.0):
     """Legacy scalar harness composition; both leads move together."""
-    return v1lf_terminal_harness_parts_by_terminal(
+    return obiwan_terminal_harness_parts_by_terminal(
         _uniform_pull_state(pull_mm))
 
 
-def _v1lf_y_breakout_paths_by_terminal(
+def _obiwan_y_breakout_paths_by_terminal(
         pull_by_terminal_mm: Mapping[int, float]):
     pulls = _pulls_by_terminal(pull_by_terminal_mm)
     return {
         "bundle": _suffix_by_length(
-            v1lf_terminated_cable_points(),
+            obiwan_terminated_cable_points(),
             FASTON_BREAKOUT_BUNDLE_OVERLAP_MM),
         "leads": {
             name: _prefix_by_length(points, FASTON_BREAKOUT_LENGTH)
-            for name, points in v1lf_terminal_lead_points_by_terminal(
+            for name, points in obiwan_terminal_lead_points_by_terminal(
                 pulls).items()
         },
     }
 
 
-def _v1lf_y_breakout_junction():
+def _obiwan_y_breakout_junction():
     """OD8 collar overlapping the incoming jacket and both branch legs."""
-    x, y, z = v1lf_terminated_cable_points()[-1]
+    x, y, z = obiwan_terminated_cable_points()[-1]
     return Pos(x, y, z) * Cylinder(
         FASTON_BREAKOUT_BUNDLE_OD / 2.0,
         FASTON_BREAKOUT_JUNCTION_LENGTH_MM,
     )
 
 
-V1LF_Y_BREAKOUT_BOOT_PART_NAMES = (
-    "v1lf_Y_breakout_bundle_heatshrink",
-    "v1lf_Y_breakout_terminal_lead_1_heatshrink",
-    "v1lf_Y_breakout_terminal_lead_2_heatshrink",
+OBIWAN_Y_BREAKOUT_BOOT_PART_NAMES = (
+    "obiwan_Y_breakout_bundle_heatshrink",
+    "obiwan_Y_breakout_terminal_lead_1_heatshrink",
+    "obiwan_Y_breakout_terminal_lead_2_heatshrink",
 )
 
 
-def v1lf_y_breakout_boot_part_by_terminal(
+def obiwan_y_breakout_boot_part_by_terminal(
         part_name: str, pull_by_terminal_mm: Mapping[int, float]):
     """Build one Y-boot leg for bounded-memory validation."""
     from top_baffle_nd25fw4_cables import _tube_loft
 
-    if part_name not in V1LF_Y_BREAKOUT_BOOT_PART_NAMES:
-        raise ValueError(f"unknown V1LF Y-boot part: {part_name}")
-    paths = _v1lf_y_breakout_paths_by_terminal(pull_by_terminal_mm)
+    if part_name not in OBIWAN_Y_BREAKOUT_BOOT_PART_NAMES:
+        raise ValueError(f"unknown Obi-Wan Y-boot part: {part_name}")
+    paths = _obiwan_y_breakout_paths_by_terminal(pull_by_terminal_mm)
     bundle_r = ((FASTON_BREAKOUT_BUNDLE_OD / 2.0)
                 / math.cos(math.pi / 24.0))
     lead_r = ((FASTON_BREAKOUT_LEAD_OD / 2.0)
               / math.cos(math.pi / 24.0))
-    if part_name == "v1lf_Y_breakout_bundle_heatshrink":
+    if part_name == "obiwan_Y_breakout_bundle_heatshrink":
         return _tube_loft(
             paths["bundle"], bundle_r, sides=24).fuse(
-                _v1lf_y_breakout_junction()).clean()
+                _obiwan_y_breakout_junction()).clean()
     lead_name = part_name.removeprefix(
-        "v1lf_Y_breakout_").removesuffix("_heatshrink")
+        "obiwan_Y_breakout_").removesuffix("_heatshrink")
     return _tube_loft(paths["leads"][lead_name], lead_r, sides=24)
 
 
-def v1lf_y_breakout_boot_parts_by_terminal(
+def obiwan_y_breakout_boot_parts_by_terminal(
         pull_by_terminal_mm: Mapping[int, float]):
     """Heat-shrink legs with a positive-volume OD8 fused Y junction.
 
@@ -998,27 +998,27 @@ def v1lf_y_breakout_boot_parts_by_terminal(
     """
     pulls = _pulls_by_terminal(pull_by_terminal_mm)
     return {
-        name: v1lf_y_breakout_boot_part_by_terminal(name, pulls)
-        for name in V1LF_Y_BREAKOUT_BOOT_PART_NAMES
+        name: obiwan_y_breakout_boot_part_by_terminal(name, pulls)
+        for name in OBIWAN_Y_BREAKOUT_BOOT_PART_NAMES
     }
 
 
-def v1lf_y_breakout_boot_parts_for_terminal_pull(
+def obiwan_y_breakout_boot_parts_for_terminal_pull(
         terminal_id: int, pull_mm: float):
-    return v1lf_y_breakout_boot_parts_by_terminal(
-        v1lf_independent_pull_state(terminal_id, pull_mm))
+    return obiwan_y_breakout_boot_parts_by_terminal(
+        obiwan_independent_pull_state(terminal_id, pull_mm))
 
 
-def v1lf_y_breakout_boot_parts(pull_mm: float = 0.0):
+def obiwan_y_breakout_boot_parts(pull_mm: float = 0.0):
     """Legacy scalar Y-boot composition; both branch leads move together."""
-    return v1lf_y_breakout_boot_parts_by_terminal(
+    return obiwan_y_breakout_boot_parts_by_terminal(
         _uniform_pull_state(pull_mm))
 
 
-def v1lf_y_breakout_boot_envelope_by_terminal(
+def obiwan_y_breakout_boot_envelope_by_terminal(
         pull_by_terminal_mm: Mapping[int, float]):
     """One fused printable/proxy envelope for the complete Y boot."""
-    parts = v1lf_y_breakout_boot_parts_by_terminal(pull_by_terminal_mm)
+    parts = obiwan_y_breakout_boot_parts_by_terminal(pull_by_terminal_mm)
     names = tuple(parts)
     envelope = parts[names[0]]
     for name in names[1:]:
@@ -1026,54 +1026,54 @@ def v1lf_y_breakout_boot_envelope_by_terminal(
     return envelope.clean()
 
 
-def v1lf_y_breakout_boot_envelope(pull_mm: float = 0.0):
-    return v1lf_y_breakout_boot_envelope_by_terminal(
+def obiwan_y_breakout_boot_envelope(pull_mm: float = 0.0):
+    return obiwan_y_breakout_boot_envelope_by_terminal(
         _uniform_pull_state(pull_mm))
 
 
-def v1lf_y_breakout_boot_envelope_for_terminal_pull(
+def obiwan_y_breakout_boot_envelope_for_terminal_pull(
         terminal_id: int, pull_mm: float):
-    return v1lf_y_breakout_boot_envelope_by_terminal(
-        v1lf_independent_pull_state(terminal_id, pull_mm))
+    return obiwan_y_breakout_boot_envelope_by_terminal(
+        obiwan_independent_pull_state(terminal_id, pull_mm))
 
 
-def v1lf_y_breakout_cable_parts_by_terminal(
+def obiwan_y_breakout_cable_parts_by_terminal(
         pull_by_terminal_mm: Mapping[int, float]):
     """Underlying D7/D3.2 cable segments that the Y boot must contain."""
     from top_baffle_nd25fw4_cables import _tube_loft
 
-    paths = _v1lf_y_breakout_paths_by_terminal(pull_by_terminal_mm)
+    paths = _obiwan_y_breakout_paths_by_terminal(pull_by_terminal_mm)
     bundle_r = ((GROMMET_CABLE_D / 2.0)
                 / math.cos(math.pi / 24.0))
     lead_r = ((FASTON_LEAD_D / 2.0)
               / math.cos(math.pi / 24.0))
     parts = {
-        "v1lf_Y_underlying_D7_bundle": _tube_loft(
+        "obiwan_Y_underlying_D7_bundle": _tube_loft(
             paths["bundle"], bundle_r, sides=24),
     }
     for name, points in paths["leads"].items():
-        parts[f"v1lf_Y_underlying_{name}_D3p2"] = _tube_loft(
+        parts[f"obiwan_Y_underlying_{name}_D3p2"] = _tube_loft(
             points, lead_r, sides=24)
     return parts
 
 
-def v1lf_y_breakout_cable_parts_for_terminal_pull(
+def obiwan_y_breakout_cable_parts_for_terminal_pull(
         terminal_id: int, pull_mm: float):
-    return v1lf_y_breakout_cable_parts_by_terminal(
-        v1lf_independent_pull_state(terminal_id, pull_mm))
+    return obiwan_y_breakout_cable_parts_by_terminal(
+        obiwan_independent_pull_state(terminal_id, pull_mm))
 
 
-def v1lf_y_breakout_cable_parts(pull_mm: float = 0.0):
-    return v1lf_y_breakout_cable_parts_by_terminal(
+def obiwan_y_breakout_cable_parts(pull_mm: float = 0.0):
+    return obiwan_y_breakout_cable_parts_by_terminal(
         _uniform_pull_state(pull_mm))
 
 
-def v1lf_y_breakout_facts_by_terminal(
+def obiwan_y_breakout_facts_by_terminal(
         pull_by_terminal_mm: Mapping[int, float]):
     """Analytic Y-junction construction and cable-containment contract."""
     pulls = _pulls_by_terminal(pull_by_terminal_mm)
-    paths = _v1lf_y_breakout_paths_by_terminal(pulls)
-    breakout = tuple(v1lf_terminated_cable_points()[-1])
+    paths = _obiwan_y_breakout_paths_by_terminal(pulls)
+    breakout = tuple(obiwan_terminated_cable_points()[-1])
     a = math.radians(UM_TERMINAL_CLOCK_DEG)
     vx, vy = -math.sin(a), math.cos(a)
     breakout_t = (
@@ -1120,16 +1120,16 @@ def v1lf_y_breakout_facts_by_terminal(
     }
 
 
-def v1lf_y_breakout_facts(pull_mm: float = 0.0):
-    facts = v1lf_y_breakout_facts_by_terminal(_uniform_pull_state(pull_mm))
+def obiwan_y_breakout_facts(pull_mm: float = 0.0):
+    facts = obiwan_y_breakout_facts_by_terminal(_uniform_pull_state(pull_mm))
     facts["pull_state_mm"] = float(pull_mm)
     return facts
 
 
-def v1lf_y_breakout_facts_for_terminal_pull(
+def obiwan_y_breakout_facts_for_terminal_pull(
         terminal_id: int, pull_mm: float):
-    facts = v1lf_y_breakout_facts_by_terminal(
-        v1lf_independent_pull_state(terminal_id, pull_mm))
+    facts = obiwan_y_breakout_facts_by_terminal(
+        obiwan_independent_pull_state(terminal_id, pull_mm))
     facts.update({
         "active_terminal_id": terminal_id,
         "installed_terminal_id": 2 if terminal_id == 1 else 1,
@@ -1139,7 +1139,7 @@ def v1lf_y_breakout_facts_for_terminal_pull(
     return facts
 
 
-def v1lf_separated_lead_part_by_terminal(
+def obiwan_separated_lead_part_by_terminal(
         terminal_id: int, pull_by_terminal_mm: Mapping[int, float]):
     """Build one physical lead after the intentional 8-mm Y overlap."""
     from top_baffle_nd25fw4_cables import _tube_loft
@@ -1150,32 +1150,32 @@ def v1lf_separated_lead_part_by_terminal(
     lead_radius = ((FASTON_LEAD_D / 2.0)
                    / math.cos(math.pi / 24.0))
     name = f"terminal_lead_{terminal_id}"
-    points = v1lf_terminal_lead_points_by_terminal(pulls)[name]
+    points = obiwan_terminal_lead_points_by_terminal(pulls)[name]
     return _tube_loft(
         _suffix_by_length(points, FASTON_BREAKOUT_LENGTH),
         lead_radius, sides=24)
 
 
-def v1lf_separated_lead_parts_by_terminal(
+def obiwan_separated_lead_parts_by_terminal(
         pull_by_terminal_mm: Mapping[int, float]):
     """Physical lead solids after the intentional 8-mm Y overlap."""
     pulls = _pulls_by_terminal(pull_by_terminal_mm)
     return {
         f"terminal_lead_{terminal_id}":
-            v1lf_separated_lead_part_by_terminal(terminal_id, pulls)
+            obiwan_separated_lead_part_by_terminal(terminal_id, pulls)
         for terminal_id in FASTON_TERMINAL_IDS
     }
 
 
-def v1lf_separated_lead_parts(pull_mm: float = 0.0):
-    return v1lf_separated_lead_parts_by_terminal(
+def obiwan_separated_lead_parts(pull_mm: float = 0.0):
+    return obiwan_separated_lead_parts_by_terminal(
         _uniform_pull_state(pull_mm))
 
 
-def v1lf_terminal_harness_facts_by_terminal(
+def obiwan_terminal_harness_facts_by_terminal(
         pull_by_terminal_mm: Mapping[int, float]):
     pulls = _pulls_by_terminal(pull_by_terminal_mm)
-    leads = v1lf_terminal_lead_points_by_terminal(pulls)
+    leads = obiwan_terminal_lead_points_by_terminal(pulls)
     entries = faston_flag_lead_endpoints_by_terminal(pulls)
     face_points = faston_flag_wire_entry_face_points_by_terminal(pulls)
     solved_handles = {}
@@ -1189,7 +1189,7 @@ def v1lf_terminal_harness_facts_by_terminal(
         solved_handles[name] = solved
         installed_lengths[name] = target
     return {
-        "bundle_breakout": tuple(v1lf_terminated_cable_points()[-1]),
+        "bundle_breakout": tuple(obiwan_terminated_cable_points()[-1]),
         "lead_endpoints": {
             name: tuple(points[-1]) for name, points in leads.items()},
         "lead_engagement_points": entries,
@@ -1205,10 +1205,10 @@ def v1lf_terminal_harness_facts_by_terminal(
     }
 
 
-def v1lf_terminal_harness_facts_for_terminal_pull(
+def obiwan_terminal_harness_facts_for_terminal_pull(
         terminal_id: int, pull_mm: float):
-    facts = v1lf_terminal_harness_facts_by_terminal(
-        v1lf_independent_pull_state(terminal_id, pull_mm))
+    facts = obiwan_terminal_harness_facts_by_terminal(
+        obiwan_independent_pull_state(terminal_id, pull_mm))
     facts.update({
         "active_terminal_id": terminal_id,
         "installed_terminal_id": 2 if terminal_id == 1 else 1,
@@ -1218,36 +1218,36 @@ def v1lf_terminal_harness_facts_for_terminal_pull(
     return facts
 
 
-def v1lf_terminal_harness_facts(pull_mm: float = 0.0):
+def obiwan_terminal_harness_facts(pull_mm: float = 0.0):
     """Legacy scalar facts; retain the original ``pull_state_mm`` field."""
-    facts = v1lf_terminal_harness_facts_by_terminal(
+    facts = obiwan_terminal_harness_facts_by_terminal(
         _uniform_pull_state(pull_mm))
     facts["pull_state_mm"] = float(pull_mm)
     return facts
 
 
-def v1lf_terminal_service_parts_by_terminal(
+def obiwan_terminal_service_parts_by_terminal(
         pull_by_terminal_mm: Mapping[int, float]):
     """Compose connectors, boots, leads, harness and Y boot for a state."""
     pulls = _pulls_by_terminal(pull_by_terminal_mm)
     return {
         **faston_proxy_parts_by_terminal(pulls),
         **faston_boot_proxy_parts_by_terminal(pulls),
-        **v1lf_terminal_harness_parts_by_terminal(pulls),
-        **v1lf_y_breakout_boot_parts_by_terminal(pulls),
+        **obiwan_terminal_harness_parts_by_terminal(pulls),
+        **obiwan_y_breakout_boot_parts_by_terminal(pulls),
     }
 
 
-def v1lf_terminal_service_state_parts(
+def obiwan_terminal_service_state_parts(
         terminal_id: int, pull_mm: float):
     """Complete one-terminal pull state with the opposite side installed."""
-    return v1lf_terminal_service_parts_by_terminal(
-        v1lf_independent_pull_state(terminal_id, pull_mm))
+    return obiwan_terminal_service_parts_by_terminal(
+        obiwan_independent_pull_state(terminal_id, pull_mm))
 
 
-def v1lf_terminal_service_state_facts(
+def obiwan_terminal_service_state_facts(
         terminal_id: int, pull_mm: float):
-    pulls = v1lf_independent_pull_state(terminal_id, pull_mm)
+    pulls = obiwan_independent_pull_state(terminal_id, pull_mm)
     other_id = 2 if terminal_id == 1 else 1
     return {
         "active_terminal_id": terminal_id,
@@ -1260,16 +1260,16 @@ def v1lf_terminal_service_state_facts(
             "terminal_tab_2", "faston_receptacle_2"),
         "boot_part_names": (
             "faston_insulation_boot_1", "faston_insulation_boot_2"),
-        "harness": v1lf_terminal_harness_facts_by_terminal(pulls),
-        "y_breakout": v1lf_y_breakout_facts_by_terminal(pulls),
+        "harness": obiwan_terminal_harness_facts_by_terminal(pulls),
+        "y_breakout": obiwan_y_breakout_facts_by_terminal(pulls),
         "physical_measure_required": PHYSICAL_MEASURE_REQUIRED,
     }
 
 
-def v1lf_lm_cable_envelope():
+def obiwan_lm_cable_envelope():
     """Reference-only D7.8 short LM lead floating behind the carrier."""
     from top_baffle_nd25fw4_cables import _tube_loft
-    from top_baffle_nd25fw4_v1lf_route import (
+    from top_baffle_nd25fw4_obiwan_route import (
         LM_CABLE_D_EST,
         lm_cable_points,
     )
@@ -1281,10 +1281,10 @@ def v1lf_lm_cable_envelope():
     return _tube_loft(points, radius, sides=24)
 
 
-def v1lf_ts_cable_envelope():
+def obiwan_ts_cable_envelope():
     """Reference-only tweeter cable through the crown-crossover D6 path."""
     from top_baffle_nd25fw4_cables import _tube_loft
-    from top_baffle_nd25fw4_v1lf_route import (
+    from top_baffle_nd25fw4_obiwan_route import (
         TS_CABLE_D_EST,
         ts_cable_points,
     )
@@ -1474,7 +1474,7 @@ def split_grommet_parts(routing_profile: str = "proud"):
     Proud uses a short curved shank that follows the final R14 bore and
     seats its flange on z=0.  V1L follows its keyed R14 and seats on the
     physical z=6.8 rear face without entering the Faston motion volume.
-    V1LF deliberately has no printed grommet. The nominal split bores are
+    Obi-Wan deliberately has no printed grommet. The nominal split bores are
     D7 (proud) and D7.1 (V1L).
     """
     if routing_profile == "proud":
@@ -1513,10 +1513,10 @@ def gen_step():
     for label, part in faston_pull_sweep_parts().items():
         part.label = f"{label}_12mm_SERVICE_ENVELOPE"
         children.append(part)
-    for label, part in v1lf_terminal_harness_parts().items():
+    for label, part in obiwan_terminal_harness_parts().items():
         part.label = f"{label}_PHYSICAL_CABLE_PROXY"
         children.append(part)
-    for label, part in v1lf_y_breakout_boot_parts().items():
+    for label, part in obiwan_y_breakout_boot_parts().items():
         part.label = f"{label}_PHYSICAL_HEATSHRINK_PROXY"
         children.append(part)
     for profile in ("proud", "v1l"):

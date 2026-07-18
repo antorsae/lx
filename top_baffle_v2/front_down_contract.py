@@ -38,7 +38,7 @@ RELEASE_ACOUSTIC_PRINT_CONTRACT = {
     "printer_contact": "forbidden; offline slicing only",
     "oversize_policy": (
         "never scale, tilt, clip, or virtual-bed an oversized STL; "
-        "the V1LF LM monolith is explicitly not P2S-printable and "
+        "the Obi-Wan LM monolith is explicitly not P2S-printable and "
         "its cavity G-code is covered only by exact same-state "
         "keyed split artifacts"
     ),

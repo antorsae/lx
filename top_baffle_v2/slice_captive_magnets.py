@@ -713,10 +713,10 @@ def _validate_cavity_audit_proxies(
                     f"{artifact['id']}: unresolved proxy "
                     f"{source_name} -> {target_id}/{target_name}")
             if (target["state"] != artifact["state"]
-                    or target["variant"] != "V1LF-split"):
+                    or target["variant"] != "Obi-Wan-split"):
                 raise AuditError(
                     f"{artifact['id']}: proxy {target_id} is not a same-state "
-                    "V1LF-split artifact")
+                    "Obi-Wan-split artifact")
             if target.get("p2s_printability") == "not_printable_oversize":
                 raise AuditError(
                     f"{artifact['id']}: proxy {target_id} is itself declared "
@@ -1068,17 +1068,17 @@ def normalize_catalog(
             auxiliary_bindings[path_key] = _resolve_path(
                 path_value, catalog_path.parent)
             auxiliary_bindings[hash_key] = hash_value
-        if variant in ("V1LF-Ac", "V1LF-Ae") and not {
+        if variant in ("Obi-Wan-Ac", "Obi-Wan-Ae") and not {
                 "transaction_manifest", "transaction_manifest_sha256",
                 "facts", "facts_sha256"} <= set(auxiliary_bindings):
             raise AuditError(
                 f"{artifact_id}: Ac/Ae artifact lacks facts/transaction "
                 "manifest hash bindings")
-        if variant in ("V1LF", "V1LF-split") and not {
+        if variant in ("Obi-Wan", "Obi-Wan-split") and not {
                 "stage_manifest", "stage_manifest_sha256"
         } <= set(auxiliary_bindings):
             raise AuditError(
-                f"{artifact_id}: V1LF artifact lacks staged-build manifest "
+                f"{artifact_id}: Obi-Wan artifact lacks staged-build manifest "
                 "hash binding")
         normalized.append({
             "id": artifact_id,

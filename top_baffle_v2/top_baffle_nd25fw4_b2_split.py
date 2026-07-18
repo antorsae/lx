@@ -56,7 +56,7 @@ PRINT_ORIENTATION = "front-face-down"
 if ROUTING_PROFILE != "proud":
     raise RuntimeError(
         "B2/C7/V0/V1/V1L pieces require LX_ROUTING_PROFILE=proud; "
-        "V1LF has a separate skeletal builder"
+        "Obi-Wan has a separate skeletal builder"
     )
 
 CLEARANCE_MM = 0.05
@@ -200,7 +200,7 @@ def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
     """Split the (optionally re-shaped) baffle into the four print
     pieces. ``shape_cuts``/``shape_adds`` are applied before the ducts
     are cut -- used by variant C7 (LM knife-edge taper + T-duct ribs);
-    the ducts then re-cut through any added material. V1LF is a separate
+    the ducts then re-cut through any added material. Obi-Wan is a separate
     two-carrier R6F core and never passes through this four-piece builder.
     ``um_handoff_key`` is explicit so V1L can select its rear-plane axis
     handoff while every other proud-family caller keeps the default.

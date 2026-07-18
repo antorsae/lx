@@ -1,10 +1,10 @@
-"""Render separate proud/R6P and skeletal-V1LF/R6F routing sheets.
+"""Render separate proud/R6P and skeletal-Obi-Wan/R6F routing sheets.
 
 Faithful: both sheets sample the same complete centerlines used by the
-subtractive proud cutters or integral V1LF printed-cover spans.  The proud
+subtractive proud cutters or integral Obi-Wan printed-cover spans.  The proud
 sheet shows the normal B2/C7/V0/V1 UM handoff plus the exact, clearly
 labeled V1L-only alternate tail to its 283-degree rear-face aperture.
-The V1LF sheet shows fully covered local Z bumps, their full-width burial
+The Obi-Wan sheet shows fully covered local Z bumps, their full-width burial
 webs and solid roof-to-blind-bore backfill, the short crown crossover with T
 above UM, the short free LM lead (no micro-duct), deliberately free cable
 handoffs, six fully buried LM/UM magnets, and the 283 degree terminal clock.
@@ -105,7 +105,10 @@ def _save_routing_figure(fig, output, **kwargs):
     """Failure-atomic PNG with embedded profile/state provenance."""
     output = Path(output)
     state = "floor_stand" if STAND_FOOT else "no_floor_stand"
-    token = f"LX521_{ROUTING_PROFILE.upper()}_{ROUTING_REV}_{state}"
+    profile_token = (
+        "Obi-Wan" if ROUTING_PROFILE == "obiwan"
+        else ROUTING_PROFILE.upper())
+    token = f"LX521_{profile_token}_{ROUTING_REV}_{state}"
     temporary = output.with_name(
         f".{output.stem}.{os.getpid()}.tmp.png")
     metadata = {
@@ -113,10 +116,10 @@ def _save_routing_figure(fig, output, **kwargs):
         "Description": (
             f"{token}; LX_STAND_FOOT={int(STAND_FOOT)}; "
             f"LX_ROUTING_PROFILE={ROUTING_PROFILE}"
-            + ("; LX_V1LF_SIDE_SECTION=roof_to_bore_solid_backfill"
-               "; LX_V1LF_VIEWS=front_xy,side_yz,top_xz"
-               "; LX_V1LF_SEPARATE_FLOOR_SUPPORT=0"
-               if ROUTING_PROFILE == "v1lf" else "")),
+            + ("; LX_OBIWAN_SIDE_SECTION=roof_to_bore_solid_backfill"
+               "; LX_OBIWAN_VIEWS=front_xy,side_yz,top_xz"
+               "; LX_OBIWAN_SEPARATE_FLOOR_SUPPORT=0"
+               if ROUTING_PROFILE == "obiwan" else "")),
     }
     try:
         fig.savefig(temporary, metadata=metadata, **kwargs)
@@ -449,7 +452,7 @@ def _polyline_interval(points, start_mm, end_mm):
         for axis in range(points.shape[1])))
 
 
-def _draw_v1lf_terminal_service(
+def _draw_obiwan_terminal_service(
         ax, facts, route_handoff_xy, bundle_diameter):
     """Draw the free D82-to-terminal handoff and terminal service states."""
     from matplotlib.patches import Wedge
@@ -472,13 +475,13 @@ def _draw_v1lf_terminal_service(
         FASTON_TAB_EXPOSED_L,
         FASTON_TAB_W,
         TERMINAL_CONTACT_RADIUS,
-        V1LF_TERMINATED_HANDOFF_R,
-        V1LF_TERMINATED_HANDOFF_STEPS,
-        v1lf_terminal_lead_points,
-        v1lf_terminal_lead_points_for_terminal_pull,
-        v1lf_terminated_cable_points,
+        OBIWAN_TERMINATED_HANDOFF_R,
+        OBIWAN_TERMINATED_HANDOFF_STEPS,
+        obiwan_terminal_lead_points,
+        obiwan_terminal_lead_points_for_terminal_pull,
+        obiwan_terminated_cable_points,
     )
-    from top_baffle_nd25fw4_v1lf_route import UM_MOUTH_TANGENT
+    from top_baffle_nd25fw4_obiwan_route import UM_MOUTH_TANGENT
 
     center = UM_CUTOUT[:2]
     clock_deg = float(facts["terminal_clock_deg"])
@@ -495,11 +498,11 @@ def _draw_v1lf_terminal_service(
              center[1] + 72.0 * radial[1]],
             color="tab:orange", ls="--", lw=1.3, zorder=9)
 
-    terminated = np.asarray(v1lf_terminated_cable_points(), dtype=float)
+    terminated = np.asarray(obiwan_terminated_cable_points(), dtype=float)
     # The entire UM-side span is free cable. The sampled route reaches the
     # D82 reference before this final handoff continues to the terminal axis;
     # neither interval is a small printed duct or a grommet.
-    free_bundle = terminated[-(V1LF_TERMINATED_HANDOFF_STEPS + 1):]
+    free_bundle = terminated[-(OBIWAN_TERMINATED_HANDOFF_STEPS + 1):]
     free_entry = np.vstack((
         np.asarray(route_handoff_xy, dtype=float),
         free_bundle[0, :2],
@@ -524,7 +527,7 @@ def _draw_v1lf_terminal_service(
     }
     installed_leads = {
         name: np.asarray(points, dtype=float)
-        for name, points in v1lf_terminal_lead_points().items()
+        for name, points in obiwan_terminal_lead_points().items()
     }
 
     # Installed tabs, receptacles and boots.  Each terminal keeps its own
@@ -564,7 +567,7 @@ def _draw_v1lf_terminal_service(
         # legible without implying that the opposite terminal also moves.
         for station_mm in FASTON_LEAD_PULL_STATES_MM[1:-1]:
             intermediate = np.asarray(
-                v1lf_terminal_lead_points_for_terminal_pull(
+                obiwan_terminal_lead_points_for_terminal_pull(
                     terminal_id, station_mm)[f"terminal_lead_{terminal_id}"],
                 dtype=float)
             ax.plot(intermediate[:, 0], intermediate[:, 1], color=color,
@@ -572,7 +575,7 @@ def _draw_v1lf_terminal_service(
                     solid_capstyle="round", zorder=9)
 
         pulled_lead = np.asarray(
-            v1lf_terminal_lead_points_for_terminal_pull(
+            obiwan_terminal_lead_points_for_terminal_pull(
                 terminal_id, FASTON_PULL_DISTANCE)[
                     f"terminal_lead_{terminal_id}"], dtype=float)
         ax.plot(pulled_lead[:, 0], pulled_lead[:, 1], color=color,
@@ -645,7 +648,7 @@ def _draw_v1lf_terminal_service(
         "reference opening\n"
         f"continues to {clock_deg:g} deg terminal reference; "
         f"{tangent_bearing:.0f} deg tangent -> "
-        f"free R{V1LF_TERMINATED_HANDOFF_R:.0f}; no grommet",
+        f"free R{OBIWAN_TERMINATED_HANDOFF_R:.0f}; no grommet",
         route_handoff_xy, (126, 322), ha="right", fontsize=7.7,
         color="0.25", arrowprops=dict(arrowstyle="-", color="0.4"))
     ax.annotate(
@@ -668,13 +671,13 @@ def _draw_v1lf_terminal_service(
         "installed_leads": installed_leads,
         "lead_colors": lead_colors,
         "breakout": breakout,
-        "handoff_radius_mm": V1LF_TERMINATED_HANDOFF_R,
+        "handoff_radius_mm": OBIWAN_TERMINATED_HANDOFF_R,
         "lead_min_bend_radius_mm": FASTON_LEAD_MIN_BEND_R,
     }
 
 
-def render_v1lf():
-    """Render true XY/YZ/XZ orthographic routing views for one V1LF state."""
+def render_obiwan():
+    """Render true XY/YZ/XZ orthographic routing views for one Obi-Wan state."""
     from matplotlib.lines import Line2D
     from gen_driver_overlay import outline_polygon
     from shapely.geometry import Point, Polygon, box
@@ -694,7 +697,7 @@ def render_v1lf():
         UM_PILOT_XY,
         UM_RECESS_R,
     )
-    from top_baffle_nd25fw4_v1lf import (
+    from top_baffle_nd25fw4_obiwan import (
         CORE_REAR_Z,
         JUNCTION_WEB_Z,
         JOINT_EAR_X,
@@ -711,11 +714,11 @@ def render_v1lf():
         side_magnet_sites,
         tweeter_joint_polygon,
     )
-    from top_baffle_nd25fw4_v1lf_bridge import (
+    from top_baffle_nd25fw4_obiwan_bridge import (
         BRIDGE_FACE_Z,
         bridge_face_plan,
     )
-    from top_baffle_nd25fw4_v1lf_floor import (
+    from top_baffle_nd25fw4_obiwan_floor import (
         FLOOR_LANE_SPECS,
         FOOT_FRONT_Z_MM,
         FOOT_HEIGHT_MM,
@@ -739,7 +742,7 @@ def render_v1lf():
         integral_stem_plan_points,
         integrated_floor_facts,
     )
-    from top_baffle_nd25fw4_v1lf_route import (
+    from top_baffle_nd25fw4_obiwan_route import (
         CABLE_D_EST,
         DUCT_D,
         LM_CABLE_D_EST,
@@ -1067,7 +1070,7 @@ def render_v1lf():
         color=route_colors["lm"], lw=max(1.8, LM_CABLE_D_EST * 0.50),
         solid_capstyle="round", zorder=8,
         label="LM short lead floats; no micro-duct")
-    _draw_v1lf_terminal_service(
+    _draw_obiwan_terminal_service(
         ax_front, facts,
         tuple(route[-1, :2]), CABLE_D_EST)
     if STAND_FOOT:
@@ -1369,15 +1372,15 @@ def render_v1lf():
         if STAND_FOOT else
         "NO-FLOOR — FUSED FRONT-FLUSH BRIDGE")
     fig.suptitle(
-        "LX521 V1LF cable routing — "
+        "LX521 Obi-Wan cable routing — "
         f"{state_heading}\n"
         "true orthographic views; buried Z-preferred lanes; "
-        "no separate floor support and no V1LF grommets",
+        "no separate floor support and no Obi-Wan grommets",
         fontsize=12.0, y=0.985)
     fig.text(
         0.995, 0.006,
-        "LX_V1LF_VIEWS=front_xy,side_yz,top_xz | "
-        "LX_V1LF_SEPARATE_FLOOR_SUPPORT=0",
+        "LX_OBIWAN_VIEWS=front_xy,side_yz,top_xz | "
+        "LX_OBIWAN_SEPARATE_FLOOR_SUPPORT=0",
         ha="right", va="bottom", fontsize=6.8, color="0.30")
     if STAND_FOOT:
         fig.text(
@@ -1396,8 +1399,8 @@ def render_v1lf():
 
 
 if __name__ == "__main__":
-    if ROUTING_PROFILE == "v1lf":
-        render_v1lf()
+    if ROUTING_PROFILE == "obiwan":
+        render_obiwan()
         sys.exit(0)
     if STAND_FOOT:
         # The release checker requires review sheets >=1600 px wide.  Keep
