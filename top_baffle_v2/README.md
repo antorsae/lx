@@ -42,12 +42,12 @@ documents the implemented layout and the safe future source-package migration.
 | `top_baffle_nd25fw4_c7_split.py` | C7 print split: same seams/dovetails/ducts as B2 -- the three LM pieces are drop-in replacements, piece_top and all attachments are shared |
 | `top_baffle_nd25fw4_cables.py` | Proud-family **R6P** subtractive routing and routing-profile dispatch: standard B2/C7/V0/V1 UM tail plus the keyed V1L-only 283-degree alternate |
 | `top_baffle_nd25fw4_v1l.py` / `_split.py` | Thin R6P bottom+mids; its alternate UM tail and rear-face exit remain wholly in `piece_mid_right`, so the shared top/vase is unchanged |
-| `top_baffle_nd25fw4_obiwan.py` / `_split.py` | Extreme Obi-Wan core: LM/UM flush-driver collars, rounded LM-to-UM M3 half-laps, six pause-and-bury captive magnet stations (two upper LM ring-radial, two lower LM base-side, and two UM ring-radial), buried UM/T route spans, and free rear cable continuations. Floor and no-floor share one exact lower-LM front/wing-contact outline from Y=0 through the broad ring shoulder; only rear/deep structure differs (integral W64 stand/NL8 panel versus shallow four-insert bridge). |
-| `top_baffle_nd25fw4_obiwan_lm_split.py` | Optional, mutually exclusive two-print form of the finalized Obi-Wan LM carrier: exact zero-gap world-Y butt seam plus two symmetric concealed Ø0.80 cylindrical pins normal to the seam (world +Y). The pins engage 0.80 mm; the right blind socket is round Ø1.04 and the left is X-relieved to 1.16 × 1.04 mm so the 216.486 mm pitch cannot bind like two tight round fits. Both sockets retain 0.12 mm radial and 0.25 mm end clearance, at least 0.506 mm final radial wall, and zero external protrusion, extra fastener, envelope growth, or standalone retention/load credit; the monolithic LM remains canonical. |
+| `top_baffle_nd25fw4_obiwan.py` / `_split.py` | Extreme Obi-Wan core: LM/UM flush-driver collars; rounded LM-to-UM M3 half-laps whose closure-web/base teardrops remain nominal Ø9 while each complete Z-owned cylindrical functional boss is locally Ø9.8, with standalone rear Ø3.4 LM clearance bores and standalone rear-opening blind Ø4.6 x 4.0 UM heat-set receivers; six pause-and-bury captive magnet stations (two upper LM ring-radial, two lower LM base-side, and two UM ring-radial); buried UM/T route spans; and free rear cable continuations. Floor and no-floor share one exact lower-LM front/wing-contact outline from Y=0 through the broad ring shoulder; only rear/deep structure differs (integral W64 stand/NL8 panel versus shallow four-insert bridge). |
+| `top_baffle_nd25fw4_obiwan_lm_split.py` | Optional, mutually exclusive two-print form of the finalized Obi-Wan LM carrier: exact zero-gap world-Y butt seam plus two symmetric Ø1.60 cylindrical pins normal to the seam (world +Y). The pins engage 2.40 mm; the right blind socket is round Ø1.84 and the left is X-relieved to 1.96 × 1.84 mm so the 218.374 mm pitch cannot bind like two tight round fits. Two tiny exterior lands outside the LM recess retain 0.12 mm radial and 0.25 mm end clearance, at least 0.50 mm local radial/end wall, at least 0.05 mm recess plan clearance and 0.13 mm conservative W22-flange clearance. They add about 1.40 mm local perimeter growth but no extra fastener or standalone retention/load credit; the monolithic LM remains canonical. |
 | `top_baffle_nd25fw4_obiwan_route.py` | Exact R6F printed-owner segments and physical cable continuations: 0.8 mm minimum walls and 0.85 mm seat roof on the surviving buried UM/T spans, full-width longitudinal burial webs plus solid roof-to-bore saddles at every named insert-bypass Z bump, free UM cable behind the UM carrier, free T cable behind the tweeter crescent, and the 82.67° physical crown crossing |
 | `top_baffle_nd25fw4_obiwan_bridge.py` | Universal lower-LM front profile (filled exterior union of the historical floor stem and no-floor bridge), immutable no-floor four-hole datum, fused 62 mm insert core with soft cubic shoulders and two centered rear cable entries at the deepest existing LM-pad depth (no separate keel or rear ribs), hardware proxies, and an opening-aware biaxial 4 kg sustained-1g/3g/5g structural screen |
 | `top_baffle_nd25fw4_obiwan_floor.py` / `_floor_strength.py` | Floor-only integral W64 full-depth stem/foot, R12 root, rear NL8 panel/service cavity and three buried cable continuations; closed-form five-material net-section screen. This is part of the LM carrier, not an add-on, and the analysis is not FEA or physical qualification. |
-| `top_baffle_nd25fw4_obiwan_attachments.py` | Optional direct blind-M3 tweeter crescent only; any cable retention is external/non-modeled, and magnets receive zero structural load credit |
+| `top_baffle_nd25fw4_obiwan_attachments.py` | Optional tweeter crescent with complete standalone blind-M3 receiver ears; any cable retention is external/non-modeled, and magnets receive zero structural load credit |
 | `top_baffle_nd25fw4_obiwan_assembled.py` | Review assembly containing the R6F core, selected add-ons, and the explicitly non-manufacturing terminal/Faston proxy |
 | `obiwan_wings_cad.py` | STEP-first Ac/Ae Obi-Wan acoustic attachments: one canonical monolith per side, three exact surface-normal captive D5 × 2 magnet receivers per side (LM lower, LM upper, and UM), one saddle compatible with the shared floor/no-floor lower-LM front profile, the approved constant-depth Ac or monotonic LM/UM/T-weighted Ae rear, and three exact-mask print intersections per side. Each physical side has one V1L-style through-local-thickness XY dovetail at the lower→middle interface (lower male, neck/head/depth 7/9/4 mm) and one at the middle→UM interface (middle male, 7/8.5/4 mm); female clearance is 0.05 mm, the exposed split clearance closes over the final 2 mm at both endpoints, and the keys add no envelope growth. They register/interlock in XY but provide no independent Z retention. Ae’s complete internal protected-land perimeter is accepted only when paired actual-BREP probes show a C0 jump ≤0.03 mm |
 | `export_obiwan_wings.py` | Transactional Ac/Ae exporter: canonical/assembled STEP, six strict front-face-down STLs with six exact adjacent `.print.json` authorities, facts, hash manifest, and CAD-derived QA renders under `wings/ac/` or `wings/ae/`; every review PNG uses hash-validated staged BREPs for a neutral no-floor LM-upper/UM/tweeter reference plus the two coincident LM-lower outlines—blue dash-dot for no-floor and green dotted for floor stand; the side view keeps its useful acoustic-depth scale and includes a complete-depth floor inset |
@@ -391,11 +391,11 @@ the top level. The `LX_STAND_FOOT` environment flag defaults to 1.
 | lx521_top_c7base_4of4_vase_b2 | same part as base 4of4 (re-tessellated file) | C7 = same vase |
 | lx521_top_v0_4of4_vase / v1_4of4_vase | as base 4of4 | V0 / V1 vase experiments |
 | `lx521_top_v1l_1..3of4_*` + re-exported 4of4 vase | as proud base 1..4of4 | keyed V1L bottom/mids; its 283-degree alternate is confined to 3of4 `mid_right`, while 4of4 is the unchanged V1 vase |
-| `lx521_top_obiwan_core_1of2_lm_carrier.stl` | Ø226 collar, six ordinary blind LM insert bores at 0/60/120/180/240/300°, two rounded LM-to-UM ears, two captive upper R113-lip magnet stations plus two captive lower base-side stations at `(x,y,z)=(±32,18,12.55)`, and the LM-owned buried UM/T route segments; the D7.8 LM lead is free inside a minimum-radius 3.96 mm rear-open subtractive clearance, not a printed duct. Both states have the same broad lower shoulder and Y=0 front tongue, so the lower interface faces and outward ±X normals coincide. Behind it, floor state owns the full-height W64 stem/foot and NL8 panel while no-floor owns the shallow four-insert bridge. | canonical large-format release form of the mandatory R6F LM carrier; approximately 235.61 x 313.35 mm front-face-down, so **not P2S-printable**. Use this on a verified larger bed **or** both optional keyed halves, never both forms. |
+| `lx521_top_obiwan_core_1of2_lm_carrier.stl` | Ø226 collar, six ordinary blind LM insert bores at 0/60/120/180/240/300°, two complete rear LM-to-UM ears with locally Ø9.8 cylindrical functional bosses and standalone Ø3.4 rear-driven screw-clearance passages at x=±32/y=315.770, two captive upper R113-lip magnet stations plus two captive lower base-side stations at `(x,y,z)=(±32,18,12.55)`, and the LM-owned buried UM/T route segments; the D7.8 LM lead is free inside a minimum-radius 3.96 mm rear-open subtractive clearance, not a printed duct. Both states have the same broad lower shoulder and Y=0 front tongue, so the lower interface faces and outward ±X normals coincide. Behind it, floor state owns the full-height W64 stem/foot and NL8 panel while no-floor owns the shallow four-insert bridge. | canonical large-format release form of the mandatory R6F LM carrier; approximately 235.61 x 313.35 mm front-face-down, so **not P2S-printable**. Use this on a verified larger bed **or** both optional keyed halves, never both forms. |
 | `lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl` | front-face-down; in-plane bed rotation only; verified within 220 mm in both states | optional replacement print form for the canonical LM; in floor state it inherits the **entire** stem/foot/NL8 panel but remains the bed-checked alternative to the oversized monolith; requires the matching top half |
-| `lx521_top_obiwan_optional_lm_keyed_2of2_top.stl` | front-face-down; in-plane bed rotation only | optional replacement print form for the canonical LM; requires the matching bottom half |
-| `lx521_top_obiwan_core_2of2_um_carrier.stl` | Ø103.4 collar, two rounded LM-to-UM ears, direct tweeter-joint halves, two captive magnet stations, and the buried T continuation with fully solid-webbed 328°/58° insert bypasses; the UM cable is free behind this carrier and has no printed rear duct | mandatory R6F UM core |
-| `lx521_top_obiwan_addon_tweeter_crescent.stl` | cropped V1 crescent + direct blind-M3 half-laps; no printed T-cable arc or conduit | optional R6F face-to-face tweeter carrier; attaches at x=±24, y=421.5, with the T cable free behind it |
+| `lx521_top_obiwan_optional_lm_keyed_2of2_top.stl` | front-face-down; in-plane bed rotation only; inherits both complete LM-to-UM ears, their local Ø9.8 cylindrical functional bosses, and their standalone Ø3.4 rear clearance passages | optional replacement print form for the canonical LM; requires the matching bottom half |
+| `lx521_top_obiwan_core_2of2_um_carrier.stl` | Ø103.4 collar; two complete front LM-to-UM ears with standalone rear-opening blind Ø4.6 x 4.0 M3 heat-set receivers and 1.9 mm acoustic-front floors; two complete rear UM-to-tweeter ears with standalone Ø3.4 screw-clearance passages; locally Ø9.8 cylindrical functional bosses at both interfaces; two captive magnet stations; and the buried T continuation with fully solid-webbed 328°/58° insert bypasses. The UM cable is free behind this carrier and has no printed rear duct. | mandatory R6F UM core; install both LM-to-UM inserts in this individual print before assembly |
+| `lx521_top_obiwan_addon_tweeter_crescent.stl` | cropped V1 crescent plus two complete front UM-to-tweeter ears with locally Ø9.8 functional bosses, standalone rear-opening blind Ø4.6 x 4.0 M3 heat-set receivers, complete 360° walls, and 1.9 mm acoustic-front floors; no printed T-cable arc or conduit | optional R6F face-to-face tweeter carrier; install both inserts in this individual print before assembly, then attach at x=±24, y=421.5 with the T cable free behind it |
 | `lx521_top_proud_addon_um_grommet_half_{a,b}.stl` | split TPU insert with short curved shank | standard B2/C7/V0/V1 R14-bore strain relief; not V1L |
 | `lx521_top_v1l_addon_um_grommet_half_{a,b}.stl` | keyed split TPU D8 curved shank, D7.1 bore, D13 × 2 flange | V1L-only strain relief; seats at Q on the z=6.8 rear face and follows the alternate R14 |
 | `lx521_coupon_*` | small blocks/gauges | calibration, routing, and clocking checks (PRINTING.md) |
@@ -728,9 +728,18 @@ mandatory geometry is only:
   outside radius;
 - an UM flush carrier with Ø82 opening, Ø98.6 seat, and **R51.7**
   outside radius;
-- two compact Ø9 teardrop half-lap ears at x=±32.0, y=315.770 that
-  establish the 165.100 mm driver-center spacing without entering
-  either flange seat;
+- two compact half-lap pairs at x=±32.0, y=315.770 that establish the
+  165.100 mm driver-center spacing without entering either flange seat. Their
+  closure-web/base teardrops remain nominal **Ø9**, while each complete
+  Z-owned cylindrical functional boss is locally **Ø9.8** to preserve the
+  joint screen with the Ø4.6 receiver. Each LM rear Z-half owns a complete
+  standalone Ø3.4
+  rear-driven screw-clearance passage; each UM front Z-half owns a complete
+  standalone rear-opening blind Ø4.6 x 4.0 receiver for an M3 x 3 heat-set.
+  The receiver retains a **1.9 mm solid acoustic-front floor**, and the LM and
+  UM ear halves retain a **0.20 mm axial gap**. Install the inserts in the
+  individual UM print before assembly, then drive the screws from the LM rear;
+  this interface has no washer, nut, or front bolt head;
 - exactly six surface-normal D5×2 alignment/anti-rattle interfaces using
   captive Ø5.20 × 2.10 cavities: four LM and two UM. Each magnet is enclosed
   between 0.45 mm axial skins and a self-supporting 45° closing roof, with no
@@ -757,8 +766,10 @@ mandatory geometry is only:
   leaving the crown clear; both states own six ordinary blind carrier
   inserts;
 - two compact direct UM-to-tweeter half-lap ears at **x=±24,
-  y=421.5**, with rear-driven M3 screws and blind crescent inserts so
-  no fastener breaks the acoustic front; and
+  y=421.5**. UM owns complete rear ears with Ø3.4 passages; the crescent owns
+  complete front ears with rear-opening blind Ø4.6 x 4.0 receivers, 360°
+  walls, and 1.9 mm acoustic-front floors, so each part is independently
+  printable and no fastener breaks the acoustic front; and
 - complementary, tangent-blended **full-depth** closure webs at both
   LM–UM and T–UM junctions. LM owns the lower LM–UM web, UM owns the upper
   LM–UM and lower T–UM webs, and the tweeter crescent owns the upper T–UM
@@ -766,7 +777,13 @@ mandatory geometry is only:
   0.40 mm; the local anti-void lens fills retain a separate 0.45 mm
   Classic-wall fusion land. Sub-resolution Boolean shards are discarded,
   while the independently printed owners retain the normal 0.05 mm plan
-  seam. These are solid members behind the common z=18.3 front plane,
+  seam. The functional bosses at both LM-to-UM and UM-to-tweeter are a
+  Z-owned exception: each base closure teardrop remains nominal Ø9, but every
+  complete cylindrical boss is locally Ø9.8. Each ear remains wholly in its
+  assigned axial half, and the opposing print is fully notched over that half
+  so the plan seam cannot split a bore, receiver wall, or front floor. The
+  separate 0.20 mm axial gaps remain open. These are
+  solid members behind the common z=18.3 front plane,
   not front skins over cavities; the only non-functional opening between the
   upper rings is the central ±6 mm T free-cable mouth; and
 - an Ø8.2 UM passage buried only in the LM carrier and an Ø6.0 T passage
@@ -791,7 +808,10 @@ LM/UM/crescent BREPs through fixed physical windows, not a window generated
 from the closure target. It checks the actual front-face-down Bambu schedule
 (0.20 mm first layer, then 0.16 mm layers) plus both sides of
 each half-lap transition against frozen conservative front silhouettes,
-rejects exact 3-D owner overlap and proud material above z=18.3, and rejects
+proves the standalone LM clearance passages and UM blind receivers retain
+their complete local Ø9.8 functional bosses, 360° walls, and the 1.9 mm UM
+front floor; rejects exact 3-D owner overlap and proud material above z=18.3;
+and rejects
 any bounded residual void component beyond the declared fit seams, fastener
 interfaces, route lumen, and T cable mouth. Thus a self-shrunk target, an open
 cusp connected to a driver aperture, or a thin front skin over a rear cavity
@@ -806,16 +826,22 @@ printed as the mutually exclusive pair
 with the monolithic LM. The pair is cut from the finalized state-specific LM
 at world **Y=172.481 mm** with an exact **zero-gap planar butt**, so both buried
 route lumens cross the seam without being redrawn. The bottom owns two
-symmetric Ø0.80 cylindrical pins at `x=±108.243`, `z=14.30`; each points world
+symmetric Ø1.60 cylindrical pins at `x=±109.187`, `z=14.30`; each points world
 +Y normal to the seam, has 0.50 mm root overlap, and engages the top by
-0.80 mm. The top owns two 1.05 mm-deep blind sockets with 0.12 mm radial and
-0.25 mm end clearance: right is round Ø1.04, while left is X-relieved to
-1.16 × 1.04 mm. This round-plus-relieved constraint tolerates ±0.30 mm
-relative pitch error across the 216.486 mm spacing instead of binding like
-two tight round sockets. Calculated final radial walls are at least 0.564 mm
-at the round socket and 0.506 mm at the relieved socket, without entering the
-driver recess or growing the envelope. The pins create no extra screw or
-standalone retention/load credit.
+2.40 mm (2.90 mm total male length). The top owns two 2.65 mm-deep blind
+sockets with 0.12 mm radial and 0.25 mm end clearance: right is round Ø1.84,
+while left is X-relieved to 1.96 × 1.84 mm. This round-plus-relieved constraint
+tolerates ±0.30 mm relative pitch error across the 218.374 mm spacing instead
+of binding like two tight round sockets. Two small exterior support lands
+grow outward from the R113 lip, outside the LM recess. They retain at least
+0.50 mm local radial and blind-end wall, 0.05 mm recess plan clearance, and
+0.13 mm conservative W22-flange plan clearance. The necessary tradeoff is
+about 1.40 mm of local perimeter growth. Ac and Ae include a hidden 0.25 mm
+clearance pocket around each land at the carrier interface, wholly between the
+front and rear faces. CAD compatibility is gated; physical printed fit remains
+coupon-qualified. With the monolithic LM these pockets are only small hidden
+local reliefs; the three magnetic datums and primary wing retention are unchanged.
+The pins create no extra screw or standalone retention/load credit.
 Print both halves front-face-down. Assemble them front-face-down on one flat
 datum, bring the top toward the bottom along world -Y so both pins enter
 together without flexing, and confirm full seating, coplanarity, and
@@ -825,9 +851,10 @@ across the seam. Both keyed halves now print front-face-down with only
 in-plane bed rotation. The former Z26°/Z45° and floor-bottom X=−90° footprint
 figures are obsolete because those out-of-plane orientations cannot support
 the captive-magnet pause. Revalidate the generated front-down footprint on the
-selected printer. Each horizontal Ø0.80 pin is only two nominal 0.4 mm nozzle
+selected printer. Each horizontal Ø1.60 pin is four nominal 0.4 mm nozzle
 widths: release requires a process-matched coupon and sliced preview proving
-both complete pin paths, both blind mouths, and continuous minimum-wall paths.
+both complete pin paths, both blind mouths, the exterior lands, and continuous
+minimum-wall paths.
 This option is still **PENDING** until two-pin/socket fit, full-seat and
 coplanarity evidence, route-seam inspection, cable pull-through, and
 driver-installed 1g/3g/5g proof are recorded; monolithic-LM evidence does not
@@ -865,7 +892,8 @@ unchanged saddle and sit flush on either state; the floor's deep load path and
 the no-floor bridge's four blind inserts remain independent.
 
 The optional V1 face-to-face tweeter crescent remains a separate add-on with
-direct blind-M3 half-laps and no printed T-cable arc.
+complete local-Ø9.8 blind-M3 receiver half-laps, 360° walls, 1.9 mm front
+floors, and no printed T-cable arc.
 Obi-Wan has no printed grommet; selected external cable retention remains a
 physical-fit item, and cable load must never reach the MU tabs. No-floor
 support is not an add-on: a 62 mm insert-bearing plate with soft cubic
@@ -899,9 +927,11 @@ safety factor under the same assumed 600 N per insert; magnets contribute
 exactly 0 N. These are design calculations, not certification. The two-ear
 upper joints use the actual 0.43 kg MU + 0.20 kg tweeters plus carrier,
 crescent, wire, and hardware allowance: 0.85 kg total over conservative
-120 mm plan and 70 mm rear levers. Their governing contact factors are
-about 2.82/2.12/1.27, with M3 tension factor about 1.17 at 5g.
-Magnets receive no credit in any case. The
+120 mm plan and 70 mm rear levers. Both receiver interfaces co-govern with
+contact factors about 2.85/2.14/1.28 and M3 screw-tension factor about 1.28 at
+5g. Those screens do not independently qualify either heat-set process,
+receiver wall, or 1.9 mm front floor; the 5g pullout demand is approximately
+393.9 N per insert. Magnets receive no credit in any case. The
 finished print, inserts, screws, stock bridge, and installation substrate
 remain
 inside the physical proof-test boundary. The factors apply only near
@@ -1071,12 +1101,14 @@ scarf mate is also excluded because no printable mate has been released.
 - If the optional Obi-Wan LM keyed split is selected instead, print both halves
   front-face-down with in-plane rotation only. Recheck each generated
   footprint against the actual printer; this is the required P2S form. It replaces,
-  rather than accompanies, the monolithic LM. Its two concealed Ø0.80 +Y
-  pins and right-round/left-X-relieved blind sockets remain inside the
-  existing lip, so they create no external protrusion or envelope growth.
-  Preview the two-nozzle-width horizontal pins and ≥0.506 mm socket walls,
-  then qualify their simultaneous straight-pull fit with a process-matched
-  coupon.
+  rather than accompanies, the monolithic LM. Its two concealed Ø1.60 +Y
+  pins and right-round/left-X-relieved blind sockets sit on small exterior
+  lands outside the LM recess, adding about 1.40 mm of local perimeter growth.
+  Ac/Ae include matching 0.25 mm interface pockets around those lands;
+  physical fit remains coupon-qualified.
+  Preview the four-nozzle-width horizontal pins, ≥0.50 mm
+  socket/end walls and both lands, then qualify their simultaneous straight-
+  pull fit and actual U22 clearance with a process-matched coupon/print.
 - Ac and Ae wing sides each print as lower, middle, and UM segments cut from
   the finalized monolith. The lower segment owns the 7/9/4 mm male dovetail
   into the middle segment; the middle segment owns the 7/8.5/4 mm male
@@ -1101,15 +1133,19 @@ measured withdrawal before installing the MU.
 **R6F:** first prove the real MU terminal/Faston fit with coupon 9 and
 the review STEP. If the optional LM print split is selected, use both halves
 and omit the monolithic LM. With both front faces down on one flat datum, seat
-the bottom half's two symmetric Ø0.80 +Y pins simultaneously in the top
+the bottom half's two symmetric Ø1.60 +Y pins simultaneously in the top
 half's right round and left X-relieved blind sockets by bringing the top along
 world -Y without flexing or twisting. Verify full seating, coplanarity, the
 closed route seam, and unobstructed UM/T cable pull-through. Hold that
 registration while lifting the LM for driver fit-up. The pins/sockets have no
 standalone retention or load credit; only the installed LM flange and its
 normal fasteners splice the seam.
-Bolt the two carriers together at the rounded x=±32.0,
-y=315.770 half-lap ears on a flat front-face datum and verify the
+Install both LM-to-UM M3 inserts through the individual UM carrier's rear
+receiver openings before assembly. On a flat front-face datum, engage the
+rounded x=±32.0, y=315.770 half-lap ears while preserving their 0.20 mm axial
+gap, then drive two M3 screws from the LM rear through its Ø3.4 clearance
+passages into the UM's blind Ø4.6 x 4.0 receivers. Use no washer/nut and do not
+drill through the 1.9 mm UM front floor. Verify the
 165.100 mm axis spacing. Place the LM cable in its short free span, dry-fish
 the UM and shared tweeter cables through their buried owner segments, and
 rehearse the free UM span behind the UM carrier and free T span behind the

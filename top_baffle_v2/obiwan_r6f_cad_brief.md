@@ -16,8 +16,17 @@
   `review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md`, not
   nominal CAD Z arithmetic.
 - Mandatory core: minimum LM and UM load-bearing rings, two pairs of tiny
-  rounded bolted ears, six magnet sites used only for alignment, an UM route
-  buried only in LM, and a T route buried only in LM/UM. Actual Ø5.0 x 2.0
+  rounded insert-fastened ears, six magnet sites used only for alignment, an
+  UM route buried only in LM, and a T route buried only in LM/UM. At
+  x=±32.0/y=315.770 and x=±24/y=421.5, each closure-web/base teardrop remains
+  nominal Ø9 while every complete Z-owned cylindrical functional boss is
+  locally Ø9.8. LM and UM respectively own complete standalone rear Ø3.4
+  screw-clearance passages; UM and the crescent respectively own complete
+  standalone rear-opening blind Ø4.6 x 4.0 receivers for M3 x 3 heat-set
+  inserts, with 360° walls and 1.9 mm acoustic-front floors. Both interfaces
+  retain a 0.20 mm axial gap. Install inserts in the individual UM and
+  crescent prints before assembly; no washer, nut, front bolt head, or
+  cross-owner receiver wall is part of either interface. Actual Ø5.0 x 2.0
   magnets use the global pause-and-bury captive system: Ø5.20 x 2.10 internal
   cavity, 0.45 mm plastic skin at each axial face, vertically open loading
   cradle, and self-supporting 45-degree roof. The finished magnet has no glue
@@ -52,21 +61,27 @@
   solid. A mutually exclusive two-print option is derived from that finalized,
   state-specific solid at world `Y=172.481 mm` with an exact zero-gap planar
   butt; use both optional halves or the monolithic LM, never a mixture. The
-  bottom owns two symmetric Ø0.80 cylindrical pins at `x=±108.243`,
+  bottom owns two symmetric Ø1.60 cylindrical pins at `x=±109.187`,
   `z=14.30`; both point world +Y normal to the seam, overlap the root by
-  0.50 mm, and engage the top by 0.80 mm. The top owns two 1.05 mm-deep blind
-  sockets with 0.12 mm radial and 0.25 mm end clearance: right is round Ø1.04,
-  while left is X-relieved to 1.16 × 1.04 mm. This round-plus-relieved
-  constraint accepts ±0.30 mm relative pitch error across the 216.486 mm
-  spacing instead of binding like two round sockets. Minimum final radial
-  walls are 0.564 mm round and 0.506 mm relieved, with 0.587 mm driver
-  clearance.
-  It adds no external protrusion, envelope growth, extra screw, or standalone
+  0.50 mm, and engage the top by 2.40 mm (2.90 mm total length). The top owns
+  two 2.65 mm-deep blind sockets with 0.12 mm radial and 0.25 mm end clearance:
+  right is round Ø1.84, while left is X-relieved to 1.96 × 1.84 mm. This
+  round-plus-relieved constraint accepts ±0.30 mm relative pitch error across
+  the 218.374 mm spacing instead of binding like two round sockets. Tiny
+  exterior lands grow outward from the carrier lip, outside the LM recess, and
+  retain ≥0.50 mm local radial/end wall, ≥0.05 mm recess plan clearance, and
+  ≥0.13 mm conservative W22-flange plan clearance. They add about 1.40 mm
+  local perimeter growth; Ac/Ae are geometrically compatible through 0.25 mm
+  hidden carrier-interface pockets, with physical fit still coupon-qualified.
+  With the monolithic LM those pockets are small hidden local reliefs; the
+  three magnetic datums and primary retention geometry remain unchanged.
+  The keys add no extra screw or standalone
   retention/load credit. Print and assemble both front faces down on one flat
   datum, move the top straight along world -Y so both pins enter together, and
   verify two-pin/socket fit, full seating, coplanarity and route-seam continuity.
-  Each horizontal pin is only two nominal 0.4 mm nozzle widths; require a
-  process-matched coupon and slicer proof of both pins and all minimum walls.
+  Each horizontal pin is four nominal 0.4 mm nozzle widths; require a
+  process-matched coupon, actual U22 fit and slicer proof of both pins, both
+  support lands and all minimum walls.
   The installed LM driver flange and all normal LM fasteners are the service
   splice across the seam. Both optional halves in both stand states print
   front-face-down with in-plane bed rotation only. Former Z26°/Z45° and
@@ -74,7 +89,10 @@
   out-of-plane orientation cannot support the captive-magnet pause. Validate
   each generated front-down footprint against the selected printer. Both buried
   cable lumens cross
-  the seam and retain their final open sections.
+  the seam and retain their final open sections. The optional LM top inherits
+  both complete LM-to-UM rear ears, their local Ø9.8 cylindrical functional
+  bosses, and their standalone Ø3.4 clearance passages; neither bore may
+  depend on the bottom half or the assembled UM.
 - Minimal carrier section: non-load annular slabs are deleted. Each driver
   seat retains only a 0.85 mm two-extrusion membrane; narrow outer lips,
   local blind-insert bosses/floors and calculated radial spokes carry load.
@@ -184,7 +202,15 @@
   at z=18.3; no shallow patch or rear cavity is allowed. Fixed-window/frozen-
   silhouette acceptance runs at every 0.16 mm print layer and both sides of
   every half-lap transition. The central ±6 mm T free-cable mouth is the sole
-  non-functional open span.
+  non-functional open span. Functional bosses at both LM-to-UM and
+  UM-to-tweeter are explicitly Z-owned rather than plan-split: each base
+  closure teardrop remains nominal Ø9 and every complete cylindrical
+  functional boss is locally Ø9.8. LM owns complete rear Ø3.4 ears and UM
+  complete front Ø4.6 receiver ears at the lower joint; UM owns complete rear
+  Ø3.4 ears and the crescent complete front Ø4.6 receiver ears at the upper
+  joint. Each opposing print is fully notched over the other Z-half. The plan
+  seam must not bisect a cylindrical wall or receiver floor, and both separate
+  0.20 mm axial gaps must remain open.
 - Terminal intent: MU terminal clock remains 283 deg, midway between the
   238/328 deg screws. With no printed UM-carrier rear duct or D82 mouth, the
   free Ø7 jacket follows the modeled R15 terminal approach to that immutable
@@ -253,7 +279,21 @@
   polarity in `review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md`; physical evidence and per-state
   signoff in `obiwan_physical_qualification.md`.
 - Validation: exact insert and bridge coordinates; opening-free front web,
-  rear-entry bore/front-floor depth, and zero rear protrusion; state isolation;
+  rear-entry bore/front-floor depth, and zero rear protrusion; exact
+  x=±32.0/y=315.770 LM-to-UM axes; two complete standalone LM rear Ø3.4
+  clearance passages, including the optional keyed LM top; two complete
+  standalone UM rear-opening blind Ø4.6 x 4.0 insert receivers; nominal Ø9
+  closure-web/base teardrops and complete local Ø9.8 Z-owned cylindrical
+  functional bosses; 1.9 mm solid UM acoustic-front floors; 0.20 mm axial ear
+  gaps; continuous rear-driven
+  screw access; independent insert installation in the UM print; exact
+  x=±24.0/y=421.5 UM-to-tweeter axes; two complete standalone UM rear Ø3.4
+  passages and two complete standalone crescent rear-opening blind Ø4.6 x 4.0
+  insert receivers; complete local Ø9.8 functional bosses, 1.9 mm crescent
+  acoustic-front floors, and a 0.20 mm axial gap; independent insert
+  installation in the crescent print; complete 360° receiver and
+  clearance-bore walls at both interfaces with no cross-owner dependency; no
+  washer/nut or front breakthrough; state isolation;
   exact floor/no-floor LM-lower exterior equality at the front and throughout
   `z=6.8..18.3`, common world `Y=0` lower extent, coincident station widths,
   and equal 0.20 mm wing saddle clearance in both states;
@@ -276,12 +316,13 @@
   final-BREP solid saddle continuity from conduit roof to ordinary blind-bore
   floor at all eight named bumps;
   optional-LM seam Y/zero-gap butt, final-lumen preservation and non-overlapping
-  halves; two symmetric concealed Ø0.80 world-+Y cylindrical pins, 0.80 mm
-  engagement, right Ø1.04 round and left 1.16 × 1.04 X-relieved blind sockets,
-  0.12 mm radial/0.25 mm end clearances, ≥0.564/≥0.506 mm socket walls,
-  ≥0.587 mm driver clearance, round-plus-relieved pitch tolerance, complete
-  two-nozzle-width sliced pin/wall paths, process-matched fit and full seating,
-  zero envelope growth, no external feature, and zero standalone
+  halves; two symmetric concealed Ø1.60 world-+Y cylindrical pins, 2.40 mm
+  engagement, right Ø1.84 round and left 1.96 × 1.84 X-relieved blind sockets,
+  0.12 mm radial/0.25 mm end clearances, ≥0.50 mm local radial/end walls,
+  ≥0.05 mm recess plan clearance, ≥0.13 mm conservative W22-flange plan
+  clearance, about 1.40 mm local perimeter growth, round-plus-relieved pitch tolerance, complete four-nozzle-width
+  sliced pin/land/wall paths, process-matched fit, actual U22 fit and full seating,
+  explicit exterior support lands and zero standalone
   retention/load credit; front-face-down orientation and selected-printer
   footprint clearance for all optional split parts;
   exact floor Y=0 and LM-axis-to-floor 200.981 mm; integral W64 stem/foot,

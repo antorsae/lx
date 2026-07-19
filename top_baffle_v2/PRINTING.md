@@ -31,16 +31,21 @@ bridge-web load case is treated explicitly below. PLA still relaxes
 | W22 on **Obi-Wan** | **M5 x 12** pan + flat washer into carrier heat-sets | 0.8–1.0 N·m | all six 0/60/120/180/240/300° sites are ordinary blind carrier inserts in both states; floor mode has no secondary support inserts or long through-screws |
 | 10F | M3 x 8 into M3 x 3 x O5 heat-set (bore O4.6 x 4.0) | 0.30–0.40 N·m | short engagement — do not overdrive |
 | R6P bridge (no-stand) | M5 machine screw from the bridge (behind) into M5 x 5.8 x O6.3 heat-set (bore O6.4 x 6.8, REAR face) | hand-snug | 4 off; same insert as the W22, set from the rear |
-| R6F collar half-laps | 2 x M3 through-bolts + washers/nuts; choose length against the printed 11.5 mm stack | hand-snug | structural UM/tweeter-to-LM load path; tighten evenly on a flat front-face datum |
+| R6F LM-to-UM half-laps | 2 x rear-driven M3 screws through the LM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the UM's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±32, y=315.770; the closure-web/base teardrops remain nominal Ø9, while the complete Z-owned cylindrical functional bosses are locally Ø9.8. The UM receivers retain a 1.9 mm acoustic-front floor and the Z-halves retain a 0.20 mm axial gap. Select screw length for full insert engagement without bottoming. No washer, nut, or front bolt head belongs to this interface. |
 | R6F fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening Ø6.4 × 6.8 inserts | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders, centered rear UM/T entries at x=±8/y=82/z=5.3, solid acoustic front, immutable 40 × 50 pattern, and no geometry behind the existing LM pads; magnets receive zero load credit |
-| R6F optional LM keyed seam | two symmetric concealed Ø0.80 cylindrical pins at x=±108.243/z=14.30, normal to the world-Y=172.481 mm zero-gap seam and pointing +Y; 0.80 mm engagement plus 0.50 mm root overlap. Right blind socket Ø1.04 round; left blind socket 1.16 × 1.04 mm X-relieved; both 1.05 mm deep with 0.12 mm radial and 0.25 mm end clearance; minimum final walls 0.564 mm round / 0.506 mm relieved | registration only | mutually exclusive replacement print form for the canonical monolithic LM. Round+relieved sockets tolerate ±0.30 mm relative pitch error; no external protrusion, envelope growth, extra screw, or standalone retention/load credit. Print and assemble front-face-down on a flat datum, moving the top straight along -Y; the installed LM driver flange and its normal fasteners are the structural splice. |
-| R6F UM-to-tweeter half-laps | 2 x rear-driven M3 screws at x=±24, y=421.5 into blind M3 x 3 inserts in Ø4.6 x 4.0 receivers | hand-snug | no front bolt head; keep the acoustic face uninterrupted |
+| R6F optional LM keyed seam | two symmetric Ø1.60 cylindrical pins at x=±109.187/z=14.30, normal to the world-Y=172.481 mm zero-gap seam and pointing +Y; 2.40 mm engagement plus 0.50 mm root overlap. Right blind socket Ø1.84 round; left blind socket 1.96 × 1.84 mm X-relieved; both 2.65 mm deep with 0.12 mm radial and 0.25 mm end clearance. Small exterior lands outside the LM recess preserve ≥0.50 mm radial/end walls, ≥0.05 mm recess plan clearance and ≥0.13 mm conservative W22-flange clearance. | registration only | mutually exclusive replacement print form for the canonical monolithic LM. Round+relieved sockets tolerate ±0.30 mm relative pitch error; the lands add about 1.40 mm local perimeter growth but no extra screw or standalone retention/load credit. Print and assemble front-face-down on a flat datum, moving the top straight along -Y; the installed LM driver flange and its normal fasteners are the structural splice. |
+| R6F UM-to-tweeter half-laps | 2 x rear-driven M3 screws through the UM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the crescent's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±24, y=421.5; nominal Ø9 closure-base teardrops, complete local Ø9.8 Z-owned functional bosses, 0.20 mm axial gap, complete 360° receiver walls, and 1.9 mm acoustic-front floors. Install both inserts in the individual crescent before assembly; no front bolt head or cross-owner receiver wall. |
 | R6F alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and lower straight-base sites at `(x,y,z)=(±32,18,12.55)` with outward normals `(-1,0)` left and `(1,0)` right. UM keeps its 50.5°/129.5° axes at z=15.1. Every station has 0.45 mm axial skins and a 45° support-free roof; ring sites use only the validated +0.60 mm outward local backing boss required to avoid the flange seat. Magnets are fully buried at the manifest pause, never glued or externally accessible. Ac/Ae have matching captive LM-lower, LM-upper, and UM receivers. Alignment/anti-rattle only: **zero structural load credit**. |
 | Tweeter pair | M4 through-bolts + nyloc + wave washer; length = septum + faceplates (stock 18.3 septum → ~M4 x 35; V1/R6F crescent → ~M4 x 30 — verify stacked) | snug, ~0.5 N·m | clamps the 4.0 mm crescent seat; recheck after a week |
 
 **Installing the inserts:** soldering iron at 230–250 °C, press
 slowly and square, stop flush. The bores carry +1.0 mm melt room by
-design.
+design. Before bringing any joint halves together, install both LM-to-UM M3
+inserts through the rear/mating openings of the individual UM print and both
+UM-to-tweeter M3 inserts through the rear/mating openings of the individual
+crescent. Every Ø4.6 x 4.0 receiver must remain fully surrounded by its local
+Ø9.8 functional boss and retain its 1.9 mm solid front floor; reject any
+insert that cracks, laterally opens, moves, or marks the acoustic face.
 
 ### R6F structural screens
 
@@ -102,13 +107,18 @@ through the complete stem/root**. Sparse infill receives no structural credit.
 Magnets and both optional concealed split pins/sockets receive 0 N structural
 credit.
 
-The two collar ears and the two tweeter-interface ears carry only the upper
-assembly, not the LM/stand.
+The two LM-to-UM insert-fastened ears and the two tweeter-interface ears carry
+only the upper assembly, not the LM/stand.
 The ledgered 0.43 kg MU + 0.20 kg tweeters plus printed/hardware allowance
 gives a **0.85 kg** case over conservative 120 mm plan and 70 mm rear
-levers. Governing contact factors are about **2.82/2.12/1.27** at
-1g/3g/5g; M3 tension factor is about **1.17** at 5g. Magnets contribute
-0 N to every calculation.
+levers. Both D4.6-receiver interfaces co-govern with contact factors of about
+**2.85/2.14/1.28** at 1g/3g/5g; the M3 screw-tension factor is about **1.28**
+at 5g. Those numbers are analytical screens, not qualification of either
+heat-set installation, receiver wall, or 1.9 mm front floor. Each interface
+reaches approximately **393.9 N per insert** in the 5g pullout-demand case
+and therefore remains subject to physical pullout qualification. Magnets
+contribute 0 N to every
+calculation.
 
 These screens cover the modeled bridge/integral-root reactions, minimum
 printed transfer sections, ear neck/net/bearing areas and M3 shear. They
@@ -117,18 +127,19 @@ installation substrate, real insert process, or a changed print orientation.
 Those items remain inside the system proof-test boundary.
 
 They also do not transfer automatically from the canonical monolithic LM to
-the optional LM keyed split. Its two concealed Ø0.80 +Y pins and
+the optional LM keyed split. Its two concealed Ø1.60 +Y pins and
 right-round/left-X-relieved blind sockets are registration aids with no
 standalone retention/load credit. The round+relieved pair prevents redundant
-pitch constraint, but the horizontal pins are only two nominal 0.4 mm nozzle
-widths. That print form remains pending until sliced pin/wall paths,
+pitch constraint. The horizontal pins are four nominal 0.4 mm nozzle widths
+and their sockets sit in small exterior lands outside the LM recess. That
+print form remains pending until sliced pin/land/wall paths, actual U22 fit,
 process-matched fit, full seating, front-datum coplanarity, UM/T route-seam
 continuity and cable pull-through, and the complete driver-installed 1g/3g/5g
 proof have passed and been recorded.
 
 This calculation is a screening model, not permission to hang drivers
 from an untested print. Before service, every final combination of
-filament batch, slicer settings, frame, carrier, inserts, and bolts must
+filament batch, slicer settings, frame, carrier, inserts, and fasteners must
 pass a documented physical proof test through the distributed 4 kg
 sustained-1g, 3g and 5g bridge/integral-stand cases in the governing normal and
 rear-moment directions. The upper joints must simultaneously carry their
@@ -188,14 +199,19 @@ obsolete ≤220 mm tilted-orientation figures. The optional LM keyed split
 replaces that monolithic LM with two front-down prints. On a P2S, this split
 is mandatory: both canonical LM monoliths are approximately 235.61 x 313.35 mm
 front-face-down and are not P2S-printable. Do not scale, clip, tilt, or use a
-virtual bed. Two symmetric Ø0.80 pins point +Y normal to the seam and engage
-0.80 mm; the right socket is round Ø1.04 and the left is X-relieved to
-1.16 × 1.04 mm. Both blind sockets are 1.05 mm deep, retain 0.12 mm radial and
-0.25 mm end clearance, and preserve at least 0.506 mm final radial wall. They
-remain concealed inside the existing lip and add no envelope growth. Never
-mix either half with the monolithic LM. Because each horizontal pin is only
-two nominal nozzle widths, reject a slice missing either complete pin or a
-continuous socket-wall path.
+virtual bed. Two symmetric Ø1.60 pins point +Y normal to the seam and engage
+2.40 mm; the right socket is round Ø1.84 and the left is X-relieved to
+1.96 × 1.84 mm. Both blind sockets are 2.65 mm deep, retain 0.12 mm radial and
+0.25 mm end clearance, and preserve at least 0.50 mm local radial/end wall in
+small exterior lands outside the LM recess. They preserve at least 0.05 mm
+recess and 0.13 mm conservative W22-flange plan clearance while adding about
+1.40 mm of local perimeter growth. Never mix either half with the
+monolithic LM. Ac/Ae include matching 0.25 mm hidden interface pockets for
+these lands; printed fit remains coupon-qualified. Each horizontal pin is four nominal nozzle widths; reject a
+slice missing either complete pin, either land, or a continuous socket-wall
+path.
+With a monolithic LM, the same pockets remain as small hidden local reliefs;
+the three magnetic datums and primary retention geometry are unchanged.
 The UM route is covered only in LM, T is covered in
 LM/UM, and their specified rear continuations are free; the short LM lead is
 also intentionally free inside a rear-open subtractive clearance, not a
@@ -487,11 +503,16 @@ rear spans behind UM and the tweeter crescent, and a separate un-ducted LM
 lead. Rehearse every cable before the drivers or optional modules hide the
 working area:
 
-Before cable fishing, dry-assemble LM, UM, and the tweeter crescent on one
-flat front-face datum. The complementary full-depth junction webs must meet
+Before cable fishing, install the two LM-to-UM inserts in the standalone UM
+carrier, then dry-assemble LM, UM, and the tweeter crescent on one flat
+front-face datum. The complementary full-depth junction webs must meet
 with only their designed fit seams; reject a visible triangular/cusp void,
 front step, thin membrane, or enclosed pocket at either LM–UM or T–UM. The
-central T free-cable mouth is intentional and must remain unobstructed.
+central T free-cable mouth is intentional and must remain unobstructed. At
+x=±32, verify that each LM Ø3.4 passage is open in the individual LM print,
+each UM Ø4.6 x 4.0 receiver is fully enclosed by its local Ø9.8 functional
+boss in the individual UM print, and the UM acoustic face remains closed by its
+1.9 mm floor.
 
 1. Place the measured D7.8 LM cable over the modeled 20.15 mm free span at 269.5°
    behind the carrier; do not add a printed micro-duct. Confirm it seats in the
@@ -569,12 +590,12 @@ Choose exactly one LM print form for each state: either the canonical
 `lx521_top_obiwan_optional_lm_keyed_2of2_top.stl`. The optional seam is at world
 Y=172.481 mm with a closed zero-gap planar butt. Before step 4, place both
 front faces down on one flat datum. With the bottom stationary, move the top
-straight along world -Y and seat both bottom-owned Ø0.80 +Y pins together—one
+straight along world -Y and seat both bottom-owned Ø1.60 +Y pins together—one
 in the right round socket and one in the left X-relieved socket. Do not twist,
 spread, hammer, or use one pin as a hinge. Inspect both fits, full seating,
 coplanarity and route-seam continuity, then pull the actual UM/T cables through
-both preserved lumen handoffs. The pins/sockets add no external protrusion,
-extra screw, or standalone retention/load credit.
+both preserved lumen handoffs. The pin/socket lands add about 1.40 mm of local
+perimeter growth but no extra screw or standalone retention/load credit.
 Hold registration when lifting the LM from the datum for driver fit-up; the
 installed flange and all normal LM fasteners provide the structural splice.
 Do not load an unspliced split LM.
@@ -590,8 +611,15 @@ pause rows. No monolith pause is synthesized.
    exceed the modeled service space.
 2. Install all six rotated LM carrier inserts at 0/60/120/180/240/300° in
    both states; every site is an ordinary blind carrier bore. Floor mode has
-   no secondary support heat-sets or through-clearance sites. Install four UM
-   inserts and the two blind M3 inserts in the crescent half-laps. No-floor
+   no secondary support heat-sets or through-clearance sites. Install the four
+   UM driver inserts, then install two additional M3 inserts through the
+   standalone UM carrier's rear/mating openings at x=±32, y=315.770. Those
+   joint inserts belong wholly to the UM print in blind Ø4.6 x 4.0 receivers
+   inside local Ø9.8 functional bosses, with a 1.9 mm front floor. Install the
+   two crescent M3 inserts through that standalone print's rear/mating
+   openings at x=±24, y=421.5; each must likewise sit in a complete local
+   Ø9.8 boss with an independently printable 360° receiver wall and 1.9 mm
+   front floor. No-floor
    additionally owns four rear-opening bridge inserts in the 62 mm solid web;
    each Ø6.4 × 6.8 bore starts at z=5.3 and leaves a 6.2 mm front floor. Set every
    insert square and reject any cracked, loose, or over-melted boss.
@@ -611,10 +639,13 @@ pause rows. No monolith pause is synthesized.
    align and suppress rattle only;
    assign them **zero load capacity** in every assembly and test. For Ac/Ae,
    verify three coaxial receiver pairs per side: LM lower, LM upper, and UM.
-4. Put both collars front-face-down on one flat reference. Engage the
-   two rounded half-lap ears at x=±32.0, y=315.770, insert the two M3
-   through-bolts,
-   and tighten evenly while holding both front faces coplanar. Verify
+4. After the two UM-owned joint inserts have been installed and inspected in
+   the individual UM print, put both collars front-face-down on one flat
+   reference. Engage the two rounded half-lap ears at x=±32.0, y=315.770;
+   preserve their 0.20 mm axial gap. Drive two M3 screws from the LM rear,
+   through the LM's Ø3.4 clearance bores, into the UM inserts. Tighten evenly
+   without bottoming the screws while holding both front faces coplanar. Do
+   not add washers/nuts or drill through the UM front floor. Verify
    the 165.100 mm driver-center spacing before loading the drivers.
 5. In floor mode, inspect the integral W64 stem/foot and R12 root, fish all
    three buried floor lanes, fit the NL8 receptacle through the rear panel and
@@ -627,8 +658,9 @@ pause rows. No monolith pause is synthesized.
    solid-backed cable bump clears real hardware before tightening. Magnets
    remain alignment/anti-rattle aids, never a load path. Add only the remaining
    optional modules needed. Attach the tweeter
-   crescent directly at x=±24, y=421.5
-   with two rear-driven M3 screws into its blind inserts; no bolt head
+   crescent directly at x=±24, y=421.5, preserve the 0.20 mm axial gap, and
+   drive two M3 screws through the UM's standalone Ø3.4 passages into the
+   pre-installed crescent inserts; no bolt head
    may break the acoustic front. Obi-Wan has no printed grommet; keep the
    selected external cable retention outside the buried-route mouths and free
    cable paths; do not rely on it until its physical cable/retention fit passes.
@@ -655,7 +687,7 @@ pause rows. No monolith pause is synthesized.
    Fastons only after this inspection. Cable load must be reacted away
    from the MU tabs.
 8. Before entrusting drivers to the carrier, proof-test the finished
-   carrier/web-or-integral-stand/insert/bolt system with a dummy 4.0 kg mass through the
+   carrier/web-or-integral-stand/insert/fastener system with a dummy 4.0 kg mass through the
    sustained-1g, 3g, and 5g cases in the governing normal and
    rear-moment directions. Follow the documentation and rejection
    criteria in “R6F structural screens”; magnets receive no credit.

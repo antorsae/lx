@@ -12,6 +12,10 @@ and UM carriers. They reuse the carrier geometry and magnetic interfaces; they
 do not modify the driver carriers, mounting axes, cable paths, floor/no-floor
 structure, or tweeter crescent.
 
+Both variants accept either the canonical monolithic LM or the same-state
+optional keyed LM pair. This is geometric compatibility only; keyed-land fit
+remains process-matched coupon-qualified.
+
 The two supported comparisons deliberately share one installed plan and one
 print split:
 
@@ -34,6 +38,14 @@ remain responsible for driver and stand loads.
 - Floor and no-floor Obi-Wan states expose the same wing-contact outline.
 - No wing material may invade driver seats, carrier keep-outs, cable passages,
   the tweeter crescent envelope, or the required `0.05` mating gap.
+
+Each physical side contains one hidden local clearance pocket for the optional
+split's exterior socket land. The cutter offsets the worst-case X-relieved land
+by `0.25` radially and at both axial ends; the right wing uses that worst case
+and the left is its exact mirror. The pocket stays wholly between the rear and
+front faces, does not reach receiver lands or voids, dovetails, or the exposed
+acoustic edge, and remains as a small local relief with the monolithic LM.
+Magnet datums and primary retention geometry are unchanged.
 
 The generated design map is `obiwan_wing_design_map.png`. It must show Ac and
 Ae only.
@@ -63,7 +75,9 @@ The process reference remains `coupons/obiwan_ae_embed/`.
 
 Ac is the mass and geometry reference:
 
-- Solid `11.5` depth everywhere in the wing material.
+- `11.5` rear-field depth wherever material remains; captive-receiver voids
+  and the keyed-land interface relief are the only declared subtractive
+  exceptions.
 - Flat front at `z = 18.3` and flat rear at `z = 6.8`.
 - Full-depth receiver roots, carrier lands, joint bands, and tweeter-contact
   cap.
@@ -142,6 +156,12 @@ The clean release must prove:
 - Every STL is closed and strict-manifold.
 - Receiver axes, cavities, intact skins, mating gap, and polarity match the
   carrier contract.
+- Both Ac/Ae sides clear the exact staged floor/no-floor canonical LM and both
+  same-state keyed halves.
+- Actual BREP land-to-final-wing clearance is at least `0.25` at both optional
+  keyed socket lands.
+- Each keyed-land pocket misses receiver lands and cutters, dovetails, and the
+  exposed acoustic edge.
 - Both dovetails reconstruct the monolithic field with the prescribed
   clearance, ownership, endpoint closure, and minimum ligament.
 - Ac is constant-depth.
@@ -152,4 +172,6 @@ The clean release must prove:
   or floor/no-floor interface mismatch.
 
 Physical fit, magnet insertion, cable service, proof loading, and acoustic
-measurement remain required before release authorization.
+measurement remain required before release authorization. In particular, the
+printed keyed-LM/wing fit remains process-matched coupon-pending even after the
+geometric compatibility gates pass.

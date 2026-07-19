@@ -733,27 +733,33 @@ check_floor_obiwan_mouths: \
 check_no_floor_obiwan_mouths: \
         _check_r6f_test_feed_and_flush_mouth_contract
 
-check_floor_obiwan_burial: test_obiwan_r6f.py $(OBIWAN_SRCS)
+check_floor_obiwan_burial: test_obiwan_r6f.py $(OBIWAN_SRCS) | \
+		floor_stand/.obiwan_stage/manifest.json
 	LX_R6F_SINGLE_CHECK=test_floor_lm_burial_web_contract \
 	    $(RUN) test_obiwan_r6f.py
 
-check_no_floor_obiwan_burial: test_obiwan_r6f.py $(OBIWAN_SRCS)
+check_no_floor_obiwan_burial: test_obiwan_r6f.py $(OBIWAN_SRCS) | \
+		no_floor_stand/.obiwan_stage/manifest.json
 	LX_R6F_SINGLE_CHECK=test_lm_burial_web_contract \
 	    $(RUN) test_obiwan_r6f.py
 
-check_floor_obiwan_um_burial: test_obiwan_r6f.py $(OBIWAN_SRCS)
+check_floor_obiwan_um_burial: test_obiwan_r6f.py $(OBIWAN_SRCS) | \
+		floor_stand/.obiwan_stage/manifest.json
 	LX_R6F_SINGLE_CHECK=test_floor_um_burial_web_contract \
 	    $(RUN) test_obiwan_r6f.py
 
-check_no_floor_obiwan_um_burial: test_obiwan_r6f.py $(OBIWAN_SRCS)
+check_no_floor_obiwan_um_burial: test_obiwan_r6f.py $(OBIWAN_SRCS) | \
+		no_floor_stand/.obiwan_stage/manifest.json
 	LX_R6F_SINGLE_CHECK=test_um_burial_web_contract \
 	    $(RUN) test_obiwan_r6f.py
 
-check_floor_obiwan_backfills: test_obiwan_r6f.py $(OBIWAN_SRCS)
+check_floor_obiwan_backfills: test_obiwan_r6f.py $(OBIWAN_SRCS) | \
+		floor_stand/.obiwan_stage/manifest.json
 	LX_R6F_SINGLE_CHECK=test_floor_bump_backfill_contract \
 	    $(RUN) test_obiwan_r6f.py
 
-check_no_floor_obiwan_backfills: test_obiwan_r6f.py $(OBIWAN_SRCS)
+check_no_floor_obiwan_backfills: test_obiwan_r6f.py $(OBIWAN_SRCS) | \
+		no_floor_stand/.obiwan_stage/manifest.json
 	LX_R6F_SINGLE_CHECK=test_bump_backfill_contract \
 	    $(RUN) test_obiwan_r6f.py
 
@@ -771,7 +777,8 @@ check_no_floor_um_shell check_no_floor_t_shell: \
 # Focused exact-BREP integral floor-load-path diagnostic. This target is
 # intentionally single-check so mount/root regressions can be measured
 # without rebuilding or rerunning the full Obi-Wan service matrix.
-check_floor_integrated_mount: test_obiwan_r6f.py $(OBIWAN_SRCS)
+check_floor_integrated_mount: test_obiwan_r6f.py $(OBIWAN_SRCS) | \
+		floor_stand/.obiwan_stage/manifest.json
 	LX_R6F_SINGLE_CHECK=test_floor_integrated_mount $(RUN) test_obiwan_r6f.py
 
 # Focused source-BREP plus strict-STL gate for the monolithic no-floor LM.

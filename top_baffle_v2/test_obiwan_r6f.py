@@ -513,6 +513,8 @@ def test_route_contract():
             for xy in flush.UM_PILOT_XY)
     assert min(um_magnet_insert_gaps) >= 1.0
     assert core.JOINT_BOSS_D == core.TWEETER_JOINT_BOSS_D == 9.0
+    assert (core.JOINT_FUNCTIONAL_BOSS_D
+            == core.TWEETER_JOINT_FUNCTIONAL_BOSS_D == 9.8)
     assert core.JOINT_NECK_D == core.TWEETER_JOINT_NECK_D == 4.0
     assert core.LM_CORE_R == 113.0
     assert math.isclose(core.UM_CORE_R, 51.7, abs_tol=1e-12)
@@ -783,32 +785,34 @@ def test_route_contract():
     expected_tangent = np.asarray((*route.UM_MOUTH_TANGENT, 0.0))
     assert float(np.dot(mouth_tangent, expected_tangent)) > 0.999
 
-    # The minimally outward-shifted LM half-laps retain the full T-void
-        # side wall. The upper T tunnel deliberately passes through only the
-        # bottom of the complementary front UM half-lap; its closed cover,
-        # M3 clearance and retained upper ligament are all explicit.
+    # The complete D9.8 functional ears clear the T lumen. The tight +X UM
+    # station overlaps the route in plan, so only the exact 3-D cutter-to-ear
+    # distance can qualify it; a sampled plan-height deduction previously
+    # and incorrectly treated the ear as tunneled.
     t_line = LineString(np.asarray(paths["T"])[:, :2])
     for x in core.JOINT_EAR_X:
-        lm_half_lap = core.joint_ear_polygon(
+        lm_ear_plan = core._complete_joint_ear_plan(
             "lm", x, core.JOINT_RECEIVER_RADIAL_CLEAR)
-        wall = t_line.distance(lm_half_lap) - route.TS_CUTTER_R
+        wall = t_line.distance(lm_ear_plan) - route.TS_CUTTER_R
         assert wall >= route.TUNNEL_SKIN - 0.02, (
-            f"T void to LM half-lap wall {wall:.3f} mm")
+            f"T void to LM standalone-ear wall {wall:.3f} mm")
 
-        um_half_lap = core.joint_ear_polygon(
-            "um", x, core.JOINT_RECEIVER_RADIAL_CLEAR)
-        near = [point for point in np.asarray(paths["T"])
-                if Point(float(point[0]), float(point[1])).distance(
-                    um_half_lap) <= route.TS_OUTER_R]
-        if near:
-            top_ligament = core.UM_JOINT_Z[1] - max(
-                float(point[2]) + route.TS_CUTTER_R for point in near)
-            assert top_ligament >= 4.80
-            bolt_wall = (t_line.distance(Point(x, core.JOINT_EAR_Y))
-                         - route.TS_CUTTER_R - core.JOINT_HOLE_D / 2.0)
-            assert bolt_wall >= route.TUNNEL_SKIN
-            assert math.isclose(
-                core.UM_JOINT_TUNNEL_LIGAMENT, 5.35, abs_tol=1e-8)
+    t_inner_cutter = route._round_tube(
+        route._owner_cutter_points(
+            route.ts_cable_points(1.8), "um"),
+        route.TS_CUTTER_R)
+    um_ear_clearances = {}
+    for x in core.JOINT_EAR_X:
+        complete_um_ear = core._complete_joint_ear("um", x)
+        overlap = _intersection_volume(t_inner_cutter, complete_um_ear)
+        assert overlap < 0.01, (
+            f"T inner cutter intersects complete UM ear x={x:g} by "
+            f"{overlap:.4f} mm3")
+        um_ear_clearances[x] = t_inner_cutter.distance_to(complete_um_ear)
+        assert um_ear_clearances[x] >= 0.44, (
+            f"T inner-cutter clearance to complete UM ear x={x:g} is "
+            f"only {um_ear_clearances[x]:.3f} mm")
+    assert 0.44 <= min(um_ear_clearances.values()) <= 0.46
 
     # Analytic plan-intent erosion/normal distance catches horizontal route
     # escape early. The final manufactured-BREP normal wall is independently
@@ -1365,18 +1369,18 @@ def _final_um_burial_web_contract(stand_foot):
         functional_voids.append(core._joint_ear(
             "lm", x,
             (z0 - core.JOINT_RECEIVER_RADIAL_CLEAR,
-             z1 + core.JOINT_RECEIVER_RADIAL_CLEAR),
+             core.UM_JOINT_Z[0]),
             core.JOINT_RECEIVER_RADIAL_CLEAR))
         functional_voids.append(core._cylinder_at(
-            x, core.JOINT_EAR_Y, core.JOINT_HOLE_D / 2.0,
-            core.CORE_REAR_Z - core.JOINT_BORE_REAR_OVERSHOOT,
-            core.THICKNESS_MM + 0.2))
+            x, core.JOINT_EAR_Y, core.JOINT_INSERT_BORE_D / 2.0,
+            *core.JOINT_INSERT_BORE_Z))
     for x in core.TWEETER_JOINT_X:
         functional_voids.append(core._plan_prism(
-            core._owned_tweeter_joint_plan(
+            core._complete_tweeter_joint_ear_plan(
                 "tweeter", x, core.TWEETER_JOINT_CLEAR),
-            core.TWEETER_ADDON_JOINT_Z[0] - core.TWEETER_JOINT_CLEAR,
-            core.TWEETER_ADDON_JOINT_Z[1] + 0.2))
+            core.TWEETER_CORE_JOINT_Z[1],
+            core.TWEETER_ADDON_JOINT_Z[1]
+            + core.TWEETER_JOINT_CLEAR))
         functional_voids.append(core._cylinder_at(
             x, core.TWEETER_JOINT_Y, core.TWEETER_JOINT_HOLE_D / 2.0,
             core.TWEETER_CORE_JOINT_Z[0] - 0.2,
@@ -2121,13 +2125,99 @@ def test_joint_load_contract():
     assert load["plan_lever_mm"] == 120.0
     assert load["rear_lever_mm"] == 70.0
     assert load["magnet_load_credit_n"] == 0.0
+    assert math.isclose(
+        load["lm_um_clearance_bore_d_mm"], 3.4, abs_tol=1e-12)
+    assert math.isclose(
+        load["lm_um_insert_receiver_d_mm"], 4.6, abs_tol=1e-12)
+    assert math.isclose(
+        load["lm_um_insert_receiver_depth_mm"], 4.0, abs_tol=1e-12)
+    assert math.isclose(
+        load["lm_um_insert_front_floor_mm"], 1.9, abs_tol=1e-12)
+    assert math.isclose(
+        load["lm_um_functional_boss_d_mm"], 9.8, abs_tol=1e-12)
+    assert math.isclose(
+        load["um_tweeter_functional_boss_d_mm"], 9.8,
+        abs_tol=1e-12)
+    assert math.isclose(load["lm_um_net_width_mm"], 5.2, abs_tol=1e-12)
+    assert math.isclose(
+        load["um_tweeter_net_width_mm"], 5.2, abs_tol=1e-12)
+    assert math.isclose(
+        load["minimum_half_thickness_mm"], 5.4, abs_tol=1e-12)
+    assert math.isclose(
+        load["full_half_thickness_mm"], 5.4, abs_tol=1e-12)
+    assert math.isclose(
+        load["nearby_route_front_ligament_mm"], 5.35, abs_tol=1e-12)
+    assert math.isclose(
+        load["lm_um_axial_gap_mm"], 0.20, abs_tol=1e-12)
+    assert math.isclose(
+        load["lm_um_bore_overlap_mm"], 0.35, abs_tol=1e-12)
+    assert load["lm_um_standalone_ear_ownership_required"] is True
+    assert load["lm_um_full_360_wall_required"] is True
+    assert load["lm_um_cross_owner_material_allowed"] is False
+    # The analytic printed-ear/M3 screen deliberately does not certify
+    # polymer-specific insert retention. Release still requires a physical
+    # pullout qualification in the chosen material, orientation and process.
+    assert load["lm_um_insert_pullout_qualification_required"] is True
+    assert math.isclose(
+        load["um_tweeter_clearance_bore_d_mm"], 3.4,
+        abs_tol=1e-12)
+    assert math.isclose(
+        load["um_tweeter_insert_receiver_d_mm"], 4.6,
+        abs_tol=1e-12)
+    assert math.isclose(
+        load["um_tweeter_insert_receiver_depth_mm"], 4.0,
+        abs_tol=1e-12)
+    assert math.isclose(
+        load["um_tweeter_insert_front_floor_mm"], 1.9,
+        abs_tol=1e-12)
+    assert math.isclose(
+        load["um_tweeter_axial_gap_mm"], 0.20, abs_tol=1e-12)
+    assert math.isclose(
+        load["um_tweeter_bore_overlap_mm"], 0.35, abs_tol=1e-12)
+    assert load["um_tweeter_standalone_ear_ownership_required"] is True
+    assert load["um_tweeter_full_360_wall_required"] is True
+    assert load["um_tweeter_cross_owner_material_allowed"] is False
+    assert load["um_tweeter_insert_pullout_qualification_required"] is True
     assert load["pla_sf_1g_creep"] >= 3.0
     assert load["pla_sf_3g"] >= 2.0
     assert load["pla_sf_5g"] >= 1.5
     assert load["m3_shear_sf_5g"] >= 4.0
-    assert load["moment_1g"]["contact_sf"] >= 2.7
-    assert load["moment_3g"]["contact_sf"] >= 2.0
-    assert load["moment_5g"]["contact_sf"] >= 1.25
+    moment_thresholds = {
+        "moment_1g": 2.7,
+        "moment_3g": 2.0,
+        "moment_5g": 1.25,
+    }
+    for case, threshold in moment_thresholds.items():
+        moment = load[case]
+        assert moment["governing_interface"] in {"lm_um", "um_tweeter"}
+        assert set(moment["interfaces"]) == {"lm_um", "um_tweeter"}
+        lm_um = moment["interfaces"]["lm_um"]
+        um_tweeter = moment["interfaces"]["um_tweeter"]
+        assert math.isclose(
+            lm_um["contact_lever_mm"], 7.35, abs_tol=1e-12)
+        assert math.isclose(
+            um_tweeter["contact_lever_mm"], 7.35, abs_tol=1e-12)
+        assert math.isclose(
+            lm_um["net_area_per_ear_mm2"], 5.2 * 5.4,
+            abs_tol=1e-12)
+        assert math.isclose(
+            um_tweeter["net_area_per_ear_mm2"], 5.2 * 5.4,
+            abs_tol=1e-12)
+        assert lm_um["contact_sf"] >= threshold
+        assert um_tweeter["contact_sf"] >= threshold
+        assert math.isclose(lm_um["contact_sf"],
+                            um_tweeter["contact_sf"], abs_tol=1e-12)
+        assert math.isclose(
+            moment["contact_sf"], min(
+                lm_um["contact_sf"], um_tweeter["contact_sf"]),
+            abs_tol=1e-12)
+        assert math.isclose(
+            moment["lm_um_insert_pullout_required_n"],
+            lm_um["contact_force_per_ear_n"], abs_tol=1e-12)
+        assert math.isclose(
+            moment["um_tweeter_insert_pullout_required_n"],
+            um_tweeter["contact_force_per_ear_n"], abs_tol=1e-12)
+        assert "lm_um_insert_pullout_sf" not in moment
     assert load["moment_5g"]["m3_tension_sf"] >= 1.15
     spokes = carrier_spoke_load_facts()
     assert spokes["design_mass_kg"] == 4.0
@@ -2363,6 +2453,7 @@ def _load_lm_keyed_parts(stand_foot):
 
     paths = _validated_obiwan_stage_paths(stand_foot)
     lm = import_brep(str(paths["core_lm_carrier"]))
+    um = import_brep(str(paths["core_um_carrier"]))
     parts = {
         key: import_brep(str(paths[key]))
         for key in (
@@ -2370,7 +2461,7 @@ def _load_lm_keyed_parts(stand_foot):
             "optional_lm_keyed_2of2_top",
         )
     }
-    return lm, parts
+    return lm, um, parts
 
 
 def _validated_obiwan_stage_paths(stand_foot):
@@ -2490,8 +2581,9 @@ def _assert_lm_keyed_split(stand_foot):
     import top_baffle_nd25fw4_obiwan as core
     import top_baffle_nd25fw4_obiwan_lm_split as lm_split
     import top_baffle_nd25fw4_obiwan_route as route
+    import top_baffle_nd25fw4_um_fit as fit
 
-    lm, parts = _load_lm_keyed_parts(stand_foot)
+    lm, um, parts = _load_lm_keyed_parts(stand_foot)
     expected_keys = {
         "optional_lm_keyed_1of2_bottom",
         "optional_lm_keyed_2of2_top",
@@ -2504,28 +2596,55 @@ def _assert_lm_keyed_split(stand_foot):
         assert part.volume > 0.01
     assert _intersection_volume(bottom, top) < 0.02
 
-    # The hidden registration is made only by reassigning/cutting source
-    # material. Neither half may grow beyond the monolithic LM envelope.
+    # The hidden registration adds only two explicitly bounded exterior lands
+    # outside the driver recess. Neither half may grow beyond that optional-
+    # split carrier; the declared local perimeter growth is tested below.
+    augmented_lm = lm_split.registration_augmented_carrier(lm)
+    support_tool = lm_split.registration_support_land_tool()
     for name, part in parts.items():
-        extra = part - lm
+        extra = part - augmented_lm
         assert (0.0 if extra is None else extra.volume) < 0.03, name
+    allowed_support = support_tool - lm
+    actual_support = augmented_lm - lm
+    assert abs(
+        (0.0 if actual_support is None else actual_support.volume)
+        - (0.0 if allowed_support is None else allowed_support.volume)
+    ) < 0.03
+
+    # A nominal D190-bore clearance is insufficient: the rejected inward-pad
+    # candidate cleared that bore but intersected the real driver's rear
+    # flange/frame step.  Gate the actual added material against both the
+    # hash-pinned placed W22 STEP and its conservative service proxy.
+    w22_native = fit.load_w22_reference_step_native()
+    w22_placed = fit.place_w22_reference_step(w22_native)
+    assert _intersection_volume(actual_support, w22_placed) < 0.03
+    assert _intersection_volume(
+        actual_support, fit.w22_body_keepout(include_flange=True)) < 0.03
 
     state = "floor" if stand_foot else "no-floor"
+    _assert_standalone_lm_joint_brep(
+        lm, core, f"{state} canonical LM")
+    _assert_standalone_lm_joint_brep(
+        top, core, f"{state} optional keyed LM top")
+    _assert_standalone_um_joint_brep(
+        um, core, f"{state} canonical UM")
+    _assert_lm_um_joint_stls(stand_foot, core)
+    _assert_um_tweeter_joint_stls(stand_foot, core)
     _assert_lower_base_magnet_split_ownership(
         lm, bottom, top, core, lm_split, state)
 
-    # The only intentional source loss is the two local female fit reliefs
-    # not occupied by their male pins. Everywhere else, including both
-    # route-cover sections, the union equals the monolithic carrier exactly.
+    # The only intentional augmented-source loss is the two local female fit
+    # reliefs not occupied by their male pins. Everywhere else, including both
+    # route-cover sections, the union equals the optional carrier exactly.
     male_tool = lm_split.male_registration_key_tool()
     socket_tool = lm_split.female_registration_socket_tool()
     top_clip = core._plan_prism(
         box(-400.0, lm_split.LM_SPLIT_SEAM_Y, 400.0, 600.0),
         -100.0, 100.0)
-    expected_relief = lm & socket_tool
+    expected_relief = augmented_lm & socket_tool
     expected_relief = expected_relief & top_clip
     expected_relief = expected_relief - male_tool
-    missing = lm - bottom
+    missing = augmented_lm - bottom
     missing = missing - top
     unexpected_missing = missing - expected_relief
     uncut_relief = expected_relief - missing
@@ -2549,6 +2668,7 @@ def _assert_lm_keyed_split(stand_foot):
         assert _intersection_volume(bottom, cutter) < 0.03
         assert _intersection_volume(top, cutter) < 0.03
         assert _intersection_volume(socket_tool, cutter) < 0.03
+        assert _intersection_volume(support_tool, cutter) < 0.03
     # Independently generated nominal acoustic shells must also remain
     # untouched: a socket that misses the lumen but thins its cover is still
     # an unacceptable hidden resonance/leak risk.
@@ -2574,47 +2694,61 @@ def _assert_lm_keyed_split(stand_foot):
     assert facts["registration_axis_world_xyz"] == (0.0, 1.0, 0.0)
     assert facts["registration_axis_normal_to_horizontal_seam"] is True
     assert facts["registration_symmetry_error_mm"] < 1e-9
-    assert 216.0 <= facts["registration_center_spacing_mm"] <= 217.0
+    assert 218.3 <= facts["registration_center_spacing_mm"] <= 218.5
     assert facts["assembly_motion"] == (
         "top_half_approaches_along_negative_world_y")
     assert facts["assembly_gap_mm"] == 0.0
     assert facts["buried_route_joint"] == "closed_zero_gap_planar_butt"
-    assert facts["pin_diameter_mm"] == 0.80
+    assert facts["pin_diameter_mm"] == 1.60
     assert facts["pin_root_overlap_mm"] == 0.50
-    assert facts["male_pin_length_mm"] == 1.30
-    assert 1.30 <= facts["male_total_volume_mm3"] <= 1.31
-    assert facts["engagement_depth_mm"] == 0.80
+    assert facts["male_pin_length_mm"] == 2.90
+    assert 11.66 <= facts["male_total_volume_mm3"] <= 11.67
+    assert facts["engagement_depth_mm"] == 2.40
     assert math.isclose(
-        facts["socket_round_diameter_mm"], 1.04, abs_tol=1e-12)
+        facts["socket_round_diameter_mm"], 1.84, abs_tol=1e-12)
     assert facts["socket_radial_clearance_mm"] == 0.12
     assert facts["socket_end_clearance_mm"] == 0.25
-    assert facts["socket_blind_depth_mm"] == 1.05
+    assert facts["socket_blind_depth_mm"] == 2.65
     assert facts["round_socket_side"] == "right"
     assert facts["relieved_socket_side"] == "left"
     assert facts["relieved_socket_x_extra_each_side_mm"] == 0.06
     assert math.isclose(
-        facts["relieved_socket_x_span_mm"], 1.16, abs_tol=1e-12)
+        facts["relieved_socket_x_span_mm"], 1.96, abs_tol=1e-12)
     assert math.isclose(
         facts["registered_round_diametral_play_mm"], 0.24,
         abs_tol=1e-12)
     assert math.isclose(
         facts["relative_pin_pitch_error_capacity_mm"], 0.30,
         abs_tol=1e-12)
-    assert facts["round_socket_inner_wall_mm"] >= 0.56
-    assert facts["round_socket_outer_wall_mm"] >= 0.56
+    assert facts["round_socket_inner_wall_mm"] >= 0.50
+    assert facts["round_socket_outer_wall_mm"] >= 0.50
     assert facts["relieved_socket_inner_wall_mm"] >= 0.50
     assert facts["relieved_socket_outer_wall_mm"] >= 0.50
     assert facts["minimum_socket_radial_wall_mm"] >= 0.50
-    assert facts["driver_radial_clearance_mm"] >= 0.58
+    assert facts["socket_blind_end_wall_mm"] >= 0.50
+    assert math.isclose(
+        facts["support_land_length_mm"], 3.65, abs_tol=1e-12)
+    assert all(math.isclose(actual, expected, abs_tol=1e-12)
+               for actual, expected in zip(
+                   facts["support_land_z_range_mm"], (12.88, 15.72)))
+    assert facts["support_land_clearance_above_rear_mm"] >= 6.07
+    assert facts["support_land_clearance_below_front_mm"] >= 2.57
+    assert math.isclose(
+        facts["support_land_driver_recess_plan_clearance_mm"],
+        0.05, abs_tol=1e-9)
+    assert facts["support_land_driver_flange_plan_clearance_mm"] >= 0.129999
+    assert facts["exterior_support_land"] is True
+    assert 1.39 <= facts["support_land_plan_outline_growth_mm"] <= 1.42
+    assert facts["inward_support_land_rejected_for_driver_collision"] is True
     assert facts["two_round_socket_design_rejected"] is True
     assert facts["tolerance_strategy"] == (
         "right_round_locator_left_x_relief_round_and_diamond")
     assert "bind" in facts["binding_drawback"]
     assert facts["nominal_nozzle_diameter_mm"] == 0.40
-    assert facts["pin_nominal_nozzle_width_count"] == 2.0
+    assert facts["pin_nominal_nozzle_width_count"] == 4.0
     assert facts["pin_and_socket_slicer_gate_required"] is True
     assert "no load credit" in facts["printability_drawback"]
-    assert facts["envelope_growth_mm"] == 0.0
+    assert 1.39 <= facts["envelope_growth_mm"] <= 1.42
     assert facts["installed_structural_load_credit_n"] == 0.0
     assert facts["standalone_retention_credit_n"] == 0.0
     assert facts["physical_coupon_required"] is True
@@ -2653,8 +2787,8 @@ def _assert_lm_keyed_split(stand_foot):
                 "no-floor LM lower lost the universal Y=0 front tongue")
     print(
         f"  {state} optional LM keyed split: zero-gap route butt, "
-        f"two concealed +Y pins with round+relieved sockets, no envelope "
-        f"growth; "
+        f"two concealed +Y pins with round+relieved sockets and declared "
+        f"local perimeter lands; "
         f"220-mm footprints {footprints}")
 
 
@@ -2671,14 +2805,392 @@ def _intersection_volume(a, b):
     return 0.0 if hit is None else hit.volume
 
 
-def _owned_tweeter_joint_witnesses(core, x):
-    """Exact complementary T--UM half-lap material and functional voids."""
-    core_ear = core._plan_prism(
-        core._owned_tweeter_joint_plan("um", x),
-        *core.TWEETER_CORE_JOINT_Z)
-    addon_ear = core._plan_prism(
-        core._owned_tweeter_joint_plan("tweeter", x),
-        *core.TWEETER_ADDON_JOINT_Z)
+def _joint_annulus_witness(core, x, bore_diameter, z0, z1):
+    """A full-circle wall witness inside the complete functional boss."""
+    outer = core._cylinder_at(
+        x, core.JOINT_EAR_Y,
+        core.JOINT_FUNCTIONAL_BOSS_D / 2.0 - 0.20, z0, z1)
+    inner = core._cylinder_at(
+        x, core.JOINT_EAR_Y, bore_diameter / 2.0 + 0.20,
+        z0 - 0.10, z1 + 0.10)
+    return outer - inner
+
+
+def _assert_standalone_lm_joint_brep(lm, core, label):
+    """LM alone owns two complete ears with rear-driven D3.4 bores."""
+    for x in core.JOINT_EAR_X:
+        complete_ear = core._complete_joint_ear("lm", x)
+        clearance_bore = core._cylinder_at(
+            x, core.JOINT_EAR_Y,
+            core.JOINT_CLEARANCE_BORE_D / 2.0,
+            core.CORE_REAR_Z - core.JOINT_BORE_REAR_OVERSHOOT,
+            core.JOINT_CLEARANCE_BORE_TOP_Z)
+        required_ear = complete_ear - clearance_bore
+        retained = _intersection_volume(lm, required_ear)
+        assert retained > 0.995 * required_ear.volume, (
+            f"{label} x={x:g} retains only {retained:.3f}/"
+            f"{required_ear.volume:.3f} mm3 of its complete standalone ear")
+        obstruction = _intersection_volume(lm, clearance_bore)
+        assert obstruction < 0.02, (
+            f"{label} x={x:g} obstructs its D3.4 clearance bore by "
+            f"{obstruction:.3f} mm3")
+
+        wall = _joint_annulus_witness(
+            core, x, core.JOINT_CLEARANCE_BORE_D,
+            core.LM_JOINT_Z[0] + 0.20,
+            core.LM_JOINT_Z[1] - 0.20)
+        wall_fill = _intersection_volume(lm, wall)
+        assert wall_fill > 0.995 * wall.volume, (
+            f"{label} x={x:g} lacks a complete 360-degree D3.4 bore wall: "
+            f"{wall_fill:.3f}/{wall.volume:.3f} mm3")
+
+        opposing_ear = core._complete_joint_ear("um", x)
+        cross_owner = _intersection_volume(lm, opposing_ear)
+        assert cross_owner < 0.02, (
+            f"{label} x={x:g} contains {cross_owner:.3f} mm3 of UM-owned "
+            "ear material")
+
+
+def _assert_standalone_um_joint_brep(um, core, label):
+    """UM alone owns two complete ears with rear-open D4.6 receivers."""
+    for x in core.JOINT_EAR_X:
+        complete_ear = core._complete_joint_ear("um", x)
+        insert_receiver = core._cylinder_at(
+            x, core.JOINT_EAR_Y, core.JOINT_INSERT_BORE_D / 2.0,
+            *core.JOINT_INSERT_BORE_Z)
+        required_ear = complete_ear - insert_receiver
+        retained = _intersection_volume(um, required_ear)
+        assert retained > 0.995 * required_ear.volume, (
+            f"{label} x={x:g} retains only {retained:.3f}/"
+            f"{required_ear.volume:.3f} mm3 of its complete standalone ear")
+        obstruction = _intersection_volume(um, insert_receiver)
+        assert obstruction < 0.02, (
+            f"{label} x={x:g} obstructs its rear-open D4.6 x 4.0 receiver "
+            f"by {obstruction:.3f} mm3")
+
+        wall = _joint_annulus_witness(
+            core, x, core.JOINT_INSERT_BORE_D,
+            core.UM_JOINT_Z[0] + 0.20,
+            core.JOINT_INSERT_BORE_Z[1] - 0.20)
+        wall_fill = _intersection_volume(um, wall)
+        assert wall_fill > 0.995 * wall.volume, (
+            f"{label} x={x:g} lacks a complete 360-degree D4.6 receiver "
+            f"wall: {wall_fill:.3f}/{wall.volume:.3f} mm3")
+
+        floor_z0 = core.JOINT_INSERT_BORE_Z[1] + 0.15
+        floor_z1 = core.THICKNESS_MM - 0.15
+        floor = core._cylinder_at(
+            x, core.JOINT_EAR_Y,
+            core.JOINT_INSERT_BORE_D / 2.0 - 0.25,
+            floor_z0, floor_z1)
+        floor_fill = _intersection_volume(um, floor)
+        assert floor_fill > 0.98 * floor.volume, (
+            f"{label} x={x:g} lost its 1.9-mm front receiver floor: "
+            f"{floor_fill:.3f}/{floor.volume:.3f} mm3")
+
+        opposing_ear = core._complete_joint_ear("lm", x)
+        cross_owner = _intersection_volume(um, opposing_ear)
+        assert cross_owner < 0.02, (
+            f"{label} x={x:g} contains {cross_owner:.3f} mm3 of LM-owned "
+            "ear material")
+
+
+def _tweeter_joint_annulus_witness(
+        core, x, bore_diameter, z0, z1):
+    """Full-circle wall witness inside one complete D9.8 T boss."""
+    outer = core._cylinder_at(
+        x, core.TWEETER_JOINT_Y,
+        core.TWEETER_JOINT_FUNCTIONAL_BOSS_D / 2.0 - 0.20,
+        z0, z1)
+    inner = core._cylinder_at(
+        x, core.TWEETER_JOINT_Y, bore_diameter / 2.0 + 0.20,
+        z0 - 0.10, z1 + 0.10)
+    return outer - inner
+
+
+def _assert_standalone_um_tweeter_joint_brep(
+        um, tweeter, core, label):
+    """Each T--UM print owns a complete functional ear and usable bore."""
+    assert math.isclose(
+        core.TWEETER_ADDON_JOINT_Z[0]
+        - core.TWEETER_CORE_JOINT_Z[1], 0.20, abs_tol=1e-12)
+    assert math.isclose(
+        core.TWEETER_CORE_BORE_TOP_Z
+        - core.TWEETER_JOINT_INSERT_BORE_Z[0],
+        0.35, abs_tol=1e-12)
+    assert math.isclose(
+        core.TWEETER_JOINT_INSERT_BORE_Z[1]
+        - core.TWEETER_ADDON_JOINT_Z[0],
+        4.0, abs_tol=1e-12)
+    assert math.isclose(
+        core.TWEETER_JOINT_INSERT_FRONT_FLOOR_MM,
+        1.9, abs_tol=1e-12)
+
+    for x in core.TWEETER_JOINT_X:
+        core_ear = core._complete_tweeter_joint_ear("um", x)
+        core_bore = core._cylinder_at(
+            x, core.TWEETER_JOINT_Y,
+            core.TWEETER_JOINT_HOLE_D / 2.0,
+            core.TWEETER_CORE_JOINT_Z[0] - 0.2,
+            core.TWEETER_CORE_BORE_TOP_Z)
+        core_required = core_ear - core_bore
+        retained = _intersection_volume(um, core_required)
+        assert retained > 0.995 * core_required.volume, (
+            f"{label} UM x={x:g} retains only {retained:.3f}/"
+            f"{core_required.volume:.3f} mm3 of its complete T ear")
+        obstruction = _intersection_volume(um, core_bore)
+        assert obstruction < 0.02, (
+            f"{label} UM x={x:g} obstructs its D3.4 bore by "
+            f"{obstruction:.3f} mm3")
+        core_wall = _tweeter_joint_annulus_witness(
+            core, x, core.TWEETER_JOINT_HOLE_D,
+            core.TWEETER_CORE_JOINT_Z[0] + 0.20,
+            core.TWEETER_CORE_JOINT_Z[1] - 0.20)
+        core_wall_fill = _intersection_volume(um, core_wall)
+        assert core_wall_fill > 0.995 * core_wall.volume, (
+            f"{label} UM x={x:g} lacks a complete 360-degree D3.4 wall: "
+            f"{core_wall_fill:.3f}/{core_wall.volume:.3f} mm3")
+        cross_owner = _intersection_volume(
+            um, core._complete_tweeter_joint_ear("tweeter", x))
+        assert cross_owner < 0.02, (
+            f"{label} UM x={x:g} contains {cross_owner:.3f} mm3 of "
+            "crescent-owned T ear material")
+
+        addon_ear = core._complete_tweeter_joint_ear("tweeter", x)
+        receiver = core._cylinder_at(
+            x, core.TWEETER_JOINT_Y,
+            core.TWEETER_JOINT_INSERT_BORE_D / 2.0,
+            *core.TWEETER_JOINT_INSERT_BORE_Z)
+        addon_required = addon_ear - receiver
+        retained = _intersection_volume(tweeter, addon_required)
+        assert retained > 0.995 * addon_required.volume, (
+            f"{label} crescent x={x:g} retains only {retained:.3f}/"
+            f"{addon_required.volume:.3f} mm3 of its complete T ear")
+        obstruction = _intersection_volume(tweeter, receiver)
+        assert obstruction < 0.02, (
+            f"{label} crescent x={x:g} obstructs its D4.6 x 4.0 receiver "
+            f"by {obstruction:.3f} mm3")
+        addon_wall = _tweeter_joint_annulus_witness(
+            core, x, core.TWEETER_JOINT_INSERT_BORE_D,
+            core.TWEETER_ADDON_JOINT_Z[0] + 0.20,
+            core.TWEETER_JOINT_INSERT_BORE_Z[1] - 0.20)
+        addon_wall_fill = _intersection_volume(tweeter, addon_wall)
+        assert addon_wall_fill > 0.995 * addon_wall.volume, (
+            f"{label} crescent x={x:g} lacks a complete 360-degree D4.6 "
+            f"receiver wall: {addon_wall_fill:.3f}/"
+            f"{addon_wall.volume:.3f} mm3")
+        floor = core._cylinder_at(
+            x, core.TWEETER_JOINT_Y, 2.05,
+            core.TWEETER_JOINT_INSERT_BORE_Z[1] + 0.15,
+            core.THICKNESS_MM - 0.15)
+        floor_fill = _intersection_volume(tweeter, floor)
+        assert floor_fill > 0.995 * floor.volume, (
+            f"{label} crescent x={x:g} lost its 1.9-mm front floor: "
+            f"{floor_fill:.3f}/{floor.volume:.3f} mm3")
+        cross_owner = _intersection_volume(
+            tweeter, core._complete_tweeter_joint_ear("um", x))
+        assert cross_owner < 0.02, (
+            f"{label} crescent x={x:g} contains {cross_owner:.3f} mm3 of "
+            "UM-owned T ear material")
+
+
+def _stl_world_point_membership(stl_path, world_points):
+    """Classify installed-frame points against one hash-bound release STL."""
+    from front_down_contract import (
+        validate_front_down_transform,
+        validate_print_sidecar,
+    )
+    from vtkmodules.vtkCommonCore import vtkPoints
+    from vtkmodules.vtkCommonDataModel import vtkPolyData
+    from vtkmodules.vtkFiltersModeling import vtkSelectEnclosedPoints
+    from vtkmodules.vtkIOGeometry import vtkSTLReader
+
+    payload = validate_print_sidecar(stl_path)
+    matrix = np.asarray(validate_front_down_transform(payload), dtype=float)
+    world = np.asarray(world_points, dtype=float)
+    assert world.ndim == 2 and world.shape[1] == 3
+    homogeneous = np.column_stack((world, np.ones(len(world))))
+    transformed = (homogeneous @ matrix.T)[:, :3]
+
+    points = vtkPoints()
+    points.SetDataTypeToDouble()
+    for point in transformed:
+        points.InsertNextPoint(*(float(value) for value in point))
+    cloud = vtkPolyData()
+    cloud.SetPoints(points)
+
+    reader = vtkSTLReader()
+    reader.SetFileName(str(stl_path))
+    reader.Update()
+    surface = reader.GetOutput()
+    assert surface.GetNumberOfCells() > 0, f"empty release STL: {stl_path}"
+
+    enclosed = vtkSelectEnclosedPoints()
+    enclosed.SetInputData(cloud)
+    enclosed.SetSurfaceData(surface)
+    enclosed.SetTolerance(1.0e-6)
+    enclosed.Update()
+    return tuple(bool(enclosed.IsInside(index)) for index in range(len(world)))
+
+
+def _assert_stl_point_groups(
+        stl_path, point_groups, *, required_groups, forbidden_groups):
+    names = tuple(dict.fromkeys((*required_groups, *forbidden_groups)))
+    points = []
+    ranges = {}
+    for name in names:
+        start = len(points)
+        points.extend(point_groups[name])
+        ranges[name] = range(start, len(points))
+    membership = _stl_world_point_membership(stl_path, points)
+    for name in required_groups:
+        missing = [
+            (index - ranges[name].start, points[index])
+            for index in ranges[name] if not membership[index]
+        ]
+        assert not missing, (
+            f"{stl_path.name} misses required {name} material at "
+            f"{missing[:4]}")
+    for name in forbidden_groups:
+        present = [
+            (index - ranges[name].start, points[index])
+            for index in ranges[name] if membership[index]
+        ]
+        assert not present, (
+            f"{stl_path.name} contains forbidden {name} material at "
+            f"{present[:4]}")
+
+
+def _assert_lm_um_joint_stls(stand_foot, core):
+    """Semantic point gate on each independently printable release mesh."""
+    angles = np.linspace(0.0, 2.0 * math.pi, 24, endpoint=False)
+    lm_wall_radius = (
+        core.JOINT_CLEARANCE_BORE_D + core.JOINT_FUNCTIONAL_BOSS_D) / 4.0
+    um_wall_radius = (
+        core.JOINT_INSERT_BORE_D + core.JOINT_FUNCTIONAL_BOSS_D) / 4.0
+
+    def rings(radius, z):
+        return tuple(
+            (x + radius * math.cos(angle),
+             core.JOINT_EAR_Y + radius * math.sin(angle), z)
+            for x in core.JOINT_EAR_X for angle in angles)
+
+    def bore_points(radius, z_values):
+        offsets = (
+            (0.0, 0.0),
+            (radius, 0.0), (-radius, 0.0),
+            (0.0, radius), (0.0, -radius),
+        )
+        return tuple(
+            (x + dx, core.JOINT_EAR_Y + dy, z)
+            for x in core.JOINT_EAR_X for z in z_values
+            for dx, dy in offsets)
+
+    groups = {
+        "LM 360-degree wall": rings(lm_wall_radius, 9.50),
+        "UM 360-degree wall": rings(um_wall_radius, 14.40),
+        "LM clearance bore": bore_points(1.45, (7.20, 9.50, 12.00)),
+        "UM insert receiver": bore_points(
+            2.00, (12.65, 14.40, 16.15)),
+        "UM receiver front floor": bore_points(2.00, (17.25,)),
+    }
+    state_dir = "floor_stand" if stand_foot else "no_floor_stand"
+    stl_dir = Path(__file__).resolve().parent / state_dir / "stl"
+    lm_paths = (
+        stl_dir / "lx521_top_obiwan_core_1of2_lm_carrier.stl",
+        stl_dir / "lx521_top_obiwan_optional_lm_keyed_2of2_top.stl",
+    )
+    for stl_path in lm_paths:
+        _assert_stl_point_groups(
+            stl_path, groups,
+            required_groups=("LM 360-degree wall",),
+            forbidden_groups=(
+                "LM clearance bore", "UM 360-degree wall"))
+    um_path = stl_dir / "lx521_top_obiwan_core_2of2_um_carrier.stl"
+    _assert_stl_point_groups(
+        um_path, groups,
+        required_groups=(
+            "UM 360-degree wall", "UM receiver front floor"),
+        forbidden_groups=(
+            "UM insert receiver", "LM 360-degree wall"))
+    state = "floor" if stand_foot else "no-floor"
+    print(
+        f"  {state} release STLs: complete standalone LM/keyed D3.4 ears; "
+        "complete UM D4.6 x 4.0 blind receivers with 1.9-mm front floors")
+
+
+def _assert_um_tweeter_joint_stls(stand_foot, core):
+    """Semantic 360-degree wall/floor gate on both T--UM release meshes."""
+    angles = np.linspace(0.0, 2.0 * math.pi, 24, endpoint=False)
+
+    def rings(radius, z):
+        return tuple(
+            (x + radius * math.cos(angle),
+             core.TWEETER_JOINT_Y + radius * math.sin(angle), z)
+            for x in core.TWEETER_JOINT_X for angle in angles)
+
+    def disk_points(radii, z):
+        points = [
+            (x, core.TWEETER_JOINT_Y, z)
+            for x in core.TWEETER_JOINT_X
+        ]
+        points.extend(
+            (x + radius * math.cos(angle),
+             core.TWEETER_JOINT_Y + radius * math.sin(angle), z)
+            for x in core.TWEETER_JOINT_X for radius in radii
+            for angle in angles)
+        return tuple(points)
+
+    def bore_points(radius, z_values):
+        offsets = (
+            (0.0, 0.0),
+            (radius, 0.0), (-radius, 0.0),
+            (0.0, radius), (0.0, -radius),
+        )
+        return tuple(
+            (x + dx, core.TWEETER_JOINT_Y + dy, z)
+            for x in core.TWEETER_JOINT_X for z in z_values
+            for dx, dy in offsets)
+
+    groups = {
+        "UM T-joint 360-degree wall": rings(3.30, 9.50),
+        "UM T-joint clearance bore": bore_points(
+            1.45, (7.20, 9.50, 12.00)),
+        "crescent 360-degree receiver wall": rings(3.40, 14.40),
+        "crescent insert receiver": bore_points(
+            2.00, (12.65, 14.40, 16.15)),
+        "crescent 1.9-mm receiver floor": disk_points(
+            (1.20, 2.00), 17.25),
+    }
+    state_dir = "floor_stand" if stand_foot else "no_floor_stand"
+    stl_dir = Path(__file__).resolve().parent / state_dir / "stl"
+    um_path = stl_dir / "lx521_top_obiwan_core_2of2_um_carrier.stl"
+    tweeter_path = (
+        stl_dir / "lx521_top_obiwan_addon_tweeter_crescent.stl")
+    _assert_stl_point_groups(
+        um_path, groups,
+        required_groups=("UM T-joint 360-degree wall",),
+        forbidden_groups=(
+            "UM T-joint clearance bore",
+            "crescent 360-degree receiver wall"))
+    _assert_stl_point_groups(
+        tweeter_path, groups,
+        required_groups=(
+            "crescent 360-degree receiver wall",
+            "crescent 1.9-mm receiver floor"),
+        forbidden_groups=(
+            "crescent insert receiver",
+            "UM T-joint 360-degree wall"))
+    state = "floor" if stand_foot else "no-floor"
+    print(
+        f"  {state} release STLs: complete standalone UM D3.4 T ears; "
+        "complete crescent D4.6 x 4.0 receivers with 1.9-mm front floors")
+
+
+def _complete_tweeter_joint_witnesses(core, x):
+    """Independent complete-ear authority for the T--UM service joint."""
+    core_ear = core._complete_tweeter_joint_ear("um", x)
+    addon_ear = core._complete_tweeter_joint_ear("tweeter", x)
     core_bolt = core._cylinder_at(
         x, core.TWEETER_JOINT_Y,
         core.TWEETER_JOINT_HOLE_D / 2.0,
@@ -2687,8 +3199,7 @@ def _owned_tweeter_joint_witnesses(core, x):
     insert = core._cylinder_at(
         x, core.TWEETER_JOINT_Y,
         core.TWEETER_JOINT_INSERT_BORE_D / 2.0,
-        core.TWEETER_ADDON_JOINT_Z[0] - 0.2,
-        core.TWEETER_ADDON_JOINT_Z[0] + 4.0)
+        *core.TWEETER_JOINT_INSERT_BORE_Z)
     return {
         "core_ear": core_ear,
         "addon_ear": addon_ear,
@@ -2703,34 +3214,22 @@ def _assert_core_interface_breps(lm, um, core):
     import top_baffle_nd25fw4_obiwan_route as route
     from captive_magnets import DEFAULT_SPEC, wall_cavity_tools
 
-    for x in core.JOINT_EAR_X:
-        # The full-depth closure split intentionally trims each legacy raw
-        # ear wherever the complementary plan owner or its terminal fit drain
-        # takes precedence.  Qualify the exact printable ear authority here;
-        # the independent analytic closure test freezes the permitted raw-to-
-        # owned clipping so this BREP witness cannot shrink itself to pass.
-        lm_ear = core._owned_joint_ear("lm", x, core.LM_JOINT_Z)
-        um_ear = core._owned_joint_ear("um", x, core.UM_JOINT_Z)
-        bore = core._cylinder_at(
-            x, core.JOINT_EAR_Y, core.JOINT_HOLE_D / 2.0,
-            core.CORE_REAR_Z - core.JOINT_BORE_REAR_OVERSHOOT,
-            core.THICKNESS_MM + 0.2)
-        expected_lm_ear = lm_ear - bore
-        expected_um_ear = um_ear - bore
-        assert (_intersection_volume(lm, expected_lm_ear)
-                > 0.995 * expected_lm_ear.volume), (
-                    f"owned LM half-lap at x={x:g} was gouged outside "
-                    "its bore and declared plan clip")
-        overlap = _intersection_volume(um, lm_ear)
-        assert overlap < 0.02, (
-            f"UM overlaps LM half-lap at x={x:g} by {overlap:.3f} mm3")
-        assert (_intersection_volume(um, expected_um_ear)
-                > 0.995 * expected_um_ear.volume), (
-                    f"owned UM half-lap at x={x:g} was gouged outside "
-                    "its bore and declared plan clip")
-        overlap = _intersection_volume(lm, um_ear)
-        assert overlap < 0.02, (
-            f"LM overlaps UM half-lap at x={x:g} by {overlap:.3f} mm3")
+    assert math.isclose(
+        core.UM_JOINT_Z[0] - core.LM_JOINT_Z[1],
+        0.20, abs_tol=1e-12)
+    assert math.isclose(
+        core.JOINT_CLEARANCE_BORE_TOP_Z - core.JOINT_INSERT_BORE_Z[0],
+        0.35, abs_tol=1e-12)
+    assert math.isclose(
+        core.JOINT_INSERT_BORE_Z[1] - core.UM_JOINT_Z[0],
+        4.0, abs_tol=1e-12)
+    assert math.isclose(
+        core.UM_JOINT_Z[0] - core.JOINT_INSERT_BORE_Z[0],
+        0.20, abs_tol=1e-12)
+    assert math.isclose(
+        core.JOINT_INSERT_FRONT_FLOOR_MM, 1.9, abs_tol=1e-12)
+    _assert_standalone_lm_joint_brep(lm, core, "canonical LM")
+    _assert_standalone_um_joint_brep(um, core, "canonical UM")
 
     owner = {"lm": lm, "um": um}
     route_covers = {
@@ -3163,7 +3662,11 @@ def _assembled_shell_contract(stand_foot, route_name):
         assert _intersection_volume(um, floor) > 0.90 * floor.volume
     actual_parts = [lm, um]
     if route_name == "T":
-        actual_parts.append(import_brep(staged["tweeter"]))
+        tweeter = import_brep(staged["tweeter"])
+        actual_parts.append(tweeter)
+        state = "floor" if stand_foot else "no-floor"
+        _assert_standalone_um_tweeter_joint_brep(
+            um, tweeter, core, f"{state} canonical T--UM")
     if route_name == "UM":
         _assert_core_interface_breps(lm, um, core)
 
@@ -4036,7 +4539,7 @@ def _tweeter_and_service_legacy_monolithic(stand_foot):
         raise AssertionError("Obi-Wan must not generate printed grommet parts")
 
     for x in core.TWEETER_JOINT_X:
-        witness = _owned_tweeter_joint_witnesses(core, x)
+        witness = _complete_tweeter_joint_witnesses(core, x)
         assert (_intersection_volume(um, witness["core_required"])
                 > 0.995 * witness["core_required"].volume)
         assert _intersection_volume(tweeter, witness["core_ear"]) < 0.02
@@ -4662,7 +5165,7 @@ def _service_joint(fit, paths, name):
         assert actual_overlap < 0.02, (
             f"actual UM/tweeter print collision {actual_overlap:.4f} mm3")
     for x in core.TWEETER_JOINT_X:
-        witness = _owned_tweeter_joint_witnesses(core, x)
+        witness = _complete_tweeter_joint_witnesses(core, x)
         if name == "um":
             core_hit = _intersection_volume(
                 part, witness["core_required"])

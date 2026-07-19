@@ -197,9 +197,10 @@ def qualification_record(stand_foot: bool) -> dict:
                 "status": "pending_two_pin_fit_and_installed_load_test",
                 "registration_structural_load_credit_n": 0.0,
                 "required_evidence": (
-                    "front-face-down print proving both complete D0.80 pin "
-                    "toolpaths, the right round and left X-relieved socket "
-                    "walls, simultaneous straight insertion, full seating, "
+                    "front-face-down print proving both complete D1.60 pin "
+                    "toolpaths, the exterior support lands, and the right "
+                    "round and left X-relieved socket walls; simultaneous "
+                    "straight insertion, actual U22 fit, full seating, "
                     "assembled front coplanarity, cable pull-through/route "
                     "continuity, and driver-installed 1g/3g/5g proof"),
             },

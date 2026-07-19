@@ -5,7 +5,7 @@ This module starts from the irreducible interfaces instead:
 
 * LM carrier: D190 opening, D221.2 flush seat, R113.0 outside.
 * UM carrier: D82 opening, D98.6 flush seat, R51.7 outside.
-* two rounded M3 through-bolted half-lap ears establish 165.100 mm;
+* two rounded M3 insert-fastened half-lap ears establish 165.100 mm;
 * six fully buried captive magnet interfaces provide four LM and two UM
   alignment sites;
   the original upper LM pair stays at +/-26 degrees from top while the lower
@@ -203,23 +203,42 @@ LM_BASE_MAGNET_FACE_X = 32.0
 LM_BASE_MAGNET_Y = 18.0
 LM_BASE_MAGNET_Z = 12.55
 
-# Two compact Z-axis bolted *rounded ears*.  The old rectangular tabs
+# Two compact Z-axis fastened *rounded ears*.  The old rectangular tabs
 # projected into the MU flange seating region.  Each replacement is a
-# D9 bolt boss convex-hulled to a D4 contact neck on its owning ring.
+# D9 base-web boss convex-hulled to a D4 contact neck on its owning ring;
+# the final Z-owned functional boss is locally D9.8 as documented below.
 # The complete footprint (not only its M3 axis) clears both recess discs.
-# LM owns the rear half and UM owns the front half; their 0.20 mm Z air
-# gap prevents the two prints fusing during assembly.
+# LM owns the complete rear ear and rear-driven screw-clearance passage. UM
+# owns the complete front ear and a rear-opening blind M3 heat-set receiver.
+# Neither functional boss is allowed to inherit the full-depth closure-web
+# plan seam: the non-owning carrier receives the complete opposing-ear notch,
+# so each insert/bore can be prepared in its individual print. Their 0.20 mm
+# Z air gap prevents the two prints fusing during assembly.
 # A 7.00-mm outward shift from the concept nominal clears the buried T route
-# and the complementary half-lap receiver envelope. Neither rounded boss nor
-# neck is enlarged; the UM half-lap remains clear by Z separation.
+# and the complementary half-lap receiver envelope.  The D4 neck and D9
+# closure-base boss stay nominal; only the Z-owned functional cylinder grows
+# locally to D9.8, and the two halves remain clear by Z separation.
 JOINT_EAR_X = (-32.0, 32.0)
 JOINT_EAR_Y = 315.770102
-JOINT_HOLE_D = 3.4
+JOINT_CLEARANCE_BORE_D = 3.4
+JOINT_INSERT_BORE_D = 4.6
+JOINT_INSERT_DEPTH_MM = 4.0
+# The closure-web base plan keeps the compact historical D9 teardrop. The
+# complete Z-owned functional ear locally grows only its cylindrical boss to
+# D9.8: a D4.6 heat-set receiver inside D9 would reduce the existing 5g
+# moment-contact screen below its accepted factor. The extra 0.40-mm radius is
+# local to the two axial half-ears and remains clear of both flange seats,
+# cable routes, and all captive-magnet lands.
 JOINT_BOSS_D = 9.0
+JOINT_FUNCTIONAL_BOSS_D = 9.8
 JOINT_NECK_D = 4.0
 JOINT_BORE_REAR_OVERSHOOT = 0.01
 LM_JOINT_Z = (CORE_REAR_Z, 12.20)
 UM_JOINT_Z = (12.40, THICKNESS_MM)
+JOINT_CLEARANCE_BORE_TOP_Z = LM_JOINT_Z[1] + 0.35
+JOINT_INSERT_BORE_Z = (
+    LM_JOINT_Z[1], UM_JOINT_Z[0] + JOINT_INSERT_DEPTH_MM)
+JOINT_INSERT_FRONT_FLOOR_MM = THICKNESS_MM - JOINT_INSERT_BORE_Z[1]
 UM_JOINT_TUNNEL_LIGAMENT = THICKNESS_MM - (
     CROSSOVER_T_Z + TS_CUTTER_R)
 JOINT_RECEIVER_RADIAL_CLEAR = 0.10
@@ -232,12 +251,25 @@ JOINT_RECEIVER_RADIAL_CLEAR = 0.10
 TWEETER_JOINT_X = (-24.0, 24.0)
 TWEETER_JOINT_Y = 421.5
 TWEETER_JOINT_BOSS_D = 9.0
+# As at LM--UM, the full-depth closure web keeps the compact historical D9
+# footprint, while each independently printed functional half-ear restores a
+# complete D9.8 boss.  The crescent half contains a D4.6 heat-set receiver;
+# evaluating or printing that receiver inside D9 would miss the accepted 5g
+# moment-contact screen even if its wall were not split by the plan seam.
+TWEETER_JOINT_FUNCTIONAL_BOSS_D = 9.8
 TWEETER_JOINT_NECK_D = 4.0
 TWEETER_JOINT_HOLE_D = 3.4
 TWEETER_JOINT_INSERT_BORE_D = 4.6
+TWEETER_JOINT_INSERT_DEPTH_MM = 4.0
 TWEETER_CORE_JOINT_Z = (CORE_REAR_Z, 12.20)
 TWEETER_ADDON_JOINT_Z = (12.40, THICKNESS_MM)
 TWEETER_JOINT_CLEAR = 0.10
+TWEETER_JOINT_INSERT_BORE_Z = (
+    TWEETER_CORE_JOINT_Z[1],
+    TWEETER_ADDON_JOINT_Z[0] + TWEETER_JOINT_INSERT_DEPTH_MM,
+)
+TWEETER_JOINT_INSERT_FRONT_FLOOR_MM = (
+    THICKNESS_MM - TWEETER_JOINT_INSERT_BORE_Z[1])
 # Keep the rear M3 through-bore continuous into the add-on's blind insert
 # receiver, but do not terminate its cutter on a real 0.20/0.16-mm Bambu
 # layer.  The former +0.30 endpoint was exactly world Z=12.50; an OCC section
@@ -470,7 +502,8 @@ def carrier_spoke_load_facts():
     }
 
 
-def joint_ear_polygon(owner: str, x: float, clearance: float = 0.0):
+def joint_ear_polygon(owner: str, x: float, clearance: float = 0.0,
+                      *, boss_d: float = JOINT_BOSS_D):
     """Exact rounded half-lap footprint for visual/tests/booleans.
 
     ``owner`` chooses the ring touched by the narrow neck.  A positive
@@ -486,14 +519,15 @@ def joint_ear_polygon(owner: str, x: float, clearance: float = 0.0):
     length = math.hypot(dx, dy)
     contact = (center[0] + radius * dx / length,
                center[1] + radius * dy / length)
-    boss = Point(x, JOINT_EAR_Y).buffer(JOINT_BOSS_D / 2.0,
+    boss = Point(x, JOINT_EAR_Y).buffer(boss_d / 2.0,
                                         resolution=32)
     neck = Point(*contact).buffer(JOINT_NECK_D / 2.0, resolution=32)
     polygon = boss.union(neck).convex_hull
     return polygon.buffer(clearance, resolution=16) if clearance else polygon
 
 
-def tweeter_joint_polygon(x: float, clearance: float = 0.0):
+def tweeter_joint_polygon(x: float, clearance: float = 0.0,
+                          *, boss_d: float = TWEETER_JOINT_BOSS_D):
     """Compact direct ear footprint from the UM ring to the crescent."""
     center = UM_CUTOUT[:2]
     dx, dy = x - center[0], TWEETER_JOINT_Y - center[1]
@@ -501,7 +535,7 @@ def tweeter_joint_polygon(x: float, clearance: float = 0.0):
     contact = (center[0] + UM_CORE_R * dx / length,
                center[1] + UM_CORE_R * dy / length)
     boss = Point(x, TWEETER_JOINT_Y).buffer(
-        TWEETER_JOINT_BOSS_D / 2.0, resolution=32)
+        boss_d / 2.0, resolution=32)
     neck = Point(*contact).buffer(
         TWEETER_JOINT_NECK_D / 2.0, resolution=32)
     polygon = boss.union(neck).convex_hull
@@ -1107,7 +1141,13 @@ def _supported_plan_components(plan, support):
 
 
 def _owned_joint_ear_plan(owner: str, x: float):
-    """Rounded LM/UM ear plan, excluding unsupported outboard islands."""
+    """Diagnostic closure-clipped LM/UM ear plan.
+
+    This is the footprint contributed by the full-depth closure-web base
+    before the functional Z-owned joint is restored.  It is deliberately not
+    the printable insert/bore authority: using it for a finished ear splits
+    the cylindrical wall between the two independently printed carriers.
+    """
     record = junction_closure_polygons()["lm_um"]
     blocked = unary_union((
         record["target"].difference(record[owner]),
@@ -1123,22 +1163,29 @@ def _owned_joint_ear_plan(owner: str, x: float):
     return _supported_plan_components(plan, support)
 
 
-def _owned_joint_ear(owner: str, x: float, z_span):
-    return _plan_prism(_owned_joint_ear_plan(owner, x), *z_span)
+def _complete_joint_ear_plan(owner: str, x: float,
+                             clearance: float = 0.0):
+    """Complete standalone LM/UM ear footprint, never split by the web seam."""
+    return joint_ear_polygon(
+        owner, x, clearance, boss_d=JOINT_FUNCTIONAL_BOSS_D)
 
 
-def _joint_receiver_plan(owner: str, x: float):
-    """Clear only the opposing ear material that is actually printable."""
-    current_owner = "lm" if owner == "um" else "um"
-    record = junction_closure_polygons()["lm_um"]
-    return _owned_joint_ear_plan(owner, x).buffer(
-        JOINT_RECEIVER_RADIAL_CLEAR, resolution=16).difference(
-            record[current_owner].intersection(record["target"])).buffer(0)
+def _complete_joint_ear(owner: str, x: float):
+    """Complete Z-owned functional ear for one independently printed carrier."""
+    if owner not in {"lm", "um"}:
+        raise ValueError(owner)
+    z_span = LM_JOINT_Z if owner == "lm" else UM_JOINT_Z
+    return _plan_prism(_complete_joint_ear_plan(owner, x), *z_span)
 
 
 def _owned_tweeter_joint_plan(owner: str, x: float,
                               clearance: float = 0.0):
-    """One T half-lap footprint clipped to its full-depth plan owner."""
+    """Diagnostic closure-clipped T--UM base-ear footprint.
+
+    The result describes only material contributed by the full-depth closure
+    web.  It is deliberately not the printable bore/insert authority: using
+    this plan for a finished half-ear lets the plan seam bisect the receiver.
+    """
     if owner not in {"um", "tweeter"}:
         raise ValueError(owner)
     record = junction_closure_polygons()["t_um"]
@@ -1162,6 +1209,25 @@ def _owned_tweeter_joint_plan(owner: str, x: float,
             record["tweeter"],
         )).buffer(0)
     return _supported_plan_components(plan, support)
+
+
+def _complete_tweeter_joint_ear_plan(owner: str, x: float,
+                                      clearance: float = 0.0):
+    """Complete standalone T--UM ear, never split by closure ownership."""
+    if owner not in {"um", "tweeter"}:
+        raise ValueError(owner)
+    return tweeter_joint_polygon(
+        x, clearance, boss_d=TWEETER_JOINT_FUNCTIONAL_BOSS_D)
+
+
+def _complete_tweeter_joint_ear(owner: str, x: float):
+    """Complete Z-owned functional ear for one independently printed part."""
+    if owner not in {"um", "tweeter"}:
+        raise ValueError(owner)
+    z_span = (TWEETER_CORE_JOINT_Z if owner == "um"
+              else TWEETER_ADDON_JOINT_Z)
+    return _plan_prism(
+        _complete_tweeter_joint_ear_plan(owner, x), *z_span)
 
 
 def side_magnet_sites(driver: str | None = None):
@@ -1317,26 +1383,44 @@ def joint_load_facts():
         TWEETER_CORE_JOINT_Z[1] - TWEETER_CORE_JOINT_Z[0],
         TWEETER_ADDON_JOINT_Z[1] - TWEETER_ADDON_JOINT_Z[0],
     )
-    tunneled_half_thickness = min(
-        full_half_thickness, UM_JOINT_TUNNEL_LIGAMENT)
-    pair_thickness = full_half_thickness + tunneled_half_thickness
+    # The outward-shifted complete functional ears do not intersect the T
+    # lumen (the exact cutter remains 0.445 mm away). Therefore the true
+    # minimum axial ear thickness is 5.4 mm; the nearby 5.35-mm route-to-front
+    # ligament is reported separately and receives no fictitious ear penalty.
+    minimum_half_thickness = full_half_thickness
+    pair_thickness = 2.0 * minimum_half_thickness
     neck_width = min(JOINT_NECK_D, TWEETER_JOINT_NECK_D)
-    net_width = min(
-        JOINT_BOSS_D - JOINT_HOLE_D,
-        TWEETER_JOINT_BOSS_D - TWEETER_JOINT_HOLE_D,
-    )
-    bearing_width = min(JOINT_HOLE_D, TWEETER_JOINT_HOLE_D)
+    # The LM--UM interface is now insert-fastened, so its governing printed
+    # annulus is set by the D4.6 receiver rather than the D3.4 screw passage.
+    # Evaluate both reinforced D9.8 functional bosses separately for moment
+    # contact.  In particular, the crescent half is governed by its D4.6
+    # insert receiver, not by the core half's smaller D3.4 screw passage.
+    lm_um_net_width = JOINT_FUNCTIONAL_BOSS_D - JOINT_INSERT_BORE_D
+    tweeter_net_width = (
+        TWEETER_JOINT_FUNCTIONAL_BOSS_D
+        - TWEETER_JOINT_INSERT_BORE_D)
+    net_width = min(lm_um_net_width, tweeter_net_width)
+    bearing_width = min(
+        JOINT_INSERT_BORE_D, TWEETER_JOINT_HOLE_D)
     neck_area = neck_width * pair_thickness
     net_area = net_width * pair_thickness
     bearing_area = bearing_width * pair_thickness
     bolt_shear_area = 2.0 * math.pi * (3.0 / 2.0) ** 2
     m3_tensile_area = math.pi * (2.53 / 2.0) ** 2
-    contact_lever = (min(JOINT_BOSS_D, TWEETER_JOINT_BOSS_D)
-                     * JOINT_CONTACT_LEVER_FACTOR)
+    contact_levers = {
+        "lm_um": (JOINT_FUNCTIONAL_BOSS_D
+                  * JOINT_CONTACT_LEVER_FACTOR),
+        "um_tweeter": (TWEETER_JOINT_FUNCTIONAL_BOSS_D
+                       * JOINT_CONTACT_LEVER_FACTOR),
+    }
+    contact_lever = min(contact_levers.values())
     moment_lever = math.hypot(
         JOINT_PLAN_LEVER_MM, JOINT_REAR_LEVER_MM)
-    # Moment contact is governed by the single weaker tunneled ear.
-    net_area_per_ear = net_width * tunneled_half_thickness
+    # Moment contact is governed by the single weaker ear in each interface.
+    net_area_per_ear = {
+        "lm_um": lm_um_net_width * minimum_half_thickness,
+        "um_tweeter": tweeter_net_width * minimum_half_thickness,
+    }
 
     def force(g_load):
         return JOINT_DESIGN_MASS_KG * gravity * g_load
@@ -1352,17 +1436,38 @@ def joint_load_facts():
 
     def moment_facts(g_load, allowable):
         moment = force(g_load) * moment_lever
-        contact_force_per_ear = moment / (2.0 * contact_lever)
-        contact_stress = contact_force_per_ear / net_area_per_ear
+        interfaces = {}
+        for name in ("lm_um", "um_tweeter"):
+            contact_force = moment / (2.0 * contact_levers[name])
+            contact_stress = contact_force / net_area_per_ear[name]
+            interfaces[name] = {
+                "contact_lever_mm": contact_levers[name],
+                "net_area_per_ear_mm2": net_area_per_ear[name],
+                "contact_force_per_ear_n": contact_force,
+                "contact_stress_mpa": contact_stress,
+                "contact_sf": allowable / contact_stress,
+            }
+        governing_name = min(
+            interfaces, key=lambda name: interfaces[name]["contact_sf"])
+        governing = interfaces[governing_name]
+        contact_force_per_ear = max(
+            facts["contact_force_per_ear_n"]
+            for facts in interfaces.values())
         m3_tension_stress = contact_force_per_ear / m3_tensile_area
         return {
             "moment_nmm": moment,
+            "governing_interface": governing_name,
             "contact_force_per_ear_n": contact_force_per_ear,
-            "contact_stress_mpa": contact_stress,
-            "contact_sf": allowable / contact_stress,
+            "contact_stress_mpa": governing["contact_stress_mpa"],
+            "contact_sf": governing["contact_sf"],
             "m3_tension_stress_mpa": m3_tension_stress,
             "m3_tension_sf": (
                 JOINT_M3_TENSION_ALLOW_MPA / m3_tension_stress),
+            "lm_um_insert_pullout_required_n": (
+                interfaces["lm_um"]["contact_force_per_ear_n"]),
+            "um_tweeter_insert_pullout_required_n": (
+                interfaces["um_tweeter"]["contact_force_per_ear_n"]),
+            "interfaces": interfaces,
         }
 
     stress_1g, sf_1g = facts(1.0, JOINT_PLA_CREEP_ALLOW_MPA)
@@ -1381,9 +1486,40 @@ def joint_load_facts():
         "rear_lever_mm": JOINT_REAR_LEVER_MM,
         "resultant_moment_lever_mm": moment_lever,
         "contact_lever_mm": contact_lever,
-        "minimum_half_thickness_mm": tunneled_half_thickness,
+        "lm_um_functional_boss_d_mm": JOINT_FUNCTIONAL_BOSS_D,
+        "um_tweeter_functional_boss_d_mm": (
+            TWEETER_JOINT_FUNCTIONAL_BOSS_D),
+        "lm_um_net_width_mm": lm_um_net_width,
+        "um_tweeter_net_width_mm": tweeter_net_width,
+        "minimum_half_thickness_mm": minimum_half_thickness,
         "full_half_thickness_mm": full_half_thickness,
-        "tunneled_half_thickness_mm": tunneled_half_thickness,
+        "nearby_route_front_ligament_mm": UM_JOINT_TUNNEL_LIGAMENT,
+        "lm_um_clearance_bore_d_mm": JOINT_CLEARANCE_BORE_D,
+        "lm_um_insert_receiver_d_mm": JOINT_INSERT_BORE_D,
+        "lm_um_insert_receiver_depth_mm": JOINT_INSERT_DEPTH_MM,
+        "lm_um_insert_front_floor_mm": JOINT_INSERT_FRONT_FLOOR_MM,
+        "lm_um_axial_gap_mm": UM_JOINT_Z[0] - LM_JOINT_Z[1],
+        "lm_um_bore_overlap_mm": (
+            JOINT_CLEARANCE_BORE_TOP_Z - JOINT_INSERT_BORE_Z[0]),
+        "lm_um_standalone_ear_ownership_required": True,
+        "lm_um_full_360_wall_required": True,
+        "lm_um_cross_owner_material_allowed": False,
+        "lm_um_insert_pullout_qualification_required": True,
+        "um_tweeter_clearance_bore_d_mm": TWEETER_JOINT_HOLE_D,
+        "um_tweeter_insert_receiver_d_mm": TWEETER_JOINT_INSERT_BORE_D,
+        "um_tweeter_insert_receiver_depth_mm": (
+            TWEETER_JOINT_INSERT_DEPTH_MM),
+        "um_tweeter_insert_front_floor_mm": (
+            TWEETER_JOINT_INSERT_FRONT_FLOOR_MM),
+        "um_tweeter_axial_gap_mm": (
+            TWEETER_ADDON_JOINT_Z[0] - TWEETER_CORE_JOINT_Z[1]),
+        "um_tweeter_bore_overlap_mm": (
+            TWEETER_CORE_BORE_TOP_Z
+            - TWEETER_JOINT_INSERT_BORE_Z[0]),
+        "um_tweeter_standalone_ear_ownership_required": True,
+        "um_tweeter_full_360_wall_required": True,
+        "um_tweeter_cross_owner_material_allowed": False,
+        "um_tweeter_insert_pullout_qualification_required": True,
         "neck_area_mm2": neck_area,
         "net_area_mm2": net_area,
         "bearing_area_mm2": bearing_area,
@@ -1412,14 +1548,26 @@ def _cut_lm_mount_holes(part):
     return part
 
 
-def _receiver_notch(part, owner: str, x: float, z_span):
-    """Cut a receiver while preserving the current ring's web ownership."""
-    z0, z1 = z_span
-    notch_plan = _joint_receiver_plan(owner, x)
+def _complete_joint_receiver_notch(part, ear_owner: str, x: float):
+    """Remove the full opposing ear so the functional boss has one owner.
+
+    The notch spans the complete 0.20-mm axial air gap as well as the opposing
+    ear.  This prevents either full-depth closure web from surviving across
+    the nominal gap or bisecting the standalone bore/insert annulus.
+    """
+    if ear_owner == "lm":
+        z0 = LM_JOINT_Z[0] - JOINT_RECEIVER_RADIAL_CLEAR
+        z1 = UM_JOINT_Z[0]
+    elif ear_owner == "um":
+        z0 = LM_JOINT_Z[1]
+        z1 = UM_JOINT_Z[1] + JOINT_RECEIVER_RADIAL_CLEAR
+    else:
+        raise ValueError(ear_owner)
     return _subtract_plan_prisms(
-        part, notch_plan,
-        z0 - JOINT_RECEIVER_RADIAL_CLEAR,
-        z1 + JOINT_RECEIVER_RADIAL_CLEAR)
+        part,
+        _complete_joint_ear_plan(
+            ear_owner, x, JOINT_RECEIVER_RADIAL_CLEAR),
+        z0, z1)
 
 
 def _fuse_attached(part, addition, label: str):
@@ -1446,6 +1594,75 @@ def _fuse_attached(part, addition, label: str):
              (solid.bounding_box().max.X, solid.bounding_box().max.Y,
               solid.bounding_box().max.Z))
             for solid in combined.solids()]}")
+
+
+def _apply_complete_lm_um_joint(part, owner: str):
+    """Restore one carrier's complete ear and cut its standalone fastener void."""
+    if owner not in {"lm", "um"}:
+        raise ValueError(owner)
+    opposing = "um" if owner == "lm" else "lm"
+    for x in JOINT_EAR_X:
+        part = _complete_joint_receiver_notch(part, opposing, x)
+    for x in JOINT_EAR_X:
+        part = _fuse_attached(
+            part, _complete_joint_ear(owner, x),
+            f"{owner.upper()} complete standalone joint ear {x:+.1f}")
+        if owner == "lm":
+            part -= _cylinder_at(
+                x, JOINT_EAR_Y, JOINT_CLEARANCE_BORE_D / 2.0,
+                CORE_REAR_Z - JOINT_BORE_REAR_OVERSHOOT,
+                JOINT_CLEARANCE_BORE_TOP_Z)
+        else:
+            part -= _cylinder_at(
+                x, JOINT_EAR_Y, JOINT_INSERT_BORE_D / 2.0,
+                *JOINT_INSERT_BORE_Z)
+    return part
+
+
+def _complete_tweeter_joint_receiver_notch(
+        part, ear_owner: str, x: float):
+    """Remove one complete opposing T ear plus the 0.20-mm axial gap."""
+    if ear_owner == "um":
+        z0 = TWEETER_CORE_JOINT_Z[0] - TWEETER_JOINT_CLEAR
+        z1 = TWEETER_ADDON_JOINT_Z[0]
+    elif ear_owner == "tweeter":
+        z0 = TWEETER_CORE_JOINT_Z[1]
+        z1 = TWEETER_ADDON_JOINT_Z[1] + TWEETER_JOINT_CLEAR
+    else:
+        raise ValueError(ear_owner)
+    return _subtract_plan_prisms(
+        part,
+        _complete_tweeter_joint_ear_plan(
+            ear_owner, x, TWEETER_JOINT_CLEAR),
+        z0, z1)
+
+
+def _apply_complete_um_tweeter_joint(part, owner: str):
+    """Restore complete standalone T ears and their owner-specific voids."""
+    if owner not in {"um", "tweeter"}:
+        raise ValueError(owner)
+    opposing = "tweeter" if owner == "um" else "um"
+    for x in TWEETER_JOINT_X:
+        part = _complete_tweeter_joint_receiver_notch(part, opposing, x)
+    for x in TWEETER_JOINT_X:
+        part = _fuse_attached(
+            part, _complete_tweeter_joint_ear(owner, x),
+            f"{owner.upper()} complete standalone tweeter joint ear "
+            f"{x:+.1f}")
+        # Preserve the rear-driven screw passage across the true 0.20-mm
+        # inter-part gap.  On the crescent it then widens into the D4.6 blind
+        # heat-set receiver; the larger cutter deliberately starts at the
+        # rear owner's z=12.2 termination for a 0.35-mm service overlap.
+        part -= _cylinder_at(
+            x, TWEETER_JOINT_Y, TWEETER_JOINT_HOLE_D / 2.0,
+            TWEETER_CORE_JOINT_Z[0] - 0.2,
+            TWEETER_CORE_BORE_TOP_Z)
+        if owner == "tweeter":
+            part -= _cylinder_at(
+                x, TWEETER_JOINT_Y,
+                TWEETER_JOINT_INSERT_BORE_D / 2.0,
+                *TWEETER_JOINT_INSERT_BORE_Z)
+    return part
 
 
 def _ensure_shell_contained(part, shell, label: str):
@@ -1492,13 +1709,7 @@ def lm_carrier_outer_blank():
 
     # Establish every small attachment union before carving the long
     # swept tunnel cutters.
-    for x in JOINT_EAR_X:
-        part = _receiver_notch(part, "um", x, UM_JOINT_Z)
-    for x in JOINT_EAR_X:
-        part += _owned_joint_ear("lm", x, LM_JOINT_Z)
-        part -= _cylinder_at(x, JOINT_EAR_Y, JOINT_HOLE_D / 2.0,
-                             CORE_REAR_Z - JOINT_BORE_REAR_OVERSHOOT,
-                             THICKNESS_MM + 0.2)
+    part = _apply_complete_lm_um_joint(part, "lm")
     # One continuous outer sweep per route is fused before the nominal voids
     # are cut.  This keeps every Z bump covered and avoids the old fragmented
     # coplanar rear-floor topology.
@@ -1683,12 +1894,8 @@ def finalize_lm_carrier(part, *, routes_already_cut=False):
     # One final pass is sufficient here: all route, magnet, driver and mount
     # Booleans are already complete. The former consecutive duplicate pass
     # changed no geometry and made every LM build pay for four extra cuts.
-    for x in JOINT_EAR_X:
-        part = _receiver_notch(part, "um", x, UM_JOINT_Z)
-        part -= _cylinder_at(x, JOINT_EAR_Y, JOINT_HOLE_D / 2.0,
-                             CORE_REAR_Z - JOINT_BORE_REAR_OVERSHOOT,
-                             THICKNESS_MM + 0.2)
-    part = clean_stage(part, "final joint receiver recut")
+    part = _apply_complete_lm_um_joint(part, "lm")
+    part = clean_stage(part, "final standalone LM joint recut")
 
     part = part.clean()
     solids = list(part.solids())
@@ -1741,30 +1948,9 @@ def um_carrier():
     part = _enforce_junction_plan_ownership(part, "lm_um", "um")
     part = _enforce_junction_plan_ownership(part, "t_um", "um")
 
-    for x in JOINT_EAR_X:
-        part = _receiver_notch(part, "lm", x, LM_JOINT_Z)
-    for x in JOINT_EAR_X:
-        part += _owned_joint_ear("um", x, UM_JOINT_Z)
-        part -= _cylinder_at(x, JOINT_EAR_Y, JOINT_HOLE_D / 2.0,
-                             CORE_REAR_Z - JOINT_BORE_REAR_OVERSHOOT,
-                             THICKNESS_MM + 0.2)
+    part = _apply_complete_lm_um_joint(part, "um")
     part = _add_side_magnet_ears(part, "um")
 
-    # Rear half of the direct crescent joints.  The complementary upper
-    # half is an add-on and is removed from the core with a 0.1-mm plan
-    # receiver clearance plus the established 0.2-mm axial split.
-    for x in TWEETER_JOINT_X:
-        part = _subtract_plan_prisms(
-            part,
-            _owned_tweeter_joint_plan("tweeter", x, TWEETER_JOINT_CLEAR),
-            TWEETER_ADDON_JOINT_Z[0] - TWEETER_JOINT_CLEAR,
-            TWEETER_ADDON_JOINT_Z[1] + 0.2)
-        part += _plan_prism(
-            _owned_tweeter_joint_plan("um", x), *TWEETER_CORE_JOINT_Z)
-        part -= _cylinder_at(
-            x, TWEETER_JOINT_Y, TWEETER_JOINT_HOLE_D / 2.0,
-            TWEETER_CORE_JOINT_Z[0] - 0.2,
-            TWEETER_CORE_BORE_TOP_Z)
     for px, py in UM_PILOT_XY:
         part -= _cylinder_at(px, py, UM_PILOT_D_MM / 2.0,
                              UM_SEAT_Z - UM_PILOT_DEPTH_MM,
@@ -1787,22 +1973,34 @@ def um_carrier():
     # consecutive duplicate passes only repeated identical OCC subtractions.
     part = _enforce_junction_plan_ownership(part, "lm_um", "um")
     part = _enforce_junction_plan_ownership(part, "t_um", "um")
+    part = _cut_side_magnet_pockets(part, "um")
+    # The final ownership masks intentionally govern the full-depth closure
+    # web, not the Z-owned functional boss. Restore the complete UM receiver
+    # after those masks and after every positive cover union. Then reopen the
+    # route lumen: the nearby T cutter is authoritative and must not be
+    # refilled by the late ear fusion.
+    part = _apply_complete_lm_um_joint(part, "um")
+    for cutter in route_inner_cutters("um"):
+        part -= cutter
+    # Route cuts and receiver cuts are both negative, but repeat the receiver
+    # cylinders explicitly so this final construction order remains obvious
+    # and robust to future positive route-shell repairs.
     for x in JOINT_EAR_X:
-        part = _receiver_notch(part, "lm", x, LM_JOINT_Z)
-        part -= _cylinder_at(x, JOINT_EAR_Y, JOINT_HOLE_D / 2.0,
-                             CORE_REAR_Z - JOINT_BORE_REAR_OVERSHOOT,
-                             THICKNESS_MM + 0.2)
+        part -= _cylinder_at(
+            x, JOINT_EAR_Y, JOINT_INSERT_BORE_D / 2.0,
+            *JOINT_INSERT_BORE_Z)
+    # The full-depth T--UM plan mask is a closure-web authority only.  Restore
+    # the complete rear functional ears after every positive cover union and
+    # every ownership mask, then reopen the authoritative route and screw
+    # passage so neither can be refilled by this final fusion.
+    part = _apply_complete_um_tweeter_joint(part, "um")
+    for cutter in route_inner_cutters("um"):
+        part -= cutter
     for x in TWEETER_JOINT_X:
-        part = _subtract_plan_prisms(
-            part,
-            _owned_tweeter_joint_plan("tweeter", x, TWEETER_JOINT_CLEAR),
-            TWEETER_ADDON_JOINT_Z[0] - TWEETER_JOINT_CLEAR,
-            TWEETER_ADDON_JOINT_Z[1] + 0.2)
         part -= _cylinder_at(
             x, TWEETER_JOINT_Y, TWEETER_JOINT_HOLE_D / 2.0,
             TWEETER_CORE_JOINT_Z[0] - 0.2,
             TWEETER_CORE_BORE_TOP_Z)
-    part = _cut_side_magnet_pockets(part, "um")
     part = part.clean()
     solids = list(part.solids())
     if (not part.is_valid or len(solids) != 1

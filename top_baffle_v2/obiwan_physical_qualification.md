@@ -26,6 +26,27 @@ integral W64 stem/foot, R12 root, buried floor lanes and NL8 panel. The floor
 datum is world `Y=0`, exactly **200.981 mm** below the LM axis. All six LM
 driver insert sites are ordinary blind carrier bores in both states.
 
+At the LM-to-UM joint axes x=±32 mm, y=315.770 mm, the monolithic LM—or the
+selected optional keyed LM top—must independently contain both rear Ø3.4
+screw-clearance passages. The standalone UM must independently contain both
+rear-opening blind Ø4.6 x 4.0 M3 heat-set receivers and their complete walls,
+with a 1.9 mm solid acoustic-front floor. The closure-web/base teardrop remains
+nominal Ø9, while each complete Z-owned cylindrical functional boss is locally
+Ø9.8. Install the inserts in that individual UM print before assembly. The ear
+halves retain a 0.20 mm axial gap and are
+joined by rear-driven M3 screws only; no washer, nut, front bolt head, or
+through-drilled UM floor is permitted.
+
+At the UM-to-tweeter axes x=±24 mm, y=421.5 mm, the standalone UM must
+independently contain both rear Ø3.4 screw-clearance passages. The standalone
+crescent must independently contain both rear-opening blind Ø4.6 x 4.0 M3
+heat-set receivers, complete 360° walls, and 1.9 mm solid acoustic-front
+floors. Here too the closure-web/base teardrop remains nominal Ø9 while each
+complete Z-owned cylindrical functional boss is locally Ø9.8. Install both
+inserts in the individual crescent before assembly. The 0.20 mm axial gap may
+not be filled by either print, and no receiver wall or floor may depend on UM
+material.
+
 Each state release manifest ships both the canonical monolithic LM carrier and
 both halves of the optional keyed LM form. Although an installed assembly uses
 exactly one form, release qualification must authorize **both shipped forms
@@ -34,26 +55,34 @@ independently**. Authorization of one form does not authorize the other, and
 or print-form decision. A state remains unauthorized until both print-form
 decisions pass. The keyed form is cut at world `Y=172.481 mm` with a zero-gap
 planar butt; neither keyed half may be combined with the monolithic carrier in
-an installed assembly. The bottom owns two symmetric concealed Ø0.80
-cylindrical pins at `x=±108.243 mm`, `z=14.30 mm`; both point world +Y normal
-to the seam, have 0.50 mm root overlap, and engage the top by 0.80 mm. The top
-owns 1.05 mm-deep blind sockets with 0.12 mm radial and 0.25 mm end clearance:
-right is round Ø1.04, while left is X-relieved to 1.16 × 1.04 mm. This
-round-plus-relieved constraint accepts ±0.30 mm relative pitch error across
-the 216.486 mm spacing instead of binding like two tight round sockets. It adds
-no external protrusion, envelope growth, extra screw, or standalone
-retention/load credit. Its installed load path exists only after the LM driver
-flange and all normal LM fasteners splice the seam.
+an installed assembly. The bottom owns two symmetric concealed Ø1.60
+cylindrical pins at `x=±109.187 mm`, `z=14.30 mm`; both point world +Y normal
+to the seam, have 0.50 mm root overlap, and engage the top by 2.40 mm (2.90 mm
+total male length). The top owns 2.65 mm-deep blind sockets with 0.12 mm radial
+and 0.25 mm end clearance: right is round Ø1.84, while left is X-relieved to
+1.96 × 1.84 mm. This round-plus-relieved constraint accepts ±0.30 mm relative
+pitch error across the 218.374 mm spacing instead of binding like two tight
+round sockets. Small exterior lands outside the LM recess add about 1.40 mm
+of local perimeter growth but no extra screw or standalone retention/load
+credit. Ac/Ae provide 0.25 mm clearance pockets around the lands, wholly at
+the hidden carrier interface between their front and rear faces; printed fit
+remains coupon-qualified.
+Its installed load path exists only after the LM driver flange and all normal
+LM fasteners splice the seam.
 
-The keyed sockets' current CAD contract retains at least **0.564 mm inner and
-outer wall at the round socket** and **0.506 mm inner and outer wall at the
-X-relieved socket**, with at least **0.587 mm driver-flange clearance**. Each
-horizontal pin is only two nominal 0.4 mm nozzle widths, so positive CAD wall
-checks are not release evidence by themselves. The candidate slicer preview
-must show both complete pin toolpaths, both open blind mouths, and continuous
-intended extrusion paths at all four minimum socket walls. A state/process-
-matched two-pin/socket coupon must pass before the keyed form can be
-authorized.
+With the monolithic LM, the Ac/Ae pockets remain as small hidden local reliefs.
+The three magnetic datums and primary wing-retention geometry are unchanged,
+but the former local saddle contact is not claimed to be geometrically identical.
+
+The keyed sockets' current CAD contract retains at least **0.50 mm local
+radial and blind-end wall**, **0.05 mm recess plan clearance**, and **0.13 mm
+conservative W22-flange plan clearance**. Each horizontal pin is four nominal
+0.4 mm nozzle widths,
+but positive CAD wall checks are not release evidence by themselves. The
+candidate slicer preview must show both complete pin toolpaths, both open blind
+mouths, both support lands, and continuous intended extrusion paths at all
+minimum socket walls. A state/process-matched two-pin/socket coupon and actual
+U22 fit must pass before the keyed form can be authorized.
 
 Every released acoustic candidate prints front-face-down, whether or not it
 contains a magnet. The authoritative pause
@@ -93,9 +122,9 @@ state” is acceptable only with the shared lot/serial/evidence identifier.
 | Printed orientation and support settings for every qualified part | PENDING | PENDING |
 | `review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md` revision / SHA-256 and applied pause markers | PENDING | PENDING |
 | D5 × 2 magnet supplier, grade, lot and marked-pole convention | PENDING | PENDING |
-| Heat-set manufacturer, part number and lot for M3 and M5 inserts | PENDING | PENDING |
+| Heat-set manufacturer, part number and lot for M3 and M5 inserts, including the two LM-to-UM M3 x 3 inserts installed in the standalone UM carrier and two UM-to-tweeter M3 x 3 inserts installed in the standalone crescent | PENDING | PENDING |
 | Insert tool, set temperature, dwell/process and operator | PENDING | PENDING |
-| Bolt, washer, nut, stock-bridge hardware, and floor anti-tip tether/anchor specification | PENDING | PENDING |
+| Screw, driver-clamp washer, stock-bridge hardware, unrelated through-bolt/nut hardware, and floor anti-tip tether/anchor specification; confirm both upper interfaces use rear-driven M3 screws only, with no washer/nut or front bolt head | PENDING | PENDING |
 | Qualification ambient and maximum intended service temperature | PENDING | PENDING |
 
 ## Per-state candidate identity
@@ -143,11 +172,18 @@ than recording only “looks good.”
 | Monolithic LM form physical fit: actual U22 seat/flange, all normal LM fasteners, insert access, front-datum seating and surrounding-clearance inspection on the printed monolithic carrier | PENDING | PENDING |
 | Monolithic LM form cable check: actual UM/T cables fished through the intact buried lumens, free LM lead placed, cable service repeated without snag or insulation damage, and continuity/insulation verified | PENDING | PENDING |
 | Keyed LM form physical fit: both printed halves front-face-down on one flat datum; top translated straight along world -Y so the two pins enter together without flex/twist; actual U22 flange and all normal LM fasteners installed; full seating, front-datum coplanarity and post-fit crack/damage inspection | PENDING | PENDING |
-| Keyed LM dedicated two-pin/socket coupon: candidate material/process; two symmetric Ø0.80 +Y pins, 0.80 mm engagement; right Ø1.04 round and left 1.16 × 1.04 X-relieved blind sockets; assembly force; simultaneous straight -Y insertion; no pin used as a hinge | PENDING | PENDING |
-| Keyed LM pin/socket slicer and thin-wall acceptance: CAD minima confirmed at ≥0.564 mm round and ≥0.506 mm relieved; candidate preview shows both complete two-nozzle-width horizontal pins, both blind mouths and continuous intended paths at all minimum walls; state/process-matched coupon has no gaps, droop, delamination or breakage | PENDING | PENDING |
+| Keyed LM dedicated two-pin/socket coupon: candidate material/process; two symmetric Ø1.60 +Y pins, 2.40 mm engagement; right Ø1.84 round and left 1.96 × 1.84 X-relieved blind sockets; assembly force; simultaneous straight -Y insertion; no pin used as a hinge | PENDING | PENDING |
+| Keyed LM pin/socket slicer and thin-wall acceptance: CAD minima confirmed at ≥0.50 mm radial/end wall, ≥0.05 mm recess plan clearance and ≥0.13 mm conservative W22-flange plan clearance; candidate preview shows both complete four-nozzle-width horizontal pins, both blind mouths, both exterior support lands and continuous intended paths at all minimum walls; state/process-matched coupon has no gaps, droop, delamination or breakage; actual U22 fit clears the lands; Ac/Ae 0.25 mm hidden interface pockets clear both actual staged halves and pass a printed fit coupon | PENDING | PENDING |
 | Keyed LM seam metrology: world Y=172.481 mm, closed zero-gap planar butt, no volumetric half overlap, both front faces registered on one flat datum, and continuous UM/T route seams | PENDING | PENDING |
 | Keyed LM physical UM/T cable pull-through across both preserved seam lumens without snag, insulation damage or slicer-support residue, followed by continuity/insulation verification | PENDING | PENDING |
 | Assembled LM–UM and T–UM closure-web inspection: all owners front-face-down on one flat datum; z=18.3 faces coplanar; solid tangent-blended webs seated across the 0.05 mm plan seams; each anti-void lens retains a continuous 0.45 mm fusion land and a visible Classic wall path; no triangular/cusp opening, bounded front-plane void island, thin front skin, rear hollow, or sub-resolution detached shard; only the declared T cable mouth and functional fastener/interface/route clearances remain | PENDING | PENDING |
+| Standalone LM-to-UM fastener features before assembly: the closure-web/base teardrops remain nominal Ø9; both monolithic LM or selected optional keyed LM-top ears have complete local Ø9.8 Z-owned cylindrical functional bosses and unobstructed rear Ø3.4 clearance passages; both UM ears have complete local Ø9.8 bosses, independently accessible rear-opening blind Ø4.6 x 4.0 receivers, complete 360° walls, and 1.9 mm solid acoustic-front floors; no feature depends on material from the opposing print | PENDING | PENDING |
+| LM-to-UM insert installation before assembly: both M3 x 3 heat-sets installed square and flush through the individual UM carrier's rear/mating openings; no cracking, lateral opening, over-melt, insert motion, receiver-wall damage, or acoustic-face mark/breakthrough; insertion process, temperature, dwell, and photographs recorded | PENDING | PENDING |
+| LM-to-UM dry assembly: complete LM and UM ears engage with the specified 0.20 mm axial gap; rear-driven screws pass through the LM Ø3.4 bores and achieve full UM-insert engagement without bottoming; both front faces remain coplanar; no washer, nut, or front bolt head is present | PENDING | PENDING |
+| Standalone UM-to-tweeter fastener features before assembly: both UM ears have complete local Ø9.8 Z-owned bosses and unobstructed rear Ø3.4 passages; both crescent ears have complete local Ø9.8 bosses, independently accessible rear-opening blind Ø4.6 x 4.0 receivers, complete 360° walls, and 1.9 mm solid acoustic-front floors; no feature depends on material from the opposing print | PENDING | PENDING |
+| UM-to-tweeter insert installation before assembly: both M3 x 3 heat-sets installed square and flush through the individual crescent's rear/mating openings; no cracking, lateral opening, over-melt, insert motion, receiver-wall damage, or acoustic-face mark/breakthrough; insertion process, temperature, dwell, and photographs recorded | PENDING | PENDING |
+| UM-to-tweeter dry assembly: complete UM and crescent ears engage with the specified 0.20 mm axial gap; rear-driven screws pass through the UM Ø3.4 bores and achieve full crescent-insert engagement without bottoming; both front faces remain coplanar; no washer, nut, or front bolt head is present | PENDING | PENDING |
+| Process-matched M3 insert pullout/pry qualification for both D4.6-receiver interfaces: test the individual UM and individual crescent receiver constructions to at least the documented 5g demand of 393.9 N per insert without insert motion, wall opening, floor damage, or boss fracture | PENDING | PENDING |
 | Terminal carrier radius and rear Z | PENDING | PENDING |
 | Terminal pitch, tab width/thickness and exposed length | PENDING | PENDING |
 | Polarity order | PENDING | PENDING |
@@ -186,7 +222,10 @@ moments. The upper joints must also be checked with their 0.85 kg distributed
 mass and documented 120 mm plan / 70 mm rear lever case. Ramp every load over
 at least 10 seconds; hold 1g for 24 hours, 3g for 60 seconds and 5g for 10
 seconds. Reject cracks, insert motion, loss of torque, permanent deformation,
-electrical damage or impaired cable service.
+electrical damage or impaired cable service. At both interfaces, inspect the
+two heat-sets, complete receiver walls, and 1.9 mm front floors after every
+load case; the M3 screw-tension screen does not independently qualify insert
+pull-out, receiver pry-out, or front-floor integrity.
 
 The no-floor analytical screen deducts the complete Ø8.2 and Ø6.0 centered
 entry lumens from the 62 mm insert core and credits a conservative
@@ -245,7 +284,8 @@ sustained 1g, transient 3g and transient 5g loading.
 | Keyed LM dedicated driver-installed 3g proof: 60 s load/time history, temperature, maximum and residual deflection, fastener/insert movement, seam/pin/socket damage and post-test torque | PENDING | PENDING |
 | Keyed LM dedicated driver-installed 5g proof: 10 s load/time history, temperature, maximum and residual deflection, fastener/insert movement, seam/pin/socket damage and post-test torque | PENDING | PENDING |
 | Keyed LM post-proof cable pull-through, service, continuity and insulation repeated successfully with the driver flange splice installed | PENDING | PENDING |
-| Upper LM-to-UM and UM-to-tweeter joint proof at the documented 0.85 kg case | PENDING | PENDING |
+| Upper LM-to-UM joint proof at the documented 0.85 kg case: both local Ø9.8 functional bosses remain intact; rear-driven M3 screws remain engaged in both UM-owned inserts; no insert motion/pull-out, receiver-wall crack/pry-out, 1.9 mm front-floor damage, loss of 0.20 mm axial-gap control, or post-test torque loss | PENDING | PENDING |
+| Upper UM-to-tweeter joint proof at the documented 0.85 kg case: both complete local Ø9.8 UM/crescent bosses remain intact; rear-driven M3 screws remain engaged in both crescent-owned inserts; no insert motion/pull-out, receiver-wall crack/pry-out, 1.9 mm front-floor damage, loss of 0.20 mm axial-gap control, or post-test torque loss | PENDING | PENDING |
 | Integral W64 stem/foot, R12 root, three buried lanes, service cavity and NL8 panel remain sound | PENDING | N/A — no integral stand in this state |
 | Front-flush solid four-hole web, stock bridge and installation substrate remain sound | N/A — no stock bridge in this state | PENDING |
 | Solid-backed cable bumps remain clear, cavity-free and undamaged after every load case | PENDING | PENDING |

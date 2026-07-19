@@ -709,10 +709,10 @@ def render_obiwan():
         TWEETER_JOINT_X,
         TWEETER_JOINT_Y,
         UM_CORE_R,
+        _complete_joint_ear_plan,
+        _complete_tweeter_joint_ear_plan,
         junction_closure_polygons,
-        joint_ear_polygon,
         side_magnet_sites,
-        tweeter_joint_polygon,
     )
     from top_baffle_nd25fw4_obiwan_bridge import (
         BRIDGE_FACE_Z,
@@ -967,7 +967,7 @@ def render_obiwan():
                         lw=0.42, alpha=0.90, zorder=3.2)
         for x in JOINT_EAR_X:
             for owner, color in (("lm", "#858d98"), ("um", "#a0a7b1")):
-                ear = joint_ear_polygon(owner, x)
+                ear = _complete_joint_ear_plan(owner, x)
                 ex, ey = ear.exterior.xy
                 ax.fill(ex, ey, fc=color, ec="0.25", lw=0.7, zorder=3)
             ax.plot(x, JOINT_EAR_Y, marker="o", ms=3.8, mfc="white",
@@ -987,7 +987,7 @@ def render_obiwan():
             ax.fill(ex, ey, fc="#c9b6dc", ec="#76538f", lw=0.9,
                     alpha=0.50, zorder=2)
         for x in TWEETER_JOINT_X:
-            ear = tweeter_joint_polygon(x)
+            ear = _complete_tweeter_joint_ear_plan("tweeter", x)
             ex, ey = ear.exterior.xy
             ax.fill(ex, ey, fc="#a88ac2", ec="#76538f", lw=0.8,
                     alpha=0.72, zorder=4)

@@ -72,6 +72,10 @@ from top_baffle_nd25fw4_obiwan import (
     _plan_prism,
     side_magnet_sites,
 )
+from top_baffle_nd25fw4_obiwan_lm_split import (
+    REGISTRATION_WING_CLEARANCE_MM,
+    registration_wing_clearance_tools,
+)
 from captive_magnets import (
     CAPTIVE_LAND_MM,
     CAVITY_DEPTH_MM,
@@ -1411,6 +1415,18 @@ def _cut_receivers(part, side: str) -> Part:
     return _one_solid(part.clean(), f"{side} finalized receiver wing")
 
 
+def _cut_optional_lm_key_clearance(part, side: str) -> Part:
+    """Clear the optional LM split's exterior socket land at the interface."""
+    side = _normalize_side(side)
+    tool = registration_wing_clearance_tools()[side]
+    result = part - tool
+    if result is None:
+        raise RuntimeError(
+            f"{side} optional LM key-land clearance returned no shape")
+    return _one_solid(
+        result.clean(), f"{side} wing with optional LM key-land clearance")
+
+
 @lru_cache(maxsize=2)
 def _right_monolith_cached(slug: str) -> Part:
     _require_guarded_build()
@@ -1422,6 +1438,7 @@ def _right_monolith_cached(slug: str) -> Part:
     else:
         body = _ae_smooth_body()
     body = _cut_receivers(body, "right")
+    body = _cut_optional_lm_key_clearance(body, "right")
     body.label = f"obiwan_wing_{slug}_right_monolithic"
     return body
 
@@ -1987,6 +2004,17 @@ def wing_facts(variant_id: str) -> dict:
                 depth_field.protected_area_mm2),
             "top_flush_depth_mm": [float(value)
                                    for value in depth_field.top_flush_depth_mm],
+            "optional_lm_keyed_split": {
+                "geometrically_compatible": True,
+                "physical_fit_coupon_required": True,
+                "exterior_support_land_clearance_mm": float(
+                    REGISTRATION_WING_CLEARANCE_MM),
+                "pocket_location": "carrier_interface_between_front_and_rear",
+                "right_pocket_uses_left_relief_worst_case": True,
+                "left_is_exact_mirror": True,
+                "monolithic_lm_local_hidden_relief": True,
+                "primary_magnet_datums_unchanged": True,
+            },
         },
         "dovetail_contract": {
             "method": "v1l_style_through_thickness_xy_dovetails",

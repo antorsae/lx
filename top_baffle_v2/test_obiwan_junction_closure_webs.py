@@ -129,9 +129,11 @@ def test_source_owns_full_depth_webs_before_functional_recuts() -> None:
     assert ("TWEETER_CORE_BORE_TOP_Z = "
             "TWEETER_CORE_JOINT_Z[1] + 0.35") in core
     assert core.count("TWEETER_CORE_BORE_TOP_Z)") == 2
-    assert addon.count("TWEETER_CORE_BORE_TOP_Z)") == 1
-    assert addon.index("TWEETER_JOINT_HOLE_D / 2.0") < addon.index(
-        "TWEETER_JOINT_INSERT_BORE_D / 2.0")
+    assert addon.count("TWEETER_CORE_BORE_TOP_Z)") == 0
+    t_helper = core[core.index("def _apply_complete_um_tweeter_joint"):
+                    core.index("def _ensure_shell_contained")]
+    assert t_helper.index("TWEETER_JOINT_HOLE_D / 2.0") < (
+        t_helper.index("TWEETER_JOINT_INSERT_BORE_D / 2.0"))
     assert "TWEETER_CORE_JOINT_Z[1] + 0.3)" not in core
     assert "JUNCTION_WEB_LENS_FUSION_MM = 0.45" in core
     assert "JUNCTION_WEB_MIN_LENS_AREA_MM2 = 0.05" in core
@@ -148,6 +150,18 @@ def test_source_owns_full_depth_webs_before_functional_recuts() -> None:
     assert '_enforce_junction_plan_ownership(part, "t_um", "um")' in core
     assert ('_enforce_junction_plan_ownership(part, "t_um", "tweeter")'
             in addon)
+    assert "JOINT_CLEARANCE_BORE_D = 3.4" in core
+    assert "JOINT_INSERT_BORE_D = 4.6" in core
+    assert "JOINT_INSERT_DEPTH_MM = 4.0" in core
+    assert "JOINT_FUNCTIONAL_BOSS_D = 9.8" in core
+    assert "TWEETER_JOINT_INSERT_DEPTH_MM = 4.0" in core
+    assert "TWEETER_JOINT_FUNCTIONAL_BOSS_D = 9.8" in core
+    assert 'part = _apply_complete_lm_um_joint(part, "lm")' in core
+    assert 'part = _apply_complete_lm_um_joint(part, "um")' in core
+    assert 'part = _apply_complete_um_tweeter_joint(part, "um")' in core
+    assert ('part = _apply_complete_um_tweeter_joint(part, "tweeter")'
+            in addon)
+    assert "\nJOINT_HOLE_D =" not in core
     # Ear clearance is established by the existing complementary Z-half
     # receiver recuts.  A plan keepout subtracted from both owners recreates
     # the visible moat and must never be reintroduced.
@@ -192,6 +206,10 @@ def test_source_owns_full_depth_webs_before_functional_recuts() -> None:
     assert "_junction_closure_web" in _function_call_names(
         core, "um_carrier")
     assert "_junction_closure_web" in _function_call_names(
+        addon, "tweeter_crescent")
+    assert "_apply_complete_um_tweeter_joint" in _function_call_names(
+        core, "um_carrier")
+    assert "_apply_complete_um_tweeter_joint" in _function_call_names(
         addon, "tweeter_crescent")
 
 
@@ -366,16 +384,10 @@ def test_analytic_closure_plans_have_only_open_assembly_seams() -> None:
             assert component.boundary.intersection(
                 record["audit_domain"].boundary).length > 0.01
         if junction == "lm_um":
-            # Each seam also crosses the existing through-M3 bore, but the
-            # tiny boss-perimeter drain is what makes the gap unbounded in
-            # every strict XY section rather than merely vented in 3-D.
-            bores = [
-                Point(x, cad.JOINT_EAR_Y).buffer(
-                    cad.JOINT_HOLE_D / 2.0, resolution=64)
-                for x in cad.JOINT_EAR_X
-            ]
-            for bore in bores:
-                assert record["fit_seam"].intersection(bore).area > 1.0e-4
+            # This is only the full-depth closure-web partition.  The final
+            # functional construction restores one complete Z-owned boss per
+            # print, so this base-plan seam is never the authority for either
+            # the LM clearance annulus or the UM insert annulus.
             lm_disk = Point(*cad.L22_CUTOUT[:2]).buffer(
                 cad.LM_CORE_R, resolution=128).difference(
                     Point(*cad.L22_CUTOUT[:2]).buffer(
@@ -389,15 +401,10 @@ def test_analytic_closure_plans_have_only_open_assembly_seams() -> None:
             um_blocked = unary_union((
                 target.difference(record["um"]), drain)).buffer(0)
 
-            # Independent anti-shrink contract for the closure-aware LM/UM
-            # half-laps.  The old R6F witness assumed the complete legacy ear
-            # survived, but complementary plan ownership intentionally removes
-            # roughly one third of that footprint.  Conversely, using only the
-            # generator's owned-ear helper as its oracle would allow an
-            # accidental future shrink to pass.  Freeze both raw and retained
-            # areas, reconstruct the permitted loss from the closure authority,
-            # and prove the support filter discards exactly two small outboard
-            # islands rather than arbitrary load-bearing material.
+            # Freeze the closure-clipped *base-web* footprint independently
+            # of the complete functional ears. This still catches accidental
+            # web shrink, but must never be reused as the printable bore or
+            # insert boss oracle.
             frozen_ear_plans = {
                 "lm": {
                     "raw_area_mm2": 81.494594604,
@@ -478,19 +485,21 @@ def test_analytic_closure_plans_have_only_open_assembly_seams() -> None:
                     mirrored_right).area <= 1.0e-8
 
             lm_ears = unary_union([
-                cad._owned_joint_ear_plan("lm", x)
+                cad._complete_joint_ear_plan("lm", x)
                 for x in cad.JOINT_EAR_X
             ])
             um_ears = unary_union([
-                cad._owned_joint_ear_plan("um", x)
+                cad._complete_joint_ear_plan("um", x)
                 for x in cad.JOINT_EAR_X
             ])
             lm_receivers = unary_union([
-                cad._joint_receiver_plan("um", x)
+                cad._complete_joint_ear_plan(
+                    "um", x, cad.JOINT_RECEIVER_RADIAL_CLEAR)
                 for x in cad.JOINT_EAR_X
             ])
             um_receivers = unary_union([
-                cad._joint_receiver_plan("lm", x)
+                cad._complete_joint_ear_plan(
+                    "lm", x, cad.JOINT_RECEIVER_RADIAL_CLEAR)
                 for x in cad.JOINT_EAR_X
             ])
             planned_sections = {
@@ -512,12 +521,12 @@ def test_analytic_closure_plans_have_only_open_assembly_seams() -> None:
                 assert component.bounds[3] - component.bounds[1] <= 0.051
             assert drain.intersection(record["route_keepout"]).is_empty
 
-            # Freeze the raw-to-owned T half-lap clipping independently of
-            # ``_owned_tweeter_joint_plan``.  The service BREP gate consumes
-            # the owned footprints because the complementary full-depth web
-            # legitimately occupies part of each legacy raw ear; these exact
-            # areas and component counts prevent that corrected oracle from
-            # shrinking its own expected material to pass.
+            # Freeze the raw-to-owned T closure-base clipping independently
+            # of ``_owned_tweeter_joint_plan``.  These areas describe only
+            # the legacy full-depth web contribution; standalone BREP/STL
+            # gates deliberately use complete D9.8 functional ears instead.
+            # Keeping the diagnostic record prevents a later closure-plan
+            # change from silently inventing detached web slivers.
             frozen_ear_plans = {
                 "um": {
                     "raw_area_mm2": 96.922625703,
@@ -774,6 +783,11 @@ def _missing_volume(required, owner) -> float:
     return sum(solid.volume for solid in missing.solids())
 
 
+def _intersection_volume(first, second) -> float:
+    intersection = (first & second).clean()
+    return sum(solid.volume for solid in intersection.solids())
+
+
 @lru_cache(maxsize=2)
 def obiwan_actual_parts(stand_foot: bool = False):
     """Import exact hash-validated release-stage owners for one state."""
@@ -790,6 +804,207 @@ def obiwan_actual_parts(stand_foot: bool = False):
         "um": import_brep(str(paths["core_um_carrier"])),
         "tweeter": import_brep(str(paths["addon_tweeter_crescent"])),
     }
+
+
+def test_lm_um_individual_breps_own_complete_fastener_features() -> None:
+    """Each separate print owns a complete usable bore/insert boss."""
+    _require_guarded_test()
+    import top_baffle_nd25fw4_obiwan as cad
+
+    assert math.isclose(
+        cad.UM_JOINT_Z[0] - cad.LM_JOINT_Z[1], 0.20,
+        abs_tol=1.0e-9)
+    assert math.isclose(
+        cad.JOINT_INSERT_BORE_Z[1] - cad.UM_JOINT_Z[0],
+        cad.JOINT_INSERT_DEPTH_MM, abs_tol=1.0e-9)
+    assert math.isclose(
+        cad.JOINT_INSERT_FRONT_FLOOR_MM, 1.90, abs_tol=1.0e-9)
+    assert math.isclose(
+        cad.JOINT_CLEARANCE_BORE_TOP_Z - cad.JOINT_INSERT_BORE_Z[0],
+        0.35, abs_tol=1.0e-9)
+
+    for stand_foot, state in ((False, "no_floor"), (True, "floor")):
+        actual = obiwan_actual_parts(stand_foot)
+        lm = actual["lm"]
+        um = actual["um"]
+        for x in cad.JOINT_EAR_X:
+            lm_ear = cad._complete_joint_ear("lm", x)
+            um_ear = cad._complete_joint_ear("um", x)
+            assert _intersection_volume(um, lm_ear) <= 0.01, (
+                f"{state}/x={x:g}: UM crosses into the standalone LM ear")
+            assert _intersection_volume(lm, um_ear) <= 0.01, (
+                f"{state}/x={x:g}: LM crosses into the standalone UM ear")
+
+            # Complete 360-degree printable walls, inset from nominal faces
+            # so Boolean/section tolerances cannot turn a tangent into a pass.
+            lm_outer = cad._cylinder_at(
+                x, cad.JOINT_EAR_Y,
+                cad.JOINT_FUNCTIONAL_BOSS_D / 2.0 - 0.05,
+                cad.LM_JOINT_Z[0] + 0.03,
+                cad.LM_JOINT_Z[1] - 0.03)
+            lm_inner = cad._cylinder_at(
+                x, cad.JOINT_EAR_Y,
+                cad.JOINT_CLEARANCE_BORE_D / 2.0 + 0.05,
+                cad.LM_JOINT_Z[0] + 0.02,
+                cad.LM_JOINT_Z[1] - 0.02)
+            lm_annulus = (lm_outer - lm_inner).clean()
+            assert _missing_volume(lm_annulus, lm) <= 0.02, (
+                f"{state}/x={x:g}: LM clearance boss is not 360 degrees")
+
+            um_outer = cad._cylinder_at(
+                x, cad.JOINT_EAR_Y,
+                cad.JOINT_FUNCTIONAL_BOSS_D / 2.0 - 0.05,
+                cad.UM_JOINT_Z[0] + 0.03,
+                cad.JOINT_INSERT_BORE_Z[1] - 0.03)
+            um_inner = cad._cylinder_at(
+                x, cad.JOINT_EAR_Y,
+                cad.JOINT_INSERT_BORE_D / 2.0 + 0.05,
+                cad.UM_JOINT_Z[0] + 0.02,
+                cad.JOINT_INSERT_BORE_Z[1] - 0.02)
+            um_annulus = (um_outer - um_inner).clean()
+            assert _missing_volume(um_annulus, um) <= 0.02, (
+                f"{state}/x={x:g}: UM insert boss is not 360 degrees")
+
+            clearance_path = cad._cylinder_at(
+                x, cad.JOINT_EAR_Y,
+                cad.JOINT_CLEARANCE_BORE_D / 2.0 - 0.05,
+                cad.LM_JOINT_Z[0], cad.JOINT_CLEARANCE_BORE_TOP_Z)
+            assert _intersection_volume(lm, clearance_path) <= 0.01, (
+                f"{state}/x={x:g}: LM clearance passage is obstructed")
+            insert_receiver = cad._cylinder_at(
+                x, cad.JOINT_EAR_Y,
+                cad.JOINT_INSERT_BORE_D / 2.0 - 0.05,
+                cad.JOINT_INSERT_BORE_Z[0],
+                cad.JOINT_INSERT_BORE_Z[1] - 0.02)
+            assert _intersection_volume(um, insert_receiver) <= 0.01, (
+                f"{state}/x={x:g}: UM blind insert receiver is obstructed")
+
+            # The individual UM print retains a complete floor in front of
+            # the blind receiver; the functional D9.8 boss is also absent from
+            # both prints throughout the intentional 0.20-mm assembly gap.
+            front_floor = cad._cylinder_at(
+                x, cad.JOINT_EAR_Y,
+                cad.JOINT_FUNCTIONAL_BOSS_D / 2.0 - 0.10,
+                cad.JOINT_INSERT_BORE_Z[1] + 0.03,
+                cad.UM_JOINT_Z[1] - 0.03)
+            assert _missing_volume(front_floor, um) <= 0.02, (
+                f"{state}/x={x:g}: UM blind receiver lost its front floor")
+            axial_gap = cad._cylinder_at(
+                x, cad.JOINT_EAR_Y,
+                cad.JOINT_FUNCTIONAL_BOSS_D / 2.0 - 0.05,
+                cad.LM_JOINT_Z[1] + 0.01,
+                cad.UM_JOINT_Z[0] - 0.01)
+            assert _intersection_volume(lm, axial_gap) <= 0.01
+            assert _intersection_volume(um, axial_gap) <= 0.01
+
+            # Both negative cutters overlap across the split, providing one
+            # unobstructed rear-driven screw/insert approach in assembly.
+            common_path = cad._cylinder_at(
+                x, cad.JOINT_EAR_Y,
+                cad.JOINT_CLEARANCE_BORE_D / 2.0 - 0.05,
+                cad.JOINT_INSERT_BORE_Z[0] + 0.01,
+                cad.JOINT_CLEARANCE_BORE_TOP_Z - 0.01)
+            assert _intersection_volume(lm, common_path) <= 0.01
+            assert _intersection_volume(um, common_path) <= 0.01
+
+
+def test_um_tweeter_individual_breps_own_complete_fastener_features() -> None:
+    """UM and crescent each print a complete T ear and usable fastener void."""
+    _require_guarded_test()
+    import top_baffle_nd25fw4_obiwan as cad
+
+    assert math.isclose(
+        cad.TWEETER_ADDON_JOINT_Z[0] - cad.TWEETER_CORE_JOINT_Z[1],
+        0.20, abs_tol=1.0e-9)
+    assert math.isclose(
+        cad.TWEETER_JOINT_INSERT_BORE_Z[1]
+        - cad.TWEETER_ADDON_JOINT_Z[0],
+        cad.TWEETER_JOINT_INSERT_DEPTH_MM, abs_tol=1.0e-9)
+    assert math.isclose(
+        cad.TWEETER_JOINT_INSERT_FRONT_FLOOR_MM,
+        1.90, abs_tol=1.0e-9)
+    assert math.isclose(
+        cad.TWEETER_CORE_BORE_TOP_Z
+        - cad.TWEETER_JOINT_INSERT_BORE_Z[0],
+        0.35, abs_tol=1.0e-9)
+
+    for stand_foot, state in ((False, "no_floor"), (True, "floor")):
+        actual = obiwan_actual_parts(stand_foot)
+        um = actual["um"]
+        tweeter = actual["tweeter"]
+        assert _intersection_volume(um, tweeter) <= 0.01
+        for x in cad.TWEETER_JOINT_X:
+            um_ear = cad._complete_tweeter_joint_ear("um", x)
+            tweeter_ear = cad._complete_tweeter_joint_ear("tweeter", x)
+            assert _intersection_volume(tweeter, um_ear) <= 0.01, (
+                f"{state}/x={x:g}: crescent crosses into standalone UM ear")
+            assert _intersection_volume(um, tweeter_ear) <= 0.01, (
+                f"{state}/x={x:g}: UM crosses into standalone crescent ear")
+
+            um_outer = cad._cylinder_at(
+                x, cad.TWEETER_JOINT_Y,
+                cad.TWEETER_JOINT_FUNCTIONAL_BOSS_D / 2.0 - 0.05,
+                cad.TWEETER_CORE_JOINT_Z[0] + 0.03,
+                cad.TWEETER_CORE_JOINT_Z[1] - 0.03)
+            um_inner = cad._cylinder_at(
+                x, cad.TWEETER_JOINT_Y,
+                cad.TWEETER_JOINT_HOLE_D / 2.0 + 0.05,
+                cad.TWEETER_CORE_JOINT_Z[0] + 0.02,
+                cad.TWEETER_CORE_JOINT_Z[1] - 0.02)
+            assert _missing_volume(
+                (um_outer - um_inner).clean(), um) <= 0.02, (
+                f"{state}/x={x:g}: UM T clearance wall is not 360 degrees")
+
+            tweeter_outer = cad._cylinder_at(
+                x, cad.TWEETER_JOINT_Y,
+                cad.TWEETER_JOINT_FUNCTIONAL_BOSS_D / 2.0 - 0.05,
+                cad.TWEETER_ADDON_JOINT_Z[0] + 0.03,
+                cad.TWEETER_JOINT_INSERT_BORE_Z[1] - 0.03)
+            tweeter_inner = cad._cylinder_at(
+                x, cad.TWEETER_JOINT_Y,
+                cad.TWEETER_JOINT_INSERT_BORE_D / 2.0 + 0.05,
+                cad.TWEETER_ADDON_JOINT_Z[0] + 0.02,
+                cad.TWEETER_JOINT_INSERT_BORE_Z[1] - 0.02)
+            assert _missing_volume(
+                (tweeter_outer - tweeter_inner).clean(), tweeter) <= 0.02, (
+                f"{state}/x={x:g}: crescent receiver wall is not 360 degrees")
+
+            clearance_path = cad._cylinder_at(
+                x, cad.TWEETER_JOINT_Y,
+                cad.TWEETER_JOINT_HOLE_D / 2.0 - 0.05,
+                cad.TWEETER_CORE_JOINT_Z[0],
+                cad.TWEETER_CORE_BORE_TOP_Z)
+            assert _intersection_volume(um, clearance_path) <= 0.01
+            receiver = cad._cylinder_at(
+                x, cad.TWEETER_JOINT_Y,
+                cad.TWEETER_JOINT_INSERT_BORE_D / 2.0 - 0.05,
+                cad.TWEETER_JOINT_INSERT_BORE_Z[0],
+                cad.TWEETER_JOINT_INSERT_BORE_Z[1] - 0.02)
+            assert _intersection_volume(tweeter, receiver) <= 0.01
+
+            front_floor = cad._cylinder_at(
+                x, cad.TWEETER_JOINT_Y,
+                cad.TWEETER_JOINT_INSERT_BORE_D / 2.0 - 0.05,
+                cad.TWEETER_JOINT_INSERT_BORE_Z[1] + 0.03,
+                cad.TWEETER_ADDON_JOINT_Z[1] - 0.03)
+            assert _missing_volume(front_floor, tweeter) <= 0.02, (
+                f"{state}/x={x:g}: crescent blind receiver lost its floor")
+
+            axial_gap = cad._cylinder_at(
+                x, cad.TWEETER_JOINT_Y,
+                cad.TWEETER_JOINT_FUNCTIONAL_BOSS_D / 2.0 - 0.05,
+                cad.TWEETER_CORE_JOINT_Z[1] + 0.01,
+                cad.TWEETER_ADDON_JOINT_Z[0] - 0.01)
+            assert _intersection_volume(um, axial_gap) <= 0.01
+            assert _intersection_volume(tweeter, axial_gap) <= 0.01
+
+            common_path = cad._cylinder_at(
+                x, cad.TWEETER_JOINT_Y,
+                cad.TWEETER_JOINT_HOLE_D / 2.0 - 0.05,
+                cad.TWEETER_JOINT_INSERT_BORE_Z[0] + 0.01,
+                cad.TWEETER_CORE_BORE_TOP_Z - 0.01)
+            assert _intersection_volume(um, common_path) <= 0.01
+            assert _intersection_volume(tweeter, common_path) <= 0.01
 
 
 @lru_cache(maxsize=4)
@@ -815,52 +1030,38 @@ def _cropped_junction_parts(stand_foot: bool, junction: str):
 
 def _front_plan_contract(cad, junction: str):
     """Exact front owner/void plans after complementary receiver recuts."""
-    from shapely.geometry import Point
     from shapely.ops import unary_union
 
     record = cad.junction_closure_polygons()[junction]
     audit = record["audit_domain"]
     if junction == "lm_um":
-        um_blocked = unary_union((
-            record["target"].difference(record["um"]),
-            record["terminal_drain"],
-        )).buffer(0)
+        # The UM insert receiver ends at z=16.4, leaving a fully solid 1.9-mm
+        # front floor. At the front audit plane there is therefore no bore;
+        # UM owns the complete boss and LM retains only its buffered mating
+        # clearance around that boss.
         front_ears = unary_union([
-            cad._owned_joint_ear_plan("um", x)
+            cad._complete_joint_ear_plan("um", x)
             for x in cad.JOINT_EAR_X
         ])
         receiver = unary_union([
-            cad._joint_receiver_plan("um", x)
-            for x in cad.JOINT_EAR_X
-        ])
-        holes = unary_union([
-            Point(x, cad.JOINT_EAR_Y).buffer(
-                cad.JOINT_HOLE_D / 2.0, resolution=32)
+            cad._complete_joint_ear_plan(
+                "um", x, cad.JOINT_RECEIVER_RADIAL_CLEAR)
             for x in cad.JOINT_EAR_X
         ])
         owners = {
-            # Both independently printable owners carry the through-M3
-            # bores.  Omitting them from the LM oracle turns the intentional
-            # fastener opening into a false "missing web" at the front slab.
-            "lm": record["lm"].difference(
-                unary_union((receiver, holes))).buffer(0),
-            "um": unary_union((record["um"], front_ears))
-                  .difference(holes).buffer(0),
+            "lm": record["lm"].difference(receiver).buffer(0),
+            "um": unary_union((record["um"], front_ears)).buffer(0),
         }
         receiver_clearance = receiver.difference(front_ears).buffer(0)
-        functional = unary_union((receiver_clearance, holes)).buffer(0)
+        functional = receiver_clearance
         mouth = record["target"].difference(record["target"])
     elif junction == "t_um":
-        tweeter_blocked = unary_union((
-            record["target"].difference(record["tweeter"]),
-            record["terminal_drain"],
-        )).buffer(0)
         front_ears = unary_union([
-            cad._owned_tweeter_joint_plan("tweeter", x)
+            cad._complete_tweeter_joint_ear_plan("tweeter", x)
             for x in cad.TWEETER_JOINT_X
         ])
         receiver = unary_union([
-            cad._owned_tweeter_joint_plan(
+            cad._complete_tweeter_joint_ear_plan(
                 "tweeter", x, cad.TWEETER_JOINT_CLEAR)
             for x in cad.TWEETER_JOINT_X
         ])
@@ -912,19 +1113,22 @@ def _full_depth_safe_plan(cad, junction: str, owner: str):
     if junction == "lm_um":
         opposing = "um" if owner == "lm" else "lm"
         receivers = unary_union([
-            cad.joint_ear_polygon(
+            cad._complete_joint_ear_plan(
                 opposing, x, cad.JOINT_RECEIVER_RADIAL_CLEAR)
             for x in cad.JOINT_EAR_X
         ])
+        bore_d = (cad.JOINT_CLEARANCE_BORE_D if owner == "lm"
+                  else cad.JOINT_INSERT_BORE_D)
         holes = unary_union([
             Point(x, cad.JOINT_EAR_Y).buffer(
-                cad.JOINT_HOLE_D / 2.0, resolution=32)
+                bore_d / 2.0, resolution=32)
             for x in cad.JOINT_EAR_X
         ])
         keepout = unary_union((receivers, holes))
     elif junction == "t_um":
         receivers = unary_union([
-            cad.tweeter_joint_polygon(x, cad.TWEETER_JOINT_CLEAR)
+            cad._complete_tweeter_joint_ear_plan(
+                "tweeter", x, cad.TWEETER_JOINT_CLEAR)
             for x in cad.TWEETER_JOINT_X
         ])
         keepout = receivers
@@ -1073,6 +1277,8 @@ def _dense_section_samples(cad):
         cad.THICKNESS_MM,
         *cad.LM_JOINT_Z,
         *cad.UM_JOINT_Z,
+        cad.JOINT_CLEARANCE_BORE_TOP_Z,
+        *cad.JOINT_INSERT_BORE_Z,
         *cad.TWEETER_CORE_JOINT_Z,
         *cad.TWEETER_ADDON_JOINT_Z,
         cad.LM_JOINT_Z[1] + cad.JOINT_RECEIVER_RADIAL_CLEAR,
@@ -1148,84 +1354,96 @@ def _assembled_plan_oracle(cad, junction: str, z_mm: float):
 
     record = cad.junction_closure_polygons()[junction]
     if junction == "lm_um":
-        lm_blocked = unary_union((
-            record["target"].difference(record["lm"]),
-            record["terminal_drain"],
-        )).buffer(0)
-        um_blocked = unary_union((
-            record["target"].difference(record["um"]),
-            record["terminal_drain"],
-        )).buffer(0)
         lm_ears = unary_union([
-            cad._owned_joint_ear_plan("lm", x)
+            cad._complete_joint_ear_plan("lm", x)
             for x in cad.JOINT_EAR_X
         ])
         um_ears = unary_union([
-            cad._owned_joint_ear_plan("um", x)
+            cad._complete_joint_ear_plan("um", x)
             for x in cad.JOINT_EAR_X
         ])
         lm_receiver = unary_union([
-            cad._joint_receiver_plan("lm", x)
+            cad._complete_joint_ear_plan(
+                "lm", x, cad.JOINT_RECEIVER_RADIAL_CLEAR)
             for x in cad.JOINT_EAR_X
         ])
         um_receiver = unary_union([
-            cad._joint_receiver_plan("um", x)
+            cad._complete_joint_ear_plan(
+                "um", x, cad.JOINT_RECEIVER_RADIAL_CLEAR)
             for x in cad.JOINT_EAR_X
         ])
-        holes = unary_union([
+        clearance_holes = unary_union([
             Point(x, cad.JOINT_EAR_Y).buffer(
-                cad.JOINT_HOLE_D / 2.0, resolution=32)
+                cad.JOINT_CLEARANCE_BORE_D / 2.0, resolution=32)
+            for x in cad.JOINT_EAR_X
+        ])
+        insert_holes = unary_union([
+            Point(x, cad.JOINT_EAR_Y).buffer(
+                cad.JOINT_INSERT_BORE_D / 2.0, resolution=32)
             for x in cad.JOINT_EAR_X
         ])
         active_clearances = []
+        active_bores = []
+
+        lm_ear_active = cad.LM_JOINT_Z[0] < z_mm < cad.LM_JOINT_Z[1]
+        um_ear_active = cad.UM_JOINT_Z[0] < z_mm < cad.UM_JOINT_Z[1]
         lm_plan = record["lm"]
-        if cad.LM_JOINT_Z[0] < z_mm < cad.LM_JOINT_Z[1]:
+        if lm_ear_active:
             lm_plan = unary_union((lm_plan, lm_ears))
-        if (cad.UM_JOINT_Z[0] - cad.JOINT_RECEIVER_RADIAL_CLEAR
-                < z_mm
+        # LM is completely relieved for the opposing UM ear from its rear
+        # split plane onward. Where the UM ear is absent (the 0.20-mm axial
+        # gap and the front overshoot), the whole receiver is intentional
+        # open assembly space; otherwise only its radial fit clearance is.
+        if (cad.LM_JOINT_Z[1] < z_mm
                 < cad.UM_JOINT_Z[1] + cad.JOINT_RECEIVER_RADIAL_CLEAR):
             lm_plan = lm_plan.difference(um_receiver)
             active_clearances.append(
-                um_receiver.difference(um_ears).buffer(0))
-        lm_plan = lm_plan.difference(holes).buffer(0)
+                (um_receiver.difference(um_ears).buffer(0)
+                 if um_ear_active else um_receiver))
+        lm_bore_active = (
+            cad.CORE_REAR_Z - cad.JOINT_BORE_REAR_OVERSHOOT
+            < z_mm < cad.JOINT_CLEARANCE_BORE_TOP_Z)
+        if lm_bore_active:
+            lm_plan = lm_plan.difference(clearance_holes)
+            active_bores.append(clearance_holes)
+        lm_plan = lm_plan.buffer(0)
 
         um_plan = record["um"]
-        if cad.UM_JOINT_Z[0] < z_mm < cad.UM_JOINT_Z[1]:
+        if um_ear_active:
             um_plan = unary_union((um_plan, um_ears))
         if (cad.LM_JOINT_Z[0] - cad.JOINT_RECEIVER_RADIAL_CLEAR
                 < z_mm
-                < cad.LM_JOINT_Z[1] + cad.JOINT_RECEIVER_RADIAL_CLEAR):
+                < cad.UM_JOINT_Z[0]):
             um_plan = um_plan.difference(lm_receiver)
             active_clearances.append(
-                lm_receiver.difference(lm_ears).buffer(0))
-        um_plan = um_plan.difference(holes).buffer(0)
+                (lm_receiver.difference(lm_ears).buffer(0)
+                 if lm_ear_active else lm_receiver))
+        insert_bore_active = (
+            cad.JOINT_INSERT_BORE_Z[0]
+            < z_mm < cad.JOINT_INSERT_BORE_Z[1])
+        if insert_bore_active:
+            um_plan = um_plan.difference(insert_holes)
+            active_bores.append(insert_holes)
+        um_plan = um_plan.buffer(0)
         owner_plans = {"lm": lm_plan, "um": um_plan}
         functional_bores = unary_union(
-            (holes, *active_clearances)).buffer(0)
+            (*active_bores, *active_clearances)).buffer(0)
     elif junction == "t_um":
-        um_blocked = unary_union((
-            record["target"].difference(record["um"]),
-            record["terminal_drain"],
-        )).buffer(0)
-        tweeter_blocked = unary_union((
-            record["target"].difference(record["tweeter"]),
-            record["terminal_drain"],
-        )).buffer(0)
         um_ears = unary_union([
-            cad._owned_tweeter_joint_plan("um", x)
+            cad._complete_tweeter_joint_ear_plan("um", x)
             for x in cad.TWEETER_JOINT_X
         ])
         tweeter_ears = unary_union([
-            cad._owned_tweeter_joint_plan("tweeter", x)
+            cad._complete_tweeter_joint_ear_plan("tweeter", x)
             for x in cad.TWEETER_JOINT_X
         ])
         core_receiver = unary_union([
-            cad._owned_tweeter_joint_plan(
+            cad._complete_tweeter_joint_ear_plan(
                 "um", x, cad.TWEETER_JOINT_CLEAR)
             for x in cad.TWEETER_JOINT_X
         ])
         addon_receiver = unary_union([
-            cad._owned_tweeter_joint_plan(
+            cad._complete_tweeter_joint_ear_plan(
                 "tweeter", x, cad.TWEETER_JOINT_CLEAR)
             for x in cad.TWEETER_JOINT_X
         ])
@@ -1241,13 +1459,21 @@ def _assembled_plan_oracle(cad, junction: str, z_mm: float):
         ])
         active_clearances = []
         um_plan = record["um"]
-        if cad.TWEETER_CORE_JOINT_Z[0] < z_mm < cad.TWEETER_CORE_JOINT_Z[1]:
+        um_ear_active = (
+            cad.TWEETER_CORE_JOINT_Z[0]
+            < z_mm < cad.TWEETER_CORE_JOINT_Z[1])
+        if um_ear_active:
             um_plan = unary_union((um_plan, um_ears))
-        if (cad.TWEETER_ADDON_JOINT_Z[0] - cad.TWEETER_JOINT_CLEAR
-                < z_mm < cad.TWEETER_ADDON_JOINT_Z[1] + 0.2):
+        if (cad.TWEETER_CORE_JOINT_Z[1]
+                < z_mm
+                < cad.TWEETER_ADDON_JOINT_Z[1]
+                + cad.TWEETER_JOINT_CLEAR):
             um_plan = um_plan.difference(addon_receiver)
             active_clearances.append(
-                addon_receiver.difference(tweeter_ears).buffer(0))
+                (addon_receiver.difference(tweeter_ears).buffer(0)
+                 if (cad.TWEETER_ADDON_JOINT_Z[0]
+                     < z_mm < cad.TWEETER_ADDON_JOINT_Z[1])
+                 else addon_receiver))
         core_holes_active = (cad.TWEETER_CORE_JOINT_Z[0] - 0.2
                              <= z_mm
                              <= cad.TWEETER_CORE_BORE_TOP_Z)
@@ -1256,25 +1482,26 @@ def _assembled_plan_oracle(cad, junction: str, z_mm: float):
         um_plan = um_plan.buffer(0)
 
         tweeter_plan = record["tweeter"]
-        if (cad.TWEETER_ADDON_JOINT_Z[0]
-                < z_mm < cad.TWEETER_ADDON_JOINT_Z[1]):
+        tweeter_ear_active = (
+            cad.TWEETER_ADDON_JOINT_Z[0]
+            < z_mm < cad.TWEETER_ADDON_JOINT_Z[1])
+        if tweeter_ear_active:
             tweeter_plan = unary_union((tweeter_plan, tweeter_ears))
-        if (cad.TWEETER_CORE_JOINT_Z[0] - 0.2
-                < z_mm
-                < cad.TWEETER_CORE_JOINT_Z[1]
-                + cad.TWEETER_JOINT_CLEAR):
+        if (cad.TWEETER_CORE_JOINT_Z[0] - cad.TWEETER_JOINT_CLEAR
+                < z_mm < cad.TWEETER_ADDON_JOINT_Z[0]):
             tweeter_plan = tweeter_plan.difference(core_receiver)
             active_clearances.append(
-                core_receiver.difference(um_ears).buffer(0))
+                (core_receiver.difference(um_ears).buffer(0)
+                 if um_ear_active else core_receiver))
         # The rear-driven M3 service path crosses both independently printed
         # owners.  The full-depth tweeter web must therefore carry the same
         # core-hole recut as the UM half before it widens into the blind
         # insert receiver.
         if core_holes_active:
             tweeter_plan = tweeter_plan.difference(core_holes)
-        insert_holes_active = (cad.TWEETER_ADDON_JOINT_Z[0] - 0.2
-                               < z_mm
-                               < cad.TWEETER_ADDON_JOINT_Z[0] + 4.0)
+        insert_holes_active = (
+            cad.TWEETER_JOINT_INSERT_BORE_Z[0]
+            < z_mm < cad.TWEETER_JOINT_INSERT_BORE_Z[1])
         if insert_holes_active:
             tweeter_plan = tweeter_plan.difference(insert_holes)
         tweeter_plan = tweeter_plan.buffer(0)
@@ -1553,6 +1780,8 @@ def test_fixed_windows_have_no_3d_collision_and_fronts_are_coplanar() -> None:
 FULL_CHECKS = (
     test_analytic_closure_plans_have_only_open_assembly_seams,
     test_brep_web_prisms_are_solid_through_the_complete_obiwan_depth,
+    test_lm_um_individual_breps_own_complete_fastener_features,
+    test_um_tweeter_individual_breps_own_complete_fastener_features,
     test_final_owner_breps_keep_safe_web_interiors_solid_full_depth,
     test_brep_front_plane_contains_every_expected_owner_region,
     test_brep_assembled_front_sections_match_declared_voids_only,

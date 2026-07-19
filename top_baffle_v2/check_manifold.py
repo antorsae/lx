@@ -76,6 +76,7 @@ def expected_wing_stl_names(slug: str) -> frozenset[str]:
 def _print_sidecar_inventory_errors(
         root: Path, expected_stl_names: set[str] | frozenset[str], *,
         excluded_stl_names: set[str] | frozenset[str] = frozenset(),
+        actual_name_prefixes: tuple[str, ...] | None = None,
         label: str | None = None) -> list[str]:
     """Validate one exact STL-to-adjacent-sidecar release inventory."""
     scope = label or root.as_posix()
@@ -92,7 +93,10 @@ def _print_sidecar_inventory_errors(
         for name in expected_stls - excluded
     }
     actual_sidecars = {
-        path.name for path in root.glob("*.print.json") if path.is_file()
+        path.name for path in root.glob("*.print.json")
+        if (path.is_file()
+            and (actual_name_prefixes is None
+                 or path.name.startswith(actual_name_prefixes)))
     }
     missing = sorted(expected_sidecars - actual_sidecars)
     extra = sorted(actual_sidecars - expected_sidecars)
@@ -984,7 +988,12 @@ def _obiwan_manifest_errors(
             "lx521_polar_base_1of2_base.stl",
             "lx521_polar_base_2of2_rotor.stl",
         }
-    complete_actual = {path.name for path in root.glob("*.stl")}
+    complete_actual = {
+        path.name for path in root.glob("*.stl")
+        if (not obiwan_only
+            or path.name.startswith((
+                "lx521_top_obiwan_", "lx521_coupon_")))
+    }
     if complete_actual != complete_expected:
         missing = sorted(complete_expected - complete_actual)
         extra = sorted(complete_actual - complete_expected)
@@ -1007,6 +1016,9 @@ def _obiwan_manifest_errors(
             f"{len(complete_expected - set(polar_exclusions))}")
     errors.extend(_print_sidecar_inventory_errors(
         root, complete_expected, excluded_stl_names=polar_exclusions,
+        actual_name_prefixes=(
+            ("lx521_top_obiwan_", "lx521_coupon_")
+            if obiwan_only else None),
         label=state))
     errors.extend(_review_artifact_errors(root.parent))
     return errors

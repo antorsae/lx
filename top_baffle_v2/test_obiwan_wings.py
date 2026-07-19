@@ -580,6 +580,17 @@ def test_exported_artifact_contract() -> None:
         interface = geometry.get("interface_contract")
         assert isinstance(interface, dict)
         assert interface.get("selected_receiver_count_per_side") == 3
+        keyed_interface = interface.get("optional_lm_keyed_split")
+        assert keyed_interface == {
+            "geometrically_compatible": True,
+            "physical_fit_coupon_required": True,
+            "exterior_support_land_clearance_mm": 0.25,
+            "pocket_location": "carrier_interface_between_front_and_rear",
+            "right_pocket_uses_left_relief_worst_case": True,
+            "left_is_exact_mirror": True,
+            "monolithic_lm_local_hidden_relief": True,
+            "primary_magnet_datums_unchanged": True,
+        }
         for side in SIDE_NAMES:
             receivers = interface.get("receivers", {}).get(side)
             assert isinstance(receivers, list) and len(receivers) == 3
@@ -1054,10 +1065,12 @@ def test_live_brep_geometry_contract() -> None:
     _require_remote_guard()
 
     import numpy as np
-    from build123d import Plane, mirror
+    from build123d import Align, Box, Plane, Pos, import_brep, mirror
     from captive_magnets import DEFAULT_SPEC, pair_facts, wall_cavity_tools
+    from export_obiwan_staged import load_stage_manifest, staged_part_paths
     import export_obiwan_wings as exporter
     import obiwan_wings_cad as cad
+    import top_baffle_nd25fw4_obiwan_lm_split as lm_split
 
     _assert_plan_dovetail_contract(cad)
     context_parts = cad.wing_review_split_context_parts(
@@ -1178,8 +1191,72 @@ def test_live_brep_geometry_contract() -> None:
         f"max width delta={maximum_station_width_delta:.4f} mm; "
         "both lower D5.20 x 2.10 captive stations sealed",
         flush=True)
+    staged_lm_parts = {}
+    for state, manifest_path, stand_foot in (
+            ("floor", FLOOR_STAGE_MANIFEST, True),
+            ("no_floor", NO_FLOOR_STAGE_MANIFEST, False)):
+        payload = load_stage_manifest(manifest_path, stand_foot=stand_foot)
+        paths = staged_part_paths(manifest_path, payload)
+        for part_key in (
+                "core_lm_carrier",
+                "optional_lm_keyed_1of2_bottom",
+                "optional_lm_keyed_2of2_top"):
+            shape = import_brep(str(paths[part_key]))
+            _assert_one_positive_solid(shape, f"{state}/{part_key}")
+            staged_lm_parts[f"{state}/{part_key}"] = shape
     del context_records
     del context_parts
+
+    def positive_local_clip(shape, clip, label: str):
+        """Clip to one proven key-change neighborhood and retain exact BREP."""
+        clipped = shape & clip
+        assert clipped is not None and clipped.is_valid, (
+            f"{label}: invalid/empty local BREP clip")
+        solids = list(clipped.solids())
+        assert solids and all(solid.volume > 0.0 for solid in solids), (
+            f"{label}: local clip has no positive solid")
+        return clipped
+
+    # The keyed-split acceptance in test_obiwan_r6f proves, for both stand
+    # states, that the staged halves equal the canonical/augmented LM outside
+    # the declared support/pin/socket tools.  Baseline canonical wing clearance
+    # is gated separately above.  Therefore only these two small declared
+    # neighborhoods need the expensive artifact-backed staged-part Booleans.
+    support_lands = lm_split.registration_support_land_tools()
+    wing_pockets = lm_split.registration_wing_clearance_tools()
+    male_pins = lm_split.male_registration_pin_tools()
+    female_sockets = lm_split.female_registration_socket_tools()
+    key_neighborhoods = {}
+    staged_local_parts = {side: {} for side in SIDE_NAMES}
+    for side in SIDE_NAMES:
+        pocket_bounds = _shape_bounds(wing_pockets[side])
+        padding_mm = 0.50
+        lower = tuple(value - padding_mm for value in pocket_bounds[0])
+        upper = tuple(value + padding_mm for value in pocket_bounds[1])
+        clip = Pos(*lower) * Box(
+            *(upper[axis] - lower[axis] for axis in range(3)),
+            align=(Align.MIN, Align.MIN, Align.MIN))
+        key_neighborhoods[side] = clip
+        clip_bounds = _shape_bounds(clip)
+        for tool_name, tool in (
+                ("wing pocket", wing_pockets[side]),
+                ("support land", support_lands[side]),
+                ("male pin", male_pins[side]),
+                ("female socket", female_sockets[side])):
+            tool_bounds = _shape_bounds(tool)
+            margins = (
+                *(tool_bounds[0][axis] - clip_bounds[0][axis]
+                  for axis in range(3)),
+                *(clip_bounds[1][axis] - tool_bounds[1][axis]
+                  for axis in range(3)),
+            )
+            assert min(margins) >= 0.49, (
+                f"{side}: {tool_name} lacks local proof-box margin")
+            assert _difference_volume(tool, clip) <= 0.01, (
+                f"{side}: {tool_name} escapes local proof box")
+        for part_key, staged_lm in staged_lm_parts.items():
+            staged_local_parts[side][part_key] = positive_local_clip(
+                staged_lm, clip, f"{side}/{part_key}")
 
     for slug in VARIANT_IDS:
         right = cad.wing_monolithic(slug, "right")
@@ -1204,6 +1281,54 @@ def test_live_brep_geometry_contract() -> None:
         left_volume = cad.adaptive_volume_mm3(left)
         assert math.isclose(right_volume, left_volume, rel_tol=1e-9,
                             abs_tol=0.02)
+        for side, monolith in (("right", right), ("left", left)):
+            pocket = wing_pockets[side]
+            land = support_lands[side]
+            pocket_bounds = pocket.bounding_box()
+            assert pocket_bounds.min.Z - REAR_Z_MM >= 5.82
+            assert FRONT_Z_MM - pocket_bounds.max.Z >= 2.32
+            assert _difference_volume(land, pocket) <= 0.01, (
+                f"{slug}/{side}: support land escapes its clearance pocket")
+            assert _intersection_volume(
+                monolith, land) <= 0.03, (
+                    f"{slug}/{side}: optional LM support land collides wing")
+            assert _intersection_volume(
+                monolith, pocket) <= 0.03, (
+                    f"{slug}/{side}: keyed-land clearance pocket is blocked")
+            actual_clearance = monolith.distance_to(land)
+            assert actual_clearance >= (
+                lm_split.REGISTRATION_WING_CLEARANCE_MM - 0.01), (
+                    f"{slug}/{side}: keyed-land clearance is only "
+                    f"{actual_clearance:.4f} mm")
+            wing_local = positive_local_clip(
+                monolith, key_neighborhoods[side],
+                f"{slug}/{side}/wing key neighborhood")
+            for part_key, staged_lm in staged_local_parts[side].items():
+                overlap = _intersection_volume(wing_local, staged_lm)
+                assert overlap <= 0.03, (
+                    f"{slug}/{side}: actual staged {part_key} collides wing "
+                    f"by {overlap:.6f} mm3")
+            for name, land in cad.receiver_required_lands(side).items():
+                assert _intersection_volume(pocket, land) <= 0.03, (
+                    f"{slug}/{side}: key pocket reaches receiver land {name}")
+            for name, cutter in cad.receiver_pockets(side).items():
+                assert _intersection_volume(pocket, cutter) <= 0.03, (
+                    f"{slug}/{side}: key pocket reaches receiver void {name}")
+            for key in cad._layout().dovetail_keys:
+                key_plan = (key["polygon"] if side == "right"
+                            else cad._mirror_plan(key["polygon"]))
+                key_tool = cad._plan_prism(
+                    key_plan, REAR_Z_MM - 0.5, FRONT_Z_MM + 0.5)
+                assert _intersection_volume(pocket, key_tool) <= 0.03, (
+                    f"{slug}/{side}: key pocket reaches {key['name']} dovetail")
+            exposed_edge = cad._ae_analytics()[1].exposed_outer_edge
+            exposed_edge = (exposed_edge if side == "right"
+                            else cad._mirror_plan(exposed_edge))
+            exposed_edge_guard = cad._plan_prism(
+                exposed_edge.buffer(1.0),
+                REAR_Z_MM - 0.5, FRONT_Z_MM + 0.5)
+            assert _intersection_volume(pocket, exposed_edge_guard) <= 0.03, (
+                f"{slug}/{side}: key pocket reaches outer acoustic edge")
         facts_path = _variant_paths(slug)["facts"]
         assert isinstance(facts_path, Path)
         serialized = _read_json_object(facts_path).get("geometry", {})
@@ -1490,12 +1615,20 @@ def test_live_brep_geometry_contract() -> None:
     expected_cavity_volume = sum(
         _intersection_volume(uncut_ac, cutter)
         for cutter in cad.receiver_pockets("right").values())
+    key_pocket = lm_split.registration_wing_clearance_tools()["right"]
+    for name, cutter in cad.receiver_pockets("right").items():
+        assert _intersection_volume(key_pocket, cutter) <= 0.03, (
+            f"Ac key pocket overlaps receiver cutter {name}")
+    expected_key_pocket_volume = _intersection_volume(uncut_ac, key_pocket)
+    assert expected_key_pocket_volume > 1.0
+    expected_removed_volume = (
+        expected_cavity_volume + expected_key_pocket_volume)
     assert math.isclose(
-        cavity_removed, expected_cavity_volume,
+        cavity_removed, expected_removed_volume,
         rel_tol=1e-5, abs_tol=0.03), (
-            "Ac receiver removal does not match the exact clipped "
-            "D5.20 x 2.10 cradle/chimney/45-degree-roof cutters: "
-            f"{cavity_removed:.3f} vs {expected_cavity_volume:.3f} mm3")
+            "Ac functional removal does not match the exact clipped "
+            "receiver cutters plus optional-LM key pocket: "
+            f"{cavity_removed:.3f} vs {expected_removed_volume:.3f} mm3")
     for role, plan_piece in cad.wing_print_plan_parts(
             "ac", "right").items():
         witness = plan_piece.representative_point()

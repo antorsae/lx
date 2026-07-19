@@ -13,20 +13,9 @@ from build123d import Box, Compound, Cylinder, Part, Pos
 from top_baffle_nd25fw4 import UM_CUTOUT
 from top_baffle_nd25fw4_cables import ROUTING_PROFILE
 from top_baffle_nd25fw4_obiwan import (
-    TWEETER_ADDON_JOINT_Z,
-    TWEETER_CORE_BORE_TOP_Z,
-    TWEETER_CORE_JOINT_Z,
-    TWEETER_JOINT_CLEAR,
-    TWEETER_JOINT_HOLE_D,
-    TWEETER_JOINT_INSERT_BORE_D,
-    TWEETER_JOINT_X,
-    TWEETER_JOINT_Y,
+    _apply_complete_um_tweeter_joint,
     _junction_closure_web,
-    _owned_tweeter_joint_plan,
-    _plan_prism,
     _require_guarded_build,
-    _subtract_plan_prisms,
-    tweeter_joint_polygon,
 )
 
 
@@ -94,32 +83,12 @@ def tweeter_crescent():
         part, _junction_closure_web("t_um", "tweeter"),
         "tweeter-owned full-depth T--UM closure web")
 
-    for x in TWEETER_JOINT_X:
-        part = _subtract_plan_prisms(
-            part,
-            _owned_tweeter_joint_plan(
-                "um", x, TWEETER_JOINT_CLEAR),
-            TWEETER_CORE_JOINT_Z[0] - 0.2,
-            TWEETER_CORE_JOINT_Z[1] + TWEETER_JOINT_CLEAR)
-        part = _fuse_required(
-            part,
-            _plan_prism(
-                _owned_tweeter_joint_plan("tweeter", x),
-                *TWEETER_ADDON_JOINT_Z),
-            f"tweeter rounded ear {x:+.1f}")
-        # The full-depth closure web also crosses the rear-driven M3 axis.
-        # Recut the same core through-bore on this complementary owner before
-        # opening the larger blind insert receiver.  Their 0.35-mm axial
-        # overlap keeps one continuous service path without hollowing any
-        # unrelated part of the solid web.
-        part -= _cylinder_at(
-            x, TWEETER_JOINT_Y, TWEETER_JOINT_HOLE_D / 2.0,
-            TWEETER_CORE_JOINT_Z[0] - 0.2,
-            TWEETER_CORE_BORE_TOP_Z)
-        part -= _cylinder_at(
-            x, TWEETER_JOINT_Y, TWEETER_JOINT_INSERT_BORE_D / 2.0,
-            TWEETER_ADDON_JOINT_Z[0] - 0.2,
-            TWEETER_ADDON_JOINT_Z[0] + 4.0)
+    # The closure seam remains the full-depth web authority, but it must not
+    # split a receiver that has to work on this print by itself.  Remove the
+    # complete opposing UM half, restore two complete crescent-owned D9.8
+    # ears, and cut the D4.6 x 4.0 blind receivers only after all positive
+    # closure material is final.
+    part = _apply_complete_um_tweeter_joint(part, "tweeter")
 
     # The cable leaves through the intentional central plan mouth and floats
     # behind this add-on.  There is no horn, trench or hidden suffix; only the

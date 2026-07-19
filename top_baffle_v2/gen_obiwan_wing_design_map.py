@@ -65,9 +65,9 @@ from top_baffle_nd25fw4_obiwan import (
     SIDE_MAGNET_D,
     SIDE_MAGNET_POCKET_D,
     UM_CORE_R,
-    joint_ear_polygon,
+    _complete_joint_ear_plan,
+    _complete_tweeter_joint_ear_plan,
     side_magnet_sites,
-    tweeter_joint_polygon,
 )
 from top_baffle_nd25fw4_obiwan_bridge import common_lm_wing_contact_plan
 from captive_magnets import (
@@ -536,11 +536,11 @@ def _common_keepout_parts() -> dict[str, Polygon]:
     }
     for owner in ("lm", "um"):
         for x in (-32.0, 32.0):
-            parts[f"{owner}_joint_{x:+.0f}"] = joint_ear_polygon(
+            parts[f"{owner}_joint_{x:+.0f}"] = _complete_joint_ear_plan(
                 owner, x, SADDLE_CLEAR_MM)
     for x in (-24.0, 24.0):
-        parts[f"t_joint_{x:+.0f}"] = tweeter_joint_polygon(
-            x, SADDLE_CLEAR_MM)
+        parts[f"t_joint_{x:+.0f}"] = _complete_tweeter_joint_ear_plan(
+            "tweeter", x, SADDLE_CLEAR_MM)
     for site in side_magnet_sites():
         # The four ring stations have a 0.60-mm local backing boss because
         # the native lip is only 2.40 mm deep.  Keep the wing outside that
