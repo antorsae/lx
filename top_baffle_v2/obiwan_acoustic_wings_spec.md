@@ -64,7 +64,18 @@ The production interface contract is:
 - Captive cavity: `D5.20 x 2.10`.
 - Intact axial skin: `0.45` on both carrier and wing.
 - Plastic mating gap: `0.05`.
-- Nominal installed magnet-face separation: `0.95`.
+- The carrier's structural ring radii remain `LM R113.0` and `UM R51.7`.
+  Their smooth exposed side radii are `LM R113.8` and `UM R52.5`; the
+  fairings stop only inside the existing LM--UM and T--UM cusp/service
+  regions. The LM--UM stop keeps the `0.40` inter-carrier gap open.
+- At LM-upper and UM, the carrier cavity construction datum is structural
+  radius `+0.65`, which is `0.15` beneath the continuous exposed surface.
+  The `0.45` cavity skin is unchanged. There is no local pad, boss, flat, or
+  visible cue at a ring magnet station.
+- Nominal installed magnet-face separation is `1.10` at the LM-upper and UM
+  ring pairs (`0.45 + 0.15 + 0.05 + 0.45`) and `0.95` at the LM-lower
+  base-side pair (`0.45 + 0.05 + 0.45`). Ac and Ae place their matching
+  receivers from the visible carrier datums.
 - Magnets are pause-inserted and permanently buried; no external access hole.
 - Polarity follows the hash-bound print sidecar/catalog authority.
 - Alignment and anti-rattle only: zero structural load credit.

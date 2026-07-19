@@ -116,9 +116,13 @@ RELEASE_SITE_GEOMETRY_MM = {
     "inner_skin_mm": 0.45,
     "captive_land_mm": 3.00,
     "interface_gap_mm": 0.05,
-    "paired_magnet_face_separation_mm": 0.95,
     "roof_angle_deg": 45.0,
     "classic_retaining_path_mm": 0.42,
+}
+PAIRED_MAGNET_FACE_SEPARATION_MM = {
+    None: 0.95,
+    "base_side": 0.95,
+    "ring": 1.10,
 }
 
 
@@ -649,6 +653,13 @@ def _source_site_contract(site: Mapping[str, Any]) -> dict[str, Any]:
             "interface_gap_mm", "paired_magnet_face_separation_mm"):
         contract[key] = _float(
             _required(site, key, f"source {key}"), f"source {key}")
+    if "interface_kind" in site:
+        contract["interface_kind"] = str(site["interface_kind"])
+        contract["carrier_cavity_face_inset_mm"] = _float(
+            _required(
+                site, "carrier_cavity_face_inset_mm",
+                "source carrier cavity-face inset"),
+            "source carrier cavity-face inset")
     for key in ("roof_height_mm", "side_wall_margin_mm"):
         if key in site:
             contract[key] = _float(site[key], f"source {key}")
@@ -957,6 +968,50 @@ def normalize_catalog(
                     raise AuditError(
                         f"{artifact_id}/{site_name}: {key} must be "
                         f"{expected:.3f}, got {actual:.6f}")
+            interface_kind = site.get("interface_kind")
+            if interface_kind is not None:
+                interface_kind = str(interface_kind)
+            is_obiwan = variant.startswith("Obi-Wan")
+            expected_interface_kind = None
+            if is_obiwan:
+                expected_interface_kind = (
+                    "base_side" if site_name.startswith("lm_lower_")
+                    else "ring")
+                if interface_kind != expected_interface_kind:
+                    raise AuditError(
+                        f"{artifact_id}/{site_name}: interface_kind must be "
+                        f"{expected_interface_kind!r}, got {interface_kind!r}")
+            elif interface_kind is not None:
+                raise AuditError(
+                    f"{artifact_id}/{site_name}: interface_kind is reserved "
+                    "for Obi-Wan carrier/wing pairs")
+            expected_pair_separation = PAIRED_MAGNET_FACE_SEPARATION_MM[
+                interface_kind]
+            actual_pair_separation = _float(_required(
+                site, "paired_magnet_face_separation_mm",
+                f"{artifact_id}/{site_name}: paired magnet-face separation"),
+                "paired magnet-face separation")
+            if not math.isclose(
+                    actual_pair_separation, expected_pair_separation,
+                    abs_tol=1.0e-9, rel_tol=0.0):
+                raise AuditError(
+                    f"{artifact_id}/{site_name}: paired magnet-face "
+                    f"separation must be {expected_pair_separation:.3f}, "
+                    f"got {actual_pair_separation:.6f}")
+            if is_obiwan:
+                expected_inset = (
+                    0.15 if expected_interface_kind == "ring" else 0.0)
+                actual_inset = _float(_required(
+                    site, "carrier_cavity_face_inset_mm",
+                    f"{artifact_id}/{site_name}: carrier cavity-face inset"),
+                    "carrier cavity-face inset")
+                if not math.isclose(
+                        actual_inset, expected_inset,
+                        abs_tol=1.0e-9, rel_tol=0.0):
+                    raise AuditError(
+                        f"{artifact_id}/{site_name}: carrier cavity-face "
+                        f"inset must be {expected_inset:.3f}, got "
+                        f"{actual_inset:.6f}")
             polarity = str(_required(
                 site, "polarity_instruction",
                 f"{artifact_id}/{site_name}: polarity instruction")).strip()
@@ -1016,6 +1071,12 @@ def normalize_catalog(
                 "source_contract_sha256": _sha256_bytes(
                     _canonical_json(source_contract)),
             }
+            if interface_kind is not None:
+                normalized_site.update({
+                    "interface_kind": interface_kind,
+                    "carrier_cavity_face_inset_mm": source_contract[
+                        "carrier_cavity_face_inset_mm"],
+                })
             if closure == "transverse_gable_45deg":
                 normalized_site["print_actual_face_xyz_mm"] = _print_field(
                     site, raw, "actual_face_xyz_mm")

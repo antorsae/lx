@@ -53,7 +53,11 @@ MAGNET_FACE_SKIN_MM = 0.45
 MAGNET_INNER_SKIN_MM = 0.45
 MAGNET_CAPTIVE_LAND_MM = 3.00
 MAGNET_INTERFACE_GAP_MM = 0.05
-MAGNET_FACE_SEPARATION_MM = 0.95
+BASE_MAGNET_FACE_SEPARATION_MM = 0.95
+RING_MAGNET_FACE_SEPARATION_MM = 1.10
+RING_CAVITY_FACE_OFFSET_MM = 0.65
+RING_CAVITY_FACE_INSET_MM = 0.15
+RING_FLUSH_FAIRING_MM = 0.80
 MAGNET_ROOF_ANGLE_DEG = 45.0
 DOVETAIL_PROFILES_MM = (
     {"neck": 7.0, "head": 9.0, "depth": 4.0},
@@ -62,6 +66,14 @@ DOVETAIL_PROFILES_MM = (
 BED_XY_MM = 220.0
 REVIEW_KINDS = (
     "front", "rear", "side_section", "split_exploded", "magnet_roots")
+
+
+def _expected_magnet_face_separation(interface_kind: str) -> float:
+    assert interface_kind in {"base_side", "ring"}, (
+        f"unknown Obi-Wan magnet interface kind: {interface_kind!r}")
+    if interface_kind == "ring":
+        return RING_MAGNET_FACE_SEPARATION_MM
+    return BASE_MAGNET_FACE_SEPARATION_MM
 
 
 def _artifact_root() -> Path:
@@ -625,7 +637,8 @@ def test_exported_artifact_contract() -> None:
                     MAGNET_INTERFACE_GAP_MM, abs_tol=1e-9)
                 assert math.isclose(
                     receiver.get("paired_magnet_face_separation_mm"),
-                    MAGNET_FACE_SEPARATION_MM, abs_tol=1e-9)
+                    _expected_magnet_face_separation(
+                        receiver.get("interface_kind")), abs_tol=1e-9)
                 assert receiver.get("carrier_magnet_fully_buried") is True
                 assert receiver.get("receiver_magnet_fully_buried") is True
                 assert all(math.isclose(actual, expected, abs_tol=1e-12)
@@ -633,8 +646,19 @@ def test_exported_artifact_contract() -> None:
                                receiver.get("marked_pole_axis_xyz"),
                                [*receiver.get("axis_normal_xy"), 0.0]))
                 carrier_face = receiver.get("carrier_face_xy_mm")
+                carrier_cavity_datum = receiver.get(
+                    "carrier_cavity_datum_xy_mm")
                 mouth = receiver.get("receiver_mouth_xy_mm")
                 normal = receiver.get("axis_normal_xy")
+                expected_inset = (
+                    RING_CAVITY_FACE_INSET_MM
+                    if receiver.get("interface_kind") == "ring"
+                    else 0.0)
+                assert all(math.isclose(
+                    carrier_face[index],
+                    carrier_cavity_datum[index]
+                    + expected_inset * normal[index],
+                    abs_tol=1e-9) for index in range(2))
                 assert all(math.isclose(
                     mouth[index],
                     carrier_face[index]
@@ -1395,13 +1419,20 @@ def test_live_brep_geometry_contract() -> None:
                 MAGNET_INTERFACE_GAP_MM, abs_tol=1e-9)
             assert math.isclose(
                 record["paired_magnet_face_separation_mm"],
-                MAGNET_FACE_SEPARATION_MM, abs_tol=1e-9)
+                _expected_magnet_face_separation(
+                    record["interface_kind"]), abs_tol=1e-9)
             assert record["carrier_magnet_fully_buried"] is True
             assert record["receiver_magnet_fully_buried"] is True
 
             site = next(
                 site for site in cad._selected_sites("right")
                 if site["name"] == record["name"])
+            receiver_datum = cad._receiver_datum_face(site)
+            cavity_inset = float(
+                site.get("carrier_cavity_face_inset_mm", 0.0))
+            expected_pair_gap = MAGNET_INTERFACE_GAP_MM + cavity_inset
+            expected_face_separation = _expected_magnet_face_separation(
+                site["interface_kind"])
             base_tools = wall_cavity_tools(
                 name=site["name"], face=site["face"],
                 outward=(*site["normal"], 0.0), owner="carrier",
@@ -1409,18 +1440,18 @@ def test_live_brep_geometry_contract() -> None:
                 front_z=FRONT_Z_MM,
                 interface_gap_mm=MAGNET_INTERFACE_GAP_MM)
             receiver_tools = wall_cavity_tools(
-                name=site["name"], face=site["face"],
+                name=site["name"], face=receiver_datum,
                 outward=(*site["normal"], 0.0), owner="wing",
                 axis_z=site["z_mm"], print_up=(0.0, 0.0, -1.0),
                 front_z=FRONT_Z_MM,
                 interface_gap_mm=MAGNET_INTERFACE_GAP_MM)
             pair = pair_facts(base_tools, receiver_tools)
             assert math.isclose(
-                pair["interface_gap_mm"], MAGNET_INTERFACE_GAP_MM,
+                pair["interface_gap_mm"], expected_pair_gap,
                 abs_tol=1e-9)
             assert math.isclose(
                 pair["nominal_magnet_face_separation_mm"],
-                MAGNET_FACE_SEPARATION_MM, abs_tol=1e-9)
+                expected_face_separation, abs_tol=1e-9)
             expected_pole_axis = np.asarray(
                 (*site["normal"], 0.0), dtype=float)
             expected_pole_axis /= np.linalg.norm(expected_pole_axis)
@@ -1556,17 +1587,36 @@ def test_live_brep_geometry_contract() -> None:
                         "lower captive receiver land")
 
             # The two ring receivers obey the same sealed geometry and are
-            # wholly owned by their corresponding split prints.  Their shared
-            # carrier datum includes the deliberate local +0.60-mm Obi-Wan boss.
+            # wholly owned by their corresponding split prints.  The carrier
+            # cavity datum sits 0.15 mm beneath a continuous +0.80-mm ring
+            # fairing; there is no station-local backing boss or visible cue.
             for ring_site in (
                     candidate for candidate in cad._selected_sites(side)
                     if candidate["interface_kind"] == "ring"):
                 assert math.isclose(
-                    ring_site["face_offset_mm"], 0.60, abs_tol=1e-12)
+                    ring_site["face_offset_mm"],
+                    RING_CAVITY_FACE_OFFSET_MM, abs_tol=1e-12)
+                assert math.isclose(
+                    ring_site["carrier_cavity_face_inset_mm"],
+                    RING_CAVITY_FACE_INSET_MM, abs_tol=1e-12)
+                assert math.isclose(
+                    ring_site["continuous_flush_ring_fairing_mm"],
+                    RING_FLUSH_FAIRING_MM, abs_tol=1e-12)
+                assert math.isclose(
+                    ring_site["local_captive_backing_boss_mm"],
+                    0.0, abs_tol=1e-12)
+                receiver_datum = cad._receiver_datum_face(ring_site)
+                for index in range(2):
+                    assert math.isclose(
+                        receiver_datum[index],
+                        ring_site["face"][index]
+                        + RING_CAVITY_FACE_INSET_MM
+                        * ring_site["normal"][index],
+                        abs_tol=1e-9)
                 ring_role = (
                     "lm_upper" if ring_site["driver"] == "lm" else "um")
                 ring_tools = wall_cavity_tools(
-                    name=ring_site["name"], face=ring_site["face"],
+                    name=ring_site["name"], face=receiver_datum,
                     outward=(*ring_site["normal"], 0.0), owner="wing",
                     axis_z=ring_site["z_mm"], print_up=(0.0, 0.0, -1.0),
                     front_z=FRONT_Z_MM,

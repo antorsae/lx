@@ -131,7 +131,23 @@
         "inner_skin_mm": {"type": "number", "exclusiveMinimum": 0},
         "captive_land_mm": {"const": 3.0},
         "interface_gap_mm": {"const": 0.05},
-        "paired_magnet_face_separation_mm": {"const": 0.95},
+        "paired_magnet_face_separation_mm": {"enum": [0.95, 1.1]},
+        "interface_kind": {"enum": ["base_side", "ring"]},
+        "carrier_cavity_face_inset_mm": {
+          "type": "number"
+        },
+        "carrier_cavity_datum_xy_mm": {
+          "type": "array",
+          "prefixItems": [{"type": "number"}, {"type": "number"}],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "outer_surface_face_xy_mm": {
+          "type": "array",
+          "prefixItems": [{"type": "number"}, {"type": "number"}],
+          "minItems": 2,
+          "maxItems": 2
+        },
         "roof_angle_deg": {"type": "number", "exclusiveMinimum": 0},
         "classic_retaining_path_mm": {"const": 0.42},
         "polarity_instruction": {"type": "string", "minLength": 1},
@@ -172,6 +188,40 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "if": {"required": ["interface_kind"]},
+          "then": {
+            "required": [
+              "carrier_cavity_face_inset_mm",
+              "carrier_cavity_datum_xy_mm",
+              "outer_surface_face_xy_mm"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": ["interface_kind"],
+            "properties": {"interface_kind": {"const": "ring"}}
+          },
+          "then": {
+            "properties": {
+              "carrier_cavity_face_inset_mm": {"const": 0.15},
+              "paired_magnet_face_separation_mm": {"const": 1.1}
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["interface_kind"],
+            "properties": {"interface_kind": {"const": "base_side"}}
+          },
+          "then": {
+            "properties": {
+              "carrier_cavity_face_inset_mm": {"const": 0.0},
+              "paired_magnet_face_separation_mm": {"const": 0.95}
+            }
           }
         }
       ]

@@ -19,7 +19,7 @@
     {
       "file_count": 86,
       "manifest": "obiwan/manifest.json",
-      "manifest_sha256": "32e39f413c255a32931db325143b0d1d169e071c9de5bf7ec0a1ec5c31dfa852",
+      "manifest_sha256": "fd22b2ef183bef8384391aa223c0cd56fd68692f4bd46dab866addceb424a41f",
       "product": "obiwan",
       "release_authorized": false,
       "status": "candidate_not_release_authorized"

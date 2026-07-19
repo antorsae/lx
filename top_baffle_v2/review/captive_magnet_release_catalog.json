@@ -2315,7 +2315,7 @@
       "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
       "print_orientation": "front_face_down",
       "print_sidecar": "../floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json",
-      "print_sidecar_sha256": "c508c7c71cd9a839954b4cf5d3a97fd04dcfc1baa7e7006b78e6846c54c0a6a3",
+      "print_sidecar_sha256": "815139150748444483270057c0e923b080983bef701ec30fa200b153859917fa",
       "rotation_deg": {
         "x": 180.0,
         "z": 26.0
@@ -2333,6 +2333,11 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -32.0,
+            18.0
+          ],
+          "carrier_cavity_face_inset_mm": 0.0,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
             -30.5,
@@ -2362,6 +2367,7 @@
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "base_side",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -2377,6 +2383,10 @@
             -0.0
           ],
           "name": "lm_lower_left",
+          "outer_surface_face_xy_mm": [
+            -32.0,
+            18.0
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             -1.0,
@@ -2448,6 +2458,11 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            32.0,
+            18.0
+          ],
+          "carrier_cavity_face_inset_mm": 0.0,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
             30.5,
@@ -2477,6 +2492,7 @@
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "base_side",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -2492,6 +2508,10 @@
             -0.0
           ],
           "name": "lm_lower_right",
+          "outer_surface_face_xy_mm": [
+            32.0,
+            18.0
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             1.0,
@@ -2556,10 +2576,10 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_staged.py": "81e078aa0860e67e9e9636ad29f5dbd0e9d1db764fe0cc0cae55d5b34f01ca72",
         "../export_piece_stls.py": "b1b45cf564faec7da92ed3b6178c569c97fab979a22ebcc33813b622f805689a",
-        "../floor_stand/.obiwan_stage/manifest.json": "20499b7e58dd12737b1c0592b2c42fc418df989d97d20e592367b6f9888338de",
+        "../floor_stand/.obiwan_stage/manifest.json": "89fbbcb78ef9a05100534004986eb75c4aff04d803c59574c48d55eab77b17b9",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5",
-        "../top_baffle_nd25fw4_obiwan_lm_split.py": "b531338716cbafde5711d65ef600b581bbded444eab90543b622196b35bebb8c"
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1",
+        "../top_baffle_nd25fw4_obiwan_lm_split.py": "baa10fd64c672fed2518b81a4d7810b30c8b7f277acb5878172716a1d47c9814"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -2597,10 +2617,10 @@
         ]
       ],
       "stage_manifest": "../floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "20499b7e58dd12737b1c0592b2c42fc418df989d97d20e592367b6f9888338de",
+      "stage_manifest_sha256": "89fbbcb78ef9a05100534004986eb75c4aff04d803c59574c48d55eab77b17b9",
       "state": "floor_stand",
       "stl": "../floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
-      "stl_sha256": "dc81af2964531b668ea11643ba9b685524922483c9dfc4a561e07b644315cafd",
+      "stl_sha256": "1d17fe9cbd8dbf262794fe6255833ae70be0394c7922b4ed2aa7c8fd1eb9cce6",
       "variant": "Obi-Wan-split"
     },
     {
@@ -2608,7 +2628,7 @@
       "part": "lx521_top_obiwan_optional_lm_keyed_2of2_top",
       "print_orientation": "front_face_down",
       "print_sidecar": "../floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.print.json",
-      "print_sidecar_sha256": "80477642a1fffb714134f8229e620753784d037f71a7e3b8464d4e5233d2522c",
+      "print_sidecar_sha256": "310b2837fad667140a8aee118f867b26269c6d65212552dc4f0e582944787a49",
       "rotation_deg": {
         "x": 180.0,
         "z": 45.0
@@ -2616,8 +2636,8 @@
       "sites": [
         {
           "actual_face_xyz_mm": [
-            -49.798962275239205,
-            303.08400365958533,
+            -49.82088083257866,
+            303.1289433619003,
             12.55
           ],
           "bed_datum_source_xyz": [
@@ -2626,10 +2646,15 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -49.82088083257866,
+            303.1289433619003
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
-            -49.14140555505559,
-            301.73581259013656,
+            -49.163324112395046,
+            301.78075229245155,
             12.55
           ],
           "cavity_depth_mm": 2.1,
@@ -2650,11 +2675,12 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            -49.798962275239205,
-            303.08400365958533,
+            -49.82088083257866,
+            303.1289433619003,
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "ring",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -2670,24 +2696,28 @@
             -0.0
           ],
           "name": "lm_upper_left",
+          "outer_surface_face_xy_mm": [
+            -49.88663650459702,
+            303.2637624688452
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             -0.4383711467890776,
             0.8987940462991671,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              135.39047892448147,
-              5.589089911917597,
+              135.40675733220436,
+              6.341813983137627,
               5.750000099999983
             ],
             "cavity_center_xyz_mm": [
-              134.90212669279572,
-              7.007367775316595,
+              134.9184051005186,
+              7.760091846536625,
               5.750000099999983
             ],
             "insertion_direction_xyz": [
@@ -2706,8 +2736,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              134.9184051005186,
-              6.9600918465366135,
+              134.9346835082415,
+              7.712815917756615,
               5.750000099999983
             ]
           },
@@ -2723,16 +2753,16 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            -49.163324112395046,
-            301.78075229245155,
+            -49.1852426697345,
+            301.82569199476654,
             12.55
           ],
           "structural_load_credit_n": 0.0
         },
         {
           "actual_face_xyz_mm": [
-            49.7989622752392,
-            303.0840036595854,
+            49.82088083257865,
+            303.1289433619003,
             12.55
           ],
           "bed_datum_source_xyz": [
@@ -2741,10 +2771,15 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            49.82088083257865,
+            303.1289433619003
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
-            49.141405555055584,
-            301.7358125901366,
+            49.16332411239504,
+            301.78075229245155,
             12.55
           ],
           "cavity_depth_mm": 2.1,
@@ -2765,11 +2800,12 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            49.7989622752392,
-            303.0840036595854,
+            49.82088083257865,
+            303.1289433619003,
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "ring",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -2785,24 +2821,28 @@
             -0.0
           ],
           "name": "lm_upper_right",
+          "outer_surface_face_xy_mm": [
+            49.886636504597014,
+            303.2637624688452
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             0.43837114678907746,
             0.898794046299167,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              205.81684676623092,
-              76.01545775366696,
+              205.86412269501088,
+              76.79917934594414,
               5.750000099999983
             ],
             "cavity_center_xyz_mm": [
-              204.39856890283193,
-              76.50380998535272,
+              204.4458448316119,
+              77.28753157762986,
               5.750000099999983
             ],
             "insertion_direction_xyz": [
@@ -2821,8 +2861,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              204.4458448316119,
-              76.48753157762985,
+              204.4931207603919,
+              77.271253169907,
               5.750000099999983
             ]
           },
@@ -2838,8 +2878,8 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            49.16332411239504,
-            301.7807522924516,
+            49.18524266973449,
+            301.82569199476654,
             12.55
           ],
           "structural_load_credit_n": 0.0
@@ -2849,10 +2889,10 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_staged.py": "81e078aa0860e67e9e9636ad29f5dbd0e9d1db764fe0cc0cae55d5b34f01ca72",
         "../export_piece_stls.py": "b1b45cf564faec7da92ed3b6178c569c97fab979a22ebcc33813b622f805689a",
-        "../floor_stand/.obiwan_stage/manifest.json": "20499b7e58dd12737b1c0592b2c42fc418df989d97d20e592367b6f9888338de",
+        "../floor_stand/.obiwan_stage/manifest.json": "89fbbcb78ef9a05100534004986eb75c4aff04d803c59574c48d55eab77b17b9",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5",
-        "../top_baffle_nd25fw4_obiwan_lm_split.py": "b531338716cbafde5711d65ef600b581bbded444eab90543b622196b35bebb8c"
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1",
+        "../top_baffle_nd25fw4_obiwan_lm_split.py": "baa10fd64c672fed2518b81a4d7810b30c8b7f277acb5878172716a1d47c9814"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -2874,7 +2914,7 @@
           0.7071067811865475,
           -0.7071067811865476,
           0.0,
-          255.1150280896535
+          255.9150280896535
         ],
         [
           0.0,
@@ -2890,10 +2930,10 @@
         ]
       ],
       "stage_manifest": "../floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "20499b7e58dd12737b1c0592b2c42fc418df989d97d20e592367b6f9888338de",
+      "stage_manifest_sha256": "89fbbcb78ef9a05100534004986eb75c4aff04d803c59574c48d55eab77b17b9",
       "state": "floor_stand",
       "stl": "../floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.stl",
-      "stl_sha256": "e39cdc68f040551202793302c0b390b38b681b550e1c4f6a5c4bfc4a79e88483",
+      "stl_sha256": "7ee27adc14740db4a92108fe6541f3a77cf3b5bd4988438d4131811242937c5a",
       "variant": "Obi-Wan-split"
     },
     {
@@ -2924,7 +2964,7 @@
       "part": "lx521_top_obiwan_core_1of2_lm_carrier",
       "print_orientation": "front_face_down",
       "print_sidecar": "../floor_stand/stl/lx521_top_obiwan_core_1of2_lm_carrier.print.json",
-      "print_sidecar_sha256": "fb459fa1be4eae9d65546e5aff00a92cf8f5c03c6e6ed965f85827312aa21f1f",
+      "print_sidecar_sha256": "3874973bdcfbcbb082ee9018651349f9f21e8815911a9a52306573b25b938531",
       "rotation_deg": {
         "x": 180.0,
         "z": 28.0
@@ -2942,6 +2982,11 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -32.0,
+            18.0
+          ],
+          "carrier_cavity_face_inset_mm": 0.0,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
             -30.5,
@@ -2971,6 +3016,7 @@
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "base_side",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -2986,6 +3032,10 @@
             -0.0
           ],
           "name": "lm_lower_left",
+          "outer_surface_face_xy_mm": [
+            -32.0,
+            18.0
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             -1.0,
@@ -2999,12 +3049,12 @@
             "actual_face_xyz_mm": [
               8.450488130146045,
               267.8153832251262,
-              5.750000099999987
+              5.750000099999962
             ],
             "cavity_center_xyz_mm": [
               9.774909519434434,
               268.519590569305,
-              5.750000099999987
+              5.750000099999962
             ],
             "insertion_direction_xyz": [
               0.0,
@@ -3024,7 +3074,7 @@
             "seated_magnet_center_xyz_mm": [
               9.730762139791487,
               268.49611699116576,
-              5.750000099999987
+              5.750000099999962
             ]
           },
           "print_up_source_xyz": [
@@ -3057,6 +3107,11 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            32.0,
+            18.0
+          ],
+          "carrier_cavity_face_inset_mm": 0.0,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
             30.5,
@@ -3086,6 +3141,7 @@
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "base_side",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -3101,6 +3157,10 @@
             -0.0
           ],
           "name": "lm_lower_right",
+          "outer_surface_face_xy_mm": [
+            32.0,
+            18.0
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             1.0,
@@ -3114,12 +3174,12 @@
             "actual_face_xyz_mm": [
               64.95913407311737,
               297.86156324342323,
-              5.750000099999987
+              5.750000099999962
             ],
             "cavity_center_xyz_mm": [
               63.63471268382898,
               297.15735589924435,
-              5.750000099999987
+              5.750000099999962
             ],
             "insertion_direction_xyz": [
               0.0,
@@ -3139,7 +3199,7 @@
             "seated_magnet_center_xyz_mm": [
               63.67886006347193,
               297.18082947738367,
-              5.750000099999987
+              5.750000099999962
             ]
           },
           "print_up_source_xyz": [
@@ -3162,8 +3222,8 @@
         },
         {
           "actual_face_xyz_mm": [
-            -49.798962275239205,
-            303.08400365958533,
+            -49.82088083257866,
+            303.1289433619003,
             12.55
           ],
           "bed_datum_source_xyz": [
@@ -3172,10 +3232,15 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -49.82088083257866,
+            303.1289433619003
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
-            -49.14140555505559,
-            301.73581259013656,
+            -49.163324112395046,
+            301.78075229245155,
             12.55
           ],
           "cavity_depth_mm": 2.1,
@@ -3196,11 +3261,12 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            -49.798962275239205,
-            303.08400365958533,
+            -49.82088083257866,
+            303.1289433619003,
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "ring",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -3216,25 +3282,29 @@
             -0.0
           ],
           "name": "lm_upper_left",
+          "outer_surface_face_xy_mm": [
+            -49.88663650459702,
+            303.2637624688452
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             -0.4383711467890776,
             0.8987940462991671,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              126.57376995716088,
-              7.745041795986083,
-              5.750000099999987
+              126.57551493199603,
+              7.695072254635193,
+              5.750000099999962
             ],
             "cavity_center_xyz_mm": [
-              126.52142071210712,
-              9.24412803651478,
-              5.750000099999987
+              126.52316568694228,
+              9.194158495163833,
+              5.750000099999962
             ],
             "insertion_direction_xyz": [
               0.0,
@@ -3252,9 +3322,9 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              126.52316568694228,
-              9.194158495163833,
-              5.750000099999987
+              126.52491066177741,
+              9.14418895381283,
+              5.750000099999962
             ]
           },
           "print_up_source_xyz": [
@@ -3269,16 +3339,16 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            -49.163324112395046,
-            301.78075229245155,
+            -49.1852426697345,
+            301.82569199476654,
             12.55
           ],
           "structural_load_credit_n": 0.0
         },
         {
           "actual_face_xyz_mm": [
-            49.7989622752392,
-            303.0840036595854,
+            49.82088083257865,
+            303.1289433619003,
             12.55
           ],
           "bed_datum_source_xyz": [
@@ -3287,10 +3357,15 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            49.82088083257865,
+            303.1289433619003
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
-            49.141405555055584,
-            301.7358125901366,
+            49.16332411239504,
+            301.78075229245155,
             12.55
           ],
           "cavity_depth_mm": 2.1,
@@ -3311,11 +3386,12 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            49.7989622752392,
-            303.0840036595854,
+            49.82088083257865,
+            303.1289433619003,
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "ring",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -3331,25 +3407,29 @@
             -0.0
           ],
           "name": "lm_upper_right",
+          "outer_surface_face_xy_mm": [
+            49.886636504597014,
+            303.2637624688452
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             0.43837114678907746,
             0.898794046299167,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              214.51351769275084,
-              54.50343508493043,
-              5.750000099999987
+              214.55396854246956,
+              54.474045822315844,
+              5.750000099999962
             ],
             "cavity_center_xyz_mm": [
-              213.29999220118842,
-              55.38511296336915,
-              5.750000099999987
+              213.34044305090714,
+              55.35572370075454,
+              5.750000099999962
             ],
             "insertion_direction_xyz": [
               0.0,
@@ -3367,9 +3447,9 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              213.34044305090717,
-              55.35572370075448,
-              5.750000099999987
+              213.38089390062592,
+              55.326334438139895,
+              5.750000099999962
             ]
           },
           "print_up_source_xyz": [
@@ -3384,8 +3464,8 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            49.16332411239504,
-            301.7807522924516,
+            49.18524266973449,
+            301.82569199476654,
             12.55
           ],
           "structural_load_credit_n": 0.0
@@ -3395,9 +3475,9 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_staged.py": "81e078aa0860e67e9e9636ad29f5dbd0e9d1db764fe0cc0cae55d5b34f01ca72",
         "../export_piece_stls.py": "b1b45cf564faec7da92ed3b6178c569c97fab979a22ebcc33813b622f805689a",
-        "../floor_stand/.obiwan_stage/manifest.json": "20499b7e58dd12737b1c0592b2c42fc418df989d97d20e592367b6f9888338de",
+        "../floor_stand/.obiwan_stage/manifest.json": "89fbbcb78ef9a05100534004986eb75c4aff04d803c59574c48d55eab77b17b9",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -3424,7 +3504,7 @@
           0.0,
           0.0,
           -1.0,
-          18.300000099999988
+          18.300000099999963
         ],
         [
           0.0,
@@ -3434,10 +3514,10 @@
         ]
       ],
       "stage_manifest": "../floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "20499b7e58dd12737b1c0592b2c42fc418df989d97d20e592367b6f9888338de",
+      "stage_manifest_sha256": "89fbbcb78ef9a05100534004986eb75c4aff04d803c59574c48d55eab77b17b9",
       "state": "floor_stand",
       "stl": "../floor_stand/stl/lx521_top_obiwan_core_1of2_lm_carrier.stl",
-      "stl_sha256": "11ca73df0aa740845aa01a1ebbf364a6526715b559306593517d412e6b40680c",
+      "stl_sha256": "53e480d4edff79408e1c8bbb665fd94ec9dca600aca9daea1dcbea8b30c2b43f",
       "variant": "Obi-Wan"
     },
     {
@@ -3445,7 +3525,7 @@
       "part": "lx521_top_obiwan_core_2of2_um_carrier",
       "print_orientation": "front_face_down",
       "print_sidecar": "../floor_stand/stl/lx521_top_obiwan_core_2of2_um_carrier.print.json",
-      "print_sidecar_sha256": "a4c9661b8cd6b213898dc66cc00df35d5d3b70346b6fe6ccc813b0f5a84a9316",
+      "print_sidecar_sha256": "820e8fac8cf092823a201e6b9b9fc3d3e79a4b89caa6787957dc28da32bf2efe",
       "rotation_deg": {
         "x": 180.0,
         "z": 0.0
@@ -3453,8 +3533,8 @@
       "sites": [
         {
           "actual_face_xyz_mm": [
-            -33.26689092052706,
-            406.4369657111778,
+            -33.29869483154094,
+            406.47554694034716,
             15.1
           ],
           "bed_datum_source_xyz": [
@@ -3463,10 +3543,15 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -33.29869483154094,
+            406.47554694034716
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
           "cavity_center_xyz_mm": [
-            -32.31277359011042,
-            405.2795288360962,
+            -32.3445775011243,
+            405.31811006526556,
             15.1
           ],
           "cavity_depth_mm": 2.1,
@@ -3487,11 +3572,12 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            -33.26689092052706,
-            406.4369657111778,
+            -33.29869483154094,
+            406.47554694034716,
             15.1
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "ring",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -3507,24 +3593,28 @@
             -0.0
           ],
           "name": "um_left",
+          "outer_surface_face_xy_mm": [
+            -33.39410656458261,
+            406.5912906278553
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             -0.6360782202777641,
             0.7716245833877199,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              18.433109179472936,
-              19.963034388822223,
+              19.201305268459052,
+              19.924453159652842,
               3.200000099999963
             ],
             "cavity_center_xyz_mm": [
-              19.38722650988958,
-              21.120471263903823,
+              20.155422598875695,
+              21.081890034734442,
               3.200000099999963
             ],
             "insertion_direction_xyz": [
@@ -3543,8 +3633,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              19.35542259887569,
-              21.081890034734442,
+              20.123618687861807,
+              21.04330880556506,
               3.200000099999963
             ]
           },
@@ -3560,16 +3650,16 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            -32.344577501124306,
-            405.31811006526556,
+            -32.37638141213819,
+            405.35669129443494,
             15.1
           ],
           "structural_load_credit_n": 0.0
         },
         {
           "actual_face_xyz_mm": [
-            33.266890920527054,
-            406.4369657111778,
+            33.298694831540935,
+            406.47554694034716,
             15.1
           ],
           "bed_datum_source_xyz": [
@@ -3578,10 +3668,15 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            33.298694831540935,
+            406.47554694034716
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
           "cavity_center_xyz_mm": [
-            32.31277359011041,
-            405.2795288360962,
+            32.34457750112429,
+            405.31811006526556,
             15.1
           ],
           "cavity_depth_mm": 2.1,
@@ -3602,11 +3697,12 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            33.266890920527054,
-            406.4369657111778,
+            33.298694831540935,
+            406.47554694034716,
             15.1
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "ring",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -3622,24 +3718,28 @@
             -0.0
           ],
           "name": "um_right",
+          "outer_surface_face_xy_mm": [
+            33.3941065645826,
+            406.5912906278553
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             0.636078220277764,
             0.77162458338772,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              84.96689102052704,
-              19.963034388822223,
+              85.79869493154092,
+              19.924453159652842,
               3.200000099999963
             ],
             "cavity_center_xyz_mm": [
-              84.01277369011041,
-              21.120471263903823,
+              84.84457760112429,
+              21.081890034734442,
               3.200000099999963
             ],
             "insertion_direction_xyz": [
@@ -3658,8 +3758,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              84.0445776011243,
-              21.081890034734442,
+              84.87638151213818,
+              21.04330880556506,
               3.200000099999963
             ]
           },
@@ -3675,8 +3775,8 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            32.3445775011243,
-            405.31811006526556,
+            32.37638141213818,
+            405.35669129443494,
             15.1
           ],
           "structural_load_credit_n": 0.0
@@ -3686,9 +3786,9 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_staged.py": "81e078aa0860e67e9e9636ad29f5dbd0e9d1db764fe0cc0cae55d5b34f01ca72",
         "../export_piece_stls.py": "b1b45cf564faec7da92ed3b6178c569c97fab979a22ebcc33813b622f805689a",
-        "../floor_stand/.obiwan_stage/manifest.json": "20499b7e58dd12737b1c0592b2c42fc418df989d97d20e592367b6f9888338de",
+        "../floor_stand/.obiwan_stage/manifest.json": "89fbbcb78ef9a05100534004986eb75c4aff04d803c59574c48d55eab77b17b9",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -3703,7 +3803,7 @@
           1.0,
           0.0,
           0.0,
-          51.7000001
+          52.500000099999994
         ],
         [
           0.0,
@@ -3725,10 +3825,10 @@
         ]
       ],
       "stage_manifest": "../floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "20499b7e58dd12737b1c0592b2c42fc418df989d97d20e592367b6f9888338de",
+      "stage_manifest_sha256": "89fbbcb78ef9a05100534004986eb75c4aff04d803c59574c48d55eab77b17b9",
       "state": "floor_stand",
       "stl": "../floor_stand/stl/lx521_top_obiwan_core_2of2_um_carrier.stl",
-      "stl_sha256": "8cdfc04969aa8326a8865fda6f01cfc5a631efc2e69d75d210428777cbe3af12",
+      "stl_sha256": "4b2838cc102ad3043b59a35d82930667082796f09f369bdd12da417bad18f417",
       "variant": "Obi-Wan"
     },
     {
@@ -8828,7 +8928,7 @@
       "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
       "print_orientation": "front_face_down",
       "print_sidecar": "../no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json",
-      "print_sidecar_sha256": "594b08473f91b9fa83b8897ee281ff2b7ca2de93246b807bbf866c82a64b3ebf",
+      "print_sidecar_sha256": "20086d1526dcc934cb843eb1ea9b434e806e91b113aff8f56c3c299df3e22ed7",
       "rotation_deg": {
         "x": 180.0,
         "z": 26.0
@@ -8846,6 +8946,11 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -32.0,
+            18.0
+          ],
+          "carrier_cavity_face_inset_mm": 0.0,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
             -30.5,
@@ -8875,6 +8980,7 @@
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "base_side",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -8890,6 +8996,10 @@
             -0.0
           ],
           "name": "lm_lower_left",
+          "outer_surface_face_xy_mm": [
+            -32.0,
+            18.0
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             -1.0,
@@ -8961,6 +9071,11 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            32.0,
+            18.0
+          ],
+          "carrier_cavity_face_inset_mm": 0.0,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
             30.5,
@@ -8990,6 +9105,7 @@
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "base_side",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -9005,6 +9121,10 @@
             -0.0
           ],
           "name": "lm_lower_right",
+          "outer_surface_face_xy_mm": [
+            32.0,
+            18.0
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             1.0,
@@ -9070,9 +9190,9 @@
         "../export_obiwan_staged.py": "81e078aa0860e67e9e9636ad29f5dbd0e9d1db764fe0cc0cae55d5b34f01ca72",
         "../export_piece_stls.py": "b1b45cf564faec7da92ed3b6178c569c97fab979a22ebcc33813b622f805689a",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../no_floor_stand/.obiwan_stage/manifest.json": "29ce3b5dfa31bf8f6714bfb2ac8cbe3726ac2228ef2ebbfeaf85413c20fb5ce9",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5",
-        "../top_baffle_nd25fw4_obiwan_lm_split.py": "b531338716cbafde5711d65ef600b581bbded444eab90543b622196b35bebb8c"
+        "../no_floor_stand/.obiwan_stage/manifest.json": "7ce90c43689bb6d26fa50a5227ede73faf09060adcb8451d2a64f04bf72f6046",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1",
+        "../top_baffle_nd25fw4_obiwan_lm_split.py": "baa10fd64c672fed2518b81a4d7810b30c8b7f277acb5878172716a1d47c9814"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -9110,10 +9230,10 @@
         ]
       ],
       "stage_manifest": "../no_floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "29ce3b5dfa31bf8f6714bfb2ac8cbe3726ac2228ef2ebbfeaf85413c20fb5ce9",
+      "stage_manifest_sha256": "7ce90c43689bb6d26fa50a5227ede73faf09060adcb8451d2a64f04bf72f6046",
       "state": "no_floor_stand",
       "stl": "../no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
-      "stl_sha256": "00fd18fed54eb31d12ca93d191f67828548da1960abfba732371bdf50e6d113a",
+      "stl_sha256": "de97064b763db068a6523ac38b233ad88679b1d915265345fcf1dc8ac18c928c",
       "variant": "Obi-Wan-split"
     },
     {
@@ -9121,7 +9241,7 @@
       "part": "lx521_top_obiwan_optional_lm_keyed_2of2_top",
       "print_orientation": "front_face_down",
       "print_sidecar": "../no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.print.json",
-      "print_sidecar_sha256": "fb400020af1d4e08eb7c5aa2aa656ac4fedad6cbc0c38404a590586a8996bfc6",
+      "print_sidecar_sha256": "ec7b275daf84f46e69ce197c6a7f6f1a67c5e535b3e208fd9a916cca81780b56",
       "rotation_deg": {
         "x": 180.0,
         "z": 45.0
@@ -9129,8 +9249,8 @@
       "sites": [
         {
           "actual_face_xyz_mm": [
-            -49.798962275239205,
-            303.08400365958533,
+            -49.82088083257866,
+            303.1289433619003,
             12.55
           ],
           "bed_datum_source_xyz": [
@@ -9139,10 +9259,15 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -49.82088083257866,
+            303.1289433619003
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
-            -49.14140555505559,
-            301.73581259013656,
+            -49.163324112395046,
+            301.78075229245155,
             12.55
           ],
           "cavity_depth_mm": 2.1,
@@ -9163,11 +9288,12 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            -49.798962275239205,
-            303.08400365958533,
+            -49.82088083257866,
+            303.1289433619003,
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "ring",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -9183,24 +9309,28 @@
             -0.0
           ],
           "name": "lm_upper_left",
+          "outer_surface_face_xy_mm": [
+            -49.88663650459702,
+            303.2637624688452
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             -0.4383711467890776,
             0.8987940462991671,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              135.39047892448147,
-              5.589089911917597,
+              135.40675733220436,
+              6.341813983137627,
               5.750000099999983
             ],
             "cavity_center_xyz_mm": [
-              134.90212669279572,
-              7.007367775316595,
+              134.9184051005186,
+              7.760091846536625,
               5.750000099999983
             ],
             "insertion_direction_xyz": [
@@ -9219,8 +9349,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              134.9184051005186,
-              6.9600918465366135,
+              134.9346835082415,
+              7.712815917756615,
               5.750000099999983
             ]
           },
@@ -9236,16 +9366,16 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            -49.163324112395046,
-            301.78075229245155,
+            -49.1852426697345,
+            301.82569199476654,
             12.55
           ],
           "structural_load_credit_n": 0.0
         },
         {
           "actual_face_xyz_mm": [
-            49.7989622752392,
-            303.0840036595854,
+            49.82088083257865,
+            303.1289433619003,
             12.55
           ],
           "bed_datum_source_xyz": [
@@ -9254,10 +9384,15 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            49.82088083257865,
+            303.1289433619003
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
-            49.141405555055584,
-            301.7358125901366,
+            49.16332411239504,
+            301.78075229245155,
             12.55
           ],
           "cavity_depth_mm": 2.1,
@@ -9278,11 +9413,12 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            49.7989622752392,
-            303.0840036595854,
+            49.82088083257865,
+            303.1289433619003,
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "ring",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -9298,24 +9434,28 @@
             -0.0
           ],
           "name": "lm_upper_right",
+          "outer_surface_face_xy_mm": [
+            49.886636504597014,
+            303.2637624688452
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             0.43837114678907746,
             0.898794046299167,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              205.81684676623092,
-              76.01545775366696,
+              205.86412269501088,
+              76.79917934594414,
               5.750000099999983
             ],
             "cavity_center_xyz_mm": [
-              204.39856890283193,
-              76.50380998535272,
+              204.4458448316119,
+              77.28753157762986,
               5.750000099999983
             ],
             "insertion_direction_xyz": [
@@ -9334,8 +9474,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              204.4458448316119,
-              76.48753157762985,
+              204.4931207603919,
+              77.271253169907,
               5.750000099999983
             ]
           },
@@ -9351,8 +9491,8 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            49.16332411239504,
-            301.7807522924516,
+            49.18524266973449,
+            301.82569199476654,
             12.55
           ],
           "structural_load_credit_n": 0.0
@@ -9363,9 +9503,9 @@
         "../export_obiwan_staged.py": "81e078aa0860e67e9e9636ad29f5dbd0e9d1db764fe0cc0cae55d5b34f01ca72",
         "../export_piece_stls.py": "b1b45cf564faec7da92ed3b6178c569c97fab979a22ebcc33813b622f805689a",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../no_floor_stand/.obiwan_stage/manifest.json": "29ce3b5dfa31bf8f6714bfb2ac8cbe3726ac2228ef2ebbfeaf85413c20fb5ce9",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5",
-        "../top_baffle_nd25fw4_obiwan_lm_split.py": "b531338716cbafde5711d65ef600b581bbded444eab90543b622196b35bebb8c"
+        "../no_floor_stand/.obiwan_stage/manifest.json": "7ce90c43689bb6d26fa50a5227ede73faf09060adcb8451d2a64f04bf72f6046",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1",
+        "../top_baffle_nd25fw4_obiwan_lm_split.py": "baa10fd64c672fed2518b81a4d7810b30c8b7f277acb5878172716a1d47c9814"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -9387,7 +9527,7 @@
           0.7071067811865475,
           -0.7071067811865476,
           0.0,
-          255.1150280896535
+          255.9150280896535
         ],
         [
           0.0,
@@ -9403,10 +9543,10 @@
         ]
       ],
       "stage_manifest": "../no_floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "29ce3b5dfa31bf8f6714bfb2ac8cbe3726ac2228ef2ebbfeaf85413c20fb5ce9",
+      "stage_manifest_sha256": "7ce90c43689bb6d26fa50a5227ede73faf09060adcb8451d2a64f04bf72f6046",
       "state": "no_floor_stand",
       "stl": "../no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.stl",
-      "stl_sha256": "1a5686344d16efe5f94e5070dfdfa6406dac3dfabc0a0ec11ef622afa9e6b8f2",
+      "stl_sha256": "16d27a2d4a0283e5bfdd1b8ca36cdfc953c2574807becc7293875b0401d51a25",
       "variant": "Obi-Wan-split"
     },
     {
@@ -9437,7 +9577,7 @@
       "part": "lx521_top_obiwan_core_1of2_lm_carrier",
       "print_orientation": "front_face_down",
       "print_sidecar": "../no_floor_stand/stl/lx521_top_obiwan_core_1of2_lm_carrier.print.json",
-      "print_sidecar_sha256": "3646cee16af36d08d3b5784acfa04f23638983bb83cfd9d9595c8b112302c48d",
+      "print_sidecar_sha256": "3322b003f7a504bba0847888550d88e78ffd91e5c6600d0bbee588318affafa8",
       "rotation_deg": {
         "x": 180.0,
         "z": 28.0
@@ -9455,6 +9595,11 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -32.0,
+            18.0
+          ],
+          "carrier_cavity_face_inset_mm": 0.0,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
             -30.5,
@@ -9484,6 +9629,7 @@
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "base_side",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -9499,6 +9645,10 @@
             -0.0
           ],
           "name": "lm_lower_left",
+          "outer_surface_face_xy_mm": [
+            -32.0,
+            18.0
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             -1.0,
@@ -9512,12 +9662,12 @@
             "actual_face_xyz_mm": [
               8.450488230146036,
               267.8153832251262,
-              5.750000099999987
+              5.750000099999962
             ],
             "cavity_center_xyz_mm": [
               9.774909619434425,
               268.519590569305,
-              5.750000099999987
+              5.750000099999962
             ],
             "insertion_direction_xyz": [
               0.0,
@@ -9537,7 +9687,7 @@
             "seated_magnet_center_xyz_mm": [
               9.730762239791478,
               268.49611699116576,
-              5.750000099999987
+              5.750000099999962
             ]
           },
           "print_up_source_xyz": [
@@ -9570,6 +9720,11 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            32.0,
+            18.0
+          ],
+          "carrier_cavity_face_inset_mm": 0.0,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
             30.5,
@@ -9599,6 +9754,7 @@
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "base_side",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -9614,6 +9770,10 @@
             -0.0
           ],
           "name": "lm_lower_right",
+          "outer_surface_face_xy_mm": [
+            32.0,
+            18.0
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             1.0,
@@ -9627,12 +9787,12 @@
             "actual_face_xyz_mm": [
               64.95913417311736,
               297.86156324342323,
-              5.750000099999987
+              5.750000099999962
             ],
             "cavity_center_xyz_mm": [
               63.634712783828974,
               297.15735589924435,
-              5.750000099999987
+              5.750000099999962
             ],
             "insertion_direction_xyz": [
               0.0,
@@ -9652,7 +9812,7 @@
             "seated_magnet_center_xyz_mm": [
               63.67886016347192,
               297.18082947738367,
-              5.750000099999987
+              5.750000099999962
             ]
           },
           "print_up_source_xyz": [
@@ -9675,8 +9835,8 @@
         },
         {
           "actual_face_xyz_mm": [
-            -49.798962275239205,
-            303.08400365958533,
+            -49.82088083257866,
+            303.1289433619003,
             12.55
           ],
           "bed_datum_source_xyz": [
@@ -9685,10 +9845,15 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -49.82088083257866,
+            303.1289433619003
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
-            -49.14140555505559,
-            301.73581259013656,
+            -49.163324112395046,
+            301.78075229245155,
             12.55
           ],
           "cavity_depth_mm": 2.1,
@@ -9709,11 +9874,12 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            -49.798962275239205,
-            303.08400365958533,
+            -49.82088083257866,
+            303.1289433619003,
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "ring",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -9729,25 +9895,29 @@
             -0.0
           ],
           "name": "lm_upper_left",
+          "outer_surface_face_xy_mm": [
+            -49.88663650459702,
+            303.2637624688452
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             -0.4383711467890776,
             0.8987940462991671,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              126.57377005716086,
-              7.745041795986083,
-              5.750000099999987
+              126.57551503199602,
+              7.695072254635193,
+              5.750000099999962
             ],
             "cavity_center_xyz_mm": [
-              126.5214208121071,
-              9.24412803651478,
-              5.750000099999987
+              126.52316578694226,
+              9.194158495163833,
+              5.750000099999962
             ],
             "insertion_direction_xyz": [
               0.0,
@@ -9765,9 +9935,9 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              126.52316578694226,
-              9.194158495163833,
-              5.750000099999987
+              126.52491076177739,
+              9.14418895381283,
+              5.750000099999962
             ]
           },
           "print_up_source_xyz": [
@@ -9782,16 +9952,16 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            -49.163324112395046,
-            301.78075229245155,
+            -49.1852426697345,
+            301.82569199476654,
             12.55
           ],
           "structural_load_credit_n": 0.0
         },
         {
           "actual_face_xyz_mm": [
-            49.7989622752392,
-            303.0840036595854,
+            49.82088083257865,
+            303.1289433619003,
             12.55
           ],
           "bed_datum_source_xyz": [
@@ -9800,10 +9970,15 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            49.82088083257865,
+            303.1289433619003
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
-            49.141405555055584,
-            301.7358125901366,
+            49.16332411239504,
+            301.78075229245155,
             12.55
           ],
           "cavity_depth_mm": 2.1,
@@ -9824,11 +9999,12 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            49.7989622752392,
-            303.0840036595854,
+            49.82088083257865,
+            303.1289433619003,
             12.55
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "ring",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -9844,25 +10020,29 @@
             -0.0
           ],
           "name": "lm_upper_right",
+          "outer_surface_face_xy_mm": [
+            49.886636504597014,
+            303.2637624688452
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             0.43837114678907746,
             0.898794046299167,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              214.51351779275083,
-              54.50343508493043,
-              5.750000099999987
+              214.55396864246956,
+              54.474045822315844,
+              5.750000099999962
             ],
             "cavity_center_xyz_mm": [
-              213.2999923011884,
-              55.38511296336915,
-              5.750000099999987
+              213.34044315090713,
+              55.35572370075454,
+              5.750000099999962
             ],
             "insertion_direction_xyz": [
               0.0,
@@ -9880,9 +10060,9 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              213.34044315090716,
-              55.35572370075448,
-              5.750000099999987
+              213.38089400062591,
+              55.326334438139895,
+              5.750000099999962
             ]
           },
           "print_up_source_xyz": [
@@ -9897,8 +10077,8 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            49.16332411239504,
-            301.7807522924516,
+            49.18524266973449,
+            301.82569199476654,
             12.55
           ],
           "structural_load_credit_n": 0.0
@@ -9909,8 +10089,8 @@
         "../export_obiwan_staged.py": "81e078aa0860e67e9e9636ad29f5dbd0e9d1db764fe0cc0cae55d5b34f01ca72",
         "../export_piece_stls.py": "b1b45cf564faec7da92ed3b6178c569c97fab979a22ebcc33813b622f805689a",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../no_floor_stand/.obiwan_stage/manifest.json": "29ce3b5dfa31bf8f6714bfb2ac8cbe3726ac2228ef2ebbfeaf85413c20fb5ce9",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../no_floor_stand/.obiwan_stage/manifest.json": "7ce90c43689bb6d26fa50a5227ede73faf09060adcb8451d2a64f04bf72f6046",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -9937,7 +10117,7 @@
           0.0,
           0.0,
           -1.0,
-          18.300000099999988
+          18.300000099999963
         ],
         [
           0.0,
@@ -9947,10 +10127,10 @@
         ]
       ],
       "stage_manifest": "../no_floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "29ce3b5dfa31bf8f6714bfb2ac8cbe3726ac2228ef2ebbfeaf85413c20fb5ce9",
+      "stage_manifest_sha256": "7ce90c43689bb6d26fa50a5227ede73faf09060adcb8451d2a64f04bf72f6046",
       "state": "no_floor_stand",
       "stl": "../no_floor_stand/stl/lx521_top_obiwan_core_1of2_lm_carrier.stl",
-      "stl_sha256": "fbfb9607b8af8b29fec9bed380793792e17a5b7b48435f6df76396f2af8adbc0",
+      "stl_sha256": "5ab1f2dc08c22ddde639d1f12d4e1b93dfb3f8daeb69042fb1d2f24fefb6efbd",
       "variant": "Obi-Wan"
     },
     {
@@ -9958,7 +10138,7 @@
       "part": "lx521_top_obiwan_core_2of2_um_carrier",
       "print_orientation": "front_face_down",
       "print_sidecar": "../no_floor_stand/stl/lx521_top_obiwan_core_2of2_um_carrier.print.json",
-      "print_sidecar_sha256": "3d86aa3a1bfce635c708d6e097bd42b81dbabb13c9834fec091f73908979aaf8",
+      "print_sidecar_sha256": "8f31efe529ff608b3eee6af4629d4dc3412b65263d98e86fcbb931295aa5ae33",
       "rotation_deg": {
         "x": 180.0,
         "z": 0.0
@@ -9966,8 +10146,8 @@
       "sites": [
         {
           "actual_face_xyz_mm": [
-            -33.26689092052706,
-            406.4369657111778,
+            -33.29869483154094,
+            406.47554694034716,
             15.1
           ],
           "bed_datum_source_xyz": [
@@ -9976,10 +10156,15 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -33.29869483154094,
+            406.47554694034716
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
           "cavity_center_xyz_mm": [
-            -32.31277359011042,
-            405.2795288360962,
+            -32.3445775011243,
+            405.31811006526556,
             15.1
           ],
           "cavity_depth_mm": 2.1,
@@ -10000,11 +10185,12 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            -33.26689092052706,
-            406.4369657111778,
+            -33.29869483154094,
+            406.47554694034716,
             15.1
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "ring",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -10020,24 +10206,28 @@
             -0.0
           ],
           "name": "um_left",
+          "outer_surface_face_xy_mm": [
+            -33.39410656458261,
+            406.5912906278553
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             -0.6360782202777641,
             0.7716245833877199,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              18.433109179472936,
-              19.963034388822223,
+              19.201305268459052,
+              19.924453159652842,
               3.200000099999963
             ],
             "cavity_center_xyz_mm": [
-              19.38722650988958,
-              21.120471263903823,
+              20.155422598875695,
+              21.081890034734442,
               3.200000099999963
             ],
             "insertion_direction_xyz": [
@@ -10056,8 +10246,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              19.35542259887569,
-              21.081890034734442,
+              20.123618687861807,
+              21.04330880556506,
               3.200000099999963
             ]
           },
@@ -10073,16 +10263,16 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            -32.344577501124306,
-            405.31811006526556,
+            -32.37638141213819,
+            405.35669129443494,
             15.1
           ],
           "structural_load_credit_n": 0.0
         },
         {
           "actual_face_xyz_mm": [
-            33.266890920527054,
-            406.4369657111778,
+            33.298694831540935,
+            406.47554694034716,
             15.1
           ],
           "bed_datum_source_xyz": [
@@ -10091,10 +10281,15 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            33.298694831540935,
+            406.47554694034716
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
           "cavity_center_xyz_mm": [
-            32.31277359011041,
-            405.2795288360962,
+            32.34457750112429,
+            405.31811006526556,
             15.1
           ],
           "cavity_depth_mm": 2.1,
@@ -10115,11 +10310,12 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            33.266890920527054,
-            406.4369657111778,
+            33.298694831540935,
+            406.47554694034716,
             15.1
           ],
           "interface_gap_mm": 0.05,
+          "interface_kind": "ring",
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
@@ -10135,24 +10331,28 @@
             -0.0
           ],
           "name": "um_right",
+          "outer_surface_face_xy_mm": [
+            33.3941065645826,
+            406.5912906278553
+          ],
           "owner": "base",
           "pair_axis_xyz": [
             0.636078220277764,
             0.77162458338772,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              84.96689102052704,
-              19.963034388822223,
+              85.79869493154092,
+              19.924453159652842,
               3.200000099999963
             ],
             "cavity_center_xyz_mm": [
-              84.01277369011041,
-              21.120471263903823,
+              84.84457760112429,
+              21.081890034734442,
               3.200000099999963
             ],
             "insertion_direction_xyz": [
@@ -10171,8 +10371,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              84.0445776011243,
-              21.081890034734442,
+              84.87638151213818,
+              21.04330880556506,
               3.200000099999963
             ]
           },
@@ -10188,8 +10388,8 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            32.3445775011243,
-            405.31811006526556,
+            32.37638141213818,
+            405.35669129443494,
             15.1
           ],
           "structural_load_credit_n": 0.0
@@ -10200,8 +10400,8 @@
         "../export_obiwan_staged.py": "81e078aa0860e67e9e9636ad29f5dbd0e9d1db764fe0cc0cae55d5b34f01ca72",
         "../export_piece_stls.py": "b1b45cf564faec7da92ed3b6178c569c97fab979a22ebcc33813b622f805689a",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../no_floor_stand/.obiwan_stage/manifest.json": "29ce3b5dfa31bf8f6714bfb2ac8cbe3726ac2228ef2ebbfeaf85413c20fb5ce9",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../no_floor_stand/.obiwan_stage/manifest.json": "7ce90c43689bb6d26fa50a5227ede73faf09060adcb8451d2a64f04bf72f6046",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -10216,7 +10416,7 @@
           1.0,
           0.0,
           0.0,
-          51.7000001
+          52.500000099999994
         ],
         [
           0.0,
@@ -10238,10 +10438,10 @@
         ]
       ],
       "stage_manifest": "../no_floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "29ce3b5dfa31bf8f6714bfb2ac8cbe3726ac2228ef2ebbfeaf85413c20fb5ce9",
+      "stage_manifest_sha256": "7ce90c43689bb6d26fa50a5227ede73faf09060adcb8451d2a64f04bf72f6046",
       "state": "no_floor_stand",
       "stl": "../no_floor_stand/stl/lx521_top_obiwan_core_2of2_um_carrier.stl",
-      "stl_sha256": "b38d09c26f8a1437ceca5a41eb2248a1c503ac724aa72f65fac5feb3cf5355ff",
+      "stl_sha256": "25840d7e126addb2934ff59ad043a9e3895567e06dfe86096be2bf4485099761",
       "variant": "Obi-Wan"
     },
     {
@@ -13028,12 +13228,12 @@
     },
     {
       "facts": "../wings/ac/obiwan_wing_ac_facts.json",
-      "facts_sha256": "f0a3e1a8ac139bcd175dd9b33e7bd521c0b937ef023ff0f77f1719b1d1322ee1",
+      "facts_sha256": "10679a78e3ec83735f4f8b590840163409b3025275723bae99d7bdc2276a3bfb",
       "id": "shared:Obi-Wan-Ac:obiwan_wing_ac_left_1of3_lm_lower",
       "part": "obiwan_wing_ac_left_1of3_lm_lower",
       "print_orientation": "front_face_down",
       "print_sidecar": "../wings/ac/stl/lx521_top_obiwan_wing_ac_left_1of3_lm_lower.print.json",
-      "print_sidecar_sha256": "ceb30d444da8ac172a68cedb694c35b1b0b4bd9b78afcc58f79b1fb878cb7bb0",
+      "print_sidecar_sha256": "fce53c80d408c2bdfb50e613b959514c2d221bd29dbef95519551756d0c7fd8c",
       "rotation_deg": {
         "x": 180.0,
         "z": 16.568625362956823
@@ -13056,6 +13256,11 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -32.0,
+            18.0
+          ],
+          "carrier_cavity_face_inset_mm": 0.0,
           "carrier_face_xy_mm": [
             -32.0,
             18.0
@@ -13109,6 +13314,10 @@
           ],
           "name": "lm_lower_left",
           "orientation": "horizontal_base_axis_vertical_diameter",
+          "outer_surface_face_xy_mm": [
+            -32.0,
+            18.0
+          ],
           "owner": "receiver",
           "pair_axis_xyz": [
             -1.0,
@@ -13121,12 +13330,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               47.450744645827186,
-              199.0602152507687,
+              199.14084672148044,
               5.75
             ],
             "cavity_center_xyz_mm": [
               46.01302633921264,
-              198.6324699166908,
+              198.71310138740256,
               5.75
             ],
             "insertion_direction_xyz": [
@@ -13146,7 +13355,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               46.060950282766456,
-              198.64672809449343,
+              198.72735956520518,
               5.75
             ]
           },
@@ -13178,9 +13387,9 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_wings.py": "ca65cc86c5c959e028a2cd6ded617147d06c86c0348acb0fea332fe904279f22",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../gen_obiwan_wing_design_map.py": "564e7466921f8457ea6ff9a7fb1e852618cc34038b2aa1833a469f3457606e57",
-        "../obiwan_wings_cad.py": "6ecac0710afe2d87b2bd678dee809fdc7ac253b189992e4c1279137c735f968c",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../gen_obiwan_wing_design_map.py": "ad8dcad2543f32a801e7bb771097acac61d8e8391cf0b552e54e19de089c38b3",
+        "../obiwan_wings_cad.py": "c01f27a1b58a02e91ee41ffcace9c89914249ae82ca58d52609ad1504604396d",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -13201,7 +13410,7 @@
           0.2851635560519251,
           -0.9584788710763636,
           0.0,
-          225.45232690160745
+          225.5329583723192
         ],
         [
           0.0,
@@ -13218,19 +13427,19 @@
       ],
       "state": "shared",
       "stl": "../wings/ac/stl/lx521_top_obiwan_wing_ac_left_1of3_lm_lower.stl",
-      "stl_sha256": "97bfd9444ddb35138e5df57c50476522376661c904b93b02f57b03fa0444df4a",
+      "stl_sha256": "c5a28cc9c8a1c9f500a63259dcce5e4a9e875db1e0e1799a93642826fd7e690a",
       "transaction_manifest": "../wings/ac/obiwan_wing_ac_print_manifest.json",
-      "transaction_manifest_sha256": "dd23d87de0c3c44b4975e0208c87ecfa93c85c54eca9eb43785e15b678cde924",
+      "transaction_manifest_sha256": "41feff2903215f31e43b073aaebaf6eeafb890411c819548aeb9c0ce796c45d8",
       "variant": "Obi-Wan-Ac"
     },
     {
       "facts": "../wings/ac/obiwan_wing_ac_facts.json",
-      "facts_sha256": "f0a3e1a8ac139bcd175dd9b33e7bd521c0b937ef023ff0f77f1719b1d1322ee1",
+      "facts_sha256": "10679a78e3ec83735f4f8b590840163409b3025275723bae99d7bdc2276a3bfb",
       "id": "shared:Obi-Wan-Ac:obiwan_wing_ac_left_2of3_lm_upper",
       "part": "obiwan_wing_ac_left_2of3_lm_upper",
       "print_orientation": "front_face_down",
       "print_sidecar": "../wings/ac/stl/lx521_top_obiwan_wing_ac_left_2of3_lm_upper.print.json",
-      "print_sidecar_sha256": "78dcac416a6c8d58292bc3fccbeab2e398fd33c8bdda835e342b981bdc23989d",
+      "print_sidecar_sha256": "563f09cf8749f8826260d6942e4ef7097001d4bde1bb0fb1f55818f8e05d8738",
       "rotation_deg": {
         "x": 180.0,
         "z": 55.932253050440636
@@ -13238,8 +13447,8 @@
       "sites": [
         {
           "actual_face_xyz_mm": [
-            -49.82088083257866,
-            303.12894336190027,
+            -49.908555061936475,
+            303.3087021711601,
             12.55
           ],
           "axis_normal_xy": [
@@ -13253,16 +13462,21 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -49.82088083257866,
+            303.1289433619003
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "carrier_face_xy_mm": [
-            -49.798962275239205,
-            303.08400365958533
+            -49.88663650459702,
+            303.2637624688452
           ],
           "carrier_magnet_fully_buried": true,
           "carrier_to_receiver_face_gap_mm": 0.05,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
-            -50.47843755276227,
-            304.47713443134904,
+            -50.56611178212009,
+            304.6568932406089,
             12.55
           ],
           "cavity_depth_mm": 2.1,
@@ -13284,8 +13498,8 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            -49.798962275239205,
-            303.08400365958533,
+            -49.88663650459702,
+            303.2637624688452,
             12.55
           ],
           "interface_gap_mm": 0.05,
@@ -13306,24 +13520,28 @@
           ],
           "name": "lm_upper_left",
           "orientation": "radial_axis_tangential_diameter",
+          "outer_surface_face_xy_mm": [
+            -49.88663650459702,
+            303.2637624688452
+          ],
           "owner": "receiver",
           "pair_axis_xyz": [
             -0.4383711467890776,
             0.8987940462991671,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points along the same installed pair-axis vector as the carrier magnet; the face toward the carrier is therefore the opposite pole",
           "print_space": {
             "actual_face_xyz_mm": [
-              138.4230119740893,
-              58.641758084071625,
+              138.52280710527594,
+              58.46843488368734,
               5.749999999999979
             ],
             "cavity_center_xyz_mm": [
-              139.17147545798912,
-              57.34183408118969,
+              139.27127058917574,
+              57.16851088080537,
               5.749999999999979
             ],
             "insertion_direction_xyz": [
@@ -13342,8 +13560,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              139.14652667519243,
-              57.38516488128579,
+              139.24632180637911,
+              57.21184168090147,
               5.749999999999979
             ]
           },
@@ -13355,8 +13573,8 @@
           "raw_roof_start_print_z_mm": 8.35,
           "receiver_magnet_fully_buried": true,
           "receiver_mouth_xy_mm": [
-            -49.82088083257866,
-            303.12894336190027
+            -49.908555061936475,
+            303.3087021711601
           ],
           "required_min_part_top_print_z_mm": 11.45,
           "roof_angle_deg": 45.0,
@@ -13364,8 +13582,8 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            -50.45651899542282,
-            304.43219472903405,
+            -50.544193224780635,
+            304.6119535382939,
             12.55
           ],
           "structural_load_credit_n": 0.0
@@ -13375,9 +13593,9 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_wings.py": "ca65cc86c5c959e028a2cd6ded617147d06c86c0348acb0fea332fe904279f22",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../gen_obiwan_wing_design_map.py": "564e7466921f8457ea6ff9a7fb1e852618cc34038b2aa1833a469f3457606e57",
-        "../obiwan_wings_cad.py": "6ecac0710afe2d87b2bd678dee809fdc7ac253b189992e4c1279137c735f968c",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../gen_obiwan_wing_design_map.py": "ad8dcad2543f32a801e7bb771097acac61d8e8391cf0b552e54e19de089c38b3",
+        "../obiwan_wings_cad.py": "c01f27a1b58a02e91ee41ffcace9c89914249ae82ca58d52609ad1504604396d",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -13392,13 +13610,13 @@
           0.5601727724431591,
           0.8283757993889879,
           0.0,
-          -84.77336785971823
+          -84.77336785971825
         ],
         [
           0.8283757993889879,
           -0.5601727724431591,
           0.0,
-          269.7167506808235
+          269.71675068082345
         ],
         [
           0.0,
@@ -13415,28 +13633,28 @@
       ],
       "state": "shared",
       "stl": "../wings/ac/stl/lx521_top_obiwan_wing_ac_left_2of3_lm_upper.stl",
-      "stl_sha256": "bb6446ab704de1589acba79a61a0adb90591d0f062fdc14d8783a1bdc092e42a",
+      "stl_sha256": "256e9b07d187e09f5a1f3e8ffd28ea88f040214692ed3b125496a03e9eee77c5",
       "transaction_manifest": "../wings/ac/obiwan_wing_ac_print_manifest.json",
-      "transaction_manifest_sha256": "dd23d87de0c3c44b4975e0208c87ecfa93c85c54eca9eb43785e15b678cde924",
+      "transaction_manifest_sha256": "41feff2903215f31e43b073aaebaf6eeafb890411c819548aeb9c0ce796c45d8",
       "variant": "Obi-Wan-Ac"
     },
     {
       "facts": "../wings/ac/obiwan_wing_ac_facts.json",
-      "facts_sha256": "f0a3e1a8ac139bcd175dd9b33e7bd521c0b937ef023ff0f77f1719b1d1322ee1",
+      "facts_sha256": "10679a78e3ec83735f4f8b590840163409b3025275723bae99d7bdc2276a3bfb",
       "id": "shared:Obi-Wan-Ac:obiwan_wing_ac_left_3of3_um",
       "part": "obiwan_wing_ac_left_3of3_um",
       "print_orientation": "front_face_down",
       "print_sidecar": "../wings/ac/stl/lx521_top_obiwan_wing_ac_left_3of3_um.print.json",
-      "print_sidecar_sha256": "b0e54d2b9fcf1c9e7fd409641148e73611d5c0743dee9dcb082d55c3065c1f67",
+      "print_sidecar_sha256": "651f3e575d1798be2621c59d7ee665e0aed1e6ac993a3b8496a04df062b2e4be",
       "rotation_deg": {
         "x": 180.0,
-        "z": 79.47068197969215
+        "z": 79.47068197969213
       },
       "sites": [
         {
           "actual_face_xyz_mm": [
-            -33.29869483154095,
-            406.47554694034716,
+            -33.425910475596496,
+            406.6298718570247,
             15.1
           ],
           "axis_normal_xy": [
@@ -13450,16 +13668,21 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -33.29869483154094,
+            406.47554694034716
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "carrier_face_xy_mm": [
-            -33.26689092052706,
-            406.4369657111778
+            -33.39410656458261,
+            406.5912906278553
           ],
           "carrier_magnet_fully_buried": true,
           "carrier_to_receiver_face_gap_mm": 0.05,
           "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
           "cavity_center_xyz_mm": [
-            -34.25281216195759,
-            407.63298381542876,
+            -34.38002780601314,
+            407.7873087321063,
             15.1
           ],
           "cavity_depth_mm": 2.1,
@@ -13481,8 +13704,8 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            -33.26689092052706,
-            406.4369657111778,
+            -33.39410656458261,
+            406.5912906278553,
             15.1
           ],
           "interface_gap_mm": 0.05,
@@ -13503,24 +13726,28 @@
           ],
           "name": "um_left",
           "orientation": "radial_axis_tangential_diameter",
+          "outer_surface_face_xy_mm": [
+            -33.39410656458261,
+            406.5912906278553
+          ],
           "owner": "receiver",
           "pair_axis_xyz": [
             -0.6360782202777641,
             0.7716245833877199,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points along the same installed pair-axis vector as the carrier magnet; the face toward the carrier is therefore the opposite pole",
           "print_space": {
             "actual_face_xyz_mm": [
-              19.397260781976627,
-              24.19626512775733,
+              19.525739890713908,
+              24.042990476826162,
               3.1999999999999584
             ],
             "cavity_center_xyz_mm": [
-              20.36085409750666,
-              23.046705245773865,
+              20.48933320624394,
+              22.893430594842698,
               3.1999999999999584
             ],
             "insertion_direction_xyz": [
@@ -13529,18 +13756,18 @@
               -1.0
             ],
             "marked_pole_axis_xyz": [
-              0.642395543686691,
-              -0.7663732546556414,
+              0.6423955436866909,
+              -0.7663732546556417,
               0.0
             ],
             "material_inward_xyz": [
-              0.642395543686691,
-              -0.7663732546556414,
+              0.6423955436866909,
+              -0.7663732546556417,
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              20.328734320322326,
-              23.085023908506642,
+              20.457213429059607,
+              22.93174925757546,
               3.1999999999999584
             ]
           },
@@ -13552,8 +13779,8 @@
           "raw_roof_start_print_z_mm": 5.800000000000001,
           "receiver_magnet_fully_buried": true,
           "receiver_mouth_xy_mm": [
-            -33.29869483154095,
-            406.47554694034716
+            -33.425910475596496,
+            406.6298718570247
           ],
           "required_min_part_top_print_z_mm": 8.850000000000001,
           "roof_angle_deg": 45.0,
@@ -13561,8 +13788,8 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            -34.221008250943704,
-            407.5944025862594,
+            -34.34822389499925,
+            407.7487275029369,
             15.1
           ],
           "structural_load_credit_n": 0.0
@@ -13572,9 +13799,9 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_wings.py": "ca65cc86c5c959e028a2cd6ded617147d06c86c0348acb0fea332fe904279f22",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../gen_obiwan_wing_design_map.py": "564e7466921f8457ea6ff9a7fb1e852618cc34038b2aa1833a469f3457606e57",
-        "../obiwan_wings_cad.py": "6ecac0710afe2d87b2bd678dee809fdc7ac253b189992e4c1279137c735f968c",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../gen_obiwan_wing_design_map.py": "ad8dcad2543f32a801e7bb771097acac61d8e8391cf0b552e54e19de089c38b3",
+        "../obiwan_wings_cad.py": "c01f27a1b58a02e91ee41ffcace9c89914249ae82ca58d52609ad1504604396d",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -13586,16 +13813,16 @@
       ],
       "source_to_stl_matrix": [
         [
-          0.18273862920055323,
+          0.18273862920055345,
           0.9831615296572088,
           0.0,
           -374.14890186846236
         ],
         [
           0.9831615296572088,
-          -0.18273862920055323,
+          -0.18273862920055345,
           0.0,
-          131.2130451253479
+          131.21304512534792
         ],
         [
           0.0,
@@ -13612,19 +13839,19 @@
       ],
       "state": "shared",
       "stl": "../wings/ac/stl/lx521_top_obiwan_wing_ac_left_3of3_um.stl",
-      "stl_sha256": "e2ea1a9fa66115825bea0a69bcdd34d7f4ef8c1d40f066c92482657e17ab8f11",
+      "stl_sha256": "b7b0f67b8af171c5ee2f9ec449ff7655ac3fb6dc6ae9720be5611c023d127068",
       "transaction_manifest": "../wings/ac/obiwan_wing_ac_print_manifest.json",
-      "transaction_manifest_sha256": "dd23d87de0c3c44b4975e0208c87ecfa93c85c54eca9eb43785e15b678cde924",
+      "transaction_manifest_sha256": "41feff2903215f31e43b073aaebaf6eeafb890411c819548aeb9c0ce796c45d8",
       "variant": "Obi-Wan-Ac"
     },
     {
       "facts": "../wings/ac/obiwan_wing_ac_facts.json",
-      "facts_sha256": "f0a3e1a8ac139bcd175dd9b33e7bd521c0b937ef023ff0f77f1719b1d1322ee1",
+      "facts_sha256": "10679a78e3ec83735f4f8b590840163409b3025275723bae99d7bdc2276a3bfb",
       "id": "shared:Obi-Wan-Ac:obiwan_wing_ac_right_1of3_lm_lower",
       "part": "obiwan_wing_ac_right_1of3_lm_lower",
       "print_orientation": "front_face_down",
       "print_sidecar": "../wings/ac/stl/lx521_top_obiwan_wing_ac_right_1of3_lm_lower.print.json",
-      "print_sidecar_sha256": "370918f298a0abf37aeaacb24044d9810a466db87126793884d94e70fa78fe1a",
+      "print_sidecar_sha256": "afa7f731fe9a5b8095c079ee0b8395eec46bbb07365182733b9cf84f276e2be4",
       "rotation_deg": {
         "x": 180.0,
         "z": 73.43137463704318
@@ -13647,6 +13874,11 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            32.0,
+            18.0
+          ],
+          "carrier_cavity_face_inset_mm": 0.0,
           "carrier_face_xy_mm": [
             32.0,
             18.0
@@ -13700,6 +13932,10 @@
           ],
           "name": "lm_lower_right",
           "orientation": "horizontal_base_axis_vertical_diameter",
+          "outer_surface_face_xy_mm": [
+            32.0,
+            18.0
+          ],
           "owner": "receiver",
           "pair_axis_xyz": [
             1.0,
@@ -13769,9 +14005,9 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_wings.py": "ca65cc86c5c959e028a2cd6ded617147d06c86c0348acb0fea332fe904279f22",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../gen_obiwan_wing_design_map.py": "564e7466921f8457ea6ff9a7fb1e852618cc34038b2aa1833a469f3457606e57",
-        "../obiwan_wings_cad.py": "6ecac0710afe2d87b2bd678dee809fdc7ac253b189992e4c1279137c735f968c",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../gen_obiwan_wing_design_map.py": "ad8dcad2543f32a801e7bb771097acac61d8e8391cf0b552e54e19de089c38b3",
+        "../obiwan_wings_cad.py": "c01f27a1b58a02e91ee41ffcace9c89914249ae82ca58d52609ad1504604396d",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -13809,19 +14045,19 @@
       ],
       "state": "shared",
       "stl": "../wings/ac/stl/lx521_top_obiwan_wing_ac_right_1of3_lm_lower.stl",
-      "stl_sha256": "7cb541db53611e26645c80ef4b5e4444362de7c198f05e24c601d81bca719532",
+      "stl_sha256": "796cd54ff54456abd1585ab857f5b6e8b508b77d462c570b3db614fb0becb973",
       "transaction_manifest": "../wings/ac/obiwan_wing_ac_print_manifest.json",
-      "transaction_manifest_sha256": "dd23d87de0c3c44b4975e0208c87ecfa93c85c54eca9eb43785e15b678cde924",
+      "transaction_manifest_sha256": "41feff2903215f31e43b073aaebaf6eeafb890411c819548aeb9c0ce796c45d8",
       "variant": "Obi-Wan-Ac"
     },
     {
       "facts": "../wings/ac/obiwan_wing_ac_facts.json",
-      "facts_sha256": "f0a3e1a8ac139bcd175dd9b33e7bd521c0b937ef023ff0f77f1719b1d1322ee1",
+      "facts_sha256": "10679a78e3ec83735f4f8b590840163409b3025275723bae99d7bdc2276a3bfb",
       "id": "shared:Obi-Wan-Ac:obiwan_wing_ac_right_2of3_lm_upper",
       "part": "obiwan_wing_ac_right_2of3_lm_upper",
       "print_orientation": "front_face_down",
       "print_sidecar": "../wings/ac/stl/lx521_top_obiwan_wing_ac_right_2of3_lm_upper.print.json",
-      "print_sidecar_sha256": "193bee622e29f6b6ad1f298348276f10af6150f712cb9dacae3b89bac1dcc168",
+      "print_sidecar_sha256": "9ffb5d8b23f5f40e755bb5b2241c33bed4df20b1e638f8214f735f50db679430",
       "rotation_deg": {
         "x": 180.0,
         "z": 34.067746949559364
@@ -13829,8 +14065,8 @@
       "sites": [
         {
           "actual_face_xyz_mm": [
-            49.82088083257865,
-            303.1289433619003,
+            49.90855506193647,
+            303.3087021711601,
             12.55
           ],
           "axis_normal_xy": [
@@ -13844,16 +14080,21 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            49.82088083257865,
+            303.1289433619003
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "carrier_face_xy_mm": [
-            49.7989622752392,
-            303.0840036595854
+            49.886636504597014,
+            303.2637624688452
           ],
           "carrier_magnet_fully_buried": true,
           "carrier_to_receiver_face_gap_mm": 0.05,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
-            50.478437552762266,
-            304.4771344313491,
+            50.56611178212008,
+            304.6568932406089,
             12.55
           ],
           "cavity_depth_mm": 2.1,
@@ -13875,8 +14116,8 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            49.7989622752392,
-            303.0840036595854,
+            49.886636504597014,
+            303.2637624688452,
             12.55
           ],
           "interface_gap_mm": 0.05,
@@ -13897,24 +14138,28 @@
           ],
           "name": "lm_upper_right",
           "orientation": "radial_axis_tangential_diameter",
+          "outer_surface_face_xy_mm": [
+            49.886636504597014,
+            303.2637624688452
+          ],
           "owner": "receiver",
           "pair_axis_xyz": [
             0.43837114678907746,
             0.898794046299167,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points along the same installed pair-axis vector as the carrier magnet; the face toward the carrier is therefore the opposite pole",
           "print_space": {
             "actual_face_xyz_mm": [
-              10.848632090427401,
-              75.8071986994427,
+              10.14607135527504,
+              75.56213010610293,
               5.749999999999979
             ],
             "cavity_center_xyz_mm": [
-              12.148556093309338,
-              75.05873521554287,
+              11.445995358157006,
+              74.8136666222031,
               5.749999999999979
             ],
             "insertion_direction_xyz": [
@@ -13933,8 +14178,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              12.105225293213266,
-              75.08368399833955,
+              11.402664558060906,
+              74.83861540499976,
               5.749999999999979
             ]
           },
@@ -13946,8 +14191,8 @@
           "raw_roof_start_print_z_mm": 8.35,
           "receiver_magnet_fully_buried": true,
           "receiver_mouth_xy_mm": [
-            49.82088083257865,
-            303.1289433619003
+            49.90855506193647,
+            303.3087021711601
           ],
           "required_min_part_top_print_z_mm": 11.45,
           "roof_angle_deg": 45.0,
@@ -13955,8 +14200,8 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            50.45651899542281,
-            304.4321947290341,
+            50.54419322478063,
+            304.6119535382939,
             12.55
           ],
           "structural_load_credit_n": 0.0
@@ -13966,9 +14211,9 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_wings.py": "ca65cc86c5c959e028a2cd6ded617147d06c86c0348acb0fea332fe904279f22",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../gen_obiwan_wing_design_map.py": "564e7466921f8457ea6ff9a7fb1e852618cc34038b2aa1833a469f3457606e57",
-        "../obiwan_wings_cad.py": "6ecac0710afe2d87b2bd678dee809fdc7ac253b189992e4c1279137c735f968c",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../gen_obiwan_wing_design_map.py": "ad8dcad2543f32a801e7bb771097acac61d8e8391cf0b552e54e19de089c38b3",
+        "../obiwan_wings_cad.py": "c01f27a1b58a02e91ee41ffcace9c89914249ae82ca58d52609ad1504604396d",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -13983,13 +14228,13 @@
           0.8283757993889879,
           0.5601727724431591,
           0.0,
-          -200.22636050632448
+          -201.10224444186107
         ],
         [
           0.5601727724431591,
           -0.8283757993889879,
           0.0,
-          299.0035785332503
+          298.8583050710971
         ],
         [
           0.0,
@@ -14006,19 +14251,19 @@
       ],
       "state": "shared",
       "stl": "../wings/ac/stl/lx521_top_obiwan_wing_ac_right_2of3_lm_upper.stl",
-      "stl_sha256": "b7166da248e661818cb3b844ff65fc30c8d607bbac1bd02c63b865d93da0243f",
+      "stl_sha256": "7189d57caaf041d66f31dd3f969b2d704493b450e495d81ade624c7fe0582a7c",
       "transaction_manifest": "../wings/ac/obiwan_wing_ac_print_manifest.json",
-      "transaction_manifest_sha256": "dd23d87de0c3c44b4975e0208c87ecfa93c85c54eca9eb43785e15b678cde924",
+      "transaction_manifest_sha256": "41feff2903215f31e43b073aaebaf6eeafb890411c819548aeb9c0ce796c45d8",
       "variant": "Obi-Wan-Ac"
     },
     {
       "facts": "../wings/ac/obiwan_wing_ac_facts.json",
-      "facts_sha256": "f0a3e1a8ac139bcd175dd9b33e7bd521c0b937ef023ff0f77f1719b1d1322ee1",
+      "facts_sha256": "10679a78e3ec83735f4f8b590840163409b3025275723bae99d7bdc2276a3bfb",
       "id": "shared:Obi-Wan-Ac:obiwan_wing_ac_right_3of3_um",
       "part": "obiwan_wing_ac_right_3of3_um",
       "print_orientation": "front_face_down",
       "print_sidecar": "../wings/ac/stl/lx521_top_obiwan_wing_ac_right_3of3_um.print.json",
-      "print_sidecar_sha256": "0b83b6a7ce8f877cde7ddc9b6eb44f1ad35b785aabd576fc182c9dc1f83fb32d",
+      "print_sidecar_sha256": "d4648ec9d116be3cd84a833104e54776bc9f0f93c24f957d36151894853066c2",
       "rotation_deg": {
         "x": 180.0,
         "z": 10.52931802030787
@@ -14026,8 +14271,8 @@
       "sites": [
         {
           "actual_face_xyz_mm": [
-            33.29869483154094,
-            406.47554694034716,
+            33.42591047559649,
+            406.6298718570247,
             15.1
           ],
           "axis_normal_xy": [
@@ -14041,16 +14286,21 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            33.298694831540935,
+            406.47554694034716
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "carrier_face_xy_mm": [
-            33.266890920527054,
-            406.4369657111778
+            33.3941065645826,
+            406.5912906278553
           ],
           "carrier_magnet_fully_buried": true,
           "carrier_to_receiver_face_gap_mm": 0.05,
           "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
           "cavity_center_xyz_mm": [
-            34.252812161957586,
-            407.63298381542876,
+            34.38002780601313,
+            407.7873087321063,
             15.1
           ],
           "cavity_depth_mm": 2.1,
@@ -14072,8 +14322,8 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            33.266890920527054,
-            406.4369657111778,
+            33.3941065645826,
+            406.5912906278553,
             15.1
           ],
           "interface_gap_mm": 0.05,
@@ -14094,24 +14344,28 @@
           ],
           "name": "um_right",
           "orientation": "radial_axis_tangential_diameter",
+          "outer_surface_face_xy_mm": [
+            33.3941065645826,
+            406.5912906278553
+          ],
           "owner": "receiver",
           "pair_axis_xyz": [
             0.636078220277764,
             0.77162458338772,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points along the same installed pair-axis vector as the carrier magnet; the face toward the carrier is therefore the opposite pole",
           "print_space": {
             "actual_face_xyz_mm": [
-              9.443230038328082,
-              39.0867694984467,
+              8.924806258547164,
+              38.95829038970936,
               3.1999999999999584
             ],
             "cavity_center_xyz_mm": [
-              10.592789920311546,
-              38.12317618291661,
+              10.074366140530628,
+              37.99469707417933,
               3.1999999999999584
             ],
             "insertion_direction_xyz": [
@@ -14130,8 +14384,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              10.554471257578754,
-              38.15529596010094,
+              10.036047477797837,
+              38.02681685136366,
               3.1999999999999584
             ]
           },
@@ -14143,8 +14397,8 @@
           "raw_roof_start_print_z_mm": 5.800000000000001,
           "receiver_magnet_fully_buried": true,
           "receiver_mouth_xy_mm": [
-            33.29869483154094,
-            406.47554694034716
+            33.42591047559649,
+            406.6298718570247
           ],
           "required_min_part_top_print_z_mm": 8.850000000000001,
           "roof_angle_deg": 45.0,
@@ -14152,8 +14406,8 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            34.2210082509437,
-            407.5944025862594,
+            34.348223894999244,
+            407.7487275029369,
             15.1
           ],
           "structural_load_credit_n": 0.0
@@ -14163,9 +14417,9 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_wings.py": "ca65cc86c5c959e028a2cd6ded617147d06c86c0348acb0fea332fe904279f22",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../gen_obiwan_wing_design_map.py": "564e7466921f8457ea6ff9a7fb1e852618cc34038b2aa1833a469f3457606e57",
-        "../obiwan_wings_cad.py": "6ecac0710afe2d87b2bd678dee809fdc7ac253b189992e4c1279137c735f968c",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../gen_obiwan_wing_design_map.py": "ad8dcad2543f32a801e7bb771097acac61d8e8391cf0b552e54e19de089c38b3",
+        "../obiwan_wings_cad.py": "c01f27a1b58a02e91ee41ffcace9c89914249ae82ca58d52609ad1504604396d",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -14180,7 +14434,7 @@
           0.9831615296572088,
           0.18273862920055353,
           0.0,
-          -97.57354995926259
+          -98.24524838997463
         ],
         [
           0.18273862920055353,
@@ -14203,19 +14457,19 @@
       ],
       "state": "shared",
       "stl": "../wings/ac/stl/lx521_top_obiwan_wing_ac_right_3of3_um.stl",
-      "stl_sha256": "f93ec751f231746722ffd4583bc99b6d4901d7b572609550295e76d47037e6eb",
+      "stl_sha256": "9d5b7f2c93a510443a000b5c04870b6793db7ffc9f6a400eb9e1a7de55d2ef8d",
       "transaction_manifest": "../wings/ac/obiwan_wing_ac_print_manifest.json",
-      "transaction_manifest_sha256": "dd23d87de0c3c44b4975e0208c87ecfa93c85c54eca9eb43785e15b678cde924",
+      "transaction_manifest_sha256": "41feff2903215f31e43b073aaebaf6eeafb890411c819548aeb9c0ce796c45d8",
       "variant": "Obi-Wan-Ac"
     },
     {
       "facts": "../wings/ae/obiwan_wing_ae_facts.json",
-      "facts_sha256": "a0b75b4ccc3d9047ba94f76a881e9e17fcd62c123274bd7edcc32b1382a30dfd",
+      "facts_sha256": "d7a0f9c63fe61246b1a3e72e19d5fe709784de0b43f216bdf0976e5e3feb23ae",
       "id": "shared:Obi-Wan-Ae:obiwan_wing_ae_left_1of3_lm_lower",
       "part": "obiwan_wing_ae_left_1of3_lm_lower",
       "print_orientation": "front_face_down",
       "print_sidecar": "../wings/ae/stl/lx521_top_obiwan_wing_ae_left_1of3_lm_lower.print.json",
-      "print_sidecar_sha256": "31b2f6964e891eda0b3bcd0e9d92fb87d64c6a1d65c1ae48638d3c5167782a11",
+      "print_sidecar_sha256": "404b47948dad5d91c0fec33ebf60012738b0a0e481cced275985abf196305e61",
       "rotation_deg": {
         "x": 180.0,
         "z": 16.568625362956823
@@ -14238,6 +14492,11 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -32.0,
+            18.0
+          ],
+          "carrier_cavity_face_inset_mm": 0.0,
           "carrier_face_xy_mm": [
             -32.0,
             18.0
@@ -14291,6 +14550,10 @@
           ],
           "name": "lm_lower_left",
           "orientation": "horizontal_base_axis_vertical_diameter",
+          "outer_surface_face_xy_mm": [
+            -32.0,
+            18.0
+          ],
           "owner": "receiver",
           "pair_axis_xyz": [
             -1.0,
@@ -14303,12 +14566,12 @@
           "print_space": {
             "actual_face_xyz_mm": [
               47.45074474582708,
-              199.0602153507687,
+              199.14084682148044,
               5.75000009999998
             ],
             "cavity_center_xyz_mm": [
               46.01302643921253,
-              198.6324700166908,
+              198.71310148740255,
               5.75000009999998
             ],
             "insertion_direction_xyz": [
@@ -14328,7 +14591,7 @@
             ],
             "seated_magnet_center_xyz_mm": [
               46.06095038276635,
-              198.6467281944934,
+              198.72735966520514,
               5.75000009999998
             ]
           },
@@ -14360,9 +14623,9 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_wings.py": "ca65cc86c5c959e028a2cd6ded617147d06c86c0348acb0fea332fe904279f22",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../gen_obiwan_wing_design_map.py": "564e7466921f8457ea6ff9a7fb1e852618cc34038b2aa1833a469f3457606e57",
-        "../obiwan_wings_cad.py": "6ecac0710afe2d87b2bd678dee809fdc7ac253b189992e4c1279137c735f968c",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../gen_obiwan_wing_design_map.py": "ad8dcad2543f32a801e7bb771097acac61d8e8391cf0b552e54e19de089c38b3",
+        "../obiwan_wings_cad.py": "c01f27a1b58a02e91ee41ffcace9c89914249ae82ca58d52609ad1504604396d",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -14383,7 +14646,7 @@
           0.2851635560519251,
           -0.9584788710763636,
           0.0,
-          225.45232700160744
+          225.5329584723192
         ],
         [
           0.0,
@@ -14400,19 +14663,19 @@
       ],
       "state": "shared",
       "stl": "../wings/ae/stl/lx521_top_obiwan_wing_ae_left_1of3_lm_lower.stl",
-      "stl_sha256": "f95070824ed63b6f2f5006aa6d52f48d0a2d546c1b6da61d017e52ab3e631ee8",
+      "stl_sha256": "e3c58d098489ed414166149feda1e0194989d8c9601565dea841d569634d9260",
       "transaction_manifest": "../wings/ae/obiwan_wing_ae_print_manifest.json",
-      "transaction_manifest_sha256": "ec4455c1128da7e7306d2abc756fe305d81a696330cb26e3928e6e9eb31f54ff",
+      "transaction_manifest_sha256": "34a7f02e1e09cda5c13e859ca06920a9cb1c8159219ae977ce705f6fcb73468a",
       "variant": "Obi-Wan-Ae"
     },
     {
       "facts": "../wings/ae/obiwan_wing_ae_facts.json",
-      "facts_sha256": "a0b75b4ccc3d9047ba94f76a881e9e17fcd62c123274bd7edcc32b1382a30dfd",
+      "facts_sha256": "d7a0f9c63fe61246b1a3e72e19d5fe709784de0b43f216bdf0976e5e3feb23ae",
       "id": "shared:Obi-Wan-Ae:obiwan_wing_ae_left_2of3_lm_upper",
       "part": "obiwan_wing_ae_left_2of3_lm_upper",
       "print_orientation": "front_face_down",
       "print_sidecar": "../wings/ae/stl/lx521_top_obiwan_wing_ae_left_2of3_lm_upper.print.json",
-      "print_sidecar_sha256": "c9fe76c8aa03e722c16eb3fa4a1b00040415cd829d06d49ddb1bce810883ce9b",
+      "print_sidecar_sha256": "c083244c0c09a52f555910c2840aba4bc562e071c61160284facfc0034abd895",
       "rotation_deg": {
         "x": 180.0,
         "z": 55.932253050440636
@@ -14420,8 +14683,8 @@
       "sites": [
         {
           "actual_face_xyz_mm": [
-            -49.82088083257866,
-            303.12894336190027,
+            -49.908555061936475,
+            303.3087021711601,
             12.55
           ],
           "axis_normal_xy": [
@@ -14435,16 +14698,21 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -49.82088083257866,
+            303.1289433619003
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "carrier_face_xy_mm": [
-            -49.798962275239205,
-            303.08400365958533
+            -49.88663650459702,
+            303.2637624688452
           ],
           "carrier_magnet_fully_buried": true,
           "carrier_to_receiver_face_gap_mm": 0.05,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
-            -50.47843755276227,
-            304.47713443134904,
+            -50.56611178212009,
+            304.6568932406089,
             12.55
           ],
           "cavity_depth_mm": 2.1,
@@ -14466,8 +14734,8 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            -49.798962275239205,
-            303.08400365958533,
+            -49.88663650459702,
+            303.2637624688452,
             12.55
           ],
           "interface_gap_mm": 0.05,
@@ -14488,24 +14756,28 @@
           ],
           "name": "lm_upper_left",
           "orientation": "radial_axis_tangential_diameter",
+          "outer_surface_face_xy_mm": [
+            -49.88663650459702,
+            303.2637624688452
+          ],
           "owner": "receiver",
           "pair_axis_xyz": [
             -0.4383711467890776,
             0.8987940462991671,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points along the same installed pair-axis vector as the carrier magnet; the face toward the carrier is therefore the opposite pole",
           "print_space": {
             "actual_face_xyz_mm": [
-              138.42301207408929,
-              58.64175818407165,
+              138.5228072052759,
+              58.46843498368736,
               5.75000009999998
             ],
             "cavity_center_xyz_mm": [
-              139.1714755579891,
-              57.34183418118971,
+              139.27127068917576,
+              57.168510980805394,
               5.75000009999998
             ],
             "insertion_direction_xyz": [
@@ -14524,8 +14796,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              139.14652677519243,
-              57.38516498128581,
+              139.24632190637908,
+              57.211841780901494,
               5.75000009999998
             ]
           },
@@ -14537,8 +14809,8 @@
           "raw_roof_start_print_z_mm": 8.35,
           "receiver_magnet_fully_buried": true,
           "receiver_mouth_xy_mm": [
-            -49.82088083257866,
-            303.12894336190027
+            -49.908555061936475,
+            303.3087021711601
           ],
           "required_min_part_top_print_z_mm": 11.45,
           "roof_angle_deg": 45.0,
@@ -14546,8 +14818,8 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            -50.45651899542282,
-            304.43219472903405,
+            -50.544193224780635,
+            304.6119535382939,
             12.55
           ],
           "structural_load_credit_n": 0.0
@@ -14557,9 +14829,9 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_wings.py": "ca65cc86c5c959e028a2cd6ded617147d06c86c0348acb0fea332fe904279f22",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../gen_obiwan_wing_design_map.py": "564e7466921f8457ea6ff9a7fb1e852618cc34038b2aa1833a469f3457606e57",
-        "../obiwan_wings_cad.py": "6ecac0710afe2d87b2bd678dee809fdc7ac253b189992e4c1279137c735f968c",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../gen_obiwan_wing_design_map.py": "ad8dcad2543f32a801e7bb771097acac61d8e8391cf0b552e54e19de089c38b3",
+        "../obiwan_wings_cad.py": "c01f27a1b58a02e91ee41ffcace9c89914249ae82ca58d52609ad1504604396d",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -14574,13 +14846,13 @@
           0.5601727724431591,
           0.8283757993889879,
           0.0,
-          -84.77336775971824
+          -84.77336775971825
         ],
         [
           0.8283757993889879,
           -0.5601727724431591,
           0.0,
-          269.71675078082353
+          269.7167507808235
         ],
         [
           0.0,
@@ -14597,19 +14869,19 @@
       ],
       "state": "shared",
       "stl": "../wings/ae/stl/lx521_top_obiwan_wing_ae_left_2of3_lm_upper.stl",
-      "stl_sha256": "c5045be7f486c515fca7e65542a3186155dfd0053ecbd0ce97deff0efd454204",
+      "stl_sha256": "3e79b960ad86fbe9da0c34c1caf03a77f16f6b4fd133f079a2b1bfc4bf6822d0",
       "transaction_manifest": "../wings/ae/obiwan_wing_ae_print_manifest.json",
-      "transaction_manifest_sha256": "ec4455c1128da7e7306d2abc756fe305d81a696330cb26e3928e6e9eb31f54ff",
+      "transaction_manifest_sha256": "34a7f02e1e09cda5c13e859ca06920a9cb1c8159219ae977ce705f6fcb73468a",
       "variant": "Obi-Wan-Ae"
     },
     {
       "facts": "../wings/ae/obiwan_wing_ae_facts.json",
-      "facts_sha256": "a0b75b4ccc3d9047ba94f76a881e9e17fcd62c123274bd7edcc32b1382a30dfd",
+      "facts_sha256": "d7a0f9c63fe61246b1a3e72e19d5fe709784de0b43f216bdf0976e5e3feb23ae",
       "id": "shared:Obi-Wan-Ae:obiwan_wing_ae_left_3of3_um",
       "part": "obiwan_wing_ae_left_3of3_um",
       "print_orientation": "front_face_down",
       "print_sidecar": "../wings/ae/stl/lx521_top_obiwan_wing_ae_left_3of3_um.print.json",
-      "print_sidecar_sha256": "295c227a52d3c1fabcdf89e409c1c1a7fb3554cd38eb363515e03bfbd1099495",
+      "print_sidecar_sha256": "6f9cf841f75d5356005ced73aebec79f497e72000a851b0cc3667df5d3b7f584",
       "rotation_deg": {
         "x": 180.0,
         "z": 169.47068197969213
@@ -14617,8 +14889,8 @@
       "sites": [
         {
           "actual_face_xyz_mm": [
-            -33.29869483154095,
-            406.47554694034716,
+            -33.425910475596496,
+            406.6298718570247,
             15.1
           ],
           "axis_normal_xy": [
@@ -14632,16 +14904,21 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            -33.29869483154094,
+            406.47554694034716
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "carrier_face_xy_mm": [
-            -33.26689092052706,
-            406.4369657111778
+            -33.39410656458261,
+            406.5912906278553
           ],
           "carrier_magnet_fully_buried": true,
           "carrier_to_receiver_face_gap_mm": 0.05,
           "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
           "cavity_center_xyz_mm": [
-            -34.25281216195759,
-            407.63298381542876,
+            -34.38002780601314,
+            407.7873087321063,
             15.1
           ],
           "cavity_depth_mm": 2.1,
@@ -14663,8 +14940,8 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            -33.26689092052706,
-            406.4369657111778,
+            -33.39410656458261,
+            406.5912906278553,
             15.1
           ],
           "interface_gap_mm": 0.05,
@@ -14685,24 +14962,28 @@
           ],
           "name": "um_left",
           "orientation": "radial_axis_tangential_diameter",
+          "outer_surface_face_xy_mm": [
+            -33.39410656458261,
+            406.5912906278553
+          ],
           "owner": "receiver",
           "pair_axis_xyz": [
             -0.6360782202777641,
             0.7716245833877199,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points along the same installed pair-axis vector as the carrier magnet; the face toward the carrier is therefore the opposite pole",
           "print_space": {
             "actual_face_xyz_mm": [
-              9.44323013832809,
-              19.397260881976592,
+              8.924806358547158,
+              19.52573999071393,
               3.2000000999999596
             ],
             "cavity_center_xyz_mm": [
-              10.592790020311554,
-              20.360854197506683,
+              10.074366240530622,
+              20.48933330624402,
               3.2000000999999596
             ],
             "insertion_direction_xyz": [
@@ -14721,8 +15002,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              10.554471357578777,
-              20.32873442032235,
+              10.03604757779786,
+              20.457213529059686,
               3.2000000999999596
             ]
           },
@@ -14734,8 +15015,8 @@
           "raw_roof_start_print_z_mm": 5.800000000000001,
           "receiver_magnet_fully_buried": true,
           "receiver_mouth_xy_mm": [
-            -33.29869483154095,
-            406.47554694034716
+            -33.425910475596496,
+            406.6298718570247
           ],
           "required_min_part_top_print_z_mm": 8.850000000000001,
           "roof_angle_deg": 45.0,
@@ -14743,8 +15024,8 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            -34.221008250943704,
-            407.5944025862594,
+            -34.34822389499925,
+            407.7487275029369,
             15.1
           ],
           "structural_load_credit_n": 0.0
@@ -14754,9 +15035,9 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_wings.py": "ca65cc86c5c959e028a2cd6ded617147d06c86c0348acb0fea332fe904279f22",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../gen_obiwan_wing_design_map.py": "564e7466921f8457ea6ff9a7fb1e852618cc34038b2aa1833a469f3457606e57",
-        "../obiwan_wings_cad.py": "6ecac0710afe2d87b2bd678dee809fdc7ac253b189992e4c1279137c735f968c",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../gen_obiwan_wing_design_map.py": "ad8dcad2543f32a801e7bb771097acac61d8e8391cf0b552e54e19de089c38b3",
+        "../obiwan_wings_cad.py": "c01f27a1b58a02e91ee41ffcace9c89914249ae82ca58d52609ad1504604396d",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -14771,7 +15052,7 @@
           -0.9831615296572087,
           0.18273862920055373,
           0.0,
-          -97.57354985926267
+          -98.24524828997471
         ],
         [
           0.18273862920055373,
@@ -14794,19 +15075,19 @@
       ],
       "state": "shared",
       "stl": "../wings/ae/stl/lx521_top_obiwan_wing_ae_left_3of3_um.stl",
-      "stl_sha256": "468be0e10ef1653a469136749234a0f7bcc436df3b44bda311e5cfa873bd06e0",
+      "stl_sha256": "bec8478e6647dff271aaca204f1d1e4a8a4dbd9718428708d31b218c4e3fc1c6",
       "transaction_manifest": "../wings/ae/obiwan_wing_ae_print_manifest.json",
-      "transaction_manifest_sha256": "ec4455c1128da7e7306d2abc756fe305d81a696330cb26e3928e6e9eb31f54ff",
+      "transaction_manifest_sha256": "34a7f02e1e09cda5c13e859ca06920a9cb1c8159219ae977ce705f6fcb73468a",
       "variant": "Obi-Wan-Ae"
     },
     {
       "facts": "../wings/ae/obiwan_wing_ae_facts.json",
-      "facts_sha256": "a0b75b4ccc3d9047ba94f76a881e9e17fcd62c123274bd7edcc32b1382a30dfd",
+      "facts_sha256": "d7a0f9c63fe61246b1a3e72e19d5fe709784de0b43f216bdf0976e5e3feb23ae",
       "id": "shared:Obi-Wan-Ae:obiwan_wing_ae_right_1of3_lm_lower",
       "part": "obiwan_wing_ae_right_1of3_lm_lower",
       "print_orientation": "front_face_down",
       "print_sidecar": "../wings/ae/stl/lx521_top_obiwan_wing_ae_right_1of3_lm_lower.print.json",
-      "print_sidecar_sha256": "f24cd23a80a555faf62a22d19af43f17018feff6b0b69e482caec12385444501",
+      "print_sidecar_sha256": "c28d98b02767658a91e9577876a3ade3060754d47f245fdcfedc2f53a730298e",
       "rotation_deg": {
         "x": 180.0,
         "z": 73.43137463704318
@@ -14829,6 +15110,11 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            32.0,
+            18.0
+          ],
+          "carrier_cavity_face_inset_mm": 0.0,
           "carrier_face_xy_mm": [
             32.0,
             18.0
@@ -14882,6 +15168,10 @@
           ],
           "name": "lm_lower_right",
           "orientation": "horizontal_base_axis_vertical_diameter",
+          "outer_surface_face_xy_mm": [
+            32.0,
+            18.0
+          ],
           "owner": "receiver",
           "pair_axis_xyz": [
             1.0,
@@ -14951,9 +15241,9 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_wings.py": "ca65cc86c5c959e028a2cd6ded617147d06c86c0348acb0fea332fe904279f22",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../gen_obiwan_wing_design_map.py": "564e7466921f8457ea6ff9a7fb1e852618cc34038b2aa1833a469f3457606e57",
-        "../obiwan_wings_cad.py": "6ecac0710afe2d87b2bd678dee809fdc7ac253b189992e4c1279137c735f968c",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../gen_obiwan_wing_design_map.py": "ad8dcad2543f32a801e7bb771097acac61d8e8391cf0b552e54e19de089c38b3",
+        "../obiwan_wings_cad.py": "c01f27a1b58a02e91ee41ffcace9c89914249ae82ca58d52609ad1504604396d",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -14991,19 +15281,19 @@
       ],
       "state": "shared",
       "stl": "../wings/ae/stl/lx521_top_obiwan_wing_ae_right_1of3_lm_lower.stl",
-      "stl_sha256": "482646a7e1ba01ea57a77caaf1a64c80f5508a5f258128ce2ce9236555998ba0",
+      "stl_sha256": "d65674ae6e0f6b1344b2b10c007f9ed3d62709e8701be38b5cef75f80adc520e",
       "transaction_manifest": "../wings/ae/obiwan_wing_ae_print_manifest.json",
-      "transaction_manifest_sha256": "ec4455c1128da7e7306d2abc756fe305d81a696330cb26e3928e6e9eb31f54ff",
+      "transaction_manifest_sha256": "34a7f02e1e09cda5c13e859ca06920a9cb1c8159219ae977ce705f6fcb73468a",
       "variant": "Obi-Wan-Ae"
     },
     {
       "facts": "../wings/ae/obiwan_wing_ae_facts.json",
-      "facts_sha256": "a0b75b4ccc3d9047ba94f76a881e9e17fcd62c123274bd7edcc32b1382a30dfd",
+      "facts_sha256": "d7a0f9c63fe61246b1a3e72e19d5fe709784de0b43f216bdf0976e5e3feb23ae",
       "id": "shared:Obi-Wan-Ae:obiwan_wing_ae_right_2of3_lm_upper",
       "part": "obiwan_wing_ae_right_2of3_lm_upper",
       "print_orientation": "front_face_down",
       "print_sidecar": "../wings/ae/stl/lx521_top_obiwan_wing_ae_right_2of3_lm_upper.print.json",
-      "print_sidecar_sha256": "039ce03f3fbdf6b7093acefd80aa8e58b495070e4c1ead2cecf7cacb37ad547f",
+      "print_sidecar_sha256": "ce616699e272aae4f2d842639e8ffd6fa00044a74d902e4098f5b037e5052cf1",
       "rotation_deg": {
         "x": 180.0,
         "z": 34.067746949559364
@@ -15011,8 +15301,8 @@
       "sites": [
         {
           "actual_face_xyz_mm": [
-            49.82088083257865,
-            303.1289433619003,
+            49.90855506193647,
+            303.3087021711601,
             12.55
           ],
           "axis_normal_xy": [
@@ -15026,16 +15316,21 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            49.82088083257865,
+            303.1289433619003
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "carrier_face_xy_mm": [
-            49.7989622752392,
-            303.0840036595854
+            49.886636504597014,
+            303.2637624688452
           ],
           "carrier_magnet_fully_buried": true,
           "carrier_to_receiver_face_gap_mm": 0.05,
           "cavity_bury_roof_start_print_z_mm": 8.4,
           "cavity_center_xyz_mm": [
-            50.478437552762266,
-            304.4771344313491,
+            50.56611178212008,
+            304.6568932406089,
             12.55
           ],
           "cavity_depth_mm": 2.1,
@@ -15057,8 +15352,8 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            49.7989622752392,
-            303.0840036595854,
+            49.886636504597014,
+            303.2637624688452,
             12.55
           ],
           "interface_gap_mm": 0.05,
@@ -15079,24 +15374,28 @@
           ],
           "name": "lm_upper_right",
           "orientation": "radial_axis_tangential_diameter",
+          "outer_surface_face_xy_mm": [
+            49.886636504597014,
+            303.2637624688452
+          ],
           "owner": "receiver",
           "pair_axis_xyz": [
             0.43837114678907746,
             0.898794046299167,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points along the same installed pair-axis vector as the carrier magnet; the face toward the carrier is therefore the opposite pole",
           "print_space": {
             "actual_face_xyz_mm": [
-              10.848632190427395,
-              75.80719879944272,
+              10.146071455275035,
+              75.56213020610295,
               5.75000009999998
             ],
             "cavity_center_xyz_mm": [
-              12.148556193309332,
-              75.05873531554289,
+              11.445995458157,
+              74.81366672220312,
               5.75000009999998
             ],
             "insertion_direction_xyz": [
@@ -15115,8 +15414,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              12.10522539321326,
-              75.08368409833957,
+              11.4026646580609,
+              74.83861550499978,
               5.75000009999998
             ]
           },
@@ -15128,8 +15427,8 @@
           "raw_roof_start_print_z_mm": 8.35,
           "receiver_magnet_fully_buried": true,
           "receiver_mouth_xy_mm": [
-            49.82088083257865,
-            303.1289433619003
+            49.90855506193647,
+            303.3087021711601
           ],
           "required_min_part_top_print_z_mm": 11.45,
           "roof_angle_deg": 45.0,
@@ -15137,8 +15436,8 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            50.45651899542281,
-            304.4321947290341,
+            50.54419322478063,
+            304.6119535382939,
             12.55
           ],
           "structural_load_credit_n": 0.0
@@ -15148,9 +15447,9 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_wings.py": "ca65cc86c5c959e028a2cd6ded617147d06c86c0348acb0fea332fe904279f22",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../gen_obiwan_wing_design_map.py": "564e7466921f8457ea6ff9a7fb1e852618cc34038b2aa1833a469f3457606e57",
-        "../obiwan_wings_cad.py": "6ecac0710afe2d87b2bd678dee809fdc7ac253b189992e4c1279137c735f968c",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../gen_obiwan_wing_design_map.py": "ad8dcad2543f32a801e7bb771097acac61d8e8391cf0b552e54e19de089c38b3",
+        "../obiwan_wings_cad.py": "c01f27a1b58a02e91ee41ffcace9c89914249ae82ca58d52609ad1504604396d",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -15165,13 +15464,13 @@
           0.8283757993889879,
           0.5601727724431591,
           0.0,
-          -200.2263604063245
+          -201.10224434186108
         ],
         [
           0.5601727724431591,
           -0.8283757993889879,
           0.0,
-          299.0035786332503
+          298.85830517109713
         ],
         [
           0.0,
@@ -15188,19 +15487,19 @@
       ],
       "state": "shared",
       "stl": "../wings/ae/stl/lx521_top_obiwan_wing_ae_right_2of3_lm_upper.stl",
-      "stl_sha256": "4c3cde086f2802d123e0112a4fe32fe3882006294d50ce8b0922f74968999d0c",
+      "stl_sha256": "11f89e50ac8559b0f424d452027d2b74a68bc1b9c075cd19c58fe99c2c089983",
       "transaction_manifest": "../wings/ae/obiwan_wing_ae_print_manifest.json",
-      "transaction_manifest_sha256": "ec4455c1128da7e7306d2abc756fe305d81a696330cb26e3928e6e9eb31f54ff",
+      "transaction_manifest_sha256": "34a7f02e1e09cda5c13e859ca06920a9cb1c8159219ae977ce705f6fcb73468a",
       "variant": "Obi-Wan-Ae"
     },
     {
       "facts": "../wings/ae/obiwan_wing_ae_facts.json",
-      "facts_sha256": "a0b75b4ccc3d9047ba94f76a881e9e17fcd62c123274bd7edcc32b1382a30dfd",
+      "facts_sha256": "d7a0f9c63fe61246b1a3e72e19d5fe709784de0b43f216bdf0976e5e3feb23ae",
       "id": "shared:Obi-Wan-Ae:obiwan_wing_ae_right_3of3_um",
       "part": "obiwan_wing_ae_right_3of3_um",
       "print_orientation": "front_face_down",
       "print_sidecar": "../wings/ae/stl/lx521_top_obiwan_wing_ae_right_3of3_um.print.json",
-      "print_sidecar_sha256": "4cef870c62c6ae64861ff0b4a6d1d0d540db50322be4d1513038b9069938b3de",
+      "print_sidecar_sha256": "626fe9ebff56b4fc0058499339912b5834bc20b831dabd0f0f5417b765fd655b",
       "rotation_deg": {
         "x": 180.0,
         "z": 10.52931802030787
@@ -15208,8 +15507,8 @@
       "sites": [
         {
           "actual_face_xyz_mm": [
-            33.29869483154094,
-            406.47554694034716,
+            33.42591047559649,
+            406.6298718570247,
             15.1
           ],
           "axis_normal_xy": [
@@ -15223,16 +15522,21 @@
             18.3
           ],
           "captive_land_mm": 3.0,
+          "carrier_cavity_datum_xy_mm": [
+            33.298694831540935,
+            406.47554694034716
+          ],
+          "carrier_cavity_face_inset_mm": 0.15,
           "carrier_face_xy_mm": [
-            33.266890920527054,
-            406.4369657111778
+            33.3941065645826,
+            406.5912906278553
           ],
           "carrier_magnet_fully_buried": true,
           "carrier_to_receiver_face_gap_mm": 0.05,
           "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
           "cavity_center_xyz_mm": [
-            34.252812161957586,
-            407.63298381542876,
+            34.38002780601313,
+            407.7873087321063,
             15.1
           ],
           "cavity_depth_mm": 2.1,
@@ -15254,8 +15558,8 @@
             0.0
           ],
           "interface_datum_xyz_mm": [
-            33.266890920527054,
-            406.4369657111778,
+            33.3941065645826,
+            406.5912906278553,
             15.1
           ],
           "interface_gap_mm": 0.05,
@@ -15276,24 +15580,28 @@
           ],
           "name": "um_right",
           "orientation": "radial_axis_tangential_diameter",
+          "outer_surface_face_xy_mm": [
+            33.3941065645826,
+            406.5912906278553
+          ],
           "owner": "receiver",
           "pair_axis_xyz": [
             0.636078220277764,
             0.77162458338772,
             0.0
           ],
-          "paired_magnet_face_separation_mm": 0.95,
+          "paired_magnet_face_separation_mm": 1.1,
           "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
           "polarity_instruction": "marked/N pole points along the same installed pair-axis vector as the carrier magnet; the face toward the carrier is therefore the opposite pole",
           "print_space": {
             "actual_face_xyz_mm": [
-              9.443230138328076,
-              39.08676959844672,
+              8.924806358547158,
+              38.958290489709384,
               3.2000000999999596
             ],
             "cavity_center_xyz_mm": [
-              10.59279002031154,
-              38.12317628291663,
+              10.074366240530622,
+              37.99469717417935,
               3.2000000999999596
             ],
             "insertion_direction_xyz": [
@@ -15312,8 +15620,8 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              10.554471357578748,
-              38.155296060100966,
+              10.03604757779783,
+              38.026816951363685,
               3.2000000999999596
             ]
           },
@@ -15325,8 +15633,8 @@
           "raw_roof_start_print_z_mm": 5.800000000000001,
           "receiver_magnet_fully_buried": true,
           "receiver_mouth_xy_mm": [
-            33.29869483154094,
-            406.47554694034716
+            33.42591047559649,
+            406.6298718570247
           ],
           "required_min_part_top_print_z_mm": 8.850000000000001,
           "roof_angle_deg": 45.0,
@@ -15334,8 +15642,8 @@
           "roof_height_mm": 2.6000000000000005,
           "roof_plane_grid_mm": 0.2,
           "seated_magnet_center_xyz_mm": [
-            34.2210082509437,
-            407.5944025862594,
+            34.348223894999244,
+            407.7487275029369,
             15.1
           ],
           "structural_load_credit_n": 0.0
@@ -15345,9 +15653,9 @@
         "../captive_magnets.py": "d84f83d4b24c2df30e6df5e5def82bbcb997731c8e7fc3d30f0ad897dfedab97",
         "../export_obiwan_wings.py": "ca65cc86c5c959e028a2cd6ded617147d06c86c0348acb0fea332fe904279f22",
         "../front_down_contract.py": "8460829ed12cde317dec9be20a32452feb4b5ace5170d9925a1ccffa8b0354d6",
-        "../gen_obiwan_wing_design_map.py": "564e7466921f8457ea6ff9a7fb1e852618cc34038b2aa1833a469f3457606e57",
-        "../obiwan_wings_cad.py": "6ecac0710afe2d87b2bd678dee809fdc7ac253b189992e4c1279137c735f968c",
-        "../top_baffle_nd25fw4_obiwan.py": "8d70aa4432fe91765d523d50d99ada9f8d79571546a4530fef655b5af7a9aff5"
+        "../gen_obiwan_wing_design_map.py": "ad8dcad2543f32a801e7bb771097acac61d8e8391cf0b552e54e19de089c38b3",
+        "../obiwan_wings_cad.py": "c01f27a1b58a02e91ee41ffcace9c89914249ae82ca58d52609ad1504604396d",
+        "../top_baffle_nd25fw4_obiwan.py": "d65e399c628464cd09134db62028f9f8046eb160eb402faeb66a2ddfb23ec9f1"
       },
       "source_files": [
         "../captive_magnets.py",
@@ -15362,7 +15670,7 @@
           0.9831615296572088,
           0.18273862920055353,
           0.0,
-          -97.5735498592626
+          -98.24524828997464
         ],
         [
           0.18273862920055353,
@@ -15385,9 +15693,9 @@
       ],
       "state": "shared",
       "stl": "../wings/ae/stl/lx521_top_obiwan_wing_ae_right_3of3_um.stl",
-      "stl_sha256": "3ee03affe36450f6712267a2a8360c5f422f5cc9e0e4731c04240a6efbfe267e",
+      "stl_sha256": "43e13235388ff9d4bb1a23248d459a64797522abe067f215b518d7491a77e52a",
       "transaction_manifest": "../wings/ae/obiwan_wing_ae_print_manifest.json",
-      "transaction_manifest_sha256": "ec4455c1128da7e7306d2abc756fe305d81a696330cb26e3928e6e9eb31f54ff",
+      "transaction_manifest_sha256": "34a7f02e1e09cda5c13e859ca06920a9cb1c8159219ae977ce705f6fcb73468a",
       "variant": "Obi-Wan-Ae"
     }
   ],
@@ -15441,8 +15749,10 @@
     "magnet_depth_mm": 2.0,
     "magnet_diameter_mm": 5.0,
     "nominal_magnet": "D5.0 x 2.0 mm disc",
-    "nominal_paired_magnet_face_separation_mm": 0.95,
-    "paired_magnet_face_separation_mm": 0.95,
+    "paired_magnet_face_separation_by_interface_kind_mm": {
+      "base_side": 0.95,
+      "ring": 1.1
+    },
     "roof_angle_deg": 45.0,
     "roof_height_mm": 2.6000000000000005,
     "roof_plane_grid_mm": 0.2,
@@ -15541,7 +15851,7 @@
     "scope": "every_released_acoustic_part",
     "slicer": "Bambu Studio P2S 0.4 mm / 0.16 mm Classic"
   },
-  "schema_sha256": "3bb5d05ee284fcede2770f2912f0003efc72342c1cd0349fa99153868e444c74",
+  "schema_sha256": "d9ffa903415d55a810fbf724f747ff18ecbb85ff2efcf6fec8fd16776ee55109",
   "schema_version": 1,
-  "source_revision": "50a10b10d8381acd37be2cc1a7be9edd29423792e81b2e1a32c5bdb889480a4f"
+  "source_revision": "3ae587dffd676714636c93469ad3c7ac58fc210f54fbdc85106ac1c1f2868f59"
 }

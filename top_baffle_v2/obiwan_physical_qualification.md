@@ -62,8 +62,9 @@ total male length). The top owns 2.65 mm-deep blind sockets with 0.12 mm radial
 and 0.25 mm end clearance: right is round Ø1.84, while left is X-relieved to
 1.96 × 1.84 mm. This round-plus-relieved constraint accepts ±0.30 mm relative
 pitch error across the 218.374 mm spacing instead of binding like two tight
-round sockets. Small exterior lands outside the LM recess add about 1.40 mm
-of local perimeter growth but no extra screw or standalone retention/load
+round sockets. Small exterior lands outside the LM recess reach R114.4036:
+1.4036 mm beyond structural R113.0 and 0.6036 mm beyond the finalized R113.8
+visible fairing, but add no extra screw or standalone retention/load
 credit. Ac/Ae provide 0.25 mm clearance pockets around the lands, wholly at
 the hidden carrier interface between their front and rear faces; printed fit
 remains coupon-qualified.
@@ -95,8 +96,16 @@ credit even after this process passes.
 
 The approved station uses an actual D5.0 × 2.0 disc in an Ø5.20 × 2.10 cavity,
 0.45 mm axial skins on both faces, and a support-free 45° roof. No glue or
-external access is permitted. Across a 0.05 mm mating air gap, opposing magnet
-faces are nominally 0.95 mm apart.
+external access is permitted. The LM-upper and UM ring stations retain
+structural radii R113.0/R51.7 beneath continuous exposed R113.8/R52.5 side
+fairings. Those fairings stop only inside the existing LM--UM and T--UM
+cusp/service regions; the LM--UM stop preserves the 0.40 mm inter-carrier
+gap. Their cavity construction datum is structural radius
++0.65 mm, 0.15 mm beneath the exposed surface, with no local pad, boss, flat,
+or visible cue. Across the 0.05 mm mating air gap and matching Ac/Ae receivers,
+opposing magnet faces are nominally 1.10 mm apart at those ring stations. The
+LM-lower base-side pair has no 0.15 mm inset and remains nominally 0.95 mm
+apart. The D5 × 2 geometry and both 0.45 mm skins are unchanged.
 
 ## Per-state hardware and process identity
 
@@ -203,7 +212,7 @@ than recording only “looks good.”
 | Final free-LM placement plus UM/T buried-span fishing and free-span placement, electrical continuity and insulation test | PENDING | PENDING |
 | Final strain-relief pull transfers cable load away from MU tabs | PENDING | PENDING |
 | No-floor bridge plate has a soft cubic blend into R113 and occupies z=5.3..18.3; four rear Ø6.4 x 6.8 insert bores retain a 6.2 mm front floor, the centered UM/T mouths at x=±8/y=82 open only at rear z=5.3, and no geometry extends behind the existing LM-pad envelope | N/A — integral stand/lane geometry replaces it | PENDING |
-| Six actual Ø5 x 2 magnets are pause-inserted and fully buried in Ø5.20 x 2.10 surface-normal cavities with continuous 0.45 mm axial skins and support-free 45° roofs: preserve upper LM axes 64°/116°, lower LM base-side sites `(x,y,z)=(±32,18,12.55)` with outward normals `(-1,0)`/`(1,0)`, and UM axes 50.5°/129.5° at z=15.1; verify every Obi-Wan ring site has only the +0.60 mm outward backing adaptation required to clear the flange seat; verify floor/no-floor station coincidence, route/insert/structure keepouts, three matching Ac/Ae receivers per side, 0.05 mm mating gap, 0.95 mm nominal magnet separation, no glue, no external access and no proud ears | PENDING | PENDING |
+| Six actual Ø5 x 2 magnets are pause-inserted and fully buried in Ø5.20 x 2.10 surface-normal cavities with continuous 0.45 mm axial skins and support-free 45° roofs: preserve upper LM axes 64°/116°, lower LM base-side sites `(x,y,z)=(±32,18,12.55)` with outward normals `(-1,0)`/`(1,0)`, and UM axes 50.5°/129.5° at z=15.1; verify R113.0/R51.7 structural rings, smooth exposed R113.8/R52.5 side fairings clipped only inside the existing LM--UM and T--UM cusp/service regions with the 0.40 mm LM--UM inter-carrier gap preserved, and ring cavity construction datums at structural radius +0.65 mm / 0.15 mm beneath the exposed surface; verify there is no local pad, boss, flat, visible cue, external access, or proud ear; verify floor/no-floor station coincidence, route/insert/structure keepouts, three matching Ac/Ae receivers per side, the 0.05 mm mating gap, 1.10 mm nominal ring-pair magnet-face separation, and the unchanged 0.95 mm LM-lower base-pair separation | PENDING | PENDING |
 | Every released acoustic STL printed front-face-down; for each magnet-bearing STL, sliced preview/G-code records the lowest open, representative open, last fully open, first closing and fully sealed layers; retaining walls remain continuous; each disc was inserted with manifest polarity, fully seated below the completed layer and clear of the resumed nozzle path | PENDING | PENDING |
 | Coupon-equivalent regression markers on the tested P2S 0.4 mm / 0.16 mm profile remain UM Z=5.96 mm and LM Z=8.52 mm; unrelated parts use their own sliced schedules rather than these values | PENDING | PENDING |
 | UM passage is buried only in LM and ends in a flush free-cable handoff; the UM carrier has no printed rear UM duct or D82 mouth, and the physical cable remains clear behind UM through its R15/R20 service path | PENDING | PENDING |

@@ -284,6 +284,18 @@ def test_catalog_schema_requires_x180_plus_numeric_z() -> None:
     ) in conditional_requirements
 
 
+def test_catalog_global_pair_spacing_is_not_ambiguous() -> None:
+    payload = json.loads((
+        ROOT / "review" / "captive_magnet_release_catalog.json"
+    ).read_text(encoding="utf-8"))
+    geometry = payload["geometry"]
+    assert "paired_magnet_face_separation_mm" not in geometry
+    assert "nominal_paired_magnet_face_separation_mm" not in geometry
+    assert geometry[
+        "paired_magnet_face_separation_by_interface_kind_mm"
+    ] == {"base_side": 0.95, "ring": 1.10}
+
+
 def test_catalog_source_freezes_56_stls_and_102_stations() -> None:
     """Audit release arithmetic without importing build123d/OCC locally."""
     path = ROOT / "generate_captive_magnet_catalog.py"
@@ -625,7 +637,8 @@ def test_r6f_carriers_reuse_make_stage_across_assertion_edits() -> None:
             assert r6f._validated_obiwan_stage_paths(stand_foot) is resolved
         select_state.assert_called_once_with(stand_foot)
         load_manifest.assert_called_once_with(
-            manifest, stand_foot=stand_foot)
+            manifest, stand_foot=stand_foot,
+            require_active_environment=False)
         resolve_parts.assert_called_once_with(manifest, payload)
 
     stage = {
@@ -780,7 +793,9 @@ def test_physical_reference_coupon_freezes_zero_interface_gap() -> None:
     assert source.count("COUPON_INTERFACE_GAP_MM") >= 8
     readme = (path.parent / "README.md").read_text(encoding="utf-8")
     assert "coupon magnets by 0.90 mm" in readme
-    assert "0.95 mm nominal" in readme
+    assert "1.10 mm nominal magnet-to-magnet separation" in readme
+    assert "LM-lower base-side pair" in readme
+    assert "0.95 mm" in readme
 
 
 def _rotation_keywords(path: Path, function_name: str) -> tuple[tuple[str, object], ...]:
@@ -1276,6 +1291,7 @@ def main() -> None:
     tests = (
         test_obiwan_release_manifest_binds_print_sidecars,
         test_catalog_schema_requires_x180_plus_numeric_z,
+        test_catalog_global_pair_spacing_is_not_ambiguous,
         test_catalog_source_freezes_56_stls_and_102_stations,
         test_wing_catalog_identity_preserves_frozen_release_case,
         test_catalog_generator_uses_release_wide_acoustic_print_contract,

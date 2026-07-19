@@ -278,13 +278,20 @@ def _selected_sites(side: str) -> tuple[dict, ...]:
     return tuple(sorted(selected, key=lambda site: order[site["name"]]))
 
 
+def _receiver_datum_face(site) -> tuple[float, float]:
+    """Visible carrier surface used by the mating wing receiver."""
+    face = site.get("outer_surface_face", site["face"])
+    return float(face[0]), float(face[1])
+
+
 def receiver_facts(side: str) -> tuple[dict, ...]:
     """Serializable captive contract for all three receivers on one side."""
     records = []
     for site in _selected_sites(side):
+        receiver_datum = _receiver_datum_face(site)
         tools = wall_cavity_tools(
             name=str(site["name"]),
-            face=site["face"],
+            face=receiver_datum,
             outward=(*site["normal"], 0.0),
             owner="wing",
             axis_z=float(site["z_mm"]),
@@ -296,15 +303,18 @@ def receiver_facts(side: str) -> tuple[dict, ...]:
         record.update({
             "driver": str(site["driver"]),
             "axis_normal_xy": [float(value) for value in site["normal"]],
-            "carrier_face_xy_mm": [float(value) for value in site["face"]],
+            "carrier_face_xy_mm": list(receiver_datum),
+            "carrier_cavity_datum_xy_mm": [
+                float(value) for value in site["face"]],
             "receiver_mouth_xy_mm": list(tools.actual_face_xyz[:2]),
             "axis_z_mm": tools.actual_face_xyz[2],
             "cavity_diameter_mm": MAGNET_POCKET_DIAMETER_MM,
             "cavity_depth_mm": MAGNET_POCKET_DEPTH_MM,
             "captive_land_mm": MAGNET_CAPTIVE_LAND_MM,
             "carrier_to_receiver_face_gap_mm": MAGNET_FACE_GAP_MM,
-            "paired_magnet_face_separation_mm": (
-                NOMINAL_PAIRED_FACE_SEPARATION_MM),
+            "paired_magnet_face_separation_mm": round(
+                NOMINAL_PAIRED_FACE_SEPARATION_MM
+                + float(site.get("carrier_cavity_face_inset_mm", 0.0)), 9),
             "orientation": (
                 "horizontal_base_axis_vertical_diameter"
                 if site.get("interface_kind") == "base_side"
@@ -324,7 +334,7 @@ def receiver_pockets(side: str) -> dict[str, object]:
     for site in _selected_sites(side):
         tools = wall_cavity_tools(
             name=str(site["name"]),
-            face=site["face"],
+            face=_receiver_datum_face(site),
             outward=(*site["normal"], 0.0),
             owner="wing",
             axis_z=float(site["z_mm"]),
@@ -345,7 +355,7 @@ def receiver_required_lands(side: str) -> dict[str, object]:
     return {
         str(site["name"]): wall_cavity_tools(
             name=str(site["name"]),
-            face=site["face"],
+            face=_receiver_datum_face(site),
             outward=(*site["normal"], 0.0),
             owner="wing",
             axis_z=float(site["z_mm"]),

@@ -106,11 +106,13 @@ def test_relief_uses_driver_clear_exterior_support_lands():
     constants = _numeric_constants(tree)
 
     # Source-authority dimensions: LM centre Y=200.981, driver recess R110.6,
-    # outer carrier R113.0, rear z=6.8 and front z=18.3.  Repeat the module's
-    # support-land calculation without importing OCC/build123d.
+    # structural carrier R113.0, visible fairing R113.8, rear z=6.8 and front
+    # z=18.3. Repeat the module's support-land calculation without importing
+    # OCC/build123d.
     cy = 200.981
     recess_r = 110.6
-    outer_r = 113.0
+    structural_r = 113.0
+    visible_r = 113.8
     rear_z = 6.8
     seat_z = 12.3
     front_z = 18.3
@@ -136,8 +138,10 @@ def test_relief_uses_driver_clear_exterior_support_lands():
     x = sqrt(inner_authority_r ** 2 - end_dy ** 2) + support_half_x
     recess_clearance = sqrt(
         (x - support_half_x) ** 2 + end_dy ** 2) - recess_r
-    outline_growth = sqrt(
-        (x + support_half_x) ** 2 + root_dy ** 2) - outer_r
+    outer_land_r = sqrt(
+        (x + support_half_x) ** 2 + root_dy ** 2)
+    structural_growth = outer_land_r - structural_r
+    visible_growth = outer_land_r - visible_r
     driver_flange_clearance = (
         recess_r + recess_clearance
         - constants["REGISTRATION_DRIVER_FLANGE_R_MM"])
@@ -147,18 +151,26 @@ def test_relief_uses_driver_clear_exterior_support_lands():
     assert 218.3 < 2.0 * x < 218.5
     assert abs(recess_clearance - 0.05) < 1e-9
     assert driver_flange_clearance >= 0.129999
-    assert 1.39 < outline_growth < 1.42
+    assert 114.40 < outer_land_r < 114.41
+    assert 1.39 < structural_growth < 1.42
+    assert 0.59 < visible_growth < 0.62
     assert support_z_min > seat_z
     assert support_z_min - rear_z > 6.0
     assert front_z - support_z_max > 2.5
 
 
 def test_both_pins_are_reassigned_and_both_sockets_are_cut():
-    _, tree = _source_tree()
+    source, tree = _source_tree()
     split = ast.unparse(_function(tree, "lm_carrier_split_parts"))
     supports = ast.unparse(_function(tree, "registration_support_land_tools"))
+    augmented = ast.unparse(_function(tree, "registration_augmented_carrier"))
     assert "REGISTRATION_MIN_RADIAL_WALL_MM" in supports
     assert "REGISTRATION_SUPPORT_END_WALL_MM" in supports
+    assert "REGISTRATION_SUPPORT_FUSION_OVERLAP_MM = 0.10" in source
+    assert "exterior_cap = (support - inner_clip).clean()" in augmented
+    assert "lost_source = carrier - combined" in augmented
+    assert "missing_support = support - combined" in augmented
+    assert "unexpected = combined - carrier - support" in augmented
     assert "carrier = registration_augmented_carrier(carrier)" in split
     assert "male_registration_pin_tools().items()" in split
     assert "female_registration_socket_tools().values()" in split

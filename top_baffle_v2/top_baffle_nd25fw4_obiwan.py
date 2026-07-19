@@ -3,8 +3,10 @@
 The previous Obi-Wan was a rear-thinned copy of the complete B2 outline.
 This module starts from the irreducible interfaces instead:
 
-* LM carrier: D190 opening, D221.2 flush seat, R113.0 outside.
-* UM carrier: D82 opening, D98.6 flush seat, R51.7 outside.
+* LM carrier: D190 opening, D221.2 flush seat, R113.0 structural lip with a
+  smooth R113.80 exterior ring.
+* UM carrier: D82 opening, D98.6 flush seat, R51.7 structural lip with a
+  smooth R52.50 exterior ring.
 * two rounded M3 insert-fastened half-lap ears establish 165.100 mm;
 * six fully buried captive magnet interfaces provide four LM and two UM
   alignment sites;
@@ -21,9 +23,11 @@ This module starts from the irreducible interfaces instead:
   split in plan between their independently printed owners; only the central
   T free-cable mouth and the functional route cuts remain open.
 
-The outer lips are only 2.4 mm beyond the flange-recess radii. The LM
-rear insert pads, driver pilots and flush seats remain unchanged. The
-only the tweeter crescent is a separate printed add-on.  The floor stem,
+The structural outer lips are only 2.4 mm beyond the flange-recess radii.
+A continuous 0.80 mm exterior ring fairing hides the four radial captive
+magnet stations without a local boss, flat, notch, or other position cue. The
+LM rear insert pads, driver pilots and flush seats remain unchanged. Only
+the tweeter crescent is a separate printed add-on.  The floor stem,
 foot, NL8 panel and buried continuations are monolithic LM geometry;
 there is no floor-support add-on or support hardware.
 the no-floor bridge web is the sole core exception: it is
@@ -60,7 +64,7 @@ from build123d import (
     Wire,
     extrude,
 )
-from shapely.geometry import LineString, Point, Polygon
+from shapely.geometry import LineString, Point, Polygon, box
 from shapely.geometry.polygon import orient
 from shapely.ops import unary_union
 
@@ -132,6 +136,32 @@ PRINT_ORIENTATION = "front-face-down"
 CORE_REAR_Z = 6.8
 LM_CORE_R = LM_RECESS_R + 2.4       # 113.0
 UM_CORE_R = UM_RECESS_R + 2.4       # 51.7
+# The D5 x 2 captive stack is 3.00 mm deep, while the structural lip is only
+# 2.40 mm.  A local flat pad was visibly proud of the circular ring.  Replace
+# it with one continuous cylindrical fairing around each exposed carrier
+# side.  Only the pre-existing LM--UM and T--UM cusp/service regions retain
+# the structural radius;
+# every magnet station shares one exact exterior radius, so its location is
+# impossible to infer from the outer silhouette.  The cavity datum remains
+# 0.15 mm below that surface; the extra skin is intentional and keeps the
+# rectangular D5.20+walls land wholly inside the circular fairing even on the
+# tighter UM radius.
+SIDE_RING_CAVITY_RECESS_CLEAR_MM = 0.05
+SIDE_RING_CAVITY_FACE_OFFSET_MM = (
+    CAPTIVE_LAND_MM - (LM_CORE_R - LM_RECESS_R)
+    + SIDE_RING_CAVITY_RECESS_CLEAR_MM
+)
+SIDE_RING_FLUSH_FAIRING_MM = 0.80
+LM_VISIBLE_RING_R = LM_CORE_R + SIDE_RING_FLUSH_FAIRING_MM
+UM_VISIBLE_RING_R = UM_CORE_R + SIDE_RING_FLUSH_FAIRING_MM
+SIDE_RING_CAVITY_FACE_INSET_MM = (
+    SIDE_RING_FLUSH_FAIRING_MM - SIDE_RING_CAVITY_FACE_OFFSET_MM)
+SIDE_RING_FAIRING_FUSION_OVERLAP_MM = 0.10
+# Preserve the pre-existing central T cable mouth and T--UM closure geometry.
+# The two UM magnet stations lie well outboard at |x| ~= 33.4 mm, so stopping
+# only the annular fairing inside this |x| <= 14 mm cusp window cannot create
+# a pocket-location cue.
+UM_T_FAIRING_CUSP_HALF_WIDTH_MM = 14.0
 CORE_CENTER_SPACING = UM_CUTOUT[1] - L22_CUTOUT[1]  # 165.100
 CORE_RING_GAP = CORE_CENTER_SPACING - LM_CORE_R - UM_CORE_R  # 0.400
 
@@ -157,12 +187,13 @@ STRUCT_SHORT_ALLOW_MPA = 18.0
 # lm_lower prints share one exact receiver axis.  D5x2 magnets are completely
 # captive in D5.20 x 2.10 cavities behind 0.45-mm skins, with a printable
 # circular cradle and self-supporting 45-degree roof.  The lower pair stays on
-# the exact W64 side faces.  The four 2.40-mm ring lips need a local 0.60-mm
-# outward backing boss to contain the qualified 3.00-mm land without entering
-# either flange recess.  These are sealed interface pads, never exposed magnet
-# ears.  Magnets carry alignment/anti-rattle load only.  The monolithic W64
-# stem/root carries floor load; the four stock bridge holes carry no-floor
-# load.
+# the exact W64 side faces.  The four radial stations sit inside continuous
+# smooth R113.80/R52.50 exterior rings.  Their cavity datums are 0.65 mm
+# outside the structural lip and 0.15 mm below the visible surface, so the
+# qualified 3.00-mm land clears the flange recess while no local backing pad
+# breaks the circular silhouette.  Magnets carry alignment/anti-rattle load
+# only.  The monolithic W64 stem/root carries floor load; the four stock
+# bridge holes carry no-floor load.
 SIDE_EAR_D = 7.8
 SIDE_EAR_IN = 0.7
 SIDE_EAR_OUT = 3.3
@@ -175,9 +206,9 @@ SIDE_MAGNET_INNER_SKIN = INNER_SKIN_MM
 SIDE_MAGNET_Z = {
     "lm": 12.55,
     # Raised within the R51.7 lip so the complete captive envelope keeps at
-    # least 1.1 mm from the conservative upper-T cover envelope.  The local
-    # +0.60-mm backing makes room for both qualified 0.45-mm axial skins; the
-    # inward skin ends exactly at the immutable R49.3 recess datum.
+    # least 1.1 mm from the conservative upper-T cover envelope.  The smooth
+    # ring fairing makes room for both qualified 0.45-mm axial skins; the
+    # inward land ends 0.05 mm outside the immutable R49.3 recess datum.
     "um": 15.10,
 }
 SIDE_INTERFACE_GAP = INTERFACE_GAP_MM
@@ -192,12 +223,10 @@ SIDE_MAGNET_ANGLES = {
     "um": (129.5, 50.5),
 }
 SIDE_MAGNET_FACE_OFFSET = {
-    # The immutable flange-recess leaves only a 2.40-mm radial lip.  Shift
-    # the local interface face outward by the missing 0.60 mm so the entire
-    # qualified 3.00-mm captive land ends exactly at, never inside, the
-    # recess.  This is a local backing boss, not an exposed magnet ear.
-    "lm": CAPTIVE_LAND_MM - (LM_CORE_R - LM_RECESS_R),
-    "um": CAPTIVE_LAND_MM - (UM_CORE_R - UM_RECESS_R),
+    # Cavity construction datums, not visible interface faces.  Both are
+    # recessed 0.15 mm below their continuous circular outer surfaces.
+    "lm": SIDE_RING_CAVITY_FACE_OFFSET_MM,
+    "um": SIDE_RING_CAVITY_FACE_OFFSET_MM,
 }
 LM_BASE_MAGNET_FACE_X = 32.0
 LM_BASE_MAGNET_Y = 18.0
@@ -305,7 +334,7 @@ LM_T_CLOSURE_HANDOFF_RELIEF_MM = 0.0
 LM_T_CLOSURE_HANDOFF_RADIAL_INSET_MM = 2.0
 LM_T_CLOSURE_HANDOFF_RADIAL_OUTSET_MM = 4.0
 LM_UM_WEB_BLEND_START_X = 20.0
-T_UM_WEB_BLEND_START_X = 14.0
+T_UM_WEB_BLEND_START_X = UM_T_FAIRING_CUSP_HALF_WIDTH_MM
 
 # The buried left-hand T cover approaches the LM lip closely enough to pinch
 # off a 1.58-mm2 sliver of the otherwise rear-open D221.2 flange recess at
@@ -446,6 +475,104 @@ def _minimal_ring_blank(center, cut_radius, recess_radius, outer_radius,
             "minimal carrier lip/membrane blank must be one valid solid; "
             f"valid={blank.is_valid} volumes="
             f"{[solid.volume for solid in solids]}")
+    return Part([solids[0]])
+
+
+def side_ring_outer_plan(driver: str):
+    """Visible ring plan with its fairing stopped outside interface cusps.
+
+    The fairing is continuous around every exposed side and every magnet
+    station.  The pre-existing LM--UM and T--UM cusp/service regions retain
+    the structural radii, preventing independently printed owners from
+    acquiring an overlapping annular lens or a capped cable mouth.
+    """
+    if driver == "lm":
+        center = L22_CUTOUT[:2]
+        nominal_r = LM_CORE_R
+        visible_r = LM_VISIBLE_RING_R
+        clip = box(
+            center[0] - visible_r - 1.0,
+            center[1] - visible_r - 1.0,
+            center[0] + visible_r + 1.0,
+            center[1] + nominal_r,
+        )
+    elif driver == "um":
+        center = UM_CUTOUT[:2]
+        nominal_r = UM_CORE_R
+        visible_r = UM_VISIBLE_RING_R
+        clip = box(
+            center[0] - visible_r - 1.0,
+            center[1] - nominal_r,
+            center[0] + visible_r + 1.0,
+            center[1] + visible_r + 1.0,
+        )
+        top_cusp = box(
+            center[0] - UM_T_FAIRING_CUSP_HALF_WIDTH_MM,
+            center[1],
+            center[0] + UM_T_FAIRING_CUSP_HALF_WIDTH_MM,
+            center[1] + visible_r + 1.0,
+        )
+    else:
+        raise ValueError(driver)
+    nominal = Point(*center).buffer(nominal_r, resolution=256)
+    fairing = Point(*center).buffer(
+        visible_r, resolution=256).intersection(clip)
+    if driver == "um":
+        fairing = fairing.difference(top_cusp)
+    return nominal.union(fairing).buffer(0)
+
+
+def _side_ring_fairing(driver: str):
+    """Exact cylindrical fairing with a complementary cusp stop."""
+    if driver == "lm":
+        center = L22_CUTOUT[:2]
+        nominal_r = LM_CORE_R
+        visible_r = LM_VISIBLE_RING_R
+        clip_plan = box(
+            center[0] - visible_r - 1.0,
+            center[1] - visible_r - 1.0,
+            center[0] + visible_r + 1.0,
+            center[1] + nominal_r,
+        )
+    elif driver == "um":
+        center = UM_CUTOUT[:2]
+        nominal_r = UM_CORE_R
+        visible_r = UM_VISIBLE_RING_R
+        clip_plan = box(
+            center[0] - visible_r - 1.0,
+            center[1] - nominal_r,
+            center[0] + visible_r + 1.0,
+            center[1] + visible_r + 1.0,
+        )
+        top_cusp = box(
+            center[0] - UM_T_FAIRING_CUSP_HALF_WIDTH_MM,
+            center[1],
+            center[0] + UM_T_FAIRING_CUSP_HALF_WIDTH_MM,
+            center[1] + visible_r + 1.0,
+        )
+    else:
+        raise ValueError(driver)
+    fairing = _cylinder_at(
+        *center, visible_r, CORE_REAR_Z, THICKNESS_MM)
+    fairing -= _cylinder_at(
+        *center,
+        nominal_r - SIDE_RING_FAIRING_FUSION_OVERLAP_MM,
+        CORE_REAR_Z - 0.2,
+        THICKNESS_MM + 0.2,
+    )
+    fairing &= _plan_prism(
+        clip_plan, CORE_REAR_Z - 0.2, THICKNESS_MM + 0.2)
+    if driver == "um":
+        fairing -= _plan_prism(
+            top_cusp, CORE_REAR_Z - 0.2, THICKNESS_MM + 0.2)
+    fairing = fairing.clean()
+    solids = list(fairing.solids())
+    if (not fairing.is_valid or len(solids) != 1
+            or solids[0].volume <= 0.01):
+        raise RuntimeError(
+            f"{driver} smooth ring fairing must be one valid solid; "
+            f"valid={fairing.is_valid} "
+            f"volumes={[solid.volume for solid in solids]}")
     return Part([solids[0]])
 
 
@@ -1245,6 +1372,12 @@ def side_magnet_sites(driver: str | None = None):
             face_r = radius + face_offset
             face = (center[0] + face_r * normal[0],
                     center[1] + face_r * normal[1])
+            visible_radius = (
+                LM_VISIBLE_RING_R if key == "lm" else UM_VISIBLE_RING_R)
+            outer_surface_face = (
+                center[0] + visible_radius * normal[0],
+                center[1] + visible_radius * normal[1],
+            )
             side = "left" if normal[0] < 0 else "right"
             vertical = "upper" if normal[1] >= 0 else "lower"
             records.append({
@@ -1253,12 +1386,18 @@ def side_magnet_sites(driver: str | None = None):
                 "driver": key,
                 "angle_deg": angle, "normal": normal,
                 "face": face, "center": center, "radius": radius,
+                "outer_surface_face": outer_surface_face,
+                "outer_surface_radius_mm": visible_radius,
                 "clock_from_top_deg": 90.0 - angle,
                 "face_offset_mm": face_offset,
+                "carrier_cavity_face_inset_mm": (
+                    visible_radius - face_r),
                 "z_mm": SIDE_MAGNET_Z[key],
                 "interface_kind": "ring",
                 "magnet_fully_buried": True,
-                "local_captive_backing_boss_mm": face_offset,
+                "local_captive_backing_boss_mm": 0.0,
+                "continuous_flush_ring_fairing_mm": (
+                    visible_radius - radius),
                 "proud_ear_added": False,
             })
         if key == "lm":
@@ -1271,6 +1410,7 @@ def side_magnet_sites(driver: str | None = None):
                     "angle_deg": angle,
                     "normal": (normal_x, 0.0),
                     "face": (face_x, LM_BASE_MAGNET_Y),
+                    "outer_surface_face": (face_x, LM_BASE_MAGNET_Y),
                     # These compatibility fields describe the horizontal
                     # base-side datum; receiver construction must key from
                     # interface_kind rather than treating it as an R113 arc.
@@ -1278,10 +1418,12 @@ def side_magnet_sites(driver: str | None = None):
                     "radius": LM_BASE_MAGNET_FACE_X,
                     "clock_from_top_deg": 90.0 - angle,
                     "face_offset_mm": 0.0,
+                    "carrier_cavity_face_inset_mm": 0.0,
                     "z_mm": LM_BASE_MAGNET_Z,
                     "interface_kind": "base_side",
                     "magnet_fully_buried": True,
                     "local_captive_backing_boss_mm": 0.0,
+                    "continuous_flush_ring_fairing_mm": 0.0,
                     "proud_ear_added": False,
                 })
     return records
@@ -1329,11 +1471,12 @@ def _cut_side_magnet_pockets(part, driver: str):
 
 def _add_side_magnet_ears(part, driver: str,
                           interface_kinds: set[str] | None = None):
-    """Add only the exact local land required by each captive station.
+    """Verify/fill the exact land required by each captive station.
 
     Existing carrier material absorbs the land at the lower LM sites.  The
-    four 2.40-mm ring lips gain only the 0.60-mm local boss needed to reach
-    the helper's qualified 3.00-mm land; magnets remain completely buried.
+    four ring sites are already contained by their continuous smooth exterior
+    fairings; adding local material there would reintroduce a visible pocket
+    cue.  Magnets remain completely buried.
     """
     for site in side_magnet_sites(driver):
         if (interface_kinds is not None
@@ -1349,28 +1492,18 @@ def _add_side_magnet_ears(part, driver: str,
             front_z=THICKNESS_MM,
             interface_gap_mm=SIDE_INTERFACE_GAP,
         )
+        if site["interface_kind"] == "ring":
+            missing = tools.required_land - part
+            missing_volume = sum(
+                solid.volume for solid in missing.solids())
+            if missing_volume > 0.01:
+                raise RuntimeError(
+                    f"{site['name']} smooth ring fairing misses "
+                    f"{missing_volume:.4f} mm3 of captive land")
+            continue
         part = _ensure_shell_contained(
             part, tools.required_land,
             f"{site['name']} captive-magnet minimum land")
-        if site["interface_kind"] == "ring":
-            # The qualified 3.00-mm land ends exactly on the immutable
-            # circular flange-seat datum.  Give the later authoritative
-            # recess cutter one helper-epsilon of sacrificial material to
-            # cross instead of asking OCC to subtract at a tangent/coplanar
-            # terminal face.  Translation toward material-inward extends
-            # only the construction-side end; the installed interface face
-            # and its 0.60-mm local boss do not move.  The final recess recut
-            # removes this overlap completely, so released geometry retains
-            # the exact recess radius and the full 0.45-mm inner skin.
-            overlap = tools.spec.boolean_epsilon_mm
-            inward = tools.material_inward_xyz
-            sacrificial_land = (
-                Pos(*(overlap * component for component in inward))
-                * tools.required_land
-            )
-            part = _ensure_shell_contained(
-                part, sacrificial_land,
-                f"{site['name']} recess-recut construction overlap")
     return part
 
 
@@ -1681,6 +1814,9 @@ def lm_carrier_outer_blank():
     part = _minimal_ring_blank(
         (cx, cy), cut_d / 2.0, LM_RECESS_R, LM_CORE_R, LM_SEAT_Z)
     part = _fuse_attached(
+        part, _side_ring_fairing("lm"),
+        "continuous smooth LM side-ring fairing")
+    part = _fuse_attached(
         part, _lm_um_rear_recess_backfill(),
         "symmetric solid rear LM--UM recess-island backfill")
 
@@ -1750,7 +1886,7 @@ def lm_carrier_outer_blank():
     # every captive land only after that massive owner is present: doing so
     # avoids both detached lower tangent solids and making the subsequent
     # large body union operate on the four small ring-land splitters.  Ring
-    # interfaces retain only their explicit 0.60-mm local outward boss;
+    # interfaces are contained by one continuous smooth R113.80 ring;
     # lower lands point entirely inward and add no proud material.
     part = _add_side_magnet_ears(part, "lm")
 
@@ -1917,6 +2053,9 @@ def um_carrier():
     cx, cy, cut_d = UM_CUTOUT
     part = _minimal_ring_blank(
         (cx, cy), cut_d / 2.0, UM_RECESS_R, UM_CORE_R, UM_SEAT_Z)
+    part = _fuse_attached(
+        part, _side_ring_fairing("um"),
+        "continuous smooth UM side-ring fairing")
     part = _fuse_attached(
         part, _um_t_rear_recess_backfill(),
         "symmetric solid rear T-cover/UM-recess backfill")

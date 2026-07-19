@@ -43,7 +43,7 @@ No magnet receives structural-load credit. The release contract remains
 | Cavity support | Not applicable | No internal support material |
 | Finished access | Exposed/accessible | Completely buried; no glue and no access opening |
 | Mating plastic gap | Approximately 0.05 mm | Preserved at approximately 0.05 mm |
-| Nominal opposing magnet-face separation | Old documentation sometimes conflated this with the plastic gap | **0.95 mm = 0.45 + 0.05 + 0.45** |
+| Nominal opposing magnet-face separation | Old documentation sometimes conflated this with the plastic gap | **0.95 mm = 0.45 + 0.05 + 0.45** for standard and Obi-Wan LM-lower base-side pairs; **1.10 mm = 0.45 + 0.15 + 0.05 + 0.45** for Obi-Wan LM-upper/UM ring pairs |
 | Classic-wall retention | Not applicable | 0.45 mm skins preserve approximately 0.42 mm wall paths |
 
 The cavity bottom follows the circular D5 magnet profile. Its upper loading
@@ -82,7 +82,7 @@ ways to print one installed carrier; both forms are release artifacts and are
 therefore deliberately counted in the catalog.
 
 The two canonical Obi-Wan LM monoliths have an approximately
-235.61 x 313.35 mm mandatory front-down footprint and do not fit a P2S
+236.41 x 313.75 mm mandatory front-down footprint and do not fit a P2S
 256 x 256 mm bed. They remain valid large-format release outputs. Their eight
 site contracts are audited on the exact, same-state keyed lower/upper
 geometry; that proxy coverage is not a fabricated monolith G-code pause.
@@ -93,10 +93,12 @@ geometry; that proxy coverage is not a fabricated monolith G-code pause.
   in-plane site positions, axes, mating datums, and approximately 0.05 mm
   interface clearance. Only the local material needed for the 3.00 mm captive
   land and roof is added.
-- Obi-Wan upper/lower LM and UM sites retain their existing interface-plane
-  positions and radial/base-side axes. Ring-radial sites use a local 0.60 mm
-  outward backing addition because moving the captive envelope inward would
-  collide with the driver flange seat. This backing is not a proud magnet ear.
+- Obi-Wan upper/lower LM and UM sites retain their radial/base-side axes.
+  Ring-radial cavity datums sit at structural radius +0.65 mm, 0.15 mm beneath
+  continuous exposed R113.8/R52.5 side fairings. The fairings stop only inside
+  existing LM--UM and T--UM cusp/service regions, preserve the 0.40 mm LM--UM
+  gap, and have no local pad, boss,
+  flat, protrusion, or other visible magnet-location cue.
 - Obi-Wan Ac/Ae receivers use the matching pair axes and protected local lands.
   Existing outlines, acoustic depth laws, three-piece splits, and dovetail
   geometry remain authoritative.
@@ -108,9 +110,11 @@ geometry; that proxy coverage is not a fabricated monolith G-code pause.
   station per stand state. It is not a polarity-pair qualification coupon.
 
 The conversion preserves established part splits, driver and insert
-locations, dovetails, mating faces, route/duct geometry, external acoustic
-envelopes, and intended magnet polarity. Keepout tests continue to treat the
-magnet cavity, both skins, and local backing as real geometry.
+locations, dovetails, mating faces, route/duct geometry, and intended magnet
+polarity. The Obi-Wan ring exterior is the deliberate exception: its former
+station-local backing cues are replaced by continuous R113.8/R52.5 fairings.
+Keepout tests treat each magnet cavity, both skins, and the actual surrounding
+carrier or wing wall as real geometry.
 
 ## Front-face-down texture contract
 
@@ -222,8 +226,9 @@ No file in this migration uploads to a printer or starts a print.
 - Six Ac and six Ae wing STL/`.print.json` pairs, their STEP masters and
   assemblies, facts, transactional manifests, and review images.
 - Obi-Wan staged-build manifests, release manifests, cable-routing PNGs, and
-  driver/variant overlays whose magnet depictions now show the captive skins
-  and 0.95 mm paired separation.
+  driver/variant overlays whose magnet depictions now show the captive skins,
+  0.95 mm base-side paired separation, and 1.10 mm Obi-Wan ring-pair
+  separation.
 - The hash-bound captive-magnet release catalog, Bambu profile provenance,
   per-STL G-code validation records, five-layer SVG/PNG evidence, and the
   authoritative JSON/CSV/Markdown pause outputs after final publication.
@@ -282,9 +287,11 @@ manifest are authoritative.
 
 - The reference coupon physically validates the topology and 0.45 mm Classic
   retaining walls at 0.90 mm opposing-magnet separation. Production pairs
-  preserve the 0.05 mm plastic gap and therefore separate magnet faces by
-  0.95 mm. Measure pull/retention through the production stack; do not rely on
-  a supplier bare-magnet pull figure.
+  retain the 0.05 mm plastic gap: standard and Obi-Wan LM-lower base-side
+  pairs separate magnet faces by 0.95 mm, while Obi-Wan LM-upper/UM ring pairs
+  include the 0.15 mm buried carrier datum and separate them by 1.10 mm.
+  Measure pull/retention through each production stack; do not rely on a
+  supplier bare-magnet pull figure.
 - V0 has no mating production print. Its marked-pole direction is deliberately
   provisional until a real mate is designed and tested.
 - The raw MU10RB reference mesh omits the electrical terminal tabs. The chosen

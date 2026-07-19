@@ -976,7 +976,13 @@ def test_generator_style_source_matrix_is_consumed(tmp_path: Path):
             ],
             "sites": [{
                 **_release_site_contract(),
-                "name": "lm", "closure_kind": "transverse_gable_45deg",
+                "name": "lm_upper_right",
+                "closure_kind": "transverse_gable_45deg",
+                "interface_kind": "ring",
+                "carrier_cavity_face_inset_mm": 0.15,
+                "carrier_cavity_datum_xy_mm": [2.0, 2.0],
+                "outer_surface_face_xy_mm": [2.15, 2.0],
+                "paired_magnet_face_separation_mm": 1.10,
                 "cavity_bury_roof_start_print_z_mm": 8.4,
                 "roof_apex_print_z_mm": 11.0,
                 "cavity_center_xyz_mm": [1.0, 2.0, 12.55],
@@ -1264,6 +1270,9 @@ def _exact_split_proxy_catalog() -> dict:
     ]
 
     def site(name: str, x: float) -> dict:
+        interface_kind = (
+            "base_side" if name.startswith("lm_lower_") else "ring")
+        cavity_inset = 0.0 if interface_kind == "base_side" else 0.15
         return {
             "name": name,
             "closure_kind": "transverse_gable_45deg",
@@ -1286,7 +1295,13 @@ def _exact_split_proxy_catalog() -> dict:
             "polarity_instruction": "marked/N pole follows installed axis",
             "captive_land_mm": 3.0,
             "interface_gap_mm": 0.05,
-            "paired_magnet_face_separation_mm": 0.95,
+            "paired_magnet_face_separation_mm": round(
+                0.95 + cavity_inset, 9),
+            "interface_kind": interface_kind,
+            "carrier_cavity_face_inset_mm": cavity_inset,
+            "carrier_cavity_datum_xy_mm": [x - 1.5, 10.0],
+            "outer_surface_face_xy_mm": [
+                x - 1.5 - cavity_inset, 10.0],
             "classic_retaining_path_mm": 0.42,
             "magnet_count": 1,
             "structural_load_credit_n": 0.0,
@@ -1318,6 +1333,36 @@ def _exact_split_proxy_catalog() -> dict:
         artifact("floor:split:bottom", "Obi-Wan-split", "bottom", [lower]),
         artifact("floor:split:top", "Obi-Wan-split", "top", [upper]),
     ])
+
+
+def test_obiwan_ring_pair_spacing_is_interface_specific(
+        tmp_path: Path) -> None:
+    payload = _exact_split_proxy_catalog()
+    path = tmp_path / "catalog.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    normalized = audit.normalize_catalog(
+        path, enforce_release_inventory=False)
+    monolith_sites = {
+        site["name"]: site
+        for site in normalized["artifacts"][0]["sites"]
+    }
+    assert monolith_sites["lm_lower_left"][
+        "paired_magnet_face_separation_mm"] == 0.95
+    assert monolith_sites["lm_upper_left"][
+        "paired_magnet_face_separation_mm"] == 1.10
+
+    payload["artifacts"][0]["sites"][1][
+        "paired_magnet_face_separation_mm"] = 0.95
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    try:
+        audit.normalize_catalog(path, enforce_release_inventory=False)
+    except audit.AuditError as exc:
+        assert (
+            "paired magnet-face separation must be 1.100" in str(exc)
+            or "paired_magnet_face_separation_mm: value does not equal "
+               "const 1.1" in str(exc))
+    else:
+        raise AssertionError("stale 0.95-mm Obi-Wan ring spacing passed")
 
 
 def test_catalog_envelope_and_frozen_inventory_are_fail_closed(
@@ -1392,6 +1437,14 @@ def test_catalog_schema_rejects_invalid_generated_by_and_exclusion(
 
 def test_wing_facts_and_transaction_manifest_are_hash_bound(
         tmp_path: Path) -> None:
+    wing_site = _minimal_catalog_site()
+    wing_site.update({
+        "interface_kind": "ring",
+        "carrier_cavity_face_inset_mm": 0.15,
+        "carrier_cavity_datum_xy_mm": [0.0, 0.0],
+        "outer_surface_face_xy_mm": [0.0, 0.15],
+        "paired_magnet_face_separation_mm": 1.10,
+    })
     raw = {
         "id": "shared:Obi-Wan-Ac:wing", "part": "wing",
         "variant": "Obi-Wan-Ac", "state": "shared", "stl": "wing.stl",
@@ -1400,7 +1453,7 @@ def test_wing_facts_and_transaction_manifest_are_hash_bound(
         "source_to_stl_matrix": [
             [1.0, 0.0, 0.0, 0.0], [0.0, -1.0, 0.0, 1.0],
             [0.0, 0.0, -1.0, 1.0], [0.0, 0.0, 0.0, 1.0]],
-        "sites": [_minimal_catalog_site()],
+        "sites": [wing_site],
     }
     payload = _catalog_document([raw])
     _write_bound_stl_and_sidecar(tmp_path, raw)

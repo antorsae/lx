@@ -360,10 +360,15 @@ def _v0_sites() -> dict[str, dict[str, Any]]:
 
 def _obiwan_sites(*, owner: str, driver: str) -> dict[str, dict[str, Any]]:
     records: dict[str, dict[str, Any]] = {}
+    receiver_owner = str(owner).strip().lower() in {
+        "receiver", "attachment", "wing"}
     for site in side_magnet_sites(driver):
+        cavity_datum = site["face"]
+        outer_surface = site.get("outer_surface_face", cavity_datum)
+        tool_datum = outer_surface if receiver_owner else cavity_datum
         tools = wall_cavity_tools(
             name=str(site["name"]),
-            face=site["face"],
+            face=tool_datum,
             outward=(*site["normal"], 0.0),
             owner=owner,
             axis_z=float(site["z_mm"]),
@@ -372,8 +377,27 @@ def _obiwan_sites(*, owner: str, driver: str) -> dict[str, dict[str, Any]]:
             interface_gap_mm=SIDE_INTERFACE_GAP,
         )
         expected = 8.52 if driver == "lm" else 5.96
-        records[str(site["name"])] = _site_record(
+        record = _site_record(
             tools, family="obiwan", expected_pause=expected)
+        cavity_inset = round(float(
+            site.get("carrier_cavity_face_inset_mm", 0.0)), 9)
+        record.update({
+            "interface_kind": str(site.get("interface_kind", "ring")),
+            "carrier_cavity_datum_xy_mm": [
+                float(value) for value in cavity_datum],
+            "carrier_cavity_face_inset_mm": cavity_inset,
+            "outer_surface_face_xy_mm": [
+                float(value) for value in outer_surface],
+            "paired_magnet_face_separation_mm": round(
+                NOMINAL_PAIRED_FACE_SEPARATION_MM + cavity_inset, 9),
+        })
+        expected_separation = (
+            1.10 if record["interface_kind"] == "ring" else 0.95)
+        if record["paired_magnet_face_separation_mm"] != expected_separation:
+            raise RuntimeError(
+                f"{site['name']}: Obi-Wan paired magnet-face separation "
+                f"must be {expected_separation:.2f} mm")
+        records[str(site["name"])] = record
     return records
 
 
@@ -640,6 +664,38 @@ def _wing_artifacts(slug: str, output: Path) -> list[dict[str, Any]]:
             expected_name = (
                 f"{role}_{side}" if role != "um" else f"um_{side}")
             site = dict(receiver_by_name[expected_name])
+            interface_kind = str(site.get("interface_kind", "ring"))
+            cavity_datum = site.get(
+                "carrier_cavity_datum_xy_mm", site["carrier_face_xy_mm"])
+            outer_surface = site["carrier_face_xy_mm"]
+            normal = site["axis_normal_xy"]
+            cavity_inset = round(sum(
+                (float(outer_surface[index]) - float(cavity_datum[index]))
+                * float(normal[index])
+                for index in range(2)
+            ), 9)
+            tangential_error = abs(sum(
+                (float(outer_surface[index]) - float(cavity_datum[index]))
+                * (-float(normal[1]) if index == 0 else float(normal[0]))
+                for index in range(2)
+            ))
+            expected_separation = 1.10 if interface_kind == "ring" else 0.95
+            actual_separation = float(
+                site["paired_magnet_face_separation_mm"])
+            expected_inset = 0.15 if interface_kind == "ring" else 0.0
+            if (abs(cavity_inset - expected_inset) > 1.0e-9
+                    or tangential_error > 1.0e-9
+                    or abs(actual_separation - expected_separation) > 1.0e-9):
+                raise RuntimeError(
+                    f"{slug}/{expected_name}: stale Obi-Wan carrier/wing "
+                    "magnet spacing facts")
+            site.update({
+                "interface_kind": interface_kind,
+                "carrier_cavity_face_inset_mm": cavity_inset,
+                "outer_surface_face_xy_mm": [
+                    float(value) for value in outer_surface],
+                "paired_magnet_face_separation_mm": expected_separation,
+            })
             site["installed_marked_pole_axis_xyz"] = site[
                 "marked_pole_axis_xyz"]
             site["polarity_instruction"] = _polarity("wing", "obiwan")
@@ -815,6 +871,13 @@ def generate(output: Path) -> dict[str, Any]:
             "released family inventory drifted: "
             f"{actual_family_counts}")
 
+    global_geometry = DEFAULT_SPEC.facts()
+    # Pair separation is interface-specific in the released inventory.  A
+    # generic scalar silently misdescribes Obi-Wan ring pairs, so expose only
+    # the authoritative map at catalog scope; every site still carries its
+    # exact scalar under the schema.
+    global_geometry.pop("paired_magnet_face_separation_mm", None)
+
     payload = {
         "schema_version": SCHEMA_VERSION,
         "schema_sha256": _sha256(SCHEMA_PATH),
@@ -823,10 +886,12 @@ def generate(output: Path) -> dict[str, Any]:
         "source_revision": source_revision,
         "print_contract": dict(RELEASE_ACOUSTIC_PRINT_CONTRACT),
         "geometry": {
-            **DEFAULT_SPEC.facts(),
+            **global_geometry,
             "nominal_magnet": "D5.0 x 2.0 mm disc",
-            "nominal_paired_magnet_face_separation_mm": (
-                NOMINAL_PAIRED_FACE_SEPARATION_MM),
+            "paired_magnet_face_separation_by_interface_kind_mm": {
+                "base_side": 0.95,
+                "ring": 1.10,
+            },
             "glue": False,
             "external_access_opening": False,
             "internal_support_material": False,

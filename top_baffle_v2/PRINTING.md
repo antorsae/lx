@@ -33,9 +33,9 @@ bridge-web load case is treated explicitly below. PLA still relaxes
 | R6P bridge (no-stand) | M5 machine screw from the bridge (behind) into M5 x 5.8 x O6.3 heat-set (bore O6.4 x 6.8, REAR face) | hand-snug | 4 off; same insert as the W22, set from the rear |
 | R6F LM-to-UM half-laps | 2 x rear-driven M3 screws through the LM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the UM's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±32, y=315.770; the closure-web/base teardrops remain nominal Ø9, while the complete Z-owned cylindrical functional bosses are locally Ø9.8. The UM receivers retain a 1.9 mm acoustic-front floor and the Z-halves retain a 0.20 mm axial gap. Select screw length for full insert engagement without bottoming. No washer, nut, or front bolt head belongs to this interface. |
 | R6F fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening Ø6.4 × 6.8 inserts | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders, centered rear UM/T entries at x=±8/y=82/z=5.3, solid acoustic front, immutable 40 × 50 pattern, and no geometry behind the existing LM pads; magnets receive zero load credit |
-| R6F optional LM keyed seam | two symmetric Ø1.60 cylindrical pins at x=±109.187/z=14.30, normal to the world-Y=172.481 mm zero-gap seam and pointing +Y; 2.40 mm engagement plus 0.50 mm root overlap. Right blind socket Ø1.84 round; left blind socket 1.96 × 1.84 mm X-relieved; both 2.65 mm deep with 0.12 mm radial and 0.25 mm end clearance. Small exterior lands outside the LM recess preserve ≥0.50 mm radial/end walls, ≥0.05 mm recess plan clearance and ≥0.13 mm conservative W22-flange clearance. | registration only | mutually exclusive replacement print form for the canonical monolithic LM. Round+relieved sockets tolerate ±0.30 mm relative pitch error; the lands add about 1.40 mm local perimeter growth but no extra screw or standalone retention/load credit. Print and assemble front-face-down on a flat datum, moving the top straight along -Y; the installed LM driver flange and its normal fasteners are the structural splice. |
+| R6F optional LM keyed seam | two symmetric Ø1.60 cylindrical pins at x=±109.187/z=14.30, normal to the world-Y=172.481 mm zero-gap seam and pointing +Y; 2.40 mm engagement plus 0.50 mm root overlap. Right blind socket Ø1.84 round; left blind socket 1.96 × 1.84 mm X-relieved; both 2.65 mm deep with 0.12 mm radial and 0.25 mm end clearance. Small exterior lands outside the LM recess preserve ≥0.50 mm radial/end walls, ≥0.05 mm recess plan clearance and ≥0.13 mm conservative W22-flange clearance. | registration only | mutually exclusive replacement print form for the canonical monolithic LM. Round+relieved sockets tolerate ±0.30 mm relative pitch error; the lands reach R114.4036, which is 1.4036 mm beyond structural R113.0 but only 0.6036 mm beyond the finalized R113.8 visible fairing. They add no extra screw or standalone retention/load credit. Print and assemble front-face-down on a flat datum, moving the top straight along -Y; the installed LM driver flange and its normal fasteners are the structural splice. |
 | R6F UM-to-tweeter half-laps | 2 x rear-driven M3 screws through the UM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the crescent's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±24, y=421.5; nominal Ø9 closure-base teardrops, complete local Ø9.8 Z-owned functional bosses, 0.20 mm axial gap, complete 360° receiver walls, and 1.9 mm acoustic-front floors. Install both inserts in the individual crescent before assembly; no front bolt head or cross-owner receiver wall. |
-| R6F alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and lower straight-base sites at `(x,y,z)=(±32,18,12.55)` with outward normals `(-1,0)` left and `(1,0)` right. UM keeps its 50.5°/129.5° axes at z=15.1. Every station has 0.45 mm axial skins and a 45° support-free roof; ring sites use only the validated +0.60 mm outward local backing boss required to avoid the flange seat. Magnets are fully buried at the manifest pause, never glued or externally accessible. Ac/Ae have matching captive LM-lower, LM-upper, and UM receivers. Alignment/anti-rattle only: **zero structural load credit**. |
+| R6F alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and lower straight-base sites at `(x,y,z)=(±32,18,12.55)` with outward normals `(-1,0)` left and `(1,0)` right. UM keeps its 50.5°/129.5° axes at z=15.1. Every station has 0.45 mm axial skins and a 45° support-free roof. The R113.0/R51.7 structural rings have continuous exposed R113.8/R52.5 side fairings, clipped only inside the existing LM--UM and T--UM cusp/service regions; the LM--UM stop preserves the 0.40 mm gap. Ring cavity datums sit at structural radius +0.65 mm, 0.15 mm beneath the exposed surface, with no local pad, boss, flat, or visible cue. Magnets are fully buried at the manifest pause, never glued or externally accessible. Ac/Ae have matching captive LM-lower, LM-upper, and UM receivers. Nominal paired magnet-face separation is 1.10 mm at LM-upper/UM and 0.95 mm at LM-lower. Alignment/anti-rattle only: **zero structural load credit**. |
 | Tweeter pair | M4 through-bolts + nyloc + wave washer; length = septum + faceplates (stock 18.3 septum → ~M4 x 35; V1/R6F crescent → ~M4 x 30 — verify stacked) | snug, ~0.5 N·m | clamps the 4.0 mm crescent seat; recheck after a week |
 
 **Installing the inserts:** soldering iron at 230–250 °C, press
@@ -197,15 +197,16 @@ LM+integral stand is therefore a large-format print. Revalidate the actual
 front-down footprint against the selected printer instead of relying on the
 obsolete ≤220 mm tilted-orientation figures. The optional LM keyed split
 replaces that monolithic LM with two front-down prints. On a P2S, this split
-is mandatory: both canonical LM monoliths are approximately 235.61 x 313.35 mm
+is mandatory: both canonical LM monoliths are approximately 236.41 x 313.75 mm
 front-face-down and are not P2S-printable. Do not scale, clip, tilt, or use a
 virtual bed. Two symmetric Ø1.60 pins point +Y normal to the seam and engage
 2.40 mm; the right socket is round Ø1.84 and the left is X-relieved to
 1.96 × 1.84 mm. Both blind sockets are 2.65 mm deep, retain 0.12 mm radial and
 0.25 mm end clearance, and preserve at least 0.50 mm local radial/end wall in
 small exterior lands outside the LM recess. They preserve at least 0.05 mm
-recess and 0.13 mm conservative W22-flange plan clearance while adding about
-1.40 mm of local perimeter growth. Never mix either half with the
+recess and 0.13 mm conservative W22-flange plan clearance. Their worst-case
+reach is R114.4036: 1.4036 mm beyond structural R113.0 but only 0.6036 mm
+beyond the finalized R113.8 visible fairing. Never mix either half with the
 monolithic LM. Ac/Ae include matching 0.25 mm hidden interface pockets for
 these lands; printed fit remains coupon-qualified. Each horizontal pin is four nominal nozzle widths; reject a
 slice missing either complete pin, either land, or a continuous socket-wall
@@ -262,8 +263,12 @@ All released magnet-bearing parts print **front-face-down**. The approved
 system encloses each actual D5.0 × 2.0 disc in an Ø5.20 × 2.10 cavity with
 0.45 mm plastic at each axial face, a vertically open loading cradle, and a
 self-supporting 45° roof. There is no magnet glue and no external access
-opening. The approximately 0.05 mm mating air gap remains, so two opposing
-0.45 mm skins put the nominal magnet faces **0.95 mm apart**.
+opening. The approximately 0.05 mm mating air gap remains. Standard stations,
+including the Obi-Wan LM-lower base-side pair, retain **0.95 mm** nominal
+magnet-face separation across two 0.45 mm skins. Obi-Wan LM-upper and UM ring
+cavity datums are additionally inset 0.15 mm beneath their smooth exposed
+carrier fairings, so those matching Ac/Ae pairs are nominally **1.10 mm**
+apart. The D5 × 2 cavities and both 0.45 mm skins are unchanged.
 
 Use the exact part/variant rows in
 [`CAPTIVE_MAGNET_PAUSE_MANIFEST.md`](review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md). Pause at the listed
@@ -594,8 +599,9 @@ straight along world -Y and seat both bottom-owned Ø1.60 +Y pins together—one
 in the right round socket and one in the left X-relieved socket. Do not twist,
 spread, hammer, or use one pin as a hinge. Inspect both fits, full seating,
 coplanarity and route-seam continuity, then pull the actual UM/T cables through
-both preserved lumen handoffs. The pin/socket lands add about 1.40 mm of local
-perimeter growth but no extra screw or standalone retention/load credit.
+both preserved lumen handoffs. The pin/socket lands reach R114.4036—1.4036 mm
+beyond structural R113.0 and 0.6036 mm beyond the finalized R113.8 visible
+fairing—but add no extra screw or standalone retention/load credit.
 Hold registration when lifting the LM from the datum for driver fit-up; the
 installed flange and all normal LM fasteners provide the structural splice.
 Do not load an unspliced split LM.
@@ -631,11 +637,16 @@ pause rows. No monolith pause is synthesized.
    `(-1,0)` left and `(1,0)` right. Confirm that these shared floor/no-floor
    datums remain clear of lower inserts, buried routes, and the
    bridge/integral-stand load path. UM keeps the 50.5°/129.5° axes centered
-   at z=15.1. Ring sites receive the local +0.60 mm outward backing boss needed
-   to keep the captive envelope out of the flange seat. Verify 0.45 mm axial
-   skins, a continuous loading cradle, and the support-free 45° closing roof in
-   sliced preview. Use the manifest's marked local-axis polarity for every
-   carrier and mating receiver; do not infer it from mirroring. These magnets
+   at z=15.1. Verify the R113.0/R51.7 structural rings and continuous exposed
+   R113.8/R52.5 side fairings, clipped only inside the existing LM--UM and
+   T--UM cusp/service regions, with the 0.40 mm LM--UM inter-carrier gap open.
+   Each ring cavity datum is structural radius
+   +0.65 mm, 0.15 mm beneath the exposed surface; there must be no local pad,
+   boss, flat, or visible cue. Verify unchanged 0.45 mm axial skins, a
+   continuous loading cradle, and the support-free 45° closing roof in sliced
+   preview. Nominal paired magnet-face separation is 1.10 mm at LM-upper/UM
+   and 0.95 mm at LM-lower. Use the manifest's marked local-axis polarity for
+   every carrier and mating receiver; do not infer it from mirroring. These magnets
    align and suppress rattle only;
    assign them **zero load capacity** in every assembly and test. For Ac/Ae,
    verify three coaxial receiver pairs per side: LM lower, LM upper, and UM.

@@ -7,8 +7,11 @@ curvatures, coupon-specific zero modeled plastic-interface gap, D5.2 diametral
 clearance, root-envelope widths, and installed magnet heights. “Zero” here
 does not mean exposed magnets touch: the two 0.45 mm skins still separate the
 coupon magnets by 0.90 mm. Released production interfaces preserve their
-approximately 0.05 mm mating air gap and therefore have **0.95 mm nominal
-magnet-to-magnet separation**.
+approximately 0.05 mm mating air gap. The Obi-Wan LM-upper/UM ring cavity
+datum is also buried 0.15 mm beneath its smooth carrier surface, giving
+**1.10 mm nominal magnet-to-magnet separation**; the LM-lower base-side pair
+has no datum inset and remains **0.95 mm**. This coupon qualifies the captive
+printing process, not production pull force.
 
 The coupon targets D5 x 2 mm magnets. Print both coupon strips
 front-face-down, matching the production texture/process direction. At each
@@ -44,9 +47,12 @@ wall generator with a 0.4 mm nozzle. Always confirm that the Preview shows one
 continuous extrusion line down each long side of every open cavity before
 printing.
 
-The carrier requires a local 0.60 mm outward backing addition behind the
-released 2.40 mm lip; this is intentional because moving the captive cavity
-inward would collide with the LM/UM flange seat, and it must be checked for
-clearance in the full carrier. A thinner 0.30 mm
+The released carrier uses a cavity datum at structural radius +0.65 mm,
+0.15 mm beneath a continuous exposed +0.80 mm ring fairing. The fairing is
+clipped only inside the existing LM--UM and T--UM cusp/service regions and
+contains no local pad, boss,
+flat, protrusion, or visible magnet-location cue. This full-carrier clearance
+and surface contract is validated in CAD rather than by the strip coupon. A
+thinner 0.30 mm
 skin remains possible as an Arachne-only calibration variant, but it must not
 be printed from a Preview in which those retaining paths disappear.

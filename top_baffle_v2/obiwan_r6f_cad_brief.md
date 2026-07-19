@@ -37,12 +37,18 @@
   outward normals `(-1,0)`/`(1,0)`. Both stand states expose those exact
   base-side datums, and both cavities clear buried routes and the
   bridge/integral-stand load path. The
-  UM pair is also earless at 50.5/129.5 deg, z=15.1. LM-upper and UM
-  ring-radial stations use a local +0.60 mm outward backing boss because an
-  inward captive envelope would collide with the corresponding flange seat.
-  This preserves the interface-plane site and axis. Opposing 0.45 mm skins
-  across the preserved 0.05 mm mating air gap put the nominal magnet faces
-  0.95 mm apart. Magnets receive zero structural-load credit. The
+  UM pair is also earless at 50.5/129.5 deg, z=15.1. The structural LM and UM
+  ring radii remain 113.0 and 51.7 mm. Their exposed sides are continuous
+  cylindrical fairings at radii 113.8 and 52.5 mm, clipped only inside the
+  existing LM--UM and T--UM cusp/service regions. The LM--UM stop keeps the
+  0.40 mm inter-carrier gap open. At each LM-upper
+  and UM ring station, the cavity construction datum is structural radius
+  +0.65 mm, 0.15 mm beneath the exposed surface. There is no local pad, boss,
+  flat, or silhouette cue. The D5 x 2 cavity and 0.45 mm skins are unchanged.
+  With the preserved 0.05 mm mating gap and matching Ac/Ae receivers, nominal
+  paired magnet-face separation is 1.10 mm at the ring stations and remains
+  0.95 mm at the LM-lower base-side stations. Magnets receive zero
+  structural-load credit. The
   D7.8 LM lead is a modeled free span with no printed micro-duct; the LM
   carrier has only a minimum-radius 3.96 mm rear-open subtractive clearance
   around that immutable centerline. The UM cable
@@ -70,8 +76,9 @@
   the 218.374 mm spacing instead of binding like two round sockets. Tiny
   exterior lands grow outward from the carrier lip, outside the LM recess, and
   retain ≥0.50 mm local radial/end wall, ≥0.05 mm recess plan clearance, and
-  ≥0.13 mm conservative W22-flange plan clearance. They add about 1.40 mm
-  local perimeter growth; Ac/Ae are geometrically compatible through 0.25 mm
+  ≥0.13 mm conservative W22-flange plan clearance. Their worst-case reach is
+  R114.4036: 1.4036 mm beyond structural R113.0 and 0.6036 mm beyond the
+  finalized R113.8 visible fairing. Ac/Ae are geometrically compatible through 0.25 mm
   hidden carrier-interface pockets, with physical fit still coupon-qualified.
   With the monolithic LM those pockets are small hidden local reliefs; the
   three magnetic datums and primary retention geometry remain unchanged.
@@ -299,13 +306,20 @@
   and equal 0.20 mm wing saddle clearance in both states;
   six global Ø5.20 x 2.10 surface-normal captive magnet cavities with 0.45 mm
   axial skins, continuous printable cradles and 45-degree roofs; preservation
-  of the upper 64/116 deg LM ring pair and its +0.60 mm outward local backing;
+  of the upper 64/116 deg LM ring pair on the R113.0 structural carrier and
+  the 50.5/129.5 deg UM pair on the R51.7 structural carrier; continuous
+  smooth exposed side radii R113.8/R52.5, clipped only inside the existing
+  LM--UM and T--UM cusp/service regions, with the 0.40 mm LM--UM
+  inter-carrier gap preserved; ring cavity construction datums at
+  structural radius +0.65 mm, 0.15 mm beneath the exposed surface, with no
+  local pad, boss, flat, or visible cue;
   exact lower-LM
   base-side faces at `(x,y,z)=(±32,18,12.55)` with outward ±X normals in
   both stand states; at least 2.2 mm upper-LM nearest-insert edge gap; absence
   of LM proud ears; three matching Ac/Ae receivers per physical side at
-  LM lower, LM upper, and UM; preserved 0.05 mm mating gap and 0.95 mm nominal
-  magnet separation; manifest-derived pauses and mirrored polarity;
+  LM lower, LM upper, and UM; preserved 0.05 mm mating gap, 1.10 mm nominal
+  paired magnet-face separation at LM-upper/UM, and 0.95 mm at the LM-lower
+  base-side pair; manifest-derived pauses and mirrored polarity;
   free D7.8 LM span clearance with zero printed micro-duct, an exact rear-open
   subtractive relief, and correct floor lane continuation;
   physical-cable containment; insert/head/terminal/service clearance;
@@ -320,7 +334,8 @@
   engagement, right Ø1.84 round and left 1.96 × 1.84 X-relieved blind sockets,
   0.12 mm radial/0.25 mm end clearances, ≥0.50 mm local radial/end walls,
   ≥0.05 mm recess plan clearance, ≥0.13 mm conservative W22-flange plan
-  clearance, about 1.40 mm local perimeter growth, round-plus-relieved pitch tolerance, complete four-nozzle-width
+  clearance, R114.4036 worst-case land reach (1.4036 mm beyond structural R113.0;
+  0.6036 mm beyond the finalized R113.8 visible fairing), round-plus-relieved pitch tolerance, complete four-nozzle-width
   sliced pin/land/wall paths, process-matched fit, actual U22 fit and full seating,
   explicit exterior support lands and zero standalone
   retention/load credit; front-face-down orientation and selected-printer

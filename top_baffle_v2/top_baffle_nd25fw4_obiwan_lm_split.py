@@ -14,15 +14,16 @@ halves from the final BREP preserves their exact open lumen sections.
 
 Two concealed cylindrical pins sit symmetrically on small exterior support
 lands outside the LM driver recess and point normal to the horizontal seam
-(world +Y).  The lands merge into the R110.6..R113 carrier lip and preserve a
-0.05 mm plan clearance outside that recess.  A local roughly 1.40 mm perimeter
-growth is required: putting the longer/wider sockets inward would collide the
-hash-pinned W22 flange.  The right socket is round; the left
+(world +Y).  The lands merge into the carrier lip and preserve a 0.05 mm plan
+clearance outside that recess.  Their worst-case reach is R114.4036: 1.4036 mm
+beyond the structural R113.0 lip, but only 0.6036 mm beyond the finalized
+R113.8 visible fairing.  Putting the longer/wider sockets inward would collide
+the hash-pinned W22 flange.  The right socket is round; the left
 socket has the minimum X relief needed to avoid over-constraining the roughly
 218.37 mm pin spacing.  This round-and-diamond constraint pattern registers
 both halves without the binding risk of two tight round sockets, another
 screw, or a driver-flange collision.  The required exterior lands create only
-the documented local perimeter growth; the rest of the carrier is unchanged.
+the documented local plan-envelope growth; the rest of the carrier is unchanged.
 It receives zero installed structural-load credit: the LM driver flange and
 its normal fasteners bridge the seam in service, and the split configuration
 remains pending physical print/fit/load qualification.
@@ -41,8 +42,10 @@ from top_baffle_nd25fw4_obiwan import (
     LM_CORE_R,
     LM_RECESS_R,
     LM_SEAT_Z,
+    LM_VISIBLE_RING_R,
     L22_CUTOUT,
     THICKNESS_MM,
+    _cylinder_at,
     _fuse_attached,
     _plan_prism,
     lm_carrier,
@@ -61,6 +64,7 @@ LM_SPLIT_SEAM_Y = L22_CUTOUT[1] + LM_SPLIT_SEAM_OFFSET_Y
 # would cut straight through both buried cable covers. Registration clearance
 # is confined to two blind sockets inside the left/right structural lips.
 LM_SPLIT_GAP_MM = 0.0
+REGISTRATION_SUPPORT_FUSION_OVERLAP_MM = 0.10
 
 # Two identical cylindrical male pins replace the former one-sided tangential
 # tongue.  Their axes are normal to the horizontal split seam: world +Y from
@@ -68,8 +72,9 @@ LM_SPLIT_GAP_MM = 0.0
 # engage 2.40 mm, three times the former 0.80-mm engagement.  That longer,
 # wider fit cannot retain the required wall inside the bare 2.40-mm radial
 # carrier lip, so each socket is housed by a tiny exterior land outside the LM
-# driver recess.  This changes the perimeter locally by roughly 1.40 mm but
-# avoids the installed-driver volume; an inward land was rejected after it
+# driver recess.  Their R114.4036 reach grows 1.4036 mm beyond the structural
+# lip and 0.6036 mm beyond the visible fairing, but avoids the installed-driver
+# volume; an inward land was rejected after it
 # intersected the hash-pinned W22 STEP.  The legacy 0.12-mm per-side fit
 # clearance and 0.25-mm blind-end clearance are retained.  One
 # socket is round and fully locating; the opposite socket is relieved by
@@ -260,9 +265,44 @@ def registration_augmented_carrier(source):
     """Add only the two driver-clear exterior registration lands."""
     carrier = _one_solid(source, "source LM carrier")
     for side, support in registration_support_land_tools().items():
-        carrier = _fuse_attached(
-            carrier, support,
-            f"optional LM concealed {side} registration support land")
+        # The smooth R113.8 fairing now contains almost the entire legacy
+        # support capsule.  Fusing that mostly coincident 24-mm3 tool directly
+        # makes OCC rewrite same-domain cylinder faces and report spurious
+        # volume loss/gain.  Add only the exterior cap plus a 0.10-mm annular
+        # construction overlap.  Validate the result by exact set containment
+        # instead of unreliable same-domain volume arithmetic: no source may
+        # disappear, all of the qualified support must remain, and nothing
+        # outside source U support may be created.
+        inner_clip = _cylinder_at(
+            *L22_CUTOUT[:2],
+            LM_VISIBLE_RING_R - REGISTRATION_SUPPORT_FUSION_OVERLAP_MM,
+            -200.0, 100.0)
+        exterior_cap = (support - inner_clip).clean()
+        combined = carrier.fuse(exterior_cap).clean()
+        solids = list(combined.solids())
+        lost_source = carrier - combined
+        missing_support = support - combined
+        unexpected = (combined - carrier) - support
+
+        def volume(shape):
+            return 0.0 if shape is None else sum(
+                solid.volume for solid in shape.solids())
+
+        lost_volume = volume(lost_source)
+        missing_volume = volume(missing_support)
+        unexpected_volume = volume(unexpected)
+        if (not combined.is_valid or len(solids) != 1
+                or solids[0].volume <= 0.01
+                or lost_volume > 0.02
+                or missing_volume > 0.02
+                or unexpected_volume > 0.02):
+            raise RuntimeError(
+                f"optional LM concealed {side} registration support land "
+                "failed bounded cap fusion: "
+                f"valid={combined.is_valid} solids={len(solids)} "
+                f"lost={lost_volume:.6f} missing={missing_volume:.6f} "
+                f"unexpected={unexpected_volume:.6f} mm3")
+        carrier = Part([solids[0]])
     return _one_solid(carrier, "registration-augmented LM carrier")
 
 
@@ -310,7 +350,8 @@ def registration_fit_facts() -> dict:
     ) - LM_RECESS_R
     outer_land_r = sqrt(
         (x + support_half_x) ** 2 + support_root_dy ** 2)
-    plan_outline_growth = outer_land_r - LM_CORE_R
+    plan_growth_from_structural = outer_land_r - LM_CORE_R
+    plan_growth_beyond_visible = outer_land_r - LM_VISIBLE_RING_R
     driver_flange_clearance = (
         LM_RECESS_R + recess_clearance
         - REGISTRATION_DRIVER_FLANGE_R_MM)
@@ -388,7 +429,13 @@ def registration_fit_facts() -> dict:
         "wing_clearance_compatible_variants": ("ac", "ae"),
         "wing_clearance_pocket_between_front_and_rear": True,
         "exterior_support_land": True,
-        "support_land_plan_outline_growth_mm": plan_outline_growth,
+        "support_land_outer_radius_mm": outer_land_r,
+        "support_land_plan_growth_from_structural_ring_mm": (
+            plan_growth_from_structural),
+        "support_land_plan_growth_beyond_visible_fairing_mm": (
+            plan_growth_beyond_visible),
+        "support_land_plan_outline_growth_mm": (
+            plan_growth_beyond_visible),
         "inward_support_land_rejected_for_driver_collision": True,
         "two_round_socket_design_rejected": True,
         "tolerance_strategy": (
@@ -405,7 +452,7 @@ def registration_fit_facts() -> dict:
             "the horizontal D1.6 pins are four nominal 0.4-mm nozzle widths "
             "but have no load credit; verify both pin toolpaths, the local "
             "support lands and the minimum socket walls before release"),
-        "envelope_growth_mm": plan_outline_growth,
+        "envelope_growth_mm": plan_growth_beyond_visible,
         "target_square_bed_mm": LM_SPLIT_TARGET_BED_MM,
         "floor_bottom_print_rotation_x_deg": 180.0,
         "print_orientation": "front_face_down_all_pieces",

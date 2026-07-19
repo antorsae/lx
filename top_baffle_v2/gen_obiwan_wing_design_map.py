@@ -67,6 +67,7 @@ from top_baffle_nd25fw4_obiwan import (
     UM_CORE_R,
     _complete_joint_ear_plan,
     _complete_tweeter_joint_ear_plan,
+    side_ring_outer_plan,
     side_magnet_sites,
 )
 from top_baffle_nd25fw4_obiwan_bridge import common_lm_wing_contact_plan
@@ -90,9 +91,9 @@ DEPTH_MM = THICKNESS_MM - CORE_REAR_Z
 FRONT_SKIN_MM = 1.20
 FULL_RIB_MM = 2.40
 SADDLE_CLEAR_MM = INTERFACE_GAP_MM
-# Carrier and attachment faces retain an exact 0.05-mm assembly gap.  With a
-# 0.45-mm captive skin on each part, nominal magnet-face separation is
-# 0.95 mm; the old zero-gap/exposed-pocket assumption is deliberately gone.
+# Visible carrier and attachment faces retain an exact 0.05-mm assembly gap.
+# Ring-carrier cavity datums sit 0.15 mm beneath that smooth surface, so their
+# magnet-face separation is 1.10 mm; the base-side LM pair remains 0.95 mm.
 MAGNET_FACE_GAP_MM = INTERFACE_GAP_MM
 # Ac is the exact constant-depth reference.  Ae keeps the same flat front
 # datum but replaces the rear slab with a constrained, single-valued feather.
@@ -441,7 +442,8 @@ def _rounded_oriented_pad(face, normal, radial, tangential) -> Polygon:
 
 def _pocket_plan(site) -> Polygon:
     """XY projection of the complete outward captive receiver land."""
-    face = np.asarray(site["face"], dtype=float)
+    face = np.asarray(
+        site.get("outer_surface_face", site["face"]), dtype=float)
     normal = np.asarray(site["normal"], dtype=float)
     tangent = np.array((-normal[1], normal[0]))
     mouth = face + MAGNET_FACE_GAP_MM * normal
@@ -523,10 +525,10 @@ def _common_keepout_parts() -> dict[str, Polygon]:
     """
     lm_lower_contact = common_lm_wing_contact_plan()
     parts: dict[str, Polygon] = {
-        "lm_carrier": Point(*LM_CENTER).buffer(
-            LM_CORE_R + SADDLE_CLEAR_MM, resolution=160),
-        "um_carrier": Point(*UM_CENTER).buffer(
-            UM_CORE_R + SADDLE_CLEAR_MM, resolution=160),
+        "lm_carrier": side_ring_outer_plan("lm").buffer(
+            SADDLE_CLEAR_MM, resolution=32, join_style=1),
+        "um_carrier": side_ring_outer_plan("um").buffer(
+            SADDLE_CLEAR_MM, resolution=32, join_style=1),
         "t_crescent": Point(*T_CRESCENT_CENTER).buffer(
             52.2 + SADDLE_CLEAR_MM, resolution=128),
         "no_floor_bridge": lm_lower_contact.buffer(
@@ -541,15 +543,6 @@ def _common_keepout_parts() -> dict[str, Polygon]:
     for x in (-24.0, 24.0):
         parts[f"t_joint_{x:+.0f}"] = _complete_tweeter_joint_ear_plan(
             "tweeter", x, SADDLE_CLEAR_MM)
-    for site in side_magnet_sites():
-        # The four ring stations have a 0.60-mm local backing boss because
-        # the native lip is only 2.40 mm deep.  Keep the wing outside that
-        # exact boss plus the same 0.05-mm assembly gap.  Lower base sites
-        # are already contained by the common LM contact outline.
-        if site.get("interface_kind") == "ring":
-            parts[f"captive_boss_{site['name']}"] = (
-                _carrier_pocket_plan(site).buffer(
-                    SADDLE_CLEAR_MM, resolution=16, join_style=1))
     return parts
 
 
@@ -571,7 +564,8 @@ def _receiver_root(profile: Polygon, site, key: str) -> tuple[Polygon, Polygon]:
     is_um = site["driver"] == "um"
     radial = PAD_UM_RADIAL_MM if is_um else PAD_LM_RADIAL_MM
     tangential = PAD_UM_TANGENTIAL_MM if is_um else PAD_LM_TANGENTIAL_MM
-    pad = _rounded_oriented_pad(site["face"], site["normal"],
+    receiver_face = site.get("outer_surface_face", site["face"])
+    pad = _rounded_oriented_pad(receiver_face, site["normal"],
                                 radial, tangential)
     if site.get("interface_kind") == "base_side":
         # The base receiver mates to the common W64 tongue, not the R113 LM
@@ -579,11 +573,7 @@ def _receiver_root(profile: Polygon, site, key: str) -> tuple[Polygon, Polygon]:
         # the carrier and hide the intended flush x=+/-32 interface.
         carrier = common_lm_wing_contact_plan()
     else:
-        carrier = unary_union((
-            Point(*site["center"]).buffer(
-                site["radius"], resolution=160),
-            _carrier_pocket_plan(site),
-        )).buffer(0)
+        carrier = side_ring_outer_plan(site["driver"])
     carrier = carrier.buffer(
         MAGNET_FACE_GAP_MM, resolution=16, join_style=1)
     pad = pad.difference(carrier)
@@ -1017,7 +1007,8 @@ def _validate_layout(layout: VariantLayout) -> None:
                 f"{layout.definition.key} does not contain {name} receiver pocket")
         normal = np.asarray(site["normal"], dtype=float)
         tangent = np.array((-normal[1], normal[0]))
-        face = np.asarray(site["face"], dtype=float)
+        face = np.asarray(
+            site.get("outer_surface_face", site["face"]), dtype=float)
         coords = np.asarray(pocket.exterior.coords)[:-1]
         radial_extent = float(np.ptp(coords @ normal))
         tangential_extent = float(np.ptp(coords @ tangent))
@@ -1383,7 +1374,8 @@ def _ae_section_definitions(
     sites = _right_sites()
 
     def radial_line(site, inward=2.0, outward=95.0):
-        face = np.asarray(site["face"], dtype=float)
+        face = np.asarray(
+            site.get("outer_surface_face", site["face"]), dtype=float)
         normal = np.asarray(site["normal"], dtype=float)
         return LineString((tuple(face - inward * normal),
                            tuple(face + outward * normal)))
@@ -1545,12 +1537,13 @@ def _circle(ax, center, diameter, **kwargs):
 
 
 def _draw_carriers_and_drivers(ax, labels: bool = False):
-    for center, outer_r, open_d, name in (
-            (LM_CENTER, LM_CORE_R, L22_CUTOUT[2], "LM R113"),
-            (UM_CENTER, UM_CORE_R, UM_CUTOUT[2], "UM R51.7")):
-        ax.add_patch(Circle(center, outer_r, facecolor=COLORS["carrier"],
-                            edgecolor=COLORS["carrier_edge"], lw=1.0,
-                            zorder=5))
+    for driver, center, open_d, name in (
+            ("lm", LM_CENTER, L22_CUTOUT[2], "LM side R113.8"),
+            ("um", UM_CENTER, UM_CUTOUT[2], "UM side R52.5")):
+        _draw_shape(
+            ax, side_ring_outer_plan(driver),
+            facecolor=COLORS["carrier"],
+            edgecolor=COLORS["carrier_edge"], linewidth=1.0, zorder=5)
         ax.add_patch(Circle(center, open_d / 2.0, facecolor="white",
                             edgecolor=COLORS["carrier_edge"], lw=0.8,
                             zorder=6))
@@ -1600,8 +1593,9 @@ def _draw_magnets(ax, show_labels=False):
                          else "radial")
             label = (f"active {interface} {site['driver'].upper()} receiver\n"
                      "XY: 2.10 axial x 5.20 transverse")
-            ax.annotate(label, xy=site["face"],
-                        xytext=(site["face"][0] + 18, site["face"][1] - 4),
+            surface_face = site.get("outer_surface_face", site["face"])
+            ax.annotate(label, xy=surface_face,
+                        xytext=(surface_face[0] + 18, surface_face[1] - 4),
                         fontsize=6.8, color=color,
                         arrowprops=dict(arrowstyle="-", color=color, lw=0.7),
                         zorder=15)
@@ -1971,7 +1965,8 @@ def _draw_ae_actual_section(
         sites = _right_sites()
         site = (sites["lm_upper_right"] if definition.key == "S2"
                 else sites["um_right"])
-        face = np.asarray(site["face"], dtype=float)
+        face = np.asarray(
+            site.get("outer_surface_face", site["face"]), dtype=float)
         index = int(np.argmin(np.linalg.norm(xy - face, axis=1)))
         pocket_x = float(along[index])
         ax.add_patch(Rectangle(

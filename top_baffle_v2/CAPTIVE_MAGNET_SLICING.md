@@ -59,7 +59,7 @@ separate prints; their constituent STLs are present in this inventory.
 
 The floor and no-floor canonical
 `lx521_top_obiwan_core_1of2_lm_carrier.stl` monoliths each have an approximately
-235.61 x 313.35 mm mandatory front-face-down footprint. They therefore do not
+236.41 x 313.75 mm mandatory front-face-down footprint. They therefore do not
 fit the P2S 256 x 256 mm bed. They remain valid large-format release CAD/STL,
 but the P2S audit does **not** slice them, generate G-code for them, or publish
 a pause marker for them. It never grants a virtual larger bed, scales, clips,

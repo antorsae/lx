@@ -3,11 +3,11 @@
     "collapsed_apex_facets_removed": 0,
     "component_error": 0,
     "component_signed_volumes": [
-      316186.65056180174,
+      320618.9113472332,
       -65.39900977366848,
       -65.39906231582023,
-      -65.39908631384915,
-      -65.39917404575826
+      -65.39913125583364,
+      -65.39915069330345
     ],
     "components": 5,
     "degenerate": 0,
@@ -20,8 +20,8 @@
     "open": 0,
     "outer_components": 1,
     "over_shared": 0,
-    "signed_volume": 315925.05422935245,
-    "triangles": 30342,
+    "signed_volume": 320357.3149931943,
+    "triangles": 30110,
     "winding": 0,
     "zero_volume": 0,
     "zero_volume_components": 0
@@ -30,7 +30,7 @@
   "pre_translation_bbox_min_mm": [
     -28.254322971485674,
     -298.7315299057354,
-    -18.300000099999988
+    -18.300000099999963
   ],
   "print_orientation": "front_face_down",
   "rotation_deg": {
@@ -55,7 +55,7 @@
       0.0,
       0.0,
       -1.0,
-      18.300000099999988
+      18.300000099999963
     ],
     [
       0.0,
@@ -65,12 +65,12 @@
     ]
   ],
   "stl": "lx521_top_obiwan_core_1of2_lm_carrier.stl",
-  "stl_bytes": 1517184,
+  "stl_bytes": 1505584,
   "stl_origin_translation_mm": [
     28.254322971485674,
     298.7315299057354,
-    18.300000099999988
+    18.300000099999963
   ],
-  "stl_sha256": "11ca73df0aa740845aa01a1ebbf364a6526715b559306593517d412e6b40680c",
+  "stl_sha256": "53e480d4edff79408e1c8bbb665fd94ec9dca600aca9daea1dcbea8b30c2b43f",
   "variant_export": "obiwan"
 }

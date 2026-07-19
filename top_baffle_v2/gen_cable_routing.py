@@ -703,16 +703,19 @@ def render_obiwan():
         JOINT_EAR_X,
         JOINT_EAR_Y,
         LM_CORE_R,
+        LM_VISIBLE_RING_R,
         SIDE_MAGNET_DEPTH,
         SIDE_MAGNET_POCKET_D,
         TWEETER_JOINT_HOLE_D,
         TWEETER_JOINT_X,
         TWEETER_JOINT_Y,
         UM_CORE_R,
+        UM_VISIBLE_RING_R,
         _complete_joint_ear_plan,
         _complete_tweeter_joint_ear_plan,
         junction_closure_polygons,
         side_magnet_sites,
+        side_ring_outer_plan,
     )
     from top_baffle_nd25fw4_obiwan_bridge import (
         BRIDGE_FACE_Z,
@@ -924,13 +927,32 @@ def render_obiwan():
                         raise ValueError(axes)
                     ax.add_patch(rect)
 
+    def fill_plan(ax, plan, *, facecolor, edgecolor, linewidth,
+                  alpha=1.0, zorder=2.0):
+        """Draw every polygon of one exact Shapely carrier plan."""
+        pieces = ((plan,) if plan.geom_type == "Polygon"
+                  else tuple(plan.geoms))
+        for piece in pieces:
+            if piece.is_empty:
+                continue
+            ex, ey = piece.exterior.xy
+            ax.fill(
+                ex, ey, fc=facecolor, ec=edgecolor, lw=linewidth,
+                alpha=alpha, zorder=zorder)
+
     def draw_core_front(ax):
-        for (cx, cy, cut_d), outer, recess, color in (
-                (L22_CUTOUT, LM_CORE_R, LM_RECESS_R, "#b8bec7"),
-                (UM_CUTOUT, UM_CORE_R, UM_RECESS_R, "#c7cdd5")):
-            ax.add_patch(plt.Circle(
-                (cx, cy), outer, fc=color, ec="#303943",
-                lw=1.25, zorder=2))
+        # Route ownership remains keyed to the structural R113/R51.7 discs,
+        # but the released carrier sides are the continuous R113.8/R52.5
+        # fairings.  Their exact plans stop inside the pre-existing LM--UM
+        # and T--UM cusp/service regions, so this drawing must not replace
+        # them with either nominal circles or local magnet-pad boxes.
+        for driver, (cx, cy, cut_d), recess, color in (
+                ("lm", L22_CUTOUT, LM_RECESS_R, "#b8bec7"),
+                ("um", UM_CUTOUT, UM_RECESS_R, "#c7cdd5")):
+            fill_plan(
+                ax, side_ring_outer_plan(driver),
+                facecolor=color, edgecolor="#303943",
+                linewidth=1.25, zorder=2)
             ax.add_patch(plt.Circle(
                 (cx, cy), recess, fill=False, ec="0.48",
                 ls="--", lw=0.8, zorder=3))
@@ -1100,6 +1122,15 @@ def render_obiwan():
         fontsize=7.1, color="tab:orange",
         arrowprops=dict(arrowstyle="-", color="tab:orange"))
     ax_front.annotate(
+        f"smooth exposed carrier sides: LM R{LM_VISIBLE_RING_R:g} / "
+        f"UM R{UM_VISIBLE_RING_R:g}\n"
+        f"route owners remain R{LM_CORE_R:g} / R{UM_CORE_R:g}; "
+        "fairings stop inside interface cusps\n"
+        "orange cavity axes end 0.15 mm below the smooth surface",
+        tuple(magnet_sites[0]["outer_surface_face"]), (-128, 242),
+        fontsize=7.1, color="#303943",
+        arrowprops=dict(arrowstyle="-", color="#303943"))
+    ax_front.annotate(
         "all route bypass bumps are closed and solid-backed\n"
         "ordinary blind driver bores; zero open windows/cavities",
         (route[0, 0], route[0, 1]), (-130, 116),
@@ -1123,12 +1154,11 @@ def render_obiwan():
 
     # True YZ projection.  Carrier projections remain light so the depth
     # changes and cable ownership read clearly.
-    for center_y, outer in (
-            (L22_CUTOUT[1], LM_CORE_R),
-            (UM_CUTOUT[1], UM_CORE_R)):
+    for driver in ("lm", "um"):
+        _min_x, min_y, _max_x, max_y = side_ring_outer_plan(driver).bounds
         ax_side.add_patch(plt.Rectangle(
-            (CORE_REAR_Z, center_y - outer),
-            THICKNESS_MM - CORE_REAR_Z, 2.0 * outer,
+            (CORE_REAR_Z, min_y),
+            THICKNESS_MM - CORE_REAR_Z, max_y - min_y,
             fc="#c9cfd6", ec="#303943", lw=0.9,
             alpha=0.55, zorder=1))
     if STAND_FOOT:
@@ -1246,9 +1276,11 @@ def render_obiwan():
 
     # True XZ projection.  This is not a route-station plot: every line uses
     # its world x and z coordinates.
+    lm_visible_bounds = side_ring_outer_plan("lm").bounds
     ax_top.add_patch(plt.Rectangle(
-        (-LM_CORE_R, CORE_REAR_Z),
-        2.0 * LM_CORE_R, THICKNESS_MM - CORE_REAR_Z,
+        (lm_visible_bounds[0], CORE_REAR_Z),
+        lm_visible_bounds[2] - lm_visible_bounds[0],
+        THICKNESS_MM - CORE_REAR_Z,
         fc="#c9cfd6", ec="#303943", lw=0.9,
         alpha=0.50, zorder=1))
     if STAND_FOOT:
