@@ -6,6 +6,7 @@ from __future__ import annotations
 import ast
 import importlib.util
 import json
+import math
 import os
 from pathlib import Path
 import struct
@@ -59,7 +60,10 @@ def _load_catalog_generator_without_cad():
         "top_baffle_nd25fw4": _stub_module(
             "top_baffle_nd25fw4", THICKNESS_MM=18.3),
         "top_baffle_nd25fw4_b": _stub_module(
-            "top_baffle_nd25fw4_b", MAGNET_SITES=()),
+            "top_baffle_nd25fw4_b",
+            BASE_CAVITY_FACE_INSET_MM=(0.0, 0.14),
+            MAGNET_SITES=(),
+        ),
         "top_baffle_nd25fw4_v0": _stub_module(
             "top_baffle_nd25fw4_v0", V0_MAGNET_SITES=()),
         "top_baffle_nd25fw4_v1": _stub_module(
@@ -127,17 +131,17 @@ def _load_coupon_mesh_gate_without_cad():
         "_canonicalize_transform_zeros", "_strict_mesh_facts"))
 
 
-def _load_v1_ts_nudge_without_cad():
-    """Extract the V1 TS detour law without importing build123d/OCC."""
+def _load_ts_nudge_without_cad():
+    """Extract the shared captive TS detour without build123d/OCC."""
     path = ROOT / "top_baffle_nd25fw4_cables.py"
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
     constants = {
         "TS_ROUTE_STANDARD",
-        "TS_ROUTE_V1_CAPTIVE",
-        "TS_V1_CAPTIVE_NUDGE_MAX_MM",
-        "TS_V1_CAPTIVE_NUDGE_KNOTS",
+        "TS_ROUTE_CAPTIVE",
+        "TS_CAPTIVE_NUDGE_MAX_MM",
+        "TS_CAPTIVE_NUDGE_KNOTS",
     }
-    functions = {"_smoothstep01", "_ts_v1_captive_nudge_mm"}
+    functions = {"_smoothstep01", "_ts_captive_nudge_mm"}
     body = []
     for node in tree.body:
         if isinstance(node, ast.Assign):
@@ -232,7 +236,7 @@ def test_catalog_schema_requires_x180_plus_numeric_z() -> None:
         "cavity_diameter_mm", "cavity_depth_mm",
         "face_skin_mm", "inner_skin_mm", "captive_land_mm",
         "interface_gap_mm", "paired_magnet_face_separation_mm",
-        "roof_angle_deg", "classic_retaining_path_mm",
+        "roof_angle_deg", "minimum_retaining_path_mm",
         "polarity_instruction", "installed_marked_pole_axis_xyz",
         "insertion_direction_xyz", "magnet_count",
         "structural_load_credit_n", "print_space",
@@ -292,8 +296,175 @@ def test_catalog_global_pair_spacing_is_not_ambiguous() -> None:
     assert "paired_magnet_face_separation_mm" not in geometry
     assert "nominal_paired_magnet_face_separation_mm" not in geometry
     assert geometry[
-        "paired_magnet_face_separation_by_interface_kind_mm"
-    ] == {"base_side": 0.95, "ring": 1.10}
+        "paired_magnet_face_separation_by_interface_profile_mm"
+    ] == {
+        "standard_straight": 0.95,
+        "standard_curved": 1.09,
+        "obiwan_base_side": 0.95,
+        "obiwan_ring": 1.10,
+    }
+
+
+def _release_catalog() -> dict[str, object]:
+    path = ROOT / "review" / "captive_magnet_release_catalog.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    assert isinstance(payload, dict)
+    assert isinstance(payload.get("artifacts"), list)
+    return payload
+
+
+def _one_toleranced_value(
+    values: list[tuple[float, str]], *, label: str, tolerance: float = 1.0e-6,
+) -> float:
+    """Require one numeric release datum while retaining useful failures."""
+    assert values, f"{label}: no release values"
+    reference = values[0][0]
+    drift = [
+        (value, owner) for value, owner in values
+        if not math.isclose(
+            value, reference, abs_tol=tolerance, rel_tol=0.0)
+    ]
+    assert not drift, (
+        f"{label}: expected one value, reference={reference:.9f}, "
+        f"drift={drift}")
+    return reference
+
+
+def test_transverse_magnet_plane_is_uniform_per_design_family() -> None:
+    """Stock, slim and Obi-Wan each publish one insertion/closure plane.
+
+    Grouping by the user-facing design family is deliberate: attachments,
+    split alternatives, both stand states and Ac/Ae receivers must not
+    silently retain a stale lower/upper or LM/UM depth.  V0 is axial and the
+    fit coupon is not an assembled baffle, so neither belongs to this gate.
+    """
+    payload = _release_catalog()
+    family_variants = {
+        "stock": {"A", "B1", "B2", "C7"},
+        "slim": {"V1", "V1-A", "V1-B1", "V1L"},
+        "obiwan": {
+            "Obi-Wan", "Obi-Wan-split", "Obi-Wan-Ac", "Obi-Wan-Ae",
+        },
+    }
+    artifacts = payload["artifacts"]
+    assert isinstance(artifacts, list)
+    for family, variants in family_variants.items():
+        selected = [
+            artifact for artifact in artifacts
+            if isinstance(artifact, dict) and artifact.get("variant") in variants
+        ]
+        assert {artifact["variant"] for artifact in selected} == variants
+        fields = {
+            "source seated-magnet Z": [],
+            "print-space seated-magnet Z": [],
+            "raw roof-start print Z": [],
+            "snapped roof-start print Z": [],
+        }
+        for artifact in selected:
+            artifact_id = str(artifact["id"])
+            sites = artifact.get("sites")
+            assert isinstance(sites, list) and sites, artifact_id
+            for site in sites:
+                assert isinstance(site, dict), artifact_id
+                if site.get("closure_kind") != "transverse_gable_45deg":
+                    continue
+                owner = f"{artifact_id}/{site.get('name')}"
+                source_center = site["seated_magnet_center_xyz_mm"]
+                print_center = site["print_space"][
+                    "seated_magnet_center_xyz_mm"]
+                fields["source seated-magnet Z"].append(
+                    (float(source_center[2]), owner))
+                fields["print-space seated-magnet Z"].append(
+                    (float(print_center[2]), owner))
+                fields["raw roof-start print Z"].append(
+                    (float(site["raw_roof_start_print_z_mm"]), owner))
+                fields["snapped roof-start print Z"].append((
+                    float(site["cavity_bury_roof_start_print_z_mm"]), owner,
+                ))
+        for field, values in fields.items():
+            _one_toleranced_value(values, label=f"{family} {field}")
+
+
+def _mirrored_name(name: str) -> tuple[str, str] | None:
+    """Return (side, side-neutral name) for one released site name."""
+    tokens = name.split("_")
+    side_tokens = [token for token in tokens if token in {"left", "right"}]
+    if not side_tokens:
+        return None
+    assert len(side_tokens) == 1, f"ambiguous side in site name {name!r}"
+    side = side_tokens[0]
+    neutral = "_".join("SIDE" if token == side else token for token in tokens)
+    return side, neutral
+
+
+def _assert_source_mirror(
+    left: list[float], right: list[float], *, label: str,
+    tolerance: float = 1.0e-6,
+) -> None:
+    assert len(left) == len(right) in {2, 3}, label
+    assert math.isclose(
+        float(left[0]), -float(right[0]),
+        abs_tol=tolerance, rel_tol=0.0,
+    ), f"{label}: X is not mirrored: left={left}, right={right}"
+    for axis in range(1, len(left)):
+        assert math.isclose(
+            float(left[axis]), float(right[axis]),
+            abs_tol=tolerance, rel_tol=0.0,
+        ), f"{label}: axis {axis} drift: left={left}, right={right}"
+
+
+def test_every_released_magnet_site_has_exact_left_right_symmetry() -> None:
+    """Mirror all source-space magnet geometry, not only nominal centres."""
+    payload = _release_catalog()
+    artifacts = payload["artifacts"]
+    assert isinstance(artifacts, list)
+    paired: dict[tuple[str, str, str, str], dict[str, dict[str, object]]] = {}
+    for artifact in artifacts:
+        assert isinstance(artifact, dict)
+        for site in artifact["sites"]:
+            assert isinstance(site, dict)
+            # V0's two rear-axis sites deliberately avoid different nearby
+            # cable corridors; this regression governs the transverse flank
+            # interfaces whose released parts are true left/right mirrors.
+            if site.get("closure_kind") != "transverse_gable_45deg":
+                continue
+            parsed = _mirrored_name(str(site["name"]))
+            if parsed is None:
+                continue
+            side, neutral = parsed
+            key = (
+                str(artifact["state"]), str(artifact["variant"]),
+                str(site.get("owner")), neutral,
+            )
+            bucket = paired.setdefault(key, {})
+            # A given released family/state may intentionally repeat the same
+            # site in a monolith and a split/wing inventory only when its
+            # variant identity differs.  Duplicate one-side records here
+            # therefore indicate catalog ambiguity.
+            assert side not in bucket, (key, side)
+            bucket[side] = site
+
+    assert paired
+    vector_fields = (
+        "interface_datum_xyz_mm",
+        "actual_face_xyz_mm",
+        "cavity_center_xyz_mm",
+        "seated_magnet_center_xyz_mm",
+        "pair_axis_xyz",
+        "material_inward_xyz",
+        "marked_pole_axis_xyz",
+        "installed_marked_pole_axis_xyz",
+        "carrier_cavity_datum_xy_mm",
+        "outer_surface_face_xy_mm",
+    )
+    for key, by_side in paired.items():
+        assert set(by_side) == {"left", "right"}, (key, sorted(by_side))
+        left, right = by_side["left"], by_side["right"]
+        for field in vector_fields:
+            assert (field in left) == (field in right), (key, field)
+            if field in left:
+                _assert_source_mirror(
+                    left[field], right[field], label=f"{key}/{field}")
 
 
 def test_catalog_source_freezes_56_stls_and_102_stations() -> None:
@@ -588,6 +759,17 @@ def test_obiwan_release_target_requires_captive_catalog() -> None:
     assert "$(CAPTIVE_MAGNET_CATALOG)" in targets["obiwan_release"]
 
 
+def test_release_metadata_waits_for_current_captive_catalog() -> None:
+    """The static consumer must not race the generated catalog in candidate."""
+    makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
+    targets = {
+        line.split(":", 1)[0]: line.split(":", 1)[1]
+        for line in _logical_make_lines(makefile)
+        if ":" in line and not line.startswith(("#", "\t"))
+    }
+    assert "$(CAPTIVE_MAGNET_CATALOG)" in targets["check_release_metadata"]
+
+
 def test_check_waits_for_both_obiwan_native_stages() -> None:
     """Parallel R6F keyed-split checks must never race stage creation."""
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
@@ -855,16 +1037,16 @@ def test_docs_do_not_describe_generated_stls_front_up() -> None:
     assert "print-ready pieces (flat, z = thickness, front face up)" not in readme
 
 
-def test_v1_ts_captive_detour_is_smooth_full_lumen_and_wired() -> None:
-    """Mac-safe gate for the V1/V1L-only lower-left skin repair."""
-    contract = _load_v1_ts_nudge_without_cad()
-    nudge = contract["_ts_v1_captive_nudge_mm"]
-    knots = contract["TS_V1_CAPTIVE_NUDGE_KNOTS"]
-    maximum = contract["TS_V1_CAPTIVE_NUDGE_MAX_MM"]
+def test_ts_captive_detour_is_smooth_full_lumen_and_wired() -> None:
+    """Mac-safe gate for the stock/slim lower-left land repair."""
+    contract = _load_ts_nudge_without_cad()
+    nudge = contract["_ts_captive_nudge_mm"]
+    knots = contract["TS_CAPTIVE_NUDGE_KNOTS"]
+    maximum = contract["TS_CAPTIVE_NUDGE_MAX_MM"]
 
-    assert maximum == 0.20
+    assert maximum == 0.60
     assert tuple(offset for _y, offset in knots) == (
-        0.0, 0.1, 0.2, 0.2, 0.1, 0.0)
+        0.0, 0.3, 0.6, 0.6, 0.3, 0.0)
     for y, expected in knots:
         assert abs(nudge(y) - expected) < 1.0e-12
     assert nudge(knots[0][0] - 100.0) == 0.0
@@ -889,11 +1071,12 @@ def test_v1_ts_captive_detour_is_smooth_full_lumen_and_wired() -> None:
         encoding="utf-8")
     v1l = (ROOT / "top_baffle_nd25fw4_v1l_split.py").read_text(
         encoding="utf-8")
-    assert "x + _ts_v1_captive_nudge_mm(y)" in cables
+    assert "x + _ts_captive_nudge_mm(y)" in cables
     assert "ts_route_key=ts_route_key" in cables
     assert "ts_route_key=ts_route_key" in split
-    assert "ts_route_key=TS_ROUTE_V1_CAPTIVE" in v1
-    assert "ts_route_key=TS_ROUTE_V1_CAPTIVE" in v1l
+    assert "ts_route_key=TS_ROUTE_CAPTIVE" in v1
+    assert "ts_route_key=TS_ROUTE_CAPTIVE" in v1l
+    assert "ts_route_key: str = TS_ROUTE_CAPTIVE" in split
     # No cavity land is fused into the conduit: the repair is centerline-only
     # and `_ts_cutter` continues deriving every section from `ts_section`.
     assert "w2, h2, zc = ts_section(py)" in cables
@@ -1292,6 +1475,8 @@ def main() -> None:
         test_obiwan_release_manifest_binds_print_sidecars,
         test_catalog_schema_requires_x180_plus_numeric_z,
         test_catalog_global_pair_spacing_is_not_ambiguous,
+        test_transverse_magnet_plane_is_uniform_per_design_family,
+        test_every_released_magnet_site_has_exact_left_right_symmetry,
         test_catalog_source_freezes_56_stls_and_102_stations,
         test_wing_catalog_identity_preserves_frozen_release_case,
         test_catalog_generator_uses_release_wide_acoustic_print_contract,
@@ -1306,6 +1491,7 @@ def main() -> None:
         test_obiwan_catalog_binds_staged_exporter_and_state_manifest,
         test_receiver_polarity_docs_match_pair_axis_convention,
         test_obiwan_release_target_requires_captive_catalog,
+        test_release_metadata_waits_for_current_captive_catalog,
         test_check_waits_for_both_obiwan_native_stages,
         test_r6f_carriers_reuse_make_stage_across_assertion_edits,
         test_coupon_mesh_inventory_excludes_print_sidecars,
@@ -1313,7 +1499,7 @@ def main() -> None:
         test_physical_reference_coupon_freezes_zero_interface_gap,
         test_every_export_pipeline_is_x180_plus_z_only,
         test_docs_do_not_describe_generated_stls_front_up,
-        test_v1_ts_captive_detour_is_smooth_full_lumen_and_wired,
+        test_ts_captive_detour_is_smooth_full_lumen_and_wired,
         test_wing_review_uses_captive_cavity_schema,
         test_ae_unions_overlapping_relief_tools_before_final_cut,
         test_docs_reject_fake_p2s_monolith_pauses,

@@ -183,8 +183,9 @@ STRUCT_SHORT_ALLOW_MPA = 18.0
 # top centreline (world polar 116/64 degrees). The lower pair is no longer in
 # the R113 lip: it is mirrored through the straight sides of the shared W64
 # lower tongue at x=+/-32, y=18, with horizontal outward normals. Both lower
-# sites use the common z=12.55 datum, so floor/no-floor carriers and the Ac/Ae
-# lm_lower prints share one exact receiver axis.  D5x2 magnets are completely
+# sites use the same front-biased z=15.10 datum as the upper LM and UM sites,
+# so floor/no-floor carriers and the Ac/Ae split prints share one exact
+# receiver axis and closure plane. D5x2 magnets are completely
 # captive in D5.20 x 2.10 cavities behind 0.45-mm skins, with a printable
 # circular cradle and self-supporting 45-degree roof.  The lower pair stays on
 # the exact W64 side faces.  The four radial stations sit inside continuous
@@ -203,13 +204,10 @@ SIDE_MAGNET_DEPTH = CAVITY_DEPTH_MM
 SIDE_MAGNET_CAPTIVE_LAND = CAPTIVE_LAND_MM
 SIDE_MAGNET_FACE_SKIN = FACE_SKIN_MM
 SIDE_MAGNET_INNER_SKIN = INNER_SKIN_MM
+OBIWAN_MAGNET_Z_MM = 15.10
 SIDE_MAGNET_Z = {
-    "lm": 12.55,
-    # Raised within the R51.7 lip so the complete captive envelope keeps at
-    # least 1.1 mm from the conservative upper-T cover envelope.  The smooth
-    # ring fairing makes room for both qualified 0.45-mm axial skins; the
-    # inward land ends 0.05 mm outside the immutable R49.3 recess datum.
-    "um": 15.10,
+    "lm": OBIWAN_MAGNET_Z_MM,
+    "um": OBIWAN_MAGNET_Z_MM,
 }
 SIDE_INTERFACE_GAP = INTERFACE_GAP_MM
 SIDE_MAGNET_ANGLES = {
@@ -230,7 +228,7 @@ SIDE_MAGNET_FACE_OFFSET = {
 }
 LM_BASE_MAGNET_FACE_X = 32.0
 LM_BASE_MAGNET_Y = 18.0
-LM_BASE_MAGNET_Z = 12.55
+LM_BASE_MAGNET_Z = OBIWAN_MAGNET_Z_MM
 
 # Two compact Z-axis fastened *rounded ears*.  The old rectangular tabs
 # projected into the MU flange seating region.  Each replacement is a
@@ -878,7 +876,7 @@ def _bounded_plan_lenses(material, window, *, max_area: float = 20.0):
 
 
 def _owned_lens_addition(lenses, support, opposing_plan):
-    """Fill a lens through one Classic-wall-wide owning fusion land."""
+    """Fill a lens through one qualified extrusion-path-wide fusion land."""
     if lenses.is_empty:
         return lenses
     overlap = lenses.buffer(
@@ -1469,14 +1467,14 @@ def _cut_side_magnet_pockets(part, driver: str):
     return part
 
 
-def _add_side_magnet_ears(part, driver: str,
-                          interface_kinds: set[str] | None = None):
-    """Verify/fill the exact land required by each captive station.
+def _verify_side_magnet_lands(part, driver: str,
+                              interface_kinds: set[str] | None = None):
+    """Fail unless the immutable carrier already owns every captive land.
 
-    Existing carrier material absorbs the land at the lower LM sites.  The
-    four ring sites are already contained by their continuous smooth exterior
-    fairings; adding local material there would reintroduce a visible pocket
-    cue.  Magnets remain completely buried.
+    Lower-LM base sites and the four ring sites follow the same rule: no
+    station may silently fuse missing material.  Ring lands are contained by
+    their continuous smooth fairings; lower lands are contained by the broad
+    base shoulder.  Magnets remain completely buried without a local cue.
     """
     for site in side_magnet_sites(driver):
         if (interface_kinds is not None
@@ -1492,18 +1490,12 @@ def _add_side_magnet_ears(part, driver: str,
             front_z=THICKNESS_MM,
             interface_gap_mm=SIDE_INTERFACE_GAP,
         )
-        if site["interface_kind"] == "ring":
-            missing = tools.required_land - part
-            missing_volume = sum(
-                solid.volume for solid in missing.solids())
-            if missing_volume > 0.01:
-                raise RuntimeError(
-                    f"{site['name']} smooth ring fairing misses "
-                    f"{missing_volume:.4f} mm3 of captive land")
-            continue
-        part = _ensure_shell_contained(
-            part, tools.required_land,
-            f"{site['name']} captive-magnet minimum land")
+        missing = tools.required_land - part
+        missing_volume = sum(solid.volume for solid in missing.solids())
+        if missing_volume > 0.01:
+            raise RuntimeError(
+                f"{site['name']} immutable {site['interface_kind']} host "
+                f"misses {missing_volume:.4f} mm3 of captive land")
     return part
 
 
@@ -1888,7 +1880,7 @@ def lm_carrier_outer_blank():
     # large body union operate on the four small ring-land splitters.  Ring
     # interfaces are contained by one continuous smooth R113.80 ring;
     # lower lands point entirely inward and add no proud material.
-    part = _add_side_magnet_ears(part, "lm")
+    part = _verify_side_magnet_lands(part, "lm")
 
     part = part.clean()
     solids = list(part.solids())
@@ -2088,7 +2080,7 @@ def um_carrier():
     part = _enforce_junction_plan_ownership(part, "t_um", "um")
 
     part = _apply_complete_lm_um_joint(part, "um")
-    part = _add_side_magnet_ears(part, "um")
+    part = _verify_side_magnet_lands(part, "um")
 
     for px, py in UM_PILOT_XY:
         part -= _cylinder_at(px, py, UM_PILOT_D_MM / 2.0,

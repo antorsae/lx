@@ -266,8 +266,8 @@ def test_route_contract():
         "lm_upper_left": 116.0, "lm_upper_right": 64.0,
         "lm_lower_left": 180.0, "lm_lower_right": 0.0}
     assert {name: lm_by_name[name]["z_mm"] for name in lm_by_name} == {
-        "lm_upper_left": 12.55, "lm_upper_right": 12.55,
-        "lm_lower_left": 12.55, "lm_lower_right": 12.55}
+        "lm_upper_left": 15.10, "lm_upper_right": 15.10,
+        "lm_lower_left": 15.10, "lm_lower_right": 15.10}
     assert lm_by_name["lm_lower_left"]["face"] == (-32.0, 18.0)
     assert lm_by_name["lm_lower_right"]["face"] == (32.0, 18.0)
     assert lm_by_name["lm_lower_left"]["normal"] == (-1.0, 0.0)
@@ -301,7 +301,7 @@ def test_route_contract():
     assert math.isclose(
         core.THICKNESS_MM
         - (core.LM_BASE_MAGNET_Z + core.SIDE_MAGNET_POCKET_D / 2.0),
-        3.15, abs_tol=1e-12)
+        0.60, abs_tol=1e-12)
 
     # Conservative XZ section screen through y=18, where the two transverse
     # captive stations cross the shared W64 lower tongue.  Deduct the full
@@ -325,10 +325,10 @@ def test_route_contract():
         bridge.BRIDGE_GOVERNING_NECK_WIDTH_MM * bridge.BRIDGE_WEB_T)
     assert math.isclose(governing_bridge_area_mm2, 621.4, abs_tol=1e-9)
     section_states = {
-        "floor": (floor.STEM_Z_MM[0], floor.STEM_Z_MM[1], 9.95, 3.15),
+        "floor": (floor.STEM_Z_MM[0], floor.STEM_Z_MM[1], 12.50, 0.60),
         "no_floor": (
             bridge.BRIDGE_WEB_REAR_Z, bridge.BRIDGE_WEB_FRONT_Z,
-            4.65, 3.15),
+            7.20, 0.60),
     }
     retained_section_areas = {}
     for state, (rear_z, front_z, expected_rear_skin,
@@ -448,14 +448,14 @@ def test_route_contract():
         assert math.isclose(
             effective_pair_separation, expected_pair_separation,
             abs_tol=1e-12)
-        assert facts["classic_retaining_path_mm"] == 0.42
+        assert facts["minimum_retaining_path_mm"] == 0.42
         assert facts["actual_face_xyz_mm"][:2] == list(site["face"])
         assert all(math.isclose(actual, expected, abs_tol=1e-12)
                    for actual, expected in zip(
                        facts["marked_pole_axis_xyz"],
                        (*site["normal"], 0.0), strict=True))
         assert facts["print_up_source_xyz"] == [0.0, 0.0, -1.0]
-        expected_roof_start = 8.40 if site["driver"] == "lm" else 5.80
+        expected_roof_start = 5.80
         assert math.isclose(
             facts["cavity_bury_roof_start_print_z_mm"],
             expected_roof_start, abs_tol=1e-9)

@@ -19,6 +19,7 @@ from build123d import Box, Pos
 
 from top_baffle_nd25fw4 import THICKNESS_MM, baffle_solid
 from top_baffle_nd25fw4_b import (
+    STANDARD_MAGNET_Z_MM,
     TWEETER_DROP_MM,
     apply_magnet_base_cavities,
 )
@@ -38,18 +39,18 @@ def field_cutters():
         160.0, 462.0 - Y_STEP, REAR_MM + 0.7)]
 
 
-V1_MAGNET_ZC = (12.5, 14.4)
+V1_MAGNET_Z_MM = STANDARD_MAGNET_Z_MM
+V1_MAGNET_ZC = (V1_MAGNET_Z_MM, V1_MAGNET_Z_MM)
 
 
 def apply_v1_base_magnets(part):
     """Bury four V1/V1L base magnets at the released site heights.
 
-    Both 45-degree roofs fit inside the z=6.8..18.3 vase without the local
-    rear cap needed by the standard zc=5.0 lower station.  The upper curved
-    site still receives the common <=0.134666-mm tangent-plane land boss,
-    paired to the attachment relief; the lower straight site is locally
-    trimmed to its released datum.  Marked poles point OUT along the
-    mirrored base-to-attachment normals.
+    Both 45-degree roofs share the front-biased z=15.10 plane and fit inside
+    the z=6.8..18.3 vase.  The magnet-free host owns a broad, symmetric rear
+    taper thickness band, so neither station receives a local cap, boss, or
+    backfill.  Marked poles point OUT along the mirrored
+    base-to-attachment normals.
     """
     return apply_magnet_base_cavities(
         part, site_zc=V1_MAGNET_ZC, lower_rear_caps=False,

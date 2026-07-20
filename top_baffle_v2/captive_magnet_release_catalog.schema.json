@@ -27,7 +27,7 @@
         "orientation": {"const": "front_face_down"},
         "allowed_additional_rotation": {"const": "in_bed_Z_only"},
         "reason": {"const": "consistent acoustic-front build-plate texture"},
-        "slicer": {"const": "Bambu Studio P2S 0.4 mm / 0.16 mm Classic"},
+        "slicer": {"const": "Bambu Studio P2S 0.4 mm / 0.16 mm Arachne"},
         "pause_authority": {
           "const": "actual sliced G-code first-closing layer"
         },
@@ -105,7 +105,7 @@
         "cavity_diameter_mm", "cavity_depth_mm",
         "face_skin_mm", "inner_skin_mm", "captive_land_mm",
         "interface_gap_mm", "paired_magnet_face_separation_mm",
-        "roof_angle_deg", "classic_retaining_path_mm",
+        "roof_angle_deg", "minimum_retaining_path_mm",
         "polarity_instruction", "installed_marked_pole_axis_xyz",
         "magnet_count", "structural_load_credit_n",
         "cavity_center_xyz_mm", "seated_magnet_center_xyz_mm",
@@ -131,7 +131,10 @@
         "inner_skin_mm": {"type": "number", "exclusiveMinimum": 0},
         "captive_land_mm": {"const": 3.0},
         "interface_gap_mm": {"const": 0.05},
-        "paired_magnet_face_separation_mm": {"enum": [0.95, 1.1]},
+        "paired_magnet_face_separation_mm": {"enum": [0.95, 1.09, 1.1]},
+        "interface_profile": {
+          "enum": ["standard_straight", "standard_curved"]
+        },
         "interface_kind": {"enum": ["base_side", "ring"]},
         "carrier_cavity_face_inset_mm": {
           "type": "number"
@@ -149,7 +152,7 @@
           "maxItems": 2
         },
         "roof_angle_deg": {"type": "number", "exclusiveMinimum": 0},
-        "classic_retaining_path_mm": {"const": 0.42},
+        "minimum_retaining_path_mm": {"const": 0.42},
         "polarity_instruction": {"type": "string", "minLength": 1},
         "installed_marked_pole_axis_xyz": {"$ref": "#/$defs/vec3"},
         "magnet_count": {"const": 1},

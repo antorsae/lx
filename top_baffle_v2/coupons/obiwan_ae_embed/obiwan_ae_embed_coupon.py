@@ -117,10 +117,10 @@ class Station:
 
     @property
     def bury_plane_print_z_mm(self) -> float:
-        # Round upward to a real 0.20-mm project layer.  LM's analytic 8.35-mm
-        # cavity top becomes 8.40 mm; UM is already exactly 5.80 mm.  This is
-        # the last fully open layer, not the slicer's pause-marker layer: the
-        # pause is attached to the following, first-closing layer.
+        # Round upward to a real 0.20-mm project layer.  The common LM/UM
+        # cavity top is exactly 5.80 mm.  This is the last fully open layer,
+        # not the slicer's pause-marker layer: the pause is attached to the
+        # following, first-closing layer.
         return (
             math.ceil((self.raw_roof_start_print_z_mm - 1.0e-9)
                       / TARGET_LAYER_MM)

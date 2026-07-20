@@ -17,9 +17,10 @@ Exact booleans against the B2 solid:
       along B2's flare/chamfer/arc flank and reach ~9 mm below seam B.
 
 All six are flat 18.3 mm extrusions.  Print front-face-down and pause for
-the captive D5x2 magnets before their 45-degree roofs close.  The helper
-cuts a local 0.05 mm interface gap on each receiver; the surrounding outline
-kinks remain the shear/alignment datums.
+the captive D5x2 magnets before their 45-degree roofs close.  Each receiver's
+0.05 mm construction allowance remains solid ahead of its qualified 0.45 mm
+skin; there is no local air notch.  The surrounding outline kinks remain the
+shear/alignment datums.
 """
 
 from __future__ import annotations
@@ -57,7 +58,13 @@ def _two_sides(diff, prefix: str, out: dict) -> None:
         out[f"{prefix}_{side}"] = s
 
 
-def attachments() -> dict:
+def attachments(*, magnet_cavities: bool = True) -> dict:
+    """Return the six stock attachment prints.
+
+    ``magnet_cavities=False`` is the immutable-host regression path used to
+    prove that the production cavity operation only removes fully internal
+    material.  Release exports always use the default.
+    """
     b2 = baffle_solid(OUTLINE_B2, TWEETER_DROP_MM)
     # All attachments live above y=303; trimming there discards any hairline
     # boolean slivers along the collinear chamfer-extension edges.
@@ -65,6 +72,8 @@ def attachments() -> dict:
     out = {}
 
     def _captive(diff):
+        if not magnet_cavities:
+            return diff
         return apply_magnet_attachment_cavities(diff)
 
     a_diff = _captive((baffle_solid(OUTLINE_A_COMP, TWEETER_DROP_MM) - b2) & keep)

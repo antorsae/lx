@@ -33,7 +33,7 @@ RELEASE_ACOUSTIC_PRINT_CONTRACT = {
     "orientation": "front_face_down",
     "allowed_additional_rotation": "in_bed_Z_only",
     "reason": "consistent acoustic-front build-plate texture",
-    "slicer": "Bambu Studio P2S 0.4 mm / 0.16 mm Classic",
+    "slicer": "Bambu Studio P2S 0.4 mm / 0.16 mm Arachne",
     "pause_authority": "actual sliced G-code first-closing layer",
     "printer_contact": "forbidden; offline slicing only",
     "oversize_policy": (

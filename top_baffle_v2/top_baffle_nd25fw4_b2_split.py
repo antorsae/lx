@@ -49,7 +49,7 @@ from top_baffle_nd25fw4_b import (
 )
 from top_baffle_nd25fw4_b2 import OUTLINE_B2
 from top_baffle_nd25fw4_cables import ROUTING_PROFILE, cable_cutters
-from top_baffle_nd25fw4_cables import TS_ROUTE_STANDARD
+from top_baffle_nd25fw4_cables import TS_ROUTE_CAPTIVE
 
 PRINT_ORIENTATION = "front-face-down"
 
@@ -105,10 +105,14 @@ SEAM_B_Y = 315.95  # exactly at B2's waist kinks -> obtuse seam corners
 # crossings (TS at x=-80, UM at x=+88).
 # inner teeth SHALLOW (depth 3) and at +-66 so the wall to the LM
 # cutout (which bulges to x=57 at the seam-band top) stays ~7 mm, not
-# ~1.5; outer teeth (+-103, depth 5) are the main anchor.
+# ~1.5; outer teeth (+-103, depth 5) are the main anchor.  The positive
+# seam-B tooth is centred at x=29 rather than x=30 so its grown female
+# pocket stays clear of the complete lower-right captive-magnet sealing
+# land.  This is a broad registration-key placement change, not a local
+# magnet-shaped patch, and leaves the acoustic/front/rear envelope unchanged.
 DOVETAILS_A = [(-103.0, 6.0, 7.0, 5.0), (-66.0, 7.0, 9.0, 3.0),
                (66.0, 7.0, 9.0, 3.0), (103.0, 6.0, 7.0, 5.0)]
-DOVETAILS_B = [(-19.0, 10.0, 14.0, 6.0), (30.0, 10.0, 14.0, 6.0)]
+DOVETAILS_B = [(-19.0, 10.0, 14.0, 6.0), (29.0, 10.0, 14.0, 6.0)]
 # ONE tooth in the ~20 mm mid-mid neck (per user preference), centered
 # and beefed (neck 7, head 8.5). mid_right carries the tab.
 DOVETAILS_C = [(305.0, 7.0, 8.5, 4.0)]
@@ -196,7 +200,7 @@ def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
            only: str | None = None,
            cable_routes=None,
            cable_y_range=None,
-           ts_route_key: str = TS_ROUTE_STANDARD) -> dict:
+           ts_route_key: str = TS_ROUTE_CAPTIVE) -> dict:
     """Split the (optionally re-shaped) baffle into the four print
     pieces. ``shape_cuts``/``shape_adds`` are applied before the ducts
     are cut -- used by variant C7 (LM knife-edge taper + T-duct ribs);
@@ -210,8 +214,9 @@ def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
     may further omit cutters spatially disjoint from that one piece; the
     default still builds the complete cable set. ``cable_y_range`` trims
     the high-face-count TS loft on its original section grid for a known
-    split band. ``ts_route_key`` is the V1/V1L-only captive-land keepout;
-    standard/B2/C7/V0 callers retain the default centerline."""
+    split band. ``ts_route_key`` defaults to the shared stock/slim captive-
+    land keepout; explicit diagnostic callers may still request the legacy
+    unnudged centerline."""
     piece_order = (
         "piece_bottom", "piece_mid_left", "piece_mid_right", "piece_top_b2")
     if only is not None and only not in piece_order:

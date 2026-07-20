@@ -9,7 +9,7 @@
   "part": "lx521_top_obiwan_wing_ac_right_2of3_lm_upper",
   "pre_translation_bbox_min_mm": [
     201.10224444186107,
-    -298.8583050710971,
+    -298.85830507109716,
     -18.29999999999998
   ],
   "print_orientation": "front_face_down",
@@ -31,7 +31,7 @@
       0.5601727724431591,
       -0.8283757993889879,
       0.0,
-      298.8583050710971
+      298.85830507109716
     ],
     [
       0.0,
@@ -47,12 +47,12 @@
     ]
   ],
   "stl": "lx521_top_obiwan_wing_ac_right_2of3_lm_upper.stl",
-  "stl_bytes": 221084,
+  "stl_bytes": 213484,
   "stl_origin_translation_mm": [
     -201.10224444186107,
-    298.8583050710971,
+    298.85830507109716,
     18.29999999999998
   ],
-  "stl_sha256": "7189d57caaf041d66f31dd3f969b2d704493b450e495d81ade624c7fe0582a7c",
+  "stl_sha256": "9b1023aa576ec20012acabb31191dfcecd95e589de7ab063132714131c09ecb8",
   "variant_slug": "ac"
 }

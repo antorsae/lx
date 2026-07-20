@@ -880,7 +880,8 @@ def _draw_magnet_root_review(
         normal = np.asarray(receiver["axis_normal_xy"], dtype=float)
         normal /= np.linalg.norm(normal)
         tangent = np.asarray((-normal[1], normal[0]), dtype=float)
-        mouth = np.asarray(receiver["receiver_mouth_xy_mm"], dtype=float)
+        mouth = np.asarray(
+            receiver["receiver_cavity_face_xy_mm"], dtype=float)
         carrier_face = np.asarray(receiver["carrier_face_xy_mm"], dtype=float)
         # Receiver facts are the same captive-cavity authority consumed by
         # the release catalog.  Do not retain aliases for the retired exposed
@@ -893,7 +894,7 @@ def _draw_magnet_root_review(
         face_skin = float(receiver["face_skin_mm"])
         inner_skin = float(receiver["inner_skin_mm"])
         captive_land = float(receiver["captive_land_mm"])
-        gap = float(receiver["carrier_to_receiver_face_gap_mm"])
+        standoff = float(receiver["receiver_solid_standoff_mm"])
         cavity_start = mouth + face_skin * normal
         cavity_end = cavity_start + depth * normal
         land_end = mouth + captive_land * normal
@@ -965,7 +966,7 @@ def _draw_magnet_root_review(
             0.035, 0.965,
             f"Ø{diameter:.1f} × {depth:.1f} mm\n"
             f"skins {face_skin:.2f} / {inner_skin:.2f} mm\n"
-            f"carrier gap {gap:.2f} mm\n"
+            f"solid face standoff {standoff:.2f} mm\n"
             f"axis z={float(receiver['axis_z_mm']):.2f} mm",
             transform=ax.transAxes, va="top", ha="left", fontsize=9,
             bbox={"boxstyle": "round,pad=0.35", "facecolor": "white",

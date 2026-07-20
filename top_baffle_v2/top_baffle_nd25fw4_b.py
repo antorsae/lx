@@ -26,10 +26,6 @@ Variants (see top_baffle_nd25fw4_b1/_b2.py)
 
 from __future__ import annotations
 
-import math
-
-from build123d import Box, Pos, Rot
-
 from top_baffle_nd25fw4 import OUTLINE, THICKNESS_MM, baffle_solid
 from captive_magnets import (
     CAVITY_DEPTH_MM,
@@ -40,7 +36,6 @@ from captive_magnets import (
     MAGNET_DEPTH_MM,
     MAGNET_DIAMETER_MM,
     apply_wall_cavity,
-    wall_cavity_tools,
 )
 
 PRINT_ORIENTATION = "front-face-down"
@@ -134,8 +129,10 @@ A_COMP_CREST_Y = 391.709  # split plane between top and bottom shoulders
 #     ~51 mm from the tweeter center -- the wall is an arc about it --
 #     so no driver-distance freedom exists.)
 # Both magnets are printed captive behind 0.45 mm plastic skins.  The
-# receiver gets a local 0.05 mm air gap, so the nominal magnet-face spacing
-# is 0.45 + 0.05 + 0.45 = 0.95 mm.  There is no glue or post-print access.
+# receiver keeps a solid 0.05 mm spacing standoff ahead of its qualified
+# 0.45 mm skin, so the nominal magnet-face spacing remains
+# 0.45 + 0.05 + 0.45 = 0.95 mm without a visible local air notch. There is
+# no glue or post-print access.
 # The 45-degree roofs close only after the insertion pause; the outline
 # kinks/corners continue to provide shear registration and magnets receive
 # no structural-load credit.  Standard/V1/V1L parts print front-face-down.
@@ -147,144 +144,61 @@ MAG_FACE_SKIN_MM = FACE_SKIN_MM
 MAG_INNER_SKIN_MM = INNER_SKIN_MM
 MAG_INTERFACE_GAP_MM = INTERFACE_GAP_MM
 MAG_LAND_DEPTH_MM = MAG_FACE_SKIN_MM + MAG_CAVITY_DEPTH_MM + MAG_INNER_SKIN_MM
-# The snapped lower roof apex is 0.30 mm beyond the historical rear plane;
-# the qualified topology then requires a complete 0.45 mm sealing skin.
-LOWER_MAGNET_REAR_CAP_MM = 0.75
-LOWER_MAGNET_REAR_CAP_OVERLAP_MM = 0.05
-MAGNET_LOCAL_BACKING_WIDTH_MM = MAG_CAVITY_D_MM + 1.20
-UPPER_MAGNET_BACKFILL_REAR_Z_MM = 5.05
-UPPER_MAGNET_BACKFILL_FRONT_Z_MM = 13.90
+MAGNET_QUALIFIED_LAND_WIDTH_MM = MAG_CAVITY_D_MM + 1.20
+# One front-biased source plane governs every stock and slim transverse
+# station.  Front-face-down export maps it to a 3.20-mm print-space axis;
+# the D5.20 cradle begins 0.60 mm behind the acoustic front and the complete
+# gable/inner-skin land remains at source Z >= 9.45 mm.  No local rear cap or
+# station-shaped taper backfill is permitted.
+STANDARD_MAGNET_Z_MM = 15.10
 # Exact plan deviations at the released, rounded interface datums.  These are
 # analytic bounds against the actual B2 line/ThreePointArc, not allowances:
 # see test_standard_interface_plane_facts.  Cutter reach adds a small robust
 # overtravel, but only existing host material is removed.
-LOWER_INTERFACE_BASE_EXCESS_MAX_MM = 0.031572
-LOWER_INTERFACE_BASE_RELIEF_REACH_MM = 0.05
-UPPER_INTERFACE_BASE_BOSS_MAX_MM = 0.134666
-UPPER_INTERFACE_BASE_BOSS_AREA_MM2 = 0.430824
-UPPER_INTERFACE_RECEIVER_RELIEF_MAX_MM = 0.184666
-UPPER_INTERFACE_RECEIVER_RELIEF_REACH_MM = 0.16
+LOWER_INTERFACE_DATUM_DEVIATION_MAX_MM = 0.031572
+UPPER_INTERFACE_CURVE_DEVIATION_MAX_MM = 0.134666
+UPPER_INTERFACE_CURVE_DEVIATION_AREA_MM2 = 0.430824
+
+# The curved upper tangent loses at most 0.134666 mm across the qualified
+# 6.40-mm land.  Recessing the base cavity face by 0.14 mm keeps the complete
+# 0.45-mm interface skin inside the unchanged host instead of growing a local
+# boss.  The receiver keeps the 0.05-mm spacing allowance as solid material
+# behind the shared flush interface, so no local pocket-width relief appears
+# on an exterior edge.
+BASE_CAVITY_FACE_INSET_MM = (0.0, 0.14)
 
 # (x, y, nx, ny, pin, zc) on the right flank; the left flank is
-# mirrored. zc is the bore height (mid-thickness unless the crescent
-# rear taper forces it forward). Bottom site at the waist-kink end of
-# the flare wall (59.2 from the UM center). Top site on the crescent
-# arc at theta=-69.5 deg, the balance point of the apex wedge: the
-# receiver's bottom corner keeps 1.3 mm to the shoulder/wing's chamfer
-# mating face, while the rear taper still leaves ~12.2 mm of wall (bore
-# raised to zc=10.7: ~1.7 mm behind the cavity cradle). T ducts pass
-# 2.2 mm below the cavity envelope; 21.7 from the clamp hole, 57.2 from
-# the UM center. All checked by test_clearances.py (make check).
+# mirrored.  Both use the one front-biased source-Z plane.  The bottom site
+# lies at the waist-kink end of the flare wall (59.2 mm from the UM center).
+# The top site lies on the crescent arc at theta=-69.5 deg, where the broad,
+# smooth taper shelf contains the complete captive land without a local boss
+# or rear cue.  The protected T route clears both envelopes.  All of these
+# facts are checked against the immutable production hosts by
+# test_clearances.py (make check).
 MAGNET_SITES = [
-    (40.0, 322.4, 0.95853, -0.28518, True, 5.0),  # zc low: the raised
-    # vase-side TS duct (z=11.5) passes above this wall site
-    (17.880, 420.371, 0.35021, -0.93667, True, 10.7),
+    (40.0, 322.4, 0.95853, -0.28518, True, STANDARD_MAGNET_Z_MM),
+    (17.880, 420.371, 0.35021, -0.93667, True, STANDARD_MAGNET_Z_MM),
 ]
 
 
-def _local_land_box(x, y, nx, ny, owner: str, z0: float, z1: float):
-    """One owner-side D+1.2 by 3.00 local backing prism."""
-    if not z1 > z0:
-        raise ValueError(f"local backing requires z1 > z0, got {z0}, {z1}")
-    if owner == "base":
-        axis_center = -MAG_LAND_DEPTH_MM / 2.0
-    elif owner == "receiver":
-        axis_center = MAG_INTERFACE_GAP_MM + MAG_LAND_DEPTH_MM / 2.0
-    else:
-        raise ValueError(f"unknown captive owner {owner!r}")
-    ang = math.degrees(math.atan2(ny, nx))
-    return (
-        Pos(x, y, (z0 + z1) / 2.0)
-        * Rot(Z=ang)
-        * Pos(axis_center, 0.0, 0.0)
-        * Box(MAG_LAND_DEPTH_MM, MAGNET_LOCAL_BACKING_WIDTH_MM, z1 - z0)
-    )
-
-
-def _local_plan_box(x, y, nx, ny, axis0: float, axis1: float,
-                    z0: float, z1: float):
-    """Local outward-axis/tangent/source-Z box at a released site."""
-    if not axis1 > axis0 or not z1 > z0:
-        raise ValueError(
-            f"local plan box requires ordered bounds; axis={axis0, axis1} "
-            f"z={z0, z1}")
-    ang = math.degrees(math.atan2(ny, nx))
-    return (
-        Pos(x, y, (z0 + z1) / 2.0)
-        * Rot(Z=ang)
-        * Pos((axis0 + axis1) / 2.0, 0.0, 0.0)
-        * Box(axis1 - axis0, MAGNET_LOCAL_BACKING_WIDTH_MM, z1 - z0)
-    )
-
-
-def _land_source_z_bounds(tools):
-    """Exact source-Z extent of one helper-required wall land."""
-    bb = tools.required_land.bounding_box()
-    return float(bb.min.Z), float(bb.max.Z)
-
-
-def _local_lower_base_relief(x, y, nx, ny, tools):
-    """Trim the rounded lower datum back to its released tangent plane.
-
-    The released point is 0.031554 mm inside the exact straight B2 edge
-    (0.031572 mm worst case across the 6.4-mm land).  Without this trim the
-    nominal 0.05-mm receiver relief leaves only 0.0184 mm of physical air.
-    The cut is confined to the qualified land's source-Z span.
-    """
-    z0, z1 = _land_source_z_bounds(tools)
-    return _local_plan_box(
-        x, y, nx, ny,
-        0.0, LOWER_INTERFACE_BASE_RELIEF_REACH_MM,
-        z0 - 0.02, z1 + 0.02,
-    )
-
-
-def _local_upper_receiver_relief(x, y, nx, ny, tools):
-    """Flatten the curved receiver locally to the +0.05-mm face plane.
-
-    The matching base needs the complete rectangular coupon land, whose
-    outer face is the released tangent plane.  The old curved receiver
-    intrudes as far as 0.134666 mm behind that plane; remove it through the
-    actual +0.05-mm receiver face so no base/receiver overlap remains.
-    """
-    z0, z1 = _land_source_z_bounds(tools)
-    return _local_plan_box(
-        x, y, nx, ny,
-        -UPPER_INTERFACE_RECEIVER_RELIEF_REACH_MM,
-        MAG_INTERFACE_GAP_MM,
-        z0 - 0.02, z1 + 0.02,
-    )
-
-
-def _local_rear_cap(x, y, nx, ny, owner: str):
-    """Minimal external rear backing for a standard lower-site roof.
-
-    At zc=5.0 the D5.2 cavity's exact roof apex is z=-0.20.  A 0.30-mm
-    extension reaches the layer-snapped apex at z=-0.30; the remaining
-    0.45 mm provides the proven post-apex sealing skin, so the bounded cap
-    ends at z=-0.75.  This preserves the released interface datum and magnet
-    axis.  The patch is limited to the 3.0-mm captive land and a 0.6-mm
-    tangential margin; 0.05 mm overlaps the existing host solely for a
-    robust union and does not change the outer envelope.
-    """
-    return _local_land_box(
-        x, y, nx, ny, owner,
-        -LOWER_MAGNET_REAR_CAP_MM,
-        LOWER_MAGNET_REAR_CAP_OVERLAP_MM,
-    )
-
-
 def _apply_magnets(part, owner: str, site_zc=None,
-                   lower_rear_caps: bool = True,
+                   lower_rear_caps: bool = False,
                    name_prefix: str = "standard"):
     """Apply all four standard wall-normal captive stations.
 
-    ``site_zc`` may override the lower/upper source-Z axis heights (V1 and
-    V1L use 12.5/14.4).  ``outward`` always points from base to receiver.
+    ``site_zc`` may override the common source-Z axis for controlled probes;
+    production stock and slim callers use 15.10 mm at every station.
+    ``lower_rear_caps`` remains as a rejected compatibility argument so a
+    stale caller cannot silently restore the visible rear box. ``outward``
+    always points from base to receiver.
     Both marked/N vectors follow that same pair axis: the base's marked pole
     faces the receiver and the receiver's marked pole faces away from the
     base, including at mirrored sites.
     """
+    if lower_rear_caps:
+        raise ValueError(
+            "local rear magnet caps are forbidden; move the common plane "
+            "inside the immutable host")
     result = part
     records = []
     z_by_index = tuple(site_zc) if site_zc is not None else None
@@ -294,39 +208,26 @@ def _apply_magnets(part, owner: str, site_zc=None,
         site_key = "lower" if site_index == 0 else "upper"
         for side, sx in (("right", 1.0), ("left", -1.0)):
             px, pnx = sx * x, sx * nx
+            normal_length = (pnx * pnx + ny * ny) ** 0.5
+            onx, ony = pnx / normal_length, ny / normal_length
+            base_inset = (
+                BASE_CAVITY_FACE_INSET_MM[site_index]
+                if owner == "base" else 0.0)
+            tool_face = (
+                px - base_inset * onx,
+                y - base_inset * ony,
+                zc,
+            )
             tool_kwargs = {
                 "name": f"{name_prefix}_{site_key}_{side}_{owner}",
-                "face": (px, y, zc),
-                "outward": (pnx, ny, 0.0),
+                "face": tool_face,
+                "outward": (onx, ony, 0.0),
                 "owner": owner,
                 "print_up": (0.0, 0.0, -1.0),
                 "bed_datum": (0.0, 0.0, THICKNESS_MM),
             }
-            preview = wall_cavity_tools(**tool_kwargs)
-
-            # The published coordinates are rounded.  Make their intended
-            # local tangent planes real geometry while preserving the magnet
-            # centres and axes: lower base trims 0.0316 mm of straight-edge
-            # excess; upper receiver clears the curved host through +0.05.
-            if site_index == 0 and owner == "base":
-                result -= _local_lower_base_relief(
-                    px, y, pnx, ny, preview)
-            elif site_index == 1 and owner == "receiver":
-                result -= _local_upper_receiver_relief(
-                    px, y, pnx, ny, preview)
-
-            backing = ()
-            if lower_rear_caps and site_index == 0:
-                backing = (_local_rear_cap(px, y, pnx, ny, owner),)
-            elif site_index == 1:
-                # Fuse the helper's exact qualified land.  On the standard
-                # part this simultaneously restores the rear taper and adds
-                # only the 0.134666-mm curved-plan sliver; on V1/V1L it adds
-                # only that plan sliver over the variant's own Z schedule.
-                backing = (preview.required_land,)
             result, tools = apply_wall_cavity(
                 result,
-                backing_additions=backing,
                 **tool_kwargs,
             )
             records.append(tools)
@@ -334,7 +235,7 @@ def _apply_magnets(part, owner: str, site_zc=None,
 
 
 def apply_magnet_base_cavities(part, *, site_zc=None,
-                               lower_rear_caps: bool = True,
+                               lower_rear_caps: bool = False,
                                name_prefix: str = "standard"):
     """Bury four base magnets; marked pole points OUT toward the mate."""
     return _apply_magnets(
@@ -345,7 +246,7 @@ def apply_magnet_base_cavities(part, *, site_zc=None,
 
 
 def apply_magnet_attachment_cavities(part, *, site_zc=None,
-                                     lower_rear_caps: bool = True,
+                                     lower_rear_caps: bool = False,
                                      name_prefix: str = "standard"):
     """Bury four receivers; marked pole faces away from the mating base."""
     return _apply_magnets(

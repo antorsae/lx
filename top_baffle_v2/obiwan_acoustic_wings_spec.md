@@ -37,7 +37,8 @@ remain responsible for driver and stand loads.
 - Left and right geometry must be exact mirrors.
 - Floor and no-floor Obi-Wan states expose the same wing-contact outline.
 - No wing material may invade driver seats, carrier keep-outs, cable passages,
-  the tweeter crescent envelope, or the required `0.05` mating gap.
+  the tweeter crescent envelope, or the matched receiver construction
+  envelope. Carrier and wing solids contact with zero physical mating gap.
 
 Each physical side contains one hidden local clearance pocket for the optional
 split's exterior socket land. The cutter offsets the worst-case X-relieved land
@@ -63,7 +64,9 @@ The production interface contract is:
 - Magnet: `D5 x 2` N52 disc.
 - Captive cavity: `D5.20 x 2.10`.
 - Intact axial skin: `0.45` on both carrier and wing.
-- Plastic mating gap: `0.05`.
+- Common source plane: `Z = 15.10` for LM-lower, LM-upper, and UM.
+- Physical mating gap: `0.00`; the receiver cavity datum has a `0.05` solid
+  construction standoff, not an air gap.
 - The carrier's structural ring radii remain `LM R113.0` and `UM R51.7`.
   Their smooth exposed side radii are `LM R113.8` and `UM R52.5`; the
   fairings stop only inside the existing LM--UM and T--UM cusp/service
@@ -76,6 +79,9 @@ The production interface contract is:
   ring pairs (`0.45 + 0.15 + 0.05 + 0.45`) and `0.95` at the LM-lower
   base-side pair (`0.45 + 0.05 + 0.45`). Ac and Ae place their matching
   receivers from the visible carrier datums.
+- Every cavity is wholly buried in the immutable host; neither carrier nor
+  wing may show a local pad, box, flat, dent, silhouette change, or other
+  magnet-location cue on any exterior surface.
 - Magnets are pause-inserted and permanently buried; no external access hole.
 - Polarity follows the hash-bound print sidecar/catalog authority.
 - Alignment and anti-rattle only: zero structural load credit.
@@ -165,8 +171,9 @@ The clean release must prove:
   pairs.
 - STEP, STL, facts, manifests, and review images are hash-consistent.
 - Every STL is closed and strict-manifold.
-- Receiver axes, cavities, intact skins, mating gap, and polarity match the
-  carrier contract.
+- Receiver axes, common source Z, cavities, intact skins, 0.05 mm solid
+  receiver construction standoff, zero physical mating gap, and polarity
+  match the carrier contract.
 - Both Ac/Ae sides clear the exact staged floor/no-floor canonical LM and both
   same-state keyed halves.
 - Actual BREP land-to-final-wing clearance is at least `0.25` at both optional

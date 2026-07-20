@@ -223,6 +223,13 @@ CRESCENT_TAPER_T_HOLES_MM = 4.0
 CRESCENT_TAPER_T_TIP_MM = 0.4    # feather floor: protects the front face
 CRESCENT_TAPER_THETA_DEG = (-90.0, -44.33, -16.68)  # bottom, clamps, tips
 CRESCENT_TAPER_R_MM = (36.0, 51.5, 62.0)  # inner, knee, fade-out
+# Thin V1/V1L hosts retain a broad symmetric thickness shelf through the
+# detachable upper-magnet band.  At least 9.30 mm of material leaves the
+# common Z=15.10 captive land 0.45 mm behind the sculpted rear surface.  The
+# shelf ends before the clamp-seat control point and is applied on both sides
+# of the crescent; it is not a station-local pad or pocket-shaped cue.
+CRESCENT_TAPER_MAGNET_BAND_THETA_DEG = -64.0
+CRESCENT_TAPER_MAGNET_BAND_MIN_THICKNESS_MM = 9.30
 
 
 def _smoothstep(t: float) -> float:
@@ -240,7 +247,22 @@ def _crescent_taper_depth(theta_deg: float,
     d_h = front_mm - CRESCENT_TAPER_T_HOLES_MM
     d_e = front_mm - CRESCENT_TAPER_T_TIP_MM
     if theta_deg <= th_h:
-        return d_h * _smoothstep((theta_deg - th_b) / (th_h - th_b))
+        original = d_h * _smoothstep(
+            (theta_deg - th_b) / (th_h - th_b))
+        th_m = CRESCENT_TAPER_MAGNET_BAND_THETA_DEG
+        magnet_limit = max(
+            0.0,
+            front_mm - CRESCENT_TAPER_MAGNET_BAND_MIN_THICKNESS_MM,
+        )
+        original_at_magnet = d_h * _smoothstep(
+            (th_m - th_b) / (th_h - th_b))
+        if original_at_magnet <= magnet_limit + 1.0e-9:
+            return original
+        if theta_deg <= th_m:
+            return magnet_limit * _smoothstep(
+                (theta_deg - th_b) / (th_m - th_b))
+        return magnet_limit + (d_h - magnet_limit) * _smoothstep(
+            (theta_deg - th_m) / (th_h - th_m))
     return d_h + (d_e - d_h) * _smoothstep((theta_deg - th_h) / (th_e - th_h))
 
 

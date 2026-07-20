@@ -125,6 +125,12 @@ def test_source_owns_full_depth_webs_before_functional_recuts() -> None:
             in v1)
     assert "raw = v1_magnet_free_solid()" in addon
     assert "raw = v1_solid()" not in addon
+    magnet_land_helper = core[
+        core.index("def _verify_side_magnet_lands"):
+        core.index("def joint_load_facts")]
+    assert "required_land - part" in magnet_land_helper
+    assert "_ensure_shell_contained" not in magnet_land_helper
+    assert "_add_side_magnet_ears" not in core
     assert "JUNCTION_WEB_Z = (CORE_REAR_Z, THICKNESS_MM)" in core
     assert ("TWEETER_CORE_BORE_TOP_Z = "
             "TWEETER_CORE_JOINT_Z[1] + 0.35") in core

@@ -6,10 +6,10 @@
   },
   "files": [
     {
-      "bytes": 1551080,
+      "bytes": 988773,
       "path": "cad/attachments.step",
       "role": "attachment_set",
-      "sha256": "25ae991167e40de3a7de1cf1fcfca9cf0df037df6bf9f022aba3334f1c3e5755",
+      "sha256": "9ee363aea61b121b5c3bba2ca476849cdad7fbc2baf54859a7838ccdaeb2b3e2",
       "source": "top_baffle_nd25fw4_attachments.step"
     },
     {
@@ -20,24 +20,24 @@
       "source": "no_floor_stand/top_baffle_nd25fw4_b2.step"
     },
     {
-      "bytes": 18675694,
+      "bytes": 18370987,
       "path": "cad/base_print_assembly.step",
       "role": "print_assembly",
-      "sha256": "335800dd0bbd5c8bb8e41c537acf1cf7cea80f5e6e3ef7e07bcd07971940b54d",
+      "sha256": "8a31f2a87f51412df86887e5cbf4fb55b18417993ae2c05b9537c0b25e6057e7",
       "source": "no_floor_stand/top_baffle_nd25fw4_b2_split.step"
     },
     {
-      "bytes": 19517972,
+      "bytes": 18924003,
       "path": "cad/shoulders_assembly.step",
       "role": "optional_shoulders_assembly",
-      "sha256": "a640c37d8d3ca040f21c5e2631b7607cc45a9686acd018e534b940d1fa652f8f",
+      "sha256": "abc5513af0b4824c6b56ce98b8898dfc8500d70cdac1bdd4065574216b9119a3",
       "source": "no_floor_stand/top_baffle_nd25fw4_a_comp_assembled.step"
     },
     {
-      "bytes": 19453736,
+      "bytes": 18860782,
       "path": "cad/wings_assembly.step",
       "role": "optional_wings_assembly",
-      "sha256": "8332eada84abe83dd73bccb547e9909b75fe56eeee8d2589fd043ca8d2b78dc2",
+      "sha256": "6b0106a335d6ef47e9e30e5501f2ee2c58b5075e2099bcc78a1190a4982b0e45",
       "source": "no_floor_stand/top_baffle_nd25fw4_b1_assembled.step"
     },
     {
@@ -86,140 +86,140 @@
       "bytes": 1481,
       "path": "stl/lx521_top_addonA_1of4_shoulder_top_left.print.json",
       "role": "print_orientation_authority",
-      "sha256": "b651c14bc6c1d21459beb42a18ad757d289773e814e99c6ed16099a53c06aa67",
+      "sha256": "fcaab6223bf10ae07cec4441989ab863f830386ff52a007634573b5eaa3069f3",
       "source": "no_floor_stand/stl/lx521_top_addonA_1of4_shoulder_top_left.print.json"
     },
     {
-      "bytes": 122684,
+      "bytes": 120484,
       "path": "stl/lx521_top_addonA_1of4_shoulder_top_left.stl",
       "role": "print_mesh",
-      "sha256": "36675e3b719ba898ba2d7a500aa42b9be65e8a824a5b3871513acc6dc7e9bd6b",
+      "sha256": "bf688bfb89eb2132b4d42bd2e3e56066dc321f21aa53b4b02c3c5b856fc6cbc2",
       "source": "no_floor_stand/stl/lx521_top_addonA_1of4_shoulder_top_left.stl"
     },
     {
-      "bytes": 1489,
+      "bytes": 1487,
       "path": "stl/lx521_top_addonA_2of4_shoulder_top_right.print.json",
       "role": "print_orientation_authority",
-      "sha256": "0e086863c6c3fe10f05d0413586a17cd48c21e4c643c725cae7c532a0a6c434d",
+      "sha256": "6980342f0d0a0262290e34c44efe1c2dfded25324cf38a6c6dcf4763710bcea9",
       "source": "no_floor_stand/stl/lx521_top_addonA_2of4_shoulder_top_right.print.json"
     },
     {
-      "bytes": 138484,
+      "bytes": 136284,
       "path": "stl/lx521_top_addonA_2of4_shoulder_top_right.stl",
       "role": "print_mesh",
-      "sha256": "311cd1579cbef52da8172f42540aea3a77fd2238b7c8b886478fc738bdca550c",
+      "sha256": "28038a32ec1dd48a7046de37e82d2998d439674966a040c6ccc0a37610b1ef4b",
       "source": "no_floor_stand/stl/lx521_top_addonA_2of4_shoulder_top_right.stl"
     },
     {
       "bytes": 1471,
       "path": "stl/lx521_top_addonA_3of4_shoulder_bottom_left.print.json",
       "role": "print_orientation_authority",
-      "sha256": "72ac1e575bb04c18ab9d2086fafec9cb26319ac8b9a525ca046c12c856cb2339",
+      "sha256": "b4f7a24df2c964fa1271ebe71541950ac70812064de6df2bbf20a7a288a9ba58",
       "source": "no_floor_stand/stl/lx521_top_addonA_3of4_shoulder_bottom_left.print.json"
     },
     {
-      "bytes": 143784,
+      "bytes": 142384,
       "path": "stl/lx521_top_addonA_3of4_shoulder_bottom_left.stl",
       "role": "print_mesh",
-      "sha256": "6aded0bb8cac7a8c632e4286840f27d97355ff6b9bb476a514ff885b9fb8bdae",
+      "sha256": "3a3d9a534a4927ee67c248cf00f365debd933c34abcd720b0cde6fb0951d7026",
       "source": "no_floor_stand/stl/lx521_top_addonA_3of4_shoulder_bottom_left.stl"
     },
     {
-      "bytes": 1450,
+      "bytes": 1447,
       "path": "stl/lx521_top_addonA_4of4_shoulder_bottom_right.print.json",
       "role": "print_orientation_authority",
-      "sha256": "d2b42a61a739fc4b29f688c4b8d3b013d2290a4f1d3ed4a02dd7a8d7275c0712",
+      "sha256": "bb433bf3984f3b98d6331427d298693484272e590d81caba05e40924ce28125d",
       "source": "no_floor_stand/stl/lx521_top_addonA_4of4_shoulder_bottom_right.print.json"
     },
     {
-      "bytes": 105084,
+      "bytes": 103684,
       "path": "stl/lx521_top_addonA_4of4_shoulder_bottom_right.stl",
       "role": "print_mesh",
-      "sha256": "5ab2fb7ca0885fa99e46560ed344637ce49529905167e85f5cbf1ad65538658a",
+      "sha256": "11b5e9891c24d0782be4f4fbe57904451ec8ffde4ddff3eca9c73e6ede1ed250",
       "source": "no_floor_stand/stl/lx521_top_addonA_4of4_shoulder_bottom_right.stl"
     },
     {
-      "bytes": 1492,
+      "bytes": 1494,
       "path": "stl/lx521_top_addonB1_1of2_wing_left.print.json",
       "role": "print_orientation_authority",
-      "sha256": "0edf00fda6a95f605f49207552d94fceeb425f0860a838c098f39b22653e8ab5",
+      "sha256": "51364dbc107659231e368c67a53157fa9b2472a274f7ed8d5bb4a5cb763d2c4e",
       "source": "no_floor_stand/stl/lx521_top_addonB1_1of2_wing_left.print.json"
     },
     {
-      "bytes": 156484,
+      "bytes": 153184,
       "path": "stl/lx521_top_addonB1_1of2_wing_left.stl",
       "role": "print_mesh",
-      "sha256": "02ce09554d7a9a14f267b646e123d29365de4221cfd4a26352053e9699fad4a0",
+      "sha256": "d9646a5efa5ed67b4d6a39875a30eb23b8d20562bd11e756128eca24c4d3c514",
       "source": "no_floor_stand/stl/lx521_top_addonB1_1of2_wing_left.stl"
     },
     {
-      "bytes": 1477,
+      "bytes": 1478,
       "path": "stl/lx521_top_addonB1_2of2_wing_right.print.json",
       "role": "print_orientation_authority",
-      "sha256": "b67b2dd6de9100374ecd13e9f1384e212064f2e657924adda2ab0d3d5652da61",
+      "sha256": "92e1af298871a8a4d579b3c1fb4a12ca6fd5d71270a91625eed9fbfab8944631",
       "source": "no_floor_stand/stl/lx521_top_addonB1_2of2_wing_right.print.json"
     },
     {
-      "bytes": 171984,
+      "bytes": 168684,
       "path": "stl/lx521_top_addonB1_2of2_wing_right.stl",
       "role": "print_mesh",
-      "sha256": "243ada13ac84133a762081413e671feff50a6ffa2c3ff81b1d3ae043c1feb062",
+      "sha256": "547a984a1c27e802542bcf465779ae5a58cfe362f9e1b390ef1299d2d5da3215",
       "source": "no_floor_stand/stl/lx521_top_addonB1_2of2_wing_right.stl"
     },
     {
       "bytes": 1414,
       "path": "stl/lx521_top_base_1of4_bottom.print.json",
       "role": "print_orientation_authority",
-      "sha256": "b1f73c25d546ec693f54ac66ef8999a9f6466acad04a428e8728ed17bb9a22e5",
+      "sha256": "050559149575a56361ad1a3a819044d3c80d2487134d39c7a3c9f66fc7e8d3aa",
       "source": "no_floor_stand/stl/lx521_top_base_1of4_bottom.print.json"
     },
     {
-      "bytes": 828484,
+      "bytes": 828284,
       "path": "stl/lx521_top_base_1of4_bottom.stl",
       "role": "print_mesh",
-      "sha256": "b7a4c762b729b4703adda1f9824ffb621a3783e002c4bedfb778f9009249e8c7",
+      "sha256": "1635be0e311ae33d6689e74b59aac1a860933223cec6dce07156f8bdcc336796",
       "source": "no_floor_stand/stl/lx521_top_base_1of4_bottom.stl"
     },
     {
-      "bytes": 1394,
+      "bytes": 1396,
       "path": "stl/lx521_top_base_2of4_mid_left.print.json",
       "role": "print_orientation_authority",
-      "sha256": "0079458ea6bd2f08fc71c1d45f0e933ff2aee6c2cc897fc06c72de22070eeab3",
+      "sha256": "76aef18f9dcc5d6a364d43a3e2dfb5d05af0d732fbba2958d0014a72d373b464",
       "source": "no_floor_stand/stl/lx521_top_base_2of4_mid_left.print.json"
     },
     {
-      "bytes": 398184,
+      "bytes": 382484,
       "path": "stl/lx521_top_base_2of4_mid_left.stl",
       "role": "print_mesh",
-      "sha256": "697820e8fc76670e20e065d8cbe9ba472d264d271cc888d7ad1969017ea2ded5",
+      "sha256": "053b22c843737849df367ddae1078b86668c78ba6c6614efab31bc56ef135c70",
       "source": "no_floor_stand/stl/lx521_top_base_2of4_mid_left.stl"
     },
     {
-      "bytes": 1417,
+      "bytes": 1415,
       "path": "stl/lx521_top_base_3of4_mid_right.print.json",
       "role": "print_orientation_authority",
-      "sha256": "bacb9a9cb8d582c21adf3ff56580ed80081fd180b8bc79f969b8e5796fa38d56",
+      "sha256": "2b42a09c5da12e09beca8f7cfd4e7521a25affee9a4dff32d0b44b172afd8bbb",
       "source": "no_floor_stand/stl/lx521_top_base_3of4_mid_right.print.json"
     },
     {
       "bytes": 785584,
       "path": "stl/lx521_top_base_3of4_mid_right.stl",
       "role": "print_mesh",
-      "sha256": "d3d2d324089d807085ee91e4ac668bc88b38f489e4c3d0cb77a799a3e8859d6c",
+      "sha256": "c3c353f0e279b1968d91b5b57c68beeba33c7c4534a1bf00ff4815d480f377ef",
       "source": "no_floor_stand/stl/lx521_top_base_3of4_mid_right.stl"
     },
     {
       "bytes": 1517,
       "path": "stl/lx521_top_base_4of4_vase_b2.print.json",
       "role": "print_orientation_authority",
-      "sha256": "d9df5d944f4d75506bfa8d7ac1dc0543465c8a7e847691084b40fcbc34b42351",
+      "sha256": "66cc1331ab8e5a647b952fc621c051ad3214a58fad0df31fd93557b67209c805",
       "source": "no_floor_stand/stl/lx521_top_base_4of4_vase_b2.print.json"
     },
     {
-      "bytes": 470884,
+      "bytes": 463284,
       "path": "stl/lx521_top_base_4of4_vase_b2.stl",
       "role": "print_mesh",
-      "sha256": "a7466977f2c1432d7256acb030d4272b5d0be86aaf314cb1659c1929159c9eae",
+      "sha256": "4c9ff81f37f1fc782491cca4657dc8552d33456c7f3b78603c406de5bf5aadd7",
       "source": "no_floor_stand/stl/lx521_top_base_4of4_vase_b2.stl"
     },
     {

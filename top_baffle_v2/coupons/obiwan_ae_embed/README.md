@@ -6,9 +6,10 @@ magnet stations into each strip while preserving their R113/R51.7 interface
 curvatures, coupon-specific zero modeled plastic-interface gap, D5.2 diametral
 clearance, root-envelope widths, and installed magnet heights. “Zero” here
 does not mean exposed magnets touch: the two 0.45 mm skins still separate the
-coupon magnets by 0.90 mm. Released production interfaces preserve their
-approximately 0.05 mm mating air gap. The Obi-Wan LM-upper/UM ring cavity
-datum is also buried 0.15 mm beneath its smooth carrier surface, giving
+coupon magnets by 0.90 mm. Released production mating surfaces are flush with
+zero physical air gap: their 0.05 mm receiver construction offset is solid
+plastic, not a local exterior cut. The Obi-Wan LM-upper/UM ring cavity datum
+is also buried 0.15 mm beneath its smooth carrier surface, giving
 **1.10 mm nominal magnet-to-magnet separation**; the LM-lower base-side pair
 has no datum inset and remains **0.95 mm**. This coupon qualifies the captive
 printing process, not production pull force.
@@ -18,19 +19,16 @@ front-face-down, matching the production texture/process direction. At each
 pause, drop the magnets vertically through the open loading chimneys and use
 the polarity directions below. For a constant 0.20 mm profile:
 
-1. Let the fully open UM cavity layer at Z = 5.80 mm finish. Put the pause on
-   the following, first-closing layer at Z = 6.00 mm. Insert the UM magnet in
-   both pieces.
-2. Let the fully open LM cavity layer at Z = 8.40 mm finish. Put the pause on
-   the following, first-closing layer at Z = 8.60 mm. Insert the LM magnet in
-   both pieces.
-3. Resume after checking that every magnet is fully seated below the current
+1. Let the fully open LM and UM cavity layer at Z = 5.80 mm finish. Put the
+   pause on the following, first-closing layer at Z = 6.00 mm. Insert all four
+   magnets.
+2. Resume after checking that every magnet is fully seated below the current
    layer and cannot rise toward the toolhead.
 
 With Bambu's 0.16 mm profile and its 0.20 mm initial layer, the corresponding
-first-closing layers are Z = 5.96 mm (UM) and Z = 8.52 mm (LM). Use the slicer
-preview to place each pause immediately before the first inward roof line,
-rather than trusting a nominal layer number. The cavity roof closes at 45
+common first-closing layer is Z = 5.96 mm for LM and UM. Use the generated
+manifest pause rather than trusting a nominal layer number; the pipeline
+derives it from the actual sliced roof onset. The cavity roof closes at 45
 degrees and leaves no access opening in the finished part.
 
 For attraction, mark one pole on every magnet before printing. Insert all four

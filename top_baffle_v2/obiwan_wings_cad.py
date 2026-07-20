@@ -306,12 +306,14 @@ def receiver_facts(side: str) -> tuple[dict, ...]:
             "carrier_face_xy_mm": list(receiver_datum),
             "carrier_cavity_datum_xy_mm": [
                 float(value) for value in site["face"]],
-            "receiver_mouth_xy_mm": list(tools.actual_face_xyz[:2]),
+            "receiver_cavity_face_xy_mm": list(tools.actual_face_xyz[:2]),
             "axis_z_mm": tools.actual_face_xyz[2],
             "cavity_diameter_mm": MAGNET_POCKET_DIAMETER_MM,
             "cavity_depth_mm": MAGNET_POCKET_DEPTH_MM,
             "captive_land_mm": MAGNET_CAPTIVE_LAND_MM,
-            "carrier_to_receiver_face_gap_mm": MAGNET_FACE_GAP_MM,
+            "receiver_solid_standoff_mm": MAGNET_FACE_GAP_MM,
+            "physical_interface_gap_mm": 0.0,
+            "receiver_spacing_standoff_is_solid": True,
             "paired_magnet_face_separation_mm": round(
                 NOMINAL_PAIRED_FACE_SEPARATION_MM
                 + float(site.get("carrier_cavity_face_inset_mm", 0.0)), 9),
@@ -350,7 +352,7 @@ def receiver_pockets(side: str) -> dict[str, object]:
 
 
 def receiver_required_lands(side: str) -> dict[str, object]:
-    """Return minimum local receiver backing for the qualified cavities."""
+    """Return lands that the immutable receiver host must already contain."""
     _require_guarded_build()
     return {
         str(site["name"]): wall_cavity_tools(
@@ -1412,12 +1414,12 @@ def _one_solid(shape, label: str) -> Part:
 
 def _cut_receivers(part, side: str) -> Part:
     for name, land in receiver_required_lands(side).items():
-        fused = part.fuse(land)
-        if fused is None:
+        missing = land - part
+        missing_volume = 0.0 if missing is None else float(missing.volume)
+        if missing_volume > 0.02:
             raise RuntimeError(
-                f"{side} receiver backing fusion {name} returned no shape")
-        part = _one_solid(
-            fused.clean(), f"{side} {name} captive receiver backing")
+                f"{side} {name} immutable wing host misses "
+                f"{missing_volume:.4f} mm3 of required captive land")
     for name, cutter in receiver_pockets(side).items():
         part = part - cutter
         if part is None:

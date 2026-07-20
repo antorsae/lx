@@ -36,7 +36,10 @@ from front_down_contract import (
     validate_print_sidecar,
 )
 from top_baffle_nd25fw4 import THICKNESS_MM
-from top_baffle_nd25fw4_b import MAGNET_SITES
+from top_baffle_nd25fw4_b import (
+    BASE_CAVITY_FACE_INSET_MM,
+    MAGNET_SITES,
+)
 from top_baffle_nd25fw4_v0 import V0_MAGNET_SITES
 from top_baffle_nd25fw4_v1 import V1_MAGNET_ZC
 from top_baffle_nd25fw4_obiwan import (
@@ -324,20 +327,42 @@ def _site_record(tools, *, family: str,
 def _standard_sites(*, owner: str, z_centres: Sequence[float],
                     family: str) -> dict[str, dict[str, Any]]:
     records: dict[str, dict[str, Any]] = {}
+    owner_key = str(owner).strip().lower()
+    is_base = owner_key in {"base", "carrier"}
+    is_receiver = owner_key in {"receiver", "attachment", "wing"}
     for index, (x, y, nx, ny, _pin, _released_z) in enumerate(MAGNET_SITES):
         vertical = "lower" if index == 0 else "upper"
         zc = float(z_centres[index])
         for side, sign in (("right", 1.0), ("left", -1.0)):
+            base_inset = float(BASE_CAVITY_FACE_INSET_MM[index])
+            raw_nx, raw_ny = sign * nx, ny
+            normal_length = (raw_nx * raw_nx + raw_ny * raw_ny) ** 0.5
+            outward = (raw_nx / normal_length, raw_ny / normal_length)
+            physical_face = (sign * x, y, zc)
+            tool_face = (
+                physical_face[0] - (outward[0] * base_inset if is_base else 0.0),
+                physical_face[1] - (outward[1] * base_inset if is_base else 0.0),
+                zc,
+            )
             tools = wall_cavity_tools(
                 name=f"{family}_{vertical}_{side}_{owner}",
-                face=(sign * x, y, zc),
-                outward=(sign * nx, ny, 0.0),
+                face=tool_face,
+                outward=(*outward, 0.0),
                 owner=owner,
                 print_up=(0.0, 0.0, -1.0),
                 bed_datum=(0.0, 0.0, THICKNESS_MM),
             )
-            records[f"{vertical}_{side}"] = _site_record(
-                tools, family=family)
+            record = _site_record(tools, family=family)
+            record.update({
+                "interface_profile": (
+                    "standard_straight" if index == 0
+                    else "standard_curved"),
+                "outer_surface_face_xy_mm": list(physical_face[:2]),
+                "carrier_cavity_face_inset_mm": base_inset,
+                "paired_magnet_face_separation_mm": round(
+                    NOMINAL_PAIRED_FACE_SEPARATION_MM + base_inset, 9),
+            })
+            records[f"{vertical}_{side}"] = record
     return records
 
 
@@ -376,7 +401,7 @@ def _obiwan_sites(*, owner: str, driver: str) -> dict[str, dict[str, Any]]:
             front_z=THICKNESS_MM,
             interface_gap_mm=SIDE_INTERFACE_GAP,
         )
-        expected = 8.52 if driver == "lm" else 5.96
+        expected = 5.96
         record = _site_record(
             tools, family="obiwan", expected_pause=expected)
         cavity_inset = round(float(
@@ -702,7 +727,7 @@ def _wing_artifacts(slug: str, output: Path) -> list[dict[str, Any]]:
             site["magnet_count"] = 1
             site["structural_load_credit_n"] = 0.0
             site["expected_pause_marker_z_mm"] = (
-                8.52 if role.startswith("lm") else 5.96)
+                5.96)
             stl = _resolve_release_relative(
                 root, entry.get("path"), f"{slug}:{entry['label']} STL")
             transaction = manifest_artifacts.get(entry["path"])
@@ -888,9 +913,11 @@ def generate(output: Path) -> dict[str, Any]:
         "geometry": {
             **global_geometry,
             "nominal_magnet": "D5.0 x 2.0 mm disc",
-            "paired_magnet_face_separation_by_interface_kind_mm": {
-                "base_side": 0.95,
-                "ring": 1.10,
+            "paired_magnet_face_separation_by_interface_profile_mm": {
+                "standard_straight": 0.95,
+                "standard_curved": 1.09,
+                "obiwan_base_side": 0.95,
+                "obiwan_ring": 1.10,
             },
             "glue": False,
             "external_access_opening": False,

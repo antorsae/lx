@@ -8,7 +8,7 @@ from __future__ import annotations
 from build123d import Compound
 
 from top_baffle_nd25fw4_b2_split import pieces
-from top_baffle_nd25fw4_cables import TS_ROUTE_V1_CAPTIVE
+from top_baffle_nd25fw4_cables import TS_ROUTE_CAPTIVE
 from top_baffle_nd25fw4_v1 import (
     REAR_MM,
     apply_v1_base_magnets,
@@ -21,7 +21,7 @@ PRINT_ORIENTATION = "front-face-down"
 def pieces_v1() -> dict:
     result = pieces(shape_cuts=field_cutters(), magnet_cavities=False,
                     crescent_rear_mm=REAR_MM,
-                    ts_route_key=TS_ROUTE_V1_CAPTIVE)
+                    ts_route_key=TS_ROUTE_CAPTIVE)
     result["piece_top_b2"] = apply_v1_base_magnets(result["piece_top_b2"])
     return result
 

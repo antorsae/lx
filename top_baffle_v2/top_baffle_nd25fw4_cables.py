@@ -81,23 +81,23 @@ UM_Y = 366.081
 DUCT_Z = {"lm": 12.55, "um": 12.55, "ts": 11.5}
 LANE_OFFSET = 5.11  # TS lane center this far inside the vase wall lines
 
-# V1/V1L raise the lower left captive-magnet station into the TS duct's
-# source-Z window.  At the released y=322.4 station the unchanged R6P
-# centerline leaves only about 0.325 mm of the helper's nominal 0.45-mm inner
-# retaining skin, which Bambu Classic cannot carry as one continuous wall.
-# Keep the complete D6 lumen and the released magnet datum by moving only
-# this short span of the V1/V1L TS centerline up to 0.20 mm toward x=0.
-# Smoothstep ramps make the nudge tangent-continuous at both ends; all
-# standard-family routes remain byte-for-byte unchanged.
+# The unified front-biased transverse-magnet plane brings the lower-left
+# station into the TS duct's source-Z window in every stock/slim variant.
+# Keep the complete D6 lumen and immutable magnet host by moving only this
+# short span 0.60 mm toward x=0.  Exact BREP screening leaves 0.7919 mm from
+# cavity void to duct and effectively zero (<0.00002 mm3) intersection with
+# the helper's complete 0.60-mm-margin required land. Smoothstep ramps make
+# the nudge tangent-continuous at both ends; the minimum spline bend radius
+# remains >4.89 mm against the 4.5-mm release floor.
 TS_ROUTE_STANDARD = "standard"
-TS_ROUTE_V1_CAPTIVE = "v1_captive_keepout"
-TS_V1_CAPTIVE_NUDGE_MAX_MM = 0.20
-TS_V1_CAPTIVE_NUDGE_KNOTS = (
+TS_ROUTE_CAPTIVE = "captive_keepout"
+TS_CAPTIVE_NUDGE_MAX_MM = 0.60
+TS_CAPTIVE_NUDGE_KNOTS = (
     (313.202641, 0.00),
-    (317.145618, 0.10),
-    (320.500000, 0.20),
-    (324.000000, 0.20),
-    (327.500000, 0.10),
+    (317.145618, 0.30),
+    (320.500000, 0.60),
+    (324.000000, 0.60),
+    (327.500000, 0.30),
     (330.800000, 0.00),
 )
 
@@ -254,20 +254,20 @@ def _smoothstep01(value: float) -> float:
     return value * value * (3.0 - 2.0 * value)
 
 
-def _ts_v1_captive_nudge_mm(y: float) -> float:
-    """Positive-X V1/V1L TS detour preserving the full D6 lumen.
+def _ts_captive_nudge_mm(y: float) -> float:
+    """Positive-X stock/slim TS detour preserving the full D6 lumen.
 
     The left TS lane lies at negative X, so positive X is toward the baffle
     centreline and away from the lower-left captive land.  The short plateau
     brackets the released magnet station; both ramps have zero end slope.
     """
-    if y <= TS_V1_CAPTIVE_NUDGE_KNOTS[0][0]:
+    if y <= TS_CAPTIVE_NUDGE_KNOTS[0][0]:
         return 0.0
-    if y >= TS_V1_CAPTIVE_NUDGE_KNOTS[-1][0]:
+    if y >= TS_CAPTIVE_NUDGE_KNOTS[-1][0]:
         return 0.0
     for (y0, x0), (y1, x1) in zip(
-            TS_V1_CAPTIVE_NUDGE_KNOTS,
-            TS_V1_CAPTIVE_NUDGE_KNOTS[1:]):
+            TS_CAPTIVE_NUDGE_KNOTS,
+            TS_CAPTIVE_NUDGE_KNOTS[1:]):
         if y <= y1:
             weight = _smoothstep01((y - y0) / (y1 - y0))
             return x0 + weight * (x1 - x0)
@@ -313,14 +313,14 @@ def _ts_route(ts_route_key: str = TS_ROUTE_STANDARD):
     )
     if ts_route_key == TS_ROUTE_STANDARD:
         return route
-    if ts_route_key == TS_ROUTE_V1_CAPTIVE:
+    if ts_route_key == TS_ROUTE_CAPTIVE:
         return [
-            (x + _ts_v1_captive_nudge_mm(y), y)
+            (x + _ts_captive_nudge_mm(y), y)
             for x, y in route
         ]
     raise ValueError(
         f"unknown TS route key {ts_route_key!r}; choose "
-        f"{TS_ROUTE_STANDARD!r} or {TS_ROUTE_V1_CAPTIVE!r}")
+        f"{TS_ROUTE_STANDARD!r} or {TS_ROUTE_CAPTIVE!r}")
 
 
 # Without the stand foot the baffle bolts to the stock support via the
@@ -450,7 +450,7 @@ def route_points(name, um_handoff_key: str = "proud",
     """Planar duct centerline (z=DUCT_Z[name]) for the three routes.
 
     ``um_handoff_key`` changes only the terminal span of the UM route;
-    ``ts_route_key`` changes only the short V1/V1L lower-left captive
+    ``ts_route_key`` changes only the short stock/slim lower-left captive
     keepout span.  Both defaults preserve the standard proud geometry.
     """
     if name == "t1f":

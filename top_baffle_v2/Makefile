@@ -25,8 +25,29 @@
 #   make check               proud regression + final Obi-Wan R6F suites
 #   make candidate           checks + regenerated candidate artifacts + QA
 #   make release             candidate QA + fail-closed physical-release gate
+#   make bambu_profiles      local Bambu preset resolution; no CAD/printer I/O
+#   make bambu_dry_run       local per-STL command/provenance preview
+#   make bambu_slice_obiwan  local filtered ready-project diagnostic
+#   make bambu_slice_release local authoritative ready-project slice/audit
 #
 # Compatible with the macOS-provided GNU make 3.81.
+
+# Bambu slicing is workstation-only.  Detect these public goals before the
+# remote-first dispatcher captures MAKECMDGOALS, force even an explicitly
+# supplied remote/remote-worker mode back to local, and reject ambiguous mixed
+# CAD+slicer invocations.  Multiple Bambu goals in one invocation are allowed.
+LOCAL_BAMBU_GOALS := bambu_profiles bambu_dry_run \
+                     bambu_slice_obiwan bambu_slice_release
+BAMBU_GOALS_REQUESTED := $(filter $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))
+ifneq ($(strip $(BAMBU_GOALS_REQUESTED)),)
+ifneq ($(strip $(filter-out $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))),)
+$(error local-only Bambu goals cannot be mixed with CAD or other Make goals)
+endif
+ifneq ($(shell uname -s),Darwin)
+$(error local-only Bambu goals require a Darwin/macOS host and cannot run on osado)
+endif
+override LX_CAD_EXECUTION := local
+endif
 
 LX_CAD_EXECUTION ?= remote
 ifeq ($(filter $(LX_CAD_EXECUTION),remote local local-manifold remote-worker),)
@@ -206,9 +227,10 @@ CLEARANCE_CHECK_NAMES := \
         test_attachment_flushness \
         test_magnet_top_site_walls \
         test_magnet_cavities_vs_t_ducts \
-        test_v1_ts_captive_keepout_nudge \
+        test_ts_captive_keepout_nudge \
         test_standard_captive_magnet_contract \
         test_standard_local_magnet_backing \
+        test_individual_attachment_magnet_burial \
         test_duct_vs_w22_pilots \
         test_duct_duct_separation \
         test_duct_vs_um_pilots \
@@ -405,6 +427,8 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
         check_floor_obiwan_lm_split check_no_floor_obiwan_lm_split \
         check_obiwan_lm_profile check_obiwan_lm_profile_plan \
         check_obiwan_lm_profile_brep manifold _manifold_parallel clean \
+        bambu_profiles bambu_dry_run \
+        bambu_slice_obiwan bambu_slice_release \
         $(CLEARANCE_CHECK_TARGETS) $(R6F_CHECK_TARGETS)
 all: validate_obiwan_stages floor_stand_artifacts no_floor_stand_artifacts common \
         obiwan_wings $(CAPTIVE_MAGNET_CATALOG)
@@ -592,7 +616,8 @@ check_static: check_remote_transport check_release_metadata \
 check_remote_transport: test_remote_cad.py remote_cad.py Makefile
 	$(PYTHON_RUN) test_remote_cad.py
 
-check_release_metadata: test_release_metadata.py check_manifold.py \
+check_release_metadata: $(CAPTIVE_MAGNET_CATALOG) \
+        test_release_metadata.py check_manifold.py \
         $(PRINT_CONTRACT_SRCS) write_obiwan_release_manifest.py Makefile
 	$(PYTHON_RUN) test_release_metadata.py
 
@@ -600,6 +625,53 @@ check_slice_metadata: test_slice_captive_magnets.py \
         slice_captive_magnets.py json_schema_subset.py \
         captive_magnet_slicing_profile.json $(PRINT_CONTRACT_SRCS)
 	$(PYTHON_RUN) test_slice_captive_magnets.py
+
+# These targets consume an existing, remotely generated catalog but never list
+# it as a Make prerequisite: a missing catalog must not launch heavyweight CAD
+# on this workstation.  They run Bambu Studio only as a local CLI slicer and do
+# not contain any printer transport/upload/start operation.
+BAMBU_JOBS ?= 1
+BAMBU_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit
+
+define REQUIRE_BAMBU_CATALOG
+	@test -s "$(CAPTIVE_MAGNET_CATALOG)" || { \
+		echo "missing $(CAPTIVE_MAGNET_CATALOG)" >&2; \
+		echo "run 'make obiwan_release' first to generate/promote it remotely, then rerun this local Bambu target" >&2; \
+		exit 1; \
+	}
+endef
+
+bambu_profiles: check_slice_metadata
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) slice_captive_magnets.py \
+		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--output "$(BAMBU_AUDIT_OUTPUT)" \
+		--jobs "$(BAMBU_JOBS)" \
+		--prepare-profiles-only
+
+bambu_dry_run: check_slice_metadata
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) slice_captive_magnets.py \
+		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--output "$(BAMBU_AUDIT_OUTPUT)" \
+		--jobs "$(BAMBU_JOBS)" \
+		--dry-run
+
+bambu_slice_obiwan: check_slice_metadata
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) slice_captive_magnets.py \
+		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--output "$(BAMBU_AUDIT_OUTPUT)" \
+		--jobs "$(BAMBU_JOBS)" \
+		--only '*Obi-Wan*' --emit-ready-projects
+
+bambu_slice_release: check_slice_metadata
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) slice_captive_magnets.py \
+		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--output "$(BAMBU_AUDIT_OUTPUT)" \
+		--jobs "$(BAMBU_JOBS)" \
+		--emit-ready-projects
 
 check_clearance_suite: $(CLEARANCE_CHECK_STAMPS)
 	@echo "all clearance checks passed (Make-jobserver isolated)"

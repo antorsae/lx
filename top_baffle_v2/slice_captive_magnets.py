@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+import copy
 import csv
 import dataclasses
 import datetime as dt
@@ -38,7 +39,9 @@ import struct
 import subprocess
 import sys
 import tempfile
+import zipfile
 from typing import Any, Iterable, Iterator, Mapping, Sequence
+import xml.etree.ElementTree as ET
 
 from bambu_3mf_audit import (
     Bambu3MFAuditError,
@@ -79,6 +82,7 @@ CANONICAL_MANIFEST_FILENAMES = (
     "CAPTIVE_MAGNET_PAUSE_MANIFEST.md",
 )
 PLACED_3MF_FILENAME = "audited_slice_project.3mf"
+READY_3MF_FILENAME = "ready_to_print.gcode.3mf"
 AUDIT_SOURCE_FILES = (
     Path(__file__).resolve(),
     (SCRIPT_DIR / "bambu_3mf_audit.py").resolve(),
@@ -101,12 +105,68 @@ LAST_OPEN_INTERIOR_PATH_LIMIT_MM = 0.20
 CLOSING_BOUNDARY_INSET_MM = 0.03
 CLOSING_BOUNDARY_REOPEN_TOLERANCE_MM = 0.03
 FALLBACK_LINE_WIDTH_MM = 0.45
-# A physically continuous 0.42-mm Classic bead can tolerate a small gap
+# A physically continuous 0.42-mm variable-width bead can tolerate a small gap
 # between sampled segment centrelines.  Anything larger than one bead plus
 # the two 0.05-mm half-sample offsets is a real break, not G-code segmentation.
 RETAINING_PATH_CONNECTIVITY_GAP_MM = 0.52
+RETAINING_TRACK_DEDUP_TOLERANCE_MM = 0.012
+# Classify a transverse retaining traversal by the bead edge that forms the
+# cavity boundary, rather than by a broad centreline band.  Across all current
+# release slices the real boundary edge is within 0.0271 mm of nominal; 0.06
+# mm leaves measurement/slicer margin while excluding V1's surrounding-body
+# hairpin, whose nearest edge is 0.254 mm behind the cavity boundary.
+TRANSVERSE_CAVITY_EDGE_TOLERANCE_MM = 0.06
+TRANSVERSE_SAME_PATH_EDGE_RETURN_BIN_LIMIT = 3
+# Bambu's one-path adaptive bead reaches 0.661027 mm on the legacy V1 inner
+# skin.  Width alone never grants release: the same stage must still prove one
+# physical traversal and a path-width-aware D5 x 2 loading aperture.
+TRANSVERSE_RETAINING_BEAD_WIDTH_RANGE_MM = (0.42, 0.67)
+AXIAL_RETAINING_BEAD_WIDTH_RANGE_MM = (0.42, 0.65)
+# Arachne reports the resolved variable-width bead rather than simply echoing
+# the 0.42-mm nominal outer-wall setting.  Angled transverse/interface paths
+# in the pinned release reach 0.415656 mm, whereas axial rings merely serialize
+# as 0.419996 mm.  Keep the CAD/profile contract at 0.42 mm and give each
+# topology only the lower-side margin its measured output requires.
+TRANSVERSE_RETAINING_BEAD_LOWER_WIDTH_TOLERANCE_MM = 0.005
+AXIAL_RETAINING_BEAD_LOWER_WIDTH_TOLERANCE_MM = 0.000005
+ANNULAR_COMPONENT_SEAM_WIDTH_MARGIN_MM = 0.04
+ANNULAR_COMPONENT_SEAM_SEARCH_RAYS = 2.0
 EVIDENCE_CELL_PX = 218
 EVIDENCE_MARGIN_MM = 4.0
+# Keep repository overrides fail-closed.  Bambu Studio accepts unknown JSON
+# keys without reporting that they are inert, so every authority we intentionally
+# inject must be registered here as a setting the audit understands and checks.
+PROFILE_OVERRIDE_KEYS = {
+    "machine": frozenset({"machine_pause_gcode"}),
+    "process": frozenset({
+        "wall_loops",
+        "top_shell_layers",
+        "bottom_shell_layers",
+        "outer_wall_speed",
+        "curr_bed_type",
+        "sparse_infill_pattern",
+        "sparse_infill_density",
+        "wall_generator",
+        "enable_support",
+        "support_on_build_plate_only",
+        "support_critical_regions_only",
+        "precise_outer_wall",
+        "detect_thin_wall",
+        "ensure_vertical_shell_thickness",
+        "detect_narrow_internal_solid_infill",
+        "elefant_foot_compensation",
+        "xy_hole_compensation",
+    }),
+    "filament": frozenset({
+        "nozzle_temperature",
+        "nozzle_temperature_initial_layer",
+        "fan_max_speed",
+        "overhang_fan_speed",
+        "filament_max_volumetric_speed",
+        "textured_plate_temp",
+        "textured_plate_temp_initial_layer",
+    }),
+}
 RELEASE_SITE_GEOMETRY_MM = {
     "magnet_diameter_mm": 5.0,
     "magnet_depth_mm": 2.0,
@@ -117,13 +177,32 @@ RELEASE_SITE_GEOMETRY_MM = {
     "captive_land_mm": 3.00,
     "interface_gap_mm": 0.05,
     "roof_angle_deg": 45.0,
-    "classic_retaining_path_mm": 0.42,
+    "minimum_retaining_path_mm": 0.42,
 }
 PAIRED_MAGNET_FACE_SEPARATION_MM = {
     None: 0.95,
+    "standard_straight": 0.95,
+    "standard_curved": 1.09,
     "base_side": 0.95,
     "ring": 1.10,
 }
+SUPPORT_PROCESS_KEYS = (
+    "enable_support",
+    "support_on_build_plate_only",
+    "support_critical_regions_only",
+)
+SUPPORTED_ARTIFACT_MATCHES = (
+    {
+        "state": "floor_stand",
+        "variant": "Obi-Wan-split",
+        "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+    },
+    {
+        "state": "no_floor_stand",
+        "variant": "Obi-Wan-split",
+        "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+    },
+)
 
 
 class AuditError(RuntimeError):
@@ -346,6 +425,273 @@ def _boolish(value: Any) -> bool:
     return False
 
 
+def _profile_value_equal(actual: Any, expected: Any) -> bool:
+    """Compare Bambu JSON values without weakening vector cardinality."""
+    if isinstance(expected, list):
+        return (
+            isinstance(actual, list)
+            and len(actual) == len(expected)
+            and all(_profile_value_equal(a, e)
+                    for a, e in zip(actual, expected, strict=True))
+        )
+    if isinstance(expected, bool):
+        return _boolish(actual) is expected
+    if isinstance(expected, (int, float)):
+        try:
+            return math.isclose(
+                _float(actual, "profile value"), float(expected),
+                abs_tol=1.0e-9, rel_tol=0.0)
+        except AuditError:
+            return False
+    return str(actual) == str(expected)
+
+
+def _apply_profile_overrides(
+    resolved: Mapping[str, Mapping[str, Any]],
+    overrides: Mapping[str, Any],
+    *,
+    label: str,
+) -> dict[str, dict[str, Any]]:
+    """Apply repository authority only after preset inheritance is flat."""
+    result = {
+        key: copy.deepcopy(dict(value)) for key, value in resolved.items()
+    }
+    if not isinstance(overrides, Mapping):
+        raise AuditError(f"{label} must be an object")
+    unexpected = sorted(set(overrides) - set(result))
+    if unexpected:
+        raise AuditError(
+            f"{label} contains unsupported profile sections: {unexpected}")
+    for section, values in overrides.items():
+        if not isinstance(values, Mapping):
+            raise AuditError(f"{label}.{section} must be an object")
+        for key, value in values.items():
+            if not isinstance(key, str) or not key:
+                raise AuditError(f"{label}.{section} has an invalid key")
+            allowed = PROFILE_OVERRIDE_KEYS.get(section, frozenset())
+            if key not in allowed:
+                raise AuditError(
+                    f"{label}.{section}.{key} is not a registered, "
+                    "toolpath-audited Bambu setting")
+            result[section][key] = copy.deepcopy(value)
+    return result
+
+
+def _assert_profile_overrides(
+    resolved: Mapping[str, Mapping[str, Any]],
+    overrides: Mapping[str, Any],
+    *,
+    label: str,
+) -> None:
+    for section, values in overrides.items():
+        for key, expected in values.items():
+            actual = resolved[section].get(key)
+            if not _profile_value_equal(actual, expected):
+                raise AuditError(
+                    f"{label} was not applied: {section}.{key} "
+                    f"is {actual!r}, expected {expected!r}")
+
+
+def _percent(value: Any, label: str) -> float:
+    if isinstance(value, list):
+        if not value:
+            raise AuditError(f"{label} is empty")
+        value = value[0]
+    text = str(value).strip()
+    if text.endswith("%"):
+        text = text[:-1]
+    return _float(text, label)
+
+
+def _validate_support_override_policy(config: Mapping[str, Any]) -> None:
+    """Pin support off globally and on only for both keyed LM bottoms."""
+    requirements = config.get("requirements")
+    if (not isinstance(requirements, Mapping)
+            or requirements.get("support_enabled") is not False):
+        raise AuditError(
+            "requirements.support_enabled must explicitly be false by "
+            "default")
+    repo_overrides = config.get("repo_overrides")
+    if not isinstance(repo_overrides, Mapping):
+        raise AuditError("slicing profile repo_overrides must be an object")
+    base_process = repo_overrides.get("process")
+    if not isinstance(base_process, Mapping):
+        raise AuditError("slicing profile repo_overrides.process is required")
+    for key in SUPPORT_PROCESS_KEYS:
+        if key not in base_process or _boolish(base_process[key]):
+            raise AuditError(
+                f"repo_overrides.process.{key} must explicitly be 0")
+
+    rules = config.get("artifact_overrides")
+    if not isinstance(rules, list):
+        raise AuditError("artifact_overrides must be an array")
+    actual_matches = []
+    for index, rule in enumerate(rules):
+        if not isinstance(rule, Mapping):
+            raise AuditError(f"artifact_overrides[{index}] must be an object")
+        process = rule.get("process", {})
+        if not isinstance(process, Mapping):
+            raise AuditError(
+                f"artifact_overrides[{index}].process must be an object")
+        present = set(process).intersection(SUPPORT_PROCESS_KEYS)
+        if not present:
+            continue
+        if present != set(SUPPORT_PROCESS_KEYS):
+            raise AuditError(
+                f"artifact_overrides[{index}] must set all support keys")
+        if not all(_boolish(process[key]) for key in SUPPORT_PROCESS_KEYS):
+            raise AuditError(
+                f"artifact_overrides[{index}] support keys must all be 1")
+        match = rule.get("match")
+        if not isinstance(match, Mapping):
+            raise AuditError(
+                f"artifact_overrides[{index}].match must be an object")
+        actual_matches.append(dict(match))
+    actual_match_keys = sorted(
+        tuple(sorted(item.items())) for item in actual_matches)
+    required_match_keys = sorted(
+        tuple(sorted(item.items())) for item in SUPPORTED_ARTIFACT_MATCHES)
+    if actual_match_keys != required_match_keys:
+        raise AuditError(
+            "support overrides must target exactly the floor/no-floor "
+            "Obi-Wan keyed LM bottom artifacts")
+
+
+def _effective_profile_contract(
+    resolved: Mapping[str, Mapping[str, Any]],
+    config: Mapping[str, Any],
+    enforced_overrides: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Validate and summarize the exact settings sent to Bambu Studio."""
+    req = config["requirements"]
+    checks = {
+        "nozzle diameter": (
+            _scalar(resolved["machine"], "nozzle_diameter", "machine"),
+            _float(req["nozzle_diameter_mm"], "required nozzle diameter")),
+        "layer height": (
+            _scalar(resolved["process"], "layer_height", "process"),
+            _float(req["layer_height_mm"], "required layer height")),
+        "first layer height": (
+            _scalar(
+                resolved["process"], "initial_layer_print_height", "process"),
+            _float(
+                req["first_layer_height_mm"], "required first layer height")),
+        "outer wall width": (
+            _scalar(resolved["process"], "outer_wall_line_width", "process"),
+            _float(
+                req["outer_wall_line_width_mm"], "required outer wall width")),
+        "inner wall width": (
+            _scalar(resolved["process"], "inner_wall_line_width", "process"),
+            _float(
+                req["inner_wall_line_width_mm"], "required inner wall width")),
+    }
+    for item, (actual, expected) in checks.items():
+        if not math.isclose(actual, expected, abs_tol=1.0e-8):
+            raise AuditError(
+                f"resolved Bambu {item} {actual:g} != required {expected:g}")
+    _assert_profile_overrides(
+        resolved, enforced_overrides, label="repository profile override")
+    process = resolved["process"]
+    filament = resolved["filament"]
+    machine = resolved["machine"]
+    wall_generator = str(process.get("wall_generator", "")).lower()
+    required_wall_generator = str(req["wall_generator"]).lower()
+    if required_wall_generator != "arachne":
+        raise AuditError(
+            "repository slicing requirements must pin wall_generator to "
+            "'arachne'")
+    if wall_generator != required_wall_generator:
+        raise AuditError(
+            f"resolved wall generator {wall_generator!r} is not "
+            f"{required_wall_generator!r}")
+    support_enabled = _boolish(process.get("enable_support"))
+    support_on_build_plate_only = _boolish(
+        process.get("support_on_build_plate_only"))
+    support_critical_regions_only = _boolish(
+        process.get("support_critical_regions_only"))
+    if support_enabled and not (
+            support_on_build_plate_only and support_critical_regions_only):
+        raise AuditError(
+            "support-enabled artifact profiles must also enable "
+            "support_on_build_plate_only and "
+            "support_critical_regions_only")
+    if not support_enabled and (
+            support_on_build_plate_only or support_critical_regions_only):
+        raise AuditError(
+            "support scope flags must be disabled when enable_support is 0")
+    model = machine.get("printer_model")
+    if model != req["printer_model"]:
+        raise AuditError(
+            f"resolved printer model {model!r} is not "
+            f"{req['printer_model']!r}")
+    if str(machine.get("machine_pause_gcode", "")).strip() != "M400 U1":
+        raise AuditError(
+            "resolved machine_pause_gcode must be exactly 'M400 U1'")
+    return {
+        "printer_model": model,
+        "nozzle_diameter_mm": checks["nozzle diameter"][0],
+        "layer_height_mm": checks["layer height"][0],
+        "first_layer_height_mm": checks["first layer height"][0],
+        "wall_generator": wall_generator,
+        "outer_wall_line_width_mm": checks["outer wall width"][0],
+        "inner_wall_line_width_mm": checks["inner wall width"][0],
+        "wall_loops": int(round(_scalar(process, "wall_loops", "process"))),
+        "top_shell_layers": int(round(
+            _scalar(process, "top_shell_layers", "process"))),
+        "bottom_shell_layers": int(round(
+            _scalar(process, "bottom_shell_layers", "process"))),
+        "outer_wall_speed_mm_s": _scalar(
+            process, "outer_wall_speed", "process"),
+        "bed_type": process.get("curr_bed_type"),
+        "sparse_infill_pattern": process.get("sparse_infill_pattern"),
+        "sparse_infill_density_percent": _percent(
+            process.get("sparse_infill_density"),
+            "resolved process.sparse_infill_density"),
+        "precise_outer_wall": _boolish(process.get("precise_outer_wall")),
+        "detect_thin_wall": _boolish(process.get("detect_thin_wall")),
+        "ensure_vertical_shell_thickness": process.get(
+            "ensure_vertical_shell_thickness"),
+        "detect_narrow_internal_solid_infill": _boolish(
+            process.get("detect_narrow_internal_solid_infill")),
+        "elefant_foot_compensation_mm": _scalar(
+            process, "elefant_foot_compensation", "process"),
+        "xy_hole_compensation_mm": _scalar(
+            process, "xy_hole_compensation", "process"),
+        "xy_hole_compensation_policy": req.get(
+            "xy_hole_compensation_policy"),
+        "support_enabled": support_enabled,
+        "support_on_build_plate_only": support_on_build_plate_only,
+        "support_critical_regions_only": support_critical_regions_only,
+        "arc_fitting_enabled": _boolish(process.get("enable_arc_fitting")),
+        "machine_pause_gcode": machine["machine_pause_gcode"],
+        "nozzle_temperature_c": _scalar(
+            filament, "nozzle_temperature", "filament"),
+        "nozzle_temperature_initial_layer_c": _scalar(
+            filament, "nozzle_temperature_initial_layer", "filament"),
+        "fan_max_speed_percent": _scalar(
+            filament, "fan_max_speed", "filament"),
+        "overhang_fan_speed_percent": _scalar(
+            filament, "overhang_fan_speed", "filament"),
+        "filament_max_volumetric_speed_mm3_s": _scalar(
+            filament, "filament_max_volumetric_speed", "filament"),
+        "textured_plate_temp_c": _scalar(
+            filament, "textured_plate_temp", "filament"),
+        "textured_plate_temp_initial_layer_c": _scalar(
+            filament, "textured_plate_temp_initial_layer", "filament"),
+        "filament": filament.get("name"),
+    }
+
+
+def _parse_bambu_studio_version(help_output: str) -> str:
+    matches = re.findall(
+        r"(?m)^BambuStudio-([0-9]+(?:\.[0-9]+){3}):\s*$", help_output)
+    if len(matches) != 1:
+        raise AuditError(
+            "Bambu Studio --help did not contain exactly one "
+            "BambuStudio-XX.XX.XX.XX banner")
+    return matches[0]
+
+
 def prepare_profiles(
     config_path: Path,
     output_dir: Path,
@@ -356,6 +702,7 @@ def prepare_profiles(
     config = _load_json(config_path)
     if config.get("schema_version") != 1:
         raise AuditError(f"unsupported slicing profile schema in {config_path}")
+    _validate_support_override_policy(config)
     root = (system_root or _default_bambu_system_root(config["vendor"])).resolve()
     resolver = PresetResolver(root)
     sources = {
@@ -366,38 +713,16 @@ def prepare_profiles(
     for label, path in sources.items():
         if path.resolve() not in resolver.raw:
             raise AuditError(f"configured {label} preset was not found: {path}")
-    resolved = {label: resolver.resolve(path) for label, path in sources.items()}
-    req = config["requirements"]
-    checks = {
-        "nozzle diameter": (
-            _scalar(resolved["machine"], "nozzle_diameter", "machine"),
-            _float(req["nozzle_diameter_mm"], "required nozzle diameter")),
-        "layer height": (
-            _scalar(resolved["process"], "layer_height", "process"),
-            _float(req["layer_height_mm"], "required layer height")),
-        "first layer height": (
-            _scalar(resolved["process"], "initial_layer_print_height", "process"),
-            _float(req["first_layer_height_mm"], "required first layer height")),
-        "outer wall width": (
-            _scalar(resolved["process"], "outer_wall_line_width", "process"),
-            _float(req["outer_wall_line_width_mm"], "required outer wall width")),
-        "inner wall width": (
-            _scalar(resolved["process"], "inner_wall_line_width", "process"),
-            _float(req["inner_wall_line_width_mm"], "required inner wall width")),
+    flattened = {
+        label: resolver.resolve(path) for label, path in sources.items()
     }
-    for label, (actual, expected) in checks.items():
-        if not math.isclose(actual, expected, abs_tol=1.0e-8):
-            raise AuditError(
-                f"resolved Bambu {label} {actual:g} != required {expected:g}")
-    wall_generator = str(resolved["process"].get("wall_generator", "")).lower()
-    if wall_generator != str(req["wall_generator"]).lower():
-        raise AuditError(
-            f"resolved wall generator {wall_generator!r} is not Classic")
-    if _boolish(resolved["process"].get("enable_support")):
-        raise AuditError("resolved process enables support; captive cavities forbid it")
-    model = resolved["machine"].get("printer_model")
-    if model != req["printer_model"]:
-        raise AuditError(f"resolved printer model {model!r} is not {req['printer_model']!r}")
+    repo_overrides = config.get("repo_overrides")
+    if not isinstance(repo_overrides, Mapping) or not repo_overrides:
+        raise AuditError("slicing profile must define non-empty repo_overrides")
+    resolved = _apply_profile_overrides(
+        flattened, repo_overrides, label="repo_overrides")
+    effective = _effective_profile_contract(
+        resolved, config, repo_overrides)
 
     profile_dir = output_dir / "profiles"
     profile_dir.mkdir(parents=True, exist_ok=True)
@@ -417,9 +742,19 @@ def prepare_profiles(
             [str(bambu_binary), "--help"], text=True,
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
             timeout=30, check=False)
-        version_line = version_run.stdout.splitlines()[0].strip()
+        if version_run.returncode != 0:
+            raise AuditError(
+                f"Bambu Studio --help exited {version_run.returncode}")
+        version = _parse_bambu_studio_version(version_run.stdout)
     except (OSError, subprocess.SubprocessError) as exc:
         raise AuditError(f"cannot execute Bambu Studio CLI: {exc}") from exc
+    required_version = config.get("required_bambu_studio_version")
+    if not isinstance(required_version, str) or not required_version:
+        raise AuditError("required_bambu_studio_version is missing")
+    if version != required_version:
+        raise AuditError(
+            f"Bambu Studio version {version!r} != required "
+            f"{required_version!r}")
     audit_sources = {
         str(path): sha256_file(path) for path in AUDIT_SOURCE_FILES
     }
@@ -427,7 +762,8 @@ def prepare_profiles(
         "backend": "BambuStudio",
         "binary": str(bambu_binary),
         "binary_sha256": sha256_file(bambu_binary),
-        "version": version_line,
+        "version": version,
+        "required_version": required_version,
         "config_path": str(config_path.resolve()),
         "config_sha256": sha256_file(config_path),
         "system_vendor_root": str(root),
@@ -442,19 +778,8 @@ def prepare_profiles(
             key: {"path": str(path), "sha256": sha256_file(path)}
             for key, path in paths.items()
         },
-        "effective": {
-            "printer_model": model,
-            "nozzle_diameter_mm": checks["nozzle diameter"][0],
-            "layer_height_mm": checks["layer height"][0],
-            "first_layer_height_mm": checks["first layer height"][0],
-            "wall_generator": wall_generator,
-            "outer_wall_line_width_mm": checks["outer wall width"][0],
-            "inner_wall_line_width_mm": checks["inner wall width"][0],
-            "support_enabled": False,
-            "arc_fitting_enabled": _boolish(
-                resolved["process"].get("enable_arc_fitting")),
-            "filament": resolved["filament"].get("name"),
-        },
+        "repo_overrides": copy.deepcopy(repo_overrides),
+        "effective": effective,
         "machine_bounds_mm": config["machine_bounds_mm"],
         "audit_sources": audit_sources,
     }
@@ -468,10 +793,88 @@ def prepare_profiles(
         "identity": identity,
         "paths": paths,
         "resolved": resolved,
+        "enforced_overrides": copy.deepcopy(repo_overrides),
         # Keep the original scalar for existing diagnostic consumers, while
         # binding every pure-Python authority used by the slice audit.
         "audit_script_sha256": audit_sources[str(Path(__file__).resolve())],
         "audit_source_sha256": audit_sources,
+    }
+
+
+def _artifact_profile_bundle(
+    artifact: Mapping[str, Any],
+    profile_bundle: Mapping[str, Any],
+    output_dir: Path,
+) -> dict[str, Any]:
+    """Materialize any exact artifact override as a hash-bound profile set."""
+    rules = profile_bundle["config"].get("artifact_overrides", [])
+    if not isinstance(rules, list):
+        raise AuditError("artifact_overrides must be an array")
+    matches: list[tuple[int, Mapping[str, Any]]] = []
+    for index, rule in enumerate(rules):
+        if not isinstance(rule, Mapping):
+            raise AuditError(f"artifact_overrides[{index}] must be an object")
+        match = rule.get("match")
+        if not isinstance(match, Mapping) or not match:
+            raise AuditError(
+                f"artifact_overrides[{index}].match must be a non-empty object")
+        if any(key not in artifact or artifact[key] != expected
+               for key, expected in match.items()):
+            continue
+        payload = {key: value for key, value in rule.items() if key != "match"}
+        if not payload:
+            raise AuditError(
+                f"artifact_overrides[{index}] has no profile values")
+        matches.append((index, payload))
+    if len(matches) > 1:
+        raise AuditError(
+            f"{artifact['id']}: multiple artifact profile overrides match: "
+            f"{[index for index, _payload in matches]}")
+    if not matches:
+        return dict(profile_bundle)
+
+    index, override = matches[0]
+    resolved = _apply_profile_overrides(
+        profile_bundle["resolved"], override,
+        label=f"artifact_overrides[{index}]")
+    enforced = copy.deepcopy(profile_bundle["enforced_overrides"])
+    for section, values in override.items():
+        section_values = enforced.setdefault(section, {})
+        if not isinstance(values, Mapping):
+            raise AuditError(
+                f"artifact_overrides[{index}].{section} must be an object")
+        section_values.update(copy.deepcopy(dict(values)))
+    effective = _effective_profile_contract(
+        resolved, profile_bundle["config"], enforced)
+
+    profile_dir = output_dir / "slice_profile"
+    profile_dir.mkdir(parents=True, exist_ok=True)
+    paths: dict[str, Path] = {}
+    for section, data in resolved.items():
+        path = profile_dir / f"resolved_{section}.json"
+        _write_json(path, data)
+        paths[section] = path
+    identity = copy.deepcopy(profile_bundle["identity"])
+    identity["effective"] = effective
+    identity["artifact_override"] = {
+        "rule_index": index,
+        "match": copy.deepcopy(rules[index]["match"]),
+        "values": copy.deepcopy(override),
+    }
+    identity["resolved_profiles"] = {
+        section: {"path": str(path), "sha256": sha256_file(path)}
+        for section, path in paths.items()
+    }
+    identity["profile_set_sha256"] = _sha256_bytes(_canonical_json({
+        section: record["sha256"]
+        for section, record in identity["resolved_profiles"].items()
+    }))
+    return {
+        **profile_bundle,
+        "identity": identity,
+        "paths": paths,
+        "resolved": resolved,
+        "enforced_overrides": enforced,
     }
 
 
@@ -649,7 +1052,7 @@ def _source_site_contract(site: Mapping[str, Any]) -> dict[str, Any]:
             "source structural load credit"),
     }
     for key in (
-            "classic_retaining_path_mm", "captive_land_mm",
+            "minimum_retaining_path_mm", "captive_land_mm",
             "interface_gap_mm", "paired_magnet_face_separation_mm"):
         contract[key] = _float(
             _required(site, key, f"source {key}"), f"source {key}")
@@ -971,9 +1374,16 @@ def normalize_catalog(
             interface_kind = site.get("interface_kind")
             if interface_kind is not None:
                 interface_kind = str(interface_kind)
+            interface_profile = site.get("interface_profile")
+            if interface_profile is not None:
+                interface_profile = str(interface_profile)
             is_obiwan = variant.startswith("Obi-Wan")
             expected_interface_kind = None
             if is_obiwan:
+                if interface_profile is not None:
+                    raise AuditError(
+                        f"{artifact_id}/{site_name}: interface_profile is "
+                        "reserved for standard/slim pairs")
                 expected_interface_kind = (
                     "base_side" if site_name.startswith("lm_lower_")
                     else "ring")
@@ -985,8 +1395,15 @@ def normalize_catalog(
                 raise AuditError(
                     f"{artifact_id}/{site_name}: interface_kind is reserved "
                     "for Obi-Wan carrier/wing pairs")
+            elif interface_profile not in (
+                    None, "standard_straight", "standard_curved"):
+                raise AuditError(
+                    f"{artifact_id}/{site_name}: unsupported standard/slim "
+                    f"interface_profile {interface_profile!r}")
+            separation_profile = (
+                interface_kind if is_obiwan else interface_profile)
             expected_pair_separation = PAIRED_MAGNET_FACE_SEPARATION_MM[
-                interface_kind]
+                separation_profile]
             actual_pair_separation = _float(_required(
                 site, "paired_magnet_face_separation_mm",
                 f"{artifact_id}/{site_name}: paired magnet-face separation"),
@@ -1057,8 +1474,8 @@ def normalize_catalog(
                 "interface_gap_mm": source_contract["interface_gap_mm"],
                 "paired_magnet_face_separation_mm": source_contract[
                     "paired_magnet_face_separation_mm"],
-                "classic_retaining_path_mm": source_contract[
-                    "classic_retaining_path_mm"],
+                "minimum_retaining_path_mm": source_contract[
+                    "minimum_retaining_path_mm"],
                 "polarity_instruction": polarity,
                 "installed_marked_pole_axis_xyz": installed_axis,
                 "magnet_count": magnet_count,
@@ -1471,6 +1888,7 @@ class Segment:
     line_number: int
     z0: float = 0.0
     z1: float = 0.0
+    path_id: int = 0
 
     @property
     def length(self) -> float:
@@ -1483,6 +1901,7 @@ class Layer:
     layer_height: float | None
     segments: list[Segment]
     line_number: int
+    first_extrusion_line_number: int | None = None
 
 
 @dataclasses.dataclass
@@ -1542,6 +1961,24 @@ def parse_gcode(
     maxs = [-math.inf, -math.inf, -math.inf]
     config: dict[str, str] = {}
     in_config = False
+    next_path_id = 0
+    active_path_id: int | None = None
+    last_extrusion_end: tuple[float, float, float] | None = None
+
+    def extrusion_path_id(
+        start: tuple[float, float, float],
+        end: tuple[float, float, float],
+    ) -> int:
+        nonlocal next_path_id, active_path_id, last_extrusion_end
+        connected = (
+            active_path_id is not None
+            and last_extrusion_end is not None
+            and math.dist(start, last_extrusion_end) <= 1.0e-5)
+        if not connected:
+            next_path_id += 1
+            active_path_id = next_path_id
+        last_extrusion_end = end
+        return active_path_id
     with path.open("r", encoding="utf-8", errors="replace") as stream:
         for line_number, raw in enumerate(stream, 1):
             line = raw.strip()
@@ -1681,6 +2118,17 @@ def parse_gcode(
                     raise AuditError(
                         f"{path}:{line_number}: {token} needs {count} "
                         "tessellation segments; refusing unbounded arc")
+                if (current is not None and e_delta > 1.0e-8
+                        and planar_length > 1.0e-8
+                        and current.first_extrusion_line_number is None):
+                    current.first_extrusion_line_number = line_number
+                segment_path_id = 0
+                if e_delta > 1.0e-8 and planar_length > 1.0e-8:
+                    segment_path_id = extrusion_path_id(
+                        (old_x, old_y, old_z), (x, y, z))
+                else:
+                    active_path_id = None
+                    last_extrusion_end = None
                 prior_x, prior_y, prior_z = old_x, old_y, old_z
                 for index in range(1, count + 1):
                     t = index / count
@@ -1704,10 +2152,15 @@ def parse_gcode(
                         current.segments.append(Segment(
                             prior_x, prior_y, next_x, next_y,
                             e_delta / count, feature, line_width, line_number,
-                            prior_z, next_z))
+                            prior_z, next_z, segment_path_id))
                     prior_x, prior_y, prior_z = next_x, next_y, next_z
                 if e_delta > 1.0e-8 and planar_length > 1.0e-8:
                     extrusion += 1
+                    if same_endpoint:
+                        # A following full circle is another traversal even if
+                        # it begins at the exact same coordinate.
+                        active_path_id = None
+                        last_extrusion_end = None
             else:
                 for axis, value in enumerate((old_x, old_y, old_z)):
                     mins[axis] = min(mins[axis], value)
@@ -1717,12 +2170,20 @@ def parse_gcode(
                     maxs[axis] = max(maxs[axis], value)
                 if (current is not None and e_delta > 1.0e-8
                         and math.hypot(x - old_x, y - old_y) > 1.0e-8):
+                    if current.first_extrusion_line_number is None:
+                        current.first_extrusion_line_number = line_number
+                    segment_path_id = extrusion_path_id(
+                        (old_x, old_y, old_z), (x, y, z))
                     if _segment_intersects_regions(
                             old_x, old_y, x, y, retain_regions):
                         current.segments.append(Segment(
                             old_x, old_y, x, y, e_delta, feature,
-                            line_width, line_number, old_z, z))
+                            line_width, line_number, old_z, z,
+                            segment_path_id))
                     extrusion += 1
+                elif math.hypot(x - old_x, y - old_y) > 1.0e-8:
+                    active_path_id = None
+                    last_extrusion_end = None
     if not layers:
         raise AuditError(f"no Bambu CHANGE_LAYER/Z_HEIGHT records in {path}")
     if not movement or not extrusion or not temperatures:
@@ -1746,6 +2207,12 @@ def _validate_actual_gcode_profile(
         "initial_layer_print_height": expected["first_layer_height_mm"],
         "outer_wall_line_width": expected["outer_wall_line_width_mm"],
         "inner_wall_line_width": expected["inner_wall_line_width_mm"],
+        "wall_loops": expected["wall_loops"],
+        "top_shell_layers": expected["top_shell_layers"],
+        "bottom_shell_layers": expected["bottom_shell_layers"],
+        "elefant_foot_compensation": expected[
+            "elefant_foot_compensation_mm"],
+        "xy_hole_compensation": expected["xy_hole_compensation_mm"],
     }
     for key, expected_value in actual_fields.items():
         value = parsed.config.get(key)
@@ -1753,19 +2220,133 @@ def _validate_actual_gcode_profile(
             errors.append(f"G-code CONFIG_BLOCK lacks {key}")
             continue
         try:
-            actual = float(value)
+            actual = float(value.strip().rstrip("%"))
         except ValueError:
             errors.append(f"G-code {key} is not numeric: {value!r}")
             continue
         if not math.isclose(actual, expected_value, abs_tol=1.0e-8):
             errors.append(
                 f"G-code {key}={actual:g} != resolved {expected_value:g}")
-    if parsed.config.get("wall_generator", "").lower() != "classic":
+
+    # Bambu serializes vector settings as comma-separated values.  Comparing
+    # only the first item would let a second extruder/speed silently retain an
+    # unsafe preset value (for example outer_wall_speed=60,200).
+    vector_fields = {
+        "outer_wall_speed": ("process", "outer_wall_speed"),
+        "nozzle_temperature": ("filament", "nozzle_temperature"),
+        "nozzle_temperature_initial_layer": (
+            "filament", "nozzle_temperature_initial_layer"),
+        "fan_max_speed": ("filament", "fan_max_speed"),
+        "overhang_fan_speed": ("filament", "overhang_fan_speed"),
+        "filament_max_volumetric_speed": (
+            "filament", "filament_max_volumetric_speed"),
+        "textured_plate_temp": ("filament", "textured_plate_temp"),
+        "textured_plate_temp_initial_layer": (
+            "filament", "textured_plate_temp_initial_layer"),
+    }
+    for key, (section, profile_key) in vector_fields.items():
+        raw_actual = parsed.config.get(key)
+        if raw_actual is None:
+            errors.append(f"G-code CONFIG_BLOCK lacks {key}")
+            continue
+        raw_expected = profile_bundle["resolved"][section].get(profile_key)
+        expected_items = (
+            list(raw_expected) if isinstance(raw_expected, list)
+            else [raw_expected])
+        actual_items = raw_actual.split(",")
+        try:
+            expected_vector = [
+                float(str(value).strip().rstrip("%"))
+                for value in expected_items
+            ]
+            actual_vector = [
+                float(value.strip().rstrip("%"))
+                for value in actual_items
+            ]
+        except (TypeError, ValueError):
+            errors.append(
+                f"G-code/resolved {key} vector is not numeric: "
+                f"{raw_actual!r} / {raw_expected!r}")
+            continue
+        if len(actual_vector) == len(expected_vector):
+            vector_pass = all(math.isclose(
+                actual, required, abs_tol=1.0e-8, rel_tol=0.0)
+                for actual, required in zip(
+                    actual_vector, expected_vector, strict=True))
+        elif len(actual_vector) == 1:
+            # Bambu's CONFIG_BLOCK collapses identical per-tool vectors to one
+            # scalar (the stock P2S output does this for 60,60 and 225,225).
+            vector_pass = all(math.isclose(
+                actual_vector[0], required, abs_tol=1.0e-8, rel_tol=0.0)
+                for required in expected_vector)
+        elif len(expected_vector) == 1:
+            vector_pass = all(math.isclose(
+                actual, expected_vector[0], abs_tol=1.0e-8, rel_tol=0.0)
+                for actual in actual_vector)
+        else:
+            vector_pass = False
+        if not vector_pass:
+            errors.append(
+                f"G-code {key}={actual_vector!r} != resolved "
+                f"{expected_vector!r}")
+    expected_wall_generator = str(expected["wall_generator"]).lower()
+    if parsed.config.get("wall_generator", "").lower() != expected_wall_generator:
         errors.append(
             f"G-code wall_generator={parsed.config.get('wall_generator')!r}, "
-            "expected classic")
-    if _boolish(parsed.config.get("enable_support")):
-        errors.append("G-code enables support")
+            f"expected {expected_wall_generator}")
+    support_fields = {
+        "enable_support": expected["support_enabled"],
+        "support_on_build_plate_only": expected[
+            "support_on_build_plate_only"],
+        "support_critical_regions_only": expected[
+            "support_critical_regions_only"],
+    }
+    for key, expected_value in support_fields.items():
+        if key not in parsed.config:
+            errors.append(f"G-code CONFIG_BLOCK lacks {key}")
+            continue
+        actual_value = _boolish(parsed.config[key])
+        if actual_value is not expected_value:
+            errors.append(
+                f"G-code {key}={actual_value} != resolved "
+                f"{expected_value}")
+    expected_pattern = str(expected["sparse_infill_pattern"]).lower()
+    actual_pattern = parsed.config.get("sparse_infill_pattern", "").lower()
+    if actual_pattern != expected_pattern:
+        errors.append(
+            f"G-code sparse_infill_pattern={actual_pattern!r} != resolved "
+            f"{expected_pattern!r}")
+    if parsed.config.get("curr_bed_type") != "Textured PEI Plate":
+        errors.append("G-code curr_bed_type is not Textured PEI Plate")
+    density = parsed.config.get("sparse_infill_density")
+    if density is None:
+        errors.append("G-code CONFIG_BLOCK lacks sparse_infill_density")
+    else:
+        try:
+            actual_density = float(density.strip().rstrip("%"))
+        except ValueError:
+            errors.append(
+                f"G-code sparse_infill_density is not numeric: {density!r}")
+        else:
+            if not math.isclose(
+                    actual_density,
+                    expected["sparse_infill_density_percent"],
+                    abs_tol=1.0e-8):
+                errors.append(
+                    "G-code sparse_infill_density="
+                    f"{actual_density:g}% != resolved "
+                    f"{expected['sparse_infill_density_percent']:g}%")
+    for key, expected_value in (
+            ("precise_outer_wall", True),
+            ("detect_thin_wall", True),
+            ("detect_narrow_internal_solid_infill", True)):
+        if _boolish(parsed.config.get(key)) is not expected_value:
+            errors.append(f"G-code {key} is not enabled")
+    if parsed.config.get("ensure_vertical_shell_thickness") != "enabled":
+        errors.append(
+            "G-code ensure_vertical_shell_thickness is not enabled")
+    if parsed.config.get("machine_pause_gcode", "").strip() != "M400 U1":
+        errors.append("G-code machine_pause_gcode is not exactly 'M400 U1'")
     actual_arc_fitting = _boolish(parsed.config.get("enable_arc_fitting"))
     if actual_arc_fitting != bool(expected.get("arc_fitting_enabled")):
         errors.append(
@@ -1870,6 +2451,19 @@ def _retaining_stage_pass(
             and retaining[
                 "inner_skin_longest_contiguous_span_mm"] >= 0.10
         )
+    if stage == "lowest_open":
+        # At the first axial cradle layer the circular floor intersects the
+        # cavity as top/gap paths, not yet as the mature medial annulus seen at
+        # representative and last-open layers.  Require real continuous ring
+        # material here, while reserving strict bounded-bead multiplicity for
+        # the two mature open stages.
+        gap = retaining.get("largest_uncovered_arc_mm")
+        return (
+            retaining.get("annular_path_length_mm", 0.0)
+            >= math.pi * site["cavity_diameter_mm"] / 2.0
+            and isinstance(gap, (int, float))
+            and math.isfinite(float(gap))
+            and float(gap) <= RETAINING_PATH_CONNECTIVITY_GAP_MM)
     return bool(retaining["pass"])
 
 
@@ -1932,6 +2526,625 @@ def _longest_connected_v_span(
     return max(high - low for low, high in extents.values())
 
 
+def _single_classic_track_summary(
+    *,
+    track_samples: Sequence[tuple[float, int, str, float, int]],
+    required_bins: Sequence[int],
+    expected_center_mm: float,
+    allowed_width_range_mm: tuple[float, float],
+    lower_width_tolerance_mm: float,
+) -> dict[str, Any]:
+    """Count extrusion tracks independently in every occupied scan bin.
+
+    Path identity comes from extrusion/travel continuity in the raw G-code,
+    not spatial clustering.  Thus coincident duplicate traversals and the two
+    real contours observed around U=0.210 and U=0.240 mm remain two paths.
+    """
+    target = RELEASE_SITE_GEOMETRY_MM["minimum_retaining_path_mm"]
+    by_bin: dict[int, list[tuple[float, str, float, int]]] = {}
+    for position, bin_index, feature, width, path_id in track_samples:
+        by_bin.setdefault(bin_index, []).append(
+            (position, feature, width, path_id))
+    centers_by_bin: dict[int, list[float]] = {}
+    for bin_index, samples in by_bin.items():
+        by_path: dict[int, list[tuple[float, str, float, int]]] = {}
+        for sample in samples:
+            by_path.setdefault(sample[3], []).append(sample)
+        centers = []
+        for _path_id, path_samples in sorted(by_path.items()):
+            clusters: list[list[tuple[float, str, float, int]]] = []
+            for sample in sorted(path_samples, key=lambda value: value[0]):
+                if (not clusters
+                        or sample[0] - clusters[-1][0][0]
+                        > RETAINING_TRACK_DEDUP_TOLERANCE_MM):
+                    clusters.append([sample])
+                else:
+                    clusters[-1].append(sample)
+            centers.extend(
+                sum(sample[0] for sample in cluster) / len(cluster)
+                for cluster in clusters)
+        centers_by_bin[bin_index] = sorted(centers)
+    unique_features = sorted({
+        str(sample[2]).strip() for sample in track_samples
+    })
+    unique_widths = sorted({
+        round(float(sample[3]), 6) for sample in track_samples
+    })
+    effective_lower_width_mm = (
+        allowed_width_range_mm[0]
+        - lower_width_tolerance_mm)
+    width_pass = bool(unique_widths) and all(
+        effective_lower_width_mm - FLOAT_EPS <= value
+        <= allowed_width_range_mm[1] + FLOAT_EPS
+        for value in unique_widths)
+    feature_pass = bool(unique_features) and all(
+        value.lower() == "outer wall" for value in unique_features)
+    missing_bins = sorted(set(required_bins) - set(centers_by_bin))
+    per_bin_counts = {
+        str(index): len(centers_by_bin.get(index, ()))
+        for index in required_bins
+    }
+    max_count = max(per_bin_counts.values(), default=0)
+    exactly_one_per_bin = (
+        not missing_bins
+        and all(value == 1 for value in per_bin_counts.values()))
+    centered_pass = exactly_one_per_bin and all(
+        abs(centers_by_bin[index][0] - expected_center_mm) <= 0.12
+        for index in required_bins)
+    single_pass = (
+        exactly_one_per_bin
+        and centered_pass
+        and width_pass
+        and feature_pass
+    )
+    return {
+        "classic_target_line_width_mm": target,
+        "allowed_single_bead_width_range_mm": list(
+            allowed_width_range_mm),
+        "lower_width_tolerance_mm": lower_width_tolerance_mm,
+        "effective_minimum_bead_width_mm": effective_lower_width_mm,
+        "observed_line_widths_mm": unique_widths,
+        "observed_features": unique_features,
+        "track_identity": "raw_gcode_extrusion_travel_continuity",
+        "same_path_coordinate_dedup_tolerance_mm": (
+            RETAINING_TRACK_DEDUP_TOLERANCE_MM),
+        "expected_center_mm": expected_center_mm,
+        "required_scan_bins": list(required_bins),
+        "missing_scan_bins": missing_bins,
+        "observed_track_centers_mm_by_bin": {
+            str(index): centers for index, centers
+            in sorted(centers_by_bin.items())
+        },
+        "path_count_by_scan_bin": per_bin_counts,
+        "estimated_path_count": max_count,
+        "exactly_one_path_per_scan_bin": exactly_one_per_bin,
+        "centered_path_pass": centered_pass,
+        "line_width_pass": width_pass,
+        "outer_wall_only_pass": feature_pass,
+        "single_classic_path_pass": single_pass,
+    }
+
+
+def _clustered_track_crossings(
+    track_samples: Sequence[tuple[float, int, str, float, int]],
+) -> dict[int, list[tuple[float, int, float, tuple[str, ...]]]]:
+    """Cluster coincident segment intersections without losing path identity."""
+    by_bin: dict[int, list[tuple[float, str, float, int]]] = {}
+    for position, bin_index, feature, width, path_id in track_samples:
+        by_bin.setdefault(bin_index, []).append(
+            (position, feature, width, path_id))
+    result: dict[int, list[tuple[float, int, float, tuple[str, ...]]]] = {}
+    for bin_index, samples in by_bin.items():
+        by_path: dict[int, list[tuple[float, str, float, int]]] = {}
+        for sample in samples:
+            by_path.setdefault(sample[3], []).append(sample)
+        crossings: list[tuple[float, int, float, tuple[str, ...]]] = []
+        for path_id, path_samples in sorted(by_path.items()):
+            clusters: list[list[tuple[float, str, float, int]]] = []
+            for sample in sorted(path_samples, key=lambda value: value[0]):
+                if (not clusters
+                        or sample[0] - clusters[-1][0][0]
+                        > RETAINING_TRACK_DEDUP_TOLERANCE_MM):
+                    clusters.append([sample])
+                else:
+                    clusters[-1].append(sample)
+            crossings.extend((
+                sum(sample[0] for sample in cluster) / len(cluster),
+                path_id,
+                max(float(sample[2]) for sample in cluster),
+                tuple(sorted({str(sample[1]).strip() for sample in cluster})),
+            ) for cluster in clusters)
+        result[bin_index] = sorted(crossings)
+    return result
+
+
+def _single_transverse_classic_track_summary(
+    *,
+    track_samples: Sequence[tuple[float, int, str, float, int]],
+    nearby_track_samples: Sequence[tuple[float, int, str, float, int]],
+    required_bins: Sequence[int],
+    expected_center_mm: float,
+    allowed_width_range_mm: tuple[float, float],
+    material_side_sign: int,
+) -> dict[str, Any]:
+    """Prove one cavity wall and reject nearby overlapping traversals.
+
+    The primary candidate is selected by its physical cavity-facing bead edge.
+    A second bead cannot evade the exact-one rule merely by falling just
+    outside that classifier.  Every nearby longitudinal crossing whose bead
+    footprint overlaps the primary is therefore audited too.  The sole
+    permitted topology is Bambu's measured same-path surrounding-body hairpin:
+    one Outer-wall return in at most three contiguous bins anchored to one edge
+    of the scan window, on the material side of the cavity wall.
+    """
+    if material_side_sign not in (-1, 1):
+        raise AuditError("transverse material-side sign must be -1 or +1")
+    summary = _single_classic_track_summary(
+        track_samples=track_samples,
+        required_bins=required_bins,
+        expected_center_mm=expected_center_mm,
+        allowed_width_range_mm=allowed_width_range_mm,
+        lower_width_tolerance_mm=(
+            TRANSVERSE_RETAINING_BEAD_LOWER_WIDTH_TOLERANCE_MM))
+    primary = _clustered_track_crossings(track_samples)
+    nearby = _clustered_track_crossings(nearby_track_samples)
+
+    overlapping_extras: dict[
+        int, list[tuple[float, int, float, tuple[str, ...]]]] = {}
+    for bin_index in required_bins:
+        primary_crossings = primary.get(bin_index, ())
+        for crossing in nearby.get(bin_index, ()):
+            matched_primary = any(
+                crossing[1] == candidate[1]
+                and abs(crossing[0] - candidate[0])
+                <= RETAINING_TRACK_DEDUP_TOLERANCE_MM + FLOAT_EPS
+                for candidate in primary_crossings)
+            if matched_primary:
+                continue
+            bead_overlaps_primary = any(
+                abs(crossing[0] - candidate[0])
+                <= (crossing[2] + candidate[2]) / 2.0 + FLOAT_EPS
+                for candidate in primary_crossings)
+            if bead_overlaps_primary:
+                overlapping_extras.setdefault(bin_index, []).append(crossing)
+
+    extra_bins = sorted(overlapping_extras)
+    one_extra_per_bin = all(
+        len(overlapping_extras[index]) == 1 for index in extra_bins)
+    edge_anchored = not extra_bins
+    if extra_bins:
+        contiguous = extra_bins == list(range(extra_bins[0], extra_bins[-1] + 1))
+        edge_anchored = contiguous and (
+            extra_bins[0] == required_bins[0]
+            or extra_bins[-1] == required_bins[-1])
+    bounded = (
+        len(extra_bins) <= TRANSVERSE_SAME_PATH_EDGE_RETURN_BIN_LIMIT
+        and one_extra_per_bin
+        and edge_anchored)
+    same_path = all(
+        len(primary.get(index, ())) == 1
+        and overlapping_extras[index][0][1] == primary[index][0][1]
+        for index in extra_bins)
+    material_side = all(
+        material_side_sign * (
+            overlapping_extras[index][0][0] - primary[index][0][0]) > 0.0
+        for index in extra_bins)
+    outer_wall_only = all(
+        all(feature.lower() == "outer wall" for feature in crossing[3])
+        for crossings in overlapping_extras.values() for crossing in crossings)
+    nearby_duplicate_guard_pass = (
+        bounded and same_path and material_side and outer_wall_only)
+    single_pass = (
+        summary["single_classic_path_pass"]
+        and nearby_duplicate_guard_pass)
+    max_nearby_overlap_count = max((
+        len(primary.get(index, ()))
+        + len(overlapping_extras.get(index, ()))
+        for index in required_bins), default=0)
+    summary.update({
+        "track_identity": (
+            "cavity_edge_primary_plus_nearby_overlap_duplicate_guard"),
+        "nearby_overlapping_extra_scan_bins": extra_bins,
+        "nearby_overlapping_extra_centers_mm_by_bin": {
+            str(index): [crossing[0] for crossing in crossings]
+            for index, crossings in sorted(overlapping_extras.items())
+        },
+        "nearby_overlapping_extra_path_ids_by_bin": {
+            str(index): [crossing[1] for crossing in crossings]
+            for index, crossings in sorted(overlapping_extras.items())
+        },
+        "nearby_overlapping_maximum_crossings_per_scan_bin": (
+            max_nearby_overlap_count),
+        "allowed_same_path_edge_return_scan_bins": (
+            TRANSVERSE_SAME_PATH_EDGE_RETURN_BIN_LIMIT),
+        "nearby_one_extra_per_bin_pass": one_extra_per_bin,
+        "nearby_edge_return_contiguous_and_anchored_pass": edge_anchored,
+        "nearby_edge_return_same_raw_path_pass": same_path,
+        "nearby_edge_return_material_side_pass": material_side,
+        "nearby_edge_return_outer_wall_only_pass": outer_wall_only,
+        "nearby_duplicate_guard_pass": nearby_duplicate_guard_pass,
+        "single_classic_path_pass": single_pass,
+    })
+    return summary
+
+
+def _transverse_track_intersections(
+    segments: Sequence[tuple[float, float, float, float, str, float, int]],
+    *,
+    scanlines_v_mm: Sequence[float],
+) -> list[tuple[float, int, str, float, int]]:
+    """Intersect every nearby longitudinal bead with fixed scan lines."""
+    intersections = []
+    for bin_index, scan_v in enumerate(scanlines_v_mm):
+        for u0, v0, u1, v1, feature, width, path_id in segments:
+            delta_v = v1 - v0
+            if abs(delta_v) <= FLOAT_EPS:
+                continue
+            t = (scan_v - v0) / delta_v
+            if t < -FLOAT_EPS or t > 1.0 + FLOAT_EPS:
+                continue
+            u = u0 + max(0.0, min(1.0, t)) * (u1 - u0)
+            intersections.append((u, bin_index, feature, width, path_id))
+    return intersections
+
+
+def _cavity_boundary_track_intersections(
+    track_samples: Sequence[tuple[float, int, str, float, int]],
+    *,
+    expected_cavity_edge_mm: float,
+    cavity_edge_direction: int,
+) -> list[tuple[float, int, str, float, int]]:
+    """Select beads whose physical edge forms the nominal cavity boundary."""
+    if cavity_edge_direction not in (-1, 1):
+        raise AuditError("transverse cavity-edge direction must be -1 or +1")
+    intersections = []
+    for u, bin_index, feature, width, path_id in track_samples:
+        cavity_edge = u + cavity_edge_direction * width / 2.0
+        if (abs(cavity_edge - expected_cavity_edge_mm)
+                <= TRANSVERSE_CAVITY_EDGE_TOLERANCE_MM + FLOAT_EPS):
+            intersections.append((u, bin_index, feature, width, path_id))
+    return intersections
+
+
+def _annular_track_intersections(
+    segments: Sequence[tuple[float, float, float, float, str, float, int]],
+    *,
+    center_xy: tuple[float, float],
+    expected_radius_mm: float,
+    skin_thickness_mm: float,
+    ray_count: int = 72,
+) -> list[tuple[float, int, str, float, int]]:
+    """Intersect actual toolpath segments with fixed rays, not angle bins."""
+    cx, cy = center_xy
+    intersections = []
+    for bin_index in range(ray_count):
+        angle = (bin_index + 0.5) * 2.0 * math.pi / ray_count
+        dx, dy = math.cos(angle), math.sin(angle)
+        for x0, y0, x1, y1, feature, width, path_id in segments:
+            px, py = x0 - cx, y0 - cy
+            sx, sy = x1 - x0, y1 - y0
+            denominator = sx * dy - sy * dx
+            if abs(denominator) <= FLOAT_EPS:
+                continue
+            t = -(px * dy - py * dx) / denominator
+            if t < -FLOAT_EPS or t > 1.0 + FLOAT_EPS:
+                continue
+            ix = px + max(0.0, min(1.0, t)) * sx
+            iy = py + max(0.0, min(1.0, t)) * sy
+            radial = ix * dx + iy * dy
+            if radial <= 0.0:
+                continue
+            if (abs(radial - expected_radius_mm)
+                    <= skin_thickness_mm / 2.0 + 0.04):
+                intersections.append(
+                    (radial, bin_index, feature, width, path_id))
+    return intersections
+
+
+def _single_annular_classic_track_summary(
+    *,
+    track_samples: Sequence[tuple[float, int, str, float, int]],
+    required_bins: Sequence[int],
+    expected_center_mm: float,
+    allowed_width_range_mm: tuple[float, float],
+    allowed_anomaly_bins: int = 2,
+    allowed_component_paths: int = 2,
+    center_tolerance_mm: float = 0.16,
+    component_points: Mapping[
+        int, Sequence[tuple[float, float, float]]] | None = None,
+) -> dict[str, Any]:
+    """Prove one annular bead, optionally split into two complementary arcs."""
+    summary = _single_classic_track_summary(
+        track_samples=track_samples,
+        required_bins=required_bins,
+        expected_center_mm=expected_center_mm,
+        allowed_width_range_mm=allowed_width_range_mm,
+        lower_width_tolerance_mm=(
+            AXIAL_RETAINING_BEAD_LOWER_WIDTH_TOLERANCE_MM))
+    expected_bins = tuple(range(len(required_bins)))
+    if tuple(required_bins) != expected_bins:
+        raise AuditError(
+            "annular scan bins must be the contiguous zero-based ray ring")
+    ray_count = len(required_bins)
+    if ray_count < 3:
+        raise AuditError("annular scan requires at least three rays")
+    samples_by_bin: dict[
+        int, list[tuple[float, int, str, float, int]]] = {}
+    for sample in track_samples:
+        samples_by_bin.setdefault(sample[1], []).append(sample)
+    unique_path_ids = sorted({sample[4] for sample in track_samples})
+    component_bins = {
+        path_id: {
+            sample[1] for sample in track_samples if sample[4] == path_id
+        }.intersection(required_bins)
+        for path_id in unique_path_ids
+    }
+
+    def cyclic_interval(
+        bins: set[int],
+    ) -> tuple[bool, set[int]]:
+        """Return whether bins form one cyclic run and its occupied endpoints."""
+        if not bins:
+            return False, set()
+        if len(bins) == ray_count:
+            return True, set()
+        starts = {
+            index for index in bins
+            if (index - 1) % ray_count not in bins
+        }
+        ends = {
+            index for index in bins
+            if (index + 1) % ray_count not in bins
+        }
+        return len(starts) == 1 and len(ends) == 1, starts | ends
+
+    component_intervals = {
+        path_id: cyclic_interval(bins)
+        for path_id, bins in component_bins.items()
+    }
+    occupied_bins = sorted(set(samples_by_bin).intersection(required_bins))
+    missing_bins = sorted(set(required_bins) - set(occupied_bins))
+    per_bin_counts = {
+        str(bin_index): len(summary[
+            "observed_track_centers_mm_by_bin"].get(str(bin_index), ()))
+        for bin_index in required_bins
+    }
+    multiple_crossing_bins = sorted(
+        bin_index for bin_index in required_bins
+        if per_bin_counts[str(bin_index)] > 1)
+    anomaly_bins = sorted(set(missing_bins) | set(multiple_crossing_bins))
+    bounded_anomaly_count_pass = len(anomaly_bins) <= allowed_anomaly_bins
+    coverage_pass = len(occupied_bins) >= ray_count - allowed_anomaly_bins
+    bounded_component_path_count_pass = (
+        1 <= len(unique_path_ids) <= allowed_component_paths)
+    component_cyclic_contiguous_pass = (
+        bounded_component_path_count_pass
+        and all(value[0] for value in component_intervals.values()))
+
+    cross_component_overlap_bins: set[int] = set()
+    if len(unique_path_ids) == 2:
+        cross_component_overlap_bins = (
+            component_bins[unique_path_ids[0]]
+            & component_bins[unique_path_ids[1]])
+    component_exclusive_bins = {
+        path_id: bins - set().union(*(
+            other_bins for other_id, other_bins in component_bins.items()
+            if other_id != path_id
+        )) if len(component_bins) > 1 else set(bins)
+        for path_id, bins in component_bins.items()
+    }
+    if len(unique_path_ids) == 1:
+        complementary_coverage_pass = coverage_pass
+    elif len(unique_path_ids) == 2:
+        complementary_coverage_pass = (
+            coverage_pass
+            and not cross_component_overlap_bins
+            and all(
+                len(component_exclusive_bins[path_id]) >= 18
+                for path_id in unique_path_ids))
+    else:
+        complementary_coverage_pass = False
+
+    endpoint_bins = set().union(*(
+        endpoints for _contiguous, endpoints in component_intervals.values()
+    )) if component_intervals else set()
+    if (len(unique_path_ids) == 1 and not endpoint_bins
+            and multiple_crossing_bins):
+        # A full single component has no occupancy gap from which to infer its
+        # raw seam.  A bounded local double crossing is itself the seam datum.
+        endpoint_bins.update(multiple_crossing_bins)
+
+    def cyclic_distance(a: int, b: int) -> int:
+        delta = abs(a - b)
+        return min(delta, ray_count - delta)
+
+    anomaly_endpoint_local_pass = (
+        not anomaly_bins
+        or (bool(endpoint_bins) and all(
+            any(cyclic_distance(index, endpoint) <= 1
+                for endpoint in endpoint_bins)
+            for index in anomaly_bins)))
+    if len(unique_path_ids) == 1 and anomaly_bins:
+        anomalies_one_run, _unused = cyclic_interval(set(anomaly_bins))
+        anomaly_endpoint_local_pass = (
+            anomaly_endpoint_local_pass and anomalies_one_run)
+
+    component_junctions: list[dict[str, Any]] = []
+    if (len(unique_path_ids) == 2
+            and not cross_component_overlap_bins):
+        owner_by_bin = {
+            index: next((
+                path_id for path_id in unique_path_ids
+                if index in component_bins[path_id]
+            ), None)
+            for index in required_bins
+        }
+        seen_junctions: set[tuple[int, int, int, int]] = set()
+        for from_bin in required_bins:
+            from_path = owner_by_bin[from_bin]
+            if from_path is None:
+                continue
+            to_bin = (from_bin + 1) % ray_count
+            steps = 1
+            while owner_by_bin[to_bin] is None and steps < ray_count:
+                to_bin = (to_bin + 1) % ray_count
+                steps += 1
+            to_path = owner_by_bin[to_bin]
+            if to_path is None or to_path == from_path:
+                continue
+            key = (from_bin, to_bin, int(from_path), int(to_path))
+            if key in seen_junctions:
+                continue
+            seen_junctions.add(key)
+            candidates = []
+            angle_a = (from_bin + 0.5) * 2.0 * math.pi / ray_count
+            angle_b = (to_bin + 0.5) * 2.0 * math.pi / ray_count
+
+            def angle_distance(a: float, b: float) -> float:
+                delta = abs((a - b) % (2.0 * math.pi))
+                return min(delta, 2.0 * math.pi - delta)
+
+            search_angle = (
+                ANNULAR_COMPONENT_SEAM_SEARCH_RAYS
+                * 2.0 * math.pi / ray_count)
+            geometry_a = [
+                point for point in (component_points or {}).get(
+                    int(from_path), ())
+                if angle_distance(math.atan2(point[1], point[0]), angle_a)
+                <= search_angle + FLOAT_EPS
+            ]
+            geometry_b = [
+                point for point in (component_points or {}).get(
+                    int(to_path), ())
+                if angle_distance(math.atan2(point[1], point[0]), angle_b)
+                <= search_angle + FLOAT_EPS
+            ]
+            measurement_basis = "annular_component_near_endpoint_samples"
+            for point_a in geometry_a:
+                for point_b in geometry_b:
+                    distance = math.hypot(
+                        point_b[0] - point_a[0],
+                        point_b[1] - point_a[1])
+                    width_limit = (point_a[2] + point_b[2]) / 2.0
+                    limit = min(
+                        RETAINING_PATH_CONNECTIVITY_GAP_MM,
+                        width_limit + ANNULAR_COMPONENT_SEAM_WIDTH_MARGIN_MM)
+                    candidates.append((distance, limit))
+            if not candidates:
+                measurement_basis = "ray_intersection_fallback"
+                from_samples = [
+                    sample for sample in track_samples
+                    if sample[1] == from_bin and sample[4] == from_path
+                ]
+                to_samples = [
+                    sample for sample in track_samples
+                    if sample[1] == to_bin and sample[4] == to_path
+                ]
+                for sample_a in from_samples:
+                    for sample_b in to_samples:
+                        radial_a, radial_b = sample_a[0], sample_b[0]
+                        distance = math.sqrt(max(
+                            0.0,
+                            radial_a * radial_a + radial_b * radial_b
+                            - 2.0 * radial_a * radial_b
+                            * math.cos(angle_b - angle_a)))
+                        width_limit = (
+                            float(sample_a[3]) + float(sample_b[3])) / 2.0
+                        limit = min(
+                            RETAINING_PATH_CONNECTIVITY_GAP_MM,
+                            width_limit
+                            + ANNULAR_COMPONENT_SEAM_WIDTH_MARGIN_MM)
+                        candidates.append((distance, limit))
+            if not candidates:
+                distance, limit = math.inf, 0.0
+            else:
+                distance, limit = min(
+                    candidates, key=lambda value: value[0])
+            component_junctions.append({
+                "from_path_id": from_path,
+                "from_ray_bin": from_bin,
+                "to_path_id": to_path,
+                "to_ray_bin": to_bin,
+                "intervening_ray_step_count": steps,
+                "measurement_basis": measurement_basis,
+                "nearest_centerline_distance_mm": distance,
+                "allowed_centerline_distance_mm": limit,
+                "pass": distance <= limit + FLOAT_EPS,
+            })
+    component_seam_continuity_pass = (
+        len(unique_path_ids) == 1
+        or (len(component_junctions) == 2
+            and all(record["pass"] for record in component_junctions)))
+
+    centered_pass = bool(track_samples) and all(
+        abs(sample[0] - expected_center_mm) <= center_tolerance_mm
+        for sample in track_samples)
+    single_pass = (
+        bounded_component_path_count_pass
+        and component_cyclic_contiguous_pass
+        and complementary_coverage_pass
+        and component_seam_continuity_pass
+        and bounded_anomaly_count_pass
+        and anomaly_endpoint_local_pass
+        and centered_pass
+        and summary["line_width_pass"]
+        and summary["outer_wall_only_pass"])
+    summary.update({
+        "track_identity": (
+            "bounded_complementary_raw_gcode_annular_path_components"),
+        "observed_path_ids": unique_path_ids,
+        "estimated_path_count": len(unique_path_ids),
+        "allowed_component_path_count": allowed_component_paths,
+        "bounded_component_path_count_pass": (
+            bounded_component_path_count_pass),
+        "component_occupied_ray_bins": {
+            str(path_id): sorted(component_bins[path_id])
+            for path_id in unique_path_ids
+        },
+        "component_exclusive_ray_bin_count": {
+            str(path_id): len(component_exclusive_bins[path_id])
+            for path_id in unique_path_ids
+        },
+        "minimum_exclusive_ray_bins_per_split_component": 18,
+        "cross_component_overlap_ray_bins": sorted(
+            cross_component_overlap_bins),
+        "component_cyclic_contiguous_pass": (
+            component_cyclic_contiguous_pass),
+        "complementary_component_coverage_pass": (
+            complementary_coverage_pass),
+        "component_seam_width_margin_mm": (
+            ANNULAR_COMPONENT_SEAM_WIDTH_MARGIN_MM),
+        "component_seam_search_ray_radius": (
+            ANNULAR_COMPONENT_SEAM_SEARCH_RAYS),
+        "component_seam_junctions": component_junctions,
+        "component_seam_continuity_pass": (
+            component_seam_continuity_pass),
+        "required_minimum_occupied_ray_bins": (
+            len(required_bins) - allowed_anomaly_bins),
+        "occupied_ray_bin_count": len(occupied_bins),
+        "missing_scan_bins": missing_bins,
+        "annular_coverage_pass": coverage_pass,
+        "allowed_local_seam_anomaly_bins": allowed_anomaly_bins,
+        "combined_missing_or_multiple_anomaly_bins": anomaly_bins,
+        "bounded_combined_anomaly_count_pass": bounded_anomaly_count_pass,
+        "component_interval_endpoint_ray_bins": sorted(endpoint_bins),
+        "anomaly_endpoint_local_pass": anomaly_endpoint_local_pass,
+        "multiple_crossing_ray_bins": multiple_crossing_bins,
+        "multiple_crossing_ray_bin_path_ids": {
+            str(bin_index): sorted({
+                sample[4] for sample in samples_by_bin[bin_index]})
+            for bin_index in multiple_crossing_bins
+        },
+        "local_seam_anomaly_pass": (
+            bounded_anomaly_count_pass and anomaly_endpoint_local_pass),
+        "unique_annular_path_pass": len(unique_path_ids) == 1,
+        "center_tolerance_mm": center_tolerance_mm,
+        "centered_path_pass": centered_pass,
+        "single_classic_path_pass": single_pass,
+    })
+    return summary
+
+
 def _largest_circular_sample_gap(
     angles: Sequence[float], radius: float,
 ) -> float:
@@ -1962,6 +3175,10 @@ def _toolpath_metrics(
     wall_b_v: list[float] = []
     wall_a_uv: list[tuple[float, float]] = []
     wall_b_uv: list[tuple[float, float]] = []
+    wall_a_track_segments: list[
+        tuple[float, float, float, float, str, float, int]] = []
+    wall_b_track_segments: list[
+        tuple[float, float, float, float, str, float, int]] = []
     roi = radius + EVIDENCE_MARGIN_MM
     closure = site["closure_kind"]
     if closure == "transverse_gable_45deg":
@@ -1977,6 +3194,8 @@ def _toolpath_metrics(
         second_wall_center = face_skin + cavity_depth + inner_skin / 2.0
         wall_band = max(0.28, min(face_skin * 0.75, 0.38))
         central_chord_half = min(1.0, magnet_radius / 2.0)
+        track_bin_count = max(1, int(math.ceil(
+            2.0 * central_chord_half / SITE_SAMPLE_STEP_MM)))
         positive_free_edges: list[float] = []
         negative_free_edges: list[float] = []
         interface_cavity_edges: list[float] = []
@@ -1992,6 +3211,13 @@ def _toolpath_metrics(
                 if segment.line_width is not None and segment.line_width > 0.0
                 else FALLBACK_LINE_WIDTH_MM)
             half_path = path_width / 2.0
+            dx0, dy0 = segment.x0 - fx, segment.y0 - fy
+            dx1, dy1 = segment.x1 - fx, segment.y1 - fy
+            u0, v0 = dx0 * ux + dy0 * uy, (
+                segment.x0 - cx) * vx + (segment.y0 - cy) * vy
+            u1, v1 = dx1 * ux + dy1 * uy, (
+                segment.x1 - cx) * vx + (segment.y1 - cy) * vy
+            longitudinal = abs(v1 - v0) >= abs(u1 - u0)
             for x, y, weight in _sample_segment(segment):
                 dx, dy = x - fx, y - fy
                 u = dx * ux + dy * uy
@@ -2018,10 +3244,74 @@ def _toolpath_metrics(
                     wall_b_uv.append((u, v))
                     if abs(v) <= central_chord_half:
                         inner_cavity_edges.append(u - half_path)
+            # Keep the duplicate guard scoped to the designed 0.45-mm skin
+            # centre band (plus 0.04 mm numeric/toolpath margin).  Structural
+            # perimeter legs deeper in the surrounding body are not extra
+            # retaining-wall traversals, even when normal FDM bead footprints
+            # touch.  A true near-duplicate just outside the 0.06-mm cavity-
+            # edge classifier remains inside this broader skin band and is
+            # audited below.
+            if (longitudinal and min(u0, u1) <= (
+                    first_wall_center + face_skin / 2.0 + 0.04)
+                    and max(u0, u1) >= (
+                        first_wall_center - face_skin / 2.0 - 0.04)):
+                wall_a_track_segments.append((
+                    u0, v0, u1, v1, segment.feature, path_width,
+                    segment.path_id))
+            if (longitudinal and min(u0, u1) <= (
+                    second_wall_center + inner_skin / 2.0 + 0.04)
+                    and max(u0, u1) >= (
+                        second_wall_center - inner_skin / 2.0 - 0.04)):
+                wall_b_track_segments.append((
+                    u0, v0, u1, v1, segment.feature, path_width,
+                    segment.path_id))
         span_a = max(wall_a_v) - min(wall_a_v) if wall_a_v else 0.0
         span_b = max(wall_b_v) - min(wall_b_v) if wall_b_v else 0.0
         contiguous_span_a = _longest_connected_v_span(wall_a_uv)
         contiguous_span_b = _longest_connected_v_span(wall_b_uv)
+        required_track_bins = tuple(range(track_bin_count))
+        scanlines = tuple(
+            -central_chord_half + (index + 0.5) * SITE_SAMPLE_STEP_MM
+            for index in required_track_bins)
+        wall_a_nearby_tracks = _transverse_track_intersections(
+            wall_a_track_segments, scanlines_v_mm=scanlines)
+        wall_b_nearby_tracks = _transverse_track_intersections(
+            wall_b_track_segments, scanlines_v_mm=scanlines)
+        wall_a_tracks = _cavity_boundary_track_intersections(
+            wall_a_nearby_tracks,
+            expected_cavity_edge_mm=face_skin,
+            cavity_edge_direction=1)
+        wall_b_tracks = _cavity_boundary_track_intersections(
+            wall_b_nearby_tracks,
+            expected_cavity_edge_mm=face_skin + cavity_depth,
+            cavity_edge_direction=-1)
+        interface_single_path = _single_transverse_classic_track_summary(
+            track_samples=wall_a_tracks,
+            nearby_track_samples=wall_a_nearby_tracks,
+            required_bins=required_track_bins,
+            expected_center_mm=first_wall_center,
+            allowed_width_range_mm=(
+                TRANSVERSE_RETAINING_BEAD_WIDTH_RANGE_MM),
+            material_side_sign=-1)
+        inner_single_path = _single_transverse_classic_track_summary(
+            track_samples=wall_b_tracks,
+            nearby_track_samples=wall_b_nearby_tracks,
+            required_bins=required_track_bins,
+            expected_center_mm=second_wall_center,
+            allowed_width_range_mm=(
+                TRANSVERSE_RETAINING_BEAD_WIDTH_RANGE_MM),
+            material_side_sign=1)
+        for summary, boundary, direction in (
+            (interface_single_path, face_skin, 1),
+            (inner_single_path, face_skin + cavity_depth, -1),
+        ):
+            summary.update({
+                "candidate_selection": "cavity_facing_bead_edge",
+                "expected_cavity_edge_mm": boundary,
+                "cavity_edge_direction": direction,
+                "cavity_edge_tolerance_mm": (
+                    TRANSVERSE_CAVITY_EDGE_TOLERANCE_MM),
+            })
         free_transverse_diameter = (
             min(positive_free_edges) - max(negative_free_edges)
             if positive_free_edges and negative_free_edges else None)
@@ -2042,12 +3332,27 @@ def _toolpath_metrics(
             "inner_skin_path_length_mm": wall_b,
             "inner_skin_transverse_span_mm": span_b,
             "inner_skin_longest_contiguous_span_mm": contiguous_span_b,
+            "interface_skin_single_path": interface_single_path,
+            "inner_skin_single_path": inner_single_path,
+            "single_classic_path_pass": (
+                interface_single_path["single_classic_path_pass"]
+                and inner_single_path["single_classic_path_pass"]),
             "connectivity_gap_limit_mm": RETAINING_PATH_CONNECTIVITY_GAP_MM,
-            "pass": contiguous_span_a >= 3.0 and contiguous_span_b >= 3.0,
+            "pass": (
+                contiguous_span_a >= 3.0
+                and contiguous_span_b >= 3.0
+                and interface_single_path["single_classic_path_pass"]
+                and inner_single_path["single_classic_path_pass"]),
         }
     else:
         annulus_length = 0.0
         annulus_angles: list[float] = []
+        axial_skin = site.get("face_skin_mm", 0.45)
+        expected_ring_center = radius + axial_skin / 2.0
+        annulus_component_points: dict[
+            int, list[tuple[float, float, float]]] = {}
+        annulus_track_segments: list[
+            tuple[float, float, float, float, str, float, int]] = []
         radial_free_edges: list[float] = []
         for segment in layer.segments:
             if min(segment.x0, segment.x1) > cx + roi or max(segment.x0, segment.x1) < cx - roi:
@@ -2060,6 +3365,7 @@ def _toolpath_metrics(
                 if segment.line_width is not None and segment.line_width > 0.0
                 else FALLBACK_LINE_WIDTH_MM)
             half_path = path_width / 2.0
+            annulus_hit = False
             for x, y, weight in _sample_segment(segment):
                 radial = math.hypot(x - cx, y - cy)
                 if radial < radius - 0.05:
@@ -2068,12 +3374,31 @@ def _toolpath_metrics(
                     boundary_distances.append(radial)
                     radial_free_edges.append(radial - half_path)
                 if radius - 0.20 <= radial <= radius + 0.80:
+                    annulus_hit = True
                     annulus_length += weight
                     annulus_angles.append(math.atan2(y - cy, x - cx))
+                if (abs(radial - expected_ring_center)
+                        <= axial_skin / 2.0 + 0.04):
+                    annulus_component_points.setdefault(
+                        segment.path_id, []).append((
+                            x - cx, y - cy, path_width))
+            annulus_track_segments.append((
+                segment.x0, segment.y0, segment.x1, segment.y1,
+                segment.feature, path_width, segment.path_id))
         # A complete circumference is not required to be one continuous G-code
         # segment, but adjacent segments must cover the complete circumference;
         # summing unrelated fragments is not evidence of a printable cradle.
         largest_gap = _largest_circular_sample_gap(annulus_angles, radius)
+        annulus_tracks = _annular_track_intersections(
+            annulus_track_segments, center_xy=(cx, cy),
+            expected_radius_mm=expected_ring_center,
+            skin_thickness_mm=axial_skin)
+        annular_single_path = _single_annular_classic_track_summary(
+            track_samples=annulus_tracks,
+            required_bins=tuple(range(72)),
+            expected_center_mm=expected_ring_center,
+            allowed_width_range_mm=AXIAL_RETAINING_BEAD_WIDTH_RANGE_MM,
+            component_points=annulus_component_points)
         free_radial_diameter = (
             2.0 * min(radial_free_edges) if radial_free_edges else None)
         loading_aperture = {
@@ -2087,10 +3412,14 @@ def _toolpath_metrics(
             "sample_count": len(annulus_angles),
             "largest_uncovered_arc_mm": (
                 largest_gap if math.isfinite(largest_gap) else None),
+            "annular_single_path": annular_single_path,
+            "single_classic_path_pass": annular_single_path[
+                "single_classic_path_pass"],
             "connectivity_gap_limit_mm": RETAINING_PATH_CONNECTIVITY_GAP_MM,
             "pass": (
                 annulus_length >= math.pi * radius
                 and largest_gap <= RETAINING_PATH_CONNECTIVITY_GAP_MM
+                and annular_single_path["single_classic_path_pass"]
             ),
         }
     return {
@@ -2145,8 +3474,8 @@ def _roof_progression_pass(metrics: Mapping[str, Mapping[str, Any]]) -> tuple[bo
     last_boundary = metrics["last_fully_open"]["opening_half_width_path_mm"]
     first_boundary = metrics["first_closing_pause"]["opening_half_width_path_mm"]
     sealed_boundary = metrics["fully_sealed"]["opening_half_width_path_mm"]
-    # The first 0.16-mm 45-degree roof strip is narrower than a 0.42-mm
-    # Classic wall.  Its centreline can therefore remain outside the nominal
+    # The first 0.16-mm 45-degree roof strip is narrower than a nominal
+    # 0.42-mm wall.  Its centreline can therefore remain outside the nominal
     # cavity interior even though Preview has begun closing the roof.  The
     # robust sliced fact is that the nearest roof-boundary path moves inward
     # on the first-closing layer and continues inward by the sealed layer.
@@ -2184,7 +3513,7 @@ def _discover_actual_closure_layers(
     ambiguous, or reopens.  The CAD bury plane is checked as a bounded
     consistency datum against the actual toolpath onset, but it never selects
     the pause layer: a sub-line-width roof strip may not acquire a printable
-    Classic centreline until one or two scheduled layers after the exact CAD
+    Arachne centreline until one or two scheduled layers after the exact CAD
     boundary.  A pause can therefore never be manufactured from nominal CAD Z
     alone.
     """
@@ -2319,7 +3648,7 @@ def _discover_actual_closure_layers(
             f"{site['name']}: first actual closing layer has no auditable "
             "roof boundary")
     cad_consistency_tolerance = max(
-        float(site.get("classic_retaining_path_mm", FALLBACK_LINE_WIDTH_MM)),
+        float(site.get("minimum_retaining_path_mm", FALLBACK_LINE_WIDTH_MM)),
         LAYER_EPS)
     cad_bury_directly_bracketed = (
         last_entry["layer"].z <= bury + LAYER_EPS
@@ -2332,7 +3661,7 @@ def _discover_actual_closure_layers(
         raise AuditError(
             f"{site['name']}: actual G-code closing onset "
             f"{first_entry['layer'].z:.3f} mm must begin above, and remain "
-            f"within one Classic path width of, CAD bury plane {bury:.3f} "
+            f"within one nominal path width of, CAD bury plane {bury:.3f} "
             f"mm (tolerance {cad_consistency_tolerance:.3f} mm); last actual "
             f"open layer is {last_entry['layer'].z:.3f} mm")
 
@@ -2424,7 +3753,7 @@ def _render_evidence_svg(
     elements = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
         '<rect width="100%" height="100%" fill="white"/>',
-        f'<text x="12" y="25" font-family="sans-serif" font-size="17" font-weight="bold">{html.escape(artifact["id"])} — Bambu P2S 0.4 / 0.16 Classic</text>',
+        f'<text x="12" y="25" font-family="sans-serif" font-size="17" font-weight="bold">{html.escape(artifact["id"])} — Bambu P2S 0.4 / 0.16 Arachne</text>',
         '<text x="12" y="49" font-family="sans-serif" font-size="12">front face down · local sliced G-code toolpaths · red box = nominal cavity plan</text>',
     ]
     for column, stage in enumerate(stages):
@@ -2626,16 +3955,24 @@ def _bambu_command(
     stl: Path,
     output: Path,
     profile_bundle: Mapping[str, Any],
+    *,
+    project_filename: str = PLACED_3MF_FILENAME,
+    custom_gcodes: Path | None = None,
 ) -> list[str]:
     settings = ";".join(str(profile_bundle["paths"][key])
                         for key in ("machine", "process"))
-    return [
+    command = [
         str(bambu), "--debug", "2", "--slice", "0", "--arrange", "1",
-        "--orient", "0", "--export-3mf", PLACED_3MF_FILENAME,
+        "--orient", "0", "--allow-rotations=0",
+        "--export-3mf", project_filename,
         "--load-settings", settings,
         "--load-filaments", str(profile_bundle["paths"]["filament"]),
-        "--outputdir", str(output), str(stl),
+        "--outputdir", str(output),
     ]
+    if custom_gcodes is not None:
+        command.extend(("--load-custom-gcodes", str(custom_gcodes)))
+    command.append(str(stl))
+    return command
 
 
 def _slice_one(
@@ -2647,6 +3984,7 @@ def _slice_one(
     catalog_sha: str,
     reuse: bool,
     dry_run: bool,
+    emit_ready_projects: bool = False,
 ) -> dict[str, Any]:
     stl: Path = artifact["stl"]
     release_stl: Path = artifact.get("release_stl", stl)
@@ -2656,16 +3994,25 @@ def _slice_one(
         raise AuditError(
             f"{artifact['id']}: front-down STL must sit at Z=0; "
             f"min Z={mesh.bounds_min[2]:.4f}")
-    bounds = profile_bundle["identity"]["machine_bounds_mm"]
+    slug = _slug(artifact["id"])
+    out_dir = output_root / "slices" / slug
+    out_dir.mkdir(parents=True, exist_ok=True)
+    ready_dir = out_dir / "ready"
+    # A later diagnostic discovery-only run must not leave a stale packaged
+    # project beside fresh evidence where it could be mistaken for this run's
+    # validated primary artifact.
+    if not emit_ready_projects and not dry_run:
+        shutil.rmtree(ready_dir, ignore_errors=True)
+    artifact_profile_bundle = _artifact_profile_bundle(
+        artifact, profile_bundle, out_dir)
+    bounds = artifact_profile_bundle["identity"]["machine_bounds_mm"]
     if mesh.size[0] > bounds["x"][1] - bounds["x"][0] + 1e-4 \
             or mesh.size[1] > bounds["y"][1] - bounds["y"][0] + 1e-4 \
             or mesh.size[2] > bounds["z"][1] - bounds["z"][0] + 1e-4:
         raise AuditError(
             f"{artifact['id']}: {mesh.size} mm exceeds P2S 256-mm envelope")
-    slug = _slug(artifact["id"])
-    out_dir = output_root / "slices" / slug
-    out_dir.mkdir(parents=True, exist_ok=True)
-    fingerprint = _artifact_fingerprint(artifact, profile_bundle, catalog_sha)
+    fingerprint = _artifact_fingerprint(
+        artifact, artifact_profile_bundle, catalog_sha)
     fingerprint_path = out_dir / "slice_fingerprint.json"
     gcode = out_dir / "plate_1.gcode"
     result_path = out_dir / "result.json"
@@ -2679,7 +4026,8 @@ def _slice_one(
                 gcode=gcode, result_path=result_path,
                 project_3mf=project_3mf):
             reused = True
-    command = _bambu_command(bambu, stl, out_dir, profile_bundle)
+    command = _bambu_command(
+        bambu, stl, out_dir, artifact_profile_bundle)
     if dry_run:
         return {"id": artifact["id"], "dry_run": True, "command": command,
                 "fingerprint": fingerprint}
@@ -2689,7 +4037,9 @@ def _slice_one(
         run = subprocess.run(
             command, cwd=out_dir, text=True, stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
-            timeout=int(profile_bundle["config"]["slicing"]["timeout_seconds"]),
+            timeout=int(
+                artifact_profile_bundle["config"]["slicing"][
+                    "timeout_seconds"]),
             check=False,
             env={**os.environ, "LC_ALL": "C"})
         (out_dir / "bambu_studio.log").write_text(
@@ -2761,7 +4111,7 @@ def _slice_one(
         retain_regions=_cavity_retain_regions(slicer_sites, placement),
     )
     site_records = []
-    errors = _validate_actual_gcode_profile(parsed, profile_bundle)
+    errors = _validate_actual_gcode_profile(parsed, artifact_profile_bundle)
     for site in slicer_sites:
         selected, metrics, closure_discovery = (
             _discover_actual_closure_layers(parsed.layers, site, placement))
@@ -2881,7 +4231,7 @@ def _slice_one(
     for record in site_records:
         record.pop("layer_metrics", None)
     skill_validation = _validate_with_gcode_skill(
-        gcode, out_dir, profile_bundle)
+        gcode, out_dir, artifact_profile_bundle)
     if skill_validation.get("ok") is not True:
         errors.append(
             "plain G-code static validation did not return an explicit pass")
@@ -2906,6 +4256,12 @@ def _slice_one(
         "reused_slice": reused,
         "command": command,
         "fingerprint": fingerprint,
+        "profile_set_sha256": artifact_profile_bundle[
+            "identity"]["profile_set_sha256"],
+        "profile_effective": artifact_profile_bundle[
+            "identity"]["effective"],
+        "artifact_profile_override": artifact_profile_bundle[
+            "identity"].get("artifact_override"),
         "input": {
             "stl": str(release_stl),
             "stl_sha256": sha256_file(stl),
@@ -2941,8 +4297,23 @@ def _slice_one(
                 key: parsed.config.get(key) for key in (
                     "layer_height", "initial_layer_print_height",
                     "wall_generator", "outer_wall_line_width",
-                    "inner_wall_line_width", "enable_support",
-                    "enable_arc_fitting")
+                    "inner_wall_line_width", "wall_loops",
+                    "top_shell_layers", "bottom_shell_layers",
+                    "outer_wall_speed", "curr_bed_type",
+                    "sparse_infill_pattern", "sparse_infill_density",
+                    "precise_outer_wall", "detect_thin_wall",
+                    "ensure_vertical_shell_thickness",
+                    "detect_narrow_internal_solid_infill",
+                    "elefant_foot_compensation", "xy_hole_compensation",
+                    "enable_support", "support_on_build_plate_only",
+                    "support_critical_regions_only", "enable_arc_fitting",
+                    "nozzle_temperature",
+                    "nozzle_temperature_initial_layer", "fan_max_speed",
+                    "overhang_fan_speed",
+                    "filament_max_volumetric_speed",
+                    "textured_plate_temp",
+                    "textured_plate_temp_initial_layer",
+                    "machine_pause_gcode")
             },
             "gcode_skill_validation": skill_validation,
         },
@@ -2953,6 +4324,21 @@ def _slice_one(
             "png": png_record,
         },
     }
+    if emit_ready_projects:
+        if record["status"] == "pass":
+            record["slicer"]["ready_project"] = _emit_ready_project(
+                record=record,
+                artifact=artifact,
+                stl=stl,
+                mesh=mesh,
+                ready_dir=ready_dir,
+                profile_bundle=artifact_profile_bundle,
+                bambu=bambu,
+                discovery_fingerprint=fingerprint,
+                reuse=reuse,
+            )
+        else:
+            shutil.rmtree(ready_dir, ignore_errors=True)
     _write_json(out_dir / "captive_magnet_slice_audit.json", record)
     return record
 
@@ -3152,6 +4538,499 @@ def _pause_groups(record: Mapping[str, Any]) -> list[dict[str, Any]]:
     return result
 
 
+def _custom_gcodes_document(
+    record: Mapping[str, Any],
+) -> tuple[dict[str, Any], list[float]]:
+    groups = _pause_groups(record)
+    if not groups:
+        raise AuditError(
+            f"{record.get('id', '<unknown>')}: no passing pause groups are "
+            "available for a ready-to-print project")
+    gcodes = []
+    pause_z = []
+    for group in groups:
+        z = float(group["pause_marker_z_mm"])
+        pause_z.append(z)
+        sites = ", ".join(str(value) for value in group["sites"])
+        gcodes.append({
+            "type": "PausePrint",
+            "print_z": z,
+            "color": "",
+            "extruder": 1,
+            "extra": f"Insert {group['magnet_count']} magnet(s): {sites}",
+        })
+    return {"mode": "SingleExtruder", "gcodes": gcodes}, pause_z
+
+
+def _gcode_pause_events(path: Path) -> list[dict[str, Any]]:
+    """Locate Bambu pause tags and require their first command to be M400 U1."""
+    current_z: float | None = None
+    pending_change = False
+    awaiting: dict[str, Any] | None = None
+    events: list[dict[str, Any]] = []
+    with path.open("r", encoding="utf-8", errors="replace") as stream:
+        for line_number, raw in enumerate(stream, 1):
+            line = raw.strip()
+            if line == "; CHANGE_LAYER":
+                if awaiting is not None:
+                    raise AuditError(
+                        f"{path}:{awaiting['line_number']}: pause tag has no "
+                        "M400 U1 before the next layer")
+                pending_change = True
+                continue
+            if pending_change and line.startswith("; Z_HEIGHT:"):
+                current_z = _float(
+                    line.split(":", 1)[1], "pause G-code layer Z")
+                pending_change = False
+                continue
+            if line == "; PAUSE_PRINTING":
+                if current_z is None:
+                    raise AuditError(
+                        f"{path}:{line_number}: pause precedes any layer Z")
+                if awaiting is not None:
+                    raise AuditError(
+                        f"{path}:{line_number}: nested pause tags")
+                awaiting = {"z_mm": current_z, "line_number": line_number}
+                continue
+            if awaiting is None:
+                continue
+            command = line.split(";", 1)[0].strip()
+            if not command:
+                continue
+            if " ".join(command.split()) != "M400 U1":
+                raise AuditError(
+                    f"{path}:{line_number}: first pause command is "
+                    f"{command!r}, expected exactly 'M400 U1'")
+            events.append({
+                **awaiting,
+                "command": "M400 U1",
+                "command_line_number": line_number,
+            })
+            awaiting = None
+    if awaiting is not None:
+        raise AuditError(
+            f"{path}:{awaiting['line_number']}: pause tag has no M400 U1")
+    return events
+
+
+def _assert_exact_pause_z(
+    actual: Sequence[float], expected: Sequence[float], *, label: str,
+) -> None:
+    if len(actual) != len(expected) or any(
+            not math.isclose(a, e, abs_tol=0.001, rel_tol=0.0)
+            for a, e in zip(actual, expected, strict=True)):
+        raise AuditError(
+            f"{label} pause layers {list(actual)} != expected "
+            f"{list(expected)}")
+
+
+def _validate_ready_project_archive(
+    project_3mf: Path,
+    plain_gcode: Path,
+    *,
+    expected_pause_z: Sequence[float],
+    profile_bundle: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Prove the final 3MF embeds settings, G-code, and PausePrint metadata."""
+    required = (
+        "Metadata/project_settings.config",
+        "Metadata/custom_gcode_per_layer.xml",
+        "Metadata/plate_1.gcode",
+    )
+    try:
+        with zipfile.ZipFile(project_3mf) as archive:
+            names = archive.namelist()
+            for name in required:
+                if names.count(name) != 1:
+                    raise AuditError(
+                        f"{project_3mf}: expected exactly one {name}")
+            settings_bytes = archive.read(required[0])
+            custom_xml = archive.read(required[1])
+            embedded_gcode = archive.read(required[2])
+            corrupt = archive.testzip()
+            if corrupt is not None:
+                raise AuditError(
+                    f"{project_3mf}: corrupt ZIP member {corrupt}")
+    except (OSError, zipfile.BadZipFile, KeyError) as exc:
+        raise AuditError(
+            f"cannot inspect ready-to-print 3MF {project_3mf}: {exc}") from exc
+
+    plain_bytes = plain_gcode.read_bytes()
+    if embedded_gcode != plain_bytes:
+        raise AuditError(
+            f"{project_3mf}: embedded plate_1.gcode differs from the "
+            "validated plain G-code")
+    try:
+        settings = json.loads(settings_bytes)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise AuditError(
+            f"{project_3mf}: project settings are not valid JSON") from exc
+    if not isinstance(settings, Mapping):
+        raise AuditError(f"{project_3mf}: project settings are not an object")
+    embedded_settings = {}
+    for section, values in profile_bundle["enforced_overrides"].items():
+        for key, expected in values.items():
+            actual = settings.get(key)
+            if not _profile_value_equal(actual, expected):
+                raise AuditError(
+                    f"{project_3mf}: embedded setting {key}={actual!r}, "
+                    f"expected {expected!r} from {section} profile")
+            embedded_settings[key] = actual
+
+    try:
+        root = ET.fromstring(custom_xml)
+    except ET.ParseError as exc:
+        raise AuditError(
+            f"{project_3mf}: custom pause XML is invalid") from exc
+    local_tag = lambda element: element.tag.rsplit("}", 1)[-1]
+    if local_tag(root) != "custom_gcodes_per_layer":
+        raise AuditError(
+            f"{project_3mf}: custom pause XML has unexpected root "
+            f"{local_tag(root)!r}")
+    plates = [element for element in list(root)
+              if local_tag(element) == "plate"]
+    if len(plates) != 1 or len(list(root)) != 1:
+        raise AuditError(
+            f"{project_3mf}: custom pause XML must contain exactly one "
+            "direct plate")
+    plate = plates[0]
+    plate_info = [element for element in list(plate)
+                  if local_tag(element) == "plate_info"]
+    if (len(plate_info) != 1
+            or plate_info[0].attrib.get("id") != "1"):
+        raise AuditError(
+            f"{project_3mf}: custom pause XML must contain exactly one "
+            "plate_info id=1")
+    layers = [element for element in list(plate)
+              if local_tag(element) == "layer"]
+    modes = [element.attrib.get("value") for element in list(plate)
+             if local_tag(element) == "mode"]
+    if modes != ["SingleExtruder"]:
+        raise AuditError(
+            f"{project_3mf}: custom G-code mode is {modes!r}, expected "
+            "SingleExtruder")
+    xml_z: list[float] = []
+    for element in layers:
+        if element.attrib.get("type") != "1":
+            raise AuditError(
+                f"{project_3mf}: custom layer is not PausePrint type 1")
+        if element.attrib.get("extruder") != "1":
+            raise AuditError(
+                f"{project_3mf}: PausePrint extruder is not 1")
+        if " ".join(element.attrib.get("gcode", "").split()) != "M400 U1":
+            raise AuditError(
+                f"{project_3mf}: PausePrint XML does not embed M400 U1")
+        xml_z.append(_float(
+            element.attrib.get("top_z"), "custom pause XML top_z"))
+    _assert_exact_pause_z(
+        xml_z, expected_pause_z, label="embedded custom XML")
+
+    events = _gcode_pause_events(plain_gcode)
+    _assert_exact_pause_z(
+        [event["z_mm"] for event in events], expected_pause_z,
+        label="ready G-code")
+    return {
+        "project_settings_member": required[0],
+        "project_settings_sha256": _sha256_bytes(settings_bytes),
+        "enforced_project_settings": embedded_settings,
+        "custom_gcode_member": required[1],
+        "custom_gcode_xml_sha256": _sha256_bytes(custom_xml),
+        "embedded_gcode_member": required[2],
+        "embedded_gcode_sha256": _sha256_bytes(embedded_gcode),
+        "pause_z_mm": list(expected_pause_z),
+        "gcode_pause_events": events,
+    }
+
+
+def _cached_ready_project_matches(
+    prior: Mapping[str, Any],
+    *,
+    fingerprint: str,
+    gcode: Path,
+    result_path: Path,
+    project_3mf: Path,
+) -> bool:
+    required = {
+        "fingerprint": fingerprint,
+        "gcode_sha256": sha256_file(gcode),
+        "result_sha256": sha256_file(result_path),
+        "project_3mf_sha256": sha256_file(project_3mf),
+    }
+    return all(prior.get(key) == value for key, value in required.items())
+
+
+def _validate_ready_cavity_toolpaths(
+    *,
+    artifact: Mapping[str, Any],
+    discovery_record: Mapping[str, Any],
+    gcode: Path,
+    stl_to_bed_matrix: BambuMatrix4,
+) -> tuple[ParsedGcode, list[dict[str, Any]]]:
+    """Re-run every cavity gate against the pause-bearing final G-code."""
+    sites = [
+        _site_in_bambu_bed_space(site, stl_to_bed_matrix)
+        for site in artifact["sites"]
+    ]
+    parsed = parse_gcode(
+        gcode, retain_regions=_cavity_retain_regions(sites, (0.0, 0.0)))
+    discovery_by_name = {
+        item["site"]["name"]: item for item in discovery_record["sites"]
+    }
+    results = []
+    errors = []
+    for site in sites:
+        name = site["name"]
+        expected = discovery_by_name.get(name)
+        if expected is None:
+            errors.append(f"{name}: missing discovery-pass site")
+            continue
+        selected, metrics, _closure = _discover_actual_closure_layers(
+            parsed.layers, site, (0.0, 0.0))
+        roof_pass, roof_detail = _roof_progression_pass(metrics)
+        retaining_stage_pass = {
+            stage: _retaining_stage_pass(site, stage, metrics[stage])
+            for stage in (
+                "lowest_open", "representative_open", "last_fully_open")
+        }
+        aperture_pass, aperture_detail = _loading_aperture_pass(
+            site, metrics["last_fully_open"])
+        actual_pause = selected["first_closing_pause"].z
+        expected_pause = float(
+            expected["actual"]["bambu_studio_pause_marker_z_mm"])
+        same_pause = math.isclose(
+            actual_pause, expected_pause, abs_tol=0.001, rel_tol=0.0)
+        if not roof_pass:
+            errors.append(f"{name}: final roof progression failed: {roof_detail}")
+        if not all(retaining_stage_pass.values()):
+            errors.append(
+                f"{name}: final retaining path gate failed at "
+                + ", ".join(stage for stage, passed
+                            in retaining_stage_pass.items() if not passed))
+        if not aperture_pass:
+            errors.append(
+                f"{name}: final loading aperture failed: {aperture_detail}")
+        if not same_pause:
+            errors.append(
+                f"{name}: final closing layer {actual_pause:.3f} differs "
+                f"from discovery {expected_pause:.3f}")
+        results.append({
+            "site": name,
+            "first_closing_layer_z_mm": actual_pause,
+            "discovery_first_closing_layer_z_mm": expected_pause,
+            "same_closing_layer_pass": same_pause,
+            "roof_progression_pass": roof_pass,
+            "retaining_paths_stage_pass": retaining_stage_pass,
+            "loading_aperture_pass": aperture_pass,
+            "single_classic_path_pass": metrics[
+                "last_fully_open"]["retaining_paths"][
+                    "single_classic_path_pass"],
+        })
+    if errors:
+        raise AuditError(
+            f"{artifact['id']}: ready G-code cavity audit failed: "
+            + "; ".join(errors))
+    return parsed, results
+
+
+def _assert_pauses_precede_layer_extrusion(
+    parsed: ParsedGcode, events: Sequence[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    evidence = []
+    for event in events:
+        matches = [layer for layer in parsed.layers if math.isclose(
+            layer.z, float(event["z_mm"]), abs_tol=0.001, rel_tol=0.0)]
+        if len(matches) != 1:
+            raise AuditError(
+                f"pause at Z={event['z_mm']} does not map to exactly one layer")
+        layer = matches[0]
+        first_extrusion = layer.first_extrusion_line_number
+        if first_extrusion is None:
+            raise AuditError(
+                f"pause layer Z={layer.z:.3f} contains no extrusion")
+        if int(event["command_line_number"]) >= first_extrusion:
+            raise AuditError(
+                f"pause M400 U1 at line {event['command_line_number']} is not "
+                f"before first layer extrusion at line {first_extrusion}")
+        evidence.append({
+            "z_mm": layer.z,
+            "pause_command_line_number": event["command_line_number"],
+            "first_extrusion_line_number": first_extrusion,
+            "pass": True,
+        })
+    return evidence
+
+
+def _emit_ready_project(
+    *,
+    record: Mapping[str, Any],
+    artifact: Mapping[str, Any],
+    stl: Path,
+    mesh: MeshFacts,
+    ready_dir: Path,
+    profile_bundle: Mapping[str, Any],
+    bambu: Path,
+    discovery_fingerprint: str,
+    reuse: bool,
+) -> dict[str, Any]:
+    """Second pass: reslice the STL with discovered pauses embedded."""
+    ready_dir.mkdir(parents=True, exist_ok=True)
+    custom_document, pause_z = _custom_gcodes_document(record)
+    custom_path = ready_dir / "custom_gcodes.json"
+    _write_json(custom_path, custom_document)
+    gcode = ready_dir / "plate_1.gcode"
+    result_path = ready_dir / "result.json"
+    project_3mf = ready_dir / READY_3MF_FILENAME
+    command = _bambu_command(
+        bambu, stl, ready_dir, profile_bundle,
+        project_filename=READY_3MF_FILENAME,
+        custom_gcodes=custom_path)
+    fingerprint = _sha256_bytes(_canonical_json({
+        "discovery_fingerprint": discovery_fingerprint,
+        "custom_gcodes_sha256": sha256_file(custom_path),
+        "profile_set_sha256": profile_bundle[
+            "identity"]["profile_set_sha256"],
+        "bambu_binary_sha256": profile_bundle["identity"]["binary_sha256"],
+        "stl_sha256": sha256_file(stl),
+        "command": command,
+    }))
+    fingerprint_path = ready_dir / "ready_project_fingerprint.json"
+    reused = False
+    if (reuse and fingerprint_path.is_file() and gcode.is_file()
+            and result_path.is_file() and project_3mf.is_file()):
+        prior = _load_json(fingerprint_path)
+        if isinstance(prior, Mapping) and _cached_ready_project_matches(
+                prior, fingerprint=fingerprint, gcode=gcode,
+                result_path=result_path, project_3mf=project_3mf):
+            reused = True
+    if not reused:
+        for stale in (gcode, result_path, project_3mf, fingerprint_path):
+            stale.unlink(missing_ok=True)
+        run = subprocess.run(
+            command, cwd=ready_dir, text=True,
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            timeout=int(profile_bundle["config"]["slicing"][
+                "timeout_seconds"]),
+            check=False, env={**os.environ, "LC_ALL": "C"})
+        (ready_dir / "bambu_studio.log").write_text(
+            run.stdout, encoding="utf-8", errors="replace")
+        if run.returncode != 0:
+            raise AuditError(
+                f"{artifact['id']}: ready-project Bambu Studio pass exited "
+                f"{run.returncode}; see {ready_dir / 'bambu_studio.log'}")
+        if (not gcode.is_file() or not result_path.is_file()
+                or not project_3mf.is_file()):
+            raise AuditError(
+                f"{artifact['id']}: ready-project pass did not create "
+                "plate_1.gcode/result.json/ready_to_print.gcode.3mf")
+        _write_json(fingerprint_path, {
+            "fingerprint": fingerprint,
+            "command": command,
+            "custom_gcodes_sha256": sha256_file(custom_path),
+            "gcode_sha256": sha256_file(gcode),
+            "result_sha256": sha256_file(result_path),
+            "project_3mf_sha256": sha256_file(project_3mf),
+        })
+
+    result = _load_json(result_path)
+    if result.get("return_code") != 0:
+        raise AuditError(
+            f"{artifact['id']}: ready-project slicer result is not Success")
+    plates = result.get("sliced_plates")
+    if not isinstance(plates, list) or len(plates) != 1:
+        raise AuditError(
+            f"{artifact['id']}: ready project must contain one sliced plate")
+    objects = plates[0].get("objects")
+    if not isinstance(objects, list) or len(objects) != 1:
+        raise AuditError(
+            f"{artifact['id']}: ready project must contain one sliced object")
+    if (int(plates[0].get("triangle_count", -1)) != mesh.triangle_count
+            or int(objects[0].get("triangle_count", -1))
+            != mesh.triangle_count):
+        raise AuditError(
+            f"{artifact['id']}: ready project triangle count differs from STL")
+    try:
+        project_audit = audit_bambu_3mf(project_3mf, stl)
+        ready_bbox = objects[0].get("bbox")
+        if not isinstance(ready_bbox, Mapping):
+            raise Bambu3MFAuditError("ready result lacks an object bbox")
+        validate_bambu_result_bbox(
+            ready_bbox, project_audit.source_bounds,
+            project_audit.stl_to_bed_matrix)
+        validate_bambu_bed_fit(
+            project_audit.transformed_actual_mesh_bounds,
+            profile_bundle["identity"]["machine_bounds_mm"])
+    except Bambu3MFAuditError as exc:
+        raise AuditError(
+            f"{artifact['id']}: ready 3MF placement/mesh audit failed: "
+            f"{exc}") from exc
+    discovery_matrix = record["slicer"]["bambu_3mf_audit"][
+        "stl_to_bed_matrix"]
+    matrix_delta = max(
+        abs(float(actual) - float(expected))
+        for actual_row, expected_row in zip(
+            project_audit.stl_to_bed_matrix, discovery_matrix, strict=True)
+        for actual, expected in zip(actual_row, expected_row, strict=True)
+    )
+    if matrix_delta > 1.0e-6:
+        raise AuditError(
+            f"{artifact['id']}: ready-pass STL placement differs from "
+            f"discovery by {matrix_delta:.9f}")
+    parsed, cavity_audit = _validate_ready_cavity_toolpaths(
+        artifact=artifact, discovery_record=record, gcode=gcode,
+        stl_to_bed_matrix=project_audit.stl_to_bed_matrix)
+    profile_errors = _validate_actual_gcode_profile(parsed, profile_bundle)
+    if profile_errors:
+        raise AuditError(
+            f"{artifact['id']}: ready G-code profile mismatch: "
+            + "; ".join(profile_errors))
+    archive_audit = _validate_ready_project_archive(
+        project_3mf, gcode, expected_pause_z=pause_z,
+        profile_bundle=profile_bundle)
+    pause_before_extrusion = _assert_pauses_precede_layer_extrusion(
+        parsed, archive_audit["gcode_pause_events"])
+    skill_validation = _validate_with_gcode_skill(
+        gcode, ready_dir, profile_bundle)
+    if skill_validation.get("ok") is not True:
+        raise AuditError(
+            f"{artifact['id']}: ready G-code static validation did not pass")
+    output_hashes = {
+        "custom_gcodes_sha256": sha256_file(custom_path),
+        "result_sha256": sha256_file(result_path),
+        "gcode_sha256": sha256_file(gcode),
+        "project_3mf_sha256": sha256_file(project_3mf),
+    }
+    output_fingerprint = _sha256_bytes(_canonical_json({
+        "input_fingerprint": fingerprint,
+        **output_hashes,
+        "archive_audit": archive_audit,
+        "cavity_toolpath_audit": cavity_audit,
+        "pause_before_first_layer_extrusion": pause_before_extrusion,
+    }))
+    placement_audit = project_audit.as_record()
+    placement_audit.pop("staged_stl", None)
+    placement_audit["max_matrix_delta_from_discovery"] = matrix_delta
+    return {
+        "status": "pass",
+        "reused": reused,
+        "direct_stl_reslice": True,
+        "auto_rotation_disabled": "--allow-rotations=0" in command,
+        "command": command,
+        "input_fingerprint": fingerprint,
+        "output_fingerprint": output_fingerprint,
+        "custom_gcodes_json": str(custom_path),
+        "result_json": str(result_path),
+        "gcode": str(gcode),
+        "project_3mf": str(project_3mf),
+        **output_hashes,
+        "pause_z_mm": pause_z,
+        "archive_audit": archive_audit,
+        "bambu_3mf_audit": placement_audit,
+        "cavity_toolpath_audit": cavity_audit,
+        "pause_before_first_layer_extrusion": pause_before_extrusion,
+        "gcode_skill_validation": skill_validation,
+    }
+
+
 def _require_record_file(
     path_value: Any, digest_value: Any, label: str,
 ) -> Path:
@@ -3174,6 +5053,7 @@ def _validate_complete_release(
     failures: Sequence[Mapping[str, str]] = (),
     *,
     enforce_expected_inventory: bool = True,
+    require_ready_projects: bool = False,
 ) -> None:
     """Require exact, passing, hash-backed coverage before publication."""
     if failures:
@@ -3290,6 +5170,31 @@ def _validate_complete_release(
         _require_record_file(
             slicer.get("project_3mf"), slicer.get("project_3mf_sha256"),
             f"{record['id']} audited Bambu 3MF")
+        if require_ready_projects:
+            ready = slicer.get("ready_project", {})
+            if not isinstance(ready, Mapping) or ready.get("status") != "pass":
+                raise AuditError(
+                    f"{record['id']}: authoritative publication requires a "
+                    "passing ready-to-print project")
+            if not isinstance(ready.get("output_fingerprint"), str) or not re.fullmatch(
+                    r"[0-9a-f]{64}", ready["output_fingerprint"]):
+                raise AuditError(
+                    f"{record['id']}: ready-to-print output fingerprint is "
+                    "missing or invalid")
+            if Path(str(ready.get("project_3mf", ""))).name != READY_3MF_FILENAME:
+                raise AuditError(
+                    f"{record['id']}: primary ready project must be named "
+                    f"{READY_3MF_FILENAME}")
+            for path_key, hash_key, item in (
+                    ("custom_gcodes_json", "custom_gcodes_sha256",
+                     "custom PausePrint JSON"),
+                    ("result_json", "result_sha256", "ready Bambu result"),
+                    ("gcode", "gcode_sha256", "ready G-code"),
+                    ("project_3mf", "project_3mf_sha256",
+                     "ready-to-print 3MF")):
+                _require_record_file(
+                    ready.get(path_key), ready.get(hash_key),
+                    f"{record['id']} {item}")
         pause_count = sum(
             int(group["magnet_count"]) for group in _pause_groups(record))
         if pause_count != len(expected_sites):
@@ -3321,6 +5226,14 @@ def _write_manifest_bundle(
     all_groups = []
     for record in records:
         for group in _pause_groups(record):
+            discovery = record["slicer"]
+            ready = discovery.get("ready_project")
+            ready_pass = (
+                isinstance(ready, Mapping) and ready.get("status") == "pass")
+            primary = ready if ready_pass else discovery
+            placement_audit = (
+                ready["bambu_3mf_audit"] if ready_pass
+                else discovery["bambu_3mf_audit"])
             all_groups.append({
                 "artifact_id": record["id"],
                 "state": record["state"],
@@ -3329,13 +5242,21 @@ def _write_manifest_bundle(
                 "print_orientation": record["print_orientation"],
                 "stl": record["input"]["stl"],
                 "stl_sha256": record["input"]["stl_sha256"],
-                "gcode": record["slicer"]["gcode"],
-                "gcode_sha256": record["slicer"]["gcode_sha256"],
-                "audited_bambu_3mf": record["slicer"]["project_3mf"],
-                "audited_bambu_3mf_sha256": record["slicer"][
+                "gcode": primary["gcode"],
+                "gcode_sha256": primary["gcode_sha256"],
+                "audited_bambu_3mf": primary["project_3mf"],
+                "audited_bambu_3mf_sha256": primary[
                     "project_3mf_sha256"],
-                "bambu_arrange_rz_degrees": record["slicer"][
-                    "bambu_3mf_audit"]["rigid_rz"]["rz_degrees"],
+                "ready_project": ready_pass,
+                "ready_project_output_fingerprint": (
+                    ready.get("output_fingerprint") if ready_pass else None),
+                "discovery_gcode": discovery["gcode"],
+                "discovery_gcode_sha256": discovery["gcode_sha256"],
+                "discovery_bambu_3mf": discovery["project_3mf"],
+                "discovery_bambu_3mf_sha256": discovery[
+                    "project_3mf_sha256"],
+                "bambu_arrange_rz_degrees": placement_audit[
+                    "rigid_rz"]["rz_degrees"],
                 **group,
             })
     actual_slice_records = [
@@ -3371,6 +5292,10 @@ def _write_manifest_bundle(
                 record.get("status") == OVERSIZE_COVERED_STATUS
                 for record in oversize_records),
             "pause_group_count": len(all_groups),
+            "ready_project_count": sum(
+                record.get("slicer", {}).get(
+                    "ready_project", {}).get("status") == "pass"
+                for record in actual_slice_records),
             "magnet_count": sum(group["magnet_count"] for group in all_groups),
             "p2s_pause_magnet_count": sum(
                 group["magnet_count"] for group in all_groups),
@@ -3405,6 +5330,9 @@ def _write_manifest_bundle(
             "print_insertion_direction_xyz", "insertion_instruction",
             "stl", "stl_sha256", "gcode", "gcode_sha256",
             "audited_bambu_3mf", "audited_bambu_3mf_sha256",
+            "ready_project", "ready_project_output_fingerprint",
+            "discovery_gcode", "discovery_gcode_sha256",
+            "discovery_bambu_3mf", "discovery_bambu_3mf_sha256",
             "bambu_arrange_rz_degrees", "polarity")
         writer = csv.DictWriter(stream, fieldnames=fields)
         writer.writeheader()
@@ -3425,15 +5353,17 @@ def _write_manifest_bundle(
         "# Captive-magnet pause manifest",
         "",
         ("Authoritative for the exact STL and profile hashes below. This run "
-         "used Bambu Lab P2S, 0.4 mm nozzle, 0.16 mm High Quality, Classic "
+         "used Bambu Lab P2S, 0.4 mm nozzle, 0.16 mm High Quality, Arachne "
          "walls, and Bambu PLA Tough+. All parts are front-face-down."),
         "",
         "This audit did not contact a printer and did not upload or start a print.",
         "",
         "## Insertion procedure",
         "",
-        "1. Print each part front-face-down; do not auto-orient it.",
-        "2. Add the Bambu Studio pause marker at the exact **first-closing** Z listed below.",
+        "1. Open the hash-listed ready-to-print 3MF; do not auto-orient it.",
+        ("2. The PausePrint events at the exact **first-closing** Z values "
+         "below are already embedded and were verified in both project XML "
+         "and G-code; do not add or move them manually."),
         ("3. At each pause, insert the listed number of D5 x 2 mm magnets "
          "vertically downward from above (+Z side) along print `-Z` "
          "(`print_insertion_direction_xyz = [0, 0, -1]`), with the marked "
@@ -3471,8 +5401,8 @@ def _write_manifest_bundle(
          "hash-bound to the staged STL, and audited as an exact mesh with "
          "only a proper unit-scale rotation about print Z plus XY placement."),
         "",
-        "| State | Variant / part | Arrange Rz | Audited 3MF | SHA-256 |",
-        "|---|---|---:|---|---|",
+        "| State | Variant / part | Arrange Rz | Ready-to-print 3MF | SHA-256 | Ready fingerprint |",
+        "|---|---|---:|---|---|---|",
     ))
     for group in placement_groups.values():
         lines.append(
@@ -3480,7 +5410,8 @@ def _write_manifest_bundle(
             f"`{group['part']}` | "
             f"{group['bambu_arrange_rz_degrees']:.6f} deg | "
             f"`{group['audited_bambu_3mf']}` | "
-            f"`{group['audited_bambu_3mf_sha256']}` |")
+            f"`{group['audited_bambu_3mf_sha256']}` | "
+            f"`{group['ready_project_output_fingerprint']}` |")
     if oversize_records:
         lines.extend((
             "",
@@ -3550,6 +5481,28 @@ def _validate_manifest_bundle(paths: Mapping[str, Path]) -> None:
             or summary.get("catalog_magnet_station_count")
             != EXPECTED_RELEASE_MAGNET_COUNT):
         raise AuditError("staged JSON manifest lacks complete passing coverage")
+    artifacts = manifest.get("artifacts")
+    if not isinstance(artifacts, list):
+        raise AuditError("staged JSON manifest lacks artifact records")
+    for record in artifacts:
+        if (not isinstance(record, Mapping)
+                or record.get("audit_mode") != "actual_p2s_slice"):
+            continue
+        ready = record.get("slicer", {}).get("ready_project", {})
+        if (not isinstance(ready, Mapping)
+                or ready.get("status") != "pass"
+                or not isinstance(ready.get("output_fingerprint"), str)
+                or not re.fullmatch(
+                    r"[0-9a-f]{64}", ready["output_fingerprint"])
+                or Path(str(ready.get("project_3mf", ""))).name
+                != READY_3MF_FILENAME):
+            raise AuditError(
+                f"{record.get('id', '<unknown>')}: staged JSON artifact is "
+                "not bound to a ready-to-print project")
+    if summary.get("ready_project_count") != summary.get(
+            "sliced_artifact_count"):
+        raise AuditError(
+            "staged JSON ready-project count differs from sliced artifacts")
     groups = manifest.get("pause_groups")
     if not isinstance(groups, list) or not groups:
         raise AuditError("staged JSON manifest contains no pause groups")
@@ -3562,6 +5515,17 @@ def _validate_manifest_bundle(paths: Mapping[str, Path]) -> None:
             raise AuditError(
                 "staged JSON manifest lacks the exact print -Z insertion "
                 "contract")
+        if (group.get("ready_project") is not True
+                or not isinstance(
+                    group.get("ready_project_output_fingerprint"), str)
+                or not re.fullmatch(
+                    r"[0-9a-f]{64}",
+                    group["ready_project_output_fingerprint"])
+                or Path(str(group.get("audited_bambu_3mf", ""))).name
+                != READY_3MF_FILENAME):
+            raise AuditError(
+                "staged JSON manifest pause group is not bound to a "
+                "ready-to-print project")
         _require_record_file(
             group.get("audited_bambu_3mf"),
             group.get("audited_bambu_3mf_sha256"),
@@ -3580,6 +5544,15 @@ def _validate_manifest_bundle(paths: Mapping[str, Path]) -> None:
             raise AuditError(
                 "staged CSV manifest lacks the exact print -Z insertion "
                 "contract")
+        if (row.get("ready_project") != "True"
+                or not re.fullmatch(
+                    r"[0-9a-f]{64}",
+                    row.get("ready_project_output_fingerprint", ""))
+                or Path(row.get("audited_bambu_3mf", "")).name
+                != READY_3MF_FILENAME):
+            raise AuditError(
+                "staged CSV manifest row is not bound to a ready-to-print "
+                "project")
         _require_record_file(
             row.get("audited_bambu_3mf"),
             row.get("audited_bambu_3mf_sha256"),
@@ -3593,7 +5566,7 @@ def _validate_manifest_bundle(paths: Mapping[str, Path]) -> None:
     for required_text in (
             "print_insertion_direction_xyz = [0, 0, -1]",
             "## Audited Bambu arrangements",
-            "audited_slice_project.3mf",
+            READY_3MF_FILENAME,
             "provisional unpaired V0 convention",
             "unpaired coupon1 regression station"):
         if required_text not in markdown:
@@ -3660,7 +5633,8 @@ def write_manifests(
     failures: Sequence[Mapping[str, str]] = (),
 ) -> dict[str, Path]:
     """Validate, stage, then transactionally publish canonical manifests."""
-    _validate_complete_release(catalog, records, failures)
+    _validate_complete_release(
+        catalog, records, failures, require_ready_projects=True)
     if sha256_file(catalog_path) != catalog.get("_catalog_sha256"):
         raise AuditError("release catalog changed before manifest publication")
     if sha256_file(CATALOG_SCHEMA) != catalog.get(
@@ -3678,7 +5652,8 @@ def write_manifests(
             Path(directory), catalog_path, catalog, profile_bundle,
             records, failures)
         _validate_manifest_bundle(staged_paths)
-        _validate_complete_release(catalog, records, failures)
+        _validate_complete_release(
+            catalog, records, failures, require_ready_projects=True)
         if (sha256_file(catalog_path) != catalog["_catalog_sha256"]
                 or sha256_file(CATALOG_SCHEMA)
                 != catalog["_catalog_schema_sha256"]):
@@ -3708,6 +5683,36 @@ def _filter_artifacts(
     return selected
 
 
+def _validate_artifact_override_coverage(
+    artifacts: Sequence[Mapping[str, Any]], config: Mapping[str, Any],
+) -> None:
+    """Fail if a supposedly exact artifact override is stale or ambiguous."""
+    _validate_support_override_policy(config)
+    rules = config.get("artifact_overrides", [])
+    if not isinstance(rules, list):
+        raise AuditError("artifact_overrides must be an array")
+    matched_by_artifact: dict[str, list[int]] = {}
+    for index, rule in enumerate(rules):
+        if not isinstance(rule, Mapping) or not isinstance(
+                rule.get("match"), Mapping):
+            raise AuditError(f"artifact_overrides[{index}] is invalid")
+        match = rule["match"]
+        matches = [artifact for artifact in artifacts if all(
+            artifact.get(key) == expected for key, expected in match.items())]
+        if len(matches) != 1:
+            raise AuditError(
+                f"artifact_overrides[{index}] match {dict(match)!r} resolved "
+                f"to {len(matches)} catalog artifacts; expected exactly one")
+        matched_by_artifact.setdefault(matches[0]["id"], []).append(index)
+    ambiguous = {
+        artifact_id: indexes for artifact_id, indexes
+        in matched_by_artifact.items() if len(indexes) > 1
+    }
+    if ambiguous:
+        raise AuditError(
+            f"multiple artifact overrides target the same artifact: {ambiguous}")
+
+
 def _authoritative_run_requested(
     only_patterns: Sequence[str], dry_run: bool,
 ) -> bool:
@@ -3730,6 +5735,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--no-reuse", action="store_true",
                         help="ignore content-addressed completed slices")
     parser.add_argument("--prepare-profiles-only", action="store_true")
+    parser.add_argument(
+        "--emit-ready-projects", action="store_true",
+        help=("after discovery, reslice each direct STL with exact PausePrint "
+              "events and export ready_to_print.gcode.3mf"))
     parser.add_argument("--dry-run", action="store_true",
                         help="write resolved profiles and print commands only")
     return parser
@@ -3739,6 +5748,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.jobs < 1:
         raise AuditError("--jobs must be positive")
+    if args.emit_ready_projects and args.dry_run:
+        raise AuditError(
+            "--emit-ready-projects requires executed discovery slices; "
+            "it cannot be combined with --dry-run")
+    if (not args.only and not args.dry_run and not args.prepare_profiles_only
+            and not args.emit_ready_projects):
+        raise AuditError(
+            "an unfiltered authoritative run requires "
+            "--emit-ready-projects; discovery-only/manual-pause output is "
+            "allowed only for explicit --only diagnostic subsets")
     authoritative_request = _authoritative_run_requested(
         args.only, args.dry_run)
     output = args.output.expanduser().resolve()
@@ -3754,6 +5773,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     catalog_path = args.catalog.expanduser().resolve()
     catalog = normalize_catalog(catalog_path)
+    _validate_artifact_override_coverage(
+        catalog["artifacts"], profile_bundle["config"])
     selected = _filter_artifacts(catalog["artifacts"], args.only)
     catalog_by_id = {
         artifact["id"]: artifact for artifact in catalog["artifacts"]
@@ -3791,7 +5812,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _slice_one(
                 artifact, output_root=output, profile_bundle=profile_bundle,
                 bambu=bambu, catalog_sha=catalog_sha,
-                reuse=not args.no_reuse, dry_run=args.dry_run)
+                reuse=not args.no_reuse, dry_run=args.dry_run,
+                emit_ready_projects=args.emit_ready_projects)
 
         with concurrent.futures.ThreadPoolExecutor(
                 max_workers=args.jobs) as pool:
@@ -3851,6 +5873,21 @@ def main(argv: Sequence[str] | None = None) -> int:
             if record.get("status") not in (
                 "pass", OVERSIZE_COVERED_STATUS)
         ]
+        if args.emit_ready_projects:
+            missing_ready = [
+                record["id"] for record in records
+                if (record.get("audit_mode") == "actual_p2s_slice"
+                    and record.get("status") == "pass"
+                    and record.get("slicer", {}).get(
+                        "ready_project", {}).get("status") != "pass")
+            ]
+            if missing_ready:
+                failures.append({
+                    "id": "ready-project-coverage",
+                    "error": (
+                        "passing actual slices lack validated ready projects: "
+                        + ", ".join(missing_ready)),
+                })
 
         if not authoritative_request:
             # Dry runs returned above, so the remaining non-authoritative
@@ -3901,7 +5938,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 file=sys.stderr)
             return 1
 
-        _validate_complete_release(catalog, records, failures)
+        _validate_complete_release(
+            catalog, records, failures, require_ready_projects=True)
         paths = write_manifests(
             output, catalog_path, catalog, profile_bundle, records, failures)
         print("\n".join(

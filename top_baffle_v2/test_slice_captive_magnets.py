@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import inspect
 import math
 from pathlib import Path
 import tempfile
+import zipfile
 
 import slice_captive_magnets as audit
 from front_down_contract import (
@@ -27,7 +29,7 @@ def _release_site_contract(axis=(1.0, 0.0, 0.0)) -> dict:
         "interface_gap_mm": 0.05,
         "paired_magnet_face_separation_mm": 0.95,
         "roof_angle_deg": 45.0,
-        "classic_retaining_path_mm": 0.42,
+        "minimum_retaining_path_mm": 0.42,
         "polarity_instruction": "marked/N pole follows installed axis",
         "installed_marked_pole_axis_xyz": list(axis),
         # All synthetic release fixtures use the same source front-down
@@ -193,7 +195,7 @@ endsolid fixture
 
 def _synthetic_gcode(
         path: Path, *, first_closing_z: float | None) -> None:
-    """Write cavity-local Classic paths with an explicit roof onset."""
+    """Write cavity-local Arachne paths with an explicit roof onset."""
     lines = [
         "M83", "M104 S245", "M140 S55", "G90", "G1 X10 Y10 Z0.2",
     ]
@@ -249,15 +251,15 @@ def test_actual_bambu_layer_regression(tmp_path: Path):
     }
     lm = {
         **common,
-        "print_cavity_center_xyz_mm": (1.50, 0.0, 5.75),
-        "print_seated_magnet_center_xyz_mm": (1.45, 0.0, 5.75),
-        "cavity_bury_roof_start_print_z_mm": 8.40,
-        "roof_apex_print_z_mm": 11.00,
+        "print_cavity_center_xyz_mm": (1.50, 0.0, 3.20),
+        "print_seated_magnet_center_xyz_mm": (1.45, 0.0, 3.20),
+        "cavity_bury_roof_start_print_z_mm": 5.80,
+        "roof_apex_print_z_mm": 8.40,
     }
     um_gcode = tmp_path / "um_synthetic.gcode"
     lm_gcode = tmp_path / "lm_synthetic.gcode"
     _synthetic_gcode(um_gcode, first_closing_z=5.96)
-    _synthetic_gcode(lm_gcode, first_closing_z=8.52)
+    _synthetic_gcode(lm_gcode, first_closing_z=5.96)
     um_layers, _um_metrics, um_discovery = (
         audit._discover_actual_closure_layers(
             audit.parse_gcode(um_gcode).layers, um, (0.0, 0.0)))
@@ -266,8 +268,8 @@ def test_actual_bambu_layer_regression(tmp_path: Path):
             audit.parse_gcode(lm_gcode).layers, lm, (0.0, 0.0)))
     assert math.isclose(um_layers["last_fully_open"].z, 5.80)
     assert math.isclose(um_layers["first_closing_pause"].z, 5.96)
-    assert math.isclose(lm_layers["last_fully_open"].z, 8.36)
-    assert math.isclose(lm_layers["first_closing_pause"].z, 8.52)
+    assert math.isclose(lm_layers["last_fully_open"].z, 5.80)
+    assert math.isclose(lm_layers["first_closing_pause"].z, 5.96)
     assert um_discovery["all_prior_scheduled_open_layers_pass"] is True
     assert lm_discovery["all_prior_scheduled_open_layers_pass"] is True
     assert um_discovery["method"] == (
@@ -282,7 +284,7 @@ def test_actual_bambu_layer_regression(tmp_path: Path):
     assert math.isclose(
         lm_layers["last_fully_open"].z
         - audit._seated_magnet_print_z_bounds(lm)[1],
-        0.11, abs_tol=1.0e-12)
+        0.10, abs_tol=1.0e-12)
 
 
 def test_actual_closure_discovery_rejects_early_or_missing_roof(
@@ -442,6 +444,400 @@ def test_profile_inheritance_and_include(tmp_path: Path):
     assert len(resolver.dependencies) == 3
 
 
+def _synthetic_profile_bundle(tmp_path: Path | None = None) -> dict:
+    config = audit._load_json(audit.DEFAULT_PROFILE)
+    flattened = {
+        "machine": {
+            "name": "machine",
+            "printer_model": "Bambu Lab P2S",
+            "nozzle_diameter": ["0.4"],
+            "machine_pause_gcode": "wrong",
+        },
+        "process": {
+            "name": "process",
+            "layer_height": "0.16",
+            "initial_layer_print_height": "0.2",
+            "outer_wall_line_width": "0.42",
+            "inner_wall_line_width": "0.45",
+            "wall_generator": "classic",
+            "enable_support": "1",
+            "support_on_build_plate_only": "1",
+            "support_critical_regions_only": "1",
+            "enable_arc_fitting": "0",
+            "wall_loops": "2",
+            "top_shell_layers": "2",
+            "bottom_shell_layers": "2",
+            "outer_wall_speed": ["200", "200"],
+            "curr_bed_type": "Cool Plate",
+            "sparse_infill_pattern": "grid",
+            "sparse_infill_density": "15%",
+            "precise_outer_wall": "0",
+            "detect_thin_wall": "0",
+            "ensure_vertical_shell_thickness": "disabled",
+            "detect_narrow_internal_solid_infill": "0",
+            "elefant_foot_compensation": "0",
+            "xy_hole_compensation": "0",
+        },
+        "filament": {
+            "name": "Bambu PLA Tough+ @BBL P2S",
+            "nozzle_temperature": ["245", "245"],
+            "nozzle_temperature_initial_layer": ["245", "245"],
+            "fan_max_speed": ["100"],
+            "overhang_fan_speed": ["50"],
+            "filament_max_volumetric_speed": ["21", "21"],
+            "textured_plate_temp": ["60"],
+            "textured_plate_temp_initial_layer": ["60"],
+            "eng_plate_temp": ["55"],
+        },
+    }
+    resolved = audit._apply_profile_overrides(
+        flattened, config["repo_overrides"], label="test repo overrides")
+    effective = audit._effective_profile_contract(
+        resolved, config, config["repo_overrides"])
+    return {
+        "config": config,
+        "resolved": resolved,
+        "enforced_overrides": config["repo_overrides"],
+        "paths": {},
+        "identity": {
+            "effective": effective,
+            "machine_bounds_mm": config["machine_bounds_mm"],
+            "binary_sha256": "0" * 64,
+            "profile_set_sha256": "1" * 64,
+        },
+        "audit_source_sha256": {},
+    }
+
+
+def test_repo_overrides_apply_after_flattening_and_are_exact() -> None:
+    bundle = _synthetic_profile_bundle()
+    process = bundle["resolved"]["process"]
+    filament = bundle["resolved"]["filament"]
+    assert process["wall_loops"] == "6"
+    assert process["top_shell_layers"] == "6"
+    assert process["bottom_shell_layers"] == "5"
+    assert process["outer_wall_speed"] == ["60", "60"]
+    assert process["curr_bed_type"] == "Textured PEI Plate"
+    assert process["sparse_infill_pattern"] == "gyroid"
+    assert process["sparse_infill_density"] == "30%"
+    assert process["wall_generator"] == "arachne"
+    assert process["enable_support"] == "0"
+    assert process["support_on_build_plate_only"] == "0"
+    assert process["support_critical_regions_only"] == "0"
+    assert process["precise_outer_wall"] == "1"
+    assert process["detect_thin_wall"] == "1"
+    assert process["ensure_vertical_shell_thickness"] == "enabled"
+    assert process["detect_narrow_internal_solid_infill"] == "1"
+    assert process["elefant_foot_compensation"] == "0.15"
+    assert process["xy_hole_compensation"] == "0"
+    assert filament["nozzle_temperature"] == ["225", "225"]
+    assert filament["fan_max_speed"] == ["60"]
+    assert filament["overhang_fan_speed"] == ["100"]
+    assert filament["filament_max_volumetric_speed"] == ["16", "16"]
+    assert filament["textured_plate_temp"] == ["55"]
+    assert filament["textured_plate_temp_initial_layer"] == ["55"]
+    assert bundle["resolved"]["machine"]["machine_pause_gcode"] == "M400 U1"
+    assert bundle["identity"]["effective"]["detect_thin_wall"] is True
+    assert bundle["identity"]["effective"]["support_enabled"] is False
+    assert bundle["identity"]["effective"][
+        "support_on_build_plate_only"] is False
+    assert bundle["identity"]["effective"][
+        "support_critical_regions_only"] is False
+
+
+def test_profile_override_typo_fails_closed() -> None:
+    bundle = _synthetic_profile_bundle()
+    typo = {"process": {"detect_thin_wal": "1"}}
+    try:
+        audit._apply_profile_overrides(
+            bundle["resolved"], typo, label="synthetic typo")
+    except audit.AuditError as exc:
+        assert "not a registered" in str(exc)
+    else:
+        raise AssertionError("unknown Bambu override key was accepted")
+
+
+def test_artifact_density_overrides_are_exact(tmp_path: Path) -> None:
+    bundle = _synthetic_profile_bundle()
+    base = {
+        "id": "synthetic",
+        "variant": "Obi-Wan-split",
+        "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+    }
+    floor = audit._artifact_profile_bundle(
+        {**base, "state": "floor_stand"}, bundle, tmp_path / "floor")
+    no_floor = audit._artifact_profile_bundle(
+        {**base, "state": "no_floor_stand"}, bundle,
+        tmp_path / "no_floor")
+    fallback = audit._artifact_profile_bundle(
+        {**base, "state": "another_state"}, bundle,
+        tmp_path / "fallback")
+    assert floor["resolved"]["process"]["sparse_infill_density"] == "100%"
+    assert floor["resolved"]["process"][
+        "sparse_infill_pattern"] == "zig-zag"
+    assert no_floor["resolved"]["process"][
+        "sparse_infill_density"] == "40%"
+    assert no_floor["resolved"]["process"][
+        "sparse_infill_pattern"] == "gyroid"
+    assert fallback["resolved"]["process"][
+        "sparse_infill_density"] == "30%"
+    assert floor["identity"]["effective"][
+        "sparse_infill_density_percent"] == 100.0
+    assert floor["identity"]["effective"][
+        "sparse_infill_pattern"] == "zig-zag"
+    assert no_floor["identity"]["effective"][
+        "sparse_infill_density_percent"] == 40.0
+    for supported in (floor, no_floor):
+        process = supported["resolved"]["process"]
+        assert process["enable_support"] == "1"
+        assert process["support_on_build_plate_only"] == "1"
+        assert process["support_critical_regions_only"] == "1"
+        effective = supported["identity"]["effective"]
+        assert effective["support_enabled"] is True
+        assert effective["support_on_build_plate_only"] is True
+        assert effective["support_critical_regions_only"] is True
+    assert fallback["identity"]["effective"]["support_enabled"] is False
+    for state in ("floor_stand", "no_floor_stand"):
+        um = audit._artifact_profile_bundle({
+            "id": f"{state}:um", "state": state,
+            "variant": "Obi-Wan",
+            "part": "lx521_top_obiwan_core_2of2_um_carrier",
+        }, bundle, tmp_path / f"um_{state}")
+        assert um["resolved"]["process"][
+            "sparse_infill_density"] == "40%"
+
+
+def test_every_artifact_override_must_match_once() -> None:
+    config = audit._load_json(audit.DEFAULT_PROFILE)
+    artifacts = [
+        {"id": f"artifact-{index}", **rule["match"]}
+        for index, rule in enumerate(config["artifact_overrides"])
+    ]
+    audit._validate_artifact_override_coverage(artifacts, config)
+    try:
+        audit._validate_artifact_override_coverage(artifacts[:-1], config)
+    except audit.AuditError as exc:
+        assert "expected exactly one" in str(exc)
+    else:
+        raise AssertionError("zero-match artifact override passed")
+    duplicated = [*artifacts, {**artifacts[0], "id": "duplicate"}]
+    try:
+        audit._validate_artifact_override_coverage(duplicated, config)
+    except audit.AuditError as exc:
+        assert "expected exactly one" in str(exc)
+    else:
+        raise AssertionError("ambiguous artifact override passed")
+
+
+def test_support_override_targets_only_both_keyed_lm_bottom_jobs() -> None:
+    config = audit._load_json(audit.DEFAULT_PROFILE)
+    audit._validate_support_override_policy(config)
+    base_process = config["repo_overrides"]["process"]
+    assert base_process["enable_support"] == "0"
+    assert base_process["support_on_build_plate_only"] == "0"
+    assert base_process["support_critical_regions_only"] == "0"
+    support_rules = [
+        rule for rule in config["artifact_overrides"]
+        if audit._boolish(rule.get("process", {}).get("enable_support"))
+    ]
+    assert len(support_rules) == 2
+    assert {
+        rule["match"]["state"] for rule in support_rules
+    } == {"floor_stand", "no_floor_stand"}
+    for rule in support_rules:
+        assert rule["match"]["variant"] == "Obi-Wan-split"
+        assert rule["match"]["part"] == (
+            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom")
+        process = rule["process"]
+        assert process["enable_support"] == "1"
+        assert process["support_on_build_plate_only"] == "1"
+        assert process["support_critical_regions_only"] == "1"
+
+    extra = copy.deepcopy(config)
+    extra["artifact_overrides"].append({
+        "match": {"state": "floor_stand", "variant": "A",
+                  "part": "unexpected"},
+        "process": {
+            "enable_support": "1",
+            "support_on_build_plate_only": "1",
+            "support_critical_regions_only": "1",
+        },
+    })
+    try:
+        audit._validate_support_override_policy(extra)
+    except audit.AuditError as exc:
+        assert "support overrides must target exactly" in str(exc)
+    else:
+        raise AssertionError("third support-enabled artifact passed")
+
+
+def test_support_enabled_requires_both_scope_guards() -> None:
+    bundle = _synthetic_profile_bundle()
+    for missing in (
+            "support_on_build_plate_only",
+            "support_critical_regions_only"):
+        resolved = copy.deepcopy(bundle["resolved"])
+        enforced = copy.deepcopy(bundle["enforced_overrides"])
+        resolved["process"]["enable_support"] = "1"
+        enforced["process"]["enable_support"] = "1"
+        resolved["process"][missing] = "0"
+        enforced["process"][missing] = "0"
+        other = ({"support_on_build_plate_only",
+                  "support_critical_regions_only"} - {missing}).pop()
+        resolved["process"][other] = "1"
+        enforced["process"][other] = "1"
+        try:
+            audit._effective_profile_contract(
+                resolved, bundle["config"], enforced)
+        except audit.AuditError as exc:
+            assert "support-enabled artifact profiles" in str(exc)
+        else:
+            raise AssertionError(
+                f"support profile without {missing} passed")
+
+
+def test_bambu_version_banner_ignores_timestamped_trace() -> None:
+    output = (
+        "[2026-07-20 08:00:00] [trace] Initializing StaticPrintConfigs\n"
+        "BambuStudio-02.07.01.62:\nUsage: bambu-studio\n")
+    assert audit._parse_bambu_studio_version(output) == "02.07.01.62"
+    for invalid in ("trace only\n", output + "BambuStudio-02.07.01.63:\n"):
+        try:
+            audit._parse_bambu_studio_version(invalid)
+        except audit.AuditError as exc:
+            assert "exactly one" in str(exc)
+        else:
+            raise AssertionError("ambiguous/missing Bambu version passed")
+
+
+def test_actual_gcode_profile_checks_every_pinned_setting(
+        tmp_path: Path) -> None:
+    bundle = _synthetic_profile_bundle()
+    effective = bundle["identity"]["effective"]
+    config = {
+        "layer_height": "0.16",
+        "initial_layer_print_height": "0.2",
+        "outer_wall_line_width": "0.42",
+        "inner_wall_line_width": "0.45",
+        "wall_loops": "6",
+        "top_shell_layers": "6",
+        "bottom_shell_layers": "5",
+        # Bambu's actual CONFIG_BLOCK collapses identical preset vectors.
+        "outer_wall_speed": "60",
+        "curr_bed_type": "Textured PEI Plate",
+        "elefant_foot_compensation": "0.15",
+        "xy_hole_compensation": "0",
+        "nozzle_temperature": "225",
+        "nozzle_temperature_initial_layer": "225",
+        "fan_max_speed": "60",
+        "overhang_fan_speed": "100",
+        "filament_max_volumetric_speed": "16",
+        "textured_plate_temp": "55",
+        "textured_plate_temp_initial_layer": "55",
+        "wall_generator": "arachne",
+        "enable_support": "0",
+        "support_on_build_plate_only": "0",
+        "support_critical_regions_only": "0",
+        "sparse_infill_pattern": "gyroid",
+        "sparse_infill_density": (
+            f"{effective['sparse_infill_density_percent']:g}%"),
+        "precise_outer_wall": "1",
+        "detect_thin_wall": "1",
+        "ensure_vertical_shell_thickness": "enabled",
+        "detect_narrow_internal_solid_infill": "1",
+        "machine_pause_gcode": "M400 U1",
+        "enable_arc_fitting": "0",
+    }
+
+    def parsed(values: dict) -> audit.ParsedGcode:
+        return audit.ParsedGcode(
+            [audit.Layer(0.20, 0.20, [], 1),
+             audit.Layer(0.36, 0.16, [], 2)],
+            1, 0, 1, 1, (0.0, 0.0, 0.0), (1.0, 1.0, 0.36), values)
+
+    assert audit._validate_actual_gcode_profile(parsed(config), bundle) == []
+    mutations = {
+        "wall_generator": "classic",
+        "enable_support": "1",
+        "support_on_build_plate_only": "1",
+        "support_critical_regions_only": "1",
+        "wall_loops": "5",
+        "top_shell_layers": "5",
+        "bottom_shell_layers": "4",
+        "outer_wall_speed": "200",
+        "curr_bed_type": "Cool Plate",
+        "sparse_infill_pattern": "grid",
+        "sparse_infill_density": "15%",
+        "precise_outer_wall": "0",
+        "detect_thin_wall": "0",
+        "ensure_vertical_shell_thickness": "disabled",
+        "detect_narrow_internal_solid_infill": "0",
+        "elefant_foot_compensation": "0",
+        "xy_hole_compensation": "0.05",
+        "nozzle_temperature": "245",
+        "fan_max_speed": "100",
+        "overhang_fan_speed": "50",
+        "filament_max_volumetric_speed": "21",
+        "textured_plate_temp": "60",
+        "textured_plate_temp_initial_layer": "60",
+        "machine_pause_gcode": "M0",
+    }
+    for key, value in mutations.items():
+        changed = dict(config)
+        changed[key] = value
+        errors = audit._validate_actual_gcode_profile(parsed(changed), bundle)
+        assert errors, f"mutated pinned G-code setting passed: {key}"
+
+    # Pattern validation follows the exact resolved artifact profile.  This is
+    # required for the 100%-solid keyed LM bottom, where Bambu rejects gyroid.
+    solid_bundle = {
+        **bundle,
+        "identity": {
+            **bundle["identity"],
+            "effective": {
+                **effective,
+                "sparse_infill_pattern": "zig-zag",
+            },
+        },
+    }
+    solid_config = {
+        **config,
+        "sparse_infill_pattern": "zig-zag",
+    }
+    assert audit._validate_actual_gcode_profile(
+        parsed(solid_config), solid_bundle) == []
+
+    changed = dict(config)
+    changed["outer_wall_speed"] = "60,200"
+    errors = audit._validate_actual_gcode_profile(parsed(changed), bundle)
+    assert any("outer_wall_speed" in error for error in errors)
+
+    support_bundle = audit._artifact_profile_bundle({
+        "id": "floor:split:bottom",
+        "state": "floor_stand",
+        "variant": "Obi-Wan-split",
+        "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+    }, bundle, tmp_path / "support_profile")
+    support_config = {
+        **config,
+        "enable_support": "1",
+        "support_on_build_plate_only": "1",
+        "support_critical_regions_only": "1",
+        "sparse_infill_pattern": "zig-zag",
+        "sparse_infill_density": "100%",
+    }
+    assert audit._validate_actual_gcode_profile(
+        parsed(support_config), support_bundle) == []
+    for key in (
+            "enable_support", "support_on_build_plate_only",
+            "support_critical_regions_only"):
+        changed = dict(support_config)
+        changed[key] = "0"
+        errors = audit._validate_actual_gcode_profile(
+            parsed(changed), support_bundle)
+        assert any(key in error for error in errors)
+
+
 def test_catalog_rejects_non_front_down(tmp_path: Path):
     catalog = _catalog_document([{
             "id": "bad", "part": "bad", "variant": "test",
@@ -557,9 +953,20 @@ def test_bambu_command_explicitly_disables_auto_orientation(tmp_path: Path):
     assert command[command.index("--orient") + 1] == "0"
     assert "--rotate-x" not in command
     assert "--rotate-y" not in command
-    assert "--allow-rotations" not in command
+    assert "--allow-rotations=0" in command
     assert command[command.index("--export-3mf") + 1] == (
         audit.PLACED_3MF_FILENAME)
+
+    custom = tmp_path / "custom_gcodes.json"
+    ready = audit._bambu_command(
+        tmp_path / "BambuStudio", tmp_path / "part.stl",
+        tmp_path / "out", profile_bundle,
+        project_filename=audit.READY_3MF_FILENAME,
+        custom_gcodes=custom)
+    assert ready[ready.index("--export-3mf") + 1] == (
+        audit.READY_3MF_FILENAME)
+    assert ready[ready.index("--load-custom-gcodes") + 1] == str(custom)
+    assert ready[-1] == str(tmp_path / "part.stl")
 
 
 def test_cached_slice_reuse_is_hash_bound(tmp_path: Path) -> None:
@@ -670,6 +1077,131 @@ def test_pause_group_preserves_insertion_and_full_polarity_instruction() -> None
         assert "unsafe insertion direction" in str(exc)
     else:
         raise AssertionError("unsafe pause-group insertion was accepted")
+
+
+def test_ready_custom_gcodes_and_archive_are_self_contained(
+        tmp_path: Path) -> None:
+    record = {
+        "id": "state:Obi-Wan:part",
+        "audit_mode": "actual_p2s_slice",
+        "status": "pass",
+        "sites": [{
+            "site": {
+                "name": "um_left",
+                "print_insertion_direction_xyz": (0.0, 0.0, -1.0),
+                "print_marked_pole_axis_xyz": (1.0, 0.0, 0.0),
+                "installed_marked_pole_axis_xyz": (1.0, 0.0, 0.0),
+                "polarity_instruction": "marked pole follows +X",
+            },
+            "actual": {
+                "bambu_studio_pause_marker_z_mm": 5.96,
+                "last_completely_open_layer_z_mm": 5.80,
+                "cavity_bury_roof_start_plane_z_mm": 5.80,
+            },
+            "seated_magnet": {
+                "below_last_open_layer_mm": 0.10,
+                "below_first_closing_layer_mm": 0.26,
+            },
+        }],
+    }
+    custom, pause_z = audit._custom_gcodes_document(record)
+    assert pause_z == [5.96]
+    assert custom["mode"] == "SingleExtruder"
+    assert custom["gcodes"] == [{
+        "type": "PausePrint", "print_z": 5.96, "color": "",
+        "extruder": 1, "extra": "Insert 1 magnet(s): um_left",
+    }]
+
+    bundle = _synthetic_profile_bundle()
+    settings = {}
+    for values in bundle["enforced_overrides"].values():
+        settings.update(values)
+    gcode = tmp_path / "plate_1.gcode"
+    gcode.write_text("\n".join((
+        "; CHANGE_LAYER", "; Z_HEIGHT: 5.96",
+        "; PAUSE_PRINTING", "M400 U1",
+        "G1 X1 Y1 E0.1",
+    )) + "\n", encoding="utf-8")
+    custom_xml = (
+        '<?xml version="1.0" encoding="utf-8"?>\n'
+        '<custom_gcodes_per_layer><plate><plate_info id="1"/>'
+        '<layer top_z="5.96" type="1" extruder="1" color="" '
+        'extra="Insert magnet" gcode="M400 U1"/>'
+        '<mode value="SingleExtruder"/></plate>'
+        '</custom_gcodes_per_layer>')
+    project = tmp_path / audit.READY_3MF_FILENAME
+    with zipfile.ZipFile(project, "w") as archive:
+        archive.writestr(
+            "Metadata/project_settings.config", json.dumps(settings))
+        archive.writestr(
+            "Metadata/custom_gcode_per_layer.xml", custom_xml)
+        archive.writestr("Metadata/plate_1.gcode", gcode.read_bytes())
+    result = audit._validate_ready_project_archive(
+        project, gcode, expected_pause_z=pause_z,
+        profile_bundle=bundle)
+    assert result["pause_z_mm"] == [5.96]
+    assert result["embedded_gcode_sha256"] == audit.sha256_file(gcode)
+
+    support_bundle = audit._artifact_profile_bundle({
+        "id": "floor:split:bottom",
+        "state": "floor_stand",
+        "variant": "Obi-Wan-split",
+        "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+    }, bundle, tmp_path / "support_ready_profile")
+    support_settings = {}
+    for values in support_bundle["enforced_overrides"].values():
+        support_settings.update(values)
+    support_project = tmp_path / "supported_ready.gcode.3mf"
+    with zipfile.ZipFile(support_project, "w") as archive:
+        archive.writestr(
+            "Metadata/project_settings.config",
+            json.dumps(support_settings))
+        archive.writestr(
+            "Metadata/custom_gcode_per_layer.xml", custom_xml)
+        archive.writestr("Metadata/plate_1.gcode", gcode.read_bytes())
+    support_result = audit._validate_ready_project_archive(
+        support_project, gcode, expected_pause_z=pause_z,
+        profile_bundle=support_bundle)
+    assert support_result["enforced_project_settings"][
+        "enable_support"] == "1"
+    assert support_result["enforced_project_settings"][
+        "support_on_build_plate_only"] == "1"
+    assert support_result["enforced_project_settings"][
+        "support_critical_regions_only"] == "1"
+
+    support_settings["support_critical_regions_only"] = "0"
+    invalid_support_project = tmp_path / "invalid_supported_ready.gcode.3mf"
+    with zipfile.ZipFile(invalid_support_project, "w") as archive:
+        archive.writestr(
+            "Metadata/project_settings.config",
+            json.dumps(support_settings))
+        archive.writestr(
+            "Metadata/custom_gcode_per_layer.xml", custom_xml)
+        archive.writestr("Metadata/plate_1.gcode", gcode.read_bytes())
+    try:
+        audit._validate_ready_project_archive(
+            invalid_support_project, gcode, expected_pause_z=pause_z,
+            profile_bundle=support_bundle)
+    except audit.AuditError as exc:
+        assert "support_critical_regions_only" in str(exc)
+    else:
+        raise AssertionError(
+            "ready project missing critical-region support passed")
+
+    events = result["gcode_pause_events"]
+    parsed = audit.ParsedGcode(
+        [audit.Layer(5.96, 0.16, [], 1,
+                     first_extrusion_line_number=5)],
+        1, 0, 1, 1, (0.0, 0.0, 0.0), (1.0, 1.0, 5.96), {})
+    ordering = audit._assert_pauses_precede_layer_extrusion(parsed, events)
+    assert ordering[0]["pass"] is True
+    parsed.layers[0].first_extrusion_line_number = 3
+    try:
+        audit._assert_pauses_precede_layer_extrusion(parsed, events)
+    except audit.AuditError as exc:
+        assert "not before first layer extrusion" in str(exc)
+    else:
+        raise AssertionError("pause after layer extrusion passed")
 
 
 def test_only_and_dry_run_are_never_authoritative() -> None:
@@ -1101,9 +1633,18 @@ def test_transverse_retaining_gate_requires_continuous_paths():
         "inner_skin_mm": 0.45,
     }
 
-    def segment(x: float, y0: float, y1: float) -> audit.Segment:
+    def segment(
+        x: float, y0: float, y1: float, *,
+        feature: str = "Outer wall", width: float = 0.42,
+        path_id: int = 1,
+    ) -> audit.Segment:
         return audit.Segment(
-            x, y0, x, y1, 0.1, "Outer wall", 0.42, 1)
+            x, y0, x, y1, 0.1, feature, width, 1,
+            path_id=path_id)
+
+    def side_wall(y: float) -> audit.Segment:
+        return audit.Segment(
+            0.45, y, 2.55, y, 0.1, "Outer wall", 0.42, 1)
 
     interface_x = 0.45 / 2.0
     inner_x = 0.45 + 2.1 + 0.45 / 2.0
@@ -1129,9 +1670,178 @@ def test_transverse_retaining_gate_requires_continuous_paths():
     assert continuous["retaining_paths"][
         "interface_skin_longest_contiguous_span_mm"] >= 3.0
     assert continuous["retaining_paths"]["pass"] is True
+    assert continuous["retaining_paths"][
+        "interface_skin_single_path"]["estimated_path_count"] == 1
+
+    # Bambu serializes ordinary 0.42-mm paths as 0.419996 mm and Arachne can
+    # locally resolve the same nominal one-wall skin to 0.415656 mm. Admit
+    # that bounded lower-side modulation, but reject a materially thin bead
+    # below the explicit 0.415-mm floor.
+    arachne_lower_edge = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            segment(interface_x, -2.1, 2.1, width=0.415656),
+            segment(inner_x, -2.1, 2.1, width=0.415656),
+        ], 1), site, (0.0, 0.0))
+    assert arachne_lower_edge["retaining_paths"]["pass"] is True
+    assert arachne_lower_edge["retaining_paths"][
+        "interface_skin_single_path"]["lower_width_tolerance_mm"] == 0.005
+
+    materially_underwidth = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            segment(interface_x, -2.1, 2.1, width=0.414),
+            segment(inner_x, -2.1, 2.1, width=0.414),
+        ], 1), site, (0.0, 0.0))
+    assert materially_underwidth["retaining_paths"]["pass"] is False
+
+    # Bambu's thin-wall medial bead may widen beyond the nominal 0.42 mm.  It
+    # remains valid only as one traversal and while the path-width-aware D5x2
+    # loading aperture remains clear.
+    widened = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            segment(interface_x - (0.586 - 0.45) / 2.0,
+                    -2.1, 2.1, width=0.586),
+            segment(inner_x + 0.085, -2.1, 2.1, width=0.586),
+            side_wall(-2.81), side_wall(2.81),
+        ], 1), site, (0.0, 0.0))
+    assert widened["retaining_paths"]["pass"] is True
+    assert widened["loading_aperture"]["free_axial_slot_width_mm"] >= 2.0
+    assert audit._loading_aperture_pass({
+        **site, "magnet_diameter_mm": 5.0, "magnet_depth_mm": 2.0,
+    }, widened)[0] is True
+
+    # Legacy V1's inner skin is also one adaptive-width traversal.  Its
+    # measured 0.661027-mm bead remains valid because the opposing 0.484-mm
+    # path and actual centre placement leave more than 2.0 mm of free slot.
+    legacy_widened = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            segment(interface_x, -2.1, 2.1, width=0.484),
+            segment(inner_x + 0.09, -2.1, 2.1, width=0.661),
+            side_wall(-2.81), side_wall(2.81),
+        ], 1), site, (0.0, 0.0))
+    assert legacy_widened["retaining_paths"]["pass"] is True
+    assert legacy_widened["loading_aperture"][
+        "free_axial_slot_width_mm"] >= 2.0
+    assert audit._loading_aperture_pass({
+        **site, "magnet_diameter_mm": 5.0, "magnet_depth_mm": 2.0,
+    }, legacy_widened)[0] is True
+
+    overwide = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            segment(interface_x - (0.671 - 0.45) / 2.0,
+                    -2.1, 2.1, width=0.671),
+            segment(inner_x + (0.671 - 0.45) / 2.0,
+                    -2.1, 2.1, width=0.671),
+            side_wall(-2.81), side_wall(2.81),
+        ], 1), site, (0.0, 0.0))
+    assert overwide["retaining_paths"]["pass"] is False
+
+    # A speed/feature split can divide one physical centreline into several
+    # G-code moves; it remains exactly one path in every transverse scan bin.
+    segmented_one = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            segment(interface_x, -2.1, 0.0),
+            segment(interface_x, 0.0, 2.1),
+            segment(inner_x, -2.1, -0.3),
+            segment(inner_x, -0.3, 2.1),
+        ], 1), site, (0.0, 0.0))
+    assert segmented_one["retaining_paths"]["pass"] is True
+
+    # The two real Bambu traces separated by only 0.03 mm are still two
+    # extrusion passes.  Neither a full parallel pass nor a short second pass
+    # may be hidden by loose spatial clustering.
+    two_full = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            segment(interface_x - 0.015, -2.1, 2.1),
+            segment(interface_x + 0.015, -2.1, 2.1),
+            segment(inner_x - 0.015, -2.1, 2.1),
+            segment(inner_x + 0.015, -2.1, 2.1),
+        ], 1), site, (0.0, 0.0))
+    assert two_full["retaining_paths"][
+        "interface_skin_single_path"]["estimated_path_count"] == 2
+    assert two_full["retaining_paths"]["pass"] is False
+
+    short_second = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            segment(interface_x, -2.1, 2.1),
+            segment(interface_x + 0.03, -0.2, 0.2),
+            segment(inner_x, -2.1, 2.1),
+        ], 1), site, (0.0, 0.0))
+    assert short_second["retaining_paths"]["pass"] is False
+    assert max(short_second["retaining_paths"][
+        "interface_skin_single_path"][
+            "path_count_by_scan_bin"].values()) == 2
+
+    # A surrounding-body return can pass through the broad centreline band
+    # without forming the cavity wall.  Candidate classification uses the
+    # path-width-aware cavity-facing bead edge, so that body-side geometry is
+    # excluded while exact-one checks remain strict at the actual boundary.
+    body_side_return = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            segment(interface_x, -2.1, 2.1, path_id=10),
+            segment(inner_x, -2.1, 2.1, path_id=20),
+            segment(inner_x + 0.24, -1.0, -0.7, path_id=20),
+        ], 1), site, (0.0, 0.0))
+    edge_summary = body_side_return["retaining_paths"][
+        "inner_skin_single_path"]
+    assert body_side_return["retaining_paths"]["pass"] is True
+    assert edge_summary["estimated_path_count"] == 1
+    assert edge_summary["candidate_selection"] == "cavity_facing_bead_edge"
+    assert edge_summary["cavity_edge_tolerance_mm"] == 0.06
+
+    independent_body_return = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            segment(interface_x, -2.1, 2.1, path_id=10),
+            segment(inner_x, -2.1, 2.1, path_id=20),
+            segment(inner_x + 0.24, -1.0, -0.7, path_id=21),
+        ], 1), site, (0.0, 0.0))
+    assert independent_body_return["retaining_paths"]["pass"] is False
+
+    long_same_path_return = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            segment(interface_x, -2.1, 2.1, path_id=10),
+            segment(inner_x, -2.1, 2.1, path_id=20),
+            segment(inner_x + 0.24, -1.0, -0.6, path_id=20),
+        ], 1), site, (0.0, 0.0))
+    assert long_same_path_return["retaining_paths"]["pass"] is False
+
+    # A full duplicate only 0.001 mm outside the cavity-edge classifier must
+    # not become invisible.  Its bead still overlaps the selected wall across
+    # all scan bins, so the independent nearby-duplicate guard rejects it even
+    # though the D5x2 loading slot remains open.
+    adaptive_interface_x = 0.45 - 0.484 / 2.0
+    just_outside_cutoff = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            segment(adaptive_interface_x, -2.1, 2.1,
+                    width=0.484, path_id=30),
+            segment(adaptive_interface_x + 0.061, -2.1, 2.1,
+                    width=0.484, path_id=31),
+            segment(inner_x, -2.1, 2.1, path_id=40),
+            side_wall(-2.81), side_wall(2.81),
+        ], 1), site, (0.0, 0.0))
+    cutoff_summary = just_outside_cutoff["retaining_paths"][
+        "interface_skin_single_path"]
+    assert cutoff_summary["estimated_path_count"] == 1
+    assert cutoff_summary[
+        "nearby_overlapping_maximum_crossings_per_scan_bin"] == 2
+    assert cutoff_summary["nearby_duplicate_guard_pass"] is False
+    assert just_outside_cutoff["retaining_paths"]["pass"] is False
+    assert audit._loading_aperture_pass({
+        **site, "magnet_diameter_mm": 5.0, "magnet_depth_mm": 2.0,
+    }, just_outside_cutoff)[0] is True
+
+    gap_fill = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            segment(interface_x, -2.1, 2.1),
+            segment(interface_x + 0.03, -0.2, 0.2,
+                    feature="Gap infill"),
+            segment(inner_x, -2.1, 2.1),
+        ], 1), site, (0.0, 0.0))
+    assert gap_fill["retaining_paths"][
+        "interface_skin_single_path"]["outer_wall_only_pass"] is False
+    assert gap_fill["retaining_paths"]["pass"] is False
 
     # Projecting only onto V would incorrectly merge these two overlapping
-    # halves.  Their U separation exceeds one 0.42-mm Classic bead, so they
+    # halves.  Their U separation exceeds one 0.42-mm Arachne path, so they
     # are physically disconnected and neither component spans 3 mm.
     staggered = []
     for center_x in (interface_x, inner_x):
@@ -1159,6 +1869,223 @@ def test_axial_retaining_gate_requires_complete_annular_coverage():
     assert audit._largest_circular_sample_gap(
         fragmented, radius) > 5.0
     assert audit._largest_circular_sample_gap([], radius) == math.inf
+
+    site = {
+        "closure_kind": "axis_opposed_conical_45deg",
+        "print_cavity_center_xyz_mm": (0.0, 0.0, 3.0),
+        "cavity_diameter_mm": 5.2,
+        "cavity_depth_mm": 2.1,
+        "magnet_diameter_mm": 5.0,
+        "magnet_depth_mm": 2.0,
+        "face_skin_mm": 0.45,
+    }
+
+    def ring(
+        ring_radius: float, *, path_id: int = 1, width: float = 0.42,
+    ) -> list[audit.Segment]:
+        points = [
+            (ring_radius * math.cos(math.radians(value)),
+             ring_radius * math.sin(math.radians(value)))
+            for value in range(0, 361, 2)
+        ]
+        return [
+            audit.Segment(
+                x0, y0, x1, y1, 0.01, "Outer wall", width, index,
+                path_id=path_id)
+            for index, ((x0, y0), (x1, y1))
+            in enumerate(zip(points, points[1:]), 1)
+        ]
+
+    one = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, ring(2.81), 1), site, (0.0, 0.0))
+    assert one["retaining_paths"]["single_classic_path_pass"] is True
+    serialized_nominal = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, ring(2.81, width=0.419996), 1),
+        site, (0.0, 0.0))
+    assert serialized_nominal["retaining_paths"][
+        "single_classic_path_pass"] is True
+    materially_underwidth = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, ring(2.81, width=0.41999), 1),
+        site, (0.0, 0.0))
+    assert materially_underwidth["retaining_paths"][
+        "single_classic_path_pass"] is False
+    two = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            *ring(2.81, path_id=1), *ring(2.985, path_id=2)], 1),
+        site, (0.0, 0.0))
+    assert two["retaining_paths"]["annular_single_path"][
+        "estimated_path_count"] == 2
+    assert two["retaining_paths"]["single_classic_path_pass"] is False
+
+    # Even if malformed input labels two complete circumferences as one raw
+    # path, the bounded seam exception cannot hide 72 doubled ray crossings.
+    same_path_double = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            *ring(2.81, path_id=1), *ring(2.985, path_id=1)], 1),
+        site, (0.0, 0.0))
+    annular = same_path_double["retaining_paths"]["annular_single_path"]
+    assert annular["estimated_path_count"] == 1
+    assert len(annular["multiple_crossing_ray_bins"]) > 2
+    assert same_path_double["retaining_paths"][
+        "single_classic_path_pass"] is False
+
+    def arc(
+        arc_radius: float, start_deg: float, end_deg: float, path_id: int,
+    ) -> list[audit.Segment]:
+        values = [start_deg]
+        while values[-1] + 1.0 < end_deg:
+            values.append(values[-1] + 1.0)
+        values.append(end_deg)
+        points = [
+            (arc_radius * math.cos(math.radians(value)),
+             arc_radius * math.sin(math.radians(value)))
+            for value in values
+        ]
+        return [
+            audit.Segment(
+                x0, y0, x1, y1, 0.01, "Outer wall", 0.42, index,
+                path_id=path_id)
+            for index, ((x0, y0), (x1, y1))
+            in enumerate(zip(points, points[1:]), 1)
+        ]
+
+    # Two angularly complementary arcs can still be physically disconnected
+    # when their radii differ.  This case otherwise clears the D5 aperture and
+    # the 0.52-mm angular-gap gate; only endpoint-local Euclidean seam checking
+    # proves that it is not one printable annular bead.
+    disconnected_arcs = audit._toolpath_metrics(
+        audit.Layer(3.0, 0.16, [
+            *arc(2.711, 7.4, 172.6, 11),
+            *arc(2.985, 182.4, 357.6, 12),
+        ], 1), site, (0.0, 0.0))
+    disconnected_summary = disconnected_arcs["retaining_paths"][
+        "annular_single_path"]
+    assert disconnected_arcs["retaining_paths"][
+        "largest_uncovered_arc_mm"] < 0.52
+    assert disconnected_arcs["loading_aperture"][
+        "free_radial_diameter_mm"] >= 5.0
+    assert disconnected_summary[
+        "complementary_component_coverage_pass"] is True
+    assert disconnected_summary["component_seam_continuity_pass"] is False
+    assert disconnected_arcs["retaining_paths"]["pass"] is False
+
+
+def test_axial_single_path_allows_only_bounded_local_seam_anomaly() -> None:
+    expected_radius = 2.825
+    bins = tuple(range(72))
+
+    # Model the measured one-component seam: bin 12 is missed and adjacent bin
+    # 13 crosses the same raw path twice.  Both anomalies remain in one bounded
+    # endpoint neighborhood of one circumference.
+    local_seam = [
+        (expected_radius, index, "Outer wall", 0.42, 17)
+        for index in bins if index != 12
+    ]
+    local_seam.append((
+        expected_radius + 0.03, 13, "Outer wall", 0.631, 17))
+    summary = audit._single_annular_classic_track_summary(
+        track_samples=local_seam,
+        required_bins=tuple(range(72)),
+        expected_center_mm=expected_radius,
+        allowed_width_range_mm=audit.AXIAL_RETAINING_BEAD_WIDTH_RANGE_MM)
+    assert summary["unique_annular_path_pass"] is True
+    assert summary["occupied_ray_bin_count"] == 71
+    assert summary["missing_scan_bins"] == [12]
+    assert summary["multiple_crossing_ray_bins"] == [13]
+    assert summary["anomaly_endpoint_local_pass"] is True
+    assert summary["single_classic_path_pass"] is True
+
+    # The measured right V0 ring is one geometric bead emitted as two long,
+    # complementary arcs: 46 exclusive rays plus 24, with only the two seam
+    # bins missing and no cross-component overlap.
+    split_components = [
+        (expected_radius, index, "Outer wall", 0.42, 17)
+        for index in range(16, 62)
+    ]
+    split_components.extend(
+        (expected_radius + 0.02, index, "Outer wall", 0.631, 18)
+        for index in (*range(63, 72), *range(0, 15)))
+    split_bead = audit._single_annular_classic_track_summary(
+        track_samples=split_components,
+        required_bins=bins,
+        expected_center_mm=expected_radius,
+        allowed_width_range_mm=audit.AXIAL_RETAINING_BEAD_WIDTH_RANGE_MM)
+    assert split_bead["unique_annular_path_pass"] is False
+    assert split_bead["bounded_component_path_count_pass"] is True
+    assert split_bead["component_exclusive_ray_bin_count"] == {
+        "17": 46, "18": 24,
+    }
+    assert split_bead["cross_component_overlap_ray_bins"] == []
+    assert split_bead["complementary_component_coverage_pass"] is True
+    assert split_bead["component_seam_continuity_pass"] is True
+    assert split_bead["single_classic_path_pass"] is True
+
+    # Angular complementarity alone is insufficient: two arcs at different
+    # radii can cover 70/72 rays while leaving a physical void at both seams.
+    # Their nearest ray-sampled centreline gaps exceed both the bead-footprint
+    # limit and the general 0.52-mm connectivity cap.
+    disconnected_split = [
+        (2.711, index, "Outer wall", 0.42, 17)
+        for index in range(1, 35)
+    ]
+    disconnected_split.extend(
+        (2.984, index, "Outer wall", 0.42, 18)
+        for index in range(36, 72))
+    disconnected = audit._single_annular_classic_track_summary(
+        track_samples=disconnected_split,
+        required_bins=bins,
+        expected_center_mm=expected_radius,
+        allowed_width_range_mm=audit.AXIAL_RETAINING_BEAD_WIDTH_RANGE_MM)
+    assert disconnected["complementary_component_coverage_pass"] is True
+    assert len(disconnected["component_seam_junctions"]) == 2
+    assert disconnected["component_seam_continuity_pass"] is False
+    assert disconnected["single_classic_path_pass"] is False
+
+    # A complete ring plus one stray sample is not a complementary split.  It
+    # overlaps the first component and contributes no meaningful exclusive arc.
+    complete_plus_stray = [
+        (expected_radius, index, "Outer wall", 0.42, 17)
+        for index in bins
+    ]
+    complete_plus_stray.append((
+        expected_radius + 0.02, 13, "Outer wall", 0.42, 18))
+    stray = audit._single_annular_classic_track_summary(
+        track_samples=complete_plus_stray,
+        required_bins=bins,
+        expected_center_mm=expected_radius,
+        allowed_width_range_mm=audit.AXIAL_RETAINING_BEAD_WIDTH_RANGE_MM)
+    assert stray["bounded_component_path_count_pass"] is True
+    assert stray["complementary_component_coverage_pass"] is False
+    assert stray["single_classic_path_pass"] is False
+
+    # A bounded count is not enough when the missing and doubled rays are far
+    # apart rather than local to the same single-component seam.
+    remote_double = [
+        (expected_radius, index, "Outer wall", 0.42, 17)
+        for index in bins if index != 12
+    ]
+    remote_double.append((
+        expected_radius + 0.03, 40, "Outer wall", 0.631, 17))
+    nonlocal_seam = audit._single_annular_classic_track_summary(
+        track_samples=remote_double,
+        required_bins=bins,
+        expected_center_mm=expected_radius,
+        allowed_width_range_mm=audit.AXIAL_RETAINING_BEAD_WIDTH_RANGE_MM)
+    assert nonlocal_seam["bounded_combined_anomaly_count_pass"] is True
+    assert nonlocal_seam["anomaly_endpoint_local_pass"] is False
+    assert nonlocal_seam["single_classic_path_pass"] is False
+
+    # More than two independently emitted components is no longer a bounded
+    # two-arc representation of one medial ring.
+    third_path = [*split_components, (
+        expected_radius + 0.01, 15, "Outer wall", 0.42, 19)]
+    rejected = audit._single_annular_classic_track_summary(
+        track_samples=third_path,
+        required_bins=bins,
+        expected_center_mm=expected_radius,
+        allowed_width_range_mm=audit.AXIAL_RETAINING_BEAD_WIDTH_RANGE_MM)
+    assert rejected["bounded_component_path_count_pass"] is False
+    assert rejected["single_classic_path_pass"] is False
 
 
 def test_last_open_loading_aperture_checks_diameter_slot_and_obstruction():
@@ -1302,7 +2229,7 @@ def _exact_split_proxy_catalog() -> dict:
             "carrier_cavity_datum_xy_mm": [x - 1.5, 10.0],
             "outer_surface_face_xy_mm": [
                 x - 1.5 - cavity_inset, 10.0],
-            "classic_retaining_path_mm": 0.42,
+            "minimum_retaining_path_mm": 0.42,
             "magnet_count": 1,
             "structural_load_credit_n": 0.0,
         }
@@ -1363,6 +2290,60 @@ def test_obiwan_ring_pair_spacing_is_interface_specific(
                "const 1.1" in str(exc))
     else:
         raise AssertionError("stale 0.95-mm Obi-Wan ring spacing passed")
+
+
+def test_standard_curved_pair_spacing_uses_declared_interface_profile(
+        tmp_path: Path) -> None:
+    """Curved stock/slim sites retain the intentional 0.14-mm base inset."""
+    matrix = [
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, -1.0, 0.0, 20.0],
+        [0.0, 0.0, -1.0, 18.3],
+        [0.0, 0.0, 0.0, 1.0],
+    ]
+    site = {
+        **_release_site_contract((1.0, 0.0, 0.0)),
+        "name": "standard_upper_left_receiver",
+        "closure_kind": "transverse_gable_45deg",
+        "cavity_bury_roof_start_print_z_mm": 5.80,
+        "roof_apex_print_z_mm": 8.40,
+        "cavity_center_xyz_mm": [-18.38, 420.37, 15.10],
+        "seated_magnet_center_xyz_mm": [-18.33, 420.37, 15.10],
+        "actual_face_xyz_mm": [-17.88, 420.37, 15.10],
+        "material_inward_xyz": [1.0, 0.0, 0.0],
+        "marked_pole_axis_xyz": [1.0, 0.0, 0.0],
+        "interface_profile": "standard_curved",
+        "carrier_cavity_face_inset_mm": 0.14,
+        "paired_magnet_face_separation_mm": 1.09,
+    }
+    artifact = {
+        "id": "floor_stand:A:curved",
+        "state": "floor_stand",
+        "variant": "A",
+        "part": "shoulder_top_left",
+        "stl": "shoulder_top_left.stl",
+        "print_orientation": "front_face_down",
+        "rotation_deg": {"x": 180.0, "z": 0.0},
+        "source_to_stl_matrix": matrix,
+        "sites": [site],
+    }
+    payload = _catalog_document([artifact])
+    path = tmp_path / "catalog.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    normalized = audit.normalize_catalog(
+        path, enforce_release_inventory=False)
+    assert normalized["artifacts"][0]["sites"][0][
+        "paired_magnet_face_separation_mm"] == 1.09
+
+    payload["artifacts"][0]["sites"][0][
+        "paired_magnet_face_separation_mm"] = 0.95
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    try:
+        audit.normalize_catalog(path, enforce_release_inventory=False)
+    except audit.AuditError as exc:
+        assert "paired magnet-face separation must be 1.090" in str(exc)
+    else:
+        raise AssertionError("stale 0.95-mm standard curved spacing passed")
 
 
 def test_catalog_envelope_and_frozen_inventory_are_fail_closed(
@@ -1621,7 +2602,7 @@ endsolid oversize
             },
             "sites": [{
                 "site": site,
-                "actual": {"bambu_studio_pause_marker_z_mm": 8.52},
+                "actual": {"bambu_studio_pause_marker_z_mm": 5.96},
                 "retaining_paths_pass": True,
                 "loading_aperture_pass": True,
                 "seated_magnet": {"clearance_pass": True},

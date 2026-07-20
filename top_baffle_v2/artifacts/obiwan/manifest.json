@@ -6,45 +6,45 @@
   },
   "files": [
     {
-      "bytes": 1001185,
+      "bytes": 1001320,
       "path": "images/wing_design_map.png",
       "role": "generated_wing_design_map",
-      "sha256": "cf2c0a327ef8bd0c9dbaa5ccce077f4ab37cb6b0d5a898b8034671307afb6831",
+      "sha256": "c3f5080674c5bf2c5ce4dc504aaa6401a58401cf52abe178e949525e10bdcfa1",
       "source": "obiwan_wing_design_map.png"
     },
     {
-      "bytes": 32382,
+      "bytes": 32797,
       "path": "qualification.md",
       "role": "physical_qualification_template",
-      "sha256": "2b07f5bc5c462da0cb73124e04b7ec55e834431a57412ebda6bfeb3b9327bd88",
+      "sha256": "9e50ba3859bc029df4dcdcf03bf8bbc2bc67c1502e39727f074435b6617828a6",
       "source": "obiwan_physical_qualification.md"
     },
     {
-      "bytes": 2500786,
+      "bytes": 2721712,
       "path": "states/floor/cad/attachments.step",
       "role": "optional_tweeter_attachment",
-      "sha256": "0e581b40e293a9f8244f61f435bc31de2006cdc96026f54ebf8ef7faaddd026a",
+      "sha256": "7b8a6b8ddb2c061fd698c4383edb581419b91e3888daeb4304b2ff25be6356da",
       "source": "floor_stand/top_baffle_nd25fw4_obiwan_attachments.step"
     },
     {
-      "bytes": 19825639,
+      "bytes": 19825773,
       "path": "states/floor/cad/core.step",
       "role": "core_assembly",
-      "sha256": "9aa3d169bfb1da022765afefd975471232bdaf4931dab8cd7a22699bac17fc24",
+      "sha256": "b0e065b35e22f2d1492c8c2f2125c131f2771c531325e778335c716cffea290a",
       "source": "floor_stand/top_baffle_nd25fw4_obiwan_split.step"
     },
     {
-      "bytes": 13839555,
+      "bytes": 13839689,
       "path": "states/floor/cad/lm_keyed_split.step",
       "role": "optional_lm_print_split",
-      "sha256": "eea1c8d5e533dcca932a74c7cc77c5d26abf17561ea3d8c3889cd2b931af7fe3",
+      "sha256": "0239d83d3ccc059ca7ab8ee9d63f1105bc21b87f5299b469be96f6b4b5f70a8b",
       "source": "floor_stand/top_baffle_nd25fw4_obiwan_lm_split.step"
     },
     {
-      "bytes": 131491573,
+      "bytes": 131726835,
       "path": "states/floor/cad/review_assembly.step",
       "role": "non_manufacturing_review_assembly",
-      "sha256": "bdc688860a7df3866f4b7e9f3811629b99d84aea05bb7de5f9e9bb3ed7bc6dde",
+      "sha256": "ba9e2fbdbec2864d54a7e41b21548c71b6470635072cec9cfd1f85a7e40e040b",
       "source": "floor_stand/top_baffle_nd25fw4_obiwan_assembled.step"
     },
     {
@@ -69,10 +69,10 @@
       "source": "images/generated/obiwan/floor/core_iso_opposite_20260718T100009Z.png"
     },
     {
-      "bytes": 621198,
+      "bytes": 621094,
       "path": "states/floor/images/routing.png",
       "role": "generated_routing",
-      "sha256": "4a2bc14418d834d9c565de58dab5bccf75ba2dd72f2c0f0442b7afc473c9127d",
+      "sha256": "83f322372fde3df8b67716d6a8597536490361ce0bd39c86e0ca9ff83d3bb272",
       "source": "floor_stand/baffle_cable_routing_obiwan.png"
     },
     {
@@ -86,49 +86,49 @@
       "bytes": 14976,
       "path": "states/floor/manifest.json",
       "role": "candidate_manifest",
-      "sha256": "c50635d2beaa8699d99cd90d25a3efa178328459166f44bd84f298fb083c7b94",
+      "sha256": "8d61437dcd976e51d2d40dcfe81a804be3ae8bf25bb696ef6bd3726825da533a",
       "source": "floor_stand/obiwan_release_manifest.json"
     },
     {
       "bytes": 16032,
       "path": "states/floor/qualification/integrated_floor_strength.json",
       "role": "analytical_screen",
-      "sha256": "c1792ba99e1bc8fe880cc396d54035e6404c891e0181f6e8f73ad14db1316dab",
+      "sha256": "eef96bb014ada63f97aff0f2187800c5330c1d4c306efbb0b2244cf908cd6f96",
       "source": "floor_stand/obiwan_integrated_floor_strength.json"
     },
     {
       "bytes": 2707,
       "path": "states/floor/qualification/integrated_floor_strength.md",
       "role": "analytical_screen_report",
-      "sha256": "daca7f1388f8e8315c2d9aca3e05242707e533b9c377e0dd67eca9b279917771",
+      "sha256": "7a9c3c8a46be0f129e1cec7bb03f86d21dc2a466f8e35372e34110fcb303958f",
       "source": "floor_stand/obiwan_integrated_floor_strength.md"
     },
     {
-      "bytes": 1417,
+      "bytes": 1438,
       "path": "states/floor/stl/lx521_top_obiwan_addon_tweeter_crescent.print.json",
       "role": "print_orientation_authority",
-      "sha256": "f54547348f5453a19b56b335496163d02fcb488a86761b856d54d34bdc3c3f26",
+      "sha256": "ae13ea4f83f80f67f5379bf50c76419486e7f46ba9e73f6dc0b991fb8acdc2fe",
       "source": "floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.print.json"
     },
     {
-      "bytes": 165984,
+      "bytes": 174584,
       "path": "states/floor/stl/lx521_top_obiwan_addon_tweeter_crescent.stl",
       "role": "print_mesh",
-      "sha256": "21b91976f9d808ca03b652ea20fc4299edd0b43dee5d886f94bc193849bb6dd5",
+      "sha256": "b3152a56cff21ff810f81015f27896817f8b86d1044455f10e46c87477fdeef7",
       "source": "floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.stl"
     },
     {
-      "bytes": 1620,
+      "bytes": 1621,
       "path": "states/floor/stl/lx521_top_obiwan_core_1of2_lm_carrier.print.json",
       "role": "print_orientation_authority",
-      "sha256": "3874973bdcfbcbb082ee9018651349f9f21e8815911a9a52306573b25b938531",
+      "sha256": "7834ea26f46294335721f6ae141b0081765a76a42e3549491c47d4d65ea7c5d3",
       "source": "floor_stand/stl/lx521_top_obiwan_core_1of2_lm_carrier.print.json"
     },
     {
       "bytes": 1505584,
       "path": "states/floor/stl/lx521_top_obiwan_core_1of2_lm_carrier.stl",
       "role": "print_mesh",
-      "sha256": "53e480d4edff79408e1c8bbb665fd94ec9dca600aca9daea1dcbea8b30c2b43f",
+      "sha256": "f9a825a0ce9bb7fc675dd9876a96a6d99ff0466c4bdcd4ae52815472ede75879",
       "source": "floor_stand/stl/lx521_top_obiwan_core_1of2_lm_carrier.stl"
     },
     {
@@ -149,56 +149,56 @@
       "bytes": 1586,
       "path": "states/floor/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json",
       "role": "print_orientation_authority",
-      "sha256": "815139150748444483270057c0e923b080983bef701ec30fa200b153859917fa",
+      "sha256": "14a4d7113d82b9239fff0f720a38d7ed0cfcd642fe5a76c4294492a3b44f13ff",
       "source": "floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json"
     },
     {
       "bytes": 1117884,
       "path": "states/floor/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
       "role": "print_mesh",
-      "sha256": "1d17fe9cbd8dbf262794fe6255833ae70be0394c7922b4ed2aa7c8fd1eb9cce6",
+      "sha256": "93b6ff02c257eba214bc2eecd955f8a29d1ea764a14652244b5e144a2dd0d4ad",
       "source": "floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl"
     },
     {
-      "bytes": 1581,
+      "bytes": 1582,
       "path": "states/floor/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.print.json",
       "role": "print_orientation_authority",
-      "sha256": "310b2837fad667140a8aee118f867b26269c6d65212552dc4f0e582944787a49",
+      "sha256": "0ee78eb030dbd14ae7a06621c3b4b7d6e957c50c5bb66b19911d34143426b772",
       "source": "floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.print.json"
     },
     {
       "bytes": 466984,
       "path": "states/floor/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.stl",
       "role": "print_mesh",
-      "sha256": "7ee27adc14740db4a92108fe6541f3a77cf3b5bd4988438d4131811242937c5a",
+      "sha256": "2048df3871734b1e85b69de2851f8e08410e59cfd4d8bec11c244087d0f52b70",
       "source": "floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.stl"
     },
     {
-      "bytes": 2500744,
+      "bytes": 2721670,
       "path": "states/no_floor/cad/attachments.step",
       "role": "optional_tweeter_attachment",
-      "sha256": "d5052c64eb0789134872663385ae30bbbc93debfbc15f49e76190ccd64249046",
+      "sha256": "e605ee6faeb04d10f86501fb1c975dc27de0b2a61ac080ff099cfa7f8ede5fc0",
       "source": "no_floor_stand/top_baffle_nd25fw4_obiwan_attachments.step"
     },
     {
-      "bytes": 18997055,
+      "bytes": 18997189,
       "path": "states/no_floor/cad/core.step",
       "role": "core_assembly",
-      "sha256": "9b9a3c3c2663bc0f305a6bc0c01ddbc806fbe846df43f34ee3acd59d2ea612e0",
+      "sha256": "44dd54cf1e8ac103e5cd179d233facd7b94a4defef3872900805f58a357cefc8",
       "source": "no_floor_stand/top_baffle_nd25fw4_obiwan_split.step"
     },
     {
-      "bytes": 13006441,
+      "bytes": 13006575,
       "path": "states/no_floor/cad/lm_keyed_split.step",
       "role": "optional_lm_print_split",
-      "sha256": "0d203f19c24bf5a8187dc59bd682daadf450f803d379291a496231afac71afaa",
+      "sha256": "80a55c11ad4b33d5290c18c20ce5a88547f9c7ddd15c43eccfda1e6189a68f37",
       "source": "no_floor_stand/top_baffle_nd25fw4_obiwan_lm_split.step"
     },
     {
-      "bytes": 130659684,
+      "bytes": 130894951,
       "path": "states/no_floor/cad/review_assembly.step",
       "role": "non_manufacturing_review_assembly",
-      "sha256": "77814216370638c956f636398816843852b2aa7ce5b78d585e3bd9af90776244",
+      "sha256": "ded1092b2ce699dab5e7360601dd05b7d9a6e3f69996dfe3cc77175e127b1182",
       "source": "no_floor_stand/top_baffle_nd25fw4_obiwan_assembled.step"
     },
     {
@@ -223,10 +223,10 @@
       "source": "images/generated/obiwan/no_floor/core_iso_opposite_20260718T095955Z.png"
     },
     {
-      "bytes": 516768,
+      "bytes": 516616,
       "path": "states/no_floor/images/routing.png",
       "role": "generated_routing",
-      "sha256": "02fe6cf94e00bd25a6fa73b754f7e7f9fccc72856342b6cee285d8efd701d7f4",
+      "sha256": "256bd4c5f80745846b8a10fedee3edc9b939a25e0df90638aaec0580eeab6a64",
       "source": "no_floor_stand/baffle_cable_routing_obiwan.png"
     },
     {
@@ -240,35 +240,35 @@
       "bytes": 14128,
       "path": "states/no_floor/manifest.json",
       "role": "candidate_manifest",
-      "sha256": "8225d6e97cc4df4ee67d44a63f66bb3a76eaf7e22e774d1b3bb06b942d682cba",
+      "sha256": "3e2f05e8bba29788aa4cc6562dd72a89540c8d5c6f2802520f75b32ee3fea8ab",
       "source": "no_floor_stand/obiwan_release_manifest.json"
     },
     {
-      "bytes": 1417,
+      "bytes": 1438,
       "path": "states/no_floor/stl/lx521_top_obiwan_addon_tweeter_crescent.print.json",
       "role": "print_orientation_authority",
-      "sha256": "f54547348f5453a19b56b335496163d02fcb488a86761b856d54d34bdc3c3f26",
+      "sha256": "ae13ea4f83f80f67f5379bf50c76419486e7f46ba9e73f6dc0b991fb8acdc2fe",
       "source": "no_floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.print.json"
     },
     {
-      "bytes": 165984,
+      "bytes": 174584,
       "path": "states/no_floor/stl/lx521_top_obiwan_addon_tweeter_crescent.stl",
       "role": "print_mesh",
-      "sha256": "21b91976f9d808ca03b652ea20fc4299edd0b43dee5d886f94bc193849bb6dd5",
+      "sha256": "b3152a56cff21ff810f81015f27896817f8b86d1044455f10e46c87477fdeef7",
       "source": "no_floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.stl"
     },
     {
-      "bytes": 1618,
+      "bytes": 1620,
       "path": "states/no_floor/stl/lx521_top_obiwan_core_1of2_lm_carrier.print.json",
       "role": "print_orientation_authority",
-      "sha256": "3322b003f7a504bba0847888550d88e78ffd91e5c6600d0bbee588318affafa8",
+      "sha256": "711acd8a5798d7ba32200d3db08043aa1c48a59bcd7a3d6e1bc7f5d52a8b9540",
       "source": "no_floor_stand/stl/lx521_top_obiwan_core_1of2_lm_carrier.print.json"
     },
     {
       "bytes": 718384,
       "path": "states/no_floor/stl/lx521_top_obiwan_core_1of2_lm_carrier.stl",
       "role": "print_mesh",
-      "sha256": "5ab1f2dc08c22ddde639d1f12d4e1b93dfb3f8daeb69042fb1d2f24fefb6efbd",
+      "sha256": "60eb7dc56516c8507dbf7332e627ed9a67da0cf56a33169688bf901afc574347",
       "source": "no_floor_stand/stl/lx521_top_obiwan_core_1of2_lm_carrier.stl"
     },
     {
@@ -289,322 +289,322 @@
       "bytes": 1585,
       "path": "states/no_floor/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json",
       "role": "print_orientation_authority",
-      "sha256": "20086d1526dcc934cb843eb1ea9b434e806e91b113aff8f56c3c299df3e22ed7",
+      "sha256": "4c9126d6644d6aa2ad07b8081d00d38ee259b2b111ed3b885b072ee0c260ee59",
       "source": "no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json"
     },
     {
       "bytes": 330184,
       "path": "states/no_floor/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
       "role": "print_mesh",
-      "sha256": "de97064b763db068a6523ac38b233ad88679b1d915265345fcf1dc8ac18c928c",
+      "sha256": "3dca982feba49adb5ceb8cd6af0735226e116405afada8e9b7be6f940ebb5a09",
       "source": "no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl"
     },
     {
       "bytes": 1581,
       "path": "states/no_floor/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.print.json",
       "role": "print_orientation_authority",
-      "sha256": "ec7b275daf84f46e69ce197c6a7f6f1a67c5e535b3e208fd9a916cca81780b56",
+      "sha256": "7f0492896e320f312f2c03935ab44dbe31dee2cc2b133e41e084ae09302213df",
       "source": "no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.print.json"
     },
     {
       "bytes": 467484,
       "path": "states/no_floor/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.stl",
       "role": "print_mesh",
-      "sha256": "16d27a2d4a0283e5bfdd1b8ca36cdfc953c2574807becc7293875b0401d51a25",
+      "sha256": "9b12424211ce85afe3316e40c9cd5f056322fb240662a98e9e617ead8e0b88d7",
       "source": "no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.stl"
     },
     {
-      "bytes": 14299739,
+      "bytes": 13760455,
       "path": "wings/ac/cad/monolithic_pair.step",
       "role": "canonical_wing_pair",
-      "sha256": "b2f7b569e0afc30705d70b0e1c3f73b2210ca526d949442026c257b8467afce5",
+      "sha256": "4f0939a0e028077435647256d1b5f21c8d91a52a1e17fdb841049008bf369f86",
       "source": "wings/ac/top_baffle_nd25fw4_obiwan_wing_ac.step"
     },
     {
-      "bytes": 14901540,
+      "bytes": 14361870,
       "path": "wings/ac/cad/print_assembly.step",
       "role": "six_piece_print_assembly",
-      "sha256": "b73ea2622e1a9193e10e063ca0682002aa67ad77b38ada3d35c3df3e7351ba77",
+      "sha256": "31332cab8a799293749433e95e42fec2950972ccc645438b07758d63495cf34e",
       "source": "wings/ac/top_baffle_nd25fw4_obiwan_wing_ac_assembled.step"
     },
     {
-      "bytes": 55980,
+      "bytes": 56775,
       "path": "wings/ac/facts.json",
       "role": "geometry_facts",
-      "sha256": "10679a78e3ec83735f4f8b590840163409b3025275723bae99d7bdc2276a3bfb",
+      "sha256": "1c3b944763e511008de9bca069814d567100e80f919bf74cc69be62a26d0d8b9",
       "source": "wings/ac/obiwan_wing_ac_facts.json"
     },
     {
-      "bytes": 210615,
+      "bytes": 212150,
       "path": "wings/ac/images/front.png",
       "role": "generated_wing_review",
-      "sha256": "540aec8f41d4dda248738d737633e7f3aaee49cb868faef815a0fc3ecc7fa0cd",
+      "sha256": "bbfd2898476422c32480a6d070cc87c1f7538433243cc16cc1aac1b60611f685",
       "source": "wings/ac/review/obiwan_wing_ac_front.png"
     },
     {
-      "bytes": 477686,
+      "bytes": 467626,
       "path": "wings/ac/images/magnet_roots.png",
       "role": "generated_wing_review",
-      "sha256": "a7a13f7711645e7aafa1aa20fbf9718eef73e8db67529ddee4f4d68f36eb3620",
+      "sha256": "6fb5cd85f85680cca5d1ba8af363174986e5f202588a18ef51298e1f08761b0a",
       "source": "wings/ac/review/obiwan_wing_ac_magnet_roots.png"
     },
     {
-      "bytes": 208459,
+      "bytes": 210347,
       "path": "wings/ac/images/rear.png",
       "role": "generated_wing_review",
-      "sha256": "22c51ee109ef23344348b1392958d44e2f520f727c6deddfe97462bdf0cb1b1c",
+      "sha256": "3a6b1f5cc406a66f78e4d7f99d25429fc7ea73181e2a68d3ea3ff1cebf7dabdd",
       "source": "wings/ac/review/obiwan_wing_ac_rear.png"
     },
     {
-      "bytes": 202540,
+      "bytes": 202388,
       "path": "wings/ac/images/side_section.png",
       "role": "generated_wing_review",
-      "sha256": "aa950d914c54fbdfb71e19f4dac46113238aff066c8ec6dcd879703684f6d35c",
+      "sha256": "25ff57b94b09ee9c236590bcc2b4a61fc402d10fbca9c5b32d1c9a0ad97ace2e",
       "source": "wings/ac/review/obiwan_wing_ac_side_section.png"
     },
     {
-      "bytes": 261501,
+      "bytes": 261943,
       "path": "wings/ac/images/split_exploded.png",
       "role": "generated_wing_review",
-      "sha256": "9b556b4e0b7049d1b36b207c0b5046cdf481d69a579f2ee86d85cec4bfb8c518",
+      "sha256": "9104edf0ad3a310eaa3164e01acae6f6dc658bca8f9681c8d86c1d2eee11c501",
       "source": "wings/ac/review/obiwan_wing_ac_split_exploded.png"
     },
     {
       "bytes": 10271,
       "path": "wings/ac/manifest.json",
       "role": "wing_manifest",
-      "sha256": "41feff2903215f31e43b073aaebaf6eeafb890411c819548aeb9c0ce796c45d8",
+      "sha256": "96d2818b2d08509a8e13eb59748c4024165e5357eddb2cb983a3735022c0e224",
       "source": "wings/ac/obiwan_wing_ac_print_manifest.json"
     },
     {
       "bytes": 1153,
       "path": "wings/ac/stl/lx521_top_obiwan_wing_ac_left_1of3_lm_lower.print.json",
       "role": "print_orientation_authority",
-      "sha256": "fce53c80d408c2bdfb50e613b959514c2d221bd29dbef95519551756d0c7fd8c",
+      "sha256": "6609a4162ec2edf5264120e9cab18744733ad48ee6c6f88fedec8ea197581028",
       "source": "wings/ac/stl/lx521_top_obiwan_wing_ac_left_1of3_lm_lower.print.json"
     },
     {
-      "bytes": 110384,
+      "bytes": 111984,
       "path": "wings/ac/stl/lx521_top_obiwan_wing_ac_left_1of3_lm_lower.stl",
       "role": "print_mesh",
-      "sha256": "c5a28cc9c8a1c9f500a63259dcce5e4a9e875db1e0e1799a93642826fd7e690a",
+      "sha256": "98b18cbd31d04799f082e1ff57a11e79be42d90265da79eae2a1fb15ed10b5f4",
       "source": "wings/ac/stl/lx521_top_obiwan_wing_ac_left_1of3_lm_lower.stl"
     },
     {
       "bytes": 1196,
       "path": "wings/ac/stl/lx521_top_obiwan_wing_ac_left_2of3_lm_upper.print.json",
       "role": "print_orientation_authority",
-      "sha256": "563f09cf8749f8826260d6942e4ef7097001d4bde1bb0fb1f55818f8e05d8738",
+      "sha256": "3e2960867adcf6d0275ec0b1781481840f44780af9852d0dbbdbb3f9002711cd",
       "source": "wings/ac/stl/lx521_top_obiwan_wing_ac_left_2of3_lm_upper.print.json"
     },
     {
-      "bytes": 221084,
+      "bytes": 213484,
       "path": "wings/ac/stl/lx521_top_obiwan_wing_ac_left_2of3_lm_upper.stl",
       "role": "print_mesh",
-      "sha256": "256e9b07d187e09f5a1f3e8ffd28ea88f040214692ed3b125496a03e9eee77c5",
+      "sha256": "4adba51f697e9970fdff6a4961d761f672ef924c58af89a42e96812d94623f58",
       "source": "wings/ac/stl/lx521_top_obiwan_wing_ac_left_2of3_lm_upper.stl"
     },
     {
-      "bytes": 1178,
+      "bytes": 1174,
       "path": "wings/ac/stl/lx521_top_obiwan_wing_ac_left_3of3_um.print.json",
       "role": "print_orientation_authority",
-      "sha256": "651f3e575d1798be2621c59d7ee665e0aed1e6ac993a3b8496a04df062b2e4be",
+      "sha256": "63303448b16be46f72d07c185125630449cadbf3e29d5b76e95f6a0dea61e2ab",
       "source": "wings/ac/stl/lx521_top_obiwan_wing_ac_left_3of3_um.print.json"
     },
     {
-      "bytes": 88484,
+      "bytes": 82084,
       "path": "wings/ac/stl/lx521_top_obiwan_wing_ac_left_3of3_um.stl",
       "role": "print_mesh",
-      "sha256": "b7b0f67b8af171c5ee2f9ec449ff7655ac3fb6dc6ae9720be5611c023d127068",
+      "sha256": "9a99270913bac89b45aed1a457404b1ef78b55c40ca98c412678e59cdadfffa2",
       "source": "wings/ac/stl/lx521_top_obiwan_wing_ac_left_3of3_um.stl"
     },
     {
       "bytes": 1163,
       "path": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_1of3_lm_lower.print.json",
       "role": "print_orientation_authority",
-      "sha256": "afa7f731fe9a5b8095c079ee0b8395eec46bbb07365182733b9cf84f276e2be4",
+      "sha256": "f609a1b9ef5fd9d172dd4b58aa0ef40cb607b5bc12e2b4e13f9436b3c7055838",
       "source": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_1of3_lm_lower.print.json"
     },
     {
-      "bytes": 110384,
+      "bytes": 111984,
       "path": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_1of3_lm_lower.stl",
       "role": "print_mesh",
-      "sha256": "796cd54ff54456abd1585ab857f5b6e8b508b77d462c570b3db614fb0becb973",
+      "sha256": "e7893f849fab576907af111c40b74b504fc39be6a8d876885525bdc62b98ddc5",
       "source": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_1of3_lm_lower.stl"
     },
     {
-      "bytes": 1200,
+      "bytes": 1203,
       "path": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_2of3_lm_upper.print.json",
       "role": "print_orientation_authority",
-      "sha256": "9ffb5d8b23f5f40e755bb5b2241c33bed4df20b1e638f8214f735f50db679430",
+      "sha256": "e8a06d026d3390e53044c4fd655877751229b83fe90a1a305359dc5bafd8f31e",
       "source": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_2of3_lm_upper.print.json"
     },
     {
-      "bytes": 221084,
+      "bytes": 213484,
       "path": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_2of3_lm_upper.stl",
       "role": "print_mesh",
-      "sha256": "7189d57caaf041d66f31dd3f969b2d704493b450e495d81ade624c7fe0582a7c",
+      "sha256": "9b1023aa576ec20012acabb31191dfcecd95e589de7ab063132714131c09ecb8",
       "source": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_2of3_lm_upper.stl"
     },
     {
       "bytes": 1179,
       "path": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_3of3_um.print.json",
       "role": "print_orientation_authority",
-      "sha256": "d4648ec9d116be3cd84a833104e54776bc9f0f93c24f957d36151894853066c2",
+      "sha256": "95f84decf20b2ab54d0e0b9ce429603701e7879e45460a7c694cd2f0cb6c6e38",
       "source": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_3of3_um.print.json"
     },
     {
-      "bytes": 88484,
+      "bytes": 82084,
       "path": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_3of3_um.stl",
       "role": "print_mesh",
-      "sha256": "9d5b7f2c93a510443a000b5c04870b6793db7ffc9f6a400eb9e1a7de55d2ef8d",
+      "sha256": "e7c0fab6b7c287f1f357e22884d037c8d90e76a4b9574cbd2a5a613e60dc747a",
       "source": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_3of3_um.stl"
     },
     {
-      "bytes": 28410729,
+      "bytes": 27871254,
       "path": "wings/ae/cad/monolithic_pair.step",
       "role": "canonical_wing_pair",
-      "sha256": "d1c1de3277e59f6b75e239a6eb494120c852ceb4eadb8aa52ed41c3689208859",
+      "sha256": "e1e23c068e0b9258045f6bd3fe1d0e5d894dbc08fd78145ed0612f428cf2ad77",
       "source": "wings/ae/top_baffle_nd25fw4_obiwan_wing_ae.step"
     },
     {
-      "bytes": 46655927,
+      "bytes": 46116168,
       "path": "wings/ae/cad/print_assembly.step",
       "role": "six_piece_print_assembly",
-      "sha256": "4b61f4be03185897071eb06efc0cf9e835d4625eff700516289c5c59c6b5e064",
+      "sha256": "af73c6f02327de3a19f817778f49ebe7aea4d4d32091764f6ee7d3963846539a",
       "source": "wings/ae/top_baffle_nd25fw4_obiwan_wing_ae_assembled.step"
     },
     {
-      "bytes": 57425,
+      "bytes": 58196,
       "path": "wings/ae/facts.json",
       "role": "geometry_facts",
-      "sha256": "d7a0f9c63fe61246b1a3e72e19d5fe709784de0b43f216bdf0976e5e3feb23ae",
+      "sha256": "af0eb454917bd7438d397d7e354832c7ed4dfd58f6808e87309d7db764fc057e",
       "source": "wings/ae/obiwan_wing_ae_facts.json"
     },
     {
-      "bytes": 243932,
+      "bytes": 245116,
       "path": "wings/ae/images/front.png",
       "role": "generated_wing_review",
-      "sha256": "66be792594f6e6d7f1e21e1817c0c6cdce2d6e9ebead84b23add9e73279c793b",
+      "sha256": "5f81d213929707ffd11b86bccc2541ec76ed29d11d2cad45f9580fea205fc0bf",
       "source": "wings/ae/review/obiwan_wing_ae_front.png"
     },
     {
-      "bytes": 578302,
+      "bytes": 587191,
       "path": "wings/ae/images/magnet_roots.png",
       "role": "generated_wing_review",
-      "sha256": "1a148700ef2f9d65a41f2f92ae82d7e23a6ba360fe21873079baf9add380fcd0",
+      "sha256": "923d614275bbc688c0541a72b3e0a388c4850191754f44ac4a3b0081454ce68a",
       "source": "wings/ae/review/obiwan_wing_ae_magnet_roots.png"
     },
     {
-      "bytes": 284972,
+      "bytes": 285024,
       "path": "wings/ae/images/rear.png",
       "role": "generated_wing_review",
-      "sha256": "c9f39ae1ab864f43ab409cb7e8a243d321c9e23e9f3754bd405ae9f90b724894",
+      "sha256": "7c7b32fe2b20800b745949cb87dc03f49947bf91ea1a111c63621ad501e84861",
       "source": "wings/ae/review/obiwan_wing_ae_rear.png"
     },
     {
-      "bytes": 217869,
+      "bytes": 217725,
       "path": "wings/ae/images/side_section.png",
       "role": "generated_wing_review",
-      "sha256": "f22ab4269830a7d604fcb2ed034656a84c0c8be5c4e598702c5bc537cc48f481",
+      "sha256": "6c07bfb8904bbcaaf89f8e71e3847e3285842e597fa067b618552e925ae93bbb",
       "source": "wings/ae/review/obiwan_wing_ae_side_section.png"
     },
     {
-      "bytes": 266565,
+      "bytes": 266540,
       "path": "wings/ae/images/split_exploded.png",
       "role": "generated_wing_review",
-      "sha256": "e92f66c5bdf0735ee64520a033024d68a0034c7b20c2df33b063fa74db0ff333",
+      "sha256": "4db9dbe0f209f18e766bd00ca1a0f395ecaa18d656012964e430c2233df852ab",
       "source": "wings/ae/review/obiwan_wing_ae_split_exploded.png"
     },
     {
       "bytes": 10279,
       "path": "wings/ae/manifest.json",
       "role": "wing_manifest",
-      "sha256": "34a7f02e1e09cda5c13e859ca06920a9cb1c8159219ae977ce705f6fcb73468a",
+      "sha256": "131677b7ca5c32c38e9fb064a65102b9d067a08ba3260544ce3c57ac35b4cc96",
       "source": "wings/ae/obiwan_wing_ae_print_manifest.json"
     },
     {
       "bytes": 1194,
       "path": "wings/ae/stl/lx521_top_obiwan_wing_ae_left_1of3_lm_lower.print.json",
       "role": "print_orientation_authority",
-      "sha256": "404b47948dad5d91c0fec33ebf60012738b0a0e481cced275985abf196305e61",
+      "sha256": "a6334cf60a2137e1eb82bec8362e0e8384451e93ffedacc1d5cc149bdea03725",
       "source": "wings/ae/stl/lx521_top_obiwan_wing_ae_left_1of3_lm_lower.print.json"
     },
     {
-      "bytes": 7301284,
+      "bytes": 7302684,
       "path": "wings/ae/stl/lx521_top_obiwan_wing_ae_left_1of3_lm_lower.stl",
       "role": "print_mesh",
-      "sha256": "e3c58d098489ed414166149feda1e0194989d8c9601565dea841d569634d9260",
+      "sha256": "b9a2f1ea24d1ef2cc5a50a6a5031e357d19704c7fb1a2f5922b8de558ab90d8a",
       "source": "wings/ae/stl/lx521_top_obiwan_wing_ae_left_1of3_lm_lower.stl"
     },
     {
       "bytes": 1195,
       "path": "wings/ae/stl/lx521_top_obiwan_wing_ae_left_2of3_lm_upper.print.json",
       "role": "print_orientation_authority",
-      "sha256": "c083244c0c09a52f555910c2840aba4bc562e071c61160284facfc0034abd895",
+      "sha256": "5be86cd6211af2f245cc81fbaf8afb97956b4c701180386d452203f0cd010dea",
       "source": "wings/ae/stl/lx521_top_obiwan_wing_ae_left_2of3_lm_upper.print.json"
     },
     {
-      "bytes": 9464484,
+      "bytes": 9452584,
       "path": "wings/ae/stl/lx521_top_obiwan_wing_ae_left_2of3_lm_upper.stl",
       "role": "print_mesh",
-      "sha256": "3e79b960ad86fbe9da0c34c1caf03a77f16f6b4fd133f079a2b1bfc4bf6822d0",
+      "sha256": "d7992d3665e149a482c08567326d733c8c19bab9c0e62f72480cb2c29865cd08",
       "source": "wings/ae/stl/lx521_top_obiwan_wing_ae_left_2of3_lm_upper.stl"
     },
     {
       "bytes": 1174,
       "path": "wings/ae/stl/lx521_top_obiwan_wing_ae_left_3of3_um.print.json",
       "role": "print_orientation_authority",
-      "sha256": "6f9cf841f75d5356005ced73aebec79f497e72000a851b0cc3667df5d3b7f584",
+      "sha256": "eaafc9dd958190b63e1997d3b6efae5614a254177ca5cbe2368574a492c3a6fe",
       "source": "wings/ae/stl/lx521_top_obiwan_wing_ae_left_3of3_um.print.json"
     },
     {
-      "bytes": 3180184,
+      "bytes": 3175584,
       "path": "wings/ae/stl/lx521_top_obiwan_wing_ae_left_3of3_um.stl",
       "role": "print_mesh",
-      "sha256": "bec8478e6647dff271aaca204f1d1e4a8a4dbd9718428708d31b218c4e3fc1c6",
+      "sha256": "b9ef9bc6349f8c2b4770ef7694eac8bde6dfd7a02d82f83a9f023a54e7221444",
       "source": "wings/ae/stl/lx521_top_obiwan_wing_ae_left_3of3_um.stl"
     },
     {
       "bytes": 1204,
       "path": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_1of3_lm_lower.print.json",
       "role": "print_orientation_authority",
-      "sha256": "c28d98b02767658a91e9577876a3ade3060754d47f245fdcfedc2f53a730298e",
+      "sha256": "b474edd8e0ba1825de51a6411e8e8ac971c9e58b2ee7dc7da54ec39ba117060e",
       "source": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_1of3_lm_lower.print.json"
     },
     {
-      "bytes": 7305484,
+      "bytes": 7300184,
       "path": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_1of3_lm_lower.stl",
       "role": "print_mesh",
-      "sha256": "d65674ae6e0f6b1344b2b10c007f9ed3d62709e8701be38b5cef75f80adc520e",
+      "sha256": "71feb25e94e24b2c72e51d3b0eff3ae84a217017e5ddc00a713f998d23ccfc17",
       "source": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_1of3_lm_lower.stl"
     },
     {
-      "bytes": 1205,
+      "bytes": 1202,
       "path": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_2of3_lm_upper.print.json",
       "role": "print_orientation_authority",
-      "sha256": "ce616699e272aae4f2d842639e8ffd6fa00044a74d902e4098f5b037e5052cf1",
+      "sha256": "f41cdd02dbc21dc691079be68c4f963536e8110e20d706ba84b28383082e2ffd",
       "source": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_2of3_lm_upper.print.json"
     },
     {
-      "bytes": 9469584,
+      "bytes": 9448784,
       "path": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_2of3_lm_upper.stl",
       "role": "print_mesh",
-      "sha256": "11f89e50ac8559b0f424d452027d2b74a68bc1b9c075cd19c58fe99c2c089983",
+      "sha256": "ce20608f257691a64435471da8070b9ebbd0d874957755bd09626d969cd32319",
       "source": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_2of3_lm_upper.stl"
     },
     {
       "bytes": 1179,
       "path": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_3of3_um.print.json",
       "role": "print_orientation_authority",
-      "sha256": "626fe9ebff56b4fc0058499339912b5834bc20b831dabd0f0f5417b765fd655b",
+      "sha256": "3717b926d9a9d7ae652daac01460cbb3bfdc28d9212c311fd437640b96bf5d35",
       "source": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_3of3_um.print.json"
     },
     {
-      "bytes": 3172184,
+      "bytes": 3171784,
       "path": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_3of3_um.stl",
       "role": "print_mesh",
-      "sha256": "43e13235388ff9d4bb1a23248d459a64797522abe067f215b518d7491a77e52a",
+      "sha256": "54d06b6ead1d5bc93b6b85a056482b75e8ec6916a517b7675e87636e459b4ed6",
       "source": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_3of3_um.stl"
     }
   ],

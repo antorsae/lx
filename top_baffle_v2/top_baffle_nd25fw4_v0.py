@@ -9,29 +9,21 @@ pilots are front-side features.
 
 Magnet interface: one fully buried D5.2 x 2.10 cavity per side.  The legacy
 rear-axis XY sites (+-46, 324) were invalid: their centres sat 5.263 mm
-outside the B2 flare, leaving even the complete cavity detached.  The first
-correction moved both sites along the exact flare inward normal to
-(+-37.697, 326.470), leaving the R3.20 captive land 0.20 mm inside the
-unchanged acoustic outline.  Final route inspection rejected its mirrored
-left station: it was only 2.605 mm from the T centerline, versus the required
-8.0 mm (R3.20 land + 3.30-mm T half-width + 1.50-mm web).  V0 has no released
-mate, so the safe final adaptation retains the already-clear right station
-and moves only the left station to (-7.250, 321.200), below the D82 cutout and
-between the seam-B dovetails.  The all-constraint optimizer's shorter
-(-7.500, 322.300) candidate left only 0.219 mm beyond the cutout rule and
-0.241 mm beyond the seam rule.  The selected point is only 0.416 mm farther
-from the rejected station (30.899 mm total), but raises those margins to
-1.263 and 0.549 mm respectively; its nearest pilot margin is 12.363 mm and
-its sampled T-route margin is 18.014 mm.  A local full-depth circular
-keep restores only each land through the rear bevel; both keeps are wholly
-contained by the original B2 solid, so they neither grow the front outline
-nor fill the UM cutout or an insert bore.  V0 prints front-face-down:
+outside the B2 flare, leaving even the complete cavity detached.  A first
+correction at (+-37.697, 326.470) connected the lands, but its left station
+failed the T-route rule and its right station required a circular restore of
+the rear knife bevel.  That restore made the pocket position visible from
+the exterior and is forbidden.  V0 has no released mate, so both final sites
+move to the symmetric inboard locations (+-6.690, 321.290), below the D82
+cutout and between the seam-B dovetails.  The complete R3.20 x 5.60 captive
+lands already exist in the post-bevel host at these locations; applying the
+magnet cavities only subtracts internal material and leaves the knife bevel,
+front face, and rear face unchanged.  V0 prints front-face-down:
 the 0.45-mm rear skin occupies z=0..0.45, a 45-degree conical closure
 occupies z=0.45..3.05, and the cylindrical cavity occupies z=3.05..5.15.
 This shifts the magnet centre from the former flush-pocket z=1.00 datum to
 z=4.10 (+3.10 mm inward) while keeping the +Z axis.  The final sites are
-plan-clear of every duct; the local keeps prevent the rear bevel from
-interrupting their printable land.  No released V0 mate exists;
+plan-clear of every duct.  No released V0 mate exists;
 marked-pole direction is provisionally outward/rear (-Z).
 Checked by test_v0_duct_corridor (rear z-containment) and
 test_v0_captive_geometry (final BREP land/cavity/skin containment)."""
@@ -41,11 +33,8 @@ from __future__ import annotations
 import math
 
 from build123d import (
-    Align,
-    Cylinder,
     Plane,
     Polyline,
-    Pos,
     Wire,
     loft,
     make_face,
@@ -77,16 +66,13 @@ _CHAMF = ((60.654, 391.709), (10.081, 418.176))
 # enough to put the complete land inside the existing outline with 0.20 mm of
 # Boolean/print connection.  That was geometrically connected but not route-
 # safe on the mirrored left: its center was only 2.605 mm from the T route.
-# With no released mate, retain the clear right site and shift only the left
-# site to the connected strip below the D82 cutout and between the seam-B
-# dovetails.  A 0.10-mm all-constraint grid found the minimum-displacement
-# 0.20-mm-qualified candidate at (-7.50, 322.30), but its cutout/seam margins
-# were only 0.219/0.241 mm.  Select (-7.25, 321.20): only 0.416 mm more travel,
-# with 1.263/0.549 mm cutout/seam margins, 12.363 mm beyond the nearest-pilot
-# rule and 18.014 mm beyond the T-route rule.  Each full-depth circular keep
-# stays inside the old B2 volume;
-# unlike a rear-only boss it cannot start as an unsupported island when the
-# part is printed front-face-down.
+# With no released mate, move both stations to the symmetric connected strip
+# below the D82 cutout and between the seam-B dovetails.  At (+-6.69, 321.29)
+# the complete axial land exists in the post-bevel host without a local keep.
+# The pair retains at least 1.088 mm to the D82/seam rules and 18.58 mm of
+# sampled T-route clearance; pilot and other route constraints are looser.
+# This deliberately trades compatibility with the never-released scarf mate
+# for an immutable, cue-free exterior.
 V0_LEGACY_MAGNET_SITES = {
     "right": (46.0, 324.0),
     "left": (-46.0, 324.0),
@@ -132,11 +118,9 @@ V0_FIRST_CORRECTION_MAGNET_SITES = {
     "left": (-_V0_FIRST_RIGHT[0], _V0_FIRST_RIGHT[1]),
 }
 V0_MAGNET_SITES = {
-    "right": V0_FIRST_CORRECTION_MAGNET_SITES["right"],
-    "left": (-7.250, 321.200),
+    "right": (6.690, 321.290),
+    "left": (-6.690, 321.290),
 }
-V0_REJECTED_LEFT_TO_FINAL_SHIFT_MM = math.dist(
-    V0_FIRST_CORRECTION_MAGNET_SITES["left"], V0_MAGNET_SITES["left"])
 V0_MAGNET_LAND_OUTLINE_CLEARANCE_MM = {
     side: (-_flare_signed_distance((abs(x), y))
            - V0_CAPTIVE_LAND_RADIUS_MM)
@@ -243,23 +227,6 @@ def slide_cutters():
     return [right, mirror(right, about=Plane.YZ)]
 
 
-def v0_magnet_backing(x, y):
-    """Full-depth printable keep for one final captive station.
-
-    The R3.20 cylinder is exactly the helper-required axial plan land.  The
-    retained right station has the minimum 0.20-mm outline inset; the route-
-    corrected left station is farther inboard.  Both broadly overlap the
-    un-bevelled inner field, making one connected, front-supported solid;
-    each keep only restores material that ``slide_cutters`` removes from the
-    rear.
-    """
-    return Pos(x, y, 0.0) * Cylinder(
-        V0_CAPTIVE_LAND_RADIUS_MM,
-        THICKNESS_MM,
-        align=(Align.CENTER, Align.CENTER, Align.MIN),
-    )
-
-
 def apply_v0_magnets(part):
     """Apply the two front-down, rear-axis captive V0 cavities.
 
@@ -278,7 +245,6 @@ def apply_v0_magnets(part):
             pair_axis=(0.0, 0.0, -1.0),
             print_up=(0.0, 0.0, -1.0),
             bed_datum=(0.0, 0.0, THICKNESS_MM),
-            backing_additions=(v0_magnet_backing(x, y),),
         )
         records.append(tools)
     return result, tuple(records)

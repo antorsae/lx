@@ -91,9 +91,11 @@ DEPTH_MM = THICKNESS_MM - CORE_REAR_Z
 FRONT_SKIN_MM = 1.20
 FULL_RIB_MM = 2.40
 SADDLE_CLEAR_MM = INTERFACE_GAP_MM
-# Visible carrier and attachment faces retain an exact 0.05-mm assembly gap.
-# Ring-carrier cavity datums sit 0.15 mm beneath that smooth surface, so their
-# magnet-face separation is 1.10 mm; the base-side LM pair remains 0.95 mm.
+# The receiver cavity datum is offset 0.05 mm from the visible carrier face,
+# but that interval is solid wing material rather than an assembly air gap.
+# Ring-carrier cavity datums sit 0.15 mm beneath the smooth carrier surface,
+# so their magnet-face separation is 1.10 mm; the base-side LM pair remains
+# 0.95 mm.
 MAGNET_FACE_GAP_MM = INTERFACE_GAP_MM
 # Ac is the exact constant-depth reference.  Ae keeps the same flat front
 # datum but replaces the rear slab with a constrained, single-valued feather.
@@ -441,7 +443,7 @@ def _rounded_oriented_pad(face, normal, radial, tangential) -> Polygon:
 
 
 def _pocket_plan(site) -> Polygon:
-    """XY projection of the complete outward captive receiver land."""
+    """XY projection of the solid standoff plus captive receiver land."""
     face = np.asarray(
         site.get("outer_surface_face", site["face"]), dtype=float)
     normal = np.asarray(site["normal"], dtype=float)
@@ -450,10 +452,10 @@ def _pocket_plan(site) -> Polygon:
     outer = mouth + CAPTIVE_LAND_MM * normal
     half = CAVITY_DIAMETER_MM / 2.0 + SIDE_WALL_MARGIN_MM
     return Polygon((
-        tuple(mouth - half * tangent),
+        tuple(face - half * tangent),
         tuple(outer - half * tangent),
         tuple(outer + half * tangent),
-        tuple(mouth + half * tangent),
+        tuple(face + half * tangent),
     ))
 
 
@@ -574,8 +576,12 @@ def _receiver_root(profile: Polygon, site, key: str) -> tuple[Polygon, Polygon]:
         carrier = common_lm_wing_contact_plan()
     else:
         carrier = side_ring_outer_plan(site["driver"])
-    carrier = carrier.buffer(
-        MAGNET_FACE_GAP_MM, resolution=16, join_style=1)
+    # Keep the root flush with the visible carrier datum.  The cavity itself
+    # begins MAGNET_FACE_GAP_MM farther outward, leaving that complete interval
+    # as solid receiver standoff.  Buffering the carrier by the same amount
+    # would turn the standoff into an actual air gap and contradict the sealed
+    # cavity contract.
+    carrier = carrier.buffer(0)
     pad = pad.difference(carrier)
     if is_um:
         bridge = _um_receiver_bridge(site).difference(carrier)
@@ -1013,7 +1019,8 @@ def _validate_layout(layout: VariantLayout) -> None:
         radial_extent = float(np.ptp(coords @ normal))
         tangential_extent = float(np.ptp(coords @ tangent))
         center_delta = np.asarray(pocket.centroid.coords[0]) - face
-        if (not math.isclose(radial_extent, CAPTIVE_LAND_MM,
+        if (not math.isclose(radial_extent,
+                             CAPTIVE_LAND_MM + MAGNET_FACE_GAP_MM,
                              abs_tol=0.002)
                 or not math.isclose(tangential_extent,
                                     (CAVITY_DIAMETER_MM

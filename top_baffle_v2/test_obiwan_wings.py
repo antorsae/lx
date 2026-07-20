@@ -59,6 +59,7 @@ RING_CAVITY_FACE_OFFSET_MM = 0.65
 RING_CAVITY_FACE_INSET_MM = 0.15
 RING_FLUSH_FAIRING_MM = 0.80
 MAGNET_ROOF_ANGLE_DEG = 45.0
+OBIWAN_MAGNET_Z_MM = 15.10
 DOVETAIL_PROFILES_MM = (
     {"neck": 7.0, "head": 9.0, "depth": 4.0},
     {"neck": 7.0, "head": 8.5, "depth": 4.0},
@@ -630,8 +631,13 @@ def test_exported_artifact_contract() -> None:
                     receiver.get("roof_angle_deg"),
                     MAGNET_ROOF_ANGLE_DEG, abs_tol=1e-9)
                 assert math.isclose(
-                    receiver.get("carrier_to_receiver_face_gap_mm"),
+                    receiver.get("receiver_solid_standoff_mm"),
                     MAGNET_INTERFACE_GAP_MM, abs_tol=1e-9)
+                assert math.isclose(
+                    receiver.get("physical_interface_gap_mm"),
+                    0.0, abs_tol=1e-9)
+                assert receiver.get(
+                    "receiver_spacing_standoff_is_solid") is True
                 assert math.isclose(
                     receiver.get("interface_gap_mm"),
                     MAGNET_INTERFACE_GAP_MM, abs_tol=1e-9)
@@ -648,7 +654,7 @@ def test_exported_artifact_contract() -> None:
                 carrier_face = receiver.get("carrier_face_xy_mm")
                 carrier_cavity_datum = receiver.get(
                     "carrier_cavity_datum_xy_mm")
-                mouth = receiver.get("receiver_mouth_xy_mm")
+                mouth = receiver.get("receiver_cavity_face_xy_mm")
                 normal = receiver.get("axis_normal_xy")
                 expected_inset = (
                     RING_CAVITY_FACE_INSET_MM
@@ -675,7 +681,8 @@ def test_exported_artifact_contract() -> None:
             assert serialized_lower.get("axis_normal_xy") == [
                 expected_normal_x, 0.0]
             assert math.isclose(
-                serialized_lower.get("axis_z_mm"), 12.55, abs_tol=1e-9)
+                serialized_lower.get("axis_z_mm"),
+                OBIWAN_MAGNET_Z_MM, abs_tol=1e-9)
         dovetails = geometry.get("dovetail_contract")
         assert isinstance(dovetails, dict)
         assert dovetails.get("method") == (
@@ -1391,9 +1398,10 @@ def test_live_brep_geometry_contract() -> None:
         assert lower_receiver["interface_kind"] == "base_side"
         assert lower_receiver["axis_normal_xy"] == [1.0, 0.0]
         assert lower_receiver["carrier_face_xy_mm"] == [32.0, 18.0]
-        assert lower_receiver["receiver_mouth_xy_mm"] == [32.05, 18.0]
+        assert lower_receiver["receiver_cavity_face_xy_mm"] == [32.05, 18.0]
         assert math.isclose(
-            lower_receiver["axis_z_mm"], 12.55, abs_tol=1e-9)
+            lower_receiver["axis_z_mm"],
+            OBIWAN_MAGNET_Z_MM, abs_tol=1e-9)
         for record in receiver_records:
             assert record["closure_kind"] == "transverse_gable_45deg"
             assert math.isclose(
@@ -1415,8 +1423,11 @@ def test_live_brep_geometry_contract() -> None:
                 record["roof_angle_deg"], MAGNET_ROOF_ANGLE_DEG,
                 abs_tol=1e-9)
             assert math.isclose(
-                record["carrier_to_receiver_face_gap_mm"],
+                record["receiver_solid_standoff_mm"],
                 MAGNET_INTERFACE_GAP_MM, abs_tol=1e-9)
+            assert math.isclose(
+                record["physical_interface_gap_mm"], 0.0, abs_tol=1e-9)
+            assert record["receiver_spacing_standoff_is_solid"] is True
             assert math.isclose(
                 record["paired_magnet_face_separation_mm"],
                 _expected_magnet_face_separation(
@@ -1519,11 +1530,12 @@ def test_live_brep_geometry_contract() -> None:
                     f"{slug}/{side}/{key['name']}: female {female_role} "
                     f"owns {female_intrusion:.6f} mm3 of male key")
 
-        # The lower receiver is a real 0.05-mm-gapped, fully sealed captive
-        # station in lm_lower, not merely a coordinate record.  Probe the
+        # The lower receiver is a real fully sealed captive station in
+        # lm_lower, not merely a coordinate record.  Probe the
         # cradle/chimney/roof voids, both 0.45-mm skins, the complete 3.00-mm
-        # positive land, and the locally empty interface gap on both mirrors.
-        # No upper print may own any positive station material.
+        # positive land, and the solid 0.05-mm receiver-side spacing standoff
+        # on both mirrors.  It preserves magnet spacing without a visible
+        # pocket-width exterior notch. No upper print may own station material.
         for side, side_pieces in (
                 ("right", pieces), ("left", left_pieces)):
             site = next(
@@ -1569,12 +1581,13 @@ def test_live_brep_geometry_contract() -> None:
             inner_skin = cad._axis_cylinder(
                 inner_face, site["normal"], site["z_mm"], skin_diameter,
                 inward=0.0, outward=DEFAULT_SPEC.inner_skin_mm - 0.03)
-            local_gap = cad._axis_cylinder(
+            solid_standoff = cad._axis_cylinder(
                 site["face"], site["normal"], site["z_mm"], skin_diameter,
                 inward=0.0, outward=MAGNET_INTERFACE_GAP_MM - 0.01)
-            assert _intersection_volume(
-                side_pieces["lm_lower"], local_gap) <= 0.02, (
-                    f"{slug}/{side}: 0.05-mm interface gap is not real")
+            standoff_fill = _intersection_volume(
+                side_pieces["lm_lower"], solid_standoff)
+            assert standoff_fill >= 0.97 * solid_standoff.volume, (
+                f"{slug}/{side}: solid receiver spacing standoff is missing")
             for skin_label, skin in (("interface", face_skin),
                                      ("inner", inner_skin)):
                 fill = _intersection_volume(side_pieces["lm_lower"], skin)
@@ -1635,6 +1648,47 @@ def test_live_brep_geometry_contract() -> None:
                     f"{slug}/{side}/{ring_role}: captive ring land "
                     f"incomplete: {ring_retained:.3f}/"
                     f"{ring_solid.volume:.3f} mm3")
+
+                # The same zero-air-gap contract applies at the curved
+                # LM-upper and UM roots.  Probe the solid 0.05-mm interval
+                # separately from the qualified land so a plan-level carrier
+                # clearance cannot silently turn it back into an air notch.
+                ring_standoff = cad._axis_cylinder(
+                    receiver_datum, ring_site["normal"], ring_site["z_mm"],
+                    skin_diameter, inward=0.0,
+                    outward=MAGNET_INTERFACE_GAP_MM - 0.01)
+                ring_standoff_fill = _intersection_volume(
+                    side_pieces[ring_role], ring_standoff)
+                assert ring_standoff_fill >= 0.97 * ring_standoff.volume, (
+                    f"{slug}/{side}/{ring_role}: solid receiver spacing "
+                    "standoff is missing")
+
+                ring_actual_face = ring_tools.actual_face_xyz[:2]
+                ring_face_skin = cad._axis_cylinder(
+                    ring_actual_face, ring_site["normal"], ring_site["z_mm"],
+                    skin_diameter, inward=0.0,
+                    outward=DEFAULT_SPEC.face_skin_mm - 0.03)
+                rnx, rny = ring_site["normal"]
+                ring_inner_face = (
+                    ring_actual_face[0]
+                    + (DEFAULT_SPEC.face_skin_mm
+                       + DEFAULT_SPEC.cavity_depth_mm) * rnx,
+                    ring_actual_face[1]
+                    + (DEFAULT_SPEC.face_skin_mm
+                       + DEFAULT_SPEC.cavity_depth_mm) * rny,
+                )
+                ring_inner_skin = cad._axis_cylinder(
+                    ring_inner_face, ring_site["normal"], ring_site["z_mm"],
+                    skin_diameter, inward=0.0,
+                    outward=DEFAULT_SPEC.inner_skin_mm - 0.03)
+                for skin_label, skin in (
+                        ("interface", ring_face_skin),
+                        ("inner", ring_inner_skin)):
+                    fill = _intersection_volume(
+                        side_pieces[ring_role], skin)
+                    assert fill >= 0.97 * skin.volume, (
+                        f"{slug}/{side}/{ring_role}: {skin_label} ring skin "
+                        "is not sealed")
                 for other_role in (
                         role for role in PRINT_PART_ROLES
                         if role != ring_role):

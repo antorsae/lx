@@ -3,16 +3,18 @@
 This module is the production geometry authority derived from the physically
 validated ``coupons/obiwan_ae_embed`` coupon.  It deliberately owns no baffle
 outline, driver, route, insert, or backing-pad geometry.  Callers provide an
-installed interface datum and, where the existing host is thinner than the
-3.00 mm captive land, explicit local backing additions.
+installed interface datum, and production geometry must already contain the
+complete 3.00 mm captive land.  The helper never changes the exterior form.
 
 Coordinate contract
 -------------------
 
 ``outward`` always points from a base/carrier toward its mating
-receiver/attachment.  ``face`` is the base/carrier interface datum.  A
-receiver face is placed at ``face + interface_gap * outward``.  The helper
-then derives the material-inward direction from ``owner``:
+receiver/attachment.  ``face`` is the shared physical interface datum.  A
+receiver cavity-face datum is placed at ``face + interface_gap * outward``;
+the offset remains solid and produces a flush 0.50-mm physical receiver skin
+(0.05-mm spacing standoff plus the qualified 0.45-mm skin), not a local air
+notch.  The helper then derives the material-inward direction from ``owner``:
 
 * ``base`` / ``carrier``: ``-outward``;
 * ``receiver`` / ``attachment`` / ``wing``: ``+outward``.
@@ -36,7 +38,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import math
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 from build123d import (
     Align,
@@ -69,7 +71,7 @@ ROOF_ANGLE_DEG = 45.0
 ROOF_PLANE_GRID_MM = 0.20
 BOOLEAN_EPS_MM = 0.03
 SIDE_WALL_MARGIN_MM = 0.60
-CLASSIC_RETAINING_PATH_MM = 0.42
+MINIMUM_RETAINING_PATH_MM = 0.42
 
 ROOF_HEIGHT_MM = (
     CAVITY_DIAMETER_MM / 2.0
@@ -103,7 +105,7 @@ class CaptiveMagnetSpec:
     roof_plane_grid_mm: float = ROOF_PLANE_GRID_MM
     boolean_epsilon_mm: float = BOOLEAN_EPS_MM
     side_wall_margin_mm: float = SIDE_WALL_MARGIN_MM
-    retaining_path_mm: float = CLASSIC_RETAINING_PATH_MM
+    retaining_path_mm: float = MINIMUM_RETAINING_PATH_MM
 
     def __post_init__(self) -> None:
         positive = {
@@ -137,10 +139,10 @@ class CaptiveMagnetSpec:
                 "roof angle must be in (0, 45] degrees for self-support")
         if self.face_skin_mm + 1.0e-9 < self.retaining_path_mm:
             raise CaptiveMagnetGeometryError(
-                "face skin is thinner than the proven Classic wall path")
+                "face skin is thinner than the qualified minimum wall path")
         if self.inner_skin_mm + 1.0e-9 < self.retaining_path_mm:
             raise CaptiveMagnetGeometryError(
-                "inner skin is thinner than the proven Classic wall path")
+                "inner skin is thinner than the qualified minimum wall path")
 
     @property
     def cavity_radius_mm(self) -> float:
@@ -181,7 +183,7 @@ class CaptiveMagnetSpec:
             "roof_angle_deg": self.roof_angle_deg,
             "roof_height_mm": self.roof_height_mm,
             "roof_plane_grid_mm": self.roof_plane_grid_mm,
-            "classic_retaining_path_mm": self.retaining_path_mm,
+            "minimum_retaining_path_mm": self.retaining_path_mm,
         }
 
 
@@ -391,12 +393,13 @@ def wall_cavity_tools(
     """Return exact coupon-style tools for an XY wall-normal magnet.
 
     ``face`` is the base/carrier interface datum, even for a receiver.  The
-    receiver's actual face is offset by ``interface_gap_mm`` along
-    ``outward``.  A receiver-only local cutter removes any legacy host
-    material between the shared datum and that actual face across the full
-    qualified captive-land footprint.  This makes the 0.05-mm air gap real
-    geometry rather than metadata while ending exactly at the new 0.45-mm
-    face skin.  No cavity cutter overshoots either axial skin.
+    receiver's cavity-face datum is offset by ``interface_gap_mm`` along
+    ``outward``.  The offset is deliberately *solid*: together with the
+    receiver's 0.45-mm qualified face skin it gives a 0.50-mm physical skin
+    behind the shared flush exterior.  This preserves the released magnet-
+    face spacing without cutting a local 6.4-mm-wide exterior notch that
+    reveals the pocket position.  No cavity cutter overshoots either axial
+    skin or touches the shared interface surface.
     """
 
     spec = spec or CaptiveMagnetSpec(interface_gap_mm=interface_gap_mm)
@@ -502,24 +505,6 @@ def wall_cavity_tools(
         align=(Align.MIN, Align.MIN, Align.MIN),
     )
     local_cutters = [local_cradle, local_chimney, local_roof]
-    if owner_key == "receiver" and interface_gap_mm > 0.0:
-        # Existing attachment solids commonly begin at the historical shared
-        # datum.  Offseting only the cavity would leave that material in the
-        # nominal pair gap.  Remove it locally over the same D+1.2-mm tangent
-        # width and complete cradle/roof/inner-skin print span.  The tiny
-        # outward extension makes the Boolean robust; the cutter still ends
-        # at local X=0, so it cannot nick the interface-side captive skin.
-        local_gap = Pos(
-            -interface_gap_mm - spec.boolean_epsilon_mm,
-            -land_half_width,
-            land_z0,
-        ) * Box(
-            interface_gap_mm + spec.boolean_epsilon_mm,
-            2.0 * land_half_width,
-            land_z1 - land_z0,
-            align=(Align.MIN, Align.MIN, Align.MIN),
-        )
-        local_cutters.append(local_gap)
     roof_apex = roof_start + spec.roof_height_mm
     return CaptiveMagnetTools(
         name=str(name),
@@ -711,11 +696,22 @@ def axial_cavity_tools(
 def _apply_tools(
     part: Any,
     tools: CaptiveMagnetTools,
-    backing_additions: Iterable[Any],
 ) -> Any:
+    """Subtract one qualified cavity without changing the host exterior.
+
+    Production callers must provide an immutable host that already contains
+    ``tools.required_land``.  Positive magnet-local additions are
+    intentionally not supported: a backing pad, cap, boss, or bevel restore
+    would reveal the pocket from an exterior surface.
+    """
+    missing = tools.required_land - part
+    missing_volume = sum(float(solid.volume) for solid in missing.solids())
+    if missing_volume > 0.02:
+        raise CaptiveMagnetGeometryError(
+            f"{tools.name}: immutable host misses "
+            f"{missing_volume:.4f} mm3 of required captive land")
+
     result = part
-    for addition in backing_additions:
-        result = result.fuse(addition)
     for cutter in tools.cutters:
         result = result - cutter
     return result.clean()
@@ -723,26 +719,22 @@ def _apply_tools(
 
 def apply_wall_cavity(
     part: Any,
-    *,
-    backing_additions: Iterable[Any] = (),
     **kwargs: Any,
 ) -> tuple[Any, CaptiveMagnetTools]:
-    """Fuse caller-owned backing, subtract a wall cavity, return shape/tools."""
+    """Subtract a wall cavity from an already-qualified immutable host."""
 
     tools = wall_cavity_tools(**kwargs)
-    return _apply_tools(part, tools, backing_additions), tools
+    return _apply_tools(part, tools), tools
 
 
 def apply_axial_cavity(
     part: Any,
-    *,
-    backing_additions: Iterable[Any] = (),
     **kwargs: Any,
 ) -> tuple[Any, CaptiveMagnetTools]:
-    """Fuse caller-owned backing, subtract an axial cavity, return shape/tools."""
+    """Subtract an axial cavity from an already-qualified immutable host."""
 
     tools = axial_cavity_tools(**kwargs)
-    return _apply_tools(part, tools, backing_additions), tools
+    return _apply_tools(part, tools), tools
 
 
 def pair_facts(

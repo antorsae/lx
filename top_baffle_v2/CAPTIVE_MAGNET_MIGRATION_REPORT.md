@@ -18,7 +18,7 @@ intentionally unfinished fields are labeled `FINALIZE AFTER PROMOTION`.
 - Promoted source snapshot SHA-256: **`[FINALIZE AFTER PROMOTION: 64-hex source hash]`**
 - Actual complete-slice totals and Obi-Wan regression observations:
   **`[FINALIZE AFTER PROMOTION: passed/failed STLs, actual pause stations,
-  exact-split proxy coverage, observed UM 5.96 / LM 8.52 results]`**
+  exact-split proxy coverage, observed common transverse 5.96 result]`**
 - Authoritative catalog/pause/polarity manifest paths:
   **`[FINALIZE AFTER PROMOTION: release catalog plus JSON, CSV, and Markdown
   pause-manifest paths]`**
@@ -42,16 +42,16 @@ No magnet receives structural-load credit. The release contract remains
 | Closure | External opening remained | Self-supporting 45-degree roof, 2.60 mm nominal rise |
 | Cavity support | Not applicable | No internal support material |
 | Finished access | Exposed/accessible | Completely buried; no glue and no access opening |
-| Mating plastic gap | Approximately 0.05 mm | Preserved at approximately 0.05 mm |
-| Nominal opposing magnet-face separation | Old documentation sometimes conflated this with the plastic gap | **0.95 mm = 0.45 + 0.05 + 0.45** for standard and Obi-Wan LM-lower base-side pairs; **1.10 mm = 0.45 + 0.15 + 0.05 + 0.45** for Obi-Wan LM-upper/UM ring pairs |
-| Classic-wall retention | Not applicable | 0.45 mm skins preserve approximately 0.42 mm wall paths |
+| Physical mating gap | Approximately 0.05 mm | **0.00 mm**; the receiver's 0.05 mm offset is a solid construction standoff, not an air gap |
+| Nominal opposing magnet-face separation | Old documentation sometimes misidentified the 0.05 mm solid standoff as clearance | **0.95 mm = 0.45 + 0.05 + 0.45** at straight pairs; **1.09 mm = 0.45 + 0.14 + 0.05 + 0.45** at standard curved pairs; **1.10 mm = 0.45 + 0.15 + 0.05 + 0.45** at Obi-Wan LM-upper/UM ring pairs |
+| Arachne-wall retention | Not applicable | Each 0.45 mm skin resolves to one bounded variable-width wall path |
 
 The cavity bottom follows the circular D5 magnet profile. Its upper loading
 region remains vertically open until insertion, with continuous retaining
 extrusion on both axial sides. The production helper is derived from the
 physically tested `coupons/obiwan_ae_embed` implementation; the earlier 0.30 mm
-skin was rejected because Bambu Studio Classic omitted it with the qualified
-0.4 mm nozzle process.
+skin was rejected because it did not produce a retained path with the
+qualified 0.4 mm nozzle process.
 
 ## Exact released magnet inventory
 
@@ -90,10 +90,14 @@ geometry; that proxy coverage is not a fabricated monolith G-code pause.
 ## Variant-specific adaptations
 
 - Standard, C7, A, B1, V1, V1-A, V1-B1, and V1L retain their established
-  in-plane site positions, axes, mating datums, and approximately 0.05 mm
-  interface clearance. Only the local material needed for the 3.00 mm captive
-  land and roof is added.
+  in-plane site positions and axes. Every transverse station uses the common
+  source plane **Z = 15.10 mm**. Opposing solids meet with zero physical
+  interface gap; the receiver's 0.05 mm offset is solid construction standoff.
+  The complete 3.00 mm captive land and roof fit inside the immutable host,
+  with no local pad, cap, boss, flat, dent, or other exterior location cue.
 - Obi-Wan upper/lower LM and UM sites retain their radial/base-side axes.
+  All six carrier sites and their Ac/Ae receivers share source
+  **Z = 15.10 mm**.
   Ring-radial cavity datums sit at structural radius +0.65 mm, 0.15 mm beneath
   continuous exposed R113.8/R52.5 side fairings. The fairings stop only inside
   existing LM--UM and T--UM cusp/service regions, preserve the 0.40 mm LM--UM
@@ -105,7 +109,11 @@ geometry; that proxy coverage is not a fabricated monolith G-code pause.
 - V0 has two rear-axis stations and no released mate. Its front-down axial
   treatment uses a 0.45 mm rear skin, 45-degree conical closure, 2.10 mm
   cavity, and 0.45 mm inner skin rather than pretending the transverse coupon
-  topology fits an axial site.
+  topology fits an axial site. The released centres are symmetric at
+  `(±6.690, 321.290)`: both complete R3.20 lands are contained by the
+  immutable post-bevel host, so no local keep, backing, boss, rear block, or
+  visible magnet-location cue is added. Detached `(±46,324)` and interim
+  `(±37.697,326.470)` sites remain rejected history.
 - Coupon 1 is retained as a released fit/regression plate with one unpaired
   station per stand state. It is not a polarity-pair qualification coupon.
 
@@ -158,11 +166,11 @@ provide the part/variant, sites, orientation, last fully open layer, CAD
 bury/roof-start plane, first closing layer, Bambu pause-marker Z, count, and
 site-specific polarity vector.
 
-Required Obi-Wan coupon-equivalent regressions for the tested P2S 0.4 mm /
-0.16 mm High Quality / Classic profile are UM **Z = 5.96 mm** and LM
-**Z = 8.52 mm**. These are regression requirements, not global pause values.
-Every unrelated station gets its pause from the actual generated G-code layer
-schedule.
+The required Obi-Wan coupon-equivalent regression for the tested P2S 0.4 mm /
+0.16 mm High Quality / Arachne profile is **Z = 5.96 mm** for every LM and UM
+transverse station on the common source plane. This remains a sliced-layer
+regression, not a pause value to copy to another family; every unrelated
+station gets its pause from the actual generated G-code layer schedule.
 
 | Site role | Marked/N-pole convention |
 |---|---|
@@ -183,13 +191,13 @@ magnet vertically from above the paused part, from its +Z side along
 
 1. Keep the exact STL and adjacent `.print.json` together. Confirm the part is
    front-face-down and has only its recorded in-bed Z rotation.
-2. Use the pinned Bambu P2S 0.4 mm / 0.16 mm High Quality / Classic-wall
+2. Use the pinned Bambu P2S 0.4 mm / 0.16 mm High Quality / Arachne-wall
    process. Internal cavity support must remain disabled. Do not let Bambu
    auto-orient or tilt the part.
 3. Mark and verify one pole on every D5 x 2 mm magnet against a retained
    master magnet before slicing or printing.
-4. Use the authoritative per-part pause manifest. Do not copy 5.96 or 8.52 mm
-   to an unrelated part.
+4. Use the authoritative per-part pause manifest. Do not copy the 5.96 mm
+   Obi-Wan regression marker to an unrelated family.
 5. At each pause, confirm the previous layer is the final fully open cavity
    layer and that the next toolpath begins the roof. Insert the manifest's
    exact count from above along print -Z, using every site's listed polarity.
@@ -227,8 +235,8 @@ No file in this migration uploads to a printer or starts a print.
   assemblies, facts, transactional manifests, and review images.
 - Obi-Wan staged-build manifests, release manifests, cable-routing PNGs, and
   driver/variant overlays whose magnet depictions now show the captive skins,
-  0.95 mm base-side paired separation, and 1.10 mm Obi-Wan ring-pair
-  separation.
+  0.95 mm straight paired separation, 1.09 mm standard curved paired
+  separation, and 1.10 mm Obi-Wan ring-pair separation.
 - The hash-bound captive-magnet release catalog, Bambu profile provenance,
   per-STL G-code validation records, five-layer SVG/PNG evidence, and the
   authoritative JSON/CSV/Markdown pause outputs after final publication.
@@ -264,7 +272,7 @@ legacy or concept artifacts: they are valid non-acoustic measurement tools.
   losslessly before that unchanged gate; ordinary collinear or malformed
   facets remain hard failures.
 - Profile preflight resolves Bambu Studio, P2S 0.4 mm, 0.20 mm first layer,
-  0.16 mm subsequent layers, Classic walls, 0.42/0.45 mm nominal paths,
+  0.16 mm subsequent layers, Arachne walls, 0.42/0.45 mm nominal paths,
   support disabled, and Bambu PLA Tough+ without contacting a printer.
 
 The expected complete-audit policy is 54 actual P2S slices covering 94 pause
@@ -285,11 +293,13 @@ manifest are authoritative.
 
 ## Remaining physical risks and required qualification
 
-- The reference coupon physically validates the topology and 0.45 mm Classic
+- The reference coupon physically validates the topology and 0.45 mm Arachne
   retaining walls at 0.90 mm opposing-magnet separation. Production pairs
-  retain the 0.05 mm plastic gap: standard and Obi-Wan LM-lower base-side
-  pairs separate magnet faces by 0.95 mm, while Obi-Wan LM-upper/UM ring pairs
-  include the 0.15 mm buried carrier datum and separate them by 1.10 mm.
+  have zero physical mating gap. Their receiver datum instead includes a
+  0.05 mm solid construction standoff: straight pairs separate magnet faces
+  by 0.95 mm, standard curved pairs include the 0.14 mm base inset and
+  separate them by 1.09 mm, while Obi-Wan LM-upper/UM ring pairs include the
+  0.15 mm buried carrier datum and separate them by 1.10 mm.
   Measure pull/retention through each production stack; do not rely on a
   supplier bare-magnet pull figure.
 - V0 has no mating production print. Its marked-pole direction is deliberately

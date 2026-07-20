@@ -33,11 +33,12 @@
   or external access opening. Preserve the upper LM pair at world polar 64/116
   deg (±26 deg from top), with no ear and at least 2.2 mm cavity-edge to
   nearest insert-pad edge. Preserve the lower LM pair axes in the common
-  straight base side faces at `(x,y,z)=(±32,18,12.55)`, with left/right
+  straight base side faces at `(x,y,z)=(±32,18,15.10)`, with left/right
   outward normals `(-1,0)`/`(1,0)`. Both stand states expose those exact
   base-side datums, and both cavities clear buried routes and the
   bridge/integral-stand load path. The
-  UM pair is also earless at 50.5/129.5 deg, z=15.1. The structural LM and UM
+  UM pair is also earless at 50.5/129.5 deg. All LM-lower, LM-upper, and UM
+  magnet axes share the common source plane **Z = 15.10 mm**. The structural LM and UM
   ring radii remain 113.0 and 51.7 mm. Their exposed sides are continuous
   cylindrical fairings at radii 113.8 and 52.5 mm, clipped only inside the
   existing LM--UM and T--UM cusp/service regions. The LM--UM stop keeps the
@@ -45,9 +46,11 @@
   and UM ring station, the cavity construction datum is structural radius
   +0.65 mm, 0.15 mm beneath the exposed surface. There is no local pad, boss,
   flat, or silhouette cue. The D5 x 2 cavity and 0.45 mm skins are unchanged.
-  With the preserved 0.05 mm mating gap and matching Ac/Ae receivers, nominal
-  paired magnet-face separation is 1.10 mm at the ring stations and remains
-  0.95 mm at the LM-lower base-side stations. Magnets receive zero
+  Matching Ac/Ae solids contact with zero physical mating gap; their receiver
+  construction datum has a 0.05 mm solid standoff, not an air gap. Nominal
+  paired magnet-face separation is therefore 1.10 mm at the ring stations and
+  remains 0.95 mm at the straight LM-lower base-side stations. Every station
+  is wholly internal and leaves no front, rear, or side location cue. Magnets receive zero
   structural-load credit. The
   D7.8 LM lead is a modeled free span with no printed micro-duct; the LM
   carrier has only a minimum-radius 3.96 mm rear-open subtractive clearance
@@ -314,12 +317,14 @@
   structural radius +0.65 mm, 0.15 mm beneath the exposed surface, with no
   local pad, boss, flat, or visible cue;
   exact lower-LM
-  base-side faces at `(x,y,z)=(±32,18,12.55)` with outward ±X normals in
+  base-side faces at `(x,y,z)=(±32,18,15.10)` with outward ±X normals in
   both stand states; at least 2.2 mm upper-LM nearest-insert edge gap; absence
   of LM proud ears; three matching Ac/Ae receivers per physical side at
-  LM lower, LM upper, and UM; preserved 0.05 mm mating gap, 1.10 mm nominal
-  paired magnet-face separation at LM-upper/UM, and 0.95 mm at the LM-lower
-  base-side pair; manifest-derived pauses and mirrored polarity;
+  LM lower, LM upper, and UM; common source Z=15.10 for every LM/UM station;
+  0.05 mm solid receiver construction standoff with zero physical mating gap;
+  1.10 mm nominal paired magnet-face separation at LM-upper/UM and 0.95 mm at
+  the straight LM-lower base-side pair; no exterior magnet-location cue;
+  manifest-derived pauses and mirrored polarity;
   free D7.8 LM span clearance with zero printed micro-duct, an exact rear-open
   subtractive relief, and correct floor lane continuation;
   physical-cable containment; insert/head/terminal/service clearance;

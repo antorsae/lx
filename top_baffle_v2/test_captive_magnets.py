@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 import math
 
 from build123d import Align, Box, Pos
@@ -32,13 +33,19 @@ def test_nominal_authority() -> None:
     assert captive.CAPTIVE_LAND_MM == 3.0
     assert facts["paired_magnet_face_separation_mm"] == 0.95
     assert captive.NOMINAL_PAIRED_FACE_SEPARATION_MM == 0.95
+    # A generic positive-backing hook could restore an exterior bevel or
+    # create a visible pocket boss.  Production cavity application is
+    # deliberately subtractive-only.
+    assert "backing_additions" not in inspect.signature(
+        captive.apply_wall_cavity).parameters
+    assert "backing_additions" not in inspect.signature(
+        captive.apply_axial_cavity).parameters
 
 
 def test_coupon_regression_planes_and_pair() -> None:
-    # Coupon local coordinates: rear=0, front=11.5. LM center from rear is
-    # 5.75; UM is 8.30. These must retain the physically tested 0.16-profile
-    # first-closing markers downstream: CAD roof planes 8.40 / 5.80 produce
-    # Bambu Preview pauses 8.52 / 5.96.
+    # Coupon local coordinates: rear=0, front=11.5. Production LM and UM now
+    # share the front-biased 8.30-mm local axis. Its CAD roof plane at 5.80
+    # produces the common Bambu 0.16-profile pause at 5.96 mm.
     common = {
         "face": (0.0, 0.0),
         "outward": (1.0, 0.0, 0.0),
@@ -46,17 +53,17 @@ def test_coupon_regression_planes_and_pair() -> None:
         "print_up": (0.0, 0.0, -1.0),
     }
     lm_base = captive.wall_cavity_tools(
-        name="lm_base", owner="base", axis_z=5.75, **common)
+        name="lm_base", owner="base", axis_z=8.30, **common)
     lm_receiver = captive.wall_cavity_tools(
-        name="lm_receiver", owner="receiver", axis_z=5.75, **common)
+        name="lm_receiver", owner="receiver", axis_z=8.30, **common)
     um_base = captive.wall_cavity_tools(
         name="um_base", owner="base", axis_z=8.30, **common)
     assert math.isclose(
-        lm_base.roof_start_print_z_mm, 8.40, abs_tol=1.0e-12)
+        lm_base.roof_start_print_z_mm, 5.80, abs_tol=1.0e-12)
     assert math.isclose(
         um_base.roof_start_print_z_mm, 5.80, abs_tol=1.0e-12)
     assert math.isclose(
-        lm_base.required_min_part_top_print_z_mm, 11.45,
+        lm_base.required_min_part_top_print_z_mm, 8.85,
         abs_tol=1.0e-12)
     pair = captive.pair_facts(lm_base, lm_receiver)
     assert math.isclose(pair["interface_gap_mm"], 0.05, abs_tol=1.0e-12)
@@ -71,9 +78,10 @@ def test_coupon_style_wall_solids() -> None:
     # legacy glue pocket.
     base = Pos(-4.0, -4.0, 0.0) * Box(
         4.0, 8.0, 11.5, align=(Align.MIN, Align.MIN, Align.MIN))
-    # Deliberately begin the receiver at the historical shared datum.  The
-    # helper must cut the 0.05-mm local air gap itself rather than relying on
-    # every legacy caller to have already moved its host face.
+    # Deliberately begin the receiver at the shared datum.  The 0.05-mm pair-
+    # spacing allowance must remain solid in front of the qualified 0.45-mm
+    # receiver skin; cutting it as a local air gap leaves a visible pocket-
+    # width notch on the exterior.
     receiver = Pos(0.0, -4.0, 0.0) * Box(
         4.0, 8.0, 11.5, align=(Align.MIN, Align.MIN, Align.MIN))
     kwargs = {
@@ -93,11 +101,33 @@ def test_coupon_style_wall_solids() -> None:
     assert not base.is_inside(
         base_tools.cavity_center_xyz, tolerance=1.0e-5)
     assert base.is_inside((-2.775, 0.0, 5.75), tolerance=1.0e-5)
-    assert not receiver.is_inside((0.025, 0.0, 5.75), tolerance=1.0e-5)
+    assert len(receiver_tools.cutters) == 3
+    assert receiver.is_inside((0.025, 0.0, 5.75), tolerance=1.0e-5)
     assert receiver.is_inside((0.275, 0.0, 5.75), tolerance=1.0e-5)
+    assert receiver.is_inside((0.475, 0.0, 5.75), tolerance=1.0e-5)
+    assert not receiver.is_inside((0.525, 0.0, 5.75), tolerance=1.0e-5)
     assert not receiver.is_inside(
         receiver_tools.cavity_center_xyz, tolerance=1.0e-5)
     assert receiver.is_inside((2.825, 0.0, 5.75), tolerance=1.0e-5)
+
+
+def test_application_rejects_missing_host_land() -> None:
+    undersized = Pos(-1.0, -1.0, 0.0) * Box(
+        1.0, 2.0, 11.5, align=(Align.MIN, Align.MIN, Align.MIN))
+    try:
+        captive.apply_wall_cavity(
+            undersized,
+            name="missing_land_probe",
+            face=(0.0, 0.0, 5.75),
+            outward=(1.0, 0.0, 0.0),
+            owner="base",
+            front_z=11.5,
+            print_up=(0.0, 0.0, -1.0),
+        )
+    except captive.CaptiveMagnetGeometryError as exc:
+        assert "immutable host misses" in str(exc)
+    else:
+        raise AssertionError("cavity application accepted incomplete land")
 
 
 def test_axis_parallel_and_front_down_opposed_cones() -> None:
@@ -144,6 +174,7 @@ def main() -> None:
         test_nominal_authority,
         test_coupon_regression_planes_and_pair,
         test_coupon_style_wall_solids,
+        test_application_rejects_missing_host_land,
         test_axis_parallel_and_front_down_opposed_cones,
     )
     for test in tests:

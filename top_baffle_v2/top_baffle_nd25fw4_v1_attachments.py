@@ -6,14 +6,13 @@ field cut to z=6.8 above seam B), so every attachment comes out 11.5
 deep with the V1-scaled taper carried through -- flush front, flat
 rear at z=6.8.
 
-Anchoring: BOTH B2 site plan positions -- lower flare site at zc=12.5,
-upper crescent-arc site at zc=14.4 -- use closed pause-and-bury cavities
-behind 0.45-mm skins.  Receiver faces carry the local 0.05-mm air gap;
+Anchoring: BOTH B2 site plan positions use the common front-biased
+zc=15.10 plane and closed pause-and-bury cavities behind 0.45-mm qualified
+skins. Receiver faces retain a solid 0.05-mm spacing standoff;
 their marked/N vectors follow the base-to-receiver pair axis, so their
 interface-facing poles are opposite the base's and attract.  The curved
-upper host is relieved by at most
-0.184666 mm to mate the base's qualified tangent land; there are no lips,
-hooks, or attachment-side proud bosses. Wing bottoms are trimmed parallel
+upper host needs no local relief or fused land; there are no lips, hooks,
+attachment-side proud bosses, or pocket-shaped exterior cues. Wing bottoms are trimmed parallel
 to the chamfer-extension edge (+2.2), dropping the collapsed B1-B2 wedge.
 """
 
@@ -49,10 +48,18 @@ def _v1_base(outline):
 
 
 
-def v1_attachments() -> dict:
+def v1_attachments(*, magnet_cavities: bool = True) -> dict:
+    """Return the six slim attachment prints.
+
+    ``magnet_cavities=False`` exposes the exact pre-cavity individual hosts
+    for the no-growth/no-visible-pocket regression.  Release exports retain
+    the default.
+    """
     b2 = _v1_base(OUTLINE_B2)
     keep = _box(303.0, 500.0)
     def _receivers(solid):
+        if not magnet_cavities:
+            return solid
         return apply_magnet_attachment_cavities(
             solid, site_zc=V1_MAGNET_ZC, lower_rear_caps=False,
             name_prefix="v1")

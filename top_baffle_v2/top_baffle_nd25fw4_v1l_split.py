@@ -1,6 +1,6 @@
 """V1L print split: bottom + mids thinned front-flush (see _v1l.py);
 combine with the V1 vase for the full ~12 mm front-flush baffle.  Its TS
-centreline shares V1's smooth 0.20-mm local captive-land detour while the
+centreline shares V1's smooth 0.60-mm local captive-land detour while the
 duct section remains unchanged.  The captive-magnet top piece prints
 front-face-down."""
 
@@ -10,7 +10,7 @@ from build123d import Compound
 
 from top_baffle_nd25fw4_b2_split import pieces
 from top_baffle_nd25fw4_cables import (
-    TS_ROUTE_V1_CAPTIVE,
+    TS_ROUTE_CAPTIVE,
     UM_V1L_HANDOFF_KEY,
 )
 from top_baffle_nd25fw4_v1 import apply_v1_base_magnets
@@ -72,7 +72,7 @@ def pieces_v1l(only: str | None = None,
                     only=only,
                     cable_routes=route_subset,
                     cable_y_range=ts_y_range,
-                    ts_route_key=TS_ROUTE_V1_CAPTIVE)
+                    ts_route_key=TS_ROUTE_CAPTIVE)
     if "piece_top_b2" in result:
         result["piece_top_b2"] = apply_v1_base_magnets(
             result["piece_top_b2"])
