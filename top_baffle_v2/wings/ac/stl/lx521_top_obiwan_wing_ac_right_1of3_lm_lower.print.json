@@ -47,12 +47,12 @@
     ]
   ],
   "stl": "lx521_top_obiwan_wing_ac_right_1of3_lm_lower.stl",
-  "stl_bytes": 111984,
+  "stl_bytes": 103984,
   "stl_origin_translation_mm": [
     -9.139491971464194,
     -11.170779742823918,
     18.3
   ],
-  "stl_sha256": "e7893f849fab576907af111c40b74b504fc39be6a8d876885525bdc62b98ddc5",
+  "stl_sha256": "8dedeae4d7284b257a58bc4c85bd8407af93dd338d10eac8097637934e869dcf",
   "variant_slug": "ac"
 }

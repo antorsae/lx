@@ -17,11 +17,11 @@ import json
 import os
 from pathlib import Path
 
-from front_down_contract import validate_print_sidecar
+from front_down_contract import sidecar_path_for_stl, validate_print_sidecar
 
 
 ROOT = Path(__file__).resolve().parent
-FORMAT_VERSION = 9
+FORMAT_VERSION = 10
 QUALIFICATION_RECORD = ROOT / "obiwan_physical_qualification.md"
 
 REQUIRED_REFERENCE_PATHS = (
@@ -144,6 +144,14 @@ def expected_artifact_names(stand_foot: bool) -> tuple[str, ...]:
         "obiwan_integrated_floor_strength.json",
         "obiwan_integrated_floor_strength.md",
     ) if stand_foot else ()
+    support_blockers = () if stand_foot else (
+        "support_blockers/"
+        "lx521_top_obiwan_optional_lm_keyed_1of2_bottom."
+        "support_blocker.stl",
+        "support_blockers/"
+        "lx521_top_obiwan_optional_lm_keyed_1of2_bottom."
+        "support_blocker.json",
+    )
     coupons = [
         f"stl/lx521_coupon_{name}.stl"
         for name in (
@@ -165,7 +173,8 @@ def expected_artifact_names(stand_foot: bool) -> tuple[str, ...]:
     ]
     return tuple(sorted((
         *review, *obiwan_stls, *obiwan_print_sidecars,
-        *strength_reports, *coupons, *coupon_print_sidecars)))
+        *strength_reports, *support_blockers,
+        *coupons, *coupon_print_sidecars)))
 
 
 def qualification_record(stand_foot: bool) -> dict:
@@ -245,7 +254,9 @@ def build_manifest(state_dir: Path, stand_foot: bool) -> dict:
     # The manifest must never bless a self-consistent but stale or malformed
     # orientation sidecar. Every printable STL in this Obi-Wan transaction has
     # exactly one adjacent, hash-bound front-down authority record.
-    stl_names = tuple(name for name in expected_names if name.endswith(".stl"))
+    stl_names = tuple(
+        name for name in expected_names
+        if name.startswith("stl/") and name.endswith(".stl"))
     expected_sidecars = {
         name.removesuffix(".stl") + ".print.json" for name in stl_names
     }
@@ -259,6 +270,31 @@ def build_manifest(state_dir: Path, stand_foot: bool) -> dict:
             f"extra={sorted(actual_sidecars - expected_sidecars)}")
     for name in stl_names:
         validate_print_sidecar(state_dir / name)
+    if not stand_foot:
+        blocker_relative = (
+            "support_blockers/"
+            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom."
+            "support_blocker.stl")
+        binding_relative = blocker_relative.removesuffix(".stl") + ".json"
+        binding = json.loads(
+            (state_dir / binding_relative).read_text(encoding="utf-8"))
+        main_stl = state_dir / "stl" / (
+            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl")
+        blocker = state_dir / blocker_relative
+        if (binding.get("schema_version") != 1
+                or binding.get("kind") != "bambu_support_blocker"
+                or binding.get("main_stl_sha256") != sha256_file(main_stl)
+                or binding.get("support_blocker_sha256")
+                != sha256_file(blocker)):
+            raise RuntimeError(
+                "no-floor duct support-blocker binding is stale")
+        sidecar = json.loads(
+            sidecar_path_for_stl(main_stl).read_text(encoding="utf-8"))
+        if (binding.get("source_to_stl_matrix")
+                != sidecar.get("source_to_stl_matrix")):
+            raise RuntimeError(
+                "no-floor duct support blocker uses a different print "
+                "transform from its keyed LM bottom")
     return {
         "format_version": FORMAT_VERSION,
         "variant": "Obi-Wan",

@@ -66,7 +66,6 @@ from top_baffle_nd25fw4_b2 import OUTLINE_B2
 from top_baffle_nd25fw4_cables import (
     BIG_RAMPS,
     CABLE_D,
-    EXIT_RAMPS,
     FOOT_LANES,
     ROUTING_PROFILE,
     ROUTING_REV,
@@ -83,7 +82,7 @@ from top_baffle_nd25fw4_cables import (
 )
 
 STYLE = {
-    "lm": ("tab:blue", "LM 2x2.5mm2, duct D8.2 (z=12.55)"),
+    "lm": ("tab:blue", "LM 2x2.5mm2, D8.2->D9 R14 rear handoff"),
     "um": ("tab:green", "UM D8.2 normal B2/C7/V0/V1 (z=12.55)"),
     "ts": ("gold", "T1+T2 shared, 2x(2xAWG24), duct D6.0 (z=11.5)"),
     "t1f": ("tab:red", "T pair feeders, D3.8 (z=3.7, strip)"),
@@ -116,8 +115,9 @@ def _save_routing_figure(fig, output, **kwargs):
         "Description": (
             f"{token}; LX_STAND_FOOT={int(STAND_FOOT)}; "
             f"LX_ROUTING_PROFILE={ROUTING_PROFILE}"
-            + ("; LX_OBIWAN_SIDE_SECTION=roof_to_bore_solid_backfill"
-               "; LX_OBIWAN_VIEWS=front_xy,side_yz,top_xz"
+            + ("; LX_OBIWAN_VIEWS=front_xy,route_depth"
+               "; LX_OBIWAN_CONTENT=LM_UM_routes_only"
+               "; LX_OBIWAN_TERMINAL_SERVICE_OVERLAY=0"
                "; LX_OBIWAN_SEPARATE_FLOOR_SUPPORT=0"
                if ROUTING_PROFILE == "obiwan" else "")),
     }
@@ -137,8 +137,8 @@ TAPER_CY = CRESCENT_SCALLOP_CY - TWEETER_DROP_MM
 
 
 def duct_xyz(name, n=400):
-    if name == "um":
-        return np.array(route_centerline_points("um", spacing_mm=1.0))
+    if name in {"lm", "um"}:
+        return np.array(route_centerline_points(name, spacing_mm=1.0))
     path = Spline(*route_points(name))
     pts = [path @ (i / n) for i in range(n + 1)]
     return np.array([[p.X, p.Y, p.Z] for p in pts])
@@ -256,14 +256,8 @@ def draw_side_view(ax):
                 textcoords="axes fraction", fontsize=7.2,
                 ha="right", va="center", color=V1L_ALT_COLOR,
                 arrowprops=dict(arrowstyle="-", color=V1L_ALT_COLOR))
-    # Separate legacy LM rear bore.  The UM outlet is already in the
-    # complete R14 centerline plotted above.
-    for name, (p0, p1, _dia) in EXIT_RAMPS.items():
-        color = STYLE[name][0]
-        ax.plot([p0[2], p1[2]], [p0[1], p1[1]], color=color, ls=":",
-                lw=CABLE_D.get(name, 3.8) * 0.6, alpha=0.8, zorder=7)
-        ax.plot(p1[2], p1[1], marker="o", ms=6, mfc="white", mec=color,
-                zorder=8)
+    # LM and UM outlets are already part of the complete R14 centerlines
+    # plotted above; no detached vertical-bore overlay is permitted.
     ax.plot(11.5, 433.5, marker="o", ms=5, mfc="white", mec=STYLE["ts"][0],
             zorder=8)  # T scallop-rim exits (head-on at duct depth)
     if STAND_FOOT:
@@ -676,8 +670,8 @@ def _draw_obiwan_terminal_service(
     }
 
 
-def render_obiwan():
-    """Render true XY/YZ/XZ orthographic routing views for one Obi-Wan state."""
+def render_obiwan_engineering_detail():
+    """Legacy comprehensive engineering sheet retained for source reference."""
     from matplotlib.lines import Line2D
     from gen_driver_overlay import outline_polygon
     from shapely.geometry import Point, Polygon, box
@@ -1422,6 +1416,155 @@ def render_obiwan():
             f"root R{floor_facts['root_fillet_r_mm']:g}",
             ha="left", va="bottom", fontsize=6.8, color="0.30")
     fig.subplots_adjust(top=0.90, bottom=0.13, left=0.07, right=0.98)
+
+    out = f"baffle_cable_routing_{ROUTING_PROFILE}.png"
+    _prune_legacy_routing_png()
+    _save_routing_figure(fig, out, bbox_inches="tight")
+    plt.close(fig)
+    print(f"wrote {out}")
+
+
+def render_obiwan():
+    """Render the released, uncluttered LM/UM routing sheet.
+
+    The former engineering sheet mixed terminal pull envelopes, magnets,
+    closure-web ownership, T routing and three projections over the LM--UM
+    junction.  That made the actual cable paths unreadable and, critically,
+    drew only LM's external lead instead of its complete buried D9 route.
+    This release view shows exactly two systems: the complete LM route and the
+    complete UM route, with a separate route-depth plot.  No proxy box,
+    terminal-service state, T path, magnet, pilot or ownership overlay is
+    rendered.
+    """
+    from matplotlib.lines import Line2D
+    from shapely.geometry import Point
+    from top_baffle_nd25fw4_flush import LM_RECESS_R, UM_RECESS_R
+    from top_baffle_nd25fw4_obiwan import (
+        LM_CORE_R, side_ring_outer_plan)
+    from top_baffle_nd25fw4_obiwan_bridge import bridge_face_plan
+    from top_baffle_nd25fw4_obiwan_floor import (
+        FOOT_HEIGHT_MM, FOOT_WIDTH_MM, STEM_SHOULDER_HALF_WIDTH_MM,
+        STEM_TOP_Y_MM, integral_stem_plan_points)
+    from top_baffle_nd25fw4_obiwan_route import (
+        CABLE_D_EST, DUCT_D, LM_CABLE_D_EST, LM_INTERNAL_DUCT_D_MM,
+        lm_cable_points, lm_complete_duct_points, route_cable_points)
+
+    um_route = np.asarray(route_cable_points(spacing_mm=0.35), dtype=float)
+    lm_route = np.asarray(
+        lm_complete_duct_points(spacing_mm=0.30), dtype=float)
+    lm_free = np.asarray(lm_cable_points(spacing_mm=0.30), dtype=float)
+    lm_center = np.asarray(L22_CUTOUT[:2], dtype=float)
+
+    if STAND_FOOT:
+        um_owner = (
+            (np.linalg.norm(um_route[:, :2] - lm_center, axis=1)
+             <= LM_CORE_R + 1.0e-6)
+            | ((np.abs(um_route[:, 0]) <= STEM_SHOULDER_HALF_WIDTH_MM)
+               & (um_route[:, 1] <= STEM_TOP_Y_MM + 1.0e-6)))
+    else:
+        bridge = bridge_face_plan()
+        um_owner = (
+            (np.linalg.norm(um_route[:, :2] - lm_center, axis=1)
+             <= LM_CORE_R + 1.0e-6)
+            | np.asarray([
+                bridge.covers(Point(float(x), float(y)))
+                for x, y in um_route[:, :2]
+            ]))
+
+    fig, (ax_plan, ax_depth) = plt.subplots(
+        1, 2, figsize=(12.4, 8.0), dpi=150,
+        gridspec_kw={"width_ratios": (1.42, 0.78)})
+
+    def fill_plan(plan, facecolor, edgecolor, zorder):
+        pieces = ((plan,) if plan.geom_type == "Polygon"
+                  else tuple(plan.geoms))
+        for piece in pieces:
+            if piece.is_empty:
+                continue
+            x, y = piece.exterior.xy
+            ax_plan.fill(x, y, fc=facecolor, ec=edgecolor,
+                         lw=1.0, zorder=zorder)
+
+    for driver, cutout, recess, color in (
+            ("LM", L22_CUTOUT, LM_RECESS_R, "#c7cdd4"),
+            ("UM", UM_CUTOUT, UM_RECESS_R, "#d3d8de")):
+        fill_plan(side_ring_outer_plan(driver.lower()), color, "#303943", 2)
+        ax_plan.add_patch(plt.Circle(
+            cutout[:2], recess, fill=False, ec="#737b84",
+            ls=(0, (3.0, 2.0)), lw=0.8, zorder=3))
+        ax_plan.add_patch(plt.Circle(
+            cutout[:2], cutout[2] / 2.0, fc="white", ec="#303943",
+            lw=1.0, zorder=4))
+        ax_plan.text(cutout[0], cutout[1], driver, ha="center", va="center",
+                     fontsize=10, color="#303943", zorder=5)
+
+    buried_x = np.ma.masked_where(~um_owner, um_route[:, 0])
+    buried_y = np.ma.masked_where(~um_owner, um_route[:, 1])
+    free_x = np.ma.masked_where(um_owner, um_route[:, 0])
+    free_y = np.ma.masked_where(um_owner, um_route[:, 1])
+    ax_plan.plot(buried_x, buried_y, color=STYLE["um"][0],
+                 lw=3.0, ls=(0, (4.0, 2.2)), zorder=7)
+    ax_plan.plot(free_x, free_y, color=STYLE["um"][0],
+                 lw=2.5, zorder=7)
+    ax_plan.plot(lm_route[:, 0], lm_route[:, 1], color=STYLE["lm"][0],
+                 lw=3.0, ls=(0, (4.0, 2.2)), zorder=8)
+    ax_plan.plot(lm_free[:, 0], lm_free[:, 1], color=STYLE["lm"][0],
+                 lw=2.5, zorder=8)
+
+    for point, color, marker in (
+            (lm_route[0], STYLE["lm"][0], "o"),
+            (um_route[0], STYLE["um"][0], "o"),
+            (lm_route[-1], STYLE["lm"][0], "s"),
+            (um_route[-1], STYLE["um"][0], "s")):
+        ax_plan.plot(point[0], point[1], marker=marker, ms=5.5,
+                     mfc="white", mec=color, mew=1.2, zorder=9)
+
+    ax_plan.set(xlim=(-125, 125), ylim=(-4, 430), xlabel="x (mm)",
+                ylabel="y (mm)")
+    ax_plan.set_aspect("equal", adjustable="box")
+    ax_plan.set_title("PLAN — actual LM and UM centerlines")
+    ax_plan.grid(True, lw=0.28, alpha=0.26)
+
+    def station(points):
+        return np.concatenate((
+            [0.0], np.cumsum(np.linalg.norm(np.diff(points, axis=0), axis=1))))
+
+    lm_s = station(lm_route)
+    um_s = station(um_route)
+    ax_depth.plot(lm_s, lm_route[:, 2], color=STYLE["lm"][0], lw=2.4,
+                  label=f"LM buried D{LM_INTERNAL_DUCT_D_MM:g}")
+    ax_depth.plot(um_s, um_route[:, 2], color=STYLE["um"][0], lw=2.4,
+                  label=f"UM buried D{DUCT_D:g} / free D{CABLE_D_EST:g}")
+    ax_depth.axhline(THICKNESS_MM, color="#303943", lw=0.8, ls=":",
+                     label="outer front z=18.3")
+    ax_depth.axhline(12.3, color="#737b84", lw=0.8, ls="--",
+                     label="LM recess floor z=12.3")
+    ax_depth.axhline(5.3, color="#637180", lw=0.8, ls=":",
+                     label="flat rear patch z=5.3")
+    ax_depth.set(xlabel="distance along each route (mm)", ylabel="source z (mm)",
+                 ylim=(-6, 20.5))
+    ax_depth.set_title("DEPTH — no hidden installation proxy")
+    ax_depth.grid(True, lw=0.28, alpha=0.26)
+    ax_depth.legend(loc="best", fontsize=7.5, framealpha=0.95)
+
+    legend = (
+        Line2D([0], [0], color=STYLE["lm"][0], lw=3,
+               label=f"LM: buried D{LM_INTERNAL_DUCT_D_MM:g}; "
+                     f"free cable D{LM_CABLE_D_EST:g}"),
+        Line2D([0], [0], color=STYLE["um"][0], lw=3,
+               label=f"UM: buried D{DUCT_D:g}; free cable D{CABLE_D_EST:g}"),
+        Line2D([0], [0], color="#303943", lw=2, ls=(0, (4, 2)),
+               label="dashed = printed duct; solid = free cable"),
+    )
+    fig.legend(handles=legend, loc="lower center", ncol=3,
+               bbox_to_anchor=(0.5, 0.02), fontsize=8, framealpha=0.96)
+    state = "floor stand" if STAND_FOOT else "no floor stand"
+    fig.suptitle(
+        f"LX521 Obi-Wan — LM / UM cable routing ({state})\n"
+        "released centerlines only; T and installation overlays intentionally omitted",
+        fontsize=12, y=0.985)
+    fig.subplots_adjust(top=0.90, bottom=0.13, left=0.07, right=0.98,
+                        wspace=0.18)
 
     out = f"baffle_cable_routing_{ROUTING_PROFILE}.png"
     _prune_legacy_routing_png()

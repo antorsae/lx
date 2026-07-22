@@ -16,8 +16,8 @@ This module starts from the irreducible interfaces instead:
   no-floor mode owns a shallow front-flush four-hole solid web;
 * the D8.2 UM path is buried only in LM and exits flush at R113 before its
   free span behind UM; D6 is buried only in LM/UM before floating behind the
-  crescent; the short LM lead floats in a minimal rear-open relief without a
-  printed micro-duct;
+  crescent; the no-floor UM/T bundle enters through explicit rear-normal
+  bores and the LM lead exits through one continuous R14/D9 rear handoff;
 * two compact direct half-lap ears attach the optional tweeter crescent.
 * tangent-blended LM--UM and T--UM cusp closures are full-depth solids,
   split in plan between their independently printed owners; only the central
@@ -85,6 +85,7 @@ from top_baffle_nd25fw4 import (
     STAND_FOOT,
     THICKNESS_MM,
     UM_CUTOUT,
+    UM_PILOT_ANGLES_DEG,
     UM_PILOT_DEPTH_MM,
     UM_PILOT_D_MM,
     UM_TERMINAL_CLOCK_DEG,
@@ -107,7 +108,12 @@ from top_baffle_nd25fw4_obiwan_route import (
     CROSSOVER_T_Z,
     TS_CUTTER_R,
     TUNNEL_ROOF_SKIN,
-    lm_free_lead_relief_cutter,
+    lm_rear_exit_port_cutter,
+    no_floor_rear_entry_bores,
+    no_floor_rear_entry_bore_cutters,
+    no_floor_rear_entry_cap_relief_cutters,
+    no_floor_rear_entry_vestibules,
+    no_floor_rear_entry_vestibule_cutters,
     route_inner_cutter_group,
     route_inner_cutter_group_count,
     route_inner_cutters,
@@ -174,6 +180,22 @@ SEAT_MEMBRANE_LIP_OVERLAP = 0.40
 LM_STRUCT_SPOKE_W = 4.0
 UM_INSERT_BOSS_D = UM_PAD_D_MM
 UM_STRUCT_SPOKE_W = 3.2
+# The 238-degree UM driver-mount boss lies beside the left LM--UM M3 ear.
+# A radial spoke at that one site fused into the ear and appeared as an
+# unexplained rectangular block next to the heat-set receiver.  Keep the
+# driver bolt pattern and its required radial load path, but turn only the
+# ear-height section of this spoke 5 degrees toward the free side.  Its lower
+# radial root remains only below the UM ear start so the old support does not
+# leave a small sealed lower junction void.  The ear-height plan gap is at
+# least 0.80 mm; all other mount supports remain exactly radial.
+UM_PILOT_SPOKE_TANGENTIAL_OFFSETS_DEG = {238.0: 5.0}
+UM_JOINT_EAR_SPOKE_CLEAR_MM = 0.80
+# The clear upper support leaves a tiny crescent between the driver recess
+# wall and the historic radial contact.  Close it from inside the recess with
+# a 0.45-mm terminal land: it is only 1.20 mm deep from the recess rim and
+# never reaches the external ring surface or the M3 ear.
+UM_PILOT_RECESS_CLOSURE_LAND_EXPANSION_MM = 0.45
+UM_PILOT_RECESS_CLOSURE_LAND_DEPTH_MM = 1.20
 STRUCT_DESIGN_MASS_KG = 4.0
 STRUCT_CREEP_ALLOW_MPA = 8.0
 STRUCT_SHORT_ALLOW_MPA = 18.0
@@ -262,6 +284,15 @@ JOINT_NECK_D = 4.0
 JOINT_BORE_REAR_OVERSHOOT = 0.01
 LM_JOINT_Z = (CORE_REAR_Z, 12.20)
 UM_JOINT_Z = (12.40, THICKNESS_MM)
+# The original radial 238-degree support closes the lower receiver perimeter,
+# but must hand over to the deflected support before the UM's standalone M3
+# ear begins.  The two support plans never coexist at one Z plane: a radial
+# lower section runs to this datum and the clear deflected section starts
+# there.  That avoids both the visible ear bridge and the sealed wedge that a
+# lower-Z fan of both supports would create.  The 0.01-mm offset resolves to
+# a full 0.16-mm front-down Bambu layer separation: the last radial layer is
+# at z=12.34 and the first ear layer at z=12.50.
+UM_PILOT_LOWER_RADIAL_SPOKE_TOP_Z = UM_JOINT_Z[0] - 0.01
 JOINT_CLEARANCE_BORE_TOP_Z = LM_JOINT_Z[1] + 0.35
 JOINT_INSERT_BORE_Z = (
     LM_JOINT_Z[1], UM_JOINT_Z[0] + JOINT_INSERT_DEPTH_MM)
@@ -574,17 +605,79 @@ def _side_ring_fairing(driver: str):
     return Part([solids[0]])
 
 
-def _radial_spoke(center, pilot_xy, contact_radius, width, z0, z1):
+def _radial_spoke_plan(center, pilot_xy, contact_radius, width,
+                       tangent_offset_deg: float = 0.0):
+    """Plan for a structural driver-mount spoke.
+
+    Most supports are precisely radial.  The sole nearby LM--UM interface
+    support uses a tiny tangential correction so it remains an independent
+    driver-mount load path rather than accidentally welding itself to the M3
+    heat-set ear.
+    """
     dx = pilot_xy[0] - center[0]
     dy = pilot_xy[1] - center[1]
-    length = math.hypot(dx, dy)
+    angle = math.atan2(dy, dx) + math.radians(tangent_offset_deg)
     contact = (
-        center[0] + contact_radius * dx / length,
-        center[1] + contact_radius * dy / length,
+        center[0] + contact_radius * math.cos(angle),
+        center[1] + contact_radius * math.sin(angle),
     )
-    plan = LineString((pilot_xy, contact)).buffer(
+    return LineString((pilot_xy, contact)).buffer(
         width / 2.0, resolution=24, cap_style=1, join_style=1)
-    return _plan_prism(plan, z0, z1)
+
+
+def _radial_spoke(center, pilot_xy, contact_radius, width, z0, z1,
+                  tangent_offset_deg: float = 0.0):
+    return _plan_prism(
+        _radial_spoke_plan(
+            center, pilot_xy, contact_radius, width,
+            tangent_offset_deg),
+        z0, z1)
+
+
+def um_pilot_spoke_z_segments(pilot_angle: float, z0: float, z1: float):
+    """Return non-overlapping (tangent offset, z0, z1) UM support spans.
+
+    The 238-degree support changes its plan exactly below the adjacent
+    standalone M3 ear.  It must be a Z handoff, not a lower-Z union of two
+    diverging spokes: that fan would enclose a non-printable internal wedge
+    against the UM recess boundary.
+    """
+    if z1 <= z0:
+        raise ValueError("UM pilot support span must have positive depth")
+    tangent_offset = UM_PILOT_SPOKE_TANGENTIAL_OFFSETS_DEG.get(
+        pilot_angle, 0.0)
+    if not tangent_offset:
+        return ((0.0, z0, z1),)
+    transition = UM_PILOT_LOWER_RADIAL_SPOKE_TOP_Z
+    if not z0 < transition < z1:
+        raise ValueError(
+            "UM pilot spoke transition must lie inside its support span")
+    return (
+        (0.0, z0, transition),
+        (tangent_offset, transition, z1),
+    )
+
+
+def _um_pilot_recess_closure_land(center, pilot_xy):
+    """Small hidden outer-recess land closing the clear-spoke crescent.
+
+    This is deliberately a terminal slice of the former radial load path,
+    expanded only by one extrusion width.  It sits wholly below the driver
+    flange seat and within the recess/ring interface; it is not an external
+    boss, tab, or cue for either the driver insert or the adjacent M3 ear.
+    """
+    radial = _radial_spoke_plan(
+        center, pilot_xy, UM_RECESS_R + 0.25, UM_STRUCT_SPOKE_W)
+    outer = Point(*center).buffer(UM_RECESS_R + 0.25, resolution=128)
+    inner = Point(*center).buffer(
+        UM_RECESS_R - UM_PILOT_RECESS_CLOSURE_LAND_DEPTH_MM,
+        resolution=128)
+    land = radial.buffer(
+        UM_PILOT_RECESS_CLOSURE_LAND_EXPANSION_MM,
+        resolution=24).intersection(outer).difference(inner).buffer(0)
+    if land.is_empty or not land.is_valid or land.area <= 0.01:
+        raise RuntimeError("UM pilot recess closure land is invalid")
+    return land
 
 
 def carrier_spoke_load_facts():
@@ -1799,6 +1892,45 @@ def _ensure_shell_contained(part, shell, label: str):
     return _fuse_attached(part, shell, label)
 
 
+def _no_floor_cover_remainders(cover, bridge, label: str):
+    """Drop only cover volume already owned by the solid no-floor bridge.
+
+    The bridge and each swept cover intentionally describe the same material
+    above the rear plane.  Asking OCC to fuse either complete, deeply
+    overlapping BREP after the other can leave invalid same-domain internal
+    faces even though the mathematical union is one solid.  Remove only the
+    subset that is already inside the *actual bridge solid*, beginning 0.55
+    mm above its rear face.  The retained rear band therefore overlaps the
+    bridge by positive volume, while any conduit shoulder outside the bridge
+    silhouette remains untouched.  Since the discarded set is a strict
+    subset of ``bridge``, this is exactly set-equivalent to the full union.
+    """
+    if STAND_FOOT:
+        return tuple(cover.solids())
+    bridge_box = bridge.bounding_box()
+    trim_z0 = PAD_FACE_Z + route.TUNNEL_FUSE_OVERLAP
+    trim_z1 = bridge_box.max.Z + 1.0
+    trim = Pos(
+        (bridge_box.min.X + bridge_box.max.X) / 2.0,
+        (bridge_box.min.Y + bridge_box.max.Y) / 2.0,
+        (trim_z0 + trim_z1) / 2.0,
+    ) * Box(
+        bridge_box.max.X - bridge_box.min.X + 2.0,
+        bridge_box.max.Y - bridge_box.min.Y + 2.0,
+        trim_z1 - trim_z0,
+    )
+    redundant = (bridge & trim).clean()
+    remainder = (cover - redundant).clean()
+    solids = tuple(remainder.solids())
+    if (not remainder.is_valid or not solids
+            or any(solid.volume <= 0.01 for solid in solids)):
+        raise RuntimeError(
+            f"{label}: bridge-owned cover reduction failed; "
+            f"valid={remainder.is_valid} volumes="
+            f"{[solid.volume for solid in solids]}")
+    return solids
+
+
 def lm_carrier_outer_blank():
     """Solid LM carrier/tail before the one streamed tunnel-cutter pass."""
     _require_guarded_build()
@@ -1838,12 +1970,31 @@ def lm_carrier_outer_blank():
     # Establish every small attachment union before carving the long
     # swept tunnel cutters.
     part = _apply_complete_lm_um_joint(part, "lm")
+
+    # In no-floor mode fuse the massive shallow bridge before adding the thin
+    # route covers.  Fusing it afterward makes the R113.8-flush cover and the
+    # bridge shoulder share several nearly coincident faces; OCC can return a
+    # single-volume but invalid shell.  The one streamed cutter pass remains
+    # after every union, so this ordering change is set-equivalent and still
+    # leaves no coincident internal tunnel walls.
+    bridge = None
+    if not STAND_FOOT:
+        bridge = fused_bridge_tail()
+        part = _fuse_attached(
+            part, bridge, "fused no-floor solid bridge web")
+
     # One continuous outer sweep per route is fused before the nominal voids
     # are cut.  This keeps every Z bump covered and avoids the old fragmented
     # coplanar rear-floor topology.
     for index, cover in enumerate(route_outer_covers("lm")):
-        part = _fuse_attached(
-            part, cover, f"LM closed tunnel cover component {index}")
+        remainders = (
+            _no_floor_cover_remainders(
+                cover, bridge, f"LM closed tunnel cover component {index}")
+            if bridge is not None else (cover,))
+        for subindex, remainder in enumerate(remainders):
+            part = _fuse_attached(
+                part, Part([remainder]),
+                f"LM closed tunnel cover component {index}.{subindex}")
 
     # Floor features are cut only from their massive owner before that body
     # touches the thin covers.  Each buried floor lane deliberately stops
@@ -1863,16 +2014,6 @@ def lm_carrier_outer_blank():
         part = _fuse_attached(
             part, floor_wing_contact_profile_addition(),
             "universal LM-lower floor wing-contact shoulder")
-
-    # In no-floor mode fuse the shallow solid bridge web before hollowing
-    # the combined carrier. Hollowing the carrier and web independently and
-    # then fusing their coincident tunnel walls can make OCC discard an
-    # otherwise valid
-    # 0.8-mm branch.  One cutter pass is set-equivalent, cheaper, and leaves
-    # no same-domain internal faces.
-    if not STAND_FOOT:
-        part = _fuse_attached(
-            part, fused_bridge_tail(), "fused no-floor solid bridge web")
 
     # Both state bodies now own the exact x=+/-32 lower datums.  Add/qualify
     # every captive land only after that massive owner is present: doing so
@@ -1973,23 +2114,84 @@ def finalize_lm_carrier(part, *, routes_already_cut=False):
     def clean_stage(candidate, label: str):
         candidate = candidate.clean()
         stage_solids = list(candidate.solids())
+        significant = [
+            solid for solid in stage_solids if solid.volume > 1.0e-4]
+        dust = [
+            solid for solid in stage_solids if solid.volume <= 1.0e-4]
+        if (len(significant) == 1 and significant[0].is_valid
+                and sum(solid.volume for solid in dust) <= 1.0e-4):
+            # OCC can leave an invalid, disconnected numerical needle where
+            # two already-overlapping void cutters meet.  It is neither part
+            # of the printable carrier nor large enough to tessellate.  Keep
+            # the independently valid functional body and still fail closed
+            # for every material component above 0.0001 mm3.
+            return Part([significant[0]])
         if (not candidate.is_valid or len(stage_solids) != 1
                 or stage_solids[0].volume <= 0.01):
+            stage_bounds = [(
+                solid.bounding_box().min.X,
+                solid.bounding_box().min.Y,
+                solid.bounding_box().min.Z,
+                solid.bounding_box().max.X,
+                solid.bounding_box().max.Y,
+                solid.bounding_box().max.Z,
+            ) for solid in stage_solids]
             raise RuntimeError(
                 f"LM {label} invalidated carrier: "
                 f"valid={candidate.is_valid} "
-                f"volumes={[solid.volume for solid in stage_solids]}")
+                f"volumes={[solid.volume for solid in stage_solids]} "
+                f"bounds={stage_bounds}")
         return Part([stage_solids[0]])
 
     if not routes_already_cut:
         for index in range(route_inner_cutter_group_count("lm")):
             part = apply_lm_route_cutter(part, index)
-    # The short D7.8 LM lead remains a free cable, not a printed tunnel. The
-    # universal no-floor web and integral floor stem nevertheless overlap its
-    # immutable centerline, so remove the route authority's minimal rear-open
-    # clearance before any captive cavity or functional-interface recut.
-    part -= lm_free_lead_relief_cutter()
-    part = clean_stage(part, "rear-open free-LM-lead relief")
+    # No-floor UM/T feeds use a rear-normal bore, a hidden spherical
+    # vestibule, and (for UM) one short octagonal start-cap relief.  These
+    # volumes intentionally overlap.  Subtracting them sequentially can leave
+    # an invalid equal-radius shared edge whose occurrence depends on distant
+    # LM face numbering.  Fuse the exact tools first, validate that union, and
+    # make one Boolean cut per cable.  Dimensions and the resulting void set
+    # are unchanged; only the intermediate topology is removed.
+    if not STAND_FOOT:
+        bore_by_name = {
+            entry.name: cutter
+            for entry, cutter in zip(
+                no_floor_rear_entry_bores(),
+                no_floor_rear_entry_bore_cutters(), strict=True)
+            if entry.name != "lm"
+        }
+        vestibule_by_name = {
+            entry.name: cutter
+            for entry, cutter in zip(
+                no_floor_rear_entry_vestibules(),
+                no_floor_rear_entry_vestibule_cutters(), strict=True)
+        }
+        um_reliefs = tuple(no_floor_rear_entry_cap_relief_cutters())
+        for entry_name in ("t", "um"):
+            tools = [bore_by_name[entry_name],
+                     vestibule_by_name[entry_name]]
+            if entry_name == "um":
+                tools.extend(um_reliefs)
+            transition = tools[0].fuse(*tools[1:]).clean()
+            transition_solids = list(transition.solids())
+            if (not transition.is_valid or len(transition_solids) != 1
+                    or not transition_solids[0].is_valid
+                    or transition_solids[0].volume <= 0.01):
+                raise RuntimeError(
+                    f"LM {entry_name.upper()} entry transition tool invalid: "
+                    f"valid={transition.is_valid} volumes="
+                    f"{[solid.volume for solid in transition_solids]}")
+            part -= transition
+            part = clean_stage(
+                part, f"{entry_name.upper()} fused rear entry transition")
+    # The D7.8 LM pair remains external after leaving the carrier.  Floor mode
+    # recuts only the shared R14/D9 handoff already owned by its integral lane;
+    # the curve reaches the rear face without the superseded side relief that
+    # cut a visible crescent bite into the lower ring.
+    if STAND_FOOT:
+        part -= lm_rear_exit_port_cutter()
+        part = clean_stage(part, "LM gradual R14 rear cable exit")
     # Cut the transverse captive stations while their qualified backing
     # lands still belong to the continuous outer blank.  Recutting the
     # circular flange seat first leaves the ring lands tangent to that seat;
@@ -2054,15 +2256,29 @@ def um_carrier():
 
     um_boss_floor = (
         UM_SEAT_Z - UM_PILOT_DEPTH_MM - UM_PAD_FLOOR_MM)
-    for px, py in UM_PILOT_XY:
+    for pilot_angle, (px, py) in zip(UM_PILOT_ANGLES_DEG, UM_PILOT_XY):
         boss = _cylinder_at(
             px, py, UM_INSERT_BOSS_D / 2.0,
             um_boss_floor, UM_SEAT_Z)
-        spoke = _radial_spoke(
-            (cx, cy), (px, py), UM_RECESS_R + 0.25,
-            UM_STRUCT_SPOKE_W, um_boss_floor, UM_SEAT_Z)
+        support = boss
+        for tangent_offset, support_z0, support_z1 in (
+                um_pilot_spoke_z_segments(
+                    pilot_angle, um_boss_floor, UM_SEAT_Z)):
+            support = support.fuse(_radial_spoke(
+                (cx, cy), (px, py), UM_RECESS_R + 0.25,
+                UM_STRUCT_SPOKE_W, support_z0, support_z1,
+                tangent_offset)).clean()
+        if pilot_angle in UM_PILOT_SPOKE_TANGENTIAL_OFFSETS_DEG:
+            # Fill only the upper clear-spoke crescent.  The land is fully
+            # buried inside the UM driver recess and stops 0.80+ mm clear of
+            # the standalone M3 ear, so it cannot recreate the unwanted
+            # visible ear bridge.
+            support = support.fuse(_plan_prism(
+                _um_pilot_recess_closure_land((cx, cy), (px, py)),
+                UM_PILOT_LOWER_RADIAL_SPOKE_TOP_Z,
+                UM_SEAT_Z)).clean()
         part = _fuse_attached(
-            part, boss.fuse(spoke).clean(), "UM insert boss/spoke")
+            part, support, "UM insert boss/spoke")
 
     # UM owns the upper half of the LM--UM closure and the lower half of the
     # T--UM closure.  Both are complete z=6.8..18.3 solids; the final route

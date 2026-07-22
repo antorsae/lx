@@ -86,19 +86,22 @@ HOST_RE = re.compile(r"^(?:[A-Za-z0-9_.-]+@)?[A-Za-z0-9_.-]+$")
 TARGET_RE = re.compile(r"^[A-Za-z0-9_./:+%-]+$")
 REMOTE_MAKE_TARGETS = {
     "all", "candidate", "release", "floor_stand", "floor_obiwan",
-    "no_floor_stand", "no_floor_obiwan", "obiwan_release",
+    "no_floor_stand", "no_floor_obiwan", "no_floor_obiwan_01a",
+    "obiwan_release",
     "obiwan_wings",
     "obiwan_wing_artifacts", "check_obiwan_wings",
     "common", "check", "check_captive_magnets", "check_obiwan",
     "check_obiwan_shells",
     "check_obiwan_t_shells", "check_obiwan_service",
     "check_obiwan_closure_focus",
+    "check_obiwan_um_pilot_spoke",
     "check_obiwan_mouths", "check_obiwan_burial",
     "check_obiwan_um_burial",
     "check_obiwan_backfills", "check_obiwan_route_boundaries",
     "check_floor_um_shell", "check_floor_t_shell",
     "check_no_floor_um_shell", "check_no_floor_t_shell",
     "check_floor_obiwan_mouths", "check_no_floor_obiwan_mouths",
+    "check_no_floor_obiwan_mouths_focused",
     "check_floor_obiwan_burial", "check_no_floor_obiwan_burial",
     "check_floor_obiwan_um_burial", "check_no_floor_obiwan_um_burial",
     "check_floor_obiwan_backfills", "check_no_floor_obiwan_backfills",
@@ -106,9 +109,11 @@ REMOTE_MAKE_TARGETS = {
     "check_floor_integrated_mount",
     "check_no_floor_lm_mesh", "check_obiwan_lm_split",
     "check_obiwan_lm_profile", "check_obiwan_junction_closure_plans",
+    "check_obiwan_junction_closure_base",
     "check_obiwan_junction_closures",
     "check_obiwan_lm_split_two_pin_static",
     "manifold", "clean",
+    "refresh_captive_magnet_catalog_existing",
     "validate_obiwan_stages",
     "validate_floor_obiwan_stage", "validate_no_floor_obiwan_stage",
 }
@@ -1224,6 +1229,8 @@ def _target_required_artifact_relatives(
             OBIWAN_WING_DESIGN_MAP_ARTIFACT,
             CAPTIVE_MAGNET_CATALOG_ARTIFACT,
         })
+    elif target == "refresh_captive_magnet_catalog_existing":
+        required.add(CAPTIVE_MAGNET_CATALOG_ARTIFACT)
 
     if target in {
             "obiwan_wings", "obiwan_wing_artifacts",
@@ -1237,6 +1244,17 @@ def _target_required_artifact_relatives(
     elif target == "no_floor_obiwan":
         required.update(_obiwan_release_artifact_relatives(
             work, "no_floor_stand"))
+    elif target == "no_floor_obiwan_01a":
+        base = "top_baffle_v2/no_floor_stand"
+        stem = "lx521_top_obiwan_optional_lm_keyed_1of2_bottom"
+        required.update({
+            f"{base}/stl/{stem}.stl",
+            f"{base}/stl/{stem}.print.json",
+            f"{base}/support_blockers/{stem}.support_blocker.stl",
+            f"{base}/support_blockers/{stem}.support_blocker.json",
+            f"{base}/top_baffle_nd25fw4_obiwan_lm_split.step",
+            f"{base}/baffle_cable_routing_obiwan.png",
+        })
     return required
 
 

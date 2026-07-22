@@ -1428,7 +1428,7 @@ def _cut_receivers(part, side: str) -> Part:
 
 
 def _cut_optional_lm_key_clearance(part, side: str) -> Part:
-    """Clear the optional LM split's exterior socket land at the interface."""
+    """Keep wing clearance around the optional ring-local keyed split."""
     side = _normalize_side(side)
     tool = registration_wing_clearance_tools()[side]
     result = part - tool
@@ -2019,12 +2019,12 @@ def wing_facts(variant_id: str) -> dict:
             "optional_lm_keyed_split": {
                 "geometrically_compatible": True,
                 "physical_fit_coupon_required": True,
-                "exterior_support_land_clearance_mm": float(
+                "ring_local_key_clearance_mm": float(
                     REGISTRATION_WING_CLEARANCE_MM),
                 "pocket_location": "carrier_interface_between_front_and_rear",
                 "right_pocket_uses_left_relief_worst_case": True,
                 "left_is_exact_mirror": True,
-                "monolithic_lm_local_hidden_relief": True,
+                "carrier_exterior_growth_mm": 0.0,
                 "primary_magnet_datums_unchanged": True,
             },
         },

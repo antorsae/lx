@@ -35,16 +35,11 @@ from top_baffle_nd25fw4 import (
 from top_baffle_nd25fw4_flush import LM_RECESS_R, PAD_FACE_Z
 from top_baffle_nd25fw4_obiwan_route import (
     DUCT_D,
-    LM_ROUTE_ARC_START_DEG,
-    LM_ROUTE_R,
-    NO_FLOOR_FEED_CUTTER_EXTENSION,
-    NO_FLOOR_FEED_END_HANDLE,
-    NO_FLOOR_FEED_START_BEARING_DEG,
-    NO_FLOOR_FEED_START_HANDLE,
-    NO_FLOOR_MAIN_FEED_XY,
-    NO_FLOOR_T_FEED_XY,
+    LM_INTERNAL_DUCT_D_MM,
     TS_DUCT_D,
-    TS_LM_ARC_START_DEG,
+    lm_internal_duct_cutter_points,
+    route_cable_points,
+    ts_cable_points,
 )
 from top_baffle_nd25fw4_obiwan_floor import integral_stem_plan_points
 
@@ -62,26 +57,27 @@ BRIDGE_BORE_FLOOR_MM = BRIDGE_WEB_T - BRIDGE_INSERT_DEPTH_MM
 
 # Solid panel around the unchanged 40 x 50 hole pattern. Its lower rounded
 # rectangle is the immutable insert-bearing core; filled cubic shoulders blend
-# its vertical sides tangentially into the LM outer ring. The two rear feed
-# lumens now pass through the upper panel, so both diameters are conservatively
-# removed from the complete 62-mm core even though the cubic shoulders make
-# every real horizontal cut wider. No strength credit is taken for the thin
-# tunnel skins themselves.
+# its vertical sides tangentially into the LM outer ring. The three D20-packed
+# rear feed lumens pass through the upper panel, so all three diameters are
+# conservatively removed from the complete 62-mm core even though they do not
+# govern at one identical horizontal station and the cubic shoulders make
+# every real cut wider. No strength credit is taken for tunnel skins.
 BRIDGE_WEB_X = (-31.0, 31.0)
 BRIDGE_WEB_Y = (14.0, 90.25)
 BRIDGE_WEB_CORNER_R = 4.0
 BRIDGE_WEB_WIDTH = BRIDGE_WEB_X[1] - BRIDGE_WEB_X[0]
 BRIDGE_WEB_HEIGHT = BRIDGE_WEB_Y[1] - BRIDGE_WEB_Y[0]
-BRIDGE_WEB_TUNNEL_DEDUCTION_MM = DUCT_D + TS_DUCT_D
+BRIDGE_WEB_TUNNEL_DEDUCTION_MM = (
+    LM_INTERNAL_DUCT_D_MM + DUCT_D + TS_DUCT_D)
 BRIDGE_WEB_NET_WIDTH_MM = (
     BRIDGE_WEB_WIDTH - BRIDGE_WEB_TUNNEL_DEDUCTION_MM)
 
 # Screen the first uninterrupted horizontal ligament above the immutable top
 # insert pair. The 0.05-mm offset avoids crediting a tangent to the D6.4 blind
-# bores. Both rear-facing cutter extensions already cross this section, so the
-# full 14.2-mm lumen deduction applies. A separate sampled outline/corridor
-# audit below proves that the real soft-blend section is wider than this 47.8
-# mm lower bound.
+# bores. All three rear-facing lumens are conservatively deducted across the
+# complete core even though their actual curved centerlines do not coincide at
+# one section. A separate sampled outline/corridor audit below proves the real
+# soft-blend section is at least this 38.8-mm lower bound.
 BRIDGE_ROUTE_SECTION_Y_MM = (
     max(float(y) for _x, y in BRIDGE_HOLE_XY)
     + L22_PILOT_D_MM / 2.0 + 0.05)
@@ -103,7 +99,7 @@ BRIDGE_FUSION_CRADLE_Z = BRIDGE_FACE_Z
 BRIDGE_FUSION_INTERFACE_Z = (6.8, BRIDGE_WEB_FRONT_Z)
 BRIDGE_FUSION_INTERFACE_T = (
     BRIDGE_FUSION_INTERFACE_Z[1] - BRIDGE_FUSION_INTERFACE_Z[0])
-BRIDGE_FUSION_TUNNEL_DEDUCTION_MM = DUCT_D + TS_DUCT_D
+BRIDGE_FUSION_TUNNEL_DEDUCTION_MM = BRIDGE_WEB_TUNNEL_DEDUCTION_MM
 
 # The wing itself occupies z=6.8..18.3.  Both stand states must therefore
 # expose exactly the same external LM-lower plan through this complete depth.
@@ -147,9 +143,10 @@ BRIDGE_BLEND_LEFT_TANGENCY = _circle_xy(
 
 # The old 45.06-mm R113 chord preceded the filled cubic shoulders and the two
 # bridge-entry lumens; it is no longer the physical horizontal section. The
-# member screen instead uses the opening-aware 62 - 8.2 - 6.0 = 47.8-mm core
-# lower bound at the first ligament above the top insert pair. This is smaller
-# than the exact sampled soft-outline net section and therefore conservative.
+# member screen instead uses the opening-aware
+# 62 - 9.0 - 8.2 - 6.0 = 38.8-mm core lower bound at the first ligament above
+# the top insert pair. This is smaller than the exact sampled soft-outline net
+# section and therefore conservative.
 BRIDGE_GOVERNING_NECK_WIDTH_MM = BRIDGE_WEB_NET_WIDTH_MM
 
 # Deliberately derated PLA Tough+ structural model.
@@ -373,52 +370,25 @@ def floor_wing_contact_profile_addition():
 
 
 def _no_floor_feed_lumen_plan():
-    """Conservative plan projection of both no-floor bridge feed lumens."""
-    sqrt_half = math.sqrt(0.5)
+    """Conservative projection of all three no-floor bridge lumens.
 
-    def entry(feed_xy, start_bearing_deg, arc_angle_deg,
-              end_direction, radius):
-        feed = tuple(map(float, feed_xy))
-        start_direction = (
-            math.cos(math.radians(start_bearing_deg)),
-            math.sin(math.radians(start_bearing_deg)),
-        )
-        arc = _circle_xy(LM_ROUTE_R, arc_angle_deg)
-        points = [(
-            feed[0] - start_direction[0] * NO_FLOOR_FEED_CUTTER_EXTENSION,
-            feed[1] - start_direction[1] * NO_FLOOR_FEED_CUTTER_EXTENSION,
-        )]
-        points.extend(_cubic_xy(
-            feed,
-            (feed[0] + start_direction[0] * NO_FLOOR_FEED_START_HANDLE,
-             feed[1] + start_direction[1] * NO_FLOOR_FEED_START_HANDLE),
-            (
-                arc[0] - end_direction[0] * NO_FLOOR_FEED_END_HANDLE,
-                arc[1] - end_direction[1] * NO_FLOOR_FEED_END_HANDLE,
-            ),
-            arc,
-            800,
-        ))
-        # A round buffer slightly overbounds the real 24/32-sided cutter
-        # sections, which is appropriate for a load-bearing deduction.
-        return LineString(points).buffer(
-            radius, resolution=32, cap_style=1, join_style=1)
-
-    main = entry(
-        NO_FLOOR_MAIN_FEED_XY,
-        NO_FLOOR_FEED_START_BEARING_DEG,
-        LM_ROUTE_ARC_START_DEG,
-        (sqrt_half, sqrt_half),
-        DUCT_D / 2.0,
+    Consume the route authority's actual centerlines rather than maintaining
+    a second approximation. Round buffers slightly overbound the polygonal
+    production cutters, which is appropriate for a load-bearing deduction.
+    """
+    records = (
+        (lm_internal_duct_cutter_points(0.20),
+         LM_INTERNAL_DUCT_D_MM / 2.0),
+        (route_cable_points(0.20), DUCT_D / 2.0),
+        (ts_cable_points(0.20), TS_DUCT_D / 2.0),
     )
-    tweeter = entry(
-        NO_FLOOR_T_FEED_XY,
-        180.0 - NO_FLOOR_FEED_START_BEARING_DEG,
-        TS_LM_ARC_START_DEG,
-        (-sqrt_half, sqrt_half),
-        TS_DUCT_D / 2.0,
-    )
-    return unary_union((main, tweeter))
+    lumens = []
+    for points, radius in records:
+        if len(points) < 2:
+            raise RuntimeError("no-floor bridge lumen centerline is empty")
+        lumens.append(LineString(points[:, :2]).buffer(
+            radius, resolution=32, cap_style=1, join_style=1))
+    return unary_union(lumens)
 
 
 @lru_cache(maxsize=1)
@@ -517,6 +487,8 @@ def bridge_fusion_interface_facts():
     return {
         "span_deg": BRIDGE_FUSION_CRADLE_SPAN_DEG,
         "gross_arc_width_mm": gross_width,
+        "deducted_lm_tunnel_count": 1,
+        "deducted_lm_tunnel_width_mm": LM_INTERNAL_DUCT_D_MM,
         "deducted_um_tunnel_count": 1,
         "deducted_um_tunnel_width_mm": DUCT_D,
         "deducted_t_tunnel_width_mm": TS_DUCT_D,

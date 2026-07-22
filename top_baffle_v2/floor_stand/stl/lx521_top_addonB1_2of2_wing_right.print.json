@@ -24,6 +24,8 @@
     "zero_volume": 0,
     "zero_volume_components": 0
   },
+  "mesh_angular_tolerance": 0.2,
+  "mesh_tolerance_mm": 0.05,
   "part": "lx521_top_addonB1_2of2_wing_right",
   "pre_translation_bbox_min_mm": [
     10.080999899999998,

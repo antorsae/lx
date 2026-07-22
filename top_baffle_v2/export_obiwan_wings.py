@@ -442,8 +442,15 @@ def _context_mesh_records(parts: dict[str, dict]) -> list[dict[str, Any]]:
     for key, style in identities.items():
         entry = parts[key]
         shape = entry["shape"]
+        # These context BREPs contain the finalized LM-owned UM/T conduits:
+        # their positive covers end at R113.75 beneath the uninterrupted
+        # R113.8 carrier fairing.  The generic 0.22-mm review deflection is
+        # wider than that 0.05-mm carrier land and can make OCC omit one of
+        # the closely spaced faces entirely.  Context is derived from the
+        # same production carriers, so tessellate it with their release mesh
+        # resolution instead of weakening or repairing the review mesh.
         vertices, triangles = shape.tessellate(
-            REVIEW_MESH_TOLERANCE_MM, REVIEW_MESH_ANGULAR_TOLERANCE)
+            MESH_TOLERANCE_MM, MESH_ANGULAR_TOLERANCE)
         xyz = np.asarray(
             [[float(vertex.X), float(vertex.Y), float(vertex.Z)]
              for vertex in vertices], dtype=float)

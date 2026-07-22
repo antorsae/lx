@@ -452,6 +452,7 @@ def _synthetic_profile_bundle(tmp_path: Path | None = None) -> dict:
             "printer_model": "Bambu Lab P2S",
             "nozzle_diameter": ["0.4"],
             "machine_pause_gcode": "wrong",
+            "machine_max_speed_z": ["20"],
         },
         "process": {
             "name": "process",
@@ -463,6 +464,7 @@ def _synthetic_profile_bundle(tmp_path: Path | None = None) -> dict:
             "enable_support": "1",
             "support_on_build_plate_only": "1",
             "support_critical_regions_only": "1",
+            "support_remove_small_overhang": "1",
             "enable_arc_fitting": "0",
             "wall_loops": "2",
             "top_shell_layers": "2",
@@ -524,6 +526,7 @@ def test_repo_overrides_apply_after_flattening_and_are_exact() -> None:
     assert process["enable_support"] == "0"
     assert process["support_on_build_plate_only"] == "0"
     assert process["support_critical_regions_only"] == "0"
+    assert process["support_remove_small_overhang"] == "0"
     assert process["precise_outer_wall"] == "1"
     assert process["detect_thin_wall"] == "1"
     assert process["ensure_vertical_shell_thickness"] == "enabled"
@@ -543,6 +546,8 @@ def test_repo_overrides_apply_after_flattening_and_are_exact() -> None:
         "support_on_build_plate_only"] is False
     assert bundle["identity"]["effective"][
         "support_critical_regions_only"] is False
+    assert bundle["identity"]["effective"][
+        "support_remove_small_overhang"] is False
 
 
 def test_profile_override_typo_fails_closed() -> None:
@@ -592,10 +597,12 @@ def test_artifact_density_overrides_are_exact(tmp_path: Path) -> None:
         assert process["enable_support"] == "1"
         assert process["support_on_build_plate_only"] == "1"
         assert process["support_critical_regions_only"] == "1"
+        assert process["support_remove_small_overhang"] == "1"
         effective = supported["identity"]["effective"]
         assert effective["support_enabled"] is True
         assert effective["support_on_build_plate_only"] is True
         assert effective["support_critical_regions_only"] is True
+        assert effective["support_remove_small_overhang"] is True
     assert fallback["identity"]["effective"]["support_enabled"] is False
     for state in ("floor_stand", "no_floor_stand"):
         um = audit._artifact_profile_bundle({
@@ -629,29 +636,35 @@ def test_every_artifact_override_must_match_once() -> None:
         raise AssertionError("ambiguous artifact override passed")
 
 
-def test_support_override_targets_only_both_keyed_lm_bottom_jobs() -> None:
+def test_support_override_targets_only_keyed_lm_split_jobs() -> None:
     config = audit._load_json(audit.DEFAULT_PROFILE)
     audit._validate_support_override_policy(config)
     base_process = config["repo_overrides"]["process"]
     assert base_process["enable_support"] == "0"
     assert base_process["support_on_build_plate_only"] == "0"
     assert base_process["support_critical_regions_only"] == "0"
+    assert base_process["support_remove_small_overhang"] == "0"
     support_rules = [
         rule for rule in config["artifact_overrides"]
         if audit._boolish(rule.get("process", {}).get("enable_support"))
     ]
-    assert len(support_rules) == 2
+    assert len(support_rules) == 4
     assert {
         rule["match"]["state"] for rule in support_rules
     } == {"floor_stand", "no_floor_stand"}
+    assert {
+        rule["match"]["part"] for rule in support_rules
+    } == {
+        "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+        "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+    }
     for rule in support_rules:
         assert rule["match"]["variant"] == "Obi-Wan-split"
-        assert rule["match"]["part"] == (
-            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom")
         process = rule["process"]
         assert process["enable_support"] == "1"
         assert process["support_on_build_plate_only"] == "1"
         assert process["support_critical_regions_only"] == "1"
+        assert process["support_remove_small_overhang"] == "1"
 
     extra = copy.deepcopy(config)
     extra["artifact_overrides"].append({
@@ -661,6 +674,7 @@ def test_support_override_targets_only_both_keyed_lm_bottom_jobs() -> None:
             "enable_support": "1",
             "support_on_build_plate_only": "1",
             "support_critical_regions_only": "1",
+            "support_remove_small_overhang": "1",
         },
     })
     try:
@@ -668,24 +682,26 @@ def test_support_override_targets_only_both_keyed_lm_bottom_jobs() -> None:
     except audit.AuditError as exc:
         assert "support overrides must target exactly" in str(exc)
     else:
-        raise AssertionError("third support-enabled artifact passed")
+        raise AssertionError("unexpected support-enabled artifact passed")
 
 
 def test_support_enabled_requires_both_scope_guards() -> None:
     bundle = _synthetic_profile_bundle()
     for missing in (
             "support_on_build_plate_only",
-            "support_critical_regions_only"):
+            "support_critical_regions_only",
+            "support_remove_small_overhang"):
         resolved = copy.deepcopy(bundle["resolved"])
         enforced = copy.deepcopy(bundle["enforced_overrides"])
         resolved["process"]["enable_support"] = "1"
         enforced["process"]["enable_support"] = "1"
         resolved["process"][missing] = "0"
         enforced["process"][missing] = "0"
-        other = ({"support_on_build_plate_only",
-                  "support_critical_regions_only"} - {missing}).pop()
-        resolved["process"][other] = "1"
-        enforced["process"][other] = "1"
+        for other in ({"support_on_build_plate_only",
+                       "support_critical_regions_only",
+                       "support_remove_small_overhang"} - {missing}):
+            resolved["process"][other] = "1"
+            enforced["process"][other] = "1"
         try:
             audit._effective_profile_contract(
                 resolved, bundle["config"], enforced)
@@ -738,6 +754,7 @@ def test_actual_gcode_profile_checks_every_pinned_setting(
         "enable_support": "0",
         "support_on_build_plate_only": "0",
         "support_critical_regions_only": "0",
+        "support_remove_small_overhang": "0",
         "sparse_infill_pattern": "gyroid",
         "sparse_infill_density": (
             f"{effective['sparse_infill_density_percent']:g}%"),
@@ -761,6 +778,7 @@ def test_actual_gcode_profile_checks_every_pinned_setting(
         "enable_support": "1",
         "support_on_build_plate_only": "1",
         "support_critical_regions_only": "1",
+        "support_remove_small_overhang": "1",
         "wall_loops": "5",
         "top_shell_layers": "5",
         "bottom_shell_layers": "4",
@@ -823,6 +841,7 @@ def test_actual_gcode_profile_checks_every_pinned_setting(
         "enable_support": "1",
         "support_on_build_plate_only": "1",
         "support_critical_regions_only": "1",
+        "support_remove_small_overhang": "1",
         "sparse_infill_pattern": "zig-zag",
         "sparse_infill_density": "100%",
     }
@@ -830,7 +849,8 @@ def test_actual_gcode_profile_checks_every_pinned_setting(
         parsed(support_config), support_bundle) == []
     for key in (
             "enable_support", "support_on_build_plate_only",
-            "support_critical_regions_only"):
+            "support_critical_regions_only",
+            "support_remove_small_overhang"):
         changed = dict(support_config)
         changed[key] = "0"
         errors = audit._validate_actual_gcode_profile(
@@ -1104,35 +1124,46 @@ def test_ready_custom_gcodes_and_archive_are_self_contained(
             },
         }],
     }
-    custom, pause_z = audit._custom_gcodes_document(record)
+    bundle = _synthetic_profile_bundle()
+    pause_policy = bundle["identity"]["effective"]["magnet_insertion_pause"]
+    custom, pause_z = audit._custom_gcodes_document(record, pause_policy)
     assert pause_z == [5.96]
     assert custom["mode"] == "SingleExtruder"
-    assert custom["gcodes"] == [{
-        "type": "PausePrint", "print_z": 5.96, "color": "",
-        "extruder": 1, "extra": "Insert 1 magnet(s): um_left",
-    }]
+    assert custom["gcodes"][0]["type"] == "Custom"
+    assert custom["gcodes"][0]["print_z"] == 5.96
+    assert custom["gcodes"][0]["extruder"] == 1
+    program = custom["gcodes"][0]["extra"]
+    assert audit.MAGNET_INSERTION_PAUSE_COMMAND in program
+    assert "G1 Z250 F1200" in program
+    assert "G1 Z5.96 F1200" in program
 
-    bundle = _synthetic_profile_bundle()
     settings = {}
     for values in bundle["enforced_overrides"].values():
         settings.update(values)
     gcode = tmp_path / "plate_1.gcode"
     gcode.write_text("\n".join((
-        "; CHANGE_LAYER", "; Z_HEIGHT: 5.96",
-        "; PAUSE_PRINTING", "M400 U1",
-        "G1 X1 Y1 E0.1",
+        "; CHANGE_LAYER", "; Z_HEIGHT: 5.96", "; CUSTOM_GCODE",
+        program, "G1 X1 Y1 E0.1",
     )) + "\n", encoding="utf-8")
+    xml_program = (program.replace("&", "&amp;")
+                   .replace("\"", "&quot;")
+                   .replace("\n", "&#10;"))
     custom_xml = (
         '<?xml version="1.0" encoding="utf-8"?>\n'
         '<custom_gcodes_per_layer><plate><plate_info id="1"/>'
-        '<layer top_z="5.96" type="1" extruder="1" color="" '
-        'extra="Insert magnet" gcode="M400 U1"/>'
+        '<layer top_z="5.96" type="4" extruder="1" color="" '
+        f'extra="{xml_program}" gcode="{xml_program}"/>'
         '<mode value="SingleExtruder"/></plate>'
         '</custom_gcodes_per_layer>')
+    model_settings = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<config><object id="2"><metadata key="name" '
+        'value="synthetic.stl"/></object></config>')
     project = tmp_path / audit.READY_3MF_FILENAME
     with zipfile.ZipFile(project, "w") as archive:
         archive.writestr(
             "Metadata/project_settings.config", json.dumps(settings))
+        archive.writestr("Metadata/model_settings.config", model_settings)
         archive.writestr(
             "Metadata/custom_gcode_per_layer.xml", custom_xml)
         archive.writestr("Metadata/plate_1.gcode", gcode.read_bytes())
@@ -1141,6 +1172,8 @@ def test_ready_custom_gcodes_and_archive_are_self_contained(
         profile_bundle=bundle)
     assert result["pause_z_mm"] == [5.96]
     assert result["embedded_gcode_sha256"] == audit.sha256_file(gcode)
+    assert result["gcode_pause_events"][0]["park_z_mm"] == 250.0
+    assert result["gcode_pause_events"][0]["restore_z_mm"] == 5.96
 
     support_bundle = audit._artifact_profile_bundle({
         "id": "floor:split:bottom",
@@ -1156,9 +1189,12 @@ def test_ready_custom_gcodes_and_archive_are_self_contained(
         archive.writestr(
             "Metadata/project_settings.config",
             json.dumps(support_settings))
+        archive.writestr("Metadata/model_settings.config", model_settings)
         archive.writestr(
             "Metadata/custom_gcode_per_layer.xml", custom_xml)
         archive.writestr("Metadata/plate_1.gcode", gcode.read_bytes())
+    assert audit._inject_ready_project_object_support(
+        support_project, enabled=True) == ["2"]
     support_result = audit._validate_ready_project_archive(
         support_project, gcode, expected_pause_z=pause_z,
         profile_bundle=support_bundle)
@@ -1168,6 +1204,8 @@ def test_ready_custom_gcodes_and_archive_are_self_contained(
         "support_on_build_plate_only"] == "1"
     assert support_result["enforced_project_settings"][
         "support_critical_regions_only"] == "1"
+    assert support_result["enforced_project_settings"][
+        "support_remove_small_overhang"] == "1"
 
     support_settings["support_critical_regions_only"] = "0"
     invalid_support_project = tmp_path / "invalid_supported_ready.gcode.3mf"
@@ -1175,6 +1213,12 @@ def test_ready_custom_gcodes_and_archive_are_self_contained(
         archive.writestr(
             "Metadata/project_settings.config",
             json.dumps(support_settings))
+        archive.writestr(
+            "Metadata/model_settings.config",
+            model_settings.replace(
+                'value="synthetic.stl"/>',
+                'value="synthetic.stl"/><metadata key="enable_support" '
+                'value="1"/>'))
         archive.writestr(
             "Metadata/custom_gcode_per_layer.xml", custom_xml)
         archive.writestr("Metadata/plate_1.gcode", gcode.read_bytes())
@@ -1191,11 +1235,11 @@ def test_ready_custom_gcodes_and_archive_are_self_contained(
     events = result["gcode_pause_events"]
     parsed = audit.ParsedGcode(
         [audit.Layer(5.96, 0.16, [], 1,
-                     first_extrusion_line_number=5)],
+                     first_extrusion_line_number=16)],
         1, 0, 1, 1, (0.0, 0.0, 0.0), (1.0, 1.0, 5.96), {})
     ordering = audit._assert_pauses_precede_layer_extrusion(parsed, events)
     assert ordering[0]["pass"] is True
-    parsed.layers[0].first_extrusion_line_number = 3
+    parsed.layers[0].first_extrusion_line_number = 12
     try:
         audit._assert_pauses_precede_layer_extrusion(parsed, events)
     except audit.AuditError as exc:

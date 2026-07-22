@@ -1,0 +1,68 @@
+{
+  "kind": "bambu_support_blocker",
+  "main_stl": "../stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
+  "main_stl_sha256": "daf22bf9a90924e05d4312621bcfc59bc059121fc0264dc4f07183cf0863b9fb",
+  "mesh": {
+    "component_error": 1,
+    "component_signed_volumes": [
+      9950.59435104788,
+      5551.524321667743,
+      1142.4027162407813,
+      654.5738781926934,
+      594.4238283700449,
+      342.32301870295146,
+      341.25268795529587,
+      190.48642050021567,
+      142.76391622617876,
+      106.1066129873405
+    ],
+    "components": 10,
+    "degenerate": 0,
+    "disconnected_material_components": 9,
+    "duplicates": 0,
+    "negative_volume": 0,
+    "nested_void_components": 0,
+    "nonfinite": 0,
+    "nonnested_void_components": 0,
+    "open": 0,
+    "outer_components": 10,
+    "over_shared": 0,
+    "signed_volume": 19016.451751891043,
+    "triangles": 6072,
+    "winding": 0,
+    "zero_volume": 0,
+    "zero_volume_components": 0
+  },
+  "modifier_clearance_mm": 0.25,
+  "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+  "purpose": "forbid_support_inside_no_floor_lm_um_t_ducts",
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      0.898794046299167,
+      0.4383711467890774,
+      0.0,
+      28.761409581573346
+    ],
+    [
+      0.4383711467890774,
+      -0.898794046299167,
+      0.0,
+      205.24878143744328
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999984
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "support_blocker": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom.support_blocker.stl",
+  "support_blocker_sha256": "d51da0edb161b8ed4a3843937ef0a4b98d28e0a6e8cdada6cd044cdbb82f949c"
+}

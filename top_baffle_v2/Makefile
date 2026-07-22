@@ -29,6 +29,8 @@
 #   make bambu_dry_run       local per-STL command/provenance preview
 #   make bambu_slice_obiwan  local filtered ready-project diagnostic
 #   make bambu_slice_release local authoritative ready-project slice/audit
+#   make to_print            local complete P2S shelf: audit + 39 friendly files
+#   make to_print_validate   validate an existing P2S shelf without slicing
 #
 # Compatible with the macOS-provided GNU make 3.81.
 
@@ -37,7 +39,8 @@
 # supplied remote/remote-worker mode back to local, and reject ambiguous mixed
 # CAD+slicer invocations.  Multiple Bambu goals in one invocation are allowed.
 LOCAL_BAMBU_GOALS := bambu_profiles bambu_dry_run \
-                     bambu_slice_obiwan bambu_slice_release
+                     bambu_slice_obiwan bambu_slice_release \
+                     check_to_print_shelf to_print to_print_validate
 BAMBU_GOALS_REQUESTED := $(filter $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))
 ifneq ($(strip $(BAMBU_GOALS_REQUESTED)),)
 ifneq ($(strip $(filter-out $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))),)
@@ -240,6 +243,7 @@ CLEARANCE_CHECK_NAMES := \
         test_v0_captive_geometry \
         test_v1_field \
         test_route_smoothness \
+        test_lm_exit_curvature_and_fishing \
         test_v1l_um_terminal_axis_handoff \
         test_um_eroded_outline_containment \
         test_ts_eroded_outline_containment \
@@ -272,6 +276,7 @@ R6F_CHECK_NAMES := \
         test_bridge_contract \
         test_bridge_geometry \
         test_joint_load_contract \
+        test_um_driver_spoke_is_separate_from_lm_um_insert_ear \
         test_floor_lm_core \
         test_no_floor_lm_core \
         test_floor_lm_keyed_split \
@@ -403,7 +408,8 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
 .PHONY: all candidate release validate_obiwan_stages \
         validate_floor_obiwan_stage validate_no_floor_obiwan_stage \
         floor_stand floor_stand_artifacts floor_obiwan \
-        no_floor_stand no_floor_stand_artifacts no_floor_obiwan obiwan_release \
+        no_floor_stand no_floor_stand_artifacts no_floor_obiwan \
+        no_floor_obiwan_01a obiwan_release \
         obiwan_wings obiwan_wing_artifacts check_obiwan_wings \
         common check check_static check_remote_transport \
         check_release_metadata check_slice_metadata \
@@ -411,24 +417,30 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
         check_captive_magnets check_obiwan \
         check_obiwan_shells check_obiwan_t_shells \
         check_obiwan_service check_obiwan_closure_focus \
+        check_obiwan_um_pilot_spoke \
         check_obiwan_mouths check_obiwan_burial check_obiwan_backfills \
         check_obiwan_um_burial \
         check_obiwan_route_boundaries \
         check_floor_um_shell check_floor_t_shell \
         check_no_floor_um_shell check_no_floor_t_shell \
         check_floor_obiwan_mouths check_no_floor_obiwan_mouths \
+        check_no_floor_obiwan_mouths_focused \
         check_floor_obiwan_burial check_no_floor_obiwan_burial \
         check_floor_obiwan_um_burial check_no_floor_obiwan_um_burial \
         check_floor_obiwan_backfills check_no_floor_obiwan_backfills \
         check_route_contract check_bump_brep check_floor_integrated_mount \
         check_no_floor_lm_mesh check_obiwan_lm_split \
         check_obiwan_lm_split_two_pin_static \
-        check_obiwan_junction_closure_plans check_obiwan_junction_closures \
+        check_obiwan_junction_closure_plans \
+        check_obiwan_junction_closure_base \
+        check_obiwan_junction_closures \
         check_floor_obiwan_lm_split check_no_floor_obiwan_lm_split \
         check_obiwan_lm_profile check_obiwan_lm_profile_plan \
         check_obiwan_lm_profile_brep manifold _manifold_parallel clean \
         bambu_profiles bambu_dry_run \
         bambu_slice_obiwan bambu_slice_release \
+        refresh_captive_magnet_catalog_existing \
+        check_to_print_shelf to_print to_print_validate \
         $(CLEARANCE_CHECK_TARGETS) $(R6F_CHECK_TARGETS)
 all: validate_obiwan_stages floor_stand_artifacts no_floor_stand_artifacts common \
         obiwan_wings $(CAPTIVE_MAGNET_CATALOG)
@@ -457,6 +469,19 @@ $(CAPTIVE_MAGNET_CATALOG): generate_captive_magnet_catalog.py \
 	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan PYTHONPATH=. $(RUN) \
 	    generate_captive_magnet_catalog.py --output $@
 	@test -s $@
+
+# Iteration-only catalog refresh over the already exported, remotely verified
+# release inventory.  This deliberately has no mesh prerequisites: it updates
+# hash/provenance bindings after a focused CAD export without rebuilding the
+# unaffected floor, wing, and legacy artifacts.  The generator still applies
+# the complete 56-artifact/102-station fail-closed catalog contract.
+refresh_captive_magnet_catalog_existing: generate_captive_magnet_catalog.py \
+        captive_magnet_release_catalog.schema.json slice_captive_magnets.py \
+        json_schema_subset.py captive_magnets.py
+	@mkdir -p review
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan PYTHONPATH=. $(RUN) \
+	    generate_captive_magnet_catalog.py --output $(CAPTIVE_MAGNET_CATALOG)
+	@test -s $(CAPTIVE_MAGNET_CATALOG)
 
 # Runtime package versions are part of the native-stage fingerprint but not
 # filesystem prerequisites. Validate first on every build; the stage command
@@ -531,6 +556,30 @@ no_floor_obiwan: validate_no_floor_obiwan_stage \
 	$(MAKE) --no-print-directory _manifold_parallel \
 	    MANIFOLD_ROOTS='no_floor_stand/stl' MANIFOLD_OBIWAN_ONLY=1
 
+# Focused iteration/export contract for the only no-floor part whose cable
+# routing owns the D20 entry cluster and LM-recess crossing.  The native stage
+# remains the STEP-first authority; only 01a is tessellated, while the keyed
+# pair STEP and uncluttered routing sheet are refreshed for review.
+no_floor_obiwan_01a: validate_no_floor_obiwan_stage
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan $(RUN) export_piece_stls.py \
+	    --variant obiwan \
+	    --obiwan-key optional_lm_keyed_1of2_bottom \
+	    --obiwan-stage-manifest no_floor_stand/.obiwan_stage/manifest.json \
+	    --outdir no_floor_stand/stl
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan PYTHONPATH=. $(RUN) \
+	    export_obiwan_staged.py step \
+	    --manifest no_floor_stand/.obiwan_stage/manifest.json \
+	    --kind lm_split \
+	    --output no_floor_stand/top_baffle_nd25fw4_obiwan_lm_split.step
+	cd no_floor_stand && LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan \
+	    PYTHONPATH=.. $(RUN) ../gen_cable_routing.py
+	@test -s no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl
+	@test -s no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json
+	@test -s no_floor_stand/support_blockers/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.support_blocker.stl
+	@test -s no_floor_stand/support_blockers/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.support_blocker.json
+	@test -s no_floor_stand/top_baffle_nd25fw4_obiwan_lm_split.step
+	@test -s no_floor_stand/baffle_cable_routing_obiwan.png
+
 # One public remote target owns the complete two-state Obi-Wan release, Ac/Ae
 # magnetic attachments and the focused final-BREP interface checks.  A single
 # Make DAG lets osado share both native stages and fan independent state,
@@ -538,8 +587,10 @@ no_floor_obiwan: validate_no_floor_obiwan_stage \
 obiwan_release: floor_stand_artifacts no_floor_stand_artifacts \
         obiwan_wings \
         $(CAPTIVE_MAGNET_CATALOG) \
+        $(call clearance_check_stamp,test_lm_exit_curvature_and_fishing) \
         check_route_contract check_obiwan_lm_split check_obiwan_shells \
         check_obiwan_route_boundaries check_floor_integrated_mount \
+        check_obiwan_um_pilot_spoke \
         check_obiwan_lm_split_two_pin_static \
         check_obiwan_junction_closures
 	# Ac/Ae already pass their own final gate through obiwan_wings.
@@ -610,7 +661,7 @@ check: validate_obiwan_stages check_static check_clearance_suite check_r6f_suite
         check_obiwan_junction_closures
 
 check_static: check_remote_transport check_release_metadata \
-        check_slice_metadata check_captive_magnets \
+        check_slice_metadata check_to_print_shelf check_captive_magnets \
         check_obiwan_lm_split_two_pin_static
 
 check_remote_transport: test_remote_cad.py remote_cad.py Makefile
@@ -625,6 +676,11 @@ check_slice_metadata: test_slice_captive_magnets.py \
         slice_captive_magnets.py json_schema_subset.py \
         captive_magnet_slicing_profile.json $(PRINT_CONTRACT_SRCS)
 	$(PYTHON_RUN) test_slice_captive_magnets.py
+
+check_to_print_shelf: test_to_print_shelf.py build_to_print_shelf.py \
+        to_print/catalog.json \
+        slice_captive_magnets.py bambu_3mf_audit.py $(PRINT_CONTRACT_SRCS)
+	$(PYTHON_RUN) test_to_print_shelf.py
 
 # These targets consume an existing, remotely generated catalog but never list
 # it as a Make prerequisite: a missing catalog must not launch heavyweight CAD
@@ -673,6 +729,27 @@ bambu_slice_release: check_slice_metadata
 		--jobs "$(BAMBU_JOBS)" \
 		--emit-ready-projects
 
+# User-facing, local-only materialization of the 39 P2S-printable parts.
+# The full audited magnet pass is deliberately a prerequisite: a friendly
+# filename must never promote a stale or discovery-only 3MF to a ready project.
+TO_PRINT_SHELF ?= to_print
+
+to_print: check_to_print_shelf bambu_slice_release
+	$(PYTHON_RUN) build_to_print_shelf.py \
+		--shelf "$(TO_PRINT_SHELF)" \
+		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--slice-missing
+
+to_print_validate: check_to_print_shelf
+	$(PYTHON_RUN) build_to_print_shelf.py \
+		--shelf "$(TO_PRINT_SHELF)" \
+		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--validate-only
+
 check_clearance_suite: $(CLEARANCE_CHECK_STAMPS)
 	@echo "all clearance checks passed (Make-jobserver isolated)"
 
@@ -711,6 +788,10 @@ check_obiwan_junction_closure_plans: \
 # source contract.
 check_obiwan_junction_closures: $(JUNCTION_CLOSURE_STAMP)
 
+# Focused two-state exact-BREP gate used while iterating closure ownership.
+# It stops before the sixteen dense physical-layer shards.
+check_obiwan_junction_closure_base: $(JUNCTION_CLOSURE_BASE_STAMP)
+
 $(JUNCTION_CLOSURE_STAMP): $(JUNCTION_CLOSURE_BASE_STAMP) \
 		$(JUNCTION_CLOSURE_DENSE_STAMPS)
 	@mkdir -p $(@D)
@@ -726,7 +807,12 @@ $(JUNCTION_CLOSURE_BASE_STAMP): \
 		floor_stand/.obiwan_stage/manifest.json \
 		no_floor_stand/.obiwan_stage/manifest.json
 	@mkdir -p $(@D)
+	# Run both base checks so each state is compared with its own route oracle.
 	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan PYTHONPATH=. \
+	    LX_OBIWAN_CLOSURE_FULL_TEST=1 \
+	    LX_OBIWAN_CLOSURE_BASE_ONLY=1 $(RUN) \
+	    test_obiwan_junction_closure_webs.py
+	LX_STAND_FOOT=1 LX_ROUTING_PROFILE=obiwan PYTHONPATH=. \
 	    LX_OBIWAN_CLOSURE_FULL_TEST=1 \
 	    LX_OBIWAN_CLOSURE_BASE_ONLY=1 $(RUN) \
 	    test_obiwan_junction_closure_webs.py
@@ -743,7 +829,10 @@ $(call junction_closure_dense_stamp,$(1),$(2)): \
 		floor_stand/.obiwan_stage/manifest.json \
 		no_floor_stand/.obiwan_stage/manifest.json
 	@mkdir -p $$(@D)
-	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan PYTHONPATH=. \
+	# The route oracle is state-dependent; keep it in the same state as the
+	# corresponding immutable staged BREP. ``floor_%`` intentionally excludes
+	# the ``no_floor_%`` cases.
+	LX_STAND_FOOT=$(if $(filter floor_%,$(1)),1,0) LX_ROUTING_PROFILE=obiwan PYTHONPATH=. \
 	    LX_OBIWAN_CLOSURE_FULL_TEST=1 \
 	    LX_OBIWAN_CLOSURE_DENSE_CASE=$(1) \
 	    LX_OBIWAN_CLOSURE_DENSE_SHARD=$(2)/4 $$(RUN) \
@@ -804,6 +893,15 @@ check_floor_obiwan_mouths: \
 
 check_no_floor_obiwan_mouths: \
         _check_r6f_test_feed_and_flush_mouth_contract
+
+# Exact one-state iteration gate for the no-floor lower carrier.  The generic
+# R6F stamp graph intentionally validates both native stages for a release,
+# but a local 01a geometry correction must not rebuild the unaffected floor
+# carrier merely to inspect its own final BREP.
+check_no_floor_obiwan_mouths_focused: validate_no_floor_obiwan_stage \
+		test_obiwan_r6f.py $(OBIWAN_SRCS)
+	$(R6F_CLEAN_ENV) LX_R6F_SINGLE_CHECK=test_feed_and_flush_mouth_contract \
+	    $(RUN) test_obiwan_r6f.py
 
 check_floor_obiwan_burial: test_obiwan_r6f.py $(OBIWAN_SRCS) | \
 		floor_stand/.obiwan_stage/manifest.json
@@ -894,6 +992,13 @@ check_obiwan_lm_profile_brep: test_obiwan_r6f.py $(OBIWAN_SRCS)
 check_route_contract: test_obiwan_r6f.py $(OBIWAN_SRCS)
 	LX_R6F_SINGLE_CHECK=test_route_contract $(RUN) test_obiwan_r6f.py
 
+# The 238-degree UM driver mount is intentionally offset by 5 degrees so its
+# required support does not fuse into the adjacent LM--UM M3 heat-set ear.
+# Keep that small visual/structural correction inside every focused release.
+check_obiwan_um_pilot_spoke: test_obiwan_r6f.py $(OBIWAN_SRCS)
+	LX_R6F_SINGLE_CHECK=test_um_driver_spoke_is_separate_from_lm_um_insert_ear \
+	    $(RUN) test_obiwan_r6f.py
+
 # Focused exact-BREP route-to-insert clearance check for both stand states.
 check_bump_brep: test_obiwan_r6f.py $(OBIWAN_SRCS)
 	LX_R6F_SINGLE_CHECK=test_no_floor_route_smoothness $(RUN) test_obiwan_r6f.py
@@ -948,16 +1053,13 @@ endif
 $(1)/stl/.stamp_obiwan: $(OBIWAN_SRCS) $(STL_EXPORT_SRCS) \
         $(1)/.obiwan_stage/manifest.json
 	@rm -f $$@
-ifeq ($(LX_CAD_EXECUTION),remote-worker)
-	# The staged BREPs are already hash-verified. Osado can import and mesh
-	# the complete state without the local one-group-per-process workaround.
-	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=obiwan $(RUN) export_piece_stls.py --variant obiwan --obiwan-stage-manifest $(1)/.obiwan_stage/manifest.json --outdir $(1)/stl
-else
+	# Mesh each hash-verified staged group in a fresh OCC process on every
+	# host. This makes tessellation independent of previously meshed parts and
+	# keeps the keyed registration bores deterministic after bed rotation.
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=obiwan $(RUN) export_piece_stls.py --variant obiwan --obiwan-part lm --obiwan-stage-manifest $(1)/.obiwan_stage/manifest.json --outdir $(1)/stl
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=obiwan $(RUN) export_piece_stls.py --variant obiwan --obiwan-part lm_split --obiwan-stage-manifest $(1)/.obiwan_stage/manifest.json --outdir $(1)/stl
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=obiwan $(RUN) export_piece_stls.py --variant obiwan --obiwan-part um --obiwan-stage-manifest $(1)/.obiwan_stage/manifest.json --outdir $(1)/stl
 	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=obiwan $(RUN) export_piece_stls.py --variant obiwan --obiwan-part tweeter --obiwan-stage-manifest $(1)/.obiwan_stage/manifest.json --outdir $(1)/stl
-endif
 	@touch $$@
 
 $(1)/stl/.stamp_coupon: export_coupon.py check_manifold.py \

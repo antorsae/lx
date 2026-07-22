@@ -82,9 +82,9 @@ def _routes(stand_foot: bool, routing_profile: str = "proud",
 
     out = {}
     for name in ("lm", "um", "ts"):
-        if name == "um":
+        if name in {"lm", "um"}:
             pts = cab.route_centerline_points(
-                "um", spacing_mm=0.35,
+                name, spacing_mm=0.35,
                 um_handoff_key=um_handoff_key)
             out[name] = np.asarray(pts, dtype=float)
         else:
@@ -1093,9 +1093,9 @@ def test_v1_field():
             for x, y, z in pts:
                 if not 96.0 < y < 434.0:
                     continue
-                if name == "um" and z < 12.54:
-                    # The selected R14 is the intentional rear opening;
-                    # exact axis, containment and curvature tests cover it.
+                if name in {"lm", "um"} and z < 12.54:
+                    # The selected R14 is an intentional rear opening;
+                    # exact mouth and curvature tests cover it.
                     continue
                 w2, h2, zc = _section_at(name, y, z)
                 skin = _ts_floor_skin(name, h2)
@@ -1147,19 +1147,19 @@ def test_duct_vs_um_pilots():
 
 
 def test_route_smoothness():
-    """Whole-centerline bend radii, including the UM outlet handoff.
+    """Whole-centerline bend radii, including both outlet handoffs.
 
     Three-point circumradii are parameterization independent and do not
     discard the endpoints.  R6 explicitly requires the analytic elbow
     to appear in this test; the former suite stopped 20 samples before
     the separate 90-degree outlet cylinder.
     """
-    FLOORS = {"lm": 25.0, "um": 12.5, "ts": 4.5,
+    FLOORS = {"lm": 13.9, "um": 12.5, "ts": 4.5,
               "t1f": 6.0, "t2f": 6.0}
 
     for stand_foot in (True, False):
         for name, pts in _routes(stand_foot).items():
-            probe = pts if name == "um" else pts[20:-20]
+            probe = pts if name in {"lm", "um"} else pts[20:-20]
             r_min = _min_three_point_radius(probe)
             assert r_min >= FLOORS[name], (
                 f"{name} min bend radius {r_min:.1f} < {FLOORS[name]} "
@@ -1206,6 +1206,74 @@ def test_route_smoothness():
         f"V1L UM plan/elbow tangent error {join_angle:.3f} deg")
     print(f"  V1L UM terminal span: plan R{plan_r:.2f}, elbow "
           f"R{elbow_r:.2f}, G1 error {join_angle:.3f} deg")
+
+
+def test_lm_exit_curvature_and_fishing():
+    """Every Stock/Slim LM outlet is a traversable R14, never an L-bore.
+
+    The standard and V1L pieces have different rear depths, so their R14
+    arcs reach the surface at different angles.  Both must retain the same
+    exact mouth XY, a G1 plan/arc/lead handoff, and a D9 terminal section for
+    the estimated D7.8 cable.
+    """
+    for stand_foot in (False, True):
+        cab = _cab(stand_foot, "proud")
+        for label, key, expected_rear_z in (
+                ("Stock", "proud", cab.LM_EXIT_STANDARD_REAR_FACE_Z_MM),
+                ("Slim", cab.UM_V1L_HANDOFF_KEY,
+                 cab.LM_EXIT_V1L_REAR_FACE_Z_MM)):
+            spec = cab._lm_handoff_spec(key)
+            arc_intervals = 320
+            points = np.asarray(cab.lm_handoff_points(
+                n=arc_intervals, um_handoff_key=key), dtype=float)
+            elbow_r = _min_three_point_radius(
+                points[:arc_intervals + 1])
+            assert elbow_r >= cab.LM_EXIT_MIN_BEND_R_MM, (
+                f"{label} LM outlet radius {elbow_r:.4f} mm")
+            assert math.isclose(
+                spec["radius_mm"], cab.LM_EXIT_BEND_R_MM,
+                abs_tol=1e-12)
+            assert np.allclose(
+                spec["face"],
+                (cab.LM_DUCT_OUT_X_MM, cab.LM_DUCT_OUT_Y_MM,
+                 expected_rear_z), atol=1e-12)
+
+            plan = cab._lm_plan_spline(um_handoff_key=key)
+            plan_tangent = np.asarray(tuple(plan % 1.0), dtype=float)
+            plan_tangent /= np.linalg.norm(plan_tangent)
+            assert np.dot(plan_tangent, (0.0, 1.0, 0.0)) > 0.999999
+            arc_face_tangent = (
+                points[arc_intervals] - points[arc_intervals - 1])
+            arc_face_tangent /= np.linalg.norm(arc_face_tangent)
+            lead_tangent = (
+                points[arc_intervals + 1] - points[arc_intervals])
+            lead_tangent /= np.linalg.norm(lead_tangent)
+            join_error = math.degrees(math.acos(np.clip(
+                np.dot(arc_face_tangent, lead_tangent), -1.0, 1.0)))
+            assert join_error <= 0.20, (
+                f"{label} LM arc/lead tangent error {join_error:.4f} deg")
+
+            section_points, section_radii = cab._lm_tube_sections(
+                um_handoff_key=key, spacing_mm=1.0)
+            assert any(
+                np.allclose(point, spec["face"], atol=1e-9)
+                for point in section_points)
+            assert math.isclose(
+                section_radii[-1] * 2.0, cab.LM_EXIT_D_MM,
+                abs_tol=1e-12)
+            assert (
+                section_radii[-1] - 7.8 / 2.0 >= 0.59), (
+                f"{label} LM terminal radial cable slack is too small")
+            assert section_radii[-1] >= section_radii[-2]
+            assert all(
+                right + 1e-12 >= left
+                for left, right in zip(
+                    section_radii[:-1], section_radii[1:])), (
+                f"{label} LM D8.2-to-D9 flare is not monotone")
+            print(
+                f"  {label} LM (foot={stand_foot}): R{elbow_r:.2f}, "
+                f"rear angle {spec['face_angle_deg_from_rear_normal']:.2f} "
+                "deg, D9 terminal")
 
 
 def test_v1l_um_terminal_axis_handoff():
@@ -1881,6 +1949,7 @@ if __name__ == "__main__":
         test_v0_captive_geometry,
         test_v1_field,
         test_route_smoothness,
+        test_lm_exit_curvature_and_fishing,
         test_v1l_um_terminal_axis_handoff,
         test_um_eroded_outline_containment,
         test_ts_eroded_outline_containment,

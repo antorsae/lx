@@ -14,6 +14,8 @@ two optional keyed replacement prints remain strictly bed-checked.
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import math
 import os
 import struct
@@ -39,6 +41,17 @@ from front_down_contract import sidecar_path_for_stl, write_print_sidecar
 
 BED_MM = 256.0
 OBIWAN_OPTIONAL_LM_SPLIT_BED_MM = 220.0
+DEFAULT_MESH_TOLERANCE_MM = 0.05
+DEFAULT_MESH_ANGULAR_TOLERANCE = 0.20
+# Obi-Wan's 0.45-mm captive skins, 0.8-mm flush route shells and narrow
+# complementary closure faces need a finer deterministic tessellation than
+# the broad legacy baffles. At 0.05 mm OCC can leave the narrowest valid BREP
+# faces without triangulation, yielding an open STL even though the native
+# carrier is one valid solid. Ac uses this same 0.01/0.08 release class;
+# apply it to every Obi-Wan core piece so split and canonical meshes share one
+# contract.
+OBIWAN_MESH_TOLERANCE_MM = 0.01
+OBIWAN_MESH_ANGULAR_TOLERANCE = 0.08
 
 # A rigid OCC Location can leave mathematically-zero coordinates as tiny
 # nonzero values on only one of two adjacent face triangulations.  Binary
@@ -174,9 +187,136 @@ def _strict_mesh_facts(path: Path) -> dict[str, int | float]:
     return facts
 
 
+def _report_null_triangulation_faces(shape) -> None:
+    """Emit bounded native-face facts when OCC skips a valid BREP face."""
+    from OCP.BRep import BRep_Tool
+    from OCP.TopLoc import TopLoc_Location
+
+    missing = []
+    for index, face in enumerate(shape.faces()):
+        triangulation = BRep_Tool.Triangulation_s(
+            face.wrapped, TopLoc_Location())
+        if triangulation is not None:
+            continue
+        bbox = face.bounding_box()
+        edge_lengths = [float(edge.length) for edge in face.edges()]
+        missing.append({
+            "face": index,
+            "type": str(face.geom_type),
+            "valid": bool(face.is_valid),
+            "area_mm2": float(face.area),
+            "bounds_mm": (
+                (bbox.min.X, bbox.min.Y, bbox.min.Z),
+                (bbox.max.X, bbox.max.Y, bbox.max.Z),
+            ),
+            "edges": len(edge_lengths),
+            "edge_min_mm": min(edge_lengths, default=0.0),
+            "edge_max_mm": max(edge_lengths, default=0.0),
+        })
+    print(
+        "OCC null-triangulation face diagnostics: "
+        + json.dumps(missing, sort_keys=True),
+        file=sys.stderr,
+    )
+
+
+def _modifier_mesh_facts(path: Path) -> dict[str, int | float]:
+    """Validate a possibly disconnected support-blocker STL."""
+    from check_manifold import stl_diagnostics
+
+    facts = stl_diagnostics(path)
+    defect_keys = (
+        "open", "over_shared", "winding", "degenerate", "duplicates",
+        "nonfinite", "zero_volume", "negative_volume",
+    )
+    defects = {key: facts[key] for key in defect_keys if facts[key]}
+    if defects or int(facts.get("components", 0)) < 1:
+        raise RuntimeError(
+            f"temporary support blocker fails mesh contract: {path.name}: "
+            f"{defects}; components={facts.get('components')}")
+    return facts
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _write_atomic_json(path: Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(
+        f".{path.name}.{os.getpid()}.tmp")
+    try:
+        temporary.write_text(
+            json.dumps(payload, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8")
+        temporary.replace(path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def _export_no_floor_lm_support_blocker(
+        *, out_dir: Path, name: str, main_stl_path: Path,
+        source_bbox, bed_rotation_deg: float) -> str:
+    """Export and hash-bind the no-floor duct support-blocker modifier."""
+    from top_baffle_nd25fw4_obiwan_lm_split import LM_SPLIT_SEAM_Y
+    from top_baffle_nd25fw4_obiwan_route import (
+        no_floor_lm_bottom_support_blocker,
+    )
+
+    blocker = no_floor_lm_bottom_support_blocker(LM_SPLIT_SEAM_Y)
+    blocker = Rot(X=180.0) * blocker
+    if bed_rotation_deg:
+        blocker = Rot(Z=bed_rotation_deg) * blocker
+    blocker = Pos(
+        -source_bbox.min.X, -source_bbox.min.Y, -source_bbox.min.Z,
+    ) * blocker
+    blocker_dir = out_dir.parent / "support_blockers"
+    blocker_path = blocker_dir / f"{name}.support_blocker.stl"
+    blocker_dir.mkdir(parents=True, exist_ok=True)
+    temporary = blocker_path.with_name(
+        f".{blocker_path.stem}.{os.getpid()}.tmp.stl")
+    try:
+        export_stl(
+            blocker, str(temporary), tolerance=0.05,
+            angular_tolerance=0.2)
+        _validate_binary_stl(temporary)
+        _canonicalize_transform_zeros(temporary)
+        _remove_collapsed_apex_facets(temporary)
+        blocker_mesh = _modifier_mesh_facts(temporary)
+        temporary.replace(blocker_path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+    main_sidecar = json.loads(
+        sidecar_path_for_stl(main_stl_path).read_text(encoding="utf-8"))
+    binding_path = blocker_path.with_suffix(".json")
+    _write_atomic_json(binding_path, {
+        "schema_version": 1,
+        "kind": "bambu_support_blocker",
+        "purpose": "forbid_support_inside_no_floor_lm_um_t_ducts",
+        "part": name,
+        "main_stl": f"../stl/{main_stl_path.name}",
+        "main_stl_sha256": _sha256_file(main_stl_path),
+        "support_blocker": blocker_path.name,
+        "support_blocker_sha256": _sha256_file(blocker_path),
+        "source_to_stl_matrix": main_sidecar["source_to_stl_matrix"],
+        "modifier_clearance_mm": 0.25,
+        "mesh": blocker_mesh,
+    })
+    return (
+        f"  support blocker {blocker_path.name}"
+        f" ({blocker_mesh['components']} closed components)")
+
+
 def _write_print_transform_sidecar(
         path: Path, *, name: str, variant: str, z_rotation_deg: float,
-        oriented_bbox, mesh_facts: dict[str, int | float]) -> None:
+        oriented_bbox, mesh_facts: dict[str, int | float],
+        mesh_tolerance_mm: float,
+        mesh_angular_tolerance: float) -> None:
     """Bind one STL to its exact front-down rigid source transform."""
     angle = math.radians(float(z_rotation_deg))
     cosine, sine = math.cos(angle), math.sin(angle)
@@ -205,7 +345,12 @@ def _write_print_transform_sidecar(
         path,
         part=name,
         transform=transform,
-        extra={"variant_export": variant, "mesh": mesh_facts},
+        extra={
+            "variant_export": variant,
+            "mesh": mesh_facts,
+            "mesh_tolerance_mm": mesh_tolerance_mm,
+            "mesh_angular_tolerance": mesh_angular_tolerance,
+        },
     )
 
 
@@ -351,6 +496,17 @@ def main() -> None:
         help="export one staged R6F group; omit on osado to mesh the whole "
              "state in one guarded process")
     ap.add_argument(
+        "--obiwan-key",
+        choices=(
+            "core_lm_carrier",
+            "core_um_carrier",
+            "optional_lm_keyed_1of2_bottom",
+            "optional_lm_keyed_2of2_top",
+            "addon_tweeter_crescent",
+        ),
+        help="export exactly one staged R6F print part; intended for focused "
+             "remote iteration without remeshing an unaffected group")
+    ap.add_argument(
         "--obiwan-stage-manifest", type=Path,
         help="hash-verified native-BREP stage manifest produced by "
              "export_obiwan_staged.py; required for every Obi-Wan export")
@@ -364,6 +520,10 @@ def main() -> None:
     args = ap.parse_args()
     if args.obiwan_part and args.variant != "obiwan":
         ap.error("--obiwan-part requires --variant obiwan")
+    if args.obiwan_key and args.variant != "obiwan":
+        ap.error("--obiwan-key requires --variant obiwan")
+    if args.obiwan_key and args.obiwan_part:
+        ap.error("--obiwan-key and --obiwan-part are mutually exclusive")
     if args.obiwan_stage_manifest and args.variant != "obiwan":
         ap.error("--obiwan-stage-manifest requires --variant obiwan")
     if args.v1l_piece and args.variant != "v1l":
@@ -372,10 +532,11 @@ def main() -> None:
     if stand_mode not in {"0", "1"}:
         ap.error("LX_STAND_FOOT must be 0 or 1")
     if (args.variant == "obiwan" and args.obiwan_part is None
+            and args.obiwan_key is None
             and not _large_host_execution()):
         ap.error(
-            "local --variant obiwan requires one --obiwan-part so every OCC "
-            "group runs in a fresh guarded process")
+            "local --variant obiwan requires one --obiwan-part or "
+            "--obiwan-key so every OCC group runs in a fresh guarded process")
     if args.variant == "obiwan" and args.obiwan_stage_manifest is None:
         ap.error(
             "--variant obiwan requires --obiwan-stage-manifest; direct "
@@ -396,6 +557,7 @@ def main() -> None:
         keys = tuple(
             key for key, spec in PRINT_PART_SPECS.items()
             if key in staged and (
+                args.obiwan_key is None or key == args.obiwan_key) and (
                 args.obiwan_part is None
                 or spec["group"] == args.obiwan_part))
         if not keys:
@@ -528,17 +690,28 @@ def main() -> None:
             f".{path.stem}.{os.getpid()}.tmp.stl")
         canonicalized_zeros = 0
         collapsed_apex_facets = 0
+        mesh_tolerance = (
+            OBIWAN_MESH_TOLERANCE_MM
+            if args.variant == "obiwan" else DEFAULT_MESH_TOLERANCE_MM)
+        mesh_angular_tolerance = (
+            OBIWAN_MESH_ANGULAR_TOLERANCE
+            if args.variant == "obiwan"
+            else DEFAULT_MESH_ANGULAR_TOLERANCE)
         try:
             export_stl(
-                moved, str(temporary), tolerance=0.05,
-                angular_tolerance=0.2)
+                moved, str(temporary), tolerance=mesh_tolerance,
+                angular_tolerance=mesh_angular_tolerance)
             _validate_binary_stl(temporary)
             # X-axis print transforms can express exact zero coordinates as
             # face-local floating-point noise. Keep all other meshes
             # byte-for-byte faithful to the ordinary OCC export.
             canonicalized_zeros = _canonicalize_transform_zeros(temporary)
             collapsed_apex_facets = _remove_collapsed_apex_facets(temporary)
-            mesh_facts = _strict_mesh_facts(temporary)
+            try:
+                mesh_facts = _strict_mesh_facts(temporary)
+            except RuntimeError:
+                _report_null_triangulation_faces(moved)
+                raise
             mesh_facts["collapsed_apex_facets_removed"] = (
                 collapsed_apex_facets)
             temporary.replace(path)
@@ -547,7 +720,20 @@ def main() -> None:
         _write_print_transform_sidecar(
             path, name=name, variant=args.variant,
             z_rotation_deg=bed_rotation, oriented_bbox=bb,
-            mesh_facts=mesh_facts)
+            mesh_facts=mesh_facts,
+            mesh_tolerance_mm=mesh_tolerance,
+            mesh_angular_tolerance=mesh_angular_tolerance)
+        support_blocker_note = ""
+        if (args.variant == "obiwan" and stand_mode == "0"
+                and name ==
+                "lx521_top_obiwan_optional_lm_keyed_1of2_bottom"):
+            support_blocker_note = _export_no_floor_lm_support_blocker(
+                out_dir=out_dir,
+                name=name,
+                main_stl_path=path,
+                source_bbox=bb,
+                bed_rotation_deg=bed_rotation,
+            )
         print(
             f"{name:22s} {size.X:7.2f} x {size.Y:7.2f} x {size.Z:5.2f} mm  "
             f"volume {solid.volume / 1000.0:7.1f} cm3  "
@@ -557,7 +743,7 @@ def main() -> None:
             f"  mesh {mesh_facts['triangles']} tris/strict"
             f"  transform-zero fixes {canonicalized_zeros}"
             f"  collapsed-apex facets {collapsed_apex_facets}"
-            f"  -> {path.name}"
+            f"  -> {path.name}{support_blocker_note}"
         )
     if misfits:
         sys.exit("ERROR: piece(s) exceed their configured bed envelope: "

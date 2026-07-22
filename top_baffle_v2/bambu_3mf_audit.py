@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Pure-Python, fail-closed audit of a single-object Bambu 3MF project.
+"""Pure-Python, fail-closed audit of a Bambu 3MF model assembly.
 
 The Bambu CLI may translate and rotate an arranged object around print Z even
 when ``--orient 0`` is used.  Its ``result.json`` object bounding box is the
@@ -9,7 +9,7 @@ the unrotated STL dimensions therefore confuses an allowed bed-plane rotation
 with scaling.
 
 This module binds the exported 3MF back to the staged STL instead.  It resolves
-the single component chain, reconstructs the mesh in original STL coordinates,
+the normal-part component, reconstructs the mesh in original STL coordinates,
 compares the complete triangle soup, and then proves that the build transform
 is a proper, unit-scale Rz plus XY translation.  No OCC, slicer, or third-party
 geometry package is imported.
@@ -92,6 +92,8 @@ class Bambu3MFAudit:
     transformed_actual_mesh_bounds: Bounds3D
     stl_to_bed_matrix: Matrix4
     rigid_rz: RigidRzFacts
+    support_blocker_count: int = 0
+    support_blocker_triangle_counts: tuple[int, ...] = ()
 
     def as_record(self) -> dict[str, object]:
         return {
@@ -111,6 +113,9 @@ class Bambu3MFAudit:
                     self.rigid_rz.orthonormal_max_error),
                 "rz_degrees": self.rigid_rz.rz_degrees,
             },
+            "support_blocker_count": self.support_blocker_count,
+            "support_blocker_triangle_counts": list(
+                self.support_blocker_triangle_counts),
         }
 
 
@@ -466,6 +471,17 @@ class _BambuPackage:
     def close(self) -> None:
         self._zip.close()
 
+    def read_member(self, member: str) -> bytes:
+        member = _normalize_member("", member)
+        if member not in self._members:
+            raise Bambu3MFAuditError(
+                f"3MF archive is missing member {member!r}")
+        try:
+            return self._zip.read(member)
+        except (KeyError, OSError) as error:
+            raise Bambu3MFAuditError(
+                f"cannot read 3MF member {member!r}") from error
+
     def document(self, member: str) -> _ModelDocument:
         member = _normalize_member("", member)
         if member in self._documents:
@@ -674,22 +690,117 @@ def _validate_mesh_equivalence(
     return max_error
 
 
+def _bambu_model_parts(
+    package: _BambuPackage, root_object_id: int,
+) -> dict[str, list[tuple[int, str]]]:
+    """Return model-settings part IDs/source names grouped by subtype."""
+    try:
+        root = ET.fromstring(package.read_member(
+            "Metadata/model_settings.config"))
+    except ET.ParseError as error:
+        raise Bambu3MFAuditError(
+            "Metadata/model_settings.config is invalid XML") from error
+    objects = [
+        element for element in _descendants(root, "object")
+        if element.attrib.get("id") == str(root_object_id)
+    ]
+    if len(objects) != 1:
+        raise Bambu3MFAuditError(
+            "model settings must describe the sole build object exactly once")
+    parts: dict[str, list[tuple[int, str]]] = {}
+    for part in _children(objects[0], "part"):
+        try:
+            part_id = int(part.attrib["id"])
+        except (KeyError, ValueError) as error:
+            raise Bambu3MFAuditError(
+                "model-settings part has an invalid id") from error
+        subtype = part.attrib.get("subtype", "").strip()
+        source_values = [
+            metadata.attrib.get("value", "")
+            for metadata in _children(part, "metadata")
+            if metadata.attrib.get("key") == "source_file"
+        ]
+        if not subtype or len(source_values) != 1 or not source_values[0]:
+            raise Bambu3MFAuditError(
+                f"model-settings part {part_id} lacks subtype/source_file")
+        parts.setdefault(subtype, []).append((part_id, source_values[0]))
+    return parts
+
+
+def _resolve_root_component(
+    package: _BambuPackage,
+    document: _ModelDocument,
+    root_object_id: int,
+    child_object_id: int,
+) -> tuple[tuple[Triangle, ...], int]:
+    """Resolve one named component of an assembly-root build object."""
+    root = document.objects.get(root_object_id)
+    if root is None:
+        raise Bambu3MFAuditError(
+            f"root model has no object id {root_object_id}")
+    groups = _children(root, "components")
+    if len(groups) != 1 or _children(root, "mesh"):
+        raise Bambu3MFAuditError(
+            "assembly build root must contain exactly one component group")
+    matches = []
+    for component in _children(groups[0], "component"):
+        try:
+            object_id = int(component.attrib["objectid"])
+        except (KeyError, ValueError) as error:
+            raise Bambu3MFAuditError(
+                "3MF component has invalid objectid") from error
+        if object_id == child_object_id:
+            matches.append(component)
+    if len(matches) != 1:
+        raise Bambu3MFAuditError(
+            f"assembly root must reference part {child_object_id} once")
+    component = matches[0]
+    path_value = _attribute(component, "path")
+    child_document = (
+        package.document(_normalize_member(document.member, path_value))
+        if path_value else document
+    )
+    triangles, depth, leaf_count = package.resolve_object(
+        child_document, child_object_id,
+        frozenset({(document.member, root_object_id)}))
+    if leaf_count != 1:
+        raise Bambu3MFAuditError(
+            f"assembly part {child_object_id} does not resolve to one mesh")
+    transform = _parse_3mf_transform(
+        component.attrib.get("transform"),
+        f"component {root_object_id}->{child_object_id} transform")
+    transformed = tuple(
+        tuple(transform_point(transform, point) for point in triangle)
+        for triangle in triangles
+    )
+    return transformed, depth + 1
+
+
 def audit_bambu_3mf(
     project_3mf: Path | str,
     staged_stl: Path | str,
     *,
+    support_blocker_stls: Sequence[Path | str] = (),
     mesh_tolerance_mm: float = DEFAULT_MESH_TOLERANCE_MM,
     transform_tolerance: float = DEFAULT_TRANSFORM_TOLERANCE,
     bed_z_tolerance_mm: float = DEFAULT_BED_Z_TOLERANCE_MM,
 ) -> Bambu3MFAudit:
-    """Audit one Bambu-exported, single-component 3MF against its staged STL."""
+    """Audit one Bambu 3MF against its staged printable and modifier meshes."""
     project_path = Path(project_3mf)
     stl_path = Path(staged_stl)
+    blocker_paths = tuple(Path(path) for path in support_blocker_stls)
+    blocker_names = [path.name for path in blocker_paths]
+    if len(blocker_names) != len(set(blocker_names)):
+        raise Bambu3MFAuditError(
+            "support-blocker STL basenames must be unique")
     mesh_tolerance_mm = _finite(mesh_tolerance_mm, "mesh tolerance")
     bed_z_tolerance_mm = _finite(bed_z_tolerance_mm, "bed-Z tolerance")
     if mesh_tolerance_mm < 0.0 or bed_z_tolerance_mm < 0.0:
         raise Bambu3MFAuditError("audit tolerances must be non-negative")
     staged_triangles = read_stl_triangles(stl_path)
+    blocker_triangles = {
+        path.name: read_stl_triangles(path) for path in blocker_paths
+    }
     source_bounds = mesh_bounds(staged_triangles)
     if abs(source_bounds.minimum[2]) > bed_z_tolerance_mm:
         raise Bambu3MFAuditError(
@@ -718,12 +829,46 @@ def audit_bambu_3mf(
             root_object_id = int(item.attrib["objectid"])
         except (KeyError, ValueError) as error:
             raise Bambu3MFAuditError("3MF build item has invalid objectid") from error
-        reconstructed, component_depth, leaf_count = package.resolve_object(
-            root_document, root_object_id)
-        if component_depth < 1 or leaf_count != 1:
-            raise Bambu3MFAuditError(
-                "3MF build item must resolve through one component chain "
-                "to exactly one object mesh")
+        reconstructed_blockers: list[
+            tuple[Path, tuple[Triangle, ...]]
+        ] = []
+        if blocker_paths:
+            parts = _bambu_model_parts(package, root_object_id)
+            if set(parts) != {"normal_part", "support_blocker"}:
+                raise Bambu3MFAuditError(
+                    "support-blocked 3MF must contain only one normal_part "
+                    "and the declared support_blocker parts")
+            normal_parts = parts["normal_part"]
+            if len(normal_parts) != 1:
+                raise Bambu3MFAuditError(
+                    "support-blocked 3MF must contain exactly one normal_part")
+            normal_id, normal_source = normal_parts[0]
+            if Path(normal_source).name != stl_path.name:
+                raise Bambu3MFAuditError(
+                    "3MF normal_part source_file does not name the staged STL")
+            blocker_parts = parts["support_blocker"]
+            actual_blocker_names = [
+                Path(source).name for _part_id, source in blocker_parts
+            ]
+            if Counter(actual_blocker_names) != Counter(blocker_names):
+                raise Bambu3MFAuditError(
+                    "3MF support_blocker source_file inventory differs from "
+                    "the staged blocker STLs")
+            reconstructed, component_depth = _resolve_root_component(
+                package, root_document, root_object_id, normal_id)
+            blocker_by_name = {path.name: path for path in blocker_paths}
+            for blocker_id, blocker_source in blocker_parts:
+                blocker_path = blocker_by_name[Path(blocker_source).name]
+                blocker_mesh, _blocker_depth = _resolve_root_component(
+                    package, root_document, root_object_id, blocker_id)
+                reconstructed_blockers.append((blocker_path, blocker_mesh))
+        else:
+            reconstructed, component_depth, leaf_count = package.resolve_object(
+                root_document, root_object_id)
+            if component_depth < 1 or leaf_count != 1:
+                raise Bambu3MFAuditError(
+                    "3MF build item must resolve through one component chain "
+                    "to exactly one object mesh")
         stl_to_bed = _parse_3mf_transform(
             item.attrib.get("transform"), "build item transform")
     finally:
@@ -732,6 +877,13 @@ def audit_bambu_3mf(
     mesh_max_error = _validate_mesh_equivalence(
         staged_triangles, reconstructed,
         tolerance_mm=mesh_tolerance_mm)
+    blocker_triangle_counts = []
+    for blocker_path, reconstructed_blocker in reconstructed_blockers:
+        _validate_mesh_equivalence(
+            blocker_triangles[blocker_path.name], reconstructed_blocker,
+            tolerance_mm=mesh_tolerance_mm)
+        blocker_triangle_counts.append(
+            len(blocker_triangles[blocker_path.name]))
     rigid_rz = validate_rigid_rz_affine(
         stl_to_bed, tolerance=transform_tolerance)
     transformed_bounds = transform_mesh_bounds(staged_triangles, stl_to_bed)
@@ -751,6 +903,8 @@ def audit_bambu_3mf(
         transformed_actual_mesh_bounds=transformed_bounds,
         stl_to_bed_matrix=stl_to_bed,
         rigid_rz=rigid_rz,
+        support_blocker_count=len(blocker_paths),
+        support_blocker_triangle_counts=tuple(blocker_triangle_counts),
     )
 
 

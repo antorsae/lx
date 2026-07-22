@@ -12,18 +12,17 @@ away from every LM insert and magnet axis.  Both buried cable
 passages necessarily cross any useful top/bottom ring seam; deriving the
 halves from the final BREP preserves their exact open lumen sections.
 
-Two concealed cylindrical pins sit symmetrically on small exterior support
-lands outside the LM driver recess and point normal to the horizontal seam
-(world +Y).  The lands merge into the carrier lip and preserve a 0.05 mm plan
-clearance outside that recess.  Their worst-case reach is R114.4036: 1.4036 mm
-beyond the structural R113.0 lip, but only 0.6036 mm beyond the finalized
-R113.8 visible fairing.  Putting the longer/wider sockets inward would collide
-the hash-pinned W22 flange.  The right socket is round; the left
+Two concealed cylindrical pins sit symmetrically *inside* the existing smooth
+R113.8 LM ring and point normal to the horizontal seam (world +Y).  The former
+exterior support lands were the block-like features visible on both keyed
+halves.  Moving the axes into the 3.2-mm fairing band removes those additions
+entirely: the optional split now has zero plan-envelope growth and the same
+outer cylinder as the monolithic carrier.  The right socket is round; the left
 socket has the minimum X relief needed to avoid over-constraining the roughly
-218.37 mm pin spacing.  This round-and-diamond constraint pattern registers
+217.7 mm pin spacing.  This round-and-diamond constraint pattern registers
 both halves without the binding risk of two tight round sockets, another
-screw, or a driver-flange collision.  The required exterior lands create only
-the documented local plan-envelope growth; the rest of the carrier is unchanged.
+screw, or a driver-flange collision.  Each socket retains at least 0.38 mm of
+native ring wall; no support solid is fused onto the carrier.
 It receives zero installed structural-load credit: the LM driver flange and
 its normal fasteners bridge the seam in service, and the split configuration
 remains pending physical print/fit/load qualification.
@@ -64,66 +63,72 @@ LM_SPLIT_SEAM_Y = L22_CUTOUT[1] + LM_SPLIT_SEAM_OFFSET_Y
 # would cut straight through both buried cable covers. Registration clearance
 # is confined to two blind sockets inside the left/right structural lips.
 LM_SPLIT_GAP_MM = 0.0
-REGISTRATION_SUPPORT_FUSION_OVERLAP_MM = 0.10
 
 # Two identical cylindrical male pins replace the former one-sided tangential
 # tongue.  Their axes are normal to the horizontal split seam: world +Y from
 # bottom into top.  The pins are D1.60 (four nominal 0.40-mm nozzle widths) and
-# engage 2.40 mm, three times the former 0.80-mm engagement.  That longer,
-# wider fit cannot retain the required wall inside the bare 2.40-mm radial
-# carrier lip, so each socket is housed by a tiny exterior land outside the LM
-# driver recess.  Their R114.4036 reach grows 1.4036 mm beyond the structural
-# lip and 0.6036 mm beyond the visible fairing, but avoids the installed-driver
-# volume; an inward land was rejected after it
-# intersected the hash-pinned W22 STEP.  The legacy 0.12-mm per-side fit
-# clearance and 0.25-mm blind-end clearance are retained.  One
+# engage 2.40 mm, three times the former 0.80-mm engagement.  The smooth
+# R113.8 fairing now provides enough radial width to house them without any
+# exterior land.  A 0.10-mm per-side fit clearance and 0.25-mm blind-end
+# clearance are retained.  One
 # socket is round and fully locating; the opposite socket is relieved by
-# 0.06 mm along X only.  This classic round-and-diamond arrangement tolerates
-# up to +/-0.30 mm relative pin-pitch error instead of making two widely
+# 0.02 mm along X only.  This round-and-diamond arrangement tolerates
+# up to +/-0.22 mm relative pin-pitch error instead of making two widely
 # spaced round fits fight one another, while preserving at least 0.50 mm of
-# local socket wall and 0.50 mm behind each blind end.
+# blind-end wall and at least 0.38 mm of native radial ring wall.
 REGISTRATION_PIN_DIAMETER_MM = 1.60
 REGISTRATION_PIN_ENGAGEMENT_MM = 2.40
 REGISTRATION_PIN_ROOT_OVERLAP_MM = 0.50
 REGISTRATION_CENTER_Z_MM = 14.30
-REGISTRATION_SOCKET_RADIAL_CLEAR_MM = 0.12
+REGISTRATION_SOCKET_RADIAL_CLEAR_MM = 0.10
 REGISTRATION_SOCKET_END_CLEAR_MM = 0.25
-REGISTRATION_RELIEVED_SOCKET_X_EXTRA_MM = 0.06
+REGISTRATION_RELIEVED_SOCKET_X_EXTRA_MM = 0.02
 REGISTRATION_SOCKET_BOOLEAN_OVERTRAVEL_MM = 0.05
-REGISTRATION_MIN_RADIAL_WALL_MM = 0.50
+REGISTRATION_MIN_RADIAL_WALL_MM = 0.38
 REGISTRATION_SUPPORT_END_WALL_MM = 0.50
-REGISTRATION_SUPPORT_RECESS_CLEAR_MM = 0.05
 REGISTRATION_DRIVER_FLANGE_R_MM = 110.52
 REGISTRATION_WING_CLEARANCE_MM = 0.25
 
 
 def _registration_abs_x_mm() -> float:
-    """Place both lands wholly outside the driver-recess authority."""
+    """Center both sockets in the existing ring's tightest X interval."""
     _, cy = L22_CUTOUT[:2]
-    support_start_y = (
-        LM_SPLIT_SEAM_Y - REGISTRATION_PIN_ROOT_OVERLAP_MM)
-    support_length = (
-        REGISTRATION_PIN_ROOT_OVERLAP_MM
-        + REGISTRATION_PIN_ENGAGEMENT_MM
-        + REGISTRATION_SOCKET_END_CLEAR_MM
-        + REGISTRATION_SUPPORT_END_WALL_MM)
-    support_end_y = support_start_y + support_length
-    dy = support_end_y - cy
-    support_half_x = (
-        REGISTRATION_PIN_DIAMETER_MM / 2.0
-        + REGISTRATION_SOCKET_RADIAL_CLEAR_MM
-        + REGISTRATION_MIN_RADIAL_WALL_MM
+
+    def branch_x(radius, y):
+        dy = y - cy
+        if abs(dy) >= radius:
+            raise RuntimeError("registration span escaped the LM ring")
+        return sqrt(radius ** 2 - dy ** 2)
+
+    pin_r = REGISTRATION_PIN_DIAMETER_MM / 2.0
+    socket_half_x = (
+        pin_r + REGISTRATION_SOCKET_RADIAL_CLEAR_MM
         + REGISTRATION_RELIEVED_SOCKET_X_EXTRA_MM)
-    inner_authority_r = (
-        LM_RECESS_R + REGISTRATION_SUPPORT_RECESS_CLEAR_MM)
-    if abs(dy) >= inner_authority_r:
+    socket_start_y = (
+        LM_SPLIT_SEAM_Y - REGISTRATION_SOCKET_BOOLEAN_OVERTRAVEL_MM)
+    socket_end_y = (
+        LM_SPLIT_SEAM_Y + REGISTRATION_PIN_ENGAGEMENT_MM
+        + REGISTRATION_SOCKET_END_CLEAR_MM)
+    pin_start_y = LM_SPLIT_SEAM_Y - REGISTRATION_PIN_ROOT_OVERLAP_MM
+    pin_end_y = LM_SPLIT_SEAM_Y + REGISTRATION_PIN_ENGAGEMENT_MM
+
+    lower = max(
+        branch_x(LM_RECESS_R, socket_end_y)
+        + socket_half_x + REGISTRATION_MIN_RADIAL_WALL_MM,
+        branch_x(LM_RECESS_R, pin_end_y)
+        + pin_r + REGISTRATION_MIN_RADIAL_WALL_MM,
+    )
+    upper = min(
+        branch_x(LM_VISIBLE_RING_R, socket_start_y)
+        - socket_half_x - REGISTRATION_MIN_RADIAL_WALL_MM,
+        branch_x(LM_VISIBLE_RING_R, pin_start_y)
+        - pin_r - REGISTRATION_MIN_RADIAL_WALL_MM,
+    )
+    if lower >= upper:
         raise RuntimeError(
-            "Obi-Wan LM registration support misses the driver recess")
-    x = sqrt(inner_authority_r ** 2 - dy ** 2) + support_half_x
-    if x <= support_half_x:
-        raise RuntimeError(
-            "Obi-Wan LM registration support has no symmetric placement")
-    return x
+            "Obi-Wan LM registration no longer fits inside the smooth ring: "
+            f"x interval {lower:.4f}..{upper:.4f} mm")
+    return (lower + upper) / 2.0
 
 
 def registration_pin_centers_xyz():
@@ -193,17 +198,22 @@ def female_registration_socket_tools() -> dict:
 
 
 def registration_support_land_tools() -> dict:
-    """Local socket lands that grow outward from the existing LM lip."""
+    """Native-ring wall witnesses around the two concealed sockets.
+
+    These are qualification volumes only.  They must already be wholly
+    contained by the monolithic carrier and are never fused to it.
+    """
     radius = (
         REGISTRATION_PIN_DIAMETER_MM / 2.0
         + REGISTRATION_SOCKET_RADIAL_CLEAR_MM
         + REGISTRATION_MIN_RADIAL_WALL_MM)
-    start_y = LM_SPLIT_SEAM_Y - REGISTRATION_PIN_ROOT_OVERLAP_MM
+    start_y = (
+        LM_SPLIT_SEAM_Y - REGISTRATION_SOCKET_BOOLEAN_OVERTRAVEL_MM)
     length = (
-        REGISTRATION_PIN_ROOT_OVERLAP_MM
+        REGISTRATION_SOCKET_BOOLEAN_OVERTRAVEL_MM
         + REGISTRATION_PIN_ENGAGEMENT_MM
         + REGISTRATION_SOCKET_END_CLEAR_MM
-        + REGISTRATION_SUPPORT_END_WALL_MM)
+    )
     tools = {}
     for side, (x, _, z) in registration_pin_centers_xyz().items():
         relief = (
@@ -215,9 +225,10 @@ def registration_support_land_tools() -> dict:
 
 
 def registration_wing_clearance_tools() -> dict:
-    """Symmetric Ac/Ae interface pockets around either support-land form.
+    """Symmetric Ac/Ae interface clearance around the ring-local keys.
 
-    The left socket land is 0.06 mm wider in X than the round right land.  Both
+    The left socket wall witness is 0.02 mm wider in X than the round right
+    witness. Both
     wing pockets deliberately use that worst-case relieved capsule so the
     finalized right wing can remain the exact mirror authority for the left.
     The 0.25-mm offset is applied radially and at both axial ends; the pocket
@@ -230,12 +241,12 @@ def registration_wing_clearance_tools() -> dict:
         + REGISTRATION_MIN_RADIAL_WALL_MM
         + clearance)
     start_y = (
-        LM_SPLIT_SEAM_Y - REGISTRATION_PIN_ROOT_OVERLAP_MM - clearance)
+        LM_SPLIT_SEAM_Y
+        - REGISTRATION_SOCKET_BOOLEAN_OVERTRAVEL_MM - clearance)
     length = (
-        REGISTRATION_PIN_ROOT_OVERLAP_MM
+        REGISTRATION_SOCKET_BOOLEAN_OVERTRAVEL_MM
         + REGISTRATION_PIN_ENGAGEMENT_MM
         + REGISTRATION_SOCKET_END_CLEAR_MM
-        + REGISTRATION_SUPPORT_END_WALL_MM
         + 2.0 * clearance)
     return {
         side: _y_axis_capsule(
@@ -246,7 +257,7 @@ def registration_wing_clearance_tools() -> dict:
 
 
 def registration_support_land_tool():
-    """Compatibility aggregate for the two driver-clear exterior lands."""
+    """Compatibility aggregate for the two native-ring wall witnesses."""
     return Compound(children=list(registration_support_land_tools().values()))
 
 
@@ -262,57 +273,26 @@ def female_registration_socket_tool():
 
 
 def registration_augmented_carrier(source):
-    """Add only the two driver-clear exterior registration lands."""
+    """Validate that both keys fit inside the carrier; add no material."""
     carrier = _one_solid(source, "source LM carrier")
     for side, support in registration_support_land_tools().items():
-        # The smooth R113.8 fairing now contains almost the entire legacy
-        # support capsule.  Fusing that mostly coincident 24-mm3 tool directly
-        # makes OCC rewrite same-domain cylinder faces and report spurious
-        # volume loss/gain.  Add only the exterior cap plus a 0.10-mm annular
-        # construction overlap.  Validate the result by exact set containment
-        # instead of unreliable same-domain volume arithmetic: no source may
-        # disappear, all of the qualified support must remain, and nothing
-        # outside source U support may be created.
-        inner_clip = _cylinder_at(
-            *L22_CUTOUT[:2],
-            LM_VISIBLE_RING_R - REGISTRATION_SUPPORT_FUSION_OVERLAP_MM,
-            -200.0, 100.0)
-        exterior_cap = (support - inner_clip).clean()
-        combined = carrier.fuse(exterior_cap).clean()
-        solids = list(combined.solids())
-        lost_source = carrier - combined
-        missing_support = support - combined
-        unexpected = (combined - carrier) - support
-
-        def volume(shape):
-            return 0.0 if shape is None else sum(
-                solid.volume for solid in shape.solids())
-
-        lost_volume = volume(lost_source)
-        missing_volume = volume(missing_support)
-        unexpected_volume = volume(unexpected)
-        if (not combined.is_valid or len(solids) != 1
-                or solids[0].volume <= 0.01
-                or lost_volume > 0.02
-                or missing_volume > 0.02
-                or unexpected_volume > 0.02):
+        outside = support - carrier
+        outside_volume = 0.0 if outside is None else sum(
+            solid.volume for solid in outside.solids())
+        if outside_volume > 0.02:
             raise RuntimeError(
-                f"optional LM concealed {side} registration support land "
-                "failed bounded cap fusion: "
-                f"valid={combined.is_valid} solids={len(solids)} "
-                f"lost={lost_volume:.6f} missing={missing_volume:.6f} "
-                f"unexpected={unexpected_volume:.6f} mm3")
-        carrier = Part([solids[0]])
-    return _one_solid(carrier, "registration-augmented LM carrier")
+                f"optional LM concealed {side} socket wall escapes the "
+                f"native smooth ring by {outside_volume:.6f} mm3")
+    return carrier
 
 
 def registration_fit_facts() -> dict:
-    """Exact pure-math design facts for the exterior-land two-pin registration."""
+    """Exact pure-math facts for ring-local two-pin registration."""
     centers = registration_pin_centers_xyz()
     cx, cy = L22_CUTOUT[:2]
     x = _registration_abs_x_mm()
     support_start_y = (
-        LM_SPLIT_SEAM_Y - REGISTRATION_PIN_ROOT_OVERLAP_MM)
+        LM_SPLIT_SEAM_Y - REGISTRATION_SOCKET_BOOLEAN_OVERTRAVEL_MM)
     socket_depth = (REGISTRATION_PIN_ENGAGEMENT_MM
                     + REGISTRATION_SOCKET_END_CLEAR_MM)
     pin_r = REGISTRATION_PIN_DIAMETER_MM / 2.0
@@ -323,10 +303,9 @@ def registration_fit_facts() -> dict:
     support_half_x = (
         support_r + REGISTRATION_RELIEVED_SOCKET_X_EXTRA_MM)
     support_length = (
-        REGISTRATION_PIN_ROOT_OVERLAP_MM
+        REGISTRATION_SOCKET_BOOLEAN_OVERTRAVEL_MM
         + REGISTRATION_PIN_ENGAGEMENT_MM
-        + REGISTRATION_SOCKET_END_CLEAR_MM
-        + REGISTRATION_SUPPORT_END_WALL_MM)
+        + REGISTRATION_SOCKET_END_CLEAR_MM)
     support_end_y = support_start_y + support_length
     support_z_min = REGISTRATION_CENTER_Z_MM - support_r
     support_z_max = REGISTRATION_CENTER_Z_MM + support_r
@@ -340,24 +319,34 @@ def registration_fit_facts() -> dict:
         raise RuntimeError(
             "Obi-Wan LM registration land reaches the front exterior")
 
-    # The support cross-sections are exact 0.50-mm offsets of their socket
-    # cross-sections.  The far-end relieved land is the point closest to the
-    # driver recess; the root outer point governs local plan-envelope growth.
+    # The wall witness is a radial offset of the socket cross-section and must
+    # remain wholly between the driver recess and the existing R113.8 fairing.
     support_root_dy = support_start_y - cy
     support_end_dy = support_end_y - cy
-    recess_clearance = sqrt(
-        (x - support_half_x) ** 2 + support_end_dy ** 2
-    ) - LM_RECESS_R
-    outer_land_r = sqrt(
+    recess_clearance = (
+        sqrt((x - support_half_x) ** 2 + support_end_dy ** 2)
+        - LM_RECESS_R)
+    outer_witness_r = sqrt(
         (x + support_half_x) ** 2 + support_root_dy ** 2)
-    plan_growth_from_structural = outer_land_r - LM_CORE_R
-    plan_growth_beyond_visible = outer_land_r - LM_VISIBLE_RING_R
+    plan_growth_from_structural = max(0.0, outer_witness_r - LM_CORE_R)
+    plan_growth_beyond_visible = max(
+        0.0, outer_witness_r - LM_VISIBLE_RING_R)
     driver_flange_clearance = (
-        LM_RECESS_R + recess_clearance
+        sqrt((x - support_half_x) ** 2 + support_end_dy ** 2)
         - REGISTRATION_DRIVER_FLANGE_R_MM)
+    socket_inner_wall = (
+        x - relieved_half_x
+        - sqrt(LM_RECESS_R ** 2 - support_end_dy ** 2))
+    socket_outer_wall = (
+        sqrt(LM_VISIBLE_RING_R ** 2 - support_root_dy ** 2)
+        - x - relieved_half_x)
+    round_inner_wall = socket_inner_wall + (
+        REGISTRATION_RELIEVED_SOCKET_X_EXTRA_MM)
+    round_outer_wall = socket_outer_wall + (
+        REGISTRATION_RELIEVED_SOCKET_X_EXTRA_MM)
     min_wall = min(
-        REGISTRATION_MIN_RADIAL_WALL_MM,
-        REGISTRATION_SUPPORT_END_WALL_MM)
+        socket_inner_wall, socket_outer_wall,
+        round_inner_wall, round_outer_wall)
     if min_wall < REGISTRATION_MIN_RADIAL_WALL_MM:
         raise RuntimeError(
             "Obi-Wan LM relieved registration socket leaves only "
@@ -410,10 +399,10 @@ def registration_fit_facts() -> dict:
         "relative_pin_pitch_error_capacity_mm": (
             2.0 * REGISTRATION_SOCKET_RADIAL_CLEAR_MM
             + REGISTRATION_RELIEVED_SOCKET_X_EXTRA_MM),
-        "round_socket_inner_wall_mm": REGISTRATION_MIN_RADIAL_WALL_MM,
-        "round_socket_outer_wall_mm": REGISTRATION_MIN_RADIAL_WALL_MM,
-        "relieved_socket_inner_wall_mm": REGISTRATION_MIN_RADIAL_WALL_MM,
-        "relieved_socket_outer_wall_mm": REGISTRATION_MIN_RADIAL_WALL_MM,
+        "round_socket_inner_wall_mm": round_inner_wall,
+        "round_socket_outer_wall_mm": round_outer_wall,
+        "relieved_socket_inner_wall_mm": socket_inner_wall,
+        "relieved_socket_outer_wall_mm": socket_outer_wall,
         "minimum_socket_radial_wall_mm": min_wall,
         "socket_blind_end_wall_mm": REGISTRATION_SUPPORT_END_WALL_MM,
         "support_land_length_mm": support_length,
@@ -428,15 +417,16 @@ def registration_fit_facts() -> dict:
         "wing_interface_clearance_mm": REGISTRATION_WING_CLEARANCE_MM,
         "wing_clearance_compatible_variants": ("ac", "ae"),
         "wing_clearance_pocket_between_front_and_rear": True,
-        "exterior_support_land": True,
-        "support_land_outer_radius_mm": outer_land_r,
+        "exterior_support_land": False,
+        "registration_wall_source": "native_r113p8_smooth_ring",
+        "support_land_outer_radius_mm": outer_witness_r,
         "support_land_plan_growth_from_structural_ring_mm": (
             plan_growth_from_structural),
         "support_land_plan_growth_beyond_visible_fairing_mm": (
             plan_growth_beyond_visible),
         "support_land_plan_outline_growth_mm": (
             plan_growth_beyond_visible),
-        "inward_support_land_rejected_for_driver_collision": True,
+        "inward_support_land_rejected_for_driver_collision": False,
         "two_round_socket_design_rejected": True,
         "tolerance_strategy": (
             "right_round_locator_left_x_relief_round_and_diamond"),
@@ -450,8 +440,8 @@ def registration_fit_facts() -> dict:
         "pin_and_socket_slicer_gate_required": True,
         "printability_drawback": (
             "the horizontal D1.6 pins are four nominal 0.4-mm nozzle widths "
-            "but have no load credit; verify both pin toolpaths, the local "
-            "support lands and the minimum socket walls before release"),
+            "but have no load credit; verify both pin toolpaths and the "
+            "native-ring minimum socket walls before release"),
         "envelope_growth_mm": plan_growth_beyond_visible,
         "target_square_bed_mm": LM_SPLIT_TARGET_BED_MM,
         "floor_bottom_print_rotation_x_deg": 180.0,

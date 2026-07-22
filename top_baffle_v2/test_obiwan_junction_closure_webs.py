@@ -227,6 +227,7 @@ def test_make_jobserver_owns_the_complete_dense_matrix() -> None:
         assert case in makefile
     assert "JUNCTION_CLOSURE_DENSE_STAMPS" in makefile
     assert "LX_OBIWAN_CLOSURE_BASE_ONLY=1" in makefile
+    assert "LX_STAND_FOOT=$(if $(filter floor_%,$(1)),1,0)" in makefile
     assert "LX_OBIWAN_CLOSURE_DENSE_CASE=$(1)" in makefile
     assert "LX_OBIWAN_CLOSURE_DENSE_SHARD=$(2)/4" in makefile
     tree = ast.parse(source)
@@ -795,12 +796,23 @@ def _intersection_volume(first, second) -> float:
 
 
 @lru_cache(maxsize=2)
-def obiwan_actual_parts(stand_foot: bool = False):
-    """Import exact hash-validated release-stage owners for one state."""
+def obiwan_actual_parts(stand_foot: bool | None = None):
+    """Import exact hash-validated release-stage owners for one state.
+
+    Selector-driven checks run once per ``LX_STAND_FOOT`` process.  When a
+    caller omits the explicit state, bind the staged BREP to that same route
+    oracle instead of silently falling back to the no-floor carrier.
+    """
     _require_guarded_test()
     from build123d import import_brep
     from export_obiwan_staged import load_stage_manifest, staged_part_paths
 
+    if stand_foot is None:
+        state_value = os.environ.get("LX_STAND_FOOT", "0")
+        if state_value not in {"0", "1"}:
+            raise RuntimeError(
+                "LX_STAND_FOOT must be 0 or 1 for staged closure checks")
+        stand_foot = state_value == "1"
     state = "floor_stand" if stand_foot else "no_floor_stand"
     manifest = ROOT / state / ".obiwan_stage/manifest.json"
     payload = load_stage_manifest(manifest, stand_foot=stand_foot)
@@ -1161,14 +1173,25 @@ def test_final_owner_breps_keep_safe_web_interiors_solid_full_depth() -> None:
             for cutter in cad.route_inner_cutters(owner):
                 required -= cutter
         if owner == "lm":
-            required -= cad.lm_free_lead_relief_cutter()
+            required -= cad.lm_rear_exit_port_cutter()
             for cutter in cad._lm_t_closure_handoff_cutters():
                 required -= cutter
         required = required.clean()
-        missing = _missing_volume(required, actual[owner])
+        difference_shape = (required - actual[owner]).clean()
+        difference_solids = tuple(difference_shape.solids())
+        missing = sum(
+            solid.volume for solid in difference_solids)
         assert missing <= max(0.04, required.volume * 4.0e-4), (
             f"{junction}/{owner}: hidden full-depth closure loss "
-            f"{missing:.6f} mm3")
+            f"{missing:.6f} mm3 (components="
+            f"{[(solid.volume,
+                 (solid.bounding_box().min.X,
+                  solid.bounding_box().min.Y,
+                  solid.bounding_box().min.Z),
+                 (solid.bounding_box().max.X,
+                  solid.bounding_box().max.Y,
+                  solid.bounding_box().max.Z))
+                for solid in difference_solids]})")
 
 
 def test_brep_front_plane_contains_every_expected_owner_region() -> None:
@@ -1328,7 +1351,7 @@ def _route_cutter_shape(owner: str):
 
     children = list(cad.route_inner_cutters(owner))
     if owner == "lm":
-        children.append(cad.lm_free_lead_relief_cutter())
+        children.append(cad.lm_rear_exit_port_cutter())
         children.extend(cad._lm_t_closure_handoff_cutters())
     return Compound(children=children)
 
@@ -1557,6 +1580,14 @@ def test_assembled_sections_match_complementary_ownership_through_depth():
         selected_state, selected_junction = DENSE_CASES[selected_case]
     else:
         selected_state = selected_junction = None
+    # The floor and no-floor feeds use distinct route paths/cutter sections.
+    # A dense stage audit is valid only when the imported CAD route state
+    # matches the immutable staged BREP selected by its case.
+    if selected_state is not None:
+        active_state = "floor" if cad.STAND_FOOT else "no_floor"
+        assert active_state == selected_state, (
+            f"{selected_case}: CAD route state {active_state!r} does not "
+            f"match selected BREP state {selected_state!r}")
     samples = _dense_shard_samples(
         _dense_section_samples(cad),
         os.environ.get(DENSE_SHARD_ENV, "").strip())
@@ -1573,13 +1604,17 @@ def test_assembled_sections_match_complementary_ownership_through_depth():
         independent_window = _independent_junction_window(junction)
         frozen_required = _frozen_required_front_domain(junction)
         assert independent_window.covers(frozen_required)
-        assemblies = [
-            ("no_floor", _cropped_junction_parts(False, junction)),
-            ("floor", _cropped_junction_parts(True, junction)),
-        ]
+        if selected_state == "floor":
+            assemblies = (("floor", _cropped_junction_parts(True, junction)),)
+        elif selected_state == "no_floor":
+            assemblies = ((
+                "no_floor", _cropped_junction_parts(False, junction)),)
+        else:
+            assemblies = (
+                ("no_floor", _cropped_junction_parts(False, junction)),
+                ("floor", _cropped_junction_parts(True, junction)),
+            )
         for state, state_parts in assemblies:
-            if selected_state is not None and state != selected_state:
-                continue
             for z_mid in samples:
                 plans, expected_void_plan, bounded_allowed = (
                     _assembled_plan_oracle(cad, junction, z_mid))

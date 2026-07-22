@@ -2,7 +2,7 @@
 
 This test intentionally does not import build123d or the CAD module.  It is a
 fast guard for the normal-to-seam axis, symmetric male pins, round+relieved
-socket tolerance strategy, and the driver-clear exterior support-land budget.
+socket tolerance strategy, and the zero-growth native-ring wall budget.
 Exact BREP containment and route-shell checks remain in
 ``test_obiwan_r6f.py`` and run on the remote CAD host.
 """
@@ -72,12 +72,11 @@ def test_two_symmetric_pins_and_normal_axis_are_source_contracts():
 def test_round_plus_relief_socket_avoids_wide_pitch_binding():
     source, tree = _source_tree()
     constants = _numeric_constants(tree)
-    assert constants["REGISTRATION_SOCKET_RADIAL_CLEAR_MM"] == 0.12
+    assert constants["REGISTRATION_SOCKET_RADIAL_CLEAR_MM"] == 0.10
     assert constants["REGISTRATION_SOCKET_END_CLEAR_MM"] == 0.25
-    assert constants["REGISTRATION_RELIEVED_SOCKET_X_EXTRA_MM"] == 0.06
-    assert constants["REGISTRATION_MIN_RADIAL_WALL_MM"] == 0.50
+    assert constants["REGISTRATION_RELIEVED_SOCKET_X_EXTRA_MM"] == 0.02
+    assert constants["REGISTRATION_MIN_RADIAL_WALL_MM"] == 0.38
     assert constants["REGISTRATION_SUPPORT_END_WALL_MM"] == 0.50
-    assert constants["REGISTRATION_SUPPORT_RECESS_CLEAR_MM"] == 0.05
     assert constants["REGISTRATION_DRIVER_FLANGE_R_MM"] == 110.52
     assert constants["REGISTRATION_WING_CLEARANCE_MM"] == 0.25
 
@@ -93,25 +92,22 @@ def test_round_plus_relief_socket_avoids_wide_pitch_binding():
     assert '"pin_and_socket_slicer_gate_required": True' in source
     assert "horizontal D1.6 pins are four nominal 0.4-mm nozzle" in source
 
-    # The round locator permits +/-0.12 mm X float and the relieved locator
-    # +/-0.18 mm.  Their differential pitch capacity is therefore 0.30 mm.
+    # The reduced ring-local fit retains 0.22 mm differential pitch capacity.
     pitch_capacity = (
         2.0 * constants["REGISTRATION_SOCKET_RADIAL_CLEAR_MM"]
         + constants["REGISTRATION_RELIEVED_SOCKET_X_EXTRA_MM"])
-    assert abs(pitch_capacity - 0.30) < 1e-12
+    assert abs(pitch_capacity - 0.22) < 1e-12
 
 
-def test_relief_uses_driver_clear_exterior_support_lands():
+def test_relief_is_wholly_inside_existing_smooth_ring():
     _, tree = _source_tree()
     constants = _numeric_constants(tree)
 
     # Source-authority dimensions: LM centre Y=200.981, driver recess R110.6,
-    # structural carrier R113.0, visible fairing R113.8, rear z=6.8 and front
-    # z=18.3. Repeat the module's support-land calculation without importing
-    # OCC/build123d.
+    # visible fairing R113.8. Repeat the module's tightest-interval placement
+    # without importing OCC/build123d.
     cy = 200.981
     recess_r = 110.6
-    structural_r = 113.0
     visible_r = 113.8
     rear_z = 6.8
     seat_z = 12.3
@@ -124,36 +120,54 @@ def test_relief_uses_driver_clear_exterior_support_lands():
     support_half_x = (
         support_r
         + constants["REGISTRATION_RELIEVED_SOCKET_X_EXTRA_MM"])
-    support_start_y = (
-        seam_y - constants["REGISTRATION_PIN_ROOT_OVERLAP_MM"])
+    socket_half_x = (
+        constants["REGISTRATION_PIN_DIAMETER_MM"] / 2.0
+        + constants["REGISTRATION_SOCKET_RADIAL_CLEAR_MM"]
+        + constants["REGISTRATION_RELIEVED_SOCKET_X_EXTRA_MM"])
+    socket_start_y = (
+        seam_y - constants["REGISTRATION_SOCKET_BOOLEAN_OVERTRAVEL_MM"])
+    socket_end_y = (
+        seam_y + constants["REGISTRATION_PIN_ENGAGEMENT_MM"]
+        + constants["REGISTRATION_SOCKET_END_CLEAR_MM"])
+    pin_start_y = seam_y - constants["REGISTRATION_PIN_ROOT_OVERLAP_MM"]
+    pin_end_y = seam_y + constants["REGISTRATION_PIN_ENGAGEMENT_MM"]
+    pin_r = constants["REGISTRATION_PIN_DIAMETER_MM"] / 2.0
+    wall = constants["REGISTRATION_MIN_RADIAL_WALL_MM"]
+
+    def branch_x(radius, y):
+        return sqrt(radius ** 2 - (y - cy) ** 2)
+
+    lower = max(
+        branch_x(recess_r, socket_end_y) + socket_half_x + wall,
+        branch_x(recess_r, pin_end_y) + pin_r + wall,
+    )
+    upper = min(
+        branch_x(visible_r, socket_start_y) - socket_half_x - wall,
+        branch_x(visible_r, pin_start_y) - pin_r - wall,
+    )
+    x = (lower + upper) / 2.0
+    support_start_y = socket_start_y
     support_length = (
-        constants["REGISTRATION_PIN_ROOT_OVERLAP_MM"]
+        constants["REGISTRATION_SOCKET_BOOLEAN_OVERTRAVEL_MM"]
         + constants["REGISTRATION_PIN_ENGAGEMENT_MM"]
-        + constants["REGISTRATION_SOCKET_END_CLEAR_MM"]
-        + constants["REGISTRATION_SUPPORT_END_WALL_MM"])
+        + constants["REGISTRATION_SOCKET_END_CLEAR_MM"])
     end_dy = support_start_y + support_length - cy
     root_dy = support_start_y - cy
-    inner_authority_r = (
-        recess_r + constants["REGISTRATION_SUPPORT_RECESS_CLEAR_MM"])
-    x = sqrt(inner_authority_r ** 2 - end_dy ** 2) + support_half_x
     recess_clearance = sqrt(
         (x - support_half_x) ** 2 + end_dy ** 2) - recess_r
-    outer_land_r = sqrt(
+    outer_witness_r = sqrt(
         (x + support_half_x) ** 2 + root_dy ** 2)
-    structural_growth = outer_land_r - structural_r
-    visible_growth = outer_land_r - visible_r
     driver_flange_clearance = (
         recess_r + recess_clearance
         - constants["REGISTRATION_DRIVER_FLANGE_R_MM"])
     support_z_min = constants["REGISTRATION_CENTER_Z_MM"] - support_r
     support_z_max = constants["REGISTRATION_CENTER_Z_MM"] + support_r
 
-    assert 218.3 < 2.0 * x < 218.5
-    assert abs(recess_clearance - 0.05) < 1e-9
-    assert driver_flange_clearance >= 0.129999
-    assert 114.40 < outer_land_r < 114.41
-    assert 1.39 < structural_growth < 1.42
-    assert 0.59 < visible_growth < 0.62
+    assert lower < upper
+    assert 217.6 < 2.0 * x < 217.8
+    assert recess_clearance >= 0.0
+    assert driver_flange_clearance >= 0.079
+    assert outer_witness_r <= visible_r
     assert support_z_min > seat_z
     assert support_z_min - rear_z > 6.0
     assert front_z - support_z_max > 2.5
@@ -165,12 +179,10 @@ def test_both_pins_are_reassigned_and_both_sockets_are_cut():
     supports = ast.unparse(_function(tree, "registration_support_land_tools"))
     augmented = ast.unparse(_function(tree, "registration_augmented_carrier"))
     assert "REGISTRATION_MIN_RADIAL_WALL_MM" in supports
-    assert "REGISTRATION_SUPPORT_END_WALL_MM" in supports
-    assert "REGISTRATION_SUPPORT_FUSION_OVERLAP_MM = 0.10" in source
-    assert "exterior_cap = (support - inner_clip).clean()" in augmented
-    assert "lost_source = carrier - combined" in augmented
-    assert "missing_support = support - combined" in augmented
-    assert "unexpected = combined - carrier - support" in augmented
+    assert "outside = support - carrier" in augmented
+    assert "return carrier" in augmented
+    assert "exterior_cap" not in augmented
+    assert '"exterior_support_land": False' in source
     assert "carrier = registration_augmented_carrier(carrier)" in split
     assert "male_registration_pin_tools().items()" in split
     assert "female_registration_socket_tools().values()" in split
@@ -193,7 +205,7 @@ def test_ac_ae_clearance_tools_offset_the_worst_case_land():
 CHECKS = (
     test_two_symmetric_pins_and_normal_axis_are_source_contracts,
     test_round_plus_relief_socket_avoids_wide_pitch_binding,
-    test_relief_uses_driver_clear_exterior_support_lands,
+    test_relief_is_wholly_inside_existing_smooth_ring,
     test_both_pins_are_reassigned_and_both_sockets_are_cut,
     test_ac_ae_clearance_tools_offset_the_worst_case_land,
 )

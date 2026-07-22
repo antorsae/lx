@@ -142,10 +142,29 @@ def _front_section_exterior(shape, z_mm: float):
         if not wire.is_closed or wire.length <= 0.1:
             continue
         sample_count = max(96, int(math.ceil(wire.length / 0.10)))
-        points = []
+        ordered_samples = []
         for index in range(sample_count):
             point = wire.position_at(index / sample_count)
-            points.append((float(point.X), float(point.Y)))
+            ordered_samples.append((index / sample_count, point))
+        # Uniform arc-length samples alone need not land on a topological
+        # vertex.  That made the exact y=172.481 LM split corner disappear
+        # from one state while the other happened to sample 0.0007 mm away,
+        # creating a false 0.030-mm Hausdorff excursion between coincident
+        # analytic profiles.  Insert every OCC wire vertex at its ordered
+        # normalized position; curved spans remain sampled at <=0.10 mm.
+        ordered_samples.extend(
+            (wire.param_at_point(vertex.center()), vertex.center())
+            for vertex in wire.vertices()
+        )
+        ordered_samples.sort(key=lambda sample: sample[0])
+        points = []
+        for _position, point in ordered_samples:
+            xy = (float(point.X), float(point.Y))
+            if (not points
+                    or math.hypot(
+                        xy[0] - points[-1][0],
+                        xy[1] - points[-1][1]) > 1.0e-8):
+                points.append(xy)
         polygon = Polygon(points).buffer(0)
         if polygon.geom_type == "Polygon" and polygon.area > 0.01:
             polygons.append(polygon)
@@ -597,11 +616,11 @@ def test_exported_artifact_contract() -> None:
         assert keyed_interface == {
             "geometrically_compatible": True,
             "physical_fit_coupon_required": True,
-            "exterior_support_land_clearance_mm": 0.25,
+            "ring_local_key_clearance_mm": 0.25,
             "pocket_location": "carrier_interface_between_front_and_rear",
             "right_pocket_uses_left_relief_worst_case": True,
             "left_is_exact_mirror": True,
-            "monolithic_lm_local_hidden_relief": True,
+            "carrier_exterior_growth_mm": 0.0,
             "primary_magnet_datums_unchanged": True,
         }
         for side in SIDE_NAMES:
@@ -1260,20 +1279,27 @@ def test_live_brep_geometry_contract() -> None:
     key_neighborhoods = {}
     staged_local_parts = {side: {} for side in SIDE_NAMES}
     for side in SIDE_NAMES:
-        pocket_bounds = _shape_bounds(wing_pockets[side])
+        local_tools = (
+            ("wing pocket", wing_pockets[side]),
+            ("support land", support_lands[side]),
+            ("male pin", male_pins[side]),
+            ("female socket", female_sockets[side]),
+        )
+        local_bounds = tuple(
+            _shape_bounds(tool) for _tool_name, tool in local_tools)
         padding_mm = 0.50
-        lower = tuple(value - padding_mm for value in pocket_bounds[0])
-        upper = tuple(value + padding_mm for value in pocket_bounds[1])
+        lower = tuple(
+            min(bounds[0][axis] for bounds in local_bounds) - padding_mm
+            for axis in range(3))
+        upper = tuple(
+            max(bounds[1][axis] for bounds in local_bounds) + padding_mm
+            for axis in range(3))
         clip = Pos(*lower) * Box(
             *(upper[axis] - lower[axis] for axis in range(3)),
             align=(Align.MIN, Align.MIN, Align.MIN))
         key_neighborhoods[side] = clip
         clip_bounds = _shape_bounds(clip)
-        for tool_name, tool in (
-                ("wing pocket", wing_pockets[side]),
-                ("support land", support_lands[side]),
-                ("male pin", male_pins[side]),
-                ("female socket", female_sockets[side])):
+        for tool_name, tool in local_tools:
             tool_bounds = _shape_bounds(tool)
             margins = (
                 *(tool_bounds[0][axis] - clip_bounds[0][axis]
@@ -1724,7 +1750,15 @@ def test_live_brep_geometry_contract() -> None:
         assert _intersection_volume(key_pocket, cutter) <= 0.03, (
             f"Ac key pocket overlaps receiver cutter {name}")
     expected_key_pocket_volume = _intersection_volume(uncut_ac, key_pocket)
-    assert expected_key_pocket_volume > 1.0
+    # The 3x-long keys and sockets are wholly buried in the native R113.8
+    # ring (zero carrier-envelope growth).  Only the deliberate 0.25-mm
+    # wing-clearance offset crosses the Ac interface, so its exact clipped
+    # volume is a small edge sliver rather than the former external-land
+    # pocket.  Bracket both failure modes: no clearance cut and a renewed
+    # bulky/visible support land.
+    assert 0.05 < expected_key_pocket_volume < 0.25, (
+        "Ac native-ring key clearance has implausible clipped volume: "
+        f"{expected_key_pocket_volume:.6f} mm3")
     expected_removed_volume = (
         expected_cavity_volume + expected_key_pocket_volume)
     assert math.isclose(

@@ -216,13 +216,13 @@ than recording only “looks good.”
 | Full service-motion clearance to the physical MU10 and installed U22 | PENDING | PENDING |
 | Final free-LM placement plus UM/T buried-span fishing and free-span placement, electrical continuity and insulation test | PENDING | PENDING |
 | Final strain-relief pull transfers cable load away from MU tabs | PENDING | PENDING |
-| No-floor bridge plate has a soft cubic blend into R113 and occupies z=5.3..18.3; four rear Ø6.4 x 6.8 insert bores retain a 6.2 mm front floor, the centered UM/T mouths at x=±8/y=82 open only at rear z=5.3, and no geometry extends behind the existing LM-pad envelope | N/A — integral stand/lane geometry replaces it | PENDING |
+| No-floor bridge plate has a soft cubic blend into R113 and occupies z=5.3..18.3; four rear Ø6.4 x 6.8 insert bores retain a 6.2 mm front floor; LM/T/UM mouths are packed wholly inside the D20 support opening as LM above, T lower-left, UM lower-right and open only at rear z=5.3; no geometry extends behind the existing LM-pad envelope | N/A — integral stand/lane geometry replaces it | PENDING |
 | Six actual Ø5 x 2 magnets are pause-inserted and fully buried in Ø5.20 x 2.10 surface-normal cavities with continuous 0.45 mm axial skins and support-free 45° roofs: preserve upper LM axes 64°/116°, lower LM base-side sites `(x,y,z)=(±32,18,15.10)` with outward normals `(-1,0)`/`(1,0)`, and UM axes 50.5°/129.5° at the same common source Z=15.10; verify R113.0/R51.7 structural rings, smooth exposed R113.8/R52.5 side fairings clipped only inside the existing LM--UM and T--UM cusp/service regions with the 0.40 mm LM--UM inter-carrier gap preserved, and ring cavity construction datums at structural radius +0.65 mm / 0.15 mm beneath the exposed surface; verify there is no local pad, boss, flat, visible cue, external access, or proud ear; verify floor/no-floor station coincidence, route/insert/structure keepouts, three matching Ac/Ae receivers per side, a 0.05 mm solid receiver construction standoff with zero physical mating gap, 1.10 mm nominal ring-pair magnet-face separation, and the unchanged 0.95 mm straight LM-lower base-pair separation | PENDING | PENDING |
 | Every released acoustic STL printed front-face-down; for each magnet-bearing STL, sliced preview/G-code records the lowest open, representative open, last fully open, first closing and fully sealed layers; retaining walls remain continuous; each disc was inserted with manifest polarity, fully seated below the completed layer and clear of the resumed nozzle path | PENDING | PENDING |
 | Coupon-equivalent regression marker on the tested P2S 0.4 mm / 0.16 mm Arachne profile is Z=5.96 mm for every common-plane Obi-Wan LM/UM transverse station; unrelated families use their own sliced schedules rather than copying this value | PENDING | PENDING |
 | UM passage is buried only in LM and ends in a flush free-cable handoff; the UM carrier has no printed rear UM duct or D82 mouth, and the physical cable remains clear behind UM through its R15/R20 service path | PENDING | PENDING |
 | T passage is buried only in LM/UM and ends in a flush free-cable handoff; the tweeter crescent has no printed T arc, conduit, socket, or horn, and the free cable remains clear behind the crescent | PENDING | PENDING |
-| Physical UM/T centerlines cross at 82.67° with T above UM and retain the documented physical-envelope gap; no two-printed-duct separator web is claimed or required | PENDING | PENDING |
+| Physical UM/T centerlines cross at 82.95° with T above UM and retain a 2.00 mm physical-envelope gap; both LM-owned lumens finish at R112.95 and their 0.8 mm covers at R113.75 beneath the continuous visible R113.8 carrier exterior, retaining a 0.85 mm solid outside skin with no groove; no two-printed-duct separator web is claimed or required | PENDING | PENDING |
 | Integral floor geometry: floor Y=0, LM axis height 200.981 mm, full-depth W64 stem, W64×18.3 foot over z=−150..18.3, R12 root, rear NL8 panel/service cavity and three buried Ø9/Ø8.2/Ø6 lanes; no separate support/yoke/rail artifact | PENDING | N/A — no integral stand in this state |
 | All six LM sites retain ordinary blind carrier insert bores; all eight named duct bumps have continuous solid saddle material from conduit roof to bore floor | PENDING | PENDING |
 
@@ -241,10 +241,11 @@ two heat-sets, complete receiver walls, and 1.9 mm front floors after every
 load case; the M3 screw-tension screen does not independently qualify insert
 pull-out, receiver pry-out, or front-floor integrity.
 
-The no-floor analytical screen deducts the complete Ø8.2 and Ø6.0 centered
+The no-floor analytical screen deducts the complete Ø9/Ø8.2/Ø6.0 D20-packed
 entry lumens from the 62 mm insert core and credits a conservative
-47.8 × 13.0 mm member; exact sampled soft-outline cuts retain at least
-53.5 mm. Its calculated 5g factor is about 1.10. The fusion screen separately credits only the actual
+38.8 × 13.0 mm member; exact sampled soft-outline cuts retain at least
+45.73 mm. Its calculated 5g factor is about 0.82, so 5g is not analytically
+qualified. The fusion screen separately credits only the actual
 z=6.8..18.3 (11.5 mm) ring-lip overlap, giving a 2.87 factor at 5g. This
 calculation remains screening context only and
 does not change any PENDING field below into physical evidence.

@@ -64,6 +64,18 @@ BED_MM = 256.0
 # canonicalization, never vertex welding or generic mesh repair.
 STL_TRANSFORM_ZERO_EPSILON_MM = 2.0e-7
 
+# Coupon 12 is a Boolean crop of the finalized Obi-Wan carrier rather than a
+# purpose-built low-complexity calibration solid.  Its near-surface UM route,
+# cover and native R113.8 fairing therefore inherit the same closely spaced
+# faces as the production carrier.  Use the production Obi-Wan tessellation
+# for that coupon; the generic coupon mesh is intentionally coarser and can
+# leave nonconformal edge sampling across those faces even though the source
+# BREP and the complete released carrier are valid solids.
+DEFAULT_STL_TOLERANCE_MM = 0.05
+DEFAULT_STL_ANGULAR_TOLERANCE_RAD = 0.2
+OBIWAN_CROP_STL_TOLERANCE_MM = 0.01
+OBIWAN_CROP_STL_ANGULAR_TOLERANCE_RAD = 0.08
+
 
 def _validate_binary_stl(path: Path) -> None:
     with path.open("rb") as stream:
@@ -419,10 +431,16 @@ def _export_group(group: str, stl_dir: Path, target_mode: str) -> None:
         temporary = out.with_name(
             f".{out.stem}.{os.getpid()}.tmp.stl")
         canonicalized_zeros = 0
+        if name == "12_obiwan_closed_bore_bump":
+            mesh_tolerance = OBIWAN_CROP_STL_TOLERANCE_MM
+            angular_tolerance = OBIWAN_CROP_STL_ANGULAR_TOLERANCE_RAD
+        else:
+            mesh_tolerance = DEFAULT_STL_TOLERANCE_MM
+            angular_tolerance = DEFAULT_STL_ANGULAR_TOLERANCE_RAD
         try:
             export_stl(
-                laid, str(temporary), tolerance=0.05,
-                angular_tolerance=0.2)
+                laid, str(temporary), tolerance=mesh_tolerance,
+                angular_tolerance=angular_tolerance)
             _validate_binary_stl(temporary)
             canonicalized_zeros = _canonicalize_transform_zeros(temporary)
             mesh_facts = _strict_mesh_facts(temporary)

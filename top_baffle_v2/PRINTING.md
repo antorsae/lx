@@ -32,7 +32,7 @@ bridge-web load case is treated explicitly below. PLA still relaxes
 | 10F | M3 x 8 into M3 x 3 x O5 heat-set (bore O4.6 x 4.0) | 0.30–0.40 N·m | short engagement — do not overdrive |
 | R6P bridge (no-stand) | M5 machine screw from the bridge (behind) into M5 x 5.8 x O6.3 heat-set (bore O6.4 x 6.8, REAR face) | hand-snug | 4 off; same insert as the W22, set from the rear |
 | R6F LM-to-UM half-laps | 2 x rear-driven M3 screws through the LM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the UM's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±32, y=315.770; the closure-web/base teardrops remain nominal Ø9, while the complete Z-owned cylindrical functional bosses are locally Ø9.8. The UM receivers retain a 1.9 mm acoustic-front floor and the Z-halves retain a 0.20 mm axial gap. Select screw length for full insert engagement without bottoming. No washer, nut, or front bolt head belongs to this interface. |
-| R6F fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening Ø6.4 × 6.8 inserts | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders, centered rear UM/T entries at x=±8/y=82/z=5.3, solid acoustic front, immutable 40 × 50 pattern, and no geometry behind the existing LM pads; magnets receive zero load credit |
+| R6F fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening Ø6.4 × 6.8 inserts | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders; LM/T/UM entries packed inside the D20 support opening as LM above, T lower-left, UM lower-right at z=5.3; solid acoustic front; immutable 40 × 50 pattern; no geometry behind the existing LM pads; magnets receive zero load credit |
 | R6F optional LM keyed seam | two symmetric Ø1.60 cylindrical pins at x=±109.187/z=14.30, normal to the world-Y=172.481 mm zero-gap seam and pointing +Y; 2.40 mm engagement plus 0.50 mm root overlap. Right blind socket Ø1.84 round; left blind socket 1.96 × 1.84 mm X-relieved; both 2.65 mm deep with 0.12 mm radial and 0.25 mm end clearance. Small exterior lands outside the LM recess preserve ≥0.50 mm radial/end walls, ≥0.05 mm recess plan clearance and ≥0.13 mm conservative W22-flange clearance. | registration only | mutually exclusive replacement print form for the canonical monolithic LM. Round+relieved sockets tolerate ±0.30 mm relative pitch error; the lands reach R114.4036, which is 1.4036 mm beyond structural R113.0 but only 0.6036 mm beyond the finalized R113.8 visible fairing. They add no extra screw or standalone retention/load credit. Print and assemble front-face-down on a flat datum, moving the top straight along -Y; the installed LM driver flange and its normal fasteners are the structural splice. |
 | R6F UM-to-tweeter half-laps | 2 x rear-driven M3 screws through the UM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the crescent's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±24, y=421.5; nominal Ø9 closure-base teardrops, complete local Ø9.8 Z-owned functional bosses, 0.20 mm axial gap, complete 360° receiver walls, and 1.9 mm acoustic-front floors. Install both inserts in the individual crescent before assembly; no front bolt head or cross-owner receiver wall. |
 | R6F alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and lower straight-base sites at `(x,y,z)=(±32,18,15.10)` with outward normals `(-1,0)` left and `(1,0)` right. UM keeps its 50.5°/129.5° axes; all six stations share source Z=15.10. Every station has 0.45 mm axial skins and a 45° support-free roof. The R113.0/R51.7 structural rings have continuous exposed R113.8/R52.5 side fairings, clipped only inside the existing LM--UM and T--UM cusp/service regions; the LM--UM stop preserves the 0.40 mm gap. Ring cavity datums sit at structural radius +0.65 mm, 0.15 mm beneath the exposed surface. There is no magnet-local backing, boss, relief, rear cap, flat, or visible cue: the magnet-free exterior is immutable. Magnets are fully buried at the manifest pause, never glued or externally accessible. Ac/Ae have matching captive LM-lower, LM-upper, and UM receivers. Their mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm allowance is a solid standoff. Nominal paired magnet-face separation is 1.10 mm at LM-upper/UM and 0.95 mm at LM-lower. Alignment/anti-rattle only: **zero structural load credit**. |
@@ -57,11 +57,11 @@ lower 18 MPa short-duration and 8 MPa sustained allowables for printed
 anisotropy, stress concentrations, and creep. The softly blended plate has a
 62 mm insert core and occupies z=5.3..18.3, ending at the deepest existing
 LM-pad rear datum with no added rear projection. The structural model deducts
-the complete Ø8.2 and Ø6.0 centered entry lumens and credits only a
-**47.8 × 13.0 mm** section; exact 0.01 mm sampled cuts retain at least 53.5 mm.
-Its in-plane/rear section moduli are **4950.5/1346.4 mm³**. Conservatively
-summing the two bending stresses gives about **3.28/9.84/16.41 MPa** and
-safety factors **2.44/1.83/1.10** at sustained 1g/8 MPa, transient 3g/18 MPa,
+the complete Ø9/Ø8.2/Ø6.0 D20-packed entry lumens and credits only a
+**38.8 × 13.0 mm** section; exact 0.01 mm sampled cuts retain at least 45.73 mm.
+Its in-plane/rear section moduli are **3261.8/1092.9 mm³**. Conservatively
+summing the two bending stresses gives about **4.40/13.19/21.99 MPa** and
+safety factors **1.82/1.36/0.82** at sustained 1g/8 MPa, transient 3g/18 MPa,
 and transient 5g/18 MPa. The physical 68° lower-ring cradle
 extends to z=5.3 with the web, but the existing ring lip starts at z=6.8;
 the calculation therefore credits only the actual 11.5 mm-deep monolithic
@@ -429,18 +429,19 @@ mouth, free cable, driver and Faston service envelopes with the measured UM cabl
   at fine layer resolution. The UM cable must run free behind the UM carrier
   with no printed rear duct; T must run free behind the tweeter crescent with
   no crescent-owned printed arc. The true minimum non-load wall on each
-  surviving buried span is 0.8 mm and the seat roof is 0.85 mm. The D7.8
-  LM lead is different: it floats over a short 20.15 mm span behind the carrier
-  with no printed micro-duct or cover. The carrier has only a minimum-radius
-  3.96 mm rear-open subtractive clearance around its unchanged z=0.40..3.80
-  centerline; the 1.00 mm clearance to the deepest z=5.3 pad/web rear datum
-  applies at the outer station before the rise. In floor state verify its
-  buried continuation through the integral stem. Block support from every
+  surviving buried span is 0.8 mm and the seat roof is 0.85 mm. In no-floor
+  state verify all three LM/T/UM entries are open inside the D20 support
+  opening, with LM above, T lower-left, and UM lower-right. Pull the D7.8 LM
+  reference through its nominal Ø9 branch and common R14 handoff; in floor
+  state verify the corresponding buried Ø9 continuation through the integral
+  stem. Confirm the LM-owned UM/T lumens finish at R112.95 and their covers at
+  R113.75 beneath the uninterrupted R113.8 carrier exterior, retaining a
+  0.85 mm solid outside skin with no groove. Block support from every
   functional mouth/free-cable span and
   inspect the complete solid-backed rear bumps. Use the routing PNG's nominal
   diametric u-z sections—not only its longitudinal station plot—to confirm each
-  conduit roof is joined solidly to its blind-bore floor. Verify the 82.67°
-  physical crown crossing has T above UM and retains the 1.85 mm
+  conduit roof is joined solidly to its blind-bore floor. Verify the 82.95°
+  physical crown crossing has T above UM and retains the 2.00 mm
   physical-cable gap; there is no two-duct separator web to inspect. Then
   follow T around the covered 328°/58° UM-carrier bumps to its flush exit,
   after which it remains free behind the crescent. All six LM insert bypasses

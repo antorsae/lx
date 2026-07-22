@@ -28,6 +28,7 @@
       "enable_support": "0",
       "support_on_build_plate_only": "0",
       "support_critical_regions_only": "0",
+      "support_remove_small_overhang": "0",
       "precise_outer_wall": "1",
       "detect_thin_wall": "1",
       "ensure_vertical_shell_thickness": "enabled",
@@ -74,7 +75,8 @@
         "sparse_infill_density": "100%",
         "enable_support": "1",
         "support_on_build_plate_only": "1",
-        "support_critical_regions_only": "1"
+        "support_critical_regions_only": "1",
+        "support_remove_small_overhang": "1"
       }
     },
     {
@@ -87,7 +89,34 @@
         "sparse_infill_density": "40%",
         "enable_support": "1",
         "support_on_build_plate_only": "1",
-        "support_critical_regions_only": "1"
+        "support_critical_regions_only": "1",
+        "support_remove_small_overhang": "1"
+      }
+    },
+    {
+      "match": {
+        "state": "floor_stand",
+        "variant": "Obi-Wan-split",
+        "part": "lx521_top_obiwan_optional_lm_keyed_2of2_top"
+      },
+      "process": {
+        "enable_support": "1",
+        "support_on_build_plate_only": "1",
+        "support_critical_regions_only": "1",
+        "support_remove_small_overhang": "1"
+      }
+    },
+    {
+      "match": {
+        "state": "no_floor_stand",
+        "variant": "Obi-Wan-split",
+        "part": "lx521_top_obiwan_optional_lm_keyed_2of2_top"
+      },
+      "process": {
+        "enable_support": "1",
+        "support_on_build_plate_only": "1",
+        "support_critical_regions_only": "1",
+        "support_remove_small_overhang": "1"
       }
     },
     {
@@ -133,5 +162,10 @@
     "auto_orient": false,
     "allow_rotations": false,
     "timeout_seconds": 7200
+  },
+  "magnet_insertion_pause": {
+    "park_z_mm": 250.0,
+    "z_travel_speed_mm_s": 20.0,
+    "policy": "The P2S has a 256 mm Z envelope. At each captive-magnet insertion layer, raise the nozzle to Z=250 mm (which lowers the bed to within 6 mm of its lowest position), pause with M400 U1, then restore the exact insertion-layer Z before the next print move. No XY motion is injected."
   }
 }

@@ -9,7 +9,7 @@ The local macOS profile cannot reliably build and hollow the face-rich LM
 carrier in one OCC process.  A lightweight, stdlib-only parent therefore
 runs its outer blank, every exact route-cutter group, and final functional
 recuts in separate guarded descendants there.  On the osado large-memory
-profile the same carrier is built directly in one guarded worker; the 20
+profile the same carrier is built directly in one guarded worker; the 21
 cutter-group count remains a checked geometry contract, not an execution
 split.  Other printed parts and review proxies are serialized to native BREP
 before a final import-only STEP assembly worker.
@@ -44,7 +44,7 @@ import run_memory_guarded as memory_guard
 SCRIPT = Path(__file__).resolve()
 ROOT = SCRIPT.parent
 SCHEMA_VERSION = 7
-EXPECTED_LM_CUTTER_GROUP_COUNT = 20
+EXPECTED_LM_CUTTER_GROUP_COUNT = 21
 FIXED_TIMESTAMP = "2020-01-01T00:00:00"
 WORKER_HEADROOM_MIB = 3200.0
 RUNTIME_DISTRIBUTIONS = ("build123d", "cadquery-ocp", "numpy", "shapely")

@@ -150,6 +150,7 @@ PROFILE_OVERRIDE_KEYS = {
         "enable_support",
         "support_on_build_plate_only",
         "support_critical_regions_only",
+        "support_remove_small_overhang",
         "precise_outer_wall",
         "detect_thin_wall",
         "ensure_vertical_shell_thickness",
@@ -190,6 +191,7 @@ SUPPORT_PROCESS_KEYS = (
     "enable_support",
     "support_on_build_plate_only",
     "support_critical_regions_only",
+    "support_remove_small_overhang",
 )
 SUPPORTED_ARTIFACT_MATCHES = (
     {
@@ -202,7 +204,26 @@ SUPPORTED_ARTIFACT_MATCHES = (
         "variant": "Obi-Wan-split",
         "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
     },
+    {
+        "state": "floor_stand",
+        "variant": "Obi-Wan-split",
+        "part": "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+    },
+    {
+        "state": "no_floor_stand",
+        "variant": "Obi-Wan-split",
+        "part": "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+    },
 )
+DUCT_SUPPORT_BLOCKER_MATCH = {
+    "state": "no_floor_stand",
+    "variant": "Obi-Wan-split",
+    "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+}
+MAGNET_INSERTION_PARK_BEGIN = "; MAGNET_INSERTION_PARK_BEGIN"
+MAGNET_INSERTION_PARK_END = "; MAGNET_INSERTION_PARK_END"
+MAGNET_INSERTION_PAUSE_COMMAND = "M400 U1"
+MAGNET_INSERTION_CUSTOM_GCODE_TYPE = "Custom"
 
 
 class AuditError(RuntimeError):
@@ -300,6 +321,67 @@ def _resolve_path(value: str | Path, base: Path) -> Path:
     if not path.is_absolute():
         path = base / path
     return path.resolve()
+
+
+def _requires_duct_support_blocker(
+    state: str, variant: str, part: str,
+) -> bool:
+    return {
+        "state": state, "variant": variant, "part": part,
+    } == DUCT_SUPPORT_BLOCKER_MATCH
+
+
+def _normalize_duct_support_blocker(
+    *, artifact_id: str, stl: Path, stl_sha256: str, part: str,
+    source_to_stl_matrix: tuple[tuple[float, ...], ...],
+) -> dict[str, Any]:
+    """Bind the generated no-support volume to its exact printable STL."""
+    blocker = (
+        stl.parent.parent / "support_blockers"
+        / f"{stl.stem}.support_blocker.stl"
+    ).resolve()
+    binding = blocker.with_suffix(".json")
+    if not blocker.is_file() or not binding.is_file():
+        raise AuditError(
+            f"{artifact_id}: generated duct support blocker or binding is "
+            f"missing: {blocker}, {binding}")
+    payload = _load_json(binding)
+    if not isinstance(payload, Mapping):
+        raise AuditError(
+            f"{artifact_id}: duct support-blocker binding is not an object")
+    if (payload.get("schema_version") != 1
+            or payload.get("kind") != "bambu_support_blocker"
+            or payload.get("purpose")
+            != "forbid_support_inside_no_floor_lm_um_t_ducts"
+            or payload.get("part") != part):
+        raise AuditError(
+            f"{artifact_id}: duct support-blocker binding has the wrong "
+            "schema, purpose, or part")
+    if Path(str(payload.get("support_blocker", ""))).name != blocker.name:
+        raise AuditError(
+            f"{artifact_id}: blocker binding names a different modifier STL")
+    if Path(str(payload.get("main_stl", ""))).name != stl.name:
+        raise AuditError(
+            f"{artifact_id}: blocker binding names a different printable STL")
+    blocker_sha256 = sha256_file(blocker)
+    if (payload.get("main_stl_sha256") != stl_sha256
+            or payload.get("support_blocker_sha256") != blocker_sha256):
+        raise AuditError(
+            f"{artifact_id}: support-blocker binding hashes differ from the "
+            "release meshes")
+    binding_matrix = _matrix4(
+        payload.get("source_to_stl_matrix"),
+        f"{artifact_id} support-blocker source-to-STL transform")
+    if binding_matrix != source_to_stl_matrix:
+        raise AuditError(
+            f"{artifact_id}: support blocker and printable STL use different "
+            "source-to-STL transforms")
+    return {
+        "support_blocker": blocker,
+        "support_blocker_sha256": blocker_sha256,
+        "support_blocker_binding": binding,
+        "support_blocker_binding_sha256": sha256_file(binding),
+    }
 
 
 class PresetResolver:
@@ -504,7 +586,7 @@ def _percent(value: Any, label: str) -> float:
 
 
 def _validate_support_override_policy(config: Mapping[str, Any]) -> None:
-    """Pin support off globally and on only for both keyed LM bottoms."""
+    """Pin support off globally and on only for all keyed LM split parts."""
     requirements = config.get("requirements")
     if (not isinstance(requirements, Mapping)
             or requirements.get("support_enabled") is not False):
@@ -554,7 +636,45 @@ def _validate_support_override_policy(config: Mapping[str, Any]) -> None:
     if actual_match_keys != required_match_keys:
         raise AuditError(
             "support overrides must target exactly the floor/no-floor "
-            "Obi-Wan keyed LM bottom artifacts")
+            "Obi-Wan keyed LM split artifacts")
+
+
+def _magnet_insertion_pause_policy(
+    config: Mapping[str, Any], machine: Mapping[str, Any],
+) -> dict[str, float | str | bool]:
+    """Validate the physical, P2S-specific magnet insertion pause motion."""
+    raw = config.get("magnet_insertion_pause")
+    if not isinstance(raw, Mapping):
+        raise AuditError("magnet_insertion_pause must be an object")
+    park_z = _float(raw.get("park_z_mm"), "magnet insertion park Z")
+    speed = _float(
+        raw.get("z_travel_speed_mm_s"), "magnet insertion Z travel speed")
+    bounds = config.get("machine_bounds_mm")
+    if not isinstance(bounds, Mapping):
+        raise AuditError("machine_bounds_mm must be an object")
+    z_bounds = bounds.get("z")
+    if (not isinstance(z_bounds, list) or len(z_bounds) != 2):
+        raise AuditError("machine_bounds_mm.z must contain [min, max]")
+    z_min = _float(z_bounds[0], "machine minimum Z")
+    z_max = _float(z_bounds[1], "machine maximum Z")
+    if not (z_min < park_z < z_max):
+        raise AuditError(
+            f"magnet insertion park Z {park_z:g} must be strictly inside "
+            f"the P2S Z envelope {z_min:g}..{z_max:g}")
+    max_z_speed = _scalar(machine, "machine_max_speed_z", "machine")
+    if speed <= 0.0 or speed > max_z_speed + 1.0e-9:
+        raise AuditError(
+            f"magnet insertion Z travel speed {speed:g} mm/s exceeds the "
+            f"P2S maximum {max_z_speed:g} mm/s")
+    return {
+        "custom_gcode_type": MAGNET_INSERTION_CUSTOM_GCODE_TYPE,
+        "pause_command": MAGNET_INSERTION_PAUSE_COMMAND,
+        "park_z_mm": park_z,
+        "z_travel_speed_mm_s": speed,
+        "z_travel_feedrate_mm_min": speed * 60.0,
+        "restore_exact_pause_z": True,
+        "xy_motion": "none",
+    }
 
 
 def _effective_profile_contract(
@@ -594,6 +714,7 @@ def _effective_profile_contract(
     process = resolved["process"]
     filament = resolved["filament"]
     machine = resolved["machine"]
+    magnet_insertion_pause = _magnet_insertion_pause_policy(config, machine)
     wall_generator = str(process.get("wall_generator", "")).lower()
     required_wall_generator = str(req["wall_generator"]).lower()
     if required_wall_generator != "arachne":
@@ -609,14 +730,19 @@ def _effective_profile_contract(
         process.get("support_on_build_plate_only"))
     support_critical_regions_only = _boolish(
         process.get("support_critical_regions_only"))
+    support_remove_small_overhang = _boolish(
+        process.get("support_remove_small_overhang"))
     if support_enabled and not (
-            support_on_build_plate_only and support_critical_regions_only):
+            support_on_build_plate_only and support_critical_regions_only
+            and support_remove_small_overhang):
         raise AuditError(
             "support-enabled artifact profiles must also enable "
             "support_on_build_plate_only and "
-            "support_critical_regions_only")
+            "support_critical_regions_only and "
+            "support_remove_small_overhang")
     if not support_enabled and (
-            support_on_build_plate_only or support_critical_regions_only):
+            support_on_build_plate_only or support_critical_regions_only
+            or support_remove_small_overhang):
         raise AuditError(
             "support scope flags must be disabled when enable_support is 0")
     model = machine.get("printer_model")
@@ -662,8 +788,10 @@ def _effective_profile_contract(
         "support_enabled": support_enabled,
         "support_on_build_plate_only": support_on_build_plate_only,
         "support_critical_regions_only": support_critical_regions_only,
+        "support_remove_small_overhang": support_remove_small_overhang,
         "arc_fitting_enabled": _boolish(process.get("enable_arc_fitting")),
         "machine_pause_gcode": machine["machine_pause_gcode"],
+        "magnet_insertion_pause": magnet_insertion_pause,
         "nozzle_temperature_c": _scalar(
             filament, "nozzle_temperature", "filament"),
         "nozzle_temperature_initial_layer_c": _scalar(
@@ -1558,6 +1686,15 @@ def normalize_catalog(
             raise AuditError(
                 f"{artifact_id}: Obi-Wan artifact lacks staged-build manifest "
                 "hash binding")
+        support_blocker_binding: dict[str, Any] = {}
+        if _requires_duct_support_blocker(state, variant, part):
+            support_blocker_binding = _normalize_duct_support_blocker(
+                artifact_id=artifact_id,
+                stl=stl,
+                stl_sha256=stl_sha,
+                part=part,
+                source_to_stl_matrix=source_to_stl_matrix,
+            )
         normalized.append({
             "id": artifact_id,
             "state": state,
@@ -1581,6 +1718,7 @@ def normalize_catalog(
             "cavity_audit_proxies": raw.get("cavity_audit_proxies"),
             "catalog_record": raw,
             **auxiliary_bindings,
+            **support_blocker_binding,
         })
     _validate_cavity_audit_proxies(normalized)
     inventory = data["inventory"]
@@ -1680,6 +1818,52 @@ def _validate_artifact_bindings(artifact: Mapping[str, Any]) -> None:
                 or sha256_file(path) != expected):
             raise AuditError(
                 f"{artifact['id']}: {path_key} hash differs from catalog")
+    blocker_keys = {
+        "support_blocker", "support_blocker_sha256",
+        "support_blocker_binding", "support_blocker_binding_sha256",
+    }
+    requires_blocker = _requires_duct_support_blocker(
+        str(artifact["state"]), str(artifact["variant"]),
+        str(artifact["part"]))
+    present_blocker_keys = blocker_keys.intersection(artifact)
+    if requires_blocker and present_blocker_keys != blocker_keys:
+        raise AuditError(
+            f"{artifact['id']}: no-floor duct support blocker binding is "
+            "incomplete")
+    if not requires_blocker and present_blocker_keys:
+        raise AuditError(
+            f"{artifact['id']}: unexpected support-blocker binding")
+    if requires_blocker:
+        blocker = artifact["support_blocker"]
+        binding = artifact["support_blocker_binding"]
+        if (not isinstance(blocker, Path) or not blocker.is_file()
+                or sha256_file(blocker)
+                != artifact["support_blocker_sha256"]):
+            raise AuditError(
+                f"{artifact['id']}: support-blocker STL hash differs from "
+                "its release binding")
+        if (not isinstance(binding, Path) or not binding.is_file()
+                or sha256_file(binding)
+                != artifact["support_blocker_binding_sha256"]):
+            raise AuditError(
+                f"{artifact['id']}: support-blocker metadata hash differs "
+                "from its release binding")
+        payload = _load_json(binding)
+        if (not isinstance(payload, Mapping)
+                or payload.get("main_stl_sha256")
+                != artifact["stl_catalog_sha256"]
+                or payload.get("support_blocker_sha256")
+                != artifact["support_blocker_sha256"]
+                or Path(str(payload.get("main_stl", ""))).name != stl.name
+                or Path(str(payload.get("support_blocker", ""))).name
+                != blocker.name
+                or _matrix4(
+                    payload.get("source_to_stl_matrix"),
+                    f"{artifact['id']} support-blocker transform")
+                != artifact["source_to_stl_matrix"]):
+            raise AuditError(
+                f"{artifact['id']}: support-blocker metadata no longer "
+                "binds the staged printable and modifier meshes")
 
 
 def _copy_hash_bound_file(
@@ -1770,6 +1954,27 @@ def _stage_release_inputs(
         staged["release_print_sidecar"] = artifact["print_sidecar"]
         staged["stl"] = staged_stl
         staged["print_sidecar"] = staged_sidecar
+        if "support_blocker" in artifact:
+            staged_blocker = (
+                artifact_dir / "modifiers" / artifact["support_blocker"].name)
+            staged_blocker_binding = (
+                artifact_dir / "modifiers"
+                / artifact["support_blocker_binding"].name)
+            _copy_hash_bound_file(
+                artifact["support_blocker"], staged_blocker,
+                artifact["support_blocker_sha256"],
+                f"{artifact['id']} support-blocker STL")
+            _copy_hash_bound_file(
+                artifact["support_blocker_binding"],
+                staged_blocker_binding,
+                artifact["support_blocker_binding_sha256"],
+                f"{artifact['id']} support-blocker binding")
+            staged["release_support_blocker"] = artifact[
+                "support_blocker"]
+            staged["release_support_blocker_binding"] = artifact[
+                "support_blocker_binding"]
+            staged["support_blocker"] = staged_blocker
+            staged["support_blocker_binding"] = staged_blocker_binding
         staged_sources: list[Path] = []
         staged_source_hashes: dict[Path, str] = {}
         for source_index, source in enumerate(artifact["source_files"]):
@@ -2300,6 +2505,8 @@ def _validate_actual_gcode_profile(
             "support_on_build_plate_only"],
         "support_critical_regions_only": expected[
             "support_critical_regions_only"],
+        "support_remove_small_overhang": expected[
+            "support_remove_small_overhang"],
     }
     for key, expected_value in support_fields.items():
         if key not in parsed.config:
@@ -3942,12 +4149,59 @@ def _artifact_fingerprint(
             "transaction_manifest_sha256"),
         "facts_sha256": artifact.get("facts_sha256"),
         "stage_manifest_sha256": artifact.get("stage_manifest_sha256"),
+        "support_blocker_sha256": artifact.get("support_blocker_sha256"),
+        "support_blocker_binding_sha256": artifact.get(
+            "support_blocker_binding_sha256"),
         "profile_set_sha256": profile_bundle["identity"]["profile_set_sha256"],
         "bambu_binary_sha256": profile_bundle["identity"]["binary_sha256"],
         "audit_source_sha256": sorted(
             profile_bundle["audit_source_sha256"].items()),
     }
     return _sha256_bytes(_canonical_json(payload))
+
+
+def _write_bambu_assemble_list(
+    path: Path,
+    *,
+    stl: Path,
+    support_blockers: Sequence[Path],
+) -> None:
+    """Describe one printable object with co-located support blockers."""
+    if not support_blockers:
+        raise AuditError("an assemble list requires at least one modifier")
+
+    def object_record(mesh: Path, subtype: str) -> dict[str, Any]:
+        return {
+            "path": str(mesh.resolve()),
+            "subtype": subtype,
+            "count": 1,
+            "filaments": [1],
+            "assemble_index": [1],
+            "pos_x": [0],
+            "pos_y": [0],
+            "pos_z": [0],
+        }
+
+    _write_json(path, {
+        "plates": [{
+            "plate_name": stl.stem,
+            "need_arrange": True,
+            "objects": [
+                object_record(stl, "normal_part"),
+                *(object_record(blocker, "support_blocker")
+                  for blocker in support_blockers),
+            ],
+            "assembled_params": [{
+                "assemble_index": 1,
+                "print_params": {
+                    "enable_support": "1",
+                    "support_on_build_plate_only": "1",
+                    "support_critical_regions_only": "1",
+                    "support_remove_small_overhang": "1",
+                },
+            }],
+        }],
+    })
 
 
 def _bambu_command(
@@ -3958,6 +4212,7 @@ def _bambu_command(
     *,
     project_filename: str = PLACED_3MF_FILENAME,
     custom_gcodes: Path | None = None,
+    assemble_list: Path | None = None,
 ) -> list[str]:
     settings = ";".join(str(profile_bundle["paths"][key])
                         for key in ("machine", "process"))
@@ -3971,7 +4226,10 @@ def _bambu_command(
     ]
     if custom_gcodes is not None:
         command.extend(("--load-custom-gcodes", str(custom_gcodes)))
-    command.append(str(stl))
+    if assemble_list is None:
+        command.append(str(stl))
+    else:
+        command.extend(("--load-assemble-list", str(assemble_list)))
     return command
 
 
@@ -3987,6 +4245,9 @@ def _slice_one(
     emit_ready_projects: bool = False,
 ) -> dict[str, Any]:
     stl: Path = artifact["stl"]
+    support_blockers = tuple(
+        [artifact["support_blocker"]]
+        if "support_blocker" in artifact else [])
     release_stl: Path = artifact.get("release_stl", stl)
     _validate_artifact_bindings(artifact)
     mesh = inspect_stl(stl)
@@ -4017,6 +4278,13 @@ def _slice_one(
     gcode = out_dir / "plate_1.gcode"
     result_path = out_dir / "result.json"
     project_3mf = out_dir / PLACED_3MF_FILENAME
+    assemble_list = (
+        out_dir / "bambu_assemble_list.json"
+        if support_blockers else None)
+    if assemble_list is not None:
+        _write_bambu_assemble_list(
+            assemble_list, stl=stl,
+            support_blockers=support_blockers)
     reused = False
     if (reuse and fingerprint_path.is_file() and gcode.is_file()
             and result_path.is_file() and project_3mf.is_file()):
@@ -4027,7 +4295,8 @@ def _slice_one(
                 project_3mf=project_3mf):
             reused = True
     command = _bambu_command(
-        bambu, stl, out_dir, artifact_profile_bundle)
+        bambu, stl, out_dir, artifact_profile_bundle,
+        assemble_list=assemble_list)
     if dry_run:
         return {"id": artifact["id"], "dry_run": True, "command": command,
                 "fingerprint": fingerprint}
@@ -4084,7 +4353,9 @@ def _slice_one(
     if not isinstance(bbox, dict):
         raise AuditError(f"{artifact['id']}: missing Bambu object bbox")
     try:
-        project_audit = audit_bambu_3mf(project_3mf, stl)
+        project_audit = audit_bambu_3mf(
+            project_3mf, stl,
+            support_blocker_stls=support_blockers)
         expected_bbox = validate_bambu_result_bbox(
             bbox, project_audit.source_bounds,
             project_audit.stl_to_bed_matrix)
@@ -4306,7 +4577,8 @@ def _slice_one(
                     "detect_narrow_internal_solid_infill",
                     "elefant_foot_compensation", "xy_hole_compensation",
                     "enable_support", "support_on_build_plate_only",
-                    "support_critical_regions_only", "enable_arc_fitting",
+                    "support_critical_regions_only",
+                    "support_remove_small_overhang", "enable_arc_fitting",
                     "nozzle_temperature",
                     "nozzle_temperature_initial_layer", "fan_max_speed",
                     "overhang_fan_speed",
@@ -4538,8 +4810,59 @@ def _pause_groups(record: Mapping[str, Any]) -> list[dict[str, Any]]:
     return result
 
 
+def _magnet_pause_commands(
+    pause_z: float,
+    pause_policy: Mapping[str, Any],
+) -> list[str]:
+    """Return the exact physical motion/pause/resume command sequence."""
+    park_z = _float(
+        pause_policy.get("park_z_mm"), "magnet insertion park Z")
+    feedrate = _float(
+        pause_policy.get("z_travel_feedrate_mm_min"),
+        "magnet insertion Z feedrate")
+    pause_command = " ".join(str(
+        pause_policy.get("pause_command", "")).split())
+    if pause_command != MAGNET_INSERTION_PAUSE_COMMAND:
+        raise AuditError(
+            "magnet insertion pause command must be exactly "
+            f"{MAGNET_INSERTION_PAUSE_COMMAND!r}")
+    if park_z <= pause_z + 1.0e-6:
+        raise AuditError(
+            f"magnet insertion park Z {park_z:g} is not above its "
+            f"pause layer {pause_z:g}")
+    return [
+        "G90",
+        "M400",
+        f"G1 Z{park_z:g} F{feedrate:g}",
+        "M400",
+        pause_command,
+        f"G1 Z{pause_z:g} F{feedrate:g}",
+        "M400",
+    ]
+
+
+def _magnet_pause_program(
+    group: Mapping[str, Any],
+    pause_policy: Mapping[str, Any],
+) -> str:
+    """Build the self-describing custom G-code event stored in the 3MF."""
+    pause_z = _float(group.get("pause_marker_z_mm"), "magnet pause Z")
+    sites = ", ".join(str(value) for value in group["sites"])
+    park_z = _float(
+        pause_policy.get("park_z_mm"), "magnet insertion park Z")
+    return "\n".join((
+        MAGNET_INSERTION_PARK_BEGIN,
+        f"; Insert {group['magnet_count']} magnet(s): {sites}",
+        "; P2S: no XY move; absolute Z raises the nozzle and lowers the bed.",
+        f"; Park at Z={park_z:g} mm, then restore Z={pause_z:g} mm after Continue.",
+        *_magnet_pause_commands(pause_z, pause_policy),
+        MAGNET_INSERTION_PARK_END,
+    ))
+
+
 def _custom_gcodes_document(
     record: Mapping[str, Any],
+    pause_policy: Mapping[str, Any],
 ) -> tuple[dict[str, Any], list[float]]:
     groups = _pause_groups(record)
     if not groups:
@@ -4551,19 +4874,21 @@ def _custom_gcodes_document(
     for group in groups:
         z = float(group["pause_marker_z_mm"])
         pause_z.append(z)
-        sites = ", ".join(str(value) for value in group["sites"])
         gcodes.append({
-            "type": "PausePrint",
+            "type": MAGNET_INSERTION_CUSTOM_GCODE_TYPE,
             "print_z": z,
             "color": "",
             "extruder": 1,
-            "extra": f"Insert {group['magnet_count']} magnet(s): {sites}",
+            "extra": _magnet_pause_program(group, pause_policy),
         })
     return {"mode": "SingleExtruder", "gcodes": gcodes}, pause_z
 
 
-def _gcode_pause_events(path: Path) -> list[dict[str, Any]]:
-    """Locate Bambu pause tags and require their first command to be M400 U1."""
+def _gcode_pause_events(
+    path: Path,
+    pause_policy: Mapping[str, Any],
+) -> list[dict[str, Any]]:
+    """Locate Bambu custom magnet pauses and prove park/pause/restore order."""
     current_z: float | None = None
     pending_change = False
     awaiting: dict[str, Any] | None = None
@@ -4574,8 +4899,8 @@ def _gcode_pause_events(path: Path) -> list[dict[str, Any]]:
             if line == "; CHANGE_LAYER":
                 if awaiting is not None:
                     raise AuditError(
-                        f"{path}:{awaiting['line_number']}: pause tag has no "
-                        "M400 U1 before the next layer")
+                        f"{path}:{awaiting['line_number']}: custom magnet "
+                        "pause is unfinished before the next layer")
                 pending_change = True
                 continue
             if pending_change and line.startswith("; Z_HEIGHT:"):
@@ -4584,33 +4909,276 @@ def _gcode_pause_events(path: Path) -> list[dict[str, Any]]:
                 pending_change = False
                 continue
             if line == "; PAUSE_PRINTING":
+                raise AuditError(
+                    f"{path}:{line_number}: found obsolete bare PausePrint; "
+                    "ready projects must use the magnet park/pause/restore "
+                    "custom G-code")
+            if line == "; CUSTOM_GCODE":
                 if current_z is None:
-                    raise AuditError(
-                        f"{path}:{line_number}: pause precedes any layer Z")
+                    raise AuditError(f"{path}:{line_number}: custom magnet "
+                                     "pause precedes any layer Z")
                 if awaiting is not None:
-                    raise AuditError(
-                        f"{path}:{line_number}: nested pause tags")
-                awaiting = {"z_mm": current_z, "line_number": line_number}
+                    raise AuditError(f"{path}:{line_number}: nested custom "
+                                     "magnet pauses")
+                awaiting = {
+                    "z_mm": current_z,
+                    "line_number": line_number,
+                    "inside_program": False,
+                    "commands": [],
+                }
                 continue
             if awaiting is None:
+                continue
+            if line == MAGNET_INSERTION_PARK_BEGIN:
+                if awaiting["inside_program"]:
+                    raise AuditError(
+                        f"{path}:{line_number}: nested magnet pause program")
+                awaiting["inside_program"] = True
+                continue
+            if line == MAGNET_INSERTION_PARK_END:
+                if not awaiting["inside_program"]:
+                    raise AuditError(
+                        f"{path}:{line_number}: magnet pause program ended "
+                        "before it began")
+                commands = awaiting["commands"]
+                expected = _magnet_pause_commands(
+                    float(awaiting["z_mm"]), pause_policy)
+                actual = [command for command, _line in commands]
+                # Bambu keeps the park feedrate but coalesces the identical
+                # restore feedrate into the modal state, yielding ``G1 Z...``
+                # rather than ``G1 Z... F...``.  The preceding park move
+                # proves the inherited value is the pinned safe Z speed.
+                modal_restore = list(expected)
+                modal_restore[5] = f"G1 Z{float(awaiting['z_mm']):g}"
+                if actual not in (expected, modal_restore):
+                    raise AuditError(
+                        f"{path}:{awaiting['line_number']}: magnet pause "
+                        f"commands {actual!r} != required {expected!r} "
+                        f"(or modal restore {modal_restore!r})")
+                events.append({
+                    "z_mm": awaiting["z_mm"],
+                    "line_number": awaiting["line_number"],
+                    "custom_gcode_type": MAGNET_INSERTION_CUSTOM_GCODE_TYPE,
+                    "command": MAGNET_INSERTION_PAUSE_COMMAND,
+                    "park_z_mm": _float(
+                        pause_policy.get("park_z_mm"),
+                        "magnet insertion park Z"),
+                    "park_command_line_number": commands[2][1],
+                    "command_line_number": commands[4][1],
+                    "restore_z_mm": awaiting["z_mm"],
+                    "restore_command_line_number": commands[5][1],
+                })
+                awaiting = None
+                continue
+            if not awaiting["inside_program"]:
+                if line and not line.startswith(";"):
+                    raise AuditError(
+                        f"{path}:{line_number}: magnet custom G-code has a "
+                        "command before its park marker")
                 continue
             command = line.split(";", 1)[0].strip()
             if not command:
                 continue
-            if " ".join(command.split()) != "M400 U1":
-                raise AuditError(
-                    f"{path}:{line_number}: first pause command is "
-                    f"{command!r}, expected exactly 'M400 U1'")
-            events.append({
-                **awaiting,
-                "command": "M400 U1",
-                "command_line_number": line_number,
-            })
-            awaiting = None
+            awaiting["commands"].append((" ".join(command.split()), line_number))
     if awaiting is not None:
         raise AuditError(
-            f"{path}:{awaiting['line_number']}: pause tag has no M400 U1")
+            f"{path}:{awaiting['line_number']}: custom magnet pause has no "
+            "completed park/pause/restore program")
     return events
+
+
+def _validate_magnet_pause_program_text(
+    program: str,
+    pause_z: float,
+    pause_policy: Mapping[str, Any],
+    *,
+    label: str,
+) -> None:
+    """Require the self-contained custom event to be exactly motion-safe."""
+    lines = [line.strip() for line in program.splitlines()]
+    try:
+        begin = lines.index(MAGNET_INSERTION_PARK_BEGIN)
+        end = lines.index(MAGNET_INSERTION_PARK_END)
+    except ValueError as exc:
+        raise AuditError(f"{label} lacks the magnet park program markers") from exc
+    if begin >= end:
+        raise AuditError(f"{label} has invalid magnet park program marker order")
+    commands = []
+    for line in lines[begin + 1:end]:
+        command = line.split(";", 1)[0].strip()
+        if command:
+            commands.append(" ".join(command.split()))
+    expected = _magnet_pause_commands(pause_z, pause_policy)
+    if commands != expected:
+        raise AuditError(
+            f"{label} commands {commands!r} != required {expected!r}")
+
+
+def _local_xml_tag(element: ET.Element) -> str:
+    return element.tag.rsplit("}", 1)[-1]
+
+
+def _read_single_3mf_member(project_3mf: Path, member: str) -> bytes:
+    try:
+        with zipfile.ZipFile(project_3mf) as archive:
+            if archive.namelist().count(member) != 1:
+                raise AuditError(
+                    f"{project_3mf}: expected exactly one {member}")
+            return archive.read(member)
+    except (OSError, zipfile.BadZipFile, KeyError) as exc:
+        raise AuditError(
+            f"cannot read {member} from ready project {project_3mf}: {exc}") from exc
+
+
+def _replace_single_3mf_member(
+    project_3mf: Path,
+    member: str,
+    replacement_bytes: bytes,
+) -> None:
+    """Atomically replace one 3MF member while preserving every other member."""
+    try:
+        with zipfile.ZipFile(project_3mf) as archive:
+            infos = archive.infolist()
+            if sum(info.filename == member for info in infos) != 1:
+                raise AuditError(
+                    f"{project_3mf}: expected exactly one {member}")
+            entries = [(info, archive.read(info.filename)) for info in infos]
+            comment = archive.comment
+    except (OSError, zipfile.BadZipFile, KeyError) as exc:
+        raise AuditError(
+            f"cannot rewrite ready project {project_3mf}: {exc}") from exc
+    temporary = project_3mf.with_name(
+        f".{project_3mf.name}.{Path(member).name}.tmp")
+    try:
+        with zipfile.ZipFile(temporary, "w", allowZip64=True) as replacement:
+            replacement.comment = comment
+            for info, payload in entries:
+                replacement.writestr(
+                    info,
+                    replacement_bytes if info.filename == member else payload,
+                    compress_type=info.compress_type)
+        temporary.replace(project_3mf)
+    except OSError as exc:
+        temporary.unlink(missing_ok=True)
+        raise AuditError(
+            f"cannot rewrite ready project {project_3mf}: {exc}") from exc
+
+
+def _encode_ready_project_custom_gcode_newlines(project_3mf: Path) -> bool:
+    """Use XML character references so reopening retains multiline custom G-code."""
+    member = "Metadata/custom_gcode_per_layer.xml"
+    source = _read_single_3mf_member(project_3mf, member)
+    try:
+        text = source.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise AuditError(
+            f"{project_3mf}: custom G-code XML is not UTF-8") from exc
+
+    def encode_attribute(match: re.Match[str]) -> str:
+        name = match.group("name")
+        value = match.group("value")
+        value = value.replace("\r\n", "\n").replace("\r", "\n")
+        return f'{name}="{value.replace("\n", "&#10;")}"'
+
+    encoded = re.sub(
+        r'(?P<name>extra|gcode)="(?P<value>[^"]*)"',
+        encode_attribute, text, flags=re.DOTALL)
+    if encoded == text:
+        return False
+    _replace_single_3mf_member(project_3mf, member, encoded.encode("utf-8"))
+    return True
+
+
+def _inject_ready_project_object_support(
+    project_3mf: Path,
+    *,
+    enabled: bool,
+) -> list[str]:
+    """Persist object-level support for Bambu Studio reopening/re-slicing.
+
+    The project process already contains the three support settings.  For the
+    keyed LM split parts we additionally place the standard ``enable_support``
+    override on the single model object, so it remains enabled even if a user
+    switches the global process preset after opening the ready project.
+    """
+    if not enabled:
+        return []
+    member = "Metadata/model_settings.config"
+    model_settings = _read_single_3mf_member(project_3mf, member)
+    try:
+        root = ET.fromstring(model_settings)
+    except ET.ParseError as exc:
+        raise AuditError(
+            f"{project_3mf}: model settings XML is invalid") from exc
+    objects = [element for element in list(root)
+               if _local_xml_tag(element) == "object"]
+    if not objects:
+        raise AuditError(f"{project_3mf}: model settings contain no objects")
+    object_ids = []
+    changed = False
+    for object_element in objects:
+        object_id = object_element.attrib.get("id")
+        if not object_id:
+            raise AuditError(f"{project_3mf}: model settings object lacks id")
+        object_ids.append(object_id)
+        metadata = [element for element in list(object_element)
+                    if (_local_xml_tag(element) == "metadata"
+                        and element.attrib.get("key") == "enable_support")]
+        if len(metadata) > 1:
+            raise AuditError(
+                f"{project_3mf}: object {object_id} has duplicate "
+                "enable_support metadata")
+        if metadata:
+            if metadata[0].attrib.get("value") != "1":
+                metadata[0].set("value", "1")
+                changed = True
+            continue
+        support_metadata = ET.Element(
+            "metadata", {"key": "enable_support", "value": "1"})
+        insertion_index = 0
+        for index, child in enumerate(list(object_element)):
+            if _local_xml_tag(child) == "metadata":
+                insertion_index = index + 1
+        object_element.insert(insertion_index, support_metadata)
+        changed = True
+    if not changed:
+        return object_ids
+    replacement_bytes = ET.tostring(
+        root, encoding="utf-8", xml_declaration=True)
+    _replace_single_3mf_member(project_3mf, member, replacement_bytes)
+    return object_ids
+
+
+def _validate_ready_project_object_support(
+    model_settings: bytes,
+    *,
+    project_3mf: Path,
+    required: bool,
+) -> list[dict[str, str]]:
+    """Verify the object-level support redundancy in a packed ready project."""
+    if not required:
+        return []
+    try:
+        root = ET.fromstring(model_settings)
+    except ET.ParseError as exc:
+        raise AuditError(
+            f"{project_3mf}: model settings XML is invalid") from exc
+    objects = [element for element in list(root)
+               if _local_xml_tag(element) == "object"]
+    if not objects:
+        raise AuditError(f"{project_3mf}: model settings contain no objects")
+    result = []
+    for object_element in objects:
+        object_id = object_element.attrib.get("id")
+        values = [element.attrib.get("value") for element in list(object_element)
+                  if (_local_xml_tag(element) == "metadata"
+                      and element.attrib.get("key") == "enable_support")]
+        if values != ["1"]:
+            raise AuditError(
+                f"{project_3mf}: object {object_id!r} must explicitly embed "
+                "enable_support=1 for the supported keyed LM split part")
+        result.append({"object_id": str(object_id), "enable_support": "1"})
+    return result
 
 
 def _assert_exact_pause_z(
@@ -4631,9 +5199,10 @@ def _validate_ready_project_archive(
     expected_pause_z: Sequence[float],
     profile_bundle: Mapping[str, Any],
 ) -> dict[str, Any]:
-    """Prove the final 3MF embeds settings, G-code, and PausePrint metadata."""
+    """Prove the final 3MF embeds settings, G-code, and park/pause metadata."""
     required = (
         "Metadata/project_settings.config",
+        "Metadata/model_settings.config",
         "Metadata/custom_gcode_per_layer.xml",
         "Metadata/plate_1.gcode",
     )
@@ -4645,8 +5214,9 @@ def _validate_ready_project_archive(
                     raise AuditError(
                         f"{project_3mf}: expected exactly one {name}")
             settings_bytes = archive.read(required[0])
-            custom_xml = archive.read(required[1])
-            embedded_gcode = archive.read(required[2])
+            model_settings = archive.read(required[1])
+            custom_xml = archive.read(required[2])
+            embedded_gcode = archive.read(required[3])
             corrupt = archive.testzip()
             if corrupt is not None:
                 raise AuditError(
@@ -4667,6 +5237,11 @@ def _validate_ready_project_archive(
             f"{project_3mf}: project settings are not valid JSON") from exc
     if not isinstance(settings, Mapping):
         raise AuditError(f"{project_3mf}: project settings are not an object")
+    pause_policy = profile_bundle["identity"]["effective"].get(
+        "magnet_insertion_pause")
+    if not isinstance(pause_policy, Mapping):
+        raise AuditError(
+            f"{project_3mf}: profile has no magnet insertion pause policy")
     embedded_settings = {}
     for section, values in profile_bundle["enforced_overrides"].items():
         for key, expected in values.items():
@@ -4676,6 +5251,10 @@ def _validate_ready_project_archive(
                     f"{project_3mf}: embedded setting {key}={actual!r}, "
                     f"expected {expected!r} from {section} profile")
             embedded_settings[key] = actual
+    object_support_overrides = _validate_ready_project_object_support(
+        model_settings, project_3mf=project_3mf,
+        required=bool(profile_bundle["identity"]["effective"].get(
+            "support_enabled")))
 
     try:
         root = ET.fromstring(custom_xml)
@@ -4711,32 +5290,42 @@ def _validate_ready_project_archive(
             "SingleExtruder")
     xml_z: list[float] = []
     for element in layers:
-        if element.attrib.get("type") != "1":
+        if element.attrib.get("type") != "4":
             raise AuditError(
-                f"{project_3mf}: custom layer is not PausePrint type 1")
+                f"{project_3mf}: custom layer is not Custom type 4")
         if element.attrib.get("extruder") != "1":
             raise AuditError(
-                f"{project_3mf}: PausePrint extruder is not 1")
-        if " ".join(element.attrib.get("gcode", "").split()) != "M400 U1":
+                f"{project_3mf}: magnet custom G-code extruder is not 1")
+        pause_z = _float(
+            element.attrib.get("top_z"), "custom pause XML top_z")
+        gcode_program = element.attrib.get("gcode", "")
+        extra_program = element.attrib.get("extra", "")
+        if gcode_program != extra_program:
             raise AuditError(
-                f"{project_3mf}: PausePrint XML does not embed M400 U1")
-        xml_z.append(_float(
-            element.attrib.get("top_z"), "custom pause XML top_z"))
+                f"{project_3mf}: custom G-code XML gcode and extra differ")
+        _validate_magnet_pause_program_text(
+            gcode_program, pause_z, pause_policy,
+            label=f"{project_3mf}: custom G-code XML")
+        xml_z.append(pause_z)
     _assert_exact_pause_z(
         xml_z, expected_pause_z, label="embedded custom XML")
 
-    events = _gcode_pause_events(plain_gcode)
+    events = _gcode_pause_events(plain_gcode, pause_policy)
     _assert_exact_pause_z(
         [event["z_mm"] for event in events], expected_pause_z,
         label="ready G-code")
     return {
         "project_settings_member": required[0],
         "project_settings_sha256": _sha256_bytes(settings_bytes),
+        "model_settings_member": required[1],
+        "model_settings_sha256": _sha256_bytes(model_settings),
+        "object_support_overrides": object_support_overrides,
         "enforced_project_settings": embedded_settings,
-        "custom_gcode_member": required[1],
+        "custom_gcode_member": required[2],
         "custom_gcode_xml_sha256": _sha256_bytes(custom_xml),
-        "embedded_gcode_member": required[2],
+        "embedded_gcode_member": required[3],
         "embedded_gcode_sha256": _sha256_bytes(embedded_gcode),
+        "magnet_insertion_pause": dict(pause_policy),
         "pause_z_mm": list(expected_pause_z),
         "gcode_pause_events": events,
     }
@@ -4757,6 +5346,23 @@ def _cached_ready_project_matches(
         "project_3mf_sha256": sha256_file(project_3mf),
     }
     return all(prior.get(key) == value for key, value in required.items())
+
+
+def _support_toolpath_summary(path: Path) -> dict[str, int]:
+    """Count emitted Bambu support feature blocks, not merely support flags."""
+    support = 0
+    interface = 0
+    with path.open("r", encoding="utf-8", errors="replace") as stream:
+        for raw in stream:
+            line = raw.strip()
+            if line == "; FEATURE: Support":
+                support += 1
+            elif line == "; FEATURE: Support interface":
+                interface += 1
+    return {
+        "support_feature_blocks": support,
+        "support_interface_feature_blocks": interface,
+    }
 
 
 def _validate_ready_cavity_toolpaths(
@@ -4874,16 +5480,32 @@ def _emit_ready_project(
 ) -> dict[str, Any]:
     """Second pass: reslice the STL with discovered pauses embedded."""
     ready_dir.mkdir(parents=True, exist_ok=True)
-    custom_document, pause_z = _custom_gcodes_document(record)
+    support_blockers = tuple(
+        [artifact["support_blocker"]]
+        if "support_blocker" in artifact else [])
+    pause_policy = profile_bundle["identity"]["effective"].get(
+        "magnet_insertion_pause")
+    if not isinstance(pause_policy, Mapping):
+        raise AuditError(
+            f"{artifact['id']}: profile has no magnet insertion pause policy")
+    custom_document, pause_z = _custom_gcodes_document(record, pause_policy)
     custom_path = ready_dir / "custom_gcodes.json"
     _write_json(custom_path, custom_document)
     gcode = ready_dir / "plate_1.gcode"
     result_path = ready_dir / "result.json"
     project_3mf = ready_dir / READY_3MF_FILENAME
+    assemble_list = (
+        ready_dir / "bambu_assemble_list.json"
+        if support_blockers else None)
+    if assemble_list is not None:
+        _write_bambu_assemble_list(
+            assemble_list, stl=stl,
+            support_blockers=support_blockers)
     command = _bambu_command(
         bambu, stl, ready_dir, profile_bundle,
         project_filename=READY_3MF_FILENAME,
-        custom_gcodes=custom_path)
+        custom_gcodes=custom_path,
+        assemble_list=assemble_list)
     fingerprint = _sha256_bytes(_canonical_json({
         "discovery_fingerprint": discovery_fingerprint,
         "custom_gcodes_sha256": sha256_file(custom_path),
@@ -4895,6 +5517,8 @@ def _emit_ready_project(
     }))
     fingerprint_path = ready_dir / "ready_project_fingerprint.json"
     reused = False
+    support_enabled = bool(profile_bundle["identity"]["effective"].get(
+        "support_enabled"))
     if (reuse and fingerprint_path.is_file() and gcode.is_file()
             and result_path.is_file() and project_3mf.is_file()):
         prior = _load_json(fingerprint_path)
@@ -4922,6 +5546,9 @@ def _emit_ready_project(
             raise AuditError(
                 f"{artifact['id']}: ready-project pass did not create "
                 "plate_1.gcode/result.json/ready_to_print.gcode.3mf")
+        _encode_ready_project_custom_gcode_newlines(project_3mf)
+        _inject_ready_project_object_support(
+            project_3mf, enabled=support_enabled)
         _write_json(fingerprint_path, {
             "fingerprint": fingerprint,
             "command": command,
@@ -4949,7 +5576,9 @@ def _emit_ready_project(
         raise AuditError(
             f"{artifact['id']}: ready project triangle count differs from STL")
     try:
-        project_audit = audit_bambu_3mf(project_3mf, stl)
+        project_audit = audit_bambu_3mf(
+            project_3mf, stl,
+            support_blocker_stls=support_blockers)
         ready_bbox = objects[0].get("bbox")
         if not isinstance(ready_bbox, Mapping):
             raise Bambu3MFAuditError("ready result lacks an object bbox")
@@ -4983,6 +5612,11 @@ def _emit_ready_project(
         raise AuditError(
             f"{artifact['id']}: ready G-code profile mismatch: "
             + "; ".join(profile_errors))
+    support_toolpaths = _support_toolpath_summary(gcode)
+    if support_enabled and support_toolpaths["support_feature_blocks"] <= 0:
+        raise AuditError(
+            f"{artifact['id']}: support is enabled but the ready G-code has "
+            "no emitted Support feature blocks")
     archive_audit = _validate_ready_project_archive(
         project_3mf, gcode, expected_pause_z=pause_z,
         profile_bundle=profile_bundle)
@@ -5024,6 +5658,7 @@ def _emit_ready_project(
         **output_hashes,
         "pause_z_mm": pause_z,
         "archive_audit": archive_audit,
+        "support_toolpaths": support_toolpaths,
         "bambu_3mf_audit": placement_audit,
         "cavity_toolpath_audit": cavity_audit,
         "pause_before_first_layer_extrusion": pause_before_extrusion,
@@ -5187,7 +5822,7 @@ def _validate_complete_release(
                     f"{READY_3MF_FILENAME}")
             for path_key, hash_key, item in (
                     ("custom_gcodes_json", "custom_gcodes_sha256",
-                     "custom PausePrint JSON"),
+                     "custom magnet park/pause/restore JSON"),
                     ("result_json", "result_sha256", "ready Bambu result"),
                     ("gcode", "gcode_sha256", "ready G-code"),
                     ("project_3mf", "project_3mf_sha256",
@@ -5361,9 +5996,12 @@ def _write_manifest_bundle(
         "## Insertion procedure",
         "",
         "1. Open the hash-listed ready-to-print 3MF; do not auto-orient it.",
-        ("2. The PausePrint events at the exact **first-closing** Z values "
-         "below are already embedded and were verified in both project XML "
-         "and G-code; do not add or move them manually."),
+        ("2. The Bambu Custom park/pause/restore events at the exact "
+         "**first-closing** Z values below are already embedded and were "
+         "verified in both project XML and G-code; do not add or move them "
+         "manually. Each raises the nozzle to Z=250 mm (lowering the bed), "
+         "pauses with `M400 U1`, then restores the exact layer Z on "
+         "Continue."),
         ("3. At each pause, insert the listed number of D5 x 2 mm magnets "
          "vertically downward from above (+Z side) along print `-Z` "
          "(`print_insertion_direction_xyz = [0, 0, -1]`), with the marked "
@@ -5737,8 +6375,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--prepare-profiles-only", action="store_true")
     parser.add_argument(
         "--emit-ready-projects", action="store_true",
-        help=("after discovery, reslice each direct STL with exact PausePrint "
-              "events and export ready_to_print.gcode.3mf"))
+        help=("after discovery, reslice each direct STL with exact Bambu "
+              "Custom magnet park/pause/restore events and export "
+              "ready_to_print.gcode.3mf"))
     parser.add_argument("--dry-run", action="store_true",
                         help="write resolved profiles and print commands only")
     return parser

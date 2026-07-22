@@ -22,6 +22,8 @@
     "zero_volume": 0,
     "zero_volume_components": 0
   },
+  "mesh_angular_tolerance": 0.2,
+  "mesh_tolerance_mm": 0.05,
   "part": "lx521_top_v1l_addon_um_grommet_half_b",
   "pre_translation_bbox_min_mm": [
     7.6994300672208595,

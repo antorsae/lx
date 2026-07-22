@@ -32,6 +32,12 @@ from build123d import (
 )
 
 from top_baffle_nd25fw4 import L22_CUTOUT, STAND_FOOT, THICKNESS_MM
+from top_baffle_nd25fw4_cables import (
+    LM_DUCT_OUT_REAR_Z_MM,
+    LM_EXIT_BEND_R_MM,
+    lm_exit_handoff_points,
+    lm_exit_handoff_spec,
+)
 from top_baffle_nd25fw4_flush import PAD_FACE_Z
 from top_baffle_nd25fw4_obiwan_floor_strength import (
     FLOOR_Y_MM,
@@ -83,31 +89,39 @@ FLOOR_LANE_EFFECTIVE_OVERLAP_MM = (
     - FLOOR_LANE_PREFUSION_HANDOFF_GAP_MM)
 FLOOR_LANE_BEZIER_START_HANDLE_MM = 20.0
 FLOOR_LANE_BEZIER_END_HANDLE_MM = 25.0
-# UM/T enter the integral stem through native rear mouths at z=5.3.  The
-# floor body must be absent behind the complete printed cover envelope, not
-# merely behind the nominal lumen.  A 0.05-mm Boolean allowance is applied
-# outside the 0.30-mm final-BREP contract probe; it does not enlarge the
-# functional lumen in front of the mouth plane.
+# The LM stays fully buried through the stem, then uses a final exact R14
+# turn beside the lower ring.  This control station gives the straight high-Z
+# approach a G1 handoff into that turn without reopening the former stem slot.
+FLOOR_LM_FINAL_TURN_APPROACH_P2_Y_MM = 60.0
+FLOOR_LM_EXIT_HANDOFF = lm_exit_handoff_spec(
+    12.55, STEM_Z_MM[0], LM_DUCT_OUT_REAR_Z_MM)
+# UM/T need clearance behind their complete printed cover envelopes, not just
+# their nominal lumens.  That clearance is now internal: a 0.45-mm rear skin
+# closes the former visible lower-stem mouths while keeping the same robust
+# Boolean margin at the hidden handoff plane.
 FLOOR_FEED_MOUTH_SHELL_MM = 0.8
 FLOOR_FEED_MOUTH_CONTRACT_CLEARANCE_MM = 0.30
 FLOOR_FEED_MOUTH_BOOLEAN_MARGIN_MM = 0.05
-FLOOR_FEED_MOUTH_RELIEF_Z_MM = (-0.20, PAD_FACE_Z)
-# The free LM lead does not need to approach the centered UM/T feed mouths.
-# Its second R14 turn begins directly where the first R14 turn ends, so the
-# D9 lane reaches its rear mouth at y=38.5 without crossing either long
-# floor-body lane.  The former y=82 endpoint grazed both feed skins; merely
-# moving it to y=74.5 instead crossed the complete UM/T approach cubics.
-FLOOR_LM_FLOAT_FEED_Y_MM = 38.5
+FLOOR_REAR_FACE_SKIN_MM = 0.45
+FLOOR_FEED_MOUTH_RELIEF_Z_MM = (FLOOR_REAR_FACE_SKIN_MM, PAD_FACE_Z)
+# The floor-state T bundle enters from the service cavity, so it can use a
+# left-side handoff that stays wholly clear of the new direct LM continuation.
+# This is intentionally independent of the no-floor stock/slim rear entry.
+FLOOR_T_ROUTE_FEED_XY = (-26.0, 82.0)
+FLOOR_T_ROUTE_FEED_BEARING_DEG = 116.0
 FLOOR_LANE_SPECS = {
     "lm": {
         "x_mm": 0.0,
         "floor_y_mm": 10.5,
         "stem_z_mm": 12.55,
         "diameter_mm": 9.0,
-        # The short LM lead intentionally floats from this rear-facing
-        # opening; it does not join either printed annular route.
-        "feed_xyz_mm": (0.0, FLOOR_LM_FLOAT_FEED_Y_MM, -6.0),
-        "handoff_mode": "rear_open_float",
+        # The floor lane reaches the shared stock/slim rear-face mouth through
+        # the common R14 handoff.  ``mouth_xyz_mm`` is the installed datum;
+        # ``feed_xyz_mm`` is only the tangent cutter overtravel outside the
+        # printed rear face.
+        "mouth_xyz_mm": FLOOR_LM_EXIT_HANDOFF["face"],
+        "feed_xyz_mm": FLOOR_LM_EXIT_HANDOFF["rear_end"],
+        "handoff_mode": "buried_r14_rear_exit",
     },
     "um": {
         "x_mm": 12.0,
@@ -125,8 +139,12 @@ FLOOR_LANE_SPECS = {
         "floor_y_mm": 7.5,
         "stem_z_mm": 6.20,
         "diameter_mm": 6.0,
-        "feed_xyz_mm": (-8.0, 82.0, PAD_FACE_Z),
-        "feed_bearing_deg": 115.0,
+        "feed_xyz_mm": (
+            FLOOR_T_ROUTE_FEED_XY[0],
+            FLOOR_T_ROUTE_FEED_XY[1],
+            PAD_FACE_Z,
+        ),
+        "feed_bearing_deg": FLOOR_T_ROUTE_FEED_BEARING_DEG,
         "handoff_mode": "buried_route_overlap",
     },
 }
@@ -269,7 +287,7 @@ def _floor_lane_entry_points(name: str):
 
 
 def _floor_lane_bezier_points(name: str):
-    """G1 cubic from the R14 entry to a buried annular-route feed."""
+    """G1 cubic from the R14 entry to its selected internal handoff."""
     spec = FLOOR_LANE_SPECS[name]
     if spec["handoff_mode"] != "buried_route_overlap":
         raise ValueError(f"{name} does not have an annular-route Bezier")
@@ -288,6 +306,39 @@ def _floor_lane_bezier_points(name: str):
     return p0, p1, p2, p3
 
 
+def _floor_lm_rear_port_components():
+    """High-Z LM approach and shared R14 descent through the rear face."""
+    spec = FLOOR_LANE_SPECS["lm"]
+    handoff = FLOOR_LM_EXIT_HANDOFF
+    p0 = _floor_lane_entry_points("lm")[-1]
+    exit_start = handoff["start"]
+    if not p0[1] < FLOOR_LM_FINAL_TURN_APPROACH_P2_Y_MM < exit_start[1]:
+        raise RuntimeError("LM final-turn approach station is not ordered")
+    high_cubic = (
+        p0,
+        (p0[0], p0[1] + FLOOR_LANE_BEZIER_START_HANDLE_MM, p0[2]),
+        (exit_start[0], FLOOR_LM_FINAL_TURN_APPROACH_P2_Y_MM, p0[2]),
+        exit_start,
+    )
+    return (
+        high_cubic,
+        exit_start,
+        handoff["arc_mid"],
+        handoff["face"],
+        handoff["rear_end"],
+    )
+
+
+def _floor_lm_rear_port_edges():
+    cubic, exit_start, exit_mid, face, rear_end = (
+        _floor_lm_rear_port_components())
+    return (
+        Bezier(*cubic),
+        ThreePointArc(exit_start, exit_mid, face),
+        Line(face, rear_end),
+    )
+
+
 def _floor_lane_overlap_end(name: str):
     spec = FLOOR_LANE_SPECS[name]
     feed = spec["feed_xyz_mm"]
@@ -304,10 +355,8 @@ def floor_lane_path(name: str):
 
     UM/T stop on their authoritative cubic 0.8 mm before the feed; the later
     8-mm annular owner-cutter backreach creates the final overlap through
-    ordinary solid body material.  LM instead makes a second exact R14 turn
-    through the rear face before the centered y=82 UM/T feeds, leaving the
-    deliberately short terminal lead free rather than recreating a
-    micro-duct.
+    ordinary solid body material.  LM remains at high Z through the stem,
+    then takes a final R14 descent at the shared lower-ring outlet.
     """
     try:
         spec = FLOOR_LANE_SPECS[name]
@@ -318,31 +367,10 @@ def floor_lane_path(name: str):
         Line(line_start, arc_start),
         ThreePointArc(arc_start, arc_mid, arc_end),
     ]
-    if spec["handoff_mode"] == "rear_open_float":
-        radius = FLOOR_LANE_BEND_R_MM
-        exit_start = (
-            spec["x_mm"], spec["feed_xyz_mm"][1] - radius,
-            spec["stem_z_mm"])
-        exit_center = (
-            spec["x_mm"], exit_start[1], exit_start[2] - radius)
-        exit_mid = (
-            spec["x_mm"],
-            exit_center[1] + radius / math.sqrt(2.0),
-            exit_center[2] + radius / math.sqrt(2.0),
-        )
-        exit_end = (
-            spec["x_mm"],
-            exit_start[1] + radius,
-            exit_start[2] - radius,
-        )
-        if math.dist(arc_end, exit_start) > 1.0e-9:
-            edges.append(Line(arc_end, exit_start))
-        edges.extend((
-            ThreePointArc(exit_start, exit_mid, exit_end),
-            Line(exit_end, spec["feed_xyz_mm"]),
-        ))
-    else:
+    if spec["handoff_mode"] == "buried_route_overlap":
         edges.append(Bezier(*_prefusion_cubic_controls(name)))
+    else:
+        edges.extend(_floor_lm_rear_port_edges())
     return Wire(edges)
 
 
@@ -403,7 +431,8 @@ def floor_lane_control_points(name: str):
 
     UM/T include a short forward visual continuation from the unchanged feed;
     the actual body-only cutter stops 0.8 mm early and the annular owner cutter
-    supplies the final 7.2-mm backreaching overlap.
+    supplies the final 7.2-mm backreaching overlap. LM stays buried until its
+    final lower-ring R14 turn, then continues through the clean rear port.
     """
     try:
         spec = FLOOR_LANE_SPECS[name]
@@ -421,27 +450,21 @@ def floor_lane_control_points(name: str):
             center_y + radius * math.cos(angle),
             center_z + radius * math.sin(angle),
         ))
-    if spec["handoff_mode"] == "rear_open_float":
-        exit_start = (
-            spec["x_mm"], spec["feed_xyz_mm"][1] - radius,
-            spec["stem_z_mm"])
-        if math.dist(points[-1], exit_start) > 1.0e-9:
-            points.append(exit_start)
-        exit_center_z = spec["stem_z_mm"] - radius
-        for index in range(1, 17):
-            angle = 0.5 * math.pi * (1.0 - index / 16.0)
-            points.append((
-                spec["x_mm"],
-                exit_start[1] + radius * math.cos(angle),
-                exit_center_z + radius * math.sin(angle),
-            ))
-        points.append(spec["feed_xyz_mm"])
-    else:
+    if spec["handoff_mode"] == "buried_route_overlap":
         bezier = _floor_lane_bezier_points(name)
         points.extend(
             _cubic_point(bezier, index / 32.0)
             for index in range(1, 33))
         points.append(_floor_lane_overlap_end(name))
+    else:
+        bezier, _exit_start, _exit_mid, _face, _rear_end = (
+            _floor_lm_rear_port_components())
+        points.extend(
+            _cubic_point(bezier, index / 32.0)
+            for index in range(1, 33))
+        points.extend(lm_exit_handoff_points(
+            spec["stem_z_mm"], STEM_Z_MM[0], n=32,
+            rear_end_z_mm=LM_DUCT_OUT_REAR_Z_MM)[1:])
     return tuple(points)
 
 
@@ -559,8 +582,21 @@ def integrated_floor_facts() -> dict:
             "rear_mouth_relief_z_mm": (
                 FLOOR_FEED_MOUTH_RELIEF_Z_MM
                 if spec["handoff_mode"] == "buried_route_overlap" else None),
+            "rear_face_skin_mm": (
+                FLOOR_REAR_FACE_SKIN_MM
+                if spec["handoff_mode"] == "buried_route_overlap" else None),
             "preview_points": floor_lane_control_points(name),
         }
+        if name == "lm":
+            lanes[name].update({
+                "exit_bend_radius_mm": LM_EXIT_BEND_R_MM,
+                "rear_face_mouth_xyz_mm": FLOOR_LM_EXIT_HANDOFF["face"],
+                "rear_face_angle_deg_from_normal": (
+                    FLOOR_LM_EXIT_HANDOFF[
+                        "face_angle_deg_from_rear_normal"]),
+                "external_tangent_xyz": (
+                    FLOOR_LM_EXIT_HANDOFF["face_tangent"]),
+            })
     return {
         "ownership": "floor_core_lm_and_optional_keyed_bottom",
         "separate_floor_support_exists": False,

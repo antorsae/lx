@@ -51,10 +51,10 @@
   paired magnet-face separation is therefore 1.10 mm at the ring stations and
   remains 0.95 mm at the straight LM-lower base-side stations. Every station
   is wholly internal and leaves no front, rear, or side location cue. Magnets receive zero
-  structural-load credit. The
-  D7.8 LM lead is a modeled free span with no printed micro-duct; the LM
-  carrier has only a minimum-radius 3.96 mm rear-open subtractive clearance
-  around that immutable centerline. The UM cable
+  structural-load credit. In no-floor state the D7.8 LM lead enters through
+  the upper Ø9 bore in the D20 cluster and follows a buried Ø9 path to the
+  common R14 rear handoff; floor state reaches that handoff through its
+  integral Ø9 lane. The UM cable
   is free behind the UM carrier with no printed rear duct; T is free behind
   the tweeter crescent, which owns no printed cable arc.
   No-floor mode additionally owns one monolithic fused bridge-interface tail;
@@ -173,21 +173,20 @@
   LM carrier. The printed T passage is nominal Ø6.0 and exists in the LM and
   UM carriers only. Their complete physical validation solids remain UM Ø7.0
   and T Ø5.2 across both buried and free spans. The LM physical envelope is
-  Ø7.8, but it has no printed duct: only a rear-open subtractive clearance
-  of radius 3.96 mm where the universal LM-lower owners overlap the free span.
-- Routing intent: LM uses a short 20.15 mm free radial span at 269.5 deg behind the
-  carrier with no printed micro-duct or cover. A minimum-radius 3.96 mm
-  rear-open relief is subtracted without moving the cable centerline. It rises
-  from z=0.40 to 3.80, beginning at R103 before the R95/D190 mouth, and
-  retains 1.00 mm clearance to the deepest z=5.3 pad/web rear datum at the
-  outer station.
+  Ø7.8 inside the nominal Ø9 route.
+- Routing intent: no-floor LM/T/UM enter wholly inside the D20 support opening
+  in an LM-above, T-lower-left, UM-lower-right layout. LM follows the buried
+  Ø9 branch to the common R14 outlet.
   Floor state continues LM/UM/T into the three buried integral-stem lanes.
   UM rises inside the right LM arc, exits the LM-owned buried
   passage, and continues free behind the UM carrier. T rises inside the left
   LM arc, remains buried through the UM carrier, then exits and continues
-  free behind the tweeter crescent. Their physical centerlines cross at
-  82.67 deg with T higher in +Z, UM lower, and a 1.85 mm physical-envelope
-  gap. There is no printed UM-owner arc at the crossing, no two-duct
+  free behind the tweeter crescent. The LM-owned UM/T lumens finish at R112.95
+  and their covers at R113.75 beneath the continuous visible R113.8 carrier
+  exterior. The 0.05 mm solid owner land yields a 0.85 mm outside skin with
+  no groove. Their
+  physical centerlines cross at 82.95 deg with T higher in +Z, UM lower, and
+  a 2.00 mm physical-envelope gap. There is no printed UM-owner arc at the crossing, no two-duct
   separator web, and no crescent-owned T arc.
   All eight named insert bypasses are smooth local Z dips with continuous
   closed cover and a full-width solid saddle from conduit roof to the
@@ -325,8 +324,8 @@
   1.10 mm nominal paired magnet-face separation at LM-upper/UM and 0.95 mm at
   the straight LM-lower base-side pair; no exterior magnet-location cue;
   manifest-derived pauses and mirrored polarity;
-  free D7.8 LM span clearance with zero printed micro-duct, an exact rear-open
-  subtractive relief, and correct floor lane continuation;
+  unobstructed D7.8 LM travel through the no-floor Ø9 D20 branch/R14 handoff
+  and the corresponding floor-lane continuation;
   physical-cable containment; insert/head/terminal/service clearance;
   minimum normal wall and eroded-outline containment on printed-owner spans;
   positive absence of a printed UM-carrier rear duct and crescent-owned T

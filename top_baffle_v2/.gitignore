@@ -38,12 +38,22 @@ review/captive_magnet_slice_audit/slices/
 !review/captive_magnet_release_catalog.json
 !review/captive_magnet_slice_audit/captive_magnet_pause_manifest.json
 
+# Local P2S print shelf.  The friendly source map and selection guide are
+# reviewed in Git; its rendered STL/3MF delivery files and slicer workspace
+# are reproducible local outputs and deliberately remain untracked.
+to_print/*/stl/
+to_print/*/3mf/
+review/to_print_slice_workspace/
+to_print/release_manifest.json
+!to_print/catalog.json
+
 # Adjacent front-down print authorities are part of every released STL.  The
 # repository root ignores generic JSON, so explicitly keep all three release
 # trees trackable rather than relying on force-add during promotion/commit.
 !floor_stand/stl/*.print.json
 !no_floor_stand/stl/*.print.json
 !wings/*/stl/*.print.json
+!*/support_blockers/*.support_blocker.json
 
 # The product catalog is deliberately JSON-backed and carries linked copies of
 # the same print authorities. Keep it trackable despite the parent repository's

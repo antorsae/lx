@@ -2,7 +2,7 @@
   "part": "lx521_coupon_3_fish_entry",
   "pre_translation_bbox_min_mm": [
     -24.00000010000001,
-    -70.00000015639503,
+    -70.00000010000454,
     -18.3000001
   ],
   "print_orientation": "front_face_down",
@@ -22,7 +22,7 @@
       0.0,
       -1.0,
       0.0,
-      70.00000015639503
+      70.00000010000454
     ],
     [
       0.0,
@@ -38,12 +38,12 @@
     ]
   ],
   "stl": "lx521_coupon_3_fish_entry.stl",
-  "stl_bytes": 321484,
+  "stl_bytes": 318484,
   "stl_origin_translation_mm": [
     24.00000010000001,
-    70.00000015639503,
+    70.00000010000454,
     18.3000001
   ],
-  "stl_sha256": "71acc866fbe255caf9bb0114708e5f1bbd211a0de755754baed4060042a5f9f5",
+  "stl_sha256": "15ac9d3bb26cb2bc9a573904335c481581e67e46012f1aef6c19abf8dfb73a63",
   "variant_export": "coupon"
 }

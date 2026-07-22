@@ -1,0 +1,402 @@
+{
+  "schema_version": 1,
+  "catalog_kind": "lx521_p2s_print_shelf",
+  "printer": "Bambu Lab P2S",
+  "format": "STL sources plus ready-to-print .gcode.3mf projects",
+  "selection_rules": {
+    "stock": "Choose 01a or 01b for the lower LM piece; 02–04 are shared. Then choose exactly one attachment set: A shoulders or B1 wings.",
+    "slim": "Choose 01a or 01b for the lower LM piece; 02–04 are shared. Then choose exactly one attachment set: A shoulders or B1 wings.",
+    "obiwan": "Choose 01a or 01b for the keyed LM bottom; 02–04 are shared. Then choose exactly one wing family: Ac or Ae."
+  },
+  "entries": [
+    {
+      "name": "stock_01a_of_10_LM_bottom_1_of_3_no_floor_stand",
+      "family": "stock",
+      "logical_slot": "01",
+      "state": "no_floor_stand",
+      "selection": "core",
+      "description": "Stock LM lower, 1 of 3 — no-floor stand",
+      "source_stl": "no_floor_stand/stl/lx521_top_base_1of4_bottom.stl"
+    },
+    {
+      "name": "stock_01b_of_10_LM_bottom_1_of_3_floor_stand",
+      "family": "stock",
+      "logical_slot": "01",
+      "state": "floor_stand",
+      "selection": "core",
+      "description": "Stock LM lower, 1 of 3 — floor stand",
+      "source_stl": "floor_stand/stl/lx521_top_base_1of4_bottom.stl"
+    },
+    {
+      "name": "stock_02_of_10_LM_mid_left_2_of_3",
+      "family": "stock",
+      "logical_slot": "02",
+      "state": "shared",
+      "selection": "core",
+      "description": "Stock LM middle-left, 2 of 3",
+      "source_stl": "no_floor_stand/stl/lx521_top_base_2of4_mid_left.stl"
+    },
+    {
+      "name": "stock_03_of_10_LM_mid_right_3_of_3",
+      "family": "stock",
+      "logical_slot": "03",
+      "state": "shared",
+      "selection": "core",
+      "description": "Stock LM middle-right, 3 of 3 — shared",
+      "source_stl": "no_floor_stand/stl/lx521_top_base_3of4_mid_right.stl"
+    },
+    {
+      "name": "stock_04_of_10_UM_vase_1_of_1",
+      "family": "stock",
+      "logical_slot": "04",
+      "state": "shared",
+      "selection": "core",
+      "description": "Stock UM vase/top, 1 of 1",
+      "source_stl": "no_floor_stand/stl/lx521_top_base_4of4_vase_b2.stl",
+      "catalog_artifact_id": "no_floor_stand:B2:lx521_top_base_4of4_vase_b2"
+    },
+    {
+      "name": "stock_05_of_10_A_shoulder_bottom_left_1_of_4",
+      "family": "stock",
+      "logical_slot": "05",
+      "state": "shared",
+      "selection": "A_shoulders",
+      "description": "Stock A shoulder bottom-left, 1 of 4",
+      "source_stl": "no_floor_stand/stl/lx521_top_addonA_3of4_shoulder_bottom_left.stl",
+      "catalog_artifact_id": "no_floor_stand:A:lx521_top_addonA_3of4_shoulder_bottom_left"
+    },
+    {
+      "name": "stock_06_of_10_A_shoulder_top_left_2_of_4",
+      "family": "stock",
+      "logical_slot": "06",
+      "state": "shared",
+      "selection": "A_shoulders",
+      "description": "Stock A shoulder top-left, 2 of 4",
+      "source_stl": "no_floor_stand/stl/lx521_top_addonA_1of4_shoulder_top_left.stl",
+      "catalog_artifact_id": "no_floor_stand:A:lx521_top_addonA_1of4_shoulder_top_left"
+    },
+    {
+      "name": "stock_07_of_10_A_shoulder_bottom_right_3_of_4",
+      "family": "stock",
+      "logical_slot": "07",
+      "state": "shared",
+      "selection": "A_shoulders",
+      "description": "Stock A shoulder bottom-right, 3 of 4",
+      "source_stl": "no_floor_stand/stl/lx521_top_addonA_4of4_shoulder_bottom_right.stl",
+      "catalog_artifact_id": "no_floor_stand:A:lx521_top_addonA_4of4_shoulder_bottom_right"
+    },
+    {
+      "name": "stock_08_of_10_A_shoulder_top_right_4_of_4",
+      "family": "stock",
+      "logical_slot": "08",
+      "state": "shared",
+      "selection": "A_shoulders",
+      "description": "Stock A shoulder top-right, 4 of 4",
+      "source_stl": "no_floor_stand/stl/lx521_top_addonA_2of4_shoulder_top_right.stl",
+      "catalog_artifact_id": "no_floor_stand:A:lx521_top_addonA_2of4_shoulder_top_right"
+    },
+    {
+      "name": "stock_09_of_10_B1_wing_left_1_of_2",
+      "family": "stock",
+      "logical_slot": "09",
+      "state": "shared",
+      "selection": "B1_wings",
+      "description": "Stock B1 wing left, 1 of 2",
+      "source_stl": "no_floor_stand/stl/lx521_top_addonB1_1of2_wing_left.stl",
+      "catalog_artifact_id": "no_floor_stand:B1:lx521_top_addonB1_1of2_wing_left"
+    },
+    {
+      "name": "stock_10_of_10_B1_wing_right_2_of_2",
+      "family": "stock",
+      "logical_slot": "10",
+      "state": "shared",
+      "selection": "B1_wings",
+      "description": "Stock B1 wing right, 2 of 2",
+      "source_stl": "no_floor_stand/stl/lx521_top_addonB1_2of2_wing_right.stl",
+      "catalog_artifact_id": "no_floor_stand:B1:lx521_top_addonB1_2of2_wing_right"
+    },
+
+    {
+      "name": "slim_01a_of_10_LM_bottom_1_of_3_no_floor_stand",
+      "family": "slim",
+      "logical_slot": "01",
+      "state": "no_floor_stand",
+      "selection": "core",
+      "description": "Slim LM lower, 1 of 3 — no-floor stand",
+      "source_stl": "no_floor_stand/stl/lx521_top_v1l_1of4_bottom.stl"
+    },
+    {
+      "name": "slim_01b_of_10_LM_bottom_1_of_3_floor_stand",
+      "family": "slim",
+      "logical_slot": "01",
+      "state": "floor_stand",
+      "selection": "core",
+      "description": "Slim LM lower, 1 of 3 — floor stand",
+      "source_stl": "floor_stand/stl/lx521_top_v1l_1of4_bottom.stl"
+    },
+    {
+      "name": "slim_02_of_10_LM_mid_left_2_of_3",
+      "family": "slim",
+      "logical_slot": "02",
+      "state": "shared",
+      "selection": "core",
+      "description": "Slim LM middle-left, 2 of 3",
+      "source_stl": "no_floor_stand/stl/lx521_top_v1l_2of4_mid_left.stl"
+    },
+    {
+      "name": "slim_03_of_10_LM_mid_right_3_of_3",
+      "family": "slim",
+      "logical_slot": "03",
+      "state": "shared",
+      "selection": "core",
+      "description": "Slim LM middle-right, 3 of 3 — shared",
+      "source_stl": "no_floor_stand/stl/lx521_top_v1l_3of4_mid_right.stl"
+    },
+    {
+      "name": "slim_04_of_10_UM_vase_1_of_1",
+      "family": "slim",
+      "logical_slot": "04",
+      "state": "shared",
+      "selection": "core",
+      "description": "Slim UM vase/top, 1 of 1",
+      "source_stl": "no_floor_stand/stl/lx521_top_v1l_4of4_vase_b2.stl",
+      "catalog_artifact_id": "no_floor_stand:V1L:lx521_top_v1l_4of4_vase_b2"
+    },
+    {
+      "name": "slim_05_of_10_A_shoulder_bottom_left_1_of_4",
+      "family": "slim",
+      "logical_slot": "05",
+      "state": "shared",
+      "selection": "A_shoulders",
+      "description": "Slim A shoulder bottom-left, 1 of 4",
+      "source_stl": "no_floor_stand/stl/lx521_top_v1addonA_shoulder_bottom_left.stl",
+      "catalog_artifact_id": "no_floor_stand:V1-A:lx521_top_v1addonA_shoulder_bottom_left"
+    },
+    {
+      "name": "slim_06_of_10_A_shoulder_top_left_2_of_4",
+      "family": "slim",
+      "logical_slot": "06",
+      "state": "shared",
+      "selection": "A_shoulders",
+      "description": "Slim A shoulder top-left, 2 of 4",
+      "source_stl": "no_floor_stand/stl/lx521_top_v1addonA_shoulder_top_left.stl",
+      "catalog_artifact_id": "no_floor_stand:V1-A:lx521_top_v1addonA_shoulder_top_left"
+    },
+    {
+      "name": "slim_07_of_10_A_shoulder_bottom_right_3_of_4",
+      "family": "slim",
+      "logical_slot": "07",
+      "state": "shared",
+      "selection": "A_shoulders",
+      "description": "Slim A shoulder bottom-right, 3 of 4",
+      "source_stl": "no_floor_stand/stl/lx521_top_v1addonA_shoulder_bottom_right.stl",
+      "catalog_artifact_id": "no_floor_stand:V1-A:lx521_top_v1addonA_shoulder_bottom_right"
+    },
+    {
+      "name": "slim_08_of_10_A_shoulder_top_right_4_of_4",
+      "family": "slim",
+      "logical_slot": "08",
+      "state": "shared",
+      "selection": "A_shoulders",
+      "description": "Slim A shoulder top-right, 4 of 4",
+      "source_stl": "no_floor_stand/stl/lx521_top_v1addonA_shoulder_top_right.stl",
+      "catalog_artifact_id": "no_floor_stand:V1-A:lx521_top_v1addonA_shoulder_top_right"
+    },
+    {
+      "name": "slim_09_of_10_B1_wing_left_1_of_2",
+      "family": "slim",
+      "logical_slot": "09",
+      "state": "shared",
+      "selection": "B1_wings",
+      "description": "Slim B1 wing left, 1 of 2",
+      "source_stl": "no_floor_stand/stl/lx521_top_v1addonB1_wing_left.stl",
+      "catalog_artifact_id": "no_floor_stand:V1-B1:lx521_top_v1addonB1_wing_left"
+    },
+    {
+      "name": "slim_10_of_10_B1_wing_right_2_of_2",
+      "family": "slim",
+      "logical_slot": "10",
+      "state": "shared",
+      "selection": "B1_wings",
+      "description": "Slim B1 wing right, 2 of 2",
+      "source_stl": "no_floor_stand/stl/lx521_top_v1addonB1_wing_right.stl",
+      "catalog_artifact_id": "no_floor_stand:V1-B1:lx521_top_v1addonB1_wing_right"
+    },
+
+    {
+      "name": "obiwan_01a_of_16_LM_bottom_keyed_1_of_2_no_floor_stand",
+      "family": "obiwan",
+      "logical_slot": "01",
+      "state": "no_floor_stand",
+      "selection": "core",
+      "description": "Obi-Wan keyed LM bottom, 1 of 2 — no-floor stand",
+      "source_stl": "no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
+      "catalog_artifact_id": "no_floor_stand:Obi-Wan-split:lx521_top_obiwan_optional_lm_keyed_1of2_bottom"
+    },
+    {
+      "name": "obiwan_01b_of_16_LM_bottom_keyed_1_of_2_floor_stand",
+      "family": "obiwan",
+      "logical_slot": "01",
+      "state": "floor_stand",
+      "selection": "core",
+      "description": "Obi-Wan keyed LM bottom, 1 of 2 — floor stand",
+      "source_stl": "floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
+      "catalog_artifact_id": "floor_stand:Obi-Wan-split:lx521_top_obiwan_optional_lm_keyed_1of2_bottom"
+    },
+    {
+      "name": "obiwan_02_of_16_LM_top_keyed_2_of_2",
+      "family": "obiwan",
+      "logical_slot": "02",
+      "state": "shared",
+      "selection": "core",
+      "description": "Obi-Wan keyed LM top, 2 of 2 — shared",
+      "source_stl": "no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.stl",
+      "catalog_artifact_id": "no_floor_stand:Obi-Wan-split:lx521_top_obiwan_optional_lm_keyed_2of2_top"
+    },
+    {
+      "name": "obiwan_03_of_16_UM_carrier_1_of_1",
+      "family": "obiwan",
+      "logical_slot": "03",
+      "state": "shared",
+      "selection": "core",
+      "description": "Obi-Wan UM carrier, 1 of 1 — shared",
+      "source_stl": "no_floor_stand/stl/lx521_top_obiwan_core_2of2_um_carrier.stl",
+      "catalog_artifact_id": "no_floor_stand:Obi-Wan:lx521_top_obiwan_core_2of2_um_carrier"
+    },
+    {
+      "name": "obiwan_04_of_16_T_tweeter_crescent_1_of_1",
+      "family": "obiwan",
+      "logical_slot": "04",
+      "state": "shared",
+      "selection": "core",
+      "description": "Obi-Wan tweeter crescent, 1 of 1",
+      "source_stl": "no_floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.stl"
+    },
+
+    {
+      "name": "obiwan_05_of_16_Ac_wing_LM_lower_left_1_of_3",
+      "family": "obiwan",
+      "logical_slot": "05",
+      "state": "shared",
+      "selection": "Ac_wings",
+      "description": "Obi-Wan Ac wing LM lower-left, 1 of 3",
+      "source_stl": "wings/ac/stl/lx521_top_obiwan_wing_ac_left_1of3_lm_lower.stl",
+      "catalog_artifact_id": "shared:Obi-Wan-Ac:obiwan_wing_ac_left_1of3_lm_lower"
+    },
+    {
+      "name": "obiwan_06_of_16_Ac_wing_LM_upper_left_2_of_3",
+      "family": "obiwan",
+      "logical_slot": "06",
+      "state": "shared",
+      "selection": "Ac_wings",
+      "description": "Obi-Wan Ac wing LM upper-left, 2 of 3",
+      "source_stl": "wings/ac/stl/lx521_top_obiwan_wing_ac_left_2of3_lm_upper.stl",
+      "catalog_artifact_id": "shared:Obi-Wan-Ac:obiwan_wing_ac_left_2of3_lm_upper"
+    },
+    {
+      "name": "obiwan_07_of_16_Ac_wing_UM_left_3_of_3",
+      "family": "obiwan",
+      "logical_slot": "07",
+      "state": "shared",
+      "selection": "Ac_wings",
+      "description": "Obi-Wan Ac wing UM left, 3 of 3",
+      "source_stl": "wings/ac/stl/lx521_top_obiwan_wing_ac_left_3of3_um.stl",
+      "catalog_artifact_id": "shared:Obi-Wan-Ac:obiwan_wing_ac_left_3of3_um"
+    },
+    {
+      "name": "obiwan_08_of_16_Ac_wing_LM_lower_right_1_of_3",
+      "family": "obiwan",
+      "logical_slot": "08",
+      "state": "shared",
+      "selection": "Ac_wings",
+      "description": "Obi-Wan Ac wing LM lower-right, 1 of 3",
+      "source_stl": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_1of3_lm_lower.stl",
+      "catalog_artifact_id": "shared:Obi-Wan-Ac:obiwan_wing_ac_right_1of3_lm_lower"
+    },
+    {
+      "name": "obiwan_09_of_16_Ac_wing_LM_upper_right_2_of_3",
+      "family": "obiwan",
+      "logical_slot": "09",
+      "state": "shared",
+      "selection": "Ac_wings",
+      "description": "Obi-Wan Ac wing LM upper-right, 2 of 3",
+      "source_stl": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_2of3_lm_upper.stl",
+      "catalog_artifact_id": "shared:Obi-Wan-Ac:obiwan_wing_ac_right_2of3_lm_upper"
+    },
+    {
+      "name": "obiwan_10_of_16_Ac_wing_UM_right_3_of_3",
+      "family": "obiwan",
+      "logical_slot": "10",
+      "state": "shared",
+      "selection": "Ac_wings",
+      "description": "Obi-Wan Ac wing UM right, 3 of 3",
+      "source_stl": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_3of3_um.stl",
+      "catalog_artifact_id": "shared:Obi-Wan-Ac:obiwan_wing_ac_right_3of3_um"
+    },
+
+    {
+      "name": "obiwan_11_of_16_Ae_wing_LM_lower_left_1_of_3",
+      "family": "obiwan",
+      "logical_slot": "11",
+      "state": "shared",
+      "selection": "Ae_wings",
+      "description": "Obi-Wan Ae wing LM lower-left, 1 of 3",
+      "source_stl": "wings/ae/stl/lx521_top_obiwan_wing_ae_left_1of3_lm_lower.stl",
+      "catalog_artifact_id": "shared:Obi-Wan-Ae:obiwan_wing_ae_left_1of3_lm_lower"
+    },
+    {
+      "name": "obiwan_12_of_16_Ae_wing_LM_upper_left_2_of_3",
+      "family": "obiwan",
+      "logical_slot": "12",
+      "state": "shared",
+      "selection": "Ae_wings",
+      "description": "Obi-Wan Ae wing LM upper-left, 2 of 3",
+      "source_stl": "wings/ae/stl/lx521_top_obiwan_wing_ae_left_2of3_lm_upper.stl",
+      "catalog_artifact_id": "shared:Obi-Wan-Ae:obiwan_wing_ae_left_2of3_lm_upper"
+    },
+    {
+      "name": "obiwan_13_of_16_Ae_wing_UM_left_3_of_3",
+      "family": "obiwan",
+      "logical_slot": "13",
+      "state": "shared",
+      "selection": "Ae_wings",
+      "description": "Obi-Wan Ae wing UM left, 3 of 3",
+      "source_stl": "wings/ae/stl/lx521_top_obiwan_wing_ae_left_3of3_um.stl",
+      "catalog_artifact_id": "shared:Obi-Wan-Ae:obiwan_wing_ae_left_3of3_um"
+    },
+    {
+      "name": "obiwan_14_of_16_Ae_wing_LM_lower_right_1_of_3",
+      "family": "obiwan",
+      "logical_slot": "14",
+      "state": "shared",
+      "selection": "Ae_wings",
+      "description": "Obi-Wan Ae wing LM lower-right, 1 of 3",
+      "source_stl": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_1of3_lm_lower.stl",
+      "catalog_artifact_id": "shared:Obi-Wan-Ae:obiwan_wing_ae_right_1of3_lm_lower"
+    },
+    {
+      "name": "obiwan_15_of_16_Ae_wing_LM_upper_right_2_of_3",
+      "family": "obiwan",
+      "logical_slot": "15",
+      "state": "shared",
+      "selection": "Ae_wings",
+      "description": "Obi-Wan Ae wing LM upper-right, 2 of 3",
+      "source_stl": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_2of3_lm_upper.stl",
+      "catalog_artifact_id": "shared:Obi-Wan-Ae:obiwan_wing_ae_right_2of3_lm_upper"
+    },
+    {
+      "name": "obiwan_16_of_16_Ae_wing_UM_right_3_of_3",
+      "family": "obiwan",
+      "logical_slot": "16",
+      "state": "shared",
+      "selection": "Ae_wings",
+      "description": "Obi-Wan Ae wing UM right, 3 of 3",
+      "source_stl": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_3of3_um.stl",
+      "catalog_artifact_id": "shared:Obi-Wan-Ae:obiwan_wing_ae_right_3of3_um"
+    }
+  ],
+  "excluded_legacy_outputs": [
+    "Obi-Wan LM monolith/core_1of2_lm_carrier: exceeds the P2S bed; use the keyed split 01/02 pieces.",
+    "C7, V0, V1 vase legacy outputs, coupons, grommets, and other diagnostic/legacy geometry are intentionally absent."
+  ]
+}

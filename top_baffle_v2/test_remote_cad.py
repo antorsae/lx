@@ -296,6 +296,8 @@ def test_target_contract() -> None:
     assert "check_obiwan_lm_profile" in remote.REMOTE_MAKE_TARGETS
     assert "check_obiwan_junction_closure_plans" in (
         remote.REMOTE_MAKE_TARGETS)
+    assert "check_obiwan_junction_closure_base" in (
+        remote.REMOTE_MAKE_TARGETS)
     assert "check_obiwan_junction_closures" in remote.REMOTE_MAKE_TARGETS
     assert "check_obiwan_service" in remote.REMOTE_MAKE_TARGETS
     assert "check_obiwan_closure_focus" in remote.REMOTE_MAKE_TARGETS
@@ -1677,9 +1679,10 @@ def test_obiwan_release_parallel_dag() -> None:
     )
     output = result.stdout
     assert output.count("export_obiwan_staged.py stage") == 2
-    assert output.count(
-        "export_piece_stls.py --variant obiwan "
-        "--obiwan-stage-manifest") == 2
+    for part in ("lm", "lm_split", "um", "tweeter"):
+        assert output.count(
+            "export_piece_stls.py --variant obiwan "
+            f"--obiwan-part {part} --obiwan-stage-manifest") == 2
     assert output.count(
         "cd floor_stand && LX_STAND_FOOT=1 LX_ROUTING_PROFILE=obiwan "
         "PYTHONPATH=..") == 1
@@ -1747,10 +1750,9 @@ def test_profile_specific_stl_dag() -> None:
     )
     assert remote_result.stdout.count(
         "export_piece_stls.py --variant v1l --outdir") == 1
-    assert remote_result.stdout.count(
-        "export_piece_stls.py --variant obiwan --obiwan-stage-manifest") == 1
+    assert remote_result.stdout.count("--obiwan-part") == 4
+    assert "--obiwan-part lm_split" in remote_result.stdout
     assert "--v1l-piece" not in remote_result.stdout
-    assert "--obiwan-part" not in remote_result.stdout
 
     local_result = subprocess.run(
         ["make", "-n", "-B", "LX_CAD_EXECUTION=local",

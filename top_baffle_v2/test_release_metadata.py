@@ -208,12 +208,25 @@ def test_obiwan_release_manifest_binds_print_sidecars() -> None:
         actual_sidecars = {name for name in names if name.endswith(".print.json")}
         assert actual_sidecars == expected_obiwan
         assert len(actual_sidecars) == 15
-        assert len(names) == (42 if stand_foot else 40)
-        stls = {name for name in names if name.endswith(".stl")}
+        assert len(names) == 42
+        stls = {
+            name for name in names
+            if name.startswith("stl/") and name.endswith(".stl")
+        }
         assert actual_sidecars == {
             name.removesuffix(".stl") + ".print.json" for name in stls
         }
-    assert release_manifest.FORMAT_VERSION == 9
+        blocker_base = (
+            "support_blockers/"
+            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom."
+            "support_blocker")
+        blocker_artifacts = {
+            name for name in names if name.startswith("support_blockers/")
+        }
+        assert blocker_artifacts == (
+            {f"{blocker_base}.stl", f"{blocker_base}.json"}
+            if not stand_foot else set())
+    assert release_manifest.FORMAT_VERSION == 10
     assert (ROOT / "front_down_contract.py") in (
         release_manifest.generation_source_paths())
 
