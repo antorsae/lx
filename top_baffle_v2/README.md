@@ -19,13 +19,13 @@ The exact design depth is **18.3 mm**, not 18.6 mm.
 
 ![Standard B2 CAD snapshot](artifacts/standard/images/iso.png)
 
-The original state-oriented build outputs remain in `floor_stand/`,
-`no_floor_stand/`, and `wings/` because the validation pipeline depends on
+The original state-oriented build outputs remain in `build/floor_stand/`,
+`build/no_floor_stand/`, and `build/wings/` because the validation pipeline depends on
 them. `artifacts/` adds stable names, hashes, and product grouping through
 relative links without duplicating large CAD files. See
 [`docs/PROJECT_SCOPE.md`](docs/PROJECT_SCOPE.md) for the intent, assumptions,
 and release boundary; [`docs/REPOSITORY_STRUCTURE.md`](docs/REPOSITORY_STRUCTURE.md)
-documents the implemented layout and the safe future source-package migration.
+documents the implemented source/package and generated-state boundary.
 
 For direct Bambu Lab P2S use, build the small
 [`to_print/`](to_print/README.md) shelf with `make to_print`. It exposes only
@@ -36,35 +36,35 @@ matching ready-to-print `.gcode.3mf` projects and a local hash manifest.
 
 | File | What |
 |---|---|
-| `top_baffle_nd25fw4.py` | Geometry library (drawing outline, holes, pilots); its own gen_step is the un-compromised aligned drawing (no artifacts kept) |
-| `top_baffle_nd25fw4_a_comp.py` | Variant A-comp: straight-sided tower — vertical flanks at ±60.65 (tangent to B2's flare crest) from the extended top edge down to the LM chamfer-extension; tweeter section at the B2 drop. Buildable as B2 pieces + 4 shoulder pieces |
-| `top_baffle_nd25fw4_attachments.py` / `.step` | The 6 attachment pieces (exact boolean complements): 2+2 A-comp shoulders (top/bottom per side, split at the crest tangent), 2 B1 wings |
-| `top_baffle_nd25fw4_b.py` | Shared B-family builder: mini-LM upper-mid vase (no shelf corners) + tweeter section lowered 9.0 mm. Governing clearance is on the FRONT face: the lower tweeter faces forward (stock LX521.4 arrangement), so its D104 faceplate shares the front plane with the 10F's D97.5 flange -- axis spacing 102.84 mm vs 100.75 mm contact leaves a 2.1 mm edge gap (drawing spacing allows an 11.1 mm drop max). Scallop-to-flange 14.1 mm; scallop-to-D82 web 21.9 mm. Total height 459.3 mm. Below the y=306 seam identical to A. |
-| `top_baffle_nd25fw4_b1.py` | B1: flank is ONE straight line from the crescent horn corner (36.8, 432.9) through the max-width point (83.8, 399.6) to the V-waist at (+/-56.12, 306.5) -- extended to the horn so the top magnet site lands in the B1 wing |
-| `top_baffle_nd25fw4_b2.py` | B2: constant wall around the 10F -- flare and chamfer keep the LM tilts but are both tangent to the r=50.83 circle about the UM center (9.8 mm wall at the D82, 2.1 mm to the D97.5 flange at both tangential points). Chamfer runs from the flare corner (+/-60.65, 391.71; max width 121.3 mm) to the crescent's D102.11 arc extended to (+/-10.08, 418.18); waist (+/-38.1, 315.95). |
-| `top_baffle_nd25fw4_b2_split.py` | 4-piece print split of variant B2 (the universal **R6P proud-family** base set), shown assembled |
-| `top_baffle_nd25fw4_c7.py` | Variant C7: B2 with the LM section rear-tapered to a ~0.5 knife edge over the last 19 mm inside the flank/chamfer outline (front face stays a full plane). Full-depth land kept at the bottom strip (foot/bridge) and before seam B; half-round ribs (r=5.4) carry the T ducts across the band. See "Variant C7" below |
-| `top_baffle_nd25fw4_c7_split.py` | C7 print split: same seams/dovetails/ducts as B2 -- the three LM pieces are drop-in replacements, piece_top and all attachments are shared |
-| `top_baffle_nd25fw4_cables.py` | Proud-family **R6P** subtractive routing and routing-profile dispatch: standard B2/C7/V0/V1 UM tail plus the keyed V1L-only 283-degree alternate |
-| `top_baffle_nd25fw4_v1l.py` / `_split.py` | Thin R6P bottom+mids; its alternate UM tail and rear-face exit remain wholly in `piece_mid_right`, so the shared top/vase is unchanged |
-| `top_baffle_nd25fw4_obiwan.py` / `_split.py` | Extreme Obi-Wan core: structural LM/UM flush-driver collars at R113.0/R51.7 with smooth exposed R113.8/R52.5 side fairings clipped only inside the existing LM--UM and T--UM cusp/service regions, with the 0.40 mm LM--UM inter-carrier gap preserved; rounded LM-to-UM M3 half-laps whose closure-web/base teardrops remain nominal Ø9 while each complete Z-owned cylindrical functional boss is locally Ø9.8, with standalone rear Ø3.4 LM clearance bores and standalone rear-opening blind Ø4.6 x 4.0 UM heat-set receivers; six pause-and-bury captive magnet stations (two upper LM ring-radial, two lower LM base-side, and two UM ring-radial), with ring cavity datums hidden 0.15 mm beneath the continuous fairing and no local pad/boss/flat/cue; buried UM/T route spans; and free rear cable continuations. Floor and no-floor share one exact lower-LM front/wing-contact outline from Y=0 through the broad ring shoulder; only rear/deep structure differs (integral W64 stand/NL8 panel versus shallow four-insert bridge). |
-| `top_baffle_nd25fw4_obiwan_lm_split.py` | Optional, mutually exclusive two-print form of the finalized Obi-Wan LM carrier: exact zero-gap world-Y butt seam plus two symmetric Ø1.60 cylindrical pins normal to the seam (world +Y). The pins engage 2.40 mm; the right blind socket is round Ø1.84 and the left is X-relieved to 1.96 × 1.84 mm so the 218.374 mm pitch cannot bind like two tight round fits. Two tiny exterior lands outside the LM recess retain 0.12 mm radial and 0.25 mm end clearance, at least 0.50 mm local radial/end wall, at least 0.05 mm recess plan clearance and 0.13 mm conservative W22-flange clearance. Their worst-case reach is R114.4036: 1.4036 mm beyond the structural R113.0 ring and 0.6036 mm beyond the finalized R113.8 visible fairing. They add no extra fastener or standalone retention/load credit; the monolithic LM remains canonical. |
-| `top_baffle_nd25fw4_obiwan_route.py` | Exact R6F printed-owner segments and physical cable continuations: 0.8 mm minimum walls and 0.85 mm seat roof on the surviving buried UM/T spans; no-floor LM/T/UM entries packed inside the one D20 support opening; LM-owned UM/T envelopes buried 0.05 mm beneath their outside owner limits, leaving a continuous 0.85 mm skin to visible R113.8 with no groove; full-width burial webs and solid roof-to-bore saddles; free UM behind the UM carrier; free T behind the crescent; and the 82.95° crown crossing |
-| `top_baffle_nd25fw4_obiwan_bridge.py` | Universal lower-LM front profile (filled exterior union of the historical floor stem and no-floor bridge), immutable no-floor four-hole datum, fused 62 mm insert core with soft cubic shoulders and three rear cable entries packed in the D20 support opening at the deepest existing LM-pad depth (no separate keel or rear ribs), hardware proxies, and an opening-aware biaxial 4 kg sustained-1g/3g/5g structural screen |
-| `top_baffle_nd25fw4_obiwan_floor.py` / `_floor_strength.py` | Floor-only integral W64 full-depth stem/foot, R12 root, rear NL8 panel/service cavity and three buried cable continuations; closed-form five-material net-section screen. This is part of the LM carrier, not an add-on, and the analysis is not FEA or physical qualification. |
-| `top_baffle_nd25fw4_obiwan_attachments.py` | Optional tweeter crescent with complete standalone blind-M3 receiver ears; any cable retention is external/non-modeled, and magnets receive zero structural load credit |
-| `top_baffle_nd25fw4_obiwan_assembled.py` | Review assembly containing the R6F core, selected add-ons, and the explicitly non-manufacturing terminal/Faston proxy |
-| `obiwan_wings_cad.py` | STEP-first Ac/Ae Obi-Wan acoustic attachments: one canonical monolith per side, three exact surface-normal captive D5 × 2 magnet receivers per side (LM lower, LM upper, and UM), one saddle compatible with the shared floor/no-floor lower-LM front profile, the approved constant-depth Ac or monotonic LM/UM/T-weighted Ae rear, and three exact-mask print intersections per side. Each physical side has one V1L-style through-local-thickness XY dovetail at the lower→middle interface (lower male, neck/head/depth 7/9/4 mm) and one at the middle→UM interface (middle male, 7/8.5/4 mm); female clearance is 0.05 mm, the exposed split clearance closes over the final 2 mm at both endpoints, and the keys add no envelope growth. They register/interlock in XY but provide no independent Z retention. Ae’s complete internal protected-land perimeter is accepted only when paired actual-BREP probes show a C0 jump ≤0.03 mm |
-| `export_obiwan_wings.py` | Transactional Ac/Ae exporter: canonical/assembled STEP, six strict front-face-down STLs with six exact adjacent `.print.json` authorities, facts, hash manifest, and CAD-derived QA renders under `wings/ac/` or `wings/ae/`; every review PNG uses hash-validated staged BREPs for a neutral no-floor LM-upper/UM/tweeter reference plus the two coincident LM-lower outlines—blue dash-dot for no-floor and green dotted for floor stand; the side view keeps its useful acoustic-depth scale and includes a complete-depth floor inset |
-| `test_obiwan_wings.py` | Remote-only Ac/Ae BREP, print-inventory, STEP, STL, mirror, depth, receiver, dovetail/clearance, endpoint-closure, bed-fit, provenance, render, and exact dual-state lower-LM front-profile gates |
-| `top_baffle_nd25fw4_um_fit.py` | 283-degree MU terminal service model: terminal-less MU body, hash-pinned W22 reference and declared-placement conservative rear keepout, independent low-profile flag-Faston pull states, physical OD8/OD4 Y-breakout harness, and the proud/V1L split strain reliefs; `PHYSICAL_MEASURE_REQUIRED` remains true |
-| `export_piece_stls.py` | Exports the print-ready proud-family or Obi-Wan core/add-on STLs (`--variant`, `--outdir`) and one exact adjacent, hash-bound `.print.json` authority for every STL |
-| `export_steps.py` | Exports a module's `gen_step()` to STEP via build123d's native exporter (`<module.py> --output <path>`) — no CAD-skill dependency |
-| `Makefile` | Generates STEPs/STLs/PNGs for both stand states into `floor_stand/` and `no_floor_stand/` (see "Generated artifact layout"). Local OCC jobs are serial; the remote executor uses bounded parallel slots, and every CAD subprocess runs through `run_memory_guarded.py`. |
-| `remote_cad.py` / `cad-remote-requirements.lock` | Content-addressed SSH executor, resumable job control, verified artifact return, and exact remote Python environment |
+| `src/lx521_baffle/base.py` | Geometry library (drawing outline, holes, pilots); its own gen_step is the un-compromised aligned drawing (no artifacts kept) |
+| `src/lx521_baffle/proud/top_baffle_nd25fw4_a_comp.py` | Variant A-comp: straight-sided tower — vertical flanks at ±60.65 (tangent to B2's flare crest) from the extended top edge down to the LM chamfer-extension; tweeter section at the B2 drop. Buildable as B2 pieces + 4 shoulder pieces |
+| `src/lx521_baffle/proud/top_baffle_nd25fw4_attachments.py` / `build/common/top_baffle_nd25fw4_attachments.step` | The 6 attachment pieces (exact boolean complements): 2+2 A-comp shoulders (top/bottom per side, split at the crest tangent), 2 B1 wings |
+| `src/lx521_baffle/proud/top_baffle_nd25fw4_b.py` | Shared B-family builder: mini-LM upper-mid vase (no shelf corners) + tweeter section lowered 9.0 mm. Governing clearance is on the FRONT face: the lower tweeter faces forward (stock LX521.4 arrangement), so its D104 faceplate shares the front plane with the 10F's D97.5 flange -- axis spacing 102.84 mm vs 100.75 mm contact leaves a 2.1 mm edge gap (drawing spacing allows an 11.1 mm drop max). Scallop-to-flange 14.1 mm; scallop-to-D82 web 21.9 mm. Total height 459.3 mm. Below the y=306 seam identical to A. |
+| `src/lx521_baffle/proud/top_baffle_nd25fw4_b1.py` | B1: flank is ONE straight line from the crescent horn corner (36.8, 432.9) through the max-width point (83.8, 399.6) to the V-waist at (+/-56.12, 306.5) -- extended to the horn so the top magnet site lands in the B1 wing |
+| `src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py` | B2: constant wall around the 10F -- flare and chamfer keep the LM tilts but are both tangent to the r=50.83 circle about the UM center (9.8 mm wall at the D82, 2.1 mm to the D97.5 flange at both tangential points). Chamfer runs from the flare corner (+/-60.65, 391.71; max width 121.3 mm) to the crescent's D102.11 arc extended to (+/-10.08, 418.18); waist (+/-38.1, 315.95). |
+| `src/lx521_baffle/proud/top_baffle_nd25fw4_b2_split.py` | 4-piece print split of variant B2 (the universal **R6P proud-family** base set), shown assembled |
+| `src/lx521_baffle/proud/top_baffle_nd25fw4_c7.py` | Variant C7: B2 with the LM section rear-tapered to a ~0.5 knife edge over the last 19 mm inside the flank/chamfer outline (front face stays a full plane). Full-depth land kept at the bottom strip (foot/bridge) and before seam B; half-round ribs (r=5.4) carry the T ducts across the band. See "Variant C7" below |
+| `src/lx521_baffle/proud/top_baffle_nd25fw4_c7_split.py` | C7 print split: same seams/dovetails/ducts as B2 -- the three LM pieces are drop-in replacements, piece_top and all attachments are shared |
+| `src/lx521_baffle/cables.py` | Proud-family **R6P** subtractive routing and routing-profile dispatch: standard B2/C7/V0/V1 UM tail plus the keyed V1L-only 283-degree alternate |
+| `src/lx521_baffle/proud/top_baffle_nd25fw4_v1l.py` / `src/lx521_baffle/proud/top_baffle_nd25fw4_v1l_split.py` | Thin R6P bottom+mids; its alternate UM tail and rear-face exit remain wholly in `piece_mid_right`, so the shared top/vase is unchanged |
+| `src/lx521_baffle/obiwan/carriers.py` / `src/lx521_baffle/obiwan/split.py` | Extreme Obi-Wan core: structural LM/UM flush-driver collars at R113.0/R51.7 with smooth exposed R113.8/R52.5 side fairings clipped only inside the existing LM--UM and T--UM cusp/service regions, with the 0.40 mm LM--UM inter-carrier gap preserved; rounded LM-to-UM M3 half-laps whose closure-web/base teardrops remain nominal Ø9 while each complete Z-owned cylindrical functional boss is locally Ø9.8, with standalone rear Ø3.4 LM clearance bores and standalone rear-opening blind Ø4.6 x 4.0 UM heat-set receivers; six pause-and-bury captive magnet stations (two upper LM ring-radial, two lower LM base-side, and two UM ring-radial), with ring cavity datums hidden 0.15 mm beneath the continuous fairing and no local pad/boss/flat/cue; buried UM/T route spans; and free rear cable continuations. Floor and no-floor share one exact lower-LM front/wing-contact outline from Y=0 through the broad ring shoulder; only rear/deep structure differs (integral W64 stand/NL8 panel versus shallow four-insert bridge). |
+| `src/lx521_baffle/obiwan/lm_split.py` | Optional, mutually exclusive two-print form of the finalized Obi-Wan LM carrier: exact zero-gap world-Y butt seam plus two symmetric Ø1.60 cylindrical pins normal to the seam (world +Y). The pins engage 2.40 mm; the right blind socket is round Ø1.84 and the left is X-relieved to 1.96 × 1.84 mm so the 218.374 mm pitch cannot bind like two tight round fits. Two tiny exterior lands outside the LM recess retain 0.12 mm radial and 0.25 mm end clearance, at least 0.50 mm local radial/end wall, at least 0.05 mm recess plan clearance and 0.13 mm conservative W22-flange clearance. Their worst-case reach is R114.4036: 1.4036 mm beyond the structural R113.0 ring and 0.6036 mm beyond the finalized R113.8 visible fairing. They add no extra fastener or standalone retention/load credit; the monolithic LM remains canonical. |
+| `src/lx521_baffle/obiwan/route.py` | Exact R6F printed-owner segments and physical cable continuations: 0.8 mm minimum walls and 0.85 mm seat roof on the surviving buried UM/T spans; no-floor LM/T/UM entries packed inside the one D20 support opening; LM-owned UM/T envelopes buried 0.05 mm beneath their outside owner limits, leaving a continuous 0.85 mm skin to visible R113.8 with no groove; full-width burial webs and solid roof-to-bore saddles; free UM behind the UM carrier; free T behind the crescent; and the 82.95° crown crossing |
+| `src/lx521_baffle/obiwan/bridge.py` | Universal lower-LM front profile (filled exterior union of the historical floor stem and no-floor bridge), immutable no-floor four-hole datum, fused 62 mm insert core with soft cubic shoulders and three rear cable entries packed in the D20 support opening at the deepest existing LM-pad depth (no separate keel or rear ribs), hardware proxies, and an opening-aware biaxial 4 kg sustained-1g/3g/5g structural screen |
+| `src/lx521_baffle/obiwan/floor.py` / `src/lx521_baffle/obiwan/floor_strength.py` | Floor-only integral W64 full-depth stem/foot, R12 root, rear NL8 panel/service cavity and three buried cable continuations; closed-form five-material net-section screen. This is part of the LM carrier, not an add-on, and the analysis is not FEA or physical qualification. |
+| `src/lx521_baffle/obiwan/attachments.py` | Optional tweeter crescent with complete standalone blind-M3 receiver ears; any cable retention is external/non-modeled, and magnets receive zero structural load credit |
+| `src/lx521_baffle/obiwan/assembled.py` | Review assembly containing the R6F core, selected add-ons, and the explicitly non-manufacturing terminal/Faston proxy |
+| `src/lx521_baffle/obiwan/wings.py` | STEP-first Ac/Ae Obi-Wan acoustic attachments: one canonical monolith per side, three exact surface-normal captive D5 × 2 magnet receivers per side (LM lower, LM upper, and UM), one saddle compatible with the shared floor/no-floor lower-LM front profile, the approved constant-depth Ac or monotonic LM/UM/T-weighted Ae rear, and three exact-mask print intersections per side. Each physical side has one V1L-style through-local-thickness XY dovetail at the lower→middle interface (lower male, neck/head/depth 7/9/4 mm) and one at the middle→UM interface (middle male, 7/8.5/4 mm); female clearance is 0.05 mm, the exposed split clearance closes over the final 2 mm at both endpoints, and the keys add no envelope growth. They register/interlock in XY but provide no independent Z retention. Ae’s complete internal protected-land perimeter is accepted only when paired actual-BREP probes show a C0 jump ≤0.03 mm |
+| `scripts/export_obiwan_wings.py` | Transactional Ac/Ae exporter: canonical/assembled STEP, six strict front-face-down STLs with six exact adjacent `.print.json` authorities, facts, hash manifest, and CAD-derived QA renders under `build/wings/ac/` or `build/wings/ae/`; every review PNG uses hash-validated staged BREPs for a neutral no-floor LM-upper/UM/tweeter reference plus the two coincident LM-lower outlines—blue dash-dot for no-floor and green dotted for floor stand; the side view keeps its useful acoustic-depth scale and includes a complete-depth floor inset |
+| `tests/test_obiwan_wings.py` | Remote-only Ac/Ae BREP, print-inventory, STEP, STL, mirror, depth, receiver, dovetail/clearance, endpoint-closure, bed-fit, provenance, render, and exact dual-state lower-LM front-profile gates |
+| `src/lx521_baffle/um_fit.py` | 283-degree MU terminal service model: terminal-less MU body, hash-pinned W22 reference and declared-placement conservative rear keepout, independent low-profile flag-Faston pull states, physical OD8/OD4 Y-breakout harness, and the proud/V1L split strain reliefs; `PHYSICAL_MEASURE_REQUIRED` remains true |
+| `scripts/export_piece_stls.py` | Exports the print-ready proud-family or Obi-Wan core/add-on STLs (`--variant`, `--outdir`) and one exact adjacent, hash-bound `.print.json` authority for every STL |
+| `scripts/export_steps.py` | Exports a module's `gen_step()` to STEP via build123d's native exporter (`<module.py> --output <path>`) — no CAD-skill dependency |
+| `Makefile` | Generates STEPs/STLs/PNGs for both stand states into `build/floor_stand/` and `build/no_floor_stand/` (see "Generated artifact layout"). Local OCC jobs are serial; the remote executor uses bounded parallel slots, and every CAD subprocess runs through `scripts/run_memory_guarded.py`. |
+| `scripts/remote_cad.py` / `cad-remote-requirements.lock` | Content-addressed SSH executor, resumable job control, verified artifact return, and exact remote Python environment |
 | `review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md` | Authoritative per-STL front-face-down orientation, actual sliced open/closing layers, Bambu Custom park/pause/restore events, grouped magnet counts, and local-axis polarity |
 | `review/CAPTIVE_MAGNET_ARTIFACT_INVENTORY.md` | Clickable inventory of all 56 magnet-bearing STL records, their 54 locally generated/directly loadable G-code-bearing Bambu 3MF projects, descriptive piece names, and exact magnet counts; also reconciles the 90 transverse, four axial V0, and eight exact split-proxy stations |
-| `<variant>/stl/*.stl` and `wings/{ac,ae}/stl/*.stl` | The enforced acoustic-print inventory is 45 nonpolar front-face-down STL/sidecar pairs in each stand state plus six Ac and six Ae pairs: 102 exact pairs total. Every acoustic piece is source-X180 with only an optional in-bed Z rotation and its front datum at STL Z=0. A missing, orphaned, stale-hash, tilted, or translation-inconsistent `<stem>.print.json` fails release validation. The two floor polar-index jigs are the sole orientation-sidecar exclusions because they are fixtures with no acoustic front-face datum. |
+| `build/<state>/stl/*.stl` and `build/wings/{ac,ae}/stl/*.stl` | The enforced acoustic-print inventory is 45 nonpolar front-face-down STL/sidecar pairs in each stand state plus six Ac and six Ae pairs: 102 exact pairs total. Every acoustic piece is source-X180 with only an optional in-bed Z rotation and its front datum at STL Z=0. A missing, orphaned, stale-hash, tilted, or translation-inconsistent `<stem>.print.json` fails release validation. The two floor polar-index jigs are the sole orientation-sidecar exclusions because they are fixtures with no acoustic front-face datum. |
 
 Regenerate through the remote executor (the default):
 
@@ -80,12 +80,12 @@ directory. The pinned Python 3.12.12 environment is content-addressed and
 reused remotely. Jobs survive a lost SSH connection; the printed job id can
 be inspected or resumed with:
 
-    python3 remote_cad.py status JOB_ID
-    python3 remote_cad.py resume JOB_ID
-    python3 remote_cad.py cancel JOB_ID
+    python3 scripts/remote_cad.py status JOB_ID
+    python3 scripts/remote_cad.py resume JOB_ID
+    python3 scripts/remote_cad.py cancel JOB_ID
 
 For a deliberately detached launch use
-`python3 remote_cad.py run --detach TARGET`; ordinary `make` waits and fetches
+`python3 scripts/remote_cad.py run --detach TARGET`; ordinary `make` waits and fetches
 automatically, while Ctrl-C detaches without killing the remote cgroup.
 
 The client accepts only documented public Make targets; Make-variable
@@ -210,8 +210,8 @@ tighten their selected profile but cannot relax it.
 
 Self-contained — the direct pip dependencies are
 `build123d`, `shapely`, `matplotlib`, `numpy`, and `Pillow` (no external CAD
-tooling). `make check` runs `test_clearances.py` for proud-family
-regressions and `test_obiwan_r6f.py` for guarded R6F BREP contracts.
+tooling). `make check` runs `tests/test_clearances.py` for proud-family
+regressions and `tests/test_obiwan_r6f.py` for guarded R6F BREP contracts.
 Together they cover duct/pilot separation, flange-seat containment,
 service envelopes, R6P grommet regressions, complete-route smoothness, exact
 normal/eroded-outline containment, closed assembled shells, hardware
@@ -237,7 +237,7 @@ is present.
   behind with M5 machine screws. no-stand only. Front face stays solid
   (no through-hole, no countersink).
 - 2 corner holes Ø4.5 @ (±66.2, 10.0) — OPTIONAL, disabled by default
-  (set CORNER_HOLES_ENABLED = True in top_baffle_nd25fw4.py to cut them).
+  (set CORNER_HOLES_ENABLED = True in src/lx521_baffle/base.py to cut them).
   When enabled: M5 machine screws thread-form through the full 18.3 mm
   (pre-run the screw once to cut the threads).
 - Blind driver mounts, front face only:
@@ -298,7 +298,7 @@ is present.
   R6P duct crossings and remain in full-depth material outside the C7
   taper.
 - piece_bottom carries a FUSED stand foot (STAND_FOOT flag in
-  top_baffle_nd25fw4.py). The foot starts as the baffle's own bottom
+  src/lx521_baffle/base.py). The foot starts as the baffle's own bottom
   strip (18.3 tall, side faces continuing the flank slopes: ±76.2 at
   the floor widening to ±81.6, sharing the floor plane with the plate
   -- no step), runs 150 mm rearward, and TAPERS in plan continuously
@@ -370,9 +370,9 @@ remains fused into the LM core exactly as before.
 The default remote `make` builds BOTH stand-foot states. Use
 `LX_CAD_EXECUTION=local make -j1` only for an intentional local build:
 
-    floor_stand/      LX_STAND_FOOT=1: R6P fused foot + NL8 panel;
+    build/floor_stand/      LX_STAND_FOOT=1: R6P fused foot + NL8 panel;
       stl/  *.step  *.png     R6F integral LM-owned W64 floor stem/foot + NL8 panel
-    no_floor_stand/   LX_STAND_FOOT=0: R6P flat piece_bottom + bridge;
+    build/no_floor_stand/   LX_STAND_FOOT=0: R6P flat piece_bottom + bridge;
       stl/  *.step  *.png     R6F solid bridge web fused into the LM core
 
 Each folder contains all proud-family variants and the matching Obi-Wan
@@ -381,10 +381,10 @@ different base piece; the other base STLs can differ by <0.05 mm as
 the foot-entry knots move. In R6F, the UM core is state-independent. The
 floor LM owns the integral stand; the no-floor LM owns the fused bridge web,
 but their front wing-contact outlines are identical through z=6.8..18.3.
-`top_baffle_nd25fw4_attachments.step` is flag-independent and stays at
-the top level. The `LX_STAND_FOOT` environment flag defaults to 1.
+`build/common/top_baffle_nd25fw4_attachments.step` is flag-independent and is
+promoted as one shared file. The `LX_STAND_FOOT` environment flag defaults to 1.
 
-| STL in `<variant>/stl/` | Footprint (mm) | Used by |
+| STL in `build/<state>/stl/` | Footprint (mm) | Used by |
 |---|---|---|
 | lx521_top_base_1of4_bottom | 223.8 × 125.0, 168.3 tall (fused stand foot; front-face-down only — see above) | R6P proud family |
 | lx521_top_base_2of4_mid_left | 146.7 × 201.9 | R6P proud family |
@@ -631,9 +631,6 @@ rear-skinned T ducts).
   probes on the built piece solids.
 - Print: same bed footprints as the B2 pieces; the taper prints
   front-face-down with layers shrinking as they rise (support-free).
-- The historical `gen_lm_knife_draft.py` source is retained for research; its
-  one-off concept raster is generated on demand and is not a release artifact.
-
 ## Variant V0 — minimalist UM vase (front slide)
 
 An alternate piece_top for the low-crossover (3-4 kHz) experiments:
@@ -900,7 +897,7 @@ coverage from actual keyed-half pause groups. Scaling, clipping, tilting, and
 virtual-bed overrides are prohibited because all pieces must retain the same
 front-face-down texture and insertion geometry.
 
-The floor stand is not an add-on. In `floor_stand/`, both the canonical LM
+The floor stand is not an add-on. In `build/floor_stand/`, both the canonical LM
 carrier and the optional keyed bottom own the complete floor structure: a
 full-depth W64 stem softly blended into the lower LM cap, a W64 × 18.3 mm
 rectangular foot extending from `z=-150..18.3`, a true R12 internal root,
@@ -1110,7 +1107,7 @@ mm / 0.16 mm profile.
 The sibling `.print.json` beside each released nonpolar STL is mandatory
 machine-readable print authority, not optional documentation. It binds the
 exact STL hash and size to X180 plus an optional bed-normal Z rotation and the
-origin translation. Keep each pair together and rerun `check_manifold.py`
+origin translation. Keep each pair together and rerun `scripts/check_manifold.py`
 after copying artifacts; do not print a missing, orphaned, hash-stale, tilted,
 or translation-inconsistent pair. The only release STLs intentionally without
 this acoustic/front-down sidecar are the floor-state polar base and rotor,

@@ -13,7 +13,7 @@ __pycache__/
 # Makefile build stamps (any depth: state roots, stl/, wings/*/stl/)
 **/.stamp
 **/.stamp_*
-*/.obiwan_stage/
+**/.obiwan_stage/
 .manifold-stamps/
 .check-stamps/
 
@@ -50,10 +50,10 @@ to_print/release_manifest.json
 # Adjacent front-down print authorities are part of every released STL.  The
 # repository root ignores generic JSON, so explicitly keep all three release
 # trees trackable rather than relying on force-add during promotion/commit.
-!floor_stand/stl/*.print.json
-!no_floor_stand/stl/*.print.json
-!wings/*/stl/*.print.json
-!*/support_blockers/*.support_blocker.json
+!build/floor_stand/stl/*.print.json
+!build/no_floor_stand/stl/*.print.json
+!build/wings/*/stl/*.print.json
+!build/*/support_blockers/*.support_blocker.json
 
 # The product catalog is deliberately JSON-backed and carries linked copies of
 # the same print authorities. Keep it trackable despite the parent repository's

@@ -1,1 +1,1 @@
-../../obiwan_physical_qualification.md
+../../docs/obiwan_physical_qualification.md

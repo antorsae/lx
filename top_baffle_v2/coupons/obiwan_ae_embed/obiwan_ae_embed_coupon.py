@@ -35,8 +35,9 @@ from build123d import (
 # radii, site heights, or receiver-root envelopes.  The physically tested
 # coupon's zero interface gap is deliberately frozen locally below.
 PROJECT_DIR = Path(__file__).resolve().parents[2]
-if str(PROJECT_DIR) not in sys.path:
-    sys.path.insert(0, str(PROJECT_DIR))
+for _import_root in (PROJECT_DIR / "src", PROJECT_DIR / "scripts"):
+    if str(_import_root) not in sys.path:
+        sys.path.insert(0, str(_import_root))
 
 from gen_obiwan_wing_design_map import (  # noqa: E402
     PAD_LM_RADIAL_MM,
@@ -44,8 +45,8 @@ from gen_obiwan_wing_design_map import (  # noqa: E402
     PAD_UM_RADIAL_MM,
     PAD_UM_TANGENTIAL_MM,
 )
-from top_baffle_nd25fw4 import THICKNESS_MM  # noqa: E402
-from top_baffle_nd25fw4_obiwan import (  # noqa: E402
+from lx521_baffle.base import THICKNESS_MM  # noqa: E402
+from lx521_baffle.obiwan.carriers import (  # noqa: E402
     CORE_REAR_Z,
     LM_CORE_R,
     LM_RECESS_R,

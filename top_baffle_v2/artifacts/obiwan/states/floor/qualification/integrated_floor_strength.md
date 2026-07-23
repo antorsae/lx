@@ -1,1 +1,1 @@
-../../../../../floor_stand/obiwan_integrated_floor_strength.md
+../../../../../build/floor_stand/obiwan_integrated_floor_strength.md

@@ -1,0 +1,74 @@
+{
+  "mesh": {
+    "collapsed_apex_facets_removed": 0,
+    "component_error": 0,
+    "component_signed_volumes": [
+      139700.71955915587
+    ],
+    "components": 1,
+    "degenerate": 0,
+    "disconnected_material_components": 0,
+    "duplicates": 0,
+    "negative_volume": 0,
+    "nested_void_components": 0,
+    "nonfinite": 0,
+    "nonnested_void_components": 0,
+    "open": 0,
+    "outer_components": 1,
+    "over_shared": 0,
+    "signed_volume": 139700.71955915587,
+    "triangles": 8326,
+    "winding": 0,
+    "zero_volume": 0,
+    "zero_volume_components": 0
+  },
+  "mesh_angular_tolerance": 0.2,
+  "mesh_tolerance_mm": 0.05,
+  "part": "lx521_top_c7base_2of4_mid_left",
+  "pre_translation_bbox_min_mm": [
+    -152.4010001,
+    -321.9500001,
+    -18.300000099999988
+  ],
+  "print_orientation": "front_face_down",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      152.4010001
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      321.9500001
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999988
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "lx521_top_c7base_2of4_mid_left.stl",
+  "stl_bytes": 416384,
+  "stl_origin_translation_mm": [
+    152.4010001,
+    321.9500001,
+    18.300000099999988
+  ],
+  "stl_sha256": "098db3aa5a4716336d8e850fd0d06bfaeb3e5b7b9e1b90f3886e6a0a67766911",
+  "variant_export": "c7"
+}
