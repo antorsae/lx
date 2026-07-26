@@ -7,6 +7,7 @@
   },
   "order": 1,
   "part": "lx521_top_obiwan_wing_ae_right_1of3_lm_lower",
+  "piece_count": 3,
   "pre_translation_bbox_min_mm": [
     9.139491871464196,
     11.170779642823918,
@@ -46,6 +47,7 @@
       1.0
     ]
   ],
+  "split_variant": "a",
   "stl": "lx521_top_obiwan_wing_ae_right_1of3_lm_lower.stl",
   "stl_bytes": 7285984,
   "stl_origin_translation_mm": [

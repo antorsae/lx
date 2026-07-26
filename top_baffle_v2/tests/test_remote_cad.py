@@ -210,7 +210,14 @@ def _cached_public_output_fixture(root: Path) -> tuple[Path, dict[str, Path]]:
     for relative in floor_artifacts:
         output(f"top_baffle_v2/build/floor_stand/{relative}")
     output("top_baffle_v2/build/floor_stand/stl/unrelated-legacy.stl")
-    output("top_baffle_v2/build/no_floor_stand/stl/no-floor.stl")
+    no_floor_artifacts = {
+        "stl/no-floor.stl": {"sha256": "fixture"},
+    }
+    output(
+        "top_baffle_v2/build/no_floor_stand/obiwan_release_manifest.json",
+        json.dumps({"artifacts": no_floor_artifacts}))
+    for relative in no_floor_artifacts:
+        output(f"top_baffle_v2/build/no_floor_stand/{relative}")
     output("top_baffle_v2/build/wings/ac/stl/wing.stl")
     output(remote.COMMON_ARTIFACT)
     output(remote.OBIWAN_WING_DESIGN_MAP_ARTIFACT)
@@ -334,8 +341,10 @@ def test_target_contract() -> None:
     assert "check_floor_integrated_mount" in remote.REMOTE_MAKE_TARGETS
     assert "floor_obiwan" in remote.REMOTE_MAKE_TARGETS
     assert "no_floor_obiwan" in remote.REMOTE_MAKE_TARGETS
+    assert "obiwan_state_releases" in remote.REMOTE_MAKE_TARGETS
     assert "obiwan_release" in remote.REMOTE_MAKE_TARGETS
     assert "obiwan_wings" in remote.REMOTE_MAKE_TARGETS
+    assert "obiwan_wing_exports" in remote.REMOTE_MAKE_TARGETS
     assert "obiwan_wing_artifacts" in remote.REMOTE_MAKE_TARGETS
     assert "check_obiwan_wings" in remote.REMOTE_MAKE_TARGETS
     assert "check_captive_magnets" in remote.REMOTE_MAKE_TARGETS
@@ -351,6 +360,7 @@ def test_target_contract() -> None:
         remote.REMOTE_MAKE_TARGETS)
     assert "check_floor_support" not in remote.REMOTE_MAKE_TARGETS
     assert remote._full_output_roots(["obiwan_wings"]) == {"wings"}
+    assert remote._full_output_roots(["obiwan_wing_exports"]) == {"wings"}
     assert remote._full_output_roots(["check_obiwan_wings"]) == {
         "wings"}
     assert remote._full_output_roots(["obiwan_release"]) == {
@@ -1193,6 +1203,13 @@ def test_warm_cache_always_bundles_public_target_outputs() -> None:
         assert selected("floor_obiwan") == floor_required
         assert "top_baffle_v2/build/floor_stand/stl/unrelated-legacy.stl" not in (
             selected("floor_obiwan"))
+        no_floor_required = {
+            "top_baffle_v2/build/no_floor_stand/"
+            "obiwan_release_manifest.json",
+            "top_baffle_v2/build/no_floor_stand/stl/no-floor.stl",
+        }
+        assert selected("obiwan_state_releases") == (
+            floor_required | no_floor_required)
         assert selected("common") == {remote.COMMON_ARTIFACT}
 
         complete_roots = {
@@ -1955,7 +1972,7 @@ def test_obiwan_release_parallel_dag() -> None:
         assert output.count(f"LX_R6F_CASE_ID={check}") == 1
     # The captive catalog is project-wide, so the public release target now
     # regenerates both states of every magnet-bearing family before writing
-    # its 56-STL inventory.  V1L therefore appears once per stand state.
+    # its 64-STL inventory.  V1L therefore appears once per stand state.
     assert output.count(
         "export_piece_stls.py --variant v1l --outdir") == 2
     assert output.count(

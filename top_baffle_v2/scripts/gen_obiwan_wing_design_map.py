@@ -221,6 +221,7 @@ class VariantLayout:
     field_right: Polygon
     nominal_parts: dict[str, Polygon]
     print_parts: dict[str, Polygon]
+    two_piece_print_parts: dict[str, Polygon]
     rear_structure: Polygon
     lower_seam_y: float
     lower_seam_slope: float
@@ -848,10 +849,26 @@ def _partition(field: Polygon):
             lm_upper.difference(lower_gap).buffer(0)),
         "um": _largest_polygon(um.difference(upper_gap).buffer(0)),
     }
+    # The two-piece alternative keeps the lower print and its fit clearance
+    # byte-for-byte/geometrically identical to the established three-piece
+    # release.  Its upper print restores the complete former upper fit gap so
+    # LM-upper and UM become one continuous solid instead of two shells hidden
+    # in a nominally fused export.
+    lm_um_upper = unary_union((
+        print_parts["lm_upper"], print_parts["um"], upper_gap)).buffer(0)
+    if lm_um_upper.geom_type != "Polygon":
+        raise RuntimeError(
+            "two-piece LM/UM upper mask is not one connected polygon")
+    two_piece_print_parts = {
+        "lm_lower": print_parts["lm_lower"],
+        "lm_um_upper": lm_um_upper,
+    }
     if any(part.is_empty for part in (*nominal_parts.values(),
-                                      *print_parts.values())):
+                                      *print_parts.values(),
+                                      *two_piece_print_parts.values())):
         raise RuntimeError("dovetail partition produced an empty part")
-    return (nominal_parts, print_parts, float(y_ref), float(slope),
+    return (nominal_parts, print_parts, two_piece_print_parts,
+            float(y_ref), float(slope),
             (lower_seam, upper_seam), fit_clearance_gaps,
             (lower_key, upper_key))
 
@@ -885,10 +902,36 @@ def _obb_dimensions(shape: Polygon) -> tuple[float, float]:
     return a, b
 
 
+def _square_bed_dimensions(
+        shape: Polygon) -> tuple[float, float, float]:
+    """Return a deterministic sampled fit for a square print bed.
+
+    The combined LM/UM piece is long but crescent-shaped: its minimum-area
+    oriented rectangle is longer than the bed while a diagonal placement
+    fits with ample margin.  Half-degree samples are conservative enough for
+    the >20-mm measured margin; the exporter performs the final exact-BREP
+    bounding-box gate.
+    """
+    best: tuple[float, float, float, float] | None = None
+    for angle in np.arange(0.0, 180.0, 0.5):
+        rotated = affinity.rotate(
+            shape, float(angle), origin=(0.0, 0.0), use_radians=False)
+        min_x, min_y, max_x, max_y = rotated.bounds
+        width = float(max_x - min_x)
+        height = float(max_y - min_y)
+        candidate = (max(width, height), width * height, float(angle), width)
+        if best is None or candidate < best:
+            best = candidate
+            best_height = height
+    assert best is not None
+    return best[3], best_height, best[2]
+
+
 def _build_layout(definition: VariantDefinition) -> VariantLayout:
     profile, field = _field_for_variant(definition)
-    (nominal_parts, print_parts, lower_seam_y, lower_seam_slope,
-     joint_seams, fit_clearance_gaps, dovetail_keys) = _partition(field)
+    (nominal_parts, print_parts, two_piece_print_parts,
+     lower_seam_y, lower_seam_slope, joint_seams,
+     fit_clearance_gaps, dovetail_keys) = _partition(field)
     sites = _right_sites()
     root_shapes = tuple(_receiver_root(profile, sites[name], definition.key)[0]
                         for name in ACTIVE_RECEIVER_NAMES_RIGHT)
@@ -914,9 +957,17 @@ def _build_layout(definition: VariantDefinition) -> VariantLayout:
             raise RuntimeError(
                 f"{definition.key} {name} does not fit {BED_USABLE_MM:g} mm bed: "
                 f"{a:.2f} x {b:.2f}")
+    width, height, angle = _square_bed_dimensions(
+        two_piece_print_parts["lm_um_upper"])
+    metrics["lm_um_upper_bed_fit"] = (
+        f"{width:.1f} x {height:.1f} @ {angle:.1f} deg")
+    if width > BED_USABLE_MM + 1e-6 or height > BED_USABLE_MM + 1e-6:
+        raise RuntimeError(
+            f"{definition.key} two-piece LM/UM upper does not fit "
+            f"{BED_USABLE_MM:g} mm bed: {width:.2f} x {height:.2f}")
 
     layout = VariantLayout(definition, profile, field, nominal_parts,
-                           print_parts, structure,
+                           print_parts, two_piece_print_parts, structure,
                            lower_seam_y, lower_seam_slope,
                            joint_seams, fit_clearance_gaps,
                            dovetail_keys, metrics)
@@ -935,6 +986,10 @@ def _validate_layout(layout: VariantLayout) -> None:
     for name, part in layout.print_parts.items():
         if part.is_empty or not part.is_valid:
             raise RuntimeError(f"{layout.definition.key} {name} is invalid/empty")
+    for name, part in layout.two_piece_print_parts.items():
+        if part.is_empty or not part.is_valid:
+            raise RuntimeError(
+                f"{layout.definition.key} two-piece {name} is invalid/empty")
     if not layout.field_right.is_valid or layout.field_right.is_empty:
         raise RuntimeError(f"{layout.definition.key} field invalid/empty")
     reconstructed = unary_union(tuple(layout.nominal_parts.values())).buffer(0)
@@ -959,6 +1014,30 @@ def _validate_layout(layout: VariantLayout) -> None:
     if outside_print.area > 0.01:
         raise RuntimeError(
             f"{layout.definition.key} dovetail child leaves monolithic envelope")
+    two_piece_lower = layout.two_piece_print_parts["lm_lower"]
+    two_piece_upper = layout.two_piece_print_parts["lm_um_upper"]
+    if two_piece_lower.symmetric_difference(
+            layout.print_parts["lm_lower"]).area > 1.0e-9:
+        raise RuntimeError(
+            f"{layout.definition.key} two-piece lower differs from A lower")
+    if (layout.print_parts["lm_upper"].difference(two_piece_upper).area > 0.01
+            or layout.print_parts["um"].difference(two_piece_upper).area > 0.01
+            or layout.fit_clearance_gaps[1].difference(
+                two_piece_upper).area > 0.01):
+        raise RuntimeError(
+            f"{layout.definition.key} two-piece upper omits A material or "
+            "the former upper fit gap")
+    if two_piece_lower.intersection(two_piece_upper).area > 0.01:
+        raise RuntimeError(
+            f"{layout.definition.key} two-piece prints overlap")
+    reconstructed_two_piece = unary_union((
+        *layout.two_piece_print_parts.values(),
+        layout.fit_clearance_gaps[0])).buffer(0)
+    if reconstructed_two_piece.symmetric_difference(
+            layout.field_right).area > 0.02:
+        raise RuntimeError(
+            f"{layout.definition.key} two-piece fit gap does not "
+            "reconstruct field")
     for seam in layout.joint_seams:
         coords = np.asarray(seam.coords)
         if (Point(*coords[0]).distance(layout.field_right.boundary) > 0.05

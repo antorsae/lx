@@ -409,6 +409,149 @@ def test_feature_bridge_height_does_not_override_layer_schedule(
     assert [layer.layer_height for layer in parsed.layers] == [0.20, 0.16]
 
 
+def test_support_toolpaths_are_filtered_and_fail_on_duct_collision(
+        tmp_path: Path):
+    identity = (
+        (1.0, 0.0, 0.0, 0.0),
+        (0.0, 1.0, 0.0, 0.0),
+        (0.0, 0.0, 1.0, 0.0),
+        (0.0, 0.0, 0.0, 1.0),
+    )
+    contract = {
+        "schema_version": 1,
+        "coordinate_space": "authoritative_source_mm",
+        "split_half": "bottom",
+        "split_seam_y_mm": 100.0,
+        "modifier_clearance_mm": 0.25,
+        "regions": [{
+            "name": "test_duct",
+            "kind": "polyline_tube",
+            "radius_mm": 1.0,
+            "points_xyz_mm": [[0.0, 0.0, 0.1], [10.0, 0.0, 0.1]],
+        }],
+    }
+
+    def write(path: Path, support_y: float) -> None:
+        path.write_text("\n".join((
+            "M83", "M104 S220", "M140 S55", "G90",
+            "; CHANGE_LAYER", "; Z_HEIGHT: 0.20", "; LAYER_HEIGHT: 0.20",
+            "; FEATURE: Outer wall", "; LINE_WIDTH: 0.42",
+            "G1 X0 Y4 Z0.20", "G1 X10 Y4 E0.1",
+            "; FEATURE: Support", "; LINE_WIDTH: 0.42",
+            f"G1 X0 Y{support_y:g}", f"G1 X10 Y{support_y:g} E0.1",
+            "; CONFIG_BLOCK_START", "; layer_height = 0.2",
+            "; CONFIG_BLOCK_END",
+        )) + "\n", encoding="utf-8")
+
+    clear = tmp_path / "support_clear.gcode"
+    write(clear, 2.0)
+    filtered = audit.parse_gcode(
+        clear, retain_feature_prefixes=("support",))
+    assert {
+        segment.feature for layer in filtered.layers
+        for segment in layer.segments
+    } == {"Support"}
+    result = audit.audit_support_toolpaths_vs_ducts(
+        gcode=clear, contract=contract,
+        source_to_stl_matrix=identity, stl_to_bed_matrix=identity)
+    assert result["status"] == "pass"
+    assert result["collision_count"] == 0
+    assert result["support_extrusion_segments_checked"] == 1
+
+    collision = tmp_path / "support_collision.gcode"
+    write(collision, 0.0)
+    try:
+        audit.audit_support_toolpaths_vs_ducts(
+            gcode=collision, contract=contract,
+            source_to_stl_matrix=identity, stl_to_bed_matrix=identity)
+    except audit.AuditError as exc:
+        assert "support toolpath enters a cable duct" in str(exc)
+    else:
+        raise AssertionError("support extrusion inside a duct passed")
+
+
+def test_segment_distance_clamps_degenerate_and_finite_segments() -> None:
+    cases = (
+        (
+            (0.0, 0.0, 0.0), (10.0, 0.0, 0.0),
+            (12.0, 3.0, 0.0), (12.0, 3.0, 0.0),
+            math.sqrt(13.0),
+        ),
+        (
+            (12.0, 3.0, 0.0), (12.0, 3.0, 0.0),
+            (0.0, 0.0, 0.0), (10.0, 0.0, 0.0),
+            math.sqrt(13.0),
+        ),
+        (
+            (0.0, 0.0, 0.0), (10.0, 0.0, 0.0),
+            (5.0, -3.0, 4.0), (5.0, 3.0, 4.0),
+            4.0,
+        ),
+        (
+            (0.0, 0.0, 0.0), (1.0, 0.0, 0.0),
+            (0.0, 2.0, 0.0), (1.0, 2.0, 0.0),
+            2.0,
+        ),
+    )
+    for first_start, first_end, second_start, second_end, expected in cases:
+        actual = audit._segment_distance_3d(
+            first_start, first_end, second_start, second_end)
+        assert math.isclose(actual, expected, abs_tol=1.0e-12)
+
+
+def test_duct_collision_contract_requires_complete_state_inventory() -> None:
+    regions = [{
+        "name": name,
+        "kind": "polyline_tube",
+        "radius_mm": 1.0,
+        "points_xyz_mm": [[0.0, 0.0, 0.0]],
+    } for name in sorted(
+        audit.EXPECTED_KEYED_LM_DUCT_REGION_NAMES["no_floor_stand"])]
+    contract = {
+        "schema_version": 1,
+        "coordinate_space": "authoritative_source_mm",
+        "split_half": "top",
+        "split_seam_y_mm": audit.EXPECTED_LM_SPLIT_SEAM_Y_MM,
+        "modifier_clearance_mm": 0.25,
+        "regions": regions,
+    }
+    normalized = audit._normalize_duct_collision_contract(
+        contract,
+        artifact_id="no-floor:Obi-Wan-split:"
+        "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+        state="no_floor_stand",
+        variant="Obi-Wan-split",
+        part="lx521_top_obiwan_optional_lm_keyed_2of2_top",
+        modifier_clearance_mm=0.25,
+    )
+    assert {
+        region["name"] for region in normalized["regions"]
+    } == audit.EXPECTED_KEYED_LM_DUCT_REGION_NAMES["no_floor_stand"]
+
+    for changed, expected in (
+            ({**contract, "regions": regions[:-1]}, "inventory is incomplete"),
+            ({
+                **contract,
+                "split_seam_y_mm":
+                audit.EXPECTED_LM_SPLIT_SEAM_Y_MM + 0.001,
+            }, "differs from R6F authority")):
+        try:
+            audit._normalize_duct_collision_contract(
+                changed,
+                artifact_id="no-floor:Obi-Wan-split:"
+                "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+                state="no_floor_stand",
+                variant="Obi-Wan-split",
+                part="lx521_top_obiwan_optional_lm_keyed_2of2_top",
+                modifier_clearance_mm=0.25,
+            )
+        except audit.AuditError as exc:
+            assert expected in str(exc)
+        else:
+            raise AssertionError(
+                "incomplete duct collision contract passed")
+
+
 def test_arc_parser_fails_closed_on_unsupported_encodings(tmp_path: Path):
     prefix = "\n".join((
         "M83", "M104 S220", "M140 S55", "G90",
@@ -620,6 +763,13 @@ def test_artifact_density_overrides_are_exact(tmp_path: Path) -> None:
         }, bundle, tmp_path / f"um_{state}")
         assert um["resolved"]["process"][
             "sparse_infill_density"] == "40%"
+        assert um["identity"]["effective"]["support_enabled"] is True
+        assert um["identity"]["effective"][
+            "support_on_build_plate_only"] is True
+        assert um["identity"]["effective"][
+            "support_critical_regions_only"] is True
+        assert um["identity"]["effective"][
+            "support_remove_small_overhang"] is True
 
 
 def test_every_artifact_override_must_match_once() -> None:
@@ -644,7 +794,7 @@ def test_every_artifact_override_must_match_once() -> None:
         raise AssertionError("ambiguous artifact override passed")
 
 
-def test_support_override_targets_only_keyed_lm_split_jobs() -> None:
+def test_support_override_targets_only_exact_duct_safe_jobs() -> None:
     config = audit._load_json(audit.DEFAULT_PROFILE)
     audit._validate_support_override_policy(config)
     base_process = config["repo_overrides"]["process"]
@@ -656,18 +806,24 @@ def test_support_override_targets_only_keyed_lm_split_jobs() -> None:
         rule for rule in config["artifact_overrides"]
         if audit._boolish(rule.get("process", {}).get("enable_support"))
     ]
-    assert len(support_rules) == 4
+    assert len(support_rules) == 6
     assert {
         rule["match"]["state"] for rule in support_rules
     } == {"floor_stand", "no_floor_stand"}
     assert {
         rule["match"]["part"] for rule in support_rules
     } == {
+        "lx521_top_obiwan_core_2of2_um_carrier",
         "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
         "lx521_top_obiwan_optional_lm_keyed_2of2_top",
     }
+    assert {
+        tuple(sorted(rule["match"].items())) for rule in support_rules
+    } == {
+        tuple(sorted(match.items()))
+        for match in audit.SUPPORTED_ARTIFACT_MATCHES
+    }
     for rule in support_rules:
-        assert rule["match"]["variant"] == "Obi-Wan-split"
         process = rule["process"]
         assert process["enable_support"] == "1"
         assert process["support_on_build_plate_only"] == "1"
@@ -693,7 +849,59 @@ def test_support_override_targets_only_keyed_lm_split_jobs() -> None:
         raise AssertionError("unexpected support-enabled artifact passed")
 
 
-def test_support_enabled_requires_both_scope_guards() -> None:
+def test_um_carrier_collision_contract_is_unsplit_and_exact() -> None:
+    contract = {
+        "schema_version": 1,
+        "coordinate_space": "authoritative_source_mm",
+        "owner": "um_carrier",
+        "modifier_clearance_mm": 0.25,
+        "regions": [{
+            "name": "um_carrier_t_route_lumen",
+            "kind": "polyline_tube",
+            "radius_mm": 3.0,
+            "points_xyz_mm": [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0]],
+        }],
+    }
+    normalized = audit._normalize_duct_collision_contract(
+        contract,
+        artifact_id="no_floor_stand:Obi-Wan:"
+        "lx521_top_obiwan_core_2of2_um_carrier",
+        state="no_floor_stand",
+        variant="Obi-Wan",
+        part="lx521_top_obiwan_core_2of2_um_carrier",
+        modifier_clearance_mm=0.25,
+    )
+    assert normalized["owner"] == "um_carrier"
+    assert "split_half" not in normalized
+    assert {
+        region["name"] for region in normalized["regions"]
+    } == audit.EXPECTED_UM_CARRIER_DUCT_REGION_NAMES
+
+
+def test_floating_cantilever_warning_is_release_blocking(
+    tmp_path: Path,
+) -> None:
+    clean = tmp_path / "clean.log"
+    clean.write_text("[warning] no filament colors found\n", encoding="utf-8")
+    audit._validate_bambu_slicer_log(
+        clean, artifact_id="carrier", phase="audit slice")
+
+    floating = tmp_path / "floating.log"
+    floating.write_text(
+        "found NON_CRITICAL slicing warnings: object has floating "
+        "cantilever.\n",
+        encoding="utf-8",
+    )
+    try:
+        audit._validate_bambu_slicer_log(
+            floating, artifact_id="carrier", phase="audit slice")
+    except audit.AuditError as exc:
+        assert "floating_cantilever" in str(exc)
+    else:
+        raise AssertionError("floating-cantilever warning passed")
+
+
+def test_support_enabled_requires_all_three_safety_guards() -> None:
     bundle = _synthetic_profile_bundle()
     for missing in (
             "support_on_build_plate_only",
@@ -1175,6 +1383,8 @@ def test_ready_custom_gcodes_and_archive_are_self_contained(
         archive.writestr(
             "Metadata/custom_gcode_per_layer.xml", custom_xml)
         archive.writestr("Metadata/plate_1.gcode", gcode.read_bytes())
+    assert audit._inject_ready_project_object_support(
+        project, enabled=False) == ["2"]
     result = audit._validate_ready_project_archive(
         project, gcode, expected_pause_z=pause_z,
         profile_bundle=bundle)
@@ -1182,6 +1392,13 @@ def test_ready_custom_gcodes_and_archive_are_self_contained(
     assert result["embedded_gcode_sha256"] == audit.sha256_file(gcode)
     assert result["gcode_pause_events"][0]["park_z_mm"] == 250.0
     assert result["gcode_pause_events"][0]["restore_z_mm"] == 5.96
+    assert result["object_support_overrides"] == [{
+        "object_id": "2",
+        "enable_support": "0",
+        "support_on_build_plate_only": "0",
+        "support_critical_regions_only": "0",
+        "support_remove_small_overhang": "0",
+    }]
 
     support_bundle = audit._artifact_profile_bundle({
         "id": "floor:split:bottom",
@@ -1214,6 +1431,38 @@ def test_ready_custom_gcodes_and_archive_are_self_contained(
         "support_critical_regions_only"] == "1"
     assert support_result["enforced_project_settings"][
         "support_remove_small_overhang"] == "1"
+    assert support_result["object_support_overrides"] == [{
+        "object_id": "2",
+        "enable_support": "1",
+        "support_on_build_plate_only": "1",
+        "support_critical_regions_only": "1",
+        "support_remove_small_overhang": "1",
+    }]
+
+    incomplete_object_project = (
+        tmp_path / "incomplete_object_supported_ready.gcode.3mf")
+    with zipfile.ZipFile(incomplete_object_project, "w") as archive:
+        archive.writestr(
+            "Metadata/project_settings.config",
+            json.dumps(support_settings))
+        archive.writestr(
+            "Metadata/model_settings.config",
+            model_settings.replace(
+                'value="synthetic.stl"/>',
+                'value="synthetic.stl"/><metadata key="enable_support" '
+                'value="1"/>'))
+        archive.writestr(
+            "Metadata/custom_gcode_per_layer.xml", custom_xml)
+        archive.writestr("Metadata/plate_1.gcode", gcode.read_bytes())
+    try:
+        audit._validate_ready_project_archive(
+            incomplete_object_project, gcode, expected_pause_z=pause_z,
+            profile_bundle=support_bundle)
+    except audit.AuditError as exc:
+        assert "support_on_build_plate_only" in str(exc)
+    else:
+        raise AssertionError(
+            "ready project with incomplete per-object support passed")
 
     support_settings["support_critical_regions_only"] = "0"
     invalid_support_project = tmp_path / "invalid_supported_ready.gcode.3mf"
@@ -2416,7 +2665,7 @@ def test_catalog_envelope_and_frozen_inventory_are_fail_closed(
     try:
         audit.normalize_catalog(path)
     except audit.AuditError as exc:
-        assert "56 artifacts / 102 captive stations" in str(exc)
+        assert "64 artifacts / 114 captive stations" in str(exc)
     else:
         raise AssertionError("truncated production inventory passed")
 

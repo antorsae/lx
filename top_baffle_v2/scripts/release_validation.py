@@ -83,8 +83,8 @@ SCHEMA_VERSION = 1
 AUDIT_SCHEMA_VERSION = 1
 OVERSIZE_COVERED_STATUS = (
     "not_p2s_printable__cavity_covered_by_exact_split")
-EXPECTED_RELEASE_ARTIFACT_COUNT = 56
-EXPECTED_RELEASE_MAGNET_COUNT = 102
+EXPECTED_RELEASE_ARTIFACT_COUNT = 64
+EXPECTED_RELEASE_MAGNET_COUNT = 114
 CANONICAL_MANIFEST_FILENAMES = (
     "captive_magnet_pause_manifest.json",
     "captive_magnet_pause_manifest.csv",
@@ -218,6 +218,16 @@ SUPPORT_PROCESS_KEYS = (
 SUPPORTED_ARTIFACT_MATCHES = (
     {
         "state": "floor_stand",
+        "variant": "Obi-Wan",
+        "part": "lx521_top_obiwan_core_2of2_um_carrier",
+    },
+    {
+        "state": "no_floor_stand",
+        "variant": "Obi-Wan",
+        "part": "lx521_top_obiwan_core_2of2_um_carrier",
+    },
+    {
+        "state": "floor_stand",
         "variant": "Obi-Wan-split",
         "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
     },
@@ -237,11 +247,32 @@ SUPPORTED_ARTIFACT_MATCHES = (
         "part": "lx521_top_obiwan_optional_lm_keyed_2of2_top",
     },
 )
-DUCT_SUPPORT_BLOCKER_MATCH = {
-    "state": "no_floor_stand",
-    "variant": "Obi-Wan-split",
-    "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+DUCT_SUPPORT_BLOCKER_MATCHES = SUPPORTED_ARTIFACT_MATCHES
+EXPECTED_LM_SPLIT_SEAM_Y_MM = 172.481
+EXPECTED_KEYED_LM_DUCT_REGION_NAMES = {
+    "floor_stand": frozenset({
+        "um_route_lumen",
+        "t_route_lumen",
+        "floor_lm_lane_lumen",
+        "floor_um_lane_lumen",
+        "floor_um_feed_relief",
+        "floor_t_lane_lumen",
+        "floor_t_feed_relief",
+    }),
+    "no_floor_stand": frozenset({
+        "um_route_lumen",
+        "t_route_lumen",
+        "lm_internal_and_rear_exit_lumen",
+        "no_floor_lm_entry_bore",
+        "no_floor_t_entry_bore",
+        "no_floor_um_entry_bore",
+        "no_floor_t_entry_vestibule",
+        "no_floor_um_entry_vestibule",
+    }),
 }
+EXPECTED_UM_CARRIER_DUCT_REGION_NAMES = frozenset({
+    "um_carrier_t_route_lumen",
+})
 MAGNET_INSERTION_PARK_BEGIN = "; MAGNET_INSERTION_PARK_BEGIN"
 MAGNET_INSERTION_PARK_END = "; MAGNET_INSERTION_PARK_END"
 MAGNET_INSERTION_PAUSE_COMMAND = "M400 U1"
@@ -337,13 +368,144 @@ def _resolve_path(value: str | Path, base: Path) -> Path:
 def _requires_duct_support_blocker(
     state: str, variant: str, part: str,
 ) -> bool:
-    return {
-        "state": state, "variant": variant, "part": part,
-    } == DUCT_SUPPORT_BLOCKER_MATCH
+    identity = {"state": state, "variant": variant, "part": part}
+    return any(identity == match for match in DUCT_SUPPORT_BLOCKER_MATCHES)
+
+
+def _expected_duct_region_names(
+    *, state: str, variant: str, part: str,
+) -> frozenset[str]:
+    if (variant == "Obi-Wan"
+            and part == "lx521_top_obiwan_core_2of2_um_carrier"):
+        return EXPECTED_UM_CARRIER_DUCT_REGION_NAMES
+    if (variant == "Obi-Wan-split"
+            and part in {
+                "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+                "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+            }):
+        names = EXPECTED_KEYED_LM_DUCT_REGION_NAMES.get(state)
+        if names is not None:
+            return names
+    raise AuditError(
+        f"{state}:{variant}:{part}: no duct collision inventory authority")
+
+
+def _normalize_duct_collision_contract(
+    value: Any, *, artifact_id: str, state: str,
+    variant: str, part: str, modifier_clearance_mm: float,
+) -> dict[str, Any]:
+    """Validate the OCC-free centerline authority used by the G-code gate."""
+    if not isinstance(value, Mapping):
+        raise AuditError(
+            f"{artifact_id}: support blocker lacks a duct collision contract")
+    if (value.get("schema_version") != 1
+            or value.get("coordinate_space")
+            != "authoritative_source_mm"):
+        raise AuditError(
+            f"{artifact_id}: duct collision contract has the wrong schema "
+            "or coordinate space")
+    split_half: str | None = None
+    seam_y: float | None = None
+    owner: str | None = None
+    if part == "lx521_top_obiwan_core_2of2_um_carrier":
+        owner = value.get("owner")
+        if owner != "um_carrier":
+            raise AuditError(
+                f"{artifact_id}: UM carrier collision contract has the "
+                "wrong owner")
+        if "split_half" in value or "split_seam_y_mm" in value:
+            raise AuditError(
+                f"{artifact_id}: unsplit UM carrier contract contains "
+                "keyed-split fields")
+    else:
+        split_half = value.get("split_half")
+        expected_half = (
+            "bottom" if part.endswith("1of2_bottom") else "top")
+        if split_half != expected_half:
+            raise AuditError(
+                f"{artifact_id}: duct collision contract split half is "
+                f"{split_half!r}, expected {expected_half!r}")
+        seam_y = _float(
+            value.get("split_seam_y_mm"),
+            f"{artifact_id} duct collision split seam")
+        if not math.isclose(
+                seam_y, EXPECTED_LM_SPLIT_SEAM_Y_MM,
+                abs_tol=1.0e-9, rel_tol=0.0):
+            raise AuditError(
+                f"{artifact_id}: duct collision split seam {seam_y:g} "
+                f"differs from R6F authority "
+                f"{EXPECTED_LM_SPLIT_SEAM_Y_MM:g}")
+    contract_clearance = _float(
+        value.get("modifier_clearance_mm"),
+        f"{artifact_id} duct collision modifier clearance")
+    if (contract_clearance <= 0.0
+            or not math.isclose(
+                contract_clearance, modifier_clearance_mm,
+                abs_tol=1.0e-9, rel_tol=0.0)):
+        raise AuditError(
+            f"{artifact_id}: duct collision clearance differs from the "
+            "support-blocker clearance")
+    raw_regions = value.get("regions")
+    if not isinstance(raw_regions, list) or not raw_regions:
+        raise AuditError(
+            f"{artifact_id}: duct collision contract has no regions")
+    regions: list[dict[str, Any]] = []
+    names: set[str] = set()
+    total_points = 0
+    for index, raw in enumerate(raw_regions):
+        label = f"{artifact_id} duct collision region {index}"
+        if not isinstance(raw, Mapping):
+            raise AuditError(f"{label} is not an object")
+        name = raw.get("name")
+        if (not isinstance(name, str) or not name
+                or name in names):
+            raise AuditError(f"{label} has an invalid or duplicate name")
+        names.add(name)
+        if raw.get("kind") != "polyline_tube":
+            raise AuditError(f"{label} is not a polyline_tube")
+        radius = _float(raw.get("radius_mm"), f"{label} radius")
+        if radius <= 0.0:
+            raise AuditError(f"{label} radius must be positive")
+        raw_points = raw.get("points_xyz_mm")
+        if not isinstance(raw_points, list) or not raw_points:
+            raise AuditError(f"{label} has no centerline points")
+        points = [
+            list(_vec3(point, f"{label} point {point_index}"))
+            for point_index, point in enumerate(raw_points)
+        ]
+        total_points += len(points)
+        if total_points > 200_000:
+            raise AuditError(
+                f"{artifact_id}: duct collision contract is unbounded")
+        regions.append({
+            "name": name,
+            "kind": "polyline_tube",
+            "radius_mm": radius,
+            "points_xyz_mm": points,
+        })
+    expected_names = _expected_duct_region_names(
+        state=state, variant=variant, part=part)
+    if names != expected_names:
+        raise AuditError(
+            f"{artifact_id}: duct collision region inventory is incomplete: "
+            f"expected={sorted(expected_names)}, actual={sorted(names)}")
+    normalized = {
+        "schema_version": 1,
+        "coordinate_space": "authoritative_source_mm",
+        "modifier_clearance_mm": contract_clearance,
+        "regions": regions,
+    }
+    if owner is not None:
+        normalized["owner"] = owner
+    else:
+        normalized["split_half"] = split_half
+        normalized["split_seam_y_mm"] = seam_y
+    return normalized
 
 
 def _normalize_duct_support_blocker(
-    *, artifact_id: str, stl: Path, stl_sha256: str, part: str,
+    *, artifact_id: str, state: str, variant: str, stl: Path,
+    stl_sha256: str, part: str,
     source_to_stl_matrix: tuple[tuple[float, ...], ...],
 ) -> dict[str, Any]:
     """Bind the generated no-support volume to its exact printable STL."""
@@ -363,7 +525,7 @@ def _normalize_duct_support_blocker(
     if (payload.get("schema_version") != 1
             or payload.get("kind") != "bambu_support_blocker"
             or payload.get("purpose")
-            != "forbid_support_inside_no_floor_lm_um_t_ducts"
+            != "forbid_support_inside_functional_ducts"
             or payload.get("part") != part):
         raise AuditError(
             f"{artifact_id}: duct support-blocker binding has the wrong "
@@ -387,11 +549,26 @@ def _normalize_duct_support_blocker(
         raise AuditError(
             f"{artifact_id}: support blocker and printable STL use different "
             "source-to-STL transforms")
+    modifier_clearance = _float(
+        payload.get("modifier_clearance_mm"),
+        f"{artifact_id} support-blocker clearance")
+    if modifier_clearance <= 0.0:
+        raise AuditError(
+            f"{artifact_id}: support-blocker clearance must be positive")
+    duct_collision_contract = _normalize_duct_collision_contract(
+        payload.get("duct_collision_contract"),
+        artifact_id=artifact_id,
+        state=state,
+        variant=variant,
+        part=part,
+        modifier_clearance_mm=modifier_clearance,
+    )
     return {
         "support_blocker": blocker,
         "support_blocker_sha256": blocker_sha256,
         "support_blocker_binding": binding,
         "support_blocker_binding_sha256": sha256_file(binding),
+        "duct_collision_contract": duct_collision_contract,
     }
 
 
@@ -597,7 +774,7 @@ def _percent(value: Any, label: str) -> float:
 
 
 def _validate_support_override_policy(config: Mapping[str, Any]) -> None:
-    """Pin support off globally and on only for all keyed LM split parts."""
+    """Pin support off globally and on only for its exact safe allowlist."""
     requirements = config.get("requirements")
     if (not isinstance(requirements, Mapping)
             or requirements.get("support_enabled") is not False):
@@ -647,7 +824,7 @@ def _validate_support_override_policy(config: Mapping[str, Any]) -> None:
     if actual_match_keys != required_match_keys:
         raise AuditError(
             "support overrides must target exactly the floor/no-floor "
-            "Obi-Wan keyed LM split artifacts")
+            "Obi-Wan keyed LM split and UM carrier artifacts")
 
 
 def _magnet_insertion_pause_policy(
@@ -1699,6 +1876,8 @@ def normalize_catalog(
         if _requires_duct_support_blocker(state, variant, part):
             support_blocker_binding = _normalize_duct_support_blocker(
                 artifact_id=artifact_id,
+                state=state,
+                variant=variant,
                 stl=stl,
                 stl_sha256=stl_sha,
                 part=part,
@@ -1830,6 +2009,7 @@ def _validate_artifact_bindings(artifact: Mapping[str, Any]) -> None:
     blocker_keys = {
         "support_blocker", "support_blocker_sha256",
         "support_blocker_binding", "support_blocker_binding_sha256",
+        "duct_collision_contract",
     }
     requires_blocker = _requires_duct_support_blocker(
         str(artifact["state"]), str(artifact["variant"]),
@@ -1837,7 +2017,7 @@ def _validate_artifact_bindings(artifact: Mapping[str, Any]) -> None:
     present_blocker_keys = blocker_keys.intersection(artifact)
     if requires_blocker and present_blocker_keys != blocker_keys:
         raise AuditError(
-            f"{artifact['id']}: no-floor duct support blocker binding is "
+            f"{artifact['id']}: duct support blocker binding is "
             "incomplete")
     if not requires_blocker and present_blocker_keys:
         raise AuditError(
@@ -1869,7 +2049,17 @@ def _validate_artifact_bindings(artifact: Mapping[str, Any]) -> None:
                 or _matrix4(
                     payload.get("source_to_stl_matrix"),
                     f"{artifact['id']} support-blocker transform")
-                != artifact["source_to_stl_matrix"]):
+                != artifact["source_to_stl_matrix"]
+                or _normalize_duct_collision_contract(
+                    payload.get("duct_collision_contract"),
+                    artifact_id=str(artifact["id"]),
+                    state=str(artifact["state"]),
+                    variant=str(artifact["variant"]),
+                    part=str(artifact["part"]),
+                    modifier_clearance_mm=_float(
+                        payload.get("modifier_clearance_mm"),
+                        f"{artifact['id']} support-blocker clearance"),
+                ) != artifact["duct_collision_contract"]):
             raise AuditError(
                 f"{artifact['id']}: support-blocker metadata no longer "
                 "binds the staged printable and modifier meshes")

@@ -54,6 +54,7 @@ to_print/release_manifest.json
 !build/no_floor_stand/stl/*.print.json
 !build/wings/*/stl/*.print.json
 !build/*/support_blockers/*.support_blocker.json
+!build/print_plates/**/*.plate.json
 
 # The product catalog is deliberately JSON-backed and carries linked copies of
 # the same print authorities. Keep it trackable despite the parent repository's

@@ -107,8 +107,8 @@ TARGET_RE = re.compile(r"^[A-Za-z0-9_./:+%-]+$")
 REMOTE_MAKE_TARGETS = {
     "all", "candidate", "release", "floor_stand", "floor_obiwan",
     "no_floor_stand", "no_floor_obiwan", "no_floor_obiwan_01a",
-    "obiwan_release",
-    "obiwan_wings",
+    "obiwan_release", "obiwan_state_releases",
+    "obiwan_wings", "obiwan_wing_exports",
     "obiwan_wing_artifacts", "check_obiwan_wings",
     "common", "check", "check_captive_magnets", "check_obiwan",
     "check_obiwan_shells",
@@ -1282,11 +1282,17 @@ def _target_required_artifact_relatives(
         required.add(CAPTIVE_MAGNET_CATALOG_ARTIFACT)
 
     if target in {
-            "obiwan_wings", "obiwan_wing_artifacts",
+            "obiwan_wings", "obiwan_wing_exports",
+            "obiwan_wing_artifacts",
             "check_obiwan_wings"}:
         required.add(OBIWAN_WING_DESIGN_MAP_ARTIFACT)
     elif target == "common":
         required.add(COMMON_ARTIFACT)
+    elif target == "obiwan_state_releases":
+        required.update(_obiwan_release_artifact_relatives(
+            work, "floor_stand"))
+        required.update(_obiwan_release_artifact_relatives(
+            work, "no_floor_stand"))
     elif target == "floor_obiwan":
         required.update(_obiwan_release_artifact_relatives(
             work, "floor_stand"))
@@ -2010,7 +2016,8 @@ def _full_output_roots(targets: list[str]) -> set[str]:
         full.update(("floor_stand", "no_floor_stand", "wings"))
     full.update(target for target in targets if target in {"floor_stand", "no_floor_stand"})
     if any(target in {
-            "obiwan_wings", "obiwan_wing_artifacts",
+            "obiwan_wings", "obiwan_wing_exports",
+            "obiwan_wing_artifacts",
             "check_obiwan_wings",
     } for target in targets):
         full.add("wings")

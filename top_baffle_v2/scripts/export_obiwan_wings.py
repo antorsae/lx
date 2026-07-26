@@ -92,6 +92,7 @@ FIXED_TIMESTAMP = "2020-01-01T00:00:00"
 VARIANTS = ("ac", "ae")
 SIDES = ("left", "right")
 PART_ORDER = ("lm_lower", "lm_upper", "um")
+TWO_PIECE_PART_ORDER = ("lm_lower", "lm_um_upper")
 BED_LIMIT_MM = 220.0
 FRONT_Z_MM = 18.3
 REAR_Z_MM = 6.8
@@ -115,10 +116,13 @@ STATE_CONTEXT_LINEWIDTH = 1.45
 CANONICAL_STEP_TEMPLATE = "top_baffle_nd25fw4_obiwan_wing_{slug}.step"
 ASSEMBLED_STEP_TEMPLATE = (
     "top_baffle_nd25fw4_obiwan_wing_{slug}_assembled.step")
+TWO_PIECE_ASSEMBLED_STEP_TEMPLATE = (
+    "top_baffle_nd25fw4_obiwan_wing_{slug}_assembled_b.step")
 FACTS_TEMPLATE = "obiwan_wing_{slug}_facts.json"
 MANIFEST_TEMPLATE = "obiwan_wing_{slug}_print_manifest.json"
 REVIEW_KINDS = (
-    "front", "rear", "side_section", "split_exploded", "magnet_roots")
+    "front", "rear", "side_section", "split_exploded",
+    "two_piece_split_exploded", "magnet_roots")
 
 
 def _guard_or_reexec() -> None:
@@ -263,6 +267,18 @@ def _stl_name(slug: str, side: str, order: int, role: str) -> str:
     return f"lx521_top_obiwan_wing_{slug}_{side}_{order}of3_{role}.stl"
 
 
+def _two_piece_part_label(
+        slug: str, side: str, order: int, role: str) -> str:
+    return f"obiwan_wing_{slug}_{side}_b_{order}of2_{role}"
+
+
+def _two_piece_stl_name(
+        slug: str, side: str, order: int, role: str) -> str:
+    return (
+        f"lx521_top_obiwan_wing_{slug}_{side}_b_"
+        f"{order}of2_{role}.stl")
+
+
 def _best_print_orientation(shape, Rot) -> tuple[Any, float, dict[str, Any]]:
     """Return a deterministic front-down minimum-XY orientation.
 
@@ -303,6 +319,39 @@ def _best_print_orientation(shape, Rot) -> tuple[Any, float, dict[str, Any]]:
     angle, best_score, best_shape, best_bbox = min(
         ((angle, *score(angle)) for angle in candidate_angles),
         key=lambda item: item[1])
+    primary_size = best_bbox.size
+    if (float(primary_size.X) > BED_LIMIT_MM + 1e-6
+            or float(primary_size.Y) > BED_LIMIT_MM + 1e-6):
+        # A long crescent can fit a square plate diagonally even when its
+        # minimum-area rectangle has one overlong side.  Preserve the legacy
+        # orientation for every established A piece that already fits, and
+        # search only for otherwise-failing alternatives such as B's fused
+        # LM/UM upper.
+        from shapely import affinity
+
+        hull = MultiPoint(xy).convex_hull
+        sampled = []
+        for candidate_angle in (
+                index * 0.25 for index in range(int(180.0 / 0.25))):
+            rotated = affinity.rotate(
+                hull, candidate_angle, origin=(0.0, 0.0),
+                use_radians=False)
+            min_x, min_y, max_x, max_y = rotated.bounds
+            width = float(max_x - min_x)
+            height = float(max_y - min_y)
+            sampled.append((
+                (max(width, height), width * height,
+                 abs(candidate_angle)),
+                candidate_angle,
+            ))
+        fallback_angles = [
+            candidate_angle for _candidate_score, candidate_angle
+            in sorted(sampled)[:8]
+        ]
+        angle, best_score, best_shape, best_bbox = min(
+            ((candidate_angle, *score(candidate_angle))
+             for candidate_angle in fallback_angles),
+            key=lambda item: item[1])
     size = best_bbox.size
     if (float(size.X) > BED_LIMIT_MM + 1e-6
             or float(size.Y) > BED_LIMIT_MM + 1e-6
@@ -341,6 +390,7 @@ def _mesh_records(parts: dict[tuple[str, str], Any]) -> list[dict[str, Any]]:
         "lm_lower": "#4f9bd7",
         "lm_upper": "#62b77b",
         "um": "#efa43a",
+        "lm_um_upper": "#62b77b",
     }
     for (side, role), shape in parts.items():
         vertices, triangles = shape.tessellate(
@@ -533,7 +583,9 @@ def _draw_mesh_review(
                 FRONT_Z_MM
                 + z_scale * (triangles[..., 2] - FRONT_Z_MM))
         if exploded:
-            role_index = PART_ORDER.index(record["role"])
+            role_index = (
+                1 if record["role"] == "lm_um_upper"
+                else PART_ORDER.index(record["role"]))
             direction = -1.0 if record["side"] == "left" else 1.0
             triangles[..., 0] += direction * 9.0 * role_index
             triangles[..., 1] += 10.0 * (role_index - 1)
@@ -1041,10 +1093,12 @@ def _validate_png(path: Path) -> None:
 def _render_reviews(
         slug: str, parts: dict[tuple[str, str], Any], review_dir: Path,
         receiver_records, geometry,
+        two_piece_parts: dict[tuple[str, str], Any],
         ) -> tuple[list[Path], dict[str, Any]]:
     display_slug = {"ac": "Ac", "ae": "Ae"}[slug]
     metadata_variant = slug.upper()
     records = _mesh_records(parts)
+    two_piece_records = _mesh_records(two_piece_parts)
     context_parts = geometry.wing_review_split_context_parts(
         NO_FLOOR_STAGE_MANIFEST, FLOOR_STAGE_MANIFEST)
     context_records = _context_mesh_records(context_parts)
@@ -1073,6 +1127,14 @@ def _render_reviews(
         outputs["split_exploded"], records,
         title=f"Obi-Wan {display_slug} — six-piece exploded print assembly",
         metadata_variant=metadata_variant,
+        elev=28.0, azim=-62.0, exploded=True,
+        context_records=context_records)
+    _draw_mesh_review(
+        outputs["two_piece_split_exploded"], two_piece_records,
+        title=(
+            f"Obi-Wan {display_slug} — four-piece alternative exploded "
+            "print assembly"),
+        metadata_variant=f"{metadata_variant}-B",
         elev=28.0, azim=-62.0, exploded=True,
         context_records=context_records)
     _draw_magnet_root_review(
@@ -1169,8 +1231,9 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
 
     geometry = importlib.import_module(GEOMETRY_MODULE)
     for api_name in (
-            "wing_monolithic", "wing_print_parts", "wing_facts",
-            "receiver_facts", "wing_review_split_context_parts"):
+            "wing_monolithic", "wing_print_parts",
+            "wing_two_piece_print_parts", "wing_facts", "receiver_facts",
+            "wing_review_split_context_parts"):
         if not callable(getattr(geometry, api_name, None)):
             raise RuntimeError(
                 f"{GEOMETRY_MODULE} lacks required API {api_name}()")
@@ -1208,6 +1271,20 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
                 _require_solids(shape, 1, f"{slug}/{side}/{role}")
                 shape.label = _part_label(slug, side, order, role)
                 print_parts[(side, role)] = shape
+        two_piece_parts: dict[tuple[str, str], Any] = {}
+        for side in SIDES:
+            mapping = geometry.wing_two_piece_print_parts(slug, side)
+            if set(mapping) != set(TWO_PIECE_PART_ORDER):
+                raise RuntimeError(
+                    f"{slug}/{side}: two-piece roles {sorted(mapping)} do "
+                    f"not match {list(TWO_PIECE_PART_ORDER)}")
+            for order, role in enumerate(TWO_PIECE_PART_ORDER, start=1):
+                shape = mapping[role]
+                _require_solids(
+                    shape, 1, f"{slug}/{side}/two-piece/{role}")
+                shape.label = _two_piece_part_label(
+                    slug, side, order, role)
+                two_piece_parts[(side, role)] = shape
 
         canonical_label = f"lx521_obiwan_basic_wing_{slug}_monolithic_pair"
         canonical = Compound(children=[monoliths[side] for side in SIDES])
@@ -1221,109 +1298,155 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
         assembled = Compound(children=assembled_children)
         assembled.label = assembly_label
         _require_solids(assembled, 6, assembly_label)
+        two_piece_assembly_label = (
+            f"lx521_obiwan_basic_wing_{slug}_two_piece_print_assembly")
+        two_piece_assembled = Compound(children=[
+            two_piece_parts[(side, role)]
+            for side in SIDES for role in TWO_PIECE_PART_ORDER
+        ])
+        two_piece_assembled.label = two_piece_assembly_label
+        _require_solids(
+            two_piece_assembled, 4, two_piece_assembly_label)
 
         canonical_rel = Path(CANONICAL_STEP_TEMPLATE.format(slug=slug))
         assembled_rel = Path(ASSEMBLED_STEP_TEMPLATE.format(slug=slug))
+        two_piece_assembled_rel = Path(
+            TWO_PIECE_ASSEMBLED_STEP_TEMPLATE.format(slug=slug))
         canonical_path = slug_stage / canonical_rel
         assembled_path = slug_stage / assembled_rel
+        two_piece_assembled_path = slug_stage / two_piece_assembled_rel
         export_step(canonical, str(canonical_path), timestamp=FIXED_TIMESTAMP)
         export_step(assembled, str(assembled_path), timestamp=FIXED_TIMESTAMP)
+        export_step(
+            two_piece_assembled, str(two_piece_assembled_path),
+            timestamp=FIXED_TIMESTAMP)
         validate_step_transaction(canonical_path)
         validate_step_transaction(assembled_path)
+        validate_step_transaction(two_piece_assembled_path)
 
         part_facts = []
         stl_relatives = []
         sidecar_relatives = []
-        for side in SIDES:
-            for order, role in enumerate(PART_ORDER, start=1):
-                shape = print_parts[(side, role)]
-                mesh_tolerance = (
-                    AE_MESH_TOLERANCE_MM
-                    if slug == "ae" else MESH_TOLERANCE_MM)
-                mesh_angular_tolerance = (
-                    AE_MESH_ANGULAR_TOLERANCE
-                    if slug == "ae" else MESH_ANGULAR_TOLERANCE)
-                moved, z_angle, print_facts = _best_print_orientation(shape, Rot)
-                name = _stl_name(slug, side, order, role)
-                relative = Path("stl") / name
-                path = slug_stage / relative
-                export_stl(
-                    moved, str(path), tolerance=mesh_tolerance,
-                    angular_tolerance=mesh_angular_tolerance)
-                _validate_binary_stl(path)
-                zero_fixes = _canonicalize_transform_zeros(path)
-                mesh_facts = _strict_mesh_facts(path)
-                sidecar_relative = relative.with_suffix(".print.json")
-                sidecar_path = sidecar_path_for_stl(path)
-                if sidecar_path != slug_stage / sidecar_relative:
-                    raise RuntimeError(
-                        f"non-canonical print sidecar path for {relative}: "
-                        f"{sidecar_path}")
-                write_print_sidecar(
-                    path,
-                    part=path.stem,
-                    transform=print_facts["transform"],
-                    extra={
-                        "artifact_family": "obiwan_wing_artifacts",
-                        "variant_slug": slug,
-                        "assembly_label": shape.label,
-                        "side": side,
-                        "order": order,
-                        "role": role,
-                        "mesh": {
-                            "tolerance_mm": mesh_tolerance,
-                            "angular_tolerance": mesh_angular_tolerance,
-                        },
-                    },
-                )
-                sidecar_payload = validate_print_sidecar(
-                    path, sidecar_path)
-                sidecar_transform = {
-                    key: sidecar_payload.get(key)
-                    for key in print_facts["transform"]
-                }
-                if sidecar_transform != print_facts["transform"]:
-                    raise RuntimeError(
-                        f"print sidecar transform drifted from exporter: "
-                        f"{sidecar_path}")
-                if sidecar_payload.get("stl_sha256") != _sha256(path):
-                    raise RuntimeError(
-                        f"print sidecar does not bind its STL: "
-                        f"{sidecar_path}")
-                entry = {
-                    "label": shape.label,
-                    "path": relative.as_posix(),
+        part_specs = [
+            {
+                "split_variant": "a",
+                "piece_count": 3,
+                "side": side,
+                "order": order,
+                "role": role,
+                "shape": print_parts[(side, role)],
+                "name": _stl_name(slug, side, order, role),
+            }
+            for side in SIDES
+            for order, role in enumerate(PART_ORDER, start=1)
+        ] + [
+            {
+                "split_variant": "b",
+                "piece_count": 2,
+                "side": side,
+                "order": order,
+                "role": role,
+                "shape": two_piece_parts[(side, role)],
+                "name": _two_piece_stl_name(slug, side, order, role),
+            }
+            for side in SIDES
+            for order, role in enumerate(TWO_PIECE_PART_ORDER, start=1)
+        ]
+        for spec in part_specs:
+            split_variant = spec["split_variant"]
+            piece_count = spec["piece_count"]
+            side = spec["side"]
+            order = spec["order"]
+            role = spec["role"]
+            shape = spec["shape"]
+            mesh_tolerance = (
+                AE_MESH_TOLERANCE_MM
+                if slug == "ae" else MESH_TOLERANCE_MM)
+            mesh_angular_tolerance = (
+                AE_MESH_ANGULAR_TOLERANCE
+                if slug == "ae" else MESH_ANGULAR_TOLERANCE)
+            moved, z_angle, print_facts = _best_print_orientation(shape, Rot)
+            relative = Path("stl") / spec["name"]
+            path = slug_stage / relative
+            export_stl(
+                moved, str(path), tolerance=mesh_tolerance,
+                angular_tolerance=mesh_angular_tolerance)
+            _validate_binary_stl(path)
+            zero_fixes = _canonicalize_transform_zeros(path)
+            mesh_facts = _strict_mesh_facts(path)
+            sidecar_relative = relative.with_suffix(".print.json")
+            sidecar_path = sidecar_path_for_stl(path)
+            if sidecar_path != slug_stage / sidecar_relative:
+                raise RuntimeError(
+                    f"non-canonical print sidecar path for {relative}: "
+                    f"{sidecar_path}")
+            write_print_sidecar(
+                path,
+                part=path.stem,
+                transform=print_facts["transform"],
+                extra={
+                    "artifact_family": "obiwan_wing_artifacts",
+                    "variant_slug": slug,
+                    "assembly_label": shape.label,
+                    "split_variant": split_variant,
+                    "piece_count": piece_count,
                     "side": side,
                     "order": order,
                     "role": role,
-                    "assembly_bbox_mm": _bbox_facts(shape),
-                    "print_bbox_mm": print_facts["bbox_mm"],
-                    "volume_mm3": geometry.adaptive_volume_mm3(shape),
-                    "volume_integration": "BRepGProp_adaptive_2d_Gauss",
-                    "bed_limit_mm": BED_LIMIT_MM,
-                    "print_transform_deg": {"x": 180.0, "z": z_angle},
-                    "print_transform": print_facts["transform"],
-                    "print_sidecar": sidecar_relative.as_posix(),
-                    "print_sidecar_sha256": _sha256(sidecar_path),
-                    "mesh_tolerance_mm": mesh_tolerance,
-                    "mesh_angular_tolerance": mesh_angular_tolerance,
-                    "transform_zero_fixes": zero_fixes,
-                    "stl_diagnostics": mesh_facts,
-                }
-                part_facts.append(entry)
-                stl_relatives.append(relative)
-                sidecar_relatives.append(sidecar_relative)
+                    "mesh": {
+                        "tolerance_mm": mesh_tolerance,
+                        "angular_tolerance": mesh_angular_tolerance,
+                    },
+                },
+            )
+            sidecar_payload = validate_print_sidecar(path, sidecar_path)
+            sidecar_transform = {
+                key: sidecar_payload.get(key)
+                for key in print_facts["transform"]
+            }
+            if sidecar_transform != print_facts["transform"]:
+                raise RuntimeError(
+                    f"print sidecar transform drifted from exporter: "
+                    f"{sidecar_path}")
+            if sidecar_payload.get("stl_sha256") != _sha256(path):
+                raise RuntimeError(
+                    f"print sidecar does not bind its STL: {sidecar_path}")
+            entry = {
+                "label": shape.label,
+                "path": relative.as_posix(),
+                "split_variant": split_variant,
+                "piece_count": piece_count,
+                "side": side,
+                "order": order,
+                "role": role,
+                "assembly_bbox_mm": _bbox_facts(shape),
+                "print_bbox_mm": print_facts["bbox_mm"],
+                "volume_mm3": geometry.adaptive_volume_mm3(shape),
+                "volume_integration": "BRepGProp_adaptive_2d_Gauss",
+                "bed_limit_mm": BED_LIMIT_MM,
+                "print_transform_deg": {"x": 180.0, "z": z_angle},
+                "print_transform": print_facts["transform"],
+                "print_sidecar": sidecar_relative.as_posix(),
+                "print_sidecar_sha256": _sha256(sidecar_path),
+                "mesh_tolerance_mm": mesh_tolerance,
+                "mesh_angular_tolerance": mesh_angular_tolerance,
+                "transform_zero_fixes": zero_fixes,
+                "stl_diagnostics": mesh_facts,
+            }
+            part_facts.append(entry)
+            stl_relatives.append(relative)
+            sidecar_relatives.append(sidecar_relative)
 
         review_paths, review_context = _render_reviews(
             slug, print_parts, review_stage, geometry.receiver_facts("right"),
-            geometry)
+            geometry, two_piece_parts)
         review_relatives = [Path("review") / path.name for path in review_paths]
 
         source_geometry = geometry.wing_facts(slug)
         facts_rel = Path(FACTS_TEMPLATE.format(slug=slug))
         facts_path = slug_stage / facts_rel
         facts_payload = {
-            "schema_version": 2,
+            "schema_version": 3,
             "artifact_family": "obiwan_wing_artifacts",
             "variant_slug": slug,
             "source": source,
@@ -1341,6 +1464,12 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
                     "solid_count": 6,
                     "bbox_mm": _bbox_facts(assembled),
                 },
+                "two_piece_assembled_step": {
+                    "path": two_piece_assembled_rel.as_posix(),
+                    "label": two_piece_assembly_label,
+                    "solid_count": 4,
+                    "bbox_mm": _bbox_facts(two_piece_assembled),
+                },
                 "print_parts": part_facts,
                 "review_pngs": [path.as_posix() for path in review_relatives],
                 "review_context": review_context,
@@ -1351,6 +1480,7 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
         artifact_specs = [
             (canonical_rel, "canonical_step"),
             (assembled_rel, "assembled_step"),
+            (two_piece_assembled_rel, "assembled_step"),
             *((relative, "print_stl") for relative in stl_relatives),
             *((relative, "print_sidecar")
               for relative in sidecar_relatives),
@@ -1365,7 +1495,7 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
         manifest_rel = Path(MANIFEST_TEMPLATE.format(slug=slug))
         manifest_path = slug_stage / manifest_rel
         manifest_payload = {
-            "schema_version": 2,
+            "schema_version": 3,
             "artifact_family": "obiwan_wing_artifacts",
             "variant_slug": slug,
             "source": source,
@@ -1373,6 +1503,8 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
             "facts_sha256": _sha256(facts_path),
             "canonical_step_path": canonical_rel.as_posix(),
             "assembled_step_path": assembled_rel.as_posix(),
+            "two_piece_assembled_step_path": (
+                two_piece_assembled_rel.as_posix()),
             "print_parts": [entry["path"] for entry in part_facts],
             "print_sidecars": [
                 entry["print_sidecar"] for entry in part_facts],
@@ -1386,6 +1518,8 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
             "variant_slug": slug,
             "canonical_step": _result_path(final_slug / canonical_rel),
             "assembled_step": _result_path(final_slug / assembled_rel),
+            "two_piece_assembled_step": _result_path(
+                final_slug / two_piece_assembled_rel),
             "stl_count": len(stl_relatives),
             "print_sidecar_count": len(sidecar_relatives),
             "facts": _result_path(final_slug / facts_rel),

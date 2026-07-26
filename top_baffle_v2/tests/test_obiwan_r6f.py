@@ -674,7 +674,7 @@ def test_route_contract():
     assert memory_guard.MIN_FREE_MB >= memory_guard.PROFILE_MIN_FREE_MB
     assert memory_guard.GUARD_SLOTS <= memory_guard.PROFILE_MAX_GUARD_SLOTS
     assert staged.SCHEMA_VERSION == R6F_NATIVE_STAGE_SCHEMA_VERSION == 7
-    assert release_manifest.FORMAT_VERSION == 10
+    assert release_manifest.FORMAT_VERSION == 11
     assert staged.ATTACHMENT_KEYS_BASE == ("addon_tweeter_crescent",)
     assert set(staged.PRINT_PART_SPECS) == {
         "core_lm_carrier",

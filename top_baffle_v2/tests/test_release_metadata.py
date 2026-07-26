@@ -235,7 +235,7 @@ def test_obiwan_release_manifest_binds_print_sidecars() -> None:
         actual_sidecars = {name for name in names if name.endswith(".print.json")}
         assert actual_sidecars == expected_obiwan
         assert len(actual_sidecars) == 15
-        assert len(names) == 42
+        assert len(names) == (48 if stand_foot else 46)
         stls = {
             name for name in names
             if name.startswith("stl/") and name.endswith(".stl")
@@ -243,17 +243,19 @@ def test_obiwan_release_manifest_binds_print_sidecars() -> None:
         assert actual_sidecars == {
             name.removesuffix(".stl") + ".print.json" for name in stls
         }
-        blocker_base = (
-            "support_blockers/"
-            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom."
-            "support_blocker")
         blocker_artifacts = {
             name for name in names if name.startswith("support_blockers/")
         }
-        assert blocker_artifacts == (
-            {f"{blocker_base}.stl", f"{blocker_base}.json"}
-            if not stand_foot else set())
-    assert release_manifest.FORMAT_VERSION == 10
+        assert blocker_artifacts == {
+            f"support_blockers/{stem}.support_blocker.{suffix}"
+            for stem in (
+                "lx521_top_obiwan_core_2of2_um_carrier",
+                "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+                "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+            )
+            for suffix in ("stl", "json")
+        }
+    assert release_manifest.FORMAT_VERSION == 12
     assert (ROOT / "src/lx521_baffle/print_contract.py") in (
         release_manifest.generation_source_paths())
 
@@ -458,9 +460,19 @@ def test_every_released_magnet_site_has_exact_left_right_symmetry() -> None:
     payload = _release_catalog()
     artifacts = payload["artifacts"]
     assert isinstance(artifacts, list)
-    paired: dict[tuple[str, str, str, str], dict[str, dict[str, object]]] = {}
+    paired: dict[
+        tuple[str, str, str, str, str],
+        dict[str, dict[str, object]],
+    ] = {}
     for artifact in artifacts:
         assert isinstance(artifact, dict)
+        artifact_part = str(artifact["part"])
+        parsed_part = _mirrored_name(artifact_part)
+        split_discriminator = ""
+        if artifact["variant"] in {"Obi-Wan-Ac", "Obi-Wan-Ae"}:
+            split_discriminator = (
+                parsed_part[1]
+                if parsed_part is not None else artifact_part)
         for site in artifact["sites"]:
             assert isinstance(site, dict)
             # V0's two rear-axis sites deliberately avoid different nearby
@@ -474,13 +486,13 @@ def test_every_released_magnet_site_has_exact_left_right_symmetry() -> None:
             side, neutral = parsed
             key = (
                 str(artifact["state"]), str(artifact["variant"]),
-                str(site.get("owner")), neutral,
+                split_discriminator, str(site.get("owner")), neutral,
             )
             bucket = paired.setdefault(key, {})
-            # A given released family/state may intentionally repeat the same
-            # site in a monolith and a split/wing inventory only when its
-            # variant identity differs.  Duplicate one-side records here
-            # therefore indicate catalog ambiguity.
+            # A and B wing alternatives intentionally repeat installed site
+            # geometry. Pair within the side-neutral physical artifact role
+            # so each split is independently mirrored without aliasing the
+            # alternative release record.
             assert side not in bucket, (key, side)
             bucket[side] = site
 
@@ -507,7 +519,7 @@ def test_every_released_magnet_site_has_exact_left_right_symmetry() -> None:
                     left[field], right[field], label=f"{key}/{field}")
 
 
-def test_catalog_source_freezes_56_stls_and_102_stations() -> None:
+def test_catalog_source_freezes_64_stls_and_114_stations() -> None:
     """Audit release arithmetic without importing build123d/OCC locally."""
     path = ROOT / "scripts/generate_captive_magnet_catalog.py"
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
@@ -524,15 +536,15 @@ def test_catalog_source_freezes_56_stls_and_102_stations() -> None:
             "EXPECTED_FAMILY_COUNTS",
         }
     }
-    assert assignments["EXPECTED_ARTIFACT_COUNT"] == 56
-    assert assignments["EXPECTED_MAGNET_COUNT"] == 102
+    assert assignments["EXPECTED_ARTIFACT_COUNT"] == 64
+    assert assignments["EXPECTED_MAGNET_COUNT"] == 114
     assert assignments["EXPECTED_STATE_ARTIFACT_COUNT"] == 22
     assert assignments["EXPECTED_STATE_MAGNET_COUNT"] == 45
-    assert assignments["EXPECTED_SHARED_ARTIFACT_COUNT"] == 12
-    assert assignments["EXPECTED_SHARED_MAGNET_COUNT"] == 12
+    assert assignments["EXPECTED_SHARED_ARTIFACT_COUNT"] == 20
+    assert assignments["EXPECTED_SHARED_MAGNET_COUNT"] == 24
     families = assignments["EXPECTED_FAMILY_COUNTS"]
-    assert sum(counts[0] for counts in families.values()) == 56
-    assert sum(counts[1] for counts in families.values()) == 102
+    assert sum(counts[0] for counts in families.values()) == 64
+    assert sum(counts[1] for counts in families.values()) == 114
     assert set(families) == {
         "B2", "C7", "A", "B1", "V0", "V1", "V1-A", "V1-B1",
         "V1L", "Obi-Wan", "Obi-Wan-split", "Obi-Wan-Ac", "Obi-Wan-Ae",
@@ -1261,7 +1273,7 @@ def test_release_sidecars_fail_closed() -> None:
 
 def test_sidecar_inventory_exact_counts_and_only_polar_exclusion() -> None:
     assert EXPECTED_NONPOLAR_STATE_STL_COUNT == 45
-    assert EXPECTED_WING_STL_COUNT == 6
+    assert EXPECTED_WING_STL_COUNT == 10
     assert FLOOR_POLAR_SIDECAR_EXCLUSIONS == {
         "lx521_polar_base_1of2_base.stl",
         "lx521_polar_base_2of2_rotor.stl",
@@ -1909,7 +1921,7 @@ def test_stage4_public_and_case_contract_is_frozen() -> None:
         "_validate_ready_project_archive": "(project_3mf: 'Path', plain_gcode: 'Path', *, expected_pause_z: 'Sequence[float]', profile_bundle: 'Mapping[str, Any]') -> 'dict[str, Any]'",
         "inspect_stl": "(path: 'Path') -> 'MeshFacts'",
         "normalize_catalog": "(catalog_path: 'Path', *, enforce_release_inventory: 'bool' = True) -> 'dict[str, Any]'",
-        "parse_gcode": "(path: 'Path', *, retain_regions: 'Sequence[tuple[float, float, float, float]] | None' = None) -> 'ParsedGcode'",
+        "parse_gcode": "(path: 'Path', *, retain_regions: 'Sequence[tuple[float, float, float, float]] | None' = None, retain_feature_prefixes: 'Sequence[str] | None' = None) -> 'ParsedGcode'",
         "prepare_profiles": "(config_path: 'Path', output_dir: 'Path', *, system_root: 'Path | None', bambu_binary: 'Path') -> 'dict[str, Any]'",
     }
     assert slicer.READY_3MF_FILENAME == "ready_to_print.gcode.3mf"
@@ -2088,7 +2100,7 @@ def main() -> None:
         test_catalog_global_pair_spacing_is_not_ambiguous,
         test_transverse_magnet_plane_is_uniform_per_design_family,
         test_every_released_magnet_site_has_exact_left_right_symmetry,
-        test_catalog_source_freezes_56_stls_and_102_stations,
+        test_catalog_source_freezes_64_stls_and_114_stations,
         test_wing_catalog_identity_preserves_frozen_release_case,
         test_catalog_generator_uses_release_wide_acoustic_print_contract,
         test_coupon1_polarity_is_explicitly_unpaired_and_axis_specific,

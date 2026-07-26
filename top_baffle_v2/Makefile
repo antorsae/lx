@@ -29,7 +29,8 @@
 #   make bambu_dry_run       local per-STL command/provenance preview
 #   make bambu_slice_obiwan  local filtered ready-project diagnostic
 #   make bambu_slice_release local authoritative ready-project slice/audit
-#   make to_print            local complete P2S shelf: audit + 39 friendly files
+#   make obiwan_combo_plate  local 01a+02+03+04 composite slice/audit
+#   make to_print            local complete P2S shelf: audit + 48 friendly files
 #   make to_print_validate   validate an existing P2S shelf without slicing
 #
 # Compatible with the macOS-provided GNU make 3.81.
@@ -38,13 +39,47 @@
 # path.  It remains valid inside recipes that render from a build subdirectory.
 export PYTHONPATH := $(CURDIR)/src:$(CURDIR)/scripts
 
+# First-class local packaging artifacts are declared before the execution-mode
+# router so invoking either a public alias or a concrete output path can never
+# fall through to the remote CAD dispatcher.
+CAPTIVE_MAGNET_CATALOG ?= review/captive_magnet_release_catalog.json
+BAMBU_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit
+TO_PRINT_SHELF ?= to_print
+OBIWAN_COMBO_NAME := obiwan_01a_02_03_04_LM_UM_1_of_1
+OBIWAN_COMBO_SOURCE_DIR := build/print_plates/obiwan
+OBIWAN_COMBO_SOURCE_STAMP := $(OBIWAN_COMBO_SOURCE_DIR)/.stamp_$(OBIWAN_COMBO_NAME)
+OBIWAN_COMBO_STL := $(OBIWAN_COMBO_SOURCE_DIR)/$(OBIWAN_COMBO_NAME).stl
+OBIWAN_COMBO_MANIFEST := $(OBIWAN_COMBO_SOURCE_DIR)/$(OBIWAN_COMBO_NAME).plate.json
+OBIWAN_COMBO_WORKSPACE ?= review/to_print_slice_workspace/composite/$(OBIWAN_COMBO_NAME)
+OBIWAN_COMBO_READY_DIR := $(OBIWAN_COMBO_WORKSPACE)/ready
+OBIWAN_COMBO_READY_STAMP := $(OBIWAN_COMBO_READY_DIR)/.stamp_validated
+OBIWAN_COMBO_PROJECT := $(OBIWAN_COMBO_READY_DIR)/$(OBIWAN_COMBO_NAME).gcode.3mf
+OBIWAN_COMBO_GCODE := $(OBIWAN_COMBO_READY_DIR)/plate_1.gcode
+OBIWAN_COMBO_RESULT := $(OBIWAN_COMBO_READY_DIR)/result.json
+OBIWAN_COMBO_AUDIT := $(OBIWAN_COMBO_READY_DIR)/plate_audit.json
+OBIWAN_COMBO_READY_OUTPUTS := $(OBIWAN_COMBO_PROJECT) $(OBIWAN_COMBO_GCODE) \
+                             $(OBIWAN_COMBO_RESULT) $(OBIWAN_COMBO_AUDIT)
+OBIWAN_COMBO_PROMOTION_STAMP := $(OBIWAN_COMBO_READY_DIR)/.stamp_to_print_promoted
+OBIWAN_COMBO_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_COMBO_NAME).stl
+OBIWAN_COMBO_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_COMBO_NAME).gcode.3mf
+OBIWAN_COMBO_SHELF_OUTPUTS := $(OBIWAN_COMBO_SHELF_STL) $(OBIWAN_COMBO_SHELF_PROJECT)
+
 # Bambu slicing is workstation-only.  Detect these public goals before the
 # remote-first dispatcher captures MAKECMDGOALS, force even an explicitly
 # supplied remote/remote-worker mode back to local, and reject ambiguous mixed
 # CAD+slicer invocations.  Multiple Bambu goals in one invocation are allowed.
 LOCAL_BAMBU_GOALS := bambu_profiles bambu_dry_run \
                      bambu_slice_obiwan bambu_slice_release \
-                     check_to_print_shelf to_print to_print_validate
+                     obiwan_combo_plate_source obiwan_combo_plate \
+                     obiwan_combo_plate_validate \
+                     obiwan_combo_plate_to_print \
+                     check_to_print_shelf to_print to_print_validate \
+                     $(OBIWAN_COMBO_SOURCE_STAMP) \
+                     $(OBIWAN_COMBO_STL) $(OBIWAN_COMBO_MANIFEST) \
+                     $(OBIWAN_COMBO_READY_STAMP) \
+                     $(OBIWAN_COMBO_READY_OUTPUTS) \
+                     $(OBIWAN_COMBO_PROMOTION_STAMP) \
+                     $(OBIWAN_COMBO_SHELF_OUTPUTS)
 BAMBU_GOALS_REQUESTED := $(filter $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))
 ifneq ($(strip $(BAMBU_GOALS_REQUESTED)),)
 ifneq ($(strip $(filter-out $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))),)
@@ -154,12 +189,14 @@ OBIWAN_RELEASE_SRCS := $(OBIWAN_SRCS) $(EXECUTION_SRCS) $(PRINT_CONTRACT_SRCS) \
         tests/test_obiwan_r6f.py tests/test_harness.py \
         tests/test_obiwan_junction_closure_webs.py \
         tests/test_obiwan_lm_split_two_pin_static.py tests/test_remote_cad.py \
+        $(wildcard tests/test_*.py) \
         scripts/write_obiwan_release_manifest.py docs/obiwan_physical_qualification.md \
         scripts/remote_cad.py cad-remote-requirements.lock
 # export_piece_stls imports the strict checker after meshing, and that checker
 # imports the release-manifest helpers at module load.  Keep every STL stamp
 # source-complete so a checker/contract change cannot reuse a stale mesh stamp.
 STL_EXPORT_SRCS := scripts/export_piece_stls.py scripts/check_manifold.py \
+        scripts/obiwan_support_blocker.py \
         src/lx521_baffle/stl_export.py $(PRINT_CONTRACT_SRCS) \
         scripts/write_obiwan_release_manifest.py
 # Command-line Make variables must not turn a candidate/release recipe into
@@ -196,7 +233,6 @@ FLOOR_STRENGTH_REPORTS = build/floor_stand/obiwan_integrated_floor_strength.json
 OBIWAN_WING_DESIGN_MAP = build/common/obiwan_wing_design_map.png
 OBIWAN_WING_SLUGS = ac ae
 OBIWAN_WING_STAMPS = $(addprefix build/wings/.stamp_,$(OBIWAN_WING_SLUGS))
-CAPTIVE_MAGNET_CATALOG = review/captive_magnet_release_catalog.json
 OBIWAN_WING_INPUTS = cad-remote-requirements.lock \
         docs/obiwan_acoustic_wings_spec.md src/lx521_baffle/magnets.py \
         src/lx521_baffle/assembly.py src/lx521_baffle/magnet_contract.py src/lx521_baffle/geom.py \
@@ -436,8 +472,10 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
         validate_floor_obiwan_stage validate_no_floor_obiwan_stage \
         floor_stand floor_stand_artifacts floor_obiwan \
         no_floor_stand no_floor_stand_artifacts no_floor_obiwan \
+        obiwan_state_releases \
         no_floor_obiwan_01a obiwan_release \
-        obiwan_wings obiwan_wing_artifacts check_obiwan_wings \
+        obiwan_wings obiwan_wing_exports obiwan_wing_artifacts \
+        check_obiwan_wings \
         common check check_static check_shared_contracts check_remote_transport \
         check_release_metadata check_slice_metadata \
         check_clearance_suite check_r6f_suite \
@@ -466,6 +504,8 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
         check_obiwan_lm_profile_brep manifold _manifold_parallel clean \
         bambu_profiles bambu_dry_run \
         bambu_slice_obiwan bambu_slice_release \
+        obiwan_combo_plate_source obiwan_combo_plate \
+        obiwan_combo_plate_validate obiwan_combo_plate_to_print \
         refresh_captive_magnet_catalog_existing \
         check_to_print_shelf to_print to_print_validate \
         $(CLEARANCE_CHECK_TARGETS) $(R6F_CASE_TARGETS)
@@ -477,7 +517,7 @@ all: validate_obiwan_stages floor_stand_artifacts no_floor_stand_artifacts commo
 	$(RUN) scripts/check_manifold.py --metadata-only \
 	    build/floor_stand/stl build/no_floor_stand/stl
 
-# This catalog is generated only after all 56 released magnet-bearing meshes
+# This catalog is generated only after all 64 released magnet-bearing meshes
 # and their exact front-down print transforms exist.  It is the CAD-side
 # authority consumed by the local, no-printer-contact Bambu slicing audit.
 $(CAPTIVE_MAGNET_CATALOG): scripts/generate_captive_magnet_catalog.py \
@@ -501,7 +541,7 @@ $(CAPTIVE_MAGNET_CATALOG): scripts/generate_captive_magnet_catalog.py \
 # release inventory.  This deliberately has no mesh prerequisites: it updates
 # hash/provenance bindings after a focused CAD export without rebuilding the
 # unaffected floor, wing, and legacy artifacts.  The generator still applies
-# the complete 56-artifact/102-station fail-closed catalog contract.
+# the complete 64-artifact/114-station fail-closed catalog contract.
 refresh_captive_magnet_catalog_existing: scripts/generate_captive_magnet_catalog.py \
         captive_magnet_release_catalog.schema.json $(SLICER_SRCS) \
         scripts/json_schema_subset.py src/lx521_baffle/magnets.py $(SHARED_CAD_SRCS) \
@@ -577,6 +617,10 @@ endef
 $(eval $(call FOCUSED_OBIWAN_RELEASE_RULE,floor,build/floor_stand))
 $(eval $(call FOCUSED_OBIWAN_RELEASE_RULE,no_floor,build/no_floor_stand))
 
+# One remote-safe join lets both focused state releases share the bounded
+# Make jobserver without expanding into the unrelated proud/C/V0/V1/V1L DAG.
+obiwan_state_releases: floor_obiwan no_floor_obiwan
+
 # Focused iteration/export contract for the only no-floor part whose cable
 # routing owns the D20 entry cluster and LM-recess crossing.  The native stage
 # remains the STEP-first authority; only 01a is tessellated, while the keyed
@@ -628,17 +672,24 @@ obiwan_release: floor_stand_artifacts no_floor_stand_artifacts \
 # before either solid model.
 obiwan_wings: $(OBIWAN_WING_DESIGN_MAP) obiwan_wing_artifacts
 
-obiwan_wing_artifacts: $(OBIWAN_WING_STAMPS) check_obiwan_wings
+# A successful export-only checkpoint publishes the expensive Ac/Ae
+# transactions into the verified remote Make cache before live-BREP QA.  A
+# test-only failure can then be fixed and rerun without rebuilding either
+# fine-mesh wing family.
+obiwan_wing_exports: $(OBIWAN_WING_DESIGN_MAP) $(OBIWAN_WING_STAMPS)
+
+obiwan_wing_artifacts: obiwan_wing_exports check_obiwan_wings
 
 build/wings/.stamp_%: scripts/export_obiwan_wings.py src/lx521_baffle/obiwan/wings.py \
         scripts/gen_obiwan_wing_design_map.py $(OBIWAN_WING_DESIGN_MAP) \
-        scripts/check_manifold.py $(OBIWAN_WING_INPUTS)
+        $(OBIWAN_WING_INPUTS)
 	@rm -f $@
 	@mkdir -p build/wings
 	$(call RUN_STATE,0,obiwan,.) \
 	    scripts/export_obiwan_wings.py --slug $* --output-root build/wings
 	@test -s build/wings/$*/top_baffle_nd25fw4_obiwan_wing_$*.step
 	@test -s build/wings/$*/top_baffle_nd25fw4_obiwan_wing_$*_assembled.step
+	@test -s build/wings/$*/top_baffle_nd25fw4_obiwan_wing_$*_assembled_b.step
 	@touch $@
 
 check_obiwan_wings: $(OBIWAN_WING_STAMPS) \
@@ -694,10 +745,14 @@ check_slice_metadata: tests/test_slice_captive_magnets.py \
         $(PRINT_CONTRACT_SRCS)
 	$(PYTHON_RUN) tests/test_slice_captive_magnets.py
 
-check_to_print_shelf: $(CAPTIVE_MAGNET_CATALOG) \
-        tests/test_to_print_shelf.py scripts/build_to_print_shelf.py \
-        to_print/catalog.json \
+# The local shelf gate consumes an already promoted catalog.  Never make that
+# file a prerequisite here: its CAD-side dependency chain would turn
+# ``make to_print`` into an accidental workstation CAD rebuild.
+check_to_print_shelf: tests/test_to_print_shelf.py scripts/build_to_print_shelf.py \
+        scripts/build_obiwan_combo_plate.py \
+        scripts/composite_bambu_3mf_audit.py to_print/catalog.json \
         $(SLICER_SRCS) scripts/bambu_3mf_audit.py $(PRINT_CONTRACT_SRCS)
+	$(REQUIRE_BAMBU_CATALOG)
 	$(PYTHON_RUN) tests/test_to_print_shelf.py
 
 # These targets consume an existing, remotely generated catalog but never list
@@ -705,7 +760,6 @@ check_to_print_shelf: $(CAPTIVE_MAGNET_CATALOG) \
 # on this workstation.  They run Bambu Studio only as a local CLI slicer and do
 # not contain any printer transport/upload/start operation.
 BAMBU_JOBS ?= 1
-BAMBU_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit
 
 define REQUIRE_BAMBU_CATALOG
 	@test -s "$(CAPTIVE_MAGNET_CATALOG)" || { \
@@ -747,26 +801,153 @@ bambu_slice_release: check_slice_metadata
 		--jobs "$(BAMBU_JOBS)" \
 		--emit-ready-projects
 
-# User-facing, local-only materialization of the 39 P2S-printable parts.
-# The full audited magnet pass is deliberately a prerequisite: a friendly
-# filename must never promote a stale or discovery-only 3MF to a ready project.
-TO_PRINT_SHELF ?= to_print
+# The combined plate is pure local packaging over released STLs.  Absolute
+# prerequisites deliberately have no matching CAD rules: if a released input
+# or audit authority is absent, Make fails locally instead of regenerating it
+# on the workstation or dispatching it to osado.
+OBIWAN_COMBO_RELEASED_INPUTS := $(addprefix $(CURDIR)/,\
+        build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl \
+        build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json \
+        build/no_floor_stand/support_blockers/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.support_blocker.stl \
+        build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.stl \
+        build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.print.json \
+        build/no_floor_stand/support_blockers/lx521_top_obiwan_optional_lm_keyed_2of2_top.support_blocker.stl \
+        build/no_floor_stand/stl/lx521_top_obiwan_core_2of2_um_carrier.stl \
+        build/no_floor_stand/stl/lx521_top_obiwan_core_2of2_um_carrier.print.json \
+        build/no_floor_stand/support_blockers/lx521_top_obiwan_core_2of2_um_carrier.support_blocker.stl \
+        build/no_floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.stl \
+        build/no_floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.print.json)
+OBIWAN_COMBO_DISCOVERY_AUDITS := \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/no_floor_stand_Obi-Wan-split_lx521_top_obiwan_optional_lm_keyed_1of2_bottom/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/no_floor_stand_Obi-Wan-split_lx521_top_obiwan_optional_lm_keyed_2of2_top/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/no_floor_stand_Obi-Wan_lx521_top_obiwan_core_2of2_um_carrier/captive_magnet_slice_audit.json
+OBIWAN_COMBO_SOURCE_SRCS := scripts/build_obiwan_combo_plate.py \
+        scripts/composite_bambu_3mf_audit.py scripts/bambu_3mf_audit.py \
+        scripts/check_manifold.py $(PRINT_CONTRACT_SRCS) Makefile
+OBIWAN_COMBO_READY_SRCS := $(OBIWAN_COMBO_SOURCE_SRCS) \
+        $(SLICER_SRCS) scripts/json_schema_subset.py \
+        captive_magnet_slicing_profile.json tests/test_slice_captive_magnets.py
 
-to_print: check_to_print_shelf bambu_slice_release
+$(OBIWAN_COMBO_SOURCE_STAMP): $(OBIWAN_COMBO_SOURCE_SRCS) \
+        $(OBIWAN_COMBO_RELEASED_INPUTS)
+	@rm -f "$@"
+	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py --source-only
+	@test -s "$(OBIWAN_COMBO_STL)"
+	@test -s "$(OBIWAN_COMBO_MANIFEST)"
+	@touch "$@"
+
+$(OBIWAN_COMBO_STL) $(OBIWAN_COMBO_MANIFEST): | $(OBIWAN_COMBO_SOURCE_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_COMBO_SOURCE_STAMP)"; \
+		$(MAKE) --no-print-directory "$(OBIWAN_COMBO_SOURCE_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_combo_plate_source: $(OBIWAN_COMBO_STL) $(OBIWAN_COMBO_MANIFEST)
+
+$(OBIWAN_COMBO_READY_STAMP): $(OBIWAN_COMBO_SOURCE_STAMP) \
+        $(OBIWAN_COMBO_READY_SRCS) \
+        $(abspath $(CAPTIVE_MAGNET_CATALOG)) \
+        $(OBIWAN_COMBO_DISCOVERY_AUDITS)
+	@rm -f "$@"
+	$(PYTHON_RUN) tests/test_slice_captive_magnets.py
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
+		--workspace "$(OBIWAN_COMBO_WORKSPACE)" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--dry-run
+	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
+		--workspace "$(OBIWAN_COMBO_WORKSPACE)" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--slice-missing
+	@test -s "$(OBIWAN_COMBO_PROJECT)"
+	@test -s "$(OBIWAN_COMBO_GCODE)"
+	@test -s "$(OBIWAN_COMBO_RESULT)"
+	@test -s "$(OBIWAN_COMBO_AUDIT)"
+	@touch "$@"
+
+$(OBIWAN_COMBO_READY_OUTPUTS): | $(OBIWAN_COMBO_READY_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_COMBO_READY_STAMP)"; \
+		$(MAKE) --no-print-directory "$(OBIWAN_COMBO_READY_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_combo_plate: $(OBIWAN_COMBO_PROJECT) $(OBIWAN_COMBO_AUDIT)
+
+obiwan_combo_plate_validate: obiwan_combo_plate_source \
+        $(OBIWAN_COMBO_READY_SRCS) \
+        $(abspath $(CAPTIVE_MAGNET_CATALOG)) \
+        $(OBIWAN_COMBO_DISCOVERY_AUDITS)
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) tests/test_slice_captive_magnets.py
+	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
+		--workspace "$(OBIWAN_COMBO_WORKSPACE)" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--validate-only
+	@test -s "$(OBIWAN_COMBO_PROJECT)"
+	@test -s "$(OBIWAN_COMBO_AUDIT)"
+	@touch "$(OBIWAN_COMBO_READY_STAMP)"
+
+# Promotion is also an ordinary artifact transaction.  It requires an existing
+# complete shelf manifest and crosses the full 48/48 equivalence barrier with
+# slicing disabled before refreshing only the combined-plate delivery pair.
+$(OBIWAN_COMBO_PROMOTION_STAMP): $(OBIWAN_COMBO_READY_STAMP) \
+        scripts/build_to_print_shelf.py tests/test_to_print_shelf.py \
+        $(TO_PRINT_SHELF)/catalog.json \
+        $(abspath $(TO_PRINT_SHELF))/release_manifest.json
+	@rm -f "$@"
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/build_to_print_shelf.py \
+		--shelf "$(TO_PRINT_SHELF)" \
+		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--validate-only \
+		--only "$(OBIWAN_COMBO_NAME)"
+	$(PYTHON_RUN) tests/test_to_print_shelf.py
+	@test -s "$(OBIWAN_COMBO_SHELF_STL)"
+	@test -s "$(OBIWAN_COMBO_SHELF_PROJECT)"
+	@touch "$@"
+
+$(OBIWAN_COMBO_SHELF_OUTPUTS): | $(OBIWAN_COMBO_PROMOTION_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_COMBO_PROMOTION_STAMP)"; \
+		$(MAKE) --no-print-directory "$(OBIWAN_COMBO_PROMOTION_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_combo_plate_to_print: $(OBIWAN_COMBO_SHELF_OUTPUTS)
+
+# User-facing, local-only materialization of the 48 P2S-printable entries.
+# It consumes the existing authoritative magnet projects and fails closed if
+# one is absent; the expensive full 64-artifact reslice remains an explicit
+# ``make bambu_slice_release`` operation rather than an implicit shelf step.
+to_print: $(OBIWAN_COMBO_READY_STAMP)
+	$(REQUIRE_BAMBU_CATALOG)
 	$(PYTHON_RUN) scripts/build_to_print_shelf.py \
 		--shelf "$(TO_PRINT_SHELF)" \
 		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
 		--slice-missing
+	$(PYTHON_RUN) tests/test_to_print_shelf.py
+	@test -s "$(OBIWAN_COMBO_SHELF_STL)"
+	@test -s "$(OBIWAN_COMBO_SHELF_PROJECT)"
+	@touch "$(OBIWAN_COMBO_PROMOTION_STAMP)"
 
-to_print_validate: check_to_print_shelf
+to_print_validate: obiwan_combo_plate_source check_to_print_shelf
 	$(PYTHON_RUN) scripts/build_to_print_shelf.py \
 		--shelf "$(TO_PRINT_SHELF)" \
 		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
 		--validate-only
+	@touch "$(OBIWAN_COMBO_READY_STAMP)"
+	@touch "$(OBIWAN_COMBO_PROMOTION_STAMP)"
 
 check_clearance_suite: $(CLEARANCE_CHECK_STAMPS)
 	@echo "all clearance checks passed (Make-jobserver isolated)"

@@ -16,8 +16,8 @@ Both variants accept either the canonical monolithic LM or the same-state
 optional keyed LM pair. This is geometric compatibility only; keyed-land fit
 remains process-matched coupon-qualified.
 
-The two supported comparisons deliberately share one installed plan and one
-print split:
+The two supported comparisons deliberately share one installed plan and two
+qualified print-split options:
 
 - **Ac:** constant solid depth reference.
 - **Ae:** the same plan and flat acoustic front, with a weighted rear depth
@@ -100,7 +100,7 @@ Ac is the mass and geometry reference:
   cap.
 - The exposed edge remains a 90-degree constant-depth edge.
 
-Ac and Ae must use the same installed plan, receiver axes, segmentation, and
+Ac and Ae must use the same installed plan, receiver axes, split options, and
 dovetail definitions so depth is the controlled variable.
 
 ## Ae: weighted-depth wing
@@ -128,13 +128,24 @@ physical evidence. CAD validation alone does not qualify the one-layer edge.
 
 ## Print subdivision
 
-Each side is divided into three front-face-down prints:
+Each side has two alternative front-face-down subdivisions. Option A is the
+established three-piece split:
 
 1. `lm_lower`
 2. `lm_upper`
 3. `um`
 
-There are therefore six STLs for Ac and six for Ae. The split contract is:
+Option B is a two-piece split:
+
+1. `lm_lower`, geometrically identical to option A's lower piece
+2. `lm_um_upper`, one continuous solid combining option A's `lm_upper` and
+   `um`
+
+Option B retains the lower dovetail and its `0.05` female clearance exactly.
+The former middle-to-UM seam, key, and clearance are restored as solid wing
+material; a B upper containing a hidden slit or multiple solids is invalid.
+
+There are therefore ten STLs for Ac and ten for Ae. The split contract is:
 
 - Lower-to-middle key: lower male, `7/9/4` neck/head/depth.
 - Middle-to-UM key: middle male, `7/8.5/4` neck/head/depth.
@@ -152,10 +163,13 @@ For slug `ac` or `ae`, the release transaction produces:
 ```text
 build/wings/<slug>/top_baffle_nd25fw4_obiwan_wing_<slug>.step
 build/wings/<slug>/top_baffle_nd25fw4_obiwan_wing_<slug>_assembled.step
+build/wings/<slug>/top_baffle_nd25fw4_obiwan_wing_<slug>_assembled_b.step
 build/wings/<slug>/obiwan_wing_<slug>_facts.json
 build/wings/<slug>/obiwan_wing_<slug>_print_manifest.json
 build/wings/<slug>/stl/lx521_top_obiwan_wing_<slug>_<side>_<n>of3_<role>.stl
 build/wings/<slug>/stl/lx521_top_obiwan_wing_<slug>_<side>_<n>of3_<role>.print.json
+build/wings/<slug>/stl/lx521_top_obiwan_wing_<slug>_<side>_b_<n>of2_<role>.stl
+build/wings/<slug>/stl/lx521_top_obiwan_wing_<slug>_<side>_b_<n>of2_<role>.print.json
 build/wings/<slug>/review/obiwan_wing_<slug>_<view>.png
 ```
 
@@ -167,8 +181,8 @@ The clean release must prove:
 
 - Ac/Ae are the only accepted exporter choices and artifact directories.
 - Each monolithic pair contains two mirrored solids.
-- Each print assembly contains six valid solids and exactly six STL/sidecar
-  pairs.
+- The A print assembly contains six valid solids, the B assembly contains four,
+  and the transaction contains exactly ten STL/sidecar pairs.
 - STEP, STL, facts, manifests, and review images are hash-consistent.
 - Every STL is closed and strict-manifold.
 - Receiver axes, common source Z, cavities, intact skins, 0.05 mm solid
@@ -182,10 +196,14 @@ The clean release must prove:
   exposed acoustic edge.
 - Both dovetails reconstruct the monolithic field with the prescribed
   clearance, ownership, endpoint closure, and minimum ligament.
+- Every B lower is exactly the corresponding A lower; every B upper contains
+  both established upper pieces plus the restored former upper clearance,
+  is one valid solid, and reconstructs the monolith with only the lower fit
+  clearance.
 - Ac is constant-depth.
 - Ae meets its depth range, edge constancy, protected full-depth lands,
   monotonic section, slope, and joint-mismatch gates.
-- All twelve prints are front-face-down and bed-fit.
+- All twenty prints are front-face-down and bed-fit.
 - CAD snapshots show no disconnected segment, unintended alternative wing,
   or floor/no-floor interface mismatch.
 

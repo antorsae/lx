@@ -1,0 +1,60 @@
+{
+  "artifact_family": "obiwan_wing_artifacts",
+  "assembly_label": "obiwan_wing_ac_right_b_1of2_lm_lower",
+  "mesh": {
+    "angular_tolerance": 0.08,
+    "tolerance_mm": 0.01
+  },
+  "order": 1,
+  "part": "lx521_top_obiwan_wing_ac_right_b_1of2_lm_lower",
+  "piece_count": 2,
+  "pre_translation_bbox_min_mm": [
+    9.139491971464194,
+    11.170779742823918,
+    -18.3
+  ],
+  "print_orientation": "front_face_down",
+  "role": "lm_lower",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 73.43137463704318
+  },
+  "schema_version": 1,
+  "side": "right",
+  "source_to_stl_matrix": [
+    [
+      0.28516355605192506,
+      0.9584788710763636,
+      0.0,
+      -9.139491971464194
+    ],
+    [
+      0.9584788710763636,
+      -0.28516355605192506,
+      0.0,
+      -11.170779742823918
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.3
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "split_variant": "b",
+  "stl": "lx521_top_obiwan_wing_ac_right_b_1of2_lm_lower.stl",
+  "stl_bytes": 103984,
+  "stl_origin_translation_mm": [
+    -9.139491971464194,
+    -11.170779742823918,
+    18.3
+  ],
+  "stl_sha256": "8dedeae4d7284b257a58bc4c85bd8407af93dd338d10eac8097637934e869dcf",
+  "variant_slug": "ac"
+}

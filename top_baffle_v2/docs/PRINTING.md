@@ -213,6 +213,19 @@ slice missing either complete pin, either land, or a continuous socket-wall
 path.
 With a monolithic LM, the same pockets remain as small hidden local reliefs;
 the three magnetic datums and primary retention geometry are unchanged.
+
+For the no-floor keyed split, the shelf also provides
+`obiwan_01a_02_03_04_LM_UM_1_of_1` as a mutually exclusive single-plate
+alternative to the four individual 01a/02/03/04 projects. It does not
+regenerate or fuse geometry: the four released front-down STLs are translated
+to locked positions inside one Bambu object. The project carries three
+released duct blockers, 40% gyroid infill, all four support fields pinned
+globally and per object, and one six-magnet pause at Z=5.96 mm. Promotion
+requires 4-volume project/STL equivalence, actual support under the UM carrier,
+no support under the tweeter footprint, and zero support-bead collisions
+against every LM/UM functional duct. Never print this plate together with the
+individual 01a, 02, 03, or 04 files.
+
 The UM route is covered only in LM, T is covered in
 LM/UM, and their specified rear continuations are free; the short LM lead is
 also intentionally free inside a rear-open subtractive clearance, not a
@@ -271,12 +284,18 @@ reuse a 0.20-mm pause height or derive one by scaling.
   infill: on.* Until the local CLI chain can bind that modifier volume, its
   keyed-bottom job deliberately uses global **100% zig-zag** as the automated
   safe fallback; Bambu rejects gyroid at 100%.
-* **Support:** off for every job except
-  `lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl` in both floor states.
-  For that piece the generated project pins **Enable support: on**,
-  **On build plate only: on**, and **Support critical regions only: on** for
-  the floating cantilever. Do not broaden support manually: the final
-  toolpath audit must still prove the magnet loading aperture is unobstructed.
+* **Support:** off for every job except both optional keyed LM halves and the
+  UM carrier in both floor states. Those generated projects pin **Enable
+  support: on**,
+  **On build plate only: on**, **Support critical regions only: on**, and
+  **Remove small overhangs: on**, both globally and per object. Each project
+  embeds a hash-bound blocker over every functional duct segment owned by that
+  carrier. Do not broaden support manually: promotion requires a zero-collision
+  audit between deposited support beads and the functional duct volumes.
+  Bambu Studio's `floating cantilever` warning is a hard release failure even
+  though the CLI describes it as non-critical.
+  Every other generated project pins the same four settings off globally and
+  per object, then verifies that its G-code emits no support feature.
 * **Strength tuning:** nozzle 225 °C (top-middle of the Tough range —
   hotter = better layer adhesion), bed 55–60 °C, **max fan 60 %**
   (overhang fan 100 %), outer wall <=120 mm/s, keep the filament
@@ -406,14 +425,15 @@ mouth, free cable, driver and Faston service envelopes with the measured UM cabl
 
 * **R6P internal voids:** the cable ducts (Ø3.8–9.3, arched ceilings)
   self-support on the flat pieces. For the floor-stand bottom, preview
-  the connector channel's ~38 mm ceiling; use build-plate-only tree
-  supports only if the preview shows an unsafe bridge, and paint
-  support blockers over every duct bore.
+  the connector channel's ~38 mm ceiling. The generated projects keep support
+  disabled; they are rejected if any support feature is emitted. If a future
+  revision enables support, it must first add a hash-bound blocker for every
+  duct and pass the support-toolpath-versus-duct collision gate.
 * **Obi-Wan collar recesses (front-down = seat floor is a ceiling over
   the bed):** the LM and UM annuli bridge 6.0 / 4.0 mm above the bed.
-  Add **normal supports painted into the two seat rings only**
-  (support/raft gap 0.2, 2 dense interface
-  layers), keep blockers over everything else. The seat surface is a
+  Use the generated, audited project rather than repainting support. Its
+  remove-small-overhang/critical-region/build-plate-only policy and embedded
+  duct blockers are part of the release contract. The seat surface is a
   supported face: expect ±0.1–0.2 roughness — the drivers hide it,
   but FLUSHNESS depends on the real seat depth. Print coupon block
   **7_recess_seat** first, drop the actual driver flange edge into

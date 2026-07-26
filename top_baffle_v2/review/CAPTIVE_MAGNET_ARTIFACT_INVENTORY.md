@@ -1,14 +1,14 @@
 # Captive-magnet artifact inventory
 
 Generated from the authoritative release catalog and the successful full
-Bambu P2S slice release of 2026-07-20. There are no Rhino `.3dm` files in this
+Bambu P2S slice release of 2026-07-24. There are no Rhino `.3dm` files in this
 release; the directly loadable files are G-code-bearing Bambu
 `.gcode.3mf` projects. Each ready project already contains its exact
 `PausePrint` event, front-face-down arrangement, Arachne profile, and verified
 process settings.
 
-The 54 ready projects and their raw G-code live in the local, Git-ignored
-`captive_magnet_slice_audit/slices/` workspace (about 1.1 GB). Regenerate that
+The 62 ready projects and their raw G-code live in the local, Git-ignored
+`captive_magnet_slice_audit/slices/` workspace (about 1.3 GB). Regenerate that
 workspace on a Bambu Studio host with `make bambu_slice_release`; the compact,
 tracked manifest below is the release authority.
 
@@ -78,15 +78,23 @@ with the human-readable insertion/polarity table in
 | [`lx521_top_obiwan_wing_ac_left_1of3_lm_lower.stl`](../wings/ac/stl/lx521_top_obiwan_wing_ac_left_1of3_lm_lower.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_left_1of3_lm_lower/ready/ready_to_print.gcode.3mf) | Obi-Wan Ac wing — left LM-lower segment, 1 of 3 | 1 |
 | [`lx521_top_obiwan_wing_ac_left_2of3_lm_upper.stl`](../wings/ac/stl/lx521_top_obiwan_wing_ac_left_2of3_lm_upper.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_left_2of3_lm_upper/ready/ready_to_print.gcode.3mf) | Obi-Wan Ac wing — left LM-upper segment, 2 of 3 | 1 |
 | [`lx521_top_obiwan_wing_ac_left_3of3_um.stl`](../wings/ac/stl/lx521_top_obiwan_wing_ac_left_3of3_um.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_left_3of3_um/ready/ready_to_print.gcode.3mf) | Obi-Wan Ac wing — left UM segment, 3 of 3 | 1 |
+| [`lx521_top_obiwan_wing_ac_left_b_1of2_lm_lower.stl`](../wings/ac/stl/lx521_top_obiwan_wing_ac_left_b_1of2_lm_lower.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_left_b_1of2_lm_lower/ready/ready_to_print.gcode.3mf) | Obi-Wan Ac wing B — left LM-lower segment, 1 of 2 | 1 |
+| [`lx521_top_obiwan_wing_ac_left_b_2of2_lm_um_upper.stl`](../wings/ac/stl/lx521_top_obiwan_wing_ac_left_b_2of2_lm_um_upper.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_left_b_2of2_lm_um_upper/ready/ready_to_print.gcode.3mf) | Obi-Wan Ac wing B — left fused LM/UM upper, 2 of 2 | 2 |
 | [`lx521_top_obiwan_wing_ac_right_1of3_lm_lower.stl`](../wings/ac/stl/lx521_top_obiwan_wing_ac_right_1of3_lm_lower.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_right_1of3_lm_lower/ready/ready_to_print.gcode.3mf) | Obi-Wan Ac wing — right LM-lower segment, 1 of 3 | 1 |
 | [`lx521_top_obiwan_wing_ac_right_2of3_lm_upper.stl`](../wings/ac/stl/lx521_top_obiwan_wing_ac_right_2of3_lm_upper.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_right_2of3_lm_upper/ready/ready_to_print.gcode.3mf) | Obi-Wan Ac wing — right LM-upper segment, 2 of 3 | 1 |
 | [`lx521_top_obiwan_wing_ac_right_3of3_um.stl`](../wings/ac/stl/lx521_top_obiwan_wing_ac_right_3of3_um.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_right_3of3_um/ready/ready_to_print.gcode.3mf) | Obi-Wan Ac wing — right UM segment, 3 of 3 | 1 |
+| [`lx521_top_obiwan_wing_ac_right_b_1of2_lm_lower.stl`](../wings/ac/stl/lx521_top_obiwan_wing_ac_right_b_1of2_lm_lower.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_right_b_1of2_lm_lower/ready/ready_to_print.gcode.3mf) | Obi-Wan Ac wing B — right LM-lower segment, 1 of 2 | 1 |
+| [`lx521_top_obiwan_wing_ac_right_b_2of2_lm_um_upper.stl`](../wings/ac/stl/lx521_top_obiwan_wing_ac_right_b_2of2_lm_um_upper.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_right_b_2of2_lm_um_upper/ready/ready_to_print.gcode.3mf) | Obi-Wan Ac wing B — right fused LM/UM upper, 2 of 2 | 2 |
 | [`lx521_top_obiwan_wing_ae_left_1of3_lm_lower.stl`](../wings/ae/stl/lx521_top_obiwan_wing_ae_left_1of3_lm_lower.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_left_1of3_lm_lower/ready/ready_to_print.gcode.3mf) | Obi-Wan Ae wing — left LM-lower segment, 1 of 3 | 1 |
 | [`lx521_top_obiwan_wing_ae_left_2of3_lm_upper.stl`](../wings/ae/stl/lx521_top_obiwan_wing_ae_left_2of3_lm_upper.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_left_2of3_lm_upper/ready/ready_to_print.gcode.3mf) | Obi-Wan Ae wing — left LM-upper segment, 2 of 3 | 1 |
 | [`lx521_top_obiwan_wing_ae_left_3of3_um.stl`](../wings/ae/stl/lx521_top_obiwan_wing_ae_left_3of3_um.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_left_3of3_um/ready/ready_to_print.gcode.3mf) | Obi-Wan Ae wing — left UM segment, 3 of 3 | 1 |
+| [`lx521_top_obiwan_wing_ae_left_b_1of2_lm_lower.stl`](../wings/ae/stl/lx521_top_obiwan_wing_ae_left_b_1of2_lm_lower.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_left_b_1of2_lm_lower/ready/ready_to_print.gcode.3mf) | Obi-Wan Ae wing B — left LM-lower segment, 1 of 2 | 1 |
+| [`lx521_top_obiwan_wing_ae_left_b_2of2_lm_um_upper.stl`](../wings/ae/stl/lx521_top_obiwan_wing_ae_left_b_2of2_lm_um_upper.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_left_b_2of2_lm_um_upper/ready/ready_to_print.gcode.3mf) | Obi-Wan Ae wing B — left fused LM/UM upper, 2 of 2 | 2 |
 | [`lx521_top_obiwan_wing_ae_right_1of3_lm_lower.stl`](../wings/ae/stl/lx521_top_obiwan_wing_ae_right_1of3_lm_lower.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_right_1of3_lm_lower/ready/ready_to_print.gcode.3mf) | Obi-Wan Ae wing — right LM-lower segment, 1 of 3 | 1 |
 | [`lx521_top_obiwan_wing_ae_right_2of3_lm_upper.stl`](../wings/ae/stl/lx521_top_obiwan_wing_ae_right_2of3_lm_upper.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_right_2of3_lm_upper/ready/ready_to_print.gcode.3mf) | Obi-Wan Ae wing — right LM-upper segment, 2 of 3 | 1 |
 | [`lx521_top_obiwan_wing_ae_right_3of3_um.stl`](../wings/ae/stl/lx521_top_obiwan_wing_ae_right_3of3_um.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_right_3of3_um/ready/ready_to_print.gcode.3mf) | Obi-Wan Ae wing — right UM segment, 3 of 3 | 1 |
+| [`lx521_top_obiwan_wing_ae_right_b_1of2_lm_lower.stl`](../wings/ae/stl/lx521_top_obiwan_wing_ae_right_b_1of2_lm_lower.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_right_b_1of2_lm_lower/ready/ready_to_print.gcode.3mf) | Obi-Wan Ae wing B — right LM-lower segment, 1 of 2 | 1 |
+| [`lx521_top_obiwan_wing_ae_right_b_2of2_lm_um_upper.stl`](../wings/ae/stl/lx521_top_obiwan_wing_ae_right_b_2of2_lm_um_upper.stl) · [ready 3MF](captive_magnet_slice_audit/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_right_b_2of2_lm_um_upper/ready/ready_to_print.gcode.3mf) | Obi-Wan Ae wing B — right fused LM/UM upper, 2 of 2 | 2 |
 
 ## Count reconciliation
 
@@ -94,13 +102,13 @@ with the human-readable insertion/polarity table in
 |---|---:|---:|---:|---:|
 | Floor stand | 22 | 45 | 21 | 41 |
 | No floor stand | 22 | 45 | 21 | 41 |
-| Shared wings | 12 | 12 | 12 | 12 |
-| **Total** | **56** | **102** | **54** | **94** |
+| Shared wings | 20 | 24 | 20 | 24 |
+| **Total** | **64** | **114** | **62** | **106** |
 
-The 94 directly sliced insertions are **90 transverse sites plus four axial V0
+The 106 directly sliced insertions are **102 transverse sites plus four axial V0
 sites**. The remaining eight catalog stations are the two four-magnet Obi-Wan
 LM monoliths; they duplicate the exact keyed-half cavities for audit coverage
 and have no P2S project. Floor/no-floor, Ac/Ae, and monolith/keyed split are
-alternative choices, so 102 is an audit-inventory count rather than a bill of
+alternative choices, so 114 is an audit-inventory count rather than a bill of
 materials. A physical Obi-Wan build using either LM form and one wing family
 uses 12 magnets: six in the carrier and six in the wing receivers.

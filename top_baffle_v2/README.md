@@ -29,8 +29,12 @@ documents the implemented source/package and generated-state boundary.
 
 For direct Bambu Lab P2S use, build the small
 [`to_print/`](to_print/README.md) shelf with `make to_print`. It exposes only
-the 39 printable Stock, Slim, and Obi-Wan files under friendly names, with
-matching ready-to-print `.gcode.3mf` projects and a local hash manifest.
+the 48 printable Stock, Slim, and Obi-Wan entries under friendly names,
+including the no-floor Obi-Wan 01a+02+03+04 single-plate alternative, with
+matching ready-to-print `.gcode.3mf` projects and a local hash manifest. That
+alternative is independently addressable through
+`make obiwan_combo_plate_source`, `make obiwan_combo_plate`, and
+`make obiwan_combo_plate_to_print`; none of these targets dispatches to osado.
 
 ## Files
 
@@ -54,8 +58,8 @@ matching ready-to-print `.gcode.3mf` projects and a local hash manifest.
 | `src/lx521_baffle/obiwan/floor.py` / `src/lx521_baffle/obiwan/floor_strength.py` | Floor-only integral W64 full-depth stem/foot, R12 root, rear NL8 panel/service cavity and three buried cable continuations; closed-form five-material net-section screen. This is part of the LM carrier, not an add-on, and the analysis is not FEA or physical qualification. |
 | `src/lx521_baffle/obiwan/attachments.py` | Optional tweeter crescent with complete standalone blind-M3 receiver ears; any cable retention is external/non-modeled, and magnets receive zero structural load credit |
 | `src/lx521_baffle/obiwan/assembled.py` | Review assembly containing the R6F core, selected add-ons, and the explicitly non-manufacturing terminal/Faston proxy |
-| `src/lx521_baffle/obiwan/wings.py` | STEP-first Ac/Ae Obi-Wan acoustic attachments: one canonical monolith per side, three exact surface-normal captive D5 × 2 magnet receivers per side (LM lower, LM upper, and UM), one saddle compatible with the shared floor/no-floor lower-LM front profile, the approved constant-depth Ac or monotonic LM/UM/T-weighted Ae rear, and three exact-mask print intersections per side. Each physical side has one V1L-style through-local-thickness XY dovetail at the lower→middle interface (lower male, neck/head/depth 7/9/4 mm) and one at the middle→UM interface (middle male, 7/8.5/4 mm); female clearance is 0.05 mm, the exposed split clearance closes over the final 2 mm at both endpoints, and the keys add no envelope growth. They register/interlock in XY but provide no independent Z retention. Ae’s complete internal protected-land perimeter is accepted only when paired actual-BREP probes show a C0 jump ≤0.03 mm |
-| `scripts/export_obiwan_wings.py` | Transactional Ac/Ae exporter: canonical/assembled STEP, six strict front-face-down STLs with six exact adjacent `.print.json` authorities, facts, hash manifest, and CAD-derived QA renders under `build/wings/ac/` or `build/wings/ae/`; every review PNG uses hash-validated staged BREPs for a neutral no-floor LM-upper/UM/tweeter reference plus the two coincident LM-lower outlines—blue dash-dot for no-floor and green dotted for floor stand; the side view keeps its useful acoustic-depth scale and includes a complete-depth floor inset |
+| `src/lx521_baffle/obiwan/wings.py` | STEP-first Ac/Ae Obi-Wan acoustic attachments: one canonical monolith per side, three exact surface-normal captive D5 × 2 magnet receivers per side (LM lower, LM upper, and UM), one saddle compatible with the shared floor/no-floor lower-LM front profile, the approved constant-depth Ac or monotonic LM/UM/T-weighted Ae rear, and two print options. Option A preserves the original three exact-mask pieces; option B keeps the identical lower piece and fuses LM-upper plus UM into one upper piece by restoring only their former clearance seam. Each physical side retains the lower→upper V1L-style through-local-thickness XY dovetail; option A also retains its middle→UM dovetail. Female clearance is 0.05 mm, exposed split clearance closes over the final 2 mm at both endpoints, and the keys add no envelope growth. They register/interlock in XY but provide no independent Z retention. Ae’s complete internal protected-land perimeter is accepted only when paired actual-BREP probes show a C0 jump ≤0.03 mm |
+| `scripts/export_obiwan_wings.py` | Transactional Ac/Ae exporter: canonical/A/B assembled STEP, ten strict front-face-down STLs with ten exact adjacent `.print.json` authorities, facts, hash manifest, and CAD-derived QA renders under `build/wings/ac/` or `build/wings/ae/`; every review PNG uses hash-validated staged BREPs for a neutral no-floor LM-upper/UM/tweeter reference plus the two coincident LM-lower outlines—blue dash-dot for no-floor and green dotted for floor stand; the side view keeps its useful acoustic-depth scale and includes a complete-depth floor inset |
 | `tests/test_obiwan_wings.py` | Remote-only Ac/Ae BREP, print-inventory, STEP, STL, mirror, depth, receiver, dovetail/clearance, endpoint-closure, bed-fit, provenance, render, and exact dual-state lower-LM front-profile gates |
 | `src/lx521_baffle/um_fit.py` | 283-degree MU terminal service model: terminal-less MU body, hash-pinned W22 reference and declared-placement conservative rear keepout, independent low-profile flag-Faston pull states, physical OD8/OD4 Y-breakout harness, and the proud/V1L split strain reliefs; `PHYSICAL_MEASURE_REQUIRED` remains true |
 | `scripts/export_piece_stls.py` | Exports the print-ready proud-family or Obi-Wan core/add-on STLs (`--variant`, `--outdir`) and one exact adjacent, hash-bound `.print.json` authority for every STL |
@@ -63,8 +67,8 @@ matching ready-to-print `.gcode.3mf` projects and a local hash manifest.
 | `Makefile` | Generates STEPs/STLs/PNGs for both stand states into `build/floor_stand/` and `build/no_floor_stand/` (see "Generated artifact layout"). Local OCC jobs are serial; the remote executor uses bounded parallel slots, and every CAD subprocess runs through `scripts/run_memory_guarded.py`. |
 | `scripts/remote_cad.py` / `cad-remote-requirements.lock` | Content-addressed SSH executor, resumable job control, verified artifact return, and exact remote Python environment |
 | `review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md` | Authoritative per-STL front-face-down orientation, actual sliced open/closing layers, Bambu Custom park/pause/restore events, grouped magnet counts, and local-axis polarity |
-| `review/CAPTIVE_MAGNET_ARTIFACT_INVENTORY.md` | Clickable inventory of all 56 magnet-bearing STL records, their 54 locally generated/directly loadable G-code-bearing Bambu 3MF projects, descriptive piece names, and exact magnet counts; also reconciles the 90 transverse, four axial V0, and eight exact split-proxy stations |
-| `build/<state>/stl/*.stl` and `build/wings/{ac,ae}/stl/*.stl` | The enforced acoustic-print inventory is 45 nonpolar front-face-down STL/sidecar pairs in each stand state plus six Ac and six Ae pairs: 102 exact pairs total. Every acoustic piece is source-X180 with only an optional in-bed Z rotation and its front datum at STL Z=0. A missing, orphaned, stale-hash, tilted, or translation-inconsistent `<stem>.print.json` fails release validation. The two floor polar-index jigs are the sole orientation-sidecar exclusions because they are fixtures with no acoustic front-face datum. |
+| `review/CAPTIVE_MAGNET_ARTIFACT_INVENTORY.md` | Clickable inventory of all 64 magnet-bearing STL records, their 62 locally generated/directly loadable G-code-bearing Bambu 3MF projects, descriptive piece names, and exact magnet counts; also reconciles the 102 transverse, four axial V0, and eight exact split-proxy stations |
+| `build/<state>/stl/*.stl` and `build/wings/{ac,ae}/stl/*.stl` | The enforced acoustic-print inventory is 45 nonpolar front-face-down STL/sidecar pairs in each stand state plus ten Ac and ten Ae pairs: 110 exact pairs total. Every acoustic piece is source-X180 with only an optional in-bed Z rotation and its front datum at STL Z=0. A missing, orphaned, stale-hash, tilted, or translation-inconsistent `<stem>.print.json` fails release validation. The two floor polar-index jigs are the sole orientation-sidecar exclusions because they are fixtures with no acoustic front-face datum. |
 
 Regenerate through the remote executor (the default):
 
@@ -1123,8 +1127,11 @@ scarf mate is also excluded because no printable mate has been released.
 ## Printing
 
 - Follow PRINTING.md and run the applicable coupons first.
-- R6P baffle pieces print front-face-down; use the documented support
-  blockers for internal ducts and the floor-foot strength modifier.
+- R6P baffle pieces print front-face-down. Support-disabled projects must emit
+  no support features; every support-enabled Obi-Wan keyed LM half and UM
+  carrier embeds its generated duct blocker and must pass the final
+  support/duct collision gate. A Bambu `floating cantilever` warning blocks
+  release.
 - The canonical floor R6F LM with its integral stand and the no-floor monolith
   are not P2S-printable at their approximately 236.41 x 313.75 mm front-down
   footprint. On a verified larger-format machine, print them front-face-down

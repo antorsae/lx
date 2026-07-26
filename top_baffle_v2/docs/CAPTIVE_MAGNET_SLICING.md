@@ -5,13 +5,13 @@ D5 x 2 magnet system. It resolves the installed Bambu presets, slices every
 catalogued STL that fits the P2S bed in its mandatory front-face-down
 orientation, reads the actual G-code layer schedule, checks the open cradle
 and closing roof toolpaths, and writes both the pause audit and ready-to-open
-`.gcode.3mf` projects. The catalog contains exactly 56 magnet-bearing release
-STLs, of which 54 are actual P2S slice jobs. The two canonical Obi-Wan LM
+`.gcode.3mf` projects. The catalog contains exactly 64 magnet-bearing release
+STLs, of which 62 are actual P2S slice jobs. The two canonical Obi-Wan LM
 monoliths are catalogued release artifacts but are explicitly classified as
 not P2S-printable; their cavity audits are supplied by exact same-state keyed
-halves as described below. The number 102 is the count of individual magnet
-stations, not a claim that this pipeline slices 102 STLs. Separately, the full
-repository release happens to contain 102 STL/`.print.json` pairs. This magnet
+halves as described below. The number 114 is the count of individual magnet
+stations, not a claim that this pipeline slices 114 STLs. Separately, the full
+repository release contains 110 STL/`.print.json` pairs. This magnet
 catalog excludes every nonmagnet-bearing print, including the Obi-Wan tweeter
 crescent and coupons, so these targets are not yet a complete-print-set slicer.
 
@@ -26,9 +26,16 @@ or a printer address, and cannot upload or start a print.
 - Nominal wall paths: 0.42 mm outer / 0.45 mm inner
 - Detect thin wall: enabled for the captive-magnet retaining skins
 - Filament used for slicing: Bambu PLA Tough+
-- Support: disabled by default; enabled only for both
-  `lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl` jobs with **On build
-  plate only** and **Support critical regions only**
+- Support: disabled by default; enabled only for both keyed LM halves and the
+  UM carrier in both stand states. Every supported project pins **Enable
+  support**, **On build plate only**, **Support critical regions only**, and
+  **Remove small overhangs** globally and on every object.
+- Duct safety: every support-enabled carrier carries a hash-bound modifier
+  over every functional lumen it owns. The final G-code must pass the
+  independent deposited-support-bead-versus-duct collision gate with zero
+  intersections.
+- A Bambu Studio `floating cantilever` diagnostic is release-blocking even
+  when the slicer labels it non-critical and exits successfully.
 - Orientation: **front face down for every piece**
 
 The production overrides retain the project's structural profile: six wall
@@ -69,14 +76,23 @@ costs material and increases warp risk, but it preserves the structural
 requirement until modifier-volume `.3mf` automation is implemented. Do not
 reduce that piece to sparse infill after loading the generated project.
 
-Both floor states of that keyed LM bottom also carry the only support override
-in the release catalog: `enable_support=1`,
-`support_on_build_plate_only=1`, and
-`support_critical_regions_only=1`. This supports the floating cantilever from
-the plate without turning ordinary buried-magnet jobs into supported prints.
-The cavity audit still rejects support or any other extrusion that blocks the
-last-open D5 loading aperture, and both the final G-code CONFIG_BLOCK and the
-ready `.gcode.3mf` project settings must contain the exact three flags.
+The ready-project archive is not accepted merely because its profile flags
+look correct. Its object overrides, embedded blocker mesh, source/STL/3MF
+equivalence, and final support toolpaths are all checked before shelf
+promotion. Any support bead entering a functional duct is a release failure.
+
+Both keyed LM halves and the UM carrier in both floor states carry the support
+override:
+`enable_support=1`, `support_on_build_plate_only=1`,
+`support_critical_regions_only=1`, and
+`support_remove_small_overhang=1`. The four settings are pinned in the global
+project profile and on every model object. Each supported carrier also embeds
+its state-specific duct blocker. Ordinary buried-magnet jobs pin the same four
+fields to `0` globally and per object, and are rejected if they emit any
+support feature. The
+cavity audit still rejects support or any other extrusion that blocks the
+last-open D5 loading aperture, while the separate duct gate rejects every
+support bead that intersects a functional cable lumen.
 
 The process selector lives in `captive_magnet_slicing_profile.json`. The
 pipeline recursively flattens the installed system presets' `inherits` and
@@ -116,11 +132,14 @@ and 1.10 mm for Obi-Wan ring pairs with the 0.15 mm carrier inset. The cavity
 contract is wholly internal: a local exterior box, cap, flat, dent, boss, or
 other magnet-location cue is a release failure.
 
-The current fail-closed inventory is 56 magnet-bearing released STLs and 102
-individual magnet stations: 22 STLs in each floor state plus 12 shared Ac/Ae
-segments. A count change is a source-level release change, not something the
-generator silently accepts. Non-print compound STEP review packages are not
-separate prints; their constituent STLs are present in this inventory.
+The current fail-closed inventory is 64 magnet-bearing released STLs and 114
+individual magnet stations: 22 STLs / 45 stations in each floor state plus
+20 shared Ac/Ae segments / 24 stations. Each Ac/Ae side exposes the unchanged
+three-piece A set and the two-piece B alternative; the B lower is identical to
+the A lower, while the fused B upper carries both LM-upper and UM stations. A
+count change is a source-level release change, not something the generator
+silently accepts. Non-print compound STEP review packages are not separate
+prints; their constituent STLs are present in this inventory.
 
 ### Oversized canonical Obi-Wan LM policy
 
@@ -147,8 +166,8 @@ and every per-site cradle, aperture, clearance, closure, and sealed-roof gate.
 Any missing, duplicate, cross-state, or contract-mismatched proxy fails the
 release.
 
-The current 56-STL/102-station catalog consequently produces 54 actual P2S
-slices with 94 actual pause-station rows, plus eight canonical monolith site
+The current 64-STL/114-station catalog consequently produces 62 actual P2S
+slices with 106 actual pause-station rows, plus eight canonical monolith site
 contracts covered by those exact split slices. This is coverage of duplicate
 geometry, not a printable monolith pause. The authoritative manifests label
 each monolith `not_p2s_printable__cavity_covered_by_exact_split`, list its
@@ -237,7 +256,7 @@ make bambu_dry_run
 # Generate ready projects for the Obi-Wan-filtered diagnostic subset.
 make bambu_slice_obiwan
 
-# Slice/audit all 54 P2S jobs and generate the authoritative ready projects.
+# Slice/audit all 62 P2S jobs and generate the authoritative ready projects.
 make bambu_slice_release
 
 # Serial is the conservative default. Increase only when host memory permits.
@@ -264,8 +283,8 @@ upload, start-print, or other printer contact.
 run writes subset results and ready projects for matching artifacts, but it
 is not a complete Obi-Wan print set and cannot replace the release-wide
 canonical JSON/CSV/Markdown pause manifests. Only the unfiltered
-`bambu_slice_release` can publish that authority after all 56 catalog entries,
-54 real P2S slices, proxy coverage, and toolpath gates pass.
+`bambu_slice_release` can publish that authority after all 64 catalog entries,
+62 real P2S slices, proxy coverage, and toolpath gates pass.
 
 ### Why the output is a sliced 3MF, not an STL sidecar
 
@@ -287,13 +306,36 @@ copies the exact catalog, schema, STL, adjacent print sidecar, source files,
 Obi-Wan stage manifest, and Ac/Ae facts/transaction manifest into a read-only
 staging tree. It slices those frozen STL bytes, then rechecks the live and
 staged hashes, resolved profiles, and Bambu Studio binary. Only exact coverage
-of all 56 artifacts / 102 stations with zero failures may transactionally
+of all 64 artifacts / 114 stations with zero failures may transactionally
 replace the three canonical manifests. A subset, dry run, failed slice,
 missing evidence render, provenance drift, or interrupted publication leaves
 the previous authority untouched.
 
 No OpenCascade code is imported by this command. No local CAD execution is
 performed.
+
+### No-floor 01a+02+03+04 composite shelf plate
+
+The canonical 64-artifact audit remains unchanged. The printer shelf adds one
+local packaging alternative,
+`obiwan_01a_02_03_04_LM_UM_1_of_1`, by translation-only concatenation of the
+already released 01a, 02, 03, and 04 STLs. Its Bambu project is one printable
+object with four normal volumes and the three canonical duct blockers. The
+plate repeats the six authoritative LM/UM sites in one Z=5.96 mm pause; it
+does not create a new CAD artifact or magnet station.
+
+`scripts/build_obiwan_combo_plate.py` independently requires exact
+four-volume/project/STL equivalence, all four support fields globally and per
+object, actual support under each carrier footprint, no support under the
+tweeter footprint, and zero support-bead collisions against each of the three
+functional duct contracts. `make obiwan_combo_plate` performs a dry run before
+the local macOS Bambu slice and refuses remote-worker/osado execution.
+The source STL/manifest, ready project/audit, and promoted shelf pair are
+ordinary Make artifacts with recovery stamps; `make
+obiwan_combo_plate_to_print` refreshes only the delivery pair after a
+slice-disabled complete 48/48 shelf validation. `make to_print` consumes
+existing authoritative captive-magnet ready projects and never implicitly
+launches `bambu_slice_release`.
 
 ## Layer and toolpath evidence
 

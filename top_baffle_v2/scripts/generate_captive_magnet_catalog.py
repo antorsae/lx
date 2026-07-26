@@ -60,12 +60,12 @@ HERE = PROJECT_ROOT
 DEFAULT_OUTPUT = HERE / "review" / "captive_magnet_release_catalog.json"
 SCHEMA_PATH = HERE / "captive_magnet_release_catalog.schema.json"
 SCHEMA_VERSION = 1
-EXPECTED_ARTIFACT_COUNT = 56
-EXPECTED_MAGNET_COUNT = 102
+EXPECTED_ARTIFACT_COUNT = 64
+EXPECTED_MAGNET_COUNT = 114
 EXPECTED_STATE_ARTIFACT_COUNT = 22
 EXPECTED_STATE_MAGNET_COUNT = 45
-EXPECTED_SHARED_ARTIFACT_COUNT = 12
-EXPECTED_SHARED_MAGNET_COUNT = 12
+EXPECTED_SHARED_ARTIFACT_COUNT = 20
+EXPECTED_SHARED_MAGNET_COUNT = 24
 EXPECTED_FAMILY_COUNTS = {
     # family: (released STL count, total captive-station count)
     "B2": (2, 8),
@@ -79,8 +79,8 @@ EXPECTED_FAMILY_COUNTS = {
     "V1L": (2, 8),
     "Obi-Wan": (4, 12),
     "Obi-Wan-split": (4, 8),
-    "Obi-Wan-Ac": (6, 6),
-    "Obi-Wan-Ae": (6, 6),
+    "Obi-Wan-Ac": (10, 12),
+    "Obi-Wan-Ae": (10, 12),
     "coupon1": (2, 2),
 }
 RELEASED_WING_VARIANTS = {
@@ -654,6 +654,165 @@ def _state_artifacts(state: str, output: Path) -> list[dict[str, Any]]:
     return result
 
 
+def _wing_release_site(
+        receiver_by_name: dict[str, dict[str, Any]],
+        expected_name: str) -> dict[str, Any]:
+    """Validate and enrich one source receiver for a wing release artifact."""
+    site = dict(receiver_by_name[expected_name])
+    interface_kind = str(site.get("interface_kind", "ring"))
+    cavity_datum = site.get(
+        "carrier_cavity_datum_xy_mm", site["carrier_face_xy_mm"])
+    outer_surface = site["carrier_face_xy_mm"]
+    normal = site["axis_normal_xy"]
+    cavity_inset = round(sum(
+        (float(outer_surface[index]) - float(cavity_datum[index]))
+        * float(normal[index])
+        for index in range(2)
+    ), 9)
+    tangential_error = abs(sum(
+        (float(outer_surface[index]) - float(cavity_datum[index]))
+        * (-float(normal[1]) if index == 0 else float(normal[0]))
+        for index in range(2)
+    ))
+    expected_separation = 1.10 if interface_kind == "ring" else 0.95
+    actual_separation = float(site["paired_magnet_face_separation_mm"])
+    expected_inset = 0.15 if interface_kind == "ring" else 0.0
+    if (abs(cavity_inset - expected_inset) > 1.0e-9
+            or tangential_error > 1.0e-9
+            or abs(actual_separation - expected_separation) > 1.0e-9):
+        raise RuntimeError(
+            f"{expected_name}: stale Obi-Wan carrier/wing magnet "
+            "spacing facts")
+    site.update({
+        "interface_kind": interface_kind,
+        "carrier_cavity_face_inset_mm": cavity_inset,
+        "outer_surface_face_xy_mm": [
+            float(value) for value in outer_surface],
+        "paired_magnet_face_separation_mm": expected_separation,
+        "installed_marked_pole_axis_xyz": site[
+            "marked_pole_axis_xyz"],
+        "polarity_instruction": _polarity("wing", "obiwan"),
+        "magnet_count": 1,
+        "structural_load_credit_n": 0.0,
+        "expected_pause_marker_z_mm": 5.96,
+    })
+    return site
+
+
+def _wing_artifact_from_entry(
+        *, slug: str, wing_variant: str, output: Path, root: Path,
+        facts_path: Path, manifest_path: Path, facts_sha: str,
+        manifest_artifacts: dict[str, dict[str, Any]],
+        wing_source_files: list[str],
+        wing_source_hashes: dict[str, str],
+        receiver_by_name: dict[str, dict[str, Any]],
+        entry: dict[str, Any]) -> dict[str, Any]:
+    side = str(entry["side"])
+    role = str(entry["role"])
+    split_variant = str(entry["split_variant"])
+    if split_variant == "a":
+        site_names = (f"{role}_{side}",)
+    elif split_variant == "b" and role == "lm_lower":
+        site_names = (f"lm_lower_{side}",)
+    elif split_variant == "b" and role == "lm_um_upper":
+        site_names = (f"lm_upper_{side}", f"um_{side}")
+    else:
+        raise RuntimeError(
+            f"{slug}: unsupported wing split/role "
+            f"{split_variant}/{role}")
+    sites = [
+        _wing_release_site(receiver_by_name, name)
+        for name in site_names
+    ]
+
+    stl = _resolve_release_relative(
+        root, entry.get("path"), f"{slug}:{entry['label']} STL")
+    transaction = manifest_artifacts.get(entry["path"])
+    if (transaction is None
+            or transaction.get("kind") != "print_stl"
+            or transaction.get("sha256") != _sha256(stl)):
+        raise RuntimeError(
+            f"{slug}: STL is not bound to its transaction: {stl}")
+    transform = entry.get("print_transform")
+    if not isinstance(transform, dict):
+        raise RuntimeError(f"wing lacks front-down transform: {stl}")
+    try:
+        validate_front_down_transform(
+            transform, label=f"{slug}:{entry['label']}")
+    except FrontDownContractError as exc:
+        raise RuntimeError(
+            f"wing has invalid front-down transform: {stl}: {exc}") from exc
+    sidecar_relative = entry.get("print_sidecar")
+    sidecar = _resolve_release_relative(
+        root, sidecar_relative, f"{slug}:{entry['label']} print sidecar")
+    sidecar_transaction = manifest_artifacts.get(sidecar_relative)
+    sidecar_sha = _sha256(sidecar) if sidecar.is_file() else None
+    if (sidecar_transaction is None
+            or sidecar_transaction.get("kind") != "print_sidecar"
+            or sidecar_transaction.get("sha256") != sidecar_sha
+            or entry.get("print_sidecar_sha256") != sidecar_sha):
+        raise RuntimeError(
+            f"{slug}: sidecar is not bound to its transaction: {sidecar}")
+    try:
+        sidecar_payload = validate_print_sidecar(stl, sidecar)
+    except FrontDownContractError as exc:
+        raise RuntimeError(
+            f"wing has invalid print sidecar: {sidecar}: {exc}") from exc
+    if sidecar_payload.get("part") != stl.stem:
+        raise RuntimeError(
+            f"{slug}: print sidecar part identity drifted: {sidecar}")
+    if sidecar_payload.get("assembly_label") != entry["label"]:
+        raise RuntimeError(
+            f"{slug}: print sidecar assembly identity drifted: {sidecar}")
+    expected_release_metadata = {
+        "artifact_family": "obiwan_wing_artifacts",
+        "variant_slug": slug,
+        "split_variant": split_variant,
+        "piece_count": entry.get("piece_count"),
+        "side": side,
+        "order": entry.get("order"),
+        "role": role,
+        "mesh": {
+            "tolerance_mm": entry.get("mesh_tolerance_mm"),
+            "angular_tolerance": entry.get("mesh_angular_tolerance"),
+        },
+    }
+    if {
+            key: sidecar_payload.get(key)
+            for key in expected_release_metadata
+    } != expected_release_metadata:
+        raise RuntimeError(
+            f"{slug}: print sidecar release metadata drifted: {sidecar}")
+    sidecar_transform = {
+        key: sidecar_payload.get(key) for key in transform
+    }
+    if sidecar_transform != transform:
+        raise RuntimeError(
+            f"{slug}: print sidecar and facts transform differ: {sidecar}")
+    matrix = sidecar_payload["source_to_stl_matrix"]
+    sites = [_add_print_space(site, matrix) for site in sites]
+    return {
+        "id": f"shared:{wing_variant}:{entry['label']}",
+        "state": "shared",
+        "variant": wing_variant,
+        "part": entry["label"],
+        "stl": _relative(stl, output),
+        "stl_sha256": _sha256(stl),
+        "print_sidecar": _relative(sidecar, output),
+        "print_sidecar_sha256": sidecar_sha,
+        "transaction_manifest": _relative(manifest_path, output),
+        "transaction_manifest_sha256": _sha256(manifest_path),
+        "facts": _relative(facts_path, output),
+        "facts_sha256": facts_sha,
+        "print_orientation": "front_face_down",
+        "rotation_deg": sidecar_payload["rotation_deg"],
+        "source_to_stl_matrix": matrix,
+        "sites": sites,
+        "source_files": wing_source_files,
+        "source_file_sha256": wing_source_hashes,
+    }
+
+
 def _wing_artifacts(slug: str, output: Path) -> list[dict[str, Any]]:
     wing_variant = _released_wing_variant(slug)
     root = HERE / "build/wings" / slug
@@ -661,9 +820,9 @@ def _wing_artifacts(slug: str, output: Path) -> list[dict[str, Any]]:
     manifest_path = root / f"obiwan_wing_{slug}_print_manifest.json"
     facts = _read_json(facts_path)
     manifest = _read_json(manifest_path)
-    if facts.get("schema_version") != 2:
+    if facts.get("schema_version") != 3:
         raise RuntimeError(f"{slug}: wing facts lack print-sidecar schema")
-    if manifest.get("schema_version") != 2:
+    if manifest.get("schema_version") != 3:
         raise RuntimeError(f"{slug}: wing manifest lacks print-sidecar schema")
     facts_sha = _sha256(facts_path)
     if manifest.get("facts_sha256") != facts_sha:
@@ -694,161 +853,57 @@ def _wing_artifacts(slug: str, output: Path) -> list[dict[str, Any]]:
     ), output)
     receivers = facts["geometry"]["interface_contract"]["receivers"]
     parts = facts["exports"]["print_parts"]
-    if not isinstance(parts, list) or len(parts) != 6:
-        raise RuntimeError(f"{slug}: expected six transactional wing parts")
+    if not isinstance(parts, list) or len(parts) != 10:
+        raise RuntimeError(f"{slug}: expected ten transactional wing parts")
     expected_stls = [item.get("path") for item in parts]
     expected_sidecars = [item.get("print_sidecar") for item in parts]
     if (any(not isinstance(path, str) or not path
             for path in (*expected_stls, *expected_sidecars))
-            or len(set(expected_stls)) != 6
-            or len(set(expected_sidecars)) != 6
+            or len(set(expected_stls)) != 10
+            or len(set(expected_sidecars)) != 10
             or manifest.get("print_parts") != expected_stls
             or manifest.get("print_sidecars") != expected_sidecars):
         raise RuntimeError(
-            f"{slug}: facts/manifest do not bind six unique STL/sidecar pairs")
-    by_key = {(item["side"], item["role"]): item for item in parts}
-    result: list[dict[str, Any]] = []
-    for side in ("left", "right"):
+            f"{slug}: facts/manifest do not bind ten unique "
+            "STL/sidecar pairs")
+    expected_keys = {
+        ("a", side, role)
+        for side in ("left", "right")
+        for role in ("lm_lower", "lm_upper", "um")
+    } | {
+        ("b", side, role)
+        for side in ("left", "right")
+        for role in ("lm_lower", "lm_um_upper")
+    }
+    actual_keys = {
+        (item.get("split_variant"), item.get("side"), item.get("role"))
+        for item in parts
+    }
+    if actual_keys != expected_keys:
+        raise RuntimeError(
+            f"{slug}: wing split inventory drifted: {sorted(actual_keys)}")
+    result = []
+    for entry in parts:
+        side = str(entry["side"])
         receiver_by_name = {
             item["name"]: item for item in receivers[side]
         }
-        for role in ("lm_lower", "lm_upper", "um"):
-            entry = by_key[(side, role)]
-            expected_name = (
-                f"{role}_{side}" if role != "um" else f"um_{side}")
-            site = dict(receiver_by_name[expected_name])
-            interface_kind = str(site.get("interface_kind", "ring"))
-            cavity_datum = site.get(
-                "carrier_cavity_datum_xy_mm", site["carrier_face_xy_mm"])
-            outer_surface = site["carrier_face_xy_mm"]
-            normal = site["axis_normal_xy"]
-            cavity_inset = round(sum(
-                (float(outer_surface[index]) - float(cavity_datum[index]))
-                * float(normal[index])
-                for index in range(2)
-            ), 9)
-            tangential_error = abs(sum(
-                (float(outer_surface[index]) - float(cavity_datum[index]))
-                * (-float(normal[1]) if index == 0 else float(normal[0]))
-                for index in range(2)
-            ))
-            expected_separation = 1.10 if interface_kind == "ring" else 0.95
-            actual_separation = float(
-                site["paired_magnet_face_separation_mm"])
-            expected_inset = 0.15 if interface_kind == "ring" else 0.0
-            if (abs(cavity_inset - expected_inset) > 1.0e-9
-                    or tangential_error > 1.0e-9
-                    or abs(actual_separation - expected_separation) > 1.0e-9):
-                raise RuntimeError(
-                    f"{slug}/{expected_name}: stale Obi-Wan carrier/wing "
-                    "magnet spacing facts")
-            site.update({
-                "interface_kind": interface_kind,
-                "carrier_cavity_face_inset_mm": cavity_inset,
-                "outer_surface_face_xy_mm": [
-                    float(value) for value in outer_surface],
-                "paired_magnet_face_separation_mm": expected_separation,
-            })
-            site["installed_marked_pole_axis_xyz"] = site[
-                "marked_pole_axis_xyz"]
-            site["polarity_instruction"] = _polarity("wing", "obiwan")
-            site["magnet_count"] = 1
-            site["structural_load_credit_n"] = 0.0
-            site["expected_pause_marker_z_mm"] = (
-                5.96)
-            stl = _resolve_release_relative(
-                root, entry.get("path"), f"{slug}:{entry['label']} STL")
-            transaction = manifest_artifacts.get(entry["path"])
-            if (transaction is None
-                    or transaction.get("kind") != "print_stl"
-                    or transaction.get("sha256") != _sha256(stl)):
-                raise RuntimeError(
-                    f"{slug}: STL is not bound to its transaction: {stl}")
-            transform = entry.get("print_transform")
-            if not isinstance(transform, dict):
-                raise RuntimeError(f"wing lacks front-down transform: {stl}")
-            try:
-                validate_front_down_transform(
-                    transform, label=f"{slug}:{entry['label']}")
-            except FrontDownContractError as exc:
-                raise RuntimeError(
-                    f"wing has invalid front-down transform: {stl}: "
-                    f"{exc}") from exc
-            sidecar_relative = entry.get("print_sidecar")
-            sidecar = _resolve_release_relative(
-                root, sidecar_relative,
-                f"{slug}:{entry['label']} print sidecar")
-            sidecar_transaction = manifest_artifacts.get(sidecar_relative)
-            sidecar_sha = _sha256(sidecar) if sidecar.is_file() else None
-            if (sidecar_transaction is None
-                    or sidecar_transaction.get("kind") != "print_sidecar"
-                    or sidecar_transaction.get("sha256") != sidecar_sha
-                    or entry.get("print_sidecar_sha256") != sidecar_sha):
-                raise RuntimeError(
-                    f"{slug}: sidecar is not bound to its transaction: "
-                    f"{sidecar}")
-            try:
-                sidecar_payload = validate_print_sidecar(stl, sidecar)
-            except FrontDownContractError as exc:
-                raise RuntimeError(
-                    f"wing has invalid print sidecar: {sidecar}: {exc}") from exc
-            if sidecar_payload.get("part") != stl.stem:
-                raise RuntimeError(
-                    f"{slug}: print sidecar part identity drifted: {sidecar}")
-            if sidecar_payload.get("assembly_label") != entry["label"]:
-                raise RuntimeError(
-                    f"{slug}: print sidecar assembly identity drifted: "
-                    f"{sidecar}")
-            expected_release_metadata = {
-                "artifact_family": "obiwan_wing_artifacts",
-                "variant_slug": slug,
-                "side": side,
-                "order": entry.get("order"),
-                "role": role,
-                "mesh": {
-                    "tolerance_mm": entry.get("mesh_tolerance_mm"),
-                    "angular_tolerance": entry.get(
-                        "mesh_angular_tolerance"),
-                },
-            }
-            if {
-                    key: sidecar_payload.get(key)
-                    for key in expected_release_metadata
-            } != expected_release_metadata:
-                raise RuntimeError(
-                    f"{slug}: print sidecar release metadata drifted: "
-                    f"{sidecar}")
-            sidecar_transform = {
-                key: sidecar_payload.get(key) for key in transform
-            }
-            if sidecar_transform != transform:
-                raise RuntimeError(
-                    f"{slug}: print sidecar and facts transform differ: "
-                    f"{sidecar}")
-            matrix = sidecar_payload["source_to_stl_matrix"]
-            site = _add_print_space(site, matrix)
-            result.append({
-                "id": f"shared:{wing_variant}:{entry['label']}",
-                "state": "shared",
-                "variant": wing_variant,
-                "part": entry["label"],
-                "stl": _relative(stl, output),
-                "stl_sha256": _sha256(stl),
-                "print_sidecar": _relative(sidecar, output),
-                "print_sidecar_sha256": sidecar_sha,
-                "transaction_manifest": _relative(manifest_path, output),
-                "transaction_manifest_sha256": _sha256(manifest_path),
-                "facts": _relative(facts_path, output),
-                "facts_sha256": facts_sha,
-                "print_orientation": "front_face_down",
-                "rotation_deg": sidecar_payload["rotation_deg"],
-                "source_to_stl_matrix": matrix,
-                "sites": [site],
-                "source_files": wing_source_files,
-                "source_file_sha256": wing_source_hashes,
-            })
-    if len(result) != 6:
-        raise RuntimeError(f"{slug}: expected six wing STLs, got {len(result)}")
+        result.append(_wing_artifact_from_entry(
+            slug=slug,
+            wing_variant=wing_variant,
+            output=output,
+            root=root,
+            facts_path=facts_path,
+            manifest_path=manifest_path,
+            facts_sha=facts_sha,
+            manifest_artifacts=manifest_artifacts,
+            wing_source_files=wing_source_files,
+            wing_source_hashes=wing_source_hashes,
+            receiver_by_name=receiver_by_name,
+            entry=entry,
+        ))
+    if len(result) != 10:
+        raise RuntimeError(f"{slug}: expected ten wing STLs, got {len(result)}")
     return result
 
 
@@ -1019,8 +1074,9 @@ def generate(output: Path) -> dict[str, Any]:
             {
                 "path": "legacy exposed-pocket generated artifacts",
                 "reason": (
-                    "obsolete outputs are replaced in place by the 56 "
-                    "hash-bound regenerated STLs listed in this catalog"),
+                    "obsolete outputs are replaced in place by the "
+                    f"{EXPECTED_ARTIFACT_COUNT} hash-bound regenerated "
+                    "STLs listed in this catalog"),
             },
         ],
         "artifacts": sorted(artifacts, key=lambda item: item["id"]),

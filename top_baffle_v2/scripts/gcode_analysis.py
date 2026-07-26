@@ -69,6 +69,7 @@ def parse_gcode(
     path: Path,
     *,
     retain_regions: Sequence[tuple[float, float, float, float]] | None = None,
+    retain_feature_prefixes: Sequence[str] | None = None,
 ) -> ParsedGcode:
     """Parse Bambu G-code and retain only requested local extrusion paths.
 
@@ -77,6 +78,9 @@ def parse_gcode(
     cavity ROIs, bounding retained memory independently of overall part size;
     all arc subpoints still contribute to global motion bounds.
     """
+    retained_prefixes = (
+        tuple(value.strip().lower() for value in retain_feature_prefixes)
+        if retain_feature_prefixes is not None else None)
     layers: list[Layer] = []
     pending_change = False
     current: Layer | None = None
@@ -271,10 +275,14 @@ def parse_gcode(
                     for axis, value in enumerate((next_x, next_y, next_z)):
                         mins[axis] = min(mins[axis], value)
                         maxs[axis] = max(maxs[axis], value)
+                    retain_feature = (
+                        retained_prefixes is None
+                        or feature.lower().startswith(retained_prefixes))
                     if (current is not None and e_delta > 1.0e-8
                             and math.hypot(
                                 next_x - prior_x,
                                 next_y - prior_y) > 1.0e-8
+                            and retain_feature
                             and _segment_intersects_regions(
                                 prior_x, prior_y, next_x, next_y,
                                 retain_regions)):
@@ -303,8 +311,11 @@ def parse_gcode(
                         current.first_extrusion_line_number = line_number
                     segment_path_id = extrusion_path_id(
                         (old_x, old_y, old_z), (x, y, z))
-                    if _segment_intersects_regions(
-                            old_x, old_y, x, y, retain_regions):
+                    retain_feature = (
+                        retained_prefixes is None
+                        or feature.lower().startswith(retained_prefixes))
+                    if (retain_feature and _segment_intersects_regions(
+                            old_x, old_y, x, y, retain_regions)):
                         current.segments.append(Segment(
                             old_x, old_y, x, y, e_delta, feature,
                             line_width, line_number, old_z, z,
@@ -322,6 +333,252 @@ def parse_gcode(
     return ParsedGcode(
         layers, movement, arcs, extrusion, temperatures,
         tuple(mins), tuple(maxs), config)  # type: ignore[arg-type]
+
+
+def _segment_distance_3d(
+    first_start: Sequence[float],
+    first_end: Sequence[float],
+    second_start: Sequence[float],
+    second_end: Sequence[float],
+) -> float:
+    """Shortest Euclidean distance between two finite 3-D segments."""
+    p0 = tuple(float(value) for value in first_start)
+    p1 = tuple(float(value) for value in first_end)
+    q0 = tuple(float(value) for value in second_start)
+    q1 = tuple(float(value) for value in second_end)
+    first_direction = tuple(
+        p1[index] - p0[index] for index in range(3))
+    second_direction = tuple(
+        q1[index] - q0[index] for index in range(3))
+    separation = tuple(
+        p0[index] - q0[index] for index in range(3))
+
+    def dot(left, right):
+        return sum(left[index] * right[index] for index in range(3))
+
+    def clamp01(value: float) -> float:
+        return max(0.0, min(1.0, value))
+
+    first_length_sq = dot(first_direction, first_direction)
+    second_length_sq = dot(second_direction, second_direction)
+    small = 1.0e-12
+    if first_length_sq <= small and second_length_sq <= small:
+        return math.dist(p0, q0)
+    if first_length_sq <= small:
+        first_parameter = 0.0
+        second_parameter = clamp01(
+            dot(second_direction, separation) / second_length_sq)
+    elif second_length_sq <= small:
+        second_parameter = 0.0
+        first_parameter = clamp01(
+            -dot(first_direction, separation) / first_length_sq)
+    else:
+        first_second_dot = dot(first_direction, second_direction)
+        first_separation_dot = dot(first_direction, separation)
+        second_separation_dot = dot(second_direction, separation)
+        denominator = (
+            first_length_sq * second_length_sq
+            - first_second_dot * first_second_dot)
+        if denominator > small:
+            first_parameter = clamp01((
+                first_second_dot * second_separation_dot
+                - first_separation_dot * second_length_sq
+            ) / denominator)
+        else:
+            first_parameter = 0.0
+        second_parameter = (
+            first_second_dot * first_parameter + second_separation_dot
+        ) / second_length_sq
+        if second_parameter < 0.0:
+            second_parameter = 0.0
+            first_parameter = clamp01(
+                -first_separation_dot / first_length_sq)
+        elif second_parameter > 1.0:
+            second_parameter = 1.0
+            first_parameter = clamp01(
+                (first_second_dot - first_separation_dot)
+                / first_length_sq)
+    delta = tuple(
+        separation[index]
+        + first_parameter * first_direction[index]
+        - second_parameter * second_direction[index]
+        for index in range(3))
+    return math.sqrt(dot(delta, delta))
+
+
+def _support_duct_capsules(
+    contract: Mapping[str, Any],
+    source_to_stl_matrix: BambuMatrix4,
+    stl_to_bed_matrix: BambuMatrix4,
+) -> list[dict[str, Any]]:
+    split_half = contract.get("split_half")
+    seam_y = (
+        float(contract["split_seam_y_mm"])
+        if split_half is not None else None)
+    capsules: list[dict[str, Any]] = []
+    for region in contract["regions"]:
+        radius = float(region["radius_mm"])
+        points = [
+            tuple(float(value) for value in point)
+            for point in region["points_xyz_mm"]
+        ]
+        pairs = (
+            [(points[0], points[0])]
+            if len(points) == 1 else list(zip(points[:-1], points[1:]))
+        )
+        for source_start, source_end in pairs:
+            if (split_half == "bottom"
+                    and min(source_start[1], source_end[1])
+                    > float(seam_y) + radius):
+                continue
+            if (split_half == "top"
+                    and max(source_start[1], source_end[1])
+                    < float(seam_y) - radius):
+                continue
+            stl_start = transform_bambu_point(
+                source_to_stl_matrix, source_start)
+            stl_end = transform_bambu_point(
+                source_to_stl_matrix, source_end)
+            capsules.append({
+                "region": str(region["name"]),
+                "start": transform_bambu_point(
+                    stl_to_bed_matrix, stl_start),
+                "end": transform_bambu_point(
+                    stl_to_bed_matrix, stl_end),
+                "radius_mm": radius,
+            })
+    if not capsules:
+        raise AuditError("duct collision contract produced no capsules")
+    return capsules
+
+
+def audit_support_toolpaths_vs_ducts(
+    *,
+    gcode: Path,
+    contract: Mapping[str, Any],
+    source_to_stl_matrix: BambuMatrix4,
+    stl_to_bed_matrix: BambuMatrix4,
+) -> dict[str, Any]:
+    """Fail if any deposited support bead enters a functional cable lumen."""
+    capsules = _support_duct_capsules(
+        contract, source_to_stl_matrix, stl_to_bed_matrix)
+    roi_margin = max(
+        float(capsule["radius_mm"]) for capsule in capsules) + 1.0
+    retain_regions = [
+        (
+            min(capsule["start"][0], capsule["end"][0]) - roi_margin,
+            min(capsule["start"][1], capsule["end"][1]) - roi_margin,
+            max(capsule["start"][0], capsule["end"][0]) + roi_margin,
+            max(capsule["start"][1], capsule["end"][1]) + roi_margin,
+        )
+        for capsule in capsules
+    ]
+    parsed = parse_gcode(
+        gcode, retain_regions=retain_regions,
+        retain_feature_prefixes=("support",))
+
+    cell_size = 8.0
+    index: dict[tuple[int, int, int], set[int]] = {}
+
+    def cell_range(low: float, high: float):
+        return range(
+            math.floor(low / cell_size),
+            math.floor(high / cell_size) + 1)
+
+    for capsule_index, capsule in enumerate(capsules):
+        radius = float(capsule["radius_mm"])
+        start = capsule["start"]
+        end = capsule["end"]
+        for ix in cell_range(
+                min(start[0], end[0]) - radius,
+                max(start[0], end[0]) + radius):
+            for iy in cell_range(
+                    min(start[1], end[1]) - radius,
+                    max(start[1], end[1]) + radius):
+                for iz in cell_range(
+                        min(start[2], end[2]) - radius,
+                        max(start[2], end[2]) + radius):
+                    index.setdefault((ix, iy, iz), set()).add(
+                        capsule_index)
+
+    support_segments = 0
+    candidate_checks = 0
+    minimum_clearance = math.inf
+    closest: dict[str, Any] | None = None
+    collisions: list[dict[str, Any]] = []
+    fallback_height = float(parsed.config.get("layer_height", 0.2))
+    for layer in parsed.layers:
+        layer_height = (
+            float(layer.layer_height)
+            if layer.layer_height is not None else fallback_height)
+        for segment in layer.segments:
+            if not segment.feature.lower().startswith("support"):
+                continue
+            support_segments += 1
+            line_width = (
+                float(segment.line_width)
+                if segment.line_width is not None
+                and segment.line_width > 0.0 else FALLBACK_LINE_WIDTH_MM)
+            bead_radius = 0.5 * math.hypot(line_width, layer_height)
+            start = (
+                segment.x0, segment.y0,
+                segment.z0 - layer_height / 2.0)
+            end = (
+                segment.x1, segment.y1,
+                segment.z1 - layer_height / 2.0)
+            candidates: set[int] = set()
+            for ix in cell_range(
+                    min(start[0], end[0]) - bead_radius,
+                    max(start[0], end[0]) + bead_radius):
+                for iy in cell_range(
+                        min(start[1], end[1]) - bead_radius,
+                        max(start[1], end[1]) + bead_radius):
+                    for iz in cell_range(
+                            min(start[2], end[2]) - bead_radius,
+                            max(start[2], end[2]) + bead_radius):
+                        candidates.update(index.get((ix, iy, iz), ()))
+            for capsule_index in candidates:
+                capsule = capsules[capsule_index]
+                candidate_checks += 1
+                distance = _segment_distance_3d(
+                    start, end, capsule["start"], capsule["end"])
+                clearance = (
+                    distance - float(capsule["radius_mm"]) - bead_radius)
+                evidence = {
+                    "gcode_line_number": segment.line_number,
+                    "layer_z_mm": layer.z,
+                    "feature": segment.feature,
+                    "line_width_mm": line_width,
+                    "layer_height_mm": layer_height,
+                    "duct_region": capsule["region"],
+                    "centerline_distance_mm": distance,
+                    "duct_radius_mm": capsule["radius_mm"],
+                    "support_bead_radius_mm": bead_radius,
+                    "bead_to_lumen_clearance_mm": clearance,
+                }
+                if clearance < minimum_clearance:
+                    minimum_clearance = clearance
+                    closest = evidence
+                if clearance <= 0.0 and len(collisions) < 25:
+                    collisions.append(evidence)
+    if collisions:
+        first = collisions[0]
+        raise AuditError(
+            "support toolpath enters a cable duct: "
+            f"{first['duct_region']} at G-code line "
+            f"{first['gcode_line_number']} has "
+            f"{first['bead_to_lumen_clearance_mm']:.4f} mm clearance")
+    return {
+        "status": "pass",
+        "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+        "support_extrusion_segments_checked": support_segments,
+        "duct_capsule_segment_count": len(capsules),
+        "candidate_distance_checks": candidate_checks,
+        "collision_count": 0,
+        "minimum_bead_to_lumen_clearance_mm": (
+            minimum_clearance if math.isfinite(minimum_clearance) else None),
+        "closest_approach": closest,
+    }
 
 
 def _validate_actual_gcode_profile(

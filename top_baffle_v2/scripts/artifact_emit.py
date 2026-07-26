@@ -6,6 +6,30 @@ from release_validation import *
 from gcode_analysis import *
 
 
+FATAL_BAMBU_SLICER_DIAGNOSTICS = {
+    "floating_cantilever": "floating cantilever",
+}
+
+
+def _validate_bambu_slicer_log(
+    path: Path, *, artifact_id: str, phase: str,
+) -> None:
+    """Reject geometric warnings that make an otherwise-successful slice unsafe."""
+    if not path.is_file():
+        raise AuditError(
+            f"{artifact_id}: {phase} Bambu Studio log is missing: {path}")
+    text = path.read_text(encoding="utf-8", errors="replace")
+    lowered = text.lower()
+    failures = [
+        name for name, marker in FATAL_BAMBU_SLICER_DIAGNOSTICS.items()
+        if marker in lowered
+    ]
+    if failures:
+        raise AuditError(
+            f"{artifact_id}: {phase} Bambu Studio reported release-blocking "
+            f"geometry diagnostics: {', '.join(failures)}; see {path}")
+
+
 def _color_for_feature(feature: str) -> str:
     value = feature.lower()
     if "outer wall" in value:
@@ -406,6 +430,10 @@ def _slice_one(
             "result_sha256": sha256_file(result_path),
             "project_3mf_sha256": sha256_file(project_3mf),
         })
+    _validate_bambu_slicer_log(
+        out_dir / "bambu_studio.log",
+        artifact_id=artifact["id"],
+        phase="audit slice")
     result_json = _load_json(result_path)
     if result_json.get("return_code") != 0:
         raise AuditError(f"{artifact['id']}: slicer result is not Success: {result_json}")
@@ -1172,13 +1200,11 @@ def _inject_ready_project_object_support(
 ) -> list[str]:
     """Persist object-level support for Bambu Studio reopening/re-slicing.
 
-    The project process already contains the three support settings.  For the
-    keyed LM split parts we additionally place the standard ``enable_support``
-    override on the single model object, so it remains enabled even if a user
-    switches the global process preset after opening the ready project.
+    Every support field is repeated on every model object as an explicit one
+    or zero.  A reopened project therefore cannot inherit a stale object-level
+    support policy after its global process preset changes.
     """
-    if not enabled:
-        return []
+    expected_value = "1" if enabled else "0"
     member = "Metadata/model_settings.config"
     model_settings = _read_single_3mf_member(project_3mf, member)
     try:
@@ -1197,26 +1223,29 @@ def _inject_ready_project_object_support(
         if not object_id:
             raise AuditError(f"{project_3mf}: model settings object lacks id")
         object_ids.append(object_id)
-        metadata = [element for element in list(object_element)
-                    if (_local_xml_tag(element) == "metadata"
-                        and element.attrib.get("key") == "enable_support")]
-        if len(metadata) > 1:
-            raise AuditError(
-                f"{project_3mf}: object {object_id} has duplicate "
-                "enable_support metadata")
-        if metadata:
-            if metadata[0].attrib.get("value") != "1":
-                metadata[0].set("value", "1")
-                changed = True
-            continue
-        support_metadata = ET.Element(
-            "metadata", {"key": "enable_support", "value": "1"})
-        insertion_index = 0
-        for index, child in enumerate(list(object_element)):
-            if _local_xml_tag(child) == "metadata":
-                insertion_index = index + 1
-        object_element.insert(insertion_index, support_metadata)
-        changed = True
+        for key in SUPPORT_PROCESS_KEYS:
+            metadata = [
+                element for element in list(object_element)
+                if (_local_xml_tag(element) == "metadata"
+                    and element.attrib.get("key") == key)
+            ]
+            if len(metadata) > 1:
+                raise AuditError(
+                    f"{project_3mf}: object {object_id} has duplicate "
+                    f"{key} metadata")
+            if metadata:
+                if metadata[0].attrib.get("value") != expected_value:
+                    metadata[0].set("value", expected_value)
+                    changed = True
+                continue
+            support_metadata = ET.Element(
+                "metadata", {"key": key, "value": expected_value})
+            insertion_index = 0
+            for index, child in enumerate(list(object_element)):
+                if _local_xml_tag(child) == "metadata":
+                    insertion_index = index + 1
+            object_element.insert(insertion_index, support_metadata)
+            changed = True
     if not changed:
         return object_ids
     replacement_bytes = ET.tostring(
@@ -1229,11 +1258,10 @@ def _validate_ready_project_object_support(
     model_settings: bytes,
     *,
     project_3mf: Path,
-    required: bool,
+    enabled: bool,
 ) -> list[dict[str, str]]:
-    """Verify the object-level support redundancy in a packed ready project."""
-    if not required:
-        return []
+    """Verify all object-level support safety fields in a packed project."""
+    expected_value = "1" if enabled else "0"
     try:
         root = ET.fromstring(model_settings)
     except ET.ParseError as exc:
@@ -1246,14 +1274,21 @@ def _validate_ready_project_object_support(
     result = []
     for object_element in objects:
         object_id = object_element.attrib.get("id")
-        values = [element.attrib.get("value") for element in list(object_element)
-                  if (_local_xml_tag(element) == "metadata"
-                      and element.attrib.get("key") == "enable_support")]
-        if values != ["1"]:
-            raise AuditError(
-                f"{project_3mf}: object {object_id!r} must explicitly embed "
-                "enable_support=1 for the supported keyed LM split part")
-        result.append({"object_id": str(object_id), "enable_support": "1"})
+        record = {"object_id": str(object_id)}
+        for key in SUPPORT_PROCESS_KEYS:
+            values = [
+                element.attrib.get("value")
+                for element in list(object_element)
+                if (_local_xml_tag(element) == "metadata"
+                    and element.attrib.get("key") == key)
+            ]
+            if values != [expected_value]:
+                raise AuditError(
+                    f"{project_3mf}: object {object_id!r} must explicitly "
+                    f"embed {key}={expected_value} for its resolved support "
+                    "policy")
+            record[key] = expected_value
+        result.append(record)
     return result
 
 
@@ -1329,7 +1364,7 @@ def _validate_ready_project_archive(
             embedded_settings[key] = actual
     object_support_overrides = _validate_ready_project_object_support(
         model_settings, project_3mf=project_3mf,
-        required=bool(profile_bundle["identity"]["effective"].get(
+        enabled=bool(profile_bundle["identity"]["effective"].get(
             "support_enabled")))
 
     try:
@@ -1431,10 +1466,13 @@ def _support_toolpath_summary(path: Path) -> dict[str, int]:
     with path.open("r", encoding="utf-8", errors="replace") as stream:
         for raw in stream:
             line = raw.strip()
-            if line == "; FEATURE: Support":
+            if not line.startswith("; FEATURE:"):
+                continue
+            feature = line.split(":", 1)[1].strip().lower()
+            if feature.startswith("support"):
                 support += 1
-            elif line == "; FEATURE: Support interface":
-                interface += 1
+                if "interface" in feature:
+                    interface += 1
     return {
         "support_feature_blocks": support,
         "support_interface_feature_blocks": interface,
@@ -1633,6 +1671,10 @@ def _emit_ready_project(
             "result_sha256": sha256_file(result_path),
             "project_3mf_sha256": sha256_file(project_3mf),
         })
+    _validate_bambu_slicer_log(
+        ready_dir / "bambu_studio.log",
+        artifact_id=artifact["id"],
+        phase="ready-project slice")
 
     result = _load_json(result_path)
     if result.get("return_code") != 0:
@@ -1693,6 +1735,34 @@ def _emit_ready_project(
         raise AuditError(
             f"{artifact['id']}: support is enabled but the ready G-code has "
             "no emitted Support feature blocks")
+    if not support_enabled and any(support_toolpaths.values()):
+        raise AuditError(
+            f"{artifact['id']}: support is disabled but the ready G-code "
+            "contains support feature blocks")
+    if support_enabled:
+        contract = artifact.get("duct_collision_contract")
+        if not isinstance(contract, Mapping):
+            raise AuditError(
+                f"{artifact['id']}: support-enabled duct-bearing part lacks "
+                "a hash-bound duct collision contract")
+        try:
+            duct_support_toolpath_audit = audit_support_toolpaths_vs_ducts(
+                gcode=gcode,
+                contract=contract,
+                source_to_stl_matrix=artifact["source_to_stl_matrix"],
+                stl_to_bed_matrix=project_audit.stl_to_bed_matrix,
+            )
+        except AuditError as exc:
+            raise AuditError(
+                f"{artifact['id']}: support-vs-duct collision gate failed: "
+                f"{exc}") from exc
+    else:
+        duct_support_toolpath_audit = {
+            "status": "pass",
+            "gate": "support_disabled_no_support_feature_blocks",
+            "support_extrusion_segments_checked": 0,
+            "collision_count": 0,
+        }
     archive_audit = _validate_ready_project_archive(
         project_3mf, gcode, expected_pause_z=pause_z,
         profile_bundle=profile_bundle)
@@ -1714,6 +1784,7 @@ def _emit_ready_project(
         **output_hashes,
         "archive_audit": archive_audit,
         "cavity_toolpath_audit": cavity_audit,
+        "duct_support_toolpath_audit": duct_support_toolpath_audit,
         "pause_before_first_layer_extrusion": pause_before_extrusion,
     }))
     placement_audit = project_audit.as_record()
@@ -1735,6 +1806,7 @@ def _emit_ready_project(
         "pause_z_mm": pause_z,
         "archive_audit": archive_audit,
         "support_toolpaths": support_toolpaths,
+        "duct_support_toolpath_audit": duct_support_toolpath_audit,
         "bambu_3mf_audit": placement_audit,
         "cavity_toolpath_audit": cavity_audit,
         "pause_before_first_layer_extrusion": pause_before_extrusion,
@@ -1861,7 +1933,7 @@ def _write_manifest_bundle(
             "discovery_gcode", "discovery_gcode_sha256",
             "discovery_bambu_3mf", "discovery_bambu_3mf_sha256",
             "bambu_arrange_rz_degrees", "polarity")
-        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer = csv.DictWriter(stream, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         for group in all_groups:
             writer.writerow({

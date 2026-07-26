@@ -126,7 +126,11 @@
         "part": "lx521_top_obiwan_core_2of2_um_carrier"
       },
       "process": {
-        "sparse_infill_density": "40%"
+        "sparse_infill_density": "40%",
+        "enable_support": "1",
+        "support_on_build_plate_only": "1",
+        "support_critical_regions_only": "1",
+        "support_remove_small_overhang": "1"
       }
     },
     {
@@ -136,7 +140,11 @@
         "part": "lx521_top_obiwan_core_2of2_um_carrier"
       },
       "process": {
-        "sparse_infill_density": "40%"
+        "sparse_infill_density": "40%",
+        "enable_support": "1",
+        "support_on_build_plate_only": "1",
+        "support_critical_regions_only": "1",
+        "support_remove_small_overhang": "1"
       }
     }
   ],

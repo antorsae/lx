@@ -41,6 +41,7 @@ from bambu_3mf_audit import (
     validate_bed_fit as validate_bambu_bed_fit,
     validate_result_bbox as validate_bambu_result_bbox,
 )
+import build_obiwan_combo_plate as combo
 from lx521_baffle.print_contract import FrontDownContractError, validate_print_sidecar
 from lx521_baffle.io import pretty_json_bytes, sha256_bytes, sha256_file
 import slice_captive_magnets as captive
@@ -58,9 +59,9 @@ LEGACY_SHELF_SOURCE_ROOTS = {
     "wings": Path("build/wings"),
 }
 
-EXPECTED_FAMILY_COUNTS = {"stock": 11, "slim": 11, "obiwan": 17}
+EXPECTED_FAMILY_COUNTS = {"stock": 11, "slim": 11, "obiwan": 26}
 EXPECTED_ENTRY_COUNT = sum(EXPECTED_FAMILY_COUNTS.values())
-EXPECTED_MAGNET_PROJECT_COUNT = 30
+EXPECTED_MAGNET_PROJECT_COUNT = 39
 EXPECTED_NON_MAGNET_PROJECT_COUNT = 9
 NAME_RE = re.compile(r"^[A-Za-z0-9_]+$")
 UNPRINTABLE_OR_LEGACY_TOKENS = (
@@ -71,6 +72,12 @@ UNPRINTABLE_OR_LEGACY_TOKENS = (
 
 class ShelfError(RuntimeError):
     """A printer-shelf mapping, source, or slice contract failed."""
+
+
+def _is_magnet_entry(entry: Mapping[str, Any]) -> bool:
+    return bool(
+        entry.get("catalog_artifact_id")
+        or entry.get("composite_plate"))
 
 
 def _sha256(path: Path) -> str:
@@ -168,12 +175,52 @@ def _catalog_entries(catalog_path: Path) -> tuple[dict[str, Any], list[dict[str,
         if any(token in lowered_source for token in UNPRINTABLE_OR_LEGACY_TOKENS):
             raise ShelfError(f"{label} selects excluded legacy/oversized geometry")
         entry["source_path"] = _require_relative_stl(entry.get("source_stl"), label)
-        sidecar = entry["source_path"].with_suffix(".print.json")
-        try:
-            entry["print_sidecar"] = validate_print_sidecar(
-                entry["source_path"], sidecar)
-        except FrontDownContractError as exc:
-            raise ShelfError(f"{name}: invalid front-down print sidecar: {exc}") from exc
+        composite_plate = entry.get("composite_plate")
+        if composite_plate is None:
+            sidecar = entry["source_path"].with_suffix(".print.json")
+            try:
+                entry["print_sidecar"] = validate_print_sidecar(
+                    entry["source_path"], sidecar)
+            except FrontDownContractError as exc:
+                raise ShelfError(
+                    f"{name}: invalid front-down print sidecar: {exc}") from exc
+            entry["source_contract_path"] = sidecar
+        else:
+            if (name != combo.PLATE_NAME
+                    or family != "obiwan"
+                    or entry["state"] != "no_floor_stand"
+                    or entry["selection"] != "core_plate_alternative"
+                    or not isinstance(composite_plate, Mapping)):
+                raise ShelfError(
+                    f"{name}: unsupported composite-plate catalog entry")
+            manifest_value = composite_plate.get("manifest")
+            if not isinstance(manifest_value, str) or not manifest_value:
+                raise ShelfError(
+                    f"{name}.composite_plate.manifest must be a path")
+            manifest_relative = Path(manifest_value)
+            if (manifest_relative.is_absolute()
+                    or ".." in manifest_relative.parts):
+                raise ShelfError(
+                    f"{name}: composite manifest must stay in the repository")
+            manifest_path = (ROOT / manifest_relative).resolve()
+            if (composite_plate.get("builder")
+                    != "scripts/build_obiwan_combo_plate.py"
+                    or composite_plate.get("magnet_insertions") != 6):
+                raise ShelfError(
+                    f"{name}: composite builder/pause contract drifted")
+            expected_replacements = [
+                part.friendly_name for part in combo.PARTS
+            ]
+            if composite_plate.get("replaces") != expected_replacements:
+                raise ShelfError(
+                    f"{name}: composite replacement inventory drifted")
+            try:
+                entry["print_sidecar"] = combo.validate_source_bundle(
+                    entry["source_path"], manifest_path)
+            except combo.ComboPlateError as exc:
+                raise ShelfError(
+                    f"{name}: invalid composite source contract: {exc}") from exc
+            entry["source_contract_path"] = manifest_path
         artifact_id = entry.get("catalog_artifact_id")
         if artifact_id is not None and (not isinstance(artifact_id, str)
                                         or not artifact_id):
@@ -202,7 +249,7 @@ def _catalog_entries(catalog_path: Path) -> tuple[dict[str, Any], list[dict[str,
     if family_counts != EXPECTED_FAMILY_COUNTS:
         raise ShelfError(
             f"shelf family counts {family_counts} != {EXPECTED_FAMILY_COUNTS}")
-    magnetic = [entry for entry in normalized if entry.get("catalog_artifact_id")]
+    magnetic = [entry for entry in normalized if _is_magnet_entry(entry)]
     if len(magnetic) != EXPECTED_MAGNET_PROJECT_COUNT:
         raise ShelfError(
             f"shelf has {len(magnetic)} magnet projects, expected "
@@ -226,6 +273,39 @@ def _bind_entries_to_release(
     artifact_by_id: Mapping[str, Mapping[str, Any]],
 ) -> None:
     for entry in entries:
+        if entry.get("composite_plate") is not None:
+            bound = []
+            manifest_parts = entry["print_sidecar"].get("parts")
+            if not isinstance(manifest_parts, list):
+                raise ShelfError(
+                    f"{entry['name']}: composite manifest has no parts")
+            for part, record in zip(combo.PARTS, manifest_parts, strict=True):
+                if part.artifact_id is None:
+                    if record.get("catalog_artifact_id") is not None:
+                        raise ShelfError(
+                            f"{part.friendly_name}: unexpected release binding")
+                    continue
+                artifact = artifact_by_id.get(part.artifact_id)
+                if artifact is None:
+                    raise ShelfError(
+                        f"{entry['name']}: unknown release artifact "
+                        f"{part.artifact_id}")
+                if (Path(artifact["stl"]).resolve()
+                        != part.source_stl.resolve()
+                        or artifact["stl_catalog_sha256"]
+                        != sha256_file(part.source_stl)
+                        or Path(artifact.get(
+                            "support_blocker", "")).resolve()
+                        != part.support_blocker.resolve()):
+                    raise ShelfError(
+                        f"{part.friendly_name}: composite release binding "
+                        "differs from the canonical artifact")
+                bound.append(dict(artifact))
+            if len(bound) != 3:
+                raise ShelfError(
+                    f"{entry['name']}: expected three captive release bindings")
+            entry["composite_artifacts"] = bound
+            continue
         artifact_id = entry.get("catalog_artifact_id")
         if artifact_id is None:
             continue
@@ -323,7 +403,7 @@ def _prune_workspace(workspace: Path, entries: Sequence[Mapping[str, Any]]) -> N
     expected = {
         str(entry["name"])
         for entry in entries
-        if entry.get("catalog_artifact_id") is None
+        if not _is_magnet_entry(entry)
     }
     for candidate in non_magnet_root.iterdir():
         if candidate.name in expected:
@@ -455,6 +535,10 @@ def _validate_result(
         "mesh_max_abs_error_mm": audit.mesh_max_abs_error_mm,
         "rz_degrees": audit.rigid_rz.rz_degrees,
         "bed_clearances_mm": clearances,
+        "stl_to_bed_matrix": [
+            list(row) for row in audit.stl_to_bed_matrix
+        ],
+        "support_blocker_count": audit.support_blocker_count,
     }
 
 
@@ -476,6 +560,7 @@ def _parse_project_archive(
 
     required = (
         "Metadata/project_settings.config",
+        "Metadata/model_settings.config",
         "Metadata/plate_1.gcode",
     )
     try:
@@ -487,7 +572,8 @@ def _parse_project_archive(
                 if names.count(member) != 1:
                     raise ShelfError(f"{label}: expected exactly one {member}")
             settings_bytes = archive.read(required[0])
-            embedded_gcode = archive.read(required[1])
+            model_settings = archive.read(required[1])
+            embedded_gcode = archive.read(required[2])
             custom_xml = (archive.read("Metadata/custom_gcode_per_layer.xml")
                           if "Metadata/custom_gcode_per_layer.xml" in names
                           else b"")
@@ -510,6 +596,13 @@ def _parse_project_archive(
                     f"{label}: embedded setting {key}={actual!r} differs from "
                     f"the resolved {section} profile")
             enforced[key] = actual
+    try:
+        object_support_overrides = (
+            captive._validate_ready_project_object_support(
+                model_settings, project_3mf=project, enabled=False))
+    except captive.AuditError as exc:
+        raise ShelfError(
+            f"{label}: object support policy is not pinned off: {exc}") from exc
     if custom_xml:
         try:
             root = ET.fromstring(custom_xml)
@@ -532,6 +625,8 @@ def _parse_project_archive(
         raise ShelfError(f"{label}: non-magnet project unexpectedly contains pauses")
     return {
         "project_settings_sha256": _sha256_bytes(settings_bytes),
+        "model_settings_sha256": _sha256_bytes(model_settings),
+        "object_support_overrides": object_support_overrides,
         "embedded_gcode_sha256": _sha256_bytes(embedded_gcode),
         "custom_gcode_xml_sha256": _sha256_bytes(custom_xml),
         "enforced_project_settings": enforced,
@@ -557,6 +652,9 @@ def _non_magnet_fingerprint(
         "profile_set_sha256": profile_bundle["identity"]["profile_set_sha256"],
         "bambu_binary_sha256": profile_bundle["identity"]["binary_sha256"],
         "command": list(command),
+        "object_support_policy": {
+            key: "0" for key in captive.SUPPORT_PROCESS_KEYS
+        },
     }))
 
 
@@ -686,6 +784,13 @@ def _slice_non_magnet(
             raise ShelfError(
                 f"{entry['name']}: Bambu did not create plate_1.gcode, "
                 "result.json, and .gcode.3mf")
+        try:
+            captive._inject_ready_project_object_support(
+                project, enabled=False)
+        except captive.AuditError as exc:
+            raise ShelfError(
+                f"{entry['name']}: could not pin object support off: "
+                f"{exc}") from exc
         _write_json(fingerprint_path, {
             "fingerprint": fingerprint,
             "command": command,
@@ -733,6 +838,40 @@ def _validate_magnet_project(
         label=str(entry["name"]), stl=Path(entry["source_path"]),
         project=ready_project, result_path=result,
         profile_bundle=project_profile, artifact=artifact)
+    support_enabled = bool(
+        project_profile["identity"]["effective"]["support_enabled"])
+    support_toolpaths = captive._support_toolpath_summary(gcode)
+    if support_enabled:
+        contract = artifact.get("duct_collision_contract")
+        if not isinstance(contract, Mapping):
+            raise ShelfError(
+                f"{entry['name']}: support-enabled project lacks a "
+                "hash-bound duct collision contract")
+        try:
+            duct_audit = captive.audit_support_toolpaths_vs_ducts(
+                gcode=gcode,
+                contract=contract,
+                source_to_stl_matrix=artifact["source_to_stl_matrix"],
+                stl_to_bed_matrix=tuple(
+                    tuple(float(value) for value in row)
+                    for row in placement["stl_to_bed_matrix"]),
+            )
+        except captive.AuditError as exc:
+            raise ShelfError(
+                f"{entry['name']}: support-vs-duct collision gate failed: "
+                f"{exc}") from exc
+    else:
+        if any(support_toolpaths.values()):
+            raise ShelfError(
+                f"{entry['name']}: support-disabled project contains "
+                "support feature blocks")
+        duct_audit = {
+            "status": "pass",
+            "gate": "support_disabled_no_support_feature_blocks",
+            "collision_count": 0,
+        }
+    archive["support_toolpaths"] = support_toolpaths
+    archive["duct_support_toolpath_audit"] = duct_audit
     return (
         ready_project, gcode, result, archive, placement,
         dict(project_profile["identity"]["effective"]),
@@ -754,7 +893,81 @@ def _validate_non_magnet_project(
         label=str(entry["name"]), stl=Path(entry["source_path"]),
         project=project, result_path=result, profile_bundle=profile_bundle,
         artifact=None)
+    support_toolpaths = captive._support_toolpath_summary(gcode)
+    if any(support_toolpaths.values()):
+        raise ShelfError(
+            f"{entry['name']}: non-magnet support-disabled project contains "
+            "support feature blocks")
+    archive["support_toolpaths"] = support_toolpaths
+    archive["duct_support_toolpath_audit"] = {
+        "status": "pass",
+        "gate": "support_disabled_no_support_feature_blocks",
+        "collision_count": 0,
+    }
     return archive, placement
+
+
+def _validate_composite_project(
+    *,
+    entry: Mapping[str, Any],
+    shelf: Path,
+    profile_path: Path,
+    release_catalog: Path,
+    release_audit: Path,
+    system_root: Path | None,
+    bambu: Path,
+    allow_slice: bool,
+) -> tuple[
+    Path, Path, Path, dict[str, Any], dict[str, Any], dict[str, Any], bool
+]:
+    if entry.get("name") != combo.PLATE_NAME:
+        raise ShelfError("unknown composite shelf project")
+    try:
+        result = combo.build_or_validate_ready_plate(
+            workspace=(
+                _workspace_root(shelf) / "composite" / combo.PLATE_NAME),
+            profile_path=profile_path,
+            release_catalog=release_catalog,
+            release_audit=release_audit,
+            system_root=system_root,
+            bambu_binary=str(bambu),
+            allow_slice=allow_slice,
+        )
+    except combo.ComboPlateError as exc:
+        raise ShelfError(
+            f"{entry['name']}: composite project audit failed: {exc}") from exc
+    audit = result["audit"]
+    project_equivalence = audit["project_stl_equivalence"]
+    archive = dict(audit["archive_audit"])
+    archive["support_toolpaths"] = audit["support_toolpaths"]
+    archive["duct_support_toolpath_audit"] = audit[
+        "duct_support_toolpath_audit"]
+    archive["captive_cavity_audit"] = audit["captive_cavity_audit"]
+    archive["pause_before_first_layer_extrusion"] = audit[
+        "pause_before_first_layer_extrusion"]
+    archive["support_midpoints_inside_part_footprints"] = audit[
+        "support_midpoints_inside_part_footprints"]
+    placement = {
+        "triangle_count": int(project_equivalence["triangle_count"]),
+        "mesh_max_abs_error_mm": float(
+            project_equivalence["mesh_max_abs_error_mm"]),
+        "rz_degrees": float(project_equivalence["rigid_rz"]["rz_degrees"]),
+        "bed_clearances_mm": audit["bed_clearances_mm"],
+        "stl_to_bed_matrix": project_equivalence["stl_to_bed_matrix"],
+        "support_blocker_count": int(
+            project_equivalence["support_blocker_count"]),
+        "normal_part_count": len(
+            project_equivalence["normal_part_names"]),
+    }
+    return (
+        Path(result["project"]),
+        Path(result["gcode"]),
+        Path(result["result"]),
+        archive,
+        placement,
+        dict(result["profile_effective"]),
+        bool(result["reused"]),
+    )
 
 
 def build_shelf(
@@ -800,7 +1013,7 @@ def build_shelf(
         if prior_names != expected_names:
             raise ShelfError(
                 "targeted shelf refresh requires an existing complete "
-                "39-entry manifest")
+                f"{EXPECTED_ENTRY_COUNT}-entry manifest")
         prior_manifest = dict(prior)
     workspace = _workspace_root(shelf)
     _migrate_legacy_workspace(shelf, workspace)
@@ -811,14 +1024,29 @@ def build_shelf(
     base_profile = _profile_bundle(
         workspace=workspace, profile_path=profile_path, bambu=bambu,
         system_root=system_root)
-    records: list[dict[str, Any]] = []
-    for entry in selected_entries:
+    # Validate every source/project pair before touching any managed shelf
+    # STL or 3MF.  Targeted refreshes still cross the complete equivalence barrier;
+    # ``selected_entries`` controls only the later promotion step.
+    validated: list[dict[str, Any]] = []
+    for entry in entries:
         source = Path(entry["source_path"])
-        source_sidecar = source.with_suffix(".print.json")
-        stl_destination, project_destination = _delivery_paths(shelf, entry)
-        stl_delivery = _link_or_copy(source, stl_destination)
+        source_sidecar = Path(entry["source_contract_path"])
         artifact = entry.get("artifact")
-        if artifact is not None:
+        composite_plate = entry.get("composite_plate")
+        if composite_plate is not None:
+            (project, gcode, result, archive, placement,
+             profile_effective, reused) = _validate_composite_project(
+                entry=entry,
+                shelf=shelf,
+                profile_path=profile_path,
+                release_catalog=release_catalog,
+                release_audit=release_audit,
+                system_root=system_root,
+                bambu=bambu,
+                allow_slice=allow_slice,
+            )
+            project_kind = "local_composite_captive_magnet_slice"
+        elif artifact is not None:
             (project, gcode, result, archive, placement,
              profile_effective) = _validate_magnet_project(
                 entry=entry, release_audit=release_audit,
@@ -835,39 +1063,106 @@ def build_shelf(
                 profile_bundle=base_profile)
             project_kind = "local_non_magnet_slice"
             profile_effective = base_profile["identity"]["effective"]
+        validated.append({
+            "entry": entry,
+            "source": source,
+            "source_sidecar": source_sidecar,
+            "project": project,
+            "gcode": gcode,
+            "record": {
+                "name": entry["name"],
+                "family": entry["family"],
+                "logical_slot": entry["logical_slot"],
+                "state": entry["state"],
+                "selection": entry["selection"],
+                "description": entry["description"],
+                "catalog_artifact_id": entry.get("catalog_artifact_id"),
+                "magnet_insertions": (
+                    int(composite_plate["magnet_insertions"])
+                    if composite_plate is not None
+                    else len(artifact["sites"]) if artifact else 0),
+                "source_stl": _relative(source),
+                "source_stl_sha256": _sha256(source),
+                "source_print_sidecar": _relative(source_sidecar),
+                "source_print_sidecar_sha256": _sha256(source_sidecar),
+                "composite_plate": (
+                    dict(composite_plate)
+                    if composite_plate is not None else None),
+                "project_source": _relative(project),
+                "gcode_source": _relative(gcode),
+                "gcode_sha256": _sha256(gcode),
+                "project_kind": project_kind,
+                "slice_reused": reused,
+                "profile_effective": profile_effective,
+                "archive_audit": archive,
+                "placement_audit": placement,
+            },
+        })
+    if len(validated) != EXPECTED_ENTRY_COUNT:
+        raise ShelfError(
+            "project/STL equivalence gate did not inspect every shelf entry")
+    equivalence_entries = []
+    for item in validated:
+        record = item["record"]
+        placement = record["placement_audit"]
+        if (not isinstance(placement.get("triangle_count"), int)
+                or placement["triangle_count"] <= 0
+                or float(placement.get(
+                    "mesh_max_abs_error_mm", float("inf"))) > 0.02):
+            raise ShelfError(
+                f"{record['name']}: project/STL equivalence evidence is "
+                "missing or out of tolerance")
+        duct_audit = record["archive_audit"].get(
+            "duct_support_toolpath_audit")
+        if (not isinstance(duct_audit, Mapping)
+                or duct_audit.get("status") != "pass"
+                or duct_audit.get("collision_count") != 0):
+            raise ShelfError(
+                f"{record['name']}: support/duct safety gate is not passing")
+        equivalence_entries.append({
+            "name": record["name"],
+            "source_stl_sha256": record["source_stl_sha256"],
+            "project_sha256": _sha256(item["project"]),
+            "triangle_count": placement["triangle_count"],
+            "mesh_max_abs_error_mm": placement[
+                "mesh_max_abs_error_mm"],
+            "support_blocker_count": placement[
+                "support_blocker_count"],
+        })
+    equivalence_gate = {
+        "status": "pass",
+        "required_pair_count": EXPECTED_ENTRY_COUNT,
+        "passing_pair_count": len(equivalence_entries),
+        "mesh_tolerance_mm": 0.02,
+        "promotion_started_after_complete_gate": True,
+        "entries": equivalence_entries,
+    }
+
+    records: list[dict[str, Any]] = []
+    selected_names = {entry["name"] for entry in selected_entries}
+    for item in validated:
+        record = item["record"]
+        if record["name"] not in selected_names:
+            continue
+        entry = item["entry"]
+        source = item["source"]
+        project = item["project"]
+        stl_destination, project_destination = _delivery_paths(shelf, entry)
+        stl_delivery = _link_or_copy(source, stl_destination)
         project_delivery = _link_or_copy(project, project_destination)
         if _sha256(project_destination) != _sha256(project):
             raise ShelfError(f"{entry['name']}: delivered 3MF hash mismatch")
         if _sha256(stl_destination) != _sha256(source):
             raise ShelfError(f"{entry['name']}: delivered STL hash mismatch")
-        records.append({
-            "name": entry["name"],
-            "family": entry["family"],
-            "logical_slot": entry["logical_slot"],
-            "state": entry["state"],
-            "selection": entry["selection"],
-            "description": entry["description"],
-            "catalog_artifact_id": entry.get("catalog_artifact_id"),
-            "magnet_insertions": (len(artifact["sites"]) if artifact else 0),
-            "source_stl": _relative(source),
-            "source_stl_sha256": _sha256(source),
-            "source_print_sidecar": _relative(source_sidecar),
-            "source_print_sidecar_sha256": _sha256(source_sidecar),
+        record.update({
             "delivered_stl": _relative(stl_destination),
             "delivered_stl_sha256": _sha256(stl_destination),
             "stl_delivery": stl_delivery,
             "p2s_project": _relative(project_destination),
             "p2s_project_sha256": _sha256(project_destination),
-            "project_source": _relative(project),
             "project_delivery": project_delivery,
-            "gcode_source": _relative(gcode),
-            "gcode_sha256": _sha256(gcode),
-            "project_kind": project_kind,
-            "slice_reused": reused,
-            "profile_effective": profile_effective,
-            "archive_audit": archive,
-            "placement_audit": placement,
         })
+        records.append(record)
     if prior_manifest is not None:
         refreshed = {record["name"]: record for record in records}
         records = [
@@ -891,13 +1186,14 @@ def build_shelf(
             "source_revision": release["source_revision"],
         },
         "slicer": base_profile["identity"],
+        "project_stl_equivalence_gate": equivalence_gate,
         "inventory": {
             "entry_count": len(records),
             "family_counts": EXPECTED_FAMILY_COUNTS,
             "magnet_project_count": sum(
-                record["catalog_artifact_id"] is not None for record in records),
+                int(record["magnet_insertions"]) > 0 for record in records),
             "non_magnet_project_count": sum(
-                record["catalog_artifact_id"] is None for record in records),
+                int(record["magnet_insertions"]) == 0 for record in records),
             "magnet_insertions": sum(record["magnet_insertions"] for record in records),
         },
         "entries": records,

@@ -32,8 +32,8 @@ ObiWan  export_obiwan_staged.py stage ──► <state>/.obiwan_stage/manifest.j
         ──► export_obiwan_staged.py step --kind {split,lm_split,attachments,assembled}
 Wings   export_obiwan_wings.py --slug {ac,ae} ──► wings/{ac,ae}/
 STEPs   generic rule ──► export_steps.py <module>.gen_step()
-Shelf   make to_print: captive-magnet release audit ──► build_to_print_shelf.py
-        ──► to_print/{stock,slim,obiwan}/{stl,3mf}/  (39 files, hard-linked, SHA-256-bound)
+Shelf   make to_print: existing captive-magnet ready authority ──► build_to_print_shelf.py
+        ──► to_print/{stock,slim,obiwan}/{stl,3mf}/  (48 entries, hard-linked, SHA-256-bound)
 ```
 
 `make` dispatches to osado.lan via `remote_cad.py` by default; every heavy

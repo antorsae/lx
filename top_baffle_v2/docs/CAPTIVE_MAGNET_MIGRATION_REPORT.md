@@ -5,9 +5,9 @@
 The production source migration is implemented: every discovered released,
 printable magnet station is represented by the shared pause-and-bury captive
 system instead of an externally accessible glue pocket. The fail-closed
-inventory contains **56 magnet-bearing STLs and 102 per-STL magnet stations**.
+inventory contains **64 magnet-bearing STLs and 114 per-STL magnet stations**.
 This count includes both stand-state copies and the mutually exclusive Obi-Wan LM
-monolith/split alternatives.
+monolith/split alternatives, plus both Ac/Ae A and B wing split options.
 
 This document is not the final release authority until the content-addressed
 CAD candidate has been atomically promoted and the complete Bambu slice audit
@@ -70,14 +70,14 @@ The family counts below are enforced in code and must not change silently.
 | V1L | 2 | 8 | `lx521_top_v1l_4of4_vase_b2`, one per stand state |
 | Obi-Wan | 4 | 12 | LM monolith and UM carrier in both stand states |
 | Obi-Wan-split | 4 | 8 | Keyed LM lower and upper alternatives in both stand states |
-| Obi-Wan-Ac | 6 | 6 | Left/right LM-lower, LM-upper, and UM wing segments |
-| Obi-Wan-Ae | 6 | 6 | Left/right LM-lower, LM-upper, and UM wing segments |
+| Obi-Wan-Ac | 10 | 12 | Left/right three-piece A and two-piece B wing alternatives |
+| Obi-Wan-Ae | 10 | 12 | Left/right three-piece A and two-piece B wing alternatives |
 | coupon1 | 2 | 2 | `lx521_coupon_1_fit_plate`, one per stand state |
-| **Total** | **56** | **102** | Exact fail-closed catalog |
+| **Total** | **64** | **114** | Exact fail-closed catalog |
 
 State accounting is 22 magnet-bearing STLs / 45 stations in
-`floor_stand`, 22 / 45 in `no_floor_stand`, and 12 / 12 shared Ac/Ae wing
-segments. A Obi-Wan LM monolith and its two keyed substitutes are alternative
+`floor_stand`, 22 / 45 in `no_floor_stand`, and 20 / 24 shared Ac/Ae wing
+segments. An Obi-Wan LM monolith and its two keyed substitutes are alternative
 ways to print one installed carrier; both forms are release artifacts and are
 therefore deliberately counted in the catalog.
 
@@ -131,9 +131,9 @@ coupon prints with its acoustic front face on the build plate.** This applies
 to magnet-bearing and non-magnet pieces alike so their visible texture is
 consistent.
 
-The broader orientation inventory is **102 acoustic STL/sidecar pairs**:
-45 in each stand state plus six Ac and six Ae wing segments. Do not confuse
-that orientation count with the separate 102 captive-station count above.
+The broader orientation inventory is **110 acoustic STL/sidecar pairs**:
+45 in each stand state plus ten Ac and ten Ae wing segments. Do not confuse
+that orientation count with the separate 114 captive-station count above.
 Each acoustic STL has an adjacent, hash-bound `<stem>.print.json` which
 records:
 
@@ -231,7 +231,7 @@ No file in this migration uploads to a printer or starts a print.
   packages, and assembled review STEPs.
 - All 45 released non-polar-index STL/`.print.json` pairs in each stand state,
   including the 22 magnet-bearing pairs in each state.
-- Six Ac and six Ae wing STL/`.print.json` pairs, their STEP masters and
+- Ten Ac and ten Ae wing STL/`.print.json` pairs, their A/B STEP masters and
   assemblies, facts, transactional manifests, and review images.
 - Obi-Wan staged-build manifests, release manifests, cable-routing PNGs, and
   driver/variant overlays whose magnet depictions now show the captive skins,
@@ -249,7 +249,7 @@ No file in this migration uploads to a printer or starts a print.
 | `coupons/obiwan_ae_embed` | Physically validated geometry/process reference, not a production baffle print; retained as regression authority |
 | `lx521_coupon_7_recess_seat.stl` in each stand state | Diagnostic driver-seat crop whose current XY region contains no captive site |
 | Hypothetical V0 mating attachment | No released printable mate exists; V0 remains explicitly unpaired |
-| Legacy exposed-pocket generated artifacts | Obsolete bytes superseded in place by the 56 hash-bound captive STLs |
+| Legacy exposed-pocket generated artifacts | Obsolete bytes superseded in place by the 64 hash-bound captive STLs |
 
 The two polar-index jigs listed in the orientation section are also excluded
 from the acoustic front-down sidecar inventory, but not because they are
@@ -257,8 +257,8 @@ legacy or concept artifacts: they are valid non-acoustic measurement tools.
 
 ## Validation completed before final slice publication
 
-- Pure release-metadata/front-down tests: **26 passed**.
-- Slicer/catalog/toolpath unit tests: **35 passed**.
+- Pure release-metadata/front-down tests: **42 passed**.
+- Slicer/catalog/toolpath unit tests: **57 passed**.
 - Remote-CAD transport, guard, and promotion tests passed, including expected
   simulated guard failures.
 - Remote native/source suites, standard clearances, Obi-Wan R6F geometry,
@@ -273,7 +273,7 @@ legacy or concept artifacts: they are valid non-acoustic measurement tools.
   0.16 mm subsequent layers, Arachne walls, 0.42/0.45 mm nominal paths,
   support disabled, and Bambu PLA Tough+ without contacting a printer.
 
-The expected complete-audit policy is 54 actual P2S slices covering 94 pause
+The expected complete-audit policy is 62 actual P2S slices covering 106 pause
 stations plus eight exact same-state keyed-split proxy contracts for the two
 oversized LM monoliths. Only the finalized observed totals in the release
 manifest are authoritative.

@@ -245,16 +245,17 @@ def _write_atomic_json(path: Path, payload: dict) -> None:
         temporary.unlink(missing_ok=True)
 
 
-def _export_no_floor_lm_support_blocker(
+def _export_duct_support_blocker(
         *, out_dir: Path, name: str, main_stl_path: Path,
         source_bbox, bed_rotation_deg: float) -> str:
-    """Export and hash-bind the no-floor duct support-blocker modifier."""
-    from lx521_baffle.obiwan.lm_split import LM_SPLIT_SEAM_Y
-    from lx521_baffle.obiwan.route import (
-        no_floor_lm_bottom_support_blocker,
+    """Export and hash-bind one carrier-owned duct support blocker."""
+    from obiwan_support_blocker import (
+        DUCT_SUPPORT_BLOCKER_CLEARANCE_MM,
+        duct_support_blocker,
     )
 
-    blocker = no_floor_lm_bottom_support_blocker(LM_SPLIT_SEAM_Y)
+    part_key = name.removeprefix("lx521_top_obiwan_")
+    blocker, collision_contract = duct_support_blocker(part_key)
     blocker = Rot(X=180.0) * blocker
     if bed_rotation_deg:
         blocker = Rot(Z=bed_rotation_deg) * blocker
@@ -284,14 +285,15 @@ def _export_no_floor_lm_support_blocker(
     _write_atomic_json(binding_path, {
         "schema_version": 1,
         "kind": "bambu_support_blocker",
-        "purpose": "forbid_support_inside_no_floor_lm_um_t_ducts",
+        "purpose": "forbid_support_inside_functional_ducts",
         "part": name,
         "main_stl": f"../stl/{main_stl_path.name}",
         "main_stl_sha256": _sha256_file(main_stl_path),
         "support_blocker": blocker_path.name,
         "support_blocker_sha256": _sha256_file(blocker_path),
         "source_to_stl_matrix": main_sidecar["source_to_stl_matrix"],
-        "modifier_clearance_mm": 0.25,
+        "modifier_clearance_mm": DUCT_SUPPORT_BLOCKER_CLEARANCE_MM,
+        "duct_collision_contract": collision_contract,
         "mesh": blocker_mesh,
     })
     return (
@@ -696,10 +698,13 @@ def main() -> None:
             mesh_tolerance_mm=mesh_tolerance,
             mesh_angular_tolerance=mesh_angular_tolerance)
         support_blocker_note = ""
-        if (args.variant == "obiwan" and stand_mode == "0"
-                and name ==
-                "lx521_top_obiwan_optional_lm_keyed_1of2_bottom"):
-            support_blocker_note = _export_no_floor_lm_support_blocker(
+        if args.variant == "obiwan":
+            from obiwan_support_blocker import (
+                DUCT_SUPPORT_BLOCKER_STL_NAMES,
+            )
+        if (args.variant == "obiwan"
+                and name in DUCT_SUPPORT_BLOCKER_STL_NAMES):
+            support_blocker_note = _export_duct_support_blocker(
                 out_dir=out_dir,
                 name=name,
                 main_stl_path=path,

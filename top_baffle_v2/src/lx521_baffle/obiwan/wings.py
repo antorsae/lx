@@ -90,6 +90,7 @@ from ..magnets import (
 VARIANT_IDS = ("ac", "ae")
 SIDE_NAMES = ("left", "right")
 PRINT_PART_KEYS = ("lm_lower", "lm_upper", "um")
+TWO_PIECE_PRINT_PART_KEYS = ("lm_lower", "lm_um_upper")
 
 FRONT_Z_MM = float(THICKNESS_MM)
 REAR_LIMIT_Z_MM = float(CORE_REAR_Z)
@@ -225,7 +226,7 @@ def _mirror_plan(geometry):
 
 @lru_cache(maxsize=1)
 def _layout():
-    """Approved A-plan, receiver roots and three-part dovetail partition."""
+    """Approved A-plan, receiver roots and both print partitions."""
     return contract._build_layout(_A_DEFINITION)
 
 
@@ -254,6 +255,17 @@ def wing_print_plan_parts(variant_id: str, side: str) -> dict[str, Polygon]:
     _normalize_variant(variant_id)
     side = _normalize_side(side)
     result = _layout().print_parts
+    if side == "right":
+        return dict(result)
+    return {key: _mirror_plan(value) for key, value in result.items()}
+
+
+def wing_two_piece_print_plan_parts(
+        variant_id: str, side: str) -> dict[str, Polygon]:
+    """Return the exact XY masks for the alternative two-piece wing."""
+    _normalize_variant(variant_id)
+    side = _normalize_side(side)
+    result = _layout().two_piece_print_parts
     if side == "right":
         return dict(result)
     return {key: _mirror_plan(value) for key, value in result.items()}
@@ -1506,6 +1518,46 @@ def wing_print_parts(variant_id: str, side: str) -> dict[str, Part]:
     return result
 
 
+@lru_cache(maxsize=2)
+def _right_two_piece_print_parts_cached(slug: str) -> tuple[Part, ...]:
+    """Build B from the finalized monolith while preserving A's lower."""
+    monolith = deepcopy(_right_monolith_cached(slug))
+    lower = deepcopy(_right_print_parts_cached(slug)[0])
+    lower.label = f"obiwan_wing_{slug}_right_b_1of2_lm_lower"
+    upper_mask = _plan_prism(
+        _layout().two_piece_print_parts["lm_um_upper"],
+        REAR_LIMIT_Z_MM - 0.5, FRONT_Z_MM + 0.5)
+    common = monolith & upper_mask
+    if common is None:
+        raise RuntimeError(
+            f"{slug} right two-piece LM/UM upper intersection is empty")
+    upper = _one_solid(
+        common.clean(), f"{slug} right two-piece LM/UM upper print piece")
+    upper.label = f"obiwan_wing_{slug}_right_b_2of2_lm_um_upper"
+    return lower, upper
+
+
+def wing_two_piece_print_parts(
+        variant_id: str, side: str) -> dict[str, Part]:
+    """Return the alternative two installed-position print pieces."""
+    _require_guarded_build()
+    slug = _normalize_variant(variant_id)
+    side = _normalize_side(side)
+    right = tuple(
+        deepcopy(piece)
+        for piece in _right_two_piece_print_parts_cached(slug))
+    result: dict[str, Part] = {}
+    for order, (role, piece) in enumerate(
+            zip(TWO_PIECE_PRINT_PART_KEYS, right, strict=True), start=1):
+        if side == "left":
+            piece = _one_solid(
+                mirror(piece, about=Plane.YZ),
+                f"{slug} mirrored left two-piece {role} print piece")
+        piece.label = f"obiwan_wing_{slug}_{side}_b_{order}of2_{role}"
+        result[role] = piece
+    return result
+
+
 def wing_monolithic_assembly(variant_id: str) -> Compound:
     """Canonical STEP authority: installed left/right monolithic pair."""
     _require_guarded_build()
@@ -1527,6 +1579,19 @@ def wing_print_assembly(variant_id: str) -> Compound:
         children.extend(wing_print_parts(slug, side).values())
     assembly = Compound(children=children)
     assembly.label = f"lx521_obiwan_basic_wing_{slug}_print_assembly"
+    return assembly
+
+
+def wing_two_piece_print_assembly(variant_id: str) -> Compound:
+    """Installed four-piece assembly for the alternative B wing split."""
+    _require_guarded_build()
+    slug = _normalize_variant(variant_id)
+    children = []
+    for side in SIDE_NAMES:
+        children.extend(wing_two_piece_print_parts(slug, side).values())
+    assembly = Compound(children=children)
+    assembly.label = (
+        f"lx521_obiwan_basic_wing_{slug}_two_piece_print_assembly")
     return assembly
 
 
@@ -1925,6 +1990,10 @@ def wing_facts(variant_id: str) -> dict:
         side: wing_print_parts(slug, side)
         for side in SIDE_NAMES
     }
+    two_piece_parts = {
+        side: wing_two_piece_print_parts(slug, side)
+        for side in SIDE_NAMES
+    }
     if slug == "ac":
         analytic_volume = float(layout.field_right.area * FULL_DEPTH_MM)
         analytic_mass = (
@@ -1944,10 +2013,18 @@ def wing_facts(variant_id: str) -> dict:
         max_slope = float(depth_field.max_grid_slope)
 
     print_records = {}
+    two_piece_print_records = {}
     for side in SIDE_NAMES:
         print_records[side] = {}
         for role, piece in parts[side].items():
             print_records[side][role] = {
+                "label": piece.label,
+                "volume_mm3": adaptive_volume_mm3(piece),
+                "bounds_mm": _bounds_record(piece),
+            }
+        two_piece_print_records[side] = {}
+        for role, piece in two_piece_parts[side].items():
+            two_piece_print_records[side][role] = {
                 "label": piece.label,
                 "volume_mm3": adaptive_volume_mm3(piece),
                 "bounds_mm": _bounds_record(piece),
@@ -2029,6 +2106,7 @@ def wing_facts(variant_id: str) -> dict:
         "dovetail_contract": {
             "method": "v1l_style_through_thickness_xy_dovetails",
             "part_roles": list(PRINT_PART_KEYS),
+            "two_piece_part_roles": list(TWO_PIECE_PRINT_PART_KEYS),
             "key_count_per_side": len(layout.dovetail_keys),
             "clearance_mm": float(contract.DOVETAIL_CLEARANCE_MM),
             "endpoint_taper_mm": float(
@@ -2077,11 +2155,29 @@ def wing_facts(variant_id: str) -> dict:
         },
         "print_contract": {
             "usable_bed_xy_mm": float(contract.BED_USABLE_MM),
+            "options": {
+                "a": {
+                    "piece_count_per_side": 3,
+                    "part_roles": list(PRINT_PART_KEYS),
+                },
+                "b": {
+                    "piece_count_per_side": 2,
+                    "part_roles": list(TWO_PIECE_PRINT_PART_KEYS),
+                    "lower_geometry_identical_to_a": True,
+                    "former_upper_fit_gap_restored": True,
+                },
+            },
             "right_plan_obb_mm": {
                 role: str(layout.metrics[f"{role}_obb"])
                 for role in PRINT_PART_KEYS
             },
+            "two_piece_right_plan_bed_fit_mm": {
+                "lm_lower": str(layout.metrics["lm_lower_obb"]),
+                "lm_um_upper": str(
+                    layout.metrics["lm_um_upper_bed_fit"]),
+            },
             "installed_piece_brep": print_records,
+            "two_piece_installed_piece_brep": two_piece_print_records,
         },
         "analytic_sections_right": _section_fact_summary(slug),
         "actual_brep": {
@@ -2114,17 +2210,21 @@ __all__ = (
     "VARIANT_IDS",
     "SIDE_NAMES",
     "PRINT_PART_KEYS",
+    "TWO_PIECE_PRINT_PART_KEYS",
     "receiver_facts",
     "receiver_pockets",
     "receiver_required_lands",
     "wing_plan",
     "wing_print_plan_parts",
+    "wing_two_piece_print_plan_parts",
     "wing_depth_at",
     "wing_section_samples",
     "wing_monolithic",
     "wing_print_parts",
+    "wing_two_piece_print_parts",
     "wing_monolithic_assembly",
     "wing_print_assembly",
+    "wing_two_piece_print_assembly",
     "wing_review_assembly",
     "adaptive_volume_mm3",
     "wing_facts",

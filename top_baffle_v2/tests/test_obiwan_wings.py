@@ -43,6 +43,7 @@ FLOOR_STAGE_MANIFEST = ROOT / "build/floor_stand/.obiwan_stage/manifest.json"
 VARIANT_IDS = ("ac", "ae")
 SIDE_NAMES = ("left", "right")
 PRINT_PART_ROLES = ("lm_lower", "lm_upper", "um")
+TWO_PIECE_PART_ROLES = ("lm_lower", "lm_um_upper")
 FRONT_Z_MM = 18.3
 REAR_Z_MM = 6.8
 FULL_DEPTH_MM = 11.5
@@ -75,7 +76,8 @@ DOVETAIL_PROFILES_MM = (
 )
 BED_XY_MM = 220.0
 REVIEW_KINDS = (
-    "front", "rear", "side_section", "split_exploded", "magnet_roots")
+    "front", "rear", "side_section", "split_exploded",
+    "two_piece_split_exploded", "magnet_roots")
 
 
 def _expected_magnet_face_separation(interface_kind: str) -> float:
@@ -258,11 +260,17 @@ def _assert_complete_step(path: Path, required_tokens: tuple[str, ...]) -> None:
 
 
 def _expected_stl_names(slug: str) -> tuple[str, ...]:
-    return tuple(
+    three_piece = tuple(
         f"lx521_top_obiwan_wing_{slug}_{side}_{order}of3_{role}.stl"
         for side in SIDE_NAMES
         for order, role in enumerate(PRINT_PART_ROLES, start=1)
     )
+    two_piece = tuple(
+        f"lx521_top_obiwan_wing_{slug}_{side}_b_{order}of2_{role}.stl"
+        for side in SIDE_NAMES
+        for order, role in enumerate(TWO_PIECE_PART_ROLES, start=1)
+    )
+    return three_piece + two_piece
 
 
 def _variant_paths(slug: str) -> dict[str, Path | tuple[Path, ...]]:
@@ -276,6 +284,9 @@ def _variant_paths(slug: str) -> dict[str, Path | tuple[Path, ...]]:
         "assembled_step": (
             directory
             / f"top_baffle_nd25fw4_obiwan_wing_{slug}_assembled.step"),
+        "two_piece_assembled_step": (
+            directory
+            / f"top_baffle_nd25fw4_obiwan_wing_{slug}_assembled_b.step"),
         "facts": directory / f"obiwan_wing_{slug}_facts.json",
         "manifest": directory / f"obiwan_wing_{slug}_print_manifest.json",
         "stls": stls,
@@ -341,6 +352,7 @@ def _assert_review_png(path: Path, slug: str, kind: str) -> None:
         "rear": "rear surface",
         "side_section": "rear-depth profile",
         "split_exploded": "exploded print assembly",
+        "two_piece_split_exploded": "exploded print assembly",
         "magnet_roots": "magnetic roots",
     }[kind]
     assert required_phrase in title.lower(), (
@@ -451,14 +463,20 @@ def _verify_source_hashes(source: dict) -> None:
         "combined source attestation digest is stale")
 
 
-def _print_record_key(record: dict) -> tuple[str, str, int]:
+def _print_record_key(record: dict) -> tuple[str, str, str, int]:
+    split_variant = record.get("split_variant")
     side = record.get("side")
     role = record.get("role")
     order = record.get("order")
+    assert split_variant in {"a", "b"}, (
+        f"invalid split variant: {split_variant!r}")
     assert side in SIDE_NAMES, f"invalid print side: {side!r}"
-    assert role in PRINT_PART_ROLES, f"invalid print role: {role!r}"
+    expected_roles = (
+        PRINT_PART_ROLES if split_variant == "a"
+        else TWO_PIECE_PART_ROLES)
+    assert role in expected_roles, f"invalid print role: {role!r}"
     assert isinstance(order, int), f"invalid print order: {order!r}"
-    return side, role, order
+    return split_variant, side, role, order
 
 
 def _assert_print_bbox(record: dict, label: str) -> None:
@@ -500,6 +518,7 @@ def test_exported_artifact_contract() -> None:
     assert tuple(cad.VARIANT_IDS) == VARIANT_IDS
     assert tuple(cad.SIDE_NAMES) == SIDE_NAMES
     assert tuple(cad.PRINT_PART_KEYS) == PRINT_PART_ROLES
+    assert tuple(cad.TWO_PIECE_PRINT_PART_KEYS) == TWO_PIECE_PART_ROLES
 
     for slug in VARIANT_IDS:
         paths = _variant_paths(slug)
@@ -508,17 +527,19 @@ def test_exported_artifact_contract() -> None:
             f"missing variant artifact directory: {directory}")
         canonical_step = paths["canonical_step"]
         assembled_step = paths["assembled_step"]
+        two_piece_assembled_step = paths["two_piece_assembled_step"]
         facts_path = paths["facts"]
         manifest_path = paths["manifest"]
         stls = paths["stls"]
         sidecars = paths["sidecars"]
         assert isinstance(canonical_step, Path)
         assert isinstance(assembled_step, Path)
+        assert isinstance(two_piece_assembled_step, Path)
         assert isinstance(facts_path, Path)
         assert isinstance(manifest_path, Path)
         assert isinstance(stls, tuple)
         assert isinstance(sidecars, tuple)
-        assert len(stls) == len(sidecars) == 6
+        assert len(stls) == len(sidecars) == 10
 
         review_paths = tuple(
             directory / "review" / f"obiwan_wing_{slug}_{kind}.png"
@@ -527,6 +548,7 @@ def test_exported_artifact_contract() -> None:
         expected_relative = {
             canonical_step.relative_to(directory).as_posix(),
             assembled_step.relative_to(directory).as_posix(),
+            two_piece_assembled_step.relative_to(directory).as_posix(),
             facts_path.relative_to(directory).as_posix(),
             manifest_path.relative_to(directory).as_posix(),
             *(path.relative_to(directory).as_posix() for path in stls),
@@ -555,13 +577,24 @@ def test_exported_artifact_contract() -> None:
                 for order, role in enumerate(PRINT_PART_ROLES, start=1)
             ),
         )
+        two_piece_assembled_labels = (
+            f"lx521_obiwan_basic_wing_{slug}_two_piece_print_assembly",
+            *(
+                f"obiwan_wing_{slug}_{side}_b_{order}of2_{role}"
+                for side in SIDE_NAMES
+                for order, role in enumerate(
+                    TWO_PIECE_PART_ROLES, start=1)
+            ),
+        )
         _assert_complete_step(canonical_step, canonical_labels)
         _assert_complete_step(assembled_step, assembled_labels)
+        _assert_complete_step(
+            two_piece_assembled_step, two_piece_assembled_labels)
 
         facts = _read_json_object(facts_path)
         manifest = _read_json_object(manifest_path)
         for document, name in ((facts, "facts"), (manifest, "manifest")):
-            assert document.get("schema_version") == 2, (
+            assert document.get("schema_version") == 3, (
                 f"{slug} {name}: schema version drifted")
             assert document.get("artifact_family") == "obiwan_wing_artifacts", (
                 f"{slug} {name}: artifact family drifted")
@@ -717,6 +750,9 @@ def test_exported_artifact_contract() -> None:
         assert math.isclose(
             dovetails.get("male_root_overlap_mm"), 0.05, abs_tol=1e-9)
         assert dovetails.get("key_count_per_side") == 2
+        assert dovetails.get("part_roles") == list(PRINT_PART_ROLES)
+        assert dovetails.get("two_piece_part_roles") == list(
+            TWO_PIECE_PART_ROLES)
         assert dovetails.get("male_owners") == ["lm_lower", "lm_upper"]
         assert dovetails.get("lower_profile_mm") == {
             "neck": 7.0, "head": 9.0, "depth": 4.0}
@@ -737,6 +773,22 @@ def test_exported_artifact_contract() -> None:
         installed = print_contract.get("installed_piece_brep")
         assert isinstance(installed, dict)
         assert set(installed) == set(SIDE_NAMES)
+        two_piece_installed = print_contract.get(
+            "two_piece_installed_piece_brep")
+        assert isinstance(two_piece_installed, dict)
+        assert set(two_piece_installed) == set(SIDE_NAMES)
+        assert print_contract.get("options") == {
+            "a": {
+                "piece_count_per_side": 3,
+                "part_roles": list(PRINT_PART_ROLES),
+            },
+            "b": {
+                "piece_count_per_side": 2,
+                "part_roles": list(TWO_PIECE_PART_ROLES),
+                "lower_geometry_identical_to_a": True,
+                "former_upper_fit_gap_restored": True,
+            },
+        }
         actual_facts = geometry.get("actual_brep")
         assert isinstance(actual_facts, dict)
         assert actual_facts.get("valid_single_solid_each_side") is True
@@ -747,6 +799,8 @@ def test_exported_artifact_contract() -> None:
         facts_relative = facts_path.relative_to(directory).as_posix()
         canonical_relative = canonical_step.relative_to(directory).as_posix()
         assembled_relative = assembled_step.relative_to(directory).as_posix()
+        two_piece_assembled_relative = (
+            two_piece_assembled_step.relative_to(directory).as_posix())
         review_relatives = [
             f"review/obiwan_wing_{slug}_{kind}.png" for kind in REVIEW_KINDS
         ]
@@ -754,6 +808,8 @@ def test_exported_artifact_contract() -> None:
         assert manifest.get("facts_sha256") == _sha256_file(facts_path)
         assert manifest.get("canonical_step_path") == canonical_relative
         assert manifest.get("assembled_step_path") == assembled_relative
+        assert manifest.get("two_piece_assembled_step_path") == (
+            two_piece_assembled_relative)
         assert manifest.get("review_pngs") == review_relatives, (
             f"{slug}: review inventory/order drifted")
 
@@ -776,7 +832,8 @@ def test_exported_artifact_contract() -> None:
                 f"{slug}: invalid artifact kind for {relative}")
             if relative == canonical_relative:
                 expected_kind = "canonical_step"
-            elif relative == assembled_relative:
+            elif relative in {
+                    assembled_relative, two_piece_assembled_relative}:
                 expected_kind = "assembled_step"
             elif relative == facts_relative:
                 expected_kind = "facts_json"
@@ -793,18 +850,29 @@ def test_exported_artifact_contract() -> None:
             _assert_review_png(path, slug, kind)
 
         print_records = facts.get("exports", {}).get("print_parts")
-        assert isinstance(print_records, list) and len(print_records) == 6, (
-            f"{slug}: facts must contain six print records")
+        assert isinstance(print_records, list) and len(print_records) == 10, (
+            f"{slug}: facts must contain ten print records")
         expected_keys = {
-            (side, role, order)
+            ("a", side, role, order)
             for side in SIDE_NAMES
             for order, role in enumerate(PRINT_PART_ROLES, start=1)
+        } | {
+            ("b", side, role, order)
+            for side in SIDE_NAMES
+            for order, role in enumerate(TWO_PIECE_PART_ROLES, start=1)
         }
         record_map = {
             _print_record_key(record): record for record in print_records
         }
         assert set(record_map) == expected_keys, (
             f"{slug}: print role/order inventory drifted")
+        for side in SIDE_NAMES:
+            a_lower = _resolve_variant_relative(
+                directory, record_map[("a", side, "lm_lower", 1)]["path"])
+            b_lower = _resolve_variant_relative(
+                directory, record_map[("b", side, "lm_lower", 1)]["path"])
+            assert _sha256_file(a_lower) == _sha256_file(b_lower), (
+                f"{slug}/{side}: B lower is not byte-identical to A lower")
         assert manifest.get("print_parts") == [
             record["path"] for record in print_records], (
                 f"{slug}: facts/manifest print inventory differs")
@@ -813,19 +881,31 @@ def test_exported_artifact_contract() -> None:
                 f"{slug}: facts/manifest sidecar inventory differs")
         assert set(manifest["print_sidecars"]) == {
             path.relative_to(directory).as_posix() for path in sidecars
-        }, f"{slug}: manifest does not bind exactly six real sidecars"
+        }, f"{slug}: manifest does not bind exactly ten real sidecars"
 
-        for side, role, order in sorted(expected_keys):
-            record = record_map[(side, role, order)]
-            expected_name = (
-                f"lx521_top_obiwan_wing_{slug}_{side}_{order}of3_{role}.stl")
+        for split_variant, side, role, order in sorted(expected_keys):
+            record = record_map[(split_variant, side, role, order)]
+            piece_count = 3 if split_variant == "a" else 2
+            if split_variant == "a":
+                expected_name = (
+                    f"lx521_top_obiwan_wing_{slug}_{side}_"
+                    f"{order}of3_{role}.stl")
+                expected_label = (
+                    f"obiwan_wing_{slug}_{side}_{order}of3_{role}")
+            else:
+                expected_name = (
+                    f"lx521_top_obiwan_wing_{slug}_{side}_b_"
+                    f"{order}of2_{role}.stl")
+                expected_label = (
+                    f"obiwan_wing_{slug}_{side}_b_{order}of2_{role}")
             relative = record.get("path")
             expected_relative_path = f"stl/{expected_name}"
             assert relative == expected_relative_path, (
                 f"{slug} {side}/{role}: STL path drifted")
-            assert record.get("label") == (
-                f"obiwan_wing_{slug}_{side}_{order}of3_{role}"), (
+            assert record.get("label") == expected_label, (
                     f"{slug} {side}/{role}: STEP/STL label drifted")
+            assert record.get("split_variant") == split_variant
+            assert record.get("piece_count") == piece_count
             assert isinstance(record.get("volume_mm3"), (int, float))
             assert record["volume_mm3"] > 1.0
             assert record.get("volume_integration") == (
@@ -889,11 +969,14 @@ def test_exported_artifact_contract() -> None:
                 key: sidecar_payload.get(key)
                 for key in (
                     "artifact_family", "variant_slug", "assembly_label",
-                    "side", "order", "role", "mesh")
+                    "split_variant", "piece_count", "side", "order", "role",
+                    "mesh")
             } == {
                 "artifact_family": "obiwan_wing_artifacts",
                 "variant_slug": slug,
                 "assembly_label": record["label"],
+                "split_variant": split_variant,
+                "piece_count": piece_count,
                 "side": side,
                 "order": order,
                 "role": role,
@@ -919,15 +1002,31 @@ def test_exported_artifact_contract() -> None:
                 mesh["signed_volume"], record["volume_mm3"],
                 rel_tol=0.003, abs_tol=0.5), (
                     f"{slug} {side}/{role}: STL/source volume mismatch")
+        for side in SIDE_NAMES:
+            a_lower = record_map[("a", side, "lm_lower", 1)]
+            b_lower = record_map[("b", side, "lm_lower", 1)]
+            assert math.isclose(
+                a_lower["volume_mm3"], b_lower["volume_mm3"],
+                rel_tol=0.0, abs_tol=1.0e-6), (
+                    f"{slug}/{side}: B lower is not A lower")
+            assert a_lower["assembly_bbox_mm"] == b_lower[
+                "assembly_bbox_mm"], (
+                    f"{slug}/{side}: B lower bounds differ from A lower")
 
         canonical_record = facts.get("exports", {}).get("canonical_step")
         assembled_record = facts.get("exports", {}).get("assembled_step")
+        two_piece_assembled_record = facts.get("exports", {}).get(
+            "two_piece_assembled_step")
         assert isinstance(canonical_record, dict)
         assert isinstance(assembled_record, dict)
+        assert isinstance(two_piece_assembled_record, dict)
         canonical_bbox = _assert_bbox_facts(
             canonical_record.get("bbox_mm"), f"{slug} canonical STEP")
         assembled_bbox = _assert_bbox_facts(
             assembled_record.get("bbox_mm"), f"{slug} assembled STEP")
+        two_piece_assembled_bbox = _assert_bbox_facts(
+            two_piece_assembled_record.get("bbox_mm"),
+            f"{slug} two-piece assembled STEP")
         assert canonical_record == {
             "path": canonical_relative,
             "label": f"lx521_obiwan_basic_wing_{slug}_monolithic_pair",
@@ -940,10 +1039,23 @@ def test_exported_artifact_contract() -> None:
             "solid_count": 6,
             "bbox_mm": assembled_bbox,
         }
+        assert two_piece_assembled_record == {
+            "path": two_piece_assembled_relative,
+            "label": (
+                f"lx521_obiwan_basic_wing_{slug}_"
+                "two_piece_print_assembly"),
+            "solid_count": 4,
+            "bbox_mm": two_piece_assembled_bbox,
+        }
         _assert_bounds_close(
             (tuple(canonical_bbox["min_mm"]), tuple(canonical_bbox["max_mm"])),
             (tuple(assembled_bbox["min_mm"]), tuple(assembled_bbox["max_mm"])),
             0.02, f"{slug} canonical/print assembly")
+        _assert_bounds_close(
+            (tuple(canonical_bbox["min_mm"]), tuple(canonical_bbox["max_mm"])),
+            (tuple(two_piece_assembled_bbox["min_mm"]),
+             tuple(two_piece_assembled_bbox["max_mm"])),
+            0.02, f"{slug} canonical/two-piece print assembly")
         assert facts.get("exports", {}).get("review_pngs") == review_relatives
         review_context = facts.get("exports", {}).get("review_context")
         assert isinstance(review_context, dict)
@@ -978,7 +1090,7 @@ def test_exported_artifact_contract() -> None:
             assert record["xy_path_count"] > 0
             assert type(record.get("yz_path_count")) is int
             assert record["yz_path_count"] > 0
-        print(f"  {slug}: exact STEP/JSON inventory and six strict STLs pass")
+        print(f"  {slug}: exact STEP/JSON inventory and ten strict STLs pass")
 
 
 def _vertical_depth_mm(shape, x_mm: float, y_mm: float) -> float:
@@ -1112,6 +1224,22 @@ def _assert_plan_dovetail_contract(cad) -> None:
     reconstructed = unary_union((
         *layout.print_parts.values(), *layout.fit_clearance_gaps)).buffer(0)
     assert reconstructed.symmetric_difference(layout.field_right).area <= 0.02
+    assert set(layout.two_piece_print_parts) == set(TWO_PIECE_PART_ROLES)
+    two_piece_lower = layout.two_piece_print_parts["lm_lower"]
+    two_piece_upper = layout.two_piece_print_parts["lm_um_upper"]
+    assert two_piece_lower.symmetric_difference(
+        layout.print_parts["lm_lower"]).area <= 1.0e-9
+    assert layout.print_parts["lm_upper"].difference(
+        two_piece_upper).area <= 0.01
+    assert layout.print_parts["um"].difference(two_piece_upper).area <= 0.01
+    assert layout.fit_clearance_gaps[1].difference(
+        two_piece_upper).area <= 0.01
+    assert two_piece_lower.intersection(two_piece_upper).area <= 0.01
+    reconstructed_two_piece = unary_union((
+        *layout.two_piece_print_parts.values(),
+        layout.fit_clearance_gaps[0])).buffer(0)
+    assert reconstructed_two_piece.symmetric_difference(
+        layout.field_right).area <= 0.02
 
 
 def test_live_brep_geometry_contract() -> None:
@@ -1533,6 +1661,52 @@ def test_live_brep_geometry_contract() -> None:
             assert _difference_volume(
                 mirrored_piece, left_pieces[role]) <= 0.02, (
                     f"{slug}/{role}: mirrored right print solid differs")
+
+        two_piece = cad.wing_two_piece_print_parts(slug, "right")
+        left_two_piece = cad.wing_two_piece_print_parts(slug, "left")
+        assert tuple(two_piece) == TWO_PIECE_PART_ROLES
+        assert tuple(left_two_piece) == TWO_PIECE_PART_ROLES
+        for side, monolith, a_parts, b_parts in (
+                ("right", right, pieces, two_piece),
+                ("left", left, left_pieces, left_two_piece)):
+            for role, piece in b_parts.items():
+                _assert_one_positive_solid(
+                    piece, f"{slug}/{side}/B/{role}")
+                assert _difference_volume(piece, monolith) <= 0.03, (
+                    f"{slug}/{side}/B/{role}: leaves monolith")
+            assert _difference_volume(
+                b_parts["lm_lower"], a_parts["lm_lower"]) <= 0.02
+            assert _difference_volume(
+                a_parts["lm_lower"], b_parts["lm_lower"]) <= 0.02
+            for a_role in ("lm_upper", "um"):
+                assert _difference_volume(
+                    a_parts[a_role], b_parts["lm_um_upper"]) <= 0.03, (
+                        f"{slug}/{side}/B upper omits A {a_role}")
+            assert _intersection_volume(
+                b_parts["lm_lower"], b_parts["lm_um_upper"]) <= 0.03, (
+                    f"{slug}/{side}: B pieces overlap")
+
+            upper_gap_plan = cad._layout().fit_clearance_gaps[1]
+            if side == "left":
+                upper_gap_plan = cad._mirror_plan(upper_gap_plan)
+            upper_gap_tool = cad._plan_prism(
+                upper_gap_plan, REAR_Z_MM - 0.5, FRONT_Z_MM + 0.5)
+            upper_gap_material = monolith & upper_gap_tool
+            assert upper_gap_material is not None
+            assert _difference_volume(
+                upper_gap_material,
+                b_parts["lm_um_upper"]) <= 0.03, (
+                    f"{slug}/{side}: B upper retained the former split slit")
+        for role, piece in two_piece.items():
+            mirrored_piece = mirror(piece, about=Plane.YZ)
+            assert _difference_volume(
+                left_two_piece[role], mirrored_piece) <= 0.02
+            assert _difference_volume(
+                mirrored_piece, left_two_piece[role]) <= 0.02
+        print(
+            f"  {slug}: two-piece BREP is single-solid, mirrored, "
+            "A-lower-identical, and fills the former upper seam",
+            flush=True)
 
         for key in cad._layout().dovetail_keys:
             male_role = key["male_owner"]

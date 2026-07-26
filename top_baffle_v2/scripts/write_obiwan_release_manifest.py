@@ -29,8 +29,37 @@ from lx521_baffle.io import sha256_file
 
 
 ROOT = PROJECT_ROOT
-FORMAT_VERSION = 10
+FORMAT_VERSION = 12
 QUALIFICATION_RECORD = ROOT / "docs/obiwan_physical_qualification.md"
+EXPECTED_KEYED_LM_DUCT_REGION_NAMES = {
+    False: {
+        "um_route_lumen",
+        "t_route_lumen",
+        "lm_internal_and_rear_exit_lumen",
+        "no_floor_lm_entry_bore",
+        "no_floor_t_entry_bore",
+        "no_floor_um_entry_bore",
+        "no_floor_t_entry_vestibule",
+        "no_floor_um_entry_vestibule",
+    },
+    True: {
+        "um_route_lumen",
+        "t_route_lumen",
+        "floor_lm_lane_lumen",
+        "floor_um_lane_lumen",
+        "floor_um_feed_relief",
+        "floor_t_lane_lumen",
+        "floor_t_feed_relief",
+    },
+}
+EXPECTED_UM_CARRIER_DUCT_REGION_NAMES = {
+    "um_carrier_t_route_lumen",
+}
+SUPPORT_BLOCKER_STEMS = (
+    "lx521_top_obiwan_core_2of2_um_carrier",
+    "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+    "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+)
 
 REQUIRED_REFERENCE_PATHS = (
     ROOT.parent / "linkwitz" / "H1658-04_MU10RB-SL_driver.stl",
@@ -131,13 +160,10 @@ def expected_artifact_names(stand_foot: bool) -> tuple[str, ...]:
         "obiwan_integrated_floor_strength.json",
         "obiwan_integrated_floor_strength.md",
     ) if stand_foot else ()
-    support_blockers = () if stand_foot else (
-        "support_blockers/"
-        "lx521_top_obiwan_optional_lm_keyed_1of2_bottom."
-        "support_blocker.stl",
-        "support_blockers/"
-        "lx521_top_obiwan_optional_lm_keyed_1of2_bottom."
-        "support_blocker.json",
+    support_blockers = tuple(
+        f"support_blockers/{stem}.support_blocker.{suffix}"
+        for stem in SUPPORT_BLOCKER_STEMS
+        for suffix in ("stl", "json")
     )
     coupons = [
         f"stl/lx521_coupon_{name}.stl"
@@ -257,31 +283,51 @@ def build_manifest(state_dir: Path, stand_foot: bool) -> dict:
             f"extra={sorted(actual_sidecars - expected_sidecars)}")
     for name in stl_names:
         validate_print_sidecar(state_dir / name)
-    if not stand_foot:
+    for stem in SUPPORT_BLOCKER_STEMS:
         blocker_relative = (
-            "support_blockers/"
-            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom."
-            "support_blocker.stl")
+            f"support_blockers/{stem}.support_blocker.stl")
         binding_relative = blocker_relative.removesuffix(".stl") + ".json"
         binding = json.loads(
             (state_dir / binding_relative).read_text(encoding="utf-8"))
-        main_stl = state_dir / "stl" / (
-            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl")
+        main_stl = state_dir / "stl" / f"{stem}.stl"
         blocker = state_dir / blocker_relative
         if (binding.get("schema_version") != 1
                 or binding.get("kind") != "bambu_support_blocker"
+                or binding.get("purpose")
+                != "forbid_support_inside_functional_ducts"
                 or binding.get("main_stl_sha256") != sha256_file(main_stl)
                 or binding.get("support_blocker_sha256")
                 != sha256_file(blocker)):
             raise RuntimeError(
-                "no-floor duct support-blocker binding is stale")
+                f"{stem}: duct support-blocker binding is stale")
         sidecar = json.loads(
             sidecar_path_for_stl(main_stl).read_text(encoding="utf-8"))
         if (binding.get("source_to_stl_matrix")
                 != sidecar.get("source_to_stl_matrix")):
             raise RuntimeError(
-                "no-floor duct support blocker uses a different print "
-                "transform from its keyed LM bottom")
+                f"{stem}: duct support blocker uses a different print "
+                "transform from its keyed LM part")
+        collision = binding.get("duct_collision_contract")
+        is_um_carrier = stem == "lx521_top_obiwan_core_2of2_um_carrier"
+        expected_regions = (
+            EXPECTED_UM_CARRIER_DUCT_REGION_NAMES
+            if is_um_carrier
+            else EXPECTED_KEYED_LM_DUCT_REGION_NAMES[stand_foot])
+        if (not isinstance(collision, dict)
+                or collision.get("schema_version") != 1
+                or collision.get("coordinate_space")
+                != "authoritative_source_mm"
+                or (
+                    collision.get("owner") != "um_carrier"
+                    if is_um_carrier
+                    else collision.get("split_seam_y_mm") != 172.481)
+                or {
+                    region.get("name")
+                    for region in collision.get("regions", ())
+                    if isinstance(region, dict)
+                } != expected_regions):
+            raise RuntimeError(
+                f"{stem}: duct collision contract is missing or malformed")
     return {
         "format_version": FORMAT_VERSION,
         "variant": "Obi-Wan",
