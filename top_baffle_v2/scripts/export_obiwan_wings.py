@@ -1090,6 +1090,67 @@ def _validate_png(path: Path) -> None:
                 f"review PNG is too small: {path}: {image.size}")
 
 
+def _portable_review_context_parts() -> dict[str, dict]:
+    """Load hash-validated staged context without rebuilding it locally.
+
+    Stage BREPs are portable release inputs. Their active guard-policy and
+    repository-wide source checks are appropriate when producing carrier
+    geometry, but wing review rendering only imports already-hashed solids
+    and does not depend on ``obiwan/wings.py``. Accepting the recorded remote
+    policy and source fingerprint here prevents a wing-only change from
+    rebuilding unrelated LM geometry while retaining state, identity,
+    transaction, byte-count, and per-BREP hash validation.
+    """
+    from build123d import Part, import_brep
+    from export_obiwan_staged import load_stage_manifest, staged_part_paths
+
+    no_floor_payload = load_stage_manifest(
+        NO_FLOOR_STAGE_MANIFEST, stand_foot=False,
+        require_active_environment=False, require_current_sources=False)
+    floor_payload = load_stage_manifest(
+        FLOOR_STAGE_MANIFEST, stand_foot=True,
+        require_active_environment=False, require_current_sources=False)
+    no_floor_paths = staged_part_paths(
+        NO_FLOOR_STAGE_MANIFEST, no_floor_payload)
+    floor_paths = staged_part_paths(FLOOR_STAGE_MANIFEST, floor_payload)
+    specifications = (
+        ("lm_lower_floor", floor_payload, floor_paths,
+         "optional_lm_keyed_1of2_bottom", "floor_stand"),
+        ("lm_lower_no_floor", no_floor_payload, no_floor_paths,
+         "optional_lm_keyed_1of2_bottom", "no_floor_stand"),
+        ("lm_upper", no_floor_payload, no_floor_paths,
+         "optional_lm_keyed_2of2_top", "no_floor_stand"),
+        ("um", no_floor_payload, no_floor_paths,
+         "core_um_carrier", "no_floor_stand"),
+        ("t", no_floor_payload, no_floor_paths,
+         "addon_tweeter_crescent", "no_floor_stand"),
+    )
+    context = {}
+    for key, payload, paths, part_key, state in specifications:
+        shape = import_brep(str(paths[part_key]))
+        solids = list(shape.solids())
+        if (not shape.is_valid or len(solids) != 1
+                or solids[0].volume <= 0.01):
+            raise RuntimeError(
+                f"invalid portable review BREP {state}/{part_key}: "
+                f"valid={shape.is_valid} solids={len(solids)}")
+        source_label = f"reference_obiwan_{state}_{part_key}"
+        part = Part([solids[0]])
+        part.label = source_label
+        context[key] = {
+            "shape": part,
+            "source_label": source_label,
+            "source_sha256": payload["parts"][part_key]["sha256"],
+            "state": state,
+            "part_key": part_key,
+        }
+    if (context["lm_lower_floor"]["source_sha256"]
+            == context["lm_lower_no_floor"]["source_sha256"]):
+        raise RuntimeError(
+            "floor and no-floor LM lower staged BREPs must be distinct")
+    return context
+
+
 def _render_reviews(
         slug: str, parts: dict[tuple[str, str], Any], review_dir: Path,
         receiver_records, geometry,
@@ -1099,8 +1160,7 @@ def _render_reviews(
     metadata_variant = slug.upper()
     records = _mesh_records(parts)
     two_piece_records = _mesh_records(two_piece_parts)
-    context_parts = geometry.wing_review_split_context_parts(
-        NO_FLOOR_STAGE_MANIFEST, FLOOR_STAGE_MANIFEST)
+    context_parts = _portable_review_context_parts()
     context_records = _context_mesh_records(context_parts)
     outputs = {kind: review_dir / f"obiwan_wing_{slug}_{kind}.png"
                for kind in REVIEW_KINDS}
@@ -1443,6 +1503,8 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
         review_relatives = [Path("review") / path.name for path in review_paths]
 
         source_geometry = geometry.wing_facts(slug)
+        source_geometry["interface_contract"]["tweeter_crescent"] = (
+            geometry.contract.t_wing_interface_facts())
         facts_rel = Path(FACTS_TEMPLATE.format(slug=slug))
         facts_path = slug_stage / facts_rel
         facts_payload = {

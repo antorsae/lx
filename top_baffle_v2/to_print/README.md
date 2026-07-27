@@ -17,7 +17,7 @@ to_print/
 │   ├── stl/                     # 11 printable Slim pieces
 │   └── 3mf/                     # matching ready P2S projects
 └── obiwan/
-    ├── stl/                     # 26 entries, including one core-plate alternative
+    ├── stl/                     # 29 entries, including four plate alternatives
     └── 3mf/                     # matching ready P2S projects
 ```
 
@@ -34,14 +34,28 @@ required support fields globally and on every object, plus hash-bound duct
 blockers and a zero-collision support-toolpath gate, so an ordinary Bambu
 Studio re-slice cannot silently obstruct a functional cable lumen.
 
-`obiwan_01a_02_03_04_LM_UM_1_of_1` is the no-floor single-plate
-alternative for 01a+02+03+04. It is one Bambu printable object containing
-four normal volumes and three aligned duct-blocker volumes at locked,
-translation-only positions. It uses 40% gyroid, pins all four support fields
-globally and on the object, pauses once at Z=5.96 mm for the six LM/UM
-magnets, and has no support toolpath under the tweeter footprint. Its
-promotion audit requires exact 3MF/STL equivalence and zero support-bead
-collisions in all three duct-bearing parts.
+`obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand` and
+`obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand` are the no-floor and
+floor-stand single-plate alternatives for 01+02+03+04. Each is one Bambu
+printable object containing four normal volumes and three aligned
+state-specific duct-blocker volumes at locked, translation-only positions.
+The no-floor plate uses 40% gyroid; the floor plate preserves the integral
+floor bottom's authoritative 100% zig-zag profile. Both pin all four support
+fields globally and on the object, pause once at Z=5.96 mm for the six LM/UM
+magnets, and emit no support under the tweeter footprint. Promotion requires
+exact 3MF/STL equivalence and zero support-bead collisions in all three
+duct-bearing parts.
+
+`obiwan_05b_06b_08b_09b_Ac_wings_1_of_1` and
+`obiwan_11b_12b_14b_15b_Ae_wings_1_of_1` are the single-plate alternatives
+for the four Ac and Ae B-split wing pieces respectively. Each preserves the released
+front-face-down orientation, applies only locked Z rotations and XY
+translations, and uses 30% gyroid with all four support fields pinned off
+globally and on the object. The audited packing has 3.587 mm minimum
+part-to-part clearance and 3.592 mm minimum bed-edge clearance. Each pauses
+once at Z=5.96 mm for all six wing magnets, emits zero support feature blocks,
+and passes exact project/STL equivalence: 15,692 triangles for Ac and 958,546
+for Ae.
 
 The six-wall setting is deliberately general-body strength, not six walls in
 the captive-magnet skin. Arachne is allowed to emit the one bounded
@@ -55,13 +69,16 @@ materials.  State and attachment choices are alternatives:
   `A_shoulder` pieces or the two `B1` wings, never both.
 - **Slim:** the same choice model as Stock.
 - **Obi-Wan:** choose the individual core (`01a_no_floor_stand` or
-  `01b_floor_stand`, plus 02–04), or use
-  `obiwan_01a_02_03_04_LM_UM_1_of_1` instead of the four individual files.
-  The combined plate is only the no-floor 01a form; never print it together
-  with 01a/02/03/04. Choose Ac (05–10) or Ae (11–16), never both wing
-  families. Within the selected family, choose either every `a` file for the
-  original three-piece-per-side split or every `b` file for the fused
-  two-piece-per-side split; never mix the A and B wing sets.
+  `01b_floor_stand`, plus 02–04), or use the matching
+  `obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand` or
+  `obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand` plate instead of those four
+  individual files. Never mix stand states or print a combined core plate
+  together with its individual 01/02/03/04 pieces. Choose Ac (05–10) or Ae
+  (11–16), never both wing families. Within the selected family, choose either
+  every `a` file for the original three-piece-per-side split or every `b` file
+  for the fused two-piece-per-side split; never mix the A and B wing sets. For
+  Ac B or Ae B, use either the four individual projects or the matching
+  single-plate alternative; never print both forms.
 
 The tracked [catalog.json](catalog.json) is the authoritative friendly-name
 map.  `release_manifest.json` is generated locally by the build and records
@@ -77,29 +94,39 @@ make to_print
 ```
 
 It consumes the existing authoritative captive-magnet ready projects, builds
-the combined plate incrementally, then creates or refreshes all 48
+the four combined plates incrementally, then creates or refreshes all 51
 STL/project pairs. It does **not** implicitly launch the heavyweight
 64-artifact release slicer; a missing canonical ready project fails closed and
-must be refreshed explicitly with `make bambu_slice_release`. Of the 39
+must be refreshed explicitly with `make bambu_slice_release`. Of the 42
 pause-bearing projects, 38 are hard-linked from that audited release and the
-combined plate is built and sliced locally from those same released inputs.
+four combined plates are built and sliced locally from those same released inputs.
 The 9 magnet-free pieces are sliced locally under the same pinned profile.
 Hard links make the visible files ordinary, directly-openable files without
 duplicating the large project payloads on disk.
 
-The combined plate is a first-class Make artifact. To build its deterministic
-source STL/manifest, validated ready project, or promoted shelf pair, run:
+All four combined plates are first-class Make artifacts. To build their
+deterministic source STL/manifests, validated ready projects, or promoted
+shelf pairs, run:
 
 ```sh
-make obiwan_combo_plate_source
-make obiwan_combo_plate
-make obiwan_combo_plate_to_print
+make obiwan_no_floor_combo_plate_source
+make obiwan_no_floor_combo_plate
+make obiwan_no_floor_combo_plate_to_print
+make obiwan_floor_combo_plate_source
+make obiwan_floor_combo_plate
+make obiwan_floor_combo_plate_to_print
+make obiwan_ac_wing_plate_source
+make obiwan_ac_wing_plate
+make obiwan_ac_wing_plate_to_print
+make obiwan_ae_wing_plate_source
+make obiwan_ae_wing_plate
+make obiwan_ae_wing_plate_to_print
 ```
 
 The corresponding concrete STL, ready `.gcode.3mf`, audit, and promoted files
 are backed by ordinary dependency stamps with missing-member recovery. The
-ready target dry-runs before any required local slice; the promotion target
-disables slicing and crosses the complete 48/48 shelf-equivalence gate.
+ready targets dry-run before any required local slice; the promotion targets
+disable slicing and cross the complete 51/51 shelf-equivalence gate.
 Every alias and concrete artifact path rejects remote-worker or osado
 execution.
 
@@ -111,6 +138,6 @@ make to_print_validate
 
 The materialized STLs and `.gcode.3mf` projects are ignored by Git on purpose.
 The private slicer cache is kept outside this delivery tree at
-`review/to_print_slice_workspace/`, so `to_print/` remains an exact 48-STL /
-48-project printer shelf. Re-run `make to_print` after any intentional
+`review/to_print_slice_workspace/`, so `to_print/` remains an exact 51-STL /
+51-project printer shelf. Re-run `make to_print` after any intentional
 canonical release-slice change.

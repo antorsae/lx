@@ -58,12 +58,15 @@ from gen_driver_overlay import (
 from lx521_baffle.base import L22_CUTOUT, THICKNESS_MM, UM_CUTOUT
 from lx521_baffle.proud.top_baffle_nd25fw4_a_comp import OUTLINE_A_COMP
 from lx521_baffle.proud.top_baffle_nd25fw4_b import TWEETER_DROP_MM
+from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
 from lx521_baffle.obiwan.carriers import (
     CORE_REAR_Z,
     LM_CORE_R,
     SIDE_MAGNET_DEPTH,
     SIDE_MAGNET_D,
     SIDE_MAGNET_POCKET_D,
+    T_CRESCENT_ARC_CENTER,
+    T_CRESCENT_ARC_R,
     UM_CORE_R,
     _complete_joint_ear_plan,
     _complete_tweeter_joint_ear_plan,
@@ -97,6 +100,16 @@ SADDLE_CLEAR_MM = INTERFACE_GAP_MM
 # so their magnet-face separation is 1.10 mm; the base-side LM pair remains
 # 0.95 mm.
 MAGNET_FACE_GAP_MM = INTERFACE_GAP_MM
+# The wing must follow the complete released B2/Obi-Wan crescent profile
+# rather than either the former conservative R52.2 construction envelope or
+# an extrapolation of the lower R51.0517 arc.  Above the arc endpoint the
+# released horn is a cubic B2 flank; extending the circle through that region
+# undercuts the actual T print near its tip.  A dedicated 0.20-mm normal plan
+# clearance around the complete profile leaves practical room between
+# independently printed T and wing parts without the visually amplified
+# ~2.2-mm horizontal slot created by the old oversized envelope.
+T_WING_CLEARANCE_MM = 0.20
+T_CRESCENT_PROFILE_WINDOW_MM = (-80.0, 412.0, 80.0, 454.0)
 # Ac is the exact constant-depth reference.  Ae keeps the same flat front
 # datum but replaces the rear slab with a constrained, single-valued feather.
 # The documented project profile is 0.20-mm layers on a 0.4-mm nozzle.  Because
@@ -158,9 +171,10 @@ SEAM_UPPER_Y = 391.709
 A_TAPER_TOP_Y = 453.457
 A_TAPER_TOP_X = 49.177
 A_TAPER_CREST_X = 60.654
-# The exact construction line meets the conservative optional-crescent
-# keepout as a zero-width tip.  Stop it at a source-derived 1.20 mm solid cap
-# so the engineering layout remains printable rather than merely pictorial.
+# The exact construction line met the former conservative optional-crescent
+# keepout as a zero-width tip.  Retain its source-derived cutoff and require at
+# least a 1.20-mm solid cap; following the released arc increases the actual
+# cap without moving the established top datum.
 A_TAPER_CAP_Y = 449.081
 A_TAPER_CAP_MIN_WIDTH_MM = 1.20
 # V1L-family through-thickness XY dovetails.  Each physical-side wing has one
@@ -340,9 +354,74 @@ def _a_taper_x(y: float) -> float:
 
 
 def _a_cap_keepout_x() -> float:
-    radius = 52.2 + SADDLE_CLEAR_MM
-    dy = A_TAPER_CAP_Y - T_CRESCENT_CENTER[1]
-    return math.sqrt(radius * radius - dy * dy)
+    station = LineString((
+        (-100.0, A_TAPER_CAP_Y),
+        (100.0, A_TAPER_CAP_Y),
+    ))
+    section = _t_crescent_keepout_plan().intersection(station)
+    coordinates = shapely.get_coordinates(section)
+    positive_x = coordinates[coordinates[:, 0] > 0.0, 0]
+    if positive_x.size == 0:
+        raise RuntimeError("T crescent keepout misses the A-wing cap station")
+    return float(np.max(positive_x))
+
+
+def _released_t_crescent_plan() -> Polygon:
+    """Symmetric worst-case plan envelope of the released T crescent.
+
+    The lower interface is the measured B2 three-point arc. At its upper
+    endpoint the released outline continues along the B2 cubic horn flank,
+    so a circle alone is not the complete interface authority. The wings are
+    exact mirrors while the source drawing differs by a few microns
+    side-to-side; unioning the plan with its mirror makes the common wing
+    profile clear the farther released side in both installed positions.
+    """
+    lower_arc_disk = Point(*T_CRESCENT_ARC_CENTER).buffer(
+        T_CRESCENT_ARC_R, resolution=256)
+    source_profile = _profile_polygon(OUTLINE_B2)
+    upper_profile = source_profile.intersection(
+        box(*T_CRESCENT_PROFILE_WINDOW_MM))
+    released = unary_union((lower_arc_disk, upper_profile)).buffer(0)
+    symmetric = unary_union((released, _mirror(released))).buffer(0)
+    if symmetric.geom_type != "Polygon" or not symmetric.is_valid:
+        raise RuntimeError(
+            "released symmetric T crescent plan must be one valid polygon")
+    return symmetric
+
+
+def _t_crescent_keepout_plan(
+        clearance_mm: float = T_WING_CLEARANCE_MM) -> Polygon:
+    """Complete released T plan with an optional normal clearance."""
+    clearance = float(clearance_mm)
+    if clearance < 0.0:
+        raise ValueError("T crescent clearance must be non-negative")
+    released = _released_t_crescent_plan()
+    if clearance == 0.0:
+        return released
+    return released.buffer(clearance, resolution=128, join_style=1)
+
+
+def _t_crescent_arc_plan(clearance_mm: float = 0.0) -> Polygon:
+    """Backward-compatible name for the complete released T plan."""
+    return _t_crescent_keepout_plan(clearance_mm)
+
+
+def t_wing_interface_facts() -> dict:
+    """JSON-safe authority for the released T-to-wing plan interface."""
+    return {
+        "released_lower_arc_center_xy_mm": [
+            float(value) for value in T_CRESCENT_ARC_CENTER
+        ],
+        "released_lower_arc_radius_mm": float(T_CRESCENT_ARC_R),
+        "released_upper_profile_source": "OUTLINE_B2 cubic horn flanks",
+        "profile_window_xyxy_mm": [
+            float(value) for value in T_CRESCENT_PROFILE_WINDOW_MM
+        ],
+        "symmetry_policy": "union_with_mirror_worst_case",
+        "normal_plan_clearance_mm": float(T_WING_CLEARANCE_MM),
+        "keepout_construction": "released_plan.buffer(clearance)",
+        "split_independent": True,
+    }
 
 
 def _ae_reference_depth(
@@ -532,8 +611,7 @@ def _common_keepout_parts() -> dict[str, Polygon]:
             SADDLE_CLEAR_MM, resolution=32, join_style=1),
         "um_carrier": side_ring_outer_plan("um").buffer(
             SADDLE_CLEAR_MM, resolution=32, join_style=1),
-        "t_crescent": Point(*T_CRESCENT_CENTER).buffer(
-            52.2 + SADDLE_CLEAR_MM, resolution=128),
+        "t_crescent": _t_crescent_keepout_plan(),
         "no_floor_bridge": lm_lower_contact.buffer(
             SADDLE_CLEAR_MM, resolution=32, join_style=1),
         "floor_stem": lm_lower_contact.buffer(
@@ -983,6 +1061,21 @@ def _validate_layout(layout: VariantLayout) -> None:
         if cap_width < A_TAPER_CAP_MIN_WIDTH_MM - 0.01:
             raise RuntimeError(
                 f"A-Obi-Wan taper cap is too narrow: {cap_width:.3f} mm")
+        # The photographed upper T/Ae slot is controlled by the complete
+        # released crescent profile from y=430 through the printable cap.
+        # Gate the actual monolithic field here so neither a conservative
+        # proxy radius nor an extrapolated lower arc can silently recreate a
+        # large opening or collide with the cubic horn flank.
+        upper_t_field = layout.field_right.intersection(
+            box(0.0, 430.0, 180.0, A_TAPER_CAP_Y - 0.05))
+        actual_t_plan = _released_t_crescent_plan()
+        measured_clearance = upper_t_field.distance(actual_t_plan)
+        if not math.isclose(
+                measured_clearance, T_WING_CLEARANCE_MM,
+                abs_tol=0.005):
+            raise RuntimeError(
+                "A-Obi-Wan T-to-wing normal clearance drifted: "
+                f"{measured_clearance:.4f} mm")
     for name, part in layout.print_parts.items():
         if part.is_empty or not part.is_valid:
             raise RuntimeError(f"{layout.definition.key} {name} is invalid/empty")
@@ -1482,7 +1575,7 @@ def _ae_section_definitions(
             radial_line(sites["um_right"]),
             pocket_z_mm=float(sites["um_right"]["z_mm"])),
         SectionDefinition(
-            "S5", "1.20-mm plan tip-cap exception",
+            "S5", "T-seat plan tip-cap exception",
             LineString(((0.0, A_TAPER_CAP_Y - 0.35),
                         (175.0, A_TAPER_CAP_Y - 0.35)))),
     )
@@ -1735,9 +1828,10 @@ def _draw_variant(
                 color=COLORS["correction"], lw=0.8,
                 ls=(0, (2, 2)), zorder=10)
         if show_a_annotation:
+            cap_width = cap_outer_x - cap_inner_x
             ax.annotate(
                 "requested straight taper\n"
-                "1.20 mm solid cap at crescent keepout",
+                f"{cap_width:.2f} mm solid cap at crescent keepout",
                 xy=((cap_outer_x + A_TAPER_CREST_X) / 2.0,
                     (A_TAPER_CAP_Y + SEAM_UPPER_Y) / 2.0),
                 xytext=(78.0, 468.0), fontsize=6.6, ha="center",

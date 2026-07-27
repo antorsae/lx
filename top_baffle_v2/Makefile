@@ -29,8 +29,11 @@
 #   make bambu_dry_run       local per-STL command/provenance preview
 #   make bambu_slice_obiwan  local filtered ready-project diagnostic
 #   make bambu_slice_release local authoritative ready-project slice/audit
-#   make obiwan_combo_plate  local 01a+02+03+04 composite slice/audit
-#   make to_print            local complete P2S shelf: audit + 48 friendly files
+#   make obiwan_no_floor_combo_plate local no-floor 01a+02+03+04 plate
+#   make obiwan_floor_combo_plate local floor-stand 01b+02+03+04 plate
+#   make obiwan_ac_wing_plate local 05b+06b+08b+09b single-plate slice/audit
+#   make obiwan_ae_wing_plate local 11b+12b+14b+15b single-plate slice/audit
+#   make to_print            local complete P2S shelf: audit + 51 friendly files
 #   make to_print_validate   validate an existing P2S shelf without slicing
 #
 # Compatible with the macOS-provided GNU make 3.81.
@@ -45,24 +48,91 @@ export PYTHONPATH := $(CURDIR)/src:$(CURDIR)/scripts
 CAPTIVE_MAGNET_CATALOG ?= review/captive_magnet_release_catalog.json
 BAMBU_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit
 TO_PRINT_SHELF ?= to_print
-OBIWAN_COMBO_NAME := obiwan_01a_02_03_04_LM_UM_1_of_1
 OBIWAN_COMBO_SOURCE_DIR := build/print_plates/obiwan
-OBIWAN_COMBO_SOURCE_STAMP := $(OBIWAN_COMBO_SOURCE_DIR)/.stamp_$(OBIWAN_COMBO_NAME)
-OBIWAN_COMBO_STL := $(OBIWAN_COMBO_SOURCE_DIR)/$(OBIWAN_COMBO_NAME).stl
-OBIWAN_COMBO_MANIFEST := $(OBIWAN_COMBO_SOURCE_DIR)/$(OBIWAN_COMBO_NAME).plate.json
-OBIWAN_COMBO_WORKSPACE ?= review/to_print_slice_workspace/composite/$(OBIWAN_COMBO_NAME)
-OBIWAN_COMBO_READY_DIR := $(OBIWAN_COMBO_WORKSPACE)/ready
-OBIWAN_COMBO_READY_STAMP := $(OBIWAN_COMBO_READY_DIR)/.stamp_validated
-OBIWAN_COMBO_PROJECT := $(OBIWAN_COMBO_READY_DIR)/$(OBIWAN_COMBO_NAME).gcode.3mf
-OBIWAN_COMBO_GCODE := $(OBIWAN_COMBO_READY_DIR)/plate_1.gcode
-OBIWAN_COMBO_RESULT := $(OBIWAN_COMBO_READY_DIR)/result.json
-OBIWAN_COMBO_AUDIT := $(OBIWAN_COMBO_READY_DIR)/plate_audit.json
-OBIWAN_COMBO_READY_OUTPUTS := $(OBIWAN_COMBO_PROJECT) $(OBIWAN_COMBO_GCODE) \
-                             $(OBIWAN_COMBO_RESULT) $(OBIWAN_COMBO_AUDIT)
-OBIWAN_COMBO_PROMOTION_STAMP := $(OBIWAN_COMBO_READY_DIR)/.stamp_to_print_promoted
-OBIWAN_COMBO_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_COMBO_NAME).stl
-OBIWAN_COMBO_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_COMBO_NAME).gcode.3mf
-OBIWAN_COMBO_SHELF_OUTPUTS := $(OBIWAN_COMBO_SHELF_STL) $(OBIWAN_COMBO_SHELF_PROJECT)
+OBIWAN_NO_FLOOR_COMBO_NAME := obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand
+OBIWAN_NO_FLOOR_COMBO_SOURCE_STAMP := $(OBIWAN_COMBO_SOURCE_DIR)/.stamp_$(OBIWAN_NO_FLOOR_COMBO_NAME)
+OBIWAN_NO_FLOOR_COMBO_STL := $(OBIWAN_COMBO_SOURCE_DIR)/$(OBIWAN_NO_FLOOR_COMBO_NAME).stl
+OBIWAN_NO_FLOOR_COMBO_MANIFEST := $(OBIWAN_COMBO_SOURCE_DIR)/$(OBIWAN_NO_FLOOR_COMBO_NAME).plate.json
+OBIWAN_NO_FLOOR_COMBO_WORKSPACE ?= review/to_print_slice_workspace/composite/$(OBIWAN_NO_FLOOR_COMBO_NAME)
+OBIWAN_NO_FLOOR_COMBO_READY_DIR := $(OBIWAN_NO_FLOOR_COMBO_WORKSPACE)/ready
+OBIWAN_NO_FLOOR_COMBO_READY_STAMP := $(OBIWAN_NO_FLOOR_COMBO_READY_DIR)/.stamp_validated
+OBIWAN_NO_FLOOR_COMBO_PROJECT := $(OBIWAN_NO_FLOOR_COMBO_READY_DIR)/$(OBIWAN_NO_FLOOR_COMBO_NAME).gcode.3mf
+OBIWAN_NO_FLOOR_COMBO_GCODE := $(OBIWAN_NO_FLOOR_COMBO_READY_DIR)/plate_1.gcode
+OBIWAN_NO_FLOOR_COMBO_RESULT := $(OBIWAN_NO_FLOOR_COMBO_READY_DIR)/result.json
+OBIWAN_NO_FLOOR_COMBO_AUDIT := $(OBIWAN_NO_FLOOR_COMBO_READY_DIR)/plate_audit.json
+OBIWAN_NO_FLOOR_COMBO_READY_OUTPUTS := $(OBIWAN_NO_FLOOR_COMBO_PROJECT) \
+                                      $(OBIWAN_NO_FLOOR_COMBO_GCODE) \
+                                      $(OBIWAN_NO_FLOOR_COMBO_RESULT) \
+                                      $(OBIWAN_NO_FLOOR_COMBO_AUDIT)
+OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP := $(OBIWAN_NO_FLOOR_COMBO_READY_DIR)/.stamp_to_print_promoted
+OBIWAN_NO_FLOOR_COMBO_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_NO_FLOOR_COMBO_NAME).stl
+OBIWAN_NO_FLOOR_COMBO_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_NO_FLOOR_COMBO_NAME).gcode.3mf
+OBIWAN_NO_FLOOR_COMBO_SHELF_OUTPUTS := $(OBIWAN_NO_FLOOR_COMBO_SHELF_STL) \
+                                      $(OBIWAN_NO_FLOOR_COMBO_SHELF_PROJECT)
+OBIWAN_FLOOR_COMBO_NAME := obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand
+OBIWAN_FLOOR_COMBO_SOURCE_STAMP := $(OBIWAN_COMBO_SOURCE_DIR)/.stamp_$(OBIWAN_FLOOR_COMBO_NAME)
+OBIWAN_FLOOR_COMBO_STL := $(OBIWAN_COMBO_SOURCE_DIR)/$(OBIWAN_FLOOR_COMBO_NAME).stl
+OBIWAN_FLOOR_COMBO_MANIFEST := $(OBIWAN_COMBO_SOURCE_DIR)/$(OBIWAN_FLOOR_COMBO_NAME).plate.json
+OBIWAN_FLOOR_COMBO_WORKSPACE ?= review/to_print_slice_workspace/composite/$(OBIWAN_FLOOR_COMBO_NAME)
+OBIWAN_FLOOR_COMBO_READY_DIR := $(OBIWAN_FLOOR_COMBO_WORKSPACE)/ready
+OBIWAN_FLOOR_COMBO_READY_STAMP := $(OBIWAN_FLOOR_COMBO_READY_DIR)/.stamp_validated
+OBIWAN_FLOOR_COMBO_PROJECT := $(OBIWAN_FLOOR_COMBO_READY_DIR)/$(OBIWAN_FLOOR_COMBO_NAME).gcode.3mf
+OBIWAN_FLOOR_COMBO_GCODE := $(OBIWAN_FLOOR_COMBO_READY_DIR)/plate_1.gcode
+OBIWAN_FLOOR_COMBO_RESULT := $(OBIWAN_FLOOR_COMBO_READY_DIR)/result.json
+OBIWAN_FLOOR_COMBO_AUDIT := $(OBIWAN_FLOOR_COMBO_READY_DIR)/plate_audit.json
+OBIWAN_FLOOR_COMBO_READY_OUTPUTS := $(OBIWAN_FLOOR_COMBO_PROJECT) \
+                                   $(OBIWAN_FLOOR_COMBO_GCODE) \
+                                   $(OBIWAN_FLOOR_COMBO_RESULT) \
+                                   $(OBIWAN_FLOOR_COMBO_AUDIT)
+OBIWAN_FLOOR_COMBO_PROMOTION_STAMP := $(OBIWAN_FLOOR_COMBO_READY_DIR)/.stamp_to_print_promoted
+OBIWAN_FLOOR_COMBO_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_FLOOR_COMBO_NAME).stl
+OBIWAN_FLOOR_COMBO_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_FLOOR_COMBO_NAME).gcode.3mf
+OBIWAN_FLOOR_COMBO_SHELF_OUTPUTS := $(OBIWAN_FLOOR_COMBO_SHELF_STL) \
+                                   $(OBIWAN_FLOOR_COMBO_SHELF_PROJECT)
+OBIWAN_AC_WING_PLATE_NAME := obiwan_05b_06b_08b_09b_Ac_wings_1_of_1
+OBIWAN_AC_WING_PLATE_SOURCE_DIR := build/print_plates/obiwan
+OBIWAN_AC_WING_PLATE_SOURCE_STAMP := $(OBIWAN_AC_WING_PLATE_SOURCE_DIR)/.stamp_$(OBIWAN_AC_WING_PLATE_NAME)
+OBIWAN_AC_WING_PLATE_STL := $(OBIWAN_AC_WING_PLATE_SOURCE_DIR)/$(OBIWAN_AC_WING_PLATE_NAME).stl
+OBIWAN_AC_WING_PLATE_MANIFEST := $(OBIWAN_AC_WING_PLATE_SOURCE_DIR)/$(OBIWAN_AC_WING_PLATE_NAME).plate.json
+OBIWAN_AC_WING_PLATE_PREVIEW := $(OBIWAN_AC_WING_PLATE_SOURCE_DIR)/$(OBIWAN_AC_WING_PLATE_NAME).layout.png
+OBIWAN_AC_WING_PLATE_WORKSPACE ?= review/to_print_slice_workspace/composite/$(OBIWAN_AC_WING_PLATE_NAME)
+OBIWAN_AC_WING_PLATE_READY_DIR := $(OBIWAN_AC_WING_PLATE_WORKSPACE)/ready
+OBIWAN_AC_WING_PLATE_READY_STAMP := $(OBIWAN_AC_WING_PLATE_READY_DIR)/.stamp_validated
+OBIWAN_AC_WING_PLATE_PROJECT := $(OBIWAN_AC_WING_PLATE_READY_DIR)/$(OBIWAN_AC_WING_PLATE_NAME).gcode.3mf
+OBIWAN_AC_WING_PLATE_GCODE := $(OBIWAN_AC_WING_PLATE_READY_DIR)/plate_1.gcode
+OBIWAN_AC_WING_PLATE_RESULT := $(OBIWAN_AC_WING_PLATE_READY_DIR)/result.json
+OBIWAN_AC_WING_PLATE_AUDIT := $(OBIWAN_AC_WING_PLATE_READY_DIR)/plate_audit.json
+OBIWAN_AC_WING_PLATE_READY_OUTPUTS := $(OBIWAN_AC_WING_PLATE_PROJECT) \
+                                     $(OBIWAN_AC_WING_PLATE_GCODE) \
+                                     $(OBIWAN_AC_WING_PLATE_RESULT) \
+                                     $(OBIWAN_AC_WING_PLATE_AUDIT)
+OBIWAN_AC_WING_PLATE_PROMOTION_STAMP := $(OBIWAN_AC_WING_PLATE_READY_DIR)/.stamp_to_print_promoted
+OBIWAN_AC_WING_PLATE_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_AC_WING_PLATE_NAME).stl
+OBIWAN_AC_WING_PLATE_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_AC_WING_PLATE_NAME).gcode.3mf
+OBIWAN_AC_WING_PLATE_SHELF_OUTPUTS := $(OBIWAN_AC_WING_PLATE_SHELF_STL) \
+                                     $(OBIWAN_AC_WING_PLATE_SHELF_PROJECT)
+OBIWAN_AE_WING_PLATE_NAME := obiwan_11b_12b_14b_15b_Ae_wings_1_of_1
+OBIWAN_AE_WING_PLATE_SOURCE_DIR := build/print_plates/obiwan
+OBIWAN_AE_WING_PLATE_SOURCE_STAMP := $(OBIWAN_AE_WING_PLATE_SOURCE_DIR)/.stamp_$(OBIWAN_AE_WING_PLATE_NAME)
+OBIWAN_AE_WING_PLATE_STL := $(OBIWAN_AE_WING_PLATE_SOURCE_DIR)/$(OBIWAN_AE_WING_PLATE_NAME).stl
+OBIWAN_AE_WING_PLATE_MANIFEST := $(OBIWAN_AE_WING_PLATE_SOURCE_DIR)/$(OBIWAN_AE_WING_PLATE_NAME).plate.json
+OBIWAN_AE_WING_PLATE_PREVIEW := $(OBIWAN_AE_WING_PLATE_SOURCE_DIR)/$(OBIWAN_AE_WING_PLATE_NAME).layout.png
+OBIWAN_AE_WING_PLATE_WORKSPACE ?= review/to_print_slice_workspace/composite/$(OBIWAN_AE_WING_PLATE_NAME)
+OBIWAN_AE_WING_PLATE_READY_DIR := $(OBIWAN_AE_WING_PLATE_WORKSPACE)/ready
+OBIWAN_AE_WING_PLATE_READY_STAMP := $(OBIWAN_AE_WING_PLATE_READY_DIR)/.stamp_validated
+OBIWAN_AE_WING_PLATE_PROJECT := $(OBIWAN_AE_WING_PLATE_READY_DIR)/$(OBIWAN_AE_WING_PLATE_NAME).gcode.3mf
+OBIWAN_AE_WING_PLATE_GCODE := $(OBIWAN_AE_WING_PLATE_READY_DIR)/plate_1.gcode
+OBIWAN_AE_WING_PLATE_RESULT := $(OBIWAN_AE_WING_PLATE_READY_DIR)/result.json
+OBIWAN_AE_WING_PLATE_AUDIT := $(OBIWAN_AE_WING_PLATE_READY_DIR)/plate_audit.json
+OBIWAN_AE_WING_PLATE_READY_OUTPUTS := $(OBIWAN_AE_WING_PLATE_PROJECT) \
+                                     $(OBIWAN_AE_WING_PLATE_GCODE) \
+                                     $(OBIWAN_AE_WING_PLATE_RESULT) \
+                                     $(OBIWAN_AE_WING_PLATE_AUDIT)
+OBIWAN_AE_WING_PLATE_PROMOTION_STAMP := $(OBIWAN_AE_WING_PLATE_READY_DIR)/.stamp_to_print_promoted
+OBIWAN_AE_WING_PLATE_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_AE_WING_PLATE_NAME).stl
+OBIWAN_AE_WING_PLATE_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_AE_WING_PLATE_NAME).gcode.3mf
+OBIWAN_AE_WING_PLATE_SHELF_OUTPUTS := $(OBIWAN_AE_WING_PLATE_SHELF_STL) \
+                                     $(OBIWAN_AE_WING_PLATE_SHELF_PROJECT)
 
 # Bambu slicing is workstation-only.  Detect these public goals before the
 # remote-first dispatcher captures MAKECMDGOALS, force even an explicitly
@@ -71,15 +141,54 @@ OBIWAN_COMBO_SHELF_OUTPUTS := $(OBIWAN_COMBO_SHELF_STL) $(OBIWAN_COMBO_SHELF_PRO
 LOCAL_BAMBU_GOALS := bambu_profiles bambu_dry_run \
                      bambu_slice_obiwan bambu_slice_release \
                      obiwan_combo_plate_source obiwan_combo_plate \
-                     obiwan_combo_plate_validate \
-                     obiwan_combo_plate_to_print \
+                     obiwan_combo_plate_validate obiwan_combo_plate_to_print \
+                     obiwan_no_floor_combo_plate_source \
+                     obiwan_no_floor_combo_plate \
+                     obiwan_no_floor_combo_plate_validate \
+                     obiwan_no_floor_combo_plate_to_print \
+                     obiwan_floor_combo_plate_source \
+                     obiwan_floor_combo_plate \
+                     obiwan_floor_combo_plate_validate \
+                     obiwan_floor_combo_plate_to_print \
+                     obiwan_ac_wing_plate_source \
+                     obiwan_ac_wing_plate \
+                     obiwan_ac_wing_plate_validate \
+                     obiwan_ac_wing_plate_to_print \
+                     obiwan_ae_wing_plate_source \
+                     obiwan_ae_wing_plate \
+                     obiwan_ae_wing_plate_validate \
+                     obiwan_ae_wing_plate_to_print \
                      check_to_print_shelf to_print to_print_validate \
-                     $(OBIWAN_COMBO_SOURCE_STAMP) \
-                     $(OBIWAN_COMBO_STL) $(OBIWAN_COMBO_MANIFEST) \
-                     $(OBIWAN_COMBO_READY_STAMP) \
-                     $(OBIWAN_COMBO_READY_OUTPUTS) \
-                     $(OBIWAN_COMBO_PROMOTION_STAMP) \
-                     $(OBIWAN_COMBO_SHELF_OUTPUTS)
+                     $(OBIWAN_NO_FLOOR_COMBO_SOURCE_STAMP) \
+                     $(OBIWAN_NO_FLOOR_COMBO_STL) \
+                     $(OBIWAN_NO_FLOOR_COMBO_MANIFEST) \
+                     $(OBIWAN_NO_FLOOR_COMBO_READY_STAMP) \
+                     $(OBIWAN_NO_FLOOR_COMBO_READY_OUTPUTS) \
+                     $(OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP) \
+                     $(OBIWAN_NO_FLOOR_COMBO_SHELF_OUTPUTS) \
+                     $(OBIWAN_FLOOR_COMBO_SOURCE_STAMP) \
+                     $(OBIWAN_FLOOR_COMBO_STL) \
+                     $(OBIWAN_FLOOR_COMBO_MANIFEST) \
+                     $(OBIWAN_FLOOR_COMBO_READY_STAMP) \
+                     $(OBIWAN_FLOOR_COMBO_READY_OUTPUTS) \
+                     $(OBIWAN_FLOOR_COMBO_PROMOTION_STAMP) \
+                     $(OBIWAN_FLOOR_COMBO_SHELF_OUTPUTS) \
+                     $(OBIWAN_AC_WING_PLATE_SOURCE_STAMP) \
+                     $(OBIWAN_AC_WING_PLATE_STL) \
+                     $(OBIWAN_AC_WING_PLATE_MANIFEST) \
+                     $(OBIWAN_AC_WING_PLATE_PREVIEW) \
+                     $(OBIWAN_AC_WING_PLATE_READY_STAMP) \
+                     $(OBIWAN_AC_WING_PLATE_READY_OUTPUTS) \
+                     $(OBIWAN_AC_WING_PLATE_PROMOTION_STAMP) \
+                     $(OBIWAN_AC_WING_PLATE_SHELF_OUTPUTS) \
+                     $(OBIWAN_AE_WING_PLATE_SOURCE_STAMP) \
+                     $(OBIWAN_AE_WING_PLATE_STL) \
+                     $(OBIWAN_AE_WING_PLATE_MANIFEST) \
+                     $(OBIWAN_AE_WING_PLATE_PREVIEW) \
+                     $(OBIWAN_AE_WING_PLATE_READY_STAMP) \
+                     $(OBIWAN_AE_WING_PLATE_READY_OUTPUTS) \
+                     $(OBIWAN_AE_WING_PLATE_PROMOTION_STAMP) \
+                     $(OBIWAN_AE_WING_PLATE_SHELF_OUTPUTS)
 BAMBU_GOALS_REQUESTED := $(filter $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))
 ifneq ($(strip $(BAMBU_GOALS_REQUESTED)),)
 ifneq ($(strip $(filter-out $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))),)
@@ -506,6 +615,16 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
         bambu_slice_obiwan bambu_slice_release \
         obiwan_combo_plate_source obiwan_combo_plate \
         obiwan_combo_plate_validate obiwan_combo_plate_to_print \
+        obiwan_no_floor_combo_plate_source obiwan_no_floor_combo_plate \
+        obiwan_no_floor_combo_plate_validate \
+        obiwan_no_floor_combo_plate_to_print \
+        obiwan_floor_combo_plate_source obiwan_floor_combo_plate \
+        obiwan_floor_combo_plate_validate \
+        obiwan_floor_combo_plate_to_print \
+        obiwan_ac_wing_plate_source obiwan_ac_wing_plate \
+        obiwan_ac_wing_plate_validate obiwan_ac_wing_plate_to_print \
+        obiwan_ae_wing_plate_source obiwan_ae_wing_plate \
+        obiwan_ae_wing_plate_validate obiwan_ae_wing_plate_to_print \
         refresh_captive_magnet_catalog_existing \
         check_to_print_shelf to_print to_print_validate \
         $(CLEARANCE_CHECK_TARGETS) $(R6F_CASE_TARGETS)
@@ -749,7 +868,8 @@ check_slice_metadata: tests/test_slice_captive_magnets.py \
 # file a prerequisite here: its CAD-side dependency chain would turn
 # ``make to_print`` into an accidental workstation CAD rebuild.
 check_to_print_shelf: tests/test_to_print_shelf.py scripts/build_to_print_shelf.py \
-        scripts/build_obiwan_combo_plate.py \
+        scripts/build_obiwan_combo_plate.py tests/test_obiwan_combo_plates.py \
+        scripts/build_obiwan_wing_plate.py tests/test_obiwan_wing_plates.py \
         scripts/composite_bambu_3mf_audit.py to_print/catalog.json \
         $(SLICER_SRCS) scripts/bambu_3mf_audit.py $(PRINT_CONTRACT_SRCS)
 	$(REQUIRE_BAMBU_CATALOG)
@@ -801,11 +921,11 @@ bambu_slice_release: check_slice_metadata
 		--jobs "$(BAMBU_JOBS)" \
 		--emit-ready-projects
 
-# The combined plate is pure local packaging over released STLs.  Absolute
-# prerequisites deliberately have no matching CAD rules: if a released input
-# or audit authority is absent, Make fails locally instead of regenerating it
-# on the workstation or dispatching it to osado.
-OBIWAN_COMBO_RELEASED_INPUTS := $(addprefix $(CURDIR)/,\
+# The two combined plates are pure local packaging over released STLs.
+# Absolute prerequisites deliberately have no matching CAD rules: if a
+# released input or audit authority is absent, Make fails locally instead of
+# regenerating it on the workstation or dispatching it to osado.
+OBIWAN_NO_FLOOR_COMBO_RELEASED_INPUTS := $(addprefix $(CURDIR)/,\
         build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl \
         build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json \
         build/no_floor_stand/support_blockers/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.support_blocker.stl \
@@ -817,85 +937,393 @@ OBIWAN_COMBO_RELEASED_INPUTS := $(addprefix $(CURDIR)/,\
         build/no_floor_stand/support_blockers/lx521_top_obiwan_core_2of2_um_carrier.support_blocker.stl \
         build/no_floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.stl \
         build/no_floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.print.json)
-OBIWAN_COMBO_DISCOVERY_AUDITS := \
+OBIWAN_FLOOR_COMBO_RELEASED_INPUTS := $(addprefix $(CURDIR)/,\
+        build/floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl \
+        build/floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json \
+        build/floor_stand/support_blockers/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.support_blocker.stl \
+        build/floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.stl \
+        build/floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.print.json \
+        build/floor_stand/support_blockers/lx521_top_obiwan_optional_lm_keyed_2of2_top.support_blocker.stl \
+        build/floor_stand/stl/lx521_top_obiwan_core_2of2_um_carrier.stl \
+        build/floor_stand/stl/lx521_top_obiwan_core_2of2_um_carrier.print.json \
+        build/floor_stand/support_blockers/lx521_top_obiwan_core_2of2_um_carrier.support_blocker.stl \
+        build/floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.stl \
+        build/floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.print.json)
+OBIWAN_NO_FLOOR_COMBO_DISCOVERY_AUDITS := \
         $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/no_floor_stand_Obi-Wan-split_lx521_top_obiwan_optional_lm_keyed_1of2_bottom/captive_magnet_slice_audit.json \
         $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/no_floor_stand_Obi-Wan-split_lx521_top_obiwan_optional_lm_keyed_2of2_top/captive_magnet_slice_audit.json \
         $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/no_floor_stand_Obi-Wan_lx521_top_obiwan_core_2of2_um_carrier/captive_magnet_slice_audit.json
+OBIWAN_FLOOR_COMBO_DISCOVERY_AUDITS := \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/floor_stand_Obi-Wan-split_lx521_top_obiwan_optional_lm_keyed_1of2_bottom/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/floor_stand_Obi-Wan-split_lx521_top_obiwan_optional_lm_keyed_2of2_top/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/floor_stand_Obi-Wan_lx521_top_obiwan_core_2of2_um_carrier/captive_magnet_slice_audit.json
 OBIWAN_COMBO_SOURCE_SRCS := scripts/build_obiwan_combo_plate.py \
         scripts/composite_bambu_3mf_audit.py scripts/bambu_3mf_audit.py \
-        scripts/check_manifold.py $(PRINT_CONTRACT_SRCS) Makefile
+        scripts/check_manifold.py tests/test_obiwan_combo_plates.py \
+        $(PRINT_CONTRACT_SRCS) Makefile
 OBIWAN_COMBO_READY_SRCS := $(OBIWAN_COMBO_SOURCE_SRCS) \
         $(SLICER_SRCS) scripts/json_schema_subset.py \
         captive_magnet_slicing_profile.json tests/test_slice_captive_magnets.py
 
-$(OBIWAN_COMBO_SOURCE_STAMP): $(OBIWAN_COMBO_SOURCE_SRCS) \
-        $(OBIWAN_COMBO_RELEASED_INPUTS)
+$(OBIWAN_NO_FLOOR_COMBO_SOURCE_STAMP): $(OBIWAN_COMBO_SOURCE_SRCS) \
+        $(OBIWAN_NO_FLOOR_COMBO_RELEASED_INPUTS)
 	@rm -f "$@"
-	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py --source-only
-	@test -s "$(OBIWAN_COMBO_STL)"
-	@test -s "$(OBIWAN_COMBO_MANIFEST)"
+	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
+		--variant no_floor_stand --source-only
+	@test -s "$(OBIWAN_NO_FLOOR_COMBO_STL)"
+	@test -s "$(OBIWAN_NO_FLOOR_COMBO_MANIFEST)"
+	$(PYTHON_RUN) tests/test_obiwan_combo_plates.py \
+		--variant no_floor_stand
 	@touch "$@"
 
-$(OBIWAN_COMBO_STL) $(OBIWAN_COMBO_MANIFEST): | $(OBIWAN_COMBO_SOURCE_STAMP)
+$(OBIWAN_NO_FLOOR_COMBO_STL) $(OBIWAN_NO_FLOOR_COMBO_MANIFEST): | \
+        $(OBIWAN_NO_FLOOR_COMBO_SOURCE_STAMP)
 	@test -s "$@" || { \
-		rm -f "$(OBIWAN_COMBO_SOURCE_STAMP)"; \
-		$(MAKE) --no-print-directory "$(OBIWAN_COMBO_SOURCE_STAMP)"; \
+		rm -f "$(OBIWAN_NO_FLOOR_COMBO_SOURCE_STAMP)"; \
+		$(MAKE) --no-print-directory \
+			"$(OBIWAN_NO_FLOOR_COMBO_SOURCE_STAMP)"; \
 		test -s "$@"; \
 	}
 
-obiwan_combo_plate_source: $(OBIWAN_COMBO_STL) $(OBIWAN_COMBO_MANIFEST)
+obiwan_no_floor_combo_plate_source: $(OBIWAN_NO_FLOOR_COMBO_STL) \
+        $(OBIWAN_NO_FLOOR_COMBO_MANIFEST)
 
-$(OBIWAN_COMBO_READY_STAMP): $(OBIWAN_COMBO_SOURCE_STAMP) \
+$(OBIWAN_NO_FLOOR_COMBO_READY_STAMP): \
+        $(OBIWAN_NO_FLOOR_COMBO_SOURCE_STAMP) \
         $(OBIWAN_COMBO_READY_SRCS) \
         $(abspath $(CAPTIVE_MAGNET_CATALOG)) \
-        $(OBIWAN_COMBO_DISCOVERY_AUDITS)
+        $(OBIWAN_NO_FLOOR_COMBO_DISCOVERY_AUDITS)
 	@rm -f "$@"
+	$(PYTHON_RUN) tests/test_obiwan_combo_plates.py \
+		--variant no_floor_stand
 	$(PYTHON_RUN) tests/test_slice_captive_magnets.py
 	$(REQUIRE_BAMBU_CATALOG)
 	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
-		--workspace "$(OBIWAN_COMBO_WORKSPACE)" \
+		--variant no_floor_stand \
+		--workspace "$(OBIWAN_NO_FLOOR_COMBO_WORKSPACE)" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
 		--dry-run
 	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
-		--workspace "$(OBIWAN_COMBO_WORKSPACE)" \
+		--variant no_floor_stand \
+		--workspace "$(OBIWAN_NO_FLOOR_COMBO_WORKSPACE)" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
 		--slice-missing
-	@test -s "$(OBIWAN_COMBO_PROJECT)"
-	@test -s "$(OBIWAN_COMBO_GCODE)"
-	@test -s "$(OBIWAN_COMBO_RESULT)"
-	@test -s "$(OBIWAN_COMBO_AUDIT)"
+	@test -s "$(OBIWAN_NO_FLOOR_COMBO_PROJECT)"
+	@test -s "$(OBIWAN_NO_FLOOR_COMBO_GCODE)"
+	@test -s "$(OBIWAN_NO_FLOOR_COMBO_RESULT)"
+	@test -s "$(OBIWAN_NO_FLOOR_COMBO_AUDIT)"
 	@touch "$@"
 
-$(OBIWAN_COMBO_READY_OUTPUTS): | $(OBIWAN_COMBO_READY_STAMP)
+$(OBIWAN_NO_FLOOR_COMBO_READY_OUTPUTS): | \
+        $(OBIWAN_NO_FLOOR_COMBO_READY_STAMP)
 	@test -s "$@" || { \
-		rm -f "$(OBIWAN_COMBO_READY_STAMP)"; \
-		$(MAKE) --no-print-directory "$(OBIWAN_COMBO_READY_STAMP)"; \
+		rm -f "$(OBIWAN_NO_FLOOR_COMBO_READY_STAMP)"; \
+		$(MAKE) --no-print-directory \
+			"$(OBIWAN_NO_FLOOR_COMBO_READY_STAMP)"; \
 		test -s "$@"; \
 	}
 
-obiwan_combo_plate: $(OBIWAN_COMBO_PROJECT) $(OBIWAN_COMBO_AUDIT)
+obiwan_no_floor_combo_plate: $(OBIWAN_NO_FLOOR_COMBO_PROJECT) \
+        $(OBIWAN_NO_FLOOR_COMBO_AUDIT)
 
-obiwan_combo_plate_validate: obiwan_combo_plate_source \
+obiwan_no_floor_combo_plate_validate: obiwan_no_floor_combo_plate_source \
         $(OBIWAN_COMBO_READY_SRCS) \
         $(abspath $(CAPTIVE_MAGNET_CATALOG)) \
-        $(OBIWAN_COMBO_DISCOVERY_AUDITS)
+        $(OBIWAN_NO_FLOOR_COMBO_DISCOVERY_AUDITS)
 	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) tests/test_obiwan_combo_plates.py \
+		--variant no_floor_stand
 	$(PYTHON_RUN) tests/test_slice_captive_magnets.py
 	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
-		--workspace "$(OBIWAN_COMBO_WORKSPACE)" \
+		--variant no_floor_stand \
+		--workspace "$(OBIWAN_NO_FLOOR_COMBO_WORKSPACE)" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
 		--validate-only
-	@test -s "$(OBIWAN_COMBO_PROJECT)"
-	@test -s "$(OBIWAN_COMBO_AUDIT)"
-	@touch "$(OBIWAN_COMBO_READY_STAMP)"
+	@test -s "$(OBIWAN_NO_FLOOR_COMBO_PROJECT)"
+	@test -s "$(OBIWAN_NO_FLOOR_COMBO_AUDIT)"
+	@touch "$(OBIWAN_NO_FLOOR_COMBO_READY_STAMP)"
+
+$(OBIWAN_FLOOR_COMBO_SOURCE_STAMP): $(OBIWAN_COMBO_SOURCE_SRCS) \
+        $(OBIWAN_FLOOR_COMBO_RELEASED_INPUTS)
+	@rm -f "$@"
+	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
+		--variant floor_stand --source-only
+	@test -s "$(OBIWAN_FLOOR_COMBO_STL)"
+	@test -s "$(OBIWAN_FLOOR_COMBO_MANIFEST)"
+	$(PYTHON_RUN) tests/test_obiwan_combo_plates.py --variant floor_stand
+	@touch "$@"
+
+$(OBIWAN_FLOOR_COMBO_STL) $(OBIWAN_FLOOR_COMBO_MANIFEST): | \
+        $(OBIWAN_FLOOR_COMBO_SOURCE_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_FLOOR_COMBO_SOURCE_STAMP)"; \
+		$(MAKE) --no-print-directory "$(OBIWAN_FLOOR_COMBO_SOURCE_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_floor_combo_plate_source: $(OBIWAN_FLOOR_COMBO_STL) \
+        $(OBIWAN_FLOOR_COMBO_MANIFEST)
+
+$(OBIWAN_FLOOR_COMBO_READY_STAMP): \
+        $(OBIWAN_FLOOR_COMBO_SOURCE_STAMP) \
+        $(OBIWAN_COMBO_READY_SRCS) \
+        $(abspath $(CAPTIVE_MAGNET_CATALOG)) \
+        $(OBIWAN_FLOOR_COMBO_DISCOVERY_AUDITS)
+	@rm -f "$@"
+	$(PYTHON_RUN) tests/test_obiwan_combo_plates.py --variant floor_stand
+	$(PYTHON_RUN) tests/test_slice_captive_magnets.py
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
+		--variant floor_stand \
+		--workspace "$(OBIWAN_FLOOR_COMBO_WORKSPACE)" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--dry-run
+	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
+		--variant floor_stand \
+		--workspace "$(OBIWAN_FLOOR_COMBO_WORKSPACE)" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--slice-missing
+	@test -s "$(OBIWAN_FLOOR_COMBO_PROJECT)"
+	@test -s "$(OBIWAN_FLOOR_COMBO_GCODE)"
+	@test -s "$(OBIWAN_FLOOR_COMBO_RESULT)"
+	@test -s "$(OBIWAN_FLOOR_COMBO_AUDIT)"
+	@touch "$@"
+
+$(OBIWAN_FLOOR_COMBO_READY_OUTPUTS): | \
+        $(OBIWAN_FLOOR_COMBO_READY_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_FLOOR_COMBO_READY_STAMP)"; \
+		$(MAKE) --no-print-directory "$(OBIWAN_FLOOR_COMBO_READY_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_floor_combo_plate: $(OBIWAN_FLOOR_COMBO_PROJECT) \
+        $(OBIWAN_FLOOR_COMBO_AUDIT)
+
+obiwan_floor_combo_plate_validate: obiwan_floor_combo_plate_source \
+        $(OBIWAN_COMBO_READY_SRCS) \
+        $(abspath $(CAPTIVE_MAGNET_CATALOG)) \
+        $(OBIWAN_FLOOR_COMBO_DISCOVERY_AUDITS)
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) tests/test_obiwan_combo_plates.py --variant floor_stand
+	$(PYTHON_RUN) tests/test_slice_captive_magnets.py
+	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
+		--variant floor_stand \
+		--workspace "$(OBIWAN_FLOOR_COMBO_WORKSPACE)" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--validate-only
+	@test -s "$(OBIWAN_FLOOR_COMBO_PROJECT)"
+	@test -s "$(OBIWAN_FLOOR_COMBO_AUDIT)"
+	@touch "$(OBIWAN_FLOOR_COMBO_READY_STAMP)"
+
+# Backward-compatible no-floor aliases; all new documentation uses the
+# state-explicit targets above.
+obiwan_combo_plate_source: obiwan_no_floor_combo_plate_source
+obiwan_combo_plate: obiwan_no_floor_combo_plate
+obiwan_combo_plate_validate: obiwan_no_floor_combo_plate_validate
+
+# This alternative plate is local packaging over already released Ac B-wing
+# STLs.  Absolute inputs prevent either local CAD regeneration or dispatch.
+OBIWAN_AC_WING_PLATE_RELEASED_INPUTS := $(addprefix $(CURDIR)/,\
+        build/wings/ac/stl/lx521_top_obiwan_wing_ac_left_b_1of2_lm_lower.stl \
+        build/wings/ac/stl/lx521_top_obiwan_wing_ac_left_b_1of2_lm_lower.print.json \
+        build/wings/ac/stl/lx521_top_obiwan_wing_ac_left_b_2of2_lm_um_upper.stl \
+        build/wings/ac/stl/lx521_top_obiwan_wing_ac_left_b_2of2_lm_um_upper.print.json \
+        build/wings/ac/stl/lx521_top_obiwan_wing_ac_right_b_1of2_lm_lower.stl \
+        build/wings/ac/stl/lx521_top_obiwan_wing_ac_right_b_1of2_lm_lower.print.json \
+        build/wings/ac/stl/lx521_top_obiwan_wing_ac_right_b_2of2_lm_um_upper.stl \
+        build/wings/ac/stl/lx521_top_obiwan_wing_ac_right_b_2of2_lm_um_upper.print.json)
+OBIWAN_AC_WING_PLATE_DISCOVERY_AUDITS := \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_left_b_1of2_lm_lower/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_left_b_2of2_lm_um_upper/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_right_b_1of2_lm_lower/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_right_b_2of2_lm_um_upper/captive_magnet_slice_audit.json
+OBIWAN_WING_PLATE_SOURCE_SRCS := scripts/build_obiwan_wing_plate.py \
+        scripts/bambu_3mf_audit.py scripts/check_manifold.py \
+        src/lx521_baffle/obiwan/wings.py $(PRINT_CONTRACT_SRCS) \
+        tests/test_obiwan_wing_plates.py Makefile
+OBIWAN_WING_PLATE_READY_SRCS := $(OBIWAN_WING_PLATE_SOURCE_SRCS) \
+        $(SLICER_SRCS) scripts/json_schema_subset.py \
+        captive_magnet_slicing_profile.json tests/test_slice_captive_magnets.py
+
+$(OBIWAN_AC_WING_PLATE_SOURCE_STAMP): \
+        $(OBIWAN_WING_PLATE_SOURCE_SRCS) \
+        $(OBIWAN_AC_WING_PLATE_RELEASED_INPUTS)
+	@rm -f "$@"
+	$(PYTHON_RUN) scripts/build_obiwan_wing_plate.py \
+		--variant ac --source-only
+	@test -s "$(OBIWAN_AC_WING_PLATE_STL)"
+	@test -s "$(OBIWAN_AC_WING_PLATE_MANIFEST)"
+	@test -s "$(OBIWAN_AC_WING_PLATE_PREVIEW)"
+	$(PYTHON_RUN) tests/test_obiwan_wing_plates.py --variant ac
+	@touch "$@"
+
+$(OBIWAN_AC_WING_PLATE_STL) $(OBIWAN_AC_WING_PLATE_MANIFEST) \
+$(OBIWAN_AC_WING_PLATE_PREVIEW): | $(OBIWAN_AC_WING_PLATE_SOURCE_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_AC_WING_PLATE_SOURCE_STAMP)"; \
+		$(MAKE) --no-print-directory "$(OBIWAN_AC_WING_PLATE_SOURCE_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_ac_wing_plate_source: $(OBIWAN_AC_WING_PLATE_STL) \
+        $(OBIWAN_AC_WING_PLATE_MANIFEST) $(OBIWAN_AC_WING_PLATE_PREVIEW)
+
+$(OBIWAN_AC_WING_PLATE_READY_STAMP): \
+        $(OBIWAN_AC_WING_PLATE_SOURCE_STAMP) \
+        $(OBIWAN_WING_PLATE_READY_SRCS) \
+        $(abspath $(CAPTIVE_MAGNET_CATALOG)) \
+        $(OBIWAN_AC_WING_PLATE_DISCOVERY_AUDITS)
+	@rm -f "$@"
+	$(PYTHON_RUN) tests/test_obiwan_wing_plates.py --variant ac
+	$(PYTHON_RUN) tests/test_slice_captive_magnets.py
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/build_obiwan_wing_plate.py --variant ac \
+		--workspace "$(OBIWAN_AC_WING_PLATE_WORKSPACE)" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--dry-run
+	$(PYTHON_RUN) scripts/build_obiwan_wing_plate.py --variant ac \
+		--workspace "$(OBIWAN_AC_WING_PLATE_WORKSPACE)" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--slice-missing
+	@test -s "$(OBIWAN_AC_WING_PLATE_PROJECT)"
+	@test -s "$(OBIWAN_AC_WING_PLATE_GCODE)"
+	@test -s "$(OBIWAN_AC_WING_PLATE_RESULT)"
+	@test -s "$(OBIWAN_AC_WING_PLATE_AUDIT)"
+	@touch "$@"
+
+$(OBIWAN_AC_WING_PLATE_READY_OUTPUTS): | \
+        $(OBIWAN_AC_WING_PLATE_READY_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_AC_WING_PLATE_READY_STAMP)"; \
+		$(MAKE) --no-print-directory "$(OBIWAN_AC_WING_PLATE_READY_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_ac_wing_plate: $(OBIWAN_AC_WING_PLATE_PROJECT) \
+        $(OBIWAN_AC_WING_PLATE_AUDIT)
+
+obiwan_ac_wing_plate_validate: obiwan_ac_wing_plate_source \
+        $(OBIWAN_WING_PLATE_READY_SRCS) \
+        $(abspath $(CAPTIVE_MAGNET_CATALOG)) \
+        $(OBIWAN_AC_WING_PLATE_DISCOVERY_AUDITS)
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) tests/test_obiwan_wing_plates.py --variant ac
+	$(PYTHON_RUN) tests/test_slice_captive_magnets.py
+	$(PYTHON_RUN) scripts/build_obiwan_wing_plate.py --variant ac \
+		--workspace "$(OBIWAN_AC_WING_PLATE_WORKSPACE)" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--validate-only
+	@test -s "$(OBIWAN_AC_WING_PLATE_PROJECT)"
+	@test -s "$(OBIWAN_AC_WING_PLATE_AUDIT)"
+	@touch "$(OBIWAN_AC_WING_PLATE_READY_STAMP)"
+
+# This alternative plate is also local packaging over already released Ae
+# B-wing STLs.  Its locked Rz+XY placement keeps all four front-face-down
+# pieces on one P2S plate; none of these rules can regenerate wing geometry.
+OBIWAN_AE_WING_PLATE_RELEASED_INPUTS := $(addprefix $(CURDIR)/,\
+        build/wings/ae/stl/lx521_top_obiwan_wing_ae_left_b_1of2_lm_lower.stl \
+        build/wings/ae/stl/lx521_top_obiwan_wing_ae_left_b_1of2_lm_lower.print.json \
+        build/wings/ae/stl/lx521_top_obiwan_wing_ae_left_b_2of2_lm_um_upper.stl \
+        build/wings/ae/stl/lx521_top_obiwan_wing_ae_left_b_2of2_lm_um_upper.print.json \
+        build/wings/ae/stl/lx521_top_obiwan_wing_ae_right_b_1of2_lm_lower.stl \
+        build/wings/ae/stl/lx521_top_obiwan_wing_ae_right_b_1of2_lm_lower.print.json \
+        build/wings/ae/stl/lx521_top_obiwan_wing_ae_right_b_2of2_lm_um_upper.stl \
+        build/wings/ae/stl/lx521_top_obiwan_wing_ae_right_b_2of2_lm_um_upper.print.json)
+OBIWAN_AE_WING_PLATE_DISCOVERY_AUDITS := \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_left_b_1of2_lm_lower/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_left_b_2of2_lm_um_upper/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_right_b_1of2_lm_lower/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_right_b_2of2_lm_um_upper/captive_magnet_slice_audit.json
+$(OBIWAN_AE_WING_PLATE_SOURCE_STAMP): \
+        $(OBIWAN_WING_PLATE_SOURCE_SRCS) \
+        $(OBIWAN_AE_WING_PLATE_RELEASED_INPUTS)
+	@rm -f "$@"
+	$(PYTHON_RUN) scripts/build_obiwan_wing_plate.py \
+		--variant ae --source-only
+	@test -s "$(OBIWAN_AE_WING_PLATE_STL)"
+	@test -s "$(OBIWAN_AE_WING_PLATE_MANIFEST)"
+	@test -s "$(OBIWAN_AE_WING_PLATE_PREVIEW)"
+	$(PYTHON_RUN) tests/test_obiwan_wing_plates.py --variant ae
+	@touch "$@"
+
+$(OBIWAN_AE_WING_PLATE_STL) $(OBIWAN_AE_WING_PLATE_MANIFEST) \
+$(OBIWAN_AE_WING_PLATE_PREVIEW): | $(OBIWAN_AE_WING_PLATE_SOURCE_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_AE_WING_PLATE_SOURCE_STAMP)"; \
+		$(MAKE) --no-print-directory "$(OBIWAN_AE_WING_PLATE_SOURCE_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_ae_wing_plate_source: $(OBIWAN_AE_WING_PLATE_STL) \
+        $(OBIWAN_AE_WING_PLATE_MANIFEST) $(OBIWAN_AE_WING_PLATE_PREVIEW)
+
+$(OBIWAN_AE_WING_PLATE_READY_STAMP): \
+        $(OBIWAN_AE_WING_PLATE_SOURCE_STAMP) \
+        $(OBIWAN_WING_PLATE_READY_SRCS) \
+        $(abspath $(CAPTIVE_MAGNET_CATALOG)) \
+        $(OBIWAN_AE_WING_PLATE_DISCOVERY_AUDITS)
+	@rm -f "$@"
+	$(PYTHON_RUN) tests/test_obiwan_wing_plates.py --variant ae
+	$(PYTHON_RUN) tests/test_slice_captive_magnets.py
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/build_obiwan_wing_plate.py --variant ae \
+		--workspace "$(OBIWAN_AE_WING_PLATE_WORKSPACE)" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--dry-run
+	$(PYTHON_RUN) scripts/build_obiwan_wing_plate.py --variant ae \
+		--workspace "$(OBIWAN_AE_WING_PLATE_WORKSPACE)" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--slice-missing
+	@test -s "$(OBIWAN_AE_WING_PLATE_PROJECT)"
+	@test -s "$(OBIWAN_AE_WING_PLATE_GCODE)"
+	@test -s "$(OBIWAN_AE_WING_PLATE_RESULT)"
+	@test -s "$(OBIWAN_AE_WING_PLATE_AUDIT)"
+	@touch "$@"
+
+$(OBIWAN_AE_WING_PLATE_READY_OUTPUTS): | \
+        $(OBIWAN_AE_WING_PLATE_READY_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_AE_WING_PLATE_READY_STAMP)"; \
+		$(MAKE) --no-print-directory "$(OBIWAN_AE_WING_PLATE_READY_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_ae_wing_plate: $(OBIWAN_AE_WING_PLATE_PROJECT) \
+        $(OBIWAN_AE_WING_PLATE_AUDIT)
+
+obiwan_ae_wing_plate_validate: obiwan_ae_wing_plate_source \
+        $(OBIWAN_WING_PLATE_READY_SRCS) \
+        $(abspath $(CAPTIVE_MAGNET_CATALOG)) \
+        $(OBIWAN_AE_WING_PLATE_DISCOVERY_AUDITS)
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) tests/test_obiwan_wing_plates.py --variant ae
+	$(PYTHON_RUN) tests/test_slice_captive_magnets.py
+	$(PYTHON_RUN) scripts/build_obiwan_wing_plate.py --variant ae \
+		--workspace "$(OBIWAN_AE_WING_PLATE_WORKSPACE)" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--validate-only
+	@test -s "$(OBIWAN_AE_WING_PLATE_PROJECT)"
+	@test -s "$(OBIWAN_AE_WING_PLATE_AUDIT)"
+	@touch "$(OBIWAN_AE_WING_PLATE_READY_STAMP)"
 
 # Promotion is also an ordinary artifact transaction.  It requires an existing
-# complete shelf manifest and crosses the full 48/48 equivalence barrier with
-# slicing disabled before refreshing only the combined-plate delivery pair.
-$(OBIWAN_COMBO_PROMOTION_STAMP): $(OBIWAN_COMBO_READY_STAMP) \
+# complete shelf manifest and crosses the full 51/51 equivalence barrier with
+# slicing disabled before refreshing only the requested delivery pair.
+$(OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP): \
+        $(OBIWAN_NO_FLOOR_COMBO_READY_STAMP) \
         scripts/build_to_print_shelf.py tests/test_to_print_shelf.py \
         $(TO_PRINT_SHELF)/catalog.json \
         $(abspath $(TO_PRINT_SHELF))/release_manifest.json
@@ -907,26 +1335,123 @@ $(OBIWAN_COMBO_PROMOTION_STAMP): $(OBIWAN_COMBO_READY_STAMP) \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
 		--validate-only \
-		--only "$(OBIWAN_COMBO_NAME)"
+		--only "$(OBIWAN_NO_FLOOR_COMBO_NAME)"
 	$(PYTHON_RUN) tests/test_to_print_shelf.py
-	@test -s "$(OBIWAN_COMBO_SHELF_STL)"
-	@test -s "$(OBIWAN_COMBO_SHELF_PROJECT)"
+	@test -s "$(OBIWAN_NO_FLOOR_COMBO_SHELF_STL)"
+	@test -s "$(OBIWAN_NO_FLOOR_COMBO_SHELF_PROJECT)"
 	@touch "$@"
 
-$(OBIWAN_COMBO_SHELF_OUTPUTS): | $(OBIWAN_COMBO_PROMOTION_STAMP)
+$(OBIWAN_NO_FLOOR_COMBO_SHELF_OUTPUTS): | \
+        $(OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP)
 	@test -s "$@" || { \
-		rm -f "$(OBIWAN_COMBO_PROMOTION_STAMP)"; \
-		$(MAKE) --no-print-directory "$(OBIWAN_COMBO_PROMOTION_STAMP)"; \
+		rm -f "$(OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP)"; \
+		$(MAKE) --no-print-directory \
+			"$(OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP)"; \
 		test -s "$@"; \
 	}
 
-obiwan_combo_plate_to_print: $(OBIWAN_COMBO_SHELF_OUTPUTS)
+obiwan_no_floor_combo_plate_to_print: \
+        $(OBIWAN_NO_FLOOR_COMBO_SHELF_OUTPUTS)
 
-# User-facing, local-only materialization of the 48 P2S-printable entries.
+$(OBIWAN_FLOOR_COMBO_PROMOTION_STAMP): \
+        $(OBIWAN_FLOOR_COMBO_READY_STAMP) \
+        scripts/build_to_print_shelf.py tests/test_to_print_shelf.py \
+        $(TO_PRINT_SHELF)/catalog.json \
+        $(abspath $(TO_PRINT_SHELF))/release_manifest.json
+	@rm -f "$@"
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/build_to_print_shelf.py \
+		--shelf "$(TO_PRINT_SHELF)" \
+		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--validate-only \
+		--only "$(OBIWAN_FLOOR_COMBO_NAME)"
+	$(PYTHON_RUN) tests/test_to_print_shelf.py
+	@test -s "$(OBIWAN_FLOOR_COMBO_SHELF_STL)"
+	@test -s "$(OBIWAN_FLOOR_COMBO_SHELF_PROJECT)"
+	@touch "$@"
+
+$(OBIWAN_FLOOR_COMBO_SHELF_OUTPUTS): | \
+        $(OBIWAN_FLOOR_COMBO_PROMOTION_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_FLOOR_COMBO_PROMOTION_STAMP)"; \
+		$(MAKE) --no-print-directory \
+			"$(OBIWAN_FLOOR_COMBO_PROMOTION_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_floor_combo_plate_to_print: $(OBIWAN_FLOOR_COMBO_SHELF_OUTPUTS)
+obiwan_combo_plate_to_print: obiwan_no_floor_combo_plate_to_print
+
+$(OBIWAN_AC_WING_PLATE_PROMOTION_STAMP): \
+        $(OBIWAN_AC_WING_PLATE_READY_STAMP) \
+        scripts/build_to_print_shelf.py tests/test_to_print_shelf.py \
+        $(TO_PRINT_SHELF)/catalog.json \
+        $(abspath $(TO_PRINT_SHELF))/release_manifest.json
+	@rm -f "$@"
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/build_to_print_shelf.py \
+		--shelf "$(TO_PRINT_SHELF)" \
+		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--validate-only \
+		--only "$(OBIWAN_AC_WING_PLATE_NAME)"
+	$(PYTHON_RUN) tests/test_to_print_shelf.py
+	@test -s "$(OBIWAN_AC_WING_PLATE_SHELF_STL)"
+	@test -s "$(OBIWAN_AC_WING_PLATE_SHELF_PROJECT)"
+	@touch "$@"
+
+$(OBIWAN_AC_WING_PLATE_SHELF_OUTPUTS): | \
+        $(OBIWAN_AC_WING_PLATE_PROMOTION_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_AC_WING_PLATE_PROMOTION_STAMP)"; \
+		$(MAKE) --no-print-directory \
+			"$(OBIWAN_AC_WING_PLATE_PROMOTION_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_ac_wing_plate_to_print: $(OBIWAN_AC_WING_PLATE_SHELF_OUTPUTS)
+
+$(OBIWAN_AE_WING_PLATE_PROMOTION_STAMP): \
+        $(OBIWAN_AE_WING_PLATE_READY_STAMP) \
+        scripts/build_to_print_shelf.py tests/test_to_print_shelf.py \
+        $(TO_PRINT_SHELF)/catalog.json \
+        $(abspath $(TO_PRINT_SHELF))/release_manifest.json
+	@rm -f "$@"
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/build_to_print_shelf.py \
+		--shelf "$(TO_PRINT_SHELF)" \
+		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--validate-only \
+		--only "$(OBIWAN_AE_WING_PLATE_NAME)"
+	$(PYTHON_RUN) tests/test_to_print_shelf.py
+	@test -s "$(OBIWAN_AE_WING_PLATE_SHELF_STL)"
+	@test -s "$(OBIWAN_AE_WING_PLATE_SHELF_PROJECT)"
+	@touch "$@"
+
+$(OBIWAN_AE_WING_PLATE_SHELF_OUTPUTS): | \
+        $(OBIWAN_AE_WING_PLATE_PROMOTION_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_AE_WING_PLATE_PROMOTION_STAMP)"; \
+		$(MAKE) --no-print-directory \
+			"$(OBIWAN_AE_WING_PLATE_PROMOTION_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_ae_wing_plate_to_print: $(OBIWAN_AE_WING_PLATE_SHELF_OUTPUTS)
+
+# User-facing, local-only materialization of the 51 P2S-printable entries.
 # It consumes the existing authoritative magnet projects and fails closed if
 # one is absent; the expensive full 64-artifact reslice remains an explicit
 # ``make bambu_slice_release`` operation rather than an implicit shelf step.
-to_print: $(OBIWAN_COMBO_READY_STAMP)
+to_print: $(OBIWAN_NO_FLOOR_COMBO_READY_STAMP) \
+        $(OBIWAN_FLOOR_COMBO_READY_STAMP) \
+        $(OBIWAN_AC_WING_PLATE_READY_STAMP) \
+        $(OBIWAN_AE_WING_PLATE_READY_STAMP)
 	$(REQUIRE_BAMBU_CATALOG)
 	$(PYTHON_RUN) scripts/build_to_print_shelf.py \
 		--shelf "$(TO_PRINT_SHELF)" \
@@ -935,19 +1460,37 @@ to_print: $(OBIWAN_COMBO_READY_STAMP)
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
 		--slice-missing
 	$(PYTHON_RUN) tests/test_to_print_shelf.py
-	@test -s "$(OBIWAN_COMBO_SHELF_STL)"
-	@test -s "$(OBIWAN_COMBO_SHELF_PROJECT)"
-	@touch "$(OBIWAN_COMBO_PROMOTION_STAMP)"
+	@test -s "$(OBIWAN_NO_FLOOR_COMBO_SHELF_STL)"
+	@test -s "$(OBIWAN_NO_FLOOR_COMBO_SHELF_PROJECT)"
+	@touch "$(OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP)"
+	@test -s "$(OBIWAN_FLOOR_COMBO_SHELF_STL)"
+	@test -s "$(OBIWAN_FLOOR_COMBO_SHELF_PROJECT)"
+	@touch "$(OBIWAN_FLOOR_COMBO_PROMOTION_STAMP)"
+	@test -s "$(OBIWAN_AC_WING_PLATE_SHELF_STL)"
+	@test -s "$(OBIWAN_AC_WING_PLATE_SHELF_PROJECT)"
+	@touch "$(OBIWAN_AC_WING_PLATE_PROMOTION_STAMP)"
+	@test -s "$(OBIWAN_AE_WING_PLATE_SHELF_STL)"
+	@test -s "$(OBIWAN_AE_WING_PLATE_SHELF_PROJECT)"
+	@touch "$(OBIWAN_AE_WING_PLATE_PROMOTION_STAMP)"
 
-to_print_validate: obiwan_combo_plate_source check_to_print_shelf
+to_print_validate: obiwan_no_floor_combo_plate_source \
+        obiwan_floor_combo_plate_source \
+        obiwan_ac_wing_plate_source obiwan_ae_wing_plate_source \
+        check_to_print_shelf
 	$(PYTHON_RUN) scripts/build_to_print_shelf.py \
 		--shelf "$(TO_PRINT_SHELF)" \
 		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
 		--validate-only
-	@touch "$(OBIWAN_COMBO_READY_STAMP)"
-	@touch "$(OBIWAN_COMBO_PROMOTION_STAMP)"
+	@touch "$(OBIWAN_NO_FLOOR_COMBO_READY_STAMP)"
+	@touch "$(OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP)"
+	@touch "$(OBIWAN_FLOOR_COMBO_READY_STAMP)"
+	@touch "$(OBIWAN_FLOOR_COMBO_PROMOTION_STAMP)"
+	@touch "$(OBIWAN_AC_WING_PLATE_READY_STAMP)"
+	@touch "$(OBIWAN_AC_WING_PLATE_PROMOTION_STAMP)"
+	@touch "$(OBIWAN_AE_WING_PLATE_READY_STAMP)"
+	@touch "$(OBIWAN_AE_WING_PLATE_PROMOTION_STAMP)"
 
 check_clearance_suite: $(CLEARANCE_CHECK_STAMPS)
 	@echo "all clearance checks passed (Make-jobserver isolated)"

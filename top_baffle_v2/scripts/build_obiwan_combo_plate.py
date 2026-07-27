@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Build and audit the local-only Obi-Wan 01a+02+03+04 P2S plate.
+"""Build and audit local-only Obi-Wan 01+02+03+04 P2S plates.
 
 This is packaging, not CAD generation.  Four already-released front-down
 STLs are translated into one deterministic multi-shell STL, then loaded into
 Bambu Studio as one printable assembly with four normal volumes and the three
 released duct support blockers.  The fixed disposition is intentionally not
-auto-arranged or rotated.
+auto-arranged or rotated.  Both floor-stand states are explicit, hash-bound
+variants so a plate can never silently consume geometry or blockers from the
+other state.
 """
 
 from __future__ import annotations
@@ -56,18 +58,12 @@ import release_validation as captive
 
 
 ROOT = PROJECT_ROOT
-PLATE_NAME = "obiwan_01a_02_03_04_LM_UM_1_of_1"
 PLATE_OUTPUT_DIR = ROOT / "build" / "print_plates" / "obiwan"
-PLATE_STL = PLATE_OUTPUT_DIR / f"{PLATE_NAME}.stl"
-PLATE_MANIFEST = PLATE_OUTPUT_DIR / f"{PLATE_NAME}.plate.json"
-DEFAULT_WORKSPACE = (
-    ROOT / "review" / "to_print_slice_workspace" / "composite" / PLATE_NAME)
 DEFAULT_PROFILE = ROOT / "captive_magnet_slicing_profile.json"
 DEFAULT_RELEASE_CATALOG = ROOT / "review" / "captive_magnet_release_catalog.json"
 DEFAULT_RELEASE_AUDIT = ROOT / "review" / "captive_magnet_slice_audit"
 PAUSE_Z_MM = 5.96
 MINIMUM_PART_GAP_MM = 2.0
-EXPECTED_TRIANGLE_COUNT = 56_688
 MACHINE_BOUNDS_MM = {
     "x": (0.0, 256.0),
     "y": (0.0, 256.0),
@@ -109,44 +105,205 @@ class PlatePart:
         return f"{self.friendly_name}.stl"
 
 
-PARTS = (
-    PlatePart(
-        "obiwan_01a_of_16_LM_bottom_keyed_1_of_2_no_floor_stand",
-        ROOT / "build/no_floor_stand/stl/"
-        "lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
-        (2.697, 34.319, 0.0),
-        "no_floor_stand:Obi-Wan-split:"
-        "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
-        ROOT / "build/no_floor_stand/support_blockers/"
-        "lx521_top_obiwan_optional_lm_keyed_1of2_bottom.support_blocker.stl",
-    ),
-    PlatePart(
-        "obiwan_02_of_16_LM_top_keyed_2_of_2",
-        ROOT / "build/no_floor_stand/stl/"
-        "lx521_top_obiwan_optional_lm_keyed_2of2_top.stl",
-        (27.025, 2.010, 0.0),
-        "no_floor_stand:Obi-Wan-split:"
-        "lx521_top_obiwan_optional_lm_keyed_2of2_top",
-        ROOT / "build/no_floor_stand/support_blockers/"
-        "lx521_top_obiwan_optional_lm_keyed_2of2_top.support_blocker.stl",
-    ),
-    PlatePart(
-        "obiwan_03_of_16_UM_carrier_1_of_1",
-        ROOT / "build/no_floor_stand/stl/"
-        "lx521_top_obiwan_core_2of2_um_carrier.stl",
-        (71.034, 28.412, 0.0),
-        "no_floor_stand:Obi-Wan:"
-        "lx521_top_obiwan_core_2of2_um_carrier",
-        ROOT / "build/no_floor_stand/support_blockers/"
-        "lx521_top_obiwan_core_2of2_um_carrier.support_blocker.stl",
-    ),
-    PlatePart(
-        "obiwan_04_of_16_T_tweeter_crescent_1_of_1",
-        ROOT / "build/no_floor_stand/stl/"
-        "lx521_top_obiwan_addon_tweeter_crescent.stl",
-        (108.678, 208.859, 0.0),
-    ),
+@dataclass(frozen=True)
+class ComboPlateVariant:
+    state: str
+    label: str
+    plate_name: str
+    expected_triangle_count: int
+    sparse_infill_density_percent: float
+    sparse_infill_pattern: str
+    parts: tuple[PlatePart, ...]
+
+
+LOCKED_TRANSLATIONS_MM = (
+    (2.697, 34.319, 0.0),
+    (27.025, 2.010, 0.0),
+    (71.034, 28.412, 0.0),
+    (108.678, 208.859, 0.0),
 )
+
+
+def _variant(
+    *,
+    state: str,
+    label: str,
+    bottom_slot: str,
+    plate_name: str,
+    expected_triangle_count: int,
+    sparse_infill_density_percent: float,
+    sparse_infill_pattern: str,
+) -> ComboPlateVariant:
+    bottom_suffix = (
+        "no_floor_stand" if state == "no_floor_stand" else "floor_stand"
+    )
+    identities = (
+        (
+            f"obiwan_{bottom_slot}_of_16_LM_bottom_keyed_1_of_2_"
+            f"{bottom_suffix}",
+            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+            f"{state}:Obi-Wan-split:"
+            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+        ),
+        (
+            "obiwan_02_of_16_LM_top_keyed_2_of_2",
+            "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+            f"{state}:Obi-Wan-split:"
+            "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+        ),
+        (
+            "obiwan_03_of_16_UM_carrier_1_of_1",
+            "lx521_top_obiwan_core_2of2_um_carrier",
+            f"{state}:Obi-Wan:lx521_top_obiwan_core_2of2_um_carrier",
+        ),
+        (
+            "obiwan_04_of_16_T_tweeter_crescent_1_of_1",
+            "lx521_top_obiwan_addon_tweeter_crescent",
+            None,
+        ),
+    )
+    parts = []
+    for identity, translation in zip(
+            identities, LOCKED_TRANSLATIONS_MM, strict=True):
+        friendly_name, stem, artifact_id = identity
+        support_blocker = (
+            ROOT / "build" / state / "support_blockers"
+            / f"{stem}.support_blocker.stl"
+            if artifact_id is not None else None
+        )
+        parts.append(PlatePart(
+            friendly_name=friendly_name,
+            source_stl=ROOT / "build" / state / "stl" / f"{stem}.stl",
+            translation_mm=translation,
+            artifact_id=artifact_id,
+            support_blocker=support_blocker,
+        ))
+    return ComboPlateVariant(
+        state=state,
+        label=label,
+        plate_name=plate_name,
+        expected_triangle_count=expected_triangle_count,
+        sparse_infill_density_percent=sparse_infill_density_percent,
+        sparse_infill_pattern=sparse_infill_pattern,
+        parts=tuple(parts),
+    )
+
+
+VARIANTS = {
+    "no_floor_stand": _variant(
+        state="no_floor_stand",
+        label="no-floor",
+        bottom_slot="01a",
+        plate_name=(
+            "obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand"
+        ),
+        expected_triangle_count=56_688,
+        sparse_infill_density_percent=40.0,
+        sparse_infill_pattern="gyroid",
+    ),
+    "floor_stand": _variant(
+        state="floor_stand",
+        label="floor-stand",
+        bottom_slot="01b",
+        plate_name=(
+            "obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand"
+        ),
+        expected_triangle_count=143_370,
+        sparse_infill_density_percent=100.0,
+        sparse_infill_pattern="zig-zag",
+    ),
+}
+
+
+def _activate_variant(variant: ComboPlateVariant) -> None:
+    global ACTIVE_VARIANT
+    global PLATE_NAME, PLATE_STL, PLATE_MANIFEST
+    global DEFAULT_WORKSPACE, EXPECTED_TRIANGLE_COUNT, PARTS
+    ACTIVE_VARIANT = variant
+    PLATE_NAME = variant.plate_name
+    PLATE_STL = PLATE_OUTPUT_DIR / f"{PLATE_NAME}.stl"
+    PLATE_MANIFEST = PLATE_OUTPUT_DIR / f"{PLATE_NAME}.plate.json"
+    DEFAULT_WORKSPACE = (
+        ROOT / "review" / "to_print_slice_workspace"
+        / "composite" / PLATE_NAME
+    )
+    EXPECTED_TRIANGLE_COUNT = variant.expected_triangle_count
+    PARTS = variant.parts
+
+
+@dataclass(frozen=True)
+class ComboPlateAPI:
+    """Stand-state-bound API consumed by the shelf and focused tests."""
+
+    variant: ComboPlateVariant
+
+    @property
+    def PLATE_NAME(self) -> str:
+        return self.variant.plate_name
+
+    @property
+    def PARTS(self) -> tuple[PlatePart, ...]:
+        return self.variant.parts
+
+    @property
+    def EXPECTED_TRIANGLE_COUNT(self) -> int:
+        return self.variant.expected_triangle_count
+
+    @property
+    def SPARSE_INFILL_DENSITY_PERCENT(self) -> float:
+        return self.variant.sparse_infill_density_percent
+
+    @property
+    def SPARSE_INFILL_PATTERN(self) -> str:
+        return self.variant.sparse_infill_pattern
+
+    @property
+    def PLATE_STL(self) -> Path:
+        return PLATE_OUTPUT_DIR / f"{self.PLATE_NAME}.stl"
+
+    @property
+    def PLATE_MANIFEST(self) -> Path:
+        return PLATE_OUTPUT_DIR / f"{self.PLATE_NAME}.plate.json"
+
+    @property
+    def DEFAULT_WORKSPACE(self) -> Path:
+        return (
+            ROOT / "review" / "to_print_slice_workspace"
+            / "composite" / self.PLATE_NAME
+        )
+
+    def activate(self) -> None:
+        _activate_variant(self.variant)
+
+    def validate_source_bundle(
+        self,
+        stl: Path | None = None,
+        manifest_path: Path | None = None,
+    ) -> dict[str, Any]:
+        self.activate()
+        return validate_source_bundle(
+            stl or self.PLATE_STL,
+            manifest_path or self.PLATE_MANIFEST,
+        )
+
+    def build_or_validate_ready_plate(
+        self,
+        **kwargs: Any,
+    ) -> dict[str, Any]:
+        self.activate()
+        kwargs.setdefault("workspace", self.DEFAULT_WORKSPACE)
+        return build_or_validate_ready_plate(**kwargs)
+
+
+def get_variant(state: str) -> ComboPlateAPI:
+    try:
+        return ComboPlateAPI(VARIANTS[state.lower()])
+    except KeyError as exc:
+        raise ComboPlateError(
+            f"unknown composite plate stand state {state!r}") from exc
+
+
+_activate_variant(VARIANTS["no_floor_stand"])
 
 
 def _relative(path: Path) -> str:
@@ -294,10 +451,12 @@ def _combined_expected_triangles():
 
 def build_source_bundle(
     *,
-    output_stl: Path = PLATE_STL,
-    manifest_path: Path = PLATE_MANIFEST,
+    output_stl: Path | None = None,
+    manifest_path: Path | None = None,
 ) -> dict[str, Any]:
     """Write the deterministic translated STL union and its scoped contract."""
+    output_stl = output_stl or PLATE_STL
+    manifest_path = manifest_path or PLATE_MANIFEST
     part_records = []
     translated_records: list[bytes] = []
     for part in PARTS:
@@ -345,7 +504,8 @@ def build_source_bundle(
 
     output_stl.parent.mkdir(parents=True, exist_ok=True)
     header = (
-        b"LX521 Obi-Wan 01a+02+03+04 locked P2S plate"
+        f"LX521 Obi-Wan {ACTIVE_VARIANT.label} 01+02+03+04 locked P2S plate"
+        .encode("ascii")
     ).ljust(80, b"\0")
     payload = (
         header
@@ -372,9 +532,11 @@ def build_source_bundle(
         "schema_version": 1,
         "manifest_kind": "lx521_locked_composite_print_plate",
         "name": PLATE_NAME,
+        "stand_state": ACTIVE_VARIANT.state,
         "source_policy": (
-            "translation-only concatenation of four released front-down STLs; "
-            "no CAD or structure regeneration"),
+            f"translation-only concatenation of four released "
+            f"{ACTIVE_VARIANT.state} front-down STLs; no CAD or structure "
+            "regeneration"),
         "stl": output_stl.name,
         "stl_sha256": sha256_file(output_stl),
         "stl_bytes": output_stl.stat().st_size,
@@ -391,6 +553,14 @@ def build_source_bundle(
         },
         "packing": packing,
         "parts": part_records,
+        "print_profile": {
+            "sparse_infill_density_percent": (
+                ACTIVE_VARIANT.sparse_infill_density_percent
+            ),
+            "sparse_infill_pattern": (
+                ACTIVE_VARIANT.sparse_infill_pattern
+            ),
+        },
         "support_policy": {
             "enabled": True,
             "global_and_object_fields": {
@@ -414,9 +584,11 @@ def build_source_bundle(
     }
     manifest["source_bundle_fingerprint"] = sha256_bytes(_canonical_json({
         "name": manifest["name"],
+        "stand_state": manifest["stand_state"],
         "stl_sha256": manifest["stl_sha256"],
         "parts": manifest["parts"],
         "packing": manifest["packing"],
+        "print_profile": manifest["print_profile"],
         "support_policy": manifest["support_policy"],
         "magnet_pause": manifest["magnet_pause"],
     }))
@@ -426,16 +598,19 @@ def build_source_bundle(
 
 
 def validate_source_bundle(
-    stl: Path = PLATE_STL,
-    manifest_path: Path = PLATE_MANIFEST,
+    stl: Path | None = None,
+    manifest_path: Path | None = None,
 ) -> dict[str, Any]:
     """Validate the intentional multi-body STL without relaxing global policy."""
+    stl = stl or PLATE_STL
+    manifest_path = manifest_path or PLATE_MANIFEST
     payload = _read_json(manifest_path, "composite plate manifest")
     if (not isinstance(payload, Mapping)
             or payload.get("schema_version") != 1
             or payload.get("manifest_kind")
             != "lx521_locked_composite_print_plate"
-            or payload.get("name") != PLATE_NAME):
+            or payload.get("name") != PLATE_NAME
+            or payload.get("stand_state") != ACTIVE_VARIANT.state):
         raise ComboPlateError("composite plate manifest identity is invalid")
     if (not stl.is_file()
             or payload.get("stl") != stl.name
@@ -443,6 +618,14 @@ def validate_source_bundle(
             or payload.get("stl_bytes") != stl.stat().st_size):
         raise ComboPlateError(
             "composite plate STL does not match its manifest")
+    if payload.get("print_profile") != {
+        "sparse_infill_density_percent": (
+            ACTIVE_VARIANT.sparse_infill_density_percent
+        ),
+        "sparse_infill_pattern": ACTIVE_VARIANT.sparse_infill_pattern,
+    }:
+        raise ComboPlateError(
+            "composite plate infill contract crossed stand states")
     records = payload.get("parts")
     if not isinstance(records, list) or len(records) != len(PARTS):
         raise ComboPlateError("composite plate part inventory is incomplete")
@@ -597,8 +780,12 @@ def _write_assemble_list(
                 "assemble_index": 1,
                 "print_params": {
                     **{key: "1" for key in SUPPORT_KEYS},
-                    "sparse_infill_density": "40%",
-                    "sparse_infill_pattern": "gyroid",
+                    "sparse_infill_density": (
+                        f"{ACTIVE_VARIANT.sparse_infill_density_percent:g}%"
+                    ),
+                    "sparse_infill_pattern": (
+                        ACTIVE_VARIANT.sparse_infill_pattern
+                    ),
                 },
             }],
         }],
@@ -764,7 +951,7 @@ def validate_ready_plate(
     for path in (project, gcode, result_path):
         if not path.is_file() or path.stat().st_size == 0:
             raise ComboPlateError(f"missing composite slice output: {path}")
-    source_manifest = validate_source_bundle()
+    source_manifest = validate_source_bundle(PLATE_STL, PLATE_MANIFEST)
     try:
         project_audit = audit_bambu_composite_3mf(
             project,
@@ -894,15 +1081,20 @@ def validate_ready_plate(
         raise ComboPlateError(
             "composite G-code static validation did not pass")
     effective = profile_bundle["identity"]["effective"]
-    if (effective.get("sparse_infill_density_percent") != 40.0
-            or effective.get("sparse_infill_pattern") != "gyroid"
+    if (effective.get("sparse_infill_density_percent")
+            != ACTIVE_VARIANT.sparse_infill_density_percent
+            or effective.get("sparse_infill_pattern")
+            != ACTIVE_VARIANT.sparse_infill_pattern
             or effective.get("support_enabled") is not True):
         raise ComboPlateError(
-            "composite effective profile is not 40% gyroid with support")
+            f"{ACTIVE_VARIANT.state} composite effective profile is not "
+            f"{ACTIVE_VARIANT.sparse_infill_density_percent:g}% "
+            f"{ACTIVE_VARIANT.sparse_infill_pattern} with support")
     record = {
         "schema_version": 1,
         "audit_kind": "lx521_locked_composite_print_plate",
         "name": PLATE_NAME,
+        "stand_state": ACTIVE_VARIANT.state,
         "status": "pass",
         "local_only": True,
         "source_manifest": _relative(PLATE_MANIFEST),
@@ -962,7 +1154,10 @@ def _prepare_slice(
     bambu_binary: str | None,
 ) -> dict[str, Any]:
     _local_slice_guard()
-    build_source_bundle()
+    build_source_bundle(
+        output_stl=PLATE_STL,
+        manifest_path=PLATE_MANIFEST,
+    )
     try:
         bambu = captive._find_bambu_binary(bambu_binary)
         base_profile = captive.prepare_profiles(
@@ -980,10 +1175,14 @@ def _prepare_slice(
             f"cannot prepare composite profile: {exc}") from exc
     effective = profile_bundle["identity"]["effective"]
     if (effective.get("support_enabled") is not True
-            or effective.get("sparse_infill_density_percent") != 40.0
-            or effective.get("sparse_infill_pattern") != "gyroid"):
+            or effective.get("sparse_infill_density_percent")
+            != ACTIVE_VARIANT.sparse_infill_density_percent
+            or effective.get("sparse_infill_pattern")
+            != ACTIVE_VARIANT.sparse_infill_pattern):
         raise ComboPlateError(
-            "the keyed-LM safe profile is not support-on 40% gyroid")
+            f"the {ACTIVE_VARIANT.state} keyed-LM profile is not support-on "
+            f"{ACTIVE_VARIANT.sparse_infill_density_percent:g}% "
+            f"{ACTIVE_VARIANT.sparse_infill_pattern}")
     for section_values in profile_bundle["enforced_overrides"].values():
         if not isinstance(section_values, Mapping):
             continue
@@ -1070,7 +1269,7 @@ def _cache_matches(prepared: Mapping[str, Any]) -> bool:
 
 def build_or_validate_ready_plate(
     *,
-    workspace: Path = DEFAULT_WORKSPACE,
+    workspace: Path | None = None,
     profile_path: Path = DEFAULT_PROFILE,
     release_catalog: Path = DEFAULT_RELEASE_CATALOG,
     release_audit: Path = DEFAULT_RELEASE_AUDIT,
@@ -1079,6 +1278,7 @@ def build_or_validate_ready_plate(
     allow_slice: bool,
     dry_run: bool = False,
 ) -> dict[str, Any]:
+    workspace = workspace or DEFAULT_WORKSPACE
     prepared = _prepare_slice(
         workspace=workspace,
         profile_path=profile_path,
@@ -1101,9 +1301,14 @@ def build_or_validate_ready_plate(
     fingerprint_path = ready / "slice_fingerprint.json"
     if not reused:
         if not allow_slice:
+            make_target = (
+                "obiwan_floor_combo_plate"
+                if ACTIVE_VARIANT.state == "floor_stand"
+                else "obiwan_no_floor_combo_plate"
+            )
             raise ComboPlateError(
                 "composite project is missing or stale; run "
-                "make obiwan_combo_plate")
+                f"make {make_target}")
         for stale in (
                 project, gcode, result, fingerprint_path,
                 ready / "bambu_studio.log"):
@@ -1179,6 +1384,8 @@ def build_or_validate_ready_plate(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--variant", choices=sorted(VARIANTS), default="no_floor_stand")
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument(
         "--source-only", action="store_true",
@@ -1204,11 +1411,20 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
+    arguments = list(argv) if argv is not None else sys.argv[1:]
+    selector = argparse.ArgumentParser(add_help=False)
+    selector.add_argument(
+        "--variant", choices=sorted(VARIANTS), default="no_floor_stand")
+    selected, _remaining = selector.parse_known_args(arguments)
+    _activate_variant(VARIANTS[selected.variant])
+    args = build_parser().parse_args(arguments)
     if args.source_only:
-        manifest = build_source_bundle()
+        manifest = build_source_bundle(
+            output_stl=PLATE_STL,
+            manifest_path=PLATE_MANIFEST,
+        )
         print(
-            f"Composite STL ready: {PLATE_STL} "
+            f"{ACTIVE_VARIANT.label} composite STL ready: {PLATE_STL} "
             f"({manifest['triangle_count']} triangles)")
         return 0
     result = build_or_validate_ready_plate(
@@ -1227,7 +1443,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(json.dumps(result, indent=2, default=str))
     else:
         print(
-            f"Composite plate ready: {result['project']} "
+            f"{ACTIVE_VARIANT.label} composite plate ready: "
+            f"{result['project']} "
             f"(reused={result['reused']})")
     return 0
 
@@ -1242,5 +1459,8 @@ if __name__ == "__main__":
             OSError,
             subprocess.SubprocessError,
     ) as exc:
-        print(f"Obi-Wan composite plate failed: {exc}", file=sys.stderr)
+        print(
+            f"Obi-Wan {ACTIVE_VARIANT.label} composite plate failed: {exc}",
+            file=sys.stderr,
+        )
         raise SystemExit(2)

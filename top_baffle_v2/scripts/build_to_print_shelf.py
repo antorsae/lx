@@ -42,6 +42,7 @@ from bambu_3mf_audit import (
     validate_result_bbox as validate_bambu_result_bbox,
 )
 import build_obiwan_combo_plate as combo
+import build_obiwan_wing_plate as wing_plate
 from lx521_baffle.print_contract import FrontDownContractError, validate_print_sidecar
 from lx521_baffle.io import pretty_json_bytes, sha256_bytes, sha256_file
 import slice_captive_magnets as captive
@@ -59,15 +60,49 @@ LEGACY_SHELF_SOURCE_ROOTS = {
     "wings": Path("build/wings"),
 }
 
-EXPECTED_FAMILY_COUNTS = {"stock": 11, "slim": 11, "obiwan": 26}
+EXPECTED_FAMILY_COUNTS = {"stock": 11, "slim": 11, "obiwan": 29}
 EXPECTED_ENTRY_COUNT = sum(EXPECTED_FAMILY_COUNTS.values())
-EXPECTED_MAGNET_PROJECT_COUNT = 39
+EXPECTED_MAGNET_PROJECT_COUNT = 42
 EXPECTED_NON_MAGNET_PROJECT_COUNT = 9
 NAME_RE = re.compile(r"^[A-Za-z0-9_]+$")
 UNPRINTABLE_OR_LEGACY_TOKENS = (
     "core_1of2_lm_carrier", "c7", "v0", "coupon", "grommet",
     "lx521_top_v1_4of4_vase",
 )
+AC_WING_PLATE = wing_plate.get_variant("ac")
+AE_WING_PLATE = wing_plate.get_variant("ae")
+NO_FLOOR_COMBO_PLATE = combo.get_variant("no_floor_stand")
+FLOOR_COMBO_PLATE = combo.get_variant("floor_stand")
+COMPOSITE_SPECS = {
+    NO_FLOOR_COMBO_PLATE.PLATE_NAME: {
+        "module": NO_FLOOR_COMBO_PLATE,
+        "builder": "scripts/build_obiwan_combo_plate.py",
+        "state": "no_floor_stand",
+        "selection": "core_plate_alternative",
+        "project_kind": "local_composite_captive_magnet_slice",
+    },
+    FLOOR_COMBO_PLATE.PLATE_NAME: {
+        "module": FLOOR_COMBO_PLATE,
+        "builder": "scripts/build_obiwan_combo_plate.py",
+        "state": "floor_stand",
+        "selection": "core_plate_alternative",
+        "project_kind": "local_composite_captive_magnet_slice",
+    },
+    AC_WING_PLATE.PLATE_NAME: {
+        "module": AC_WING_PLATE,
+        "builder": "scripts/build_obiwan_wing_plate.py",
+        "state": "shared",
+        "selection": "Ac_wings_b_2piece_plate",
+        "project_kind": "local_locked_wing_plate_slice",
+    },
+    AE_WING_PLATE.PLATE_NAME: {
+        "module": AE_WING_PLATE,
+        "builder": "scripts/build_obiwan_wing_plate.py",
+        "state": "shared",
+        "selection": "Ae_wings_b_2piece_plate",
+        "project_kind": "local_locked_wing_plate_slice",
+    },
+}
 
 
 class ShelfError(RuntimeError):
@@ -186,10 +221,11 @@ def _catalog_entries(catalog_path: Path) -> tuple[dict[str, Any], list[dict[str,
                     f"{name}: invalid front-down print sidecar: {exc}") from exc
             entry["source_contract_path"] = sidecar
         else:
-            if (name != combo.PLATE_NAME
+            spec = COMPOSITE_SPECS.get(name)
+            if (spec is None
                     or family != "obiwan"
-                    or entry["state"] != "no_floor_stand"
-                    or entry["selection"] != "core_plate_alternative"
+                    or entry["state"] != spec["state"]
+                    or entry["selection"] != spec["selection"]
                     or not isinstance(composite_plate, Mapping)):
                 raise ShelfError(
                     f"{name}: unsupported composite-plate catalog entry")
@@ -203,24 +239,25 @@ def _catalog_entries(catalog_path: Path) -> tuple[dict[str, Any], list[dict[str,
                 raise ShelfError(
                     f"{name}: composite manifest must stay in the repository")
             manifest_path = (ROOT / manifest_relative).resolve()
-            if (composite_plate.get("builder")
-                    != "scripts/build_obiwan_combo_plate.py"
+            if (composite_plate.get("builder") != spec["builder"]
                     or composite_plate.get("magnet_insertions") != 6):
                 raise ShelfError(
                     f"{name}: composite builder/pause contract drifted")
+            module = spec["module"]
             expected_replacements = [
-                part.friendly_name for part in combo.PARTS
+                part.friendly_name for part in module.PARTS
             ]
             if composite_plate.get("replaces") != expected_replacements:
                 raise ShelfError(
                     f"{name}: composite replacement inventory drifted")
             try:
-                entry["print_sidecar"] = combo.validate_source_bundle(
+                entry["print_sidecar"] = module.validate_source_bundle(
                     entry["source_path"], manifest_path)
-            except combo.ComboPlateError as exc:
+            except (combo.ComboPlateError, wing_plate.WingPlateError) as exc:
                 raise ShelfError(
                     f"{name}: invalid composite source contract: {exc}") from exc
             entry["source_contract_path"] = manifest_path
+            entry["composite_spec"] = spec
         artifact_id = entry.get("catalog_artifact_id")
         if artifact_id is not None and (not isinstance(artifact_id, str)
                                         or not artifact_id):
@@ -274,12 +311,18 @@ def _bind_entries_to_release(
 ) -> None:
     for entry in entries:
         if entry.get("composite_plate") is not None:
+            spec = entry.get("composite_spec")
+            if not isinstance(spec, Mapping):
+                raise ShelfError(
+                    f"{entry['name']}: composite specification is missing")
+            module = spec["module"]
             bound = []
             manifest_parts = entry["print_sidecar"].get("parts")
             if not isinstance(manifest_parts, list):
                 raise ShelfError(
                     f"{entry['name']}: composite manifest has no parts")
-            for part, record in zip(combo.PARTS, manifest_parts, strict=True):
+            for part, record in zip(
+                    module.PARTS, manifest_parts, strict=True):
                 if part.artifact_id is None:
                     if record.get("catalog_artifact_id") is not None:
                         raise ShelfError(
@@ -290,20 +333,30 @@ def _bind_entries_to_release(
                     raise ShelfError(
                         f"{entry['name']}: unknown release artifact "
                         f"{part.artifact_id}")
+                expected_blocker = getattr(part, "support_blocker", None)
+                actual_blocker = artifact.get("support_blocker")
+                blocker_matches = (
+                    actual_blocker is None
+                    if expected_blocker is None
+                    else actual_blocker is not None
+                    and Path(actual_blocker).resolve()
+                    == expected_blocker.resolve()
+                )
                 if (Path(artifact["stl"]).resolve()
                         != part.source_stl.resolve()
                         or artifact["stl_catalog_sha256"]
                         != sha256_file(part.source_stl)
-                        or Path(artifact.get(
-                            "support_blocker", "")).resolve()
-                        != part.support_blocker.resolve()):
+                        or not blocker_matches):
                     raise ShelfError(
                         f"{part.friendly_name}: composite release binding "
                         "differs from the canonical artifact")
                 bound.append(dict(artifact))
-            if len(bound) != 3:
+            expected_bound = sum(
+                part.artifact_id is not None for part in module.PARTS)
+            if len(bound) != expected_bound:
                 raise ShelfError(
-                    f"{entry['name']}: expected three captive release bindings")
+                    f"{entry['name']}: expected {expected_bound} captive "
+                    "release bindings")
             entry["composite_artifacts"] = bound
             continue
         artifact_id = entry.get("catalog_artifact_id")
@@ -920,12 +973,14 @@ def _validate_composite_project(
 ) -> tuple[
     Path, Path, Path, dict[str, Any], dict[str, Any], dict[str, Any], bool
 ]:
-    if entry.get("name") != combo.PLATE_NAME:
+    spec = entry.get("composite_spec")
+    if not isinstance(spec, Mapping):
         raise ShelfError("unknown composite shelf project")
+    module = spec["module"]
     try:
-        result = combo.build_or_validate_ready_plate(
+        result = module.build_or_validate_ready_plate(
             workspace=(
-                _workspace_root(shelf) / "composite" / combo.PLATE_NAME),
+                _workspace_root(shelf) / "composite" / module.PLATE_NAME),
             profile_path=profile_path,
             release_catalog=release_catalog,
             release_audit=release_audit,
@@ -933,7 +988,7 @@ def _validate_composite_project(
             bambu_binary=str(bambu),
             allow_slice=allow_slice,
         )
-    except combo.ComboPlateError as exc:
+    except (combo.ComboPlateError, wing_plate.WingPlateError) as exc:
         raise ShelfError(
             f"{entry['name']}: composite project audit failed: {exc}") from exc
     audit = result["audit"]
@@ -945,8 +1000,12 @@ def _validate_composite_project(
     archive["captive_cavity_audit"] = audit["captive_cavity_audit"]
     archive["pause_before_first_layer_extrusion"] = audit[
         "pause_before_first_layer_extrusion"]
-    archive["support_midpoints_inside_part_footprints"] = audit[
-        "support_midpoints_inside_part_footprints"]
+    if "support_midpoints_inside_part_footprints" in audit:
+        archive["support_midpoints_inside_part_footprints"] = audit[
+            "support_midpoints_inside_part_footprints"]
+    if isinstance(entry["print_sidecar"].get("packing"), Mapping):
+        archive["source_packing"] = dict(
+            entry["print_sidecar"]["packing"])
     placement = {
         "triangle_count": int(project_equivalence["triangle_count"]),
         "mesh_max_abs_error_mm": float(
@@ -956,8 +1015,7 @@ def _validate_composite_project(
         "stl_to_bed_matrix": project_equivalence["stl_to_bed_matrix"],
         "support_blocker_count": int(
             project_equivalence["support_blocker_count"]),
-        "normal_part_count": len(
-            project_equivalence["normal_part_names"]),
+        "normal_part_count": len(module.PARTS),
     }
     return (
         Path(result["project"]),
@@ -1045,7 +1103,7 @@ def build_shelf(
                 bambu=bambu,
                 allow_slice=allow_slice,
             )
-            project_kind = "local_composite_captive_magnet_slice"
+            project_kind = entry["composite_spec"]["project_kind"]
         elif artifact is not None:
             (project, gcode, result, archive, placement,
              profile_effective) = _validate_magnet_project(

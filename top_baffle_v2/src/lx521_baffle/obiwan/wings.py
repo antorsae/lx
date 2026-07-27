@@ -128,6 +128,12 @@ AE_PROTECTED_CONSTRAINT_SPACING_MM = 0.25
 AE_PROTECTED_CONSTRAINT_TARGET_MM = FULL_DEPTH_MM - 0.005
 AE_PROTECTED_CONSTRAINT_TOL_MM = 0.004
 AE_PROTECTED_COLLAR_OFFSETS_MM = (0.25, 0.50, 1.00, 2.00, 4.00)
+# A print mask that ends exactly on the cubic Ae exterior can leave OCC with a
+# coincident face/edge classification and no intersection solid. Extend only
+# the part of each mask that lies outside the finalized wing plan. Interior
+# dovetail ownership and fit-clearance gaps therefore remain exact, while the
+# Boolean tool crosses every exposed perimeter by a deterministic margin.
+PRINT_MASK_EXTERIOR_OVERSHOOT_MM = 0.05
 AE_PROTECTED_GHOST_MAX_DEPTH_MM = 2.0 * FULL_DEPTH_MM - AE_EDGE_DEPTH_MM
 AE_PROTECTED_GHOST_REGULARIZATION = 1.0e-5
 AE_PROTECTED_OUTWARD_REGULARIZATION = 1.0e-3
@@ -1422,6 +1428,22 @@ def _one_solid(shape, label: str) -> Part:
     return result
 
 
+def _print_mask_plan(plan: Polygon) -> Polygon:
+    """Cross the exterior perimeter without changing internal split seams."""
+    field = _layout().field_right
+    exterior_overshoot = plan.buffer(
+        PRINT_MASK_EXTERIOR_OVERSHOOT_MM,
+        join_style=2,
+    ).difference(field)
+    mask = unary_union((plan, exterior_overshoot)).buffer(0)
+    if (mask.geom_type != "Polygon" or not mask.is_valid
+            or mask.intersection(field).symmetric_difference(plan).area
+            > 1.0e-6):
+        raise RuntimeError(
+            "outward-oversized print mask changed its in-plan ownership")
+    return mask
+
+
 def _cut_receivers(part, side: str) -> Part:
     for name, land in receiver_required_lands(side).items():
         missing = land - part
@@ -1487,7 +1509,7 @@ def _right_print_parts_cached(slug: str) -> tuple[Part, ...]:
     result = []
     for order, role in enumerate(PRINT_PART_KEYS, start=1):
         mask = _plan_prism(
-            _layout().print_parts[role],
+            _print_mask_plan(_layout().print_parts[role]),
             REAR_LIMIT_Z_MM - 0.5, FRONT_Z_MM + 0.5)
         common = monolith & mask
         if common is None:
@@ -1525,7 +1547,7 @@ def _right_two_piece_print_parts_cached(slug: str) -> tuple[Part, ...]:
     lower = deepcopy(_right_print_parts_cached(slug)[0])
     lower.label = f"obiwan_wing_{slug}_right_b_1of2_lm_lower"
     upper_mask = _plan_prism(
-        _layout().two_piece_print_parts["lm_um_upper"],
+        _print_mask_plan(_layout().two_piece_print_parts["lm_um_upper"]),
         REAR_LIMIT_Z_MM - 0.5, FRONT_Z_MM + 0.5)
     common = monolith & upper_mask
     if common is None:

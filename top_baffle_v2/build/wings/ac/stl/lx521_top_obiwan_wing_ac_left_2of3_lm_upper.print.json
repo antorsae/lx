@@ -9,7 +9,7 @@
   "part": "lx521_top_obiwan_wing_ac_left_2of3_lm_upper",
   "piece_count": 3,
   "pre_translation_bbox_min_mm": [
-    84.77336785971822,
+    84.77336785971828,
     -269.71675068082345,
     -18.29999999999998
   ],
@@ -17,7 +17,7 @@
   "role": "lm_upper",
   "rotation_deg": {
     "x": 180.0,
-    "z": 55.932253050440636
+    "z": 55.93225305044064
   },
   "schema_version": 1,
   "side": "left",
@@ -26,7 +26,7 @@
       0.5601727724431591,
       0.8283757993889879,
       0.0,
-      -84.77336785971822
+      -84.77336785971828
     ],
     [
       0.8283757993889879,
@@ -51,10 +51,10 @@
   "stl": "lx521_top_obiwan_wing_ac_left_2of3_lm_upper.stl",
   "stl_bytes": 213484,
   "stl_origin_translation_mm": [
-    -84.77336785971822,
+    -84.77336785971828,
     269.71675068082345,
     18.29999999999998
   ],
-  "stl_sha256": "4adba51f697e9970fdff6a4961d761f672ef924c58af89a42e96812d94623f58",
+  "stl_sha256": "45bf33ea0bb1ce7d866cdf9da9a30b84789459cd9af1d3a8f006ac6c15970654",
   "variant_slug": "ac"
 }

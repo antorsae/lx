@@ -214,17 +214,35 @@ path.
 With a monolithic LM, the same pockets remain as small hidden local reliefs;
 the three magnetic datums and primary retention geometry are unchanged.
 
-For the no-floor keyed split, the shelf also provides
-`obiwan_01a_02_03_04_LM_UM_1_of_1` as a mutually exclusive single-plate
-alternative to the four individual 01a/02/03/04 projects. It does not
-regenerate or fuse geometry: the four released front-down STLs are translated
-to locked positions inside one Bambu object. The project carries three
-released duct blockers, 40% gyroid infill, all four support fields pinned
-globally and per object, and one six-magnet pause at Z=5.96 mm. Promotion
-requires 4-volume project/STL equivalence, actual support under the UM carrier,
-no support under the tweeter footprint, and zero support-bead collisions
-against every LM/UM functional duct. Never print this plate together with the
-individual 01a, 02, 03, or 04 files.
+For the keyed split, the shelf also provides the mutually exclusive
+`obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand` and
+`obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand` single-plate alternatives to
+the corresponding four individual 01/02/03/04 projects. They do not
+regenerate or fuse geometry: four released, same-state front-down STLs are
+translated to locked positions inside one Bambu object. Each project carries
+the three released state-specific duct blockers, all four support fields
+pinned globally and per object, and one six-magnet pause at Z=5.96 mm. The
+no-floor project uses 40% gyroid; the floor project preserves the integral
+floor bottom's 100% zig-zag contract. Promotion requires exact four-volume
+project/STL equivalence, actual support under every carrier, no support under
+the tweeter footprint, and zero support-bead collisions against every LM/UM
+functional duct. Never print a combined plate with its individual 01, 02, 03,
+or 04 files, and never mix the two stand states.
+
+For the Ac and Ae B wing splits, the shelf also provides
+`obiwan_05b_06b_08b_09b_Ac_wings_1_of_1` and
+`obiwan_11b_12b_14b_15b_Ae_wings_1_of_1` as mutually exclusive single-plate
+alternatives to their four individual B projects. Each rigidly rotates and
+translates the four exact released front-face-down STLs without
+regenerating, changing, or fusing their geometry. The locked footprint is
+248.813 × 248.815 mm on the 256 mm bed, with 3.587 mm minimum inter-part gap
+and 3.592 mm minimum edge clearance. Use the ready project: it has 30% gyroid,
+all four support fields pinned off globally and per object, zero support
+feature blocks, and one Z=5.96 mm pause for all six wing magnets. Promotion
+requires exact 3MF/STL equivalence (15,692 triangles for Ac; 958,546 for Ae),
+an identity outer
+placement, and passing toolpath audits for all four captive-cavity regions.
+Never print either plate together with its four individual B files.
 
 The UM route is covered only in LM, T is covered in
 LM/UM, and their specified rear continuations are free; the short LM lead is

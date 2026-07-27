@@ -6,7 +6,7 @@
   "selection_rules": {
     "stock": "Choose 01a or 01b for the lower LM piece; 02–04 are shared. Then choose exactly one attachment set: A shoulders or B1 wings.",
     "slim": "Choose 01a or 01b for the lower LM piece; 02–04 are shared. Then choose exactly one attachment set: A shoulders or B1 wings.",
-    "obiwan": "Choose either the individual core files (01a or 01b, plus 02–04) or the no-floor 01a+02+03+04 single-plate alternative; never print both forms. Then choose Ac or Ae and exactly one wing split: a (3 pieces per side) or b (2 pieces per side)."
+    "obiwan": "Choose either the individual core files (01a or 01b, plus 02–04) or the matching no-floor 01a+02+03+04 / floor-stand 01b+02+03+04 single-plate alternative; never mix stand states or print both forms. Then choose Ac or Ae and exactly one wing split: a (3 pieces per side) or b (2 pieces per side). For either Ac-b or Ae-b, choose either its four individual wing projects or its single-plate alternative; never both."
   },
   "entries": [
     {
@@ -273,19 +273,39 @@
       "source_stl": "no_floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.stl"
     },
     {
-      "name": "obiwan_01a_02_03_04_LM_UM_1_of_1",
+      "name": "obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand",
       "family": "obiwan",
       "logical_slot": "01-04",
       "state": "no_floor_stand",
       "selection": "core_plate_alternative",
       "description": "Obi-Wan no-floor 01a+02+03+04 locked single-plate alternative",
-      "source_stl": "build/print_plates/obiwan/obiwan_01a_02_03_04_LM_UM_1_of_1.stl",
+      "source_stl": "build/print_plates/obiwan/obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand.stl",
       "composite_plate": {
-        "manifest": "build/print_plates/obiwan/obiwan_01a_02_03_04_LM_UM_1_of_1.plate.json",
+        "manifest": "build/print_plates/obiwan/obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand.plate.json",
         "builder": "scripts/build_obiwan_combo_plate.py",
         "magnet_insertions": 6,
         "replaces": [
           "obiwan_01a_of_16_LM_bottom_keyed_1_of_2_no_floor_stand",
+          "obiwan_02_of_16_LM_top_keyed_2_of_2",
+          "obiwan_03_of_16_UM_carrier_1_of_1",
+          "obiwan_04_of_16_T_tweeter_crescent_1_of_1"
+        ]
+      }
+    },
+    {
+      "name": "obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand",
+      "family": "obiwan",
+      "logical_slot": "01-04",
+      "state": "floor_stand",
+      "selection": "core_plate_alternative",
+      "description": "Obi-Wan floor-stand 01b+02+03+04 locked single-plate alternative",
+      "source_stl": "build/print_plates/obiwan/obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand.stl",
+      "composite_plate": {
+        "manifest": "build/print_plates/obiwan/obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand.plate.json",
+        "builder": "scripts/build_obiwan_combo_plate.py",
+        "magnet_insertions": 6,
+        "replaces": [
+          "obiwan_01b_of_16_LM_bottom_keyed_1_of_2_floor_stand",
           "obiwan_02_of_16_LM_top_keyed_2_of_2",
           "obiwan_03_of_16_UM_carrier_1_of_1",
           "obiwan_04_of_16_T_tweeter_crescent_1_of_1"
@@ -393,6 +413,26 @@
       "source_stl": "wings/ac/stl/lx521_top_obiwan_wing_ac_right_b_2of2_lm_um_upper.stl",
       "catalog_artifact_id": "shared:Obi-Wan-Ac:obiwan_wing_ac_right_b_2of2_lm_um_upper"
     },
+    {
+      "name": "obiwan_05b_06b_08b_09b_Ac_wings_1_of_1",
+      "family": "obiwan",
+      "logical_slot": "05b-09b",
+      "state": "shared",
+      "selection": "Ac_wings_b_2piece_plate",
+      "description": "Obi-Wan Ac B-split left/right wings, locked four-piece single-plate alternative",
+      "source_stl": "build/print_plates/obiwan/obiwan_05b_06b_08b_09b_Ac_wings_1_of_1.stl",
+      "composite_plate": {
+        "manifest": "build/print_plates/obiwan/obiwan_05b_06b_08b_09b_Ac_wings_1_of_1.plate.json",
+        "builder": "scripts/build_obiwan_wing_plate.py",
+        "magnet_insertions": 6,
+        "replaces": [
+          "obiwan_05b_of_16_Ac_wing_LM_lower_left_1_of_2",
+          "obiwan_06b_of_16_Ac_wing_LM_UM_upper_left_2_of_2",
+          "obiwan_08b_of_16_Ac_wing_LM_lower_right_1_of_2",
+          "obiwan_09b_of_16_Ac_wing_LM_UM_upper_right_2_of_2"
+        ]
+      }
+    },
 
     {
       "name": "obiwan_11a_of_16_Ae_wing_LM_lower_left_1_of_3",
@@ -493,6 +533,26 @@
       "description": "Obi-Wan Ae wing B split, fused LM/UM upper-right, 2 of 2",
       "source_stl": "wings/ae/stl/lx521_top_obiwan_wing_ae_right_b_2of2_lm_um_upper.stl",
       "catalog_artifact_id": "shared:Obi-Wan-Ae:obiwan_wing_ae_right_b_2of2_lm_um_upper"
+    },
+    {
+      "name": "obiwan_11b_12b_14b_15b_Ae_wings_1_of_1",
+      "family": "obiwan",
+      "logical_slot": "11b-15b",
+      "state": "shared",
+      "selection": "Ae_wings_b_2piece_plate",
+      "description": "Obi-Wan Ae B-split left/right wings, locked four-piece single-plate alternative",
+      "source_stl": "build/print_plates/obiwan/obiwan_11b_12b_14b_15b_Ae_wings_1_of_1.stl",
+      "composite_plate": {
+        "manifest": "build/print_plates/obiwan/obiwan_11b_12b_14b_15b_Ae_wings_1_of_1.plate.json",
+        "builder": "scripts/build_obiwan_wing_plate.py",
+        "magnet_insertions": 6,
+        "replaces": [
+          "obiwan_11b_of_16_Ae_wing_LM_lower_left_1_of_2",
+          "obiwan_12b_of_16_Ae_wing_LM_UM_upper_left_2_of_2",
+          "obiwan_14b_of_16_Ae_wing_LM_lower_right_1_of_2",
+          "obiwan_15b_of_16_Ae_wing_LM_UM_upper_right_2_of_2"
+        ]
+      }
     }
   ],
   "excluded_legacy_outputs": [

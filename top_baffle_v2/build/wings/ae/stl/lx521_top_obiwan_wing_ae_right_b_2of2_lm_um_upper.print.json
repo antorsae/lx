@@ -10,7 +10,7 @@
   "piece_count": 2,
   "pre_translation_bbox_min_mm": [
     224.57655354081865,
-    -165.77774709745668,
+    -166.7019970534017,
     -18.30000009999998
   ],
   "print_orientation": "front_face_down",
@@ -32,7 +32,7 @@
       0.8929789434111369,
       -0.45009844103743507,
       0.0,
-      165.77774709745668
+      166.7019970534017
     ],
     [
       0.0,
@@ -49,12 +49,12 @@
   ],
   "split_variant": "b",
   "stl": "lx521_top_obiwan_wing_ae_right_b_2of2_lm_um_upper.stl",
-  "stl_bytes": 16662784,
+  "stl_bytes": 17283284,
   "stl_origin_translation_mm": [
     -224.57655354081865,
-    165.77774709745668,
+    166.7019970534017,
     18.30000009999998
   ],
-  "stl_sha256": "633f0a0d45b38463fbdf59a2ba57e4dacf49d7570aae7d59f7fd2611cbb07edb",
+  "stl_sha256": "4ffac662fd1329748bef247f91cb38f90a7edfcd7684d6befbb0d742cac194e3",
   "variant_slug": "ae"
 }

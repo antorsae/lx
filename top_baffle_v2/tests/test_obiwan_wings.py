@@ -54,6 +54,7 @@ AE_LAND_BOUNDARY_SAMPLE_SPACING_MM = 0.50
 AE_LAND_BOUNDARY_PROBE_OFFSET_MM = 0.004
 AE_LAND_BOUNDARY_MAX_JUMP_MM = 0.03
 DOVETAIL_CLEARANCE_MM = 0.05
+T_WING_CLEARANCE_MM = 0.20
 DOVETAIL_ENDPOINT_TAPER_MM = 2.0
 DOVETAIL_MIN_LIGAMENT_MM = 2.0
 DOVETAIL_ROOT_OVERLAP_MM = 0.05
@@ -649,6 +650,18 @@ def test_exported_artifact_contract() -> None:
         interface = geometry.get("interface_contract")
         assert isinstance(interface, dict)
         assert interface.get("selected_receiver_count_per_side") == 3
+        t_interface = interface.get("tweeter_crescent")
+        assert isinstance(t_interface, dict)
+        assert math.isclose(
+            t_interface.get("normal_plan_clearance_mm"),
+            T_WING_CLEARANCE_MM, abs_tol=1e-9)
+        assert t_interface.get("released_upper_profile_source") == (
+            "OUTLINE_B2 cubic horn flanks")
+        assert t_interface.get("symmetry_policy") == (
+            "union_with_mirror_worst_case")
+        assert t_interface.get("keepout_construction") == (
+            "released_plan.buffer(clearance)")
+        assert t_interface.get("split_independent") is True
         keyed_interface = interface.get("optional_lm_keyed_split")
         assert keyed_interface == {
             "geometrically_compatible": True,
@@ -1241,6 +1254,50 @@ def _assert_plan_dovetail_contract(cad) -> None:
     assert reconstructed_two_piece.symmetric_difference(
         layout.field_right).area <= 0.02
 
+    # The exposed upper T edge follows the complete released crescent
+    # profile: the measured lower arc followed by the cubic horn flank.
+    # Check both the intended normal clearance and the visually amplified
+    # horizontal opening at the station seen in the physical assembly.
+    from shapely.geometry import LineString, box
+
+    actual_t_plan = cad.contract._released_t_crescent_plan()
+    upper_t_field = layout.field_right.intersection(
+        box(0.0, 430.0, 180.0, cad.contract.A_TAPER_CAP_Y - 0.05))
+    assert math.isclose(
+        upper_t_field.distance(actual_t_plan),
+        T_WING_CLEARANCE_MM, abs_tol=0.005)
+
+    station_y = 426.0
+    station = LineString(((-80.0, station_y), (180.0, station_y)))
+    wing_section = layout.field_right.intersection(station)
+    crescent_section = actual_t_plan.intersection(station)
+    wing_x = min(
+        point[0]
+        for line in _line_parts(wing_section)
+        for point in line.coords
+        if point[0] > 20.0)
+    crescent_x = max(
+        point[0]
+        for line in _line_parts(crescent_section)
+        for point in line.coords)
+    horizontal_gap = wing_x - crescent_x
+    assert 0.30 <= horizontal_gap <= 0.45, (
+        f"T-to-wing y=426 horizontal gap is {horizontal_gap:.4f} mm")
+
+    # Lock two stations on the cubic horn continuation. A circle extrapolated
+    # from the lower three-point arc falls progressively inside these values
+    # and can make the released T mesh obstruct the wing near the tip.
+    for station_y, expected_x in ((440.0, 42.6566), (448.0, 47.1115)):
+        station = LineString(((-80.0, station_y), (180.0, station_y)))
+        crescent_section = actual_t_plan.intersection(station)
+        released_x = max(
+            point[0]
+            for line in _line_parts(crescent_section)
+            for point in line.coords)
+        assert math.isclose(released_x, expected_x, abs_tol=0.01), (
+            f"released cubic T profile drifted at y={station_y:g}: "
+            f"x={released_x:.4f} mm")
+
 
 def test_live_brep_geometry_contract() -> None:
     """Gate the constructed solids, not merely their serialized metadata."""
@@ -1282,7 +1339,7 @@ def test_live_brep_geometry_contract() -> None:
     # The wing clearance was historically based on the union of two unequal
     # lower supports.  Gate the actual staged BREPs so that union is now the
     # exterior of *each* state at the physical wing-contact depth.
-    from shapely.geometry import LineString
+    from shapely.geometry import LineString, box
 
     section_z = FRONT_Z_MM - 0.15
     floor_outline = _front_section_exterior(
@@ -1313,6 +1370,8 @@ def test_live_brep_geometry_contract() -> None:
     assert maximum_station_width_delta <= 0.04, (
         "floor/no-floor LM-lower station widths differ by "
         f"{maximum_station_width_delta:.6f} mm")
+
+    t_crescent = context_parts["t"]["shape"]
 
     # Probe the complete carrier-side captive system, not merely the shared
     # datum.  Each staged lower print must retain both sealed skins and the
@@ -1466,6 +1525,24 @@ def test_live_brep_geometry_contract() -> None:
             assert outside_plan <= 0.03, (
                 f"{slug}/{side}: finalized monolith grows outside exact "
                 f"wing plan by {outside_plan:.6f} mm3")
+
+            x0, x1 = ((0.0, 180.0)
+                      if side == "right" else (-180.0, 0.0))
+            upper_t_tool = cad._plan_prism(
+                box(x0, 430.0, x1, cad.contract.A_TAPER_CAP_Y - 0.05),
+                REAR_Z_MM - 0.5, FRONT_Z_MM + 0.5)
+            wing_upper_t = monolith & upper_t_tool
+            crescent_upper_t = t_crescent & upper_t_tool
+            assert _intersection_volume(
+                wing_upper_t, crescent_upper_t) <= 0.01, (
+                    f"{slug}/{side}: upper wing collides T crescent")
+            measured_t_clearance = wing_upper_t.distance_to(
+                crescent_upper_t)
+            assert math.isclose(
+                measured_t_clearance, T_WING_CLEARANCE_MM,
+                abs_tol=0.01), (
+                    f"{slug}/{side}: BREP T-to-wing clearance is "
+                    f"{measured_t_clearance:.4f} mm")
         right_volume = cad.adaptive_volume_mm3(right)
         left_volume = cad.adaptive_volume_mm3(left)
         assert math.isclose(right_volume, left_volume, rel_tol=1e-9,

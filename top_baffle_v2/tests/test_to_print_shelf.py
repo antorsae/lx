@@ -51,32 +51,70 @@ def main() -> int:
           and "scripts/slice_captive_magnets.py" not in shelf_dry_run,
           "to_print must consume existing release projects, not implicitly "
           "run the heavyweight captive-magnet release slicer")
-    combo_dry_run = make_dry_run("obiwan_combo_plate")
-    check(0 <= combo_dry_run.find("--dry-run")
-          < combo_dry_run.find("--slice-missing"),
-          "composite artifact must dry-run before local slicing")
-    promotion_dry_run = make_dry_run("obiwan_combo_plate_to_print")
-    shelf_command = promotion_dry_run.rfind(
-        "scripts/build_to_print_shelf.py")
-    check(shelf_command >= 0
-          and "--validate-only" in promotion_dry_run[shelf_command:]
-          and f'--only "{shelf.combo.PLATE_NAME}"'
-          in promotion_dry_run[shelf_command:],
-          "targeted composite promotion must disable slicing and cross the "
-          "existing complete-shelf validation barrier")
+    for make_slug, api in (
+            ("no_floor", shelf.NO_FLOOR_COMBO_PLATE),
+            ("floor", shelf.FLOOR_COMBO_PLATE)):
+        combo_dry_run = make_dry_run(
+            f"obiwan_{make_slug}_combo_plate")
+        check(0 <= combo_dry_run.find("--dry-run")
+              < combo_dry_run.find("--slice-missing"),
+              f"{make_slug}: composite artifact must dry-run before slicing")
+        promotion_dry_run = make_dry_run(
+            f"obiwan_{make_slug}_combo_plate_to_print")
+        shelf_command = promotion_dry_run.rfind(
+            "scripts/build_to_print_shelf.py")
+        check(shelf_command >= 0
+              and "--validate-only" in promotion_dry_run[shelf_command:]
+              and f'--only "{api.PLATE_NAME}"'
+              in promotion_dry_run[shelf_command:],
+              f"targeted {make_slug} composite promotion must disable "
+              "slicing and cross the complete-shelf validation barrier")
+    for slug in ("ac", "ae"):
+        wing_plate_dry_run = make_dry_run(
+            f"obiwan_{slug}_wing_plate")
+        check(0 <= wing_plate_dry_run.find("--dry-run")
+              < wing_plate_dry_run.find("--slice-missing"),
+              f"{slug}: wing-plate artifact must dry-run before local slicing")
+    for slug, api in (
+            ("ac", shelf.AC_WING_PLATE),
+            ("ae", shelf.AE_WING_PLATE)):
+        wing_promotion_dry_run = make_dry_run(
+            f"obiwan_{slug}_wing_plate_to_print")
+        wing_shelf_command = wing_promotion_dry_run.rfind(
+            "scripts/build_to_print_shelf.py")
+        check(wing_shelf_command >= 0
+              and "--validate-only"
+              in wing_promotion_dry_run[wing_shelf_command:]
+              and f'--only "{api.PLATE_NAME}"'
+              in wing_promotion_dry_run[wing_shelf_command:],
+              f"targeted {slug} wing-plate promotion must disable slicing "
+              "and cross the complete-shelf validation barrier")
 
-    concrete_targets = (
-        "build/print_plates/obiwan/"
-        f"{shelf.combo.PLATE_NAME}.stl",
-        "review/to_print_slice_workspace/composite/"
-        f"{shelf.combo.PLATE_NAME}/ready/"
-        f"{shelf.combo.PLATE_NAME}.gcode.3mf",
-        "to_print/obiwan/3mf/"
-        f"{shelf.combo.PLATE_NAME}.gcode.3mf",
+    plate_apis = (
+        shelf.NO_FLOOR_COMBO_PLATE,
+        shelf.FLOOR_COMBO_PLATE,
+        shelf.AC_WING_PLATE,
+        shelf.AE_WING_PLATE,
+    )
+    concrete_targets = tuple(
+        target
+        for api in plate_apis
+        for target in (
+            f"build/print_plates/obiwan/{api.PLATE_NAME}.stl",
+            "review/to_print_slice_workspace/composite/"
+            f"{api.PLATE_NAME}/ready/{api.PLATE_NAME}.gcode.3mf",
+            f"to_print/obiwan/3mf/{api.PLATE_NAME}.gcode.3mf",
+        )
     )
     for target in concrete_targets:
         output = make_dry_run(target)
-        check("build_obiwan_combo_plate.py" in output,
+        expected_builder = (
+            "build_obiwan_wing_plate.py"
+            if any(api.PLATE_NAME in target for api in (
+                shelf.AC_WING_PLATE, shelf.AE_WING_PLATE))
+            else "build_obiwan_combo_plate.py"
+        )
+        check(expected_builder in output,
               f"{target} is not backed by the composite artifact graph")
         database = subprocess.run(
             ["make", "-np", target],
@@ -117,15 +155,15 @@ def main() -> int:
     shelf._bind_entries_to_release(entries, by_id)
 
     check(raw["printer"] == "Bambu Lab P2S", "catalog printer drift")
-    check(len(entries) == 48, "shelf must contain exactly 48 entries")
+    check(len(entries) == 51, "shelf must contain exactly 51 entries")
     families = {
         family: sum(entry["family"] == family for entry in entries)
         for family in shelf.EXPECTED_FAMILY_COUNTS
     }
-    check(families == {"stock": 11, "slim": 11, "obiwan": 26},
+    check(families == {"stock": 11, "slim": 11, "obiwan": 29},
           f"unexpected family counts: {families}")
     magnetic = [entry for entry in entries if shelf._is_magnet_entry(entry)]
-    check(len(magnetic) == 39, "expected 39 audited magnet projects")
+    check(len(magnetic) == 42, "expected 42 audited magnet projects")
     check(len(entries) - len(magnetic) == 9,
           "expected 9 locally sliced non-magnet projects")
     canonical_magnetic = [
@@ -193,6 +231,7 @@ def main() -> int:
         "obiwan_06b_of_16_Ac_wing_LM_UM_upper_left_2_of_2",
         "obiwan_08b_of_16_Ac_wing_LM_lower_right_1_of_2",
         "obiwan_09b_of_16_Ac_wing_LM_UM_upper_right_2_of_2",
+        "obiwan_05b_06b_08b_09b_Ac_wings_1_of_1",
         "obiwan_11a_of_16_Ae_wing_LM_lower_left_1_of_3",
         "obiwan_12a_of_16_Ae_wing_LM_upper_left_2_of_3",
         "obiwan_13a_of_16_Ae_wing_UM_left_3_of_3",
@@ -203,6 +242,7 @@ def main() -> int:
         "obiwan_12b_of_16_Ae_wing_LM_UM_upper_left_2_of_2",
         "obiwan_14b_of_16_Ae_wing_LM_lower_right_1_of_2",
         "obiwan_15b_of_16_Ae_wing_LM_UM_upper_right_2_of_2",
+        "obiwan_11b_12b_14b_15b_Ae_wings_1_of_1",
     }, "Ac/Ae A/B left/right wing shelf names drifted")
     for required in (
         "stock_01a_of_10_LM_bottom_1_of_3_no_floor_stand",
@@ -211,15 +251,19 @@ def main() -> int:
         "slim_01a_of_10_LM_bottom_1_of_3_no_floor_stand",
         "slim_03_of_10_LM_mid_right_3_of_3",
         "obiwan_01a_of_16_LM_bottom_keyed_1_of_2_no_floor_stand",
+        "obiwan_01b_of_16_LM_bottom_keyed_1_of_2_floor_stand",
         "obiwan_02_of_16_LM_top_keyed_2_of_2",
         "obiwan_03_of_16_UM_carrier_1_of_1",
         "obiwan_04_of_16_T_tweeter_crescent_1_of_1",
-        "obiwan_01a_02_03_04_LM_UM_1_of_1",
+        "obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand",
+        "obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand",
+        "obiwan_05b_06b_08b_09b_Ac_wings_1_of_1",
         "obiwan_16a_of_16_Ae_wing_UM_right_3_of_3",
         "obiwan_11b_of_16_Ae_wing_LM_lower_left_1_of_2",
         "obiwan_12b_of_16_Ae_wing_LM_UM_upper_left_2_of_2",
         "obiwan_14b_of_16_Ae_wing_LM_lower_right_1_of_2",
         "obiwan_15b_of_16_Ae_wing_LM_UM_upper_right_2_of_2",
+        "obiwan_11b_12b_14b_15b_Ae_wings_1_of_1",
     ):
         check(required in names, f"missing required friendly name: {required}")
     for forbidden in (
@@ -254,14 +298,22 @@ def main() -> int:
             check(Path(artifact["stl"]).resolve() == source.resolve(),
                   f"release source mismatch for {entry['name']}")
         if entry.get("composite_plate"):
-            check(entry["name"] == shelf.combo.PLATE_NAME,
+            module = entry["composite_spec"]["module"]
+            check(entry["name"] in shelf.COMPOSITE_SPECS,
                   "unexpected composite shelf entry")
-            contract = shelf.combo.validate_source_bundle(
+            contract = module.validate_source_bundle(
                 source, Path(entry["source_contract_path"]))
-            check(contract["triangle_count"] == 56688,
-                  "composite source triangle count drift")
-            check(len(entry["composite_artifacts"]) == 3,
-                  "composite source lacks three captive release bindings")
+            expected_bindings = (
+                3 if entry["name"] in {
+                    shelf.NO_FLOOR_COMBO_PLATE.PLATE_NAME,
+                    shelf.FLOOR_COMBO_PLATE.PLATE_NAME,
+                } else 4
+            )
+            check(contract["triangle_count"]
+                  == module.EXPECTED_TRIANGLE_COUNT,
+                  f"{entry['name']}: composite source triangle count drift")
+            check(len(entry["composite_artifacts"]) == expected_bindings,
+                  f"{entry['name']}: captive release bindings are incomplete")
 
     check(release["inventory"]["artifact_count"] == 64,
           "unexpected canonical captive-magnet release inventory")
@@ -271,58 +323,112 @@ def main() -> int:
     gate = manifest.get("project_stl_equivalence_gate")
     check(isinstance(gate, dict) and gate.get("status") == "pass",
           "shelf manifest lacks a passing project/STL equivalence gate")
-    check(gate.get("required_pair_count") == 48
-          and gate.get("passing_pair_count") == 48
-          and len(gate.get("entries", ())) == 48,
-          "shelf promotion did not cross a 48/48 equivalence gate")
+    check(gate.get("required_pair_count") == 51
+          and gate.get("passing_pair_count") == 51
+          and len(gate.get("entries", ())) == 51,
+          "shelf promotion did not cross a 51/51 equivalence gate")
     manifest_records = {
         record["name"]: record for record in manifest["entries"]
     }
     check(set(manifest_records) == names,
           "shelf manifest names differ from the catalog")
-    combo_record = manifest_records[shelf.combo.PLATE_NAME]
-    check(combo_record["project_kind"]
-          == "local_composite_captive_magnet_slice",
-          "composite project kind drift")
-    check(combo_record["magnet_insertions"] == 6,
-          "composite project must pause for six magnets")
-    check(combo_record["placement_audit"]["normal_part_count"] == 4
-          and combo_record["placement_audit"]["support_blocker_count"] == 3,
-          "composite project must carry four parts and three duct blockers")
-    combo_duct = combo_record["archive_audit"][
-        "duct_support_toolpath_audit"]
-    check(combo_duct["status"] == "pass"
-          and combo_duct["collision_count"] == 0
-          and len(combo_duct["parts"]) == 3,
-          "composite support-vs-duct collision gate is not passing")
-    combo_profile = combo_record["profile_effective"]
-    check(all(combo_profile[key] is True for key in (
-        "support_enabled",
-        "support_on_build_plate_only",
-        "support_critical_regions_only",
-        "support_remove_small_overhang",
-    )), "composite project does not pin all four support fields")
-    object_support = combo_record["archive_audit"][
-        "object_support_overrides"]
-    check(len(object_support) == 1
-          and all(object_support[0][key] == "1" for key in (
-              "enable_support",
-              "support_on_build_plate_only",
-              "support_critical_regions_only",
-              "support_remove_small_overhang",
-          )), "composite object-level support fields are not all pinned")
-    support_coverage = combo_record["archive_audit"][
-        "support_midpoints_inside_part_footprints"]
-    check(support_coverage[
-              "obiwan_03_of_16_UM_carrier_1_of_1"] > 0,
-          "composite UM carrier has floating-cantilever risk")
-    check(support_coverage[
-              "obiwan_04_of_16_T_tweeter_crescent_1_of_1"] == 0,
-          "composite tweeter unexpectedly receives support")
-    check(manifest["inventory"]["magnet_project_count"] == 39
+    for label, api, expected_infill in (
+            (
+                "no-floor", shelf.NO_FLOOR_COMBO_PLATE,
+                (40.0, "gyroid"),
+            ),
+            (
+                "floor-stand", shelf.FLOOR_COMBO_PLATE,
+                (100.0, "zig-zag"),
+            )):
+        combo_record = manifest_records[api.PLATE_NAME]
+        check(combo_record["project_kind"]
+              == "local_composite_captive_magnet_slice",
+              f"{label}: composite project kind drift")
+        check(combo_record["magnet_insertions"] == 6,
+              f"{label}: composite project must pause for six magnets")
+        check(combo_record["placement_audit"]["normal_part_count"] == 4
+              and combo_record["placement_audit"][
+                  "support_blocker_count"] == 3,
+              f"{label}: composite must carry four parts and three blockers")
+        combo_duct = combo_record["archive_audit"][
+            "duct_support_toolpath_audit"]
+        check(combo_duct["status"] == "pass"
+              and combo_duct["collision_count"] == 0
+              and len(combo_duct["parts"]) == 3,
+              f"{label}: support-vs-duct collision gate is not passing")
+        combo_profile = combo_record["profile_effective"]
+        check((
+            combo_profile["sparse_infill_density_percent"],
+            combo_profile["sparse_infill_pattern"],
+        ) == expected_infill,
+              f"{label}: combined-plate infill profile drifted")
+        check(all(combo_profile[key] is True for key in (
+            "support_enabled",
+            "support_on_build_plate_only",
+            "support_critical_regions_only",
+            "support_remove_small_overhang",
+        )), f"{label}: project does not pin all support fields")
+        object_support = combo_record["archive_audit"][
+            "object_support_overrides"]
+        check(len(object_support) == 1
+              and all(object_support[0][key] == "1" for key in (
+                  "enable_support",
+                  "support_on_build_plate_only",
+                  "support_critical_regions_only",
+                  "support_remove_small_overhang",
+              )), f"{label}: object support fields are not all pinned")
+        support_coverage = combo_record["archive_audit"][
+            "support_midpoints_inside_part_footprints"]
+        check(support_coverage[
+                  "obiwan_03_of_16_UM_carrier_1_of_1"] > 0,
+              f"{label}: UM carrier has floating-cantilever risk")
+        check(support_coverage[
+                  "obiwan_04_of_16_T_tweeter_crescent_1_of_1"] == 0,
+              f"{label}: tweeter unexpectedly receives support")
+    for label, api in (
+            ("Ac", shelf.AC_WING_PLATE),
+            ("Ae", shelf.AE_WING_PLATE)):
+        wing_record = manifest_records[api.PLATE_NAME]
+        check(wing_record["project_kind"] == "local_locked_wing_plate_slice"
+              and wing_record["magnet_insertions"] == 6,
+              f"{label} wing-plate project identity or pause drifted")
+        check(wing_record["placement_audit"]["normal_part_count"] == 4
+              and wing_record["placement_audit"][
+                  "support_blocker_count"] == 0,
+              f"{label} wing plate must contain four parts and no blockers")
+        wing_duct = wing_record["archive_audit"][
+            "duct_support_toolpath_audit"]
+        check(wing_duct["status"] == "pass"
+              and wing_duct["collision_count"] == 0,
+              f"{label} wing-plate support-toolpath gate is not passing")
+        wing_profile = wing_record["profile_effective"]
+        check(all(wing_profile[key] is False for key in (
+            "support_enabled",
+            "support_on_build_plate_only",
+            "support_critical_regions_only",
+            "support_remove_small_overhang",
+        )), f"{label} wing plate does not pin all support fields off")
+        wing_object_support = wing_record["archive_audit"][
+            "object_support_overrides"]
+        check(len(wing_object_support) == 1
+              and all(wing_object_support[0][key] == "0" for key in (
+                  "enable_support",
+                  "support_on_build_plate_only",
+                  "support_critical_regions_only",
+                  "support_remove_small_overhang",
+              )), f"{label} object support fields are not all pinned off")
+        wing_packing = wing_record["archive_audit"]["source_packing"]
+        check(wing_packing["minimum_actual_xy_gap_mm"] >= 3.5
+              and wing_packing["minimum_actual_bed_edge_mm"] >= 3.5,
+              f"{label} wing-plate packing clearance drifted")
+        check(len(wing_record["archive_audit"][
+                  "captive_cavity_audit"]) == 4,
+              f"{label} wing plate lacks four cavity-toolpath audits")
+    check(manifest["inventory"]["magnet_project_count"] == 42
           and manifest["inventory"]["non_magnet_project_count"] == 9
-          and manifest["inventory"]["magnet_insertions"] == 62,
-          "shelf inventory does not include the composite alternative")
+          and manifest["inventory"]["magnet_insertions"] == 80,
+          "shelf inventory does not include all four plate alternatives")
     for entry in entries:
         record = manifest_records[entry["name"]]
         delivered_stl = ROOT / record["delivered_stl"]

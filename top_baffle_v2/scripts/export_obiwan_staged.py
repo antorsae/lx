@@ -401,12 +401,16 @@ def _resolved_record_path(manifest_path: Path, record: dict) -> Path:
 
 def load_stage_manifest(
         path: Path, *, stand_foot: bool | None = None,
-        require_active_environment: bool = True) -> dict:
+        require_active_environment: bool = True,
+        require_current_sources: bool = True) -> dict:
     """Validate source/policy/runtime provenance and every staged BREP hash.
 
     Portable release verification uses the recorded runtime and guard policy
     to recompute provenance. Build/export consumers additionally require those
-    records to match their active worker environment.
+    records to match their active worker environment. A consumer of staged
+    geometry that is provably independent of a changed source may disable the
+    broad repository-level source fingerprint; state, identity, transaction,
+    byte-count, and per-BREP hash checks remain mandatory.
     """
     path = Path(path)
     payload = json.loads(path.read_text(encoding="utf-8"))
@@ -438,11 +442,19 @@ def load_stage_manifest(
             or not all(isinstance(value, str)
                        for value in runtime_identity["packages"].values())):
         raise RuntimeError("Obi-Wan stage runtime-identity record is malformed")
-    expected_source = _source_fingerprint(
-        stand_foot, runtime_identity=runtime_identity,
-        guard_policy=guard_policy)
-    if payload.get("source_sha256") != expected_source:
-        raise RuntimeError("Obi-Wan stage is stale for the current CAD sources")
+    source_sha256 = payload.get("source_sha256")
+    if (not isinstance(source_sha256, str)
+            or len(source_sha256) != 64
+            or any(character not in "0123456789abcdef"
+                   for character in source_sha256)):
+        raise RuntimeError("Obi-Wan stage source fingerprint is malformed")
+    if require_current_sources:
+        expected_source = _source_fingerprint(
+            stand_foot, runtime_identity=runtime_identity,
+            guard_policy=guard_policy)
+        if source_sha256 != expected_source:
+            raise RuntimeError(
+                "Obi-Wan stage is stale for the current CAD sources")
     if require_active_environment:
         if guard_policy != _guard_policy():
             raise RuntimeError("Obi-Wan stage guard-policy mismatch")

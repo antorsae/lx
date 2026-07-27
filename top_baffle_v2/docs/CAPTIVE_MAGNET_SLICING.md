@@ -314,28 +314,56 @@ the previous authority untouched.
 No OpenCascade code is imported by this command. No local CAD execution is
 performed.
 
-### No-floor 01a+02+03+04 composite shelf plate
+### Floor/no-floor 01+02+03+04 composite shelf plates
 
-The canonical 64-artifact audit remains unchanged. The printer shelf adds one
-local packaging alternative,
-`obiwan_01a_02_03_04_LM_UM_1_of_1`, by translation-only concatenation of the
-already released 01a, 02, 03, and 04 STLs. Its Bambu project is one printable
-object with four normal volumes and the three canonical duct blockers. The
-plate repeats the six authoritative LM/UM sites in one Z=5.96 mm pause; it
-does not create a new CAD artifact or magnet station.
+The canonical 64-artifact audit remains unchanged. The printer shelf adds two
+local packaging alternatives,
+`obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand` and
+`obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand`, by translation-only
+concatenation of the four already released, same-state 01/02/03/04 STLs. Each
+Bambu project is one printable object with four normal volumes and the three
+state-specific canonical duct blockers. Each plate repeats the six
+authoritative LM/UM sites in one Z=5.96 mm pause; neither creates a new CAD
+artifact or magnet station. The no-floor plate uses its authoritative 40%
+gyroid profile; the integral floor plate uses its authoritative 100% zig-zag
+profile.
 
 `scripts/build_obiwan_combo_plate.py` independently requires exact
 four-volume/project/STL equivalence, all four support fields globally and per
 object, actual support under each carrier footprint, no support under the
 tweeter footprint, and zero support-bead collisions against each of the three
-functional duct contracts. `make obiwan_combo_plate` performs a dry run before
-the local macOS Bambu slice and refuses remote-worker/osado execution.
+functional duct contracts. `make obiwan_no_floor_combo_plate` and `make
+obiwan_floor_combo_plate` each perform a dry run before the local macOS Bambu
+slice and refuse remote-worker/osado execution.
 The source STL/manifest, ready project/audit, and promoted shelf pair are
-ordinary Make artifacts with recovery stamps; `make
-obiwan_combo_plate_to_print` refreshes only the delivery pair after a
-slice-disabled complete 48/48 shelf validation. `make to_print` consumes
+ordinary Make artifacts with recovery stamps; the corresponding
+`_to_print` targets refresh only their delivery pair after a slice-disabled
+complete 51/51 shelf validation. `make to_print` consumes
 existing authoritative captive-magnet ready projects and never implicitly
 launches `bambu_slice_release`.
+
+### Ac/Ae B four-piece wing shelf plates
+
+The shelf packages the released Ac B-split 05b/06b/08b/09b meshes as
+`obiwan_05b_06b_08b_09b_Ac_wings_1_of_1` and the Ae B-split
+11b/12b/14b/15b meshes as `obiwan_11b_12b_14b_15b_Ae_wings_1_of_1`.
+The shared builder applies only
+deterministic Rz and XY rigid transforms to the exact front-face-down STL
+triangle records. Its analytic footprint and mesh-witness gates require at
+least 3.5 mm between parts and at every bed edge; the locked result achieves
+3.587 mm and 3.592 mm respectively.
+
+`scripts/build_obiwan_wing_plate.py` slices only on local macOS with Bambu
+arranging/orienting/rotations disabled. It pins all four support settings off
+globally and per object, requires zero support feature blocks, preserves one
+six-site Z=5.96 mm magnet pause, and checks every cavity against the
+authoritative release audit. Project promotion additionally requires identity
+placement and exact equivalence to all 15,692 Ac or 958,546 Ae source
+triangles.
+`make obiwan_ac_wing_plate` and
+`make obiwan_ae_wing_plate` build and audit the local ready projects;
+their corresponding `_to_print` targets refresh the friendly shelf pairs
+after the complete 51/51 slice-disabled shelf gate.
 
 ## Layer and toolpath evidence
 

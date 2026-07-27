@@ -39,6 +39,15 @@ remain responsible for driver and stand loads.
 - No wing material may invade driver seats, carrier keep-outs, cable passages,
   the tweeter crescent envelope, or the matched receiver construction
   envelope. Carrier and wing solids contact with zero physical mating gap.
+- The upper wing follows the complete released B2/Obi-Wan tweeter-crescent
+  profile: the lower arc (`center = (-0.016809, 468.219063)`,
+  `R = 51.051679`) followed by the released cubic horn flank. Because the
+  wings are exact mirrors while the source profile has micron-scale
+  left/right differences, the interface authority is the released plan
+  unioned with its mirror and offset by `0.20` normal to the profile. A larger
+  conservative proxy circle is forbidden because its oblique projection
+  creates an excessive visible slot; extrapolating the lower circle is also
+  forbidden because it undercuts the real horn near its tip.
 
 Each physical side contains one hidden local clearance pocket for the optional
 split's exterior socket land. The cutter offsets the worst-case X-relieved land
@@ -196,6 +205,9 @@ The clean release must prove:
   exposed acoustic edge.
 - Both dovetails reconstruct the monolithic field with the prescribed
   clearance, ownership, endpoint closure, and minimum ligament.
+- The exposed upper T-to-wing boundary retains `0.20 +/- 0.005` normal plan
+  clearance to the complete released crescent profile, independently of A/B
+  subdivision.
 - Every B lower is exactly the corresponding A lower; every B upper contains
   both established upper pieces plus the restored former upper clearance,
   is one valid solid, and reconstructs the monolith with only the lower fit

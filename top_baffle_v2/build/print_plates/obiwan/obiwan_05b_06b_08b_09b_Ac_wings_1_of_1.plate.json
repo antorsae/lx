@@ -1,0 +1,437 @@
+{
+  "bed_clearances_mm": {
+    "x": [
+      3.5499982833862305,
+      3.5500030517578125
+    ],
+    "y": [
+      3.551790475845337,
+      3.5500030517578125
+    ],
+    "z": [
+      0.0,
+      244.5
+    ]
+  },
+  "bounds_mm": {
+    "maximum_mm": [
+      252.4499969482422,
+      252.4499969482422,
+      11.5
+    ],
+    "minimum_mm": [
+      3.5499982833862305,
+      3.551790475845337,
+      0.0
+    ],
+    "size_mm": [
+      248.89999866485596,
+      248.89820647239685,
+      11.5
+    ]
+  },
+  "composite_topology_policy": "each released source passes strict manifold validation and the bundle is their exact, non-intersecting rigid transform",
+  "expected_disconnected_printable_part_count": 4,
+  "magnet_pause": {
+    "magnet_count": 6,
+    "pause_z_mm": 5.96,
+    "sites": [
+      "lm_lower_left",
+      "lm_upper_left",
+      "um_left",
+      "lm_lower_right",
+      "lm_upper_right",
+      "um_right"
+    ]
+  },
+  "manifest_kind": "lx521_locked_composite_print_plate",
+  "mesh_footprint_witnesses": {
+    "obiwan_05b_of_16_Ac_wing_LM_lower_left_1_of_2": {
+      "triangle_centroids_outside_0_005mm_guard": 0,
+      "triangle_count": 2078,
+      "vertices_outside_0_005mm_guard": 0
+    },
+    "obiwan_06b_of_16_Ac_wing_LM_UM_upper_left_2_of_2": {
+      "triangle_centroids_outside_0_005mm_guard": 0,
+      "triangle_count": 6520,
+      "vertices_outside_0_005mm_guard": 0
+    },
+    "obiwan_08b_of_16_Ac_wing_LM_lower_right_1_of_2": {
+      "triangle_centroids_outside_0_005mm_guard": 0,
+      "triangle_count": 2078,
+      "vertices_outside_0_005mm_guard": 0
+    },
+    "obiwan_09b_of_16_Ac_wing_LM_UM_upper_right_2_of_2": {
+      "triangle_centroids_outside_0_005mm_guard": 0,
+      "triangle_count": 6520,
+      "vertices_outside_0_005mm_guard": 0
+    }
+  },
+  "name": "obiwan_05b_06b_08b_09b_Ac_wings_1_of_1",
+  "packing": {
+    "bed_edges": [
+      {
+        "clearance_mm": {
+          "x_high": 3.5500000025521388,
+          "x_low": 190.57753053389578,
+          "y_high": 36.042249978284985,
+          "y_low": 3.5601210018645304
+        },
+        "part": "obiwan_05b_of_16_Ac_wing_LM_lower_left_1_of_2"
+      },
+      {
+        "clearance_mm": {
+          "x_high": 5.542390236479605,
+          "x_low": 74.17244013673887,
+          "y_high": 4.605778156996962,
+          "y_low": 33.99722624725271
+        },
+        "part": "obiwan_06b_of_16_Ac_wing_LM_UM_upper_left_2_of_2"
+      },
+      {
+        "clearance_mm": {
+          "x_high": 117.32914954882258,
+          "x_low": 3.549999999129369,
+          "y_high": 3.550000022664449,
+          "y_low": 57.158817938184825
+        },
+        "part": "obiwan_08b_of_16_Ac_wing_LM_lower_right_1_of_2"
+      },
+      {
+        "clearance_mm": {
+          "x_high": 80.67661404243677,
+          "x_low": 30.19843758036444,
+          "y_high": 5.700192737993916,
+          "y_low": 3.5517897679265786
+        },
+        "part": "obiwan_09b_of_16_Ac_wing_LM_UM_upper_right_2_of_2"
+      }
+    ],
+    "minimum_actual_bed_edge_mm": 3.549999999129369,
+    "minimum_actual_xy_gap_mm": 3.5499992689706876,
+    "minimum_required_bed_edge_mm": 3.5,
+    "minimum_required_xy_gap_mm": 3.5,
+    "pairwise": [
+      {
+        "intersection_area_mm2": 0.0,
+        "left": "obiwan_05b_of_16_Ac_wing_LM_lower_left_1_of_2",
+        "right": "obiwan_06b_of_16_Ac_wing_LM_UM_upper_left_2_of_2",
+        "xy_gap_mm": 3.5499999992247244
+      },
+      {
+        "intersection_area_mm2": 0.0,
+        "left": "obiwan_05b_of_16_Ac_wing_LM_lower_left_1_of_2",
+        "right": "obiwan_08b_of_16_Ac_wing_LM_lower_right_1_of_2",
+        "xy_gap_mm": 94.34230890479571
+      },
+      {
+        "intersection_area_mm2": 0.0,
+        "left": "obiwan_05b_of_16_Ac_wing_LM_lower_left_1_of_2",
+        "right": "obiwan_09b_of_16_Ac_wing_LM_UM_upper_right_2_of_2",
+        "xy_gap_mm": 46.17897307564552
+      },
+      {
+        "intersection_area_mm2": 0.0,
+        "left": "obiwan_06b_of_16_Ac_wing_LM_UM_upper_left_2_of_2",
+        "right": "obiwan_08b_of_16_Ac_wing_LM_lower_right_1_of_2",
+        "xy_gap_mm": 40.17559632871247
+      },
+      {
+        "intersection_area_mm2": 0.0,
+        "left": "obiwan_06b_of_16_Ac_wing_LM_UM_upper_left_2_of_2",
+        "right": "obiwan_09b_of_16_Ac_wing_LM_UM_upper_right_2_of_2",
+        "xy_gap_mm": 3.5500000007321315
+      },
+      {
+        "intersection_area_mm2": 0.0,
+        "left": "obiwan_08b_of_16_Ac_wing_LM_lower_right_1_of_2",
+        "right": "obiwan_09b_of_16_Ac_wing_LM_UM_upper_right_2_of_2",
+        "xy_gap_mm": 3.5499992689706876
+      }
+    ]
+  },
+  "parts": [
+    {
+      "catalog_artifact_id": "shared:Obi-Wan-Ac:obiwan_wing_ac_left_b_1of2_lm_lower",
+      "friendly_name": "obiwan_05b_of_16_Ac_wing_LM_lower_left_1_of_2",
+      "mesh_diagnostics": {
+        "component_error": 0,
+        "component_signed_volumes": [
+          91233.06638892437,
+          -64.88301068305474
+        ],
+        "components": 2,
+        "degenerate": 0,
+        "disconnected_material_components": 0,
+        "duplicates": 0,
+        "negative_volume": 0,
+        "nested_void_components": 1,
+        "nonfinite": 0,
+        "nonnested_void_components": 0,
+        "open": 0,
+        "outer_components": 1,
+        "over_shared": 0,
+        "signed_volume": 91168.18337824145,
+        "triangles": 2078,
+        "winding": 0,
+        "zero_volume": 0,
+        "zero_volume_components": 0
+      },
+      "role": "lm_lower",
+      "rz_degrees": 180.006547942825,
+      "side": "left",
+      "source_print_sidecar": "build/wings/ac/stl/lx521_top_obiwan_wing_ac_left_b_1of2_lm_lower.print.json",
+      "source_print_sidecar_sha256": "5823d35ba87faeae8e60b61d39b11182395982e0d14226e58fe064ade0961e79",
+      "source_stl": "build/wings/ac/stl/lx521_top_obiwan_wing_ac_left_b_1of2_lm_lower.stl",
+      "source_stl_sha256": "2425fe35ff7ce974fb26c420fe5e5a7b3361968735e8b44c37fa52fbdafe219a",
+      "stl_to_plate_matrix": [
+        [
+          -0.9999999934696795,
+          0.00011428316127950355,
+          0.0,
+          252.426708722303
+        ],
+        [
+          -0.00011428316127950355,
+          -0.9999999934696795,
+          0.0,
+          219.958422201636
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "translation_xy_mm": [
+        252.426708722303,
+        219.958422201636
+      ],
+      "triangle_count": 2078
+    },
+    {
+      "catalog_artifact_id": "shared:Obi-Wan-Ac:obiwan_wing_ac_left_b_2of2_lm_um_upper",
+      "friendly_name": "obiwan_06b_of_16_Ac_wing_LM_UM_upper_left_2_of_2",
+      "mesh_diagnostics": {
+        "component_error": 0,
+        "component_signed_volumes": [
+          66820.398249109,
+          -64.88299392536918,
+          -64.88307849967826
+        ],
+        "components": 3,
+        "degenerate": 0,
+        "disconnected_material_components": 0,
+        "duplicates": 0,
+        "negative_volume": 0,
+        "nested_void_components": 2,
+        "nonfinite": 0,
+        "nonnested_void_components": 0,
+        "open": 0,
+        "outer_components": 1,
+        "over_shared": 0,
+        "signed_volume": 66690.63217668388,
+        "triangles": 6520,
+        "winding": 0,
+        "zero_volume": 0,
+        "zero_volume_components": 0
+      },
+      "role": "lm_um_upper",
+      "rz_degrees": -82.921230563781,
+      "side": "left",
+      "source_print_sidecar": "build/wings/ac/stl/lx521_top_obiwan_wing_ac_left_b_2of2_lm_um_upper.print.json",
+      "source_print_sidecar_sha256": "41f73b342088cd73cba182381efc5fd8c76e47e27e2bba44cd524b426e88b056",
+      "source_stl": "build/wings/ac/stl/lx521_top_obiwan_wing_ac_left_b_2of2_lm_um_upper.stl",
+      "source_stl_sha256": "74a739fba86823a274cc8dc8ca349ee5c39bb2b02e97e7bac05d4379a6e3e4d3",
+      "stl_to_plate_matrix": [
+        [
+          0.12323376637207177,
+          0.9923776694513806,
+          0.0,
+          50.756431596864
+        ],
+        [
+          -0.9923776694513806,
+          0.12323376637207177,
+          0.0,
+          227.804382692246
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "translation_xy_mm": [
+        50.756431596864,
+        227.804382692246
+      ],
+      "triangle_count": 6520
+    },
+    {
+      "catalog_artifact_id": "shared:Obi-Wan-Ac:obiwan_wing_ac_right_b_1of2_lm_lower",
+      "friendly_name": "obiwan_08b_of_16_Ac_wing_LM_lower_right_1_of_2",
+      "mesh_diagnostics": {
+        "component_error": 0,
+        "component_signed_volumes": [
+          91233.06721411982,
+          -64.88305094158116
+        ],
+        "components": 2,
+        "degenerate": 0,
+        "disconnected_material_components": 0,
+        "duplicates": 0,
+        "negative_volume": 0,
+        "nested_void_components": 1,
+        "nonfinite": 0,
+        "nonnested_void_components": 0,
+        "open": 0,
+        "outer_components": 1,
+        "over_shared": 0,
+        "signed_volume": 91168.18416317835,
+        "triangles": 2078,
+        "winding": 0,
+        "zero_volume": 0,
+        "zero_volume_components": 0
+      },
+      "role": "lm_lower",
+      "rz_degrees": -127.436883856071,
+      "side": "right",
+      "source_print_sidecar": "build/wings/ac/stl/lx521_top_obiwan_wing_ac_right_b_1of2_lm_lower.print.json",
+      "source_print_sidecar_sha256": "945a596a905aec6aeaf4d02a0d141cfa6de1f48166fbd72ec493f88c2c571da1",
+      "source_stl": "build/wings/ac/stl/lx521_top_obiwan_wing_ac_right_b_1of2_lm_lower.stl",
+      "source_stl_sha256": "8b8742f92fe27bc89e5af83c9fd2f8a6958f5a5e2ffa67480a1b24e37bf770b9",
+      "stl_to_plate_matrix": [
+        [
+          -0.6078871140623111,
+          0.7940234609613211,
+          0.0,
+          97.201036136042
+        ],
+        [
+          -0.7940234609613211,
+          -0.6078871140623111,
+          0.0,
+          264.333261819892
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "translation_xy_mm": [
+        97.201036136042,
+        264.333261819892
+      ],
+      "triangle_count": 2078
+    },
+    {
+      "catalog_artifact_id": "shared:Obi-Wan-Ac:obiwan_wing_ac_right_b_2of2_lm_um_upper",
+      "friendly_name": "obiwan_09b_of_16_Ac_wing_LM_UM_upper_right_2_of_2",
+      "mesh_diagnostics": {
+        "component_error": 0,
+        "component_signed_volumes": [
+          66820.40323911537,
+          -64.88302596621742,
+          -64.88302807967077
+        ],
+        "components": 3,
+        "degenerate": 0,
+        "disconnected_material_components": 0,
+        "duplicates": 0,
+        "negative_volume": 0,
+        "nested_void_components": 2,
+        "nonfinite": 0,
+        "nonnested_void_components": 0,
+        "open": 0,
+        "outer_components": 1,
+        "over_shared": 0,
+        "signed_volume": 66690.63718506944,
+        "triangles": 6520,
+        "winding": 0,
+        "zero_volume": 0,
+        "zero_volume_components": 0
+      },
+      "role": "lm_um_upper",
+      "rz_degrees": 110.702555432118,
+      "side": "right",
+      "source_print_sidecar": "build/wings/ac/stl/lx521_top_obiwan_wing_ac_right_b_2of2_lm_um_upper.print.json",
+      "source_print_sidecar_sha256": "c49094951b0e2a2746fb9ca770a502ba90e75fd9fe5a83c2ebfbc1482e30b982",
+      "source_stl": "build/wings/ac/stl/lx521_top_obiwan_wing_ac_right_b_2of2_lm_um_upper.stl",
+      "source_stl_sha256": "2a4f82c05fbc761c314f6b8b53c1aab36dcf886275509ff9bc048d11a9b66ddd",
+      "stl_to_plate_matrix": [
+        [
+          -0.3535165648902537,
+          -0.9354282646724948,
+          0.0,
+          231.314810940662
+        ],
+        [
+          0.9354282646724948,
+          -0.3535165648902537,
+          0.0,
+          67.458534877173
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "translation_xy_mm": [
+        231.314810940662,
+        67.458534877173
+      ],
+      "triangle_count": 6520
+    }
+  ],
+  "preview": "build/print_plates/obiwan/obiwan_05b_06b_08b_09b_Ac_wings_1_of_1.layout.png",
+  "preview_sha256": "633582cf8b7cbed7ebd4863a0f57b34886754338fde652eafa99c4990a6c612a",
+  "schema_version": 1,
+  "source_bundle_fingerprint": "0231aadf077c3ab820da8e70eb08474bbb5b9c8515620388d0ab869aeb80a328",
+  "source_policy": "rigid Rz plus XY placement of four released front-face-down STLs; no CAD, BREP, support structure, or acoustic geometry regeneration",
+  "stl": "obiwan_05b_06b_08b_09b_Ac_wings_1_of_1.stl",
+  "stl_bytes": 859884,
+  "stl_sha256": "7ab10cc220286f8508c3e79872b08303d40043541fe30329c1c1df7131e98949",
+  "support_policy": {
+    "enabled": false,
+    "global_and_object_fields": {
+      "enable_support": "0",
+      "support_critical_regions_only": "0",
+      "support_on_build_plate_only": "0",
+      "support_remove_small_overhang": "0"
+    },
+    "support_blocker_count": 0,
+    "support_toolpath_gate": "no support feature blocks permitted"
+  },
+  "triangle_count": 17196
+}
