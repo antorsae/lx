@@ -20,6 +20,7 @@ SET_TITLES = {
     "andres": "Andres Measurements",
     "juan-baffleless": "Juan Driver Measurements",
     "juan-lx521-top-raw": "Juan LX521 Top-Baffle Raw Measurements",
+    "kaspar": "Kaspar LX521 Outdoors (DSP)",
     SYSTEM_SET: "LX521.4 Complete System",
 }
 
@@ -33,6 +34,12 @@ SET_DESCRIPTIONS = {
         "50 cm front/rear polar measurements of L22MG and L10NEO mounted in the "
         "LX521 top baffle with no crossover/EQ, plus a raw L22MG+L10NEO+tweeter stack "
         "captured at L22MG microphone height."
+    ),
+    "kaspar": (
+        "Kaspar Reili's LX521 measured outdoors at 1 m on-axis (18-Oct-2022), ungated. "
+        "Lower mid, upper mid and tweeter captured individually downstream of the active "
+        "crossover/EQ, plus the full system at three DSP gain profiles. On-axis only - "
+        "no polar coverage."
     ),
 }
 
@@ -98,9 +105,15 @@ def render_interactive_card(
 
     drivers = detect_drivers(set_docs_dir)
     title = SET_TITLES.get(set_name, set_name.replace("-", " ").title())
-    subtitle = f"{len(drivers)} Drivers - " + (
-        "Full 360 deg coverage" if has_rear else "Front hemisphere (0-90 deg)"
-    )
+    if set_cfg.get("single_angle"):
+        # No per-angle plots exist for these, so detect_drivers() finds nothing;
+        # take the channel count from the measurement metadata instead.
+        n_channels = len(set_cfg.get("measurement_metadata_overrides") or {})
+        subtitle = f"{n_channels} Channels - On-axis only (0 deg)"
+    else:
+        subtitle = f"{len(drivers)} Drivers - " + (
+            "Full 360 deg coverage" if has_rear else "Front hemisphere (0-90 deg)"
+        )
     description = SET_DESCRIPTIONS.get(set_name)
 
     header_lines: List[str] = []
@@ -220,11 +233,11 @@ def render_static_section(set_name: str, set_cfg: Dict) -> str:
     drivers = detect_drivers(set_docs_dir)
     title = SET_TITLES.get(set_name, set_name.replace("-", " ").title())
 
-    lines = []
     header = f"Static Plots - {title} (PNG)"
     if has_rear:
         header += " - 360 deg"
-    lines.append(f'        <h2 class="section-title">{header}</h2>')
+    header_line = f'        <h2 class="section-title">{header}</h2>'
+    lines: List[str] = []
 
     # Core analysis images
     core_items = []
@@ -319,7 +332,10 @@ def render_static_section(set_name: str, set_cfg: Dict) -> str:
             lines.append("        <h3>Crossover Analysis</h3>")
             lines.append(image_grid(items, indent=" " * 8))
 
-    return "\n".join(lines)
+    # Sets with no static plots (e.g. on-axis-only) get no empty section header.
+    if not lines:
+        return ""
+    return "\n".join([header_line, *lines])
 
 
 def write_index():

@@ -116,7 +116,8 @@ plt.rcParams['legend.fontsize'] = 9
 class PolarResponseVisualizer:
     """Generate comprehensive polar response visualizations"""
 
-    def __init__(self, data_path: str = None, static_plots_dir: Path = None, interactive_plots_dir: Path = None):
+    def __init__(self, data_path: str = None, static_plots_dir: Path = None,
+                 interactive_plots_dir: Path = None, require_directivity: bool = True):
         """
         Initialize visualizer
 
@@ -124,6 +125,9 @@ class PolarResponseVisualizer:
             data_path: Path to HDF5 data file (default from config)
             static_plots_dir: Directory for static PNG plots (default from config)
             interactive_plots_dir: Directory for interactive HTML plots (default from config)
+            require_directivity: When False, accept drivers with fewer than two
+                angles and skip directivity metrics. Used for on-axis-only sets
+                that only produce frequency response output.
         """
         if data_path is None:
             data_path = config.HDF5_FILE_PATH
@@ -155,7 +159,7 @@ class PolarResponseVisualizer:
         for driver in self.all_drivers:
             try:
                 freq, angles, spl_matrix, phase_matrix = create_polar_matrix_from_dict(self.data[driver])
-                calc = DirectivityCalculator(freq, angles, spl_matrix)
+                calc = DirectivityCalculator(freq, angles, spl_matrix) if require_directivity else None
             except ValueError as exc:
                 print(f"Warning: Skipping driver '{driver}' due to invalid angle data: {exc}")
                 self.skipped_drivers[driver] = str(exc)
@@ -179,16 +183,18 @@ class PolarResponseVisualizer:
                 'rear_phase_matrix': rear_phase_matrix,
                 'has_rear': self.data[driver].get('has_rear', False),
                 'calculator': calc,
-                'di': calc.calculate_directivity_index(),
-                'beamwidth_6db': calc.calculate_beamwidth(-6),
-                'beamwidth_3db': calc.calculate_beamwidth(-3),
-                'sound_power': calc.calculate_sound_power()
+                'di': calc.calculate_directivity_index() if calc else None,
+                'beamwidth_6db': calc.calculate_beamwidth(-6) if calc else None,
+                'beamwidth_3db': calc.calculate_beamwidth(-3) if calc else None,
+                'sound_power': calc.calculate_sound_power() if calc else None
             }
             self.drivers.append(driver)
 
         if not self.drivers:
             raise ValueError(
                 "No valid drivers found. Each driver needs at least 2 angles and must include 0°."
+                if require_directivity else
+                "No valid drivers found in the measurement data."
             )
 
         # Ensure output directories exist
@@ -860,6 +866,7 @@ class PolarResponseVisualizer:
         extra_set_specs = [
             ("juan-baffleless", "Juan baffleless drivers", "loadExtraJuanBafflelessBtn"),
             ("juan-lx521-top-raw", "Juan top-baffle raw drivers", "loadExtraJuanTopBaffleBtn"),
+            ("kaspar", "Kaspar LX521 outdoor 1 m (DSP)", "loadExtraKasparBtn"),
         ]
         extra_datasets = {}
         for extra_set_name, extra_label, extra_button_id in extra_set_specs:
@@ -887,10 +894,24 @@ class PolarResponseVisualizer:
             extra_data = self._load_extra_set_data(extra_set_name)
             if not extra_data:
                 continue
+            # On-axis-only sets have no off-axis data to align to the base grid;
+            # interpolating would replicate the 0 degree curve at every angle and
+            # read as measured directivity. Publish them at their own angles and
+            # let the explorer skip them where they were not measured.
+            interp_target = None if mset.get("single_angle") else all_angles
             extra_all_data, extra_angles, extra_drivers, extra_interp_info = self._build_explorer_payload(
-                extra_data, TARGET_POINTS, target_angles=all_angles
+                extra_data, TARGET_POINTS, target_angles=interp_target
             )
             if extra_drivers:
+                if interp_target is None:
+                    measured = ", ".join(f"{int(a)}°" for a in extra_angles)
+                    note = (
+                        f"On-axis-only dataset: measured at {measured}. Not interpolated "
+                        "to the base angle grid; these curves are hidden at angles they "
+                        "were not measured at."
+                    )
+                else:
+                    note = self._format_interpolation_note(all_angles, extra_interp_info)
                 extra_datasets[extra_set_name] = {
                     "label": extra_label,
                     "buttonId": extra_button_id,
@@ -898,7 +919,7 @@ class PolarResponseVisualizer:
                     "drivers": extra_drivers,
                     "allData": extra_all_data,
                     "allAngles": [int(a) for a in extra_angles],
-                    "interpolationNote": self._format_interpolation_note(all_angles, extra_interp_info),
+                    "interpolationNote": note,
                 }
 
         extra_controls_html = ""

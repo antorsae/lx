@@ -60,6 +60,14 @@ _PATTERN_DEFS = {
         "side_from_match": lambda m: m.group("side"),
         "filename": lambda driver, angle, side: f"{driver} {angle} {side}.mdat",
     },
+    # Same F{angle}-{driver} shape as "andres", but kept separate so the
+    # andres-only combination-file skip and diagnostic-only HDF5 stamping
+    # do not apply to Kaspar's on-axis captures.
+    "kaspar": {
+        "regex": re.compile(r"^F(?P<angle>\d+)-(?P<driver>.+)$"),
+        "side_from_match": lambda m: "F",
+        "filename": lambda driver, angle, side: f"F{angle}-{driver}.mdat",
+    },
     "lx521_system": {
         "regex": re.compile(r"^(?P<driver>.+)\s+(?P<angle>\d+)\s+GRADOS\s+(?P<side>F|REAR)$"),
         "side_from_match": lambda m: "R" if m.group("side") == "REAR" else "F",
@@ -189,7 +197,7 @@ class PolarDataLoader:
             raise ValueError(
                 "direct_ir_peak_policy='strongest' is unsafe for high-angle validation because "
                 "the absolute peak can be a reflected/scattered lobe rather than the direct "
-                "arrival. Use the default 'first-strong' policy, or set "
+                "arrival. Use the default 'ir-start' policy for REW no-timing-ref captures, or set "
                 "ALLOW_UNSAFE_STRONGEST_IR_PEAK_POLICY=1 only for legacy diagnostics."
             )
         self._file_index = None
@@ -456,9 +464,10 @@ class PolarDataLoader:
     def _auto_fix_timing(self, measurement_uuid: str, measurement_metadata: Optional[Dict] = None) -> dict:
         """
         Detect and fix timing anomalies.
-        Prefer the first strong lobe near the acoustic timing reference. This
-        avoids aligning t=0 to early pre-response artifacts or later/larger
-        high-angle lobes.
+        For REW no-timing-reference captures, the configured default is the
+        stored IR start/onset. Peak-based policies are retained for legacy
+        diagnostics, but a later reflection can be stronger than the direct
+        arrival at high angle.
 
         Returns:
             dict with 'corrected' (bool) and 'offset_ms' (float) if correction was applied

@@ -43,7 +43,7 @@ MEASUREMENT_SETS = {
         "path": Path("measurements/andres"),
         "pattern_type": "andres",  # F{angle}-{driver}.mdat
         "has_rear": False,
-        "hdf5_file": "polar_data_andres.h5",
+        "hdf5_file": "polar_data_andres_l22mg_first_lobe.h5",
         "output_dir": OUTPUT_DIR / "andres",
     },
     "juan-baffleless": {
@@ -66,6 +66,13 @@ MEASUREMENT_SETS = {
         "has_rear": True,
         "hdf5_file": "polar_data_juan_baffleless.h5",
         "output_dir": OUTPUT_DIR / "juan-baffleless",
+        "measurement_metadata_overrides": {
+            "L22MG (nude)": {
+                "measurement_distance_m": 0.50,
+                "measurement_height_reference": "l22mg",
+                "notes": "Measurement distance: 50 cm from driver. Mic height: L22MG/LM.",
+            },
+        },
     },
     "lx521-system": {
         "path": Path("measurements/juan/LX521 POLARES 0_180 GRADOS"),
@@ -82,6 +89,7 @@ MEASUREMENT_SETS = {
 | Pattern | Example | Description |
 |---------|---------|-------------|
 | `andres` | `F45-10F8424.mdat` | Front-only measurements |
+| `kaspar` | `F0-UM MU10RB (Kaspar DSP).mdat` | Same shape as `andres`, kept separate from its combination-file and diagnostic-HDF5 rules |
 | `juan` | `GRS PT6816 45 F.mdat` | Front (F) and Rear (R) measurements |
 | `scanspeak` | `SS10F8414G10 45 F.mdat` | Same convention as `juan` |
 | `juan_suffix` | `SS10F8424G00 45 F sn 074.mdat` | Same as `juan`, allowing text after `F`/`R` |
@@ -144,9 +152,11 @@ make help             # Show all targets
 ```
 output/
 ├── data/
-│   ├── polar_data_andres.h5          # Processed data (andres set)
-│   ├── polar_data_juan_baffleless.h5 # Processed data (juan-baffleless set)
-│   └── polar_data_lx521_system.h5    # Processed data (lx521-system set)
+│   ├── polar_data_andres_l22mg_first_lobe.h5 # Andres first-lobe validation target
+│   ├── polar_data_andres.h5                  # Legacy strongest-lobe diagnostic
+│   ├── polar_data_juan_baffleless.h5         # Processed data (juan-baffleless set)
+│   ├── polar_data_kaspar.h5                  # Processed data (kaspar set, on-axis only)
+│   └── polar_data_lx521_system.h5            # Processed data (lx521-system set)
 ├── andres/                            # Visualizations for andres set
 │   ├── static_plots/
 │   │   ├── core/                     # DI, beamwidth, contour plots
@@ -155,10 +165,26 @@ output/
 ├── juan-baffleless/                   # Visualizations for juan-baffleless set
 │   ├── static_plots/
 │   └── interactive/
-└── lx521-system/                      # Visualizations for lx521-system set
-    ├── static_plots/
-    └── interactive/
+├── lx521-system/                      # Visualizations for lx521-system set
+│   ├── static_plots/
+│   └── interactive/
+└── kaspar/                            # On-axis-only set: no static/polar plots
+    └── interactive/                   # Frequency response explorer + summary
 ```
+
+### On-Axis-Only Sets
+
+A set with a single measurement angle sets `"single_angle": True` in its
+config entry. Directivity, beamwidth, contour and polar output is skipped
+(there is no angular coverage to compute it from), and only the frequency
+response explorer and measurement summary are generated. Such a set is still
+offered as a loadable overlay in every other set's explorer, but it is not
+interpolated onto their angle grids — its curves are simply hidden at angles
+it was not measured at.
+
+Per-set `gate_left_ms`, `gate_right_ms` and `smoothing` keys override the
+`config.py` defaults, for captures where the default 0.5/3.0 ms gate would
+discard the band of interest.
 
 ## Pipeline Workflow
 

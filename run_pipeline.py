@@ -83,6 +83,8 @@ def run_pipeline(args):
     data_dir = mset.get("path")
     pattern_type = mset.get("pattern_type")
     angles = mset.get("angles")
+    gate_left_ms = mset.get("gate_left_ms", config.GATE_LEFT_MS)
+    gate_right_ms = mset.get("gate_right_ms", config.GATE_RIGHT_MS)
     driver_list = None
     if args.drivers:
         driver_list = [driver.strip() for driver in args.drivers.split(",") if driver.strip()]
@@ -107,7 +109,7 @@ def run_pipeline(args):
     # 1. Load & Process Data
     if not args.skip_loading:
         print("\n[STEP 1] Loading and Processing Data...")
-        smoothing_val = 0 if args.no_smoothing else config.DEFAULT_SMOOTHING
+        smoothing_val = 0 if args.no_smoothing else mset.get("smoothing", config.DEFAULT_SMOOTHING)
 
         try:
             if sources:
@@ -128,8 +130,8 @@ def run_pipeline(args):
                         driver_list=driver_list,
                         angles=angles,
                         smoothing=smoothing_val,
-                        gate_left_ms=config.GATE_LEFT_MS,
-                        gate_right_ms=config.GATE_RIGHT_MS,
+                        gate_left_ms=gate_left_ms,
+                        gate_right_ms=gate_right_ms,
                         include_rear=has_rear
                     )
                     # Check for collisions before merging
@@ -158,8 +160,8 @@ def run_pipeline(args):
                     driver_list=driver_list,
                     angles=angles,
                     smoothing=smoothing_val,
-                    gate_left_ms=config.GATE_LEFT_MS,
-                    gate_right_ms=config.GATE_RIGHT_MS,
+                    gate_left_ms=gate_left_ms,
+                    gate_right_ms=gate_right_ms,
                     include_rear=has_rear
                 )
 
@@ -171,8 +173,8 @@ def run_pipeline(args):
             # Save
             print(f"\n[STEP 2] Saving to {hdf5_path}...")
             loader.save_to_hdf5(data, str(hdf5_path),
-                               gate_left_ms=config.GATE_LEFT_MS,
-                               gate_right_ms=config.GATE_RIGHT_MS,
+                               gate_left_ms=gate_left_ms,
+                               gate_right_ms=gate_right_ms,
                                smoothing=smoothing_val)
 
         except RuntimeError as e:
@@ -189,12 +191,21 @@ def run_pipeline(args):
             print(f"Error: Data file {hdf5_path} not found. Run without --skip-loading first.")
             sys.exit(1)
 
+        single_angle = bool(mset.get("single_angle"))
         viz = PolarResponseVisualizer(
             str(hdf5_path),
             static_plots_dir=static_plots_dir,
-            interactive_plots_dir=interactive_plots_dir
+            interactive_plots_dir=interactive_plots_dir,
+            require_directivity=not single_angle,
         )
-        viz.generate_all_plots()
+        if single_angle:
+            # On-axis-only sets have no polar coverage, so directivity,
+            # beamwidth, contour and polar plots would be meaningless.
+            print("Single-angle set: generating frequency response outputs only.")
+            viz.plot_frequency_response_explorer()
+            viz.generate_measurement_summary_html()
+        else:
+            viz.generate_all_plots()
     else:
         print("\n[STEP 3] Skipped visualizations.")
 
@@ -228,9 +239,10 @@ if __name__ == "__main__":
         choices=["strongest", "first-strong", "ir-start"],
         help=(
             "IR timing selector used before gating. Defaults to the measurement-set "
-            "policy, then config.DIRECT_IR_PEAK_POLICY. 'strongest' is unsafe for "
-            "high-angle validation and requires --allow-unsafe-strongest-peak-policy; "
-            "'ir-start' uses REW's stored timeOfIRStartSeconds as the window reference."
+            "policy, then config.DIRECT_IR_PEAK_POLICY. 'ir-start' uses REW's stored "
+            "timeOfIRStartSeconds/onset as the window reference. 'strongest' and "
+            "'first-strong' are legacy diagnostics for no-timing-ref captures because "
+            "high-angle reflections can be stronger than the direct arrival."
         ),
     )
     parser.add_argument(

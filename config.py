@@ -9,6 +9,23 @@ from pathlib import Path
 OUTPUT_DIR = Path("output")
 DATA_DIR = OUTPUT_DIR / "data"
 
+# Kaspar Reili's outdoor LX521 captures share one measurement condition; only
+# the DSP channel gains differ between the three system profiles.
+KASPAR_COMMON_NOTE = (
+    "Kaspar Reili LX521, outdoors, 1 m on-axis, 18-Oct-2022. UMIK-1 (18 dB gain, "
+    "cal 7057283) with REW acoustic timing reference, ungated. Measured downstream "
+    "of the active crossover/EQ: acoustic channel outputs, not raw drivers."
+)
+
+KASPAR_DRIVER_NOTES = {
+    "LM L22MG (Kaspar DSP)": "Lower midrange alone, DSP channel gains at 0.",
+    "UM MU10RB (Kaspar DSP)": "Upper midrange alone, DSP channel gains at 0.",
+    "Tweeter 27TFFNC (Kaspar DSP)": "Tweeter alone, DSP channel gains at 0.",
+    "System P1 (Kaspar DSP)": "All drivers, gain profile 1: Woofer -4.8, LM -4.6, UM +2, HI -2 dB.",
+    "System P2 (Kaspar DSP)": "All drivers, gain profile 2: Woofer -4.8, LM -6.2, UM +2, HI -2 dB.",
+    "System P3 (Kaspar DSP)": "All drivers, gain profile 3: Woofer -4.8, LM -6.2, UM -2.8, HI 0 dB.",
+}
+
 # Measurement Set Configurations
 MEASUREMENT_SETS = {
     "andres": {
@@ -116,6 +133,38 @@ MEASUREMENT_SETS = {
             },
         },
     },
+    "kaspar": {
+        # Kaspar Reili's LX521, measured outdoors at 1 m on-axis, 18 Oct 2022.
+        # Split from a single 6-measurement .mdat into F0-{driver}.mdat files.
+        # Per-driver captures are taken downstream of the active crossover/EQ,
+        # so they are acoustic channel outputs, not raw drivers.
+        "path": Path("measurements/kaspar"),
+        "pattern_type": "kaspar",  # F{angle}-{driver}.mdat
+        "angles": [0],
+        "has_rear": False,
+        # On-axis only: no polar/DI/beamwidth/contour output is meaningful here.
+        "single_angle": True,
+        # Outdoor capture with the first reflection ~6 ms after the direct
+        # arrival and >=20 dB down. The default 3 ms gate would discard
+        # everything below ~333 Hz, which is most of what these captures show,
+        # so publish them ungated.
+        "gate_left_ms": 0.0,
+        "gate_right_ms": 0.0,
+        # Ungated means full 0.37 Hz resolution with deep comb structure. The
+        # explorer decimates to ~500 log-spaced points, and picking single bins
+        # out of that aliases by up to ~10 dB, so smooth before decimating.
+        "smoothing": 12,
+        "hdf5_file": "polar_data_kaspar.h5",
+        "output_dir": OUTPUT_DIR / "kaspar",
+        "direct_ir_peak_policy": "ir-start",
+        "measurement_metadata_overrides": {
+            name: {
+                "measurement_distance_m": 1.00,
+                "notes": f"{KASPAR_COMMON_NOTE} {detail}",
+            }
+            for name, detail in KASPAR_DRIVER_NOTES.items()
+        },
+    },
     "lx521-system": {
         "path": Path("measurements/juan/LX521 POLARES 0_180 GRADOS"),
         "pattern_type": "lx521_system",  # {name} {angle} GRADOS {F|REAR}.mdat
@@ -145,12 +194,11 @@ GATE_LEFT_MS = 0.5
 GATE_RIGHT_MS = 3.0
 SAMPLE_RATE = 48000  # Default, will be updated from measurement
 
-# Direct-arrival IR selection for regenerated diagnostic HDF5s. The canonical
-# Andres validation target is the published-parity HDF5 above, not a regenerated
-# first-lobe/direct-gate substitute. "first-strong" remains the safe selector
-# for side/null diagnostic work because a later larger lobe/reflection cannot
-# silently anchor the gate.
-DIRECT_IR_PEAK_POLICY = os.environ.get("DIRECT_IR_PEAK_POLICY", "first-strong")
+# Direct-arrival IR selection for regenerated HDF5s. Juan's USB/no-timing-ref
+# captures are not absolute-time measurements: REW can peak-reference a later
+# stronger reflection to 0 ms at high angle. Use REW's stored IR-start/onset as
+# the default gate reference; first-strong/strongest are legacy diagnostics.
+DIRECT_IR_PEAK_POLICY = os.environ.get("DIRECT_IR_PEAK_POLICY", "ir-start")
 ALLOW_UNSAFE_STRONGEST_IR_PEAK_POLICY = os.environ.get(
     "ALLOW_UNSAFE_STRONGEST_IR_PEAK_POLICY",
     "",
@@ -182,6 +230,12 @@ DRIVER_COLORS = {
     'L22MG (LX521 top raw)': '#ff7f0e',  # Orange - mounted raw
     'L10NEO (LX521 top raw)': '#8c564b',  # Brown - mounted raw
     'L22MG+L10NEO+Tweeters (LX521 top raw)': '#111827',  # Black - mounted raw stack
+    'LM L22MG (Kaspar DSP)': '#ff7f0e',        # Orange - Kaspar lower mid
+    'UM MU10RB (Kaspar DSP)': '#2ca02c',       # Green - Kaspar upper mid
+    'Tweeter 27TFFNC (Kaspar DSP)': '#d62728',  # Red - Kaspar tweeter
+    'System P1 (Kaspar DSP)': '#111827',       # Black - Kaspar system profile 1
+    'System P2 (Kaspar DSP)': '#6b7280',       # Gray - Kaspar system profile 2
+    'System P3 (Kaspar DSP)': '#9467bd',       # Purple - Kaspar system profile 3
 }
 
 DRIVER_NAME_ALIASES = {

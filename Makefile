@@ -28,7 +28,7 @@ else
 endif
 
 # Measurement sets
-SETS := andres juan-baffleless juan-lx521-top-raw lx521-system
+SETS := andres juan-baffleless juan-lx521-top-raw lx521-system kaspar
 
 # Directories
 OUTPUT_DIR := output
@@ -118,8 +118,14 @@ viz-%: $$(call hdf5_for,$$*)
 
 sync-%:
 	@echo "Syncing $* to docs/..."
-	@mkdir -p $(DOCS_DIR)/$*/static_plots $(DOCS_DIR)/$*/interactive
-	rsync -av --delete $(OUTPUT_DIR)/$*/static_plots/ $(DOCS_DIR)/$*/static_plots/
+	@mkdir -p $(DOCS_DIR)/$*/interactive
+	@if [ -d "$(OUTPUT_DIR)/$*/static_plots" ]; then \
+		mkdir -p $(DOCS_DIR)/$*/static_plots; \
+		rsync -av --delete $(OUTPUT_DIR)/$*/static_plots/ $(DOCS_DIR)/$*/static_plots/; \
+	else \
+		echo "  (no static plots for $*, skipping)"; \
+		rm -rf $(DOCS_DIR)/$*/static_plots; \
+	fi
 	rsync -av --delete $(OUTPUT_DIR)/$*/interactive/ $(DOCS_DIR)/$*/interactive/
 	@echo "✓ $* synced to docs/"
 
