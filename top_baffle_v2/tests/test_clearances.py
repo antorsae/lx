@@ -173,7 +173,7 @@ def test_duct_duct_separation():
     cab = _cab(True, "proud")
     for stand_foot in (True, False):
         route_sets = (
-            ("standard", _routes(stand_foot, "proud")),
+            ("stock", _routes(stand_foot, "proud")),
             ("V1L", _routes(stand_foot, "proud",
                             cab.UM_V1L_HANDOFF_KEY)),
         )
@@ -209,7 +209,7 @@ def test_duct_vs_w22_pilots():
     cab = _cab(True, "proud")
     for stand_foot in (True, False):
         route_sets = (
-            ("standard", _routes(stand_foot, "proud")),
+            ("stock", _routes(stand_foot, "proud")),
             ("V1L", _routes(stand_foot, "proud",
                             cab.UM_V1L_HANDOFF_KEY)),
         )
@@ -228,7 +228,7 @@ def test_duct_vs_w22_pilots():
                         f"{variant} {name} vs W22 pilot "
                         f"({px:.1f},{py:.1f}): plan {measured:.2f} < "
                         f"{required + SAMPLING_SLACK:.2f}")
-        print(f"  W22 pilots vs standard/V1L LM/UM clearances OK "
+        print(f"  W22 pilots vs stock/V1L LM/UM clearances OK "
               f"(foot={stand_foot})")
 
 
@@ -317,7 +317,7 @@ def test_stock_slim_floor_bend_lateral_envelope():
         bent_wall_lateral_hermite,
         lateral_hermite_bounds,
     )
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (
+    from lx521_baffle.proud.b2_split import (
         FLOOR_BEND_LATERAL_ENVELOPE,
     )
 
@@ -379,7 +379,7 @@ def test_stock_slim_floor_bend_lateral_envelope():
 def _chamfer_plane():
     """B2's chamfer edge (the shoulder/wing mating face), as (P0, inward
     unit normal) -- the wall the top magnet receiver must not pierce."""
-    from lx521_baffle.proud.top_baffle_nd25fw4_b import B2_RIGHT_SEGS
+    from lx521_baffle.proud.b import B2_RIGHT_SEGS
 
     (_, p_apex, p_crest) = B2_RIGHT_SEGS[1]  # ("L", apex, crest)
     ux, uy = p_crest[0] - p_apex[0], p_crest[1] - p_apex[1]
@@ -391,13 +391,13 @@ def _chamfer_plane():
 def test_magnet_top_site_walls():
     from lx521_baffle.base import (
         CRESCENT_SCALLOP_CY, THICKNESS_MM, _crescent_taper_depth)
-    from lx521_baffle.proud.top_baffle_nd25fw4_b import (
+    from lx521_baffle.proud.b import (
         MAG_CAVITY_D_MM, MAG_CAVITY_DEPTH_MM, MAG_FACE_SKIN_MM,
         MAG_INNER_SKIN_MM, MAG_INTERFACE_GAP_MM, MAG_LAND_DEPTH_MM,
         MAGNET_D_MM, MAGNET_SITES, MAGNET_T_MM,
         TWEETER_DROP_MM)
 
-    # One fit standard applies to every generated variant: the purchased
+    # One fit rule applies to every generated variant: the purchased
     # magnet remains D5 x 2 while all base/receiver cavities are D5.2 x 2.1,
     # buried between one printable 0.45 mm extrusion at each axial face.
     assert MAGNET_D_MM == 5.0
@@ -457,7 +457,7 @@ def test_magnet_top_site_walls():
 
 
 def test_magnet_cavities_vs_t_ducts():
-    from lx521_baffle.proud.top_baffle_nd25fw4_b import (
+    from lx521_baffle.proud.b import (
         MAG_CAVITY_D_MM, MAG_CAVITY_DEPTH_MM, MAG_FACE_SKIN_MM,
         MAG_INTERFACE_GAP_MM, MAGNET_SITES)
     from lx521_baffle.cables import CABLE_D
@@ -494,14 +494,14 @@ def test_ts_captive_keepout_nudge():
     preserving every duct section.
     """
     from build123d import Spline
-    from lx521_baffle.proud.top_baffle_nd25fw4_b import MAGNET_SITES
+    from lx521_baffle.proud.b import MAGNET_SITES
 
     cab = _cab(True, "proud")
-    standard = cab._ts_route(cab.TS_ROUTE_STANDARD)
+    stock = cab._ts_route(cab.TS_ROUTE_STANDARD)
     protected = cab._ts_route(cab.TS_ROUTE_CAPTIVE)
-    assert len(standard) == len(protected)
+    assert len(stock) == len(protected)
 
-    for (x0, y0), (x1, y1) in zip(standard, protected):
+    for (x0, y0), (x1, y1) in zip(stock, protected):
         assert math.isclose(y1, y0, abs_tol=1.0e-12)
         expected = cab._ts_captive_nudge_mm(y0)
         assert math.isclose(x1 - x0, expected, abs_tol=1.0e-12)
@@ -509,10 +509,10 @@ def test_ts_captive_keepout_nudge():
         assert cab.ts_section(y1) == cab.ts_section(y0)
 
     protected_by_y = {y: x for x, y in protected}
-    standard_by_y = {y: x for x, y in standard}
+    stock_by_y = {y: x for x, y in stock}
     for y, expected in cab.TS_CAPTIVE_NUDGE_KNOTS:
         assert math.isclose(
-            protected_by_y[y] - standard_by_y[y], expected,
+            protected_by_y[y] - stock_by_y[y], expected,
             abs_tol=1.0e-12)
 
     _x, _y, lower_nx, _lower_ny, _pin, _zc = MAGNET_SITES[0]
@@ -531,18 +531,18 @@ def test_ts_captive_keepout_nudge():
           f"normal nudge={restored_normal_web:.3f} mm")
 
 
-def test_standard_captive_magnet_contract():
+def test_stock_captive_magnet_contract():
     """Pair geometry, one closure plane, and flush solid receiver skin."""
     from lx521_baffle.magnets import pair_facts, wall_cavity_tools
     from lx521_baffle.base import THICKNESS_MM
-    from lx521_baffle.proud.top_baffle_nd25fw4_b import (
+    from lx521_baffle.proud.b import (
         BASE_CAVITY_FACE_INSET_MM, B2_RIGHT_SEGS,
         LOWER_INTERFACE_DATUM_DEVIATION_MAX_MM,
         MAGNET_QUALIFIED_LAND_WIDTH_MM, MAGNET_SITES,
         STANDARD_MAGNET_Z_MM,
         UPPER_INTERFACE_CURVE_DEVIATION_AREA_MM2,
         UPPER_INTERFACE_CURVE_DEVIATION_MAX_MM)
-    from lx521_baffle.proud.top_baffle_nd25fw4_v1 import REAR_MM, V1_MAGNET_ZC
+    from lx521_baffle.proud.v1 import REAR_MM, V1_MAGNET_ZC
 
     for index, (x, y, nx, ny, _pin, zc) in enumerate(MAGNET_SITES):
         assert math.isclose(zc, STANDARD_MAGNET_Z_MM, abs_tol=1e-12)
@@ -567,10 +567,10 @@ def test_standard_captive_magnet_contract():
                 "bed_datum": (0.0, 0.0, THICKNESS_MM),
             }
             base = wall_cavity_tools(
-                name=f"standard_{index}_{side}_base", owner="base",
+                name=f"stock_{index}_{side}_base", owner="base",
                 **base_kwargs)
             receiver = wall_cavity_tools(
-                name=f"standard_{index}_{side}_receiver",
+                name=f"stock_{index}_{side}_receiver",
                 owner="receiver", **receiver_kwargs)
             pair = pair_facts(base, receiver)
             assert math.isclose(
@@ -688,7 +688,7 @@ def test_standard_captive_magnet_contract():
         abs_tol=1.0e-6)
 
 
-def test_standard_local_magnet_backing():
+def test_stock_local_magnet_backing():
     """Magnet booleans may change only fully internal cavity volume.
 
     The old regression intentionally allowed a 0.75-mm rear cap and a local
@@ -702,17 +702,17 @@ def test_standard_local_magnet_backing():
     import gc
 
     from lx521_baffle.base import baffle_solid
-    from lx521_baffle.proud.top_baffle_nd25fw4_a_comp import OUTLINE_A_COMP
-    from lx521_baffle.proud.top_baffle_nd25fw4_attachments import _box
-    from lx521_baffle.proud.top_baffle_nd25fw4_b import (
+    from lx521_baffle.proud.a_comp import OUTLINE_A_COMP
+    from lx521_baffle.proud.attachments import _box
+    from lx521_baffle.proud.b import (
         TWEETER_DROP_MM, _apply_magnets)
-    from lx521_baffle.proud.top_baffle_nd25fw4_b1 import OUTLINE_B1
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import pieces
+    from lx521_baffle.proud.b1 import OUTLINE_B1
+    from lx521_baffle.proud.b2 import OUTLINE_B2
+    from lx521_baffle.proud.b2_split import pieces
     from lx521_baffle.cables import TS_ROUTE_CAPTIVE
-    from lx521_baffle.proud.top_baffle_nd25fw4_v1 import (
+    from lx521_baffle.proud.v1 import (
         REAR_MM, V1_MAGNET_ZC, field_cutters)
-    from lx521_baffle.proud.top_baffle_nd25fw4_v1_attachments import _v1_base
+    from lx521_baffle.proud.v1_attachments import _v1_base
 
     def volume(shape):
         return 0.0 if shape is None else float(shape.volume)
@@ -853,10 +853,10 @@ def test_individual_attachment_magnet_burial():
     from build123d import Box, Pos
     from lx521_baffle.magnets import wall_cavity_tools
     from lx521_baffle.base import THICKNESS_MM
-    from lx521_baffle.proud.top_baffle_nd25fw4_attachments import attachments
-    from lx521_baffle.proud.top_baffle_nd25fw4_b import MAGNET_SITES
-    from lx521_baffle.proud.top_baffle_nd25fw4_v1 import V1_MAGNET_ZC
-    from lx521_baffle.proud.top_baffle_nd25fw4_v1_attachments import v1_attachments
+    from lx521_baffle.proud.attachments import attachments
+    from lx521_baffle.proud.b import MAGNET_SITES
+    from lx521_baffle.proud.v1 import V1_MAGNET_ZC
+    from lx521_baffle.proud.v1_attachments import v1_attachments
 
     def volume(shape):
         return 0.0 if shape is None else float(shape.volume)
@@ -962,11 +962,11 @@ def test_individual_attachment_magnet_burial():
 def test_v1_field():
     """V1/V1L front-flush fields contain their selected duct windows.
 
-    V1 uses the standard proud UM tail; V1L uses the keyed 283-degree
+    V1 uses the stock proud UM tail; V1L uses the keyed 283-degree
     tail.  Both have material z=6.8..18.3, except for each intentional
     analytic R14 rear opening.
     """
-    import lx521_baffle.proud.top_baffle_nd25fw4_v1 as v1
+    import lx521_baffle.proud.v1 as v1
     from lx521_baffle.base import THICKNESS_MM
     from lx521_baffle.cables import CABLE_D
 
@@ -1016,7 +1016,7 @@ def test_duct_vs_um_pilots():
     cab = _cab(True, "proud")
     for stand_foot in (True, False):
         route_sets = (
-            ("standard", _routes(stand_foot, "proud")),
+            ("stock", _routes(stand_foot, "proud")),
             ("V1L", _routes(stand_foot, "proud",
                             cab.UM_V1L_HANDOFF_KEY)),
         )
@@ -1050,7 +1050,7 @@ def test_duct_vs_um_pilots():
                         f"{variant} {name} vs MU10 pilot "
                         f"({px:.1f},{py:.1f}): 3D surface clearance "
                         f"{measured:.2f} < 1.50")
-    print("  MU10 pilots vs standard/V1L proud-family ducts: plan "
+    print("  MU10 pilots vs stock/V1L proud-family ducts: plan "
           "and vertical clearances OK (section-aware)")
 
 
@@ -1195,7 +1195,7 @@ def test_um_tail_has_no_curvature_reversal():
 def test_lm_exit_curvature_and_fishing():
     """Every Stock/Slim LM outlet is a traversable R14, never an L-bore.
 
-    The standard and V1L pieces have different rear depths, so their R14
+    The stock and V1L pieces have different rear depths, so their R14
     arcs reach the surface at different angles.  Both must retain the same
     exact mouth XY, a G1 plan/arc/lead handoff, and a D9 terminal section for
     the estimated D7.8 cable.
@@ -1263,7 +1263,7 @@ def test_lm_exit_curvature_and_fishing():
 def test_v1l_um_terminal_axis_handoff():
     """The V1L mid-right mouth is centered on the requested 283° axis.
 
-    The routing sheet's white standard outlet is below the thin V1L
+    The routing sheet's white stock outlet is below the thin V1L
     rear plane.  Therefore this regression solves the qualified spatial
     circle at z=6.8 and checks the real printed mouth, rather than merely
     clocking the nominal z=-2 rear endpoint.  It also proves the complete
@@ -1273,7 +1273,7 @@ def test_v1l_um_terminal_axis_handoff():
     from lx521_baffle.base import (
         UM_CUTOUT, UM_PILOT_ANGLES_DEG, UM_PILOT_D_MM,
         UM_PILOT_PCD_MM, UM_TERMINAL_CLOCK_DEG, _pilot_centers)
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import SEAM_B_Y, SEAM_C_X
+    from lx521_baffle.proud.b2_split import SEAM_B_Y, SEAM_C_X
 
     key = cab.UM_V1L_HANDOFF_KEY
     spec = cab.UM_HANDOFF[key]
@@ -1304,14 +1304,14 @@ def test_v1l_um_terminal_axis_handoff():
     assert face_tangent[2] < -0.5
     assert abs(spec["rear_end"][2] + 2.0) < 1.0e-9
 
-    standard = cab.UM_HANDOFF["proud"]
+    stock = cab.UM_HANDOFF["proud"]
     assert np.linalg.norm(
-        np.asarray(spec["start"]) - np.asarray(standard["start"])) > 15.0
+        np.asarray(spec["start"]) - np.asarray(stock["start"])) > 15.0
     assert np.allclose(
-        standard["rear_face_axis_point"],
+        stock["rear_face_axis_point"],
         (*cab.UM_STANDARD_REAR_FACE_XY_MM, 0.0), atol=1.0e-12)
     assert np.allclose(
-        cab.route_points("um")[-1][:2], standard["start"][:2],
+        cab.route_points("um")[-1][:2], stock["start"][:2],
         atol=1.0e-12)
     assert np.allclose(
         cab.route_points("um", um_handoff_key=key)[-1][:2],
@@ -1358,14 +1358,14 @@ def test_um_eroded_outline_containment():
     """
     from shapely.geometry import LineString, Polygon
     from gen_driver_overlay import outline_polygon
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
+    from lx521_baffle.proud.b2 import OUTLINE_B2
 
     poly = Polygon(outline_polygon(OUTLINE_B2, samples=256))
     assert poly.is_valid
     cab = _cab(False, "proud")
     need = cab.UM_HANDOFF_D_MM / 2.0 + 1.6
     eroded = poly.buffer(-need, resolution=64, join_style=2)
-    for label, key in (("standard proud", "proud"),
+    for label, key in (("stock proud", "proud"),
                        ("V1L", cab.UM_V1L_HANDOFF_KEY)):
         pts = np.asarray(cab.route_centerline_points(
             "um", spacing_mm=0.25, um_handoff_key=key))
@@ -1392,7 +1392,7 @@ def test_ts_eroded_outline_containment():
     """
     from shapely.geometry import LineString, Point, Polygon
     from gen_driver_overlay import outline_polygon
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
+    from lx521_baffle.proud.b2 import OUTLINE_B2
 
     poly = Polygon(outline_polygon(OUTLINE_B2, samples=512))
     assert poly.is_valid
@@ -1428,9 +1428,9 @@ def test_stock_slim_ts_full_section_containment():
     """
     from build123d import Box, Pos
     from lx521_baffle.base import baffle_solid
-    from lx521_baffle.proud.top_baffle_nd25fw4_b import TWEETER_DROP_MM
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
-    from lx521_baffle.proud.top_baffle_nd25fw4_v1 import (
+    from lx521_baffle.proud.b import TWEETER_DROP_MM
+    from lx521_baffle.proud.b2 import OUTLINE_B2
+    from lx521_baffle.proud.v1 import (
         v1_magnet_free_solid,
     )
 
@@ -1639,9 +1639,9 @@ def test_stock_slim_no_floor_full_duct_containment():
     import gc
     from build123d import Box, Pos
     from lx521_baffle.base import baffle_solid
-    from lx521_baffle.proud.top_baffle_nd25fw4_b import TWEETER_DROP_MM
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
-    from lx521_baffle.proud.top_baffle_nd25fw4_v1 import (
+    from lx521_baffle.proud.b import TWEETER_DROP_MM
+    from lx521_baffle.proud.b2 import OUTLINE_B2
+    from lx521_baffle.proud.v1 import (
         v1_magnet_free_solid,
     )
 
@@ -1693,8 +1693,8 @@ def test_stock_slim_no_floor_full_duct_containment():
 def test_stock_slim_no_floor_bottom_topology():
     """The relocated three-port entry must not detach a lower-piece island."""
     _cab(False, "proud")
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import pieces
-    from lx521_baffle.proud.top_baffle_nd25fw4_v1l_split import pieces_v1l
+    from lx521_baffle.proud.b2_split import pieces
+    from lx521_baffle.proud.v1l_split import pieces_v1l
 
     stock = pieces(
         only="piece_bottom",
@@ -1772,8 +1772,8 @@ def test_cutter_health():
                 else il.import_module(m)
         cab = sys.modules[CABLE_MODULE]
         base_mod = sys.modules[BASE_MODULE]
-        from lx521_baffle.proud.top_baffle_nd25fw4_b import TWEETER_DROP_MM
-        from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
+        from lx521_baffle.proud.b import TWEETER_DROP_MM
+        from lx521_baffle.proud.b2 import OUTLINE_B2
         base = base_mod.baffle_solid(OUTLINE_B2, TWEETER_DROP_MM)
         cutters = cab.cable_cutters()
         for i, c in enumerate(cutters):
@@ -1793,7 +1793,7 @@ def test_cutter_health():
         v1l_base -= v1l_tube
         assert v1l_base.is_valid and v1l_base.volume > 0, (
             f"V1L keyed UM cutter poisoned base boolean (foot={mode})")
-        print(f"  all cutters healthy + standard/V1L UM booleans clean "
+        print(f"  all cutters healthy + stock/V1L UM booleans clean "
               f"(foot={mode})")
         del base, v1l_base, v1l_tube, cab
         gc.collect()
@@ -1814,9 +1814,9 @@ def test_v1l_mid_right_terminal_duct_topology():
     from build123d import Vertex
 
     cab = _cab(False, "proud")
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (
+    from lx521_baffle.proud.b2_split import (
         SEAM_A_Y, SEAM_B_Y)
-    from lx521_baffle.proud.top_baffle_nd25fw4_v1l_split import pieces_v1l
+    from lx521_baffle.proud.v1l_split import pieces_v1l
 
     parts = pieces_v1l(only="piece_mid_right")
     assert set(parts) == {"piece_mid_right"}
@@ -1865,10 +1865,10 @@ def _test_v1l_upper_dovetail_depth_profile(
 
     _cab(False, "proud")
     from lx521_baffle.base import THICKNESS_MM
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (
+    from lx521_baffle.proud.b2_split import (
         DOVETAILS_B, SEAM_B_Y)
-    from lx521_baffle.proud.top_baffle_nd25fw4_v1 import REAR_MM
-    from lx521_baffle.proud.top_baffle_nd25fw4_v1l_split import pieces_v1l
+    from lx521_baffle.proud.v1 import REAR_MM
+    from lx521_baffle.proud.v1l_split import pieces_v1l
 
     cx, neck, _head, depth = DOVETAILS_B[dovetail_index]
     part = pieces_v1l(
@@ -1901,7 +1901,7 @@ def test_v1l_upper_dovetail_depth_mid_right():
 
 def test_seam_keys_vs_ducts():
     """Every regular dovetail pocket keeps a wall to every crossing duct."""
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (
+    from lx521_baffle.proud.b2_split import (
         DOVETAILS_A, DOVETAILS_B, DOVETAILS_C,
         SEAM_A_Y, SEAM_B_Y, SEAM_C_X)
     from lx521_baffle.cables import CABLE_D
@@ -1923,7 +1923,7 @@ def test_seam_keys_vs_ducts():
     cab = _cab(True, "proud")
     for stand_foot in (True, False):
         route_sets = (
-            ("standard", _routes(stand_foot, "proud")),
+            ("stock", _routes(stand_foot, "proud")),
             ("V1L", _routes(stand_foot, "proud",
                             cab.UM_V1L_HANDOFF_KEY)),
         )
@@ -1943,7 +1943,7 @@ def test_seam_keys_vs_ducts():
                             f"{variant} {name} duct {dd:.2f} from seam "
                             f"key [{x0:.1f}..{x1:.1f}]x"
                             f"[{y0:.1f}..{y1:.1f}] at ({x:.1f},{y:.1f})")
-    print("  regular dovetails: standard/V1L ducts keep >=1.4 to every pocket")
+    print("  regular dovetails: stock/V1L ducts keep >=1.4 to every pocket")
 
 
 def test_shared_lm_clock_and_hidden_seam_b_m3():
@@ -1955,7 +1955,7 @@ def test_shared_lm_clock_and_hidden_seam_b_m3():
         THICKNESS_MM,
     )
     import lx521_baffle.flush as flush
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (
+    from lx521_baffle.proud.b2_split import (
         DOVETAILS_B,
         SEAM_A_Y,
         SEAM_B_M3_AXIS_X_MM,
@@ -2055,14 +2055,14 @@ def test_shared_lm_clock_and_hidden_seam_b_m3():
     print(
         "  shared W22 0/60 clock: two lower-piece inserts; hidden seam-B "
         "M3x20 has 3.381-mm engagement, 0.619-mm tip margin, and zero "
-        "standard/V1L duct overlap")
+        "stock/V1L duct overlap")
 
 
 def test_variant_outlines_splice():
     for name in (
-        "lx521_baffle.proud.top_baffle_nd25fw4_b1",
-        "lx521_baffle.proud.top_baffle_nd25fw4_b2",
-        "lx521_baffle.proud.top_baffle_nd25fw4_a_comp",
+        "lx521_baffle.proud.b1",
+        "lx521_baffle.proud.b2",
+        "lx521_baffle.proud.a_comp",
     ):
         mod = importlib.import_module(name)
         importlib.reload(mod)  # re-runs variant_outline's anchor checks
@@ -2077,8 +2077,8 @@ def test_attachment_flushness():
     _routes(True)  # normalize the reload state
     from build123d import Box, Pos
 
-    from lx521_baffle.proud.top_baffle_nd25fw4_attachments import attachments
-    from lx521_baffle.proud.top_baffle_nd25fw4_v1_attachments import v1_attachments
+    from lx521_baffle.proud.attachments import attachments
+    from lx521_baffle.proud.v1_attachments import v1_attachments
     wall_x = _cab()._wall_x
 
     # Surrounding attachment outlines mate at exact fit (variant - b2, no
@@ -2125,7 +2125,7 @@ def test_v1l_service_envelope():
     """V1L's cable enters the terminal corridor; printed TPU must not.
 
     Zero cable/Faston overlap was the correct rule for the laterally
-    offset standard proud outlet, but would contradict the requested
+    offset stock proud outlet, but would contradict the requested
     on-axis V1L handoff.  The installed D7 cable must intentionally
     occupy that corridor while both split strain-relief halves remain
     outside it and preserve the cable bore.
@@ -2179,7 +2179,7 @@ def test_emboss_driver_keepouts():
     from lx521_baffle.base import L22_CUTOUT
 
     ax, ay, rot, font, short = EMBOSS_XY["2of4_mid_left"]
-    label = _label("lx521_top_v1l_2of4_mid_left")
+    label = _label("slim_2_of_4_mid_left")
     if short:
         label = label.split(" ")[0]
     text_face = mirror(Text(label, font_size=font), Plane.YZ)
@@ -2196,10 +2196,10 @@ def test_emboss_driver_keepouts():
     # Option-B vertical tangent and V1L's thickness ramp.  Bind the complete
     # longest label, not only its nominal anchor, to both geometry limits.
     from lx521_baffle.floor_bend import centerline_controls
-    from lx521_baffle.proud.top_baffle_nd25fw4_v1l import RAMP_Y0
+    from lx521_baffle.proud.v1l import RAMP_Y0
 
     bx, by, brot, bfont, bshort = EMBOSS_XY["1of4_bottom"]
-    bottom_label = _label("lx521_top_v1l_1of4_bottom")
+    bottom_label = _label("slim_1_of_4_bottom")
     if bshort:
         bottom_label = bottom_label.split(" ")[0]
     bottom_text = Rot(Z=brot) * mirror(
@@ -2227,7 +2227,7 @@ def test_margin_dashboard():
                                     UM_PILOT_PCD_MM, _pilot_centers)
     from lx521_baffle.cables import CABLE_D
     from lx521_baffle.magnets import FACE_SKIN_MM, INNER_SKIN_MM
-    from lx521_baffle.proud.top_baffle_nd25fw4_b import (
+    from lx521_baffle.proud.b import (
         MAG_CAVITY_D_MM, STANDARD_MAGNET_Z_MM)
 
     entries = []
@@ -2309,7 +2309,7 @@ def test_margin_dashboard():
     import lx521_baffle.obiwan.route as vroute
     from shapely.geometry import LineString, Polygon
     from gen_driver_overlay import outline_polygon
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
+    from lx521_baffle.proud.b2 import OUTLINE_B2
 
     cabm = _cab(True, "proud")
     ov = cabm.TS_OVAL
@@ -2332,7 +2332,7 @@ def test_margin_dashboard():
                        - cab.UM_HANDOFF_D_MM / 2.0)
     entries.append((v1l_normal_wall - 1.6,
                     "V1L UM exact normal outline wall (-1.6)"))
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import SEAM_B_Y, SEAM_C_X
+    from lx521_baffle.proud.b2_split import SEAM_B_Y, SEAM_C_X
     anchor = np.asarray(cab.UM_FAIR_TAIL_REVIEW_ANCHOR_XY)
     i0 = int(np.argmin(np.linalg.norm(v1l_pts[:, :2] - anchor, axis=1)))
     v1l_tail = v1l_pts[i0:]
@@ -2382,8 +2382,8 @@ if __name__ == "__main__":
         test_magnet_top_site_walls,
         test_magnet_cavities_vs_t_ducts,
         test_ts_captive_keepout_nudge,
-        test_standard_captive_magnet_contract,
-        test_standard_local_magnet_backing,
+        test_stock_captive_magnet_contract,
+        test_stock_local_magnet_backing,
         test_individual_attachment_magnet_burial,
         test_duct_vs_w22_pilots,
         test_duct_duct_separation,

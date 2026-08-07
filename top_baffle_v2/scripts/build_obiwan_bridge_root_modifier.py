@@ -31,7 +31,7 @@ from lx521_baffle.print_contract import (
 )
 
 
-PART = "lx521_top_obiwan_optional_lm_keyed_1of2_bottom"
+PART = "obiwan_optional_lm_keyed_1_of_2_bottom"
 ARTIFACT_MATCH = {
     "state": "no_floor_stand",
     "variant": "Obi-Wan-split",

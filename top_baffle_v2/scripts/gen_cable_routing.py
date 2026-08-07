@@ -62,8 +62,8 @@ from lx521_baffle.base import (
     UM_TERMINAL_CLOCK_DEG,
     _crescent_taper_depth,
 )
-from lx521_baffle.proud.top_baffle_nd25fw4_b import TWEETER_DROP_MM
-from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
+from lx521_baffle.proud.b import TWEETER_DROP_MM
+from lx521_baffle.proud.b2 import OUTLINE_B2
 from lx521_baffle.cables import (
     CABLE_D,
     FLOOR_ROUTE_SERVICE_START_Z_MM,
@@ -369,7 +369,7 @@ def draw_foot_top_view(ax2):
     front view above: taper to the 38-wide tongue, connector channel,
     NL8MPXX panel, and the four packed duct runs to their step-face
     exits."""
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (
+    from lx521_baffle.proud.b2_split import (
         CHANNEL_HALF_W, CHANNEL_STEP_Z, FLANK_SLOPE, FOOT_DEPTH_REAR,
         NL8_SCREW_PITCH, PANEL_T, TONGUE_HALF_W)
     h = TONGUE_HALF_W

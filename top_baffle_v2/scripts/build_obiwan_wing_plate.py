@@ -158,14 +158,14 @@ def _variant(
     expected_triangle_count: int,
 ) -> WingPlateVariant:
     identities = (
-        ("left", "lm_lower", "1of2_lm_lower", "LM_lower_left_1_of_2"),
+        ("left", "lm_lower", "1_of_2_lm_lower", "LM_lower_left_1_of_2"),
         (
-            "left", "lm_um_upper", "2of2_lm_um_upper",
+            "left", "lm_um_upper", "2_of_2_lm_um_upper",
             "LM_UM_upper_left_2_of_2",
         ),
-        ("right", "lm_lower", "1of2_lm_lower", "LM_lower_right_1_of_2"),
+        ("right", "lm_lower", "1_of_2_lm_lower", "LM_lower_right_1_of_2"),
         (
-            "right", "lm_um_upper", "2of2_lm_um_upper",
+            "right", "lm_um_upper", "2_of_2_lm_um_upper",
             "LM_UM_upper_right_2_of_2",
         ),
     )
@@ -174,12 +174,11 @@ def _variant(
             slots, identities, LOCKED_PLACEMENTS_BY_VARIANT[slug], strict=True):
         side, role, source_suffix, friendly_suffix = identity
         rz_degrees, translation = placement
-        stem = f"lx521_top_obiwan_wing_{slug}_{side}_b_{source_suffix}"
+        stem = f"obiwan_wing_{slug}_{side}_split2_{source_suffix}"
         parts.append(PlatePart(
-            f"obiwan_{slot}b_of_16_{label}_wing_{friendly_suffix}",
+            f"obiwan_{slot}_split2_{label}_wing_{friendly_suffix}",
             ROOT / f"build/wings/{slug}/stl/{stem}.stl",
-            f"shared:Obi-Wan-{label}:"
-            f"obiwan_wing_{slug}_{side}_b_{source_suffix}",
+            f"shared:Obi-Wan-{label}:{stem}",
             side,
             role,
             rz_degrees,
@@ -188,10 +187,7 @@ def _variant(
     return WingPlateVariant(
         slug=slug,
         label=label,
-        plate_name=(
-            f"obiwan_{slots[0]}b_{slots[1]}b_{slots[2]}b_{slots[3]}b_"
-            f"{label}_wings_1_of_1"
-        ),
+        plate_name=f"obiwan_{slug}_wings_split2_combo",
         expected_triangle_count=expected_triangle_count,
         parts=tuple(parts),
     )

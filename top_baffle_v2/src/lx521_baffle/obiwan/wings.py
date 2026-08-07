@@ -1791,11 +1791,11 @@ def wing_review_split_context_parts(
 
     specifications = (
         ("lm_lower_floor", floor_payload, floor_paths,
-         "optional_lm_keyed_1of2_bottom", "floor_stand"),
+         "optional_lm_keyed_1_of_2_bottom", "floor_stand"),
         ("lm_lower_no_floor", no_floor_payload, no_floor_paths,
-         "optional_lm_keyed_1of2_bottom", "no_floor_stand"),
+         "optional_lm_keyed_1_of_2_bottom", "no_floor_stand"),
         ("lm_upper", no_floor_payload, no_floor_paths,
-         "optional_lm_keyed_2of2_top", "no_floor_stand"),
+         "optional_lm_keyed_2_of_2_top", "no_floor_stand"),
         ("um", no_floor_payload, no_floor_paths,
          "core_um_carrier", "no_floor_stand"),
         ("t", no_floor_payload, no_floor_paths,

@@ -517,8 +517,8 @@ def lm_carrier_split_parts(source=None) -> dict:
             "optional LM keyed halves overlap by "
             f"{collision_volume:.6f} mm3")
     return {
-        "optional_lm_keyed_1of2_bottom": bottom,
-        "optional_lm_keyed_2of2_top": top,
+        "optional_lm_keyed_1_of_2_bottom": bottom,
+        "optional_lm_keyed_2_of_2_top": top,
     }
 
 

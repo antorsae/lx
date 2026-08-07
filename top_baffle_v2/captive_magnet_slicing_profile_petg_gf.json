@@ -44,7 +44,7 @@
       "match": {
         "state": "floor_stand",
         "variant": "Obi-Wan-split",
-        "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom"
+        "part": "obiwan_optional_lm_keyed_1_of_2_bottom"
       },
       "process": {
         "sparse_infill_pattern": "zig-zag",
@@ -59,7 +59,7 @@
       "match": {
         "state": "no_floor_stand",
         "variant": "Obi-Wan-split",
-        "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom"
+        "part": "obiwan_optional_lm_keyed_1_of_2_bottom"
       },
       "process": {
         "sparse_infill_density": "40%",
@@ -73,7 +73,7 @@
       "match": {
         "state": "floor_stand",
         "variant": "Obi-Wan-split",
-        "part": "lx521_top_obiwan_optional_lm_keyed_2of2_top"
+        "part": "obiwan_optional_lm_keyed_2_of_2_top"
       },
       "process": {
         "enable_support": "1",
@@ -86,7 +86,7 @@
       "match": {
         "state": "no_floor_stand",
         "variant": "Obi-Wan-split",
-        "part": "lx521_top_obiwan_optional_lm_keyed_2of2_top"
+        "part": "obiwan_optional_lm_keyed_2_of_2_top"
       },
       "process": {
         "enable_support": "1",
@@ -99,7 +99,7 @@
       "match": {
         "state": "floor_stand",
         "variant": "Obi-Wan",
-        "part": "lx521_top_obiwan_core_2of2_um_carrier"
+        "part": "obiwan_core_2_of_2_um_carrier"
       },
       "process": {
         "sparse_infill_density": "40%",
@@ -113,7 +113,7 @@
       "match": {
         "state": "no_floor_stand",
         "variant": "Obi-Wan",
-        "part": "lx521_top_obiwan_core_2of2_um_carrier"
+        "part": "obiwan_core_2_of_2_um_carrier"
       },
       "process": {
         "sparse_infill_density": "40%",
@@ -129,41 +129,41 @@
       "match": {
         "state": "no_floor_stand",
         "variant": "Obi-Wan-split",
-        "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom"
+        "part": "obiwan_optional_lm_keyed_1_of_2_bottom"
       },
-      "contract": "build/no_floor_stand/process_modifiers/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.bridge_root_100pct.modifier.json"
+      "contract": "build/no_floor_stand/process_modifiers/obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.json"
     }
   ],
   "artifact_scope": [
     {
       "state": "floor_stand",
       "variant": "Obi-Wan-split",
-      "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom"
+      "part": "obiwan_optional_lm_keyed_1_of_2_bottom"
     },
     {
       "state": "no_floor_stand",
       "variant": "Obi-Wan-split",
-      "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom"
+      "part": "obiwan_optional_lm_keyed_1_of_2_bottom"
     },
     {
       "state": "floor_stand",
       "variant": "Obi-Wan-split",
-      "part": "lx521_top_obiwan_optional_lm_keyed_2of2_top"
+      "part": "obiwan_optional_lm_keyed_2_of_2_top"
     },
     {
       "state": "no_floor_stand",
       "variant": "Obi-Wan-split",
-      "part": "lx521_top_obiwan_optional_lm_keyed_2of2_top"
+      "part": "obiwan_optional_lm_keyed_2_of_2_top"
     },
     {
       "state": "floor_stand",
       "variant": "Obi-Wan",
-      "part": "lx521_top_obiwan_core_2of2_um_carrier"
+      "part": "obiwan_core_2_of_2_um_carrier"
     },
     {
       "state": "no_floor_stand",
       "variant": "Obi-Wan",
-      "part": "lx521_top_obiwan_core_2of2_um_carrier"
+      "part": "obiwan_core_2_of_2_um_carrier"
     }
   ],
   "requirements": {

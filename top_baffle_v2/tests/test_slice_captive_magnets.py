@@ -518,10 +518,10 @@ def test_duct_collision_contract_requires_complete_state_inventory() -> None:
     normalized = audit._normalize_duct_collision_contract(
         contract,
         artifact_id="no-floor:Obi-Wan-split:"
-        "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+        "obiwan_optional_lm_keyed_2_of_2_top",
         state="no_floor_stand",
         variant="Obi-Wan-split",
-        part="lx521_top_obiwan_optional_lm_keyed_2of2_top",
+        part="obiwan_optional_lm_keyed_2_of_2_top",
         modifier_clearance_mm=0.25,
     )
     assert {
@@ -539,10 +539,10 @@ def test_duct_collision_contract_requires_complete_state_inventory() -> None:
             audit._normalize_duct_collision_contract(
                 changed,
                 artifact_id="no-floor:Obi-Wan-split:"
-                "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+                "obiwan_optional_lm_keyed_2_of_2_top",
                 state="no_floor_stand",
                 variant="Obi-Wan-split",
-                part="lx521_top_obiwan_optional_lm_keyed_2of2_top",
+                part="obiwan_optional_lm_keyed_2_of_2_top",
                 modifier_clearance_mm=0.25,
             )
         except audit.AuditError as exc:
@@ -639,15 +639,15 @@ def test_petg_gf_profile_is_scoped_to_structural_core_only() -> None:
         for variant, part in (
             (
                 "Obi-Wan-split",
-                "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+                "obiwan_optional_lm_keyed_1_of_2_bottom",
             ),
             (
                 "Obi-Wan-split",
-                "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+                "obiwan_optional_lm_keyed_2_of_2_top",
             ),
             (
                 "Obi-Wan",
-                "lx521_top_obiwan_core_2of2_um_carrier",
+                "obiwan_core_2_of_2_um_carrier",
             ),
         )
     }
@@ -663,10 +663,10 @@ def test_petg_gf_profile_is_scoped_to_structural_core_only() -> None:
     )
 
     wing = {
-        "id": "shared:Obi-Wan-Ae:lx521_top_obiwan_ae_lm_lower_left_1of3",
+        "id": "shared:Obi-Wan-Ae:obiwan_wing_ae_left_1_of_3_lm_lower",
         "state": "shared",
         "variant": "Obi-Wan-Ae",
-        "part": "lx521_top_obiwan_ae_lm_lower_left_1of3",
+        "part": "obiwan_wing_ae_left_1_of_3_lm_lower",
     }
     try:
         audit._validate_profile_artifact_scope([wing], config)
@@ -680,7 +680,7 @@ def test_petg_gf_profile_is_scoped_to_structural_core_only() -> None:
     assert modifiers[0]["match"] == {
         "state": "no_floor_stand",
         "variant": "Obi-Wan-split",
-        "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+        "part": "obiwan_optional_lm_keyed_1_of_2_bottom",
     }
 
 
@@ -807,7 +807,7 @@ def test_artifact_density_overrides_are_exact(tmp_path: Path) -> None:
     base = {
         "id": "synthetic",
         "variant": "Obi-Wan-split",
-        "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+        "part": "obiwan_optional_lm_keyed_1_of_2_bottom",
     }
     floor = audit._artifact_profile_bundle(
         {**base, "state": "floor_stand"}, bundle, tmp_path / "floor")
@@ -848,7 +848,7 @@ def test_artifact_density_overrides_are_exact(tmp_path: Path) -> None:
         um = audit._artifact_profile_bundle({
             "id": f"{state}:um", "state": state,
             "variant": "Obi-Wan",
-            "part": "lx521_top_obiwan_core_2of2_um_carrier",
+            "part": "obiwan_core_2_of_2_um_carrier",
         }, bundle, tmp_path / f"um_{state}")
         assert um["resolved"]["process"][
             "sparse_infill_density"] == "40%"
@@ -902,9 +902,9 @@ def test_support_override_targets_only_exact_duct_safe_jobs() -> None:
     assert {
         rule["match"]["part"] for rule in support_rules
     } == {
-        "lx521_top_obiwan_core_2of2_um_carrier",
-        "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
-        "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+        "obiwan_core_2_of_2_um_carrier",
+        "obiwan_optional_lm_keyed_1_of_2_bottom",
+        "obiwan_optional_lm_keyed_2_of_2_top",
     }
     assert {
         tuple(sorted(rule["match"].items())) for rule in support_rules
@@ -954,10 +954,10 @@ def test_um_carrier_collision_contract_is_unsplit_and_exact() -> None:
     normalized = audit._normalize_duct_collision_contract(
         contract,
         artifact_id="no_floor_stand:Obi-Wan:"
-        "lx521_top_obiwan_core_2of2_um_carrier",
+        "obiwan_core_2_of_2_um_carrier",
         state="no_floor_stand",
         variant="Obi-Wan",
-        part="lx521_top_obiwan_core_2of2_um_carrier",
+        part="obiwan_core_2_of_2_um_carrier",
         modifier_clearance_mm=0.25,
     )
     assert normalized["owner"] == "um_carrier"
@@ -1139,7 +1139,7 @@ def test_actual_gcode_profile_checks_every_pinned_setting(
         "id": "floor:split:bottom",
         "state": "floor_stand",
         "variant": "Obi-Wan-split",
-        "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+        "part": "obiwan_optional_lm_keyed_1_of_2_bottom",
     }, bundle, tmp_path / "support_profile")
     support_config = {
         **config,
@@ -1493,7 +1493,7 @@ def test_ready_custom_gcodes_and_archive_are_self_contained(
         "id": "floor:split:bottom",
         "state": "floor_stand",
         "variant": "Obi-Wan-split",
-        "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+        "part": "obiwan_optional_lm_keyed_1_of_2_bottom",
     }, bundle, tmp_path / "support_ready_profile")
     support_settings = {}
     for values in support_bundle["enforced_overrides"].values():
@@ -2715,7 +2715,7 @@ def test_standard_curved_pair_spacing_uses_declared_interface_profile(
     ]
     site = {
         **_release_site_contract((1.0, 0.0, 0.0)),
-        "name": "standard_upper_left_receiver",
+        "name": "stock_upper_left_receiver",
         "closure_kind": "transverse_gable_45deg",
         "cavity_bury_roof_start_print_z_mm": 5.80,
         "roof_apex_print_z_mm": 8.40,

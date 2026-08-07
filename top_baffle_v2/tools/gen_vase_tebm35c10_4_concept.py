@@ -43,13 +43,13 @@ from lx521_baffle.magnet_contract import (
     MAGNET_DEPTH_MM,
     MAGNET_DIAMETER_MM,
 )
-from lx521_baffle.proud.top_baffle_nd25fw4_b import (
+from lx521_baffle.proud.b import (
     MAGNET_SITES,
     STANDARD_MAGNET_Z_MM,
     TWEETER_DROP_MM,
 )
-from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
-from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import SEAM_B_Y
+from lx521_baffle.proud.b2 import OUTLINE_B2
+from lx521_baffle.proud.b2_split import SEAM_B_Y
 from lx521_baffle.proud.vase_tebm35c10_4 import (
     T_MAGNET_FACE_X_MM,
     T_MAGNET_FLAT_EDGE_MARGIN_MM,

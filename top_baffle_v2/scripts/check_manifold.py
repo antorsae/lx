@@ -65,12 +65,12 @@ def expected_wing_stl_names(slug: str) -> frozenset[str]:
     if slug not in WING_SLUGS:
         raise ValueError(f"unknown released wing slug: {slug}")
     three_piece = {
-        f"lx521_top_obiwan_wing_{slug}_{side}_{order}of3_{role}.stl"
+        f"obiwan_wing_{slug}_{side}_{order}_of_3_{role}.stl"
         for side in WING_SIDES
         for order, role in enumerate(WING_ROLES, start=1)
     }
     two_piece = {
-        f"lx521_top_obiwan_wing_{slug}_{side}_b_{order}of2_{role}.stl"
+        f"obiwan_wing_{slug}_{side}_split2_{order}_of_2_{role}.stl"
         for side in WING_SIDES
         for order, role in enumerate(WING_TWO_PIECE_ROLES, start=1)
     }
@@ -603,8 +603,8 @@ def _floor_strength_report_errors(state_dir: Path) -> list[str]:
     geometry = payload.get("production_geometry")
     records = geometry.get("artifacts") if isinstance(geometry, dict) else None
     expected_steps = (
-        "top_baffle_nd25fw4_obiwan_split.step",
-        "top_baffle_nd25fw4_obiwan_lm_split.step",
+        "obiwan_split.step",
+        "obiwan_lm_split.step",
     )
     if (not isinstance(records, list) or len(records) != 2
             or not isinstance(geometry.get("derivation"), str)):
@@ -638,11 +638,11 @@ def _floor_strength_report_errors(state_dir: Path) -> list[str]:
 def _review_artifact_errors(state_dir: Path) -> list[str]:
     state = state_dir.name
     required = {
-        "top_baffle_nd25fw4_obiwan_split.step",
-        "top_baffle_nd25fw4_obiwan_lm_split.step",
-        "top_baffle_nd25fw4_obiwan_attachments.step",
-        "top_baffle_nd25fw4_obiwan_assembled.step",
-        "top_baffle_nd25fw4_um_fit.step",
+        "obiwan_split.step",
+        "obiwan_lm_split.step",
+        "obiwan_attachments.step",
+        "obiwan_assembled.step",
+        "um_fit.step",
         "baffle_cable_routing_proud.png",
         "baffle_cable_routing_obiwan.png",
         "baffle_variants_drivers.png",
@@ -712,10 +712,10 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
             if png["chromatic_fraction"] < 0.001:
                 errors.append(f"{state}: review PNG lacks route/driver color: {name}")
 
-    attachments = state_dir / "top_baffle_nd25fw4_obiwan_attachments.step"
-    split = state_dir / "top_baffle_nd25fw4_obiwan_split.step"
-    lm_split = state_dir / "top_baffle_nd25fw4_obiwan_lm_split.step"
-    assembled = state_dir / "top_baffle_nd25fw4_obiwan_assembled.step"
+    attachments = state_dir / "obiwan_attachments.step"
+    split = state_dir / "obiwan_split.step"
+    lm_split = state_dir / "obiwan_lm_split.step"
+    assembled = state_dir / "obiwan_assembled.step"
     if attachments.is_file():
         has_support = _contains_bytes(
             attachments, b"addon_mount_floor_support")
@@ -761,8 +761,8 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
         if token_error:
             errors.append(token_error)
         for optional in (
-                b"optional_lm_keyed_1of2_bottom",
-                b"optional_lm_keyed_2of2_top"):
+                b"optional_lm_keyed_1_of_2_bottom",
+                b"optional_lm_keyed_2_of_2_top"):
             if _contains_bytes(split, optional):
                 errors.append(
                     f"{state}: canonical core STEP contains mutually "
@@ -780,8 +780,8 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
         if token_error:
             errors.append(token_error)
         for child in (
-                b"optional_lm_keyed_1of2_bottom",
-                b"optional_lm_keyed_2of2_top"):
+                b"optional_lm_keyed_1_of_2_bottom",
+                b"optional_lm_keyed_2_of_2_top"):
             if not _contains_bytes(lm_split, child):
                 errors.append(
                     f"{state}: optional LM split STEP lacks child "
@@ -864,13 +864,13 @@ def _review_artifact_errors(state_dir: Path) -> list[str]:
                     f"{state}: assembled STEP retains removed Obi-Wan "
                     f"child {removed.decode('ascii')}")
         for optional in (
-                b"optional_lm_keyed_1of2_bottom",
-                b"optional_lm_keyed_2of2_top"):
+                b"optional_lm_keyed_1_of_2_bottom",
+                b"optional_lm_keyed_2_of_2_top"):
             if _contains_bytes(assembled, optional):
                 errors.append(
                     f"{state}: canonical assembled STEP contains mutually "
                     f"exclusive LM split child {optional.decode('ascii')}")
-    fit_step = state_dir / "top_baffle_nd25fw4_um_fit.step"
+    fit_step = state_dir / "um_fit.step"
     if fit_step.is_file():
         for removed in (
                 b"obiwan_um_grommet_half_a_TPU_PRINT_PART",
@@ -892,13 +892,13 @@ def _obiwan_manifest_errors(
         return _wing_print_sidecar_errors(root, state)
     if state not in {"floor_stand", "no_floor_stand"}:
         return []
-    actual = {path.name for path in root.glob("lx521_top_obiwan_*.stl")}
+    actual = {path.name for path in root.glob("obiwan_*.stl")}
     expected = {
-        "lx521_top_obiwan_core_1of2_lm_carrier.stl",
-        "lx521_top_obiwan_core_2of2_um_carrier.stl",
-        "lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
-        "lx521_top_obiwan_optional_lm_keyed_2of2_top.stl",
-        "lx521_top_obiwan_addon_tweeter_crescent.stl",
+        "obiwan_core_1_of_2_lm_carrier.stl",
+        "obiwan_core_2_of_2_um_carrier.stl",
+        "obiwan_optional_lm_keyed_1_of_2_bottom.stl",
+        "obiwan_optional_lm_keyed_2_of_2_top.stl",
+        "obiwan_addon_tweeter_crescent.stl",
     }
     errors = []
     missing = sorted(expected - actual)
@@ -907,6 +907,8 @@ def _obiwan_manifest_errors(
         errors.append(f"{state}: missing Obi-Wan artifacts: {', '.join(missing)}")
     if extra:
         errors.append(f"{state}: stale/extra Obi-Wan artifacts: {', '.join(extra)}")
+    # Retired artifacts keep the exact names they were removed under, so a
+    # warm tree that still carries one is still caught.
     forbidden_obiwan = {
         "lx521_top_obiwan_addon_mount_floor_support.stl",
         "lx521_top_obiwan_addon_um_grommet_half_a.stl",
@@ -959,30 +961,30 @@ def _obiwan_manifest_errors(
     if forbidden_coupon.exists():
         errors.append(f"{state}: stale open-window coupon remains")
     common_release = {
-        "lx521_top_base_1of4_bottom.stl",
-        "lx521_top_base_2of4_mid_left.stl",
-        "lx521_top_base_3of4_mid_right.stl",
-        "lx521_top_base_4of4_vase_b2.stl",
-        "lx521_top_addonA_1of4_shoulder_top_left.stl",
-        "lx521_top_addonA_2of4_shoulder_top_right.stl",
-        "lx521_top_addonA_3of4_shoulder_bottom_left.stl",
-        "lx521_top_addonA_4of4_shoulder_bottom_right.stl",
-        "lx521_top_addonB1_1of2_wing_left.stl",
-        "lx521_top_addonB1_2of2_wing_right.stl",
-        "lx521_top_proud_addon_um_grommet_half_a.stl",
-        "lx521_top_proud_addon_um_grommet_half_b.stl",
-        "lx521_top_v1addonA_shoulder_top_left.stl",
-        "lx521_top_v1addonA_shoulder_top_right.stl",
-        "lx521_top_v1addonA_shoulder_bottom_left.stl",
-        "lx521_top_v1addonA_shoulder_bottom_right.stl",
-        "lx521_top_v1addonB1_wing_left.stl",
-        "lx521_top_v1addonB1_wing_right.stl",
-        "lx521_top_v1l_1of4_bottom.stl",
-        "lx521_top_v1l_2of4_mid_left.stl",
-        "lx521_top_v1l_3of4_mid_right.stl",
-        "lx521_top_v1l_4of4_vase_b2.stl",
-        "lx521_top_v1l_addon_um_grommet_half_a.stl",
-        "lx521_top_v1l_addon_um_grommet_half_b.stl",
+        "stock_1_of_4_bottom.stl",
+        "stock_2_of_4_mid_left.stl",
+        "stock_3_of_4_mid_right.stl",
+        "stock_4_of_4_vase_b2.stl",
+        "stock_shoulder_1_of_4_top_left.stl",
+        "stock_shoulder_2_of_4_top_right.stl",
+        "stock_shoulder_3_of_4_bottom_left.stl",
+        "stock_shoulder_4_of_4_bottom_right.stl",
+        "stock_wing_1_of_2_left.stl",
+        "stock_wing_2_of_2_right.stl",
+        "stock_um_grommet_half_a.stl",
+        "stock_um_grommet_half_b.stl",
+        "slim_shoulder_2_of_4_top_left.stl",
+        "slim_shoulder_4_of_4_top_right.stl",
+        "slim_shoulder_1_of_4_bottom_left.stl",
+        "slim_shoulder_3_of_4_bottom_right.stl",
+        "slim_wing_1_of_2_left.stl",
+        "slim_wing_2_of_2_right.stl",
+        "slim_1_of_4_bottom.stl",
+        "slim_2_of_4_mid_left.stl",
+        "slim_3_of_4_mid_right.stl",
+        "slim_4_of_4_vase_b2.stl",
+        "slim_um_grommet_half_a.stl",
+        "slim_um_grommet_half_b.stl",
     }
     complete_expected = expected | expected_coupons
     if not obiwan_only:
@@ -996,7 +998,7 @@ def _obiwan_manifest_errors(
         path.name for path in root.glob("*.stl")
         if (not obiwan_only
             or path.name.startswith((
-                "lx521_top_obiwan_", "lx521_coupon_")))
+                "obiwan_", "lx521_coupon_")))
     }
     if complete_actual != complete_expected:
         missing = sorted(complete_expected - complete_actual)
@@ -1021,7 +1023,7 @@ def _obiwan_manifest_errors(
     errors.extend(_print_sidecar_inventory_errors(
         root, complete_expected, excluded_stl_names=polar_exclusions,
         actual_name_prefixes=(
-            ("lx521_top_obiwan_", "lx521_coupon_")
+            ("obiwan_", "lx521_coupon_")
             if obiwan_only else None),
         label=state))
     errors.extend(_review_artifact_errors(root.parent))
@@ -1147,11 +1149,11 @@ def main() -> int:
         no_floor = state_dirs.get("no_floor_stand")
         if floor and no_floor:
             for name in (
-                    "top_baffle_nd25fw4_obiwan_split.step",
-                    "top_baffle_nd25fw4_obiwan_lm_split.step",
-                    "top_baffle_nd25fw4_obiwan_attachments.step",
-                    "top_baffle_nd25fw4_obiwan_assembled.step",
-                    "top_baffle_nd25fw4_um_fit.step"):
+                    "obiwan_split.step",
+                    "obiwan_lm_split.step",
+                    "obiwan_attachments.step",
+                    "obiwan_assembled.step",
+                    "um_fit.step"):
                 a, b = floor / name, no_floor / name
                 if (a.is_file() and b.is_file()
                         and a.stat().st_size == b.stat().st_size
@@ -1181,8 +1183,8 @@ def main() -> int:
                             "  DEFECT floor/no-floor decoded PNG pixels are "
                             f"identical: {name}")
             for name in (
-                    "stl/lx521_top_obiwan_core_1of2_lm_carrier.stl",
-                    "stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
+                    "stl/obiwan_core_1_of_2_lm_carrier.stl",
+                    "stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
                     "stl/lx521_coupon_12_obiwan_closed_bore_bump.stl"):
                 a, b = floor / name, no_floor / name
                 if (a.is_file() and b.is_file()

@@ -6,7 +6,7 @@ W64 rectangle from the baffle front to the retained NL8 rear plane; only the
 three buried cable lumens and the necessary connector service scoop are
 subtracted.
 
-This module intentionally does not import ``top_baffle_nd25fw4_obiwan`` so the
+This module intentionally does not import ``obiwan`` so the
 carrier can add the floor body without an import cycle.
 """
 

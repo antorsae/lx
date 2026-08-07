@@ -179,7 +179,7 @@ def pad_relief_cylinders():
 def obiwan_field_cutters():
     """V1L bottom/mids field cutters with the pad reliefs punched out
     (ramp loft included -- the bottom pad straddles the ramp end)."""
-    from .proud import top_baffle_nd25fw4_v1l as v1l
+    from .proud import v1l as v1l
     pads = pad_relief_cylinders()
     out = []
     for cutter in v1l.field_cutters():
@@ -201,7 +201,7 @@ def ceiling_at(x, y):
 
 # -- self-checks (import-time; cheap arithmetic only) -----------------
 def _static_asserts():
-    from .proud import top_baffle_nd25fw4_v1l as v1l
+    from .proud import v1l as v1l
     # pads restore a full insert stack: floor wall >= 0.75
     assert LM_SEAT_Z - LM_BORE_DEPTH_MM - PAD_FACE_Z >= 0.75
     # the bore actually swallows the owner's insert + settle room

@@ -57,11 +57,11 @@ DEFAULT_PROFILE = ROOT / "captive_magnet_slicing_profile.json"
 PETG_GF_PROFILE = ROOT / "captive_magnet_slicing_profile_petg_gf.json"
 PETG_GF_01A_ARTIFACT_ID = (
     "no_floor_stand:Obi-Wan-split:"
-    "lx521_top_obiwan_optional_lm_keyed_1of2_bottom"
+    "obiwan_optional_lm_keyed_1_of_2_bottom"
 )
 PETG_GF_01B_ARTIFACT_ID = (
     "floor_stand:Obi-Wan-split:"
-    "lx521_top_obiwan_optional_lm_keyed_1of2_bottom"
+    "obiwan_optional_lm_keyed_1_of_2_bottom"
 )
 PETG_GF_RELEASE_AUDITS = {
     PETG_GF_01A_ARTIFACT_ID: (
@@ -82,8 +82,10 @@ EXPECTED_ENTRY_COUNT = sum(EXPECTED_FAMILY_COUNTS.values())
 EXPECTED_MAGNET_PROJECT_COUNT = 42
 EXPECTED_NON_MAGNET_PROJECT_COUNT = 9
 NAME_RE = re.compile(r"^[A-Za-z0-9_]+$")
+# The last token is the pre-rename name of the retired standalone V1 vase;
+# it stays literal so a stale checkout cannot reintroduce that file.
 UNPRINTABLE_OR_LEGACY_TOKENS = (
-    "core_1of2_lm_carrier", "c7", "v0", "coupon", "grommet",
+    "core_1_of_2_lm_carrier", "c7", "v0", "coupon", "grommet",
     "lx521_top_v1_4of4_vase",
 )
 AC_WING_PLATE = wing_plate.get_variant("ac")

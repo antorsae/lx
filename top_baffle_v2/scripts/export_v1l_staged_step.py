@@ -56,7 +56,7 @@ def _large_host_execution() -> bool:
 
 def _export_one(piece_name: str, output: Path) -> None:
     from build123d import export_step
-    from lx521_baffle.proud.top_baffle_nd25fw4_v1l_split import pieces_v1l
+    from lx521_baffle.proud.v1l_split import pieces_v1l
 
     solid = pieces_v1l(only=piece_name)[piece_name]
     solid.label = piece_name
@@ -81,7 +81,7 @@ def _export_assembly(output: Path) -> None:
         # children are still the exact four physical print pieces; only the
         # macOS-driven computational fragmentation is removed.
         from build123d import Compound, export_step
-        from lx521_baffle.proud.top_baffle_nd25fw4_v1l_split import pieces_v1l
+        from lx521_baffle.proud.v1l_split import pieces_v1l
 
         pieces = pieces_v1l()
         if set(pieces) != set(PIECE_ORDER):
@@ -94,7 +94,7 @@ def _export_assembly(output: Path) -> None:
             solid.label = piece_name
             children.append(solid)
         assembly = Compound(children=children)
-        assembly.label = "lx521_4_top_baffle_nd25fw4_v1l_split"
+        assembly.label = "lx521_4_top_baffle_v1l_split"
         temporary = output.with_name(
             f".{output.stem}.{os.getpid()}.tmp.step")
         try:
@@ -131,7 +131,7 @@ def _export_assembly(output: Path) -> None:
             solid.label = piece_name
             children.append(solid)
         assembly = Compound(children=children)
-        assembly.label = "lx521_4_top_baffle_nd25fw4_v1l_split"
+        assembly.label = "lx521_4_top_baffle_v1l_split"
         temporary = output.with_name(
             f".{output.stem}.{os.getpid()}.tmp.step")
         try:

@@ -122,7 +122,7 @@ def test_source_owns_full_depth_webs_before_functional_recuts() -> None:
     joints = JOINT_SOURCE.read_text(encoding="utf-8")
     magnets = MAGNET_SOURCE.read_text(encoding="utf-8")
     addon = ADDON_SOURCE.read_text(encoding="utf-8")
-    v1 = (ROOT / "src/lx521_baffle/proud/top_baffle_nd25fw4_v1.py").read_text(
+    v1 = (ROOT / "src/lx521_baffle/proud/v1.py").read_text(
         encoding="utf-8")
     ast.parse(core)
     ast.parse(closure)

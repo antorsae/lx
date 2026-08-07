@@ -49,12 +49,12 @@ from lx521_baffle.obiwan.rear_entry import (
 DUCT_SUPPORT_BLOCKER_CLEARANCE_MM = 0.25
 DUCT_SUPPORT_BLOCKER_BOOLEAN_MARGIN_MM = 0.05
 DUCT_SUPPORT_BLOCKER_PART_KEYS = frozenset({
-    "core_2of2_um_carrier",
-    "optional_lm_keyed_1of2_bottom",
-    "optional_lm_keyed_2of2_top",
+    "core_2_of_2_um_carrier",
+    "optional_lm_keyed_1_of_2_bottom",
+    "optional_lm_keyed_2_of_2_top",
 })
 DUCT_SUPPORT_BLOCKER_STL_NAMES = frozenset(
-    f"lx521_top_obiwan_{key}" for key in DUCT_SUPPORT_BLOCKER_PART_KEYS)
+    f"obiwan_{key}" for key in DUCT_SUPPORT_BLOCKER_PART_KEYS)
 
 
 def _require_guarded_build() -> None:
@@ -64,9 +64,9 @@ def _require_guarded_build() -> None:
 
 
 def _split_region(part_key: str):
-    if part_key == "optional_lm_keyed_1of2_bottom":
+    if part_key == "optional_lm_keyed_1_of_2_bottom":
         low_y, high_y = -400.0, LM_SPLIT_SEAM_Y
-    elif part_key == "optional_lm_keyed_2of2_top":
+    elif part_key == "optional_lm_keyed_2_of_2_top":
         low_y, high_y = LM_SPLIT_SEAM_Y, 600.0
     else:
         raise ValueError(f"unsupported keyed LM blocker part {part_key!r}")
@@ -283,7 +283,7 @@ def duct_support_blocker(
         raise ValueError(part_key)
     if clearance_mm <= 0.0:
         raise ValueError("support-blocker clearance must be positive")
-    if part_key == "core_2of2_um_carrier":
+    if part_key == "core_2_of_2_um_carrier":
         combined = _fuse_components(
             _um_owner_t_route_blockers(clearance_mm=clearance_mm),
             f"{part_key} UM owner T route")

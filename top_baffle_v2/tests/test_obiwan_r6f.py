@@ -672,20 +672,20 @@ def test_route_contract():
     assert set(staged.PRINT_PART_SPECS) == {
         "core_lm_carrier",
         "core_um_carrier",
-        "optional_lm_keyed_1of2_bottom",
-        "optional_lm_keyed_2of2_top",
+        "optional_lm_keyed_1_of_2_bottom",
+        "optional_lm_keyed_2_of_2_top",
         "addon_tweeter_crescent",
     }
     assert staged._expected_print_keys(True) == (
         "core_lm_carrier",
         "core_um_carrier",
-        "optional_lm_keyed_1of2_bottom",
-        "optional_lm_keyed_2of2_top",
+        "optional_lm_keyed_1_of_2_bottom",
+        "optional_lm_keyed_2_of_2_top",
         "addon_tweeter_crescent",
     )
     assert staged.OPTIONAL_LM_SPLIT_KEYS == (
-        "optional_lm_keyed_1of2_bottom",
-        "optional_lm_keyed_2of2_top",
+        "optional_lm_keyed_1_of_2_bottom",
+        "optional_lm_keyed_2_of_2_top",
     )
     assert {
         staged.PRINT_PART_SPECS[key]["group"]
@@ -3297,7 +3297,7 @@ def test_floor_lm_core():
     assert _intersection_volume(lm, membrane_void) < 0.01
     assert BED_MM == 256.0
     _assert_lm_mount_bores(lm, core, flush)
-    rotated = Rot(Z=BED_ROT_Z["obiwan_core_1of2_lm_carrier"]) * lm
+    rotated = Rot(Z=BED_ROT_Z["obiwan_core_1_of_2_lm_carrier"]) * lm
     bb = rotated.bounding_box().size
     assert max(bb.X, bb.Y, bb.Z) > BED_MM, (
         "canonical monolithic floor LM unexpectedly fits the standard bed; "
@@ -3446,7 +3446,7 @@ def test_no_floor_lm_core():
         "rear_section_modulus_mm3"] - 5.0
     assert bridge_load_facts()["fusion_sf_5g"] >= 1.4
     front_down = (
-        Rot(Z=BED_ROT_Z["obiwan_core_1of2_lm_carrier"])
+        Rot(Z=BED_ROT_Z["obiwan_core_1_of_2_lm_carrier"])
         * Rot(X=180.0) * lm)
     bb = front_down.bounding_box().size
     assert max(bb.X, bb.Y, bb.Z) > 0.0
@@ -3466,8 +3466,8 @@ def _load_lm_keyed_parts(stand_foot):
     parts = {
         key: import_brep(str(paths[key]))
         for key in (
-            "optional_lm_keyed_1of2_bottom",
-            "optional_lm_keyed_2of2_top",
+            "optional_lm_keyed_1_of_2_bottom",
+            "optional_lm_keyed_2_of_2_top",
         )
     }
     return lm, um, parts
@@ -3600,12 +3600,12 @@ def _assert_lm_keyed_split(stand_foot):
 
     lm, um, parts = _load_lm_keyed_parts(stand_foot)
     expected_keys = {
-        "optional_lm_keyed_1of2_bottom",
-        "optional_lm_keyed_2of2_top",
+        "optional_lm_keyed_1_of_2_bottom",
+        "optional_lm_keyed_2_of_2_top",
     }
     assert set(parts) == expected_keys
-    bottom = parts["optional_lm_keyed_1of2_bottom"]
-    top = parts["optional_lm_keyed_2of2_top"]
+    bottom = parts["optional_lm_keyed_1_of_2_bottom"]
+    top = parts["optional_lm_keyed_2_of_2_top"]
     for name, part in parts.items():
         assert part.is_valid and len(part.solids()) == 1, name
         assert part.volume > 0.01
@@ -4269,8 +4269,8 @@ def _assert_lm_um_joint_stls(stand_foot, core):
     state_dir = "floor_stand" if stand_foot else "no_floor_stand"
     stl_dir = PROJECT_ROOT / "build" / state_dir / "stl"
     lm_paths = (
-        stl_dir / "lx521_top_obiwan_core_1of2_lm_carrier.stl",
-        stl_dir / "lx521_top_obiwan_optional_lm_keyed_2of2_top.stl",
+        stl_dir / "obiwan_core_1_of_2_lm_carrier.stl",
+        stl_dir / "obiwan_optional_lm_keyed_2_of_2_top.stl",
     )
     for stl_path in lm_paths:
         _assert_stl_point_groups(
@@ -4283,7 +4283,7 @@ def _assert_lm_um_joint_stls(stand_foot, core):
         if site["interface_kind"] == "ring")
     for stl_path in lm_paths:
         _assert_stl_ring_surfaces(stl_path, lm_ring_sites, core)
-    um_path = stl_dir / "lx521_top_obiwan_core_2of2_um_carrier.stl"
+    um_path = stl_dir / "obiwan_core_2_of_2_um_carrier.stl"
     _assert_stl_point_groups(
         um_path, groups,
         required_groups=(
@@ -4343,9 +4343,9 @@ def _assert_um_tweeter_joint_stls(stand_foot, core):
     }
     state_dir = "floor_stand" if stand_foot else "no_floor_stand"
     stl_dir = PROJECT_ROOT / "build" / state_dir / "stl"
-    um_path = stl_dir / "lx521_top_obiwan_core_2of2_um_carrier.stl"
+    um_path = stl_dir / "obiwan_core_2_of_2_um_carrier.stl"
     tweeter_path = (
-        stl_dir / "lx521_top_obiwan_addon_tweeter_crescent.stl")
+        stl_dir / "obiwan_addon_tweeter_crescent.stl")
     _assert_stl_point_groups(
         um_path, groups,
         required_groups=("UM T-joint 360-degree wall",),
@@ -5486,19 +5486,19 @@ def test_floor_integrated_mount():
     # and, like every released part, prints front-face-down.  Its in-bed Z
     # rotation is allowed to minimize XY without changing that common datum.
     canonical = (
-        Rot(Z=BED_ROT_Z["obiwan_core_1of2_lm_carrier"])
+        Rot(Z=BED_ROT_Z["obiwan_core_1_of_2_lm_carrier"])
         * Rot(X=180.0) * lm)
     canonical_size = canonical.bounding_box().size
     assert BED_MM == 256.0
     assert max(canonical_size.X, canonical_size.Y, canonical_size.Z) > BED_MM
     keyed = lm_split.lm_carrier_split_parts(lm)
-    bottom = keyed["optional_lm_keyed_1of2_bottom"]
-    top = keyed["optional_lm_keyed_2of2_top"]
+    bottom = keyed["optional_lm_keyed_1_of_2_bottom"]
+    top = keyed["optional_lm_keyed_2_of_2_top"]
     assert math.isclose(bottom.bounding_box().min.Y, 0.0, abs_tol=0.02)
     assert math.isclose(bottom.bounding_box().min.Z, -150.0, abs_tol=0.02)
     assert top.bounding_box().min.Y > facts["stem_top_y_mm"]
     bottom_print = (
-        Rot(Z=BED_ROT_Z["obiwan_optional_lm_keyed_1of2_bottom"])
+        Rot(Z=BED_ROT_Z["obiwan_optional_lm_keyed_1_of_2_bottom"])
         * Rot(X=180.0) * bottom)
     bottom_size = bottom_print.bounding_box().size
     assert OBIWAN_OPTIONAL_LM_SPLIT_BED_MM == 220.0

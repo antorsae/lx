@@ -84,9 +84,9 @@ STL_TRANSFORM_ZERO_EPSILON_MM = 2.0e-7
 
 # In-bed rotations preserve the common front-down process direction.
 BED_ROT_Z = {
-    "obiwan_core_1of2_lm_carrier": 28.0,
-    "obiwan_optional_lm_keyed_1of2_bottom": 26.0,
-    "obiwan_optional_lm_keyed_2of2_top": 45.0,
+    "obiwan_core_1_of_2_lm_carrier": 28.0,
+    "obiwan_optional_lm_keyed_1_of_2_bottom": 26.0,
+    "obiwan_optional_lm_keyed_2_of_2_top": 45.0,
 }
 
 
@@ -263,7 +263,7 @@ def _export_duct_support_blocker(
         duct_support_blocker,
     )
 
-    part_key = name.removeprefix("lx521_top_obiwan_")
+    part_key = name.removeprefix("obiwan_")
     blocker, collision_contract = duct_support_blocker(part_key)
     blocker = Rot(X=180.0) * blocker
     if bed_rotation_deg:
@@ -365,41 +365,63 @@ EMBOSS_XY = {
     # is on the retained vertical tangent: the tallest V1L label spans
     # y=74.63..77.55, leaving ~0.45 mm both above the R41 wall endpoint
     # (74.15) and below V1L's rear-thickness ramp (78.0).
-    "1of4_bottom": (0.0, 76.0, 0.0, 4.0, False),
+    # Anchors are keyed by the piece-name tail, which is unique across both
+    # proud products: stock and slim number their shoulders differently, but
+    # a shoulder always ends in its corner and a base piece in its role.
+    "_1_of_4_bottom": (0.0, 76.0, 0.0, 4.0, False),
     # Use the compact V1L-2 family/position code here. The optional routing
     # suffix put one inward glyph stroke into the guarded R95 opening and
     # appeared as the reported duct-out bite in the exported STL.
-    "2of4_mid_left": (-98.0, 160.0, 0.0, 4.0, True),
-    "3of4_mid_right": (95.0, 160.0, 0.0, 4.0, False),
-    "4of4_vase": (0.0, 320.6, 0.0, 4.0, False),
-    "shoulder_top_left": (-44.0, 412.0, 0.0, 3.2, False),
-    "shoulder_top_right": (44.0, 412.0, 0.0, 3.2, False),
-    "shoulder_bottom_left": (-55.0, 345.0, 90.0, 3.2, False),
-    "shoulder_bottom_right": (55.0, 345.0, 90.0, 3.2, False),
-    "wing_left": (-71.0, 388.0, -73.5, 4.0, False),
-    "wing_right": (71.0, 388.0, 73.5, 4.0, False),
-    "core_1of2_lm_carrier": (0.0, 300.0, 0.0, 3.0, False),
-    "core_2of2_um_carrier": (0.0, 408.0, 0.0, 2.2, False),
+    "_2_of_4_mid_left": (-98.0, 160.0, 0.0, 4.0, True),
+    "_3_of_4_mid_right": (95.0, 160.0, 0.0, 4.0, False),
+    "_4_of_4_vase_b2": (0.0, 320.6, 0.0, 4.0, False),
+    "_top_left": (-44.0, 412.0, 0.0, 3.2, False),
+    "_top_right": (44.0, 412.0, 0.0, 3.2, False),
+    "_bottom_left": (-55.0, 345.0, 90.0, 3.2, False),
+    "_bottom_right": (55.0, 345.0, 90.0, 3.2, False),
+    "_wing_1_of_2_left": (-71.0, 388.0, -73.5, 4.0, False),
+    "_wing_2_of_2_right": (71.0, 388.0, 73.5, 4.0, False),
+    "_core_1_of_2_lm_carrier": (0.0, 300.0, 0.0, 3.0, False),
+    "_core_2_of_2_um_carrier": (0.0, 408.0, 0.0, 2.2, False),
+}
+
+# The embossed provenance code stays the established design vocabulary even
+# though the filenames are now product-first: a printed B2-1 or V1A-SBL part
+# must remain identifiable against every earlier print and photo.
+EMBOSS_CODES = {
+    "stock_1_of_4_bottom": "B2-1",
+    "stock_2_of_4_mid_left": "B2-2",
+    "stock_3_of_4_mid_right": "B2-3",
+    "stock_4_of_4_vase_b2": "B2-4",
+    "stock_shoulder_1_of_4_top_left": "A-1",
+    "stock_shoulder_2_of_4_top_right": "A-2",
+    "stock_shoulder_3_of_4_bottom_left": "A-3",
+    "stock_shoulder_4_of_4_bottom_right": "A-4",
+    "stock_wing_1_of_2_left": "B1-1",
+    "stock_wing_2_of_2_right": "B1-2",
+    "slim_1_of_4_bottom": "V1L-1",
+    "slim_2_of_4_mid_left": "V1L-2",
+    "slim_3_of_4_mid_right": "V1L-3",
+    "slim_4_of_4_vase_b2": "V1L-4",
+    "slim_shoulder_1_of_4_bottom_left": "V1A-SBL",
+    "slim_shoulder_2_of_4_top_left": "V1A-STL",
+    "slim_shoulder_3_of_4_bottom_right": "V1A-SBR",
+    "slim_shoulder_4_of_4_top_right": "V1A-STR",
+    "slim_wing_1_of_2_left": "V1B1-WL",
+    "slim_wing_2_of_2_right": "V1B1-WR",
 }
 
 
 def _label(name):
-    """Short provenance code, e.g. B2-1, V1L-3, V1A-TL, B1-WL."""
-    if "obiwan_core_1of2_lm" in name:
+    """Short provenance code, e.g. B2-1, V1L-3, V1A-STL, V1B1-WL."""
+    if "obiwan_core_1_of_2_lm" in name:
         return f"Obi-Wan-LM {_routing_rev()}"
-    if "obiwan_core_2of2_um" in name:
+    if "obiwan_core_2_of_2_um" in name:
         return f"Obi-Wan-UM {_routing_rev()}"
-    n = name.replace("lx521_top_", "")
-    fam = {"base": "B2", "v1l": "V1L", "obiwan": "Obi-Wan",
-           "addonA": "A", "addonB1": "B1", "v1addonA": "V1A",
-           "v1addonB1": "V1B1"}
-    head = n.split("_")[0]
-    code = fam.get(head, head.upper())
-    if "of4" in n or "of2" in n:
-        code += "-" + n.split("_")[1][0]
-    else:
-        parts = n.split("_")
-        code += "-" + "".join(w[0] for w in parts[1:]).upper()
+    try:
+        code = EMBOSS_CODES[name]
+    except KeyError:
+        raise SystemExit(f"no emboss provenance code for {name}") from None
     return f"{code} {_routing_rev()}"
 
 
@@ -416,7 +438,7 @@ def _emboss(solid, name):
         return solid
 
     for suffix, (ax, ay, rot, font, short) in EMBOSS_XY.items():
-        if suffix in name:
+        if name.endswith(suffix):
             break
     else:
         raise SystemExit(f"no emboss anchor for {name}")
@@ -447,16 +469,27 @@ OUT_DIR = PROJECT_ROOT / "build/floor_stand/stl"
 
 # slicer-friendly names: <group>_<print order>_<part>
 STL_NAMES = {
-    "piece_bottom": "lx521_top_base_1of4_bottom",
-    "piece_mid_left": "lx521_top_base_2of4_mid_left",
-    "piece_mid_right": "lx521_top_base_3of4_mid_right",
-    "piece_top_b2": "lx521_top_base_4of4_vase_b2",
-    "attach_a_shoulder_top_left": "lx521_top_addonA_1of4_shoulder_top_left",
-    "attach_a_shoulder_top_right": "lx521_top_addonA_2of4_shoulder_top_right",
-    "attach_a_shoulder_bottom_left": "lx521_top_addonA_3of4_shoulder_bottom_left",
-    "attach_a_shoulder_bottom_right": "lx521_top_addonA_4of4_shoulder_bottom_right",
-    "attach_b1_wing_left": "lx521_top_addonB1_1of2_wing_left",
-    "attach_b1_wing_right": "lx521_top_addonB1_2of2_wing_right",
+    "piece_bottom": "stock_1_of_4_bottom",
+    "piece_mid_left": "stock_2_of_4_mid_left",
+    "piece_mid_right": "stock_3_of_4_mid_right",
+    "piece_top_b2": "stock_4_of_4_vase_b2",
+    "attach_a_shoulder_top_left": "stock_shoulder_1_of_4_top_left",
+    "attach_a_shoulder_top_right": "stock_shoulder_2_of_4_top_right",
+    "attach_a_shoulder_bottom_left": "stock_shoulder_3_of_4_bottom_left",
+    "attach_a_shoulder_bottom_right": "stock_shoulder_4_of_4_bottom_right",
+    "attach_b1_wing_left": "stock_wing_1_of_2_left",
+    "attach_b1_wing_right": "stock_wing_2_of_2_right",
+}
+
+# Slim receivers are numbered in the shelf's bottom-left/top-left/bottom-right
+# /top-right order; the stock set keeps its own established 1..4 ordering.
+V1_ATTACHMENT_STL_NAMES = {
+    "attach_v1a_shoulder_bottom_left": "slim_shoulder_1_of_4_bottom_left",
+    "attach_v1a_shoulder_top_left": "slim_shoulder_2_of_4_top_left",
+    "attach_v1a_shoulder_bottom_right": "slim_shoulder_3_of_4_bottom_right",
+    "attach_v1a_shoulder_top_right": "slim_shoulder_4_of_4_top_right",
+    "attach_v1b1_wing_left": "slim_wing_1_of_2_left",
+    "attach_v1b1_wing_right": "slim_wing_2_of_2_right",
 }
 
 PROUD_STEP_PIECE_LABELS = (
@@ -551,8 +584,8 @@ def main() -> None:
         choices=(
             "core_lm_carrier",
             "core_um_carrier",
-            "optional_lm_keyed_1of2_bottom",
-            "optional_lm_keyed_2of2_top",
+            "optional_lm_keyed_1_of_2_bottom",
+            "optional_lm_keyed_2_of_2_top",
             "addon_tweeter_crescent",
         ),
         help="export exactly one staged R6F print part; intended for focused "
@@ -629,19 +662,19 @@ def main() -> None:
         # particular this removes the deleted external R14 raceway and
         # right alignment link from incremental output directories.
         for legacy in (
-                *out_dir.glob("lx521_top_obiwan_[1-4]of4_*.stl"),
-                *out_dir.glob("lx521_top_obiwan_[1-4]of4_*.print.json")):
+                *out_dir.glob("obiwan_[1-4]of4_*.stl"),
+                *out_dir.glob("obiwan_[1-4]of4_*.print.json")):
             _unlink_print_pair(legacy)
         expected = {
-            "lx521_top_obiwan_core_1of2_lm_carrier.stl",
-            "lx521_top_obiwan_core_2of2_um_carrier.stl",
-            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
-            "lx521_top_obiwan_optional_lm_keyed_2of2_top.stl",
-            "lx521_top_obiwan_addon_tweeter_crescent.stl",
+            "obiwan_core_1_of_2_lm_carrier.stl",
+            "obiwan_core_2_of_2_um_carrier.stl",
+            "obiwan_optional_lm_keyed_1_of_2_bottom.stl",
+            "obiwan_optional_lm_keyed_2_of_2_top.stl",
+            "obiwan_addon_tweeter_crescent.stl",
         }
         for legacy in (
-                *out_dir.glob("lx521_top_obiwan_addon_*.stl"),
-                *out_dir.glob("lx521_top_obiwan_addon_*.print.json")):
+                *out_dir.glob("obiwan_addon_*.stl"),
+                *out_dir.glob("obiwan_addon_*.print.json")):
             stl_name = (
                 legacy.name.removesuffix(".print.json") + ".stl"
                 if legacy.name.endswith(".print.json") else legacy.name)
@@ -651,7 +684,7 @@ def main() -> None:
         parts = {}
         if args.v1l_piece != "grommet":
             if step_parts is None:
-                from lx521_baffle.proud.top_baffle_nd25fw4_v1l_split import pieces_v1l
+                from lx521_baffle.proud.v1l_split import pieces_v1l
                 physical_parts = pieces_v1l(only=args.v1l_piece)
             else:
                 selected = (
@@ -662,34 +695,33 @@ def main() -> None:
                     key: step_parts[key] for key in selected
                 }
             parts.update({
-                STL_NAMES[k].replace("lx521_top_base_", "lx521_top_v1l_"): v
+                STL_NAMES[k].replace("stock_", "slim_", 1): v
                 for k, v in physical_parts.items()
             })
         if args.v1l_piece in (None, "grommet"):
             from lx521_baffle.um_fit import split_grommet_parts
             parts.update({
-                f"lx521_top_v1l_addon_{name}": solid
+                f"slim_{name}": solid
                 for name, solid in split_grommet_parts("v1l").items()
             })
     elif args.variant == "v1":
         # The V1 split STEP remains the geometry authority the slim receivers
         # are cut against, but only its attachments are released as prints:
         # the slim vase ships from the V1L set.
-        from lx521_baffle.proud.top_baffle_nd25fw4_v1_attachments import v1_attachments
-        parts = {k.replace("attach_v1a_", "lx521_top_v1addonA_")
-                  .replace("attach_v1b1_", "lx521_top_v1addonB1_"): v
+        from lx521_baffle.proud.v1_attachments import v1_attachments
+        parts = {V1_ATTACHMENT_STL_NAMES[k]: v
                  for k, v in v1_attachments().items()}
     else:
-        from lx521_baffle.proud.top_baffle_nd25fw4_attachments import attachments
+        from lx521_baffle.proud.attachments import attachments
         if step_parts is None:
-            from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import pieces
+            from lx521_baffle.proud.b2_split import pieces
             parts = dict(pieces())
         else:
             parts = dict(step_parts)
         parts.update(attachments())
         parts = {STL_NAMES[k]: v for k, v in parts.items()}
         from lx521_baffle.um_fit import split_grommet_parts
-        parts.update({f"lx521_top_proud_addon_{name}": solid
+        parts.update({f"stock_{name}": solid
                       for name, solid in split_grommet_parts("proud").items()})
     misfits = []
     for name, solid in parts.items():
@@ -714,7 +746,7 @@ def main() -> None:
         # the 220-mm envelope front-down (about 218.7 x 175.9 mm).
         solid = Rot(X=180.0) * solid
         canonical_lm_large_format = (
-            "obiwan_core_1of2_lm_carrier" in name)
+            "obiwan_core_1_of_2_lm_carrier" in name)
         bed_rotation = next((angle for key, angle in BED_ROT_Z.items()
                              if key in name), 0.0)
         orientation = " @ X180deg front-down"

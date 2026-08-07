@@ -239,7 +239,7 @@
   non-overlapping low-profile flag Fastons (8.5 mm receptacle, 9.5 mm boot,
   11 mm pitch). Service review moves one connector at a time through the
   declared 0/3/6/9/12 mm pull states while the other remains installed.
-  The dedicated `top_baffle_nd25fw4_um_fit.step` review model includes a
+  The dedicated `um_fit.step` review model includes a
   closed Ø98/Ø80/Ø60 body keep-out derived from the terminal-less reference
   mesh, the conservative stepped W22 rear-body proxy, cable and service
   envelopes. The assembled carrier STEP is reviewed
@@ -282,10 +282,10 @@
   qualification record. A
   non-load-bearing skin on every surviving buried route starts at two full extrusion widths
   (0.8 mm). Structural rails/bosses use separately calculated sections.
-- Primary paths: `top_baffle_nd25fw4_obiwan*.py`; generated STEP files in
+- Primary paths: `obiwan*.py`; generated STEP files in
   `build/floor_stand/` and `build/no_floor_stand/`; print meshes in each `stl/` tree;
-  optional split review at `*/top_baffle_nd25fw4_obiwan_lm_split.step` and its
-  two `lx521_top_obiwan_optional_lm_keyed_*` meshes;
+  optional split review at `*/obiwan_lm_split.step` and its
+  two `obiwan_optional_lm_keyed_*` meshes;
   routing sheets at `*/baffle_cable_routing_obiwan.png`, including plan,
   longitudinal side profiles, and nominal diametric u-z sections with exact
   vertical backfill limits through

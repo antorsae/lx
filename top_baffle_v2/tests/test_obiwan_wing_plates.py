@@ -20,21 +20,21 @@ import build_obiwan_wing_plate as plate
 
 EXPECTED = {
     "ac": {
-        "plate_name": "obiwan_05b_06b_08b_09b_Ac_wings_1_of_1",
+        "plate_name": "obiwan_ac_wings_split2_combo",
         "names": (
-            "obiwan_05b_of_16_Ac_wing_LM_lower_left_1_of_2",
-            "obiwan_06b_of_16_Ac_wing_LM_UM_upper_left_2_of_2",
-            "obiwan_08b_of_16_Ac_wing_LM_lower_right_1_of_2",
-            "obiwan_09b_of_16_Ac_wing_LM_UM_upper_right_2_of_2",
+            "obiwan_05_split2_Ac_wing_LM_lower_left_1_of_2",
+            "obiwan_06_split2_Ac_wing_LM_UM_upper_left_2_of_2",
+            "obiwan_08_split2_Ac_wing_LM_lower_right_1_of_2",
+            "obiwan_09_split2_Ac_wing_LM_UM_upper_right_2_of_2",
         ),
     },
     "ae": {
-        "plate_name": "obiwan_11b_12b_14b_15b_Ae_wings_1_of_1",
+        "plate_name": "obiwan_ae_wings_split2_combo",
         "names": (
-            "obiwan_11b_of_16_Ae_wing_LM_lower_left_1_of_2",
-            "obiwan_12b_of_16_Ae_wing_LM_UM_upper_left_2_of_2",
-            "obiwan_14b_of_16_Ae_wing_LM_lower_right_1_of_2",
-            "obiwan_15b_of_16_Ae_wing_LM_UM_upper_right_2_of_2",
+            "obiwan_11_split2_Ae_wing_LM_lower_left_1_of_2",
+            "obiwan_12_split2_Ae_wing_LM_UM_upper_left_2_of_2",
+            "obiwan_14_split2_Ae_wing_LM_lower_right_1_of_2",
+            "obiwan_15_split2_Ae_wing_LM_UM_upper_right_2_of_2",
         ),
     },
 }

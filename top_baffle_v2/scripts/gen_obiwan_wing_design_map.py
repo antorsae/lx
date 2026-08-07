@@ -57,9 +57,9 @@ from gen_driver_overlay import (
 )
 from lx521_baffle.base import L22_CUTOUT, THICKNESS_MM, UM_CUTOUT
 from lx521_baffle.floor_bend import centerline_controls
-from lx521_baffle.proud.top_baffle_nd25fw4_a_comp import OUTLINE_A_COMP
-from lx521_baffle.proud.top_baffle_nd25fw4_b import TWEETER_DROP_MM
-from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
+from lx521_baffle.proud.a_comp import OUTLINE_A_COMP
+from lx521_baffle.proud.b import TWEETER_DROP_MM
+from lx521_baffle.proud.b2 import OUTLINE_B2
 from lx521_baffle.obiwan.carriers import (
     CORE_REAR_Z,
     LM_CORE_R,

@@ -5,8 +5,8 @@ The mandatory core is intrinsically two-carrier: one LM carrier and one UM
 carrier, registered by two rounded M3 half-lap ears.  The LM remains
 available as this monolithic carrier; a mutually-exclusive top/bottom
 hidden-keyed print option is exported by
-``top_baffle_nd25fw4_obiwan_lm_split``. Every non-driver function is an add-on
-from ``top_baffle_nd25fw4_obiwan_attachments``.
+``obiwan_lm_split``. Every non-driver function is an add-on
+from ``obiwan_attachments``.
 
 In no-floor state the immutable stock-bridge XY interface sits in one
 front-flush solid web fused into the LM carrier; it is not a third print

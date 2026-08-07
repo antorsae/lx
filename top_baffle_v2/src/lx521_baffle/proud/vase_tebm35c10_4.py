@@ -61,9 +61,9 @@ from ..cables import (
     ts_section,
 )
 from ..magnets import CaptiveMagnetTools, apply_wall_cavity
-from .top_baffle_nd25fw4_b import STANDARD_MAGNET_Z_MM
-from .top_baffle_nd25fw4_b2 import OUTLINE_B2
-from .top_baffle_nd25fw4_b2_split import (
+from .b import STANDARD_MAGNET_Z_MM
+from .b2 import OUTLINE_B2
+from .b2_split import (
     DOVETAILS_B,
     SEAM_B_M3_AXIS_X_MM,
     SEAM_B_M3_AXIS_Z_MM,

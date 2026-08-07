@@ -368,11 +368,11 @@ def _transaction_fixture(root: Path):
     _write(
         incoming / "top_baffle_v2" / wing_prefix / "marker", "new-wings")
     _write(
-        baffle / "build/common/top_baffle_nd25fw4_attachments.step",
+        baffle / "build/common/attachments.step",
         "old-common")
     _write(
         incoming / "top_baffle_v2"
-        / "build/common/top_baffle_nd25fw4_attachments.step",
+        / "build/common/attachments.step",
         "new-common")
     _write(baffle / "review" / "keep.png", "keep-review")
     return repo, baffle, incoming
@@ -868,7 +868,7 @@ def test_atomic_promotion_and_rollback() -> None:
                         / "marker").read_text() == f"new-{state}"
             assert (baffle / remote._output_prefix("wings")
                     / "marker").read_text() == "new-wings"
-            assert (baffle / "build/common/top_baffle_nd25fw4_attachments.step").read_text() == (
+            assert (baffle / "build/common/attachments.step").read_text() == (
                 "new-common")
             assert (baffle / "review" / "keep.png").read_text() == "keep-review"
         finally:
@@ -890,7 +890,7 @@ def test_atomic_promotion_and_rollback() -> None:
                         / "marker").read_text() == f"old-{state}"
             assert (baffle / remote._output_prefix("wings")
                     / "marker").read_text() == "old-wings"
-            assert (baffle / "build/common/top_baffle_nd25fw4_attachments.step").read_text() == (
+            assert (baffle / "build/common/attachments.step").read_text() == (
                 "old-common")
         finally:
             _restore_project(originals)
@@ -910,7 +910,7 @@ def test_focused_nested_promotions_preserve_siblings() -> None:
         _write(no_floor / "marker", "keep-no-floor")
         _write(wings / "marker", "keep-wings")
         _write(
-            baffle / "build/common/top_baffle_nd25fw4_attachments.step",
+            baffle / "build/common/attachments.step",
             "old-attachments")
         _write(
             baffle / "build/common/obiwan_wing_design_map.png",
@@ -927,7 +927,7 @@ def test_focused_nested_promotions_preserve_siblings() -> None:
         try:
             _write(
                 incoming / "top_baffle_v2"
-                / "build/common/top_baffle_nd25fw4_attachments.step",
+                / "build/common/attachments.step",
                 "new-attachments")
             common_metadata = {
                 "job_id": "focused-common", "targets": ["common"],
@@ -937,7 +937,7 @@ def test_focused_nested_promotions_preserve_siblings() -> None:
             assert remote._promote_artifacts(
                 incoming, common_metadata) == 1
             assert (baffle / "build/common/"
-                    "top_baffle_nd25fw4_attachments.step").read_text() == (
+                    "attachments.step").read_text() == (
                         "new-attachments")
             assert (baffle / "build/common/"
                     "obiwan_wing_design_map.png").read_text() == (
@@ -1116,7 +1116,7 @@ def test_promotion_signals_roll_back() -> None:
                     remote._output_prefix("wings"), "marker").read_text() == (
                     "old-wings")
                 assert baffle.joinpath(
-                    "build/common/top_baffle_nd25fw4_attachments.step").read_text() == (
+                    "build/common/attachments.step").read_text() == (
                         "old-common")
                 assert (baffle / "review" / "keep.png").read_text() == (
                     "keep-review")
@@ -1137,7 +1137,7 @@ def test_remote_clean_preserves_review() -> None:
             assert not (baffle / remote._output_prefix("floor_stand")).exists()
             assert not (baffle / remote._output_prefix("no_floor_stand")).exists()
             assert not (baffle / remote._output_prefix("wings")).exists()
-            assert not (baffle / "build/common/top_baffle_nd25fw4_attachments.step").exists()
+            assert not (baffle / "build/common/attachments.step").exists()
             assert (baffle / "review" / "keep.png").read_text() == "keep-review"
         finally:
             _restore_project(originals)
@@ -1165,7 +1165,7 @@ def test_remote_clean_preserves_review() -> None:
                 remote._output_prefix("wings"), "marker").read_text() == (
                 "old-wings")
             assert baffle.joinpath(
-                "build/common/top_baffle_nd25fw4_attachments.step").read_text() == (
+                "build/common/attachments.step").read_text() == (
                     "old-common")
             assert (baffle / "review" / "keep.png").read_text() == (
                 "keep-review")
@@ -1766,12 +1766,12 @@ def test_make_obiwan_only_manifold_filters_warm_legacy_meshes() -> None:
         legacy = []
         for state_root in (floor_root, no_floor_root):
             for index in range(4):
-                path = state_root / f"lx521_top_v1l_legacy_{index}.stl"
+                path = state_root / f"slim_legacy_{index}.stl"
                 _write(path, "cached legacy mesh")
                 legacy.append(path)
             for name in (
-                    "lx521_top_obiwan_core_1of2_lm_carrier.stl",
-                    "lx521_top_obiwan_core_2of2_um_carrier.stl",
+                    "obiwan_core_1_of_2_lm_carrier.stl",
+                    "obiwan_core_2_of_2_um_carrier.stl",
                     "lx521_coupon_12_obiwan_closed_bore_bump.stl"):
                 path = state_root / name
                 _write(path, "focused obiwan mesh")
@@ -2142,10 +2142,10 @@ def test_obiwan_release_parallel_dag() -> None:
         "export_piece_stls.py --variant v1l") == 2
     assert output.count(
         "--source-step build/floor_stand/"
-        "top_baffle_nd25fw4_v1l_split.step") == 1
+        "v1l_split.step") == 1
     assert output.count(
         "--source-step build/no_floor_stand/"
-        "top_baffle_nd25fw4_v1l_split.step") == 1
+        "v1l_split.step") == 1
     assert output.count(
         "generate_captive_magnet_catalog.py --output ") == 1
     assert "check_manifold.py --obiwan-only" not in output

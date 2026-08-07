@@ -20,10 +20,10 @@ import build_obiwan_combo_plate as plate
 EXPECTED = {
     "no_floor_stand": {
         "plate_name": (
-            "obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand"
+            "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand"
         ),
         "bottom_name": (
-            "obiwan_01a_of_16_LM_bottom_keyed_1_of_2_no_floor_stand"
+            "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand"
         ),
         "triangle_count": 63_008,
         "make_slug": "no_floor",
@@ -31,10 +31,10 @@ EXPECTED = {
     },
     "floor_stand": {
         "plate_name": (
-            "obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand"
+            "obiwan_01_02_03_04_LM_UM_combo_floor_stand"
         ),
         "bottom_name": (
-            "obiwan_01b_of_16_LM_bottom_keyed_1_of_2_floor_stand"
+            "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand"
         ),
         "triangle_count": 165_892,
         "make_slug": "floor",
@@ -43,9 +43,9 @@ EXPECTED = {
 }
 
 SHARED_NAMES = (
-    "obiwan_02_of_16_LM_top_keyed_2_of_2",
-    "obiwan_03_of_16_UM_carrier_1_of_1",
-    "obiwan_04_of_16_T_tweeter_crescent_1_of_1",
+    "obiwan_02_LM_top_keyed_2_of_2",
+    "obiwan_03_UM_carrier_1_of_1",
+    "obiwan_04_T_tweeter_crescent_1_of_1",
 )
 PETG_GF_PROFILE = ROOT / "captive_magnet_slicing_profile_petg_gf.json"
 

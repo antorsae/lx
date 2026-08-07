@@ -509,7 +509,7 @@ def integral_floor_strength_facts() -> dict:
                 "stability; anchor or provide an anti-tip system"),
         },
         "split_configuration": {
-            "stand_owner": "optional_lm_keyed_1of2_bottom",
+            "stand_owner": "optional_lm_keyed_1_of_2_bottom",
             "concealed_key_structural_credit_n": 0.0,
             "installed_driver_flange_required_to_bridge_seam": True,
             "physical_proof_and_creep_test_required": True,

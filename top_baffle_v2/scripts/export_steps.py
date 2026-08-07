@@ -52,7 +52,7 @@ def main() -> None:
     source_stem = (
         Path(args.source).stem if args.source.endswith(".py")
         else args.source)
-    if (source_stem.startswith("top_baffle_nd25fw4_obiwan")
+    if (source_stem.startswith("obiwan_")
             or source_stem.startswith("lx521_baffle.obiwan.")):
         raise SystemExit(
             "direct Obi-Wan STEP generation is disabled because it retains "

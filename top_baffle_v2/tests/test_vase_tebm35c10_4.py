@@ -21,7 +21,7 @@ from lx521_baffle.cables import (
     route_points,
 )
 from lx521_baffle.magnet_contract import CAPTIVE_LAND_MM
-from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (
+from lx521_baffle.proud.b2_split import (
     CLEARANCE_MM,
     DOVETAILS_B,
     SEAM_B_M3_AXIS_X_MM,

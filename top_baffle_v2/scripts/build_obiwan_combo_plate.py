@@ -128,7 +128,6 @@ def _variant(
     *,
     state: str,
     label: str,
-    bottom_slot: str,
     plate_name: str,
     expected_triangle_count: int,
     sparse_infill_density_percent: float,
@@ -139,26 +138,25 @@ def _variant(
     )
     identities = (
         (
-            f"obiwan_{bottom_slot}_of_16_LM_bottom_keyed_1_of_2_"
-            f"{bottom_suffix}",
-            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+            f"obiwan_01_LM_bottom_keyed_1_of_2_{bottom_suffix}",
+            "obiwan_optional_lm_keyed_1_of_2_bottom",
             f"{state}:Obi-Wan-split:"
-            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+            "obiwan_optional_lm_keyed_1_of_2_bottom",
         ),
         (
-            "obiwan_02_of_16_LM_top_keyed_2_of_2",
-            "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+            "obiwan_02_LM_top_keyed_2_of_2",
+            "obiwan_optional_lm_keyed_2_of_2_top",
             f"{state}:Obi-Wan-split:"
-            "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+            "obiwan_optional_lm_keyed_2_of_2_top",
         ),
         (
-            "obiwan_03_of_16_UM_carrier_1_of_1",
-            "lx521_top_obiwan_core_2of2_um_carrier",
-            f"{state}:Obi-Wan:lx521_top_obiwan_core_2of2_um_carrier",
+            "obiwan_03_UM_carrier_1_of_1",
+            "obiwan_core_2_of_2_um_carrier",
+            f"{state}:Obi-Wan:obiwan_core_2_of_2_um_carrier",
         ),
         (
-            "obiwan_04_of_16_T_tweeter_crescent_1_of_1",
-            "lx521_top_obiwan_addon_tweeter_crescent",
+            "obiwan_04_T_tweeter_crescent_1_of_1",
+            "obiwan_addon_tweeter_crescent",
             None,
         ),
     )
@@ -193,9 +191,8 @@ VARIANTS = {
     "no_floor_stand": _variant(
         state="no_floor_stand",
         label="no-floor",
-        bottom_slot="01a",
         plate_name=(
-            "obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand"
+            "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand"
         ),
         expected_triangle_count=63_008,
         sparse_infill_density_percent=40.0,
@@ -204,9 +201,8 @@ VARIANTS = {
     "floor_stand": _variant(
         state="floor_stand",
         label="floor-stand",
-        bottom_slot="01b",
         plate_name=(
-            "obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand"
+            "obiwan_01_02_03_04_LM_UM_combo_floor_stand"
         ),
         expected_triangle_count=165_892,
         sparse_infill_density_percent=100.0,

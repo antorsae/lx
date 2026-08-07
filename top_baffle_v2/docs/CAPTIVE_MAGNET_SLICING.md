@@ -132,7 +132,7 @@ matching Ac/Ae receivers may not drift onto separate source-Z or roof planes.
 The interface contract records a 0.05 mm **solid receiver construction
 standoff** and a 0.00 mm physical mating gap; the standoff must never be
 reported as an air gap. Nominal opposing magnet-face spacing is 0.95 mm for
-straight pairs, 1.09 mm for standard curved pairs with the 0.14 mm base inset,
+straight pairs, 1.09 mm for `standard_curved` pairs with the 0.14 mm base inset,
 and 1.10 mm for Obi-Wan ring pairs with the 0.15 mm carrier inset. The cavity
 contract is wholly internal: a local exterior box, cap, flat, dent, boss, or
 other magnet-location cue is a release failure.
@@ -149,7 +149,7 @@ prints; their constituent STLs are present in this inventory.
 ### Oversized canonical Obi-Wan LM policy
 
 The floor and no-floor canonical
-`lx521_top_obiwan_core_1of2_lm_carrier.stl` monoliths each have an approximately
+`obiwan_core_1_of_2_lm_carrier.stl` monoliths each have an approximately
 236.41 x 313.75 mm mandatory front-face-down footprint. They therefore do not
 fit the P2S 256 x 256 mm bed. They remain valid large-format release CAD/STL,
 but the P2S audit does **not** slice them, generate G-code for them, or publish
@@ -158,8 +158,8 @@ or tilts a monolith to manufacture a passing result.
 
 Each of the monolith's four cavity stations maps one-to-one to the matching
 station in the **same floor state** on
-`lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl` or
-`lx521_top_obiwan_optional_lm_keyed_2of2_top.stl`. Before accepting that mapping,
+`obiwan_optional_lm_keyed_1_of_2_bottom.stl` or
+`obiwan_optional_lm_keyed_2_of_2_top.stl`. Before accepting that mapping,
 the consumer requires an identical source-space cavity contract: station and
 closure kind, cavity and seated centers, installed/marked axes, actual face
 and material-inward direction where applicable, magnet/cavity dimensions,
@@ -188,11 +188,11 @@ exclusions, and complete artifact IDs):
   "schema_version": 1,
   "source_revision": "0000000000000000000000000000000000000000000000000000000000000000",
   "artifacts": [{
-    "id": "no_floor_stand:Obi-Wan:lx521_top_obiwan_core_1of2_lm_carrier",
+    "id": "no_floor_stand:Obi-Wan:obiwan_core_1_of_2_lm_carrier",
     "state": "no_floor_stand",
     "variant": "Obi-Wan",
-    "part": "lx521_top_obiwan_core_1of2_lm_carrier",
-    "stl": "../no_floor_stand/stl/lx521_top_obiwan_core_1of2_lm_carrier.stl",
+    "part": "obiwan_core_1_of_2_lm_carrier",
+    "stl": "../no_floor_stand/stl/obiwan_core_1_of_2_lm_carrier.stl",
     "source_files": ["../src/lx521_baffle/obiwan/carriers.py"],
     "print_orientation": "front_face_down",
     "source_to_stl_matrix": [
@@ -323,8 +323,8 @@ performed.
 
 The canonical 64-artifact audit remains unchanged. The printer shelf adds two
 local packaging alternatives,
-`obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand` and
-`obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand`, by translation-only
+`obiwan_01_02_03_04_LM_UM_combo_no_floor_stand` and
+`obiwan_01_02_03_04_LM_UM_combo_floor_stand`, by translation-only
 concatenation of the four already released, same-state 01/02/03/04 STLs. Each
 Bambu project is one printable object with four normal volumes and the three
 state-specific canonical duct blockers. Each plate repeats the six
@@ -351,8 +351,8 @@ launches `bambu_slice_release`.
 ### Ac/Ae B four-piece wing shelf plates
 
 The shelf packages the released Ac B-split 05b/06b/08b/09b meshes as
-`obiwan_05b_06b_08b_09b_Ac_wings_1_of_1` and the Ae B-split
-11b/12b/14b/15b meshes as `obiwan_11b_12b_14b_15b_Ae_wings_1_of_1`.
+`obiwan_ac_wings_split2_combo` and the Ae B-split
+11b/12b/14b/15b meshes as `obiwan_ae_wings_split2_combo`.
 The shared builder applies only
 deterministic Rz and XY rigid transforms to the exact front-face-down STL
 triangle records. Its analytic footprint and mesh-witness gates require at

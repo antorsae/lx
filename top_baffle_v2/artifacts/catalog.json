@@ -2,16 +2,16 @@
   "products": [
     {
       "file_count": 35,
-      "manifest": "standard/manifest.json",
-      "manifest_sha256": "d426bc71c30a36e4b19f5b4ef863f9ba3a8549b6973a0a35e483f56b40c034e8",
-      "product": "standard",
+      "manifest": "stock/manifest.json",
+      "manifest_sha256": "6a61213d20ad2a8434bfbb5537e45b292bf8df16754e0c02a409f0bc694e25f2",
+      "product": "stock",
       "release_authorized": null,
       "status": "canonical_cad"
     },
     {
       "file_count": 31,
       "manifest": "slim/manifest.json",
-      "manifest_sha256": "b136f33f993214d8cbfb8f3d079b6b37f34b06c7ceabcf8204d732707cdc3431",
+      "manifest_sha256": "5f8a4417e4a8faf3f8072a39b7b254d94847136d522b78d1f073efd00e6c7e5f",
       "product": "slim",
       "release_authorized": false,
       "status": "experimental_cad"
@@ -19,7 +19,7 @@
     {
       "file_count": 86,
       "manifest": "obiwan/manifest.json",
-      "manifest_sha256": "4196f5d7a3640a9f1e9682e33bc176b83dc4586e9123c62f0930581369305297",
+      "manifest_sha256": "85b7e660a33f33e1b9fb5d08a284c009bb303c8cc35b33dc36a2b40ab3571d31",
       "product": "obiwan",
       "release_authorized": false,
       "status": "candidate_not_release_authorized"

@@ -139,31 +139,31 @@ PRINT_PART_SPECS = {
     "core_lm_carrier": {
         "filename": "core_lm_carrier.brep",
         "label": "core_lm_carrier",
-        "stl_name": "lx521_top_obiwan_core_1of2_lm_carrier",
+        "stl_name": "obiwan_core_1_of_2_lm_carrier",
         "group": "lm",
     },
     "core_um_carrier": {
         "filename": "core_um_carrier.brep",
         "label": "core_um_carrier",
-        "stl_name": "lx521_top_obiwan_core_2of2_um_carrier",
+        "stl_name": "obiwan_core_2_of_2_um_carrier",
         "group": "um",
     },
-    "optional_lm_keyed_1of2_bottom": {
-        "filename": "optional_lm_keyed_1of2_bottom.brep",
-        "label": "optional_lm_keyed_1of2_bottom",
-        "stl_name": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+    "optional_lm_keyed_1_of_2_bottom": {
+        "filename": "optional_lm_keyed_1_of_2_bottom.brep",
+        "label": "optional_lm_keyed_1_of_2_bottom",
+        "stl_name": "obiwan_optional_lm_keyed_1_of_2_bottom",
         "group": "lm_split",
     },
-    "optional_lm_keyed_2of2_top": {
-        "filename": "optional_lm_keyed_2of2_top.brep",
-        "label": "optional_lm_keyed_2of2_top",
-        "stl_name": "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+    "optional_lm_keyed_2_of_2_top": {
+        "filename": "optional_lm_keyed_2_of_2_top.brep",
+        "label": "optional_lm_keyed_2_of_2_top",
+        "stl_name": "obiwan_optional_lm_keyed_2_of_2_top",
         "group": "lm_split",
     },
     "addon_tweeter_crescent": {
         "filename": "addon_tweeter_crescent.brep",
         "label": "addon_tweeter_crescent",
-        "stl_name": "lx521_top_obiwan_addon_tweeter_crescent",
+        "stl_name": "obiwan_addon_tweeter_crescent",
         "group": "tweeter",
     },
 }
@@ -272,8 +272,8 @@ REVIEW_PART_SPECS = {
 
 CORE_KEYS = ("core_lm_carrier", "core_um_carrier")
 OPTIONAL_LM_SPLIT_KEYS = (
-    "optional_lm_keyed_1of2_bottom",
-    "optional_lm_keyed_2of2_top",
+    "optional_lm_keyed_1_of_2_bottom",
+    "optional_lm_keyed_2_of_2_top",
 )
 ATTACHMENT_KEYS_BASE = (
     "addon_tweeter_crescent",

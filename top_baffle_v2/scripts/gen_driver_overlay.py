@@ -59,10 +59,10 @@ from lx521_baffle.base import (
     UM_PILOT_PCD_MM,
     _pilot_centers,
 )
-from lx521_baffle.proud.top_baffle_nd25fw4_a_comp import OUTLINE_A_COMP
-from lx521_baffle.proud.top_baffle_nd25fw4_b import MAGNET_D_MM, MAGNET_SITES, TWEETER_DROP_MM
-from lx521_baffle.proud.top_baffle_nd25fw4_b1 import OUTLINE_B1
-from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
+from lx521_baffle.proud.a_comp import OUTLINE_A_COMP
+from lx521_baffle.proud.b import MAGNET_D_MM, MAGNET_SITES, TWEETER_DROP_MM
+from lx521_baffle.proud.b1 import OUTLINE_B1
+from lx521_baffle.proud.b2 import OUTLINE_B2
 
 LM_FLANGE_D_MM = 220.6    # U22REX/P-SL datasheet
 UM_FLANGE_D_MM = 98.0     # MU10RB-SL datasheet

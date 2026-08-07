@@ -204,7 +204,7 @@ def _fit_pieces() -> dict:
         THICKNESS_MM,
         m5_insert_bore_cutter,
     )
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (
+    from lx521_baffle.proud.b2_split import (
         _grown,
         _trapezoid_up,
     )
@@ -327,8 +327,8 @@ def _fishing_pieces(
             x1 - x0, y1 - y0, THICKNESS_MM - z0)
         if special == "real_outline":
             from lx521_baffle.base import baffle_solid
-            from lx521_baffle.proud.top_baffle_nd25fw4_b import TWEETER_DROP_MM
-            from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
+            from lx521_baffle.proud.b import TWEETER_DROP_MM
+            from lx521_baffle.proud.b2 import OUTLINE_B2
             blk = baffle_solid(OUTLINE_B2, TWEETER_DROP_MM) & crop
         elif special in {"lm_core", "obiwan_bump", "um_core"}:
             staged_lm = (

@@ -65,12 +65,12 @@ INTERFACE_SOURCES = (
     SCRIPT_DIR / "gen_driver_overlay.py",
     SCRIPT_DIR / "export_obiwan_staged.py",
     PROJECT_ROOT / "src/lx521_baffle/base.py",
-    PROJECT_ROOT / "src/lx521_baffle/proud/top_baffle_nd25fw4_b.py",
-    PROJECT_ROOT / "src/lx521_baffle/proud/top_baffle_nd25fw4_b1.py",
-    PROJECT_ROOT / "src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py",
+    PROJECT_ROOT / "src/lx521_baffle/proud/b.py",
+    PROJECT_ROOT / "src/lx521_baffle/proud/b1.py",
+    PROJECT_ROOT / "src/lx521_baffle/proud/b2.py",
     PROJECT_ROOT / "src/lx521_baffle/cables.py",
     PROJECT_ROOT / "src/lx521_baffle/flush.py",
-    PROJECT_ROOT / "src/lx521_baffle/proud/top_baffle_nd25fw4_v1.py",
+    PROJECT_ROOT / "src/lx521_baffle/proud/v1.py",
     PROJECT_ROOT / "src/lx521_baffle/obiwan/carriers.py",
     PROJECT_ROOT / "src/lx521_baffle/obiwan/closure_webs.py",
     PROJECT_ROOT / "src/lx521_baffle/obiwan/joints.py",
@@ -78,7 +78,7 @@ INTERFACE_SOURCES = (
     PROJECT_ROOT / "src/lx521_baffle/obiwan/bumps.py",
     PROJECT_ROOT / "src/lx521_baffle/obiwan/rear_entry.py",
     PROJECT_ROOT / "src/lx521_baffle/obiwan/attachments.py",
-    PROJECT_ROOT / "src/lx521_baffle/proud/top_baffle_nd25fw4_a_comp.py",
+    PROJECT_ROOT / "src/lx521_baffle/proud/a_comp.py",
     PROJECT_ROOT / "src/lx521_baffle/obiwan/bridge.py",
     PROJECT_ROOT / "src/lx521_baffle/obiwan/floor.py",
     PROJECT_ROOT / "src/lx521_baffle/obiwan/floor_strength.py",
@@ -113,11 +113,11 @@ FLOOR_CONTEXT_COLOR = "#2e8b57"
 FLOOR_CONTEXT_LINESTYLE = (0, (1.0, 2.2))
 STATE_CONTEXT_LINEWIDTH = 1.45
 
-CANONICAL_STEP_TEMPLATE = "top_baffle_nd25fw4_obiwan_wing_{slug}.step"
+CANONICAL_STEP_TEMPLATE = "obiwan_wing_{slug}.step"
 ASSEMBLED_STEP_TEMPLATE = (
-    "top_baffle_nd25fw4_obiwan_wing_{slug}_assembled.step")
+    "obiwan_wing_{slug}_assembled.step")
 TWO_PIECE_ASSEMBLED_STEP_TEMPLATE = (
-    "top_baffle_nd25fw4_obiwan_wing_{slug}_assembled_b.step")
+    "obiwan_wing_{slug}_assembled_split2.step")
 FACTS_TEMPLATE = "obiwan_wing_{slug}_facts.json"
 MANIFEST_TEMPLATE = "obiwan_wing_{slug}_print_manifest.json"
 REVIEW_KINDS = (
@@ -260,23 +260,21 @@ def _strict_mesh_facts(path: Path) -> dict[str, Any]:
 
 
 def _part_label(slug: str, side: str, order: int, role: str) -> str:
-    return f"obiwan_wing_{slug}_{side}_{order}of3_{role}"
+    return f"obiwan_wing_{slug}_{side}_{order}_of_3_{role}"
 
 
 def _stl_name(slug: str, side: str, order: int, role: str) -> str:
-    return f"lx521_top_obiwan_wing_{slug}_{side}_{order}of3_{role}.stl"
+    return f"{_part_label(slug, side, order, role)}.stl"
 
 
 def _two_piece_part_label(
         slug: str, side: str, order: int, role: str) -> str:
-    return f"obiwan_wing_{slug}_{side}_b_{order}of2_{role}"
+    return f"obiwan_wing_{slug}_{side}_split2_{order}_of_2_{role}"
 
 
 def _two_piece_stl_name(
         slug: str, side: str, order: int, role: str) -> str:
-    return (
-        f"lx521_top_obiwan_wing_{slug}_{side}_b_"
-        f"{order}of2_{role}.stl")
+    return f"{_two_piece_part_label(slug, side, order, role)}.stl"
 
 
 def _best_print_orientation(shape, Rot) -> tuple[Any, float, dict[str, Any]]:
@@ -1115,11 +1113,11 @@ def _portable_review_context_parts() -> dict[str, dict]:
     floor_paths = staged_part_paths(FLOOR_STAGE_MANIFEST, floor_payload)
     specifications = (
         ("lm_lower_floor", floor_payload, floor_paths,
-         "optional_lm_keyed_1of2_bottom", "floor_stand"),
+         "optional_lm_keyed_1_of_2_bottom", "floor_stand"),
         ("lm_lower_no_floor", no_floor_payload, no_floor_paths,
-         "optional_lm_keyed_1of2_bottom", "no_floor_stand"),
+         "optional_lm_keyed_1_of_2_bottom", "no_floor_stand"),
         ("lm_upper", no_floor_payload, no_floor_paths,
-         "optional_lm_keyed_2of2_top", "no_floor_stand"),
+         "optional_lm_keyed_2_of_2_top", "no_floor_stand"),
         ("um", no_floor_payload, no_floor_paths,
          "core_um_carrier", "no_floor_stand"),
         ("t", no_floor_payload, no_floor_paths,

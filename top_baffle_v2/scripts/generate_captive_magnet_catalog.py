@@ -43,11 +43,11 @@ from lx521_baffle.print_contract import (
 )
 from lx521_baffle.io import sha256_file
 from lx521_baffle.base import THICKNESS_MM
-from lx521_baffle.proud.top_baffle_nd25fw4_b import (
+from lx521_baffle.proud.b import (
     BASE_CAVITY_FACE_INSET_MM,
     MAGNET_SITES,
 )
-from lx521_baffle.proud.top_baffle_nd25fw4_v1 import V1_MAGNET_ZC
+from lx521_baffle.proud.v1 import V1_MAGNET_ZC
 from lx521_baffle.obiwan.carriers import (
     SIDE_INTERFACE_GAP,
     side_magnet_sites,
@@ -316,7 +316,7 @@ def _site_record(tools, *, family: str,
     return record
 
 
-def _standard_sites(*, owner: str, z_centres: Sequence[float],
+def _proud_family_sites(*, owner: str, z_centres: Sequence[float],
                     family: str) -> dict[str, dict[str, Any]]:
     records: dict[str, dict[str, Any]] = {}
     owner_key = str(owner).strip().lower()
@@ -480,15 +480,15 @@ def _artifact(*, output: Path, state: str, variant: str, part: str,
 
 def _state_artifacts(state: str, output: Path) -> list[dict[str, Any]]:
     root = HERE / "build" / state / "stl"
-    standard_base = _standard_sites(
+    stock_base = _proud_family_sites(
         owner="base", z_centres=[site[5] for site in MAGNET_SITES],
-        family="standard")
-    standard_receiver = _standard_sites(
+        family="stock")
+    stock_receiver = _proud_family_sites(
         owner="receiver", z_centres=[site[5] for site in MAGNET_SITES],
-        family="standard")
-    v1_base = _standard_sites(
+        family="stock")
+    v1_base = _proud_family_sites(
         owner="base", z_centres=V1_MAGNET_ZC, family="v1")
-    v1_receiver = _standard_sites(
+    v1_receiver = _proud_family_sites(
         owner="receiver", z_centres=V1_MAGNET_ZC, family="v1")
     obiwan_lm = _obiwan_sites(owner="carrier", driver="lm")
     obiwan_um = _obiwan_sites(owner="carrier", driver="um")
@@ -507,52 +507,52 @@ def _state_artifacts(state: str, output: Path) -> list[dict[str, Any]]:
         result.append(artifact)
         return artifact
 
-    base_sources = ("src/lx521_baffle/magnets.py", "src/lx521_baffle/proud/top_baffle_nd25fw4_b.py")
-    add("B2", "lx521_top_base_4of4_vase_b2",
-        standard_base.values(),
-        (*base_sources, "src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py",
-         "src/lx521_baffle/proud/top_baffle_nd25fw4_b2_split.py"))
+    base_sources = ("src/lx521_baffle/magnets.py", "src/lx521_baffle/proud/b.py")
+    add("B2", "stock_4_of_4_vase_b2",
+        stock_base.values(),
+        (*base_sources, "src/lx521_baffle/proud/b2.py",
+         "src/lx521_baffle/proud/b2_split.py"))
     a_map = (
-        ("lx521_top_addonA_1of4_shoulder_top_left", "upper_left"),
-        ("lx521_top_addonA_2of4_shoulder_top_right", "upper_right"),
-        ("lx521_top_addonA_3of4_shoulder_bottom_left", "lower_left"),
-        ("lx521_top_addonA_4of4_shoulder_bottom_right", "lower_right"),
+        ("stock_shoulder_1_of_4_top_left", "upper_left"),
+        ("stock_shoulder_2_of_4_top_right", "upper_right"),
+        ("stock_shoulder_3_of_4_bottom_left", "lower_left"),
+        ("stock_shoulder_4_of_4_bottom_right", "lower_right"),
     )
     for stem, key in a_map:
-        add("A", stem, (standard_receiver[key],),
-            (*base_sources, "src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py",
-             "src/lx521_baffle/proud/top_baffle_nd25fw4_a_comp.py",
-             "src/lx521_baffle/proud/top_baffle_nd25fw4_attachments.py"))
+        add("A", stem, (stock_receiver[key],),
+            (*base_sources, "src/lx521_baffle/proud/b2.py",
+             "src/lx521_baffle/proud/a_comp.py",
+             "src/lx521_baffle/proud/attachments.py"))
     for side in ("left", "right"):
-        add("B1", f"lx521_top_addonB1_{1 if side == 'left' else 2}of2_wing_{side}",
-            (standard_receiver[f"lower_{side}"],
-             standard_receiver[f"upper_{side}"]),
-            (*base_sources, "src/lx521_baffle/proud/top_baffle_nd25fw4_b1.py",
-             "src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py",
-             "src/lx521_baffle/proud/top_baffle_nd25fw4_attachments.py"))
+        add("B1", f"stock_wing_{1 if side == 'left' else 2}_of_2_{side}",
+            (stock_receiver[f"lower_{side}"],
+             stock_receiver[f"upper_{side}"]),
+            (*base_sources, "src/lx521_baffle/proud/b1.py",
+             "src/lx521_baffle/proud/b2.py",
+             "src/lx521_baffle/proud/attachments.py"))
 
     for stem, key in (
-        ("lx521_top_v1addonA_shoulder_top_left", "upper_left"),
-        ("lx521_top_v1addonA_shoulder_top_right", "upper_right"),
-        ("lx521_top_v1addonA_shoulder_bottom_left", "lower_left"),
-        ("lx521_top_v1addonA_shoulder_bottom_right", "lower_right"),
+        ("slim_shoulder_2_of_4_top_left", "upper_left"),
+        ("slim_shoulder_4_of_4_top_right", "upper_right"),
+        ("slim_shoulder_1_of_4_bottom_left", "lower_left"),
+        ("slim_shoulder_3_of_4_bottom_right", "lower_right"),
     ):
         add("V1-A", stem, (v1_receiver[key],),
-            (*base_sources, "src/lx521_baffle/proud/top_baffle_nd25fw4_a_comp.py",
-             "src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py",
-             "src/lx521_baffle/proud/top_baffle_nd25fw4_v1.py",
-             "src/lx521_baffle/proud/top_baffle_nd25fw4_v1_attachments.py"))
+            (*base_sources, "src/lx521_baffle/proud/a_comp.py",
+             "src/lx521_baffle/proud/b2.py",
+             "src/lx521_baffle/proud/v1.py",
+             "src/lx521_baffle/proud/v1_attachments.py"))
     for side in ("left", "right"):
-        add("V1-B1", f"lx521_top_v1addonB1_wing_{side}",
+        add("V1-B1", f"slim_wing_{1 if side == 'left' else 2}_of_2_{side}",
             (v1_receiver[f"lower_{side}"], v1_receiver[f"upper_{side}"]),
-            (*base_sources, "src/lx521_baffle/proud/top_baffle_nd25fw4_b1.py",
-             "src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py",
-             "src/lx521_baffle/proud/top_baffle_nd25fw4_v1.py",
-             "src/lx521_baffle/proud/top_baffle_nd25fw4_v1_attachments.py"))
-    add("V1L", "lx521_top_v1l_4of4_vase_b2", v1_base.values(),
-        (*base_sources, "src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py",
-         "src/lx521_baffle/proud/top_baffle_nd25fw4_v1.py", "src/lx521_baffle/proud/top_baffle_nd25fw4_v1l.py",
-         "src/lx521_baffle/proud/top_baffle_nd25fw4_v1l_split.py"))
+            (*base_sources, "src/lx521_baffle/proud/b1.py",
+             "src/lx521_baffle/proud/b2.py",
+             "src/lx521_baffle/proud/v1.py",
+             "src/lx521_baffle/proud/v1_attachments.py"))
+    add("V1L", "slim_4_of_4_vase_b2", v1_base.values(),
+        (*base_sources, "src/lx521_baffle/proud/b2.py",
+         "src/lx521_baffle/proud/v1.py", "src/lx521_baffle/proud/v1l.py",
+         "src/lx521_baffle/proud/v1l_split.py"))
 
     lm_lower = tuple(obiwan_lm[name] for name in (
         "lm_lower_left", "lm_lower_right"))
@@ -569,26 +569,26 @@ def _state_artifacts(state: str, output: Path) -> list[dict[str, Any]]:
         "src/lx521_baffle/obiwan/route.py",
         "scripts/export_obiwan_staged.py",
     )
-    lm_monolith = add("Obi-Wan", "lx521_top_obiwan_core_1of2_lm_carrier",
+    lm_monolith = add("Obi-Wan", "obiwan_core_1_of_2_lm_carrier",
         (*lm_lower, *lm_upper),
         obiwan_sources, stage_manifest=obiwan_stage_manifest)
-    add("Obi-Wan", "lx521_top_obiwan_core_2of2_um_carrier",
+    add("Obi-Wan", "obiwan_core_2_of_2_um_carrier",
         obiwan_um.values(),
         obiwan_sources, stage_manifest=obiwan_stage_manifest)
-    add("Obi-Wan-split", "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+    add("Obi-Wan-split", "obiwan_optional_lm_keyed_1_of_2_bottom",
         lm_lower,
         (*obiwan_sources, "src/lx521_baffle/obiwan/lm_split.py"),
         stage_manifest=obiwan_stage_manifest)
-    add("Obi-Wan-split", "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+    add("Obi-Wan-split", "obiwan_optional_lm_keyed_2_of_2_top",
         lm_upper,
         (*obiwan_sources, "src/lx521_baffle/obiwan/lm_split.py"),
         stage_manifest=obiwan_stage_manifest)
     split_bottom_id = (
         f"{state}:Obi-Wan-split:"
-        "lx521_top_obiwan_optional_lm_keyed_1of2_bottom")
+        "obiwan_optional_lm_keyed_1_of_2_bottom")
     split_top_id = (
         f"{state}:Obi-Wan-split:"
-        "lx521_top_obiwan_optional_lm_keyed_2of2_top")
+        "obiwan_optional_lm_keyed_2_of_2_top")
     lm_monolith["p2s_printability"] = "not_printable_oversize"
     lm_monolith["cavity_audit_proxies"] = [
         {
@@ -604,7 +604,7 @@ def _state_artifacts(state: str, output: Path) -> list[dict[str, Any]]:
         )
     ]
     add("coupon1", "lx521_coupon_1_fit_plate", (_coupon1_site(),),
-        ("src/lx521_baffle/magnets.py", "src/lx521_baffle/proud/top_baffle_nd25fw4_b2_split.py",
+        ("src/lx521_baffle/magnets.py", "src/lx521_baffle/proud/b2_split.py",
          "scripts/export_coupon.py"), print_exporter="scripts/export_coupon.py")
 
     if len(result) != 22:

@@ -17,7 +17,7 @@ top_baffle_v2/
 │   ├── wings/{ac,ae}/
 │   └── common/               independently promoted shared outputs
 ├── artifacts/                product-oriented links + hash manifests
-│   ├── standard/
+│   ├── stock/
 │   ├── slim/
 │   └── obiwan/
 ├── coupons/                  process/fit qualification pieces
@@ -49,7 +49,7 @@ Each product owns:
 ```
 
 Obi-Wan nests `states/{floor,no_floor}` and `wings/{ac,ae}` because those are
-real, mutually exclusive configuration choices. The standard/slim shoulder
+real, mutually exclusive configuration choices. The stock/slim shoulder
 and wing files remain siblings because each set is an alternative add-on to
 the same base.
 

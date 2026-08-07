@@ -4,7 +4,7 @@
 The authoritative generators still write the state-oriented build trees used by
 the validation pipeline.  This tool creates stable relative symlinks under
 ``artifacts/`` and deterministic SHA-256 manifests for the three products a
-human actually chooses: standard, slim, and Obi-Wan.
+human actually chooses: stock, slim, and Obi-Wan.
 """
 
 from __future__ import annotations
@@ -55,28 +55,28 @@ def _print_pair(destination_root: str, source_root: str, stem: str) -> list[Link
     ]
 
 
-def _standard_links() -> list[Link]:
+def _stock_links() -> list[Link]:
     state = "no_floor_stand"
     state_root = f"build/{state}"
     stl_source = f"{state_root}/stl"
     links = [
-        Link("cad/base.step", f"{state_root}/top_baffle_nd25fw4_b2.step", "canonical_design"),
+        Link("cad/base.step", f"{state_root}/b2.step", "canonical_design"),
         Link(
             "cad/base_print_assembly.step",
-            f"{state_root}/top_baffle_nd25fw4_b2_split.step",
+            f"{state_root}/b2_split.step",
             "print_assembly",
         ),
         Link(
             "cad/shoulders_assembly.step",
-            f"{state_root}/top_baffle_nd25fw4_a_comp_assembled.step",
+            f"{state_root}/a_comp_assembled.step",
             "optional_shoulders_assembly",
         ),
         Link(
             "cad/wings_assembly.step",
-            f"{state_root}/top_baffle_nd25fw4_b1_assembled.step",
+            f"{state_root}/b1_assembled.step",
             "optional_wings_assembly",
         ),
-        Link("cad/attachments.step", "build/common/top_baffle_nd25fw4_attachments.step", "attachment_set"),
+        Link("cad/attachments.step", "build/common/attachments.step", "attachment_set"),
         Link("images/plan.png", f"{state_root}/baffle_variants_drivers.png", "generated_plan"),
         Link("images/routing.png", f"{state_root}/baffle_cable_routing_proud.png", "generated_routing"),
     ]
@@ -84,23 +84,23 @@ def _standard_links() -> list[Link]:
         links.append(
             Link(
                 f"images/{view.removeprefix('base_')}.png",
-                _latest(f"images/generated/standard/{view}_*.png"),
+                _latest(f"images/generated/stock/{view}_*.png"),
                 "cad_snapshot",
             )
         )
     stems = [
-        "lx521_top_base_1of4_bottom",
-        "lx521_top_base_2of4_mid_left",
-        "lx521_top_base_3of4_mid_right",
-        "lx521_top_base_4of4_vase_b2",
-        "lx521_top_addonA_1of4_shoulder_top_left",
-        "lx521_top_addonA_2of4_shoulder_top_right",
-        "lx521_top_addonA_3of4_shoulder_bottom_left",
-        "lx521_top_addonA_4of4_shoulder_bottom_right",
-        "lx521_top_addonB1_1of2_wing_left",
-        "lx521_top_addonB1_2of2_wing_right",
-        "lx521_top_proud_addon_um_grommet_half_a",
-        "lx521_top_proud_addon_um_grommet_half_b",
+        "stock_1_of_4_bottom",
+        "stock_2_of_4_mid_left",
+        "stock_3_of_4_mid_right",
+        "stock_4_of_4_vase_b2",
+        "stock_shoulder_1_of_4_top_left",
+        "stock_shoulder_2_of_4_top_right",
+        "stock_shoulder_3_of_4_bottom_left",
+        "stock_shoulder_4_of_4_bottom_right",
+        "stock_wing_1_of_2_left",
+        "stock_wing_2_of_2_right",
+        "stock_um_grommet_half_a",
+        "stock_um_grommet_half_b",
     ]
     for stem in stems:
         links.extend(_print_pair("stl", stl_source, stem))
@@ -114,13 +114,13 @@ def _slim_links() -> list[Link]:
     links = [
         Link(
             "cad/base_print_assembly.step",
-            f"{state_root}/top_baffle_nd25fw4_v1l_split.step",
+            f"{state_root}/v1l_split.step",
             "print_assembly",
         ),
-        Link("cad/top.step", f"{state_root}/top_baffle_nd25fw4_v1.step", "thin_top_design"),
+        Link("cad/top.step", f"{state_root}/v1.step", "thin_top_design"),
         Link(
             "cad/attachments.step",
-            f"{state_root}/top_baffle_nd25fw4_v1_attachments.step",
+            f"{state_root}/v1_attachments.step",
             "thin_attachment_set",
         ),
     ]
@@ -133,18 +133,18 @@ def _slim_links() -> list[Link]:
             )
         )
     stems = [
-        "lx521_top_v1l_1of4_bottom",
-        "lx521_top_v1l_2of4_mid_left",
-        "lx521_top_v1l_3of4_mid_right",
-        "lx521_top_v1l_4of4_vase_b2",
-        "lx521_top_v1addonA_shoulder_top_left",
-        "lx521_top_v1addonA_shoulder_top_right",
-        "lx521_top_v1addonA_shoulder_bottom_left",
-        "lx521_top_v1addonA_shoulder_bottom_right",
-        "lx521_top_v1addonB1_wing_left",
-        "lx521_top_v1addonB1_wing_right",
-        "lx521_top_v1l_addon_um_grommet_half_a",
-        "lx521_top_v1l_addon_um_grommet_half_b",
+        "slim_1_of_4_bottom",
+        "slim_2_of_4_mid_left",
+        "slim_3_of_4_mid_right",
+        "slim_4_of_4_vase_b2",
+        "slim_shoulder_2_of_4_top_left",
+        "slim_shoulder_4_of_4_top_right",
+        "slim_shoulder_1_of_4_bottom_left",
+        "slim_shoulder_3_of_4_bottom_right",
+        "slim_wing_1_of_2_left",
+        "slim_wing_2_of_2_right",
+        "slim_um_grommet_half_a",
+        "slim_um_grommet_half_b",
     ]
     for stem in stems:
         links.extend(_print_pair("stl", stl_source, stem))
@@ -155,20 +155,20 @@ def _obiwan_state_links(state: str, destination: str) -> list[Link]:
     state_root = f"build/{state}"
     source_stl = f"{state_root}/stl"
     links = [
-        Link(f"states/{destination}/cad/core.step", f"{state_root}/top_baffle_nd25fw4_obiwan_split.step", "core_assembly"),
+        Link(f"states/{destination}/cad/core.step", f"{state_root}/obiwan_split.step", "core_assembly"),
         Link(
             f"states/{destination}/cad/lm_keyed_split.step",
-            f"{state_root}/top_baffle_nd25fw4_obiwan_lm_split.step",
+            f"{state_root}/obiwan_lm_split.step",
             "optional_lm_print_split",
         ),
         Link(
             f"states/{destination}/cad/attachments.step",
-            f"{state_root}/top_baffle_nd25fw4_obiwan_attachments.step",
+            f"{state_root}/obiwan_attachments.step",
             "optional_tweeter_attachment",
         ),
         Link(
             f"states/{destination}/cad/review_assembly.step",
-            f"{state_root}/top_baffle_nd25fw4_obiwan_assembled.step",
+            f"{state_root}/obiwan_assembled.step",
             "non_manufacturing_review_assembly",
         ),
         Link(
@@ -192,11 +192,11 @@ def _obiwan_state_links(state: str, destination: str) -> list[Link]:
             )
         )
     stems = [
-        "lx521_top_obiwan_core_1of2_lm_carrier",
-        "lx521_top_obiwan_core_2of2_um_carrier",
-        "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
-        "lx521_top_obiwan_optional_lm_keyed_2of2_top",
-        "lx521_top_obiwan_addon_tweeter_crescent",
+        "obiwan_core_1_of_2_lm_carrier",
+        "obiwan_core_2_of_2_um_carrier",
+        "obiwan_optional_lm_keyed_1_of_2_bottom",
+        "obiwan_optional_lm_keyed_2_of_2_top",
+        "obiwan_addon_tweeter_crescent",
     ]
     for stem in stems:
         links.extend(_print_pair(f"states/{destination}/stl", source_stl, stem))
@@ -224,12 +224,12 @@ def _obiwan_wing_links(slug: str) -> list[Link]:
     links = [
         Link(
             f"{destination}/cad/monolithic_pair.step",
-            f"{source}/top_baffle_nd25fw4_obiwan_wing_{slug}.step",
+            f"{source}/obiwan_wing_{slug}.step",
             "canonical_wing_pair",
         ),
         Link(
             f"{destination}/cad/print_assembly.step",
-            f"{source}/top_baffle_nd25fw4_obiwan_wing_{slug}_assembled.step",
+            f"{source}/obiwan_wing_{slug}_assembled.step",
             "six_piece_print_assembly",
         ),
         Link(
@@ -253,7 +253,7 @@ def _obiwan_wing_links(slug: str) -> list[Link]:
         )
     for side in ("left", "right"):
         for order, role in ((1, "lm_lower"), (2, "lm_upper"), (3, "um")):
-            stem = f"lx521_top_obiwan_wing_{slug}_{side}_{order}of3_{role}"
+            stem = f"obiwan_wing_{slug}_{side}_{order}_of_3_{role}"
             links.extend(_print_pair(f"{destination}/stl", f"{source}/stl", stem))
     return links
 
@@ -271,8 +271,8 @@ def _obiwan_links() -> list[Link]:
 
 
 PRODUCTS = {
-    "standard": {
-        "title": "Standard R6P baffle",
+    "stock": {
+        "title": "Stock R6P baffle",
         "status": "canonical_cad",
         "release_authorized": None,
         "intent": "Full-depth B2 base with mutually exclusive A-comp shoulders or B1 wings.",
@@ -281,7 +281,7 @@ PRODUCTS = {
             "width_mm": 304.802,
             "height_mm": 453.457,
         },
-        "links": _standard_links,
+        "links": _stock_links,
     },
     "slim": {
         "title": "Slim R6P baffle",

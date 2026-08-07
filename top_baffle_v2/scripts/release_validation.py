@@ -219,32 +219,32 @@ SUPPORTED_ARTIFACT_MATCHES = (
     {
         "state": "floor_stand",
         "variant": "Obi-Wan",
-        "part": "lx521_top_obiwan_core_2of2_um_carrier",
+        "part": "obiwan_core_2_of_2_um_carrier",
     },
     {
         "state": "no_floor_stand",
         "variant": "Obi-Wan",
-        "part": "lx521_top_obiwan_core_2of2_um_carrier",
+        "part": "obiwan_core_2_of_2_um_carrier",
     },
     {
         "state": "floor_stand",
         "variant": "Obi-Wan-split",
-        "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+        "part": "obiwan_optional_lm_keyed_1_of_2_bottom",
     },
     {
         "state": "no_floor_stand",
         "variant": "Obi-Wan-split",
-        "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+        "part": "obiwan_optional_lm_keyed_1_of_2_bottom",
     },
     {
         "state": "floor_stand",
         "variant": "Obi-Wan-split",
-        "part": "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+        "part": "obiwan_optional_lm_keyed_2_of_2_top",
     },
     {
         "state": "no_floor_stand",
         "variant": "Obi-Wan-split",
-        "part": "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+        "part": "obiwan_optional_lm_keyed_2_of_2_top",
     },
 )
 DUCT_SUPPORT_BLOCKER_MATCHES = SUPPORTED_ARTIFACT_MATCHES
@@ -376,12 +376,12 @@ def _expected_duct_region_names(
     *, state: str, variant: str, part: str,
 ) -> frozenset[str]:
     if (variant == "Obi-Wan"
-            and part == "lx521_top_obiwan_core_2of2_um_carrier"):
+            and part == "obiwan_core_2_of_2_um_carrier"):
         return EXPECTED_UM_CARRIER_DUCT_REGION_NAMES
     if (variant == "Obi-Wan-split"
             and part in {
-                "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
-                "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+                "obiwan_optional_lm_keyed_1_of_2_bottom",
+                "obiwan_optional_lm_keyed_2_of_2_top",
             }):
         names = EXPECTED_KEYED_LM_DUCT_REGION_NAMES.get(state)
         if names is not None:
@@ -407,7 +407,7 @@ def _normalize_duct_collision_contract(
     split_half: str | None = None
     seam_y: float | None = None
     owner: str | None = None
-    if part == "lx521_top_obiwan_core_2of2_um_carrier":
+    if part == "obiwan_core_2_of_2_um_carrier":
         owner = value.get("owner")
         if owner != "um_carrier":
             raise AuditError(

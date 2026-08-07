@@ -218,8 +218,8 @@ With a monolithic LM, the same pockets remain as small hidden local reliefs;
 the three magnetic datums and primary retention geometry are unchanged.
 
 For the keyed split, the shelf also provides the mutually exclusive
-`obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand` and
-`obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand` single-plate alternatives to
+`obiwan_01_02_03_04_LM_UM_combo_no_floor_stand` and
+`obiwan_01_02_03_04_LM_UM_combo_floor_stand` single-plate alternatives to
 the corresponding four individual 01/02/03/04 projects. They do not
 regenerate or fuse geometry: four released, same-state front-down STLs are
 translated to locked positions inside one Bambu object. Each project carries
@@ -236,8 +236,8 @@ functional duct. Never print a combined plate with its individual 01, 02, 03,
 or 04 files, and never mix the two stand states.
 
 For the Ac and Ae B wing splits, the shelf also provides
-`obiwan_05b_06b_08b_09b_Ac_wings_1_of_1` and
-`obiwan_11b_12b_14b_15b_Ae_wings_1_of_1` as mutually exclusive single-plate
+`obiwan_ac_wings_split2_combo` and
+`obiwan_ae_wings_split2_combo` as mutually exclusive single-plate
 alternatives to their four individual B projects. Each rigidly rotates and
 translates the four exact released front-face-down STLs without
 regenerating, changing, or fusing their geometry. The locked footprint is
@@ -354,7 +354,7 @@ Z=**15.10 mm**. Their magnet-free exterior is immutable: no cavity operation
 may add a local backing, boss, relief, rear cap, flat, or visible pocket cue.
 The mating surfaces are flush with **0 mm physical air gap**. The receiver's
 0.05 mm allowance is a solid internal spacing standoff, not an air-gap cutter.
-Standard lower stations are therefore **0.95 mm** apart. The standard curved
+Stock lower stations are therefore **0.95 mm** apart. The `standard_curved`
 upper base datum is recessed 0.14 mm inside
 the unchanged host, giving **1.09 mm**. Obi-Wan LM-upper and UM ring datums are
 0.15 mm beneath their smooth carrier fairings, and the Obi-Wan LM-lower datum
@@ -422,7 +422,7 @@ large parts:
 3. `lx521_coupon_3_fish_entry.stl` — no-foot entry cluster and Ø6.8
    tweeter-pair merge.
 4. `lx521_coupon_4_um_outlet_proud.stl` — the real B2 outline and the
-   complete standard B2/C7/V0/V1 R6P Ø8.2/G1/R14 rear outlet at
+   complete stock B2/V1 R6P Ø8.2/G1/R14 rear outlet at
    (33.446, 301.492). It does **not** represent the keyed V1L outlet.
 5. `lx521_coupon_5_fish_ts_dive.stl` — proud-family tweeter notch
    passage.
@@ -448,11 +448,11 @@ Before any captive-magnet production run, also print and slice the dedicated
 reference in `coupons/obiwan_ae_embed/`. Its source and README define the proven
 cradle/skin/roof implementation and the common 5.96 mm regression marker.
 R6P uses a short curved split grommet that follows the final R14 bore;
-print `lx521_top_proud_addon_um_grommet_half_{a,b}.stl` and test it with
+print `stock_um_grommet_half_{a,b}.stl` and test it with
 coupon 4. That grommet fits B2/C7/V0/V1 only; do not fit it to V1L.
 V1L has no separate coupon in this set: its printed `mid_right` is the
 dry-fishing and physical service-fit article for the 283-degree exit.
-Use `lx521_top_v1l_addon_um_grommet_half_{a,b}.stl`, not the proud
+Use `slim_um_grommet_half_{a,b}.stl`, not the proud
 halves. The V1L TPU insert follows the keyed R14 with a Ø8 body around a
 Ø7.1 bore, enters 2.5 mm, and seats its Ø13 × 2 flange on the z=6.8 rear
 face. Test both halves around the measured cable and in the printed
@@ -684,19 +684,19 @@ connector or revise the service geometry.
 ### R6F Obi-Wan barebone
 
 Before hardware assembly, inspect
-`top_baffle_nd25fw4_obiwan_split.step` for the mandatory core,
-`top_baffle_nd25fw4_obiwan_lm_split.step` if the optional two-print LM form is
+`obiwan_split.step` for the mandatory core,
+`obiwan_lm_split.step` if the optional two-print LM form is
 selected,
-`top_baffle_nd25fw4_obiwan_attachments.step` for the selected printed
-modules, and `top_baffle_nd25fw4_obiwan_assembled.step` with
-`top_baffle_nd25fw4_um_fit.step` for the service keep-clear. The last
+`obiwan_attachments.step` for the selected printed
+modules, and `obiwan_assembled.step` with
+`um_fit.step` for the service keep-clear. The last
 two contain reference geometry and are not an instruction to print the
 Faston proxy.
 
 Choose exactly one LM print form for each state: either the canonical
-`lx521_top_obiwan_core_1of2_lm_carrier.stl`, or both
-`lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl` and
-`lx521_top_obiwan_optional_lm_keyed_2of2_top.stl`. The optional seam is at world
+`obiwan_core_1_of_2_lm_carrier.stl`, or both
+`obiwan_optional_lm_keyed_1_of_2_bottom.stl` and
+`obiwan_optional_lm_keyed_2_of_2_top.stl`. The optional seam is at world
 Y=172.481 mm with a closed zero-gap planar butt. Before step 4, place both
 front faces down on one flat datum. With the bottom stationary, move the top
 straight along world -Y and seat both bottom-owned Ø1.60 +Y pins together—one

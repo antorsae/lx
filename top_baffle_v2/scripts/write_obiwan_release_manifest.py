@@ -56,9 +56,9 @@ EXPECTED_UM_CARRIER_DUCT_REGION_NAMES = {
     "um_carrier_t_route_lumen",
 }
 SUPPORT_BLOCKER_STEMS = (
-    "lx521_top_obiwan_core_2of2_um_carrier",
-    "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
-    "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+    "obiwan_core_2_of_2_um_carrier",
+    "obiwan_optional_lm_keyed_1_of_2_bottom",
+    "obiwan_optional_lm_keyed_2_of_2_top",
 )
 
 REQUIRED_REFERENCE_PATHS = (
@@ -129,11 +129,11 @@ def native_stage_record(
 
 def expected_artifact_names(stand_foot: bool) -> tuple[str, ...]:
     review = (
-        "top_baffle_nd25fw4_obiwan_split.step",
-        "top_baffle_nd25fw4_obiwan_lm_split.step",
-        "top_baffle_nd25fw4_obiwan_attachments.step",
-        "top_baffle_nd25fw4_obiwan_assembled.step",
-        "top_baffle_nd25fw4_um_fit.step",
+        "obiwan_split.step",
+        "obiwan_lm_split.step",
+        "obiwan_attachments.step",
+        "obiwan_assembled.step",
+        "um_fit.step",
         "baffle_cable_routing_proud.png",
         "baffle_cable_routing_obiwan.png",
         "baffle_variants_drivers.png",
@@ -141,11 +141,11 @@ def expected_artifact_names(stand_foot: bool) -> tuple[str, ...]:
         "baffle_b2_drivers.png",
     )
     obiwan_stls = [
-        "stl/lx521_top_obiwan_core_1of2_lm_carrier.stl",
-        "stl/lx521_top_obiwan_core_2of2_um_carrier.stl",
-        "stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
-        "stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.stl",
-        "stl/lx521_top_obiwan_addon_tweeter_crescent.stl",
+        "stl/obiwan_core_1_of_2_lm_carrier.stl",
+        "stl/obiwan_core_2_of_2_um_carrier.stl",
+        "stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
+        "stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
+        "stl/obiwan_addon_tweeter_crescent.stl",
     ]
     # Print orientation is part of the release, not an informal slicer note.
     # Bind every installed Obi-Wan STL to the hash-backed X180/front-down plus
@@ -308,7 +308,7 @@ def build_manifest(state_dir: Path, stand_foot: bool) -> dict:
                 f"{stem}: duct support blocker uses a different print "
                 "transform from its keyed LM part")
         collision = binding.get("duct_collision_contract")
-        is_um_carrier = stem == "lx521_top_obiwan_core_2of2_um_carrier"
+        is_um_carrier = stem == "obiwan_core_2_of_2_um_carrier"
         expected_regions = (
             EXPECTED_UM_CARRIER_DUCT_REGION_NAMES
             if is_um_carrier

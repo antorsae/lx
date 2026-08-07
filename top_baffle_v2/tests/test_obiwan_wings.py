@@ -268,12 +268,12 @@ def _assert_complete_step(path: Path, required_tokens: tuple[str, ...]) -> None:
 
 def _expected_stl_names(slug: str) -> tuple[str, ...]:
     three_piece = tuple(
-        f"lx521_top_obiwan_wing_{slug}_{side}_{order}of3_{role}.stl"
+        f"obiwan_wing_{slug}_{side}_{order}_of_3_{role}.stl"
         for side in SIDE_NAMES
         for order, role in enumerate(PRINT_PART_ROLES, start=1)
     )
     two_piece = tuple(
-        f"lx521_top_obiwan_wing_{slug}_{side}_b_{order}of2_{role}.stl"
+        f"obiwan_wing_{slug}_{side}_split2_{order}_of_2_{role}.stl"
         for side in SIDE_NAMES
         for order, role in enumerate(TWO_PIECE_PART_ROLES, start=1)
     )
@@ -287,13 +287,13 @@ def _variant_paths(slug: str) -> dict[str, Path | tuple[Path, ...]]:
     return {
         "directory": directory,
         "canonical_step": (
-            directory / f"top_baffle_nd25fw4_obiwan_wing_{slug}.step"),
+            directory / f"obiwan_wing_{slug}.step"),
         "assembled_step": (
             directory
-            / f"top_baffle_nd25fw4_obiwan_wing_{slug}_assembled.step"),
+            / f"obiwan_wing_{slug}_assembled.step"),
         "two_piece_assembled_step": (
             directory
-            / f"top_baffle_nd25fw4_obiwan_wing_{slug}_assembled_b.step"),
+            / f"obiwan_wing_{slug}_assembled_b.step"),
         "facts": directory / f"obiwan_wing_{slug}_facts.json",
         "manifest": directory / f"obiwan_wing_{slug}_print_manifest.json",
         "stls": stls,
@@ -579,7 +579,7 @@ def test_exported_artifact_contract() -> None:
         assembled_labels = (
             f"lx521_obiwan_basic_wing_{slug}_print_assembly",
             *(
-                f"obiwan_wing_{slug}_{side}_{order}of3_{role}"
+                f"obiwan_wing_{slug}_{side}_{order}_of_3_{role}"
                 for side in SIDE_NAMES
                 for order, role in enumerate(PRINT_PART_ROLES, start=1)
             ),
@@ -587,7 +587,7 @@ def test_exported_artifact_contract() -> None:
         two_piece_assembled_labels = (
             f"lx521_obiwan_basic_wing_{slug}_two_piece_print_assembly",
             *(
-                f"obiwan_wing_{slug}_{side}_b_{order}of2_{role}"
+                f"obiwan_wing_{slug}_{side}_split2_{order}_of_2_{role}"
                 for side in SIDE_NAMES
                 for order, role in enumerate(
                     TWO_PIECE_PART_ROLES, start=1)
@@ -942,16 +942,16 @@ def test_exported_artifact_contract() -> None:
             piece_count = 3 if split_variant == "a" else 2
             if split_variant == "a":
                 expected_name = (
-                    f"lx521_top_obiwan_wing_{slug}_{side}_"
-                    f"{order}of3_{role}.stl")
+                    f"obiwan_wing_{slug}_{side}_"
+                    f"{order}_of_3_{role}.stl")
                 expected_label = (
-                    f"obiwan_wing_{slug}_{side}_{order}of3_{role}")
+                    f"obiwan_wing_{slug}_{side}_{order}_of_3_{role}")
             else:
                 expected_name = (
-                    f"lx521_top_obiwan_wing_{slug}_{side}_b_"
-                    f"{order}of2_{role}.stl")
+                    f"obiwan_wing_{slug}_{side}_split2_"
+                    f"{order}_of_2_{role}.stl")
                 expected_label = (
-                    f"obiwan_wing_{slug}_{side}_b_{order}of2_{role}")
+                    f"obiwan_wing_{slug}_{side}_split2_{order}_of_2_{role}")
             relative = record.get("path")
             expected_relative_path = f"stl/{expected_name}"
             assert relative == expected_relative_path, (
@@ -1122,12 +1122,12 @@ def test_exported_artifact_contract() -> None:
         by_key = {record["key"]: record for record in context_records}
         assert by_key["lm_lower_no_floor"]["state"] == "no_floor_stand"
         assert by_key["lm_lower_no_floor"]["part_key"] == (
-            "optional_lm_keyed_1of2_bottom")
+            "optional_lm_keyed_1_of_2_bottom")
         assert by_key["lm_lower_no_floor"]["color"] == "#2878b5"
         assert by_key["lm_lower_no_floor"]["line_style"] == "dash_dot"
         assert by_key["lm_lower_floor"]["state"] == "floor_stand"
         assert by_key["lm_lower_floor"]["part_key"] == (
-            "optional_lm_keyed_1of2_bottom")
+            "optional_lm_keyed_1_of_2_bottom")
         assert by_key["lm_lower_floor"]["color"] == "#2e8b57"
         assert by_key["lm_lower_floor"]["line_style"] == "dotted"
         assert (by_key["lm_lower_floor"]["source_sha256"]
@@ -1422,11 +1422,11 @@ def test_live_brep_geometry_contract() -> None:
             f"obiwan_wing_{slug}_{side}_monolithic"
             for side in SIDE_NAMES)
         print_labels = tuple(
-            f"obiwan_wing_{slug}_{side}_{order}of3_{role}"
+            f"obiwan_wing_{slug}_{side}_{order}_of_3_{role}"
             for side in SIDE_NAMES
             for order, role in enumerate(PRINT_PART_ROLES, start=1))
         two_piece_labels = tuple(
-            f"obiwan_wing_{slug}_{side}_b_{order}of2_{role}"
+            f"obiwan_wing_{slug}_{side}_split2_{order}_of_2_{role}"
             for side in SIDE_NAMES
             for order, role in enumerate(TWO_PIECE_PART_ROLES, start=1))
 
@@ -1450,7 +1450,7 @@ def test_live_brep_geometry_contract() -> None:
             "print_parts": {
                 side: {
                     role: print_assembly[
-                        f"obiwan_wing_{slug}_{side}_{order}of3_{role}"]
+                        f"obiwan_wing_{slug}_{side}_{order}_of_3_{role}"]
                     for order, role in enumerate(PRINT_PART_ROLES, start=1)
                 }
                 for side in SIDE_NAMES
@@ -1458,7 +1458,7 @@ def test_live_brep_geometry_contract() -> None:
             "two_piece_parts": {
                 side: {
                     role: two_piece_assembly[
-                        f"obiwan_wing_{slug}_{side}_b_{order}of2_{role}"]
+                        f"obiwan_wing_{slug}_{side}_split2_{order}_of_2_{role}"]
                     for order, role in enumerate(
                         TWO_PIECE_PART_ROLES, start=1)
                 }
@@ -1615,8 +1615,8 @@ def test_live_brep_geometry_contract() -> None:
         paths = staged_part_paths(manifest_path, payload)
         for part_key in (
                 "core_lm_carrier",
-                "optional_lm_keyed_1of2_bottom",
-                "optional_lm_keyed_2of2_top"):
+                "optional_lm_keyed_1_of_2_bottom",
+                "optional_lm_keyed_2_of_2_top"):
             shape = import_brep(str(paths[part_key]))
             _assert_one_positive_solid(shape, f"{state}/{part_key}")
             staged_lm_parts[f"{state}/{part_key}"] = shape

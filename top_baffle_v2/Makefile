@@ -35,6 +35,7 @@
 #   make obiwan_ae_wing_plate local 11b+12b+14b+15b single-plate slice/audit
 #   make to_print            local complete P2S shelf: audit + 51 friendly files
 #   make to_print_validate   validate an existing P2S shelf without slicing
+#   make artifacts           local artifacts/ product facade: relink + rehash
 #
 # Compatible with the macOS-provided GNU make 3.81.
 
@@ -51,12 +52,12 @@ PETG_GF_PROFILE := captive_magnet_slicing_profile_petg_gf.json
 PETG_GF_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit_petg_gf_01a
 PETG_GF_01B_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit_petg_gf_01b
 TO_PRINT_SHELF ?= to_print
-OBIWAN_01A_ARTIFACT_ID := no_floor_stand:Obi-Wan-split:lx521_top_obiwan_optional_lm_keyed_1of2_bottom
-OBIWAN_01A_SLUG := no_floor_stand_Obi-Wan-split_lx521_top_obiwan_optional_lm_keyed_1of2_bottom
-OBIWAN_01A_RELEASED_STL := $(CURDIR)/build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl
+OBIWAN_01A_ARTIFACT_ID := no_floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_1_of_2_bottom
+OBIWAN_01A_SLUG := no_floor_stand_Obi-Wan-split_obiwan_optional_lm_keyed_1_of_2_bottom
+OBIWAN_01A_RELEASED_STL := $(CURDIR)/build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl
 OBIWAN_01A_RELEASED_SIDECAR := $(OBIWAN_01A_RELEASED_STL:.stl=.print.json)
 OBIWAN_01A_MODIFIER_DIR := build/no_floor_stand/process_modifiers
-OBIWAN_01A_MODIFIER_STL := $(OBIWAN_01A_MODIFIER_DIR)/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.bridge_root_100pct.modifier.stl
+OBIWAN_01A_MODIFIER_STL := $(OBIWAN_01A_MODIFIER_DIR)/obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.stl
 OBIWAN_01A_MODIFIER_CONTRACT := $(OBIWAN_01A_MODIFIER_STL:.stl=.json)
 OBIWAN_01A_MODIFIER_STAMP := $(OBIWAN_01A_MODIFIER_DIR)/.stamp_bridge_root_100pct
 OBIWAN_01A_PETG_GF_SLICE_DIR := $(PETG_GF_AUDIT_OUTPUT)/slices/$(OBIWAN_01A_SLUG)
@@ -65,15 +66,15 @@ OBIWAN_01A_PETG_GF_PROJECT := $(OBIWAN_01A_PETG_GF_READY_DIR)/ready_to_print.gco
 OBIWAN_01A_PETG_GF_GCODE := $(OBIWAN_01A_PETG_GF_READY_DIR)/plate_1.gcode
 OBIWAN_01A_PETG_GF_AUDIT := $(OBIWAN_01A_PETG_GF_SLICE_DIR)/captive_magnet_slice_audit.json
 OBIWAN_01A_PETG_GF_STAMP := $(OBIWAN_01A_PETG_GF_READY_DIR)/.stamp_petg_gf_validated
-OBIWAN_01A_FRIENDLY_NAME := obiwan_01a_of_16_LM_bottom_keyed_1_of_2_no_floor_stand
+OBIWAN_01A_FRIENDLY_NAME := obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand
 OBIWAN_01A_PETG_GF_PROMOTION_STAMP := $(OBIWAN_01A_PETG_GF_READY_DIR)/.stamp_to_print_promoted
 OBIWAN_01A_PETG_GF_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_01A_FRIENDLY_NAME).stl
 OBIWAN_01A_PETG_GF_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_01A_FRIENDLY_NAME).gcode.3mf
 OBIWAN_01A_PETG_GF_SHELF_OUTPUTS := $(OBIWAN_01A_PETG_GF_SHELF_STL) \
                                    $(OBIWAN_01A_PETG_GF_SHELF_PROJECT)
-OBIWAN_01B_ARTIFACT_ID := floor_stand:Obi-Wan-split:lx521_top_obiwan_optional_lm_keyed_1of2_bottom
-OBIWAN_01B_SLUG := floor_stand_Obi-Wan-split_lx521_top_obiwan_optional_lm_keyed_1of2_bottom
-OBIWAN_01B_RELEASED_STL := $(CURDIR)/build/floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl
+OBIWAN_01B_ARTIFACT_ID := floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_1_of_2_bottom
+OBIWAN_01B_SLUG := floor_stand_Obi-Wan-split_obiwan_optional_lm_keyed_1_of_2_bottom
+OBIWAN_01B_RELEASED_STL := $(CURDIR)/build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl
 OBIWAN_01B_RELEASED_SIDECAR := $(OBIWAN_01B_RELEASED_STL:.stl=.print.json)
 OBIWAN_01B_PETG_GF_SLICE_DIR := $(PETG_GF_01B_AUDIT_OUTPUT)/slices/$(OBIWAN_01B_SLUG)
 OBIWAN_01B_PETG_GF_READY_DIR := $(OBIWAN_01B_PETG_GF_SLICE_DIR)/ready
@@ -81,14 +82,14 @@ OBIWAN_01B_PETG_GF_PROJECT := $(OBIWAN_01B_PETG_GF_READY_DIR)/ready_to_print.gco
 OBIWAN_01B_PETG_GF_GCODE := $(OBIWAN_01B_PETG_GF_READY_DIR)/plate_1.gcode
 OBIWAN_01B_PETG_GF_AUDIT := $(OBIWAN_01B_PETG_GF_SLICE_DIR)/captive_magnet_slice_audit.json
 OBIWAN_01B_PETG_GF_STAMP := $(OBIWAN_01B_PETG_GF_READY_DIR)/.stamp_petg_gf_validated
-OBIWAN_01B_FRIENDLY_NAME := obiwan_01b_of_16_LM_bottom_keyed_1_of_2_floor_stand
+OBIWAN_01B_FRIENDLY_NAME := obiwan_01_LM_bottom_keyed_1_of_2_floor_stand
 OBIWAN_01B_PETG_GF_PROMOTION_STAMP := $(OBIWAN_01B_PETG_GF_READY_DIR)/.stamp_to_print_promoted
 OBIWAN_01B_PETG_GF_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_01B_FRIENDLY_NAME).stl
 OBIWAN_01B_PETG_GF_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_01B_FRIENDLY_NAME).gcode.3mf
 OBIWAN_01B_PETG_GF_SHELF_OUTPUTS := $(OBIWAN_01B_PETG_GF_SHELF_STL) \
                                    $(OBIWAN_01B_PETG_GF_SHELF_PROJECT)
 OBIWAN_COMBO_SOURCE_DIR := build/print_plates/obiwan
-OBIWAN_NO_FLOOR_COMBO_NAME := obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand
+OBIWAN_NO_FLOOR_COMBO_NAME := obiwan_01_02_03_04_LM_UM_combo_no_floor_stand
 OBIWAN_NO_FLOOR_COMBO_SOURCE_STAMP := $(OBIWAN_COMBO_SOURCE_DIR)/.stamp_$(OBIWAN_NO_FLOOR_COMBO_NAME)
 OBIWAN_NO_FLOOR_COMBO_STL := $(OBIWAN_COMBO_SOURCE_DIR)/$(OBIWAN_NO_FLOOR_COMBO_NAME).stl
 OBIWAN_NO_FLOOR_COMBO_MANIFEST := $(OBIWAN_COMBO_SOURCE_DIR)/$(OBIWAN_NO_FLOOR_COMBO_NAME).plate.json
@@ -108,7 +109,7 @@ OBIWAN_NO_FLOOR_COMBO_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_NO_FLOO
 OBIWAN_NO_FLOOR_COMBO_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_NO_FLOOR_COMBO_NAME).gcode.3mf
 OBIWAN_NO_FLOOR_COMBO_SHELF_OUTPUTS := $(OBIWAN_NO_FLOOR_COMBO_SHELF_STL) \
                                       $(OBIWAN_NO_FLOOR_COMBO_SHELF_PROJECT)
-OBIWAN_FLOOR_COMBO_NAME := obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand
+OBIWAN_FLOOR_COMBO_NAME := obiwan_01_02_03_04_LM_UM_combo_floor_stand
 OBIWAN_FLOOR_COMBO_SOURCE_STAMP := $(OBIWAN_COMBO_SOURCE_DIR)/.stamp_$(OBIWAN_FLOOR_COMBO_NAME)
 OBIWAN_FLOOR_COMBO_STL := $(OBIWAN_COMBO_SOURCE_DIR)/$(OBIWAN_FLOOR_COMBO_NAME).stl
 OBIWAN_FLOOR_COMBO_MANIFEST := $(OBIWAN_COMBO_SOURCE_DIR)/$(OBIWAN_FLOOR_COMBO_NAME).plate.json
@@ -128,7 +129,7 @@ OBIWAN_FLOOR_COMBO_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_FLOOR_COMB
 OBIWAN_FLOOR_COMBO_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_FLOOR_COMBO_NAME).gcode.3mf
 OBIWAN_FLOOR_COMBO_SHELF_OUTPUTS := $(OBIWAN_FLOOR_COMBO_SHELF_STL) \
                                    $(OBIWAN_FLOOR_COMBO_SHELF_PROJECT)
-OBIWAN_AC_WING_PLATE_NAME := obiwan_05b_06b_08b_09b_Ac_wings_1_of_1
+OBIWAN_AC_WING_PLATE_NAME := obiwan_ac_wings_split2_combo
 OBIWAN_AC_WING_PLATE_SOURCE_DIR := build/print_plates/obiwan
 OBIWAN_AC_WING_PLATE_SOURCE_STAMP := $(OBIWAN_AC_WING_PLATE_SOURCE_DIR)/.stamp_$(OBIWAN_AC_WING_PLATE_NAME)
 OBIWAN_AC_WING_PLATE_STL := $(OBIWAN_AC_WING_PLATE_SOURCE_DIR)/$(OBIWAN_AC_WING_PLATE_NAME).stl
@@ -150,7 +151,7 @@ OBIWAN_AC_WING_PLATE_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_AC_WING_
 OBIWAN_AC_WING_PLATE_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_AC_WING_PLATE_NAME).gcode.3mf
 OBIWAN_AC_WING_PLATE_SHELF_OUTPUTS := $(OBIWAN_AC_WING_PLATE_SHELF_STL) \
                                      $(OBIWAN_AC_WING_PLATE_SHELF_PROJECT)
-OBIWAN_AE_WING_PLATE_NAME := obiwan_11b_12b_14b_15b_Ae_wings_1_of_1
+OBIWAN_AE_WING_PLATE_NAME := obiwan_ae_wings_split2_combo
 OBIWAN_AE_WING_PLATE_SOURCE_DIR := build/print_plates/obiwan
 OBIWAN_AE_WING_PLATE_SOURCE_STAMP := $(OBIWAN_AE_WING_PLATE_SOURCE_DIR)/.stamp_$(OBIWAN_AE_WING_PLATE_NAME)
 OBIWAN_AE_WING_PLATE_STL := $(OBIWAN_AE_WING_PLATE_SOURCE_DIR)/$(OBIWAN_AE_WING_PLATE_NAME).stl
@@ -318,6 +319,24 @@ LOCAL_BAMBU_GOALS := bambu_profiles bambu_dry_run \
                      $(VASE_TEBM_SLIM_3MF) $(VASE_TEBM_SLIM_GCODE) \
                      $(VASE_TEBM_SLIM_SLICE_AUDIT) \
                      $(VASE_TEBM_SLIM_SLICE_STAMP)
+# The artifacts/ facade is a pure local packaging step: it reads already
+# promoted build outputs and rewrites relative symlinks plus SHA-256
+# manifests.  Dispatching it to osado would only ship a snapshot round trip
+# and could publish links resolved against a worker-local tree, so detect the
+# goal before the remote-first router and pin it to local execution.  It is
+# deliberately absent from the candidate/all DAG.
+LOCAL_PACKAGING_GOALS := artifacts
+PACKAGING_GOALS_REQUESTED := $(filter $(LOCAL_PACKAGING_GOALS),$(MAKECMDGOALS))
+ifneq ($(strip $(PACKAGING_GOALS_REQUESTED)),)
+ifneq ($(strip $(filter-out $(LOCAL_PACKAGING_GOALS),$(MAKECMDGOALS))),)
+$(error local-only artifacts goal cannot be mixed with CAD or other Make goals)
+endif
+ifeq ($(LX_CAD_EXECUTION),remote-worker)
+$(error the artifacts facade is workstation-only and cannot run on a remote CAD worker)
+endif
+override LX_CAD_EXECUTION := local
+endif
+
 BAMBU_GOALS_REQUESTED := $(filter $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))
 ifneq ($(strip $(BAMBU_GOALS_REQUESTED)),)
 ifneq ($(strip $(filter-out $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))),)
@@ -460,16 +479,16 @@ ifeq ($(LX_CAD_EXECUTION),local)
 .NOTPARALLEL:
 endif
 
-GENS := top_baffle_nd25fw4_b2_split top_baffle_nd25fw4_b2 \
-        top_baffle_nd25fw4_b1 top_baffle_nd25fw4_a_comp \
-        top_baffle_nd25fw4_b1_assembled top_baffle_nd25fw4_a_comp_assembled \
-        top_baffle_nd25fw4_v1 top_baffle_nd25fw4_v1_split \
-        top_baffle_nd25fw4_v1l_split top_baffle_nd25fw4_obiwan_split \
-        top_baffle_nd25fw4_obiwan_lm_split \
-        top_baffle_nd25fw4_obiwan_attachments \
-        top_baffle_nd25fw4_obiwan_assembled \
-        top_baffle_nd25fw4_um_fit \
-        top_baffle_nd25fw4_v1_attachments
+GENS := b2_split b2 \
+        b1 a_comp \
+        b1_assembled a_comp_assembled \
+        v1 v1_split \
+        v1l_split obiwan_split \
+        obiwan_lm_split \
+        obiwan_attachments \
+        obiwan_assembled \
+        um_fit \
+        v1_attachments
 
 OVERLAY_PNGS = baffle_b1_drivers.png baffle_b2_drivers.png \
                baffle_variants_drivers.png
@@ -484,15 +503,15 @@ OBIWAN_WING_INPUTS = cad-remote-requirements.lock \
         src/lx521_baffle/assembly.py src/lx521_baffle/magnet_contract.py src/lx521_baffle/geom.py \
         src/lx521_baffle/print_contract.py src/lx521_baffle/io.py src/lx521_baffle/stl_export.py \
         scripts/export_steps.py scripts/gen_driver_overlay.py scripts/export_obiwan_staged.py \
-        src/lx521_baffle/base.py src/lx521_baffle/proud/top_baffle_nd25fw4_b.py \
-        src/lx521_baffle/proud/top_baffle_nd25fw4_b1.py src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py \
+        src/lx521_baffle/base.py src/lx521_baffle/proud/b.py \
+        src/lx521_baffle/proud/b1.py src/lx521_baffle/proud/b2.py \
         src/lx521_baffle/cables.py src/lx521_baffle/flush.py \
-        src/lx521_baffle/proud/top_baffle_nd25fw4_v1.py src/lx521_baffle/obiwan/carriers.py \
+        src/lx521_baffle/proud/v1.py src/lx521_baffle/obiwan/carriers.py \
         src/lx521_baffle/obiwan/attachments.py \
         src/lx521_baffle/obiwan/route.py \
         src/lx521_baffle/obiwan/bumps.py \
         src/lx521_baffle/obiwan/rear_entry.py \
-        src/lx521_baffle/proud/top_baffle_nd25fw4_a_comp.py \
+        src/lx521_baffle/proud/a_comp.py \
         src/lx521_baffle/obiwan/bridge.py \
         src/lx521_baffle/obiwan/floor.py \
         src/lx521_baffle/obiwan/floor_strength.py \
@@ -537,8 +556,8 @@ CLEARANCE_CHECK_NAMES := \
         test_magnet_top_site_walls \
         test_magnet_cavities_vs_t_ducts \
         test_ts_captive_keepout_nudge \
-        test_standard_captive_magnet_contract \
-        test_standard_local_magnet_backing \
+        test_stock_captive_magnet_contract \
+        test_stock_local_magnet_backing \
         test_individual_attachment_magnet_burial \
         test_duct_vs_w22_pilots \
         test_duct_duct_separation \
@@ -746,7 +765,8 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_v1 $(1)
         no_floor_obiwan_01a obiwan_release \
         obiwan_wings obiwan_wing_exports obiwan_wing_artifacts \
         check_obiwan_wings \
-        common check check_static check_shared_contracts check_remote_transport \
+        common artifacts \
+        check check_static check_shared_contracts check_remote_transport \
         check_release_metadata check_slice_metadata \
         check_clearance_suite check_r6f_suite \
         check_captive_magnets check_obiwan \
@@ -817,9 +837,9 @@ all: validate_obiwan_stages floor_stand_artifacts no_floor_stand_artifacts commo
 # released rear envelope; both retain the regular seam-B female dovetails.
 VASE_TEBM_CAD_SRCS := \
         src/lx521_baffle/proud/vase_tebm35c10_4.py \
-        src/lx521_baffle/proud/top_baffle_nd25fw4_b.py \
-        src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py \
-        src/lx521_baffle/proud/top_baffle_nd25fw4_b2_split.py \
+        src/lx521_baffle/proud/b.py \
+        src/lx521_baffle/proud/b2.py \
+        src/lx521_baffle/proud/b2_split.py \
         src/lx521_baffle/base.py src/lx521_baffle/cables.py \
         src/lx521_baffle/magnets.py src/lx521_baffle/magnet_contract.py \
         src/lx521_baffle/print_contract.py src/lx521_baffle/stl_export.py \
@@ -1000,21 +1020,21 @@ obiwan_state_releases: floor_obiwan no_floor_obiwan
 no_floor_obiwan_01a: validate_no_floor_obiwan_stage
 	$(call RUN_STATE,0,obiwan) scripts/export_piece_stls.py \
 	    --variant obiwan \
-	    --obiwan-key optional_lm_keyed_1of2_bottom \
+	    --obiwan-key optional_lm_keyed_1_of_2_bottom \
 	    --obiwan-stage-manifest build/no_floor_stand/.obiwan_stage/manifest.json \
 	    --outdir build/no_floor_stand/stl
 	$(call RUN_STATE,0,obiwan,.) \
 	    scripts/export_obiwan_staged.py step \
 	    --manifest build/no_floor_stand/.obiwan_stage/manifest.json \
 	    --kind lm_split \
-	    --output build/no_floor_stand/top_baffle_nd25fw4_obiwan_lm_split.step
+	    --output build/no_floor_stand/obiwan_lm_split.step
 	cd build/no_floor_stand && LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan \
 	    $(RUN) ../../scripts/gen_cable_routing.py
-	@test -s build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl
-	@test -s build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json
-	@test -s build/no_floor_stand/support_blockers/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.support_blocker.stl
-	@test -s build/no_floor_stand/support_blockers/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.support_blocker.json
-	@test -s build/no_floor_stand/top_baffle_nd25fw4_obiwan_lm_split.step
+	@test -s build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl
+	@test -s build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json
+	@test -s build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl
+	@test -s build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.json
+	@test -s build/no_floor_stand/obiwan_lm_split.step
 	@test -s build/no_floor_stand/baffle_cable_routing_obiwan.png
 
 # One public remote target owns the complete two-state Obi-Wan release, Ac/Ae
@@ -1060,9 +1080,9 @@ build/wings/.stamp_%: scripts/export_obiwan_wings.py src/lx521_baffle/obiwan/win
 	@mkdir -p build/wings
 	$(call RUN_STATE,0,obiwan,.) \
 	    scripts/export_obiwan_wings.py --slug $* --output-root build/wings
-	@test -s build/wings/$*/top_baffle_nd25fw4_obiwan_wing_$*.step
-	@test -s build/wings/$*/top_baffle_nd25fw4_obiwan_wing_$*_assembled.step
-	@test -s build/wings/$*/top_baffle_nd25fw4_obiwan_wing_$*_assembled_b.step
+	@test -s build/wings/$*/obiwan_wing_$*.step
+	@test -s build/wings/$*/obiwan_wing_$*_assembled.step
+	@test -s build/wings/$*/obiwan_wing_$*_assembled_b.step
 	@touch $@
 
 $(OBIWAN_WING_ARTIFACT_CHECK_STAMP): tests/test_obiwan_wings.py \
@@ -1097,8 +1117,8 @@ check_obiwan_wings: $(OBIWAN_WING_CHECK_STAMPS)
 	    MANIFOLD_ROOTS='build/wings/ac/stl build/wings/ae/stl'
 
 $(OBIWAN_WING_DESIGN_MAP): scripts/gen_obiwan_wing_design_map.py \
-        scripts/gen_driver_overlay.py src/lx521_baffle/proud/top_baffle_nd25fw4_a_comp.py \
-        src/lx521_baffle/proud/top_baffle_nd25fw4_b.py src/lx521_baffle/obiwan/carriers.py \
+        scripts/gen_driver_overlay.py src/lx521_baffle/proud/a_comp.py \
+        src/lx521_baffle/proud/b.py src/lx521_baffle/obiwan/carriers.py \
         src/lx521_baffle/floor_bend.py \
         src/lx521_baffle/obiwan/bridge.py \
         src/lx521_baffle/obiwan/floor.py
@@ -1114,7 +1134,13 @@ no_floor_stand_artifacts: validate_no_floor_obiwan_stage \
 	$(MAKE) --no-print-directory _manifold_parallel \
 	    MANIFOLD_ROOTS='build/no_floor_stand/stl'
 no_floor_stand: no_floor_stand_artifacts
-common: build/common/top_baffle_nd25fw4_attachments.step
+common: build/common/attachments.step
+
+# Rebuild the product-facing artifacts/ facade from whatever is already
+# promoted under build/, docs/ and images/generated/.  It writes only
+# relative symlinks and hash manifests and never invokes CAD.
+artifacts: scripts/build_artifact_catalog.py
+	$(PYTHON_RUN) scripts/build_artifact_catalog.py
 
 check: validate_obiwan_stages check_static check_clearance_suite check_r6f_suite \
         check_obiwan_junction_closures
@@ -1472,37 +1498,37 @@ obiwan_floor_petg_gf_01b_validate:
 # released input or audit authority is absent, Make fails locally instead of
 # regenerating it on the workstation or dispatching it to osado.
 OBIWAN_NO_FLOOR_COMBO_RELEASED_INPUTS := $(addprefix $(CURDIR)/,\
-        build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl \
-        build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json \
-        build/no_floor_stand/support_blockers/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.support_blocker.stl \
-        build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.stl \
-        build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.print.json \
-        build/no_floor_stand/support_blockers/lx521_top_obiwan_optional_lm_keyed_2of2_top.support_blocker.stl \
-        build/no_floor_stand/stl/lx521_top_obiwan_core_2of2_um_carrier.stl \
-        build/no_floor_stand/stl/lx521_top_obiwan_core_2of2_um_carrier.print.json \
-        build/no_floor_stand/support_blockers/lx521_top_obiwan_core_2of2_um_carrier.support_blocker.stl \
-        build/no_floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.stl \
-        build/no_floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.print.json)
+        build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl \
+        build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json \
+        build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl \
+        build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl \
+        build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.print.json \
+        build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl \
+        build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl \
+        build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.print.json \
+        build/no_floor_stand/support_blockers/obiwan_core_2_of_2_um_carrier.support_blocker.stl \
+        build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.stl \
+        build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.print.json)
 OBIWAN_FLOOR_COMBO_RELEASED_INPUTS := $(addprefix $(CURDIR)/,\
-        build/floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl \
-        build/floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json \
-        build/floor_stand/support_blockers/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.support_blocker.stl \
-        build/floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.stl \
-        build/floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.print.json \
-        build/floor_stand/support_blockers/lx521_top_obiwan_optional_lm_keyed_2of2_top.support_blocker.stl \
-        build/floor_stand/stl/lx521_top_obiwan_core_2of2_um_carrier.stl \
-        build/floor_stand/stl/lx521_top_obiwan_core_2of2_um_carrier.print.json \
-        build/floor_stand/support_blockers/lx521_top_obiwan_core_2of2_um_carrier.support_blocker.stl \
-        build/floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.stl \
-        build/floor_stand/stl/lx521_top_obiwan_addon_tweeter_crescent.print.json)
+        build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl \
+        build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json \
+        build/floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl \
+        build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl \
+        build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.print.json \
+        build/floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl \
+        build/floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl \
+        build/floor_stand/stl/obiwan_core_2_of_2_um_carrier.print.json \
+        build/floor_stand/support_blockers/obiwan_core_2_of_2_um_carrier.support_blocker.stl \
+        build/floor_stand/stl/obiwan_addon_tweeter_crescent.stl \
+        build/floor_stand/stl/obiwan_addon_tweeter_crescent.print.json)
 OBIWAN_NO_FLOOR_COMBO_DISCOVERY_AUDITS := \
-        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/no_floor_stand_Obi-Wan-split_lx521_top_obiwan_optional_lm_keyed_1of2_bottom/captive_magnet_slice_audit.json \
-        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/no_floor_stand_Obi-Wan-split_lx521_top_obiwan_optional_lm_keyed_2of2_top/captive_magnet_slice_audit.json \
-        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/no_floor_stand_Obi-Wan_lx521_top_obiwan_core_2of2_um_carrier/captive_magnet_slice_audit.json
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/no_floor_stand_Obi-Wan-split_obiwan_optional_lm_keyed_1_of_2_bottom/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/no_floor_stand_Obi-Wan-split_obiwan_optional_lm_keyed_2_of_2_top/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/no_floor_stand_Obi-Wan_obiwan_core_2_of_2_um_carrier/captive_magnet_slice_audit.json
 OBIWAN_FLOOR_COMBO_DISCOVERY_AUDITS := \
-        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/floor_stand_Obi-Wan-split_lx521_top_obiwan_optional_lm_keyed_1of2_bottom/captive_magnet_slice_audit.json \
-        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/floor_stand_Obi-Wan-split_lx521_top_obiwan_optional_lm_keyed_2of2_top/captive_magnet_slice_audit.json \
-        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/floor_stand_Obi-Wan_lx521_top_obiwan_core_2of2_um_carrier/captive_magnet_slice_audit.json
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/floor_stand_Obi-Wan-split_obiwan_optional_lm_keyed_1_of_2_bottom/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/floor_stand_Obi-Wan-split_obiwan_optional_lm_keyed_2_of_2_top/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/floor_stand_Obi-Wan_obiwan_core_2_of_2_um_carrier/captive_magnet_slice_audit.json
 OBIWAN_COMBO_SOURCE_SRCS := scripts/build_obiwan_combo_plate.py \
         scripts/composite_bambu_3mf_audit.py scripts/bambu_3mf_audit.py \
         scripts/check_manifold.py tests/test_obiwan_combo_plates.py \
@@ -1685,19 +1711,19 @@ obiwan_combo_plate_validate: obiwan_no_floor_combo_plate_validate
 # This alternative plate is local packaging over already released Ac B-wing
 # STLs.  Absolute inputs prevent either local CAD regeneration or dispatch.
 OBIWAN_AC_WING_PLATE_RELEASED_INPUTS := $(addprefix $(CURDIR)/,\
-        build/wings/ac/stl/lx521_top_obiwan_wing_ac_left_b_1of2_lm_lower.stl \
-        build/wings/ac/stl/lx521_top_obiwan_wing_ac_left_b_1of2_lm_lower.print.json \
-        build/wings/ac/stl/lx521_top_obiwan_wing_ac_left_b_2of2_lm_um_upper.stl \
-        build/wings/ac/stl/lx521_top_obiwan_wing_ac_left_b_2of2_lm_um_upper.print.json \
-        build/wings/ac/stl/lx521_top_obiwan_wing_ac_right_b_1of2_lm_lower.stl \
-        build/wings/ac/stl/lx521_top_obiwan_wing_ac_right_b_1of2_lm_lower.print.json \
-        build/wings/ac/stl/lx521_top_obiwan_wing_ac_right_b_2of2_lm_um_upper.stl \
-        build/wings/ac/stl/lx521_top_obiwan_wing_ac_right_b_2of2_lm_um_upper.print.json)
+        build/wings/ac/stl/obiwan_wing_ac_left_split2_1_of_2_lm_lower.stl \
+        build/wings/ac/stl/obiwan_wing_ac_left_split2_1_of_2_lm_lower.print.json \
+        build/wings/ac/stl/obiwan_wing_ac_left_split2_2_of_2_lm_um_upper.stl \
+        build/wings/ac/stl/obiwan_wing_ac_left_split2_2_of_2_lm_um_upper.print.json \
+        build/wings/ac/stl/obiwan_wing_ac_right_split2_1_of_2_lm_lower.stl \
+        build/wings/ac/stl/obiwan_wing_ac_right_split2_1_of_2_lm_lower.print.json \
+        build/wings/ac/stl/obiwan_wing_ac_right_split2_2_of_2_lm_um_upper.stl \
+        build/wings/ac/stl/obiwan_wing_ac_right_split2_2_of_2_lm_um_upper.print.json)
 OBIWAN_AC_WING_PLATE_DISCOVERY_AUDITS := \
-        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_left_b_1of2_lm_lower/captive_magnet_slice_audit.json \
-        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_left_b_2of2_lm_um_upper/captive_magnet_slice_audit.json \
-        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_right_b_1of2_lm_lower/captive_magnet_slice_audit.json \
-        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_right_b_2of2_lm_um_upper/captive_magnet_slice_audit.json
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_left_split2_1_of_2_lm_lower/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_left_split2_2_of_2_lm_um_upper/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_right_split2_1_of_2_lm_lower/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ac_obiwan_wing_ac_right_split2_2_of_2_lm_um_upper/captive_magnet_slice_audit.json
 OBIWAN_WING_PLATE_SOURCE_SRCS := scripts/build_obiwan_wing_plate.py \
         scripts/bambu_3mf_audit.py scripts/check_manifold.py \
         src/lx521_baffle/obiwan/wings.py $(PRINT_CONTRACT_SRCS) \
@@ -1785,19 +1811,19 @@ obiwan_ac_wing_plate_validate: obiwan_ac_wing_plate_source \
 # B-wing STLs.  Its locked Rz+XY placement keeps all four front-face-down
 # pieces on one P2S plate; none of these rules can regenerate wing geometry.
 OBIWAN_AE_WING_PLATE_RELEASED_INPUTS := $(addprefix $(CURDIR)/,\
-        build/wings/ae/stl/lx521_top_obiwan_wing_ae_left_b_1of2_lm_lower.stl \
-        build/wings/ae/stl/lx521_top_obiwan_wing_ae_left_b_1of2_lm_lower.print.json \
-        build/wings/ae/stl/lx521_top_obiwan_wing_ae_left_b_2of2_lm_um_upper.stl \
-        build/wings/ae/stl/lx521_top_obiwan_wing_ae_left_b_2of2_lm_um_upper.print.json \
-        build/wings/ae/stl/lx521_top_obiwan_wing_ae_right_b_1of2_lm_lower.stl \
-        build/wings/ae/stl/lx521_top_obiwan_wing_ae_right_b_1of2_lm_lower.print.json \
-        build/wings/ae/stl/lx521_top_obiwan_wing_ae_right_b_2of2_lm_um_upper.stl \
-        build/wings/ae/stl/lx521_top_obiwan_wing_ae_right_b_2of2_lm_um_upper.print.json)
+        build/wings/ae/stl/obiwan_wing_ae_left_split2_1_of_2_lm_lower.stl \
+        build/wings/ae/stl/obiwan_wing_ae_left_split2_1_of_2_lm_lower.print.json \
+        build/wings/ae/stl/obiwan_wing_ae_left_split2_2_of_2_lm_um_upper.stl \
+        build/wings/ae/stl/obiwan_wing_ae_left_split2_2_of_2_lm_um_upper.print.json \
+        build/wings/ae/stl/obiwan_wing_ae_right_split2_1_of_2_lm_lower.stl \
+        build/wings/ae/stl/obiwan_wing_ae_right_split2_1_of_2_lm_lower.print.json \
+        build/wings/ae/stl/obiwan_wing_ae_right_split2_2_of_2_lm_um_upper.stl \
+        build/wings/ae/stl/obiwan_wing_ae_right_split2_2_of_2_lm_um_upper.print.json)
 OBIWAN_AE_WING_PLATE_DISCOVERY_AUDITS := \
-        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_left_b_1of2_lm_lower/captive_magnet_slice_audit.json \
-        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_left_b_2of2_lm_um_upper/captive_magnet_slice_audit.json \
-        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_right_b_1of2_lm_lower/captive_magnet_slice_audit.json \
-        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_right_b_2of2_lm_um_upper/captive_magnet_slice_audit.json
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_left_split2_1_of_2_lm_lower/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_left_split2_2_of_2_lm_um_upper/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_right_split2_1_of_2_lm_lower/captive_magnet_slice_audit.json \
+        $(abspath $(BAMBU_AUDIT_OUTPUT))/slices/shared_Obi-Wan-Ae_obiwan_wing_ae_right_split2_2_of_2_lm_um_upper/captive_magnet_slice_audit.json
 $(OBIWAN_AE_WING_PLATE_SOURCE_STAMP): \
         $(OBIWAN_WING_PLATE_SOURCE_SRCS) \
         $(OBIWAN_AE_WING_PLATE_RELEASED_INPUTS)
@@ -2322,12 +2348,12 @@ check_obiwan_lm_split: check_floor_obiwan_lm_split \
 
 check_floor_obiwan_lm_split: validate_floor_obiwan_stage \
         build/floor_stand/stl/.stamp_obiwan \
-        build/floor_stand/top_baffle_nd25fw4_obiwan_lm_split.step \
+        build/floor_stand/obiwan_lm_split.step \
         _check_r6f_floor_lm_keyed_split
 
 check_no_floor_obiwan_lm_split: validate_no_floor_obiwan_stage \
         build/no_floor_stand/stl/.stamp_obiwan \
-        build/no_floor_stand/top_baffle_nd25fw4_obiwan_lm_split.step \
+        build/no_floor_stand/obiwan_lm_split.step \
         _check_r6f_no_floor_lm_keyed_split
 
 # Fast source-plan plus native-BREP regression for the universal LM-lower
@@ -2357,10 +2383,10 @@ check_bump_brep: \
         _check_r6f_bump_brep_clearance \
         _check_r6f_floor_bump_brep_clearance
 
-build/common/top_baffle_nd25fw4_attachments.step: $(SRCS) scripts/export_steps.py
+build/common/attachments.step: $(SRCS) scripts/export_steps.py
 	@mkdir -p $(@D)
 	LX_ROUTING_PROFILE=proud $(RUN) scripts/export_steps.py \
-	    lx521_baffle.proud.top_baffle_nd25fw4_attachments \
+	    lx521_baffle.proud.attachments \
 	    --output $@
 
 # B2 and V1 share one export skeleton; V1L and Obi-Wan stay hand-written
@@ -2368,7 +2394,7 @@ build/common/top_baffle_nd25fw4_attachments.step: $(SRCS) scripts/export_steps.p
 STL_VARIANTS := b2 v1
 stl_variant_stamp = $(if $(filter b2,$(1)),.stamp,.stamp_$(1))
 stl_variant_arg = $(if $(filter b2,$(1)),, --variant $(1))
-stl_variant_step = top_baffle_nd25fw4_$(1)_split.step
+stl_variant_step = $(1)_split.step
 
 # $(1) = output root, $(2) = LX_STAND_FOOT, $(3) = variant.
 define STATE_STL_VARIANT_RULE
@@ -2396,13 +2422,13 @@ endef
 
 # $(1) = variant dir, $(2) = LX_STAND_FOOT value
 define RULES
-$(1)/stl/.stamp_v1l: $(1)/top_baffle_nd25fw4_v1l_split.step \
+$(1)/stl/.stamp_v1l: $(1)/v1l_split.step \
         $(STL_EXPORT_SRCS)
 	@rm -f $$@
 	# STEP is the geometry authority on every host.  Import its four labeled
 	# physical children once, then mesh them and the lightweight grommet pair.
 	$(call RUN_STATE,$(2),proud) scripts/export_piece_stls.py --variant v1l \
-	    --source-step $(1)/top_baffle_nd25fw4_v1l_split.step \
+	    --source-step $(1)/v1l_split.step \
 	    --outdir $(1)/stl
 	@touch $$@
 
@@ -2428,7 +2454,7 @@ $(1)/stl/.stamp_coupon: scripts/export_coupon.py scripts/check_manifold.py \
 
 # R6F STEP targets import only the state-local, hash-verified native BREPs.
 # Direct generator-module export is fail-closed in scripts/export_steps.py.
-$(1)/top_baffle_nd25fw4_obiwan_%.step: \
+$(1)/obiwan_%.step: \
 		$(1)/.obiwan_stage/manifest.json scripts/export_obiwan_staged.py \
 		scripts/export_steps.py $(OBIWAN_SRCS)
 	@mkdir -p $(1)
@@ -2437,7 +2463,7 @@ $(1)/top_baffle_nd25fw4_obiwan_%.step: \
 	    --manifest $(1)/.obiwan_stage/manifest.json \
 	    --kind $$* --output $$@
 
-$(1)/top_baffle_nd25fw4_um_fit.step: src/lx521_baffle/um_fit.py \
+$(1)/um_fit.step: src/lx521_baffle/um_fit.py \
         $(SRCS) scripts/export_steps.py $(1)/.obiwan_stage/manifest.json
 	@mkdir -p $(1)
 	$(call RUN_STATE,$(2),proud,.) scripts/export_steps.py \
@@ -2445,7 +2471,7 @@ $(1)/top_baffle_nd25fw4_um_fit.step: src/lx521_baffle/um_fit.py \
 
 # Osado builds V1L's shared baffle/duct tree once and emits the same four
 # physical children. Explicit local mode retains one-piece-per-child staging.
-$(1)/top_baffle_nd25fw4_v1l_split.step: scripts/export_v1l_staged_step.py \
+$(1)/v1l_split.step: scripts/export_v1l_staged_step.py \
         scripts/export_steps.py $(SRCS)
 	@mkdir -p $(1)
 	$(call RUN_STATE,$(2),proud,.) scripts/export_v1l_staged_step.py --output $$@
@@ -2469,11 +2495,11 @@ $(1)/baffle_cable_routing_obiwan.png: $(OBIWAN_SRCS) scripts/gen_cable_routing.p
 
 $(1)/obiwan_release_manifest.json: $(OBIWAN_RELEASE_SRCS) \
         $(1)/stl/.stamp_obiwan $(1)/stl/.stamp_coupon \
-        $(1)/top_baffle_nd25fw4_obiwan_split.step \
-        $(1)/top_baffle_nd25fw4_obiwan_lm_split.step \
-        $(1)/top_baffle_nd25fw4_obiwan_attachments.step \
-        $(1)/top_baffle_nd25fw4_obiwan_assembled.step \
-        $(1)/top_baffle_nd25fw4_um_fit.step \
+        $(1)/obiwan_split.step \
+        $(1)/obiwan_lm_split.step \
+        $(1)/obiwan_attachments.step \
+        $(1)/obiwan_assembled.step \
+        $(1)/um_fit.step \
         $(1)/baffle_cable_routing_proud.png \
         $(1)/baffle_cable_routing_obiwan.png \
         $(if $(filter 1,$(2)),$(FLOOR_STRENGTH_REPORTS)) \
@@ -2501,14 +2527,14 @@ $(eval $(call recover_stamp,$(addprefix build/no_floor_stand/,$(OVERLAY_PNGS)),b
 
 build/floor_stand/.stamp_obiwan_integrated_floor_strength: \
         src/lx521_baffle/obiwan/floor_strength.py \
-        build/floor_stand/top_baffle_nd25fw4_obiwan_split.step \
-        build/floor_stand/top_baffle_nd25fw4_obiwan_lm_split.step
+        build/floor_stand/obiwan_split.step \
+        build/floor_stand/obiwan_lm_split.step
 	@rm -f $@ $(FLOOR_STRENGTH_REPORTS)
 	$(RUN) -m lx521_baffle.obiwan.floor_strength \
 	    --json build/floor_stand/obiwan_integrated_floor_strength.json \
 	    --markdown build/floor_stand/obiwan_integrated_floor_strength.md \
-	    --step build/floor_stand/top_baffle_nd25fw4_obiwan_split.step \
-	    --step build/floor_stand/top_baffle_nd25fw4_obiwan_lm_split.step
+	    --step build/floor_stand/obiwan_split.step \
+	    --step build/floor_stand/obiwan_lm_split.step
 	@touch $@
 
 $(eval $(call recover_stamp,$(FLOOR_STRENGTH_REPORTS),build/floor_stand/.stamp_obiwan_integrated_floor_strength))
@@ -2517,7 +2543,7 @@ clean:
 	rm -rf build/floor_stand build/no_floor_stand build/wings \
 	    build/vase_TEBM35C10-4 \
 	    .manifold-stamps .check-stamps __pycache__ \
-	    build/common/top_baffle_nd25fw4_attachments.step \
+	    build/common/attachments.step \
 	    build/common/obiwan_wing_design_map.png
 
 endif

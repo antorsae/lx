@@ -118,11 +118,11 @@ def main() -> int:
     for target, friendly_name in (
         (
             "obiwan_no_floor_petg_gf_01a_to_print",
-            "obiwan_01a_of_16_LM_bottom_keyed_1_of_2_no_floor_stand",
+            "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand",
         ),
         (
             "obiwan_floor_petg_gf_01b_to_print",
-            "obiwan_01b_of_16_LM_bottom_keyed_1_of_2_floor_stand",
+            "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand",
         ),
     ):
         structural_promotion = make_dry_run(target)
@@ -352,22 +352,22 @@ def main() -> int:
     check(blocker_names == {
         (
             "no_floor_stand",
-            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom."
+            "obiwan_optional_lm_keyed_1_of_2_bottom."
             "support_blocker.stl",
         ),
         (
             "floor_stand",
-            "lx521_top_obiwan_optional_lm_keyed_1of2_bottom."
+            "obiwan_optional_lm_keyed_1_of_2_bottom."
             "support_blocker.stl",
         ),
         (
             "no_floor_stand",
-            "lx521_top_obiwan_optional_lm_keyed_2of2_top."
+            "obiwan_optional_lm_keyed_2_of_2_top."
             "support_blocker.stl",
         ),
         (
             "no_floor_stand",
-            "lx521_top_obiwan_core_2of2_um_carrier."
+            "obiwan_core_2_of_2_um_carrier."
             "support_blocker.stl",
         ),
     }, "unexpected shelf support-blocker inventory")
@@ -388,49 +388,49 @@ def main() -> int:
         and entry["selection"].startswith(("Ac_wings_", "Ae_wings_"))
     }
     check(wing_names == {
-        "obiwan_05a_of_16_Ac_wing_LM_lower_left_1_of_3",
-        "obiwan_06a_of_16_Ac_wing_LM_upper_left_2_of_3",
-        "obiwan_07a_of_16_Ac_wing_UM_left_3_of_3",
-        "obiwan_08a_of_16_Ac_wing_LM_lower_right_1_of_3",
-        "obiwan_09a_of_16_Ac_wing_LM_upper_right_2_of_3",
-        "obiwan_10a_of_16_Ac_wing_UM_right_3_of_3",
-        "obiwan_05b_of_16_Ac_wing_LM_lower_left_1_of_2",
-        "obiwan_06b_of_16_Ac_wing_LM_UM_upper_left_2_of_2",
-        "obiwan_08b_of_16_Ac_wing_LM_lower_right_1_of_2",
-        "obiwan_09b_of_16_Ac_wing_LM_UM_upper_right_2_of_2",
-        "obiwan_05b_06b_08b_09b_Ac_wings_1_of_1",
-        "obiwan_11a_of_16_Ae_wing_LM_lower_left_1_of_3",
-        "obiwan_12a_of_16_Ae_wing_LM_upper_left_2_of_3",
-        "obiwan_13a_of_16_Ae_wing_UM_left_3_of_3",
-        "obiwan_14a_of_16_Ae_wing_LM_lower_right_1_of_3",
-        "obiwan_15a_of_16_Ae_wing_LM_upper_right_2_of_3",
-        "obiwan_16a_of_16_Ae_wing_UM_right_3_of_3",
-        "obiwan_11b_of_16_Ae_wing_LM_lower_left_1_of_2",
-        "obiwan_12b_of_16_Ae_wing_LM_UM_upper_left_2_of_2",
-        "obiwan_14b_of_16_Ae_wing_LM_lower_right_1_of_2",
-        "obiwan_15b_of_16_Ae_wing_LM_UM_upper_right_2_of_2",
-        "obiwan_11b_12b_14b_15b_Ae_wings_1_of_1",
+        "obiwan_05_split3_Ac_wing_LM_lower_left_1_of_3",
+        "obiwan_06_split3_Ac_wing_LM_upper_left_2_of_3",
+        "obiwan_07_split3_Ac_wing_UM_left_3_of_3",
+        "obiwan_08_split3_Ac_wing_LM_lower_right_1_of_3",
+        "obiwan_09_split3_Ac_wing_LM_upper_right_2_of_3",
+        "obiwan_10_split3_Ac_wing_UM_right_3_of_3",
+        "obiwan_05_split2_Ac_wing_LM_lower_left_1_of_2",
+        "obiwan_06_split2_Ac_wing_LM_UM_upper_left_2_of_2",
+        "obiwan_08_split2_Ac_wing_LM_lower_right_1_of_2",
+        "obiwan_09_split2_Ac_wing_LM_UM_upper_right_2_of_2",
+        "obiwan_ac_wings_split2_combo",
+        "obiwan_11_split3_Ae_wing_LM_lower_left_1_of_3",
+        "obiwan_12_split3_Ae_wing_LM_upper_left_2_of_3",
+        "obiwan_13_split3_Ae_wing_UM_left_3_of_3",
+        "obiwan_14_split3_Ae_wing_LM_lower_right_1_of_3",
+        "obiwan_15_split3_Ae_wing_LM_upper_right_2_of_3",
+        "obiwan_16_split3_Ae_wing_UM_right_3_of_3",
+        "obiwan_11_split2_Ae_wing_LM_lower_left_1_of_2",
+        "obiwan_12_split2_Ae_wing_LM_UM_upper_left_2_of_2",
+        "obiwan_14_split2_Ae_wing_LM_lower_right_1_of_2",
+        "obiwan_15_split2_Ae_wing_LM_UM_upper_right_2_of_2",
+        "obiwan_ae_wings_split2_combo",
     }, "Ac/Ae A/B left/right wing shelf names drifted")
     for required in (
-        "stock_01a_of_10_LM_bottom_1_of_3_no_floor_stand",
-        "stock_01b_of_10_LM_bottom_1_of_3_floor_stand",
-        "stock_03_of_10_LM_mid_right_3_of_3",
-        "slim_01a_of_10_LM_bottom_1_of_3_no_floor_stand",
-        "slim_03_of_10_LM_mid_right_3_of_3",
-        "obiwan_01a_of_16_LM_bottom_keyed_1_of_2_no_floor_stand",
-        "obiwan_01b_of_16_LM_bottom_keyed_1_of_2_floor_stand",
-        "obiwan_02_of_16_LM_top_keyed_2_of_2",
-        "obiwan_03_of_16_UM_carrier_1_of_1",
-        "obiwan_04_of_16_T_tweeter_crescent_1_of_1",
-        "obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand",
-        "obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand",
-        "obiwan_05b_06b_08b_09b_Ac_wings_1_of_1",
-        "obiwan_16a_of_16_Ae_wing_UM_right_3_of_3",
-        "obiwan_11b_of_16_Ae_wing_LM_lower_left_1_of_2",
-        "obiwan_12b_of_16_Ae_wing_LM_UM_upper_left_2_of_2",
-        "obiwan_14b_of_16_Ae_wing_LM_lower_right_1_of_2",
-        "obiwan_15b_of_16_Ae_wing_LM_UM_upper_right_2_of_2",
-        "obiwan_11b_12b_14b_15b_Ae_wings_1_of_1",
+        "stock_01_LM_bottom_1_of_3_no_floor_stand",
+        "stock_01_LM_bottom_1_of_3_floor_stand",
+        "stock_03_LM_mid_right_3_of_3",
+        "slim_01_LM_bottom_1_of_3_no_floor_stand",
+        "slim_03_LM_mid_right_3_of_3",
+        "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand",
+        "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand",
+        "obiwan_02_LM_top_keyed_2_of_2",
+        "obiwan_03_UM_carrier_1_of_1",
+        "obiwan_04_T_tweeter_crescent_1_of_1",
+        "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand",
+        "obiwan_01_02_03_04_LM_UM_combo_floor_stand",
+        "obiwan_ac_wings_split2_combo",
+        "obiwan_16_split3_Ae_wing_UM_right_3_of_3",
+        "obiwan_11_split2_Ae_wing_LM_lower_left_1_of_2",
+        "obiwan_12_split2_Ae_wing_LM_UM_upper_left_2_of_2",
+        "obiwan_14_split2_Ae_wing_LM_lower_right_1_of_2",
+        "obiwan_15_split2_Ae_wing_LM_UM_upper_right_2_of_2",
+        "obiwan_ae_wings_split2_combo",
     ):
         check(required in names, f"missing required friendly name: {required}")
     for forbidden in (
@@ -445,7 +445,7 @@ def main() -> int:
         check(forbidden not in names, f"stale state duplicate remains: {forbidden}")
     check(not any("LM_top_keyed_1_of_2" in name for name in names),
           "Obi-Wan keyed LM top must be 2 of 2")
-    check(not any("core_1of2_lm_carrier" in entry["source_stl"]
+    check(not any("core_1_of_2_lm_carrier" in entry["source_stl"]
                   for entry in entries),
           "P2S-oversize Obi-Wan monolith leaked into shelf")
     check(not any(any(token in entry["source_stl"].lower()
@@ -548,10 +548,10 @@ def main() -> int:
         support_coverage = combo_record["archive_audit"][
             "support_midpoints_inside_part_footprints"]
         check(support_coverage[
-                  "obiwan_03_of_16_UM_carrier_1_of_1"] > 0,
+                  "obiwan_03_UM_carrier_1_of_1"] > 0,
               f"{label}: UM carrier has floating-cantilever risk")
         check(support_coverage[
-                  "obiwan_04_of_16_T_tweeter_crescent_1_of_1"] == 0,
+                  "obiwan_04_T_tweeter_crescent_1_of_1"] == 0,
               f"{label}: tweeter unexpectedly receives support")
         check(
             combo_profile["filament"]
@@ -566,7 +566,7 @@ def main() -> int:
             f"{label}: bridge/root parameter-modifier count drifted",
         )
     structural_01a = manifest_records[
-        "obiwan_01a_of_16_LM_bottom_keyed_1_of_2_no_floor_stand"]
+        "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand"]
     check(
         structural_01a["profile_effective"]["filament"]
         == "TINMORRY PETG-GF Profile @BBL P2S"
@@ -576,7 +576,7 @@ def main() -> int:
         "100%-solid bridge/root modifier",
     )
     structural_01b = manifest_records[
-        "obiwan_01b_of_16_LM_bottom_keyed_1_of_2_floor_stand"]
+        "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand"]
     check(
         structural_01b["profile_effective"]["filament"]
         == "TINMORRY PETG-GF Profile @BBL P2S"

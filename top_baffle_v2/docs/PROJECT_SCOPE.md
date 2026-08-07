@@ -12,7 +12,7 @@ reprinting the driver carriers.
 The repository is not a generic collection of every historical geometry idea.
 Its human-facing inventory is three product families:
 
-1. **Standard R6P:** B2, nominally 18.3 mm deep, with mutually exclusive
+1. **Stock R6P:** B2, nominally 18.3 mm deep, with mutually exclusive
    A-comp shoulders or B1 wings.
 2. **Slim R6P:** V1L lower/mids plus the V1 top. The acoustic field is
    11.5 mm deep and front-flush at z=18.3; the bottom structural strip remains
@@ -37,15 +37,17 @@ not retained; Ac and Ae are the complete Obi-Wan wing inventory.
 - **Secondary outputs:** front-face-down STL pieces with adjacent hash-bound
   `.print.json` orientation authorities; generated PNG design sheets and CAD
   snapshots.
-- **Standard validation target:** one-piece B2 bounds 304.802 x 453.457 x
+- **Stock validation target:** one-piece B2 bounds 304.802 x 453.457 x
   18.3 mm; print assembly retains the same front plane.
 - **Slim validation target:** 304.802 x 453.457 mm plan; main rear plane z=6.8
   (11.5 mm field); structural bottom strip may reach z=0.
 - **Obi-Wan validation target:** two-carrier core, 165.100 mm LM/UM axis spacing,
   shared z=18.3 front, separate floor/no-floor rear structure, Ac/Ae manifests.
-- **Catalog paths:** `artifacts/standard`, `artifacts/slim`, and
+- **Catalog paths:** `artifacts/stock`, `artifacts/slim`, and
   `artifacts/obiwan`.
-- **Assumptions:** “stock” means the no-floor/stock-bridge mounting state.
+- **Assumptions:** “stock” names the full-depth B2 product family. The
+  mounting state it ships in is the “stock-bridge (no-floor)” state, always
+  written out in full so the product name is never read as a state.
   “Wings/shoulders” means alternative perimeter sets, never both installed at
   the same time. Ac is the constant-depth Obi-Wan wing; Ae is the weighted-depth
   experiment.

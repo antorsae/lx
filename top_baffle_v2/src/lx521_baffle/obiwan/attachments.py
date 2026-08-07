@@ -51,7 +51,7 @@ def _fuse_required(part, addition, label):
 def tweeter_crescent():
     """Rear-tapered acoustic crescent on two compact direct half-laps."""
     _require_guarded_build()
-    from ..proud.top_baffle_nd25fw4_v1 import v1_magnet_free_solid
+    from ..proud.v1 import v1_magnet_free_solid
     from .carriers import UM_CORE_R
 
     # Obi-Wan uses M3 half-laps here, not V1's captive base magnets.  Crop from

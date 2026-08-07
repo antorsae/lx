@@ -407,10 +407,10 @@ def test_ordered_assembly_helper_and_narrow_adoption() -> None:
         assert "ordered_labeled_compound" not in (
             ROOT / specialized).read_text(encoding="utf-8")
     assert 'if "b1_wing" in k' in (
-        ROOT / "src/lx521_baffle/proud/top_baffle_nd25fw4_b1_assembled.py").read_text(
+        ROOT / "src/lx521_baffle/proud/b1_assembled.py").read_text(
             encoding="utf-8")
     assert 'if "a_shoulder" in k' in (
-        ROOT / "src/lx521_baffle/proud/top_baffle_nd25fw4_a_comp_assembled.py").read_text(
+        ROOT / "src/lx521_baffle/proud/a_comp_assembled.py").read_text(
             encoding="utf-8")
 
 

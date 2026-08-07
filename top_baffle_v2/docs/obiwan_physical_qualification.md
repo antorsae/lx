@@ -22,7 +22,7 @@ release approver signs that state. `PENDING`, a blank field, `N/A` without a
 written justification, or a failed row keeps that state unauthorized.
 
 The floor candidate has no separate support artifact. The canonical floor LM
-and `lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl` each own the complete
+and `obiwan_optional_lm_keyed_1_of_2_bottom.stl` each own the complete
 integral W64 stem/foot, convex constant-thickness R41-minimum Option-B
 transition, buried floor lanes and NL8 panel. The floor
 datum is world `Y=0`, exactly **200.981 mm** below the LM axis. All six LM
@@ -160,8 +160,8 @@ both the manifest and this qualification record.
 | Inspector and inspection date | PENDING | PENDING |
 | Candidate artifact-inventory path / SHA-256, excluding manifest and this record | PENDING | PENDING |
 | Canonical monolithic LM carrier STL SHA-256 — mandatory shipped form | PENDING | PENDING |
-| Keyed LM bottom `lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl` SHA-256 — mandatory shipped form | PENDING | PENDING |
-| Keyed LM top `lx521_top_obiwan_optional_lm_keyed_2of2_top.stl` SHA-256 — mandatory shipped form | PENDING | PENDING |
+| Keyed LM bottom `obiwan_optional_lm_keyed_1_of_2_bottom.stl` SHA-256 — mandatory shipped form | PENDING | PENDING |
+| Keyed LM top `obiwan_optional_lm_keyed_2_of_2_top.stl` SHA-256 — mandatory shipped form | PENDING | PENDING |
 | Keyed split print orientation and verified in-bed footprint (bottom / top) | Both front-face-down with in-plane rotation only; record actual selected-printer clearances | Both front-face-down with in-plane rotation only; record actual selected-printer clearances |
 | UM carrier STL SHA-256 | PENDING | PENDING |
 | Tweeter crescent STL SHA-256, if fitted | PENDING | PENDING |

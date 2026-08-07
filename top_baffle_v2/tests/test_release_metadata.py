@@ -75,13 +75,13 @@ def _load_catalog_generator_without_cad():
         ),
         "lx521_baffle.base": _stub_module(
             "lx521_baffle.base", THICKNESS_MM=18.3),
-        "lx521_baffle.proud.top_baffle_nd25fw4_b": _stub_module(
-            "lx521_baffle.proud.top_baffle_nd25fw4_b",
+        "lx521_baffle.proud.b": _stub_module(
+            "lx521_baffle.proud.b",
             BASE_CAVITY_FACE_INSET_MM=(0.0, 0.14),
             MAGNET_SITES=(),
         ),
-        "lx521_baffle.proud.top_baffle_nd25fw4_v1": _stub_module(
-            "lx521_baffle.proud.top_baffle_nd25fw4_v1",
+        "lx521_baffle.proud.v1": _stub_module(
+            "lx521_baffle.proud.v1",
             V1_MAGNET_ZC=()),
         "lx521_baffle.obiwan.carriers": _stub_module(
             "lx521_baffle.obiwan.carriers",
@@ -206,11 +206,11 @@ def _logical_make_lines(text: str) -> tuple[str, ...]:
 
 def test_obiwan_release_manifest_binds_print_sidecars() -> None:
     expected_obiwan = {
-        "stl/lx521_top_obiwan_core_1of2_lm_carrier.print.json",
-        "stl/lx521_top_obiwan_core_2of2_um_carrier.print.json",
-        "stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json",
-        "stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.print.json",
-        "stl/lx521_top_obiwan_addon_tweeter_crescent.print.json",
+        "stl/obiwan_core_1_of_2_lm_carrier.print.json",
+        "stl/obiwan_core_2_of_2_um_carrier.print.json",
+        "stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json",
+        "stl/obiwan_optional_lm_keyed_2_of_2_top.print.json",
+        "stl/obiwan_addon_tweeter_crescent.print.json",
         *(
             f"stl/lx521_coupon_{name}.print.json"
             for name in (
@@ -246,9 +246,9 @@ def test_obiwan_release_manifest_binds_print_sidecars() -> None:
         assert blocker_artifacts == {
             f"support_blockers/{stem}.support_blocker.{suffix}"
             for stem in (
-                "lx521_top_obiwan_core_2of2_um_carrier",
-                "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
-                "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+                "obiwan_core_2_of_2_um_carrier",
+                "obiwan_optional_lm_keyed_1_of_2_bottom",
+                "obiwan_optional_lm_keyed_2_of_2_top",
             )
             for suffix in ("stl", "json")
         }
@@ -789,8 +789,8 @@ def test_obiwan_catalog_binds_staged_exporter_and_state_manifest() -> None:
 
 def test_receiver_polarity_docs_match_pair_axis_convention() -> None:
     for relative in (
-        "src/lx521_baffle/proud/top_baffle_nd25fw4_b.py",
-        "src/lx521_baffle/proud/top_baffle_nd25fw4_v1_attachments.py",
+        "src/lx521_baffle/proud/b.py",
+        "src/lx521_baffle/proud/v1_attachments.py",
     ):
         text = (ROOT / relative).read_text(encoding="utf-8").lower()
         assert "marked pole in" not in text
@@ -1118,11 +1118,11 @@ def test_ts_captive_detour_is_smooth_full_lumen_and_wired() -> None:
 
     cables = (ROOT / "src/lx521_baffle/cables.py").read_text(
         encoding="utf-8")
-    split = (ROOT / "src/lx521_baffle/proud/top_baffle_nd25fw4_b2_split.py").read_text(
+    split = (ROOT / "src/lx521_baffle/proud/b2_split.py").read_text(
         encoding="utf-8")
-    v1 = (ROOT / "src/lx521_baffle/proud/top_baffle_nd25fw4_v1_split.py").read_text(
+    v1 = (ROOT / "src/lx521_baffle/proud/v1_split.py").read_text(
         encoding="utf-8")
-    v1l = (ROOT / "src/lx521_baffle/proud/top_baffle_nd25fw4_v1l_split.py").read_text(
+    v1l = (ROOT / "src/lx521_baffle/proud/v1l_split.py").read_text(
         encoding="utf-8")
     assert "x + _ts_captive_nudge_mm(y)" in cables
     assert "ts_route_key=ts_route_key" in cables
@@ -1682,7 +1682,7 @@ def test_shared_owner_dependencies_are_attested_and_hash_sensitive() -> None:
     assert "src/lx521_baffle/floor_bend.py" in wing_map_line.split()
     v1l_line = next(
         line for line in logical_make
-        if line.startswith("$(1)/top_baffle_nd25fw4_v1l_split.step:"))
+        if line.startswith("$(1)/v1l_split.step:"))
     assert "scripts/export_steps.py" in v1l_line
     slicer_line = next(
         line for line in logical_make if line.startswith("SLICER_SRCS :="))

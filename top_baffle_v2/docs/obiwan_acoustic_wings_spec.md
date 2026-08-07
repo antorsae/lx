@@ -180,15 +180,15 @@ There are therefore ten STLs for Ac and ten for Ae. The split contract is:
 For slug `ac` or `ae`, the release transaction produces:
 
 ```text
-build/wings/<slug>/top_baffle_nd25fw4_obiwan_wing_<slug>.step
-build/wings/<slug>/top_baffle_nd25fw4_obiwan_wing_<slug>_assembled.step
-build/wings/<slug>/top_baffle_nd25fw4_obiwan_wing_<slug>_assembled_b.step
+build/wings/<slug>/obiwan_wing_<slug>.step
+build/wings/<slug>/obiwan_wing_<slug>_assembled.step
+build/wings/<slug>/obiwan_wing_<slug>_assembled_b.step
 build/wings/<slug>/obiwan_wing_<slug>_facts.json
 build/wings/<slug>/obiwan_wing_<slug>_print_manifest.json
-build/wings/<slug>/stl/lx521_top_obiwan_wing_<slug>_<side>_<n>of3_<role>.stl
-build/wings/<slug>/stl/lx521_top_obiwan_wing_<slug>_<side>_<n>of3_<role>.print.json
-build/wings/<slug>/stl/lx521_top_obiwan_wing_<slug>_<side>_b_<n>of2_<role>.stl
-build/wings/<slug>/stl/lx521_top_obiwan_wing_<slug>_<side>_b_<n>of2_<role>.print.json
+build/wings/<slug>/stl/obiwan_wing_<slug>_<side>_<n>_of_3_<role>.stl
+build/wings/<slug>/stl/obiwan_wing_<slug>_<side>_<n>_of_3_<role>.print.json
+build/wings/<slug>/stl/obiwan_wing_<slug>_<side>_split2_<n>_of_2_<role>.stl
+build/wings/<slug>/stl/obiwan_wing_<slug>_<side>_split2_<n>_of_2_<role>.print.json
 build/wings/<slug>/review/obiwan_wing_<slug>_<view>.png
 ```
 

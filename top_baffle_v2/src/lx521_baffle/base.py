@@ -390,5 +390,5 @@ OUTLINE_ALIGNED = _aligned_outline()
 
 def gen_step():
     part = baffle_solid(OUTLINE_ALIGNED, tweeter_drop_mm=TWEETER_DROP_A_MM)
-    part.label = "lx521_4_top_baffle_nd25fw4"
+    part.label = "lx521_4_top_baffle"
     return part

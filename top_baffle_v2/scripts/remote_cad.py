@@ -84,7 +84,7 @@ GENERATED_SUFFIXES = {
     ".3mf", ".brep", ".glb", ".json", ".png", ".step", ".stl",
 }
 COMMON_ARTIFACT = (
-    "top_baffle_v2/build/common/top_baffle_nd25fw4_attachments.step")
+    "top_baffle_v2/build/common/attachments.step")
 OBIWAN_WING_DESIGN_MAP_ARTIFACT = (
     "top_baffle_v2/build/common/obiwan_wing_design_map.png")
 CAPTIVE_MAGNET_CATALOG_ARTIFACT = (
@@ -1478,13 +1478,13 @@ def _target_required_artifact_relatives(
             work, "no_floor_stand"))
     elif target == "no_floor_obiwan_01a":
         base = "top_baffle_v2/build/no_floor_stand"
-        stem = "lx521_top_obiwan_optional_lm_keyed_1of2_bottom"
+        stem = "obiwan_optional_lm_keyed_1_of_2_bottom"
         required.update({
             f"{base}/stl/{stem}.stl",
             f"{base}/stl/{stem}.print.json",
             f"{base}/support_blockers/{stem}.support_blocker.stl",
             f"{base}/support_blockers/{stem}.support_blocker.json",
-            f"{base}/top_baffle_nd25fw4_obiwan_lm_split.step",
+            f"{base}/obiwan_lm_split.step",
             f"{base}/baffle_cable_routing_obiwan.png",
         })
     elif target == "vase_tebm35c10_4_cad":
@@ -3229,7 +3229,7 @@ def _promote_artifacts(incoming: Path, metadata: dict) -> int:
             *(BAFFLE_DIR / _output_prefix(name)
               for name in OUTPUT_ROOT_PREFIXES),
             BAFFLE_DIR / "__pycache__",
-            BAFFLE_DIR / "build/common/top_baffle_nd25fw4_attachments.step",
+            BAFFLE_DIR / "build/common/attachments.step",
             BAFFLE_DIR / "build/common/obiwan_wing_design_map.png",
         ]
         destinations = [
