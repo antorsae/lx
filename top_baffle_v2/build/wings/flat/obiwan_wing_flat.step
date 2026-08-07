@@ -1,7 +1,7 @@
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Open CASCADE Model'),'2;1');
-FILE_NAME('lx521_obiwan_basic_wing_ac_monolithic_pair',
+FILE_NAME('lx521_obiwan_basic_wing_flat_monolithic_pair',
   '2020-01-01T00:00:00',('Author'),('Open CASCADE'),
   'Open CASCADE STEP processor 7.9','build123d','Unknown');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
@@ -15,8 +15,8 @@ DATA;
 #4 = PRODUCT_DEFINITION_SHAPE('','',#5);
 #5 = PRODUCT_DEFINITION('design','',#6,#9);
 #6 = PRODUCT_DEFINITION_FORMATION('','',#7);
-#7 = PRODUCT('lx521_obiwan_basic_wing_ac_monolithic_pair',
-  'lx521_obiwan_basic_wing_ac_monolithic_pair','',(#8));
+#7 = PRODUCT('lx521_obiwan_basic_wing_flat_monolithic_pair',
+  'lx521_obiwan_basic_wing_flat_monolithic_pair','',(#8));
 #8 = PRODUCT_CONTEXT('',#2,'mechanical');
 #9 = PRODUCT_DEFINITION_CONTEXT('part definition',#2,'design');
 #10 = SHAPE_REPRESENTATION('',(#11,#15,#19),#23);
@@ -46,8 +46,8 @@ GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#27)) GLOBAL_UNIT_ASSIGNED_CONTEXT(
 #30 = PRODUCT_DEFINITION_SHAPE('','',#31);
 #31 = PRODUCT_DEFINITION('design','',#32,#35);
 #32 = PRODUCT_DEFINITION_FORMATION('','',#33);
-#33 = PRODUCT('obiwan_wing_ac_left_monolithic',
-  'obiwan_wing_ac_left_monolithic','',(#34));
+#33 = PRODUCT('obiwan_wing_flat_left_monolithic',
+  'obiwan_wing_flat_left_monolithic','',(#34));
 #34 = PRODUCT_CONTEXT('',#2,'mechanical');
 #35 = PRODUCT_DEFINITION_CONTEXT('part definition',#2,'design');
 #36 = ADVANCED_BREP_SHAPE_REPRESENTATION('',(#11,#37),#149773);
@@ -173568,14 +173568,14 @@ SHAPE_REPRESENTATION_RELATIONSHIP() );
 #149781 = PRODUCT_DEFINITION_SHAPE('Placement','Placement of an item',
   #149782);
 #149782 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1',
-  'obiwan_wing_ac_left_monolithic','',#5,#31,$);
+  'obiwan_wing_flat_left_monolithic','',#5,#31,$);
 #149783 = PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,(#33));
 #149784 = SHAPE_DEFINITION_REPRESENTATION(#149785,#149791);
 #149785 = PRODUCT_DEFINITION_SHAPE('','',#149786);
 #149786 = PRODUCT_DEFINITION('design','',#149787,#149790);
 #149787 = PRODUCT_DEFINITION_FORMATION('','',#149788);
-#149788 = PRODUCT('obiwan_wing_ac_right_monolithic',
-  'obiwan_wing_ac_right_monolithic','',(#149789));
+#149788 = PRODUCT('obiwan_wing_flat_right_monolithic',
+  'obiwan_wing_flat_right_monolithic','',(#149789));
 #149789 = PRODUCT_CONTEXT('',#2,'mechanical');
 #149790 = PRODUCT_DEFINITION_CONTEXT('part definition',#2,'design');
 #149791 = ADVANCED_BREP_SHAPE_REPRESENTATION('',(#11,#149792),#299492);
@@ -347127,7 +347127,7 @@ SHAPE_REPRESENTATION_RELATIONSHIP() );
 #299500 = PRODUCT_DEFINITION_SHAPE('Placement','Placement of an item',
   #299501);
 #299501 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2',
-  'obiwan_wing_ac_right_monolithic','',#5,#149786,$);
+  'obiwan_wing_flat_right_monolithic','',#5,#149786,$);
 #299502 = PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,(#149788));
 ENDSEC;
 END-ISO-10303-21;

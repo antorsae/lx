@@ -6,10 +6,10 @@
   },
   "files": [
     {
-      "bytes": 988621,
+      "bytes": 988718,
       "path": "cad/attachments.step",
       "role": "attachment_set",
-      "sha256": "e045e397fa0e16b5bde102eb6cdf7c69d063efb50e0cb8a1b9bc18fc1286b633",
+      "sha256": "6b30eb79709726ed7a2137d6251e0ff4ec570dd649db2df214423a85416fa55e",
       "source": "build/common/attachments.step"
     },
     {
@@ -30,7 +30,7 @@
       "bytes": 45471636,
       "path": "cad/shoulders_assembly.step",
       "role": "optional_shoulders_assembly",
-      "sha256": "99eca40dc9c4f033c572796dce38132d1b699ade6481dd05d0a5ca11fab4364d",
+      "sha256": "80523fc94c9f1bab5980879237d6cde3a04649edd6bc68b44a5f0500fafeda39",
       "source": "build/no_floor_stand/a_comp_assembled.step"
     },
     {

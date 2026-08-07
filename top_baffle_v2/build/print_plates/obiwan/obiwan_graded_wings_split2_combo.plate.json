@@ -181,7 +181,7 @@
       "rz_degrees": 58.72427357715,
       "side": "left",
       "source_print_sidecar": "build/wings/graded/stl/obiwan_wing_graded_left_split2_1_of_2_lm_lower.print.json",
-      "source_print_sidecar_sha256": "12241c44050b373d070d1b33c67e926bacb567563c5c063b381780b388480a26",
+      "source_print_sidecar_sha256": "cabc055a4a67a144248a5edd1e41e51511b6243f08682e81d88f546a0fc221b0",
       "source_stl": "build/wings/graded/stl/obiwan_wing_graded_left_split2_1_of_2_lm_lower.stl",
       "source_stl_sha256": "79372c83362b259cb93e75072dec7284d2ca9978c4a6368fbfced81e45cccd2b",
       "stl_to_plate_matrix": [
@@ -247,7 +247,7 @@
       "rz_degrees": -82.921230563781,
       "side": "left",
       "source_print_sidecar": "build/wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.print.json",
-      "source_print_sidecar_sha256": "876f7d0c0740ce50a48b0d34aa1bd59472cb71b25ff724de9313312016c0cb96",
+      "source_print_sidecar_sha256": "ad0c06df52a9a7cce76244af8ba0d2e73260e35ae4a73a2625c3c86bdab0618b",
       "source_stl": "build/wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.stl",
       "source_stl_sha256": "4244dead1a6618dd73ae541946f88cf1e918799a007c518d7983a36f5b9b8224",
       "stl_to_plate_matrix": [
@@ -312,7 +312,7 @@
       "rz_degrees": -89.203304927416,
       "side": "right",
       "source_print_sidecar": "build/wings/graded/stl/obiwan_wing_graded_right_split2_1_of_2_lm_lower.print.json",
-      "source_print_sidecar_sha256": "777809aa0d451f2e1b55d0bebe263f9cbcc14446145a8f9cbcf844007ff16621",
+      "source_print_sidecar_sha256": "245e15847ef2e52734667333d726fa4c04820d298870503387bac0b363461264",
       "source_stl": "build/wings/graded/stl/obiwan_wing_graded_right_split2_1_of_2_lm_lower.stl",
       "source_stl_sha256": "fb710daee44335b9be8066c3989d6aba61eb8b220c6c65f0bd6ccb4a5b7f722d",
       "stl_to_plate_matrix": [
@@ -378,7 +378,7 @@
       "rz_degrees": 110.702555432118,
       "side": "right",
       "source_print_sidecar": "build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.print.json",
-      "source_print_sidecar_sha256": "be2be8e10585a36fa9ac48ad0ea1a71f918f4993f5c34ecb15bab777c6b4e489",
+      "source_print_sidecar_sha256": "8e06b384b1ed57fa79c43a46f0c9611652a30dbe77f4a7c3a1eb252a1409771c",
       "source_stl": "build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.stl",
       "source_stl_sha256": "9bab730a8c5bdc959cd236c0380642a7568e9ab456bb6adf6c4de9f5c32bd1af",
       "stl_to_plate_matrix": [
@@ -415,13 +415,13 @@
     }
   ],
   "preview": "build/print_plates/obiwan/obiwan_graded_wings_split2_combo.layout.png",
-  "preview_sha256": "5308d942d990039ee893f76c9a55289c4bebf01e9f0fd25af028ffd3c48c7fdb",
+  "preview_sha256": "d7129a35f9d0016a97f36c773af336c89845daad73cc58cef5ddae1c0151a916",
   "schema_version": 1,
-  "source_bundle_fingerprint": "9fbf5a5ed69e554422db0e7e11a6feac86c34e60fb00581c3ca44be34083c21e",
+  "source_bundle_fingerprint": "61d2245d5399f5ba7fb724ee4f05b40b40f7e51228c46aff0cd29f4f6eb1d7b9",
   "source_policy": "rigid Rz plus XY placement of four released front-face-down STLs; no CAD, BREP, support structure, or acoustic geometry regeneration",
   "stl": "obiwan_graded_wings_split2_combo.stl",
   "stl_bytes": 108450484,
-  "stl_sha256": "baf3ec108e8180472b873935a359d14a4dd54ab42ce3e7f9e1d64e5ed33b5cb0",
+  "stl_sha256": "21daab1f657e54d19856f7b337a32acf16c5b8af2430e96f3dc697b5e269ccd0",
   "support_policy": {
     "enabled": false,
     "global_and_object_fields": {
