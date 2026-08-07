@@ -344,6 +344,22 @@ endif
 override LX_CAD_EXECUTION := local
 endif
 
+# Candidate CAD goals build experimental parts that are deliberately outside
+# the release inventory and the remote promotion roots; they run locally
+# under the ordinary guard.  Promotion to a remote target happens if and
+# when a candidate is release-authorized.
+LOCAL_CANDIDATE_GOALS := obiwan_bmr_crescent_cad
+CANDIDATE_GOALS_REQUESTED := $(filter $(LOCAL_CANDIDATE_GOALS),$(MAKECMDGOALS))
+ifneq ($(strip $(CANDIDATE_GOALS_REQUESTED)),)
+ifneq ($(strip $(filter-out $(LOCAL_CANDIDATE_GOALS),$(MAKECMDGOALS))),)
+$(error local-only candidate CAD goals cannot be mixed with other Make goals)
+endif
+ifeq ($(LX_CAD_EXECUTION),remote-worker)
+$(error candidate CAD goals are workstation-only and cannot run on a remote CAD worker)
+endif
+override LX_CAD_EXECUTION := local
+endif
+
 BAMBU_GOALS_REQUESTED := $(filter $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))
 ifneq ($(strip $(BAMBU_GOALS_REQUESTED)),)
 ifneq ($(strip $(filter-out $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))),)
@@ -854,6 +870,7 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_v1 $(1)
         check_obiwan_lm_profile_brep manifold _manifold_parallel clean \
         check_bambu_3mf_audit bambu_profiles bambu_dry_run \
         bambu_slice_obiwan bambu_slice_release \
+        obiwan_bmr_crescent_cad \
         vase_tebm35c10_4_cad vase_tebm35c10_4_3mf \
         vase_tebm35c10_4_3mf_validate \
         vase_tebm35c10_4_stock_cad vase_tebm35c10_4_slim_cad \
@@ -970,6 +987,66 @@ vase_tebm35c10_4_stock_cad: $(VASE_TEBM_STOCK_CAD_OUTPUTS)
 
 vase_tebm35c10_4_slim_cad: $(VASE_TEBM_SLIM_CAD_OUTPUTS)
 	@echo "Slim BMR vase: $(VASE_TEBM_SLIM_STEP)"
+
+# Candidate coaxial TEBM35C10-4 BMR crescent for the Obi-Wan UM collar.
+# Mount-identical to the released ND25FW-4 crescent; outside the release
+# inventory, the stage manifests, and to_print — its own test asserts all
+# three.  Local-only (see LOCAL_CANDIDATE_GOALS).
+BMR_CRESCENT_NAME := obiwan_bmr_crescent_TEBM35C10-4
+BMR_CRESCENT_ROOT := build/bmr_crescent_TEBM35C10-4
+BMR_CRESCENT_BREP := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).brep
+BMR_CRESCENT_STEP := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).step
+BMR_CRESCENT_STL := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).stl
+BMR_CRESCENT_SIDECAR := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).print.json
+BMR_CRESCENT_FACTS := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).facts.json
+BMR_CRESCENT_MANIFEST := $(BMR_CRESCENT_ROOT)/cad_manifest.json
+BMR_CRESCENT_EXPORT_STAMP := $(BMR_CRESCENT_ROOT)/.stamp_cad_validated
+BMR_CRESCENT_CAD_STAMP := $(BMR_CRESCENT_ROOT)/.stamp_cad_ready
+BMR_CRESCENT_CAD_OUTPUTS := $(BMR_CRESCENT_BREP) $(BMR_CRESCENT_STEP) \
+        $(BMR_CRESCENT_STL) $(BMR_CRESCENT_SIDECAR) $(BMR_CRESCENT_FACTS) \
+        $(BMR_CRESCENT_MANIFEST)
+
+BMR_CRESCENT_CAD_SRCS := src/lx521_baffle/obiwan/bmr_crescent.py \
+        src/lx521_baffle/obiwan/attachments.py \
+        src/lx521_baffle/obiwan/carriers.py \
+        src/lx521_baffle/obiwan/joints.py \
+        src/lx521_baffle/obiwan/route.py \
+        src/lx521_baffle/proud/v1.py src/lx521_baffle/proud/b.py \
+        src/lx521_baffle/proud/b2.py \
+        src/lx521_baffle/proud/vase_tebm35c10_4.py \
+        src/lx521_baffle/base.py src/lx521_baffle/cables.py \
+        src/lx521_baffle/print_contract.py src/lx521_baffle/stl_export.py \
+        src/lx521_baffle/geom.py src/lx521_baffle/io.py \
+        scripts/export_bmr_crescent.py scripts/export_piece_stls.py \
+        scripts/export_steps.py scripts/check_manifold.py \
+        tests/test_bmr_crescent.py $(EXECUTION_SRCS)
+
+# The export runs before the test: the test's geometry gates read the
+# exported BREP and hash-check it against the current sources.
+$(BMR_CRESCENT_CAD_STAMP): $(BMR_CRESCENT_CAD_SRCS)
+	@rm -f "$@"
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan $(RUN) \
+	    scripts/export_bmr_crescent.py --output-root "$(BMR_CRESCENT_ROOT)"
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan $(RUN) \
+	    tests/test_bmr_crescent.py
+	$(PYTHON_RUN) scripts/check_manifold.py --stl-only "$(BMR_CRESCENT_STL)"
+	@for path in $(BMR_CRESCENT_CAD_OUTPUTS) \
+	        $(BMR_CRESCENT_EXPORT_STAMP); do \
+		test -s "$$path" || exit 1; \
+	done
+	@touch "$@"
+
+$(BMR_CRESCENT_CAD_OUTPUTS): | $(BMR_CRESCENT_CAD_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(BMR_CRESCENT_CAD_STAMP)"; \
+		$(MAKE) --no-print-directory "$(BMR_CRESCENT_CAD_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_bmr_crescent_cad: $(BMR_CRESCENT_CAD_OUTPUTS)
+	@echo "Candidate BMR crescent STEP: $(BMR_CRESCENT_STEP)"
+	@echo "Candidate BMR crescent STL:  $(BMR_CRESCENT_STL)"
+	@echo "candidate only; not release-authorized, not staged, not counted"
 
 # This catalog is generated only after all 58 released magnet-bearing meshes
 # and their exact front-down print transforms exist.  It is the CAD-side
