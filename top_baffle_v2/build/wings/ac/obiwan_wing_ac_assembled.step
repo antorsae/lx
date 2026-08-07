@@ -62,8 +62,8 @@ GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#43)) GLOBAL_UNIT_ASSIGNED_CONTEXT(
 #46 = PRODUCT_DEFINITION_SHAPE('','',#47);
 #47 = PRODUCT_DEFINITION('design','',#48,#51);
 #48 = PRODUCT_DEFINITION_FORMATION('','',#49);
-#49 = PRODUCT('obiwan_wing_ac_left_1of3_lm_lower',
-  'obiwan_wing_ac_left_1of3_lm_lower','',(#50));
+#49 = PRODUCT('obiwan_wing_ac_left_1_of_3_lm_lower',
+  'obiwan_wing_ac_left_1_of_3_lm_lower','',(#50));
 #50 = PRODUCT_CONTEXT('',#2,'mechanical');
 #51 = PRODUCT_DEFINITION_CONTEXT('part definition',#2,'design');
 #52 = ADVANCED_BREP_SHAPE_REPRESENTATION('',(#11,#53),#36875);
@@ -42768,14 +42768,14 @@ SHAPE_REPRESENTATION_RELATIONSHIP() );
 #36883 = PRODUCT_DEFINITION_SHAPE('Placement','Placement of an item',
   #36884);
 #36884 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('3',
-  'obiwan_wing_ac_left_1of3_lm_lower','',#5,#47,$);
+  'obiwan_wing_ac_left_1_of_3_lm_lower','',#5,#47,$);
 #36885 = PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,(#49));
 #36886 = SHAPE_DEFINITION_REPRESENTATION(#36887,#36893);
 #36887 = PRODUCT_DEFINITION_SHAPE('','',#36888);
 #36888 = PRODUCT_DEFINITION('design','',#36889,#36892);
 #36889 = PRODUCT_DEFINITION_FORMATION('','',#36890);
-#36890 = PRODUCT('obiwan_wing_ac_left_2of3_lm_upper',
-  'obiwan_wing_ac_left_2of3_lm_upper','',(#36891));
+#36890 = PRODUCT('obiwan_wing_ac_left_2_of_3_lm_upper',
+  'obiwan_wing_ac_left_2_of_3_lm_upper','',(#36891));
 #36891 = PRODUCT_CONTEXT('',#2,'mechanical');
 #36892 = PRODUCT_DEFINITION_CONTEXT('part definition',#2,'design');
 #36893 = ADVANCED_BREP_SHAPE_REPRESENTATION('',(#11,#36894),#114234);
@@ -132389,14 +132389,14 @@ SHAPE_REPRESENTATION_RELATIONSHIP() );
 #114242 = PRODUCT_DEFINITION_SHAPE('Placement','Placement of an item',
   #114243);
 #114243 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('4',
-  'obiwan_wing_ac_left_2of3_lm_upper','',#5,#36888,$);
+  'obiwan_wing_ac_left_2_of_3_lm_upper','',#5,#36888,$);
 #114244 = PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,(#36890));
 #114245 = SHAPE_DEFINITION_REPRESENTATION(#114246,#114252);
 #114246 = PRODUCT_DEFINITION_SHAPE('','',#114247);
 #114247 = PRODUCT_DEFINITION('design','',#114248,#114251);
 #114248 = PRODUCT_DEFINITION_FORMATION('','',#114249);
-#114249 = PRODUCT('obiwan_wing_ac_left_3of3_um',
-  'obiwan_wing_ac_left_3of3_um','',(#114250));
+#114249 = PRODUCT('obiwan_wing_ac_left_3_of_3_um',
+  'obiwan_wing_ac_left_3_of_3_um','',(#114250));
 #114250 = PRODUCT_CONTEXT('',#2,'mechanical');
 #114251 = PRODUCT_DEFINITION_CONTEXT('part definition',#2,'design');
 #114252 = ADVANCED_BREP_SHAPE_REPRESENTATION('',(#11,#114253),#155011);
@@ -179647,14 +179647,14 @@ SHAPE_REPRESENTATION_RELATIONSHIP() );
 #155019 = PRODUCT_DEFINITION_SHAPE('Placement','Placement of an item',
   #155020);
 #155020 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('5',
-  'obiwan_wing_ac_left_3of3_um','',#5,#114247,$);
+  'obiwan_wing_ac_left_3_of_3_um','',#5,#114247,$);
 #155021 = PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,(#114249));
 #155022 = SHAPE_DEFINITION_REPRESENTATION(#155023,#155029);
 #155023 = PRODUCT_DEFINITION_SHAPE('','',#155024);
 #155024 = PRODUCT_DEFINITION('design','',#155025,#155028);
 #155025 = PRODUCT_DEFINITION_FORMATION('','',#155026);
-#155026 = PRODUCT('obiwan_wing_ac_right_1of3_lm_lower',
-  'obiwan_wing_ac_right_1of3_lm_lower','',(#155027));
+#155026 = PRODUCT('obiwan_wing_ac_right_1_of_3_lm_lower',
+  'obiwan_wing_ac_right_1_of_3_lm_lower','',(#155027));
 #155027 = PRODUCT_CONTEXT('',#2,'mechanical');
 #155028 = PRODUCT_DEFINITION_CONTEXT('part definition',#2,'design');
 #155029 = ADVANCED_BREP_SHAPE_REPRESENTATION('',(#11,#155030),#191808);
@@ -222373,14 +222373,14 @@ SHAPE_REPRESENTATION_RELATIONSHIP() );
 #191816 = PRODUCT_DEFINITION_SHAPE('Placement','Placement of an item',
   #191817);
 #191817 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('6',
-  'obiwan_wing_ac_right_1of3_lm_lower','',#5,#155024,$);
+  'obiwan_wing_ac_right_1_of_3_lm_lower','',#5,#155024,$);
 #191818 = PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,(#155026));
 #191819 = SHAPE_DEFINITION_REPRESENTATION(#191820,#191826);
 #191820 = PRODUCT_DEFINITION_SHAPE('','',#191821);
 #191821 = PRODUCT_DEFINITION('design','',#191822,#191825);
 #191822 = PRODUCT_DEFINITION_FORMATION('','',#191823);
-#191823 = PRODUCT('obiwan_wing_ac_right_2of3_lm_upper',
-  'obiwan_wing_ac_right_2of3_lm_upper','',(#191824));
+#191823 = PRODUCT('obiwan_wing_ac_right_2_of_3_lm_upper',
+  'obiwan_wing_ac_right_2_of_3_lm_upper','',(#191824));
 #191824 = PRODUCT_CONTEXT('',#2,'mechanical');
 #191825 = PRODUCT_DEFINITION_CONTEXT('part definition',#2,'design');
 #191826 = ADVANCED_BREP_SHAPE_REPRESENTATION('',(#11,#191827),#269049);
@@ -312134,14 +312134,14 @@ SHAPE_REPRESENTATION_RELATIONSHIP() );
 #269057 = PRODUCT_DEFINITION_SHAPE('Placement','Placement of an item',
   #269058);
 #269058 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('7',
-  'obiwan_wing_ac_right_2of3_lm_upper','',#5,#191821,$);
+  'obiwan_wing_ac_right_2_of_3_lm_upper','',#5,#191821,$);
 #269059 = PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,(#191823));
 #269060 = SHAPE_DEFINITION_REPRESENTATION(#269061,#269067);
 #269061 = PRODUCT_DEFINITION_SHAPE('','',#269062);
 #269062 = PRODUCT_DEFINITION('design','',#269063,#269066);
 #269063 = PRODUCT_DEFINITION_FORMATION('','',#269064);
-#269064 = PRODUCT('obiwan_wing_ac_right_3of3_um',
-  'obiwan_wing_ac_right_3of3_um','',(#269065));
+#269064 = PRODUCT('obiwan_wing_ac_right_3_of_3_um',
+  'obiwan_wing_ac_right_3_of_3_um','',(#269065));
 #269065 = PRODUCT_CONTEXT('',#2,'mechanical');
 #269066 = PRODUCT_DEFINITION_CONTEXT('part definition',#2,'design');
 #269067 = ADVANCED_BREP_SHAPE_REPRESENTATION('',(#11,#269068),#309704);
@@ -359512,7 +359512,7 @@ SHAPE_REPRESENTATION_RELATIONSHIP() );
 #309712 = PRODUCT_DEFINITION_SHAPE('Placement','Placement of an item',
   #309713);
 #309713 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('8',
-  'obiwan_wing_ac_right_3of3_um','',#5,#269062,$);
+  'obiwan_wing_ac_right_3_of_3_um','',#5,#269062,$);
 #309714 = PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,(#269064));
 ENDSEC;
 END-ISO-10303-21;

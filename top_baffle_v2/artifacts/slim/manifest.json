@@ -6,24 +6,24 @@
   },
   "files": [
     {
-      "bytes": 1062091,
+      "bytes": 1062075,
       "path": "cad/attachments.step",
       "role": "thin_attachment_set",
-      "sha256": "781b4d29784c55cc23291b7c1f2cf312835349967a1a0958d42b17264966e58c",
+      "sha256": "4f582da86c2077231397cc9c4ab1711ff1252cb4bb11b9198b26fe3633bdd8b2",
       "source": "build/no_floor_stand/v1_attachments.step"
     },
     {
-      "bytes": 46363167,
+      "bytes": 46363143,
       "path": "cad/base_print_assembly.step",
       "role": "print_assembly",
-      "sha256": "d2b2494799af3ee516dd6b2c2dffa37f724e82cab415d0a3b8f29706a7e0bd20",
+      "sha256": "0a61b5426fa5c600dca417aca0a3beb6a279263cdf3efee2518c2906b0d0c2eb",
       "source": "build/no_floor_stand/v1l_split.step"
     },
     {
-      "bytes": 986091,
+      "bytes": 986069,
       "path": "cad/top.step",
       "role": "thin_top_design",
-      "sha256": "cbaa87db74d0d2c8af920fd030676c15fcad6ffa390060788bdbc33ee2ba5075",
+      "sha256": "55d21eb80ad59768f8abfb7dfb4caf83c8e05a3bf7d35b950a43d8333f7c786b",
       "source": "build/no_floor_stand/v1.step"
     },
     {

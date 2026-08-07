@@ -5,7 +5,7 @@
       "part": "vase_TEBM35C10-4",
       "print_orientation": "front_face_down",
       "print_sidecar": "vase_TEBM35C10-4.print.json",
-      "print_sidecar_sha256": "879de4e5082c8289df70af6d6b799ef9741acf99e90f604e39fe78592cc499bf",
+      "print_sidecar_sha256": "1278550815ec71258423cb755173dee802ad0578a4ff7b22021e2ce996a3133f",
       "rotation_deg": {
         "x": 180.0,
         "z": 0.0
@@ -493,21 +493,21 @@
         }
       ],
       "source_file_sha256": {
-        "../../../scripts/check_manifold.py": "e50998399a046e5a6c87e82eeaa081639956141a726079b0a28c05645ccd5422",
-        "../../../scripts/export_piece_stls.py": "bc51ceb5ce79e9d12bf9a8616bc09eda41645c9ab97ec2df6eac2a2aa28aefd7",
-        "../../../scripts/export_steps.py": "6698e09040213e3d0efd782c947ebfeaaa5a7d27d3719a8e6aa7ae5859df6fda",
-        "../../../scripts/export_vase_tebm35c10_4.py": "0c4cdfce6f75a90c0e68ef67e31e59cf2412cf5d09fbbcbc00aacc9309998600",
-        "../../../src/lx521_baffle/base.py": "8c8d9f3bbd19b8944fc6767959b4a057af77f8649d359da47c35d950ec23926a",
-        "../../../src/lx521_baffle/cables.py": "c97c341a914d9904ec359fa674e57169aaefcd8900e08ee0c37f646fb8849862",
+        "../../../scripts/check_manifold.py": "74ec2f87de640944feba2b31b020d9dfcf4c0e41a9023093b8499785df30658a",
+        "../../../scripts/export_piece_stls.py": "362f7abed3545af0cac239d7a324522fec7b7ba601f7ff8162f7aba19b6e7ac2",
+        "../../../scripts/export_steps.py": "98033e876a66f9eba8aa6517034015e389dc0e2a79c14ee4a5c34df953b9d53f",
+        "../../../scripts/export_vase_tebm35c10_4.py": "602103af8162df775f73cf1e04e266590f4e60bb269250160d4ef75a9a3a79f6",
+        "../../../src/lx521_baffle/base.py": "a9085aaae4e356f7941e5e9d4f668552922ee0c262fa7ca15be7052d025b576c",
+        "../../../src/lx521_baffle/cables.py": "c22ba47866f6baf3e94cb77945495bded8a1134a697b1bf68e71f6a3d043d509",
         "../../../src/lx521_baffle/geom.py": "9479f43e9e7ca1304c8652d59911f927566e0b9eb602cc4bd0a967bc61d168dc",
         "../../../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../../../src/lx521_baffle/magnet_contract.py": "8c0a468dbcb9471c039b3e20f3f9d336ffcd85b39b79e1f54505b38ac690e7fb",
-        "../../../src/lx521_baffle/magnets.py": "0d756378a00e883a66d8f6a563ebdd59170a2c75dad37b27759d59af9fe08a5d",
+        "../../../src/lx521_baffle/magnets.py": "17e66927fc686e02c54ac9b25bf70e0c449efb6fe2bc1f6120f8db6e5b899446",
         "../../../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
-        "../../../src/lx521_baffle/proud/b.py": "0fcdcb33c4ba237fdff0579d37611a2b896e17749d04c97219e069f053e16f5f",
-        "../../../src/lx521_baffle/proud/b2.py": "39f4d1af4e89066df4a8dc2ccddced2c3a671406d0607d9fe793cbb8b17d90de",
-        "../../../src/lx521_baffle/proud/b2_split.py": "3a5b59e80408a816c26f3a838cdadf581775c0babd297426798402b5b8cf2b53",
-        "../../../src/lx521_baffle/proud/vase_tebm35c10_4.py": "ce278a00047a4186de2e8b115da2a2a9952c62b1cf502a2f0a3de17f95f70682",
+        "../../../src/lx521_baffle/proud/b.py": "23833018aab4b1775ec08b3cffe18979fbbf24282922460e6b56c668987bef67",
+        "../../../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+        "../../../src/lx521_baffle/proud/b2_split.py": "ce2dd2e0e8b9446dd04d300ee2d3b88c80580611691587aa424962e9e9f78433",
+        "../../../src/lx521_baffle/proud/vase_tebm35c10_4.py": "4f589ddb6931a66529ca7da0169bfba0a2341352b5f46a08069f75b47df026b6",
         "../../../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
       },
       "source_files": [
@@ -556,7 +556,7 @@
       ],
       "state": "shared",
       "stl": "vase_TEBM35C10-4.stl",
-      "stl_sha256": "1214f11334119099861a105ecf886410a487458edea601d0bf4c799d393f7653",
+      "stl_sha256": "8679c43972143672d5c60cb77a1ff4b1c00abe26db0dca66a4d9fb9f8776b45f",
       "variant": "Stock-TEBM35C10-4"
     }
   ],
@@ -614,7 +614,7 @@
     "scope": "every_released_acoustic_part",
     "slicer": "Bambu Studio P2S 0.4 mm / 0.16 mm Arachne"
   },
-  "schema_sha256": "03213800f14453ce99785c090fa10d7dbdb5c380bf05fd98ef75a50b5def58d1",
+  "schema_sha256": "0425b1bc26d14d92603b57a286c7b95f6c5998ab292641fe448575f676045952",
   "schema_version": 1,
-  "source_revision": "6414209a0296f97f1dcacc688afc5515368e55300d4f62cc87fa3dd6fd95afe1"
+  "source_revision": "b85021c836a9ccebd4f77885e0c43218fcc012ed0d044f10235df30772c65fa1"
 }

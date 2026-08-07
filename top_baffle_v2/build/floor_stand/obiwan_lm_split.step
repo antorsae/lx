@@ -46,8 +46,8 @@ GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#27)) GLOBAL_UNIT_ASSIGNED_CONTEXT(
 #30 = PRODUCT_DEFINITION_SHAPE('','',#31);
 #31 = PRODUCT_DEFINITION('design','',#32,#35);
 #32 = PRODUCT_DEFINITION_FORMATION('','',#33);
-#33 = PRODUCT('optional_lm_keyed_1of2_bottom',
-  'optional_lm_keyed_1of2_bottom','',(#34));
+#33 = PRODUCT('optional_lm_keyed_1_of_2_bottom',
+  'optional_lm_keyed_1_of_2_bottom','',(#34));
 #34 = PRODUCT_CONTEXT('',#2,'mechanical');
 #35 = PRODUCT_DEFINITION_CONTEXT('part definition',#2,'design');
 #36 = ADVANCED_BREP_SHAPE_REPRESENTATION('',(#11,#37),#111668);
@@ -151078,14 +151078,14 @@ SHAPE_REPRESENTATION_RELATIONSHIP() );
 #111676 = PRODUCT_DEFINITION_SHAPE('Placement','Placement of an item',
   #111677);
 #111677 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('1',
-  'optional_lm_keyed_1of2_bottom','',#5,#31,$);
+  'optional_lm_keyed_1_of_2_bottom','',#5,#31,$);
 #111678 = PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,(#33));
 #111679 = SHAPE_DEFINITION_REPRESENTATION(#111680,#111686);
 #111680 = PRODUCT_DEFINITION_SHAPE('','',#111681);
 #111681 = PRODUCT_DEFINITION('design','',#111682,#111685);
 #111682 = PRODUCT_DEFINITION_FORMATION('','',#111683);
-#111683 = PRODUCT('optional_lm_keyed_2of2_top',
-  'optional_lm_keyed_2of2_top','',(#111684));
+#111683 = PRODUCT('optional_lm_keyed_2_of_2_top',
+  'optional_lm_keyed_2_of_2_top','',(#111684));
 #111684 = PRODUCT_CONTEXT('',#2,'mechanical');
 #111685 = PRODUCT_DEFINITION_CONTEXT('part definition',#2,'design');
 #111686 = ADVANCED_BREP_SHAPE_REPRESENTATION('',(#11,#111687),#264681);
@@ -351944,7 +351944,7 @@ SHAPE_REPRESENTATION_RELATIONSHIP() );
 #264689 = PRODUCT_DEFINITION_SHAPE('Placement','Placement of an item',
   #264690);
 #264690 = NEXT_ASSEMBLY_USAGE_OCCURRENCE('2',
-  'optional_lm_keyed_2of2_top','',#5,#111681,$);
+  'optional_lm_keyed_2_of_2_top','',#5,#111681,$);
 #264691 = PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,(#111683));
 ENDSEC;
 END-ISO-10303-21;

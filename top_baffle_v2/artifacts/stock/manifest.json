@@ -6,38 +6,38 @@
   },
   "files": [
     {
-      "bytes": 988740,
+      "bytes": 988621,
       "path": "cad/attachments.step",
       "role": "attachment_set",
-      "sha256": "72212d7fc23562ba614d532a08a169d60f3a1a0071064f04452cb47324d8585f",
+      "sha256": "e045e397fa0e16b5bde102eb6cdf7c69d063efb50e0cb8a1b9bc18fc1286b633",
       "source": "build/common/attachments.step"
     },
     {
-      "bytes": 719894,
+      "bytes": 719872,
       "path": "cad/base.step",
       "role": "canonical_design",
-      "sha256": "af5287c9ca334f979daea6d17e9be285bcb6791f777cc17901c6b9174f8b2e49",
+      "sha256": "0ad9e8bc3be3cfa6de9651b2634d40993fe7b52c8f38f46333623e920ac61aef",
       "source": "build/no_floor_stand/b2.step"
     },
     {
-      "bytes": 44918683,
+      "bytes": 44918657,
       "path": "cad/base_print_assembly.step",
       "role": "print_assembly",
-      "sha256": "9856563e2e95573452e0f2f0bf17e5c69186500f668ce638f39a0b4568862d2e",
+      "sha256": "9640d12778580b94acad9d48eab06a652bf25594e63a0eafc3577b75948d5d5c",
       "source": "build/no_floor_stand/b2_split.step"
     },
     {
-      "bytes": 45471658,
+      "bytes": 45471636,
       "path": "cad/shoulders_assembly.step",
       "role": "optional_shoulders_assembly",
-      "sha256": "a390b095a71d5679390fb67b5accea694ff2af9a5a93de028f06c3d5f6d05db4",
+      "sha256": "99eca40dc9c4f033c572796dce38132d1b699ade6481dd05d0a5ca11fab4364d",
       "source": "build/no_floor_stand/a_comp_assembled.step"
     },
     {
-      "bytes": 45408465,
+      "bytes": 45408443,
       "path": "cad/wings_assembly.step",
       "role": "optional_wings_assembly",
-      "sha256": "ee6b97545dd4a491033aa19020df5f77101d00bccf8c26a9be6b2b8c055af755",
+      "sha256": "dfe9549b041229ab11dc6ed4af7bead160730eded3e31482cf15a54374779f60",
       "source": "build/no_floor_stand/b1_assembled.step"
     },
     {
@@ -69,10 +69,10 @@
       "source": "build/no_floor_stand/baffle_variants_drivers.png"
     },
     {
-      "bytes": 336820,
+      "bytes": 335479,
       "path": "images/routing.png",
       "role": "generated_routing",
-      "sha256": "45c5144f875a08fbc3ab172ef4f9402b73f9d2c4ade293c7e1da03aebbaa3a21",
+      "sha256": "72abcc904e22d827401a0335ecd154241e53c34af1f941de476b792180f1e497",
       "source": "build/no_floor_stand/baffle_cable_routing_proud.png"
     },
     {

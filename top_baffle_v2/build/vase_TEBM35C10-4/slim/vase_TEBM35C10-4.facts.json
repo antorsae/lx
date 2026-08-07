@@ -85,13 +85,13 @@
         "volume_tolerance_mm3": 1e-05
       },
       "shared_main": {
-        "accumulated_3d_turn_deg": 213.3777978960017,
-        "accumulated_plan_turn_deg": 209.70141728038985,
+        "accumulated_3d_turn_deg": 213.37779789603835,
+        "accumulated_plan_turn_deg": 209.70141728038953,
         "carries": [
           "lower_t_pair",
           "upper_t_pair"
         ],
-        "centerline_length_mm": 140.54645699965553,
+        "centerline_length_mm": 140.54645699965556,
         "entry_xyz_mm": [
           -34.082604,
           313.202641,
@@ -107,14 +107,14 @@
           433.0,
           0.0
         ],
-        "minimum_3d_bend_radius_mm": 15.505026428750728,
+        "minimum_3d_bend_radius_mm": 15.505026428651453,
         "minimum_center_radius_about_um_mm": 46.24140068053098,
-        "minimum_plan_bend_radius_mm": 15.510003396357865,
+        "minimum_plan_bend_radius_mm": 15.51000339620077,
         "minimum_um_pilot_vertical_ligament_mm": 1.6500000000000021,
         "minimum_um_plan_ligament_mm": 1.9414006805309798,
         "neck_exit_arc_radius_mm": 26.99645994731181,
         "path_form": "G1 plan spline + UM-clearance arc + opposing exit arc; normal-section ruled loft follows the 3D centerline",
-        "plan_length_mm": 139.87426070165802,
+        "plan_length_mm": 139.87426070165805,
         "seam_b_crossing_xy_mm": [
           -33.3077,
           315.95
@@ -129,13 +129,13 @@
         "z_transition": "two endpoint-flat minimum-jerk quintics over normalized path length; C2 at entry, split, and outlet"
       },
       "upper_t_branch": {
-        "accumulated_3d_turn_deg": 130.18038449832105,
-        "accumulated_plan_turn_deg": 123.4659940586121,
-        "actual_minimum_lower_center_radius_mm": 25.497577232759834,
+        "accumulated_3d_turn_deg": 130.18038449849035,
+        "accumulated_plan_turn_deg": 123.46599405859352,
+        "actual_minimum_lower_center_radius_mm": 25.497577232759845,
         "carries": [
           "upper_t_pair"
         ],
-        "centerline_length_mm": 104.8913349334233,
+        "centerline_length_mm": 104.89133493342324,
         "clearance_guide_radius_mm": 25.5,
         "connects": [
           "shared_t_main",
@@ -147,10 +147,10 @@
           433.0,
           0.0
         ],
-        "minimum_3d_bend_radius_mm": 22.231405986340622,
-        "minimum_inner_ligament_mm": 1.734577232759837,
+        "minimum_3d_bend_radius_mm": 22.231405991237676,
+        "minimum_inner_ligament_mm": 1.7345772327598477,
         "minimum_lower_insert_vertical_ligament_mm": 9.5,
-        "minimum_plan_bend_radius_mm": 22.256858006994097,
+        "minimum_plan_bend_radius_mm": 22.25685801198994,
         "minimum_required_lower_center_radius_mm": 25.3,
         "nominal_lower_land_outer_ligament_mm": 5.2,
         "opposed_mount_face_inset_mm": 6.800000000000001,
@@ -206,19 +206,19 @@
   "files": {
     "brep": {
       "path": "vase_TEBM35C10-4.brep",
-      "sha256": "1826c9ad8a7bde83481d010637d92ac36695eb2d87c7e419e658403dfc11d78a"
+      "sha256": "6ac8a1312bee2a83e33ed9337cbb3155263d9b8d9470850456b0bf1282d22f00"
     },
     "print_sidecar": {
       "path": "vase_TEBM35C10-4.print.json",
-      "sha256": "7f4d32b99606fde5d218b177316bda5d935aec553126ac9911623dcdb28d0205"
+      "sha256": "5b69d922da7bf354433d50bcee34c270c486c1898abd44d7ccccd8bb0aa30002"
     },
     "step": {
       "path": "vase_TEBM35C10-4.step",
-      "sha256": "3ab4856ae2293962734c5442fa23fe6a52185626be0b4e295ffd81ddb841c5a2"
+      "sha256": "9041eb64068a9fc774f07bbcba680950402dc438b518a0567c7f2286576eaea9"
     },
     "stl": {
       "path": "vase_TEBM35C10-4.stl",
-      "sha256": "87b5fdbf4ebc91241410aac988dda9ec3c640c5b8a2878959acf16ec78b3edba"
+      "sha256": "3108e08602927d19d3d02f8f4b420cd47d5d4ad94298b76da3a5aed57aab6016"
     }
   },
   "generated_by": "export_vase_tebm35c10_4.py",
@@ -529,36 +529,36 @@
       ],
       "minimum": [
         -60.654000100000005,
-        315.9999998999998,
+        315.9999998999999,
         -6.800000100000001
       ],
       "size": [
         121.30800020000001,
-        210.2310001000002,
+        210.23100010000007,
         25.100000200000007
       ]
     },
     "solid_count": 1,
     "valid": true,
-    "volume_mm3": 151929.7471460246
+    "volume_mm3": 151929.68397518672
   },
   "print_geometry": {
     "bounds_size_mm": [
       121.30800020000001,
-      210.2310001000002,
+      210.23100010000007,
       25.100000200000032
     ],
     "mesh": {
-      "brep_volume_abs_error_mm3": 34.0759027134045,
-      "brep_volume_relative_error": 0.0002242872337610952,
+      "brep_volume_abs_error_mm3": 34.19486365409102,
+      "brep_volume_relative_error": 0.00022507032700519377,
       "collapsed_apex_facets_removed": 0,
       "component_error": 0,
       "component_signed_volumes": [
-        152155.20335552146,
-        -64.88298595086472,
-        -64.88301122353481,
-        -64.88304488160897,
-        -64.8830701543015
+        152155.02122374266,
+        -64.88298595086404,
+        -64.88301122353641,
+        -64.88304488160911,
+        -64.88307015430205
       ],
       "components": 5,
       "degenerate": 0,
@@ -571,9 +571,9 @@
       "open": 0,
       "outer_components": 1,
       "over_shared": 0,
-      "signed_volume": 151895.6712433112,
+      "signed_volume": 151895.48911153263,
       "transform_zero_coordinates_canonicalized": 11099,
-      "triangles": 81662,
+      "triangles": 81350,
       "winding": 0,
       "zero_volume": 0,
       "zero_volume_components": 0

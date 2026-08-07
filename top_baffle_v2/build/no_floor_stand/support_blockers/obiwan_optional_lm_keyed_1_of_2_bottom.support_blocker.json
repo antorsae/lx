@@ -6296,7 +6296,7 @@
       }
     ],
     "schema_version": 1,
-    "split_half": "bottom",
+    "split_half": "top",
     "split_seam_y_mm": 172.481
   },
   "kind": "bambu_support_blocker",

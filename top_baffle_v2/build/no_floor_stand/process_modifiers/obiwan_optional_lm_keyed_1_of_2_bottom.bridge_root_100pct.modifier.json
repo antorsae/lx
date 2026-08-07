@@ -22,7 +22,7 @@
     ]
   },
   "print_sidecar": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json",
-  "print_sidecar_sha256": "1010633a51cf8eb7444f0999c678c1997f41a87d50df438413a2e978d312c5a3",
+  "print_sidecar_sha256": "45cddf96105e9938c55c3682912bc6f7fa6607d23876aa0955c3cfe555f086e0",
   "process": {
     "sparse_infill_density": "100%",
     "sparse_infill_pattern": "zig-zag"

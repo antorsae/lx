@@ -415,7 +415,7 @@
     }
   ],
   "preview": "build/print_plates/obiwan/obiwan_ae_wings_split2_combo.layout.png",
-  "preview_sha256": "a4a7a7a21a851556c2c088756e7b0780d2178c46d3bf780a657da96b4849e6af",
+  "preview_sha256": "5308d942d990039ee893f76c9a55289c4bebf01e9f0fd25af028ffd3c48c7fdb",
   "schema_version": 1,
   "source_bundle_fingerprint": "9fbf5a5ed69e554422db0e7e11a6feac86c34e60fb00581c3ca44be34083c21e",
   "source_policy": "rigid Rz plus XY placement of four released front-face-down STLs; no CAD, BREP, support structure, or acoustic geometry regeneration",
