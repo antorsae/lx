@@ -819,7 +819,9 @@ def test_protocol3_new_and_legacy_jobs_resume_wait_and_fetch() -> None:
                         published.append(executor)
                         or SimpleNamespace(stdout="published\n")))
                 assert remote._fetch(FakeRemote(), metadata) == 0
-                assert published == [remote._job_executor_path(metadata)]
+                # _publish-cache, then the post-success _gc-remote retention
+                # pass — both dispatched through the job's pinned executor.
+                assert published == [remote._job_executor_path(metadata)] * 2
 
                 wait_fetches = []
                 remote._remote_status = lambda _remote, _metadata: {
@@ -2330,6 +2332,65 @@ def test_obiwan_live_brep_reuses_hash_bound_release_steps() -> None:
         f"its hash-bound STEP BREPs: {sorted(called_attributes & forbidden)}")
 
 
+def test_gc_retention_policy() -> None:
+    """Local GC drops old archives and dead jobs but keeps live state."""
+    with tempfile.TemporaryDirectory() as text:
+        state = Path(text) / ".remote-cad"
+        original_state = remote.LOCAL_STATE
+        remote.LOCAL_STATE = state
+        try:
+            jobs = state / "jobs"
+            jobs.mkdir(parents=True)
+
+            def build_job(name: str, *, exit_code: int | None,
+                          age_seconds: float, archive_bytes: int = 0) -> Path:
+                job = jobs / name
+                job.mkdir()
+                if exit_code is not None:
+                    _write(job / "exit_code", f"{exit_code}\n")
+                _write(job / "job.json", "{}")
+                if archive_bytes:
+                    (job / "artifacts.tar.gz").write_bytes(
+                        b"x" * archive_bytes)
+                stamp = time.time() - age_seconds
+                for member in [*job.rglob("*"), job]:
+                    os.utime(member, (stamp, stamp))
+                return job
+
+            old_success = build_job(
+                "old-success", exit_code=0,
+                age_seconds=10 * 86400.0, archive_bytes=64)
+            fresh_success = build_job(
+                "fresh-success", exit_code=0,
+                age_seconds=3600.0, archive_bytes=64)
+            old_failed = build_job(
+                "old-failed", exit_code=2, age_seconds=3 * 86400.0)
+            fresh_failed = build_job(
+                "fresh-failed", exit_code=2, age_seconds=3600.0)
+            dead_unknown = build_job(
+                "dead-unknown", exit_code=None, age_seconds=10 * 86400.0)
+            live_unknown = build_job(
+                "live-unknown", exit_code=None, age_seconds=3600.0)
+
+            summary = remote._gc_local_jobs(retain_days=7.0)
+
+            assert summary["removed_job_dirs"] == 2
+            assert summary["removed_bytes"] > 0
+            # Success: archive pruned after retention, metadata kept forever.
+            assert not (old_success / "artifacts.tar.gz").exists()
+            assert (old_success / "job.json").is_file()
+            assert (fresh_success / "artifacts.tar.gz").is_file()
+            # Failure: whole directory after one day; fresh failures kept.
+            assert not old_failed.exists()
+            assert fresh_failed.is_dir()
+            # No exit code: removed only after the retention window, so a
+            # live detached job is never collected from under its client.
+            assert not dead_unknown.exists()
+            assert live_unknown.is_dir()
+        finally:
+            remote.LOCAL_STATE = original_state
+
+
 def main() -> None:
     test_target_contract()
     test_default_remote_parallelism()
@@ -2379,6 +2440,7 @@ def main() -> None:
     test_local_checker_interpreter()
     test_local_memory_profile_has_no_host_free_floor()
     test_step_label_line_wrapping()
+    test_gc_retention_policy()
     print("all remote CAD transport checks passed")
 
 

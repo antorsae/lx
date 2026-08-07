@@ -690,6 +690,8 @@ def main(argv: list[str] | None = None) -> int:
                             for name in (
                                 "LX_CLEARANCE_SINGLE_CHECK",
                                 "LX_R6F_CASE_ID",
+                                "LX_OBIWAN_WING_SINGLE_CHECK",
+                                "LX_OBIWAN_WING_LIVE_SLUG",
                                 "LX_OBIWAN_CLOSURE_DENSE_STATE",
                                 "LX_OBIWAN_CLOSURE_DENSE_SHARD",
                                 "LX_STAND_FOOT",

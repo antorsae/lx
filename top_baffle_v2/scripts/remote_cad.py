@@ -260,17 +260,44 @@ def _source_identity(records: list[dict]) -> str:
     return _sha256_bytes(_canonical_json(identity))
 
 
+_SOURCE_DIGEST_CACHE: dict[str, tuple[int, int, str]] = {}
+
+
+def _cached_sha256_file(path: Path) -> tuple[int, str]:
+    """File digest behind an mtime/size-validated per-process cache.
+
+    The dispatcher recomputes the complete source identity at several
+    race-detection checkpoints per run.  Those checkpoints stay: any content
+    change bumps st_mtime_ns and invalidates the cached digest, so each
+    checkpoint still detects modification — unchanged files just stop being
+    re-read and re-hashed at every checkpoint.
+    """
+    info = path.stat()
+    key = path.as_posix()
+    cached = _SOURCE_DIGEST_CACHE.get(key)
+    if (cached is not None and cached[0] == info.st_size
+            and cached[1] == info.st_mtime_ns):
+        return info.st_size, cached[2]
+    digest = _sha256_file(path)
+    _SOURCE_DIGEST_CACHE[key] = (info.st_size, info.st_mtime_ns, digest)
+    return info.st_size, digest
+
+
 def _source_records(
         paths: tuple[Path, ...] | None = None, *,
         include_candidate_outputs: bool = False) -> list[dict]:
     """Hash the exact local inputs without constructing an archive."""
     paths = (_source_paths(include_candidate_outputs=include_candidate_outputs)
              if paths is None else paths)
-    return [{
-        "path": path.relative_to(REPO_ROOT).as_posix(),
-        "size": path.stat().st_size,
-        "sha256": _sha256_file(path),
-    } for path in paths]
+    records = []
+    for path in paths:
+        size, digest = _cached_sha256_file(path)
+        records.append({
+            "path": path.relative_to(REPO_ROOT).as_posix(),
+            "size": size,
+            "sha256": digest,
+        })
+    return records
 
 
 def _create_source_archive(
@@ -826,11 +853,26 @@ class Remote:
         self.rsync = shutil.which("rsync")
         if not self.ssh or not self.rsync:
             raise RuntimeError("remote CAD builds require ssh and rsync")
-        self.ssh_base = [
-            self.ssh, "-o", "BatchMode=yes", "-o", "ConnectTimeout=10",
+        # One multiplexed master connection per host: the status poll loop
+        # issues several ssh commands every few seconds, and without
+        # ControlMaster each one pays a full TCP+auth handshake.  The socket
+        # must live at a SHORT path — sun_path caps at ~104 bytes on macOS
+        # and ssh appends a 17-byte temporary suffix while binding — so it
+        # goes under ~/.ssh, not under the project state directory.  %C
+        # hashes host/port/user, keeping it collision-free.
+        control_dir = Path.home() / ".ssh"
+        try:
+            control_dir.mkdir(mode=0o700, exist_ok=True)
+        except OSError:
+            pass
+        self.ssh_options = [
+            "-o", "BatchMode=yes", "-o", "ConnectTimeout=10",
             "-o", "ServerAliveInterval=15", "-o", "ServerAliveCountMax=3",
-            host,
+            "-o", "ControlMaster=auto",
+            "-o", f"ControlPath={control_dir}/lx-cad-%C",
+            "-o", "ControlPersist=60",
         ]
+        self.ssh_base = [self.ssh, *self.ssh_options, host]
 
     def command(
         self, command: str, *, check: bool = True, text: bool = True,
@@ -843,10 +885,13 @@ class Remote:
             stderr=(subprocess.DEVNULL if quiet_stderr else None),
         )
 
+    def _rsync_transport(self) -> list[str]:
+        return ["-e", shlex.join([self.ssh, *self.ssh_options])]
+
     def upload(self, local: Path, remote_path: str) -> None:
         subprocess.run(
-            [self.rsync, "-a", "--partial", str(local),
-             f"{self.host}:{remote_path}"],
+            [self.rsync, "-a", "--partial", *self._rsync_transport(),
+             str(local), f"{self.host}:{remote_path}"],
             check=True,
         )
 
@@ -854,6 +899,7 @@ class Remote:
         local.parent.mkdir(parents=True, exist_ok=True)
         result = subprocess.run(
             [self.rsync, "-a", "--partial", "--append-verify",
+             *self._rsync_transport(),
              f"{self.host}:{remote_path}", str(local)],
             stdout=subprocess.DEVNULL,
             stderr=(None if required else subprocess.DEVNULL),
@@ -1078,6 +1124,77 @@ print(json.dumps({
     return measured
 
 
+def _probe_environment(
+        environment: Path, payload: dict, base_expected: dict) -> bool:
+    """Cheap cached-environment validation for dispatch time.
+
+    The full content measurement reads and hashes every site-packages file
+    (gigabyte-scale for this environment).  The worker still performs that
+    full measurement immediately before Make and again after it; at dispatch
+    time the cached marker only needs enough scrutiny to catch real cache
+    damage: structural drift, marker tampering, a swapped interpreter,
+    package (re)installs, and file additions or removals.  Set
+    LX_CAD_ENV_REVALIDATE=1 to force the full measurement here as well.
+    """
+    if any(payload.get(key) != value for key, value in base_expected.items()):
+        return False
+    consistency = {
+        key: value for key, value in payload.items()
+        if key not in {"attestation_sha256", "created_utc"}
+    }
+    if payload.get("attestation_sha256") != _sha256_bytes(
+            _canonical_json(consistency)):
+        return False
+    runtime = payload.get("runtime")
+    if not isinstance(runtime, dict):
+        return False
+    python = environment / "bin" / "python"
+    script = r'''
+import hashlib, importlib.metadata, json, platform, re, sys, sysconfig
+from pathlib import Path
+executable = Path(sys.executable).resolve()
+digest = hashlib.sha256()
+with executable.open("rb") as stream:
+    for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+        digest.update(chunk)
+package_files = 0
+roots = sorted({
+    Path(value).resolve() for value in (
+        sysconfig.get_path("purelib"), sysconfig.get_path("platlib"))
+    if value
+})
+for root in roots:
+    for path in root.rglob("*"):
+        if (not path.is_file() or path.suffix == ".pyc"
+                or "__pycache__" in path.parts):
+            continue
+        package_files += 1
+distributions = sorted(
+    f"{re.sub(r'[-_.]+', '-', (dist.metadata.get('Name') or '').strip()).lower()}"
+    f"=={dist.version}"
+    for dist in importlib.metadata.distributions()
+)
+print(json.dumps({
+    "system": platform.system(),
+    "machine": platform.machine(),
+    "python_version": sys.version,
+    "implementation": sys.implementation.name,
+    "soabi": sysconfig.get_config_var("SOABI"),
+    "platform_tag": sysconfig.get_platform(),
+    "python_executable_sha256": digest.hexdigest(),
+    "installed_package_file_count": package_files,
+    "installed_distributions": distributions,
+}, sort_keys=True))
+'''
+    try:
+        probed = json.loads(subprocess.check_output(
+            [str(python), "-c", script], text=True))
+    except (OSError, subprocess.CalledProcessError, ValueError):
+        return False
+    return all(
+        runtime.get(key) == value for key, value in probed.items())
+
+
 def _expected_environment(
         environment_sha256: str, requirements: Path) -> dict:
     return {
@@ -1178,13 +1295,19 @@ def _prepare_environment(args: argparse.Namespace) -> int:
                             r"[0-9a-f]{64}", str(provisioner["sha256"]))):
                     raise RuntimeError(
                         "cached environment provisioner record is malformed")
-                measured = _measure_environment(
-                    environment,
-                    {**base_expected, "provisioner": provisioner})
-                if (all(payload.get(key) == value
+                if getattr(args, "revalidate", False):
+                    measured = _measure_environment(
+                        environment,
+                        {**base_expected, "provisioner": provisioner})
+                    cache_valid = all(
+                        payload.get(key) == value
                         for key, value in measured.items())
-                        and measured["runtime"]["system"] == "Linux"
-                        and measured["runtime"]["machine"] == "x86_64"):
+                else:
+                    cache_valid = _probe_environment(
+                        environment, payload, base_expected)
+                if (cache_valid
+                        and payload["runtime"]["system"] == "Linux"
+                        and payload["runtime"]["machine"] == "x86_64"):
                     print(json.dumps(payload, sort_keys=True))
                     return 0
             except (OSError, subprocess.CalledProcessError, ValueError,
@@ -1688,6 +1811,284 @@ def _publish_cache_command(args: argparse.Namespace) -> int:
     return 0
 
 
+GC_DEFAULT_RETAIN_DAYS = 7.0
+GC_FAILED_RETAIN_DAYS = 1.0
+
+
+def _gc_retain_days() -> float:
+    raw = os.environ.get("LX_CAD_GC_DAYS")
+    if raw is None:
+        return GC_DEFAULT_RETAIN_DAYS
+    try:
+        value = float(raw)
+    except ValueError as exc:
+        raise ValueError(f"invalid LX_CAD_GC_DAYS: {raw!r}") from exc
+    if value < 1.0:
+        raise ValueError("LX_CAD_GC_DAYS must be at least 1")
+    return value
+
+
+def _rmtree_force(path: Path) -> None:
+    """Remove a tree even when members are read-only (0444/0555 sources)."""
+    def _onerror(func, target, _exc_info):
+        try:
+            os.chmod(target, 0o700)
+            parent = os.path.dirname(target)
+            if parent:
+                os.chmod(parent, 0o700)
+            func(target)
+        except OSError:
+            pass
+    shutil.rmtree(path, onerror=_onerror)
+
+
+def _tree_bytes(path: Path) -> int:
+    total = 0
+    for member in path.rglob("*"):
+        try:
+            if member.is_file() and not member.is_symlink():
+                total += member.stat().st_size
+        except OSError:
+            continue
+    return total
+
+
+def _gc_local_jobs(*, retain_days: float | None = None) -> dict:
+    """Prune local job history under .remote-cad/jobs.
+
+    Successful jobs keep their small metadata and logs indefinitely but drop
+    the large artifacts archive once older than the retention window.
+    Failed or interrupted jobs are removed entirely after one day.  Jobs
+    with no recorded exit code are removed after the retention window — a
+    genuinely live detached job refreshes its local status well within it.
+    """
+    retain = _gc_retain_days() if retain_days is None else retain_days
+    now = time.time()
+    summary = {"removed_job_dirs": 0, "removed_bytes": 0}
+    jobs_root = LOCAL_STATE / "jobs"
+    if not jobs_root.is_dir():
+        return summary
+    for job in sorted(jobs_root.iterdir()):
+        if not job.is_dir() or job.is_symlink():
+            continue
+        try:
+            age_days = (now - job.stat().st_mtime) / 86400.0
+            exit_path = job / "exit_code"
+            if exit_path.is_file():
+                code = exit_path.read_text(
+                    encoding="ascii", errors="replace").strip()
+                if code == "0":
+                    archive = job / "artifacts.tar.gz"
+                    if age_days > retain and archive.is_file():
+                        summary["removed_bytes"] += archive.stat().st_size
+                        archive.unlink()
+                elif age_days > GC_FAILED_RETAIN_DAYS:
+                    summary["removed_bytes"] += _tree_bytes(job)
+                    _rmtree_force(job)
+                    summary["removed_job_dirs"] += 1
+            elif age_days > retain:
+                summary["removed_bytes"] += _tree_bytes(job)
+                _rmtree_force(job)
+                summary["removed_job_dirs"] += 1
+        except OSError:
+            continue
+    return summary
+
+
+def _gc_remote_state(args: argparse.Namespace) -> int:
+    """Prune remote job, source, environment, and incoming state.
+
+    Runs on the remote host under a non-blocking exclusive build lock so it
+    can never race a live build; when a build holds the lock the collection
+    is skipped and reported.  The Make cache entries themselves are kept —
+    they are the warm-build value and there is one per environment identity —
+    but their crash-leftover .tmp/.previous siblings are collected.
+    """
+    root = Path(args.remote_root)
+    retain = float(args.retain_days)
+    now = time.time()
+    summary = {
+        "removed_jobs": 0, "removed_sources": 0,
+        "removed_environments": 0, "removed_incoming": 0,
+        "removed_cache_debris": 0,
+    }
+    lock_path = root / "locks" / "build.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open("a+b") as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            print(json.dumps({"skipped": "build lock busy"}, sort_keys=True))
+            return 0
+        try:
+            keep_sources: set[str] = set()
+            keep_environments: set[str] = set()
+            jobs_root = root / "jobs"
+            if jobs_root.is_dir():
+                for job in sorted(jobs_root.iterdir()):
+                    if not job.is_dir() or job.is_symlink():
+                        continue
+                    terminal = False
+                    try:
+                        status = _read_json(job / "status.json")
+                        terminal = status.get("state") in {
+                            "succeeded", "failed", "canceled"}
+                    except (OSError, ValueError, RuntimeError):
+                        terminal = (job / "exit_code").is_file()
+                    try:
+                        age_days = (now - job.stat().st_mtime) / 86400.0
+                    except OSError:
+                        continue
+                    if terminal and age_days > retain:
+                        _rmtree_force(job)
+                        summary["removed_jobs"] += 1
+                        continue
+                    try:
+                        metadata = _read_json(job / "job.json")
+                    except (OSError, ValueError, RuntimeError):
+                        continue
+                    source = metadata.get("source_sha256")
+                    if isinstance(source, str):
+                        keep_sources.add(source)
+                    env_hash = metadata.get("environment_sha256")
+                    if isinstance(env_hash, str):
+                        keep_environments.add(env_hash)
+            cache_root = root / "cache"
+            if cache_root.is_dir():
+                for entry in sorted(cache_root.iterdir()):
+                    name = entry.name
+                    if name.startswith("."):
+                        try:
+                            age_days = (
+                                now - entry.stat().st_mtime) / 86400.0
+                        except OSError:
+                            continue
+                        if age_days > GC_FAILED_RETAIN_DAYS:
+                            _rmtree_force(entry)
+                            summary["removed_cache_debris"] += 1
+                        continue
+                    if "-" in name:
+                        keep_environments.add(name.split("-", 1)[0])
+                    marker = entry / "cache.json"
+                    try:
+                        payload = _read_json(marker)
+                    except (OSError, ValueError, RuntimeError):
+                        continue
+                    source = payload.get("source_sha256")
+                    if isinstance(source, str):
+                        keep_sources.add(source)
+                    env_hash = payload.get("environment_sha256")
+                    if isinstance(env_hash, str):
+                        keep_environments.add(env_hash)
+            sources_root = root / "sources"
+            if sources_root.is_dir():
+                for source_dir in sorted(sources_root.iterdir()):
+                    if not source_dir.is_dir() or source_dir.is_symlink():
+                        continue
+                    if source_dir.name in keep_sources:
+                        continue
+                    try:
+                        age_days = (
+                            now - source_dir.stat().st_mtime) / 86400.0
+                    except OSError:
+                        continue
+                    if source_dir.name.startswith(".") or age_days > retain:
+                        _rmtree_force(source_dir)
+                        summary["removed_sources"] += 1
+            envs_root = root / "envs"
+            if envs_root.is_dir():
+                for env_dir in sorted(envs_root.iterdir()):
+                    if not env_dir.is_dir() or env_dir.is_symlink():
+                        continue
+                    if env_dir.name in keep_environments:
+                        continue
+                    try:
+                        age_days = (now - env_dir.stat().st_mtime) / 86400.0
+                    except OSError:
+                        continue
+                    if env_dir.name.startswith(".") or age_days > retain:
+                        _rmtree_force(env_dir)
+                        summary["removed_environments"] += 1
+            incoming_root = root / "incoming"
+            if incoming_root.is_dir():
+                for item in sorted(incoming_root.iterdir()):
+                    try:
+                        age_days = (now - item.stat().st_mtime) / 86400.0
+                    except OSError:
+                        continue
+                    if age_days > GC_FAILED_RETAIN_DAYS:
+                        if item.is_dir() and not item.is_symlink():
+                            _rmtree_force(item)
+                        else:
+                            item.unlink(missing_ok=True)
+                        summary["removed_incoming"] += 1
+        finally:
+            fcntl.flock(lock, fcntl.LOCK_UN)
+    print(json.dumps(summary, sort_keys=True))
+    return 0
+
+
+def _maybe_collect_garbage(remote: Remote, metadata: dict) -> None:
+    """Best-effort post-success retention pass; never fails the build."""
+    if os.environ.get("LX_CAD_GC_DISABLE") == "1":
+        return
+    try:
+        retain = _gc_retain_days()
+        local_summary = _gc_local_jobs(retain_days=retain)
+        result = _remote_python(
+            remote, _job_executor_path(metadata), "_gc-remote",
+            "--remote-root", metadata["remote_root"],
+            "--retain-days", str(retain),
+        )
+        remote_summary = result.stdout.strip().splitlines()
+        print(
+            "Retention: local "
+            f"{local_summary['removed_job_dirs']} job dirs / "
+            f"{local_summary['removed_bytes'] / 1e6:.0f} MB removed; "
+            f"remote {remote_summary[-1] if remote_summary else 'n/a'}")
+    except (OSError, subprocess.CalledProcessError, RuntimeError,
+            ValueError) as exc:
+        print(f"Warning: retention pass skipped: {exc}", file=sys.stderr)
+
+
+def _gc_command(args: argparse.Namespace) -> int:
+    retain = (
+        float(args.retain_days) if args.retain_days is not None
+        else _gc_retain_days())
+    local_summary = _gc_local_jobs(retain_days=retain)
+    print(json.dumps({"local": local_summary}, sort_keys=True))
+    if args.local_only:
+        return 0
+    host = os.environ.get("LX_CAD_REMOTE_HOST", DEFAULT_HOST)
+    configured_root = os.environ.get(
+        "LX_CAD_REMOTE_ROOT", DEFAULT_REMOTE_ROOT)
+    remote = Remote(host)
+    remote_root = _resolve_remote_root(remote, configured_root)
+    jobs_root = LOCAL_STATE / "jobs"
+    tool = None
+    if jobs_root.is_dir():
+        for job in sorted(jobs_root.iterdir(), reverse=True):
+            metadata_path = job / "job.json"
+            if not metadata_path.is_file():
+                continue
+            try:
+                metadata = _read_json(metadata_path)
+            except (OSError, ValueError, RuntimeError):
+                continue
+            if metadata.get("remote_root") == remote_root:
+                tool = _job_executor_path(metadata)
+                break
+    if tool is None:
+        print("No local job references this remote root; remote GC skipped.")
+        return 0
+    result = _remote_python(
+        remote, tool, "_gc-remote",
+        "--remote-root", remote_root, "--retain-days", str(retain),
+    )
+    print(result.stdout.strip())
+    return 0
+
+
 def _read_guard_profile_events(path: Path) -> list[dict]:
     if not path.is_file():
         return []
@@ -1724,8 +2125,12 @@ def _guard_profile_label(event: dict) -> str:
     if isinstance(context, dict):
         selector = (
             context.get("LX_R6F_CASE_ID")
-            or context.get("LX_CLEARANCE_SINGLE_CHECK"))
+            or context.get("LX_CLEARANCE_SINGLE_CHECK")
+            or context.get("LX_OBIWAN_WING_SINGLE_CHECK"))
         if selector:
+            slug = context.get("LX_OBIWAN_WING_LIVE_SLUG")
+            if slug:
+                return f"{script}:{selector}:slug={slug}"
             return f"{script}:{selector}"
         dense_state = context.get("LX_OBIWAN_CLOSURE_DENSE_STATE")
         dense_shard = context.get("LX_OBIWAN_CLOSURE_DENSE_SHARD")
@@ -2108,6 +2513,7 @@ def _execute_job(args: argparse.Namespace) -> int:
             for name in (
                 "LX_CAD_MEMORY_GUARDED", "LX_CAD_MEMORY_GUARD_PID",
                 "LX_CLEARANCE_SINGLE_CHECK", "LX_R6F_CASE_ID",
+                "LX_OBIWAN_WING_SINGLE_CHECK", "LX_OBIWAN_WING_LIVE_SLUG",
             ):
                 env.pop(name, None)
             cache = job / "cache"
@@ -3029,6 +3435,7 @@ def _fetch(remote: Remote, metadata: dict) -> int:
         f"verified/promoted {promoted} artifact files."
     )
     print(f"Performance profile: {local_dir / 'profile.json'}")
+    _maybe_collect_garbage(remote, metadata)
     return 0
 
 
@@ -3140,7 +3547,15 @@ def _run_remote(args: argparse.Namespace) -> int:
         for directory in ("incoming", "sources", "jobs", "envs", "locks", "cache"):
             remote.command(f"mkdir -p {shlex.quote(remote_root + '/' + directory)}")
         remote_archive = f"{remote_root}/incoming/{archive.name}"
-        remote.upload(archive, remote_archive)
+        # A content-addressed source tree that already exists remotely does
+        # not need the archive again; _install-source re-verifies the cached
+        # tree either way and fails the job on any mismatch.
+        cached_source = remote.command(
+            "test -d "
+            + shlex.quote(f"{remote_root}/sources/{source_hash}")
+            + " && echo cached || echo missing").stdout.strip()
+        if cached_source != "cached":
+            remote.upload(archive, remote_archive)
         _remote_python(
             remote, tool, "_install-source", "--remote-root", remote_root,
             "--archive", remote_archive, "--expected", source_hash,
@@ -3153,6 +3568,8 @@ def _run_remote(args: argparse.Namespace) -> int:
             remote, tool, "_prepare-environment", "--remote-root", remote_root,
             "--environment-hash", environment_hash,
             "--requirements", requirements,
+            *(["--revalidate"]
+              if os.environ.get("LX_CAD_ENV_REVALIDATE") == "1" else []),
         )
         attestation_lines = [
             line for line in environment_result.stdout.splitlines()
@@ -3443,6 +3860,15 @@ def _parser() -> argparse.ArgumentParser:
     status = commands.add_parser("status", help="show state and recent remote log")
     status.add_argument("job_id")
     status.set_defaults(function=_status)
+    gc = commands.add_parser(
+        "gc", help="prune old job/source/environment state (local + remote)")
+    gc.add_argument("--retain-days", default=None)
+    gc.add_argument("--local-only", action="store_true")
+    gc.set_defaults(function=_gc_command)
+    gc_remote = commands.add_parser("_gc-remote")
+    gc_remote.add_argument("--remote-root", required=True)
+    gc_remote.add_argument("--retain-days", required=True)
+    gc_remote.set_defaults(function=_gc_remote_state)
     cancel = commands.add_parser("cancel", help="stop a remote job's cgroup")
     cancel.add_argument("job_id")
     cancel.set_defaults(function=_cancel)
@@ -3463,6 +3889,7 @@ def _parser() -> argparse.ArgumentParser:
     environment.add_argument("--remote-root", required=True)
     environment.add_argument("--environment-hash", required=True)
     environment.add_argument("--requirements", required=True)
+    environment.add_argument("--revalidate", action="store_true")
     environment.set_defaults(function=_prepare_environment)
     job = commands.add_parser("_prepare-job")
     job.add_argument("--remote-root", required=True)
