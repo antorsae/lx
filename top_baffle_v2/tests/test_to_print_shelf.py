@@ -76,11 +76,17 @@ def main() -> int:
                       for line in fatal_lines),
                   f"unexpected remote graph error for {target}: "
                   f"{run.stdout[-2000:]}")
+            shelf_manifest = (ROOT / "to_print/release_manifest.json").resolve()
             new_missing = []
             for raw in missing_paths:
                 path = Path(raw).resolve()
-                check(path.name == "captive_magnet_slice_audit.json"
-                      and path.is_relative_to(allowed_root),
+                # The shelf's release manifest is excluded from remote
+                # snapshots (a local shelf refresh rewrites it and must not
+                # bust the remote make cache), so a remote worker tree
+                # legitimately lacks it.
+                check((path.name == "captive_magnet_slice_audit.json"
+                       and path.is_relative_to(allowed_root))
+                      or path == shelf_manifest,
                       f"remote graph has an unexpected missing input: {raw}")
                 if raw not in ignored_missing:
                     new_missing.append(raw)
