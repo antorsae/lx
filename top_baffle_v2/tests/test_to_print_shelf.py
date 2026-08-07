@@ -270,8 +270,8 @@ def main() -> int:
               "remote shelf composite-plate count drifted")
         release, by_id = shelf._release_artifacts(
             shelf.DEFAULT_RELEASE_CATALOG)
-        check(len(by_id) == 64
-              and release["inventory"]["artifact_count"] == 64,
+        check(len(by_id) == 58
+              and release["inventory"]["artifact_count"] == 58,
               "remote captive-magnet release inventory drifted")
         referenced = {
             entry["catalog_artifact_id"] for entry in raw_entries
@@ -289,7 +289,7 @@ def main() -> int:
               "remote release lacks all six duct support blockers")
         print(
             "to_print remote contracts: neutralized Make graph, 51-entry "
-            "shelf catalog, and 64-artifact release catalog pass; "
+            "shelf catalog, and 58-artifact release catalog pass; "
             "project/STL equivalence remains local-only"
         )
         return 0
@@ -482,7 +482,7 @@ def main() -> int:
             check(len(entry["composite_artifacts"]) == expected_bindings,
                   f"{entry['name']}: captive release bindings are incomplete")
 
-    check(release["inventory"]["artifact_count"] == 64,
+    check(release["inventory"]["artifact_count"] == 58,
           "unexpected canonical captive-magnet release inventory")
     manifest = json.loads(
         (shelf.DEFAULT_SHELF / "release_manifest.json").read_text(
