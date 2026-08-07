@@ -5,19 +5,19 @@
 This project adapts the LX521.4 top baffle for a face-to-face ND25FW-4
 tweeter arrangement and makes the oversized baffle printable as registered
 pieces. It also explores two reductions in rear material: a front-flush slim
-R6P plate and the more radical Obi-Wan/R6F carrier system. Optional perimeter
+proud-routing plate and the more radical Obi-Wan carrier system. Optional perimeter
 pieces are meant to make acoustic-boundary experiments repeatable without
 reprinting the driver carriers.
 
 The repository is not a generic collection of every historical geometry idea.
 Its human-facing inventory is three product families:
 
-1. **Stock R6P:** B2, nominally 18.3 mm deep, with mutually exclusive
+1. **Stock:** B2, nominally 18.3 mm deep, with mutually exclusive
    A-comp shoulders or B1 wings.
-2. **Slim R6P:** V1L lower/mids plus the V1 top. The acoustic field is
+2. **Slim:** V1L lower/mids plus the V1 top. The acoustic field is
    11.5 mm deep and front-flush at z=18.3; the bottom structural strip remains
    full-depth. Use only the matching thin shoulder/wing set.
-3. **Obi-Wan R6F:** mandatory LM and UM collars, optional tweeter crescent, and
+3. **Obi-Wan:** mandatory LM and UM collars, optional tweeter crescent, and
    flat or graded magnetic acoustic wings. Floor and stock-bridge/no-floor mounting
    states share the wing-contact outline but differ behind it.
 

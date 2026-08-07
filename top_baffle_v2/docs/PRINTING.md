@@ -3,7 +3,7 @@
 Settings and engineering numbers for printing the piece sets in
 Bambu PLA Tough+, PLA Basic, PLA Lite, PLA Matte, or PLA Silk+ on a 0.4 mm
 nozzle, for both `build/floor_stand/` and
-`build/no_floor_stand/`. R6P proud-family pieces and the R6F Obi-Wan collars are
+`build/no_floor_stand/`. Proud-family pieces and the Obi-Wan collars are
 covered separately where their geometry diverges. Everything here
 combines manufacturer data, published reference tests, conservative
 assumptions and analytical screens. None substitutes for owner-specific
@@ -21,7 +21,7 @@ The baffle carries ~3.2 kg of drivers: W22 ~2.6 kg on six inserts,
 10F 0.43 kg on four, and the ND25 pair ~0.2 kg clamped. Static load per
 W22 driver insert is ~5 N against an assumed 600 N conservative pull-out
 capacity for an M5 x 5.8 x O6.3 heat-set in PLA (published reference tests:
-900-1400 N), so the analytic driver-mount margin is >100x. The R6F
+900-1400 N), so the analytic driver-mount margin is >100x. The Obi-Wan
 bridge-web load case is treated explicitly below. PLA still relaxes
 30-50 % of bolt preload over the first days.
 
@@ -30,14 +30,14 @@ bridge-web load case is treated explicitly below. PLA still relaxes
 | W22 | M5 x 14 pan + flat washer into M5 x 5.8 x O6.3 heat-set (unchanged 6.8 mm total bore: O6.5 x 2.0 entry, then O6.4) | 0.8–1.0 N·m | Stock, Slim and Obi-Wan share the 0/60/120/180/240/300° clock; wave washers; re-torque at 24 h and ~2 weeks |
 | W22 on **Obi-Wan** | **M5 x 12** pan + flat washer into carrier heat-sets | 0.8–1.0 N·m | all six 0/60/120/180/240/300° sites are ordinary blind carrier inserts in both states; each keeps its 6.2 mm total depth and uses an O6.5 x 2.0 entry followed by O6.4; floor mode has no secondary support inserts or long through-screws |
 | 10F | M3 x 8 into M3 x 3 x O5 heat-set (bore O4.6 x 4.0) | 0.30–0.40 N·m | short engagement — do not overdrive |
-| R6P bridge (no-stand) | M5 machine screw from the bridge (behind) into M5 x 5.8 x O6.3 heat-set (unchanged 6.8 mm total: O6.5 x 2.0 entry, then O6.4, from the REAR face) | hand-snug | 4 off; same insert as the W22, set from the rear. Stock/Slim use Obi-Wan's exact three-port D20 cable interface relative to these inserts: LM `(-0.35,64.76)`, shared T `(-4.75,55.91)`, UM `(3.17,55.91)`. |
-| R6P mid-right-to-vase seam | **M3 x 20 socket-cap**, no washer, through a Ø3.4 radial passage into one M3 x 3 heat-set in a blind Ø4.6 x 4.0 vase receiver | hand-snug | axis `(x,z)=(0,12.55)`, +Y from the LM cutout. Ø6.2 x 3.4 head pocket clears a normal D5.5 x H3.0 socket head and hides it completely after W22 installation. Nominal insert engagement 3.381 mm; tip-to-floor margin 0.619 mm. Do not substitute M3 x 25. |
-| R6F LM-to-UM half-laps | 2 x rear-driven M3 screws through the LM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the UM's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±32, y=315.770; the closure-web/base teardrops remain nominal Ø9, while the complete Z-owned cylindrical functional bosses are locally Ø9.8. The UM receivers retain a 1.9 mm acoustic-front floor and the Z-halves retain a 0.20 mm axial gap. Select screw length for full insert engagement without bottoming. No washer, nut, or front bolt head belongs to this interface. |
-| R6F fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening unchanged 6.8 mm-total bores with Ø6.5 x 2.0 entries followed by Ø6.4 | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders; LM/T/UM entries packed inside the D20 support opening as LM above, T lower-left, UM lower-right at z=5.3; solid acoustic front; immutable 40 × 50 pattern; no geometry behind the existing LM pads; magnets receive zero load credit |
-| R6F optional LM keyed seam | two symmetric Ø1.60 cylindrical pins at x=±109.187/z=14.30, normal to the world-Y=172.481 mm zero-gap seam and pointing +Y; 2.40 mm engagement plus 0.50 mm root overlap. Right blind socket Ø1.84 round; left blind socket 1.96 × 1.84 mm X-relieved; both 2.65 mm deep with 0.12 mm radial and 0.25 mm end clearance. Small exterior lands outside the LM recess preserve ≥0.50 mm radial/end walls, ≥0.05 mm recess plan clearance and ≥0.13 mm conservative W22-flange clearance. | registration only | mutually exclusive replacement print form for the canonical monolithic LM. Round+relieved sockets tolerate ±0.30 mm relative pitch error; the lands reach R114.4036, which is 1.4036 mm beyond structural R113.0 but only 0.6036 mm beyond the finalized R113.8 visible fairing. They add no extra screw or standalone retention/load credit. Print and assemble front-face-down on a flat datum, moving the top straight along -Y; the installed LM driver flange and its normal fasteners are the structural splice. |
-| R6F UM-to-tweeter half-laps | 2 x rear-driven M3 screws through the UM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the crescent's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±24, y=421.5; nominal Ø9 closure-base teardrops, complete local Ø9.8 Z-owned functional bosses, 0.20 mm axial gap, complete 360° receiver walls, and 1.9 mm acoustic-front floors. Install both inserts in the individual crescent before assembly; no front bolt head or cross-owner receiver wall. |
-| R6F alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and the lower pair at cubic parameter `u=0.50` on the shared curved shoulder. The right visible datum is `(x,y,z)=(45.285011,89.190370,15.10)` with outward normal `(0.706451,-0.707762)`; the left is its exact X mirror. UM keeps its 50.5°/129.5° axes; all six stations share source Z=15.10. Every station has 0.45 mm axial skins and a 45° support-free roof. The R113.0/R51.7 structural rings have continuous exposed R113.8/R52.5 side fairings, clipped only inside the existing LM--UM and T--UM cusp/service regions; the LM--UM stop preserves the 0.40 mm gap. Ring cavity datums sit at structural radius +0.65 mm; ring and shoulder cavity datums are 0.15 mm beneath their exposed surfaces. There is no magnet-local backing, boss, relief, rear cap, flat, or visible cue: the magnet-free exterior is immutable. Magnets are fully buried at the manifest pause, never glued or externally accessible. Flat/graded have matching captive LM-lower, LM-upper, and UM receivers. Their mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm allowance is a solid standoff. Nominal paired magnet-face separation is 1.10 mm at LM-lower, LM-upper, and UM. Alignment/anti-rattle only: **zero structural load credit**. |
-| Tweeter pair | M4 through-bolts + nyloc + wave washer; length = septum + faceplates (stock 18.3 septum → ~M4 x 35; V1/R6F crescent → ~M4 x 30 — verify stacked) | snug, ~0.5 N·m | clamps the 4.0 mm crescent seat; recheck after a week |
+| Proud bridge (no-stand) | M5 machine screw from the bridge (behind) into M5 x 5.8 x O6.3 heat-set (unchanged 6.8 mm total: O6.5 x 2.0 entry, then O6.4, from the REAR face) | hand-snug | 4 off; same insert as the W22, set from the rear. Stock/Slim use Obi-Wan's exact three-port D20 cable interface relative to these inserts: LM `(-0.35,64.76)`, shared T `(-4.75,55.91)`, UM `(3.17,55.91)`. |
+| Proud mid-right-to-vase seam | **M3 x 20 socket-cap**, no washer, through a Ø3.4 radial passage into one M3 x 3 heat-set in a blind Ø4.6 x 4.0 vase receiver | hand-snug | axis `(x,z)=(0,12.55)`, +Y from the LM cutout. Ø6.2 x 3.4 head pocket clears a normal D5.5 x H3.0 socket head and hides it completely after W22 installation. Nominal insert engagement 3.381 mm; tip-to-floor margin 0.619 mm. Do not substitute M3 x 25. |
+| Obi-Wan LM-to-UM half-laps | 2 x rear-driven M3 screws through the LM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the UM's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±32, y=315.770; the closure-web/base teardrops remain nominal Ø9, while the complete Z-owned cylindrical functional bosses are locally Ø9.8. The UM receivers retain a 1.9 mm acoustic-front floor and the Z-halves retain a 0.20 mm axial gap. Select screw length for full insert engagement without bottoming. No washer, nut, or front bolt head belongs to this interface. |
+| Obi-Wan fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening unchanged 6.8 mm-total bores with Ø6.5 x 2.0 entries followed by Ø6.4 | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders; LM/T/UM entries packed inside the D20 support opening as LM above, T lower-left, UM lower-right at z=5.3; solid acoustic front; immutable 40 × 50 pattern; no geometry behind the existing LM pads; magnets receive zero load credit |
+| Obi-Wan optional LM keyed seam | two symmetric Ø1.60 cylindrical pins at x=±109.187/z=14.30, normal to the world-Y=172.481 mm zero-gap seam and pointing +Y; 2.40 mm engagement plus 0.50 mm root overlap. Right blind socket Ø1.84 round; left blind socket 1.96 × 1.84 mm X-relieved; both 2.65 mm deep with 0.12 mm radial and 0.25 mm end clearance. Small exterior lands outside the LM recess preserve ≥0.50 mm radial/end walls, ≥0.05 mm recess plan clearance and ≥0.13 mm conservative W22-flange clearance. | registration only | mutually exclusive replacement print form for the canonical monolithic LM. Round+relieved sockets tolerate ±0.30 mm relative pitch error; the lands reach R114.4036, which is 1.4036 mm beyond structural R113.0 but only 0.6036 mm beyond the finalized R113.8 visible fairing. They add no extra screw or standalone retention/load credit. Print and assemble front-face-down on a flat datum, moving the top straight along -Y; the installed LM driver flange and its normal fasteners are the structural splice. |
+| Obi-Wan UM-to-tweeter half-laps | 2 x rear-driven M3 screws through the UM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the crescent's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±24, y=421.5; nominal Ø9 closure-base teardrops, complete local Ø9.8 Z-owned functional bosses, 0.20 mm axial gap, complete 360° receiver walls, and 1.9 mm acoustic-front floors. Install both inserts in the individual crescent before assembly; no front bolt head or cross-owner receiver wall. |
+| Obi-Wan alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and the lower pair at cubic parameter `u=0.50` on the shared curved shoulder. The right visible datum is `(x,y,z)=(45.285011,89.190370,15.10)` with outward normal `(0.706451,-0.707762)`; the left is its exact X mirror. UM keeps its 50.5°/129.5° axes; all six stations share source Z=15.10. Every station has 0.45 mm axial skins and a 45° support-free roof. The R113.0/R51.7 structural rings have continuous exposed R113.8/R52.5 side fairings, clipped only inside the existing LM--UM and T--UM cusp/service regions; the LM--UM stop preserves the 0.40 mm gap. Ring cavity datums sit at structural radius +0.65 mm; ring and shoulder cavity datums are 0.15 mm beneath their exposed surfaces. There is no magnet-local backing, boss, relief, rear cap, flat, or visible cue: the magnet-free exterior is immutable. Magnets are fully buried at the manifest pause, never glued or externally accessible. Flat/graded have matching captive LM-lower, LM-upper, and UM receivers. Their mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm allowance is a solid standoff. Nominal paired magnet-face separation is 1.10 mm at LM-lower, LM-upper, and UM. Alignment/anti-rattle only: **zero structural load credit**. |
+| Tweeter pair | M4 through-bolts + nyloc + wave washer; length = septum + faceplates (stock 18.3 septum → ~M4 x 35; V1/Obi-Wan crescent → ~M4 x 30 — verify stacked) | snug, ~0.5 N·m | clamps the 4.0 mm crescent seat; recheck after a week |
 | Optional TEBM35C10-4 BMR pair | 8 × M2 screws into M2 × 4 × Ø3.2 heat-set inserts | hand-snug; establish on a coupon | lower BMR mounts from the acoustic front and upper BMR from the rear; each pocket has a 1.2 mm blind opposite wall. Use the Stock BMR vase only with Stock receivers and the Slim BMR vase only with Slim/V1L receivers. Both print front-face-down with supports explicitly disabled; four same-height captive side magnets share one audited insertion pause. |
 
 **Installing the inserts:** soldering iron at 230–250 °C, press
@@ -49,7 +49,7 @@ crescent. Every Ø4.6 x 4.0 receiver must remain fully surrounded by its local
 Ø9.8 functional boss and retain its 1.9 mm solid front floor; reject any
 insert that cracks, laterally opens, moves, or marks the acoustic face.
 
-### R6F structural screens
+### Obi-Wan structural screens
 
 The fused bridge web and four-hole group use a conservative **4.0 kg**
 installed mass, y=230 mm center of mass, and 70 mm rear offset.
@@ -184,13 +184,13 @@ safety restraint.
 
 ## Orientation — the setting that matters most
 
-**R6P:** print every baffle piece front face down. The front plane is
+**Proud family:** print every baffle piece front face down. The front plane is
 the reliable datum while V1/V1L sculpt or step the rear. For the
 floor-stand `piece_bottom` (223.8 × 125 × 168.3), front-down leaves the
 150 mm foot rising as a self-standing wall. Smooth/satin PEI gives a
 clean front; textured PEI gives uniform grain.
 
-**R6F:** every released printable baffle/acoustic part also prints
+**Obi-Wan:** every released printable baffle/acoustic part also prints
 front-face-down. This includes the floor/no-floor monolithic LM, both optional
 keyed LM halves, the UM carrier, tweeter crescent, and flat/graded segments. Only an
 in-plane XY rotation about the bed normal may be used; the former 45° X tilt
@@ -304,9 +304,9 @@ reuse a 0.20-mm pause height or derive one by scaling.
   footprint contact within the 0.52 mm connectivity cap—not as disconnected
   arcs or a full ring plus a stray path.
   Top/bottom **6/5** layers; *Ensure vertical shell thickness: All*.
-* **Infill:** gyroid, **30 %** for R6P mids/vase and the R6F collars,
-  **40 % for the R6P piece_bottom in both stand states** (foot standing
-  moment ~8 N·m, or bridge bolts), and **40 % for the R6F fused bridge
+* **Infill:** gyroid, **30 %** for proud mids/vase and the Obi-Wan collars,
+  **40 % for the proud piece_bottom in both stand states** (foot standing
+  moment ~8 N·m, or bridge bolts), and **40 % for the Obi-Wan fused bridge
   web and tweeter crescent/direct joint ears**. For the no-floor Obi-Wan
   `01a`, use eight walls and a **100% local-solid modifier** through the
   complete W64 stem/root; do not depend on nominal infill through the root or around
@@ -335,7 +335,7 @@ reuse a 0.20-mm pause height or derive one by scaling.
   saved `TINMORRY PETG-GF Profile @BBL P2S` values: 260 °C nozzle, 80 °C
   textured bed, 0.93 flow ratio, and 12 mm³/s maximum volumetric speed. Do
   not copy this material/profile to flat/graded wings or shoulders.
-* **Dimensional fits:** R6P regular through-thickness dovetails use 0.05 mm
+* **Dimensional fits:** proud regular through-thickness dovetails use 0.05 mm
   in-plan female clearance; tune compensation until coupon 2 slides snugly
   through coupon 1 without forcing the seam open. Insert bores
   are nominal. Use *Precise wall: on*, **elephant-foot compensation
@@ -422,7 +422,7 @@ large parts:
 3. `lx521_coupon_3_fish_entry.stl` — no-foot entry cluster and Ø6.8
    tweeter-pair merge.
 4. `lx521_coupon_4_um_outlet_proud.stl` — the real B2 outline and the
-   complete stock B2/V1 R6P Ø8.2/G1/R14 rear outlet at
+   complete stock B2/V1 proud Ø8.2/G1/R14 rear outlet at
    (33.446, 301.492). It does **not** represent the keyed V1L outlet.
 5. `lx521_coupon_5_fish_ts_dive.stl` — proud-family tweeter notch
    passage.
@@ -439,7 +439,7 @@ large parts:
    238/328-degree mounting screws and their 283-degree terminal
    midpoint. Place it against the physical MU and record where the
    actual tabs, boots, and carrier land.
-12. `lx521_coupon_12_obiwan_closed_bore_bump.stl` — state-specific R6F
+12. `lx521_coupon_12_obiwan_closed_bore_bump.stl` — state-specific Obi-Wan
     LM-collar sector around the 300° axis, including the enclosed tunnel and
     full-width solid saddle from conduit roof to the ordinary blind insert
     floor; there is no trapped hollow and no cable is exposed.
@@ -447,7 +447,7 @@ large parts:
 Before any captive-magnet production run, also print and slice the dedicated
 reference in `coupons/obiwan_ae_embed/`. Its source and README define the proven
 cradle/skin/roof implementation and the common 5.96 mm regression marker.
-R6P uses a short curved split grommet that follows the final R14 bore;
+The proud family uses a short curved split grommet that follows the final R14 bore;
 print `stock_um_grommet_half_{a,b}.stl` and test it with
 coupon 4. That grommet fits B2/C7/V0/V1 only; do not fit it to V1L.
 V1L has no separate coupon in this set: its printed `mid_right` is the
@@ -462,7 +462,7 @@ Obi-Wan has no printed grommet or tunnel clip. Any selected external cable
 retention remains **physical-fit pending** and must clear the buried-route
 mouth, free cable, driver and Faston service envelopes with the measured UM cable.
 
-* **R6P internal voids:** the cable ducts (Ø3.8–9.3, arched ceilings)
+* **Proud internal voids:** the cable ducts (Ø3.8–9.3, arched ceilings)
   self-support on the flat pieces. For the floor-stand bottom, preview
   the connector channel's ~38 mm ceiling. The generated projects keep support
   disabled; they are rejected if any support feature is emitted. If a future
@@ -483,7 +483,7 @@ mouth, free cable, driver and Faston service envelopes with the measured UM cabl
   5.4±0.2 vs 4.0 measured), so re-measure both physical flanges. The
   mirrored Ø6 tweeter tunnel runs in the rear web and does not
   reduce the flush seating surface.
-* **R6F routes:** preview the physical Ø7.0 UM cable inside its Ø8.2
+* **Obi-Wan routes:** preview the physical Ø7.0 UM cable inside its Ø8.2
   LM-owned passage and the Ø5.2 T cable inside its Ø6.0 LM/UM-owned passage
   at fine layer resolution. The UM cable must run free behind the UM carrier
   with no printed rear duct; T must run free behind the tweeter crescent with
@@ -508,7 +508,7 @@ mouth, free cable, driver and Faston service envelopes with the measured UM cabl
   remains solid. Any support strand
   left in a tunnel reduces cable space. Measure the actual cables before
   relying on a retainer or strain relief.
-* **R6F terminal gate:** do not treat the STEP proxy as hardware CAD.
+* **Obi-Wan terminal gate:** do not treat the STEP proxy as hardware CAD.
   Use coupon 9 and the real MU driver to verify the 283-degree clock,
   tab/boot volume, polarity order, and real withdrawal direction before
   printing the UM collar and any nearby add-ons. There is no printed
@@ -533,9 +533,9 @@ mouth, free cable, driver and Faston service envelopes with the measured UM cabl
   Complete `obiwan_physical_qualification.md` against the real hardware and
   structural proof loads for each stand state; the pending record is
   checksum-bound into generated candidate manifests but authorizes no release.
-* **R6P seam:** align it on the outline's rear/hidden edges —
+* **Proud seam:** align it on the outline's rear/hidden edges —
   keep it off the V0/C7 knife bevels and the front perimeter.
-* **R6P floor-stand foot junction (required):** the foot meets the plate
+* **Proud floor-stand foot junction (required):** the foot meets the plate
   at a SHARP 90° inside corner with no gusset (the duct elbows own the
   corner interior), and printed front-down the joint loads layer
   adhesion in tension with a x2-3 stress concentration. At 30-40 %
@@ -568,7 +568,7 @@ exception and intentionally have no `.print.json` sidecars.
 
 ## Cable fishing protocol
 
-### R6P proud family
+### Proud family
 
 1. **Dry-fish each piece immediately after printing.** Every duct is
    open at a seam, so a collapsed segment should cost one piece rather
@@ -605,9 +605,9 @@ exception and intentionally have no `.print.json` sidecars.
    tail is wholly in `piece_mid_right`, so no special fishing or
    modification of the top/vase is required.
 
-### R6F Obi-Wan
+### Obi-Wan
 
-R6F has a UM passage buried only in LM, a T passage buried in LM/UM, free
+Obi-Wan has a UM passage buried only in LM, a T passage buried in LM/UM, free
 rear spans behind UM and the tweeter crescent, and a separate un-ducted LM
 lead. Rehearse every cable before the drivers or optional modules hide the
 working area:
@@ -664,7 +664,7 @@ connector or revise the service geometry.
 
 ## Assembly notes that interact with the material
 
-### R6P proud family
+### Proud family
 
 * Glue the seams with 5–30 min **epoxy** (open time to seat the
   dovetail keys). Magnets are not glued: they must already be captive under
@@ -681,7 +681,7 @@ connector or revise the service geometry.
   removal stroke, cable, and dedicated V1L split grommet remain
   mandatory release checks even when the analytic route checks pass.
 
-### R6F Obi-Wan barebone
+### Obi-Wan barebone
 
 Before hardware assembly, inspect
 `obiwan_split.step` for the mandatory core,
@@ -798,7 +798,7 @@ pause rows. No monolith pause is synthesized.
    one-at-a-time 0/3/6/9/12 mm review state. Record the physical release
    stroke: the modeled 12 mm endpoint has zero positive overtravel beyond
    the provisional exposed tab and does not itself prove disengagement.
-7. Follow the R6F cable-fishing protocol above. Confirm every covered
+7. Follow the Obi-Wan cable-fishing protocol above. Confirm every covered
    LM-pad bump, the physical T-over-UM crown crossing, and the covered
    328°/58° T-route bumps follow the modeled smooth curves without a kink.
    Confirm the UM span is free behind the UM carrier and the T span is free
@@ -812,7 +812,7 @@ pause rows. No monolith pause is synthesized.
    carrier/web-or-integral-stand/insert/fastener system with a dummy 4.0 kg mass through the
    sustained-1g, 3g, and 5g cases in the governing normal and
    rear-moment directions. Follow the documentation and rejection
-   criteria in “R6F structural screens”; magnets receive no credit.
+   criteria in “Obi-Wan structural screens”; magnets receive no credit.
    For floor mode, also complete the 2×/24 h/35 °C proof and the
    1.5×/≥168 h creep gate, and record the installed anti-tip anchor/tether.
    For the optional LM split, install the representative LM driver or an
@@ -831,12 +831,12 @@ pause rows. No monolith pause is synthesized.
 These constraints moved here from the project README during the product-first restructure. The per-product geometry they refer to lives in [`stock.md`](stock.md), [`slim.md`](slim.md), and [`obiwan.md`](obiwan.md).
 
 - Run the applicable coupons from the list above before committing a full print.
-- R6P baffle pieces print front-face-down. Support-disabled projects must emit
+- Proud baffle pieces print front-face-down. Support-disabled projects must emit
   no support features; every support-enabled Obi-Wan keyed LM half and UM
   carrier embeds its generated duct blocker and must pass the final
   support/duct collision gate. A Bambu `floating cantilever` warning blocks
   release.
-- The canonical floor R6F LM with its integral stand and the no-floor monolith
+- The canonical floor Obi-Wan LM with its integral stand and the no-floor monolith
   are not P2S-printable at their approximately 236.41 x 313.75 mm front-down
   footprint. On a verified larger-format machine, print them front-face-down
   and keep support out of buried route mouths, connector cavities, and

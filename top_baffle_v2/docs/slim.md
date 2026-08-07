@@ -1,9 +1,15 @@
-# Slim R6P — 11.5 mm front-flush product
+# Slim — 11.5 mm front-flush product
 
 Slim is the Stock outline with the acoustic field thinned to 11.5 mm: the V1L
 bottom and mids paired with the V1 vase, sharing one front plane at z=18.3 and
 one rear plane at z=6.8, with the bottom structural strip left at full depth.
 Catalog entry: [`artifacts/slim/`](../artifacts/slim/).
+
+![Slim with the stock bridge](../images/generated/iso/slim_no_floor_stand.png)
+![Slim with the floor stand](../images/generated/iso/slim_floor_stand.png)
+
+Both renders share one camera and one declared frame with every other product
+cell, so they are directly comparable; `make iso_matrix` regenerates them.
 
 Slim inherits Stock's seams, dovetail profiles, key dimensions, W22/MU pilot
 patterns, and captive-magnet contract unchanged — see [`stock.md`](stock.md)
@@ -14,12 +20,12 @@ the thinned LM section, and the keyed UM outlet that goes with it.
 
 | File | What |
 |---|---|
-| `src/lx521_baffle/proud/v1l.py` / `src/lx521_baffle/proud/v1l_split.py` | Thin R6P bottom+mids; its alternate UM tail and rear-face exit remain wholly in `piece_mid_right`, so the shared top/vase is unchanged |
+| `src/lx521_baffle/proud/v1l.py` / `src/lx521_baffle/proud/v1l_split.py` | Thin proud-family bottom+mids; its alternate UM tail and rear-face exit remain wholly in `piece_mid_right`, so the shared top/vase is unchanged |
 
 ## Variant V1 — 11.5 mm UM vase (minimum-thickness field)
 
 The vase field is thinned to t=11.5 while retaining the standard
-B2/V1 R6P route. The UM main hands off below seam B, so it does
+B2/V1 proud route. The UM main hands off below seam B, so it does
 not enter the vase; the
 binding buried passage here is the shared tweeter duct, flattened to
 W6.6 × H4.4 under the MU seat. The rear plane and all ducts are
@@ -55,7 +61,7 @@ constraint: the Ø8.2 LM/UM z-window. The bottom strip keeps full 18.3 (smoothst
 y=78 -> 96: full past the top pass-through seats +5, thin 10 short
 of the D190 edge) for the fused foot / bridge hardware / cable
 feeders; W22 heat-sets unchanged (floor keeps a 4.5 wall). It preserves
-the common R6P entries, LM route, and tweeter route, but its UM outlet is
+the common proud entries, LM route, and tweeter route, but its UM outlet is
 a keyed V1L-only alternate:
 
 * LM Ø8.2 at z=12.55 follows the established plan, flares to Ø9 over
@@ -98,11 +104,18 @@ split TPU grommet before final assembly.
 
 ## Cable routing — the keyed V1L UM exception
 
-The shared R6P routing, its analytic R14 LM bend, and the standard B2/V1 UM
-handoff are documented in [`stock.md`](stock.md#cable-routing-r6p-proud). V1L
-substitutes one alternate UM tail:
+The shared proud routing, its analytic R14 LM bend, and the standard B2/V1 UM
+handoff are documented in
+[`stock.md`](stock.md#cable-routing-proud-channels). V1L substitutes one
+alternate UM tail:
 
-V1L is the keyed R6P exception. Its complete UM cutter substitutes an
+![Proud-family cable routing](../build/no_floor_stand/baffle_cable_routing_proud.png)
+
+That sheet carries both tails: the normal B2/V1 UM path and the labeled
+V1L-only 283-degree alternate. The floor-stand twin is
+`build/floor_stand/baffle_cable_routing_proud.png`.
+
+V1L is the keyed proud exception. Its complete UM cutter substitutes an
 alternate tail wholly inside `piece_mid_right`; it does not branch from
 or retain the normal R14 outlet. The physical aperture is centered at
 **Q = (13.497063, 307.618796, 6.8)**, where the V1L rear face intersects
@@ -126,8 +139,18 @@ fit.
 
 ## Tweeter options
 
-The default arrangement is the face-to-face ND25FW-4 pair clamped through the
-V1 crescent. The alternative is the opposed TEBM35C10-4 BMR vase, released in a
-Slim envelope profile that replaces the crescent entirely; build it with
-`make vase_tebm35c10_4_cad` and take it from `build/vase_TEBM35C10-4/slim/`.
-See [`VARIANTS.md`](VARIANTS.md#opposed-tebm35c10-4-bmr-vase-alternative).
+Exactly as on Stock, the tweeter choice on Slim is a **choice of vase**: two
+interchangeable `04` pieces on the same seam-B interface, with nothing else in
+the set changing.
+
+- **Standard V1 vase** (default) — carries the face-to-face ND25FW-4 pair
+  clamped through the V1 crescent, plus the MU10 seat, on the 11.5 mm field.
+  This is `slim_4_of_4_vase_b2`.
+- **Opposed TEBM35C10-4 BMR vase** — replaces that vase and its crescent with
+  two Tectonic TEBM35C10-4 BMRs, the lower facing front and the upper facing
+  rear, released in a Slim envelope profile. Build it with
+  `make vase_tebm35c10_4_cad` and take it from `build/vase_TEBM35C10-4/slim/`.
+
+Pick one; they are never combined. See
+[`VARIANTS.md`](VARIANTS.md#opposed-tebm35c10-4-bmr-vase-alternative) for the
+BMR vase's geometry and the two envelope profiles.

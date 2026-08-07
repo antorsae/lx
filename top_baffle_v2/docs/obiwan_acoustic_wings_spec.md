@@ -9,7 +9,7 @@ or the wing design map.
 
 ## Scope
 
-The wings are removable acoustic-boundary attachments for the Obi-Wan R6F LM
+The wings are removable acoustic-boundary attachments for the Obi-Wan LM
 and UM carriers. They reuse the carrier geometry and magnetic interfaces; they
 do not modify the driver carriers, mounting axes, cable paths, floor/no-floor
 structure, or tweeter crescent.

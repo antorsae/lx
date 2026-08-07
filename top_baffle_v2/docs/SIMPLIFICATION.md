@@ -9,7 +9,7 @@
 Review scope: how this project builds its STEP / 3D-print (STL + `.gcode.3mf`)
 artifacts and the `to_print/` shelf, across the three shipping products —
 **Stock** (B2 proud family), **Slim** (V1L bottom+mids + V1 vase), and
-**Obi-Wan** (R6F two-carrier system). Everything below is grounded in the
+**Obi-Wan** (the two-carrier system). Everything below is grounded in the
 current tree (line references are as of this commit); nothing has been changed
 yet. Companion context: `docs/REPOSITORY_STRUCTURE.md` already sketches a
 `src/` migration; §7 turns that sketch into a staged plan.
@@ -25,7 +25,7 @@ geometry state:
 | Axis | Env var | Values | Read at |
 |---|---|---|---|
 | Stand state | `LX_STAND_FOOT` | `1` → `floor_stand/`, `0` → `no_floor_stand/` | `top_baffle_nd25fw4.py:98` |
-| Routing family | `LX_ROUTING_PROFILE` | `proud` (R6P), `obiwan` (R6F) | `top_baffle_nd25fw4_cables.py:70` |
+| Routing family | `LX_ROUTING_PROFILE` | `proud` (Stock, Slim), `obiwan` (Obi-Wan) | `top_baffle_nd25fw4_cables.py:70` |
 
 Build flow per product (each runs twice, once per stand state):
 
@@ -258,9 +258,9 @@ top_baffle_v2/
 │   ├── geom.py, assembly.py, guards.py, taper.py      (§5 shared modules)
 │   ├── base.py                   ← top_baffle_nd25fw4.py
 │   ├── cables.py  flush.py  magnets.py (← captive_magnets)  um_fit.py
-│   ├── proud/                    R6P: b.py b1.py b2.py a_comp.py split.py
+│   ├── proud/                    proud routing: b.py b1.py b2.py a_comp.py split.py
 │   │                             attachments.py (thickness-param) c7.py v0.py v1.py v1l.py
-│   └── obiwan/                   R6F: carriers.py route.py bridge.py floor.py
+│   └── obiwan/                   Obi-Wan: carriers.py route.py bridge.py floor.py
 │                                 floor_strength.py lm_split.py attachments.py
 │                                 assembled.py wings.py
 ├── scripts/                      CLIs: export_*, gen_*, slice_captive_magnets,

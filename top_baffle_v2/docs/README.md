@@ -2,12 +2,13 @@
 
 ## Products
 
-- [`stock.md`](stock.md) — Stock R6P: source modules, key dimensions, print
-  split, R6P cable routing, tweeter options, magnet attachment, assembly.
-- [`slim.md`](slim.md) — Slim R6P: the V1 vase, the V1L LM section, and the
+- [`stock.md`](stock.md) — Stock: source modules, key dimensions, print
+  split, proud cable routing, tweeter options, magnet attachment, assembly.
+- [`slim.md`](slim.md) — Slim: the V1 vase, the V1L LM section, and the
   keyed 283° UM outlet. Everything else is inherited from Stock.
-- [`obiwan.md`](obiwan.md) — Obi-Wan R6F: two-collar geometry, buried routes,
-  floor/no-floor structure, structural screens, wings, assembly.
+- [`obiwan.md`](obiwan.md) — Obi-Wan: two-collar geometry, buried routes,
+  floor/no-floor structure, structural screens, wings, combined plates,
+  tweeter crescents, assembly.
 
 ## Cross-cutting authorities
 
@@ -27,7 +28,7 @@
   fail-closed physical qualification record.
 - [`obiwan_acoustic_wings_spec.md`](obiwan_acoustic_wings_spec.md) — flat/graded
   wing design authority.
-- [`obiwan_r6f_cad_brief.md`](obiwan_r6f_cad_brief.md) — the R6F CAD brief.
+- [`obiwan_cad_brief.md`](obiwan_cad_brief.md) — the Obi-Wan CAD brief.
 
 ## Historical
 

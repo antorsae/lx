@@ -1,11 +1,17 @@
-# Stock R6P — full-depth B2 product
+# Stock — full-depth B2 product
 
 The canonical product: the complete 18.3 mm baffle outline printed as four
 registered pieces, with mutually exclusive A-comp shoulders or B1 wings as the
 optional perimeter. Catalog entry: [`artifacts/stock/`](../artifacts/stock/).
 Slim reuses this product's seams, key dimensions, and magnet contract, so this
 file is the authority for both; see [`slim.md`](slim.md) for what Slim changes
-and [`obiwan.md`](obiwan.md) for the unrelated R6F carrier system.
+and [`obiwan.md`](obiwan.md) for the unrelated Obi-Wan carrier system.
+
+![Stock with the stock bridge](../images/generated/iso/stock_no_floor_stand.png)
+![Stock with the floor stand](../images/generated/iso/stock_floor_stand.png)
+
+Both renders share one camera and one declared frame with every other product
+cell, so they are directly comparable; `make iso_matrix` regenerates them.
 
 ## Source modules
 
@@ -17,12 +23,21 @@ and [`obiwan.md`](obiwan.md) for the unrelated R6F carrier system.
 | `src/lx521_baffle/proud/b.py` | Shared B-family builder: mini-LM upper-mid vase (no shelf corners) + tweeter section lowered 9.0 mm. Governing clearance is on the FRONT face: the lower tweeter faces forward (stock LX521.4 arrangement), so its D104 faceplate shares the front plane with the 10F's D97.5 flange -- axis spacing 102.84 mm vs 100.75 mm contact leaves a 2.1 mm edge gap (drawing spacing allows an 11.1 mm drop max). Scallop-to-flange 14.1 mm; scallop-to-D82 web 21.9 mm. Total height 459.3 mm. Below the y=306 seam identical to A. |
 | `src/lx521_baffle/proud/b1.py` | B1: flank is ONE straight line from the crescent horn corner (36.8, 432.9) through the max-width point (83.8, 399.6) to the V-waist at (+/-56.12, 306.5) -- extended to the horn so the top magnet site lands in the B1 wing |
 | `src/lx521_baffle/proud/b2.py` | B2: constant wall around the 10F -- flare and chamfer keep the LM tilts but are both tangent to the r=50.83 circle about the UM center (9.8 mm wall at the D82, 2.1 mm to the D97.5 flange at both tangential points). Chamfer runs from the flare corner (+/-60.65, 391.71; max width 121.3 mm) to the crescent's D102.11 arc extended to (+/-10.08, 418.18); waist (+/-38.1, 315.95). |
-| `src/lx521_baffle/proud/b2_split.py` | 4-piece print split of variant B2 (the universal **R6P proud-family** base set) with seven regular through-thickness dovetails |
+| `src/lx521_baffle/proud/b2_split.py` | 4-piece print split of variant B2 (the universal **proud-family** base set) with seven regular through-thickness dovetails |
 | `src/lx521_baffle/proud/vase_tebm35c10_4.py` | Parameterized Stock/Slim alternative vase for two opposed Tectonic TEBM35C10-4 BMRs: front/rear mounting, eight M2 insert bores, four captive side magnets, blind pocket walls, independent cable branches, smooth rear growth, and the regular seam-B female dovetails |
-| `src/lx521_baffle/cables.py` | Proud-family **R6P** subtractive routing and routing-profile dispatch: standard B2/V1 UM tail plus the keyed V1L-only 283-degree alternate |
+| `src/lx521_baffle/cables.py` | Proud-family subtractive routing and routing-profile dispatch: standard B2/V1 UM tail plus the keyed V1L-only 283-degree alternate |
 | `src/lx521_baffle/um_fit.py` | 283-degree MU terminal service model: terminal-less MU body, hash-pinned W22 reference and declared-placement conservative rear keepout, independent low-profile flag-Faston pull states, physical OD8/OD4 Y-breakout harness, and the proud/V1L split strain reliefs; `PHYSICAL_MEASURE_REQUIRED` remains true |
 
 ## Key dimensions (from the drawing, verified against printed dims)
+
+![Variant B2 driver overlays](../build/no_floor_stand/baffle_b2_drivers.png)
+
+The overlay sheet plots each driver's real footprint against the exact
+outline. That is the no-floor-stand sheet; its floor-stand twin at
+`build/floor_stand/baffle_b2_drivers.png` differs only in dropping the four
+bridge pass-throughs at `(±20, 20)/(±20, 70)`, which the fused foot replaces.
+`baffle_b1_drivers.png` and `baffle_variants_drivers.png` in the same folders
+do the same for the B1 wing variant and for all variants together.
 
 - Outline: bottom 152.4 → ±152.4 @ y≈256.1 → neck 114.3 (y 306–409) →
   121.84 across the tweeter prongs; top scallop cut from Ø78.50,
@@ -165,8 +180,8 @@ and [`obiwan.md`](obiwan.md) for the unrelated R6F carrier system.
   sides use the shared 0.05 mm mitred in-plan clearance. Qualify the fit on
   coupons 1 and 2 before printing a complete four-piece set.
 
-These seams and the foot/bridge behavior apply only to the R6P proud
-family. Obi-Wan R6F is not a thinned four-piece shell: its mandatory core
+These seams and the foot/bridge behavior apply only to the proud
+family. Obi-Wan is not a thinned four-piece shell: its mandatory core
 print set is the two collars described below. In floor state the complete
 stand is fused into the LM carrier itself; there is no separate
 `lx521_top_obiwan_addon_mount_floor_support` artifact. The no-floor bridge
@@ -179,10 +194,10 @@ numbered coupon procedure are in [`PRINTING.md`](PRINTING.md).
 
 | STL in `build/<state>/stl/` | Footprint (mm) | Used by |
 |---|---|---|
-| stock_1_of_4_bottom | ~223.8 × 125.0 in plan; 168.3 tall with fused floor stand, 18.3 without | R6P proud family |
-| stock_2_of_4_mid_left | ~146.7 × 201.9 | R6P proud family |
-| stock_3_of_4_mid_right | ~162.0 × 201.9 | R6P proud family |
-| stock_4_of_4_vase_b2 | ~121.3 × 137.4 | R6P proud family |
+| stock_1_of_4_bottom | ~223.8 × 125.0 in plan; 168.3 tall with fused floor stand, 18.3 without | proud family |
+| stock_2_of_4_mid_left | ~146.7 × 201.9 | proud family |
+| stock_3_of_4_mid_right | ~162.0 × 201.9 | proud family |
+| stock_4_of_4_vase_b2 | ~121.3 × 137.4 | proud family |
 | stock_shoulder_1..2_of_4_top_l/r | 50.6 × 61.8 | A-comp only |
 | stock_shoulder_3..4_of_4_bottom_l/r | 22.5 × 85.9 | A-comp only |
 | stock_wing_1..2_of_2_l/r | 73.7 × 125.1 | B1 only |
@@ -197,15 +212,22 @@ the crescent arc register the pieces. Magnets receive no structural-load
 credit. The A bottom shoulders and B1 wings extend below
 seam B and register against the mids.
 
-## Cable routing (R6P proud)
+## Cable routing (proud channels)
 
 Routing is now deliberately split into two physically incompatible
 profiles. Generate and review both sheets; the generic routing image no
 longer exists:
 
-- `baffle_cable_routing_proud.png` documents **R6P**. It shows the
-  normal B2/V1 UM path and, on the same sheet, the clearly
+- `baffle_cable_routing_proud.png` documents the proud channels. It shows
+  the normal B2/V1 UM path and, on the same sheet, the clearly
   labeled V1L-only 283-degree alternate tail.
+
+![Proud-family cable routing](../build/no_floor_stand/baffle_cable_routing_proud.png)
+
+That is the no-floor-stand sheet, which is the canonical one for reading the
+route. `build/floor_stand/baffle_cable_routing_proud.png` is the floor-stand
+sheet: same in-plate route, but the four ducts continue down the plate into
+the foot lanes instead of breaking the rear face.
 
 Every proud-family LM route now finishes with one analytic R14 bend through
 the established mouth at **(−10.5, 95.981)**. The constrained planar spline,
@@ -215,7 +237,7 @@ monotonically from Ø8.2 to Ø9 for the estimated Ø7.8 cable. Stock and Slim
 use the same mouth; their different rear depths merely intersect the R14 at
 different tangent angles.
 
-R6P keeps the UM cable space **Ø8.2 end-to-end**. For B2 and V1, the
+The proud family keeps the UM cable space **Ø8.2 end-to-end**. For B2 and V1, the
 planar main follows the outer U22 arc, returns through the broad lower
 neck, and joins an analytic R14 three-dimensional quarter-turn with
 constrained G1 tangency. The same sweep reaches a vertical rear tangent
@@ -242,7 +264,7 @@ physical U22 and service harness still require the recorded fit check.
 
 The proud-family route set is:
 
-| Driver | Cable | Duct | R6P route |
+| Driver | Cable | Duct | Proud route |
 |---|---|---|---|
 | LM (U22/W22) | 2 × 2.5 mm² twisted | Ø8.2, flaring to Ø9 over the final 10 mm | z=12.55 main through the lower insert sector, then one continuous G1 R14 bend through the retained rear mouth below the Ø190 opening and an external tangent lead |
 | UM (MU10/10F) | estimated Ø7 twisted pair | Ø8.2 | B2 and V1: outer U22 arc, single-curvature W22-pilot bypass, continuous G1 R14 handoff to (33.446, 301.492). V1L only: its own single-curvature guide reaches the keyed 283-degree rear-face aperture Q=(13.497063, 307.618796, 6.8) in `piece_mid_right`; both tails are regression-gated against heading reversal |
@@ -250,41 +272,50 @@ The proud-family route set is:
 
 The route suites sample the complete physical centerlines, including the
 standard proud R14 handoff, the V1L alternate tail and rear-face handoff,
-every R6F covered Z bump, physical crown crossing, printed-to-free owner
-handoffs, independent LM lead, free rear UM/tweeter spans, and the R6F
+every Obi-Wan covered Z bump, physical crown crossing, printed-to-free owner
+handoffs, independent LM lead, free rear UM/tweeter spans, and the Obi-Wan
 cable's review-only G1 R20 turn to its Y breakout. Two separate Ø3.2 conductors then
 retain R8-minimum slack paths into non-overlapping low-profile flag-Faston
 boots and one-at-a-time 0/3/6/9/12 mm pull states. The printed terminal
 approach is R15 and the exact G1 free continuation is R20; Ø3.2/R8 remains
 provisional until the physical lead and manufacturer bend requirement are
 measured.
-For R6P, `test_um_eroded_outline_containment` erodes the exact outline by
-duct radius plus the 1.6 mm proud-family skin, tests the complete
+For the proud family, `test_um_eroded_outline_containment` erodes the exact
+outline by duct radius plus the 1.6 mm proud-family skin, tests the complete
 interpolated route `LineString` for containment (not just sampled
-vertices), and reports true normal distance to the boundary. R6F instead
+vertices), and reports true normal distance to the boundary. Obi-Wan instead
 uses its state-specific 0.8 mm wall/0.85 mm roof checks plus final assembled
 BREP shell subtraction and an independent 0.76..0.90 mm manufactured-BREP
 normal-wall bracket. The former horizontal-gap approximation is not used
 in either family.
-Pilot and duct-pair checks retain the 1.5 mm separation rule. R6P ducts
-cross its glue seams, so fish a cable or pull string through each open
-segment during assembly. R6F UM/T cables must be dry-fished through their
+Pilot and duct-pair checks retain the 1.5 mm separation rule. Proud ducts
+cross the glue seams, so fish a cable or pull string through each open
+segment during assembly. Obi-Wan UM/T cables must be dry-fished through their
 buried owner segments and rehearsed across their free rear spans, while the
 LM cable must be rehearsed over its free rear span and, in floor state,
 through the integral stem continuation before driver installation.
 
 ## Tweeter options
 
-The default arrangement is the face-to-face ND25FW-4 pair: two Dayton
-ND25FW-4 dome tweeters with waveguide, bolted through the clamp holes at
-`(±32.56, 451.24)` so their faceplates sandwich the B2 crescent. It is
-integral to the vase piece and needs no separate part.
+On Stock the tweeter choice is a **choice of vase**: the two options are
+interchangeable `04` pieces on the same seam-B interface, and nothing else in
+the four-piece set changes.
 
-The alternative replaces the crescent with the opposed TEBM35C10-4 BMR vase:
-two Tectonic TEBM35C10-4 BMRs, the lower facing front and the upper facing
-rear, released in a Stock envelope profile. Build it with
-`make vase_tebm35c10_4_cad` and take it from `build/vase_TEBM35C10-4/stock/`;
-see [`VARIANTS.md`](VARIANTS.md#opposed-tebm35c10-4-bmr-vase-alternative).
+- **Standard B2 vase** (default) — carries the face-to-face ND25FW-4 pair
+  *and* the MU10 upper-mid seat. Two Dayton ND25FW-4 dome tweeters with
+  waveguide bolt through the clamp holes at `(±32.56, 451.24)` so their
+  faceplates sandwich the B2 crescent; the crescent is integral to the vase
+  and needs no separate part. This is `stock_4_of_4_vase_b2`.
+- **Opposed TEBM35C10-4 BMR vase** — replaces that vase entirely, crescent
+  included: two Tectonic TEBM35C10-4 BMRs, the lower facing front and the
+  upper facing rear, released in a Stock envelope profile. Build it with
+  `make vase_tebm35c10_4_cad` and take it from `build/vase_TEBM35C10-4/stock/`.
+
+Pick one; they are never combined. See
+[`VARIANTS.md`](VARIANTS.md#opposed-tebm35c10-4-bmr-vase-alternative) for the
+BMR vase's own geometry, and the [README tweeter
+section](../README.md#tweeter-options) for how this choice looks on the other
+two products.
 
 ## Magnet attachment (swappable shoulders/wings)
 
@@ -330,10 +361,10 @@ parts. Never infer polarity from left/right appearance:
 | (40.0, 322.4, 15.10) | flare, waist-kink end | A bottom shoulder, B1 wing lower end | the flank's farthest point from the UM driver (59.2 mm); the complete captive land and T-duct clearance fit inside the unchanged host |
 | (17.88, 420.37, 15.10) | crescent arc, theta=-69.5 deg | A top shoulder, B1 wing top end | as far down-arc as the receiver permits; `make check` verifies the complete internal land against the chamfer, smooth taper shelf, front face, and TS duct without exterior growth |
 
-For the legacy R6P B2/A/B1 arrangement specifically, magnet count per baffle
+For the legacy B2/A/B1 arrangement specifically, magnet count per baffle
 is 4 base + 4 per attachment set (12 with both sets; 24 for a stereo pair).
 Obi-Wan, its keyed alternative, flat/graded, and the calibration coupon use their own
-per-part counts in the authoritative pause manifest; do not apply this R6P
+per-part counts in the authoritative pause manifest; do not apply this proud
 count to them.
 
 Polarity discipline: use the "MARCADO NORTE" batch and the manifest's local
@@ -358,7 +389,7 @@ variant's hypothetical scarf mate is likewise not a release output.
 
 ## Assembly
 
-**R6P:** dry-fit and tune coupons 1 and 2 before gluing. Install the seam-B
+Dry-fit and tune coupons 1 and 2 before gluing. Install the seam-B
 M3 heat-set in the vase first. Assemble seam C, then A, then B on a flat
 front-face datum; fish each cable segment as its seam closes. Drive the
 M3×20 socket-cap screw radially from the LM opening and verify it seats below

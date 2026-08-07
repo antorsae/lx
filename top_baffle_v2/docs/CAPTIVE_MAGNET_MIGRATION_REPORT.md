@@ -220,7 +220,7 @@ No file in this migration uploads to a printer or starts a print.
 | Catalog and slicing | `scripts/generate_captive_magnet_catalog.py`, `captive_magnet_release_catalog.schema.json`, `scripts/slice_captive_magnets.py`, `captive_magnet_slicing_profile.json`, `scripts/json_schema_subset.py` |
 | Build and promotion | `Makefile`, `scripts/remote_cad.py`, `scripts/write_obiwan_release_manifest.py`, `scripts/check_manifold.py` |
 | Tests | `tests/test_captive_magnets.py`, `tests/test_release_metadata.py`, `tests/test_slice_captive_magnets.py`, plus updated clearance, Obi-Wan, wing, and remote-CAD tests |
-| Documentation/diagrams | `README.md`, `PRINTING.md`, `VARIANTS.md`, `obiwan_acoustic_wings_spec.md`, `obiwan_physical_qualification.md`, `obiwan_r6f_cad_brief.md`, and updated routing/overlay generators |
+| Documentation/diagrams | `README.md`, `PRINTING.md`, `VARIANTS.md`, `obiwan_acoustic_wings_spec.md`, `obiwan_physical_qualification.md`, `obiwan_cad_brief.md` (then named `obiwan_r6f_cad_brief.md`), and updated routing/overlay generators |
 
 ### Generated release categories
 
@@ -258,7 +258,7 @@ legacy or concept artifacts: they are valid non-acoustic measurement tools.
 - Slicer/catalog/toolpath unit tests: **57 passed**.
 - Remote-CAD transport, guard, and promotion tests passed, including expected
   simulated guard failures.
-- Remote native/source suites, standard clearances, Obi-Wan R6F geometry,
+- Remote native/source suites, standard clearances, Obi-Wan geometry,
   terminal/Faston/Y-boot service matrices, exact cable envelopes, buried
   backs, route contracts, floor datum, and analytical structure gates passed
   before artifact publication.

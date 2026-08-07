@@ -40,6 +40,27 @@ required support fields globally and on every object, plus hash-bound duct
 blockers and a zero-collision support-toolpath gate, so an ordinary Bambu
 Studio re-slice cannot silently obstruct a functional cable lumen.
 
+## Combined plates
+
+A **combo** is one pre-arranged Bambu plate that holds several parts at locked
+positions and prints them in a single job.  It is not a different part: a
+combo carries exactly the same meshes as the individual files it replaces, in
+the same released front-face-down orientation, and promotion requires exact
+project/STL equivalence against them.  There are four:
+
+| Combo | Contains |
+|---|---|
+| `obiwan_01_02_03_04_LM_UM_combo_no_floor_stand` | `01` keyed LM bottom (no-floor) + `02` keyed LM top + `03` UM carrier + `04` tweeter crescent |
+| `obiwan_01_02_03_04_LM_UM_combo_floor_stand` | `01` keyed LM bottom (floor stand) + `02` keyed LM top + `03` UM carrier + `04` tweeter crescent |
+| `obiwan_flat_wings_split2_combo` | all four flat split2 wing pieces: `05`/`08` LM-lower left and right, `06`/`09` fused LM/UM-upper left and right |
+| `obiwan_graded_wings_split2_combo` | all four graded split2 wing pieces: `11`/`14` LM-lower left and right, `12`/`15` fused LM/UM-upper left and right |
+
+**The rule is exclusive-or.**  Print a combo *or* its individual pieces, never
+both — running a combo plate and the same parts as separate jobs prints every
+piece twice.  And never mix stand states: `01` is the only state-specific
+piece, so a floor-stand plate and any no-floor part do not belong in the same
+speaker.
+
 `obiwan_01_02_03_04_LM_UM_combo_no_floor_stand` and
 `obiwan_01_02_03_04_LM_UM_combo_floor_stand` are the no-floor and
 floor-stand combo plates for 01+02+03+04. Each is one Bambu
@@ -70,6 +91,8 @@ for graded.
 The six-wall setting is deliberately general-body strength, not six walls in
 the captive-magnet skin. Arachne is allowed to emit the one bounded
 0.42–0.45 mm retaining path required by each 0.45 mm magnet wall.
+
+## Choosing what to print
 
 The two-digit slot numbers are catalogue positions, not a literal one-build
 bill of materials.  State and attachment choices are alternatives:

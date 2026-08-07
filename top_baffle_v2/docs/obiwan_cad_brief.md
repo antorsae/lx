@@ -1,4 +1,4 @@
-# Obi-Wan R6F final CAD brief
+# Obi-Wan final CAD brief
 
 - Model: source modification of the two-carrier Obi-Wan LM/UM core,
   its state-specific integral bridge/floor geometry, optional
@@ -10,7 +10,7 @@
 - Units and frame: millimetres; existing baffle XY frame is preserved;
   the LM centre is `(0, 200.981)` and the UM centre is `(0, 366.081)`;
   +Z points toward the acoustic/front face.
-- Print orientation: every released printable R6F piece, magnet-bearing or
+- Print orientation: every released printable Obi-Wan piece, magnet-bearing or
   not, prints front-face-down, with only in-plane bed rotation. Pause heights
   and polarity for magnet-bearing pieces come from
   `review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md`, not

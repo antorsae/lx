@@ -1,4 +1,4 @@
-# Obi-Wan R6F physical qualification record
+# Obi-Wan physical qualification record
 
 Overall status: **PENDING — NOT PHYSICALLY QUALIFIED**
 

@@ -3,32 +3,69 @@
 3D-printable version of the modified top baffle from
 `plano top baffle con anidados V2.pdf` (exact 1:1 vector geometry extracted
 from the PDF, not redrawn). Overall 304.8 × 468.31 × 18.3 mm — the exact
-design depth is **18.3 mm**, not 18.6 mm. That envelope describes the R6P
-proud family; the R6F Obi-Wan experiment deliberately removes the full
-outline and retains only two collars. This file is the picker: choose a
-product below, then follow its own doc.
+design depth is **18.3 mm**, not 18.6 mm. That envelope describes Stock and
+Slim, the two products that route their cables through proud channels in a
+full outline; the Obi-Wan experiment deliberately removes the outline and
+retains only two collars. This file is the picker: choose a product below,
+then follow its own doc.
 
 ## Product comparison
 
-Every render below uses one camera and one declared frame per scale group, so
-the cells are directly comparable. Regenerate them with `make iso_matrix`
-after any CAD change.
+One row per product, each showing both stand states, then one row for the
+tweeter options. Every render uses one camera and one declared frame per scale
+group, so the panels within a row and the three product rows against each
+other are directly comparable. Regenerate them with `make iso_matrix` after
+any CAD change.
 
-| | Stock R6P | Slim R6P | Obi-Wan R6F |
+![Stock, both stand states](images/generated/iso/rows/stock_row.png)
+
+Stock is the canonical product: the complete 18.3 mm outline printed as four
+registered pieces — [`docs/stock.md`](docs/stock.md).
+
+![Slim, both stand states](images/generated/iso/rows/slim_row.png)
+
+Slim is the same outline with the acoustic field thinned to 11.5 mm, sharing
+one front plane end to end — [`docs/slim.md`](docs/slim.md).
+
+![Obi-Wan, both stand states](images/generated/iso/rows/obiwan_row.png)
+
+Obi-Wan keeps only the two driver collars; both panels add its optional
+crescent and flat wings, because the mandatory geometry alone is two bare
+rings — [`docs/obiwan.md`](docs/obiwan.md).
+
+![The three tweeter carriers](images/generated/iso/rows/tweeter_row.png)
+
+The three tweeter carriers share their own larger scale, so they are
+comparable with each other but not with the product rows above.
+
+## Tweeter options
+
+There are two tweeter choices, and the choice is about the driver:
+
+- **Dayton ND25FW-4 face-to-face pair** — two dome tweeters with waveguide,
+  bolted through the baffle so their faceplates clamp the crescent between
+  them. This is the default on every product.
+- **Tectonic TEBM35C10-4 BMR pair** — balanced-mode radiators fitted in place
+  of the domes.
+
+What you actually swap to take the BMR option depends on the product, because
+each one carries its tweeters on a different part:
+
+| Product | Interchangeable part | ND25FW-4 (default) | TEBM35C10-4 |
 |---|---|---|---|
-| **Stock bridge (no floor stand)** | ![Stock, stock bridge](images/generated/iso/stock_no_floor_stand.png) | ![Slim, stock bridge](images/generated/iso/slim_no_floor_stand.png) | ![Obi-Wan, stock bridge](images/generated/iso/obiwan_no_floor_stand.png) |
-| **Floor stand** | ![Stock, floor stand](images/generated/iso/stock_floor_stand.png) | ![Slim, floor stand](images/generated/iso/slim_floor_stand.png) | ![Obi-Wan, floor stand](images/generated/iso/obiwan_floor_stand.png) |
+| Stock | the **vase**, piece `04` | the standard B2 vase: it carries both the dome pair on its integral crescent and the MU10 upper-mid seat | the opposed-BMR vase replaces that whole vase; `make vase_tebm35c10_4_cad` |
+| Slim | the **vase**, piece `04` | the standard V1 vase — the same arrangement thinned to 11.5 mm | the Slim-profile opposed-BMR vase, the same one-piece swap |
+| Obi-Wan | the **crescent** on the UM collar | the released tweeter crescent add-on | the candidate coaxial BMR crescent on the identical half-lap mount; `make obiwan_bmr_crescent_cad` |
 
-The Obi-Wan cells include its optional tweeter crescent and flat wings, because
-its mandatory geometry alone is two bare collars.
-
-| Tweeter option | Render |
-|---|---|
-| **ND25FW-4 face-to-face** (default, all products) — two Dayton ND25FW-4 domes with waveguide, faceplates clamping the crescent; integral to the Stock/Slim vase, an optional add-on carrier on Obi-Wan | ![ND25FW-4 crescent](images/generated/iso/tweeter_nd25fw4_crescent.png) |
-| **TEBM35C10-4 opposed BMR vase** (Stock & Slim only) — two Tectonic TEBM35C10-4 BMRs, lower facing front and upper facing rear, replacing the crescent; built by `make vase_tebm35c10_4_cad` | ![TEBM35C10-4 BMR vase](images/generated/iso/tweeter_tebm35c10_4_vase.png) |
-
-The tweeter row is drawn at its own larger scale; it is not comparable in size
-to the product row.
+The two BMR implementations arrange the drivers differently. On Stock and Slim
+they are **opposed**: the lower BMR faces front and the upper one faces rear.
+On Obi-Wan they are **coaxial**, stacked back to back on the released
+face-to-face acoustic axis, which makes that crescent 50.2 mm deep. The
+Obi-Wan BMR crescent is a **candidate**: it is not release-authorized, is
+deliberately absent from the release inventory, the stage manifests and
+`to_print/`, and is built only by the local target above.
+[`docs/VARIANTS.md`](docs/VARIANTS.md#candidate-coaxial-tebm35c10-4-bmr-crescent-obi-wan)
+puts the two BMR parts side by side.
 
 ## Products
 
@@ -37,9 +74,9 @@ The project has one human-facing artifact catalog:
 
 | Product | Geometry | Optional perimeter | Tweeter options | Status | Doc |
 |---|---|---|---|---|---|
-| [Stock R6P](artifacts/stock/) | B2, 304.802 x 453.457 x 18.3 mm | A-comp shoulders **or** B1 wings | ND25FW-4 crescent (integral) or TEBM35C10-4 BMR vase | Canonical CAD | [`docs/stock.md`](docs/stock.md) |
-| [Slim R6P](artifacts/slim/) | V1L + V1; 11.5 mm front-flush acoustic field, full-depth bottom strip | matching V1 shoulders **or** V1 wings | ND25FW-4 crescent (integral) or TEBM35C10-4 BMR vase | Experimental | [`docs/slim.md`](docs/slim.md) |
-| [Obi-Wan R6F](artifacts/obiwan/) | separate LM/UM collars; floor and stock-bridge states | flat constant-depth or graded weighted-depth wings | ND25FW-4 crescent add-on only | Candidate; not release-authorized | [`docs/obiwan.md`](docs/obiwan.md) |
+| [Stock](artifacts/stock/) | B2, 304.802 x 453.457 x 18.3 mm | A-comp shoulders **or** B1 wings | ND25FW-4 crescent (integral) or TEBM35C10-4 BMR vase | Canonical CAD | [`docs/stock.md`](docs/stock.md) |
+| [Slim](artifacts/slim/) | V1L + V1; 11.5 mm front-flush acoustic field, full-depth bottom strip | matching V1 shoulders **or** V1 wings | ND25FW-4 crescent (integral) or TEBM35C10-4 BMR vase | Experimental | [`docs/slim.md`](docs/slim.md) |
+| [Obi-Wan](artifacts/obiwan/) | separate LM/UM collars; floor and stock-bridge states | flat constant-depth or graded weighted-depth wings | ND25FW-4 crescent add-on, or the candidate coaxial BMR crescent | Candidate; not release-authorized | [`docs/obiwan.md`](docs/obiwan.md) |
 
 The original state-oriented build outputs remain in `build/floor_stand/`,
 `build/no_floor_stand/`, and `build/wings/` because the validation pipeline depends on
@@ -61,7 +98,7 @@ targets are:
     make obiwan_release  # both Obi-Wan states + flat/graded, concurrent on osado
     make obiwan_wings  # flat + graded STEP/STL families, built concurrently
     make vase_tebm35c10_4_cad  # both Stock and Slim BMR-vase CAD children
-    make check  # proud regression + final Obi-Wan R6F suites
+    make check  # proud regression + final Obi-Wan suites
     make candidate  # checks + regenerated candidate artifacts + QA
 
 Running OCC on the current machine requires an explicit opt-in:
@@ -89,6 +126,7 @@ These goals never dispatch to osado and run only on the workstation:
     make check_bambu_3mf_audit    synthetic 3MF transform/mesh regressions
     make bambu_slice_release      authoritative ready-project slice/audit
     make vase_tebm35c10_4_3mf     ready BMR-vase projects, both profiles
+    make obiwan_bmr_crescent_cad  candidate coaxial BMR crescent (Obi-Wan)
 
 Direct pip dependencies are `build123d`, `shapely`, `matplotlib`, `numpy`, and
 `Pillow` — no external CAD tooling.
@@ -98,19 +136,20 @@ Direct pip dependencies are `build123d`, `shapely`, `matplotlib`, `numpy`, and
 The default remote `make` builds BOTH stand-foot states. Use
 `LX_CAD_EXECUTION=local make -j1` only for an intentional local build:
 
-    build/floor_stand/      LX_STAND_FOOT=1: R6P fused foot + NL8 panel;
-      stl/  *.step  *.png     R6F integral LM-owned W64 floor stem/foot + NL8 panel
-    build/no_floor_stand/   LX_STAND_FOOT=0: R6P flat piece_bottom + bridge;
-      stl/  *.step  *.png     R6F solid bridge web fused into the LM core
+    build/floor_stand/      LX_STAND_FOOT=1: Stock/Slim fused foot + NL8 panel;
+      stl/  *.step  *.png     Obi-Wan integral LM-owned W64 floor stem/foot + NL8 panel
+    build/no_floor_stand/   LX_STAND_FOOT=0: Stock/Slim flat piece_bottom + bridge;
+      stl/  *.step  *.png     Obi-Wan solid bridge web fused into the LM core
     build/wings/{flat,graded}/    Obi-Wan acoustic wing families
     build/vase_TEBM35C10-4/{stock,slim}/   opposed-BMR vase children
+    build/bmr_crescent_TEBM35C10-4/       candidate coaxial BMR crescent
     build/common/           flag-independent shared outputs
-    images/generated/iso/   the product-comparison render set
+    images/generated/iso/   the product-comparison cells and rows/ images
 
 Each folder contains all proud-family variants and the matching Obi-Wan
-core/add-on set. In R6P, `piece_bottom` is the only functionally
+core/add-on set. In Stock and Slim, `piece_bottom` is the only functionally
 different base piece; the other base STLs can differ by <0.05 mm as
-the foot-entry knots move. In R6F, the UM core is state-independent. The
+the foot-entry knots move. In Obi-Wan, the UM core is state-independent. The
 floor LM owns the integral stand and only the shared upper shoulder; the
 no-floor LM owns the complete fused bridge web. Their lower magnet axes are
 coincident on that shoulder, but floor mode has no shallow skirt or rail below
@@ -150,11 +189,11 @@ only, and the Obi-Wan state manifests record `release_authorized: false`.
 
 Products:
 
-- [`docs/stock.md`](docs/stock.md) — Stock R6P: key dimensions, print split,
-  R6P cable routing, magnet attachment, assembly.
-- [`docs/slim.md`](docs/slim.md) — Slim R6P: V1 vase, V1L LM section, the
+- [`docs/stock.md`](docs/stock.md) — Stock: key dimensions, print split,
+  proud cable routing, magnet attachment, assembly.
+- [`docs/slim.md`](docs/slim.md) — Slim: V1 vase, V1L LM section, the
   keyed 283° UM outlet.
-- [`docs/obiwan.md`](docs/obiwan.md) — Obi-Wan R6F: two-collar geometry,
+- [`docs/obiwan.md`](docs/obiwan.md) — Obi-Wan: two-collar geometry,
   buried routes, floor/no-floor structure, structural screens, assembly.
 
 Cross-cutting authorities:

@@ -6,8 +6,8 @@
 top_baffle_v2/
 ├── README.md                 project entry point and canonical inventory
 ├── src/lx521_baffle/         parametric geometry package
-│   ├── proud/                R6P geometry families
-│   └── obiwan/               R6F carriers, routes, floor, split, and wings
+│   ├── proud/                proud-routing geometry families (Stock, Slim)
+│   └── obiwan/               Obi-Wan carriers, routes, floor, split, and wings
 ├── scripts/                  CAD export/render/release CLIs
 ├── tests/                    geometry, metadata, transport, and release gates
 ├── docs/                     prose authorities

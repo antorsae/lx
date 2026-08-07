@@ -97,11 +97,11 @@ single 8 GiB aggregate promotion guard. This private mesh-only path cannot run
 CAD/OCC targets; ordinary `LX_CAD_EXECUTION=local` remains strictly serial.
 
 The osado profile also removes workstation-only computational fragmentation:
-the clearance and R6F selectors are ordinary Make prerequisites, so the same
-jobserver bounds checks and artifact writers together. R6F imports LM, UM and
-tweeter BREPs only from each state's Make-owned, hash-validated native stage;
-its private cache contains only test-only shell witnesses absent from that
-stage, so assertion-only edits cannot rebuild carriers. R6F then evaluates
+the clearance and Obi-Wan selectors are ordinary Make prerequisites, so the same
+jobserver bounds checks and artifact writers together. The Obi-Wan suite imports
+LM, UM and tweeter BREPs only from each state's Make-owned, hash-validated native
+stage; its private cache contains only test-only shell witnesses absent from that
+stage, so assertion-only edits cannot rebuild carriers. It then evaluates
 complete shell/cable/service witnesses. The exact assembled-junction sweep
 still checks every Bambu 0.20/0.16-mm layer in both stand states, but Make
 owns sixteen complementary state/layer-shard stamps. Each shard checks both
@@ -179,11 +179,12 @@ tighten their selected profile but cannot relax it.
 Self-contained — the direct pip dependencies are
 `build123d`, `shapely`, `matplotlib`, `numpy`, and `Pillow` (no external CAD
 tooling). `make check` runs `tests/test_clearances.py` for proud-family
-regressions and `tests/test_obiwan_r6f.py` for guarded R6F BREP contracts.
+regressions and `tests/test_obiwan_r6f.py` for guarded Obi-Wan BREP contracts
+(that file keeps its internal name).
 Together they cover duct/pilot separation, flange-seat containment,
-service envelopes, R6P grommet regressions, complete-route smoothness, exact
+service envelopes, proud grommet regressions, complete-route smoothness, exact
 normal/eroded-outline containment, closed assembled shells, hardware
 clearance, and structural/bed screens. `make manifold` (also run at the
-end of `make all`) proves candidate-mesh topology; final R6F BREP shell
+end of `make all`) proves candidate-mesh topology; final Obi-Wan BREP shell
 tests, rather than manifoldness alone, prove that no rear cable window
 is present.

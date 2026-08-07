@@ -1,14 +1,23 @@
-# Obi-Wan R6F — extreme two-collar barebone
+# Obi-Wan — extreme two-collar barebone
 
 Obi-Wan removes the full baffle outline and keeps only what carries a driver:
 one LM collar and one UM collar, plus optional tweeter crescent and optional
-flat/graded acoustic wings. It shares no seam, duct, or attachment interface with the
-R6P proud family. Catalog entry: [`artifacts/obiwan/`](../artifacts/obiwan/).
+flat/graded acoustic wings. It shares no seam, duct, or attachment interface
+with the proud family. Catalog entry:
+[`artifacts/obiwan/`](../artifacts/obiwan/).
 
 This product is a **candidate**: its state manifests record
 `release_authorized: false`, and the physical qualification record in
 [`obiwan_physical_qualification.md`](obiwan_physical_qualification.md) is
 pending.
+
+![Obi-Wan with the stock bridge](../images/generated/iso/obiwan_no_floor_stand.png)
+![Obi-Wan with the floor stand](../images/generated/iso/obiwan_floor_stand.png)
+
+Both renders add the optional tweeter crescent and flat wings, because the
+mandatory geometry alone is two bare rings. They share one camera and one
+declared frame with every other product cell, so they are directly comparable;
+`make iso_matrix` regenerates them.
 
 ## Source modules
 
@@ -16,11 +25,11 @@ pending.
 |---|---|
 | `src/lx521_baffle/obiwan/carriers.py` / `src/lx521_baffle/obiwan/split.py` | Extreme Obi-Wan core: structural LM/UM flush-driver collars at R113.0/R51.7 with smooth exposed R113.8/R52.5 side fairings clipped only inside the existing LM--UM and T--UM cusp/service regions, with the 0.40 mm LM--UM inter-carrier gap preserved; rounded LM-to-UM M3 half-laps whose closure-web/base teardrops remain nominal Ø9 while each complete Z-owned cylindrical functional boss is locally Ø9.8, with standalone rear Ø3.4 LM clearance bores and standalone rear-opening blind Ø4.6 x 4.0 UM heat-set receivers; six pause-and-bury captive magnet stations (two upper LM ring-radial, two lower LM shoulder-normal, and two UM ring-radial), all with cavity datums hidden 0.15 mm beneath a continuous carrier surface and no local pad/boss/flat/cue; buried UM/T route spans; and free rear cable continuations. Floor and no-floor share the exact upper LM shoulder used by the wings. Floor has no shallow material below its y=60 shoulder tangent; no-floor alone retains the shallow four-insert bridge. |
 | `src/lx521_baffle/obiwan/lm_split.py` | Optional, mutually exclusive two-print form of the finalized Obi-Wan LM carrier: exact zero-gap world-Y butt seam plus two symmetric Ø1.60 cylindrical pins normal to the seam (world +Y). The pins engage 2.40 mm; the right blind socket is round Ø1.84 and the left is X-relieved to 1.96 × 1.84 mm so the 218.374 mm pitch cannot bind like two tight round fits. Two tiny exterior lands outside the LM recess retain 0.12 mm radial and 0.25 mm end clearance, at least 0.50 mm local radial/end wall, at least 0.05 mm recess plan clearance and 0.13 mm conservative W22-flange clearance. Their worst-case reach is R114.4036: 1.4036 mm beyond the structural R113.0 ring and 0.6036 mm beyond the finalized R113.8 visible fairing. They add no extra fastener or standalone retention/load credit; the monolithic LM remains canonical. |
-| `src/lx521_baffle/obiwan/route.py` | Exact R6F printed-owner segments and physical cable continuations: 0.8 mm minimum walls and 0.85 mm seat roof on the surviving buried UM/T spans; no-floor LM/T/UM entries packed inside the one D20 support opening; LM-owned UM/T envelopes buried 0.05 mm beneath their outside owner limits, leaving a continuous 0.85 mm skin to visible R113.8 with no groove; full-width burial webs and solid roof-to-bore saddles; free UM behind the UM carrier; free T behind the crescent; and the 82.95° crown crossing |
+| `src/lx521_baffle/obiwan/route.py` | Exact printed-owner segments and physical cable continuations: 0.8 mm minimum walls and 0.85 mm seat roof on the surviving buried UM/T spans; no-floor LM/T/UM entries packed inside the one D20 support opening; LM-owned UM/T envelopes buried 0.05 mm beneath their outside owner limits, leaving a continuous 0.85 mm skin to visible R113.8 with no groove; full-width burial webs and solid roof-to-bore saddles; free UM behind the UM carrier; free T behind the crescent; and the 82.95° crown crossing |
 | `src/lx521_baffle/obiwan/bridge.py` | Universal lower-LM front profile (filled exterior union of the historical floor stem and no-floor bridge), immutable no-floor four-hole datum, fused 62 mm insert core with soft cubic shoulders and three rear cable entries packed in the D20 support opening at the deepest existing LM-pad depth (no separate keel or rear ribs), hardware proxies, and an opening-aware biaxial 4 kg sustained-1g/3g/5g structural screen |
 | `src/lx521_baffle/obiwan/floor.py` / `src/lx521_baffle/obiwan/floor_strength.py` | Floor-only integral W64 stem/foot with the constant-thickness convex Option-B transition (75 mm span, 65 mm rise, centreline Rmin 41 mm), rear NL8 panel/service cavity and three buried cable continuations; closed-form five-material net-section screen. This is part of the LM carrier, not an add-on, and the analysis is not FEA or physical qualification. |
 | `src/lx521_baffle/obiwan/attachments.py` | Optional tweeter crescent with complete standalone blind-M3 receiver ears; any cable retention is external/non-modeled, and magnets receive zero structural load credit |
-| `src/lx521_baffle/obiwan/assembled.py` | Review assembly containing the R6F core, selected add-ons, and the explicitly non-manufacturing terminal/Faston proxy |
+| `src/lx521_baffle/obiwan/assembled.py` | Review assembly containing the Obi-Wan core, selected add-ons, and the explicitly non-manufacturing terminal/Faston proxy |
 | `src/lx521_baffle/obiwan/wings.py` | STEP-first flat/graded Obi-Wan acoustic attachments: one canonical monolith per side, three exact surface-normal captive D5 × 2 magnet receivers per side (LM lower shoulder, LM upper, and UM), one saddle compatible with the shared floor/no-floor upper LM shoulder, the approved constant-depth flat or monotonic LM/UM/T-weighted graded rear, and two print options. Both wings start at the Option-B vertical tangent y=74.15 and grow outward through a G1 cubic that joins the outer flank at the LM-aperture lower tangent y=105.981, so no wing panel hangs below the bend. Option A preserves the original three exact-mask pieces; option B keeps the identical lower piece and fuses LM-upper plus UM into one upper piece by restoring only their former clearance seam. Each physical side retains the lower→upper V1L-style through-local-thickness XY dovetail; option A also retains its middle→UM dovetail. Female clearance is 0.05 mm, exposed split clearance closes over the final 2 mm at both endpoints, and the keys add no envelope growth. They register/interlock in XY but provide no independent Z retention. Graded’s complete internal protected-land perimeter is accepted only when paired actual-BREP probes show a C0 jump ≤0.03 mm |
 | `scripts/export_obiwan_wings.py` | Transactional flat/graded exporter: canonical/A/B assembled STEP, ten strict front-face-down STLs with ten exact adjacent `.print.json` authorities, facts, hash manifest, and CAD-derived QA renders under `build/wings/flat/` or `build/wings/graded/`; every review PNG uses hash-validated staged BREPs for a neutral no-floor LM-upper/UM/tweeter reference plus the two coincident LM-lower outlines—blue dash-dot for no-floor and green dotted for floor stand; the side view keeps its useful acoustic-depth scale and includes a complete-depth floor inset |
 | `tests/test_obiwan_wings.py` | Remote-only flat/graded BREP, print-inventory, STEP, STL, mirror, depth, receiver, dovetail/clearance, endpoint-closure, bed-fit, provenance, render, and exact dual-state lower-LM front-profile gates |
@@ -334,11 +343,11 @@ filament choice, print settings, fastener torques, and insert installation.
 
 | STL in `build/<state>/stl/` | Footprint (mm) | Used by |
 |---|---|---|
-| `obiwan_core_1_of_2_lm_carrier.stl` | Structural Ø226 (R113.0) collar with a smooth exposed R113.8 side fairing, clipped only inside the LM--UM cusp to retain the 0.40 mm gap; six ordinary blind LM insert bores at 0/60/120/180/240/300°; two complete rear LM-to-UM ears with locally Ø9.8 cylindrical functional bosses and standalone Ø3.4 rear-driven screw-clearance passages at x=±32/y=315.770; two captive upper ring-magnet stations plus two captive lower shoulder stations, all hidden 0.15 mm beneath continuous surfaces. The right lower visible datum is `(x,y)=(45.285011,89.190370)` on shoulder parameter 0.5 with outward normal `(0.706451,-0.707762)`; the left is its exact mirror. All four LM magnets share source Z=15.10 with the UM pair. The LM also owns the buried UM/T route segments and continuous Ø9/R14 LM handoff. Floor state owns the full-height bent W64 stand and only the upper shallow shoulder; it has no lower box or magnet rails. No-floor owns the shallow four-insert bridge. | canonical large-format release form of the mandatory R6F LM carrier; use it on a verified larger bed **or** both optional keyed halves, never both forms. |
+| `obiwan_core_1_of_2_lm_carrier.stl` | Structural Ø226 (R113.0) collar with a smooth exposed R113.8 side fairing, clipped only inside the LM--UM cusp to retain the 0.40 mm gap; six ordinary blind LM insert bores at 0/60/120/180/240/300°; two complete rear LM-to-UM ears with locally Ø9.8 cylindrical functional bosses and standalone Ø3.4 rear-driven screw-clearance passages at x=±32/y=315.770; two captive upper ring-magnet stations plus two captive lower shoulder stations, all hidden 0.15 mm beneath continuous surfaces. The right lower visible datum is `(x,y)=(45.285011,89.190370)` on shoulder parameter 0.5 with outward normal `(0.706451,-0.707762)`; the left is its exact mirror. All four LM magnets share source Z=15.10 with the UM pair. The LM also owns the buried UM/T route segments and continuous Ø9/R14 LM handoff. Floor state owns the full-height bent W64 stand and only the upper shallow shoulder; it has no lower box or magnet rails. No-floor owns the shallow four-insert bridge. | canonical large-format release form of the mandatory LM carrier; use it on a verified larger bed **or** both optional keyed halves, never both forms. |
 | `obiwan_optional_lm_keyed_1_of_2_bottom.stl` | front-face-down; in-plane bed rotation only; verified within 220 mm in both states | optional replacement print form for the canonical LM; in floor state it inherits the **entire** stem/foot/NL8 panel but remains the bed-checked alternative to the oversized monolith; requires the matching top half |
 | `obiwan_optional_lm_keyed_2_of_2_top.stl` | front-face-down; in-plane bed rotation only; inherits both complete LM-to-UM ears, their local Ø9.8 cylindrical functional bosses, and their standalone Ø3.4 rear clearance passages | optional replacement print form for the canonical LM; requires the matching bottom half |
-| `obiwan_core_2_of_2_um_carrier.stl` | Structural Ø103.4 (R51.7) collar with a smooth exposed R52.5 side fairing, clipped only inside the LM--UM and T--UM cusp/service regions while retaining the 0.40 mm LM--UM gap; two complete front LM-to-UM ears with standalone rear-opening blind Ø4.6 x 4.0 M3 heat-set receivers and 1.9 mm acoustic-front floors; two complete rear UM-to-tweeter ears with standalone Ø3.4 screw-clearance passages; locally Ø9.8 cylindrical functional bosses at both interfaces; two captive ring-magnet stations hidden 0.15 mm beneath the fairing; and the buried T continuation with fully solid-webbed 328°/58° insert bypasses. The UM cable is free behind this carrier and has no printed rear duct. | mandatory R6F UM core; install both LM-to-UM inserts in this individual print before assembly |
-| `obiwan_addon_tweeter_crescent.stl` | cropped V1 crescent plus two complete front UM-to-tweeter ears with locally Ø9.8 functional bosses, standalone rear-opening blind Ø4.6 x 4.0 M3 heat-set receivers, complete 360° walls, and 1.9 mm acoustic-front floors; no printed T-cable arc or conduit | optional R6F face-to-face tweeter carrier; install both inserts in this individual print before assembly, then attach at x=±24, y=421.5 with the T cable free behind it |
+| `obiwan_core_2_of_2_um_carrier.stl` | Structural Ø103.4 (R51.7) collar with a smooth exposed R52.5 side fairing, clipped only inside the LM--UM and T--UM cusp/service regions while retaining the 0.40 mm LM--UM gap; two complete front LM-to-UM ears with standalone rear-opening blind Ø4.6 x 4.0 M3 heat-set receivers and 1.9 mm acoustic-front floors; two complete rear UM-to-tweeter ears with standalone Ø3.4 screw-clearance passages; locally Ø9.8 cylindrical functional bosses at both interfaces; two captive ring-magnet stations hidden 0.15 mm beneath the fairing; and the buried T continuation with fully solid-webbed 328°/58° insert bypasses. The UM cable is free behind this carrier and has no printed rear duct. | mandatory UM core; install both LM-to-UM inserts in this individual print before assembly |
+| `obiwan_addon_tweeter_crescent.stl` | cropped V1 crescent plus two complete front UM-to-tweeter ears with locally Ø9.8 functional bosses, standalone rear-opening blind Ø4.6 x 4.0 M3 heat-set receivers, complete 360° walls, and 1.9 mm acoustic-front floors; no printed T-cable arc or conduit | optional face-to-face tweeter carrier; install both inserts in this individual print before assembly, then attach at x=±24, y=421.5 with the T cable free behind it |
 
 Stable routing/fit review files in each state folder are
 `obiwan_split.step` (mandatory two-carrier core),
@@ -350,23 +359,166 @@ mutually exclusive with the monolithic LM carrier),
 standard/V1L/Obi-Wan UM Ø7 cable references, and the proud/V1L profile-fitted
 split inserts). Obi-Wan has no printed grommet. The V1L grommet halves are also exported as the stable
 STLs listed above.
-The assembled R6F STEP also shows the independent LM Ø7.8 reference.
+The assembled Obi-Wan STEP also shows the independent LM Ø7.8 reference.
+
+## Acoustic wings (flat and graded)
+
+Two mutually exclusive wing families attach to the same three captive magnet
+axes per side. **Flat** is constant depth; **graded** weights its rear depth
+by LM/UM/T wavelength. Both are optional, and
+[`obiwan_acoustic_wings_spec.md`](obiwan_acoustic_wings_spec.md) is their
+design authority.
+
+![Wing design map](../build/common/obiwan_wing_design_map.png)
+
+The engineering layout plots both families' plan, rear-depth field, section
+cuts and dovetail contract on one sheet.
+
+![Flat wing, acoustic front](../build/wings/flat/review/obiwan_wing_flat_front.png)
+![Flat wing, side section](../build/wings/flat/review/obiwan_wing_flat_side_section.png)
+
+![Graded wing, acoustic front](../build/wings/graded/review/obiwan_wing_graded_front.png)
+![Graded wing, side section](../build/wings/graded/review/obiwan_wing_graded_side_section.png)
+
+The front views carry both coincident LM-lower outlines — blue dash-dot for
+no-floor, green dotted for floor stand. The two Y/Z sections are true cuts at
+world X=55 mm and are the clearest statement of what separates the families:
+flat holds its rear at the z=6.8 limit the whole way, while graded's rear
+rises and falls between the LM, UM and T bands. Both keep the acoustic-depth
+scale in the main view and show the complete floor geometry in the inset.
+`rear`, `magnet_roots`, `split_exploded` and `two_piece_split_exploded` sheets
+sit beside them in `build/wings/{flat,graded}/review/`.
+
+Note that these sheets and the design map above still print the pre-rename
+`Ac`/`Ae` family titles inside the image. `Ac` is flat and `Ae` is graded; the
+titles regenerate with the next `make obiwan_wings`.
+
+## Combined plates
+
+A **combo** is one pre-arranged Bambu plate that holds several parts at locked
+positions and prints them in a single job. It is not a different part: each
+combo contains exactly the same meshes as the individual files it replaces, in
+the released front-face-down orientation, and promotion requires exact
+project/STL equivalence against them.
+
+There are four, all under `to_print/obiwan/`:
+
+| Combo | Contains |
+|---|---|
+| `obiwan_01_02_03_04_LM_UM_combo_no_floor_stand` | `01` keyed LM bottom (no-floor) + `02` keyed LM top + `03` UM carrier + `04` tweeter crescent |
+| `obiwan_01_02_03_04_LM_UM_combo_floor_stand` | `01` keyed LM bottom (floor stand) + `02` keyed LM top + `03` UM carrier + `04` tweeter crescent |
+| `obiwan_flat_wings_split2_combo` | all four flat split2 wing pieces: `05`/`08` LM-lower left and right, `06`/`09` fused LM/UM-upper left and right |
+| `obiwan_graded_wings_split2_combo` | all four graded split2 wing pieces: `11`/`14` LM-lower left and right, `12`/`15` fused LM/UM-upper left and right |
+
+**The rule is exclusive-or.** Print a combo *or* its individual pieces, never
+both — a combo plate together with the same parts as separate jobs prints
+every piece twice. And never mix stand states: the `01` bottom is
+state-specific, so a floor-stand plate and any no-floor part do not belong in
+the same speaker.
+
+Print settings, magnet pauses and the refresh procedure are in
+[`to_print/README.md`](../to_print/README.md).
 
 ## Tweeter options
 
-Obi-Wan carries the same default arrangement as Stock and Slim — the
-face-to-face Dayton ND25FW-4 pair — but on its own optional add-on, the
-tweeter crescent `obiwan_addon_tweeter_crescent.stl`, fastened to the UM
-collar at `x=±24, y=421.5`. Leaving it off is a supported configuration.
+Obi-Wan has no vase, so where Stock and Slim choose between two vases, Obi-Wan
+chooses between two **crescents** on one unchanged mount: the pair of half-lap
+ears at `x=±24, y=421.5` on the UM collar, with blind M3 receivers, 360° walls,
+1.9 mm acoustic-front floors and a 0.20 mm axial gap. Both crescents present
+that interface identically, so swapping them touches nothing else — not the UM
+print, not the wings.
 
-The opposed TEBM35C10-4 BMR vase is **not** available for Obi-Wan: it is a
-seam-B vase piece with the regular proud-family female dovetails, and Obi-Wan
-has no seam B. It is released in Stock and Slim envelope profiles only.
+- **Released ND25FW-4 face-to-face crescent** (default) —
+  `obiwan_addon_tweeter_crescent.stl`, the same arrangement Stock and Slim get
+  from their vase: two Dayton ND25FW-4 domes whose faceplates clamp the
+  crescent between them. This is the only release-authorized carrier.
+- **Candidate coaxial TEBM35C10-4 BMR crescent** — two Tectonic BMRs stacked
+  back to back on the same acoustic axis. Documented below; **not**
+  release-authorized.
 
-## Cable routing (R6F)
+Fitting no crescent at all is also a supported configuration.
 
-- `baffle_cable_routing_obiwan.png` documents **R6F**, the surviving buried
-  UM/T owner segments, the free rear UM and tweeter spans, the short
+The opposed TEBM35C10-4 BMR vase used by Stock and Slim is **not** available
+for Obi-Wan: it is a seam-B vase piece with the regular proud-family female
+dovetails, and Obi-Wan has no seam B. The coaxial crescent is the Obi-Wan way
+to run BMRs.
+
+### Candidate coaxial TEBM35C10-4 BMR crescent
+
+![Candidate coaxial BMR crescent](../images/generated/iso/tweeter_tebm35c10_4_crescent.png)
+
+Grown from the released ND crescent rather than drawn beside it, so the UM
+mate is identical by construction: the same half-laps at `x=±24, y=421.5`, the
+same blind-M3 ear receivers, the same 0.20 mm axial gap. Where the released
+crescent leaves an open R39.25 scallop for the face-to-face domes, this part
+fills that scallop with one circular boss carrying both BMRs on the released
+face-to-face acoustic axis at `(0, 468.193)`.
+
+- **50.2 mm stack.** The front driver mounts on the shared z=18.3 acoustic
+  plane facing +z; the rear driver mounts on the boss rear plane at z=−31.9
+  facing −z. Two 25.1 mm driver envelopes back to back is exactly
+  2 × 25.1 = 50.2 mm, of which 38.7 mm protrudes behind the core rear plane.
+- **2.40 mm partition.** Not one shared wall but two independent 1.20 mm blind
+  walls back to back, so each driver keeps the wall thickness already
+  qualified on the proud BMR vase and the two rear volumes stay separate
+  chambers.
+- **Monotonic quintic boss flare**, zero slope at both ends, with no
+  front-face-down overhang. Plan growth is confined to the already-open
+  scallop plus two tangent R5 corner blends; no flank moves outward, so the
+  flat/graded wing clearance envelope is unchanged.
+- **Root fairing** restoring the released crescent's feathered rear taper to
+  full depth, strictly inside the UM ear footprint (fairing reaches R47.0
+  against the R47.5 footprint).
+- **Two Ø4.6 lead outlets** on the −Y meridian at the proud vase's own inset,
+  at z=0.0 for the front driver and z=−13.6 for the rear one. The T cable
+  stays free behind the part exactly as on the released crescent; there is no
+  printed duct.
+- **Eight blind Ø3.2 × 4.0 M2 insert bores**, four per D66 land on the
+  drawing's Ø48.26 pattern, clocked +45°/−45°.
+- The released **M4 clamp holes** at `(±32.56, 436.383)` are inherited and
+  carry no fastener here; they are retained only to keep the released
+  silhouette exact.
+- No magnets, exactly like the released crescent. One closed shell,
+  98.34 × 96.42 × 50.20 mm, front-face-down, support-free, and P2S bed-fitting.
+
+Build it with the local-only target:
+
+    make obiwan_bmr_crescent_cad
+
+Outputs land in `build/bmr_crescent_TEBM35C10-4/` as
+`obiwan_bmr_crescent_TEBM35C10-4.{brep,step,stl,print.json,facts.json}`. The
+target never dispatches to osado. Eleven local gates run with it, covering
+mate identity by symmetric difference outside the boss cylinder in both stand
+states, zero interference with the UM carrier and with the flat and graded
+wings, single-shell topology with only the declared openings, separation of
+the two chambers, bed fit, and source-hash freshness.
+
+**Candidate status.** `release_authorized` is false and
+`PHYSICAL_MEASURE_REQUIRED` is true. The part is deliberately absent from the
+release inventory, the stage manifests and `to_print/`, and its own test
+asserts all three. The two BMRs weigh 102.6 g and the crescent is about
+160 cm³ of plastic, so the two-screw UM joint would hang roughly 300 g —
+well above the released ND25FW-4 crescent. Six items are open before this part
+is printed for use:
+
+1. the two-screw UM-to-crescent joint re-proven at that ~300 g hanging mass;
+2. the TEBM35C10-4 flange, basket and depth measured on the actual driver
+   rather than taken from the published envelope;
+3. the back-to-back 2.40 mm partition printed, then pressure- and
+   rattle-checked with both drivers fitted;
+4. an opinion on the inherited M4 clamp holes, which serve no fastener here;
+5. an acoustic opinion on the restored rear taper at the root fairing; and
+6. the free T cable dressed to both −Y lead outlets without pinch behind the
+   crescent.
+
+The artifact's `facts.json` carries five of these verbatim in its `open_items`
+array, and adds the M2 × 4 heat-set installation check — both D66 lands set
+without breaking through into the opposite pocket.
+
+## Cable routing (buried Obi-Wan routes)
+
+- `baffle_cable_routing_obiwan.png` documents the Obi-Wan routes: the
+  surviving buried UM/T owner segments, the free rear UM and tweeter spans, the short
   un-ducted LM free span, solid-backed insert-bypass bumps, the physical
   T-over-UM crown crossing, state-specific support, and optional tweeter
   carrier. In addition to
@@ -374,7 +526,7 @@ has no seam B. It is released in Stock and Slim envelope profiles only.
   nominal diametric u-z sections with authoritative vertical limits through
   representative UM and T bump/pilot axes.
 
-R6F rotates only its six LM inserts to **0/60/120/180/240/300°** on the
+Obi-Wan rotates only its six LM inserts to **0/60/120/180/240/300°** on the
 unchanged Ø209.5 PCD, leaving the 90° crown clear. The physical UM and T
 cable envelopes are Ø7.0/Ø5.2. The UM cable uses an Ø8.2 buried passage only
 inside the LM carrier, then runs free behind the UM carrier. The T cable uses
@@ -441,11 +593,11 @@ must pass and record a physical dry fit before release. The completed record
 must also bind each state to its exact candidate artifacts and document the
 required 1g/3g/5g structural proof. Record all evidence and per-state signoff
 in `obiwan_physical_qualification.md`; its current pending record and checksum
-are bound into every R6F candidate manifest.
+are bound into every Obi-Wan candidate manifest.
 
 ## Assembly
 
-**R6F:** first prove the real MU terminal/Faston fit with coupon 9 and
+First prove the real MU terminal/Faston fit with coupon 9 and
 the review STEP. If the optional LM print split is selected, use both halves
 and omit the monolithic LM. With both front faces down on one flat datum, seat
 the bottom half's two symmetric Ø1.60 +Y pins simultaneously in the top
@@ -492,4 +644,5 @@ retain the segments against Z separation and carry no structural-retention
 claim. If handling or the experiment requires Z retention, use the same
 documented rear tape or light-bond method on every compared wing. This flat/graded
 contract supersedes their former wavy butt-glue/epoxy seams only; it does not
-change the adhesive instructions for legacy R6P attachments or other splits.
+change the adhesive instructions for legacy proud-family attachments or
+other splits.
