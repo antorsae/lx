@@ -365,7 +365,7 @@ smooth rear-taper shelf rather than a local magnet-shaped patch. The D5 × 2
 cavities and both 0.45 mm Arachne one-bead skins are unchanged.
 
 Use the exact part/variant rows in
-[`CAPTIVE_MAGNET_PAUSE_MANIFEST.md`](review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md). Pause at the listed
+[`CAPTIVE_MAGNET_PAUSE_MANIFEST.md`](../review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md). Pause at the listed
 Bambu Studio marker—the first layer whose toolpath begins closing the roof,
 after the last completely open layer—not at a height inferred from CAD alone.
 Before starting, mark one pole of every magnet and stage each site in manifest
@@ -825,3 +825,63 @@ pause rows. No monolith pause is synthesized.
 9. Mount the drivers, apply the same low torques in the table, and
    re-check collar coplanarity and all fasteners after 24 hours and the
    first loud session.
+
+## Release-form print constraints
+
+These constraints moved here from the project README during the product-first restructure. The per-product geometry they refer to lives in [`stock.md`](stock.md), [`slim.md`](slim.md), and [`obiwan.md`](obiwan.md).
+
+- Run the applicable coupons from the list above before committing a full print.
+- R6P baffle pieces print front-face-down. Support-disabled projects must emit
+  no support features; every support-enabled Obi-Wan keyed LM half and UM
+  carrier embeds its generated duct blocker and must pass the final
+  support/duct collision gate. A Bambu `floating cantilever` warning blocks
+  release.
+- The canonical floor R6F LM with its integral stand and the no-floor monolith
+  are not P2S-printable at their approximately 236.41 x 313.75 mm front-down
+  footprint. On a verified larger-format machine, print them front-face-down
+  and keep support out of buried route mouths, connector cavities, and
+  free-cable paths. Preview
+  every closed bump and optional add-on separately.
+- If the optional Obi-Wan LM keyed split is selected instead, print both halves
+  front-face-down with in-plane rotation only. Recheck each generated
+  footprint against the actual printer; this is the required P2S form. It replaces,
+  rather than accompanies, the monolithic LM. Its two concealed Ø1.60 +Y
+  pins and right-round/left-X-relieved blind sockets sit on small exterior
+  lands outside the LM recess. Their worst-case reach is R114.4036: 1.4036 mm
+  beyond the structural R113.0 ring and 0.6036 mm beyond the finalized R113.8
+  visible fairing.
+  Ac/Ae include matching 0.25 mm interface pockets around those lands;
+  physical fit remains coupon-qualified.
+  Preview the four-nozzle-width horizontal pins, ≥0.50 mm
+  socket/end walls and both lands, then qualify their simultaneous straight-
+  pull fit and actual U22 clearance with a process-matched coupon/print.
+- Ac and Ae wing sides each print as lower, middle, and UM segments cut from
+  the finalized monolith. The lower segment owns the 7/9/4 mm male dovetail
+  into the middle segment; the middle segment owns the 7/8.5/4 mm male
+  dovetail into the UM segment. Both female complements use 0.05 mm clearance.
+  The clearance collapses to exact closure over the final 2 mm at each exposed
+  split endpoint, and neither key may grow the installed plan or depth
+  envelope. Both complete keys retain at least 2.0 mm measured exterior plan
+  ligament. Qualify the fit on a process-matched coupon before a complete wing.
+
+### Magnet insertion and the print sidecar
+
+Print every released baffle/acoustic part front-face-down, including
+non-magnet pieces such as the Obi-Wan tweeter crescent. For magnet-bearing parts,
+pause at the listed Bambu Studio marker, which is the first layer whose
+toolpath begins closing the roof after the last fully open layer. At the pause, insert the exact
+count vertically downward from the +Z side along print -Z, with the polarity
+shown in the manifest; ensure every disc is fully seated below the completed
+layer, clear the toolpath, and resume. Do not use the
+coupon's common **LM/UM 5.96 mm** regression marker for unrelated parts; that
+value applies only to matching Obi-Wan coupon geometry on the tested P2S 0.4
+mm / 0.16 mm profile.
+
+The sibling `.print.json` beside each released nonpolar STL is mandatory
+machine-readable print authority, not optional documentation. It binds the
+exact STL hash and size to X180 plus an optional bed-normal Z rotation and the
+origin translation. Keep each pair together and rerun `scripts/check_manifold.py`
+after copying artifacts; do not print a missing, orphaned, hash-stale, tilted,
+or translation-inconsistent pair. The only release STLs intentionally without
+this acoustic/front-down sidecar are the floor-state polar base and rotor,
+which are measurement jigs with their own flat orientation.

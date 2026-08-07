@@ -1152,10 +1152,16 @@ def test_ae_unions_overlapping_relief_tools_before_final_cut() -> None:
 
 
 def test_docs_reject_fake_p2s_monolith_pauses() -> None:
-    slicing = (ROOT / "docs/CAPTIVE_MAGNET_SLICING.md").read_text(encoding="utf-8")
-    printing = (ROOT / "docs/PRINTING.md").read_text(encoding="utf-8")
-    readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    combined = " ".join("\n".join((slicing, printing, readme)).lower().split())
+    # The product-first restructure moved the Obi-Wan monolith/keyed-split
+    # prose out of the top-level README into docs/obiwan.md; the corpus this
+    # gate reads has to follow it, or the LM oversize warnings could be
+    # deleted without failing anything.
+    documents = (
+        "docs/CAPTIVE_MAGNET_SLICING.md", "docs/PRINTING.md",
+        "docs/obiwan.md", "README.md")
+    combined = " ".join("\n".join(
+        (ROOT / name).read_text(encoding="utf-8") for name in documents
+    ).lower().split())
     assert combined.count("not p2s-printable") >= 5
     assert "no monolith g-code and no fake pause row" in combined
     assert "no monolith pause is synthesized" in combined

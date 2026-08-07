@@ -1,5 +1,11 @@
 # SIMPLIFICATION.md — code reuse, cleanup, and file-hierarchy proposal
 
+> **Historical document (July 2026).** The §7 restructure, the product-first
+> rename, the C7/V0 retirement, and several §10/P-items have since landed, so
+> the proposals below no longer describe pending work and the line references
+> describe the pre-migration tree. Read it as the reasoning behind the current
+> layout, not as an instruction sheet.
+
 Review scope: how this project builds its STEP / 3D-print (STL + `.gcode.3mf`)
 artifacts and the `to_print/` shelf, across the three shipping products —
 **Stock** (B2 proud family), **Slim** (V1L bottom+mids + V1 vase), and

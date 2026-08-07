@@ -95,6 +95,30 @@ map.  `release_manifest.json` is generated locally by the build and records
 the exact source STL, source and output SHA-256 hashes, P2S project source,
 settings, and magnet-pause count for every delivered file.
 
+## The opposed-BMR vase, delivered separately
+
+`vase_TEBM35C10-4` is the alternative to the Dayton ND25FW-4 crescent: one
+vase piece carrying two opposed Tectonic TEBM35C10-4 BMRs, the lower facing
+front and the upper facing rear. It is released in Stock and Slim envelope
+profiles only — never for Obi-Wan — and it replaces the `04` vase in the
+matching product's set. It is **not** part of this shelf, so nothing above
+changes if you use it.
+
+Its ready projects are delivered on their own parallel path, alongside the CAD
+rather than under `to_print/`:
+
+```text
+build/vase_TEBM35C10-4/stock/vase_TEBM35C10-4.gcode.3mf
+build/vase_TEBM35C10-4/slim/vase_TEBM35C10-4.gcode.3mf
+```
+
+Build them on this Mac with `make vase_tebm35c10_4_stock_3mf` and
+`make vase_tebm35c10_4_slim_3mf`, or both with `make vase_tebm35c10_4_3mf`.
+Each requires the promoted CAD from `make vase_tebm35c10_4_cad` and fails
+closed if it is missing. Like everything here, these targets never dispatch to
+osado, and each project is opened directly in Bambu Studio without
+reorienting or re-slicing.
+
 ## Refreshing the shelf
 
 Run this on the Mac that has the pinned Bambu Studio version installed:

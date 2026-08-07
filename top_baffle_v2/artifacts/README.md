@@ -20,4 +20,4 @@ python3 scripts/build_artifact_catalog.py --check
 ```
 
 Do not print a STEP review assembly. Use each STL together with its adjacent
-`.print.json` orientation authority and follow [`PRINTING.md`](../PRINTING.md).
+`.print.json` orientation authority and follow [`PRINTING.md`](../docs/PRINTING.md).

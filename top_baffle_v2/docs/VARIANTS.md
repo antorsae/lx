@@ -169,7 +169,7 @@ Obi-Wan LM-lower/LM-upper/UM pair is 1.10 mm. Slim
 hosts contain the upper land with a broad, symmetric, smooth taper shelf, not
 a station-shaped patch. Every part prints front-face-down. Exact pause heights, grouped sites, local-axis
 polarity, and counts live in
-[`CAPTIVE_MAGNET_PAUSE_MANIFEST.md`](review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md); STL files cannot carry
+[`CAPTIVE_MAGNET_PAUSE_MANIFEST.md`](../review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md); STL files cannot carry
 pause markers. Concept-only drawings, diagnostic renders, historical fit
 coupons, and the retired V0 scarf mate are not release outputs and are not
 converted as production parts. The `coupons/obiwan_ae_embed/` coupon remains the
@@ -475,3 +475,66 @@ Each stand-state folder contains:
 See PRINTING.md for print settings and torques; `make check` guards
 clearances, seam keys, complete-route smoothness, eroded-outline
 containment, service envelopes, state manifests, and cutter health.
+
+## Retired variant design history
+
+The two knife-edge experiments below were removed from the build in August 2026. They are kept here so the reasoning survives; nothing in this section is buildable.
+
+### Variant C7 — LM knife-edge taper (retired)
+
+> **Retired from the build in August 2026.** This variant no longer has build targets, exports, or catalog entries; its geometry modules remain in git history only. The description below is kept as design history.
+
+An experimental replacement for the three LM-section pieces: full
+18.3 mm around the W22, then the REAR face tapers (smoothstep over the
+last 19 mm inside the flank/chamfer outline) down to a ~0.5 mm knife at
+the edge -- the front face stays a full plane, exactly like the
+crescent rear taper. It tests SL's "ideally the baffle would be even
+thinner" in the band where the LM section's edges act (upper LM /
+lower UM octaves), removing ~70 cm³ net (taper minus the T ribs).
+The ducts sit at FIXED z from the rear face, so the binding rule is
+z-interval containment: the rear cut over a duct must stay above
+z_duct - r - skin (3.25 for the mid-plane mains; ~0 for the
+rear-skinned T ducts).
+
+- The cut fades in above the bottom strip (y 52..70: foot/bridge
+  interface keeps full depth) and fades out toward seam B (y 270..~304:
+  protected land and a flush joint to the shared vase piece). The four
+  seam-A dovetail envelopes at ±66/±103 remain inside qualified material.
+- The standard R6P routing is shared by B2 and C7, so those pieces mix
+  freely across the seams. Every duct remains inside the protected
+  full-depth corridor; the tapered rear face carries no ribs or marks.
+  This was asserted by the former test_c7_duct_corridor clearance check
+  and verified with duct-envelope probes on the built piece solids.
+- Print: same bed footprints as the B2 pieces; the taper prints
+  front-face-down with layers shrinking as they rise (support-free).
+
+### Variant V0 — minimalist UM vase (front slide) (retired)
+
+> **Retired from the build in August 2026.** This variant no longer has build targets, exports, or catalog entries; its geometry modules remain in git history only. The description below is kept as design history.
+
+An alternate piece_top for the low-crossover (3-4 kHz) experiments:
+a REAR-side knife bevel (same side and philosophy as the C7 LM taper;
+front plane fully intact) -- 18.3 -> ~0.5 over the last 2.8 mm inside
+the flare/chamfer outline, fading out at the seam-B land and blending
+into the crescent's rear taper above y~400. The band is capped at
+2.8 mm by the shared O6.0 T duct (z=11.5) hugging the left vase
+walls at ~1.6.
+The standard top-piece routing was identical for B2/C7/V0/V1; V0
+mixed with B2 or C7 bottom/mids freely. One D5 x 2 captive station per side
+uses the common Ø5.20 x 2.10 pause-and-bury cavity. The old orphan centres at
+`(±46.000, 324.000)` were 5.263 mm outside the exact B2 flare: even the
+Ø5.20 cavity was detached by 2.663 mm. The interim `(±37.697, 326.470)`
+pair was also rejected: its left site violated the T-route clearance and its
+outboard right land required a visible rear-bevel backfill. The release uses
+the symmetric inboard centres **`(±6.690, 321.290)`**. Each complete R3.20
+land is already contained by the immutable post-bevel host, so the cavity
+operation is subtractive only: there is no local keep, backing, boss, rear
+block, or other exterior magnet-location cue. The pair retains at least
+1.088 mm beyond the D82-cutout rule, 12.847 mm beyond the nearest-pilot rule,
+1.089 mm beyond the grown-seam rule, and 18.579 mm beyond every route rule.
+The rear axes, 45° conical closures, two 0.45 mm skins, driver seat, inserts,
+and provisional rearward marked-pole directions remain unchanged. These
+stations still have no released mate or pairing polarity.
+The B2-family shoulders/wings do NOT fit V0. This was guarded by the
+former test_v0_duct_corridor and test_v0_captive_geometry clearance
+checks, which exported the retired `lx521_top_v0_4of4_vase`.

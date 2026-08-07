@@ -25,6 +25,7 @@
 #   make check               proud regression + final Obi-Wan R6F suites
 #   make candidate           checks + regenerated candidate artifacts + QA
 #   make release             candidate QA + fail-closed physical-release gate
+#   make check_bambu_3mf_audit local synthetic 3MF transform/mesh regressions
 #   make bambu_profiles      local Bambu preset resolution; no CAD/printer I/O
 #   make bambu_dry_run       local per-STL command/provenance preview
 #   make bambu_slice_obiwan  local filtered ready-project diagnostic
@@ -36,6 +37,7 @@
 #   make to_print            local complete P2S shelf: audit + 51 friendly files
 #   make to_print_validate   validate an existing P2S shelf without slicing
 #   make artifacts           local artifacts/ product facade: relink + rehash
+#   make iso_matrix          local standardized README ISO render set
 #
 # Compatible with the macOS-provided GNU make 3.81.
 
@@ -234,7 +236,8 @@ VASE_TEBM_CAD_OUTPUTS := $(VASE_TEBM_STOCK_CAD_OUTPUTS) \
 # remote-first dispatcher captures MAKECMDGOALS, force even an explicitly
 # supplied remote/remote-worker mode back to local, and reject ambiguous mixed
 # CAD+slicer invocations.  Multiple Bambu goals in one invocation are allowed.
-LOCAL_BAMBU_GOALS := bambu_profiles bambu_dry_run \
+LOCAL_BAMBU_GOALS := check_bambu_3mf_audit \
+                     bambu_profiles bambu_dry_run \
                      bambu_slice_obiwan bambu_slice_release \
                      vase_tebm35c10_4_3mf \
                      vase_tebm35c10_4_3mf_validate \
@@ -325,14 +328,18 @@ LOCAL_BAMBU_GOALS := bambu_profiles bambu_dry_run \
 # and could publish links resolved against a worker-local tree, so detect the
 # goal before the remote-first router and pin it to local execution.  It is
 # deliberately absent from the candidate/all DAG.
-LOCAL_PACKAGING_GOALS := artifacts
+# `iso_matrix` joins it for the same reason plus a stronger one: its README
+# render set lands in images/generated/iso/, which is not one of the executor's
+# promoted output roots, so a remote run would draw the PNGs on osado and
+# never return them.
+LOCAL_PACKAGING_GOALS := artifacts iso_matrix
 PACKAGING_GOALS_REQUESTED := $(filter $(LOCAL_PACKAGING_GOALS),$(MAKECMDGOALS))
 ifneq ($(strip $(PACKAGING_GOALS_REQUESTED)),)
 ifneq ($(strip $(filter-out $(LOCAL_PACKAGING_GOALS),$(MAKECMDGOALS))),)
-$(error local-only artifacts goal cannot be mixed with CAD or other Make goals)
+$(error local-only packaging goals cannot be mixed with CAD or other Make goals)
 endif
 ifeq ($(LX_CAD_EXECUTION),remote-worker)
-$(error the artifacts facade is workstation-only and cannot run on a remote CAD worker)
+$(error the local packaging goals are workstation-only and cannot run on a remote CAD worker)
 endif
 override LX_CAD_EXECUTION := local
 endif
@@ -772,7 +779,7 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_v1 $(1)
         no_floor_obiwan_01a obiwan_release \
         obiwan_wings obiwan_wing_exports obiwan_wing_artifacts \
         check_obiwan_wings \
-        common artifacts \
+        common artifacts iso_matrix \
         check check_static check_shared_contracts check_remote_transport \
         check_release_metadata check_slice_metadata \
         check_clearance_suite check_r6f_suite \
@@ -799,7 +806,7 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_v1 $(1)
         check_floor_obiwan_lm_split check_no_floor_obiwan_lm_split \
         check_obiwan_lm_profile check_obiwan_lm_profile_plan \
         check_obiwan_lm_profile_brep manifold _manifold_parallel clean \
-        bambu_profiles bambu_dry_run \
+        check_bambu_3mf_audit bambu_profiles bambu_dry_run \
         bambu_slice_obiwan bambu_slice_release \
         vase_tebm35c10_4_cad vase_tebm35c10_4_3mf \
         vase_tebm35c10_4_3mf_validate \
@@ -1149,6 +1156,15 @@ common: build/common/attachments.step
 artifacts: scripts/build_artifact_catalog.py
 	$(PYTHON_RUN) scripts/build_artifact_catalog.py
 
+# Standardized README comparison renders: one shared camera and one declared
+# frame per scale group, drawn from the promoted STEP files.  Like the
+# artifacts facade it deliberately does not list those STEPs as prerequisites,
+# so a missing input can never launch heavyweight CAD on this workstation; the
+# generator fails closed and names the target that produces it.
+ISO_MATRIX_OUTDIR ?= images/generated/iso
+iso_matrix: scripts/gen_product_iso_matrix.py
+	$(RUN) scripts/gen_product_iso_matrix.py --outdir "$(ISO_MATRIX_OUTDIR)"
+
 check: validate_obiwan_stages check_static check_clearance_suite check_r6f_suite \
         check_obiwan_junction_closures
 
@@ -1204,7 +1220,16 @@ define REQUIRE_BAMBU_CATALOG
 	}
 endef
 
-bambu_profiles: check_slice_metadata
+# The only pytest-style suite in the tree.  It exercises the 3MF transform,
+# mesh-equivalence, result-bbox and bed-fit helpers on pure synthetic fixtures,
+# so it belongs to the workstation Bambu family rather than the remote DAG:
+# pytest is deliberately absent from cad-remote-requirements.lock, and adding
+# it to check_static would make the osado graph depend on a package the pinned
+# executor environment does not carry.
+check_bambu_3mf_audit: tests/test_bambu_3mf_audit.py scripts/bambu_3mf_audit.py
+	$(PYTHON_RUN) -m pytest -q tests/test_bambu_3mf_audit.py
+
+bambu_profiles: check_slice_metadata check_bambu_3mf_audit
 	$(REQUIRE_BAMBU_CATALOG)
 	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
 		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
@@ -1212,7 +1237,7 @@ bambu_profiles: check_slice_metadata
 		--jobs "$(BAMBU_JOBS)" \
 		--prepare-profiles-only
 
-bambu_dry_run: check_slice_metadata
+bambu_dry_run: check_slice_metadata check_bambu_3mf_audit
 	$(REQUIRE_BAMBU_CATALOG)
 	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
 		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
@@ -1220,7 +1245,7 @@ bambu_dry_run: check_slice_metadata
 		--jobs "$(BAMBU_JOBS)" \
 		--dry-run
 
-bambu_slice_obiwan: check_slice_metadata
+bambu_slice_obiwan: check_slice_metadata check_bambu_3mf_audit
 	$(REQUIRE_BAMBU_CATALOG)
 	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
 		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
@@ -1228,7 +1253,7 @@ bambu_slice_obiwan: check_slice_metadata
 		--jobs "$(BAMBU_JOBS)" \
 		--only '*Obi-Wan*' --emit-ready-projects
 
-bambu_slice_release: check_slice_metadata
+bambu_slice_release: check_slice_metadata check_bambu_3mf_audit
 	$(REQUIRE_BAMBU_CATALOG)
 	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
 		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
