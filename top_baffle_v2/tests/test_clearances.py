@@ -5,7 +5,7 @@ final Obi-Wan R6F source and OCC acceptance gates live in
 ``test_obiwan_r6f.py`` so superseded route experiments cannot define release.
 
   * duct-duct 3D centerline separation >= r_a + r_b + 1.5 (both
-    LX_STAND_FOOT states; planar MAINS only -- the entry-ramp mouths
+    LX_STAND_FOOT states; planar MAINS only -- the rear-entry mouths
     intentionally converge at the support window / foot lanes)
   * every W22 pilot bore vs every duct, in plan (or fully z-separated)
   * foot-lane packing webs >= 1.5 (Dx alone, per the packing note)
@@ -28,6 +28,7 @@ import importlib
 import math
 import os
 import sys
+import tempfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -91,19 +92,19 @@ def _routes(stand_foot: bool, routing_profile: str = "proud",
 
     out = {}
     for name in ("lm", "um", "ts"):
-        if name in {"lm", "um"}:
-            pts = cab.route_centerline_points(
-                name, spacing_mm=0.35,
-                um_handoff_key=um_handoff_key)
-            out[name] = np.asarray(pts, dtype=float)
-        else:
+        pts = cab.route_centerline_points(
+            name, spacing_mm=0.35,
+            um_handoff_key=um_handoff_key)
+        out[name] = np.asarray(pts, dtype=float)
+    # Floor state physically has one D6 T trunk.  The two small feeders only
+    # exist in the no-floor split above the shared entry, so including their
+    # legacy construction points in floor collision checks would test ducts
+    # that are not cut from the BREP.
+    if not stand_foot:
+        for name in ("t1f", "t2f"):
             path = Spline(*cab.route_points(name))
             pts = [path @ (i / SAMPLES_N) for i in range(SAMPLES_N + 1)]
             out[name] = np.array([[p.X, p.Y, p.Z] for p in pts])
-    for name in ("t1f", "t2f"):
-        path = Spline(*cab.route_points(name))
-        pts = [path @ (i / SAMPLES_N) for i in range(SAMPLES_N + 1)]
-        out[name] = np.array([[p.X, p.Y, p.Z] for p in pts])
     _ROUTE_CACHE[key] = out
     return out
 
@@ -128,6 +129,11 @@ def _min_three_point_radius(points: np.ndarray) -> float:
              / np.maximum(2.0 * cross, 1e-12))
     curved = radii[cross > 1e-8]
     return math.inf if len(curved) == 0 else float(np.min(curved))
+
+
+def _sample_wire(path, spacing_mm: float = 0.25):
+    count = max(12, int(math.ceil(float(path.length) / spacing_mm)))
+    return [tuple(path @ (index / count)) for index in range(count + 1)]
 
 
 def _cab(stand_foot: bool = True, routing_profile: str = "proud",
@@ -163,7 +169,6 @@ def test_duct_duct_separation():
         _pilot_centers,
     )
 
-    names = ("lm", "um", "ts", "t1f", "t2f")
     merged = ({"ts", "t1f"}, {"ts", "t2f"}, {"t1f", "t2f"})
     cab = _cab(True, "proud")
     for stand_foot in (True, False):
@@ -173,6 +178,7 @@ def test_duct_duct_separation():
                             cab.UM_V1L_HANDOFF_KEY)),
         )
         for variant, routes in route_sets:
+            names = tuple(routes)
             for i, a in enumerate(names):
                 for b in names[i + 1:]:
                     if {a, b} in merged:
@@ -192,8 +198,9 @@ def test_duct_duct_separation():
 
 def test_duct_vs_w22_pilots():
     from lx521_baffle.base import (
-        L22_CUTOUT, L22_PILOT_ANGLES_DEG, L22_PILOT_D_MM, L22_PILOT_DEPTH_MM,
-        L22_PILOT_PCD_MM, THICKNESS_MM, _pilot_centers)
+        L22_CUTOUT, L22_PILOT_ANGLES_DEG, L22_PILOT_DEPTH_MM,
+        L22_PILOT_PCD_MM, M5_INSERT_ENTRY_D_MM, THICKNESS_MM,
+        _pilot_centers)
     from lx521_baffle.cables import CABLE_D, DUCT_Z
 
     pilots = _pilot_centers(L22_CUTOUT[:2], L22_PILOT_PCD_MM,
@@ -212,7 +219,7 @@ def test_duct_vs_w22_pilots():
                               + CABLE_D.get(name, 3.8) / 2.0)
                 if duct_top_z <= pilot_floor_z - 1.5:
                     continue  # T ducts pass fully below the pilot floor
-                required = (L22_PILOT_D_MM / 2.0
+                required = (M5_INSERT_ENTRY_D_MM / 2.0
                             + CABLE_D.get(name, 3.8) / 2.0 + 1.5)
                 for px, py in pilots:
                     measured = float(np.min(np.hypot(
@@ -226,13 +233,147 @@ def test_duct_vs_w22_pilots():
 
 
 def test_foot_lane_webs():
-    from lx521_baffle.cables import FOOT_LANES
+    from shapely.geometry import LineString, box as shapely_box
+    from shapely.ops import unary_union
+    from lx521_baffle.cables import (
+        FOOT_LANES,
+        proud_floor_entry_controls,
+        proud_floor_route_facts,
+    )
+    from lx521_baffle.floor_bend import (
+        BEND_MIN_CENTERLINE_RADIUS_MM,
+        FUSION_OVERLAP_MM,
+        WALL_HALF_THICKNESS_MM,
+        bend_facts,
+        centerline_controls,
+        cubic_point,
+    )
 
     lanes = sorted((x, dia) for x, _z, _y, _r, dia in FOOT_LANES.values())
+    assert set(FOOT_LANES) == {"lm", "um", "ts"}
     for (x0, d0), (x1, d1) in zip(lanes, lanes[1:]):
         web = (x1 - x0) - (d0 + d1) / 2.0
         print(f"  foot lanes x={x0:+.2f}/{x1:+.2f}: web {web:.2f}")
         assert web >= 1.499, f"foot-lane web {web:.3f} < 1.5"
+
+    facts = bend_facts()
+    assert facts["profile"] == "option_b_tangent_cubic"
+    assert facts["wall_thickness_mm"] == 18.3
+    assert facts["rear_span_mm"] == 75.0
+    assert facts["rise_mm"] == 65.0
+    assert facts["curvature_reversals"] == 0
+    assert math.isclose(
+        facts["minimum_centerline_radius_mm"],
+        BEND_MIN_CENTERLINE_RADIUS_MM,
+        abs_tol=1.0e-9,
+    )
+
+    samples = 5000
+    wall_points = [
+        cubic_point(centerline_controls(), index / samples)[1:]
+        for index in range(samples + 1)]
+    wall_profile = unary_union((
+        LineString(wall_points).buffer(
+            WALL_HALF_THICKNESS_MM,
+            resolution=64,
+            cap_style=2,
+        ),
+        shapely_box(
+            0.0, -150.0, 18.3,
+            facts["horizontal_tangent_xyz_mm"][2]
+            + FUSION_OVERLAP_MM),
+        shapely_box(
+            facts["vertical_tangent_xyz_mm"][1]
+            - FUSION_OVERLAP_MM,
+            0.0, 200.0, 18.3),
+    ))
+    route_facts = proud_floor_route_facts()
+    assert route_facts["architecture"] == (
+        "three_trunks_shared_D6_tweeter")
+    assert route_facts["lane_count"] == 3
+    for name, lane in FOOT_LANES.items():
+        controls = proud_floor_entry_controls(name)
+        points = np.asarray([
+            cubic_point(controls, index / samples)
+            for index in range(samples + 1)
+        ])
+        radius = lane[4] / 2.0
+        tube_side_projection = LineString(points[:, 1:]).buffer(
+            radius, resolution=48, cap_style=2)
+        outside_area = tube_side_projection.difference(wall_profile).area
+        assert outside_area <= 1.0e-6, (
+            f"{name} Option-B floor trunk leaves its wall by "
+            f"{outside_area:.6f} mm2 in side projection")
+        entry_radius = _min_three_point_radius(points)
+        print(f"  {name} Option-B entry minimum R{entry_radius:.2f}")
+        assert entry_radius >= 41.0 - 0.03
+
+
+def test_stock_slim_floor_bend_lateral_envelope():
+    """The Option-B wall must reach both existing side envelopes smoothly."""
+    _cab(True, "proud")
+    from lx521_baffle.floor_bend import (
+        LATERAL_HERMITE_SECTIONS,
+        bent_wall_lateral_hermite,
+        lateral_hermite_bounds,
+    )
+    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (
+        FLOOR_BEND_LATERAL_ENVELOPE,
+    )
+
+    contract = FLOOR_BEND_LATERAL_ENVELOPE
+    arguments = {
+        "rear_left_x_mm": contract["rear_x_mm"][0],
+        "rear_right_x_mm": contract["rear_x_mm"][1],
+        "upright_left_x_mm": contract["upright_x_mm"][0],
+        "upright_right_x_mm": contract["upright_x_mm"][1],
+        "rear_left_dx_du": contract["rear_dx_du"][0],
+        "rear_right_dx_du": contract["rear_dx_du"][1],
+        "upright_left_dx_du": contract["upright_dx_du"][0],
+        "upright_right_dx_du": contract["upright_dx_du"][1],
+    }
+    assert lateral_hermite_bounds(**arguments, parameter=0.0) == (
+        *contract["rear_x_mm"],)
+    assert lateral_hermite_bounds(**arguments, parameter=1.0) == (
+        *contract["upright_x_mm"],)
+
+    # One-sided finite differences bind the swept boundary to the rear-foot
+    # and upright-flank slopes. A positional-only loft could still leave the
+    # visibly abrupt wedge that this revision removes.
+    epsilon = 1.0e-6
+    rear = lateral_hermite_bounds(**arguments, parameter=0.0)
+    rear_next = lateral_hermite_bounds(**arguments, parameter=epsilon)
+    upright_prev = lateral_hermite_bounds(
+        **arguments, parameter=1.0 - epsilon)
+    upright = lateral_hermite_bounds(**arguments, parameter=1.0)
+    rear_derivative = tuple(
+        (next_value - value) / epsilon
+        for value, next_value in zip(rear, rear_next, strict=True))
+    upright_derivative = tuple(
+        (value - previous) / epsilon
+        for previous, value in zip(upright_prev, upright, strict=True))
+    for measured, expected in zip(
+            rear_derivative, contract["rear_dx_du"], strict=True):
+        assert math.isclose(measured, expected, abs_tol=2.0e-4)
+    for measured, expected in zip(
+            upright_derivative, contract["upright_dx_du"], strict=True):
+        assert math.isclose(measured, expected, abs_tol=2.0e-4)
+
+    stations = [
+        lateral_hermite_bounds(
+            **arguments, parameter=index / (LATERAL_HERMITE_SECTIONS - 1))
+        for index in range(LATERAL_HERMITE_SECTIONS)
+    ]
+    assert all(
+        left <= prior_left and right >= prior_right
+        for (prior_left, prior_right), (left, right)
+        in zip(stations[:-1], stations[1:], strict=True)
+    )
+
+    wall = bent_wall_lateral_hermite(**arguments)
+    solids = list(wall.solids())
+    assert wall.is_valid and len(solids) == 1 and solids[0].volume > 1.0
+    assert len(list(wall.faces())) == 6
 
 
 def _chamfer_plane():
@@ -835,7 +976,8 @@ def test_v0_duct_corridor():
         UM_PILOT_PCD_MM,
         _pilot_centers,
     )
-    from lx521_baffle.cables import CABLE_D
+    from build123d import Vertex
+    from lx521_baffle.cables import CABLE_D, ts_plan_path
 
     assert v0.PRINT_ORIENTATION == "front-face-down"
     assert set(v0.V0_LEGACY_MAGNET_SITES) == {"right", "left"}
@@ -877,7 +1019,8 @@ def test_v0_duct_corridor():
     from shapely.geometry import Point
     from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (
         DOVETAILS_B, SEAM_B_Y, _below_region, _grown)
-    top_female_keepout = _grown(_below_region(SEAM_B_Y, DOVETAILS_B))
+    top_straight_seam_keepout = _grown(
+        _below_region(SEAM_B_Y, DOVETAILS_B))
     um_pilots = _pilot_centers(
         UM_CUTOUT[:2], UM_PILOT_PCD_MM, UM_PILOT_ANGLES_DEG)
     cutout_margins = {}
@@ -894,7 +1037,7 @@ def test_v0_duct_corridor():
             - v0.V0_CAPTIVE_LAND_RADIUS_MM
             for center in um_pilots)
         split_clearance = (
-            Point(x, y).distance(top_female_keepout)
+            Point(x, y).distance(top_straight_seam_keepout)
             - v0.V0_CAPTIVE_LAND_RADIUS_MM)
         seam_margins[side] = split_clearance - 1.0
         assert cutout_margins[side] >= (
@@ -908,7 +1051,7 @@ def test_v0_duct_corridor():
         assert seam_margins[side] >= (
             v0.V0_KEEPOUT_QUALIFICATION_ALLOWANCE_MM - 1e-6), (
             f"V0 {side} captive land only {split_clearance:.3f} mm "
-            "from the grown seam-B female dovetail")
+            "from the grown straight seam-B split")
     assert all(1.087 < margin < 1.089 for margin in cutout_margins.values())
     assert 12.84 < pilot_margins["left"] < 12.86
     assert 25.65 < pilot_margins["right"] < 25.68
@@ -920,12 +1063,18 @@ def test_v0_duct_corridor():
         v0.V0_MAGNET_INWARD_SHIFT_MM, 3.10, abs_tol=1e-12)
 
     routes = _routes(True)
-    rejected_left_ts_distance = min(
-        math.dist(v0.V0_FIRST_CORRECTION_MAGNET_SITES["left"], (x, y))
-        for x, y, _z in routes["ts"])
+    ts_wire = ts_plan_path()
+
+    def exact_ts_distance(site):
+        return Vertex(site[0], site[1], 0.0).distance_to(ts_wire)
+
+    # Use exact OCC curve distance here.  Route sampling density changes when
+    # an upstream span is shortened, even if this captive-site prefix is
+    # geometrically identical.
+    rejected_left_ts_distance = exact_ts_distance(
+        v0.V0_FIRST_CORRECTION_MAGNET_SITES["left"])
     final_ts_distances = {
-        side: min(
-            math.dist(site, (x, y)) for x, y, _z in routes["ts"])
+        side: exact_ts_distance(site)
         for side, site in v0.V0_MAGNET_SITES.items()
     }
     assert 2.60 < rejected_left_ts_distance < 2.61
@@ -1119,11 +1268,17 @@ def test_v1_field():
 
 
 def test_duct_vs_um_pilots():
-    """The rotated MU10 pilot bores (D4.6 x 4.0 from the front, floor
-    z=14.3) vs the shared TS duct (roof 14.5): they z-overlap, so plan
-    clearance >= 2.3 + 3.0 + 1.5 is required everywhere."""
+    """Full 3D clearance from every route to the front-blind MU pilots.
+
+    The shared TS route is round below the vase but becomes the released
+    low oval through the MU corridor.  Treating its W6.6 plan width as if it
+    also reached the round duct's z=14.5 roof rejects a physically separated
+    underpass.  Use the conservative plan half-width together with the real
+    section Z interval instead.
+    """
     from lx521_baffle.base import (UM_CUTOUT, UM_PILOT_ANGLES_DEG,
                                     UM_PILOT_D_MM, UM_PILOT_PCD_MM,
+                                    UM_PILOT_DEPTH_MM, THICKNESS_MM,
                                     _pilot_centers)
     from lx521_baffle.cables import CABLE_D
 
@@ -1144,15 +1299,30 @@ def test_duct_vs_um_pilots():
                 else:
                     w2 = CABLE_D.get(name, 3.8) / 2.0
                 for px, py in pilots:
-                    margin = (np.hypot(pts[:, 0] - px, pts[:, 1] - py)
-                              - (UM_PILOT_D_MM / 2.0 + w2 + 1.5))
-                    measured = float(np.min(margin))
-                    assert measured >= SAMPLING_SLACK, (
+                    plan_gap = (
+                        np.hypot(pts[:, 0] - px, pts[:, 1] - py)
+                        - (UM_PILOT_D_MM / 2.0 + w2)
+                    )
+                    vertical_gap = []
+                    pilot_floor = THICKNESS_MM - UM_PILOT_DEPTH_MM
+                    for _x, y, z in pts:
+                        _sw2, h2, zc = _section_at(name, y, z)
+                        vertical_gap.append(max(
+                            pilot_floor - (zc + h2),
+                            (zc - h2) - THICKNESS_MM,
+                            0.0,
+                        ))
+                    clearance = np.hypot(
+                        np.maximum(plan_gap, 0.0),
+                        np.asarray(vertical_gap),
+                    )
+                    measured = float(np.min(clearance))
+                    assert measured >= 1.5 - 0.01, (
                         f"{variant} {name} vs MU10 pilot "
-                        f"({px:.1f},{py:.1f}): plan margin "
-                        f"{measured:.2f} < {SAMPLING_SLACK:.2f}")
+                        f"({px:.1f},{py:.1f}): 3D surface clearance "
+                        f"{measured:.2f} < 1.50")
     print("  MU10 pilots vs standard/V1L proud-family ducts: plan "
-          "clearances OK (section-aware)")
+          "and vertical clearances OK (section-aware)")
 
 
 def test_route_smoothness():
@@ -1215,6 +1385,82 @@ def test_route_smoothness():
         f"V1L UM plan/elbow tangent error {join_angle:.3f} deg")
     print(f"  V1L UM terminal span: plan R{plan_r:.2f}, elbow "
           f"R{elbow_r:.2f}, G1 error {join_angle:.3f} deg")
+
+
+def test_um_tail_has_no_curvature_reversal():
+    """The W22 bypass is necessary; a cosmetic S-wiggle is not.
+
+    The signed plan heading must increase continuously from the outer U22 arc
+    into each immutable R14 terminal tangent.  This directly rejects the old
+    positive/negative/positive curvature sequence while retaining independent
+    pilot-clearance checks below.
+    """
+    from build123d import Vertex
+    from lx521_baffle.base import (
+        L22_CUTOUT,
+        L22_PILOT_ANGLES_DEG,
+        L22_PILOT_D_MM,
+        L22_PILOT_PCD_MM,
+        _pilot_centers,
+    )
+
+    rotated_upper_right_pilot = _pilot_centers(
+        L22_CUTOUT[:2], L22_PILOT_PCD_MM, L22_PILOT_ANGLES_DEG)[1]
+    for stand_foot in (False, True):
+        cab = _cab(stand_foot, "proud")
+        for label, key in (
+                ("Stock", "proud"),
+                ("V1L", cab.UM_V1L_HANDOFF_KEY)):
+            path = cab._um_plan_spline(um_handoff_key=key)
+            count = max(400, int(math.ceil(float(path.length) / 0.08)))
+            points = np.asarray([
+                tuple(path @ (index / count))
+                for index in range(count + 1)
+            ])
+            tail = points[
+                points[:, 1] >= cab.UM_FAIR_TAIL_REVIEW_START_Y_MM]
+            chords = np.diff(tail[:, :2], axis=0)
+            headings = np.unwrap(np.arctan2(chords[:, 1], chords[:, 0]))
+            heading_steps = np.diff(headings)
+            minimum_step_deg = math.degrees(float(np.min(heading_steps)))
+            assert minimum_step_deg >= -0.002, (
+                f"{label} UM tail reverses curvature by "
+                f"{minimum_step_deg:.6f} deg/sample "
+                f"(foot={stand_foot})")
+            endpoint_heading = math.atan2(
+                cab.UM_HANDOFF[key]["tangent"][1],
+                cab.UM_HANDOFF[key]["tangent"][0],
+            )
+            # The qualified terminal bearing is just past 180 degrees; map
+            # atan2's negative representation onto the same unwrapped branch
+            # as the sampled tail before comparing overshoot.
+            while endpoint_heading < headings[-1] - math.pi:
+                endpoint_heading += 2.0 * math.pi
+            while endpoint_heading > headings[-1] + math.pi:
+                endpoint_heading -= 2.0 * math.pi
+            overshoot_deg = math.degrees(
+                float(np.max(headings) - endpoint_heading))
+            assert overshoot_deg <= 0.03, (
+                f"{label} UM tail heading overshoots its handoff by "
+                f"{overshoot_deg:.6f} deg (foot={stand_foot})")
+            pilot_wall = (
+                Vertex(*rotated_upper_right_pilot, cab.DUCT_Z["um"])
+                .distance_to(path)
+                - L22_PILOT_D_MM / 2.0
+                - cab.UM_HANDOFF_D_MM / 2.0
+            )
+            assert pilot_wall >= 1.8, (
+                f"{label} fair tail/W22 pilot wall {pilot_wall:.3f} mm "
+                f"below the 1.8-mm release floor "
+                f"(foot={stand_foot})")
+            if key == "proud":
+                assert pilot_wall <= 2.6, (
+                    f"{label} fair tail uses an unnecessary detour: "
+                    f"W22 wall {pilot_wall:.3f} mm > 2.6 mm")
+            print(
+                f"  {label} UM fair tail (foot={stand_foot}): "
+                f"heading monotone, overshoot {overshoot_deg:.4f} deg, "
+                f"W22 wall {pilot_wall:.3f} mm")
 
 
 def test_lm_exit_curvature_and_fishing():
@@ -1289,10 +1535,10 @@ def test_v1l_um_terminal_axis_handoff():
     """The V1L mid-right mouth is centered on the requested 283° axis.
 
     The routing sheet's white standard outlet is below the thin V1L
-    rear plane.  Therefore this regression solves the R14 at z=6.8 and
-    checks the real printed mouth, rather than merely clocking the
-    nominal z=-2 rear endpoint.  It also proves the complete alternate
-    tail remains wholly in piece_mid_right with printable seam walls.
+    rear plane.  Therefore this regression solves the qualified spatial
+    circle at z=6.8 and checks the real printed mouth, rather than merely
+    clocking the nominal z=-2 rear endpoint.  It also proves the complete
+    in-material tail remains in piece_mid_right with printable seam walls.
     """
     cab = _cab(False, "proud")
     from lx521_baffle.base import (
@@ -1310,31 +1556,44 @@ def test_v1l_um_terminal_axis_handoff():
     assert abs(bearing - UM_TERMINAL_CLOCK_DEG) < 1e-8
     assert abs(rear[2] - cab.UM_V1L_REAR_FACE_Z_MM) < 1e-9
 
-    sx, sy, sz = spec["start"]
-    tx, ty, _tz = spec["tangent"]
-    radius = cab.UM_HANDOFF_R_MM
-    cos_phi = 1.0 - ((sz - rear[2]) / radius)
-    phi = math.acos(cos_phi)
-    solved = np.asarray((
-        sx + radius * math.sin(phi) * tx,
-        sy + radius * math.sin(phi) * ty,
-        sz - radius * (1.0 - math.cos(phi)),
-    ))
+    start = np.asarray(spec["start"], dtype=float)
+    tangent = np.asarray(spec["tangent"], dtype=float)
+    normal = np.asarray(spec["arc_normal"], dtype=float)
+    radius = spec["arc_radius_mm"]
+    phi = spec["arc_angle_rad"]
+    solved = (
+        start
+        + radius * math.sin(phi) * tangent
+        + radius * (1.0 - math.cos(phi)) * normal
+    )
     assert np.linalg.norm(solved - rear) < 1e-7, (
-        f"V1L R14 misses physical rear-axis point by "
+        f"V1L circular handoff misses physical rear-axis point by "
         f"{np.linalg.norm(solved-rear):.6g} mm")
+    assert radius >= 23.9, f"V1L spatial handoff radius {radius:.3f} mm"
+    face_tangent = np.asarray(spec["face_tangent"], dtype=float)
+    assert abs(np.linalg.norm(face_tangent) - 1.0) < 1.0e-10
+    assert face_tangent[2] < -0.5
+    assert abs(spec["rear_end"][2] + 2.0) < 1.0e-9
 
     standard = cab.UM_HANDOFF["proud"]
     assert np.linalg.norm(
-        np.asarray(spec["start"]) - np.asarray(standard["start"])) > 20.0
-    assert standard["rear_end"] == (33.445854, 301.491571, -2.00)
-    assert cab.route_points("um")[-1][:2] == standard["start"][:2]
-    assert cab.route_points("um", um_handoff_key=key)[-1][:2] == \
-        spec["start"][:2]
+        np.asarray(spec["start"]) - np.asarray(standard["start"])) > 15.0
+    assert np.allclose(
+        standard["rear_face_axis_point"],
+        (*cab.UM_STANDARD_REAR_FACE_XY_MM, 0.0), atol=1.0e-12)
+    assert np.allclose(
+        cab.route_points("um")[-1][:2], standard["start"][:2],
+        atol=1.0e-12)
+    assert np.allclose(
+        cab.route_points("um", um_handoff_key=key)[-1][:2],
+        spec["start"][:2], atol=1.0e-12)
 
     pts = np.asarray(cab.route_centerline_points(
         "um", spacing_mm=0.20, um_handoff_key=key))
-    anchor = np.asarray((61.76, 283.11))
+    # The tangent lead after the physical z=6.8 mouth is outside the printed
+    # rear surface.  Seam/pilot walls apply only while the duct is in material.
+    pts = pts[pts[:, 2] >= cab.UM_V1L_REAR_FACE_Z_MM - 1.0e-8]
+    anchor = np.asarray(cab.UM_FAIR_TAIL_REVIEW_ANCHOR_XY)
     i0 = int(np.argmin(np.linalg.norm(pts[:, :2] - anchor, axis=1)))
     tail = pts[i0:]
     duct_r = cab.UM_HANDOFF_D_MM / 2.0
@@ -1354,6 +1613,7 @@ def test_v1l_um_terminal_axis_handoff():
     assert pilot_margin >= 0.0, (
         f"V1L UM terminal tail/pilot margin {pilot_margin:.3f} < 0")
     print(f"  V1L UM rear mouth: r={station:.3f} mm @ {bearing:.3f} deg; "
+          f"spatial R{radius:.2f}; "
           f"mid-right walls C/B={seam_c_wall:.2f}/{seam_b_wall:.2f} mm; "
           f"pilot margin={pilot_margin:.2f} mm")
 
@@ -1429,21 +1689,367 @@ def test_ts_eroded_outline_containment():
             f"seam relief at ({x:.3f},{y:.3f}) outer wall {wall:.3f}")
 
 
+def test_stock_slim_ts_full_section_containment():
+    """The complete guarded production cutter may open only at its outlet.
+
+    Centerline/outline tests cannot see the rear crescent taper, blind pilot
+    openings, or the Slim rear field.  Expand both half-axes by 0.8 mm and
+    subtract each real unbored host; any residual outside the small declared
+    tweeter-outlet mouth is an exposed duct or an unapproved opening.
+    """
+    from build123d import Box, Pos
+    from lx521_baffle.base import baffle_solid
+    from lx521_baffle.proud.top_baffle_nd25fw4_b import TWEETER_DROP_MM
+    from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
+    from lx521_baffle.proud.top_baffle_nd25fw4_v1 import (
+        v1_magnet_free_solid,
+    )
+
+    cab = _cab(False, "proud")
+    cutter = cab.ts_cutter_from_path(
+        cab.ts_plan_path(cab.TS_ROUTE_CAPTIVE),
+        section_extra_mm=0.8,
+    )
+    outlet_mask = Pos(
+        cab.TS_OUTLET_XY_MM[0],
+        430.5,
+        cab.DUCT_Z["ts"],
+    ) * Box(12.0, 12.0, 12.0)
+    hosts = {
+        "Stock": baffle_solid(OUTLINE_B2, TWEETER_DROP_MM),
+        "Slim": v1_magnet_free_solid(),
+    }
+    for label, host in hosts.items():
+        residual = ((cutter - host) - outlet_mask).clean()
+        volume = 0.0 if residual is None else float(residual.volume)
+        assert volume <= 1.0e-5, (
+            f"{label} guarded TS cutter has {volume:.6f} mm3 outside "
+            "the unbored host or in an unapproved opening")
+        print(f"  {label} guarded TS cutter: no undeclared exposure")
+
+
+def _edge_min_radius(edge, samples: int = 501) -> float:
+    points = np.asarray([
+        tuple(edge @ (index / (samples - 1)))
+        for index in range(samples)
+    ], dtype=float)
+    a = points[1:-1] - points[:-2]
+    b = points[2:] - points[1:-1]
+    c = points[2:] - points[:-2]
+    cross = np.linalg.norm(np.cross(a, b), axis=1)
+    curved = cross > 1.0e-12
+    if not np.any(curved):
+        return math.inf
+    radii = (
+        np.linalg.norm(a, axis=1)
+        * np.linalg.norm(b, axis=1)
+        * np.linalg.norm(c, axis=1)
+        / np.maximum(2.0 * cross, 1.0e-18)
+    )
+    return float(np.min(radii[curved]))
+
+
+def _edge_join_angle_deg(first, second) -> float:
+    a = np.asarray(tuple(first % 1.0), dtype=float)
+    b = np.asarray(tuple(second % 0.0), dtype=float)
+    cosine = abs(float(np.dot(a, b))) / (
+        float(np.linalg.norm(a)) * float(np.linalg.norm(b)))
+    return math.degrees(math.acos(np.clip(cosine, -1.0, 1.0)))
+
+
+def test_stock_slim_curve_optimization_contracts():
+    """Optimized paths retain every interface and are genuinely smooth."""
+    from build123d import Spline
+
+    cab = _cab(False, "proud")
+
+    optimized = cab.ts_plan_path(cab.TS_ROUTE_CAPTIVE)
+    legacy = Spline(*[
+        (x, y, 0.0) for x, y in cab._ts_route(cab.TS_ROUTE_CAPTIVE)
+    ])
+    old_join = cab._path_parameter_at_y(
+        legacy, cab.TS_OPTIMIZED_START_Y_MM)
+    retained = legacy.trim(0.0, old_join)
+    first = optimized.edges()[0]
+    for parameter in np.linspace(0.0, 1.0, 41):
+        assert math.dist(
+            tuple(first @ float(parameter)),
+            tuple(retained @ float(parameter)),
+        ) <= 1.0e-7, "optimized TS moved its captive/seam prefix"
+    assert math.dist(tuple(optimized @ 0.0), tuple(legacy @ 0.0)) <= 1e-9
+    assert math.dist(tuple(optimized @ 1.0), tuple(legacy @ 1.0)) <= 1e-9
+    saved = float(legacy.length - optimized.length)
+    assert saved >= 9.8, f"optimized TS saved only {saved:.3f} mm"
+    optimized_edges = optimized.edges()[1:]
+    local_radii = []
+    for edge in optimized_edges:
+        radius = _edge_min_radius(edge)
+        if not math.isinf(radius):
+            local_radii.append(radius)
+    assert min(local_radii) >= 11.9, (
+        f"optimized upper TS local radius {min(local_radii):.3f} < R11.9")
+    for first_edge, second_edge in zip(
+            optimized.edges(), optimized.edges()[1:]):
+        angle = _edge_join_angle_deg(first_edge, second_edge)
+        assert angle <= 0.02, f"optimized TS G1 error {angle:.5f} deg"
+
+    expected_mouths = {
+        "lm": (*cab.STOCK_SLIM_LM_ENTRY_XY, 0.0),
+        "um": (*cab.STOCK_SLIM_UM_ENTRY_XY, 0.0),
+    }
+    assert cab.STOCK_SLIM_LM_ENTRY_XY == cab.OBIWAN_NO_FLOOR_LM_ENTRY_XY
+    assert cab.STOCK_SLIM_T_ENTRY_XY == cab.OBIWAN_NO_FLOOR_T_ENTRY_XY
+    assert cab.STOCK_SLIM_UM_ENTRY_XY == cab.OBIWAN_NO_FLOOR_UM_ENTRY_XY
+    packed_ports = (
+        ("LM", np.asarray(cab.STOCK_SLIM_LM_ENTRY_XY),
+         cab.BIG_RAMP_D["lm"] / 2.0),
+        ("T", np.asarray(cab.STOCK_SLIM_T_ENTRY_XY),
+         cab.NO_FLOOR_T_ENTRY_D_MM / 2.0),
+        ("UM", np.asarray(cab.STOCK_SLIM_UM_ENTRY_XY),
+         cab.UM_HANDOFF_D_MM / 2.0),
+    )
+    window_center = np.asarray(cab.SUPPORT_WINDOW[:2], dtype=float)
+    window_radius = cab.SUPPORT_WINDOW[2] / 2.0
+    for name, center, radius in packed_ports:
+        rim = window_radius - float(np.linalg.norm(center - window_center)) - radius
+        assert rim >= 0.72, f"shared {name} port has only {rim:.3f} mm rim"
+    for index, (first_name, first_center, first_radius) in enumerate(packed_ports):
+        for second_name, second_center, second_radius in packed_ports[index + 1:]:
+            wall = (
+                float(np.linalg.norm(first_center - second_center))
+                - first_radius - second_radius)
+            assert wall >= 0.80, (
+                f"shared {first_name}/{second_name} port wall "
+                f"{wall:.3f} mm < 0.80 mm")
+    radius_floors = {"lm": 16.7, "um": 17.6}
+    for key in ("proud", cab.UM_V1L_HANDOFF_KEY):
+        for name in ("lm", "um"):
+            path = cab.stock_slim_no_floor_entry_path(name, key)
+            edges = path.edges()
+            assert math.dist(tuple(edges[0] @ 1.0),
+                             expected_mouths[name]) <= 1.0e-8
+            assert math.isclose(
+                float((path @ 0.0).Z),
+                cab.STOCK_SLIM_NO_FLOOR_REAR_Z_MM,
+                abs_tol=1.0e-8,
+            )
+            radius = _edge_min_radius(edges[1])
+            assert radius >= radius_floors[name], (
+                f"{key} {name} entry radius R{radius:.3f} < "
+                f"R{radius_floors[name]:.1f}")
+            for first_edge, second_edge in zip(edges, edges[1:]):
+                angle = _edge_join_angle_deg(first_edge, second_edge)
+                assert angle <= 0.02, (
+                    f"{key} {name} entry G1 error {angle:.5f} deg")
+
+    t_entry = cab.no_floor_t_entry_path()
+    t_edges = t_entry.edges()
+    assert math.dist(
+        tuple(t_edges[0] @ 1.0),
+        (*cab.STOCK_SLIM_T_ENTRY_XY, 0.0),
+    ) <= 1.0e-8
+    t_radius = _edge_min_radius(t_edges[1])
+    assert t_radius >= 10.6, (
+        f"no-floor shared-T entry radius R{t_radius:.3f} < R10.6")
+    for first_edge, second_edge in zip(t_edges, t_edges[1:]):
+        angle = _edge_join_angle_deg(first_edge, second_edge)
+        assert angle <= 0.02, (
+            f"no-floor shared-T entry G1 error {angle:.5f} deg")
+    assert math.dist(
+        tuple(t_entry @ 1.0),
+        (-16.8, 58.8, cab.DUCT_Z["ts"]),
+    ) <= 1.0e-8
+    for key in ("proud", cab.UM_V1L_HANDOFF_KEY):
+        physical_entries = {
+            "LM": (
+                np.asarray(_sample_wire(
+                    cab.stock_slim_no_floor_entry_path("lm", key), 0.10)),
+                cab.BIG_RAMP_D["lm"] / 2.0,
+            ),
+            "T": (
+                np.asarray(_sample_wire(t_entry, 0.10)),
+                cab.NO_FLOOR_T_ENTRY_D_MM / 2.0,
+            ),
+            "UM": (
+                np.asarray(_sample_wire(
+                    cab.stock_slim_no_floor_entry_path("um", key), 0.10)),
+                cab.BIG_RAMP_D["um"] / 2.0,
+            ),
+        }
+        physical_entries = {
+            name: (points[points[:, 2] >= -1.0e-9], radius)
+            for name, (points, radius) in physical_entries.items()
+        }
+        names = tuple(physical_entries)
+        for index, first_name in enumerate(names):
+            first, first_radius = physical_entries[first_name]
+            for second_name in names[index + 1:]:
+                second, second_radius = physical_entries[second_name]
+                minimum_squared = math.inf
+                for start in range(0, len(first), 256):
+                    delta = first[start:start + 256, None, :] - second[None, :, :]
+                    minimum_squared = min(
+                        minimum_squared,
+                        float(np.min(np.einsum("ijk,ijk->ij", delta, delta))),
+                    )
+                wall = (
+                    math.sqrt(minimum_squared)
+                    - first_radius - second_radius)
+                assert wall >= 0.80, (
+                    f"{key} {first_name}/{second_name} entry web "
+                    f"{wall:.3f} mm < 0.80 mm")
+    print(
+        f"  Stock/Slim optimized curves: TS -{saved:.2f} mm / local "
+        f"R{min(local_radii):.2f}; LM >=R16.7; UM >=R17.6; "
+        "shared three-port entries match Obi-Wan; T >=R10.6; "
+        "all interfaces exact and G1")
+
+
+def test_stock_slim_no_floor_full_duct_containment():
+    """A guarded complete duct set has no undeclared exterior opening."""
+    import gc
+    from build123d import Box, Pos
+    from lx521_baffle.base import baffle_solid
+    from lx521_baffle.proud.top_baffle_nd25fw4_b import TWEETER_DROP_MM
+    from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
+    from lx521_baffle.proud.top_baffle_nd25fw4_v1 import (
+        v1_magnet_free_solid,
+    )
+
+    cab = _cab(False, "proud")
+    hosts = (
+        ("Stock", "proud", baffle_solid(OUTLINE_B2, TWEETER_DROP_MM)),
+        ("Slim", cab.UM_V1L_HANDOFF_KEY, v1_magnet_free_solid()),
+    )
+    # All negative-Z cutter extension belongs to a declared rear interface.
+    # Positive-Z masks below are local to the two upper terminal mouths; they
+    # do not hide a sidewall, magnet, driver-opening, or seam exposure.
+    rear_interface_mask = Pos(0.0, 250.0, -10.0) * Box(
+        400.0, 600.0, 20.2)
+    for label, key, host in hosts:
+        lm_spec = cab._lm_handoff_spec(key)
+        um_spec = cab._um_handoff_spec(key)
+        thin = label == "Slim"
+        lm_outlet_mask = Pos(
+            lm_spec["face"][0],
+            lm_spec["face"][1] - 2.5,
+            3.5 if thin else -0.5,
+        ) * Box(22.0, 38.0, 10.0 if thin else 3.0)
+        um_outlet_mask = Pos(
+            um_spec["outlet"][0],
+            um_spec["outlet"][1],
+            3.5 if thin else -0.5,
+        ) * Box(26.0, 26.0, 10.0 if thin else 3.0)
+        t_entry = cab.no_floor_t_entry_cutter(radial_extra_mm=0.8)
+        cutters = (
+            ("LM", cab.lm_tube(
+                um_handoff_key=key, radial_extra_mm=0.8),
+             rear_interface_mask + lm_outlet_mask),
+            ("UM", cab.um_tube(
+                um_handoff_key=key, radial_extra_mm=0.8),
+             rear_interface_mask + um_outlet_mask),
+            ("T", t_entry, rear_interface_mask),
+        )
+        for name, cutter, declared_interfaces in cutters:
+            residual = ((cutter - host) - declared_interfaces).clean()
+            volume = 0.0 if residual is None else float(residual.volume)
+            assert volume <= 1.0e-5, (
+                f"{label} guarded {name} has {volume:.6f} mm3 outside "
+                "the host away from declared entries/exits")
+        print(f"  {label} LM/UM/T guarded +0.8 mm: no undeclared exposure")
+        del cutters, t_entry
+        gc.collect()
+
+
+def test_stock_slim_no_floor_bottom_topology():
+    """The relocated three-port entry must not detach a lower-piece island."""
+    _cab(False, "proud")
+    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import pieces
+    from lx521_baffle.proud.top_baffle_nd25fw4_v1l_split import pieces_v1l
+
+    stock = pieces(
+        only="piece_bottom",
+        cable_y_range=(-1.0e6, 130.0),
+    )["piece_bottom"]
+    slim = pieces_v1l(only="piece_bottom")["piece_bottom"]
+    for label, part in (("Stock", stock), ("Slim", slim)):
+        solids = list(part.solids())
+        assert part.is_valid, f"{label} no-floor bottom is not a valid BREP"
+        assert len(solids) == 1, (
+            f"{label} no-floor bottom has {len(solids)} solids: "
+            f"{[item.volume for item in solids]}")
+        assert solids[0].volume > 1.0, f"{label} no-floor bottom is empty"
+        print(f"  {label} no-floor bottom: one connected valid solid")
+
+
+def test_c7_floor_bottom_serialization_topology():
+    """The curved C7 floor owner must survive both release serializers.
+
+    This catches two failures that BREP ``is_valid`` alone does not: a
+    variant taper mismatch at the Option-B tangent seam, and non-manifold TS
+    faces produced by intersecting floor/upper duct cutters.
+    """
+    _cab(True, "proud")
+    from build123d import export_step, export_stl, import_step
+    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import pieces
+    from lx521_baffle.proud.top_baffle_nd25fw4_c7 import taper_cutters
+    from lx521_baffle.stl_export import stl_topology_defects
+
+    part = pieces(
+        shape_cuts=taper_cutters(),
+        only="piece_bottom",
+    )["piece_bottom"]
+    solids = list(part.solids())
+    assert part.is_valid and len(solids) == 1 and solids[0].volume > 1.0
+
+    with tempfile.TemporaryDirectory(prefix="lx-c7-floor-") as temp_text:
+        temp = Path(temp_text)
+        step_path = temp / "c7_floor_bottom.step"
+        stl_path = temp / "c7_floor_bottom.stl"
+        export_step(part, step_path, timestamp="2020-01-01T00:00:00")
+        round_trip = import_step(step_path)
+        assert round_trip.is_valid
+        assert len(round_trip.solids()) == 1
+        assert math.isclose(
+            round_trip.volume, part.volume,
+            rel_tol=1.0e-8, abs_tol=0.01)
+        export_stl(
+            part, stl_path, tolerance=0.05, angular_tolerance=0.2)
+        _mesh, defects = stl_topology_defects(stl_path)
+        assert defects == {}, f"C7 floor STL topology defects: {defects}"
+    print("  C7 Option-B floor: valid solid, STEP solid, strict STL")
+
+
 def test_bridge_inserts():
     """No-stand bridge heat-set inserts (rear blind bores, z 0..6.8):
     plan-clear of every duct that z-overlaps them (>= r_bore + r_duct
     + 1.5), and the front face stays intact above them."""
-    from lx521_baffle.base import (BRIDGE_HOLE_XY, BRIDGE_INSERT_D_MM,
-                                    BRIDGE_INSERT_DEPTH_MM)
+    from lx521_baffle.base import (
+        BRIDGE_HOLE_XY, BRIDGE_INSERT_DEPTH_MM, M5_INSERT_ENTRY_D_MM)
     from lx521_baffle.cables import CABLE_D
 
-    r_ins = BRIDGE_INSERT_D_MM / 2.0
-    pts = _routes(False)  # no-stand
-    # include the strip feeders (they run at z=3.7/9.5 in the bottom)
+    # The first 2 mm is the governing D6.5 entry; using it over the complete
+    # Z overlap is conservative for the deeper D6.4 body.
+    r_ins = M5_INSERT_ENTRY_D_MM / 2.0
+    pts = _routes(False)  # no-stand retained main routes
+    # Use the actual curved no-floor entries and Y-manifold, not the legacy
+    # straight-ramp/feed control polygons.
     cab = sys.modules[CABLE_MODULE]
-    feeders = {n: np.array(cab.route_points(n)) for n in ("t1f", "t2f")}
-    for name, arr in {**pts, **feeders}.items():
-        r = CABLE_D.get(name, 3.8) / 2.0
+    actual_entries = {
+        "lm_entry": np.asarray(_sample_wire(
+            cab.stock_slim_no_floor_entry_path("lm")), dtype=float),
+        "um_entry": np.asarray(_sample_wire(
+            cab.stock_slim_no_floor_entry_path("um")), dtype=float),
+        "t_entry": np.asarray(_sample_wire(
+            cab.no_floor_t_entry_path()), dtype=float),
+    }
+    entry_radii = {
+        "lm_entry": cab.LM_EXIT_D_MM / 2.0,
+        "um_entry": cab.BIG_RAMP_D["um"] / 2.0,
+        "t_entry": cab.NO_FLOOR_T_ENTRY_D_MM / 2.0,
+    }
+    for name, arr in {**pts, **actual_entries}.items():
+        r = entry_radii.get(name, CABLE_D.get(name, 3.8) / 2.0)
         need = r_ins + r + 1.5
         zov = arr[(arr[:, 2] - r < BRIDGE_INSERT_DEPTH_MM)
                   & (arr[:, 2] + r > 0.0)]
@@ -1507,14 +2113,18 @@ def test_v1l_mid_right_terminal_duct_topology():
 
     Analytic centerline checks cannot catch an OCC subtraction that
     silently leaves a cap or invalid sliver.  Build the actual mid-right
-    split through the low-memory single-piece path, then intersect the
-    authoritative cutter and a small probe at the physical 283-degree
-    rear mouth.
+    split through the low-memory single-piece path, then measure clearance
+    from several authoritative centerline stations and the physical
+    283-degree rear mouth to the finished solid.  Point-to-solid distances
+    preserve the topology gate without materializing a second full UM sweep
+    and its memory-heavy intersection tree.
     """
     import gc
-    from build123d import Pos, Sphere
+    from build123d import Vertex
 
     cab = _cab(False, "proud")
+    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (
+        SEAM_A_Y, SEAM_B_Y)
     from lx521_baffle.proud.top_baffle_nd25fw4_v1l_split import pieces_v1l
 
     parts = pieces_v1l(only="piece_mid_right")
@@ -1525,43 +2135,47 @@ def test_v1l_mid_right_terminal_duct_topology():
 
     mid = parts["piece_mid_right"]
     key = cab.UM_V1L_HANDOFF_KEY
-    tube = cab.um_tube(um_handoff_key=key)
-    collision = mid & tube
-    collision_volume = 0.0 if collision is None else collision.volume
-    assert collision_volume < 0.05, (
-        f"V1L keyed UM cutter left {collision_volume:.4f} mm3 in mid_right")
+    route = [
+        point for point in cab.route_centerline_points(
+            "um", spacing_mm=4.0, um_handoff_key=key)
+        if SEAM_A_Y + 8.0 <= point[1] <= SEAM_B_Y - 8.0
+    ]
+    stride = max(1, len(route) // 10)
+    probes = route[::stride]
+    if probes[-1] != route[-1]:
+        probes.append(route[-1])
+    clearances = [Vertex(*point).distance_to(mid) for point in probes]
+    assert min(clearances) >= 3.60, (
+        f"V1L keyed UM bore pinched/capped: centerline clearance "
+        f"{min(clearances):.3f} mm < 3.60 mm")
 
     rear = cab.UM_HANDOFF[key]["rear_face_axis_point"]
-    mouth_probe = Pos(*rear) * Sphere(0.50)
-    mouth_collision = mid & mouth_probe
-    mouth_volume = (0.0 if mouth_collision is None
-                    else mouth_collision.volume)
-    assert mouth_volume < 0.01, (
-        f"V1L 283-degree rear mouth retained a cap "
-        f"({mouth_volume:.4f} mm3)")
+    mouth_clearance = Vertex(*rear).distance_to(mid)
+    assert mouth_clearance >= 3.60, (
+        f"V1L 283-degree rear mouth retained a cap/pinch: center clearance "
+        f"{mouth_clearance:.3f} mm < 3.60 mm")
     print(f"  V1L split topology: valid low-memory mid_right; keyed bore "
-          f"residual={collision_volume:.4f} mm3; mouth cap="
-          f"{mouth_volume:.4f} mm3")
-    del parts, mid, tube, collision, mouth_probe, mouth_collision
+          f"minimum center clearance={min(clearances):.3f} mm; mouth="
+          f"{mouth_clearance:.3f} mm")
+    del parts, mid, route, probes, clearances
     gc.collect()
 
 
 def _test_v1l_upper_dovetail_depth_profile(
         piece_name: str, dovetail_index: int):
-    """One seam-B male key obeys the shared V1L/V1 rear plane.
+    """V1L seam-B male dovetails follow the 11.5-mm local depth.
 
-    The low-memory per-piece exporter once applied only the LM-side
-    field cutter to the two mids.  Because each male tooth projects
-    above seam B into the vase, its projecting 6-mm plan region escaped
-    that cutter and retained the stock 18.3-mm depth.  Probe the actual
-    emitted geometry inside each tooth, away from the seam and edges.
+    The low-memory per-piece exporter must apply both the LM-side field
+    cutter and the V1 vase rear slab because each tooth projects 6 mm above
+    seam B.  Probe the actual emitted tooth away from its seam and edges.
     """
     import gc
     from build123d import Box, Pos
 
     _cab(False, "proud")
     from lx521_baffle.base import THICKNESS_MM
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import DOVETAILS_B, SEAM_B_Y
+    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (
+        DOVETAILS_B, SEAM_B_Y)
     from lx521_baffle.proud.top_baffle_nd25fw4_v1 import REAR_MM
     from lx521_baffle.proud.top_baffle_nd25fw4_v1l_split import pieces_v1l
 
@@ -1595,25 +2209,26 @@ def test_v1l_upper_dovetail_depth_mid_right():
 
 
 def test_seam_keys_vs_ducts():
-    """Every seam dovetail (grown female pocket) must keep a wall to
-    every duct crossing its seam -- the check that was missing when the
-    deep reroute ran the UM arc straight through the old +-97 A-keys."""
-    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (DOVETAILS_A, DOVETAILS_C,
-                                             DOVETAILS_B, SEAM_A_Y,
-                                             SEAM_B_Y, SEAM_C_X)
+    """Every regular dovetail pocket keeps a wall to every crossing duct."""
+    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (
+        DOVETAILS_A, DOVETAILS_B, DOVETAILS_C,
+        SEAM_A_Y, SEAM_B_Y, SEAM_C_X)
     from lx521_baffle.cables import CABLE_D
 
     rects = []  # (x0, x1, y0, y1) grown pockets, both directions
-    for cx, _n, h, d in DOVETAILS_A:
-        rects.append((cx - h / 2 - 0.1, cx + h / 2 + 0.1,
-                      SEAM_A_Y - d - 0.1, SEAM_A_Y + d + 0.1))
-    for cx, _n, h, d in DOVETAILS_B:
-        rects.append((cx - h / 2 - 0.1, cx + h / 2 + 0.1,
-                      SEAM_B_Y - d - 0.1, SEAM_B_Y + d + 0.1))
-    # R6F Obi-Wan is two rings with half-laps; it has no B2 seam keys.
-    for cy, _n, h, d in DOVETAILS_C:
-        rects.append((SEAM_C_X - d - 0.1, SEAM_C_X + d + 0.1,
-                      cy - h / 2 - 0.1, cy + h / 2 + 0.1))
+    for cx, _neck, head, depth in DOVETAILS_A:
+        rects.append((cx - head / 2.0 - 0.1, cx + head / 2.0 + 0.1,
+                      SEAM_A_Y - depth - 0.1,
+                      SEAM_A_Y + depth + 0.1))
+    for cx, _neck, head, depth in DOVETAILS_B:
+        rects.append((cx - head / 2.0 - 0.1, cx + head / 2.0 + 0.1,
+                      SEAM_B_Y - depth - 0.1,
+                      SEAM_B_Y + depth + 0.1))
+    for cy, _neck, head, depth in DOVETAILS_C:
+        rects.append((SEAM_C_X - depth - 0.1,
+                      SEAM_C_X + depth + 0.1,
+                      cy - head / 2.0 - 0.1,
+                      cy + head / 2.0 + 0.1))
     cab = _cab(True, "proud")
     for stand_foot in (True, False):
         route_sets = (
@@ -1623,6 +2238,10 @@ def test_seam_keys_vs_ducts():
         )
         for variant, routes in route_sets:
             for name, pts in routes.items():
+                if variant == "V1L" and name == "um":
+                    pts = pts[
+                        pts[:, 2] >= cab.UM_V1L_REAR_FACE_Z_MM - 1.0e-8
+                    ]
                 r = CABLE_D.get(name, 3.8) / 2.0
                 for x, y, _z in pts:
                     for x0, x1, y0, y1 in rects:
@@ -1633,7 +2252,119 @@ def test_seam_keys_vs_ducts():
                             f"{variant} {name} duct {dd:.2f} from seam "
                             f"key [{x0:.1f}..{x1:.1f}]x"
                             f"[{y0:.1f}..{y1:.1f}] at ({x:.1f},{y:.1f})")
-    print("  seam keys: standard/V1L ducts keep >=1.4 to every pocket")
+    print("  regular dovetails: standard/V1L ducts keep >=1.4 to every pocket")
+
+
+def test_shared_lm_clock_and_hidden_seam_b_m3():
+    """Shared W22 clock plus the radial mid-right/vase mechanical joint."""
+    from lx521_baffle.base import (
+        L22_CUTOUT,
+        L22_PILOT_ANGLES_DEG,
+        L22_PILOT_PCD_MM,
+        THICKNESS_MM,
+    )
+    import lx521_baffle.flush as flush
+    from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (
+        DOVETAILS_B,
+        SEAM_A_Y,
+        SEAM_B_M3_AXIS_X_MM,
+        SEAM_B_M3_AXIS_Z_MM,
+        SEAM_B_M3_CLEARANCE_D_MM,
+        SEAM_B_M3_ENTRY_Y_MM,
+        SEAM_B_M3_HEAD_CLEARANCE_D_MM,
+        SEAM_B_M3_HEAD_RECESS_DEPTH_MM,
+        SEAM_B_M3_HEAD_SEAT_Y_MM,
+        SEAM_B_M3_INSERT_BORE_D_MM,
+        SEAM_B_M3_INSERT_DEPTH_MM,
+        SEAM_B_M3_INSERT_ENGAGEMENT_MM,
+        SEAM_B_M3_INSERT_TIP_MARGIN_MM,
+        SEAM_B_M3_RECOMMENDED_SCREW_LENGTH_MM,
+        SEAM_B_M3_VASE_FACE_Y_MM,
+        SEAM_B_Y,
+        SEAM_C_X,
+        seam_b_m3_mid_right_cutter,
+        seam_b_m3_vase_insert_cutter,
+    )
+
+    expected_clock = (0.0, 60.0, 120.0, 180.0, 240.0, 300.0)
+    assert L22_PILOT_ANGLES_DEG == expected_clock
+    assert flush.OBIWAN_LM_PILOT_ANGLES_DEG == expected_clock
+    pilot_r = L22_PILOT_PCD_MM / 2.0
+    pilot_xy = tuple((
+        L22_CUTOUT[0] + pilot_r * math.cos(math.radians(angle)),
+        L22_CUTOUT[1] + pilot_r * math.sin(math.radians(angle)),
+    ) for angle in expected_clock)
+    assert sum(y < SEAM_A_Y for _x, y in pilot_xy) == 2
+    assert tuple(flush.LM_PILOT_XY) == pilot_xy
+
+    assert math.isclose(SEAM_B_M3_AXIS_X_MM, 0.0, abs_tol=1.0e-12)
+    assert math.isclose(SEAM_B_M3_AXIS_Z_MM, 12.55, abs_tol=1.0e-12)
+    assert math.isclose(SEAM_B_M3_CLEARANCE_D_MM, 3.4, abs_tol=1.0e-12)
+    assert math.isclose(
+        SEAM_B_M3_HEAD_CLEARANCE_D_MM, 6.2, abs_tol=1.0e-12)
+    assert math.isclose(
+        SEAM_B_M3_HEAD_RECESS_DEPTH_MM, 3.4, abs_tol=1.0e-12)
+    assert math.isclose(
+        SEAM_B_M3_INSERT_BORE_D_MM, 4.6, abs_tol=1.0e-12)
+    assert math.isclose(
+        SEAM_B_M3_INSERT_DEPTH_MM, 4.0, abs_tol=1.0e-12)
+    assert math.isclose(
+        SEAM_B_M3_RECOMMENDED_SCREW_LENGTH_MM, 20.0, abs_tol=1.0e-12)
+    assert math.isclose(
+        SEAM_B_M3_INSERT_ENGAGEMENT_MM, 3.381, abs_tol=1.0e-9)
+    assert math.isclose(
+        SEAM_B_M3_INSERT_TIP_MARGIN_MM, 0.619, abs_tol=1.0e-9)
+
+    mid = seam_b_m3_mid_right_cutter()
+    vase = seam_b_m3_vase_insert_cutter()
+    mid_bb = mid.bounding_box()
+    vase_bb = vase.bounding_box()
+    assert math.isclose(mid_bb.min.Y, SEAM_B_M3_ENTRY_Y_MM - 0.2,
+                        abs_tol=1.0e-6)
+    assert math.isclose(mid_bb.max.Y, SEAM_B_Y + 0.2, abs_tol=1.0e-6)
+    assert math.isclose(vase_bb.min.Y, SEAM_B_M3_VASE_FACE_Y_MM - 0.2,
+                        abs_tol=1.0e-6)
+    assert math.isclose(
+        vase_bb.max.Y,
+        SEAM_B_M3_VASE_FACE_Y_MM + SEAM_B_M3_INSERT_DEPTH_MM,
+        abs_tol=1.0e-6,
+    )
+    assert math.isclose(
+        SEAM_B_M3_HEAD_SEAT_Y_MM - SEAM_B_M3_ENTRY_Y_MM,
+        SEAM_B_M3_HEAD_RECESS_DEPTH_MM,
+        abs_tol=1.0e-12,
+    )
+
+    # The common axis is centered in the thinnest z=6.8..18.3 section.
+    head_r = SEAM_B_M3_HEAD_CLEARANCE_D_MM / 2.0
+    assert math.isclose(
+        SEAM_B_M3_AXIS_Z_MM - head_r - 6.8, 2.65, abs_tol=1.0e-9)
+    assert math.isclose(
+        THICKNESS_MM - SEAM_B_M3_AXIS_Z_MM - head_r,
+        2.65,
+        abs_tol=1.0e-9,
+    )
+    # Its head stays wholly on the mid-right side of seam C and between the
+    # two seam-B dovetails.
+    assert SEAM_B_M3_AXIS_X_MM - head_r - SEAM_C_X >= 2.5 - 1.0e-9
+    for center_x, _neck, head, _depth in DOVETAILS_B:
+        dovetail_x = (center_x - head / 2.0, center_x + head / 2.0)
+        fastener_x = (-head_r, head_r)
+        assert fastener_x[1] < dovetail_x[0] or fastener_x[0] > dovetail_x[1]
+
+    cab = _cab(False, "proud")
+    for handoff in ("proud", cab.UM_V1L_HANDOFF_KEY):
+        for duct in cab.cable_cutters(um_handoff_key=handoff):
+            for name, cutter in (("mid", mid), ("vase", vase)):
+                overlap = cutter & duct
+                volume = 0.0 if overlap is None else float(overlap.volume)
+                assert volume <= 1.0e-7, (
+                    f"{handoff} duct intersects seam-B M3 {name}: "
+                    f"{volume:.6f} mm3")
+    print(
+        "  shared W22 0/60 clock: two lower-piece inserts; hidden seam-B "
+        "M3x20 has 3.381-mm engagement, 0.619-mm tip margin, and zero "
+        "standard/V1L duct overlap")
 
 
 def test_c7_duct_corridor():
@@ -1802,17 +2533,40 @@ def test_emboss_driver_keepouts():
     collision = cutter & keepout
     assert collision is None or collision.volume < 1e-7, (
         f"V1L mid-left ID enters LM keepout by {collision.volume:.6f} mm3")
-    print("  V1L mid-left rear ID clears the LM opening by >=1.5 mm")
+
+    # The floor-state bottom ID lives in the narrow flat band between the
+    # Option-B vertical tangent and V1L's thickness ramp.  Bind the complete
+    # longest label, not only its nominal anchor, to both geometry limits.
+    from lx521_baffle.floor_bend import centerline_controls
+    from lx521_baffle.proud.top_baffle_nd25fw4_v1l import RAMP_Y0
+
+    bx, by, brot, bfont, bshort = EMBOSS_XY["1of4_bottom"]
+    bottom_label = _label("lx521_top_v1l_1of4_bottom")
+    if bshort:
+        bottom_label = bottom_label.split(" ")[0]
+    bottom_text = Rot(Z=brot) * mirror(
+        Text(bottom_label, font_size=bfont), Plane.YZ)
+    bottom_bbox = bottom_text.bounding_box()
+    text_y_min = by + bottom_bbox.min.Y
+    text_y_max = by + bottom_bbox.max.Y
+    tangent_y = centerline_controls()[-1][1]
+    assert text_y_min >= tangent_y + 0.4
+    assert text_y_max <= RAMP_Y0 - 0.4
+    assert math.isclose(bx, 0.0, abs_tol=1e-12)
+    print("  V1L mid-left ID clears the LM opening; bottom ID stays in "
+          "the flat Option-B/V1L-ramp band")
 
 
 def test_margin_dashboard():
     """Report-only: the tightest margins project-wide, sorted. Erosion
     shows up here before it becomes a red assert somewhere else."""
     from lx521_baffle.base import (L22_CUTOUT, L22_PILOT_ANGLES_DEG,
-                                    L22_PILOT_D_MM, L22_PILOT_PCD_MM,
+                                    L22_PILOT_DEPTH_MM,
+                                    L22_PILOT_PCD_MM, M5_INSERT_ENTRY_D_MM,
+                                    THICKNESS_MM,
                                     UM_CUTOUT, UM_PILOT_ANGLES_DEG,
-                                    UM_PILOT_D_MM, UM_PILOT_PCD_MM,
-                                    _pilot_centers)
+                                    UM_PILOT_D_MM, UM_PILOT_DEPTH_MM,
+                                    UM_PILOT_PCD_MM, _pilot_centers)
     from lx521_baffle.cables import CABLE_D
     from lx521_baffle.magnets import FACE_SKIN_MM, INNER_SKIN_MM
     from lx521_baffle.proud.top_baffle_nd25fw4_b import (
@@ -1821,7 +2575,7 @@ def test_margin_dashboard():
     entries = []
     routes = _routes(True)
     # duct-duct
-    names = ("lm", "um", "ts", "t1f", "t2f")
+    names = tuple(routes)
     merged = ({"ts", "t1f"}, {"ts", "t2f"}, {"t1f", "t2f"})
     for i, a in enumerate(names):
         for b in names[i + 1:]:
@@ -1830,17 +2584,33 @@ def test_margin_dashboard():
             req = (CABLE_D.get(a, 3.8) + CABLE_D.get(b, 3.8)) / 2 + 1.5
             entries.append((_min_dist(routes[a], routes[b]) - req,
                             f"duct {a}-{b} separation"))
-    # pilots (plan)
-    for label, pilots, pd in (
+    # Blind front pilots versus the real variable duct section in 3D.  A
+    # plan-only radius sum falsely reports the low TS oval as colliding with
+    # an MU pilot even though the pilot ends well above that underpass.
+    for label, pilots, pd, depth in (
             ("W22", _pilot_centers(L22_CUTOUT[:2], L22_PILOT_PCD_MM,
-                                   L22_PILOT_ANGLES_DEG), L22_PILOT_D_MM),
+                                   L22_PILOT_ANGLES_DEG),
+             M5_INSERT_ENTRY_D_MM,
+             L22_PILOT_DEPTH_MM),
             ("MU10", _pilot_centers(UM_CUTOUT[:2], UM_PILOT_PCD_MM,
-                                   UM_PILOT_ANGLES_DEG), UM_PILOT_D_MM)):
+                                   UM_PILOT_ANGLES_DEG), UM_PILOT_D_MM,
+             UM_PILOT_DEPTH_MM)):
+        pilot_floor = THICKNESS_MM - depth
         for name, pts in routes.items():
-            req = pd / 2 + CABLE_D.get(name, 3.8) / 2 + 1.5
             for px, py in pilots:
-                d = float(np.min(np.hypot(pts[:, 0] - px, pts[:, 1] - py)))
-                entries.append((d - req, f"{name} vs {label} pilot "
+                clearances = []
+                for x, y, z in pts:
+                    w2, h2, zc = _section_at(name, y, z)
+                    plan_gap = math.hypot(x - px, y - py) - (pd / 2 + w2)
+                    vertical_gap = max(
+                        pilot_floor - (zc + h2),
+                        (zc - h2) - THICKNESS_MM,
+                        0.0,
+                    )
+                    clearances.append(math.hypot(
+                        max(plan_gap, 0.0), vertical_gap))
+                entries.append((min(clearances) - 1.5,
+                                f"{name} vs {label} pilot "
                                 f"({px:.0f},{py:.0f})"))
     # thin-family z-window skins (rear 6.8 / front 18.3, y>96) --
     # section-aware: the TS oval runs on the 1.4 floor rule
@@ -1897,12 +2667,15 @@ def test_margin_dashboard():
     v1l_pts = np.asarray(cab.route_centerline_points(
         "um", spacing_mm=0.25,
         um_handoff_key=cab.UM_V1L_HANDOFF_KEY))
+    v1l_pts = v1l_pts[
+        v1l_pts[:, 2] >= cab.UM_V1L_REAR_FACE_Z_MM - 1.0e-8
+    ]
     v1l_normal_wall = (LineString(v1l_pts[:, :2]).distance(poly.boundary)
                        - cab.UM_HANDOFF_D_MM / 2.0)
     entries.append((v1l_normal_wall - 1.6,
                     "V1L UM exact normal outline wall (-1.6)"))
     from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import SEAM_B_Y, SEAM_C_X
-    anchor = np.asarray((61.76, 283.11))
+    anchor = np.asarray(cab.UM_FAIR_TAIL_REVIEW_ANCHOR_XY)
     i0 = int(np.argmin(np.linalg.norm(v1l_pts[:, :2] - anchor, axis=1)))
     v1l_tail = v1l_pts[i0:]
     duct_r = cab.UM_HANDOFF_D_MM / 2.0
@@ -1943,6 +2716,7 @@ def test_margin_dashboard():
 if __name__ == "__main__":
     checks = [
         test_foot_lane_webs,
+        test_stock_slim_floor_bend_lateral_envelope,
         test_variant_outlines_splice,
         test_v1l_service_envelope,
         test_emboss_driver_keepouts,
@@ -1958,14 +2732,21 @@ if __name__ == "__main__":
         test_duct_vs_um_pilots,
         test_c7_duct_corridor,
         test_seam_keys_vs_ducts,
+        test_shared_lm_clock_and_hidden_seam_b_m3,
         test_v0_duct_corridor,
         test_v0_captive_geometry,
         test_v1_field,
         test_route_smoothness,
+        test_um_tail_has_no_curvature_reversal,
         test_lm_exit_curvature_and_fishing,
         test_v1l_um_terminal_axis_handoff,
         test_um_eroded_outline_containment,
         test_ts_eroded_outline_containment,
+        test_stock_slim_ts_full_section_containment,
+        test_stock_slim_curve_optimization_contracts,
+        test_stock_slim_no_floor_full_duct_containment,
+        test_stock_slim_no_floor_bottom_topology,
+        test_c7_floor_bottom_serialization_topology,
         test_bridge_inserts,
         test_margin_dashboard,
         test_cutter_health,

@@ -64,7 +64,8 @@ Ae only.
 
 Each physical side has three carrier-matched receiver stations:
 
-1. LM lower, on the straight base-side interface.
+1. LM lower, normal to the shared curved bridge shoulder at cubic parameter
+   `u=0.50`.
 2. LM upper, radial to the LM carrier.
 3. UM, radial to the UM carrier.
 
@@ -84,9 +85,12 @@ The production interface contract is:
   radius `+0.65`, which is `0.15` beneath the continuous exposed surface.
   The `0.45` cavity skin is unchanged. There is no local pad, boss, flat, or
   visible cue at a ring magnet station.
-- Nominal installed magnet-face separation is `1.10` at the LM-upper and UM
-  ring pairs (`0.45 + 0.15 + 0.05 + 0.45`) and `0.95` at the LM-lower
-  base-side pair (`0.45 + 0.05 + 0.45`). Ac and Ae place their matching
+- At LM-lower, the right visible shoulder datum is
+  `(x,y)=(45.285011,89.190370)` with outward normal
+  `(0.706451,-0.707762)`; the left is its exact X mirror. Its cavity datum is
+  likewise `0.15` beneath the uninterrupted shoulder.
+- Nominal installed magnet-face separation is `1.10` at LM-lower, LM-upper,
+  and UM (`0.45 + 0.15 + 0.05 + 0.45`). Ac and Ae place their matching
   receivers from the visible carrier datums.
 - Every cavity is wholly buried in the immutable host; neither carrier nor
   wing may show a local pad, box, flat, dent, silhouette change, or other
@@ -96,6 +100,12 @@ The production interface contract is:
 - Alignment and anti-rattle only: zero structural load credit.
 
 The process reference remains `coupons/obiwan_ae_embed/`.
+
+The lower Ac/Ae outline contains no material below the Option-B vertical
+tangent at `Y=74.15`. A G1 cubic starts there with the bend tangent and joins
+the released outer flank at the LM-aperture lower tangent `Y=105.981`; this
+is the common lower-root contract for Ac/Ae, left/right, and both A/B print
+splits.
 
 ## Ac: constant-depth wing
 

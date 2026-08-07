@@ -14,8 +14,10 @@ from __future__ import annotations
 import errno
 import fcntl
 import hashlib
+import json
 import os
 from pathlib import Path
+import resource
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -88,6 +90,37 @@ GUARD_SLOTS = min(
     _positive_environment_int("LX_CAD_GUARD_SLOTS", 1),
     PROFILE_MAX_GUARD_SLOTS,
 )
+
+PROFILE_EVENTS_PATH = os.environ.get("LX_CAD_PROFILE_EVENTS")
+
+
+def _append_profile_event(record: dict) -> None:
+    """Append one guard measurement atomically across parallel recipes."""
+    if not PROFILE_EVENTS_PATH:
+        return
+    path = Path(PROFILE_EVENTS_PATH)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    flags = os.O_WRONLY | os.O_CREAT | os.O_APPEND
+    flags |= getattr(os, "O_CLOEXEC", 0)
+    flags |= getattr(os, "O_NOFOLLOW", 0)
+    fd = os.open(path, flags, 0o600)
+    try:
+        info = os.fstat(fd)
+        if not stat.S_ISREG(info.st_mode):
+            raise RuntimeError(f"CAD profile path is not a file: {path}")
+        if hasattr(os, "getuid") and info.st_uid != os.getuid():
+            raise RuntimeError(f"CAD profile path has the wrong owner: {path}")
+        os.fchmod(fd, 0o600)
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        payload = (json.dumps(
+            record, sort_keys=True, separators=(",", ":")) + "\n"
+        ).encode("utf-8")
+        os.write(fd, payload)
+    finally:
+        try:
+            fcntl.flock(fd, fcntl.LOCK_UN)
+        finally:
+            os.close(fd)
 
 
 def _linux_total_memory_mib() -> float | None:
@@ -535,6 +568,14 @@ def main(argv: list[str] | None = None) -> int:
 
     process = None
     stop_signal = None
+    profile_started_epoch_ns = time.time_ns()
+    profile_started_monotonic = time.monotonic()
+    profile_peak_rss_kib = 0
+    profile_min_free_mib = None
+    profile_samples = 0
+    profile_exit_code = 99
+    profile_termination_reason = None
+    profile_usage_start = resource.getrusage(resource.RUSAGE_CHILDREN)
 
     # The CAD command owns a separate process group so a make/Codex
     # interruption would otherwise kill only this guard and leave OCC
@@ -580,14 +621,25 @@ def main(argv: list[str] | None = None) -> int:
                 elif MIN_FREE_MB and free_mib < MIN_FREE_MB:
                     reason = (f"free memory {free_mib:.0f} MiB < "
                               f"{MIN_FREE_MB} MiB")
+                if rss_kib is not None:
+                    profile_peak_rss_kib = max(
+                        profile_peak_rss_kib, rss_kib)
+                    profile_samples += 1
+                if free_mib is not None:
+                    profile_min_free_mib = (
+                        free_mib if profile_min_free_mib is None
+                        else min(profile_min_free_mib, free_mib))
             if reason:
+                profile_termination_reason = reason
                 print(
                     f"CAD memory guard terminating pid {process.pid}: "
                     f"{reason}", file=sys.stderr, flush=True)
                 _terminate_group(process)
                 if stop_signal is not None:
-                    return 128 + int(stop_signal)
-                return 99
+                    profile_exit_code = 128 + int(stop_signal)
+                    return profile_exit_code
+                profile_exit_code = 99
+                return profile_exit_code
             time.sleep(0.5)
         return_code = int(process.returncode or 0)
         if return_code < 0:
@@ -595,6 +647,7 @@ def main(argv: list[str] | None = None) -> int:
         # A command that backgrounds a child is not complete. Remove every
         # surviving group member before returning even after leader exit 0.
         if _group_exists(process.pid):
+            profile_termination_reason = "background descendants survived"
             print(
                 f"CAD memory guard cleaning descendants after pid "
                 f"{process.pid} exited", file=sys.stderr, flush=True)
@@ -603,8 +656,10 @@ def main(argv: list[str] | None = None) -> int:
             # particular, Make must not touch an output stamp after the
             # guard had to kill a background child whose files may be only
             # partly written.
-            return 99
-        return return_code
+            profile_exit_code = 99
+            return profile_exit_code
+        profile_exit_code = return_code
+        return profile_exit_code
     finally:
         # Covers Python exceptions as well as the explicit limit paths.
         # Signal handlers are restored before returning to a caller that
@@ -616,7 +671,57 @@ def main(argv: list[str] | None = None) -> int:
             for sig, handler in previous.items():
                 signal.signal(sig, handler)
         finally:
-            _release_workspace_lock(lock_fd)
+            try:
+                _release_workspace_lock(lock_fd)
+            finally:
+                if PROFILE_EVENTS_PATH:
+                    usage = resource.getrusage(resource.RUSAGE_CHILDREN)
+                    completed_epoch_ns = time.time_ns()
+                    record = {
+                        "schema_version": 1,
+                        "memory_profile": MEMORY_PROFILE,
+                        "guard_pid": os.getpid(),
+                        "child_pid": (
+                            process.pid if process is not None else None),
+                        "cwd": os.getcwd(),
+                        "command": args,
+                        "context": {
+                            name: os.environ[name]
+                            for name in (
+                                "LX_CLEARANCE_SINGLE_CHECK",
+                                "LX_R6F_CASE_ID",
+                                "LX_OBIWAN_CLOSURE_DENSE_STATE",
+                                "LX_OBIWAN_CLOSURE_DENSE_SHARD",
+                                "LX_STAND_FOOT",
+                                "LX_ROUTING_PROFILE",
+                            )
+                            if name in os.environ
+                        },
+                        "started_epoch_ns": profile_started_epoch_ns,
+                        "completed_epoch_ns": completed_epoch_ns,
+                        "wall_seconds": (
+                            time.monotonic() - profile_started_monotonic),
+                        "child_user_cpu_seconds": max(
+                            0.0, usage.ru_utime - profile_usage_start.ru_utime),
+                        "child_system_cpu_seconds": max(
+                            0.0, usage.ru_stime - profile_usage_start.ru_stime),
+                        "peak_process_tree_rss_mib": (
+                            profile_peak_rss_kib / 1024.0),
+                        "minimum_host_available_mib": (
+                            profile_min_free_mib),
+                        "sample_count": profile_samples,
+                        "exit_code": profile_exit_code,
+                        "termination_reason": profile_termination_reason,
+                        "guard_slots": GUARD_SLOTS,
+                        "max_rss_mib": MAX_RSS_MB,
+                        "min_free_mib": MIN_FREE_MB,
+                    }
+                    try:
+                        _append_profile_event(record)
+                    except (OSError, RuntimeError, ValueError) as exc:
+                        print(
+                            f"CAD memory guard could not write profile: {exc}",
+                            file=sys.stderr, flush=True)
 
 
 if __name__ == "__main__":

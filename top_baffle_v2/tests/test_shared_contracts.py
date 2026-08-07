@@ -417,7 +417,13 @@ def test_ordered_assembly_helper_and_narrow_adoption() -> None:
 def test_to_print_shelf_waits_for_release_catalog() -> None:
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
     rule = makefile.split("check_to_print_shelf:", 1)[1].split("\n\t", 1)[0]
-    assert "$(CAPTIVE_MAGNET_CATALOG)" in rule
+    assert "$(TO_PRINT_CATALOG_PREREQ)" in rule
+    prerequisite = makefile.split(
+        "TO_PRINT_CATALOG_PREREQ :=", 1)[1].split("\n", 2)[:2]
+    prerequisite = " ".join(line.strip(" \\") for line in prerequisite)
+    assert "$(filter remote-worker,$(LX_CAD_EXECUTION))" in prerequisite
+    assert "$(CAPTIVE_MAGNET_CATALOG)" in prerequisite
+    assert "$(abspath $(CAPTIVE_MAGNET_CATALOG))" in prerequisite
 
 
 def main() -> None:

@@ -10,9 +10,10 @@ coupon magnets by 0.90 mm. Released production mating surfaces are flush with
 zero physical air gap: their 0.05 mm receiver construction offset is solid
 plastic, not a local exterior cut. The Obi-Wan LM-upper/UM ring cavity datum
 is also buried 0.15 mm beneath its smooth carrier surface, giving
-**1.10 mm nominal magnet-to-magnet separation**; the LM-lower base-side pair
-has no datum inset and remains **0.95 mm**. This coupon qualifies the captive
-printing process, not production pull force.
+**1.10 mm nominal magnet-to-magnet separation**. The current LM-lower shoulder
+pair uses the same 0.15 mm inset and **1.10 mm** stack, although this
+two-radius strip coupon does not reproduce that shoulder shape. This coupon
+qualifies the captive printing process, not production pull force.
 
 The coupon targets D5 x 2 mm magnets. Print both coupon strips
 front-face-down, matching the production texture/process direction. At each

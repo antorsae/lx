@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1200" viewBox="0 0 1800 1200">
+  <defs>
+    <style>
+      text { font-family: Inter, Arial, sans-serif; fill: #172033; }
+      .title { font-size: 34px; font-weight: 700; }
+      .subtitle { font-size: 17px; fill: #526078; }
+      .view-title { font-size: 22px; font-weight: 700; }
+      .label { font-size: 16px; }
+      .small { font-size: 14px; fill: #526078; }
+      .tiny { font-size: 12px; fill: #526078; }
+      .outline { fill: #f5f7fa; stroke: #1c2a3d; stroke-width: 2.4; vector-effect: non-scaling-stroke; }
+      .thin-outline { fill: none; stroke: #1c2a3d; stroke-width: 2; vector-effect: non-scaling-stroke; }
+      .hidden { fill: #3b82f61f; stroke: #2563eb; stroke-width: 2; stroke-dasharray: 8 7; vector-effect: non-scaling-stroke; }
+      .new-solid { fill: #60a5fa70; stroke: #2563eb; stroke-width: 3; vector-effect: non-scaling-stroke; }
+      .existing { fill: #d9dee7; stroke: #526078; stroke-width: 2.2; vector-effect: non-scaling-stroke; }
+      .duct { fill: none; stroke: #0f9f8f; stroke-width: 4; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+      .duct-dash { fill: none; stroke: #0f9f8f; stroke-width: 3; stroke-dasharray: 9 6; vector-effect: non-scaling-stroke; }
+      .datum { fill: none; stroke: #94a3b8; stroke-width: 1.4; stroke-dasharray: 5 5; vector-effect: non-scaling-stroke; }
+      .dim { fill: none; stroke: #d97706; stroke-width: 1.8; vector-effect: non-scaling-stroke; }
+      .old-corner { fill: none; stroke: #dc2626; stroke-width: 2.5; stroke-dasharray: 7 6; vector-effect: non-scaling-stroke; }
+      .panel { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
+      .note { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1.5; }
+    </style>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f9f8f"/>
+    </marker>
+  </defs>
+
+  <rect width="1800" height="1200" fill="#eef2f7"/>
+  <text x="50" y="56" class="title">Slim floor stand — constant-thickness R41 wall bend</text>
+  <text x="50" y="86" class="subtitle">Source-grounded orthographic study · front/acoustic geometry and 150 mm rear footprint retained · concept only, not print-ready CAD</text>
+
+  <rect x="35" y="115" width="555" height="850" rx="12" class="panel"/>
+  <rect x="610" y="115" width="570" height="850" rx="12" class="panel"/>
+  <rect x="1200" y="115" width="565" height="850" rx="12" class="panel"/>
+
+  <!-- FRONT VIEW: exact B2/Slim principal outline and driver datums. -->
+  <text x="60" y="155" class="view-title">FRONT</text>
+  <text x="60" y="180" class="small">Acoustic/front face unchanged</text>
+  <g transform="translate(315,900) scale(1.48,-1.48)">
+    <path class="outline" d="
+      M -36.811 432.879
+      C -42.416 438.602 -46.699 445.626 -49.161 453.457
+      L -36.468 453.457
+      C -35.847 451.997 -35.182 450.378 -34.388 449.004
+      C -27.556 437.191 -14.742 428.951 0.001 428.947
+      C 14.946 428.943 27.970 437.256 34.681 449.510
+      C 35.293 450.628 35.977 452.266 36.483 453.457
+      L 49.177 453.457
+      C 46.712 445.620 42.425 438.592 36.813 432.866
+      Q 24.570 423.478 10.081 418.176
+      L 60.654 391.709 L 38.113 315.947 L 152.401 256.120
+      L 76.201 0 L -76.199 0 L -152.401 256.155
+      L -38.122 315.977 L -60.654 391.709 L -10.081 418.176
+      Q -24.570 423.478 -36.811 432.879 Z"/>
+    <rect x="-82" y="0" width="164" height="50.15" rx="5" class="hidden"/>
+    <circle cx="0" cy="200.981" r="95" fill="#ffffff" stroke="#1c2a3d" stroke-width="2" vector-effect="non-scaling-stroke"/>
+    <circle cx="0" cy="366.081" r="41" fill="#ffffff" stroke="#d97706" stroke-width="2.8" vector-effect="non-scaling-stroke"/>
+  </g>
+  <text x="315" y="365" text-anchor="middle" class="label">UM aperture D82 → R41 datum</text>
+  <line x1="315" y1="340" x2="315" y2="315" class="dim" marker-end="url(#arrow-orange)"/>
+  <text x="315" y="928" text-anchor="middle" class="small">Dashed blue = lower wall bends rearward behind front face</text>
+  <text x="315" y="950" text-anchor="middle" class="small">Driver, magnet, seam and visible outline datums stay fixed</text>
+
+  <!-- SIDE VIEW: dimensions use Slim rear plane and actual foot height/depth. -->
+  <text x="635" y="155" class="view-title">RIGHT SIDE</text>
+  <text x="635" y="180" class="small">Lower 150 mm shown; rear is left, front is right</text>
+  <line x1="655" y1="900" x2="1150" y2="900" class="datum"/>
+  <text x="658" y="922" class="tiny">floor datum y=0</text>
+
+  <!-- One constant-thickness bent wall. R41 is the wall centreline. -->
+  <path class="existing" d="M 695 900 L 1014 900 A 135.4 200.6 0 0 1 1149 699 L 1149 305 L 1118 305 L 1118 516 C 1108 530 1100 560 1100 588 L 1100 699 A 86.0 127.4 0 0 0 1014 827 L 695 827 Z"/>
+  <path d="M 695 863 L 1014 863 A 110.7 164 0 0 1 1125 699 L 1125 535" fill="none" stroke="#2563eb" stroke-width="3.5" stroke-dasharray="10 7"/>
+
+  <text x="760" y="566" class="label" fill="#0b5bd3">one continuous 18.3 mm bent wall</text>
+  <text x="760" y="588" class="tiny">outer R50.15 · centreline R41 · inner R31.85</text>
+  <text x="810" y="680" class="label" fill="#d97706">R41 wall centreline</text>
+  <line x1="971" y1="683" x2="1048" y2="748" class="dim" marker-end="url(#arrow-orange)"/>
+
+  <!-- Conceptual side projections of lanes inside the bent wall. -->
+  <path d="M 755 871 L 1014 871 A 116.1 172 0 0 1 1130 699 L 1130 575" class="duct" marker-start="url(#arrow-teal)"/>
+  <path d="M 755 855 L 1014 855 A 105.3 156 0 0 1 1119 699 L 1119 575" class="duct-dash"/>
+  <text x="746" y="752" class="label" fill="#0f766e">duct lanes follow the wall bend</text>
+  <text x="746" y="774" class="tiny">side projection only; four lanes separate across width</text>
+
+  <!-- Side dimensions. -->
+  <line x1="695" y1="930" x2="1100" y2="930" class="dim" marker-start="url(#arrow-orange)" marker-end="url(#arrow-orange)"/>
+  <text x="897" y="953" text-anchor="middle" class="label" fill="#d97706">150 mm rear depth</text>
+  <line x1="650" y1="827" x2="650" y2="900" class="dim" marker-start="url(#arrow-orange)" marker-end="url(#arrow-orange)"/>
+  <text x="640" y="867" text-anchor="end" class="small" fill="#d97706">18.3</text>
+  <text x="915" y="620" class="tiny">vertical centreline tangent: z=+9.15, y=50.15</text>
+  <line x1="1085" y1="626" x2="1120" y2="694" class="datum"/>
+  <text x="930" y="888" text-anchor="end" class="tiny">horizontal centreline tangent: z=−31.85, y=9.15</text>
+  <line x1="936" y1="884" x2="1008" y2="865" class="datum"/>
+
+  <!-- TOP VIEW: current plan taper and projected transition extent. -->
+  <text x="1225" y="155" class="view-title">TOP</text>
+  <text x="1225" y="180" class="small">Existing tapered footprint and rear connector retained</text>
+  <text x="1475" y="218" text-anchor="middle" class="tiny">FRONT</text>
+  <line x1="1475" y1="224" x2="1475" y2="254" class="dim" marker-end="url(#arrow-orange)"/>
+
+  <!-- Bottom-strip portion of vertical baffle, then tapered floor stand. -->
+  <rect x="1266" y="258" width="418" height="63" class="existing"/>
+  <path d="M 1266 321 L 1684 321 L 1523 825 L 1427 825 Z" class="existing"/>
+  <rect x="1427" y="825" width="96" height="14" fill="#aeb8c7" stroke="#526078" stroke-width="2"/>
+
+  <!-- Plan projection of the constant-thickness bent-wall zone. -->
+  <path d="M 1266 321 L 1684 321 L 1649 494 L 1301 494 Z" class="new-solid"/>
+  <line x1="1301" y1="494" x2="1649" y2="494" stroke="#2563eb" stroke-width="2" stroke-dasharray="7 6"/>
+  <text x="1475" y="405" text-anchor="middle" class="label">R41 bent-wall projection</text>
+  <text x="1475" y="427" text-anchor="middle" class="tiny">projection only—no seam; transverse loft follows the stand taper</text>
+
+  <!-- Four existing lane clocks, now with room for longer side sweeps. -->
+  <path d="M 1437 380 C 1437 500 1437 610 1437 684 L 1437 735" class="duct" marker-end="url(#arrow-teal)"/>
+  <path d="M 1461 380 C 1461 500 1461 610 1461 684 L 1461 735" class="duct" marker-end="url(#arrow-teal)"/>
+  <path d="M 1489 380 C 1489 500 1489 610 1489 684 L 1489 735" class="duct" marker-end="url(#arrow-teal)"/>
+  <path d="M 1510 380 C 1510 500 1510 610 1510 684 L 1510 735" class="duct" marker-end="url(#arrow-teal)"/>
+  <text x="1530" y="710" class="tiny">4 cable lanes</text>
+  <text x="1530" y="730" class="tiny">to existing channel step</text>
+
+  <line x1="1720" y1="321" x2="1720" y2="839" class="dim" marker-start="url(#arrow-orange)" marker-end="url(#arrow-orange)"/>
+  <text x="1736" y="580" transform="rotate(90 1736 580)" text-anchor="middle" class="label" fill="#d97706">150 mm unchanged</text>
+  <line x1="1266" y1="288" x2="1684" y2="288" class="dim" marker-start="url(#arrow-orange)" marker-end="url(#arrow-orange)"/>
+  <text x="1475" y="281" text-anchor="middle" class="small" fill="#d97706">≈164 mm stand root</text>
+  <line x1="1427" y1="865" x2="1523" y2="865" class="dim" marker-start="url(#arrow-orange)" marker-end="url(#arrow-orange)"/>
+  <text x="1475" y="889" text-anchor="middle" class="small" fill="#d97706">38 mm rear panel</text>
+
+  <!-- Rationale / scope box. -->
+  <rect x="35" y="985" width="1730" height="180" rx="12" class="note"/>
+  <text x="60" y="1022" class="view-title">Proposed geometry contract</text>
+  <circle cx="68" cy="1054" r="5" fill="#2563eb"/><text x="83" y="1060" class="label">Following the red sketch, bend the complete 18.3 mm wall on an R41 centreline; do not add a solid gusset.</text>
+  <circle cx="68" cy="1087" r="5" fill="#2563eb"/><text x="83" y="1093" class="label">Constant thickness gives inner R31.85 and outer R50.15, with tangent horizontal and vertical faces and no corner.</text>
+  <circle cx="68" cy="1120" r="5" fill="#0f9f8f"/><text x="83" y="1126" class="label">The four duct lanes follow the bent-wall corridor instead of turning through the current compact R14 foot elbows.</text>
+  <text x="1195" y="1060" class="small">Next CAD-stage gates (not run):</text>
+  <text x="1195" y="1085" class="small">duct wall ≥1.8 · lane separation · shell containment</text>
+  <text x="1195" y="1110" class="small">print orientation/supports · connector access · footprint</text>
+  <text x="1195" y="1140" class="small" font-weight="700">This PNG is a feasibility concept, not a printable artifact.</text>
+</svg>

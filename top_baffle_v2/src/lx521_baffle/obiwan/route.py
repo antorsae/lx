@@ -325,11 +325,13 @@ CENTRAL_T_FEED_RISE_LENGTH = (
     else NO_FLOOR_T_FEED_RISE_LENGTH)
 # The no-floor entries now have explicit rear-normal bores with positive
 # buried overlap. Extending either swept cutter behind its own entry is both
-# redundant and unsafe: the former 8-mm T backreach cut into the neighbouring
-# UM duct wall. The integral floor lanes still require their historical
-# backreach because their handoff is wholly internal to the deep stem.
+# redundant and unsafe.  Floor UM/T still need to reach 0.8 mm behind their
+# fixed feed datums to meet the prefused lane cutters.  A 2.0-mm backreach
+# leaves 1.2 mm of positive axial overlap while keeping the complete cutter
+# inside Option B's vertical-tangent owner; the historical 8-mm backreach
+# reached into the convex transition and detached the T handoff shell.
 NO_FLOOR_FEED_CUTTER_EXTENSION = 0.0
-FLOOR_FEED_CUTTER_EXTENSION = 8.0
+FLOOR_FEED_CUTTER_EXTENSION = 2.0
 STANDARD_CUTTER_EXTENSION = 1.5
 # Dependency-neutral copy of the bridge's immutable insert-bearing core.
 # bridge.py imports this route module, so the equality is bound by tests

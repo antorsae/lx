@@ -11,7 +11,7 @@ from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 import struct
-from typing import Sequence
+from typing import Mapping, Sequence
 
 from bambu_3mf_audit import (
     Bambu3MFAuditError,
@@ -23,7 +23,7 @@ from bambu_3mf_audit import (
     RigidRzFacts,
     Triangle,
     _BambuPackage,
-    _bambu_model_parts,
+    _bambu_model_part_records,
     _children,
     _finite,
     _parse_3mf_transform,
@@ -53,10 +53,19 @@ class BambuComposite3MFAudit:
     support_blocker_triangle_counts: tuple[int, ...]
     normal_part_names: tuple[str, ...]
     support_blocker_names: tuple[str, ...]
+    parameter_modifier_triangle_counts: tuple[int, ...] = ()
+    parameter_modifier_names: tuple[str, ...] = ()
+    parameter_modifier_settings: tuple[
+        tuple[tuple[str, str], ...], ...
+    ] = ()
 
     @property
     def support_blocker_count(self) -> int:
         return len(self.support_blocker_names)
+
+    @property
+    def parameter_modifier_count(self) -> int:
+        return len(self.parameter_modifier_names)
 
     def as_record(self) -> dict[str, object]:
         return {
@@ -84,6 +93,15 @@ class BambuComposite3MFAudit:
             "normal_part_names": list(self.normal_part_names),
             "support_blocker_names": list(self.support_blocker_names),
             "support_blocker_count": self.support_blocker_count,
+            "parameter_modifier_triangle_counts": list(
+                self.parameter_modifier_triangle_counts),
+            "parameter_modifier_names": list(
+                self.parameter_modifier_names),
+            "parameter_modifier_settings": [
+                dict(settings)
+                for settings in self.parameter_modifier_settings
+            ],
+            "parameter_modifier_count": self.parameter_modifier_count,
         }
 
 
@@ -131,6 +149,13 @@ def audit_bambu_composite_3mf(
     support_blocker_stls: Sequence[
         tuple[Path | str, Sequence[float]]
     ] = (),
+    parameter_modifier_stls: Sequence[
+        tuple[
+            Path | str,
+            Sequence[float],
+            Mapping[str, object],
+        ]
+    ] = (),
     mesh_tolerance_mm: float = DEFAULT_MESH_TOLERANCE_MM,
     transform_tolerance: float = DEFAULT_TRANSFORM_TOLERANCE,
     bed_z_tolerance_mm: float = DEFAULT_BED_Z_TOLERANCE_MM,
@@ -154,14 +179,27 @@ def audit_bambu_composite_3mf(
         (Path(path), tuple(float(value) for value in translation))
         for path, translation in support_blocker_stls
     )
+    modifier_records = tuple(
+        (
+            Path(path),
+            tuple(float(value) for value in translation),
+            {str(key): str(value) for key, value in settings.items()},
+        )
+        for path, translation, settings in parameter_modifier_stls
+    )
     normal_names = tuple(path.name for path, _translation in normal_records)
     blocker_names = tuple(path.name for path, _translation in blocker_records)
+    modifier_names = tuple(
+        path.name for path, _translation, _settings in modifier_records)
     if len(normal_names) != len(set(normal_names)):
         raise Bambu3MFAuditError(
             "composite normal-part STL basenames must be unique")
     if len(blocker_names) != len(set(blocker_names)):
         raise Bambu3MFAuditError(
             "composite support-blocker STL basenames must be unique")
+    if len(modifier_names) != len(set(modifier_names)):
+        raise Bambu3MFAuditError(
+            "composite parameter-modifier STL basenames must be unique")
 
     staged_triangles = read_stl_triangles(stl_path)
     source_bounds = mesh_bounds(staged_triangles)
@@ -179,6 +217,11 @@ def audit_bambu_composite_3mf(
         path.name: translated_float32_triangles(
             read_stl_triangles(path), translation)
         for path, translation in blocker_records
+    }
+    expected_modifiers = {
+        path.name: translated_float32_triangles(
+            read_stl_triangles(path), translation)
+        for path, translation, _settings in modifier_records
     }
     expected_combined = tuple(
         triangle
@@ -211,34 +254,46 @@ def audit_bambu_composite_3mf(
             raise Bambu3MFAuditError(
                 "composite 3MF build item has invalid objectid") from error
 
-        parts = _bambu_model_parts(package, root_object_id)
-        expected_subtypes = (
-            {"normal_part", "support_blocker"}
-            if blocker_records else {"normal_part"}
-        )
-        if set(parts) != expected_subtypes:
+        part_records = _bambu_model_part_records(
+            package, root_object_id)
+        expected_subtypes = {"normal_part"}
+        if blocker_records:
+            expected_subtypes.add("support_blocker")
+        if modifier_records:
+            expected_subtypes.add("modifier_part")
+        if set(part_records) != expected_subtypes:
             raise Bambu3MFAuditError(
                 "composite 3MF part subtypes differ from its declared "
                 "normal/modifier inventory")
         actual_normal_names = tuple(
             Path(source).name
-            for _part_id, source in parts["normal_part"]
+            for _part_id, source, _metadata
+            in part_records["normal_part"]
         )
         if Counter(actual_normal_names) != Counter(normal_names):
             raise Bambu3MFAuditError(
                 "composite 3MF normal_part inventory differs from its sources")
         actual_blocker_names = tuple(
             Path(source).name
-            for _part_id, source in parts.get("support_blocker", ())
+            for _part_id, source, _metadata
+            in part_records.get("support_blocker", ())
         )
         if Counter(actual_blocker_names) != Counter(blocker_names):
             raise Bambu3MFAuditError(
                 "composite 3MF support_blocker inventory differs from sources")
+        actual_modifier_names = tuple(
+            Path(source).name
+            for _part_id, source, _metadata
+            in part_records.get("modifier_part", ())
+        )
+        if Counter(actual_modifier_names) != Counter(modifier_names):
+            raise Bambu3MFAuditError(
+                "composite 3MF modifier_part inventory differs from sources")
 
         reconstructed_normals: list[Triangle] = []
         part_errors = [staged_error]
         normal_triangle_counts = []
-        for part_id, source in parts["normal_part"]:
+        for part_id, source, _metadata in part_records["normal_part"]:
             name = Path(source).name
             reconstructed, _depth = _resolve_root_component(
                 package, root_document, root_object_id, part_id)
@@ -252,7 +307,8 @@ def audit_bambu_composite_3mf(
             tolerance_mm=mesh_tolerance_mm))
 
         blocker_triangle_counts = []
-        for part_id, source in parts.get("support_blocker", ()):
+        for part_id, source, _metadata in part_records.get(
+                "support_blocker", ()):
             name = Path(source).name
             reconstructed, _depth = _resolve_root_component(
                 package, root_document, root_object_id, part_id)
@@ -260,6 +316,31 @@ def audit_bambu_composite_3mf(
                 expected_blockers[name], reconstructed,
                 tolerance_mm=mesh_tolerance_mm))
             blocker_triangle_counts.append(len(expected_blockers[name]))
+        modifier_expected_by_name = {
+            path.name: settings
+            for path, _translation, settings in modifier_records
+        }
+        modifier_triangle_counts = []
+        modifier_settings = []
+        for part_id, source, metadata in part_records.get(
+                "modifier_part", ()):
+            name = Path(source).name
+            expected_settings = modifier_expected_by_name[name]
+            for key, expected in expected_settings.items():
+                if metadata.get(key) != expected:
+                    raise Bambu3MFAuditError(
+                        f"composite modifier_part {name} has "
+                        f"{key}={metadata.get(key)!r}, expected "
+                        f"{expected!r}")
+            reconstructed, _depth = _resolve_root_component(
+                package, root_document, root_object_id, part_id)
+            part_errors.append(validate_triangle_soup_equivalence(
+                expected_modifiers[name], reconstructed,
+                tolerance_mm=mesh_tolerance_mm))
+            modifier_triangle_counts.append(
+                len(expected_modifiers[name]))
+            modifier_settings.append(
+                tuple(sorted(expected_settings.items())))
         stl_to_bed = _parse_3mf_transform(
             item.attrib.get("transform"), "composite build item transform")
     finally:
@@ -286,6 +367,10 @@ def audit_bambu_composite_3mf(
         support_blocker_triangle_counts=tuple(blocker_triangle_counts),
         normal_part_names=actual_normal_names,
         support_blocker_names=actual_blocker_names,
+        parameter_modifier_triangle_counts=tuple(
+            modifier_triangle_counts),
+        parameter_modifier_names=actual_modifier_names,
+        parameter_modifier_settings=tuple(modifier_settings),
     )
 
 

@@ -21,6 +21,7 @@ import pytest
 from bambu_3mf_audit import (
     Bambu3MFAuditError,
     Matrix4,
+    _validate_mesh_equivalence,
     audit_bambu_3mf,
     expected_bambu_result_bbox,
     validate_bed_fit,
@@ -238,6 +239,41 @@ def test_accepts_only_sub_tolerance_mesh_roundoff(tmp_path: Path) -> None:
     project, stl = _fixture(tmp_path, vertex_delta_mm=5.0e-7)
     audit = audit_bambu_3mf(project, stl)
     assert audit.mesh_max_abs_error_mm == pytest.approx(5.0e-7, abs=1.0e-7)
+
+
+def test_close_source_vertices_are_disambiguated_by_triangle_multiset() -> None:
+    lower = (
+        ((0.0, 0.0, 0.0), (2.0, 0.0, 0.0), (0.0, 3.0, 0.0)),
+    )
+    upper = (
+        ((0.0, 0.0, 3.0e-6), (2.0, 0.0, 3.0e-6),
+         (0.0, 3.0, 3.0e-6)),
+    )
+    reconstructed = (
+        tuple(reversed(tuple(
+            (x, y, z + 0.1e-6) for x, y, z in upper[0]))),
+        tuple(reversed(tuple(
+            (x, y, z + 0.2e-6) for x, y, z in lower[0]))),
+    )
+
+    error = _validate_mesh_equivalence(
+        lower + upper, reconstructed, tolerance_mm=1.0e-5)
+
+    assert error == pytest.approx(2.0e-7, abs=1.0e-12)
+
+
+def test_close_vertex_matching_still_rejects_triangle_multiplicity_drift() -> None:
+    lower = (
+        ((0.0, 0.0, 0.0), (2.0, 0.0, 0.0), (0.0, 3.0, 0.0)),
+    )
+    upper = (
+        ((0.0, 0.0, 3.0e-6), (2.0, 0.0, 3.0e-6),
+         (0.0, 3.0, 3.0e-6)),
+    )
+
+    with pytest.raises(Bambu3MFAuditError, match="canonical triangle soup"):
+        _validate_mesh_equivalence(
+            lower + upper, lower + lower, tolerance_mm=1.0e-5)
 
 
 @pytest.mark.parametrize(

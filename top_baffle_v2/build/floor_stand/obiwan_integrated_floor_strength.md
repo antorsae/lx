@@ -4,16 +4,16 @@ This is a conservative closed-form net-section screen, not FEA or physical quali
 
 | Material | Vertical 1g/3g/5g SF | Anchored lateral 1g/3g/5g SF | 1g deflection (mm) | Result |
 |---|---:|---:|---:|---|
-| Bambu PLA Tough+ | 3.05 / 1.97 / 1.18 | 4.22 / 2.73 / 1.64 | 1.18 | PASS (analytical) |
-| Bambu PLA Basic | 4.39 / 2.78 / 1.67 | 6.09 / 3.85 / 2.31 | 1.05 | PASS (analytical) |
-| Bambu PLA Lite | 2.69 / 1.73 / 1.04 | 3.73 / 2.40 / 1.44 | 1.40 | FAIL; provisional data |
-| Bambu PLA Matte | 2.78 / 1.79 / 1.08 | 3.85 / 2.49 / 1.49 | 1.49 | PASS (analytical) |
-| Bambu PLA Silk+ | 3.23 / 2.09 / 1.25 | 4.47 / 2.90 / 1.74 | 1.17 | PASS (analytical) |
+| Bambu PLA Tough+ | 3.05 / 1.97 / 1.18 | 3.80 / 2.46 / 1.48 | 1.30 | PASS (analytical) |
+| Bambu PLA Basic | 4.39 / 2.78 / 1.67 | 5.48 / 3.47 / 2.08 | 1.15 | PASS (analytical) |
+| Bambu PLA Lite | 2.69 / 1.73 / 1.04 | 3.35 / 2.16 / 1.30 | 1.54 | FAIL; provisional data |
+| Bambu PLA Matte | 2.78 / 1.79 / 1.08 | 3.47 / 2.24 / 1.34 | 1.65 | PASS (analytical) |
+| Bambu PLA Silk+ | 3.23 / 2.09 / 1.25 | 4.03 / 2.61 / 1.57 | 1.29 | PASS (analytical) |
 
 ## Bound production geometry
 
-- `build/floor_stand/top_baffle_nd25fw4_obiwan_split.step` — SHA-256 `0681bbcb4d09b3752f81c130946b06b412a1d9b542b5762523ff7cd26dacd2e4`
-- `build/floor_stand/top_baffle_nd25fw4_obiwan_lm_split.step` — SHA-256 `5024ae1badd071fbf9b157a999aa4701b8a557af92afb334fc05a7f17528c239`
+- `build/floor_stand/top_baffle_nd25fw4_obiwan_split.step` — SHA-256 `10ff9318ddbf0806b34881d03424c11accf718ae1f144af9186f6586197a7e86`
+- `build/floor_stand/top_baffle_nd25fw4_obiwan_lm_split.step` — SHA-256 `c8cb430f54dc5bdbec973dfcc1bb1eadb4ab20665efa227150492989f7ce5913`
 
 ## Shoulder-to-LM-ring diagnostic
 

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 import sys
 
@@ -24,7 +25,7 @@ EXPECTED = {
         "bottom_name": (
             "obiwan_01a_of_16_LM_bottom_keyed_1_of_2_no_floor_stand"
         ),
-        "triangle_count": 56_688,
+        "triangle_count": 63_008,
         "make_slug": "no_floor",
         "infill": (40.0, "gyroid"),
     },
@@ -35,7 +36,7 @@ EXPECTED = {
         "bottom_name": (
             "obiwan_01b_of_16_LM_bottom_keyed_1_of_2_floor_stand"
         ),
-        "triangle_count": 143_370,
+        "triangle_count": 165_892,
         "make_slug": "floor",
         "infill": (100.0, "zig-zag"),
     },
@@ -46,6 +47,7 @@ SHARED_NAMES = (
     "obiwan_03_of_16_UM_carrier_1_of_1",
     "obiwan_04_of_16_T_tweeter_crescent_1_of_1",
 )
+PETG_GF_PROFILE = ROOT / "captive_magnet_slicing_profile_petg_gf.json"
 
 
 def check(condition: bool, message: str) -> None:
@@ -128,6 +130,17 @@ def check_variant(state: str) -> None:
     )
 
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
+    check(
+        plate.DEFAULT_PROFILE == PETG_GF_PROFILE,
+        "combined core plates must default to the structural PETG-GF profile",
+    )
+    profile = json.loads(PETG_GF_PROFILE.read_text(encoding="utf-8"))
+    check(
+        profile["user_filament_preset"]
+        == "TINMORRY PETG-GF Profile @BBL P2S"
+        and profile["repo_overrides"]["process"]["wall_loops"] == "8",
+        "combined core profile must pin saved TINMORRY PETG-GF and 8 walls",
+    )
     make_slug = expected["make_slug"]
     for target in (
         f"obiwan_{make_slug}_combo_plate_source",
@@ -139,6 +152,10 @@ def check_variant(state: str) -> None:
             target in makefile,
             f"{target} is absent from the first-class Make graph",
         )
+    check(
+        makefile.count('--profile "$(PETG_GF_PROFILE)"') >= 7,
+        "standalone 01a and both core-plate recipes must use PETG-GF",
+    )
     print(f"Obi-Wan {state} four-piece local plate: all checks passed")
 
 

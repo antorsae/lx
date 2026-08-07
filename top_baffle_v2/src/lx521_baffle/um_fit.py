@@ -659,7 +659,7 @@ def rear_cable_envelope(routing_profile: str):
 
     Proud retains the vertical continuation behind its rear outlet.  V1L
     returns the exact complete keyed route -- planar main, terminal refit,
-    R14 handoff and rear continuation.  That installed V1L continuation
+    circular spatial handoff and rear continuation.  That installed V1L continuation
     intentionally enters the Faston service-motion envelope. Obi-Wan has no
     UM-carrier outlet: return its complete physical harness, which leaves the
     LM-owned printed passage at R113 and continues freely behind UM through
@@ -1367,58 +1367,80 @@ def _proud_curved_grommet():
 
 
 def _v1l_terminal_curved_grommet():
-    """D8/D7 split TPU shank for V1L's keyed terminal-axis R14.
+    """D8/D7 split TPU shank for V1L's keyed circular handoff.
 
-    The shank follows the exact analytic elbow on both sides of the
-    physical rear-plane crossing.  A flat annular flange occupies
+    The shank follows the exact analytic spatial arc inside the rear face and
+    its tangent lead outside it.  A flat annular flange occupies
     z=(rear-2)..rear, so its seating face is exactly z=6.8 and no part
     of the strain relief enters the z=-15..-5 Faston motion volume.
     """
     from .cables import (
         UM_HANDOFF,
-        UM_HANDOFF_R_MM,
         UM_V1L_HANDOFF_KEY,
         UM_V1L_REAR_FACE_Z_MM,
     )
 
     spec = UM_HANDOFF[UM_V1L_HANDOFF_KEY]
     sx, sy, sz = spec["start"]
-    tx, ty, _tz = spec["tangent"]
-    radius = UM_HANDOFF_R_MM
+    tangent = tuple(spec["tangent"])
+    normal = tuple(spec["arc_normal"])
+    radius = spec["arc_radius_mm"]
+    arc_angle = spec["arc_angle_rad"]
+    face = tuple(spec["rear_face_axis_point"])
+    face_tangent = tuple(spec["face_tangent"])
     rear_z = UM_V1L_REAR_FACE_Z_MM
     inner_z = rear_z + V1L_GROMMET_INSERT_DEPTH
     outer_z = rear_z - V1L_GROMMET_FLANGE_T
 
     def phi_at_z(z: float) -> float:
-        cos_phi = 1.0 - (sz - z) / radius
+        normal_z = normal[2]
+        if abs(normal_z) <= 1.0e-12:
+            raise ValueError("V1L spatial arc has no rearward component")
+        cos_phi = 1.0 - (z - sz) / (radius * normal_z)
         if not -1.0 <= cos_phi <= 1.0:
-            raise ValueError(f"z={z:g} is outside the V1L R14 handoff")
-        return math.acos(cos_phi)
+            raise ValueError(f"z={z:g} is outside the V1L circular handoff")
+        phi = math.acos(cos_phi)
+        if phi > arc_angle + 1.0e-9:
+            raise ValueError(f"z={z:g} lies beyond the V1L rear face")
+        return phi
 
     def point(phi: float):
-        return (
-            sx + radius * math.sin(phi) * tx,
-            sy + radius * math.sin(phi) * ty,
-            sz - radius * (1.0 - math.cos(phi)),
+        start = (sx, sy, sz)
+        return tuple(
+            start[index]
+            + radius * math.sin(phi) * tangent[index]
+            + radius * (1.0 - math.cos(phi)) * normal[index]
+            for index in range(3)
         )
 
-    def arc_between(z0: float, z1: float):
-        phi0, phi1 = phi_at_z(z0), phi_at_z(z1)
-        return Wire([ThreePointArc(
-            point(phi0),
-            point((phi0 + phi1) / 2.0),
-            point(phi1),
-        )])
+    def external_point_at_z(z: float):
+        if face_tangent[2] >= -1.0e-12:
+            raise ValueError("V1L face tangent does not leave through rear")
+        scale = (z - face[2]) / face_tangent[2]
+        return tuple(
+            face[index] + scale * face_tangent[index]
+            for index in range(3)
+        )
 
-    body_path = arc_between(inner_z, outer_z)
+    def path_from_inner_to_external(inner: float, external: float):
+        phi0 = phi_at_z(inner)
+        arc = ThreePointArc(
+            point(phi0),
+            point((phi0 + arc_angle) / 2.0),
+            face,
+        )
+        return Wire([arc, Line(face, external_point_at_z(external))])
+
+    body_path = path_from_inner_to_external(inner_z, outer_z)
     # Extend only the subtractive bore beyond both body ends; this avoids
     # coplanar inner caps and guarantees a through D7 passage after fuse.
-    # Continue the subtractive bore to the R14 outlet.  Because the cable
+    # Continue the subtractive bore to the tangent outlet.  Because the cable
     # crosses the flat flange obliquely, stopping its centerline only
     # 0.6 mm behind the flange leaves a clipped crescent at the rear face.
     # The full arc removes that cap artifact while adding no printable
     # material outside the flange.
-    bore_path = arc_between(inner_z + 0.6, spec["outlet"][2])
+    bore_path = path_from_inner_to_external(
+        inner_z + 0.6, spec["outlet"][2])
 
     def swept(path, radius_mm: float):
         section = Plane(origin=path @ 0, z_dir=path % 0) * Circle(radius_mm)
@@ -1443,7 +1465,7 @@ def _v1l_terminal_curved_grommet():
 
 
 def _split_v1l_terminal_grommet(full):
-    """Split the V1L insert in its R14/Z plane with a 0.2 mm gap."""
+    """Split the V1L insert in its route/Z plane with a 0.2 mm gap."""
     from .cables import (
         UM_HANDOFF,
         UM_V1L_HANDOFF_KEY,
@@ -1474,7 +1496,7 @@ def split_grommet_parts(routing_profile: str = "proud"):
     """Profile-fitted two-piece TPU inserts for the R6P routes.
 
     Proud uses a short curved shank that follows the final R14 bore and
-    seats its flange on z=0.  V1L follows its keyed R14 and seats on the
+    seats its flange on z=0.  V1L follows its keyed spatial arc and seats on the
     physical z=6.8 rear face without entering the Faston motion volume.
     Obi-Wan deliberately has no printed grommet. The nominal split bores are
     D7 (proud) and D7.1 (V1L).

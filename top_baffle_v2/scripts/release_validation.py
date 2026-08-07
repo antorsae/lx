@@ -206,7 +206,7 @@ PAIRED_MAGNET_FACE_SEPARATION_MM = {
     None: 0.95,
     "standard_straight": 0.95,
     "standard_curved": 1.09,
-    "base_side": 0.95,
+    "shoulder": 1.10,
     "ring": 1.10,
 }
 SUPPORT_PROCESS_KEYS = (
@@ -575,13 +575,27 @@ def _normalize_duct_support_blocker(
 class PresetResolver:
     """Resolve Bambu system ``inherits``/``include`` chains exactly once."""
 
-    def __init__(self, vendor_root: Path):
+    def __init__(
+        self,
+        vendor_root: Path,
+        *,
+        extra_presets: Sequence[Path] = (),
+    ):
         self.vendor_root = vendor_root.resolve()
         if not self.vendor_root.is_dir():
             raise AuditError(f"Bambu preset root does not exist: {vendor_root}")
         self.by_name: dict[str, list[Path]] = {}
         self.raw: dict[Path, dict[str, Any]] = {}
-        for path in sorted(self.vendor_root.rglob("*.json")):
+        indexed_paths = {
+            path.resolve() for path in self.vendor_root.rglob("*.json")
+        }
+        for path in extra_presets:
+            resolved = path.expanduser().resolve()
+            if not resolved.is_file():
+                raise AuditError(
+                    f"additional Bambu preset does not exist: {resolved}")
+            indexed_paths.add(resolved)
+        for path in sorted(indexed_paths):
             try:
                 data = json.loads(path.read_text(encoding="utf-8"))
             except (OSError, UnicodeError, json.JSONDecodeError):
@@ -617,6 +631,35 @@ class PresetResolver:
     def resolve(self, path: Path) -> dict[str, Any]:
         return self._resolve(path.resolve(), ())
 
+    @staticmethod
+    def _merge_values(
+        base: Mapping[str, Any],
+        overlay: Mapping[str, Any],
+        *,
+        origin: Path,
+    ) -> dict[str, Any]:
+        """Apply Bambu's per-slot ``nil`` inheritance while flattening."""
+        merged = dict(base)
+        for key, value in overlay.items():
+            if key in ("inherits", "include"):
+                continue
+            if isinstance(value, list) and any(
+                    str(item).strip().lower() == "nil" for item in value):
+                parent = merged.get(key)
+                value = [
+                    parent[index]
+                    if (str(item).strip().lower() == "nil"
+                        and isinstance(parent, list)
+                        and index < len(parent))
+                    else item
+                    for index, item in enumerate(value)
+                ]
+            elif isinstance(value, str) and value.strip().lower() == "nil":
+                if key in merged:
+                    continue
+            merged[key] = copy.deepcopy(value)
+        return merged
+
     def _resolve(self, path: Path, stack: tuple[Path, ...]) -> dict[str, Any]:
         if path in stack:
             chain = " -> ".join(item.name for item in (*stack, path))
@@ -631,7 +674,10 @@ class PresetResolver:
         parent = child.get("inherits")
         if isinstance(parent, str) and parent.strip():
             parent_path = self._find_named(parent.strip(), type_hint, path)
-            merged.update(self._resolve(parent_path, (*stack, path)))
+            merged = self._merge_values(
+                merged,
+                self._resolve(parent_path, (*stack, path)),
+                origin=parent_path)
         includes = child.get("include", [])
         if isinstance(includes, str):
             includes = [includes]
@@ -643,15 +689,44 @@ class PresetResolver:
             if not isinstance(name, str) or not name:
                 raise AuditError(f"invalid include name in {path}: {name!r}")
             include_path = self._find_named(name, type_hint, path)
-            merged.update(self._resolve(include_path, (*stack, path)))
-        merged.update({key: value for key, value in child.items()
-                       if key not in ("inherits", "include")})
-        return merged
+            merged = self._merge_values(
+                merged,
+                self._resolve(include_path, (*stack, path)),
+                origin=include_path)
+        return self._merge_values(merged, child, origin=path)
 
 
 def _default_bambu_system_root(vendor: str) -> Path:
     return (Path.home() / "Library" / "Application Support" / "BambuStudio"
             / "system" / vendor)
+
+
+def _find_user_filament_preset(name: str) -> Path:
+    """Resolve one exact saved Bambu filament preset on the local Mac."""
+    if not isinstance(name, str) or not name.strip():
+        raise AuditError("user_filament_preset must be a non-empty name")
+    user_root = (
+        Path.home() / "Library" / "Application Support" / "BambuStudio"
+        / "user"
+    )
+    candidates = sorted(
+        path.resolve()
+        for path in user_root.glob(f"*/filament/{name.strip()}.json")
+        if path.is_file()
+    )
+    if len(candidates) != 1:
+        raise AuditError(
+            f"saved Bambu filament preset {name!r} resolved to "
+            f"{len(candidates)} files below {user_root}; expected exactly one")
+    try:
+        payload = json.loads(candidates[0].read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise AuditError(
+            f"cannot read saved Bambu filament preset {candidates[0]}") from exc
+    if not isinstance(payload, Mapping) or payload.get("name") != name.strip():
+        raise AuditError(
+            f"saved Bambu filament preset identity differs from {name!r}")
+    return candidates[0]
 
 
 def _find_bambu_binary(explicit: str | None = None) -> Path:
@@ -775,6 +850,10 @@ def _percent(value: Any, label: str) -> float:
 
 def _validate_support_override_policy(config: Mapping[str, Any]) -> None:
     """Pin support off globally and on only for its exact safe allowlist."""
+    catalog_mode = config.get("catalog_mode", "release")
+    if catalog_mode not in {"release", "auxiliary"}:
+        raise AuditError(
+            "slicing profile catalog_mode must be release or auxiliary")
     requirements = config.get("requirements")
     if (not isinstance(requirements, Mapping)
             or requirements.get("support_enabled") is not False):
@@ -809,9 +888,13 @@ def _validate_support_override_policy(config: Mapping[str, Any]) -> None:
         if present != set(SUPPORT_PROCESS_KEYS):
             raise AuditError(
                 f"artifact_overrides[{index}] must set all support keys")
-        if not all(_boolish(process[key]) for key in SUPPORT_PROCESS_KEYS):
+        support_values = tuple(
+            _boolish(process[key]) for key in SUPPORT_PROCESS_KEYS)
+        required_value = catalog_mode == "release"
+        if any(value != required_value for value in support_values):
             raise AuditError(
-                f"artifact_overrides[{index}] support keys must all be 1")
+                f"artifact_overrides[{index}] support keys must all be "
+                f"{1 if required_value else 0} in {catalog_mode} mode")
         match = rule.get("match")
         if not isinstance(match, Mapping):
             raise AuditError(
@@ -821,10 +904,16 @@ def _validate_support_override_policy(config: Mapping[str, Any]) -> None:
         tuple(sorted(item.items())) for item in actual_matches)
     required_match_keys = sorted(
         tuple(sorted(item.items())) for item in SUPPORTED_ARTIFACT_MATCHES)
-    if actual_match_keys != required_match_keys:
+    if catalog_mode == "release" and actual_match_keys != required_match_keys:
         raise AuditError(
             "support overrides must target exactly the floor/no-floor "
             "Obi-Wan keyed LM split and UM carrier artifacts")
+    if catalog_mode == "auxiliary" and actual_match_keys:
+        # Auxiliary artifacts in this workflow are support-free by contract.
+        # Explicit all-zero per-object rules are harmless but unnecessary;
+        # the ready-project emitter pins the same four keys on every normal
+        # object.  Rejecting a truthy rule above is the safety boundary.
+        return
 
 
 def _magnet_insertion_pause_policy(
@@ -1020,11 +1109,33 @@ def prepare_profiles(
         raise AuditError(f"unsupported slicing profile schema in {config_path}")
     _validate_support_override_policy(config)
     root = (system_root or _default_bambu_system_root(config["vendor"])).resolve()
-    resolver = PresetResolver(root)
+    user_filament_name = config.get("user_filament_preset")
+    user_filament_path = (
+        _find_user_filament_preset(user_filament_name)
+        if user_filament_name is not None else None
+    )
+    if user_filament_path is not None:
+        expected_user_sha = config.get("user_filament_preset_sha256")
+        if (not isinstance(expected_user_sha, str)
+                or not re.fullmatch(r"[0-9a-f]{64}", expected_user_sha)
+                or sha256_file(user_filament_path) != expected_user_sha):
+            raise AuditError(
+                "saved user filament preset differs from the hash pinned "
+                f"by {config_path}")
+    resolver = PresetResolver(
+        root,
+        extra_presets=(
+            (user_filament_path,) if user_filament_path is not None else ()
+        ),
+    )
     sources = {
         "machine": root / config["machine_preset"],
         "process": root / config["process_preset"],
-        "filament": root / config["filament_preset"],
+        "filament": (
+            user_filament_path
+            if user_filament_path is not None
+            else root / config["filament_preset"]
+        ),
     }
     for label, path in sources.items():
         if path.resolve() not in resolver.raw:
@@ -1049,8 +1160,15 @@ def prepare_profiles(
         paths[label] = path
     dependency_records = []
     for path in sorted(resolver.dependencies):
+        try:
+            dependency_path = str(path.relative_to(root))
+            dependency_scope = "system_vendor_root"
+        except ValueError:
+            dependency_path = str(path)
+            dependency_scope = "saved_user_preset"
         dependency_records.append({
-            "path": str(path.relative_to(root)),
+            "path": dependency_path,
+            "scope": dependency_scope,
             "sha256": sha256_file(path),
         })
     try:
@@ -1239,6 +1357,181 @@ def inspect_stl(path: Path) -> MeshFacts:
     if count == 0 or count % 3:
         raise AuditError(f"{path} is not a recognized STL")
     return MeshFacts(count // 3, tuple(mins), tuple(maxs))  # type: ignore[arg-type]
+
+
+PARAMETER_MODIFIER_PROCESS_KEYS = frozenset({
+    "sparse_infill_density",
+    "sparse_infill_pattern",
+})
+
+
+def _profile_relative_path(
+    profile_bundle: Mapping[str, Any],
+    value: Any,
+    *,
+    label: str,
+) -> Path:
+    if not isinstance(value, str) or not value:
+        raise AuditError(f"{label} must be a non-empty relative path")
+    relative = Path(value)
+    if relative.is_absolute() or ".." in relative.parts:
+        raise AuditError(f"{label} must stay below the profile directory")
+    config_path = Path(profile_bundle["identity"]["config_path"]).resolve()
+    return (config_path.parent / relative).resolve()
+
+
+def _parameter_modifiers_for_artifact(
+    artifact: Mapping[str, Any],
+    profile_bundle: Mapping[str, Any],
+) -> tuple[dict[str, Any], ...]:
+    """Resolve and hash-check exact Bambu parameter-modifier contracts."""
+    rules = profile_bundle["config"].get("parameter_modifiers", [])
+    if not isinstance(rules, list):
+        raise AuditError("parameter_modifiers must be an array")
+    matches: list[tuple[int, Mapping[str, Any]]] = []
+    for index, rule in enumerate(rules):
+        if not isinstance(rule, Mapping):
+            raise AuditError(f"parameter_modifiers[{index}] must be an object")
+        match = rule.get("match")
+        if not isinstance(match, Mapping) or not match:
+            raise AuditError(
+                f"parameter_modifiers[{index}].match must be a non-empty "
+                "object")
+        if all(artifact.get(key) == expected
+               for key, expected in match.items()):
+            matches.append((index, rule))
+    if len(matches) > 1:
+        raise AuditError(
+            f"{artifact['id']}: multiple parameter modifiers match: "
+            f"{[index for index, _rule in matches]}")
+    if not matches:
+        return ()
+
+    index, rule = matches[0]
+    contract_path = _profile_relative_path(
+        profile_bundle, rule.get("contract"),
+        label=f"parameter_modifiers[{index}].contract")
+    contract = _load_json(contract_path)
+    expected_match = dict(rule["match"])
+    if (contract.get("schema_version") != 1
+            or contract.get("kind") != "bambu_parameter_modifier"
+            or contract.get("subtype") != "modifier_part"
+            or contract.get("artifact_match") != expected_match):
+        raise AuditError(
+            f"parameter modifier contract identity is invalid: "
+            f"{contract_path}")
+    process = contract.get("process")
+    if (not isinstance(process, Mapping)
+            or set(process) != PARAMETER_MODIFIER_PROCESS_KEYS
+            or process.get("sparse_infill_density") != "100%"
+            or process.get("sparse_infill_pattern") != "zig-zag"):
+        raise AuditError(
+            f"{contract_path}: bridge/root modifier must pin exactly "
+            "100% zig-zag infill")
+
+    source_stl = _profile_relative_path(
+        profile_bundle, contract.get("source_stl"),
+        label=f"{contract_path}.source_stl")
+    print_sidecar = _profile_relative_path(
+        profile_bundle, contract.get("print_sidecar"),
+        label=f"{contract_path}.print_sidecar")
+    modifier_stl = _profile_relative_path(
+        profile_bundle, contract.get("modifier_stl"),
+        label=f"{contract_path}.modifier_stl")
+    for path, expected_sha, label in (
+        (source_stl, contract.get("source_stl_sha256"), "source STL"),
+        (print_sidecar, contract.get("print_sidecar_sha256"), "print sidecar"),
+        (modifier_stl, contract.get("modifier_stl_sha256"), "modifier STL"),
+    ):
+        if (not path.is_file() or not isinstance(expected_sha, str)
+                or sha256_file(path) != expected_sha):
+            raise AuditError(
+                f"{contract_path}: {label} is missing or hash-mismatched")
+    artifact_stl = Path(artifact["stl"])
+    artifact_sidecar = Path(artifact["print_sidecar"])
+    if (sha256_file(artifact_stl) != contract["source_stl_sha256"]
+            or sha256_file(artifact_sidecar)
+            != contract["print_sidecar_sha256"]):
+        raise AuditError(
+            f"{artifact['id']}: parameter modifier is bound to different "
+            "release geometry")
+    modifier_mesh = inspect_stl(modifier_stl)
+    if modifier_mesh.triangle_count != int(contract.get(
+            "triangle_count", -1)):
+        raise AuditError(
+            f"{contract_path}: modifier triangle count is inconsistent")
+    return ({
+        "rule_index": index,
+        "match": expected_match,
+        "contract": contract_path,
+        "contract_sha256": sha256_file(contract_path),
+        "role": contract.get("role"),
+        "path": modifier_stl,
+        "sha256": sha256_file(modifier_stl),
+        "triangle_count": modifier_mesh.triangle_count,
+        "process": dict(process),
+    },)
+
+
+def _validate_parameter_modifier_coverage(
+    artifacts: Sequence[Mapping[str, Any]],
+    profile_bundle: Mapping[str, Any],
+) -> None:
+    """Require every configured modifier rule to bind one release artifact."""
+    rules = profile_bundle["config"].get("parameter_modifiers", [])
+    if not isinstance(rules, list):
+        raise AuditError("parameter_modifiers must be an array")
+    matched_ids: set[str] = set()
+    for index, rule in enumerate(rules):
+        if not isinstance(rule, Mapping) or not isinstance(
+                rule.get("match"), Mapping):
+            raise AuditError(f"parameter_modifiers[{index}] is invalid")
+        match = rule["match"]
+        matches = [
+            artifact for artifact in artifacts
+            if all(artifact.get(key) == expected
+                   for key, expected in match.items())
+        ]
+        if len(matches) != 1:
+            raise AuditError(
+                f"parameter_modifiers[{index}] match {dict(match)!r} "
+                f"resolved to {len(matches)} catalog artifacts; expected "
+                "exactly one")
+        artifact_id = str(matches[0]["id"])
+        if artifact_id in matched_ids:
+            raise AuditError(
+                f"multiple parameter modifiers target {artifact_id}")
+        matched_ids.add(artifact_id)
+        _parameter_modifiers_for_artifact(matches[0], profile_bundle)
+
+
+def _validate_profile_artifact_scope(
+    artifacts: Sequence[Mapping[str, Any]],
+    config: Mapping[str, Any],
+) -> None:
+    """Reject use of a material profile outside its explicit artifact scope."""
+    scope = config.get("artifact_scope")
+    if scope is None:
+        return
+    if not isinstance(scope, list) or not scope:
+        raise AuditError("artifact_scope must be a non-empty array")
+    matches = []
+    for index, match in enumerate(scope):
+        if not isinstance(match, Mapping) or not match:
+            raise AuditError(
+                f"artifact_scope[{index}] must be a non-empty object")
+        matches.append(dict(match))
+    violations = [
+        str(artifact.get("id", "<unknown>"))
+        for artifact in artifacts
+        if not any(all(artifact.get(key) == expected
+                       for key, expected in match.items())
+                   for match in matches)
+    ]
+    if violations:
+        raise AuditError(
+            "slicing profile is not authorized for artifact(s): "
+            + ", ".join(violations))
 
 
 def _matrix4(value: Any, label: str) -> tuple[tuple[float, ...], ...]:
@@ -1699,7 +1992,7 @@ def normalize_catalog(
                         f"{artifact_id}/{site_name}: interface_profile is "
                         "reserved for standard/slim pairs")
                 expected_interface_kind = (
-                    "base_side" if site_name.startswith("lm_lower_")
+                    "shoulder" if site_name.startswith("lm_lower_")
                     else "ring")
                 if interface_kind != expected_interface_kind:
                     raise AuditError(
@@ -1731,7 +2024,8 @@ def normalize_catalog(
                     f"got {actual_pair_separation:.6f}")
             if is_obiwan:
                 expected_inset = (
-                    0.15 if expected_interface_kind == "ring" else 0.0)
+                    0.15 if expected_interface_kind in {"ring", "shoulder"}
+                    else 0.0)
                 actual_inset = _float(_required(
                     site, "carrier_cavity_face_inset_mm",
                     f"{artifact_id}/{site_name}: carrier cavity-face inset"),
@@ -2466,7 +2760,15 @@ def _validate_complete_release(
             f"{pause_station_count} != {expected_pause_count}")
 
 
-def _validate_manifest_bundle(paths: Mapping[str, Path]) -> None:
+def _validate_manifest_bundle(
+    paths: Mapping[str, Path],
+    *,
+    expected_artifact_count: int,
+    expected_magnet_count: int,
+    enforce_release_polarity_contract: bool,
+) -> None:
+    if expected_artifact_count <= 0 or expected_magnet_count <= 0:
+        raise AuditError("staged manifest inventory expectation is invalid")
     if {path.name for path in paths.values()} != set(
             CANONICAL_MANIFEST_FILENAMES):
         raise AuditError("staged manifest bundle has unexpected filenames")
@@ -2479,11 +2781,11 @@ def _validate_manifest_bundle(paths: Mapping[str, Path]) -> None:
     summary = manifest.get("summary", {})
     if (summary.get("failed_artifacts") != 0
             or summary.get("requested_artifact_count")
-            != EXPECTED_RELEASE_ARTIFACT_COUNT
+            != expected_artifact_count
             or summary.get("catalog_artifact_count")
-            != EXPECTED_RELEASE_ARTIFACT_COUNT
+            != expected_artifact_count
             or summary.get("catalog_magnet_station_count")
-            != EXPECTED_RELEASE_MAGNET_COUNT):
+            != expected_magnet_count):
         raise AuditError("staged JSON manifest lacks complete passing coverage")
     artifacts = manifest.get("artifacts")
     if not isinstance(artifacts, list):
@@ -2567,12 +2869,17 @@ def _validate_manifest_bundle(paths: Mapping[str, Path]) -> None:
     markdown = paths["markdown"].read_text(encoding="utf-8")
     if "# Captive-magnet pause manifest" not in markdown:
         raise AuditError("staged Markdown manifest has the wrong document kind")
-    for required_text in (
-            "print_insertion_direction_xyz = [0, 0, -1]",
-            "## Audited Bambu arrangements",
-            READY_3MF_FILENAME,
+    required_texts = [
+        "print_insertion_direction_xyz = [0, 0, -1]",
+        "## Audited Bambu arrangements",
+        READY_3MF_FILENAME,
+    ]
+    if enforce_release_polarity_contract:
+        required_texts.extend((
             "provisional unpaired V0 convention",
-            "unpaired coupon1 regression station"):
+            "unpaired coupon1 regression station",
+        ))
+    for required_text in required_texts:
         if required_text not in markdown:
             raise AuditError(
                 "staged Markdown manifest omits required insertion/polarity "

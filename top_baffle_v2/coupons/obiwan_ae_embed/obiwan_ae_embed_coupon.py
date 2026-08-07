@@ -70,8 +70,8 @@ assert math.isclose(
 # pair's 0.05-mm assembly clearance and intentionally has coincident plastic
 # interface datums.  Keep this local and immutable: importing the production
 # wing gap would silently turn the validated coupon's 0.90-mm magnet-face
-# stack into the standard/Obi-Wan-LM-lower 0.95-mm stack when that separate
-# authority moves. Obi-Wan ring pairs instead use the visible-surface datum
+# stack into a generic non-inset 0.95-mm stack when that separate authority
+# moves. Every current Obi-Wan station instead uses a visible-surface datum
 # and a 1.10-mm stack.
 COUPON_INTERFACE_GAP_MM = 0.0
 

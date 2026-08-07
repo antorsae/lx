@@ -5,13 +5,19 @@ There are now two intentionally isolated systems:
 - The **R6P proud family** prints as four pieces joined at three seams:
   `piece_bottom`, `piece_mid_left`, `piece_mid_right`, and `piece_top`.
   All five variants retain the same seams (A: y=120, teeth ±66/±103;
-  B: y=315.95, teeth −19/+30; C: x=−5.6, tooth y=305) and matching
-  seam mouths. B2/C7/V0/V1 use the standard Ø8.2/G1/R14 UM outlet at
+  B: y=315.95, teeth −19/+29; C: x=−5.6, tooth y=305) and matching
+  seam mouths. Seam B also carries the common hidden radial M3×20 joint at
+  `(x,z)=(0,12.55)`: `mid_right` owns the recessed Ø3.4 screw passage and
+  every vase owns the blind Ø4.6×4.0 heat-set receiver. B2/C7/V0/V1 use the standard Ø8.2/G1/R14 UM outlet at
   (33.446, 301.492). V1L is a keyed routing exception: its Ø8.2
   alternate tail stays wholly in `piece_mid_right` and exits the
   z=6.8 rear face at Q=(13.497063, 307.618796), radius 60.0 mm on the
   283-degree terminal axis. Because it never reaches seam B, top/vase
   interchangeability is preserved.
+  In no-floor form, every Stock/Slim variant also shares Obi-Wan's exact
+  three-port D20 interface relative to the four bridge inserts: LM
+  `(-0.35,64.76)`, one Ø6 shared-T trunk `(-4.75,55.91)`, and UM
+  `(3.17,55.91)`.
 - **R6F Obi-Wan** is an extreme skeletal system: only one LM carrier and
   one UM collar are mandatory. It has no proud-family seams or full
   outline. UM is buried only through the LM
@@ -22,7 +28,8 @@ There are now two intentionally isolated systems:
   D7.8 LM reference follows its buried Ø9 branch to the common R14 handoff.
   No-floor mode fuses the stock four-hole solid front
   web into the LM core and has no separate keel.
-  Floor mode instead fuses the full-height W64 stem/foot, R12 root, buried
+  Floor mode instead fuses the full-height W64 stem/foot, convex
+  constant-thickness Option-B transition (centreline Rmin 41 mm), buried
   floor lanes and NL8 panel directly into the LM carrier. There is no separate
   floor-support part or support fastener. Tweeter, outline, and retention
   remain selectable add-ons. The canonical floor LM is a large-format
@@ -47,8 +54,8 @@ drivers (W22EX001 / 10F) refer to the same cutout/pilot geometry.
 | **C7** | bottom + mids (+B2 vase) | LM knife taper: REAR-side smoothstep 18.3 -> 0.5 over 19 mm from the flank/chamfer edges; recovery lands at both seams; full bottom strip. Front plane intact. | `lx521_top_c7base_1..4of4` |
 | **V0** | vase | Rear knife band: REAR-side 18.3 -> 0.5 over the last 2.8 mm of the vase outline (same sculpted side as C7); front intact. | `lx521_top_v0_4of4_vase` |
 | **V1** | vase | Thin FLUSH vase: 11.5 (material z 6.8..18.3). Crescent re-derived (4.0 clamp seat at stock z); tweeter septum 11.5 (shorter standoffs, pair spacing -6.8); one shared front plane. | `lx521_top_v1_4of4_vase` |
-| **V1L** | bottom + mids | Thin FLUSH LM section: 11.5 (z 6.8..18.3 -- SAME plane as the V1 vase: no seam-B step), including both 6-mm seam-B male teeth that project into the vase. Smoothstep ramp y=78..96 to the full strip. Ø8.2 LM duct is the 11.5 binder. Its keyed Ø8.2 UM alternate exits `mid_right` at Q=(13.497063, 307.618796, 6.8) on the 283° axis; seam B/top are untouched. | `lx521_top_v1l_1..3of4` (its `--variant v1l` export bundles the unchanged V1 vase = the complete ~12 mm baffle) |
-| **Obi-Wan R6F** | legacy four-piece baffle; replaced by two mandatory carriers plus add-ons | **Extreme barebone flush carriers**: LM Ø190 opening / Ø221.2 seat / structural R113.0 lip with smooth exposed R113.8 side fairing; UM Ø82 opening / Ø98.6 seat / structural R51.7 lip with smooth exposed R52.5 side fairing. The fairings stop only inside the existing LM–UM and T–UM cusp/service regions; the LM–UM stop preserves the 0.40 mm inter-carrier gap. Rounded M3 half-lap pairs sit at x=±32.0/y=315.770 and x=±24/y=421.5. At both interfaces the closure-web/base teardrops remain nominal Ø9, while every complete Z-owned cylindrical functional boss is locally Ø9.8. LM and UM respectively own complete standalone rear Ø3.4 passages; UM and the crescent respectively own complete standalone rear-opening blind Ø4.6 × 4.0 receivers with 360° walls and 1.9 mm front floors. Each joint retains a 0.20 mm axial gap. Install inserts in the individual UM and crescent prints before assembly; neither interface uses a washer, nut, front bolt head, or cross-owner receiver wall. Complementary tangent-blended LM–UM and T–UM closure webs are solid through z=6.8..18.3 and share the coplanar z=18.3 front; only the central T cable mouth remains open between the upper rings. Obi-Wan-only LM axes rotate to 0/60/120/180/240/300° on the unchanged Ø209.5 PCD; all six are ordinary blind carrier insert bores in both states. Six actual Ø5×2 magnets use captive Ø5.20×2.10 cavities with 0.45 mm axial skins and a 45° closing roof. Upper LM remains ring-radial at 64°/116°; lower LM remains in the straight base side faces at `(x,y,z)=(±32,18,15.10)` with outward ±X normals; UM remains ring-radial at 50.5°/129.5°. Every carrier station shares source Z=15.10. The shared floor/no-floor lower profile makes the two base-side datums identical in both states. At LM-upper and UM, the cavity construction datum is structural radius +0.65 mm, 0.15 mm beneath the continuous exposed fairing. The magnet-free carrier exterior is immutable: there is no magnet-local backing, boss, relief, rear cap, flat, or visible pocket cue. Magnets are inserted at the authoritative pause and permanently buried, with no glue or external opening. Neither carrier has proud magnet ears. Ac/Ae provide three matching captive receivers per physical side: LM lower, LM upper, and UM. Their mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm allowance is a solid spacing standoff, not an air-gap cutter. Nominal paired magnet-face separation is 1.10 mm at LM-upper/UM and 0.95 mm at the LM-lower base-side pair. UM is buried in an Ø8.2 passage only inside LM, then runs free behind UM with no printed UM-carrier rear duct. T is buried in an Ø6.0 passage through LM/UM, then runs free behind the tweeter crescent, which has no printed cable arc. Every surviving named insert bypass has a deep full-width burial web. In no-floor state, LM/T/UM enter through the D20 support opening as LM above, T lower-left and UM lower-right; the D7.8 LM lead follows a buried Ø9 branch to the common R14 handoff. The LM-owned UM/T lumens finish at R112.95 and their 0.8 mm covers at R113.75 beneath the uninterrupted visible R113.8 carrier exterior, retaining a 0.85 mm solid outside skin with no groove. The physical T/UM routes cross at 82.95° with a 2.00 mm physical-envelope gap and no two-duct separator-web claim. No-floor LM includes the unchanged front-flush bridge plate at z=5.3..18.3. Floor LM instead owns the complete W64 × 18.3 stem/foot from z=−150..18.3, R12 root, three buried floor continuations, connector service cavity and rear NL8 panel; floor Y=0 keeps the LM axis exactly 200.981 mm above the floor. The tweeter carrier is a separate add-on; Obi-Wan has no printed grommet. | `lx521_top_obiwan_core_1of2_lm_carrier.stl`, `lx521_top_obiwan_core_2of2_um_carrier.stl` |
+| **V1L** | bottom + mids | Thin FLUSH LM section: 11.5 (z 6.8..18.3 -- SAME plane as the V1 vase: no seam-B step), including both 6-mm seam-B male dovetails that project into the vase. All joints use B2's regular through-local-thickness profiles. Smoothstep ramp y=78..96 to the full strip. Ø8.2 LM duct is the 11.5 binder. Its keyed Ø8.2 UM alternate exits `mid_right` at Q=(13.497063, 307.618796, 6.8) on the 283° axis; seam B/top are untouched. | `lx521_top_v1l_1..3of4` (its `--variant v1l` export bundles the unchanged V1 vase = the complete ~12 mm baffle) |
+| **Obi-Wan R6F** | legacy four-piece baffle; replaced by two mandatory carriers plus add-ons | **Extreme barebone flush carriers**: LM Ø190 opening / Ø221.2 seat / structural R113.0 lip with smooth exposed R113.8 side fairing; UM Ø82 opening / Ø98.6 seat / structural R51.7 lip with smooth exposed R52.5 side fairing. The fairings stop only inside the existing LM–UM and T–UM cusp/service regions; the LM–UM stop preserves the 0.40 mm inter-carrier gap. Rounded M3 half-lap pairs sit at x=±32.0/y=315.770 and x=±24/y=421.5. At both interfaces the closure-web/base teardrops remain nominal Ø9, while every complete Z-owned cylindrical functional boss is locally Ø9.8. LM and UM respectively own complete standalone rear Ø3.4 passages; UM and the crescent respectively own complete standalone rear-opening blind Ø4.6 × 4.0 receivers with 360° walls and 1.9 mm front floors. Each joint retains a 0.20 mm axial gap. Install inserts in the individual UM and crescent prints before assembly; neither interface uses a washer, nut, front bolt head, or cross-owner receiver wall. Complementary tangent-blended LM–UM and T–UM closure webs are solid through z=6.8..18.3 and share the coplanar z=18.3 front; only the central T cable mouth remains open between the upper rings. Obi-Wan-only LM axes rotate to 0/60/120/180/240/300° on the unchanged Ø209.5 PCD; all six are ordinary blind carrier insert bores in both states. Six actual Ø5×2 magnets use captive Ø5.20×2.10 cavities with 0.45 mm axial skins and a 45° closing roof. Upper LM remains ring-radial at 64°/116°; lower LM sits at cubic parameter `u=0.50` on the shared curved shoulder, with right visible datum `(x,y,z)=(45.285011,89.190370,15.10)`, outward normal `(0.706451,-0.707762)`, and an exact-X-mirrored left datum; UM remains ring-radial at 50.5°/129.5°. Every carrier station shares source Z=15.10. Both states expose the same upper shoulder at that station, with no floor-state rail or shallow box below it. LM-upper/UM cavity datums are structural radius +0.65 mm; the lower shoulder datum is independently inset 0.15 mm. All three lie 0.15 mm beneath their continuous exposed surfaces. The magnet-free carrier exterior is immutable: there is no magnet-local backing, boss, relief, rear cap, flat, or visible pocket cue. Magnets are inserted at the authoritative pause and permanently buried, with no glue or external opening. Neither carrier has proud magnet ears. Ac/Ae provide three matching captive receivers per physical side: LM lower, LM upper, and UM. Their mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm allowance is a solid spacing standoff, not an air-gap cutter. Nominal paired magnet-face separation is 1.10 mm at LM-lower, LM-upper, and UM. UM is buried in an Ø8.2 passage only inside LM, then runs free behind UM with no printed UM-carrier rear duct. T is buried in an Ø6.0 passage through LM/UM, then runs free behind the tweeter crescent, which has no printed cable arc. Every surviving named insert bypass has a deep full-width burial web. In no-floor state, LM/T/UM enter through the D20 support opening as LM above, T lower-left and UM lower-right; the D7.8 LM lead follows a buried Ø9 branch to the common R14 handoff. The LM-owned UM/T lumens finish at R112.95 and their 0.8 mm covers at R113.75 beneath the uninterrupted visible R113.8 carrier exterior, retaining a 0.85 mm solid outside skin with no groove. The physical T/UM routes cross at 82.95° with a 2.00 mm physical-envelope gap and no two-duct separator-web claim. No-floor LM includes the unchanged front-flush bridge plate at z=5.3..18.3. Floor LM instead owns the complete W64 × 18.3 stem/foot from z=−150..18.3, its convex constant-thickness Option-B transition (75 mm span, 65 mm rise, centreline Rmin 41 mm), three buried floor continuations, connector service cavity and rear NL8 panel; floor Y=0 keeps the LM axis exactly 200.981 mm above the floor. The tweeter carrier is a separate add-on; Obi-Wan has no printed grommet. | `lx521_top_obiwan_core_1of2_lm_carrier.stl`, `lx521_top_obiwan_core_2of2_um_carrier.stl` |
 
 The Obi-Wan LM print form is a separate choice inside the same R6F variant. The
 canonical `lx521_top_obiwan_core_1of2_lm_carrier.stl` is one solid. On a 220 mm
@@ -86,9 +93,39 @@ reliefs. They do not move the three magnetic datums or change the primary
 magnetic retention contract.
 
 **V1 vs V1L:** V1 = thin TOP piece; V1L = thin BOTTOM+MIDS. Pair them
-for the full front-flush thin baffle; either also works alone on the
-other family's pieces (see matrix). The V1L outlet change is confined to
-its keyed `mid_right`; it does not create a V1L-specific top.
+for the full front-flush thin baffle. The V1L outlet change is confined to
+its keyed `mid_right`; it does not change the acoustic outline of the top.
+The complete V1L export retains the unchanged V1 top and its regular
+through-thickness female pockets.
+
+## Opposed TEBM35C10-4 BMR vase alternative
+
+`vase_TEBM35C10-4` is a first-class optional vase family with two released
+envelope profiles. Both replace the Dayton tweeter crescent with two opposed
+TEBM35C10-4 BMRs: the lower driver faces front, the upper driver faces rear,
+both use four M2 × 4 × Ø3.2 insert bores, and each D66 land has two captive
+D5 × 2 side magnets. The driver pockets keep 1.2 mm blind rear/front walls.
+The shared T route terminates at the lower pocket while a separate tangent
+branch reaches the upper pocket; the guarded BREP gates allow no exterior
+opening except the seam-B inlet and the two declared pocket outlets.
+
+The acoustic plane remains z=18.3 and both profiles reach the same local BMR
+rear plane z=-6.8, giving the published 25.1 mm flush driver depth. Both use
+the same regular seam-B XY profile; only the local vase thickness differs:
+
+| Profile | Lower-vase rear at seam B | Smooth rear growth | Seam-B joint |
+|---|---:|---:|---|
+| Stock BMR | z=0.0 | 6.8 mm; begins at y=391.709 | regular 10/14/6 mm female pockets through 18.3 mm |
+| Slim BMR | z=6.8 | 13.6 mm; C2 growth begins at seam B with zero slope/curvature | same regular female pockets through 11.5 mm |
+
+The Stock and Slim BMR vases use the same seam-B plan interface as the normal
+B2/V1 vases. Mixed thicknesses retain the documented hidden rear step/open
+notch behavior. The two public CAD children live under
+`build/vase_TEBM35C10-4/{stock,slim}/`; build both with
+`make vase_tebm35c10_4_cad`, or one named child with
+`make vase_tebm35c10_4_{stock,slim}_cad`. Ready Bambu projects are local-only
+targets named `vase_tebm35c10_4_{stock,slim}_3mf` and are promoted to the
+stable sibling file `vase_TEBM35C10-4.gcode.3mf` in each child root.
 
 ## Add-ons (outline experiments)
 
@@ -122,8 +159,8 @@ The magnet-free exterior is immutable: cavities and lands remain internal,
 with no magnet-local backing, boss, relief, rear cap, flat, or visible cue.
 Mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm
 allowance is a solid spacing standoff, not an air-gap cutter. Standard lower
-and curved-upper pair spacings are respectively 0.95 and 1.09 mm; Obi-Wan
-LM-lower remains 0.95 mm and its LM-upper/UM ring pairs are 1.10 mm. Slim
+and curved-upper pair spacings are respectively 0.95 and 1.09 mm; every
+Obi-Wan LM-lower/LM-upper/UM pair is 1.10 mm. Slim
 hosts contain the upper land with a broad, symmetric, smooth taper shelf, not
 a station-shaped patch. Every part prints front-face-down. Exact pause heights, grouped sites, local-axis
 polarity, and counts live in
@@ -133,11 +170,10 @@ coupons, and the unreleased V0 scarf mate are not release outputs and are not
 converted as production parts. The `coupons/obiwan_ae_embed/` coupon remains the
 reference implementation rather than an installed assembly component.
 
-## Compatibility matrix (bottom+mids x vase)
+## Envelope compatibility matrix (bottom+mids x vase)
 
-Any of {B2, C7, V1L} bottom+mids joins any of {B2, V0, V1} vase — the
-front plane is always continuous at z=18.3, and the seams, keys, and
-duct mouths still match. V1L's alternate UM tail is self-contained in
+The acoustic outline, front plane, and duct-mouth datums permit the following
+combinations. V1L's alternate UM tail is self-contained in
 `mid_right`, so it does not alter this matrix or the top. Rear-side
 steps at seam B land on the hidden side:
 
@@ -147,9 +183,9 @@ steps at seam B land on the hidden side:
 | **C7** (LM knife) | LM-edge experiment | full knife-edge baffle | knife LM + thin vase |
 | **V1L** (11.5) | thin LM only (vase protrudes 6.8 rearward) | thin LM + knife vase | **complete UNIFORM 11.5 front-flush baffle** |
 
-Notes: mixed-thickness key joints mate on the thinner piece's depth
-(the through-pockets leave a shallow open notch on the hidden rear —
-cosmetic). Tweeter through-bolt length follows the vase septum (18.3:
+Notes: mixed-thickness dovetails mate on the thinner piece's depth; the
+through-pocket leaves a shallow open notch on the hidden rear. Tweeter
+through-bolt length follows the vase septum (18.3:
 ~M4x35; 11.5: ~M4x30).
 
 **R6F Obi-Wan is outside this matrix.** Its two collars, rear-driven
@@ -247,7 +283,8 @@ identity, coupon evidence, structural proof and signed authorization in
 
 ## Hardware
 
-* W22: 6x M5 x 5.8 x O6.3 heat-sets (bore O6.4 x 6.8).
+* W22: 6x M5 x 5.8 x O6.3 heat-sets (unchanged 6.8 mm total bore:
+  O6.5 x 2.0 entry, then O6.4).
 * 10F/MU10: 4x M3 x 3 x O5 heat-sets (bore O4.6 x 4.0), pattern clocked
   to 58/148/238/328 degrees. For Obi-Wan, select the equivalent driver
   rotation that puts the terminal carrier at the 283-degree witness.
@@ -270,8 +307,9 @@ identity, coupon evidence, structural proof and signed authorization in
   carrier heat-sets in both states. Floor mode has no support screws or
   secondary inserts: its stand is monolithic with the LM. No-floor additionally
   uses the four immutable bridge inserts at
-  (±20,20)/(±20,70) in the monolithic LM solid web. The Ø6.4 × 6.8
-  bores open at z=5.3 and retain a 6.2 mm solid front floor.
+  (±20,20)/(±20,70) in the monolithic LM solid web. The unchanged
+  6.8 mm-total bores open at z=5.3 with a Ø6.5 × 2.0 entry followed by
+  Ø6.4 and retain the existing 6.2 mm solid front floor.
 * R6F tweeter crescent: 2x rear-driven M3 screws at x=±24, y=421.5 into
   standalone rear-opening blind Ø4.6 × 4.0 insert receivers in complete local
   Ø9.8 crescent half-laps. Install both inserts in the individual crescent
@@ -281,10 +319,12 @@ identity, coupon evidence, structural proof and signed authorization in
 * R6F alignment: 6x D5 × 2 N52 magnets in the core's surface-normal captive
   Ø5.20 × 2.10 cavities (four LM + two UM; three total per physical side).
   Preserve the upper LM ring axes at 64°/116° with the validated insert/route
-  clearances. The lower LM sites remain in the shared straight base
-  faces at `(x,y,z)=(±32,18,15.10)`, with left/right outward normals
-  `(-1,0)`/`(1,0)` and verified buried-route and bridge/integral-stand
-  clearance. Upper LM and UM use that same source Z=15.10; UM keeps its
+  clearances. The lower LM sites remain at cubic parameter `u=0.50` on the
+  shared curved shoulder. The right visible datum is
+  `(x,y,z)=(45.285011,89.190370,15.10)` with outward normal
+  `(0.706451,-0.707762)`; the left is its exact X mirror, with verified
+  buried-route and bridge/integral-stand clearance. Upper LM and UM use that
+  same source Z=15.10; UM keeps its
   50.5°/129.5° axes. The R113.0/R51.7
   structural rings use smooth exposed R113.8/R52.5 side fairings, clipped only
   inside the existing LM–UM and T–UM cusp/service regions with the 0.40 mm
@@ -300,8 +340,7 @@ identity, coupon evidence, structural proof and signed authorization in
   three sites on each side through matching LM-lower, LM-upper, and UM
   receivers. Mating surfaces are flush with zero physical air gap; the
   receiver's 0.05 mm allowance is a solid spacing standoff. Nominal paired
-  magnet-face separation is 1.10 mm at LM-upper/UM and remains 0.95 mm at
-  LM-lower.
+  magnet-face separation is 1.10 mm at LM-lower, LM-upper, and UM.
 * Tweeter pair (when its carrier is fitted): M4 through-bolts + nyloc,
   clamping the crescent.
 * R6P magnets: D5 x 2 N52 discs in the same Ø5.20 × 2.10 captive base

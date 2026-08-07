@@ -1,0 +1,86 @@
+{
+  "artifact_match": {
+    "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+    "state": "no_floor_stand",
+    "variant": "Obi-Wan-split"
+  },
+  "generated_by": "scripts/build_obiwan_bridge_root_modifier.py",
+  "kind": "bambu_parameter_modifier",
+  "modifier_stl": "build/no_floor_stand/process_modifiers/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.bridge_root_100pct.modifier.stl",
+  "modifier_stl_sha256": "13f1e5dc1774a9284741eb4b573311f75dc29e2b2297170288cfb0ec4db219c4",
+  "policy": "The volume changes infill only where it intersects printable 01a material; ducts, bores, and acoustic openings remain void.",
+  "print_bounds_mm": {
+    "maximum": [
+      146.4733861711497,
+      206.25517033971636,
+      13.000000099999983
+    ],
+    "minimum": [
+      7.035990201346252,
+      62.213545374811986,
+      9.999998340504135e-08
+    ]
+  },
+  "print_sidecar": "build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.print.json",
+  "print_sidecar_sha256": "1010633a51cf8eb7444f0999c678c1997f41a87d50df438413a2e978d312c5a3",
+  "process": {
+    "sparse_infill_density": "100%",
+    "sparse_infill_pattern": "zig-zag"
+  },
+  "role": "bridge_root_local_solid",
+  "schema_version": 1,
+  "source_bounds_mm": {
+    "maximum": [
+      70.0,
+      125.0,
+      18.3
+    ],
+    "minimum": [
+      -70.0,
+      14.0,
+      5.3
+    ]
+  },
+  "source_plan_xy_mm": [
+    [
+      -31.0,
+      14.0
+    ],
+    [
+      31.0,
+      14.0
+    ],
+    [
+      31.0,
+      70.0
+    ],
+    [
+      70.0,
+      110.0
+    ],
+    [
+      70.0,
+      125.0
+    ],
+    [
+      -70.0,
+      125.0
+    ],
+    [
+      -70.0,
+      110.0
+    ],
+    [
+      -31.0,
+      70.0
+    ]
+  ],
+  "source_stl": "build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl",
+  "source_stl_sha256": "3fa13078b7c402ed2bce0001f7f8127cba95418ae11cc554ed6e9b66a6ee6754",
+  "source_z_mm": [
+    5.3,
+    18.3
+  ],
+  "subtype": "modifier_part",
+  "triangle_count": 28
+}

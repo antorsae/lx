@@ -135,7 +135,7 @@
         "interface_profile": {
           "enum": ["standard_straight", "standard_curved"]
         },
-        "interface_kind": {"enum": ["base_side", "ring"]},
+        "interface_kind": {"enum": ["shoulder", "ring"]},
         "carrier_cavity_face_inset_mm": {
           "type": "number"
         },
@@ -218,12 +218,12 @@
         {
           "if": {
             "required": ["interface_kind"],
-            "properties": {"interface_kind": {"const": "base_side"}}
+            "properties": {"interface_kind": {"const": "shoulder"}}
           },
           "then": {
             "properties": {
-              "carrier_cavity_face_inset_mm": {"const": 0.0},
-              "paired_magnet_face_separation_mm": {"const": 0.95}
+              "carrier_cavity_face_inset_mm": {"const": 0.15},
+              "paired_magnet_face_separation_mm": {"const": 1.1}
             }
           }
         }

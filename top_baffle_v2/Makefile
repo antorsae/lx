@@ -47,7 +47,46 @@ export PYTHONPATH := $(CURDIR)/src:$(CURDIR)/scripts
 # fall through to the remote CAD dispatcher.
 CAPTIVE_MAGNET_CATALOG ?= review/captive_magnet_release_catalog.json
 BAMBU_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit
+PETG_GF_PROFILE := captive_magnet_slicing_profile_petg_gf.json
+PETG_GF_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit_petg_gf_01a
+PETG_GF_01B_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit_petg_gf_01b
 TO_PRINT_SHELF ?= to_print
+OBIWAN_01A_ARTIFACT_ID := no_floor_stand:Obi-Wan-split:lx521_top_obiwan_optional_lm_keyed_1of2_bottom
+OBIWAN_01A_SLUG := no_floor_stand_Obi-Wan-split_lx521_top_obiwan_optional_lm_keyed_1of2_bottom
+OBIWAN_01A_RELEASED_STL := $(CURDIR)/build/no_floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl
+OBIWAN_01A_RELEASED_SIDECAR := $(OBIWAN_01A_RELEASED_STL:.stl=.print.json)
+OBIWAN_01A_MODIFIER_DIR := build/no_floor_stand/process_modifiers
+OBIWAN_01A_MODIFIER_STL := $(OBIWAN_01A_MODIFIER_DIR)/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.bridge_root_100pct.modifier.stl
+OBIWAN_01A_MODIFIER_CONTRACT := $(OBIWAN_01A_MODIFIER_STL:.stl=.json)
+OBIWAN_01A_MODIFIER_STAMP := $(OBIWAN_01A_MODIFIER_DIR)/.stamp_bridge_root_100pct
+OBIWAN_01A_PETG_GF_SLICE_DIR := $(PETG_GF_AUDIT_OUTPUT)/slices/$(OBIWAN_01A_SLUG)
+OBIWAN_01A_PETG_GF_READY_DIR := $(OBIWAN_01A_PETG_GF_SLICE_DIR)/ready
+OBIWAN_01A_PETG_GF_PROJECT := $(OBIWAN_01A_PETG_GF_READY_DIR)/ready_to_print.gcode.3mf
+OBIWAN_01A_PETG_GF_GCODE := $(OBIWAN_01A_PETG_GF_READY_DIR)/plate_1.gcode
+OBIWAN_01A_PETG_GF_AUDIT := $(OBIWAN_01A_PETG_GF_SLICE_DIR)/captive_magnet_slice_audit.json
+OBIWAN_01A_PETG_GF_STAMP := $(OBIWAN_01A_PETG_GF_READY_DIR)/.stamp_petg_gf_validated
+OBIWAN_01A_FRIENDLY_NAME := obiwan_01a_of_16_LM_bottom_keyed_1_of_2_no_floor_stand
+OBIWAN_01A_PETG_GF_PROMOTION_STAMP := $(OBIWAN_01A_PETG_GF_READY_DIR)/.stamp_to_print_promoted
+OBIWAN_01A_PETG_GF_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_01A_FRIENDLY_NAME).stl
+OBIWAN_01A_PETG_GF_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_01A_FRIENDLY_NAME).gcode.3mf
+OBIWAN_01A_PETG_GF_SHELF_OUTPUTS := $(OBIWAN_01A_PETG_GF_SHELF_STL) \
+                                   $(OBIWAN_01A_PETG_GF_SHELF_PROJECT)
+OBIWAN_01B_ARTIFACT_ID := floor_stand:Obi-Wan-split:lx521_top_obiwan_optional_lm_keyed_1of2_bottom
+OBIWAN_01B_SLUG := floor_stand_Obi-Wan-split_lx521_top_obiwan_optional_lm_keyed_1of2_bottom
+OBIWAN_01B_RELEASED_STL := $(CURDIR)/build/floor_stand/stl/lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl
+OBIWAN_01B_RELEASED_SIDECAR := $(OBIWAN_01B_RELEASED_STL:.stl=.print.json)
+OBIWAN_01B_PETG_GF_SLICE_DIR := $(PETG_GF_01B_AUDIT_OUTPUT)/slices/$(OBIWAN_01B_SLUG)
+OBIWAN_01B_PETG_GF_READY_DIR := $(OBIWAN_01B_PETG_GF_SLICE_DIR)/ready
+OBIWAN_01B_PETG_GF_PROJECT := $(OBIWAN_01B_PETG_GF_READY_DIR)/ready_to_print.gcode.3mf
+OBIWAN_01B_PETG_GF_GCODE := $(OBIWAN_01B_PETG_GF_READY_DIR)/plate_1.gcode
+OBIWAN_01B_PETG_GF_AUDIT := $(OBIWAN_01B_PETG_GF_SLICE_DIR)/captive_magnet_slice_audit.json
+OBIWAN_01B_PETG_GF_STAMP := $(OBIWAN_01B_PETG_GF_READY_DIR)/.stamp_petg_gf_validated
+OBIWAN_01B_FRIENDLY_NAME := obiwan_01b_of_16_LM_bottom_keyed_1_of_2_floor_stand
+OBIWAN_01B_PETG_GF_PROMOTION_STAMP := $(OBIWAN_01B_PETG_GF_READY_DIR)/.stamp_to_print_promoted
+OBIWAN_01B_PETG_GF_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_01B_FRIENDLY_NAME).stl
+OBIWAN_01B_PETG_GF_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_01B_FRIENDLY_NAME).gcode.3mf
+OBIWAN_01B_PETG_GF_SHELF_OUTPUTS := $(OBIWAN_01B_PETG_GF_SHELF_STL) \
+                                   $(OBIWAN_01B_PETG_GF_SHELF_PROJECT)
 OBIWAN_COMBO_SOURCE_DIR := build/print_plates/obiwan
 OBIWAN_NO_FLOOR_COMBO_NAME := obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand
 OBIWAN_NO_FLOOR_COMBO_SOURCE_STAMP := $(OBIWAN_COMBO_SOURCE_DIR)/.stamp_$(OBIWAN_NO_FLOOR_COMBO_NAME)
@@ -134,12 +173,81 @@ OBIWAN_AE_WING_PLATE_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_AE_W
 OBIWAN_AE_WING_PLATE_SHELF_OUTPUTS := $(OBIWAN_AE_WING_PLATE_SHELF_STL) \
                                      $(OBIWAN_AE_WING_PLATE_SHELF_PROJECT)
 
+# Optional Stock/Slim vase family carrying two opposed TEBM35C10-4 BMR
+# drivers. CAD is one complete remotely promotable root with independently
+# hash-bound profile children; Bambu slicing remains local-only and consumes
+# those already-promoted roots without rebuilding CAD.
+VASE_TEBM_NAME := vase_TEBM35C10-4
+VASE_TEBM_ROOT := build/$(VASE_TEBM_NAME)
+VASE_TEBM_STOCK_ROOT := $(VASE_TEBM_ROOT)/stock
+VASE_TEBM_SLIM_ROOT := $(VASE_TEBM_ROOT)/slim
+VASE_TEBM_STOCK_BREP := $(VASE_TEBM_STOCK_ROOT)/$(VASE_TEBM_NAME).brep
+VASE_TEBM_STOCK_STEP := $(VASE_TEBM_STOCK_ROOT)/$(VASE_TEBM_NAME).step
+VASE_TEBM_STOCK_STL := $(VASE_TEBM_STOCK_ROOT)/$(VASE_TEBM_NAME).stl
+VASE_TEBM_STOCK_SIDECAR := $(VASE_TEBM_STOCK_ROOT)/$(VASE_TEBM_NAME).print.json
+VASE_TEBM_STOCK_FACTS := $(VASE_TEBM_STOCK_ROOT)/$(VASE_TEBM_NAME).facts.json
+VASE_TEBM_STOCK_CATALOG := $(VASE_TEBM_STOCK_ROOT)/$(VASE_TEBM_NAME).catalog.json
+VASE_TEBM_STOCK_PROFILE := $(VASE_TEBM_STOCK_ROOT)/$(VASE_TEBM_NAME).slicing_profile.json
+VASE_TEBM_STOCK_MANIFEST := $(VASE_TEBM_STOCK_ROOT)/cad_manifest.json
+VASE_TEBM_STOCK_EXPORT_STAMP := $(VASE_TEBM_STOCK_ROOT)/.stamp_cad_validated
+VASE_TEBM_SLIM_BREP := $(VASE_TEBM_SLIM_ROOT)/$(VASE_TEBM_NAME).brep
+VASE_TEBM_SLIM_STEP := $(VASE_TEBM_SLIM_ROOT)/$(VASE_TEBM_NAME).step
+VASE_TEBM_SLIM_STL := $(VASE_TEBM_SLIM_ROOT)/$(VASE_TEBM_NAME).stl
+VASE_TEBM_SLIM_SIDECAR := $(VASE_TEBM_SLIM_ROOT)/$(VASE_TEBM_NAME).print.json
+VASE_TEBM_SLIM_FACTS := $(VASE_TEBM_SLIM_ROOT)/$(VASE_TEBM_NAME).facts.json
+VASE_TEBM_SLIM_CATALOG := $(VASE_TEBM_SLIM_ROOT)/$(VASE_TEBM_NAME).catalog.json
+VASE_TEBM_SLIM_PROFILE := $(VASE_TEBM_SLIM_ROOT)/$(VASE_TEBM_NAME).slicing_profile.json
+VASE_TEBM_SLIM_MANIFEST := $(VASE_TEBM_SLIM_ROOT)/cad_manifest.json
+VASE_TEBM_SLIM_EXPORT_STAMP := $(VASE_TEBM_SLIM_ROOT)/.stamp_cad_validated
+VASE_TEBM_CAD_STAMP := $(VASE_TEBM_ROOT)/.stamp_cad_ready
+VASE_TEBM_STOCK_SLICE_OUTPUT ?= $(VASE_TEBM_STOCK_ROOT)/slice_audit
+VASE_TEBM_SLIM_SLICE_OUTPUT ?= $(VASE_TEBM_SLIM_ROOT)/slice_audit
+VASE_TEBM_STOCK_SLUG := shared_Stock-TEBM35C10-4_$(VASE_TEBM_NAME)
+VASE_TEBM_SLIM_SLUG := shared_Slim-TEBM35C10-4_$(VASE_TEBM_NAME)
+VASE_TEBM_STOCK_SLICE_DIR := $(VASE_TEBM_STOCK_SLICE_OUTPUT)/slices/$(VASE_TEBM_STOCK_SLUG)
+VASE_TEBM_SLIM_SLICE_DIR := $(VASE_TEBM_SLIM_SLICE_OUTPUT)/slices/$(VASE_TEBM_SLIM_SLUG)
+VASE_TEBM_STOCK_READY_DIR := $(VASE_TEBM_STOCK_SLICE_DIR)/ready
+VASE_TEBM_SLIM_READY_DIR := $(VASE_TEBM_SLIM_SLICE_DIR)/ready
+VASE_TEBM_STOCK_READY_PROJECT := $(VASE_TEBM_STOCK_READY_DIR)/ready_to_print.gcode.3mf
+VASE_TEBM_SLIM_READY_PROJECT := $(VASE_TEBM_SLIM_READY_DIR)/ready_to_print.gcode.3mf
+VASE_TEBM_STOCK_3MF := $(VASE_TEBM_STOCK_ROOT)/$(VASE_TEBM_NAME).gcode.3mf
+VASE_TEBM_SLIM_3MF := $(VASE_TEBM_SLIM_ROOT)/$(VASE_TEBM_NAME).gcode.3mf
+VASE_TEBM_STOCK_GCODE := $(VASE_TEBM_STOCK_READY_DIR)/plate_1.gcode
+VASE_TEBM_SLIM_GCODE := $(VASE_TEBM_SLIM_READY_DIR)/plate_1.gcode
+VASE_TEBM_STOCK_SLICE_AUDIT := $(VASE_TEBM_STOCK_SLICE_DIR)/captive_magnet_slice_audit.json
+VASE_TEBM_SLIM_SLICE_AUDIT := $(VASE_TEBM_SLIM_SLICE_DIR)/captive_magnet_slice_audit.json
+VASE_TEBM_STOCK_SLICE_STAMP := $(VASE_TEBM_STOCK_READY_DIR)/.stamp_vase_tebm_validated
+VASE_TEBM_SLIM_SLICE_STAMP := $(VASE_TEBM_SLIM_READY_DIR)/.stamp_vase_tebm_validated
+VASE_TEBM_STOCK_CAD_OUTPUTS := $(VASE_TEBM_STOCK_BREP) $(VASE_TEBM_STOCK_STEP) \
+                               $(VASE_TEBM_STOCK_STL) $(VASE_TEBM_STOCK_SIDECAR) \
+                               $(VASE_TEBM_STOCK_FACTS) $(VASE_TEBM_STOCK_CATALOG) \
+                               $(VASE_TEBM_STOCK_PROFILE) $(VASE_TEBM_STOCK_MANIFEST)
+VASE_TEBM_SLIM_CAD_OUTPUTS := $(VASE_TEBM_SLIM_BREP) $(VASE_TEBM_SLIM_STEP) \
+                              $(VASE_TEBM_SLIM_STL) $(VASE_TEBM_SLIM_SIDECAR) \
+                              $(VASE_TEBM_SLIM_FACTS) $(VASE_TEBM_SLIM_CATALOG) \
+                              $(VASE_TEBM_SLIM_PROFILE) $(VASE_TEBM_SLIM_MANIFEST)
+VASE_TEBM_CAD_OUTPUTS := $(VASE_TEBM_STOCK_CAD_OUTPUTS) \
+                         $(VASE_TEBM_SLIM_CAD_OUTPUTS)
+
 # Bambu slicing is workstation-only.  Detect these public goals before the
 # remote-first dispatcher captures MAKECMDGOALS, force even an explicitly
 # supplied remote/remote-worker mode back to local, and reject ambiguous mixed
 # CAD+slicer invocations.  Multiple Bambu goals in one invocation are allowed.
 LOCAL_BAMBU_GOALS := bambu_profiles bambu_dry_run \
                      bambu_slice_obiwan bambu_slice_release \
+                     vase_tebm35c10_4_3mf \
+                     vase_tebm35c10_4_3mf_validate \
+                     vase_tebm35c10_4_stock_3mf \
+                     vase_tebm35c10_4_slim_3mf \
+                     vase_tebm35c10_4_stock_3mf_validate \
+                     vase_tebm35c10_4_slim_3mf_validate \
+                     obiwan_no_floor_petg_gf_modifier \
+                     obiwan_no_floor_petg_gf_01a \
+                     obiwan_no_floor_petg_gf_01a_validate \
+                     obiwan_no_floor_petg_gf_01a_to_print \
+                     obiwan_floor_petg_gf_01b \
+                     obiwan_floor_petg_gf_01b_validate \
+                     obiwan_floor_petg_gf_01b_to_print \
                      obiwan_combo_plate_source obiwan_combo_plate \
                      obiwan_combo_plate_validate obiwan_combo_plate_to_print \
                      obiwan_no_floor_combo_plate_source \
@@ -159,6 +267,21 @@ LOCAL_BAMBU_GOALS := bambu_profiles bambu_dry_run \
                      obiwan_ae_wing_plate_validate \
                      obiwan_ae_wing_plate_to_print \
                      check_to_print_shelf to_print to_print_validate \
+                     $(OBIWAN_01A_MODIFIER_STL) \
+                     $(OBIWAN_01A_MODIFIER_CONTRACT) \
+                     $(OBIWAN_01A_MODIFIER_STAMP) \
+                     $(OBIWAN_01A_PETG_GF_PROJECT) \
+                     $(OBIWAN_01A_PETG_GF_GCODE) \
+                     $(OBIWAN_01A_PETG_GF_AUDIT) \
+                     $(OBIWAN_01A_PETG_GF_STAMP) \
+                     $(OBIWAN_01A_PETG_GF_PROMOTION_STAMP) \
+                     $(OBIWAN_01A_PETG_GF_SHELF_OUTPUTS) \
+                     $(OBIWAN_01B_PETG_GF_PROJECT) \
+                     $(OBIWAN_01B_PETG_GF_GCODE) \
+                     $(OBIWAN_01B_PETG_GF_AUDIT) \
+                     $(OBIWAN_01B_PETG_GF_STAMP) \
+                     $(OBIWAN_01B_PETG_GF_PROMOTION_STAMP) \
+                     $(OBIWAN_01B_PETG_GF_SHELF_OUTPUTS) \
                      $(OBIWAN_NO_FLOOR_COMBO_SOURCE_STAMP) \
                      $(OBIWAN_NO_FLOOR_COMBO_STL) \
                      $(OBIWAN_NO_FLOOR_COMBO_MANIFEST) \
@@ -188,14 +311,28 @@ LOCAL_BAMBU_GOALS := bambu_profiles bambu_dry_run \
                      $(OBIWAN_AE_WING_PLATE_READY_STAMP) \
                      $(OBIWAN_AE_WING_PLATE_READY_OUTPUTS) \
                      $(OBIWAN_AE_WING_PLATE_PROMOTION_STAMP) \
-                     $(OBIWAN_AE_WING_PLATE_SHELF_OUTPUTS)
+                     $(OBIWAN_AE_WING_PLATE_SHELF_OUTPUTS) \
+                     $(VASE_TEBM_STOCK_3MF) $(VASE_TEBM_STOCK_GCODE) \
+                     $(VASE_TEBM_STOCK_SLICE_AUDIT) \
+                     $(VASE_TEBM_STOCK_SLICE_STAMP) \
+                     $(VASE_TEBM_SLIM_3MF) $(VASE_TEBM_SLIM_GCODE) \
+                     $(VASE_TEBM_SLIM_SLICE_AUDIT) \
+                     $(VASE_TEBM_SLIM_SLICE_STAMP)
 BAMBU_GOALS_REQUESTED := $(filter $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))
 ifneq ($(strip $(BAMBU_GOALS_REQUESTED)),)
 ifneq ($(strip $(filter-out $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))),)
 $(error local-only Bambu goals cannot be mixed with CAD or other Make goals)
 endif
 ifneq ($(shell uname -s),Darwin)
+ifneq ($(LX_BAMBU_GRAPH_ONLY),1)
 $(error local-only Bambu goals require a Darwin/macOS host and cannot run on osado)
+endif
+ifeq ($(findstring n,$(firstword $(MAKEFLAGS))),)
+$(error LX_BAMBU_GRAPH_ONLY=1 is valid only with make -n/--just-print)
+endif
+ifeq ($(filter /bin/true /usr/bin/true,$(SHELL)),)
+$(error LX_BAMBU_GRAPH_ONLY=1 requires SHELL=/usr/bin/true)
+endif
 endif
 override LX_CAD_EXECUTION := local
 endif
@@ -278,7 +415,8 @@ OBIWAN_EXCLUSIVE_CAD_SRCS := \
         src/lx521_baffle/obiwan/attachments.py \
         src/lx521_baffle/obiwan/bridge.py \
         src/lx521_baffle/obiwan/lm_split.py \
-        src/lx521_baffle/obiwan/split.py
+        src/lx521_baffle/obiwan/split.py \
+        src/lx521_baffle/obiwan/wings.py
 SHARED_CAD_SRCS := src/lx521_baffle/assembly.py src/lx521_baffle/magnet_contract.py \
         src/lx521_baffle/geom.py src/lx521_baffle/io.py
 SRCS := $(filter-out $(OBIWAN_EXCLUSIVE_CAD_SRCS),$(CAD_SRCS_ALL)) \
@@ -344,6 +482,7 @@ OBIWAN_WING_SLUGS = ac ae
 OBIWAN_WING_STAMPS = $(addprefix build/wings/.stamp_,$(OBIWAN_WING_SLUGS))
 OBIWAN_WING_INPUTS = cad-remote-requirements.lock \
         docs/obiwan_acoustic_wings_spec.md src/lx521_baffle/magnets.py \
+        src/lx521_baffle/floor_bend.py \
         src/lx521_baffle/assembly.py src/lx521_baffle/magnet_contract.py src/lx521_baffle/geom.py \
         src/lx521_baffle/print_contract.py src/lx521_baffle/io.py src/lx521_baffle/stl_export.py \
         scripts/export_steps.py scripts/gen_driver_overlay.py scripts/export_obiwan_staged.py \
@@ -392,6 +531,7 @@ MANIFOLD_STAMPS := $(foreach stl,$(MANIFOLD_STLS),$(call manifold_stamp,$(stl)))
 # invoked by `make check`/`make candidate`.
 CLEARANCE_CHECK_NAMES := \
         test_foot_lane_webs \
+        test_stock_slim_floor_bend_lateral_envelope \
         test_variant_outlines_splice \
         test_v1l_service_envelope \
         test_emboss_driver_keepouts \
@@ -407,14 +547,21 @@ CLEARANCE_CHECK_NAMES := \
         test_duct_vs_um_pilots \
         test_c7_duct_corridor \
         test_seam_keys_vs_ducts \
+        test_shared_lm_clock_and_hidden_seam_b_m3 \
         test_v0_duct_corridor \
         test_v0_captive_geometry \
         test_v1_field \
         test_route_smoothness \
+        test_um_tail_has_no_curvature_reversal \
         test_lm_exit_curvature_and_fishing \
         test_v1l_um_terminal_axis_handoff \
         test_um_eroded_outline_containment \
         test_ts_eroded_outline_containment \
+        test_stock_slim_ts_full_section_containment \
+        test_stock_slim_curve_optimization_contracts \
+        test_stock_slim_no_floor_full_duct_containment \
+        test_stock_slim_no_floor_bottom_topology \
+        test_c7_floor_bottom_serialization_topology \
         test_bridge_inserts \
         test_margin_dashboard \
         test_cutter_health \
@@ -462,6 +609,11 @@ R6F_CASE_IDS := \
         floor_tweeter_and_service
 
 R6F_SERVICE_CASE_IDS := tweeter_and_service floor_tweeter_and_service
+R6F_FLOOR_CASE_IDS := $(filter floor_%,$(R6F_CASE_IDS))
+R6F_NO_FLOOR_CASE_IDS := $(filter-out $(R6F_FLOOR_CASE_IDS),$(R6F_CASE_IDS))
+r6f_case_stage_manifest = $(if $(filter $(1),$(R6F_FLOOR_CASE_IDS)),\
+        build/floor_stand/.obiwan_stage/manifest.json,\
+        build/no_floor_stand/.obiwan_stage/manifest.json)
 R6F_PRIVATE_ENV_NAMES := \
         LX_R6F_EXPORT_CARRIER LX_R6F_EXPORT_PATH LX_R6F_EXPORT_SHELL \
         LX_R6F_EXPORT_SHELL_SEGMENT LX_R6F_EXPORT_SHELL_SEGMENT_COUNT \
@@ -488,17 +640,34 @@ CLEARANCE_CHECK_STAMPS := $(foreach name,$(CLEARANCE_CHECK_NAMES),\
 R6F_CASE_STAMPS := $(foreach name,$(R6F_CASE_IDS),\
         $(call r6f_check_stamp,$(name)))
 JUNCTION_CLOSURE_STAMP := $(CHECK_STAMP_DIR)/obiwan_junction_closures.ok
+OBIWAN_WING_ARTIFACT_CHECK_STAMP := \
+        $(CHECK_STAMP_DIR)/obiwan_wings/artifacts.ok
+OBIWAN_WING_AC_LIVE_CHECK_STAMP := \
+        $(CHECK_STAMP_DIR)/obiwan_wings/live_ac.ok
+OBIWAN_WING_AE_LIVE_CHECK_STAMP := \
+        $(CHECK_STAMP_DIR)/obiwan_wings/live_ae.ok
+OBIWAN_WING_CHECK_STAMPS := \
+        $(OBIWAN_WING_ARTIFACT_CHECK_STAMP) \
+        $(OBIWAN_WING_AC_LIVE_CHECK_STAMP) \
+        $(OBIWAN_WING_AE_LIVE_CHECK_STAMP)
 JUNCTION_CLOSURE_BASE_STAMP := \
         $(CHECK_STAMP_DIR)/obiwan_junction_closures/base.ok
-JUNCTION_CLOSURE_DENSE_CASES := \
-        no_floor_lm_um floor_lm_um no_floor_t_um floor_t_um
-JUNCTION_CLOSURE_DENSE_SHARDS := 0 1 2 3
+junction_closure_base_state_stamp = \
+        $(CHECK_STAMP_DIR)/obiwan_junction_closures/base_$(1).ok
+JUNCTION_CLOSURE_BASE_STATE_STAMPS := \
+        $(call junction_closure_base_state_stamp,no_floor) \
+        $(call junction_closure_base_state_stamp,floor)
+JUNCTION_CLOSURE_DENSE_STATES := no_floor floor
+JUNCTION_CLOSURE_DENSE_SHARDS := 0 1 2 3 4 5 6 7
 junction_closure_dense_stamp = \
         $(CHECK_STAMP_DIR)/obiwan_junction_closures/$(1)_$(2).ok
+JUNCTION_CLOSURE_DENSE_STATE_STAMPS := \
+        $(foreach state,$(JUNCTION_CLOSURE_DENSE_STATES),\
+        $(CHECK_STAMP_DIR)/obiwan_junction_closures/state_$(state).ok)
 JUNCTION_CLOSURE_DENSE_STAMPS := \
-        $(foreach name,$(JUNCTION_CLOSURE_DENSE_CASES),\
+        $(foreach state,$(JUNCTION_CLOSURE_DENSE_STATES),\
         $(foreach shard,$(JUNCTION_CLOSURE_DENSE_SHARDS),\
-        $(call junction_closure_dense_stamp,$(name),$(shard))))
+        $(call junction_closure_dense_stamp,$(state),$(shard))))
 
 # A remote cache is keyed by the attested Python environment, verifies the
 # entire seeded tree, and overlays changed sources newer than all targets.
@@ -535,8 +704,7 @@ define R6F_CASE_RULE
 _check_r6f_$(1): $(call r6f_check_stamp,$(1))
 $(call r6f_check_stamp,$(1)): tests/test_obiwan_r6f.py tests/test_harness.py $(OBIWAN_SRCS) \
 		$(EXECUTION_SRCS) $(CHECK_REVALIDATE) | \
-		build/floor_stand/.obiwan_stage/manifest.json \
-		build/no_floor_stand/.obiwan_stage/manifest.json
+		$(call r6f_case_stage_manifest,$(1))
 	@mkdir -p $$(@D)
 	$(R6F_CLEAN_ENV) LX_R6F_CASE_ID=$(1) $(RUN) tests/test_obiwan_r6f.py
 	@touch $$@
@@ -550,8 +718,7 @@ define R6F_SERVICE_CASE_RULE
 _check_r6f_$(1): $(call r6f_check_stamp,$(1))
 $(call r6f_check_stamp,$(1)): tests/test_obiwan_r6f.py tests/test_harness.py $(OBIWAN_SRCS) \
 		$(EXECUTION_SRCS) $(CHECK_REVALIDATE) | \
-		build/floor_stand/.obiwan_stage/manifest.json \
-		build/no_floor_stand/.obiwan_stage/manifest.json
+		$(call r6f_case_stage_manifest,$(1))
 	@mkdir -p $$(@D)
 	$(R6F_CLEAN_ENV) LX_R6F_CASE_ID=$(1) \
 	    $(PYTHON_RUN) tests/test_obiwan_r6f.py
@@ -613,6 +780,19 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)
         check_obiwan_lm_profile_brep manifold _manifold_parallel clean \
         bambu_profiles bambu_dry_run \
         bambu_slice_obiwan bambu_slice_release \
+        vase_tebm35c10_4_cad vase_tebm35c10_4_3mf \
+        vase_tebm35c10_4_3mf_validate \
+        vase_tebm35c10_4_stock_cad vase_tebm35c10_4_slim_cad \
+        vase_tebm35c10_4_stock_3mf vase_tebm35c10_4_slim_3mf \
+        vase_tebm35c10_4_stock_3mf_validate \
+        vase_tebm35c10_4_slim_3mf_validate \
+        obiwan_no_floor_petg_gf_modifier \
+        obiwan_no_floor_petg_gf_01a \
+        obiwan_no_floor_petg_gf_01a_validate \
+        obiwan_no_floor_petg_gf_01a_to_print \
+        obiwan_floor_petg_gf_01b \
+        obiwan_floor_petg_gf_01b_validate \
+        obiwan_floor_petg_gf_01b_to_print \
         obiwan_combo_plate_source obiwan_combo_plate \
         obiwan_combo_plate_validate obiwan_combo_plate_to_print \
         obiwan_no_floor_combo_plate_source obiwan_no_floor_combo_plate \
@@ -635,6 +815,87 @@ all: validate_obiwan_stages floor_stand_artifacts no_floor_stand_artifacts commo
 	# inexpensive cross-state manifest/review consistency gate on the join.
 	$(RUN) scripts/check_manifold.py --metadata-only \
 	    build/floor_stand/stl build/no_floor_stand/stl
+
+# Optional opposed-BMR Stock/Slim vase family.  This target is intentionally
+# independent of the protected floor/no-floor release roots and is therefore
+# cheap to dispatch, cache, and atomically promote as one complete remote
+# root.  Both children use the same generator and differ only in their
+# released rear envelope; both retain the regular seam-B female dovetails.
+VASE_TEBM_CAD_SRCS := \
+        src/lx521_baffle/proud/vase_tebm35c10_4.py \
+        src/lx521_baffle/proud/top_baffle_nd25fw4_b.py \
+        src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py \
+        src/lx521_baffle/proud/top_baffle_nd25fw4_b2_split.py \
+        src/lx521_baffle/base.py src/lx521_baffle/cables.py \
+        src/lx521_baffle/magnets.py src/lx521_baffle/magnet_contract.py \
+        src/lx521_baffle/print_contract.py src/lx521_baffle/stl_export.py \
+        src/lx521_baffle/geom.py src/lx521_baffle/io.py \
+        scripts/export_vase_tebm35c10_4.py scripts/export_piece_stls.py \
+        scripts/export_steps.py scripts/check_manifold.py \
+        scripts/gen_vase_tebm35c10_4_slicing_profile.py \
+        scripts/release_validation.py scripts/json_schema_subset.py \
+        captive_magnet_release_catalog.schema.json \
+        captive_magnet_slicing_profile.json \
+        tests/test_vase_tebm35c10_4.py $(EXECUTION_SRCS)
+
+$(VASE_TEBM_CAD_STAMP): $(VASE_TEBM_CAD_SRCS)
+	@rm -f "$@"
+	# Remove the superseded Stock-only flat-root delivery.  Stock and Slim now
+	# have independent canonical children; retaining the old flat files would
+	# create a third, stale authority for the same artifact name.
+	@rm -f "$(VASE_TEBM_ROOT)/$(VASE_TEBM_NAME).brep" \
+	    "$(VASE_TEBM_ROOT)/$(VASE_TEBM_NAME).step" \
+	    "$(VASE_TEBM_ROOT)/$(VASE_TEBM_NAME).stl" \
+	    "$(VASE_TEBM_ROOT)/$(VASE_TEBM_NAME).print.json" \
+	    "$(VASE_TEBM_ROOT)/$(VASE_TEBM_NAME).facts.json" \
+	    "$(VASE_TEBM_ROOT)/$(VASE_TEBM_NAME).catalog.json" \
+	    "$(VASE_TEBM_ROOT)/$(VASE_TEBM_NAME).slicing_profile.json" \
+	    "$(VASE_TEBM_ROOT)/cad_manifest.json" \
+	    "$(VASE_TEBM_ROOT)/.stamp_cad_validated" \
+	    "$(VASE_TEBM_ROOT)/.$(VASE_TEBM_NAME).step.glb"
+	@rm -rf "$(VASE_TEBM_ROOT)/slice_audit"
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=proud $(RUN) \
+	    tests/test_vase_tebm35c10_4.py
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=proud $(RUN) \
+	    scripts/export_vase_tebm35c10_4.py \
+	        --profile stock --output-root "$(VASE_TEBM_STOCK_ROOT)"
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=proud $(RUN) \
+	    scripts/export_vase_tebm35c10_4.py \
+	        --profile slim --output-root "$(VASE_TEBM_SLIM_ROOT)"
+	$(PYTHON_RUN) scripts/gen_vase_tebm35c10_4_slicing_profile.py \
+	    --base captive_magnet_slicing_profile.json \
+	    --profile stock --output "$(VASE_TEBM_STOCK_PROFILE)"
+	$(PYTHON_RUN) scripts/gen_vase_tebm35c10_4_slicing_profile.py \
+	    --base captive_magnet_slicing_profile.json \
+	    --profile slim --output "$(VASE_TEBM_SLIM_PROFILE)"
+	@for path in $(VASE_TEBM_CAD_OUTPUTS) \
+	        $(VASE_TEBM_STOCK_EXPORT_STAMP) \
+	        $(VASE_TEBM_SLIM_EXPORT_STAMP); do \
+		test -s "$$path" || exit 1; \
+	done
+	@touch "$@"
+
+$(VASE_TEBM_CAD_OUTPUTS): | $(VASE_TEBM_CAD_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(VASE_TEBM_CAD_STAMP)"; \
+		$(MAKE) --no-print-directory "$(VASE_TEBM_CAD_STAMP)"; \
+		test -s "$@"; \
+	}
+
+vase_tebm35c10_4_cad: $(VASE_TEBM_CAD_OUTPUTS)
+	@echo "Stock BREP: $(VASE_TEBM_STOCK_BREP)"
+	@echo "Stock STEP: $(VASE_TEBM_STOCK_STEP)"
+	@echo "Stock STL:  $(VASE_TEBM_STOCK_STL)"
+	@echo "Slim BREP:  $(VASE_TEBM_SLIM_BREP)"
+	@echo "Slim STEP:  $(VASE_TEBM_SLIM_STEP)"
+	@echo "Slim STL:   $(VASE_TEBM_SLIM_STL)"
+	@echo "both catalogs/profiles ready for local slicing"
+
+vase_tebm35c10_4_stock_cad: $(VASE_TEBM_STOCK_CAD_OUTPUTS)
+	@echo "Stock BMR vase: $(VASE_TEBM_STOCK_STEP)"
+
+vase_tebm35c10_4_slim_cad: $(VASE_TEBM_SLIM_CAD_OUTPUTS)
+	@echo "Slim BMR vase: $(VASE_TEBM_SLIM_STEP)"
 
 # This catalog is generated only after all 64 released magnet-bearing meshes
 # and their exact front-down print transforms exist.  It is the CAD-side
@@ -771,6 +1032,7 @@ no_floor_obiwan_01a: validate_no_floor_obiwan_stage
 obiwan_release: floor_stand_artifacts no_floor_stand_artifacts \
         obiwan_wings \
         $(CAPTIVE_MAGNET_CATALOG) \
+        $(call clearance_check_stamp,test_stock_slim_floor_bend_lateral_envelope) \
         $(call clearance_check_stamp,test_lm_exit_curvature_and_fishing) \
         check_route_contract check_obiwan_lm_split check_obiwan_shells \
         check_obiwan_route_boundaries check_floor_integrated_mount \
@@ -811,16 +1073,41 @@ build/wings/.stamp_%: scripts/export_obiwan_wings.py src/lx521_baffle/obiwan/win
 	@test -s build/wings/$*/top_baffle_nd25fw4_obiwan_wing_$*_assembled_b.step
 	@touch $@
 
-check_obiwan_wings: $(OBIWAN_WING_STAMPS) \
-        tests/test_obiwan_wings.py
-	$(call RUN_STATE,0,obiwan,.) \
+$(OBIWAN_WING_ARTIFACT_CHECK_STAMP): tests/test_obiwan_wings.py \
+        $(OBIWAN_WING_STAMPS) $(OBIWAN_SRCS) $(EXECUTION_SRCS) \
+        $(CHECK_REVALIDATE)
+	@mkdir -p $(@D)
+	LX_OBIWAN_WING_SINGLE_CHECK=test_exported_artifact_contract \
+	    $(call RUN_STATE,0,obiwan,.) \
 	    tests/test_obiwan_wings.py --artifact-root build/wings
+	@touch $@
+
+$(OBIWAN_WING_AC_LIVE_CHECK_STAMP): tests/test_obiwan_wings.py \
+        $(OBIWAN_WING_STAMPS) $(OBIWAN_SRCS) $(EXECUTION_SRCS) \
+        $(CHECK_REVALIDATE)
+	@mkdir -p $(@D)
+	LX_OBIWAN_WING_SINGLE_CHECK=test_live_brep_geometry_contract_ac \
+	    $(call RUN_STATE,0,obiwan,.) \
+	    tests/test_obiwan_wings.py --artifact-root build/wings
+	@touch $@
+
+$(OBIWAN_WING_AE_LIVE_CHECK_STAMP): tests/test_obiwan_wings.py \
+        $(OBIWAN_WING_STAMPS) $(OBIWAN_SRCS) $(EXECUTION_SRCS) \
+        $(CHECK_REVALIDATE)
+	@mkdir -p $(@D)
+	LX_OBIWAN_WING_SINGLE_CHECK=test_live_brep_geometry_contract_ae \
+	    $(call RUN_STATE,0,obiwan,.) \
+	    tests/test_obiwan_wings.py --artifact-root build/wings
+	@touch $@
+
+check_obiwan_wings: $(OBIWAN_WING_CHECK_STAMPS)
 	$(MAKE) --no-print-directory _manifold_parallel \
 	    MANIFOLD_ROOTS='build/wings/ac/stl build/wings/ae/stl'
 
 $(OBIWAN_WING_DESIGN_MAP): scripts/gen_obiwan_wing_design_map.py \
         scripts/gen_driver_overlay.py src/lx521_baffle/proud/top_baffle_nd25fw4_a_comp.py \
         src/lx521_baffle/proud/top_baffle_nd25fw4_b.py src/lx521_baffle/obiwan/carriers.py \
+        src/lx521_baffle/floor_bend.py \
         src/lx521_baffle/obiwan/bridge.py \
         src/lx521_baffle/obiwan/floor.py
 	@rm -f $@
@@ -864,14 +1151,17 @@ check_slice_metadata: tests/test_slice_captive_magnets.py \
         $(PRINT_CONTRACT_SRCS)
 	$(PYTHON_RUN) tests/test_slice_captive_magnets.py
 
-# The local shelf gate consumes an already promoted catalog.  Never make that
-# file a prerequisite here: its CAD-side dependency chain would turn
-# ``make to_print`` into an accidental workstation CAD rebuild.
+# The shelf gate must not race the release catalog during a remote candidate
+# build.  Local Bambu entry points already require an existing catalog before
+# reaching this node, while the explicit prerequisite orders the remote DAG.
+TO_PRINT_CATALOG_PREREQ := $(if $(filter remote-worker,$(LX_CAD_EXECUTION)),\
+        $(CAPTIVE_MAGNET_CATALOG),$(abspath $(CAPTIVE_MAGNET_CATALOG)))
 check_to_print_shelf: tests/test_to_print_shelf.py scripts/build_to_print_shelf.py \
         scripts/build_obiwan_combo_plate.py tests/test_obiwan_combo_plates.py \
         scripts/build_obiwan_wing_plate.py tests/test_obiwan_wing_plates.py \
         scripts/composite_bambu_3mf_audit.py to_print/catalog.json \
-        $(SLICER_SRCS) scripts/bambu_3mf_audit.py $(PRINT_CONTRACT_SRCS)
+        $(SLICER_SRCS) scripts/bambu_3mf_audit.py $(PRINT_CONTRACT_SRCS) \
+        $(TO_PRINT_CATALOG_PREREQ)
 	$(REQUIRE_BAMBU_CATALOG)
 	$(PYTHON_RUN) tests/test_to_print_shelf.py
 
@@ -921,6 +1211,270 @@ bambu_slice_release: check_slice_metadata
 		--jobs "$(BAMBU_JOBS)" \
 		--emit-ready-projects
 
+# The optional TEBM vase family is deliberately outside the protected
+# 64-artifact release inventory.  Each profile catalog still uses every
+# geometry, G-code, pause, STL/3MF-equivalence, and ready-project gate; only
+# the expected inventory count is scoped to its isolated one-artifact child.
+define REQUIRE_VASE_TEBM_CAD
+	@for path in $(VASE_TEBM_CAD_OUTPUTS); do \
+		test -s "$$path" || { \
+			echo "missing promoted TEBM vase CAD artifact: $$path" >&2; \
+			echo "run 'make vase_tebm35c10_4_cad' first, then rerun this local Bambu target" >&2; \
+			exit 1; \
+		}; \
+	done
+	@test -e "$(VASE_TEBM_CAD_STAMP)" || { \
+		echo "missing promoted TEBM vase CAD stamp: $(VASE_TEBM_CAD_STAMP)" >&2; \
+		echo "run 'make vase_tebm35c10_4_cad' first, then rerun this local Bambu target" >&2; \
+		exit 1; \
+	}
+endef
+
+$(VASE_TEBM_STOCK_SLICE_STAMP): $(VASE_TEBM_STOCK_CAD_OUTPUTS) \
+        $(VASE_TEBM_CAD_STAMP) \
+        scripts/slice_captive_magnets.py scripts/release_validation.py \
+        scripts/gcode_analysis.py scripts/artifact_emit.py \
+        scripts/bambu_3mf_audit.py \
+        scripts/validate_vase_tebm35c10_4_delivery.py \
+        src/lx521_baffle/print_contract.py src/lx521_baffle/io.py
+	@rm -f "$@"
+	$(REQUIRE_VASE_TEBM_CAD)
+	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
+		--auxiliary-catalog \
+		--catalog "$(VASE_TEBM_STOCK_CATALOG)" \
+		--profile "$(VASE_TEBM_STOCK_PROFILE)" \
+		--output "$(VASE_TEBM_STOCK_SLICE_OUTPUT)" \
+		--jobs 1 \
+		--emit-ready-projects
+	@test -s "$(VASE_TEBM_STOCK_READY_PROJECT)"
+	@test -s "$(VASE_TEBM_STOCK_GCODE)"
+	@test -s "$(VASE_TEBM_STOCK_SLICE_AUDIT)"
+	@rm -f "$(VASE_TEBM_STOCK_3MF)"
+	@temporary="$(VASE_TEBM_STOCK_3MF).tmp"; \
+	    cp "$(VASE_TEBM_STOCK_READY_PROJECT)" "$$temporary"; \
+	    mv "$$temporary" "$(VASE_TEBM_STOCK_3MF)"
+	$(PYTHON_RUN) scripts/validate_vase_tebm35c10_4_delivery.py \
+		--profile stock \
+		--catalog "$(VASE_TEBM_STOCK_CATALOG)" \
+		--audit "$(VASE_TEBM_STOCK_SLICE_AUDIT)" \
+		--project "$(VASE_TEBM_STOCK_3MF)" \
+		--gcode "$(VASE_TEBM_STOCK_GCODE)"
+	@touch "$@"
+
+$(VASE_TEBM_SLIM_SLICE_STAMP): $(VASE_TEBM_SLIM_CAD_OUTPUTS) \
+        $(VASE_TEBM_CAD_STAMP) \
+        scripts/slice_captive_magnets.py scripts/release_validation.py \
+        scripts/gcode_analysis.py scripts/artifact_emit.py \
+        scripts/bambu_3mf_audit.py \
+        scripts/validate_vase_tebm35c10_4_delivery.py \
+        src/lx521_baffle/print_contract.py src/lx521_baffle/io.py
+	@rm -f "$@"
+	$(REQUIRE_VASE_TEBM_CAD)
+	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
+		--auxiliary-catalog \
+		--catalog "$(VASE_TEBM_SLIM_CATALOG)" \
+		--profile "$(VASE_TEBM_SLIM_PROFILE)" \
+		--output "$(VASE_TEBM_SLIM_SLICE_OUTPUT)" \
+		--jobs 1 \
+		--emit-ready-projects
+	@test -s "$(VASE_TEBM_SLIM_READY_PROJECT)"
+	@test -s "$(VASE_TEBM_SLIM_GCODE)"
+	@test -s "$(VASE_TEBM_SLIM_SLICE_AUDIT)"
+	@rm -f "$(VASE_TEBM_SLIM_3MF)"
+	@temporary="$(VASE_TEBM_SLIM_3MF).tmp"; \
+	    cp "$(VASE_TEBM_SLIM_READY_PROJECT)" "$$temporary"; \
+	    mv "$$temporary" "$(VASE_TEBM_SLIM_3MF)"
+	$(PYTHON_RUN) scripts/validate_vase_tebm35c10_4_delivery.py \
+		--profile slim \
+		--catalog "$(VASE_TEBM_SLIM_CATALOG)" \
+		--audit "$(VASE_TEBM_SLIM_SLICE_AUDIT)" \
+		--project "$(VASE_TEBM_SLIM_3MF)" \
+		--gcode "$(VASE_TEBM_SLIM_GCODE)"
+	@touch "$@"
+
+$(VASE_TEBM_STOCK_3MF) $(VASE_TEBM_STOCK_GCODE) \
+        $(VASE_TEBM_STOCK_SLICE_AUDIT): | $(VASE_TEBM_STOCK_SLICE_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(VASE_TEBM_STOCK_SLICE_STAMP)"; \
+		$(MAKE) --no-print-directory "$(VASE_TEBM_STOCK_SLICE_STAMP)"; \
+		test -s "$@"; \
+	}
+
+$(VASE_TEBM_SLIM_3MF) $(VASE_TEBM_SLIM_GCODE) \
+        $(VASE_TEBM_SLIM_SLICE_AUDIT): | $(VASE_TEBM_SLIM_SLICE_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(VASE_TEBM_SLIM_SLICE_STAMP)"; \
+		$(MAKE) --no-print-directory "$(VASE_TEBM_SLIM_SLICE_STAMP)"; \
+		test -s "$@"; \
+	}
+
+vase_tebm35c10_4_stock_3mf: \
+        $(VASE_TEBM_STOCK_3MF) $(VASE_TEBM_STOCK_SLICE_AUDIT)
+	@echo "Stock ready 3MF: $(VASE_TEBM_STOCK_3MF)"
+
+vase_tebm35c10_4_slim_3mf: \
+        $(VASE_TEBM_SLIM_3MF) $(VASE_TEBM_SLIM_SLICE_AUDIT)
+	@echo "Slim ready 3MF: $(VASE_TEBM_SLIM_3MF)"
+
+vase_tebm35c10_4_3mf: \
+        vase_tebm35c10_4_stock_3mf vase_tebm35c10_4_slim_3mf
+	@echo "Stock/Slim BMR vase projects validated"
+
+vase_tebm35c10_4_stock_3mf_validate:
+	$(REQUIRE_VASE_TEBM_CAD)
+	@test -s "$(VASE_TEBM_STOCK_3MF)"
+	@test -s "$(VASE_TEBM_STOCK_GCODE)"
+	@test -s "$(VASE_TEBM_STOCK_SLICE_AUDIT)"
+	$(PYTHON_RUN) scripts/validate_vase_tebm35c10_4_delivery.py \
+		--profile stock \
+		--catalog "$(VASE_TEBM_STOCK_CATALOG)" \
+		--audit "$(VASE_TEBM_STOCK_SLICE_AUDIT)" \
+		--project "$(VASE_TEBM_STOCK_3MF)" \
+		--gcode "$(VASE_TEBM_STOCK_GCODE)"
+
+vase_tebm35c10_4_slim_3mf_validate:
+	$(REQUIRE_VASE_TEBM_CAD)
+	@test -s "$(VASE_TEBM_SLIM_3MF)"
+	@test -s "$(VASE_TEBM_SLIM_GCODE)"
+	@test -s "$(VASE_TEBM_SLIM_SLICE_AUDIT)"
+	$(PYTHON_RUN) scripts/validate_vase_tebm35c10_4_delivery.py \
+		--profile slim \
+		--catalog "$(VASE_TEBM_SLIM_CATALOG)" \
+		--audit "$(VASE_TEBM_SLIM_SLICE_AUDIT)" \
+		--project "$(VASE_TEBM_SLIM_3MF)" \
+		--gcode "$(VASE_TEBM_SLIM_GCODE)"
+
+vase_tebm35c10_4_3mf_validate: \
+        vase_tebm35c10_4_stock_3mf_validate \
+        vase_tebm35c10_4_slim_3mf_validate
+
+# Local-only structural packaging for the no-floor Obi-Wan LM bottom.  The
+# modifier is slicer geometry, not CAD: it changes infill only where it
+# intersects the released bridge/root while preserving every duct and bore.
+$(OBIWAN_01A_MODIFIER_STAMP): \
+        scripts/build_obiwan_bridge_root_modifier.py \
+        tests/test_obiwan_bridge_root_modifier.py \
+        $(OBIWAN_01A_RELEASED_STL) $(OBIWAN_01A_RELEASED_SIDECAR)
+	@rm -f "$@"
+	$(PYTHON_RUN) tests/test_obiwan_bridge_root_modifier.py
+	$(PYTHON_RUN) scripts/build_obiwan_bridge_root_modifier.py
+	@test -s "$(OBIWAN_01A_MODIFIER_STL)"
+	@test -s "$(OBIWAN_01A_MODIFIER_CONTRACT)"
+	@touch "$@"
+
+$(OBIWAN_01A_MODIFIER_STL) $(OBIWAN_01A_MODIFIER_CONTRACT): | \
+        $(OBIWAN_01A_MODIFIER_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_01A_MODIFIER_STAMP)"; \
+		$(MAKE) --no-print-directory "$(OBIWAN_01A_MODIFIER_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_no_floor_petg_gf_modifier: $(OBIWAN_01A_MODIFIER_STL) \
+        $(OBIWAN_01A_MODIFIER_CONTRACT)
+
+$(OBIWAN_01A_PETG_GF_STAMP): \
+        $(OBIWAN_01A_MODIFIER_STL) $(OBIWAN_01A_MODIFIER_CONTRACT) \
+        $(PETG_GF_PROFILE) $(SLICER_SRCS) \
+        tests/test_slice_captive_magnets.py \
+        $(abspath $(CAPTIVE_MAGNET_CATALOG))
+	@rm -f "$@"
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) tests/test_slice_captive_magnets.py
+	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
+		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--profile "$(PETG_GF_PROFILE)" \
+		--output "$(PETG_GF_AUDIT_OUTPUT)" \
+		--jobs 1 \
+		--only "$(OBIWAN_01A_ARTIFACT_ID)" \
+		--dry-run
+	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
+		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--profile "$(PETG_GF_PROFILE)" \
+		--output "$(PETG_GF_AUDIT_OUTPUT)" \
+		--jobs 1 \
+		--only "$(OBIWAN_01A_ARTIFACT_ID)" \
+		--emit-ready-projects
+	@test -s "$(OBIWAN_01A_PETG_GF_PROJECT)"
+	@test -s "$(OBIWAN_01A_PETG_GF_GCODE)"
+	@test -s "$(OBIWAN_01A_PETG_GF_AUDIT)"
+	@touch "$@"
+
+$(OBIWAN_01A_PETG_GF_PROJECT) $(OBIWAN_01A_PETG_GF_GCODE) \
+        $(OBIWAN_01A_PETG_GF_AUDIT): | $(OBIWAN_01A_PETG_GF_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_01A_PETG_GF_STAMP)"; \
+		$(MAKE) --no-print-directory "$(OBIWAN_01A_PETG_GF_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_no_floor_petg_gf_01a: $(OBIWAN_01A_PETG_GF_PROJECT) \
+        $(OBIWAN_01A_PETG_GF_AUDIT)
+
+obiwan_no_floor_petg_gf_01a_validate:
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
+		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--profile "$(PETG_GF_PROFILE)" \
+		--output "$(PETG_GF_AUDIT_OUTPUT)" \
+		--jobs 1 \
+		--only "$(OBIWAN_01A_ARTIFACT_ID)" \
+		--emit-ready-projects
+	@test -s "$(OBIWAN_01A_PETG_GF_PROJECT)"
+	@test -s "$(OBIWAN_01A_PETG_GF_AUDIT)"
+	@touch "$(OBIWAN_01A_PETG_GF_STAMP)"
+
+$(OBIWAN_01B_PETG_GF_STAMP): \
+        $(OBIWAN_01B_RELEASED_STL) $(OBIWAN_01B_RELEASED_SIDECAR) \
+        $(PETG_GF_PROFILE) $(SLICER_SRCS) \
+        tests/test_slice_captive_magnets.py \
+        $(abspath $(CAPTIVE_MAGNET_CATALOG))
+	@rm -f "$@"
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) tests/test_slice_captive_magnets.py
+	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
+		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--profile "$(PETG_GF_PROFILE)" \
+		--output "$(PETG_GF_01B_AUDIT_OUTPUT)" \
+		--jobs 1 \
+		--only "$(OBIWAN_01B_ARTIFACT_ID)" \
+		--dry-run
+	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
+		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--profile "$(PETG_GF_PROFILE)" \
+		--output "$(PETG_GF_01B_AUDIT_OUTPUT)" \
+		--jobs 1 \
+		--only "$(OBIWAN_01B_ARTIFACT_ID)" \
+		--emit-ready-projects
+	@test -s "$(OBIWAN_01B_PETG_GF_PROJECT)"
+	@test -s "$(OBIWAN_01B_PETG_GF_GCODE)"
+	@test -s "$(OBIWAN_01B_PETG_GF_AUDIT)"
+	@touch "$@"
+
+$(OBIWAN_01B_PETG_GF_PROJECT) $(OBIWAN_01B_PETG_GF_GCODE) \
+        $(OBIWAN_01B_PETG_GF_AUDIT): | $(OBIWAN_01B_PETG_GF_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_01B_PETG_GF_STAMP)"; \
+		$(MAKE) --no-print-directory "$(OBIWAN_01B_PETG_GF_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_floor_petg_gf_01b: $(OBIWAN_01B_PETG_GF_PROJECT) \
+        $(OBIWAN_01B_PETG_GF_AUDIT)
+
+obiwan_floor_petg_gf_01b_validate:
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
+		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--profile "$(PETG_GF_PROFILE)" \
+		--output "$(PETG_GF_01B_AUDIT_OUTPUT)" \
+		--jobs 1 \
+		--only "$(OBIWAN_01B_ARTIFACT_ID)" \
+		--emit-ready-projects
+	@test -s "$(OBIWAN_01B_PETG_GF_PROJECT)"
+	@test -s "$(OBIWAN_01B_PETG_GF_AUDIT)"
+	@touch "$(OBIWAN_01B_PETG_GF_STAMP)"
+
 # The two combined plates are pure local packaging over released STLs.
 # Absolute prerequisites deliberately have no matching CAD rules: if a
 # released input or audit authority is absent, Make fails locally instead of
@@ -963,7 +1517,7 @@ OBIWAN_COMBO_SOURCE_SRCS := scripts/build_obiwan_combo_plate.py \
         $(PRINT_CONTRACT_SRCS) Makefile
 OBIWAN_COMBO_READY_SRCS := $(OBIWAN_COMBO_SOURCE_SRCS) \
         $(SLICER_SRCS) scripts/json_schema_subset.py \
-        captive_magnet_slicing_profile.json tests/test_slice_captive_magnets.py
+        $(PETG_GF_PROFILE) tests/test_slice_captive_magnets.py
 
 $(OBIWAN_NO_FLOOR_COMBO_SOURCE_STAMP): $(OBIWAN_COMBO_SOURCE_SRCS) \
         $(OBIWAN_NO_FLOOR_COMBO_RELEASED_INPUTS)
@@ -991,6 +1545,7 @@ obiwan_no_floor_combo_plate_source: $(OBIWAN_NO_FLOOR_COMBO_STL) \
 $(OBIWAN_NO_FLOOR_COMBO_READY_STAMP): \
         $(OBIWAN_NO_FLOOR_COMBO_SOURCE_STAMP) \
         $(OBIWAN_COMBO_READY_SRCS) \
+        $(OBIWAN_01A_MODIFIER_STL) $(OBIWAN_01A_MODIFIER_CONTRACT) \
         $(abspath $(CAPTIVE_MAGNET_CATALOG)) \
         $(OBIWAN_NO_FLOOR_COMBO_DISCOVERY_AUDITS)
 	@rm -f "$@"
@@ -1001,12 +1556,14 @@ $(OBIWAN_NO_FLOOR_COMBO_READY_STAMP): \
 	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
 		--variant no_floor_stand \
 		--workspace "$(OBIWAN_NO_FLOOR_COMBO_WORKSPACE)" \
+		--profile "$(PETG_GF_PROFILE)" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
 		--dry-run
 	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
 		--variant no_floor_stand \
 		--workspace "$(OBIWAN_NO_FLOOR_COMBO_WORKSPACE)" \
+		--profile "$(PETG_GF_PROFILE)" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
 		--slice-missing
@@ -1030,6 +1587,7 @@ obiwan_no_floor_combo_plate: $(OBIWAN_NO_FLOOR_COMBO_PROJECT) \
 
 obiwan_no_floor_combo_plate_validate: obiwan_no_floor_combo_plate_source \
         $(OBIWAN_COMBO_READY_SRCS) \
+        $(OBIWAN_01A_MODIFIER_STL) $(OBIWAN_01A_MODIFIER_CONTRACT) \
         $(abspath $(CAPTIVE_MAGNET_CATALOG)) \
         $(OBIWAN_NO_FLOOR_COMBO_DISCOVERY_AUDITS)
 	$(REQUIRE_BAMBU_CATALOG)
@@ -1039,6 +1597,7 @@ obiwan_no_floor_combo_plate_validate: obiwan_no_floor_combo_plate_source \
 	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
 		--variant no_floor_stand \
 		--workspace "$(OBIWAN_NO_FLOOR_COMBO_WORKSPACE)" \
+		--profile "$(PETG_GF_PROFILE)" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
 		--validate-only
@@ -1079,12 +1638,14 @@ $(OBIWAN_FLOOR_COMBO_READY_STAMP): \
 	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
 		--variant floor_stand \
 		--workspace "$(OBIWAN_FLOOR_COMBO_WORKSPACE)" \
+		--profile "$(PETG_GF_PROFILE)" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
 		--dry-run
 	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
 		--variant floor_stand \
 		--workspace "$(OBIWAN_FLOOR_COMBO_WORKSPACE)" \
+		--profile "$(PETG_GF_PROFILE)" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
 		--slice-missing
@@ -1115,6 +1676,7 @@ obiwan_floor_combo_plate_validate: obiwan_floor_combo_plate_source \
 	$(PYTHON_RUN) scripts/build_obiwan_combo_plate.py \
 		--variant floor_stand \
 		--workspace "$(OBIWAN_FLOOR_COMBO_WORKSPACE)" \
+		--profile "$(PETG_GF_PROFILE)" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
 		--validate-only
@@ -1322,6 +1884,68 @@ obiwan_ae_wing_plate_validate: obiwan_ae_wing_plate_source \
 # Promotion is also an ordinary artifact transaction.  It requires an existing
 # complete shelf manifest and crosses the full 51/51 equivalence barrier with
 # slicing disabled before refreshing only the requested delivery pair.
+$(OBIWAN_01A_PETG_GF_PROMOTION_STAMP): \
+        $(OBIWAN_01A_PETG_GF_STAMP) \
+        scripts/build_to_print_shelf.py tests/test_to_print_shelf.py \
+        $(TO_PRINT_SHELF)/catalog.json \
+        $(abspath $(TO_PRINT_SHELF))/release_manifest.json
+	@rm -f "$@"
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/build_to_print_shelf.py \
+		--shelf "$(TO_PRINT_SHELF)" \
+		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--validate-only \
+		--only "$(OBIWAN_01A_FRIENDLY_NAME)"
+	$(PYTHON_RUN) tests/test_to_print_shelf.py
+	@test -s "$(OBIWAN_01A_PETG_GF_SHELF_STL)"
+	@test -s "$(OBIWAN_01A_PETG_GF_SHELF_PROJECT)"
+	@touch "$@"
+
+$(OBIWAN_01A_PETG_GF_SHELF_OUTPUTS): | \
+        $(OBIWAN_01A_PETG_GF_PROMOTION_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_01A_PETG_GF_PROMOTION_STAMP)"; \
+		$(MAKE) --no-print-directory \
+			"$(OBIWAN_01A_PETG_GF_PROMOTION_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_no_floor_petg_gf_01a_to_print: \
+        $(OBIWAN_01A_PETG_GF_SHELF_OUTPUTS)
+
+$(OBIWAN_01B_PETG_GF_PROMOTION_STAMP): \
+        $(OBIWAN_01B_PETG_GF_STAMP) \
+        scripts/build_to_print_shelf.py tests/test_to_print_shelf.py \
+        $(TO_PRINT_SHELF)/catalog.json \
+        $(abspath $(TO_PRINT_SHELF))/release_manifest.json
+	@rm -f "$@"
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/build_to_print_shelf.py \
+		--shelf "$(TO_PRINT_SHELF)" \
+		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
+		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
+		--validate-only \
+		--only "$(OBIWAN_01B_FRIENDLY_NAME)"
+	$(PYTHON_RUN) tests/test_to_print_shelf.py
+	@test -s "$(OBIWAN_01B_PETG_GF_SHELF_STL)"
+	@test -s "$(OBIWAN_01B_PETG_GF_SHELF_PROJECT)"
+	@touch "$@"
+
+$(OBIWAN_01B_PETG_GF_SHELF_OUTPUTS): | \
+        $(OBIWAN_01B_PETG_GF_PROMOTION_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(OBIWAN_01B_PETG_GF_PROMOTION_STAMP)"; \
+		$(MAKE) --no-print-directory \
+			"$(OBIWAN_01B_PETG_GF_PROMOTION_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_floor_petg_gf_01b_to_print: \
+        $(OBIWAN_01B_PETG_GF_SHELF_OUTPUTS)
+
 $(OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP): \
         $(OBIWAN_NO_FLOOR_COMBO_READY_STAMP) \
         scripts/build_to_print_shelf.py tests/test_to_print_shelf.py \
@@ -1460,6 +2084,12 @@ to_print: $(OBIWAN_NO_FLOOR_COMBO_READY_STAMP) \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
 		--slice-missing
 	$(PYTHON_RUN) tests/test_to_print_shelf.py
+	@test -s "$(OBIWAN_01A_PETG_GF_SHELF_STL)"
+	@test -s "$(OBIWAN_01A_PETG_GF_SHELF_PROJECT)"
+	@touch "$(OBIWAN_01A_PETG_GF_PROMOTION_STAMP)"
+	@test -s "$(OBIWAN_01B_PETG_GF_SHELF_STL)"
+	@test -s "$(OBIWAN_01B_PETG_GF_SHELF_PROJECT)"
+	@touch "$(OBIWAN_01B_PETG_GF_PROMOTION_STAMP)"
 	@test -s "$(OBIWAN_NO_FLOOR_COMBO_SHELF_STL)"
 	@test -s "$(OBIWAN_NO_FLOOR_COMBO_SHELF_PROJECT)"
 	@touch "$(OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP)"
@@ -1485,6 +2115,10 @@ to_print_validate: obiwan_no_floor_combo_plate_source \
 		--validate-only
 	@touch "$(OBIWAN_NO_FLOOR_COMBO_READY_STAMP)"
 	@touch "$(OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP)"
+	@touch "$(OBIWAN_01A_PETG_GF_STAMP)"
+	@touch "$(OBIWAN_01A_PETG_GF_PROMOTION_STAMP)"
+	@touch "$(OBIWAN_01B_PETG_GF_STAMP)"
+	@touch "$(OBIWAN_01B_PETG_GF_PROMOTION_STAMP)"
 	@touch "$(OBIWAN_FLOOR_COMBO_READY_STAMP)"
 	@touch "$(OBIWAN_FLOOR_COMBO_PROMOTION_STAMP)"
 	@touch "$(OBIWAN_AC_WING_PLATE_READY_STAMP)"
@@ -1523,12 +2157,12 @@ check_obiwan_junction_closure_plans: \
 	    tests/test_obiwan_junction_closure_webs.py
 
 # Full analytic and actual-BREP sections for the two independently assembled
-# junctions.  The dense layer matrix is sixteen ordinary Make nodes (the four
-# floor/no-floor × LM-UM/T-UM cases, each split into four complementary layer
-# shards) so GNU Make's inherited jobserver keeps all sixteen remote slots
-# busy
-# when the LM sections outlive the lighter T sections.  The shard union retains
-# every physical Bambu layer and assertion;
+# junctions.  The dense layer matrix is sixteen ordinary Make nodes: eight
+# complementary layer shards for each floor/no-floor state.  Each process
+# audits both LM-UM and T-UM, so their shared UM BREP and route section are
+# computed once rather than once per junction.  GNU Make's inherited jobserver
+# still keeps all sixteen remote slots busy.  The shard union retains every
+# physical Bambu layer and assertion;
 # Python does not own a second scheduler.  The explicit full-test flag makes a
 # missing authenticated guard fail closed instead of silently running only the
 # source contract.
@@ -1539,30 +2173,34 @@ check_obiwan_junction_closures: $(JUNCTION_CLOSURE_STAMP)
 check_obiwan_junction_closure_base: $(JUNCTION_CLOSURE_BASE_STAMP)
 
 $(JUNCTION_CLOSURE_STAMP): $(JUNCTION_CLOSURE_BASE_STAMP) \
-		$(JUNCTION_CLOSURE_DENSE_STAMPS)
+		$(JUNCTION_CLOSURE_DENSE_STATE_STAMPS)
 	@mkdir -p $(@D)
 	@touch $@
 
-$(JUNCTION_CLOSURE_BASE_STAMP): \
-		$(call r6f_check_stamp,floor_feed_and_flush_mouth_contract) \
-		$(call r6f_check_stamp,feed_and_flush_mouth_contract) \
+$(JUNCTION_CLOSURE_BASE_STAMP): $(JUNCTION_CLOSURE_BASE_STATE_STAMPS)
+	@mkdir -p $(@D)
+	@touch $@
+
+define JUNCTION_CLOSURE_BASE_STATE_RULE
+$(call junction_closure_base_state_stamp,$(1)): \
+		$(call r6f_check_stamp,$(3)) \
 		tests/test_obiwan_junction_closure_webs.py \
 		src/lx521_baffle/obiwan/carriers.py \
 		src/lx521_baffle/obiwan/attachments.py \
 		$(OBIWAN_SRCS) $(EXECUTION_SRCS) $(CHECK_REVALIDATE) | \
-		build/floor_stand/.obiwan_stage/manifest.json \
-		build/no_floor_stand/.obiwan_stage/manifest.json
-	@mkdir -p $(@D)
-	# Run both base checks so each state is compared with its own route oracle.
-	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan \
+		$(4)
+	@mkdir -p $$(@D)
+	# Each state is compared with its own route oracle in an independent Make
+	# slot; the aggregate base stamp joins the two successful results.
+	LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=obiwan \
 	    LX_OBIWAN_CLOSURE_FULL_TEST=1 \
-	    LX_OBIWAN_CLOSURE_BASE_ONLY=1 $(RUN) \
+	    LX_OBIWAN_CLOSURE_BASE_ONLY=1 $$(RUN) \
 	    tests/test_obiwan_junction_closure_webs.py
-	LX_STAND_FOOT=1 LX_ROUTING_PROFILE=obiwan \
-	    LX_OBIWAN_CLOSURE_FULL_TEST=1 \
-	    LX_OBIWAN_CLOSURE_BASE_ONLY=1 $(RUN) \
-	    tests/test_obiwan_junction_closure_webs.py
-	@touch $@
+	@touch $$@
+endef
+
+$(eval $(call JUNCTION_CLOSURE_BASE_STATE_RULE,no_floor,0,feed_and_flush_mouth_contract,build/no_floor_stand/.obiwan_stage/manifest.json))
+$(eval $(call JUNCTION_CLOSURE_BASE_STATE_RULE,floor,1,floor_feed_and_flush_mouth_contract,build/floor_stand/.obiwan_stage/manifest.json))
 
 define JUNCTION_CLOSURE_DENSE_RULE
 $(call junction_closure_dense_stamp,$(1),$(2)): \
@@ -1576,19 +2214,30 @@ $(call junction_closure_dense_stamp,$(1),$(2)): \
 		build/no_floor_stand/.obiwan_stage/manifest.json
 	@mkdir -p $$(@D)
 	# The route oracle is state-dependent; keep it in the same state as the
-	# corresponding immutable staged BREP. ``floor_%`` intentionally excludes
-	# the ``no_floor_%`` cases.
-	LX_STAND_FOOT=$(if $(filter floor_%,$(1)),1,0) LX_ROUTING_PROFILE=obiwan \
+	# corresponding immutable staged BREP.  One state/shard process covers both
+	# junctions and therefore reuses the UM section authority.
+	LX_STAND_FOOT=$(if $(filter floor,$(1)),1,0) LX_ROUTING_PROFILE=obiwan \
 	    LX_OBIWAN_CLOSURE_FULL_TEST=1 \
-	    LX_OBIWAN_CLOSURE_DENSE_CASE=$(1) \
-	    LX_OBIWAN_CLOSURE_DENSE_SHARD=$(2)/4 $$(RUN) \
+	    LX_OBIWAN_CLOSURE_DENSE_STATE=$(1) \
+	    LX_OBIWAN_CLOSURE_DENSE_SHARD=$(2)/8 $$(RUN) \
 	    tests/test_obiwan_junction_closure_webs.py
 	@touch $$@
 endef
 
-$(foreach name,$(JUNCTION_CLOSURE_DENSE_CASES),\
+$(foreach state,$(JUNCTION_CLOSURE_DENSE_STATES),\
         $(foreach shard,$(JUNCTION_CLOSURE_DENSE_SHARDS),\
-        $(eval $(call JUNCTION_CLOSURE_DENSE_RULE,$(name),$(shard)))))
+        $(eval $(call JUNCTION_CLOSURE_DENSE_RULE,$(state),$(shard)))))
+
+define JUNCTION_CLOSURE_DENSE_STATE_RULE
+$(CHECK_STAMP_DIR)/obiwan_junction_closures/state_$(1).ok: \
+        $(foreach shard,$(JUNCTION_CLOSURE_DENSE_SHARDS),\
+        $(call junction_closure_dense_stamp,$(1),$(shard)))
+	@mkdir -p $$(@D)
+	@touch $$@
+endef
+
+$(foreach state,$(JUNCTION_CLOSURE_DENSE_STATES),\
+        $(eval $(call JUNCTION_CLOSURE_DENSE_STATE_RULE,$(state))))
 
 # Focused remote iteration gate.  Reuse the ordinary one-selector-per-node
 # Make DAG; do not re-enter the Python suite's direct-CLI thread scheduler.
@@ -1727,12 +2376,16 @@ build/common/top_baffle_nd25fw4_attachments.step: $(SRCS) scripts/export_steps.p
 STL_VARIANTS := b2 c7 v0 v1
 stl_variant_stamp = $(if $(filter b2,$(1)),.stamp,.stamp_$(1))
 stl_variant_arg = $(if $(filter b2,$(1)),, --variant $(1))
+stl_variant_step = top_baffle_nd25fw4_$(1)_split.step
 
 # $(1) = output root, $(2) = LX_STAND_FOOT, $(3) = variant.
 define STATE_STL_VARIANT_RULE
-$(1)/stl/$$(call stl_variant_stamp,$(3)): $$(SRCS) $$(STL_EXPORT_SRCS)
+$(1)/stl/$$(call stl_variant_stamp,$(3)): \
+        $(1)/$$(call stl_variant_step,$(3)) $$(STL_EXPORT_SRCS)
 	@rm -f $$@
-	$$(call RUN_STATE,$(2),proud) scripts/export_piece_stls.py$$(call stl_variant_arg,$(3)) --outdir $(1)/stl
+	$$(call RUN_STATE,$(2),proud) scripts/export_piece_stls.py$$(call stl_variant_arg,$(3)) \
+	    --source-step $(1)/$$(call stl_variant_step,$(3)) \
+	    --outdir $(1)/stl
 	@touch $$@
 endef
 
@@ -1751,19 +2404,14 @@ endef
 
 # $(1) = variant dir, $(2) = LX_STAND_FOOT value
 define RULES
-$(1)/stl/.stamp_v1l: $(SRCS) $(STL_EXPORT_SRCS)
+$(1)/stl/.stamp_v1l: $(1)/top_baffle_nd25fw4_v1l_split.step \
+        $(STL_EXPORT_SRCS)
 	@rm -f $$@
-ifeq ($(LX_CAD_EXECUTION),remote-worker)
-	# Osado constructs the shared V1L geometry once, then meshes the same
-	# four physical print pieces and grommet pair from that one build.
-	$(call RUN_STATE,$(2),proud) scripts/export_piece_stls.py --variant v1l --outdir $(1)/stl
-else
-	$(call RUN_STATE,$(2),proud) scripts/export_piece_stls.py --variant v1l --v1l-piece piece_bottom --outdir $(1)/stl
-	$(call RUN_STATE,$(2),proud) scripts/export_piece_stls.py --variant v1l --v1l-piece piece_mid_left --outdir $(1)/stl
-	$(call RUN_STATE,$(2),proud) scripts/export_piece_stls.py --variant v1l --v1l-piece piece_mid_right --outdir $(1)/stl
-	$(call RUN_STATE,$(2),proud) scripts/export_piece_stls.py --variant v1l --v1l-piece piece_top_b2 --outdir $(1)/stl
-	$(call RUN_STATE,$(2),proud) scripts/export_piece_stls.py --variant v1l --v1l-piece grommet --outdir $(1)/stl
-endif
+	# STEP is the geometry authority on every host.  Import its four labeled
+	# physical children once, then mesh them and the lightweight grommet pair.
+	$(call RUN_STATE,$(2),proud) scripts/export_piece_stls.py --variant v1l \
+	    --source-step $(1)/top_baffle_nd25fw4_v1l_split.step \
+	    --outdir $(1)/stl
 	@touch $$@
 
 $(1)/stl/.stamp_obiwan: $(OBIWAN_SRCS) $(STL_EXPORT_SRCS) \
@@ -1875,6 +2523,7 @@ $(eval $(call recover_stamp,$(FLOOR_STRENGTH_REPORTS),build/floor_stand/.stamp_o
 
 clean:
 	rm -rf build/floor_stand build/no_floor_stand build/wings \
+	    build/vase_TEBM35C10-4 \
 	    .manifold-stamps .check-stamps __pycache__ \
 	    build/common/top_baffle_nd25fw4_attachments.step \
 	    build/common/obiwan_wing_design_map.png

@@ -30,10 +30,22 @@ review/captive_magnet_slice_smoke/
 # hash-backed JSON/CSV/Markdown summaries beside this directory remain
 # reviewable release artifacts.
 review/captive_magnet_slice_audit/slices/
+review/captive_magnet_slice_audit_petg_gf_*/slices/
+
+# Optional opposed-BMR Stock/Slim CAD children are first-class deliverables.
+# Keep their compact hash/provenance JSON and stable ready project trackable,
+# while excluding reproducible slicer workspaces and obsolete in-build review
+# scratch. Curated family snapshots live under review/vase_tebm35c10_4/.
+build/vase_TEBM35C10-4/*/slice_audit/
+build/vase_TEBM35C10-4/review/
+build/vase_TEBM35C10-4/*/.*.step.glb
+!build/vase_TEBM35C10-4/*/*.json
+!build/vase_TEBM35C10-4/*/*.gcode.3mf
 
 # Release inputs/summaries are JSON by design; the repository root otherwise
 # ignores generic extraction JSON files.
 !captive_magnet_slicing_profile.json
+!captive_magnet_slicing_profile_petg_gf.json
 !captive_magnet_release_catalog.schema.json
 !review/captive_magnet_release_catalog.json
 !review/captive_magnet_slice_audit/captive_magnet_pause_manifest.json
@@ -54,6 +66,7 @@ to_print/release_manifest.json
 !build/no_floor_stand/stl/*.print.json
 !build/wings/*/stl/*.print.json
 !build/*/support_blockers/*.support_blocker.json
+!build/*/process_modifiers/*.modifier.json
 !build/print_plates/**/*.plate.json
 
 # The product catalog is deliberately JSON-backed and carries linked copies of

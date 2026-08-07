@@ -420,7 +420,8 @@ def _obiwan_sites(*, owner: str, driver: str) -> dict[str, dict[str, Any]]:
                 NOMINAL_PAIRED_FACE_SEPARATION_MM + cavity_inset, 9),
         })
         expected_separation = (
-            1.10 if record["interface_kind"] == "ring" else 0.95)
+            1.10 if record["interface_kind"] in {"ring", "shoulder"}
+            else 0.95)
         if record["paired_magnet_face_separation_mm"] != expected_separation:
             raise RuntimeError(
                 f"{site['name']}: Obi-Wan paired magnet-face separation "
@@ -674,9 +675,11 @@ def _wing_release_site(
         * (-float(normal[1]) if index == 0 else float(normal[0]))
         for index in range(2)
     ))
-    expected_separation = 1.10 if interface_kind == "ring" else 0.95
+    expected_separation = (
+        1.10 if interface_kind in {"ring", "shoulder"} else 0.95)
     actual_separation = float(site["paired_magnet_face_separation_mm"])
-    expected_inset = 0.15 if interface_kind == "ring" else 0.0
+    expected_inset = (
+        0.15 if interface_kind in {"ring", "shoulder"} else 0.0)
     if (abs(cavity_inset - expected_inset) > 1.0e-9
             or tangential_error > 1.0e-9
             or abs(actual_separation - expected_separation) > 1.0e-9):
@@ -999,7 +1002,7 @@ def generate(output: Path) -> dict[str, Any]:
             "paired_magnet_face_separation_by_interface_profile_mm": {
                 "standard_straight": 0.95,
                 "standard_curved": 1.09,
-                "obiwan_base_side": 0.95,
+                "obiwan_shoulder": 1.10,
                 "obiwan_ring": 1.10,
             },
             "glue": False,

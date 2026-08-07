@@ -32,10 +32,12 @@
   cradle, and self-supporting 45-degree roof. The finished magnet has no glue
   or external access opening. Preserve the upper LM pair at world polar 64/116
   deg (±26 deg from top), with no ear and at least 2.2 mm cavity-edge to
-  nearest insert-pad edge. Preserve the lower LM pair axes in the common
-  straight base side faces at `(x,y,z)=(±32,18,15.10)`, with left/right
-  outward normals `(-1,0)`/`(1,0)`. Both stand states expose those exact
-  base-side datums, and both cavities clear buried routes and the
+  nearest insert-pad edge. Preserve the lower LM pair axes at cubic parameter
+  `u=0.50` of the common curved shoulder. The right visible datum is
+  `(x,y,z)=(45.285011,89.190370,15.10)` with outward normal
+  `(0.706451,-0.707762)`; the left is its exact X mirror. Both stand states
+  expose those exact shoulder datums, and both cavities clear buried routes
+  and the
   bridge/integral-stand load path. The
   UM pair is also earless at 50.5/129.5 deg. All LM-lower, LM-upper, and UM
   magnet axes share the common source plane **Z = 15.10 mm**. The structural LM and UM
@@ -48,8 +50,8 @@
   flat, or silhouette cue. The D5 x 2 cavity and 0.45 mm skins are unchanged.
   Matching Ac/Ae solids contact with zero physical mating gap; their receiver
   construction datum has a 0.05 mm solid standoff, not an air gap. Nominal
-  paired magnet-face separation is therefore 1.10 mm at the ring stations and
-  remains 0.95 mm at the straight LM-lower base-side stations. Every station
+  paired magnet-face separation is therefore 1.10 mm at LM-lower, LM-upper,
+  and UM. Every station
   is wholly internal and leaves no front, rear, or side location cue. Magnets receive zero
   structural-load credit. In no-floor state the D7.8 LM lead enters through
   the upper Ø9 bore in the D20 cluster and follows a buried Ø9 path to the
@@ -59,7 +61,8 @@
   the tweeter crescent, which owns no printed cable arc.
   No-floor mode additionally owns one monolithic fused bridge-interface tail;
   there is no separate no-floor keel. Floor mode instead owns a full-height
-  integral W64 stem/foot, R12 root, three buried floor lanes and rear NL8
+  integral W64 stem/foot, convex constant-thickness Option-B transition,
+  three buried floor lanes and rear NL8
   panel. There is no separate floor-support add-on or support fastener.
   Both modes expose one identical LM-lower front/wing-contact outline: the
   opening-free union of the W64 floor stem and the broad cubic no-floor bridge
@@ -109,7 +112,7 @@
 - Obi-Wan LM axes: six sites at `0/60/120/180/240/300 deg` on the unchanged
   209.5 mm PCD. Both states own six ordinary blind carrier heat-sets; floor
   mode has no secondary support inserts or through-clearance sites. Proud/V1L families
-  retain their existing `30/90/.../330 deg` pattern.
+  use the shared `0/60/.../300 deg` Stock/Slim/Obi-Wan pattern.
 - Bridge datum: global hole centres `(-20,20)`, `(20,20)`, `(-20,70)`,
   `(20,70)` are immutable. They preserve the 40 x 50 mm pattern and,
   relative to the LM centre, the existing 182.083 mm lower-row and
@@ -118,8 +121,10 @@
   to the universal LM-lower contact outline shared with floor mode. The web is
   flush with the front and occupies `z=5.3..18.3`, exactly the deepest existing
   LM insert-pad envelope; it has no X, hollow opening, rear rib, or additional
-  rear-depth structure. Four rear-opening Ø6.4 x 6.8 bores leave a 6.2 mm solid front
-  floor, and no bridge geometry extends behind the existing LM-pad envelope.
+  rear-depth structure. Four rear-opening bores retain their 6.8 mm total
+  depth and 6.2 mm solid front floor; only their entry profile changes to
+  Ø6.5 for the first 2.0 mm and Ø6.4 below that. No bridge geometry extends
+  behind the existing LM-pad envelope.
   Floor mode owns the monolithic stand described below plus only the shallow
   missing shoulder delta needed to reach the same universal contact outline;
   it does not acquire the four bridge bores. The no-floor web extends through
@@ -140,7 +145,9 @@
 - Integral floor datum and envelope: floor world `Y=0`; LM axis world
   `Y=200.981`, therefore exact LM-axis-to-floor **200.981 mm**. The LM owns a
   full-depth W64 stem softly integrated into the lower cap, a W64 × 18.3 mm
-  rectangular foot spanning `z=-150..18.3`, and a true R12 internal root.
+  foot spanning `z=-150..18.3`, and the convex constant-thickness Option-B
+  transition: 75 mm rear span, 65 mm rise, tangent cubic, centreline
+  `Rmin=41 mm`, and zero curvature reversals.
   A W64 × 44 × 4 mm rear panel spans `z=-150..-146`; its Ø31 NL8 cutout is
   centered at `(0,22)` and four Ø3.2 holes use a 29.2 mm square. A necessary
   connector service cavity occupies x=±18, y=4..48, z=-146.2..-104. The
@@ -315,14 +322,15 @@
   inter-carrier gap preserved; ring cavity construction datums at
   structural radius +0.65 mm, 0.15 mm beneath the exposed surface, with no
   local pad, boss, flat, or visible cue;
-  exact lower-LM
-  base-side faces at `(x,y,z)=(±32,18,15.10)` with outward ±X normals in
-  both stand states; at least 2.2 mm upper-LM nearest-insert edge gap; absence
+  exact lower-LM shoulder faces at cubic parameter `u=0.50`, with right datum
+  `(45.285011,89.190370,15.10)`, outward normal
+  `(0.706451,-0.707762)`, and an exact-X-mirrored left datum in both stand
+  states; at least 2.2 mm upper-LM nearest-insert edge gap; absence
   of LM proud ears; three matching Ac/Ae receivers per physical side at
   LM lower, LM upper, and UM; common source Z=15.10 for every LM/UM station;
   0.05 mm solid receiver construction standoff with zero physical mating gap;
-  1.10 mm nominal paired magnet-face separation at LM-upper/UM and 0.95 mm at
-  the straight LM-lower base-side pair; no exterior magnet-location cue;
+  1.10 mm nominal paired magnet-face separation at LM-lower, LM-upper, and
+  UM; no exterior magnet-location cue;
   manifest-derived pauses and mirrored polarity;
   unobstructed D7.8 LM travel through the no-floor Ø9 D20 branch/R14 handoff
   and the corresponding floor-lane continuation;
@@ -345,7 +353,8 @@
   retention/load credit; front-face-down orientation and selected-printer
   footprint clearance for all optional split parts;
   exact floor Y=0 and LM-axis-to-floor 200.981 mm; integral W64 stem/foot,
-  R12 root, NL8 panel/service cavity and three buried continuations; positive
+  convex R41-minimum Option-B transition, NL8 panel/service cavity and three
+  buried continuations; positive
   absence of a separate floor-support artifact; combined-axis 4 kg
   sustained-1g/3g/5g bridge/integral-stand screen for all five named Bambu
   materials, plus the

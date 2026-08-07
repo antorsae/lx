@@ -7,11 +7,10 @@ insert-pad rear datum through the z=18.3 front): it is flush with the front,
 has no rear X-frame or separate depth ribs, and exposes four blind insert
 bores from the rear.
 
-Floor and no-floor carriers share one exact wing-contact outline: the union
-of the historic integral-floor stem and no-floor bridge outlines.  The
-no-floor web owns that complete shallow plan.  Floor mode adds only its
-missing shoulder delta through the normal z=6.8..18.3 wing-contact depth, so
-the deep floor leg and the four no-floor blind inserts remain state-specific.
+No-floor owns the complete shallow bridge outline.  Floor mode retains only
+the same upper shoulder where it meets the LM ring.  The lower magnet pair is
+located on that shared shoulder, so floor mode needs neither a lower rail nor
+a thin fusion skirt around the absent pre-Option-B stem.
 """
 
 from __future__ import annotations
@@ -26,11 +25,11 @@ from shapely.ops import unary_union
 
 from ..base import (
     BRIDGE_HOLE_XY,
-    BRIDGE_INSERT_D_MM,
     BRIDGE_INSERT_DEPTH_MM,
     L22_CUTOUT,
-    L22_PILOT_D_MM,
+    M5_INSERT_ENTRY_D_MM,
     THICKNESS_MM,
+    m5_insert_bore_cutter,
 )
 from ..flush import LM_RECESS_R, PAD_FACE_Z
 from .route import (
@@ -73,14 +72,14 @@ BRIDGE_WEB_NET_WIDTH_MM = (
     BRIDGE_WEB_WIDTH - BRIDGE_WEB_TUNNEL_DEDUCTION_MM)
 
 # Screen the first uninterrupted horizontal ligament above the immutable top
-# insert pair. The 0.05-mm offset avoids crediting a tangent to the D6.4 blind
-# bores. All three rear-facing lumens are conservatively deducted across the
+# insert pair. The 0.05-mm offset avoids crediting a tangent to the D6.5 entry
+# reliefs. All three rear-facing lumens are conservatively deducted across the
 # complete core even though their actual curved centerlines do not coincide at
 # one section. A separate sampled outline/corridor audit below proves the real
 # soft-blend section is at least this 38.8-mm lower bound.
 BRIDGE_ROUTE_SECTION_Y_MM = (
     max(float(y) for _x, y in BRIDGE_HOLE_XY)
-    + L22_PILOT_D_MM / 2.0 + 0.05)
+    + M5_INSERT_ENTRY_D_MM / 2.0 + 0.05)
 BRIDGE_ROUTE_SECTION_Y_RANGE = (
     BRIDGE_ROUTE_SECTION_Y_MM, BRIDGE_WEB_Y[1])
 BRIDGE_ROUTE_SECTION_SAMPLE_MM = 0.01
@@ -136,7 +135,6 @@ BRIDGE_BLEND_LEFT_ANGLE_DEG = (
 BRIDGE_BLEND_START_HANDLE_MM = 24.0
 BRIDGE_BLEND_END_HANDLE_MM = 40.0
 BRIDGE_BLEND_SAMPLES = 96
-
 
 def _circle_xy(radius: float, angle_deg: float):
     angle = math.radians(angle_deg)
@@ -213,20 +211,63 @@ def _cubic_xy(p0, p1, p2, p3, count: int):
     return points
 
 
-def bridge_soft_blend_plan():
-    """Filled symmetric cubic transition from the panel into the LM ring."""
+def bridge_soft_blend_right_controls():
+    """Exact right-side cubic controls for the lower LM shoulder."""
     start = (BRIDGE_WEB_X[1], BRIDGE_BLEND_START_Y)
     end = BRIDGE_BLEND_RIGHT_TANGENCY
     angle = math.radians(BRIDGE_BLEND_RIGHT_ANGLE_DEG)
     tangent = (-math.sin(angle), math.cos(angle))
-    right = _cubic_xy(
+    return (
         start,
         (start[0], start[1] + BRIDGE_BLEND_START_HANDLE_MM),
         (end[0] - BRIDGE_BLEND_END_HANDLE_MM * tangent[0],
          end[1] - BRIDGE_BLEND_END_HANDLE_MM * tangent[1]),
         end,
-        BRIDGE_BLEND_SAMPLES,
     )
+
+
+def bridge_soft_blend_frame(
+        parameter: float, side: str = "right",
+        ) -> tuple[tuple[float, float], tuple[float, float]]:
+    """Return the shoulder point and outward unit normal at a cubic station."""
+    u = float(parameter)
+    if not 0.0 <= u <= 1.0:
+        raise ValueError("soft-blend parameter must be in [0, 1]")
+    if side not in {"left", "right"}:
+        raise ValueError("soft-blend side must be 'left' or 'right'")
+    p0, p1, p2, p3 = bridge_soft_blend_right_controls()
+    v = 1.0 - u
+    point = (
+        v ** 3 * p0[0] + 3.0 * v ** 2 * u * p1[0]
+        + 3.0 * v * u ** 2 * p2[0] + u ** 3 * p3[0],
+        v ** 3 * p0[1] + 3.0 * v ** 2 * u * p1[1]
+        + 3.0 * v * u ** 2 * p2[1] + u ** 3 * p3[1],
+    )
+    derivative = (
+        3.0 * (
+            v ** 2 * (p1[0] - p0[0])
+            + 2.0 * v * u * (p2[0] - p1[0])
+            + u ** 2 * (p3[0] - p2[0])),
+        3.0 * (
+            v ** 2 * (p1[1] - p0[1])
+            + 2.0 * v * u * (p2[1] - p1[1])
+            + u ** 2 * (p3[1] - p2[1])),
+    )
+    length = math.hypot(*derivative)
+    if length <= 1.0e-12:
+        raise RuntimeError("soft-blend frame encountered a zero tangent")
+    # The right curve runs upward with carrier material to its left, making
+    # the clockwise normal the physical outward interface direction.
+    outward = (derivative[1] / length, -derivative[0] / length)
+    if side == "left":
+        return (-point[0], point[1]), (-outward[0], outward[1])
+    return point, outward
+
+
+def bridge_soft_blend_plan():
+    """Filled symmetric cubic transition from the panel into the LM ring."""
+    right = _cubic_xy(
+        *bridge_soft_blend_right_controls(), BRIDGE_BLEND_SAMPLES)
     left = [(-x, y) for x, y in right]
     angles = [
         BRIDGE_BLEND_RIGHT_ANGLE_DEG
@@ -336,30 +377,38 @@ def bridge_face_plan():
 
 
 def floor_wing_contact_profile_addition_plan():
-    """Plan delta that grows the floor stem to the universal front profile.
+    """Return only the upper floor-state wing-contact shoulder.
 
-    The inward owner offset provides a positive fusion strip.  The addition
-    remains inside the universal exterior and is one connected perimeter
-    polygon.  Its sole interior is intentional: that region is already solid
-    floor-stem material, not a cavity in the finished carrier.
+    The Option-B wall removed the old front-depth stem below its upright
+    tangent.  Subtracting an inward offset of that *historic* stem over the
+    whole plan therefore exported the nominal 0.10-mm fusion allowance as a
+    visible rectangular perimeter box.  The lower magnet pair now lives on
+    the shared curved shoulder, so the addition starts at ``y=60`` and keeps
+    no material at all below that tangent.
     """
     floor_stem = Polygon(integral_stem_plan_points()).buffer(0)
     retained_owner = floor_stem.buffer(
         -LM_WING_CONTACT_FUSION_OVERLAP_MM, join_style=1)
+    upper_clip = box(
+        -200.0,
+        BRIDGE_BLEND_START_Y,
+        200.0,
+        200.0,
+    )
     plan = common_lm_wing_contact_plan().difference(
-        retained_owner).buffer(0)
+        retained_owner).intersection(upper_clip).buffer(0)
     if plan.geom_type != "Polygon" or not plan.is_valid or plan.is_empty:
         raise RuntimeError(
             "floor LM wing-contact delta must be one valid polygon")
-    if len(plan.interiors) != 1:
+    if plan.interiors:
         raise RuntimeError(
-            "floor LM wing-contact delta must retain exactly one existing-"
-            f"stem owner opening; count={len(plan.interiors)}")
-    owner_opening = Polygon(plan.interiors[0])
-    if owner_opening.symmetric_difference(retained_owner).area > 1e-6:
+            "floor LM wing-contact delta must remain open below the curved "
+            f"stand; openings={len(plan.interiors)}")
+    forbidden_lower = box(-200.0, 0.0, 200.0, BRIDGE_BLEND_START_Y)
+    if plan.intersection(forbidden_lower).area > 1.0e-8:
         raise RuntimeError(
-            "floor LM wing-contact delta owner opening drifted from the "
-            "positive-overlap stem datum")
+            "floor LM wing-contact delta added material below the shared "
+            "upper shoulder")
     return plan
 
 
@@ -598,9 +647,12 @@ def fused_bridge_tail():
     """Return the one-piece shallow web before fusion into the LM ring."""
     tail = _plan_prism(bridge_face_plan(), *BRIDGE_FACE_Z)
     for x, y in BRIDGE_HOLE_XY:
-        tail -= Pos(
-            x, y, BRIDGE_WEB_REAR_Z + BRIDGE_INSERT_DEPTH_MM / 2.0
-        ) * Cylinder(BRIDGE_INSERT_D_MM / 2.0, BRIDGE_INSERT_DEPTH_MM)
+        tail -= m5_insert_bore_cutter(
+            (x, y),
+            opening_z=BRIDGE_WEB_REAR_Z,
+            total_depth=BRIDGE_INSERT_DEPTH_MM,
+            opening_side="-z",
+        )
     tail = tail.clean()
     solids = list(tail.solids())
     if (not tail.is_valid or len(solids) != 1
@@ -614,8 +666,13 @@ def fused_bridge_tail():
 def bridge_insert_envelopes():
     """Four immutable blind insert bores opening at the LM rear datum."""
     return Compound(children=[
-        Pos(x, y, BRIDGE_WEB_REAR_Z + BRIDGE_INSERT_DEPTH_MM / 2.0)
-        * Cylinder(BRIDGE_INSERT_D_MM / 2.0, BRIDGE_INSERT_DEPTH_MM)
+        m5_insert_bore_cutter(
+            (x, y),
+            opening_z=BRIDGE_WEB_REAR_Z,
+            total_depth=BRIDGE_INSERT_DEPTH_MM,
+            opening_side="-z",
+            overshoot=0.0,
+        )
         for x, y in BRIDGE_HOLE_XY
     ])
 
@@ -810,7 +867,11 @@ def bridge_plan_facts():
         "face_opening_count": len(face_plan.interiors),
         "face_outline": tuple(
             (float(x), float(y)) for x, y in face_plan.exterior.coords),
-        "universal_wing_contact_profile": True,
+        "universal_wing_contact_profile": False,
+        "no_floor_wing_contact_profile": "common_bridge_plus_floor_stem",
+        "floor_wing_contact_profile": "upper_common_shoulder_only",
+        "floor_exposed_perimeter_box": False,
+        "floor_lower_magnet_rails": False,
         "universal_wing_contact_bounds": tuple(map(float, face_plan.bounds)),
         "universal_wing_contact_area_mm2": float(face_plan.area),
         "native_bridge_bounds": tuple(map(float, native_plan.bounds)),
@@ -826,6 +887,8 @@ def bridge_plan_facts():
         "wing_contact_z": LM_WING_CONTACT_Z,
         "wing_contact_fusion_overlap_mm": (
             LM_WING_CONTACT_FUSION_OVERLAP_MM),
+        "floor_profile_min_y_mm": float(
+            floor_wing_contact_profile_addition_plan().bounds[1]),
         "solid_web_plan_area_mm2": float(web_plan.area),
         "solid_web_bounds": tuple(map(float, web_plan.bounds)),
         "solid_web_width_mm": BRIDGE_WEB_WIDTH,

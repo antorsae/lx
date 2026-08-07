@@ -342,7 +342,7 @@ def test_catalog_global_pair_spacing_is_not_ambiguous() -> None:
     ] == {
         "standard_straight": 0.95,
         "standard_curved": 1.09,
-        "obiwan_base_side": 0.95,
+        "obiwan_shoulder": 1.10,
         "obiwan_ring": 1.10,
     }
 
@@ -1033,8 +1033,8 @@ def test_physical_reference_coupon_freezes_zero_interface_gap() -> None:
     readme = (path.parent / "README.md").read_text(encoding="utf-8")
     assert "coupon magnets by 0.90 mm" in readme
     assert "1.10 mm nominal magnet-to-magnet separation" in readme
-    assert "LM-lower base-side pair" in readme
-    assert "0.95 mm" in readme
+    assert "LM-lower shoulder\npair" in readme
+    assert "1.10 mm" in readme
 
 
 def _rotation_keywords(path: Path, function_name: str) -> tuple[tuple[str, object], ...]:
@@ -1676,9 +1676,14 @@ def test_shared_owner_dependencies_are_attested_and_hash_sensitive() -> None:
         "src/lx521_baffle/magnet_contract.py",
         "src/lx521_baffle/geom.py",
         "src/lx521_baffle/io.py",
+        "src/lx521_baffle/floor_bend.py",
         "src/lx521_baffle/stl_export.py",
         "scripts/export_steps.py",
     } <= set(wing_line.split())
+    wing_map_line = next(
+        line for line in logical_make
+        if line.startswith("$(OBIWAN_WING_DESIGN_MAP):"))
+    assert "src/lx521_baffle/floor_bend.py" in wing_map_line.split()
     v1l_line = next(
         line for line in logical_make
         if line.startswith("$(1)/top_baffle_nd25fw4_v1l_split.step:"))

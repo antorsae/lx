@@ -65,21 +65,31 @@ from lx521_baffle.base import (
 from lx521_baffle.proud.top_baffle_nd25fw4_b import TWEETER_DROP_MM
 from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
 from lx521_baffle.cables import (
-    BIG_RAMPS,
     CABLE_D,
+    FLOOR_ROUTE_SERVICE_START_Z_MM,
     FOOT_LANES,
     ROUTING_PROFILE,
     ROUTING_REV,
+    STOCK_SLIM_LM_ENTRY_XY,
+    STOCK_SLIM_T_ENTRY_XY,
+    STOCK_SLIM_UM_ENTRY_XY,
     SUPPORT_WINDOW,
-    T_RAMP,
-    T_RAMP_L,
     UM_HANDOFF,
     UM_HANDOFF_D_MM,
+    UM_FAIR_TAIL_GUIDE_XY,
     UM_V1L_AXIS_STATION_MM,
     UM_V1L_HANDOFF_KEY,
     UM_V1L_REAR_FACE_Z_MM,
+    no_floor_t_entry_path,
+    proud_floor_entry_controls,
     route_centerline_points,
     route_points,
+)
+from lx521_baffle.floor_bend import (
+    FUSION_OVERLAP_MM as FLOOR_BEND_FUSION_OVERLAP_MM,
+    WALL_HALF_THICKNESS_MM,
+    centerline_controls as floor_bend_centerline_controls,
+    cubic_point as floor_bend_cubic_point,
 )
 
 STYLE = {
@@ -138,47 +148,86 @@ TAPER_CY = CRESCENT_SCALLOP_CY - TWEETER_DROP_MM
 
 
 def duct_xyz(name, n=400):
-    if name in {"lm", "um"}:
+    if name in {"lm", "um"} or (name == "ts" and STAND_FOOT):
         return np.array(route_centerline_points(name, spacing_mm=1.0))
+    if name == "ts" and not STAND_FOOT:
+        entry = no_floor_t_entry_path()
+        entry_points = [entry @ (i / n) for i in range(n + 1)]
+        main = Spline(*route_points(name))
+        main_points = [main @ (i / n) for i in range(1, n + 1)]
+        return np.array([
+            [p.X, p.Y, p.Z] for p in (*entry_points, *main_points)
+        ])
     path = Spline(*route_points(name))
     pts = [path @ (i / n) for i in range(n + 1)]
     return np.array([[p.X, p.Y, p.Z] for p in pts])
 
 
 def v1l_um_tail_xyz():
-    """Exact modeled V1L UM tail, trimmed to its last shared plan knot."""
+    """Exact modeled V1L UM tail, trimmed to its fairing guide."""
     pts = np.array(route_centerline_points(
         "um", spacing_mm=0.5, um_handoff_key=UM_V1L_HANDOFF_KEY))
-    anchor_xy = np.array((61.76, 283.11))
+    anchor_xy = np.array(UM_FAIR_TAIL_GUIDE_XY[UM_V1L_HANDOFF_KEY])
     start = int(np.argmin(np.linalg.norm(pts[:, :2] - anchor_xy, axis=1)))
     return pts[start:]
 
 
 def breakout_xy(name):
-    """Rear-face (z=0) crossing of the entry ramp -- where the cable
-    emerges into the support plate's D20 window."""
-    p0, p1 = _ramp(name)
-    t = -p0[2] / (p1[2] - p0[2])
-    return np.array([p0[0] + t * (p1[0] - p0[0]),
-                     p0[1] + t * (p1[1] - p0[1])])
+    """Exact shared Stock/Slim/Obi-Wan rear-face entry datum."""
+    return np.asarray({
+        "lm": STOCK_SLIM_LM_ENTRY_XY,
+        "um": STOCK_SLIM_UM_ENTRY_XY,
+        "ts": STOCK_SLIM_T_ENTRY_XY,
+    }[name], dtype=float)
 
 
-def _ramp(name):
-    if name in BIG_RAMPS:
-        return BIG_RAMPS[name]
-    return T_RAMP if name == "t1f" else T_RAMP_L
+def active_route_names():
+    """Both stand states expose the same three physical cable trunks."""
+    return ("lm", "um", "ts")
 
 
 def _foot_lane_yz(name):
-    """(y, z) polyline of the foot elbow + run, as swept by the cutter."""
-    x, z_d, y_f, r, dia = FOOT_LANES[name]
-    y_c, z_c = y_f + r, z_d - r
-    pts = [(y_c + 7.5, z_d), (y_c + 4.0, z_d)]
-    for a in range(0, 91, 6):
-        pts.append((y_c - r * math.sin(math.radians(a)),
-                    z_c + r * math.cos(math.radians(a))))
-    pts += [(y_f, z_c - 10.0), (y_f, -103.0)]
-    return np.array(pts)
+    """(y, z) polyline of the actual Option-B entry and rear run."""
+    _x, _z_d, y_f, _r, _dia = FOOT_LANES[name]
+    controls = proud_floor_entry_controls(name)
+    points = [(y_f, FLOOR_ROUTE_SERVICE_START_Z_MM), controls[0][1:]]
+    points.extend(
+        floor_bend_cubic_point(controls, index / 64.0)[1:]
+        for index in range(1, 65))
+    return np.asarray(points, dtype=float)
+
+
+def _option_b_side_profile(*, rear_z_mm: float, top_y_mm: float):
+    """Exact YZ envelope of the retained flats plus Option-B wall bend."""
+    from shapely.geometry import LineString, box as shapely_box
+    from shapely.ops import unary_union
+
+    controls = floor_bend_centerline_controls()
+    centreline_zy = [
+        tuple(reversed(floor_bend_cubic_point(
+            controls, index / 256.0)[1:]))
+        for index in range(257)
+    ]
+    horizontal = controls[0]
+    vertical = controls[-1]
+    return unary_union((
+        LineString(centreline_zy).buffer(
+            WALL_HALF_THICKNESS_MM,
+            resolution=64,
+            cap_style=2,
+        ),
+        shapely_box(
+            float(rear_z_mm), 0.0,
+            horizontal[2] + FLOOR_BEND_FUSION_OVERLAP_MM,
+            THICKNESS_MM,
+        ),
+        shapely_box(
+            0.0,
+            vertical[1] - FLOOR_BEND_FUSION_OVERLAP_MM,
+            THICKNESS_MM,
+            float(top_y_mm),
+        ),
+    ))
 
 
 def _pilot_band_ys(center_y, pcd, angles):
@@ -189,9 +238,18 @@ def _pilot_band_ys(center_y, pcd, angles):
 def draw_side_view(ax):
     """Full-height y-z profile: plate, pilots, complete duct paths,
     rear handoffs and optional stand foot."""
-    # plate slab (front face at z=18.3, rear at z=0)
-    ax.add_patch(plt.Rectangle((0, 0), THICKNESS_MM, TOP_Y, fc="0.90",
-                               ec="0.35", lw=1.0, zorder=1))
+    # Exact side envelope: floor mode uses the selected constant-thickness
+    # Option-B wall; no-floor retains the ordinary vertical plate slab.
+    if STAND_FOOT:
+        profile = _option_b_side_profile(
+            rear_z_mm=-150.0, top_y_mm=TOP_Y)
+        ax.add_patch(plt.Polygon(
+            np.asarray(profile.exterior.coords),
+            closed=True, fc="0.90", ec="0.35", lw=1.0, zorder=1))
+    else:
+        ax.add_patch(plt.Rectangle(
+            (0, 0), THICKNESS_MM, TOP_Y,
+            fc="0.90", ec="0.35", lw=1.0, zorder=1))
     # crescent rear taper: section along the clamp arc (r=44 about the
     # scallop center) -- rear surface recedes to the 4.0 clamp seat and
     # the ~0.4 horn feather
@@ -228,7 +286,8 @@ def draw_side_view(ax):
                     fontsize=8, color="0.3",
                     arrowprops=dict(arrowstyle="-", color="0.5"))
     # duct mains (true z from the swept splines)
-    for name, (color, _) in STYLE.items():
+    for name in active_route_names():
+        color = STYLE[name][0]
         pts = duct_xyz(name)
         ax.plot(pts[:, 2], pts[:, 1], color=color, lw=CABLE_D.get(name, 3.8) * 0.8,
                 alpha=0.55, solid_capstyle="round", zorder=6)
@@ -262,9 +321,7 @@ def draw_side_view(ax):
     ax.plot(11.5, 433.5, marker="o", ms=5, mfc="white", mec=STYLE["ts"][0],
             zorder=8)  # T scallop-rim exits (head-on at duct depth)
     if STAND_FOOT:
-        # foot slab, NL8 panel, connector channel, lanes
-        ax.add_patch(plt.Rectangle((-150, 0), 150, 18.3, fc="0.90",
-                                   ec="0.35", lw=1.0, zorder=1))
+        # NL8 panel, connector channel and the three Option-B lanes.
         ax.add_patch(plt.Rectangle((-150, 0), 4, 44, fc="0.62", ec="0.3",
                                    lw=0.8, zorder=3))
         ax.add_patch(plt.Rectangle((-146, 4), 47, 14.3, fc="white",
@@ -272,8 +329,9 @@ def draw_side_view(ax):
         ax.add_patch(plt.Rectangle((-146, 5.25), 33, 30.5, fill=False,
                                    ec="0.35", ls=":", lw=1.0, zorder=4))
         ax.plot([-99, -99], [4, 18.3], color="0.4", lw=1.2, zorder=3)
-        for name, (color, _) in STYLE.items():
-            lane_key = {"t1f": "t1", "t2f": "t2"}.get(name, name)
+        for name in active_route_names():
+            color = STYLE[name][0]
+            lane_key = name
             if lane_key not in FOOT_LANES:
                 continue
             lane = _foot_lane_yz(lane_key)
@@ -282,21 +340,16 @@ def draw_side_view(ax):
                     solid_capstyle="round", zorder=6)
             ax.plot(-101, FOOT_LANES[lane_key][2], marker="o", ms=5,
                     mfc="white", mec=color, zorder=8)
-        ax.annotate("R14 elbows", (-5, 22), (-70, 40), fontsize=8,
+        ax.annotate("Option-B entries (R41+)", (-5, 45), (-75, 62), fontsize=8,
                     color="0.3", arrowprops=dict(arrowstyle="-",
                                                  color="0.5"))
         ax.annotate("step-face outs (z=-99)\nNL8 panel at z=-150",
                     (-99, 30), (-145, 60), fontsize=8, color="0.3",
                     arrowprops=dict(arrowstyle="-", color="0.5"))
     else:
-        # entry ramps through the support window (rear face z=0)
-        for name in STYLE:
-            if name == "ts":
-                continue  # shared main begins at TS_STEP, not rear face
-            p0, p1 = _ramp(name)
+        # Exact three-port entry through the support window (rear face z=0).
+        for name in active_route_names():
             color = STYLE[name][0]
-            ax.plot([p0[2], p1[2]], [p0[1], p1[1]], color=color, ls=":",
-                    lw=CABLE_D.get(name, 3.8) * 0.6, alpha=0.8, zorder=7)
             bo = breakout_xy(name)
             ax.plot(0, bo[1], marker="s", ms=5, mfc=color, mec="0.2",
                     zorder=8)
@@ -346,14 +399,16 @@ def draw_foot_top_view(ax2):
                  mfc="none", mec="0.2", zorder=5)
     # duct runs: dotted through the elbow dive, solid along the foot,
     # open ends 4 mm past the step face
-    for name, (color, _) in STYLE.items():
-        lane_key = {"t1f": "t1", "t2f": "t2"}.get(name, name)
+    for name in active_route_names():
+        color = STYLE[name][0]
+        lane_key = name
         if lane_key not in FOOT_LANES:
             continue
-        x, z_d, y_f, r, dia = FOOT_LANES[lane_key]
-        ax2.plot([x, x], [z_d, z_d - r], color=color, ls=":",
-                 lw=dia * 0.6, alpha=0.55, zorder=6)
-        ax2.plot([x, x], [z_d - r, CHANNEL_STEP_Z - 4.0], color=color,
+        x, _z_d, _y_f, _r, dia = FOOT_LANES[lane_key]
+        route = np.asarray(route_centerline_points(
+            name, spacing_mm=1.0), dtype=float)
+        lower = route[route[:, 1] <= 120.0]
+        ax2.plot(lower[:, 0], lower[:, 2], color=color,
                  lw=dia, alpha=0.55, solid_capstyle="round", zorder=6)
         ax2.plot(x, CHANNEL_STEP_Z - 2.0, marker="o", ms=6, mfc="white",
                  mec=color, zorder=8)
@@ -728,7 +783,6 @@ def render_obiwan_engineering_detail():
         NL8_SCREW_PITCH_MM,
         PANEL_H_MM,
         PANEL_INNER_Z_MM,
-        ROOT_FILLET_R_MM,
         SERVICE_CAVITY_X_MM,
         SERVICE_CAVITY_Y_MM,
         SERVICE_CAVITY_Z_MM,
@@ -1092,8 +1146,8 @@ def render_obiwan_engineering_detail():
         tuple(route[-1, :2]), CABLE_D_EST)
     if STAND_FOOT:
         ax_front.annotate(
-            "LM-owned integral W64 stem + foot\n"
-            "full depth z=0..18.3; no separate yoke, rail or support",
+            "LM-owned integral W64 Option-B wall\n"
+            "18.3 mm constant thickness; no separate yoke, rail or support",
             (STEM_HALF_WIDTH_MM, 58.0), (128, 38),
             ha="right", fontsize=7.8, color="#31485f",
             arrowprops=dict(arrowstyle="-", color="#31485f"))
@@ -1157,32 +1211,12 @@ def render_obiwan_engineering_detail():
             fc="#c9cfd6", ec="#303943", lw=0.9,
             alpha=0.55, zorder=1))
     if STAND_FOOT:
-        ax_side.add_patch(plt.Rectangle(
-            (STEM_Z_MM[0], 0.0),
-            STEM_Z_MM[1] - STEM_Z_MM[0], STEM_TOP_Y_MM,
-            fc=support_color, ec="#31485f", lw=1.0,
-            alpha=0.53, zorder=1))
-        ax_side.add_patch(plt.Rectangle(
-            (FOOT_REAR_Z_MM, 0.0),
-            FOOT_FRONT_Z_MM - FOOT_REAR_Z_MM, FOOT_HEIGHT_MM,
-            fc=support_color, ec="#31485f", lw=1.0,
-            alpha=0.62, zorder=1))
-        root_center_y = FOOT_HEIGHT_MM + ROOT_FILLET_R_MM
-        root_center_z = STEM_Z_MM[0] - ROOT_FILLET_R_MM
-        angles = np.linspace(0.0, -0.5 * math.pi, 40)
-        root_y = root_center_y + ROOT_FILLET_R_MM * np.sin(angles)
-        root_z = root_center_z + ROOT_FILLET_R_MM * np.cos(angles)
-        root_poly = np.asarray((
-            (root_center_z, FOOT_HEIGHT_MM),
-            (STEM_Z_MM[0], FOOT_HEIGHT_MM),
-            (STEM_Z_MM[0], root_center_y),
-            *zip(root_z[1:], root_y[1:]),
-            (root_center_z, FOOT_HEIGHT_MM),
-        ), dtype=float)
-        ax_side.fill(
-            root_poly[:, 0], root_poly[:, 1],
-            fc=support_color, ec="#31485f",
-            lw=0.9, alpha=0.68, zorder=2)
+        profile = _option_b_side_profile(
+            rear_z_mm=FOOT_REAR_Z_MM, top_y_mm=STEM_TOP_Y_MM)
+        ax_side.add_patch(plt.Polygon(
+            np.asarray(profile.exterior.coords),
+            closed=True, fc=support_color, ec="#31485f",
+            lw=1.0, alpha=0.58, zorder=1))
         ax_side.add_patch(plt.Rectangle(
             (FOOT_REAR_Z_MM, 0.0),
             PANEL_INNER_Z_MM - FOOT_REAR_Z_MM, PANEL_H_MM,
@@ -1210,8 +1244,9 @@ def render_obiwan_engineering_detail():
             fc="white", ec="#31485f", lw=0.75, zorder=4))
         plot_floor_lanes(ax_side, (2, 1))
         ax_side.annotate(
-            f"true R{ROOT_FILLET_R_MM:g} internal root",
-            (-6.5, FOOT_HEIGHT_MM + 6.0), (-70, 58),
+            "constant 18.3 mm Option-B wall\n"
+            "tangent cubic; centreline Rmin >= 41 mm",
+            (-24.0, 42.0), (-116, 80),
             fontsize=7.3, color="#31485f",
             arrowprops=dict(arrowstyle="-", color="#31485f"))
         ax_side.annotate(
@@ -1316,8 +1351,8 @@ def render_obiwan_engineering_detail():
             hatch="//", alpha=0.92, zorder=4))
         plot_floor_lanes(ax_top, (0, 2))
         ax_top.annotate(
-            "W64 solid rectangular foot\n"
-            "same depth as connector receptacle",
+            "W64 Option-B wall footprint\n"
+            "constant 18.3 mm through bend",
             (FOOT_WIDTH_MM / 2.0, -75.0), (112, -96),
             ha="right", fontsize=7.6, color="#31485f",
             arrowprops=dict(arrowstyle="-", color="#31485f"))
@@ -1395,7 +1430,7 @@ def render_obiwan_engineering_detail():
         ncol=3, fontsize=7.4, framealpha=0.94)
 
     state_heading = (
-        "FLOOR — INTEGRAL W64 STEM/FOOT + REAR NL8"
+        "FLOOR — INTEGRAL W64 OPTION-B WALL + REAR NL8"
         if STAND_FOOT else
         "NO-FLOOR — FUSED FRONT-FLUSH BRIDGE")
     fig.suptitle(
@@ -1414,7 +1449,7 @@ def render_obiwan_engineering_detail():
             0.01, 0.006,
             f"floor datum y={floor_facts['floor_y_mm']:g}; "
             f"LM axis-to-floor={floor_facts['lm_axis_to_floor_mm']:.3f} mm; "
-            f"root R{floor_facts['root_fillet_r_mm']:g}",
+            f"bend Rmin={floor_facts['floor_bend']['minimum_radius_mm']:.3f}",
             ha="left", va="bottom", fontsize=6.8, color="0.30")
     fig.subplots_adjust(top=0.90, bottom=0.13, left=0.07, right=0.98)
 
@@ -1603,17 +1638,15 @@ if __name__ == "__main__":
     draw(ax, OUTLINE_B2, TWEETER_DROP_MM,
          f"Proud family {ROUTING_REV} - normal ducts + keyed V1L UM alternate")
     draw_terminal_service(ax)
-    for name, (color, label) in STYLE.items():
+    for name in active_route_names():
+        color, label = STYLE[name]
         pts = duct_xyz(name)
         ax.plot(pts[:, 0], pts[:, 1], color=color, lw=CABLE_D.get(name, 3.8), alpha=0.55,
                 solid_capstyle="round", zorder=7, label=label or None)
         ax.plot(*pts[-1][:2], marker="o", ms=7, mfc="white", mec=color, zorder=8)
         if STAND_FOOT:
-            # elbow dive + run rearward through the foot (into the page),
-            # exiting the channel step face just short of the NL8 panel.
-            # The shared TS main has no lane of its own (it starts at the
-            # z-step); the pair feeders map onto the t1/t2 lanes.
-            lane = {"t1f": "t1", "t2f": "t2"}.get(name, name)
+            # Option-B dive + rearward run, ending at the channel step face.
+            lane = name
             if lane not in FOOT_LANES:
                 continue
             x, _, y_f, _, _ = FOOT_LANES[lane]
@@ -1621,12 +1654,7 @@ if __name__ == "__main__":
                     lw=CABLE_D.get(name, 3.8) * 0.6, alpha=0.55, zorder=7)
             ax.plot(x, y_f, marker="v", ms=6, mfc=color, mec="0.2", zorder=8)
         else:
-            if name == "ts":
-                continue
             bo = breakout_xy(name)
-            ax.plot([bo[0], pts[0][0]], [bo[1], pts[0][1]], color=color,
-                    lw=CABLE_D.get(name, 3.8), alpha=0.55, solid_capstyle="round",
-                    zorder=7)
             ax.plot(*bo, marker="s", ms=6, mfc=color, mec="0.2", zorder=8)
 
     # Overlay only the exact diverging V1L terminal tail.  Q is the
@@ -1674,7 +1702,7 @@ if __name__ == "__main__":
         ax_leg.legend(*ax.get_legend_handles_labels(), loc="center",
                       fontsize=9, framealpha=0.9)
     else:
-        # D20 window in the support plate: all four cables pass here
+        # D20 window: three physical mouths; T carries both tweeter pairs.
         wx, wy, wd = SUPPORT_WINDOW
         ax.add_patch(plt.Circle((wx, wy), wd / 2, fill=False, ec="0.25",
                                 ls=":", lw=1.4, zorder=9))

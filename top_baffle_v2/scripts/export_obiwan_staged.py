@@ -27,6 +27,7 @@ group, so the selected local/remote memory profile remains authoritative.
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 from importlib.metadata import PackageNotFoundError, version
 import json
@@ -533,11 +534,56 @@ def _wait_for_worker_headroom(label: str) -> None:
 
 def _run_worker(label: str, arguments: list[str]) -> None:
     _wait_for_worker_headroom(label)
-    subprocess.run(
-        [sys.executable, str(SCRIPT), "worker", *arguments],
-        check=True,
-        env=os.environ.copy(),
+    started = time.monotonic()
+    exit_code = 0
+    print(f"[obiwan-stage] worker start: {label}", flush=True)
+    try:
+        subprocess.run(
+            [sys.executable, str(SCRIPT), "worker", *arguments],
+            check=True,
+            env=os.environ.copy(),
+        )
+    except subprocess.CalledProcessError as exc:
+        exit_code = exc.returncode
+        raise
+    finally:
+        print(
+            "[obiwan-stage-profile] "
+            + json.dumps({
+                "schema_version": 1,
+                "label": label,
+                "wall_seconds": time.monotonic() - started,
+                "exit_code": exit_code,
+                "stand_foot": _stand_foot(),
+            }, sort_keys=True, separators=(",", ":")),
+            flush=True,
+        )
+
+
+def _run_large_host_workers(output_dir: Path) -> None:
+    """Build independent LM and non-LM stage branches concurrently.
+
+    Profiled Osado runs showed the direct LM branch and the print/review
+    branch using only about 3.4 GiB combined peak RSS while running
+    sequentially for roughly 343 seconds.  They share no output paths and
+    meet only when the manifest is assembled, so let the existing guarded
+    process tree execute both branches at once on the large host.
+    """
+    jobs = (
+        ("LM direct full carrier and optional split",
+         ["lm-direct", "--output-dir", str(output_dir)]),
+        ("all non-LM print/review groups",
+         ["groups-direct", "--output-dir", str(output_dir)]),
     )
+    with ThreadPoolExecutor(
+            max_workers=len(jobs),
+            thread_name_prefix="obiwan-stage") as executor:
+        futures = [
+            executor.submit(_run_worker, label, arguments)
+            for label, arguments in jobs
+        ]
+        for future in futures:
+            future.result()
 
 
 def _require_guarded_worker() -> None:
@@ -859,12 +905,12 @@ def _stage(manifest_path: Path) -> None:
             # The large remote host does not need the macOS-era 25-process
             # outer/cutter/finalize transaction chain.  Keep the exact group
             # count above as a release contract while constructing the same
-            # final carrier in one OCC address space.
+            # final carrier in one OCC address space.  The independent LM and
+            # non-LM branches run concurrently and join before manifesting.
             print(
-                "[obiwan-stage] LM execution=direct-full (osado)",
+                "[obiwan-stage] execution=parallel direct-full (osado)",
                 flush=True)
-            _run_worker("LM direct full carrier and optional split", [
-                "lm-direct", "--output-dir", str(temporary_dir)])
+            _run_large_host_workers(temporary_dir)
         else:
             print(
                 "[obiwan-stage] LM execution=segmented (local)",
@@ -887,10 +933,7 @@ def _stage(manifest_path: Path) -> None:
                 "lm-split", "--input", str(lm_final),
                 "--output-dir", str(temporary_dir)])
 
-        if _large_host_execution():
-            _run_worker("all non-LM print/review groups", [
-                "groups-direct", "--output-dir", str(temporary_dir)])
-        else:
+        if not _large_host_execution():
             print_groups = ["um", "tweeter"]
             for group in print_groups:
                 _run_worker(f"print group {group}", [

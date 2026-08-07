@@ -56,6 +56,7 @@ from gen_driver_overlay import (
     outline_polygon,
 )
 from lx521_baffle.base import L22_CUTOUT, THICKNESS_MM, UM_CUTOUT
+from lx521_baffle.floor_bend import centerline_controls
 from lx521_baffle.proud.top_baffle_nd25fw4_a_comp import OUTLINE_A_COMP
 from lx521_baffle.proud.top_baffle_nd25fw4_b import TWEETER_DROP_MM
 from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
@@ -96,9 +97,8 @@ FULL_RIB_MM = 2.40
 SADDLE_CLEAR_MM = INTERFACE_GAP_MM
 # The receiver cavity datum is offset 0.05 mm from the visible carrier face,
 # but that interval is solid wing material rather than an assembly air gap.
-# Ring-carrier cavity datums sit 0.15 mm beneath the smooth carrier surface,
-# so their magnet-face separation is 1.10 mm; the base-side LM pair remains
-# 0.95 mm.
+# Ring and shoulder cavity datums sit 0.15 mm beneath their smooth carrier
+# surfaces, so every Obi-Wan wing magnet-face separation is 1.10 mm.
 MAGNET_FACE_GAP_MM = INTERFACE_GAP_MM
 # The wing must follow the complete released B2/Obi-Wan crescent profile
 # rather than either the former conservative R52.2 construction envelope or
@@ -166,6 +166,16 @@ PAD_UM_TANGENTIAL_MM = 13.0
 PAD_UM_RADIAL_MM = 8.0
 ACTIVE_RECEIVER_NAMES_RIGHT = (
     "lm_lower_right", "lm_upper_right", "um_right")
+# The lower wing no longer descends beside the Option-B floor curve.  It begins
+# at the bend's exact vertical centreline tangent and grows outward through a
+# G1 cubic, joining the released outer flank at the LM aperture's lower
+# tangent.  This produces a zero-width inner start and a gradual wing root
+# instead of a horizontal shelf or a rectangular panel below the bend.
+WING_LOWER_START_Y_MM = float(centerline_controls()[-1][1])
+WING_LOWER_OUTER_JOIN_Y_MM = float(
+    L22_CUTOUT[1] - L22_CUTOUT[2] / 2.0)
+WING_LOWER_BLEND_HANDLE_FRACTION = 1.0 / 3.0
+WING_LOWER_BLEND_SAMPLES = 96
 SEAM_LOWER_X_REF = 60.0
 SEAM_UPPER_Y = 391.709
 A_TAPER_TOP_Y = 453.457
@@ -531,12 +541,18 @@ def _pocket_plan(site) -> Polygon:
     mouth = face + MAGNET_FACE_GAP_MM * normal
     outer = mouth + CAPTIVE_LAND_MM * normal
     half = CAVITY_DIAMETER_MM / 2.0 + SIDE_WALL_MARGIN_MM
-    return Polygon((
+    plan = Polygon((
         tuple(face - half * tangent),
         tuple(outer - half * tangent),
         tuple(outer + half * tangent),
         tuple(face + half * tangent),
     ))
+    if site.get("interface_kind") == "shoulder":
+        # The shoulder is mildly concave in plan. Its visible boundary owns
+        # the inner corners of the conservative rectangular standoff proxy;
+        # the actual qualified land begins 0.05 mm outward and remains whole.
+        plan = plan.difference(common_lm_wing_contact_plan()).buffer(0)
+    return plan
 
 
 def _carrier_pocket_plan(site) -> Polygon:
@@ -631,6 +647,95 @@ def _common_keepout() -> Polygon:
     return unary_union(tuple(_common_keepout_parts().values())).buffer(0)
 
 
+def _right_boundary_x(geometry: Polygon, y_mm: float) -> float:
+    station = LineString(((-200.0, y_mm), (200.0, y_mm)))
+    coordinates = shapely.get_coordinates(geometry.boundary.intersection(
+        station))
+    if coordinates.size == 0:
+        raise RuntimeError(
+            f"wing lower blend misses boundary at y={y_mm:.6f}")
+    positive = coordinates[coordinates[:, 0] >= 0.0, 0]
+    if positive.size == 0:
+        raise RuntimeError(
+            f"wing lower blend has no right boundary at y={y_mm:.6f}")
+    return float(np.max(positive))
+
+
+def _right_boundary_dx_dy(geometry: Polygon, y_mm: float) -> float:
+    delta = 0.01
+    return (
+        _right_boundary_x(geometry, y_mm + delta)
+        - _right_boundary_x(geometry, y_mm - delta)
+    ) / (2.0 * delta)
+
+
+def _lower_wing_blend(profile: Polygon) -> tuple[Polygon, dict[str, object]]:
+    """G1 lower crop from the floor-bend tangent to the outer flank."""
+    keepout = _common_keepout()
+    inner = np.asarray((
+        _right_boundary_x(keepout, WING_LOWER_START_Y_MM),
+        WING_LOWER_START_Y_MM,
+    ), dtype=float)
+    outer = np.asarray((
+        _right_boundary_x(profile, WING_LOWER_OUTER_JOIN_Y_MM),
+        WING_LOWER_OUTER_JOIN_Y_MM,
+    ), dtype=float)
+    inner_tangent = np.asarray((
+        _right_boundary_dx_dy(keepout, WING_LOWER_START_Y_MM), 1.0,
+    ), dtype=float)
+    outer_tangent = np.asarray((
+        _right_boundary_dx_dy(profile, WING_LOWER_OUTER_JOIN_Y_MM), 1.0,
+    ), dtype=float)
+    inner_tangent /= np.linalg.norm(inner_tangent)
+    outer_tangent /= np.linalg.norm(outer_tangent)
+    handle = (
+        np.linalg.norm(outer - inner)
+        * WING_LOWER_BLEND_HANDLE_FRACTION)
+    controls = (
+        inner,
+        inner + handle * inner_tangent,
+        outer - handle * outer_tangent,
+        outer,
+    )
+    points = []
+    for index in range(WING_LOWER_BLEND_SAMPLES + 1):
+        u = index / WING_LOWER_BLEND_SAMPLES
+        v = 1.0 - u
+        point = (
+            v ** 3 * controls[0]
+            + 3.0 * v ** 2 * u * controls[1]
+            + 3.0 * v * u ** 2 * controls[2]
+            + u ** 3 * controls[3]
+        )
+        points.append((float(point[0]), float(point[1])))
+    if any(
+            points[index + 1][0] <= points[index][0]
+            or points[index + 1][1] <= points[index][1]
+            for index in range(len(points) - 1)):
+        raise RuntimeError(
+            "wing lower blend must grow monotonically outward and upward")
+    mask = Polygon((
+        *points,
+        (200.0, WING_LOWER_OUTER_JOIN_Y_MM),
+        (200.0, 500.0),
+        (-200.0, 500.0),
+        (-200.0, WING_LOWER_START_Y_MM),
+    )).buffer(0)
+    if mask.geom_type != "Polygon" or not mask.is_valid or mask.is_empty:
+        raise RuntimeError("wing lower blend mask must be one valid polygon")
+    facts = {
+        "profile": "g1_cubic_from_floor_bend_tangent_to_outer_flank",
+        "inner_start_xy_mm": [float(value) for value in inner],
+        "outer_join_xy_mm": [float(value) for value in outer],
+        "inner_tangent_xy": [float(value) for value in inner_tangent],
+        "outer_tangent_xy": [float(value) for value in outer_tangent],
+        "handle_mm": float(handle),
+        "sample_count": WING_LOWER_BLEND_SAMPLES,
+        "minimum_y_mm": WING_LOWER_START_Y_MM,
+    }
+    return mask, facts
+
+
 def _right_sites() -> dict[str, dict]:
     sites = {site["name"]: site for site in side_magnet_sites()
              if site["normal"][0] > 0.0}
@@ -648,11 +753,14 @@ def _receiver_root(profile: Polygon, site, key: str) -> tuple[Polygon, Polygon]:
     receiver_face = site.get("outer_surface_face", site["face"])
     pad = _rounded_oriented_pad(receiver_face, site["normal"],
                                 radial, tangential)
-    if site.get("interface_kind") == "base_side":
-        # The base receiver mates to the common W64 tongue, not the R113 LM
+    if site.get("interface_kind") == "shoulder":
+        # The lower receiver follows the shared soft shoulder, not the R113
         # circle. Subtracting the circle here would put wing material inside
-        # the carrier and hide the intended flush x=+/-32 interface.
+        # the carrier and erase the intended flush curved interface.
         carrier = common_lm_wing_contact_plan()
+        # The rounded visual root must not shave the four corners of the
+        # qualified rectangular captive land at this non-radial station.
+        pad = unary_union((pad, _pocket_plan(site))).buffer(0)
     else:
         carrier = side_ring_outer_plan(site["driver"])
     # Keep the root flush with the visible carrier datum.  The cavity itself
@@ -673,6 +781,7 @@ def _receiver_root(profile: Polygon, site, key: str) -> tuple[Polygon, Polygon]:
 
 def _field_for_variant(definition: VariantDefinition) -> tuple[Polygon, Polygon]:
     profile = _effective_profile(definition)
+    lower_mask, _lower_blend_facts = _lower_wing_blend(profile)
     right_half = box(0.65, -20.0, 180.0, 470.0)
     field = profile.difference(_common_keepout()).intersection(right_half)
     if definition.key == "A":
@@ -680,13 +789,14 @@ def _field_for_variant(definition: VariantDefinition) -> tuple[Polygon, Polygon]
     sites = _right_sites()
 
     # Every physical-side station receives a matching wing pocket: lower LM
-    # on the straight base, upper LM on R113 and UM on R51.7.
+    # on the shared soft shoulder, upper LM on R113 and UM on R51.7.
     roots = []
     for name in ACTIVE_RECEIVER_NAMES_RIGHT:
         root, _ = _receiver_root(profile, sites[name], definition.key)
         roots.append(root)
     spine = _intercarrier_bridge_right().intersection(profile).buffer(0)
-    field = unary_union((field, *roots, spine)).buffer(0)
+    field = unary_union((field, *roots, spine)).intersection(
+        lower_mask).buffer(0)
     field = _largest_polygon(field)
     return profile, field
 
@@ -1021,6 +1131,8 @@ def _build_layout(definition: VariantDefinition) -> VariantLayout:
     metrics: dict[str, float | str] = {
         "area_mm2": field.area,
         "mass_g_side": mass_g,
+        "lower_start_y_mm": WING_LOWER_START_Y_MM,
+        "lower_outer_join_y_mm": WING_LOWER_OUTER_JOIN_Y_MM,
         "lower_seam_chord_mm": math.dist(
             joint_seams[0].coords[0], joint_seams[0].coords[-1]),
         "upper_seam_chord_mm": math.dist(
@@ -1085,6 +1197,19 @@ def _validate_layout(layout: VariantLayout) -> None:
                 f"{layout.definition.key} two-piece {name} is invalid/empty")
     if not layout.field_right.is_valid or layout.field_right.is_empty:
         raise RuntimeError(f"{layout.definition.key} field invalid/empty")
+    if not math.isclose(
+            layout.field_right.bounds[1], WING_LOWER_START_Y_MM,
+            abs_tol=1.0e-6):
+        raise RuntimeError(
+            f"{layout.definition.key} wing descends below the floor-bend "
+            f"tangent: {layout.field_right.bounds[1]:.6f} vs "
+            f"{WING_LOWER_START_Y_MM:.6f} mm")
+    forbidden_lower = box(
+        -200.0, -20.0, 200.0, WING_LOWER_START_Y_MM - 1.0e-6)
+    if layout.field_right.intersection(forbidden_lower).area > 1.0e-8:
+        raise RuntimeError(
+            f"{layout.definition.key} wing retained material below the "
+            "floor-bend tangent")
     reconstructed = unary_union(tuple(layout.nominal_parts.values())).buffer(0)
     if reconstructed.symmetric_difference(layout.field_right).area > 0.02:
         raise RuntimeError(
@@ -1754,7 +1879,7 @@ def _draw_magnets(ax, show_labels=False):
         if active:
             # In XY every surface-normal cylinder is edge-on: the carrier
             # pocket projects inward and the matching receiver projects
-            # outward, including the horizontal base-side LM interface.
+            # outward, including the curved shoulder LM interface.
             _draw_shape(
                 ax, _pocket_plan(site), facecolor=color, edgecolor="white",
                 linewidth=0.45, alpha=0.92, zorder=12.5)
@@ -1767,8 +1892,8 @@ def _draw_magnets(ax, show_labels=False):
                     (coords[1, 1], coords[3, 1]),
                     color=color, lw=0.8, zorder=13)
         if show_labels and site["normal"][0] > 0:
-            interface = ("horizontal base-side" if
-                         site.get("interface_kind") == "base_side"
+            interface = ("shoulder-normal" if
+                         site.get("interface_kind") == "shoulder"
                          else "radial")
             label = (f"active {interface} {site['driver'].upper()} receiver\n"
                      "XY: 2.10 axial x 5.20 transverse")

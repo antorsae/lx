@@ -3,7 +3,7 @@
     "collapsed_apex_facets_removed": 0,
     "component_error": 0,
     "component_signed_volumes": [
-      173447.63447794196
+      173443.51258421593
     ],
     "components": 1,
     "degenerate": 0,
@@ -16,8 +16,8 @@
     "open": 0,
     "outer_components": 1,
     "over_shared": 0,
-    "signed_volume": 173447.63447794196,
-    "triangles": 7648,
+    "signed_volume": 173443.51258421593,
+    "triangles": 8174,
     "winding": 0,
     "zero_volume": 0,
     "zero_volume_components": 0
@@ -26,7 +26,7 @@
   "mesh_tolerance_mm": 0.05,
   "part": "lx521_top_base_2of4_mid_left",
   "pre_translation_bbox_min_mm": [
-    -152.4010001,
+    -152.40100010001325,
     -321.9500001,
     -18.300000099999988
   ],
@@ -41,7 +41,7 @@
       1.0,
       0.0,
       0.0,
-      152.4010001
+      152.40100010001325
     ],
     [
       0.0,
@@ -63,12 +63,12 @@
     ]
   ],
   "stl": "lx521_top_base_2of4_mid_left.stl",
-  "stl_bytes": 382484,
+  "stl_bytes": 408784,
   "stl_origin_translation_mm": [
-    152.4010001,
+    152.40100010001325,
     321.9500001,
     18.300000099999988
   ],
-  "stl_sha256": "053b22c843737849df367ddae1078b86668c78ba6c6614efab31bc56ef135c70",
+  "stl_sha256": "64989f1faf67c5166c0266d424c6f6200f72edf0f46d7f7382789adbba4abb9b",
   "variant_export": "b2"
 }

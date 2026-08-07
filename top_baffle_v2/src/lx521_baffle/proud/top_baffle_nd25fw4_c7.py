@@ -17,7 +17,7 @@ Kept full thickness: the core inside the taper band, the bottom strip
 (y<~64, stand-foot / bridge interface -- the taper fades in over
 y 52..70), and a recovery fade toward seam B (the cut scales to zero
 over y 270..~304) so the joint to the vase piece is flush and the
-seam-B dovetails keep their full section. The planar duct spans run in
+seam-B integral joint envelopes retain their qualified protected land. The planar duct spans run in
 the FRONT half (LM/UM z=12.55, TS z=11.5); the UM route then uses its
 intentional R14 rear opening below seam B. The
 rear taper clears every duct with no ribs -- verified by
@@ -37,6 +37,11 @@ from ..geom import (
     smoothstep01 as _smoothstep,
 )
 from ..base import THICKNESS_MM, baffle_solid
+from ..cables import (
+    DUCT_Z,
+    UM_HANDOFF_D_MM,
+    _um_plan_spline,
+)
 from .top_baffle_nd25fw4_b import TWEETER_DROP_MM
 from .top_baffle_nd25fw4_b2 import OUTLINE_B2
 
@@ -70,9 +75,34 @@ def rec_fade(y: float) -> float:
 # crosses each bore sideways, so containment must hold across the
 # duct's full plan width, not just under the centerline (the c7
 # mid_right exposed-slot bug). (arc_r about LM center, duct z, bore r,
-# side: +1 right / -1 left.)
-_DUCT_ARCS = ((119.5, 12.55, 4.1, 1.0), (116.5, 11.5, 3.0, -1.0))
+# side: +1 right / -1 left.)  TS remains the released circular span.  UM now
+# leaves its old R119.5 arc to pass the shared 0/60-clock M5 receiver, so its
+# C7 clamp follows the qualified wire instead of pretending the tail is still
+# circular.
+_DUCT_ARCS = ((116.5, 11.5, 3.0, -1.0),)
 _LM_C = (0.0, 200.981)
+
+
+def _sample_um_corridor(spacing_mm: float = 0.35):
+    path = _um_plan_spline()
+    count = max(64, int(math.ceil(float(path.length) / spacing_mm)))
+    return tuple(
+        (float((path @ (index / count)).X),
+         float((path @ (index / count)).Y))
+        for index in range(count + 1)
+    )
+
+
+_UM_CORRIDOR_POINTS = _sample_um_corridor()
+
+
+def _um_corridor_distance(x: float, y: float) -> float:
+    point = (x, y)
+    return min(
+        _d_seg(point, start, end)
+        for start, end in zip(_UM_CORRIDOR_POINTS,
+                              _UM_CORRIDOR_POINTS[1:])
+    )
 
 
 def _duct_min_t(x: float, y: float) -> float:
@@ -90,6 +120,15 @@ def _duct_min_t(x: float, y: float) -> float:
         # envelope by ~0.35 through the pinch)
         drop = math.sqrt(max(r * r - o * o, 0.0)) if o < r else 0.0
         need = max(need, THICKNESS_MM - (z_d - drop - 2.0))
+    if x >= 0.0 and 45.0 < y < 316.0:
+        r = UM_HANDOFF_D_MM / 2.0
+        o = _um_corridor_distance(x, y)
+        if o < r + 2.0:
+            drop = math.sqrt(max(r * r - o * o, 0.0)) if o < r else 0.0
+            need = max(
+                need,
+                THICKNESS_MM - (DUCT_Z["um"] - drop - 2.0),
+            )
     return need
 
 

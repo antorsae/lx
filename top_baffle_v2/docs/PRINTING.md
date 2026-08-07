@@ -27,16 +27,18 @@ bridge-web load case is treated explicitly below. PLA still relaxes
 
 | Fastener | Spec | Torque | Notes |
 |---|---|---|---|
-| W22 | M5 x 14 pan + flat washer into M5 x 5.8 x O6.3 heat-set (bore O6.4 x 6.8) | 0.8–1.0 N·m | wave washers; re-torque at 24 h and ~2 weeks |
-| W22 on **Obi-Wan** | **M5 x 12** pan + flat washer into carrier heat-sets | 0.8–1.0 N·m | all six 0/60/120/180/240/300° sites are ordinary blind carrier inserts in both states; floor mode has no secondary support inserts or long through-screws |
+| W22 | M5 x 14 pan + flat washer into M5 x 5.8 x O6.3 heat-set (unchanged 6.8 mm total bore: O6.5 x 2.0 entry, then O6.4) | 0.8–1.0 N·m | Stock, Slim and Obi-Wan share the 0/60/120/180/240/300° clock; wave washers; re-torque at 24 h and ~2 weeks |
+| W22 on **Obi-Wan** | **M5 x 12** pan + flat washer into carrier heat-sets | 0.8–1.0 N·m | all six 0/60/120/180/240/300° sites are ordinary blind carrier inserts in both states; each keeps its 6.2 mm total depth and uses an O6.5 x 2.0 entry followed by O6.4; floor mode has no secondary support inserts or long through-screws |
 | 10F | M3 x 8 into M3 x 3 x O5 heat-set (bore O4.6 x 4.0) | 0.30–0.40 N·m | short engagement — do not overdrive |
-| R6P bridge (no-stand) | M5 machine screw from the bridge (behind) into M5 x 5.8 x O6.3 heat-set (bore O6.4 x 6.8, REAR face) | hand-snug | 4 off; same insert as the W22, set from the rear |
+| R6P bridge (no-stand) | M5 machine screw from the bridge (behind) into M5 x 5.8 x O6.3 heat-set (unchanged 6.8 mm total: O6.5 x 2.0 entry, then O6.4, from the REAR face) | hand-snug | 4 off; same insert as the W22, set from the rear. Stock/Slim use Obi-Wan's exact three-port D20 cable interface relative to these inserts: LM `(-0.35,64.76)`, shared T `(-4.75,55.91)`, UM `(3.17,55.91)`. |
+| R6P mid-right-to-vase seam | **M3 x 20 socket-cap**, no washer, through a Ø3.4 radial passage into one M3 x 3 heat-set in a blind Ø4.6 x 4.0 vase receiver | hand-snug | axis `(x,z)=(0,12.55)`, +Y from the LM cutout. Ø6.2 x 3.4 head pocket clears a normal D5.5 x H3.0 socket head and hides it completely after W22 installation. Nominal insert engagement 3.381 mm; tip-to-floor margin 0.619 mm. Do not substitute M3 x 25. |
 | R6F LM-to-UM half-laps | 2 x rear-driven M3 screws through the LM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the UM's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±32, y=315.770; the closure-web/base teardrops remain nominal Ø9, while the complete Z-owned cylindrical functional bosses are locally Ø9.8. The UM receivers retain a 1.9 mm acoustic-front floor and the Z-halves retain a 0.20 mm axial gap. Select screw length for full insert engagement without bottoming. No washer, nut, or front bolt head belongs to this interface. |
-| R6F fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening Ø6.4 × 6.8 inserts | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders; LM/T/UM entries packed inside the D20 support opening as LM above, T lower-left, UM lower-right at z=5.3; solid acoustic front; immutable 40 × 50 pattern; no geometry behind the existing LM pads; magnets receive zero load credit |
+| R6F fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening unchanged 6.8 mm-total bores with Ø6.5 x 2.0 entries followed by Ø6.4 | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders; LM/T/UM entries packed inside the D20 support opening as LM above, T lower-left, UM lower-right at z=5.3; solid acoustic front; immutable 40 × 50 pattern; no geometry behind the existing LM pads; magnets receive zero load credit |
 | R6F optional LM keyed seam | two symmetric Ø1.60 cylindrical pins at x=±109.187/z=14.30, normal to the world-Y=172.481 mm zero-gap seam and pointing +Y; 2.40 mm engagement plus 0.50 mm root overlap. Right blind socket Ø1.84 round; left blind socket 1.96 × 1.84 mm X-relieved; both 2.65 mm deep with 0.12 mm radial and 0.25 mm end clearance. Small exterior lands outside the LM recess preserve ≥0.50 mm radial/end walls, ≥0.05 mm recess plan clearance and ≥0.13 mm conservative W22-flange clearance. | registration only | mutually exclusive replacement print form for the canonical monolithic LM. Round+relieved sockets tolerate ±0.30 mm relative pitch error; the lands reach R114.4036, which is 1.4036 mm beyond structural R113.0 but only 0.6036 mm beyond the finalized R113.8 visible fairing. They add no extra screw or standalone retention/load credit. Print and assemble front-face-down on a flat datum, moving the top straight along -Y; the installed LM driver flange and its normal fasteners are the structural splice. |
 | R6F UM-to-tweeter half-laps | 2 x rear-driven M3 screws through the UM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the crescent's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±24, y=421.5; nominal Ø9 closure-base teardrops, complete local Ø9.8 Z-owned functional bosses, 0.20 mm axial gap, complete 360° receiver walls, and 1.9 mm acoustic-front floors. Install both inserts in the individual crescent before assembly; no front bolt head or cross-owner receiver wall. |
-| R6F alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and lower straight-base sites at `(x,y,z)=(±32,18,15.10)` with outward normals `(-1,0)` left and `(1,0)` right. UM keeps its 50.5°/129.5° axes; all six stations share source Z=15.10. Every station has 0.45 mm axial skins and a 45° support-free roof. The R113.0/R51.7 structural rings have continuous exposed R113.8/R52.5 side fairings, clipped only inside the existing LM--UM and T--UM cusp/service regions; the LM--UM stop preserves the 0.40 mm gap. Ring cavity datums sit at structural radius +0.65 mm, 0.15 mm beneath the exposed surface. There is no magnet-local backing, boss, relief, rear cap, flat, or visible cue: the magnet-free exterior is immutable. Magnets are fully buried at the manifest pause, never glued or externally accessible. Ac/Ae have matching captive LM-lower, LM-upper, and UM receivers. Their mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm allowance is a solid standoff. Nominal paired magnet-face separation is 1.10 mm at LM-upper/UM and 0.95 mm at LM-lower. Alignment/anti-rattle only: **zero structural load credit**. |
+| R6F alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and the lower pair at cubic parameter `u=0.50` on the shared curved shoulder. The right visible datum is `(x,y,z)=(45.285011,89.190370,15.10)` with outward normal `(0.706451,-0.707762)`; the left is its exact X mirror. UM keeps its 50.5°/129.5° axes; all six stations share source Z=15.10. Every station has 0.45 mm axial skins and a 45° support-free roof. The R113.0/R51.7 structural rings have continuous exposed R113.8/R52.5 side fairings, clipped only inside the existing LM--UM and T--UM cusp/service regions; the LM--UM stop preserves the 0.40 mm gap. Ring cavity datums sit at structural radius +0.65 mm; ring and shoulder cavity datums are 0.15 mm beneath their exposed surfaces. There is no magnet-local backing, boss, relief, rear cap, flat, or visible cue: the magnet-free exterior is immutable. Magnets are fully buried at the manifest pause, never glued or externally accessible. Ac/Ae have matching captive LM-lower, LM-upper, and UM receivers. Their mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm allowance is a solid standoff. Nominal paired magnet-face separation is 1.10 mm at LM-lower, LM-upper, and UM. Alignment/anti-rattle only: **zero structural load credit**. |
 | Tweeter pair | M4 through-bolts + nyloc + wave washer; length = septum + faceplates (stock 18.3 septum → ~M4 x 35; V1/R6F crescent → ~M4 x 30 — verify stacked) | snug, ~0.5 N·m | clamps the 4.0 mm crescent seat; recheck after a week |
+| Optional TEBM35C10-4 BMR pair | 8 × M2 screws into M2 × 4 × Ø3.2 heat-set inserts | hand-snug; establish on a coupon | lower BMR mounts from the acoustic front and upper BMR from the rear; each pocket has a 1.2 mm blind opposite wall. Use the Stock BMR vase only with Stock receivers and the Slim BMR vase only with Slim/V1L receivers. Both print front-face-down with supports explicitly disabled; four same-height captive side magnets share one audited insertion pause. |
 
 **Installing the inserts:** soldering iron at 230–250 °C, press
 slowly and square, stop flush. The bores carry +1.0 mm melt room by
@@ -75,7 +77,8 @@ material-property reference is the
 [Bambu PLA Tough+ data sheet](https://us.store.bambulab.com/products/pla-tough-upgrade?id=624483921975980068).
 
 The floor state has no separate support. Its LM carrier owns a full-depth W64
-stem, W64 × 18.3 foot over z=−150..18.3, R12 root, three buried lanes and
+stem, W64 × 18.3 foot over z=−150..18.3, convex constant-thickness Option-B
+transition with a 41 mm minimum centreline radius, three buried lanes and
 rear NL8 panel. World floor Y=0 puts the LM axis exactly **200.981 mm** above
 the floor. A closed-form rectangle-minus-lumens screen deducts the complete
 Ø9 LM, Ø8.2 UM and Ø6 shared-T lane sections from the root and uses the
@@ -221,9 +224,12 @@ the corresponding four individual 01/02/03/04 projects. They do not
 regenerate or fuse geometry: four released, same-state front-down STLs are
 translated to locked positions inside one Bambu object. Each project carries
 the three released state-specific duct blockers, all four support fields
-pinned globally and per object, and one six-magnet pause at Z=5.96 mm. The
-no-floor project uses 40% gyroid; the floor project preserves the integral
-floor bottom's 100% zig-zag contract. Promotion requires exact four-volume
+pinned globally and per object, and one six-magnet pause at Z=5.96 mm. Both
+combined core projects use the hash-pinned saved TINMORRY PETG-GF preset and
+eight walls. The no-floor project uses 40% gyroid globally plus a 100%-solid
+zig-zag parameter modifier through the complete `01a` bridge/root; the floor
+project preserves the integral-floor bottom's global 100% zig-zag contract.
+Promotion requires exact four-volume
 project/STL equivalence, actual support under every carrier, no support under
 the tweeter footprint, and zero support-bead collisions against every LM/UM
 functional duct. Never print a combined plate with its individual 01, 02, 03,
@@ -243,6 +249,9 @@ requires exact 3MF/STL equivalence (15,692 triangles for Ac; 958,546 for Ae),
 an identity outer
 placement, and passing toolpath audits for all four captive-cavity regions.
 Never print either plate together with its four individual B files.
+The Ac/Ae wings and shoulders do not carry the LM/UM cantilever load and stay
+on the standard Bambu PLA Tough+ profile with six walls; do not apply the
+PETG-GF structural-core profile to them.
 
 The UM route is covered only in LM, T is covered in
 LM/UM, and their specified rear continuations are free; the short LM lead is
@@ -267,8 +276,11 @@ the exact first-closing-layer Z values in the generated pause manifest. Do not
 reuse a 0.20-mm pause height or derive one by scaling.
 
 * **Layer height:** **0.16 mm** for every generated captive-magnet job.
-* **Walls: 6 loops maximum** (2.4 mm where geometry permits) — makes the
-  material around every insert bore, dovetail key, and knife edge fully solid.
+* **Walls: 6 loops maximum** (2.4 mm where geometry permits) for ordinary
+  parts. Both standalone Obi-Wan keyed LM bottoms (`01a` no-floor and `01b`
+  floor) and both combined `01+02+03+04` core plates use **8 loops** under
+  their PETG-GF structural profile. The wall setting makes the material
+  around every insert bore, dovetail key, and knife edge fully solid.
   Every 0.45 mm captive-magnet retaining skin is the exception: Arachne must
   slice it as exactly one bounded variable-width bead/traversal, never six
   paths. *Detect thin wall: on* remains pinned and the actual toolpath is
@@ -295,13 +307,14 @@ reuse a 0.20-mm pause height or derive one by scaling.
 * **Infill:** gyroid, **30 %** for R6P mids/vase and the R6F collars,
   **40 % for the R6P piece_bottom in both stand states** (foot standing
   moment ~8 N·m, or bridge bolts), and **40 % for the R6F fused bridge
-  web and tweeter crescent/direct joint ears**. For the integral floor LM,
-  use at least six walls and a **100% local-solid modifier** through the
+  web and tweeter crescent/direct joint ears**. For the no-floor Obi-Wan
+  `01a`, use eight walls and a **100% local-solid modifier** through the
   complete W64 stem/root; do not depend on nominal infill through the root or around
   the three buried lanes. *Detect narrow internal solid
-  infill: on.* Until the local CLI chain can bind that modifier volume, its
-  keyed-bottom job deliberately uses global **100% zig-zag** as the automated
-  safe fallback; Bambu rejects gyroid at 100%.
+  infill: on.* The generated job embeds and audits that **100% zig-zag
+  parameter modifier** while retaining 40% gyroid globally. The
+  integral-floor keyed-bottom job deliberately uses global **100% zig-zag**;
+  Bambu rejects gyroid at 100%.
 * **Support:** off for every job except both optional keyed LM halves and the
   UM carrier in both floor states. Those generated projects pin **Enable
   support: on**,
@@ -318,9 +331,13 @@ reuse a 0.20-mm pause height or derive one by scaling.
   hotter = better layer adhesion), bed 55–60 °C, **max fan 60 %**
   (overhang fan 100 %), outer wall <=120 mm/s, keep the filament
   profile's volumetric limit (~12–16 mm³/s). Strength lives in layer
-  adhesion, not speed.
-* **Dimensional fits:** R6P dovetails use 0.05 mm working clearance;
-  tune compensation until the coupon key slides firmly. Insert bores
+  adhesion, not speed. The PETG-GF structural-core jobs instead use the exact
+  saved `TINMORRY PETG-GF Profile @BBL P2S` values: 260 °C nozzle, 80 °C
+  textured bed, 0.93 flow ratio, and 12 mm³/s maximum volumetric speed. Do
+  not copy this material/profile to Ac/Ae wings or shoulders.
+* **Dimensional fits:** R6P regular through-thickness dovetails use 0.05 mm
+  in-plan female clearance; tune compensation until coupon 2 slides snugly
+  through coupon 1 without forcing the seam open. Insert bores
   are nominal. Use *Precise wall: on*, **elephant-foot compensation
   0.15 mm**, and start X-Y hole compensation at **+0.05** for general fit
   coupons only. Captive-magnet artifacts require **0.00 mm**: +0.05 mm was
@@ -337,11 +354,13 @@ Z=**15.10 mm**. Their magnet-free exterior is immutable: no cavity operation
 may add a local backing, boss, relief, rear cap, flat, or visible pocket cue.
 The mating surfaces are flush with **0 mm physical air gap**. The receiver's
 0.05 mm allowance is a solid internal spacing standoff, not an air-gap cutter.
-Standard lower stations and the Obi-Wan LM-lower pair are therefore **0.95
-mm** apart. The standard curved upper base datum is recessed 0.14 mm inside
+Standard lower stations are therefore **0.95 mm** apart. The standard curved
+upper base datum is recessed 0.14 mm inside
 the unchanged host, giving **1.09 mm**. Obi-Wan LM-upper and UM ring datums are
-0.15 mm beneath their smooth carrier fairings, giving **1.10 mm** to matching
-Ac/Ae receivers. The slim upper station is contained by a broad, symmetric,
+0.15 mm beneath their smooth carrier fairings, and the Obi-Wan LM-lower datum
+is 0.15 mm beneath its smooth shared shoulder; all three interfaces therefore
+give **1.10 mm** to matching Ac/Ae receivers. The slim upper station is
+contained by a broad, symmetric,
 smooth rear-taper shelf rather than a local magnet-shaped patch. The D5 × 2
 cavities and both 0.45 mm Arachne one-bead skins are unchanged.
 
@@ -370,7 +389,7 @@ being no released mate—the first correction moved both to
 `(±37.697, 326.470)`. Do not use that interim pair: the left station violated
 the T-route rule, while the outboard right land required a visible rear-bevel
 backfill. The release uses symmetric **`(±6.690, 321.290)`** centres below the
-D82 cutout and between the seam-B dovetails. The minimum qualified residuals
+D82 cutout and between the seam-B integral-joint stations. The minimum qualified residuals
 across the pair are 1.088 mm beyond the cutout rule, 12.847 mm beyond the
 nearest-pilot rule, 1.089 mm beyond the grown seam rule, and 18.579 mm beyond
 every route rule. Each complete R3.20 land already exists in the immutable
@@ -389,15 +408,17 @@ never be entered manually in Bambu Studio.
 Print the applicable stable `stl/lx521_coupon_*.stl` files before the
 large parts:
 
-1. `lx521_coupon_1_fit_plate.stl` — female dovetail, Ø6.4/Ø4.6 insert
-   bores, and the released V1-upper captive-magnet regression station. Print
+1. `lx521_coupon_1_fit_plate.stl` — clearance-grown regular female dovetail,
+   stepped M5 bore (Ø6.5 for the first 2.0 mm, then Ø6.4 to the unchanged
+   6.8 mm total depth), Ø4.6 insert bore, and the released
+   V1-upper captive-magnet regression station. Print
    it front-face-down and use the exact pause generated for its own sliced
    G-code; its former exposed-pocket inspection notch has been deleted so the
    45° roof retains the full post-apex seal. This is an **unpaired** regression
    station: install the marked/N pole along source -Y, which is print +Y under
    its X180/Z0 transform. There is no mating magnet and no attraction claim.
-2. `lx521_coupon_2_fit_key.stl` — matching loose male dovetail. It contains
-   no magnet and does not define a polarity pair with coupon 1.
+2. `lx521_coupon_2_fit_key.stl` — matching loose full-thickness male dovetail.
+   It contains no magnet and does not define a polarity pair with coupon 1.
 3. `lx521_coupon_3_fish_entry.stl` — no-foot entry cluster and Ø6.8
    tweeter-pair merge.
 4. `lx521_coupon_4_um_outlet_proud.stl` — the real B2 outline and the
@@ -552,14 +573,20 @@ exception and intentionally have no `.print.json` sidecars.
 1. **Dry-fish each piece immediately after printing.** Every duct is
    open at a seam, so a collapsed segment should cost one piece rather
    than an assembled baffle.
-2. **Thread during glue-up**, bottom → mids → vase. The dovetails align
-   mating mouths and the crossings carry funnel relief.
+2. **Thread during glue-up.** Keep `mid_right` front-face-down on a flat datum;
+   slide `mid_left` along local Z to engage seam C, then engage the bottom's
+   four seam-A males and lower the vase's two female seam-B pockets onto the
+   mid-piece males. The regular dovetails align mating duct mouths while the
+   crossings retain funnel relief. Never flex a tooth sideways.
 3. Use ~1.5 mm nylon trimmer line or a guitar string as the leader,
    soldered and heat-shrunk to the pair; do not create a taped lump.
    The LM bundle remains the tightest nominal fit. Use only a
    plastic-safe dry lubricant or a small amount of silicone grease.
-4. Fish T2 first (the higher z=9.5 feeder), then T1 beside it through
-   the shared Ø6.8 step.
+4. In floor-stand form, fish T2 first (the higher z=9.5 feeder), then T1
+   beside it through the shared Ø6.8 step. In no-floor form, both pairs use
+   the one Ø6 rear mouth at `(-4.75,55.91)`, matching Obi-Wan; pull them
+   sequentially through that shared trunk rather than looking for the deleted
+   legacy second T entry.
 5. For B2/C7/V0/V1, dry-fish
    `lx521_coupon_4_um_outlet_proud.stl` with the actual UM cable. The
    route is Ø8.2 from main through its G1 R14 rear turn, so the estimated
@@ -704,15 +731,18 @@ pause rows. No monolith pause is synthesized.
    Ø9.8 boss with an independently printable 360° receiver wall and 1.9 mm
    front floor. No-floor
    additionally owns four rear-opening bridge inserts in the 62 mm solid web;
-   each Ø6.4 × 6.8 bore starts at z=5.3 and leaves a 6.2 mm front floor. Set every
+   each unchanged 6.8 mm-total bore starts at z=5.3 with a Ø6.5 × 2.0
+   rear entry followed by Ø6.4 and leaves the existing 6.2 mm front floor. Set every
    insert square and reject any cracked, loose, or over-melted boss.
 3. During printing, bury six D5×2 magnets in the Ø5.20×2.10
    surface-normal captive cavities at the exact manifest pauses. LM uses
    four: preserve the upper ring-radial 64°/116° axes and the validated
-   nearest-insert/route clearances, then fit the lower captive pair at
-   `(x,y,z)=(±32,18,15.10)` in the straight base sides, with outward normals
-   `(-1,0)` left and `(1,0)` right. Confirm that these shared floor/no-floor
-   datums remain clear of lower inserts, buried routes, and the
+   nearest-insert/route clearances, then fit the lower captive pair at the
+   shared shoulder's cubic midpoint. The right visible datum is
+   `(x,y,z)=(45.285011,89.190370,15.10)` with outward normal
+   `(0.706451,-0.707762)`; the left is its exact X mirror. Confirm that these
+   coincident floor/no-floor datums remain clear of lower inserts, buried
+   routes, and the
    bridge/integral-stand load path. Upper LM and UM use that same source
    Z=15.10; UM keeps the 50.5°/129.5° axes. Verify the R113.0/R51.7 structural rings and continuous exposed
    R113.8/R52.5 side fairings, clipped only inside the existing LM--UM and
@@ -724,8 +754,8 @@ pause rows. No monolith pause is synthesized.
    continuous loading cradle, and the support-free 45° closing roof in sliced
    preview with Arachne. The mating surfaces must remain flush with zero air
    gap; the receiver's 0.05 mm spacing allowance is solid material. Nominal
-   paired magnet-face separation is 1.10 mm at LM-upper/UM and 0.95 mm at
-   LM-lower. Use the manifest's marked local-axis polarity for
+   paired magnet-face separation is 1.10 mm at LM-lower, LM-upper, and UM.
+   Use the manifest's marked local-axis polarity for
    every carrier and mating receiver; do not infer it from mirroring. These magnets
    align and suppress rattle only;
    assign them **zero load capacity** in every assembly and test. For Ac/Ae,
@@ -738,7 +768,8 @@ pause rows. No monolith pause is synthesized.
    without bottoming the screws while holding both front faces coplanar. Do
    not add washers/nuts or drill through the UM front floor. Verify
    the 165.100 mm driver-center spacing before loading the drivers.
-5. In floor mode, inspect the integral W64 stem/foot and R12 root, fish all
+5. In floor mode, inspect the integral W64 stem/foot and convex R41-minimum
+   Option-B transition, fish all
    three buried floor lanes, fit the NL8 receptacle through the rear panel and
    confirm the service cavity remains usable. Install a positive anti-tip
    tether or anchor before loading the assembly; the W64 foot is not a safety

@@ -110,9 +110,23 @@ AE_SURFACE_OUTSIDE_MIN_DEPTH_MM = -2.0
 AE_EXACT_EDGE_BAND_MM = 0.12
 AE_RELIEF_BOUNDARY_GUARD_MM = 0.08
 AE_EDGE_BOOLEAN_OVERSHOOT_MM = 0.20
+# Preserve the 0.04-mm protected-land collar that keeps the fitted rear
+# transition below the 0.03-mm C0 gate. The new G1 lower root creates one
+# acute relief tip where this normal inset corresponds to 0.186 mm measured
+# along the tip bisector. That tiny region gets an explicit, bounded exception
+# below; the established 0.08-mm gate remains in force everywhere else.
 AE_BOOLEAN_RELIEF_INSET_MM = 0.04
 AE_BOOLEAN_RELIEF_SIMPLIFY_MM = 0.015
-AE_BOOLEAN_RELIEF_MAX_HAUSDORFF_MM = 0.08
+AE_BOOLEAN_RELIEF_GENERAL_MAX_HAUSDORFF_MM = 0.08
+AE_BOOLEAN_RELIEF_ROOT_EXCEPTION_RADIUS_MM = 0.25
+AE_BOOLEAN_RELIEF_ROOT_MAX_HAUSDORFF_MM = 0.20
+# A protected receiver at the new, narrower G1 lower root encloses one tiny
+# disconnected component of the *candidate* Ae rear-relief plan.  Cutting a
+# 3.87-mm2 island would create a fragile isolated rear pocket for negligible
+# mass benefit.  Retain it at full depth, but fail if this narrowly scoped
+# topological allowance ever grows into meaningful acoustic relief.
+AE_RELIEF_DISCONNECTED_COMPONENT_MAX_AREA_MM2 = 4.0
+AE_RELIEF_DISCONNECTED_TOTAL_MAX_AREA_MM2 = 4.0
 AE_BOOLEAN_EDGE_EXTENSION_MM = 0.13
 AE_BOOLEAN_EDGE_EXTENSION_INSET_MM = 0.003
 AE_BOOLEAN_EDGE_EXTENSION_SIMPLIFY_MM = 0.001
@@ -334,8 +348,8 @@ def receiver_facts(side: str) -> tuple[dict, ...]:
                 NOMINAL_PAIRED_FACE_SEPARATION_MM
                 + float(site.get("carrier_cavity_face_inset_mm", 0.0)), 9),
             "orientation": (
-                "horizontal_base_axis_vertical_diameter"
-                if site.get("interface_kind") == "base_side"
+                "shoulder_normal_axis_tangential_diameter"
+                if site.get("interface_kind") == "shoulder"
                 else "radial_axis_tangential_diameter"),
             "interface_kind": str(site.get("interface_kind", "ring")),
             "carrier_magnet_fully_buried": True,
@@ -1193,52 +1207,15 @@ def _ae_smooth_body() -> Part:
         _occ_integer_array(u_mults), _occ_integer_array(v_mults),
         AE_SURFACE_SPLINE_DEGREE, AE_SURFACE_SPLINE_DEGREE,
         False, False)
-    perimeter_guard = exact_plan.boundary.buffer(
-        AE_RELIEF_BOUNDARY_GUARD_MM, cap_style=2, join_style=2
-    ).intersection(exact_plan).buffer(0)
-    relief_plan = exact_plan.difference(
-        depth_field.protected.union(perimeter_guard)).buffer(0)
-    if (relief_plan.geom_type != "Polygon" or relief_plan.is_empty
-            or not relief_plan.is_valid):
-        raise RuntimeError(
-            "Ae rear relief plan must be one valid protected-land complement")
+    relief_plan, _relief_component_facts = _ae_relief_plan()
     # OCC does not produce a valid solid when the fitted cutter is clipped by
     # the analytic plan's ~1,400 tessellated boundary edges.  Use a strictly
     # inward, sub-nozzle Boolean mask: it can only enlarge the exact full-depth
     # land, never cut it, and remains within 0.08 mm of the analytic relief.
-    boolean_relief_plan = relief_plan.buffer(
-        -AE_BOOLEAN_RELIEF_INSET_MM, join_style=2
-    ).simplify(
-        AE_BOOLEAN_RELIEF_SIMPLIFY_MM, preserve_topology=True
-    ).buffer(0)
-    edge_extension = relief_plan.intersection(
-        depth_field.exposed_outer_edge.buffer(
-            AE_BOOLEAN_EDGE_EXTENSION_MM, cap_style=2, join_style=2)
-    ).buffer(
-        -AE_BOOLEAN_EDGE_EXTENSION_INSET_MM, join_style=2
-    ).simplify(
-        AE_BOOLEAN_EDGE_EXTENSION_SIMPLIFY_MM, preserve_topology=True
-    ).buffer(0)
-    boolean_relief_plan = unary_union(
-        (boolean_relief_plan, edge_extension)).buffer(0)
-    if (boolean_relief_plan.geom_type != "Polygon"
-            or boolean_relief_plan.is_empty
-            or not boolean_relief_plan.is_valid
-            or boolean_relief_plan.difference(relief_plan).area > 1.0e-6
-            or boolean_relief_plan.hausdorff_distance(relief_plan)
-            > AE_BOOLEAN_RELIEF_MAX_HAUSDORFF_MM):
-        raise RuntimeError(
-            "Ae conservative Boolean relief mask left its exact tolerance")
-    edge_plan_overlap = (
-        AE_EXACT_EDGE_BAND_MM
-        - boolean_relief_plan.distance(depth_field.exposed_outer_edge))
-    if edge_plan_overlap < AE_CUTTER_MIN_PLAN_OVERLAP_MM:
-        raise RuntimeError(
-            "Ae edge/relief cutters lost positive plan overlap: "
-            f"{edge_plan_overlap:.6f} mm")
+    boolean_relief_plan, _boolean_relief_facts = _ae_boolean_relief_plan()
 
     # Retain a padded rectangle for cap-tool construction, but trim the fitted
-    # rear itself to the conservative 261-edge Boolean relief outline.  The
+    # rear itself to the conservative simplified Boolean relief outline. The
     # exact analytic outline has roughly 1,400 tessellated edges and is kept
     # for every depth/protected-land audit, not passed to OCC as a trim wire.
     surface_plan = orient(Polygon((
@@ -1402,6 +1379,144 @@ def _ae_smooth_body() -> Part:
         raise RuntimeError(
             "Ae removal tools did not reduce the pristine blank volume")
     return _one_solid(body, "Ae constrained monolith before receivers")
+
+
+def _single_ae_relief_component(relief_geometry):
+    """Return the one manufacturable Ae relief component and audit facts.
+
+    Any discarded component remains pristine full-depth blank material.  This
+    operation can therefore only strengthen the wing; it can never remove a
+    protected land or alter the exterior plan.
+    """
+    if relief_geometry.is_empty or not relief_geometry.is_valid:
+        raise RuntimeError("Ae rear relief complement is empty or invalid")
+    if relief_geometry.geom_type == "Polygon":
+        components = (relief_geometry,)
+    elif relief_geometry.geom_type == "MultiPolygon":
+        components = tuple(sorted(
+            relief_geometry.geoms, key=lambda item: item.area, reverse=True))
+    else:
+        raise RuntimeError(
+            "Ae rear relief complement has unsupported topology: "
+            f"{relief_geometry.geom_type}")
+
+    primary = components[0]
+    discarded_areas = tuple(float(piece.area) for piece in components[1:])
+    discarded_total = float(sum(discarded_areas))
+    discarded_maximum = max(discarded_areas, default=0.0)
+    if (discarded_maximum
+            > AE_RELIEF_DISCONNECTED_COMPONENT_MAX_AREA_MM2 + 1.0e-9
+            or discarded_total
+            > AE_RELIEF_DISCONNECTED_TOTAL_MAX_AREA_MM2 + 1.0e-9):
+        raise RuntimeError(
+            "Ae rear relief developed a material disconnected component: "
+            f"areas={discarded_areas}, "
+            "per-component limit="
+            f"{AE_RELIEF_DISCONNECTED_COMPONENT_MAX_AREA_MM2:.3f} mm2, "
+            f"total limit={AE_RELIEF_DISCONNECTED_TOTAL_MAX_AREA_MM2:.3f} "
+            "mm2")
+    if primary.is_empty or not primary.is_valid or primary.interiors:
+        raise RuntimeError(
+            "Ae primary rear relief must be one valid opening-free polygon")
+    return primary, {
+        "candidate_component_count": len(components),
+        "cut_component_count": 1,
+        "retained_full_depth_island_count": len(discarded_areas),
+        "retained_full_depth_island_area_mm2": discarded_total,
+        "largest_retained_island_area_mm2": discarded_maximum,
+        "maximum_allowed_island_area_mm2": (
+            AE_RELIEF_DISCONNECTED_COMPONENT_MAX_AREA_MM2),
+        "maximum_allowed_total_island_area_mm2": (
+            AE_RELIEF_DISCONNECTED_TOTAL_MAX_AREA_MM2),
+    }
+
+
+@lru_cache(maxsize=1)
+def _ae_relief_plan():
+    """Return the conservative connected Ae relief plan and topology facts."""
+    exact_plan = _layout().field_right
+    _solution, depth_field, _sections = _ae_analytics()
+    perimeter_guard = exact_plan.boundary.buffer(
+        AE_RELIEF_BOUNDARY_GUARD_MM, cap_style=2, join_style=2
+    ).intersection(exact_plan).buffer(0)
+    candidate = exact_plan.difference(
+        depth_field.protected.union(perimeter_guard)).buffer(0)
+    return _single_ae_relief_component(candidate)
+
+
+@lru_cache(maxsize=1)
+def _ae_boolean_relief_plan():
+    """Return the connected OCC trim and its localized tolerance audit."""
+    relief_plan, _component_facts = _ae_relief_plan()
+    _solution, depth_field, _sections = _ae_analytics()
+    boolean_relief_plan = relief_plan.buffer(
+        -AE_BOOLEAN_RELIEF_INSET_MM, join_style=2
+    ).simplify(
+        AE_BOOLEAN_RELIEF_SIMPLIFY_MM, preserve_topology=True
+    ).buffer(0)
+    edge_extension = relief_plan.intersection(
+        depth_field.exposed_outer_edge.buffer(
+            AE_BOOLEAN_EDGE_EXTENSION_MM, cap_style=2, join_style=2)
+    ).buffer(
+        -AE_BOOLEAN_EDGE_EXTENSION_INSET_MM, join_style=2
+    ).simplify(
+        AE_BOOLEAN_EDGE_EXTENSION_SIMPLIFY_MM, preserve_topology=True
+    ).buffer(0)
+    boolean_relief_plan = unary_union(
+        (boolean_relief_plan, edge_extension)).buffer(0)
+    if (boolean_relief_plan.geom_type != "Polygon"
+            or boolean_relief_plan.is_empty
+            or not boolean_relief_plan.is_valid
+            or boolean_relief_plan.difference(relief_plan).area > 1.0e-6):
+        raise RuntimeError(
+            "Ae conservative Boolean relief mask left its exact topology")
+
+    root_tip = min(
+        relief_plan.exterior.coords, key=lambda coordinate: coordinate[1])
+    root_exception = Point(*root_tip).buffer(
+        AE_BOOLEAN_RELIEF_ROOT_EXCEPTION_RADIUS_MM, resolution=32)
+    mask_tolerance = boolean_relief_plan.buffer(
+        AE_BOOLEAN_RELIEF_GENERAL_MAX_HAUSDORFF_MM + 1.0e-9)
+    general_boundary = relief_plan.boundary.difference(root_exception)
+    if not general_boundary.difference(mask_tolerance).is_empty:
+        raise RuntimeError(
+            "Ae conservative Boolean relief mask exceeded its general "
+            "0.08-mm tolerance outside the lower-root exception")
+    root_boundary = relief_plan.boundary.intersection(root_exception)
+    root_tolerance = boolean_relief_plan.buffer(
+        AE_BOOLEAN_RELIEF_ROOT_MAX_HAUSDORFF_MM + 1.0e-9)
+    if not root_boundary.difference(root_tolerance).is_empty:
+        raise RuntimeError(
+            "Ae conservative Boolean relief mask exceeded its localized "
+            "lower-root tolerance")
+    maximum_hausdorff = float(
+        boolean_relief_plan.hausdorff_distance(relief_plan))
+    if maximum_hausdorff > AE_BOOLEAN_RELIEF_ROOT_MAX_HAUSDORFF_MM + 1.0e-9:
+        raise RuntimeError(
+            "Ae conservative Boolean relief mask exceeded its absolute "
+            f"tolerance: {maximum_hausdorff:.6f} mm")
+
+    edge_plan_overlap = (
+        AE_EXACT_EDGE_BAND_MM
+        - boolean_relief_plan.distance(depth_field.exposed_outer_edge))
+    if edge_plan_overlap < AE_CUTTER_MIN_PLAN_OVERLAP_MM:
+        raise RuntimeError(
+            "Ae edge/relief cutters lost positive plan overlap: "
+            f"{edge_plan_overlap:.6f} mm")
+    return boolean_relief_plan, {
+        "normal_inset_mm": AE_BOOLEAN_RELIEF_INSET_MM,
+        "general_maximum_hausdorff_mm": (
+            AE_BOOLEAN_RELIEF_GENERAL_MAX_HAUSDORFF_MM),
+        "lower_root_exception_radius_mm": (
+            AE_BOOLEAN_RELIEF_ROOT_EXCEPTION_RADIUS_MM),
+        "lower_root_maximum_hausdorff_mm": (
+            AE_BOOLEAN_RELIEF_ROOT_MAX_HAUSDORFF_MM),
+        "lower_root_tip_xy_mm": [float(value) for value in root_tip],
+        "measured_maximum_hausdorff_mm": maximum_hausdorff,
+        "outside_exact_relief_area_mm2": float(
+            boolean_relief_plan.difference(relief_plan).area),
+        "edge_plan_overlap_mm": float(edge_plan_overlap),
+    }
 
 
 def _strict_single_solid(shape, label: str) -> Part:
@@ -2099,6 +2214,10 @@ def wing_facts(variant_id: str) -> dict:
                 None if slug == "ac" else AE_SURFACE_OUTSIDE_MIN_DEPTH_MM),
             "exact_edge_brep_band_mm": (
                 0.0 if slug == "ac" else AE_EXACT_EDGE_BAND_MM),
+            "conservative_relief_island_retention": (
+                None if slug == "ac" else _ae_relief_plan()[1]),
+            "conservative_boolean_relief_mask": (
+                None if slug == "ac" else _ae_boolean_relief_plan()[1]),
             "protected_perimeter_brep_c0_gate": protected_perimeter_brep,
             "retention_centres": list(solution.center_names),
             "retention_scales": [float(value)
@@ -2106,6 +2225,8 @@ def wing_facts(variant_id: str) -> dict:
         },
         "interface_contract": {
             "selected_receiver_count_per_side": 3,
+            "lower_floor_bend_integration": (
+                contract._lower_wing_blend(layout.profile)[1]),
             "receivers": {
                 side: list(receiver_facts(side)) for side in SIDE_NAMES
             },

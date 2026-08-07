@@ -94,6 +94,12 @@ class Bambu3MFAudit:
     rigid_rz: RigidRzFacts
     support_blocker_count: int = 0
     support_blocker_triangle_counts: tuple[int, ...] = ()
+    parameter_modifier_count: int = 0
+    parameter_modifier_triangle_counts: tuple[int, ...] = ()
+    parameter_modifier_names: tuple[str, ...] = ()
+    parameter_modifier_settings: tuple[
+        tuple[tuple[str, str], ...], ...
+    ] = ()
 
     def as_record(self) -> dict[str, object]:
         return {
@@ -116,6 +122,14 @@ class Bambu3MFAudit:
             "support_blocker_count": self.support_blocker_count,
             "support_blocker_triangle_counts": list(
                 self.support_blocker_triangle_counts),
+            "parameter_modifier_count": self.parameter_modifier_count,
+            "parameter_modifier_triangle_counts": list(
+                self.parameter_modifier_triangle_counts),
+            "parameter_modifier_names": list(self.parameter_modifier_names),
+            "parameter_modifier_settings": [
+                dict(settings)
+                for settings in self.parameter_modifier_settings
+            ],
         }
 
 
@@ -620,11 +634,14 @@ def _validate_mesh_equivalence(
             "3MF triangle count differs from staged STL: "
             f"{len(reconstructed)} != {len(staged)}")
 
-    # Assign every reconstructed vertex to one and only one staged-STL vertex
-    # within the strict coordinate tolerance.  A spatial hash avoids fragile
-    # float sorting: a sub-tolerance change near zero must not reorder (0,0,0)
-    # after (0,3,0), while two genuinely distinct source vertices within the
-    # tolerance are intentionally rejected as ambiguous rather than merged.
+    # Assign every reconstructed vertex to its deterministic nearest staged-STL
+    # vertex within the strict coordinate tolerance.  A spatial hash avoids
+    # fragile float sorting: a sub-tolerance change near zero must not reorder
+    # (0,0,0) after (0,3,0).  STEP tessellation may legitimately emit distinct
+    # source vertices closer than this serialization tolerance, so proximity
+    # alone is not an ambiguity failure.  The complete canonical triangle
+    # multiset comparison below (including multiplicity) remains authoritative
+    # and rejects a nearest-point assignment that changes mesh connectivity.
     source_points = sorted(set(
         point for triangle in staged for point in triangle))
     point_ids = {point: index for index, point in enumerate(source_points)}
@@ -668,12 +685,8 @@ def _validate_mesh_equivalence(
                 raise Bambu3MFAuditError(
                     "3MF mesh differs from staged STL: vertex "
                     f"{point!r} has no match within {tolerance_mm:.9g} mm")
-            candidate_ids = {source_id for source_id, _error in candidates}
-            if len(candidate_ids) != 1:
-                raise Bambu3MFAuditError(
-                    "staged STL contains vertices too close for an unambiguous "
-                    f"{tolerance_mm:.9g}-mm mesh comparison")
-            source_id, error = candidates[0]
+            source_id, error = min(
+                candidates, key=lambda candidate: (candidate[1], candidate[0]))
             max_error = max(max_error, error)
             mapped_cache[point] = source_id
             return source_id
@@ -690,10 +703,10 @@ def _validate_mesh_equivalence(
     return max_error
 
 
-def _bambu_model_parts(
+def _bambu_model_part_records(
     package: _BambuPackage, root_object_id: int,
-) -> dict[str, list[tuple[int, str]]]:
-    """Return model-settings part IDs/source names grouped by subtype."""
+) -> dict[str, list[tuple[int, str, dict[str, str]]]]:
+    """Return part IDs, source names, and metadata grouped by subtype."""
     try:
         root = ET.fromstring(package.read_member(
             "Metadata/model_settings.config"))
@@ -707,7 +720,7 @@ def _bambu_model_parts(
     if len(objects) != 1:
         raise Bambu3MFAuditError(
             "model settings must describe the sole build object exactly once")
-    parts: dict[str, list[tuple[int, str]]] = {}
+    parts: dict[str, list[tuple[int, str, dict[str, str]]]] = {}
     for part in _children(objects[0], "part"):
         try:
             part_id = int(part.attrib["id"])
@@ -715,16 +728,39 @@ def _bambu_model_parts(
             raise Bambu3MFAuditError(
                 "model-settings part has an invalid id") from error
         subtype = part.attrib.get("subtype", "").strip()
+        metadata_values: dict[str, str] = {}
+        for metadata in _children(part, "metadata"):
+            key = metadata.attrib.get("key", "")
+            value = metadata.attrib.get("value", "")
+            if not key or key in metadata_values:
+                raise Bambu3MFAuditError(
+                    f"model-settings part {part_id} has invalid/duplicate "
+                    "metadata")
+            metadata_values[key] = value
         source_values = [
-            metadata.attrib.get("value", "")
-            for metadata in _children(part, "metadata")
-            if metadata.attrib.get("key") == "source_file"
+            value for key, value in metadata_values.items()
+            if key == "source_file"
         ]
         if not subtype or len(source_values) != 1 or not source_values[0]:
             raise Bambu3MFAuditError(
                 f"model-settings part {part_id} lacks subtype/source_file")
-        parts.setdefault(subtype, []).append((part_id, source_values[0]))
+        parts.setdefault(subtype, []).append(
+            (part_id, source_values[0], metadata_values))
     return parts
+
+
+def _bambu_model_parts(
+    package: _BambuPackage, root_object_id: int,
+) -> dict[str, list[tuple[int, str]]]:
+    """Return model-settings part IDs/source names grouped by subtype."""
+    return {
+        subtype: [
+            (part_id, source)
+            for part_id, source, _metadata in records
+        ]
+        for subtype, records in _bambu_model_part_records(
+            package, root_object_id).items()
+    }
 
 
 def _resolve_root_component(
@@ -781,6 +817,9 @@ def audit_bambu_3mf(
     staged_stl: Path | str,
     *,
     support_blocker_stls: Sequence[Path | str] = (),
+    parameter_modifier_stls: Sequence[
+        tuple[Path | str, Mapping[str, object]]
+    ] = (),
     mesh_tolerance_mm: float = DEFAULT_MESH_TOLERANCE_MM,
     transform_tolerance: float = DEFAULT_TRANSFORM_TOLERANCE,
     bed_z_tolerance_mm: float = DEFAULT_BED_Z_TOLERANCE_MM,
@@ -789,10 +828,20 @@ def audit_bambu_3mf(
     project_path = Path(project_3mf)
     stl_path = Path(staged_stl)
     blocker_paths = tuple(Path(path) for path in support_blocker_stls)
+    modifier_records = tuple(
+        (Path(path), {
+            str(key): str(value) for key, value in settings.items()
+        })
+        for path, settings in parameter_modifier_stls
+    )
     blocker_names = [path.name for path in blocker_paths]
+    modifier_names = [path.name for path, _settings in modifier_records]
     if len(blocker_names) != len(set(blocker_names)):
         raise Bambu3MFAuditError(
             "support-blocker STL basenames must be unique")
+    if len(modifier_names) != len(set(modifier_names)):
+        raise Bambu3MFAuditError(
+            "parameter-modifier STL basenames must be unique")
     mesh_tolerance_mm = _finite(mesh_tolerance_mm, "mesh tolerance")
     bed_z_tolerance_mm = _finite(bed_z_tolerance_mm, "bed-Z tolerance")
     if mesh_tolerance_mm < 0.0 or bed_z_tolerance_mm < 0.0:
@@ -800,6 +849,10 @@ def audit_bambu_3mf(
     staged_triangles = read_stl_triangles(stl_path)
     blocker_triangles = {
         path.name: read_stl_triangles(path) for path in blocker_paths
+    }
+    modifier_triangles = {
+        path.name: read_stl_triangles(path)
+        for path, _settings in modifier_records
     }
     source_bounds = mesh_bounds(staged_triangles)
     if abs(source_bounds.minimum[2]) > bed_z_tolerance_mm:
@@ -832,23 +885,33 @@ def audit_bambu_3mf(
         reconstructed_blockers: list[
             tuple[Path, tuple[Triangle, ...]]
         ] = []
-        if blocker_paths:
-            parts = _bambu_model_parts(package, root_object_id)
-            if set(parts) != {"normal_part", "support_blocker"}:
+        reconstructed_modifiers: list[
+            tuple[Path, tuple[Triangle, ...], dict[str, str]]
+        ] = []
+        if blocker_paths or modifier_records:
+            part_records = _bambu_model_part_records(
+                package, root_object_id)
+            expected_subtypes = {"normal_part"}
+            if blocker_paths:
+                expected_subtypes.add("support_blocker")
+            if modifier_records:
+                expected_subtypes.add("modifier_part")
+            if set(part_records) != expected_subtypes:
                 raise Bambu3MFAuditError(
-                    "support-blocked 3MF must contain only one normal_part "
-                    "and the declared support_blocker parts")
-            normal_parts = parts["normal_part"]
+                    "assembled 3MF part subtypes differ from the declared "
+                    "normal/modifier inventory")
+            normal_parts = part_records["normal_part"]
             if len(normal_parts) != 1:
                 raise Bambu3MFAuditError(
-                    "support-blocked 3MF must contain exactly one normal_part")
-            normal_id, normal_source = normal_parts[0]
+                    "assembled 3MF must contain exactly one normal_part")
+            normal_id, normal_source, _normal_metadata = normal_parts[0]
             if Path(normal_source).name != stl_path.name:
                 raise Bambu3MFAuditError(
                     "3MF normal_part source_file does not name the staged STL")
-            blocker_parts = parts["support_blocker"]
+            blocker_parts = part_records.get("support_blocker", ())
             actual_blocker_names = [
-                Path(source).name for _part_id, source in blocker_parts
+                Path(source).name
+                for _part_id, source, _metadata in blocker_parts
             ]
             if Counter(actual_blocker_names) != Counter(blocker_names):
                 raise Bambu3MFAuditError(
@@ -857,11 +920,37 @@ def audit_bambu_3mf(
             reconstructed, component_depth = _resolve_root_component(
                 package, root_document, root_object_id, normal_id)
             blocker_by_name = {path.name: path for path in blocker_paths}
-            for blocker_id, blocker_source in blocker_parts:
+            for blocker_id, blocker_source, _metadata in blocker_parts:
                 blocker_path = blocker_by_name[Path(blocker_source).name]
                 blocker_mesh, _blocker_depth = _resolve_root_component(
                     package, root_document, root_object_id, blocker_id)
                 reconstructed_blockers.append((blocker_path, blocker_mesh))
+            modifier_parts = part_records.get("modifier_part", ())
+            actual_modifier_names = [
+                Path(source).name
+                for _part_id, source, _metadata in modifier_parts
+            ]
+            if Counter(actual_modifier_names) != Counter(modifier_names):
+                raise Bambu3MFAuditError(
+                    "3MF modifier_part source_file inventory differs from "
+                    "the staged parameter-modifier STLs")
+            modifier_by_name = {
+                path.name: (path, settings)
+                for path, settings in modifier_records
+            }
+            for modifier_id, modifier_source, metadata in modifier_parts:
+                modifier_path, expected_settings = modifier_by_name[
+                    Path(modifier_source).name]
+                for key, expected in expected_settings.items():
+                    if metadata.get(key) != expected:
+                        raise Bambu3MFAuditError(
+                            f"3MF modifier_part {modifier_path.name} has "
+                            f"{key}={metadata.get(key)!r}, expected "
+                            f"{expected!r}")
+                modifier_mesh, _modifier_depth = _resolve_root_component(
+                    package, root_document, root_object_id, modifier_id)
+                reconstructed_modifiers.append(
+                    (modifier_path, modifier_mesh, expected_settings))
         else:
             reconstructed, component_depth, leaf_count = package.resolve_object(
                 root_document, root_object_id)
@@ -884,6 +973,16 @@ def audit_bambu_3mf(
             tolerance_mm=mesh_tolerance_mm)
         blocker_triangle_counts.append(
             len(blocker_triangles[blocker_path.name]))
+    modifier_triangle_counts = []
+    modifier_settings = []
+    for (modifier_path, reconstructed_modifier,
+         expected_settings) in reconstructed_modifiers:
+        _validate_mesh_equivalence(
+            modifier_triangles[modifier_path.name], reconstructed_modifier,
+            tolerance_mm=mesh_tolerance_mm)
+        modifier_triangle_counts.append(
+            len(modifier_triangles[modifier_path.name]))
+        modifier_settings.append(tuple(sorted(expected_settings.items())))
     rigid_rz = validate_rigid_rz_affine(
         stl_to_bed, tolerance=transform_tolerance)
     transformed_bounds = transform_mesh_bounds(staged_triangles, stl_to_bed)
@@ -905,6 +1004,11 @@ def audit_bambu_3mf(
         rigid_rz=rigid_rz,
         support_blocker_count=len(blocker_paths),
         support_blocker_triangle_counts=tuple(blocker_triangle_counts),
+        parameter_modifier_count=len(modifier_records),
+        parameter_modifier_triangle_counts=tuple(
+            modifier_triangle_counts),
+        parameter_modifier_names=tuple(modifier_names),
+        parameter_modifier_settings=tuple(modifier_settings),
     )
 
 

@@ -158,25 +158,29 @@ def _gcode_tool_path() -> Path | None:
     return candidates[0] if candidates else None
 
 
-def _validate_with_gcode_skill(
-    gcode: Path,
-    out_dir: Path,
+def _gcode_validation_wrapper(
     profile_bundle: Mapping[str, Any],
 ) -> dict[str, Any]:
-    tool = _gcode_tool_path()
-    if tool is None:
-        return {"ok": None, "reason": "gcode skill validator not installed"}
+    """Build the skill wrapper from the exact active Bambu profile stack."""
     effective = profile_bundle["identity"]["effective"]
     bounds = profile_bundle["identity"]["machine_bounds_mm"]
-    filament = profile_bundle["resolved"]["filament"]
-    nozzle_temp = _scalar(filament, "nozzle_temperature", "filament")
-    bed_temp = _scalar(filament, "eng_plate_temp", "filament")
-    wrapper = {
+    if effective.get("bed_type") != "Textured PEI Plate":
+        raise AuditError(
+            "G-code validation wrapper currently requires the pinned "
+            "Textured PEI Plate process")
+    return {
         # The skill validator's schema currently enumerates Orca/Prusa/Cura.
         # This value is only a validation-schema compatibility field: actual
         # slicing provenance remains BambuStudio in every manifest record.
         "backend": "orcaslicer",
         "native_config": str(profile_bundle["paths"]["machine"]),
+        "native_settings": [
+            str(profile_bundle["paths"]["machine"]),
+            str(profile_bundle["paths"]["process"]),
+        ],
+        "native_filaments": [
+            str(profile_bundle["paths"]["filament"]),
+        ],
         "machine": {
             "name": effective["printer_model"],
             "bed_size_mm": [bounds["x"][1], bounds["y"][1]],
@@ -185,10 +189,21 @@ def _validate_with_gcode_skill(
         },
         "filament": {
             "type": effective["filament"],
-            "nozzle_temp_c": nozzle_temp,
-            "bed_temp_c": bed_temp,
+            "nozzle_temp_c": effective["nozzle_temperature_c"],
+            "bed_temp_c": effective["textured_plate_temp_c"],
         },
     }
+
+
+def _validate_with_gcode_skill(
+    gcode: Path,
+    out_dir: Path,
+    profile_bundle: Mapping[str, Any],
+) -> dict[str, Any]:
+    tool = _gcode_tool_path()
+    if tool is None:
+        return {"ok": None, "reason": "gcode skill validator not installed"}
+    wrapper = _gcode_validation_wrapper(profile_bundle)
     wrapper_path = out_dir / "gcode_validation_profile.json"
     _write_json(wrapper_path, wrapper)
     run = subprocess.run(
@@ -235,6 +250,7 @@ def _artifact_fingerprint(
     artifact: Mapping[str, Any],
     profile_bundle: Mapping[str, Any],
     catalog_sha: str,
+    parameter_modifiers: Sequence[Mapping[str, Any]] = (),
 ) -> str:
     stl = artifact["stl"]
     payload = {
@@ -252,6 +268,11 @@ def _artifact_fingerprint(
         "support_blocker_sha256": artifact.get("support_blocker_sha256"),
         "support_blocker_binding_sha256": artifact.get(
             "support_blocker_binding_sha256"),
+        "parameter_modifiers": [{
+            "contract_sha256": modifier["contract_sha256"],
+            "modifier_stl_sha256": modifier["sha256"],
+            "process": modifier["process"],
+        } for modifier in parameter_modifiers],
         "profile_set_sha256": profile_bundle["identity"]["profile_set_sha256"],
         "bambu_binary_sha256": profile_bundle["identity"]["binary_sha256"],
         "audit_source_sha256": sorted(
@@ -265,13 +286,18 @@ def _write_bambu_assemble_list(
     *,
     stl: Path,
     support_blockers: Sequence[Path],
+    parameter_modifiers: Sequence[Mapping[str, Any]] = (),
 ) -> None:
-    """Describe one printable object with co-located support blockers."""
-    if not support_blockers:
+    """Describe one printable object with co-located slicer modifiers."""
+    if not support_blockers and not parameter_modifiers:
         raise AuditError("an assemble list requires at least one modifier")
 
-    def object_record(mesh: Path, subtype: str) -> dict[str, Any]:
-        return {
+    def object_record(
+        mesh: Path,
+        subtype: str,
+        print_params: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        record = {
             "path": str(mesh.resolve()),
             "subtype": subtype,
             "count": 1,
@@ -281,6 +307,9 @@ def _write_bambu_assemble_list(
             "pos_y": [0],
             "pos_z": [0],
         }
+        if print_params:
+            record["print_params"] = dict(print_params)
+        return record
 
     _write_json(path, {
         "plates": [{
@@ -290,6 +319,10 @@ def _write_bambu_assemble_list(
                 object_record(stl, "normal_part"),
                 *(object_record(blocker, "support_blocker")
                   for blocker in support_blockers),
+                *(object_record(
+                    Path(modifier["path"]), "modifier_part",
+                    modifier["process"])
+                  for modifier in parameter_modifiers),
             ],
             "assembled_params": [{
                 "assemble_index": 1,
@@ -302,6 +335,31 @@ def _write_bambu_assemble_list(
             }],
         }],
     })
+
+
+def _stage_parameter_modifiers(
+    artifact: Mapping[str, Any],
+    profile_bundle: Mapping[str, Any],
+    destination: Path,
+) -> tuple[dict[str, Any], ...]:
+    resolved = _parameter_modifiers_for_artifact(artifact, profile_bundle)
+    staged = []
+    for modifier in resolved:
+        source = Path(modifier["path"])
+        target = destination / source.name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if (not target.is_file()
+                or sha256_file(target) != modifier["sha256"]):
+            target.unlink(missing_ok=True)
+            try:
+                os.link(source, target)
+            except OSError:
+                shutil.copy2(source, target)
+        if sha256_file(target) != modifier["sha256"]:
+            raise AuditError(
+                f"{artifact['id']}: staged parameter modifier hash mismatch")
+        staged.append({**modifier, "path": target})
+    return tuple(staged)
 
 
 def _bambu_command(
@@ -366,6 +424,9 @@ def _slice_one(
         shutil.rmtree(ready_dir, ignore_errors=True)
     artifact_profile_bundle = _artifact_profile_bundle(
         artifact, profile_bundle, out_dir)
+    parameter_modifiers = _stage_parameter_modifiers(
+        artifact, artifact_profile_bundle,
+        out_dir / "parameter_modifiers")
     bounds = artifact_profile_bundle["identity"]["machine_bounds_mm"]
     if mesh.size[0] > bounds["x"][1] - bounds["x"][0] + 1e-4 \
             or mesh.size[1] > bounds["y"][1] - bounds["y"][0] + 1e-4 \
@@ -373,18 +434,20 @@ def _slice_one(
         raise AuditError(
             f"{artifact['id']}: {mesh.size} mm exceeds P2S 256-mm envelope")
     fingerprint = _artifact_fingerprint(
-        artifact, artifact_profile_bundle, catalog_sha)
+        artifact, artifact_profile_bundle, catalog_sha,
+        parameter_modifiers)
     fingerprint_path = out_dir / "slice_fingerprint.json"
     gcode = out_dir / "plate_1.gcode"
     result_path = out_dir / "result.json"
     project_3mf = out_dir / PLACED_3MF_FILENAME
     assemble_list = (
         out_dir / "bambu_assemble_list.json"
-        if support_blockers else None)
+        if support_blockers or parameter_modifiers else None)
     if assemble_list is not None:
         _write_bambu_assemble_list(
             assemble_list, stl=stl,
-            support_blockers=support_blockers)
+            support_blockers=support_blockers,
+            parameter_modifiers=parameter_modifiers)
     reused = False
     if (reuse and fingerprint_path.is_file() and gcode.is_file()
             and result_path.is_file() and project_3mf.is_file()):
@@ -459,7 +522,11 @@ def _slice_one(
     try:
         project_audit = audit_bambu_3mf(
             project_3mf, stl,
-            support_blocker_stls=support_blockers)
+            support_blocker_stls=support_blockers,
+            parameter_modifier_stls=[
+                (modifier["path"], modifier["process"])
+                for modifier in parameter_modifiers
+            ])
         expected_bbox = validate_bambu_result_bbox(
             bbox, project_audit.source_bounds,
             project_audit.stl_to_bed_matrix)
@@ -1597,6 +1664,9 @@ def _emit_ready_project(
     support_blockers = tuple(
         [artifact["support_blocker"]]
         if "support_blocker" in artifact else [])
+    parameter_modifiers = _stage_parameter_modifiers(
+        artifact, profile_bundle,
+        ready_dir / "parameter_modifiers")
     pause_policy = profile_bundle["identity"]["effective"].get(
         "magnet_insertion_pause")
     if not isinstance(pause_policy, Mapping):
@@ -1610,11 +1680,12 @@ def _emit_ready_project(
     project_3mf = ready_dir / READY_3MF_FILENAME
     assemble_list = (
         ready_dir / "bambu_assemble_list.json"
-        if support_blockers else None)
+        if support_blockers or parameter_modifiers else None)
     if assemble_list is not None:
         _write_bambu_assemble_list(
             assemble_list, stl=stl,
-            support_blockers=support_blockers)
+            support_blockers=support_blockers,
+            parameter_modifiers=parameter_modifiers)
     command = _bambu_command(
         bambu, stl, ready_dir, profile_bundle,
         project_filename=READY_3MF_FILENAME,
@@ -1627,6 +1698,11 @@ def _emit_ready_project(
             "identity"]["profile_set_sha256"],
         "bambu_binary_sha256": profile_bundle["identity"]["binary_sha256"],
         "stl_sha256": sha256_file(stl),
+        "parameter_modifiers": [{
+            "contract_sha256": modifier["contract_sha256"],
+            "modifier_stl_sha256": modifier["sha256"],
+            "process": modifier["process"],
+        } for modifier in parameter_modifiers],
         "command": command,
     }))
     fingerprint_path = ready_dir / "ready_project_fingerprint.json"
@@ -1696,7 +1772,11 @@ def _emit_ready_project(
     try:
         project_audit = audit_bambu_3mf(
             project_3mf, stl,
-            support_blocker_stls=support_blockers)
+            support_blocker_stls=support_blockers,
+            parameter_modifier_stls=[
+                (modifier["path"], modifier["process"])
+                for modifier in parameter_modifiers
+            ])
         ready_bbox = objects[0].get("bbox")
         if not isinstance(ready_bbox, Mapping):
             raise Bambu3MFAuditError("ready result lacks an object bbox")
@@ -2120,10 +2200,14 @@ def write_manifests(
     profile_bundle: Mapping[str, Any],
     records: Sequence[Mapping[str, Any]],
     failures: Sequence[Mapping[str, str]] = (),
+    *,
+    enforce_expected_inventory: bool = True,
 ) -> dict[str, Path]:
     """Validate, stage, then transactionally publish canonical manifests."""
     _validate_complete_release(
-        catalog, records, failures, require_ready_projects=True)
+        catalog, records, failures,
+        enforce_expected_inventory=enforce_expected_inventory,
+        require_ready_projects=True)
     if sha256_file(catalog_path) != catalog.get("_catalog_sha256"):
         raise AuditError("release catalog changed before manifest publication")
     if sha256_file(CATALOG_SCHEMA) != catalog.get(
@@ -2140,9 +2224,19 @@ def write_manifests(
         staged_paths = _write_manifest_bundle(
             Path(directory), catalog_path, catalog, profile_bundle,
             records, failures)
-        _validate_manifest_bundle(staged_paths)
+        _validate_manifest_bundle(
+            staged_paths,
+            expected_artifact_count=len(catalog["artifacts"]),
+            expected_magnet_count=sum(
+                int(site["magnet_count"])
+                for artifact in catalog["artifacts"]
+                for site in artifact["sites"]),
+            enforce_release_polarity_contract=enforce_expected_inventory,
+        )
         _validate_complete_release(
-            catalog, records, failures, require_ready_projects=True)
+            catalog, records, failures,
+            enforce_expected_inventory=enforce_expected_inventory,
+            require_ready_projects=True)
         if (sha256_file(catalog_path) != catalog["_catalog_sha256"]
                 or sha256_file(CATALOG_SCHEMA)
                 != catalog["_catalog_schema_sha256"]):

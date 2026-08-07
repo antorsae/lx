@@ -122,12 +122,24 @@ EXPECTED_SITE_NAMES = (
     "um_right",
 )
 
-LOCKED_PLACEMENTS = (
-    (180.006547942825, (252.426708722303, 219.958422201636)),
-    (-82.921230563781, (50.756431596864, 227.804382692246)),
-    (-127.436883856071, (97.201036136042, 264.333261819892)),
-    (110.702555432118, (231.314810940662, 67.458534877173)),
-)
+LOCKED_PLACEMENTS_BY_VARIANT = {
+    # Ac and Ae share the same four print-space footprints. Their left LM+UM
+    # upper footprint has a 90-degree source-space clocking, so it needs its
+    # own rigid transform to retain the common packed layout. The lower-root
+    # placements are the locally re-optimized G1 tangent-root arrangement.
+    "ac": (
+        (58.724273577150, (51.156885879315, 86.406547312980)),
+        (-172.921230563781, (248.183921832446, 252.320989480231)),
+        (-89.203304927416, (202.926578585501, 167.723983347523)),
+        (110.702555432118, (231.314810940662, 67.458534877173)),
+    ),
+    "ae": (
+        (58.724273577150, (51.156885879315, 86.406547312980)),
+        (-82.921230563781, (50.756431596864, 227.804382692246)),
+        (-89.203304927416, (202.926578585501, 167.723983347523)),
+        (110.702555432118, (231.314810940662, 67.458534877173)),
+    ),
+}
 
 
 @dataclass(frozen=True)
@@ -159,7 +171,7 @@ def _variant(
     )
     parts = []
     for slot, identity, placement in zip(
-            slots, identities, LOCKED_PLACEMENTS, strict=True):
+            slots, identities, LOCKED_PLACEMENTS_BY_VARIANT[slug], strict=True):
         side, role, source_suffix, friendly_suffix = identity
         rz_degrees, translation = placement
         stem = f"lx521_top_obiwan_wing_{slug}_{side}_b_{source_suffix}"
@@ -186,8 +198,8 @@ def _variant(
 
 
 VARIANTS = {
-    "ac": _variant("ac", "Ac", ("05", "06", "08", "09"), 17_196),
-    "ae": _variant("ae", "Ae", ("11", "12", "14", "15"), 982_430),
+    "ac": _variant("ac", "Ac", ("05", "06", "08", "09"), 17_836),
+    "ae": _variant("ae", "Ae", ("11", "12", "14", "15"), 2_169_008),
 }
 
 

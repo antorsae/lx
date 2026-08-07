@@ -2,7 +2,7 @@
   "part": "lx521_coupon_8_fish_ts_oval_proud",
   "pre_translation_bbox_min_mm": [
     -58.0000001,
-    -430.0000001,
+    -430.0,
     -18.300000099999963
   ],
   "print_orientation": "front_face_down",
@@ -22,7 +22,7 @@
       0.0,
       -1.0,
       0.0,
-      430.0000001
+      430.0
     ],
     [
       0.0,
@@ -38,12 +38,12 @@
     ]
   ],
   "stl": "lx521_coupon_8_fish_ts_oval_proud.stl",
-  "stl_bytes": 147284,
+  "stl_bytes": 125684,
   "stl_origin_translation_mm": [
     58.0000001,
-    430.0000001,
+    430.0,
     18.300000099999963
   ],
-  "stl_sha256": "896bcdfb89e1d54b82cb400082b0f24a46a52d38e28d069a76078ece04c0969d",
+  "stl_sha256": "eb158c5a1e973e3c2abb1d1426d4e0d652685619f9ece240d9375cc8b751d7b3",
   "variant_export": "coupon"
 }

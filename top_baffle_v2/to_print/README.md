@@ -23,9 +23,15 @@ to_print/
 
 Open the `.gcode.3mf` from `3mf/` directly in Bambu Studio.  Do not reorient
 or re-slice it.  The project already has the front face on the build plate,
-the P2S 0.4 mm / 0.16 mm Arachne profile, six general walls, 30% gyroid
-infill (40% for the no-floor keyed LM bottom and both UM carriers; 100%
-zig-zag for the floor-stand keyed LM bottom), and the verified magnet events.
+the P2S 0.4 mm / 0.16 mm Arachne profile and the verified magnet events.
+Ordinary parts use Bambu PLA Tough+ with six general walls and 30% gyroid
+infill (40% for both UM carriers). The standalone keyed LM bottoms `01a` and
+`01b`, plus both combined `01+02+03+04` core plates, are the structural
+exceptions: they use the hash-pinned saved
+**TINMORRY PETG-GF Profile @BBL P2S** preset and eight walls. No-floor `01a`
+uses 40% gyroid globally plus its 100%-solid bridge/root modifier; floor
+`01b` uses global 100% zig-zag. Ac/Ae wings and shoulders remain PLA Tough+;
+do not print them in PETG-GF.
 Each magnetic event makes no XY move: it raises the nozzle to Z=250 mm at
 20 mm/s (lowering the P2S bed to within 6 mm of its bottom), executes the
 Bambu pause `M400 U1`, then restores the exact closing-layer Z when you press
@@ -39,19 +45,23 @@ Studio re-slice cannot silently obstruct a functional cable lumen.
 floor-stand single-plate alternatives for 01+02+03+04. Each is one Bambu
 printable object containing four normal volumes and three aligned
 state-specific duct-blocker volumes at locked, translation-only positions.
-The no-floor plate uses 40% gyroid; the floor plate preserves the integral
-floor bottom's authoritative 100% zig-zag profile. Both pin all four support
-fields globally and on the object, pause once at Z=5.96 mm for the six LM/UM
-magnets, and emit no support under the tweeter footprint. Promotion requires
-exact 3MF/STL equivalence and zero support-bead collisions in all three
-duct-bearing parts.
+Both use TINMORRY PETG-GF and eight walls. The no-floor plate uses 40% gyroid
+globally plus a 100% zig-zag parameter modifier through the complete `01a`
+bridge/root; the floor plate preserves the integral-floor bottom's global
+100% zig-zag profile. Both pin all four support fields globally and on the
+object, pause once at Z=5.96 mm for the six LM/UM magnets, and emit no support
+under the tweeter footprint. Promotion requires exact 3MF/STL equivalence,
+the required modifier inventory, and zero support-bead collisions in all
+three duct-bearing parts.
 
 `obiwan_05b_06b_08b_09b_Ac_wings_1_of_1` and
 `obiwan_11b_12b_14b_15b_Ae_wings_1_of_1` are the single-plate alternatives
 for the four Ac and Ae B-split wing pieces respectively. Each preserves the released
 front-face-down orientation, applies only locked Z rotations and XY
 translations, and uses 30% gyroid with all four support fields pinned off
-globally and on the object. The audited packing has 3.587 mm minimum
+globally and on the object. These non-load-bearing pieces retain the standard
+Bambu PLA Tough+ profile; they are not PETG-GF jobs. The audited packing has
+3.587 mm minimum
 part-to-part clearance and 3.592 mm minimum bed-edge clearance. Each pauses
 once at Z=5.96 mm for all six wing magnets, emits zero support feature blocks,
 and passes exact project/STL equivalence: 15,692 triangles for Ac and 958,546
@@ -110,6 +120,10 @@ shelf pairs, run:
 
 ```sh
 make obiwan_no_floor_combo_plate_source
+make obiwan_no_floor_petg_gf_01a
+make obiwan_no_floor_petg_gf_01a_to_print
+make obiwan_floor_petg_gf_01b
+make obiwan_floor_petg_gf_01b_to_print
 make obiwan_no_floor_combo_plate
 make obiwan_no_floor_combo_plate_to_print
 make obiwan_floor_combo_plate_source

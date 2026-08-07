@@ -48,15 +48,18 @@ from build123d import Cylinder, Pos
 
 from .base import (
     L22_CUTOUT,
+    L22_PILOT_ANGLES_DEG,
     L22_PILOT_D_MM,
     L22_PILOT_DEPTH_MM,
     L22_PILOT_PCD_MM,
+    M5_INSERT_ENTRY_D_MM,
     THICKNESS_MM,
     UM_CUTOUT,
     UM_PILOT_ANGLES_DEG,
     UM_PILOT_D_MM,
     UM_PILOT_DEPTH_MM,
     UM_PILOT_PCD_MM,
+    m5_insert_bore_cutter,
 )
 
 # Flange envelopes (SEAS datasheets) + drop-in clearance.
@@ -76,8 +79,9 @@ UM_RECESS_R = (UM_FLANGE_D_MM + RECESS_CLR_MM) / 2.0   # 49.3
 # the 5.5 wall under the seat can NEVER swallow a 5.8 insert, so some
 # added rear material is irreducible. Minimum honest pad: bore =
 # 5.8 + 0.4 settle = 6.2 below the seat (floor z=6.1) + 0.8 floor ->
-# pad face z=5.3: straight O9.6 buttons, 1.5 proud, rim 1.6 around
-# the O6.4 bore (the plate itself grips the insert's top 4.3 -- only
+# pad face z=5.3: straight O9.6 buttons, 1.5 proud, minimum rim 1.55 around
+# the O6.5 x 2.0 entry relief (the deeper bore stays O6.4; the plate itself
+# grips the insert's top 4.3 -- only
 # the bottom 1.5 rides the pad), 0.6 x 45 deg rim chamfer. ALL pads
 # concentric with their bores: the top one clears seam C (x=-5.6) by
 # 0.8 -- the earlier flared/offset O13 version breached the seam
@@ -100,9 +104,9 @@ UM_PAD_FLOOR_MM = 0.8
 _LM_C = (L22_CUTOUT[0], L22_CUTOUT[1])
 _UM_C = (UM_CUTOUT[0], UM_CUTOUT[1])
 
-# Obi-Wan alone rotates the W22 pattern by -30 degrees.  Proud/V1L keep
-# the production 30/90/... clock from ``lx521_baffle.base``.
-OBIWAN_LM_PILOT_ANGLES_DEG = (0.0, 60.0, 120.0, 180.0, 240.0, 300.0)
+# All released families now share the same W22 clock.  Keep the Obi-Wan name
+# as an explicit compatibility contract for its carrier and route modules.
+OBIWAN_LM_PILOT_ANGLES_DEG = L22_PILOT_ANGLES_DEG
 
 
 def _pilot_xy(center, pcd, angles):
@@ -137,10 +141,13 @@ def deep_pilot_cutters():
     pads stay minimal."""
     out = []
     for px, py in LM_PILOT_XY:
-        z0 = LM_SEAT_Z - LM_BORE_DEPTH_MM     # 6.1
-        out.append(Pos(px, py, (z0 + LM_SEAT_Z + 0.1) / 2.0)
-                   * Cylinder(L22_PILOT_D_MM / 2.0,
-                              LM_BORE_DEPTH_MM + 0.1))
+        out.append(m5_insert_bore_cutter(
+            (px, py),
+            opening_z=LM_SEAT_Z,
+            total_depth=LM_BORE_DEPTH_MM,
+            opening_side="+z",
+            overshoot=0.10,
+        ))
     for px, py in UM_PILOT_XY:
         z0 = UM_SEAT_Z - UM_PILOT_DEPTH_MM    # 10.3
         out.append(Pos(px, py, (z0 + UM_SEAT_Z + 0.1) / 2.0)
@@ -202,7 +209,7 @@ def _static_asserts():
     # UM bores stay blind in the 11.5 plate
     assert UM_SEAT_Z - UM_PILOT_DEPTH_MM - v1l.REAR_MM >= 3.0
     # every pad rims its bore (concentric)
-    assert (PAD_D_MM - L22_PILOT_D_MM) / 2.0 >= 1.5
+    assert (PAD_D_MM - M5_INSERT_ENTRY_D_MM) / 2.0 >= 1.5
     # EVERY pad's full plan extent clears seam C (x=-5.6) -- the
     # flared/offset version breached the seam plane and got sliced
     # at the piece edge (found on a print render, 2026-07-10)

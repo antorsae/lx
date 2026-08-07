@@ -5,6 +5,8 @@ from __future__ import annotations
 
 from pathlib import Path
 import json
+import os
+import re
 import subprocess
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -28,29 +30,113 @@ def check(condition: bool, message: str) -> None:
 
 
 def main() -> int:
+    remote_contract_only = (
+        os.environ.get("LX_CAD_EXECUTION") == "remote-worker"
+    )
+    graph_env = os.environ.copy()
+    # Pure dependency-graph inspection is allowed on a remote Linux worker,
+    # but the Makefile accepts this escape hatch only while GNU Make itself is
+    # in -n/--just-print mode *and* every exceptional recursive-Make recipe is
+    # neutralized by /usr/bin/true.  No slicer recipe can execute.
+    graph_env["LX_BAMBU_GRAPH_ONLY"] = "1"
+
+    def make_graph(target: str, *flags: str) -> str:
+        ignored_missing: list[str] = []
+        for _attempt in range(8):
+            command = ["make", *flags]
+            if remote_contract_only:
+                command.append("-k")
+            command.append("SHELL=/usr/bin/true")
+            for missing in ignored_missing:
+                command.extend(("-o", missing))
+            command.append(target)
+            run = subprocess.run(
+                command,
+                cwd=ROOT,
+                env=graph_env,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+            if run.returncode == 0:
+                return run.stdout
+            missing_paths = re.findall(
+                r"No rule to make target '([^']+)'", run.stdout)
+            check(remote_contract_only and missing_paths,
+                  f"make {' '.join(flags)} {target} failed: "
+                  f"{run.stdout[-2000:]}")
+            allowed_root = (
+                ROOT / "review/captive_magnet_slice_audit/slices"
+            ).resolve()
+            fatal_lines = [
+                line for line in run.stdout.splitlines() if "***" in line
+            ]
+            check(all("No rule to make target" in line
+                      for line in fatal_lines),
+                  f"unexpected remote graph error for {target}: "
+                  f"{run.stdout[-2000:]}")
+            new_missing = []
+            for raw in missing_paths:
+                path = Path(raw).resolve()
+                check(path.name == "captive_magnet_slice_audit.json"
+                      and path.is_relative_to(allowed_root),
+                      f"remote graph has an unexpected missing input: {raw}")
+                if raw not in ignored_missing:
+                    new_missing.append(raw)
+            check(new_missing,
+                  f"remote graph made no progress for {target}: "
+                  f"{run.stdout[-2000:]}")
+            ignored_missing.extend(new_missing)
+        raise AssertionError(
+            f"remote graph required too many missing-input passes: {target}")
+
     def make_dry_run(target: str) -> str:
-        run = subprocess.run(
-            ["make", "-nB", target],
-            cwd=ROOT,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            check=False,
-        )
-        check(run.returncode == 0,
-              f"make -nB {target} failed: {run.stdout[-2000:]}")
-        check("scripts/remote_cad.py" not in run.stdout
-              and "osado.lan" not in run.stdout
+        output = make_graph(target, "-nB")
+        check("scripts/remote_cad.py" not in output
+              and "osado.lan" not in output
               and not any(line.lstrip().startswith("ssh ")
-                          for line in run.stdout.splitlines()),
+                          for line in output.splitlines()),
               f"{target} must not dispatch CAD or slicing to osado")
-        return run.stdout
+        return output
 
     shelf_dry_run = make_dry_run("to_print")
     check("--emit-ready-projects" not in shelf_dry_run
           and "scripts/slice_captive_magnets.py" not in shelf_dry_run,
           "to_print must consume existing release projects, not implicitly "
           "run the heavyweight captive-magnet release slicer")
+    for target in (
+        "obiwan_no_floor_petg_gf_01a",
+        "obiwan_floor_petg_gf_01b",
+    ):
+        structural_build = make_dry_run(target)
+        check(
+            0 <= structural_build.find("--dry-run")
+            < structural_build.find("--emit-ready-projects"),
+            f"{target} must dry-run before local structural slicing",
+        )
+    for target, friendly_name in (
+        (
+            "obiwan_no_floor_petg_gf_01a_to_print",
+            "obiwan_01a_of_16_LM_bottom_keyed_1_of_2_no_floor_stand",
+        ),
+        (
+            "obiwan_floor_petg_gf_01b_to_print",
+            "obiwan_01b_of_16_LM_bottom_keyed_1_of_2_floor_stand",
+        ),
+    ):
+        structural_promotion = make_dry_run(target)
+        structural_shelf_command = structural_promotion.rfind(
+            "scripts/build_to_print_shelf.py")
+        check(
+            structural_shelf_command >= 0
+            and "--validate-only"
+            in structural_promotion[structural_shelf_command:]
+            and f'--only "{friendly_name}"'
+            in structural_promotion[structural_shelf_command:],
+            f"targeted PETG-GF promotion {target} must disable slicing and "
+            "cross the complete-shelf validation barrier",
+        )
     for make_slug, api in (
             ("no_floor", shelf.NO_FLOOR_COMBO_PLATE),
             ("floor", shelf.FLOOR_COMBO_PLATE)):
@@ -116,24 +202,15 @@ def main() -> int:
         )
         check(expected_builder in output,
               f"{target} is not backed by the composite artifact graph")
-        database = subprocess.run(
-            ["make", "-np", target],
-            cwd=ROOT,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            check=False,
-        )
-        check(database.returncode == 0,
-              f"cannot inspect Make record for {target}")
+        database_output = make_graph(target, "-np")
         marker = f"\n{target}:"
-        start = database.stdout.find(marker)
+        start = database_output.find(marker)
         found = start >= 0
-        if not found and database.stdout.startswith(f"{target}:"):
+        if not found and database_output.startswith(f"{target}:"):
             start = -1
             found = True
         check(found, f"missing concrete Make record for {target}")
-        record = database.stdout[start + 1:].split("\n\n", 1)[0]
+        record = database_output[start + 1:].split("\n\n", 1)[0]
         check("#  Phony target" not in record and ".stamp_" in record,
               f"{target} must be a non-phony stamp-backed artifact")
 
@@ -150,11 +227,101 @@ def main() -> int:
             f"legacy shelf source did not resolve read-only: {historical}",
         )
 
+    if remote_contract_only:
+        raw = json.loads(
+            shelf.DEFAULT_CATALOG.read_text(encoding="utf-8"))
+        raw_entries = raw.get("entries") if isinstance(raw, dict) else None
+        check(raw.get("schema_version") == 1
+              and raw.get("catalog_kind") == "lx521_p2s_print_shelf"
+              and raw.get("printer") == "Bambu Lab P2S"
+              and isinstance(raw_entries, list),
+              "remote shelf catalog header is invalid")
+        check(len(raw_entries) == 51,
+              "remote shelf catalog must contain exactly 51 entries")
+        names = []
+        families = {family: 0 for family in shelf.EXPECTED_FAMILY_COUNTS}
+        for index, entry in enumerate(raw_entries):
+            check(isinstance(entry, dict),
+                  f"remote catalog entry {index} is not an object")
+            name = entry.get("name")
+            family = entry.get("family")
+            source = Path(str(entry.get("source_stl", "")))
+            check(isinstance(name, str) and shelf.NAME_RE.fullmatch(name),
+                  f"remote catalog entry {index} has an invalid name")
+            check(family in families,
+                  f"remote catalog entry {index} has an invalid family")
+            check(not source.is_absolute() and ".." not in source.parts
+                  and source.suffix.lower() == ".stl",
+                  f"remote catalog entry {index} has an unsafe source")
+            check(not any(token in source.as_posix().lower()
+                          for token in shelf.UNPRINTABLE_OR_LEGACY_TOKENS),
+                  f"remote catalog entry {index} selects legacy geometry")
+            names.append(name)
+            families[family] += 1
+        check(len(set(names)) == len(names),
+              "remote shelf catalog contains duplicate names")
+        check(families == {"stock": 11, "slim": 11, "obiwan": 29},
+              f"remote shelf family counts drifted: {families}")
+        check(sum(shelf._is_magnet_entry(entry)
+                  for entry in raw_entries) == 42,
+              "remote shelf magnet-project count drifted")
+        check(sum(entry.get("composite_plate") is not None
+                  for entry in raw_entries) == 4,
+              "remote shelf composite-plate count drifted")
+        release, by_id = shelf._release_artifacts(
+            shelf.DEFAULT_RELEASE_CATALOG)
+        check(len(by_id) == 64
+              and release["inventory"]["artifact_count"] == 64,
+              "remote captive-magnet release inventory drifted")
+        referenced = {
+            entry["catalog_artifact_id"] for entry in raw_entries
+            if entry.get("catalog_artifact_id")
+        }
+        check(referenced <= set(by_id),
+              "remote shelf references an unknown release artifact")
+        release_blockers = [
+            artifact for artifact in by_id.values()
+            if "support_blocker" in artifact
+        ]
+        check(len(release_blockers) == 6
+              and all(Path(artifact["support_blocker"]).is_file()
+                      for artifact in release_blockers),
+              "remote release lacks all six duct support blockers")
+        print(
+            "to_print remote contracts: neutralized Make graph, 51-entry "
+            "shelf catalog, and 64-artifact release catalog pass; "
+            "project/STL equivalence remains local-only"
+        )
+        return 0
+
     raw, entries = shelf._catalog_entries(shelf.DEFAULT_CATALOG)
     release, by_id = shelf._release_artifacts(shelf.DEFAULT_RELEASE_CATALOG)
     shelf._bind_entries_to_release(entries, by_id)
 
     check(raw["printer"] == "Bambu Lab P2S", "catalog printer drift")
+    check(
+        shelf.COMPOSITE_SPECS[
+            shelf.NO_FLOOR_COMBO_PLATE.PLATE_NAME]["profile_path"]
+        == shelf.PETG_GF_PROFILE
+        and shelf.COMPOSITE_SPECS[
+            shelf.FLOOR_COMBO_PLATE.PLATE_NAME]["profile_path"]
+        == shelf.PETG_GF_PROFILE,
+        "both combined core plates must use the structural PETG-GF profile",
+    )
+    check(
+        "profile_path" not in shelf.COMPOSITE_SPECS[
+            shelf.AC_WING_PLATE.PLATE_NAME]
+        and "profile_path" not in shelf.COMPOSITE_SPECS[
+            shelf.AE_WING_PLATE.PLATE_NAME],
+        "Ac/Ae wing plates must remain on the standard non-GF profile",
+    )
+    check(
+        set(shelf.PETG_GF_RELEASE_AUDITS) == {
+            shelf.PETG_GF_01A_ARTIFACT_ID,
+            shelf.PETG_GF_01B_ARTIFACT_ID,
+        },
+        "both standalone keyed LM bottoms must use structural PETG-GF audits",
+    )
     check(len(entries) == 51, "shelf must contain exactly 51 entries")
     families = {
         family: sum(entry["family"] == family for entry in entries)
@@ -386,6 +553,43 @@ def main() -> int:
         check(support_coverage[
                   "obiwan_04_of_16_T_tweeter_crescent_1_of_1"] == 0,
               f"{label}: tweeter unexpectedly receives support")
+        check(
+            combo_profile["filament"]
+            == "TINMORRY PETG-GF Profile @BBL P2S"
+            and combo_profile["wall_loops"] == 8,
+            f"{label}: combined core plate must use PETG-GF and eight walls",
+        )
+        expected_modifier_count = 1 if label == "no-floor" else 0
+        check(
+            combo_record["placement_audit"]["parameter_modifier_count"]
+            == expected_modifier_count,
+            f"{label}: bridge/root parameter-modifier count drifted",
+        )
+    structural_01a = manifest_records[
+        "obiwan_01a_of_16_LM_bottom_keyed_1_of_2_no_floor_stand"]
+    check(
+        structural_01a["profile_effective"]["filament"]
+        == "TINMORRY PETG-GF Profile @BBL P2S"
+        and structural_01a["profile_effective"]["wall_loops"] == 8
+        and structural_01a["placement_audit"]["parameter_modifier_count"] == 1,
+        "standalone no-floor 01a must use PETG-GF, eight walls, and one "
+        "100%-solid bridge/root modifier",
+    )
+    structural_01b = manifest_records[
+        "obiwan_01b_of_16_LM_bottom_keyed_1_of_2_floor_stand"]
+    check(
+        structural_01b["profile_effective"]["filament"]
+        == "TINMORRY PETG-GF Profile @BBL P2S"
+        and structural_01b["profile_effective"]["wall_loops"] == 8
+        and structural_01b["profile_effective"][
+            "sparse_infill_density_percent"] == 100.0
+        and structural_01b["profile_effective"][
+            "sparse_infill_pattern"] == "zig-zag"
+        and structural_01b["placement_audit"][
+            "parameter_modifier_count"] == 0,
+        "standalone floor 01b must use PETG-GF, eight walls, global 100% "
+        "zig-zag, and no local parameter modifier",
+    )
     for label, api in (
             ("Ac", shelf.AC_WING_PLATE),
             ("Ae", shelf.AE_WING_PLATE)):
@@ -403,6 +607,11 @@ def main() -> int:
               and wing_duct["collision_count"] == 0,
               f"{label} wing-plate support-toolpath gate is not passing")
         wing_profile = wing_record["profile_effective"]
+        check(
+            wing_profile["filament"] == "Bambu PLA Tough+ @BBL P2S"
+            and wing_profile["wall_loops"] == 6,
+            f"{label} wing plate must remain PLA Tough+ with six walls",
+        )
         check(all(wing_profile[key] is False for key in (
             "support_enabled",
             "support_on_build_plate_only",
@@ -425,6 +634,13 @@ def main() -> int:
         check(len(wing_record["archive_audit"][
                   "captive_cavity_audit"]) == 4,
               f"{label} wing plate lacks four cavity-toolpath audits")
+    for wing_name in wing_names:
+        wing_profile = manifest_records[wing_name]["profile_effective"]
+        check(
+            wing_profile["filament"] == "Bambu PLA Tough+ @BBL P2S"
+            and wing_profile["wall_loops"] == 6,
+            f"{wing_name}: wing/shoulder material must remain non-GF PLA",
+        )
     check(manifest["inventory"]["magnet_project_count"] == 42
           and manifest["inventory"]["non_magnet_project_count"] == 9
           and manifest["inventory"]["magnet_insertions"] == 80,

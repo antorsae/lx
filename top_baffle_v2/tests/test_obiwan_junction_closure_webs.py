@@ -86,15 +86,10 @@ def _guarded_build() -> bool:
 FULL_TEST_ENV = "LX_OBIWAN_CLOSURE_FULL_TEST"
 PLAN_ONLY_ENV = "LX_OBIWAN_CLOSURE_PLAN_ONLY"
 BASE_ONLY_ENV = "LX_OBIWAN_CLOSURE_BASE_ONLY"
-DENSE_CASE_ENV = "LX_OBIWAN_CLOSURE_DENSE_CASE"
+DENSE_STATE_ENV = "LX_OBIWAN_CLOSURE_DENSE_STATE"
 DENSE_SHARD_ENV = "LX_OBIWAN_CLOSURE_DENSE_SHARD"
-DENSE_SHARD_COUNT = 4
-DENSE_CASES = {
-    "no_floor_lm_um": ("no_floor", "lm_um"),
-    "floor_lm_um": ("floor", "lm_um"),
-    "no_floor_t_um": ("no_floor", "t_um"),
-    "floor_t_um": ("floor", "t_um"),
-}
+DENSE_SHARD_COUNT = 8
+DENSE_STATES = {"no_floor": False, "floor": True}
 
 
 def _require_guarded_test() -> None:
@@ -241,13 +236,15 @@ def test_make_jobserver_owns_the_complete_dense_matrix() -> None:
     """Keep concurrency/dependency authority in Make, not this test file."""
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
     source = Path(__file__).read_text(encoding="utf-8")
-    for case in DENSE_CASES:
-        assert case in makefile
+    for state in DENSE_STATES:
+        assert state in makefile
+    assert "JUNCTION_CLOSURE_BASE_STATE_STAMPS" in makefile
+    assert "JUNCTION_CLOSURE_DENSE_STATE_STAMPS" in makefile
     assert "JUNCTION_CLOSURE_DENSE_STAMPS" in makefile
     assert "LX_OBIWAN_CLOSURE_BASE_ONLY=1" in makefile
-    assert "LX_STAND_FOOT=$(if $(filter floor_%,$(1)),1,0)" in makefile
-    assert "LX_OBIWAN_CLOSURE_DENSE_CASE=$(1)" in makefile
-    assert "LX_OBIWAN_CLOSURE_DENSE_SHARD=$(2)/4" in makefile
+    assert "LX_STAND_FOOT=$(if $(filter floor,$(1)),1,0)" in makefile
+    assert "LX_OBIWAN_CLOSURE_DENSE_STATE=$(1)" in makefile
+    assert "LX_OBIWAN_CLOSURE_DENSE_SHARD=$(2)/8" in makefile
     tree = ast.parse(source)
     imported = {
         alias.name
@@ -1043,24 +1040,34 @@ def test_um_tweeter_individual_breps_own_complete_fastener_features() -> None:
             assert _intersection_volume(tweeter, common_path) <= 0.01
 
 
-@lru_cache(maxsize=4)
-def _cropped_junction_parts(stand_foot: bool, junction: str):
-    """Crop large release BREPs once before the dense layer sweep."""
+@lru_cache(maxsize=2)
+def _cropped_dense_state_parts(stand_foot: bool):
+    """Crop each owner once across both dense junction windows."""
     import lx521_baffle.obiwan.carriers as cad
+    from shapely.ops import unary_union
 
-    owners = (("lm", "um") if junction == "lm_um"
-              else ("um", "tweeter"))
     # The 1-mm collar keeps true connectivity immediately outside the fixed
     # audit rectangle while reducing every subsequent OCC section from a
-    # complete carrier to the small physical junction.
-    clip_plan = _independent_junction_window(junction).buffer(
-        1.0, join_style=2)
-    clip = cad._plan_prism(
-        clip_plan, cad.CORE_REAR_Z - 0.01, cad.THICKNESS_MM + 0.01)
+    # complete carrier to the two small physical junctions. UM participates
+    # in both and is intentionally sectioned from their disjoint union once.
+    windows = {
+        "lm": _independent_junction_window("lm_um").buffer(
+            1.0, join_style=2),
+        "um": unary_union((
+            _independent_junction_window("lm_um").buffer(
+                1.0, join_style=2),
+            _independent_junction_window("t_um").buffer(
+                1.0, join_style=2),
+        )),
+        "tweeter": _independent_junction_window("t_um").buffer(
+            1.0, join_style=2),
+    }
     actual = obiwan_actual_parts(stand_foot)
     return {
-        owner: (actual[owner] & clip).clean()
-        for owner in owners
+        owner: (actual[owner] & cad._plan_prism(
+            clip_plan, cad.CORE_REAR_Z - 0.01,
+            cad.THICKNESS_MM + 0.01)).clean()
+        for owner, clip_plan in windows.items()
     }
 
 
@@ -1374,23 +1381,29 @@ def _route_cutter_shape(owner: str):
     return Compound(children=children)
 
 
-@lru_cache(maxsize=4)
-def _cropped_route_cutter_shape(owner: str, junction: str):
-    """Keep only the exact route authority relevant to one fixed window."""
+@lru_cache(maxsize=2)
+def _cropped_route_cutter_shape(owner: str):
+    """Keep the exact route authority across all owner junction windows."""
     import lx521_baffle.obiwan.carriers as cad
+    from shapely.ops import unary_union
 
+    junctions = ("lm_um", "t_um") if owner == "um" else ("lm_um",)
+    clip_plan = unary_union(tuple(
+        _independent_junction_window(junction).buffer(1.0, join_style=2)
+        for junction in junctions
+    ))
     clip = cad._plan_prism(
-        _independent_junction_window(junction).buffer(1.0, join_style=2),
+        clip_plan,
         cad.CORE_REAR_Z - 0.01, cad.THICKNESS_MM + 0.01)
     return (_route_cutter_shape(owner) & clip).clean()
 
 
 @lru_cache(maxsize=512)
-def _route_void_plan(owner: str, junction: str, z_mm: float):
+def _route_void_plan(owner: str, z_mm: float):
     from shapely.ops import unary_union
 
     polygons = _section_polygons(
-        _cropped_route_cutter_shape(owner, junction), z_mm)
+        _cropped_route_cutter_shape(owner), z_mm)
     return unary_union(polygons).buffer(0) if polygons else None
 
 
@@ -1569,7 +1582,7 @@ def _assembled_plan_oracle(cad, junction: str, z_mm: float):
     for owner, plan in tuple(owner_plans.items()):
         if owner not in {"lm", "um"}:
             continue
-        route_plan = _route_void_plan(owner, junction, z_mm)
+        route_plan = _route_void_plan(owner, z_mm)
         if route_plan is not None and not route_plan.is_empty:
             owner_plans[owner] = plan.difference(route_plan).buffer(0)
             route_plans.append(route_plan)
@@ -1590,21 +1603,18 @@ def test_assembled_sections_match_complementary_ownership_through_depth():
     from shapely.ops import unary_union
     import lx521_baffle.obiwan.carriers as cad
 
-    selected_case = os.environ.get(DENSE_CASE_ENV, "").strip()
-    if selected_case:
-        assert selected_case in DENSE_CASES, (
-            f"unknown {DENSE_CASE_ENV}={selected_case!r}; expected one of "
-            f"{', '.join(DENSE_CASES)}")
-        selected_state, selected_junction = DENSE_CASES[selected_case]
-    else:
-        selected_state = selected_junction = None
+    selected_state = os.environ.get(DENSE_STATE_ENV, "").strip()
+    if selected_state:
+        assert selected_state in DENSE_STATES, (
+            f"unknown {DENSE_STATE_ENV}={selected_state!r}; expected one of "
+            f"{', '.join(DENSE_STATES)}")
     # The floor and no-floor feeds use distinct route paths/cutter sections.
     # A dense stage audit is valid only when the imported CAD route state
-    # matches the immutable staged BREP selected by its case.
-    if selected_state is not None:
+    # matches the immutable staged BREP selected by its state shard.
+    if selected_state:
         active_state = "floor" if cad.STAND_FOOT else "no_floor"
         assert active_state == selected_state, (
-            f"{selected_case}: CAD route state {active_state!r} does not "
+            f"{selected_state}: CAD route state {active_state!r} does not "
             f"match selected BREP state {selected_state!r}")
     samples = _dense_shard_samples(
         _dense_section_samples(cad),
@@ -1615,22 +1625,20 @@ def test_assembled_sections_match_complementary_ownership_through_depth():
     }
     section_cache = {}
     for junction, owners in pairs.items():
-        if selected_junction is not None and junction != selected_junction:
-            continue
         record = cad.junction_closure_polygons()[junction]
         fit_seam = record["fit_seam"]
         independent_window = _independent_junction_window(junction)
         frozen_required = _frozen_required_front_domain(junction)
         assert independent_window.covers(frozen_required)
         if selected_state == "floor":
-            assemblies = (("floor", _cropped_junction_parts(True, junction)),)
+            assemblies = (("floor", _cropped_dense_state_parts(True)),)
         elif selected_state == "no_floor":
             assemblies = ((
-                "no_floor", _cropped_junction_parts(False, junction)),)
+                "no_floor", _cropped_dense_state_parts(False)),)
         else:
             assemblies = (
-                ("no_floor", _cropped_junction_parts(False, junction)),
-                ("floor", _cropped_junction_parts(True, junction)),
+                ("no_floor", _cropped_dense_state_parts(False)),
+                ("floor", _cropped_dense_state_parts(True)),
             )
         for state, state_parts in assemblies:
             for z_mid in samples:
@@ -1638,7 +1646,7 @@ def test_assembled_sections_match_complementary_ownership_through_depth():
                     _assembled_plan_oracle(cad, junction, z_mid))
                 section_plans = {}
                 for owner in owners:
-                    key = (state, junction, owner, z_mid)
+                    key = (state, owner, z_mid)
                     if key not in section_cache:
                         section_cache[key] = _section_material_plan(
                             state_parts[owner], z_mid)
@@ -1866,11 +1874,11 @@ def main() -> int:
             flush=True,
         )
         return 0
-    dense_case = os.environ.get(DENSE_CASE_ENV, "").strip()
-    if dense_case:
-        assert dense_case in DENSE_CASES, (
-            f"unknown {DENSE_CASE_ENV}={dense_case!r}; expected one of "
-            f"{', '.join(DENSE_CASES)}")
+    dense_state = os.environ.get(DENSE_STATE_ENV, "").strip()
+    if dense_state:
+        assert dense_state in DENSE_STATES, (
+            f"unknown {DENSE_STATE_ENV}={dense_state!r}; expected one of "
+            f"{', '.join(DENSE_STATES)}")
         checks = (
             test_assembled_sections_match_complementary_ownership_through_depth,
         )

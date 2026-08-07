@@ -59,7 +59,7 @@ import release_validation as captive
 
 ROOT = PROJECT_ROOT
 PLATE_OUTPUT_DIR = ROOT / "build" / "print_plates" / "obiwan"
-DEFAULT_PROFILE = ROOT / "captive_magnet_slicing_profile.json"
+DEFAULT_PROFILE = ROOT / "captive_magnet_slicing_profile_petg_gf.json"
 DEFAULT_RELEASE_CATALOG = ROOT / "review" / "captive_magnet_release_catalog.json"
 DEFAULT_RELEASE_AUDIT = ROOT / "review" / "captive_magnet_slice_audit"
 PAUSE_Z_MM = 5.96
@@ -197,7 +197,7 @@ VARIANTS = {
         plate_name=(
             "obiwan_01a_02_03_04_LM_UM_1_of_1_no_floor_stand"
         ),
-        expected_triangle_count=56_688,
+        expected_triangle_count=63_008,
         sparse_infill_density_percent=40.0,
         sparse_infill_pattern="gyroid",
     ),
@@ -208,7 +208,7 @@ VARIANTS = {
         plate_name=(
             "obiwan_01b_02_03_04_LM_UM_1_of_1_floor_stand"
         ),
-        expected_triangle_count=143_370,
+        expected_triangle_count=165_892,
         sparse_infill_density_percent=100.0,
         sparse_infill_pattern="zig-zag",
     ),
@@ -751,12 +751,17 @@ def _write_assemble_list(
     *,
     staged_parts: Mapping[str, Path],
     staged_blockers: Mapping[str, Path],
+    staged_modifiers: Mapping[str, Sequence[Mapping[str, Any]]],
 ) -> None:
     objects = []
     for part in PARTS:
-        def record(mesh: Path, subtype: str) -> dict[str, Any]:
+        def record(
+            mesh: Path,
+            subtype: str,
+            print_params: Mapping[str, Any] | None = None,
+        ) -> dict[str, Any]:
             dx, dy, dz = part.translation_mm
-            return {
+            payload = {
                 "path": str(mesh.resolve()),
                 "subtype": subtype,
                 "count": 1,
@@ -766,11 +771,18 @@ def _write_assemble_list(
                 "pos_y": [dy],
                 "pos_z": [dz],
             }
+            if print_params:
+                payload["print_params"] = dict(print_params)
+            return payload
         objects.append(record(
             staged_parts[part.friendly_name], "normal_part"))
         if part.support_blocker is not None:
             objects.append(record(
                 staged_blockers[part.friendly_name], "support_blocker"))
+        for modifier in staged_modifiers.get(part.friendly_name, ()):
+            objects.append(record(
+                Path(modifier["path"]), "modifier_part",
+                modifier["process"]))
     _write_json(path, {
         "plates": [{
             "plate_name": PLATE_NAME,
@@ -941,6 +953,7 @@ def validate_ready_plate(
     artifacts: Mapping[str, Mapping[str, Any]],
     staged_parts: Mapping[str, Path],
     staged_blockers: Mapping[str, Path],
+    staged_modifiers: Mapping[str, Sequence[Mapping[str, Any]]],
     release_audit: Path,
 ) -> dict[str, Any]:
     """Run every promotion gate against the final pause-bearing project."""
@@ -963,6 +976,16 @@ def validate_ready_plate(
             support_blocker_stls=[
                 (staged_blockers[part.friendly_name], part.translation_mm)
                 for part in PARTS if part.support_blocker is not None
+            ],
+            parameter_modifier_stls=[
+                (
+                    Path(modifier["path"]),
+                    part.translation_mm,
+                    modifier["process"],
+                )
+                for part in PARTS
+                for modifier in staged_modifiers.get(
+                    part.friendly_name, ())
             ],
         )
     except Bambu3MFAuditError as exc:
@@ -1090,6 +1113,25 @@ def validate_ready_plate(
             f"{ACTIVE_VARIANT.state} composite effective profile is not "
             f"{ACTIVE_VARIANT.sparse_infill_density_percent:g}% "
             f"{ACTIVE_VARIANT.sparse_infill_pattern} with support")
+    modifier_count = sum(
+        len(modifiers) for modifiers in staged_modifiers.values())
+    petg_gf_core = (
+        profile_bundle["config"].get("user_filament_preset")
+        == "TINMORRY PETG-GF Profile @BBL P2S"
+    )
+    if petg_gf_core:
+        expected_modifier_count = (
+            1 if ACTIVE_VARIANT.state == "no_floor_stand" else 0)
+        if (modifier_count != expected_modifier_count
+                or project_audit.parameter_modifier_count
+                != expected_modifier_count
+                or effective.get("wall_loops") != 8
+                or effective.get("filament")
+                != "TINMORRY PETG-GF Profile @BBL P2S"):
+            raise ComboPlateError(
+                "structural core plate must use eight walls and the saved "
+                "TINMORRY PETG-GF profile; no-floor additionally requires "
+                "one audited 100%-solid bridge/root modifier")
     record = {
         "schema_version": 1,
         "audit_kind": "lx521_locked_composite_print_plate",
@@ -1130,6 +1172,15 @@ def validate_ready_plate(
         },
         "gcode_static_validation": static_validation,
         "profile_effective": dict(effective),
+        "parameter_modifiers": [{
+            "part": part.friendly_name,
+            "contract": _relative(Path(modifier["contract"])),
+            "contract_sha256": modifier["contract_sha256"],
+            "modifier_stl": _relative(Path(modifier["path"])),
+            "modifier_stl_sha256": modifier["sha256"],
+            "process": dict(modifier["process"]),
+        } for part in PARTS for modifier in staged_modifiers.get(
+            part.friendly_name, ())],
     }
     _write_json(ready / "plate_audit.json", record)
     preview = ready / "preview"
@@ -1166,6 +1217,11 @@ def _prepare_slice(
     except captive.AuditError as exc:
         raise ComboPlateError(str(exc)) from exc
     catalog, artifacts = _normalized_artifacts(release_catalog)
+    try:
+        captive._validate_profile_artifact_scope(
+            list(artifacts.values()), base_profile["config"])
+    except captive.AuditError as exc:
+        raise ComboPlateError(str(exc)) from exc
     first_artifact = artifacts[PARTS[0].artifact_id]  # type: ignore[index]
     try:
         profile_bundle = captive._artifact_profile_bundle(
@@ -1195,6 +1251,7 @@ def _prepare_slice(
     inputs = workspace / "inputs"
     staged_parts = {}
     staged_blockers = {}
+    staged_modifiers: dict[str, tuple[dict[str, Any], ...]] = {}
     for part in PARTS:
         staged = inputs / part.staged_name
         _materialize(part.source_stl, staged)
@@ -1203,13 +1260,30 @@ def _prepare_slice(
             staged_blocker = inputs / part.support_blocker.name
             _materialize(part.support_blocker, staged_blocker)
             staged_blockers[part.friendly_name] = staged_blocker
+        modifiers = []
+        if part.artifact_id is not None:
+            try:
+                resolved_modifiers = captive._parameter_modifiers_for_artifact(
+                    artifacts[part.artifact_id], profile_bundle)
+            except captive.AuditError as exc:
+                raise ComboPlateError(
+                    f"{part.friendly_name}: parameter modifier failed: "
+                    f"{exc}") from exc
+            for modifier in resolved_modifiers:
+                source_modifier = Path(modifier["path"])
+                staged_modifier = (
+                    inputs / "parameter_modifiers" / source_modifier.name)
+                _materialize(source_modifier, staged_modifier)
+                modifiers.append({**modifier, "path": staged_modifier})
+        staged_modifiers[part.friendly_name] = tuple(modifiers)
     ready = workspace / "ready"
     ready.mkdir(parents=True, exist_ok=True)
     assemble_list = ready / "bambu_assemble_list.json"
     custom_gcodes = ready / "custom_gcodes.json"
     _write_assemble_list(
         assemble_list, staged_parts=staged_parts,
-        staged_blockers=staged_blockers)
+        staged_blockers=staged_blockers,
+        staged_modifiers=staged_modifiers)
     _write_custom_gcodes(
         custom_gcodes, artifacts=artifacts,
         profile_bundle=profile_bundle)
@@ -1229,6 +1303,12 @@ def _prepare_slice(
             "identity"]["profile_set_sha256"],
         "bambu_binary_sha256": profile_bundle["identity"]["binary_sha256"],
         "assemble_list_sha256": sha256_file(assemble_list),
+        "parameter_modifiers": [{
+            "contract_sha256": modifier["contract_sha256"],
+            "modifier_stl_sha256": modifier["sha256"],
+            "process": modifier["process"],
+        } for modifiers in staged_modifiers.values()
+          for modifier in modifiers],
         "custom_gcodes_sha256": sha256_file(custom_gcodes),
         "command": command,
     }))
@@ -1241,6 +1321,7 @@ def _prepare_slice(
         "artifacts": artifacts,
         "staged_parts": staged_parts,
         "staged_blockers": staged_blockers,
+        "staged_modifiers": staged_modifiers,
         "assemble_list": assemble_list,
         "custom_gcodes": custom_gcodes,
         "command": command,
@@ -1363,6 +1444,7 @@ def build_or_validate_ready_plate(
         artifacts=prepared["artifacts"],
         staged_parts=prepared["staged_parts"],
         staged_blockers=prepared["staged_blockers"],
+        staged_modifiers=prepared["staged_modifiers"],
         release_audit=release_audit,
     )
     audit["slice_reused"] = reused

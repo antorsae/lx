@@ -6301,7 +6301,7 @@
   },
   "kind": "bambu_support_blocker",
   "main_stl": "../stl/lx521_top_obiwan_optional_lm_keyed_2of2_top.stl",
-  "main_stl_sha256": "81d255d07c785765e7615fea7156d9beff278417847bd8bd70cbc8d749d08319",
+  "main_stl_sha256": "40879b57e91bb159a09f9aecf472ee2343ddebc3fe30b8e1f93e6a32f6568d03",
   "mesh": {
     "component_error": 1,
     "component_signed_volumes": [

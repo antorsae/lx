@@ -35,7 +35,16 @@ if __name__ == "__main__":
     import run_memory_guarded as memory_guard
     memory_guard.reexec_under_guard(Path(__file__))
 
-from build123d import Plane, Pos, Rot, Text, export_stl, extrude, import_brep
+from build123d import (
+    Plane,
+    Pos,
+    Rot,
+    Text,
+    export_stl,
+    extrude,
+    import_brep,
+    import_step,
+)
 from lx521_baffle.print_contract import (
     front_down_transform_record,
     sidecar_path_for_stl,
@@ -351,7 +360,12 @@ def _routing_rev():
 # rear: only the full-thickness corner past the horn tips fits text,
 # with a shortened family+position code at font 2.6.
 EMBOSS_XY = {
-    "1of4_bottom": (70.0, 40.0, 0.0, 4.0, False),
+    # The old (70, 40) rear-plane site became empty when the hard floor
+    # corner was replaced by the rearward Option-B bend.  This centered band
+    # is on the retained vertical tangent: the tallest V1L label spans
+    # y=74.63..77.55, leaving ~0.45 mm both above the R41 wall endpoint
+    # (74.15) and below V1L's rear-thickness ramp (78.0).
+    "1of4_bottom": (0.0, 76.0, 0.0, 4.0, False),
     # Use the compact V1L-2 family/position code here. The optional routing
     # suffix put one inward glyph stroke into the guarded R95 opening and
     # appeared as the reported duct-out bite in the exported STL.
@@ -445,6 +459,65 @@ STL_NAMES = {
     "attach_b1_wing_right": "lx521_top_addonB1_2of2_wing_right",
 }
 
+PROUD_STEP_PIECE_LABELS = (
+    "piece_bottom",
+    "piece_mid_left",
+    "piece_mid_right",
+    "piece_top_b2",
+)
+
+
+def _load_proud_step_parts(
+        path: Path, *, stand_mode: str) -> dict[str, object]:
+    """Load the four physical print children from an authoritative STEP.
+
+    STEP is already a required release artifact for every proud-family split.
+    Meshing those exact children avoids rebuilding the same Boolean tree in a
+    second process and gives OCC one deterministic serialization boundary
+    before face triangulation.  Labels and the stand-state envelope are
+    checked fail-closed so a stale or wrong-state STEP cannot feed an STL.
+    """
+    if not path.is_file():
+        raise RuntimeError(f"STEP mesh source does not exist: {path}")
+    assembly = import_step(str(path))
+    children = tuple(assembly.children)
+    labels = tuple(child.label for child in children)
+    if len(labels) != len(set(labels)):
+        raise RuntimeError(
+            f"STEP mesh source has duplicate child labels: {path}: {labels}")
+    parts = dict(zip(labels, children, strict=True))
+    expected = set(PROUD_STEP_PIECE_LABELS)
+    if set(parts) != expected:
+        raise RuntimeError(
+            f"STEP mesh source must contain exactly {sorted(expected)}; "
+            f"got {sorted(parts)} from {path}")
+    for label, part in parts.items():
+        solids = tuple(part.solids())
+        if (not part.is_valid or len(solids) != 1
+                or solids[0].volume <= 0.01):
+            raise RuntimeError(
+                f"STEP mesh source child {label!r} is not one valid solid: "
+                f"valid={part.is_valid} volumes="
+                f"{[solid.volume for solid in solids]}")
+
+    # Only the bottom child differs categorically between the stand states.
+    # The released no-floor baffle is 18.3 mm deep; the floor child extends
+    # 150 mm behind the same datum.  This broad classification deliberately
+    # avoids binding the gate to tessellation or sub-millimetre tolerances.
+    bottom_depth = float(parts["piece_bottom"].bounding_box().size.Z)
+    source_has_floor = bottom_depth > 50.0
+    expected_has_floor = stand_mode == "1"
+    if source_has_floor != expected_has_floor:
+        raise RuntimeError(
+            f"STEP mesh source stand-state mismatch for {path}: "
+            f"LX_STAND_FOOT={stand_mode}, bottom depth={bottom_depth:.3f} mm")
+    print(
+        f"[step-mesh-source] loaded {path} "
+        f"({len(parts)} labeled solids; bottom depth {bottom_depth:.3f} mm)",
+        flush=True,
+    )
+    return parts
+
 
 def _large_host_execution() -> bool:
     """Allow whole-variant meshing only in the guarded osado workflow."""
@@ -464,6 +537,10 @@ def main() -> None:
                     help="b2: base pieces + attachments; c7: the four "
                          "LM-knife-taper base pieces (attachments and "
                          "piece_top are shared with b2)")
+    ap.add_argument(
+        "--source-step", type=Path,
+        help="mesh labeled proud-family pieces from this authoritative "
+             "split STEP instead of rebuilding their CAD")
     ap.add_argument(
         "--obiwan-part",
         choices=("lm", "lm_split", "um", "tweeter"),
@@ -502,6 +579,8 @@ def main() -> None:
         ap.error("--obiwan-stage-manifest requires --variant obiwan")
     if args.v1l_piece and args.variant != "v1l":
         ap.error("--v1l-piece requires --variant v1l")
+    if args.source_step and args.variant == "obiwan":
+        ap.error("--source-step is for proud-family split STEP files only")
     stand_mode = os.environ.get("LX_STAND_FOOT", "1")
     if stand_mode not in {"0", "1"}:
         ap.error("LX_STAND_FOOT must be 0 or 1")
@@ -519,6 +598,10 @@ def main() -> None:
     os.environ["LX_ROUTING_PROFILE"] = profile
     out_dir = args.outdir
     out_dir.mkdir(parents=True, exist_ok=True)
+    step_parts = (
+        _load_proud_step_parts(args.source_step, stand_mode=stand_mode)
+        if args.source_step is not None else None
+    )
     if args.variant == "obiwan":
         from export_obiwan_staged import (
             PRINT_PART_SPECS,
@@ -565,12 +648,22 @@ def main() -> None:
             if stl_name not in expected:
                 _unlink_print_pair(legacy)
     elif args.variant == "v1l":
-        from lx521_baffle.proud.top_baffle_nd25fw4_v1l_split import pieces_v1l
         parts = {}
         if args.v1l_piece != "grommet":
+            if step_parts is None:
+                from lx521_baffle.proud.top_baffle_nd25fw4_v1l_split import pieces_v1l
+                physical_parts = pieces_v1l(only=args.v1l_piece)
+            else:
+                selected = (
+                    PROUD_STEP_PIECE_LABELS
+                    if args.v1l_piece is None else (args.v1l_piece,)
+                )
+                physical_parts = {
+                    key: step_parts[key] for key in selected
+                }
             parts.update({
                 STL_NAMES[k].replace("lx521_top_base_", "lx521_top_v1l_"): v
-                for k, v in pieces_v1l(only=args.v1l_piece).items()
+                for k, v in physical_parts.items()
             })
         if args.v1l_piece in (None, "grommet"):
             from lx521_baffle.um_fit import split_grommet_parts
@@ -580,24 +673,38 @@ def main() -> None:
             })
     elif args.variant == "v1":
         from lx521_baffle.proud.top_baffle_nd25fw4_v1_attachments import v1_attachments
-        from lx521_baffle.proud.top_baffle_nd25fw4_v1_split import pieces_v1
-        parts = {"lx521_top_v1_4of4_vase": pieces_v1()["piece_top_b2"]}
+        if step_parts is None:
+            from lx521_baffle.proud.top_baffle_nd25fw4_v1_split import pieces_v1
+            vase = pieces_v1()["piece_top_b2"]
+        else:
+            vase = step_parts["piece_top_b2"]
+        parts = {"lx521_top_v1_4of4_vase": vase}
         parts.update({k.replace("attach_v1a_", "lx521_top_v1addonA_")
                        .replace("attach_v1b1_", "lx521_top_v1addonB1_"): v
                       for k, v in v1_attachments().items()})
     elif args.variant == "v0":
-        from lx521_baffle.proud.top_baffle_nd25fw4_v0_split import pieces_v0
+        if step_parts is None:
+            from lx521_baffle.proud.top_baffle_nd25fw4_v0_split import pieces_v0
+            vase = pieces_v0()["piece_top_b2"]
+        else:
+            vase = step_parts["piece_top_b2"]
         parts = {"lx521_top_v0_4of4_vase":
-                 pieces_v0()["piece_top_b2"]}
+                 vase}
     elif args.variant == "c7":
-        from lx521_baffle.proud.top_baffle_nd25fw4_c7_split import pieces_c7
+        if step_parts is None:
+            from lx521_baffle.proud.top_baffle_nd25fw4_c7_split import pieces_c7
+            physical_parts = pieces_c7()
+        else:
+            physical_parts = step_parts
         parts = {STL_NAMES[k].replace("lx521_top_base_", "lx521_top_c7base_"):
-                 v for k, v in pieces_c7().items()}
+                 v for k, v in physical_parts.items()}
     else:
         from lx521_baffle.proud.top_baffle_nd25fw4_attachments import attachments
-        from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import pieces
-
-        parts = dict(pieces())
+        if step_parts is None:
+            from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import pieces
+            parts = dict(pieces())
+        else:
+            parts = dict(step_parts)
         parts.update(attachments())
         parts = {STL_NAMES[k]: v for k, v in parts.items()}
         from lx521_baffle.um_fit import split_grommet_parts

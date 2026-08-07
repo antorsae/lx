@@ -1,0 +1,45 @@
+{
+  "artifact": "shared:Slim-TEBM35C10-4:vase_TEBM35C10-4",
+  "files": [
+    {
+      "path": "vase_TEBM35C10-4.brep",
+      "sha256": "1826c9ad8a7bde83481d010637d92ac36695eb2d87c7e419e658403dfc11d78a",
+      "size": 2339409
+    },
+    {
+      "path": "vase_TEBM35C10-4.catalog.json",
+      "sha256": "a758574bfb1e1c6687dda9c067f78214e763174488e0f2b7d7ae7ccf4043680b",
+      "size": 20629
+    },
+    {
+      "path": "vase_TEBM35C10-4.facts.json",
+      "sha256": "287bff7cad2fe530e4994e1cdbf6013cf0b60f206ecd19fc7c35b32b16b94c29",
+      "size": 16196
+    },
+    {
+      "path": "vase_TEBM35C10-4.print.json",
+      "sha256": "7f4d32b99606fde5d218b177316bda5d935aec553126ac9911623dcdb28d0205",
+      "size": 1725
+    },
+    {
+      "path": "vase_TEBM35C10-4.step",
+      "sha256": "3ab4856ae2293962734c5442fa23fe6a52185626be0b4e295ffd81ddb841c5a2",
+      "size": 5785508
+    },
+    {
+      "path": "vase_TEBM35C10-4.stl",
+      "sha256": "87b5fdbf4ebc91241410aac988dda9ec3c640c5b8a2878959acf16ec78b3edba",
+      "size": 4083184
+    }
+  ],
+  "profile": "slim",
+  "schema_version": 1,
+  "validation": {
+    "auxiliary_catalog_bindings": "pass",
+    "front_down_print_contract": "pass",
+    "native_brep_round_trip": "pass",
+    "step_transaction": "pass",
+    "stl_brep_volume_relative_error": 0.0002242872337610952,
+    "stl_strict_two_manifold": "pass"
+  }
+}

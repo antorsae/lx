@@ -1,0 +1,620 @@
+{
+  "artifacts": [
+    {
+      "id": "shared:Stock-TEBM35C10-4:vase_TEBM35C10-4",
+      "part": "vase_TEBM35C10-4",
+      "print_orientation": "front_face_down",
+      "print_sidecar": "vase_TEBM35C10-4.print.json",
+      "print_sidecar_sha256": "879de4e5082c8289df70af6d6b799ef9741acf99e90f604e39fe78592cc499bf",
+      "rotation_deg": {
+        "x": 180.0,
+        "z": 0.0
+      },
+      "sites": [
+        {
+          "actual_face_xyz_mm": [
+            -32.83458542451846,
+            443.93100000000004,
+            15.1
+          ],
+          "bed_datum_source_xyz": [
+            0.0,
+            0.0,
+            18.3
+          ],
+          "captive_land_mm": 3.0,
+          "carrier_cavity_face_inset_mm": 0.0,
+          "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
+          "cavity_center_xyz_mm": [
+            -31.33458542451846,
+            443.93100000000004,
+            15.1
+          ],
+          "cavity_depth_mm": 2.1,
+          "cavity_diameter_mm": 5.2,
+          "closure_kind": "transverse_gable_45deg",
+          "face_skin_mm": 0.45,
+          "inner_skin_mm": 0.45,
+          "insertion_direction_xyz": [
+            -0.0,
+            -0.0,
+            1.0
+          ],
+          "installed_marked_pole_axis_xyz": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "interface_datum_xyz_mm": [
+            -32.83458542451846,
+            443.93100000000004,
+            15.1
+          ],
+          "interface_gap_mm": 0.05,
+          "interface_profile": "standard_straight",
+          "magnet_count": 1,
+          "magnet_depth_mm": 2.0,
+          "magnet_diameter_mm": 5.0,
+          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "marked_pole_axis_xyz": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "material_inward_xyz": [
+            1.0,
+            -0.0,
+            -0.0
+          ],
+          "minimum_retaining_path_mm": 0.42,
+          "name": "tebm_lower_left_base",
+          "outer_surface_face_xy_mm": [
+            -32.83458542451846,
+            443.93100000000004
+          ],
+          "owner": "base",
+          "pair_axis_xyz": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "paired_magnet_face_separation_mm": 0.95,
+          "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
+          "polarity_instruction": "marked/N pole points OUT from the vase along installed_marked_pole_axis_xyz; verify the future mating piece uses the opposite interface-facing pole before burial",
+          "print_space": {
+            "actual_face_xyz_mm": [
+              27.819414675481546,
+              82.29999999999995,
+              3.200000099999963
+            ],
+            "cavity_center_xyz_mm": [
+              29.319414675481546,
+              82.29999999999995,
+              3.200000099999963
+            ],
+            "insertion_direction_xyz": [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            "marked_pole_axis_xyz": [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            "material_inward_xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "seated_magnet_center_xyz_mm": [
+              29.269414675481546,
+              82.29999999999995,
+              3.200000099999963
+            ]
+          },
+          "print_up_source_xyz": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "raw_roof_start_print_z_mm": 5.800000000000001,
+          "required_min_part_top_print_z_mm": 8.850000000000001,
+          "roof_angle_deg": 45.0,
+          "roof_apex_print_z_mm": 8.400000000000002,
+          "roof_height_mm": 2.6000000000000005,
+          "roof_plane_grid_mm": 0.2,
+          "seated_magnet_center_xyz_mm": [
+            -31.38458542451846,
+            443.93100000000004,
+            15.1
+          ],
+          "structural_load_credit_n": 0.0
+        },
+        {
+          "actual_face_xyz_mm": [
+            32.83458542451846,
+            443.93100000000004,
+            15.1
+          ],
+          "bed_datum_source_xyz": [
+            0.0,
+            0.0,
+            18.3
+          ],
+          "captive_land_mm": 3.0,
+          "carrier_cavity_face_inset_mm": 0.0,
+          "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
+          "cavity_center_xyz_mm": [
+            31.33458542451846,
+            443.93100000000004,
+            15.1
+          ],
+          "cavity_depth_mm": 2.1,
+          "cavity_diameter_mm": 5.2,
+          "closure_kind": "transverse_gable_45deg",
+          "face_skin_mm": 0.45,
+          "inner_skin_mm": 0.45,
+          "insertion_direction_xyz": [
+            -0.0,
+            -0.0,
+            1.0
+          ],
+          "installed_marked_pole_axis_xyz": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "interface_datum_xyz_mm": [
+            32.83458542451846,
+            443.93100000000004,
+            15.1
+          ],
+          "interface_gap_mm": 0.05,
+          "interface_profile": "standard_straight",
+          "magnet_count": 1,
+          "magnet_depth_mm": 2.0,
+          "magnet_diameter_mm": 5.0,
+          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "marked_pole_axis_xyz": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "material_inward_xyz": [
+            -1.0,
+            -0.0,
+            -0.0
+          ],
+          "minimum_retaining_path_mm": 0.42,
+          "name": "tebm_lower_right_base",
+          "outer_surface_face_xy_mm": [
+            32.83458542451846,
+            443.93100000000004
+          ],
+          "owner": "base",
+          "pair_axis_xyz": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "paired_magnet_face_separation_mm": 0.95,
+          "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
+          "polarity_instruction": "marked/N pole points OUT from the vase along installed_marked_pole_axis_xyz; verify the future mating piece uses the opposite interface-facing pole before burial",
+          "print_space": {
+            "actual_face_xyz_mm": [
+              93.48858552451847,
+              82.29999999999995,
+              3.200000099999963
+            ],
+            "cavity_center_xyz_mm": [
+              91.98858552451847,
+              82.29999999999995,
+              3.200000099999963
+            ],
+            "insertion_direction_xyz": [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            "marked_pole_axis_xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "material_inward_xyz": [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            "seated_magnet_center_xyz_mm": [
+              92.03858552451847,
+              82.29999999999995,
+              3.200000099999963
+            ]
+          },
+          "print_up_source_xyz": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "raw_roof_start_print_z_mm": 5.800000000000001,
+          "required_min_part_top_print_z_mm": 8.850000000000001,
+          "roof_angle_deg": 45.0,
+          "roof_apex_print_z_mm": 8.400000000000002,
+          "roof_height_mm": 2.6000000000000005,
+          "roof_plane_grid_mm": 0.2,
+          "seated_magnet_center_xyz_mm": [
+            31.38458542451846,
+            443.93100000000004,
+            15.1
+          ],
+          "structural_load_credit_n": 0.0
+        },
+        {
+          "actual_face_xyz_mm": [
+            -32.83458542451846,
+            493.23100000000005,
+            15.1
+          ],
+          "bed_datum_source_xyz": [
+            0.0,
+            0.0,
+            18.3
+          ],
+          "captive_land_mm": 3.0,
+          "carrier_cavity_face_inset_mm": 0.0,
+          "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
+          "cavity_center_xyz_mm": [
+            -31.33458542451846,
+            493.23100000000005,
+            15.1
+          ],
+          "cavity_depth_mm": 2.1,
+          "cavity_diameter_mm": 5.2,
+          "closure_kind": "transverse_gable_45deg",
+          "face_skin_mm": 0.45,
+          "inner_skin_mm": 0.45,
+          "insertion_direction_xyz": [
+            -0.0,
+            -0.0,
+            1.0
+          ],
+          "installed_marked_pole_axis_xyz": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "interface_datum_xyz_mm": [
+            -32.83458542451846,
+            493.23100000000005,
+            15.1
+          ],
+          "interface_gap_mm": 0.05,
+          "interface_profile": "standard_straight",
+          "magnet_count": 1,
+          "magnet_depth_mm": 2.0,
+          "magnet_diameter_mm": 5.0,
+          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "marked_pole_axis_xyz": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "material_inward_xyz": [
+            1.0,
+            -0.0,
+            -0.0
+          ],
+          "minimum_retaining_path_mm": 0.42,
+          "name": "tebm_upper_left_base",
+          "outer_surface_face_xy_mm": [
+            -32.83458542451846,
+            493.23100000000005
+          ],
+          "owner": "base",
+          "pair_axis_xyz": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "paired_magnet_face_separation_mm": 0.95,
+          "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
+          "polarity_instruction": "marked/N pole points OUT from the vase along installed_marked_pole_axis_xyz; verify the future mating piece uses the opposite interface-facing pole before burial",
+          "print_space": {
+            "actual_face_xyz_mm": [
+              27.819414675481546,
+              32.99999999999994,
+              3.200000099999963
+            ],
+            "cavity_center_xyz_mm": [
+              29.319414675481546,
+              32.99999999999994,
+              3.200000099999963
+            ],
+            "insertion_direction_xyz": [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            "marked_pole_axis_xyz": [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            "material_inward_xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "seated_magnet_center_xyz_mm": [
+              29.269414675481546,
+              32.99999999999994,
+              3.200000099999963
+            ]
+          },
+          "print_up_source_xyz": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "raw_roof_start_print_z_mm": 5.800000000000001,
+          "required_min_part_top_print_z_mm": 8.850000000000001,
+          "roof_angle_deg": 45.0,
+          "roof_apex_print_z_mm": 8.400000000000002,
+          "roof_height_mm": 2.6000000000000005,
+          "roof_plane_grid_mm": 0.2,
+          "seated_magnet_center_xyz_mm": [
+            -31.38458542451846,
+            493.23100000000005,
+            15.1
+          ],
+          "structural_load_credit_n": 0.0
+        },
+        {
+          "actual_face_xyz_mm": [
+            32.83458542451846,
+            493.23100000000005,
+            15.1
+          ],
+          "bed_datum_source_xyz": [
+            0.0,
+            0.0,
+            18.3
+          ],
+          "captive_land_mm": 3.0,
+          "carrier_cavity_face_inset_mm": 0.0,
+          "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
+          "cavity_center_xyz_mm": [
+            31.33458542451846,
+            493.23100000000005,
+            15.1
+          ],
+          "cavity_depth_mm": 2.1,
+          "cavity_diameter_mm": 5.2,
+          "closure_kind": "transverse_gable_45deg",
+          "face_skin_mm": 0.45,
+          "inner_skin_mm": 0.45,
+          "insertion_direction_xyz": [
+            -0.0,
+            -0.0,
+            1.0
+          ],
+          "installed_marked_pole_axis_xyz": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "interface_datum_xyz_mm": [
+            32.83458542451846,
+            493.23100000000005,
+            15.1
+          ],
+          "interface_gap_mm": 0.05,
+          "interface_profile": "standard_straight",
+          "magnet_count": 1,
+          "magnet_depth_mm": 2.0,
+          "magnet_diameter_mm": 5.0,
+          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "marked_pole_axis_xyz": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "material_inward_xyz": [
+            -1.0,
+            -0.0,
+            -0.0
+          ],
+          "minimum_retaining_path_mm": 0.42,
+          "name": "tebm_upper_right_base",
+          "outer_surface_face_xy_mm": [
+            32.83458542451846,
+            493.23100000000005
+          ],
+          "owner": "base",
+          "pair_axis_xyz": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "paired_magnet_face_separation_mm": 0.95,
+          "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
+          "polarity_instruction": "marked/N pole points OUT from the vase along installed_marked_pole_axis_xyz; verify the future mating piece uses the opposite interface-facing pole before burial",
+          "print_space": {
+            "actual_face_xyz_mm": [
+              93.48858552451847,
+              32.99999999999994,
+              3.200000099999963
+            ],
+            "cavity_center_xyz_mm": [
+              91.98858552451847,
+              32.99999999999994,
+              3.200000099999963
+            ],
+            "insertion_direction_xyz": [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            "marked_pole_axis_xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "material_inward_xyz": [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            "seated_magnet_center_xyz_mm": [
+              92.03858552451847,
+              32.99999999999994,
+              3.200000099999963
+            ]
+          },
+          "print_up_source_xyz": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "raw_roof_start_print_z_mm": 5.800000000000001,
+          "required_min_part_top_print_z_mm": 8.850000000000001,
+          "roof_angle_deg": 45.0,
+          "roof_apex_print_z_mm": 8.400000000000002,
+          "roof_height_mm": 2.6000000000000005,
+          "roof_plane_grid_mm": 0.2,
+          "seated_magnet_center_xyz_mm": [
+            31.38458542451846,
+            493.23100000000005,
+            15.1
+          ],
+          "structural_load_credit_n": 0.0
+        }
+      ],
+      "source_file_sha256": {
+        "../../../scripts/check_manifold.py": "e50998399a046e5a6c87e82eeaa081639956141a726079b0a28c05645ccd5422",
+        "../../../scripts/export_piece_stls.py": "bc51ceb5ce79e9d12bf9a8616bc09eda41645c9ab97ec2df6eac2a2aa28aefd7",
+        "../../../scripts/export_steps.py": "6698e09040213e3d0efd782c947ebfeaaa5a7d27d3719a8e6aa7ae5859df6fda",
+        "../../../scripts/export_vase_tebm35c10_4.py": "0c4cdfce6f75a90c0e68ef67e31e59cf2412cf5d09fbbcbc00aacc9309998600",
+        "../../../src/lx521_baffle/base.py": "8c8d9f3bbd19b8944fc6767959b4a057af77f8649d359da47c35d950ec23926a",
+        "../../../src/lx521_baffle/cables.py": "c97c341a914d9904ec359fa674e57169aaefcd8900e08ee0c37f646fb8849862",
+        "../../../src/lx521_baffle/geom.py": "9479f43e9e7ca1304c8652d59911f927566e0b9eb602cc4bd0a967bc61d168dc",
+        "../../../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+        "../../../src/lx521_baffle/magnet_contract.py": "8c0a468dbcb9471c039b3e20f3f9d336ffcd85b39b79e1f54505b38ac690e7fb",
+        "../../../src/lx521_baffle/magnets.py": "0d756378a00e883a66d8f6a563ebdd59170a2c75dad37b27759d59af9fe08a5d",
+        "../../../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+        "../../../src/lx521_baffle/proud/top_baffle_nd25fw4_b.py": "0fcdcb33c4ba237fdff0579d37611a2b896e17749d04c97219e069f053e16f5f",
+        "../../../src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py": "39f4d1af4e89066df4a8dc2ccddced2c3a671406d0607d9fe793cbb8b17d90de",
+        "../../../src/lx521_baffle/proud/top_baffle_nd25fw4_b2_split.py": "3a5b59e80408a816c26f3a838cdadf581775c0babd297426798402b5b8cf2b53",
+        "../../../src/lx521_baffle/proud/vase_tebm35c10_4.py": "ce278a00047a4186de2e8b115da2a2a9952c62b1cf502a2f0a3de17f95f70682",
+        "../../../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+      },
+      "source_files": [
+        "../../../src/lx521_baffle/base.py",
+        "../../../src/lx521_baffle/cables.py",
+        "../../../src/lx521_baffle/geom.py",
+        "../../../src/lx521_baffle/io.py",
+        "../../../src/lx521_baffle/magnet_contract.py",
+        "../../../src/lx521_baffle/magnets.py",
+        "../../../src/lx521_baffle/print_contract.py",
+        "../../../src/lx521_baffle/stl_export.py",
+        "../../../src/lx521_baffle/proud/top_baffle_nd25fw4_b.py",
+        "../../../src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py",
+        "../../../src/lx521_baffle/proud/top_baffle_nd25fw4_b2_split.py",
+        "../../../src/lx521_baffle/proud/vase_tebm35c10_4.py",
+        "../../../scripts/check_manifold.py",
+        "../../../scripts/export_piece_stls.py",
+        "../../../scripts/export_steps.py",
+        "../../../scripts/export_vase_tebm35c10_4.py"
+      ],
+      "source_to_stl_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          60.654000100000005
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0,
+          526.231
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          18.300000099999963
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "state": "shared",
+      "stl": "vase_TEBM35C10-4.stl",
+      "stl_sha256": "1214f11334119099861a105ecf886410a487458edea601d0bf4c799d393f7653",
+      "variant": "Stock-TEBM35C10-4"
+    }
+  ],
+  "catalog_kind": "released_pause_and_bury_captive_magnets",
+  "exclusions": [
+    {
+      "path": "review/captive_magnet_release_catalog.json",
+      "reason": "the protected production release remains independent; this catalog is consumed only with --auxiliary-catalog"
+    }
+  ],
+  "generated_by": "export_vase_tebm35c10_4.py",
+  "geometry": {
+    "captive_land_mm": 3.0,
+    "cavity_depth_mm": 2.1,
+    "cavity_diameter_mm": 5.2,
+    "external_access_opening": false,
+    "face_skin_mm": 0.45,
+    "glue": false,
+    "inner_skin_mm": 0.45,
+    "interface_gap_mm": 0.05,
+    "internal_support_material": false,
+    "magnet_depth_mm": 2.0,
+    "magnet_diameter_mm": 5.0,
+    "minimum_retaining_path_mm": 0.42,
+    "nominal_magnet": "D5.0 x 2.0 mm disc",
+    "paired_magnet_face_separation_by_interface_profile_mm": {
+      "standard_straight": 0.95
+    },
+    "roof_angle_deg": 45.0,
+    "roof_height_mm": 2.6000000000000005,
+    "roof_plane_grid_mm": 0.2,
+    "structural_load_credit_n": 0.0
+  },
+  "inventory": {
+    "artifact_count": 1,
+    "count_semantics": "isolated optional stock BMR-vase artifact; not an amendment to the protected 64-artifact release inventory",
+    "families": [
+      "Stock-TEBM35C10-4"
+    ],
+    "family_counts": {
+      "Stock-TEBM35C10-4": {
+        "artifact_count": 1,
+        "magnet_count": 4
+      }
+    },
+    "magnet_count": 4
+  },
+  "print_contract": {
+    "allowed_additional_rotation": "in_bed_Z_only",
+    "orientation": "front_face_down",
+    "oversize_policy": "never scale, tilt, clip, or virtual-bed an oversized STL; the Obi-Wan LM monolith is explicitly not P2S-printable and its cavity G-code is covered only by exact same-state keyed split artifacts",
+    "pause_authority": "actual sliced G-code first-closing layer",
+    "printer_contact": "forbidden; offline slicing only",
+    "reason": "consistent acoustic-front build-plate texture",
+    "scope": "every_released_acoustic_part",
+    "slicer": "Bambu Studio P2S 0.4 mm / 0.16 mm Arachne"
+  },
+  "schema_sha256": "03213800f14453ce99785c090fa10d7dbdb5c380bf05fd98ef75a50b5def58d1",
+  "schema_version": 1,
+  "source_revision": "6414209a0296f97f1dcacc688afc5515368e55300d4f62cc87fa3dd6fd95afe1"
+}

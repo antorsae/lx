@@ -122,9 +122,6 @@ from .carriers import (
     JUNCTION_WEB_SAMPLES,
     JUNCTION_WEB_SEAM_GAP,
     JUNCTION_WEB_Z,
-    LM_BASE_MAGNET_FACE_X,
-    LM_BASE_MAGNET_Y,
-    LM_BASE_MAGNET_Z,
     LM_CORE_R,
     LM_JOINT_Z,
     LM_STRUCT_SPOKE_W,
@@ -139,6 +136,13 @@ from .carriers import (
     LM_UM_WEB_BLEND_START_X,
     LM_UM_WEB_HALF_WIDTH,
     LM_VISIBLE_RING_R,
+    LM_SHOULDER_MAGNET_ANGLE_RIGHT_DEG,
+    LM_SHOULDER_MAGNET_CAVITY_FACE_INSET_MM,
+    LM_SHOULDER_MAGNET_FACE_RIGHT,
+    LM_SHOULDER_MAGNET_NORMAL_RIGHT,
+    LM_SHOULDER_MAGNET_OUTER_FACE_RIGHT,
+    LM_SHOULDER_MAGNET_PARAMETER,
+    LM_SHOULDER_MAGNET_Z,
     OBIWAN_MAGNET_Z_MM,
     PRINT_ORIENTATION,
     SEAT_MEMBRANE_LIP_OVERLAP,
@@ -272,29 +276,48 @@ def side_magnet_sites(driver: str | None = None):
                 "proud_ear_added": False,
             })
         if key == "lm":
-            for side, face_x, normal_x, angle in (
-                    ("left", -LM_BASE_MAGNET_FACE_X, -1.0, 180.0),
-                    ("right", LM_BASE_MAGNET_FACE_X, 1.0, 0.0)):
+            for side, mirror_x in (("left", -1.0), ("right", 1.0)):
+                outer_surface_face = (
+                    mirror_x * LM_SHOULDER_MAGNET_OUTER_FACE_RIGHT[0],
+                    LM_SHOULDER_MAGNET_OUTER_FACE_RIGHT[1],
+                )
+                face = (
+                    mirror_x * LM_SHOULDER_MAGNET_FACE_RIGHT[0],
+                    LM_SHOULDER_MAGNET_FACE_RIGHT[1],
+                )
+                normal = (
+                    mirror_x * LM_SHOULDER_MAGNET_NORMAL_RIGHT[0],
+                    LM_SHOULDER_MAGNET_NORMAL_RIGHT[1],
+                )
+                angle = (
+                    LM_SHOULDER_MAGNET_ANGLE_RIGHT_DEG
+                    if side == "right"
+                    else (180.0 - LM_SHOULDER_MAGNET_ANGLE_RIGHT_DEG) % 360.0
+                )
                 records.append({
                     "name": f"lm_lower_{side}",
                     "driver": "lm",
                     "angle_deg": angle,
-                    "normal": (normal_x, 0.0),
-                    "face": (face_x, LM_BASE_MAGNET_Y),
-                    "outer_surface_face": (face_x, LM_BASE_MAGNET_Y),
-                    # These compatibility fields describe the horizontal
-                    # base-side datum; receiver construction must key from
-                    # interface_kind rather than treating it as an R113 arc.
-                    "center": (0.0, LM_BASE_MAGNET_Y),
-                    "radius": LM_BASE_MAGNET_FACE_X,
+                    "normal": normal,
+                    "face": face,
+                    "outer_surface_face": outer_surface_face,
+                    # Compatibility fields describe a non-circular shoulder
+                    # station. Consumers must key from ``interface_kind``.
+                    "center": L22_CUTOUT[:2],
+                    "radius": math.dist(
+                        L22_CUTOUT[:2], outer_surface_face),
                     "clock_from_top_deg": 90.0 - angle,
-                    "face_offset_mm": 0.0,
-                    "carrier_cavity_face_inset_mm": 0.0,
-                    "z_mm": LM_BASE_MAGNET_Z,
-                    "interface_kind": "base_side",
+                    "face_offset_mm": (
+                        -LM_SHOULDER_MAGNET_CAVITY_FACE_INSET_MM),
+                    "carrier_cavity_face_inset_mm": (
+                        LM_SHOULDER_MAGNET_CAVITY_FACE_INSET_MM),
+                    "shoulder_parameter": LM_SHOULDER_MAGNET_PARAMETER,
+                    "z_mm": LM_SHOULDER_MAGNET_Z,
+                    "interface_kind": "shoulder",
                     "magnet_fully_buried": True,
                     "local_captive_backing_boss_mm": 0.0,
                     "continuous_flush_ring_fairing_mm": 0.0,
+                    "continuous_flush_shoulder": True,
                     "proud_ear_added": False,
                 })
     return records

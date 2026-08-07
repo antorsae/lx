@@ -78,6 +78,10 @@ def build_parser() -> argparse.ArgumentParser:
                         help="ignore content-addressed completed slices")
     parser.add_argument("--prepare-profiles-only", action="store_true")
     parser.add_argument(
+        "--auxiliary-catalog", action="store_true",
+        help=("consume one isolated optional-artifact catalog without "
+              "weakening the protected release inventory gate"))
+    parser.add_argument(
         "--emit-ready-projects", action="store_true",
         help=("after discovery, reslice each direct STL with exact Bambu "
               "Custom magnet park/pause/restore events and export "
@@ -115,10 +119,26 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(output / "profiles" / "profile_provenance.json")
         return 0
     catalog_path = args.catalog.expanduser().resolve()
-    catalog = normalize_catalog(catalog_path)
+    profile_mode = profile_bundle["config"].get("catalog_mode", "release")
+    expected_mode = "auxiliary" if args.auxiliary_catalog else "release"
+    if profile_mode != expected_mode:
+        raise AuditError(
+            f"profile catalog_mode {profile_mode!r} does not match "
+            f"requested {expected_mode!r} slicing")
+    if args.auxiliary_catalog and output == DEFAULT_OUTPUT.resolve():
+        raise AuditError(
+            "an auxiliary catalog must use an isolated --output directory")
+    catalog = normalize_catalog(
+        catalog_path,
+        enforce_release_inventory=not args.auxiliary_catalog,
+    )
     _validate_artifact_override_coverage(
         catalog["artifacts"], profile_bundle["config"])
+    _validate_parameter_modifier_coverage(
+        catalog["artifacts"], profile_bundle)
     selected = _filter_artifacts(catalog["artifacts"], args.only)
+    _validate_profile_artifact_scope(
+        selected, profile_bundle["config"])
     catalog_by_id = {
         artifact["id"]: artifact for artifact in catalog["artifacts"]
     }
@@ -282,9 +302,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             return 1
 
         _validate_complete_release(
-            catalog, records, failures, require_ready_projects=True)
+            catalog, records, failures,
+            enforce_expected_inventory=not args.auxiliary_catalog,
+            require_ready_projects=True)
         paths = write_manifests(
-            output, catalog_path, catalog, profile_bundle, records, failures)
+            output, catalog_path, catalog, profile_bundle, records, failures,
+            enforce_expected_inventory=not args.auxiliary_catalog)
         print("\n".join(
             f"{key}: {path}" for key, path in paths.items()))
         return 0

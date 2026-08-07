@@ -45,6 +45,7 @@ import math
 import os
 
 from build123d import (
+    Bezier,
     Circle,
     Cylinder,
     Line,
@@ -61,6 +62,14 @@ from build123d import (
 )
 
 from .geom import smoothstep01 as _smoothstep01
+from .floor_bend import (
+    BEND_HORIZONTAL_HANDLE_MM,
+    BEND_MIN_CENTERLINE_RADIUS_MM,
+    BEND_REAR_SPAN_MM,
+    BEND_VERTICAL_HANDLE_MM,
+    canonical_lane_controls,
+    cubic_point as floor_bend_cubic_point,
+)
 from .base import (
     L22_CUTOUT,
     STAND_FOOT,
@@ -129,6 +138,12 @@ TS_OVAL = {"w2": 3.3, "h2": 2.2, "zc": 10.45,
            "y_in": (316.0, 330.0), "y_out": (417.5, 425.5)}
 
 
+def _minimum_jerk01(value: float) -> float:
+    """Endpoint-flat C2 quintic used by physical duct transitions."""
+    value = min(1.0, max(0.0, float(value)))
+    return value ** 3 * (10.0 + value * (-15.0 + 6.0 * value))
+
+
 def ts_section(y):
     """(w2, h2, zc) of the TS duct section at height y: the oval drop
     under the MU10 flange seat, round O6.0 z=11.5 elsewhere. The duct
@@ -144,6 +159,11 @@ def ts_section(y):
         f = (y - yi0) / (yi1 - yi0)
     else:                             # exit morph (f runs 1 -> 0)
         f = (yo1 - y) / (yo1 - yo0)
+    # A linear morph made the centerline change slope abruptly at all four
+    # section-law boundaries.  The quintic preserves the same endpoint
+    # sections and the same occupied Z interval while making size and center
+    # position C2 at each boundary.
+    f = _minimum_jerk01(f)
     return (rw2 + f * (ow2 - rw2), rh2 + f * (oh2 - rh2),
             rzc + f * (ozc - rzc))
 
@@ -324,26 +344,222 @@ def _ts_route(ts_route_key: str = TS_ROUTE_STANDARD):
         f"{TS_ROUTE_STANDARD!r} or {TS_ROUTE_CAPTIVE!r}")
 
 
-# Without the stand foot the baffle bolts to the stock support via the
-# four pass-throughs, and all cables must pass a D20 hole in the
-# support plate: center (0, 60). Packing: LM/UM breakouts side by side
-# (steep ramps crossing z=0 at (-/+5.2, 60.5)); twin O4.6 T ramps
-# breaking out at (+3.8, 52.2) / (-3.1, 52.7) into the strip feeders,
-# far lips up to ~1.4 past the rim (the floppy AWG24 pairs duck in).
+# Stock/Slim upper-vase route optimization.  The B2 flare and chamfer are
+# tangent to the same UM-centred circle.  R45.91 is the balanced centerline
+# between the D82 opening and both tangent exterior walls: with the W6.6 oval
+# it retains at least 1.60 mm on either side.  The released route is preserved
+# byte-for-byte through y=330.8, so the lower-left captive-magnet detour and
+# both seam-mouth interfaces do not move.  A short G1 lead reaches the exact
+# circle, and an R12 fillet turns into the unchanged final outlet position.
+TS_OPTIMIZED_START_Y_MM = 330.8
+TS_OPTIMIZED_LINE_JOIN_Y_MM = 346.0
+TS_UM_CORRIDOR_R_MM = 45.91
+TS_UM_CORRIDOR_LOWER_DXY = (-0.29752, 1.0)
+TS_UM_CORRIDOR_UPPER_DXY = (1.9108, 1.0)
+TS_OPTIMIZED_TRANSITION_START_HANDLE_MM = 5.0
+TS_OPTIMIZED_TRANSITION_END_HANDLE_MM = 7.0
+TS_OUTLET_FILLET_R_MM = 12.0
+TS_OUTLET_XY_MM = (-3.4, 433.0)
+
+
+def _unit_xyz(values):
+    magnitude = math.sqrt(sum(float(value) ** 2 for value in values))
+    if magnitude <= 1.0e-12:
+        raise ValueError("zero-length routing vector")
+    return tuple(float(value) / magnitude for value in values)
+
+
+def _path_parameter_at_y(path, target_y: float) -> float:
+    """Normalized parameter at one point on a y-monotone path."""
+    if not float((path @ 0.0).Y) <= target_y <= float((path @ 1.0).Y):
+        raise ValueError(f"path does not bracket y={target_y}")
+    low = 0.0
+    high = 1.0
+    for _iteration in range(64):
+        middle = (low + high) / 2.0
+        if float((path @ middle).Y) < target_y:
+            low = middle
+        else:
+            high = middle
+    return (low + high) / 2.0
+
+
+def _clockwise_circle_angle_for_tangent(direction_xy) -> float:
+    """Circle position angle whose clockwise tangent is direction_xy."""
+    dx, dy, _dz = _unit_xyz((*direction_xy, 0.0))
+    return math.atan2(dx, -dy) % (2.0 * math.pi)
+
+
+def _um_circle_point(radius_mm: float, angle_rad: float):
+    return (
+        radius_mm * math.cos(angle_rad),
+        UM_Y + radius_mm * math.sin(angle_rad),
+        0.0,
+    )
+
+
+def _tail_fillet_geometry(start, start_direction, end, end_direction,
+                           radius_mm: float):
+    """Tangent points and midpoint for a minor plan fillet."""
+    p0 = (float(start[0]), float(start[1]))
+    p1 = (float(end[0]), float(end[1]))
+    d0x, d0y, _ = _unit_xyz((*start_direction[:2], 0.0))
+    d1x, d1y, _ = _unit_xyz((*end_direction[:2], 0.0))
+    denominator = d0x * d1y - d0y * d1x
+    if abs(denominator) <= 1.0e-9:
+        raise ValueError("outlet fillet tangents are parallel")
+    delta_x = p1[0] - p0[0]
+    delta_y = p1[1] - p0[1]
+    along_start = (delta_x * d1y - delta_y * d1x) / denominator
+    corner = (
+        p0[0] + along_start * d0x,
+        p0[1] + along_start * d0y,
+    )
+    turn = math.acos(max(-1.0, min(1.0, d0x * d1x + d0y * d1y)))
+    offset = radius_mm * math.tan(turn / 2.0)
+    first = (corner[0] - offset * d0x,
+             corner[1] - offset * d0y)
+    second = (corner[0] + offset * d1x,
+              corner[1] + offset * d1y)
+    cross = d0x * d1y - d0y * d1x
+    normal = ((-d0y, d0x) if cross > 0.0 else (d0y, -d0x))
+    center = (first[0] + radius_mm * normal[0],
+              first[1] + radius_mm * normal[1])
+    first_angle = math.atan2(first[1] - center[1],
+                             first[0] - center[0])
+    second_angle = math.atan2(second[1] - center[1],
+                              second[0] - center[0])
+    if cross > 0.0:
+        sweep_angle = (second_angle - first_angle) % (2.0 * math.pi)
+    else:
+        sweep_angle = -((first_angle - second_angle) % (2.0 * math.pi))
+    if abs(sweep_angle) >= math.pi:
+        raise ValueError("outlet fillet must use the minor arc")
+    middle_angle = first_angle + sweep_angle / 2.0
+    middle = (
+        center[0] + radius_mm * math.cos(middle_angle),
+        center[1] + radius_mm * math.sin(middle_angle),
+    )
+    return first, middle, second
+
+
+def ts_plan_path(ts_route_key: str = TS_ROUTE_STANDARD):
+    """Qualified Stock/Slim shared-T plan path.
+
+    The legacy spline owns everything through the captive-magnet span.  The
+    upper-vase portion is an exact G1 line/arc/line corridor followed by an
+    R12 outlet fillet, eliminating the former many-knot curvature reversals.
+    """
+    legacy = Spline(*[
+        (x, y, 0.0) for x, y in _ts_route(ts_route_key=ts_route_key)
+    ])
+    start_parameter = _path_parameter_at_y(
+        legacy, TS_OPTIMIZED_START_Y_MM)
+    prefix = legacy.trim(0.0, start_parameter)
+    prefix_end = tuple(prefix @ 1.0)
+    prefix_tangent = _unit_xyz(tuple(prefix % 1.0))
+
+    lower_direction = _unit_xyz((*TS_UM_CORRIDOR_LOWER_DXY, 0.0))
+    lower_angle = _clockwise_circle_angle_for_tangent(
+        TS_UM_CORRIDOR_LOWER_DXY)
+    lower_tangent = _um_circle_point(TS_UM_CORRIDOR_R_MM, lower_angle)
+    line_join_distance = (
+        (TS_OPTIMIZED_LINE_JOIN_Y_MM - lower_tangent[1])
+        / lower_direction[1]
+    )
+    line_join = tuple(
+        lower_tangent[index] + line_join_distance * lower_direction[index]
+        for index in range(3)
+    )
+    transition = Bezier(
+        prefix_end,
+        tuple(prefix_end[index]
+              + TS_OPTIMIZED_TRANSITION_START_HANDLE_MM
+              * prefix_tangent[index] for index in range(3)),
+        tuple(line_join[index]
+              - TS_OPTIMIZED_TRANSITION_END_HANDLE_MM
+              * lower_direction[index] for index in range(3)),
+        line_join,
+    ).edge()
+
+    upper_direction = _unit_xyz((*TS_UM_CORRIDOR_UPPER_DXY, 0.0))
+    upper_angle = _clockwise_circle_angle_for_tangent(
+        TS_UM_CORRIDOR_UPPER_DXY)
+    upper_tangent = _um_circle_point(TS_UM_CORRIDOR_R_MM, upper_angle)
+    circle_sweep = -((lower_angle - upper_angle) % (2.0 * math.pi))
+    circle_mid = _um_circle_point(
+        TS_UM_CORRIDOR_R_MM, lower_angle + circle_sweep / 2.0)
+
+    legacy_outlet_tangent = _unit_xyz(tuple(legacy % 1.0))
+    outlet = (*TS_OUTLET_XY_MM, 0.0)
+    fillet_start, fillet_mid, fillet_end = _tail_fillet_geometry(
+        upper_tangent,
+        upper_direction,
+        outlet,
+        legacy_outlet_tangent,
+        TS_OUTLET_FILLET_R_MM,
+    )
+    return Wire((
+        prefix,
+        transition,
+        Line(line_join, lower_tangent).edge(),
+        ThreePointArc(lower_tangent, circle_mid, upper_tangent).edge(),
+        Line(upper_tangent, (*fillet_start, 0.0)).edge(),
+        ThreePointArc(
+            (*fillet_start, 0.0),
+            (*fillet_mid, 0.0),
+            (*fillet_end, 0.0),
+        ).edge(),
+        Line((*fillet_end, 0.0), outlet).edge(),
+    ))
+
+
+# Without the stand foot the baffle bolts to the stock support via the four
+# rear M5 inserts, and all cables pass the support plate's D20 window.  One
+# release-critical three-port datum is shared by Stock, Slim and Obi-Wan:
+#
+#                         LM (D9)
+#                    T (D6)   UM (D8.2)
+#
+# Coordinates are relative to the same (0, 60) support-window centre and the
+# same four bridge inserts at (+/-20, 20/70).  The unequal offsets retain at
+# least 0.72 mm to the D20 rim and 0.80 mm between neighbouring lumens.  T is
+# one D6 trunk carrying both AWG24 tweeter pairs; the former two-entry fan was
+# both harder to identify during assembly and geometrically inconsistent with
+# Obi-Wan.
 SUPPORT_WINDOW = (0.0, 60.0, 20.0)  # cx, cy, D of the support-plate hole
-T_RAMP = ((1.0, 53.4, -6.4), (6.0, 51.3, 5.0))  # right pair
-T_RAMP_L = ((-1.0, 53.4, -6.4), (-6.3, 51.7, 9.5))  # left pair,
-# lancing the raised t2 feeder (z=9.5); breakout ~(-3.1, 52.7)
+OBIWAN_NO_FLOOR_ENTRY_WINDOW_CENTER_XY = tuple(
+    map(float, SUPPORT_WINDOW[:2]))
+OBIWAN_NO_FLOOR_ENTRY_WINDOW_D_MM = float(SUPPORT_WINDOW[2])
+OBIWAN_NO_FLOOR_LM_ENTRY_LOCAL_XY = (-0.35, 4.76)
+OBIWAN_NO_FLOOR_T_ENTRY_LOCAL_XY = (-4.75, -4.09)
+OBIWAN_NO_FLOOR_UM_ENTRY_LOCAL_XY = (3.17, -4.09)
 
 
-# LM/UM entries: straight oblique ramps (p0 behind the rear face ->
-# tip inside the planar main), O0.8 over their ducts.
-BIG_RAMPS = {
-    "lm": ((-4.6, 56.0, -6.4), (-8.0, 68.5, 12.55)),
-    "um": ((2.0, 56.0, -6.4), (8.0, 60.0, 12.55)),  # 69-deg ramp
-    # lancing the fan arc; breakout (4.0, 57.4) inside the D20 window
-}
-BIG_RAMP_D = {"lm": 9.0, "um": 8.6}
+def _obiwan_no_floor_entry_xy(local_xy):
+    return (
+        OBIWAN_NO_FLOOR_ENTRY_WINDOW_CENTER_XY[0] + local_xy[0],
+        OBIWAN_NO_FLOOR_ENTRY_WINDOW_CENTER_XY[1] + local_xy[1],
+    )
+
+
+OBIWAN_NO_FLOOR_LM_ENTRY_XY = _obiwan_no_floor_entry_xy(
+    OBIWAN_NO_FLOOR_LM_ENTRY_LOCAL_XY)
+OBIWAN_NO_FLOOR_T_ENTRY_XY = _obiwan_no_floor_entry_xy(
+    OBIWAN_NO_FLOOR_T_ENTRY_LOCAL_XY)
+OBIWAN_NO_FLOOR_UM_ENTRY_XY = _obiwan_no_floor_entry_xy(
+    OBIWAN_NO_FLOOR_UM_ENTRY_LOCAL_XY)
+
+# Stock/Slim intentionally alias the Obi-Wan physical interfaces.  Keep the
+# aliases explicit so tests can reject any future profile-specific drift.
+STOCK_SLIM_LM_ENTRY_XY = OBIWAN_NO_FLOOR_LM_ENTRY_XY
+STOCK_SLIM_T_ENTRY_XY = OBIWAN_NO_FLOOR_T_ENTRY_XY
+STOCK_SLIM_UM_ENTRY_XY = OBIWAN_NO_FLOOR_UM_ENTRY_XY
+
+# Entry diameters now match the Obi-Wan ports as well as their XY datums.
+# UM is D8.2 end-to-end; the deleted legacy D8.6 mouth served only the old
+# oblique breakout and would consume 0.20 mm of the qualified T/UM web.
+BIG_RAMP_D = {"lm": 9.0, "um": 8.2}
 # One source of truth for the lower LM outlet in every family.  Its X datum
 # is the established stock/slim duct X; its Y datum sits 10 mm below the
 # nominal lower tangent of the D190 acoustic aperture.  Keeping this datum
@@ -375,53 +591,32 @@ LM_EXIT_STANDARD_REAR_FACE_Z_MM = 0.0
 LM_EXIT_V1L_REAR_FACE_Z_MM = 6.8
 
 
-def _rear_plane_crossing_xy(start, end):
-    """XY where one oblique stock/slim entry crosses the z=0 datum."""
-    fraction = -start[2] / (end[2] - start[2])
-    return (
-        start[0] + fraction * (end[0] - start[0]),
-        start[1] + fraction * (end[1] - start[1]),
-    )
+# Stock/Slim no-floor entry curves.  Each cubic is tangent to its
+# short external lead and to the retained main route, so the former
+# straight-ramp/spline intersections cannot leave a cable-catching elbow.
+# The UM joins the released fan at y=67.880790, before the nearby bridge
+# insert becomes limiting; its D8.6 surface retains 1.65 mm of true 3D
+# clearance from that insert.  LM uses the complete available run to its R14
+# terminal handoff and therefore keeps R17.4 or better in both Stock and Slim.
+STOCK_SLIM_NO_FLOOR_REAR_Z_MM = -6.4
+STOCK_SLIM_NO_FLOOR_LM_CONTROL_1_MM = (
+    -6.41114611, 66.28587067, 8.65591948)
+STOCK_SLIM_NO_FLOOR_LM_END_HANDLE_MM = 7.95948850
+STOCK_SLIM_NO_FLOOR_UM_JOIN_Y_MM = 67.88078966
+STOCK_SLIM_NO_FLOOR_UM_CONTROL_1_MM = (
+    5.03310110, 57.57806369, 7.77492804)
+STOCK_SLIM_NO_FLOOR_UM_END_HANDLE_MM = 7.88851748
 
-
-# Stock/Slim retain their established, individually drilled rear entries.
-STOCK_SLIM_LM_ENTRY_XY = _rear_plane_crossing_xy(*BIG_RAMPS["lm"])
-STOCK_SLIM_UM_ENTRY_XY = _rear_plane_crossing_xy(*BIG_RAMPS["um"])
-STOCK_SLIM_T_RIGHT_ENTRY_XY = _rear_plane_crossing_xy(*T_RAMP)
-STOCK_SLIM_T_LEFT_ENTRY_XY = _rear_plane_crossing_xy(*T_RAMP_L)
-
-# Obi-Wan's no-floor bridge instead presents all three cable entries through
-# the one immutable D20 support opening.  Coordinates below are relative to
-# that opening's centre and are deliberately arranged as viewed from the
-# rear:
-#
-#                         LM (D9)
-#                    T (D6)   UM (D8.2)
-#
-# The unequal offsets solve the circle packing with >=0.72 mm radial rim and
-# >=0.80 mm lumen-to-lumen web.  Keep the local datums explicit: deriving one
-# port from another would hide a release-critical change in the D20 packing.
-OBIWAN_NO_FLOOR_ENTRY_WINDOW_CENTER_XY = tuple(
-    map(float, SUPPORT_WINDOW[:2]))
-OBIWAN_NO_FLOOR_ENTRY_WINDOW_D_MM = float(SUPPORT_WINDOW[2])
-OBIWAN_NO_FLOOR_LM_ENTRY_LOCAL_XY = (-0.35, 4.76)
-OBIWAN_NO_FLOOR_T_ENTRY_LOCAL_XY = (-4.75, -4.09)
-OBIWAN_NO_FLOOR_UM_ENTRY_LOCAL_XY = (3.17, -4.09)
-
-
-def _obiwan_no_floor_entry_xy(local_xy):
-    return (
-        OBIWAN_NO_FLOOR_ENTRY_WINDOW_CENTER_XY[0] + local_xy[0],
-        OBIWAN_NO_FLOOR_ENTRY_WINDOW_CENTER_XY[1] + local_xy[1],
-    )
-
-
-OBIWAN_NO_FLOOR_LM_ENTRY_XY = _obiwan_no_floor_entry_xy(
-    OBIWAN_NO_FLOOR_LM_ENTRY_LOCAL_XY)
-OBIWAN_NO_FLOOR_T_ENTRY_XY = _obiwan_no_floor_entry_xy(
-    OBIWAN_NO_FLOOR_T_ENTRY_LOCAL_XY)
-OBIWAN_NO_FLOOR_UM_ENTRY_XY = _obiwan_no_floor_entry_xy(
-    OBIWAN_NO_FLOOR_UM_ENTRY_LOCAL_XY)
+# One D6 shared-T entry carries both pairs from Obi-Wan's exact T mouth to the
+# unchanged standard TS main.  The spatial cubic is G1 at the retained main,
+# stays within the D20 window when back-projected to z=-6.4, and has a sampled
+# minimum bend radius above R10.6.
+NO_FLOOR_T_CONTROL_1_MM = (-6.22328412, 52.31152271, 6.20543104)
+NO_FLOOR_T_END_HANDLE_MM = 6.69229648
+NO_FLOOR_T_ENTRY_D_MM = 6.0
+NO_FLOOR_T_JOIN_D_MM = 6.8
+NO_FLOOR_T_JOIN_GROW_MM = 5.0
+NO_FLOOR_T_CUTTER_OVERLAP_MM = 3.0
 
 # Profile-specific G1 UM handoff.  The quarter circle lies in the plane
 # spanned by the incoming plan tangent and -Z:
@@ -434,15 +629,54 @@ UM_HANDOFF_D_MM = 8.2
 UM_MAIN_D_MM = CABLE_D["um"]
 UM_TRANSITION_MM = 0.0  # retained as an exported R6 design fact
 
-UM_HANDOFF = {
-    "proud": {
-        "start": (46.028970, 295.354375, 12.55),
-        "tangent": (-0.898794, 0.438371, 0.0),
-        "outlet": (33.445854, 301.491571, -1.45),
-        "rear_end": (33.445854, 301.491571, -2.00),
-        "bearing_deg": 297.376,
-    },
-}
+# Rotating the shared W22 clock to 0/60/... places one M5 receiver at
+# (52.375, 291.697).  The former diagonal R14 start passed through it.  The
+# replacement retains the exact old z=0 rear-face crossing and uses a
+# constrained tangent corridor between the receiver and the exterior waist.
+# The standard and V1L rear mouths are immutable, but their planar approach
+# bearings are qualified independently.  V1L must wrap outside both the W22
+# aperture and the rotated 60-degree M5 receiver before reaching its 283-degree
+# physical rear-mouth station; a near-leftward approach makes that possible
+# without an S-bend.
+UM_STANDARD_REAR_FACE_XY_MM = (33.51352576823163, 301.4585632826594)
+UM_TERMINAL_PLAN_BEARING_DEG = 184.17703583
+UM_TERMINAL_PLAN_TANGENT = (
+    math.cos(math.radians(UM_TERMINAL_PLAN_BEARING_DEG)),
+    math.sin(math.radians(UM_TERMINAL_PLAN_BEARING_DEG)),
+    0.0,
+)
+UM_V1L_TERMINAL_PLAN_BEARING_DEG = 180.0
+UM_V1L_TERMINAL_PLAN_TANGENT = (
+    math.cos(math.radians(UM_V1L_TERMINAL_PLAN_BEARING_DEG)),
+    math.sin(math.radians(UM_V1L_TERMINAL_PLAN_BEARING_DEG)),
+    0.0,
+)
+UM_V1L_PLAN_START_XY_MM = (30.8078720, 302.9999940)
+
+
+def _standard_um_handoff():
+    tx, ty, _tz = UM_TERMINAL_PLAN_TANGENT
+    start_z = DUCT_Z["um"]
+    cos_phi = 1.0 - start_z / UM_HANDOFF_R_MM
+    plan_to_rear = UM_HANDOFF_R_MM * math.sqrt(1.0 - cos_phi * cos_phi)
+    rear_x, rear_y = UM_STANDARD_REAR_FACE_XY_MM
+    start_x = rear_x - plan_to_rear * tx
+    start_y = rear_y - plan_to_rear * ty
+    outlet_x = start_x + UM_HANDOFF_R_MM * tx
+    outlet_y = start_y + UM_HANDOFF_R_MM * ty
+    bearing = math.degrees(math.atan2(
+        outlet_y - UM_CUTOUT[1], outlet_x - UM_CUTOUT[0])) % 360.0
+    return {
+        "start": (start_x, start_y, start_z),
+        "tangent": UM_TERMINAL_PLAN_TANGENT,
+        "rear_face_axis_point": (rear_x, rear_y, 0.0),
+        "outlet": (outlet_x, outlet_y, start_z - UM_HANDOFF_R_MM),
+        "rear_end": (outlet_x, outlet_y, -2.00),
+        "bearing_deg": bearing,
+    }
+
+
+UM_HANDOFF = {"proud": _standard_um_handoff()}
 
 # V1L-only terminal-axis handoff.  The requested target is a physical
 # rear-face fact, not a projection of the old rear endpoint: at z=6.8
@@ -456,8 +690,7 @@ UM_V1L_REAR_FACE_Z_MM = 6.8
 
 
 def _v1l_terminal_axis_handoff():
-    standard = UM_HANDOFF["proud"]
-    tx, ty, _tz = standard["tangent"]
+    tx, ty, _tz = UM_V1L_TERMINAL_PLAN_TANGENT
     tn = math.hypot(tx, ty)
     tx, ty = tx / tn, ty / tn
 
@@ -465,30 +698,63 @@ def _v1l_terminal_axis_handoff():
     rear_x = UM_CUTOUT[0] + UM_V1L_AXIS_STATION_MM * math.cos(axis)
     rear_y = UM_CUTOUT[1] + UM_V1L_AXIS_STATION_MM * math.sin(axis)
 
-    start_z = standard["start"][2]
-    # z(phi) = start_z - R * (1-cos(phi)); solve at the real V1L rear.
-    cos_phi = 1.0 - ((start_z - UM_V1L_REAR_FACE_Z_MM)
-                     / UM_HANDOFF_R_MM)
-    if not -1.0 <= cos_phi <= 1.0:
-        raise ValueError("V1L rear plane is unreachable by the R14 handoff")
-    plan_to_rear = UM_HANDOFF_R_MM * math.sqrt(1.0 - cos_phi * cos_phi)
-    start_x = rear_x - plan_to_rear * tx
-    start_y = rear_y - plan_to_rear * ty
+    start = (*UM_V1L_PLAN_START_XY_MM, DUCT_Z["um"])
+    face = (rear_x, rear_y, UM_V1L_REAR_FACE_Z_MM)
+    tangent = (tx, ty, 0.0)
+    delta = tuple(face[index] - start[index] for index in range(3))
+    along = sum(delta[index] * tangent[index] for index in range(3))
+    normal_delta = tuple(
+        delta[index] - along * tangent[index] for index in range(3)
+    )
+    normal_length = math.sqrt(sum(value * value for value in normal_delta))
+    if along <= 0.0 or normal_length <= 0.0:
+        raise ValueError("V1L circular handoff has invalid endpoint geometry")
+    normal = tuple(value / normal_length for value in normal_delta)
+    arc_radius = (
+        along * along + normal_length * normal_length
+    ) / (2.0 * normal_length)
+    arc_angle = 2.0 * math.atan2(normal_length, along)
 
-    outlet_x = start_x + UM_HANDOFF_R_MM * tx
-    outlet_y = start_y + UM_HANDOFF_R_MM * ty
-    outlet_z = start_z - UM_HANDOFF_R_MM
-    bearing = math.degrees(math.atan2(outlet_y - UM_CUTOUT[1],
-                                     outlet_x - UM_CUTOUT[0])) % 360.0
+    def arc_point(phi):
+        return tuple(
+            start[index]
+            + arc_radius * math.sin(phi) * tangent[index]
+            + arc_radius * (1.0 - math.cos(phi)) * normal[index]
+            for index in range(3)
+        )
+
+    face_tangent = tuple(
+        math.cos(arc_angle) * tangent[index]
+        + math.sin(arc_angle) * normal[index]
+        for index in range(3)
+    )
+    if face_tangent[2] >= -1.0e-9:
+        raise ValueError("V1L circular handoff does not exit through the rear")
+    rear_scale = (-2.0 - face[2]) / face_tangent[2]
+    rear_end = tuple(
+        face[index] + rear_scale * face_tangent[index]
+        for index in range(3)
+    )
+    outlet_scale = (-1.45 - face[2]) / face_tangent[2]
+    outlet = tuple(
+        face[index] + outlet_scale * face_tangent[index]
+        for index in range(3)
+    )
+    bearing = math.degrees(math.atan2(
+        outlet[1] - UM_CUTOUT[1], outlet[0] - UM_CUTOUT[0])) % 360.0
     return {
-        "start": (start_x, start_y, start_z),
-        "tangent": (tx, ty, 0.0),
-        "rear_face_axis_point": (
-            rear_x, rear_y, UM_V1L_REAR_FACE_Z_MM),
+        "start": start,
+        "tangent": tangent,
+        "arc_mid": arc_point(arc_angle / 2.0),
+        "arc_radius_mm": arc_radius,
+        "arc_angle_rad": arc_angle,
+        "arc_normal": normal,
+        "face_tangent": face_tangent,
+        "rear_face_axis_point": face,
         "axis_station_mm": UM_V1L_AXIS_STATION_MM,
         "rear_face_bearing_deg": UM_TERMINAL_CLOCK_DEG,
-        "outlet": (outlet_x, outlet_y, outlet_z),
-        "rear_end": (outlet_x, outlet_y, -2.00),
+        "outlet": outlet,
+        "rear_end": rear_end,
         "bearing_deg": bearing,
     }
 
@@ -646,16 +912,237 @@ def _lm_handoff_spec(um_handoff_key: str = "proud") -> dict:
         DUCT_Z["lm"], _lm_rear_face_z(um_handoff_key))
 
 
-# STAND_FOOT lanes: (x, duct z, run height y_f, elbow radius, bore D).
-# Four lanes persist (one per NL8 pair); the two T lanes feed the
-# shared duct via the feeder/lead. Webs come from Dx alone.
+# STAND_FOOT lanes: (x, upright z, floor y, qualified minimum bend radius,
+# bore D).  Stock/Slim now use the same three-trunk physical architecture as
+# Obi-Wan.  Both tweeter pairs share one D6 lane from the connector service
+# cavity onward, eliminating the old two-small-bore merge in the tight lower
+# corner.  X packing retains >=3.4 mm between complete neighboring bores.
 FOOT_LANES = {
-    "lm": (-5.45, 12.55, 10.5, 14.0, 9.0),
-    "um": (5.4, 12.55, 10.5, 14.0, 8.6),
-    "t1": (13.9, 3.7, 5.5, 14.0, 4.6),
-    "t2": (-14.9, 9.5, 5.5, 14.0, 4.6),  # outboard: at z=9.5
-    # the old x lands 7.1 from the LM lead (need 7.65)
+    "lm": (0.0, 12.55, 10.5, 41.0, 9.0),
+    "um": (12.0, 12.55, 10.5, 41.0, 8.2),
+    "ts": (-12.0, 11.5, 7.5, 41.0, 6.0),
 }
+
+FLOOR_ROUTE_SERVICE_START_Z_MM = -103.0
+FLOOR_UM_JOIN_Y_MM = 82.0
+FLOOR_UM_END_HANDLE_MM = 37.0
+# Join the retained T main only after its leftward bearing is established.
+# The former y=70 / 35-mm handle pulled the cubic's penultimate control back
+# across the LM continuation, creating both a visible plan wiggle and a
+# 5.41-mm centreline near-collision.  At y=90 with a 40-mm tangent handle the
+# X controls are monotone (-12, -12, -20.92, -51.22), the entry remains G1,
+# its sampled minimum radius is 57.5 mm, and the closest LM/T centrelines are
+# 12.16 mm apart (3.66 mm of material between the D9 and D6 lumens).
+FLOOR_TS_JOIN_Y_MM = 90.0
+FLOOR_TS_END_HANDLE_MM = 40.0
+FLOOR_TS_JOIN_OVERLAP_MM = 3.0
+
+
+def _normalized_xyz(vector):
+    length = math.sqrt(sum(float(value) ** 2 for value in vector))
+    if length <= 1.0e-12:
+        raise ValueError("floor-route tangent cannot be zero")
+    return tuple(float(value) / length for value in vector)
+
+
+def _proud_floor_join(name: str, um_handoff_key: str = "proud",
+                      ts_route_key: str = TS_ROUTE_STANDARD):
+    """Upper endpoint, unit tangent and cubic handle for one floor trunk."""
+    if name == "lm":
+        handoff = _lm_handoff_spec(um_handoff_key)
+        return (
+            tuple(handoff["start"]),
+            tuple(handoff["plan_tangent"]),
+            BEND_VERTICAL_HANDLE_MM,
+        )
+    if name == "um":
+        path = _um_plan_spline(um_handoff_key=um_handoff_key)
+        parameter = _path_parameter_at_y(path, FLOOR_UM_JOIN_Y_MM)
+        return (
+            tuple(path @ parameter),
+            _normalized_xyz(tuple(path % parameter)),
+            FLOOR_UM_END_HANDLE_MM,
+        )
+    if name == "ts":
+        path = ts_plan_path(ts_route_key=ts_route_key)
+        parameter = _path_parameter_at_y(path, FLOOR_TS_JOIN_Y_MM)
+        point = path @ parameter
+        return (
+            (float(point.X), float(point.Y),
+             ts_section(float(point.Y))[2]),
+            _normalized_xyz((float((path % parameter).X),
+                             float((path % parameter).Y), 0.0)),
+            FLOOR_TS_END_HANDLE_MM,
+        )
+    raise ValueError(f"unknown proud floor trunk {name!r}")
+
+
+def proud_floor_entry_controls(
+        name: str, um_handoff_key: str = "proud",
+        ts_route_key: str = TS_ROUTE_STANDARD):
+    """Exact direct cubic from one rear foot lane to its qualified main."""
+    try:
+        x_mm, upright_z_mm, floor_y_mm, _radius_mm, _diameter_mm = (
+            FOOT_LANES[name])
+    except KeyError as exc:
+        raise ValueError(f"unknown proud floor trunk {name!r}") from exc
+    canonical = canonical_lane_controls(
+        x_mm, floor_y_mm, upright_z_mm)
+    endpoint, tangent, handle = _proud_floor_join(
+        name,
+        um_handoff_key=um_handoff_key,
+        ts_route_key=ts_route_key,
+    )
+    return (
+        canonical[0],
+        canonical[1],
+        tuple(endpoint[axis] - handle * tangent[axis]
+              for axis in range(3)),
+        endpoint,
+    )
+
+
+def proud_floor_entry_wire(
+        name: str, um_handoff_key: str = "proud",
+        ts_route_key: str = TS_ROUTE_STANDARD):
+    """Complete round floor-route wire for LM/UM, entry-only for T."""
+    controls = proud_floor_entry_controls(
+        name,
+        um_handoff_key=um_handoff_key,
+        ts_route_key=ts_route_key,
+    )
+    lane = FOOT_LANES[name]
+    start = (
+        lane[0], lane[2], FLOOR_ROUTE_SERVICE_START_Z_MM)
+    edges = [Line(start, controls[0]), Bezier(*controls)]
+    if name == "lm":
+        handoff = _lm_handoff_spec(um_handoff_key)
+        edges.extend((
+            ThreePointArc(
+                handoff["start"], handoff["arc_mid"], handoff["face"]),
+            Line(handoff["face"], handoff["rear_end"]),
+        ))
+    elif name == "um":
+        main = _um_plan_spline(um_handoff_key=um_handoff_key)
+        parameter = _path_parameter_at_y(main, FLOOR_UM_JOIN_Y_MM)
+        edges.extend(main.trim(parameter, 1.0).edges())
+        handoff = _um_handoff_spec(um_handoff_key)
+        handoff_points = um_handoff_points(
+            n=24, um_handoff_key=um_handoff_key)
+        edges.extend((
+            ThreePointArc(
+                handoff_points[0],
+                handoff.get("arc_mid", handoff_points[12]),
+                handoff_points[-2],
+            ),
+            Line(handoff_points[-2], handoff_points[-1]),
+        ))
+    elif name == "ts":
+        endpoint, tangent, _handle = _proud_floor_join(
+            name, ts_route_key=ts_route_key)
+        overlap_end = tuple(
+            endpoint[axis] + FLOOR_TS_JOIN_OVERLAP_MM * tangent[axis]
+            for axis in range(3))
+        edges.append(Line(endpoint, overlap_end))
+    else:
+        raise ValueError(name)
+    return Wire(edges)
+
+
+def _proud_floor_round_cutter(
+        name: str, um_handoff_key: str = "proud",
+        ts_route_key: str = TS_ROUTE_STANDARD,
+        radial_extra_mm: float = 0.0):
+    if radial_extra_mm < 0.0:
+        raise ValueError("floor-route expansion must be non-negative")
+    path = proud_floor_entry_wire(
+        name,
+        um_handoff_key=um_handoff_key,
+        ts_route_key=ts_route_key,
+    )
+    radius = FOOT_LANES[name][4] / 2.0 + radial_extra_mm
+    section = Plane(origin=path @ 0.0, z_dir=path % 0.0) * Circle(radius)
+    return sweep(section, path=path)
+
+
+def proud_floor_route_facts() -> dict:
+    """Dependency-light Option-B floor route contract."""
+    records = {}
+    for name, lane in FOOT_LANES.items():
+        controls = proud_floor_entry_controls(name)
+        records[name] = {
+            "x_mm": lane[0],
+            "upright_z_mm": lane[1],
+            "floor_y_mm": lane[2],
+            "diameter_mm": lane[4],
+            "minimum_bend_radius_mm": lane[3],
+            "service_start_z_mm": FLOOR_ROUTE_SERVICE_START_Z_MM,
+            "entry_controls_xyz_mm": controls,
+            "join_xyz_mm": controls[-1],
+        }
+    return {
+        "architecture": "three_trunks_shared_D6_tweeter",
+        "lane_count": len(records),
+        "wall_reference_minimum_radius_mm": (
+            BEND_MIN_CENTERLINE_RADIUS_MM),
+        "lanes": records,
+    }
+
+# The 60-degree M5 receiver and the exterior waist leave 3.420 mm for the two
+# release walls (1.8 + 1.6 mm).  Once the receiver and D8.2 duct radii are
+# removed, only 0.020 mm remains.  Do not interpolate freely across it.  The
+# route below touches one exact straight tangent through that corridor, with
+# 1.810 mm to the M5 receiver and 1.610 mm to the exterior at the limiting
+# station.  Cubics on either side are G1 and have monotone signed curvature.
+UM_OUTER_ARC_ANGLES_DEG = (
+    -56.29, -44.0, -32.0, -20.0, -8.0, 4.0, 12.0, 20.0,
+    26.8, 33.6, 36.0,
+)
+UM_V1L_OUTER_ARC_ANGLES_DEG = (
+    -56.29, -44.0, -32.0, -20.0, -8.0, 4.0, 12.0, 20.0,
+    26.8, 33.6, 36.0,
+)
+UM_FAIR_TAIL_REVIEW_ANCHOR_XY = tuple(_arc(
+    119.5, [UM_V1L_OUTER_ARC_ANGLES_DEG[-1]])[0])
+# Public routing-diagram datums.  Keep the keyed mapping because review tools
+# select the alternate V1L tail by handoff key rather than duplicating a
+# coordinate that can drift when the qualified prefix changes.
+UM_FAIR_TAIL_GUIDE_XY = {
+    "proud": tuple(_arc(119.5, [UM_OUTER_ARC_ANGLES_DEG[-1]])[0]),
+    UM_V1L_HANDOFF_KEY: UM_FAIR_TAIL_REVIEW_ANCHOR_XY,
+}
+UM_FAIR_TAIL_REVIEW_START_Y_MM = 238.0
+UM_W22_BYPASS_CONTACT_XY_MM = (56.62314617, 299.81242889)
+UM_W22_BYPASS_TANGENT_XY = (-0.88595304, 0.46377496)
+UM_W22_BYPASS_ENTRY_LEAD_MM = 16.0
+UM_W22_BYPASS_ENTRY_START_HANDLE_MM = 14.0
+UM_W22_BYPASS_ENTRY_END_HANDLE_MM = 14.0
+UM_W22_BYPASS_TERMINAL_PARAMETERS = {
+    "proud": {
+        "lead_mm": 2.51445747,
+        "start_handle_mm": 1.11810767,
+        "end_handle_mm": 3.52681911,
+    },
+    UM_V1L_HANDOFF_KEY: {
+        "lead_mm": 0.0,
+        "start_handle_mm": 6.8,
+        "end_handle_mm": 8.0,
+    },
+}
+
+
+def _um_prefix_points(arc_angles=UM_OUTER_ARC_ANGLES_DEG):
+    """Released UM prefix through the qualified R119.5 review anchor."""
+    fan = [(30.0 + 26.0 * math.cos(math.radians(angle)),
+            46.1 + 26.0 * math.sin(math.radians(angle)))
+           for angle in (180, 172, 164, 156, 148, 140, 132, 124)]
+    return (
+        ([(5.4, 30.0), (4.9, 37.0), (4.35, 43.0)]
+         if STAND_FOOT else [])
+        + fan
+        + [(40.9, 84.6)]
+        + _arc(119.5, arc_angles)
+    )
 
 
 def route_points(name, um_handoff_key: str = "proud",
@@ -672,7 +1159,7 @@ def route_points(name, um_handoff_key: str = "proud",
         return _with_z(_t2_feeder(), [(0, 9.5), (9999, 9.5)])
     if name == "lm":
         # Planar z=12.55; the line drifts from the x=-8.6 entry column
-        # to the analytic R14 start past the 270-deg W22 insert bore.  The
+        # to the analytic R14 start through the lower W22 insert sector.  The
         # handoff itself reaches the shared lower rear-face mouth exactly
         # 10 mm outside the D190 acoustic aperture; it is not represented by
         # a perpendicular cylinder colliding with this planar spline.
@@ -690,46 +1177,90 @@ def route_points(name, um_handoff_key: str = "proud",
                 "Obi-Wan UM routing is integral core geometry; use "
                 "top_baffle_nd25fw4_obiwan_route.route_cable_points()"
             )
-        handoff = _um_handoff_spec(um_handoff_key)
-        # O8.2 at z=12.55.  The proud route uses the R26 fan and the
-        # r=119.5 U22-centered arc, then returns through the wide lower
-        # neck.  Its final span is refit directly to the selected R14
-        # elbow start; _um_plan_spline constrains the end tangent to the
-        # analytic elbow tangent, so there is no added junction or kink.
-        fan = [(30.0 + 26.0 * math.cos(math.radians(a)),
-                46.1 + 26.0 * math.sin(math.radians(a)))
-               for a in (180, 172, 164, 156, 148, 140, 132, 124)]
-        prefix = (([(5.4, 30.0), (4.9, 37.0), (4.35, 43.0)]
-                   if STAND_FOOT else [])
-                  + fan + [(40.9, 84.6)])
-        plan = (prefix
-                + _arc(119.5, [-56.29, -44, -32, -20, -8, 4, 12, 20])
-                + [(108.01, 251.03), (102.45, 258.63),
-                   (95.57, 265.04), (87.60, 270.06),
-                   (61.76, 283.11),
-                   handoff["start"][:2]])
-        return _with_z(plan, [(0, 12.55), (9999, 12.55)])
+        path = _um_plan_spline(um_handoff_key=um_handoff_key)
+        count = max(32, int(math.ceil(float(path.length) / 6.0)))
+        return [tuple(path @ (index / count))
+                for index in range(count + 1)]
     if name == "ts":
-        return [(x, y, ts_section(y)[2])
-                for x, y in _ts_route(ts_route_key=ts_route_key)]
+        path = ts_plan_path(ts_route_key=ts_route_key)
+        count = max(32, int(math.ceil(float(path.length) / 6.0)))
+        points = []
+        for index in range(count + 1):
+            point = path @ (index / count)
+            points.append((
+                float(point.X),
+                float(point.Y),
+                ts_section(float(point.Y))[2],
+            ))
+        return points
     raise ValueError(name)
 
 
 def _um_plan_spline(um_handoff_key: str = "proud"):
-    """Planar UM spline with an endpoint tangent constrained to the R14
-    elbow.  The explicit constraint is the G1 contract; merely placing
-    collinear final control points is not sufficient for a B-spline."""
+    """Planar UM wire constrained through the narrow rotated-M5 corridor.
+
+    The name is retained for public compatibility.  The result is now a
+    multi-edge G1 wire instead of one free interpolating spline: prefix,
+    entry cubic, exact tangent line, and terminal cubic.
+    """
     if ROUTING_PROFILE != "proud":
         raise RuntimeError("the R14 plan spline exists only in profile proud")
     spec = _um_handoff_spec(um_handoff_key)
-    pts = route_points("um", um_handoff_key=um_handoff_key)
-    p0, p1 = pts[0], pts[1]
+    arc_angles = (
+        UM_V1L_OUTER_ARC_ANGLES_DEG
+        if um_handoff_key == UM_V1L_HANDOFF_KEY
+        else UM_OUTER_ARC_ANGLES_DEG)
+    prefix_points = [(*point, DUCT_Z["um"])
+                     for point in _um_prefix_points(arc_angles)]
+    p0, p1 = prefix_points[0], prefix_points[1]
     t0 = (p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2])
-    t1 = spec["tangent"]
-    # Unit tangent scalars avoid OCC's default long endpoint handles,
-    # which can create a tiny B-spline reversal even with the correct
-    # tangent direction (observed in the no-foot proud path).
-    return Spline(*pts, tangents=(t0, t1), tangent_scalars=(1.0, 1.0))
+    arc_angle = math.radians(arc_angles[-1])
+    arc_tangent = (-math.sin(arc_angle), math.cos(arc_angle), 0.0)
+    prefix = Spline(
+        *prefix_points,
+        tangents=(t0, arc_tangent),
+        tangent_scalars=(1.0, 1.0),
+    )
+
+    tangent = (*UM_W22_BYPASS_TANGENT_XY, 0.0)
+    contact = (*UM_W22_BYPASS_CONTACT_XY_MM, DUCT_Z["um"])
+    entry = tuple(
+        contact[index] - UM_W22_BYPASS_ENTRY_LEAD_MM * tangent[index]
+        for index in range(3))
+    prefix_end = tuple(prefix @ 1.0)
+    entry_curve = Bezier(
+        prefix_end,
+        tuple(prefix_end[index]
+              + UM_W22_BYPASS_ENTRY_START_HANDLE_MM * arc_tangent[index]
+              for index in range(3)),
+        tuple(entry[index]
+              - UM_W22_BYPASS_ENTRY_END_HANDLE_MM * tangent[index]
+              for index in range(3)),
+        entry,
+    ).edge()
+
+    parameters = UM_W22_BYPASS_TERMINAL_PARAMETERS[um_handoff_key]
+    terminal_start = tuple(
+        contact[index] + parameters["lead_mm"] * tangent[index]
+        for index in range(3))
+    terminal_end = tuple(spec["start"])
+    terminal_tangent = tuple(spec["tangent"])
+    terminal_curve = Bezier(
+        terminal_start,
+        tuple(terminal_start[index]
+              + parameters["start_handle_mm"] * tangent[index]
+              for index in range(3)),
+        tuple(terminal_end[index]
+              - parameters["end_handle_mm"] * terminal_tangent[index]
+              for index in range(3)),
+        terminal_end,
+    ).edge()
+    return Wire((
+        prefix,
+        entry_curve,
+        Line(entry, terminal_start).edge(),
+        terminal_curve,
+    ))
 
 
 def _lm_plan_spline(um_handoff_key: str = "proud"):
@@ -744,6 +1275,104 @@ def _lm_plan_spline(um_handoff_key: str = "proud"):
         tangents=(t0, (0.0, 1.0, 0.0)),
         tangent_scalars=(1.0, 1.0),
     )
+
+
+def _external_point_on_tangent(face, inner_control, rear_z_mm: float):
+    """Continue a face tangent to one exact external rear-Z station."""
+    face = tuple(map(float, face))
+    inner_control = tuple(map(float, inner_control))
+    direction = tuple(
+        inner_control[index] - face[index] for index in range(3))
+    if direction[2] <= 1.0e-9:
+        raise ValueError("entry tangent must point into positive Z")
+    scale = (face[2] - float(rear_z_mm)) / direction[2]
+    return tuple(
+        face[index] - scale * direction[index] for index in range(3))
+
+
+def _sample_path_points(path, spacing_mm: float = 1.25):
+    """Arc-length-like samples including both exact path endpoints."""
+    count = max(8, int(math.ceil(float(path.length) / spacing_mm)))
+    return [tuple(path @ (index / count)) for index in range(count + 1)]
+
+
+def stock_slim_no_floor_entry_path(
+        name: str, um_handoff_key: str = "proud"):
+    """Continuous rear-entry path for one Stock/Slim no-floor duct.
+
+    The returned wire begins at z=-6.4, crosses the immutable released mouth
+    at z=0, and terminates G1 on the retained LM or UM route.  It deliberately
+    does not replace either upper terminal handoff.
+    """
+    if name == "lm":
+        mouth = (*STOCK_SLIM_LM_ENTRY_XY, 0.0)
+        control_1 = STOCK_SLIM_NO_FLOOR_LM_CONTROL_1_MM
+        endpoint = _lm_handoff_spec(um_handoff_key)["start"]
+        control_2 = (
+            endpoint[0],
+            endpoint[1] - STOCK_SLIM_NO_FLOOR_LM_END_HANDLE_MM,
+            endpoint[2],
+        )
+        continuation = []
+    elif name == "um":
+        mouth = (*STOCK_SLIM_UM_ENTRY_XY, 0.0)
+        control_1 = STOCK_SLIM_NO_FLOOR_UM_CONTROL_1_MM
+        main = _um_plan_spline(um_handoff_key=um_handoff_key)
+        join_parameter = _path_parameter_at_y(
+            main, STOCK_SLIM_NO_FLOOR_UM_JOIN_Y_MM)
+        endpoint = tuple(main @ join_parameter)
+        tangent = _unit_xyz(tuple(main % join_parameter))
+        control_2 = tuple(
+            endpoint[index]
+            - STOCK_SLIM_NO_FLOOR_UM_END_HANDLE_MM * tangent[index]
+            for index in range(3)
+        )
+        # ``main`` is a multi-edge G1 wire after the rotated-M5 reroute.
+        # Flatten the trimmed continuation back to edges before constructing
+        # the entry wire; nesting a Wire inside Wire is not a valid OCC wire.
+        continuation = list(main.trim(join_parameter, 1.0).edges())
+    else:
+        raise ValueError("no-floor entry name must be 'lm' or 'um'")
+
+    external = _external_point_on_tangent(
+        mouth, control_1, STOCK_SLIM_NO_FLOOR_REAR_Z_MM)
+    return Wire((
+        Line(external, mouth).edge(),
+        Bezier(mouth, control_1, control_2, endpoint).edge(),
+        *continuation,
+    ))
+
+
+def no_floor_t_entry_path():
+    """Return the single shared-T entry from the rear mouth to the TS main."""
+    if STAND_FOOT:
+        raise RuntimeError("the D20 T entry exists only without the foot")
+    mouth = (*STOCK_SLIM_T_ENTRY_XY, 0.0)
+    endpoint_point = ts_plan_path(TS_ROUTE_STANDARD) @ 0.0
+    endpoint = (
+        float(endpoint_point.X),
+        float(endpoint_point.Y),
+        ts_section(float(endpoint_point.Y))[2],
+    )
+    tangent_vector = ts_plan_path(TS_ROUTE_STANDARD) % 0.0
+    tangent = _unit_xyz((
+        float(tangent_vector.X), float(tangent_vector.Y), 0.0))
+    control_2 = tuple(
+        endpoint[index] - NO_FLOOR_T_END_HANDLE_MM * tangent[index]
+        for index in range(3)
+    )
+    external = _external_point_on_tangent(
+        mouth, NO_FLOOR_T_CONTROL_1_MM,
+        STOCK_SLIM_NO_FLOOR_REAR_Z_MM)
+    return Wire((
+        Line(external, mouth).edge(),
+        Bezier(
+            mouth,
+            NO_FLOOR_T_CONTROL_1_MM,
+            control_2,
+            endpoint,
+        ).edge(),
+    ))
 
 
 def lm_handoff_points(n: int = 48, um_handoff_key: str = "proud"):
@@ -762,7 +1391,7 @@ def lm_path_wire(um_handoff_key: str = "proud"):
 
 
 def um_handoff_points(n: int = 24, um_handoff_key: str = "proud"):
-    """Analytic R14 quarter-turn plus the short rear-facing outlet run.
+    """Analytic circular turn plus the short rear-facing outlet run.
 
     The first point is the end of the planar main and the penultimate
     point is already 1.45 mm behind the nominal rear face.  Keeping the
@@ -776,24 +1405,38 @@ def um_handoff_points(n: int = 24, um_handoff_key: str = "proud"):
     spec = _um_handoff_spec(um_handoff_key)
     sx, sy, sz = spec["start"]
     tx, ty, _tz = spec["tangent"]
-    r = UM_HANDOFF_R_MM
+    if um_handoff_key == UM_V1L_HANDOFF_KEY:
+        r = spec["arc_radius_mm"]
+        phi_total = spec["arc_angle_rad"]
+        nx, ny, nz = spec["arc_normal"]
+    else:
+        r = UM_HANDOFF_R_MM
+        phi_total = math.pi * 0.5
+        nx, ny, nz = (0.0, 0.0, -1.0)
     out = []
     for i in range(n + 1):
-        phi = math.pi * 0.5 * i / n
-        out.append((sx + r * math.sin(phi) * tx,
-                    sy + r * math.sin(phi) * ty,
-                    sz - r * (1.0 - math.cos(phi))))
+        phi = phi_total * i / n
+        out.append((sx + r * math.sin(phi) * tx
+                    + r * (1.0 - math.cos(phi)) * nx,
+                    sy + r * math.sin(phi) * ty
+                    + r * (1.0 - math.cos(phi)) * ny,
+                    sz + r * (1.0 - math.cos(phi)) * nz))
     out.append(spec["rear_end"])
     return out
 
 
 def um_path_wire(um_handoff_key: str = "proud"):
-    """Three-edge G1 wire: constrained plan spline, R14 arc, rear line."""
+    """G1 wire: constrained plan, circular handoff, and rear lead."""
     plan = _um_plan_spline(um_handoff_key=um_handoff_key)
+    spec = _um_handoff_spec(um_handoff_key)
     handoff = um_handoff_points(n=24, um_handoff_key=um_handoff_key)
-    elbow = ThreePointArc(handoff[0], handoff[12], handoff[-2])
+    elbow = ThreePointArc(
+        handoff[0],
+        spec.get("arc_mid", handoff[12]),
+        handoff[-2],
+    )
     rear = Line(handoff[-2], handoff[-1])
-    return Wire([plan, elbow, rear])
+    return Wire([*plan.edges(), elbow, rear])
 
 
 def route_centerline_points(name: str, spacing_mm: float = 2.0,
@@ -816,6 +1459,59 @@ def route_centerline_points(name: str, spacing_mm: float = 2.0,
         from .obiwan.route import route_cable_points
         return [tuple(map(float, p))
                 for p in route_cable_points(spacing_mm=spacing_mm)]
+    if STAND_FOOT and ROUTING_PROFILE == "proud":
+        if raceway_only:
+            raise RuntimeError("floor routes have no detachable raceway")
+        if name in {"lm", "um"}:
+            return _sample_path_points(
+                proud_floor_entry_wire(
+                    name,
+                    um_handoff_key=um_handoff_key,
+                    ts_route_key=ts_route_key,
+                ),
+                spacing_mm=spacing_mm,
+            )
+        if name == "ts":
+            controls = proud_floor_entry_controls(
+                "ts", ts_route_key=ts_route_key)
+            line_start = (
+                FOOT_LANES["ts"][0],
+                FOOT_LANES["ts"][2],
+                FLOOR_ROUTE_SERVICE_START_Z_MM,
+            )
+            line_count = max(
+                2, int(math.ceil(
+                    math.dist(line_start, controls[0]) / spacing_mm)))
+            points = [tuple(
+                line_start[axis]
+                + index / line_count
+                * (controls[0][axis] - line_start[axis])
+                for axis in range(3))
+                for index in range(line_count + 1)]
+            cubic_length = float(Bezier(*controls).length)
+            cubic_count = max(
+                8, int(math.ceil(cubic_length / spacing_mm)))
+            points.extend(
+                floor_bend_cubic_point(controls, index / cubic_count)
+                for index in range(1, cubic_count + 1))
+
+            main = ts_plan_path(ts_route_key=ts_route_key)
+            join_parameter = _path_parameter_at_y(
+                main, FLOOR_TS_JOIN_Y_MM)
+            upper_length = float(main.length) * (1.0 - join_parameter)
+            upper_count = max(
+                16, int(math.ceil(upper_length / spacing_mm)))
+            for index in range(1, upper_count + 1):
+                parameter = (
+                    join_parameter
+                    + (1.0 - join_parameter) * index / upper_count)
+                point = main @ parameter
+                points.append((
+                    float(point.X),
+                    float(point.Y),
+                    ts_section(float(point.Y))[2],
+                ))
+            return points
     if name == "lm":
         path = _lm_plan_spline(um_handoff_key=um_handoff_key)
         n = max(12, int(path.length / spacing_mm))
@@ -823,6 +1519,18 @@ def route_centerline_points(name: str, spacing_mm: float = 2.0,
         return plan + lm_handoff_points(
             n=max(12, int(LM_EXIT_BEND_R_MM / spacing_mm)),
             um_handoff_key=um_handoff_key)[1:]
+    if name == "ts":
+        path = ts_plan_path(ts_route_key=ts_route_key)
+        count = max(16, int(math.ceil(float(path.length) / spacing_mm)))
+        points = []
+        for index in range(count + 1):
+            point = path @ (index / count)
+            points.append((
+                float(point.X),
+                float(point.Y),
+                ts_section(float(point.Y))[2],
+            ))
+        return points
     if name != "um":
         path = Spline(*route_points(name, ts_route_key=ts_route_key))
         n = max(8, int(path.length / spacing_mm))
@@ -874,15 +1582,146 @@ def _tube_loft(points, radii, sides: int = 24):
     return loft(sections, ruled=True)
 
 
+def _cumulative_distances(points):
+    distances = [0.0]
+    for first, second in zip(points[:-1], points[1:]):
+        distances.append(distances[-1] + math.dist(first, second))
+    return distances
+
+
+def _stock_slim_no_floor_um_sections(
+        um_handoff_key: str = "proud", radial_extra_mm: float = 0.0):
+    path = stock_slim_no_floor_entry_path(
+        "um", um_handoff_key=um_handoff_key)
+    points = _sample_path_points(path)
+    distances = _cumulative_distances(points)
+    mouth_distance = math.dist(points[0], (*STOCK_SLIM_UM_ENTRY_XY, 0.0))
+    radii = []
+    for distance in distances:
+        u = min(1.0, max(
+            0.0, (distance - mouth_distance) / 8.0))
+        taper = _smoothstep01(u)
+        radii.append(
+            BIG_RAMP_D["um"] / 2.0
+            + (UM_HANDOFF_D_MM / 2.0 - BIG_RAMP_D["um"] / 2.0)
+            * taper
+            + radial_extra_mm
+        )
+    handoff = um_handoff_points(
+        um_handoff_key=um_handoff_key)
+    points.extend(handoff[1:])
+    radii.extend([
+        UM_HANDOFF_D_MM / 2.0 + radial_extra_mm
+    ] * (len(handoff) - 1))
+    return points, radii
+
+
+def _stock_slim_no_floor_lm_sections(
+        um_handoff_key: str = "proud", radial_extra_mm: float = 0.0):
+    path = stock_slim_no_floor_entry_path(
+        "lm", um_handoff_key=um_handoff_key)
+    points = _sample_path_points(path)
+    distances = _cumulative_distances(points)
+    mouth_distance = math.dist(points[0], (*STOCK_SLIM_LM_ENTRY_XY, 0.0))
+    flare_start = max(0.0, distances[-1] - LM_EXIT_FLARE_LENGTH_MM)
+    base_radius = CABLE_D["lm"] / 2.0
+    exit_radius = LM_EXIT_D_MM / 2.0
+    radii = []
+    for distance in distances:
+        entry_u = min(1.0, max(
+            0.0, (distance - mouth_distance) / 8.0))
+        entry_radius = (
+            exit_radius
+            + (base_radius - exit_radius) * _smoothstep01(entry_u)
+        )
+        flare_u = min(1.0, max(
+            0.0,
+            (distance - flare_start)
+            / max(LM_EXIT_FLARE_LENGTH_MM, 1.0e-12),
+        ))
+        flare_radius = (
+            base_radius
+            + (exit_radius - base_radius) * _smoothstep01(flare_u)
+        )
+        radii.append(max(entry_radius, flare_radius) + radial_extra_mm)
+    handoff = lm_handoff_points(
+        n=32, um_handoff_key=um_handoff_key)
+    points.extend(handoff[1:])
+    radii.extend([
+        exit_radius + radial_extra_mm
+    ] * (len(handoff) - 1))
+    return points, radii
+
+
+def _no_floor_t_entry_sections(radial_extra_mm: float = 0.0):
+    """Sample the D6 entry, smooth D6.8 buried join, and TS overlap."""
+    if STAND_FOOT:
+        raise RuntimeError("the D20 T entry exists only without the foot")
+    if radial_extra_mm < 0.0:
+        raise ValueError("T entry expansion must be non-negative")
+    points = _sample_path_points(no_floor_t_entry_path(), spacing_mm=0.9)
+    physical_end_distance = _cumulative_distances(points)[-1]
+    # Continue through the exact shared-T interface by 3 mm.  The physical
+    # path contract still ends at (-16.8, 58.8, 11.5); this cutter-only lead
+    # buries both caps so the host subtraction cannot retain a zero-area
+    # triangulation face at that otherwise coincident section.
+    ts_path = ts_plan_path(TS_ROUTE_STANDARD)
+    overlap_count = max(2, int(math.ceil(
+        NO_FLOOR_T_CUTTER_OVERLAP_MM / 0.9)))
+    overlap_parameter = min(
+        1.0, NO_FLOOR_T_CUTTER_OVERLAP_MM / float(ts_path.length))
+    for index in range(1, overlap_count + 1):
+        point = ts_path @ (overlap_parameter * index / overlap_count)
+        points.append((
+            float(point.X),
+            float(point.Y),
+            ts_section(float(point.Y))[2],
+        ))
+    distances = _cumulative_distances(points)
+    entry_radius = NO_FLOOR_T_ENTRY_D_MM / 2.0
+    join_radius = NO_FLOOR_T_JOIN_D_MM / 2.0
+    radii = []
+    for distance in distances:
+        grow_u = min(1.0, max(
+            0.0,
+            (distance - (physical_end_distance - NO_FLOOR_T_JOIN_GROW_MM))
+            / NO_FLOOR_T_JOIN_GROW_MM,
+        ))
+        radii.append(
+            entry_radius
+            + (join_radius - entry_radius) * _smoothstep01(grow_u)
+            + radial_extra_mm)
+    return points, radii
+
+
+def no_floor_t_entry_cutter(radial_extra_mm: float = 0.0):
+    """Continuous no-floor T entry with an enlarged buried TS join."""
+    points, radii = _no_floor_t_entry_sections(radial_extra_mm)
+    return _tube_loft(
+        points, radii, sides=24,
+    )
+
+
 def um_tube(raceway_only: bool = False, radial_extra_mm: float = 0.0,
             um_handoff_key: str = "proud"):
-    """Proud UM bore, constant r=4.1 through its R14 handoff."""
-    if ROUTING_PROFILE != "proud" or raceway_only or radial_extra_mm:
+    """Proud UM bore, including the Option-B floor trunk when selected."""
+    if ROUTING_PROFILE != "proud" or raceway_only:
         raise RuntimeError("external Obi-Wan raceway generation was removed")
-    radius = UM_HANDOFF_D_MM / 2.0 + radial_extra_mm
-    path = um_path_wire(um_handoff_key=um_handoff_key)
-    section = Plane(origin=path @ 0, z_dir=path % 0) * Circle(radius)
-    return sweep(section, path=path)
+    if radial_extra_mm < 0.0:
+        raise ValueError("UM expansion must be non-negative")
+    if STAND_FOOT:
+        return _proud_floor_round_cutter(
+            "um",
+            um_handoff_key=um_handoff_key,
+            radial_extra_mm=radial_extra_mm,
+        )
+    if not STAND_FOOT:
+        points, radii = _stock_slim_no_floor_um_sections(
+            um_handoff_key=um_handoff_key,
+            radial_extra_mm=radial_extra_mm,
+        )
+        return _tube_loft(points, radii, sides=24)
+    raise AssertionError("unreachable UM stand-state branch")
 
 
 def _lm_tube_sections(um_handoff_key: str = "proud",
@@ -913,28 +1752,86 @@ def _lm_tube_sections(um_handoff_key: str = "proud",
     return points, radii
 
 
-def lm_tube(um_handoff_key: str = "proud"):
-    """One continuous LM cutter with a gradual R14/D9 rear handoff."""
+def lm_tube(um_handoff_key: str = "proud",
+            radial_extra_mm: float = 0.0):
+    """One continuous LM cutter with its selected gradual floor/entry path."""
     if ROUTING_PROFILE != "proud":
         raise RuntimeError("the proud LM tube requires profile proud")
-    points, radii = _lm_tube_sections(um_handoff_key=um_handoff_key)
-    return _tube_loft(points, radii, sides=24)
+    if radial_extra_mm < 0.0:
+        raise ValueError("LM expansion must be non-negative")
+    if STAND_FOOT:
+        return _proud_floor_round_cutter(
+            "lm",
+            um_handoff_key=um_handoff_key,
+            radial_extra_mm=radial_extra_mm,
+        )
+    if not STAND_FOOT:
+        points, radii = _stock_slim_no_floor_lm_sections(
+            um_handoff_key=um_handoff_key,
+            radial_extra_mm=radial_extra_mm,
+        )
+        return _tube_loft(points, radii, sides=24)
+    raise AssertionError("unreachable LM stand-state branch")
 
 
 
 
 
-def _ts_cutter(y_range=None, ts_route_key: str = TS_ROUTE_STANDARD):
-    """The TS duct as ONE ruled loft: vertical elliptical sections
-    every ~2.4 mm along the interpolating spline of the route, sized
-    and positioned by ts_section(y). Outside the vase every section
-    is the O6.0 circle at z=11.5, so the solid matches the old pipe
-    sweep there to within the chord sag (<0.03 on the r=116.5 arc).
-    ONE solid because joining coaxial tubes (round sweep + oval loft)
-    leaves near-tangent sliver faces at the join -- the exposed-duct/
-    open-STL-edge failure class. Sections are 24-gons (inscribed:
-    bore ~1% under nominal -- wall margins stay conservative)."""
-    path = Spline(*route_points("ts", ts_route_key=ts_route_key))
+def _plan_ts_section_face(px, py, tx, ty, zc, w2, h2):
+    """One released TS polygon section on a plan-tangent normal plane."""
+    pl = Plane(
+        origin=(px, py, 0.0),
+        x_dir=(-ty, tx, 0.0),
+        z_dir=(tx, ty, 0.0),
+    )
+    points = [
+        (w2 * math.cos(angle), zc + h2 * math.sin(angle))
+        for angle in (
+            2.0 * math.pi * index / 24.0 for index in range(24))
+    ]
+    points.append(points[0])
+    return pl * make_face(Wire(Polyline(*points).edges()))
+
+
+def _spatial_round_section_face(point, tangent, radius_mm: float):
+    """One D-round polygon section normal to an arbitrary 3D tangent."""
+    tangent = _normalized_xyz(tangent)
+    if abs(tangent[2]) < 0.92:
+        x_dir = (-tangent[1], tangent[0], 0.0)
+        x_norm = math.hypot(x_dir[0], x_dir[1])
+        x_dir = (x_dir[0] / x_norm, x_dir[1] / x_norm, 0.0)
+    else:
+        x_dir = (1.0, 0.0, 0.0)
+    plane = Plane(origin=point, x_dir=x_dir, z_dir=tangent)
+    points = [
+        (radius_mm * math.cos(angle), radius_mm * math.sin(angle))
+        for angle in (
+            2.0 * math.pi * index / 24.0 for index in range(24))
+    ]
+    points.append(points[0])
+    return plane * make_face(Wire(Polyline(*points).edges()))
+
+
+def _ts_cutter_on_path(
+    path,
+    y_range=None,
+    section_extra_mm: float = 0.0,
+    center_z_fn=None,
+    follow_3d_tangent: bool = False,
+):
+    """Build the TS ruled loft along one already-qualified plan path.
+
+    Keeping the section generator separate from the released centerline lets
+    an optional vase optimize only its local route while retaining the exact
+    D6-to-oval section law.  ``path`` may be a spline, edge, or joined wire;
+    only its global X/Y position and tangent are used because ``ts_section``
+    remains the default owner of the duct's Z station and section dimensions.
+    A local variant may supply ``center_z_fn(t, x, y, default_z)`` and request
+    section planes normal to that resulting 3D centerline.  Defaults preserve
+    the released plan-path behavior exactly.
+    """
+    if section_extra_mm < 0.0:
+        raise ValueError("TS section expansion must be non-negative")
     n_st = max(6, int(path.length / 2.4))
     indices = list(range(n_st + 1))
     if y_range is not None:
@@ -950,7 +1847,7 @@ def _ts_cutter(y_range=None, ts_route_key: str = TS_ROUTE_STANDARD):
         i0 = max(0, in_range[0] - 1)
         i1 = min(n_st, in_range[-1] + 1)
         indices = list(range(i0, i1 + 1))
-    secs = []
+    stations = []
     for i in indices:
         t = i / n_st
         px, py, _pz = tuple(path @ t)
@@ -958,15 +1855,158 @@ def _ts_cutter(y_range=None, ts_route_key: str = TS_ROUTE_STANDARD):
         nrm = math.hypot(tx, ty)
         tx, ty = tx / nrm, ty / nrm
         w2, h2, zc = ts_section(py)
-        # plane y-axis = z_dir x x_dir = +Z for any plan tangent, so
-        # the profile's v coordinate is GLOBAL z (C7 station idiom)
-        pl = Plane(origin=(px, py, 0.0), x_dir=(-ty, tx, 0.0),
-                   z_dir=(tx, ty, 0.0))
-        pts = [(w2 * math.cos(a), zc + h2 * math.sin(a))
-               for a in (2.0 * math.pi * k / 24.0 for k in range(24))]
+        if center_z_fn is not None:
+            zc = float(center_z_fn(t, px, py, zc))
+        w2 += section_extra_mm
+        h2 += section_extra_mm
+        stations.append((t, px, py, tx, ty, zc, w2, h2))
+
+    secs = []
+    for station_index, station in enumerate(stations):
+        _t, px, py, tx, ty, zc, w2, h2 = station
+        if follow_3d_tangent:
+            before = stations[max(0, station_index - 1)]
+            after = stations[min(len(stations) - 1, station_index + 1)]
+            tangent = (
+                after[1] - before[1],
+                after[2] - before[2],
+                after[5] - before[5],
+            )
+            tangent_norm = math.sqrt(sum(value * value for value in tangent))
+            tangent = tuple(value / tangent_norm for value in tangent)
+            plan_norm = math.hypot(tangent[0], tangent[1])
+            if plan_norm <= 1.0e-9:
+                raise ValueError("TS 3D centerline cannot be vertical")
+            x_dir = (-tangent[1] / plan_norm,
+                     tangent[0] / plan_norm, 0.0)
+            pl = Plane(
+                origin=(px, py, zc), x_dir=x_dir, z_dir=tangent)
+            pts = [(w2 * math.cos(a), h2 * math.sin(a))
+                   for a in (2.0 * math.pi * k / 24.0
+                             for k in range(24))]
+        else:
+            # plane y-axis = z_dir x x_dir = +Z for any plan tangent, so
+            # the profile's v coordinate is GLOBAL z (C7 station idiom)
+            secs.append(_plan_ts_section_face(
+                px, py, tx, ty, zc, w2, h2))
+            continue
         pts.append(pts[0])
         secs.append(pl * make_face(Wire(Polyline(*pts).edges())))
     return loft(secs, ruled=True)
+
+
+def ts_cutter_from_path(
+    path,
+    y_range=None,
+    section_extra_mm: float = 0.0,
+    center_z_fn=None,
+    follow_3d_tangent: bool = False,
+):
+    """Public reuse hook for a locally optimized proud-family TS path.
+
+    ``section_extra_mm`` expands both half-axes by a radial guard.  Production
+    cutters leave it at zero; BREP containment checks use it to prove a real
+    material skin around the complete duct instead of checking only its
+    centerline.  ``center_z_fn`` and ``follow_3d_tangent`` are an explicit
+    reuse hook for variants whose qualified local route changes Z smoothly.
+    """
+    if ROUTING_PROFILE != "proud":
+        raise RuntimeError(
+            "custom proud TS cutters require LX_ROUTING_PROFILE=proud")
+    if float(path.length) <= 0.0:
+        raise ValueError("custom TS path must have positive length")
+    return _ts_cutter_on_path(
+        path,
+        y_range=y_range,
+        section_extra_mm=section_extra_mm,
+        center_z_fn=center_z_fn,
+        follow_3d_tangent=follow_3d_tangent,
+    )
+
+
+def _ts_cutter(y_range=None, ts_route_key: str = TS_ROUTE_STANDARD):
+    """The released TS duct as ONE ruled loft: vertical elliptical sections
+    every ~2.4 mm along the interpolating spline of the route, sized
+    and positioned by ts_section(y). Outside the vase every section
+    is the O6.0 circle at z=11.5, so the solid matches the old pipe
+    sweep there to within the chord sag (<0.03 on the r=116.5 arc).
+    ONE solid because joining coaxial tubes (round sweep + oval loft)
+    leaves near-tangent sliver faces at the join -- the exposed-duct/
+    open-STL-edge failure class. Sections are 24-gons (inscribed:
+    bore ~1% under nominal -- wall margins stay conservative)."""
+    path = ts_plan_path(ts_route_key=ts_route_key)
+    return _ts_cutter_on_path(path, y_range=y_range)
+
+
+def _proud_floor_ts_complete_cutter(
+        ts_route_key: str = TS_ROUTE_STANDARD,
+        upper_y_range=None):
+    """One ruled solid for the complete floor T trunk and upper TS route.
+
+    The floor cubic and retained plan path meet at the released y=90 station
+    with an exact common point, tangent, D6 section, and z=11.5 centre. A
+    single loft keeps that junction internal to one solid; no tangent cutter
+    union or overlapping sequential subtraction remains for OCC to fragment.
+    """
+    controls = proud_floor_entry_controls(
+        "ts", ts_route_key=ts_route_key)
+    lane = FOOT_LANES["ts"]
+    service_start = (
+        lane[0], lane[2], FLOOR_ROUTE_SERVICE_START_Z_MM)
+    floor_path = Wire((Line(service_start, controls[0]), Bezier(*controls)))
+    floor_count = max(
+        12, int(math.ceil(float(floor_path.length) / 2.0)))
+    radius = lane[4] / 2.0
+    sections = [
+        _spatial_round_section_face(
+            tuple(floor_path @ (index / floor_count)),
+            tuple(floor_path % (index / floor_count)),
+            radius,
+        )
+        for index in range(floor_count + 1)
+    ]
+
+    main = ts_plan_path(ts_route_key=ts_route_key)
+    join_parameter = _path_parameter_at_y(main, FLOOR_TS_JOIN_Y_MM)
+    main_count = max(6, int(float(main.length) / 2.4))
+    main_indices = [
+        index for index in range(main_count + 1)
+        if index / main_count > join_parameter + 1.0e-12
+    ]
+    if upper_y_range is not None and main_indices:
+        _y_min, y_max = upper_y_range
+        within = [
+            index for index in main_indices
+            if float((main @ (index / main_count)).Y) <= y_max
+        ]
+        if within:
+            last_position = main_indices.index(within[-1])
+            main_indices = main_indices[
+                :min(len(main_indices), last_position + 2)]
+        else:
+            main_indices = []
+    for index in main_indices:
+        parameter = index / main_count
+        point = main @ parameter
+        tangent = main % parameter
+        tx, ty = float(tangent.X), float(tangent.Y)
+        tangent_norm = math.hypot(tx, ty)
+        tx, ty = tx / tangent_norm, ty / tangent_norm
+        px, py = float(point.X), float(point.Y)
+        w2, h2, zc = ts_section(py)
+        sections.append(_plan_ts_section_face(
+            px, py, tx, ty, zc, w2, h2))
+
+    cutter = loft(sections, ruled=True)
+    solids = tuple(cutter.solids())
+    if (not cutter.is_valid or len(solids) != 1
+            or solids[0].volume <= 0.01):
+        raise RuntimeError(
+            "complete floor TS loft must be one valid solid; "
+            f"valid={cutter.is_valid} volumes="
+            f"{[solid.volume for solid in solids]}")
+    cutter.label = "floor_ts_complete_single_loft"
+    return cutter
 
 
 def _entry_ramp(p0, p1, dia):
@@ -1048,47 +2088,50 @@ def cable_cutters(um_handoff_key: str = "proud", route_names=None,
         cutters.append(lm_tube(um_handoff_key=um_handoff_key))
     if "um" in selected:
         cutters.append(um_tube(um_handoff_key=um_handoff_key))
+    ts_cutter = None
     if "ts" in selected:
-        cutters.append(_ts_cutter(
-            y_range=ts_y_range, ts_route_key=ts_route_key))
-    # the two O3.8 pair-feeders in the strip + the z-step bore
-    for fname in ("t1f", "t2f"):
-        if fname not in selected:
-            continue
-        path = Spline(*route_points(fname))
-        section = Plane(origin=path @ 0, z_dir=path % 0) * Circle(1.9)
-        cutters.append(sweep(section, path=path))
-    if selected & {"ts", "t1f", "t2f"}:
-        cutters.append(_entry_ramp(TS_STEP[0], TS_STEP[1], 6.8))
-    if STAND_FOOT:
-        # 90-deg vertical-plane elbows + runs along the foot, packed to
-        # fit the 38-wide connector tongue, exiting through the channel
-        # step face (z=-99, ~40 mm short of the NL8 panel). One planar
-        # (constant-x) spline per route, O0.8 over its duct.
-        lane_routes = {
-            "lm": "lm", "um": "um", "t1": "t1f", "t2": "t2f"}
-        for lane_name, (x, z_d, y_f, r, dia) in FOOT_LANES.items():
-            if lane_routes[lane_name] not in selected:
-                continue
-            y_c, z_c = y_f + r, z_d - r
-            pts = [(x, y_c + 7.5, z_d), (x, y_c + 4.0, z_d)]
-            for a in range(0, 91, 15):
-                pts.append((x, y_c - r * math.sin(math.radians(a)),
-                            z_c + r * math.cos(math.radians(a))))
-            # run the tongue, exiting through the channel step face z=-99
-            for z in (z_c - 10.0, z_c - 30.0, -60.0, -85.0, -103.0):
-                pts.append((x, y_f, z))
-            path = Spline(*pts)
-            section = Plane(origin=path @ 0, z_dir=path % 0) * Circle(dia / 2.0)
-            cutters.append(sweep(section, path=path))
+        effective_ts_y_range = ts_y_range
+        if STAND_FOOT:
+            lower = FLOOR_TS_JOIN_Y_MM - FLOOR_TS_JOIN_OVERLAP_MM
+            if effective_ts_y_range is None:
+                effective_ts_y_range = (lower, 1.0e9)
+            else:
+                effective_ts_y_range = (
+                    max(lower, effective_ts_y_range[0]),
+                    effective_ts_y_range[1],
+                )
+            if effective_ts_y_range[1] >= effective_ts_y_range[0]:
+                if selected & {"t1f", "t2f"}:
+                    ts_cutter = _proud_floor_ts_complete_cutter(
+                        ts_route_key=ts_route_key,
+                        upper_y_range=effective_ts_y_range,
+                    )
+                else:
+                    ts_cutter = _ts_cutter(
+                        y_range=effective_ts_y_range,
+                        ts_route_key=ts_route_key)
+        else:
+            ts_cutter = _ts_cutter(
+                y_range=effective_ts_y_range,
+                ts_route_key=ts_route_key)
+    if not STAND_FOOT:
+        if selected & {"ts", "t1f", "t2f"}:
+            if ts_cutter is not None:
+                cutters.append(ts_cutter)
+            cutters.append(no_floor_t_entry_cutter())
+        elif ts_cutter is not None:
+            cutters.append(ts_cutter)
         return cutters
-    # twin T entry ramps lancing into the O3.8 strip feeders
-    if "t1f" in selected:
-        cutters.append(_entry_ramp(T_RAMP[0], T_RAMP[1], 4.6))
-    if "t2f" in selected:
-        cutters.append(_entry_ramp(T_RAMP_L[0], T_RAMP_L[1], 4.6))
-    # LM/UM entries: steep straight ramps into the D20 support window
-    for name, (p0, p1) in BIG_RAMPS.items():
-        if name in selected:
-            cutters.append(_entry_ramp(p0, p1, BIG_RAMP_D[name]))
+    if ts_cutter is not None:
+        cutters.append(ts_cutter)
+    # One shared D6 T trunk replaces the former two small floor feeders.  Only
+    # bottom/full callers request the feeder names; upper-only TS cutters do
+    # not spend time constructing this disjoint floor sweep.
+    if selected & {"t1f", "t2f"}:
+        if "ts" not in selected:
+            cutters.append(_proud_floor_round_cutter(
+                "ts", ts_route_key=ts_route_key))
+        elif ts_cutter is None:
+            raise RuntimeError(
+                "selected floor TS trunk has no complete cutter")
     return cutters

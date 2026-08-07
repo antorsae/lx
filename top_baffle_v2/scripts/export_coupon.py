@@ -4,14 +4,15 @@ same source X=180-degree front-face-down process orientation as the released
 baffle pieces. The slicer may translate/arrange them but must not reorient.
 
   1 fit_plate    dovetail female pocket (grown by the working
-                 CLEARANCE_MM) + O6.4 x 6.8 (W22) and O4.6 x 4.0
+                 CLEARANCE_MM) + O6.5 x 2.0 entry over the unchanged
+                 O6.4 x 6.8 total-depth W22 bore and O4.6 x 4.0
                  (10F) heat-set bores opening UP + the V1 upper captive
                  magnet wall section (D5.20 x 2.10 cavity, 0.45-mm
                  interface/inner skins and a 45-degree closing roof)
   2 fit_key      loose male dovetail key (no clearance) -- tune X-Y
                  hole compensation until it slides snug into the plate
-  3 fish_entry   the no-foot entry cluster: twin T ramps, feeders and
-                 the O6.8 Y-step
+  3 fish_entry   the shared no-foot three-port cluster: LM above,
+                 one O6 T trunk lower-left, UM lower-right
   4 um_outlet_proud  real B2 outline + the complete R6P R14 outlet
   5 fish_ts_dive the proud R6P TS notch/oval at full 18.3 depth
   6 fish_foot    a stand-foot R14 elbow pair
@@ -43,6 +44,7 @@ committing kilograms.
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import importlib
 import os
 from pathlib import Path
@@ -151,6 +153,15 @@ COUPON_GROUPS = (
     "bump_12",
 )
 
+
+def _large_host_execution() -> bool:
+    """Use bounded group fan-out only inside the Osado release cgroup."""
+    return (
+        os.environ.get("LX_CAD_EXECUTION") != "local"
+        and os.environ.get("LX_CAD_MEMORY_PROFILE") == "osado-512g"
+        and os.environ.get("LX_CAD_ALLOW_PARALLEL") == "1"
+    )
+
 _STATEFUL_MODULES = (
     "lx521_baffle.obiwan.attachments",
     "lx521_baffle.obiwan.assembled",
@@ -188,7 +199,11 @@ def _fit_pieces() -> dict:
     )
     from shapely import box as sbox
     from shapely.ops import unary_union
-    from lx521_baffle.base import THICKNESS_MM
+    from lx521_baffle.base import (
+        L22_PILOT_DEPTH_MM,
+        THICKNESS_MM,
+        m5_insert_bore_cutter,
+    )
     from lx521_baffle.proud.top_baffle_nd25fw4_b2_split import (
         _grown,
         _trapezoid_up,
@@ -201,7 +216,12 @@ def _fit_pieces() -> dict:
     pocket = _grown(_trapezoid_up(-28.0, 40.0 - DEPTH, NECK, HEAD, DEPTH))
     plate -= _poly_prism(pocket, t)
     # heat-set bores from the top face (open UP for easy insert setting)
-    plate -= Pos(0.0, 20.0, t - 3.2) * Cylinder(3.2, 7.2)  # O6.4 x 6.8
+    plate -= m5_insert_bore_cutter(
+        (0.0, 20.0),
+        opening_z=t,
+        total_depth=L22_PILOT_DEPTH_MM,
+        opening_side="+z",
+    )
     plate -= Pos(14.0, 20.0, t - 2.0) * Cylinder(2.3, 4.2)
     # V1 upper wall station, kept as a release regression coupon.  It now
     # uses the exact production pause-and-bury cradle/roof rather than an
@@ -230,7 +250,48 @@ def _fit_pieces() -> dict:
     return {"1_fit_plate": plate, "2_fit_key": male}
 
 
-def _fishing_pieces(target_mode: str, only: str | None = None) -> dict:
+def _find_obiwan_stage_manifest(output_dir: Path) -> Path | None:
+    """Find the state-local native-BREP transaction above a staging dir."""
+    output_dir = Path(output_dir).resolve()
+    for root in (output_dir, *output_dir.parents):
+        candidate = root / ".obiwan_stage" / "manifest.json"
+        if candidate.is_file():
+            return candidate
+        if root == PROJECT_ROOT.resolve():
+            break
+    return None
+
+
+def _staged_lm_carrier(output_dir: Path, target_mode: str):
+    """Import the already-qualified LM carrier when its stage is available."""
+    manifest = _find_obiwan_stage_manifest(output_dir)
+    if manifest is None:
+        return None
+    from build123d import import_brep
+    from export_obiwan_staged import load_stage_manifest, staged_part_paths
+
+    payload = load_stage_manifest(
+        manifest, stand_foot=target_mode == "1")
+    paths = staged_part_paths(manifest, payload)
+    carrier = import_brep(str(paths["core_lm_carrier"]))
+    solids = tuple(carrier.solids())
+    if (not carrier.is_valid or len(solids) != 1
+            or solids[0].volume <= 0.01):
+        raise RuntimeError(
+            "staged LM carrier for coupon crop is not one valid solid; "
+            f"valid={carrier.is_valid} volumes="
+            f"{[solid.volume for solid in solids]}")
+    print(
+        f"[coupon-stage-reuse] imported {paths['core_lm_carrier']} "
+        f"for state={payload['state']}",
+        flush=True,
+    )
+    return carrier
+
+
+def _fishing_pieces(
+        target_mode: str, only: str | None = None,
+        *, output_dir: Path | None = None) -> dict:
     """Real duct geometry carved from a region box, one body per hard
     fishing spot."""
     # name -> (LX_STAND_FOOT, region box, rear z0, special geometry)
@@ -270,9 +331,19 @@ def _fishing_pieces(target_mode: str, only: str | None = None) -> dict:
             from lx521_baffle.proud.top_baffle_nd25fw4_b2 import OUTLINE_B2
             blk = baffle_solid(OUTLINE_B2, TWEETER_DROP_MM) & crop
         elif special in {"lm_core", "obiwan_bump", "um_core"}:
-            from lx521_baffle.obiwan.carriers import lm_carrier, um_carrier
-            blk = (um_carrier() if special == "um_core"
-                   else lm_carrier()) & crop
+            staged_lm = (
+                _staged_lm_carrier(output_dir, target_mode)
+                if (output_dir is not None
+                    and special in {"lm_core", "obiwan_bump"})
+                else None
+            )
+            if staged_lm is not None:
+                carrier = staged_lm
+            else:
+                from lx521_baffle.obiwan.carriers import lm_carrier, um_carrier
+                carrier = (um_carrier() if special == "um_core"
+                           else lm_carrier())
+            blk = carrier & crop
             # Coupon 7's current x=-82..-22/y=84..141 seat crop contains no
             # released captive site (the lower LM pair is at y=18).  Keep the
             # diagnostic crop unchanged and do not add disconnected fill
@@ -353,12 +424,13 @@ _EXPECTED_COUPON_SIDECARS = {
 }
 
 
-def _pieces_for_group(group: str, target_mode: str):
+def _pieces_for_group(group: str, target_mode: str, output_dir: Path):
     if group == "fit_1_2":
         _set_state(target_mode, "proud")
         return _fit_pieces()
     if group in _FISHING_GROUPS:
-        return _fishing_pieces(target_mode, _FISHING_GROUPS[group])
+        return _fishing_pieces(
+            target_mode, _FISHING_GROUPS[group], output_dir=output_dir)
     if group == "clock_9":
         return _clocking_piece(target_mode)
     raise ValueError(group)
@@ -399,7 +471,7 @@ def _run_group_guarded(group: str, stl_dir: Path, target_mode: str) -> None:
 def _export_group(group: str, stl_dir: Path, target_mode: str) -> None:
     from build123d import export_stl
 
-    pieces = _pieces_for_group(group, target_mode)
+    pieces = _pieces_for_group(group, target_mode, stl_dir)
     for name, solid in pieces.items():
         raw_solids = list(solid.solids())
         if (not solid.is_valid or len(raw_solids) != 1
@@ -490,8 +562,22 @@ def main() -> None:
         with tempfile.TemporaryDirectory(
                 prefix=".coupon-stage-", dir=stl_dir) as stage_name:
             stage_dir = Path(stage_name)
-            for group in COUPON_GROUPS:
-                _run_group_guarded(group, stage_dir, target_mode)
+            if _large_host_execution():
+                # Groups have disjoint outputs and run under the enclosing
+                # recipe's one 28-GiB process-tree guard.  Osado has ample
+                # CPU/RAM for all nine small crops; local macOS deliberately
+                # keeps the established one-at-a-time memory behavior.
+                with ThreadPoolExecutor(
+                        max_workers=len(COUPON_GROUPS),
+                        thread_name_prefix="coupon") as executor:
+                    tuple(executor.map(
+                        lambda group: _run_group_guarded(
+                            group, stage_dir, target_mode),
+                        COUPON_GROUPS,
+                    ))
+            else:
+                for group in COUPON_GROUPS:
+                    _run_group_guarded(group, stage_dir, target_mode)
             actual = {path.name for path in stage_dir.glob("*.stl")}
             if actual != _EXPECTED_COUPON_FILES:
                 raise RuntimeError(

@@ -79,16 +79,22 @@ UM_PILOT_DEPTH_MM = 4.0
 # (D8.8 head recess) on D209.5 pitch, cross-checked against the
 # E0022_W22EX001 reference STEP used to establish the mounting template.
 # Mounted with BRASS
-# HEAT-SET inserts M5 x 5.8 long x D6.3 OD: bore D6.4 x 6.8 (5.8
-# insert + 1.0 melt room; manufacturer's recommended hole), set with a
-# soldering iron. M5 screws pass the D5.0 flange holes natively; heads
-# seat in the D8.8 recesses. Pattern aligned VERTICALLY (30/90/...330
-# deg). Floor z=11.5; the ring is plan-clear of every front-half duct
-# (LM keeps 3.05 to the 270-deg bore, seam C clears the 90-deg bore by
-# 2.25) -- checked by the suite.
-L22_PILOT_D_MM = 6.4
+# HEAT-SET inserts M5 x 5.8 long x D6.3 OD (D7.1 maximum head): the
+# unchanged total bore is D6.4 x 6.8 (5.8 insert + 1.0 melt room), with a
+# D6.5 x 2.0 entry relief at the insertion face.  The extra 0.05 mm radial
+# lead exists only at the mouth; the remaining 4.8 mm stays D6.4.  M5 screws
+# pass the D5.0 flange holes natively; heads
+# seat in the D8.8 recesses.  Stock/Slim and Obi-Wan share the same
+# 0/60/...300-degree clock.  That puts two inserts in ``piece_bottom``,
+# keeps the LM terminal axis vertical, and removes the former +Y bore from
+# the narrow seam-C land.  Floor z=11.5; every bore remains regression-gated
+# against the complete front-half duct set.
+M5_INSERT_BODY_D_MM = 6.4
+M5_INSERT_ENTRY_D_MM = 6.5
+M5_INSERT_ENTRY_DEPTH_MM = 2.0
+L22_PILOT_D_MM = M5_INSERT_BODY_D_MM
 L22_PILOT_PCD_MM = 209.5
-L22_PILOT_ANGLES_DEG = (30.0, 90.0, 150.0, 210.0, 270.0, 330.0)
+L22_PILOT_ANGLES_DEG = (0.0, 60.0, 120.0, 180.0, 240.0, 300.0)
 L22_PILOT_DEPTH_MM = 6.8
 
 # STAND_FOOT: piece_bottom carries a fused stand foot (see the split
@@ -126,6 +132,52 @@ CORNER_HOLE_XY = [
     (-66.2, 10.0),
     (66.2, 10.0),
 ]
+
+
+def m5_insert_bore_cutter(
+    center_xy: tuple[float, float],
+    *,
+    opening_z: float,
+    total_depth: float,
+    opening_side: str,
+    overshoot: float = 0.20,
+):
+    """Return the shared stepped M5 heat-set-insert bore cutter.
+
+    ``opening_side='+z'`` serves front/driver-seat insertion: the physical
+    mouth is ``opening_z`` and the blind floor is ``opening_z-total_depth``.
+    ``opening_side='-z'`` serves rear insertion and reverses that interval.
+    In either direction the first 2.0 mm is D6.5 and all remaining depth is
+    D6.4.  ``overshoot`` lies outside the physical host and therefore never
+    changes the requested total depth.
+    """
+    depth = float(total_depth)
+    extra = float(overshoot)
+    if depth < M5_INSERT_ENTRY_DEPTH_MM:
+        raise ValueError(
+            "M5 insert bore depth must contain the complete entry relief")
+    if extra < 0.0:
+        raise ValueError("M5 insert bore overshoot cannot be negative")
+    x, y = map(float, center_xy)
+    mouth = float(opening_z)
+    if opening_side == "+z":
+        body_z0, body_z1 = mouth - depth, mouth + extra
+        entry_z0, entry_z1 = mouth - M5_INSERT_ENTRY_DEPTH_MM, mouth + extra
+    elif opening_side == "-z":
+        body_z0, body_z1 = mouth - extra, mouth + depth
+        entry_z0, entry_z1 = mouth - extra, mouth + M5_INSERT_ENTRY_DEPTH_MM
+    else:
+        raise ValueError("M5 insert bore opening_side must be '+z' or '-z'")
+
+    def cylinder(diameter: float, z0: float, z1: float):
+        return Pos(x, y, (z0 + z1) / 2.0) * Cylinder(
+            diameter / 2.0, z1 - z0)
+
+    body = cylinder(M5_INSERT_BODY_D_MM, body_z0, body_z1)
+    entry = cylinder(M5_INSERT_ENTRY_D_MM, entry_z0, entry_z1)
+    cutter = body.fuse(entry).clean()
+    cutter.label = "m5_heat_set_bore_D6p5x2_then_D6p4"
+    return cutter
 
 # Outer boundary, exactly as drawn. ("L", start, end) straight segments and
 # ("C", start, ctrl1, ctrl2, end) cubic beziers; consecutive collinear top-edge
@@ -302,14 +354,20 @@ def baffle_solid(outline=OUTLINE, tweeter_drop_mm: float = 0.0,
     pilots = [
         (UM_CUTOUT[:2], UM_PILOT_PCD_MM, UM_PILOT_ANGLES_DEG, UM_PILOT_D_MM,
          UM_PILOT_DEPTH_MM),
-        (L22_CUTOUT[:2], L22_PILOT_PCD_MM, L22_PILOT_ANGLES_DEG, L22_PILOT_D_MM,
-         L22_PILOT_DEPTH_MM),
     ]
     for center_xy, pcd, angles, dia, depth in pilots:
         for px, py in _pilot_centers(center_xy, pcd, angles):
             part -= Pos(px, py, THICKNESS_MM - depth / 2.0) * Cylinder(
                 dia / 2.0, depth
             )
+    for px, py in _pilot_centers(
+            L22_CUTOUT[:2], L22_PILOT_PCD_MM, L22_PILOT_ANGLES_DEG):
+        part -= m5_insert_bore_cutter(
+            (px, py),
+            opening_z=THICKNESS_MM,
+            total_depth=L22_PILOT_DEPTH_MM,
+            opening_side="+z",
+        )
     for cutter in _crescent_taper_cutters(tweeter_drop_mm,
                                           crescent_front_mm,
                                           crescent_rear_mm):
@@ -318,8 +376,12 @@ def baffle_solid(outline=OUTLINE, tweeter_drop_mm: float = 0.0,
     # BLIND from the REAR face (z=0..depth) -- the opposite side from the
     # front-mounted driver inserts. The bridge screws in from behind.
     for cx, cy in (BRIDGE_HOLE_XY if not STAND_FOOT else []):
-        part -= Pos(cx, cy, BRIDGE_INSERT_DEPTH_MM / 2.0) * Cylinder(
-            BRIDGE_INSERT_D_MM / 2.0, BRIDGE_INSERT_DEPTH_MM)
+        part -= m5_insert_bore_cutter(
+            (cx, cy),
+            opening_z=0.0,
+            total_depth=BRIDGE_INSERT_DEPTH_MM,
+            opening_side="-z",
+        )
     return part
 
 

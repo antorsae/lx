@@ -1,0 +1,81 @@
+{
+  "mesh": {
+    "brep_volume_abs_error_mm3": 24.95889402832836,
+    "brep_volume_relative_error": 0.00016078678733137813,
+    "collapsed_apex_facets_removed": 0,
+    "component_error": 0,
+    "component_signed_volumes": [
+      155514.24864104108,
+      -64.88298595086472,
+      -64.88301122353481,
+      -64.88304488160897,
+      -64.8830701543015
+    ],
+    "components": 5,
+    "degenerate": 0,
+    "disconnected_material_components": 0,
+    "duplicates": 0,
+    "negative_volume": 0,
+    "nested_void_components": 4,
+    "nonfinite": 0,
+    "nonnested_void_components": 0,
+    "open": 0,
+    "outer_components": 1,
+    "over_shared": 0,
+    "signed_volume": 155254.71652883082,
+    "transform_zero_coordinates_canonicalized": 11112,
+    "triangles": 81704,
+    "winding": 0,
+    "zero_volume": 0,
+    "zero_volume_components": 0
+  },
+  "mesh_angular_tolerance": 0.08,
+  "mesh_tolerance_mm": 0.01,
+  "part": "vase_TEBM35C10-4",
+  "pre_translation_bbox_min_mm": [
+    -60.654000100000005,
+    -526.231,
+    -18.300000099999963
+  ],
+  "print_orientation": "front_face_down",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      60.654000100000005
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      526.231
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999963
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "vase_TEBM35C10-4.stl",
+  "stl_bytes": 4085284,
+  "stl_origin_translation_mm": [
+    60.654000100000005,
+    526.231,
+    18.300000099999963
+  ],
+  "stl_sha256": "1214f11334119099861a105ecf886410a487458edea601d0bf4c799d393f7653",
+  "variant_export": "Stock-TEBM35C10-4"
+}

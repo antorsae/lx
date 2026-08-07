@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1450" viewBox="0 0 1800 1450">
+  <defs>
+    <style>
+      text { font-family: Inter, Arial, sans-serif; fill: #172033; }
+      .title { font-size: 34px; font-weight: 700; }
+      .subtitle { font-size: 17px; fill: #526078; }
+      .h1 { font-size: 24px; font-weight: 700; }
+      .h2 { font-size: 19px; font-weight: 700; }
+      .label { font-size: 16px; }
+      .small { font-size: 14px; fill: #526078; }
+      .tiny { font-size: 12px; fill: #526078; }
+      .panel { fill: #fff; stroke: #cbd5e1; stroke-width: 1.5; }
+      .wall-outline { fill: none; stroke: #34445c; stroke-width: 65; stroke-linecap: butt; stroke-linejoin: round; }
+      .wall { fill: none; stroke: #d9e0e9; stroke-width: 60.4; stroke-linecap: butt; stroke-linejoin: round; }
+      .centre { fill: none; stroke: #2563eb; stroke-width: 3.5; stroke-dasharray: 10 7; }
+      .outer { fill: none; stroke: #0b5bd3; stroke-width: 6; }
+      .duct { fill: none; stroke: #0f9f8f; stroke-width: 4; stroke-linecap: round; }
+      .dim { fill: none; stroke: #d97706; stroke-width: 2; }
+      .datum { fill: none; stroke: #94a3b8; stroke-width: 1.5; stroke-dasharray: 6 5; }
+      .zone { fill: #60a5fa55; stroke: #2563eb; stroke-width: 2.5; }
+      .body { fill: #e4e9f0; stroke: #526078; stroke-width: 2; }
+    </style>
+    <marker id="orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10z" fill="#d97706"/>
+    </marker>
+    <marker id="teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10z" fill="#0f9f8f"/>
+    </marker>
+  </defs>
+
+  <rect width="1800" height="1450" fill="#eef2f7"/>
+  <text x="45" y="52" class="title">Slim floor stand — two convex bend options</text>
+  <text x="45" y="82" class="subtitle">Equal-scale engineering concepts · 18.3 mm wall · 150 mm rear depth · no CAD generation or slicing</text>
+
+  <rect x="35" y="105" width="845" height="750" rx="12" class="panel"/>
+  <rect x="920" y="105" width="845" height="750" rx="12" class="panel"/>
+
+  <!-- OPTION A: circular outer convex face R41, equal-scale 3.3 px/mm. -->
+  <text x="60" y="147" class="h1">A · CIRCULAR CONVEX FACE</text>
+  <text x="60" y="174" class="small">R41 applies to the visible outer surface; the complete wall is offset inward</text>
+  <line x1="95" y1="730" x2="735" y2="730" class="datum"/>
+  <text x="98" y="754" class="tiny">floor y=0</text>
+
+  <path d="M140 699.8 L560.1 699.8 A105.1 105.1 0 0 1 665.2 594.7 L665.2 245" class="wall-outline"/>
+  <path d="M140 699.8 L560.1 699.8 A105.1 105.1 0 0 1 665.2 594.7 L665.2 245" class="wall"/>
+  <path d="M560.1 730 A135.3 135.3 0 0 1 695.4 594.7" class="outer"/>
+  <path d="M140 699.8 L560.1 699.8 A105.1 105.1 0 0 1 665.2 594.7 L665.2 300" class="centre"/>
+  <path d="M160 706 L560.1 706 A98.9 98.9 0 0 1 659 607 L659 345" class="duct"/>
+
+  <circle cx="560.1" cy="594.7" r="4.5" fill="#d97706"/>
+  <line x1="560.1" y1="594.7" x2="653" y2="690" class="dim" marker-end="url(#orange)"/>
+  <text x="470" y="568" class="label" fill="#d97706">outer convex radius R41</text>
+  <text x="470" y="590" class="tiny">circle centre shown · not the wall centreline</text>
+
+  <line x1="140" y1="790" x2="635" y2="790" class="dim" marker-start="url(#orange)" marker-end="url(#orange)"/>
+  <text x="388" y="815" text-anchor="middle" class="label" fill="#d97706">150 mm rear depth</text>
+  <line x1="104" y1="669.6" x2="104" y2="730" class="dim" marker-start="url(#orange)" marker-end="url(#orange)"/>
+  <text x="94" y="704" text-anchor="end" class="small" fill="#d97706">18.3</text>
+
+  <rect x="445" y="205" width="390" height="117" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="465" y="236" class="h2">Exact radii</text>
+  <text x="465" y="264" class="label">outer face: R41.00</text>
+  <text x="465" y="289" class="label">wall centreline: R31.85</text>
+  <text x="655" y="289" class="label">inner face: R22.70</text>
+  <text x="465" y="312" class="tiny">bend envelope: 41 × 41 mm</text>
+
+  <text x="145" y="650" class="small">representative duct side projection</text>
+  <text x="145" y="670" class="tiny">four lanes remain separated across width</text>
+
+  <!-- OPTION B: 75x65 tangent cubic, equal-scale 3.3 px/mm. -->
+  <text x="945" y="147" class="h1">B · RED-SKETCH TANGENT SPLINE</text>
+  <text x="945" y="174" class="small">Longer convex transition; R41 is the verified minimum centreline curvature radius</text>
+  <line x1="980" y1="730" x2="1620" y2="730" class="datum"/>
+  <text x="983" y="754" class="tiny">floor y=0</text>
+
+  <path d="M1000 699.8 L1277.7 699.8 C1500.45 699.8 1525.2 597.24 1525.2 485.31 L1525.2 245" class="wall-outline"/>
+  <path d="M1000 699.8 L1277.7 699.8 C1500.45 699.8 1525.2 597.24 1525.2 485.31 L1525.2 245" class="wall"/>
+  <path d="M1000 699.8 L1277.7 699.8 C1500.45 699.8 1525.2 597.24 1525.2 485.31 L1525.2 300" class="centre"/>
+  <path d="M1020 706 L1277.7 706 C1488 706 1517 603 1517 495 L1517 345" class="duct"/>
+
+  <circle cx="1486.39" cy="632.85" r="5" fill="#d97706"/>
+  <line x1="1405" y1="585" x2="1480" y2="628" class="dim" marker-end="url(#orange)"/>
+  <text x="1200" y="565" class="label" fill="#d97706">minimum centreline radius R41.000</text>
+  <text x="1200" y="586" class="tiny">at spline parameter t=0.507 · no curvature reversal</text>
+
+  <line x1="1000" y1="790" x2="1495" y2="790" class="dim" marker-start="url(#orange)" marker-end="url(#orange)"/>
+  <text x="1248" y="815" text-anchor="middle" class="label" fill="#d97706">150 mm rear depth</text>
+  <line x1="964" y1="669.6" x2="964" y2="730" class="dim" marker-start="url(#orange)" marker-end="url(#orange)"/>
+  <text x="954" y="704" text-anchor="end" class="small" fill="#d97706">18.3</text>
+
+  <rect x="1310" y="205" width="410" height="117" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="1330" y="236" class="h2">Exact centreline spline</text>
+  <text x="1330" y="263" class="small">span: 75 rear × 65 rise</text>
+  <text x="1330" y="287" class="small">control handles: 67.5 horizontal / 33.918 vertical</text>
+  <text x="1330" y="311" class="small">endpoint radii: R219.88 / R230.09</text>
+
+  <text x="1005" y="650" class="small">representative duct side projection</text>
+  <text x="1005" y="670" class="tiny">long approach; four lanes remain separated across width</text>
+
+  <!-- TOP VIEWS. -->
+  <rect x="35" y="875" width="845" height="290" rx="12" class="panel"/>
+  <rect x="920" y="875" width="845" height="290" rx="12" class="panel"/>
+  <text x="60" y="910" class="h2">A · TOP</text>
+  <text x="945" y="910" class="h2">B · TOP</text>
+
+  <path d="M265 935 L715 935 L542.5 1135 L437.5 1135 Z" class="body"/>
+  <path d="M265 935 L715 935 L668 990 L312 990 Z" class="zone"/>
+  <rect x="437.5" y="1135" width="105" height="12" class="body"/>
+  <path d="M472 955 L472 1085 M484 955 L484 1085 M496 955 L496 1085 M508 955 L508 1085" class="duct"/>
+  <text x="490" y="973" text-anchor="middle" class="label">41 mm bend projection</text>
+  <text x="490" y="1013" text-anchor="middle" class="tiny">compact; most of the tapered foot stays straight</text>
+
+  <path d="M1150 935 L1600 935 L1427.5 1135 L1322.5 1135 Z" class="body"/>
+  <path d="M1150 935 L1600 935 L1503 1047 L1247 1047 Z" class="zone"/>
+  <rect x="1322.5" y="1135" width="105" height="12" class="body"/>
+  <path d="M1357 955 L1357 1085 M1369 955 L1369 1085 M1381 955 L1381 1085 M1393 955 L1393 1085" class="duct"/>
+  <text x="1375" y="973" text-anchor="middle" class="label">84.15 mm total bend envelope</text>
+  <text x="1375" y="1068" text-anchor="middle" class="tiny">75 mm centreline span; longer duct-fishing corridor</text>
+
+  <!-- LOWER FRONT IMPACT + comparison. -->
+  <rect x="35" y="1185" width="1730" height="230" rx="12" class="panel"/>
+  <text x="60" y="1220" class="h2">LOWER FRONT IMPACT</text>
+  <text x="60" y="1245" class="small">Driver, magnet and seam datums remain above these zones; only the lower wall turns rearward</text>
+
+  <g transform="translate(265 1390) scale(1.45 -1.45)">
+    <path d="M-76.2 0 L76.2 0 L106 100 L-106 100 Z" class="body" vector-effect="non-scaling-stroke"/>
+    <path d="M-76.2 0 L76.2 0 L88.4 41 L-88.4 41 Z" class="zone" vector-effect="non-scaling-stroke"/>
+  </g>
+  <text x="265" y="1280" text-anchor="middle" class="label">A · lower 41 mm affected</text>
+
+  <g transform="translate(665 1390) scale(1.45 -1.45)">
+    <path d="M-76.2 0 L76.2 0 L106 100 L-106 100 Z" class="body" vector-effect="non-scaling-stroke"/>
+    <path d="M-76.2 0 L76.2 0 L98.3 74.15 L-98.3 74.15 Z" class="zone" vector-effect="non-scaling-stroke"/>
+  </g>
+  <text x="665" y="1280" text-anchor="middle" class="label">B · lower 74.15 mm affected</text>
+
+  <line x1="950" y1="1210" x2="950" y2="1390" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="980" y="1223" class="h2">TRADE-OFF</text>
+  <text x="980" y="1255" class="label">A</text><text x="1020" y="1255" class="small">smallest change; exact circular manufacture; tighter duct bend (wall centreline R31.85).</text>
+  <text x="980" y="1293" class="label">B</text><text x="1020" y="1293" class="small">closest to the red sketch; duct path never tighter than R41; occupies more of the foot.</text>
+  <text x="980" y="1331" class="label">Both</text><text x="1020" y="1331" class="small">18.3 mm constant thickness, convex outer profile, 150 mm total depth, no hard corner.</text>
+  <text x="980" y="1375" class="small" font-weight="700">Concept only: shell containment, duct offsets, connector access and print orientation remain CAD-stage gates.</text>
+</svg>

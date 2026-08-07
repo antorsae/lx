@@ -1,0 +1,113 @@
+{
+  "artifact_overrides": [],
+  "artifact_scope": [
+    {
+      "part": "vase_TEBM35C10-4",
+      "state": "shared",
+      "variant": "Slim-TEBM35C10-4"
+    }
+  ],
+  "backend": "BambuStudio",
+  "catalog_mode": "auxiliary",
+  "filament": "Bambu PLA Tough+ @BBL P2S",
+  "filament_preset": "filament/Bambu PLA Tough+ @BBL P2S.json",
+  "generated_from": "../../../captive_magnet_slicing_profile.json",
+  "machine_bounds_mm": {
+    "x": [
+      0.0,
+      256.0
+    ],
+    "y": [
+      0.0,
+      256.0
+    ],
+    "z": [
+      0.0,
+      256.0
+    ]
+  },
+  "machine_preset": "machine/Bambu Lab P2S 0.4 nozzle.json",
+  "magnet_insertion_pause": {
+    "park_z_mm": 250.0,
+    "policy": "The P2S has a 256 mm Z envelope. At each captive-magnet insertion layer, raise the nozzle to Z=250 mm (which lowers the bed to within 6 mm of its lowest position), pause with M400 U1, then restore the exact insertion-layer Z before the next print move. No XY motion is injected.",
+    "z_travel_speed_mm_s": 20.0
+  },
+  "printer": "Bambu Lab P2S 0.4 nozzle",
+  "process": "0.16mm High Quality @BBL P2S",
+  "process_preset": "process/0.16mm High Quality @BBL P2S.json",
+  "repo_overrides": {
+    "filament": {
+      "fan_max_speed": [
+        "60"
+      ],
+      "filament_max_volumetric_speed": [
+        "16",
+        "16"
+      ],
+      "nozzle_temperature": [
+        "225",
+        "225"
+      ],
+      "nozzle_temperature_initial_layer": [
+        "225",
+        "225"
+      ],
+      "overhang_fan_speed": [
+        "100"
+      ],
+      "textured_plate_temp": [
+        "55"
+      ],
+      "textured_plate_temp_initial_layer": [
+        "55"
+      ]
+    },
+    "machine": {
+      "machine_pause_gcode": "M400 U1"
+    },
+    "process": {
+      "bottom_shell_layers": "5",
+      "curr_bed_type": "Textured PEI Plate",
+      "detect_narrow_internal_solid_infill": "1",
+      "detect_thin_wall": "1",
+      "elefant_foot_compensation": "0.15",
+      "enable_support": "0",
+      "ensure_vertical_shell_thickness": "enabled",
+      "outer_wall_speed": [
+        "60",
+        "60"
+      ],
+      "precise_outer_wall": "1",
+      "sparse_infill_density": "30%",
+      "sparse_infill_pattern": "gyroid",
+      "support_critical_regions_only": "0",
+      "support_on_build_plate_only": "0",
+      "support_remove_small_overhang": "0",
+      "top_shell_layers": "6",
+      "wall_generator": "arachne",
+      "wall_loops": "6",
+      "xy_hole_compensation": "0"
+    }
+  },
+  "required_bambu_studio_version": "02.07.01.62",
+  "requirements": {
+    "first_layer_height_mm": 0.2,
+    "inner_wall_line_width_mm": 0.45,
+    "layer_height_mm": 0.16,
+    "nozzle_diameter_mm": 0.4,
+    "outer_wall_line_width_mm": 0.42,
+    "print_orientation": "front_face_down",
+    "printer_model": "Bambu Lab P2S",
+    "support_enabled": false,
+    "wall_generator": "arachne",
+    "xy_hole_compensation_policy": "0 mm is mandatory for captive-magnet parts: Bambu Studio 02.07.01.62 deletes the 0.45 mm retaining skin at +0.05 mm; 0 mm preserves the retaining geometry, while Arachne variable-width generation and the independent toolpath audit require exactly one bounded retaining traversal"
+  },
+  "schema_version": 1,
+  "slicing": {
+    "allow_rotations": false,
+    "arrange": true,
+    "auto_orient": false,
+    "timeout_seconds": 7200
+  },
+  "vendor": "BBL"
+}

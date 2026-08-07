@@ -614,9 +614,11 @@ def _validate_actual_gcode_profile(
             errors.append(
                 f"G-code {key}={actual:g} != resolved {expected_value:g}")
 
-    # Bambu serializes vector settings as comma-separated values.  Comparing
-    # only the first item would let a second extruder/speed silently retain an
-    # unsafe preset value (for example outer_wall_speed=60,200).
+    # Bambu serializes process vectors as comma-separated values.  Comparing
+    # only the first process item would let a second speed silently retain an
+    # unsafe value (for example outer_wall_speed=60,200).  Filament presets
+    # also use vectors for standard/high-flow *variant* slots, but a one-tool
+    # P2S G-code CONFIG_BLOCK serializes only the selected first slot.
     vector_fields = {
         "outer_wall_speed": ("process", "outer_wall_speed"),
         "nozzle_temperature": ("filament", "nozzle_temperature"),
@@ -659,6 +661,10 @@ def _validate_actual_gcode_profile(
                 actual, required, abs_tol=1.0e-8, rel_tol=0.0)
                 for actual, required in zip(
                     actual_vector, expected_vector, strict=True))
+        elif len(actual_vector) == 1 and section == "filament":
+            vector_pass = math.isclose(
+                actual_vector[0], expected_vector[0],
+                abs_tol=1.0e-8, rel_tol=0.0)
         elif len(actual_vector) == 1:
             # Bambu's CONFIG_BLOCK collapses identical per-tool vectors to one
             # scalar (the stock P2S output does this for 60,60 and 225,225).

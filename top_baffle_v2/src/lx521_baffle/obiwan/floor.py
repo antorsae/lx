@@ -39,6 +39,15 @@ from ..cables import (
     lm_exit_handoff_spec,
 )
 from ..flush import PAD_FACE_Z
+from ..floor_bend import (
+    BEND_MIN_CENTERLINE_RADIUS_MM,
+    BEND_VERTICAL_HANDLE_MM,
+    FUSION_OVERLAP_MM as FLOOR_BEND_FUSION_OVERLAP_MM,
+    bend_facts,
+    bent_wall_prism,
+    canonical_lane_controls,
+    sampled_minimum_radius,
+)
 from .floor_strength import (
     FLOOR_Y_MM,
     FOOT_FRONT_Z_MM,
@@ -46,7 +55,6 @@ from .floor_strength import (
     FOOT_REAR_Z_MM,
     FOOT_WIDTH_MM,
     LM_AXIS_Y_MM,
-    ROOT_FILLET_R_MM,
 )
 
 
@@ -72,27 +80,31 @@ STEM_SHOULDER_HALF_WIDTH_MM = 58.0
 STEM_SHOULDER_START_Y_MM = 68.0
 STEM_TOP_Y_MM = LM_AXIS_Y_MM - L22_CUTOUT[2] / 2.0
 STEM_SHOULDER_SAMPLES = 32
-ROOT_FUSION_OVERLAP_MM = 0.10
+FLOOR_BEND_VERTICAL_TANGENT_Y_MM = bend_facts()[
+    "vertical_tangent_xyz_mm"][1]
+FLOOR_BEND_HORIZONTAL_TANGENT_Z_MM = bend_facts()[
+    "horizontal_tangent_xyz_mm"][2]
+FLOOR_BEND_UPRIGHT_START_Y_MM = (
+    FLOOR_BEND_VERTICAL_TANGENT_Y_MM - FLOOR_BEND_FUSION_OVERLAP_MM)
+FLOOR_BEND_REAR_FLAT_END_Z_MM = (
+    FLOOR_BEND_HORIZONTAL_TANGENT_Z_MM + FLOOR_BEND_FUSION_OVERLAP_MM)
 
-FLOOR_LANE_BEND_R_MM = 14.0
+FLOOR_LANE_BEND_R_MM = BEND_MIN_CENTERLINE_RADIUS_MM
 FLOOR_LANE_SERVICE_START_Z_MM = -108.0
 # The body-only UM/T sweep stops before the annular feed.  After fusion, the
-# globally phased owner cutter reaches 8 mm backward through this temporary
-# solid bridge, yielding 7.2 mm of final lumen overlap.  This avoids duplicate
-# coincident sweeps at the thin feed wall.  A short forward continuation is
-# retained only in the dependency-light installed-centerline drawing.
+# globally phased owner cutter reaches 2.0 mm backward through this temporary
+# solid bridge, yielding 1.2 mm of final lumen overlap.  This avoids duplicate
+# coincident sweeps at the thin feed wall without reaching into Option B's
+# convex transition.  A short forward continuation is retained only in the
+# dependency-light installed-centerline drawing.
 FLOOR_LANE_INSTALLED_PREVIEW_FORWARD_MM = 3.0
 FLOOR_LANE_PREFUSION_HANDOFF_GAP_MM = 0.8
-FLOOR_ROUTE_OWNER_BACKREACH_MM = 8.0
+FLOOR_ROUTE_OWNER_BACKREACH_MM = 2.0
 FLOOR_LANE_EFFECTIVE_OVERLAP_MM = (
     FLOOR_ROUTE_OWNER_BACKREACH_MM
     - FLOOR_LANE_PREFUSION_HANDOFF_GAP_MM)
-FLOOR_LANE_BEZIER_START_HANDLE_MM = 20.0
-FLOOR_LANE_BEZIER_END_HANDLE_MM = 25.0
-# The LM stays fully buried through the stem, then uses a final exact R14
-# turn beside the lower ring.  This control station gives the straight high-Z
-# approach a G1 handoff into that turn without reopening the former stem slot.
-FLOOR_LM_FINAL_TURN_APPROACH_P2_Y_MM = 60.0
+FLOOR_LANE_UM_END_HANDLE_MM = 35.0
+FLOOR_LANE_T_END_HANDLE_MM = 32.0
 FLOOR_LM_EXIT_HANDOFF = lm_exit_handoff_spec(
     12.55, STEM_Z_MM[0], LM_DUCT_OUT_REAR_Z_MM)
 # UM/T need clearance behind their complete printed cover envelopes, not just
@@ -195,41 +207,19 @@ def integral_stem_plan_points():
 
 def _stem_prism():
     face = _plan_face(integral_stem_plan_points())
-    return Pos(0.0, 0.0, STEM_Z_MM[0]) * extrude(
+    full = Pos(0.0, 0.0, STEM_Z_MM[0]) * extrude(
         face, amount=STEM_Z_MM[1] - STEM_Z_MM[0])
-
-
-def _root_fillet_prism():
-    """True R12 internal YZ fillet, extruded across the complete W64 root."""
-    radius = ROOT_FILLET_R_MM
-    center_y = FOOT_HEIGHT_MM + radius
-    center_z = STEM_Z_MM[0] - radius
-    arc = []
-    for index in range(25):
-        angle = -0.5 * math.pi * index / 24.0
-        arc.append((
-            center_y + radius * math.sin(angle),
-            center_z + radius * math.cos(angle),
-        ))
-    # Local Plane.YZ face coordinates are (world Y, world Z).
-    # Retain the external analytic R12 surface while growing the hidden
-    # fusion edges 0.10 mm into both owners.  Face-only contact between the
-    # former fillet, foot and stem was needlessly fragile in OCC booleans.
-    overlap = ROOT_FUSION_OVERLAP_MM
-    points = [
-        (FOOT_HEIGHT_MM - overlap, center_z),
-        (FOOT_HEIGHT_MM - overlap, STEM_Z_MM[0] + overlap),
-        (center_y, STEM_Z_MM[0] + overlap),
-        (center_y, STEM_Z_MM[0]),
-        *arc[1:],
-        (FOOT_HEIGHT_MM - overlap, center_z),
-    ]
-    # Plane.YZ's positive extrusion direction is world -X.  Start at the
-    # +X side so the R12 prism spans exactly -32..+32 rather than producing
-    # a one-sided -96..-32 wing.
-    face = Pos(FOOT_WIDTH_MM / 2.0, 0.0, 0.0) * (
-        Plane.YZ * _plan_face(points))
-    return extrude(face, amount=FOOT_WIDTH_MM)
+    clip_height = STEM_TOP_Y_MM - FLOOR_BEND_UPRIGHT_START_Y_MM + 2.0
+    clip = Pos(
+        0.0,
+        (FLOOR_BEND_UPRIGHT_START_Y_MM + STEM_TOP_Y_MM) / 2.0,
+        sum(STEM_Z_MM) / 2.0,
+    ) * Box(
+        2.0 * STEM_SHOULDER_HALF_WIDTH_MM + 4.0,
+        clip_height,
+        STEM_Z_MM[1] - STEM_Z_MM[0] + 2.0,
+    )
+    return (full & clip).clean()
 
 
 def integrated_floor_addition():
@@ -240,17 +230,18 @@ def integrated_floor_addition():
     foot = Pos(
         0.0,
         FLOOR_Y_MM + FOOT_HEIGHT_MM / 2.0,
-        (FOOT_REAR_Z_MM + FOOT_FRONT_Z_MM) / 2.0,
+        (FOOT_REAR_Z_MM + FLOOR_BEND_REAR_FLAT_END_Z_MM) / 2.0,
     ) * Box(
         FOOT_WIDTH_MM,
         FOOT_HEIGHT_MM,
-        FOOT_FRONT_Z_MM - FOOT_REAR_Z_MM,
+        FLOOR_BEND_REAR_FLAT_END_Z_MM - FOOT_REAR_Z_MM,
     )
+    bend = bent_wall_prism(FOOT_WIDTH_MM)
     panel = Pos(
         0.0, PANEL_H_MM / 2.0,
         (FOOT_REAR_Z_MM + PANEL_INNER_Z_MM) / 2.0,
     ) * Box(FOOT_WIDTH_MM, PANEL_H_MM, PANEL_T_MM)
-    body = foot.fuse(_stem_prism(), _root_fillet_prism(), panel).clean()
+    body = foot.fuse(bend, _stem_prism(), panel).clean()
     solids = tuple(body.solids())
     if (not body.is_valid or len(solids) != 1
             or solids[0].volume <= 0.01):
@@ -261,66 +252,53 @@ def integrated_floor_addition():
     return Part([solids[0]])
 
 
-def _floor_lane_entry_points(name: str):
-    """Connector line and exact R14 quarter-turn defining points."""
+def _floor_lane_entry_components(name: str):
+    """Connector line plus direct Option-B cubic for one floor trunk."""
     try:
         spec = FLOOR_LANE_SPECS[name]
     except KeyError as exc:
         raise ValueError(name) from exc
-    x = spec["x_mm"]
-    floor_y = spec["floor_y_mm"]
-    stem_z = spec["stem_z_mm"]
-    radius = FLOOR_LANE_BEND_R_MM
-    center_y = floor_y + radius
-    center_z = stem_z - radius
-    line_start = (x, floor_y, FLOOR_LANE_SERVICE_START_Z_MM)
-    arc_start = (x, floor_y, center_z)
-    arc_mid = (
-        x,
-        center_y - radius / math.sqrt(2.0),
-        center_z + radius / math.sqrt(2.0),
+    controls = _floor_lane_bezier_points(name)
+    line_start = (
+        spec["x_mm"],
+        spec["floor_y_mm"],
+        FLOOR_LANE_SERVICE_START_Z_MM,
     )
-    arc_end = (x, center_y, stem_z)
-    return line_start, arc_start, arc_mid, arc_end
+    return line_start, controls
 
 
 def _floor_lane_bezier_points(name: str):
-    """G1 cubic from the R14 entry to its selected internal handoff."""
+    """G1 cubic from the straight foot lane to its selected handoff."""
     spec = FLOOR_LANE_SPECS[name]
-    if spec["handoff_mode"] != "buried_route_overlap":
-        raise ValueError(f"{name} does not have an annular-route Bezier")
-    p0 = _floor_lane_entry_points(name)[-1]
-    p3 = spec["feed_xyz_mm"]
-    bearing = math.radians(spec["feed_bearing_deg"])
-    tangent = (math.cos(bearing), math.sin(bearing), 0.0)
-    p1 = (
-        p0[0],
-        p0[1] + FLOOR_LANE_BEZIER_START_HANDLE_MM,
-        p0[2],
+    canonical = canonical_lane_controls(
+        spec["x_mm"], spec["floor_y_mm"], spec["stem_z_mm"])
+    if name == "lm":
+        endpoint = FLOOR_LM_EXIT_HANDOFF["start"]
+        tangent = FLOOR_LM_EXIT_HANDOFF["plan_tangent"]
+        handle = BEND_VERTICAL_HANDLE_MM
+    elif spec["handoff_mode"] == "buried_route_overlap":
+        endpoint = spec["feed_xyz_mm"]
+        bearing = math.radians(spec["feed_bearing_deg"])
+        tangent = (math.cos(bearing), math.sin(bearing), 0.0)
+        handle = (
+            FLOOR_LANE_UM_END_HANDLE_MM
+            if name == "um" else FLOOR_LANE_T_END_HANDLE_MM)
+    else:
+        raise ValueError(f"unsupported floor handoff for {name}")
+    return (
+        canonical[0],
+        canonical[1],
+        tuple(endpoint[index] - handle * tangent[index]
+              for index in range(3)),
+        tuple(endpoint),
     )
-    p2 = tuple(
-        p3[index] - FLOOR_LANE_BEZIER_END_HANDLE_MM * tangent[index]
-        for index in range(3))
-    return p0, p1, p2, p3
 
 
 def _floor_lm_rear_port_components():
-    """High-Z LM approach and shared R14 descent through the rear face."""
-    spec = FLOOR_LANE_SPECS["lm"]
+    """Shared R14 descent through the released lower-ring rear face."""
     handoff = FLOOR_LM_EXIT_HANDOFF
-    p0 = _floor_lane_entry_points("lm")[-1]
-    exit_start = handoff["start"]
-    if not p0[1] < FLOOR_LM_FINAL_TURN_APPROACH_P2_Y_MM < exit_start[1]:
-        raise RuntimeError("LM final-turn approach station is not ordered")
-    high_cubic = (
-        p0,
-        (p0[0], p0[1] + FLOOR_LANE_BEZIER_START_HANDLE_MM, p0[2]),
-        (exit_start[0], FLOOR_LM_FINAL_TURN_APPROACH_P2_Y_MM, p0[2]),
-        exit_start,
-    )
     return (
-        high_cubic,
-        exit_start,
+        handoff["start"],
         handoff["arc_mid"],
         handoff["face"],
         handoff["rear_end"],
@@ -328,10 +306,9 @@ def _floor_lm_rear_port_components():
 
 
 def _floor_lm_rear_port_edges():
-    cubic, exit_start, exit_mid, face, rear_end = (
+    exit_start, exit_mid, face, rear_end = (
         _floor_lm_rear_port_components())
     return (
-        Bezier(*cubic),
         ThreePointArc(exit_start, exit_mid, face),
         Line(face, rear_end),
     )
@@ -349,25 +326,23 @@ def _floor_lane_overlap_end(name: str):
 
 
 def floor_lane_path(name: str):
-    """Floor-body cutter path with true R14 arcs and G1 joins.
+    """Floor-body cutter path following the Option-B wall transition.
 
     UM/T stop on their authoritative cubic 0.8 mm before the feed; the later
-    8-mm annular owner-cutter backreach creates the final overlap through
-    ordinary solid body material.  LM remains at high Z through the stem,
-    then takes a final R14 descent at the shared lower-ring outlet.
+    2.0-mm annular owner-cutter backreach creates the final overlap through
+    ordinary solid body material.  LM reaches its existing lower-ring R14
+    outlet directly from the same long tangent cubic.
     """
     try:
         spec = FLOOR_LANE_SPECS[name]
     except KeyError as exc:
         raise ValueError(name) from exc
-    line_start, arc_start, arc_mid, arc_end = _floor_lane_entry_points(name)
-    edges = [
-        Line(line_start, arc_start),
-        ThreePointArc(arc_start, arc_mid, arc_end),
-    ]
+    line_start, controls = _floor_lane_entry_components(name)
+    edges = [Line(line_start, controls[0])]
     if spec["handoff_mode"] == "buried_route_overlap":
         edges.append(Bezier(*_prefusion_cubic_controls(name)))
     else:
+        edges.append(Bezier(*controls))
         edges.extend(_floor_lm_rear_port_edges())
     return Wire(edges)
 
@@ -429,37 +404,24 @@ def floor_lane_control_points(name: str):
 
     UM/T include a short forward visual continuation from the unchanged feed;
     the actual body-only cutter stops 0.8 mm early and the annular owner cutter
-    supplies the final 7.2-mm backreaching overlap. LM stays buried until its
+    supplies the final 1.2-mm backreaching overlap. LM stays buried until its
     final lower-ring R14 turn, then continues through the clean rear port.
     """
     try:
         spec = FLOOR_LANE_SPECS[name]
     except KeyError as exc:
         raise ValueError(name) from exc
-    line_start, arc_start, _arc_mid, arc_end = _floor_lane_entry_points(name)
-    radius = FLOOR_LANE_BEND_R_MM
-    center_y = spec["floor_y_mm"] + radius
-    center_z = spec["stem_z_mm"] - radius
-    points = [line_start, arc_start]
-    for index in range(1, 17):
-        angle = math.pi - 0.5 * math.pi * index / 16.0
-        points.append((
-            spec["x_mm"],
-            center_y + radius * math.cos(angle),
-            center_z + radius * math.sin(angle),
-        ))
+    line_start, controls = _floor_lane_entry_components(name)
+    points = [line_start, controls[0]]
     if spec["handoff_mode"] == "buried_route_overlap":
-        bezier = _floor_lane_bezier_points(name)
         points.extend(
-            _cubic_point(bezier, index / 32.0)
-            for index in range(1, 33))
+            _cubic_point(controls, index / 64.0)
+            for index in range(1, 65))
         points.append(_floor_lane_overlap_end(name))
     else:
-        bezier, _exit_start, _exit_mid, _face, _rear_end = (
-            _floor_lm_rear_port_components())
         points.extend(
-            _cubic_point(bezier, index / 32.0)
-            for index in range(1, 33))
+            _cubic_point(controls, index / 64.0)
+            for index in range(1, 65))
         points.extend(lm_exit_handoff_points(
             spec["stem_z_mm"], STEM_Z_MM[0], n=32,
             rear_end_z_mm=LM_DUCT_OUT_REAR_Z_MM)[1:])
@@ -558,9 +520,13 @@ def integrated_floor_facts() -> dict:
     """Dependency-light dimensions shared by tests, drawings and manifests."""
     lanes = {}
     for name, spec in FLOOR_LANE_SPECS.items():
+        entry_min_radius, entry_min_parameter = sampled_minimum_radius(
+            _floor_lane_bezier_points(name), samples=20_000)
         lanes[name] = {
             **spec,
-            "bend_radius_mm": FLOOR_LANE_BEND_R_MM,
+            "bend_radius_mm": entry_min_radius,
+            "bend_min_parameter": entry_min_parameter,
+            "entry_controls_xyz_mm": _floor_lane_bezier_points(name),
             "service_start_z_mm": FLOOR_LANE_SERVICE_START_Z_MM,
             "route_overlap_mm": (
                 FLOOR_LANE_EFFECTIVE_OVERLAP_MM
@@ -607,7 +573,10 @@ def integrated_floor_facts() -> dict:
         "stem_z_mm": STEM_Z_MM,
         "stem_top_y_mm": STEM_TOP_Y_MM,
         "stem_shoulder_half_width_mm": STEM_SHOULDER_HALF_WIDTH_MM,
-        "root_fillet_r_mm": ROOT_FILLET_R_MM,
+        "root_fillet_r_mm": None,
+        "floor_bend": bend_facts(),
+        "rear_flat_end_z_mm": FLOOR_BEND_REAR_FLAT_END_Z_MM,
+        "upright_start_y_mm": FLOOR_BEND_UPRIGHT_START_Y_MM,
         "panel_z_mm": (FOOT_REAR_Z_MM, PANEL_INNER_Z_MM),
         "panel_height_mm": PANEL_H_MM,
         "nl8_center_y_mm": NL8_CENTER_Y_MM,

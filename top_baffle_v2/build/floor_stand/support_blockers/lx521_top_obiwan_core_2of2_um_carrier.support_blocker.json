@@ -3286,11 +3286,11 @@
   },
   "kind": "bambu_support_blocker",
   "main_stl": "../stl/lx521_top_obiwan_core_2of2_um_carrier.stl",
-  "main_stl_sha256": "df29dc2a9545931d244c3bf1fdcbb0bdffba9db2287781fda4529cb7e42c8089",
+  "main_stl_sha256": "339c12af4ef1c282cd4497c1248ff51b9a9db1d3db62abbdf2dca89c0821c52c",
   "mesh": {
     "component_error": 0,
     "component_signed_volumes": [
-      4947.266299681889
+      4948.024475375917
     ],
     "components": 1,
     "degenerate": 0,
@@ -3303,8 +3303,8 @@
     "open": 0,
     "outer_components": 1,
     "over_shared": 0,
-    "signed_volume": 4947.266299681889,
-    "triangles": 454,
+    "signed_volume": 4948.024475375917,
+    "triangles": 464,
     "winding": 0,
     "zero_volume": 0,
     "zero_volume_components": 0
@@ -3340,5 +3340,5 @@
     ]
   ],
   "support_blocker": "lx521_top_obiwan_core_2of2_um_carrier.support_blocker.stl",
-  "support_blocker_sha256": "87e8ea6959cd84d1153915628d47b03c57e46e9a8313618f5906e089ca9e6089"
+  "support_blocker_sha256": "0dea9329c56636ac6bcb1b3652a8d638c77301b1bd21d89151601d4701fab06d"
 }

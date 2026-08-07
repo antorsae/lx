@@ -56,6 +56,7 @@ PROTOCOL_VERSION = 3
 ENVIRONMENT_ATTESTATION_VERSION = 3
 PROMOTION_TRANSACTION_VERSION = 1
 BUILD_CACHE_VERSION = 1
+PERFORMANCE_PROFILE_VERSION = 1
 REMOTE_PYTHON_VERSION = "3.12.12"
 REMOTE_MEMORY_PROFILE = "osado-512g"
 REMOTE_MEMORY_MAX_MIB = 512 * 1024
@@ -71,6 +72,7 @@ OUTPUT_ROOT_PREFIXES = {
     "floor_stand": Path("build/floor_stand"),
     "no_floor_stand": Path("build/no_floor_stand"),
     "wings": Path("build/wings"),
+    "tebm35c10_4": Path("build/vase_TEBM35C10-4"),
 }
 STATE_OUTPUT_ROOTS = ("floor_stand", "no_floor_stand")
 ARTIFACT_SCAN_PREFIXES = (
@@ -134,6 +136,7 @@ REMOTE_MAKE_TARGETS = {
     "check_obiwan_lm_split_two_pin_static",
     "manifold", "clean",
     "refresh_captive_magnet_catalog_existing",
+    "vase_tebm35c10_4_cad",
     "validate_obiwan_stages",
     "validate_floor_obiwan_stage", "validate_no_floor_obiwan_stage",
 }
@@ -955,6 +958,57 @@ def _current_cgroup_attestation() -> dict:
     }
 
 
+def _current_cgroup_metrics() -> dict:
+    """Read aggregate CPU, memory, process and I/O counters for this job."""
+    try:
+        record = next(
+            line for line in Path("/proc/self/cgroup").read_text(
+                encoding="utf-8").splitlines()
+            if line.startswith("0::"))
+        relative = record.split(":", 2)[2].lstrip("/")
+        root = Path("/sys/fs/cgroup").resolve()
+        directory = (root / relative).resolve()
+        if directory != root and root not in directory.parents:
+            raise RuntimeError("cgroup path escapes /sys/fs/cgroup")
+
+        def keyed(name: str) -> dict[str, int]:
+            values = {}
+            for line in (directory / name).read_text(
+                    encoding="ascii").splitlines():
+                fields = line.split()
+                if len(fields) == 2:
+                    values[fields[0]] = int(fields[1])
+            return values
+
+        memory_peak = int((directory / "memory.peak").read_text(
+            encoding="ascii").strip())
+        pids_peak = int((directory / "pids.peak").read_text(
+            encoding="ascii").strip())
+        cpu = keyed("cpu.stat")
+        memory_events = keyed("memory.events")
+        io_path = directory / "io.stat"
+        io_totals = None
+        if io_path.is_file():
+            io_totals = {
+                key: 0 for key in (
+                    "rbytes", "wbytes", "rios", "wios", "dbytes", "dios")
+            }
+            for line in io_path.read_text(encoding="ascii").splitlines():
+                for field in line.split()[1:]:
+                    key, separator, value = field.partition("=")
+                    if separator and key in io_totals:
+                        io_totals[key] += int(value)
+    except (OSError, StopIteration, ValueError) as exc:
+        raise RuntimeError("cannot measure remote cgroup-v2 work") from exc
+    return {
+        "memory_peak_bytes": memory_peak,
+        "pids_peak": pids_peak,
+        "cpu": cpu,
+        "memory_events": memory_events,
+        "io": io_totals,
+    }
+
+
 def _uv_identity(uv: str) -> dict:
     path = Path(uv).resolve()
     if not path.is_file():
@@ -1310,6 +1364,21 @@ def _target_required_artifact_relatives(
             f"{base}/top_baffle_nd25fw4_obiwan_lm_split.step",
             f"{base}/baffle_cable_routing_obiwan.png",
         })
+    elif target == "vase_tebm35c10_4_cad":
+        base = "top_baffle_v2/build/vase_TEBM35C10-4"
+        stem = "vase_TEBM35C10-4"
+        for profile in ("stock", "slim"):
+            child = f"{base}/{profile}"
+            required.update({
+                f"{child}/{stem}.brep",
+                f"{child}/{stem}.step",
+                f"{child}/{stem}.stl",
+                f"{child}/{stem}.print.json",
+                f"{child}/{stem}.facts.json",
+                f"{child}/{stem}.catalog.json",
+                f"{child}/{stem}.slicing_profile.json",
+                f"{child}/cad_manifest.json",
+            })
     return required
 
 
@@ -1401,6 +1470,9 @@ def _artifact_paths(job: Path, metadata: dict) -> list[Path]:
 def _create_artifact_bundle(job: Path, metadata: dict) -> None:
     work = job / "work"
     _verify_source(work, metadata["source_sha256"], allow_extra=True)
+    profile_path = job / "profile.json"
+    if not profile_path.is_file():
+        raise RuntimeError("remote job omitted its performance profile")
     paths = _artifact_paths(job, metadata)
     records = [{
         "path": path.relative_to(work).as_posix(),
@@ -1436,6 +1508,11 @@ def _create_artifact_bundle(job: Path, metadata: dict) -> None:
         },
         "created_utc": _utc_now(),
         "build_completed_ns": time.time_ns(),
+        "performance_profile": {
+            "schema_version": PERFORMANCE_PROFILE_VERSION,
+            "size": profile_path.stat().st_size,
+            "sha256": _sha256_file(profile_path),
+        },
         "archive_sha256": _sha256_file(archive),
         "files": records,
     })
@@ -1472,6 +1549,16 @@ def _validated_completed_job_for_cache(job: Path) -> tuple[dict, dict]:
     archive = job / "artifacts.tar.gz"
     if _sha256_file(archive) != artifacts.get("archive_sha256"):
         raise RuntimeError("cache artifact archive hash mismatch")
+    profile_record = artifacts.get("performance_profile")
+    profile_path = job / "profile.json"
+    if (not isinstance(profile_record, dict)
+            or set(profile_record) != {"schema_version", "size", "sha256"}
+            or profile_record.get("schema_version")
+            != PERFORMANCE_PROFILE_VERSION
+            or not profile_path.is_file()
+            or profile_path.stat().st_size != profile_record.get("size")
+            or _sha256_file(profile_path) != profile_record.get("sha256")):
+        raise RuntimeError("cache performance-profile binding is invalid")
     records = artifacts.get("files")
     if not isinstance(records, list):
         raise RuntimeError("cache artifact manifest has no file list")
@@ -1601,10 +1688,286 @@ def _publish_cache_command(args: argparse.Namespace) -> int:
     return 0
 
 
+def _read_guard_profile_events(path: Path) -> list[dict]:
+    if not path.is_file():
+        return []
+    events = []
+    for line_number, line in enumerate(
+            path.read_text(encoding="utf-8").splitlines(), start=1):
+        if not line.strip():
+            continue
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(
+                f"invalid guard profile event at line {line_number}") from exc
+        if (not isinstance(event, dict)
+                or event.get("schema_version") != 1
+                or not isinstance(event.get("command"), list)
+                or not isinstance(event.get("wall_seconds"), (int, float))
+                or not isinstance(
+                    event.get("peak_process_tree_rss_mib"), (int, float))
+                or type(event.get("exit_code")) is not int):
+            raise RuntimeError(
+                f"malformed guard profile event at line {line_number}")
+        events.append(event)
+    return events
+
+
+def _guard_profile_label(event: dict) -> str:
+    command = [str(value) for value in event.get("command", ())]
+    script = next(
+        (Path(value).name for value in command if value.endswith(".py")),
+        Path(command[0]).name if command else "unknown",
+    )
+    context = event.get("context")
+    if isinstance(context, dict):
+        selector = (
+            context.get("LX_R6F_CASE_ID")
+            or context.get("LX_CLEARANCE_SINGLE_CHECK"))
+        if selector:
+            return f"{script}:{selector}"
+        dense_state = context.get("LX_OBIWAN_CLOSURE_DENSE_STATE")
+        dense_shard = context.get("LX_OBIWAN_CLOSURE_DENSE_SHARD")
+        if dense_state is not None or dense_shard is not None:
+            return (
+                f"{script}:state={dense_state or '?'}:"
+                f"shard={dense_shard or '?'}")
+        state = context.get("LX_STAND_FOOT")
+        profile = context.get("LX_ROUTING_PROFILE")
+        if state is not None or profile is not None:
+            return f"{script}:foot={state or '?'}:route={profile or '?'}"
+    return script
+
+
+def _make_trace_targets(log_path: Path) -> list[str]:
+    if not log_path.is_file():
+        return []
+    pattern = re.compile(
+        r"^[^\n:]+:\d+: (?:update target|target) '([^']+)'",
+        re.MULTILINE,
+    )
+    return pattern.findall(log_path.read_text(
+        encoding="utf-8", errors="replace"))
+
+
+def _stage_phase_profile_events(log_path: Path) -> list[dict]:
+    """Read structured child-phase timings emitted by staged CAD exporters."""
+    if not log_path.is_file():
+        return []
+    prefix = "[obiwan-stage-profile] "
+    events = []
+    for line_number, line in enumerate(log_path.read_text(
+            encoding="utf-8", errors="replace").splitlines(), start=1):
+        marker = line.find(prefix)
+        if marker < 0:
+            continue
+        try:
+            event = json.loads(line[marker + len(prefix):])
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(
+                f"invalid stage phase profile at log line {line_number}"
+            ) from exc
+        if (not isinstance(event, dict)
+                or event.get("schema_version") != 1
+                or not isinstance(event.get("label"), str)
+                or not event["label"]
+                or not isinstance(event.get("wall_seconds"), (int, float))
+                or isinstance(event.get("wall_seconds"), bool)
+                or float(event["wall_seconds"]) < 0.0
+                or type(event.get("exit_code")) is not int
+                or type(event.get("stand_foot")) is not bool):
+            raise RuntimeError(
+                f"malformed stage phase profile at log line {line_number}")
+        events.append(event)
+    return events
+
+
+def _write_performance_profile(
+    job: Path,
+    metadata: dict,
+    *,
+    executor_started_ns: int,
+    make_started_ns: int,
+    make_completed_ns: int,
+    make_exit_code: int,
+    make_command: list[str],
+    cache_profile: dict,
+    cgroup_before_make: dict,
+) -> None:
+    """Aggregate per-recipe guard samples and whole-cgroup measurements."""
+    events_path = job / "profile-events.jsonl"
+    events = _read_guard_profile_events(events_path)
+    stage_phase_events = _stage_phase_profile_events(job / "build.log")
+    groups: dict[str, dict] = {}
+    for event in events:
+        label = _guard_profile_label(event)
+        group = groups.setdefault(label, {
+            "count": 0,
+            "wall_seconds": 0.0,
+            "child_cpu_seconds": 0.0,
+            "peak_process_tree_rss_mib": 0.0,
+            "nonzero_exit_count": 0,
+        })
+        group["count"] += 1
+        group["wall_seconds"] += float(event["wall_seconds"])
+        group["child_cpu_seconds"] += (
+            float(event.get("child_user_cpu_seconds", 0.0))
+            + float(event.get("child_system_cpu_seconds", 0.0)))
+        group["peak_process_tree_rss_mib"] = max(
+            group["peak_process_tree_rss_mib"],
+            float(event["peak_process_tree_rss_mib"]))
+        group["nonzero_exit_count"] += int(event["exit_code"] != 0)
+
+    top_events = []
+    for event in sorted(
+            events, key=lambda item: float(item["wall_seconds"]),
+            reverse=True)[:40]:
+        top_events.append({
+            "label": _guard_profile_label(event),
+            "wall_seconds": float(event["wall_seconds"]),
+            "child_cpu_seconds": (
+                float(event.get("child_user_cpu_seconds", 0.0))
+                + float(event.get("child_system_cpu_seconds", 0.0))),
+            "peak_process_tree_rss_mib": float(
+                event["peak_process_tree_rss_mib"]),
+            "exit_code": event["exit_code"],
+            "command": event["command"],
+            "context": event.get("context", {}),
+        })
+
+    stage_phase_groups: dict[str, dict] = {}
+    for event in stage_phase_events:
+        state = "floor" if event["stand_foot"] else "no_floor"
+        label = f"{state}:{event['label']}"
+        group = stage_phase_groups.setdefault(label, {
+            "count": 0,
+            "wall_seconds": 0.0,
+            "max_wall_seconds": 0.0,
+            "nonzero_exit_count": 0,
+        })
+        wall_seconds = float(event["wall_seconds"])
+        group["count"] += 1
+        group["wall_seconds"] += wall_seconds
+        group["max_wall_seconds"] = max(
+            group["max_wall_seconds"], wall_seconds)
+        group["nonzero_exit_count"] += int(event["exit_code"] != 0)
+
+    slowest_stage_phases = [{
+        "label": event["label"],
+        "state": "floor" if event["stand_foot"] else "no_floor",
+        "wall_seconds": float(event["wall_seconds"]),
+        "exit_code": event["exit_code"],
+    } for event in sorted(
+        stage_phase_events,
+        key=lambda item: float(item["wall_seconds"]),
+        reverse=True,
+    )[:80]]
+
+    trace_targets = _make_trace_targets(job / "build.log")
+    make_wall = max(0.0, (make_completed_ns - make_started_ns) / 1.0e9)
+    cgroup_after_make = _current_cgroup_metrics()
+    cpu_delta = {
+        key: max(
+            0,
+            int(cgroup_after_make["cpu"].get(key, 0))
+            - int(cgroup_before_make["cpu"].get(key, 0)),
+        )
+        for key in set(cgroup_before_make["cpu"]) | set(
+            cgroup_after_make["cpu"])
+    }
+    memory_event_delta = {
+        key: max(
+            0,
+            int(cgroup_after_make["memory_events"].get(key, 0))
+            - int(cgroup_before_make["memory_events"].get(key, 0)),
+        )
+        for key in set(cgroup_before_make["memory_events"]) | set(
+            cgroup_after_make["memory_events"])
+    }
+    io_delta = None
+    if (cgroup_before_make.get("io") is not None
+            and cgroup_after_make.get("io") is not None):
+        io_delta = {
+            key: max(
+                0,
+                int(cgroup_after_make["io"].get(key, 0))
+                - int(cgroup_before_make["io"].get(key, 0)),
+            )
+            for key in set(cgroup_before_make["io"]) | set(
+                cgroup_after_make["io"])
+        }
+    cpu_seconds = float(cpu_delta.get("usage_usec", 0)) / 1.0e6
+    guard_wall = sum(float(event["wall_seconds"]) for event in events)
+    profile = {
+        "schema_version": PERFORMANCE_PROFILE_VERSION,
+        "job_id": metadata["job_id"],
+        "source_sha256": metadata["source_sha256"],
+        "targets": metadata["targets"],
+        "parallel_jobs": metadata["parallel_jobs"],
+        "cache": cache_profile,
+        "executor_started_epoch_ns": executor_started_ns,
+        "make_started_epoch_ns": make_started_ns,
+        "make_completed_epoch_ns": make_completed_ns,
+        "make_wall_seconds": make_wall,
+        "executor_to_make_completion_seconds": max(
+            0.0, (make_completed_ns - executor_started_ns) / 1.0e9),
+        "make_exit_code": make_exit_code,
+        "make_command": make_command,
+        "cgroup": {
+            "before_make": cgroup_before_make,
+            "after_make": cgroup_after_make,
+            "make_delta": {
+                "cpu": cpu_delta,
+                "memory_events": memory_event_delta,
+                "io": io_delta,
+            },
+        },
+        "derived": {
+            "aggregate_cpu_seconds": cpu_seconds,
+            "average_cpu_cores_during_make": (
+                cpu_seconds / make_wall if make_wall > 0.0 else 0.0),
+            "guarded_recipe_count": len(events),
+            "guarded_recipe_wall_seconds_sum": guard_wall,
+            "guarded_recipe_parallelism_equivalent": (
+                guard_wall / make_wall if make_wall > 0.0 else 0.0),
+            "max_guarded_recipe_rss_mib": max(
+                (float(event["peak_process_tree_rss_mib"])
+                 for event in events), default=0.0),
+            "make_trace_update_count": len(trace_targets),
+            "make_trace_unique_target_count": len(set(trace_targets)),
+            "stage_phase_count": len(stage_phase_events),
+            "stage_phase_wall_seconds_sum": sum(
+                float(event["wall_seconds"])
+                for event in stage_phase_events),
+        },
+        "make_trace_targets": trace_targets,
+        "guard_groups": dict(sorted(
+            groups.items(),
+            key=lambda item: item[1]["wall_seconds"],
+            reverse=True)),
+        "slowest_guarded_recipes": top_events,
+        "stage_phase_groups": dict(sorted(
+            stage_phase_groups.items(),
+            key=lambda item: item[1]["wall_seconds"],
+            reverse=True)),
+        "slowest_stage_phases": slowest_stage_phases,
+        "guard_event_log": {
+            "path": events_path.name,
+            "size": events_path.stat().st_size if events_path.is_file() else 0,
+            "sha256": (
+                _sha256_file(events_path) if events_path.is_file() else None),
+        },
+        "created_utc": _utc_now(),
+    }
+    _atomic_json(job / "profile.json", profile)
+
+
 def _execute_job(args: argparse.Namespace) -> int:
     job = Path(args.job_dir)
     exit_code = 99
     log_path = job / "build.log"
+    executor_started_ns = time.time_ns()
     try:
         metadata = _read_json(job / "job.json")
         if metadata.get("protocol_version") != PROTOCOL_VERSION:
@@ -1666,7 +2029,25 @@ def _execute_job(args: argparse.Namespace) -> int:
                 )
             if cache_seed is None:
                 print("make-cache=cold", file=log)
+                cache_profile = {
+                    "state": "cold",
+                    "seed_file_count": 0,
+                    "changed_source_count": None,
+                    "changed_source_paths": [],
+                }
             else:
+                seed_manifest = _read_json(job / "cache-seed.json")
+                cache_profile = {
+                    "state": "verified",
+                    "source_sha256": cache_seed["source_sha256"],
+                    "build_completed_ns": cache_seed[
+                        "build_completed_ns"],
+                    "seed_file_count": len(seed_manifest["files"]),
+                    "changed_source_count": len(
+                        cache_seed["changed_source_paths"]),
+                    "changed_source_paths": list(
+                        cache_seed["changed_source_paths"]),
+                }
                 print(
                     "make-cache=verified "
                     f"source={cache_seed['source_sha256']} "
@@ -1745,6 +2126,8 @@ def _execute_job(args: argparse.Namespace) -> int:
                 "LX_CAD_MEMORY_PROFILE": REMOTE_MEMORY_PROFILE,
                 "LX_CAD_MAX_RSS_MB": str(metadata["worker_max_rss_mib"]),
                 "LX_CAD_MIN_FREE_MB": str(REMOTE_MEMORY_FLOOR_MIB),
+                "LX_CAD_PROFILE_EVENTS": str(
+                    (job / "profile-events.jsonl").resolve()),
                 "MAKEFLAGS": "",
                 "MPLCONFIGDIR": str(cache / "matplotlib"),
                 "PYTHONDONTWRITEBYTECODE": "1",
@@ -1753,17 +2136,31 @@ def _execute_job(args: argparse.Namespace) -> int:
                 "PATH": str(environment / "bin") + os.pathsep + env.get("PATH", ""),
             })
             command = [
-                make, "--no-print-directory", "-j",
+                make, "--no-print-directory", "--trace", "-j",
                 str(metadata["parallel_jobs"]),
                 "LX_CAD_EXECUTION=remote-worker",
                 f"PYTHON={python}", "--", *metadata["targets"],
             ]
             print("command=" + shlex.join(command), file=log)
+            cgroup_before_make = _current_cgroup_metrics()
+            make_started_ns = time.time_ns()
             result = subprocess.run(
                 command, cwd=job / "work" / "top_baffle_v2", env=env,
                 stdout=log, stderr=subprocess.STDOUT,
             )
+            make_completed_ns = time.time_ns()
             exit_code = int(result.returncode)
+            _write_performance_profile(
+                job,
+                metadata,
+                executor_started_ns=executor_started_ns,
+                make_started_ns=make_started_ns,
+                make_completed_ns=make_completed_ns,
+                make_exit_code=exit_code,
+                make_command=command,
+                cache_profile=cache_profile,
+                cgroup_before_make=cgroup_before_make,
+            )
             if exit_code == 0:
                 final_measurement = _measure_environment(
                     environment, {**expected, "provisioner": provisioner})
@@ -1934,6 +2331,17 @@ def _download_job_file(
     return present
 
 
+def _verify_performance_profile(local_dir: Path, metadata: dict) -> dict:
+    profile = _read_json(local_dir / "profile.json")
+    if (profile.get("schema_version") != PERFORMANCE_PROFILE_VERSION
+            or profile.get("job_id") != metadata["job_id"]
+            or profile.get("source_sha256") != metadata["source_sha256"]
+            or profile.get("targets") != metadata["targets"]
+            or type(profile.get("make_exit_code")) is not int):
+        raise RuntimeError("remote CAD performance profile is malformed")
+    return profile
+
+
 def _verify_and_extract_artifacts(local_dir: Path, metadata: dict) -> Path:
     manifest = _read_json(local_dir / "artifacts.json")
     if manifest.get("protocol_version") != PROTOCOL_VERSION:
@@ -1971,6 +2379,16 @@ def _verify_and_extract_artifacts(local_dir: Path, metadata: dict) -> Path:
                 REMOTE_MEMORY_MAX_MIB * 1024 * 1024)
             or cgroup.get("memory_swap_max_bytes") != 0):
         raise RuntimeError("artifact cgroup attestation is invalid")
+    profile_record = manifest.get("performance_profile")
+    profile_path = local_dir / "profile.json"
+    if (not isinstance(profile_record, dict)
+            or set(profile_record) != {"schema_version", "size", "sha256"}
+            or profile_record.get("schema_version")
+            != PERFORMANCE_PROFILE_VERSION
+            or not profile_path.is_file()
+            or profile_path.stat().st_size != profile_record.get("size")
+            or _sha256_file(profile_path) != profile_record.get("sha256")):
+        raise RuntimeError("performance profile hash/provenance mismatch")
     archive = local_dir / "artifacts.tar.gz"
     if _sha256_file(archive) != manifest.get("archive_sha256"):
         raise RuntimeError("downloaded artifact archive hash mismatch")
@@ -2021,6 +2439,8 @@ def _full_output_roots(targets: list[str]) -> set[str]:
             "check_obiwan_wings",
     } for target in targets):
         full.add("wings")
+    if "vase_tebm35c10_4_cad" in targets:
+        full.add("tebm35c10_4")
     return full
 
 
@@ -2535,6 +2955,11 @@ def _fetch(remote: Remote, metadata: dict) -> int:
             remote, metadata, local_dir, "exit_code", required=True)
         _download_job_file(
             remote, metadata, local_dir, "build.log", required=False)
+        profile_present = _download_job_file(
+            remote, metadata, local_dir, "profile.json", required=False)
+        _download_job_file(
+            remote, metadata, local_dir, "profile-events.jsonl",
+            required=False)
         exit_code = int((local_dir / "exit_code").read_text(
             encoding="ascii").strip())
         status = _read_json(local_dir / "status.json")
@@ -2552,6 +2977,8 @@ def _fetch(remote: Remote, metadata: dict) -> int:
                 f"Remote CAD job {metadata['job_id']} failed "
                 f"(status {status.get('state')!r}, exit {effective_exit}).")
             print(f"Log: {local_dir / 'build.log'}")
+            if profile_present:
+                print(f"Profile: {local_dir / 'profile.json'}")
             return effective_exit
         if _current_source_identity(metadata) != metadata["source_sha256"]:
             raise RuntimeError(
@@ -2561,6 +2988,13 @@ def _fetch(remote: Remote, metadata: dict) -> int:
             remote, metadata, local_dir, "artifacts.json", required=True)
         _download_job_file(
             remote, metadata, local_dir, "artifacts.tar.gz", required=True)
+        if not profile_present:
+            raise RuntimeError(
+                "succeeded remote CAD job omitted its performance profile")
+        profile = _verify_performance_profile(local_dir, metadata)
+        if profile["make_exit_code"] != 0:
+            raise RuntimeError(
+                "succeeded remote CAD profile records a failed Make")
         incoming = _verify_and_extract_artifacts(local_dir, metadata)
         try:
             if _current_source_identity(metadata) != metadata["source_sha256"]:
@@ -2594,6 +3028,7 @@ def _fetch(remote: Remote, metadata: dict) -> int:
         f"Remote CAD job {metadata['job_id']} succeeded; "
         f"verified/promoted {promoted} artifact files."
     )
+    print(f"Performance profile: {local_dir / 'profile.json'}")
     return 0
 
 

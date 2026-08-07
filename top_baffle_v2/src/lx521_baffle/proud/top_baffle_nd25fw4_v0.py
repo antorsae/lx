@@ -15,7 +15,8 @@ failed the T-route rule and its right station required a circular restore of
 the rear knife bevel.  That restore made the pocket position visible from
 the exterior and is forbidden.  V0 has no released mate, so both final sites
 move to the symmetric inboard locations (+-6.690, 321.290), below the D82
-cutout and between the seam-B dovetails.  The complete R3.20 x 5.60 captive
+cutout and between the two seam-B integral-joint stations.  The complete
+R3.20 x 5.60 captive
 lands already exist in the post-bevel host at these locations; applying the
 magnet cavities only subtracts internal material and leaves the knife bevel,
 front face, and rear face unchanged.  V0 prints front-face-down:
@@ -71,7 +72,8 @@ _CHAMF = ((60.654, 391.709), (10.081, 418.176))
 # Boolean/print connection.  That was geometrically connected but not route-
 # safe on the mirrored left: its center was only 2.605 mm from the T route.
 # With no released mate, move both stations to the symmetric connected strip
-# below the D82 cutout and between the seam-B dovetails.  At (+-6.69, 321.29)
+# below the D82 cutout and between the seam-B integral-joint stations.  At
+# (+-6.69, 321.29)
 # the complete axial land exists in the post-bevel host without a local keep.
 # The pair retains at least 1.088 mm to the D82/seam rules and 18.58 mm of
 # sampled T-route clearance; pilot and other route constraints are looser.

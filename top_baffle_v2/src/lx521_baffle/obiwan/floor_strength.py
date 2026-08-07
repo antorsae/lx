@@ -24,10 +24,14 @@ import json
 import math
 from pathlib import Path
 
+from ..floor_bend import (
+    BEND_MIN_CENTERLINE_RADIUS_MM,
+    bend_facts,
+)
 from ..io import sha256_file
 
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 GRAVITY_M_S2 = 9.80665
 DESIGN_MASS_KG = 4.0
 DESIGN_CG_Y_MM = 230.0
@@ -39,14 +43,18 @@ FOOT_WIDTH_MM = 64.0
 FOOT_HEIGHT_MM = 18.3
 FOOT_REAR_Z_MM = -150.0
 FOOT_FRONT_Z_MM = 18.3
-ROOT_FILLET_R_MM = 12.0
-ROOT_SECTION_Y_MM = FOOT_HEIGHT_MM + ROOT_FILLET_R_MM
-STEM_EFFECTIVE_LENGTH_MM = LM_AXIS_Y_MM - FOOT_HEIGHT_MM
+# The conservative section station is the horizontal Option-B tangent, not
+# the former hard-corner fillet crown.  Using the lowest centreline station also gives
+# the anchored lateral screen its largest credible Y lever.  The complete
+# wall remains W64 x 18.3 normal to its tangent through the bend.
+ROOT_SECTION_Y_MM = FOOT_HEIGHT_MM / 2.0
+STEM_EFFECTIVE_LENGTH_MM = LM_AXIS_Y_MM - ROOT_SECTION_Y_MM
 SOLID_MODIFIER_MAX_Y_MM = LM_AXIS_Y_MM - 95.0
 # Explicit local-geometry/model uncertainty applied to every nominal section
-# stress.  It is not a substitute for a notch FEA: the R12 root and smooth
-# longitudinal bores justify a modest factor, while the physical proof gate
-# remains authoritative for printed-layer and lumen-edge effects.
+# stress.  It is not a substitute for a curved-beam/notch FEA: the R41-minimum
+# tangent wall and smooth longitudinal bores justify a modest factor, while
+# the physical proof gate remains authoritative for printed-layer and
+# lumen-edge effects.
 ROOT_STRESS_CONCENTRATION_FACTOR = 1.25
 
 # Printed shoulder-to-ring diagnostic.  These are the exact R6F LM carrier
@@ -64,17 +72,17 @@ LM_RING_LIP_REAR_Z_MM = 6.8
 LM_RING_FRONT_Z_MM = 18.3
 SHOULDER_RING_TANGENT_Y_MM = LM_AXIS_Y_MM - LM_RING_CUTOUT_R_MM
 
-# Exact floor-lane sections at the first straight stem section above the
-# R12 root blend.  The D6 T lumen carries the same shared tweeter bundle as
+# Exact floor-lane sections normal to the Option-B transition.  The D6 T
+# lumen carries the same shared tweeter bundle as
 # the already-released LM/UM carrier route; it is not split into two weaker
 # floor bores.
 ROOT_LUMENS = (
     {"name": "lm", "diameter_mm": 9.0,
      "center_x_mm": 0.0, "center_z_mm": 12.55},
     {"name": "um", "diameter_mm": 8.2,
-     "center_x_mm": 11.0, "center_z_mm": 12.55},
+     "center_x_mm": 12.0, "center_z_mm": 12.55},
     {"name": "t", "diameter_mm": 6.0,
-     "center_x_mm": -11.0, "center_z_mm": 6.20},
+     "center_x_mm": -12.0, "center_z_mm": 6.20},
 )
 
 # These conservative design inputs use weak-direction lower bounds and
@@ -458,7 +466,10 @@ def integral_floor_strength_facts() -> dict:
             "foot_width_mm": FOOT_WIDTH_MM,
             "foot_height_mm": FOOT_HEIGHT_MM,
             "foot_z_mm": (FOOT_REAR_Z_MM, FOOT_FRONT_Z_MM),
-            "root_fillet_r_mm": ROOT_FILLET_R_MM,
+            "root_fillet_r_mm": None,
+            "floor_bend": bend_facts(),
+            "bend_min_centerline_radius_mm": (
+                BEND_MIN_CENTERLINE_RADIUS_MM),
             "root_section_y_mm": ROOT_SECTION_Y_MM,
             "stem_effective_length_mm": STEM_EFFECTIVE_LENGTH_MM,
             "root_stress_concentration_factor": (

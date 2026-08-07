@@ -23,7 +23,8 @@ written justification, or a failed row keeps that state unauthorized.
 
 The floor candidate has no separate support artifact. The canonical floor LM
 and `lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl` each own the complete
-integral W64 stem/foot, R12 root, buried floor lanes and NL8 panel. The floor
+integral W64 stem/foot, convex constant-thickness R41-minimum Option-B
+transition, buried floor lanes and NL8 panel. The floor
 datum is world `Y=0`, exactly **200.981 mm** below the LM axis. All six LM
 driver insert sites are ordinary blind carrier bores in both states.
 
@@ -107,11 +108,12 @@ gap. Their cavity construction datum is structural radius
 +0.65 mm, 0.15 mm beneath the exposed surface, with no local pad, boss, flat,
 or visible cue. Opposing carrier and Ac/Ae solids have zero physical mating
 gap. The receiver cavity datum instead includes a 0.05 mm solid construction
-standoff. Opposing magnet faces are therefore nominally 1.10 mm apart at the
-ring stations (`0.45 + 0.15 + 0.05 + 0.45`). The straight LM-lower base-side
-pair has no 0.15 mm carrier inset and remains nominally 0.95 mm apart
-(`0.45 + 0.05 + 0.45`). The D5 × 2 geometry and both 0.45 mm skins are
-unchanged.
+standoff. Opposing magnet faces are therefore nominally 1.10 mm apart at
+LM-lower, LM-upper, and UM (`0.45 + 0.15 + 0.05 + 0.45`). The LM-lower datum
+is cubic parameter `u=0.50` on the shared curved shoulder; its right visible
+point is `(45.285011,89.190370)` with outward normal
+`(0.706451,-0.707762)`, and its left point is the exact X mirror. The D5 × 2
+geometry and both 0.45 mm skins are unchanged.
 
 ## Per-state hardware and process identity
 
@@ -164,7 +166,7 @@ both the manifest and this qualification record.
 | UM carrier STL SHA-256 | PENDING | PENDING |
 | Tweeter crescent STL SHA-256, if fitted | PENDING | PENDING |
 | Selected external cable-retention identity, if fitted | PENDING | PENDING |
-| Integral floor LM geometry identity: W64 stem/foot, R12 root, NL8 panel, floor Y=0 and 200.981 mm LM-axis height | PENDING | N/A — no integral stand in this state |
+| Integral floor LM geometry identity: W64 stem/foot, convex constant-thickness Option-B transition (75 mm span, 65 mm rise, centreline Rmin 41 mm), NL8 panel, floor Y=0 and 200.981 mm LM-axis height | PENDING | N/A — no integral stand in this state |
 | Positive check that `lx521_top_obiwan_addon_mount_floor_support.stl` is absent | PENDING | PENDING |
 | Stock bridge serial/revision and installation substrate | N/A — integral LM owns this load path | PENDING |
 | Floor anti-tip tether/anchor make, attachment points, rating and installation record | PENDING | N/A — no integral floor stand in this state |
@@ -217,14 +219,14 @@ than recording only “looks good.”
 | Full service-motion clearance to the physical MU10 and installed U22 | PENDING | PENDING |
 | Final free-LM placement plus UM/T buried-span fishing and free-span placement, electrical continuity and insulation test | PENDING | PENDING |
 | Final strain-relief pull transfers cable load away from MU tabs | PENDING | PENDING |
-| No-floor bridge plate has a soft cubic blend into R113 and occupies z=5.3..18.3; four rear Ø6.4 x 6.8 insert bores retain a 6.2 mm front floor; LM/T/UM mouths are packed wholly inside the D20 support opening as LM above, T lower-left, UM lower-right and open only at rear z=5.3; no geometry extends behind the existing LM-pad envelope | N/A — integral stand/lane geometry replaces it | PENDING |
-| Six actual Ø5 x 2 magnets are pause-inserted and fully buried in Ø5.20 x 2.10 surface-normal cavities with continuous 0.45 mm axial skins and support-free 45° roofs: preserve upper LM axes 64°/116°, lower LM base-side sites `(x,y,z)=(±32,18,15.10)` with outward normals `(-1,0)`/`(1,0)`, and UM axes 50.5°/129.5° at the same common source Z=15.10; verify R113.0/R51.7 structural rings, smooth exposed R113.8/R52.5 side fairings clipped only inside the existing LM--UM and T--UM cusp/service regions with the 0.40 mm LM--UM inter-carrier gap preserved, and ring cavity construction datums at structural radius +0.65 mm / 0.15 mm beneath the exposed surface; verify there is no local pad, boss, flat, visible cue, external access, or proud ear; verify floor/no-floor station coincidence, route/insert/structure keepouts, three matching Ac/Ae receivers per side, a 0.05 mm solid receiver construction standoff with zero physical mating gap, 1.10 mm nominal ring-pair magnet-face separation, and the unchanged 0.95 mm straight LM-lower base-pair separation | PENDING | PENDING |
+| No-floor bridge plate has a soft cubic blend into R113 and occupies z=5.3..18.3; four rear insert bores retain the unchanged 6.8 mm total depth and 6.2 mm front floor, with a Ø6.5 x 2.0 entry followed by Ø6.4; LM/T/UM mouths are packed wholly inside the D20 support opening as LM above, T lower-left, UM lower-right and open only at rear z=5.3; no geometry extends behind the existing LM-pad envelope | N/A — integral stand/lane geometry replaces it | PENDING |
+| Six actual Ø5 x 2 magnets are pause-inserted and fully buried in Ø5.20 x 2.10 surface-normal cavities with continuous 0.45 mm axial skins and support-free 45° roofs: preserve upper LM axes 64°/116°, the lower LM pair at cubic parameter `u=0.50` on the shared shoulder, with right visible datum `(x,y,z)=(45.285011,89.190370,15.10)`, outward normal `(0.706451,-0.707762)`, and an exact-X-mirrored left datum, and UM axes 50.5°/129.5° at the same common source Z=15.10; verify R113.0/R51.7 structural rings, smooth exposed R113.8/R52.5 side fairings clipped only inside the existing LM--UM and T--UM cusp/service regions with the 0.40 mm LM--UM inter-carrier gap preserved, and ring cavity construction datums at structural radius +0.65 mm / 0.15 mm beneath the exposed surface; verify there is no local pad, boss, flat, visible cue, external access, or proud ear; verify floor/no-floor station coincidence, route/insert/structure keepouts, three matching Ac/Ae receivers per side, a 0.05 mm solid receiver construction standoff with zero physical mating gap, 1.10 mm nominal magnet-face separation at LM-lower, LM-upper, and UM | PENDING | PENDING |
 | Every released acoustic STL printed front-face-down; for each magnet-bearing STL, sliced preview/G-code records the lowest open, representative open, last fully open, first closing and fully sealed layers; retaining walls remain continuous; each disc was inserted with manifest polarity, fully seated below the completed layer and clear of the resumed nozzle path | PENDING | PENDING |
 | Coupon-equivalent regression marker on the tested P2S 0.4 mm / 0.16 mm Arachne profile is Z=5.96 mm for every common-plane Obi-Wan LM/UM transverse station; unrelated families use their own sliced schedules rather than copying this value | PENDING | PENDING |
 | UM passage is buried only in LM and ends in a flush free-cable handoff; the UM carrier has no printed rear UM duct or D82 mouth, and the physical cable remains clear behind UM through its R15/R20 service path | PENDING | PENDING |
 | T passage is buried only in LM/UM and ends in a flush free-cable handoff; the tweeter crescent has no printed T arc, conduit, socket, or horn, and the free cable remains clear behind the crescent | PENDING | PENDING |
 | Physical UM/T centerlines cross at 82.95° with T above UM and retain a 2.00 mm physical-envelope gap; both LM-owned lumens finish at R112.95 and their 0.8 mm covers at R113.75 beneath the continuous visible R113.8 carrier exterior, retaining a 0.85 mm solid outside skin with no groove; no two-printed-duct separator web is claimed or required | PENDING | PENDING |
-| Integral floor geometry: floor Y=0, LM axis height 200.981 mm, full-depth W64 stem, W64×18.3 foot over z=−150..18.3, R12 root, rear NL8 panel/service cavity and three buried Ø9/Ø8.2/Ø6 lanes; no separate support/yoke/rail artifact | PENDING | N/A — no integral stand in this state |
+| Integral floor geometry: floor Y=0, LM axis height 200.981 mm, full-depth W64 stem, W64×18.3 foot over z=−150..18.3, convex constant-thickness Option-B transition (75 mm span, 65 mm rise, centreline Rmin 41 mm), rear NL8 panel/service cavity and three buried Ø9/Ø8.2/Ø6 lanes; no separate support/yoke/rail artifact | PENDING | N/A — no integral stand in this state |
 | All six LM sites retain ordinary blind carrier insert bores; all eight named duct bumps have continuous solid saddle material from conduit roof to bore floor | PENDING | PENDING |
 
 ## Per-state structural proof evidence
@@ -302,7 +304,7 @@ sustained 1g, transient 3g and transient 5g loading.
 | Keyed LM post-proof cable pull-through, service, continuity and insulation repeated successfully with the driver flange splice installed | PENDING | PENDING |
 | Upper LM-to-UM joint proof at the documented 0.85 kg case: both local Ø9.8 functional bosses remain intact; rear-driven M3 screws remain engaged in both UM-owned inserts; no insert motion/pull-out, receiver-wall crack/pry-out, 1.9 mm front-floor damage, loss of 0.20 mm axial-gap control, or post-test torque loss | PENDING | PENDING |
 | Upper UM-to-tweeter joint proof at the documented 0.85 kg case: both complete local Ø9.8 UM/crescent bosses remain intact; rear-driven M3 screws remain engaged in both crescent-owned inserts; no insert motion/pull-out, receiver-wall crack/pry-out, 1.9 mm front-floor damage, loss of 0.20 mm axial-gap control, or post-test torque loss | PENDING | PENDING |
-| Integral W64 stem/foot, R12 root, three buried lanes, service cavity and NL8 panel remain sound | PENDING | N/A — no integral stand in this state |
+| Integral W64 stem/foot, convex R41-minimum Option-B transition, three buried lanes, service cavity and NL8 panel remain sound | PENDING | N/A — no integral stand in this state |
 | Front-flush solid four-hole web, stock bridge and installation substrate remain sound | N/A — no stock bridge in this state | PENDING |
 | Solid-backed cable bumps remain clear, cavity-free and undamaged after every load case | PENDING | PENDING |
 | Post-proof cable service, continuity and Faston removal repeated successfully | PENDING | PENDING |

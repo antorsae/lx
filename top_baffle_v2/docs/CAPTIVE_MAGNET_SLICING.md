@@ -25,7 +25,10 @@ or a printer address, and cannot upload or start a print.
 - Wall generator: Arachne
 - Nominal wall paths: 0.42 mm outer / 0.45 mm inner
 - Detect thin wall: enabled for the captive-magnet retaining skins
-- Filament used for slicing: Bambu PLA Tough+
+- Filament used for the general release: Bambu PLA Tough+. Both standalone
+  Obi-Wan keyed LM bottoms (`01a` no-floor and `01b` floor) and both combined
+  `01+02+03+04` core plates use the separately pinned saved TINMORRY PETG-GF
+  profile.
 - Support: disabled by default; enabled only for both keyed LM halves and the
   UM carrier in both stand states. Every supported project pins **Enable
   support**, **On build plate only**, **Support critical regions only**, and
@@ -38,7 +41,7 @@ or a printer address, and cannot upload or start a print.
   when the slicer labels it non-critical and exits successfully.
 - Orientation: **front face down for every piece**
 
-The production overrides retain the project's structural profile: six wall
+The production overrides retain the general project's structural profile: six wall
 loops as the requested **maximum** where the local geometry has room, six top
 and five bottom shell layers, and gyroid infill at the artifact-specific 30 or
 40 percent requirement. Six loops is not a promise of six parallel paths in a
@@ -65,16 +68,15 @@ X-Y hole compensation is fixed at 0.00 mm for this pipeline. An empirical
 slice with +0.05 mm deleted the 0.45 mm retaining skin, so the general fit-
 tuning starting point does not apply to captive-magnet artifacts.
 
-The integral floor LM requires a 100 percent local-solid stem/root. Bambu's
-CLI cannot yet generate and bind the required modifier volume through this
-pipeline without a brittle GUI edit, so only the floor-state
-`lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl` uses global 100 percent
-infill as the safe automated fallback. Its artifact profile uses Bambu's
-`zig-zag` solid pattern because Bambu Studio rejects gyroid at 100 percent;
-both discovery and ready G-code are checked for that exact combination. This
-costs material and increases warp risk, but it preserves the structural
-requirement until modifier-volume `.3mf` automation is implemented. Do not
-reduce that piece to sparse infill after loading the generated project.
+The no-floor LM bridge/root requires local solid material. Its structural
+PETG-GF job embeds a deterministic parameter-modifier mesh, hash-bound to the
+released `01a` STL and print sidecar, with exactly 100 percent zig-zag infill
+through the complete bridge/root and both lower LM boss axes. Global infill
+remains 40 percent gyroid. The integral-floor keyed LM uses global 100 percent
+zig-zag because Bambu Studio rejects gyroid at 100 percent. Both standalone
+keyed LM bottoms and both combined core plates use eight walls and the exact
+saved TINMORRY PETG-GF preset. The archive audit rejects a missing, extra,
+misbound, or settings-drifted modifier.
 
 The ready-project archive is not accepted merely because its profile flags
 look correct. Its object overrides, embedded blocker mesh, source/STL/3MF
@@ -94,7 +96,10 @@ cavity audit still rejects support or any other extrusion that blocks the
 last-open D5 loading aperture, while the separate duct gate rejects every
 support bead that intersects a functional cable lumen.
 
-The process selector lives in `captive_magnet_slicing_profile.json`. The
+The general process selector lives in `captive_magnet_slicing_profile.json`;
+the core-only structural selector lives in
+`captive_magnet_slicing_profile_petg_gf.json`. The latter has an explicit
+artifact allowlist that excludes every Ac/Ae wing and shoulder. The
 pipeline recursively flattens the installed system presets' `inherits` and
 `include` chains into complete machine/process/filament JSON snapshots. Every
 source preset, dependency, flattened profile, STL, G-code file, result file,
@@ -324,9 +329,10 @@ concatenation of the four already released, same-state 01/02/03/04 STLs. Each
 Bambu project is one printable object with four normal volumes and the three
 state-specific canonical duct blockers. Each plate repeats the six
 authoritative LM/UM sites in one Z=5.96 mm pause; neither creates a new CAD
-artifact or magnet station. The no-floor plate uses its authoritative 40%
-gyroid profile; the integral floor plate uses its authoritative 100% zig-zag
-profile.
+artifact or magnet station. Both plates use the hash-pinned saved TINMORRY
+PETG-GF preset and eight walls. The no-floor plate uses 40% gyroid globally
+with one audited 100% zig-zag parameter modifier through the `01a`
+bridge/root; the integral-floor plate uses global 100% zig-zag.
 
 `scripts/build_obiwan_combo_plate.py` independently requires exact
 four-volume/project/STL equivalence, all four support fields globally and per
@@ -364,6 +370,8 @@ triangles.
 `make obiwan_ae_wing_plate` build and audit the local ready projects;
 their corresponding `_to_print` targets refresh the friendly shelf pairs
 after the complete 51/51 slice-disabled shelf gate.
+All Ac/Ae wing and shoulder projects remain on Bambu PLA Tough+ with six
+walls. They are explicitly outside the PETG-GF profile's artifact scope.
 
 ## Layer and toolpath evidence
 

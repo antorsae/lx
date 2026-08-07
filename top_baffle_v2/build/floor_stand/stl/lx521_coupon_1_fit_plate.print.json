@@ -38,12 +38,12 @@
     ]
   ],
   "stl": "lx521_coupon_1_fit_plate.stl",
-  "stl_bytes": 34084,
+  "stl_bytes": 46684,
   "stl_origin_translation_mm": [
     46.0,
     40.000000000000014,
     18.3
   ],
-  "stl_sha256": "6a03913ab3fbab8a6a0db747ebd553e1058a23cc221b7758a5cee0737f0894a5",
+  "stl_sha256": "a95fa55b438a64dd3f94e7c8da991954bb6196475d01bcedb1e7e83353cef847",
   "variant_export": "coupon"
 }

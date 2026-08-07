@@ -11,7 +11,7 @@ This module starts from the irreducible interfaces instead:
 * six fully buried captive magnet interfaces provide four LM and two UM
   alignment sites;
   the original upper LM pair stays at +/-26 degrees from top while the lower
-  LM pair mates horizontally through the shared W64 base sides;
+  LM pair follows the shared curved bridge shoulder above the floor bend;
 * floor mode owns a full-depth integral W64 stem and rectangular floor foot;
   no-floor mode owns a shallow front-flush four-hole solid web;
 * the D8.2 UM path is buried only in LM and exits flush at R113 before its
@@ -76,7 +76,6 @@ def _require_guarded_build():
 
 from ..base import (
     L22_CUTOUT,
-    L22_PILOT_D_MM,
     STAND_FOOT,
     THICKNESS_MM,
     UM_CUTOUT,
@@ -84,6 +83,7 @@ from ..base import (
     UM_PILOT_DEPTH_MM,
     UM_PILOT_D_MM,
     UM_TERMINAL_CLOCK_DEG,
+    m5_insert_bore_cutter,
 )
 from ..flush import (
     LM_BORE_DEPTH_MM,
@@ -111,6 +111,7 @@ from .route import (
     route_outer_covers,
 )
 from .bridge import (
+    bridge_soft_blend_frame,
     floor_wing_contact_profile_addition,
     fused_bridge_tail,
 )
@@ -193,15 +194,15 @@ STRUCT_SHORT_ALLOW_MPA = 18.0
 
 # Exactly two LM and one UM magnets per physical side. There are no rear
 # attachment bores. The upper LM pair remains radial at +/-26 degrees from the
-# top centreline (world polar 116/64 degrees). The lower pair is no longer in
-# the R113 lip: it is mirrored through the straight sides of the shared W64
-# lower tongue at x=+/-32, y=18, with horizontal outward normals. Both lower
-# sites use the same front-biased z=15.10 datum as the upper LM and UM sites,
-# so floor/no-floor carriers and the Ac/Ae split prints share one exact
-# receiver axis and closure plane. D5x2 magnets are completely
+# top centreline (world polar 116/64 degrees). The lower pair sits at the exact
+# midpoint of the common soft shoulder above the Option-B tangent. Its local
+# normal is almost 45 degrees, and the cavity datum is inset 0.15 mm from the
+# uninterrupted shoulder surface. This removes every lower rail while keeping
+# floor/no-floor carriers and Ac/Ae split prints on one exact interface. All
+# sites use the same front-biased z=15.10 datum. D5x2 magnets are completely
 # captive in D5.20 x 2.10 cavities behind 0.45-mm skins, with a printable
-# circular cradle and self-supporting 45-degree roof.  The lower pair stays on
-# the exact W64 side faces.  The four radial stations sit inside continuous
+# circular cradle and self-supporting 45-degree roof. The four ring stations
+# sit inside continuous
 # smooth R113.80/R52.50 exterior rings.  Their cavity datums are 0.65 mm
 # outside the structural lip and 0.15 mm below the visible surface, so the
 # qualified 3.00-mm land clears the flange recess while no local backing pad
@@ -226,7 +227,7 @@ SIDE_INTERFACE_GAP = INTERFACE_GAP_MM
 SIDE_MAGNET_ANGLES = {
     # The upper pair is one degree crownward of the adjacent 120/60-degree W22
     # inserts, retaining its exact 2.251-mm D5.2 captive-envelope to D9.6-boss
-    # edge gap. Lower LM sites are explicit base-side records below rather
+    # edge gap. Lower LM sites are explicit shoulder records below rather
     # than fake polar positions on the R113 ring.
     "lm": (116.0, 64.0),
     # Symmetric top-side sites clear the T arc, D8 insert pads and direct
@@ -239,9 +240,28 @@ SIDE_MAGNET_FACE_OFFSET = {
     "lm": SIDE_RING_CAVITY_FACE_OFFSET_MM,
     "um": SIDE_RING_CAVITY_FACE_OFFSET_MM,
 }
-LM_BASE_MAGNET_FACE_X = 32.0
-LM_BASE_MAGNET_Y = 18.0
-LM_BASE_MAGNET_Z = OBIWAN_MAGNET_Z_MM
+LM_SHOULDER_MAGNET_PARAMETER = 0.50
+(
+    LM_SHOULDER_MAGNET_OUTER_FACE_RIGHT,
+    LM_SHOULDER_MAGNET_NORMAL_RIGHT,
+) = bridge_soft_blend_frame(LM_SHOULDER_MAGNET_PARAMETER, "right")
+LM_SHOULDER_MAGNET_CAVITY_FACE_INSET_MM = (
+    SIDE_RING_CAVITY_FACE_INSET_MM)
+LM_SHOULDER_MAGNET_FACE_RIGHT = tuple(
+    point - LM_SHOULDER_MAGNET_CAVITY_FACE_INSET_MM * normal
+    for point, normal in zip(
+        LM_SHOULDER_MAGNET_OUTER_FACE_RIGHT,
+        LM_SHOULDER_MAGNET_NORMAL_RIGHT,
+        strict=True,
+    )
+)
+LM_SHOULDER_MAGNET_ANGLE_RIGHT_DEG = (
+    math.degrees(math.atan2(
+        LM_SHOULDER_MAGNET_NORMAL_RIGHT[1],
+        LM_SHOULDER_MAGNET_NORMAL_RIGHT[0],
+    )) % 360.0
+)
+LM_SHOULDER_MAGNET_Z = OBIWAN_MAGNET_Z_MM
 
 # Two compact Z-axis fastened *rounded ears*.  The old rectangular tabs
 # projected into the MU flange seating region.  Each replacement is a
@@ -792,9 +812,13 @@ def carrier_spoke_load_facts():
 def _cut_lm_mount_holes(part):
     """All six W22 sites remain ordinary blind driver inserts."""
     for x, y in LM_PILOT_XY:
-        part -= _cylinder_at(
-            x, y, L22_PILOT_D_MM / 2.0,
-            LM_SEAT_Z - LM_BORE_DEPTH_MM, LM_SEAT_Z + 0.15)
+        part -= m5_insert_bore_cutter(
+            (x, y),
+            opening_z=LM_SEAT_Z,
+            total_depth=LM_BORE_DEPTH_MM,
+            opening_side="+z",
+            overshoot=0.15,
+        )
     return part
 
 
@@ -923,7 +947,7 @@ def lm_carrier_outer_blank():
 
     # Floor features are cut only from their massive owner before that body
     # touches the thin covers.  Each buried floor lane deliberately stops
-    # short of its feed during this pre-fusion cut; the normal 8-mm owner
+    # short of its feed during this pre-fusion cut; the 2.0-mm owner
     # cutter below opens the final G1 overlap through solid body material.
     # This avoids both coincident lumen walls and the destructive late T-lane
     # subtraction that otherwise detaches OCC's unrelated main-cover branch.
@@ -967,10 +991,18 @@ def apply_lm_route_cutter(part, index):
     solids = list(part.solids())
     if (not part.is_valid or len(solids) != 1
             or solids[0].volume <= 1e-9):
+        bounds = [(
+            solid.bounding_box().min.X,
+            solid.bounding_box().min.Y,
+            solid.bounding_box().min.Z,
+            solid.bounding_box().max.X,
+            solid.bounding_box().max.Y,
+            solid.bounding_box().max.Z,
+        ) for solid in solids]
         raise RuntimeError(
             f"LM cutter group {index} detached geometry: "
             f"valid={part.is_valid} volumes="
-            f"{[solid.volume for solid in part.solids()]}")
+            f"{[solid.volume for solid in solids]} bounds={bounds}")
     return Part([solids[0]])
 
 

@@ -1346,6 +1346,13 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
                     slug, side, order, role)
                 two_piece_parts[(side, role)] = shape
 
+        # Run every source-BREP qualification before serializing the first
+        # STEP/STL.  In particular, Ae's protected-land C0 probe is expensive
+        # but must fail before ten fine meshes are emitted, not afterwards.
+        source_geometry = geometry.wing_facts(slug)
+        source_geometry["interface_contract"]["tweeter_crescent"] = (
+            geometry.contract.t_wing_interface_facts())
+
         canonical_label = f"lx521_obiwan_basic_wing_{slug}_monolithic_pair"
         canonical = Compound(children=[monoliths[side] for side in SIDES])
         canonical.label = canonical_label
@@ -1412,6 +1419,7 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
             for side in SIDES
             for order, role in enumerate(TWO_PIECE_PART_ORDER, start=1)
         ]
+        reusable_lower_meshes: dict[str, dict[str, Any]] = {}
         for spec in part_specs:
             split_variant = spec["split_variant"]
             piece_count = spec["piece_count"]
@@ -1428,12 +1436,34 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
             moved, z_angle, print_facts = _best_print_orientation(shape, Rot)
             relative = Path("stl") / spec["name"]
             path = slug_stage / relative
-            export_stl(
-                moved, str(path), tolerance=mesh_tolerance,
-                angular_tolerance=mesh_angular_tolerance)
-            _validate_binary_stl(path)
-            zero_fixes = _canonicalize_transform_zeros(path)
-            mesh_facts = _strict_mesh_facts(path)
+            reusable = (
+                reusable_lower_meshes.get(side)
+                if split_variant == "b" and role == "lm_lower"
+                else None)
+            if reusable is None:
+                export_stl(
+                    moved, str(path), tolerance=mesh_tolerance,
+                    angular_tolerance=mesh_angular_tolerance)
+                _validate_binary_stl(path)
+                zero_fixes = _canonicalize_transform_zeros(path)
+                mesh_facts = _strict_mesh_facts(path)
+            else:
+                if (not math.isclose(
+                        z_angle, reusable["z_angle"], abs_tol=1.0e-12)
+                        or print_facts != reusable["print_facts"]
+                        or mesh_tolerance != reusable["mesh_tolerance"]
+                        or mesh_angular_tolerance
+                        != reusable["mesh_angular_tolerance"]):
+                    raise RuntimeError(
+                        f"{slug}/{side}: B lower no longer shares A lower's "
+                        "exact print transform/mesh contract")
+                shutil.copyfile(reusable["path"], path)
+                _validate_binary_stl(path)
+                if _sha256(path) != reusable["sha256"]:
+                    raise RuntimeError(
+                        f"{slug}/{side}: copied B lower differs from A lower")
+                zero_fixes = reusable["zero_fixes"]
+                mesh_facts = reusable["mesh_facts"]
             sidecar_relative = relative.with_suffix(".print.json")
             sidecar_path = sidecar_path_for_stl(path)
             if sidecar_path != slug_stage / sidecar_relative:
@@ -1496,15 +1526,23 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
             part_facts.append(entry)
             stl_relatives.append(relative)
             sidecar_relatives.append(sidecar_relative)
+            if split_variant == "a" and role == "lm_lower":
+                reusable_lower_meshes[side] = {
+                    "path": path,
+                    "sha256": _sha256(path),
+                    "z_angle": z_angle,
+                    "print_facts": print_facts,
+                    "mesh_tolerance": mesh_tolerance,
+                    "mesh_angular_tolerance": mesh_angular_tolerance,
+                    "zero_fixes": zero_fixes,
+                    "mesh_facts": mesh_facts,
+                }
 
         review_paths, review_context = _render_reviews(
             slug, print_parts, review_stage, geometry.receiver_facts("right"),
             geometry, two_piece_parts)
         review_relatives = [Path("review") / path.name for path in review_paths]
 
-        source_geometry = geometry.wing_facts(slug)
-        source_geometry["interface_contract"]["tweeter_crescent"] = (
-            geometry.contract.t_wing_interface_facts())
         facts_rel = Path(FACTS_TEMPLATE.format(slug=slug))
         facts_path = slug_stage / facts_rel
         facts_payload = {

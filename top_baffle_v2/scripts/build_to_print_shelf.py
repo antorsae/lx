@@ -54,6 +54,23 @@ DEFAULT_CATALOG = DEFAULT_SHELF / "catalog.json"
 DEFAULT_RELEASE_CATALOG = ROOT / "review" / "captive_magnet_release_catalog.json"
 DEFAULT_RELEASE_AUDIT = ROOT / "review" / "captive_magnet_slice_audit"
 DEFAULT_PROFILE = ROOT / "captive_magnet_slicing_profile.json"
+PETG_GF_PROFILE = ROOT / "captive_magnet_slicing_profile_petg_gf.json"
+PETG_GF_01A_ARTIFACT_ID = (
+    "no_floor_stand:Obi-Wan-split:"
+    "lx521_top_obiwan_optional_lm_keyed_1of2_bottom"
+)
+PETG_GF_01B_ARTIFACT_ID = (
+    "floor_stand:Obi-Wan-split:"
+    "lx521_top_obiwan_optional_lm_keyed_1of2_bottom"
+)
+PETG_GF_RELEASE_AUDITS = {
+    PETG_GF_01A_ARTIFACT_ID: (
+        ROOT / "review" / "captive_magnet_slice_audit_petg_gf_01a"
+    ),
+    PETG_GF_01B_ARTIFACT_ID: (
+        ROOT / "review" / "captive_magnet_slice_audit_petg_gf_01b"
+    ),
+}
 LEGACY_SHELF_SOURCE_ROOTS = {
     "floor_stand": Path("build/floor_stand"),
     "no_floor_stand": Path("build/no_floor_stand"),
@@ -80,6 +97,7 @@ COMPOSITE_SPECS = {
         "state": "no_floor_stand",
         "selection": "core_plate_alternative",
         "project_kind": "local_composite_captive_magnet_slice",
+        "profile_path": PETG_GF_PROFILE,
     },
     FLOOR_COMBO_PLATE.PLATE_NAME: {
         "module": FLOOR_COMBO_PLATE,
@@ -87,6 +105,7 @@ COMPOSITE_SPECS = {
         "state": "floor_stand",
         "selection": "core_plate_alternative",
         "project_kind": "local_composite_captive_magnet_slice",
+        "profile_path": PETG_GF_PROFILE,
     },
     AC_WING_PLATE.PLATE_NAME: {
         "module": AC_WING_PLATE,
@@ -574,9 +593,19 @@ def _validate_result(
         (Path(artifact["support_blocker"]),)
         if artifact is not None and "support_blocker" in artifact else ()
     )
+    parameter_modifiers = (
+        captive._parameter_modifiers_for_artifact(
+            artifact, profile_bundle)
+        if artifact is not None else ()
+    )
     try:
         audit = audit_bambu_3mf(
-            project, stl, support_blocker_stls=support_blockers)
+            project, stl,
+            support_blocker_stls=support_blockers,
+            parameter_modifier_stls=[
+                (modifier["path"], modifier["process"])
+                for modifier in parameter_modifiers
+            ])
         validate_bambu_result_bbox(bbox, audit.source_bounds, audit.stl_to_bed_matrix)
         clearances = validate_bambu_bed_fit(
             audit.transformed_actual_mesh_bounds,
@@ -592,6 +621,7 @@ def _validate_result(
             list(row) for row in audit.stl_to_bed_matrix
         ],
         "support_blocker_count": audit.support_blocker_count,
+        "parameter_modifier_count": audit.parameter_modifier_count,
     }
 
 
@@ -874,6 +904,8 @@ def _validate_magnet_project(
     profile_workspace: Path,
 ) -> tuple[Path, Path, Path, dict[str, Any], dict[str, Any], dict[str, Any]]:
     artifact = entry["artifact"]
+    captive._validate_profile_artifact_scope(
+        [artifact], base_profile["config"])
     ready_project, gcode, result, audit_path = _ready_source(
         release_audit, artifact["id"])
     if not all(path.is_file() for path in (ready_project, gcode, result, audit_path)):
@@ -1015,6 +1047,8 @@ def _validate_composite_project(
         "stl_to_bed_matrix": project_equivalence["stl_to_bed_matrix"],
         "support_blocker_count": int(
             project_equivalence["support_blocker_count"]),
+        "parameter_modifier_count": int(
+            project_equivalence.get("parameter_modifier_count", 0)),
         "normal_part_count": len(module.PARTS),
     }
     return (
@@ -1082,6 +1116,11 @@ def build_shelf(
     base_profile = _profile_bundle(
         workspace=workspace, profile_path=profile_path, bambu=bambu,
         system_root=system_root)
+    petg_gf_profile = _profile_bundle(
+        workspace=workspace / "petg_gf_profile",
+        profile_path=PETG_GF_PROFILE,
+        bambu=bambu,
+        system_root=system_root)
     # Validate every source/project pair before touching any managed shelf
     # STL or 3MF.  Targeted refreshes still cross the complete equivalence barrier;
     # ``selected_entries`` controls only the later promotion step.
@@ -1092,11 +1131,13 @@ def build_shelf(
         artifact = entry.get("artifact")
         composite_plate = entry.get("composite_plate")
         if composite_plate is not None:
+            composite_profile_path = entry["composite_spec"].get(
+                "profile_path", profile_path)
             (project, gcode, result, archive, placement,
              profile_effective, reused) = _validate_composite_project(
                 entry=entry,
                 shelf=shelf,
-                profile_path=profile_path,
+                profile_path=Path(composite_profile_path),
                 release_catalog=release_catalog,
                 release_audit=release_audit,
                 system_root=system_root,
@@ -1105,10 +1146,17 @@ def build_shelf(
             )
             project_kind = entry["composite_spec"]["project_kind"]
         elif artifact is not None:
+            structural_release_audit = PETG_GF_RELEASE_AUDITS.get(
+                artifact["id"])
+            structural = structural_release_audit is not None
             (project, gcode, result, archive, placement,
              profile_effective) = _validate_magnet_project(
-                entry=entry, release_audit=release_audit,
-                base_profile=base_profile,
+                entry=entry,
+                release_audit=(
+                    structural_release_audit if structural
+                    else release_audit),
+                base_profile=(
+                    petg_gf_profile if structural else base_profile),
                 profile_workspace=workspace / "magnet_profiles")
             project_kind = "audited_captive_magnet_reuse"
             reused = True
@@ -1186,6 +1234,8 @@ def build_shelf(
                 "mesh_max_abs_error_mm"],
             "support_blocker_count": placement[
                 "support_blocker_count"],
+            "parameter_modifier_count": placement.get(
+                "parameter_modifier_count", 0),
         })
     equivalence_gate = {
         "status": "pass",
@@ -1244,6 +1294,7 @@ def build_shelf(
             "source_revision": release["source_revision"],
         },
         "slicer": base_profile["identity"],
+        "structural_slicer": petg_gf_profile["identity"],
         "project_stl_equivalence_gate": equivalence_gate,
         "inventory": {
             "entry_count": len(records),

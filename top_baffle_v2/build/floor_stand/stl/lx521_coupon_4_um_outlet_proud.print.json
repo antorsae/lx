@@ -38,12 +38,12 @@
     ]
   ],
   "stl": "lx521_coupon_4_um_outlet_proud.stl",
-  "stl_bytes": 140084,
+  "stl_bytes": 113784,
   "stl_origin_translation_mm": [
     6.0000001000034375,
     323.0000001,
     18.300000099999966
   ],
-  "stl_sha256": "7c1a63a3b0448f1a62dd6b5a154b03f976806b54e7113e249350bceb49eb3628",
+  "stl_sha256": "69fa404db522d969865b989cda2b9e75fa034907b10be9ec395816654e94590c",
   "variant_export": "coupon"
 }

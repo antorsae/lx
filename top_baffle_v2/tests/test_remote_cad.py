@@ -65,6 +65,64 @@ def _write_source_tree(
     return source_hash
 
 
+def _write_profile_fixture(job: Path, metadata: dict) -> dict:
+    path = job / "profile.json"
+    _write(path, json.dumps({
+        "schema_version": remote.PERFORMANCE_PROFILE_VERSION,
+        "job_id": metadata["job_id"],
+        "source_sha256": metadata["source_sha256"],
+        "targets": metadata["targets"],
+        "make_exit_code": 0,
+    }))
+    return {
+        "schema_version": remote.PERFORMANCE_PROFILE_VERSION,
+        "size": path.stat().st_size,
+        "sha256": remote._sha256_file(path),
+    }
+
+
+def test_stage_phase_profile_parser() -> None:
+    with tempfile.TemporaryDirectory() as text:
+        log = Path(text) / "build.log"
+        _write(log, "\n".join((
+            "ordinary build output",
+            "[obiwan-stage-profile] " + json.dumps({
+                "schema_version": 1,
+                "label": "LM direct full carrier and optional split",
+                "wall_seconds": 241.25,
+                "exit_code": 0,
+                "stand_foot": True,
+            }, separators=(",", ":")),
+            "more output",
+        )) + "\n")
+        assert remote._stage_phase_profile_events(log) == [{
+            "schema_version": 1,
+            "label": "LM direct full carrier and optional split",
+            "wall_seconds": 241.25,
+            "exit_code": 0,
+            "stand_foot": True,
+        }]
+
+
+def test_guard_profile_label_identifies_closure_state_shard() -> None:
+    event = {
+        "command": [sys.executable,
+                    "tests/test_obiwan_junction_closure_webs.py"],
+        "context": {
+            "LX_OBIWAN_CLOSURE_DENSE_STATE": "floor",
+            "LX_OBIWAN_CLOSURE_DENSE_SHARD": "3/8",
+            "LX_STAND_FOOT": "1",
+            "LX_ROUTING_PROFILE": "obiwan",
+        },
+    }
+    assert remote._guard_profile_label(event) == (
+        "test_obiwan_junction_closure_webs.py:state=floor:shard=3/8")
+    guard_source = (PROJECT_ROOT / "scripts/run_memory_guarded.py").read_text(
+        encoding="utf-8")
+    assert '"LX_OBIWAN_CLOSURE_DENSE_STATE"' in guard_source
+    assert '"LX_OBIWAN_CLOSURE_DENSE_SHARD"' in guard_source
+
+
 def _completed_cache_job(
         root: Path, job_id: str, *, source_files: dict[str, bytes],
         source_mtime_ns: int, output_data: bytes,
@@ -96,6 +154,7 @@ def _completed_cache_job(
         "state": "succeeded", "exit_code": 0,
     }))
     _write(job / "exit_code", "0\n")
+    profile_record = _write_profile_fixture(job, metadata)
     archive = job / "artifacts.tar.gz"
     with tarfile.open(archive, "w:gz") as bundle:
         bundle.add(
@@ -115,6 +174,7 @@ def _completed_cache_job(
         "environment_attestation_sha256": attestation_hash,
         "targets": ["floor_stand"],
         "build_completed_ns": completed_ns,
+        "performance_profile": profile_record,
         "archive_sha256": remote._sha256_file(archive),
         "files": [artifact_record],
     }))
@@ -136,6 +196,7 @@ def _rewrite_job_artifacts(
         "size": path.stat().st_size,
         "sha256": remote._sha256_file(path),
     } for path in paths]
+    profile_record = _write_profile_fixture(job, metadata)
     _write(job / "artifacts.json", json.dumps({
         "protocol_version": remote.PROTOCOL_VERSION,
         "job_id": metadata["job_id"],
@@ -145,6 +206,7 @@ def _rewrite_job_artifacts(
             "environment_attestation_sha256"],
         "targets": metadata["targets"],
         "build_completed_ns": completed_ns,
+        "performance_profile": profile_record,
         "archive_sha256": remote._sha256_file(archive),
         "files": records,
     }))
@@ -358,6 +420,9 @@ def test_target_contract() -> None:
     assert "check_obiwan_closure_focus" in remote.REMOTE_MAKE_TARGETS
     assert "check_obiwan_lm_split_two_pin_static" in (
         remote.REMOTE_MAKE_TARGETS)
+    assert "vase_tebm35c10_4_cad" in remote.REMOTE_MAKE_TARGETS
+    assert remote.OUTPUT_ROOT_PREFIXES["tebm35c10_4"] == Path(
+        "build/vase_TEBM35C10-4")
     assert "check_floor_support" not in remote.REMOTE_MAKE_TARGETS
     assert remote._full_output_roots(["obiwan_wings"]) == {"wings"}
     assert remote._full_output_roots(["obiwan_wing_exports"]) == {"wings"}
@@ -366,6 +431,8 @@ def test_target_contract() -> None:
     assert remote._full_output_roots(["obiwan_release"]) == {
         "floor_stand", "no_floor_stand", "wings"}
     assert remote._full_output_roots(["no_floor_obiwan"]) == set()
+    assert remote._full_output_roots(["vase_tebm35c10_4_cad"]) == {
+        "tebm35c10_4"}
     assert remote._full_output_roots(["all"]) == {
         "floor_stand", "no_floor_stand", "wings"}
     for target in remote.REMOTE_MAKE_TARGETS:
@@ -407,7 +474,7 @@ def test_remote_make_and_guard_share_parallelism_authority() -> None:
     assert 'str(metadata["parallel_jobs"]),' in source
     command_block = source[source.index("command = [\n", source.index(
         '"LX_CAD_GUARD_SLOTS"')):]
-    assert 'make, "--no-print-directory", "-j",' in command_block
+    assert 'make, "--no-print-directory", "--trace", "-j",' in command_block
 
 
 def test_remote_worker_exports_source_snapshot_identity() -> None:
@@ -695,6 +762,7 @@ def test_protocol3_new_and_legacy_jobs_resume_wait_and_fetch() -> None:
                     "host": "example.invalid",
                     "remote_root": "/remote/lx-cad",
                     "source_sha256": "b" * 64,
+                    "targets": ["all"],
                     "transport": {
                         "source_path": transport_path,
                         "sha256": "a" * 64,
@@ -717,6 +785,17 @@ def test_protocol3_new_and_legacy_jobs_resume_wait_and_fetch() -> None:
                             _write(destination, "0\n")
                         elif name == "build.log":
                             _write(destination, "completed before resume\n")
+                        elif name == "profile.json":
+                            _write(destination, json.dumps({
+                                "schema_version": (
+                                    remote.PERFORMANCE_PROFILE_VERSION),
+                                "job_id": metadata["job_id"],
+                                "source_sha256": metadata["source_sha256"],
+                                "targets": metadata["targets"],
+                                "make_exit_code": 0,
+                            }))
+                        elif name == "profile-events.jsonl":
+                            _write(destination, "")
                         elif name in {"artifacts.json", "artifacts.tar.gz"}:
                             _write(destination, "fixture\n")
                         elif required:
@@ -961,6 +1040,8 @@ def test_fetch_requires_succeeded_status() -> None:
                     _write(destination, "0\n")
                 elif name == "build.log":
                     _write(destination, "synthetic canceled fetch\n")
+                elif name in {"profile.json", "profile-events.jsonl"}:
+                    return False
                 elif required:
                     raise AssertionError(f"unexpected required file: {name}")
                 return True
@@ -1633,7 +1714,13 @@ def test_obiwan_basic_wing_parallel_dag() -> None:
     assert result.stdout.count(
         "scripts/export_obiwan_wings.py --slug ae --output-root build/wings") == 1
     assert result.stdout.count(
-        "tests/test_obiwan_wings.py --artifact-root build/wings") == 1
+        "tests/test_obiwan_wings.py --artifact-root build/wings") == 3
+    for selector in (
+            "test_exported_artifact_contract",
+            "test_live_brep_geometry_contract_ac",
+            "test_live_brep_geometry_contract_ae"):
+        assert result.stdout.count(
+            f"LX_OBIWAN_WING_SINGLE_CHECK={selector}") == 1
 
 
 def test_make_parallel_manifold_dag() -> None:
@@ -1753,6 +1840,81 @@ def test_candidate_is_one_flat_make_dag() -> None:
     )[1].split("\ncommon:", 1)[0]
     assert "_manifold_parallel" not in floor_wrapper
     assert "_manifold_parallel" not in no_floor_wrapper
+
+
+def test_local_to_print_validation_cannot_launch_cad_catalog_build() -> None:
+    """Keep local shelf validation read-only with respect to heavy CAD."""
+    makefile = (PROJECT_ROOT / "Makefile").read_text(encoding="utf-8")
+    logical_lines = _logical_make_lines(makefile)
+    prerequisite = next(
+        line for line in logical_lines
+        if line.startswith("TO_PRINT_CATALOG_PREREQ := "))
+    assert "$(filter remote-worker,$(LX_CAD_EXECUTION))" in prerequisite
+    shelf_rule = next(
+        line for line in logical_lines
+        if line.startswith("check_to_print_shelf:"))
+    assert "$(TO_PRINT_CATALOG_PREREQ)" in shelf_rule
+    assert "$(CAPTIVE_MAGNET_CATALOG)" not in shelf_rule
+
+    resolved = {}
+    with tempfile.TemporaryDirectory() as text:
+        probe = Path(text) / "probe.mk"
+        probe.write_text(
+            f"include {PROJECT_ROOT / 'Makefile'}\n"
+            "print-to-print-catalog-prereq:\n"
+            "\t@printf '%s\\n' '$(TO_PRINT_CATALOG_PREREQ)'\n",
+            encoding="utf-8",
+        )
+        for mode in ("local", "remote-worker"):
+            result = subprocess.run(
+                ["make", "-s", "--no-print-directory", "-f", str(probe),
+                 f"LX_CAD_EXECUTION={mode}",
+                 "print-to-print-catalog-prereq"],
+                cwd=PROJECT_ROOT, text=True, stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT, check=True,
+                # This test also runs as a recipe of the remote-worker Make.
+                # Do not let its inherited MAKEFLAGS command-line assignment
+                # override the explicit mode of this isolated child probe.
+                env={
+                    **os.environ,
+                    "MAKEFLAGS": "",
+                    "MFLAGS": "",
+                    "MAKELEVEL": "0",
+                },
+            )
+            resolved[mode] = result.stdout.strip()
+    catalog = "review/captive_magnet_release_catalog.json"
+    assert resolved["local"] == str((PROJECT_ROOT / catalog).resolve())
+    assert resolved["remote-worker"] == catalog
+
+
+def test_remote_bambu_graph_probe_is_dry_run_only() -> None:
+    """The Linux shelf probe may inspect, but can never execute, slicing."""
+    makefile = (PROJECT_ROOT / "Makefile").read_text(encoding="utf-8")
+    guard = makefile.split(
+        "BAMBU_GOALS_REQUESTED :=", 1,
+    )[1].split("\nLX_CAD_EXECUTION ?=", 1)[0]
+    assert "ifneq ($(LX_BAMBU_GRAPH_ONLY),1)" in guard
+    assert (
+        "ifeq ($(findstring n,$(firstword $(MAKEFLAGS))),)" in guard
+    )
+    assert (
+        "LX_BAMBU_GRAPH_ONLY=1 is valid only with make -n/--just-print"
+        in guard
+    )
+    assert "ifeq ($(filter /bin/true /usr/bin/true,$(SHELL)),)" in guard
+    assert (
+        "LX_BAMBU_GRAPH_ONLY=1 requires SHELL=/usr/bin/true" in guard
+    )
+    shelf_test = (PROJECT_ROOT / "tests/test_to_print_shelf.py").read_text(
+        encoding="utf-8")
+    assert 'os.environ.get("LX_CAD_EXECUTION") == "remote-worker"' in (
+        shelf_test
+    )
+    assert "project/STL equivalence remains local-only" in shelf_test
+    assert shelf_test.index("if remote_contract_only:") < shelf_test.index(
+        'manifest = json.loads(',
+    )
 
 
 def test_make_check_registries_match_python_and_do_not_fan_out() -> None:
@@ -1972,9 +2134,16 @@ def test_obiwan_release_parallel_dag() -> None:
         assert output.count(f"LX_R6F_CASE_ID={check}") == 1
     # The captive catalog is project-wide, so the public release target now
     # regenerates both states of every magnet-bearing family before writing
-    # its 64-STL inventory.  V1L therefore appears once per stand state.
+    # its 64-STL inventory. V1L therefore meshes one authoritative split STEP
+    # per stand state instead of rebuilding the four-piece Boolean tree.
     assert output.count(
-        "export_piece_stls.py --variant v1l --outdir") == 2
+        "export_piece_stls.py --variant v1l") == 2
+    assert output.count(
+        "--source-step build/floor_stand/"
+        "top_baffle_nd25fw4_v1l_split.step") == 1
+    assert output.count(
+        "--source-step build/no_floor_stand/"
+        "top_baffle_nd25fw4_v1l_split.step") == 1
     assert output.count(
         "generate_captive_magnet_catalog.py --output ") == 1
     assert "check_manifold.py --obiwan-only" not in output
@@ -2009,7 +2178,7 @@ def test_profile_specific_stl_dag() -> None:
         env={**os.environ, "LX_CAD_GUARD_SLOTS": "8"},
     )
     assert remote_result.stdout.count(
-        "export_piece_stls.py --variant v1l --outdir") == 1
+        "export_piece_stls.py --variant v1l") == 1
     assert remote_result.stdout.count("--obiwan-part") == 4
     assert "--obiwan-part lm_split" in remote_result.stdout
     assert "--v1l-piece" not in remote_result.stdout
@@ -2021,7 +2190,10 @@ def test_profile_specific_stl_dag() -> None:
         stderr=subprocess.STDOUT, check=True,
         env=os.environ.copy(),
     )
-    assert local_result.stdout.count("--v1l-piece") == 5
+    assert local_result.stdout.count(
+        "export_piece_stls.py --variant v1l") == 1
+    assert local_result.stdout.count("--source-step") >= 1
+    assert "--v1l-piece" not in local_result.stdout
     assert local_result.stdout.count("--obiwan-part") == 4
     assert "--obiwan-part lm_split" in local_result.stdout
     assert "--obiwan-part support" not in local_result.stdout
@@ -2131,6 +2303,33 @@ def test_step_label_line_wrapping() -> None:
         )
 
 
+def test_obiwan_live_brep_reuses_hash_bound_release_steps() -> None:
+    """The expensive wing acceptance must not reconstruct exported solids."""
+    path = PROJECT_ROOT / "tests/test_obiwan_wings.py"
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    function = next(
+        node for node in tree.body
+        if isinstance(node, ast.FunctionDef)
+        and node.name == "test_live_brep_geometry_contract")
+    call_names = {
+        node.func.id
+        for node in ast.walk(function)
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+    }
+    assert {"import_step", "_verify_source_hashes", "_sha256_file"} <= (
+        call_names)
+    forbidden = {
+        "wing_monolithic", "wing_print_parts", "wing_two_piece_print_parts"}
+    called_attributes = {
+        node.func.attr
+        for node in ast.walk(function)
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+    }
+    assert called_attributes.isdisjoint(forbidden), (
+        "live wing acceptance reconstructs released CAD instead of importing "
+        f"its hash-bound STEP BREPs: {sorted(called_attributes & forbidden)}")
+
+
 def main() -> None:
     test_target_contract()
     test_default_remote_parallelism()
@@ -2165,6 +2364,8 @@ def main() -> None:
     test_make_parallel_manifold_dag()
     test_make_obiwan_only_manifold_filters_warm_legacy_meshes()
     test_candidate_is_one_flat_make_dag()
+    test_local_to_print_validation_cannot_launch_cad_catalog_build()
+    test_remote_bambu_graph_probe_is_dry_run_only()
     test_make_check_registries_match_python_and_do_not_fan_out()
     test_public_shell_targets_wait_for_their_validated_stage()
     test_make_check_stamps_skip_unchanged_selector_work()
@@ -2174,6 +2375,7 @@ def main() -> None:
     test_obiwan_basic_wing_contract_dependency()
     test_obiwan_release_parallel_dag()
     test_profile_specific_stl_dag()
+    test_obiwan_live_brep_reuses_hash_bound_release_steps()
     test_local_checker_interpreter()
     test_local_memory_profile_has_no_host_free_floor()
     test_step_label_line_wrapping()

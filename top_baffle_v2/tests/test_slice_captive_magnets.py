@@ -595,6 +595,95 @@ def test_profile_inheritance_and_include(tmp_path: Path):
     assert len(resolver.dependencies) == 3
 
 
+def test_profile_nil_vector_slots_inherit_parent_values(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "BBL"
+    root.mkdir()
+    (root / "base.json").write_text(json.dumps({
+        "name": "base",
+        "type": "filament",
+        "temperature": ["255", "265"],
+        "flow": ["0.95", "0.98"],
+    }), encoding="utf-8")
+    child = root / "child.json"
+    child.write_text(json.dumps({
+        "name": "child",
+        "type": "filament",
+        "inherits": "base",
+        "temperature": ["260", "nil"],
+        "flow": ["0.93", "nil"],
+    }), encoding="utf-8")
+    resolved = audit.PresetResolver(root).resolve(child)
+    assert resolved["temperature"] == ["260", "265"]
+    assert resolved["flow"] == ["0.93", "0.98"]
+
+
+def test_petg_gf_profile_is_scoped_to_structural_core_only() -> None:
+    config = audit._load_json(
+        PROJECT_ROOT / "captive_magnet_slicing_profile_petg_gf.json")
+    assert config["user_filament_preset"] == (
+        "TINMORRY PETG-GF Profile @BBL P2S")
+    assert config["repo_overrides"]["process"]["wall_loops"] == "8"
+    assert config["user_filament_preset_sha256"] == (
+        "2fe46f552422a202b221743c3a6a913243e375149fe080598ffd9b084a8b0346")
+
+    scope = config["artifact_scope"]
+    assert len(scope) == 6
+    assert {
+        (match["state"], match["variant"], match["part"])
+        for match in scope
+    } == {
+        (state, variant, part)
+        for state in ("floor_stand", "no_floor_stand")
+        for variant, part in (
+            (
+                "Obi-Wan-split",
+                "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+            ),
+            (
+                "Obi-Wan-split",
+                "lx521_top_obiwan_optional_lm_keyed_2of2_top",
+            ),
+            (
+                "Obi-Wan",
+                "lx521_top_obiwan_core_2of2_um_carrier",
+            ),
+        )
+    }
+    audit._validate_profile_artifact_scope(
+        [
+            {
+                "id": f"core-{index}",
+                **match,
+            }
+            for index, match in enumerate(scope)
+        ],
+        config,
+    )
+
+    wing = {
+        "id": "shared:Obi-Wan-Ae:lx521_top_obiwan_ae_lm_lower_left_1of3",
+        "state": "shared",
+        "variant": "Obi-Wan-Ae",
+        "part": "lx521_top_obiwan_ae_lm_lower_left_1of3",
+    }
+    try:
+        audit._validate_profile_artifact_scope([wing], config)
+    except audit.AuditError as exc:
+        assert "not authorized" in str(exc)
+    else:
+        raise AssertionError("PETG-GF structural profile accepted an Ae wing")
+
+    modifiers = config["parameter_modifiers"]
+    assert len(modifiers) == 1
+    assert modifiers[0]["match"] == {
+        "state": "no_floor_stand",
+        "variant": "Obi-Wan-split",
+        "part": "lx521_top_obiwan_optional_lm_keyed_1of2_bottom",
+    }
+
+
 def _synthetic_profile_bundle(tmp_path: Path | None = None) -> dict:
     config = audit._load_json(audit.DEFAULT_PROFILE)
     flattened = {
@@ -1792,6 +1881,28 @@ def test_gcode_skill_validation_must_explicitly_pass() -> None:
     assert 'skill_validation.get("ok") is not True' in source
 
 
+def test_gcode_skill_wrapper_uses_active_bed_and_native_profile_stack(
+        tmp_path: Path) -> None:
+    bundle = _synthetic_profile_bundle()
+    bundle["paths"] = {
+        name: tmp_path / f"resolved_{name}.json"
+        for name in ("machine", "process", "filament")
+    }
+    wrapper = audit._gcode_validation_wrapper(bundle)
+    assert wrapper["filament"] == {
+        "type": "Bambu PLA Tough+ @BBL P2S",
+        "nozzle_temp_c": 225.0,
+        "bed_temp_c": 55.0,
+    }
+    assert wrapper["native_settings"] == [
+        str(bundle["paths"]["machine"]),
+        str(bundle["paths"]["process"]),
+    ]
+    assert wrapper["native_filaments"] == [
+        str(bundle["paths"]["filament"]),
+    ]
+
+
 def test_generator_style_source_matrix_is_consumed(tmp_path: Path):
     # This is the exact structural shape emitted by
     # generate_captive_magnet_catalog.py: source-space helper facts plus one
@@ -2499,8 +2610,8 @@ def _exact_split_proxy_catalog() -> dict:
 
     def site(name: str, x: float) -> dict:
         interface_kind = (
-            "base_side" if name.startswith("lm_lower_") else "ring")
-        cavity_inset = 0.0 if interface_kind == "base_side" else 0.15
+            "shoulder" if name.startswith("lm_lower_") else "ring")
+        cavity_inset = 0.15
         return {
             "name": name,
             "closure_kind": "transverse_gable_45deg",
@@ -2563,7 +2674,7 @@ def _exact_split_proxy_catalog() -> dict:
     ])
 
 
-def test_obiwan_ring_pair_spacing_is_interface_specific(
+def test_obiwan_ring_and_shoulder_pair_spacing_is_1p10_mm(
         tmp_path: Path) -> None:
     payload = _exact_split_proxy_catalog()
     path = tmp_path / "catalog.json"
@@ -2575,11 +2686,11 @@ def test_obiwan_ring_pair_spacing_is_interface_specific(
         for site in normalized["artifacts"][0]["sites"]
     }
     assert monolith_sites["lm_lower_left"][
-        "paired_magnet_face_separation_mm"] == 0.95
+        "paired_magnet_face_separation_mm"] == 1.10
     assert monolith_sites["lm_upper_left"][
         "paired_magnet_face_separation_mm"] == 1.10
 
-    payload["artifacts"][0]["sites"][1][
+    payload["artifacts"][0]["sites"][0][
         "paired_magnet_face_separation_mm"] = 0.95
     path.write_text(json.dumps(payload), encoding="utf-8")
     try:
@@ -2590,7 +2701,7 @@ def test_obiwan_ring_pair_spacing_is_interface_specific(
             or "paired_magnet_face_separation_mm: value does not equal "
                "const 1.1" in str(exc))
     else:
-        raise AssertionError("stale 0.95-mm Obi-Wan ring spacing passed")
+        raise AssertionError("stale 0.95-mm Obi-Wan shoulder spacing passed")
 
 
 def test_standard_curved_pair_spacing_uses_declared_interface_profile(

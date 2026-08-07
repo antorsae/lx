@@ -1078,7 +1078,7 @@ def _owner_cutter_extension(owner):
 def _owner_cutter_points(points, owner):
     """Return the exact cutter path used by one printed route owner.
 
-    Floor feeds start inside the state-owned stem and retain the 8-mm
+    Floor feeds start inside the state-owned stem and retain the 2.0-mm
     overshoot. No-floor feeds terminate in explicit rear-normal entry bores,
     so their swept cutters start exactly at the functional datum. Keeping this
     state choice in one helper is essential: changing an extension changes
