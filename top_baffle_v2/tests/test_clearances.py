@@ -2178,7 +2178,7 @@ def test_emboss_driver_keepouts():
     from export_piece_stls import EMBOSS_XY, _label
     from lx521_baffle.base import L22_CUTOUT
 
-    ax, ay, rot, font, short = EMBOSS_XY["2of4_mid_left"]
+    ax, ay, rot, font, short = EMBOSS_XY["_2_of_4_mid_left"]
     label = _label("slim_2_of_4_mid_left")
     if short:
         label = label.split(" ")[0]
@@ -2198,7 +2198,7 @@ def test_emboss_driver_keepouts():
     from lx521_baffle.floor_bend import centerline_controls
     from lx521_baffle.proud.v1l import RAMP_Y0
 
-    bx, by, brot, bfont, bshort = EMBOSS_XY["1of4_bottom"]
+    bx, by, brot, bfont, bshort = EMBOSS_XY["_1_of_4_bottom"]
     bottom_label = _label("slim_1_of_4_bottom")
     if bshort:
         bottom_label = bottom_label.split(" ")[0]
