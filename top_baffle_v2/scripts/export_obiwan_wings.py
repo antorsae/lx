@@ -25,6 +25,7 @@ for _canonical_import_root in (PROJECT_ROOT / "src", PROJECT_ROOT / "scripts"):
     if _canonical_import_text not in sys.path:
         sys.path.insert(0, _canonical_import_text)
 import shutil
+import time
 from typing import Any, Iterable
 
 from lx521_baffle.print_contract import (
@@ -1283,6 +1284,34 @@ def _result_path(path: Path) -> str:
         return path.as_posix()
 
 
+class _PhaseClock:
+    """Wall-clock split across the export phases, reported on stdout only.
+
+    The Ae wing export is the single longest recipe in a remote build and
+    the profiles show it running alone with most of the host idle, so how
+    its time divides between geometry construction, qualification, meshing
+    and review rendering is what decides whether splitting it into per-piece
+    Make nodes would pay -- a per-piece fan-out only wins if meshing
+    dominates, since every extra process must rebuild the slug's geometry.
+
+    These numbers deliberately never reach the facts or manifest documents:
+    a wall-clock value there would make two otherwise identical exports hash
+    differently.
+    """
+
+    def __init__(self) -> None:
+        self._phases: dict[str, float] = {}
+        self._mark = time.perf_counter()
+
+    def mark(self, name: str) -> None:
+        now = time.perf_counter()
+        self._phases[name] = round(now - self._mark, 3)
+        self._mark = now
+
+    def as_dict(self) -> dict[str, float]:
+        return dict(self._phases)
+
+
 def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
     os.environ.setdefault("LX_ROUTING_PROFILE", "obiwan")
     from build123d import Compound, Rot, export_step, export_stl
@@ -1308,6 +1337,7 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
     review_stage = slug_stage / "review"
     stl_stage.mkdir(parents=True, exist_ok=True)
     review_stage.mkdir(parents=True, exist_ok=True)
+    clock = _PhaseClock()
 
     try:
         monoliths: dict[str, Any] = {}
@@ -1344,12 +1374,16 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
                     slug, side, order, role)
                 two_piece_parts[(side, role)] = shape
 
+        clock.mark("build_solids")
+
         # Run every source-BREP qualification before serializing the first
         # STEP/STL.  In particular, Ae's protected-land C0 probe is expensive
         # but must fail before ten fine meshes are emitted, not afterwards.
         source_geometry = geometry.wing_facts(slug)
         source_geometry["interface_contract"]["tweeter_crescent"] = (
             geometry.contract.t_wing_interface_facts())
+
+        clock.mark("qualify_geometry")
 
         canonical_label = f"lx521_obiwan_basic_wing_{slug}_monolithic_pair"
         canonical = Compound(children=[monoliths[side] for side in SIDES])
@@ -1388,6 +1422,8 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
         validate_step_transaction(canonical_path)
         validate_step_transaction(assembled_path)
         validate_step_transaction(two_piece_assembled_path)
+
+        clock.mark("export_steps")
 
         part_facts = []
         stl_relatives = []
@@ -1536,10 +1572,14 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
                     "mesh_facts": mesh_facts,
                 }
 
+        clock.mark("mesh_parts")
+
         review_paths, review_context = _render_reviews(
             slug, print_parts, review_stage, geometry.receiver_facts("right"),
             geometry, two_piece_parts)
         review_relatives = [Path("review") / path.name for path in review_paths]
+
+        clock.mark("render_reviews")
 
         facts_rel = Path(FACTS_TEMPLATE.format(slug=slug))
         facts_path = slug_stage / facts_rel
@@ -1611,7 +1651,10 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
         }
         _write_json(manifest_path, manifest_payload)
 
+        clock.mark("write_ledgers")
+
         _promote_transaction(slug_stage, final_slug)
+        clock.mark("promote")
         result = {
             "variant_slug": slug,
             "canonical_step": _result_path(final_slug / canonical_rel),
@@ -1625,6 +1668,7 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
             "review_pngs": [
                 _result_path(final_slug / path) for path in review_relatives],
             "source_sha256": source["combined_sha256"],
+            "phase_seconds": clock.as_dict(),
         }
     finally:
         if stage_root.exists():

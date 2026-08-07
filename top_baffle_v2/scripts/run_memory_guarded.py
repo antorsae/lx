@@ -35,16 +35,21 @@ import tempfile
 import time
 
 
+# ``max_light_guard_slots`` 0 disables the light tier entirely, which is what
+# keeps a workstation strictly serial and makes an undeclared tier behave
+# exactly as this guard did before the split.
 MEMORY_PROFILES = {
     "local-macos": {
         "max_rss_mb": 8192,
         "min_free_mb": 0,
         "max_guard_slots": 1,
+        "max_light_guard_slots": 0,
     },
     "osado-512g": {
         "max_rss_mb": 512 * 1024,
         "min_free_mb": 64 * 1024,
         "max_guard_slots": 16,
+        "max_light_guard_slots": 64,
     },
 }
 MEMORY_PROFILE = os.environ.get("LX_CAD_MEMORY_PROFILE", "local-macos")
@@ -56,6 +61,12 @@ PROFILE_MAX_RSS_MB = int(MEMORY_PROFILES[MEMORY_PROFILE]["max_rss_mb"])
 PROFILE_MIN_FREE_MB = int(MEMORY_PROFILES[MEMORY_PROFILE]["min_free_mb"])
 PROFILE_MAX_GUARD_SLOTS = int(
     MEMORY_PROFILES[MEMORY_PROFILE]["max_guard_slots"])
+PROFILE_MAX_LIGHT_GUARD_SLOTS = int(
+    MEMORY_PROFILES[MEMORY_PROFILE]["max_light_guard_slots"])
+
+GUARD_WEIGHT_HEAVY = "heavy"
+GUARD_WEIGHT_LIGHT = "light"
+GUARD_WEIGHTS = (GUARD_WEIGHT_HEAVY, GUARD_WEIGHT_LIGHT)
 
 
 def _positive_environment_int(name: str, default: int) -> int:
@@ -78,7 +89,7 @@ def _nonnegative_environment_int(name: str, default: int) -> int:
     return value
 
 
-MAX_RSS_MB = min(
+HEAVY_MAX_RSS_MB = min(
     _positive_environment_int("LX_CAD_MAX_RSS_MB", PROFILE_MAX_RSS_MB),
     PROFILE_MAX_RSS_MB,
 )
@@ -86,10 +97,51 @@ MIN_FREE_MB = max(
     _nonnegative_environment_int("LX_CAD_MIN_FREE_MB", PROFILE_MIN_FREE_MB),
     PROFILE_MIN_FREE_MB,
 )
-GUARD_SLOTS = min(
+HEAVY_GUARD_SLOTS = min(
     _positive_environment_int("LX_CAD_GUARD_SLOTS", 1),
     PROFILE_MAX_GUARD_SLOTS,
 )
+
+# Two slot pools share one aggregate budget.  Most guarded recipes peak well
+# under 1 GiB (the 116 check_manifold stamps measured 0.6 GiB, the clearance
+# checks 0.5 GiB, the junction-closure shards 1.2 GiB) while a handful of
+# OCC-heavy ones reach 10-16 GiB.  Sizing every slot for the worst case left
+# the light majority queueing behind a reservation none of them could use.
+# A recipe declares its pool through LX_CAD_GUARD_WEIGHT; the default is
+# ``heavy`` so an undeclared recipe always gets the conservative cap.
+LIGHT_GUARD_SLOTS = min(
+    _nonnegative_environment_int("LX_CAD_GUARD_LIGHT_SLOTS", 0),
+    PROFILE_MAX_LIGHT_GUARD_SLOTS,
+)
+# A light cap can never exceed the heavy cap: the light pool exists to admit
+# more concurrency, never to raise any single recipe's ceiling.
+LIGHT_MAX_RSS_MB = min(
+    _positive_environment_int("LX_CAD_LIGHT_MAX_RSS_MB", HEAVY_MAX_RSS_MB),
+    HEAVY_MAX_RSS_MB,
+)
+
+
+def _requested_guard_weight() -> str:
+    """Pool this invocation asks for, defaulting to the conservative one."""
+    value = os.environ.get(
+        "LX_CAD_GUARD_WEIGHT", GUARD_WEIGHT_HEAVY).strip().lower()
+    if value not in GUARD_WEIGHTS:
+        raise RuntimeError(
+            f"LX_CAD_GUARD_WEIGHT must be one of {', '.join(GUARD_WEIGHTS)}")
+    return value
+
+
+# Without a light pool the declaration is inert and every recipe keeps the
+# single-tier behaviour, including the historical lock-file names.
+GUARD_WEIGHT = (
+    _requested_guard_weight() if LIGHT_GUARD_SLOTS else GUARD_WEIGHT_HEAVY)
+_IS_LIGHT = GUARD_WEIGHT == GUARD_WEIGHT_LIGHT
+MAX_RSS_MB = LIGHT_MAX_RSS_MB if _IS_LIGHT else HEAVY_MAX_RSS_MB
+GUARD_SLOTS = LIGHT_GUARD_SLOTS if _IS_LIGHT else HEAVY_GUARD_SLOTS
+# Worst case if every slot in both pools is simultaneously at its cap.
+GUARD_POOL_RESERVATION_MB = (
+    HEAVY_MAX_RSS_MB * HEAVY_GUARD_SLOTS
+    + LIGHT_MAX_RSS_MB * LIGHT_GUARD_SLOTS)
 
 PROFILE_EVENTS_PATH = os.environ.get("LX_CAD_PROFILE_EVENTS")
 
@@ -151,11 +203,23 @@ def _linux_cgroup_v2_value(name: str) -> str | None:
 CGROUP_MEMORY_MAX_MIB: int | None = None
 if MEMORY_PROFILE == "osado-512g":
     total_mib = _linux_total_memory_mib()
-    required_mib = MAX_RSS_MB * GUARD_SLOTS + MIN_FREE_MB
+    # Both pools are admitted together: this process holds only one slot, but
+    # its siblings hold the rest of the reservation inside the same cgroup.
+    required_mib = GUARD_POOL_RESERVATION_MB + MIN_FREE_MB
     if sys.platform != "linux" or total_mib is None or total_mib < required_mib:
         raise RuntimeError(
             "osado-512g requires Linux with at least "
             f"{required_mib / 1024:.0f} GiB physical RAM")
+    # Physical RAM alone is not the binding limit -- the executor also caps
+    # the whole worker set with one cgroup.  Refuse a slot partition whose
+    # worst case could drive that cgroup into an OOM kill.
+    if required_mib > PROFILE_MAX_RSS_MB:
+        raise RuntimeError(
+            f"guard slot pools reserve {required_mib / 1024:.0f} GiB "
+            f"({HEAVY_GUARD_SLOTS} heavy x {HEAVY_MAX_RSS_MB} MiB + "
+            f"{LIGHT_GUARD_SLOTS} light x {LIGHT_MAX_RSS_MB} MiB + "
+            f"{MIN_FREE_MB} MiB floor), above the "
+            f"{PROFILE_MAX_RSS_MB / 1024:.0f} GiB cgroup limit")
     memory_max = _linux_cgroup_v2_value("memory.max")
     memory_swap_max = _linux_cgroup_v2_value("memory.swap.max")
     expected_bytes = PROFILE_MAX_RSS_MB * 1024 * 1024
@@ -297,12 +361,20 @@ def _workspace_root() -> Path:
 
 
 def _workspace_lock_path(slot: int = 0) -> Path:
-    """Per-user/workspace lock for one permitted outer-guard slot."""
+    """Per-user/workspace lock for one permitted outer-guard slot.
+
+    The two weight pools are namespaced apart so a light recipe can never
+    occupy a slot reserved for a heavy one.  With no light pool declared the
+    heavy names are exactly the historical ones.
+    """
     uid = os.getuid() if hasattr(os, "getuid") else 0
     workspace = str(_workspace_root())
     identity = hashlib.sha256(
         f"{uid}\0{workspace}".encode("utf-8")).hexdigest()[:20]
-    suffix = f"-slot-{slot}" if GUARD_SLOTS > 1 else ""
+    if _IS_LIGHT:
+        suffix = f"-light-slot-{slot}"
+    else:
+        suffix = f"-slot-{slot}" if GUARD_SLOTS > 1 else ""
     return (Path(tempfile.gettempdir())
             / f"lx-cad-memory-{uid}-{identity}{suffix}.lock")
 
@@ -558,8 +630,8 @@ def main(argv: list[str] | None = None) -> int:
     if lock is None:
         print(
             "CAD memory guard refusing to start command: all "
-            f"{GUARD_SLOTS} guarded CAD slot(s) are occupied near "
-            f"{_workspace_lock_path(0)}",
+            f"{GUARD_SLOTS} guarded {GUARD_WEIGHT} CAD slot(s) are occupied "
+            f"near {_workspace_lock_path(0)}",
             file=sys.stderr,
             flush=True,
         )
@@ -696,6 +768,7 @@ def main(argv: list[str] | None = None) -> int:
                                 "LX_OBIWAN_CLOSURE_DENSE_SHARD",
                                 "LX_STAND_FOOT",
                                 "LX_ROUTING_PROFILE",
+                                "LX_CAD_GUARD_WEIGHT",
                             )
                             if name in os.environ
                         },
@@ -715,8 +788,14 @@ def main(argv: list[str] | None = None) -> int:
                         "exit_code": profile_exit_code,
                         "termination_reason": profile_termination_reason,
                         "guard_slots": GUARD_SLOTS,
+                        "guard_weight": GUARD_WEIGHT,
                         "max_rss_mib": MAX_RSS_MB,
                         "min_free_mib": MIN_FREE_MB,
+                        "heavy_guard_slots": HEAVY_GUARD_SLOTS,
+                        "heavy_max_rss_mib": HEAVY_MAX_RSS_MB,
+                        "light_guard_slots": LIGHT_GUARD_SLOTS,
+                        "light_max_rss_mib": (
+                            LIGHT_MAX_RSS_MB if LIGHT_GUARD_SLOTS else None),
                     }
                     try:
                         _append_profile_event(record)

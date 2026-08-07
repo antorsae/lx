@@ -457,24 +457,129 @@ def test_target_contract() -> None:
 
 
 def test_default_remote_parallelism() -> None:
+    """The two guard pools must fit the cgroup budget with the floor spared.
+
+    This replaced a single uniform pool of 16 x 28 GiB.  Sizing every slot
+    for the largest OCC recipe made the sub-2-GiB majority queue behind a
+    reservation it could never use, so the heavy cap is now declared rather
+    than derived by division and a second, cheaper pool absorbs the rest.
+    """
     previous = os.environ.pop("LX_CAD_REMOTE_JOBS", None)
+    previous_light = os.environ.pop("LX_CAD_REMOTE_LIGHT_JOBS", None)
     try:
-        assert remote.DEFAULT_REMOTE_JOBS == 16
-        assert remote._remote_job_count(None) == 16
-        assert ((remote.REMOTE_MEMORY_MAX_MIB
-                 - remote.REMOTE_MEMORY_FLOOR_MIB) // 16) == 28 * 1024
+        assert remote.DEFAULT_REMOTE_JOBS == 12
+        assert remote._remote_job_count(None) == 12
+        assert remote.DEFAULT_REMOTE_LIGHT_JOBS == 18
+        assert remote._remote_light_job_count(12) == 18
+        # The heavy cap keeps its historical value: the guard kills on
+        # breach and the largest measured recipe peaks near 15.5 GiB.
+        assert remote.REMOTE_HEAVY_MAX_RSS_MIB == 28 * 1024
+        assert remote.REMOTE_LIGHT_MAX_RSS_MIB == 6 * 1024
+        budget = remote.REMOTE_MEMORY_MAX_MIB - remote.REMOTE_MEMORY_FLOOR_MIB
+        reservation = (
+            remote.REMOTE_HEAVY_MAX_RSS_MIB * remote.DEFAULT_REMOTE_JOBS
+            + remote.REMOTE_LIGHT_MAX_RSS_MIB
+            * remote.DEFAULT_REMOTE_LIGHT_JOBS)
+        assert reservation <= budget
+        # A smaller heavy pool frees budget for light slots, and the light
+        # count is clamped to whatever actually fits rather than rejected.
+        assert remote._remote_light_job_count(remote.MAX_REMOTE_JOBS) <= (
+            (budget - remote.REMOTE_HEAVY_MAX_RSS_MIB * remote.MAX_REMOTE_JOBS)
+            // remote.REMOTE_LIGHT_MAX_RSS_MIB)
     finally:
         if previous is not None:
             os.environ["LX_CAD_REMOTE_JOBS"] = previous
+        if previous_light is not None:
+            os.environ["LX_CAD_REMOTE_LIGHT_JOBS"] = previous_light
+
+
+def test_guard_weight_pools_never_share_a_slot() -> None:
+    """A light recipe must not be able to occupy a heavy slot, or vice versa.
+
+    The two pools are admitted independently, so overlapping lock names would
+    let heavy+light concurrency exceed the memory the cgroup was sized for.
+    """
+    root = PROJECT_ROOT
+    env = os.environ.copy()
+    env["LX_CAD_MEMORY_PROFILE"] = "local-macos"
+    env.pop("LX_CAD_MEMORY_GUARDED", None)
+    env.pop("LX_CAD_MEMORY_GUARD_PID", None)
+    probe = (
+        "import json, run_memory_guarded as guard; "
+        "guard.GUARD_SLOTS = 4; "
+        "guard._IS_LIGHT = False; heavy = str(guard._workspace_lock_path(1)); "
+        "guard._IS_LIGHT = True; light = str(guard._workspace_lock_path(1)); "
+        "print(json.dumps({'heavy': heavy, 'light': light}))"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", probe], cwd=root, env=env, check=True,
+        text=True, stdout=subprocess.PIPE)
+    paths = json.loads(result.stdout)
+    assert paths["heavy"].endswith("-slot-1.lock")
+    assert paths["light"].endswith("-light-slot-1.lock")
+    assert paths["heavy"] != paths["light"]
+
+
+def test_guard_light_cap_can_never_exceed_the_heavy_cap() -> None:
+    """The light pool adds concurrency; it must never raise a recipe's ceiling."""
+    root = PROJECT_ROOT
+    env = os.environ.copy()
+    env["LX_CAD_MEMORY_PROFILE"] = "local-macos"
+    env.pop("LX_CAD_MEMORY_GUARDED", None)
+    env.pop("LX_CAD_MEMORY_GUARD_PID", None)
+    env["LX_CAD_MAX_RSS_MB"] = "4096"
+    env["LX_CAD_LIGHT_MAX_RSS_MB"] = "8192"
+    probe = (
+        "import json, run_memory_guarded as guard; "
+        "print(json.dumps({'heavy': guard.HEAVY_MAX_RSS_MB, "
+        "'light': guard.LIGHT_MAX_RSS_MB}))"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", probe], cwd=root, env=env, check=True,
+        text=True, stdout=subprocess.PIPE)
+    caps = json.loads(result.stdout)
+    assert caps["heavy"] == 4096
+    assert caps["light"] == 4096
+
+
+def test_light_guard_weight_reaches_the_measured_light_recipes() -> None:
+    """The declared light classes are the ones the profiles proved are small."""
+    makefile = (PROJECT_ROOT / "Makefile").read_text(encoding="utf-8")
+    assert "LIGHT_GUARD := LX_CAD_GUARD_WEIGHT=light" in makefile
+    assert "RUN_LIGHT := $(LIGHT_GUARD) $(RUN)" in makefile
+    for recipe in (
+        "$(RUN_LIGHT) scripts/check_manifold.py --stl-only",
+        "LX_CLEARANCE_SINGLE_CHECK=$(1) $(RUN_LIGHT) tests/test_clearances.py",
+        "LX_OBIWAN_CLOSURE_DENSE_SHARD=$(2)/8 $$(RUN_LIGHT)",
+    ):
+        assert recipe in makefile, recipe
+    # The OCC-heavy classes must keep the conservative default.
+    for heavy in (
+        "scripts/export_obiwan_wings.py --slug",
+        "scripts/export_obiwan_staged.py stage",
+    ):
+        index = makefile.index(heavy)
+        line_start = makefile.rindex("\n", 0, makefile.rindex("\n", 0, index))
+        assert "LX_CAD_GUARD_WEIGHT" not in makefile[line_start:index]
 
 
 def test_remote_make_and_guard_share_parallelism_authority() -> None:
+    """Make gets one token per guard slot across both pools.
+
+    ``parallel_jobs`` remains the heavy pool and still drives
+    LX_CAD_GUARD_SLOTS; ``make_jobs`` is the heavy+light total and is the
+    only thing -j may use, so Make can never start more recipes than the
+    guard is prepared to admit.
+    """
     source = Path(remote.__file__).read_text(encoding="utf-8")
     assert '"LX_CAD_GUARD_SLOTS": str(metadata["parallel_jobs"])' in source
-    assert 'str(metadata["parallel_jobs"]),' in source
+    assert '"LX_CAD_GUARD_LIGHT_SLOTS": str(metadata["light_jobs"])' in source
+    assert 'str(metadata["make_jobs"]),' in source
+    assert 'make_jobs = parallel_jobs + light_jobs' in source
     command_block = source[source.index("command = [\n", source.index(
         '"LX_CAD_GUARD_SLOTS"')):]
     assert 'make, "--no-print-directory", "--trace", "-j",' in command_block
+    assert 'str(metadata["make_jobs"]),' in command_block[:200]
 
 
 def test_remote_worker_exports_source_snapshot_identity() -> None:
@@ -490,6 +595,13 @@ def test_bambu_status_json_is_not_a_source_input() -> None:
         baffle = repo / "top_baffle_v2"
         _write(baffle / "result.json", '{"return_code": 0}\n')
         _write(baffle / "captive_magnet_slicing_profile.json", "{}\n")
+        # The to_print shelf ledger is rewritten in full by every local
+        # `make to_print`.  The shelf is Darwin-only and never appears in a
+        # remote DAG, so its churn must not bust the remote make cache.  The
+        # per-state release ledgers keep a distinct name and stay sources.
+        _write(baffle / "to_print" / "release_manifest.json", "{}\n")
+        _write(baffle / "build" / "floor_stand"
+               / "obiwan_release_manifest.json", "{}\n")
         original = (remote.REPO_ROOT, remote.BAFFLE_DIR,
                     remote.REFERENCE_INPUTS)
         remote.REPO_ROOT = repo
@@ -501,6 +613,7 @@ def test_bambu_status_json_is_not_a_source_input() -> None:
                 for path in remote._source_paths()
             }
             assert "result.json" not in relative
+            assert "to_print/release_manifest.json" not in relative
             assert "captive_magnet_slicing_profile.json" in relative
         finally:
             (remote.REPO_ROOT, remote.BAFFLE_DIR,
@@ -2215,11 +2328,15 @@ def test_local_memory_profile_has_no_host_free_floor() -> None:
     env.pop("LX_CAD_MIN_FREE_MB", None)
     env.pop("LX_CAD_MEMORY_GUARDED", None)
     env.pop("LX_CAD_MEMORY_GUARD_PID", None)
+    env["LX_CAD_GUARD_WEIGHT"] = "light"
     probe = (
         "import json, run_memory_guarded as guard; "
         "print(json.dumps({"
         "'max_rss_mb': guard.MAX_RSS_MB, "
         "'min_free_mb': guard.MIN_FREE_MB, "
+        "'guard_weight': guard.GUARD_WEIGHT, "
+        "'guard_slots': guard.GUARD_SLOTS, "
+        "'light_guard_slots': guard.LIGHT_GUARD_SLOTS, "
         "'local_profile': guard.MEMORY_PROFILES['local-macos'], "
         "'remote_profile': guard.MEMORY_PROFILES['osado-512g']}))"
     )
@@ -2229,11 +2346,18 @@ def test_local_memory_profile_has_no_host_free_floor() -> None:
     policy = json.loads(result.stdout)
     assert policy["max_rss_mb"] == 8192
     assert policy["min_free_mb"] == 0
+    # max_light_guard_slots 0 keeps the workstation single-tier: a stray
+    # LX_CAD_GUARD_WEIGHT=light declaration stays inert locally and cannot
+    # open a second slot beside the one serial guard.
     assert policy["local_profile"] == {
         "max_rss_mb": 8192,
         "min_free_mb": 0,
         "max_guard_slots": 1,
+        "max_light_guard_slots": 0,
     }
+    assert policy["guard_weight"] == "heavy"
+    assert policy["guard_slots"] == 1
+    assert policy["light_guard_slots"] == 0
     assert policy["remote_profile"]["min_free_mb"] == 64 * 1024
     assert remote.REMOTE_MEMORY_FLOOR_MIB == 64 * 1024
     assert remote.REMOTE_MEMORY_MAX_MIB == 512 * 1024
@@ -2394,6 +2518,9 @@ def test_gc_retention_policy() -> None:
 def main() -> None:
     test_target_contract()
     test_default_remote_parallelism()
+    test_guard_weight_pools_never_share_a_slot()
+    test_guard_light_cap_can_never_exceed_the_heavy_cap()
+    test_light_guard_weight_reaches_the_measured_light_recipes()
     test_remote_make_and_guard_share_parallelism_authority()
     test_remote_worker_exports_source_snapshot_identity()
     test_protocol_rejection()

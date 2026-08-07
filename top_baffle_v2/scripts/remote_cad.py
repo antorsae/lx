@@ -52,7 +52,11 @@ TRANSPORT_SOURCE_PATHS = (
 )
 REQUIREMENTS_SOURCE_PATH = "top_baffle_v2/cad-remote-requirements.lock"
 
-PROTOCOL_VERSION = 3
+# 4: job metadata carries the two-pool guard partition (light_jobs,
+#    light_worker_max_rss_mib, make_jobs).  A job.json without them
+#    cannot describe the slot reservation the worker will apply, so it
+#    is rejected rather than defaulted.
+PROTOCOL_VERSION = 4
 ENVIRONMENT_ATTESTATION_VERSION = 3
 PROMOTION_TRANSACTION_VERSION = 1
 BUILD_CACHE_VERSION = 1
@@ -62,8 +66,29 @@ REMOTE_MEMORY_PROFILE = "osado-512g"
 REMOTE_MEMORY_MAX_MIB = 512 * 1024
 REMOTE_MEMORY_FLOOR_MIB = 64 * 1024
 REMOTE_MEMORY_MAX_SYSTEMD = "512G"
-DEFAULT_REMOTE_JOBS = 16
+# Guarded recipes fall into two very different memory classes, so the worker
+# runs two slot pools instead of one uniform set.  Peak-RSS histograms from
+# .remote-cad/jobs/*/profile.json put all but a handful of recipes under
+# 1.2 GiB (116 check_manifold stamps at 0.6 GiB, 37 clearance checks at
+# 0.5 GiB, 16 junction-closure shards at 1.2 GiB, worst light-classified
+# class 4.1 GiB) while the OCC-heavy ones reach 10-16 GiB (test_obiwan_r6f
+# tweeter/shell cases 11.3-15.5 GiB, export_obiwan_wings 10.1 GiB).
+#
+# The heavy pool therefore keeps the original 28 GiB cap -- 1.8x the largest
+# recipe ever measured, and the guard *kills* on breach, so this margin is
+# not negotiable -- while a second pool admits the light majority at 6 GiB.
+# Both pools share one budget: the 512 GiB cgroup less the 64 GiB host floor.
+#
+#   12 heavy x 28672 MiB + 18 light x 6144 MiB = 444 GiB <= 448 GiB
+#
+# Heavy concurrency drops 16 -> 12, which is still above the ~8-10 concurrent
+# heavy recipes the profiles show, and total slots rise 16 -> 30 for the
+# phases that were saturating all 16 with sub-2-GiB work.
+DEFAULT_REMOTE_JOBS = 12
 MAX_REMOTE_JOBS = 16
+REMOTE_HEAVY_MAX_RSS_MIB = 28 * 1024
+DEFAULT_REMOTE_LIGHT_JOBS = 18
+REMOTE_LIGHT_MAX_RSS_MIB = 6 * 1024
 LOCAL_PROMOTION_JOBS = 8
 
 DEFAULT_HOST = "osado.lan"
@@ -93,10 +118,20 @@ SOURCE_EXCLUDED_DIRS = {".remote-cad", "__pycache__", "review"}
 SOURCE_EXCLUDED_SUFFIXES = {
     ".3mf", ".brep", ".glb", ".png", ".pyc", ".step", ".stl",
 }
-# BambuStudio writes this transient status payload beside the invoked model.
-# It is neither an input nor a release artifact, and including it made an
-# otherwise identical snapshot miss the verified Make cache after slicing.
-SOURCE_EXCLUDED_NAMES = {"result.json"}
+# Locally regenerated payloads that no remote recipe reads.  Including them
+# made an otherwise identical snapshot miss the verified Make cache.
+#   result.json            BambuStudio's transient status file, written beside
+#                          the invoked model on every local slice.
+#   release_manifest.json  the to_print shelf ledger, rewritten in full by
+#                          every `make to_print`.  The shelf is Darwin-only and
+#                          never appears in a remote DAG (`make -n all` under
+#                          LX_CAD_EXECUTION=remote-worker names no to_print
+#                          target), so its churn must not invalidate the
+#                          remote source identity.  The per-state release
+#                          ledgers keep their distinct
+#                          `obiwan_release_manifest.json` name and remain
+#                          snapshot sources.
+SOURCE_EXCLUDED_NAMES = {"result.json", "release_manifest.json"}
 REFERENCE_INPUTS = (
     REPO_ROOT / "E0022_W22EX001.stp",
     REPO_ROOT / "linkwitz" / "H1658-04_MU10RB-SL_driver.stl",
@@ -1221,6 +1256,7 @@ def _validate_targets(targets: list[str]) -> list[str]:
 
 
 def _remote_job_count(explicit: int | None) -> int:
+    """Heavy guard slots, which are the memory-critical half of the pool."""
     raw = explicit if explicit is not None else os.environ.get(
         "LX_CAD_REMOTE_JOBS", str(DEFAULT_REMOTE_JOBS))
     try:
@@ -1231,6 +1267,31 @@ def _remote_job_count(explicit: int | None) -> int:
         raise ValueError(
             f"LX_CAD_REMOTE_JOBS must be between 1 and {MAX_REMOTE_JOBS}")
     return jobs
+
+
+def _remote_light_job_count(heavy_jobs: int) -> int:
+    """Light guard slots that still fit beside ``heavy_jobs`` in the cgroup.
+
+    The requested count is clamped rather than rejected so lowering
+    LX_CAD_REMOTE_JOBS can never produce a partition the guard would refuse
+    to admit.
+    """
+    raw = os.environ.get(
+        "LX_CAD_REMOTE_LIGHT_JOBS", str(DEFAULT_REMOTE_LIGHT_JOBS))
+    try:
+        jobs = int(raw)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(
+            "LX_CAD_REMOTE_LIGHT_JOBS must be an integer") from exc
+    if jobs < 0:
+        raise ValueError("LX_CAD_REMOTE_LIGHT_JOBS must be nonnegative")
+    budget_mib = REMOTE_MEMORY_MAX_MIB - REMOTE_MEMORY_FLOOR_MIB
+    remaining_mib = budget_mib - REMOTE_HEAVY_MAX_RSS_MIB * heavy_jobs
+    if remaining_mib < 0:
+        raise ValueError(
+            f"{heavy_jobs} heavy slots already exceed the "
+            f"{budget_mib} MiB guarded memory budget")
+    return min(jobs, remaining_mib // REMOTE_LIGHT_MAX_RSS_MIB)
 
 
 def _local_job_dir(job_id: str) -> Path:
@@ -1626,6 +1687,8 @@ def _create_artifact_bundle(job: Path, metadata: dict) -> None:
             "parallel_jobs": metadata["parallel_jobs"],
             "guard_slots": metadata["parallel_jobs"],
             "worker_max_rss_mib": metadata["worker_max_rss_mib"],
+            "light_guard_slots": metadata["light_jobs"],
+            "light_worker_max_rss_mib": metadata["light_worker_max_rss_mib"],
             "systemd_unit": metadata["systemd_unit"],
             "cgroup_attestation": metadata["cgroup_attestation"],
         },
@@ -2504,8 +2567,10 @@ def _execute_job(args: argparse.Namespace) -> int:
             print(f"targets={' '.join(metadata['targets'])}", file=log)
             print(
                 f"memory=systemd:{REMOTE_MEMORY_MAX_SYSTEMD} "
-                f"workers:{metadata['parallel_jobs']} "
-                f"guard-per-worker:{metadata['worker_max_rss_mib']}MiB "
+                f"workers:{metadata['parallel_jobs']}heavy"
+                f"+{metadata['light_jobs']}light "
+                f"guard-per-worker:{metadata['worker_max_rss_mib']}MiB"
+                f"/{metadata['light_worker_max_rss_mib']}MiB "
                 f"floor:{REMOTE_MEMORY_FLOOR_MIB}MiB",
                 file=log,
             )
@@ -2514,6 +2579,7 @@ def _execute_job(args: argparse.Namespace) -> int:
                 "LX_CAD_MEMORY_GUARDED", "LX_CAD_MEMORY_GUARD_PID",
                 "LX_CLEARANCE_SINGLE_CHECK", "LX_R6F_CASE_ID",
                 "LX_OBIWAN_WING_SINGLE_CHECK", "LX_OBIWAN_WING_LIVE_SLUG",
+                "LX_CAD_GUARD_WEIGHT",
             ):
                 env.pop(name, None)
             cache = job / "cache"
@@ -2529,8 +2595,11 @@ def _execute_job(args: argparse.Namespace) -> int:
                 "LX_CAD_SOURCE_SHA256": metadata["source_sha256"],
                 "LX_CAD_ALLOW_PARALLEL": "1",
                 "LX_CAD_GUARD_SLOTS": str(metadata["parallel_jobs"]),
+                "LX_CAD_GUARD_LIGHT_SLOTS": str(metadata["light_jobs"]),
                 "LX_CAD_MEMORY_PROFILE": REMOTE_MEMORY_PROFILE,
                 "LX_CAD_MAX_RSS_MB": str(metadata["worker_max_rss_mib"]),
+                "LX_CAD_LIGHT_MAX_RSS_MB": str(
+                    metadata["light_worker_max_rss_mib"]),
                 "LX_CAD_MIN_FREE_MB": str(REMOTE_MEMORY_FLOOR_MIB),
                 "LX_CAD_PROFILE_EVENTS": str(
                     (job / "profile-events.jsonl").resolve()),
@@ -2543,7 +2612,7 @@ def _execute_job(args: argparse.Namespace) -> int:
             })
             command = [
                 make, "--no-print-directory", "--trace", "-j",
-                str(metadata["parallel_jobs"]),
+                str(metadata["make_jobs"]),
                 "LX_CAD_EXECUTION=remote-worker",
                 f"PYTHON={python}", "--", *metadata["targets"],
             ]
@@ -2765,6 +2834,8 @@ def _verify_and_extract_artifacts(local_dir: Path, metadata: dict) -> Path:
         "parallel_jobs": metadata["parallel_jobs"],
         "guard_slots": metadata["parallel_jobs"],
         "worker_max_rss_mib": metadata["worker_max_rss_mib"],
+        "light_guard_slots": metadata["light_jobs"],
+        "light_worker_max_rss_mib": metadata["light_worker_max_rss_mib"],
         "systemd_unit": metadata["systemd_unit"],
     }
     execution = manifest.get("execution")
@@ -3497,8 +3568,12 @@ def _run_remote(args: argparse.Namespace) -> int:
     targets = _validate_targets(args.targets)
     include_candidate_outputs = targets == ["manifold"]
     parallel_jobs = _remote_job_count(args.jobs)
-    worker_max_rss_mib = (
-        REMOTE_MEMORY_MAX_MIB - REMOTE_MEMORY_FLOOR_MIB) // parallel_jobs
+    worker_max_rss_mib = REMOTE_HEAVY_MAX_RSS_MIB
+    light_jobs = _remote_light_job_count(parallel_jobs)
+    light_worker_max_rss_mib = REMOTE_LIGHT_MAX_RSS_MIB
+    # Make gets one token per guard slot across both pools; the guard's own
+    # per-pool locks decide which pool a started recipe may occupy.
+    make_jobs = parallel_jobs + light_jobs
     host = args.host or os.environ.get("LX_CAD_REMOTE_HOST", DEFAULT_HOST)
     configured_root = args.remote_root or os.environ.get(
         "LX_CAD_REMOTE_ROOT", DEFAULT_REMOTE_ROOT,
@@ -3533,6 +3608,9 @@ def _run_remote(args: argparse.Namespace) -> int:
             "memory_floor_mib": REMOTE_MEMORY_FLOOR_MIB,
             "parallel_jobs": parallel_jobs,
             "worker_max_rss_mib": worker_max_rss_mib,
+            "light_jobs": light_jobs,
+            "light_worker_max_rss_mib": light_worker_max_rss_mib,
+            "make_jobs": make_jobs,
             "systemd_unit": unit,
             "targets": targets,
             "include_candidate_outputs": include_candidate_outputs,

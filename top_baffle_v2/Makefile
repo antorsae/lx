@@ -445,26 +445,49 @@ OBIWAN_EXCLUSIVE_CAD_SRCS := \
         src/lx521_baffle/obiwan/wings.py
 SHARED_CAD_SRCS := src/lx521_baffle/assembly.py src/lx521_baffle/magnet_contract.py \
         src/lx521_baffle/geom.py src/lx521_baffle/io.py
-SRCS := $(filter-out $(OBIWAN_EXCLUSIVE_CAD_SRCS),$(CAD_SRCS_ALL)) \
+# GEOM_SRCS is the geometry authority every non-Obi-Wan CAD recipe imports:
+# the proud/common modules plus the reference solids they measure against.
+# Its content reaches STEP/STL/PNG bytes, so it stays a prerequisite of them.
+GEOM_SRCS := $(filter-out $(OBIWAN_EXCLUSIVE_CAD_SRCS),$(CAD_SRCS_ALL)) \
         src/lx521_baffle/magnets.py $(SHARED_CAD_SRCS) \
-        Makefile $(MU10_REFS) $(W22_REFS)
-OBIWAN_SRCS := $(SRCS) $(OBIWAN_EXCLUSIVE_CAD_SRCS)
+        $(MU10_REFS) $(W22_REFS)
+OBIWAN_SRCS := $(GEOM_SRCS) $(OBIWAN_EXCLUSIVE_CAD_SRCS)
 EXECUTION_SRCS := scripts/run_memory_guarded.py
+# This Makefile is deliberately NOT a prerequisite of ordinary CAD artifacts.
+# Make cannot detect a recipe-text edit in any case, and listing it here put
+# 258 targets (the whole ~35 min remote CAD set) behind every edit to this
+# file -- including a new comment or an unrelated new rule.  It remains a
+# prerequisite of exactly the nodes whose *content* embeds Makefile bytes or
+# Makefile-defined names:
+#   * the two obiwan_release_manifest.json ledgers, because
+#     write_obiwan_release_manifest.py::generation_source_paths() hashes this
+#     file into source_hashes();
+#   * the combo-plate and wing-plate source stamps, whose plate NAME
+#     variables are baked into the emitted plate manifests;
+#   * check_remote_transport and check_release_metadata, which parse this
+#     file's text directly.
+# A structural edit that changes a recipe's meaning without changing any of
+# those (for example flipping a $(call RULES,...) stand-foot argument) still
+# requires an explicit `make clean`, exactly as before this split.
+BUILD_POLICY_SRCS := Makefile
 PRINT_CONTRACT_SRCS := src/lx521_baffle/print_contract.py src/lx521_baffle/io.py
 SLICER_SRCS := scripts/slice_captive_magnets.py \
         scripts/release_validation.py scripts/gcode_analysis.py \
         scripts/artifact_emit.py
-OBIWAN_RELEASE_SRCS := $(OBIWAN_SRCS) $(EXECUTION_SRCS) $(PRINT_CONTRACT_SRCS) \
-        scripts/export_steps.py scripts/export_obiwan_staged.py \
-        scripts/export_piece_stls.py scripts/export_coupon.py src/lx521_baffle/stl_export.py scripts/gen_cable_routing.py \
-        scripts/gen_driver_overlay.py scripts/check_manifold.py tests/test_captive_magnets.py \
-        tests/test_clearances.py tests/test_shared_contracts.py \
-        tests/test_obiwan_r6f.py tests/test_harness.py \
-        tests/test_obiwan_junction_closure_webs.py \
-        tests/test_obiwan_lm_split_two_pin_static.py tests/test_remote_cad.py \
+# obiwan_release_manifest.json records a sha256 of every file returned by
+# write_obiwan_release_manifest.py::generation_source_paths(), so this group
+# must mirror that function exactly -- each listed file's *bytes* appear in
+# the manifest, which is why the broad wildcards are correct here and only
+# here.  Keep the two in step: src/lx521_baffle rglob, scripts/*.py,
+# tests/test_*.py, the lockfile, this Makefile, the qualification record and
+# the reference solids.  CAD_SRCS_ALL already spans the whole src package
+# (it has no subpackages below proud/ and obiwan/).
+OBIWAN_RELEASE_SRCS := $(CAD_SRCS_ALL) \
+        $(wildcard scripts/*.py) \
         $(wildcard tests/test_*.py) \
-        scripts/write_obiwan_release_manifest.py docs/obiwan_physical_qualification.md \
-        scripts/remote_cad.py cad-remote-requirements.lock
+        $(BUILD_POLICY_SRCS) cad-remote-requirements.lock \
+        docs/obiwan_physical_qualification.md \
+        $(MU10_REFS) $(W22_REFS)
 # export_piece_stls imports the strict checker after meshing, and that checker
 # imports the release-manifest helpers at module load.  Keep every STL stamp
 # source-complete so a checker/contract change cannot reuse a stale mesh stamp.
@@ -478,6 +501,25 @@ STL_EXPORT_SRCS := scripts/export_piece_stls.py scripts/check_manifold.py \
 override GUARD := $(abspath scripts/run_memory_guarded.py)
 override RUN := $(PYTHON_RUN) $(GUARD) -- $(PYTHON_RUN)
 RUN_STATE = LX_STAND_FOOT=$(1) LX_ROUTING_PROFILE=$(2) $(RUN)
+# The remote guard runs two slot pools: a small number of heavy slots sized
+# for the 10-16 GiB OCC recipes, and many more light slots at a 6 GiB cap.
+# Recipes are heavy unless they declare otherwise, so this prefix is opt-in
+# and only for classes whose measured peak RSS in
+# .remote-cad/jobs/*/profile.json leaves real headroom under that cap:
+#
+#   check_manifold.py stamps       0.6 GiB (116 of them)
+#   test_clearances.py checks      0.5-4.0 GiB (37 of them)
+#   junction-closure dense shards  1.2 GiB (16 of them)
+#   routing/overlay/design-map PNG 0.5-0.6 GiB
+#   release manifest / catalog     0.02-0.5 GiB
+#
+# Locally the light pool is disabled outright, so this declaration is inert
+# on a workstation and the build stays strictly serial.
+LIGHT_GUARD := LX_CAD_GUARD_WEIGHT=light
+RUN_LIGHT := $(LIGHT_GUARD) $(RUN)
+# State flags stay leftmost so a recipe's rendered prefix is unchanged apart
+# from the added weight declaration.
+RUN_STATE_LIGHT = LX_STAND_FOOT=$(1) LX_ROUTING_PROFILE=$(2) $(RUN_LIGHT)
 
 # Local builds remain strictly serial. The remote executor may opt into
 # several guarded slots only under the large-host profile; the enclosing
@@ -701,11 +743,15 @@ else
 CHECK_REVALIDATE := _force_check_revalidation
 endif
 
+# The stamp body is empty and the check is a pure function of the STL plus the
+# checker sources, so this Makefile supplies only the MANIFOLD_STLS target
+# list -- and Make already reacts to that by target identity.  Listing it as a
+# prerequisite here re-ran all 116 mesh checks after any edit to this file.
 define MANIFOLD_STL_RULE
 $(call manifold_stamp,$(1)): $(1) scripts/check_manifold.py \
-        $(PRINT_CONTRACT_SRCS) scripts/write_obiwan_release_manifest.py Makefile
+        $(PRINT_CONTRACT_SRCS) scripts/write_obiwan_release_manifest.py
 	@mkdir -p $$(@D)
-	$(RUN) scripts/check_manifold.py --stl-only $(1)
+	$(RUN_LIGHT) scripts/check_manifold.py --stl-only $(1)
 	@touch $$@
 endef
 
@@ -716,7 +762,7 @@ _check_clearance_$(1): $(call clearance_check_stamp,$(1))
 $(call clearance_check_stamp,$(1)): tests/test_clearances.py $(OBIWAN_SRCS) \
         $(EXECUTION_SRCS) $(CHECK_REVALIDATE)
 	@mkdir -p $$(@D)
-	LX_CLEARANCE_SINGLE_CHECK=$(1) $(RUN) tests/test_clearances.py
+	LX_CLEARANCE_SINGLE_CHECK=$(1) $(RUN_LIGHT) tests/test_clearances.py
 	@touch $$@
 endef
 
@@ -841,7 +887,7 @@ all: validate_obiwan_stages floor_stand_artifacts no_floor_stand_artifacts commo
 	# Each state already completed its one-node-per-STL sweep while the other
 	# state was still eligible to use the shared jobserver.  Keep only the
 	# inexpensive cross-state manifest/review consistency gate on the join.
-	$(RUN) scripts/check_manifold.py --metadata-only \
+	$(RUN_LIGHT) scripts/check_manifold.py --metadata-only \
 	    build/floor_stand/stl build/no_floor_stand/stl
 
 # Optional opposed-BMR Stock/Slim vase family.  This target is intentionally
@@ -939,7 +985,7 @@ $(CAPTIVE_MAGNET_CATALOG): scripts/generate_captive_magnet_catalog.py \
         build/no_floor_stand/stl/.stamp_v1l build/no_floor_stand/stl/.stamp_obiwan \
         build/no_floor_stand/stl/.stamp_coupon $(OBIWAN_WING_STAMPS)
 	@mkdir -p review
-	$(call RUN_STATE,0,obiwan,.) \
+	$(call RUN_STATE_LIGHT,0,obiwan,.) \
 	    scripts/generate_captive_magnet_catalog.py --output $@
 	@test -s $@
 
@@ -983,7 +1029,7 @@ candidate: check all
 release: candidate
 	# Candidate already completed the strict mesh sweep.  Release adds only the
 	# fail-closed physical-authorization and metadata gate.
-	$(RUN) scripts/check_manifold.py --metadata-only --require-release-authorized
+	$(RUN_LIGHT) scripts/check_manifold.py --metadata-only --require-release-authorized
 
 manifold: scripts/check_manifold.py
 	$(MAKE) --no-print-directory _manifold_parallel \
@@ -992,7 +1038,7 @@ manifold: scripts/check_manifold.py
 _manifold_parallel: $(MANIFOLD_STAMPS)
 	@test -n "$(strip $(MANIFOLD_STLS))" || { \
 	    echo "no STLs found under: $(MANIFOLD_ROOTS)" >&2; exit 1; }
-	$(RUN) scripts/check_manifold.py --metadata-only \
+	$(RUN_LIGHT) scripts/check_manifold.py --metadata-only \
 	    $(if $(filter 1,$(MANIFOLD_OBIWAN_ONLY)),--obiwan-only) \
 	    $(MANIFOLD_ROOTS)
 	@echo "$(words $(MANIFOLD_STLS))/$(words $(MANIFOLD_STLS)) STLs strict-manifold (Make-parallel)"
@@ -1068,7 +1114,7 @@ obiwan_release: floor_stand_artifacts no_floor_stand_artifacts \
 	# Ac/Ae already pass their own final gate through obiwan_wings.
 	# State-local sweeps already ran exactly once through the artifact nodes;
 	# retain only the inexpensive cross-state metadata gate on this join.
-	$(RUN) scripts/check_manifold.py --metadata-only \
+	$(RUN_LIGHT) scripts/check_manifold.py --metadata-only \
 	    build/floor_stand/stl build/no_floor_stand/stl
 
 # Source-linked, dimensioned Ac/Ae attachment layout for the Obi-Wan carrier.
@@ -1137,7 +1183,7 @@ $(OBIWAN_WING_DESIGN_MAP): scripts/gen_obiwan_wing_design_map.py \
         src/lx521_baffle/obiwan/bridge.py \
         src/lx521_baffle/obiwan/floor.py
 	@rm -f $@
-	$(call RUN_STATE,0,obiwan,.) \
+	$(call RUN_STATE_LIGHT,0,obiwan,.) \
 	    scripts/gen_obiwan_wing_design_map.py --output $@
 	@test -s $@
 
@@ -1177,13 +1223,16 @@ check_shared_contracts: tests/test_shared_contracts.py src/lx521_baffle/io.py \
         src/lx521_baffle/assembly.py src/lx521_baffle/geom.py scripts/run_memory_guarded.py
 	$(PYTHON_RUN) tests/test_shared_contracts.py
 
-check_remote_transport: tests/test_remote_cad.py scripts/remote_cad.py Makefile
+# test_remote_cad.py reads this file and asserts on the rendered DAG, so
+# the Makefile text is a genuine input to this check.
+check_remote_transport: tests/test_remote_cad.py scripts/remote_cad.py \
+        $(BUILD_POLICY_SRCS)
 	$(PYTHON_RUN) tests/test_remote_cad.py
 
 check_release_metadata: $(CAPTIVE_MAGNET_CATALOG) \
         tests/test_release_metadata.py scripts/check_manifold.py \
         $(PRINT_CONTRACT_SRCS) src/lx521_baffle/stl_export.py src/lx521_baffle/geom.py \
-        scripts/write_obiwan_release_manifest.py Makefile
+        scripts/write_obiwan_release_manifest.py $(BUILD_POLICY_SRCS)
 	$(PYTHON_RUN) tests/test_release_metadata.py
 
 check_slice_metadata: tests/test_slice_captive_magnets.py \
@@ -1564,7 +1613,7 @@ OBIWAN_FLOOR_COMBO_DISCOVERY_AUDITS := \
 OBIWAN_COMBO_SOURCE_SRCS := scripts/build_obiwan_combo_plate.py \
         scripts/composite_bambu_3mf_audit.py scripts/bambu_3mf_audit.py \
         scripts/check_manifold.py tests/test_obiwan_combo_plates.py \
-        $(PRINT_CONTRACT_SRCS) Makefile
+        $(PRINT_CONTRACT_SRCS) $(BUILD_POLICY_SRCS)
 OBIWAN_COMBO_READY_SRCS := $(OBIWAN_COMBO_SOURCE_SRCS) \
         $(SLICER_SRCS) scripts/json_schema_subset.py \
         $(PETG_GF_PROFILE) tests/test_slice_captive_magnets.py
@@ -1759,7 +1808,7 @@ OBIWAN_AC_WING_PLATE_DISCOVERY_AUDITS := \
 OBIWAN_WING_PLATE_SOURCE_SRCS := scripts/build_obiwan_wing_plate.py \
         scripts/bambu_3mf_audit.py scripts/check_manifold.py \
         src/lx521_baffle/obiwan/wings.py $(PRINT_CONTRACT_SRCS) \
-        tests/test_obiwan_wing_plates.py Makefile
+        tests/test_obiwan_wing_plates.py $(BUILD_POLICY_SRCS)
 OBIWAN_WING_PLATE_READY_SRCS := $(OBIWAN_WING_PLATE_SOURCE_SRCS) \
         $(SLICER_SRCS) scripts/json_schema_subset.py \
         captive_magnet_slicing_profile.json tests/test_slice_captive_magnets.py
@@ -2269,7 +2318,7 @@ $(call junction_closure_dense_stamp,$(1),$(2)): \
 	LX_STAND_FOOT=$(if $(filter floor,$(1)),1,0) LX_ROUTING_PROFILE=obiwan \
 	    LX_OBIWAN_CLOSURE_FULL_TEST=1 \
 	    LX_OBIWAN_CLOSURE_DENSE_STATE=$(1) \
-	    LX_OBIWAN_CLOSURE_DENSE_SHARD=$(2)/8 $$(RUN) \
+	    LX_OBIWAN_CLOSURE_DENSE_SHARD=$(2)/8 $$(RUN_LIGHT) \
 	    tests/test_obiwan_junction_closure_webs.py
 	@touch $$@
 endef
@@ -2415,7 +2464,7 @@ check_bump_brep: \
         _check_r6f_bump_brep_clearance \
         _check_r6f_floor_bump_brep_clearance
 
-build/common/attachments.step: $(SRCS) scripts/export_steps.py
+build/common/attachments.step: $(GEOM_SRCS) scripts/export_steps.py
 	@mkdir -p $(@D)
 	LX_ROUTING_PROFILE=proud $(RUN) scripts/export_steps.py \
 	    lx521_baffle.proud.attachments \
@@ -2496,7 +2545,7 @@ $(1)/obiwan_%.step: \
 	    --kind $$* --output $$@
 
 $(1)/um_fit.step: src/lx521_baffle/um_fit.py \
-        $(SRCS) scripts/export_steps.py $(1)/.obiwan_stage/manifest.json
+        $(GEOM_SRCS) scripts/export_steps.py $(1)/.obiwan_stage/manifest.json
 	@mkdir -p $(1)
 	$(call RUN_STATE,$(2),proud,.) scripts/export_steps.py \
 	    lx521_baffle.um_fit --output $$@
@@ -2504,25 +2553,25 @@ $(1)/um_fit.step: src/lx521_baffle/um_fit.py \
 # Osado builds V1L's shared baffle/duct tree once and emits the same four
 # physical children. Explicit local mode retains one-piece-per-child staging.
 $(1)/v1l_split.step: scripts/export_v1l_staged_step.py \
-        scripts/export_steps.py $(SRCS)
+        scripts/export_steps.py $(GEOM_SRCS)
 	@mkdir -p $(1)
 	$(call RUN_STATE,$(2),proud,.) scripts/export_v1l_staged_step.py --output $$@
 
-$(1)/%.step: src/lx521_baffle/proud/%.py $(SRCS) scripts/export_steps.py
+$(1)/%.step: src/lx521_baffle/proud/%.py $(GEOM_SRCS) scripts/export_steps.py
 	@mkdir -p $(1)
 	$(call RUN_STATE,$(2),proud,.) scripts/export_steps.py \
 	    lx521_baffle.proud.$$* --output $$@
 
-$(1)/baffle_cable_routing_proud.png: $(SRCS) scripts/gen_cable_routing.py \
+$(1)/baffle_cable_routing_proud.png: $(GEOM_SRCS) scripts/gen_cable_routing.py \
         scripts/gen_driver_overlay.py $(1)/.obiwan_stage/manifest.json
 	@mkdir -p $(1)
-	cd $(1) && $(call RUN_STATE,$(2),proud) \
+	cd $(1) && $(call RUN_STATE_LIGHT,$(2),proud) \
 	    ../../scripts/gen_cable_routing.py
 
 $(1)/baffle_cable_routing_obiwan.png: $(OBIWAN_SRCS) scripts/gen_cable_routing.py \
         scripts/gen_driver_overlay.py $(1)/.obiwan_stage/manifest.json
 	@mkdir -p $(1)
-	cd $(1) && $(call RUN_STATE,$(2),obiwan) \
+	cd $(1) && $(call RUN_STATE_LIGHT,$(2),obiwan) \
 	    ../../scripts/gen_cable_routing.py
 
 $(1)/obiwan_release_manifest.json: $(OBIWAN_RELEASE_SRCS) \
@@ -2537,14 +2586,14 @@ $(1)/obiwan_release_manifest.json: $(OBIWAN_RELEASE_SRCS) \
         $(if $(filter 1,$(2)),$(FLOOR_STRENGTH_REPORTS)) \
         $(addprefix $(1)/,$(OVERLAY_PNGS))
 	@rm -f $$@
-	$(call RUN_STATE,$(2),obiwan) \
+	$(call RUN_STATE_LIGHT,$(2),obiwan) \
 	    scripts/write_obiwan_release_manifest.py --state-dir $(1)
 
-$(1)/.stamp_overlays: $(SRCS) scripts/gen_driver_overlay.py \
+$(1)/.stamp_overlays: $(GEOM_SRCS) scripts/gen_driver_overlay.py \
         $(1)/.obiwan_stage/manifest.json
 	@rm -f $$@
 	@mkdir -p $(1)
-	cd $(1) && $(call RUN_STATE,$(2),proud) \
+	cd $(1) && $(call RUN_STATE_LIGHT,$(2),proud) \
 	    ../../scripts/gen_driver_overlay.py
 	@test -f $(1)/baffle_variants_drivers.png
 	@test -f $(1)/baffle_b1_drivers.png
