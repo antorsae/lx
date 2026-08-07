@@ -5,7 +5,7 @@
 The production source migration is implemented: every discovered released,
 printable magnet station is represented by the shared pause-and-bury captive
 system instead of an externally accessible glue pocket. The fail-closed
-inventory contains **64 magnet-bearing STLs and 114 per-STL magnet stations**.
+inventory contains **58 magnet-bearing STLs and 94 per-STL magnet stations**.
 This count includes both stand-state copies and the mutually exclusive Obi-Wan LM
 monolith/split alternatives, plus both Ac/Ae A and B wing split options.
 
@@ -60,11 +60,8 @@ The family counts below are enforced in code and must not change silently.
 | Family | Magnet-bearing STLs | Captive stations | Converted printable outputs |
 |---|---:|---:|---|
 | B2 | 2 | 8 | `lx521_top_base_4of4_vase_b2`, one per stand state |
-| C7 | 2 | 8 | `lx521_top_c7base_4of4_vase_b2`, one per stand state |
 | A | 8 | 8 | Four `lx521_top_addonA_*_shoulder_*` receivers per stand state |
 | B1 | 4 | 8 | Two `lx521_top_addonB1_*_wing_*` receivers per stand state |
-| V0 | 2 | 4 | `lx521_top_v0_4of4_vase`, one per stand state |
-| V1 | 2 | 8 | `lx521_top_v1_4of4_vase`, one per stand state |
 | V1-A | 8 | 8 | Four `lx521_top_v1addonA_shoulder_*` receivers per stand state |
 | V1-B1 | 4 | 8 | Two `lx521_top_v1addonB1_wing_*` receivers per stand state |
 | V1L | 2 | 8 | `lx521_top_v1l_4of4_vase_b2`, one per stand state |
@@ -73,10 +70,10 @@ The family counts below are enforced in code and must not change silently.
 | Obi-Wan-Ac | 10 | 12 | Left/right three-piece A and two-piece B wing alternatives |
 | Obi-Wan-Ae | 10 | 12 | Left/right three-piece A and two-piece B wing alternatives |
 | coupon1 | 2 | 2 | `lx521_coupon_1_fit_plate`, one per stand state |
-| **Total** | **64** | **114** | Exact fail-closed catalog |
+| **Total** | **58** | **94** | Exact fail-closed catalog |
 
-State accounting is 22 magnet-bearing STLs / 45 stations in
-`floor_stand`, 22 / 45 in `no_floor_stand`, and 20 / 24 shared Ac/Ae wing
+State accounting is 19 magnet-bearing STLs / 35 stations in
+`floor_stand`, 19 / 35 in `no_floor_stand`, and 20 / 24 shared Ac/Ae wing
 segments. An Obi-Wan LM monolith and its two keyed substitutes are alternative
 ways to print one installed carrier; both forms are release artifacts and are
 therefore deliberately counted in the catalog.
@@ -131,9 +128,9 @@ coupon prints with its acoustic front face on the build plate.** This applies
 to magnet-bearing and non-magnet pieces alike so their visible texture is
 consistent.
 
-The broader orientation inventory is **110 acoustic STL/sidecar pairs**:
-45 in each stand state plus ten Ac and ten Ae wing segments. Do not confuse
-that orientation count with the separate 114 captive-station count above.
+The broader orientation inventory is **98 acoustic STL/sidecar pairs**:
+39 in each stand state plus ten Ac and ten Ae wing segments. Do not confuse
+that orientation count with the separate 94 captive-station count above.
 Each acoustic STL has an adjacent, hash-bound `<stem>.print.json` which
 records:
 

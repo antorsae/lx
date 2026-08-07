@@ -2,7 +2,7 @@
 t=11.5 and mounted FRONT-FLUSH: material z 6.8..18.3 above the foot
 strip, so the whole plate shares the front plane. Proud R6P keeps
 LM/UM D8.2 at z=12.55 through their planar spans and the shared T duct
-at z=11.5 on the left. B2/C7/V0/V1 retain the standard G1 R14 UM
+at z=11.5 on the left. B2 and V1 retain the standard G1 R14 UM
 outlet. V1L is the keyed exception: its alternate UM tail stays wholly
 inside piece_mid_right and centers the physical rear-face exit at
 Q=(13.497063, 307.618796, 6.8), exactly 60.0 mm from the MU axis on the

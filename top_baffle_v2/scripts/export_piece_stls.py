@@ -390,8 +390,8 @@ def _label(name):
     if "obiwan_core_2of2_um" in name:
         return f"Obi-Wan-UM {_routing_rev()}"
     n = name.replace("lx521_top_", "")
-    fam = {"base": "B2", "c7base": "C7", "v1l": "V1L", "obiwan": "Obi-Wan",
-           "v1": "V1", "addonA": "A", "addonB1": "B1", "v1addonA": "V1A",
+    fam = {"base": "B2", "v1l": "V1L", "obiwan": "Obi-Wan",
+           "addonA": "A", "addonB1": "B1", "v1addonA": "V1A",
            "v1addonB1": "V1B1"}
     head = n.split("_")[0]
     code = fam.get(head, head.upper())
@@ -532,11 +532,11 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--outdir", type=Path, default=OUT_DIR,
                     help="directory for the STLs (default: stl/)")
-    ap.add_argument("--variant", choices=("b2", "c7", "v0", "v1", "v1l", "obiwan"),
+    ap.add_argument("--variant", choices=("b2", "v1", "v1l", "obiwan"),
                     default="b2",
-                    help="b2: base pieces + attachments; c7: the four "
-                         "LM-knife-taper base pieces (attachments and "
-                         "piece_top are shared with b2)")
+                    help="b2: base pieces + attachments; v1: the slim "
+                         "shoulder/wing receivers (the slim vase and base "
+                         "pieces ship from v1l)")
     ap.add_argument(
         "--source-step", type=Path,
         help="mesh labeled proud-family pieces from this authoritative "
@@ -672,32 +672,13 @@ def main() -> None:
                 for name, solid in split_grommet_parts("v1l").items()
             })
     elif args.variant == "v1":
+        # The V1 split STEP remains the geometry authority the slim receivers
+        # are cut against, but only its attachments are released as prints:
+        # the slim vase ships from the V1L set.
         from lx521_baffle.proud.top_baffle_nd25fw4_v1_attachments import v1_attachments
-        if step_parts is None:
-            from lx521_baffle.proud.top_baffle_nd25fw4_v1_split import pieces_v1
-            vase = pieces_v1()["piece_top_b2"]
-        else:
-            vase = step_parts["piece_top_b2"]
-        parts = {"lx521_top_v1_4of4_vase": vase}
-        parts.update({k.replace("attach_v1a_", "lx521_top_v1addonA_")
-                       .replace("attach_v1b1_", "lx521_top_v1addonB1_"): v
-                      for k, v in v1_attachments().items()})
-    elif args.variant == "v0":
-        if step_parts is None:
-            from lx521_baffle.proud.top_baffle_nd25fw4_v0_split import pieces_v0
-            vase = pieces_v0()["piece_top_b2"]
-        else:
-            vase = step_parts["piece_top_b2"]
-        parts = {"lx521_top_v0_4of4_vase":
-                 vase}
-    elif args.variant == "c7":
-        if step_parts is None:
-            from lx521_baffle.proud.top_baffle_nd25fw4_c7_split import pieces_c7
-            physical_parts = pieces_c7()
-        else:
-            physical_parts = step_parts
-        parts = {STL_NAMES[k].replace("lx521_top_base_", "lx521_top_c7base_"):
-                 v for k, v in physical_parts.items()}
+        parts = {k.replace("attach_v1a_", "lx521_top_v1addonA_")
+                  .replace("attach_v1b1_", "lx521_top_v1addonB1_"): v
+                 for k, v in v1_attachments().items()}
     else:
         from lx521_baffle.proud.top_baffle_nd25fw4_attachments import attachments
         if step_parts is None:

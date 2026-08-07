@@ -33,7 +33,6 @@ from typing import Any, Callable, Iterable, Mapping, Sequence
 from lx521_baffle.magnets import (
     DEFAULT_SPEC,
     NOMINAL_PAIRED_FACE_SEPARATION_MM,
-    axial_cavity_tools,
     wall_cavity_tools,
 )
 from lx521_baffle.print_contract import (
@@ -48,7 +47,6 @@ from lx521_baffle.proud.top_baffle_nd25fw4_b import (
     BASE_CAVITY_FACE_INSET_MM,
     MAGNET_SITES,
 )
-from lx521_baffle.proud.top_baffle_nd25fw4_v0 import V0_MAGNET_SITES
 from lx521_baffle.proud.top_baffle_nd25fw4_v1 import V1_MAGNET_ZC
 from lx521_baffle.obiwan.carriers import (
     SIDE_INTERFACE_GAP,
@@ -60,20 +58,17 @@ HERE = PROJECT_ROOT
 DEFAULT_OUTPUT = HERE / "review" / "captive_magnet_release_catalog.json"
 SCHEMA_PATH = HERE / "captive_magnet_release_catalog.schema.json"
 SCHEMA_VERSION = 1
-EXPECTED_ARTIFACT_COUNT = 64
-EXPECTED_MAGNET_COUNT = 114
-EXPECTED_STATE_ARTIFACT_COUNT = 22
-EXPECTED_STATE_MAGNET_COUNT = 45
+EXPECTED_ARTIFACT_COUNT = 58
+EXPECTED_MAGNET_COUNT = 94
+EXPECTED_STATE_ARTIFACT_COUNT = 19
+EXPECTED_STATE_MAGNET_COUNT = 35
 EXPECTED_SHARED_ARTIFACT_COUNT = 20
 EXPECTED_SHARED_MAGNET_COUNT = 24
 EXPECTED_FAMILY_COUNTS = {
     # family: (released STL count, total captive-station count)
     "B2": (2, 8),
-    "C7": (2, 8),
     "A": (8, 8),
     "B1": (4, 8),
-    "V0": (2, 4),
-    "V1": (2, 8),
     "V1-A": (8, 8),
     "V1-B1": (4, 8),
     "V1L": (2, 8),
@@ -291,12 +286,6 @@ def _add_print_space(site: Mapping[str, Any],
 
 
 def _polarity(owner: str, family: str) -> str:
-    if family == "v0":
-        return (
-            "provisional unpaired V0 convention: marked/N pole points rearward "
-            "along installed_marked_pole_axis_xyz; verify any future mate "
-            "before burial"
-        )
     if family == "coupon1":
         return (
             "unpaired coupon1 regression station: marked/N pole points "
@@ -366,23 +355,6 @@ def _standard_sites(*, owner: str, z_centres: Sequence[float],
                     NOMINAL_PAIRED_FACE_SEPARATION_MM + base_inset, 9),
             })
             records[f"{vertical}_{side}"] = record
-    return records
-
-
-def _v0_sites() -> dict[str, dict[str, Any]]:
-    records: dict[str, dict[str, Any]] = {}
-    if set(V0_MAGNET_SITES) != {"right", "left"}:
-        raise RuntimeError("V0 released site inventory changed")
-    for side, (x, y) in V0_MAGNET_SITES.items():
-        tools = axial_cavity_tools(
-            name=f"v0_rear_axis_{side}",
-            face=(x, y, 0.0),
-            inward=(0.0, 0.0, 1.0),
-            pair_axis=(0.0, 0.0, -1.0),
-            print_up=(0.0, 0.0, -1.0),
-            bed_datum=(0.0, 0.0, THICKNESS_MM),
-        )
-        records[side] = _site_record(tools, family="v0")
     return records
 
 
@@ -518,7 +490,6 @@ def _state_artifacts(state: str, output: Path) -> list[dict[str, Any]]:
         owner="base", z_centres=V1_MAGNET_ZC, family="v1")
     v1_receiver = _standard_sites(
         owner="receiver", z_centres=V1_MAGNET_ZC, family="v1")
-    v0 = _v0_sites()
     obiwan_lm = _obiwan_sites(owner="carrier", driver="lm")
     obiwan_um = _obiwan_sites(owner="carrier", driver="um")
 
@@ -541,12 +512,6 @@ def _state_artifacts(state: str, output: Path) -> list[dict[str, Any]]:
         standard_base.values(),
         (*base_sources, "src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py",
          "src/lx521_baffle/proud/top_baffle_nd25fw4_b2_split.py"))
-    add("C7", "lx521_top_c7base_4of4_vase_b2",
-        standard_base.values(),
-        (*base_sources, "src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py",
-         "src/lx521_baffle/proud/top_baffle_nd25fw4_c7.py",
-         "src/lx521_baffle/proud/top_baffle_nd25fw4_c7_split.py"))
-
     a_map = (
         ("lx521_top_addonA_1of4_shoulder_top_left", "upper_left"),
         ("lx521_top_addonA_2of4_shoulder_top_right", "upper_right"),
@@ -566,14 +531,6 @@ def _state_artifacts(state: str, output: Path) -> list[dict[str, Any]]:
              "src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py",
              "src/lx521_baffle/proud/top_baffle_nd25fw4_attachments.py"))
 
-    add("V0", "lx521_top_v0_4of4_vase", v0.values(),
-        ("src/lx521_baffle/magnets.py", "src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py",
-         "src/lx521_baffle/proud/top_baffle_nd25fw4_v0.py",
-         "src/lx521_baffle/proud/top_baffle_nd25fw4_v0_split.py"))
-    add("V1", "lx521_top_v1_4of4_vase", v1_base.values(),
-        (*base_sources, "src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py",
-         "src/lx521_baffle/proud/top_baffle_nd25fw4_v1.py",
-         "src/lx521_baffle/proud/top_baffle_nd25fw4_v1_split.py"))
     for stem, key in (
         ("lx521_top_v1addonA_shoulder_top_left", "upper_left"),
         ("lx521_top_v1addonA_shoulder_top_right", "upper_right"),
@@ -1029,7 +986,7 @@ def generate(output: Path) -> dict[str, Any]:
                 for family, counts in sorted(EXPECTED_FAMILY_COUNTS.items())
             },
             "families": [
-                "B2", "C7", "A", "B1", "V0", "V1", "V1-A",
+                "B2", "A", "B1", "V1-A",
                 "V1-B1", "V1L", "Obi-Wan", "Obi-Wan-split",
                 "Obi-Wan-Ac", "Obi-Wan-Ae", "coupon1",
             ],
@@ -1063,16 +1020,6 @@ def generate(output: Path) -> dict[str, Any]:
                 "reason": (
                     "driver-seat diagnostic crop; its current x/y crop "
                     "contains no released captive site and needs no pause"),
-            },
-            {
-                "path": (
-                    "src/lx521_baffle/proud/top_baffle_nd25fw4_v0.py "
-                    "future mating attachment"
-                ),
-                "reason": (
-                    "no released V0 mating magnet print exists; V0's two "
-                    "rear-axis magnets retain an explicit provisional "
-                    "polarity convention"),
             },
             {
                 "path": "legacy exposed-pocket generated artifacts",

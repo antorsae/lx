@@ -5,13 +5,13 @@ D5 x 2 magnet system. It resolves the installed Bambu presets, slices every
 catalogued STL that fits the P2S bed in its mandatory front-face-down
 orientation, reads the actual G-code layer schedule, checks the open cradle
 and closing roof toolpaths, and writes both the pause audit and ready-to-open
-`.gcode.3mf` projects. The catalog contains exactly 64 magnet-bearing release
-STLs, of which 62 are actual P2S slice jobs. The two canonical Obi-Wan LM
+`.gcode.3mf` projects. The catalog contains exactly 58 magnet-bearing release
+STLs, of which 56 are actual P2S slice jobs. The two canonical Obi-Wan LM
 monoliths are catalogued release artifacts but are explicitly classified as
 not P2S-printable; their cavity audits are supplied by exact same-state keyed
-halves as described below. The number 114 is the count of individual magnet
-stations, not a claim that this pipeline slices 114 STLs. Separately, the full
-repository release contains 110 STL/`.print.json` pairs. This magnet
+halves as described below. The number 94 is the count of individual magnet
+stations, not a claim that this pipeline slices 94 STLs. Separately, the full
+repository release contains 98 STL/`.print.json` pairs. This magnet
 catalog excludes every nonmagnet-bearing print, including the Obi-Wan tweeter
 crescent and coupons, so these targets are not yet a complete-print-set slicer.
 
@@ -137,8 +137,8 @@ and 1.10 mm for Obi-Wan ring pairs with the 0.15 mm carrier inset. The cavity
 contract is wholly internal: a local exterior box, cap, flat, dent, boss, or
 other magnet-location cue is a release failure.
 
-The current fail-closed inventory is 64 magnet-bearing released STLs and 114
-individual magnet stations: 22 STLs / 45 stations in each floor state plus
+The current fail-closed inventory is 58 magnet-bearing released STLs and 94
+individual magnet stations: 19 STLs / 35 stations in each floor state plus
 20 shared Ac/Ae segments / 24 stations. Each Ac/Ae side exposes the unchanged
 three-piece A set and the two-piece B alternative; the B lower is identical to
 the A lower, while the fused B upper carries both LM-upper and UM stations. A
@@ -311,7 +311,7 @@ copies the exact catalog, schema, STL, adjacent print sidecar, source files,
 Obi-Wan stage manifest, and Ac/Ae facts/transaction manifest into a read-only
 staging tree. It slices those frozen STL bytes, then rechecks the live and
 staged hashes, resolved profiles, and Bambu Studio binary. Only exact coverage
-of all 64 artifacts / 114 stations with zero failures may transactionally
+of all 58 artifacts / 94 stations with zero failures may transactionally
 replace the three canonical manifests. A subset, dry run, failed slice,
 missing evidence render, provenance drift, or interrupted publication leaves
 the previous authority untouched.

@@ -150,7 +150,7 @@ def test_axis_parallel_and_front_down_opposed_cones() -> None:
         8.0, 8.0, 6.0, align=(Align.MIN, Align.MIN, Align.MIN))
     block, tools = captive.apply_axial_cavity(
         block,
-        name="v0_rear_down",
+        name="axial_rear_down",
         face=(0.0, 0.0, 0.0),
         inward=(0.0, 0.0, 1.0),
         pair_axis=(0.0, 0.0, -1.0),
@@ -165,23 +165,23 @@ def test_axis_parallel_and_front_down_opposed_cones() -> None:
     assert block.is_inside((0.0, 0.0, 0.225), tolerance=1.0e-5)
     assert not block.is_inside((0.0, 0.0, 1.50), tolerance=1.0e-5)
 
-    v0 = captive.axial_cavity_tools(
-        name="v0_front_down",
+    axial = captive.axial_cavity_tools(
+        name="axial_front_down",
         face=(0.0, 0.0, 0.0),
         inward=(0.0, 0.0, 1.0),
         pair_axis=(0.0, 0.0, -1.0),
         print_up=(0.0, 0.0, -1.0),
         bed_datum=(0.0, 0.0, 18.3),
     )
-    assert v0.closure_kind == "axis_opposed_conical_45deg"
+    assert axial.closure_kind == "axis_opposed_conical_45deg"
     assert all(math.isclose(a, b, abs_tol=1.0e-12) for a, b in zip(
-        v0.cavity_center_xyz, (0.0, 0.0, 4.10)))
+        axial.cavity_center_xyz, (0.0, 0.0, 4.10)))
     assert all(math.isclose(a, b, abs_tol=1.0e-12) for a, b in zip(
-        v0.seated_magnet_center_xyz, (0.0, 0.0, 4.10)))
-    assert math.isclose(v0.roof_start_print_z_mm, 15.25, abs_tol=1e-12)
-    assert math.isclose(v0.roof_apex_print_z_mm, 17.85, abs_tol=1e-12)
+        axial.seated_magnet_center_xyz, (0.0, 0.0, 4.10)))
+    assert math.isclose(axial.roof_start_print_z_mm, 15.25, abs_tol=1e-12)
+    assert math.isclose(axial.roof_apex_print_z_mm, 17.85, abs_tol=1e-12)
     assert math.isclose(
-        v0.required_min_part_top_print_z_mm, 18.3, abs_tol=1e-12)
+        axial.required_min_part_top_print_z_mm, 18.3, abs_tol=1e-12)
 
 
 def main() -> None:

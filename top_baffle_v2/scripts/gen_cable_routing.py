@@ -2,7 +2,7 @@
 
 Faithful: both sheets sample the same complete centerlines used by the
 subtractive proud cutters or integral Obi-Wan printed-cover spans.  The proud
-sheet shows the normal B2/C7/V0/V1 UM handoff plus the exact, clearly
+sheet shows the normal B2/V1 UM handoff plus the exact, clearly
 labeled V1L-only alternate tail to its 283-degree rear-face aperture.
 The Obi-Wan sheet shows fully covered local Z bumps, their full-width burial
 webs and solid roof-to-blind-bore backfill, the short crown crossover with T
@@ -94,7 +94,7 @@ from lx521_baffle.floor_bend import (
 
 STYLE = {
     "lm": ("tab:blue", "LM 2x2.5mm2, D8.2->D9 R14 rear handoff"),
-    "um": ("tab:green", "UM D8.2 normal B2/C7/V0/V1 (z=12.55)"),
+    "um": ("tab:green", "UM D8.2 normal B2/V1 (z=12.55)"),
     "ts": ("gold", "T1+T2 shared, 2x(2xAWG24), duct D6.0 (z=11.5)"),
     "t1f": ("tab:red", "T pair feeders, D3.8 (z=3.7, strip)"),
     "t2f": ("tab:red", ""),

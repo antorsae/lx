@@ -1,6 +1,6 @@
 """V1 print split: piece_top thinned to 11.5 (see _v1.py); seams and
 duct sections remain identical to B2.  Only the TS centerline gets a smooth
-0.20-mm local captive-land detour, so the set still mixes with B2/C7
+0.20-mm local captive-land detour, so the set still mixes with B2
 bottom/mids.  The magnet-bearing top piece prints front-face-down."""
 
 from __future__ import annotations

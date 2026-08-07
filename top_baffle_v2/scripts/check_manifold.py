@@ -57,7 +57,7 @@ WING_SLUGS = ("ac", "ae")
 WING_SIDES = ("left", "right")
 WING_ROLES = ("lm_lower", "lm_upper", "um")
 WING_TWO_PIECE_ROLES = ("lm_lower", "lm_um_upper")
-EXPECTED_NONPOLAR_STATE_STL_COUNT = 45
+EXPECTED_NONPOLAR_STATE_STL_COUNT = 39
 EXPECTED_WING_STL_COUNT = 10
 
 
@@ -971,12 +971,6 @@ def _obiwan_manifest_errors(
         "lx521_top_addonB1_2of2_wing_right.stl",
         "lx521_top_proud_addon_um_grommet_half_a.stl",
         "lx521_top_proud_addon_um_grommet_half_b.stl",
-        "lx521_top_c7base_1of4_bottom.stl",
-        "lx521_top_c7base_2of4_mid_left.stl",
-        "lx521_top_c7base_3of4_mid_right.stl",
-        "lx521_top_c7base_4of4_vase_b2.stl",
-        "lx521_top_v0_4of4_vase.stl",
-        "lx521_top_v1_4of4_vase.stl",
         "lx521_top_v1addonA_shoulder_top_left.stl",
         "lx521_top_v1addonA_shoulder_top_right.stl",
         "lx521_top_v1addonA_shoulder_bottom_left.stl",

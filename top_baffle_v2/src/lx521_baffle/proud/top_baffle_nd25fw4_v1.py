@@ -4,7 +4,7 @@ LM section all share ONE front plane -- the thinning is taken from the
 REAR. Proud R6P's D8.2 UM route and R14 rear outlet finish below seam B;
 only the shared T O6.0/oval traverses this vase at z~11.5. Short M3 x 3
 x O5 pilot inserts remain front-blind. Any rear step at seam B (vs
-full-depth B2/C7 mids; none vs
+full-depth B2 mids; none vs
 V1L) is on the hidden sculpted side; keys auto-trim on both sides.
 
 The crescent taper re-derives on the 6.8..18.3 slab (same 4.0 clamp

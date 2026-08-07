@@ -185,7 +185,7 @@ safety restraint.
 ## Orientation — the setting that matters most
 
 **R6P:** print every baffle piece front face down. The front plane is
-the reliable datum while C7/V0/V1/V1L sculpt or step the rear. For the
+the reliable datum while V1/V1L sculpt or step the rear. For the
 floor-stand `piece_bottom` (223.8 × 125 × 168.3), front-down leaves the
 150 mm foot rising as a self-standing wall. Smooth/satin PEI gives a
 clean front; textured PEI gives uniform grain.

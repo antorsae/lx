@@ -78,7 +78,7 @@ PRINT_ORIENTATION = "front-face-down"
 
 if ROUTING_PROFILE != "proud":
     raise RuntimeError(
-        "B2/C7/V0/V1/V1L pieces require LX_ROUTING_PROFILE=proud; "
+        "B2/V1/V1L pieces require LX_ROUTING_PROFILE=proud; "
         "Obi-Wan has a separate skeletal builder"
     )
 
@@ -192,7 +192,7 @@ SEAM_B_Y = 315.95  # exactly at B2's waist kinks -> obtuse seam corners
 # Dovetail keys: (center along seam, neck width, head width, depth).
 # Seam A sits at y=120 so its keys at +-89 live in the 16 mm-wide
 # FULL-DEPTH window between the T arc (r=110, crossing at x~72.6) and
-# the C7 taper boundary (x~92) -- keys clear of every duct AND fully
+# the legacy knife-taper boundary (x~92) -- keys clear of every duct AND fully
 # out of the taper in all variants. Seam-B teeth occupy the clear
 # lands between the proud R6P return corridor and the waist kink.
 # TWO per mid (was one each) so neither half pivots on a single
@@ -475,8 +475,8 @@ def _option_b_floor_bottom(ducted_bottom, ducts, *, shape_cuts=()):
     # Here floor_body stops at the bend tangent (~74 mm), so the same cutters
     # cannot touch the already-qualified upper tunnel topology.
     floor_body = wall.fuse(rear_flat, _floor_panel())
-    # A split variant can own rear-side shaping at the vertical tangent.  C7,
-    # for example, has its knife-edge taper fully active by y=74.15.  Apply
+    # A split variant can own rear-side shaping at the vertical tangent, so
+    # a taper may already be fully active by y=74.15.  Apply
     # the same pre-duct cutters to the curved lower owner so both sides of the
     # sewn join expose the identical section; below the tangent those global
     # cutters naturally leave the rearward-moving Option-B wall.
@@ -560,9 +560,9 @@ def pieces(outline=OUTLINE_B2, tweeter_drop_mm: float = TWEETER_DROP_MM,
            ts_route_key: str = TS_ROUTE_CAPTIVE) -> dict:
     """Split the (optionally re-shaped) baffle into the four print
     pieces. ``shape_cuts``/``shape_adds`` are applied before the ducts
-    are cut -- used by variant C7 (LM knife-edge taper + T-duct ribs);
-    the ducts then re-cut through any added material. Obi-Wan is a separate
-    two-carrier R6F core and never passes through this four-piece builder.
+    are cut, and the ducts then re-cut through any added material.
+    Obi-Wan is a separate two-carrier R6F core and never passes through
+    this four-piece builder.
     ``um_handoff_key`` is explicit so V1L can select its rear-plane axis
     handoff while every other proud-family caller keeps the default.
     ``only`` constructs one requested split solid without retaining the

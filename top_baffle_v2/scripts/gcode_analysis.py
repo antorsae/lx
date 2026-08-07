@@ -807,7 +807,7 @@ def _seated_magnet_print_z_bounds(
 
     A cylinder's support extent along print Z combines its axial half-depth
     and the projection of its circular radius perpendicular to that axis.
-    This works for both transverse coupon-style discs and the axial V0 site.
+    This works for both transverse coupon-style discs and axial sites.
     """
     center_z = _vec3(
         site["print_seated_magnet_center_xyz_mm"],

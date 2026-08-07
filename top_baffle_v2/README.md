@@ -48,9 +48,7 @@ alternative is independently addressable through
 | `src/lx521_baffle/proud/top_baffle_nd25fw4_b2.py` | B2: constant wall around the 10F -- flare and chamfer keep the LM tilts but are both tangent to the r=50.83 circle about the UM center (9.8 mm wall at the D82, 2.1 mm to the D97.5 flange at both tangential points). Chamfer runs from the flare corner (+/-60.65, 391.71; max width 121.3 mm) to the crescent's D102.11 arc extended to (+/-10.08, 418.18); waist (+/-38.1, 315.95). |
 | `src/lx521_baffle/proud/top_baffle_nd25fw4_b2_split.py` | 4-piece print split of variant B2 (the universal **R6P proud-family** base set) with seven regular through-thickness dovetails |
 | `src/lx521_baffle/proud/vase_tebm35c10_4.py` | Parameterized Stock/Slim alternative vase for two opposed Tectonic TEBM35C10-4 BMRs: front/rear mounting, eight M2 insert bores, four captive side magnets, blind pocket walls, independent cable branches, smooth rear growth, and the regular seam-B female dovetails |
-| `src/lx521_baffle/proud/top_baffle_nd25fw4_c7.py` | Variant C7: B2 with the LM section rear-tapered to a ~0.5 knife edge over the last 19 mm inside the flank/chamfer outline (front face stays a full plane). Full-depth land kept at the bottom strip (foot/bridge) and before seam B; half-round ribs (r=5.4) carry the T ducts across the band. See "Variant C7" below |
-| `src/lx521_baffle/proud/top_baffle_nd25fw4_c7_split.py` | C7 print split: same seams, through-thickness dovetails, and ducts as B2 -- the three LM pieces are drop-in replacements, piece_top and all attachments are shared |
-| `src/lx521_baffle/cables.py` | Proud-family **R6P** subtractive routing and routing-profile dispatch: standard B2/C7/V0/V1 UM tail plus the keyed V1L-only 283-degree alternate |
+| `src/lx521_baffle/cables.py` | Proud-family **R6P** subtractive routing and routing-profile dispatch: standard B2/V1 UM tail plus the keyed V1L-only 283-degree alternate |
 | `src/lx521_baffle/proud/top_baffle_nd25fw4_v1l.py` / `src/lx521_baffle/proud/top_baffle_nd25fw4_v1l_split.py` | Thin R6P bottom+mids; its alternate UM tail and rear-face exit remain wholly in `piece_mid_right`, so the shared top/vase is unchanged |
 | `src/lx521_baffle/obiwan/carriers.py` / `src/lx521_baffle/obiwan/split.py` | Extreme Obi-Wan core: structural LM/UM flush-driver collars at R113.0/R51.7 with smooth exposed R113.8/R52.5 side fairings clipped only inside the existing LM--UM and T--UM cusp/service regions, with the 0.40 mm LM--UM inter-carrier gap preserved; rounded LM-to-UM M3 half-laps whose closure-web/base teardrops remain nominal Ø9 while each complete Z-owned cylindrical functional boss is locally Ø9.8, with standalone rear Ø3.4 LM clearance bores and standalone rear-opening blind Ø4.6 x 4.0 UM heat-set receivers; six pause-and-bury captive magnet stations (two upper LM ring-radial, two lower LM shoulder-normal, and two UM ring-radial), all with cavity datums hidden 0.15 mm beneath a continuous carrier surface and no local pad/boss/flat/cue; buried UM/T route spans; and free rear cable continuations. Floor and no-floor share the exact upper LM shoulder used by the wings. Floor has no shallow material below its y=60 shoulder tangent; no-floor alone retains the shallow four-insert bridge. |
 | `src/lx521_baffle/obiwan/lm_split.py` | Optional, mutually exclusive two-print form of the finalized Obi-Wan LM carrier: exact zero-gap world-Y butt seam plus two symmetric Ø1.60 cylindrical pins normal to the seam (world +Y). The pins engage 2.40 mm; the right blind socket is round Ø1.84 and the left is X-relieved to 1.96 × 1.84 mm so the 218.374 mm pitch cannot bind like two tight round fits. Two tiny exterior lands outside the LM recess retain 0.12 mm radial and 0.25 mm end clearance, at least 0.50 mm local radial/end wall, at least 0.05 mm recess plan clearance and 0.13 mm conservative W22-flange clearance. Their worst-case reach is R114.4036: 1.4036 mm beyond the structural R113.0 ring and 0.6036 mm beyond the finalized R113.8 visible fairing. They add no extra fastener or standalone retention/load credit; the monolithic LM remains canonical. |
@@ -68,8 +66,8 @@ alternative is independently addressable through
 | `Makefile` | Generates STEPs/STLs/PNGs for both stand states into `build/floor_stand/` and `build/no_floor_stand/` (see "Generated artifact layout"). Local OCC jobs are serial; the remote executor uses bounded parallel slots, and every CAD subprocess runs through `scripts/run_memory_guarded.py`. |
 | `scripts/remote_cad.py` / `cad-remote-requirements.lock` | Content-addressed SSH executor, resumable job control, verified artifact return, and exact remote Python environment |
 | `review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md` | Authoritative per-STL front-face-down orientation, actual sliced open/closing layers, Bambu Custom park/pause/restore events, grouped magnet counts, and local-axis polarity |
-| `review/CAPTIVE_MAGNET_ARTIFACT_INVENTORY.md` | Clickable inventory of all 64 magnet-bearing STL records, their 62 locally generated/directly loadable G-code-bearing Bambu 3MF projects, descriptive piece names, and exact magnet counts; also reconciles the 102 transverse, four axial V0, and eight exact split-proxy stations |
-| `build/<state>/stl/*.stl` and `build/wings/{ac,ae}/stl/*.stl` | The enforced acoustic-print inventory is 45 nonpolar front-face-down STL/sidecar pairs in each stand state plus ten Ac and ten Ae pairs: 110 exact pairs total. Every acoustic piece is source-X180 with only an optional in-bed Z rotation and its front datum at STL Z=0. A missing, orphaned, stale-hash, tilted, or translation-inconsistent `<stem>.print.json` fails release validation. The two floor polar-index jigs are the sole orientation-sidecar exclusions because they are fixtures with no acoustic front-face datum. |
+| `review/CAPTIVE_MAGNET_ARTIFACT_INVENTORY.md` | Clickable inventory of all 58 magnet-bearing STL records, their 56 locally generated/directly loadable G-code-bearing Bambu 3MF projects, descriptive piece names, and exact magnet counts; also reconciles the 86 transverse and eight exact split-proxy stations |
+| `build/<state>/stl/*.stl` and `build/wings/{ac,ae}/stl/*.stl` | The enforced acoustic-print inventory is 39 nonpolar front-face-down STL/sidecar pairs in each stand state plus ten Ac and ten Ae pairs: 98 exact pairs total. Every acoustic piece is source-X180 with only an optional in-bed Z rotation and its front datum at STL Z=0. A missing, orphaned, stale-hash, tilted, or translation-inconsistent `<stem>.print.json` fails release validation. The two floor polar-index jigs are the sole orientation-sidecar exclusions because they are fixtures with no acoustic front-face datum. |
 
 Regenerate through the remote executor (the default):
 
@@ -418,17 +416,13 @@ promoted as one shared file. The `LX_STAND_FOOT` environment flag defaults to 1.
 | lx521_top_addonA_1..2of4_shoulder_top_l/r | 50.6 × 61.8 | A-comp only |
 | lx521_top_addonA_3..4of4_shoulder_bottom_l/r | 22.5 × 85.9 | A-comp only |
 | lx521_top_addonB1_1..2of2_wing_l/r | 73.7 × 125.1 | B1 only |
-| lx521_top_c7base_1of4_bottom | as base 1of4 | C7 (LM knife taper) |
-| lx521_top_c7base_2..3of4_mid_l/r | as base 2/3of4 | C7 (LM knife taper) |
-| lx521_top_c7base_4of4_vase_b2 | same part as base 4of4 (re-tessellated file) | C7 = same vase |
-| lx521_top_v0_4of4_vase / v1_4of4_vase | as base 4of4 | V0 / V1 vase experiments |
 | `lx521_top_v1l_1..3of4_*` + re-exported 4of4 vase | as proud base 1..4of4 | keyed V1L bottom/mids; its 283-degree alternate is confined to 3of4 `mid_right`, while 4of4 is the unchanged V1 vase |
 | `lx521_top_obiwan_core_1of2_lm_carrier.stl` | Structural Ø226 (R113.0) collar with a smooth exposed R113.8 side fairing, clipped only inside the LM--UM cusp to retain the 0.40 mm gap; six ordinary blind LM insert bores at 0/60/120/180/240/300°; two complete rear LM-to-UM ears with locally Ø9.8 cylindrical functional bosses and standalone Ø3.4 rear-driven screw-clearance passages at x=±32/y=315.770; two captive upper ring-magnet stations plus two captive lower shoulder stations, all hidden 0.15 mm beneath continuous surfaces. The right lower visible datum is `(x,y)=(45.285011,89.190370)` on shoulder parameter 0.5 with outward normal `(0.706451,-0.707762)`; the left is its exact mirror. All four LM magnets share source Z=15.10 with the UM pair. The LM also owns the buried UM/T route segments and continuous Ø9/R14 LM handoff. Floor state owns the full-height bent W64 stand and only the upper shallow shoulder; it has no lower box or magnet rails. No-floor owns the shallow four-insert bridge. | canonical large-format release form of the mandatory R6F LM carrier; use it on a verified larger bed **or** both optional keyed halves, never both forms. |
 | `lx521_top_obiwan_optional_lm_keyed_1of2_bottom.stl` | front-face-down; in-plane bed rotation only; verified within 220 mm in both states | optional replacement print form for the canonical LM; in floor state it inherits the **entire** stem/foot/NL8 panel but remains the bed-checked alternative to the oversized monolith; requires the matching top half |
 | `lx521_top_obiwan_optional_lm_keyed_2of2_top.stl` | front-face-down; in-plane bed rotation only; inherits both complete LM-to-UM ears, their local Ø9.8 cylindrical functional bosses, and their standalone Ø3.4 rear clearance passages | optional replacement print form for the canonical LM; requires the matching bottom half |
 | `lx521_top_obiwan_core_2of2_um_carrier.stl` | Structural Ø103.4 (R51.7) collar with a smooth exposed R52.5 side fairing, clipped only inside the LM--UM and T--UM cusp/service regions while retaining the 0.40 mm LM--UM gap; two complete front LM-to-UM ears with standalone rear-opening blind Ø4.6 x 4.0 M3 heat-set receivers and 1.9 mm acoustic-front floors; two complete rear UM-to-tweeter ears with standalone Ø3.4 screw-clearance passages; locally Ø9.8 cylindrical functional bosses at both interfaces; two captive ring-magnet stations hidden 0.15 mm beneath the fairing; and the buried T continuation with fully solid-webbed 328°/58° insert bypasses. The UM cable is free behind this carrier and has no printed rear duct. | mandatory R6F UM core; install both LM-to-UM inserts in this individual print before assembly |
 | `lx521_top_obiwan_addon_tweeter_crescent.stl` | cropped V1 crescent plus two complete front UM-to-tweeter ears with locally Ø9.8 functional bosses, standalone rear-opening blind Ø4.6 x 4.0 M3 heat-set receivers, complete 360° walls, and 1.9 mm acoustic-front floors; no printed T-cable arc or conduit | optional R6F face-to-face tweeter carrier; install both inserts in this individual print before assembly, then attach at x=±24, y=421.5 with the T cable free behind it |
-| `lx521_top_proud_addon_um_grommet_half_{a,b}.stl` | split TPU insert with short curved shank | standard B2/C7/V0/V1 R14-bore strain relief; not V1L |
+| `lx521_top_proud_addon_um_grommet_half_{a,b}.stl` | split TPU insert with short curved shank | standard B2/V1 R14-bore strain relief; not V1L |
 | `lx521_top_v1l_addon_um_grommet_half_{a,b}.stl` | keyed split TPU D8 curved shank, D7.1 bore, D13 × 2 flange | V1L-only strain relief; seats at Q on the z=6.8 rear face and follows the alternate R14 |
 | `lx521_coupon_*` | small blocks/gauges | calibration, routing, and clocking checks (PRINTING.md) |
 | lx521_polar_base_1..2of2 | Ø216 / 169×185 | polar-measurement turntable under the stand foot (floor_stand only) |
@@ -461,7 +455,7 @@ profiles. Generate and review both sheets; the generic routing image no
 longer exists:
 
 - `baffle_cable_routing_proud.png` documents **R6P**. It shows the
-  normal B2/C7/V0/V1 UM path and, on the same sheet, the clearly
+  normal B2/V1 UM path and, on the same sheet, the clearly
   labeled V1L-only 283-degree alternate tail.
 - `baffle_cable_routing_obiwan.png` documents **R6F**, the surviving buried
   UM/T owner segments, the free rear UM and tweeter spans, the short
@@ -480,7 +474,7 @@ monotonically from Ø8.2 to Ø9 for the estimated Ø7.8 cable. Stock and Slim
 use the same mouth; their different rear depths merely intersect the R14 at
 different tangent angles.
 
-R6P keeps the UM cable space **Ø8.2 end-to-end**. For B2/C7/V0/V1, the
+R6P keeps the UM cable space **Ø8.2 end-to-end**. For B2 and V1, the
 planar main follows the outer U22 arc, returns through the broad lower
 neck, and joins an analytic R14 three-dimensional quarter-turn with
 constrained G1 tangency. The same sweep reaches a vertical rear tangent
@@ -500,7 +494,7 @@ the exact 283-degree terminal axis at radius 60.0 mm. The nominal cutter
 continuation ends outside the part at **(11.080158, 308.797599, −2.0)**,
 2.689 mm farther in XY along the tail; that nominal endpoint is not the
 aperture center. The route stays below seam B and never enters the
-top/vase, so B2/C7/V0/V1 geometry and every top-piece route remain
+top/vase, so B2 and V1 geometry and every top-piece route remain
 unchanged. The reference MU mesh still omits its terminal tabs, so the
 real driver, Fastons, boots, pull-off stroke, and the supplied
 `lx521_top_v1l_addon_um_grommet_half_{a,b}.stl` strain relief require a
@@ -601,7 +595,7 @@ The proud-family route set is:
 | Driver | Cable | Duct | R6P route |
 |---|---|---|---|
 | LM (U22/W22) | 2 × 2.5 mm² twisted | Ø8.2, flaring to Ø9 over the final 10 mm | z=12.55 main through the lower insert sector, then one continuous G1 R14 bend through the retained rear mouth below the Ø190 opening and an external tangent lead |
-| UM (MU10/10F) | estimated Ø7 twisted pair | Ø8.2 | B2/C7/V0/V1: outer U22 arc, single-curvature W22-pilot bypass, continuous G1 R14 handoff to (33.446, 301.492). V1L only: its own single-curvature guide reaches the keyed 283-degree rear-face aperture Q=(13.497063, 307.618796, 6.8) in `piece_mid_right`; both tails are regression-gated against heading reversal |
+| UM (MU10/10F) | estimated Ø7 twisted pair | Ø8.2 | B2 and V1: outer U22 arc, single-curvature W22-pilot bypass, continuous G1 R14 handoff to (33.446, 301.492). V1L only: its own single-curvature guide reaches the keyed 283-degree rear-face aperture Q=(13.497063, 307.618796, 6.8) in `piece_mid_right`; both tails are regression-gated against heading reversal |
 | T1+T2 (both ND25) | 2 × (2 × AWG24) | shared Ø6.0, flattened to W6.6 × H4.4 under the MU seat | strip feeders merge through the Ø6.8 step, rise along the left vase flank, and make one head-on scallop pierce near (−3.3, 430) |
 
 The route suites sample the complete physical centerlines, including the
@@ -629,7 +623,9 @@ buried owner segments and rehearsed across their free rear spans, while the
 LM cable must be rehearsed over its free rear span and, in floor state,
 through the integral stem continuation before driver installation.
 
-## Variant C7 — LM knife-edge taper
+## Variant C7 — LM knife-edge taper (retired)
+
+> **Retired from the build in August 2026.** This variant no longer has build targets, exports, or catalog entries; its geometry modules remain in git history only. The description below is kept as design history.
 
 An experimental replacement for the three LM-section pieces: full
 18.3 mm around the W22, then the REAR face tapers (smoothstep over the
@@ -650,12 +646,13 @@ rear-skinned T ducts).
 - The standard R6P routing is shared by B2 and C7, so those pieces mix
   freely across the seams. Every duct remains inside the protected
   full-depth corridor; the tapered rear face carries no ribs or marks.
-  This is asserted by
-  test_c7_duct_corridor (`make check`) and verified with duct-envelope
-  probes on the built piece solids.
+  This was asserted by the former test_c7_duct_corridor clearance check
+  and verified with duct-envelope probes on the built piece solids.
 - Print: same bed footprints as the B2 pieces; the taper prints
   front-face-down with layers shrinking as they rise (support-free).
-## Variant V0 — minimalist UM vase (front slide)
+## Variant V0 — minimalist UM vase (front slide) (retired)
+
+> **Retired from the build in August 2026.** This variant no longer has build targets, exports, or catalog entries; its geometry modules remain in git history only. The description below is kept as design history.
 
 An alternate piece_top for the low-crossover (3-4 kHz) experiments:
 a REAR-side knife bevel (same side and philosophy as the C7 LM taper;
@@ -664,8 +661,8 @@ the flare/chamfer outline, fading out at the seam-B land and blending
 into the crescent's rear taper above y~400. The band is capped at
 2.8 mm by the shared O6.0 T duct (z=11.5) hugging the left vase
 walls at ~1.6.
-The standard top-piece routing remains identical for B2/C7/V0/V1; V0
-mixes with B2 or C7 bottom/mids freely. One D5 x 2 captive station per side
+The standard top-piece routing was identical for B2/C7/V0/V1; V0
+mixed with B2 or C7 bottom/mids freely. One D5 x 2 captive station per side
 uses the common Ø5.20 x 2.10 pause-and-bury cavity. The old orphan centres at
 `(±46.000, 324.000)` were 5.263 mm outside the exact B2 flare: even the
 Ø5.20 cavity was detached by 2.663 mm. The interim `(±37.697, 326.470)`
@@ -680,15 +677,14 @@ block, or other exterior magnet-location cue. The pair retains at least
 The rear axes, 45° conical closures, two 0.45 mm skins, driver seat, inserts,
 and provisional rearward marked-pole directions remain unchanged. These
 stations still have no released mate or pairing polarity.
-The B2-family shoulders/wings do NOT fit V0. Guarded by
-test_v0_duct_corridor and test_v0_captive_geometry (`make check`); STL:
-lx521_top_v0_4of4_vase
-(--variant v0).
+The B2-family shoulders/wings do NOT fit V0. This was guarded by the
+former test_v0_duct_corridor and test_v0_captive_geometry clearance
+checks, which exported `lx521_top_v0_4of4_vase`.
 
 ## Variant V1 — 11.5 mm UM vase (minimum-thickness field)
 
 The vase field is thinned to t=11.5 while retaining the standard
-B2/C7/V0/V1 R6P route. The UM main hands off below seam B, so it does
+B2/V1 R6P route. The UM main hands off below seam B, so it does
 not enter the vase; the
 binding buried passage here is the shared tweeter duct, flattened to
 W6.6 × H4.4 under the MU seat. The rear plane and all ducts are
@@ -707,8 +703,10 @@ broad, symmetric, smooth rear-taper shelf through the upper station so the
 complete land remains internal without a station-local cap, boss, relief, or
 backfill. B2 wall
 pockets are skipped (B2 attachments do not fit V1). Guarded by
-test_v1_field (`make check`); STL: lx521_top_v1_4of4_vase
-(--variant v1). Thinner is possible only by externalizing cables to
+test_v1_field (`make check`). The duplicate standalone
+`lx521_top_v1_4of4_vase` STL is retired: this same vase ships as
+`lx521_top_v1l_4of4_vase_b2` from the `--variant v1l` export, and
+`--variant v1` now emits only the slim shoulder/wing receivers. Thinner is possible only by externalizing cables to
 rear-face grooves (~7) or through-bolting the 10F (~5-6) -- see the
 constraint ladder in the V0/V1 discussion.
 
@@ -1146,8 +1144,8 @@ Retired concept-only drawings, historical diagnostic renders, and non-release
 fit coupons are excluded from the released part migration because they are not
 printable release outputs. The
 `coupons/obiwan_ae_embed/` coupon is not an assembly part; it remains the
-physical reference implementation and regression evidence. V0's hypothetical
-scarf mate is also excluded because no printable mate has been released.
+physical reference implementation and regression evidence. The retired V0
+variant's hypothetical scarf mate is likewise not a release output.
 
 ## Printing
 

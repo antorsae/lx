@@ -83,8 +83,8 @@ SCHEMA_VERSION = 1
 AUDIT_SCHEMA_VERSION = 1
 OVERSIZE_COVERED_STATUS = (
     "not_p2s_printable__cavity_covered_by_exact_split")
-EXPECTED_RELEASE_ARTIFACT_COUNT = 64
-EXPECTED_RELEASE_MAGNET_COUNT = 114
+EXPECTED_RELEASE_ARTIFACT_COUNT = 58
+EXPECTED_RELEASE_MAGNET_COUNT = 94
 CANONICAL_MANIFEST_FILENAMES = (
     "captive_magnet_pause_manifest.json",
     "captive_magnet_pause_manifest.csv",
@@ -2875,10 +2875,7 @@ def _validate_manifest_bundle(
         READY_3MF_FILENAME,
     ]
     if enforce_release_polarity_contract:
-        required_texts.extend((
-            "provisional unpaired V0 convention",
-            "unpaired coupon1 regression station",
-        ))
+        required_texts.append("unpaired coupon1 regression station")
     for required_text in required_texts:
         if required_text not in markdown:
             raise AuditError(

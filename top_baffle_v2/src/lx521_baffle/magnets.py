@@ -30,7 +30,7 @@ upper half, full-width loading chimney, and a 45-degree gable roof.  The
 separate axial helper handles a magnet axis parallel to print-up with a
 45-degree conical roof.  It also handles an axis opposed to print-up by
 placing the cone between the exterior skin and a deeper cavity.  That latter
-layout is the front-face-down V0 treatment: rear skin 0.00..0.45, cone
+layout is the front-face-down treatment: rear skin 0.00..0.45, cone
 0.45..3.05, cavity 3.05..5.15, and inner skin through 5.60 mm.
 """
 
@@ -440,8 +440,8 @@ def axial_cavity_tools(
 
     * ``inward == print_up``: exterior skin, cavity, then closing cone;
     * ``inward == -print_up``: exterior skin, expanding cone, then the
-      deeper cavity.  This second form keeps V0 front-face-down while moving
-      its rear-axis magnet centre 4.10 mm inward from the rear face.
+      deeper cavity.  This second form keeps the host front-face-down while
+      moving its rear-axis magnet centre 4.10 mm inward from the rear face.
 
     Oblique axes are rejected because neither layout is the qualified coupon
     topology.
@@ -461,7 +461,7 @@ def axial_cavity_tools(
         "pair_axis",
     )
     # Canonical local +Z is always material-inward.  Print order is +local Z
-    # for the aligned layout and -local Z for the front-down V0 layout.
+    # for the aligned layout and -local Z for the front-down layout.
     plane = _parallel_plane(datum, inward_axis)
     radius = spec.cavity_radius_mm
     face_print_z = frame.height_mm(datum)
@@ -506,14 +506,14 @@ def axial_cavity_tools(
         required_top = roof_apex + spec.inner_skin_mm
         closure_kind = "axis_parallel_conical_45deg"
     else:
-        # Front-face-down V0: printing advances toward the rear exterior.
+        # Front-face-down: printing advances toward the rear exterior.
         # Put the complete circular cavity deeper than the cone so it is open
         # when paused, then close toward the rear and finish the 0.45-mm skin.
         roof_apex_local_z = spec.face_skin_mm
         cavity_z0 = roof_apex_local_z + spec.roof_height_mm
         cavity_center_local_z = cavity_z0 + spec.cavity_depth_mm / 2.0
         # The vertical magnet is centred in its 0.10-mm axial allowance; this
-        # is the explicit V0 datum requested for the rear-axis site.
+        # is the explicit datum requested for a rear-axis site.
         seated_center_local_z = cavity_center_local_z
         local_roof = Pos(0.0, 0.0, roof_apex_local_z) * Cone(
             0.0, radius, spec.roof_height_mm,

@@ -1,7 +1,7 @@
 """Cable routing profiles for the proud family and skeletal Obi-Wan.
 
 ``LX_ROUTING_PROFILE=proud`` (R6P, the default) is the subtractive
-route used by B2/C7/V0/V1 and, with a keyed terminal handoff, V1L.  Its
+route used by B2 and V1 and, with a keyed terminal handoff, V1L.  Its
 standard UM main follows the proven outer
 U22 arc, returns through the broad lower neck, and then turns through a
 true R14 three-dimensional elbow to the rear outlet at (33.45, 301.49).
@@ -1886,7 +1886,7 @@ def _ts_cutter_on_path(
                              for k in range(24))]
         else:
             # plane y-axis = z_dir x x_dir = +Z for any plan tangent, so
-            # the profile's v coordinate is GLOBAL z (C7 station idiom)
+            # the profile's v coordinate is GLOBAL z (station idiom)
             secs.append(_plan_ts_section_face(
                 px, py, tx, ty, zc, w2, h2))
             continue
@@ -2046,7 +2046,7 @@ def seam_relief_cutters(route_names=None):
     # Squashed SPHERES (plan r+extra, z-semi r-0.4): smooth everywhere,
     # so no wall/cap grazing against the bore -- flat-capped cylinders
     # left near-tangent slivers the mesher dropped (open STL edges
-    # that read as an exposed duct; the c7 mid_right bug), and the
+    # that read as an exposed duct; the historic mid_right bug), and the
     # foot-mode spline's <0.05 lateral shift made it intermittent.
     # Poles stay inside the bore (z-semi < r); z skins untouched.
     from build123d import Sphere, scale

@@ -8,7 +8,7 @@ There are now two intentionally isolated systems:
   B: y=315.95, teeth −19/+29; C: x=−5.6, tooth y=305) and matching
   seam mouths. Seam B also carries the common hidden radial M3×20 joint at
   `(x,z)=(0,12.55)`: `mid_right` owns the recessed Ø3.4 screw passage and
-  every vase owns the blind Ø4.6×4.0 heat-set receiver. B2/C7/V0/V1 use the standard Ø8.2/G1/R14 UM outlet at
+  every vase owns the blind Ø4.6×4.0 heat-set receiver. B2 and V1 use the standard Ø8.2/G1/R14 UM outlet at
   (33.446, 301.492). V1L is a keyed routing exception: its Ø8.2
   alternate tail stays wholly in `piece_mid_right` and exits the
   z=6.8 rear face at Q=(13.497063, 307.618796), radius 60.0 mm on the
@@ -48,12 +48,17 @@ drivers (W22EX001 / 10F) refer to the same cutout/pilot geometry.
 
 ## Base variants
 
+> **C7 and V0 were retired from the build in August 2026** — no build targets,
+> exports, or catalog entries remain; their geometry modules live in git history
+> only. Their rows below and in the compatibility matrix are kept as design
+> history and are marked *(retired)*.
+
 | Variant | Replaces | Geometry | STLs |
 |---|---|---|---|
 | **B2** | (baseline, all 4) | Full 18.3 everywhere. Constant-wall mini-vase (walls tangent to r=50.83 about the UM). | `lx521_top_base_1..4of4` |
-| **C7** | bottom + mids (+B2 vase) | LM knife taper: REAR-side smoothstep 18.3 -> 0.5 over 19 mm from the flank/chamfer edges; recovery lands at both seams; full bottom strip. Front plane intact. | `lx521_top_c7base_1..4of4` |
-| **V0** | vase | Rear knife band: REAR-side 18.3 -> 0.5 over the last 2.8 mm of the vase outline (same sculpted side as C7); front intact. | `lx521_top_v0_4of4_vase` |
-| **V1** | vase | Thin FLUSH vase: 11.5 (material z 6.8..18.3). Crescent re-derived (4.0 clamp seat at stock z); tweeter septum 11.5 (shorter standoffs, pair spacing -6.8); one shared front plane. | `lx521_top_v1_4of4_vase` |
+| **C7** *(retired)* | bottom + mids (+B2 vase) | LM knife taper: REAR-side smoothstep 18.3 -> 0.5 over 19 mm from the flank/chamfer edges; recovery lands at both seams; full bottom strip. Front plane intact. | `lx521_top_c7base_1..4of4` |
+| **V0** *(retired)* | vase | Rear knife band: REAR-side 18.3 -> 0.5 over the last 2.8 mm of the vase outline (same sculpted side as C7); front intact. | `lx521_top_v0_4of4_vase` |
+| **V1** | vase | Thin FLUSH vase: 11.5 (material z 6.8..18.3). Crescent re-derived (4.0 clamp seat at stock z); tweeter septum 11.5 (shorter standoffs, pair spacing -6.8); one shared front plane. | `lx521_top_v1l_4of4_vase_b2` (from the `--variant v1l` export; the duplicate standalone `lx521_top_v1_4of4_vase` was retired in August 2026, and `--variant v1` now emits only the slim receivers) |
 | **V1L** | bottom + mids | Thin FLUSH LM section: 11.5 (z 6.8..18.3 -- SAME plane as the V1 vase: no seam-B step), including both 6-mm seam-B male dovetails that project into the vase. All joints use B2's regular through-local-thickness profiles. Smoothstep ramp y=78..96 to the full strip. Ø8.2 LM duct is the 11.5 binder. Its keyed Ø8.2 UM alternate exits `mid_right` at Q=(13.497063, 307.618796, 6.8) on the 283° axis; seam B/top are untouched. | `lx521_top_v1l_1..3of4` (its `--variant v1l` export bundles the unchanged V1 vase = the complete ~12 mm baffle) |
 | **Obi-Wan R6F** | legacy four-piece baffle; replaced by two mandatory carriers plus add-ons | **Extreme barebone flush carriers**: LM Ø190 opening / Ø221.2 seat / structural R113.0 lip with smooth exposed R113.8 side fairing; UM Ø82 opening / Ø98.6 seat / structural R51.7 lip with smooth exposed R52.5 side fairing. The fairings stop only inside the existing LM–UM and T–UM cusp/service regions; the LM–UM stop preserves the 0.40 mm inter-carrier gap. Rounded M3 half-lap pairs sit at x=±32.0/y=315.770 and x=±24/y=421.5. At both interfaces the closure-web/base teardrops remain nominal Ø9, while every complete Z-owned cylindrical functional boss is locally Ø9.8. LM and UM respectively own complete standalone rear Ø3.4 passages; UM and the crescent respectively own complete standalone rear-opening blind Ø4.6 × 4.0 receivers with 360° walls and 1.9 mm front floors. Each joint retains a 0.20 mm axial gap. Install inserts in the individual UM and crescent prints before assembly; neither interface uses a washer, nut, front bolt head, or cross-owner receiver wall. Complementary tangent-blended LM–UM and T–UM closure webs are solid through z=6.8..18.3 and share the coplanar z=18.3 front; only the central T cable mouth remains open between the upper rings. Obi-Wan-only LM axes rotate to 0/60/120/180/240/300° on the unchanged Ø209.5 PCD; all six are ordinary blind carrier insert bores in both states. Six actual Ø5×2 magnets use captive Ø5.20×2.10 cavities with 0.45 mm axial skins and a 45° closing roof. Upper LM remains ring-radial at 64°/116°; lower LM sits at cubic parameter `u=0.50` on the shared curved shoulder, with right visible datum `(x,y,z)=(45.285011,89.190370,15.10)`, outward normal `(0.706451,-0.707762)`, and an exact-X-mirrored left datum; UM remains ring-radial at 50.5°/129.5°. Every carrier station shares source Z=15.10. Both states expose the same upper shoulder at that station, with no floor-state rail or shallow box below it. LM-upper/UM cavity datums are structural radius +0.65 mm; the lower shoulder datum is independently inset 0.15 mm. All three lie 0.15 mm beneath their continuous exposed surfaces. The magnet-free carrier exterior is immutable: there is no magnet-local backing, boss, relief, rear cap, flat, or visible pocket cue. Magnets are inserted at the authoritative pause and permanently buried, with no glue or external opening. Neither carrier has proud magnet ears. Ac/Ae provide three matching captive receivers per physical side: LM lower, LM upper, and UM. Their mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm allowance is a solid spacing standoff, not an air-gap cutter. Nominal paired magnet-face separation is 1.10 mm at LM-lower, LM-upper, and UM. UM is buried in an Ø8.2 passage only inside LM, then runs free behind UM with no printed UM-carrier rear duct. T is buried in an Ø6.0 passage through LM/UM, then runs free behind the tweeter crescent, which has no printed cable arc. Every surviving named insert bypass has a deep full-width burial web. In no-floor state, LM/T/UM enter through the D20 support opening as LM above, T lower-left and UM lower-right; the D7.8 LM lead follows a buried Ø9 branch to the common R14 handoff. The LM-owned UM/T lumens finish at R112.95 and their 0.8 mm covers at R113.75 beneath the uninterrupted visible R113.8 carrier exterior, retaining a 0.85 mm solid outside skin with no groove. The physical T/UM routes cross at 82.95° with a 2.00 mm physical-envelope gap and no two-duct separator-web claim. No-floor LM includes the unchanged front-flush bridge plate at z=5.3..18.3. Floor LM instead owns the complete W64 × 18.3 stem/foot from z=−150..18.3, its convex constant-thickness Option-B transition (75 mm span, 65 mm rise, centreline Rmin 41 mm), three buried floor continuations, connector service cavity and rear NL8 panel; floor Y=0 keeps the LM axis exactly 200.981 mm above the floor. The tweeter carrier is a separate add-on; Obi-Wan has no printed grommet. | `lx521_top_obiwan_core_1of2_lm_carrier.stl`, `lx521_top_obiwan_core_2of2_um_carrier.stl` |
 
@@ -135,13 +140,13 @@ stable sibling file `vase_TEBM35C10-4.gcode.3mf` in each child root.
 | **B1 wings** (18.3) | 2: `addonB1_1..2of2` | B2 vase only | same two sites |
 | **V1 A-shoulders** (11.5) | 4: `v1addonA_*` | V1 vase (V1L sets) | both captive stations share source Z=15.10; the upper land is contained by the broad symmetric smooth taper shelf, with no local magnet geometry; lower/upper nominal pair spacing 0.95/1.09 mm |
 | **V1 B1-wings** (11.5) | 2: `v1addonB1_*` | V1 vase (V1L sets) | same common-Z captive stations and broad smooth taper shelf |
-| V0 scarf family | (concept only; no released print) | V0 | no released mate or pairing polarity; V0's two rear-axis base cavities print front-face-down at symmetric `(±6.690,321.290)`. The detached legacy `(±46,324)` and interim `(±37.697,326.470)` pair are rejected. Both released R3.20 lands fit wholly inside the immutable post-bevel host, clear the D82 cutout, UM pilots, grown seam-B keepout, and all ducts, and require no local backing, boss, or visible rear cue. |
+| V0 scarf family *(retired)* | (concept only; never released) | V0 | no released mate or pairing polarity; V0's two rear-axis base cavities print front-face-down at symmetric `(±6.690,321.290)`. The detached legacy `(±46,324)` and interim `(±37.697,326.470)` pair are rejected. Both released R3.20 lands fit wholly inside the immutable post-bevel host, clear the D82 cutout, UM pilots, grown seam-B keepout, and all ducts, and require no local backing, boss, or visible rear cue. |
 | **R6F tweeter crescent** | `lx521_top_obiwan_addon_tweeter_crescent.stl` | Obi-Wan UM collar only | direct half-laps at x=±24, y=421.5; UM owns complete rear Ø3.4 ears and the crescent owns complete front local-Ø9.8 ears with standalone blind Ø4.6 x 4.0 insert receivers, 360° walls, 1.9 mm front floors, and a 0.20 mm axial gap; no printed T-cable arc or conduit, so T remains free behind the crescent |
-| **R6P split grommet** | `lx521_top_proud_addon_um_grommet_half_{a,b}.stl` | standard B2/C7/V0/V1 R14 outlet; **not V1L** | TPU; short curved D8 shank follows the final bore and seats at rear z=0 |
+| **R6P split grommet** | `lx521_top_proud_addon_um_grommet_half_{a,b}.stl` | standard B2/V1 R14 outlet; **not V1L** | TPU; short curved D8 shank follows the final bore and seats at rear z=0 |
 | **V1L split grommet** | `lx521_top_v1l_addon_um_grommet_half_{a,b}.stl` | keyed V1L 283° outlet only | TPU; Ø8 curved body / Ø7.1 bore / 2.5 mm insertion / Ø13 × 2 flange seated at rear z=6.8; no fastener |
 
-B2 addons on V0/V1: NO (knife/thin walls — no receiver seats).
-V1 addons on B2/V0: NO (the source-Z=15.10 slim cavity contract exists only on the V1 vase).
+B2 addons on V1: NO (thin walls — no receiver seats).
+V1 addons on B2: NO (the source-Z=15.10 slim cavity contract exists only on the V1 vase).
 R6F add-ons fit only Obi-Wan interfaces and never fit R6P parts. The floor stem,
 foot and NL8 panel are state-owned LM geometry, not an add-on.
 No acoustic perimeter skin is emitted in R6F: that absence is the
@@ -166,7 +171,7 @@ a station-shaped patch. Every part prints front-face-down. Exact pause heights, 
 polarity, and counts live in
 [`CAPTIVE_MAGNET_PAUSE_MANIFEST.md`](review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md); STL files cannot carry
 pause markers. Concept-only drawings, diagnostic renders, historical fit
-coupons, and the unreleased V0 scarf mate are not release outputs and are not
+coupons, and the retired V0 scarf mate are not release outputs and are not
 converted as production parts. The `coupons/obiwan_ae_embed/` coupon remains the
 reference implementation rather than an installed assembly component.
 
@@ -177,10 +182,10 @@ combinations. V1L's alternate UM tail is self-contained in
 `mid_right`, so it does not alter this matrix or the top. Rear-side
 steps at seam B land on the hidden side:
 
-| bottom+mids \ vase | B2 (18.3) | V0 (knife band) | V1 (11.5) |
+| bottom+mids \ vase | B2 (18.3) | V0 *(retired)* | V1 (11.5) |
 |---|---|---|---|
 | **B2** (18.3) | stock reference | edge experiment | vase-thickness experiment (rear step 6.8) |
-| **C7** (LM knife) | LM-edge experiment | full knife-edge baffle | knife LM + thin vase |
+| **C7** *(retired)* | LM-edge experiment | full knife-edge baffle | knife LM + thin vase |
 | **V1L** (11.5) | thin LM only (vase protrudes 6.8 rearward) | thin LM + knife vase | **complete UNIFORM 11.5 front-flush baffle** |
 
 Notes: mixed-thickness dovetails mate on the thinner piece's depth; the
@@ -195,7 +200,7 @@ subtractive cable network. Do not combine an R6F carrier/add-on with an
 R6P base, or generate a Obi-Wan STEP under `LX_ROUTING_PROFILE=proud`.
 R6P pieces remain mutually interchangeable exactly as shown above;
 choosing the V1L `mid_right` selects its 283-degree UM exit, while a
-B2/C7 `mid_right` retains the standard R14 exit.
+B2 `mid_right` retains the standard R14 exit.
 
 The V1L physical rear-face aperture is centered at
 **Q=(13.497063, 307.618796, 6.8)**, exactly 60.0 mm from the MU axis on

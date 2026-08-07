@@ -106,7 +106,7 @@ make to_print
 It consumes the existing authoritative captive-magnet ready projects, builds
 the four combined plates incrementally, then creates or refreshes all 51
 STL/project pairs. It does **not** implicitly launch the heavyweight
-64-artifact release slicer; a missing canonical ready project fails closed and
+58-artifact release slicer; a missing canonical ready project fails closed and
 must be refreshed explicitly with `make bambu_slice_release`. Of the 42
 pause-bearing projects, 38 are hard-linked from that audited release and the
 four combined plates are built and sliced locally from those same released inputs.

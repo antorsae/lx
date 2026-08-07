@@ -1362,15 +1362,15 @@ def test_failed_actual_slice_emits_no_pause_group() -> None:
 
 def test_pause_group_preserves_insertion_and_full_polarity_instruction() -> None:
     polarity = (
-        "provisional unpaired V0 convention: marked/N pole points rearward; "
-        "verify any future mate before burial")
+        "provisional unpaired axial convention: marked/N pole points "
+        "rearward; verify any future mate before burial")
     record = {
-        "id": "state:V0:part",
+        "id": "state:AX:part",
         "audit_mode": "actual_p2s_slice",
         "status": "pass",
         "sites": [{
             "site": {
-                "name": "v0_left",
+                "name": "axial_left",
                 "print_insertion_direction_xyz": (0.0, 0.0, -1.0),
                 "print_marked_pole_axis_xyz": (0.0, 0.0, 1.0),
                 "installed_marked_pole_axis_xyz": (0.0, 0.0, -1.0),
@@ -1983,7 +1983,7 @@ def test_catalog_rejects_non_downward_print_insertion_direction(
 
 def test_explicit_print_space_must_match_source_matrix(tmp_path: Path):
     catalog = _catalog_document([{
-            "id": "state:V0:part", "part": "part", "variant": "V0",
+            "id": "state:AX:part", "part": "part", "variant": "AX",
             "state": "state", "stl": "part.stl",
             "print_orientation": "front_face_down",
             "rotation_deg": {"x": 180.0, "z": 0.0},
@@ -1992,7 +1992,7 @@ def test_explicit_print_space_must_match_source_matrix(tmp_path: Path):
                 [0.0, 0.0, -1.0, 18.3], [0.0, 0.0, 0.0, 1.0]],
             "sites": [{
                 **_release_site_contract((0.0, 0.0, -1.0)),
-                "name": "v0", "closure_kind": "axis_opposed_conical_45deg",
+                "name": "axial", "closure_kind": "axis_opposed_conical_45deg",
                 "cavity_bury_roof_start_print_z_mm": 15.25,
                 "roof_apex_print_z_mm": 17.85,
                 "cavity_center_xyz_mm": [2.0, 3.0, 4.1],
@@ -2407,7 +2407,7 @@ def test_axial_single_path_allows_only_bounded_local_seam_anomaly() -> None:
     assert summary["anomaly_endpoint_local_pass"] is True
     assert summary["single_classic_path_pass"] is True
 
-    # The measured right V0 ring is one geometric bead emitted as two long,
+    # The measured right axial ring is one geometric bead emitted as two long,
     # complementary arcs: 46 exclusive rays plus 24, with only the two seam
     # bins missing and no cross-component overlap.
     split_components = [
@@ -2574,9 +2574,9 @@ def test_failed_metrics_remain_strict_finite_json(tmp_path: Path):
 
 def test_manifest_part_name_does_not_alias_artifact_id(tmp_path: Path):
     catalog = _catalog_document([{
-            "id": "state:V0:descriptive-id",
+            "id": "state:AX:descriptive-id",
             "part": "actual-print-part",
-            "variant": "V0", "state": "state", "stl": "part.stl",
+            "variant": "AX", "state": "state", "stl": "part.stl",
             "print_orientation": "front_face_down",
             "rotation_deg": {"x": 180.0, "z": 0.0},
             "source_to_stl_matrix": [
@@ -2584,7 +2584,7 @@ def test_manifest_part_name_does_not_alias_artifact_id(tmp_path: Path):
                 [0.0, 0.0, -1.0, 18.3], [0.0, 0.0, 0.0, 1.0]],
             "sites": [{
                 **_release_site_contract((0.0, 0.0, -1.0)),
-                "name": "v0", "closure_kind": "axis_opposed_conical_45deg",
+                "name": "axial", "closure_kind": "axis_opposed_conical_45deg",
                 "cavity_bury_roof_start_print_z_mm": 15.25,
                 "roof_apex_print_z_mm": 17.85,
                 "cavity_center_xyz_mm": [2.0, 3.0, 4.1],
@@ -2596,7 +2596,7 @@ def test_manifest_part_name_does_not_alias_artifact_id(tmp_path: Path):
     path.write_text(json.dumps(catalog), encoding="utf-8")
     artifact = audit.normalize_catalog(
         path, enforce_release_inventory=False)["artifacts"][0]
-    assert artifact["id"] == "state:V0:descriptive-id"
+    assert artifact["id"] == "state:AX:descriptive-id"
     assert artifact["part"] == "actual-print-part"
 
 
@@ -2776,7 +2776,7 @@ def test_catalog_envelope_and_frozen_inventory_are_fail_closed(
     try:
         audit.normalize_catalog(path)
     except audit.AuditError as exc:
-        assert "64 artifacts / 114 captive stations" in str(exc)
+        assert "58 artifacts / 94 captive stations" in str(exc)
     else:
         raise AssertionError("truncated production inventory passed")
 

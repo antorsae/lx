@@ -402,8 +402,8 @@ CAD_SRCS_ALL := $(wildcard src/lx521_baffle/*.py) \
 # These modules are consumed only by the Obi-Wan release family.  Keep the
 # legacy/common dependency set conservative (it still contains the shared
 # Obi-Wan route/floor stack reached through src/lx521_baffle/cables.py), while
-# preventing a carrier/web/split-only edit from invalidating every B/C/V0/V1/
-# V1L STEP and STL.  GNU Make remains the dependency authority.
+# preventing a carrier/web/split-only edit from invalidating every B/V1/V1L
+# STEP and STL.  GNU Make remains the dependency authority.
 OBIWAN_EXCLUSIVE_CAD_SRCS := \
         src/lx521_baffle/obiwan/carriers.py \
         src/lx521_baffle/obiwan/bumps.py \
@@ -463,8 +463,6 @@ endif
 GENS := top_baffle_nd25fw4_b2_split top_baffle_nd25fw4_b2 \
         top_baffle_nd25fw4_b1 top_baffle_nd25fw4_a_comp \
         top_baffle_nd25fw4_b1_assembled top_baffle_nd25fw4_a_comp_assembled \
-        top_baffle_nd25fw4_c7 top_baffle_nd25fw4_c7_split \
-        top_baffle_nd25fw4_v0 top_baffle_nd25fw4_v0_split \
         top_baffle_nd25fw4_v1 top_baffle_nd25fw4_v1_split \
         top_baffle_nd25fw4_v1l_split top_baffle_nd25fw4_obiwan_split \
         top_baffle_nd25fw4_obiwan_lm_split \
@@ -545,11 +543,8 @@ CLEARANCE_CHECK_NAMES := \
         test_duct_vs_w22_pilots \
         test_duct_duct_separation \
         test_duct_vs_um_pilots \
-        test_c7_duct_corridor \
         test_seam_keys_vs_ducts \
         test_shared_lm_clock_and_hidden_seam_b_m3 \
-        test_v0_duct_corridor \
-        test_v0_captive_geometry \
         test_v1_field \
         test_route_smoothness \
         test_um_tail_has_no_curvature_reversal \
@@ -561,7 +556,6 @@ CLEARANCE_CHECK_NAMES := \
         test_stock_slim_curve_optimization_contracts \
         test_stock_slim_no_floor_full_duct_containment \
         test_stock_slim_no_floor_bottom_topology \
-        test_c7_floor_bottom_serialization_topology \
         test_bridge_inserts \
         test_margin_dashboard \
         test_cutter_health \
@@ -732,7 +726,7 @@ $(foreach name,$(filter-out $(R6F_SERVICE_CASE_IDS),$(R6F_CASE_IDS)),\
 $(foreach name,$(R6F_SERVICE_CASE_IDS),\
     $(eval $(call R6F_SERVICE_CASE_RULE,$(name))))
 
-VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_c7 $(1)/stl/.stamp_v0 $(1)/stl/.stamp_v1 $(1)/stl/.stamp_v1l $(1)/stl/.stamp_obiwan \
+VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_v1 $(1)/stl/.stamp_v1l $(1)/stl/.stamp_obiwan \
                   $(addprefix $(1)/,$(addsuffix .step,$(GENS))) \
                   $(1)/baffle_cable_routing_proud.png \
                   $(1)/baffle_cable_routing_obiwan.png \
@@ -897,19 +891,17 @@ vase_tebm35c10_4_stock_cad: $(VASE_TEBM_STOCK_CAD_OUTPUTS)
 vase_tebm35c10_4_slim_cad: $(VASE_TEBM_SLIM_CAD_OUTPUTS)
 	@echo "Slim BMR vase: $(VASE_TEBM_SLIM_STEP)"
 
-# This catalog is generated only after all 64 released magnet-bearing meshes
+# This catalog is generated only after all 58 released magnet-bearing meshes
 # and their exact front-down print transforms exist.  It is the CAD-side
 # authority consumed by the local, no-printer-contact Bambu slicing audit.
 $(CAPTIVE_MAGNET_CATALOG): scripts/generate_captive_magnet_catalog.py \
         captive_magnet_release_catalog.schema.json $(SLICER_SRCS) \
         scripts/json_schema_subset.py src/lx521_baffle/magnets.py $(SHARED_CAD_SRCS) \
         src/lx521_baffle/stl_export.py \
-        build/floor_stand/stl/.stamp build/floor_stand/stl/.stamp_c7 \
-        build/floor_stand/stl/.stamp_v0 build/floor_stand/stl/.stamp_v1 \
+        build/floor_stand/stl/.stamp build/floor_stand/stl/.stamp_v1 \
         build/floor_stand/stl/.stamp_v1l build/floor_stand/stl/.stamp_obiwan \
         build/floor_stand/stl/.stamp_coupon \
-        build/no_floor_stand/stl/.stamp build/no_floor_stand/stl/.stamp_c7 \
-        build/no_floor_stand/stl/.stamp_v0 build/no_floor_stand/stl/.stamp_v1 \
+        build/no_floor_stand/stl/.stamp build/no_floor_stand/stl/.stamp_v1 \
         build/no_floor_stand/stl/.stamp_v1l build/no_floor_stand/stl/.stamp_obiwan \
         build/no_floor_stand/stl/.stamp_coupon $(OBIWAN_WING_STAMPS)
 	@mkdir -p review
@@ -921,7 +913,7 @@ $(CAPTIVE_MAGNET_CATALOG): scripts/generate_captive_magnet_catalog.py \
 # release inventory.  This deliberately has no mesh prerequisites: it updates
 # hash/provenance bindings after a focused CAD export without rebuilding the
 # unaffected floor, wing, and legacy artifacts.  The generator still applies
-# the complete 64-artifact/114-station fail-closed catalog contract.
+# the complete 58-artifact/94-station fail-closed catalog contract.
 refresh_captive_magnet_catalog_existing: scripts/generate_captive_magnet_catalog.py \
         captive_magnet_release_catalog.schema.json $(SLICER_SRCS) \
         scripts/json_schema_subset.py src/lx521_baffle/magnets.py $(SHARED_CAD_SRCS) \
@@ -986,7 +978,7 @@ floor_stand_artifacts: $(call VARIANT_TARGETS,build/floor_stand) \
 floor_stand: floor_stand_artifacts
 
 # Focused atomic state releases emit the complete hash-backed Obi-Wan family
-# without rebuilding unrelated proud/C/V0/V1/V1L print sets.
+# without rebuilding unrelated proud/V1/V1L print sets.
 # $(1) = public state prefix, $(2) = output root.
 define FOCUSED_OBIWAN_RELEASE_RULE
 $(1)_obiwan: validate_$(1)_obiwan_stage \
@@ -998,7 +990,7 @@ $(eval $(call FOCUSED_OBIWAN_RELEASE_RULE,floor,build/floor_stand))
 $(eval $(call FOCUSED_OBIWAN_RELEASE_RULE,no_floor,build/no_floor_stand))
 
 # One remote-safe join lets both focused state releases share the bounded
-# Make jobserver without expanding into the unrelated proud/C/V0/V1/V1L DAG.
+# Make jobserver without expanding into the unrelated proud/V1/V1L DAG.
 obiwan_state_releases: floor_obiwan no_floor_obiwan
 
 # Focused iteration/export contract for the only no-floor part whose cable
@@ -1212,7 +1204,7 @@ bambu_slice_release: check_slice_metadata
 		--emit-ready-projects
 
 # The optional TEBM vase family is deliberately outside the protected
-# 64-artifact release inventory.  Each profile catalog still uses every
+# 58-artifact release inventory.  Each profile catalog still uses every
 # geometry, G-code, pause, STL/3MF-equivalence, and ready-project gate; only
 # the expected inventory count is scoped to its isolated one-artifact child.
 define REQUIRE_VASE_TEBM_CAD
@@ -2070,7 +2062,7 @@ obiwan_ae_wing_plate_to_print: $(OBIWAN_AE_WING_PLATE_SHELF_OUTPUTS)
 
 # User-facing, local-only materialization of the 51 P2S-printable entries.
 # It consumes the existing authoritative magnet projects and fails closed if
-# one is absent; the expensive full 64-artifact reslice remains an explicit
+# one is absent; the expensive full 58-artifact reslice remains an explicit
 # ``make bambu_slice_release`` operation rather than an implicit shelf step.
 to_print: $(OBIWAN_NO_FLOOR_COMBO_READY_STAMP) \
         $(OBIWAN_FLOOR_COMBO_READY_STAMP) \
@@ -2371,9 +2363,9 @@ build/common/top_baffle_nd25fw4_attachments.step: $(SRCS) scripts/export_steps.p
 	    lx521_baffle.proud.top_baffle_nd25fw4_attachments \
 	    --output $@
 
-# B2/C7/V0/V1 share one export skeleton; V1L and Obi-Wan stay hand-written
+# B2 and V1 share one export skeleton; V1L and Obi-Wan stay hand-written
 # because their local/remote staging behavior is genuinely different.
-STL_VARIANTS := b2 c7 v0 v1
+STL_VARIANTS := b2 v1
 stl_variant_stamp = $(if $(filter b2,$(1)),.stamp,.stamp_$(1))
 stl_variant_arg = $(if $(filter b2,$(1)),, --variant $(1))
 stl_variant_step = top_baffle_nd25fw4_$(1)_split.step

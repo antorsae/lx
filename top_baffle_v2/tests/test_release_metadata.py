@@ -80,9 +80,6 @@ def _load_catalog_generator_without_cad():
             BASE_CAVITY_FACE_INSET_MM=(0.0, 0.14),
             MAGNET_SITES=(),
         ),
-        "lx521_baffle.proud.top_baffle_nd25fw4_v0": _stub_module(
-            "lx521_baffle.proud.top_baffle_nd25fw4_v0",
-            V0_MAGNET_SITES=()),
         "lx521_baffle.proud.top_baffle_nd25fw4_v1": _stub_module(
             "lx521_baffle.proud.top_baffle_nd25fw4_v1",
             V1_MAGNET_ZC=()),
@@ -377,13 +374,13 @@ def test_transverse_magnet_plane_is_uniform_per_design_family() -> None:
 
     Grouping by the user-facing design family is deliberate: attachments,
     split alternatives, both stand states and Ac/Ae receivers must not
-    silently retain a stale lower/upper or LM/UM depth.  V0 is axial and the
-    fit coupon is not an assembled baffle, so neither belongs to this gate.
+    silently retain a stale lower/upper or LM/UM depth.  The fit coupon is
+    not an assembled baffle, so it does not belong to this gate.
     """
     payload = _release_catalog()
     family_variants = {
-        "stock": {"A", "B1", "B2", "C7"},
-        "slim": {"V1", "V1-A", "V1-B1", "V1L"},
+        "stock": {"A", "B1", "B2"},
+        "slim": {"V1-A", "V1-B1", "V1L"},
         "obiwan": {
             "Obi-Wan", "Obi-Wan-split", "Obi-Wan-Ac", "Obi-Wan-Ae",
         },
@@ -475,9 +472,8 @@ def test_every_released_magnet_site_has_exact_left_right_symmetry() -> None:
                 if parsed_part is not None else artifact_part)
         for site in artifact["sites"]:
             assert isinstance(site, dict)
-            # V0's two rear-axis sites deliberately avoid different nearby
-            # cable corridors; this regression governs the transverse flank
-            # interfaces whose released parts are true left/right mirrors.
+            # This regression governs the transverse flank interfaces whose
+            # released parts are true left/right mirrors.
             if site.get("closure_kind") != "transverse_gable_45deg":
                 continue
             parsed = _mirrored_name(str(site["name"]))
@@ -519,7 +515,7 @@ def test_every_released_magnet_site_has_exact_left_right_symmetry() -> None:
                     left[field], right[field], label=f"{key}/{field}")
 
 
-def test_catalog_source_freezes_64_stls_and_114_stations() -> None:
+def test_catalog_source_freezes_58_stls_and_94_stations() -> None:
     """Audit release arithmetic without importing build123d/OCC locally."""
     path = ROOT / "scripts/generate_captive_magnet_catalog.py"
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
@@ -536,17 +532,17 @@ def test_catalog_source_freezes_64_stls_and_114_stations() -> None:
             "EXPECTED_FAMILY_COUNTS",
         }
     }
-    assert assignments["EXPECTED_ARTIFACT_COUNT"] == 64
-    assert assignments["EXPECTED_MAGNET_COUNT"] == 114
-    assert assignments["EXPECTED_STATE_ARTIFACT_COUNT"] == 22
-    assert assignments["EXPECTED_STATE_MAGNET_COUNT"] == 45
+    assert assignments["EXPECTED_ARTIFACT_COUNT"] == 58
+    assert assignments["EXPECTED_MAGNET_COUNT"] == 94
+    assert assignments["EXPECTED_STATE_ARTIFACT_COUNT"] == 19
+    assert assignments["EXPECTED_STATE_MAGNET_COUNT"] == 35
     assert assignments["EXPECTED_SHARED_ARTIFACT_COUNT"] == 20
     assert assignments["EXPECTED_SHARED_MAGNET_COUNT"] == 24
     families = assignments["EXPECTED_FAMILY_COUNTS"]
-    assert sum(counts[0] for counts in families.values()) == 64
-    assert sum(counts[1] for counts in families.values()) == 114
+    assert sum(counts[0] for counts in families.values()) == 58
+    assert sum(counts[1] for counts in families.values()) == 94
     assert set(families) == {
-        "B2", "C7", "A", "B1", "V0", "V1", "V1-A", "V1-B1",
+        "B2", "A", "B1", "V1-A", "V1-B1",
         "V1L", "Obi-Wan", "Obi-Wan-split", "Obi-Wan-Ac", "Obi-Wan-Ae",
         "coupon1",
     }
@@ -1272,7 +1268,7 @@ def test_release_sidecars_fail_closed() -> None:
 
 
 def test_sidecar_inventory_exact_counts_and_only_polar_exclusion() -> None:
-    assert EXPECTED_NONPOLAR_STATE_STL_COUNT == 45
+    assert EXPECTED_NONPOLAR_STATE_STL_COUNT == 39
     assert EXPECTED_WING_STL_COUNT == 10
     assert FLOOR_POLAR_SIDECAR_EXCLUSIONS == {
         "lx521_polar_base_1of2_base.stl",
@@ -2105,7 +2101,7 @@ def main() -> None:
         test_catalog_global_pair_spacing_is_not_ambiguous,
         test_transverse_magnet_plane_is_uniform_per_design_family,
         test_every_released_magnet_site_has_exact_left_right_symmetry,
-        test_catalog_source_freezes_64_stls_and_114_stations,
+        test_catalog_source_freezes_58_stls_and_94_stations,
         test_wing_catalog_identity_preserves_frozen_release_case,
         test_catalog_generator_uses_release_wide_acoustic_print_contract,
         test_coupon1_polarity_is_explicitly_unpaired_and_axis_specific,
