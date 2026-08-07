@@ -745,6 +745,13 @@ $(foreach name,$(filter-out $(R6F_SERVICE_CASE_IDS),$(R6F_CASE_IDS)),\
 $(foreach name,$(R6F_SERVICE_CASE_IDS),\
     $(eval $(call R6F_SERVICE_CASE_RULE,$(name))))
 
+# The keyed-split acceptance cases open the exported core STLs through the
+# print-sidecar authority, so on a truly cold tree they must order behind
+# the state's Obi-Wan STL export, not merely share a public aggregate with
+# it.  Prerequisite-only lines compose with the generated case rules.
+.check-stamps/r6f/no_floor_lm_keyed_split.ok: build/no_floor_stand/stl/.stamp_obiwan
+.check-stamps/r6f/floor_lm_keyed_split.ok: build/floor_stand/stl/.stamp_obiwan
+
 VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_v1 $(1)/stl/.stamp_v1l $(1)/stl/.stamp_obiwan \
                   $(addprefix $(1)/,$(addsuffix .step,$(GENS))) \
                   $(1)/baffle_cable_routing_proud.png \
@@ -1082,7 +1089,7 @@ build/wings/.stamp_%: scripts/export_obiwan_wings.py src/lx521_baffle/obiwan/win
 	    scripts/export_obiwan_wings.py --slug $* --output-root build/wings
 	@test -s build/wings/$*/obiwan_wing_$*.step
 	@test -s build/wings/$*/obiwan_wing_$*_assembled.step
-	@test -s build/wings/$*/obiwan_wing_$*_assembled_b.step
+	@test -s build/wings/$*/obiwan_wing_$*_assembled_split2.step
 	@touch $@
 
 $(OBIWAN_WING_ARTIFACT_CHECK_STAMP): tests/test_obiwan_wings.py \

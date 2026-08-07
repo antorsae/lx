@@ -293,7 +293,7 @@ def _variant_paths(slug: str) -> dict[str, Path | tuple[Path, ...]]:
             / f"obiwan_wing_{slug}_assembled.step"),
         "two_piece_assembled_step": (
             directory
-            / f"obiwan_wing_{slug}_assembled_b.step"),
+            / f"obiwan_wing_{slug}_assembled_split2.step"),
         "facts": directory / f"obiwan_wing_{slug}_facts.json",
         "manifest": directory / f"obiwan_wing_{slug}_print_manifest.json",
         "stls": stls,
