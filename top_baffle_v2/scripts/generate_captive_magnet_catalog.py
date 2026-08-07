@@ -607,8 +607,10 @@ def _state_artifacts(state: str, output: Path) -> list[dict[str, Any]]:
         ("src/lx521_baffle/magnets.py", "src/lx521_baffle/proud/b2_split.py",
          "scripts/export_coupon.py"), print_exporter="scripts/export_coupon.py")
 
-    if len(result) != 22:
-        raise RuntimeError(f"{state}: expected 22 magnet STLs, got {len(result)}")
+    if len(result) != EXPECTED_STATE_ARTIFACT_COUNT:
+        raise RuntimeError(
+            f"{state}: expected {EXPECTED_STATE_ARTIFACT_COUNT} magnet STLs, "
+            f"got {len(result)}")
     return result
 
 
