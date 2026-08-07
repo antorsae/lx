@@ -84,11 +84,14 @@ def _runtime_identity() -> dict:
 def _guard_policy() -> dict:
     worker_headroom = (
         WORKER_HEADROOM_MIB if memory_guard.MIN_FREE_MB else 0.0)
+    # The stage policy describes the heavy build tier that produces staged
+    # geometry.  A light-declared reader's own admission tier must not alter
+    # the fingerprint, or every light consumer would reject a valid stage.
     return {
         "memory_profile": memory_guard.MEMORY_PROFILE,
-        "max_process_tree_rss_mib": memory_guard.MAX_RSS_MB,
+        "max_process_tree_rss_mib": memory_guard.HEAVY_MAX_RSS_MB,
         "min_immediately_reclaimable_mib": memory_guard.MIN_FREE_MB,
-        "guard_slots": memory_guard.GUARD_SLOTS,
+        "guard_slots": memory_guard.HEAVY_GUARD_SLOTS,
         "worker_launch_headroom_mib": worker_headroom,
         "aggregate_cgroup_max_mib": memory_guard.CGROUP_MEMORY_MAX_MIB,
     }
