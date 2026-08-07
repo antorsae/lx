@@ -360,7 +360,14 @@ def test_shared_stl_primitives_and_exporter_adapters() -> None:
         )
         if name in lines:
             lines[name].append(node.lineno)
-    assert all(len(lines[name]) == 1 for name in wanted), lines
+    # _validate_binary_stl legitimately appears twice: once after a fresh
+    # export_stl, and once in the B-lower reuse branch that validates the
+    # byte-copied A-lower mesh before its sha comparison.  Every other
+    # shared helper must keep exactly one call site.
+    expected_call_counts = {
+        name: 2 if name == "_validate_binary_stl" else 1 for name in wanted}
+    assert {
+        name: len(lines[name]) for name in wanted} == expected_call_counts, lines
     assert [lines[name][0] for name in wanted] == sorted(
         lines[name][0] for name in wanted)
 
