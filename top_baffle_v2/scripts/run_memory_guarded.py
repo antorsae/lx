@@ -367,21 +367,30 @@ def _workspace_lock_path(slot: int = 0, weight: str | None = None) -> Path:
     occupy a slot reserved for a light one.  With no light pool declared the
     heavy names are exactly the historical ones.
     """
-    pool = GUARD_WEIGHT if weight is None else weight
     uid = os.getuid() if hasattr(os, "getuid") else 0
     workspace = str(_workspace_root())
     identity = hashlib.sha256(
         f"{uid}\0{workspace}".encode("utf-8")).hexdigest()[:20]
-    if pool == GUARD_WEIGHT_LIGHT:
+    if weight is None:
+        # This process's own pool: sized by GUARD_SLOTS, selected by
+        # _IS_LIGHT — the historical single-pool shape when light is off.
+        if _IS_LIGHT:
+            suffix = f"-light-slot-{slot}"
+        else:
+            suffix = f"-slot-{slot}" if GUARD_SLOTS > 1 else ""
+    elif weight == GUARD_WEIGHT_LIGHT:
         suffix = f"-light-slot-{slot}"
     else:
+        # Cross-pool (overflow) lookup of the heavy names from a light
+        # process, whose GUARD_SLOTS is the light count.
         suffix = f"-slot-{slot}" if HEAVY_GUARD_SLOTS > 1 else ""
     return (Path(tempfile.gettempdir())
             / f"lx-cad-memory-{uid}-{identity}{suffix}.lock")
 
 
 def _try_workspace_slot(
-        slot: int, pool_slots: int, weight: str) -> tuple[int, Path] | None:
+        slot: int, pool_slots: int,
+        weight: str | None) -> tuple[int, Path] | None:
     path = _workspace_lock_path(slot, weight)
     flags = os.O_RDWR | os.O_CREAT
     flags |= getattr(os, "O_CLOEXEC", 0)
@@ -405,7 +414,7 @@ def _try_workspace_slot(
         os.ftruncate(fd, 0)
         record = (
             f"pid={os.getpid()} workspace={_workspace_root()} "
-            f"pool={weight} slot={slot + 1}/{pool_slots}\n"
+            f"pool={weight or GUARD_WEIGHT} slot={slot + 1}/{pool_slots}\n"
         ).encode("utf-8")
         os.write(fd, record)
         return fd, path
@@ -447,7 +456,7 @@ def _scan_workspace_pools() -> tuple[int, Path] | None:
     heavy recipe in a light slot would exceed that slot's reservation.
     """
     for slot in range(GUARD_SLOTS):
-        acquired = _try_workspace_slot(slot, GUARD_SLOTS, GUARD_WEIGHT)
+        acquired = _try_workspace_slot(slot, GUARD_SLOTS, None)
         if acquired is not None:
             return acquired
     if _IS_LIGHT:
