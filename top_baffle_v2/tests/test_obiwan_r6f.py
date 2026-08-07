@@ -657,11 +657,13 @@ def test_route_contract():
         "max_rss_mb": 8192,
         "min_free_mb": 0,
         "max_guard_slots": 1,
+        "max_light_guard_slots": 0,
     }
     assert memory_guard.MEMORY_PROFILES["osado-512g"] == {
         "max_rss_mb": 512 * 1024,
         "min_free_mb": 64 * 1024,
         "max_guard_slots": 16,
+        "max_light_guard_slots": 64,
     }
     assert memory_guard.MAX_RSS_MB <= memory_guard.PROFILE_MAX_RSS_MB
     assert memory_guard.MIN_FREE_MB >= memory_guard.PROFILE_MIN_FREE_MB
