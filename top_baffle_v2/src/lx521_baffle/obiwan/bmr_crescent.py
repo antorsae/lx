@@ -1,35 +1,54 @@
-"""Candidate Obi-Wan crescent for two coaxial back-to-back TEBM35C10-4 BMRs.
+"""Candidate Obi-Wan BMR pod for two coaxial back-to-back TEBM35C10-4 BMRs.
 
 This is an alternative to the released ND25FW-4 tweeter crescent, not a
 replacement for it.  It presents the *identical* half-lap interface to an
 unmodified Obi-Wan UM collar (x=+/-24, y=421.5, complete front local-D9.8
-ears, standalone blind D4.6 x 4.0 heat-set receivers, 360-degree walls,
-1.9 mm acoustic-front floors, 0.20 mm axial gap), so the two crescents are
-mutually swappable without touching the UM print.
+ears, standalone blind D4.6 x 4.0 heat-set receivers, 1.9 mm acoustic-front
+floors, 0.20 mm axial gap), so the two parts are mutually swappable without
+touching the UM print.
 
-Where the released crescent leaves an open R39.25 scallop for the
-face-to-face Dayton pair, this part fills that scallop with one circular
-boss carrying two Tectonic TEBM35C10-4 BMRs on the *same* acoustic axis:
-the front driver mounts on the shared z=18.3 acoustic plane and the rear
-driver mounts on the boss's rear plane facing -z.  The two 25.1 mm driver
-envelopes therefore stack back to back about that one axis, and each keeps
-the vase's qualified 1.20 mm blind wall, so the shared partition is
-2.40 mm and the local stack is exactly 2 x 25.1 = 50.2 mm.
+Where the released crescent is a full acoustic silhouette carrying a
+face-to-face Dayton pair, this part keeps only what the two BMRs and that
+one mate actually need:
+
+* a D66 pod on the released tweeter acoustic axis, carrying the front driver
+  on the shared z=18.3 plane and the rear driver on z=-31.9 facing -z, with
+  each driver keeping the vase's qualified 1.20 mm blind wall (a 2.40 mm
+  back-to-back partition and two separate rear chambers);
+* the two UM half-lap ears; and
+* two drafted struts, nothing else.
+
+The released crescent's arm silhouette, its rear taper, the root fairing over
+that taper, the boss/top-edge plan blends and the inherited M4 ND25FW-4
+faceplate clamp passages are all gone: this variant clamps no tweeter, so
+those four holes carried no fastener and only existed to keep a silhouette
+this part no longer has.
+
+Why D66 and not more
+--------------------
+The pod's outer wall is exactly the driver land.  Both mounting faces must
+carry the vase's qualified D66 land, and the part prints front-face-down, so
+the plan may never grow rearward.  A radius below 33 would lose land at one
+face and a radius above 33 at the front would have to come back down to 33 at
+the rear, which is the one direction this print orientation cannot take.  A
+straight D66 cylinder is therefore the unique minimum, and it is also how the
+qualified ``proud.vase_tebm35c10_4`` treats its own drivers, where the D66
+land *is* the exterior surface around each one.  It still leaves 11.537 mm of
+wall outside each pocket and 7.270 mm outside each M2 insert bore.
 
 Coordinate frame
 ----------------
-X/Y use the released top-baffle drawing datum.  Z=18.3 is the acoustic
-front and z=6.8 is the Obi-Wan core rear plane.  The BMR boss grows only
-rearward, to z=-31.9.  The plan silhouette grows only where the released
-scallop was already open (the boss disc and two tangent corner blends);
-nothing moves outward past the released crescent's flanks, so the wing
-clearance envelope is unchanged.
+X/Y use the released top-baffle drawing datum.  Z=18.3 is the acoustic front
+and z=6.8 is the Obi-Wan core rear plane.  The pod grows only rearward, to
+z=-31.9.  In plan the whole part fits inside the released crescent's own
+footprint -- the pod sits 6.25 mm clear inside the released open scallop --
+so neither wing family nor the UM collar sees anything new.
 
 Candidate status
 ----------------
 Nothing here is release-authorized.  ``RELEASE_AUTHORIZED`` is false and
 ``PHYSICAL_MEASURE_REQUIRED`` is true: the driver envelope, the back-to-back
-partition, the boss root and the two-screw joint demand under roughly twice
+partition, the two struts and the two-screw joint demand under roughly twice
 the released crescent's hanging mass all need physical qualification before
 this part is printed for use.
 """
@@ -40,43 +59,32 @@ from dataclasses import dataclass
 import math
 
 from build123d import (
-    Axis,
-    Box,
-    Cylinder,
-    Line,
+    Face,
     Part,
-    Plane,
     Polyline,
     Pos,
     Rot,
-    Spline,
+    Cylinder,
     Wire,
     extrude,
-    loft,
-    make_face,
-    mirror,
-    revolve,
 )
+from shapely.geometry import LineString, Point
+from shapely.geometry.polygon import orient
+from shapely.ops import unary_union
 
 from ..assembly import ordered_labeled_compound
 from ..base import (
     CRESCENT_SCALLOP_CY,
-    CRESCENT_TAPER_R_MM,
     THICKNESS_MM,
-    TWEETER_HOLE_D_MM,
-    TWEETER_HOLE_XY,
-    _crescent_taper_cutters,
-    _crescent_taper_depth,
+    UM_CUTOUT,
 )
 from ..cables import ROUTING_PROFILE
 from ..proud.b import TWEETER_DROP_MM
-from .attachments import _cylinder_at, _fuse_required, tweeter_crescent
+from .attachments import _cylinder_at, _fuse_required
 from .carriers import (
     CORE_REAR_Z,
     TWEETER_ADDON_JOINT_Z,
-    TWEETER_CORE_BORE_TOP_Z,
     TWEETER_CORE_JOINT_Z,
-    TWEETER_JOINT_CLEAR,
     TWEETER_JOINT_FUNCTIONAL_BOSS_D,
     TWEETER_JOINT_HOLE_D,
     TWEETER_JOINT_INSERT_BORE_D,
@@ -84,6 +92,8 @@ from .carriers import (
     TWEETER_JOINT_INSERT_DEPTH_MM,
     TWEETER_JOINT_X,
     TWEETER_JOINT_Y,
+    UM_CORE_R,
+    _apply_complete_um_tweeter_joint,
     _require_guarded_build,
 )
 from .route import TS_FREE_CABLE_Z
@@ -91,7 +101,7 @@ from .route import TS_FREE_CABLE_Z
 
 if ROUTING_PROFILE != "obiwan":
     raise RuntimeError(
-        "the Obi-Wan BMR crescent requires LX_ROUTING_PROFILE=obiwan (R6F)")
+        "the Obi-Wan BMR pod requires LX_ROUTING_PROFILE=obiwan (R6F)")
 
 PRINT_ORIENTATION = "front-face-down"
 PART_NAME = "obiwan_bmr_crescent_TEBM35C10-4"
@@ -167,16 +177,17 @@ VASE_AUTHORITY = {
 
 
 # --- released datums this part must not move --------------------------------
-# The scallop that carries the released face-to-face Dayton pair is the
+# The scallop that carried the released face-to-face Dayton pair is the
 # D78.50 circle about the dropped scallop centre; that centre is the released
-# tweeter acoustic axis and is where the coaxial BMR pair goes.
+# tweeter acoustic axis and is where the coaxial BMR pair goes.  The pod is
+# much smaller than the scallop now, but the scallop circle remains the
+# authority that fixes the axis, so its drawing check stays.
 BMR_AXIS_XY = (0.0, CRESCENT_SCALLOP_CY - TWEETER_DROP_MM)
 SCALLOP_R_MM = 78.50 / 2.0
 # Drawing vertex at the bottom of the scallop, in the un-dropped frame.  The
 # released outline reaches it with a Bezier, so this is the authority the
 # radius is checked against rather than sampled geometry.
 SCALLOP_BOTTOM_DRAWING_Y_MM = 443.804
-CRESCENT_TOP_EDGE_Y_MM = 468.314 - TWEETER_DROP_MM
 
 if abs((CRESCENT_SCALLOP_CY - SCALLOP_BOTTOM_DRAWING_Y_MM)
        - SCALLOP_R_MM) > 0.01:
@@ -205,45 +216,68 @@ STACK_DEPTH_MM = round(FRONT_MOUNT_Z_MM - REAR_MOUNT_Z_MM, 9)    # 50.2
 REAR_PROTRUSION_MM = round(CORE_REAR_Z - REAR_MOUNT_Z_MM, 9)     # 38.7
 
 
-# --- boss envelope ----------------------------------------------------------
-# The boss plan is the released scallop circle plus a 0.50 mm overlap.  The
-# released outline reaches the scallop with a Bezier that runs up to ~0.1 mm
-# outside the true circle, so an exact-radius disc could leave a hairline
-# sliver at the top of the arc; the overlap makes the fusion unconditional and
-# never moves the silhouette anywhere the release has material.
-BOSS_SCALLOP_OVERLAP_MM = 0.50
-BOSS_PLAN_R_MM = SCALLOP_R_MM + BOSS_SCALLOP_OVERLAP_MM
-# The rear face of the boss *is* the rear driver's D66 land.
-BOSS_REAR_R_MM = TEBM_LAND_R_MM
-BOSS_FLARE_SAMPLES = 48
+# --- pod envelope: the D66 land is the exterior ------------------------------
+# See the module docstring.  Two D66 lands plus a front-face-down print with a
+# never-growing plan admit exactly one profile, the straight D66 cylinder.
+POD_OUTER_R_MM = TEBM_LAND_R_MM
+POD_OUTER_D_MM = TEBM_LAND_D_MM
+POD_WALL_OVER_POCKET_MM = round(POD_OUTER_R_MM - TEBM_CUTOUT_D_MM / 2.0, 9)
+POD_WALL_OVER_INSERT_MM = round(
+    POD_OUTER_R_MM - (TEBM_MOUNT_PCD_MM + M2_INSERT_BORE_D_MM) / 2.0, 9)
+POD_LAND_MARGIN_OVER_FLANGE_MM = round(
+    POD_OUTER_R_MM - TEBM_MAX_D_MM / 2.0, 9)
+# How far inside the released open scallop the whole pod now sits.
+POD_CLEARANCE_INSIDE_SCALLOP_MM = round(SCALLOP_R_MM - POD_OUTER_R_MM, 9)
 
-# Root fairing: the released rear taper is filled back to the core rear plane
-# next to the boss and faded out again with the same quintic the vase uses for
-# its rear growth, so the boss stands on flat full-depth material instead of a
-# feathered arm.  It stops short of the nearest UM-ear receiver footprint, so
-# the released mate is untouched by construction rather than by repair.
-UM_EAR_FOOTPRINT_R_MM = math.hypot(
-    TWEETER_JOINT_X[1], BMR_AXIS_XY[1] - TWEETER_JOINT_Y
-) - (TWEETER_JOINT_FUNCTIONAL_BOSS_D / 2.0 + TWEETER_JOINT_CLEAR)
-ROOT_FAIRING_MATE_MARGIN_MM = 0.50
-# The fairing starts inside the released scallop arc and ends 0.20 mm above the
-# released rear surface, so it overlaps both the boss and the arm instead of
-# ending on a surface it shares.  OCC will not fuse two bodies that merely
-# touch along a loft it did not build twice the same way; the released taper
-# and this ramp are separate lofts, so the contact has to be a real overlap.
-ROOT_FAIRING_FUSION_OVERLAP_MM = 0.20
-ROOT_FAIRING_R_IN_MM = SCALLOP_R_MM - 0.50
-ROOT_FAIRING_R_OUT_MM = min(
-    CRESCENT_TAPER_R_MM[1],
-    UM_EAR_FOOTPRINT_R_MM - ROOT_FAIRING_MATE_MARGIN_MM,
-)
-# Same 20-section, 4-degree fan the released taper itself is lofted on.
-FAIRING_SECTION_ANGLES_DEG = tuple(-87.0 + 4.0 * index for index in range(20))
-FAIRING_RAMP_SAMPLES = 24
 
-# Two tangent plan blends close the 68-degree notch where the boss wall meets
-# the released crescent's straight top edge.
-PLAN_FILLET_R_MM = 5.0
+# --- half-lap struts --------------------------------------------------------
+# The two struts are the only structure between the pod and the mate.  They
+# occupy the released crescent's own plate band, z=6.8..18.3, so nothing but
+# the pod itself ever reaches behind the core rear plane, and the free T cable
+# keeps the same open corridor it has on the released crescent.
+ARM_REAR_Z_MM = CORE_REAR_Z
+ARM_DEPTH_MM = round(THICKNESS_MM - ARM_REAR_Z_MM, 9)            # 11.5
+EAR_THICKNESS_MM = round(
+    TWEETER_ADDON_JOINT_Z[1] - TWEETER_ADDON_JOINT_Z[0], 9)      # 5.9
+# The half-lap's own governing printed section: the complete D9.8 functional
+# boss less the D4.6 heat-set receiver bored through it, over the ear's own
+# axial thickness.  That joint is already qualified, so the struts are sized
+# to stay clear of becoming a new weakest link rather than to some new rule.
+EAR_NET_LIGAMENT_MM = round(
+    TWEETER_JOINT_FUNCTIONAL_BOSS_D - TWEETER_JOINT_INSERT_BORE_D, 9)
+EAR_NET_SECTION_MM2 = round(EAR_NET_LIGAMENT_MM * EAR_THICKNESS_MM, 9)
+
+ARM_WIDTH_MM = 8.0
+# A root fillet equal to the strut width keeps the concave strut-to-pod corner
+# from being the stress riser the strut section was chosen to avoid.
+ARM_ROOT_FILLET_R_MM = ARM_WIDTH_MM
+# Rearward draft.  Printed front-face-down every plan grows toward the bed, so
+# this is pure positive draft, and it is bounded by keeping the strut's rear
+# width above the ear ligament it feeds.
+ARM_DRAFT_DEG = 5.0
+ARM_DRAFT_SLOPE = math.tan(math.radians(ARM_DRAFT_DEG))
+ARM_REAR_WIDTH_MM = round(
+    ARM_WIDTH_MM - 2.0 * ARM_DEPTH_MM * ARM_DRAFT_SLOPE, 9)
+# The strut crosses the UM ear's receiver notch, so over that footprint it is
+# only the ear's own 5.9 mm thick.  This is the strut's smallest section and
+# the number that has to beat ``EAR_NET_SECTION_MM2``.
+ARM_MIN_SECTION_MM2 = round(
+    (ARM_WIDTH_MM - EAR_THICKNESS_MM * ARM_DRAFT_SLOPE) * EAR_THICKNESS_MM, 9)
+# Buffer resolution and the tolerance the closed plan is decimated to.  A
+# morphological closing leaves sub-micron segments at every arc handover.
+# Undecimated they become the zero-area facets the release mesh contract
+# rejects outright, and OCC's draft offset refuses to run on several of the
+# denser plans altogether.  96 quadrant segments hold a 33 mm arc to under
+# 1.5 um and decimating at 2 um drops the slivers without moving any surface
+# a printer could resolve; that pair meshes with no degenerate or collinear
+# facet at all.  Changing either number is a geometry change and has to be
+# re-checked against the mesh contract, not assumed.
+ARM_PLAN_RESOLUTION = 96
+ARM_PLAN_SIMPLIFY_MM = 0.002
+# The released crescent takes exactly this much clearance around the UM core
+# ring; the struts are held to the same figure, and the ears -- which are
+# allowed inside it -- are restored afterwards, exactly as on the release.
+UM_COLLAR_CLEAR_MM = 0.20
 
 
 # --- driver interfaces ------------------------------------------------------
@@ -259,9 +293,13 @@ FRONT_OUTLET_Z_MM = round(
     FRONT_POCKET_FLOOR_Z_MM + POCKET_OUTLET_INSET_MM, 9)
 REAR_OUTLET_Z_MM = round(REAR_POCKET_ROOF_Z_MM - POCKET_OUTLET_INSET_MM, 9)
 # Both outlets leave on the -Y meridian, the side the free T cable arrives
-# from, and both sit behind the core rear plane where that cable already runs.
+# from and the side the mate is on, and both sit behind the core rear plane
+# where that cable already runs.  The cutter starts inside the pocket and ends
+# clear of the pod wall; nothing is added outside the wall, because in this
+# silhouette a printed duct would be the only body able to pinch the free
+# cable in the corridor the struts deliberately leave open.
 POCKET_OUTLET_INNER_R_MM = 18.0
-POCKET_OUTLET_OUTER_R_MM = 45.0
+POCKET_OUTLET_OUTER_R_MM = round(POD_OUTER_R_MM + 2.0, 9)
 
 _MATE_CROSS_CHECK = {
     "joint_x_mm": (-24.0, 24.0),
@@ -297,13 +335,6 @@ def _check_released_mate() -> None:
         raise RuntimeError("released UM clearance bore diameter moved")
 
 
-def _smootherstep(value: float) -> float:
-    """Quintic smootherstep: zero first and second derivative at both ends."""
-    clamped = max(0.0, min(1.0, float(value)))
-    return clamped * clamped * clamped * (
-        clamped * (clamped * 6.0 - 15.0) + 10.0)
-
-
 def axial_gap_mm() -> float:
     return TWEETER_ADDON_JOINT_Z[0] - TWEETER_CORE_JOINT_Z[1]
 
@@ -312,162 +343,82 @@ def insert_front_floor_mm() -> float:
     return THICKNESS_MM - TWEETER_JOINT_INSERT_BORE_Z[1]
 
 
-def boss_radius_at(z: float) -> float:
-    """Boss outer radius at one Z, on the released-scallop plan above 6.8."""
-    if z >= CORE_REAR_Z:
-        return BOSS_PLAN_R_MM
-    fraction = (z - REAR_MOUNT_Z_MM) / (CORE_REAR_Z - REAR_MOUNT_Z_MM)
-    return BOSS_REAR_R_MM + (
-        BOSS_PLAN_R_MM - BOSS_REAR_R_MM) * _smootherstep(fraction)
+def pod_radius_at(z: float) -> float:
+    """Pod outer radius at one Z.  It is the D66 land at every Z."""
+    if not (REAR_MOUNT_Z_MM - 1.0e-9 <= z <= THICKNESS_MM + 1.0e-9):
+        raise ValueError(f"z={z} is outside the BMR depth stack")
+    return POD_OUTER_R_MM
 
 
-def _boss_solid():
-    """Revolved boss: D66 rear land flaring G1 into the released scallop."""
-    flare = []
-    for index in range(BOSS_FLARE_SAMPLES + 1):
-        fraction = index / BOSS_FLARE_SAMPLES
-        z = REAR_MOUNT_Z_MM + (CORE_REAR_Z - REAR_MOUNT_Z_MM) * fraction
-        radius = BOSS_REAR_R_MM + (
-            BOSS_PLAN_R_MM - BOSS_REAR_R_MM) * _smootherstep(fraction)
-        flare.append((radius, 0.0, z))
-    profile = Wire([
-        Line((0.0, 0.0, REAR_MOUNT_Z_MM),
-             (BOSS_REAR_R_MM, 0.0, REAR_MOUNT_Z_MM)).edge(),
-        Spline(*flare, tangents=((0.0, 0.0, 1.0), (0.0, 0.0, 1.0))).edge(),
-        Line((BOSS_PLAN_R_MM, 0.0, CORE_REAR_Z),
-             (BOSS_PLAN_R_MM, 0.0, THICKNESS_MM)).edge(),
-        Line((BOSS_PLAN_R_MM, 0.0, THICKNESS_MM),
-             (0.0, 0.0, THICKNESS_MM)).edge(),
-        Line((0.0, 0.0, THICKNESS_MM),
-             (0.0, 0.0, REAR_MOUNT_Z_MM)).edge(),
-    ])
-    boss = revolve(make_face(profile), axis=Axis.Z, revolution_arc=360.0)
-    return Pos(BMR_AXIS_XY[0], BMR_AXIS_XY[1], 0.0) * boss
+def arm_plan():
+    """Plan of both struts at the acoustic front, blended into the pod.
 
-
-def _fairing_section_face(angle_deg: float, sign: float):
-    """One radial (r, z) section of the material the released taper removed.
-
-    The face is bounded above by the released rear surface and below by the
-    same surface faded back to the core rear plane, so it is exactly the
-    volume that turns the feathered arm into a flat full-depth boss root.
+    The union of the pod disc, one D8 beam per ear and the two complete D9.8
+    ear bosses is closed morphologically by ``ARM_ROOT_FILLET_R_MM``.  A
+    closing puts an exact fillet of that radius in every concave corner --
+    the strut-to-pod roots and the strut-to-boss shoulders -- and moves
+    nothing convex, so the struts stay tangent to the pod wall without any
+    hand-placed blend geometry.
     """
-    depth = _crescent_taper_depth(angle_deg, THICKNESS_MM - CORE_REAR_Z)
-    top = CORE_REAR_Z + depth + ROOT_FAIRING_FUSION_OVERLAP_MM
-    span = ROOT_FAIRING_R_OUT_MM - ROOT_FAIRING_R_IN_MM
-    points = [(ROOT_FAIRING_R_IN_MM, CORE_REAR_Z)]
-    for index in range(1, FAIRING_RAMP_SAMPLES + 1):
-        fraction = index / FAIRING_RAMP_SAMPLES
-        points.append((
-            ROOT_FAIRING_R_IN_MM + span * fraction,
-            CORE_REAR_Z + depth * _smootherstep(fraction),
-        ))
-    points.append((ROOT_FAIRING_R_OUT_MM, top))
-    points.append((ROOT_FAIRING_R_IN_MM, top))
-    points.append((ROOT_FAIRING_R_IN_MM, CORE_REAR_Z))
-    angle = math.radians(angle_deg)
-    plane = Plane(
-        origin=(0.0, BMR_AXIS_XY[1], 0.0),
-        x_dir=(sign * math.cos(angle), math.sin(angle), 0.0),
-        z_dir=(math.sin(angle), -sign * math.cos(angle), 0.0),
-    )
-    return plane * make_face(Wire(Polyline(*points).edges()))
+    pieces = [Point(*BMR_AXIS_XY).buffer(
+        POD_OUTER_R_MM, resolution=ARM_PLAN_RESOLUTION)]
+    for x in TWEETER_JOINT_X:
+        ear = (x, TWEETER_JOINT_Y)
+        pieces.append(LineString([ear, BMR_AXIS_XY]).buffer(
+            ARM_WIDTH_MM / 2.0, resolution=ARM_PLAN_RESOLUTION))
+        pieces.append(Point(*ear).buffer(
+            TWEETER_JOINT_FUNCTIONAL_BOSS_D / 2.0,
+            resolution=ARM_PLAN_RESOLUTION))
+    blended = unary_union(pieces)
+    plan = (blended
+            .buffer(ARM_ROOT_FILLET_R_MM,
+                    resolution=ARM_PLAN_RESOLUTION, join_style=1)
+            .buffer(-ARM_ROOT_FILLET_R_MM,
+                    resolution=ARM_PLAN_RESOLUTION, join_style=1))
+    plan = plan.simplify(ARM_PLAN_SIMPLIFY_MM, preserve_topology=True)
+    if plan.geom_type != "Polygon" or plan.interiors:
+        raise RuntimeError(
+            "the strut plan must close to one simple region; the fillet "
+            "radius has bridged the central cable mouth")
+    return plan
 
 
-def _root_fairing_solid():
-    """Rear-taper fill that gives the boss a G1 full-depth foundation."""
-    fairing = None
-    for sign in (1.0, -1.0):
-        side = loft([
-            _fairing_section_face(angle, sign)
-            for angle in FAIRING_SECTION_ANGLES_DEG
-        ])
-        fairing = side if fairing is None else fairing + side
-    return fairing
+def arm_collar_clearance_mm() -> float:
+    """Closest approach of the strut plan to the UM core ring."""
+    return arm_plan().distance(Point(*UM_CUTOUT[:2])) - UM_CORE_R
 
 
-def plan_fillet_geometry() -> dict[str, tuple[float, float]]:
-    """Tangent points and centre of the +X boss/top-edge plan blend."""
-    drop = BMR_AXIS_XY[1] - CRESCENT_TOP_EDGE_Y_MM
-    centre_x = math.sqrt(
-        (BOSS_PLAN_R_MM + PLAN_FILLET_R_MM) ** 2
-        - (PLAN_FILLET_R_MM - drop) ** 2)
-    centre = (centre_x, CRESCENT_TOP_EDGE_Y_MM + PLAN_FILLET_R_MM)
-    span = math.hypot(centre[0], centre[1] - BMR_AXIS_XY[1])
-    scale = BOSS_PLAN_R_MM / span
-    return {
-        "centre": centre,
-        "tangent_on_edge": (centre[0], CRESCENT_TOP_EDGE_Y_MM),
-        "tangent_on_boss": (
-            BMR_AXIS_XY[0] + scale * (centre[0] - BMR_AXIS_XY[0]),
-            BMR_AXIS_XY[1] + scale * (centre[1] - BMR_AXIS_XY[1]),
-        ),
-        "corner": (
-            math.sqrt(BOSS_PLAN_R_MM ** 2 - drop ** 2),
-            CRESCENT_TOP_EDGE_Y_MM,
-        ),
-    }
+def _plan_face(polygon):
+    """One build123d Face from a simple Shapely polygon, +Z normal."""
+    polygon = orient(polygon, sign=1.0)
+    return Face(Wire(Polyline(*[
+        (float(x), float(y)) for x, y in polygon.exterior.coords
+    ]).edges()))
 
 
-def _plan_fillet_prism():
-    """Full-depth plan of both blends, as pure CSG.
+def _pod_solid():
+    """The D66 land swept over the whole coaxial stack."""
+    return _cylinder_at(
+        BMR_AXIS_XY[0], BMR_AXIS_XY[1], POD_OUTER_R_MM,
+        REAR_MOUNT_Z_MM, THICKNESS_MM)
 
-    This is kept separate from the tapered solid on purpose.  It is also the
-    root fairing's plan mask over the blends, and a mask has to survive OCC
-    booleans: a prism recovered from the tapered solid's front face carries
-    the loft's edge structure and silently intersects to nothing.
+
+def _arm_solid():
+    """Both drafted struts, from the acoustic front back to z=6.8.
+
+    The strut plan deliberately still contains the pod disc: drafted rearward
+    that part of the extrusion is a cone strictly inside the pod cylinder, so
+    the two bodies fuse on a real volume, and the only place the strut's outer
+    surface touches the pod's is the single circle on the front face.
     """
-    geometry = plan_fillet_geometry()
-    centre = geometry["centre"]
-    height = THICKNESS_MM - CORE_REAR_Z
-    mid_z = (CORE_REAR_Z + THICKNESS_MM) / 2.0
-
-    # The blend lives above the released top edge, between the notch corner and
-    # the tangent point on that edge.  Those four half-spaces plus the two
-    # circles bound it exactly: the arc from the boss tangency down to the
-    # corner is the only free boundary.
-    corner_x = geometry["corner"][0]
-    patch = Pos(0.0, CRESCENT_TOP_EDGE_Y_MM + 200.0, mid_z) * Box(
-        400.0, 400.0, height)
-    patch &= Pos((corner_x + centre[0]) / 2.0, BMR_AXIS_XY[1], mid_z) * Box(
-        centre[0] - corner_x, 400.0, height)
-    # Keep only the corner side of the boss-centre-to-fillet-centre ray, so the
-    # patch closes exactly at the boss tangency instead of running on.
-    ray_deg = math.degrees(math.atan2(
-        centre[1] - BMR_AXIS_XY[1], centre[0] - BMR_AXIS_XY[0]))
-    patch &= (Pos(BMR_AXIS_XY[0], BMR_AXIS_XY[1], mid_z)
-              * Rot(Z=ray_deg)
-              * Pos(0.0, -200.0, 0.0)
-              * Box(400.0, 400.0, height))
-    patch -= Pos(BMR_AXIS_XY[0], BMR_AXIS_XY[1], mid_z) * Cylinder(
-        BOSS_PLAN_R_MM, height + 2.0)
-    patch -= Pos(centre[0], centre[1], mid_z) * Cylinder(
-        PLAN_FILLET_R_MM, height + 2.0)
-    patch = patch.clean()
-    return patch + mirror(patch, about=Plane.YZ)
-
-
-def _plan_fillet_solid():
-    """Both tangent blends, carrying the released rear taper of the arm."""
-    patch = _plan_fillet_prism()
-    for cutter in _crescent_taper_cutters(
-            TWEETER_DROP_MM, THICKNESS_MM, CORE_REAR_Z):
-        patch -= cutter
-    return patch.clean()
-
-
-def _plan_prism(part):
-    """Prism of every acoustic-front face, used to keep additions in plan."""
-    prism = None
-    for face in part.faces().filter_by(Plane.XY):
-        if abs(face.center().Z - THICKNESS_MM) > 1.0e-6:
-            continue
-        column = extrude(face, amount=STACK_DEPTH_MM + 20.0,
-                         dir=(0.0, 0.0, -1.0))
-        prism = column if prism is None else prism + column
-    if prism is None:
-        raise RuntimeError("crescent has no acoustic-front face to bound with")
-    return prism
+    clearance = arm_collar_clearance_mm()
+    if clearance < UM_COLLAR_CLEAR_MM - 1.0e-9:
+        raise RuntimeError(
+            "the struts must keep the released crescent's own "
+            f"{UM_COLLAR_CLEAR_MM} mm clearance around the UM core ring; "
+            f"this plan leaves {clearance:.3f} mm")
+    face = Pos(0.0, 0.0, THICKNESS_MM) * _plan_face(arm_plan())
+    return extrude(face, amount=-ARM_DEPTH_MM, taper=ARM_DRAFT_DEG)
 
 
 def _apply_driver_interfaces(part):
@@ -505,47 +456,24 @@ def _apply_driver_interfaces(part):
     return part
 
 
-def _reassert_mate_voids(part):
-    """Re-cut the released half-lap voids after every positive addition."""
-    for x in TWEETER_JOINT_X:
-        part -= _cylinder_at(
-            x, TWEETER_JOINT_Y, TWEETER_JOINT_HOLE_D / 2.0,
-            TWEETER_CORE_JOINT_Z[0] - 0.2, TWEETER_CORE_BORE_TOP_Z)
-        part -= _cylinder_at(
-            x, TWEETER_JOINT_Y, TWEETER_JOINT_INSERT_BORE_D / 2.0,
-            *TWEETER_JOINT_INSERT_BORE_Z)
-    return part
-
-
 def bmr_crescent():
-    """Released crescent mate, coaxial BMR boss, two blind driver pockets."""
+    """Minimal BMR pod on the released UM half-lap mate."""
     _require_guarded_build()
     _check_released_mate()
 
-    released = tweeter_crescent()
-    # Both masks are taken before anything is fused: each one then bounds the
-    # fairing over exactly one clean region, and no mask is ever recovered
-    # from a face of an already-boolean'd body.
-    released_plan = _plan_prism(released)
-    blend_plan = _plan_fillet_prism()
-    fairing = _root_fairing_solid()
-
     part = _fuse_required(
-        released, _plan_fillet_solid(), "boss-to-top-edge tangent plan blends")
-    part = _fuse_required(
-        part, fairing & released_plan, "BMR boss root fairing over the arms")
-    part = _fuse_required(
-        part, fairing & blend_plan, "BMR boss root fairing under the blends")
-    part = _fuse_required(part, _boss_solid(), "coaxial BMR boss")
-
+        _pod_solid(), _arm_solid(), "half-lap struts onto the BMR pod")
+    # The complete standalone ears, their receiver notch for the opposing UM
+    # halves, the rear-driven D3.4 passages and the blind D4.6 receivers, all
+    # from the released joint authority rather than restated here.
+    part = _apply_complete_um_tweeter_joint(part, "tweeter")
     part = _apply_driver_interfaces(part)
-    part = _reassert_mate_voids(part)
 
     part = part.clean()
     solids = list(part.solids())
     if not part.is_valid or len(solids) != 1 or solids[0].volume <= 0.01:
         raise RuntimeError(
-            "BMR crescent finalization must retain every required feature; "
+            "BMR pod finalization must retain every required feature; "
             f"valid={part.is_valid} volumes="
             f"{[solid.volume for solid in part.solids()]}")
     return Part([solids[0]])
@@ -587,8 +515,7 @@ def declared_openings() -> list[dict]:
             "diameter_mm": POCKET_OUTLET_D_MM,
             "axis": "-Y",
             "z_mm": FRONT_OUTLET_Z_MM,
-            "breakout_y_mm": (
-                BMR_AXIS_XY[1] - boss_radius_at(FRONT_OUTLET_Z_MM)),
+            "breakout_y_mm": BMR_AXIS_XY[1] - pod_radius_at(FRONT_OUTLET_Z_MM),
         },
         {
             "name": "rear_driver_lead_outlet",
@@ -596,8 +523,7 @@ def declared_openings() -> list[dict]:
             "diameter_mm": POCKET_OUTLET_D_MM,
             "axis": "-Y",
             "z_mm": REAR_OUTLET_Z_MM,
-            "breakout_y_mm": (
-                BMR_AXIS_XY[1] - boss_radius_at(REAR_OUTLET_Z_MM)),
+            "breakout_y_mm": BMR_AXIS_XY[1] - pod_radius_at(REAR_OUTLET_Z_MM),
         },
         {
             "name": "um_half_lap_clearance_passages",
@@ -623,25 +549,11 @@ def declared_openings() -> list[dict]:
             "blind": True,
             "pcd_mm": TEBM_MOUNT_PCD_MM,
         },
-        {
-            "name": "inherited_m4_tweeter_clamp_holes",
-            "kind": "released_inherited",
-            "diameter_mm": TWEETER_HOLE_D_MM,
-            "count": len(TWEETER_HOLE_XY),
-            "centres_xy_mm": [
-                [x, y - TWEETER_DROP_MM] for x, y in TWEETER_HOLE_XY],
-            "note": (
-                "released ND25FW-4 faceplate clamp passages; this variant has "
-                "no clamped tweeter, so they carry no fastener and are "
-                "retained only to keep the released silhouette exact"
-            ),
-        },
     ]
 
 
 def design_facts() -> dict:
     """Envelope, mate coordinates, pocket outlets and candidate flags."""
-    fillet = plan_fillet_geometry()
     return {
         "part": PART_NAME,
         "release_variant": RELEASE_VARIANT,
@@ -653,6 +565,20 @@ def design_facts() -> dict:
         "magnet_count": MAGNET_COUNT,
         "magnet_note": (
             "none in v1, exactly like the released ND25FW-4 crescent"),
+        "silhouette": {
+            "shape": "minimal_pod_two_struts_two_ears",
+            "inherits_released_crescent_outline": False,
+            "removed_from_the_first_candidate": [
+                "released crescent arm silhouette",
+                "released rear taper and its root fairing",
+                "boss-to-top-edge tangent plan blends",
+                "inherited M4 ND25FW-4 faceplate clamp passages",
+            ],
+            "removal_note": (
+                "this variant clamps no tweeter, so the four inherited M4 "
+                "passages carried no fastener; they existed only to keep a "
+                "released silhouette this part no longer has"),
+        },
         "driver": {
             "model": "Tectonic TEBM35C10-4",
             "count": 2,
@@ -692,25 +618,50 @@ def design_facts() -> dict:
             "stack_depth_mm": STACK_DEPTH_MM,
             "rear_protrusion_behind_core_rear_mm": REAR_PROTRUSION_MM,
         },
-        "boss": {
-            "plan_radius_mm": BOSS_PLAN_R_MM,
+        "pod": {
+            "profile": "straight_cylinder",
+            "outer_d_mm": POD_OUTER_D_MM,
+            "outer_r_mm": POD_OUTER_R_MM,
+            "outer_wall_authority": "tebm35c10_4_driver_land_d66",
+            "outer_wall_basis": (
+                "both mounting faces must carry the vase's qualified D66 "
+                "land and the part prints front-face-down, so the plan may "
+                "never grow rearward; a straight D66 cylinder is the unique "
+                "minimum, and it is also how the qualified vase treats its "
+                "own drivers, where the D66 land is the exterior surface"),
+            "wall_outside_pocket_mm": POD_WALL_OVER_POCKET_MM,
+            "wall_outside_m2_insert_bore_mm": POD_WALL_OVER_INSERT_MM,
+            "land_margin_over_max_flange_mm": POD_LAND_MARGIN_OVER_FLANGE_MM,
             "released_scallop_radius_mm": SCALLOP_R_MM,
-            "scallop_overlap_mm": BOSS_SCALLOP_OVERLAP_MM,
-            "rear_land_radius_mm": BOSS_REAR_R_MM,
-            "flare_law": "quintic_smootherstep_zero_slope_both_ends",
-            "root_fairing_r_in_mm": ROOT_FAIRING_R_IN_MM,
-            "root_fairing_r_out_mm": ROOT_FAIRING_R_OUT_MM,
-            "um_ear_footprint_r_mm": UM_EAR_FOOTPRINT_R_MM,
-            "root_fairing_mate_margin_mm": ROOT_FAIRING_MATE_MARGIN_MM,
-            "plan_fillet_radius_mm": PLAN_FILLET_R_MM,
-            "plan_fillet_tangent_on_edge_xy_mm": list(
-                fillet["tangent_on_edge"]),
-            "plan_fillet_tangent_on_boss_xy_mm": list(
-                fillet["tangent_on_boss"]),
-            "plan_growth_note": (
-                "growth is confined to the released open scallop plus the two "
-                "tangent corner blends; no flank moves outward, so the wing "
-                "clearance envelope is unchanged"),
+            "clearance_inside_released_scallop_mm": (
+                POD_CLEARANCE_INSIDE_SCALLOP_MM),
+        },
+        "struts": {
+            "count": 2,
+            "plan": "beam_from_pod_wall_to_each_half_lap_boss",
+            "front_width_mm": ARM_WIDTH_MM,
+            "rear_width_mm": ARM_REAR_WIDTH_MM,
+            "root_fillet_r_mm": ARM_ROOT_FILLET_R_MM,
+            "root_fillet_rule": "equal to the strut width",
+            "draft_deg": ARM_DRAFT_DEG,
+            "draft_rule": (
+                "printed front-face-down every plan grows toward the bed, so "
+                "the rearward draft is pure positive draft; it is bounded by "
+                "keeping the rear width above the ear ligament it feeds"),
+            "z_span_mm": [ARM_REAR_Z_MM, THICKNESS_MM],
+            "depth_mm": ARM_DEPTH_MM,
+            "min_section_mm2": ARM_MIN_SECTION_MM2,
+            "half_lap_net_section_mm2": EAR_NET_SECTION_MM2,
+            "section_ratio": round(
+                ARM_MIN_SECTION_MM2 / EAR_NET_SECTION_MM2, 6),
+            "section_rule": (
+                "the strut's smallest section, where it crosses the UM ear "
+                "receiver notch, stays above the half-lap's own net ligament "
+                "section, so the already-qualified joint remains governing"),
+            "um_core_ring_clearance_mm": round(arm_collar_clearance_mm(), 6),
+            "um_core_ring_clearance_rule": (
+                "the released crescent's own 0.20 mm clearance around the UM "
+                "core ring; only the ears are allowed inside it"),
         },
         "mate": {
             "interface": "obiwan_um_collar_half_laps",
@@ -727,6 +678,11 @@ def design_facts() -> dict:
             "acoustic_front_floor_mm": insert_front_floor_mm(),
             "clearance_bore_d_mm": TWEETER_JOINT_HOLE_D,
             "clearance_bore_owner": "um_carrier",
+            "scope_note": (
+                "the mount is identical to the released crescent's; the rest "
+                "of the part is not, so identity is asserted over the two ear "
+                "footprints and by assembling against the staged UM collar, "
+                "not by differencing whole silhouettes"),
         },
         "cable": {
             "free_t_cable_centreline_z_mm": TS_FREE_CABLE_Z,
@@ -735,11 +691,14 @@ def design_facts() -> dict:
                 "the T route stays free behind the part exactly as on the "
                 "released crescent; both lead outlets open on the -Y meridian "
                 "behind the core rear plane, on the side the free cable "
-                "arrives from"),
+                "arrives from and the side the mate is on.  Dropping the arms "
+                "opens that whole quadrant, so a printed duct there would be "
+                "the only body able to pinch the free cable and none is cut"),
             "outlet_inset_from_blind_wall_mm": POCKET_OUTLET_INSET_MM,
             "outlet_d_mm": POCKET_OUTLET_D_MM,
             "front_outlet_z_mm": FRONT_OUTLET_Z_MM,
             "rear_outlet_z_mm": REAR_OUTLET_Z_MM,
+            "outlet_breakout_y_mm": BMR_AXIS_XY[1] - POD_OUTER_R_MM,
         },
         "declared_openings": declared_openings(),
     }

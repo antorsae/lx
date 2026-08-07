@@ -94,6 +94,7 @@ SOURCE_FILES = (
     "src/lx521_baffle/obiwan/bmr_crescent.py",
     "src/lx521_baffle/obiwan/carriers.py",
     "src/lx521_baffle/obiwan/joints.py",
+    "src/lx521_baffle/obiwan/route.py",
     "scripts/check_manifold.py",
     "scripts/export_bmr_crescent.py",
     "scripts/export_piece_stls.py",
@@ -238,13 +239,25 @@ def _qualification() -> dict[str, Any]:
             "TEBM35C10-4 flange/basket/depth measured on the actual driver, "
             "not taken from the published envelope",
             "back-to-back 2.40 mm partition printed and pressure/rattle "
-            "checked with both drivers fitted",
+            "checked with both drivers fitted; front-face-down it is also a "
+            "D42.9 unsupported span over the front pocket",
             "M2 x 4 heat-set installation in both D66 lands without "
             "breakthrough into the opposite pocket",
-            "UM-to-crescent two-screw joint re-proven at this part's hanging "
-            "mass, which is well above the released ND25FW-4 crescent's",
+            "UM-to-pod two-screw joint re-proven at this part's hanging "
+            "mass, which is still above the released ND25FW-4 crescent's",
+            "the two struts loaded at that hanging mass; their section is "
+            "chosen to keep the qualified half-lap governing, but no strut "
+            "has been printed or loaded",
+            "an acoustic opinion on the open silhouette: dropping the "
+            "released crescent's plan leaves the UM's own T--UM closure-web "
+            "half unmated and the front largely open around the pod",
             "free T cable dressed to both -Y lead outlets without pinch "
-            "behind the crescent",
+            "behind the pod",
+        ],
+        "closed_items": [
+            "the inherited M4 ND25FW-4 faceplate clamp passages, which "
+            "carried no fastener in this variant, are resolved by deletion: "
+            "the silhouette they existed to preserve is gone",
         ],
     }
 
