@@ -1,6 +1,6 @@
-"""Remote-only Ac/Ae Obi-Wan wing acceptance checks.
+"""Remote-only flat/graded Obi-Wan wing acceptance checks.
 
-The Ac/Ae generator is deliberately expensive: each OCC-heavy check runs in
+The flat/graded generator is deliberately expensive: each OCC-heavy check runs in
 its own authenticated memory-guard process on the ``osado-512g`` profile.
 Generic pytest collection is disabled so a local invocation cannot allocate
 CAD state before the remote-profile gate is evaluated.
@@ -40,19 +40,19 @@ ROOT = PROJECT_ROOT
 NO_FLOOR_STAGE_MANIFEST = (
     ROOT / "build/no_floor_stand/.obiwan_stage/manifest.json")
 FLOOR_STAGE_MANIFEST = ROOT / "build/floor_stand/.obiwan_stage/manifest.json"
-VARIANT_IDS = ("ac", "ae")
+VARIANT_IDS = ("flat", "graded")
 SIDE_NAMES = ("left", "right")
 PRINT_PART_ROLES = ("lm_lower", "lm_upper", "um")
 TWO_PIECE_PART_ROLES = ("lm_lower", "lm_um_upper")
 FRONT_Z_MM = 18.3
 REAR_Z_MM = 6.8
 FULL_DEPTH_MM = 11.5
-AE_EDGE_DEPTH_MM = 0.24
-AE_MONOTONIC_TOL_MM = 0.002
-AE_MAX_SLOPE = 6.0
-AE_LAND_BOUNDARY_SAMPLE_SPACING_MM = 0.50
-AE_LAND_BOUNDARY_PROBE_OFFSET_MM = 0.004
-AE_LAND_BOUNDARY_MAX_JUMP_MM = 0.03
+GRADED_EDGE_DEPTH_MM = 0.24
+GRADED_MONOTONIC_TOL_MM = 0.002
+GRADED_MAX_SLOPE = 6.0
+GRADED_LAND_BOUNDARY_SAMPLE_SPACING_MM = 0.50
+GRADED_LAND_BOUNDARY_PROBE_OFFSET_MM = 0.004
+GRADED_LAND_BOUNDARY_MAX_JUMP_MM = 0.03
 DOVETAIL_CLEARANCE_MM = 0.05
 T_WING_CLEARANCE_MM = 0.20
 DOVETAIL_ENDPOINT_TAPER_MM = 2.0
@@ -75,12 +75,12 @@ DOVETAIL_PROFILES_MM = (
     {"neck": 7.0, "head": 8.5, "depth": 4.0},
 )
 BED_XY_MM = 220.0
-# Ac is planar and stays on the original 10-ppm STEP round-trip gate.  Ae's
+# flat is planar and stays on the original 10-ppm STEP round-trip gate.  graded's
 # densely trimmed tensor B-spline is re-integrated by OCC after STEP import;
 # bound that serialization-only quadrature delta at 20 ppm while retaining
 # independent exact topology/bounds/STL/C0 gates plus exact plan symmetry and
 # paired imported rear-depth probes.
-STEP_ROUNDTRIP_VOLUME_REL_TOL = {"ac": 1.0e-5, "ae": 2.0e-5}
+STEP_ROUNDTRIP_VOLUME_REL_TOL = {"flat": 1.0e-5, "graded": 2.0e-5}
 STEP_ROUNDTRIP_VOLUME_ABS_TOL_MM3 = 0.02
 STEP_ASSEMBLY_VOLUME_REL_TOL = 5.0e-4
 STEP_FAST_IDENTITY_VOLUME_REL_TOL = 2.0e-2
@@ -102,7 +102,7 @@ def _artifact_root() -> Path:
         path = ROOT / path
     path = path.resolve()
     assert path == (ROOT / "build/wings").resolve(), (
-        "the Ac/Ae release contract is rooted at top_baffle_v2/build/wings")
+        "the flat/graded release contract is rooted at top_baffle_v2/build/wings")
     return path
 
 
@@ -120,9 +120,9 @@ def _require_remote_guard() -> None:
     import run_memory_guarded as memory_guard
 
     assert _large_host_execution(), (
-        "Ac/Ae acceptance is remote-only; use the osado-512g CAD profile")
+        "flat/graded acceptance is remote-only; use the osado-512g CAD profile")
     assert memory_guard.is_guarded_process(), (
-        "Ac/Ae acceptance escaped the authenticated CAD memory guard")
+        "flat/graded acceptance escaped the authenticated CAD memory guard")
 
 
 def _shape_bounds(shape) -> tuple[tuple[float, float, float],
@@ -517,7 +517,7 @@ def _assert_bbox_facts(bbox, label: str) -> dict:
 
 
 def test_exported_artifact_contract() -> None:
-    """Gate the exact Ac/Ae release transaction and every printable mesh."""
+    """Gate the exact flat/graded release transaction and every printable mesh."""
     _require_remote_guard()
 
     import lx521_baffle.obiwan.wings as cad
@@ -623,7 +623,7 @@ def test_exported_artifact_contract() -> None:
                             abs_tol=1e-9)
         assert depth.get("retention_centres") == ["LM", "UM", "T"]
         assert depth.get("retention_scales") == [1.8, 0.9, 0.58]
-        if slug == "ac":
+        if slug == "flat":
             assert depth.get("model") == "constant"
             assert depth.get("surface_construction") == "plan_prism"
             assert math.isclose(depth.get("minimum_depth_mm"),
@@ -635,7 +635,7 @@ def test_exported_artifact_contract() -> None:
                 "direct_open_uniform_control_bspline")
             assert depth.get("surface_spline_degree") == 3
             assert math.isclose(depth.get("minimum_depth_mm"),
-                                AE_EDGE_DEPTH_MM, abs_tol=1e-9)
+                                GRADED_EDGE_DEPTH_MM, abs_tol=1e-9)
             assert math.isclose(depth.get("exact_edge_brep_band_mm"),
                                 0.12, abs_tol=1e-9)
             island_gate = depth.get("conservative_relief_island_retention")
@@ -815,11 +815,11 @@ def test_exported_artifact_contract() -> None:
         assert dovetails.get("no_envelope_growth") is True
         assert dovetails.get("through_local_thickness") is True
         assert dovetails.get("z_retention") is False
-        joint_area = dovetails.get("ae_joint_interface_area_mm2")
+        joint_area = dovetails.get("graded_joint_interface_area_mm2")
         assert isinstance(joint_area, list) and len(joint_area) == 2
         assert joint_area[0] >= 75.0
         assert joint_area[1] >= 50.0
-        joint_mismatch = dovetails.get("ae_joint_rear_mismatch_mm")
+        joint_mismatch = dovetails.get("graded_joint_rear_mismatch_mm")
         assert isinstance(joint_mismatch, list) and len(joint_mismatch) == 2
         assert max(joint_mismatch) <= 0.15
         print_contract = geometry.get("print_contract")
@@ -975,8 +975,8 @@ def test_exported_artifact_contract() -> None:
                 assembly_bbox["max_mm"][2], FRONT_Z_MM, abs_tol=0.01), (
                     f"{slug} {side}/{role}: front is not flush at z=18.3")
             assert record.get("bed_limit_mm") == BED_XY_MM
-            expected_mesh_tolerance = 0.002 if slug == "ae" else 0.01
-            expected_angular_tolerance = 0.03 if slug == "ae" else 0.08
+            expected_mesh_tolerance = 0.002 if slug == "graded" else 0.01
+            expected_angular_tolerance = 0.03 if slug == "graded" else 0.08
             assert record.get("mesh_tolerance_mm") == expected_mesh_tolerance
             assert record.get("mesh_angular_tolerance") == (
                 expected_angular_tolerance)
@@ -1364,7 +1364,7 @@ def test_live_brep_geometry_contract() -> None:
         """Import each released wing BREP once after binding it to its hash.
 
         The exporter already paid the cost of constructing and serializing
-        these exact Ac/Ae solids.  Rebuilding all 24 live solids inside the
+        these exact flat/graded solids.  Rebuilding all 24 live solids inside the
         acceptance process duplicated nearly an hour of OCC work.  STEP
         labels retain the semantic side/role identity needed by every
         downstream Boolean probe, so validate the signed artifact inventory
@@ -1547,7 +1547,7 @@ def test_live_brep_geometry_contract() -> None:
     # Probe the complete carrier-side captive system, not merely the shared
     # datum.  Each staged lower print must retain both sealed skins and the
     # positive cradle/roof land while leaving every functional cutter empty
-    # on the same shared shoulder-normal axis used by the Ac/Ae receiver.
+    # on the same shared shoulder-normal axis used by the flat/graded receiver.
     lower_carriers = {
         key: context_parts[key]["shape"]
         for key in ("lm_lower_floor", "lm_lower_no_floor")
@@ -1681,7 +1681,7 @@ def test_live_brep_geometry_contract() -> None:
             staged_local_parts[side][part_key] = positive_local_clip(
                 staged_lm, clip, f"{side}/{part_key}")
 
-    ae_live_depth_samplers = {}
+    graded_live_depth_samplers = {}
     for slug in live_slugs:
         right = release_shapes[slug]["monoliths"]["right"]
         left = release_shapes[slug]["monoliths"]["left"]
@@ -1695,7 +1695,7 @@ def test_live_brep_geometry_contract() -> None:
         assert left_bounds[0][2] >= REAR_Z_MM - 0.005
         for side, monolith in (("right", right), ("left", left)):
             wing_plan = cad.wing_plan(slug, side)
-            if slug == "ac":
+            if slug == "flat":
                 plan_envelope = cad._plan_prism(
                     wing_plan, REAR_Z_MM - 0.5, FRONT_Z_MM + 0.5)
                 outside_plan = _difference_volume(monolith, plan_envelope)
@@ -1703,12 +1703,12 @@ def test_live_brep_geometry_contract() -> None:
                     f"{slug}/{side}: finalized monolith grows outside exact "
                     f"wing plan by {outside_plan:.6f} mm3")
             else:
-                # Ae is constructed from this exact shared plan and differs
-                # from Ac only at its rear depth field.  A whole-solid
+                # graded is constructed from this exact shared plan and differs
+                # from flat only at its rear depth field.  A whole-solid
                 # near-empty STEP subtraction spends ~1h21 CPU integrating
                 # healed tensor-spline slivers.  Bind the imported BREP to the
                 # plan through its independently checked mirrored XY bounds;
-                # Ac retains the exact common-plan Boolean and Ae's unique
+                # flat retains the exact common-plan Boolean and graded's unique
                 # rear surface is probed below.
                 plan_bounds = wing_plan.bounds
                 side_bounds = right_bounds if side == "right" else left_bounds
@@ -1722,7 +1722,7 @@ def test_live_brep_geometry_contract() -> None:
             upper_t_tool = cad._plan_prism(
                 box(x0, 430.0, x1, cad.contract.A_TAPER_CAP_Y - 0.05),
                 REAR_Z_MM - 0.5, FRONT_Z_MM + 0.5)
-            if slug == "ac":
+            if slug == "flat":
                 wing_upper_t = monolith & upper_t_tool
                 crescent_upper_t = t_crescent & upper_t_tool
                 assert _intersection_volume(
@@ -1731,7 +1731,7 @@ def test_live_brep_geometry_contract() -> None:
             # The imported-BREP Common above proves physical non-collision.
             # The exact clearance is an XY plan contract because both parts
             # share the acoustic-front datum; querying Shape.distance_to on
-            # Ae's full trimmed rear B-spline invokes an unrelated global
+            # graded's full trimmed rear B-spline invokes an unrelated global
             # surface-extrema search and costs tens of core-minutes.
             wing_upper_t_plan = cad.wing_plan(slug, side).intersection(
                 box(x0, 430.0, x1, cad.contract.A_TAPER_CAP_Y - 0.05))
@@ -1788,7 +1788,7 @@ def test_live_brep_geometry_contract() -> None:
                 f"{slug}/{side}/wing key neighborhood")
             # The six-margin capsule proof above and zero wing/pocket
             # intersection establish the minimum clearance directly.  A
-            # Shape.distance_to query here would ask OCC to scan Ae's entire
+            # Shape.distance_to query here would ask OCC to scan graded's entire
             # underlying tensor B-spline despite this local trim.
             for part_key, staged_lm in staged_local_parts[side].items():
                 overlap = _intersection_volume(wing_local, staged_lm)
@@ -1808,7 +1808,7 @@ def test_live_brep_geometry_contract() -> None:
                     key_plan, REAR_Z_MM - 0.5, FRONT_Z_MM + 0.5)
                 assert _intersection_volume(pocket, key_tool) <= 0.03, (
                     f"{slug}/{side}: key pocket reaches {key['name']} dovetail")
-            exposed_edge = cad._ae_analytics()[1].exposed_outer_edge
+            exposed_edge = cad._graded_analytics()[1].exposed_outer_edge
             exposed_edge = (exposed_edge if side == "right"
                             else cad._mirror_plan(exposed_edge))
             exposed_edge_guard = cad._plan_prism(
@@ -1852,13 +1852,13 @@ def test_live_brep_geometry_contract() -> None:
         _assert_bounds_close(
             _shape_bounds(mirrored), left_bounds, 0.002,
             f"{slug} exact left/right mirror bounds")
-        if slug == "ac":
+        if slug == "flat":
             assert _difference_volume(left, mirrored) <= 0.02, (
                 f"{slug}: left contains material outside mirrored right")
             assert _difference_volume(mirrored, left) <= 0.02, (
                 f"{slug}: mirrored right contains material outside left")
         else:
-            # Independently healed STEP copies of Ae's dense trimmed tensor
+            # Independently healed STEP copies of graded's dense trimmed tensor
             # B-spline can leave near-empty Boolean/section slivers whose OCC
             # integration consumes tens of core-hours.  The exact analytic
             # plan-mirror contract is already gated above; validate the
@@ -1868,14 +1868,14 @@ def test_live_brep_geometry_contract() -> None:
             # sampled surface oracle.
             right_depth_sampler = cad._VerticalDepthSampler(right)
             left_depth_sampler = cad._VerticalDepthSampler(left)
-            ae_live_depth_samplers.update({
+            graded_live_depth_samplers.update({
                 "right": right_depth_sampler,
                 "left": left_depth_sampler,
             })
             maximum_mirrored_depth_delta = 0.0
             mirror_probe_count = 0
             mirror_sections = cad.wing_section_samples(
-                "ae", "right", samples=17)
+                "graded", "right", samples=17)
             for section in mirror_sections.values():
                 section_xy = np.asarray(section["xy_mm"], dtype=float)
                 for x_mm, y_mm in section_xy[1:-1:2]:
@@ -1887,10 +1887,10 @@ def test_live_brep_geometry_contract() -> None:
                     mirror_probe_count += 1
             assert mirror_probe_count >= 35
             assert maximum_mirrored_depth_delta <= 0.03, (
-                "Ae mirrored rear-surface depth differs by "
+                "graded mirrored rear-surface depth differs by "
                 f"{maximum_mirrored_depth_delta:.6f} mm")
             print(
-                "  ae: exact analytic plan plus "
+                "  graded: exact analytic plan plus "
                 f"{mirror_probe_count} paired imported rear-depth probes; "
                 "max depth delta="
                 f"{maximum_mirrored_depth_delta:.4f} mm",
@@ -2018,7 +2018,7 @@ def test_live_brep_geometry_contract() -> None:
                 record.get("bounds_mm"), _shape_bounds(piece), 0.003,
                 f"{label} serialized bounds")
             # Shape.volume is the inexpensive ordinary BRepGProp property
-            # already used by _assert_one_positive_solid.  Dense trimmed Ae
+            # already used by _assert_one_positive_solid.  Dense trimmed graded
             # pieces vary by up to 1.54% under that non-adaptive quadrature,
             # so use it only as a gross identity check.  The source value was
             # produced by the strict adaptive integrator and is independently
@@ -2046,7 +2046,7 @@ def test_live_brep_geometry_contract() -> None:
             assert_imported_piece_facts(
                 left_piece, serialized_a_parts["left"][role],
                 f"{slug}/left/{role}")
-            if slug == "ac":
+            if slug == "flat":
                 assert _difference_volume(piece, right) <= 0.03, (
                     f"{slug}/{role}: split print solid leaves monolith")
                 mirrored_piece = mirror(piece, about=Plane.YZ)
@@ -2073,10 +2073,10 @@ def test_live_brep_geometry_contract() -> None:
                 assert_imported_piece_facts(
                     piece, serialized_b_parts[side][role],
                     f"{slug}/{side}/B/{role}")
-                if slug == "ac":
+                if slug == "flat":
                     assert _difference_volume(piece, monolith) <= 0.03, (
                         f"{slug}/{side}/B/{role}: leaves monolith")
-            if slug == "ac":
+            if slug == "flat":
                 assert _difference_volume(
                     b_parts["lm_lower"], a_parts["lm_lower"]) <= 0.02
                 assert _difference_volume(
@@ -2114,7 +2114,7 @@ def test_live_brep_geometry_contract() -> None:
                     - sum(float(serialized_a_parts[side][role]["volume_mm3"])
                           for role in ("lm_upper", "um")))
                 assert 1.0 < restored_gap_volume < 100.0
-        if slug == "ac":
+        if slug == "flat":
             for role, piece in two_piece.items():
                 mirrored_piece = mirror(piece, about=Plane.YZ)
                 assert _difference_volume(
@@ -2132,7 +2132,7 @@ def test_live_brep_geometry_contract() -> None:
             "A-lower-identical, and fills the former upper seam",
             flush=True)
 
-        if slug == "ac":
+        if slug == "flat":
             for key in cad._layout().dovetail_keys:
                 male_role = key["male_owner"]
                 female_role = key["female_owner"]
@@ -2341,7 +2341,7 @@ def test_live_brep_geometry_contract() -> None:
                         side_pieces[other_role], ring_solid) <= 0.03, (
                             f"{slug}/{side}: {other_role} owns "
                             f"{ring_site['name']} captive land")
-        if slug == "ac":
+        if slug == "flat":
             roles = list(PRINT_PART_ROLES)
             for index, first in enumerate(roles):
                 for second in roles[index + 1:]:
@@ -2363,7 +2363,7 @@ def test_live_brep_geometry_contract() -> None:
                 < 0.015 * serialized_monolith_volume), (
             f"{slug}: implausible source-BREP dovetail fit-clearance volume "
             f"{serialized_fit_clearance_volume:.3f} mm3")
-        if slug == "ac":
+        if slug == "flat":
             fit_clearance_volume = (
                 right_volume - sum(
                     cad.adaptive_volume_mm3(piece)
@@ -2379,60 +2379,60 @@ def test_live_brep_geometry_contract() -> None:
                 f"{serialized_fit_clearance_volume:.3f} mm3, limit="
                 f"{assembly_roundtrip_limit:.3f} mm3")
 
-    if selected_slug != "ae":
-        ac = release_shapes["ac"]["monoliths"]["right"]
-        ac_depth_sampler = cad._VerticalDepthSampler(ac)
-        ac_plan = cad.wing_plan("ac", "right")
-        ac_raw_volume = float(ac_plan.area) * FULL_DEPTH_MM
-        cavity_removed = ac_raw_volume - float(ac.volume)
-        uncut_ac = cad._plan_prism(ac_plan, REAR_Z_MM, FRONT_Z_MM)
+    if selected_slug != "graded":
+        flat = release_shapes["flat"]["monoliths"]["right"]
+        flat_depth_sampler = cad._VerticalDepthSampler(flat)
+        flat_plan = cad.wing_plan("flat", "right")
+        flat_raw_volume = float(flat_plan.area) * FULL_DEPTH_MM
+        cavity_removed = flat_raw_volume - float(flat.volume)
+        uncut_flat = cad._plan_prism(flat_plan, REAR_Z_MM, FRONT_Z_MM)
         expected_cavity_volume = sum(
-            _intersection_volume(uncut_ac, cutter)
+            _intersection_volume(uncut_flat, cutter)
             for cutter in cad.receiver_pockets("right").values())
         key_pocket = lm_split.registration_wing_clearance_tools()["right"]
         for name, cutter in cad.receiver_pockets("right").items():
             assert _intersection_volume(key_pocket, cutter) <= 0.03, (
-                f"Ac key pocket overlaps receiver cutter {name}")
+                f"flat key pocket overlaps receiver cutter {name}")
         expected_key_pocket_volume = _intersection_volume(
-            uncut_ac, key_pocket)
+            uncut_flat, key_pocket)
         # The 3x-long keys and sockets are wholly buried in the native R113.8
         # ring (zero carrier-envelope growth).  Only the deliberate 0.25-mm
-        # wing-clearance offset crosses the Ac interface, so its exact clipped
+        # wing-clearance offset crosses the flat interface, so its exact clipped
         # volume is a small edge sliver rather than the former external-land
         # pocket.  Bracket both failure modes: no clearance cut and a renewed
         # bulky/visible support land.
         assert 0.05 < expected_key_pocket_volume < 0.25, (
-            "Ac native-ring key clearance has implausible clipped volume: "
+            "flat native-ring key clearance has implausible clipped volume: "
             f"{expected_key_pocket_volume:.6f} mm3")
         expected_removed_volume = (
             expected_cavity_volume + expected_key_pocket_volume)
         assert math.isclose(
             cavity_removed, expected_removed_volume,
             rel_tol=1e-5, abs_tol=0.03), (
-                "Ac functional removal does not match the exact clipped "
+                "flat functional removal does not match the exact clipped "
                 "receiver cutters plus optional-LM key pocket: "
                 f"{cavity_removed:.3f} vs {expected_removed_volume:.3f} mm3")
         for role, plan_piece in cad.wing_print_plan_parts(
-                "ac", "right").items():
+                "flat", "right").items():
             witness = plan_piece.representative_point()
-            measured = ac_depth_sampler.depth_mm(witness.x, witness.y)
+            measured = flat_depth_sampler.depth_mm(witness.x, witness.y)
             assert math.isclose(measured, FULL_DEPTH_MM, abs_tol=0.01), (
-                f"Ac {role} rear is not the constant 11.5-mm plane: "
+                f"flat {role} rear is not the constant 11.5-mm plane: "
                 f"{measured:.4f} mm")
 
-    if selected_slug == "ac":
-        print("  live Ac BREP mirror, receiver, split and depth gates pass")
+    if selected_slug == "flat":
+        print("  live flat BREP mirror, receiver, split and depth gates pass")
         return
 
-    ae = release_shapes["ae"]["monoliths"]["right"]
-    ae_depth_sampler = ae_live_depth_samplers.get(
-        "right") or cad._VerticalDepthSampler(ae)
-    sections = cad.wing_section_samples("ae", "right", samples=65)
+    graded = release_shapes["graded"]["monoliths"]["right"]
+    graded_depth_sampler = graded_live_depth_samplers.get(
+        "right") or cad._VerticalDepthSampler(graded)
+    sections = cad.wing_section_samples("graded", "right", samples=65)
     for key in ("S1", "S2", "S3", "S4"):
         section = sections[key]
         assert section["monotonic_nonincreasing"], (
-            f"Ae analytic {key} is not monotonic")
-        assert section["worst_depth_reversal_mm"] <= AE_MONOTONIC_TOL_MM
+            f"graded analytic {key} is not monotonic")
+        assert section["worst_depth_reversal_mm"] <= GRADED_MONOTONIC_TOL_MM
         xy = np.asarray(section["xy_mm"], dtype=float)
         analytic = np.asarray(section["depth_mm"], dtype=float)
         along = np.asarray(section["distance_mm"], dtype=float)
@@ -2440,16 +2440,16 @@ def test_live_brep_geometry_contract() -> None:
         direction_in = xy[-2] - xy[-1]
         direction_in /= np.linalg.norm(direction_in)
         edge_probe = xy[-1] + 0.004 * direction_in
-        edge_depth = ae_depth_sampler.depth_mm(*edge_probe)
-        assert math.isclose(edge_depth, AE_EDGE_DEPTH_MM, abs_tol=0.035), (
-            f"Ae actual {key} free edge is {edge_depth:.4f} mm")
+        edge_depth = graded_depth_sampler.depth_mm(*edge_probe)
+        assert math.isclose(edge_depth, GRADED_EDGE_DEPTH_MM, abs_tol=0.035), (
+            f"graded actual {key} free edge is {edge_depth:.4f} mm")
 
         direction_out = xy[1] - xy[0]
         direction_out /= np.linalg.norm(direction_out)
         land_probe = xy[0] + 0.004 * direction_out
-        land_depth = ae_depth_sampler.depth_mm(*land_probe)
+        land_depth = graded_depth_sampler.depth_mm(*land_probe)
         assert math.isclose(land_depth, FULL_DEPTH_MM, abs_tol=0.05), (
-            f"Ae actual {key} mating land is {land_depth:.4f} mm")
+            f"graded actual {key} mating land is {land_depth:.4f} mm")
 
         # Probe every interior witness: cubic rear surfaces can hide a local
         # reversal between a sparse set of 17 checks.  The user contract is
@@ -2457,7 +2457,7 @@ def test_live_brep_geometry_contract() -> None:
         # accepted after the full-depth land.
         indices = np.arange(1, len(xy) - 1, dtype=int)
         actual = np.asarray([
-            ae_depth_sampler.depth_mm(*xy[index]) for index in indices
+            graded_depth_sampler.depth_mm(*xy[index]) for index in indices
         ])
         expected = analytic[indices]
         maximum_error = float(np.max(np.abs(actual - expected)))
@@ -2466,24 +2466,24 @@ def test_live_brep_geometry_contract() -> None:
         maximum_slope = float(np.max(
             np.abs(np.diff(actual) / np.diff(sampled_along))))
         print(
-            f"  Ae {key}: actual max error={maximum_error:.4f} mm, "
+            f"  graded {key}: actual max error={maximum_error:.4f} mm, "
             f"reversal={reversal:.4f} mm, slope={maximum_slope:.4f}",
             flush=True)
         assert maximum_error <= 0.75, (
-            f"Ae actual {key} departs from analytic field by "
+            f"graded actual {key} departs from analytic field by "
             f"{maximum_error:.3f} mm")
         assert reversal <= 0.03, (
-            f"Ae actual {key} rear surface reverses by "
+            f"graded actual {key} rear surface reverses by "
             f"{reversal:.4f} mm")
-        assert maximum_slope <= AE_MAX_SLOPE + 0.25, (
-            f"Ae actual {key} slope is {maximum_slope:.3f}")
+        assert maximum_slope <= GRADED_MAX_SLOPE + 0.25, (
+            f"graded actual {key} slope is {maximum_slope:.3f}")
 
     s5 = sections["S5"]
     s5_xy = np.asarray(s5["xy_mm"], dtype=float)
     for index in np.unique(np.linspace(2, len(s5_xy) - 3, 9, dtype=int)):
-        measured = ae_depth_sampler.depth_mm(*s5_xy[index])
+        measured = graded_depth_sampler.depth_mm(*s5_xy[index])
         assert math.isclose(measured, FULL_DEPTH_MM, abs_tol=0.05), (
-            f"Ae actual S5 T-seat depth is {measured:.4f} mm")
+            f"graded actual S5 T-seat depth is {measured:.4f} mm")
 
     # Probe both sides of the complete internal protected-land transition.  A
     # hard union could otherwise pass the one-sided land and monotonic-section
@@ -2493,11 +2493,11 @@ def test_live_brep_geometry_contract() -> None:
     # side of their +/- probe intentionally contains no wing.
     from shapely.geometry import Point
 
-    _solution, depth_field, _definitions = cad._ae_analytics()
+    _solution, depth_field, _definitions = cad._graded_analytics()
     protected = depth_field.protected
-    plan = cad.wing_plan("ae", "right")
+    plan = cad.wing_plan("graded", "right")
     external_boundary_guard = plan.boundary.buffer(
-        cad.contract.AE_EDGE_MATCH_TOL_MM, cap_style=2, join_style=2)
+        cad.contract.GRADED_EDGE_MATCH_TOL_MM, cap_style=2, join_style=2)
     excluded_external_boundary = protected.boundary.intersection(
         external_boundary_guard)
     protected_transition = protected.boundary.difference(
@@ -2510,7 +2510,7 @@ def test_live_brep_geometry_contract() -> None:
     for line in _line_parts(protected_transition):
         sample_count = max(
             1, int(math.ceil(
-                line.length / AE_LAND_BOUNDARY_SAMPLE_SPACING_MM)))
+                line.length / GRADED_LAND_BOUNDARY_SAMPLE_SPACING_MM)))
         # Bin midpoints avoid ambiguous polygon vertices while keeping every
         # point on the perimeter within 0.25 mm of a measured witness.
         for sample_index in range(sample_count):
@@ -2529,11 +2529,11 @@ def test_live_brep_geometry_contract() -> None:
             ny = tx / tangent_length
             boundary_point = line.interpolate(distance)
             plus = Point(
-                boundary_point.x + AE_LAND_BOUNDARY_PROBE_OFFSET_MM * nx,
-                boundary_point.y + AE_LAND_BOUNDARY_PROBE_OFFSET_MM * ny)
+                boundary_point.x + GRADED_LAND_BOUNDARY_PROBE_OFFSET_MM * nx,
+                boundary_point.y + GRADED_LAND_BOUNDARY_PROBE_OFFSET_MM * ny)
             minus = Point(
-                boundary_point.x - AE_LAND_BOUNDARY_PROBE_OFFSET_MM * nx,
-                boundary_point.y - AE_LAND_BOUNDARY_PROBE_OFFSET_MM * ny)
+                boundary_point.x - GRADED_LAND_BOUNDARY_PROBE_OFFSET_MM * nx,
+                boundary_point.y - GRADED_LAND_BOUNDARY_PROBE_OFFSET_MM * ny)
             plus_inside = protected.covers(plus)
             minus_inside = protected.covers(minus)
             if plus_inside == minus_inside:
@@ -2543,11 +2543,11 @@ def test_live_brep_geometry_contract() -> None:
             if (not plan_with_tolerance.covers(inside)
                     or not plan_with_tolerance.covers(outside)):
                 continue
-            inside_depth = ae_depth_sampler.depth_mm(inside.x, inside.y)
-            outside_depth = ae_depth_sampler.depth_mm(outside.x, outside.y)
+            inside_depth = graded_depth_sampler.depth_mm(inside.x, inside.y)
+            outside_depth = graded_depth_sampler.depth_mm(outside.x, outside.y)
             assert math.isclose(
                 inside_depth, FULL_DEPTH_MM, abs_tol=0.03), (
-                    "Ae actual protected-land perimeter lost its exact depth: "
+                    "graded actual protected-land perimeter lost its exact depth: "
                     f"{inside_depth:.4f} mm at "
                     f"({inside.x:.4f}, {inside.y:.4f})")
             jump = abs(inside_depth - outside_depth)
@@ -2556,18 +2556,18 @@ def test_live_brep_geometry_contract() -> None:
                 maximum_jump = jump
                 maximum_jump_xy = (boundary_point.x, boundary_point.y)
     assert perimeter_samples >= 20, (
-        "Ae protected-land transition produced too few perimeter witnesses")
+        "graded protected-land transition produced too few perimeter witnesses")
     assert qualified_samples == perimeter_samples, (
-        "Ae protected-land perimeter could not be probed completely: "
+        "graded protected-land perimeter could not be probed completely: "
         f"{qualified_samples}/{perimeter_samples} samples")
-    assert maximum_jump <= AE_LAND_BOUNDARY_MAX_JUMP_MM, (
-        "Ae protected-land C0 rear step exceeds the 0.03-mm gate: "
+    assert maximum_jump <= GRADED_LAND_BOUNDARY_MAX_JUMP_MM, (
+        "graded protected-land C0 rear step exceeds the 0.03-mm gate: "
         f"{maximum_jump:.4f} mm at "
         f"({maximum_jump_xy[0]:.4f}, {maximum_jump_xy[1]:.4f})")
-    ae_facts_path = _variant_paths("ae")["facts"]
-    assert isinstance(ae_facts_path, Path)
+    graded_facts_path = _variant_paths("graded")["facts"]
+    assert isinstance(graded_facts_path, Path)
     serialized_gate = (
-        _read_json_object(ae_facts_path)["geometry"]["depth_contract"]
+        _read_json_object(graded_facts_path)["geometry"]["depth_contract"]
         ["protected_perimeter_brep_c0_gate"])
     assert serialized_gate["probe_engine"] == (
         "IntCurvesFace_ShapeIntersector")
@@ -2578,13 +2578,13 @@ def test_live_brep_geometry_contract() -> None:
     assert serialized_gate["legacy_boolean_calibration_probe_count"] >= 18
     assert serialized_gate["legacy_boolean_maximum_delta_mm"] <= 0.002
     print(
-        "  Ae protected perimeter: "
+        "  graded protected perimeter: "
         f"{qualified_samples} paired +/-0.004-mm probes, "
         f"max C0 jump={maximum_jump:.4f} mm, "
         "excluded external-boundary length="
         f"{excluded_external_boundary.length:.3f} mm",
         flush=True)
-    checked_label = "Ac/Ae" if selected_slug is None else selected_slug.upper()
+    checked_label = "flat/graded" if selected_slug is None else selected_slug.upper()
     print(
         f"  live {checked_label} BREP mirror, receiver, split and depth "
         "gates pass")
@@ -2602,12 +2602,12 @@ def _run_live_brep_variant(slug: str) -> None:
             os.environ["LX_OBIWAN_WING_LIVE_SLUG"] = previous
 
 
-def test_live_brep_geometry_contract_ac() -> None:
-    _run_live_brep_variant("ac")
+def test_live_brep_geometry_contract_flat() -> None:
+    _run_live_brep_variant("flat")
 
 
-def test_live_brep_geometry_contract_ae() -> None:
-    _run_live_brep_variant("ae")
+def test_live_brep_geometry_contract_graded() -> None:
+    _run_live_brep_variant("graded")
 
 
 CHECKS = (
@@ -2615,14 +2615,14 @@ CHECKS = (
     test_live_brep_geometry_contract,
 )
 SINGLE_CHECKS = CHECKS + (
-    test_live_brep_geometry_contract_ac,
-    test_live_brep_geometry_contract_ae,
+    test_live_brep_geometry_contract_flat,
+    test_live_brep_geometry_contract_graded,
 )
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Remote-only Ac/Ae Obi-Wan wing acceptance")
+        description="Remote-only flat/graded Obi-Wan wing acceptance")
     parser.add_argument("--artifact-root", default="build/wings")
     args = parser.parse_args()
     artifact_root = Path(args.artifact_root)
@@ -2647,14 +2647,14 @@ def main() -> int:
         check = next(
             (item for item in SINGLE_CHECKS if item.__name__ == single), None)
         if check is None:
-            raise SystemExit(f"unknown Ac/Ae check: {single}")
+            raise SystemExit(f"unknown flat/graded check: {single}")
         print(f"{single}:", flush=True)
         check()
         return 0
 
     if not _large_host_execution():
         raise SystemExit(
-            "Ac/Ae validation requires the remote osado-512g profile")
+            "flat/graded validation requires the remote osado-512g profile")
 
     def run_check(check):
         env = os.environ.copy()
@@ -2684,7 +2684,7 @@ def main() -> int:
                 print(stderr, end="", file=sys.stderr, flush=True)
     else:
         print(
-            f"Ac/Ae remote runner: {workers} concurrent isolated checks",
+            f"flat/graded remote runner: {workers} concurrent isolated checks",
             flush=True)
         with ThreadPoolExecutor(max_workers=workers) as executor:
             futures = {
@@ -2703,8 +2703,8 @@ def main() -> int:
     if failures:
         ordered = [check.__name__ for check in CHECKS
                    if check.__name__ in failures]
-        raise SystemExit("Ac/Ae FAILED: " + ", ".join(ordered))
-    print("\nall Ac/Ae Obi-Wan wing checks passed")
+        raise SystemExit("flat/graded FAILED: " + ", ".join(ordered))
+    print("\nall flat/graded Obi-Wan wing checks passed")
     return 0
 
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fast contract checks for local Obi-Wan Ac/Ae B-wing plates."""
+"""Fast contract checks for local Obi-Wan flat/graded B-wing plates."""
 
 from __future__ import annotations
 
@@ -19,22 +19,22 @@ import build_obiwan_wing_plate as plate
 
 
 EXPECTED = {
-    "ac": {
-        "plate_name": "obiwan_ac_wings_split2_combo",
+    "flat": {
+        "plate_name": "obiwan_flat_wings_split2_combo",
         "names": (
-            "obiwan_05_split2_Ac_wing_LM_lower_left_1_of_2",
-            "obiwan_06_split2_Ac_wing_LM_UM_upper_left_2_of_2",
-            "obiwan_08_split2_Ac_wing_LM_lower_right_1_of_2",
-            "obiwan_09_split2_Ac_wing_LM_UM_upper_right_2_of_2",
+            "obiwan_05_split2_flat_wing_LM_lower_left_1_of_2",
+            "obiwan_06_split2_flat_wing_LM_UM_upper_left_2_of_2",
+            "obiwan_08_split2_flat_wing_LM_lower_right_1_of_2",
+            "obiwan_09_split2_flat_wing_LM_UM_upper_right_2_of_2",
         ),
     },
-    "ae": {
-        "plate_name": "obiwan_ae_wings_split2_combo",
+    "graded": {
+        "plate_name": "obiwan_graded_wings_split2_combo",
         "names": (
-            "obiwan_11_split2_Ae_wing_LM_lower_left_1_of_2",
-            "obiwan_12_split2_Ae_wing_LM_UM_upper_left_2_of_2",
-            "obiwan_14_split2_Ae_wing_LM_lower_right_1_of_2",
-            "obiwan_15_split2_Ae_wing_LM_UM_upper_right_2_of_2",
+            "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2",
+            "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2",
+            "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",
+            "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2",
         ),
     },
 }
@@ -140,10 +140,10 @@ def check_variant(slug: str) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--variant", choices=("ac", "ae"), action="append",
+        "--variant", choices=("flat", "graded"), action="append",
         help="variant to check; repeat to check both (default: both)")
     args = parser.parse_args()
-    for slug in args.variant or ("ac", "ae"):
+    for slug in args.variant or ("flat", "graded"):
         check_variant(slug)
     return 0
 

@@ -2,7 +2,7 @@
 
 Obi-Wan removes the full baffle outline and keeps only what carries a driver:
 one LM collar and one UM collar, plus optional tweeter crescent and optional
-Ac/Ae acoustic wings. It shares no seam, duct, or attachment interface with the
+flat/graded acoustic wings. It shares no seam, duct, or attachment interface with the
 R6P proud family. Catalog entry: [`artifacts/obiwan/`](../artifacts/obiwan/).
 
 This product is a **candidate**: its state manifests record
@@ -21,9 +21,9 @@ pending.
 | `src/lx521_baffle/obiwan/floor.py` / `src/lx521_baffle/obiwan/floor_strength.py` | Floor-only integral W64 stem/foot with the constant-thickness convex Option-B transition (75 mm span, 65 mm rise, centreline Rmin 41 mm), rear NL8 panel/service cavity and three buried cable continuations; closed-form five-material net-section screen. This is part of the LM carrier, not an add-on, and the analysis is not FEA or physical qualification. |
 | `src/lx521_baffle/obiwan/attachments.py` | Optional tweeter crescent with complete standalone blind-M3 receiver ears; any cable retention is external/non-modeled, and magnets receive zero structural load credit |
 | `src/lx521_baffle/obiwan/assembled.py` | Review assembly containing the R6F core, selected add-ons, and the explicitly non-manufacturing terminal/Faston proxy |
-| `src/lx521_baffle/obiwan/wings.py` | STEP-first Ac/Ae Obi-Wan acoustic attachments: one canonical monolith per side, three exact surface-normal captive D5 × 2 magnet receivers per side (LM lower shoulder, LM upper, and UM), one saddle compatible with the shared floor/no-floor upper LM shoulder, the approved constant-depth Ac or monotonic LM/UM/T-weighted Ae rear, and two print options. Both wings start at the Option-B vertical tangent y=74.15 and grow outward through a G1 cubic that joins the outer flank at the LM-aperture lower tangent y=105.981, so no wing panel hangs below the bend. Option A preserves the original three exact-mask pieces; option B keeps the identical lower piece and fuses LM-upper plus UM into one upper piece by restoring only their former clearance seam. Each physical side retains the lower→upper V1L-style through-local-thickness XY dovetail; option A also retains its middle→UM dovetail. Female clearance is 0.05 mm, exposed split clearance closes over the final 2 mm at both endpoints, and the keys add no envelope growth. They register/interlock in XY but provide no independent Z retention. Ae’s complete internal protected-land perimeter is accepted only when paired actual-BREP probes show a C0 jump ≤0.03 mm |
-| `scripts/export_obiwan_wings.py` | Transactional Ac/Ae exporter: canonical/A/B assembled STEP, ten strict front-face-down STLs with ten exact adjacent `.print.json` authorities, facts, hash manifest, and CAD-derived QA renders under `build/wings/ac/` or `build/wings/ae/`; every review PNG uses hash-validated staged BREPs for a neutral no-floor LM-upper/UM/tweeter reference plus the two coincident LM-lower outlines—blue dash-dot for no-floor and green dotted for floor stand; the side view keeps its useful acoustic-depth scale and includes a complete-depth floor inset |
-| `tests/test_obiwan_wings.py` | Remote-only Ac/Ae BREP, print-inventory, STEP, STL, mirror, depth, receiver, dovetail/clearance, endpoint-closure, bed-fit, provenance, render, and exact dual-state lower-LM front-profile gates |
+| `src/lx521_baffle/obiwan/wings.py` | STEP-first flat/graded Obi-Wan acoustic attachments: one canonical monolith per side, three exact surface-normal captive D5 × 2 magnet receivers per side (LM lower shoulder, LM upper, and UM), one saddle compatible with the shared floor/no-floor upper LM shoulder, the approved constant-depth flat or monotonic LM/UM/T-weighted graded rear, and two print options. Both wings start at the Option-B vertical tangent y=74.15 and grow outward through a G1 cubic that joins the outer flank at the LM-aperture lower tangent y=105.981, so no wing panel hangs below the bend. Option A preserves the original three exact-mask pieces; option B keeps the identical lower piece and fuses LM-upper plus UM into one upper piece by restoring only their former clearance seam. Each physical side retains the lower→upper V1L-style through-local-thickness XY dovetail; option A also retains its middle→UM dovetail. Female clearance is 0.05 mm, exposed split clearance closes over the final 2 mm at both endpoints, and the keys add no envelope growth. They register/interlock in XY but provide no independent Z retention. Graded’s complete internal protected-land perimeter is accepted only when paired actual-BREP probes show a C0 jump ≤0.03 mm |
+| `scripts/export_obiwan_wings.py` | Transactional flat/graded exporter: canonical/A/B assembled STEP, ten strict front-face-down STLs with ten exact adjacent `.print.json` authorities, facts, hash manifest, and CAD-derived QA renders under `build/wings/flat/` or `build/wings/graded/`; every review PNG uses hash-validated staged BREPs for a neutral no-floor LM-upper/UM/tweeter reference plus the two coincident LM-lower outlines—blue dash-dot for no-floor and green dotted for floor stand; the side view keeps its useful acoustic-depth scale and includes a complete-depth floor inset |
+| `tests/test_obiwan_wings.py` | Remote-only flat/graded BREP, print-inventory, STEP, STL, mirror, depth, receiver, dovetail/clearance, endpoint-closure, bed-fit, provenance, render, and exact dual-state lower-LM front-profile gates |
 
 ## Geometry and interfaces
 
@@ -72,7 +72,7 @@ mandatory geometry is only:
   carrier surface. All
   six have
   **zero structural load credit**;
-- Ac and Ae provide three coaxial captive receivers on each physical
+- Flat and graded provide three coaxial captive receivers on each physical
   side—one at LM lower, one at LM upper, and one at UM—so all six carrier
   magnet axes have matching wing cavities. The mating surfaces are flush with
   zero physical air gap; the receiver retains 0.05 mm as a solid internal
@@ -159,7 +159,7 @@ grow outward from the R113 lip, outside the LM recess. They retain at least
 0.50 mm local radial and blind-end wall, 0.05 mm recess plan clearance, and
 0.13 mm conservative W22-flange plan clearance. Their worst-case reach is
 R114.4036: 1.4036 mm beyond the structural R113.0 ring and 0.6036 mm beyond
-the finalized R113.8 visible fairing. Ac and Ae include a hidden 0.25 mm
+the finalized R113.8 visible fairing. Flat and graded include a hidden 0.25 mm
 clearance pocket around each land at the carrier interface, wholly between the
 front and rear faces. CAD compatibility is gated; physical printed fit remains
 coupon-qualified. With the monolithic LM these pockets are only small hidden
@@ -212,7 +212,7 @@ The floor and no-floor lower profiles intentionally diverge below the shared
 upper shoulder. No-floor owns the complete shallow bridge down to world Y=0;
 floor mode owns only the shoulder material above Y=60 plus its full-depth
 Option-B wall. There is no shallow perimeter box and no lower magnet rail
-under the bend. Ac and Ae share the exact local shoulder saddle, contain no
+under the bend. Flat and graded share the exact local shoulder saddle, contain no
 material below the Option-B vertical tangent at Y=74.15, and grow outward
 through a G1 cubic to the LM-aperture lower tangent at Y=105.981. The floor's
 deep load path and the no-floor bridge's four blind inserts remain
@@ -327,7 +327,7 @@ geometry or release proof.
 
 See [`VARIANTS.md`](VARIANTS.md) for the variant/add-on catalog and the
 compatibility matrix, [`obiwan_acoustic_wings_spec.md`](obiwan_acoustic_wings_spec.md)
-for the Ac/Ae wing design authority, and [`PRINTING.md`](PRINTING.md) for
+for the flat/graded wing design authority, and [`PRINTING.md`](PRINTING.md) for
 filament choice, print settings, fastener torques, and insert installation.
 
 ## Printable pieces
@@ -485,11 +485,11 @@ proof: the 12 mm state has zero positive overtravel beyond the provisional
 12 mm exposed tab. The numbered procedure and hardware
 cautions are in PRINTING.md.
 
-**Ac/Ae wing segments:** slide each through-local-thickness dovetail along
+**Flat/graded wing segments:** slide each through-local-thickness dovetail along
 local Z while holding the acoustic front faces on a common datum. The two keys
 provide XY registration and in-plane interlock only; they do not independently
 retain the segments against Z separation and carry no structural-retention
 claim. If handling or the experiment requires Z retention, use the same
-documented rear tape or light-bond method on every compared wing. This Ac/Ae
+documented rear tape or light-bond method on every compared wing. This flat/graded
 contract supersedes their former wavy butt-glue/epoxy seams only; it does not
 change the adhesive instructions for legacy R6P attachments or other splits.

@@ -373,7 +373,7 @@ def test_transverse_magnet_plane_is_uniform_per_design_family() -> None:
     """Stock, slim and Obi-Wan each publish one insertion/closure plane.
 
     Grouping by the user-facing design family is deliberate: attachments,
-    split alternatives, both stand states and Ac/Ae receivers must not
+    split alternatives, both stand states and flat/graded receivers must not
     silently retain a stale lower/upper or LM/UM depth.  The fit coupon is
     not an assembled baffle, so it does not belong to this gate.
     """
@@ -382,7 +382,7 @@ def test_transverse_magnet_plane_is_uniform_per_design_family() -> None:
         "stock": {"A", "B1", "B2"},
         "slim": {"V1-A", "V1-B1", "V1L"},
         "obiwan": {
-            "Obi-Wan", "Obi-Wan-split", "Obi-Wan-Ac", "Obi-Wan-Ae",
+            "Obi-Wan", "Obi-Wan-split", "Obi-Wan-Flat", "Obi-Wan-Graded",
         },
     }
     artifacts = payload["artifacts"]
@@ -466,7 +466,7 @@ def test_every_released_magnet_site_has_exact_left_right_symmetry() -> None:
         artifact_part = str(artifact["part"])
         parsed_part = _mirrored_name(artifact_part)
         split_discriminator = ""
-        if artifact["variant"] in {"Obi-Wan-Ac", "Obi-Wan-Ae"}:
+        if artifact["variant"] in {"Obi-Wan-Flat", "Obi-Wan-Graded"}:
             split_discriminator = (
                 parsed_part[1]
                 if parsed_part is not None else artifact_part)
@@ -543,7 +543,7 @@ def test_catalog_source_freezes_58_stls_and_94_stations() -> None:
     assert sum(counts[1] for counts in families.values()) == 94
     assert set(families) == {
         "B2", "A", "B1", "V1-A", "V1-B1",
-        "V1L", "Obi-Wan", "Obi-Wan-split", "Obi-Wan-Ac", "Obi-Wan-Ae",
+        "V1L", "Obi-Wan", "Obi-Wan-split", "Obi-Wan-Flat", "Obi-Wan-Graded",
         "coupon1",
     }
 
@@ -551,7 +551,7 @@ def test_catalog_source_freezes_58_stls_and_94_stations() -> None:
 def test_wing_catalog_identity_preserves_frozen_release_case() -> None:
     """Filesystem slugs stay lowercase; released family IDs must not."""
     generator = _load_catalog_generator_without_cad()
-    expected = {"ac": "Obi-Wan-Ac", "ae": "Obi-Wan-Ae"}
+    expected = {"flat": "Obi-Wan-Flat", "graded": "Obi-Wan-Graded"}
     assert generator.RELEASED_WING_VARIANTS == expected
     for slug, variant in expected.items():
         assert generator._released_wing_variant(slug) == variant
@@ -1144,7 +1144,7 @@ def test_wing_review_uses_captive_cavity_schema() -> None:
     assert 'receiver["pocket_depth_mm"]' not in source
 
 
-def test_ae_unions_overlapping_relief_tools_before_final_cut() -> None:
+def test_graded_unions_overlapping_relief_tools_before_final_cut() -> None:
     source = (ROOT / "src/lx521_baffle/obiwan/wings.py").read_text(encoding="utf-8")
     assert "combined_cutter = relief_cutter.fuse(edge_cutter)" in source
     assert "carved = blank - combined_cutter" in source
@@ -1280,7 +1280,7 @@ def test_sidecar_inventory_exact_counts_and_only_polar_exclusion() -> None:
         "lx521_polar_base_1of2_base.stl",
         "lx521_polar_base_2of2_rotor.stl",
     }
-    for slug in ("ac", "ae"):
+    for slug in ("flat", "graded"):
         names = expected_wing_stl_names(slug)
         assert len(names) == EXPECTED_WING_STL_COUNT
         assert len({Path(name).with_suffix(".print.json").name
@@ -2131,7 +2131,7 @@ def main() -> None:
         test_docs_do_not_describe_generated_stls_front_up,
         test_ts_captive_detour_is_smooth_full_lumen_and_wired,
         test_wing_review_uses_captive_cavity_schema,
-        test_ae_unions_overlapping_relief_tools_before_final_cut,
+        test_graded_unions_overlapping_relief_tools_before_final_cut,
         test_docs_reject_fake_p2s_monolith_pauses,
         test_release_sidecars_fail_closed,
         test_sidecar_inventory_exact_counts_and_only_polar_exclusion,

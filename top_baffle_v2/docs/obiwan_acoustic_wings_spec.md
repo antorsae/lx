@@ -1,9 +1,11 @@
-# Obi-Wan Ac/Ae acoustic-wing specification
+# Obi-Wan flat/graded acoustic-wing specification
 
 This document is the complete acoustic-wing contract for the Obi-Wan top
-baffle. Only **Ac** and **Ae** are supported. Earlier W-series, B1, B2, frame,
-perforated, honeycomb, slot, and chirped-edge Obi-Wan wing concepts are retired
-and must not appear in builds, manifests, catalogs, or the wing design map.
+baffle. Only **flat** (constant depth) and **graded** (weighted depth) are
+supported; these two families were formerly called Ac and Ae. Earlier
+W-series, B1, B2, frame, perforated, honeycomb, slot, and chirped-edge Obi-Wan
+wing concepts are retired and must not appear in builds, manifests, catalogs,
+or the wing design map.
 
 ## Scope
 
@@ -19,9 +21,9 @@ remains process-matched coupon-qualified.
 The two supported comparisons deliberately share one installed plan and two
 qualified print-split options:
 
-- **Ac:** constant solid depth reference.
-- **Ae:** the same plan and flat acoustic front, with a weighted rear depth
-  field that reduces material toward the exposed edge.
+- **flat:** constant solid depth reference.
+- **graded:** the same plan and planar acoustic front, with a weighted rear
+  depth field that reduces material toward the exposed edge.
 
 Neither wing has structural load credit. The carrier and its mechanical joints
 remain responsible for driver and stand loads.
@@ -57,8 +59,8 @@ front faces, does not reach receiver lands or voids, dovetails, or the exposed
 acoustic edge, and remains as a small local relief with the monolithic LM.
 Magnet datums and primary retention geometry are unchanged.
 
-The generated design map is `obiwan_wing_design_map.png`. It must show Ac and
-Ae only.
+The generated design map is `obiwan_wing_design_map.png`. It must show flat
+and graded only.
 
 ## Magnetic interface
 
@@ -90,7 +92,7 @@ The production interface contract is:
   `(0.706451,-0.707762)`; the left is its exact X mirror. Its cavity datum is
   likewise `0.15` beneath the uninterrupted shoulder.
 - Nominal installed magnet-face separation is `1.10` at LM-lower, LM-upper,
-  and UM (`0.45 + 0.15 + 0.05 + 0.45`). Ac and Ae place their matching
+  and UM (`0.45 + 0.15 + 0.05 + 0.45`). Flat and graded place their matching
   receivers from the visible carrier datums.
 - Every cavity is wholly buried in the immutable host; neither carrier nor
   wing may show a local pad, box, flat, dent, silhouette change, or other
@@ -101,15 +103,15 @@ The production interface contract is:
 
 The process reference remains `coupons/obiwan_ae_embed/`.
 
-The lower Ac/Ae outline contains no material below the Option-B vertical
+The lower flat/graded outline contains no material below the Option-B vertical
 tangent at `Y=74.15`. A G1 cubic starts there with the bend tangent and joins
-the released outer flank at the LM-aperture lower tangent `Y=105.981`; this
-is the common lower-root contract for Ac/Ae, left/right, and both A/B print
+the released outer flank at the LM-aperture lower tangent `Y=105.981`; this is
+the common lower-root contract for flat/graded, left/right, and both A/B print
 splits.
 
-## Ac: constant-depth wing
+## flat: constant-depth wing
 
-Ac is the mass and geometry reference:
+The flat wing is the mass and geometry reference:
 
 - `11.5` rear-field depth wherever material remains; captive-receiver voids
   and the keyed-land interface relief are the only declared subtractive
@@ -119,13 +121,13 @@ Ac is the mass and geometry reference:
   cap.
 - The exposed edge remains a 90-degree constant-depth edge.
 
-Ac and Ae must use the same installed plan, receiver axes, split options, and
-dovetail definitions so depth is the controlled variable.
+Flat and graded must use the same installed plan, receiver axes, split
+options, and dovetail definitions so depth is the controlled variable.
 
-## Ae: weighted-depth wing
+## graded: weighted-depth wing
 
-Ae retains the Ac front surface and installed plan. Its rear is one continuous,
-single-valued LM/UM/tweeter-weighted field:
+The graded wing retains the flat front surface and installed plan. Its rear is
+one continuous, single-valued LM/UM/tweeter-weighted field:
 
 - Local depth range: `0.24..11.5`.
 - The eligible exposed edge is constant at `0.24`; this is a coupon-gated
@@ -142,8 +144,9 @@ single-valued LM/UM/tweeter-weighted field:
 - Dovetail interfaces must not introduce a rear-depth discontinuity greater
   than `0.15`.
 
-Ae is experimental until its edge, surface finish, and acoustic behavior have
-physical evidence. CAD validation alone does not qualify the one-layer edge.
+The graded wing is experimental until its edge, surface finish, and acoustic
+behavior have physical evidence. CAD validation alone does not qualify the
+one-layer edge.
 
 ## Print subdivision
 
@@ -164,7 +167,8 @@ Option B retains the lower dovetail and its `0.05` female clearance exactly.
 The former middle-to-UM seam, key, and clearance are restored as solid wing
 material; a B upper containing a hidden slit or multiple solids is invalid.
 
-There are therefore ten STLs for Ac and ten for Ae. The split contract is:
+There are therefore ten STLs for flat and ten for graded. The split contract
+is:
 
 - Lower-to-middle key: lower male, `7/9/4` neck/head/depth.
 - Middle-to-UM key: middle male, `7/8.5/4` neck/head/depth.
@@ -177,7 +181,7 @@ There are therefore ten STLs for Ac and ten for Ae. The split contract is:
 
 ## Canonical outputs
 
-For slug `ac` or `ae`, the release transaction produces:
+For slug `flat` or `graded`, the release transaction produces:
 
 ```text
 build/wings/<slug>/obiwan_wing_<slug>.step
@@ -198,7 +202,8 @@ No other Obi-Wan wing slug or output tree is valid.
 
 The clean release must prove:
 
-- Ac/Ae are the only accepted exporter choices and artifact directories.
+- Flat/graded are the only accepted exporter choices and artifact
+  directories.
 - Each monolithic pair contains two mirrored solids.
 - The A print assembly contains six valid solids, the B assembly contains four,
   and the transaction contains exactly ten STL/sidecar pairs.
@@ -207,8 +212,8 @@ The clean release must prove:
 - Receiver axes, common source Z, cavities, intact skins, 0.05 mm solid
   receiver construction standoff, zero physical mating gap, and polarity
   match the carrier contract.
-- Both Ac/Ae sides clear the exact staged floor/no-floor canonical LM and both
-  same-state keyed halves.
+- Both flat/graded sides clear the exact staged floor/no-floor canonical LM
+  and both same-state keyed halves.
 - Actual BREP land-to-final-wing clearance is at least `0.25` at both optional
   keyed socket lands.
 - Each keyed-land pocket misses receiver lands and cutters, dovetails, and the
@@ -222,8 +227,8 @@ The clean release must prove:
   both established upper pieces plus the restored former upper clearance,
   is one valid solid, and reconstructs the monolith with only the lower fit
   clearance.
-- Ac is constant-depth.
-- Ae meets its depth range, edge constancy, protected full-depth lands,
+- Flat is constant-depth.
+- Graded meets its depth range, edge constancy, protected full-depth lands,
   monotonic section, slope, and joint-mismatch gates.
 - All twenty prints are front-face-down and bed-fit.
 - CAD snapshots show no disconnected segment, unintended alternative wing,

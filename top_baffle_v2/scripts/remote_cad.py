@@ -2990,7 +2990,7 @@ def _check_promoted_roots(full_roots: set[str]) -> None:
     if "wings" in full_roots:
         make_check([
             (_output_prefix("wings") / slug / "stl").as_posix()
-            for slug in ("ac", "ae")
+            for slug in ("flat", "graded")
         ])
 
 

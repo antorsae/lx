@@ -1,8 +1,8 @@
-"""STEP-first Ac/Ae acoustic wings for the extreme Obi-Wan carrier.
+"""STEP-first flat/graded acoustic wings for the extreme Obi-Wan carrier.
 
 This module turns the approved analytic A-plan contract in
-``gen_obiwan_wing_design_map.py`` into release geometry.  Ac is the constant
-11.5 mm reference.  Ae has the same flat front datum and exact plan envelope,
+``gen_obiwan_wing_design_map.py`` into release geometry.  flat is the constant
+11.5 mm reference.  graded has the same flat front datum and exact plan envelope,
 but its rear is one directly controlled cubic tensor B-spline driven by the
 approved LM/UM/tweeter-weighted depth field.  Full-depth Obi-Wan lands and the
 one-layer free edge are enforced directly on that datum-clipped rear graph.
@@ -87,7 +87,7 @@ from ..magnets import (
 )
 
 
-VARIANT_IDS = ("ac", "ae")
+VARIANT_IDS = ("flat", "graded")
 SIDE_NAMES = ("left", "right")
 PRINT_PART_KEYS = ("lm_lower", "lm_upper", "um")
 TWO_PIECE_PRINT_PART_KEYS = ("lm_lower", "lm_um_upper")
@@ -95,66 +95,66 @@ TWO_PIECE_PRINT_PART_KEYS = ("lm_lower", "lm_um_upper")
 FRONT_Z_MM = float(THICKNESS_MM)
 REAR_LIMIT_Z_MM = float(CORE_REAR_Z)
 FULL_DEPTH_MM = float(contract.DEPTH_MM)
-AE_EDGE_DEPTH_MM = float(contract.AE_EDGE_DEPTH_MM)
+GRADED_EDGE_DEPTH_MM = float(contract.GRADED_EDGE_DEPTH_MM)
 MAGNET_FACE_GAP_MM = float(contract.MAGNET_FACE_GAP_MM)
 MAGNET_POCKET_DIAMETER_MM = float(CAVITY_DIAMETER_MM)
 MAGNET_POCKET_DEPTH_MM = float(CAVITY_DEPTH_MM)
 MAGNET_CAPTIVE_LAND_MM = float(CAPTIVE_LAND_MM)
 
-AE_SURFACE_GRID_X = 145
-AE_SURFACE_GRID_Y = 361
-AE_SURFACE_GRID_PADDING_MM = 4.0
-AE_SURFACE_SPLINE_DEGREE = 3
-AE_SURFACE_OUTSIDE_EDGE_SLOPE = 1.0
-AE_SURFACE_OUTSIDE_MIN_DEPTH_MM = -2.0
-AE_EXACT_EDGE_BAND_MM = 0.12
-AE_RELIEF_BOUNDARY_GUARD_MM = 0.08
-AE_EDGE_BOOLEAN_OVERSHOOT_MM = 0.20
+GRADED_SURFACE_GRID_X = 145
+GRADED_SURFACE_GRID_Y = 361
+GRADED_SURFACE_GRID_PADDING_MM = 4.0
+GRADED_SURFACE_SPLINE_DEGREE = 3
+GRADED_SURFACE_OUTSIDE_EDGE_SLOPE = 1.0
+GRADED_SURFACE_OUTSIDE_MIN_DEPTH_MM = -2.0
+GRADED_EXACT_EDGE_BAND_MM = 0.12
+GRADED_RELIEF_BOUNDARY_GUARD_MM = 0.08
+GRADED_EDGE_BOOLEAN_OVERSHOOT_MM = 0.20
 # Preserve the 0.04-mm protected-land collar that keeps the fitted rear
 # transition below the 0.03-mm C0 gate. The new G1 lower root creates one
 # acute relief tip where this normal inset corresponds to 0.186 mm measured
 # along the tip bisector. That tiny region gets an explicit, bounded exception
 # below; the established 0.08-mm gate remains in force everywhere else.
-AE_BOOLEAN_RELIEF_INSET_MM = 0.04
-AE_BOOLEAN_RELIEF_SIMPLIFY_MM = 0.015
-AE_BOOLEAN_RELIEF_GENERAL_MAX_HAUSDORFF_MM = 0.08
-AE_BOOLEAN_RELIEF_ROOT_EXCEPTION_RADIUS_MM = 0.25
-AE_BOOLEAN_RELIEF_ROOT_MAX_HAUSDORFF_MM = 0.20
+GRADED_BOOLEAN_RELIEF_INSET_MM = 0.04
+GRADED_BOOLEAN_RELIEF_SIMPLIFY_MM = 0.015
+GRADED_BOOLEAN_RELIEF_GENERAL_MAX_HAUSDORFF_MM = 0.08
+GRADED_BOOLEAN_RELIEF_ROOT_EXCEPTION_RADIUS_MM = 0.25
+GRADED_BOOLEAN_RELIEF_ROOT_MAX_HAUSDORFF_MM = 0.20
 # A protected receiver at the new, narrower G1 lower root encloses one tiny
-# disconnected component of the *candidate* Ae rear-relief plan.  Cutting a
+# disconnected component of the *candidate* graded rear-relief plan.  Cutting a
 # 3.87-mm2 island would create a fragile isolated rear pocket for negligible
 # mass benefit.  Retain it at full depth, but fail if this narrowly scoped
 # topological allowance ever grows into meaningful acoustic relief.
-AE_RELIEF_DISCONNECTED_COMPONENT_MAX_AREA_MM2 = 4.0
-AE_RELIEF_DISCONNECTED_TOTAL_MAX_AREA_MM2 = 4.0
-AE_BOOLEAN_EDGE_EXTENSION_MM = 0.13
-AE_BOOLEAN_EDGE_EXTENSION_INSET_MM = 0.003
-AE_BOOLEAN_EDGE_EXTENSION_SIMPLIFY_MM = 0.001
-AE_CUTTER_CONTROL_MIN_DEPTH_MM = AE_EDGE_DEPTH_MM + 0.02
-AE_CUTTER_MIN_PLAN_OVERLAP_MM = 0.02
-AE_PROTECTED_BOUNDARY_SAMPLE_SPACING_MM = 0.50
-AE_PROTECTED_BOUNDARY_PROBE_OFFSET_MM = 0.004
-AE_PROTECTED_BOUNDARY_MAX_C0_JUMP_MM = 0.03
-AE_PROTECTED_CONSTRAINT_SPACING_MM = 0.25
+GRADED_RELIEF_DISCONNECTED_COMPONENT_MAX_AREA_MM2 = 4.0
+GRADED_RELIEF_DISCONNECTED_TOTAL_MAX_AREA_MM2 = 4.0
+GRADED_BOOLEAN_EDGE_EXTENSION_MM = 0.13
+GRADED_BOOLEAN_EDGE_EXTENSION_INSET_MM = 0.003
+GRADED_BOOLEAN_EDGE_EXTENSION_SIMPLIFY_MM = 0.001
+GRADED_CUTTER_CONTROL_MIN_DEPTH_MM = GRADED_EDGE_DEPTH_MM + 0.02
+GRADED_CUTTER_MIN_PLAN_OVERLAP_MM = 0.02
+GRADED_PROTECTED_BOUNDARY_SAMPLE_SPACING_MM = 0.50
+GRADED_PROTECTED_BOUNDARY_PROBE_OFFSET_MM = 0.004
+GRADED_PROTECTED_BOUNDARY_MAX_C0_JUMP_MM = 0.03
+GRADED_PROTECTED_CONSTRAINT_SPACING_MM = 0.25
 # The relief surface meets the exact full-depth blank with a deliberately tiny
 # 0.005-mm C0 easing.  Protected land itself is never Booleaned: it remains
 # untouched material in the exact blank.
-AE_PROTECTED_CONSTRAINT_TARGET_MM = FULL_DEPTH_MM - 0.005
-AE_PROTECTED_CONSTRAINT_TOL_MM = 0.004
-AE_PROTECTED_COLLAR_OFFSETS_MM = (0.25, 0.50, 1.00, 2.00, 4.00)
-# A print mask that ends exactly on the cubic Ae exterior can leave OCC with a
+GRADED_PROTECTED_CONSTRAINT_TARGET_MM = FULL_DEPTH_MM - 0.005
+GRADED_PROTECTED_CONSTRAINT_TOL_MM = 0.004
+GRADED_PROTECTED_COLLAR_OFFSETS_MM = (0.25, 0.50, 1.00, 2.00, 4.00)
+# A print mask that ends exactly on the cubic graded exterior can leave OCC with a
 # coincident face/edge classification and no intersection solid. Extend only
 # the part of each mask that lies outside the finalized wing plan. Interior
 # dovetail ownership and fit-clearance gaps therefore remain exact, while the
 # Boolean tool crosses every exposed perimeter by a deterministic margin.
 PRINT_MASK_EXTERIOR_OVERSHOOT_MM = 0.05
-AE_PROTECTED_GHOST_MAX_DEPTH_MM = 2.0 * FULL_DEPTH_MM - AE_EDGE_DEPTH_MM
-AE_PROTECTED_GHOST_REGULARIZATION = 1.0e-5
-AE_PROTECTED_OUTWARD_REGULARIZATION = 1.0e-3
-AE_PROTECTED_MAX_COLLAR_ERROR_MM = 0.75
-AE_PROTECTED_COLLAR_ERROR_HARD_LIMIT_MM = 2.0
-AE_PROTECTED_COLLAR_OPTIMUM_MARGIN_MM = 0.01
-AE_PROTECTED_COLLAR_MAX_REVERSAL_MM = 0.02
+GRADED_PROTECTED_GHOST_MAX_DEPTH_MM = 2.0 * FULL_DEPTH_MM - GRADED_EDGE_DEPTH_MM
+GRADED_PROTECTED_GHOST_REGULARIZATION = 1.0e-5
+GRADED_PROTECTED_OUTWARD_REGULARIZATION = 1.0e-3
+GRADED_PROTECTED_MAX_COLLAR_ERROR_MM = 0.75
+GRADED_PROTECTED_COLLAR_ERROR_HARD_LIMIT_MM = 2.0
+GRADED_PROTECTED_COLLAR_OPTIMUM_MARGIN_MM = 0.01
+GRADED_PROTECTED_COLLAR_MAX_REVERSAL_MM = 0.02
 ADAPTIVE_VOLUME_EPS = 1.0e-6
 ADAPTIVE_VOLUME_MAX_REACHED_ERROR = 5.0e-6
 
@@ -165,7 +165,7 @@ def _require_guarded_build() -> None:
     """Reject accidental local/in-process OCC construction."""
     import run_memory_guarded as memory_guard
     memory_guard.require_guarded_build(
-        "Ac/Ae Obi-Wan wing construction requires run_memory_guarded.py; "
+        "flat/graded Obi-Wan wing construction requires run_memory_guarded.py; "
         "use the remote-first Make/export workflow")
 
 
@@ -182,8 +182,8 @@ def adaptive_volume_mm3(shape) -> float:
     """Return a guarded adaptive exact-BREP volume in cubic millimetres.
 
     build123d's default ``Shape.volume`` uses OCC's non-adaptive integration.
-    That is accurate for Ac's planar prism, but it can miss roughly 0.8% on
-    Ae's densely trimmed tensor B-spline.  The adaptive BRepGProp overload is
+    That is accurate for flat's planar prism, but it can miss roughly 0.8% on
+    graded's densely trimmed tensor B-spline.  The adaptive BRepGProp overload is
     the release oracle for both serialized volume facts and STL parity.
 
     Compound inputs are deliberately evaluated one solid at a time.  This
@@ -251,20 +251,20 @@ def _layout():
 
 
 @lru_cache(maxsize=1)
-def _ae_analytics():
-    """Approved Ae solution plus all drawing-time analytic build gates."""
+def _graded_analytics():
+    """Approved graded solution plus all drawing-time analytic build gates."""
     layout = _layout()
-    solution = contract._optimize_ae_profile()
-    depth_field = contract._build_ae_depth_field(layout, solution)
-    sections = contract._ae_section_definitions(layout)
-    contract._validate_ae_section_monotonicity(
+    solution = contract._optimize_graded_profile()
+    depth_field = contract._build_graded_depth_field(layout, solution)
+    sections = contract._graded_section_definitions(layout)
+    contract._validate_graded_section_monotonicity(
         layout, depth_field, solution, sections)
     return solution, depth_field, sections
 
 
 def wing_plan(variant_id: str, side: str):
     """Return the authoritative installed XY plan for one monolithic wing."""
-    _normalize_variant(variant_id)  # Ac and Ae deliberately share the plan.
+    _normalize_variant(variant_id)  # flat and graded deliberately share the plan.
     side = _normalize_side(side)
     plan = _layout().field_right
     return plan if side == "right" else _mirror_plan(plan)
@@ -411,15 +411,15 @@ def _normalize_xy(points: Iterable) -> np.ndarray:
 
 
 def _right_depth_vector(slug: str, xy: np.ndarray) -> np.ndarray:
-    if slug == "ac":
+    if slug == "flat":
         return np.full(len(xy), FULL_DEPTH_MM, dtype=float)
-    solution, depth_field, _sections = _ae_analytics()
+    solution, depth_field, _sections = _graded_analytics()
     cloud = shapely.points(xy[:, 0], xy[:, 1])
-    depth = contract._ae_weighted_depth(
+    depth = contract._graded_weighted_depth(
         cloud, depth_field.protected_components,
         depth_field.exposed_outer_edge, solution)
     return np.clip(np.asarray(depth, dtype=float),
-                   AE_EDGE_DEPTH_MM, FULL_DEPTH_MM)
+                   GRADED_EDGE_DEPTH_MM, FULL_DEPTH_MM)
 
 
 def wing_depth_at(
@@ -441,16 +441,16 @@ def wing_section_samples(
     if samples < 9:
         raise ValueError("section sampling requires at least 9 points")
     layout = _layout()
-    solution, depth_field, sections = _ae_analytics()
+    solution, depth_field, sections = _graded_analytics()
     result: dict[str, dict] = {}
     for definition in sections:
-        along, ae_depth, xy, _segment = contract._sample_ae_section(
+        along, graded_depth, xy, _segment = contract._sample_graded_section(
             layout, depth_field, solution, definition, samples=samples)
         if definition.key in ("S1", "S2", "S3", "S4"):
-            along, ae_depth, xy = contract._orient_ae_section_protected_to_edge(
-                depth_field, along, ae_depth, xy, definition)
-        depth = (np.full_like(ae_depth, FULL_DEPTH_MM)
-                 if slug == "ac" else np.asarray(ae_depth, dtype=float))
+            along, graded_depth, xy = contract._orient_graded_section_protected_to_edge(
+                depth_field, along, graded_depth, xy, definition)
+        depth = (np.full_like(graded_depth, FULL_DEPTH_MM)
+                 if slug == "flat" else np.asarray(graded_depth, dtype=float))
         if side == "left":
             xy = np.asarray(xy, dtype=float).copy()
             xy[:, 0] *= -1.0
@@ -467,7 +467,7 @@ def wing_section_samples(
             "maximum_depth_mm": float(np.max(depth)),
             "worst_depth_reversal_mm": worst_reversal,
             "monotonic_nonincreasing": (
-                worst_reversal <= contract.AE_SECTION_MONOTONIC_TOL_MM),
+                worst_reversal <= contract.GRADED_SECTION_MONOTONIC_TOL_MM),
             "pocket_axis_z_mm": (
                 None if definition.pocket_z_mm is None
                 else float(definition.pocket_z_mm)),
@@ -516,7 +516,7 @@ def _occ_integer_array(values: np.ndarray) -> TColStd_Array1OfInteger:
     return result
 
 
-def _ae_control_depths(xy: np.ndarray) -> np.ndarray:
+def _graded_control_depths(xy: np.ndarray) -> np.ndarray:
     """Analytic depths with a one-sided continuation outside free edges.
 
     A rectangular control net necessarily contains poles just beyond the
@@ -527,20 +527,20 @@ def _ae_control_depths(xy: np.ndarray) -> np.ndarray:
     these conditioning poles.
     """
     layout = _layout()
-    _solution, depth_field, _sections = _ae_analytics()
-    depths = _right_depth_vector("ae", xy)
+    _solution, depth_field, _sections = _graded_analytics()
+    depths = _right_depth_vector("graded", xy)
     inside = shapely.contains_xy(layout.field_right, xy[:, 0], xy[:, 1])
     for index in np.flatnonzero(~inside):
         point = Point(float(xy[index, 0]), float(xy[index, 1]))
         boundary_point, _unused = nearest_points(
             layout.field_right.boundary, point)
         if boundary_point.distance(
-                depth_field.exposed_outer_edge) <= 2.0 * contract.AE_EDGE_MATCH_TOL_MM:
+                depth_field.exposed_outer_edge) <= 2.0 * contract.GRADED_EDGE_MATCH_TOL_MM:
             outside_distance = point.distance(boundary_point)
             depths[index] = max(
-                AE_SURFACE_OUTSIDE_MIN_DEPTH_MM,
-                AE_EDGE_DEPTH_MM
-                - AE_SURFACE_OUTSIDE_EDGE_SLOPE * outside_distance)
+                GRADED_SURFACE_OUTSIDE_MIN_DEPTH_MM,
+                GRADED_EDGE_DEPTH_MM
+                - GRADED_SURFACE_OUTSIDE_EDGE_SLOPE * outside_distance)
         else:
             depths[index] = FULL_DEPTH_MM
     return depths
@@ -597,10 +597,10 @@ def _tensor_spline_basis(
         y_axis: np.ndarray) -> tuple[tuple[int, int, int, float], ...]:
     x_basis = _axis_spline_basis(
         x_mm, float(x_axis[0]), float(x_axis[-1]),
-        len(x_axis), AE_SURFACE_SPLINE_DEGREE)
+        len(x_axis), GRADED_SURFACE_SPLINE_DEGREE)
     y_basis = _axis_spline_basis(
         y_mm, float(y_axis[0]), float(y_axis[-1]),
-        len(y_axis), AE_SURFACE_SPLINE_DEGREE)
+        len(y_axis), GRADED_SURFACE_SPLINE_DEGREE)
     return tuple(
         (ix * len(y_axis) + iy, ix, iy, bx * by)
         for ix, bx in x_basis
@@ -613,10 +613,10 @@ def _protected_boundary_records(
         spacing_mm: float,
         ) -> tuple[tuple[float, float, float, float], ...]:
     """Return boundary XY and the locally oriented protected-side normal."""
-    _solution, depth_field, _sections = _ae_analytics()
+    _solution, depth_field, _sections = _graded_analytics()
     plan = _layout().field_right
     external_guard = plan.boundary.buffer(
-        contract.AE_EDGE_MATCH_TOL_MM, cap_style=2, join_style=2)
+        contract.GRADED_EDGE_MATCH_TOL_MM, cap_style=2, join_style=2)
     transition = depth_field.protected.boundary.difference(external_guard)
     records = []
     plan_with_tolerance = plan.buffer(1.0e-6)
@@ -633,28 +633,28 @@ def _protected_boundary_records(
             tangent_length = float(np.hypot(tx, ty))
             if tangent_length <= 1.0e-8:
                 raise RuntimeError(
-                    "Ae protected fitting perimeter has a degenerate tangent")
+                    "graded protected fitting perimeter has a degenerate tangent")
             nx = -ty / tangent_length
             ny = tx / tangent_length
             boundary = line.interpolate(distance)
             plus = Point(
-                boundary.x + AE_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * nx,
-                boundary.y + AE_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * ny)
+                boundary.x + GRADED_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * nx,
+                boundary.y + GRADED_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * ny)
             minus = Point(
-                boundary.x - AE_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * nx,
-                boundary.y - AE_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * ny)
+                boundary.x - GRADED_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * nx,
+                boundary.y - GRADED_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * ny)
             plus_inside = depth_field.protected.covers(plus)
             minus_inside = depth_field.protected.covers(minus)
             if plus_inside == minus_inside:
                 raise RuntimeError(
-                    "Ae protected fitting probe did not straddle the land at "
+                    "graded protected fitting probe did not straddle the land at "
                     f"({boundary.x:.6f}, {boundary.y:.6f})")
             inside = plus if plus_inside else minus
             outside = minus if plus_inside else plus
             if (not plan_with_tolerance.covers(inside)
                     or not plan_with_tolerance.covers(outside)):
                 raise RuntimeError(
-                    "Ae protected fitting probe left the plan at "
+                    "graded protected fitting probe left the plan at "
                     f"({boundary.x:.6f}, {boundary.y:.6f})")
             if not plus_inside:
                 nx = -nx
@@ -662,11 +662,11 @@ def _protected_boundary_records(
             records.append((
                 float(boundary.x), float(boundary.y), float(nx), float(ny)))
     if len(records) < 20:
-        raise RuntimeError("Ae protected fitting perimeter is implausibly short")
+        raise RuntimeError("graded protected fitting perimeter is implausibly short")
     return tuple(records)
 
 
-def _fit_ae_protected_control_net(
+def _fit_graded_protected_control_net(
         control_depth: np.ndarray, x_axis: np.ndarray,
         y_axis: np.ndarray) -> tuple[np.ndarray, dict[str, float | int]]:
     """Fit local ghost controls so narrow full-depth lands stay non-flat.
@@ -685,9 +685,9 @@ def _fit_ae_protected_control_net(
     from scipy.sparse import coo_matrix, hstack, vstack
 
     records = _protected_boundary_records(
-        AE_PROTECTED_CONSTRAINT_SPACING_MM)
+        GRADED_PROTECTED_CONSTRAINT_SPACING_MM)
     plan = _layout().field_right
-    _solution, depth_field, _sections = _ae_analytics()
+    _solution, depth_field, _sections = _graded_analytics()
     protected = depth_field.protected
     plan_with_tolerance = plan.buffer(1.0e-6)
     seed = np.asarray(control_depth, dtype=float).ravel().copy()
@@ -711,11 +711,11 @@ def _fit_ae_protected_control_net(
     candidate_indices = set(active_indices)
     x_span_mm = (
         float(x_axis[-1] - x_axis[0])
-        / float(len(x_axis) - AE_SURFACE_SPLINE_DEGREE))
+        / float(len(x_axis) - GRADED_SURFACE_SPLINE_DEGREE))
     y_span_mm = (
         float(y_axis[-1] - y_axis[0])
-        / float(len(y_axis) - AE_SURFACE_SPLINE_DEGREE))
-    maximum_collar = max(AE_PROTECTED_COLLAR_OFFSETS_MM)
+        / float(len(y_axis) - GRADED_SURFACE_SPLINE_DEGREE))
+    maximum_collar = max(GRADED_PROTECTED_COLLAR_OFFSETS_MM)
     x_ring_count = int(np.ceil(maximum_collar / x_span_mm)) + 1
     y_ring_count = int(np.ceil(maximum_collar / y_span_mm)) + 1
     for flat_index in tuple(active_indices):
@@ -731,7 +731,7 @@ def _fit_ae_protected_control_net(
         if projections and min(projections) >= -0.05
     }
     upper_by_index = {
-        index: (AE_PROTECTED_GHOST_MAX_DEPTH_MM
+        index: (GRADED_PROTECTED_GHOST_MAX_DEPTH_MM
                 if index in ghost_indices else FULL_DEPTH_MM)
         for index in candidate_indices
     }
@@ -742,7 +742,7 @@ def _fit_ae_protected_control_net(
     # this lower control bound is only a spline-conditioning allowance.
     lower_by_index = {
         index: (seed[index] if index in ghost_indices
-                else AE_SURFACE_OUTSIDE_MIN_DEPTH_MM)
+                else GRADED_SURFACE_OUTSIDE_MIN_DEPTH_MM)
         for index in candidate_indices
     }
     unknown_indices = tuple(sorted(
@@ -751,17 +751,17 @@ def _fit_ae_protected_control_net(
             or seed[index] - lower_by_index[index] > 1.0e-8)
     ))
     if not unknown_indices or not ghost_indices:
-        raise RuntimeError("Ae protected spline fit has no adjustable ghosts")
+        raise RuntimeError("graded protected spline fit has no adjustable ghosts")
     column_for = {index: column for column, index in enumerate(unknown_indices)}
 
     sample_specs: list[tuple[float, float, float | None, float]] = []
     collar_rays: list[tuple[tuple[float, float], ...]] = []
     for bx, by, nx, ny in records:
         sample_specs.append((
-            bx, by, AE_PROTECTED_CONSTRAINT_TARGET_MM, 1000.0))
+            bx, by, GRADED_PROTECTED_CONSTRAINT_TARGET_MM, 1000.0))
         ray = [(bx, by)]
         for offset, weight in zip(
-                AE_PROTECTED_COLLAR_OFFSETS_MM,
+                GRADED_PROTECTED_COLLAR_OFFSETS_MM,
                 (0.25, 0.125, 0.05, 0.025, 0.0125), strict=True):
             px = bx - offset * nx
             py = by - offset * ny
@@ -788,7 +788,7 @@ def _fit_ae_protected_control_net(
             (sample_specs[index][0], sample_specs[index][1])
             for index in analytic_indices
         ], dtype=float)
-        analytic_depth = _right_depth_vector("ae", analytic_xy)
+        analytic_depth = _right_depth_vector("graded", analytic_xy)
         for index, target in zip(
                 analytic_indices, analytic_depth, strict=True):
             px, py, _unused, weight = sample_specs[index]
@@ -822,9 +822,9 @@ def _fit_ae_protected_control_net(
 
     regularization = coo_matrix((
         np.asarray([
-            (AE_PROTECTED_GHOST_REGULARIZATION
+            (GRADED_PROTECTED_GHOST_REGULARIZATION
              if index in ghost_indices
-             else AE_PROTECTED_OUTWARD_REGULARIZATION)
+             else GRADED_PROTECTED_OUTWARD_REGULARIZATION)
             for index in unknown_indices
         ], dtype=float),
         (np.arange(len(unknown_indices)), np.arange(len(unknown_indices)))),
@@ -851,7 +851,7 @@ def _fit_ae_protected_control_net(
     if (solution.status < 0
             or not np.all(np.isfinite(np.asarray(solution.x, dtype=float)))):
         raise RuntimeError(
-            "Ae protected spline fit failed: " + str(solution.message))
+            "graded protected spline fit failed: " + str(solution.message))
     fitted = seed.copy()
     fitted[np.asarray(unknown_indices, dtype=int)] += solution.x
 
@@ -869,7 +869,7 @@ def _fit_ae_protected_control_net(
             coefficient * seed[flat_index]
             for flat_index, _ix, _iy, coefficient in entries))
         boundary_rhs.append(
-            AE_PROTECTED_CONSTRAINT_TARGET_MM - baseline)
+            GRADED_PROTECTED_CONSTRAINT_TARGET_MM - baseline)
         for flat_index, _ix, _iy, coefficient in entries:
             column = column_for.get(flat_index)
             if column is not None:
@@ -939,7 +939,7 @@ def _fit_ae_protected_control_net(
                     monotonic_values.append(value)
             current_difference = current_values[1] - current_values[0]
             monotonic_rhs.append(
-                AE_PROTECTED_COLLAR_MAX_REVERSAL_MM - current_difference)
+                GRADED_PROTECTED_COLLAR_MAX_REVERSAL_MM - current_difference)
             monotonic_count += 1
     monotonic_matrix = coo_matrix(
         (monotonic_values, (monotonic_rows, monotonic_columns)),
@@ -995,8 +995,8 @@ def _fit_ae_protected_control_net(
         hstack((-boundary_matrix, boundary_zero_slack), format="csr"),
     ), format="csr")
     collar_measure_boundary_rhs = np.concatenate((
-        residual_from_l2 + AE_PROTECTED_CONSTRAINT_TOL_MM,
-        -residual_from_l2 + AE_PROTECTED_CONSTRAINT_TOL_MM,
+        residual_from_l2 + GRADED_PROTECTED_CONSTRAINT_TOL_MM,
+        -residual_from_l2 + GRADED_PROTECTED_CONSTRAINT_TOL_MM,
     ))
     monotonic_zero_slack = coo_matrix(
         np.zeros((monotonic_count, 1), dtype=float)).tocsr()
@@ -1020,17 +1020,17 @@ def _fit_ae_protected_control_net(
         collar_measure_rhs, correction_bounds + [(0.0, None)])
     if not collar_measure.success:
         raise RuntimeError(
-            "Ae protected spline collar minimax measurement failed: "
+            "graded protected spline collar minimax measurement failed: "
             + collar_measure.message)
     collar_optimum = float(collar_measure.x[-1])
-    if collar_optimum > AE_PROTECTED_COLLAR_ERROR_HARD_LIMIT_MM:
+    if collar_optimum > GRADED_PROTECTED_COLLAR_ERROR_HARD_LIMIT_MM:
         raise RuntimeError(
-            "Ae protected spline collar cannot follow the analytic field: "
+            "graded protected spline collar cannot follow the analytic field: "
             f"minimum possible L-infinity error={collar_optimum:.6f} mm, "
-            f"hard limit={AE_PROTECTED_COLLAR_ERROR_HARD_LIMIT_MM:.6f} mm")
+            f"hard limit={GRADED_PROTECTED_COLLAR_ERROR_HARD_LIMIT_MM:.6f} mm")
     collar_limit = max(
-        AE_PROTECTED_MAX_COLLAR_ERROR_MM,
-        collar_optimum + AE_PROTECTED_COLLAR_OPTIMUM_MARGIN_MM)
+        GRADED_PROTECTED_MAX_COLLAR_ERROR_MM,
+        collar_optimum + GRADED_PROTECTED_COLLAR_OPTIMUM_MARGIN_MM)
     variable_count = len(unknown_indices)
     corrected_delta = l2_delta + collar_measure.x[:variable_count]
     fitted = seed.copy()
@@ -1043,11 +1043,11 @@ def _fit_ae_protected_control_net(
                 px, py, x_axis, y_axis)))
 
     boundary_errors = [
-        abs(evaluate(bx, by) - AE_PROTECTED_CONSTRAINT_TARGET_MM)
+        abs(evaluate(bx, by) - GRADED_PROTECTED_CONSTRAINT_TARGET_MM)
         for bx, by, _nx, _ny in records
     ]
     boundary_error = max(boundary_errors)
-    if boundary_error > AE_PROTECTED_CONSTRAINT_TOL_MM + 1.0e-6:
+    if boundary_error > GRADED_PROTECTED_CONSTRAINT_TOL_MM + 1.0e-6:
         worst_index = int(np.argmax(np.asarray(boundary_errors)))
         worst_record = records[worst_index]
         worst_entries = _tensor_spline_basis(
@@ -1059,7 +1059,7 @@ def _fit_ae_protected_control_net(
             flat_index in ghost_indices
             for flat_index, _ix, _iy, _coefficient in worst_entries)
         raise RuntimeError(
-            "Ae protected spline boundary fit missed its target: "
+            "graded protected spline boundary fit missed its target: "
             f"max error={boundary_error:.6f} mm at "
             f"({worst_record[0]:.6f}, {worst_record[1]:.6f}); "
             f"max pole={float(np.max(fitted)):.6f} mm, "
@@ -1074,7 +1074,7 @@ def _fit_ae_protected_control_net(
     for bx, by, nx, ny in records:
         depths = [evaluate(bx, by)]
         collar_xy = []
-        for offset in AE_PROTECTED_COLLAR_OFFSETS_MM:
+        for offset in GRADED_PROTECTED_COLLAR_OFFSETS_MM:
             px, py = bx - offset * nx, by - offset * ny
             point = Point(px, py)
             if not plan_with_tolerance.covers(point):
@@ -1085,7 +1085,7 @@ def _fit_ae_protected_control_net(
             depths.append(evaluate(px, py))
         if collar_xy:
             analytic = _right_depth_vector(
-                "ae", np.asarray(collar_xy, dtype=float))
+                "graded", np.asarray(collar_xy, dtype=float))
             maximum_collar_error = max(
                 maximum_collar_error,
                 float(np.max(np.abs(np.asarray(depths[1:]) - analytic))))
@@ -1094,12 +1094,12 @@ def _fit_ae_protected_control_net(
                 float(np.max(np.diff(np.asarray(depths)))))
     if maximum_collar_error > collar_limit + 1.0e-6:
         raise RuntimeError(
-            "Ae protected spline collar departs from the analytic field: "
+            "graded protected spline collar departs from the analytic field: "
             f"max error={maximum_collar_error:.6f} mm, "
             f"fitted limit={collar_limit:.6f} mm")
-    if maximum_collar_reversal > AE_PROTECTED_COLLAR_MAX_REVERSAL_MM + 1.0e-6:
+    if maximum_collar_reversal > GRADED_PROTECTED_COLLAR_MAX_REVERSAL_MM + 1.0e-6:
         raise RuntimeError(
-            "Ae protected spline collar is not monotonic: "
+            "graded protected spline collar is not monotonic: "
             f"reversal={maximum_collar_reversal:.6f} mm")
 
     return fitted.reshape(control_depth.shape), {
@@ -1120,7 +1120,7 @@ def _fit_ae_protected_control_net(
     }
 
 
-def _ae_smooth_body() -> Part:
+def _graded_smooth_body() -> Part:
     """Build one datum-clipped local cubic B-spline rear graph.
 
     The rear graph is a directly controlled, open-uniform degree-3 tensor
@@ -1130,19 +1130,19 @@ def _ae_smooth_body() -> Part:
     Obi-Wan lands and one-layer acoustic edge are applied as BREP constraints.
     """
     exact_plan = _layout().field_right
-    _solution, depth_field, _sections = _ae_analytics()
+    _solution, depth_field, _sections = _graded_analytics()
     min_x, min_y, max_x, max_y = exact_plan.bounds
     unit_x, u_knots, u_mults = _open_uniform_spline_axis(
-        AE_SURFACE_GRID_X, AE_SURFACE_SPLINE_DEGREE)
+        GRADED_SURFACE_GRID_X, GRADED_SURFACE_SPLINE_DEGREE)
     unit_y, v_knots, v_mults = _open_uniform_spline_axis(
-        AE_SURFACE_GRID_Y, AE_SURFACE_SPLINE_DEGREE)
-    x = (min_x - AE_SURFACE_GRID_PADDING_MM
-         + unit_x * (max_x - min_x + 2.0 * AE_SURFACE_GRID_PADDING_MM))
-    y = (min_y - AE_SURFACE_GRID_PADDING_MM
-         + unit_y * (max_y - min_y + 2.0 * AE_SURFACE_GRID_PADDING_MM))
+        GRADED_SURFACE_GRID_Y, GRADED_SURFACE_SPLINE_DEGREE)
+    x = (min_x - GRADED_SURFACE_GRID_PADDING_MM
+         + unit_x * (max_x - min_x + 2.0 * GRADED_SURFACE_GRID_PADDING_MM))
+    y = (min_y - GRADED_SURFACE_GRID_PADDING_MM
+         + unit_y * (max_y - min_y + 2.0 * GRADED_SURFACE_GRID_PADDING_MM))
     xx, yy = np.meshgrid(x, y, indexing="ij")
     xy = np.column_stack((xx.ravel(), yy.ravel()))
-    control_depth = _ae_control_depths(xy).reshape(xx.shape)
+    control_depth = _graded_control_depths(xy).reshape(xx.shape)
     # The protected lands are retained from the exact full-depth blank and
     # excluded from the cutter by ``boolean_relief_plan`` below.  A ghost-pole
     # boundary fit is therefore neither necessary nor acceptable here: it can
@@ -1159,9 +1159,9 @@ def _ae_smooth_body() -> Part:
     # creates the intended constant 0.24-mm free edge without a tangent cap
     # Boolean on the spline solid.
     control_depth = np.maximum(
-        control_depth, AE_CUTTER_CONTROL_MIN_DEPTH_MM)
-    if float(np.min(control_depth)) < AE_CUTTER_CONTROL_MIN_DEPTH_MM - 1.0e-9:
-        raise RuntimeError("Ae fitted cutter control-depth floor was lost")
+        control_depth, GRADED_CUTTER_CONTROL_MIN_DEPTH_MM)
+    if float(np.min(control_depth)) < GRADED_CUTTER_CONTROL_MIN_DEPTH_MM - 1.0e-9:
+        raise RuntimeError("graded fitted cutter control-depth floor was lost")
     fitted_flat = control_depth.ravel()
 
     def fitted_depth_at(px: float, py: float) -> float:
@@ -1175,10 +1175,10 @@ def _ae_smooth_body() -> Part:
         if definition.key not in {"S1", "S2", "S3", "S4"}:
             continue
         _along, expected_depth, section_xy, _segment = (
-            contract._sample_ae_section(
+            contract._sample_graded_section(
                 _layout(), depth_field, _solution, definition, samples=65))
         _along, expected_depth, section_xy = (
-            contract._orient_ae_section_protected_to_edge(
+            contract._orient_graded_section_protected_to_edge(
                 depth_field, _along, expected_depth, section_xy, definition))
         fitted_depth = np.asarray([
             fitted_depth_at(px, py) for px, py in section_xy
@@ -1187,16 +1187,16 @@ def _ae_smooth_body() -> Part:
             np.abs(fitted_depth - expected_depth)))
     if max(fitted_section_errors.values()) > 0.75:
         raise RuntimeError(
-            "Ae fitted B-spline departs from its analytic sections: "
+            "graded fitted B-spline departs from its analytic sections: "
             + ", ".join(
                 f"{key}={value:.4f} mm"
                 for key, value in fitted_section_errors.items()))
     rear_z = FRONT_Z_MM - control_depth
 
     poles = TColgp_Array2OfPnt(
-        1, AE_SURFACE_GRID_X, 1, AE_SURFACE_GRID_Y)
-    for ix in range(AE_SURFACE_GRID_X):
-        for iy in range(AE_SURFACE_GRID_Y):
+        1, GRADED_SURFACE_GRID_X, 1, GRADED_SURFACE_GRID_Y)
+    for ix in range(GRADED_SURFACE_GRID_X):
+        for iy in range(GRADED_SURFACE_GRID_Y):
             poles.SetValue(
                 ix + 1, iy + 1,
                 gp_Pnt(float(xx[ix, iy]), float(yy[ix, iy]),
@@ -1205,14 +1205,14 @@ def _ae_smooth_body() -> Part:
         poles,
         _occ_real_array(u_knots), _occ_real_array(v_knots),
         _occ_integer_array(u_mults), _occ_integer_array(v_mults),
-        AE_SURFACE_SPLINE_DEGREE, AE_SURFACE_SPLINE_DEGREE,
+        GRADED_SURFACE_SPLINE_DEGREE, GRADED_SURFACE_SPLINE_DEGREE,
         False, False)
-    relief_plan, _relief_component_facts = _ae_relief_plan()
+    relief_plan, _relief_component_facts = _graded_relief_plan()
     # OCC does not produce a valid solid when the fitted cutter is clipped by
     # the analytic plan's ~1,400 tessellated boundary edges.  Use a strictly
     # inward, sub-nozzle Boolean mask: it can only enlarge the exact full-depth
     # land, never cut it, and remains within 0.08 mm of the analytic relief.
-    boolean_relief_plan, _boolean_relief_facts = _ae_boolean_relief_plan()
+    boolean_relief_plan, _boolean_relief_facts = _graded_boolean_relief_plan()
 
     # Retain a padded rectangle for cap-tool construction, but trim the fitted
     # rear itself to the conservative simplified Boolean relief outline. The
@@ -1224,8 +1224,8 @@ def _ae_smooth_body() -> Part:
         (float(x[-1]), float(y[-1])),
         (float(x[0]), float(y[-1])),
     )), sign=1.0)
-    u_last = float(AE_SURFACE_GRID_X - AE_SURFACE_SPLINE_DEGREE)
-    v_last = float(AE_SURFACE_GRID_Y - AE_SURFACE_SPLINE_DEGREE)
+    u_last = float(GRADED_SURFACE_GRID_X - GRADED_SURFACE_SPLINE_DEGREE)
+    v_last = float(GRADED_SURFACE_GRID_Y - GRADED_SURFACE_SPLINE_DEGREE)
 
     def uv_point(px: float, py: float) -> tuple[float, float]:
         return (
@@ -1252,12 +1252,12 @@ def _ae_smooth_body() -> Part:
                 curve, rear_surface, 0.0, length)
             if not edge_builder.IsDone():
                 raise RuntimeError(
-                    "Ae exact UV trim edge failed at "
+                    "graded exact UV trim edge failed at "
                     f"({x1:.6f}, {y1:.6f})..({x2:.6f}, {y2:.6f})")
             wire_builder.Add(edge_builder.Edge())
             if not wire_builder.IsDone():
                 raise RuntimeError(
-                    "Ae exact UV trim wire disconnected at "
+                    "graded exact UV trim wire disconnected at "
                     f"({x1:.6f}, {y1:.6f})..({x2:.6f}, {y2:.6f})")
         return Wire(wire_builder.Wire())
 
@@ -1268,7 +1268,7 @@ def _ae_smooth_body() -> Part:
             np.diff(ring_xy, axis=0), axis=1)))
         if minimum_segment < 0.005:
             raise RuntimeError(
-                "Ae conservative trim contains a sub-0.005-mm segment: "
+                "graded conservative trim contains a sub-0.005-mm segment: "
                 f"{minimum_segment:.6f} mm")
     outer_wire = exact_uv_wire(trim_plan.exterior)
     face_builder = BRepBuilderAPI_MakeFace(
@@ -1276,10 +1276,10 @@ def _ae_smooth_body() -> Part:
     for interior in trim_plan.interiors:
         face_builder.Add(exact_uv_wire(interior).wrapped)
     if not face_builder.IsDone():
-        raise RuntimeError("Ae conservative fitted rear face was not built")
+        raise RuntimeError("graded conservative fitted rear face was not built")
     rear_face = Face(face_builder.Face()).fix()
     if not rear_face.is_valid:
-        raise RuntimeError("Ae conservative fitted rear trim is invalid")
+        raise RuntimeError("graded conservative fitted rear trim is invalid")
 
     # Sweep the fitted rear downward.  The convex-hull control-depth floor
     # already proves a >0.24-mm skin, so no near-tangent plane cap is needed.
@@ -1290,19 +1290,19 @@ def _ae_smooth_body() -> Part:
         rear_face, amount=float(np.max(rear_z)) - cutter_floor_z,
         dir=(0.0, 0.0, -1.0), clean=True)
     relief_cutter = _strict_single_solid(
-        relief_cutter, "Ae conservative downward rear-relief cutter")
+        relief_cutter, "graded conservative downward rear-relief cutter")
     sweep_mm = float(np.max(rear_z)) - cutter_floor_z
     expected_cutter_volume = float(boolean_relief_plan.area * sweep_mm)
     if not np.isclose(
             relief_cutter.volume, expected_cutter_volume,
             rtol=2.0e-4, atol=1.0):
         raise RuntimeError(
-            "Ae fitted face selected the wrong side of its trim wire: "
+            "graded fitted face selected the wrong side of its trim wire: "
             f"volume={relief_cutter.volume:.3f} mm3, "
             f"projected-area expectation={expected_cutter_volume:.3f} mm3")
     relief_solid = list(relief_cutter.solids())[0]
     if not BRepLib.OrientClosedSolid_s(relief_solid.wrapped):
-        raise RuntimeError("Ae rear-relief cutter could not be outward-oriented")
+        raise RuntimeError("graded rear-relief cutter could not be outward-oriented")
     interior_xy = boolean_relief_plan.representative_point()
     interior_depth = fitted_depth_at(interior_xy.x, interior_xy.y)
     interior_top_z = FRONT_Z_MM - interior_depth
@@ -1319,35 +1319,35 @@ def _ae_smooth_body() -> Part:
             Precision.Confusion_s())
     if classifier.State() != TopAbs_IN:
         raise RuntimeError(
-            "Ae rear-relief cutter does not contain its certified "
+            "graded rear-relief cutter does not contain its certified "
             "interior probe after orientation correction")
     relief_cutter = _strict_single_solid(
-        Part([relief_solid]), "Ae outward-oriented rear-relief cutter")
+        Part([relief_solid]), "graded outward-oriented rear-relief cutter")
     # The edge cutter deliberately reaches 0.04 mm farther inward than the
     # relief guard.  That overlap prevents a coincident cutter seam while the
     # laterally oversized band crosses the blank's exterior sidewall.
     edge_band = depth_field.exposed_outer_edge.buffer(
-        AE_EXACT_EDGE_BAND_MM, cap_style=2, join_style=2
+        GRADED_EXACT_EDGE_BAND_MM, cap_style=2, join_style=2
     ).difference(depth_field.protected).buffer(0)
     edge_cutter = _plan_prism(
         edge_band,
-        REAR_LIMIT_Z_MM - AE_EDGE_BOOLEAN_OVERSHOOT_MM,
-        FRONT_Z_MM - AE_EDGE_DEPTH_MM)
+        REAR_LIMIT_Z_MM - GRADED_EDGE_BOOLEAN_OVERSHOOT_MM,
+        FRONT_Z_MM - GRADED_EDGE_DEPTH_MM)
     edge_cutter = _strict_single_solid(
-        edge_cutter, "Ae laterally oversized exact-edge cutter")
+        edge_cutter, "graded laterally oversized exact-edge cutter")
     blank = _plan_prism(exact_plan, REAR_LIMIT_Z_MM, FRONT_Z_MM)
-    blank = _one_solid(blank, "Ae pristine exact-plan blank")
+    blank = _one_solid(blank, "graded pristine exact-plan blank")
     relief_probe = blank - relief_cutter
     if relief_probe is None:
-        raise RuntimeError("Ae smooth rear-relief subtraction returned no body")
+        raise RuntimeError("graded smooth rear-relief subtraction returned no body")
     relief_probe = _one_solid(
-        relief_probe.clean(), "Ae blank after smooth rear-relief subtraction")
+        relief_probe.clean(), "graded blank after smooth rear-relief subtraction")
     relief_removed_volume = float(blank.volume - relief_probe.volume)
     if relief_removed_volume <= 100.0:
         cutter_bounds = relief_cutter.bounding_box()
         blank_bounds = blank.bounding_box()
         raise RuntimeError(
-            "Ae smooth rear-relief cutter removed no meaningful material: "
+            "graded smooth rear-relief cutter removed no meaningful material: "
             f"removed={relief_removed_volume:.6f} mm3, "
             f"cutter_xy={cutter_bounds.min.X:.6f}.."
             f"{cutter_bounds.max.X:.6f}/"
@@ -1361,35 +1361,35 @@ def _ae_smooth_body() -> Part:
             f"{blank_bounds.max.Z:.6f}")
     # Subtract the positively overlapping rear and edge tools as one Boolean
     # set.  Sequential subtraction can leave a coincident BREP partition at
-    # z=FRONT_Z-AE_EDGE_DEPTH when the protected captive-land outline changes;
+    # z=FRONT_Z-GRADED_EDGE_DEPTH when the protected captive-land outline changes;
     # union-before-cut is set-theoretically identical while preserving the
     # exact 0.24-mm edge and one connected printable body.
     combined_cutter = relief_cutter.fuse(edge_cutter)
     if combined_cutter is None:
-        raise RuntimeError("Ae combined rear/edge cutter fusion returned no tool")
+        raise RuntimeError("graded combined rear/edge cutter fusion returned no tool")
     combined_cutter = _strict_single_solid(
-        combined_cutter.clean(), "Ae positively overlapping rear/edge cutter")
+        combined_cutter.clean(), "graded positively overlapping rear/edge cutter")
     carved = blank - combined_cutter
     if carved is None:
-        raise RuntimeError("Ae combined rear/edge subtraction returned no body")
+        raise RuntimeError("graded combined rear/edge subtraction returned no body")
     body = _one_solid(
         carved.clean(),
-        "Ae exact blank after protected rear/edge relief subtraction")
+        "graded exact blank after protected rear/edge relief subtraction")
     if not 0.0 < body.volume < blank.volume:
         raise RuntimeError(
-            "Ae removal tools did not reduce the pristine blank volume")
-    return _one_solid(body, "Ae constrained monolith before receivers")
+            "graded removal tools did not reduce the pristine blank volume")
+    return _one_solid(body, "graded constrained monolith before receivers")
 
 
-def _single_ae_relief_component(relief_geometry):
-    """Return the one manufacturable Ae relief component and audit facts.
+def _single_graded_relief_component(relief_geometry):
+    """Return the one manufacturable graded relief component and audit facts.
 
     Any discarded component remains pristine full-depth blank material.  This
     operation can therefore only strengthen the wing; it can never remove a
     protected land or alter the exterior plan.
     """
     if relief_geometry.is_empty or not relief_geometry.is_valid:
-        raise RuntimeError("Ae rear relief complement is empty or invalid")
+        raise RuntimeError("graded rear relief complement is empty or invalid")
     if relief_geometry.geom_type == "Polygon":
         components = (relief_geometry,)
     elif relief_geometry.geom_type == "MultiPolygon":
@@ -1397,7 +1397,7 @@ def _single_ae_relief_component(relief_geometry):
             relief_geometry.geoms, key=lambda item: item.area, reverse=True))
     else:
         raise RuntimeError(
-            "Ae rear relief complement has unsupported topology: "
+            "graded rear relief complement has unsupported topology: "
             f"{relief_geometry.geom_type}")
 
     primary = components[0]
@@ -1405,19 +1405,19 @@ def _single_ae_relief_component(relief_geometry):
     discarded_total = float(sum(discarded_areas))
     discarded_maximum = max(discarded_areas, default=0.0)
     if (discarded_maximum
-            > AE_RELIEF_DISCONNECTED_COMPONENT_MAX_AREA_MM2 + 1.0e-9
+            > GRADED_RELIEF_DISCONNECTED_COMPONENT_MAX_AREA_MM2 + 1.0e-9
             or discarded_total
-            > AE_RELIEF_DISCONNECTED_TOTAL_MAX_AREA_MM2 + 1.0e-9):
+            > GRADED_RELIEF_DISCONNECTED_TOTAL_MAX_AREA_MM2 + 1.0e-9):
         raise RuntimeError(
-            "Ae rear relief developed a material disconnected component: "
+            "graded rear relief developed a material disconnected component: "
             f"areas={discarded_areas}, "
             "per-component limit="
-            f"{AE_RELIEF_DISCONNECTED_COMPONENT_MAX_AREA_MM2:.3f} mm2, "
-            f"total limit={AE_RELIEF_DISCONNECTED_TOTAL_MAX_AREA_MM2:.3f} "
+            f"{GRADED_RELIEF_DISCONNECTED_COMPONENT_MAX_AREA_MM2:.3f} mm2, "
+            f"total limit={GRADED_RELIEF_DISCONNECTED_TOTAL_MAX_AREA_MM2:.3f} "
             "mm2")
     if primary.is_empty or not primary.is_valid or primary.interiors:
         raise RuntimeError(
-            "Ae primary rear relief must be one valid opening-free polygon")
+            "graded primary rear relief must be one valid opening-free polygon")
     return primary, {
         "candidate_component_count": len(components),
         "cut_component_count": 1,
@@ -1425,42 +1425,42 @@ def _single_ae_relief_component(relief_geometry):
         "retained_full_depth_island_area_mm2": discarded_total,
         "largest_retained_island_area_mm2": discarded_maximum,
         "maximum_allowed_island_area_mm2": (
-            AE_RELIEF_DISCONNECTED_COMPONENT_MAX_AREA_MM2),
+            GRADED_RELIEF_DISCONNECTED_COMPONENT_MAX_AREA_MM2),
         "maximum_allowed_total_island_area_mm2": (
-            AE_RELIEF_DISCONNECTED_TOTAL_MAX_AREA_MM2),
+            GRADED_RELIEF_DISCONNECTED_TOTAL_MAX_AREA_MM2),
     }
 
 
 @lru_cache(maxsize=1)
-def _ae_relief_plan():
-    """Return the conservative connected Ae relief plan and topology facts."""
+def _graded_relief_plan():
+    """Return the conservative connected graded relief plan and topology facts."""
     exact_plan = _layout().field_right
-    _solution, depth_field, _sections = _ae_analytics()
+    _solution, depth_field, _sections = _graded_analytics()
     perimeter_guard = exact_plan.boundary.buffer(
-        AE_RELIEF_BOUNDARY_GUARD_MM, cap_style=2, join_style=2
+        GRADED_RELIEF_BOUNDARY_GUARD_MM, cap_style=2, join_style=2
     ).intersection(exact_plan).buffer(0)
     candidate = exact_plan.difference(
         depth_field.protected.union(perimeter_guard)).buffer(0)
-    return _single_ae_relief_component(candidate)
+    return _single_graded_relief_component(candidate)
 
 
 @lru_cache(maxsize=1)
-def _ae_boolean_relief_plan():
+def _graded_boolean_relief_plan():
     """Return the connected OCC trim and its localized tolerance audit."""
-    relief_plan, _component_facts = _ae_relief_plan()
-    _solution, depth_field, _sections = _ae_analytics()
+    relief_plan, _component_facts = _graded_relief_plan()
+    _solution, depth_field, _sections = _graded_analytics()
     boolean_relief_plan = relief_plan.buffer(
-        -AE_BOOLEAN_RELIEF_INSET_MM, join_style=2
+        -GRADED_BOOLEAN_RELIEF_INSET_MM, join_style=2
     ).simplify(
-        AE_BOOLEAN_RELIEF_SIMPLIFY_MM, preserve_topology=True
+        GRADED_BOOLEAN_RELIEF_SIMPLIFY_MM, preserve_topology=True
     ).buffer(0)
     edge_extension = relief_plan.intersection(
         depth_field.exposed_outer_edge.buffer(
-            AE_BOOLEAN_EDGE_EXTENSION_MM, cap_style=2, join_style=2)
+            GRADED_BOOLEAN_EDGE_EXTENSION_MM, cap_style=2, join_style=2)
     ).buffer(
-        -AE_BOOLEAN_EDGE_EXTENSION_INSET_MM, join_style=2
+        -GRADED_BOOLEAN_EDGE_EXTENSION_INSET_MM, join_style=2
     ).simplify(
-        AE_BOOLEAN_EDGE_EXTENSION_SIMPLIFY_MM, preserve_topology=True
+        GRADED_BOOLEAN_EDGE_EXTENSION_SIMPLIFY_MM, preserve_topology=True
     ).buffer(0)
     boolean_relief_plan = unary_union(
         (boolean_relief_plan, edge_extension)).buffer(0)
@@ -1469,48 +1469,48 @@ def _ae_boolean_relief_plan():
             or not boolean_relief_plan.is_valid
             or boolean_relief_plan.difference(relief_plan).area > 1.0e-6):
         raise RuntimeError(
-            "Ae conservative Boolean relief mask left its exact topology")
+            "graded conservative Boolean relief mask left its exact topology")
 
     root_tip = min(
         relief_plan.exterior.coords, key=lambda coordinate: coordinate[1])
     root_exception = Point(*root_tip).buffer(
-        AE_BOOLEAN_RELIEF_ROOT_EXCEPTION_RADIUS_MM, resolution=32)
+        GRADED_BOOLEAN_RELIEF_ROOT_EXCEPTION_RADIUS_MM, resolution=32)
     mask_tolerance = boolean_relief_plan.buffer(
-        AE_BOOLEAN_RELIEF_GENERAL_MAX_HAUSDORFF_MM + 1.0e-9)
+        GRADED_BOOLEAN_RELIEF_GENERAL_MAX_HAUSDORFF_MM + 1.0e-9)
     general_boundary = relief_plan.boundary.difference(root_exception)
     if not general_boundary.difference(mask_tolerance).is_empty:
         raise RuntimeError(
-            "Ae conservative Boolean relief mask exceeded its general "
+            "graded conservative Boolean relief mask exceeded its general "
             "0.08-mm tolerance outside the lower-root exception")
     root_boundary = relief_plan.boundary.intersection(root_exception)
     root_tolerance = boolean_relief_plan.buffer(
-        AE_BOOLEAN_RELIEF_ROOT_MAX_HAUSDORFF_MM + 1.0e-9)
+        GRADED_BOOLEAN_RELIEF_ROOT_MAX_HAUSDORFF_MM + 1.0e-9)
     if not root_boundary.difference(root_tolerance).is_empty:
         raise RuntimeError(
-            "Ae conservative Boolean relief mask exceeded its localized "
+            "graded conservative Boolean relief mask exceeded its localized "
             "lower-root tolerance")
     maximum_hausdorff = float(
         boolean_relief_plan.hausdorff_distance(relief_plan))
-    if maximum_hausdorff > AE_BOOLEAN_RELIEF_ROOT_MAX_HAUSDORFF_MM + 1.0e-9:
+    if maximum_hausdorff > GRADED_BOOLEAN_RELIEF_ROOT_MAX_HAUSDORFF_MM + 1.0e-9:
         raise RuntimeError(
-            "Ae conservative Boolean relief mask exceeded its absolute "
+            "graded conservative Boolean relief mask exceeded its absolute "
             f"tolerance: {maximum_hausdorff:.6f} mm")
 
     edge_plan_overlap = (
-        AE_EXACT_EDGE_BAND_MM
+        GRADED_EXACT_EDGE_BAND_MM
         - boolean_relief_plan.distance(depth_field.exposed_outer_edge))
-    if edge_plan_overlap < AE_CUTTER_MIN_PLAN_OVERLAP_MM:
+    if edge_plan_overlap < GRADED_CUTTER_MIN_PLAN_OVERLAP_MM:
         raise RuntimeError(
-            "Ae edge/relief cutters lost positive plan overlap: "
+            "graded edge/relief cutters lost positive plan overlap: "
             f"{edge_plan_overlap:.6f} mm")
     return boolean_relief_plan, {
-        "normal_inset_mm": AE_BOOLEAN_RELIEF_INSET_MM,
+        "normal_inset_mm": GRADED_BOOLEAN_RELIEF_INSET_MM,
         "general_maximum_hausdorff_mm": (
-            AE_BOOLEAN_RELIEF_GENERAL_MAX_HAUSDORFF_MM),
+            GRADED_BOOLEAN_RELIEF_GENERAL_MAX_HAUSDORFF_MM),
         "lower_root_exception_radius_mm": (
-            AE_BOOLEAN_RELIEF_ROOT_EXCEPTION_RADIUS_MM),
+            GRADED_BOOLEAN_RELIEF_ROOT_EXCEPTION_RADIUS_MM),
         "lower_root_maximum_hausdorff_mm": (
-            AE_BOOLEAN_RELIEF_ROOT_MAX_HAUSDORFF_MM),
+            GRADED_BOOLEAN_RELIEF_ROOT_MAX_HAUSDORFF_MM),
         "lower_root_tip_xy_mm": [float(value) for value in root_tip],
         "measured_maximum_hausdorff_mm": maximum_hausdorff,
         "outside_exact_relief_area_mm2": float(
@@ -1590,12 +1590,12 @@ def _cut_optional_lm_key_clearance(part, side: str) -> Part:
 def _right_monolith_cached(slug: str) -> Part:
     _require_guarded_build()
     slug = _normalize_variant(slug)
-    if slug == "ac":
+    if slug == "flat":
         body = _plan_prism(
             _layout().field_right, REAR_LIMIT_Z_MM, FRONT_Z_MM)
-        body = _one_solid(body, "Ac constant-depth monolith")
+        body = _one_solid(body, "flat constant-depth monolith")
     else:
-        body = _ae_smooth_body()
+        body = _graded_smooth_body()
     body = _cut_receivers(body, "right")
     body = _cut_optional_lm_key_clearance(body, "right")
     body.label = f"obiwan_wing_{slug}_right_monolithic"
@@ -1981,15 +1981,15 @@ class _VerticalDepthSampler:
 
 
 @lru_cache(maxsize=1)
-def _ae_protected_perimeter_brep_facts() -> dict:
+def _graded_protected_perimeter_brep_facts() -> dict:
     """Measure the complete internal protected-land C0 transition."""
     _require_guarded_build()
-    ae = wing_monolithic("ae", "right")
-    _solution, depth_field, _definitions = _ae_analytics()
+    graded = wing_monolithic("graded", "right")
+    _solution, depth_field, _definitions = _graded_analytics()
     protected = depth_field.protected
-    plan = wing_plan("ae", "right")
+    plan = wing_plan("graded", "right")
     external_guard = plan.boundary.buffer(
-        contract.AE_EDGE_MATCH_TOL_MM, cap_style=2, join_style=2)
+        contract.GRADED_EDGE_MATCH_TOL_MM, cap_style=2, join_style=2)
     excluded_external = protected.boundary.intersection(external_guard)
     internal_transition = protected.boundary.difference(external_guard)
     plan_with_tolerance = plan.buffer(1.0e-6)
@@ -2000,7 +2000,7 @@ def _ae_protected_perimeter_brep_facts() -> dict:
     for line in _shapely_line_parts(internal_transition):
         sample_count = max(
             1, int(np.ceil(
-                line.length / AE_PROTECTED_BOUNDARY_SAMPLE_SPACING_MM)))
+                line.length / GRADED_PROTECTED_BOUNDARY_SAMPLE_SPACING_MM)))
         for sample_index in range(sample_count):
             distance = line.length * (
                 sample_index + 0.5) / float(sample_count)
@@ -2012,38 +2012,38 @@ def _ae_protected_perimeter_brep_facts() -> dict:
             tangent_length = float(np.hypot(tx, ty))
             if tangent_length <= 1.0e-8:
                 raise RuntimeError(
-                    "Ae protected perimeter contains a degenerate tangent")
+                    "graded protected perimeter contains a degenerate tangent")
             nx = -ty / tangent_length
             ny = tx / tangent_length
             boundary = line.interpolate(distance)
             plus = Point(
-                boundary.x + AE_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * nx,
-                boundary.y + AE_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * ny)
+                boundary.x + GRADED_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * nx,
+                boundary.y + GRADED_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * ny)
             minus = Point(
-                boundary.x - AE_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * nx,
-                boundary.y - AE_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * ny)
+                boundary.x - GRADED_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * nx,
+                boundary.y - GRADED_PROTECTED_BOUNDARY_PROBE_OFFSET_MM * ny)
             plus_inside = protected.covers(plus)
             minus_inside = protected.covers(minus)
             if plus_inside == minus_inside:
                 raise RuntimeError(
-                    "Ae protected perimeter probe did not straddle the land at "
+                    "graded protected perimeter probe did not straddle the land at "
                     f"({boundary.x:.6f}, {boundary.y:.6f})")
             inside = plus if plus_inside else minus
             outside = minus if plus_inside else plus
             if (not plan_with_tolerance.covers(inside)
                     or not plan_with_tolerance.covers(outside)):
                 raise RuntimeError(
-                    "Ae internal protected perimeter probe left the wing plan at "
+                    "graded internal protected perimeter probe left the wing plan at "
                     f"({boundary.x:.6f}, {boundary.y:.6f})")
             probe_pairs.append((boundary, inside, outside))
 
     perimeter_samples = len(probe_pairs)
     if perimeter_samples < 20:
         raise RuntimeError(
-            "Ae protected perimeter was not sampled completely: "
+            "graded protected perimeter was not sampled completely: "
             f"total={perimeter_samples}")
 
-    sampler = _VerticalDepthSampler(ae)
+    sampler = _VerticalDepthSampler(graded)
     flattened_xy = [
         (float(point.x), float(point.y))
         for _boundary, inside, outside in probe_pairs
@@ -2056,7 +2056,7 @@ def _ae_protected_perimeter_brep_facts() -> dict:
         outside_depth = flattened_depths[2 * pair_index + 1]
         if not np.isclose(inside_depth, FULL_DEPTH_MM, atol=0.03):
             raise RuntimeError(
-                "Ae protected land lost exact full depth: "
+                "graded protected land lost exact full depth: "
                 f"{inside_depth:.6f} mm at "
                 f"({inside.x:.6f}, {inside.y:.6f})")
         jump = abs(inside_depth - outside_depth)
@@ -2067,11 +2067,11 @@ def _ae_protected_perimeter_brep_facts() -> dict:
 
     if qualified_samples != perimeter_samples:
         raise RuntimeError(
-            "Ae protected perimeter was not probed completely: "
+            "graded protected perimeter was not probed completely: "
             f"qualified={qualified_samples}, total={perimeter_samples}")
-    if maximum_jump > AE_PROTECTED_BOUNDARY_MAX_C0_JUMP_MM:
+    if maximum_jump > GRADED_PROTECTED_BOUNDARY_MAX_C0_JUMP_MM:
         raise RuntimeError(
-            "Ae protected-land C0 rear step exceeds 0.03 mm: "
+            "graded protected-land C0 rear step exceeds 0.03 mm: "
             f"jump={maximum_jump:.6f} at {maximum_jump_xy}")
 
     # Keep a sparse deterministic comparison with the former Boolean/Axis
@@ -2086,23 +2086,23 @@ def _ae_protected_perimeter_brep_facts() -> dict:
         for point, fast_depth in (
                 (inside, flattened_depths[2 * int(pair_index)]),
                 (outside, flattened_depths[2 * int(pair_index) + 1])):
-            legacy_depth = _brep_vertical_depth_mm(ae, point.x, point.y)
+            legacy_depth = _brep_vertical_depth_mm(graded, point.x, point.y)
             maximum_engine_delta = max(
                 maximum_engine_delta, abs(legacy_depth - fast_depth))
             calibration_probe_count += 1
     if maximum_engine_delta > 0.002:
         raise RuntimeError(
-            "Ae vertical BREP probe engines disagree: "
+            "graded vertical BREP probe engines disagree: "
             f"maximum delta={maximum_engine_delta:.6f} mm")
     return {
         "locus": (
             "complete depth_field.protected.boundary excluding only "
             "external-plan-coincident segments"),
         "maximum_sample_spacing_mm": (
-            AE_PROTECTED_BOUNDARY_SAMPLE_SPACING_MM),
-        "paired_probe_offset_mm": AE_PROTECTED_BOUNDARY_PROBE_OFFSET_MM,
+            GRADED_PROTECTED_BOUNDARY_SAMPLE_SPACING_MM),
+        "paired_probe_offset_mm": GRADED_PROTECTED_BOUNDARY_PROBE_OFFSET_MM,
         "maximum_allowed_c0_jump_mm": (
-            AE_PROTECTED_BOUNDARY_MAX_C0_JUMP_MM),
+            GRADED_PROTECTED_BOUNDARY_MAX_C0_JUMP_MM),
         "internal_transition_length_mm": float(internal_transition.length),
         "excluded_external_boundary_length_mm": float(
             excluded_external.length),
@@ -2120,7 +2120,7 @@ def wing_facts(variant_id: str) -> dict:
     _require_guarded_build()
     slug = _normalize_variant(variant_id)
     layout = _layout()
-    solution, depth_field, _sections = _ae_analytics()
+    solution, depth_field, _sections = _graded_analytics()
     right = wing_monolithic(slug, "right")
     left = wing_monolithic(slug, "left")
     parts = {
@@ -2131,7 +2131,7 @@ def wing_facts(variant_id: str) -> dict:
         side: wing_two_piece_print_parts(slug, side)
         for side in SIDE_NAMES
     }
-    if slug == "ac":
+    if slug == "flat":
         analytic_volume = float(layout.field_right.area * FULL_DEPTH_MM)
         analytic_mass = (
             analytic_volume / 1000.0 * contract.PLA_DENSITY_G_CM3)
@@ -2142,7 +2142,7 @@ def wing_facts(variant_id: str) -> dict:
     else:
         analytic_volume = float(depth_field.volume_mm3)
         analytic_mass = float(depth_field.mass_g)
-        depth_min = float(AE_EDGE_DEPTH_MM)
+        depth_min = float(GRADED_EDGE_DEPTH_MM)
         depth_max = FULL_DEPTH_MM
         edge_range = [float(value)
                       for value in depth_field.outer_edge_depth_mm]
@@ -2167,7 +2167,7 @@ def wing_facts(variant_id: str) -> dict:
                 "bounds_mm": _bounds_record(piece),
             }
     protected_perimeter_brep = (
-        None if slug == "ac" else _ae_protected_perimeter_brep_facts())
+        None if slug == "flat" else _graded_protected_perimeter_brep_facts())
     return {
         "schema_version": 1,
         "artifact_family": "obiwan_wing_artifacts",
@@ -2185,39 +2185,39 @@ def wing_facts(variant_id: str) -> dict:
             "rear_limit_z_mm": REAR_LIMIT_Z_MM,
         },
         "depth_contract": {
-            "model": ("constant" if slug == "ac"
+            "model": ("constant" if slug == "flat"
                       else "LM_UM_T_weighted_smooth_rear"),
             "full_depth_mm": FULL_DEPTH_MM,
             "minimum_depth_mm": depth_min,
             "maximum_depth_mm": depth_max,
             "eligible_outer_edge_depth_mm": edge_range,
-            "ae_optional_fine_layer_edge_mm": float(
-                contract.AE_OPTIONAL_FINE_LAYER_EDGE_MM),
+            "graded_optional_fine_layer_edge_mm": float(
+                contract.GRADED_OPTIONAL_FINE_LAYER_EDGE_MM),
             "analytic_volume_mm3_per_side": analytic_volume,
             "analytic_mass_g_per_side": analytic_mass,
-            "volume_reduction_from_ac_pct": reduction,
+            "volume_reduction_from_flat_pct": reduction,
             "maximum_analytic_grid_slope": max_slope,
-            "maximum_allowed_slope": float(contract.AE_FIELD_MAX_SLOPE),
+            "maximum_allowed_slope": float(contract.GRADED_FIELD_MAX_SLOPE),
             "surface_construction": (
-                "plan_prism" if slug == "ac"
+                "plan_prism" if slug == "flat"
                 else "direct_open_uniform_control_bspline"),
             "surface_control_net_xy": (
-                None if slug == "ac"
-                else [AE_SURFACE_GRID_X, AE_SURFACE_GRID_Y]),
+                None if slug == "flat"
+                else [GRADED_SURFACE_GRID_X, GRADED_SURFACE_GRID_Y]),
             "surface_spline_degree": (
-                0 if slug == "ac" else AE_SURFACE_SPLINE_DEGREE),
+                0 if slug == "flat" else GRADED_SURFACE_SPLINE_DEGREE),
             "surface_control_padding_mm": (
-                0.0 if slug == "ac" else AE_SURFACE_GRID_PADDING_MM),
+                0.0 if slug == "flat" else GRADED_SURFACE_GRID_PADDING_MM),
             "surface_outside_edge_slope": (
-                0.0 if slug == "ac" else AE_SURFACE_OUTSIDE_EDGE_SLOPE),
+                0.0 if slug == "flat" else GRADED_SURFACE_OUTSIDE_EDGE_SLOPE),
             "surface_outside_minimum_control_depth_mm": (
-                None if slug == "ac" else AE_SURFACE_OUTSIDE_MIN_DEPTH_MM),
+                None if slug == "flat" else GRADED_SURFACE_OUTSIDE_MIN_DEPTH_MM),
             "exact_edge_brep_band_mm": (
-                0.0 if slug == "ac" else AE_EXACT_EDGE_BAND_MM),
+                0.0 if slug == "flat" else GRADED_EXACT_EDGE_BAND_MM),
             "conservative_relief_island_retention": (
-                None if slug == "ac" else _ae_relief_plan()[1]),
+                None if slug == "flat" else _graded_relief_plan()[1]),
             "conservative_boolean_relief_mask": (
-                None if slug == "ac" else _ae_boolean_relief_plan()[1]),
+                None if slug == "flat" else _graded_boolean_relief_plan()[1]),
             "protected_perimeter_brep_c0_gate": protected_perimeter_brep,
             "retention_centres": list(solution.center_names),
             "retention_scales": [float(value)
@@ -2289,10 +2289,10 @@ def wing_facts(variant_id: str) -> dict:
             "assembly_motion": "z_axis_slide",
             "z_retention": False,
             "coupon_qualification_required": True,
-            "ae_joint_interface_area_mm2": [
+            "graded_joint_interface_area_mm2": [
                 float(value) for value in depth_field.joint_area_mm2
             ],
-            "ae_joint_rear_mismatch_mm": [
+            "graded_joint_rear_mismatch_mm": [
                 float(value) for value in depth_field.joint_rear_mismatch_mm
             ],
         },
@@ -2343,7 +2343,7 @@ def wing_facts(variant_id: str) -> dict:
     }
 
 
-def gen_step(variant_id: str = "ac", assembled: bool = False):
+def gen_step(variant_id: str = "flat", assembled: bool = False):
     """Compatibility entry point for canonical or printable STEP assembly."""
     return (wing_print_assembly(variant_id) if assembled
             else wing_monolithic_assembly(variant_id))

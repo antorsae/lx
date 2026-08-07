@@ -265,8 +265,8 @@ def _obiwan_links() -> list[Link]:
     ]
     links.extend(_obiwan_state_links("no_floor_stand", "no_floor"))
     links.extend(_obiwan_state_links("floor_stand", "floor"))
-    links.extend(_obiwan_wing_links("ac"))
-    links.extend(_obiwan_wing_links("ae"))
+    links.extend(_obiwan_wing_links("flat"))
+    links.extend(_obiwan_wing_links("graded"))
     return links
 
 
@@ -299,7 +299,7 @@ PRODUCTS = {
         "title": "Obi-Wan R6F collar baffle",
         "status": "candidate_not_release_authorized",
         "release_authorized": False,
-        "intent": "Two mandatory flush carriers, optional tweeter crescent, and Ac/Ae magnetic acoustic wings in floor and stock-bridge states.",
+        "intent": "Two mandatory flush carriers, optional tweeter crescent, and flat/graded magnetic acoustic wings in floor and stock-bridge states.",
         "dimensions": {
             "carrier_field_depth_mm": 11.5,
             "front_plane_z_mm": 18.3,

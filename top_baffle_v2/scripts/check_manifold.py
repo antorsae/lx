@@ -53,7 +53,7 @@ FLOOR_POLAR_SIDECAR_EXCLUSIONS = frozenset({
     "lx521_polar_base_1of2_base.stl",
     "lx521_polar_base_2of2_rotor.stl",
 })
-WING_SLUGS = ("ac", "ae")
+WING_SLUGS = ("flat", "graded")
 WING_SIDES = ("left", "right")
 WING_ROLES = ("lm_lower", "lm_upper", "um")
 WING_TWO_PIECE_ROLES = ("lm_lower", "lm_um_upper")
@@ -131,7 +131,7 @@ def _print_sidecar_inventory_errors(
 
 
 def _wing_print_sidecar_errors(root: Path, slug: str) -> list[str]:
-    """Gate exactly six front-down STL/sidecar pairs for one Ac/Ae wing."""
+    """Gate exactly six front-down STL/sidecar pairs for one flat/graded wing."""
     expected = expected_wing_stl_names(slug)
     actual_stls = {path.name for path in root.glob("*.stl") if path.is_file()}
     errors = []

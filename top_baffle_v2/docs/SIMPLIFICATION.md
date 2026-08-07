@@ -36,7 +36,7 @@ Slim    v1l_split.pieces_v1l() + v1_split/v1_attachments ──► --variant v1l
 ObiWan  export_obiwan_staged.py stage ──► <state>/.obiwan_stage/manifest.json (hashed BREPs)
         ──► export_piece_stls.py --variant obiwan --obiwan-part {lm,lm_split,um,tweeter}
         ──► export_obiwan_staged.py step --kind {split,lm_split,attachments,assembled}
-Wings   export_obiwan_wings.py --slug {ac,ae} ──► wings/{ac,ae}/
+Wings   export_obiwan_wings.py --slug {flat,graded} ──► wings/{flat,graded}/
 STEPs   generic rule ──► export_steps.py <module>.gen_step()
 Shelf   make to_print: existing captive-magnet ready authority ──► build_to_print_shelf.py
         ──► to_print/{stock,slim,obiwan}/{stl,3mf}/  (48 entries, hard-linked, SHA-256-bound)
@@ -107,7 +107,7 @@ plus ~40 collapsible Makefile targets. Grouped by layer:
 |---|---|---|
 | K1 | ~17 focused `check_*` targets, each `LX_R6F_SINGLE_CHECK=<name> $(RUN) test_obiwan_r6f.py` (22 occurrences) — duplicating the *generated* `_check_r6f_<name>` stamp nodes | `:857-958` |
 | K2 | floor/no-floor pairs written twice verbatim: `validate_*_obiwan_stage` `:475-485`, `{floor,no_floor}_obiwan` `:530-541`, the whole mouth/burial/backfill/shell/split ladder `:837-925` | |
-| K3 | `wings/.stamp_ac` / `.stamp_ae` — 11-line recipes differing only by slug | `:572-592` |
+| K3 | `wings/.stamp_flat` / `.stamp_graded` — 11-line recipes differing only by slug | `:572-592` |
 | K4 | 16 `export_piece_stls.py` recipe lines; `.stamp/_c7/_v0/_v1` are the same 4-line skeleton ×4; V1L (5 calls) and Obi-Wan (4 calls) are hand-unrolled loops | `:966-1013` |
 | K5 | `LX_STAND_FOOT=$(2) LX_ROUTING_PROFILE=… $(RUN)` prefix repeated on 23 recipe lines | `:968-1079` |
 | K6 | "Recover-if-missing" multi-output idiom duplicated (Make 3.81 grouped-target workaround) | `:1085-1087`, `:1105-1108` |
@@ -272,7 +272,7 @@ top_baffle_v2/
 ├── coupons/                      unchanged (qualification reference pieces)
 ├── sketches/                     dated one-off concept generators (or delete)
 ├── build/                        ─ generated, per-state build outputs ─
-│   ├── floor_stand/  no_floor_stand/  wings/{ac,ae}/
+│   ├── floor_stand/  no_floor_stand/  wings/{flat,graded}/
 │   └── common/                   attachments.step, obiwan_wing_design_map.png
 ├── review/                       audit outputs (unchanged role)
 ├── artifacts/                    curated product facade (symlinks + manifests)
@@ -364,7 +364,7 @@ four days, all on the 32c/64t osado host):
 
 1. **The wings are the critical path — and they run ~2-wide on a 64-thread
    machine.** `obiwan_wings` alone takes 62 m ≈ the whole 64.5 m release.
-   Each slug (`ac`, `ae`) is ONE `export_obiwan_wings.py` process that
+   Each slug (`flat`, `graded`) is ONE `export_obiwan_wings.py` process that
    serially: rebuilds the full Obi-Wan carriers via `core_parts()`
    (`obiwan_wings_cad.py:1559-1562` — even though hash-verified staged
    BREPs of exactly those carriers already exist), then booleans/meshes

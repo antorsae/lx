@@ -30,7 +30,7 @@ plus both combined `01+02+03+04` core plates, are the structural
 exceptions: they use the hash-pinned saved
 **TINMORRY PETG-GF Profile @BBL P2S** preset and eight walls. The no-floor-stand `01`
 uses 40% gyroid globally plus its 100%-solid bridge/root modifier; the
-floor-stand `01` uses global 100% zig-zag. Ac/Ae wings and shoulders remain PLA Tough+;
+floor-stand `01` uses global 100% zig-zag. Flat/graded wings and shoulders remain PLA Tough+;
 do not print them in PETG-GF.
 Each magnetic event makes no XY move: it raises the nozzle to Z=250 mm at
 20 mm/s (lowering the P2S bed to within 6 mm of its bottom), executes the
@@ -54,9 +54,9 @@ under the tweeter footprint. Promotion requires exact 3MF/STL equivalence,
 the required modifier inventory, and zero support-bead collisions in all
 three duct-bearing parts.
 
-`obiwan_ac_wings_split2_combo` and
-`obiwan_ae_wings_split2_combo` are the combo plates
-for the four Ac and Ae split2 wing pieces respectively. Each preserves the released
+`obiwan_flat_wings_split2_combo` and
+`obiwan_graded_wings_split2_combo` are the combo plates
+for the four flat and graded split2 wing pieces respectively. Each preserves the released
 front-face-down orientation, applies only locked Z rotations and XY
 translations, and uses 30% gyroid with all four support fields pinned off
 globally and on the object. These non-load-bearing pieces retain the standard
@@ -64,8 +64,8 @@ Bambu PLA Tough+ profile; they are not PETG-GF jobs. The audited packing has
 3.587 mm minimum
 part-to-part clearance and 3.592 mm minimum bed-edge clearance. Each pauses
 once at Z=5.96 mm for all six wing magnets, emits zero support feature blocks,
-and passes exact project/STL equivalence: 15,692 triangles for Ac and 958,546
-for Ae.
+and passes exact project/STL equivalence: 15,692 triangles for flat and 958,546
+for graded.
 
 The six-wall setting is deliberately general-body strength, not six walls in
 the captive-magnet skin. Arachne is allowed to emit the one bounded
@@ -83,7 +83,7 @@ bill of materials.  State and attachment choices are alternatives:
   `obiwan_01_02_03_04_LM_UM_combo_no_floor_stand` or
   `obiwan_01_02_03_04_LM_UM_combo_floor_stand` plate instead of those four
   individual files. Never mix stand states or print a combined core plate
-  together with its individual 01/02/03/04 pieces. Choose Ac (05–10) or Ae
+  together with its individual 01/02/03/04 pieces. Choose flat (05–10) or graded
   (11–16), never both wing families. Within the selected family, choose either
   every `split3` file for the original three-piece-per-side split or every
   `split2` file for the fused two-piece-per-side split; never mix them. For
@@ -153,12 +153,12 @@ make obiwan_no_floor_combo_plate_to_print
 make obiwan_floor_combo_plate_source
 make obiwan_floor_combo_plate
 make obiwan_floor_combo_plate_to_print
-make obiwan_ac_wing_plate_source
-make obiwan_ac_wing_plate
-make obiwan_ac_wing_plate_to_print
-make obiwan_ae_wing_plate_source
-make obiwan_ae_wing_plate
-make obiwan_ae_wing_plate_to_print
+make obiwan_flat_wing_plate_source
+make obiwan_flat_wing_plate
+make obiwan_flat_wing_plate_to_print
+make obiwan_graded_wing_plate_source
+make obiwan_graded_wing_plate
+make obiwan_graded_wing_plate_to_print
 ```
 
 The corresponding concrete STL, ready `.gcode.3mf`, audit, and promoted files

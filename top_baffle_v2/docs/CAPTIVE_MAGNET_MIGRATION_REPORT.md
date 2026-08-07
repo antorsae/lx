@@ -7,7 +7,7 @@ printable magnet station is represented by the shared pause-and-bury captive
 system instead of an externally accessible glue pocket. The fail-closed
 inventory contains **58 magnet-bearing STLs and 94 per-STL magnet stations**.
 This count includes both stand-state copies and the mutually exclusive Obi-Wan LM
-monolith/split alternatives, plus both Ac/Ae A and B wing split options.
+monolith/split alternatives, plus both flat/graded A and B wing split options.
 
 This document is not the final release authority until the content-addressed
 CAD candidate has been atomically promoted and the complete Bambu slice audit
@@ -67,13 +67,13 @@ The family counts below are enforced in code and must not change silently.
 | V1L | 2 | 8 | `lx521_top_v1l_4of4_vase_b2`, one per stand state |
 | Obi-Wan | 4 | 12 | LM monolith and UM carrier in both stand states |
 | Obi-Wan-split | 4 | 8 | Keyed LM lower and upper alternatives in both stand states |
-| Obi-Wan-Ac | 10 | 12 | Left/right three-piece A and two-piece B wing alternatives |
-| Obi-Wan-Ae | 10 | 12 | Left/right three-piece A and two-piece B wing alternatives |
+| Obi-Wan-Flat | 10 | 12 | Left/right three-piece A and two-piece B wing alternatives |
+| Obi-Wan-Graded | 10 | 12 | Left/right three-piece A and two-piece B wing alternatives |
 | coupon1 | 2 | 2 | `lx521_coupon_1_fit_plate`, one per stand state |
 | **Total** | **58** | **94** | Exact fail-closed catalog |
 
 State accounting is 19 magnet-bearing STLs / 35 stations in
-`floor_stand`, 19 / 35 in `no_floor_stand`, and 20 / 24 shared Ac/Ae wing
+`floor_stand`, 19 / 35 in `no_floor_stand`, and 20 / 24 shared flat/graded wing
 segments. An Obi-Wan LM monolith and its two keyed substitutes are alternative
 ways to print one installed carrier; both forms are release artifacts and are
 therefore deliberately counted in the catalog.
@@ -93,14 +93,14 @@ geometry; that proxy coverage is not a fabricated monolith G-code pause.
   The complete 3.00 mm captive land and roof fit inside the immutable host,
   with no local pad, cap, boss, flat, dent, or other exterior location cue.
 - Obi-Wan upper/lower LM and UM sites retain their radial/base-side axes.
-  All six carrier sites and their Ac/Ae receivers share source
+  All six carrier sites and their flat/graded receivers share source
   **Z = 15.10 mm**.
   Ring-radial cavity datums sit at structural radius +0.65 mm, 0.15 mm beneath
   continuous exposed R113.8/R52.5 side fairings. The fairings stop only inside
   existing LM--UM and T--UM cusp/service regions, preserve the 0.40 mm LM--UM
   gap, and have no local pad, boss,
   flat, protrusion, or other visible magnet-location cue.
-- Obi-Wan Ac/Ae receivers use the matching pair axes and protected local lands.
+- Obi-Wan flat/graded receivers use the matching pair axes and protected local lands.
   Existing outlines, acoustic depth laws, three-piece splits, and dovetail
   geometry remain authoritative.
 - V0 has two rear-axis stations and no released mate. Its front-down axial
@@ -129,7 +129,7 @@ to magnet-bearing and non-magnet pieces alike so their visible texture is
 consistent.
 
 The broader orientation inventory is **98 acoustic STL/sidecar pairs**:
-39 in each stand state plus ten Ac and ten Ae wing segments. Do not confuse
+39 in each stand state plus ten flat and ten graded wing segments. Do not confuse
 that orientation count with the separate 94 captive-station count above.
 Each acoustic STL has an adjacent, hash-bound `<stem>.print.json` which
 records:
@@ -172,7 +172,7 @@ station gets its pause from the actual generated G-code layer schedule.
 | Site role | Marked/N-pole convention |
 |---|---|
 | Base or carrier | Marked/N pole points out of the carrier toward its mate, along the listed installed pair-axis vector |
-| Receiver, attachment, or Ac/Ae wing | Marked/N pole points along the same installed pair-axis vector as the carrier magnet; the face toward the carrier is therefore the opposite pole |
+| Receiver, attachment, or flat/graded wing | Marked/N pole points along the same installed pair-axis vector as the carrier magnet; the face toward the carrier is therefore the opposite pole |
 | V0 | Provisional and unpaired: marked/N pole points rearward along the listed installed axis; verify any future mate before burial |
 | Coupon 1 | Unpaired regression convention: marked/N pole points installed -Y; no mating or attraction claim |
 
@@ -228,7 +228,7 @@ No file in this migration uploads to a printer or starts a print.
   packages, and assembled review STEPs.
 - All 45 released non-polar-index STL/`.print.json` pairs in each stand state,
   including the 22 magnet-bearing pairs in each state.
-- Ten Ac and ten Ae wing STL/`.print.json` pairs, their A/B STEP masters and
+- Ten flat and ten graded wing STL/`.print.json` pairs, their A/B STEP masters and
   assemblies, facts, transactional manifests, and review images.
 - Obi-Wan staged-build manifests, release manifests, cable-routing PNGs, and
   driver/variant overlays whose magnet depictions now show the captive skins,
@@ -282,8 +282,8 @@ manifest are authoritative.
 | No-floor Obi-Wan assembled carrier/attachments | `[FINALIZE AFTER PROMOTION: viewer URL]` |
 | Floor Obi-Wan assembled carrier/integral stand | `[FINALIZE AFTER PROMOTION: viewer URL]` |
 | V0 axial captive stations | `[FINALIZE AFTER PROMOTION: viewer URL]` |
-| Ac assembled wing and receivers | `[FINALIZE AFTER PROMOTION: viewer URL]` |
-| Ae assembled wing and receivers | `[FINALIZE AFTER PROMOTION: viewer URL]` |
+| flat assembled wing and receivers | `[FINALIZE AFTER PROMOTION: viewer URL]` |
+| graded assembled wing and receivers | `[FINALIZE AFTER PROMOTION: viewer URL]` |
 | Representative sliced captive-station G-code | `[FINALIZE AFTER PROMOTION: viewer URL]` |
 
 ## Remaining physical risks and required qualification
@@ -314,7 +314,7 @@ manifest are authoritative.
   documented distributed proof-load/creep program remain mandatory. Bambu
   PLA Lite is provisional and fails the vertical-5g analytical screen; it is
   not a qualified substitute.
-- Ac/Ae dovetails register and interlock in plane but provide no independent
+- Flat/graded dovetails register and interlock in plane but provide no independent
   Z retention. Their documented equal-treatment external retention method and
   a physical pull test remain required.
 - A changed nozzle, layer schedule, wall generator, first-layer height,

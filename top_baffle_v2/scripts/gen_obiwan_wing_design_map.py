@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Dimensioned printable-layout sheet for Obi-Wan Ac/Ae attachments.
+"""Dimensioned printable-layout sheet for Obi-Wan flat/graded attachments.
 
 This is deliberately a 2-D, source-linked engineering drawing generator.  It
 uses the exact current A-comp outer profile and the exact Obi-Wan
-carrier/magnet datums. Ac/Ae release geometry is generated separately by
+carrier/magnet datums. flat/graded release geometry is generated separately by
 ``lx521_baffle.obiwan.wings`` from this same analytic contract. The sheet documents
-their print envelope, segmentation, Ac constant-depth reference, and the
-boundary-aware Ae LM/UM/T-weighted rear field. No other Obi-Wan wing variant
+their print envelope, segmentation, flat constant-depth reference, and the
+boundary-aware graded LM/UM/T-weighted rear field. No other Obi-Wan wing variant
 is part of this map or the release inventory.
 
 Ordinary use is remote-first through the repository Makefile::
@@ -110,56 +110,56 @@ MAGNET_FACE_GAP_MM = INTERFACE_GAP_MM
 # ~2.2-mm horizontal slot created by the old oversized envelope.
 T_WING_CLEARANCE_MM = 0.20
 T_CRESCENT_PROFILE_WINDOW_MM = (-80.0, 412.0, 80.0, 454.0)
-# Ac is the exact constant-depth reference.  Ae keeps the same flat front
+# flat is the exact constant-depth reference.  graded keeps the same flat front
 # datum but replaces the rear slab with a constrained, single-valued feather.
 # The documented project profile is 0.20-mm layers on a 0.4-mm nozzle.  Because
-# Ae prints front-down, its terminal Z thickness must be at least that first
+# graded prints front-down, its terminal Z thickness must be at least that first
 # layer.  A 0.16-mm knife is an optional future slicer/coupon contract, not the
 # reliable default represented by this drawing.  CAD t=0.24 adds slicer/mesh
 # margin while still producing the intended single 0.20-mm first-layer edge;
 # it remains coupon-gated rather than dimensionally guaranteed.
-AE_EDGE_DEPTH_MM = 0.24
-AE_OPTIONAL_FINE_LAYER_EDGE_MM = 0.16
-# Ae is not a fixed-run feather.  Its rear face is a boundary-aware field:
+GRADED_EDGE_DEPTH_MM = 0.24
+GRADED_OPTIONAL_FINE_LAYER_EDGE_MM = 0.16
+# graded is not a fixed-run feather.  Its rear face is a boundary-aware field:
 # every eligible exposed profile edge is exactly one printable layer while
 # protected Obi-Wan contact lands retain the full 11.5-mm envelope.  The three
 # driver-centred scales vary how long that thickness is retained.  LM gets the
 # longest transition (longest wavelength), UM is intermediate, and the
 # tweeter sheds depth fastest.  Gaussian radii make the hand-off between those
 # behaviours smooth in plan rather than dividing the attachment into bands.
-AE_REFERENCE_SPAN_MM = 36.0
-AE_REQUIRED_FREE_RUN_MM = AE_REFERENCE_SPAN_MM
-AE_CENTER_NAMES = ("LM", "UM", "T")
-AE_CENTER_XY_MM = (
+GRADED_REFERENCE_SPAN_MM = 36.0
+GRADED_REQUIRED_FREE_RUN_MM = GRADED_REFERENCE_SPAN_MM
+GRADED_CENTER_NAMES = ("LM", "UM", "T")
+GRADED_CENTER_XY_MM = (
     (float(LM_CENTER[0]), float(LM_CENTER[1])),
     (float(UM_CENTER[0]), float(UM_CENTER[1])),
     (float(T_CRESCENT_CENTER[0]), float(T_CRESCENT_CENTER[1])),
 )
-AE_CENTER_WEIGHT_RADII_MM = (145.0, 82.0, 56.0)
+GRADED_CENTER_WEIGHT_RADII_MM = (145.0, 82.0, 56.0)
 # Relative retention remains longest at LM and shortest at T, while the
 # absolute values are deliberately low enough for the real A-profile neck to
 # reach the one-layer edge without exceeding the 1:1 rear-slope contract.
-AE_CENTER_RETENTION_SCALES = (1.80, 0.90, 0.58)
-AE_EDGE_MATCH_TOL_MM = 0.035
-AE_EDGE_DENSIFY_MM = 0.25
-AE_DISTANCE_EPS_MM = 1e-7
-AE_PROTECTED_SOFTMIN_P = 6.0
-AE_SECTION_MONOTONIC_TOL_MM = 0.002
+GRADED_CENTER_RETENTION_SCALES = (1.80, 0.90, 0.58)
+GRADED_EDGE_MATCH_TOL_MM = 0.035
+GRADED_EDGE_DENSIFY_MM = 0.25
+GRADED_DISTANCE_EPS_MM = 1e-7
+GRADED_PROTECTED_SOFTMIN_P = 6.0
+GRADED_SECTION_MONOTONIC_TOL_MM = 0.002
 # Some full-depth Obi-Wan mating bands approach the A outline more closely than
 # the 11.26-mm rise required for a global 1:1 limit. Keep the transition
 # continuous and audit the measured peak under a 6:1 ceiling; the flush mating
 # datum takes precedence and must never be silently feathered away.
-AE_FIELD_MAX_SLOPE = 6.0
+GRADED_FIELD_MAX_SLOPE = 6.0
 # A full-depth contact cannot meet the one-layer edge in less than this run at
 # the audited slope ceiling.  The actual rear easing has a peak derivative
 # above its mean, so reserve twice the theoretical rise/run only around the T
 # contact.  This is a local edge blend, not the former y-wide top exemption.
-AE_MIN_FULL_TO_EDGE_RUN_MM = (
-    (DEPTH_MM - AE_EDGE_DEPTH_MM) / AE_FIELD_MAX_SLOPE)
-AE_TOP_CONTACT_EDGE_BLEND_MM = 2.0 * AE_MIN_FULL_TO_EDGE_RUN_MM
-AE_MIN_JOINT_AREA_MM2 = (75.0, 50.0)
-AE_CONTACT_LAND_MM = 1.20
-AE_PROTECTED_BUFFER_MM = 1.20
+GRADED_MIN_FULL_TO_EDGE_RUN_MM = (
+    (DEPTH_MM - GRADED_EDGE_DEPTH_MM) / GRADED_FIELD_MAX_SLOPE)
+GRADED_TOP_CONTACT_EDGE_BLEND_MM = 2.0 * GRADED_MIN_FULL_TO_EDGE_RUN_MM
+GRADED_MIN_JOINT_AREA_MM2 = (75.0, 50.0)
+GRADED_CONTACT_LAND_MM = 1.20
+GRADED_PROTECTED_BUFFER_MM = 1.20
 PAD_LM_TANGENTIAL_MM = 8.8
 PAD_LM_RADIAL_MM = 6.0
 PAD_UM_TANGENTIAL_MM = 13.0
@@ -191,7 +191,7 @@ A_TAPER_CAP_MIN_WIDTH_MM = 1.20
 # key per joint because its usable seam chords are only 20.57 and 15.52 mm.
 # Female clearance is the same coupon-calibrated 0.05 mm used by V1L.  The
 # straight seam slit tapers closed over the last 2 mm at each exposed endpoint
-# so Ae retains one continuous constant-thickness acoustic knife edge.
+# so graded retains one continuous constant-thickness acoustic knife edge.
 DOVETAIL_CLEARANCE_MM = 0.05
 DOVETAIL_ENDPOINT_TAPER_MM = 2.0
 # Embed the nominal seam neck this far into the male partition.  The overlap
@@ -256,7 +256,7 @@ class VariantLayout:
 
 
 @dataclass(frozen=True)
-class AeTransitionModel:
+class GradedTransitionModel:
     profile_name: str
     run_mm: float
     plateau_mm: float
@@ -280,7 +280,7 @@ class AeTransitionModel:
 
 
 @dataclass
-class AeDepthField:
+class GradedDepthField:
     protected: Polygon
     contact_land: Polygon
     top_flush_land: Polygon
@@ -294,8 +294,8 @@ class AeDepthField:
     mask: np.ndarray
     volume_mm3: float
     mass_g: float
-    ac_volume_mm3: float
-    ac_mass_g: float
+    flat_volume_mm3: float
+    flat_mass_g: float
     reduction_pct: float
     protected_area_mm2: float
     min_depth_mm: float
@@ -314,7 +314,7 @@ class SectionDefinition:
 
 
 VARIANTS = (
-    VariantDefinition("A", "Obi-Wan Ac/Ae plan", OUTLINE_A_COMP),
+    VariantDefinition("A", "Obi-Wan flat/graded plan", OUTLINE_A_COMP),
 )
 
 
@@ -336,7 +336,7 @@ def _profile_polygon(outline) -> Polygon:
 
 
 def _effective_profile(definition: VariantDefinition) -> Polygon:
-    """Return the finalized Obi-Wan Ac/Ae attachment profile.
+    """Return the finalized Obi-Wan flat/graded attachment profile.
 
     A keeps the current A-comp profile through the crest and below it.  Above
     the crest, the requested straight flank removes the old square top corner:
@@ -434,7 +434,7 @@ def t_wing_interface_facts() -> dict:
     }
 
 
-def _ae_reference_depth(
+def _graded_reference_depth(
         s_mm: np.ndarray, span_mm: float, retention_scale: float,
         ) -> np.ndarray:
     """Reference cut through the boundary-aware field for one driver scale.
@@ -450,19 +450,19 @@ def _ae_reference_depth(
     denominator = s_mm + retention_scale * edge_distance
     u = np.divide(
         s_mm, denominator, out=np.zeros_like(s_mm),
-        where=denominator > AE_DISTANCE_EPS_MM)
+        where=denominator > GRADED_DISTANCE_EPS_MM)
     u = np.clip(u, 0.0, 1.0)
     progress = u * u * (2.0 - u)
     return (DEPTH_MM
-            - (DEPTH_MM - AE_EDGE_DEPTH_MM) * progress)
+            - (DEPTH_MM - GRADED_EDGE_DEPTH_MM) * progress)
 
 
-def _build_ae_transition_model(samples: int = 2001) -> AeTransitionModel:
-    """Build LM/UM/T reference cuts for the plan-weighted Ae rear field."""
-    s = np.linspace(0.0, AE_REFERENCE_SPAN_MM, samples)
+def _build_graded_transition_model(samples: int = 2001) -> GradedTransitionModel:
+    """Build LM/UM/T reference cuts for the plan-weighted graded rear field."""
+    s = np.linspace(0.0, GRADED_REFERENCE_SPAN_MM, samples)
     profiles = tuple(
-        _ae_reference_depth(s, AE_REFERENCE_SPAN_MM, scale)
-        for scale in AE_CENTER_RETENTION_SCALES)
+        _graded_reference_depth(s, GRADED_REFERENCE_SPAN_MM, scale)
+        for scale in GRADED_CENTER_RETENTION_SCALES)
     slopes = tuple(
         float(np.max(np.abs(np.gradient(depth, s, edge_order=2))))
         for depth in profiles)
@@ -478,37 +478,37 @@ def _build_ae_transition_model(samples: int = 2001) -> AeTransitionModel:
     areas = tuple(float(np.trapezoid(depth, s)) for depth in profiles)
     representative = profiles[1]
     section_area = float(np.mean(areas))
-    ac_area = DEPTH_MM * AE_REFERENCE_SPAN_MM
-    straight_area = ((DEPTH_MM + AE_EDGE_DEPTH_MM) / 2.0
-                     * AE_REFERENCE_SPAN_MM)
-    return AeTransitionModel(
+    flat_area = DEPTH_MM * GRADED_REFERENCE_SPAN_MM
+    straight_area = ((DEPTH_MM + GRADED_EDGE_DEPTH_MM) / 2.0
+                     * GRADED_REFERENCE_SPAN_MM)
+    return GradedTransitionModel(
         profile_name="LM/UM/T weighted boundary field",
-        run_mm=AE_REFERENCE_SPAN_MM,
+        run_mm=GRADED_REFERENCE_SPAN_MM,
         plateau_mm=0.0,
-        required_span_mm=AE_REFERENCE_SPAN_MM,
+        required_span_mm=GRADED_REFERENCE_SPAN_MM,
         full_depth_mm=DEPTH_MM,
-        edge_depth_mm=AE_EDGE_DEPTH_MM,
+        edge_depth_mm=GRADED_EDGE_DEPTH_MM,
         area_mm2=section_area,
-        area_reduction_pct=100.0 * (1.0 - section_area / ac_area),
+        area_reduction_pct=100.0 * (1.0 - section_area / flat_area),
         straight_bevel_reduction_pct=(
             100.0 * (1.0 - section_area / straight_area)),
         max_slope=max(slopes),
         min_radius_mm=min(minimum_radii),
-        q=s / AE_REFERENCE_SPAN_MM,
+        q=s / GRADED_REFERENCE_SPAN_MM,
         s_mm=s,
         depth_mm=representative,
-        center_names=AE_CENTER_NAMES,
-        center_xy_mm=AE_CENTER_XY_MM,
-        weight_radii_mm=AE_CENTER_WEIGHT_RADII_MM,
-        retention_scales=AE_CENTER_RETENTION_SCALES,
+        center_names=GRADED_CENTER_NAMES,
+        center_xy_mm=GRADED_CENTER_XY_MM,
+        weight_radii_mm=GRADED_CENTER_WEIGHT_RADII_MM,
+        retention_scales=GRADED_CENTER_RETENTION_SCALES,
         depth_by_center_mm=profiles,
         max_slope_by_center=slopes,
     )
 
 
-def _optimize_ae_profile() -> AeTransitionModel:
+def _optimize_graded_profile() -> GradedTransitionModel:
     """Compatibility entry point for the former fixed-run optimizer."""
-    return _build_ae_transition_model()
+    return _build_graded_transition_model()
 
 
 def _mirror(geometry):
@@ -617,7 +617,7 @@ def _intercarrier_bridge_right() -> Polygon:
 def _common_keepout_parts() -> dict[str, Polygon]:
     """Named Obi-Wan plan envelopes that an attachment can contact.
 
-    Keeping the pieces named is essential for Ae: every one of these mating
+    Keeping the pieces named is essential for graded: every one of these mating
     boundaries needs a full-depth, flush rear datum.  The former carrier-only
     saddle mask missed the bridge and integral-stem sides at the bottom LM.
     """
@@ -1173,7 +1173,7 @@ def _validate_layout(layout: VariantLayout) -> None:
         if cap_width < A_TAPER_CAP_MIN_WIDTH_MM - 0.01:
             raise RuntimeError(
                 f"A-Obi-Wan taper cap is too narrow: {cap_width:.3f} mm")
-        # The photographed upper T/Ae slot is controlled by the complete
+        # The photographed upper T/graded slot is controlled by the complete
         # released crescent profile from y=430 through the printable cap.
         # Gate the actual monolithic field here so neither a conservative
         # proxy radius nor an extrapolated lower arc can silently recreate a
@@ -1335,29 +1335,29 @@ def _validate_layout(layout: VariantLayout) -> None:
             f"{layout.definition.key} unexpectedly modifies source profile")
 
 
-def _ae_protected_region(
+def _graded_protected_region(
         layout: VariantLayout,
         ) -> tuple[Polygon, Polygon, Polygon, tuple[Polygon, ...]]:
     if layout.definition.key != "A":
-        raise ValueError("Ae depth field requires the A plan family")
+        raise ValueError("graded depth field requires the A plan family")
     sites = _right_sites()
     # Receiver protection follows the actual surface-normal envelopes. Every Obi-Wan
     # mating boundary is protected separately below; larger construction fans
     # that do not touch Obi-Wan may still follow the weighted rear field.
     roots = tuple(
         _pocket_plan(sites[name]).buffer(
-            AE_PROTECTED_BUFFER_MM, resolution=32)
+            GRADED_PROTECTED_BUFFER_MM, resolution=32)
         for name in ACTIVE_RECEIVER_NAMES_RIGHT
     )
     contact_components = []
     top_contact_components = []
     named_keepouts = _common_keepout_parts()
     for name, keepout in named_keepouts.items():
-        # White in the plan is open Obi-Wan envelope, but the adjoining Ae
+        # White in the plan is open Obi-Wan envelope, but the adjoining graded
         # material is a real mating face. Carrier rings, joint ears, either
         # lower support and the T crescent all retain the full rear datum.
         land = layout.field_right.intersection(
-            keepout.buffer(AE_CONTACT_LAND_MM, resolution=32,
+            keepout.buffer(GRADED_CONTACT_LAND_MM, resolution=32,
                            join_style=1)).buffer(0)
         if not land.is_empty and land.area > 0.01:
             contact_components.append(land)
@@ -1365,16 +1365,16 @@ def _ae_protected_region(
                 top_contact_components.append(land)
     contact_land = unary_union(tuple(contact_components)).buffer(0)
     if contact_land.is_empty:
-        raise RuntimeError("Ae has no full-depth Obi-Wan contact land")
+        raise RuntimeError("graded has no full-depth Obi-Wan contact land")
 
     # The narrow plan spine keeps the printable outline connected, but it is
     # not a mating datum.  Leaving it out of the full-depth set lets the rear
     # field feather continuously through the LM/UM neck instead of forcing an
     # impossible 11.26-mm rise within a few millimetres of the sharp edge.
     # The 1.20-mm-wide plan cap is the explicit tweeter-flush exception and
-    # remains full depth in both Ac and Ae.
+    # remains full depth in both flat and graded.
     tip_cap = layout.field_right.intersection(
-        box(0.0, A_TAPER_CAP_Y - AE_PROTECTED_BUFFER_MM,
+        box(0.0, A_TAPER_CAP_Y - GRADED_PROTECTED_BUFFER_MM,
             180.0, A_TAPER_CAP_Y + 0.1))
     top_flush_land = unary_union(
         (*top_contact_components, tip_cap)).intersection(
@@ -1388,12 +1388,12 @@ def _ae_protected_region(
     protected = unary_union(components).intersection(
         layout.field_right).buffer(0)
     if protected.is_empty or not protected.is_valid:
-        raise RuntimeError("Ae protected full-depth region is invalid")
+        raise RuntimeError("graded protected full-depth region is invalid")
     for name in ACTIVE_RECEIVER_NAMES_RIGHT:
         if not protected.buffer(0.01).covers(_pocket_plan(sites[name])):
-            raise RuntimeError(f"Ae protection misses {name} pocket")
+            raise RuntimeError(f"graded protection misses {name} pocket")
     if top_flush_land.is_empty:
-        raise RuntimeError("Ae has no full-depth tweeter flush land")
+        raise RuntimeError("graded has no full-depth tweeter flush land")
     return protected, contact_land, top_flush_land, components
 
 
@@ -1412,7 +1412,7 @@ def _line_parts(geometry) -> tuple[LineString, ...]:
     )
 
 
-def _ae_exposed_outer_edge(
+def _graded_exposed_outer_edge(
         layout: VariantLayout, top_flush_land: Polygon):
     """Return only free A-profile edges, independent of split topology.
 
@@ -1427,28 +1427,28 @@ def _ae_exposed_outer_edge(
     and must still reach the constant knife thickness there.
     """
     profile_band = layout.profile.boundary.buffer(
-        AE_EDGE_MATCH_TOL_MM, cap_style=2, join_style=2)
+        GRADED_EDGE_MATCH_TOL_MM, cap_style=2, join_style=2)
     matched = layout.field_right.boundary.intersection(profile_band)
     matched = matched.difference(top_flush_land.buffer(
-        AE_TOP_CONTACT_EDGE_BLEND_MM,
+        GRADED_TOP_CONTACT_EDGE_BLEND_MM,
         cap_style=2, join_style=2))
     matched = matched.difference(box(
         -1000.0, -1000.0,
-        0.65 + 2.0 * AE_EDGE_MATCH_TOL_MM, 1000.0))
+        0.65 + 2.0 * GRADED_EDGE_MATCH_TOL_MM, 1000.0))
     parts = tuple(line for line in _line_parts(matched)
                   if line.length >= 0.20)
     if not parts:
-        raise RuntimeError("Ae exposed outer-edge classifier returned no edge")
+        raise RuntimeError("graded exposed outer-edge classifier returned no edge")
     edge = unary_union(parts)
-    edge = shapely.segmentize(edge, AE_EDGE_DENSIFY_MM)
+    edge = shapely.segmentize(edge, GRADED_EDGE_DENSIFY_MM)
     if edge.is_empty or edge.length < 20.0:
         raise RuntimeError(
-            f"Ae exposed outer edge is implausibly short: {edge.length:.3f} mm")
+            f"graded exposed outer edge is implausibly short: {edge.length:.3f} mm")
     return edge
 
 
-def _ae_retention_scale(
-        point_cloud, solution: AeTransitionModel) -> np.ndarray:
+def _graded_retention_scale(
+        point_cloud, solution: GradedTransitionModel) -> np.ndarray:
     """Smooth wavelength-informed LM/UM/T scale at each plan point."""
     x = np.asarray(shapely.get_x(point_cloud), dtype=float)
     y = np.asarray(shapely.get_y(point_cloud), dtype=float)
@@ -1460,37 +1460,37 @@ def _ae_retention_scale(
     raw = np.exp(-0.5 * normalized_r2)
     total = np.sum(raw, axis=-1)
     if np.any(total <= np.finfo(float).tiny):
-        raise RuntimeError("Ae driver-centre weights underflowed")
+        raise RuntimeError("graded driver-centre weights underflowed")
     weights = raw / total[..., None]
     return np.sum(
         weights * np.asarray(solution.retention_scales, dtype=float),
         axis=-1)
 
 
-def _ae_weighted_depth(
+def _graded_weighted_depth(
         point_cloud, components: tuple[Polygon, ...], exposed_outer_edge,
-        solution: AeTransitionModel) -> np.ndarray:
-    """Evaluate the boundary-aware, centre-weighted monolithic Ae field."""
+        solution: GradedTransitionModel) -> np.ndarray:
+    """Evaluate the boundary-aware, centre-weighted monolithic graded field."""
     edge_distance = np.asarray(
         shapely.distance(exposed_outer_edge, point_cloud), dtype=float)
-    retention = _ae_retention_scale(point_cloud, solution)
+    retention = _graded_retention_scale(point_cloud, solution)
     distance_stack = np.stack(tuple(
         np.asarray(shapely.distance(component, point_cloud), dtype=float)
         for component in components), axis=0)
     nearest = np.min(distance_stack, axis=0)
-    protected_hit = nearest <= AE_DISTANCE_EPS_MM
+    protected_hit = nearest <= GRADED_DISTANCE_EPS_MM
     # A p-parallel soft minimum avoids the medial-axis crease of a hard
     # distance-to-union without summing the thickness influence of every
     # separate carrier/joint land. It therefore stays smooth and materially
     # thinner while every mating component remains exactly full depth.
-    safe_distance = np.maximum(distance_stack, AE_DISTANCE_EPS_MM)
+    safe_distance = np.maximum(distance_stack, GRADED_DISTANCE_EPS_MM)
     ratios = np.divide(
         nearest[None, :], safe_distance,
         out=np.zeros_like(distance_stack),
         where=safe_distance > 0.0)
     soft_denominator = np.power(
-        np.sum(np.power(ratios, AE_PROTECTED_SOFTMIN_P), axis=0),
-        1.0 / AE_PROTECTED_SOFTMIN_P)
+        np.sum(np.power(ratios, GRADED_PROTECTED_SOFTMIN_P), axis=0),
+        1.0 / GRADED_PROTECTED_SOFTMIN_P)
     land_distance = np.divide(
         nearest, soft_denominator,
         out=np.zeros_like(nearest), where=soft_denominator > 0.0)
@@ -1498,7 +1498,7 @@ def _ae_weighted_depth(
     u = np.divide(
         land_distance, denominator,
         out=np.zeros_like(land_distance),
-        where=denominator > AE_DISTANCE_EPS_MM)
+        where=denominator > GRADED_DISTANCE_EPS_MM)
     u = np.clip(u, 0.0, 1.0)
     progress = u * u * (2.0 - u)
     depth_delta = solution.full_depth_mm - solution.edge_depth_mm
@@ -1508,7 +1508,7 @@ def _ae_weighted_depth(
     # from ``exposed_outer_edge`` and therefore remains full depth.
     depth = np.asarray(depth, dtype=float)
     depth[protected_hit] = solution.full_depth_mm
-    depth[edge_distance <= AE_DISTANCE_EPS_MM] = solution.edge_depth_mm
+    depth[edge_distance <= GRADED_DISTANCE_EPS_MM] = solution.edge_depth_mm
     return depth
 
 
@@ -1521,16 +1521,16 @@ def _sample_line_coordinates(
             point = line.interpolate(float(fraction), normalized=True)
             samples.append((point.x, point.y))
     if not samples:
-        raise RuntimeError("cannot sample empty Ae line geometry")
+        raise RuntimeError("cannot sample empty graded line geometry")
     return np.asarray(samples, dtype=float)
 
 
-def _build_ae_depth_field(
+def _build_graded_depth_field(
         layout: VariantLayout,
-        solution: AeTransitionModel) -> AeDepthField:
+        solution: GradedTransitionModel) -> GradedDepthField:
     (protected, contact_land, top_flush_land,
-     components) = _ae_protected_region(layout)
-    exposed_outer_edge = _ae_exposed_outer_edge(layout, top_flush_land)
+     components) = _graded_protected_region(layout)
+    exposed_outer_edge = _graded_exposed_outer_edge(layout, top_flush_land)
     nx, ny = 340, 900
     x = np.linspace(0.65, 165.0, nx)
     y = np.linspace(0.0, A_TAPER_CAP_Y, ny)
@@ -1538,51 +1538,51 @@ def _build_ae_depth_field(
     mask = shapely.contains_xy(layout.field_right, xx, yy)
     depths = np.full(xx.shape, np.nan, dtype=float)
     point_cloud = shapely.points(xx[mask], yy[mask])
-    depths[mask] = _ae_weighted_depth(
+    depths[mask] = _graded_weighted_depth(
         point_cloud, components, exposed_outer_edge, solution)
-    retention = _ae_retention_scale(point_cloud, solution)
+    retention = _graded_retention_scale(point_cloud, solution)
     dx = float(x[1] - x[0])
     dy = float(y[1] - y[0])
     volume = float(np.nansum(depths) * dx * dy)
-    ac_volume = float(layout.field_right.area * DEPTH_MM)
+    flat_volume = float(layout.field_right.area * DEPTH_MM)
     mass = volume / 1000.0 * PLA_DENSITY_G_CM3
-    ac_mass = ac_volume / 1000.0 * PLA_DENSITY_G_CM3
-    reduction = 100.0 * (1.0 - volume / ac_volume)
+    flat_mass = flat_volume / 1000.0 * PLA_DENSITY_G_CM3
+    reduction = 100.0 * (1.0 - volume / flat_volume)
     minimum = float(np.nanmin(depths))
-    if minimum < AE_EDGE_DEPTH_MM - 0.01:
-        raise RuntimeError(f"Ae depth undershot edge: {minimum:.3f} mm")
-    if minimum <= AE_EDGE_DEPTH_MM + 1e-10:
+    if minimum < GRADED_EDGE_DEPTH_MM - 0.01:
+        raise RuntimeError(f"graded depth undershot edge: {minimum:.3f} mm")
+    if minimum <= GRADED_EDGE_DEPTH_MM + 1e-10:
         raise RuntimeError(
-            "Ae interior grid reached edge thickness; a thin plateau exists")
+            "graded interior grid reached edge thickness; a thin plateau exists")
     if float(np.nanmax(depths)) > DEPTH_MM + 0.01:
-        raise RuntimeError("Ae depth exceeds Ac envelope")
+        raise RuntimeError("graded depth exceeds flat envelope")
     contact_mask = mask & shapely.contains_xy(contact_land, xx, yy)
     if (np.any(contact_mask)
             and float(np.nanmin(depths[contact_mask])) < DEPTH_MM - 0.02):
-        raise RuntimeError("Ae Obi-Wan contact land is not full depth")
+        raise RuntimeError("graded Obi-Wan contact land is not full depth")
     top_flush_mask = mask & shapely.contains_xy(top_flush_land, xx, yy)
     if not np.any(top_flush_mask):
-        raise RuntimeError("Ae top flush land has no grid witnesses")
+        raise RuntimeError("graded top flush land has no grid witnesses")
     top_flush_depth = (
         float(np.nanmin(depths[top_flush_mask])),
         float(np.nanmax(depths[top_flush_mask])),
     )
     if top_flush_depth[0] < DEPTH_MM - 0.02:
         raise RuntimeError(
-            f"Ae tweeter flush land is not full depth: "
+            f"graded tweeter flush land is not full depth: "
             f"{top_flush_depth[0]:.3f} mm")
 
     edge_xy = _sample_line_coordinates(
-        exposed_outer_edge, spacing_mm=AE_EDGE_DENSIFY_MM)
+        exposed_outer_edge, spacing_mm=GRADED_EDGE_DENSIFY_MM)
     edge_cloud = shapely.points(edge_xy[:, 0], edge_xy[:, 1])
-    edge_depth = _ae_weighted_depth(
+    edge_depth = _graded_weighted_depth(
         edge_cloud, components, exposed_outer_edge, solution)
     outer_edge_depth = (
         float(np.min(edge_depth)), float(np.max(edge_depth)))
-    if (abs(outer_edge_depth[0] - AE_EDGE_DEPTH_MM) > 0.005
-            or abs(outer_edge_depth[1] - AE_EDGE_DEPTH_MM) > 0.005):
+    if (abs(outer_edge_depth[0] - GRADED_EDGE_DEPTH_MM) > 0.005
+            or abs(outer_edge_depth[1] - GRADED_EDGE_DEPTH_MM) > 0.005):
         raise RuntimeError(
-            "Ae exposed edge is not constant thickness: "
+            "graded exposed edge is not constant thickness: "
             f"{outer_edge_depth[0]:.3f}..{outer_edge_depth[1]:.3f} mm")
 
     central = (mask[1:-1, 1:-1]
@@ -1592,13 +1592,13 @@ def _build_ae_depth_field(
     gy = ((depths[2:, 1:-1] - depths[:-2, 1:-1]) / (2.0 * dy))
     grid_slope = np.sqrt(gx * gx + gy * gy)
     max_grid_slope = float(np.nanmax(grid_slope[central]))
-    if max_grid_slope > AE_FIELD_MAX_SLOPE:
+    if max_grid_slope > GRADED_FIELD_MAX_SLOPE:
         central_slope = np.where(central, grid_slope, np.nan)
         slope_iy, slope_ix = np.unravel_index(
             int(np.nanargmax(central_slope)), central_slope.shape)
         grid_iy, grid_ix = slope_iy + 1, slope_ix + 1
         raise RuntimeError(
-            f"Ae weighted-field grid slope too high: {max_grid_slope:.3f} "
+            f"graded weighted-field grid slope too high: {max_grid_slope:.3f} "
             f"at x={x[grid_ix]:.3f}, y={y[grid_iy]:.3f}, "
             f"t={depths[grid_iy, grid_ix]:.3f} mm; neighborhood="
             f"{depths[grid_iy - 1:grid_iy + 2, grid_ix - 1:grid_ix + 2].tolist()}")
@@ -1611,11 +1611,11 @@ def _build_ae_depth_field(
         lines = _line_parts(interface)
         if not lines:
             raise RuntimeError(
-                f"Ae {male_name}/{female_name} dovetail has no interface")
+                f"graded {male_name}/{female_name} dovetail has no interface")
         area = 0.0
         for line in lines:
             coords = _sample_line_coordinates(line, spacing_mm=0.20)
-            depths_on_joint = _ae_weighted_depth(
+            depths_on_joint = _graded_weighted_depth(
                 shapely.points(coords[:, 0], coords[:, 1]), components,
                 exposed_outer_edge, solution)
             ds = np.linalg.norm(np.diff(coords, axis=0), axis=1)
@@ -1625,18 +1625,18 @@ def _build_ae_depth_field(
         # Both prints are cut from one finalized monolith.  They therefore
         # share the exact same rear B-spline at the nominal joint boundary.
         joint_mismatches.append(0.0)
-    if (joint_areas[0] < AE_MIN_JOINT_AREA_MM2[0]
-            or joint_areas[1] < AE_MIN_JOINT_AREA_MM2[1]):
+    if (joint_areas[0] < GRADED_MIN_JOINT_AREA_MM2[0]
+            or joint_areas[1] < GRADED_MIN_JOINT_AREA_MM2[1]):
         raise RuntimeError(
-            "Ae dovetail interface below geometric area gate: "
+            "graded dovetail interface below geometric area gate: "
             f"{joint_areas[0]:.1f}/{joint_areas[1]:.1f} mm2; minimum "
-            f"{AE_MIN_JOINT_AREA_MM2[0]:.1f}/"
-            f"{AE_MIN_JOINT_AREA_MM2[1]:.1f}")
+            f"{GRADED_MIN_JOINT_AREA_MM2[0]:.1f}/"
+            f"{GRADED_MIN_JOINT_AREA_MM2[1]:.1f}")
     if max(joint_mismatches) > 0.15:
         raise RuntimeError(
-            "Ae dovetail-face rear mismatch exceeds 0.15 mm: "
+            "graded dovetail-face rear mismatch exceeds 0.15 mm: "
             f"{joint_mismatches[0]:.3f}/{joint_mismatches[1]:.3f}")
-    return AeDepthField(
+    return GradedDepthField(
         protected=protected,
         contact_land=contact_land,
         top_flush_land=top_flush_land,
@@ -1650,8 +1650,8 @@ def _build_ae_depth_field(
         mask=mask,
         volume_mm3=volume,
         mass_g=mass,
-        ac_volume_mm3=ac_volume,
-        ac_mass_g=ac_mass,
+        flat_volume_mm3=flat_volume,
+        flat_mass_g=flat_mass,
         reduction_pct=reduction,
         protected_area_mm2=float(protected.area),
         min_depth_mm=minimum,
@@ -1673,7 +1673,7 @@ def _longest_line(geometry) -> LineString:
     return max(lines, key=lambda item: item.length) if lines else LineString()
 
 
-def _ae_section_definitions(
+def _graded_section_definitions(
         layout: VariantLayout) -> tuple[SectionDefinition, ...]:
     sites = _right_sites()
 
@@ -1706,22 +1706,22 @@ def _ae_section_definitions(
     )
 
 
-def _sample_ae_section(
+def _sample_graded_section(
         layout: VariantLayout,
-        depth_field: AeDepthField,
-        solution: AeTransitionModel,
+        depth_field: GradedDepthField,
+        solution: GradedTransitionModel,
         definition: SectionDefinition,
         samples: int = 240):
     segment = _longest_line(layout.field_right.intersection(definition.line))
     if segment.is_empty or segment.length < 0.5:
-        raise RuntimeError(f"Ae section {definition.key} misses A field")
+        raise RuntimeError(f"graded section {definition.key} misses A field")
     fractions = np.linspace(0.0, 1.0, samples)
     locations = [segment.interpolate(float(value), normalized=True)
                  for value in fractions]
     cloud = shapely.points(
         np.asarray([point.x for point in locations]),
         np.asarray([point.y for point in locations]))
-    depth = _ae_weighted_depth(
+    depth = _graded_weighted_depth(
         cloud, depth_field.protected_components,
         depth_field.exposed_outer_edge, solution)
     along = fractions * segment.length
@@ -1732,8 +1732,8 @@ def _sample_ae_section(
     return along, depth, xy, segment
 
 
-def _orient_ae_section_protected_to_edge(
-        depth_field: AeDepthField, along: np.ndarray, depth: np.ndarray,
+def _orient_graded_section_protected_to_edge(
+        depth_field: GradedDepthField, along: np.ndarray, depth: np.ndarray,
         xy: np.ndarray, definition: SectionDefinition,
         ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Normalize a section from its full-depth interface to its free edge."""
@@ -1752,19 +1752,19 @@ def _orient_ae_section_protected_to_edge(
         xy = xy[::-1]
         protected_distance = protected_distance[::-1]
         edge_distance = edge_distance[::-1]
-    endpoint_tol = max(0.40, 2.0 * AE_EDGE_MATCH_TOL_MM)
+    endpoint_tol = max(0.40, 2.0 * GRADED_EDGE_MATCH_TOL_MM)
     if (protected_distance[0] > endpoint_tol
             or edge_distance[1] > endpoint_tol):
         raise RuntimeError(
-            f"Ae section {definition.key} is not a protected-to-free-edge "
+            f"graded section {definition.key} is not a protected-to-free-edge "
             f"cut: protected/edge endpoint distances="
             f"{protected_distance[0]:.3f}/{edge_distance[1]:.3f} mm")
     return along, depth, xy
 
 
-def _validate_ae_section_monotonicity(
-        layout: VariantLayout, depth_field: AeDepthField,
-        solution: AeTransitionModel,
+def _validate_graded_section_monotonicity(
+        layout: VariantLayout, depth_field: GradedDepthField,
+        solution: GradedTransitionModel,
         sections: tuple[SectionDefinition, ...]) -> None:
     """Build gate for the physical rear surface shown by S1--S5.
 
@@ -1777,27 +1777,27 @@ def _validate_ae_section_monotonicity(
     expected_monotonic = {"S1", "S2", "S3", "S4"}
     witnessed = set()
     for definition in sections:
-        along, depth, xy, _segment = _sample_ae_section(
+        along, depth, xy, _segment = _sample_graded_section(
             layout, depth_field, solution, definition, samples=481)
         if definition.key in expected_monotonic:
-            along, depth, xy = _orient_ae_section_protected_to_edge(
+            along, depth, xy = _orient_graded_section_protected_to_edge(
                 depth_field, along, depth, xy, definition)
             if depth[0] < DEPTH_MM - 0.005:
                 raise RuntimeError(
-                    f"Ae section {definition.key} does not start flush: "
+                    f"graded section {definition.key} does not start flush: "
                     f"t={depth[0]:.4f} mm")
-            if abs(depth[-1] - AE_EDGE_DEPTH_MM) > 0.005:
+            if abs(depth[-1] - GRADED_EDGE_DEPTH_MM) > 0.005:
                 raise RuntimeError(
-                    f"Ae section {definition.key} does not end at the "
+                    f"graded section {definition.key} does not end at the "
                     f"constant free edge: t={depth[-1]:.4f} mm")
             running_minimum = np.minimum.accumulate(depth)
             reversals = depth - running_minimum
             worst_index = int(np.argmax(reversals))
             worst_reversal = float(reversals[worst_index])
-            if worst_reversal > AE_SECTION_MONOTONIC_TOL_MM:
+            if worst_reversal > GRADED_SECTION_MONOTONIC_TOL_MM:
                 valley_index = int(np.argmin(depth[:worst_index + 1]))
                 raise RuntimeError(
-                    f"Ae section {definition.key} reverses depth by "
+                    f"graded section {definition.key} reverses depth by "
                     f"{worst_reversal:.4f} mm after s="
                     f"{along[valley_index]:.3f} mm; "
                     f"t={depth[valley_index]:.4f}->"
@@ -1808,13 +1808,13 @@ def _validate_ae_section_monotonicity(
             if (float(np.min(depth)) < DEPTH_MM - 0.005
                     or float(np.max(depth)) > DEPTH_MM + 0.005):
                 raise RuntimeError(
-                    "Ae S5 T-seat/cap cut is not constant full depth: "
+                    "graded S5 T-seat/cap cut is not constant full depth: "
                     f"{float(np.min(depth)):.4f}.."
                     f"{float(np.max(depth)):.4f} mm")
     missing = expected_monotonic - witnessed
     if missing:
         raise RuntimeError(
-            f"Ae monotonic section gate missed {sorted(missing)}")
+            f"graded monotonic section gate missed {sorted(missing)}")
 
 
 def _draw_shape(ax, geometry, *, facecolor, edgecolor="none", alpha=1.0,
@@ -2039,8 +2039,8 @@ def _draw_rear_structure(ax, layout: VariantLayout):
     ax.set_ylabel("mm", fontsize=7.5)
 
 
-def _draw_ac_side_section(ax):
-    run = AE_REQUIRED_FREE_RUN_MM
+def _draw_flat_side_section(ax):
+    run = GRADED_REQUIRED_FREE_RUN_MM
     ax.fill_between((0.0, run), CORE_REAR_Z, THICKNESS_MM,
                     color="#7aaed3", alpha=0.72)
     ax.plot((0.0, run), (THICKNESS_MM, THICKNESS_MM),
@@ -2063,7 +2063,7 @@ def _draw_ac_side_section(ax):
             "flat acoustic front  z=18.3", ha="center", fontsize=7.0)
     ax.text(run / 2.0, CORE_REAR_Z - 0.30,
             "flat rear  z=6.8", ha="center", va="top", fontsize=7.0)
-    ax.set_title("Ac side section — constant solid depth", fontsize=9.2,
+    ax.set_title("flat side section — constant solid depth", fontsize=9.2,
                  weight="bold")
     ax.set_xlim(-0.8, run + 0.8)
     ax.set_ylim(5.8, 19.2)
@@ -2073,8 +2073,8 @@ def _draw_ac_side_section(ax):
     ax.tick_params(labelsize=6.8)
 
 
-def _draw_ae_optimized_section(
-        ax, solution: AeTransitionModel, depth_field: AeDepthField):
+def _draw_graded_optimized_section(
+        ax, solution: GradedTransitionModel, depth_field: GradedDepthField):
     section_colors = (
         COLORS["driver_lm"], COLORS["driver_um"], COLORS["driver_t1"])
     rear_profiles = tuple(
@@ -2091,14 +2091,14 @@ def _draw_ae_optimized_section(
         ax.plot(
             solution.s_mm, rear, color=color, lw=1.8,
             label=f"{name}  weight={scale:.2f}  slope={slope:.2f}")
-    ax.plot((0.0, AE_REQUIRED_FREE_RUN_MM),
+    ax.plot((0.0, GRADED_REQUIRED_FREE_RUN_MM),
             (THICKNESS_MM, THICKNESS_MM),
             color="#243746", lw=1.4)
     ax.axhline(CORE_REAR_Z, color="#7aaed3", lw=0.9,
-               ls=(0, (4, 3)), label="Ac rear")
+               ls=(0, (4, 3)), label="flat rear")
     ax.annotate(f"edge t={solution.edge_depth_mm:.2f}\nrear z="
                 f"{THICKNESS_MM - solution.edge_depth_mm:.2f}",
-                xy=(AE_REQUIRED_FREE_RUN_MM,
+                xy=(GRADED_REQUIRED_FREE_RUN_MM,
                     THICKNESS_MM - solution.edge_depth_mm),
                 xytext=(17.2, 14.6),
                 fontsize=6.9,
@@ -2111,21 +2111,21 @@ def _draw_ae_optimized_section(
             "Longer LM wavelengths retain depth furthest; T sheds it fastest. "
             "All three reach the same edge only at s=36: no thin plateau.\n"
             f"actual plan peak slope={depth_field.max_grid_slope:.2f}; "
-            f"mass -{depth_field.reduction_pct:.1f}% vs Ac\n"
+            f"mass -{depth_field.reduction_pct:.1f}% vs flat\n"
             f"CAD t={solution.edge_depth_mm:.2f} normally prints as one "
             "~0.20 layer (P2S/0.4 nozzle; first line 0.50); coupon-gated\n"
             "Arachne, smooth/satin plate, elephant-foot 0.15; no fused edge "
             "brim; preview layer 1\n"
-            f"t={AE_OPTIONAL_FINE_LAYER_EDGE_MM:.2f} is not represented or "
+            f"t={GRADED_OPTIONAL_FINE_LAYER_EDGE_MM:.2f} is not represented or "
             "approved (still fragile with a true 0.16 first layer)",
             fontsize=5.55, va="top", color="#30383f",
             bbox=dict(facecolor="white", edgecolor="none", alpha=0.72,
                       boxstyle="square,pad=0.12"), zorder=10)
-    ax.set_title("Ae weighted rear references — LM / UM / T",
+    ax.set_title("graded weighted rear references — LM / UM / T",
                  fontsize=9.2, weight="bold")
-    ax.axvline(AE_REQUIRED_FREE_RUN_MM, color=COLORS["correction"], lw=0.9,
+    ax.axvline(GRADED_REQUIRED_FREE_RUN_MM, color=COLORS["correction"], lw=0.9,
                ls=(0, (3, 2)))
-    ax.set_xlim(-0.8, AE_REQUIRED_FREE_RUN_MM + 0.8)
+    ax.set_xlim(-0.8, GRADED_REQUIRED_FREE_RUN_MM + 0.8)
     ax.set_ylim(5.8, 19.2)
     ax.set_xlabel("reference distance: protected land -> free edge (mm)",
                   fontsize=7.5)
@@ -2139,11 +2139,11 @@ def _swap_xy(geometry):
     return affinity.affine_transform(geometry, (0.0, 1.0, 1.0, 0.0, 0.0, 0.0))
 
 
-def _draw_ae_depth_map(
-        ax, layout: VariantLayout, depth_field: AeDepthField,
+def _draw_graded_depth_map(
+        ax, layout: VariantLayout, depth_field: GradedDepthField,
         sections: tuple[SectionDefinition, ...],
-        solution: AeTransitionModel):
-    levels = (AE_EDGE_DEPTH_MM, 1.0, 2.0, 4.0, 6.0, 8.0, 10.0, 11.5)
+        solution: GradedTransitionModel):
+    levels = (GRADED_EDGE_DEPTH_MM, 1.0, 2.0, 4.0, 6.0, 8.0, 10.0, 11.5)
     cmap = plt.get_cmap("viridis")
     norm = BoundaryNorm(levels, cmap.N, clip=True)
     mesh = ax.pcolormesh(
@@ -2168,9 +2168,9 @@ def _draw_ae_depth_map(
     top_transition_edge = (
         layout.field_right.boundary
         .intersection(layout.profile.boundary.buffer(
-            AE_EDGE_MATCH_TOL_MM, cap_style=2, join_style=2))
+            GRADED_EDGE_MATCH_TOL_MM, cap_style=2, join_style=2))
         .intersection(depth_field.top_flush_land.buffer(
-            AE_TOP_CONTACT_EDGE_BLEND_MM,
+            GRADED_TOP_CONTACT_EDGE_BLEND_MM,
             cap_style=2, join_style=2)))
     for line in _line_parts(top_transition_edge):
         coords = np.asarray(line.coords)
@@ -2205,11 +2205,11 @@ def _draw_ae_depth_map(
                 edgecolor="#202b33", linewidth=1.0, zorder=12)
     cbar = ax.figure.colorbar(mesh, ax=ax, pad=0.012, fraction=0.035,
                              ticks=levels)
-    cbar.set_label("Ae local depth t (mm)", fontsize=7.0)
+    cbar.set_label("graded local depth t (mm)", fontsize=7.0)
     cbar.ax.tick_params(labelsize=6.5)
     ax.annotate(
         "WHITE = open Obi-Wan carrier / joint / T-crescent keepout\n"
-        "no Ae material here; adjoining Ae mating band is flush t=11.5",
+        "no graded material here; adjoining graded mating band is flush t=11.5",
         xy=(354.0, 42.0), xytext=(246.0, 145.0), fontsize=6.3,
         color="#30383f",
         arrowprops=dict(arrowstyle="->", color="#30383f", lw=0.8),
@@ -2218,8 +2218,8 @@ def _draw_ae_depth_map(
     ax.annotate(
         "sole edge exception:\n"
         "local T-seat contact blend only\n"
-        f"run >= {AE_MIN_FULL_TO_EDGE_RUN_MM:.2f} mm; "
-        f"reserved {AE_TOP_CONTACT_EDGE_BLEND_MM:.2f}",
+        f"run >= {GRADED_MIN_FULL_TO_EDGE_RUN_MM:.2f} mm; "
+        f"reserved {GRADED_TOP_CONTACT_EDGE_BLEND_MM:.2f}",
         xy=(447.0, 50.0), xytext=(380.0, 82.0), fontsize=6.1,
         color=COLORS["active_mag"],
         arrowprops=dict(arrowstyle="->", color=COLORS["active_mag"],
@@ -2238,7 +2238,7 @@ def _draw_ae_depth_map(
             fontsize=6.7, va="top",
             bbox=dict(facecolor="white", edgecolor="none", alpha=0.82,
                       boxstyle="square,pad=0.18"))
-    ax.set_title("Ae LM/UM/T-weighted plan depth — exact free-edge boundary",
+    ax.set_title("graded LM/UM/T-weighted plan depth — exact free-edge boundary",
                  fontsize=9.4, weight="bold")
     ax.set_xlim(0.0, 455.0)
     ax.set_ylim(0.0, 165.0)
@@ -2249,14 +2249,14 @@ def _draw_ae_depth_map(
     ax.tick_params(labelsize=6.7)
 
 
-def _draw_ae_actual_section(
-        ax, layout: VariantLayout, depth_field: AeDepthField,
-        solution: AeTransitionModel, definition: SectionDefinition,
+def _draw_graded_actual_section(
+        ax, layout: VariantLayout, depth_field: GradedDepthField,
+        solution: GradedTransitionModel, definition: SectionDefinition,
         *, show_y_label: bool):
-    along, depth, xy, _segment = _sample_ae_section(
+    along, depth, xy, _segment = _sample_graded_section(
         layout, depth_field, solution, definition)
     if definition.key in {"S1", "S2", "S3", "S4"}:
-        along, depth, xy = _orient_ae_section_protected_to_edge(
+        along, depth, xy = _orient_graded_section_protected_to_edge(
             depth_field, along, depth, xy, definition)
     rear = THICKNESS_MM - depth
     ax.fill_between(along, rear, THICKNESS_MM,
@@ -2294,14 +2294,14 @@ def _draw_ae_actual_section(
 
 def _draw_depth_and_table(
         ax, layout: VariantLayout,
-        solution: AeTransitionModel, depth_field: AeDepthField):
+        solution: GradedTransitionModel, depth_field: GradedDepthField):
     ax.set_axis_off()
     ax.set_xlim(0, 100)
     ax.set_ylim(0, 100)
     ax.set_title("Depth, dovetail and print contract", fontsize=9.3,
                  weight="bold", pad=8)
 
-    # Binding UM receiver section; Ac and Ae retain the actual receiver
+    # Binding UM receiver section; flat and graded retain the actual receiver
     # envelope at the full z=6.8..18.3 datum, while the larger construction
     # fan is free to follow the weighted rear field.
     x0, y0, w, h = 4.0, 67.0, 42.0, 24.0
@@ -2325,7 +2325,7 @@ def _draw_depth_and_table(
     ax.text(x0 + 1.0, cy, "UM captive cavity\nzc=15.10", fontsize=6.4,
             color="white", va="center")
     ax.text(x0 + w / 2.0, y0 + 3.0,
-            "full-depth Ae protected root\n0.60 front / 5.70 rear skin",
+            "full-depth graded protected root\n0.60 front / 5.70 rear skin",
             fontsize=6.2, ha="center", va="bottom", color="#273d57")
 
     # Through-thickness XY key: this changes only the partition masks.  It
@@ -2369,7 +2369,7 @@ def _draw_depth_and_table(
             fontsize=5.65, ha="center", va="top")
 
     ax.text(4.0, 57.5,
-            "Ac/Ae are solid. Ae stays full-depth at every Obi-Wan carrier, "
+            "flat/graded are solid. graded stays full-depth at every Obi-Wan carrier, "
             "joint, support and T-seat mating band,\n"
             "plus all three receiver envelopes (base LM + radial LM/UM) and "
             "the T cap. White remains "
@@ -2392,9 +2392,9 @@ def _draw_depth_and_table(
         ax.text(x, y_header, header, fontsize=6.0, weight="bold", va="bottom")
     ax.plot((3.0, 98.0), (31.4, 31.4), color="#60686f", lw=0.7)
     rows = (
-        ("Ac", "solid flat rear", "11.5",
-         f"{depth_field.ac_mass_g:.0f}", layout),
-        ("Ae", "weighted solid rear", f"{solution.edge_depth_mm:.2f}..11.5",
+        ("Flat", "solid flat rear", "11.5",
+         f"{depth_field.flat_mass_g:.0f}", layout),
+        ("Graded", "weighted solid rear", f"{solution.edge_depth_mm:.2f}..11.5",
          f"{depth_field.mass_g:.0f}", layout),
     )
     def compact_obb(value: str) -> str:
@@ -2412,7 +2412,7 @@ def _draw_depth_and_table(
         for x, value in zip(xs, values):
             ax.text(x, y, str(value), fontsize=5.45, va="center")
     ax.text(4.0, 0.7,
-            "Ae weighted field: no fixed run/plateau; plan "
+            "graded weighted field: no fixed run/plateau; plan "
             f"-{depth_field.reduction_pct:.1f}% volume. Eligible edge "
             f"{depth_field.outer_edge_depth_mm[0]:.3f}.."
             f"{depth_field.outer_edge_depth_mm[1]:.3f}; T top "
@@ -2431,10 +2431,10 @@ def _draw_depth_and_table(
 def render(output: Path):
     layouts = tuple(_build_layout(definition) for definition in VARIANTS)
     (a_layout,) = layouts
-    solution = _optimize_ae_profile()
-    depth_field = _build_ae_depth_field(a_layout, solution)
-    sections = _ae_section_definitions(a_layout)
-    _validate_ae_section_monotonicity(
+    solution = _optimize_graded_profile()
+    depth_field = _build_graded_depth_field(a_layout, solution)
+    sections = _graded_section_definitions(a_layout)
+    _validate_graded_section_monotonicity(
         a_layout, depth_field, solution, sections)
 
     fig = plt.figure(figsize=(22.5, 16.5), dpi=160, facecolor="white")
@@ -2443,34 +2443,34 @@ def render(output: Path):
         hspace=0.23, wspace=0.20,
         left=0.035, right=0.985, top=0.935, bottom=0.045)
 
-    ac_plan_ax = fig.add_subplot(gs[0, 0:2])
-    ae_plan_ax = fig.add_subplot(gs[0, 2:4])
+    flat_plan_ax = fig.add_subplot(gs[0, 0:2])
+    graded_plan_ax = fig.add_subplot(gs[0, 2:4])
     _draw_variant(
-        ac_plan_ax, a_layout, labels=True,
-        display_title="Ac — A plan, constant solid depth",
+        flat_plan_ax, a_layout, labels=True,
+        display_title="flat — A plan, constant solid depth",
         construction_text=(
-            f"solid t=11.5 | 90 deg edges | ~{depth_field.ac_mass_g:.0f} g/side"))
+            f"solid t=11.5 | 90 deg edges | ~{depth_field.flat_mass_g:.0f} g/side"))
     _draw_variant(
-        ae_plan_ax, a_layout,
-        display_title="Ae — A plan, LM/UM/T-weighted rear",
+        graded_plan_ax, a_layout,
+        display_title="graded — A plan, LM/UM/T-weighted rear",
         construction_text=(
             f"solid t={solution.edge_depth_mm:.2f}..11.5 | "
             f"~{depth_field.mass_g:.0f} g/side | "
-            f"-{depth_field.reduction_pct:.0f}% vs Ac"),
+            f"-{depth_field.reduction_pct:.0f}% vs flat"),
         section_definitions=sections, show_a_annotation=False)
 
-    ac_side_ax = fig.add_subplot(gs[1, 0])
-    _draw_ac_side_section(ac_side_ax)
-    ae_side_ax = fig.add_subplot(gs[1, 1])
-    _draw_ae_optimized_section(ae_side_ax, solution, depth_field)
+    flat_side_ax = fig.add_subplot(gs[1, 0])
+    _draw_flat_side_section(flat_side_ax)
+    graded_side_ax = fig.add_subplot(gs[1, 1])
+    _draw_graded_optimized_section(graded_side_ax, solution, depth_field)
     depth_ax = fig.add_subplot(gs[1, 2:4])
-    _draw_ae_depth_map(depth_ax, a_layout, depth_field, sections, solution)
+    _draw_graded_depth_map(depth_ax, a_layout, depth_field, sections, solution)
 
     section_gs = gs[2, 0:2].subgridspec(
         2, 3, hspace=0.48, wspace=0.27)
     for index, definition in enumerate(sections):
         section_ax = fig.add_subplot(section_gs[index // 3, index % 3])
-        _draw_ae_actual_section(
+        _draw_graded_actual_section(
             section_ax, a_layout, depth_field, solution, definition,
             show_y_label=index % 3 == 0)
     section_note = fig.add_subplot(section_gs[1, 2])
@@ -2478,9 +2478,9 @@ def render(output: Path):
     section_note.text(
         0.02, 0.96,
         "CROSS-SECTION KEY\n\n"
-        "orange: Ae material\n"
+        "orange: graded material\n"
         "red: smooth rear target\n"
-        "blue dashed: Ac rear z=6.8\n"
+        "blue dashed: flat rear z=6.8\n"
         "magenta: captive D5.20 x 2.10 cavity\n\n"
         "All Obi-Wan mating bands and receiver axes stay t=11.5.\n"
         "S1-S4 run interface -> free edge and are monotonicity-gated.\n"
@@ -2494,18 +2494,18 @@ def render(output: Path):
     _draw_depth_and_table(contract_ax, a_layout, solution, depth_field)
 
     fig.suptitle(
-        "OBI-WAN PRINTABLE Ac / Ae ATTACHMENTS — ENGINEERING LAYOUT",
+        "OBI-WAN PRINTABLE flat / graded ATTACHMENTS — ENGINEERING LAYOUT",
         fontsize=15, weight="bold", y=0.978)
     fig.text(
         0.5, 0.953,
-        "Ac: solid constant t=11.5; Ae: flat front z=18.3 + LM/UM/T-weighted "
+        "flat: solid constant t=11.5; graded: flat front z=18.3 + LM/UM/T-weighted "
         f"{solution.edge_depth_mm:.2f}..11.5 rear with one constant free edge; "
         "flush-filled "
-        "V1L-style dovetail seams; Ac and Ae are the complete wing inventory",
+        "V1L-style dovetail seams; flat and graded are the complete wing inventory",
         ha="center", va="center", fontsize=9.0, color="#3f474d")
     fig.text(
         0.5, 0.018,
-        "CAD-LINKED PRINTABLE LAYOUT — Ac/Ae STEP + six STLs each in build/wings/; "
+        "CAD-LINKED PRINTABLE LAYOUT — flat/graded STEP + six STLs each in build/wings/; "
         "experimental/unmeasured, not physical or acoustic qualification",
         ha="center", va="center", fontsize=8.0, color="#5b6268")
 
@@ -2515,13 +2515,13 @@ def render(output: Path):
         fig.savefig(
             temporary,
             metadata={
-                "Title": "Obi-Wan printable Ac/Ae engineering layout",
+                "Title": "Obi-Wan printable flat/graded engineering layout",
                 "Description": (
-                    "Ac constant 11.5 mm solid depth; Ae boundary-aware "
+                    "flat constant 11.5 mm solid depth; graded boundary-aware "
                     "LM/UM/T-weighted rear, constant 0.24 mm coupon-gated free "
                     "edge, full-depth tweeter-top hand-off, V1L-style "
                     "dovetail seams and local protected magnet receivers; "
-                    "Ac/Ae-only CAD-linked engineering layout"),
+                    "flat/graded-only CAD-linked engineering layout"),
             },
         )
         plt.close(fig)
@@ -2546,7 +2546,7 @@ def main() -> int:
     layouts, solution, depth_field = render(Path(args.output))
     print(f"wrote {args.output}")
     print(
-        f"Ae profile: {solution.profile_name}; "
+        f"graded profile: {solution.profile_name}; "
         f"weights={solution.retention_scales}; "
         f"edge={depth_field.outer_edge_depth_mm[0]:.3f}.."
         f"{depth_field.outer_edge_depth_mm[1]:.3f} mm; "
@@ -2556,7 +2556,7 @@ def main() -> int:
         f"joint={depth_field.joint_area_mm2[0]:.1f}/"
         f"{depth_field.joint_area_mm2[1]:.1f} mm2; "
         f"plan mass~{depth_field.mass_g:.1f} g/side vs "
-        f"Ac~{depth_field.ac_mass_g:.1f} g/side")
+        f"flat~{depth_field.flat_mass_g:.1f} g/side")
     for layout in layouts:
         print(
             f"{layout.definition.key}: mass~{layout.metrics['mass_g_side']:.1f} g/side; "

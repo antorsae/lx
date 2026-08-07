@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build and audit local-only Obi-Wan Ac/Ae B-wing P2S plates.
+"""Build and audit local-only Obi-Wan flat/graded B-wing P2S plates.
 
 This is packaging, not CAD generation.  The four released front-face-down
 wing STLs are rigidly rotated about Z and translated into one deterministic
@@ -86,7 +86,7 @@ STRICT_MESH_KEYS = (
 
 
 class WingPlateError(RuntimeError):
-    """A locked Ac/Ae wing-plate contract did not pass."""
+    """A locked flat/graded wing-plate contract did not pass."""
 
 
 @dataclass(frozen=True)
@@ -123,17 +123,17 @@ EXPECTED_SITE_NAMES = (
 )
 
 LOCKED_PLACEMENTS_BY_VARIANT = {
-    # Ac and Ae share the same four print-space footprints. Their left LM+UM
+    # flat and graded share the same four print-space footprints. Their left LM+UM
     # upper footprint has a 90-degree source-space clocking, so it needs its
     # own rigid transform to retain the common packed layout. The lower-root
     # placements are the locally re-optimized G1 tangent-root arrangement.
-    "ac": (
+    "flat": (
         (58.724273577150, (51.156885879315, 86.406547312980)),
         (-172.921230563781, (248.183921832446, 252.320989480231)),
         (-89.203304927416, (202.926578585501, 167.723983347523)),
         (110.702555432118, (231.314810940662, 67.458534877173)),
     ),
-    "ae": (
+    "graded": (
         (58.724273577150, (51.156885879315, 86.406547312980)),
         (-82.921230563781, (50.756431596864, 227.804382692246)),
         (-89.203304927416, (202.926578585501, 167.723983347523)),
@@ -176,7 +176,7 @@ def _variant(
         rz_degrees, translation = placement
         stem = f"obiwan_wing_{slug}_{side}_split2_{source_suffix}"
         parts.append(PlatePart(
-            f"obiwan_{slot}_split2_{label}_wing_{friendly_suffix}",
+            f"obiwan_{slot}_split2_{slug}_wing_{friendly_suffix}",
             ROOT / f"build/wings/{slug}/stl/{stem}.stl",
             f"shared:Obi-Wan-{label}:{stem}",
             side,
@@ -194,8 +194,8 @@ def _variant(
 
 
 VARIANTS = {
-    "ac": _variant("ac", "Ac", ("05", "06", "08", "09"), 17_836),
-    "ae": _variant("ae", "Ae", ("11", "12", "14", "15"), 2_169_008),
+    "flat": _variant("flat", "Flat", ("05", "06", "08", "09"), 17_836),
+    "graded": _variant("graded", "Graded", ("11", "12", "14", "15"), 2_169_008),
 }
 
 
@@ -283,7 +283,7 @@ def get_variant(slug: str) -> WingPlateAPI:
         raise WingPlateError(f"unknown wing-plate variant {slug!r}") from exc
 
 
-_activate_variant(VARIANTS["ae"])
+_activate_variant(VARIANTS["graded"])
 
 
 def _relative(path: Path) -> str:
@@ -1270,7 +1270,7 @@ def build_or_validate_ready_plate(
         if not allow_slice:
             raise WingPlateError(
                 "wing project is missing or stale; run "
-                "make obiwan_ae_wing_plate")
+                "make obiwan_graded_wing_plate")
         for stale in (
                 project, gcode, result, fingerprint_path,
                 ready / "bambu_studio.log"):
@@ -1378,7 +1378,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     arguments = list(argv) if argv is not None else sys.argv[1:]
     selector = argparse.ArgumentParser(add_help=False)
     selector.add_argument(
-        "--variant", choices=sorted(VARIANTS), default="ae")
+        "--variant", choices=sorted(VARIANTS), default="graded")
     selected, _remaining = selector.parse_known_args(arguments)
     _activate_variant(VARIANTS[selected.variant])
     args = build_parser().parse_args(arguments)

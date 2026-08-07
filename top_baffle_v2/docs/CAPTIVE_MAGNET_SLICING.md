@@ -99,7 +99,7 @@ support bead that intersects a functional cable lumen.
 The general process selector lives in `captive_magnet_slicing_profile.json`;
 the core-only structural selector lives in
 `captive_magnet_slicing_profile_petg_gf.json`. The latter has an explicit
-artifact allowlist that excludes every Ac/Ae wing and shoulder. The
+artifact allowlist that excludes every flat/graded wing and shoulder. The
 pipeline recursively flattens the installed system presets' `inherits` and
 `include` chains into complete machine/process/filament JSON snapshots. Every
 source preset, dependency, flattened profile, STL, G-code file, result file,
@@ -114,7 +114,7 @@ The remote CAD build writes
 
 The catalog records the 64-hex content-addressed osado source snapshot and a
 SHA-256 for every listed artifact source. Obi-Wan records additionally bind the
-exact state `.obiwan_stage/manifest.json`; Ac/Ae records bind their facts and
+exact state `.obiwan_stage/manifest.json`; flat/graded records bind their facts and
 transaction manifests. The catalog itself is rendered beside the current
 authority, normalized against the checked-in schema, and checked against all
 artifact bindings before one atomic replacement. A failed generation cannot
@@ -128,7 +128,7 @@ applies that matrix to points and vectors without importing OCC:
 
 Every production transverse family uses one source magnet plane at
 **Z = 15.10 mm**. In particular, Obi-Wan LM-lower, LM-upper, UM, and their
-matching Ac/Ae receivers may not drift onto separate source-Z or roof planes.
+matching flat/graded receivers may not drift onto separate source-Z or roof planes.
 The interface contract records a 0.05 mm **solid receiver construction
 standoff** and a 0.00 mm physical mating gap; the standoff must never be
 reported as an air gap. Nominal opposing magnet-face spacing is 0.95 mm for
@@ -139,7 +139,7 @@ other magnet-location cue is a release failure.
 
 The current fail-closed inventory is 58 magnet-bearing released STLs and 94
 individual magnet stations: 19 STLs / 35 stations in each floor state plus
-20 shared Ac/Ae segments / 24 stations. Each Ac/Ae side exposes the unchanged
+20 shared flat/graded segments / 24 stations. Each flat/graded side exposes the unchanged
 three-piece A set and the two-piece B alternative; the B lower is identical to
 the A lower, while the fused B upper carries both LM-upper and UM stations. A
 count change is a source-level release change, not something the generator
@@ -308,7 +308,7 @@ insertion is part of the release chain.
 
 Canonical publication is fail-closed and release-wide. The slicer first
 copies the exact catalog, schema, STL, adjacent print sidecar, source files,
-Obi-Wan stage manifest, and Ac/Ae facts/transaction manifest into a read-only
+Obi-Wan stage manifest, and flat/graded facts/transaction manifest into a read-only
 staging tree. It slices those frozen STL bytes, then rechecks the live and
 staged hashes, resolved profiles, and Bambu Studio binary. Only exact coverage
 of all 58 artifacts / 94 stations with zero failures may transactionally
@@ -348,11 +348,11 @@ complete 51/51 shelf validation. `make to_print` consumes
 existing authoritative captive-magnet ready projects and never implicitly
 launches `bambu_slice_release`.
 
-### Ac/Ae B four-piece wing shelf plates
+### Flat/graded B four-piece wing shelf plates
 
-The shelf packages the released Ac B-split 05b/06b/08b/09b meshes as
-`obiwan_ac_wings_split2_combo` and the Ae B-split
-11b/12b/14b/15b meshes as `obiwan_ae_wings_split2_combo`.
+The shelf packages the released flat B-split 05b/06b/08b/09b meshes as
+`obiwan_flat_wings_split2_combo` and the graded B-split
+11b/12b/14b/15b meshes as `obiwan_graded_wings_split2_combo`.
 The shared builder applies only
 deterministic Rz and XY rigid transforms to the exact front-face-down STL
 triangle records. Its analytic footprint and mesh-witness gates require at
@@ -364,13 +364,13 @@ arranging/orienting/rotations disabled. It pins all four support settings off
 globally and per object, requires zero support feature blocks, preserves one
 six-site Z=5.96 mm magnet pause, and checks every cavity against the
 authoritative release audit. Project promotion additionally requires identity
-placement and exact equivalence to all 15,692 Ac or 958,546 Ae source
+placement and exact equivalence to all 15,692 flat or 958,546 graded source
 triangles.
-`make obiwan_ac_wing_plate` and
-`make obiwan_ae_wing_plate` build and audit the local ready projects;
+`make obiwan_flat_wing_plate` and
+`make obiwan_graded_wing_plate` build and audit the local ready projects;
 their corresponding `_to_print` targets refresh the friendly shelf pairs
 after the complete 51/51 slice-disabled shelf gate.
-All Ac/Ae wing and shoulder projects remain on Bambu PLA Tough+ with six
+All flat/graded wing and shoulder projects remain on Bambu PLA Tough+ with six
 walls. They are explicitly outside the PETG-GF profile's artifact scope.
 
 ## Layer and toolpath evidence

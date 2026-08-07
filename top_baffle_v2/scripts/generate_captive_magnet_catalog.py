@@ -74,13 +74,13 @@ EXPECTED_FAMILY_COUNTS = {
     "V1L": (2, 8),
     "Obi-Wan": (4, 12),
     "Obi-Wan-split": (4, 8),
-    "Obi-Wan-Ac": (10, 12),
-    "Obi-Wan-Ae": (10, 12),
+    "Obi-Wan-Flat": (10, 12),
+    "Obi-Wan-Graded": (10, 12),
     "coupon1": (2, 2),
 }
 RELEASED_WING_VARIANTS = {
-    "ac": "Obi-Wan-Ac",
-    "ae": "Obi-Wan-Ae",
+    "flat": "Obi-Wan-Flat",
+    "graded": "Obi-Wan-Graded",
 }
 
 SOURCE_REVISION_ENV = "LX_CAD_SOURCE_SHA256"
@@ -874,8 +874,8 @@ def generate(output: Path) -> dict[str, Any]:
     artifacts = [
         *_state_artifacts("floor_stand", output),
         *_state_artifacts("no_floor_stand", output),
-        *_wing_artifacts("ac", output),
-        *_wing_artifacts("ae", output),
+        *_wing_artifacts("flat", output),
+        *_wing_artifacts("graded", output),
     ]
     if len(artifacts) != EXPECTED_ARTIFACT_COUNT:
         raise RuntimeError(
@@ -990,7 +990,7 @@ def generate(output: Path) -> dict[str, Any]:
             "families": [
                 "B2", "A", "B1", "V1-A",
                 "V1-B1", "V1L", "Obi-Wan", "Obi-Wan-split",
-                "Obi-Wan-Ac", "Obi-Wan-Ae", "coupon1",
+                "Obi-Wan-Flat", "Obi-Wan-Graded", "coupon1",
             ],
         },
         "exclusions": [

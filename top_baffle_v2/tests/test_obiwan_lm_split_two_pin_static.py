@@ -199,14 +199,14 @@ def test_both_pins_are_reassigned_and_both_sockets_are_cut():
     assert "top -= socket_tool" in split
 
 
-def test_ac_ae_clearance_tools_offset_the_worst_case_land():
+def test_flat_graded_clearance_tools_offset_the_worst_case_land():
     source, tree = _source_tree()
     clearance = ast.unparse(
         _function(tree, "registration_wing_clearance_tools"))
     assert "REGISTRATION_WING_CLEARANCE_MM" in clearance
     assert "2.0 * clearance" in clearance
     assert "REGISTRATION_RELIEVED_SOCKET_X_EXTRA_MM" in clearance
-    assert '"wing_clearance_compatible_variants": ("ac", "ae")' in source
+    assert '"wing_clearance_compatible_variants": ("flat", "graded")' in source
     assert '"wing_clearance_pocket_between_front_and_rear": True' in source
 
 
@@ -215,7 +215,7 @@ CHECKS = (
     test_round_plus_relief_socket_avoids_wide_pitch_binding,
     test_relief_is_wholly_inside_existing_smooth_ring,
     test_both_pins_are_reassigned_and_both_sockets_are_cut,
-    test_ac_ae_clearance_tools_offset_the_worst_case_land,
+    test_flat_graded_clearance_tools_offset_the_worst_case_land,
 )
 
 

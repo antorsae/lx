@@ -13,12 +13,12 @@ split halves—never both forms together. The tweeter crescent is optional.
 
 Then choose one complete acoustic-wing family:
 
-- `wings/ac/`: constant 11.5 mm solid depth; or
-- `wings/ae/`: LM/UM/T-weighted rear depth with the same plan and magnetic
+- `wings/flat/`: constant 11.5 mm solid depth; or
+- `wings/graded/`: LM/UM/T-weighted rear depth with the same plan and magnetic
   roots.
 
-Ac and Ae are the entire Obi-Wan wing inventory. Each side prints as three
-keyed pieces; do not mix Ac and Ae segments.
+Flat and graded are the entire Obi-Wan wing inventory. Each side prints as three
+keyed pieces; do not mix flat and graded segments.
 
 Both state manifests currently record `release_authorized: false`. CAD,
 manifold, analytical-strength, and snapshot checks do not replace the physical

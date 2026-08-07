@@ -36,7 +36,7 @@ bridge-web load case is treated explicitly below. PLA still relaxes
 | R6F fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening unchanged 6.8 mm-total bores with Ø6.5 x 2.0 entries followed by Ø6.4 | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders; LM/T/UM entries packed inside the D20 support opening as LM above, T lower-left, UM lower-right at z=5.3; solid acoustic front; immutable 40 × 50 pattern; no geometry behind the existing LM pads; magnets receive zero load credit |
 | R6F optional LM keyed seam | two symmetric Ø1.60 cylindrical pins at x=±109.187/z=14.30, normal to the world-Y=172.481 mm zero-gap seam and pointing +Y; 2.40 mm engagement plus 0.50 mm root overlap. Right blind socket Ø1.84 round; left blind socket 1.96 × 1.84 mm X-relieved; both 2.65 mm deep with 0.12 mm radial and 0.25 mm end clearance. Small exterior lands outside the LM recess preserve ≥0.50 mm radial/end walls, ≥0.05 mm recess plan clearance and ≥0.13 mm conservative W22-flange clearance. | registration only | mutually exclusive replacement print form for the canonical monolithic LM. Round+relieved sockets tolerate ±0.30 mm relative pitch error; the lands reach R114.4036, which is 1.4036 mm beyond structural R113.0 but only 0.6036 mm beyond the finalized R113.8 visible fairing. They add no extra screw or standalone retention/load credit. Print and assemble front-face-down on a flat datum, moving the top straight along -Y; the installed LM driver flange and its normal fasteners are the structural splice. |
 | R6F UM-to-tweeter half-laps | 2 x rear-driven M3 screws through the UM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the crescent's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±24, y=421.5; nominal Ø9 closure-base teardrops, complete local Ø9.8 Z-owned functional bosses, 0.20 mm axial gap, complete 360° receiver walls, and 1.9 mm acoustic-front floors. Install both inserts in the individual crescent before assembly; no front bolt head or cross-owner receiver wall. |
-| R6F alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and the lower pair at cubic parameter `u=0.50` on the shared curved shoulder. The right visible datum is `(x,y,z)=(45.285011,89.190370,15.10)` with outward normal `(0.706451,-0.707762)`; the left is its exact X mirror. UM keeps its 50.5°/129.5° axes; all six stations share source Z=15.10. Every station has 0.45 mm axial skins and a 45° support-free roof. The R113.0/R51.7 structural rings have continuous exposed R113.8/R52.5 side fairings, clipped only inside the existing LM--UM and T--UM cusp/service regions; the LM--UM stop preserves the 0.40 mm gap. Ring cavity datums sit at structural radius +0.65 mm; ring and shoulder cavity datums are 0.15 mm beneath their exposed surfaces. There is no magnet-local backing, boss, relief, rear cap, flat, or visible cue: the magnet-free exterior is immutable. Magnets are fully buried at the manifest pause, never glued or externally accessible. Ac/Ae have matching captive LM-lower, LM-upper, and UM receivers. Their mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm allowance is a solid standoff. Nominal paired magnet-face separation is 1.10 mm at LM-lower, LM-upper, and UM. Alignment/anti-rattle only: **zero structural load credit**. |
+| R6F alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and the lower pair at cubic parameter `u=0.50` on the shared curved shoulder. The right visible datum is `(x,y,z)=(45.285011,89.190370,15.10)` with outward normal `(0.706451,-0.707762)`; the left is its exact X mirror. UM keeps its 50.5°/129.5° axes; all six stations share source Z=15.10. Every station has 0.45 mm axial skins and a 45° support-free roof. The R113.0/R51.7 structural rings have continuous exposed R113.8/R52.5 side fairings, clipped only inside the existing LM--UM and T--UM cusp/service regions; the LM--UM stop preserves the 0.40 mm gap. Ring cavity datums sit at structural radius +0.65 mm; ring and shoulder cavity datums are 0.15 mm beneath their exposed surfaces. There is no magnet-local backing, boss, relief, rear cap, flat, or visible cue: the magnet-free exterior is immutable. Magnets are fully buried at the manifest pause, never glued or externally accessible. Flat/graded have matching captive LM-lower, LM-upper, and UM receivers. Their mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm allowance is a solid standoff. Nominal paired magnet-face separation is 1.10 mm at LM-lower, LM-upper, and UM. Alignment/anti-rattle only: **zero structural load credit**. |
 | Tweeter pair | M4 through-bolts + nyloc + wave washer; length = septum + faceplates (stock 18.3 septum → ~M4 x 35; V1/R6F crescent → ~M4 x 30 — verify stacked) | snug, ~0.5 N·m | clamps the 4.0 mm crescent seat; recheck after a week |
 | Optional TEBM35C10-4 BMR pair | 8 × M2 screws into M2 × 4 × Ø3.2 heat-set inserts | hand-snug; establish on a coupon | lower BMR mounts from the acoustic front and upper BMR from the rear; each pocket has a 1.2 mm blind opposite wall. Use the Stock BMR vase only with Stock receivers and the Slim BMR vase only with Slim/V1L receivers. Both print front-face-down with supports explicitly disabled; four same-height captive side magnets share one audited insertion pause. |
 
@@ -192,7 +192,7 @@ clean front; textured PEI gives uniform grain.
 
 **R6F:** every released printable baffle/acoustic part also prints
 front-face-down. This includes the floor/no-floor monolithic LM, both optional
-keyed LM halves, the UM carrier, tweeter crescent, and Ac/Ae segments. Only an
+keyed LM halves, the UM carrier, tweeter crescent, and flat/graded segments. Only an
 in-plane XY rotation about the bed normal may be used; the former 45° X tilt
 and floor-face-down keyed-bottom
 orientations are not valid for captive-magnet insertion. The floor-state
@@ -210,7 +210,7 @@ small exterior lands outside the LM recess. They preserve at least 0.05 mm
 recess and 0.13 mm conservative W22-flange plan clearance. Their worst-case
 reach is R114.4036: 1.4036 mm beyond structural R113.0 but only 0.6036 mm
 beyond the finalized R113.8 visible fairing. Never mix either half with the
-monolithic LM. Ac/Ae include matching 0.25 mm hidden interface pockets for
+monolithic LM. Flat/graded include matching 0.25 mm hidden interface pockets for
 these lands; printed fit remains coupon-qualified. Each horizontal pin is four nominal nozzle widths; reject a
 slice missing either complete pin, either land, or a continuous socket-wall
 path.
@@ -235,9 +235,9 @@ the tweeter footprint, and zero support-bead collisions against every LM/UM
 functional duct. Never print a combined plate with its individual 01, 02, 03,
 or 04 files, and never mix the two stand states.
 
-For the Ac and Ae B wing splits, the shelf also provides
-`obiwan_ac_wings_split2_combo` and
-`obiwan_ae_wings_split2_combo` as mutually exclusive single-plate
+For the flat and graded B wing splits, the shelf also provides
+`obiwan_flat_wings_split2_combo` and
+`obiwan_graded_wings_split2_combo` as mutually exclusive single-plate
 alternatives to their four individual B projects. Each rigidly rotates and
 translates the four exact released front-face-down STLs without
 regenerating, changing, or fusing their geometry. The locked footprint is
@@ -245,11 +245,11 @@ regenerating, changing, or fusing their geometry. The locked footprint is
 and 3.592 mm minimum edge clearance. Use the ready project: it has 30% gyroid,
 all four support fields pinned off globally and per object, zero support
 feature blocks, and one Z=5.96 mm pause for all six wing magnets. Promotion
-requires exact 3MF/STL equivalence (15,692 triangles for Ac; 958,546 for Ae),
+requires exact 3MF/STL equivalence (15,692 triangles for flat; 958,546 for graded),
 an identity outer
 placement, and passing toolpath audits for all four captive-cavity regions.
 Never print either plate together with its four individual B files.
-The Ac/Ae wings and shoulders do not carry the LM/UM cantilever load and stay
+The flat/graded wings and shoulders do not carry the LM/UM cantilever load and stay
 on the standard Bambu PLA Tough+ profile with six walls; do not apply the
 PETG-GF structural-core profile to them.
 
@@ -260,7 +260,7 @@ printed micro-duct. Keep generated support out of functional buried-route
 mouths/free-cable clearance, the NL8 service cavity, and every rear bump.
 
 Every released nonpolar STL—including all ten production coupons and every
-Ac/Ae segment—must travel with its exact adjacent `<stem>.print.json`. That
+flat/graded segment—must travel with its exact adjacent `<stem>.print.json`. That
 record hash-binds the mesh to its X180 plus optional in-bed-Z transform and
 origin translation. Treat a missing, extra/orphaned, hash-stale, tilted, or
 translation-inconsistent sidecar as a hard stop; run `scripts/check_manifold.py` on
@@ -334,7 +334,7 @@ reuse a 0.20-mm pause height or derive one by scaling.
   adhesion, not speed. The PETG-GF structural-core jobs instead use the exact
   saved `TINMORRY PETG-GF Profile @BBL P2S` values: 260 °C nozzle, 80 °C
   textured bed, 0.93 flow ratio, and 12 mm³/s maximum volumetric speed. Do
-  not copy this material/profile to Ac/Ae wings or shoulders.
+  not copy this material/profile to flat/graded wings or shoulders.
 * **Dimensional fits:** R6P regular through-thickness dovetails use 0.05 mm
   in-plan female clearance; tune compensation until coupon 2 slides snugly
   through coupon 1 without forcing the seam open. Insert bores
@@ -359,7 +359,7 @@ upper base datum is recessed 0.14 mm inside
 the unchanged host, giving **1.09 mm**. Obi-Wan LM-upper and UM ring datums are
 0.15 mm beneath their smooth carrier fairings, and the Obi-Wan LM-lower datum
 is 0.15 mm beneath its smooth shared shoulder; all three interfaces therefore
-give **1.10 mm** to matching Ac/Ae receivers. The slim upper station is
+give **1.10 mm** to matching flat/graded receivers. The slim upper station is
 contained by a broad, symmetric,
 smooth rear-taper shelf rather than a local magnet-shaped patch. The D5 × 2
 cavities and both 0.45 mm Arachne one-bead skins are unchanged.
@@ -758,7 +758,7 @@ pause rows. No monolith pause is synthesized.
    Use the manifest's marked local-axis polarity for
    every carrier and mating receiver; do not infer it from mirroring. These magnets
    align and suppress rattle only;
-   assign them **zero load capacity** in every assembly and test. For Ac/Ae,
+   assign them **zero load capacity** in every assembly and test. For flat/graded,
    verify three coaxial receiver pairs per side: LM lower, LM upper, and UM.
 4. After the two UM-owned joint inserts have been installed and inspected in
    the individual UM print, put both collars front-face-down on one flat
@@ -850,12 +850,12 @@ These constraints moved here from the project README during the product-first re
   lands outside the LM recess. Their worst-case reach is R114.4036: 1.4036 mm
   beyond the structural R113.0 ring and 0.6036 mm beyond the finalized R113.8
   visible fairing.
-  Ac/Ae include matching 0.25 mm interface pockets around those lands;
+  flat/graded include matching 0.25 mm interface pockets around those lands;
   physical fit remains coupon-qualified.
   Preview the four-nozzle-width horizontal pins, ≥0.50 mm
   socket/end walls and both lands, then qualify their simultaneous straight-
   pull fit and actual U22 clearance with a process-matched coupon/print.
-- Ac and Ae wing sides each print as lower, middle, and UM segments cut from
+- Flat and graded wing sides each print as lower, middle, and UM segments cut from
   the finalized monolith. The lower segment owns the 7/9/4 mm male dovetail
   into the middle segment; the middle segment owns the 7/8.5/4 mm male
   dovetail into the UM segment. Both female complements use 0.05 mm clearance.

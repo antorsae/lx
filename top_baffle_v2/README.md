@@ -19,7 +19,7 @@ after any CAD change.
 | **Stock bridge (no floor stand)** | ![Stock, stock bridge](images/generated/iso/stock_no_floor_stand.png) | ![Slim, stock bridge](images/generated/iso/slim_no_floor_stand.png) | ![Obi-Wan, stock bridge](images/generated/iso/obiwan_no_floor_stand.png) |
 | **Floor stand** | ![Stock, floor stand](images/generated/iso/stock_floor_stand.png) | ![Slim, floor stand](images/generated/iso/slim_floor_stand.png) | ![Obi-Wan, floor stand](images/generated/iso/obiwan_floor_stand.png) |
 
-The Obi-Wan cells include its optional tweeter crescent and Ac wings, because
+The Obi-Wan cells include its optional tweeter crescent and flat wings, because
 its mandatory geometry alone is two bare collars.
 
 | Tweeter option | Render |
@@ -39,7 +39,7 @@ The project has one human-facing artifact catalog:
 |---|---|---|---|---|---|
 | [Stock R6P](artifacts/stock/) | B2, 304.802 x 453.457 x 18.3 mm | A-comp shoulders **or** B1 wings | ND25FW-4 crescent (integral) or TEBM35C10-4 BMR vase | Canonical CAD | [`docs/stock.md`](docs/stock.md) |
 | [Slim R6P](artifacts/slim/) | V1L + V1; 11.5 mm front-flush acoustic field, full-depth bottom strip | matching V1 shoulders **or** V1 wings | ND25FW-4 crescent (integral) or TEBM35C10-4 BMR vase | Experimental | [`docs/slim.md`](docs/slim.md) |
-| [Obi-Wan R6F](artifacts/obiwan/) | separate LM/UM collars; floor and stock-bridge states | Ac constant-depth or Ae weighted-depth wings | ND25FW-4 crescent add-on only | Candidate; not release-authorized | [`docs/obiwan.md`](docs/obiwan.md) |
+| [Obi-Wan R6F](artifacts/obiwan/) | separate LM/UM collars; floor and stock-bridge states | flat constant-depth or graded weighted-depth wings | ND25FW-4 crescent add-on only | Candidate; not release-authorized | [`docs/obiwan.md`](docs/obiwan.md) |
 
 The original state-oriented build outputs remain in `build/floor_stand/`,
 `build/no_floor_stand/`, and `build/wings/` because the validation pipeline depends on
@@ -58,8 +58,8 @@ targets are:
     make
     make floor_stand
     make floor_obiwan  # focused integral-floor Obi-Wan release and strict QA
-    make obiwan_release  # both Obi-Wan states + Ac/Ae, concurrent on osado
-    make obiwan_wings  # Ac + Ae STEP/STL families, built concurrently
+    make obiwan_release  # both Obi-Wan states + flat/graded, concurrent on osado
+    make obiwan_wings  # flat + graded STEP/STL families, built concurrently
     make vase_tebm35c10_4_cad  # both Stock and Slim BMR-vase CAD children
     make check  # proud regression + final Obi-Wan R6F suites
     make candidate  # checks + regenerated candidate artifacts + QA
@@ -102,7 +102,7 @@ The default remote `make` builds BOTH stand-foot states. Use
       stl/  *.step  *.png     R6F integral LM-owned W64 floor stem/foot + NL8 panel
     build/no_floor_stand/   LX_STAND_FOOT=0: R6P flat piece_bottom + bridge;
       stl/  *.step  *.png     R6F solid bridge web fused into the LM core
-    build/wings/{ac,ae}/    Obi-Wan acoustic wing families
+    build/wings/{flat,graded}/    Obi-Wan acoustic wing families
     build/vase_TEBM35C10-4/{stock,slim}/   opposed-BMR vase children
     build/common/           flag-independent shared outputs
     images/generated/iso/   the product-comparison render set
@@ -140,7 +140,7 @@ entry points:
 | `scripts/remote_cad.py` / `cad-remote-requirements.lock` | Content-addressed SSH executor, resumable job control, verified artifact return, and exact remote Python environment |
 | `review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md` | Authoritative per-STL front-face-down orientation, actual sliced open/closing layers, Bambu Custom park/pause/restore events, grouped magnet counts, and local-axis polarity |
 | `review/CAPTIVE_MAGNET_ARTIFACT_INVENTORY.md` | Clickable inventory of all 58 magnet-bearing STL records, their 56 locally generated/directly loadable G-code-bearing Bambu 3MF projects, descriptive piece names, and exact magnet counts; also reconciles the 86 transverse and eight exact split-proxy stations |
-| `build/<state>/stl/*.stl` and `build/wings/{ac,ae}/stl/*.stl` | The enforced acoustic-print inventory is 39 nonpolar front-face-down STL/sidecar pairs in each stand state plus ten Ac and ten Ae pairs: 98 exact pairs total. Every acoustic piece is source-X180 with only an optional in-bed Z rotation and its front datum at STL Z=0. A missing, orphaned, stale-hash, tilted, or translation-inconsistent `<stem>.print.json` fails release validation. The two floor polar-index jigs are the sole orientation-sidecar exclusions because they are fixtures with no acoustic front-face datum. |
+| `build/<state>/stl/*.stl` and `build/wings/{flat,graded}/stl/*.stl` | The enforced acoustic-print inventory is 39 nonpolar front-face-down STL/sidecar pairs in each stand state plus ten flat and ten graded pairs: 98 exact pairs total. Every acoustic piece is source-X180 with only an optional in-bed Z rotation and its front datum at STL Z=0. A missing, orphaned, stale-hash, tilted, or translation-inconsistent `<stem>.print.json` fails release validation. The two floor polar-index jigs are the sole orientation-sidecar exclusions because they are fixtures with no acoustic front-face datum. |
 
 The generated directories are **candidate packages**, not physical-release
 authorization: even `make release` performs CAD, artifact and manifold checks
@@ -172,7 +172,7 @@ Cross-cutting authorities:
 - [`docs/CAPTIVE_MAGNET_SLICING.md`](docs/CAPTIVE_MAGNET_SLICING.md) — pause
   and embed workflow.
 - [`docs/obiwan_acoustic_wings_spec.md`](docs/obiwan_acoustic_wings_spec.md) —
-  Ac/Ae wing design authority.
+  flat/graded wing design authority.
 - [`docs/obiwan_physical_qualification.md`](docs/obiwan_physical_qualification.md)
   — fail-closed physical qualification record.
 - [`docs/README.md`](docs/README.md) — the complete documentation index.

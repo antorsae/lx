@@ -1166,7 +1166,7 @@ def render_obiwan_engineering_detail():
             arrowprops=dict(arrowstyle="-", color="#31485f"))
     ax_front.annotate(
         "lower LM magnets: shared base sides\n"
-        "x=+/-32, y=18, z=15.10; matching Ac/Ae LM-lower receivers",
+        "x=+/-32, y=18, z=15.10; matching flat/graded LM-lower receivers",
         (32.0, 18.0), (104, 72), ha="right",
         fontsize=7.1, color="tab:orange",
         arrowprops=dict(arrowstyle="-", color="tab:orange"))

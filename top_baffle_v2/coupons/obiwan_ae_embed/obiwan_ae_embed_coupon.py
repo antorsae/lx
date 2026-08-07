@@ -1,4 +1,4 @@
-"""Minimal two-piece Obi-Wan LM/UM-to-Ae embedded-magnet coupon.
+"""Minimal two-piece Obi-Wan LM/UM-to-graded embedded-magnet coupon.
 
 The source coordinate frame follows the released baffle convention: XY is
 the installed front plane, local Z=0 is the Obi-Wan rear datum, and local Z=11.5
@@ -31,7 +31,7 @@ from build123d import (
 )
 
 
-# Reuse the released Obi-Wan/Ae dimensional authorities instead of copying their
+# Reuse the released Obi-Wan/graded dimensional authorities instead of copying their
 # radii, site heights, or receiver-root envelopes.  The physically tested
 # coupon's zero interface gap is deliberately frozen locally below.
 PROJECT_DIR = Path(__file__).resolve().parents[2]
@@ -324,7 +324,7 @@ def carrier_coupon_installed():
     # Bridge through the rear overlap shared by the released lip and the local
     # backing.  The original 0.50-mm bridge no longer reached both curved roots
     # after the skins were thickened; extending it toward the front beyond this
-    # 1.00-mm band would intrude on the mating Ae curvature in the station gap.
+    # 1.00-mm band would intrude on the mating graded curvature in the station gap.
     bridge = Pos(-CARRIER_MAGNET_LAND_MM + 0.02, lm_inner_edge - 0.12, 0.0) * Box(
         1.00,
         um_inner_edge - lm_inner_edge + 0.24,
@@ -346,7 +346,7 @@ def wing_coupon_installed():
         align=(Align.MIN, Align.MIN, Align.MIN),
     )
     part = _cut_all_cavities(lm.fuse(um, bridge).clean(), "wing")
-    return _single_solid(part, "obiwan_ae_lm_um_embed_coupon")
+    return _single_solid(part, "obiwan_graded_lm_um_embed_coupon")
 
 
 def _front_down(part, label: str):
@@ -366,7 +366,7 @@ def carrier_coupon_print():
 def wing_coupon_print():
     return _front_down(
         wing_coupon_installed(),
-        "obiwan_ae_lm_um_embed_coupon_front_down",
+        "obiwan_graded_lm_um_embed_coupon_front_down",
     )
 
 
@@ -430,8 +430,8 @@ def design_facts() -> dict[str, object]:
             "bury_plane_print_z_mm": station.bury_plane_print_z_mm,
             "roof_apex_source_z_mm": station.roof_apex_source_z_mm,
             "minimum_carrier_face_skin_at_cavity_edge_mm": FACE_SKIN_MM - sag,
-            "released_ae_root_tangential_mm": station.tangential_mm,
-            "released_ae_root_radial_mm": station.wing_radial_mm,
+            "released_graded_root_tangential_mm": station.tangential_mm,
+            "released_graded_root_radial_mm": station.wing_radial_mm,
         }
     return {
         "piece_count": 2,
@@ -458,5 +458,5 @@ def gen_step():
     wing = wing_coupon_installed()
     validate_coupon(carrier, wing)
     assembly = Compound(children=[carrier, wing])
-    assembly.label = "obiwan_ae_lm_um_embedded_magnet_coupon_pair"
+    assembly.label = "obiwan_graded_lm_um_embedded_magnet_coupon_pair"
     return assembly

@@ -14,8 +14,8 @@ Regenerate through the remote executor (the default):
     make
     make floor_stand
     make floor_obiwan  # focused integral-floor Obi-Wan release and strict QA
-    make obiwan_release  # both Obi-Wan states + Ac/Ae, concurrent on osado
-    make obiwan_wings  # Ac + Ae STEP/STL families, built concurrently
+    make obiwan_release  # both Obi-Wan states + flat/graded, concurrent on osado
+    make obiwan_wings  # flat + graded STEP/STL families, built concurrently
     make vase_tebm35c10_4_cad  # both Stock and Slim BMR-vase CAD children
 
 ## Job control and snapshot semantics
@@ -69,7 +69,7 @@ Focused jobs return generated files whose bytes changed plus the explicit
 public result of the requested target.  In particular, `floor_obiwan` and
 `no_floor_obiwan` always return every file named by their hash-bound release
 manifest, `common` always returns its STEP, and `obiwan_wings` always returns
-the Ac/Ae design map and both wing artifact trees; a warm-cache Make no-op
+the flat/graded design map and both wing artifact trees; a warm-cache Make no-op
 therefore also reconstructs a fresh or locally deleted output tree. Complete
 targets return their declared
 output roots in full and always include their top-level PNG/STEP/catalog

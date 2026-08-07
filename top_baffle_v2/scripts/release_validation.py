@@ -2154,11 +2154,11 @@ def normalize_catalog(
             auxiliary_bindings[path_key] = _resolve_path(
                 path_value, catalog_path.parent)
             auxiliary_bindings[hash_key] = hash_value
-        if variant in ("Obi-Wan-Ac", "Obi-Wan-Ae") and not {
+        if variant in ("Obi-Wan-Flat", "Obi-Wan-Graded") and not {
                 "transaction_manifest", "transaction_manifest_sha256",
                 "facts", "facts_sha256"} <= set(auxiliary_bindings):
             raise AuditError(
-                f"{artifact_id}: Ac/Ae artifact lacks facts/transaction "
+                f"{artifact_id}: flat/graded artifact lacks facts/transaction "
                 "manifest hash bindings")
         if variant in ("Obi-Wan", "Obi-Wan-split") and not {
                 "stage_manifest", "stage_manifest_sha256"

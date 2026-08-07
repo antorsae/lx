@@ -227,7 +227,7 @@ def registration_support_land_tools() -> dict:
 
 
 def registration_wing_clearance_tools() -> dict:
-    """Symmetric Ac/Ae interface clearance around the ring-local keys.
+    """Symmetric flat/graded interface clearance around the ring-local keys.
 
     The left socket wall witness is 0.02 mm wider in X than the round right
     witness. Both
@@ -417,7 +417,7 @@ def registration_fit_facts() -> dict:
         "support_land_driver_flange_plan_clearance_mm": (
             driver_flange_clearance),
         "wing_interface_clearance_mm": REGISTRATION_WING_CLEARANCE_MM,
-        "wing_clearance_compatible_variants": ("ac", "ae"),
+        "wing_clearance_compatible_variants": ("flat", "graded"),
         "wing_clearance_pocket_between_front_and_rear": True,
         "exterior_support_land": False,
         "registration_wall_source": "native_r113p8_smooth_ring",

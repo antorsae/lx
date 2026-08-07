@@ -322,7 +322,7 @@
         {
           "if": {
             "properties": {
-              "variant": {"enum": ["Obi-Wan-Ac", "Obi-Wan-Ae"]}
+              "variant": {"enum": ["Obi-Wan-Flat", "Obi-Wan-Graded"]}
             },
             "required": ["variant"]
           },

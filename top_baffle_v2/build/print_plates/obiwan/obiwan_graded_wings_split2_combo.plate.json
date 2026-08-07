@@ -1,0 +1,437 @@
+{
+  "bed_clearances_mm": {
+    "x": [
+      13.23267650604248,
+      5.542388916015625
+    ],
+    "y": [
+      3.551790475845337,
+      4.60577392578125
+    ],
+    "z": [
+      0.0,
+      244.4905824661255
+    ]
+  },
+  "bounds_mm": {
+    "maximum_mm": [
+      250.45761108398438,
+      251.39422607421875,
+      11.509417533874512
+    ],
+    "minimum_mm": [
+      13.23267650604248,
+      3.551790475845337,
+      0.0
+    ],
+    "size_mm": [
+      237.2249345779419,
+      247.8424355983734,
+      11.509417533874512
+    ]
+  },
+  "composite_topology_policy": "each released source passes strict manifold validation and the bundle is their exact, non-intersecting rigid transform",
+  "expected_disconnected_printable_part_count": 4,
+  "magnet_pause": {
+    "magnet_count": 6,
+    "pause_z_mm": 5.96,
+    "sites": [
+      "lm_lower_left",
+      "lm_upper_left",
+      "um_left",
+      "lm_lower_right",
+      "lm_upper_right",
+      "um_right"
+    ]
+  },
+  "manifest_kind": "lx521_locked_composite_print_plate",
+  "mesh_footprint_witnesses": {
+    "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2": {
+      "triangle_centroids_outside_0_005mm_guard": 0,
+      "triangle_count": 685816,
+      "vertices_outside_0_005mm_guard": 0
+    },
+    "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2": {
+      "triangle_centroids_outside_0_005mm_guard": 0,
+      "triangle_count": 398500,
+      "vertices_outside_0_005mm_guard": 0
+    },
+    "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2": {
+      "triangle_centroids_outside_0_005mm_guard": 0,
+      "triangle_count": 686098,
+      "vertices_outside_0_005mm_guard": 0
+    },
+    "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2": {
+      "triangle_centroids_outside_0_005mm_guard": 0,
+      "triangle_count": 398594,
+      "vertices_outside_0_005mm_guard": 0
+    }
+  },
+  "name": "obiwan_graded_wings_split2_combo",
+  "packing": {
+    "bed_edges": [
+      {
+        "clearance_mm": {
+          "x_high": 148.45746374540568,
+          "x_low": 13.232676200583441,
+          "y_high": 19.43899457504162,
+          "y_low": 109.4428277877792
+        },
+        "part": "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2"
+      },
+      {
+        "clearance_mm": {
+          "x_high": 5.542390124918455,
+          "x_low": 74.17244024830003,
+          "y_high": 4.605778243911374,
+          "y_low": 33.9972261603383
+        },
+        "part": "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2"
+      },
+      {
+        "clearance_mm": {
+          "x_high": 7.390938936586224,
+          "x_low": 203.00466103579922,
+          "y_high": 88.26986099924514,
+          "y_low": 13.172119988689673
+        },
+        "part": "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2"
+      },
+      {
+        "clearance_mm": {
+          "x_high": 80.67661417133124,
+          "x_low": 30.198437451469914,
+          "y_high": 5.70019267980274,
+          "y_low": 3.5517898261177407
+        },
+        "part": "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2"
+      }
+    ],
+    "minimum_actual_bed_edge_mm": 3.5517898261177407,
+    "minimum_actual_xy_gap_mm": 3.5500002551368017,
+    "minimum_required_bed_edge_mm": 3.5,
+    "minimum_required_xy_gap_mm": 3.5,
+    "pairwise": [
+      {
+        "intersection_area_mm2": 0.0,
+        "left": "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2",
+        "right": "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2",
+        "xy_gap_mm": 66.02532778627197
+      },
+      {
+        "intersection_area_mm2": 0.0,
+        "left": "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2",
+        "right": "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",
+        "xy_gap_mm": 108.62592069959594
+      },
+      {
+        "intersection_area_mm2": 0.0,
+        "left": "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2",
+        "right": "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2",
+        "xy_gap_mm": 36.519376927936406
+      },
+      {
+        "intersection_area_mm2": 0.0,
+        "left": "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2",
+        "right": "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",
+        "xy_gap_mm": 4.368481730930674
+      },
+      {
+        "intersection_area_mm2": 0.0,
+        "left": "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2",
+        "right": "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2",
+        "xy_gap_mm": 3.5500002551368017
+      },
+      {
+        "intersection_area_mm2": 0.0,
+        "left": "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",
+        "right": "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2",
+        "xy_gap_mm": 50.987914730035634
+      }
+    ]
+  },
+  "parts": [
+    {
+      "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_split2_1_of_2_lm_lower",
+      "friendly_name": "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2",
+      "mesh_diagnostics": {
+        "component_error": 0,
+        "component_signed_volumes": [
+          25775.024426842836,
+          -64.88808422551583
+        ],
+        "components": 2,
+        "degenerate": 0,
+        "disconnected_material_components": 0,
+        "duplicates": 0,
+        "negative_volume": 0,
+        "nested_void_components": 1,
+        "nonfinite": 0,
+        "nonnested_void_components": 0,
+        "open": 0,
+        "outer_components": 1,
+        "over_shared": 0,
+        "signed_volume": 25710.136342617276,
+        "triangles": 685816,
+        "winding": 0,
+        "zero_volume": 0,
+        "zero_volume_components": 0
+      },
+      "role": "lm_lower",
+      "rz_degrees": 58.72427357715,
+      "side": "left",
+      "source_print_sidecar": "build/wings/graded/stl/obiwan_wing_graded_left_split2_1_of_2_lm_lower.print.json",
+      "source_print_sidecar_sha256": "12241c44050b373d070d1b33c67e926bacb567563c5c063b381780b388480a26",
+      "source_stl": "build/wings/graded/stl/obiwan_wing_graded_left_split2_1_of_2_lm_lower.stl",
+      "source_stl_sha256": "79372c83362b259cb93e75072dec7284d2ca9978c4a6368fbfced81e45cccd2b",
+      "stl_to_plate_matrix": [
+        [
+          0.5191570705013763,
+          -0.85467884971399,
+          0.0,
+          51.156885879315
+        ],
+        [
+          0.85467884971399,
+          0.5191570705013763,
+          0.0,
+          86.40654731298
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "translation_xy_mm": [
+        51.156885879315,
+        86.40654731298
+      ],
+      "triangle_count": 685816
+    },
+    {
+      "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_split2_2_of_2_lm_um_upper",
+      "friendly_name": "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2",
+      "mesh_diagnostics": {
+        "component_error": 0,
+        "component_signed_volumes": [
+          45140.58296390976,
+          -64.88801495185577,
+          -64.88815421275137
+        ],
+        "components": 3,
+        "degenerate": 0,
+        "disconnected_material_components": 0,
+        "duplicates": 0,
+        "negative_volume": 0,
+        "nested_void_components": 2,
+        "nonfinite": 0,
+        "nonnested_void_components": 0,
+        "open": 0,
+        "outer_components": 1,
+        "over_shared": 0,
+        "signed_volume": 45010.806794745055,
+        "triangles": 398500,
+        "winding": 0,
+        "zero_volume": 0,
+        "zero_volume_components": 0
+      },
+      "role": "lm_um_upper",
+      "rz_degrees": -82.921230563781,
+      "side": "left",
+      "source_print_sidecar": "build/wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.print.json",
+      "source_print_sidecar_sha256": "876f7d0c0740ce50a48b0d34aa1bd59472cb71b25ff724de9313312016c0cb96",
+      "source_stl": "build/wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.stl",
+      "source_stl_sha256": "4244dead1a6618dd73ae541946f88cf1e918799a007c518d7983a36f5b9b8224",
+      "stl_to_plate_matrix": [
+        [
+          0.12323376637207177,
+          0.9923776694513806,
+          0.0,
+          50.756431596864
+        ],
+        [
+          -0.9923776694513806,
+          0.12323376637207177,
+          0.0,
+          227.804382692246
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "translation_xy_mm": [
+        50.756431596864,
+        227.804382692246
+      ],
+      "triangle_count": 398500
+    },
+    {
+      "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_right_split2_1_of_2_lm_lower",
+      "friendly_name": "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",
+      "mesh_diagnostics": {
+        "component_error": 0,
+        "component_signed_volumes": [
+          25775.017515579624,
+          -64.88808270341632
+        ],
+        "components": 2,
+        "degenerate": 0,
+        "disconnected_material_components": 0,
+        "duplicates": 0,
+        "negative_volume": 0,
+        "nested_void_components": 1,
+        "nonfinite": 0,
+        "nonnested_void_components": 0,
+        "open": 0,
+        "outer_components": 1,
+        "over_shared": 0,
+        "signed_volume": 25710.129432876176,
+        "triangles": 686098,
+        "winding": 0,
+        "zero_volume": 0,
+        "zero_volume_components": 0
+      },
+      "role": "lm_lower",
+      "rz_degrees": -89.203304927416,
+      "side": "right",
+      "source_print_sidecar": "build/wings/graded/stl/obiwan_wing_graded_right_split2_1_of_2_lm_lower.print.json",
+      "source_print_sidecar_sha256": "777809aa0d451f2e1b55d0bebe263f9cbcc14446145a8f9cbcf844007ff16621",
+      "source_stl": "build/wings/graded/stl/obiwan_wing_graded_right_split2_1_of_2_lm_lower.stl",
+      "source_stl_sha256": "fb710daee44335b9be8066c3989d6aba61eb8b220c6c65f0bd6ccb4a5b7f722d",
+      "stl_to_plate_matrix": [
+        [
+          0.013904504073598101,
+          0.9999033277104679,
+          0.0,
+          202.926578585501
+        ],
+        [
+          -0.9999033277104679,
+          0.013904504073598101,
+          0.0,
+          167.723983347523
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "translation_xy_mm": [
+        202.926578585501,
+        167.723983347523
+      ],
+      "triangle_count": 686098
+    },
+    {
+      "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_right_split2_2_of_2_lm_um_upper",
+      "friendly_name": "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2",
+      "mesh_diagnostics": {
+        "component_error": 0,
+        "component_signed_volumes": [
+          45140.58452637414,
+          -64.88804655781524,
+          -64.88808471013226
+        ],
+        "components": 3,
+        "degenerate": 0,
+        "disconnected_material_components": 0,
+        "duplicates": 0,
+        "negative_volume": 0,
+        "nested_void_components": 2,
+        "nonfinite": 0,
+        "nonnested_void_components": 0,
+        "open": 0,
+        "outer_components": 1,
+        "over_shared": 0,
+        "signed_volume": 45010.808395106236,
+        "triangles": 398594,
+        "winding": 0,
+        "zero_volume": 0,
+        "zero_volume_components": 0
+      },
+      "role": "lm_um_upper",
+      "rz_degrees": 110.702555432118,
+      "side": "right",
+      "source_print_sidecar": "build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.print.json",
+      "source_print_sidecar_sha256": "be2be8e10585a36fa9ac48ad0ea1a71f918f4993f5c34ecb15bab777c6b4e489",
+      "source_stl": "build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.stl",
+      "source_stl_sha256": "9bab730a8c5bdc959cd236c0380642a7568e9ab456bb6adf6c4de9f5c32bd1af",
+      "stl_to_plate_matrix": [
+        [
+          -0.3535165648902537,
+          -0.9354282646724948,
+          0.0,
+          231.314810940662
+        ],
+        [
+          0.9354282646724948,
+          -0.3535165648902537,
+          0.0,
+          67.458534877173
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "translation_xy_mm": [
+        231.314810940662,
+        67.458534877173
+      ],
+      "triangle_count": 398594
+    }
+  ],
+  "preview": "build/print_plates/obiwan/obiwan_graded_wings_split2_combo.layout.png",
+  "preview_sha256": "5308d942d990039ee893f76c9a55289c4bebf01e9f0fd25af028ffd3c48c7fdb",
+  "schema_version": 1,
+  "source_bundle_fingerprint": "9fbf5a5ed69e554422db0e7e11a6feac86c34e60fb00581c3ca44be34083c21e",
+  "source_policy": "rigid Rz plus XY placement of four released front-face-down STLs; no CAD, BREP, support structure, or acoustic geometry regeneration",
+  "stl": "obiwan_graded_wings_split2_combo.stl",
+  "stl_bytes": 108450484,
+  "stl_sha256": "baf3ec108e8180472b873935a359d14a4dd54ab42ce3e7f9e1d64e5ed33b5cb0",
+  "support_policy": {
+    "enabled": false,
+    "global_and_object_fields": {
+      "enable_support": "0",
+      "support_critical_regions_only": "0",
+      "support_on_build_plate_only": "0",
+      "support_remove_small_overhang": "0"
+    },
+    "support_blocker_count": 0,
+    "support_toolpath_gate": "no support feature blocks permitted"
+  },
+  "triangle_count": 2169008
+}

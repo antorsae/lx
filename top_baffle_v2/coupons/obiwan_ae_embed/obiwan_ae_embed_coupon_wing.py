@@ -1,4 +1,4 @@
-"""Front-down print entry point for the matching Ae coupon piece."""
+"""Front-down print entry point for the matching graded coupon piece."""
 
 from obiwan_ae_embed_coupon import wing_coupon_print
 

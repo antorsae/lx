@@ -48,7 +48,7 @@
   and UM ring station, the cavity construction datum is structural radius
   +0.65 mm, 0.15 mm beneath the exposed surface. There is no local pad, boss,
   flat, or silhouette cue. The D5 x 2 cavity and 0.45 mm skins are unchanged.
-  Matching Ac/Ae solids contact with zero physical mating gap; their receiver
+  Matching flat/graded solids contact with zero physical mating gap; their receiver
   construction datum has a 0.05 mm solid standoff, not an air gap. Nominal
   paired magnet-face separation is therefore 1.10 mm at LM-lower, LM-upper,
   and UM. Every station
@@ -84,7 +84,7 @@
   retain ≥0.50 mm local radial/end wall, ≥0.05 mm recess plan clearance, and
   ≥0.13 mm conservative W22-flange plan clearance. Their worst-case reach is
   R114.4036: 1.4036 mm beyond structural R113.0 and 0.6036 mm beyond the
-  finalized R113.8 visible fairing. Ac/Ae are geometrically compatible through 0.25 mm
+  finalized R113.8 visible fairing. Flat/graded are geometrically compatible through 0.25 mm
   hidden carrier-interface pockets, with physical fit still coupon-qualified.
   With the monolithic LM those pockets are small hidden local reliefs; the
   three magnetic datums and primary retention geometry remain unchanged.
@@ -326,7 +326,7 @@
   `(45.285011,89.190370,15.10)`, outward normal
   `(0.706451,-0.707762)`, and an exact-X-mirrored left datum in both stand
   states; at least 2.2 mm upper-LM nearest-insert edge gap; absence
-  of LM proud ears; three matching Ac/Ae receivers per physical side at
+  of LM proud ears; three matching flat/graded receivers per physical side at
   LM lower, LM upper, and UM; common source Z=15.10 for every LM/UM station;
   0.05 mm solid receiver construction standoff with zero physical mating gap;
   1.10 mm nominal paired magnet-face separation at LM-lower, LM-upper, and

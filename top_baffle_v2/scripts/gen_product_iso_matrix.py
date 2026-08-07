@@ -122,7 +122,7 @@ def _state_sources(state: str) -> dict[str, Path]:
     }
 
 
-OBIWAN_WINGS = Path("build/wings/ac/obiwan_wing_ac_assembled.step")
+OBIWAN_WINGS = Path("build/wings/flat/obiwan_wing_flat_assembled.step")
 TEBM_VASE = Path("build/vase_TEBM35C10-4/stock/vase_TEBM35C10-4.step")
 
 MAKE_TARGET_FOR_PREFIX = (
@@ -156,7 +156,7 @@ def _product_cells() -> tuple[dict, ...]:
             f"slim_{state}", f"Slim R6P — {state_label}", "product",
             (("base", source["slim_base"]),
              ("top", source["slim_top"]))))
-        # Obi-Wan's mandatory geometry is two bare collars.  The optional Ac
+        # Obi-Wan's mandatory geometry is two bare collars.  The optional flat
         # wings and tweeter crescent are included so this cell shows a
         # comparable acoustic baffle rather than two rings in empty space; the
         # legend keeps the mandatory/optional split explicit.

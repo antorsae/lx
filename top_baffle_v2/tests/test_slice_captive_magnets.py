@@ -61,7 +61,7 @@ def _catalog_document(artifacts: list[dict]) -> dict:
         if artifact.get("variant") in ("Obi-Wan", "Obi-Wan-split"):
             artifact.setdefault("stage_manifest", "stage_manifest.json")
             artifact.setdefault("stage_manifest_sha256", "e" * 64)
-        if artifact.get("variant") in ("Obi-Wan-Ac", "Obi-Wan-Ae"):
+        if artifact.get("variant") in ("Obi-Wan-Flat", "Obi-Wan-Graded"):
             artifact.setdefault("transaction_manifest", "transaction.json")
             artifact.setdefault("transaction_manifest_sha256", "f" * 64)
             artifact.setdefault("facts", "facts.json")
@@ -663,17 +663,17 @@ def test_petg_gf_profile_is_scoped_to_structural_core_only() -> None:
     )
 
     wing = {
-        "id": "shared:Obi-Wan-Ae:obiwan_wing_ae_left_1_of_3_lm_lower",
+        "id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_1_of_3_lm_lower",
         "state": "shared",
-        "variant": "Obi-Wan-Ae",
-        "part": "obiwan_wing_ae_left_1_of_3_lm_lower",
+        "variant": "Obi-Wan-Graded",
+        "part": "obiwan_wing_graded_left_1_of_3_lm_lower",
     }
     try:
         audit._validate_profile_artifact_scope([wing], config)
     except audit.AuditError as exc:
         assert "not authorized" in str(exc)
     else:
-        raise AssertionError("PETG-GF structural profile accepted an Ae wing")
+        raise AssertionError("PETG-GF structural profile accepted an graded wing")
 
     modifiers = config["parameter_modifiers"]
     assert len(modifiers) == 1
@@ -2839,8 +2839,8 @@ def test_wing_facts_and_transaction_manifest_are_hash_bound(
         "paired_magnet_face_separation_mm": 1.10,
     })
     raw = {
-        "id": "shared:Obi-Wan-Ac:wing", "part": "wing",
-        "variant": "Obi-Wan-Ac", "state": "shared", "stl": "wing.stl",
+        "id": "shared:Obi-Wan-Flat:wing", "part": "wing",
+        "variant": "Obi-Wan-Flat", "state": "shared", "stl": "wing.stl",
         "print_orientation": "front_face_down",
         "rotation_deg": {"x": 180.0, "z": 0.0},
         "source_to_stl_matrix": [
@@ -2861,7 +2861,7 @@ def test_wing_facts_and_transaction_manifest_are_hash_bound(
     except audit.AuditError as exc:
         assert "facts hash differs" in str(exc)
     else:
-        raise AssertionError("tampered Ac/Ae facts remained release-bound")
+        raise AssertionError("tampered flat/graded facts remained release-bound")
 
 
 def test_catalog_rejects_nonadjacent_print_sidecar(tmp_path: Path) -> None:

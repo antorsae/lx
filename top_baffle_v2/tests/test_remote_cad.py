@@ -280,7 +280,7 @@ def _cached_public_output_fixture(root: Path) -> tuple[Path, dict[str, Path]]:
         json.dumps({"artifacts": no_floor_artifacts}))
     for relative in no_floor_artifacts:
         output(f"top_baffle_v2/build/no_floor_stand/{relative}")
-    output("top_baffle_v2/build/wings/ac/stl/wing.stl")
+    output("top_baffle_v2/build/wings/flat/stl/wing.stl")
     output(remote.COMMON_ARTIFACT)
     output(remote.OBIWAN_WING_DESIGN_MAP_ARTIFACT)
     output(remote.CAPTIVE_MAGNET_CATALOG_ARTIFACT, "{}\n")
@@ -1825,15 +1825,15 @@ def test_obiwan_basic_wing_parallel_dag() -> None:
         env={**os.environ, "LX_CAD_GUARD_SLOTS": "4"},
     )
     assert result.stdout.count(
-        "scripts/export_obiwan_wings.py --slug ac --output-root build/wings") == 1
+        "scripts/export_obiwan_wings.py --slug flat --output-root build/wings") == 1
     assert result.stdout.count(
-        "scripts/export_obiwan_wings.py --slug ae --output-root build/wings") == 1
+        "scripts/export_obiwan_wings.py --slug graded --output-root build/wings") == 1
     assert result.stdout.count(
         "tests/test_obiwan_wings.py --artifact-root build/wings") == 3
     for selector in (
             "test_exported_artifact_contract",
-            "test_live_brep_geometry_contract_ac",
-            "test_live_brep_geometry_contract_ae"):
+            "test_live_brep_geometry_contract_flat",
+            "test_live_brep_geometry_contract_graded"):
         assert result.stdout.count(
             f"LX_OBIWAN_WING_SINGLE_CHECK={selector}") == 1
 
@@ -2191,20 +2191,20 @@ def test_promoted_roots_use_make_parallel_full_sweeps() -> None:
         assert kwargs["cwd"] == remote.BAFFLE_DIR
         assert kwargs["check"] is True
     assert "MANIFOLD_ROOTS=build/floor_stand/stl build/no_floor_stand/stl" in calls[0][0]
-    assert "MANIFOLD_ROOTS=build/wings/ac/stl build/wings/ae/stl" in calls[1][0]
+    assert "MANIFOLD_ROOTS=build/wings/flat/stl build/wings/graded/stl" in calls[1][0]
 
 
 def test_obiwan_basic_wing_contract_dependency() -> None:
     result = subprocess.run(
         ["make", "-np", "LX_CAD_EXECUTION=remote-worker",
-         f"PYTHON={sys.executable}", "build/wings/.stamp_ac"],
+         f"PYTHON={sys.executable}", "build/wings/.stamp_flat"],
         cwd=PROJECT_ROOT, text=True,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True,
         env={**os.environ, "LX_CAD_GUARD_SLOTS": "4"},
     )
     rule = next(
         line for line in result.stdout.splitlines()
-        if line.startswith("build/wings/.stamp_ac:"))
+        if line.startswith("build/wings/.stamp_flat:"))
     assert "src/lx521_baffle/print_contract.py" in rule
 
 
@@ -2229,9 +2229,9 @@ def test_obiwan_release_parallel_dag() -> None:
         "cd build/no_floor_stand && LX_STAND_FOOT=0 "
         "LX_ROUTING_PROFILE=obiwan") == 1
     assert output.count(
-        "scripts/export_obiwan_wings.py --slug ac --output-root build/wings") == 1
+        "scripts/export_obiwan_wings.py --slug flat --output-root build/wings") == 1
     assert output.count(
-        "scripts/export_obiwan_wings.py --slug ae --output-root build/wings") == 1
+        "scripts/export_obiwan_wings.py --slug graded --output-root build/wings") == 1
     assert output.count(
         "scripts/write_obiwan_release_manifest.py --state-dir build/floor_stand") == 1
     assert output.count(
@@ -2265,7 +2265,7 @@ def test_obiwan_release_parallel_dag() -> None:
     # Fresh remote snapshots intentionally contain no generated roots, so a
     # dry-run cannot discover per-STL submake nodes.  The 92-node fixture test
     # above proves that expansion independently.  Metadata runs once per
-    # completed state, once for Ac/Ae, and once at the cross-state join.
+    # completed state, once for flat/graded, and once at the cross-state join.
     assert output.count("check_manifold.py --metadata-only") == 4
     assert output.count(
         "MANIFOLD_ROOTS='build/floor_stand/stl'") == 1
@@ -2275,7 +2275,7 @@ def test_obiwan_release_parallel_dag() -> None:
         "MANIFOLD_ROOTS='build/floor_stand/stl "
         "build/no_floor_stand/stl'" not in output)
     assert output.count(
-        "MANIFOLD_ROOTS='build/wings/ac/stl build/wings/ae/stl'") == 1
+        "MANIFOLD_ROOTS='build/wings/flat/stl build/wings/graded/stl'") == 1
     assert "check_manifold.py build/floor_stand/stl" not in output
 
 

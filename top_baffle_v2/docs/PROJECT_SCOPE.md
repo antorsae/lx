@@ -18,12 +18,12 @@ Its human-facing inventory is three product families:
    11.5 mm deep and front-flush at z=18.3; the bottom structural strip remains
    full-depth. Use only the matching thin shoulder/wing set.
 3. **Obi-Wan R6F:** mandatory LM and UM collars, optional tweeter crescent, and
-   Ac or Ae magnetic acoustic wings. Floor and stock-bridge/no-floor mounting
+   flat or graded magnetic acoustic wings. Floor and stock-bridge/no-floor mounting
    states share the wing-contact outline but differ behind it.
 
 Historical C7/V0 knife-edge work remains design research, not a top-level
 product. The retired Obi-Wan W-series wing-concept generator and renders are
-not retained; Ac and Ae are the complete Obi-Wan wing inventory.
+not retained; flat and graded are the complete Obi-Wan wing inventory.
 
 ## CAD brief
 
@@ -42,14 +42,14 @@ not retained; Ac and Ae are the complete Obi-Wan wing inventory.
 - **Slim validation target:** 304.802 x 453.457 mm plan; main rear plane z=6.8
   (11.5 mm field); structural bottom strip may reach z=0.
 - **Obi-Wan validation target:** two-carrier core, 165.100 mm LM/UM axis spacing,
-  shared z=18.3 front, separate floor/no-floor rear structure, Ac/Ae manifests.
+  shared z=18.3 front, separate floor/no-floor rear structure, flat/graded manifests.
 - **Catalog paths:** `artifacts/stock`, `artifacts/slim`, and
   `artifacts/obiwan`.
 - **Assumptions:** “stock” names the full-depth B2 product family. The
   mounting state it ships in is the “stock-bridge (no-floor)” state, always
   written out in full so the product name is never read as a state.
   “Wings/shoulders” means alternative perimeter sets, never both installed at
-  the same time. Ac is the constant-depth Obi-Wan wing; Ae is the weighted-depth
+  the same time. Flat is the constant-depth Obi-Wan wing; graded is the weighted-depth
   experiment.
 
 ## Release boundary

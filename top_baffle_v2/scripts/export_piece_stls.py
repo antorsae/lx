@@ -66,7 +66,7 @@ DEFAULT_MESH_ANGULAR_TOLERANCE = 0.20
 # complementary closure faces need a finer deterministic tessellation than
 # the broad legacy baffles. At 0.05 mm OCC can leave the narrowest valid BREP
 # faces without triangulation, yielding an open STL even though the native
-# carrier is one valid solid. Ac uses this same 0.01/0.08 release class;
+# carrier is one valid solid. flat uses this same 0.01/0.08 release class;
 # apply it to every Obi-Wan core piece so split and canonical meshes share one
 # contract.
 OBIWAN_MESH_TOLERANCE_MM = 0.01

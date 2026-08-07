@@ -5117,7 +5117,7 @@ def test_floor_integrated_mount():
     # Probe only the newly added universal-profile shoulder.  The complete
     # common plan also contains legitimate driver, route and carrier cavities;
     # demanding it all be solid would test a filled baffle, not exterior wing
-    # compatibility.  The live Ac/Ae gate independently compares the exact
+    # compatibility.  The live flat/graded gate independently compares the exact
     # final front-section exteriors of both stand states.
     native_floor_plan = Polygon(integral_stem_plan_points()).buffer(0)
     shared_shoulder_plan = common_lm_wing_contact_plan().difference(

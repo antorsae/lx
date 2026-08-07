@@ -234,7 +234,7 @@ Run fast checks first, then the release-scale oracle:
   registries, stamps, prerequisite semantics, env values, remote allowlist
   entries, recipes, and emitted artifact inventories remain unchanged.
 - Candidate geometry/mesh/clearance/metadata gates pass for both stand states,
-  Stock, Slim, Obi-Wan, and Ac/Ae. Existing part names, labels, front datum,
+  Stock, Slim, Obi-Wan, and flat/graded. Existing part names, labels, front datum,
   print transforms, bed limits, and `to_print` 39-file mapping are unchanged.
 - A single pure owner supplies default captive-magnet dimensions to CAD and
   slicing, while an independent named golden catches unintended edits and the
@@ -440,7 +440,7 @@ post-candidate shelf binding. No Low notes or unresolved plan blockers remain.
   `5f622722957c4953d4f8e8d7ce38a805e9250ffe66a7bffc18a18e359c9cfb47`,
   published a cold Make cache, and promoted 348 verified files. It passed the
   full R6F and dense closure matrices, 92/92 state STLs, 12/12 wing STLs, both
-  live Ac/Ae BREP contracts, release metadata, and the shelf binding gate.
+  live flat/graded BREP contracts, release metadata, and the shelf binding gate.
 - After promotion the curated artifact facade rebuilt and passed `--check`.
   The protected shelf remained byte-identical to its pre-work baseline: 83
   files, 214,997,136 bytes. Shared/static, slicing, remote transport, direct
@@ -468,7 +468,7 @@ post-candidate shelf binding. No Low notes or unresolved plan blockers remain.
   `20260723T042552Z-55c4ad7bdae7-2843ef` used source
   `55c4ad7bdae70f4f046540e238e00be3ce08a7a503828d98aa9b29866b2e8363`.
   They passed the complete dense closure/service matrix, exact final LM mesh,
-  both live Ac/Ae BREP contracts, and 12/12 strict wing STLs; 45 verified wing
+  both live flat/graded BREP contracts, and 12/12 strict wing STLs; 45 verified wing
   artifacts were promoted.
 - The slicer is now a 298-line CLI/API facade over `release_validation.py`
   (2,394 lines), `gcode_analysis.py` (1,859), and `artifact_emit.py` (2,088).
@@ -504,7 +504,7 @@ post-candidate shelf binding. No Low notes or unresolved plan blockers remain.
   artifact files.
 - The candidate passed the complete R6F, dense closure, terminal-service,
   staged-BREP, Stock/Slim/Obi-Wan, metadata, and cross-state joins. Both state
-  inventories passed strict topology (92/92 STLs), as did Ac/Ae (12/12 STLs),
+  inventories passed strict topology (92/92 STLs), as did flat/graded (12/12 STLs),
   including the live wing profile, mirror, receiver, split, and depth gates.
   C7, V0, and V1 remained in both state inventories.
 - The only accepted BREP observations reproduced exactly: `UM route / LM pads`

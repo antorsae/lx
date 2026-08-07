@@ -198,7 +198,7 @@ STRUCT_SHORT_ALLOW_MPA = 18.0
 # midpoint of the common soft shoulder above the Option-B tangent. Its local
 # normal is almost 45 degrees, and the cavity datum is inset 0.15 mm from the
 # uninterrupted shoulder surface. This removes every lower rail while keeping
-# floor/no-floor carriers and Ac/Ae split prints on one exact interface. All
+# floor/no-floor carriers and flat/graded split prints on one exact interface. All
 # sites use the same front-biased z=15.10 datum. D5x2 magnets are completely
 # captive in D5.20 x 2.10 cavities behind 0.45-mm skins, with a printable
 # circular cradle and self-supporting 45-degree roof. The four ring stations

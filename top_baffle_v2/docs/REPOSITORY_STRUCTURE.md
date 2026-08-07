@@ -14,7 +14,7 @@ top_baffle_v2/
 ├── build/                    validated generated state
 │   ├── floor_stand/
 │   ├── no_floor_stand/
-│   ├── wings/{ac,ae}/
+│   ├── wings/{flat,graded}/
 │   └── common/               independently promoted shared outputs
 ├── artifacts/                product-oriented links + hash manifests
 │   ├── stock/
@@ -48,7 +48,7 @@ Each product owns:
 └── images/                   generated plan, routing, and CAD snapshots
 ```
 
-Obi-Wan nests `states/{floor,no_floor}` and `wings/{ac,ae}` because those are
+Obi-Wan nests `states/{floor,no_floor}` and `wings/{flat,graded}` because those are
 real, mutually exclusive configuration choices. The stock/slim shoulder
 and wing files remain siblings because each set is an alternative add-on to
 the same base.

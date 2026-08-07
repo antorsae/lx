@@ -332,7 +332,7 @@ parts. Never infer polarity from left/right appearance:
 
 For the legacy R6P B2/A/B1 arrangement specifically, magnet count per baffle
 is 4 base + 4 per attachment set (12 with both sets; 24 for a stereo pair).
-Obi-Wan, its keyed alternative, Ac/Ae, and the calibration coupon use their own
+Obi-Wan, its keyed alternative, flat/graded, and the calibration coupon use their own
 per-part counts in the authoritative pause manifest; do not apply this R6P
 count to them.
 

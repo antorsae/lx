@@ -161,15 +161,15 @@ def main() -> int:
               in promotion_dry_run[shelf_command:],
               f"targeted {make_slug} composite promotion must disable "
               "slicing and cross the complete-shelf validation barrier")
-    for slug in ("ac", "ae"):
+    for slug in ("flat", "graded"):
         wing_plate_dry_run = make_dry_run(
             f"obiwan_{slug}_wing_plate")
         check(0 <= wing_plate_dry_run.find("--dry-run")
               < wing_plate_dry_run.find("--slice-missing"),
               f"{slug}: wing-plate artifact must dry-run before local slicing")
     for slug, api in (
-            ("ac", shelf.AC_WING_PLATE),
-            ("ae", shelf.AE_WING_PLATE)):
+            ("flat", shelf.FLAT_WING_PLATE),
+            ("graded", shelf.GRADED_WING_PLATE)):
         wing_promotion_dry_run = make_dry_run(
             f"obiwan_{slug}_wing_plate_to_print")
         wing_shelf_command = wing_promotion_dry_run.rfind(
@@ -185,8 +185,8 @@ def main() -> int:
     plate_apis = (
         shelf.NO_FLOOR_COMBO_PLATE,
         shelf.FLOOR_COMBO_PLATE,
-        shelf.AC_WING_PLATE,
-        shelf.AE_WING_PLATE,
+        shelf.FLAT_WING_PLATE,
+        shelf.GRADED_WING_PLATE,
     )
     concrete_targets = tuple(
         target
@@ -203,7 +203,7 @@ def main() -> int:
         expected_builder = (
             "build_obiwan_wing_plate.py"
             if any(api.PLATE_NAME in target for api in (
-                shelf.AC_WING_PLATE, shelf.AE_WING_PLATE))
+                shelf.FLAT_WING_PLATE, shelf.GRADED_WING_PLATE))
             else "build_obiwan_combo_plate.py"
         )
         check(expected_builder in output,
@@ -223,8 +223,8 @@ def main() -> int:
     resolver_cases = {
         "floor_stand/stl/part.stl": "build/floor_stand/stl/part.stl",
         "no_floor_stand/stl/part.stl": "build/no_floor_stand/stl/part.stl",
-        "wings/ac/stl/part.stl": "build/wings/ac/stl/part.stl",
-        "build/wings/ac/stl/part.stl": "build/wings/ac/stl/part.stl",
+        "wings/flat/stl/part.stl": "build/wings/flat/stl/part.stl",
+        "build/wings/flat/stl/part.stl": "build/wings/flat/stl/part.stl",
     }
     for historical, canonical in resolver_cases.items():
         check(
@@ -316,10 +316,10 @@ def main() -> int:
     )
     check(
         "profile_path" not in shelf.COMPOSITE_SPECS[
-            shelf.AC_WING_PLATE.PLATE_NAME]
+            shelf.FLAT_WING_PLATE.PLATE_NAME]
         and "profile_path" not in shelf.COMPOSITE_SPECS[
-            shelf.AE_WING_PLATE.PLATE_NAME],
-        "Ac/Ae wing plates must remain on the standard non-GF profile",
+            shelf.GRADED_WING_PLATE.PLATE_NAME],
+        "flat/graded wing plates must remain on the standard non-GF profile",
     )
     check(
         set(shelf.PETG_GF_RELEASE_AUDITS) == {
@@ -391,32 +391,32 @@ def main() -> int:
     wing_names = {
         entry["name"] for entry in entries
         if entry["family"] == "obiwan"
-        and entry["selection"].startswith(("Ac_wings_", "Ae_wings_"))
+        and entry["selection"].startswith(("flat_wings_", "graded_wings_"))
     }
     check(wing_names == {
-        "obiwan_05_split3_Ac_wing_LM_lower_left_1_of_3",
-        "obiwan_06_split3_Ac_wing_LM_upper_left_2_of_3",
-        "obiwan_07_split3_Ac_wing_UM_left_3_of_3",
-        "obiwan_08_split3_Ac_wing_LM_lower_right_1_of_3",
-        "obiwan_09_split3_Ac_wing_LM_upper_right_2_of_3",
-        "obiwan_10_split3_Ac_wing_UM_right_3_of_3",
-        "obiwan_05_split2_Ac_wing_LM_lower_left_1_of_2",
-        "obiwan_06_split2_Ac_wing_LM_UM_upper_left_2_of_2",
-        "obiwan_08_split2_Ac_wing_LM_lower_right_1_of_2",
-        "obiwan_09_split2_Ac_wing_LM_UM_upper_right_2_of_2",
-        "obiwan_ac_wings_split2_combo",
-        "obiwan_11_split3_Ae_wing_LM_lower_left_1_of_3",
-        "obiwan_12_split3_Ae_wing_LM_upper_left_2_of_3",
-        "obiwan_13_split3_Ae_wing_UM_left_3_of_3",
-        "obiwan_14_split3_Ae_wing_LM_lower_right_1_of_3",
-        "obiwan_15_split3_Ae_wing_LM_upper_right_2_of_3",
-        "obiwan_16_split3_Ae_wing_UM_right_3_of_3",
-        "obiwan_11_split2_Ae_wing_LM_lower_left_1_of_2",
-        "obiwan_12_split2_Ae_wing_LM_UM_upper_left_2_of_2",
-        "obiwan_14_split2_Ae_wing_LM_lower_right_1_of_2",
-        "obiwan_15_split2_Ae_wing_LM_UM_upper_right_2_of_2",
-        "obiwan_ae_wings_split2_combo",
-    }, "Ac/Ae A/B left/right wing shelf names drifted")
+        "obiwan_05_split3_flat_wing_LM_lower_left_1_of_3",
+        "obiwan_06_split3_flat_wing_LM_upper_left_2_of_3",
+        "obiwan_07_split3_flat_wing_UM_left_3_of_3",
+        "obiwan_08_split3_flat_wing_LM_lower_right_1_of_3",
+        "obiwan_09_split3_flat_wing_LM_upper_right_2_of_3",
+        "obiwan_10_split3_flat_wing_UM_right_3_of_3",
+        "obiwan_05_split2_flat_wing_LM_lower_left_1_of_2",
+        "obiwan_06_split2_flat_wing_LM_UM_upper_left_2_of_2",
+        "obiwan_08_split2_flat_wing_LM_lower_right_1_of_2",
+        "obiwan_09_split2_flat_wing_LM_UM_upper_right_2_of_2",
+        "obiwan_flat_wings_split2_combo",
+        "obiwan_11_split3_graded_wing_LM_lower_left_1_of_3",
+        "obiwan_12_split3_graded_wing_LM_upper_left_2_of_3",
+        "obiwan_13_split3_graded_wing_UM_left_3_of_3",
+        "obiwan_14_split3_graded_wing_LM_lower_right_1_of_3",
+        "obiwan_15_split3_graded_wing_LM_upper_right_2_of_3",
+        "obiwan_16_split3_graded_wing_UM_right_3_of_3",
+        "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2",
+        "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2",
+        "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",
+        "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2",
+        "obiwan_graded_wings_split2_combo",
+    }, "flat/graded A/B left/right wing shelf names drifted")
     for required in (
         "stock_01_LM_bottom_1_of_3_no_floor_stand",
         "stock_01_LM_bottom_1_of_3_floor_stand",
@@ -430,13 +430,13 @@ def main() -> int:
         "obiwan_04_T_tweeter_crescent_1_of_1",
         "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand",
         "obiwan_01_02_03_04_LM_UM_combo_floor_stand",
-        "obiwan_ac_wings_split2_combo",
-        "obiwan_16_split3_Ae_wing_UM_right_3_of_3",
-        "obiwan_11_split2_Ae_wing_LM_lower_left_1_of_2",
-        "obiwan_12_split2_Ae_wing_LM_UM_upper_left_2_of_2",
-        "obiwan_14_split2_Ae_wing_LM_lower_right_1_of_2",
-        "obiwan_15_split2_Ae_wing_LM_UM_upper_right_2_of_2",
-        "obiwan_ae_wings_split2_combo",
+        "obiwan_flat_wings_split2_combo",
+        "obiwan_16_split3_graded_wing_UM_right_3_of_3",
+        "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2",
+        "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2",
+        "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",
+        "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2",
+        "obiwan_graded_wings_split2_combo",
     ):
         check(required in names, f"missing required friendly name: {required}")
     for forbidden in (
@@ -597,8 +597,8 @@ def main() -> int:
         "zig-zag, and no local parameter modifier",
     )
     for label, api in (
-            ("Ac", shelf.AC_WING_PLATE),
-            ("Ae", shelf.AE_WING_PLATE)):
+            ("Flat", shelf.FLAT_WING_PLATE),
+            ("Graded", shelf.GRADED_WING_PLATE)):
         wing_record = manifest_records[api.PLATE_NAME]
         check(wing_record["project_kind"] == "local_locked_wing_plate_slice"
               and wing_record["magnet_insertions"] == 6,

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Transactional STEP/STL/review exporter for one Obi-Wan Ac/Ae wing family.
+"""Transactional STEP/STL/review exporter for one Obi-Wan flat/graded wing family.
 
 The geometry authority is :mod:`lx521_baffle.obiwan.wings`.  This module owns only
 artifact assembly, print orientation, strict mesh validation, review renders,
@@ -90,7 +90,7 @@ INTERFACE_SOURCES = (
 )
 
 FIXED_TIMESTAMP = "2020-01-01T00:00:00"
-VARIANTS = ("ac", "ae")
+VARIANTS = ("flat", "graded")
 SIDES = ("left", "right")
 PART_ORDER = ("lm_lower", "lm_upper", "um")
 TWO_PIECE_PART_ORDER = ("lm_lower", "lm_um_upper")
@@ -100,8 +100,8 @@ REAR_Z_MM = 6.8
 SIDE_SECTION_X_MM = 55.0
 MESH_TOLERANCE_MM = 0.01
 MESH_ANGULAR_TOLERANCE = 0.08
-AE_MESH_TOLERANCE_MM = 0.002
-AE_MESH_ANGULAR_TOLERANCE = 0.03
+GRADED_MESH_TOLERANCE_MM = 0.002
+GRADED_MESH_ANGULAR_TOLERANCE = 0.03
 REVIEW_MESH_TOLERANCE_MM = 0.22
 REVIEW_MESH_ANGULAR_TOLERANCE = 0.30
 STL_TRANSFORM_ZERO_EPSILON_MM = 2.0e-7
@@ -667,7 +667,7 @@ def _draw_mesh_review(
         path, dpi=150, facecolor="white",
         metadata={"Title": f"{title} [{metadata_variant}]",
                   "Description": (
-                      "Project-native Obi-Wan Ac/Ae CAD QA render with dual-"
+                      "Project-native Obi-Wan flat/graded CAD QA render with dual-"
                       "state Obi-Wan LM-lower silhouettes: coincident common "
                       "profile, blue dash-dot no-floor and green dotted "
                       "floor stand")})
@@ -788,7 +788,7 @@ def _draw_side_section_review(
     ax.axhline(FRONT_Z_MM, color="#273746", lw=1.1, ls="--",
                label="flat acoustic front")
     ax.axhline(REAR_Z_MM, color="#7b2d26", lw=1.0, ls=":",
-               label="Ac rear datum")
+               label="flat rear datum")
     ax.xaxis.set_major_locator(MultipleLocator(50.0))
     ax.yaxis.set_major_locator(MultipleLocator(1.0))
     ax.set_xlabel("world Y along baffle (mm)", fontsize=11)
@@ -851,7 +851,7 @@ def _draw_side_section_review(
         path, dpi=150, facecolor="white",
         metadata={"Title": f"{title} [{metadata_variant}]",
                   "Description": (
-                      "True world-X section of Obi-Wan Ac/Ae CAD with dual-"
+                      "True world-X section of Obi-Wan flat/graded CAD with dual-"
                       "state Obi-Wan LM-lower silhouettes: coincident common "
                       "profile, blue dash-dot no-floor and green dotted "
                       "floor stand")})
@@ -1155,7 +1155,7 @@ def _render_reviews(
         receiver_records, geometry,
         two_piece_parts: dict[tuple[str, str], Any],
         ) -> tuple[list[Path], dict[str, Any]]:
-    display_slug = {"ac": "Ac", "ae": "Ae"}[slug]
+    display_slug = {"flat": "Flat", "graded": "Graded"}[slug]
     metadata_variant = slug.upper()
     records = _mesh_records(parts)
     two_piece_records = _mesh_records(two_piece_parts)
@@ -1287,7 +1287,7 @@ def _result_path(path: Path) -> str:
 class _PhaseClock:
     """Wall-clock split across the export phases, reported on stdout only.
 
-    The Ae wing export is the single longest recipe in a remote build and
+    The graded wing export is the single longest recipe in a remote build and
     the profiles show it running alone with most of the host idle, so how
     its time divides between geometry construction, qualification, meshing
     and review rendering is what decides whether splitting it into per-piece
@@ -1377,7 +1377,7 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
         clock.mark("build_solids")
 
         # Run every source-BREP qualification before serializing the first
-        # STEP/STL.  In particular, Ae's protected-land C0 probe is expensive
+        # STEP/STL.  In particular, graded's protected-land C0 probe is expensive
         # but must fail before ten fine meshes are emitted, not afterwards.
         source_geometry = geometry.wing_facts(slug)
         source_geometry["interface_contract"]["tweeter_crescent"] = (
@@ -1462,11 +1462,11 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
             role = spec["role"]
             shape = spec["shape"]
             mesh_tolerance = (
-                AE_MESH_TOLERANCE_MM
-                if slug == "ae" else MESH_TOLERANCE_MM)
+                GRADED_MESH_TOLERANCE_MM
+                if slug == "graded" else MESH_TOLERANCE_MM)
             mesh_angular_tolerance = (
-                AE_MESH_ANGULAR_TOLERANCE
-                if slug == "ae" else MESH_ANGULAR_TOLERANCE)
+                GRADED_MESH_ANGULAR_TOLERANCE
+                if slug == "graded" else MESH_ANGULAR_TOLERANCE)
             moved, z_angle, print_facts = _best_print_orientation(shape, Rot)
             relative = Path("stl") / spec["name"]
             path = slug_stage / relative
@@ -1678,7 +1678,7 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Export one complete Obi-Wan Ac/Ae wing artifact family")
+        description="Export one complete Obi-Wan flat/graded wing artifact family")
     parser.add_argument(
         "--slug", "--variant", dest="slug", required=True, choices=VARIANTS)
     parser.add_argument(

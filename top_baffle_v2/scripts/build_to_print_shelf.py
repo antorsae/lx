@@ -88,8 +88,8 @@ UNPRINTABLE_OR_LEGACY_TOKENS = (
     "core_1_of_2_lm_carrier", "c7", "v0", "coupon", "grommet",
     "lx521_top_v1_4of4_vase",
 )
-AC_WING_PLATE = wing_plate.get_variant("ac")
-AE_WING_PLATE = wing_plate.get_variant("ae")
+FLAT_WING_PLATE = wing_plate.get_variant("flat")
+GRADED_WING_PLATE = wing_plate.get_variant("graded")
 NO_FLOOR_COMBO_PLATE = combo.get_variant("no_floor_stand")
 FLOOR_COMBO_PLATE = combo.get_variant("floor_stand")
 COMPOSITE_SPECS = {
@@ -109,18 +109,18 @@ COMPOSITE_SPECS = {
         "project_kind": "local_composite_captive_magnet_slice",
         "profile_path": PETG_GF_PROFILE,
     },
-    AC_WING_PLATE.PLATE_NAME: {
-        "module": AC_WING_PLATE,
+    FLAT_WING_PLATE.PLATE_NAME: {
+        "module": FLAT_WING_PLATE,
         "builder": "scripts/build_obiwan_wing_plate.py",
         "state": "shared",
-        "selection": "Ac_wings_b_2piece_plate",
+        "selection": "flat_wings_b_2piece_plate",
         "project_kind": "local_locked_wing_plate_slice",
     },
-    AE_WING_PLATE.PLATE_NAME: {
-        "module": AE_WING_PLATE,
+    GRADED_WING_PLATE.PLATE_NAME: {
+        "module": GRADED_WING_PLATE,
         "builder": "scripts/build_obiwan_wing_plate.py",
         "state": "shared",
-        "selection": "Ae_wings_b_2piece_plate",
+        "selection": "graded_wings_b_2piece_plate",
         "project_kind": "local_locked_wing_plate_slice",
     },
 }

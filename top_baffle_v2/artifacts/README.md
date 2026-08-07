@@ -8,7 +8,7 @@ the catalog does not duplicate large STEP or STL files.
 |---|---|---|
 | [`stock/`](stock/) | Full-depth B2 base with either A-comp shoulders or B1 wings | Canonical CAD; physical fit remains the builder's responsibility |
 | [`slim/`](slim/) | V1L + V1 front-flush acoustic field with matching thin attachments | Experimental; structural and hardware qualification required |
-| [`obiwan/`](obiwan/) | Minimal R6F carriers with floor/no-floor mounting and Ac/Ae acoustic wings | Candidate only; release authorization is false |
+| [`obiwan/`](obiwan/) | Minimal R6F carriers with floor/no-floor mounting and flat/graded acoustic wings | Candidate only; release authorization is false |
 
 Each product directory has a generated `manifest.json` containing SHA-256,
 byte size, source path, and role for every linked file. Rebuild or verify the

@@ -1,0 +1,60 @@
+{
+  "artifact_family": "obiwan_wing_artifacts",
+  "assembly_label": "obiwan_wing_graded_left_split2_1_of_2_lm_lower",
+  "mesh": {
+    "angular_tolerance": 0.03,
+    "tolerance_mm": 0.002
+  },
+  "order": 1,
+  "part": "obiwan_wing_graded_left_split2_1_of_2_lm_lower",
+  "piece_count": 2,
+  "pre_translation_bbox_min_mm": [
+    80.58842664146518,
+    -31.553209388489122,
+    -18.300000099999984
+  ],
+  "print_orientation": "front_face_down",
+  "role": "lm_lower",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 123.71441365977145
+  },
+  "schema_version": 1,
+  "side": "left",
+  "source_to_stl_matrix": [
+    [
+      -0.5550537011101907,
+      0.8318145159131807,
+      0.0,
+      -80.58842664146518
+    ],
+    [
+      0.8318145159131807,
+      0.5550537011101907,
+      0.0,
+      31.553209388489122
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999984
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "split_variant": "b",
+  "stl": "obiwan_wing_graded_left_split2_1_of_2_lm_lower.stl",
+  "stl_bytes": 34290884,
+  "stl_origin_translation_mm": [
+    -80.58842664146518,
+    31.553209388489122,
+    18.300000099999984
+  ],
+  "stl_sha256": "79372c83362b259cb93e75072dec7284d2ca9978c4a6368fbfced81e45cccd2b",
+  "variant_slug": "graded"
+}

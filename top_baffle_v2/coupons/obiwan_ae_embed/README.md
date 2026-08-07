@@ -1,7 +1,11 @@
-# Obi-Wan Ae embedded-magnet coupon
+# Obi-Wan graded embedded-magnet coupon
+
+The directory keeps its frozen `obiwan_ae_embed` name from the wing vocabulary
+that spelled the graded family `Ae`; like every other coupon it is a
+diagnostic identity and is never renamed with the product words.
 
 This is a deliberately small two-piece process coupon: one carrier-side strip
-and one matching Ae-wing-side strip. It combines the released upper-LM and UM
+and one matching graded-wing-side strip. It combines the released upper-LM and UM
 magnet stations into each strip while preserving their R113/R51.7 interface
 curvatures, coupon-specific zero modeled plastic-interface gap, D5.2 diametral
 clearance, root-envelope widths, and installed magnet heights. “Zero” here
@@ -35,7 +39,7 @@ degrees and leaves no access opening in the finished part.
 For attraction, mark one pole on every magnet before printing. Insert all four
 magnets with that marked pole pointing in the same assembled +X direction:
 toward the functional curved face in the carrier piece, and away from the
-functional concave face in the Ae piece.
+functional concave face in the graded piece.
 
 Calibration parameters live at the top of `obiwan_ae_embed_coupon.py`. This
 coupon uses a 0.45 mm nominal axial retaining skin on both sides of the magnet

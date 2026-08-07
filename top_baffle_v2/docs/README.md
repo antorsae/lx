@@ -25,7 +25,7 @@
   embed workflow.
 - [`obiwan_physical_qualification.md`](obiwan_physical_qualification.md) —
   fail-closed physical qualification record.
-- [`obiwan_acoustic_wings_spec.md`](obiwan_acoustic_wings_spec.md) — Ac/Ae
+- [`obiwan_acoustic_wings_spec.md`](obiwan_acoustic_wings_spec.md) — flat/graded
   wing design authority.
 - [`obiwan_r6f_cad_brief.md`](obiwan_r6f_cad_brief.md) — the R6F CAD brief.
 
