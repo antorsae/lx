@@ -360,27 +360,107 @@ def _workspace_root() -> Path:
     return here
 
 
-def _workspace_lock_path(slot: int = 0) -> Path:
+def _workspace_lock_path(slot: int = 0, weight: str | None = None) -> Path:
     """Per-user/workspace lock for one permitted outer-guard slot.
 
-    The two weight pools are namespaced apart so a light recipe can never
-    occupy a slot reserved for a heavy one.  With no light pool declared the
+    The two weight pools are namespaced apart so a heavy recipe can never
+    occupy a slot reserved for a light one.  With no light pool declared the
     heavy names are exactly the historical ones.
     """
+    pool = GUARD_WEIGHT if weight is None else weight
     uid = os.getuid() if hasattr(os, "getuid") else 0
     workspace = str(_workspace_root())
     identity = hashlib.sha256(
         f"{uid}\0{workspace}".encode("utf-8")).hexdigest()[:20]
-    if _IS_LIGHT:
+    if pool == GUARD_WEIGHT_LIGHT:
         suffix = f"-light-slot-{slot}"
     else:
-        suffix = f"-slot-{slot}" if GUARD_SLOTS > 1 else ""
+        suffix = f"-slot-{slot}" if HEAVY_GUARD_SLOTS > 1 else ""
     return (Path(tempfile.gettempdir())
             / f"lx-cad-memory-{uid}-{identity}{suffix}.lock")
 
 
+def _try_workspace_slot(
+        slot: int, pool_slots: int, weight: str) -> tuple[int, Path] | None:
+    path = _workspace_lock_path(slot, weight)
+    flags = os.O_RDWR | os.O_CREAT
+    flags |= getattr(os, "O_CLOEXEC", 0)
+    flags |= getattr(os, "O_NOFOLLOW", 0)
+    fd = os.open(path, flags, 0o600)
+    try:
+        info = os.fstat(fd)
+        if not stat.S_ISREG(info.st_mode):
+            raise RuntimeError(
+                f"CAD guard lock is not a regular file: {path}")
+        if hasattr(os, "getuid") and info.st_uid != os.getuid():
+            raise RuntimeError(f"CAD guard lock has the wrong owner: {path}")
+        os.fchmod(fd, 0o600)
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as exc:
+            if exc.errno in (errno.EACCES, errno.EAGAIN):
+                os.close(fd)
+                return None
+            raise
+        os.ftruncate(fd, 0)
+        record = (
+            f"pid={os.getpid()} workspace={_workspace_root()} "
+            f"pool={weight} slot={slot + 1}/{pool_slots}\n"
+        ).encode("utf-8")
+        os.write(fd, record)
+        return fd, path
+    except Exception:
+        os.close(fd)
+        raise
+
+
+def _guard_wait_seconds() -> float:
+    """How long a recipe may wait for a slot before failing closed.
+
+    Make's job count and the slot partition are sized together, but Make
+    does not know recipe weights, so it can momentarily schedule more
+    same-weight recipes than that pool holds.  Waiting for a slot to free
+    is the correct behaviour there.  The workstation profile keeps the
+    historical immediate refusal (wait 0) so a second concurrent Make or
+    stray CLI still fails fast instead of queueing invisibly for an hour.
+    """
+    default = 3600.0 if MEMORY_PROFILE == "osado-512g" else 0.0
+    raw = os.environ.get("LX_CAD_GUARD_WAIT_SECONDS")
+    if raw is None:
+        return default
+    try:
+        value = float(raw)
+    except ValueError as exc:
+        raise RuntimeError(
+            "LX_CAD_GUARD_WAIT_SECONDS must be a number") from exc
+    if value < 0:
+        raise RuntimeError("LX_CAD_GUARD_WAIT_SECONDS must be nonnegative")
+    return value
+
+
+def _scan_workspace_pools() -> tuple[int, Path] | None:
+    """One admission pass over the pools this recipe may occupy.
+
+    A light recipe that finds its own pool full may overflow into a free
+    heavy slot: the heavy reservation strictly covers the light cap, so the
+    aggregate worst case only shrinks.  The reverse is never allowed — a
+    heavy recipe in a light slot would exceed that slot's reservation.
+    """
+    for slot in range(GUARD_SLOTS):
+        acquired = _try_workspace_slot(slot, GUARD_SLOTS, GUARD_WEIGHT)
+        if acquired is not None:
+            return acquired
+    if _IS_LIGHT:
+        for slot in range(HEAVY_GUARD_SLOTS):
+            acquired = _try_workspace_slot(
+                slot, HEAVY_GUARD_SLOTS, GUARD_WEIGHT_HEAVY)
+            if acquired is not None:
+                return acquired
+    return None
+
+
 def _acquire_workspace_lock() -> tuple[int, Path] | None:
-    """Acquire one non-blocking outer-guard slot or return ``None``.
+    """Acquire one outer-guard slot, waiting briefly on a full pool.
 
     Make's ``.NOTPARALLEL`` serializes one build, but it cannot protect the
     workstation from a second Make process or a direct CAD CLI. Holding this
@@ -388,38 +468,12 @@ def _acquire_workspace_lock() -> tuple[int, Path] | None:
     slot.  The large-host profile may expose multiple slots; its dispatcher
     also applies a per-worker cap and one aggregate systemd cgroup cap.
     """
-    for slot in range(GUARD_SLOTS):
-        path = _workspace_lock_path(slot)
-        flags = os.O_RDWR | os.O_CREAT
-        flags |= getattr(os, "O_CLOEXEC", 0)
-        flags |= getattr(os, "O_NOFOLLOW", 0)
-        fd = os.open(path, flags, 0o600)
-        try:
-            info = os.fstat(fd)
-            if not stat.S_ISREG(info.st_mode):
-                raise RuntimeError(
-                    f"CAD guard lock is not a regular file: {path}")
-            if hasattr(os, "getuid") and info.st_uid != os.getuid():
-                raise RuntimeError(f"CAD guard lock has the wrong owner: {path}")
-            os.fchmod(fd, 0o600)
-            try:
-                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except OSError as exc:
-                if exc.errno in (errno.EACCES, errno.EAGAIN):
-                    os.close(fd)
-                    continue
-                raise
-            os.ftruncate(fd, 0)
-            record = (
-                f"pid={os.getpid()} workspace={_workspace_root()} "
-                f"slot={slot + 1}/{GUARD_SLOTS}\n"
-            ).encode("utf-8")
-            os.write(fd, record)
-            return fd, path
-        except Exception:
-            os.close(fd)
-            raise
-    return None
+    deadline = time.monotonic() + _guard_wait_seconds()
+    while True:
+        acquired = _scan_workspace_pools()
+        if acquired is not None or time.monotonic() >= deadline:
+            return acquired
+        time.sleep(1.0)
 
 
 def _release_workspace_lock(fd: int) -> None:
