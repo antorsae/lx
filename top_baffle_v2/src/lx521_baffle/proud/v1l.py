@@ -14,12 +14,18 @@ feeders at z=3.7/9.5 live in the full-depth keep.
 
 Keeps at full 18.3: the bottom strip (fused foot, bridge/support
 hardware incl. the washer seats behind the top pass-throughs at
-(+-20, 70) + 5 mm margin, cable feeders + z-step). The thickness
-transition is a SMOOTHSTEP ramp from full at y=78 to the thin field
-at y=96 -- ending 10 mm short of the D190 cutout edge (y=105.98). The rear plane MATCHES the V1 vase (both 6.8): NO step at seam B.
+(+-20, 70) + 5 mm margin, cable feeders + z-step). In the no-floor
+state the thickness transition is a SMOOTHSTEP ramp from full at y=78
+to the thin field at y=96 -- ending 10 mm short of the D190 cutout
+edge (y=105.98). The floor state instead runs one long quintic ramp
+over the whole span the stand leaves free; see
+:mod:`lx521_baffle.proud.v1l_split`. The rear plane MATCHES the V1
+vase (both 6.8): NO step at seam B.
 W22 mounting: M5 x 5.8 x O6.3 heat-sets, floor z=11.5 keeps a
-4.7 wall over the new rear. Combine V1L bottom+mids with the V1 vase
-for the complete ~12 mm front-flush baffle."""
+4.7 wall over the new rear (4.98 for the two inserts at y=110.265 in
+the floor state, whose long ramp has not finished there). Combine
+V1L bottom+mids with the V1 vase for the complete ~12 mm front-flush
+baffle."""
 
 from __future__ import annotations
 
@@ -42,18 +48,31 @@ def _rect(y, z_top):
     return pl * make_face(Wire(Polyline(*pts).edges()))
 
 
-def field_cutters():
-    """Sigmoid thickness ramp (smoothstep sections lofted ruled) from
-    full 18.3 at y=RAMP_Y0 to the thin field at y=RAMP_Y1."""
-    n = 9
+def field_cutters(y_full: float = RAMP_Y0, y_slim: float = RAMP_Y1,
+                  ease=_smoothstep, sections: int = 9,
+                  min_cut_mm: float = 0.05):
+    """Thickness ramp (eased sections lofted ruled) from full 18.3 at
+    ``y_full`` to the thin field at ``y_slim``, plus the constant-depth
+    field slab that carries the thin section on to seam B.
+
+    ``min_cut_mm`` holds the deep end of the ramp at a definite bite into
+    the rear plane so the Boolean meets it transversally.  The floor state
+    passes 0.0 instead: its ramp has to land exactly on z=0 at the station
+    where the Option-B stand arc takes over, because both owners of that
+    join are cut by this same cutter and their join caps must stay equal.
+    """
+    if y_slim <= y_full:
+        raise ValueError("the V1L rear-thickness ramp must rise with Y")
+    if sections < 2:
+        raise ValueError("the V1L rear-thickness ramp needs >= 2 sections")
     secs = []
-    for i in range(n + 1):
-        y = RAMP_Y0 + (RAMP_Y1 - RAMP_Y0) * i / n
-        z_top = max(0.05, REAR_MM * _smoothstep(i / n))
+    for i in range(sections + 1):
+        y = y_full + (y_slim - y_full) * i / sections
+        z_top = max(min_cut_mm, REAR_MM * ease(i / sections))
         secs.append(_rect(y, z_top))
     fade = loft(secs, ruled=True)
-    body = Pos(0, (RAMP_Y1 + Y_END) / 2, (REAR_MM - 0.7) / 2) * Box(
-        320.0, Y_END - RAMP_Y1, REAR_MM + 0.7)
+    body = Pos(0, (y_slim + Y_END) / 2, (REAR_MM - 0.7) / 2) * Box(
+        320.0, Y_END - y_slim, REAR_MM + 0.7)
     return [fade, body]
 
 

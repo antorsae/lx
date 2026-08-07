@@ -57,10 +57,21 @@ constraint ladder in the
 The bottom + both mids thinned to t=11.5 (material z 6.8..18.3 above
 the foot strip): the ENTIRE baffle then shares one front plane (use
 with the V1 vase -- same rear plane, NO step at seam B). Binding
-constraint: the Ø8.2 LM/UM z-window. The bottom strip keeps full 18.3 (smoothstep ramp
-y=78 -> 96: full past the top pass-through seats +5, thin 10 short
-of the D190 edge) for the fused foot / bridge hardware / cable
-feeders; W22 heat-sets unchanged (floor keeps a 4.5 wall). It preserves
+constraint: the Ø8.2 LM/UM z-window. The bottom strip keeps full 18.3 for the
+fused foot / bridge hardware / cable feeders, and the rear-thickness ramp back
+up to it depends on the stand state:
+
+* **no floor stand** — smoothstep ramp y=78 -> 96: full past the top
+  pass-through seats +5, thin 10 short of the D190 edge.
+* **floor stand** — one quintic smootherstep ramp y=74.15 -> 118, i.e. the
+  whole span the stand leaves free. It reaches full depth exactly at the
+  Option-B vertical tangent, so it rejoins the stand arc's rear face
+  tangentially instead of swelling over 18 mm just above it, and it stays
+  slim through the seam-A dovetails and the 2 mm below their root so the
+  shared mid pieces mate identically in both states.
+
+W22 heat-sets unchanged (floor keeps a 4.5 wall; the floor state's ramp puts
+4.98 mm behind the two inserts at y=110.265, up from 4.7). It preserves
 the common proud entries, LM route, and tweeter route, but its UM outlet is
 a keyed V1L-only alternate:
 

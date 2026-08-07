@@ -62,6 +62,7 @@ from build123d import (
 )
 
 from .geom import smoothstep01 as _smoothstep01
+from .geom import smootherstep01
 from .floor_bend import (
     BEND_HORIZONTAL_HANDLE_MM,
     BEND_MIN_CENTERLINE_RADIUS_MM,
@@ -140,8 +141,7 @@ TS_OVAL = {"w2": 3.3, "h2": 2.2, "zc": 10.45,
 
 def _minimum_jerk01(value: float) -> float:
     """Endpoint-flat C2 quintic used by physical duct transitions."""
-    value = min(1.0, max(0.0, float(value)))
-    return value ** 3 * (10.0 + value * (-15.0 + 6.0 * value))
+    return smootherstep01(value)
 
 
 def ts_section(y):

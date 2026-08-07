@@ -363,8 +363,11 @@ EMBOSS_XY = {
     # The old (70, 40) rear-plane site became empty when the hard floor
     # corner was replaced by the rearward Option-B bend.  This centered band
     # is on the retained vertical tangent: the tallest V1L label spans
-    # y=74.63..77.55, leaving ~0.45 mm both above the R41 wall endpoint
-    # (74.15) and below V1L's rear-thickness ramp (78.0).
+    # y=74.63..77.55, leaving ~0.45 mm above the R41 wall endpoint (74.15).
+    # What keeps the band flat differs by stand state: no-floor holds the
+    # full-depth plane up to V1L's ramp start (78.0), while the floor state's
+    # long ramp begins at the tangent itself and has only fallen 0.03 mm by
+    # the top of the label.  test_emboss_driver_keepouts binds both.
     # Anchors are keyed by the piece-name tail, which is unique across both
     # proud products: stock and slim number their shoulders differently, but
     # a shoulder always ends in its corner and a base piece in its role.

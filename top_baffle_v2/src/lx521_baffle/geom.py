@@ -12,6 +12,17 @@ def smoothstep01(value: float) -> float:
     return clamped * clamped * (3.0 - 2.0 * clamped)
 
 
+def smootherstep01(value: float) -> float:
+    """Return the quintic smootherstep after clamping a scalar to ``[0, 1]``.
+
+    Both endpoints are flat to second order, so a ramp built on this law
+    leaves and rejoins its neighbouring surfaces tangentially instead of
+    with the visible knee a cubic smoothstep still shows at its ends.
+    """
+    clamped = max(0.0, min(1.0, float(value)))
+    return clamped ** 3 * (10.0 + clamped * (-15.0 + 6.0 * clamped))
+
+
 def point_segment_distance(
     point: Sequence[float],
     start: Sequence[float],

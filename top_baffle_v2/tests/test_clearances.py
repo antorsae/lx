@@ -2192,11 +2192,23 @@ def test_emboss_driver_keepouts():
     assert collision is None or collision.volume < 1e-7, (
         f"V1L mid-left ID enters LM keepout by {collision.volume:.6f} mm3")
 
-    # The floor-state bottom ID lives in the narrow flat band between the
-    # Option-B vertical tangent and V1L's thickness ramp.  Bind the complete
-    # longest label, not only its nominal anchor, to both geometry limits.
+    # The bottom ID sits just above the Option-B vertical tangent in both
+    # stand states, but a different thing keeps it flat in each.  No-floor
+    # keeps the full-depth plane from the tangent up to the short y=78 ramp
+    # start.  The floor bottom has no such band: its ramp begins AT the
+    # tangent and runs the whole way to the seam, so the label instead
+    # relies on the quintic's flat foot.  Bind that depth directly -- the
+    # 0.4 mm recess is cut from the local rear face, so a ramp that fell
+    # away under the label would thin the engraving at its far end.  Both
+    # limits are arithmetic and hold whichever state this process is in.
+    # Use the complete longest label, not only its nominal anchor.
     from lx521_baffle.floor_bend import centerline_controls
-    from lx521_baffle.proud.v1l import RAMP_Y0
+    from lx521_baffle.geom import smootherstep01
+    from lx521_baffle.proud.v1l import RAMP_Y0, REAR_MM
+    from lx521_baffle.proud.v1l_split import (
+        FLOOR_RAMP_FULL_DEPTH_Y_MM,
+        FLOOR_RAMP_SLIM_Y_MM,
+    )
 
     bx, by, brot, bfont, bshort = EMBOSS_XY["_1_of_4_bottom"]
     bottom_label = _label("slim_1_of_4_bottom")
@@ -2210,9 +2222,16 @@ def test_emboss_driver_keepouts():
     tangent_y = centerline_controls()[-1][1]
     assert text_y_min >= tangent_y + 0.4
     assert text_y_max <= RAMP_Y0 - 0.4
+    ramp_drop_mm = REAR_MM * smootherstep01(
+        (text_y_max - FLOOR_RAMP_FULL_DEPTH_Y_MM)
+        / (FLOOR_RAMP_SLIM_Y_MM - FLOOR_RAMP_FULL_DEPTH_Y_MM))
+    assert ramp_drop_mm <= 0.05, (
+        f"floor-state ramp falls {ramp_drop_mm:.3f} mm away under the "
+        "bottom ID; the 0.4 mm recess needs a flat local rear")
     assert math.isclose(bx, 0.0, abs_tol=1e-12)
-    print("  V1L mid-left ID clears the LM opening; bottom ID stays in "
-          "the flat Option-B/V1L-ramp band")
+    print(f"  V1L mid-left ID clears the LM opening; bottom ID keeps the "
+          f"no-floor flat band and sits on the floor ramp's flat foot "
+          f"({ramp_drop_mm:.3f} mm of fall across the label)")
 
 
 def test_margin_dashboard():
