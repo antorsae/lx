@@ -18,6 +18,14 @@ venv/
 .DS_Store
 Thumbs.db
 
+# CAD viewer caches
+.*.stp.glb
+.*.step.glb
+
+# BEM campaign keep-pile (see move_baffle_related.sh)
+baffle_modeling/
+tmp/
+
 # IDE/Editor
 .vscode/
 .idea/

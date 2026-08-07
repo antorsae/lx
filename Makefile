@@ -117,6 +117,10 @@ viz-%: $$(call hdf5_for,$$*)
 # ====================
 
 sync-%:
+	@if [ ! -d "$(OUTPUT_DIR)/$*" ]; then \
+		echo "  (output/$* missing — run 'make viz-$*' first; docs/$* left untouched)"; \
+		exit 0; \
+	fi
 	@echo "Syncing $* to docs/..."
 	@mkdir -p $(DOCS_DIR)/$*/interactive
 	@if [ -d "$(OUTPUT_DIR)/$*/static_plots" ]; then \
