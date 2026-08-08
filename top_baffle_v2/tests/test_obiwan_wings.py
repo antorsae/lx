@@ -76,6 +76,25 @@ GRADED_LAND_BOUNDARY_MAX_JUMP_MM = 0.03
 STANDING_BLADE_LATTICE_MM = 0.05
 STANDING_BLADE_DISK_RADIUS_MM = 0.30
 STANDING_BLADE_MAX_RISE_MM = 1.00
+# Depth-law fidelity gate. The blade gate above only sees features narrow
+# enough for a 0.30-mm disk to level. This one catches the complementary
+# failure -- a broad ridge, bulge or spline fold that is smooth but is not the
+# surface the weighted-depth law asks for. Measured interior deviation: exactly
+# 0.0000 mm on all ten flat pieces (their law is the constant full depth), and
+# at worst 0.2933 mm on the graded pieces, mirror-symmetric between left and
+# right, which is what deterministic design geometry looks like rather than a
+# numerical artifact. 1.00 mm therefore keeps a 3.4x margin while still
+# catching any multi-millimetre ridge.
+#
+# The interior margin matters more than it looks. Sweeping it over
+# 1.2/1.6/2.0/2.5/3.0 mm walks the worst deviation down
+# 0.5654/0.3784/0.2933/0.2156/0.1910 mm -- a clean monotone decay, which is
+# itself the evidence that the residual is outline bookkeeping rather than
+# anything in the surface. 2.0 mm still judges the great majority of each
+# piece, and the ridge class this gate exists for spans a third of the part.
+DEPTH_LAW_LATTICE_MM = 0.4
+DEPTH_LAW_INTERIOR_MARGIN_MM = 2.0
+DEPTH_LAW_MAX_DEVIATION_MM = 1.00
 DOVETAIL_CLEARANCE_MM = 0.05
 T_WING_CLEARANCE_MM = 0.20
 DOVETAIL_ENDPOINT_TAPER_MM = 2.0
@@ -539,6 +558,54 @@ def _assert_no_standing_blade(path: Path, label: str) -> float:
             f"{STANDING_BLADE_DISK_RADIUS_MM} mm disk; worst {worst:.4f} mm "
             f"at x={at[0]:.2f} y={at[1]:.2f} in {path.name}. A thin "
             "membrane is standing off the printed top surface.")
+    return worst
+
+
+def _assert_surface_matches_depth_law(
+        path: Path, sidecar: dict, cad, slug: str, side: str,
+        label: str) -> float:
+    """Gate the built rear surface against the approved analytic depth law.
+
+    The blade gate above catches a narrow membrane; this catches the other
+    half of the same failure -- a broad ridge, bulge or fold that is smooth
+    enough to survive opening but is simply not the surface the depth law
+    asks for.  A printable piece lies front-face-down with the front face on
+    z=0, so the sampled top height *is* the local material depth and can be
+    compared straight against ``wing_depth_at`` once the cell centre is mapped
+    back through the sidecar transform.
+
+    Only the interior is judged.  Within roughly a probe radius of the
+    outline a cell centre can map just outside the wing plan, where the law
+    evaluates against a different region and reports metre-scale nonsense;
+    that band is boundary bookkeeping, not geometry.
+    """
+    import numpy as np
+
+    matrix = np.array(sidecar["source_to_stl_matrix"], dtype=float)
+    inverse = np.linalg.inv(matrix)
+    triangles = _binary_stl_triangles(path)
+    field = _top_height_field(triangles, DEPTH_LAW_LATTICE_MM)
+    interior = _disk_fully_on_part(field, max(2, int(round(
+        DEPTH_LAW_INTERIOR_MARGIN_MM / DEPTH_LAW_LATTICE_MM))))
+    gi, gj = np.nonzero(np.isfinite(field) & interior)
+    assert len(gi) > 100, f"{label}: too few interior samples in {path.name}"
+    points = triangles.reshape(-1, 3)
+    origin = points[:, :2].min(axis=0) - DEPTH_LAW_LATTICE_MM
+    xs = origin[0] + (gi + 0.5) * DEPTH_LAW_LATTICE_MM
+    ys = origin[1] + (gj + 0.5) * DEPTH_LAW_LATTICE_MM
+    built = field[gi, gj].astype(float)
+    source = np.stack([xs, ys, built, np.ones_like(xs)], axis=1) @ inverse.T
+    analytic = np.asarray(cad.wing_depth_at(slug, side, source[:, :2]),
+                          dtype=float)
+    deviation = built - analytic
+    worst = float(np.abs(deviation).max())
+    if worst > DEPTH_LAW_MAX_DEVIATION_MM:
+        k = int(np.argmax(np.abs(deviation)))
+        raise AssertionError(
+            f"{label}: built rear surface departs from the approved depth law "
+            f"by {deviation[k]:+.4f} mm at stl x={xs[k]:.2f} y={ys[k]:.2f} "
+            f"(built {built[k]:.4f} mm, law {analytic[k]:.4f} mm) in "
+            f"{path.name}; limit {DEPTH_LAW_MAX_DEVIATION_MM} mm")
     return worst
 
 
@@ -1263,6 +1330,9 @@ def test_exported_artifact_contract() -> None:
             mesh = _assert_strict_stl(directory / relative)
             _assert_no_standing_blade(
                 directory / relative, f"{slug} {side}/{role}")
+            _assert_surface_matches_depth_law(
+                directory / relative, sidecar_payload, cad, slug, side,
+                f"{slug} {side}/{role}")
             _mesh_facts_match(
                 record.get("stl_diagnostics"), mesh,
                 f"{slug} {side}/{role}")
