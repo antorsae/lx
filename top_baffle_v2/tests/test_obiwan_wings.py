@@ -53,6 +53,29 @@ GRADED_MAX_SLOPE = 6.0
 GRADED_LAND_BOUNDARY_SAMPLE_SPACING_MM = 0.50
 GRADED_LAND_BOUNDARY_PROBE_OFFSET_MM = 0.004
 GRADED_LAND_BOUNDARY_MAX_JUMP_MM = 0.03
+# Standing-blade gate. A printable piece is exported already lying in its print
+# orientation, so a modelling remnant a slicer would draw as a phantom wall
+# is a thin blade standing off the +Z surface. Vertical ray casting on a
+# 0.05-mm lattice samples any blade thicker than the lattice; grey opening by a
+# 0.30-mm disk then levels every feature narrower than 0.60 mm, so the blade is
+# what survives above the opened surface. Judged only where the whole disk is
+# on the part, which is what tells a blade standing on material apart from the
+# design's own narrow plan features (the feathered crescent tip, dovetail
+# points) -- those read as a 6-9 mm rise otherwise.
+#
+# Threshold basis: over all twenty shipped pieces the largest rise is
+# 0.2732 mm, at the sharp convex crest where the graded rear feathers out.
+# That is the expected curvature residue of opening (curvature times radius
+# squared).
+# Synthetic blades planted on the real lower measure 0.51/3.01/6.01 mm for
+# crests of 0.5/3/6 mm at 0.08-0.30 mm thick, so 1.00 mm separates the two
+# populations with a 3.7x margin over real geometry. The gate is deliberately
+# blind to blades under about 0.5 mm tall: at that height the opening residue
+# of a legitimately sharp edge is indistinguishable from a blade, and nothing
+# that small reads as a phantom wall.
+STANDING_BLADE_LATTICE_MM = 0.05
+STANDING_BLADE_DISK_RADIUS_MM = 0.30
+STANDING_BLADE_MAX_RISE_MM = 1.00
 DOVETAIL_CLEARANCE_MM = 0.05
 T_WING_CLEARANCE_MM = 0.20
 DOVETAIL_ENDPOINT_TAPER_MM = 2.0
@@ -328,6 +351,195 @@ def _assert_strict_stl(path: Path) -> dict:
         "fully nested cavity")
     assert facts["signed_volume"] > 1.0, f"{path}: implausible volume"
     return facts
+
+
+def _binary_stl_triangles(path: Path):
+    """Return an (n, 3, 3) array of triangle vertices from a binary STL."""
+    import numpy as np
+
+    raw = np.fromfile(path, dtype=np.uint8)
+    assert raw.size >= 84, f"{path}: shorter than binary STL header"
+    count = int(np.frombuffer(raw[80:84].tobytes(), dtype="<u4")[0])
+    assert raw.size == 84 + 50 * count, (
+        f"{path}: binary length {raw.size} != expected {84 + 50 * count}")
+    records = raw[84:].reshape(count, 50)[:, 12:48]
+    return np.frombuffer(
+        records.tobytes(), dtype="<f4").reshape(count, 3, 3).astype(float)
+
+
+def _top_height_field(triangles, pitch_mm: float):
+    """Height of the topmost surface above each lattice cell centre.
+
+    Exact vertical ray casting.  Every triangle is rasterized over the cells
+    its XY bounding box covers and the barycentric-interpolated height is kept
+    wherever the cell centre falls inside the triangle.  The per-cell maximum
+    is reduced by sorting rather than ``np.maximum.at``: the unbuffered ufunc
+    dominates runtime on the graded meshes.  Cells off the part stay NaN.
+    """
+    import numpy as np
+
+    points = triangles.reshape(-1, 3)
+    origin = points[:, :2].min(axis=0) - pitch_mm
+    far = points[:, :2].max(axis=0) + pitch_mm
+    nx = int(np.ceil((far[0] - origin[0]) / pitch_mm)) + 1
+    ny = int(np.ceil((far[1] - origin[1]) / pitch_mm)) + 1
+    a, b, c = triangles[:, 0], triangles[:, 1], triangles[:, 2]
+    low = np.minimum(np.minimum(a[:, :2], b[:, :2]), c[:, :2])
+    high = np.maximum(np.maximum(a[:, :2], b[:, :2]), c[:, :2])
+    i0 = np.clip(np.ceil(
+        (low[:, 0] - origin[0]) / pitch_mm - 0.5).astype(np.int64), 0, nx - 1)
+    i1 = np.clip(np.floor(
+        (high[:, 0] - origin[0]) / pitch_mm - 0.5).astype(np.int64), 0, nx - 1)
+    j0 = np.clip(np.ceil(
+        (low[:, 1] - origin[1]) / pitch_mm - 0.5).astype(np.int64), 0, ny - 1)
+    j1 = np.clip(np.floor(
+        (high[:, 1] - origin[1]) / pitch_mm - 0.5).astype(np.int64), 0, ny - 1)
+    spans_x = np.maximum(i1 - i0 + 1, 0)
+    spans_y = np.maximum(j1 - j0 + 1, 0)
+    counts = spans_x * spans_y
+    order = np.nonzero(counts > 0)[0]
+    order = order[np.argsort(counts[order], kind="stable")]
+    running = np.cumsum(counts[order])
+    cell_parts: list = []
+    height_parts: list = []
+    start = 0
+    while start < len(order):
+        budget = (running[start - 1] if start else 0) + 2_000_000
+        stop = min(max(int(np.searchsorted(running, budget)) + 1,
+                       start + 1), len(order))
+        batch = order[start:stop]
+        start = stop
+        repeats = counts[batch]
+        owner = np.repeat(batch, repeats)
+        offset = (np.arange(repeats.sum())
+                  - np.repeat(np.cumsum(repeats) - repeats, repeats))
+        width = spans_y[owner]
+        gi = i0[owner] + offset // width
+        gj = j0[owner] + offset % width
+        px = origin[0] + (gi + 0.5) * pitch_mm
+        py = origin[1] + (gj + 0.5) * pitch_mm
+        ax, ay, az = a[owner, 0], a[owner, 1], a[owner, 2]
+        bx, by, bz = b[owner, 0], b[owner, 1], b[owner, 2]
+        cx, cy, cz = c[owner, 0], c[owner, 1], c[owner, 2]
+        det = (by - cy) * (ax - cx) + (cx - bx) * (ay - cy)
+        safe = np.where(np.abs(det) < 1.0e-14, 1.0, det)
+        u = ((by - cy) * (px - cx) + (cx - bx) * (py - cy)) / safe
+        v = ((cy - ay) * (px - cx) + (ax - cx) * (py - cy)) / safe
+        w = 1.0 - u - v
+        inside = ((np.abs(det) >= 1.0e-14) & (u >= -1.0e-9)
+                  & (v >= -1.0e-9) & (w >= -1.0e-9))
+        cell_parts.append((gi[inside] * ny + gj[inside]).astype(np.int64))
+        height_parts.append((u[inside] * az[inside] + v[inside] * bz[inside]
+                             + w[inside] * cz[inside]).astype(np.float32))
+    cells = np.concatenate(cell_parts)
+    heights = np.concatenate(height_parts)
+    ranked = np.lexsort((heights, cells))
+    cells = cells[ranked]
+    heights = heights[ranked]
+    topmost = np.nonzero(np.append(cells[1:] != cells[:-1], True))[0]
+    field = np.full(nx * ny, np.nan, dtype=np.float32)
+    field[cells[topmost]] = heights[topmost]
+    return field.reshape(nx, ny)
+
+
+def _disk_offsets(radius_cells: int) -> tuple[tuple[int, int], ...]:
+    return tuple(
+        (dx, dy)
+        for dx in range(-radius_cells, radius_cells + 1)
+        for dy in range(-radius_cells, radius_cells + 1)
+        if math.hypot(dx, dy) <= radius_cells + 0.5)
+
+
+def _disk_sweep(field, offsets, combine, fill):
+    """Accumulate ``combine`` over the disk without stacking shifted copies."""
+    import numpy as np
+
+    nx, ny = field.shape
+    pad = max(max(abs(dx), abs(dy)) for dx, dy in offsets) + 1
+    source = np.pad(field, pad, constant_values=fill)
+    source[np.isnan(source)] = fill
+    out = np.full((nx, ny), fill, dtype=np.float32)
+    for dx, dy in offsets:
+        combine(out, source[pad + dx:pad + dx + nx, pad + dy:pad + dy + ny],
+                out=out)
+    return out
+
+
+def _opened_surface(field, radius_cells: int):
+    """Grey opening by a disk: erases anything narrower than twice the radius.
+
+    Opening is exact on planes and only perturbs a curved surface by roughly
+    curvature times radius squared, so the smooth graded rear survives it while
+    a blade of any *length* is levelled to the material it stands on.  A plain
+    ring probe cannot do this: on an extended ridge the ring lies along the
+    ridge and reports the blade's own height as the local background.
+    """
+    offsets = _disk_offsets(radius_cells)
+    import numpy as np
+
+    eroded = _disk_sweep(field, offsets, np.minimum, np.inf)
+    eroded[~np.isfinite(eroded)] = np.nan
+    opened = _disk_sweep(eroded, offsets, np.maximum, -np.inf)
+    opened[~np.isfinite(opened)] = np.nan
+    return opened
+
+
+def _disk_fully_on_part(field, radius_cells: int):
+    """True where every cell of the disk carries sampled material."""
+    import numpy as np
+
+    offsets = _disk_offsets(radius_cells)
+    nx, ny = field.shape
+    pad = radius_cells + 1
+    on_part = np.pad(np.isfinite(field).astype(np.float32), pad)
+    covered = np.zeros((nx, ny), dtype=np.float32)
+    for dx, dy in offsets:
+        covered += on_part[pad + dx:pad + dx + nx, pad + dy:pad + dy + ny]
+    return covered >= len(offsets) - 0.5
+
+
+def _assert_no_standing_blade(path: Path, label: str) -> float:
+    """Reject thin membranes standing proud of a printable piece's top face.
+
+    Printable pieces are exported already lying in print orientation, so a
+    modelling remnant that a slicer would draw as a phantom wall is a blade
+    standing off the +Z surface.  Vertical ray casting on a lattice finer than
+    any printable wall samples such a blade; grey opening by a disk then
+    levels anything narrower than the disk, whatever its length, so the blade
+    is what remains above the opened surface.  Only cells whose whole disk sits
+    on the part are judged, which is what separates a blade standing on
+    material from the legitimately narrow plan features of the design -- the
+    feathered crescent tip and the dovetail points.  Sliver solids and
+    zero-thickness shells are already rejected by ``_assert_strict_stl``; this
+    closes the remaining case of a blade fused to the main body.
+    """
+    import numpy as np
+
+    triangles = _binary_stl_triangles(path)
+    field = _top_height_field(triangles, STANDING_BLADE_LATTICE_MM)
+    radius_cells = max(2, int(round(
+        STANDING_BLADE_DISK_RADIUS_MM / STANDING_BLADE_LATTICE_MM)))
+    rise = np.where(
+        _disk_fully_on_part(field, radius_cells),
+        field - _opened_surface(field, radius_cells), np.nan)
+    if not np.isfinite(rise).any():
+        raise AssertionError(f"{label}: no sampled top surface in {path.name}")
+    worst = float(np.nanmax(rise))
+    standing = int((np.nan_to_num(rise, nan=-1.0)
+                    > STANDING_BLADE_MAX_RISE_MM).sum())
+    if standing:
+        flat_index = int(np.nanargmax(rise))
+        gi, gj = np.unravel_index(flat_index, rise.shape)
+        points = triangles.reshape(-1, 3)
+        origin = points[:, :2].min(axis=0) - STANDING_BLADE_LATTICE_MM
+        at = origin + (np.array([gi, gj]) + 0.5) * STANDING_BLADE_LATTICE_MM
+        raise AssertionError(
+            f"{label}: {standing} lattice cells stand more than "
+            f"{STANDING_BLADE_MAX_RISE_MM} mm above the surface opened by a "
+            f"{STANDING_BLADE_DISK_RADIUS_MM} mm disk; worst {worst:.4f} mm "
+            f"at x={at[0]:.2f} y={at[1]:.2f} in {path.name}. A thin "
+            "membrane is standing off the printed top surface.")
+    return worst
 
 
 def _assert_review_png(path: Path, slug: str, kind: str) -> None:
@@ -1049,6 +1261,8 @@ def test_exported_artifact_contract() -> None:
                 f"{slug} {side}/{role}: sidecar/facts transform differs")
             _assert_print_bbox(record, f"{slug} {side}/{role}")
             mesh = _assert_strict_stl(directory / relative)
+            _assert_no_standing_blade(
+                directory / relative, f"{slug} {side}/{role}")
             _mesh_facts_match(
                 record.get("stl_diagnostics"), mesh,
                 f"{slug} {side}/{role}")
