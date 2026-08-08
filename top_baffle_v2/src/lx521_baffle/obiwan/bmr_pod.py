@@ -1041,10 +1041,12 @@ def magnet_facts(
             "claim is unaffected and the sealed voids are what the shell "
             "count gate now expects"),
         "release_wiring": (
-            "candidate only: these stations are recorded here and are "
-            "deliberately absent from the released captive-magnet catalog, "
-            "the release_validation counts, the slicing profiles and "
-            "to_print.  Wiring them up -- catalog entry plus the sliced "
-            "pause events -- is part of this part's future qualification"),
+            "candidate only: the stations do slice with real park/pause/"
+            "restore events, out of the part's own isolated auxiliary "
+            "catalog and profile rather than the released ones, so the "
+            "pause wiring exists.  They remain deliberately absent from the "
+            "released captive-magnet catalog, the release_validation counts, "
+            "the two released slicing profiles and to_print, and that "
+            "released-catalog entry is what the stations still owe"),
         "stations": [tools.facts() for tools in magnet_tools],
     }

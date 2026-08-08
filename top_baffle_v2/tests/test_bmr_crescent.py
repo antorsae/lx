@@ -50,6 +50,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 from typing import Any
 
 
@@ -107,6 +108,15 @@ from lx521_baffle.magnet_contract import (
 BUILD_ROOT = PROJECT_ROOT / "build" / "bmr_crescent_TEBM35C10-4"
 STAGE_STATES = ("floor_stand", "no_floor_stand")
 BED_LIMIT_MM = 256.0
+BASE_SLICING_PROFILE = PROJECT_ROOT / "captive_magnet_slicing_profile.json"
+PETG_GF_SLICING_PROFILE = (
+    PROJECT_ROOT / "captive_magnet_slicing_profile_petg_gf.json")
+
+# The released totals both candidates' deliveries must leave alone.  A
+# candidate that slices its own pauses is exactly the situation in which
+# somebody might be tempted to move one of these.
+RELEASED_ARTIFACT_TOTAL = 58
+RELEASED_SHELF_PAIRS = 51
 
 # The released captive-magnet totals.  Both candidates bury real stations, and
 # neither may move these; the number is restated here so that wiring a
@@ -167,6 +177,25 @@ def _brep(variant: Variant) -> Path:
 
 def _facts_path(variant: Variant) -> Path:
     return BUILD_ROOT / f"{variant.module.PART_NAME}.facts.json"
+
+
+def _delivery_paths(variant: Variant) -> dict[str, Path]:
+    """Every file the local-only Bambu delivery reads or promotes."""
+    stem = variant.module.PART_NAME
+    slug = f"shared_{variant.module.RELEASE_VARIANT}_{stem}"
+    slices = BUILD_ROOT / f"slice_audit_{variant.key}" / "slices" / slug
+    return {
+        "catalog": BUILD_ROOT / f"{stem}.catalog.json",
+        "profile": BUILD_ROOT / f"{stem}.slicing_profile.json",
+        "facts": _facts_path(variant),
+        "project": BUILD_ROOT / f"{stem}.gcode.3mf",
+        "audit": slices / "captive_magnet_slice_audit.json",
+        "gcode": slices / "ready" / "plate_1.gcode",
+    }
+
+
+def _json(path: Path) -> Any:
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 # --------------------------------------------------------------------------
@@ -868,6 +897,197 @@ def test_part_is_not_wired_into_the_release(variant: Variant) -> None:
         assert "bmr" not in text.lower(), (
             f"{stem} has reached the released slicing profile {profile}")
 
+    # The candidate now has a real sliced delivery, which is exactly when
+    # somebody might route it through a release structure to get it printed.
+    # Every delivered file has to live in the part's own build child, and the
+    # released totals have to be where they were.
+    assert f"EXPECTED_ARTIFACT_COUNT = {RELEASED_ARTIFACT_TOTAL}" in (
+        catalog_source), (
+        "the released artifact total moved; a candidate delivery must never "
+        "be counted against it")
+    validation = (
+        PROJECT_ROOT / "scripts" / "release_validation.py"
+    ).read_text(encoding="utf-8")
+    assert (f"EXPECTED_RELEASE_ARTIFACT_COUNT = {RELEASED_ARTIFACT_TOTAL}"
+            in validation)
+    assert f"EXPECTED_RELEASE_MAGNET_COUNT = {RELEASED_MAGNET_TOTAL}" in (
+        validation)
+    shelf_test = (PROJECT_ROOT / "tests" / "test_to_print_shelf.py").read_text(
+        encoding="utf-8")
+    assert f"exactly {RELEASED_SHELF_PAIRS} entries" in shelf_test, (
+        "the P2S shelf's pair count moved; the candidate delivery is a "
+        "parallel path and must not touch it")
+    released_catalog = PROJECT_ROOT / "review" / (
+        "captive_magnet_release_catalog.json")
+    if released_catalog.is_file():
+        entries = _json(released_catalog)["artifacts"]
+        assert len(entries) == RELEASED_ARTIFACT_TOTAL
+        assert not [entry for entry in entries if stem == entry["part"]], (
+            f"{stem} has entered the released catalog")
+    for name, path in _delivery_paths(variant).items():
+        assert BUILD_ROOT in path.parents, (
+            f"delivered {name} is outside the candidate's own build child: "
+            f"{path}")
+    # And nothing of the candidate's may appear in the structures the release
+    # slicer, the shelf and the product facade own.
+    for root in (PROJECT_ROOT / "review" / "captive_magnet_slice_audit",
+                 PROJECT_ROOT / "to_print", PROJECT_ROOT / "artifacts"):
+        if root.is_dir():
+            hits = [str(path) for path in root.rglob("*bmr_crescent*")]
+            assert not hits, f"candidate delivery leaked into {root}: {hits}"
+
+
+def test_slicing_profile_is_the_base_profile_derived(variant: Variant) -> None:
+    """The delivery takes the base profile, material and walls included.
+
+    ``captive_magnet_slicing_profile_petg_gf.json`` exists for the structural
+    core -- the two LM keyed halves and the UM carrier -- and says so in its
+    own ``artifact_scope``.  A pod hangs off the UM carrier's qualified M3
+    half-lap rather than being that joint, so it takes the base profile like
+    the qualified vase does.  This gate pins that reading in both directions:
+    the derived profile has to match the base field for field, and the
+    PETG-GF profile has to keep refusing to name either pod.
+    """
+    from gen_bmr_crescent_slicing_profile import VARIANTS, generate
+
+    module = variant.module
+    base = _json(BASE_SLICING_PROFILE)
+    petg = _json(PETG_GF_SLICING_PROFILE)
+    assert not [match for match in petg["artifact_scope"]
+                if match["part"] == module.PART_NAME], (
+        f"{module.PART_NAME} has entered the structural PETG-GF scope")
+
+    spec = VARIANTS[variant.key]
+    assert spec.part == module.PART_NAME
+    assert spec.release_variant == module.RELEASE_VARIANT
+    with tempfile.TemporaryDirectory() as directory:
+        derived_path = Path(directory) / f"{module.PART_NAME}.profile.json"
+        derived = generate(BASE_SLICING_PROFILE, derived_path, variant.key)
+    assert derived["catalog_mode"] == "auxiliary"
+    assert derived["artifact_overrides"] == []
+    assert derived["artifact_scope"] == [{
+        "state": "shared",
+        "variant": module.RELEASE_VARIANT,
+        "part": module.PART_NAME,
+    }]
+    assert derived["filament"] == base["filament"]
+    assert derived["requirements"]["support_enabled"] is False
+    process = derived["repo_overrides"]["process"]
+    base_process = base["repo_overrides"]["process"]
+    for key in ("wall_loops", "sparse_infill_density", "sparse_infill_pattern",
+                "top_shell_layers", "bottom_shell_layers"):
+        assert process[key] == base_process[key], (
+            f"{key} drifted from the base profile")
+    assert {process[name] for name in (
+        "enable_support", "support_on_build_plate_only",
+        "support_critical_regions_only", "support_remove_small_overhang",
+    )} == {"0"}
+
+    built = _delivery_paths(variant)["profile"]
+    if not built.is_file():
+        _skip(f"{built.relative_to(PROJECT_ROOT)} absent; run "
+              "'make obiwan_bmr_crescent_cad'")
+        return
+    on_disk = _json(built)
+    # Only the recorded base path differs: the temporary derivation above
+    # computed it relative to its own directory.
+    assert on_disk["generated_from"] == os.path.relpath(
+        BASE_SLICING_PROFILE, built.parent)
+    assert {key: value for key, value in on_disk.items()
+            if key != "generated_from"} == {
+        key: value for key, value in derived.items()
+        if key != "generated_from"}
+    print(f"    profile: {derived['filament']}, "
+          f"{process['wall_loops']} walls, "
+          f"{process['sparse_infill_density']} "
+          f"{process['sparse_infill_pattern']}")
+
+
+def test_pause_plan_follows_the_station_geometry(variant: Variant) -> None:
+    """Cavities that close on one plane get one pause, at a predicted Z.
+
+    Both pods put every station on the same source Z, so both must collapse
+    to a single pause covering all of their magnets -- the coaxial pod's two
+    and the opposed pod's four, whose two lands differ only in Y.  The Z
+    itself is the first layer of the profile's own ladder strictly above the
+    closing plane, which is what makes the sliced pause a regression rather
+    than a number read back from the slicer.
+    """
+    from gen_bmr_crescent_slicing_profile import pause_layer_z
+
+    paths = _delivery_paths(variant)
+    if not paths["facts"].is_file() or not paths["profile"].is_file():
+        _skip("no exported facts/profile; run 'make obiwan_bmr_crescent_cad'")
+        return
+    facts = _json(paths["facts"])
+    profile = _json(paths["profile"])
+    manifest = facts["delivery"]["pause_manifest"]
+    stations = facts["design"]["magnets"]["stations"]
+    assert len(stations) == variant.magnet_count
+
+    planes: dict[float, list[str]] = {}
+    for station in stations:
+        plane = round(
+            float(station["cavity_bury_roof_start_print_z_mm"]), 9)
+        planes.setdefault(plane, []).append(str(station["name"]))
+    assert len(planes) == 1, (
+        "the stations no longer share one closing plane; the delivery needs "
+        f"one pause per plane, not one: {sorted(planes)}")
+    assert manifest["pause_group_count"] == len(planes)
+    assert manifest["magnet_count"] == variant.magnet_count
+    assert manifest["park_z_mm"] == profile["magnet_insertion_pause"][
+        "park_z_mm"]
+
+    (plane, names), = planes.items()
+    group, = manifest["groups"]
+    assert _close(group["cavity_bury_roof_start_plane_z_mm"], plane)
+    assert group["sites"] == sorted(names)
+    assert group["magnet_count"] == variant.magnet_count
+    expected_z = pause_layer_z(profile, plane)
+    assert _close(group["expected_pause_marker_z_mm"], expected_z)
+    # The ladder itself, restated rather than re-derived: 0.20 mm first layer
+    # then 0.16 mm, so the 5.80 mm closing plane is a layer top and the pause
+    # belongs on the next one.
+    first = profile["requirements"]["first_layer_height_mm"]
+    layer = profile["requirements"]["layer_height_mm"]
+    assert (first, layer) == (0.2, 0.16)
+    assert _close(plane, 5.80, 1.0e-6) and _close(expected_z, 5.96, 1.0e-9)
+    print(f"    1 pause at Z={expected_z} burying {variant.magnet_count} "
+          f"magnet(s) over the {plane} mm closing plane")
+
+
+def test_delivery_validator_accepts_the_sliced_project(
+    variant: Variant,
+) -> None:
+    """The promoted 3MF passes the same fail-closed gate the target runs."""
+    from validate_bmr_crescent_delivery import validate
+
+    paths = _delivery_paths(variant)
+    missing = [name for name, path in paths.items() if not path.is_file()]
+    if missing:
+        _skip(f"no sliced delivery ({', '.join(sorted(missing))}); run "
+              "'make obiwan_bmr_crescent_3mf'")
+        return
+    result = validate(
+        catalog=paths["catalog"], facts=paths["facts"],
+        profile=paths["profile"], audit=paths["audit"],
+        project=paths["project"], gcode=paths["gcode"], variant=variant.key)
+    assert result["artifact"] == (
+        f"shared:{variant.module.RELEASE_VARIANT}:{variant.module.PART_NAME}")
+    assert result["release_status"] == "candidate_not_release_authorized"
+    assert result["catalog_sites"] == variant.magnet_count
+    assert result["magnet_pause_groups"] == 1
+    assert result["slicing_profile_rederived"] == "identical"
+    assert result["stl_3mf_equivalence"] == "pass"
+    assert result["support_toolpaths"] == "none"
+    event, = result["pause_events"]
+    assert event["magnet_count"] == variant.magnet_count
+    assert _close(event["pause_marker_z_mm"], 5.96, 1.0e-9)
+    assert _close(event["park_z_mm"], 250.0, 1.0e-9)
+    print(f"    delivery validated: pause Z={event['pause_marker_z_mm']}, "
+          f"park Z={event['park_z_mm']}, "
+          f"{event['magnet_count']} magnet(s)")
+
 
 # --------------------------------------------------------------------------
 # Geometry gates (exported BREP)
@@ -1529,6 +1749,9 @@ VARIANT_TESTS = (
     test_no_declared_opening_reaches_the_assembled_exterior,
     test_candidate_flags_are_set,
     test_part_is_not_wired_into_the_release,
+    test_slicing_profile_is_the_base_profile_derived,
+    test_pause_plan_follows_the_station_geometry,
+    test_delivery_validator_accepts_the_sliced_project,
     test_exported_solid_is_one_body_with_only_its_magnet_voids,
     test_declared_openings_are_the_only_openings,
     test_every_magnet_cavity_is_buried_behind_its_own_skin,

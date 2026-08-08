@@ -563,9 +563,11 @@ nothing else of the released crescent's plan.
   loading cradle, its chimney and the 45° gable buried by the layers that
   follow the pause — nothing about a station reaches the exterior, which is
   why the part now reads as one outer shell plus exactly two nested voids.
-  **They are not wired into the release**: no catalog entry, no sliced pause
-  events, no change to the 94-station released total. That wiring is part of
-  the qualification below.
+  **The pause is real**: both stations close on the same print plane, so the
+  delivery below slices them as one park/pause/restore event at Z = 5.96 mm.
+  What they are still not is *released* — no entry in the 58-artifact
+  catalog, no change to its 94-station total — and that entry is what the
+  qualification below still asks for.
 - 65.67 × 73.97 × 50.20 mm and 106.07 cm³, front-face-down, support-free and
   P2S bed-fitting — 15.70 mm shallower in Y than the strutted candidate,
   because the pod came down toward the collar. The X extent is the
@@ -613,8 +615,10 @@ fit Obi-Wan, because it is a seam-B vase piece and Obi-Wan has no seam B.
   land, on each land's flat at `x=±32.834585` and source `Z=15.10`, through
   the same `lx521_baffle.magnets` helper. Like the coaxial pod's pair they are
   sealed voids behind the 0.45 mm skin — the part reads as one outer shell
-  plus four nested voids — and like that pair they are **not wired into the
-  release**.
+  plus four nested voids. The two lands differ only in Y, so all four cavities
+  close on the same print plane and the delivery slices **one** pause at
+  Z = 5.96 mm covering all four, exactly as the four-magnet vase does. Like
+  that pair they are still **not released**.
 - **Eight blind Ø3.2 × 4.0 M2 insert bores**, four per land on the Ø48.26
   pattern, clocked +45° on the lower/front face and −45° on the upper/rear
   one, exactly as the vase clocks them.
@@ -634,9 +638,66 @@ Build them together with the local-only target:
 Both land in `build/bmr_crescent_TEBM35C10-4/` as
 `obiwan_bmr_crescent_TEBM35C10-4.*` and
 `obiwan_bmr_crescent_opposed_TEBM35C10-4.*`, each with its own
-`{brep,step,stl,print.json,facts.json}` and `cad_manifest_{coaxial,opposed}.json`.
-The target never dispatches to osado. **Forty-two local gates** run with it:
-two shared, then twenty applied to each variant in turn.
+`{brep,step,stl,print.json,facts.json,catalog.json,slicing_profile.json}` and
+`cad_manifest_{coaxial,opposed}.json`.
+The target never dispatches to osado. **Forty-eight local gates** run with it:
+two shared, then twenty-three applied to each variant in turn.
+
+### Printable delivery
+
+Each candidate is a first-class printable delivery on the same parallel path
+the optional TEBM vase family uses. On this Mac:
+
+    make obiwan_bmr_crescent_coaxial_3mf
+    make obiwan_bmr_crescent_opposed_3mf
+    make obiwan_bmr_crescent_3mf           # both
+    make obiwan_bmr_crescent_3mf_validate  # revalidate without slicing
+
+Each consumes the promoted CAD and fails closed with a
+`run 'make obiwan_bmr_crescent_cad' first` message if any of it is missing.
+Like every Bambu goal these are workstation-only and never dispatch to osado.
+The audited ready projects are promoted beside their CAD as
+
+```text
+build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.gcode.3mf
+build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.gcode.3mf
+```
+
+and the delivery record for each lands in
+`review/bmr_crescent_TEBM35C10-4/{coaxial,opposed}_delivery.json`.
+
+Each variant slices its own isolated one-artifact captive-magnet catalog under
+its own profile, both written by the CAD target. The profile is the base
+`captive_magnet_slicing_profile.json` — Bambu PLA Tough+, six walls, 30%
+gyroid, support off — with only the four fields the vase also changes:
+`catalog_mode: auxiliary`, the base it came from, an `artifact_scope` naming
+exactly one artifact, and an empty `artifact_overrides`. The structural
+PETG-GF profile stays where it belongs: scoped to the two LM keyed halves and
+the UM carrier. A pod *hangs off* the UM carrier's qualified M3 half-lap
+rather than being that joint, and the released ND25FW-4 crescent it replaces
+is not in that scope either.
+
+Both pods put every station on source `Z=15.10`, which front-face-down off the
+`z=18.3` bed datum is a cavity roof starting at print `Z=5.80`. With the
+profile's 0.20 mm first layer and 0.16 mm layers after it, 5.80 is a layer top
+and the first layer that closes the cavities is **5.96 mm** — so each variant
+gets exactly one pause, the coaxial pod's burying two magnets and the opposed
+pod's burying all four. The pause is published from the sliced G-code, never
+from CAD; what CAD contributes is the prediction the slice has to meet.
+
+The delivery validator (`scripts/validate_bmr_crescent_delivery.py`) is
+`validate_vase_tebm35c10_4_delivery.py` plus the two things a candidate owes.
+It re-derives the slicing profile from the base and rejects anything not
+byte-identical, so a hand-edited profile cannot reach a printer this way; and
+it hash-binds the promoted project to the STL the catalog carries, so a
+re-export invalidates the delivery instead of leaving a stale 3MF that still
+agrees with its own audit. On top of that it repeats every vase gate:
+one-artifact catalog identity, artifact bindings, all four support fields zero
+globally and on the object, no support toolpaths, exact STL/3MF mesh
+equivalence with no blockers or modifiers, the pause count and each pause's Z,
+park Z, `M400 U1` and exact-Z restore in that order, unit marked-pole axes with
+a polarity instruction on every station, straight-down insertion in print
+space, and the four required 3MF members.
 
 The two shared gates hold the family together. One evaluates the real proud
 vase in a proud-profile subprocess and compares all 26 mirrored constants —
@@ -680,9 +741,18 @@ continuous from the UM bore through the gap into the blind receiver under its
 - the exported solid must be one body with exactly one outer shell plus one
   nested void per declared station: one more would be an undeclared cavity and
   one fewer a station that broke out;
-- and neither candidate may appear in the released captive-magnet catalog
-  generator or the two slicing profiles, whose 94-station total is restated in
-  the test so that wiring a candidate in has to come past it.
+- neither candidate may appear in the released captive-magnet catalog
+  generator or the two released slicing profiles, and the 58-artifact /
+  94-station totals and the shelf's 51 pairs are all restated in the test so
+  that wiring a candidate in has to come past it — with every delivered file
+  additionally required to sit inside the candidate's own build child;
+- the derived slicing profile has to be the base profile field for field,
+  material and walls included, and the PETG-GF profile has to keep refusing to
+  name either pod;
+- the stations have to share one closing plane, and the pause the delivery
+  plans has to be the first layer of the profile's own ladder above it;
+- and the promoted 3MF, when one exists, has to pass the delivery validator
+  in full.
 
 The remaining gates cover zero interference with the UM carrier and with the
 flat and graded wings, the skirt's section at the ears, a never-growing
@@ -700,9 +770,12 @@ review shelf by
     # -> review/bmr_crescent_entry_closeup.png
 
 **Candidate status.** `release_authorized` is false and
-`PHYSICAL_MEASURE_REQUIRED` is true on both. They are deliberately absent from
-the release inventory, the stage manifests, `to_print/`, the captive-magnet
-catalog and the slicing profiles, and their own test asserts all five. The two
+`PHYSICAL_MEASURE_REQUIRED` is true on both. Having a printable delivery does
+not change that: they are still deliberately absent from the release
+inventory, the stage manifests, `to_print/`, the released captive-magnet
+catalog and the two released slicing profiles, and their own test asserts all
+five. What each does have is its *own* isolated catalog and profile, which is
+what a candidate delivery is allowed to have. The two
 BMRs weigh 102.6 g, so the two-screw UM joint would hang roughly **234 g** on
 the coaxial pod (106.07 cm³ of plastic) and **218 g** on the opposed one
 (93.27 cm³) — both well above the released ND25FW-4 crescent.
@@ -714,9 +787,10 @@ in a shared `open_items` block:
    rather than taken from the published envelope;
 2. M2 × 4 heat-set installation in every D66 land without breakthrough into a
    pocket or a magnet cavity;
-3. the captive stations wired up for release — a catalog entry and the sliced
-   pause events, neither of which exists while the part is a candidate — then
-   a pull test on the printed land;
+3. a pull test on the printed land: the stations now slice with real
+   park/pause/restore events out of the part's own isolated catalog, so what
+   is left of that item is the released-catalog entry and the physical pull,
+   not the pause wiring;
 4. the T cable threaded for real, out of the UM's declared mouth, into the
    Ø6.00 mate-face entry and on to both drivers, with both drivers fitted and
    the pod screwed down.

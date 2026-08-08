@@ -142,6 +142,35 @@ closed if it is missing. Like everything here, these targets never dispatch to
 osado, and each project is opened directly in Bambu Studio without
 reorienting or re-slicing.
 
+## The candidate BMR crescents, delivered the same way
+
+The two candidate Obi-Wan BMR pods — `obiwan_bmr_crescent_TEBM35C10-4`, the
+coaxial one, and `obiwan_bmr_crescent_opposed_TEBM35C10-4` — take the same
+parallel path. They are **candidates**: `release_authorized` is false on both,
+they are not in this shelf, not in the release inventory and not in the
+released captive-magnet catalog, and printing one is a review exercise rather
+than building a speaker. See [`docs/obiwan.md`](../docs/obiwan.md) for what
+each still owes.
+
+```text
+build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.gcode.3mf
+build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.gcode.3mf
+```
+
+Build them with `make obiwan_bmr_crescent_coaxial_3mf` and
+`make obiwan_bmr_crescent_opposed_3mf`, or both with
+`make obiwan_bmr_crescent_3mf`; `make obiwan_bmr_crescent_3mf_validate`
+rechecks existing projects without slicing. Each requires the promoted CAD
+from `make obiwan_bmr_crescent_cad` and fails closed if it is missing.
+
+Each project carries one real magnet pause at **Z = 5.96 mm**, burying two
+captive D5 × 2 magnets in the coaxial pod and all four in the opposed one —
+every cavity in both parts closes on the same layer, so one pause covers them
+all. The event parks at Z=250 mm, pauses with `M400 U1` and restores the exact
+layer Z, exactly like the released projects above. Insert the magnets
+vertically downward with the marked pole as the delivery record states, and do
+not add or move pauses by hand.
+
 ## Refreshing the shelf
 
 Run this on the Mac that has the pinned Bambu Studio version installed:

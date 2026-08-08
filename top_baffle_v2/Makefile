@@ -245,6 +245,12 @@ LOCAL_BAMBU_GOALS := check_bambu_3mf_audit \
                      vase_tebm35c10_4_slim_3mf \
                      vase_tebm35c10_4_stock_3mf_validate \
                      vase_tebm35c10_4_slim_3mf_validate \
+                     obiwan_bmr_crescent_3mf \
+                     obiwan_bmr_crescent_3mf_validate \
+                     obiwan_bmr_crescent_coaxial_3mf \
+                     obiwan_bmr_crescent_opposed_3mf \
+                     obiwan_bmr_crescent_coaxial_3mf_validate \
+                     obiwan_bmr_crescent_opposed_3mf_validate \
                      obiwan_no_floor_petg_gf_modifier \
                      obiwan_no_floor_petg_gf_01a \
                      obiwan_no_floor_petg_gf_01a_validate \
@@ -881,6 +887,10 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_v1 $(1)
         check_bambu_3mf_audit bambu_profiles bambu_dry_run \
         bambu_slice_obiwan bambu_slice_release \
         obiwan_bmr_crescent_cad \
+        obiwan_bmr_crescent_3mf obiwan_bmr_crescent_3mf_validate \
+        obiwan_bmr_crescent_coaxial_3mf obiwan_bmr_crescent_opposed_3mf \
+        obiwan_bmr_crescent_coaxial_3mf_validate \
+        obiwan_bmr_crescent_opposed_3mf_validate \
         vase_tebm35c10_4_cad vase_tebm35c10_4_3mf \
         vase_tebm35c10_4_3mf_validate \
         vase_tebm35c10_4_stock_cad vase_tebm35c10_4_slim_cad \
@@ -1012,6 +1022,9 @@ BMR_CRESCENT_STEP := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).step
 BMR_CRESCENT_STL := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).stl
 BMR_CRESCENT_SIDECAR := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).print.json
 BMR_CRESCENT_FACTS := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).facts.json
+BMR_CRESCENT_CATALOG := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).catalog.json
+BMR_CRESCENT_PROFILE := \
+        $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).slicing_profile.json
 BMR_CRESCENT_MANIFEST := $(BMR_CRESCENT_ROOT)/cad_manifest_coaxial.json
 BMR_CRESCENT_OPPOSED_BREP := \
         $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_OPPOSED_NAME).brep
@@ -1023,6 +1036,10 @@ BMR_CRESCENT_OPPOSED_SIDECAR := \
         $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_OPPOSED_NAME).print.json
 BMR_CRESCENT_OPPOSED_FACTS := \
         $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_OPPOSED_NAME).facts.json
+BMR_CRESCENT_OPPOSED_CATALOG := \
+        $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_OPPOSED_NAME).catalog.json
+BMR_CRESCENT_OPPOSED_PROFILE := \
+        $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_OPPOSED_NAME).slicing_profile.json
 BMR_CRESCENT_OPPOSED_MANIFEST := \
         $(BMR_CRESCENT_ROOT)/cad_manifest_opposed.json
 BMR_CRESCENT_EXPORT_STAMPS := \
@@ -1030,12 +1047,56 @@ BMR_CRESCENT_EXPORT_STAMPS := \
         $(BMR_CRESCENT_ROOT)/.stamp_cad_validated_opposed
 BMR_CRESCENT_STLS := $(BMR_CRESCENT_STL) $(BMR_CRESCENT_OPPOSED_STL)
 BMR_CRESCENT_CAD_STAMP := $(BMR_CRESCENT_ROOT)/.stamp_cad_ready
-BMR_CRESCENT_CAD_OUTPUTS := $(BMR_CRESCENT_BREP) $(BMR_CRESCENT_STEP) \
-        $(BMR_CRESCENT_STL) $(BMR_CRESCENT_SIDECAR) $(BMR_CRESCENT_FACTS) \
-        $(BMR_CRESCENT_MANIFEST) \
-        $(BMR_CRESCENT_OPPOSED_BREP) $(BMR_CRESCENT_OPPOSED_STEP) \
-        $(BMR_CRESCENT_OPPOSED_STL) $(BMR_CRESCENT_OPPOSED_SIDECAR) \
-        $(BMR_CRESCENT_OPPOSED_FACTS) $(BMR_CRESCENT_OPPOSED_MANIFEST)
+BMR_CRESCENT_COAXIAL_CAD_OUTPUTS := $(BMR_CRESCENT_BREP) \
+        $(BMR_CRESCENT_STEP) $(BMR_CRESCENT_STL) $(BMR_CRESCENT_SIDECAR) \
+        $(BMR_CRESCENT_FACTS) $(BMR_CRESCENT_CATALOG) \
+        $(BMR_CRESCENT_PROFILE) $(BMR_CRESCENT_MANIFEST)
+BMR_CRESCENT_OPPOSED_CAD_OUTPUTS := $(BMR_CRESCENT_OPPOSED_BREP) \
+        $(BMR_CRESCENT_OPPOSED_STEP) $(BMR_CRESCENT_OPPOSED_STL) \
+        $(BMR_CRESCENT_OPPOSED_SIDECAR) $(BMR_CRESCENT_OPPOSED_FACTS) \
+        $(BMR_CRESCENT_OPPOSED_CATALOG) $(BMR_CRESCENT_OPPOSED_PROFILE) \
+        $(BMR_CRESCENT_OPPOSED_MANIFEST)
+BMR_CRESCENT_CAD_OUTPUTS := $(BMR_CRESCENT_COAXIAL_CAD_OUTPUTS) \
+        $(BMR_CRESCENT_OPPOSED_CAD_OUTPUTS)
+
+# Local-only Bambu delivery for both candidates, mirroring the TEBM vase's
+# parallel path: each variant slices its own isolated one-artifact catalog
+# under its own profile, then the audited ready project is promoted to a
+# stable name beside its CAD.  Nothing here touches the protected release
+# inventory, to_print or the shelf.
+BMR_CRESCENT_SLICE_OUTPUT ?= $(BMR_CRESCENT_ROOT)/slice_audit_coaxial
+BMR_CRESCENT_OPPOSED_SLICE_OUTPUT ?= $(BMR_CRESCENT_ROOT)/slice_audit_opposed
+BMR_CRESCENT_SLUG := \
+        shared_Obiwan-TEBM35C10-4-BMR-crescent_$(BMR_CRESCENT_NAME)
+BMR_CRESCENT_OPPOSED_SLUG := \
+        shared_Obiwan-TEBM35C10-4-BMR-crescent-opposed_$(BMR_CRESCENT_OPPOSED_NAME)
+BMR_CRESCENT_SLICE_DIR := \
+        $(BMR_CRESCENT_SLICE_OUTPUT)/slices/$(BMR_CRESCENT_SLUG)
+BMR_CRESCENT_OPPOSED_SLICE_DIR := \
+        $(BMR_CRESCENT_OPPOSED_SLICE_OUTPUT)/slices/$(BMR_CRESCENT_OPPOSED_SLUG)
+BMR_CRESCENT_READY_DIR := $(BMR_CRESCENT_SLICE_DIR)/ready
+BMR_CRESCENT_OPPOSED_READY_DIR := $(BMR_CRESCENT_OPPOSED_SLICE_DIR)/ready
+BMR_CRESCENT_READY_PROJECT := \
+        $(BMR_CRESCENT_READY_DIR)/ready_to_print.gcode.3mf
+BMR_CRESCENT_OPPOSED_READY_PROJECT := \
+        $(BMR_CRESCENT_OPPOSED_READY_DIR)/ready_to_print.gcode.3mf
+BMR_CRESCENT_3MF := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).gcode.3mf
+BMR_CRESCENT_OPPOSED_3MF := \
+        $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_OPPOSED_NAME).gcode.3mf
+BMR_CRESCENT_GCODE := $(BMR_CRESCENT_READY_DIR)/plate_1.gcode
+BMR_CRESCENT_OPPOSED_GCODE := $(BMR_CRESCENT_OPPOSED_READY_DIR)/plate_1.gcode
+BMR_CRESCENT_SLICE_AUDIT := \
+        $(BMR_CRESCENT_SLICE_DIR)/captive_magnet_slice_audit.json
+BMR_CRESCENT_OPPOSED_SLICE_AUDIT := \
+        $(BMR_CRESCENT_OPPOSED_SLICE_DIR)/captive_magnet_slice_audit.json
+BMR_CRESCENT_SLICE_STAMP := \
+        $(BMR_CRESCENT_READY_DIR)/.stamp_bmr_crescent_validated
+BMR_CRESCENT_OPPOSED_SLICE_STAMP := \
+        $(BMR_CRESCENT_OPPOSED_READY_DIR)/.stamp_bmr_crescent_validated
+BMR_CRESCENT_REVIEW := review/bmr_crescent_TEBM35C10-4
+BMR_CRESCENT_REVIEW_AUDIT := $(BMR_CRESCENT_REVIEW)/coaxial_delivery.json
+BMR_CRESCENT_OPPOSED_REVIEW_AUDIT := \
+        $(BMR_CRESCENT_REVIEW)/opposed_delivery.json
 
 BMR_CRESCENT_CAD_SRCS := src/lx521_baffle/obiwan/bmr_pod.py \
         src/lx521_baffle/obiwan/bmr_crescent.py \
@@ -1055,13 +1116,26 @@ BMR_CRESCENT_CAD_SRCS := src/lx521_baffle/obiwan/bmr_pod.py \
         src/lx521_baffle/geom.py src/lx521_baffle/io.py \
         scripts/export_bmr_crescent.py scripts/export_piece_stls.py \
         scripts/export_steps.py scripts/check_manifold.py \
+        scripts/gen_bmr_crescent_slicing_profile.py \
+        scripts/release_validation.py scripts/json_schema_subset.py \
+        captive_magnet_release_catalog.schema.json \
+        captive_magnet_slicing_profile.json \
         tests/test_bmr_crescent.py $(EXECUTION_SRCS)
 
-# The export runs before the test: the test's geometry gates read the
-# exported BREPs and hash-check them against the current sources.  One
-# invocation writes both variants, so neither can be left behind by the other.
+# The profiles are derived first: the exporter hash-binds each one into the
+# catalog's own facts and refuses to export an artifact whose profile is
+# missing or scoped to a different part.  The export then runs before the
+# test, because the test's geometry gates read the exported BREPs and
+# hash-check them against the current sources.  One invocation writes both
+# variants, so neither can be left behind by the other.
 $(BMR_CRESCENT_CAD_STAMP): $(BMR_CRESCENT_CAD_SRCS)
 	@rm -f "$@"
+	$(PYTHON_RUN) scripts/gen_bmr_crescent_slicing_profile.py \
+	    --base captive_magnet_slicing_profile.json \
+	    --variant coaxial --output "$(BMR_CRESCENT_PROFILE)"
+	$(PYTHON_RUN) scripts/gen_bmr_crescent_slicing_profile.py \
+	    --base captive_magnet_slicing_profile.json \
+	    --variant opposed --output "$(BMR_CRESCENT_OPPOSED_PROFILE)"
 	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan $(RUN) \
 	    scripts/export_bmr_crescent.py --output-root "$(BMR_CRESCENT_ROOT)"
 	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan $(RUN) \
@@ -1084,6 +1158,7 @@ obiwan_bmr_crescent_cad: $(BMR_CRESCENT_CAD_OUTPUTS)
 	@echo "Candidate coaxial BMR crescent STEP: $(BMR_CRESCENT_STEP)"
 	@echo "Candidate opposed BMR crescent STEP: $(BMR_CRESCENT_OPPOSED_STEP)"
 	@echo "Candidate STLs: $(BMR_CRESCENT_STLS)"
+	@echo "both catalogs/profiles ready for local slicing"
 	@echo "candidates only; not release-authorized, not staged, not counted"
 
 # This catalog is generated only after all 58 released magnet-bearing meshes
@@ -1561,6 +1636,166 @@ vase_tebm35c10_4_slim_3mf_validate:
 vase_tebm35c10_4_3mf_validate: \
         vase_tebm35c10_4_stock_3mf_validate \
         vase_tebm35c10_4_slim_3mf_validate
+
+# The two candidate BMR crescents deliver exactly the way the optional TEBM
+# vase family does, and for the same reason: each is one isolated artifact
+# outside the protected 58-artifact release inventory, so every geometry,
+# G-code, pause, STL/3MF-equivalence and ready-project gate still applies and
+# only the expected inventory count is scoped to its own one-artifact child.
+# Being a candidate buys no leniency here; it only keeps the part out of the
+# release structures.
+define REQUIRE_BMR_CRESCENT_CAD
+	@for path in $(BMR_CRESCENT_CAD_OUTPUTS); do \
+		test -s "$$path" || { \
+			echo "missing promoted BMR crescent CAD artifact: $$path" >&2; \
+			echo "run 'make obiwan_bmr_crescent_cad' first, then rerun this local Bambu target" >&2; \
+			exit 1; \
+		}; \
+	done
+	@test -e "$(BMR_CRESCENT_CAD_STAMP)" || { \
+		echo "missing promoted BMR crescent CAD stamp: $(BMR_CRESCENT_CAD_STAMP)" >&2; \
+		echo "run 'make obiwan_bmr_crescent_cad' first, then rerun this local Bambu target" >&2; \
+		exit 1; \
+	}
+endef
+
+$(BMR_CRESCENT_SLICE_STAMP): $(BMR_CRESCENT_COAXIAL_CAD_OUTPUTS) \
+        $(BMR_CRESCENT_CAD_STAMP) \
+        scripts/slice_captive_magnets.py scripts/release_validation.py \
+        scripts/gcode_analysis.py scripts/artifact_emit.py \
+        scripts/bambu_3mf_audit.py \
+        scripts/gen_bmr_crescent_slicing_profile.py \
+        scripts/validate_bmr_crescent_delivery.py \
+        src/lx521_baffle/print_contract.py src/lx521_baffle/io.py
+	@rm -f "$@"
+	$(REQUIRE_BMR_CRESCENT_CAD)
+	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
+		--auxiliary-catalog \
+		--catalog "$(BMR_CRESCENT_CATALOG)" \
+		--profile "$(BMR_CRESCENT_PROFILE)" \
+		--output "$(BMR_CRESCENT_SLICE_OUTPUT)" \
+		--jobs 1 \
+		--emit-ready-projects
+	@test -s "$(BMR_CRESCENT_READY_PROJECT)"
+	@test -s "$(BMR_CRESCENT_GCODE)"
+	@test -s "$(BMR_CRESCENT_SLICE_AUDIT)"
+	@rm -f "$(BMR_CRESCENT_3MF)"
+	@temporary="$(BMR_CRESCENT_3MF).tmp"; \
+	    cp "$(BMR_CRESCENT_READY_PROJECT)" "$$temporary"; \
+	    mv "$$temporary" "$(BMR_CRESCENT_3MF)"
+	@mkdir -p "$(BMR_CRESCENT_REVIEW)"
+	$(PYTHON_RUN) scripts/validate_bmr_crescent_delivery.py \
+		--variant coaxial \
+		--catalog "$(BMR_CRESCENT_CATALOG)" \
+		--facts "$(BMR_CRESCENT_FACTS)" \
+		--profile "$(BMR_CRESCENT_PROFILE)" \
+		--audit "$(BMR_CRESCENT_SLICE_AUDIT)" \
+		--project "$(BMR_CRESCENT_3MF)" \
+		--gcode "$(BMR_CRESCENT_GCODE)" \
+		--review "$(BMR_CRESCENT_REVIEW_AUDIT)"
+	@touch "$@"
+
+$(BMR_CRESCENT_OPPOSED_SLICE_STAMP): $(BMR_CRESCENT_OPPOSED_CAD_OUTPUTS) \
+        $(BMR_CRESCENT_CAD_STAMP) \
+        scripts/slice_captive_magnets.py scripts/release_validation.py \
+        scripts/gcode_analysis.py scripts/artifact_emit.py \
+        scripts/bambu_3mf_audit.py \
+        scripts/gen_bmr_crescent_slicing_profile.py \
+        scripts/validate_bmr_crescent_delivery.py \
+        src/lx521_baffle/print_contract.py src/lx521_baffle/io.py
+	@rm -f "$@"
+	$(REQUIRE_BMR_CRESCENT_CAD)
+	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
+		--auxiliary-catalog \
+		--catalog "$(BMR_CRESCENT_OPPOSED_CATALOG)" \
+		--profile "$(BMR_CRESCENT_OPPOSED_PROFILE)" \
+		--output "$(BMR_CRESCENT_OPPOSED_SLICE_OUTPUT)" \
+		--jobs 1 \
+		--emit-ready-projects
+	@test -s "$(BMR_CRESCENT_OPPOSED_READY_PROJECT)"
+	@test -s "$(BMR_CRESCENT_OPPOSED_GCODE)"
+	@test -s "$(BMR_CRESCENT_OPPOSED_SLICE_AUDIT)"
+	@rm -f "$(BMR_CRESCENT_OPPOSED_3MF)"
+	@temporary="$(BMR_CRESCENT_OPPOSED_3MF).tmp"; \
+	    cp "$(BMR_CRESCENT_OPPOSED_READY_PROJECT)" "$$temporary"; \
+	    mv "$$temporary" "$(BMR_CRESCENT_OPPOSED_3MF)"
+	@mkdir -p "$(BMR_CRESCENT_REVIEW)"
+	$(PYTHON_RUN) scripts/validate_bmr_crescent_delivery.py \
+		--variant opposed \
+		--catalog "$(BMR_CRESCENT_OPPOSED_CATALOG)" \
+		--facts "$(BMR_CRESCENT_OPPOSED_FACTS)" \
+		--profile "$(BMR_CRESCENT_OPPOSED_PROFILE)" \
+		--audit "$(BMR_CRESCENT_OPPOSED_SLICE_AUDIT)" \
+		--project "$(BMR_CRESCENT_OPPOSED_3MF)" \
+		--gcode "$(BMR_CRESCENT_OPPOSED_GCODE)" \
+		--review "$(BMR_CRESCENT_OPPOSED_REVIEW_AUDIT)"
+	@touch "$@"
+
+$(BMR_CRESCENT_3MF) $(BMR_CRESCENT_GCODE) \
+        $(BMR_CRESCENT_SLICE_AUDIT): | $(BMR_CRESCENT_SLICE_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(BMR_CRESCENT_SLICE_STAMP)"; \
+		$(MAKE) --no-print-directory "$(BMR_CRESCENT_SLICE_STAMP)"; \
+		test -s "$@"; \
+	}
+
+$(BMR_CRESCENT_OPPOSED_3MF) $(BMR_CRESCENT_OPPOSED_GCODE) \
+        $(BMR_CRESCENT_OPPOSED_SLICE_AUDIT): | \
+        $(BMR_CRESCENT_OPPOSED_SLICE_STAMP)
+	@test -s "$@" || { \
+		rm -f "$(BMR_CRESCENT_OPPOSED_SLICE_STAMP)"; \
+		$(MAKE) --no-print-directory "$(BMR_CRESCENT_OPPOSED_SLICE_STAMP)"; \
+		test -s "$@"; \
+	}
+
+obiwan_bmr_crescent_coaxial_3mf: \
+        $(BMR_CRESCENT_3MF) $(BMR_CRESCENT_SLICE_AUDIT)
+	@echo "Coaxial candidate ready 3MF: $(BMR_CRESCENT_3MF)"
+
+obiwan_bmr_crescent_opposed_3mf: \
+        $(BMR_CRESCENT_OPPOSED_3MF) $(BMR_CRESCENT_OPPOSED_SLICE_AUDIT)
+	@echo "Opposed candidate ready 3MF: $(BMR_CRESCENT_OPPOSED_3MF)"
+
+obiwan_bmr_crescent_3mf: \
+        obiwan_bmr_crescent_coaxial_3mf obiwan_bmr_crescent_opposed_3mf
+	@echo "both candidate BMR crescent projects validated"
+	@echo "candidates only; not release-authorized, not staged, not counted"
+
+obiwan_bmr_crescent_coaxial_3mf_validate:
+	$(REQUIRE_BMR_CRESCENT_CAD)
+	@test -s "$(BMR_CRESCENT_3MF)"
+	@test -s "$(BMR_CRESCENT_GCODE)"
+	@test -s "$(BMR_CRESCENT_SLICE_AUDIT)"
+	@mkdir -p "$(BMR_CRESCENT_REVIEW)"
+	$(PYTHON_RUN) scripts/validate_bmr_crescent_delivery.py \
+		--variant coaxial \
+		--catalog "$(BMR_CRESCENT_CATALOG)" \
+		--facts "$(BMR_CRESCENT_FACTS)" \
+		--profile "$(BMR_CRESCENT_PROFILE)" \
+		--audit "$(BMR_CRESCENT_SLICE_AUDIT)" \
+		--project "$(BMR_CRESCENT_3MF)" \
+		--gcode "$(BMR_CRESCENT_GCODE)" \
+		--review "$(BMR_CRESCENT_REVIEW_AUDIT)"
+
+obiwan_bmr_crescent_opposed_3mf_validate:
+	$(REQUIRE_BMR_CRESCENT_CAD)
+	@test -s "$(BMR_CRESCENT_OPPOSED_3MF)"
+	@test -s "$(BMR_CRESCENT_OPPOSED_GCODE)"
+	@test -s "$(BMR_CRESCENT_OPPOSED_SLICE_AUDIT)"
+	@mkdir -p "$(BMR_CRESCENT_REVIEW)"
+	$(PYTHON_RUN) scripts/validate_bmr_crescent_delivery.py \
+		--variant opposed \
+		--catalog "$(BMR_CRESCENT_OPPOSED_CATALOG)" \
+		--facts "$(BMR_CRESCENT_OPPOSED_FACTS)" \
+		--profile "$(BMR_CRESCENT_OPPOSED_PROFILE)" \
+		--audit "$(BMR_CRESCENT_OPPOSED_SLICE_AUDIT)" \
+		--project "$(BMR_CRESCENT_OPPOSED_3MF)" \
+		--gcode "$(BMR_CRESCENT_OPPOSED_GCODE)" \
+		--review "$(BMR_CRESCENT_OPPOSED_REVIEW_AUDIT)"
+
+obiwan_bmr_crescent_3mf_validate: \
+        obiwan_bmr_crescent_coaxial_3mf_validate \
+        obiwan_bmr_crescent_opposed_3mf_validate
 
 # Local-only structural packaging for the no-floor Obi-Wan LM bottom.  The
 # modifier is slicer geometry, not CAD: it changes infill only where it

@@ -16,12 +16,15 @@ Two variants share that child directory and every gate:
   vase's side-by-side layout on the same crescent mount, 25.1 mm deep and much
   taller, with all four of the vase's captive magnets.
 
-Both carry captive D5 x 2 stations, and neither is wired into the released
-captive-magnet catalog or the sliced pause events: the stations are recorded
-in each part's own facts payload, and wiring them up is part of the
-qualification each variant still owes.  Nothing here is release-authorized;
-the facts payload carries the candidate flags and the exporter refuses to
-pretend otherwise.
+Both carry captive D5 x 2 stations, and both now have the pause wiring the
+vase has: each variant gets its own isolated one-artifact captive-magnet
+catalog binding that exact STL and its stations, scoped to the matching
+already-generated slicing profile, which the local-only Bambu target consumes
+to emit a ready-to-print project with real park/pause/restore events.  What is
+still missing is release status: neither part is in the released 58-artifact
+catalog, the release_validation counts, ``to_print`` or the stage manifests.
+Nothing here is release-authorized; the facts payload carries the candidate
+flags and the exporter refuses to pretend otherwise.
 """
 
 from __future__ import annotations
@@ -70,7 +73,9 @@ from export_piece_stls import (
     _write_print_transform_sidecar,
 )
 from export_steps import FIXED_TIMESTAMP, validate_step_transaction
+from gen_bmr_crescent_slicing_profile import pause_layer_z
 from lx521_baffle.io import pretty_json_bytes, sha256_file
+from lx521_baffle.magnets import DEFAULT_SPEC, NOMINAL_PAIRED_FACE_SEPARATION_MM
 from lx521_baffle.print_contract import (
     RELEASE_ACOUSTIC_PRINT_CONTRACT,
     validate_print_sidecar,
@@ -79,6 +84,8 @@ from lx521_baffle.obiwan import bmr_crescent, bmr_crescent_opposed
 
 
 DEFAULT_OUTPUT_ROOT = PROJECT_ROOT / "build" / "bmr_crescent_TEBM35C10-4"
+CATALOG_SCHEMA = PROJECT_ROOT / "captive_magnet_release_catalog.schema.json"
+CATALOG_SCHEMA_VERSION = 1
 ARTIFACT_STATE = "shared"
 BED_LIMIT_MM = 256.0
 SOURCE_REVISION_ENV = "LX_CAD_SOURCE_SHA256"
@@ -109,6 +116,7 @@ SOURCE_FILES = (
     "scripts/export_bmr_crescent.py",
     "scripts/export_piece_stls.py",
     "scripts/export_steps.py",
+    "scripts/gen_bmr_crescent_slicing_profile.py",
 )
 
 # Both parts are candidates and neither is release-authorized, so these lists
@@ -120,9 +128,10 @@ _SHARED_OPEN_ITEMS = (
     "not taken from the published envelope",
     "M2 x 4 heat-set installation in every D66 land without breakthrough "
     "into a pocket or a magnet cavity",
-    "the captive D5 x 2 stations wired up for release: a catalog entry and "
-    "the sliced pause events, neither of which exists while the part is a "
-    "candidate, then a pull test on the printed land",
+    "a pull test on the printed land: the captive D5 x 2 stations now slice "
+    "with real park/pause/restore events out of their own isolated catalog, "
+    "so what the stations still owe is the released-catalog entry and the "
+    "physical pull, not the pause wiring",
     "the T cable threaded for real: out of the UM's declared mouth, into "
     "the Ø6.00 mate-face entry and on to both drivers, with both drivers "
     "fitted and the pod screwed down",
@@ -179,6 +188,182 @@ def _source_revision(source_hashes: Mapping[str, str]) -> str:
         separators=(",", ":"),
     ).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
+
+
+def _transform_point(
+    matrix: Sequence[Sequence[float]], point: Sequence[float],
+) -> list[float]:
+    return [
+        sum(float(matrix[row][column]) * float(point[column])
+            for column in range(3)) + float(matrix[row][3])
+        for row in range(3)
+    ]
+
+
+def _transform_vector(
+    matrix: Sequence[Sequence[float]], vector: Sequence[float],
+) -> list[float]:
+    return [
+        sum(float(matrix[row][column]) * float(vector[column])
+            for column in range(3))
+        for row in range(3)
+    ]
+
+
+def _site_record(tools, matrix: Sequence[Sequence[float]]) -> dict[str, Any]:
+    record = dict(tools.facts())
+    record.update({
+        "installed_marked_pole_axis_xyz": list(tools.pair_axis_xyz),
+        "polarity_instruction": (
+            "marked/N pole points OUT from the pod along "
+            "installed_marked_pole_axis_xyz; verify the future mating "
+            "piece uses the opposite interface-facing pole before burial"
+        ),
+        "magnet_count": 1,
+        "structural_load_credit_n": 0.0,
+        # These are the vase's own straight side stations, not the Obi-Wan
+        # carrier ring/shoulder kind, so they declare the standard interface
+        # profile and no carrier inset.  The catalog consumer picks between
+        # the two by whether the variant name begins "Obi-Wan"; these two
+        # variants deliberately do not, because the stations are the vase's.
+        "interface_profile": "standard_straight",
+        "carrier_cavity_face_inset_mm": 0.0,
+        "outer_surface_face_xy_mm": list(tools.interface_datum_xyz[:2]),
+        "paired_magnet_face_separation_mm": round(
+            NOMINAL_PAIRED_FACE_SEPARATION_MM, 9),
+    })
+    point_fields = (
+        "actual_face_xyz_mm",
+        "cavity_center_xyz_mm",
+        "seated_magnet_center_xyz_mm",
+    )
+    vector_fields = (
+        "marked_pole_axis_xyz",
+        "insertion_direction_xyz",
+        "material_inward_xyz",
+    )
+    record["print_space"] = {
+        **{key: _transform_point(matrix, record[key])
+           for key in point_fields},
+        **{key: _transform_vector(matrix, record[key])
+           for key in vector_fields},
+    }
+    return record
+
+
+def _load_slicing_profile(path: Path, artifact_id: str) -> dict[str, Any]:
+    """Read the already-generated profile this artifact is scoped to."""
+    if not path.is_file():
+        raise RuntimeError(
+            f"missing slicing profile {path}; run "
+            "scripts/gen_bmr_crescent_slicing_profile.py first")
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise RuntimeError(f"slicing profile is not an object: {path}")
+    if payload.get("catalog_mode") != "auxiliary":
+        raise RuntimeError(f"slicing profile is not auxiliary: {path}")
+    state, variant, part = artifact_id.split(":", 2)
+    if payload.get("artifact_scope") != [{
+            "state": state, "variant": variant, "part": part}]:
+        raise RuntimeError(
+            f"slicing profile {path} is not scoped to {artifact_id}")
+    return payload
+
+
+def _pause_plan(
+    sites: Sequence[Mapping[str, Any]], profile: Mapping[str, Any],
+) -> list[dict[str, Any]]:
+    """Group the stations by the print plane that buries them.
+
+    Cavities that close on the same layer share one insertion pause, exactly
+    as the vase's four do.  Both pods put every station on the same source
+    Z, so both collapse to one group -- but the grouping is computed, not
+    assumed, so a variant that ever moves a land off that plane grows a
+    second pause here instead of silently losing one.
+    """
+    grouped: dict[float, list[Mapping[str, Any]]] = {}
+    for site in sites:
+        plane = round(float(site["cavity_bury_roof_start_print_z_mm"]), 9)
+        grouped.setdefault(plane, []).append(site)
+    return [{
+        "group": index,
+        "cavity_bury_roof_start_plane_z_mm": plane,
+        "expected_pause_marker_z_mm": pause_layer_z(dict(profile), plane),
+        "sites": [str(site["name"]) for site in members],
+        "magnet_count": len(members),
+    } for index, (plane, members) in enumerate(sorted(grouped.items()), 1)]
+
+
+def _catalog(
+    *, output: Path, stl: Path, magnet_tools: Sequence[object],
+    part_name: str, release_variant: str,
+) -> dict[str, Any]:
+    sidecar_path = stl.with_suffix(".print.json")
+    sidecar = validate_print_sidecar(stl, sidecar_path)
+    matrix = sidecar["source_to_stl_matrix"]
+    source_files, source_hashes = _source_bindings(output)
+    sites = [_site_record(tools, matrix) for tools in magnet_tools]
+    artifact_id = f"{ARTIFACT_STATE}:{release_variant}:{part_name}"
+    global_geometry = DEFAULT_SPEC.facts()
+    global_geometry.pop("paired_magnet_face_separation_mm", None)
+    return {
+        "schema_version": CATALOG_SCHEMA_VERSION,
+        "schema_sha256": sha256_file(CATALOG_SCHEMA),
+        "catalog_kind": "released_pause_and_bury_captive_magnets",
+        "generated_by": Path(__file__).name,
+        "source_revision": _source_revision(source_hashes),
+        "print_contract": dict(RELEASE_ACOUSTIC_PRINT_CONTRACT),
+        "geometry": {
+            **global_geometry,
+            "nominal_magnet": "D5.0 x 2.0 mm disc",
+            "paired_magnet_face_separation_by_interface_profile_mm": {
+                "standard_straight": NOMINAL_PAIRED_FACE_SEPARATION_MM,
+            },
+            "glue": False,
+            "external_access_opening": False,
+            "internal_support_material": False,
+            "structural_load_credit_n": 0.0,
+        },
+        "inventory": {
+            "artifact_count": 1,
+            "magnet_count": len(sites),
+            "count_semantics": (
+                "isolated candidate BMR-crescent artifact; not release "
+                "authorized and not an amendment to the protected "
+                "58-artifact / 94-station release inventory"
+            ),
+            "family_counts": {
+                release_variant: {
+                    "artifact_count": 1,
+                    "magnet_count": len(sites),
+                },
+            },
+            "families": [release_variant],
+        },
+        "exclusions": [{
+            "path": "review/captive_magnet_release_catalog.json",
+            "reason": (
+                "the protected production release remains independent; this "
+                "candidate catalog is consumed only with --auxiliary-catalog"
+            ),
+        }],
+        "artifacts": [{
+            "id": artifact_id,
+            "state": ARTIFACT_STATE,
+            "variant": release_variant,
+            "part": part_name,
+            "stl": _relative(stl, output),
+            "stl_sha256": sha256_file(stl),
+            "print_sidecar": _relative(sidecar_path, output),
+            "print_sidecar_sha256": sha256_file(sidecar_path),
+            "print_orientation": "front_face_down",
+            "rotation_deg": sidecar["rotation_deg"],
+            "source_to_stl_matrix": matrix,
+            "sites": sites,
+            "source_files": source_files,
+            "source_file_sha256": source_hashes,
+        }],
+    }
 
 
 def _validate_native_round_trip(path: Path, *, expected_volume: float) -> None:
@@ -313,11 +498,15 @@ def _qualification(
         "in_obiwan_stage_manifest": False,
         "in_to_print": False,
         "in_captive_magnet_release_catalog": False,
+        "has_captive_magnet_pause_delivery": True,
         "magnet_release_wiring_note": (
             f"the part buries {module.MAGNET_COUNT} captive D5 x 2 stations "
-            "and is deliberately absent from the released catalog, the "
-            "release_validation counts and the slicing profiles; the "
-            "stations are recorded under design.magnets instead"),
+            "and slices them with real park/pause/restore events out of its "
+            "own isolated auxiliary catalog and profile, recorded under "
+            "delivery; it remains deliberately absent from the released "
+            "catalog, the release_validation counts and the two released "
+            "slicing profiles, so the release-catalog entry is the one piece "
+            "of the magnet wiring still outstanding"),
         "open_items": list(_SHARED_OPEN_ITEMS) + list(open_items),
         "closed_items": list(_SHARED_CLOSED_ITEMS),
     }
@@ -350,9 +539,11 @@ def export_artifacts(output_root: Path, variant: _Variant) -> dict[str, Path]:
         "step": output_root / f"{part_name}.step",
         "stl": output_root / f"{part_name}.stl",
         "facts": output_root / f"{part_name}.facts.json",
+        "catalog": output_root / f"{part_name}.catalog.json",
         "manifest": output_root / f"cad_manifest_{variant.key}.json",
         "stamp": output_root / f".stamp_cad_validated_{variant.key}",
     }
+    profile_path = output_root / f"{part_name}.slicing_profile.json"
     model = module.build_model()
     solid = model.solid
     # One outer shell plus one sealed void per captive station.  The cavities
@@ -370,14 +561,72 @@ def export_artifacts(output_root: Path, variant: _Variant) -> dict[str, Path]:
     sidecar = paths["stl"].with_suffix(".print.json")
     validate_print_sidecar(paths["stl"], sidecar)
 
+    artifact_id = f"{ARTIFACT_STATE}:{release_variant}:{part_name}"
+    catalog = _catalog(
+        output=paths["catalog"], stl=paths["stl"],
+        magnet_tools=model.magnet_tools,
+        part_name=part_name, release_variant=release_variant)
+    _atomic_json(paths["catalog"], catalog)
+
+    # Validate the isolated catalog with the same strict consumer the release
+    # uses, changing only the protected release-inventory count gate.
+    from release_validation import (
+        _validate_artifact_bindings,
+        normalize_catalog,
+    )
+
+    normalized = normalize_catalog(
+        paths["catalog"], enforce_release_inventory=False)
+    for artifact in normalized["artifacts"]:
+        _validate_artifact_bindings(artifact)
+
+    profile = _load_slicing_profile(profile_path, artifact_id)
+    pause_plan = _pause_plan(catalog["artifacts"][0]["sites"], profile)
+    if sum(group["magnet_count"] for group in pause_plan) != (
+            module.MAGNET_COUNT):
+        raise RuntimeError(
+            f"{part_name}: the pause plan does not cover every station")
+
     source_files, source_hashes = _source_bindings(paths["facts"])
     source_bbox = solid.bounding_box()
     facts = {
         "schema_version": 1,
         "generated_by": Path(__file__).name,
-        "artifact": f"{ARTIFACT_STATE}:{release_variant}:{part_name}",
+        "artifact": artifact_id,
         "qualification": _qualification(variant, variant.open_items),
         "print_contract": dict(RELEASE_ACOUSTIC_PRINT_CONTRACT),
+        "delivery": {
+            "catalog_mode": "auxiliary",
+            "catalog": {"path": paths["catalog"].name,
+                        "sha256": sha256_file(paths["catalog"])},
+            "slicing_profile": {
+                "path": profile_path.name,
+                "sha256": sha256_file(profile_path),
+                "generated_from": profile["generated_from"],
+                "filament": profile["filament"],
+                "process": profile["process"],
+                "wall_loops": profile["repo_overrides"]["process"][
+                    "wall_loops"],
+                "sparse_infill_density": profile["repo_overrides"]["process"][
+                    "sparse_infill_density"],
+                "sparse_infill_pattern": profile["repo_overrides"]["process"][
+                    "sparse_infill_pattern"],
+                "support_enabled": profile["requirements"][
+                    "support_enabled"],
+            },
+            "pause_manifest": {
+                "pause_group_count": len(pause_plan),
+                "magnet_count": module.MAGNET_COUNT,
+                "park_z_mm": profile["magnet_insertion_pause"]["park_z_mm"],
+                "pause_marker_authority": (
+                    "sliced G-code first-closing layer; the expected Z below "
+                    "is the profile's own layer ladder over the CAD closing "
+                    "plane and is what the delivery validator holds the "
+                    "slice to"),
+                "groups": pause_plan,
+            },
+            "promoted_project": f"{part_name}.gcode.3mf",
+        },
         "magnet_count": module.MAGNET_COUNT,
         "stand_state": os.environ.get("LX_STAND_FOOT", ""),
         "stand_state_independent": True,
@@ -414,6 +663,10 @@ def export_artifacts(output_root: Path, variant: _Variant) -> dict[str, Path]:
                     "sha256": sha256_file(paths["stl"])},
             "print_sidecar": {"path": sidecar.name,
                               "sha256": sha256_file(sidecar)},
+            "catalog": {"path": paths["catalog"].name,
+                        "sha256": sha256_file(paths["catalog"])},
+            "slicing_profile": {"path": profile_path.name,
+                                "sha256": sha256_file(profile_path)},
         },
     }
     _atomic_json(paths["facts"], facts)
@@ -421,7 +674,7 @@ def export_artifacts(output_root: Path, variant: _Variant) -> dict[str, Path]:
     manifest_files = tuple(
         path for key, path in paths.items()
         if key not in {"manifest", "stamp"}
-    ) + (sidecar,)
+    ) + (sidecar, profile_path)
     _atomic_json(paths["manifest"], {
         "schema_version": 1,
         "artifact": f"{ARTIFACT_STATE}:{release_variant}:{part_name}",
@@ -445,6 +698,9 @@ def export_artifacts(output_root: Path, variant: _Variant) -> dict[str, Path]:
             # either a station vanished or something else sealed itself in.
             "captive_magnet_voids": module.MAGNET_COUNT,
             "shell_count": len(solid.shells()),
+            "auxiliary_catalog_bindings": "pass",
+            "slicing_profile_scope": "pass",
+            "pause_group_count": len(pause_plan),
         },
     })
     paths["stamp"].write_text(
