@@ -6,10 +6,10 @@
   },
   "files": [
     {
-      "bytes": 988718,
+      "bytes": 988620,
       "path": "cad/attachments.step",
       "role": "attachment_set",
-      "sha256": "6b30eb79709726ed7a2137d6251e0ff4ec570dd649db2df214423a85416fa55e",
+      "sha256": "2665dfa2d15b75e1a966d6a2e6c85378e8a1b3e16f952e8a28c2677ab15ec278",
       "source": "build/common/attachments.step"
     },
     {
@@ -37,7 +37,7 @@
       "bytes": 45408443,
       "path": "cad/wings_assembly.step",
       "role": "optional_wings_assembly",
-      "sha256": "dfe9549b041229ab11dc6ed4af7bead160730eded3e31482cf15a54374779f60",
+      "sha256": "fe01bb187b7e43ef64c87b180fd1296e1a9e1fb5339272b73b658f20d99ef307",
       "source": "build/no_floor_stand/b1_assembled.step"
     },
     {

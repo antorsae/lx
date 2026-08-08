@@ -83,10 +83,10 @@
       "source": "images/generated/obiwan/floor/core_top_20260718T100012Z.png"
     },
     {
-      "bytes": 21600,
+      "bytes": 21713,
       "path": "states/floor/manifest.json",
       "role": "candidate_manifest",
-      "sha256": "a8d0ade60ecfe4552f8ad41f5b6f41767cf0561df57993a854f2d52a30fe636b",
+      "sha256": "8c1d4ffe6081c8d844690d8bf2859ec2c76db905efd0cc80956b406ff830d125",
       "source": "build/floor_stand/obiwan_release_manifest.json"
     },
     {
@@ -237,10 +237,10 @@
       "source": "images/generated/obiwan/no_floor/core_top_20260718T095957Z.png"
     },
     {
-      "bytes": 20754,
+      "bytes": 20867,
       "path": "states/no_floor/manifest.json",
       "role": "candidate_manifest",
-      "sha256": "bd60d326e3d96d41e25fb4415893c05defba011cfedba96732b65d438e1b4563",
+      "sha256": "8f115b7d0a1d7e1ce954d6c28f60d426d06590722b98c5b5bea59418c27c91bd",
       "source": "build/no_floor_stand/obiwan_release_manifest.json"
     },
     {
@@ -331,7 +331,7 @@
       "bytes": 77829,
       "path": "wings/flat/facts.json",
       "role": "geometry_facts",
-      "sha256": "8cd1e0ffa1e5faf5a5c1939a5786f577448104e53d371d754b723cc87e7dbba3",
+      "sha256": "7aa1479d32e46466992b7df04080168288f4e8290f2bbc9db97143ac92a229ba",
       "source": "build/wings/flat/obiwan_wing_flat_facts.json"
     },
     {
@@ -373,7 +373,7 @@
       "bytes": 14818,
       "path": "wings/flat/manifest.json",
       "role": "wing_manifest",
-      "sha256": "4ca2ae47b8d37cee577d81c67a1b9c5e9ac0e541f5a1c5e6c5121f6e0e6885cb",
+      "sha256": "006d5529674c0e8b59acdf4fc14619bb5aa89a719a2a35d06dfd05a3a9d4ff97",
       "source": "build/wings/flat/obiwan_wing_flat_print_manifest.json"
     },
     {
@@ -478,7 +478,7 @@
       "bytes": 80253,
       "path": "wings/graded/facts.json",
       "role": "geometry_facts",
-      "sha256": "70d51b462ff1342dc1fd300c85e2b43c094558cd3705549414d8080d4b7b558d",
+      "sha256": "dc101b9015f08f7486e4b4fe76b42845952a627cd56ea29e807dbd84784daa93",
       "source": "build/wings/graded/obiwan_wing_graded_facts.json"
     },
     {
@@ -520,7 +520,7 @@
       "bytes": 14958,
       "path": "wings/graded/manifest.json",
       "role": "wing_manifest",
-      "sha256": "768834a557305867b9840d7daca9ca3703d8fa6a3d908eb70f90b3301dfb12f6",
+      "sha256": "50c2a6b79ccaaad0793fffd7995671b9411dd64dec9730902729de1a4b7ab9c6",
       "source": "build/wings/graded/obiwan_wing_graded_print_manifest.json"
     },
     {
