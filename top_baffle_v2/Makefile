@@ -438,9 +438,19 @@ MU10_REFS := ../linkwitz/H1658-04_MU10RB-SL_driver.stl \
              ../linkwitz/H1658-04_MU10RB-SL_driver_STL_notes.md \
              ../linkwitz/H1658-04_MU10RB-SL_Datasheet.pdf
 W22_REFS := ../E0022_W22EX001.stp
-CAD_SRCS_ALL := $(wildcard src/lx521_baffle/*.py) \
+# Candidate-only BMR modules are consumed exclusively by the local
+# obiwan_bmr_crescent_cad target, which lists them explicitly in
+# BMR_CRESCENT_CAD_SRCS.  Nothing released imports them, so they are
+# filtered out of the release prerequisite groups — a BMR edit must not
+# rebuild the stock/slim/obiwan CAD trees.
+BMR_CANDIDATE_CAD_SRCS := \
+        src/lx521_baffle/obiwan/bmr_pod.py \
+        src/lx521_baffle/obiwan/bmr_crescent.py \
+        src/lx521_baffle/obiwan/bmr_crescent_opposed.py
+CAD_SRCS_ALL := $(filter-out $(BMR_CANDIDATE_CAD_SRCS),\
+        $(wildcard src/lx521_baffle/*.py) \
         $(wildcard src/lx521_baffle/proud/*.py) \
-        $(wildcard src/lx521_baffle/obiwan/*.py)
+        $(wildcard src/lx521_baffle/obiwan/*.py))
 # These modules are consumed only by the Obi-Wan release family.  Keep the
 # legacy/common dependency set conservative (it still contains the shared
 # Obi-Wan route/floor stack reached through src/lx521_baffle/cables.py), while
