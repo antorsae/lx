@@ -3,7 +3,7 @@
     {
       "file_count": 35,
       "manifest": "stock/manifest.json",
-      "manifest_sha256": "b3e4dac17a2efff400630e6690f5e1c96fb0931954e3b7f8bd3a52ba494b6216",
+      "manifest_sha256": "55d4fbe513a34d014c042281b73cb476d22e01fe52a30fcb510e38977071a103",
       "product": "stock",
       "release_authorized": null,
       "status": "canonical_cad"
@@ -19,7 +19,7 @@
     {
       "file_count": 86,
       "manifest": "obiwan/manifest.json",
-      "manifest_sha256": "6be806e304ca9f18c34d551b0b739829523812895b98cc386b0ca4c8fb59bf89",
+      "manifest_sha256": "635698609aefa7c6ae4897932221e49e56a5fcdd9ed659d0afbd1caa76ba27a0",
       "product": "obiwan",
       "release_authorized": false,
       "status": "candidate_not_release_authorized"

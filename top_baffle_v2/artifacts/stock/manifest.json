@@ -6,10 +6,10 @@
   },
   "files": [
     {
-      "bytes": 988621,
+      "bytes": 988620,
       "path": "cad/attachments.step",
       "role": "attachment_set",
-      "sha256": "e045e397fa0e16b5bde102eb6cdf7c69d063efb50e0cb8a1b9bc18fc1286b633",
+      "sha256": "2665dfa2d15b75e1a966d6a2e6c85378e8a1b3e16f952e8a28c2677ab15ec278",
       "source": "build/common/attachments.step"
     },
     {

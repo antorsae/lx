@@ -49,12 +49,12 @@
   ],
   "split_variant": "b",
   "stl": "obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.stl",
-  "stl_bytes": 19929784,
+  "stl_bytes": 14509384,
   "stl_origin_translation_mm": [
     -224.57655354081865,
     166.7019970534017,
     18.30000009999998
   ],
-  "stl_sha256": "9bab730a8c5bdc959cd236c0380642a7568e9ab456bb6adf6c4de9f5c32bd1af",
+  "stl_sha256": "b08fd0d58c53baa2a5aa58bdb939897fae21dc32c23084b809166d3fbd35b297",
   "variant_slug": "graded"
 }

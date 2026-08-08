@@ -11,7 +11,7 @@
   "pre_translation_bbox_min_mm": [
     80.58842664146518,
     -31.553209388489122,
-    -18.300000099999984
+    -18.30000009999999
   ],
   "print_orientation": "front_face_down",
   "role": "lm_lower",
@@ -38,7 +38,7 @@
       0.0,
       0.0,
       -1.0,
-      18.300000099999984
+      18.30000009999999
     ],
     [
       0.0,
@@ -49,12 +49,12 @@
   ],
   "split_variant": "b",
   "stl": "obiwan_wing_graded_left_split2_1_of_2_lm_lower.stl",
-  "stl_bytes": 34290884,
+  "stl_bytes": 3841084,
   "stl_origin_translation_mm": [
     -80.58842664146518,
     31.553209388489122,
-    18.300000099999984
+    18.30000009999999
   ],
-  "stl_sha256": "79372c83362b259cb93e75072dec7284d2ca9978c4a6368fbfced81e45cccd2b",
+  "stl_sha256": "8b1c4e002381707c30025aad75880cbfa870091c05f79d3b1f2c2fd29f9348aa",
   "variant_slug": "graded"
 }
