@@ -308,6 +308,156 @@ def test_foot_lane_webs():
         print(f"  {name} Option-B entry minimum R{entry_radius:.2f}")
         assert entry_radius >= 41.0 - 0.03
 
+    _slim_floor_ramped_bend_lane_cover(samples)
+
+
+# V1L floor state: the stand wall is thickness-ramped, so the concave face
+# lifts away from the parallel offset as the sweep progresses and the lanes
+# are rerouted convex-ward to follow it (see cables.V1L_FLOOR_LANE_SHIFTS_YZ).
+#
+# The released gate for these lanes was containment alone.  These pins ADD
+# the cover the containment rule never bound, so any future drift in either
+# the ramp law or the lane shapes fails loudly instead of quietly eating the
+# duct wall.  Both floors are measured, not aspirational:
+#
+#   * concave (rear/inner) cover is capped by each lane's FIXED plate-side
+#     join, where the ramp has already cut the plate to ~11.8 mm.  No reroute
+#     can beat that cap.  Measured: LM 1.6500, UM 2.1485, TS 1.9413.
+#   * every one clears the slim family's 1.6 mm duct-skin rule
+#     (_ts_floor_skin) and the released bend's own tightest point (UM 1.4743).
+#   * convex (front/outer) cover is unchanged at LM 1.2500, UM 1.6500,
+#     TS 3.8000: it is set at the same fixed joins, which the reroute does
+#     not move.
+#
+# Accepted with the full-ramp decision: LM gives up 1.68 mm of incidental
+# rear cover and TS 0.37 mm, and TS's lane radius falls R57.5 -> R46.9.  All
+# three stay above the R41 qualified lane contract.
+SLIM_FLOOR_LANE_MIN_CONCAVE_MM = {"lm": 1.64, "um": 2.13, "ts": 1.93}
+SLIM_FLOOR_LANE_MIN_CONVEX_MM = {"lm": 1.24, "um": 1.64, "ts": 3.79}
+SLIM_FLOOR_LANE_MIN_RADIUS_MM = {"lm": 47.4, "um": 42.4, "ts": 46.8}
+SLIM_FLOOR_DUCT_SKIN_RULE_MM = 1.6
+# The reroute is confined to Y-Z, so the released foot x-packing webs are the
+# floor the rerouted lanes must still clear in full 3D.
+SLIM_FLOOR_LANE_MIN_WEB_MM = {("lm", "um"): 3.40, ("lm", "ts"): 4.50,
+                              ("um", "ts"): 4.50}
+
+
+def _slim_floor_ramped_bend_lane_cover(samples: int):
+    """Cover gate for the V1L floor lanes under the ramped stand wall."""
+    from shapely.geometry import LineString, Point, Polygon
+    from shapely.ops import unary_union
+    from lx521_baffle.cables import (
+        FOOT_LANES,
+        UM_V1L_HANDOFF_KEY,
+        TS_ROUTE_CAPTIVE,
+        proud_floor_entry_controls,
+    )
+    from lx521_baffle.floor_bend import (
+        WALL_HALF_THICKNESS_MM,
+        WALL_THICKNESS_MM,
+        bezier_point,
+        centerline_controls,
+        cubic_derivatives,
+        cubic_point,
+    )
+    from lx521_baffle.proud.v1l_split import (
+        FLOOR_RAMP_SLIM_Y_MM,
+        FLOOR_RAMP_VERTICAL_TANGENT_Y_MM,
+        floor_ramp_rear_cut_mm,
+        floor_ramp_wall_thickness_law,
+    )
+
+    controls = centerline_controls()
+    horizontal_z = controls[0][2]
+
+    def offsets(parameter):
+        point = cubic_point(controls, parameter)
+        first, _second = cubic_derivatives(controls, parameter)
+        norm = math.hypot(first[1], first[2])
+        normal = (-first[2] / norm, first[1] / norm)
+        thickness = floor_ramp_wall_thickness_law(parameter)
+        convex = (point[1] + WALL_HALF_THICKNESS_MM * normal[0],
+                  point[2] + WALL_HALF_THICKNESS_MM * normal[1])
+        concave = (
+            point[1] + (WALL_HALF_THICKNESS_MM - thickness) * normal[0],
+            point[2] + (WALL_HALF_THICKNESS_MM - thickness) * normal[1])
+        return convex, concave
+
+    bend = [offsets(index / samples) for index in range(samples + 1)]
+    plate_ys = [
+        FLOOR_RAMP_VERTICAL_TANGENT_Y_MM
+        + (130.0 - FLOOR_RAMP_VERTICAL_TANGENT_Y_MM) * index / samples
+        for index in range(samples + 1)]
+    # Concave chain: foot roof -> bend inner offset -> ramped plate rear.
+    concave_chain = (
+        [(WALL_THICKNESS_MM, -150.0), (WALL_THICKNESS_MM, horizontal_z)]
+        + [pair[1] for pair in bend]
+        + [(y, floor_ramp_rear_cut_mm(max(0.0, FLOOR_RAMP_SLIM_Y_MM - y)))
+           for y in plate_ys])
+    # Convex chain: foot underside -> bend outer offset -> plate front face.
+    convex_chain = (
+        [(0.0, -150.0), (0.0, horizontal_z)]
+        + [pair[0] for pair in bend]
+        + [(y, WALL_THICKNESS_MM) for y in plate_ys])
+    region = Polygon(convex_chain + list(reversed(concave_chain)))
+    region = unary_union([region.buffer(0)])
+    concave_line = LineString(concave_chain)
+    convex_line = LineString(convex_chain)
+
+    sampled = {}
+    for name, lane in FOOT_LANES.items():
+        lane_controls = proud_floor_entry_controls(
+            name,
+            um_handoff_key=UM_V1L_HANDOFF_KEY,
+            ts_route_key=TS_ROUTE_CAPTIVE,
+        )
+        points = np.asarray([
+            bezier_point(lane_controls, index / samples)
+            for index in range(samples + 1)])
+        sampled[name] = points
+        radius = lane[4] / 2.0
+        inside = np.asarray([
+            region.contains(Point(y, z)) for y, z in points[:, 1:]])
+        tube = LineString(points[inside][:, 1:]).buffer(
+            radius, resolution=48, cap_style=2)
+        outside_area = tube.difference(region).area
+        assert outside_area <= 1.0e-6, (
+            f"{name} V1L floor trunk leaves the ramped stand wall by "
+            f"{outside_area:.6f} mm2 in side projection")
+        in_wall = points[inside][:, 1:]
+        concave = min(
+            concave_line.distance(Point(y, z)) for y, z in in_wall) - radius
+        convex = min(
+            convex_line.distance(Point(y, z)) for y, z in in_wall) - radius
+        entry_radius = _min_three_point_radius(points)
+        print(f"  {name} V1L ramped-bend cover: concave {concave:.4f} / "
+              f"convex {convex:.4f} mm, entry R{entry_radius:.2f}")
+        assert concave >= SLIM_FLOOR_DUCT_SKIN_RULE_MM, (
+            f"{name} V1L floor trunk rear skin {concave:.4f} < the "
+            f"{SLIM_FLOOR_DUCT_SKIN_RULE_MM} mm slim duct-skin rule")
+        assert concave >= SLIM_FLOOR_LANE_MIN_CONCAVE_MM[name], (
+            f"{name} V1L rear cover {concave:.4f} below its pin "
+            f"{SLIM_FLOOR_LANE_MIN_CONCAVE_MM[name]}")
+        assert convex >= SLIM_FLOOR_LANE_MIN_CONVEX_MM[name], (
+            f"{name} V1L front cover {convex:.4f} below its pin "
+            f"{SLIM_FLOOR_LANE_MIN_CONVEX_MM[name]}")
+        assert entry_radius >= 41.0 - 0.03, (
+            f"{name} V1L lane R{entry_radius:.2f} below the R41 contract")
+        assert entry_radius >= SLIM_FLOOR_LANE_MIN_RADIUS_MM[name], (
+            f"{name} V1L lane R{entry_radius:.2f} below its pin "
+            f"R{SLIM_FLOOR_LANE_MIN_RADIUS_MM[name]}")
+
+    for (first, second), floor_mm in SLIM_FLOOR_LANE_MIN_WEB_MM.items():
+        separation = float(np.linalg.norm(
+            sampled[first][:, None, :] - sampled[second][None, :, :],
+            axis=2).min())
+        web = separation - (
+            FOOT_LANES[first][4] + FOOT_LANES[second][4]) / 2.0
+        print(f"  {first}-{second} V1L lane web {web:.4f} mm")
+        assert web >= floor_mm - 1.0e-6, (
+            f"{first}-{second} V1L lane web {web:.4f} < the released "
+            f"{floor_mm} mm foot packing floor")
+
 
 def test_stock_slim_floor_bend_lateral_envelope():
     """The Option-B wall must reach both existing side envelopes smoothly."""
@@ -2193,21 +2343,26 @@ def test_emboss_driver_keepouts():
         f"V1L mid-left ID enters LM keepout by {collision.volume:.6f} mm3")
 
     # The bottom ID sits just above the Option-B vertical tangent in both
-    # stand states, but a different thing keeps it flat in each.  No-floor
+    # stand states, but a different thing keeps it usable in each.  No-floor
     # keeps the full-depth plane from the tangent up to the short y=78 ramp
-    # start.  The floor bottom has no such band: its ramp begins AT the
-    # tangent and runs the whole way to the seam, so the label instead
-    # relies on the quintic's flat foot.  Bind that depth directly -- the
-    # 0.4 mm recess is cut from the local rear face, so a ramp that fell
-    # away under the label would thin the engraving at its far end.  Both
-    # limits are arithmetic and hold whichever state this process is in.
-    # Use the complete longest label, not only its nominal anchor.
+    # start, so its local rear is exactly flat.  The floor bottom has no flat
+    # band at all: its ramp now runs in PATH LENGTH from the seam right
+    # through the bend, so the label sits on a gently falling rear face and
+    # the 0.4 mm recess is deepest at the label's low end.
+    #
+    # Bind the fall across the complete longest label, not the nominal
+    # anchor.  0.15 mm is the measured 0.1400 mm plus a working margin; the
+    # recess then runs 0.438 mm at the bottom of the glyphs to 0.298 mm at
+    # the top, both comfortably printable, and _emboss's own 0.42-of-cutter
+    # rule still sees ~0.46.  The user accepted this engraving trade when
+    # they chose the full ramp to the horizontal tangent: every shorter ramp
+    # is STEEPER here and reads worse (an 88 mm ramp leaves only 0.09 mm of
+    # recess at the top of the label).
     from lx521_baffle.floor_bend import centerline_controls
-    from lx521_baffle.geom import smootherstep01
-    from lx521_baffle.proud.v1l import RAMP_Y0, REAR_MM
+    from lx521_baffle.proud.v1l import RAMP_Y0
     from lx521_baffle.proud.v1l_split import (
-        FLOOR_RAMP_FULL_DEPTH_Y_MM,
         FLOOR_RAMP_SLIM_Y_MM,
+        floor_ramp_rear_cut_mm,
     )
 
     bx, by, brot, bfont, bshort = EMBOSS_XY["_1_of_4_bottom"]
@@ -2222,16 +2377,16 @@ def test_emboss_driver_keepouts():
     tangent_y = centerline_controls()[-1][1]
     assert text_y_min >= tangent_y + 0.4
     assert text_y_max <= RAMP_Y0 - 0.4
-    ramp_drop_mm = REAR_MM * smootherstep01(
-        (text_y_max - FLOOR_RAMP_FULL_DEPTH_Y_MM)
-        / (FLOOR_RAMP_SLIM_Y_MM - FLOOR_RAMP_FULL_DEPTH_Y_MM))
-    assert ramp_drop_mm <= 0.05, (
-        f"floor-state ramp falls {ramp_drop_mm:.3f} mm away under the "
-        "bottom ID; the 0.4 mm recess needs a flat local rear")
+    ramp_fall_mm = (
+        floor_ramp_rear_cut_mm(FLOOR_RAMP_SLIM_Y_MM - text_y_max)
+        - floor_ramp_rear_cut_mm(FLOOR_RAMP_SLIM_Y_MM - text_y_min))
+    assert ramp_fall_mm <= 0.15, (
+        f"floor-state ramp falls {ramp_fall_mm:.3f} mm away under the "
+        "bottom ID; the 0.4 mm recess would thin past use at its far end")
     assert math.isclose(bx, 0.0, abs_tol=1e-12)
     print(f"  V1L mid-left ID clears the LM opening; bottom ID keeps the "
-          f"no-floor flat band and sits on the floor ramp's flat foot "
-          f"({ramp_drop_mm:.3f} mm of fall across the label)")
+          f"no-floor flat band and rides the floor ramp's path-length "
+          f"quintic ({ramp_fall_mm:.3f} mm of fall across the label)")
 
 
 def test_margin_dashboard():

@@ -364,10 +364,12 @@ EMBOSS_XY = {
     # corner was replaced by the rearward Option-B bend.  This centered band
     # is on the retained vertical tangent: the tallest V1L label spans
     # y=74.63..77.55, leaving ~0.45 mm above the R41 wall endpoint (74.15).
-    # What keeps the band flat differs by stand state: no-floor holds the
-    # full-depth plane up to V1L's ramp start (78.0), while the floor state's
-    # long ramp begins at the tangent itself and has only fallen 0.03 mm by
-    # the top of the label.  test_emboss_driver_keepouts binds both.
+    # No-floor holds the full-depth plane up to V1L's ramp start (78.0), so
+    # its local rear is flat.  The floor state's path-length ramp is still
+    # climbing here and falls 0.140 mm across the label, so the recess runs
+    # 0.438 mm at the bottom of the glyphs to 0.298 mm at the top -- an
+    # accepted trade for reaching full depth at the horizontal tangent.
+    # test_emboss_driver_keepouts binds both states.
     # Anchors are keyed by the piece-name tail, which is unique across both
     # proud products: stock and slim number their shoulders differently, but
     # a shoulder always ends in its corner and a base piece in its role.

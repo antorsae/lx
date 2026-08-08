@@ -63,15 +63,63 @@ up to it depends on the stand state:
 
 * **no floor stand** — smoothstep ramp y=78 -> 96: full past the top
   pass-through seats +5, thin 10 short of the D190 edge.
-* **floor stand** — one quintic smootherstep ramp y=74.15 -> 118, i.e. the
-  whole span the stand leaves free. It reaches full depth exactly at the
-  Option-B vertical tangent, so it rejoins the stand arc's rear face
-  tangentially instead of swelling over 18 mm just above it, and it stays
-  slim through the seam-A dovetails and the 2 mm below their root so the
-  shared mid pieces mate identically in both states.
+* **floor stand** — one quintic smootherstep in PATH LENGTH along the whole
+  combined profile: s=0 at the slim field 2 mm below the seam-A dovetail
+  root, 43.85 mm down the flat plate to the Option-B vertical tangent, then
+  115.739 mm on along the bend centreline as it sweeps, for a total of
+  159.589 mm. Full 18.3 mm depth is reached exactly at the HORIZONTAL
+  tangent (y=9.15, z=-65.85), where the arc has finished turning and the
+  foot begins. Because it is one smootherstep over one parameter there is no
+  knee anywhere, and value and slope are continuous at the vertical tangent
+  by construction rather than by matching two stitched ramps. The wall is
+  12.393 mm at the vertical tangent (rear face z=5.907). It stays slim
+  through the seam-A dovetails and the 2 mm below their root, so the shared
+  mid pieces mate identically in both states.
+
+  Thickness through the bend is measured normal to the swept surface: the
+  CONVEX face stays on the exact 9.15 mm parallel offset -- it is the
+  floor-contact plane at one end and the front-flush plate face at the other
+  -- and only the concave face lifts away. The wall is built by lofting 65
+  stations rather than by the released multisection sweep, which relocates
+  off-centre profiles onto the spine and missed the law by up to 0.741 mm.
+
+  The concave face is where the three cable lanes run, so carrying the ramp
+  through the bend forces them convex-ward; see the cover table below.
 
 W22 heat-sets unchanged (floor keeps a 4.5 wall; the floor state's ramp puts
-4.98 mm behind the two inserts at y=110.265, up from 4.7). It preserves
+4.707 mm behind the two inserts at y=110.265, essentially the no-floor 4.7).
+
+### Floor lanes through the ramped bend (floor state, V1L only)
+
+The released lanes are cubics translated off the wall centreline, so they
+swing to the CONCAVE side around mid-arc -- exactly the face the ramp moves
+-- and the ramped wall would have opened the UM and TS bores there (18.769
+and 13.346 mm² outside the wall in side projection; 60.75 and 34.39 mm³ of
+bore measured against the built solid). Each lane is therefore degree-
+elevated to a quintic and its two interior control points biased
+convex-ward in Y-Z only. Both endpoints and
+both endpoint tangent directions are untouched, so the straight foot run
+stays G1 into the curve and the plate-side handoff still mates the released
+main exactly; X is untouched, so the plan and the foot-lane packing webs are
+unchanged (`cables.V1L_FLOOR_LANE_SHIFTS_YZ`).
+
+| lane | rear (concave) cover | front (convex) | lane Rmin | path moved |
+|---|---|---|---|---|
+| LM Ø9 | **1.650** (was 3.327) | 1.250 unchanged | R47.5 (was R47.7) | 0.53 mm |
+| UM Ø8.2 | **2.149** (was 1.474) | 1.650 unchanged | R42.5 (was R42.8) | 2.35 mm |
+| TS Ø6 | **1.941** (was 2.307) | 3.800 unchanged | R46.9 (was R57.5) | 2.11 mm |
+
+Every rear cover clears the slim family's 1.6 mm duct-skin rule and the
+released bend's own tightest point (UM 1.474); every radius clears the R41
+qualified lane contract. The rear covers are capped by each lane's FIXED
+plate-side join (y=84.67 / 82.0 / 90.0), where the ramp has already cut the
+plate to ~11.8 mm -- 1.692 / 2.190 / 1.977 mm. No reroute can beat those:
+they follow from the join position, the bore radius and the ramp law alone.
+LM giving up 1.68 mm of incidental cover and TS 13 mm of lane radius is the
+accepted price of reaching full depth at the horizontal tangent.
+`test_foot_lane_webs` pins all of it.
+
+It preserves
 the common proud entries, LM route, and tweeter route, but its UM outlet is
 a keyed V1L-only alternate:
 

@@ -69,7 +69,7 @@ from .floor_bend import (
     BEND_REAR_SPAN_MM,
     BEND_VERTICAL_HANDLE_MM,
     canonical_lane_controls,
-    cubic_point as floor_bend_cubic_point,
+    bezier_point as floor_bend_bezier_point,
 )
 from .base import (
     L22_CUTOUT,
@@ -977,10 +977,65 @@ def _proud_floor_join(name: str, um_handoff_key: str = "proud",
     raise ValueError(f"unknown proud floor trunk {name!r}")
 
 
+# V1L floor state ONLY: convex-ward bias of the floor lanes.
+#
+# The V1L bottom's rear-thickness ramp runs on through the Option-B bend, so
+# the stand's concave face lifts away from the outer offset as the sweep
+# progresses.  The released lanes are cubics translated from the wall
+# centreline, which swing to the CONCAVE side around mid-arc -- exactly the
+# face that moves -- and the ramped wall would open the UM and TS bores
+# there (18.769 and 13.346 mm2 outside in side projection).
+#
+# Each lane is therefore degree-elevated from its released cubic to a
+# quintic (elevation is exact: the released path is reproduced to 1.4e-14 mm
+# at zero shift) and its two interior control points are biased in the Y-Z
+# plane only.  Both endpoints and both endpoint tangent DIRECTIONS are
+# untouched, so the straight foot run stays G1 into the curve and the
+# plate-side handoff still mates the released main exactly; X is untouched,
+# so the plan and the foot-lane packing webs are unchanged.
+#
+# Shifts are (dy, dz) for the third and fourth control points, solved for the
+# smallest path change that holds every cover.  Measured by
+# test_foot_lane_webs, which pins all of it:
+#   LM  concave 1.6500   convex 1.2500   R47.53   path moved 0.53 mm
+#   UM  concave 2.1485   convex 1.6500   R42.50   path moved 2.35 mm
+#   TS  concave 1.9413   convex 3.8000   R46.91   path moved 2.11 mm
+# Every concave cover clears the slim family's 1.6 mm duct-skin rule and the
+# released bend's own tightest point (UM 1.4743); every radius clears the R41
+# qualified lane contract.  The concave floors are capped by each lane's
+# FIXED plate-side join, where the ramp has already cut the plate to ~11.8 mm
+# (LM 1.6916, UM 2.1903, TS 1.9774); no reroute can beat them.
+V1L_FLOOR_LANE_SHIFTS_YZ = {
+    "lm": ((-0.7980, 0.7989), (-0.9064, 0.9056)),
+    "um": ((-7.4946, 5.1144), (1.0988, 2.2644)),
+    "ts": ((-0.6224, 4.4015), (-5.6765, 2.2651)),
+}
+
+
+def _degree_elevate(controls):
+    """Exact Bezier degree elevation by one."""
+    degree = len(controls) - 1
+    return (
+        (tuple(controls[0]),)
+        + tuple(
+            tuple(
+                (index / (degree + 1)) * controls[index - 1][axis]
+                + (1.0 - index / (degree + 1)) * controls[index][axis]
+                for axis in range(3))
+            for index in range(1, degree + 1))
+        + (tuple(controls[degree]),)
+    )
+
+
 def proud_floor_entry_controls(
         name: str, um_handoff_key: str = "proud",
         ts_route_key: str = TS_ROUTE_STANDARD):
-    """Exact direct cubic from one rear foot lane to its qualified main."""
+    """Floor-lane Bezier from one rear foot lane to its qualified main.
+
+    Stock keeps the released direct cubic.  The V1L key selects the quintic
+    whose interior is biased convex-ward for the ramped stand wall; see
+    ``V1L_FLOOR_LANE_SHIFTS_YZ``.
+    """
     try:
         x_mm, upright_z_mm, floor_y_mm, _radius_mm, _diameter_mm = (
             FOOT_LANES[name])
@@ -993,13 +1048,21 @@ def proud_floor_entry_controls(
         um_handoff_key=um_handoff_key,
         ts_route_key=ts_route_key,
     )
-    return (
+    cubic = (
         canonical[0],
         canonical[1],
         tuple(endpoint[axis] - handle * tangent[axis]
               for axis in range(3)),
         endpoint,
     )
+    if um_handoff_key != UM_V1L_HANDOFF_KEY:
+        return cubic
+    quintic = [list(point)
+               for point in _degree_elevate(_degree_elevate(cubic))]
+    for offset, (dy, dz) in enumerate(V1L_FLOOR_LANE_SHIFTS_YZ[name]):
+        quintic[2 + offset][1] += dy
+        quintic[2 + offset][2] += dz
+    return tuple(tuple(point) for point in quintic)
 
 
 def proud_floor_entry_wire(
@@ -1473,7 +1536,8 @@ def route_centerline_points(name: str, spacing_mm: float = 2.0,
             )
         if name == "ts":
             controls = proud_floor_entry_controls(
-                "ts", ts_route_key=ts_route_key)
+                "ts", ts_route_key=ts_route_key,
+                um_handoff_key=um_handoff_key)
             line_start = (
                 FOOT_LANES["ts"][0],
                 FOOT_LANES["ts"][2],
@@ -1492,7 +1556,7 @@ def route_centerline_points(name: str, spacing_mm: float = 2.0,
             cubic_count = max(
                 8, int(math.ceil(cubic_length / spacing_mm)))
             points.extend(
-                floor_bend_cubic_point(controls, index / cubic_count)
+                floor_bend_bezier_point(controls, index / cubic_count)
                 for index in range(1, cubic_count + 1))
 
             main = ts_plan_path(ts_route_key=ts_route_key)
@@ -1940,16 +2004,21 @@ def _ts_cutter(y_range=None, ts_route_key: str = TS_ROUTE_STANDARD):
 
 def _proud_floor_ts_complete_cutter(
         ts_route_key: str = TS_ROUTE_STANDARD,
-        upper_y_range=None):
+        upper_y_range=None,
+        um_handoff_key: str = "proud"):
     """One ruled solid for the complete floor T trunk and upper TS route.
 
     The floor cubic and retained plan path meet at the released y=90 station
     with an exact common point, tangent, D6 section, and z=11.5 centre. A
     single loft keeps that junction internal to one solid; no tangent cutter
     union or overlapping sequential subtraction remains for OCC to fragment.
+
+    ``um_handoff_key`` selects the floor-lane set: the V1L key carries the
+    convex-biased quintic used under the ramped stand wall, and any other
+    key keeps the released cubic byte for byte.
     """
     controls = proud_floor_entry_controls(
-        "ts", ts_route_key=ts_route_key)
+        "ts", ts_route_key=ts_route_key, um_handoff_key=um_handoff_key)
     lane = FOOT_LANES["ts"]
     service_start = (
         lane[0], lane[2], FLOOR_ROUTE_SERVICE_START_Z_MM)
@@ -2105,6 +2174,7 @@ def cable_cutters(um_handoff_key: str = "proud", route_names=None,
                     ts_cutter = _proud_floor_ts_complete_cutter(
                         ts_route_key=ts_route_key,
                         upper_y_range=effective_ts_y_range,
+                        um_handoff_key=um_handoff_key,
                     )
                 else:
                     ts_cutter = _ts_cutter(
@@ -2130,7 +2200,8 @@ def cable_cutters(um_handoff_key: str = "proud", route_names=None,
     if selected & {"t1f", "t2f"}:
         if "ts" not in selected:
             cutters.append(_proud_floor_round_cutter(
-                "ts", ts_route_key=ts_route_key))
+                "ts", ts_route_key=ts_route_key,
+                um_handoff_key=um_handoff_key))
         elif ts_cutter is None:
             raise RuntimeError(
                 "selected floor TS trunk has no complete cutter")

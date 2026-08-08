@@ -1,24 +1,32 @@
 #!/usr/bin/env python3
-"""Side-section review of the slim floor bottom's rear-thickness ramp.
+"""Review of the slim floor bottom's rear-thickness ramp through the stand.
 
-The floor-state ``piece_bottom`` used to hold the thin 11.5 mm field down to
-y=96 and then swell back to the full 18.3 mm section over an 18 mm smoothstep
-ending at y=78 -- four millimetres above the Option-B vertical tangent, so the
-plate visibly bulged just before it met its stand.  It now runs one quintic
-ramp over the whole span the stand leaves free: slim from the seam-A dovetails
-down to 2 mm below their root, then a single smooth thickening that reaches
-full depth exactly where the stand arc completes.
+The floor-state ``piece_bottom`` used to reach its full 18.3 mm section at
+the Option-B vertical tangent, so the plate was already back to full depth at
+the station where the stand arc has only started to turn.  The ramp now runs
+on ONE quintic in PATH LENGTH along the whole combined profile -- slim 2 mm
+below the seam-A dovetail root, down the flat plate, and on along the bend
+centreline as it sweeps -- reaching full depth exactly at the HORIZONTAL
+tangent, where the arc has finished turning and the foot begins.
 
-This renders both rear profiles from the exported meshes so the change can be
-inspected against real geometry rather than the thickness law alone.  Pass the
-two STLs and an output path; the section plane defaults to a constant-X lane
-clear of every duct, driver pilot and the D190 aperture.
+Carrying the ramp through the bend thins the stand's concave face, which is
+the face the three cable lanes hug around mid-arc, so those lanes are
+rerouted convex-ward as quintics.  Their covers are the real cost of the
+change and are drawn here beside the law.
+
+Panels:
+  1. side section through the whole stand, before and after, off the meshes;
+  2. wall thickness against path length s -- the law, the measured plate and
+     bend sections, and both tangents;
+  3. concave/convex cover for each rerouted lane, with the cover forced at
+     each lane's FIXED plate-side join called out.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import struct
 import sys
@@ -33,19 +41,33 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from lx521_baffle.base import L22_CUTOUT, THICKNESS_MM  # noqa: E402
+from lx521_baffle.cables import (  # noqa: E402
+    FOOT_LANES,
+    TS_ROUTE_CAPTIVE,
+    UM_V1L_HANDOFF_KEY,
+    proud_floor_entry_controls,
+)
 from lx521_baffle.floor_bend import (  # noqa: E402
+    BEND_CENTERLINE_LENGTH_MM,
     BEND_REAR_SPAN_MM,
     BEND_RISE_MM,
+    WALL_HALF_THICKNESS_MM,
+    bezier_point,
     centerline_controls,
+    cubic_derivatives,
     cubic_point,
 )
-from lx521_baffle.geom import smootherstep01  # noqa: E402
-from lx521_baffle.proud.v1l import RAMP_Y0, RAMP_Y1, REAR_MM  # noqa: E402
+from lx521_baffle.proud.v1l import RAMP_Y0, RAMP_Y1  # noqa: E402
 from lx521_baffle.proud.v1l_split import (  # noqa: E402
-    FLOOR_RAMP_FULL_DEPTH_Y_MM,
+    FLOOR_RAMP_FLAT_LENGTH_MM,
     FLOOR_RAMP_SLIM_MARGIN_MM,
     FLOOR_RAMP_SLIM_Y_MM,
+    FLOOR_RAMP_TOTAL_LENGTH_MM,
+    FLOOR_RAMP_VERTICAL_TANGENT_Y_MM,
     SEAM_A_Y,
+    floor_ramp_rear_cut_mm,
+    floor_ramp_thickness_mm,
+    floor_ramp_wall_thickness_law,
 )
 
 # Overview lane: far enough outboard of the LM/UM/TS ducts and their foot
@@ -61,6 +83,8 @@ PROFILE_X_MM = -66.0
 
 OLD_COLOR = "0.55"
 NEW_COLOR = "tab:blue"
+LANE_COLORS = {"lm": "tab:green", "um": "tab:purple", "ts": "tab:orange"}
+DUCT_SKIN_RULE_MM = 1.6
 
 
 def _inverse_print_transform(stl_path: Path):
@@ -151,6 +175,51 @@ def rear_profile(segments, y_lo: float, y_hi: float, samples: int = 900):
     return profile
 
 
+def _ray_hit(segments, origin, direction, limit: float = 30.0):
+    """Nearest crossing distance from ``origin`` along ``direction``."""
+    ox, oy = origin
+    dx, dy = direction
+    best = None
+    for (x0, y0), (x1, y1) in segments:
+        ex, ey = x1 - x0, y1 - y0
+        denominator = dx * ey - dy * ex
+        if abs(denominator) < 1e-12:
+            continue
+        t = ((x0 - ox) * ey - (y0 - oy) * ex) / denominator
+        u = ((x0 - ox) * dy - (y0 - oy) * dx) / denominator
+        if t <= 1e-7 or t > limit or not -1e-9 <= u <= 1.0 + 1e-9:
+            continue
+        best = t if best is None else min(best, t)
+    return best
+
+
+def measured_bend_thickness(segments, samples: int = 160):
+    """Wall thickness normal to the arc, read straight off the mesh section."""
+    controls = centerline_controls()
+    measured = []
+    for index in range(samples + 1):
+        parameter = index / samples
+        point = cubic_point(controls, parameter)
+        first, _second = cubic_derivatives(controls, parameter)
+        norm = math.hypot(first[1], first[2])
+        normal = (-first[2] / norm, first[1] / norm)
+        origin = (point[1], point[2])
+        outward = _ray_hit(segments, origin, normal)
+        inward = _ray_hit(segments, origin, (-normal[0], -normal[1]))
+        if outward is None or inward is None:
+            continue
+        travelled = BEND_CENTERLINE_LENGTH_MM - _arc_length(parameter)
+        measured.append(
+            (FLOOR_RAMP_FLAT_LENGTH_MM + travelled, outward + inward))
+    return measured
+
+
+def _arc_length(parameter: float) -> float:
+    from lx521_baffle.floor_bend import centerline_arc_length
+
+    return centerline_arc_length(parameter)
+
+
 def draw_section(axis, segments, color, label, linewidth=1.0,
                  z_window=None):
     """Draw section segments; ``z_window`` keeps the rear-face zoom free of
@@ -169,6 +238,67 @@ def draw_section(axis, segments, color, label, linewidth=1.0,
 def bend_centerline():
     controls = centerline_controls()
     return [cubic_point(controls, index / 200.0)[1:] for index in range(201)]
+
+
+def lane_covers(samples: int = 1200):
+    """Concave/convex cover against path length for each rerouted lane."""
+    controls = centerline_controls()
+    horizontal_z = controls[0][2]
+    stations = []
+    for index in range(samples + 1):
+        parameter = index / samples
+        point = cubic_point(controls, parameter)
+        first, _second = cubic_derivatives(controls, parameter)
+        norm = math.hypot(first[1], first[2])
+        normal = (-first[2] / norm, first[1] / norm)
+        thickness = floor_ramp_wall_thickness_law(parameter)
+        stations.append((point[1], point[2], normal, thickness,
+                         FLOOR_RAMP_FLAT_LENGTH_MM
+                         + BEND_CENTERLINE_LENGTH_MM - _arc_length(parameter)))
+    results = {}
+    for name, lane in FOOT_LANES.items():
+        lane_controls = proud_floor_entry_controls(
+            name, um_handoff_key=UM_V1L_HANDOFF_KEY,
+            ts_route_key=TS_ROUTE_CAPTIVE)
+        radius = lane[4] / 2.0
+        series = []
+        for index in range(samples + 1):
+            px, py, pz = bezier_point(lane_controls, index / samples)
+            if pz < horizontal_z:
+                continue
+            if py > FLOOR_RAMP_VERTICAL_TANGENT_Y_MM:
+                # Above the tangent the lane is in the ramped plate, whose
+                # rear face is the same law read at that station.
+                station = FLOOR_RAMP_SLIM_Y_MM - py
+                series.append((
+                    station,
+                    pz - radius - floor_ramp_rear_cut_mm(max(0.0, station)),
+                    THICKNESS_MM - pz - radius,
+                ))
+                continue
+            best = None
+            for cy, cz, normal, thickness, station in stations:
+                distance = math.hypot(py - cy, pz - cz)
+                if best is None or distance < best[0]:
+                    best = (distance, cy, cz, normal, thickness, station)
+            _d, cy, cz, normal, thickness, station = best
+            offset = (py - cy) * normal[0] + (pz - cz) * normal[1]
+            series.append((
+                station,
+                offset - radius - (WALL_HALF_THICKNESS_MM - thickness),
+                WALL_HALF_THICKNESS_MM - (offset + radius),
+            ))
+        series.sort()
+        join = lane_controls[-1]
+        results[name] = {
+            "series": series,
+            "join_y": join[1],
+            "join_s": FLOOR_RAMP_SLIM_Y_MM - join[1],
+            "join_cover": join[2] - radius - floor_ramp_rear_cut_mm(
+                FLOOR_RAMP_SLIM_Y_MM - join[1]),
+            "diameter": lane[4],
+        }
+    return results
 
 
 def main() -> None:
@@ -197,35 +327,46 @@ def main() -> None:
 
     old_rear = rear_profile(old_profile_segments, 60.0, SEAM_A_Y + 3.0)
     new_rear = rear_profile(new_profile_segments, 60.0, SEAM_A_Y + 3.0)
+    measured_bend = measured_bend_thickness(new_segments)
 
-    arc_y = FLOOR_RAMP_FULL_DEPTH_Y_MM
+    arc_y = FLOOR_RAMP_VERTICAL_TANGENT_Y_MM
     aperture_y = L22_CUTOUT[1] - L22_CUTOUT[2] / 2.0
+    total = FLOOR_RAMP_TOTAL_LENGTH_MM
 
-    fig, (ax_side, ax_zoom) = plt.subplots(
-        2, 1, figsize=(12.6, 12.2),
-        gridspec_kw={"height_ratios": [2.35, 1.0]})
+    fig, (ax_side, ax_law, ax_cover) = plt.subplots(
+        3, 1, figsize=(13.0, 16.4),
+        gridspec_kw={"height_ratios": [2.0, 1.15, 1.15]})
 
-    # -- whole side section ------------------------------------------------
+    # -- 1. whole side section --------------------------------------------
     draw_section(ax_side, old_segments, OLD_COLOR,
-                 "before: 18 mm smoothstep y=78..96")
+                 "before: full depth at the vertical tangent")
     draw_section(ax_side, new_segments, NEW_COLOR,
-                 "after: 43.85 mm quintic y=74.15..118")
-    rear_window = (-3.4, 7.4)
-    draw_section(ax_zoom, old_profile_segments, OLD_COLOR, None,
-                 linewidth=1.1, z_window=rear_window)
-    draw_section(ax_zoom, new_profile_segments, NEW_COLOR, None,
-                 linewidth=1.1, z_window=rear_window)
-
+                 f"after: one quintic over s=0..{total:.2f} mm of path")
     bend = bend_centerline()
     ax_side.plot([p[0] for p in bend], [p[1] for p in bend],
                  color="tab:orange", lw=1.1, ls="-.", zorder=3,
                  label=(f"Option-B stand arc centreline "
                         f"({BEND_REAR_SPAN_MM:g} x {BEND_RISE_MM:g} mm, "
-                        f"Rmin 41)"))
+                        f"Rmin 41, arc {BEND_CENTERLINE_LENGTH_MM:.2f} mm)"))
     ax_side.axvline(arc_y, color="tab:orange", lw=1.0, ls="--", zorder=1)
     ax_side.axvline(FLOOR_RAMP_SLIM_Y_MM, color=NEW_COLOR, lw=1.0, ls="--",
                     zorder=1)
     ax_side.axvline(SEAM_A_Y, color="tab:green", lw=1.0, ls="--", zorder=1)
+    controls = centerline_controls()
+    ax_side.plot([controls[0][1]], [controls[0][2]], marker="o", ms=6,
+                 color="k", zorder=6)
+    ax_side.annotate(
+        f"horizontal tangent: full 18.3 mm\ny={controls[0][1]:g}, "
+        f"z={controls[0][2]:g}  (s={total:.2f} mm)",
+        xy=(controls[0][1], controls[0][2]),
+        xytext=(24.0, -86.0), fontsize=8.0,
+        arrowprops={"arrowstyle": "->", "color": "k", "lw": 0.9},
+        bbox={"fc": "white", "ec": "k", "lw": 0.6,
+              "boxstyle": "round,pad=0.25", "alpha": 0.94})
+    ax_side.annotate(
+        f"vertical tangent\ny={arc_y:g}  (s={FLOOR_RAMP_FLAT_LENGTH_MM:g} mm)"
+        f"\nwall {floor_ramp_thickness_mm(FLOOR_RAMP_FLAT_LENGTH_MM):.3f} mm",
+        xy=(arc_y + 1.2, -34.0), fontsize=8.0, color="tab:orange")
     ax_side.set_xlim(-4.0, 132.0)
     ax_side.set_ylim(-106.0, 28.0)
     ax_side.set_aspect("equal", adjustable="box")
@@ -237,93 +378,109 @@ def main() -> None:
     ax_side.grid(True, lw=0.3, alpha=0.4)
     ax_side.legend(loc="lower left", fontsize=8, framealpha=0.94)
 
-    # -- rear-face zoom ----------------------------------------------------
-    for y, text, color in (
-            (arc_y,
-             f"arc completes into the stand\ny={arc_y:.2f} -> full 18.3 mm",
-             "tab:orange"),
-            (RAMP_Y0, f"old ramp start\ny={RAMP_Y0:g}", OLD_COLOR),
-            (RAMP_Y1, f"old ramp end (slim)\ny={RAMP_Y1:g}", OLD_COLOR),
-            (aperture_y, f"D190 aperture edge\ny={aperture_y:.2f}",
-             "tab:red"),
-            (FLOOR_RAMP_SLIM_Y_MM,
-             f"ramp starts, still slim\ny={FLOOR_RAMP_SLIM_Y_MM:g}"
-             f"  (seam - {FLOOR_RAMP_SLIM_MARGIN_MM:g})", NEW_COLOR),
-            (SEAM_A_Y, f"seam A / dovetail root\ny={SEAM_A_Y:g}",
-             "tab:green")):
-        ax_zoom.axvline(y, color=color, lw=0.9, ls="--", zorder=1,
-                        alpha=0.85)
+    # -- 2. the law against path length ------------------------------------
+    law_s = [total * index / 600.0 for index in range(601)]
+    ax_law.plot(law_s, [floor_ramp_thickness_mm(s) for s in law_s],
+                color=NEW_COLOR, lw=2.4,
+                label="one quintic smootherstep in path length (analytic)")
+    plate_band = [
+        (FLOOR_RAMP_SLIM_Y_MM - y, THICKNESS_MM - z) for y, z in new_rear
+        if FLOOR_RAMP_VERTICAL_TANGENT_Y_MM <= y <= FLOOR_RAMP_SLIM_Y_MM]
+    ax_law.plot([p[0] for p in plate_band], [p[1] for p in plate_band],
+                color="k", lw=0.0, marker=".", ms=2.4, zorder=5,
+                label="measured plate section (mesh, x = -66)")
+    if measured_bend:
+        ax_law.plot([p[0] for p in measured_bend],
+                    [p[1] for p in measured_bend],
+                    color="tab:red", lw=0.0, marker=".", ms=2.4, zorder=5,
+                    label="measured bend section normal to the arc (mesh)")
+    old_band = [
+        (FLOOR_RAMP_SLIM_Y_MM - y, THICKNESS_MM - z) for y, z in old_rear
+        if FLOOR_RAMP_VERTICAL_TANGENT_Y_MM <= y <= FLOOR_RAMP_SLIM_Y_MM]
+    ax_law.plot([p[0] for p in old_band], [p[1] for p in old_band],
+                color=OLD_COLOR, lw=1.6, ls="--", zorder=4,
+                label="before: plate section (mesh)")
+    ax_law.axvline(FLOOR_RAMP_FLAT_LENGTH_MM, color="tab:orange", lw=1.1,
+                   ls="--")
+    ax_law.axvline(total, color="k", lw=1.1, ls="--")
+    ax_law.axhline(THICKNESS_MM, color="0.35", lw=0.7, ls=":")
+    ax_law.axhline(11.5, color="0.35", lw=0.7, ls=":")
+    ax_law.annotate(
+        f"vertical tangent\ns={FLOOR_RAMP_FLAT_LENGTH_MM:g} mm "
+        f"(flat plate run)\nwall "
+        f"{floor_ramp_thickness_mm(FLOOR_RAMP_FLAT_LENGTH_MM):.3f} mm",
+        xy=(FLOOR_RAMP_FLAT_LENGTH_MM, 12.0),
+        xytext=(FLOOR_RAMP_FLAT_LENGTH_MM + 6.0, 12.3), fontsize=8.0,
+        color="tab:orange",
+        arrowprops={"arrowstyle": "->", "color": "tab:orange", "lw": 0.9},
+        bbox={"fc": "white", "ec": "tab:orange", "lw": 0.6,
+              "boxstyle": "round,pad=0.22", "alpha": 0.94})
+    ax_law.annotate(
+        f"horizontal tangent\ns={total:.2f} mm  (total path)\nfull 18.3 mm,"
+        " zero slope",
+        xy=(total, 17.4), xytext=(total - 46.0, 15.5), fontsize=8.0,
+        arrowprops={"arrowstyle": "->", "color": "k", "lw": 0.9},
+        bbox={"fc": "white", "ec": "k", "lw": 0.6,
+              "boxstyle": "round,pad=0.22", "alpha": 0.94})
+    ax_law.annotate(
+        f"flat plate {FLOOR_RAMP_FLAT_LENGTH_MM:g} mm", xy=(20.0, 11.15),
+        ha="center", fontsize=8.0, color="0.3")
+    ax_law.annotate(
+        f"bend sweep {BEND_CENTERLINE_LENGTH_MM:.2f} mm",
+        xy=(101.0, 11.15), ha="center", fontsize=8.0, color="0.3")
+    ax_law.set_xlim(-2.0, total + 2.0)
+    ax_law.set_ylim(11.0, 18.9)
+    ax_law.set_xlabel(
+        "s  (path length from the slim field at y=118, down the plate, then "
+        "along the bend centreline, mm)")
+    ax_law.set_ylabel("wall thickness normal to\nthe swept surface (mm)")
+    ax_law.set_title(
+        "thickness against path length -- one law, no knee at the vertical "
+        "tangent", fontsize=10.5)
+    ax_law.grid(True, lw=0.3, alpha=0.4)
+    ax_law.legend(loc="lower right", fontsize=8, framealpha=0.94)
 
-    ax_zoom.plot([p[0] for p in old_rear], [p[1] for p in old_rear],
-                 color=OLD_COLOR, lw=2.6, alpha=0.75, zorder=4,
-                 label="before: rear face measured off the mesh")
-    ax_zoom.plot([p[0] for p in new_rear], [p[1] for p in new_rear],
-                 color=NEW_COLOR, lw=2.6, alpha=0.9, zorder=4,
-                 label="after: rear face measured off the mesh")
-    law = [(y, REAR_MM * smootherstep01(
-        (y - arc_y) / (FLOOR_RAMP_SLIM_Y_MM - arc_y)))
-        for y in [arc_y + (FLOOR_RAMP_SLIM_Y_MM - arc_y) * i / 400.0
-                  for i in range(401)]]
-    ax_zoom.plot([p[0] for p in law], [p[1] for p in law],
-                 color="k", lw=0.9, ls=":", zorder=5,
-                 label="quintic smootherstep law (analytic)")
-    ax_zoom.axhline(REAR_MM, color="0.3", lw=0.7, ls=":", zorder=1)
-    ax_zoom.axhline(0.0, color="0.3", lw=0.7, ls=":", zorder=1)
-    ax_zoom.annotate(f"slim rear plane z={REAR_MM:g}  (11.5 mm field)",
-                     xy=(126.0, REAR_MM), ha="right", va="bottom",
-                     fontsize=7.6, color="0.25")
-    ax_zoom.annotate("full-depth rear plane z=0  (18.3 mm)",
-                     xy=(126.0, 0.0), ha="right", va="bottom",
-                     fontsize=7.6, color="0.25")
-    for y, text, color, offset in (
-            (arc_y, f"arc completes\ny={arc_y:.2f}", "tab:orange", 7.2),
-            (RAMP_Y0, f"old start\ny={RAMP_Y0:g}", "0.35", 4.6),
-            (RAMP_Y1, f"old end\ny={RAMP_Y1:g}", "0.35", 7.2),
-            (aperture_y, f"D190 edge\ny={aperture_y:.2f}", "tab:red", 3.0),
-            (FLOOR_RAMP_SLIM_Y_MM,
-             f"new start (slim)\ny={FLOOR_RAMP_SLIM_Y_MM:g}", NEW_COLOR,
-             4.6),
-            (SEAM_A_Y, f"seam A\ny={SEAM_A_Y:g}", "tab:green", 7.2)):
-        ax_zoom.annotate(text, xy=(y, offset), ha="center", va="bottom",
-                         fontsize=7.2, color=color,
-                         bbox={"fc": "white", "ec": color, "lw": 0.5,
-                               "boxstyle": "round,pad=0.22", "alpha": 0.93})
-    ax_zoom.annotate(
-        "", xy=(FLOOR_RAMP_SLIM_Y_MM, -1.35), xytext=(arc_y, -1.35),
-        arrowprops={"arrowstyle": "<->", "color": NEW_COLOR, "lw": 1.3})
-    ax_zoom.annotate(
-        f"one ramp, {FLOOR_RAMP_SLIM_Y_MM - arc_y:.2f} mm",
-        xy=((arc_y + FLOOR_RAMP_SLIM_Y_MM) / 2.0, -1.9), ha="center",
-        va="top", fontsize=8.4, color=NEW_COLOR)
-    ax_zoom.annotate(
-        "", xy=(RAMP_Y1, 8.15), xytext=(RAMP_Y0, 8.15),
-        arrowprops={"arrowstyle": "<->", "color": "0.35", "lw": 1.1})
-    ax_zoom.annotate(
-        f"old ramp, {RAMP_Y1 - RAMP_Y0:.2f} mm",
-        xy=((RAMP_Y0 + RAMP_Y1) / 2.0, 8.35), ha="center", va="bottom",
-        fontsize=8.0, color="0.35")
-    ax_zoom.annotate(
-        "dovetail into the mids:\nslim in both states",
-        xy=(SEAM_A_Y + 1.4, REAR_MM), xytext=(122.0, 3.4), ha="center",
-        va="top", fontsize=7.2, color="tab:green",
-        arrowprops={"arrowstyle": "->", "color": "tab:green", "lw": 0.8},
-        bbox={"fc": "white", "ec": "tab:green", "lw": 0.5,
-              "boxstyle": "round,pad=0.22", "alpha": 0.93})
-    ax_zoom.set_xlim(68.0, 126.0)
-    ax_zoom.set_ylim(-3.4, 9.6)
-    ax_zoom.set_xlabel("y  (up from the floor, mm)")
-    ax_zoom.set_ylabel("z  (rear face depth, mm)")
-    ax_zoom.set_title(
-        f"rear face, seam to stand -- the slim to full transition "
-        f"(section at x = {args.profile_x:g} mm, the -66 dovetail axis)",
-        fontsize=10.5)
-    ax_zoom.grid(True, lw=0.3, alpha=0.4)
-    ax_zoom.legend(loc="upper left", fontsize=8, framealpha=0.94)
+    # -- 3. what the rerouted lanes keep -----------------------------------
+    covers = lane_covers()
+    for name, record in covers.items():
+        color = LANE_COLORS[name]
+        series = record["series"]
+        ax_cover.plot([p[0] for p in series], [p[1] for p in series],
+                      color=color, lw=1.9,
+                      label=f"{name.upper()} D{record['diameter']:g} concave "
+                            f"(rear/inner) cover")
+        ax_cover.plot([p[0] for p in series], [p[2] for p in series],
+                      color=color, lw=1.0, ls=":", alpha=0.8,
+                      label=f"{name.upper()} convex (front/outer) cover")
+        ax_cover.plot([record["join_s"]], [record["join_cover"]],
+                      marker="v", ms=8, color=color, zorder=6)
+    ax_cover.axhline(DUCT_SKIN_RULE_MM, color="k", lw=1.4, ls="--",
+                     label=f"slim duct-skin rule {DUCT_SKIN_RULE_MM} mm")
+    ax_cover.axvline(FLOOR_RAMP_FLAT_LENGTH_MM, color="tab:orange", lw=1.0,
+                     ls="--")
+    join_text = "  ".join(
+        f"{name.upper()} {record['join_cover']:.3f}"
+        for name, record in covers.items())
+    ax_cover.annotate(
+        "cover forced at each lane's FIXED plate-side join (y=84.7 / 82.0 / "
+        f"90.0):\n{join_text} mm -- no reroute can beat these",
+        xy=(6.0, 7.4), fontsize=8.2,
+        bbox={"fc": "white", "ec": "0.4", "lw": 0.6,
+              "boxstyle": "round,pad=0.3", "alpha": 0.95})
+    ax_cover.set_xlim(-2.0, total + 2.0)
+    ax_cover.set_ylim(0.0, 9.4)
+    ax_cover.set_xlabel("s  (path length, mm)")
+    ax_cover.set_ylabel("cover to the wall face (mm)")
+    ax_cover.set_title(
+        "rerouted floor lanes through the ramped bend -- concave cover is "
+        "the cost of the full ramp", fontsize=10.5)
+    ax_cover.grid(True, lw=0.3, alpha=0.4)
+    ax_cover.legend(loc="upper right", fontsize=7.4, framealpha=0.94, ncol=2)
 
     fig.suptitle(
-        "V1L slim floor stand: piece_bottom rear-thickness transition, "
-        "before vs after", fontsize=13)
-    fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.975))
+        "V1L slim floor stand: piece_bottom rear-thickness ramp carried "
+        "through the Option-B bend", fontsize=13)
+    fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.98))
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     temporary = args.out.with_name(f".{args.out.stem}.{os.getpid()}.tmp.png")
@@ -333,9 +490,9 @@ def main() -> None:
             "Description": (
                 "slim floor piece_bottom rear-thickness ramp; "
                 "LX_STAND_FOOT=1; LX_ROUTING_PROFILE=proud; "
-                f"section x={args.section_x:g} mm; "
-                f"ramp {FLOOR_RAMP_FULL_DEPTH_Y_MM:.2f}.."
-                f"{FLOOR_RAMP_SLIM_Y_MM:g} mm quintic"),
+                f"section x={args.section_x:g} mm; one quintic over "
+                f"s=0..{total:.3f} mm reaching full depth at the horizontal "
+                "tangent; floor lanes rerouted convex-ward"),
         })
         temporary.replace(args.out)
     finally:
@@ -344,9 +501,17 @@ def main() -> None:
     print(f"wrote {args.out}")
     print(f"  section plane      x = {args.section_x:g} mm")
     print(f"  old ramp           y = {RAMP_Y0:g}..{RAMP_Y1:g} "
-          f"({RAMP_Y1 - RAMP_Y0:g} mm, cubic smoothstep)")
-    print(f"  new ramp           y = {arc_y:.2f}..{FLOOR_RAMP_SLIM_Y_MM:g} "
-          f"({FLOOR_RAMP_SLIM_Y_MM - arc_y:.2f} mm, quintic smootherstep)")
+          f"(no-floor state, cubic smoothstep)")
+    print(f"  path-length ramp   s = 0..{total:.3f} mm "
+          f"({FLOOR_RAMP_FLAT_LENGTH_MM:g} mm plate + "
+          f"{BEND_CENTERLINE_LENGTH_MM:.3f} mm arc), slim margin "
+          f"{FLOOR_RAMP_SLIM_MARGIN_MM:g} mm, rear cut at the tangent "
+          f"{floor_ramp_rear_cut_mm(FLOOR_RAMP_FLAT_LENGTH_MM):.4f} mm")
+    for name, record in covers.items():
+        concave = min(p[1] for p in record["series"])
+        convex = min(p[2] for p in record["series"])
+        print(f"  {name} lane          concave {concave:.4f} / convex "
+              f"{convex:.4f} mm, join cover {record['join_cover']:.4f} mm")
 
 
 if __name__ == "__main__":

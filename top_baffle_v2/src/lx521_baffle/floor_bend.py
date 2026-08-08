@@ -22,9 +22,11 @@ from build123d import (
     Line,
     Part,
     Plane,
+    Pos,
     Rectangle,
     Wire,
     extrude,
+    loft,
     sweep,
 )
 
@@ -63,6 +65,20 @@ WALL_OFFSET_INTERPOLATION_TOLERANCE_MM = 1.0e-7
 # envelope below 0.001 mm while retaining one six-face STEP-safe solid.  The
 # odd count includes the exact cubic midpoint as well as both tangent ends.
 LATERAL_HERMITE_SECTIONS = 33
+
+# A variable-thickness wall cannot use the multisection SWEEP: its sections
+# are off-centre from the spine, and OCC's pipe-shell relocates each one by
+# projecting it back onto the spine, which put the built surface up to
+# 0.741 mm off the requested law at mid-arc.  Lofting the same sections
+# places every one exactly where it was built, so the law is realised to
+# 1e-5 mm.  65 stations converge it to zero at double precision while the
+# convex face stays on the exact parallel offset.
+VARIABLE_THICKNESS_SECTIONS = 65
+
+# Composite Simpson over |C'(u)| for the centreline arc length.  4096 even
+# spans put the quadrature error on this cubic below 1e-11 mm, so the length
+# is exact for every downstream use and stable across platforms.
+ARC_LENGTH_SAMPLES = 4096
 
 
 def centerline_controls(
@@ -159,6 +175,59 @@ def curvature_radius(controls, parameter: float) -> float:
     if cross_norm <= 1.0e-15:
         return math.inf
     return speed ** 3 / cross_norm
+
+
+def bezier_point(controls, parameter: float) -> tuple[float, float, float]:
+    """Evaluate a Bezier of any degree at ``parameter``.
+
+    Four control points delegate to :func:`cubic_point` so every released
+    caller keeps its exact Bernstein arithmetic; the de Casteljau branch
+    exists for the V1L floor lanes, which are quintics.
+    """
+    if len(controls) == 4:
+        return cubic_point(controls, parameter)
+    u = float(parameter)
+    points = [tuple(float(value) for value in point) for point in controls]
+    while len(points) > 1:
+        points = [
+            tuple(
+                points[index][axis] * (1.0 - u) + points[index + 1][axis] * u
+                for axis in range(3))
+            for index in range(len(points) - 1)
+        ]
+    return points[0]
+
+
+def centerline_arc_length(
+    parameter: float = 1.0,
+    *,
+    controls=None,
+    samples: int = ARC_LENGTH_SAMPLES,
+) -> float:
+    """Arc length of the Option-B centreline from u=0 to ``parameter``."""
+    if samples < 2 or samples % 2:
+        raise ValueError("Simpson arc length needs an even span count >= 2")
+    end = float(parameter)
+    if not 0.0 <= end <= 1.0:
+        raise ValueError("centreline parameter must be in [0, 1]")
+    if end == 0.0:
+        return 0.0
+    controls = centerline_controls() if controls is None else controls
+
+    def speed(u: float) -> float:
+        first, _second = cubic_derivatives(controls, u)
+        return math.sqrt(sum(value * value for value in first))
+
+    step = end / samples
+    total = speed(0.0) + speed(end)
+    for index in range(1, samples):
+        total += (4.0 if index % 2 else 2.0) * speed(index * step)
+    return total * step / 3.0
+
+
+# The full sweep length, published so the V1L floor ramp can be parameterised
+# by path length instead of by Y.
+BEND_CENTERLINE_LENGTH_MM = centerline_arc_length()
 
 
 def sampled_minimum_radius(controls=None, samples: int = 100_000):
@@ -345,7 +414,8 @@ def bent_wall_lateral_hermite(
     rear_right_dx_du: float,
     upright_left_dx_du: float,
     upright_right_dx_du: float,
-    section_count: int = LATERAL_HERMITE_SECTIONS,
+    section_count: int | None = None,
+    thickness_law=None,
 ) -> Part:
     """Build the Option-B wall with a smooth, widening lateral envelope.
 
@@ -357,11 +427,22 @@ def bent_wall_lateral_hermite(
     interpolates the left and right side boundaries independently, matching
     both endpoint positions and both existing endpoint slopes.
 
-    Derivatives are with respect to the shared cubic parameter ``u``.  Each
-    section stays exactly 18.3 mm thick normal to the Option-B centreline;
-    the first section is horizontal and the last is vertical, preserving the
-    released rear-foot and upright tangent faces.
+    Derivatives are with respect to the shared cubic parameter ``u``.  By
+    default each section stays exactly 18.3 mm thick normal to the Option-B
+    centreline; the first section is horizontal and the last is vertical,
+    preserving the released rear-foot and upright tangent faces.
+
+    ``thickness_law`` optionally makes the wall thickness a function of the
+    cubic parameter, for the V1L floor bottom whose rear-thickness ramp runs
+    on through the bend.  The section keeps its CONVEX edge on the exact
+    ``WALL_HALF_THICKNESS_MM`` parallel offset and moves only the concave
+    one, because the convex face is the floor-contact plane at one end and
+    the front-flush plate face at the other -- neither may move.  Omitting
+    the law reproduces the released constant-thickness solid exactly.
     """
+    if section_count is None:
+        section_count = (LATERAL_HERMITE_SECTIONS if thickness_law is None
+                         else VARIABLE_THICKNESS_SECTIONS)
     if section_count < 5 or section_count % 2 == 0:
         raise ValueError(
             "lateral Hermite sweep needs an odd section count >= 5")
@@ -402,9 +483,25 @@ def bent_wall_lateral_hermite(
             x_dir=(1.0, 0.0, 0.0),
             z_dir=tangent,
         )
+        if thickness_law is None:
+            sections.append(
+                section_plane
+                * Rectangle(right_x - left_x, WALL_THICKNESS_MM)
+            )
+            continue
+        thickness = float(thickness_law(parameter))
+        if not 0.0 < thickness <= WALL_THICKNESS_MM:
+            raise ValueError(
+                "Option-B wall thickness law left (0, 18.3] at "
+                f"u={parameter:.6f}: {thickness:.6f}")
+        # The section plane's local +Y is z_dir x x_dir, which points at the
+        # centre of curvature -- the concave side.  Offsetting the centred
+        # rectangle by half the thickness deficit therefore pins the convex
+        # edge and lets the concave one lift away.
         sections.append(
             section_plane
-            * Rectangle(right_x - left_x, WALL_THICKNESS_MM)
+            * Pos(0.0, thickness / 2.0 - WALL_HALF_THICKNESS_MM, 0.0)
+            * Rectangle(right_x - left_x, thickness)
         )
 
     if any(
@@ -414,13 +511,21 @@ def bent_wall_lateral_hermite(
         raise RuntimeError(
             "Option-B lateral Hermite envelope must widen monotonically")
 
-    wall = sweep(
-        sections,
-        path=centerline_wire(),
-        multisection=True,
-        is_frenet=True,
-        clean=True,
-    )
+    if thickness_law is None:
+        wall = sweep(
+            sections,
+            path=centerline_wire(),
+            multisection=True,
+            is_frenet=True,
+            clean=True,
+        )
+    else:
+        # See VARIABLE_THICKNESS_SECTIONS: the loft honours the section
+        # placement the law asked for, which the spine-projecting pipe shell
+        # does not once the profiles stop being centred on the spine.  Both
+        # end caps remain the exact planar first/last sections, so the
+        # horizontal and vertical tangent joins are unchanged.
+        wall = loft(sections, ruled=False)
     solids = tuple(wall.solids())
     if (not wall.is_valid or len(solids) != 1
             or solids[0].volume <= 0.01):
