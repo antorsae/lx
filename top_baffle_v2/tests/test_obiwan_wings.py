@@ -657,14 +657,31 @@ def _assert_no_uncut_rim(path: Path, label: str) -> float:
     boundary = occupied & ~(
         padded[:-2, 1:-1] & padded[2:, 1:-1]
         & padded[1:-1, :-2] & padded[1:-1, 2:])
-    interior = _disk_fully_on_part(field, max(2, int(round(
-        UNCUT_RIM_INBOARD_MM / UNCUT_RIM_LATTICE_MM))))
-    reference = np.where(interior, field, np.inf).astype(np.float32)
-    offsets = _disk_offsets(max(2, int(round(
-        UNCUT_RIM_REACH_MM / UNCUT_RIM_LATTICE_MM))))
-    reference = _disk_sweep(reference, offsets, np.minimum, np.inf)
+    # The reference is the surface a fixed step INWARD along the local
+    # normal, not the minimum over a reach disk: on a legitimately steep
+    # edge (the wing tip climbs to its carrier contact at roughly 2:1) a
+    # disk minimum finds the downhill neighbour and reads slope as a rim,
+    # while the normal step compares against the material the ledge would
+    # actually stand on.  The inward normal comes from the occupancy
+    # centroid of a small disk — robust on a raster boundary.
     bi, bj = np.nonzero(boundary)
-    stand = field[bi, bj] - reference[bi, bj]
+    normal_cells = max(2, int(round(
+        UNCUT_RIM_INBOARD_MM / UNCUT_RIM_LATTICE_MM)))
+    occupancy = np.pad(occupied.astype(np.float32), normal_cells + 1)
+    direction = np.zeros((len(bi), 2), dtype=np.float64)
+    for dx, dy in _disk_offsets(normal_cells):
+        weight = occupancy[bi + dx + normal_cells + 1,
+                           bj + dy + normal_cells + 1]
+        direction[:, 0] += weight * dx
+        direction[:, 1] += weight * dy
+    length = np.hypot(direction[:, 0], direction[:, 1])
+    length[length == 0.0] = 1.0
+    step_cells = UNCUT_RIM_INBOARD_MM / UNCUT_RIM_LATTICE_MM
+    si = np.clip((bi + direction[:, 0] / length * step_cells).round()
+                 .astype(int), 0, field.shape[0] - 1)
+    sj = np.clip((bj + direction[:, 1] / length * step_cells).round()
+                 .astype(int), 0, field.shape[1] - 1)
+    stand = field[bi, bj] - field[si, sj]
     judged = np.isfinite(stand)
     if not judged.any():
         return 0.0
@@ -2128,14 +2145,13 @@ def test_live_brep_geometry_contract() -> None:
         print(f"  {slug}: plan envelope and T clearance pass", flush=True)
         right_volume = cad.adaptive_volume_mm3(right)
         left_volume = cad.adaptive_volume_mm3(left)
-        # These solids are re-imported from STEP, so this compares the
-        # round trip of a bit-mirrored construction, not the construction
-        # itself (the serialized facts pin that at machine precision).
-        # The graded perimeter is now the exact-plan trim wire, whose
-        # re-integration spreads a mirrored pair by ~0.06 mm3; 0.25 mm3
-        # keeps 4x margin at 3.5 ppm of the part.
+        delta = abs(right_volume - left_volume)
         assert math.isclose(right_volume, left_volume, rel_tol=1e-9,
-                            abs_tol=0.25)
+                            abs_tol=0.02), (
+            f"{slug}: imported monolith volumes are not mirror-equal: "
+            f"right={right_volume:.9f} mm3, left={left_volume:.9f} mm3, "
+            f"delta={delta:.9f} mm3 (rel {delta / right_volume:.3e}); "
+            "tolerance is rel 1e-9 or abs 0.02 mm3")
         print(f"  {slug}: imported monolith volumes pass", flush=True)
         for side, monolith in (("right", right), ("left", left)):
             pocket = wing_pockets[side]
