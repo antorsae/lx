@@ -109,6 +109,11 @@ GRADED_SURFACE_OUTSIDE_EDGE_SLOPE = 1.0
 GRADED_SURFACE_OUTSIDE_MIN_DEPTH_MM = -2.0
 GRADED_EXACT_EDGE_BAND_MM = 0.12
 GRADED_RELIEF_BOUNDARY_GUARD_MM = 0.08
+# How far inside the plan the clamp samples the law when it continues the
+# cutter floor across the perimeter overshoot. One boundary guard width: far
+# enough in that the analytic relief is on solid ground, close enough that the
+# value carried outward is the boundary value and not an interior one.
+GRADED_SURFACE_CLAMP_PROBE_MM = GRADED_RELIEF_BOUNDARY_GUARD_MM
 GRADED_EDGE_BOOLEAN_OVERSHOOT_MM = 0.20
 # Preserve the 0.04-mm protected-land collar that keeps the fitted rear
 # transition below the 0.03-mm C0 gate. The new G1 lower root creates one
@@ -556,6 +561,18 @@ def _graded_control_depths(xy: np.ndarray) -> np.ndarray:
     _solution, depth_field, _sections = _graded_analytics()
     depths = _right_depth_vector("graded", xy)
     inside = shapely.contains_xy(layout.field_right, xy[:, 0], xy[:, 1])
+    # Full depth outside the plan is right only where the wing really is full
+    # depth at that boundary: the carrier and joint contacts, which are exactly
+    # the retained lands.  Everywhere else the cutter now overshoots the
+    # outline, so a full-depth pole out there lifts the cutter floor and leaves
+    # the boundary ridge back.  Continue the interior instead: sample the law
+    # just inside the plan and carry that value outward, so the floor runs flat
+    # through the trim and the plan edge is cut by the trim alone.
+    retained_land = unary_union(
+        (depth_field.protected, _graded_retained_full_depth_islands())
+    ).buffer(0)
+    clamp_indices: list[int] = []
+    clamp_probes: list[tuple[float, float]] = []
     for index in np.flatnonzero(~inside):
         point = Point(float(xy[index, 0]), float(xy[index, 1]))
         boundary_point, _unused = nearest_points(
@@ -567,9 +584,35 @@ def _graded_control_depths(xy: np.ndarray) -> np.ndarray:
                 GRADED_SURFACE_OUTSIDE_MIN_DEPTH_MM,
                 GRADED_EDGE_DEPTH_MM
                 - GRADED_SURFACE_OUTSIDE_EDGE_SLOPE * outside_distance)
-        else:
+        elif boundary_point.distance(retained_land) <= (
+                GRADED_BOOLEAN_RELIEF_INSET_MM):
             depths[index] = FULL_DEPTH_MM
+        else:
+            clamp_indices.append(int(index))
+            clamp_probes.append(
+                _interior_probe_xy(point, boundary_point, layout.field_right))
+    if clamp_indices:
+        # One batched evaluation: the law is far too slow to call per pole and
+        # this branch covers most of the conditioning net.
+        depths[np.asarray(clamp_indices)] = _right_depth_vector(
+            "graded", np.asarray(clamp_probes, dtype=float))
     return depths
+
+
+def _interior_probe_xy(point: Point, boundary_point: Point,
+                       plan) -> tuple[float, float]:
+    """Return a point one guard width inside the plan from the boundary."""
+    dx = boundary_point.x - point.x
+    dy = boundary_point.y - point.y
+    span = float(np.hypot(dx, dy))
+    if span <= 1.0e-12:
+        return float(boundary_point.x), float(boundary_point.y)
+    step = GRADED_SURFACE_CLAMP_PROBE_MM / span
+    probe_x = float(boundary_point.x + dx * step)
+    probe_y = float(boundary_point.y + dy * step)
+    if not shapely.contains_xy(plan, probe_x, probe_y):
+        return float(boundary_point.x), float(boundary_point.y)
+    return probe_x, probe_y
 
 
 def _expanded_spline_knots(count: int, degree: int) -> np.ndarray:
