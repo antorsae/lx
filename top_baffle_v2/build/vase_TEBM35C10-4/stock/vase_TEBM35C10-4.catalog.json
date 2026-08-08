@@ -493,20 +493,20 @@
         }
       ],
       "source_file_sha256": {
-        "../../../scripts/check_manifold.py": "74ec2f87de640944feba2b31b020d9dfcf4c0e41a9023093b8499785df30658a",
-        "../../../scripts/export_piece_stls.py": "362f7abed3545af0cac239d7a324522fec7b7ba601f7ff8162f7aba19b6e7ac2",
+        "../../../scripts/check_manifold.py": "69e932a9d22af31dcd48f877330126a0a4bec7cae1ffdcda651dab6f136b444a",
+        "../../../scripts/export_piece_stls.py": "90d40a53ab29e8a18370102936ef9b1647965ad19cffdbd1ef0cef06d2dc2491",
         "../../../scripts/export_steps.py": "98033e876a66f9eba8aa6517034015e389dc0e2a79c14ee4a5c34df953b9d53f",
         "../../../scripts/export_vase_tebm35c10_4.py": "602103af8162df775f73cf1e04e266590f4e60bb269250160d4ef75a9a3a79f6",
         "../../../src/lx521_baffle/base.py": "a9085aaae4e356f7941e5e9d4f668552922ee0c262fa7ca15be7052d025b576c",
-        "../../../src/lx521_baffle/cables.py": "c22ba47866f6baf3e94cb77945495bded8a1134a697b1bf68e71f6a3d043d509",
-        "../../../src/lx521_baffle/geom.py": "9479f43e9e7ca1304c8652d59911f927566e0b9eb602cc4bd0a967bc61d168dc",
+        "../../../src/lx521_baffle/cables.py": "dd2021f779684075d2c49234950e3f7e9c72650480a7ca3ee9e984a364980d95",
+        "../../../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../../../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../../../src/lx521_baffle/magnet_contract.py": "8c0a468dbcb9471c039b3e20f3f9d336ffcd85b39b79e1f54505b38ac690e7fb",
         "../../../src/lx521_baffle/magnets.py": "17e66927fc686e02c54ac9b25bf70e0c449efb6fe2bc1f6120f8db6e5b899446",
         "../../../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../../../src/lx521_baffle/proud/b.py": "23833018aab4b1775ec08b3cffe18979fbbf24282922460e6b56c668987bef67",
         "../../../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
-        "../../../src/lx521_baffle/proud/b2_split.py": "ce2dd2e0e8b9446dd04d300ee2d3b88c80580611691587aa424962e9e9f78433",
+        "../../../src/lx521_baffle/proud/b2_split.py": "0eb2e20e6b2ec981a12232c1d47dfd7907f9aa20bca4cfd90a82d3358c74f486",
         "../../../src/lx521_baffle/proud/vase_tebm35c10_4.py": "4f589ddb6931a66529ca7da0169bfba0a2341352b5f46a08069f75b47df026b6",
         "../../../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
       },
@@ -614,7 +614,7 @@
     "scope": "every_released_acoustic_part",
     "slicer": "Bambu Studio P2S 0.4 mm / 0.16 mm Arachne"
   },
-  "schema_sha256": "0425b1bc26d14d92603b57a286c7b95f6c5998ab292641fe448575f676045952",
+  "schema_sha256": "8a6e04fafcbce45c1fbfe78bc1f5f6f7c8ca1c26007de5a26a7d5fe5c2a03d3f",
   "schema_version": 1,
-  "source_revision": "b85021c836a9ccebd4f77885e0c43218fcc012ed0d044f10235df30772c65fa1"
+  "source_revision": "c998664c8125b970fc101bb8abf57daa315334c512d4537ff9b0b16b3b62cf0a"
 }
