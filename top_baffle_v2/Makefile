@@ -1009,8 +1009,10 @@ BMR_CRESCENT_CAD_OUTPUTS := $(BMR_CRESCENT_BREP) $(BMR_CRESCENT_STEP) \
 BMR_CRESCENT_CAD_SRCS := src/lx521_baffle/obiwan/bmr_crescent.py \
         src/lx521_baffle/obiwan/attachments.py \
         src/lx521_baffle/obiwan/carriers.py \
+        src/lx521_baffle/obiwan/closure_webs.py \
         src/lx521_baffle/obiwan/joints.py \
         src/lx521_baffle/obiwan/route.py \
+        src/lx521_baffle/obiwan/wings.py \
         src/lx521_baffle/proud/v1.py src/lx521_baffle/proud/b.py \
         src/lx521_baffle/proud/b2.py \
         src/lx521_baffle/proud/vase_tebm35c10_4.py \

@@ -59,8 +59,9 @@ each one carries its tweeters on a different part:
 
 The two BMR implementations arrange the drivers differently. On Stock and Slim
 they are **opposed**: the lower BMR faces front and the upper one faces rear.
-On Obi-Wan they are **coaxial**, stacked back to back on the released
-face-to-face acoustic axis, which makes that crescent 50.2 mm deep. The
+On Obi-Wan they are **coaxial**, stacked back to back on one axis dropped as
+close to the UM collar as the half-lap mate allows, which makes that crescent
+50.2 mm deep and puts the pair 86.413 mm from the MU10 axis. The
 Obi-Wan BMR crescent is a **candidate**: it is not release-authorized, is
 deliberately absent from the release inventory, the stage manifests and
 `to_print/`, and is built only by the local target above.

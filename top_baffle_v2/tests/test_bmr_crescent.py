@@ -6,11 +6,18 @@ Geometry gates read the exported BREP under
 when it is absent; they refuse to pass against a stale export.  The staged
 gates additionally need the hash-verified Obi-Wan stage BREPs.
 
-This part is no longer a superset of the released ND25FW-4 crescent -- it
-keeps that crescent's *mount* and nothing else -- so the mate is proven by
-asserting the two ear footprints are geometrically identical and by
+This part is not a superset of the released ND25FW-4 crescent -- it keeps that
+crescent's *mount* and its junction *seam*, and nothing else -- so the mate is
+proven by asserting the two ear footprints are geometrically identical and by
 assembling the part against the staged UM collar, not by differencing whole
 silhouettes.
+
+Four gates carry the flush-junction rework specifically: the axis is
+recomputed from the two released constraints and has to be the tighter of
+them; the assembly is projected head on against the staged collar and the plan
+is walked column by column for windows; every declared opening has to name the
+side it faces, with no exterior ones; and the free T cable has to reach the
+declared mate-face entry without being touched or exposed on the way.
 
 Run with::
 
@@ -40,7 +47,6 @@ from build123d import (
     Part,
     Plane,
     Pos,
-    Rot,
     extrude,
     import_brep,
     import_step,
@@ -50,6 +56,7 @@ from lx521_baffle.io import sha256_file
 from lx521_baffle.obiwan import bmr_crescent as bmr
 from lx521_baffle.obiwan.carriers import (
     CORE_REAR_Z,
+    T_UM_CABLE_MOUTH_HALF_WIDTH,
     TWEETER_ADDON_JOINT_Z,
     TWEETER_CORE_BORE_TOP_Z,
     TWEETER_CORE_JOINT_Z,
@@ -102,10 +109,7 @@ def test_vase_authority_is_mirrored_exactly() -> None:
         f"sys.path.insert(0, {str(PROJECT_ROOT / 'src')!r});"
         "from lx521_baffle.proud import vase_tebm35c10_4 as v;"
         "names = json.loads(sys.argv[1]);"
-        "out = {n: getattr(v, n) for n in names};"
-        "out['_OUTLET_INSET'] = ("
-        "v.LOWER_T_OUTLET_Z_MM - v.LOWER_T_POCKET_REAR_Z_MM);"
-        "print(json.dumps(out))"
+        "print(json.dumps({n: getattr(v, n) for n in names}))"
     )
     environment = dict(os.environ)
     environment["LX_ROUTING_PROFILE"] = "proud"
@@ -124,10 +128,6 @@ def test_vase_authority_is_mirrored_exactly() -> None:
         assert _close(vase[name], mirrored), (
             f"{name} drifted from the vase: vase={vase[name]} "
             f"bmr_crescent={mirrored}")
-    assert _close(vase["_OUTLET_INSET"], bmr.POCKET_OUTLET_INSET_MM), (
-        "pocket outlet inset drifted from the vase's own outlet placement: "
-        f"vase={vase['_OUTLET_INSET']} "
-        f"bmr_crescent={bmr.POCKET_OUTLET_INSET_MM}")
 
 
 def test_mount_constants_equal_the_released_joint_authority() -> None:
@@ -176,15 +176,13 @@ def test_depth_stack_is_two_full_driver_envelopes() -> None:
         bmr.REAR_POCKET_ROOF_Z_MM - bmr.REAR_MOUNT_Z_MM,
         bmr.T_CLEAR_POCKET_DEPTH_MM)
     assert _close(bmr.REAR_PROTRUSION_MM, CORE_REAR_Z - bmr.REAR_MOUNT_Z_MM)
-    # Both lead outlets clear their blind wall by a real ligament.
-    for outlet_z, wall_z in (
-        (bmr.FRONT_OUTLET_Z_MM, bmr.FRONT_POCKET_FLOOR_Z_MM),
-        (bmr.REAR_OUTLET_Z_MM, bmr.REAR_POCKET_ROOF_Z_MM),
-    ):
-        ligament = abs(outlet_z - wall_z) - bmr.POCKET_OUTLET_D_MM / 2.0
+    # The cable duct runs through the front chamber's own depth, and clears
+    # both the acoustic front and the blind wall by a real ligament.
+    for wall_z in (THICKNESS_MM, bmr.FRONT_POCKET_FLOOR_Z_MM):
+        ligament = abs(bmr.CABLE_DUCT_Z_MM - wall_z) - bmr.CABLE_DUCT_R_MM
         assert ligament >= bmr.T_BLIND_BACK_WALL_THICKNESS_MM, (
-            f"lead outlet at z={outlet_z} leaves only {ligament:.3f} mm to "
-            "its blind wall")
+            f"the cable duct at z={bmr.CABLE_DUCT_Z_MM} leaves only "
+            f"{ligament:.3f} mm to the wall at z={wall_z}")
 
 
 def test_pod_outer_wall_is_the_driver_land() -> None:
@@ -208,60 +206,196 @@ def test_pod_outer_wall_is_the_driver_land() -> None:
     assert bmr.POD_WALL_OVER_POCKET_MM >= 2.4
     assert bmr.POD_WALL_OVER_INSERT_MM >= 2.4
     assert _close(bmr.POD_LAND_MARGIN_OVER_FLANGE_MM, 6.0)
-    # And the whole pod now sits inside the released open scallop instead of
-    # filling it, so nothing in plan reaches where the release had material.
-    assert _close(bmr.SCALLOP_R_MM, 39.25)
-    assert bmr.POD_CLEARANCE_INSIDE_SCALLOP_MM > 0.0
-    assert _close(bmr.POD_CLEARANCE_INSIDE_SCALLOP_MM, 6.25)
-    # The pod also stops well short of the UM ear footprints.
-    ear_radius = math.hypot(
-        TWEETER_JOINT_X[1], bmr.BMR_AXIS_XY[1] - TWEETER_JOINT_Y)
-    footprint = ear_radius - (
-        TWEETER_JOINT_FUNCTIONAL_BOSS_D / 2.0 + TWEETER_JOINT_CLEAR)
-    assert bmr.POD_OUTER_R_MM < footprint, (
-        "the pod wall must stop short of the UM ear receiver footprint")
     print(f"    pod D{bmr.POD_OUTER_D_MM:.0f} = the driver land; "
           f"{bmr.POD_WALL_OVER_POCKET_MM:.3f} mm wall outside the pocket, "
           f"{bmr.POD_WALL_OVER_INSERT_MM:.3f} mm outside each M2 bore")
 
 
-def test_struts_are_sized_from_the_half_lap_they_feed() -> None:
-    """The connecting structure must not become a new weakest link."""
-    # The strut's smallest section is where it crosses the UM ear's receiver
-    # notch and is only the ear's own thickness deep.
+def test_pod_is_dropped_as_far_as_the_mate_allows() -> None:
+    """The axis is set by the tighter of the two UM constraints, not chosen.
+
+    Two things stop the drop: the released 0.20 mm clearance on the UM's
+    native R51.7 core ring, and the UM half-lap's own receiver notch, which
+    the D66 land may not be nicked by.  Both are computed here from the same
+    released datums the part uses, and the axis has to be the larger.
+    """
+    ring = UM_CUTOUT[1] + UM_CORE_R + bmr.UM_MATE_GAP_MM + bmr.POD_OUTER_R_MM
+    notch = TWEETER_JOINT_Y + math.sqrt(
+        (bmr.POD_OUTER_R_MM + bmr.EAR_NOTCH_R_MM
+         + bmr.EAR_NOTCH_LIGAMENT_MM) ** 2 - TWEETER_JOINT_X[1] ** 2)
+    assert _close(bmr.AXIS_Y_LIMIT_FROM_UM_RING_MM, ring, 1.0e-6)
+    assert _close(bmr.AXIS_Y_LIMIT_FROM_EAR_NOTCH_MM, notch, 1.0e-6)
+    assert _close(bmr.BMR_AXIS_XY[1], max(ring, notch), 1.0e-6)
+    assert bmr.AXIS_GOVERNING_CONSTRAINT == "um_half_lap_receiver_notch"
+    assert _close(bmr.BMR_AXIS_XY[0], 0.0)
+    assert _close(bmr.BMR_AXIS_XY[1], 452.494193004, 1.0e-6)
+
+    # The notch's ligament is the vase's own qualified minimum wall, and the
+    # D66 land really does clear it: a nick there would show up at z=6.7 as
+    # rearward plan growth, which this print orientation cannot take.
+    assert _close(bmr.EAR_NOTCH_R_MM,
+                  TWEETER_JOINT_FUNCTIONAL_BOSS_D / 2.0 + TWEETER_JOINT_CLEAR)
+    assert _close(bmr.EAR_NOTCH_R_MM, 5.0)
+    assert _close(bmr.EAR_NOTCH_LIGAMENT_MM,
+                  bmr.T_BLIND_BACK_WALL_THICKNESS_MM)
+    assert _close(bmr.POD_WALL_OFF_EAR_NOTCH_MM, 1.20, 1.0e-6)
+    assert bmr.POD_WALL_OFF_UM_RING_MM >= bmr.UM_MATE_GAP_MM
+
+    # The move is real and recorded against the released axis it left.
+    assert _close(bmr.RELEASED_AXIS_XY[1], 468.193)
+    assert bmr.POD_DROP_MM > 15.0
+    assert _close(bmr.UM_AXIS_SPACING_MM,
+                  bmr.RELEASED_UM_AXIS_SPACING_MM - bmr.POD_DROP_MM, 1.0e-6)
+    assert _close(bmr.RELEASED_UM_AXIS_SPACING_MM, 102.112, 1.0e-6)
+    assert _close(bmr.SCALLOP_R_MM, 39.25)
+    print(f"    axis y {bmr.RELEASED_AXIS_XY[1]:.3f} -> "
+          f"{bmr.BMR_AXIS_XY[1]:.6f} ({bmr.POD_DROP_MM:.3f} mm closer); "
+          f"MU10-to-BMR spacing {bmr.RELEASED_UM_AXIS_SPACING_MM:.3f} -> "
+          f"{bmr.UM_AXIS_SPACING_MM:.3f} mm; "
+          f"{bmr.POD_WALL_OFF_EAR_NOTCH_MM:.3f} mm off the notch, "
+          f"{bmr.POD_WALL_OFF_UM_RING_MM:.3f} mm off the UM ring")
+
+
+def test_skirt_fills_the_junction_and_outsections_the_struts() -> None:
+    """The junction is solid, on the released seam, and stronger than before.
+
+    The two struts and the window between them are gone.  What replaces them
+    has to (a) sit on the released crescent's own seam rather than a new
+    boundary, (b) stay inside the plate band so nothing but the driver stack
+    reaches behind the core rear plane, and (c) beat the section the struts
+    reached, since the point of the qualified half-lap is that it governs.
+    """
+    assert tuple(bmr.SKIRT_Z) == (CORE_REAR_Z, THICKNESS_MM)
+    assert _close(bmr.SKIRT_DEPTH_MM, 11.5)
+    assert _close(bmr.UM_MATE_R_MM, UM_CORE_R + 0.20)
+    assert _close(bmr.UM_MATE_R_MM, 51.9)
+
+    plan = bmr.skirt_plan()
+    assert plan.geom_type == "Polygon" and not plan.interiors, (
+        "the plate-band plan must close to one simple region")
+    # The fill's own edge is the released recut; the closure web's seam runs
+    # closer, exactly as it does on the released crescent.
+    assert bmr.base_um_ring_clearance_mm() >= bmr.UM_MATE_GAP_MM, (
+        f"the flush fill leaves only {bmr.base_um_ring_clearance_mm():.4f} mm "
+        "on the UM core ring")
+    assert 0.0 < bmr.skirt_um_ring_clearance_mm() < bmr.UM_MATE_GAP_MM
+
+    # The window the user rejected is gone: on the -Y meridian the plan is
+    # continuous from the pod wall down to the mate face.
+    from shapely.geometry import LineString as _Line
+    mate_y = UM_CUTOUT[1] + bmr.UM_MATE_R_MM
+    pod_y = bmr.BMR_AXIS_XY[1] - bmr.POD_OUTER_R_MM
+    assert pod_y > mate_y, "the pod wall must stand off the mate face"
+    # The one thing allowed to interrupt the plan is a released wing: just
+    # outboard of each boss the wings run a tongue into the slot the released
+    # crescent leaves there, and this part yields to it exactly as the release
+    # does.  Every other break would be a window.
+    # Grown by the plan's own decimation budget at both ends: the skirt's
+    # boundary is simplified after the subtraction, so it lands a couple of
+    # microns either side of the wing's edge.  A real window is orders of
+    # magnitude bigger than that.
+    keepout = bmr._wing_keepout_plan().buffer(2.0 * bmr.SKIRT_PLAN_SIMPLIFY_MM)
+    for x in [value / 2.0 for value in range(-66, 67)]:
+        column = _Line([(x, 380.0), (x, bmr.BMR_AXIS_XY[1])])
+        run = column.intersection(plan)
+        # A grazing column at |x|=33 meets the pod in a single point, and a
+        # column lying exactly on the closure web's own vertical edge at
+        # |x|=6 comes back as two touching pieces; only a real gap between
+        # consecutive pieces is a break.
+        spans = sorted(
+            (piece.bounds[1], piece.bounds[3])
+            for piece in getattr(run, "geoms", [run])
+            if piece.geom_type == "LineString" and piece.length > 1.0e-6)
+        for lower, upper in zip(spans, spans[1:]):
+            gap = _Line([(x, lower[1]), (x, upper[0])])
+            if gap.length <= 1.0e-6:
+                continue
+            assert gap.difference(keepout).length <= 1.0e-6, (
+                f"the plan is broken at x={x:+.1f} between y={lower[1]:.4f} "
+                f"and y={upper[0]:.4f}, where no released wing sits; a gap "
+                "there is a window straight through the assembly")
+    run = _Line([(0.0, 380.0), (0.0, bmr.BMR_AXIS_XY[1])]).intersection(plan)
+    assert run.geom_type == "LineString", (
+        f"the meridian column is {run.geom_type}, not one unbroken run")
+    # Faceting puts the decimated arc a few microns outside the nominal
+    # R51.90; what matters is that the plan really does start at the mate
+    # face and not somewhere short of it.
+    assert 0.0 <= run.bounds[1] - mate_y <= 0.010, (
+        f"on the meridian the plan starts at {run.bounds[1]:.4f}, not on the "
+        f"R{bmr.UM_MATE_R_MM} mate face at {mate_y:.4f}")
+
+    # And it is strictly a fill: nothing reaches outboard of the D66 land.
+    minx, miny, maxx, maxy = plan.bounds
+    assert _close(maxx, bmr.POD_OUTER_R_MM, 1.0e-6)
+    assert _close(minx, -bmr.POD_OUTER_R_MM, 1.0e-6)
+    assert _close(maxy, bmr.BMR_AXIS_XY[1] + bmr.POD_OUTER_R_MM, 1.0e-6)
+
+    # Section at the ears: the superseded struts reached 1.44x the half-lap's
+    # own net ligament, so the fill has to be at least that.
     assert _close(bmr.EAR_THICKNESS_MM, 5.9)
     assert _close(bmr.EAR_NET_LIGAMENT_MM, 5.2)
     assert _close(bmr.EAR_NET_SECTION_MM2, 30.68)
-    assert bmr.ARM_MIN_SECTION_MM2 > bmr.EAR_NET_SECTION_MM2, (
-        f"strut section {bmr.ARM_MIN_SECTION_MM2:.3f} mm2 is below the "
-        f"half-lap's own {bmr.EAR_NET_SECTION_MM2:.3f} mm2, so the strut and "
-        "not the qualified joint would govern")
-    # The rearward draft is bounded by the same ligament.
-    assert bmr.ARM_REAR_WIDTH_MM > bmr.EAR_NET_LIGAMENT_MM, (
-        f"a {bmr.ARM_DRAFT_DEG} degree draft leaves only "
-        f"{bmr.ARM_REAR_WIDTH_MM:.3f} mm of strut at z={bmr.ARM_REAR_Z_MM}")
-    assert bmr.ARM_DRAFT_DEG > 0.0
-    # Root fillet equal to the strut width.
-    assert _close(bmr.ARM_ROOT_FILLET_R_MM, bmr.ARM_WIDTH_MM)
-    # The struts take the released crescent's own clearance around the UM ring.
-    clearance = bmr.arm_collar_clearance_mm()
-    assert clearance >= bmr.UM_COLLAR_CLEAR_MM, (
-        f"the struts leave only {clearance:.3f} mm around the UM core ring")
-    # One simple region, and the central cable mouth is still open: the plan
-    # must not reach the -Y meridian between the pod wall and the ears.
-    plan = bmr.arm_plan()
-    assert plan.geom_type == "Polygon" and not plan.interiors
-    from shapely.geometry import Point as _Point
-    mouth_y = bmr.BMR_AXIS_XY[1] - bmr.POD_OUTER_R_MM
-    for x in (-6.0, -3.0, 0.0, 3.0, 6.0):
-        for y in (TWEETER_JOINT_Y + 4.0, (TWEETER_JOINT_Y + mouth_y) / 2.0,
-                  mouth_y - 0.5):
-            assert not plan.contains(_Point(x, y)), (
-                f"the strut plan closes the central cable mouth at ({x}, {y})")
-    print(f"    struts {bmr.ARM_WIDTH_MM:.1f} -> {bmr.ARM_REAR_WIDTH_MM:.3f} mm "
-          f"wide, min section {bmr.ARM_MIN_SECTION_MM2:.3f} mm2 = "
-          f"{bmr.ARM_MIN_SECTION_MM2 / bmr.EAR_NET_SECTION_MM2:.2f}x the "
-          f"half-lap; {clearance:.3f} mm off the UM ring")
+    section = bmr.ear_load_path_section_mm2()
+    ratio = section / bmr.EAR_NET_SECTION_MM2
+    assert ratio >= bmr.SUPERSEDED_STRUT_SECTION_RATIO, (
+        f"the ear-to-pod load path is only {section:.3f} mm2 = {ratio:.3f}x "
+        "the half-lap's net ligament; the two struts it replaced reached "
+        f"{bmr.SUPERSEDED_STRUT_SECTION_RATIO}x")
+    print(f"    skirt z={bmr.SKIRT_Z[0]}..{bmr.SKIRT_Z[1]}, plan area "
+          f"{plan.area:.1f} mm2, fill {bmr.base_um_ring_clearance_mm():.4f} mm "
+          f"off the UM ring and the web seam {bmr.skirt_um_ring_clearance_mm():.4f} mm; "
+          f"ear load path {section:.2f} mm2 = {ratio:.2f}x the half-lap")
+
+
+def test_cable_path_is_one_hidden_entry_and_one_partition_pass() -> None:
+    """No external outlets; one mate-face entry aligned with the UM mouth."""
+    facts = bmr.design_facts()["cable"]
+    assert facts["external_outlets"] == 0
+    assert facts["entries"] == 1
+    # The entry sits inside the UM's own declared central cable mouth.
+    assert abs(bmr.CABLE_ENTRY_XY[0]) <= T_UM_CABLE_MOUTH_HALF_WIDTH
+    assert _close(bmr.CABLE_DUCT_Z_MM, bmr.TS_FREE_CABLE_Z)
+    assert _close(bmr.CABLE_DUCT_Z_MM, 3.8, 1.0e-9)
+    # The mouth is on the mate face itself.
+    entry_r = math.hypot(bmr.CABLE_ENTRY_XY[0] - UM_CUTOUT[0],
+                         bmr.CABLE_ENTRY_XY[1] - UM_CUTOUT[1])
+    assert _close(entry_r, bmr.UM_MATE_R_MM, 1.0e-6), (
+        f"the cable entry is at r={entry_r:.4f}, not on the R"
+        f"{bmr.UM_MATE_R_MM} mate face")
+    # Ø6.00 is the UM's own T lumen, and a cable arriving off-axis only fits
+    # through the bore's projected aperture.
+    assert _close(bmr.CABLE_DUCT_D_MM, bmr.TS_DUCT_D)
+    assert _close(bmr.CABLE_DUCT_D_MM, 6.0)
+    assert bmr.CABLE_MOUTH_APERTURE_MM >= bmr.TS_CABLE_D_EST, (
+        f"a {bmr.TS_CABLE_D_EST} mm cable arriving "
+        f"{bmr.CABLE_MOUTH_MISALIGNMENT_DEG:.2f} degrees off the duct sees "
+        f"only {bmr.CABLE_MOUTH_APERTURE_MM:.3f} mm of aperture")
+    # The partition pass is the vase's own single-driver lead branch, capped
+    # at Ø4.6, and it keeps that same 1.20 mm wall to the pocket bore.
+    assert _close(bmr.PARTITION_PASS_D_MM, bmr.UPPER_T_BRANCH_D_MM)
+    assert bmr.PARTITION_PASS_D_MM <= 4.6
+    assert _close(
+        bmr.PARTITION_PASS_OFFSET_MM + bmr.PARTITION_PASS_D_MM / 2.0
+        + bmr.T_BLIND_BACK_WALL_THICKNESS_MM,
+        bmr.TEBM_CUTOUT_D_MM / 2.0, 1.0e-6)
+    assert bmr.PARTITION_PASS_XY[1] < bmr.BMR_AXIS_XY[1], (
+        "the partition pass must be on the -Y side the cable arrives from")
+    # The spigot carries the duct and its floor, and nothing more.
+    assert bmr.SPIGOT_Z[1] == CORE_REAR_Z
+    assert _close(bmr.SPIGOT_Z[0],
+                  bmr.CABLE_DUCT_Z_MM - bmr.CABLE_DUCT_R_MM
+                  - bmr.T_BLIND_BACK_WALL_THICKNESS_MM, 1.0e-9)
+    assert bmr.spigot_plan().within(bmr.skirt_plan().buffer(1.0e-9)), (
+        "the spigot plan must stay inside the skirt plan, or the exterior "
+        "grows rearward at the core rear plane")
+    print(f"    entry Ø{bmr.CABLE_DUCT_D_MM:.2f} at "
+          f"({bmr.CABLE_ENTRY_XY[0]:.3f}, {bmr.CABLE_ENTRY_XY[1]:.3f}, "
+          f"{bmr.CABLE_DUCT_Z_MM}) bearing {bmr.CABLE_DUCT['bearing_deg']:.2f} "
+          f"deg, {bmr.CABLE_MOUTH_MISALIGNMENT_DEG:.2f} deg off the cable "
+          f"({bmr.CABLE_MOUTH_APERTURE_MM:.3f} mm aperture for a "
+          f"{bmr.TS_CABLE_D_EST} mm cable); partition pass "
+          f"Ø{bmr.PARTITION_PASS_D_MM} at y="
+          f"{bmr.PARTITION_PASS_XY[1]:.3f}")
 
 
 def test_inherited_tweeter_clamp_holes_are_gone() -> None:
@@ -280,16 +414,45 @@ def test_inherited_tweeter_clamp_holes_are_gone() -> None:
     assert names == [
         "front_driver_pocket_mouth",
         "rear_driver_pocket_mouth",
-        "front_driver_lead_outlet",
-        "rear_driver_lead_outlet",
+        "um_mate_face_cable_entry",
+        "chamber_partition_cable_pass",
         "um_half_lap_clearance_passages",
         "um_half_lap_insert_receivers",
         "m2_driver_insert_bores",
     ]
+    # The two external lead outlets went with the struts.
+    assert not [name for name in names if "lead_outlet" in name]
     silhouette = bmr.design_facts()["silhouette"]
     assert silhouette["inherits_released_crescent_outline"] is False
     assert any("M4" in entry
                for entry in silhouette["removed_from_the_first_candidate"])
+    assert any("outlet" in entry
+               for entry in silhouette["removed_from_the_first_candidate"])
+
+
+def test_no_declared_opening_reaches_the_assembled_exterior() -> None:
+    """Every opening faces the UM mate, a driver, or nothing at all.
+
+    This is the whole point of the cable rework: with the pod assembled on the
+    collar and both drivers fitted, there must be no hole anyone can see.
+    """
+    exposures = {"um_mate", "driver_face", "internal"}
+    for opening in bmr.declared_openings():
+        assert "exposure" in opening, (
+            f"{opening['name']} does not declare which side it faces")
+        assert opening["exposure"] in exposures, (
+            f"{opening['name']} is exposed to the {opening['exposure']}")
+    assert bmr.design_facts()["exterior_openings"] == []
+    by_exposure = {}
+    for opening in bmr.declared_openings():
+        by_exposure.setdefault(opening["exposure"], []).append(opening["name"])
+    # One cable entry, on the mate, and one internal pass.  Not two of either.
+    assert [name for name in by_exposure["um_mate"]
+            if "cable" in name] == ["um_mate_face_cable_entry"]
+    assert by_exposure["internal"] == ["chamber_partition_cable_pass"]
+    print("    openings: "
+          + "; ".join(f"{side}={sorted(names)}"
+                      for side, names in sorted(by_exposure.items())))
 
 
 def test_candidate_flags_are_set() -> None:
@@ -409,31 +572,57 @@ def test_declared_openings_are_the_only_openings() -> None:
             assert _material(solid, axis_x, axis_y, z) == 0.0, (
                 f"{name} driver pocket is obstructed at z={z:.3f}")
 
-    # The partition is solid between them: two chambers, never one.
+    # The partition separates the two chambers everywhere except at the one
+    # declared pass, which really is open over its whole declared span.
     partition_mid = (bmr.REAR_POCKET_ROOF_Z_MM
                      + bmr.FRONT_POCKET_FLOOR_Z_MM) / 2.0
     assert _material(solid, axis_x, axis_y, partition_mid, size=0.4) > 0.0, (
         "the back-to-back partition is missing; the two rear volumes would "
         "be one chamber")
+    pass_x, pass_y = bmr.PARTITION_PASS_XY
+    for z in (bmr.REAR_POCKET_ROOF_Z_MM + 0.2, partition_mid,
+              bmr.FRONT_POCKET_FLOOR_Z_MM - 0.2):
+        assert _material(solid, pass_x, pass_y, z, size=0.4) == 0.0, (
+            f"the declared partition pass is obstructed at z={z:.3f}")
+    # It is exactly one pass of exactly the declared size: the partition is
+    # intact a diameter to either side of it and on the opposite meridian.
+    for offset in (-bmr.PARTITION_PASS_D_MM, bmr.PARTITION_PASS_D_MM):
+        assert _material(solid, pass_x + offset, pass_y, partition_mid,
+                         size=0.4) > 0.0, (
+            "the partition pass is wider than declared")
+    assert _material(
+        solid, axis_x,
+        axis_y + bmr.PARTITION_PASS_OFFSET_MM, partition_mid,
+        size=0.4) > 0.0, "an undeclared second partition pass exists"
 
-    # Both lead outlets really break out of the pod on the -Y meridian.
-    for name, outlet_z in (
-        ("front", bmr.FRONT_OUTLET_Z_MM),
-        ("rear", bmr.REAR_OUTLET_Z_MM),
-    ):
-        radius = bmr.pod_radius_at(outlet_z)
-        assert _material(solid, axis_x, axis_y - (radius - 1.5), outlet_z,
-                         size=0.4) == 0.0, (
-            f"{name} lead outlet does not reach the pod wall")
-        assert _material(solid, axis_x, axis_y - (radius + 1.5), outlet_z,
-                         size=0.4) == 0.0, (
-            f"{name} lead outlet does not break out of the pod")
-        # A bore one diameter off the meridian would be a second, undeclared
-        # opening; check the wall beside it is intact.
+    # The one cable entry is open from the mate face into the front chamber,
+    # and nothing else breaks the mate face at that height.
+    entry_x, entry_y = bmr.CABLE_ENTRY_XY
+    direction = bmr.CABLE_DUCT_DIR
+    for reach in (-0.8, 1.0, bmr.CABLE_DUCT_LENGTH_MM / 2.0,
+                  bmr.CABLE_DUCT_LENGTH_MM - 1.0):
         assert _material(
-            solid, axis_x + bmr.POCKET_OUTLET_D_MM,
-            axis_y - (radius - 1.5), outlet_z, size=0.4) > 0.0, (
-            f"{name} outlet is wider than declared")
+            solid, entry_x + direction[0] * reach,
+            entry_y + direction[1] * reach, bmr.CABLE_DUCT_Z_MM,
+            size=0.4) == 0.0, (
+            f"the cable duct is obstructed {reach:.2f} mm along its axis")
+    # Beside the duct, half way along where the pod wall surrounds it, the
+    # material is intact; below it in the spigot the declared 1.20 mm floor
+    # is there.  Probing beside the mouth itself would only sample the free
+    # space outside the curved mate face.
+    normal = (-direction[1], direction[0])
+    middle = bmr.CABLE_DUCT_LENGTH_MM / 2.0
+    for sign in (-1.0, 1.0):
+        offset = sign * (bmr.CABLE_DUCT_R_MM + 0.6)
+        assert _material(
+            solid, entry_x + normal[0] * offset + direction[0] * middle,
+            entry_y + normal[1] * offset + direction[1] * middle,
+            bmr.CABLE_DUCT_Z_MM, size=0.4) > 0.0, (
+            "the cable duct is wider than declared")
+    assert _material(
+        solid, entry_x + direction[0] * 1.0, entry_y + direction[1] * 1.0,
+        bmr.SPIGOT_Z[0] + 0.4, size=0.3) > 0.0, (
+        "the cable duct has no floor under it in the spigot")
 
     # Eight blind M2 bores, four per land, on the declared PCD and clocks.
     radius = bmr.TEBM_MOUNT_PCD_MM / 2.0
@@ -492,17 +681,30 @@ def test_mount_interface_is_geometrically_identical_to_the_released_ear() -> Non
                 f"{state}: the ear at x={x:+.1f} differs from the released "
                 f"crescent's by {difference:.6f} mm3")
         # And the part really is a different part, so nobody can read the gate
-        # above as the old whole-silhouette identity claim.  Most of the
-        # released crescent is simply not here any more.
-        dropped = (released - solid).volume
-        fraction = dropped / released.volume
-        assert fraction > 0.5, (
-            "this variant is supposed to have dropped the released crescent's "
-            f"arm silhouette; only {100.0 * fraction:.1f}% of it is absent, "
-            "so the mount-only comparison above may be hiding an inherited "
-            "outline")
-        print(f"    {state}: {100.0 * fraction:.1f}% of the released "
-              f"crescent's material ({dropped:.0f} mm3) is absent here")
+        # above as the old whole-silhouette identity claim.  The comparison is
+        # confined to the plate band the two share -- this part's driver stack
+        # would otherwise swamp it -- and has to show a large difference in
+        # *both* directions.  Material of the release that is absent here is
+        # what rules out an inherited outline; the strutted candidate dropped
+        # half the release, the flush skirt drops less because the pod came
+        # down onto the collar, but it is still not a superset.
+        band = Pos(0.0, bmr.BMR_AXIS_XY[1], (CORE_REAR_Z + THICKNESS_MM) / 2.0
+                   ) * Box(400.0, 400.0, THICKNESS_MM - CORE_REAR_Z)
+        mine = solid & band
+        absent = (released - solid).volume
+        added = (mine - released).volume
+        assert absent / released.volume > 0.05, (
+            f"{state}: only {100.0 * absent / released.volume:.1f}% of the "
+            "released crescent's material is absent here, so the mount-only "
+            "comparison above may be hiding an inherited outline")
+        assert (absent + added) / released.volume > 1.0, (
+            f"{state}: the plate-band symmetric difference against the "
+            f"released crescent is only "
+            f"{100.0 * (absent + added) / released.volume:.1f}% of it")
+        print(f"    {state}: in the shared plate band, "
+              f"{100.0 * absent / released.volume:.1f}% of the released "
+              f"crescent is absent and {100.0 * added / released.volume:.1f}% "
+              "as much again is new")
         checked += 1
     if checked:
         print(f"    mount identity verified ear for ear against {checked} "
@@ -592,40 +794,136 @@ def test_no_interference_with_the_um_collar() -> None:
         assert overlap == 0.0, (
             f"{state}: BMR pod intersects the UM collar by "
             f"{overlap:.6f} mm3")
-        gap = (bmr.BMR_AXIS_XY[1] - bmr.POD_OUTER_R_MM
-               - um.bounding_box().max.Y)
-        print(f"    {state}: no interference; the pod wall clears the UM's "
-              f"furthest feature by {gap:.3f} mm in Y")
+        print(f"    {state}: no interference anywhere, with the skirt now "
+              "closed onto the collar")
         checked += 1
     if not checked:
         _skip("no staged UM carrier available for the interference gate")
 
 
-def test_free_t_cable_corridor_stays_open() -> None:
-    """No printed structure may trap the free T cable behind the part.
+def test_the_assembled_junction_has_no_window() -> None:
+    """Looking at the assembly head on, the junction must be solid.
 
-    The struts stop at the core rear plane and no duct is cut outside the pod
-    wall, so the corridor the modelled T cable runs through -- including its
-    free suffix at TS_FREE_CABLE_Z -- must be untouched.
+    This is the user-visible claim.  The pod and the collar are projected
+    along -Z onto the plan; between the two parts the projection must be
+    continuous, with nothing but the released mate seam between them.
+
+    The sweep runs out to the outer edge of the half-lap bosses and stops.
+    Past them the two parts simply end and open space between them is the
+    outboard edge of the assembly, not a window -- and the released crescent
+    leaves the same space there, which the tail of this gate checks rather
+    than assumes.
     """
     solid, _facts = _exported_solid()
     if solid is None:
         return
+    boss_edge = abs(TWEETER_JOINT_X[1]) + TWEETER_JOINT_FUNCTIONAL_BOSS_D / 2.0
+    checked = 0
+    for state in STAGE_STATES:
+        um = _staged(state, "core_um_carrier")
+        if um is None:
+            _skip(f"{state}: staged UM carrier BREP absent")
+            continue
+        # A sight line straight through both parts, on the meridian and out
+        # to the ears.  Anywhere the pod stands off the collar, something has
+        # to be in the way at some Z.
+        widest = 0.0
+        for x in [value / 2.0 for value in range(-56, 57)]:
+            column = Pos(x, 0.0, 0.0) * Box(0.30, 400.0, 60.0)
+            here = (solid & column)
+            there = (um & column)
+            if here is None or here.volume == 0.0:
+                continue
+            gaps = []
+            near = here.bounding_box().min.Y
+            far = there.bounding_box().max.Y if (
+                there is not None and there.volume > 0.0) else None
+            if far is None:
+                continue
+            gaps.append(near - far)
+            widest = max(widest, max(gaps))
+            assert near - far <= 0.30, (
+                f"{state}: at x={x:+.1f} the pod's nearest material is "
+                f"{near:.3f} but the collar stops at {far:.3f}; that "
+                f"{near - far:.3f} mm sight line is the window this design "
+                "exists to close")
+        # Outboard of the bosses both parts really do end.  The released
+        # crescent leaves the same open space there, so the sweep stopping at
+        # the boss edge is the shape of the assembly, not a chosen bound.
+        released = _staged(state, "addon_tweeter_crescent")
+        if released is not None:
+            for x in (boss_edge + 1.5, boss_edge + 4.0):
+                column = Pos(x, 0.0, 0.0) * Box(0.30, 400.0, 60.0)
+                theirs = released & column
+                collar = um & column
+                if (theirs is None or theirs.volume == 0.0
+                        or collar is None or collar.volume == 0.0):
+                    continue
+                assert (theirs.bounding_box().min.Y
+                        - collar.bounding_box().max.Y) > 1.0, (
+                    f"{state}: the released crescent meets the collar at "
+                    f"x={x:+.1f}, so this gate cannot stop at the boss edge")
+        print(f"    {state}: no window out to the boss edge at "
+              f"x=±{boss_edge:.1f}; the widest sight line across the junction "
+              f"is {widest:.3f} mm, the released mate seam")
+        checked += 1
+    if not checked:
+        _skip("no staged UM carrier available for the window gate")
+
+
+def test_free_t_cable_reaches_the_declared_entry_without_exposure() -> None:
+    """The cable now terminates in this part; it must arrive hidden.
+
+    The old gate kept a corridor open behind the crescent because the cable
+    floated there.  It does not any more: it goes straight from the UM's own
+    declared mouth into the one duct.  What has to hold instead is that (a)
+    nothing of this part touches the cable on the UM's side of the mate, and
+    (b) where the cable crosses the mate it is inside the declared entry, with
+    the whole cable section inside the bore rather than on its rim.  Nothing
+    else used that corridor: the modelled T cable is its only occupant, and it
+    is the same body checked here.
+    """
+    solid, _facts = _exported_solid()
+    if solid is None:
+        return
+    mate = Pos(UM_CUTOUT[0], UM_CUTOUT[1], (bmr.REAR_MOUNT_Z_MM
+                                            + THICKNESS_MM) / 2.0) * Cylinder(
+        bmr.UM_MATE_R_MM, bmr.STACK_DEPTH_MM + 2.0)
     checked = 0
     for state in STAGE_STATES:
         cable = _staged(state, "review_reference_ts_cable")
         if cable is None:
             _skip(f"{state}: staged T cable reference BREP absent")
             continue
-        overlap = (solid & cable)
+        # (a) On the UM's side of the mate face the cable is untouched.
+        before = cable & mate
+        overlap = None if before is None else (solid & before)
         volume = 0.0 if overlap is None else float(overlap.volume)
         assert volume == 0.0, (
             f"{state}: the BMR pod pinches the modelled T cable by "
-            f"{volume:.6f} mm3")
+            f"{volume:.6f} mm3 before it reaches the mate face")
+        # (b) At the mate face the cable's own section is inside the duct.
+        duct = bmr._duct_cutter()
+        crossing = cable - mate
+        assert crossing is not None and crossing.volume > 0.0, (
+            f"{state}: the modelled T cable never crosses the mate face")
+        # Only the first 6 mm past the face: beyond that the modelled cable
+        # keeps its released free-flight path instead of following the duct.
+        throat = Pos(bmr.CABLE_ENTRY_XY[0], bmr.CABLE_ENTRY_XY[1],
+                     bmr.CABLE_DUCT_Z_MM) * Box(14.0, 14.0, 14.0)
+        entering = crossing & throat
+        assert entering is not None and entering.volume > 0.0
+        escaped = entering - duct
+        leak = 0.0 if escaped is None else float(escaped.volume)
+        fraction = leak / float(entering.volume)
+        assert fraction < 0.02, (
+            f"{state}: {100.0 * fraction:.2f}% of the cable entering the mate "
+            "face is outside the declared duct, so it would land on the rim")
         checked += 1
     if checked:
-        print(f"    free T cable at z={bmr.TS_FREE_CABLE_Z:.2f} clear in "
-              f"{checked} staged state(s); no printed duct")
+        print(f"    free T cable at z={bmr.TS_FREE_CABLE_Z:.2f} runs clear to "
+              f"the mate face and into the Ø{bmr.CABLE_DUCT_D_MM:.2f} entry in "
+              f"{checked} staged state(s)")
 
 
 def _filled_silhouette(solid, z: float):
@@ -659,30 +957,23 @@ def test_exterior_never_grows_rearward() -> None:
     The part is printed with z=18.3 on the bed, so print height runs with
     decreasing Z.  Requiring the exterior plan at each Z to lie inside the
     plan just in front of it is exactly the no-overhang condition for the
-    whole outside of the part -- the drafted struts, their roots, the ear
-    step and the pod.  The two declared lead outlets are filled back in
-    first: a 4.6 mm bore through a wall is a bridge, not plan growth.
+    whole outside of the part -- the skirt, the ear step, the cable spigot
+    and the pod.  The one declared mate-face entry is filled back in first: a
+    Ø6 bore through a wall is a bridge, not plan growth.
     """
     solid, _facts = _exported_solid()
     if solid is None:
         return
-    pod = Pos(bmr.BMR_AXIS_XY[0], bmr.BMR_AXIS_XY[1],
-              (bmr.REAR_MOUNT_Z_MM + THICKNESS_MM) / 2.0) * Cylinder(
-        bmr.POD_OUTER_R_MM, bmr.STACK_DEPTH_MM)
-    probe = solid
-    for outlet_z in (bmr.FRONT_OUTLET_Z_MM, bmr.REAR_OUTLET_Z_MM):
-        length = bmr.POCKET_OUTLET_OUTER_R_MM - bmr.POCKET_OUTLET_INNER_R_MM
-        centre_y = bmr.BMR_AXIS_XY[1] - (
-            bmr.POCKET_OUTLET_INNER_R_MM + bmr.POCKET_OUTLET_OUTER_R_MM) / 2.0
-        filler = (Pos(bmr.BMR_AXIS_XY[0], centre_y, outlet_z) * Rot(X=90.0)
-                  * Cylinder(bmr.POCKET_OUTLET_D_MM / 2.0, length)) & pod
-        probe = probe.fuse(filler)
-    probe = probe.clean()
+    envelope = (Pos(bmr.BMR_AXIS_XY[0], bmr.BMR_AXIS_XY[1],
+                    (bmr.REAR_MOUNT_Z_MM + THICKNESS_MM) / 2.0) * Cylinder(
+        bmr.POD_OUTER_R_MM, bmr.STACK_DEPTH_MM)).fuse(
+        _plan_prism(bmr.spigot_plan(), *bmr.SPIGOT_Z))
+    probe = solid.fuse(bmr._duct_cutter() & envelope).clean()
 
     ladder = (
         18.29, 18.0, 17.0, 16.0, 15.0, 14.0, 13.0, 12.45, 12.35, 12.0,
-        11.0, 10.0, 9.0, 8.0, 7.0, 6.85, 6.75, 6.5, 5.0, 0.0,
-        -10.0, -20.0, -31.85,
+        11.0, 10.0, 9.0, 8.0, 7.0, 6.85, 6.75, 6.5, 5.0, 2.0, 0.0,
+        -0.35, -0.45, -1.0, -10.0, -20.0, -31.85,
     )
     front = None
     for z in ladder:
@@ -703,8 +994,9 @@ def test_exterior_never_grows_rearward() -> None:
 def test_wing_clearance_is_unchanged() -> None:
     """Both wing families must clear this part exactly as they clear the ND.
 
-    Every part of this silhouette is inside the released crescent's plan, so
-    no wing envelope should move.  This checks that rather than asserting it.
+    The dropped pod and its skirt now reach down into plan territory the
+    struts never touched, and the wings top out at y=449, so this is a real
+    check rather than a formality.
     """
     solid, _facts = _exported_solid()
     if solid is None:
@@ -735,8 +1027,11 @@ def main() -> None:
         test_mount_constants_equal_the_released_joint_authority,
         test_depth_stack_is_two_full_driver_envelopes,
         test_pod_outer_wall_is_the_driver_land,
-        test_struts_are_sized_from_the_half_lap_they_feed,
+        test_pod_is_dropped_as_far_as_the_mate_allows,
+        test_skirt_fills_the_junction_and_outsections_the_struts,
+        test_cable_path_is_one_hidden_entry_and_one_partition_pass,
         test_inherited_tweeter_clamp_holes_are_gone,
+        test_no_declared_opening_reaches_the_assembled_exterior,
         test_candidate_flags_are_set,
         test_part_is_not_wired_into_the_release,
         test_exported_solid_is_one_valid_body_that_fits_the_bed,
@@ -744,7 +1039,8 @@ def main() -> None:
         test_mount_interface_is_geometrically_identical_to_the_released_ear,
         test_mate_simulation_against_the_staged_um_collar,
         test_no_interference_with_the_um_collar,
-        test_free_t_cable_corridor_stays_open,
+        test_the_assembled_junction_has_no_window,
+        test_free_t_cable_reaches_the_declared_entry_without_exposure,
         test_exterior_never_grows_rearward,
         test_wing_clearance_is_unchanged,
     )

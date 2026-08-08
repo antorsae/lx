@@ -69,6 +69,8 @@ from lx521_baffle.obiwan.bmr_crescent import (
     PHYSICAL_MEASURE_REQUIRED,
     RELEASE_AUTHORIZED,
     RELEASE_VARIANT,
+    RELEASED_UM_AXIS_SPACING_MM,
+    UM_AXIS_SPACING_MM,
     build_model,
     design_facts,
 )
@@ -93,8 +95,10 @@ SOURCE_FILES = (
     "src/lx521_baffle/obiwan/attachments.py",
     "src/lx521_baffle/obiwan/bmr_crescent.py",
     "src/lx521_baffle/obiwan/carriers.py",
+    "src/lx521_baffle/obiwan/closure_webs.py",
     "src/lx521_baffle/obiwan/joints.py",
     "src/lx521_baffle/obiwan/route.py",
+    "src/lx521_baffle/obiwan/wings.py",
     "scripts/check_manifold.py",
     "scripts/export_bmr_crescent.py",
     "scripts/export_piece_stls.py",
@@ -240,24 +244,35 @@ def _qualification() -> dict[str, Any]:
             "not taken from the published envelope",
             "back-to-back 2.40 mm partition printed and pressure/rattle "
             "checked with both drivers fitted; front-face-down it is also a "
-            "D42.9 unsupported span over the front pocket",
+            "D42.9 unsupported span over the front pocket, and it now carries "
+            "one Ø4.60 lead pass",
             "M2 x 4 heat-set installation in both D66 lands without "
             "breakthrough into the opposite pocket",
             "UM-to-pod two-screw joint re-proven at this part's hanging "
             "mass, which is still above the released ND25FW-4 crescent's",
-            "the two struts loaded at that hanging mass; their section is "
-            "chosen to keep the qualified half-lap governing, but no strut "
-            "has been printed or loaded",
-            "an acoustic opinion on the open silhouette: dropping the "
-            "released crescent's plan leaves the UM's own T--UM closure-web "
-            "half unmated and the front largely open around the pod",
-            "free T cable dressed to both -Y lead outlets without pinch "
-            "behind the pod",
+            "the junction skirt loaded at that hanging mass; its section at "
+            "the ears is chosen to keep the qualified half-lap governing, but "
+            "no skirt has been printed or loaded",
+            "an acoustic opinion on the dropped axis: the BMR pair now sits "
+            f"{UM_AXIS_SPACING_MM:.3f} mm from the MU10 axis instead of the "
+            f"released {RELEASED_UM_AXIS_SPACING_MM:.3f} mm, and no "
+            "measurement or model backs that spacing",
+            "the T cable threaded for real: out of the UM's declared mouth, "
+            "into the Ø6.00 mate-face entry, along the duct into the front "
+            "chamber, and on through the Ø4.60 partition pass to the rear "
+            "driver, with both drivers fitted and the pod screwed down",
         ],
         "closed_items": [
             "the inherited M4 ND25FW-4 faceplate clamp passages, which "
             "carried no fastener in this variant, are resolved by deletion: "
             "the silhouette they existed to preserve is gone",
+            "the open window between the pod and the UM collar is resolved "
+            "by the flush junction skirt, which lands on the released "
+            "crescent's own seam and is checked head on against the staged "
+            "collar in both stand states",
+            "both external Ø4.6 driver lead outlets are resolved by deletion: "
+            "the cable now enters once, on the UM mate face, so no opening "
+            "reaches the assembled exterior at all",
         ],
     }
 
