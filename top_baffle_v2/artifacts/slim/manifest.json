@@ -6,10 +6,10 @@
   },
   "files": [
     {
-      "bytes": 1062075,
+      "bytes": 1062069,
       "path": "cad/attachments.step",
       "role": "thin_attachment_set",
-      "sha256": "4f582da86c2077231397cc9c4ab1711ff1252cb4bb11b9198b26fe3633bdd8b2",
+      "sha256": "fd9138e1b9038e1dbebdcfc56ba1c2f8166df5cb0bf0676f76fc65b972b41334",
       "source": "build/no_floor_stand/v1_attachments.step"
     },
     {
