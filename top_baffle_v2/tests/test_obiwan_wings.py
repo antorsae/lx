@@ -95,6 +95,24 @@ STANDING_BLADE_MAX_RISE_MM = 1.00
 DEPTH_LAW_LATTICE_MM = 0.4
 DEPTH_LAW_INTERIOR_MARGIN_MM = 2.0
 DEPTH_LAW_MAX_DEVIATION_MM = 1.00
+# Uncut-rim gate. The blade gate requires its whole probe disk on the part
+# and the depth-law gate skips a 2.0 mm interior margin, so both are blind
+# in the outline band -- exactly where a relief cutter that stops short of
+# the plan boundary leaves a full-depth ledge (the shipped graded pieces
+# carried a 0.12-0.19 mm wide, up to 10.42 mm tall rim along the concave
+# nose outline before the relief overshoot fix). This gate walks that band
+# deliberately: every outline cell is judged against the lowest relieved
+# surface a short inboard disk can reach, so a rim standing over relieved
+# material reads at its full height while a smooth edge reads only as the
+# local slope across the reach. Measured on the defective artifacts:
+# 0.000 mm on all ten flat pieces, 10.425/7.522/7.258/0.570 mm on the
+# graded ones; with the relief overshooting the plan the ledge cannot
+# exist by construction, so 1.00 mm keeps the same two-population margin
+# as the blade gate.
+UNCUT_RIM_LATTICE_MM = 0.05
+UNCUT_RIM_INBOARD_MM = 0.60
+UNCUT_RIM_REACH_MM = 0.90
+UNCUT_RIM_MAX_STAND_MM = 1.00
 DOVETAIL_CLEARANCE_MM = 0.05
 T_WING_CLEARANCE_MM = 0.20
 DOVETAIL_ENDPOINT_TAPER_MM = 2.0
@@ -606,6 +624,57 @@ def _assert_surface_matches_depth_law(
             f"by {deviation[k]:+.4f} mm at stl x={xs[k]:.2f} y={ys[k]:.2f} "
             f"(built {built[k]:.4f} mm, law {analytic[k]:.4f} mm) in "
             f"{path.name}; limit {DEPTH_LAW_MAX_DEVIATION_MM} mm")
+    return worst
+
+
+def _assert_no_uncut_rim(path: Path, label: str) -> float:
+    """Reject a full-depth ledge standing on the piece's outline band.
+
+    The two gates above deliberately exclude the outline band -- the blade
+    gate needs its whole disk on the part and the depth-law gate keeps a
+    2.0 mm interior margin -- so a relief cutter that stops short of the
+    plan boundary can leave a tall uncut rim that neither sees.  Here every
+    outline cell (an occupied cell with an off-part 4-neighbour) is compared
+    against the LOWEST surface reachable by a short inboard disk restricted
+    to cells whose own inboard disk is fully on the part.  A rim standing
+    over relieved material therefore reads at its full height, while a
+    legitimate edge -- feathered, sloped or full-depth against full-depth --
+    reads only as the local slope across the reach.  Outline cells with no
+    qualifying interior in reach (sub-resolvable slivers such as dovetail
+    points) are not judged.
+    """
+    import numpy as np
+
+    triangles = _binary_stl_triangles(path)
+    field = _top_height_field(triangles, UNCUT_RIM_LATTICE_MM)
+    occupied = np.isfinite(field)
+    padded = np.pad(occupied, 1)
+    boundary = occupied & ~(
+        padded[:-2, 1:-1] & padded[2:, 1:-1]
+        & padded[1:-1, :-2] & padded[1:-1, 2:])
+    interior = _disk_fully_on_part(field, max(2, int(round(
+        UNCUT_RIM_INBOARD_MM / UNCUT_RIM_LATTICE_MM))))
+    reference = np.where(interior, field, np.inf).astype(np.float32)
+    offsets = _disk_offsets(max(2, int(round(
+        UNCUT_RIM_REACH_MM / UNCUT_RIM_LATTICE_MM))))
+    reference = _disk_sweep(reference, offsets, np.minimum, np.inf)
+    bi, bj = np.nonzero(boundary)
+    stand = field[bi, bj] - reference[bi, bj]
+    judged = np.isfinite(stand)
+    if not judged.any():
+        return 0.0
+    worst = float(stand[judged].max())
+    if worst > UNCUT_RIM_MAX_STAND_MM:
+        indices = np.nonzero(judged)[0]
+        k = indices[int(np.argmax(stand[judged]))]
+        points = triangles.reshape(-1, 3)
+        origin = points[:, :2].min(axis=0) - UNCUT_RIM_LATTICE_MM
+        rim_x = origin[0] + (bi[k] + 0.5) * UNCUT_RIM_LATTICE_MM
+        rim_y = origin[1] + (bj[k] + 0.5) * UNCUT_RIM_LATTICE_MM
+        raise AssertionError(
+            f"{label}: an uncut rim stands {worst:.3f} mm proud of the "
+            f"relieved surface at stl x={rim_x:.2f} y={rim_y:.2f} in "
+            f"{path.name}; limit {UNCUT_RIM_MAX_STAND_MM} mm")
     return worst
 
 
@@ -1333,6 +1402,8 @@ def test_exported_artifact_contract() -> None:
             _assert_surface_matches_depth_law(
                 directory / relative, sidecar_payload, cad, slug, side,
                 f"{slug} {side}/{role}")
+            _assert_no_uncut_rim(
+                directory / relative, f"{slug} {side}/{role}")
             _mesh_facts_match(
                 record.get("stl_diagnostics"), mesh,
                 f"{slug} {side}/{role}")
