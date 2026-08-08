@@ -5,12 +5,18 @@
 both parts and walking sight lines across it.  This is the same claim as a
 picture: an orthographic front elevation, looking straight down -Z at the two
 parts installed, so the flush skirt can be read by eye instead of trusted.
-
 Two panels are drawn side by side, one per stand state, because the UM collar
-differs between them.  The renderer is the project-native one -- build123d
-tessellation into a Matplotlib ``Poly3DCollection`` -- with the ISO matrix's
-own light, colours and background, so the output is deterministic and looks
-like the rest of the review set.
+differs between them.
+
+A second figure frames the cable entry alone, looking up at the mate face from
+where the UM sits, which is the only angle the collar's shape can be judged
+from.  Two elevations of the same frame, so a flat face could not hide edge-on
+in one of them.
+
+The renderer is the project-native one -- build123d tessellation into a
+Matplotlib ``Poly3DCollection`` -- with the ISO matrix's own light, colours and
+background, so the output is deterministic and looks like the rest of the
+review set.
 
 Inputs are read from the build tree and never regenerated::
 
@@ -46,6 +52,7 @@ from gen_product_iso_matrix import (  # noqa: E402
 )
 
 DEFAULT_OUTPUT = Path("review/bmr_crescent_assembled_front.png")
+DEFAULT_ENTRY_OUTPUT = Path("review/bmr_crescent_entry_closeup.png")
 POD_BREP = (Path("build") / "bmr_crescent_TEBM35C10-4"
             / "obiwan_bmr_crescent_TEBM35C10-4.brep")
 STATES = ("floor_stand", "no_floor_stand")
@@ -62,6 +69,25 @@ FRONT_AZIM_DEG = -90.0
 FRAME_X = (-52.0, 52.0)
 FRAME_Y = (401.0, 492.0)
 PANEL_INCHES = (5.0, 4.6)
+
+# The entry close-up looks up at the mate face from where the UM sits: in
+# front of the part and below it, which is the angle the collar's shape has to
+# be judged from.  Two elevations of the same frame, so a flat face could not
+# hide edge-on in one of them.
+ENTRY_VIEWS = (
+    (-32.0, -90.0, "from the UM side, 32° below the mate face"),
+    (-58.0, -68.0, "same frame, steeper and off to one side"),
+)
+# Matplotlib does not clip 3-D collections, so framing alone cannot produce a
+# close-up: the rest of the pod is still drawn over it.  The pod is therefore
+# sectioned to this world box first.  Every cut plane is at least 7 mm from
+# the collar, so the flat faces at the edges of the picture are the section
+# and cannot be mistaken for the collar's own surfaces.
+ENTRY_SECTION_X = (-14.0, 22.0)
+ENTRY_SECTION_Y = (410.0, 434.0)
+ENTRY_SECTION_Z = (-6.0, 14.0)
+ENTRY_ZOOM = 1.05
+ENTRY_PANEL_INCHES = (5.2, 4.8)
 
 
 def _resolve(path: Path) -> Path:
@@ -135,6 +161,94 @@ def _draw(axes, state: str) -> None:
     axes.set_axis_off()
 
 
+def _entry_section_triangles():
+    """The pod sectioned to the entry box, in display coordinates."""
+    import numpy as np
+    from build123d import Box, Part, Pos, import_brep
+
+    pod = Part(import_brep(str(_resolve(POD_BREP))).solids())
+    spans = (ENTRY_SECTION_X, ENTRY_SECTION_Y, ENTRY_SECTION_Z)
+    centre = [(low + high) / 2.0 for low, high in spans]
+    sizes = [high - low for low, high in spans]
+    piece = pod & (Pos(*centre) * Box(*sizes))
+    vertices, triangles = piece.tessellate(
+        MESH_TOLERANCE_MM, MESH_ANGULAR_TOLERANCE)
+    xyz = np.asarray(
+        [[float(vertex.X), float(vertex.Y), float(vertex.Z)]
+         for vertex in vertices], dtype=float)
+    return np.column_stack(
+        (xyz[:, 0], -xyz[:, 2], xyz[:, 1]))[np.asarray(triangles, dtype=int)]
+
+
+def _draw_entry(axes, triangles, elev: float, azim: float) -> None:
+    """The sectioned pod, framed on the cable entry, seen from the UM's side."""
+    from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
+    axes.set_proj_type("ortho")
+    axes.set_facecolor(BACKGROUND)
+    axes.add_collection3d(Poly3DCollection(
+        triangles, facecolors=_shaded(ROLE_COLORS["top"], triangles),
+        edgecolors="none", alpha=1.0))
+    # Display coordinates are (world X, -world Z, world Y).
+    axes.set_xlim(*ENTRY_SECTION_X)
+    axes.set_ylim(-ENTRY_SECTION_Z[1], -ENTRY_SECTION_Z[0])
+    axes.set_zlim(*ENTRY_SECTION_Y)
+    axes.set_box_aspect((
+        ENTRY_SECTION_X[1] - ENTRY_SECTION_X[0],
+        ENTRY_SECTION_Z[1] - ENTRY_SECTION_Z[0],
+        ENTRY_SECTION_Y[1] - ENTRY_SECTION_Y[0]), zoom=ENTRY_ZOOM)
+    axes.view_init(elev=elev, azim=azim)
+    axes.set_axis_off()
+
+
+def render_entry(output: Path) -> Path:
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    figure = plt.figure(
+        figsize=(ENTRY_PANEL_INCHES[0] * len(ENTRY_VIEWS),
+                 ENTRY_PANEL_INCHES[1] + 0.7),
+        facecolor=BACKGROUND)
+    figure.suptitle(
+        "Cable entry — the Ø6.00 bore and its collar, seen from the UM side",
+        fontsize=11, y=0.965)
+    figure.text(
+        0.5, 0.918,
+        "pod alone, orthographic, sectioned to a box round the entry · the "
+        "collar is the bore's own sweep offset by one 1.20 mm wall",
+        ha="center", fontsize=8, color="#54606b")
+    figure.text(
+        0.5, 0.888,
+        "so it has no flat face and no corner — the flat planes at the edges "
+        "of each picture are the section, 7 mm or more away from it",
+        ha="center", fontsize=8, color="#54606b")
+    triangles = _entry_section_triangles()
+    for index, (elev, azim, caption) in enumerate(ENTRY_VIEWS):
+        axes = figure.add_subplot(
+            1, len(ENTRY_VIEWS), index + 1, projection="3d")
+        _draw_entry(axes, triangles, elev, azim)
+        axes.set_title(caption, fontsize=8, y=0.99)
+    return _save(figure, output)
+
+
+def _save(figure, output: Path) -> Path:
+    import matplotlib.pyplot as plt
+
+    absolute = PROJECT_ROOT / output
+    absolute.parent.mkdir(parents=True, exist_ok=True)
+    temporary = absolute.with_name(f".{absolute.stem}.{os.getpid()}.tmp.png")
+    try:
+        figure.savefig(
+            temporary, dpi=FIGURE_DPI, facecolor=BACKGROUND,
+            metadata={"Software": None})
+        temporary.replace(absolute)
+    finally:
+        temporary.unlink(missing_ok=True)
+        plt.close(figure)
+    return absolute
+
+
 def render(output: Path) -> Path:
     import matplotlib
     matplotlib.use("Agg")
@@ -163,26 +277,17 @@ def render(output: Path) -> Path:
                  Patch(facecolor=ROLE_COLORS["top"], label="BMR pod")],
         loc="lower center", ncol=2, frameon=False, fontsize=8,
         bbox_to_anchor=(0.5, 0.005))
-
-    absolute = PROJECT_ROOT / output
-    absolute.parent.mkdir(parents=True, exist_ok=True)
-    temporary = absolute.with_name(f".{absolute.stem}.{os.getpid()}.tmp.png")
-    try:
-        figure.savefig(
-            temporary, dpi=FIGURE_DPI, facecolor=BACKGROUND,
-            metadata={"Software": None})
-        temporary.replace(absolute)
-    finally:
-        temporary.unlink(missing_ok=True)
-        plt.close(figure)
-    return absolute
+    return _save(figure, output)
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument(
+        "--entry-output", type=Path, default=DEFAULT_ENTRY_OUTPUT)
     args = parser.parse_args(argv)
     print(render(args.output))
+    print(render_entry(args.entry_output))
     return 0
 
 

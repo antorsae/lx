@@ -86,8 +86,10 @@ whose mouth sits on the pod's R51.90 mate face, on the cable's own centreline
 and along the cable's own tangent.  The duct runs into the front chamber.  The
 rear driver is fed from that chamber through one Ø4.60 pass in the 2.40 mm
 partition, the same branch diameter the qualified vase uses for a single
-driver's leads.  Every remaining opening either faces the UM mate or is a
-driver pocket or a blind bore, so the assembled exterior has none.
+driver's leads.  Behind the skirt the duct is carried by a collar that is the
+bore's own sweep offset by one wall -- a stadium, not a slab, with no flat
+face or corner on it.  Every remaining opening either faces the UM mate or is
+a driver pocket or a blind bore, so the assembled exterior has none.
 
 Coordinate frame
 ----------------
@@ -118,7 +120,7 @@ from build123d import (
     Rot,
     Cylinder,
 )
-from shapely.geometry import LineString, Point, box
+from shapely.geometry import LineString, Point
 from shapely.ops import unary_union
 
 from ..assembly import ordered_labeled_compound
@@ -495,28 +497,28 @@ if CABLE_MOUTH_APERTURE_MM < TS_CABLE_D_EST:
         f"aperture to a {TS_CABLE_D_EST} mm cable arriving "
         f"{CABLE_MOUTH_MISALIGNMENT_DEG:.2f} degrees off its axis")
 
-# The skirt stops at the core rear plane, but the cable runs 3.0 mm behind it.
-# A spigot continues the skirt's own mate face rearward far enough to carry
-# the duct mouth and its 1.20 mm floor, and no further.  Its plan is a subset
-# of the skirt's, so the front-face-down silhouette still never grows
-# rearward -- the gate checks that rather than trusting this note.
-SPIGOT_HALF_WIDTH_MM = round(
-    abs(CABLE_ENTRY_XY[0]) + CABLE_DUCT_R_MM
-    + T_BLIND_BACK_WALL_THICKNESS_MM, 9)
-SPIGOT_Z = (round(CABLE_DUCT_Z_MM - CABLE_DUCT_R_MM
-                  - T_BLIND_BACK_WALL_THICKNESS_MM, 9), CORE_REAR_Z)
-# The spigot is a little wider than the UM's declared cable mouth, and
-# outboard of that mouth the released closure web owns the seam: the skirt's
-# lower edge there is the web's 0.05 mm fit seam, which stands above the
-# R51.90 arc.  A spigot that kept following the arc would hang below the
-# skirt, and front-face-down that is an overhang.  Its floor is therefore the
-# mate arc taken at the mouth's own half width, which is flat, is at or above
-# the seam everywhere the spigot reaches, and never touches the duct: the
-# duct's own footprint has already climbed well past it by the time it enters
-# material.
-SPIGOT_FLOOR_Y_MM = round(
-    UM_CUTOUT[1] + math.sqrt(
-        UM_MATE_R_MM ** 2 - T_UM_CABLE_MOUTH_HALF_WIDTH ** 2), 9)
+# The skirt stops at the core rear plane, but the cable runs 3.0 mm behind it,
+# so something has to carry the duct over that last stretch.  That something is
+# a collar the shape of the duct and nothing else: the duct's own plan sweep
+# grown by one wall.  Being a constant offset of a straight bore it is a
+# stadium -- two parallel sides closed by half-round ends -- so the entry has
+# no flat slab face and no corner on it anywhere.
+#
+# One wall thickness, and it is the vase's qualified 1.20 mm blind wall, which
+# is already the thinnest wall this part prints anywhere.  The project's
+# 0.85 mm buried-span skin would also have applied here -- this is a buried T
+# span -- but taking it would have bought 0.35 mm of radius at the cost of the
+# part's one simple wall invariant, so the thicker qualified figure stands.
+ENTRY_COLLAR_WALL_MM = T_BLIND_BACK_WALL_THICKNESS_MM
+ENTRY_COLLAR_R_MM = round(CABLE_DUCT_R_MM + ENTRY_COLLAR_WALL_MM, 9)
+ENTRY_COLLAR_Z = (round(CABLE_DUCT_Z_MM - ENTRY_COLLAR_R_MM, 9), CORE_REAR_Z)
+# The collar runs from one radius behind the mouth -- so the mate face carries
+# its full section and the R51.90 arc, not a straight cut, terminates it -- to
+# one radius past the point where the cable crosses the pod wall, beyond which
+# the pod's own body is the duct's wall.
+ENTRY_COLLAR_BACK_MM = ENTRY_COLLAR_R_MM
+ENTRY_COLLAR_REACH_MM = round(
+    CABLE_DUCT["mouth_to_wall_mm"] + ENTRY_COLLAR_R_MM, 9)
 
 # One declared pass feeds the rear driver from the front chamber.  Ø4.60 is
 # the qualified vase's own single-driver lead branch -- the smallest lead
@@ -643,6 +645,25 @@ def _wing_keepout_plan():
     ]).buffer(0)
 
 
+@lru_cache(maxsize=1)
+def _um_owned_relief_plan():
+    """The UM's half of the T--UM closure envelope, plus the released seam.
+
+    This is the same plan ``_enforce_junction_plan_ownership`` subtracts, but
+    it is needed here as a *plan*: that helper only reaches the closure web's
+    own Z band, and the entry collar hangs below it, so a collar cut from the
+    unrelieved skirt would poke out past the skirt's real edge at z=6.8 --
+    which front-face-down is an overhang.  ``tests/test_bmr_crescent.py``
+    applies this and the helper to the same prism and asserts they remove the
+    same volume, so the mirror cannot drift from what it mirrors.
+    """
+    record = junction_closure_polygons()["t_um"]
+    relief = record["target"].difference(record["tweeter"]).buffer(0)
+    if "terminal_drain" in record:
+        relief = unary_union((relief, record["terminal_drain"])).buffer(0)
+    return relief
+
+
 def _simplified(polygon, label: str):
     polygon = polygon.simplify(SKIRT_PLAN_SIMPLIFY_MM, preserve_topology=True)
     if polygon.geom_type != "Polygon" or polygon.interiors:
@@ -690,21 +711,32 @@ def skirt_plan():
 
 
 @lru_cache(maxsize=1)
-def spigot_plan():
-    """The strip of the plate-band plan that continues rearward.
+def entry_collar_plan():
+    """The stadium of material that carries the duct behind the skirt.
 
-    Cut from ``skirt_plan`` rather than rebuilt, and deliberately not
-    decimated again: an independently decimated copy of the same arc lands a
-    micron or two either side of it, and a couple of microns of the spigot
-    outside the skirt is still an overhang the silhouette gate would report.
-    An axis-aligned window introduces no new arc, so this is exactly a subset.
+    The duct's own plan sweep offset by one wall, clipped to what the skirt
+    above it actually is -- its plan less the UM's ownership relief.  Two
+    things fall out of that clip rather than needing constants of their own:
+    the collar's mate face becomes the same R51.90 arc and released seam the
+    skirt presents, and the collar can never reach outside the skirt, which is
+    what keeps the front-face-down silhouette from growing rearward at z=6.8.
+
+    Cut from ``skirt_plan`` rather than rebuilt, and deliberately not decimated
+    again: an independently decimated copy of the same arc lands a micron or
+    two either side of it, and a couple of microns of collar outside the skirt
+    is still an overhang the silhouette gate would report.
     """
-    window = box(-SPIGOT_HALF_WIDTH_MM, SPIGOT_FLOOR_Y_MM,
-                 SPIGOT_HALF_WIDTH_MM, BMR_AXIS_XY[1])
-    plan = skirt_plan().intersection(window)
+    mouth = np.asarray(CABLE_ENTRY_XY, dtype=float)
+    direction = np.asarray(CABLE_DUCT_DIR, dtype=float)
+    sweep = LineString([
+        tuple(mouth - ENTRY_COLLAR_BACK_MM * direction),
+        tuple(mouth + ENTRY_COLLAR_REACH_MM * direction),
+    ])
+    plan = skirt_plan().difference(_um_owned_relief_plan()).intersection(
+        sweep.buffer(ENTRY_COLLAR_R_MM, resolution=SKIRT_PLAN_RESOLUTION))
     if plan.geom_type != "Polygon" or plan.interiors:
         raise RuntimeError(
-            "the cable spigot plan must close to one simple region; got "
+            "the cable entry collar plan must close to one simple region; got "
             f"{plan.geom_type} with "
             f"{len(getattr(plan, 'interiors', ()))} hole(s)")
     return plan
@@ -838,8 +870,8 @@ def bmr_crescent():
         _pod_solid(), _plan_prism(skirt_plan(), *SKIRT_Z),
         "flush junction skirt onto the BMR pod")
     part = _fuse_required(
-        part, _plan_prism(spigot_plan(), *SPIGOT_Z),
-        "mate-face cable spigot onto the BMR pod")
+        part, _plan_prism(entry_collar_plan(), *ENTRY_COLLAR_Z),
+        "mate-face cable entry collar onto the BMR pod")
     # Hand the UM back its own half of the T--UM closure envelope and the
     # released 0.05 mm fit seam.  The crescent half this part owns is already
     # in the plan above, and the relief is its exact complement, so this only
@@ -1101,8 +1133,8 @@ def design_facts() -> dict:
                 "the two superseded struts reached, so the already-qualified "
                 "half-lap remains the governing member"),
             "rear_growth_rule": (
-                "the skirt stops at the core rear plane and the cable spigot "
-                "below it keeps a plan strictly inside the skirt's, so the "
+                "the skirt stops at the core rear plane and the cable entry "
+                "collar below it is cut from the skirt's own plan, so the "
                 "front-face-down exterior never grows rearward"),
             "wing_keepout_rule": (
                 "the released wing family's envelope may not move, so the "
@@ -1144,9 +1176,20 @@ def design_facts() -> dict:
             "entry_projected_aperture_mm": CABLE_MOUTH_APERTURE_MM,
             "duct_length_to_front_chamber_mm": CABLE_DUCT_LENGTH_MM,
             "um_declared_mouth_half_width_mm": T_UM_CABLE_MOUTH_HALF_WIDTH,
-            "spigot_z_span_mm": list(SPIGOT_Z),
-            "spigot_half_width_mm": SPIGOT_HALF_WIDTH_MM,
-            "spigot_floor_y_mm": SPIGOT_FLOOR_Y_MM,
+            "entry_collar_plan": (
+                "stadium: the duct's own plan sweep offset by one wall, "
+                "clipped to the skirt; no flat face and no corner on it"),
+            "entry_collar_z_span_mm": list(ENTRY_COLLAR_Z),
+            "entry_collar_wall_mm": ENTRY_COLLAR_WALL_MM,
+            "entry_collar_wall_authority": (
+                "the vase's qualified 1.20 mm blind wall, already the "
+                "thinnest wall this part prints anywhere; the project's "
+                "0.85 mm buried-span skin would also have applied but was "
+                "not taken, for 0.35 mm of radius against that invariant"),
+            "entry_collar_r_mm": ENTRY_COLLAR_R_MM,
+            "entry_collar_sweep_mm": [
+                -ENTRY_COLLAR_BACK_MM, ENTRY_COLLAR_REACH_MM],
+            "entry_collar_area_mm2": round(entry_collar_plan().area, 6),
             "partition_pass_d_mm": PARTITION_PASS_D_MM,
             "partition_pass_xy_mm": list(PARTITION_PASS_XY),
             "note": (

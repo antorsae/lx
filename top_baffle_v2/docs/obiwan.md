@@ -433,9 +433,9 @@ print, not the wings.
   from their vase: two Dayton ND25FW-4 domes whose faceplates clamp the
   crescent between them. This is the only release-authorized carrier.
 - **Candidate coaxial TEBM35C10-4 BMR crescent** — two Tectonic BMRs stacked
-  back to back on the same acoustic axis, carried by a minimal D66 pod on two
-  struts rather than by a crescent outline. Documented below; **not**
-  release-authorized.
+  back to back on one acoustic axis, carried by a D66 pod dropped onto the
+  collar and joined to it by a solid flush skirt rather than by a crescent
+  outline. Documented below; **not** release-authorized.
 
 Fitting no crescent at all is also a supported configuration.
 
@@ -448,12 +448,26 @@ to run BMRs.
 
 ![Candidate coaxial BMR crescent](../images/generated/iso/tweeter_tebm35c10_4_crescent.png)
 
-A minimal pod, not a crescent outline: the two drivers, the two half-lap ears,
-and the least structure that can join them. It keeps the released UM mate
-exactly — the same half-laps at `x=±24, y=421.5`, the same blind-M3 ear
-receivers, the same 0.20 mm axial gap — and keeps nothing else of the released
-crescent. Both BMRs sit on the released face-to-face acoustic axis at
-`(0, 468.193)`.
+A pod and a flush junction, not a crescent outline: the two drivers, the two
+half-lap ears, and solid material everywhere between them and the collar. It
+keeps the released UM mate exactly — the same half-laps at `x=±24, y=421.5`,
+the same blind-M3 ear receivers, the same 0.20 mm axial gap — and keeps
+nothing else of the released crescent's plan.
+
+- **The pod is dropped as close to the UM as the mate allows.** Both BMRs sit
+  on one axis at `(0, 452.494193)`, 15.699 mm below the released ND25FW-4
+  acoustic axis at `(0, 468.193)`, so the MU10-to-BMR axis spacing falls from
+  102.112 mm to **86.413 mm**. Two things stop the drop and both come from the
+  released mate: the UM's native R51.7 core ring, which the released crescent
+  clears by 0.20 mm and which alone would allow `y=450.981`; and the UM
+  half-lap's own receiver notch — the complete Ø9.8 ear grown by the released
+  0.10 mm joint clearance — which the D66 land must not be nicked by, because
+  the notch is cut over `z=6.7…12.4` while the land runs the full depth, so a
+  nick would either lose land or make the plan grow rearward at z=6.7. The
+  notch governs. Holding the proud vase's qualified 1.20 mm wall between the
+  notch and the pod fixes the axis, and leaves the pod wall 1.713 mm off the
+  UM core ring at the cable mouth — material the skirt fills. **The acoustic
+  consequence of the new spacing is unmeasured and is an open item.**
 
 - **50.2 mm stack.** The front driver mounts on the shared z=18.3 acoustic
   plane facing +z; the rear driver mounts on the pod rear land at z=−31.9
@@ -462,7 +476,7 @@ crescent. Both BMRs sit on the released face-to-face acoustic axis at
 - **2.40 mm partition.** Not one shared wall but two independent 1.20 mm blind
   walls back to back, so each driver keeps the wall thickness already
   qualified on the proud BMR vase and the two rear volumes stay separate
-  chambers.
+  chambers apart from the one declared lead pass below.
 - **The pod wall is the D66 driver land, and that is the printable minimum.**
   Both mounting faces have to carry the qualified D66 land, and the part
   prints front-face-down, so its plan may never grow rearward. Below R33 a
@@ -471,35 +485,72 @@ crescent. Both BMRs sit on the released face-to-face acoustic axis at
   take. A straight D66 cylinder is therefore the only radius that satisfies
   both — and it is also how the qualified proud vase treats its own drivers,
   where the D66 land *is* the exterior surface. It still leaves 11.537 mm of
-  wall outside each pocket and 7.270 mm outside each M2 insert bore. The whole
-  pod now sits 6.25 mm inside the released R39.25 scallop instead of filling
-  it.
-- **Two drafted struts** are the only structure between the pod and the mate,
-  8.0 mm wide at the acoustic front tapering to 5.988 mm at z=6.8 on a 5°
-  rearward draft, blended into the pod wall by an R8 root fillet (fillet
-  radius = strut width). Their smallest section, where each crosses the UM
-  ear's receiver notch, is 44.155 mm² — 1.44 × the half-lap's own 30.68 mm²
-  net ligament — so the already-qualified joint stays the governing section
-  rather than the new structure. They occupy only the released crescent's own
-  z=6.8…18.3 plate band and keep 3.793 mm off the UM core ring.
-- **No overhang anywhere outside the pockets.** Printed front-face-down the
-  exterior plan never grows rearward, checked section by section over the
-  struts, their roots, the ear step and the pod.
-- **Two Ø4.6 lead outlets** on the −Y meridian at the proud vase's own inset,
-  at z=0.0 for the front driver and z=−13.6 for the rear one, breaking out at
-  `y=435.193` on the side the free T cable arrives from and the mate is on.
-  Dropping the arms opens that whole quadrant, so a printed duct there would
-  be the only body able to pinch the free cable — none is cut, and the gate
-  intersects the part with the modelled T cable to prove it.
+  wall outside each pocket and 7.270 mm outside each M2 insert bore.
+- **A solid flush skirt, not struts.** The plate band `z=6.8…18.3` is filled
+  between the pod and the collar: the plan is the convex hull of the pod disc
+  and the two complete Ø9.8 half-lap bosses, less the released R51.90 UM
+  clearance disc, plus the released crescent's own half of the T–UM closure
+  web, less the released wing plan. Nothing about that lower edge is new — it
+  is the released crescent's seam, 0.201 mm off the UM core ring across the
+  cable mouth (the released recut) and the released 0.05 mm fit seam across
+  the closure web, where it runs 0.070 mm off the ring exactly as the released
+  crescent does. Because the hull is convex the fill has no concave corner of
+  its own, so there is no root fillet to choose. The narrowest printed section
+  on either ear-to-pod load path, the D4.6 heat-set receiver taken out of the
+  same chord, is 49.26 mm² — **1.61 ×** the half-lap's own 30.68 mm² net
+  ligament, against the 1.44 × the two superseded struts reached — so the
+  already-qualified joint stays the governing section.
+- **The wings do not move.** A convex hull of the pod and the bosses would
+  fill the slot the released crescent leaves just outboard of each ear, and
+  both wing families run a tongue into exactly that slot. The wing plan is
+  therefore subtracted from the skirt: the released envelope wins, and the
+  skirt's boundary there ends up where the released crescent's own clearance
+  envelope already was. It is the one place the plan is deliberately
+  discontinuous, and the gate that walks the plan for windows allows a break
+  only where a released wing sits in it.
+- **No overhang anywhere outside the pockets.** The skirt stops at the core
+  rear plane, so only the driver stack reaches behind it, and the one feature
+  that does go further back (the cable entry collar) is cut from the skirt's
+  own plan. Printed front-face-down the exterior plan never grows rearward,
+  checked section by section over the skirt, the ear step, the collar and the
+  pod.
+- **The cable is invisible, and there are no external outlets at all.** The
+  free T cable leaves the UM's own declared central mouth at `z=3.8` and goes
+  straight into **one Ø6.00 duct** — `TS_DUCT_D`, the UM's own T lumen, for
+  the same Ø5.2 cable — whose mouth sits on this part's R51.90 mate face at
+  `(4.131, 417.816)`, on the cable's own centreline. The duct runs along the
+  cable's own tangent, 6.58° off it at the mouth, which leaves 5.960 mm of
+  projected aperture for a 5.2 mm cable; a bore normal to the mate face or
+  aimed at the pod axis would be more than 28° off and the cable would land on
+  the rim. 16.475 mm later it opens into the front chamber. Because the skirt
+  stops at `z=6.8` and the cable runs 3.0 mm behind it, an **entry collar**
+  carries the duct back to `z=−0.4`: the bore's own plan sweep offset by one
+  1.20 mm wall — the vase's qualified blind wall, already the thinnest wall
+  this part prints — so it is a R4.20 stadium hugging the bore, with no flat
+  face and no corner on it anywhere. Clipping it to the skirt's plan does two
+  jobs at once: its mate face becomes the same R51.90 arc the skirt has, and
+  it can never reach outside the skirt, which is what keeps the
+  front-face-down silhouette from growing rearward at the core rear plane.
+- **One Ø4.60 partition pass** feeds the rear driver from the front chamber,
+  at `(0, 434.531)` — the proud vase's own single-driver lead branch, pushed
+  17.963 mm outboard in the partition, as far as its own 1.20 mm wall to the
+  Ø42.9 pocket bore allows, which is where the driver motor is not. The two
+  rear volumes are otherwise still separate chambers.
+- **Nothing opens on the assembled exterior.** Every declared opening either
+  faces the UM mate across the released gap (the cable entry, the two Ø3.4
+  half-lap passages, the two blind Ø4.6 receivers), sits under a fitted driver
+  (the two pocket mouths, the eight M2 bores), or never reaches the skin at
+  all (the partition pass).
 - **Eight blind Ø3.2 × 4.0 M2 insert bores**, four per D66 land on the
   drawing's Ø48.26 pattern, clocked +45°/−45°.
 - The released **M4 clamp holes** are **gone**. This variant clamps no
   tweeter, so those four passages carried no fastener; they existed only to
   keep a released silhouette this part no longer has.
 - No magnets, exactly like the released crescent. One closed shell,
-  66.00 × 89.67 × 50.20 mm, front-face-down, support-free, and P2S bed-fitting
-  — 32.34 mm narrower and 6.75 mm shorter than the first candidate, and
-  105.79 cm³ against its 159.54 cm³.
+  66.00 × 73.97 × 50.20 mm, front-face-down, support-free, and P2S bed-fitting
+  — 15.70 mm shallower in Y than the strutted candidate, because the pod came
+  down toward the collar, and 106.38 cm³ against its 105.79 cm³: the flush
+  fill costs 0.68 cm³, about 0.8 g.
 
 Build it with the local-only target:
 
@@ -507,8 +558,8 @@ Build it with the local-only target:
 
 Outputs land in `build/bmr_crescent_TEBM35C10-4/` as
 `obiwan_bmr_crescent_TEBM35C10-4.{brep,step,stl,print.json,facts.json}`. The
-target never dispatches to osado. Sixteen local gates run with it. Because the
-part is no longer a superset of the released crescent, the old
+target never dispatches to osado. Twenty local gates run with it. Because
+the part is no longer a superset of the released crescent, the old
 symmetric-difference identity gate is replaced by two that prove the mount
 directly: the two ear footprints are compared against the released crescent
 ear for ear over the add-on's own Z span and must match to under 10⁻⁶ mm³, and
@@ -516,39 +567,68 @@ the part is then assembled against the staged UM collar BREP in both stand
 states — zero interference, both 0.20 mm axial gaps empty from both sides with
 real bearing faces either side of them, and both rear-driven M3 paths
 continuous from the UM bore through the gap into the blind receiver under its
-1.9 mm front floor. The remaining gates cover zero interference with the UM
-carrier and with the flat and graded wings, an untouched free T cable
-corridor, a never-growing exterior silhouette, single-shell topology with only
-the declared openings, separation of the two chambers, bed fit, and
+1.9 mm front floor. Four gates carry the rework specifically:
+
+- the axis is recomputed from the two released constraints and has to be the
+  tighter of them, so the pod cannot quietly drift back up;
+- the assembly is projected head on against the staged collar and every sight
+  line across the junction has to be the mate seam, not a window — and the
+  plan itself is walked column by column, where a break is allowed only where
+  a released wing sits in it;
+- every declared opening has to name the side it faces, and the list of
+  exterior ones has to be empty;
+- the free T cable is untouched on the UM's side of the mate, and where it
+  crosses the mate its own section has to be inside the declared duct rather
+  than on its rim.
+
+The remaining gates cover zero interference with the UM carrier and with the
+flat and graded wings, the skirt's section at the ears, a never-growing
+exterior silhouette, single-shell topology with only the declared openings,
+chamber separation apart from the one declared partition pass, bed fit, and
 source-hash freshness.
+
+The same claim as a picture — the pod installed on the collar, orthographic
+front elevation, one panel per stand state — plus a close-up of the cable
+entry looking up at the mate face from where the UM sits, are rendered from
+the same BREPs into the untracked review shelf by
+
+    python scripts/render_bmr_crescent_assembly.py
+    # -> review/bmr_crescent_assembled_front.png
+    # -> review/bmr_crescent_entry_closeup.png
 
 **Candidate status.** `release_authorized` is false and
 `PHYSICAL_MEASURE_REQUIRED` is true. The part is deliberately absent from the
 release inventory, the stage manifests and `to_print/`, and its own test
-asserts all three. The two BMRs weigh 102.6 g and the pod is 105.79 cm³ of
-plastic, so the two-screw UM joint would hang roughly 234 g — down from the
-first candidate's ~300 g, but still well above the released ND25FW-4 crescent.
-Six items are open before this part is printed for use:
+asserts all three. The two BMRs weigh 102.6 g and the pod is 106.38 cm³ of
+plastic, so the two-screw UM joint would hang roughly 235 g — still well above
+the released ND25FW-4 crescent. Seven items are open before this part is
+printed for use:
 
-1. the two-screw UM-to-pod joint re-proven at that ~234 g hanging mass;
+1. the two-screw UM-to-pod joint re-proven at that ~235 g hanging mass;
 2. the TEBM35C10-4 flange, basket and depth measured on the actual driver
    rather than taken from the published envelope;
 3. the back-to-back 2.40 mm partition printed, then pressure- and
    rattle-checked with both drivers fitted — front-face-down it is also a
-   Ø42.9 unsupported span over the front pocket;
-4. the two struts loaded at that hanging mass, their section having been
-   chosen by rule and never printed or loaded;
-5. an acoustic opinion on the open silhouette, which leaves the UM's own
-   T–UM closure-web half unmated and the front largely open around the pod;
-   and
-6. the free T cable dressed to both −Y lead outlets without pinch behind the
-   pod.
+   Ø42.9 unsupported span over the front pocket, and it now carries the
+   Ø4.60 lead pass;
+4. the junction skirt loaded at that hanging mass, its section at the ears
+   having been chosen by rule and never printed or loaded;
+5. M2 × 4 heat-set installation in both D66 lands without breakthrough into
+   the opposite pocket;
+6. an acoustic opinion on the dropped axis: the BMR pair now sits 86.413 mm
+   from the MU10 axis instead of the released 102.112 mm, and nothing
+   measured or modelled backs that spacing; and
+7. the T cable threaded for real — out of the UM's declared mouth, into the
+   Ø6.00 mate-face entry, along the duct into the front chamber and on
+   through the Ø4.60 partition pass to the rear driver, with both drivers
+   fitted and the pod screwed down.
 
-The seventh item the first candidate carried — an opinion on the inherited M4
-clamp holes — is closed by deletion, and the artifact's `facts.json` records
-that in a `closed_items` array. Its `open_items` array carries all six above
-verbatim and adds the M2 × 4 heat-set installation check: both D66 lands set
-without breaking through into the opposite pocket.
+Three items are **closed**, and the artifact's `facts.json` records them in a
+`closed_items` array beside the seven open ones: the inherited M4 clamp holes,
+closed by deletion; the open window between the pod and the collar, closed by
+the flush skirt and checked head on against the staged collar in both stand
+states; and the pair of external Ø4.6 lead outlets, closed by deletion now
+that the cable enters once on the mate face.
 
 ## Cable routing (buried Obi-Wan routes)
 

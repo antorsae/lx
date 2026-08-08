@@ -70,7 +70,9 @@ from lx521_baffle.obiwan.carriers import (
     TWEETER_JOINT_Y,
     UM_CORE_R,
     _complete_tweeter_joint_ear_plan,
+    _enforce_junction_plan_ownership,
     _plan_prism,
+    _subtract_plan_prisms,
 )
 from lx521_baffle.base import THICKNESS_MM, UM_CUTOUT
 
@@ -380,14 +382,61 @@ def test_cable_path_is_one_hidden_entry_and_one_partition_pass() -> None:
         bmr.TEBM_CUTOUT_D_MM / 2.0, 1.0e-6)
     assert bmr.PARTITION_PASS_XY[1] < bmr.BMR_AXIS_XY[1], (
         "the partition pass must be on the -Y side the cable arrives from")
-    # The spigot carries the duct and its floor, and nothing more.
-    assert bmr.SPIGOT_Z[1] == CORE_REAR_Z
-    assert _close(bmr.SPIGOT_Z[0],
-                  bmr.CABLE_DUCT_Z_MM - bmr.CABLE_DUCT_R_MM
-                  - bmr.T_BLIND_BACK_WALL_THICKNESS_MM, 1.0e-9)
-    assert bmr.spigot_plan().within(bmr.skirt_plan().buffer(1.0e-9)), (
-        "the spigot plan must stay inside the skirt plan, or the exterior "
-        "grows rearward at the core rear plane")
+    # The collar carries the duct and its wall, and is the shape of the duct
+    # rather than a slab around it.
+    assert bmr.ENTRY_COLLAR_Z[1] == CORE_REAR_Z
+    assert _close(bmr.ENTRY_COLLAR_WALL_MM,
+                  bmr.T_BLIND_BACK_WALL_THICKNESS_MM)
+    assert _close(bmr.ENTRY_COLLAR_R_MM,
+                  bmr.CABLE_DUCT_R_MM + bmr.ENTRY_COLLAR_WALL_MM)
+    assert _close(bmr.ENTRY_COLLAR_Z[0],
+                  bmr.CABLE_DUCT_Z_MM - bmr.ENTRY_COLLAR_R_MM, 1.0e-9)
+    collar = bmr.entry_collar_plan()
+    relief = bmr._um_owned_relief_plan()
+    skirt = bmr.skirt_plan().difference(relief)
+    assert collar.within(skirt.buffer(1.0e-9)), (
+        "the entry collar plan must stay inside what the skirt above it "
+        "actually is, or the exterior grows rearward at the core rear plane")
+
+    # That relief is mirrored from the released ownership helper, which only
+    # reaches the closure web's Z band.  Apply both to the same prism: if the
+    # mirror ever drifts, they stop removing the same volume.
+    probe = _plan_prism(bmr.skirt_plan(), *bmr.SKIRT_Z)
+    theirs = _enforce_junction_plan_ownership(probe, "t_um", "tweeter")
+    mine = _subtract_plan_prisms(probe, relief, *bmr.SKIRT_Z)
+    assert abs(float(theirs.volume) - float(mine.volume)) < 1.0e-6, (
+        "the locally mirrored ownership relief has drifted from "
+        f"_enforce_junction_plan_ownership: {theirs.volume} vs {mine.volume}")
+
+    # It really is a stadium hugging the bore: every stretch of its boundary
+    # that is not the skirt's own edge stands exactly one collar radius off
+    # the duct's plan sweep.  A slab, or any face or corner of one, would sit
+    # further out than that somewhere.
+    from shapely.geometry import LineString as _Line2, Point as _Point
+    mouth = bmr.CABLE_ENTRY_XY
+    direction = bmr.CABLE_DUCT_DIR
+    sweep = _Line2([
+        (mouth[0] - bmr.ENTRY_COLLAR_BACK_MM * direction[0],
+         mouth[1] - bmr.ENTRY_COLLAR_BACK_MM * direction[1]),
+        (mouth[0] + bmr.ENTRY_COLLAR_REACH_MM * direction[0],
+         mouth[1] + bmr.ENTRY_COLLAR_REACH_MM * direction[1]),
+    ])
+    inherited = bmr.skirt_plan().exterior.union(relief.boundary).buffer(
+        4.0 * bmr.SKIRT_PLAN_SIMPLIFY_MM)
+    own_edge = collar.exterior.difference(inherited)
+    assert own_edge.length > 0.5 * collar.exterior.length, (
+        "most of the collar's boundary should be its own, not the skirt's")
+    strayed = max(
+        abs(sweep.distance(_Point(*coordinate)) - bmr.ENTRY_COLLAR_R_MM)
+        for piece in getattr(own_edge, "geoms", [own_edge])
+        for coordinate in piece.coords)
+    assert strayed <= 0.01, (
+        f"the collar's own boundary strays {strayed:.4f} mm from a constant "
+        f"{bmr.ENTRY_COLLAR_R_MM} mm offset of the bore; it is not a stadium")
+    # And it is small: a slab spanning the mouth would be several times this.
+    assert collar.area < 150.0, (
+        f"the entry collar plan is {collar.area:.1f} mm2; that is a box, not "
+        "a collar")
     print(f"    entry Ø{bmr.CABLE_DUCT_D_MM:.2f} at "
           f"({bmr.CABLE_ENTRY_XY[0]:.3f}, {bmr.CABLE_ENTRY_XY[1]:.3f}, "
           f"{bmr.CABLE_DUCT_Z_MM}) bearing {bmr.CABLE_DUCT['bearing_deg']:.2f} "
@@ -607,9 +656,9 @@ def test_declared_openings_are_the_only_openings() -> None:
             size=0.4) == 0.0, (
             f"the cable duct is obstructed {reach:.2f} mm along its axis")
     # Beside the duct, half way along where the pod wall surrounds it, the
-    # material is intact; below it in the spigot the declared 1.20 mm floor
-    # is there.  Probing beside the mouth itself would only sample the free
-    # space outside the curved mate face.
+    # material is intact; below it in the entry collar the declared 1.20 mm
+    # floor is there.  Probing beside the mouth itself would only sample the
+    # free space outside the curved mate face.
     normal = (-direction[1], direction[0])
     middle = bmr.CABLE_DUCT_LENGTH_MM / 2.0
     for sign in (-1.0, 1.0):
@@ -621,8 +670,8 @@ def test_declared_openings_are_the_only_openings() -> None:
             "the cable duct is wider than declared")
     assert _material(
         solid, entry_x + direction[0] * 1.0, entry_y + direction[1] * 1.0,
-        bmr.SPIGOT_Z[0] + 0.4, size=0.3) > 0.0, (
-        "the cable duct has no floor under it in the spigot")
+        bmr.ENTRY_COLLAR_Z[0] + 0.4, size=0.3) > 0.0, (
+        "the cable duct has no floor under it in the entry collar")
 
     # Eight blind M2 bores, four per land, on the declared PCD and clocks.
     radius = bmr.TEBM_MOUNT_PCD_MM / 2.0
@@ -957,7 +1006,7 @@ def test_exterior_never_grows_rearward() -> None:
     The part is printed with z=18.3 on the bed, so print height runs with
     decreasing Z.  Requiring the exterior plan at each Z to lie inside the
     plan just in front of it is exactly the no-overhang condition for the
-    whole outside of the part -- the skirt, the ear step, the cable spigot
+    whole outside of the part -- the skirt, the ear step, the entry collar
     and the pod.  The one declared mate-face entry is filled back in first: a
     Ø6 bore through a wall is a bridge, not plan growth.
     """
@@ -967,7 +1016,7 @@ def test_exterior_never_grows_rearward() -> None:
     envelope = (Pos(bmr.BMR_AXIS_XY[0], bmr.BMR_AXIS_XY[1],
                     (bmr.REAR_MOUNT_Z_MM + THICKNESS_MM) / 2.0) * Cylinder(
         bmr.POD_OUTER_R_MM, bmr.STACK_DEPTH_MM)).fuse(
-        _plan_prism(bmr.spigot_plan(), *bmr.SPIGOT_Z))
+        _plan_prism(bmr.entry_collar_plan(), *bmr.ENTRY_COLLAR_Z))
     probe = solid.fuse(bmr._duct_cutter() & envelope).clean()
 
     ladder = (
