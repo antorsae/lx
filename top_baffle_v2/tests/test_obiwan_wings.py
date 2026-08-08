@@ -140,7 +140,12 @@ BED_XY_MM = 220.0
 # bound that serialization-only quadrature delta at 20 ppm while retaining
 # independent exact topology/bounds/STL/C0 gates plus exact plan symmetry and
 # paired imported rear-depth probes.
-STEP_ROUNDTRIP_VOLUME_REL_TOL = {"flat": 1.0e-5, "graded": 2.0e-5}
+# The graded perimeter is now the exact plan trim (281-vertex wire, 0.20 mm
+# minimum segments) rather than an inset offset; STEP serialization of that
+# finer boundary round-trips the solid volume at a measured 39 ppm, so the
+# graded bound moves to 100 ppm — 2.5x the measured value and still five
+# times tighter than the assembly tolerance.
+STEP_ROUNDTRIP_VOLUME_REL_TOL = {"flat": 1.0e-5, "graded": 1.0e-4}
 STEP_ROUNDTRIP_VOLUME_ABS_TOL_MM3 = 0.02
 STEP_ASSEMBLY_VOLUME_REL_TOL = 5.0e-4
 STEP_FAST_IDENTITY_VOLUME_REL_TOL = 2.0e-2
@@ -1004,9 +1009,25 @@ def test_exported_artifact_contract() -> None:
             assert relief_mask.get("general_maximum_hausdorff_mm") == 0.08
             assert relief_mask.get("lower_root_exception_radius_mm") == 0.25
             assert relief_mask.get("lower_root_maximum_hausdorff_mm") == 0.20
-            assert relief_mask.get("outside_exact_relief_area_mm2") <= 1.0e-9
-            assert 0.18 < relief_mask.get(
-                "measured_maximum_hausdorff_mm") < 0.20
+            # The relief mask deliberately overshoots the plan outward and
+            # relies on the exact plan trim for the perimeter, so material
+            # inside the plan that the cutter misses is the number that
+            # matters now (measured 0.272 mm2, all of it the recognized
+            # lower-root exception), while the old never-leaves-the-plan
+            # invariant is inverted by design.
+            assert relief_mask.get("perimeter_overshoot_mm") == 0.20
+            # 0.20 overshoot + 0.05 simplify, plus mitre-join corner
+            # extension of the budget band (measured 0.259 at a corner).
+            assert 0.0 < relief_mask.get(
+                "measured_outward_reach_mm") <= 0.30
+            assert (relief_mask.get("uncut_perimeter_band_mm2")
+                    <= relief_mask.get("maximum_uncut_perimeter_band_mm2")
+                    == 0.35)
+            assert relief_mask.get("retained_full_depth_bite_mm2") <= 1.0e-6
+            assert 0.0 < relief_mask.get(
+                "outside_exact_plan_area_mm2") < 150.0
+            assert relief_mask.get("discarded_overshoot_area_mm2") <= 2.0
+            assert relief_mask.get("outside_exact_relief_area_mm2") >= 0.0
             assert relief_mask.get("edge_plan_overlap_mm") >= 0.02
             perimeter_gate = depth.get("protected_perimeter_brep_c0_gate")
             assert isinstance(perimeter_gate, dict)

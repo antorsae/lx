@@ -1597,8 +1597,10 @@ def _graded_boolean_relief_plan():
         raise RuntimeError(
             "graded Boolean relief mask overshot its perimeter budget of "
             f"{GRADED_RELIEF_PERIMETER_OVERSHOOT_MM:.3f} mm")
-    outward_reach = float(outside_plan.area)
-    maximum_hausdorff = outward_reach
+    outward_reach = max((
+        float(exact_plan.distance(Point(*coordinate)))
+        for geometry in getattr(outside_plan, "geoms", (outside_plan,))
+        for coordinate in geometry.exterior.coords), default=0.0)
 
     edge_plan_overlap = (
         GRADED_EXACT_EDGE_BAND_MM
@@ -1616,7 +1618,6 @@ def _graded_boolean_relief_plan():
         "lower_root_maximum_hausdorff_mm": (
             GRADED_BOOLEAN_RELIEF_ROOT_MAX_HAUSDORFF_MM),
         "lower_root_tip_xy_mm": [float(value) for value in root_tip],
-        "measured_maximum_hausdorff_mm": maximum_hausdorff,
         "outside_exact_relief_area_mm2": float(
             boolean_relief_plan.difference(relief_plan).area),
         "edge_plan_overlap_mm": float(edge_plan_overlap),
