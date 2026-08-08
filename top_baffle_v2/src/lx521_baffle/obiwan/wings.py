@@ -114,6 +114,12 @@ GRADED_RELIEF_BOUNDARY_GUARD_MM = 0.08
 # enough in that the analytic relief is on solid ground, close enough that the
 # value carried outward is the boundary value and not an interior one.
 GRADED_SURFACE_CLAMP_PROBE_MM = GRADED_RELIEF_BOUNDARY_GUARD_MM
+# Ramp from the retained full-depth datum onto the clamped law, measured along
+# the outline away from the retained land. Roughly two-and-a-half pole pitches
+# (the net is 0.953 x 1.064 mm); a hard class switch stepped ~9 mm between
+# neighbouring poles and the basis smoothed that into a 1.594 mm lip on the
+# graded UM at stl x=32.93 y=55.58.
+GRADED_SURFACE_CLAMP_BLEND_MM = 2.5
 GRADED_EDGE_BOOLEAN_OVERSHOOT_MM = 0.20
 # Preserve the 0.04-mm protected-land collar that keeps the fitted rear
 # transition below the 0.03-mm C0 gate. The new G1 lower root creates one
@@ -573,6 +579,7 @@ def _graded_control_depths(xy: np.ndarray) -> np.ndarray:
     ).buffer(0)
     clamp_indices: list[int] = []
     clamp_probes: list[tuple[float, float]] = []
+    clamp_weights: list[float] = []
     for index in np.flatnonzero(~inside):
         point = Point(float(xy[index, 0]), float(xy[index, 1]))
         boundary_point, _unused = nearest_points(
@@ -584,19 +591,35 @@ def _graded_control_depths(xy: np.ndarray) -> np.ndarray:
                 GRADED_SURFACE_OUTSIDE_MIN_DEPTH_MM,
                 GRADED_EDGE_DEPTH_MM
                 - GRADED_SURFACE_OUTSIDE_EDGE_SLOPE * outside_distance)
-        elif boundary_point.distance(retained_land) <= (
-                GRADED_BOOLEAN_RELIEF_INSET_MM):
-            depths[index] = FULL_DEPTH_MM
         else:
             clamp_indices.append(int(index))
             clamp_probes.append(
                 _interior_probe_xy(point, boundary_point, layout.field_right))
+            # Blend weight: 0 on the carrier/joint contact itself, 1 once the
+            # boundary has left the retained land by the blend span.  A hard
+            # switch here puts a ~9-mm step between neighbouring poles, and
+            # the cubic basis turns that step into a lip standing inside the
+            # trim; ramping it over roughly two-and-a-half pole pitches keeps
+            # the mate exactly full depth and still lands on the law.
+            clamp_weights.append(_clamp_blend_weight(
+                boundary_point.distance(retained_land)))
     if clamp_indices:
         # One batched evaluation: the law is far too slow to call per pole and
         # this branch covers most of the conditioning net.
-        depths[np.asarray(clamp_indices)] = _right_depth_vector(
+        selected = np.asarray(clamp_indices)
+        law = _right_depth_vector(
             "graded", np.asarray(clamp_probes, dtype=float))
+        weight = np.asarray(clamp_weights, dtype=float)
+        depths[selected] = (1.0 - weight) * FULL_DEPTH_MM + weight * law
     return depths
+
+
+def _clamp_blend_weight(retained_distance: float) -> float:
+    """Smoothstep from the retained full-depth datum onto the clamped law."""
+    span = GRADED_SURFACE_CLAMP_BLEND_MM
+    t = (float(retained_distance) - GRADED_BOOLEAN_RELIEF_INSET_MM) / span
+    t = min(1.0, max(0.0, t))
+    return t * t * (3.0 - 2.0 * t)
 
 
 def _interior_probe_xy(point: Point, boundary_point: Point,

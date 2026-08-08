@@ -2128,8 +2128,14 @@ def test_live_brep_geometry_contract() -> None:
         print(f"  {slug}: plan envelope and T clearance pass", flush=True)
         right_volume = cad.adaptive_volume_mm3(right)
         left_volume = cad.adaptive_volume_mm3(left)
+        # These solids are re-imported from STEP, so this compares the
+        # round trip of a bit-mirrored construction, not the construction
+        # itself (the serialized facts pin that at machine precision).
+        # The graded perimeter is now the exact-plan trim wire, whose
+        # re-integration spreads a mirrored pair by ~0.06 mm3; 0.25 mm3
+        # keeps 4x margin at 3.5 ppm of the part.
         assert math.isclose(right_volume, left_volume, rel_tol=1e-9,
-                            abs_tol=0.02)
+                            abs_tol=0.25)
         print(f"  {slug}: imported monolith volumes pass", flush=True)
         for side, monolith in (("right", right), ("left", left)):
             pocket = wing_pockets[side]
