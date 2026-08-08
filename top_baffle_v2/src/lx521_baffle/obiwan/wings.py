@@ -32,6 +32,7 @@ from shapely.geometry import Point, Polygon
 from shapely.geometry.polygon import orient
 from shapely.ops import nearest_points, unary_union
 
+from OCP.BRep import BRep_Tool
 from OCP.BRepBuilderAPI import (
     BRepBuilderAPI_MakeEdge,
     BRepBuilderAPI_MakeFace,
@@ -41,14 +42,15 @@ from OCP.BRepGProp import BRepGProp
 from OCP.BRepClass3d import BRepClass3d_SolidClassifier
 from OCP.BRepLib import BRepLib
 from OCP.GProp import GProp_GProps
-from OCP.Geom import Geom_BSplineSurface
+from OCP.Geom import Geom_BSplineSurface, Geom_Plane
 from OCP.Geom2d import Geom2d_Line
 from OCP.IntCurvesFace import IntCurvesFace_ShapeIntersector
-from OCP.gp import gp_Dir, gp_Dir2d, gp_Lin, gp_Pnt, gp_Pnt2d
+from OCP.gp import gp_Ax3, gp_Dir, gp_Dir2d, gp_Lin, gp_Pnt, gp_Pnt2d
 from OCP.Precision import Precision
 from OCP.TColgp import TColgp_Array2OfPnt
 from OCP.TColStd import TColStd_Array1OfInteger, TColStd_Array1OfReal
 from OCP.TopAbs import TopAbs_IN
+from OCP.TopLoc import TopLoc_Location
 
 from build123d import (
     Axis,
@@ -1699,6 +1701,49 @@ def _one_solid(shape, label: str) -> Part:
     return result
 
 
+def _direct_planar_frames(part: Part) -> Part:
+    """Re-label a mirrored body's planes onto right-handed frames, exactly.
+
+    Mirroring leaves every planar face on a left-handed frame.  STEP's
+    ``axis2_placement_3d`` is right-handed only, so the writer silently runs
+    ``ShapeCustom::DirectFaces`` over the left wing, and that pass
+    reapproximates the B-spline trims the graded relief leaves where it crosses
+    the exterior sidewalls.  The delivered left solid then lands 0.30 mm3 off
+    its right twin.
+
+    A plane's parametrization ``O + u*X + v*Y`` never mentions the frame's main
+    direction, so reversing that direction alone makes the frame right-handed
+    while leaving the surface, its parametrization and every pcurve
+    bit-identical.  The writer is then left with nothing to reapproximate.
+    """
+    for face in part.faces():
+        location = TopLoc_Location()
+        surface = BRep_Tool.Surface_s(face.wrapped, location)
+        if not isinstance(surface, Geom_Plane):
+            continue
+        if location.Transformation().IsNegative():
+            raise RuntimeError(
+                "mirrored planar face carries the reflection in its location, "
+                "so reversing the surface frame cannot make it right-handed")
+        frame = surface.Position()
+        if frame.Direct():
+            continue
+        surface.SetPosition(gp_Ax3(
+            frame.Location(), frame.Direction().Reversed(),
+            frame.XDirection()))
+        if not surface.Position().Direct():
+            raise RuntimeError(
+                "reversing a mirrored plane's main direction left the frame "
+                "left-handed; the STEP writer would still de-mirror the wing")
+    return part
+
+
+def _mirror_left(part: Part, label: str) -> Part:
+    """Mirror one finalized right-side body into its exact left twin."""
+    return _one_solid(
+        _direct_planar_frames(mirror(part, about=Plane.YZ)), label)
+
+
 def _print_mask_plan(plan: Polygon) -> Polygon:
     """Cross the exterior perimeter without changing internal split seams."""
     field = _layout().field_right
@@ -1767,8 +1812,7 @@ def wing_monolithic(variant_id: str, side: str):
     if side == "right":
         right.label = f"obiwan_wing_{slug}_right_monolithic"
         return right
-    left = mirror(right, about=Plane.YZ)
-    left = _one_solid(left, f"{slug} mirrored left monolith")
+    left = _mirror_left(right, f"{slug} mirrored left monolith")
     left.label = f"obiwan_wing_{slug}_left_monolithic"
     return left
 
@@ -1803,9 +1847,8 @@ def wing_print_parts(variant_id: str, side: str) -> dict[str, Part]:
     for order, (role, piece) in enumerate(
             zip(PRINT_PART_KEYS, right, strict=True), start=1):
         if side == "left":
-            piece = _one_solid(
-                mirror(piece, about=Plane.YZ),
-                f"{slug} mirrored left {role} print piece")
+            piece = _mirror_left(
+                piece, f"{slug} mirrored left {role} print piece")
         piece.label = f"obiwan_wing_{slug}_{side}_{order}of3_{role}"
         result[role] = piece
     return result
@@ -1843,9 +1886,8 @@ def wing_two_piece_print_parts(
     for order, (role, piece) in enumerate(
             zip(TWO_PIECE_PRINT_PART_KEYS, right, strict=True), start=1):
         if side == "left":
-            piece = _one_solid(
-                mirror(piece, about=Plane.YZ),
-                f"{slug} mirrored left two-piece {role} print piece")
+            piece = _mirror_left(
+                piece, f"{slug} mirrored left two-piece {role} print piece")
         piece.label = f"obiwan_wing_{slug}_{side}_b_{order}of2_{role}"
         result[role] = piece
     return result
