@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
-"""Assembled front view of the candidate BMR pod on the staged UM collar.
+"""Assembled front views of both candidate BMR pods on the staged UM collar.
 
-``tests/test_bmr_crescent.py`` proves the junction has no window by projecting
-both parts and walking sight lines across it.  This is the same claim as a
-picture: an orthographic front elevation, looking straight down -Z at the two
-parts installed, so the flush skirt can be read by eye instead of trusted.
-Two panels are drawn side by side, one per stand state, because the UM collar
-differs between them.
+``tests/test_bmr_crescent.py`` proves each junction has no window by
+projecting both parts and walking sight lines across it.  This is the same
+claim as a picture: an orthographic front elevation, looking straight down -Z
+at the two parts installed, so the flush skirt can be read by eye instead of
+trusted.  Four panels are drawn in a grid -- one row per candidate variant,
+one column per stand state, because the UM collar differs between them -- all
+under one declared frame, so the coaxial pod and the much taller opposed pod
+are directly comparable and their identical junction reads as identical.
 
 A second figure frames the cable entry alone, looking up at the mate face from
 where the UM sits, which is the only angle the collar's shape can be judged
 from.  Two elevations of the same frame, so a flat face could not hide edge-on
-in one of them.
+in one of them.  It is drawn from the coaxial pod alone: inside that section
+box the two variants are the same geometry, built by the same shared skirt,
+duct and collar helpers, which ``test_the_two_variants_share_one_family_module``
+asserts by object identity rather than by eye.
 
 The renderer is the project-native one -- build123d tessellation into a
 Matplotlib ``Poly3DCollection`` -- with the ISO matrix's own light, colours and
@@ -53,8 +58,13 @@ from gen_product_iso_matrix import (  # noqa: E402
 
 DEFAULT_OUTPUT = Path("review/bmr_crescent_assembled_front.png")
 DEFAULT_ENTRY_OUTPUT = Path("review/bmr_crescent_entry_closeup.png")
-POD_BREP = (Path("build") / "bmr_crescent_TEBM35C10-4"
-            / "obiwan_bmr_crescent_TEBM35C10-4.brep")
+BUILD_ROOT = Path("build") / "bmr_crescent_TEBM35C10-4"
+POD_BREP = BUILD_ROOT / "obiwan_bmr_crescent_TEBM35C10-4.brep"
+VARIANTS = (
+    ("coaxial", "coaxial — two BMRs back to back, 50.2 mm deep", POD_BREP),
+    ("opposed", "opposed — the vase layout, 25.1 mm deep and much taller",
+     BUILD_ROOT / "obiwan_bmr_crescent_opposed_TEBM35C10-4.brep"),
+)
 STATES = ("floor_stand", "no_floor_stand")
 
 # Straight-on front elevation: the camera looks along the display Y axis, so
@@ -63,12 +73,16 @@ STATES = ("floor_stand", "no_floor_stand")
 FRONT_ELEV_DEG = 0.0
 FRONT_AZIM_DEG = -90.0
 
-# Framed on the junction rather than on the whole assembly: the point of the
-# picture is the seam between the collar and the pod, and a frame that fitted
-# the UM's full 310..426 mm reach would leave it a few dozen pixels tall.
+# Framed on the junction and the pods rather than on the whole assembly: the
+# point of the picture is the seam between the collar and the pod, and a frame
+# that fitted the UM's full 310..426 mm reach would leave it a few dozen
+# pixels tall.  The top is set by the opposed pod's upper land at y=534.79 --
+# Matplotlib does not clip 3-D collections, so a shorter frame would draw that
+# land over the titles rather than cropping it -- and every panel shares the
+# frame, which is what keeps the two variants comparable.
 FRAME_X = (-52.0, 52.0)
-FRAME_Y = (401.0, 492.0)
-PANEL_INCHES = (5.0, 4.6)
+FRAME_Y = (401.0, 540.0)
+PANEL_INCHES = (5.0, 5.4)
 
 # The entry close-up looks up at the mate face from where the UM sits: in
 # front of the part and below it, which is the angle the collar's shape has to
@@ -134,14 +148,14 @@ def _shaded(color: str, triangles):
         np.column_stack((rgb, np.ones(len(triangles)))), 0.0, 1.0)
 
 
-def _draw(axes, state: str) -> None:
+def _draw(axes, state: str, pod: Path) -> None:
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
     import numpy as np
 
     collar = (Path("build") / state / ".obiwan_stage"
               / "core_um_carrier.brep")
     facets, colors = [], []
-    for role, path in (("base", collar), ("top", POD_BREP)):
+    for role, path in (("base", collar), ("top", pod)):
         triangles = _display_triangles(path)
         facets.append(triangles)
         colors.append(_shaded(ROLE_COLORS[role], triangles))
@@ -219,9 +233,14 @@ def render_entry(output: Path) -> Path:
         "collar is the bore's own sweep offset by one 1.20 mm wall",
         ha="center", fontsize=8, color="#54606b")
     figure.text(
-        0.5, 0.888,
+        0.5, 0.891,
         "so it has no flat face and no corner — the flat planes at the edges "
         "of each picture are the section, 7 mm or more away from it",
+        ha="center", fontsize=8, color="#54606b")
+    figure.text(
+        0.5, 0.866,
+        "shown on the coaxial pod; both variants build this entry from the "
+        "same shared helpers",
         ha="center", fontsize=8, color="#54606b")
     triangles = _entry_section_triangles()
     for index, (elev, azim, caption) in enumerate(ENTRY_VIEWS):
@@ -255,28 +274,44 @@ def render(output: Path) -> Path:
     import matplotlib.pyplot as plt
     from matplotlib.patches import Patch
 
+    rows, columns = len(VARIANTS), len(STATES)
     figure = plt.figure(
-        figsize=(PANEL_INCHES[0] * len(STATES), PANEL_INCHES[1] + 0.9),
+        figsize=(PANEL_INCHES[0] * columns,
+                 PANEL_INCHES[1] * rows + 1.1),
         facecolor=BACKGROUND)
     figure.suptitle(
-        "Candidate BMR pod assembled on the Obi-Wan UM collar — front "
-        "elevation", fontsize=11, y=0.965)
+        "Both candidate BMR pods assembled on the Obi-Wan UM collar — front "
+        "elevation", fontsize=12, y=0.992)
+    # ``suptitle`` anchors its top at ``y``; these must do the same or their
+    # baselines land inside it.
     figure.text(
-        0.5, 0.915,
-        "orthographic, looking down -Z · the junction between the collar and "
-        "the pod is solid · drivers not fitted, so the front pocket is open "
-        "and the partition pass shows through it",
-        ha="center", fontsize=8, color="#54606b")
-    for index, state in enumerate(STATES):
-        axes = figure.add_subplot(
-            1, len(STATES), index + 1, projection="3d")
-        _draw(axes, state)
-        axes.set_title(state.replace("_", " "), fontsize=9, y=0.98)
+        0.5, 0.971,
+        "orthographic, looking down -Z, one shared frame for all four panels",
+        ha="center", va="top", fontsize=8, color="#54606b")
+    figure.text(
+        0.5, 0.959,
+        "the junction between the collar and the pod is solid on both · "
+        "drivers not fitted, so the driver pockets are open",
+        ha="center", va="top", fontsize=8, color="#54606b")
+    for row, (key, caption, pod) in enumerate(VARIANTS):
+        left = None
+        for column, state in enumerate(STATES):
+            axes = figure.add_subplot(
+                rows, columns, row * columns + column + 1, projection="3d")
+            _draw(axes, state, pod)
+            axes.set_title(state.replace("_", " "), fontsize=9, y=0.97)
+            left = left or axes
+        # One caption per row rather than one per panel: the two stand states
+        # differ only in the collar, so repeating the variant's description
+        # over each of them would be noise.
+        figure.text(
+            0.5, left.get_position().y1 + 0.004, caption,
+            ha="center", fontsize=10, weight="bold", color="#25313a")
     figure.legend(
         handles=[Patch(facecolor=ROLE_COLORS["base"], label="UM collar"),
                  Patch(facecolor=ROLE_COLORS["top"], label="BMR pod")],
         loc="lower center", ncol=2, frameon=False, fontsize=8,
-        bbox_to_anchor=(0.5, 0.005))
+        bbox_to_anchor=(0.5, 0.004))
     return _save(figure, output)
 
 

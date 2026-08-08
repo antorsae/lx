@@ -988,25 +988,48 @@ vase_tebm35c10_4_stock_cad: $(VASE_TEBM_STOCK_CAD_OUTPUTS)
 vase_tebm35c10_4_slim_cad: $(VASE_TEBM_SLIM_CAD_OUTPUTS)
 	@echo "Slim BMR vase: $(VASE_TEBM_SLIM_STEP)"
 
-# Candidate coaxial TEBM35C10-4 BMR crescent for the Obi-Wan UM collar.
-# Mount-identical to the released ND25FW-4 crescent; outside the release
-# inventory, the stage manifests, and to_print — its own test asserts all
-# three.  Local-only (see LOCAL_CANDIDATE_GOALS).
+# Candidate TEBM35C10-4 BMR crescents for the Obi-Wan UM collar: the coaxial
+# pod and the opposed one, built together because they share one family
+# module, one exporter and one test.  Both are mount-identical to the released
+# ND25FW-4 crescent and both stay outside the release inventory, the stage
+# manifests, to_print and the captive-magnet catalog — the test asserts all
+# four.  Local-only (see LOCAL_CANDIDATE_GOALS).
 BMR_CRESCENT_NAME := obiwan_bmr_crescent_TEBM35C10-4
+BMR_CRESCENT_OPPOSED_NAME := obiwan_bmr_crescent_opposed_TEBM35C10-4
 BMR_CRESCENT_ROOT := build/bmr_crescent_TEBM35C10-4
 BMR_CRESCENT_BREP := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).brep
 BMR_CRESCENT_STEP := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).step
 BMR_CRESCENT_STL := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).stl
 BMR_CRESCENT_SIDECAR := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).print.json
 BMR_CRESCENT_FACTS := $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_NAME).facts.json
-BMR_CRESCENT_MANIFEST := $(BMR_CRESCENT_ROOT)/cad_manifest.json
-BMR_CRESCENT_EXPORT_STAMP := $(BMR_CRESCENT_ROOT)/.stamp_cad_validated
+BMR_CRESCENT_MANIFEST := $(BMR_CRESCENT_ROOT)/cad_manifest_coaxial.json
+BMR_CRESCENT_OPPOSED_BREP := \
+        $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_OPPOSED_NAME).brep
+BMR_CRESCENT_OPPOSED_STEP := \
+        $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_OPPOSED_NAME).step
+BMR_CRESCENT_OPPOSED_STL := \
+        $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_OPPOSED_NAME).stl
+BMR_CRESCENT_OPPOSED_SIDECAR := \
+        $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_OPPOSED_NAME).print.json
+BMR_CRESCENT_OPPOSED_FACTS := \
+        $(BMR_CRESCENT_ROOT)/$(BMR_CRESCENT_OPPOSED_NAME).facts.json
+BMR_CRESCENT_OPPOSED_MANIFEST := \
+        $(BMR_CRESCENT_ROOT)/cad_manifest_opposed.json
+BMR_CRESCENT_EXPORT_STAMPS := \
+        $(BMR_CRESCENT_ROOT)/.stamp_cad_validated_coaxial \
+        $(BMR_CRESCENT_ROOT)/.stamp_cad_validated_opposed
+BMR_CRESCENT_STLS := $(BMR_CRESCENT_STL) $(BMR_CRESCENT_OPPOSED_STL)
 BMR_CRESCENT_CAD_STAMP := $(BMR_CRESCENT_ROOT)/.stamp_cad_ready
 BMR_CRESCENT_CAD_OUTPUTS := $(BMR_CRESCENT_BREP) $(BMR_CRESCENT_STEP) \
         $(BMR_CRESCENT_STL) $(BMR_CRESCENT_SIDECAR) $(BMR_CRESCENT_FACTS) \
-        $(BMR_CRESCENT_MANIFEST)
+        $(BMR_CRESCENT_MANIFEST) \
+        $(BMR_CRESCENT_OPPOSED_BREP) $(BMR_CRESCENT_OPPOSED_STEP) \
+        $(BMR_CRESCENT_OPPOSED_STL) $(BMR_CRESCENT_OPPOSED_SIDECAR) \
+        $(BMR_CRESCENT_OPPOSED_FACTS) $(BMR_CRESCENT_OPPOSED_MANIFEST)
 
-BMR_CRESCENT_CAD_SRCS := src/lx521_baffle/obiwan/bmr_crescent.py \
+BMR_CRESCENT_CAD_SRCS := src/lx521_baffle/obiwan/bmr_pod.py \
+        src/lx521_baffle/obiwan/bmr_crescent.py \
+        src/lx521_baffle/obiwan/bmr_crescent_opposed.py \
         src/lx521_baffle/obiwan/attachments.py \
         src/lx521_baffle/obiwan/carriers.py \
         src/lx521_baffle/obiwan/closure_webs.py \
@@ -1017,6 +1040,7 @@ BMR_CRESCENT_CAD_SRCS := src/lx521_baffle/obiwan/bmr_crescent.py \
         src/lx521_baffle/proud/b2.py \
         src/lx521_baffle/proud/vase_tebm35c10_4.py \
         src/lx521_baffle/base.py src/lx521_baffle/cables.py \
+        src/lx521_baffle/magnets.py src/lx521_baffle/magnet_contract.py \
         src/lx521_baffle/print_contract.py src/lx521_baffle/stl_export.py \
         src/lx521_baffle/geom.py src/lx521_baffle/io.py \
         scripts/export_bmr_crescent.py scripts/export_piece_stls.py \
@@ -1024,16 +1048,17 @@ BMR_CRESCENT_CAD_SRCS := src/lx521_baffle/obiwan/bmr_crescent.py \
         tests/test_bmr_crescent.py $(EXECUTION_SRCS)
 
 # The export runs before the test: the test's geometry gates read the
-# exported BREP and hash-check it against the current sources.
+# exported BREPs and hash-check them against the current sources.  One
+# invocation writes both variants, so neither can be left behind by the other.
 $(BMR_CRESCENT_CAD_STAMP): $(BMR_CRESCENT_CAD_SRCS)
 	@rm -f "$@"
 	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan $(RUN) \
 	    scripts/export_bmr_crescent.py --output-root "$(BMR_CRESCENT_ROOT)"
 	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan $(RUN) \
 	    tests/test_bmr_crescent.py
-	$(PYTHON_RUN) scripts/check_manifold.py --stl-only "$(BMR_CRESCENT_STL)"
+	$(PYTHON_RUN) scripts/check_manifold.py --stl-only $(BMR_CRESCENT_STLS)
 	@for path in $(BMR_CRESCENT_CAD_OUTPUTS) \
-	        $(BMR_CRESCENT_EXPORT_STAMP); do \
+	        $(BMR_CRESCENT_EXPORT_STAMPS); do \
 		test -s "$$path" || exit 1; \
 	done
 	@touch "$@"
@@ -1046,9 +1071,10 @@ $(BMR_CRESCENT_CAD_OUTPUTS): | $(BMR_CRESCENT_CAD_STAMP)
 	}
 
 obiwan_bmr_crescent_cad: $(BMR_CRESCENT_CAD_OUTPUTS)
-	@echo "Candidate BMR crescent STEP: $(BMR_CRESCENT_STEP)"
-	@echo "Candidate BMR crescent STL:  $(BMR_CRESCENT_STL)"
-	@echo "candidate only; not release-authorized, not staged, not counted"
+	@echo "Candidate coaxial BMR crescent STEP: $(BMR_CRESCENT_STEP)"
+	@echo "Candidate opposed BMR crescent STEP: $(BMR_CRESCENT_OPPOSED_STEP)"
+	@echo "Candidate STLs: $(BMR_CRESCENT_STLS)"
+	@echo "candidates only; not release-authorized, not staged, not counted"
 
 # This catalog is generated only after all 58 released magnet-bearing meshes
 # and their exact front-down print transforms exist.  It is the CAD-side

@@ -422,11 +422,11 @@ Print settings, magnet pauses and the refresh procedure are in
 ## Tweeter options
 
 Obi-Wan has no vase, so where Stock and Slim choose between two vases, Obi-Wan
-chooses between two **crescents** on one unchanged mount: the pair of half-lap
-ears at `x=±24, y=421.5` on the UM collar, with blind M3 receivers, 360° walls,
-1.9 mm acoustic-front floors and a 0.20 mm axial gap. Both crescents present
-that interface identically, so swapping them touches nothing else — not the UM
-print, not the wings.
+chooses between three **crescents** on one unchanged mount: the pair of
+half-lap ears at `x=±24, y=421.5` on the UM collar, with blind M3 receivers,
+360° walls, 1.9 mm acoustic-front floors and a 0.20 mm axial gap. All three
+present that interface identically, so swapping them touches nothing else —
+not the UM print, not the wings.
 
 - **Released ND25FW-4 face-to-face crescent** (default) —
   `obiwan_addon_tweeter_crescent.stl`, the same arrangement Stock and Slim get
@@ -436,13 +436,17 @@ print, not the wings.
   back to back on one acoustic axis, carried by a D66 pod dropped onto the
   collar and joined to it by a solid flush skirt rather than by a crescent
   outline. Documented below; **not** release-authorized.
+- **Candidate opposed TEBM35C10-4 BMR crescent** — the same two BMRs in the
+  qualified proud vase's own side-by-side arrangement, on the same dropped
+  land plus a second one a vase pitch above it, inside one 25.1 mm envelope.
+  Documented below; **not** release-authorized.
 
 Fitting no crescent at all is also a supported configuration.
 
-The opposed TEBM35C10-4 BMR vase used by Stock and Slim is **not** available
-for Obi-Wan: it is a seam-B vase piece with the regular proud-family female
-dovetails, and Obi-Wan has no seam B. The coaxial crescent is the Obi-Wan way
-to run BMRs.
+The opposed TEBM35C10-4 BMR **vase** used by Stock and Slim is still **not**
+available for Obi-Wan: it is a seam-B vase piece with the regular proud-family
+female dovetails, and Obi-Wan has no seam B. What the opposed crescent takes
+from it is the *layout*, not the part.
 
 ### Candidate coaxial TEBM35C10-4 BMR crescent
 
@@ -485,7 +489,12 @@ nothing else of the released crescent's plan.
   take. A straight D66 cylinder is therefore the only radius that satisfies
   both — and it is also how the qualified proud vase treats its own drivers,
   where the D66 land *is* the exterior surface. It still leaves 11.537 mm of
-  wall outside each pocket and 7.270 mm outside each M2 insert bore.
+  wall outside each pocket and 7.270 mm outside each M2 insert bore. The land
+  carries the vase's **two magnet flats** with it, at `x=±32.834585`: a magnet
+  needs a plane to seat behind and a cylinder offers only a tangent line, so
+  0.165 mm comes off the land at its two widest points. That still leaves
+  5.835 mm of land outside the Ø54 flange there, so nothing a driver touches
+  moves.
 - **A solid flush skirt, not struts.** The plate band `z=6.8…18.3` is filled
   between the pod and the collar: the plan is the convex hull of the pod disc
   and the two complete Ø9.8 half-lap bosses, less the released R51.90 UM
@@ -546,32 +555,113 @@ nothing else of the released crescent's plan.
 - The released **M4 clamp holes** are **gone**. This variant clamps no
   tweeter, so those four passages carried no fastener; they existed only to
   keep a released silhouette this part no longer has.
-- No magnets, exactly like the released crescent. One closed shell,
-  66.00 × 73.97 × 50.20 mm, front-face-down, support-free, and P2S bed-fitting
-  — 15.70 mm shallower in Y than the strutted candidate, because the pod came
-  down toward the collar, and 106.38 cm³ against its 105.79 cm³: the flush
-  fill costs 0.68 cm³, about 0.8 g.
+- **Two captive D5 × 2 magnets**, the qualified proud vase's own lower/front
+  land pair, at the vase's own land-local station: on the land's flat at
+  `x=±32.834585`, on the project-wide source `Z=15.10`, applied through the
+  same `lx521_baffle.magnets` helper the vase uses rather than re-specified
+  here. Each is a sealed void behind the qualified 0.45 mm face skin, with the
+  loading cradle, its chimney and the 45° gable buried by the layers that
+  follow the pause — nothing about a station reaches the exterior, which is
+  why the part now reads as one outer shell plus exactly two nested voids.
+  **They are not wired into the release**: no catalog entry, no sliced pause
+  events, no change to the 94-station released total. That wiring is part of
+  the qualification below.
+- 65.67 × 73.97 × 50.20 mm and 106.07 cm³, front-face-down, support-free and
+  P2S bed-fitting — 15.70 mm shallower in Y than the strutted candidate,
+  because the pod came down toward the collar. The X extent is the
+  flat-clipped land, not the full D66: the two magnet flats are now the widest
+  thing on the part.
 
-Build it with the local-only target:
+### Candidate opposed TEBM35C10-4 BMR crescent
+
+![Candidate opposed BMR crescent](../images/generated/iso/tweeter_tebm35c10_4_crescent_opposed.png)
+
+The same two drivers, the same mount, the same skirt and the same hidden cable
+entry — arranged the way the *qualified* proud vase arranges them. Instead of
+stacking 50.2 mm rearward, the two BMRs stand side by side inside one 25.1 mm
+envelope: the lower one faces front off the shared `z=18.3` acoustic plane and
+the upper one faces rear off `z=−6.8`. It is the vase's layout on the
+crescent's mount, and nothing about it is a new idea — the vase cannot itself
+fit Obi-Wan, because it is a seam-B vase piece and Obi-Wan has no seam B.
+
+- **Two D66 lands, one vase pitch apart.** The lower land is the mount land
+  and sits on exactly the same drop limit as the coaxial pod, at
+  `(0, 452.494193)`. The upper one is at `(0, 501.794193)`, 49.3 mm above it —
+  the vase's own `PAIR_AXIS_PITCH_MM`, which is half a Ø54 flange plus half a
+  Ø43.6 basket plus 0.50 mm, because each driver's basket crosses the other's
+  mounting face. The two D66 circles overlap by 16.7 mm, so the body is one
+  continuous plan whose narrowest section between the axes is a 43.88 mm
+  waist. Both lands carry the same two magnet flats.
+- **One 25.1 mm envelope, two 1.20 mm blind walls, no shared wall.** The lower
+  pocket is bored from the front to `z=−5.6` and closed by its own 1.20 mm
+  wall on the rear plane; the upper pocket is bored from the rear to `z=17.1`
+  and closed by its own wall under the acoustic front. Neither wall is shared,
+  so there is no partition to qualify — only the 6.374 mm ligament the two
+  pocket bores leave on the axis line. Just 13.6 mm protrudes behind the core
+  rear plane, against the coaxial pod's 38.7 mm.
+- **The same hidden cable entry, then one Ø4.60 branch.** The free T cable
+  goes into the identical Ø6.00 mate-face duct — same mouth at
+  `(4.131, 417.816)`, same bearing, same stadium collar — and opens into the
+  lower/front chamber. From there one Ø4.60 branch, the vase's own
+  single-driver lead branch, crosses to the upper/rear chamber: straight, at
+  `x=0` on the line joining the two driver axes, and at the entry duct's own
+  `z=3.8`, so the lead arrives and leaves at one level and never has to climb
+  inside the part. It runs `y=473.957…480.331` under 12.2 mm of front cover,
+  8.3 mm of rear cover and 19.6 mm of cover to either side. There are no
+  exterior openings at all.
+- **Four captive D5 × 2 magnets**, all of the vase's own stations: two per D66
+  land, on each land's flat at `x=±32.834585` and source `Z=15.10`, through
+  the same `lx521_baffle.magnets` helper. Like the coaxial pod's pair they are
+  sealed voids behind the 0.45 mm skin — the part reads as one outer shell
+  plus four nested voids — and like that pair they are **not wired into the
+  release**.
+- **Eight blind Ø3.2 × 4.0 M2 insert bores**, four per land on the Ø48.26
+  pattern, clocked +45° on the lower/front face and −45° on the upper/rear
+  one, exactly as the vase clocks them.
+- 65.67 × 123.27 × 25.10 mm and 93.27 cm³ — 12.8 cm³ *less* plastic than the
+  coaxial pod for the same two drivers, and 25.1 mm rather than 50.2 mm deep,
+  at the cost of standing 49.3 mm taller. It prints front-face-down,
+  support-free and P2S bed-fitting; the body is prismatic over its whole
+  depth, so the only place the exterior plan changes at all is where the skirt
+  and the entry collar end.
+
+### Building and gating both candidates
+
+Build them together with the local-only target:
 
     make obiwan_bmr_crescent_cad
 
-Outputs land in `build/bmr_crescent_TEBM35C10-4/` as
-`obiwan_bmr_crescent_TEBM35C10-4.{brep,step,stl,print.json,facts.json}`. The
-target never dispatches to osado. Twenty local gates run with it. Because
-the part is no longer a superset of the released crescent, the old
+Both land in `build/bmr_crescent_TEBM35C10-4/` as
+`obiwan_bmr_crescent_TEBM35C10-4.*` and
+`obiwan_bmr_crescent_opposed_TEBM35C10-4.*`, each with its own
+`{brep,step,stl,print.json,facts.json}` and `cad_manifest_{coaxial,opposed}.json`.
+The target never dispatches to osado. **Forty-two local gates** run with it:
+two shared, then twenty applied to each variant in turn.
+
+The two shared gates hold the family together. One evaluates the real proud
+vase in a proud-profile subprocess and compares all 26 mirrored constants —
+the driver envelope *and* the captive-magnet flat — value for value, because
+the vase cannot be imported beside an obiwan-profile part. The other asserts
+that 21 family names (the mount, the drop limit, the skirt, the entry, the
+magnet machinery) are the *same objects* in both variants, so the shared
+module cannot quietly be forked into two copies that agree today and drift
+tomorrow.
+
+Neither part is a superset of the released crescent, so the old
 symmetric-difference identity gate is replaced by two that prove the mount
 directly: the two ear footprints are compared against the released crescent
 ear for ear over the add-on's own Z span and must match to under 10⁻⁶ mm³, and
-the part is then assembled against the staged UM collar BREP in both stand
+each part is then assembled against the staged UM collar BREP in both stand
 states — zero interference, both 0.20 mm axial gaps empty from both sides with
 real bearing faces either side of them, and both rear-driven M3 paths
 continuous from the UM bore through the gap into the blind receiver under its
-1.9 mm front floor. Four gates carry the rework specifically:
+1.9 mm front floor. Beyond those:
 
-- the axis is recomputed from the two released constraints and has to be the
-  tighter of them, so the pod cannot quietly drift back up;
-- the assembly is projected head on against the staged collar and every sight
+- the mount axis is recomputed from the two released constraints and has to be
+  the tighter of them, so neither part can quietly drift back up — and the
+  opposed variant's second axis has to be the vase's pitch above it, not a
+  local choice;
+- each assembly is projected head on against the staged collar and every sight
   line across the junction has to be the mate seam, not a window — and the
   plan itself is walked column by column, where a break is allowed only where
   a released wing sits in it;
@@ -579,56 +669,83 @@ continuous from the UM bore through the gap into the blind receiver under its
   exterior ones has to be empty;
 - the free T cable is untouched on the UM's side of the mate, and where it
   crosses the mate its own section has to be inside the declared duct rather
-  than on its rim.
+  than on its rim;
+- every captive station has to sit at the vase's own **land-local** coordinate,
+  read back from the real vase in the same subprocess — that is the only form
+  in which the two can be compared, since these parts put their lands
+  somewhere else entirely — and each cavity is then walked in the exported
+  solid: void inside, the 0.45 mm face skin solid in front of it, nothing
+  outside the flat, and solid land behind it so no station has broken into a
+  driver pocket;
+- the exported solid must be one body with exactly one outer shell plus one
+  nested void per declared station: one more would be an undeclared cavity and
+  one fewer a station that broke out;
+- and neither candidate may appear in the released captive-magnet catalog
+  generator or the two slicing profiles, whose 94-station total is restated in
+  the test so that wiring a candidate in has to come past it.
 
 The remaining gates cover zero interference with the UM carrier and with the
 flat and graded wings, the skirt's section at the ears, a never-growing
-exterior silhouette, single-shell topology with only the declared openings,
-chamber separation apart from the one declared partition pass, bed fit, and
-source-hash freshness.
+exterior silhouette over 27 sections per variant, chamber separation apart
+from the one declared pass, bed fit, and source-hash freshness.
 
-The same claim as a picture — the pod installed on the collar, orthographic
-front elevation, one panel per stand state — plus a close-up of the cable
-entry looking up at the mate face from where the UM sits, are rendered from
-the same BREPs into the untracked review shelf by
+The same claim as a picture — both pods installed on the collar, orthographic
+front elevation under one shared frame, one row per variant and one column per
+stand state — plus a close-up of the cable entry looking up at the mate face
+from where the UM sits, are rendered from the same BREPs into the untracked
+review shelf by
 
     python scripts/render_bmr_crescent_assembly.py
     # -> review/bmr_crescent_assembled_front.png
     # -> review/bmr_crescent_entry_closeup.png
 
 **Candidate status.** `release_authorized` is false and
-`PHYSICAL_MEASURE_REQUIRED` is true. The part is deliberately absent from the
-release inventory, the stage manifests and `to_print/`, and its own test
-asserts all three. The two BMRs weigh 102.6 g and the pod is 106.38 cm³ of
-plastic, so the two-screw UM joint would hang roughly 235 g — still well above
-the released ND25FW-4 crescent. Seven items are open before this part is
-printed for use:
+`PHYSICAL_MEASURE_REQUIRED` is true on both. They are deliberately absent from
+the release inventory, the stage manifests, `to_print/`, the captive-magnet
+catalog and the slicing profiles, and their own test asserts all five. The two
+BMRs weigh 102.6 g, so the two-screw UM joint would hang roughly **234 g** on
+the coaxial pod (106.07 cm³ of plastic) and **218 g** on the opposed one
+(93.27 cm³) — both well above the released ND25FW-4 crescent.
 
-1. the two-screw UM-to-pod joint re-proven at that ~235 g hanging mass;
-2. the TEBM35C10-4 flange, basket and depth measured on the actual driver
+Four items are open on **both**, and the artifact `facts.json` files carry them
+in a shared `open_items` block:
+
+1. the TEBM35C10-4 flange, basket and depth measured on the actual driver
    rather than taken from the published envelope;
-3. the back-to-back 2.40 mm partition printed, then pressure- and
-   rattle-checked with both drivers fitted — front-face-down it is also a
-   Ø42.9 unsupported span over the front pocket, and it now carries the
-   Ø4.60 lead pass;
-4. the junction skirt loaded at that hanging mass, its section at the ears
-   having been chosen by rule and never printed or loaded;
-5. M2 × 4 heat-set installation in both D66 lands without breakthrough into
-   the opposite pocket;
-6. an acoustic opinion on the dropped axis: the BMR pair now sits 86.413 mm
-   from the MU10 axis instead of the released 102.112 mm, and nothing
-   measured or modelled backs that spacing; and
-7. the T cable threaded for real — out of the UM's declared mouth, into the
-   Ø6.00 mate-face entry, along the duct into the front chamber and on
-   through the Ø4.60 partition pass to the rear driver, with both drivers
-   fitted and the pod screwed down.
+2. M2 × 4 heat-set installation in every D66 land without breakthrough into a
+   pocket or a magnet cavity;
+3. the captive stations wired up for release — a catalog entry and the sliced
+   pause events, neither of which exists while the part is a candidate — then
+   a pull test on the printed land;
+4. the T cable threaded for real, out of the UM's declared mouth, into the
+   Ø6.00 mate-face entry and on to both drivers, with both drivers fitted and
+   the pod screwed down.
 
-Three items are **closed**, and the artifact's `facts.json` records them in a
-`closed_items` array beside the seven open ones: the inherited M4 clamp holes,
-closed by deletion; the open window between the pod and the collar, closed by
-the flush skirt and checked head on against the staged collar in both stand
-states; and the pair of external Ø4.6 lead outlets, closed by deletion now
-that the cable enters once on the mate face.
+Five more are open on the **coaxial** pod: the back-to-back 2.40 mm partition
+printed and pressure/rattle-checked, which front-face-down is also a Ø42.9
+unsupported span over the front pocket carrying one Ø4.60 pass; the two-screw
+joint re-proven at its ~234 g; the junction skirt loaded at that mass, its ear
+section having been chosen by rule and never printed; an acoustic opinion on
+the dropped axis, now 86.413 mm from the MU10 axis instead of 102.112 mm; and
+its two front-land stations, on a land the vase never had to hold a
+cantilevered 50.2 mm stack from.
+
+Five more are open on the **opposed** one: the two 1.20 mm blind walls printed
+and pressure/rattle-checked, each a Ø42.9 unsupported span and the lower one
+printed as the last layers over an open pocket; the two-screw joint re-proven
+on a far longer arm than either the coaxial pod or the released crescent,
+since the upper driver axis stands **80.294 mm** above the half-lap line; the
+skirt *and* the 43.88 mm waist loaded at that hanging moment; an acoustic
+opinion on both axes, at 86.413 mm and 135.713 mm from the MU10 axis; and all
+four stations, the upper pair especially, since they sit on the land furthest
+from the only mount the part has.
+
+Three items are **closed** on both, recorded in a `closed_items` array beside
+the open ones: the inherited M4 clamp holes, closed by deletion; the open
+window between the pod and the collar, closed by the flush skirt and checked
+head on against the staged collar in both stand states; and the pair of
+external Ø4.6 lead outlets, closed by deletion now that the cable enters once
+on the mate face.
 
 ## Cable routing (buried Obi-Wan routes)
 

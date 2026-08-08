@@ -33,9 +33,9 @@ Obi-Wan keeps only the two driver collars; both panels add its optional
 crescent and flat wings, because the mandatory geometry alone is two bare
 rings — [`docs/obiwan.md`](docs/obiwan.md).
 
-![The three tweeter carriers](images/generated/iso/rows/tweeter_row.png)
+![The four tweeter carriers](images/generated/iso/rows/tweeter_row.png)
 
-The three tweeter carriers share their own larger scale, so they are
+The four tweeter carriers share their own larger scale, so they are
 comparable with each other but not with the product rows above.
 
 ## Tweeter options
@@ -55,18 +55,20 @@ each one carries its tweeters on a different part:
 |---|---|---|---|
 | Stock | the **vase**, piece `04` | the standard B2 vase: it carries both the dome pair on its integral crescent and the MU10 upper-mid seat | the opposed-BMR vase replaces that whole vase; `make vase_tebm35c10_4_cad` |
 | Slim | the **vase**, piece `04` | the standard V1 vase — the same arrangement thinned to 11.5 mm | the Slim-profile opposed-BMR vase, the same one-piece swap |
-| Obi-Wan | the **crescent** on the UM collar | the released tweeter crescent add-on | the candidate coaxial BMR crescent on the identical half-lap mount; `make obiwan_bmr_crescent_cad` |
+| Obi-Wan | the **crescent** on the UM collar | the released tweeter crescent add-on | two candidate BMR crescents, coaxial or opposed, on the identical half-lap mount; `make obiwan_bmr_crescent_cad` |
 
-The two BMR implementations arrange the drivers differently. On Stock and Slim
-they are **opposed**: the lower BMR faces front and the upper one faces rear.
-On Obi-Wan they are **coaxial**, stacked back to back on one axis dropped as
-close to the UM collar as the half-lap mate allows, which makes that crescent
-50.2 mm deep and puts the pair 86.413 mm from the MU10 axis. The
-Obi-Wan BMR crescent is a **candidate**: it is not release-authorized, is
-deliberately absent from the release inventory, the stage manifests and
-`to_print/`, and is built only by the local target above.
-[`docs/VARIANTS.md`](docs/VARIANTS.md#candidate-coaxial-tebm35c10-4-bmr-crescent-obi-wan)
-puts the two BMR parts side by side.
+The three BMR implementations arrange the drivers differently. On Stock and
+Slim they are **opposed**: the lower BMR faces front and the upper one faces
+rear. Obi-Wan offers both arrangements on one mount, on an axis dropped as
+close to the UM collar as the half-lap mate allows — **coaxial**, the two
+stacked back to back, 50.2 mm deep; or **opposed**, the vase's own layout on a
+second land 49.3 mm above the first, 25.1 mm deep but 49.3 mm taller. Both put
+the lower driver 86.413 mm from the MU10 axis. Both Obi-Wan BMR crescents are
+**candidates**: they are not release-authorized, are deliberately absent from
+the release inventory, the stage manifests, `to_print/` and the captive-magnet
+catalog, and are built only by the local target above.
+[`docs/VARIANTS.md`](docs/VARIANTS.md#candidate-tebm35c10-4-bmr-crescents-obi-wan)
+puts the three BMR parts side by side.
 
 ## Products
 
@@ -77,7 +79,7 @@ The project has one human-facing artifact catalog:
 |---|---|---|---|---|---|
 | [Stock](artifacts/stock/) | B2, 304.802 x 453.457 x 18.3 mm | A-comp shoulders **or** B1 wings | ND25FW-4 crescent (integral) or TEBM35C10-4 BMR vase | Canonical CAD | [`docs/stock.md`](docs/stock.md) |
 | [Slim](artifacts/slim/) | V1L + V1; 11.5 mm front-flush acoustic field, full-depth bottom strip | matching V1 shoulders **or** V1 wings | ND25FW-4 crescent (integral) or TEBM35C10-4 BMR vase | Experimental | [`docs/slim.md`](docs/slim.md) |
-| [Obi-Wan](artifacts/obiwan/) | separate LM/UM collars; floor and stock-bridge states | flat constant-depth or graded weighted-depth wings | ND25FW-4 crescent add-on, or the candidate coaxial BMR crescent | Candidate; not release-authorized | [`docs/obiwan.md`](docs/obiwan.md) |
+| [Obi-Wan](artifacts/obiwan/) | separate LM/UM collars; floor and stock-bridge states | flat constant-depth or graded weighted-depth wings | ND25FW-4 crescent add-on, or a candidate coaxial or opposed BMR crescent | Candidate; not release-authorized | [`docs/obiwan.md`](docs/obiwan.md) |
 
 The original state-oriented build outputs remain in `build/floor_stand/`,
 `build/no_floor_stand/`, and `build/wings/` because the validation pipeline depends on
@@ -127,7 +129,7 @@ These goals never dispatch to osado and run only on the workstation:
     make check_bambu_3mf_audit    synthetic 3MF transform/mesh regressions
     make bambu_slice_release      authoritative ready-project slice/audit
     make vase_tebm35c10_4_3mf     ready BMR-vase projects, both profiles
-    make obiwan_bmr_crescent_cad  candidate coaxial BMR crescent (Obi-Wan)
+    make obiwan_bmr_crescent_cad  both candidate BMR crescents (Obi-Wan)
 
 Direct pip dependencies are `build123d`, `shapely`, `matplotlib`, `numpy`, and
 `Pillow` — no external CAD tooling.
@@ -143,7 +145,7 @@ The default remote `make` builds BOTH stand-foot states. Use
       stl/  *.step  *.png     Obi-Wan solid bridge web fused into the LM core
     build/wings/{flat,graded}/    Obi-Wan acoustic wing families
     build/vase_TEBM35C10-4/{stock,slim}/   opposed-BMR vase children
-    build/bmr_crescent_TEBM35C10-4/       candidate coaxial BMR crescent
+    build/bmr_crescent_TEBM35C10-4/       candidate BMR crescents, both variants
     build/common/           flag-independent shared outputs
     images/generated/iso/   the product-comparison cells and rows/ images
 

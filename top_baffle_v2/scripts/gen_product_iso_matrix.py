@@ -127,11 +127,14 @@ SCALE_GROUPS = {
     },
     "tweeter_option": {
         "label": "tweeter-option scale",
-        # Sized to the extreme of each axis across all three options with a
+        # Sized to the extreme of each axis across all four options with a
         # small margin: the opposed-BMR vase is the widest (121.3) and tallest
-        # (210.2), the coaxial BMR crescent is by far the deepest (50.2).  All
-        # three cells share the frame, so their relative sizes stay honest —
-        # the ND25FW-4 crescent really is that much smaller.
+        # (210.2), the coaxial BMR crescent is by far the deepest (50.2), and
+        # the opposed BMR crescent is the second tallest (123.3) on the
+        # crescent mount.  All four cells share the frame, so their relative
+        # sizes stay honest — the ND25FW-4 crescent really is that much
+        # smaller, and the opposed crescent really is that much taller than
+        # the coaxial one for the same two drivers.
         "span": (132.0, 56.0, 215.0),
         "center": None,
         "zoom": 1.08,
@@ -158,6 +161,9 @@ OBIWAN_WINGS = Path("build/wings/flat/obiwan_wing_flat_assembled.step")
 TEBM_VASE = Path("build/vase_TEBM35C10-4/stock/vase_TEBM35C10-4.step")
 TEBM_CRESCENT = Path(
     "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.step")
+TEBM_CRESCENT_OPPOSED = Path(
+    "build/bmr_crescent_TEBM35C10-4/"
+    "obiwan_bmr_crescent_opposed_TEBM35C10-4.step")
 
 MAKE_TARGET_FOR_PREFIX = (
     (Path("build/floor_stand"), "make floor_stand"),
@@ -230,6 +236,16 @@ CELLS = (
         "tweeter_option",
         (("top", TEBM_CRESCENT),),
         note="Obi-Wan only · candidate, not release-authorized"),
+    _cell(
+        "tweeter_tebm35c10_4_crescent_opposed",
+        "TEBM35C10-4 opposed BMR crescent (candidate)",
+        "TEBM35C10-4 opposed BMR crescent",
+        "tweeter_option",
+        (("top", TEBM_CRESCENT_OPPOSED),),
+        # Row notes are centred on a panel and Matplotlib does not wrap them,
+        # so anything much past the coaxial cell's own note runs into its
+        # neighbour.  The arrangement is already in the caption.
+        note="Obi-Wan only · candidate, not release-authorized"),
 )
 
 # One row per README block.  Every panel of a row belongs to one scale group,
@@ -252,9 +268,10 @@ ROWS = (
     },
     {
         "key": "tweeter_row",
-        "title": "Tweeter options — two driver choices, three implementations",
+        "title": "Tweeter options — two driver choices, four implementations",
         "cells": ("tweeter_nd25fw4_crescent", "tweeter_tebm35c10_4_vase",
-                  "tweeter_tebm35c10_4_crescent"),
+                  "tweeter_tebm35c10_4_crescent",
+                  "tweeter_tebm35c10_4_crescent_opposed"),
     },
 )
 
