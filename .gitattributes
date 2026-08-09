@@ -1,3 +1,1 @@
 *.mdat filter=lfs diff=lfs merge=lfs -text
-top_baffle_v2/floor_stand/top_baffle_nd25fw4_v1lf_assembled.step filter=lfs diff=lfs merge=lfs -text
-top_baffle_v2/no_floor_stand/top_baffle_nd25fw4_v1lf_assembled.step filter=lfs diff=lfs merge=lfs -text

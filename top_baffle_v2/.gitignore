@@ -74,3 +74,12 @@ to_print/release_manifest.json
 # generic *.json rule.
 !artifacts/**/*.json
 !artifacts/*.json
+
+# Oversized generated CAD. GitHub rejects any blob over 100 MB, and these two
+# families regularly exceed it: the review assemblies are ~128 MB each and are
+# rewritten by every rebuild, and the graded wing plate swings between 35 MB
+# and 103 MB with its mesh density. Both are review/delivery outputs that
+# `make` regenerates, and their hashes are still recorded in the plate and
+# artifact manifests, so provenance survives without the bytes in git.
+build/*/obiwan_assembled.step
+build/print_plates/obiwan/obiwan_graded_wings_split2_combo.stl
