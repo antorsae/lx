@@ -116,7 +116,13 @@ PETG_GF_SLICING_PROFILE = (
 # candidate that slices its own pauses is exactly the situation in which
 # somebody might be tempted to move one of these.
 RELEASED_ARTIFACT_TOTAL = 58
+# The shelf carries the 51 released pairs plus one labelled candidate pair
+# per pod.  Both numbers are restated so that either a candidate quietly
+# leaving the shelf or a third one quietly joining it has to come past this
+# gate.
 RELEASED_SHELF_PAIRS = 51
+CANDIDATE_SHELF_PAIRS = 2
+SHELF_PAIRS = RELEASED_SHELF_PAIRS + CANDIDATE_SHELF_PAIRS
 
 # The released captive-magnet totals.  Both candidates bury real stations, and
 # neither may move these; the number is restated here so that wiring a
@@ -857,13 +863,60 @@ def test_candidate_flags_are_set(variant: Variant) -> None:
     assert facts["magnet_count"] == variant.magnet_count
 
 
+def _assert_shelf_carries_only_a_labelled_candidate(variant: Variant) -> None:
+    """The pod may be on the P2S shelf, but only as a candidate.
+
+    Shelf presence is the one release-adjacent structure a candidate is
+    allowed into, so it is checked in detail rather than forbidden: exactly
+    one entry, labelled CANDIDATE, bound to the part's own isolated catalog
+    and profile inside its own build child, and still saying it is not
+    release-authorized.
+    """
+    catalog = PROJECT_ROOT / "to_print" / "catalog.json"
+    if not catalog.is_file():
+        return
+    stem = variant.module.PART_NAME
+    shelf_entries = _json(catalog)["entries"]
+    entries = [
+        entry for entry in shelf_entries
+        if Path(str(entry.get("source_stl", ""))).name == f"{stem}.stl"
+    ]
+    assert len(entries) == 1, (
+        f"{stem} must appear on the P2S shelf exactly once, found "
+        f"{len(entries)}")
+    entry = entries[0]
+    delivery = entry.get("auxiliary_delivery")
+    assert isinstance(delivery, dict), (
+        f"{stem} is on the shelf without a candidate delivery record")
+    assert delivery["release_authorized"] is False, (
+        f"the shelf entry for {stem} claims release authorization")
+    assert delivery["make_target"] == "obiwan_bmr_crescent_3mf"
+    assert delivery["magnet_insertions"] == variant.magnet_count
+    assert "CANDIDATE" in entry["description"], (
+        f"the shelf entry for {stem} does not read as a candidate")
+    for key in ("source_stl", "catalog", "slicing_profile", "project"):
+        value = entry[key] if key == "source_stl" else delivery[key]
+        assert BUILD_ROOT in (PROJECT_ROOT / value).parents, (
+            f"the shelf binds {stem}.{key} outside the candidate's own build "
+            f"child: {value}")
+    bound = [
+        other for other in shelf_entries
+        if other.get("catalog_artifact_id") == entry["catalog_artifact_id"]
+    ]
+    assert len(bound) == 1, (
+        f"{stem}'s catalog artifact is claimed by {len(bound)} shelf entries")
+
+
 def test_part_is_not_wired_into_the_release(variant: Variant) -> None:
-    """The candidate stays out of the stage, the counts, to_print and catalog.
+    """The candidate stays out of the stage, the counts and the catalog.
 
     Both variants now bury real captive magnets, so the released
     captive-magnet catalog is part of what they must stay out of: its expected
     totals are restated here so that wiring a candidate in has to come past
-    this gate.
+    this gate.  The P2S shelf is the deliberate exception -- a pod nobody can
+    conveniently print is a pod nobody will physically qualify -- so what is
+    checked there is that it arrives as a labelled candidate hard-linked from
+    the part's own build child, not as a released pair.
     """
     module = variant.module
     stem = module.PART_NAME
@@ -877,10 +930,6 @@ def test_part_is_not_wired_into_the_release(variant: Variant) -> None:
         if not manifest.is_file():
             continue
         assert "bmr_crescent" not in manifest.read_text(encoding="utf-8")
-    to_print = PROJECT_ROOT / "to_print"
-    if to_print.is_dir():
-        hits = [str(path) for path in to_print.rglob("*bmr_crescent*")]
-        assert not hits, f"candidate leaked into to_print: {hits}"
 
     catalog_source = (
         PROJECT_ROOT / "scripts" / "generate_captive_magnet_catalog.py"
@@ -914,9 +963,10 @@ def test_part_is_not_wired_into_the_release(variant: Variant) -> None:
         validation)
     shelf_test = (PROJECT_ROOT / "tests" / "test_to_print_shelf.py").read_text(
         encoding="utf-8")
-    assert f"exactly {RELEASED_SHELF_PAIRS} entries" in shelf_test, (
-        "the P2S shelf's pair count moved; the candidate delivery is a "
-        "parallel path and must not touch it")
+    assert f"exactly {SHELF_PAIRS} entries" in shelf_test, (
+        "the P2S shelf's pair count moved; it carries the released pairs plus "
+        "exactly one labelled pair per candidate pod")
+    _assert_shelf_carries_only_a_labelled_candidate(variant)
     released_catalog = PROJECT_ROOT / "review" / (
         "captive_magnet_release_catalog.json")
     if released_catalog.is_file():
@@ -929,9 +979,10 @@ def test_part_is_not_wired_into_the_release(variant: Variant) -> None:
             f"delivered {name} is outside the candidate's own build child: "
             f"{path}")
     # And nothing of the candidate's may appear in the structures the release
-    # slicer, the shelf and the product facade own.
+    # slicer and the product facade own.  The shelf is checked separately
+    # above, because there the candidate is expected -- as a candidate.
     for root in (PROJECT_ROOT / "review" / "captive_magnet_slice_audit",
-                 PROJECT_ROOT / "to_print", PROJECT_ROOT / "artifacts"):
+                 PROJECT_ROOT / "artifacts"):
         if root.is_dir():
             hits = [str(path) for path in root.rglob("*bmr_crescent*")]
             assert not hits, f"candidate delivery leaked into {root}: {hits}"

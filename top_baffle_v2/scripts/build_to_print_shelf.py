@@ -77,9 +77,9 @@ LEGACY_SHELF_SOURCE_ROOTS = {
     "wings": Path("build/wings"),
 }
 
-EXPECTED_FAMILY_COUNTS = {"stock": 11, "slim": 11, "obiwan": 29}
+EXPECTED_FAMILY_COUNTS = {"stock": 11, "slim": 11, "obiwan": 31}
 EXPECTED_ENTRY_COUNT = sum(EXPECTED_FAMILY_COUNTS.values())
-EXPECTED_MAGNET_PROJECT_COUNT = 42
+EXPECTED_MAGNET_PROJECT_COUNT = 44
 EXPECTED_NON_MAGNET_PROJECT_COUNT = 9
 NAME_RE = re.compile(r"^[A-Za-z0-9_]+$")
 # The last token is the pre-rename name of the retired standalone V1 vase;
@@ -123,6 +123,49 @@ COMPOSITE_SPECS = {
         "selection": "graded_wings_b_2piece_plate",
         "project_kind": "local_locked_wing_plate_slice",
     },
+}
+
+# Candidate deliveries that were sliced beside their own CAD out of an
+# isolated one-artifact auxiliary catalog and profile, rather than out of the
+# protected 58-artifact release.  The shelf carries them so the two BMR pods
+# can actually be printed and physically qualified; every one of them stays
+# ``release_authorized: false`` in its own facts, and none of them amends the
+# release catalog, the release inventory or the two released profiles.
+BMR_CRESCENT_ROOT = ROOT / "build" / "bmr_crescent_TEBM35C10-4"
+BMR_CRESCENT_MAKE_TARGET = "obiwan_bmr_crescent_3mf"
+
+
+def _bmr_crescent_spec(
+    *, variant: str, stem: str, selection: str, magnet_insertions: int,
+) -> dict[str, Any]:
+    root = BMR_CRESCENT_ROOT
+    return {
+        "variant": variant,
+        "catalog": root / f"{stem}.catalog.json",
+        "profile_path": root / f"{stem}.slicing_profile.json",
+        "audit_root": root / f"slice_audit_{variant}",
+        "delivered_project": root / f"{stem}.gcode.3mf",
+        "make_target": BMR_CRESCENT_MAKE_TARGET,
+        "state": "shared",
+        "selection": selection,
+        "project_kind": "audited_candidate_auxiliary_magnet_reuse",
+        "magnet_insertions": magnet_insertions,
+    }
+
+
+AUXILIARY_SPECS = {
+    "obiwan_17_BMR_crescent_coaxial_1_of_1": _bmr_crescent_spec(
+        variant="coaxial",
+        stem="obiwan_bmr_crescent_TEBM35C10-4",
+        selection="bmr_crescent_candidate_coaxial",
+        magnet_insertions=2,
+    ),
+    "obiwan_18_BMR_crescent_opposed_1_of_1": _bmr_crescent_spec(
+        variant="opposed",
+        stem="obiwan_bmr_crescent_opposed_TEBM35C10-4",
+        selection="bmr_crescent_candidate_opposed",
+        magnet_insertions=4,
+    ),
 }
 
 
@@ -279,10 +322,40 @@ def _catalog_entries(catalog_path: Path) -> tuple[dict[str, Any], list[dict[str,
                     f"{name}: invalid composite source contract: {exc}") from exc
             entry["source_contract_path"] = manifest_path
             entry["composite_spec"] = spec
+        auxiliary = entry.get("auxiliary_delivery")
+        if auxiliary is not None:
+            spec = AUXILIARY_SPECS.get(name)
+            if (spec is None
+                    or family != "obiwan"
+                    or composite_plate is not None
+                    or entry["state"] != spec["state"]
+                    or entry["selection"] != spec["selection"]
+                    or not isinstance(auxiliary, Mapping)):
+                raise ShelfError(
+                    f"{name}: unsupported auxiliary-delivery catalog entry")
+            if (auxiliary.get("variant") != spec["variant"]
+                    or auxiliary.get("make_target") != spec["make_target"]
+                    or auxiliary.get("magnet_insertions")
+                    != spec["magnet_insertions"]
+                    or auxiliary.get("release_authorized") is not False):
+                raise ShelfError(
+                    f"{name}: auxiliary delivery contract drifted")
+            for key, pinned in (("catalog", spec["catalog"]),
+                                ("slicing_profile", spec["profile_path"]),
+                                ("project", spec["delivered_project"])):
+                if auxiliary.get(key) != _relative(pinned):
+                    raise ShelfError(
+                        f"{name}.auxiliary_delivery.{key} must be "
+                        f"{_relative(pinned)}")
+            entry["auxiliary_spec"] = spec
         artifact_id = entry.get("catalog_artifact_id")
         if artifact_id is not None and (not isinstance(artifact_id, str)
                                         or not artifact_id):
             raise ShelfError(f"{name}.catalog_artifact_id must be a string when set")
+        if (name in AUXILIARY_SPECS) != (auxiliary is not None):
+            raise ShelfError(
+                f"{name}: auxiliary candidate deliveries must declare an "
+                "auxiliary_delivery block")
         normalized.append(entry)
         if entry["selection"] == "core":
             core_slots.setdefault((family, entry["logical_slot"]), []).append(entry)
@@ -324,6 +397,53 @@ def _release_artifacts(release_catalog: Path) -> tuple[dict[str, Any], dict[str,
         raise ShelfError(f"released captive-magnet catalog is invalid: {exc}") from exc
     by_id = {artifact["id"]: artifact for artifact in catalog["artifacts"]}
     return catalog, by_id
+
+
+def _auxiliary_artifact(
+    entry: Mapping[str, Any],
+    artifact_by_id: Mapping[str, Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Bind one candidate entry to its own isolated one-artifact catalog.
+
+    The candidate catalogs deliberately fail the released 58-artifact
+    inventory contract, so they are normalized with that gate off.  The
+    isolation itself is then re-checked here: a candidate that has quietly
+    become a released artifact must not keep reaching the shelf through the
+    auxiliary path.
+    """
+    spec = entry["auxiliary_spec"]
+    catalog_path = Path(spec["catalog"])
+    if not catalog_path.is_file():
+        raise ShelfError(
+            f"{entry['name']}: candidate catalog is missing: {catalog_path}; "
+            f"run make {spec['make_target']}")
+    try:
+        catalog = captive.normalize_catalog(
+            catalog_path, enforce_release_inventory=False)
+    except captive.AuditError as exc:
+        raise ShelfError(
+            f"{entry['name']}: candidate catalog is invalid: {exc}") from exc
+    artifacts = catalog["artifacts"]
+    if len(artifacts) != 1:
+        raise ShelfError(
+            f"{entry['name']}: candidate catalog must hold exactly one "
+            "artifact")
+    artifact = artifacts[0]
+    artifact_id = entry.get("catalog_artifact_id")
+    if artifact["id"] != artifact_id:
+        raise ShelfError(
+            f"{entry['name']}: candidate catalog holds {artifact['id']}, "
+            f"not {artifact_id}")
+    if artifact_id in artifact_by_id:
+        raise ShelfError(
+            f"{entry['name']}: {artifact_id} is in the protected release "
+            "catalog and must not be delivered as a candidate")
+    if len(artifact["sites"]) != spec["magnet_insertions"]:
+        raise ShelfError(
+            f"{entry['name']}: candidate artifact buries "
+            f"{len(artifact['sites'])} magnets, expected "
+            f"{spec['magnet_insertions']}")
+    return dict(artifact)
 
 
 def _bind_entries_to_release(
@@ -383,7 +503,10 @@ def _bind_entries_to_release(
         artifact_id = entry.get("catalog_artifact_id")
         if artifact_id is None:
             continue
-        artifact = artifact_by_id.get(artifact_id)
+        if entry.get("auxiliary_spec") is not None:
+            artifact = _auxiliary_artifact(entry, artifact_by_id)
+        else:
+            artifact = artifact_by_id.get(artifact_id)
         if artifact is None:
             raise ShelfError(f"{entry['name']}: unknown release artifact {artifact_id}")
         if entry["source_path"].resolve() != Path(artifact["stl"]).resolve():
@@ -898,12 +1021,45 @@ def _profile_bundle(
         system_root=system_root, bambu_binary=bambu)
 
 
+_AUXILIARY_PROFILE_CACHE: dict[Path, dict[str, Any]] = {}
+
+
+def _auxiliary_profile(
+    *,
+    shelf: Path,
+    spec: Mapping[str, Any],
+    bambu: Path,
+    system_root: Path | None,
+) -> dict[str, Any]:
+    """Resolve a candidate's own pinned profile, once per profile file."""
+    profile_path = Path(spec["profile_path"])
+    cached = _AUXILIARY_PROFILE_CACHE.get(profile_path)
+    if cached is not None:
+        return cached
+    if not profile_path.is_file():
+        raise ShelfError(
+            f"candidate slicing profile is missing: {profile_path}; "
+            f"run make {spec['make_target']}")
+    bundle = _profile_bundle(
+        workspace=(
+            _workspace_root(shelf) / "auxiliary_profiles"
+            / f"{spec['variant']}_profile"),
+        profile_path=profile_path, bambu=bambu, system_root=system_root)
+    if bundle["config"].get("catalog_mode") != "auxiliary":
+        raise ShelfError(
+            f"{profile_path} is not an auxiliary candidate profile")
+    _AUXILIARY_PROFILE_CACHE[profile_path] = bundle
+    return bundle
+
+
 def _validate_magnet_project(
     *,
     entry: Mapping[str, Any],
     release_audit: Path,
     base_profile: Mapping[str, Any],
     profile_workspace: Path,
+    remediation: str = "make bambu_slice_release",
+    delivered_project: Path | None = None,
 ) -> tuple[Path, Path, Path, dict[str, Any], dict[str, Any], dict[str, Any]]:
     artifact = entry["artifact"]
     captive._validate_profile_artifact_scope(
@@ -913,7 +1069,20 @@ def _validate_magnet_project(
     if not all(path.is_file() for path in (ready_project, gcode, result, audit_path)):
         raise ShelfError(
             f"{entry['name']}: audited ready project is missing for {artifact['id']}; "
-            "run make bambu_slice_release")
+            f"run {remediation}")
+    # A parallel candidate delivery also publishes the audited project under a
+    # stable name beside its CAD.  That promoted copy is the documented
+    # delivery, so the shelf refuses to ship a shelf project that is not the
+    # very same bytes.
+    if delivered_project is not None:
+        if not delivered_project.is_file():
+            raise ShelfError(
+                f"{entry['name']}: promoted delivery project is missing: "
+                f"{delivered_project}; run {remediation}")
+        if _sha256(delivered_project) != _sha256(ready_project):
+            raise ShelfError(
+                f"{entry['name']}: promoted delivery project differs from "
+                f"its audited ready project; run {remediation}")
     project_profile = captive._artifact_profile_bundle(
         artifact, base_profile,
         profile_workspace / captive._slug(artifact["id"]))
@@ -1147,6 +1316,21 @@ def build_shelf(
                 allow_slice=allow_slice,
             )
             project_kind = entry["composite_spec"]["project_kind"]
+        elif entry.get("auxiliary_spec") is not None:
+            spec = entry["auxiliary_spec"]
+            (project, gcode, result, archive, placement,
+             profile_effective) = _validate_magnet_project(
+                entry=entry,
+                release_audit=Path(spec["audit_root"]),
+                base_profile=_auxiliary_profile(
+                    shelf=shelf, spec=spec, bambu=bambu,
+                    system_root=system_root),
+                profile_workspace=(
+                    workspace / "auxiliary_profiles" / str(entry["name"])),
+                remediation=f"make {spec['make_target']}",
+                delivered_project=Path(spec["delivered_project"]))
+            project_kind = spec["project_kind"]
+            reused = True
         elif artifact is not None:
             structural_release_audit = PETG_GF_RELEASE_AUDITS.get(
                 artifact["id"])
@@ -1196,6 +1380,9 @@ def build_shelf(
                 "composite_plate": (
                     dict(composite_plate)
                     if composite_plate is not None else None),
+                "auxiliary_delivery": (
+                    dict(entry["auxiliary_delivery"])
+                    if entry.get("auxiliary_delivery") is not None else None),
                 "project_source": _relative(project),
                 "gcode_source": _relative(gcode),
                 "gcode_sha256": _sha256(gcode),

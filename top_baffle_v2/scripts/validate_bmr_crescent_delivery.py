@@ -14,7 +14,10 @@ qualified vase does not:
   meet rather than whatever Z the slicer happened to choose.
 
 The delivery is also required to stay a candidate: the artifact must be
-absent from the released catalog and its facts must still say so.
+absent from the released catalog and its facts must still say so.  The pod
+does ship on the P2S shelf so it can be printed and physically qualified, so
+``in_to_print`` is checked against the shelf catalog in both directions
+rather than pinned to one value.
 """
 
 from __future__ import annotations
@@ -44,6 +47,7 @@ from release_validation import _validate_artifact_bindings, normalize_catalog
 
 
 RELEASE_CATALOG = PROJECT_ROOT / "review" / "captive_magnet_release_catalog.json"
+SHELF_CATALOG = PROJECT_ROOT / "to_print" / "catalog.json"
 SUPPORT_KEYS = (
     "enable_support",
     "support_on_build_plate_only",
@@ -111,15 +115,49 @@ def _expected_pause_groups(facts: dict, profile_payload: dict) -> list[dict]:
     return sorted(groups, key=lambda item: item["expected_pause_marker_z_mm"])
 
 
+def _assert_shelf_carries_the_candidate(
+    artifact_id: str, qualification: dict,
+) -> None:
+    """``in_to_print`` is a checked fact, not a claim.
+
+    The pods are on the P2S shelf so they can be printed and physically
+    qualified, so this reads the shelf catalog rather than trusting the flag:
+    the delivery is rejected both when the facts deny a shelf entry that
+    exists and when they assert one that does not, and the shelf entry has to
+    still be marked a candidate.
+    """
+    listed = [
+        entry for entry in _load(SHELF_CATALOG).get("entries", ())
+        if isinstance(entry, dict)
+        and entry.get("catalog_artifact_id") == artifact_id
+    ]
+    if len(listed) > 1:
+        raise RuntimeError(f"{artifact_id} appears twice in the P2S shelf")
+    if qualification.get("in_to_print") is not bool(listed):
+        raise RuntimeError(
+            f"facts say in_to_print={qualification.get('in_to_print')!r} but "
+            f"{SHELF_CATALOG.name} "
+            f"{'lists' if listed else 'does not list'} {artifact_id}")
+    if not listed:
+        return
+    delivery = listed[0].get("auxiliary_delivery")
+    if (not isinstance(delivery, dict)
+            or delivery.get("release_authorized") is not False):
+        raise RuntimeError(
+            f"the shelf entry for {artifact_id} no longer marks it a "
+            "candidate auxiliary delivery")
+
+
 def _assert_still_a_candidate(artifact_id: str, facts: dict) -> None:
     qualification = facts["qualification"]
     for key in ("release_authorized", "counts_against_release_inventory",
-                "in_obiwan_stage_manifest", "in_to_print",
+                "in_obiwan_stage_manifest",
                 "in_captive_magnet_release_catalog"):
         if qualification.get(key) is not False:
             raise RuntimeError(f"delivery claims release status via {key}")
     if qualification.get("has_captive_magnet_pause_delivery") is not True:
         raise RuntimeError("facts do not record the pause delivery")
+    _assert_shelf_carries_the_candidate(artifact_id, qualification)
     if RELEASE_CATALOG.is_file():
         released = _load(RELEASE_CATALOG)
         if any(str(entry.get("id")) == artifact_id

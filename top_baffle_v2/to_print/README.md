@@ -17,7 +17,7 @@ to_print/
 │   ├── stl/                     # 11 printable Slim pieces
 │   └── 3mf/                     # matching ready P2S projects
 └── obiwan/
-    ├── stl/                     # 29 entries, including four plate alternatives
+    ├── stl/                     # 31: pieces + 4 plate alternatives + 2 candidates
     └── 3mf/                     # matching ready P2S projects
 ```
 
@@ -111,7 +111,12 @@ bill of materials.  State and attachment choices are alternatives:
   every `split3` file for the original three-piece-per-side split or every
   `split2` file for the fused two-piece-per-side split; never mix them. For
   a split2 wing set, use either the four individual projects or the matching
-  combo plate; never print both forms.
+  combo plate; never print both forms. Finally, the crescent slot takes
+  exactly one choice: the released `04` tweeter crescent (which either core
+  combo plate already carries), the **candidate** `17` coaxial BMR crescent,
+  the **candidate** `18` opposed BMR crescent, or nothing at all. `17` and
+  `18` exclude each other and `04`; if you take one of them together with a
+  core combo plate, the `04` that plate carries is the piece you set aside.
 
 The tracked [catalog.json](catalog.json) is the authoritative friendly-name
 map.  `release_manifest.json` is generated locally by the build and records
@@ -142,26 +147,34 @@ closed if it is missing. Like everything here, these targets never dispatch to
 osado, and each project is opened directly in Bambu Studio without
 reorienting or re-slicing.
 
-## The candidate BMR crescents, delivered the same way
+## The candidate BMR crescents, on the shelf as candidates
 
-The two candidate Obi-Wan BMR pods — `obiwan_bmr_crescent_TEBM35C10-4`, the
-coaxial one, and `obiwan_bmr_crescent_opposed_TEBM35C10-4` — take the same
-parallel path. They are **candidates**: `release_authorized` is false on both,
-they are not in this shelf, not in the release inventory and not in the
-released captive-magnet catalog, and printing one is a review exercise rather
-than building a speaker. See [`docs/obiwan.md`](../docs/obiwan.md) for what
-each still owes.
+The two Obi-Wan BMR pods — `obiwan_17_BMR_crescent_coaxial_1_of_1` and
+`obiwan_18_BMR_crescent_opposed_1_of_1` — are on this shelf so they can
+actually be printed and physically qualified. They are still **candidates**:
+`release_authorized` is false on both, neither is in the release inventory or
+the released captive-magnet catalog, and printing one is a qualification
+exercise rather than building a finished speaker. See
+[`docs/obiwan.md`](../docs/obiwan.md) for what each still owes.
+
+Being on the shelf changes only where the files appear. Both are sliced out of
+their own isolated one-artifact catalog and their own pinned profile beside
+their CAD, and the shelf hard-links that finished delivery rather than
+re-slicing it:
 
 ```text
 build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.gcode.3mf
 build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.gcode.3mf
 ```
 
-Build them with `make obiwan_bmr_crescent_coaxial_3mf` and
+Build that delivery with `make obiwan_bmr_crescent_coaxial_3mf` and
 `make obiwan_bmr_crescent_opposed_3mf`, or both with
 `make obiwan_bmr_crescent_3mf`; `make obiwan_bmr_crescent_3mf_validate`
 rechecks existing projects without slicing. Each requires the promoted CAD
-from `make obiwan_bmr_crescent_cad` and fails closed if it is missing.
+from `make obiwan_bmr_crescent_cad` and fails closed if it is missing, and so
+does `make to_print`: the shelf reports which candidate input is missing and
+tells you to run `make obiwan_bmr_crescent_3mf` first rather than slicing a
+candidate itself.
 
 Each project carries one real magnet pause at **Z = 5.96 mm**, burying two
 captive D5 × 2 magnets in the coaxial pod and all four in the opposed one —
@@ -180,12 +193,15 @@ make to_print
 ```
 
 It consumes the existing authoritative captive-magnet ready projects, builds
-the four combined plates incrementally, then creates or refreshes all 51
+the four combined plates incrementally, then creates or refreshes all 53
 STL/project pairs. It does **not** implicitly launch the heavyweight
 58-artifact release slicer; a missing canonical ready project fails closed and
-must be refreshed explicitly with `make bambu_slice_release`. Of the 42
-pause-bearing projects, 38 are hard-linked from that audited release and the
-four combined plates are built and sliced locally from those same released inputs.
+must be refreshed explicitly with `make bambu_slice_release`. Of the 44
+pause-bearing projects, 38 are hard-linked from that audited release, the
+four combined plates are built and sliced locally from those same released
+inputs, and the two candidate BMR crescents are hard-linked from their own
+parallel delivery, which fails closed with a `make obiwan_bmr_crescent_3mf`
+message rather than being sliced here.
 The 9 magnet-free pieces are sliced locally under the same pinned profile.
 Hard links make the visible files ordinary, directly-openable files without
 duplicating the large project payloads on disk.
@@ -216,7 +232,7 @@ make obiwan_graded_wing_plate_to_print
 The corresponding concrete STL, ready `.gcode.3mf`, audit, and promoted files
 are backed by ordinary dependency stamps with missing-member recovery. The
 ready targets dry-run before any required local slice; the promotion targets
-disable slicing and cross the complete 51/51 shelf-equivalence gate.
+disable slicing and cross the complete 53/53 shelf-equivalence gate.
 Every alias and concrete artifact path rejects remote-worker or osado
 execution.
 
@@ -228,6 +244,6 @@ make to_print_validate
 
 The materialized STLs and `.gcode.3mf` projects are ignored by Git on purpose.
 The private slicer cache is kept outside this delivery tree at
-`review/to_print_slice_workspace/`, so `to_print/` remains an exact 51-STL /
-51-project printer shelf. Re-run `make to_print` after any intentional
+`review/to_print_slice_workspace/`, so `to_print/` remains an exact 53-STL /
+53-project printer shelf. Re-run `make to_print` after any intentional
 canonical release-slice change.

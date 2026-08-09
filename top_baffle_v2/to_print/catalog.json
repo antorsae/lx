@@ -6,7 +6,7 @@
   "selection_rules": {
     "stock": "Choose the no-floor-stand or floor-stand 01 lower LM piece; 02–04 are shared. Then choose exactly one attachment set: A shoulders or B1 wings.",
     "slim": "Choose the no-floor-stand or floor-stand 01 lower LM piece; 02–04 are shared. Then choose exactly one attachment set: A shoulders or B1 wings.",
-    "obiwan": "Choose either the individual core files (the no-floor-stand or floor-stand 01, plus 02–04) or the 01+02+03+04 combo plate for that same stand state; never mix stand states or print both forms. Then choose flat or graded and exactly one wing split: split3 (3 pieces per side) or split2 (2 pieces per side). For a split2 wing set, choose either its four individual wing projects or its combo plate; never both."
+    "obiwan": "Choose either the individual core files (the no-floor-stand or floor-stand 01, plus 02–04) or the 01+02+03+04 combo plate for that same stand state; never mix stand states or print both forms. Then choose flat or graded and exactly one wing split: split3 (3 pieces per side) or split2 (2 pieces per side). For a split2 wing set, choose either its four individual wing projects or its combo plate; never both. The crescent slot takes exactly one of: the released ND25FW-4 tweeter crescent 04 (which either combo plate already carries), the CANDIDATE coaxial BMR crescent 17, the CANDIDATE opposed BMR crescent 18, or no crescent at all. 17 and 18 exclude each other and 04, they replace the crescent a combo plate carries, and neither is release-authorized: print them only to physically qualify them."
   },
   "entries": [
     {
@@ -552,6 +552,45 @@
           "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",
           "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2"
         ]
+      }
+    },
+
+    {
+      "name": "obiwan_17_BMR_crescent_coaxial_1_of_1",
+      "family": "obiwan",
+      "logical_slot": "17",
+      "state": "shared",
+      "selection": "bmr_crescent_candidate_coaxial",
+      "description": "CANDIDATE Obi-Wan BMR crescent, coaxial TEBM35C10-4 pair, 1 of 1 — both drivers on one axis 86.413 mm from the MU10 axis; buries two captive magnets. Not release-authorized: absent from the released catalog and the release inventory, pending physical qualification.",
+      "source_stl": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.stl",
+      "catalog_artifact_id": "shared:Obiwan-TEBM35C10-4-BMR-crescent:obiwan_bmr_crescent_TEBM35C10-4",
+      "auxiliary_delivery": {
+        "variant": "coaxial",
+        "make_target": "obiwan_bmr_crescent_3mf",
+        "magnet_insertions": 2,
+        "release_authorized": false,
+        "catalog": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.catalog.json",
+        "slicing_profile": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.slicing_profile.json",
+        "project": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.gcode.3mf"
+      }
+    },
+    {
+      "name": "obiwan_18_BMR_crescent_opposed_1_of_1",
+      "family": "obiwan",
+      "logical_slot": "18",
+      "state": "shared",
+      "selection": "bmr_crescent_candidate_opposed",
+      "description": "CANDIDATE Obi-Wan BMR crescent, opposed TEBM35C10-4 pair, 1 of 1 — the two drivers fire back to back across a shared 2.40 mm partition; buries four captive magnets. Not release-authorized: absent from the released catalog and the release inventory, pending physical qualification.",
+      "source_stl": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.stl",
+      "catalog_artifact_id": "shared:Obiwan-TEBM35C10-4-BMR-crescent-opposed:obiwan_bmr_crescent_opposed_TEBM35C10-4",
+      "auxiliary_delivery": {
+        "variant": "opposed",
+        "make_target": "obiwan_bmr_crescent_3mf",
+        "magnet_insertions": 4,
+        "release_authorized": false,
+        "catalog": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.catalog.json",
+        "slicing_profile": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.slicing_profile.json",
+        "project": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.gcode.3mf"
       }
     }
   ],

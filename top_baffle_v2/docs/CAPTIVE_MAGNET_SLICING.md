@@ -344,7 +344,7 @@ slice and refuse remote-worker/osado execution.
 The source STL/manifest, ready project/audit, and promoted shelf pair are
 ordinary Make artifacts with recovery stamps; the corresponding
 `_to_print` targets refresh only their delivery pair after a slice-disabled
-complete 51/51 shelf validation. `make to_print` consumes
+complete 53/53 shelf validation. `make to_print` consumes
 existing authoritative captive-magnet ready projects and never implicitly
 launches `bambu_slice_release`.
 
@@ -364,12 +364,15 @@ arranging/orienting/rotations disabled. It pins all four support settings off
 globally and per object, requires zero support feature blocks, preserves one
 six-site Z=5.96 mm magnet pause, and checks every cavity against the
 authoritative release audit. Project promotion additionally requires identity
-placement and exact equivalence to all 15,692 flat or 958,546 graded source
-triangles.
+placement and exact equivalence to all 17,836 flat or 734,014 graded source
+triangles.  Those two counts are pinned in
+`scripts/build_obiwan_wing_plate.py` and have to move in the same commit as
+any deliberate wing regeneration; the graded count is what it is because the
+uncut rim was cut out of the graded wings.
 `make obiwan_flat_wing_plate` and
 `make obiwan_graded_wing_plate` build and audit the local ready projects;
 their corresponding `_to_print` targets refresh the friendly shelf pairs
-after the complete 51/51 slice-disabled shelf gate.
+after the complete 53/53 slice-disabled shelf gate.
 All flat/graded wing and shoulder projects remain on Bambu PLA Tough+ with six
 walls. They are explicitly outside the PETG-GF profile's artifact scope.
 

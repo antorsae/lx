@@ -242,8 +242,8 @@ def main() -> int:
               and raw.get("printer") == "Bambu Lab P2S"
               and isinstance(raw_entries, list),
               "remote shelf catalog header is invalid")
-        check(len(raw_entries) == 51,
-              "remote shelf catalog must contain exactly 51 entries")
+        check(len(raw_entries) == 53,
+              "remote shelf catalog must contain exactly 53 entries")
         names = []
         families = {family: 0 for family in shelf.EXPECTED_FAMILY_COUNTS}
         for index, entry in enumerate(raw_entries):
@@ -266,14 +266,22 @@ def main() -> int:
             families[family] += 1
         check(len(set(names)) == len(names),
               "remote shelf catalog contains duplicate names")
-        check(families == {"stock": 11, "slim": 11, "obiwan": 29},
+        check(families == {"stock": 11, "slim": 11, "obiwan": 31},
               f"remote shelf family counts drifted: {families}")
         check(sum(shelf._is_magnet_entry(entry)
-                  for entry in raw_entries) == 42,
+                  for entry in raw_entries) == 44,
               "remote shelf magnet-project count drifted")
         check(sum(entry.get("composite_plate") is not None
                   for entry in raw_entries) == 4,
               "remote shelf composite-plate count drifted")
+        candidates = [entry for entry in raw_entries
+                      if entry.get("auxiliary_delivery") is not None]
+        check({entry["name"] for entry in candidates}
+              == set(shelf.AUXILIARY_SPECS),
+              "remote shelf candidate-delivery entries drifted")
+        check(all(entry["auxiliary_delivery"].get("release_authorized")
+                  is False for entry in candidates),
+              "a candidate shelf entry claims release authorization")
         release, by_id = shelf._release_artifacts(
             shelf.DEFAULT_RELEASE_CATALOG)
         check(len(by_id) == 58
@@ -282,9 +290,13 @@ def main() -> int:
         referenced = {
             entry["catalog_artifact_id"] for entry in raw_entries
             if entry.get("catalog_artifact_id")
+            and entry.get("auxiliary_delivery") is None
         }
         check(referenced <= set(by_id),
               "remote shelf references an unknown release artifact")
+        check(not ({entry["catalog_artifact_id"] for entry in candidates}
+                   & set(by_id)),
+              "a candidate delivery has entered the released catalog")
         release_blockers = [
             artifact for artifact in by_id.values()
             if "support_blocker" in artifact
@@ -294,7 +306,7 @@ def main() -> int:
                       for artifact in release_blockers),
               "remote release lacks all six duct support blockers")
         print(
-            "to_print remote contracts: neutralized Make graph, 51-entry "
+            "to_print remote contracts: neutralized Make graph, 53-entry "
             "shelf catalog, and 58-artifact release catalog pass; "
             "project/STL equivalence remains local-only"
         )
@@ -328,15 +340,15 @@ def main() -> int:
         },
         "both standalone keyed LM bottoms must use structural PETG-GF audits",
     )
-    check(len(entries) == 51, "shelf must contain exactly 51 entries")
+    check(len(entries) == 53, "shelf must contain exactly 53 entries")
     families = {
         family: sum(entry["family"] == family for entry in entries)
         for family in shelf.EXPECTED_FAMILY_COUNTS
     }
-    check(families == {"stock": 11, "slim": 11, "obiwan": 29},
+    check(families == {"stock": 11, "slim": 11, "obiwan": 31},
           f"unexpected family counts: {families}")
     magnetic = [entry for entry in entries if shelf._is_magnet_entry(entry)]
-    check(len(magnetic) == 42, "expected 42 audited magnet projects")
+    check(len(magnetic) == 44, "expected 44 audited magnet projects")
     check(len(entries) - len(magnetic) == 9,
           "expected 9 locally sliced non-magnet projects")
     canonical_magnetic = [
@@ -437,6 +449,8 @@ def main() -> int:
         "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",
         "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2",
         "obiwan_graded_wings_split2_combo",
+        "obiwan_17_BMR_crescent_coaxial_1_of_1",
+        "obiwan_18_BMR_crescent_opposed_1_of_1",
     ):
         check(required in names, f"missing required friendly name: {required}")
     for forbidden in (
@@ -467,7 +481,11 @@ def main() -> int:
         check(project.name == f"{entry['name']}.gcode.3mf",
               "friendly P2S project name drift")
         if entry.get("catalog_artifact_id"):
-            artifact = by_id[entry["catalog_artifact_id"]]
+            # A candidate is bound to its own one-artifact catalog instead,
+            # which _bind_entries_to_release already resolved onto the entry.
+            artifact = (
+                entry["artifact"] if entry.get("auxiliary_spec") is not None
+                else by_id[entry["catalog_artifact_id"]])
             check(Path(artifact["stl"]).resolve() == source.resolve(),
                   f"release source mismatch for {entry['name']}")
         if entry.get("composite_plate"):
@@ -496,10 +514,10 @@ def main() -> int:
     gate = manifest.get("project_stl_equivalence_gate")
     check(isinstance(gate, dict) and gate.get("status") == "pass",
           "shelf manifest lacks a passing project/STL equivalence gate")
-    check(gate.get("required_pair_count") == 51
-          and gate.get("passing_pair_count") == 51
-          and len(gate.get("entries", ())) == 51,
-          "shelf promotion did not cross a 51/51 equivalence gate")
+    check(gate.get("required_pair_count") == 53
+          and gate.get("passing_pair_count") == 53
+          and len(gate.get("entries", ())) == 53,
+          "shelf promotion did not cross a 53/53 equivalence gate")
     manifest_records = {
         record["name"]: record for record in manifest["entries"]
     }
@@ -647,10 +665,42 @@ def main() -> int:
             and wing_profile["wall_loops"] == 6,
             f"{wing_name}: wing/shoulder material must remain non-GF PLA",
         )
-    check(manifest["inventory"]["magnet_project_count"] == 42
+    # Both BMR pods ship as printable candidates.  The shelf may deliver
+    # them, but nothing here may quietly promote them: they are sliced out of
+    # their own auxiliary catalog and profile and stay outside the released
+    # 58-artifact inventory.
+    check(set(shelf.AUXILIARY_SPECS) == {
+        "obiwan_17_BMR_crescent_coaxial_1_of_1",
+        "obiwan_18_BMR_crescent_opposed_1_of_1",
+    }, "candidate auxiliary shelf deliveries drifted")
+    for name, spec in shelf.AUXILIARY_SPECS.items():
+        candidate = manifest_records[name]
+        check(candidate["project_kind"]
+              == "audited_candidate_auxiliary_magnet_reuse",
+              f"{name}: candidate project identity drifted")
+        check(candidate["magnet_insertions"] == spec["magnet_insertions"],
+              f"{name}: candidate pause count drifted")
+        check(candidate["archive_audit"]["pause_z_mm"],
+              f"{name}: candidate project carries no magnet pause")
+        delivery = candidate["auxiliary_delivery"]
+        check(isinstance(delivery, dict)
+              and delivery["release_authorized"] is False
+              and delivery["make_target"] == "obiwan_bmr_crescent_3mf",
+              f"{name}: candidate delivery record is not a candidate")
+        check(candidate["catalog_artifact_id"] not in by_id,
+              f"{name}: candidate entered the released catalog")
+        check("CANDIDATE" in candidate["description"]
+              and "Not release-authorized" in candidate["description"],
+              f"{name}: shelf description hides its candidate status")
+    check(all(record["auxiliary_delivery"] is None
+              for name, record in manifest_records.items()
+              if name not in shelf.AUXILIARY_SPECS),
+          "a released shelf entry claims a candidate auxiliary delivery")
+    check(manifest["inventory"]["magnet_project_count"] == 44
           and manifest["inventory"]["non_magnet_project_count"] == 9
-          and manifest["inventory"]["magnet_insertions"] == 80,
-          "shelf inventory does not include all four plate alternatives")
+          and manifest["inventory"]["magnet_insertions"] == 86,
+          "shelf inventory does not include all four plate alternatives and "
+          "both candidate BMR crescents")
     for entry in entries:
         record = manifest_records[entry["name"]]
         delivered_stl = ROOT / record["delivered_stl"]

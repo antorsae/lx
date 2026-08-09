@@ -496,7 +496,12 @@ def _qualification(
         "status": "candidate_not_release_authorized",
         "counts_against_release_inventory": False,
         "in_obiwan_stage_manifest": False,
-        "in_to_print": False,
+        # The P2S shelf carries both pods so they can actually be printed and
+        # physically qualified.  Shelf presence is a delivery decision and
+        # says nothing about release authorization: every flag above and
+        # below stays false, and the shelf entry itself is labelled a
+        # candidate.
+        "in_to_print": True,
         "in_captive_magnet_release_catalog": False,
         "has_captive_magnet_pause_delivery": True,
         "magnet_release_wiring_note": (

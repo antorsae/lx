@@ -1093,6 +1093,9 @@ BMR_CRESCENT_SLICE_STAMP := \
         $(BMR_CRESCENT_READY_DIR)/.stamp_bmr_crescent_validated
 BMR_CRESCENT_OPPOSED_SLICE_STAMP := \
         $(BMR_CRESCENT_OPPOSED_READY_DIR)/.stamp_bmr_crescent_validated
+BMR_CRESCENT_READY_RESULT := $(BMR_CRESCENT_READY_DIR)/result.json
+BMR_CRESCENT_OPPOSED_READY_RESULT := \
+        $(BMR_CRESCENT_OPPOSED_READY_DIR)/result.json
 BMR_CRESCENT_REVIEW := review/bmr_crescent_TEBM35C10-4
 BMR_CRESCENT_REVIEW_AUDIT := $(BMR_CRESCENT_REVIEW)/coaxial_delivery.json
 BMR_CRESCENT_OPPOSED_REVIEW_AUDIT := \
@@ -1665,7 +1668,7 @@ $(BMR_CRESCENT_SLICE_STAMP): $(BMR_CRESCENT_COAXIAL_CAD_OUTPUTS) \
         scripts/gcode_analysis.py scripts/artifact_emit.py \
         scripts/bambu_3mf_audit.py \
         scripts/gen_bmr_crescent_slicing_profile.py \
-        scripts/validate_bmr_crescent_delivery.py \
+        scripts/validate_bmr_crescent_delivery.py to_print/catalog.json \
         src/lx521_baffle/print_contract.py src/lx521_baffle/io.py
 	@rm -f "$@"
 	$(REQUIRE_BMR_CRESCENT_CAD)
@@ -1701,7 +1704,7 @@ $(BMR_CRESCENT_OPPOSED_SLICE_STAMP): $(BMR_CRESCENT_OPPOSED_CAD_OUTPUTS) \
         scripts/gcode_analysis.py scripts/artifact_emit.py \
         scripts/bambu_3mf_audit.py \
         scripts/gen_bmr_crescent_slicing_profile.py \
-        scripts/validate_bmr_crescent_delivery.py \
+        scripts/validate_bmr_crescent_delivery.py to_print/catalog.json \
         src/lx521_baffle/print_contract.py src/lx521_baffle/io.py
 	@rm -f "$@"
 	$(REQUIRE_BMR_CRESCENT_CAD)
@@ -1796,6 +1799,30 @@ obiwan_bmr_crescent_opposed_3mf_validate:
 obiwan_bmr_crescent_3mf_validate: \
         obiwan_bmr_crescent_coaxial_3mf_validate \
         obiwan_bmr_crescent_opposed_3mf_validate
+
+# The shelf carries both candidates, so it consumes this delivery the way the
+# wing plates consume released wing pieces: absolute inputs, so a shelf
+# refresh can neither regenerate candidate CAD nor dispatch it, while a
+# re-sliced candidate still invalidates the shelf exactly as a rebuilt wing
+# invalidates its combo plate.  The recipe below can only report; it is the
+# fail-closed message for a tree that has not run the delivery yet, including
+# a remote worker that legitimately has no candidate build directory.
+BMR_CRESCENT_SHELF_INPUTS := $(addprefix $(CURDIR)/,\
+        $(BMR_CRESCENT_STL) $(BMR_CRESCENT_SIDECAR) \
+        $(BMR_CRESCENT_CATALOG) $(BMR_CRESCENT_PROFILE) \
+        $(BMR_CRESCENT_3MF) $(BMR_CRESCENT_READY_PROJECT) \
+        $(BMR_CRESCENT_GCODE) $(BMR_CRESCENT_READY_RESULT) \
+        $(BMR_CRESCENT_SLICE_AUDIT) \
+        $(BMR_CRESCENT_OPPOSED_STL) $(BMR_CRESCENT_OPPOSED_SIDECAR) \
+        $(BMR_CRESCENT_OPPOSED_CATALOG) $(BMR_CRESCENT_OPPOSED_PROFILE) \
+        $(BMR_CRESCENT_OPPOSED_3MF) $(BMR_CRESCENT_OPPOSED_READY_PROJECT) \
+        $(BMR_CRESCENT_OPPOSED_GCODE) $(BMR_CRESCENT_OPPOSED_READY_RESULT) \
+        $(BMR_CRESCENT_OPPOSED_SLICE_AUDIT))
+
+$(BMR_CRESCENT_SHELF_INPUTS):
+	@echo "missing candidate BMR crescent shelf input: $@" >&2
+	@echo "run 'make obiwan_bmr_crescent_3mf' first, then rerun this shelf target" >&2
+	@exit 1
 
 # Local-only structural packaging for the no-floor Obi-Wan LM bottom.  The
 # modifier is slicer geometry, not CAD: it changes infill only where it
@@ -2524,7 +2551,8 @@ obiwan_graded_wing_plate_to_print: $(OBIWAN_GRADED_WING_PLATE_SHELF_OUTPUTS)
 to_print: $(OBIWAN_NO_FLOOR_COMBO_READY_STAMP) \
         $(OBIWAN_FLOOR_COMBO_READY_STAMP) \
         $(OBIWAN_FLAT_WING_PLATE_READY_STAMP) \
-        $(OBIWAN_GRADED_WING_PLATE_READY_STAMP)
+        $(OBIWAN_GRADED_WING_PLATE_READY_STAMP) \
+        $(BMR_CRESCENT_SHELF_INPUTS)
 	$(REQUIRE_BAMBU_CATALOG)
 	$(PYTHON_RUN) scripts/build_to_print_shelf.py \
 		--shelf "$(TO_PRINT_SHELF)" \
@@ -2555,6 +2583,7 @@ to_print: $(OBIWAN_NO_FLOOR_COMBO_READY_STAMP) \
 to_print_validate: obiwan_no_floor_combo_plate_source \
         obiwan_floor_combo_plate_source \
         obiwan_flat_wing_plate_source obiwan_graded_wing_plate_source \
+        $(BMR_CRESCENT_SHELF_INPUTS) \
         check_to_print_shelf
 	$(PYTHON_RUN) scripts/build_to_print_shelf.py \
 		--shelf "$(TO_PRINT_SHELF)" \

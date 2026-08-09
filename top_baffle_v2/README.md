@@ -113,8 +113,9 @@ are documented in [`docs/REMOTE_BUILD.md`](docs/REMOTE_BUILD.md).
 
 For direct Bambu Lab P2S use, build the small
 [`to_print/`](to_print/README.md) shelf with `make to_print`. It exposes only
-the 51 printable Stock, Slim, and Obi-Wan entries under friendly names,
-including the no-floor-stand Obi-Wan 01+02+03+04 combo plate, with
+the 53 printable Stock, Slim, and Obi-Wan entries under friendly names,
+including the no-floor-stand Obi-Wan 01+02+03+04 combo plate and the two
+candidate BMR crescents, with
 matching ready-to-print `.gcode.3mf` projects and a local hash manifest. That
 alternative is independently addressable through
 `make obiwan_combo_plate_source`, `make obiwan_combo_plate`, and
@@ -122,7 +123,7 @@ alternative is independently addressable through
 
 These goals never dispatch to osado and run only on the workstation:
 
-    make to_print                 P2S shelf: audit + 51 friendly STL/project pairs
+    make to_print                 P2S shelf: audit + 53 friendly STL/project pairs
     make to_print_validate        validate an existing shelf without slicing
     make artifacts                artifacts/ product facade: relink + rehash
     make iso_matrix               the standardized ISO render set above

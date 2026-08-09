@@ -443,6 +443,14 @@ not the UM print, not the wings.
 
 Fitting no crescent at all is also a supported configuration.
 
+All three are on the P2S shelf — `obiwan_04_T_tweeter_crescent_1_of_1`,
+`obiwan_17_BMR_crescent_coaxial_1_of_1` and
+`obiwan_18_BMR_crescent_opposed_1_of_1` — and the choice is exclusive: take
+one or none. `17` and `18` are labelled CANDIDATE there and are hard-linked
+from their own candidate delivery, not from the release; if you take one
+alongside a core combo plate, the `04` that plate already carries is the piece
+you set aside.
+
 The opposed TEBM35C10-4 BMR **vase** used by Stock and Slim is still **not**
 available for Obi-Wan: it is a seam-B vase piece with the regular proud-family
 female dovetails, and Obi-Wan has no seam B. What the opposed crescent takes
@@ -743,9 +751,12 @@ continuous from the UM bore through the gap into the blind receiver under its
   one fewer a station that broke out;
 - neither candidate may appear in the released captive-magnet catalog
   generator or the two released slicing profiles, and the 58-artifact /
-  94-station totals and the shelf's 51 pairs are all restated in the test so
-  that wiring a candidate in has to come past it — with every delivered file
-  additionally required to sit inside the candidate's own build child;
+  94-station totals are restated in the test so that wiring a candidate into
+  the release has to come past it — with every generated file additionally
+  required to sit inside the candidate's own build child.  The P2S shelf is
+  the one place both pods do appear: it carries them as two of its 53 pairs,
+  hard-linked from that same candidate build child, labelled CANDIDATE and
+  still `release_authorized: false`;
 - the derived slicing profile has to be the base profile field for field,
   material and walls included, and the PETG-GF profile has to keep refusing to
   name either pod;
@@ -770,12 +781,17 @@ review shelf by
     # -> review/bmr_crescent_entry_closeup.png
 
 **Candidate status.** `release_authorized` is false and
-`PHYSICAL_MEASURE_REQUIRED` is true on both. Having a printable delivery does
-not change that: they are still deliberately absent from the release
-inventory, the stage manifests, `to_print/`, the released captive-magnet
-catalog and the two released slicing profiles, and their own test asserts all
-five. What each does have is its *own* isolated catalog and profile, which is
-what a candidate delivery is allowed to have. The two
+`PHYSICAL_MEASURE_REQUIRED` is true on both. Neither a printable delivery nor
+a shelf entry changes that: they are still deliberately absent from the
+release inventory, the stage manifests, the released captive-magnet catalog
+and the two released slicing profiles, and their own test asserts all four.
+What each does have is its *own* isolated catalog and profile, which is what a
+candidate delivery is allowed to have. Both are also carried on the P2S shelf
+as slots `17` and `18`, because a pod nobody can conveniently print is a pod
+nobody will physically qualify; the shelf hard-links that same isolated
+delivery, labels both entries CANDIDATE, and `in_to_print` in each
+`facts.json` is checked against `to_print/catalog.json` in both directions so
+the flag cannot drift away from where the file actually is. The two
 BMRs weigh 102.6 g, so the two-screw UM joint would hang roughly **234 g** on
 the coaxial pod (106.07 cm³ of plastic) and **218 g** on the opposed one
 (93.27 cm³) — both well above the released ND25FW-4 crescent.

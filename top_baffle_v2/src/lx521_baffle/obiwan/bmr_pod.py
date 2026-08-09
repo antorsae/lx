@@ -1045,8 +1045,10 @@ def magnet_facts(
             "restore events, out of the part's own isolated auxiliary "
             "catalog and profile rather than the released ones, so the "
             "pause wiring exists.  They remain deliberately absent from the "
-            "released captive-magnet catalog, the release_validation counts, "
-            "the two released slicing profiles and to_print, and that "
-            "released-catalog entry is what the stations still owe"),
+            "released captive-magnet catalog, the release_validation counts "
+            "and the two released slicing profiles; to_print carries the pod "
+            "as a labelled candidate so it can be printed and physically "
+            "qualified, and that released-catalog entry is what the stations "
+            "still owe"),
         "stations": [tools.facts() for tools in magnet_tools],
     }

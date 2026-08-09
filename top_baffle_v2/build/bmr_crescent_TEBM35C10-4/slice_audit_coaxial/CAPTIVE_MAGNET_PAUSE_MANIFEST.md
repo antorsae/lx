@@ -24,11 +24,11 @@ Every listed 3MF was exported by the same Bambu slice invocation, hash-bound to 
 
 | State | Variant / part | Arrange Rz | Ready-to-print 3MF | SHA-256 | Ready fingerprint |
 |---|---|---:|---|---|---|
-| shared | Obiwan-TEBM35C10-4-BMR-crescent / `obiwan_bmr_crescent_TEBM35C10-4` | 0.000000 deg | `/Users/antor/gh/lx/top_baffle_v2/build/bmr_crescent_TEBM35C10-4/slice_audit_coaxial/slices/shared_Obiwan-TEBM35C10-4-BMR-crescent_obiwan_bmr_crescent_TEBM35C10-4/ready/ready_to_print.gcode.3mf` | `96dccbd505aa61ad58499891fd4cb6358751b4e6f85ba6172e9535f9bbb37460` | `c8e89facff7b7904f64de47c8395a588217e5b43ea18620c87e14853dfd5b941` |
+| shared | Obiwan-TEBM35C10-4-BMR-crescent / `obiwan_bmr_crescent_TEBM35C10-4` | 0.000000 deg | `/Users/antor/gh/lx/top_baffle_v2/build/bmr_crescent_TEBM35C10-4/slice_audit_coaxial/slices/shared_Obiwan-TEBM35C10-4-BMR-crescent_obiwan_bmr_crescent_TEBM35C10-4/ready/ready_to_print.gcode.3mf` | `4c7c79f1ca0fea3144a392af30bc118c53c08d618003e7441e6549d137462a8e` | `49cc1bc490abb84e13072bd45644db983928ae440f422153e1acf583cee3b71c` |
 
 ## Profile and evidence
 
-- Catalog SHA-256: `98cc2c077b055f7250b517996cafb41d589eeac90c4817651fd0f0eb204d6fd2`
+- Catalog SHA-256: `65cc6f1637fc65f51a071158dbe3c63dfc25b256c2c253d242ee0a4cce2555a3`
 - Resolved profile-set SHA-256: `2a86ec4ee439a3512f6733c0d52eb65aa7f646054041e392d04278fb786bb638`
 - Bambu Studio binary SHA-256: `b022be6750898454803e9e07178b7c7446c0e5b4d148c593b4b56efde09ba281`
 - Artifacts: 1 passed, 0 failed

@@ -10,14 +10,14 @@
     ],
     "z": [
       0.0,
-      244.4905824661255
+      244.5
     ]
   },
   "bounds_mm": {
     "maximum_mm": [
       250.45761108398438,
       251.39422607421875,
-      11.509417533874512
+      11.5
     ],
     "minimum_mm": [
       13.23267650604248,
@@ -27,7 +27,7 @@
     "size_mm": [
       237.2249345779419,
       247.8424355983734,
-      11.509417533874512
+      11.5
     ]
   },
   "composite_topology_policy": "each released source passes strict manifold validation and the bundle is their exact, non-intersecting rigid transform",
@@ -48,22 +48,22 @@
   "mesh_footprint_witnesses": {
     "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2": {
       "triangle_centroids_outside_0_005mm_guard": 0,
-      "triangle_count": 685816,
+      "triangle_count": 76820,
       "vertices_outside_0_005mm_guard": 0
     },
     "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2": {
       "triangle_centroids_outside_0_005mm_guard": 0,
-      "triangle_count": 398500,
+      "triangle_count": 290126,
       "vertices_outside_0_005mm_guard": 0
     },
     "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2": {
       "triangle_centroids_outside_0_005mm_guard": 0,
-      "triangle_count": 686098,
+      "triangle_count": 76882,
       "vertices_outside_0_005mm_guard": 0
     },
     "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2": {
       "triangle_centroids_outside_0_005mm_guard": 0,
-      "triangle_count": 398594,
+      "triangle_count": 290186,
       "vertices_outside_0_005mm_guard": 0
     }
   },
@@ -157,7 +157,7 @@
       "mesh_diagnostics": {
         "component_error": 0,
         "component_signed_volumes": [
-          25775.024426842836,
+          25724.956077969917,
           -64.88808422551583
         ],
         "components": 2,
@@ -171,8 +171,8 @@
         "open": 0,
         "outer_components": 1,
         "over_shared": 0,
-        "signed_volume": 25710.136342617276,
-        "triangles": 685816,
+        "signed_volume": 25660.067993744356,
+        "triangles": 76820,
         "winding": 0,
         "zero_volume": 0,
         "zero_volume_components": 0
@@ -181,9 +181,9 @@
       "rz_degrees": 58.72427357715,
       "side": "left",
       "source_print_sidecar": "build/wings/graded/stl/obiwan_wing_graded_left_split2_1_of_2_lm_lower.print.json",
-      "source_print_sidecar_sha256": "cabc055a4a67a144248a5edd1e41e51511b6243f08682e81d88f546a0fc221b0",
+      "source_print_sidecar_sha256": "fc09a87c23a54046ae7dc77818b90de0c6202b72135ec781fbe536a7e466dbf4",
       "source_stl": "build/wings/graded/stl/obiwan_wing_graded_left_split2_1_of_2_lm_lower.stl",
-      "source_stl_sha256": "79372c83362b259cb93e75072dec7284d2ca9978c4a6368fbfced81e45cccd2b",
+      "source_stl_sha256": "8b1c4e002381707c30025aad75880cbfa870091c05f79d3b1f2c2fd29f9348aa",
       "stl_to_plate_matrix": [
         [
           0.5191570705013763,
@@ -214,7 +214,7 @@
         51.156885879315,
         86.40654731298
       ],
-      "triangle_count": 685816
+      "triangle_count": 76820
     },
     {
       "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_split2_2_of_2_lm_um_upper",
@@ -222,7 +222,7 @@
       "mesh_diagnostics": {
         "component_error": 0,
         "component_signed_volumes": [
-          45140.58296390976,
+          45133.76849629181,
           -64.88801495185577,
           -64.88815421275137
         ],
@@ -237,8 +237,8 @@
         "open": 0,
         "outer_components": 1,
         "over_shared": 0,
-        "signed_volume": 45010.806794745055,
-        "triangles": 398500,
+        "signed_volume": 45003.9923271271,
+        "triangles": 290126,
         "winding": 0,
         "zero_volume": 0,
         "zero_volume_components": 0
@@ -247,9 +247,9 @@
       "rz_degrees": -82.921230563781,
       "side": "left",
       "source_print_sidecar": "build/wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.print.json",
-      "source_print_sidecar_sha256": "ad0c06df52a9a7cce76244af8ba0d2e73260e35ae4a73a2625c3c86bdab0618b",
+      "source_print_sidecar_sha256": "5e8b91a6aac8f115cf1700c2a2a058aa162b6a987768841f4d034dad592ae2eb",
       "source_stl": "build/wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.stl",
-      "source_stl_sha256": "4244dead1a6618dd73ae541946f88cf1e918799a007c518d7983a36f5b9b8224",
+      "source_stl_sha256": "a86568f586fcf5c599e615a2439ab6ef1a45279f765d14c2a91f453776274891",
       "stl_to_plate_matrix": [
         [
           0.12323376637207177,
@@ -280,7 +280,7 @@
         50.756431596864,
         227.804382692246
       ],
-      "triangle_count": 398500
+      "triangle_count": 290126
     },
     {
       "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_right_split2_1_of_2_lm_lower",
@@ -288,7 +288,7 @@
       "mesh_diagnostics": {
         "component_error": 0,
         "component_signed_volumes": [
-          25775.017515579624,
+          25724.99557161429,
           -64.88808270341632
         ],
         "components": 2,
@@ -302,8 +302,8 @@
         "open": 0,
         "outer_components": 1,
         "over_shared": 0,
-        "signed_volume": 25710.129432876176,
-        "triangles": 686098,
+        "signed_volume": 25660.107488910842,
+        "triangles": 76882,
         "winding": 0,
         "zero_volume": 0,
         "zero_volume_components": 0
@@ -312,9 +312,9 @@
       "rz_degrees": -89.203304927416,
       "side": "right",
       "source_print_sidecar": "build/wings/graded/stl/obiwan_wing_graded_right_split2_1_of_2_lm_lower.print.json",
-      "source_print_sidecar_sha256": "245e15847ef2e52734667333d726fa4c04820d298870503387bac0b363461264",
+      "source_print_sidecar_sha256": "ff226031a09cc2db4c29386f577160ba899e86ca9440990b7a74339dd9baa4be",
       "source_stl": "build/wings/graded/stl/obiwan_wing_graded_right_split2_1_of_2_lm_lower.stl",
-      "source_stl_sha256": "fb710daee44335b9be8066c3989d6aba61eb8b220c6c65f0bd6ccb4a5b7f722d",
+      "source_stl_sha256": "3a1abdc2bb929091f154b5b4a6ed707075565a1dd4799ace7260875dd5b51708",
       "stl_to_plate_matrix": [
         [
           0.013904504073598101,
@@ -345,7 +345,7 @@
         202.926578585501,
         167.723983347523
       ],
-      "triangle_count": 686098
+      "triangle_count": 76882
     },
     {
       "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_right_split2_2_of_2_lm_um_upper",
@@ -353,7 +353,7 @@
       "mesh_diagnostics": {
         "component_error": 0,
         "component_signed_volumes": [
-          45140.58452637414,
+          45133.76133749559,
           -64.88804655781524,
           -64.88808471013226
         ],
@@ -368,8 +368,8 @@
         "open": 0,
         "outer_components": 1,
         "over_shared": 0,
-        "signed_volume": 45010.808395106236,
-        "triangles": 398594,
+        "signed_volume": 45003.985206227684,
+        "triangles": 290186,
         "winding": 0,
         "zero_volume": 0,
         "zero_volume_components": 0
@@ -378,9 +378,9 @@
       "rz_degrees": 110.702555432118,
       "side": "right",
       "source_print_sidecar": "build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.print.json",
-      "source_print_sidecar_sha256": "8e06b384b1ed57fa79c43a46f0c9611652a30dbe77f4a7c3a1eb252a1409771c",
+      "source_print_sidecar_sha256": "0444bf5ad0441e8c0a117e6cedf4f0125ccc98969ada204ad78ac87a4b6af718",
       "source_stl": "build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.stl",
-      "source_stl_sha256": "9bab730a8c5bdc959cd236c0380642a7568e9ab456bb6adf6c4de9f5c32bd1af",
+      "source_stl_sha256": "b08fd0d58c53baa2a5aa58bdb939897fae21dc32c23084b809166d3fbd35b297",
       "stl_to_plate_matrix": [
         [
           -0.3535165648902537,
@@ -411,17 +411,17 @@
         231.314810940662,
         67.458534877173
       ],
-      "triangle_count": 398594
+      "triangle_count": 290186
     }
   ],
   "preview": "build/print_plates/obiwan/obiwan_graded_wings_split2_combo.layout.png",
   "preview_sha256": "d7129a35f9d0016a97f36c773af336c89845daad73cc58cef5ddae1c0151a916",
   "schema_version": 1,
-  "source_bundle_fingerprint": "61d2245d5399f5ba7fb724ee4f05b40b40f7e51228c46aff0cd29f4f6eb1d7b9",
+  "source_bundle_fingerprint": "12a34577bd537b470808570a15dcb6d0f3ae74aee65e218955afd0ecbf9f67ac",
   "source_policy": "rigid Rz plus XY placement of four released front-face-down STLs; no CAD, BREP, support structure, or acoustic geometry regeneration",
   "stl": "obiwan_graded_wings_split2_combo.stl",
-  "stl_bytes": 108450484,
-  "stl_sha256": "21daab1f657e54d19856f7b337a32acf16c5b8af2430e96f3dc697b5e269ccd0",
+  "stl_bytes": 36700784,
+  "stl_sha256": "cfe1df14525b9efdff9686cfc27f47ec7b2819569a1d1bf7f727377fb71e671f",
   "support_policy": {
     "enabled": false,
     "global_and_object_fields": {
@@ -433,5 +433,5 @@
     "support_blocker_count": 0,
     "support_toolpath_gate": "no support feature blocks permitted"
   },
-  "triangle_count": 2169008
+  "triangle_count": 734014
 }

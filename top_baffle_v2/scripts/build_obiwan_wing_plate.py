@@ -193,9 +193,15 @@ def _variant(
     )
 
 
+# The triangle counts are the sum of the four released split2 meshes, pinned
+# so an unintended mesh change cannot reach a plate.  They therefore have to
+# move in the same commit as any deliberate wing regeneration: the graded
+# count fell from 2_169_008 to 734_014 when the uncut rim was cut, and until
+# it was moved this builder failed while the previous, phantom-walled plate
+# STL stayed on disk and stayed hard-linked onto the shelf.
 VARIANTS = {
     "flat": _variant("flat", "Flat", ("05", "06", "08", "09"), 17_836),
-    "graded": _variant("graded", "Graded", ("11", "12", "14", "15"), 2_169_008),
+    "graded": _variant("graded", "Graded", ("11", "12", "14", "15"), 734_014),
 }
 
 
