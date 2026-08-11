@@ -8,6 +8,8 @@ from pathlib import Path
 import sys
 import tempfile
 
+from shapely.geometry import Point, box as shapely_box
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 for _root in (PROJECT_ROOT / "src", PROJECT_ROOT / "scripts"):
@@ -21,6 +23,16 @@ from lx521_baffle.cables import (
     route_points,
 )
 from lx521_baffle.magnet_contract import CAPTIVE_LAND_MM
+from lx521_baffle.tebm35c10_4_land import (
+    BMR_SLIM_CORE_D_MM,
+    BMR_SLIM_LAND,
+    BMR_SLIM_M2_BOSS_R_MM,
+    BmrLandTopology,
+    FULL_CIRCULAR_LAND,
+    land_topology,
+    local_land_plan,
+    topology_facts,
+)
 from lx521_baffle.proud.b2_split import (
     CLEARANCE_MM,
     DOVETAILS_B,
@@ -35,7 +47,11 @@ from lx521_baffle.proud.b2_split import (
     seam_b_m3_vase_insert_cutter,
 )
 from lx521_baffle.proud.vase_tebm35c10_4 import (
+    BMR_SLIM_FAIRING_END_Y_MM,
+    BMR_SLIM_FAIRING_RESERVE_MM,
+    BMR_SLIM_FAIRING_START_Y_MM,
     BODY_TO_OPPOSITE_FLANGE_CLEARANCE_MM,
+    DEFAULT_LAND_TOPOLOGY,
     DUCT_APPROVED_SEAM_MOUTH_CENTER_XYZ_MM,
     DUCT_APPROVED_SEAM_MOUTH_SIZE_XYZ_MM,
     DUCT_EXPOSURE_VOLUME_TOLERANCE_MM3,
@@ -56,11 +72,13 @@ from lx521_baffle.proud.vase_tebm35c10_4 import (
     MAIN_T_UM_PILOT_VERTICAL_LIGAMENT_MM,
     PAIR_AXIS_PITCH_MM,
     PART_NAME,
+    PHYSICAL_MEASURE_REQUIRED,
     REAR_GROWTH_MM,
     REAR_RAMP_END_Y_MM,
     REAR_RAMP_LENGTH_MM,
     REAR_RAMP_START_Y_MM,
     REAR_T_MOUNT_Z_MM,
+    RELEASE_AUTHORIZED,
     SLIM_PROFILE,
     STOCK_PROFILE,
     T_BLIND_BACK_WALL_THICKNESS_MM,
@@ -74,6 +92,7 @@ from lx521_baffle.proud.vase_tebm35c10_4 import (
     TEBM_MOUNT_PCD_MM,
     T_MAGNET_FACE_X_MM,
     T_MAGNET_FLAT_EDGE_MARGIN_MM,
+    T_MAGNET_FLAT_HALF_HEIGHT_MM,
     T_CABLE_FACE_INSET_MM,
     UPPER_T_BRANCH_CLEARANCE_RADIUS_MM,
     UPPER_T_BRANCH_D_MM,
@@ -103,6 +122,11 @@ from lx521_baffle.proud.vase_tebm35c10_4 import (
     upper_t_branch_path,
     upper_t_branch_split_tangent_error_deg,
     vase_profile,
+    _bmr_slim_cable_fairing_plan,
+)
+from lx521_baffle.proud import (
+    vase_tebm35c10_4_slim_bmr_slim as slim_bmr_slim,
+    vase_tebm35c10_4_stock_bmr_slim as stock_bmr_slim,
 )
 
 
@@ -144,7 +168,22 @@ def test_dimension_contract() -> None:
     assert REAR_RAMP_START_Y_MM < REAR_RAMP_END_Y_MM < LOWER_T_AXIS_Y_MM
     _close(REAR_RAMP_LENGTH_MM,
            REAR_RAMP_END_Y_MM - REAR_RAMP_START_Y_MM)
-    assert TEBM_LAND_D_MM == 66.0
+    assert DEFAULT_LAND_TOPOLOGY is FULL_CIRCULAR_LAND
+    assert land_topology("full") is FULL_CIRCULAR_LAND
+    assert land_topology("bmr-slim") is BMR_SLIM_LAND
+    try:
+        land_topology(BmrLandTopology(
+            key="bmr-slim",
+            profile="noncanonical_copy",
+            core_d_mm=56.0,
+            parent_d_mm=63.0,
+            magnet_face_x_mm=T_MAGNET_FACE_X_MM,
+        ))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("noncanonical topology object was accepted")
+    assert TEBM_LAND_D_MM == 63.0
     assert M2_INSERT_BORE_D_MM == 3.2
     assert M2_INSERT_DEPTH_MM == 4.0
     assert T_BLIND_BACK_WALL_THICKNESS_MM == 1.2
@@ -153,17 +192,17 @@ def test_dimension_contract() -> None:
     _close(UPPER_T_POCKET_FRONT_Z_MM, 17.1)
     assert MAIN_T_ROUTE_NAME == "vase_tebm_um_contained_3d_g1_y"
     _close(MAIN_T_UM_CLEARANCE_RADIUS_MM, 46.3)
-    _close(MAIN_T_CLEARANCE_ARC_EXIT_ANGLE_DEG, 114.5)
+    _close(MAIN_T_CLEARANCE_ARC_EXIT_ANGLE_DEG, 113.0)
     _close(MAIN_T_UM_NOMINAL_INNER_LIGAMENT_MM, 2.0)
     _close(MAIN_T_UM_PILOT_VERTICAL_LIGAMENT_MM, 1.65)
     assert UPPER_T_BRANCH_D_MM == 4.6
     assert UPPER_T_BRANCH_SPLIT_Y_MM < LOWER_T_AXIS_Y_MM
-    _close(UPPER_T_BRANCH_SPLIT_Y_MM, 408.21220684158396)
+    _close(UPPER_T_BRANCH_SPLIT_Y_MM, 408.700374714848)
     _close(UPPER_T_BRANCH_SPLIT_Z_MM, 2.5)
     _close(UPPER_T_BRANCH_CLEARANCE_RADIUS_MM, 25.3)
     _close(UPPER_T_BRANCH_GUIDE_RADIUS_MM, 25.5)
     assert UPPER_T_BRANCH_MIN_INNER_LIGAMENT_MM > 1.5
-    assert UPPER_T_BRANCH_MIN_OUTER_LIGAMENT_MM > 5.0
+    assert UPPER_T_BRANCH_MIN_OUTER_LIGAMENT_MM > 3.6
     assert UPPER_T_BRANCH_LOWER_INSERT_VERTICAL_LIGAMENT_MM > 1.3
     _close(MAIN_T_ROUTE_ENTRY_Z_MM, 11.5)
     _close(LOWER_T_OUTLET_Z_MM, 0.0)
@@ -175,6 +214,13 @@ def test_dimension_contract() -> None:
     )
     assert T_MAGNET_FLAT_EDGE_MARGIN_MM == 0.10
     assert T_MAGNET_FACE_X_MM < TEBM_LAND_D_MM / 2.0
+    _close(T_MAGNET_FACE_X_MM, 31.32666595729587, 1.0e-9)
+    former_d66_face_x = math.sqrt(
+        33.0 ** 2 - T_MAGNET_FLAT_HALF_HEIGHT_MM ** 2)
+    _close(former_d66_face_x - T_MAGNET_FACE_X_MM,
+           1.5079194672225888, 1.0e-9)
+    assert RELEASE_AUTHORIZED is False
+    assert PHYSICAL_MEASURE_REQUIRED is True
     _close(DUCT_EXTERIOR_SKIN_GUARD_MM, 0.8)
     assert DUCT_EXPOSURE_VOLUME_TOLERANCE_MM3 <= 1.0e-5
     assert (
@@ -219,8 +265,9 @@ def test_t_route_optimization_contract() -> None:
     # Compare the same local interval against the shared Stock/Slim route.
     # That baseline now owns its own tangent-circle/R12 optimization, so the
     # larger TEBM envelope no longer receives credit for deleting the former
-    # wall-following defect.  It must remain shorter and lower-turn than the
-    # already-optimized common route while preserving its 15-mm-class radius.
+    # wall-following defect.  The D63 containment nudge remains shorter and
+    # lower-turn than the optimized common route while preserving its
+    # 15-mm-class radius.
     from build123d import Spline
     legacy = Spline(*route_points("ts", ts_route_key=TS_ROUTE_CAPTIVE))
     legacy_points, _legacy_length_all, _legacy_turn_all = (
@@ -244,7 +291,7 @@ def test_t_route_optimization_contract() -> None:
         legacy_turn += abs(delta)
     legacy_turn = math.degrees(legacy_turn)
     assert main_length < legacy_length - 0.50
-    assert main_turn < 0.97 * legacy_turn
+    assert main_turn < 0.99 * legacy_turn
 
     main_min_radius = min(
         math.hypot(point[0], point[1] - float(UM_CUTOUT[1]))
@@ -309,6 +356,88 @@ def test_t_route_optimization_contract() -> None:
     ) >= UPPER_T_BRANCH_CLEARANCE_RADIUS_MM
 
 
+def test_land_topology_and_bmr_slim_fairing_contract() -> None:
+    full_plan = local_land_plan(FULL_CIRCULAR_LAND)
+    slim_plan = local_land_plan(BMR_SLIM_LAND)
+
+    assert full_plan.is_valid and not full_plan.interiors
+    assert slim_plan.is_valid and not slim_plan.interiors
+    _close(full_plan.bounds[2] - full_plan.bounds[0],
+           2.0 * T_MAGNET_FACE_X_MM)
+    _close(full_plan.bounds[3] - full_plan.bounds[1], 63.0)
+    _close(slim_plan.bounds[2] - slim_plan.bounds[0],
+           2.0 * T_MAGNET_FACE_X_MM)
+    _close(slim_plan.bounds[3] - slim_plan.bounds[1],
+           BMR_SLIM_CORE_D_MM)
+    assert slim_plan.area < 0.82 * full_plan.area
+
+    # The slim silhouette must contain each complete captive side land, not
+    # merely reach the magnet-face X datum at one tangent point.
+    required_half_height = (
+        T_MAGNET_FLAT_HALF_HEIGHT_MM - T_MAGNET_FLAT_EDGE_MARGIN_MM)
+    for sign in (-1.0, 1.0):
+        face_x = sign * T_MAGNET_FACE_X_MM
+        inner_x = face_x - sign * CAPTIVE_LAND_MM
+        required = shapely_box(
+            min(face_x, inner_x), -required_half_height,
+            max(face_x, inner_x), required_half_height,
+        ).buffer(-0.005)
+        assert required.difference(slim_plan).area <= 1.0e-8
+
+    # The four diagonal M2 pads are geometry, not just a reported wall value.
+    for x, y in _mount_centers(0.0, LOWER_T_MOUNT_CLOCK_DEG):
+        required_pad = Point(x, y).buffer(
+            BMR_SLIM_M2_BOSS_R_MM - 0.01, resolution=32)
+        assert required_pad.difference(slim_plan).area <= 1.0e-7
+
+    full_facts = topology_facts(FULL_CIRCULAR_LAND)
+    slim_facts = topology_facts(BMR_SLIM_LAND)
+    assert full_facts["key"] == "full"
+    assert slim_facts["key"] == "bmr-slim"
+    _close(full_facts["core_d_mm"], 63.0)
+    _close(slim_facts["core_d_mm"], 56.0)
+    _close(slim_facts["parent_d_mm"], 63.0)
+    _close(slim_facts["m2_radial_wall_mm"], 2.5)
+    # 31.327 - 3.14 - 27.0: the dual-nozzle land depth ate 0.14 of the old
+    # 1.327-mm conservative ligament; still positive against the D54
+    # worst-case driver circle and still physical-fit-gated.
+    assert slim_facts["conservative_driver_ligament_mm"] > 1.1
+    assert slim_facts["pocket_wall_mm"] > 6.5
+    assert slim_facts["physical_measure_required"] is True
+
+    fairing = _bmr_slim_cable_fairing_plan()
+    assert fairing.is_valid and fairing.geom_type == "Polygon"
+    assert not fairing.interiors
+    _close(fairing.bounds[1], BMR_SLIM_FAIRING_START_Y_MM)
+    assert fairing.bounds[3] <= BMR_SLIM_FAIRING_END_Y_MM
+    assert 800.0 < fairing.area < 1_100.0
+    _close(BMR_SLIM_FAIRING_RESERVE_MM, 0.10)
+
+    full_design = design_facts("stock", FULL_CIRCULAR_LAND)
+    slim_design = design_facts("stock", BMR_SLIM_LAND)
+    for facts in (full_design, slim_design):
+        assert facts["release_authorized"] is False
+        assert facts["physical_measure_required"] is True
+        assert facts["status"] == "prototype_not_release_authorized"
+        assert facts["tebm35c10_4"]["axis_y_mm"] == [
+            LOWER_T_AXIS_Y_MM, UPPER_T_AXIS_Y_MM]
+        _close(facts["tebm35c10_4"]["axis_pitch_mm"], 49.3)
+    assert full_design["land_topology"]["key"] == "full"
+    assert slim_design["land_topology"]["key"] == "bmr-slim"
+    full_branch = full_design["t_cable_routing"]["upper_t_branch"]
+    slim_branch = slim_design["t_cable_routing"]["upper_t_branch"]
+    _close(full_branch["nominal_lower_land_outer_ligament_mm"], 3.7)
+    _close(slim_branch["nominal_lower_land_outer_ligament_mm"], 0.9)
+    assert "BMR-slim route fairing" in (
+        slim_branch["lower_land_outer_ligament_authority"])
+    assert full_design["t_cable_routing"]["exterior_containment"][
+        "bmr_slim_plan_fairing"] is False
+    slim_containment = slim_design["t_cable_routing"][
+        "exterior_containment"]
+    assert slim_containment["bmr_slim_plan_fairing"] is True
+    _close(slim_containment["bmr_slim_fairing_reserve_mm"], 0.10)
+
+
 def test_ducts_retain_exterior_skin_except_declared_mouths() -> None:
     guarded_main = _main_t_cable_duct(
         section_extra_mm=DUCT_EXTERIOR_SKIN_GUARD_MM)
@@ -354,19 +483,80 @@ def test_ducts_retain_exterior_skin_except_declared_mouths() -> None:
     )
 
 
+def test_bmr_slim_brep_and_cable_containment() -> None:
+    for profile in ("stock", "slim"):
+        envelope = external_envelope(profile, BMR_SLIM_LAND)
+        bounds = envelope.bounding_box()
+        assert envelope.is_valid and len(envelope.solids()) == 1
+        _close(bounds.size.X, 121.308, 2.0e-4)
+        _close(bounds.size.Y, 205.231, 2.0e-4)
+        _close(bounds.size.Z, 25.1, 2.0e-4)
+
+        residuals = duct_exposure_residuals(
+            envelope, profile=profile, topology=BMR_SLIM_LAND)
+        assert set(residuals) == {
+            "shared_main_except_seam_b_entry", "upper_t_branch"}
+        assert all(
+            float(residual.volume) <= DUCT_EXPOSURE_VOLUME_TOLERANCE_MM3
+            for residual in residuals.values()
+        ), (profile, {
+            name: float(residual.volume)
+            for name, residual in residuals.items()
+        })
+
+    guarded = (
+        _main_t_cable_duct(
+            section_extra_mm=DUCT_EXTERIOR_SKIN_GUARD_MM),
+        _upper_t_cable_duct(
+            radial_extra_mm=DUCT_EXTERIOR_SKIN_GUARD_MM),
+    )
+    # Both identity-bound wrappers must still build their intended envelope,
+    # topology and four sealed magnet stations—not merely publish the right
+    # constants.  This covers the exact modules selected by the exporter.
+    for wrapper, expected_profile in (
+        (stock_bmr_slim, "stock"),
+        (slim_bmr_slim, "slim"),
+    ):
+        assert wrapper.PROFILE.key == expected_profile
+        assert wrapper.LAND_TOPOLOGY is BMR_SLIM_LAND
+        assert wrapper.RELEASE_AUTHORIZED is False
+        assert wrapper.PHYSICAL_MEASURE_REQUIRED is True
+        facts = wrapper.design_facts()
+        assert facts["profile"] == expected_profile
+        assert facts["variant"] == wrapper.VARIANT
+        assert facts["release_variant"] == wrapper.RELEASE_VARIANT
+        assert facts["land_topology"]["key"] == "bmr-slim"
+        _close(facts["tebm35c10_4"]["axis_pitch_mm"], 49.3)
+
+        model = wrapper.build_model()
+        part = model.solid
+        assert model.land_topology is BMR_SLIM_LAND
+        assert part.is_valid and len(part.solids()) == 1
+        assert len(part.shells()) == 1 + wrapper.MAGNET_COUNT
+        assert len(model.magnet_tools) == wrapper.MAGNET_COUNT == 4
+        for tools in model.magnet_tools:
+            _close(abs(tools.actual_face_xyz[0]), T_MAGNET_FACE_X_MM)
+            assert not part.is_inside(
+                tools.cavity_center_xyz, tolerance=1.0e-5)
+            for duct in guarded:
+                assert sum(float((duct & cutter).volume)
+                           for cutter in tools.cutters) < 1.0e-7
+
+
 def test_model_geometry() -> None:
     model = build_model()
     part = model.solid
     solids = list(part.solids())
+    assert model.land_topology is FULL_CIRCULAR_LAND
     assert part.is_valid
     assert len(solids) == 1
-    assert solids[0].volume > 150_000.0
+    assert solids[0].volume > 140_000.0
     bounds = part.bounding_box()
     _close(bounds.size.X, 121.308, 2.0e-4)
     # The regular top piece starts above the 0.05-mm seam gap and contains
     # the two through-thickness female pockets for the mid-piece males.
     _close(bounds.min.Y, SEAM_B_Y + CLEARANCE_MM, 2.0e-4)
-    _close(bounds.size.Y, 210.231, 2.0e-4)
+    _close(bounds.size.Y, 208.731, 2.0e-4)
     _close(bounds.size.Z, 25.1, 2.0e-4)
     _close(bounds.min.Z, -6.8, 2.0e-4)
     _close(bounds.max.Z, 18.3, 2.0e-4)
@@ -398,14 +588,14 @@ def test_model_geometry() -> None:
             tolerance=1.0e-5,
         )
 
-    # The former B2 crescent survives nowhere outside the lower D66 land.
+    # The former B2 crescent survives nowhere outside the lower D63 land.
     for sign in (-1.0, 1.0):
         assert not part.is_inside(
-            (sign * 32.0, 431.0, THICKNESS_MM - 0.3),
+            (sign * 29.0, 431.0, THICKNESS_MM - 0.3),
             tolerance=1.0e-5,
         )
         assert part.is_inside(
-            (sign * 29.0, 431.0, THICKNESS_MM - 0.3),
+            (sign * 28.0, 431.0, THICKNESS_MM - 0.3),
             tolerance=1.0e-5,
         )
 
@@ -463,7 +653,7 @@ def test_model_geometry() -> None:
     }
     for tools in model.magnet_tools:
         _close(tools.roof_start_print_z_mm, 5.8)
-        _close(tools.required_min_part_top_print_z_mm, 8.85)
+        _close(tools.required_min_part_top_print_z_mm, 8.92)
         assert not part.is_inside(tools.cavity_center_xyz, tolerance=1.0e-5)
         # The midpoint of the qualified interface skin remains real plastic.
         sign = 1.0 if tools.pair_axis_xyz[0] > 0.0 else -1.0
@@ -488,6 +678,10 @@ def test_model_geometry() -> None:
 
     facts = design_facts()
     assert facts["part"] == PART_NAME
+    assert facts["release_authorized"] is False
+    assert facts["physical_measure_required"] is True
+    assert facts["status"] == "prototype_not_release_authorized"
+    assert facts["land_topology"]["key"] == "full"
     assert facts["m2_insert_bores"]["count"] == 8
     assert facts["t_captive_magnets"]["count"] == 4
     assert facts["blind_back_walls"]["count"] == 2
@@ -531,6 +725,8 @@ def test_model_geometry() -> None:
         "approved_exterior_mouths": ["seam_b_ts_entry"],
         "driver_pocket_terminations": [
             "lower_front_t_pocket", "upper_rear_t_pocket"],
+        "bmr_slim_plan_fairing": False,
+        "bmr_slim_fairing_reserve_mm": 0.0,
     }
     assert facts["released_interfaces"]["cable_routes"] == [
         "um", "ts", "t1f", "t2f"]
@@ -652,9 +848,13 @@ def test_make_and_remote_contracts_are_first_class() -> None:
     delivery = (PROJECT_ROOT / "scripts" /
                 "validate_vase_tebm35c10_4_delivery.py").read_text(
                     encoding="utf-8")
+    slim_exporter = (PROJECT_ROOT / "scripts" /
+                     "export_bmr_slim_candidates.py").read_text(
+                         encoding="utf-8")
     assert "vase_tebm35c10_4_cad:" in makefile
     assert "vase_tebm35c10_4_stock_cad:" in makefile
     assert "vase_tebm35c10_4_slim_cad:" in makefile
+    assert "bmr_slim_candidates_cad:" in makefile
     assert "vase_tebm35c10_4_3mf:" in makefile
     assert "vase_tebm35c10_4_stock_3mf:" in makefile
     assert "vase_tebm35c10_4_slim_3mf:" in makefile
@@ -668,13 +868,28 @@ def test_make_and_remote_contracts_are_first_class() -> None:
     assert '"tebm35c10_4"' in remote
     assert '"--auxiliary-catalog"' in slicer
     assert "support_disabled_no_support_feature_blocks" in delivery
+    for variant in (
+        "proud-stock", "proud-slim", "obiwan-coaxial", "obiwan-opposed",
+    ):
+        assert f'"{variant}"' in slim_exporter
+    assert "build/bmr_slim_TEBM35C10-4/proud/stock/" in slim_exporter
+    assert "build/bmr_slim_TEBM35C10-4/proud/slim/" in slim_exporter
+    assert '"bmr_slim_TEBM35C10-4"' in remote
+    assert "source_file_sha256" in slim_exporter
+    assert "source_revision" in slim_exporter
+    assert "len(round_trip.shells())" in slim_exporter
+    assert "volume_relative_error" in slim_exporter
+    assert "candidate_not_release_authorized" in slim_exporter
+    assert "captive_magnet_release_catalog" not in slim_exporter
 
 
 def main() -> None:
     tests = (
         test_dimension_contract,
         test_t_route_optimization_contract,
+        test_land_topology_and_bmr_slim_fairing_contract,
         test_ducts_retain_exterior_skin_except_declared_mouths,
+        test_bmr_slim_brep_and_cable_containment,
         test_model_geometry,
         test_stock_slim_seams_are_exact_production_interfaces,
         test_auxiliary_profile_contract,

@@ -120,14 +120,14 @@ DOVETAIL_MIN_LIGAMENT_MM = 2.0
 DOVETAIL_ROOT_OVERLAP_MM = 0.05
 MAGNET_CAVITY_DIAMETER_MM = 5.20
 MAGNET_CAVITY_DEPTH_MM = 2.10
-MAGNET_FACE_SKIN_MM = 0.45
-MAGNET_INNER_SKIN_MM = 0.45
-MAGNET_CAPTIVE_LAND_MM = 3.00
+MAGNET_FACE_SKIN_MM = 0.52
+MAGNET_INNER_SKIN_MM = 0.52
+MAGNET_CAPTIVE_LAND_MM = 3.14
 MAGNET_INTERFACE_GAP_MM = 0.05
-RING_MAGNET_FACE_SEPARATION_MM = 1.10
-RING_CAVITY_FACE_OFFSET_MM = 0.65
+RING_MAGNET_FACE_SEPARATION_MM = 1.24
+RING_CAVITY_FACE_OFFSET_MM = 0.79
 RING_CAVITY_FACE_INSET_MM = 0.15
-RING_FLUSH_FAIRING_MM = 0.80
+RING_FLUSH_FAIRING_MM = 0.94
 MAGNET_ROOF_ANGLE_DEG = 45.0
 OBIWAN_MAGNET_Z_MM = 15.10
 DOVETAIL_PROFILES_MM = (
@@ -2793,13 +2793,15 @@ def test_live_brep_geometry_contract() -> None:
                 f"flat key pocket overlaps receiver cutter {name}")
         expected_key_pocket_volume = _intersection_volume(
             uncut_flat, key_pocket)
-        # The 3x-long keys and sockets are wholly buried in the native R113.8
-        # ring (zero carrier-envelope growth).  Only the deliberate 0.25-mm
-        # wing-clearance offset crosses the flat interface, so its exact clipped
-        # volume is a small edge sliver rather than the former external-land
-        # pocket.  Bracket both failure modes: no clearance cut and a renewed
-        # bulky/visible support land.
-        assert 0.05 < expected_key_pocket_volume < 0.25, (
+        # The 3x-long keys and sockets are wholly buried in the native
+        # smooth ring (zero carrier-envelope growth).  Only the deliberate
+        # 0.25-mm wing-clearance offset crosses the flat interface, so its
+        # exact clipped volume is a small edge sliver rather than the former
+        # external-land pocket.  Bracket both failure modes: no clearance cut
+        # and a renewed bulky/visible support land.  The land-derived R113.94
+        # fairing shifts the sliver to a measured 0.0485 mm3, so the
+        # exists-at-all floor sits just below that.
+        assert 0.04 < expected_key_pocket_volume < 0.25, (
             "flat native-ring key clearance has implausible clipped volume: "
             f"{expected_key_pocket_volume:.6f} mm3")
         expected_removed_volume = (

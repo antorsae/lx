@@ -188,6 +188,10 @@ def main() -> int:
         shelf.FLAT_WING_PLATE,
         shelf.GRADED_WING_PLATE,
     )
+    wing_plate_names = {
+        shelf.FLAT_WING_PLATE.PLATE_NAME,
+        shelf.GRADED_WING_PLATE.PLATE_NAME,
+    }
     concrete_targets = tuple(
         target
         for api in plate_apis
@@ -195,7 +199,13 @@ def main() -> int:
             f"build/print_plates/obiwan/{api.PLATE_NAME}.stl",
             "review/to_print_slice_workspace/composite/"
             f"{api.PLATE_NAME}/ready/{api.PLATE_NAME}.gcode.3mf",
-            f"to_print/obiwan/3mf/{api.PLATE_NAME}.gcode.3mf",
+            # PETG-GF core combos ship on the 0.6-mm high-flow lane; the
+            # PLA Basic wing plates stay on the 0.4-mm lane.
+            "to_print/obiwan/"
+            f"{'3mf_04' if api.PLATE_NAME in wing_plate_names else '3mf_06hf'}"
+            f"/{api.PLATE_NAME}"
+            f"{'' if api.PLATE_NAME in wing_plate_names else '_06hf'}"
+            ".gcode.3mf",
         )
     )
     for target in concrete_targets:
@@ -478,7 +488,10 @@ def main() -> int:
         check(source.is_file(), f"missing source STL {source}")
         stl, project = shelf._delivery_paths(shelf.DEFAULT_SHELF, entry)
         check(stl.name == f"{entry['name']}.stl", "friendly STL name drift")
-        check(project.name == f"{entry['name']}.gcode.3mf",
+        expected_suffix = (
+            "" if str(entry.get("lane", "04")) == "04"
+            else f"_{entry['lane']}")
+        check(project.name == f"{entry['name']}{expected_suffix}.gcode.3mf",
               "friendly P2S project name drift")
         if entry.get("catalog_artifact_id"):
             # A candidate is bound to its own one-artifact catalog instead,
@@ -580,8 +593,10 @@ def main() -> int:
         check(
             combo_profile["filament"]
             == "TINMORRY PETG-GF Profile @BBL P2S"
-            and combo_profile["wall_loops"] == 8,
-            f"{label}: combined core plate must use PETG-GF and eight walls",
+            and combo_profile["wall_loops"] == 6
+            and combo_profile["nozzle_diameter_mm"] == 0.6,
+            f"{label}: combined core plate must use PETG-GF with six "
+            "0.62-mm walls on the 0.6-mm high-flow lane",
         )
         expected_modifier_count = 1 if label == "no-floor" else 0
         check(
@@ -594,25 +609,28 @@ def main() -> int:
     check(
         structural_01a["profile_effective"]["filament"]
         == "TINMORRY PETG-GF Profile @BBL P2S"
-        and structural_01a["profile_effective"]["wall_loops"] == 8
+        and structural_01a["profile_effective"]["wall_loops"] == 6
+        and structural_01a["profile_effective"]["nozzle_diameter_mm"] == 0.6
         and structural_01a["placement_audit"]["parameter_modifier_count"] == 1,
-        "standalone no-floor 01a must use PETG-GF, eight walls, and one "
-        "100%-solid bridge/root modifier",
+        "standalone no-floor 01a must use PETG-GF on the 0.6-mm high-flow "
+        "lane with six walls and one 100%-solid bridge/root modifier",
     )
     structural_01b = manifest_records[
         "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand"]
     check(
         structural_01b["profile_effective"]["filament"]
         == "TINMORRY PETG-GF Profile @BBL P2S"
-        and structural_01b["profile_effective"]["wall_loops"] == 8
+        and structural_01b["profile_effective"]["wall_loops"] == 6
+        and structural_01b["profile_effective"]["nozzle_diameter_mm"] == 0.6
         and structural_01b["profile_effective"][
             "sparse_infill_density_percent"] == 100.0
         and structural_01b["profile_effective"][
             "sparse_infill_pattern"] == "zig-zag"
         and structural_01b["placement_audit"][
             "parameter_modifier_count"] == 0,
-        "standalone floor 01b must use PETG-GF, eight walls, global 100% "
-        "zig-zag, and no local parameter modifier",
+        "standalone floor 01b must use PETG-GF on the 0.6-mm high-flow "
+        "lane with six walls, global 100% zig-zag, and no local parameter "
+        "modifier",
     )
     for label, api in (
             ("Flat", shelf.FLAT_WING_PLATE),
@@ -632,9 +650,9 @@ def main() -> int:
               f"{label} wing-plate support-toolpath gate is not passing")
         wing_profile = wing_record["profile_effective"]
         check(
-            wing_profile["filament"] == "Bambu PLA Tough+ @BBL P2S"
+            wing_profile["filament"] == "Bambu PLA Basic @BBL P2S"
             and wing_profile["wall_loops"] == 6,
-            f"{label} wing plate must remain PLA Tough+ with six walls",
+            f"{label} wing plate must remain PLA Basic with six walls",
         )
         check(all(wing_profile[key] is False for key in (
             "support_enabled",
@@ -661,7 +679,7 @@ def main() -> int:
     for wing_name in wing_names:
         wing_profile = manifest_records[wing_name]["profile_effective"]
         check(
-            wing_profile["filament"] == "Bambu PLA Tough+ @BBL P2S"
+            wing_profile["filament"] == "Bambu PLA Basic @BBL P2S"
             and wing_profile["wall_loops"] == 6,
             f"{wing_name}: wing/shoulder material must remain non-GF PLA",
         )

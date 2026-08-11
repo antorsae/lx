@@ -433,13 +433,22 @@ not the UM print, not the wings.
   from their vase: two Dayton ND25FW-4 domes whose faceplates clamp the
   crescent between them. This is the only release-authorized carrier.
 - **Candidate coaxial TEBM35C10-4 BMR crescent** — two Tectonic BMRs stacked
-  back to back on one acoustic axis, carried by a D66 pod dropped onto the
+  back to back on one fixed acoustic axis, carried by a clipped Ø63 pod on the
   collar and joined to it by a solid flush skirt rather than by a crescent
   outline. Documented below; **not** release-authorized.
 - **Candidate opposed TEBM35C10-4 BMR crescent** — the same two BMRs in the
-  qualified proud vase's own side-by-side arrangement, on the same dropped
-  land plus a second one a vase pitch above it, inside one 25.1 mm envelope.
+  proud vase's side-by-side arrangement, on the same fixed lower axis plus a
+  second axis one vase pitch above it, inside one 25.1 mm envelope.
   Documented below; **not** release-authorized.
+
+The packaged candidates default to the conservative `full` land: a clipped
+Ø63 circle with side-magnet faces at `x=±31.326666`, for an actual maximum
+width of 62.653 mm. The shared geometry also provides an explicitly
+unqualified **BMR-slim** topology for either arrangement. It retains those
+same side magnets and faces but replaces the unused circular field with a
+Ø56 driver-following core, four local M2 pads and two discrete magnet lobes.
+Changing topology never moves either acoustic axis. BMR-slim requires actual
+driver fit, insert, cable, magnet-pull and load qualification before release.
 
 Fitting no crescent at all is also a supported configuration.
 
@@ -466,43 +475,36 @@ keeps the released UM mate exactly — the same half-laps at `x=±24, y=421.5`,
 the same blind-M3 ear receivers, the same 0.20 mm axial gap — and keeps
 nothing else of the released crescent's plan.
 
-- **The pod is dropped as close to the UM as the mate allows.** Both BMRs sit
-  on one axis at `(0, 452.494193)`, 15.699 mm below the released ND25FW-4
-  acoustic axis at `(0, 468.193)`, so the MU10-to-BMR axis spacing falls from
-  102.112 mm to **86.413 mm**. Two things stop the drop and both come from the
-  released mate: the UM's native R51.7 core ring, which the released crescent
-  clears by 0.20 mm and which alone would allow `y=450.981`; and the UM
-  half-lap's own receiver notch — the complete Ø9.8 ear grown by the released
-  0.10 mm joint clearance — which the D66 land must not be nicked by, because
-  the notch is cut over `z=6.7…12.4` while the land runs the full depth, so a
-  nick would either lose land or make the plan grow rearward at z=6.7. The
-  notch governs. Holding the proud vase's qualified 1.20 mm wall between the
-  notch and the pod fixes the axis, and leaves the pod wall 1.713 mm off the
-  UM core ring at the cable mouth — material the skirt fills. **The acoustic
-  consequence of the new spacing is unmeasured and is an open item.**
+- **The acoustic axis is fixed, not radius-derived.** Both BMRs sit on the
+  explicitly preserved axis `(0, 452.494193)`, 15.699 mm below the released
+  ND25FW-4 axis at `(0, 468.193)`, so the MU10-to-BMR spacing remains
+  **86.413 mm** instead of 102.112 mm. The legacy construction happened to
+  derive this Y from its receiver-notch limit; the D63 redesign does not.
+  Recomputed D63 lower limits are `y=449.481` from the UM mate circle and
+  `y=450.573871` from the ear-notch construction, while the preserved axis
+  leaves 3.213 mm to the R51.7 UM core and 2.700 mm to the complete notch.
+  Selecting BMR-slim also leaves the axis untouched. The acoustic consequence
+  of the preserved 86.413 mm spacing is still unmeasured and remains open.
 
 - **50.2 mm stack.** The front driver mounts on the shared z=18.3 acoustic
   plane facing +z; the rear driver mounts on the pod rear land at z=−31.9
   facing −z. Two 25.1 mm driver envelopes back to back is exactly
   2 × 25.1 = 50.2 mm, of which 38.7 mm protrudes behind the core rear plane.
 - **2.40 mm partition.** Not one shared wall but two independent 1.20 mm blind
-  walls back to back, so each driver keeps the wall thickness already
-  qualified on the proud BMR vase and the two rear volumes stay separate
-  chambers apart from the one declared lead pass below.
-- **The pod wall is the D66 driver land, and that is the printable minimum.**
-  Both mounting faces have to carry the qualified D66 land, and the part
-  prints front-face-down, so its plan may never grow rearward. Below R33 a
-  land is lost; above R33 at the front the wall would have to come back down
-  to R33 at the rear, which is the one direction this orientation cannot
-  take. A straight D66 cylinder is therefore the only radius that satisfies
-  both — and it is also how the qualified proud vase treats its own drivers,
-  where the D66 land *is* the exterior surface. It still leaves 11.537 mm of
-  wall outside each pocket and 7.270 mm outside each M2 insert bore. The land
-  carries the vase's **two magnet flats** with it, at `x=±32.834585`: a magnet
-  needs a plane to seat behind and a cylinder offers only a tangent line, so
-  0.165 mm comes off the land at its two widest points. That still leaves
-  5.835 mm of land outside the Ø54 flange there, so nothing a driver touches
-  moves.
+  walls back to back, so each driver keeps the vase design's blind-wall
+  thickness and the two rear volumes stay separate chambers apart from the
+  one declared lead pass below.
+- **The default pod is the conservative D63 full land.** It is one constant
+  plan through the full stack for front-face-down printing: a Ø63 circle
+  clipped to 6.6 mm-high side-magnet faces at `x=±31.326666`. Those faces set
+  the actual 62.653 mm width. The full land leaves 10.037 mm outside each
+  Ø42.926 pocket and 5.770 mm radially outside each Ø3.2 M2 insert bore;
+  the flat still lies 4.327 mm beyond the conservative Ø54 driver envelope.
+  These are prototype margins, not a physical-fit claim. The BMR-slim option
+  uses the same constant-through-Z rule and magnet faces but substitutes a
+  Ø56 driver ring, four M2 pads with 2.50 mm radial walls, and two discrete
+  magnet lobes. Its pocket wall is 6.537 mm. Neither topology moves a driver,
+  mounting pattern, cable datum or side magnet.
 - **A solid flush skirt, not struts.** The plate band `z=6.8…18.3` is filled
   between the pod and the collar: the plan is the convex hull of the pod disc
   and the two complete Ø9.8 half-lap bosses, less the released R51.90 UM
@@ -513,10 +515,10 @@ nothing else of the released crescent's plan.
   the closure web, where it runs 0.070 mm off the ring exactly as the released
   crescent does. Because the hull is convex the fill has no concave corner of
   its own, so there is no root fillet to choose. The narrowest printed section
-  on either ear-to-pod load path, the D4.6 heat-set receiver taken out of the
-  same chord, is 49.26 mm² — **1.61 ×** the half-lap's own 30.68 mm² net
-  ligament, against the 1.44 × the two superseded struts reached — so the
-  already-qualified joint stays the governing section.
+  on either ear-to-pod load path is recomputed from the selected D63 or
+  BMR-slim plan after subtracting the D4.6 receiver. The gate requires it to
+  remain above the superseded struts' 1.44 × ratio to the half-lap's own
+  30.68 mm² net ligament; no legacy section result is carried forward.
 - **The wings do not move.** A convex hull of the pod and the bosses would
   fill the slot the released crescent leaves just outboard of each ear, and
   both wing families run a tongue into exactly that slot. The wing plan is
@@ -542,7 +544,7 @@ nothing else of the released crescent's plan.
   the rim. 16.475 mm later it opens into the front chamber. Because the skirt
   stops at `z=6.8` and the cable runs 3.0 mm behind it, an **entry collar**
   carries the duct back to `z=−0.4`: the bore's own plan sweep offset by one
-  1.20 mm wall — the vase's qualified blind wall, already the thinnest wall
+  1.20 mm wall — the vase design's blind-wall value, already the thinnest wall
   this part prints — so it is a R4.20 stadium hugging the bore, with no flat
   face and no corner on it anywhere. Clipping it to the skirt's plan does two
   jobs at once: its mate face becomes the same R51.90 arc the skirt has, and
@@ -558,16 +560,16 @@ nothing else of the released crescent's plan.
   half-lap passages, the two blind Ø4.6 receivers), sits under a fitted driver
   (the two pocket mouths, the eight M2 bores), or never reaches the skin at
   all (the partition pass).
-- **Eight blind Ø3.2 × 4.0 M2 insert bores**, four per D66 land on the
+- **Eight blind Ø3.2 × 4.0 M2 insert bores**, four per selected land on the
   drawing's Ø48.26 pattern, clocked +45°/−45°.
 - The released **M4 clamp holes** are **gone**. This variant clamps no
   tweeter, so those four passages carried no fastener; they existed only to
   keep a released silhouette this part no longer has.
-- **Two captive D5 × 2 magnets**, the qualified proud vase's own lower/front
-  land pair, at the vase's own land-local station: on the land's flat at
-  `x=±32.834585`, on the project-wide source `Z=15.10`, applied through the
+- **Two captive D5 × 2 magnets**, the proud vase layout's lower/front land
+  pair, at the vase's own land-local station: on the land's flat at
+  `x=±31.326666`, on the project-wide source `Z=15.10`, applied through the
   same `lx521_baffle.magnets` helper the vase uses rather than re-specified
-  here. Each is a sealed void behind the qualified 0.45 mm face skin, with the
+  here. Each is a sealed void behind the shared 0.45 mm face skin, with the
   loading cradle, its chimney and the 45° gable buried by the layers that
   follow the pause — nothing about a station reaches the exterior, which is
   why the part now reads as one outer shell plus exactly two nested voids.
@@ -576,32 +578,33 @@ nothing else of the released crescent's plan.
   What they are still not is *released* — no entry in the 58-artifact
   catalog, no change to its 94-station total — and that entry is what the
   qualification below still asks for.
-- 65.67 × 73.97 × 50.20 mm and 106.07 cm³, front-face-down, support-free and
-  P2S bed-fitting — 15.70 mm shallower in Y than the strutted candidate,
-  because the pod came down toward the collar. The X extent is the
-  flat-clipped land, not the full D66: the two magnet flats are now the widest
-  thing on the part.
+- The full-land artifact is **62.653 mm wide**, front-face-down,
+  support-free and P2S bed-fitting. Its X extent is set by the two magnet
+  faces, not by an uncut Ø63 circle. BMR-slim has the same maximum width
+  because it retains those faces, while removing the unused circular field
+  between the Ø56 core, M2 pads and side lobes.
 
 ### Candidate opposed TEBM35C10-4 BMR crescent
 
 ![Candidate opposed BMR crescent](../images/generated/iso/tweeter_tebm35c10_4_crescent_opposed.png)
 
 The same two drivers, the same mount, the same skirt and the same hidden cable
-entry — arranged the way the *qualified* proud vase arranges them. Instead of
+entry — arranged the way the proud vase arranges them. Instead of
 stacking 50.2 mm rearward, the two BMRs stand side by side inside one 25.1 mm
 envelope: the lower one faces front off the shared `z=18.3` acoustic plane and
 the upper one faces rear off `z=−6.8`. It is the vase's layout on the
 crescent's mount, and nothing about it is a new idea — the vase cannot itself
 fit Obi-Wan, because it is a seam-B vase piece and Obi-Wan has no seam B.
 
-- **Two D66 lands, one vase pitch apart.** The lower land is the mount land
-  and sits on exactly the same drop limit as the coaxial pod, at
-  `(0, 452.494193)`. The upper one is at `(0, 501.794193)`, 49.3 mm above it —
+- **Two D63 lands, one vase pitch apart.** The lower land stays on the fixed
+  axis `(0, 452.494193)`. The upper one is fixed at `(0, 501.794193)`, 49.3 mm above it —
   the vase's own `PAIR_AXIS_PITCH_MM`, which is half a Ø54 flange plus half a
   Ø43.6 basket plus 0.50 mm, because each driver's basket crosses the other's
-  mounting face. The two D66 circles overlap by 16.7 mm, so the body is one
-  continuous plan whose narrowest section between the axes is a 43.88 mm
-  waist. Both lands carry the same two magnet flats.
+  mounting face. The two default Ø63 circles overlap by 13.7 mm, so the body
+  is one continuous plan whose circle-intersection waist is 39.224 mm wide.
+  Both lands carry the same two magnet flats. BMR-slim preserves both axes,
+  pads and magnet faces while replacing each circular field with its Ø56-core
+  land plan.
 - **One 25.1 mm envelope, two 1.20 mm blind walls, no shared wall.** The lower
   pocket is bored from the front to `z=−5.6` and closed by its own 1.20 mm
   wall on the rear plane; the upper pocket is bored from the rear to `z=17.1`
@@ -619,8 +622,8 @@ fit Obi-Wan, because it is a seam-B vase piece and Obi-Wan has no seam B.
   inside the part. It runs `y=473.957…480.331` under 12.2 mm of front cover,
   8.3 mm of rear cover and 19.6 mm of cover to either side. There are no
   exterior openings at all.
-- **Four captive D5 × 2 magnets**, all of the vase's own stations: two per D66
-  land, on each land's flat at `x=±32.834585` and source `Z=15.10`, through
+- **Four captive D5 × 2 magnets**, all of the vase's own stations: two per
+  land, on each land's flat at `x=±31.326666` and source `Z=15.10`, through
   the same `lx521_baffle.magnets` helper. Like the coaxial pod's pair they are
   sealed voids behind the 0.45 mm skin — the part reads as one outer shell
   plus four nested voids. The two lands differ only in Y, so all four cavities
@@ -630,12 +633,11 @@ fit Obi-Wan, because it is a seam-B vase piece and Obi-Wan has no seam B.
 - **Eight blind Ø3.2 × 4.0 M2 insert bores**, four per land on the Ø48.26
   pattern, clocked +45° on the lower/front face and −45° on the upper/rear
   one, exactly as the vase clocks them.
-- 65.67 × 123.27 × 25.10 mm and 93.27 cm³ — 12.8 cm³ *less* plastic than the
-  coaxial pod for the same two drivers, and 25.1 mm rather than 50.2 mm deep,
-  at the cost of standing 49.3 mm taller. It prints front-face-down,
-  support-free and P2S bed-fitting; the body is prismatic over its whole
-  depth, so the only place the exterior plan changes at all is where the skirt
-  and the entry collar end.
+- The full-land artifact is **62.653 mm wide** and 25.1 mm rather than
+  50.2 mm deep, at the cost of standing one 49.3 mm driver pitch taller than
+  the coaxial pod. It prints front-face-down, support-free and P2S
+  bed-fitting; the selected land plan is constant over its whole depth, so
+  the only exterior-plan transitions are where the skirt and entry collar end.
 
 ### Building and gating both candidates
 
@@ -711,7 +713,8 @@ The two shared gates hold the family together. One evaluates the real proud
 vase in a proud-profile subprocess and compares all 26 mirrored constants —
 the driver envelope *and* the captive-magnet flat — value for value, because
 the vase cannot be imported beside an obiwan-profile part. The other asserts
-that 21 family names (the mount, the drop limit, the skirt, the entry, the
+that 21 family names (the mount, the fixed acoustic axis and clearance
+limits, the skirt, the entry, the
 magnet machinery) are the *same objects* in both variants, so the shared
 module cannot quietly be forked into two copies that agree today and drift
 tomorrow.
@@ -726,10 +729,10 @@ real bearing faces either side of them, and both rear-driven M3 paths
 continuous from the UM bore through the gap into the blind receiver under its
 1.9 mm front floor. Beyond those:
 
-- the mount axis is recomputed from the two released constraints and has to be
-  the tighter of them, so neither part can quietly drift back up — and the
-  opposed variant's second axis has to be the vase's pitch above it, not a
-  local choice;
+- the mount axis is pinned to the preserved acoustic datum and has to clear
+  both radius-derived feasibility floors, so changing a land radius cannot
+  move it — and the opposed variant's second axis has to be the vase's pitch
+  above it, not a local choice;
 - each assembly is projected head on against the staged collar and every sight
   line across the junction has to be the mate seam, not a window — and the
   plan itself is walked column by column, where a break is allowed only where
@@ -791,18 +794,19 @@ as slots `17` and `18`, because a pod nobody can conveniently print is a pod
 nobody will physically qualify; the shelf hard-links that same isolated
 delivery, labels both entries CANDIDATE, and `in_to_print` in each
 `facts.json` is checked against `to_print/catalog.json` in both directions so
-the flag cannot drift away from where the file actually is. The two
-BMRs weigh 102.6 g, so the two-screw UM joint would hang roughly **234 g** on
-the coaxial pod (106.07 cm³ of plastic) and **218 g** on the opposed one
-(93.27 cm³) — both well above the released ND25FW-4 crescent.
+the flag cannot drift away from where the file actually is. The two drivers
+alone weigh 102.6 g. Add the selected artifact's regenerated printed mass
+from `facts.json` before joint-load qualification; legacy carrier-mass
+estimates do not describe the D63 or BMR-slim geometry.
 
 Four items are open on **both**, and the artifact `facts.json` files carry them
 in a shared `open_items` block:
 
 1. the TEBM35C10-4 flange, basket and depth measured on the actual driver
    rather than taken from the published envelope;
-2. M2 × 4 heat-set installation in every D66 land without breakthrough into a
-   pocket or a magnet cavity;
+2. M2 × 4 heat-set installation in every selected land without breakthrough
+   into a pocket or magnet cavity — including the BMR-slim topology's local
+   pads;
 3. a pull test on the printed land: the stations now slice with real
    park/pause/restore events out of the part's own isolated catalog, so what
    is left of that item is the released-catalog entry and the physical pull,
@@ -814,9 +818,10 @@ in a shared `open_items` block:
 Five more are open on the **coaxial** pod: the back-to-back 2.40 mm partition
 printed and pressure/rattle-checked, which front-face-down is also a Ø42.9
 unsupported span over the front pocket carrying one Ø4.60 pass; the two-screw
-joint re-proven at its ~234 g; the junction skirt loaded at that mass, its ear
-section having been chosen by rule and never printed; an acoustic opinion on
-the dropped axis, now 86.413 mm from the MU10 axis instead of 102.112 mm; and
+joint re-proven at the regenerated carrier mass plus both 51.3 g drivers; the
+junction skirt loaded at that mass, its ear section having been chosen by
+rule and never printed; an acoustic opinion on
+the fixed axis, 86.413 mm from the MU10 axis instead of 102.112 mm; and
 its two front-land stations, on a land the vase never had to hold a
 cantilevered 50.2 mm stack from.
 
@@ -825,8 +830,9 @@ and pressure/rattle-checked, each a Ø42.9 unsupported span and the lower one
 printed as the last layers over an open pocket; the two-screw joint re-proven
 on a far longer arm than either the coaxial pod or the released crescent,
 since the upper driver axis stands **80.294 mm** above the half-lap line; the
-skirt *and* the 43.88 mm waist loaded at that hanging moment; an acoustic
-opinion on both axes, at 86.413 mm and 135.713 mm from the MU10 axis; and all
+skirt and selected-land waist loaded at that hanging moment — 39.224 mm at
+the default D63 circle intersection; an acoustic opinion on both axes, at
+86.413 mm and 135.713 mm from the MU10 axis; and all
 four stations, the upper pair especially, since they sit on the land furthest
 from the only mount the part has.
 

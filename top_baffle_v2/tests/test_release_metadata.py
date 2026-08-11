@@ -50,6 +50,29 @@ from lx521_baffle.stl_export import (
 ROOT = PROJECT_ROOT
 
 
+def _make_continued_words(text: str, variable: str) -> frozenset[str]:
+    """Return the words in a simple backslash-continued Make assignment."""
+    lines = text.splitlines()
+    prefix = f"{variable} :="
+    for index, line in enumerate(lines):
+        if not line.startswith(prefix):
+            continue
+        words: list[str] = []
+        first_line = True
+        while True:
+            payload = line.split(":=", 1)[1] if first_line else line
+            first_line = False
+            continued = payload.rstrip().endswith("\\")
+            payload = payload.rstrip().removesuffix("\\").strip()
+            words.extend(payload.split())
+            if not continued:
+                return frozenset(words)
+            index += 1
+            assert index < len(lines), f"unterminated {variable} assignment"
+            line = lines[index]
+    raise AssertionError(f"missing Make assignment: {variable}")
+
+
 def _stub_module(name: str, **attributes: object) -> types.ModuleType:
     module = types.ModuleType(name)
     for key, value in attributes.items():
@@ -69,7 +92,7 @@ def _load_catalog_generator_without_cad():
         "lx521_baffle.magnets": _stub_module(
             "lx521_baffle.magnets",
             DEFAULT_SPEC=object(),
-            NOMINAL_PAIRED_FACE_SEPARATION_MM=0.95,
+            NOMINAL_PAIRED_FACE_SEPARATION_MM=1.09,
             axial_cavity_tools=lambda **_kwargs: None,
             wall_cavity_tools=lambda **_kwargs: None,
         ),
@@ -253,8 +276,18 @@ def test_obiwan_release_manifest_binds_print_sidecars() -> None:
             for suffix in ("stl", "json")
         }
     assert release_manifest.FORMAT_VERSION == 12
-    assert (ROOT / "src/lx521_baffle/print_contract.py") in (
-        release_manifest.generation_source_paths())
+    release_sources = release_manifest.generation_source_paths()
+    assert (ROOT / "src/lx521_baffle/print_contract.py") in release_sources
+    release_relative = {
+        path.relative_to(ROOT).as_posix()
+        for path in release_sources if path.is_relative_to(ROOT)
+    }
+    assert release_manifest.BMR_CANDIDATE_SOURCE_PATHS.isdisjoint(
+        release_relative)
+    makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
+    assert _make_continued_words(
+        makefile, "BMR_CANDIDATE_CAD_SRCS"
+    ) == release_manifest.BMR_CANDIDATE_SOURCE_PATHS
 
 
 def test_catalog_schema_requires_x180_plus_numeric_z() -> None:
@@ -337,10 +370,10 @@ def test_catalog_global_pair_spacing_is_not_ambiguous() -> None:
     assert geometry[
         "paired_magnet_face_separation_by_interface_profile_mm"
     ] == {
-        "standard_straight": 0.95,
-        "standard_curved": 1.09,
-        "obiwan_shoulder": 1.10,
-        "obiwan_ring": 1.10,
+        "standard_straight": 1.09,
+        "standard_curved": 1.23,
+        "obiwan_shoulder": 1.24,
+        "obiwan_ring": 1.24,
     }
 
 
@@ -1097,9 +1130,9 @@ def test_ts_captive_detour_is_smooth_full_lumen_and_wired() -> None:
     knots = contract["TS_CAPTIVE_NUDGE_KNOTS"]
     maximum = contract["TS_CAPTIVE_NUDGE_MAX_MM"]
 
-    assert maximum == 0.60
+    assert maximum == 0.80
     assert tuple(offset for _y, offset in knots) == (
-        0.0, 0.3, 0.6, 0.6, 0.3, 0.0)
+        0.0, 0.4, 0.8, 0.8, 0.55, 0.0)
     for y, expected in knots:
         assert abs(nudge(y) - expected) < 1.0e-12
     assert nudge(knots[0][0] - 100.0) == 0.0

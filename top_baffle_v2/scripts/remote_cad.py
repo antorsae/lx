@@ -121,6 +121,7 @@ CAPTIVE_MAGNET_CATALOG_ARTIFACT = (
 # to_print/release_manifest.json once did.
 SOURCE_EXCLUDED_DIRS = {
     ".remote-cad", "__pycache__", "review", "bmr_crescent_TEBM35C10-4",
+    "bmr_slim_TEBM35C10-4",
 }
 SOURCE_EXCLUDED_SUFFIXES = {
     ".3mf", ".brep", ".glb", ".png", ".pyc", ".step", ".stl",

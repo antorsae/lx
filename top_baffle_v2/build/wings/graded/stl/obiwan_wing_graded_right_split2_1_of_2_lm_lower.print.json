@@ -9,30 +9,30 @@
   "part": "obiwan_wing_graded_right_split2_1_of_2_lm_lower",
   "piece_count": 2,
   "pre_translation_bbox_min_mm": [
-    80.5884266414652,
-    -13.26197489140352,
+    80.57706176281278,
+    -13.338311873503107,
     -18.30000009999999
   ],
   "print_orientation": "front_face_down",
   "role": "lm_lower",
   "rotation_deg": {
     "x": 180.0,
-    "z": 56.28558634022863
+    "z": 56.2349316816141
   },
   "schema_version": 1,
   "side": "right",
   "source_to_stl_matrix": [
     [
-      0.5550537011101896,
-      0.8318145159131815,
+      0.5557888834680196,
+      0.8313234731519207,
       0.0,
-      -80.5884266414652
+      -80.57706176281278
     ],
     [
-      0.8318145159131815,
-      -0.5550537011101896,
+      0.8313234731519207,
+      -0.5557888834680196,
       0.0,
-      13.26197489140352
+      13.338311873503107
     ],
     [
       0.0,
@@ -49,12 +49,12 @@
   ],
   "split_variant": "b",
   "stl": "obiwan_wing_graded_right_split2_1_of_2_lm_lower.stl",
-  "stl_bytes": 3844184,
+  "stl_bytes": 3826784,
   "stl_origin_translation_mm": [
-    -80.5884266414652,
-    13.26197489140352,
+    -80.57706176281278,
+    13.338311873503107,
     18.30000009999999
   ],
-  "stl_sha256": "3a1abdc2bb929091f154b5b4a6ed707075565a1dd4799ace7260875dd5b51708",
+  "stl_sha256": "e94e8cb163407d9e608e1345d9041207bda0b228b190ac8764effdcc4ba750af",
   "variant_slug": "graded"
 }

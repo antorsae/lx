@@ -602,6 +602,8 @@ def test_bambu_status_json_is_not_a_source_input() -> None:
         _write(baffle / "to_print" / "release_manifest.json", "{}\n")
         _write(baffle / "build" / "floor_stand"
                / "obiwan_release_manifest.json", "{}\n")
+        _write(baffle / "build" / "bmr_slim_TEBM35C10-4"
+               / "candidate.facts.json", "{}\n")
         original = (remote.REPO_ROOT, remote.BAFFLE_DIR,
                     remote.REFERENCE_INPUTS)
         remote.REPO_ROOT = repo
@@ -614,6 +616,10 @@ def test_bambu_status_json_is_not_a_source_input() -> None:
             }
             assert "result.json" not in relative
             assert "to_print/release_manifest.json" not in relative
+            assert not any(
+                path.startswith("build/bmr_slim_TEBM35C10-4/")
+                for path in relative
+            )
             assert "captive_magnet_slicing_profile.json" in relative
         finally:
             (remote.REPO_ROOT, remote.BAFFLE_DIR,

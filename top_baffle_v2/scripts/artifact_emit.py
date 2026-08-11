@@ -2028,12 +2028,23 @@ def _write_manifest_bundle(
                 "polarity": json.dumps(group["polarity"], separators=(",", ":")),
             })
     md_path = output / "CAPTIVE_MAGNET_PAUSE_MANIFEST.md"
+    manifest_config = profile_bundle.get("config") or {}
+    manifest_requirements = manifest_config.get("requirements") or {}
+    manifest_printer = manifest_config.get("printer", "Bambu Lab P2S")
+    manifest_layer = manifest_requirements.get("layer_height_mm")
+    manifest_layer_text = (
+        f"{manifest_layer:g} mm Arachne layers"
+        if isinstance(manifest_layer, (int, float))
+        else "the pinned Arachne layer schedule")
+    manifest_filament = manifest_config.get(
+        "filament", "the pinned release filament")
     lines = [
         "# Captive-magnet pause manifest",
         "",
         ("Authoritative for the exact STL and profile hashes below. This run "
-         "used Bambu Lab P2S, 0.4 mm nozzle, 0.16 mm High Quality, Arachne "
-         "walls, and Bambu PLA Tough+. All parts are front-face-down."),
+         f"used {manifest_printer}, {manifest_layer_text}, "
+         f"and {manifest_filament}. "
+         "All parts are front-face-down."),
         "",
         "This audit did not contact a printer and did not upload or start a print.",
         "",

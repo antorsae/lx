@@ -100,20 +100,24 @@ LANE_OFFSET = 5.11  # TS lane center this far inside the vase wall lines
 # The unified front-biased transverse-magnet plane brings the lower-left
 # station into the TS duct's source-Z window in every stock/slim variant.
 # Keep the complete D6 lumen and immutable magnet host by moving only this
-# short span 0.60 mm toward x=0.  Exact BREP screening leaves 0.7919 mm from
-# cavity void to duct and effectively zero (<0.00002 mm3) intersection with
-# the helper's complete 0.60-mm-margin required land. Smoothstep ramps make
-# the nudge tangent-continuous at both ends; the minimum spline bend radius
-# remains >4.89 mm against the 4.5-mm release floor.
+# short span up to 0.80 mm toward x=0.  The dual-nozzle 0.52-mm skins deepen
+# the helper land 3.00 -> 3.14 mm; the former 0.60-mm plateau cleared the
+# 3.00-mm land but its descending ramp clipped the deeper land by 0.062 mm3
+# across y=325.3..326.4, so the plateau rises to 0.80 and the down-wall
+# shoulder holds 0.55 at y=327.5.  Both end knots are unchanged, keeping the
+# route byte-for-byte outside the released detour band.  Smoothstep ramps
+# make the nudge tangent-continuous at both ends; the minimum spline bend
+# radius stays above the 4.5-mm release floor (re-verified by
+# test_ts_captive_keepout_nudge against the exact spline).
 TS_ROUTE_STANDARD = "standard"
 TS_ROUTE_CAPTIVE = "captive_keepout"
-TS_CAPTIVE_NUDGE_MAX_MM = 0.60
+TS_CAPTIVE_NUDGE_MAX_MM = 0.80
 TS_CAPTIVE_NUDGE_KNOTS = (
     (313.202641, 0.00),
-    (317.145618, 0.30),
-    (320.500000, 0.60),
-    (324.000000, 0.60),
-    (327.500000, 0.30),
+    (317.145618, 0.40),
+    (320.500000, 0.80),
+    (324.000000, 0.80),
+    (327.500000, 0.55),
     (330.800000, 0.00),
 )
 

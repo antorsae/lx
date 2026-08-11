@@ -69,10 +69,30 @@ REQUIRED_REFERENCE_PATHS = (
     QUALIFICATION_RECORD,
 )
 
+# These modules belong only to explicit, non-release TEBM/BMR targets.  Keep
+# this set byte-for-byte aligned with Makefile::BMR_CANDIDATE_CAD_SRCS so the
+# manifest never records a source that Make deliberately excludes from its
+# invalidation prerequisites.
+BMR_CANDIDATE_SOURCE_PATHS = frozenset({
+    "src/lx521_baffle/tebm35c10_4_land.py",
+    "src/lx521_baffle/proud/vase_tebm35c10_4.py",
+    "src/lx521_baffle/proud/vase_tebm35c10_4_stock_bmr_slim.py",
+    "src/lx521_baffle/proud/vase_tebm35c10_4_slim_bmr_slim.py",
+    "src/lx521_baffle/obiwan/bmr_pod.py",
+    "src/lx521_baffle/obiwan/bmr_crescent.py",
+    "src/lx521_baffle/obiwan/bmr_crescent_opposed.py",
+    "src/lx521_baffle/obiwan/bmr_crescent_bmr_slim.py",
+    "src/lx521_baffle/obiwan/bmr_crescent_opposed_bmr_slim.py",
+})
+
 
 def generation_source_paths() -> tuple[Path, ...]:
     """Complete deterministic source set for the R6F release artifacts."""
-    paths = set((ROOT / "src/lx521_baffle").rglob("*.py"))
+    paths = {
+        path for path in (ROOT / "src/lx521_baffle").rglob("*.py")
+        if path.relative_to(ROOT).as_posix()
+        not in BMR_CANDIDATE_SOURCE_PATHS
+    }
     paths.update((ROOT / "scripts").glob("*.py"))
     paths.update((ROOT / "tests").glob("test_*.py"))
     required_generators = (

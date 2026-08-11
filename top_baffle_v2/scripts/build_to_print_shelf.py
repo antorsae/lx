@@ -29,6 +29,7 @@ for _canonical_import_root in (PROJECT_ROOT / "src", PROJECT_ROOT / "scripts"):
         sys.path.insert(0, _canonical_import_text)
 import re
 import shutil
+import stat
 import subprocess
 import sys
 from typing import Any, Mapping, Sequence
@@ -54,7 +55,7 @@ DEFAULT_CATALOG = DEFAULT_SHELF / "catalog.json"
 DEFAULT_RELEASE_CATALOG = ROOT / "review" / "captive_magnet_release_catalog.json"
 DEFAULT_RELEASE_AUDIT = ROOT / "review" / "captive_magnet_slice_audit"
 DEFAULT_PROFILE = ROOT / "captive_magnet_slicing_profile.json"
-PETG_GF_PROFILE = ROOT / "captive_magnet_slicing_profile_petg_gf.json"
+PETG_GF_PROFILE = ROOT / "captive_magnet_slicing_profile_petg_gf_06hf.json"
 PETG_GF_01A_ARTIFACT_ID = (
     "no_floor_stand:Obi-Wan-split:"
     "obiwan_optional_lm_keyed_1_of_2_bottom"
@@ -65,10 +66,10 @@ PETG_GF_01B_ARTIFACT_ID = (
 )
 PETG_GF_RELEASE_AUDITS = {
     PETG_GF_01A_ARTIFACT_ID: (
-        ROOT / "review" / "captive_magnet_slice_audit_petg_gf_01a"
+        ROOT / "review" / "captive_magnet_slice_audit_petg_gf_06hf_01a"
     ),
     PETG_GF_01B_ARTIFACT_ID: (
-        ROOT / "review" / "captive_magnet_slice_audit_petg_gf_01b"
+        ROOT / "review" / "captive_magnet_slice_audit_petg_gf_06hf_01b"
     ),
 }
 LEGACY_SHELF_SOURCE_ROOTS = {
@@ -523,10 +524,19 @@ def _bind_entries_to_release(
 
 
 def _delivery_paths(shelf: Path, entry: Mapping[str, Any]) -> tuple[Path, Path]:
+    # The 0.4-mm lane owns the lane-suffixed 3mf_04 sibling; the 0.6-mm
+    # high-flow lane owns 3mf_06hf next to it.  One shared stl/ serves both
+    # lanes because the respun geometry is nozzle-agnostic.  TINMORRY
+    # PETG-GF is 0.6-HF-exclusive, so the structural entries carry
+    # ``lane: 06hf`` in the catalog and deliver into the 0.6 folder.
     family_root = shelf / str(entry["family"])
+    lane = str(entry.get("lane", "04"))
+    # 0.6-lane deliveries carry the lane in the filename too, so two open
+    # Studio tabs of the same part are never ambiguous.
+    suffix = "" if lane == "04" else f"_{lane}"
     return (
         family_root / "stl" / f"{entry['name']}.stl",
-        family_root / "3mf" / f"{entry['name']}.gcode.3mf",
+        family_root / f"3mf_{lane}" / f"{entry['name']}{suffix}.gcode.3mf",
     )
 
 
@@ -567,8 +577,9 @@ def _prune_delivery_view(shelf: Path, entries: Sequence[Mapping[str, Any]]) -> N
 
     This runs only after every desired file has been materialized and audited,
     so a failed build never deletes the previous usable shelf.  ``stl`` and
-    ``3mf`` are project-owned artifact-only directories; stale files there are
-    retired canonical revisions, not user documents.
+    ``3mf_04`` are project-owned artifact-only directories; stale files there
+    are retired canonical revisions, not user documents.  The sibling
+    ``3mf_06hf`` lane belongs to its own publisher and is never pruned here.
     """
     expected_by_root: dict[Path, set[Path]] = {}
     for entry in entries:
@@ -613,6 +624,58 @@ def _retire_legacy_workspace(shelf: Path) -> None:
     legacy = shelf / ".slice_workspace"
     if legacy.exists() or legacy.is_symlink():
         _remove_known_directory(legacy)
+
+
+# Shipping shelf projects under process-preset names that exist in no
+# Bambu Studio install prevents the GUI's remembered "same-name preset
+# conflict -> use installed" choice from substituting base values (classic
+# walls, wrong layer schedule) for the audited pinned ones.  Delivered
+# projects are additionally read-only so a Studio session can never save
+# its own modified state back over the audited shelf copy.
+LOCKED_PROCESS_IDS = {
+    "04": "LX521 captive 0.4 (locked - do not re-slice)",
+    "06hf": "LX521 captive 0.6HF (locked - do not re-slice)",
+}
+
+
+def _deliver_locked_project(
+    source: Path, destination: Path, lane: str,
+) -> str:
+    """Deliver one ready project with a locked preset id, frozen on disk."""
+    locked_id = LOCKED_PROCESS_IDS[str(lane)]
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if destination.exists() or destination.is_symlink():
+        try:
+            destination.chmod(stat.S_IWUSR | stat.S_IRUSR)
+        except OSError:
+            pass
+        destination.unlink()
+    with zipfile.ZipFile(source) as archive:
+        members = archive.infolist()
+        payloads = {
+            member.filename: archive.read(member.filename)
+            for member in members
+        }
+    if "Metadata/plate_1.gcode" not in payloads:
+        raise ShelfError(
+            f"{source}: ready project lacks embedded plate_1.gcode")
+    source_gcode = payloads["Metadata/plate_1.gcode"]
+    settings = json.loads(
+        payloads["Metadata/project_settings.config"].decode("utf-8"))
+    settings["print_settings_id"] = locked_id
+    payloads["Metadata/project_settings.config"] = (
+        json.dumps(settings, indent=4, ensure_ascii=False).encode("utf-8"))
+    with zipfile.ZipFile(
+            destination, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        for member in members:
+            archive.writestr(member.filename, payloads[member.filename])
+    with zipfile.ZipFile(destination) as archive:
+        if archive.read("Metadata/plate_1.gcode") != source_gcode:
+            raise ShelfError(
+                f"{destination}: delivered G-code diverged from the "
+                "audited source")
+    destination.chmod(stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
+    return "locked_copy"
 
 
 def _link_or_copy(source: Path, destination: Path) -> str:
@@ -1446,9 +1509,8 @@ def build_shelf(
         project = item["project"]
         stl_destination, project_destination = _delivery_paths(shelf, entry)
         stl_delivery = _link_or_copy(source, stl_destination)
-        project_delivery = _link_or_copy(project, project_destination)
-        if _sha256(project_destination) != _sha256(project):
-            raise ShelfError(f"{entry['name']}: delivered 3MF hash mismatch")
+        project_delivery = _deliver_locked_project(
+            project, project_destination, str(entry.get("lane", "04")))
         if _sha256(stl_destination) != _sha256(source):
             raise ShelfError(f"{entry['name']}: delivered STL hash mismatch")
         record.update({

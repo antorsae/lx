@@ -2,7 +2,7 @@
 
 The lower vase, UM opening, UM insert pattern, seam-B keyed interface, and
 proud cable routes remain on their released datums.  Above the lower vase the
-Dayton crescent is replaced by two measured, overlapping D66 lands:
+Dayton crescent is replaced by two measured, overlapping D63 lands:
 the lower BMR mounts on the acoustic front and the upper BMR mounts on the
 rear.  A quintic Bezier rear surface grows the T zone smoothly from the
 released 18.3-mm plate to the published 25.1-mm driver depth.  Both driver
@@ -26,6 +26,7 @@ exporter owns the common X180 front-face-down contract.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
 import math
 
 from build123d import (
@@ -35,6 +36,7 @@ from build123d import (
     Cylinder,
     Line,
     Plane,
+    Polyline,
     Pos,
     Spline,
     ThreePointArc,
@@ -43,6 +45,9 @@ from build123d import (
     make_face,
     sweep,
 )
+from shapely.geometry import LineString, box as shapely_box
+from shapely.geometry.polygon import orient
+from shapely.ops import unary_union
 
 from ..base import (
     THICKNESS_MM,
@@ -61,6 +66,38 @@ from ..cables import (
     ts_section,
 )
 from ..magnets import CaptiveMagnetTools, apply_wall_cavity
+from ..tebm35c10_4_land import (
+    BMR_SLIM_CORE_R_MM,
+    BMR_SLIM_LAND,
+    BMR_SLIM_LOBE_ROOT_X_MM,
+    BMR_SLIM_M2_BOSS_R_MM,
+    FULL_CIRCULAR_LAND,
+    LOWER_T_MOUNT_CLOCK_DEG,
+    M2_INSERT_BORE_D_MM,
+    M2_INSERT_DEPTH_MM,
+    T_BLIND_BACK_WALL_THICKNESS_MM,
+    TEBM_BASKET_D_MM,
+    TEBM_CUTOUT_D_MM,
+    TEBM_DEPTH_MM,
+    TEBM_MASS_G,
+    TEBM_MAX_D_MM,
+    TEBM_MOUNT_HOLE_COUNT,
+    TEBM_MOUNT_PCD_MM,
+    TEBM_NOMINAL_D_MM,
+    T_MAGNET_FACE_X_MM,
+    T_MAGNET_FLAT_EDGE_MARGIN_MM,
+    T_MAGNET_FLAT_HALF_HEIGHT_MM,
+    T_MAGNET_REQUIRED_FLAT_HALF_HEIGHT_MM,
+    T_MAGNET_TOTAL,
+    UPPER_T_BRANCH_D_MM,
+    UPPER_T_MOUNT_CLOCK_DEG,
+    BmrLandTopology,
+    land_topology as resolve_land_topology,
+    local_land_plan,
+    mount_centres,
+    placed_land_plan,
+    topology_facts,
+)
 from .b import STANDARD_MAGNET_Z_MM
 from .b2 import OUTLINE_B2
 from .b2_split import (
@@ -83,6 +120,8 @@ from .b2_split import (
 
 PRINT_ORIENTATION = "front-face-down"
 PART_NAME = "vase_TEBM35C10-4"
+RELEASE_AUTHORIZED = False
+PHYSICAL_MEASURE_REQUIRED = True
 
 
 @dataclass(frozen=True)
@@ -134,16 +173,6 @@ def vase_profile(
     except KeyError as exc:
         raise ValueError(f"unknown TEBM vase profile {profile!r}") from exc
 
-# Published Tectonic / distributor interface envelope, in millimetres.
-TEBM_NOMINAL_D_MM = 52.0
-TEBM_MAX_D_MM = 54.0
-TEBM_BASKET_D_MM = 43.6
-TEBM_DEPTH_MM = 25.1
-TEBM_MASS_G = 51.3
-TEBM_CUTOUT_D_MM = 1.69 * 25.4
-TEBM_MOUNT_PCD_MM = 1.90 * 25.4
-TEBM_MOUNT_HOLE_COUNT = 4
-
 # Layout contract.  The lower/front flange keeps the released 2.10-mm face
 # gap to the D97.5 UM flange.  Because each basket crosses the opposite face,
 # the second pitch is governed by D54 flange to D43.6 body, plus 0.50 mm.
@@ -164,29 +193,12 @@ PAIR_AXIS_PITCH_MM = (
 UPPER_T_AXIS_Y_MM = LOWER_T_AXIS_Y_MM + PAIR_AXIS_PITCH_MM
 T_AXIS_Y_MM = (LOWER_T_AXIS_Y_MM, UPPER_T_AXIS_Y_MM)
 
-# D66 supplies the measured driver land and M2 insert ligaments.  A 0.10-mm
-# straight-face margin is added beyond the captive helper's exact 6.40-mm
-# qualified land, so each side magnet has a real planar interface rather
-# than merely touching a circular silhouette at the land corners.
-TEBM_LAND_D_MM = 66.0
+# D63 is the conservative full-circular prototype.  It keeps the complete
+# captive magnet land 1.327 mm outside a conservative D54 circular driver
+# envelope.  ``bmr-slim`` retains the same side faces around a D56 core.
+DEFAULT_LAND_TOPOLOGY = FULL_CIRCULAR_LAND
+TEBM_LAND_D_MM = DEFAULT_LAND_TOPOLOGY.parent_d_mm
 TEBM_LAND_R_MM = TEBM_LAND_D_MM / 2.0
-T_MAGNET_REQUIRED_FLAT_HALF_HEIGHT_MM = 3.20
-T_MAGNET_FLAT_EDGE_MARGIN_MM = 0.10
-T_MAGNET_FLAT_HALF_HEIGHT_MM = (
-    T_MAGNET_REQUIRED_FLAT_HALF_HEIGHT_MM + T_MAGNET_FLAT_EDGE_MARGIN_MM
-)
-T_MAGNET_FACE_X_MM = math.sqrt(
-    TEBM_LAND_R_MM ** 2 - T_MAGNET_FLAT_HALF_HEIGHT_MM ** 2
-)
-T_MAGNET_TOTAL = 4
-
-# Requested M2 x 4 x D3.2 heat-set insert bores.  Opposite 45-degree clocks
-# keep the two published four-hole patterns visually paired while separating
-# every insert from the side-magnet chimney.
-M2_INSERT_BORE_D_MM = 3.2
-M2_INSERT_DEPTH_MM = 4.0
-LOWER_T_MOUNT_CLOCK_DEG = 45.0
-UPPER_T_MOUNT_CLOCK_DEG = -45.0
 
 # The rear surface starts at the exact released B2 flare crest and reaches
 # full growth at the lower opening's tangent.  Bezier Z control values
@@ -212,7 +224,7 @@ UPPER_T_POCKET_FRONT_Z_MM = THICKNESS_MM - T_BLIND_BACK_WALL_THICKNESS_MM
 
 # The vase-specific shared route retains the exact released seam-B crossing
 # and lower-T mouth but no longer follows the outer wall.  It stays on the
-# R46.3 UM-clearance arc through 114.5 degrees, then uses one opposing G1 arc
+# R46.3 UM-clearance arc through 113.0 degrees, then uses one opposing G1 arc
 # through the narrow lower-T/UM neck and into the fixed outlet.  The selected
 # exit is the latest 0.5-degree sampled station that passes the full-section
 # exterior gate with reserve; the path keeps a 15-mm-class minimum radius.
@@ -222,7 +234,10 @@ MAIN_T_ROUTE_SEAM_XY_MM = (-33.3077, 315.95)
 MAIN_T_ROUTE_POST_SEAM_XY_MM = (-32.914491, 317.145618)
 MAIN_T_LOWER_OUTLET_XY_MM = (-3.4, 433.0)
 MAIN_T_UM_CLEARANCE_RADIUS_MM = 46.30
-MAIN_T_CLEARANCE_ARC_EXIT_ANGLE_DEG = 114.5
+# D63 containment sweep: 113.0 degrees is the first half-degree candidate
+# with useful reserve above the required 0.80-mm guarded skin.  It preserves
+# both external endpoints and the G1 three-dimensional split.
+MAIN_T_CLEARANCE_ARC_EXIT_ANGLE_DEG = 113.0
 MAIN_T_UM_NOMINAL_INNER_LIGAMENT_MM = (
     MAIN_T_UM_CLEARANCE_RADIUS_MM
     - float(UM_CUTOUT[2]) / 2.0
@@ -297,6 +312,16 @@ DUCT_APPROVED_SEAM_MOUTH_CENTER_XYZ_MM = (
     11.5,
 )
 
+# The optional BMR-slim plan needs local plastic around both internal cable
+# routes after the D63 circle is reduced to its D56 driver ring.  A full-depth
+# plan fairing is intentionally conservative and front-face-down safe: it is
+# the guarded route projection plus 0.10 mm construction reserve, beginning
+# well above the released seam mouth.  The normal D63 topology does not use
+# this fairing; its 113-degree reroute is contained directly.
+BMR_SLIM_FAIRING_START_Y_MM = 400.0
+BMR_SLIM_FAIRING_END_Y_MM = 480.0
+BMR_SLIM_FAIRING_RESERVE_MM = 0.10
+
 
 @dataclass(frozen=True)
 class VaseTEBMModel:
@@ -304,6 +329,7 @@ class VaseTEBMModel:
 
     solid: object
     magnet_tools: tuple[CaptiveMagnetTools, ...]
+    land_topology: BmrLandTopology = FULL_CIRCULAR_LAND
 
 
 def _vertical_cylinder(
@@ -745,10 +771,100 @@ def upper_t_branch_split_tangent_error_deg() -> float:
     return math.degrees(math.acos(max(-1.0, min(1.0, dot))))
 
 
-def _plan_volume(z_min_mm: float, z_max_mm: float):
+def _extrude_plan(polygon, z_min_mm: float, z_max_mm: float):
+    """Extrude one simple Shapely plan with deterministic +Z winding."""
+    polygon = orient(polygon, sign=1.0)
+    if polygon.geom_type != "Polygon" or polygon.interiors:
+        raise RuntimeError(
+            "TEBM land/fairing plans must be one simple hole-free polygon")
+    face = make_face(Wire(Polyline(*[
+        (float(x), float(y)) for x, y in polygon.exterior.coords
+    ]).edges()))
+    return Pos(0.0, 0.0, float(z_min_mm)) * extrude(
+        face, amount=float(z_max_mm) - float(z_min_mm))
+
+
+def _land_solid(
+    axis_y: float,
+    z_min_mm: float,
+    z_max_mm: float,
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+):
+    """One full or driver-following land over an explicit Z interval."""
+    spec = resolve_land_topology(topology)
+    if spec.key == FULL_CIRCULAR_LAND.key:
+        height = float(z_max_mm) - float(z_min_mm)
+        disc = Pos(
+            0.0, float(axis_y),
+            (float(z_min_mm) + float(z_max_mm)) / 2.0,
+        ) * Cylinder(spec.core_r_mm, height)
+        clip = Pos(
+            0.0, float(axis_y),
+            (float(z_min_mm) + float(z_max_mm)) / 2.0,
+        ) * Box(spec.plan_width_mm, 200.0, height + 2.0)
+        return disc & clip
+
+    # Preserve circles as analytic BREP surfaces.  Extruding the tessellated
+    # Shapely union makes every magnet subtraction walk hundreds of planar
+    # facets and is both much slower and less robust than fusing these exact
+    # primitives.  The companion Shapely plan uses the same dimensions for
+    # clearance and monotonic-silhouette checks.
+    height = float(z_max_mm) - float(z_min_mm)
+    middle_z = (float(z_min_mm) + float(z_max_mm)) / 2.0
+    result = Pos(0.0, float(axis_y), middle_z) * Cylinder(
+        BMR_SLIM_CORE_R_MM, height)
+    lobe_width = spec.magnet_face_x_mm - BMR_SLIM_LOBE_ROOT_X_MM
+    for sign in (-1.0, 1.0):
+        result += Pos(
+            sign * (spec.magnet_face_x_mm + BMR_SLIM_LOBE_ROOT_X_MM) / 2.0,
+            float(axis_y), middle_z,
+        ) * Box(lobe_width, 2.0 * T_MAGNET_FLAT_HALF_HEIGHT_MM, height)
+    for x, y in mount_centres():
+        result += Pos(float(x), float(axis_y + y), middle_z) * Cylinder(
+            BMR_SLIM_M2_BOSS_R_MM, height)
+    return result.clean()
+
+
+@lru_cache(maxsize=1)
+def _bmr_slim_cable_fairing_plan():
+    """Plan-safe host around both guarded routes for the slim topology."""
+    main_points = [
+        (x, y) for x, y, _z in optimized_main_t_centerline_points(0.25)
+        if y >= BMR_SLIM_FAIRING_START_Y_MM
+    ]
+    branch_points = [
+        (x, y) for x, y, _z in upper_t_branch_centerline_points(0.25)
+        if y >= BMR_SLIM_FAIRING_START_Y_MM
+    ]
+    if len(main_points) < 2 or len(branch_points) < 2:
+        raise RuntimeError("BMR-slim cable fairing lost a route segment")
+    main_radius = max(
+        ts_section(y)[0] for _x, y in main_points
+    ) + DUCT_EXTERIOR_SKIN_GUARD_MM + BMR_SLIM_FAIRING_RESERVE_MM
+    branch_radius = (
+        UPPER_T_BRANCH_D_MM / 2.0
+        + DUCT_EXTERIOR_SKIN_GUARD_MM
+        + BMR_SLIM_FAIRING_RESERVE_MM
+    )
+    region = shapely_box(
+        -100.0, BMR_SLIM_FAIRING_START_Y_MM, 100.0,
+        BMR_SLIM_FAIRING_END_Y_MM,
+    )
+    return unary_union((
+        LineString(main_points).buffer(main_radius, resolution=48),
+        LineString(branch_points).buffer(branch_radius, resolution=48),
+    )).intersection(region).buffer(0)
+
+
+def _plan_volume(
+    z_min_mm: float,
+    z_max_mm: float,
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+):
     """Extrude the exact B2/BMR plan over one explicit source-Z interval."""
     z_min = float(z_min_mm)
     z_max = float(z_max_mm)
+    land_spec = resolve_land_topology(topology)
     height = z_max - z_min
     if height <= 0.0:
         raise ValueError("TEBM vase plan volume requires positive height")
@@ -768,39 +884,35 @@ def _plan_volume(z_min_mm: float, z_max_mm: float):
 
     lands = None
     for axis_y in T_AXIS_Y_MM:
-        land = Pos(0.0, axis_y, (z_min + z_max) / 2.0) * Cylinder(
-            TEBM_LAND_R_MM, height
-        )
+        land = _land_solid(axis_y, z_min, z_max, land_spec)
         lands = land if lands is None else lands + land
-    flat_clip = Pos(
-        0.0,
-        sum(T_AXIS_Y_MM) / 2.0,
-        (z_min + z_max) / 2.0,
-    ) * Box(
-        2.0 * T_MAGNET_FACE_X_MM,
-        200.0,
-        height + 2.0,
-    )
-    return lower + (lands & flat_clip)
+    result = lower + lands
+    if land_spec.key == BMR_SLIM_LAND.key:
+        result += _extrude_plan(
+            _bmr_slim_cable_fairing_plan(), z_min, z_max)
+    return result
 
 
 def _slab_without_functional_bores(
     profile: str | VaseTEBMProfile = "stock",
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
 ):
-    """Build one released lower slab plus the two clipped circular lands."""
+    """Build one released lower slab plus the selected two driver lands."""
     spec = vase_profile(profile)
-    return _plan_volume(spec.rear_surface_z_mm, THICKNESS_MM)
+    return _plan_volume(spec.rear_surface_z_mm, THICKNESS_MM, topology)
 
 
 def _rear_growth_wedge(
     profile: str | VaseTEBMProfile = "stock",
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
 ):
     """Return the exact C2 rear-growth volume before plan intersection."""
     spec = vase_profile(profile)
     x_min = -100.0
     y0 = spec.rear_ramp_start_y_mm
     y1 = REAR_RAMP_END_Y_MM
-    y_top = UPPER_T_AXIS_Y_MM + TEBM_LAND_R_MM + 14.0
+    land_spec = resolve_land_topology(topology)
+    y_top = UPPER_T_AXIS_Y_MM + land_spec.core_r_mm + 14.0
     rear_start = spec.rear_surface_z_mm
     rear_end = REAR_T_MOUNT_Z_MM
     run = y1 - y0
@@ -823,12 +935,14 @@ def _rear_growth_wedge(
 
 def external_envelope(
     profile: str | VaseTEBMProfile = "stock",
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
 ):
     """Final unbored exterior, including growth and seam-B pockets."""
     spec = vase_profile(profile)
-    slab = _slab_without_functional_bores(spec)
-    rear_growth = _rear_growth_wedge(spec) & _plan_volume(
-        REAR_T_MOUNT_Z_MM, spec.rear_surface_z_mm)
+    land_spec = resolve_land_topology(topology)
+    slab = _slab_without_functional_bores(spec, land_spec)
+    rear_growth = _rear_growth_wedge(spec, land_spec) & _plan_volume(
+        REAR_T_MOUNT_Z_MM, spec.rear_surface_z_mm, land_spec)
     envelope = slab + rear_growth
     envelope -= _prism(_grown(_below_region(SEAM_B_Y, DOVETAILS_B)))
     return envelope
@@ -920,6 +1034,7 @@ def duct_exposure_residuals(
     envelope=None,
     skin_guard_mm: float = DUCT_EXTERIOR_SKIN_GUARD_MM,
     profile: str | VaseTEBMProfile = "stock",
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
 ) -> dict[str, object]:
     """BREP residuals outside the body after approved mouths are removed.
 
@@ -931,7 +1046,7 @@ def duct_exposure_residuals(
     if skin_guard_mm < 0.0:
         raise ValueError("duct exterior skin guard must be non-negative")
     if envelope is None:
-        envelope = external_envelope(profile)
+        envelope = external_envelope(profile, topology)
     main = _main_t_cable_duct(section_extra_mm=skin_guard_mm)
     branch = _upper_t_cable_duct(radial_extra_mm=skin_guard_mm)
     return {
@@ -996,8 +1111,11 @@ def duct_unapproved_opening_residuals(
     }
 
 
-def _validate_duct_exterior_containment(envelope) -> None:
-    residuals = duct_exposure_residuals(envelope)
+def _validate_duct_exterior_containment(
+    envelope,
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+) -> None:
+    residuals = duct_exposure_residuals(envelope, topology=topology)
     residuals.update(duct_unapproved_opening_residuals())
     failures = {
         name: float(residual.volume)
@@ -1029,7 +1147,11 @@ def _apply_cable_routes(part):
     return part
 
 
-def _apply_t_magnets(part):
+def _apply_t_magnets(
+    part,
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+):
+    land_spec = resolve_land_topology(topology)
     records: list[CaptiveMagnetTools] = []
     for vertical, axis_y in (("lower", LOWER_T_AXIS_Y_MM),
                              ("upper", UPPER_T_AXIS_Y_MM)):
@@ -1037,7 +1159,7 @@ def _apply_t_magnets(part):
             part, tools = apply_wall_cavity(
                 part,
                 name=f"tebm_{vertical}_{side}_base",
-                face=(sign * T_MAGNET_FACE_X_MM,
+                face=(sign * land_spec.magnet_face_x_mm,
                       axis_y, STANDARD_MAGNET_Z_MM),
                 outward=(sign, 0.0, 0.0),
                 owner="base",
@@ -1072,15 +1194,17 @@ def _validate_duct_magnet_separation(magnet_tools) -> None:
 
 def build_model(
     profile: str | VaseTEBMProfile = "stock",
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
 ) -> VaseTEBMModel:
     """Build and validate one monolithic keyed Stock/Slim replacement."""
     spec = vase_profile(profile)
-    slab = _slab_without_functional_bores(spec)
-    rear_growth = _rear_growth_wedge(spec) & _plan_volume(
-        REAR_T_MOUNT_Z_MM, spec.rear_surface_z_mm)
+    land_spec = resolve_land_topology(topology)
+    slab = _slab_without_functional_bores(spec, land_spec)
+    rear_growth = _rear_growth_wedge(spec, land_spec) & _plan_volume(
+        REAR_T_MOUNT_Z_MM, spec.rear_surface_z_mm, land_spec)
     part = slab + rear_growth
     seam_cutter = _prism(_grown(_below_region(SEAM_B_Y, DOVETAILS_B)))
-    _validate_duct_exterior_containment(part - seam_cutter)
+    _validate_duct_exterior_containment(part - seam_cutter, land_spec)
     part = _apply_driver_interfaces(part)
     part = _apply_cable_routes(part)
 
@@ -1088,22 +1212,25 @@ def build_model(
     # the matching full-through-thickness male dovetails, exactly as in B2/V1.
     part -= seam_cutter
     part -= seam_b_m3_vase_insert_cutter()
-    part, magnet_tools = _apply_t_magnets(part)
+    part, magnet_tools = _apply_t_magnets(part, land_spec)
     _validate_duct_magnet_separation(magnet_tools)
-    part.label = f"{PART_NAME}_{spec.key}"
+    part.label = f"{PART_NAME}_{spec.key}_{land_spec.key}"
 
     solids = list(part.solids())
     if not part.is_valid or len(solids) != 1 or solids[0].volume <= 1.0:
         raise RuntimeError(
-            f"{PART_NAME}_{spec.key}: expected one valid positive-volume solid")
-    return VaseTEBMModel(part, magnet_tools)
+            f"{PART_NAME}_{spec.key}_{land_spec.key}: expected one valid "
+            "positive-volume solid")
+    return VaseTEBMModel(part, magnet_tools, land_spec)
 
 
 def design_facts(
     profile: str | VaseTEBMProfile = "stock",
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
 ) -> dict[str, object]:
     """Stable, serializable manufacturing facts independent of tessellation."""
     spec = vase_profile(profile)
+    land_spec = resolve_land_topology(topology)
     main_path = optimized_main_t_path()
     branch_path = upper_t_branch_path()
     split_xy = _main_t_branch_split_xy()
@@ -1120,10 +1247,25 @@ def design_facts(
         math.hypot(x, y - LOWER_T_AXIS_Y_MM)
         for x, y, _z in branch_points
     )
+    branch_outer_ligament = (
+        UPPER_T_BRANCH_MIN_OUTER_LIGAMENT_MM
+        if land_spec.key == FULL_CIRCULAR_LAND.key
+        else DUCT_EXTERIOR_SKIN_GUARD_MM + BMR_SLIM_FAIRING_RESERVE_MM
+    )
+    branch_outer_ligament_authority = (
+        "D63 core radius minus guide radius and nominal branch radius"
+        if land_spec.key == FULL_CIRCULAR_LAND.key
+        else "full-depth BMR-slim route fairing: guarded cutter plus the "
+             "construction reserve"
+    )
     return {
         "part": PART_NAME,
         "profile": spec.key,
         "release_variant": spec.release_variant,
+        "release_authorized": RELEASE_AUTHORIZED,
+        "physical_measure_required": PHYSICAL_MEASURE_REQUIRED,
+        "status": "prototype_not_release_authorized",
+        "land_topology": topology_facts(land_spec),
         "coordinate_system": {
             "units": "mm",
             "rear_plane_z_mm": spec.rear_surface_z_mm,
@@ -1168,7 +1310,8 @@ def design_facts(
             "axis_y_mm": list(T_AXIS_Y_MM),
             "axis_pitch_mm": PAIR_AXIS_PITCH_MM,
             "opening_web_mm": PAIR_AXIS_PITCH_MM - TEBM_CUTOUT_D_MM,
-            "land_d_mm": TEBM_LAND_D_MM,
+            "land_d_mm": land_spec.parent_d_mm,
+            "land_core_d_mm": land_spec.core_d_mm,
             "lower_mount_face": "front",
             "upper_mount_face": "rear",
         },
@@ -1260,7 +1403,9 @@ def design_facts(
                     - TEBM_CUTOUT_D_MM / 2.0
                     - UPPER_T_BRANCH_D_MM / 2.0),
                 "nominal_lower_land_outer_ligament_mm": (
-                    UPPER_T_BRANCH_MIN_OUTER_LIGAMENT_MM),
+                    branch_outer_ligament),
+                "lower_land_outer_ligament_authority": (
+                    branch_outer_ligament_authority),
                 "minimum_lower_insert_vertical_ligament_mm": (
                     UPPER_T_BRANCH_LOWER_INSERT_VERTICAL_LIGAMENT_MM),
                 "connects": ["shared_t_main", "upper_rear_t_pocket"],
@@ -1282,6 +1427,11 @@ def design_facts(
                 "approved_exterior_mouths": ["seam_b_ts_entry"],
                 "driver_pocket_terminations": [
                     "lower_front_t_pocket", "upper_rear_t_pocket"],
+                "bmr_slim_plan_fairing": (
+                    land_spec.key == BMR_SLIM_LAND.key),
+                "bmr_slim_fairing_reserve_mm": (
+                    BMR_SLIM_FAIRING_RESERVE_MM
+                    if land_spec.key == BMR_SLIM_LAND.key else 0.0),
             },
         },
         "rear_growth": {
@@ -1304,8 +1454,8 @@ def design_facts(
         },
         "t_captive_magnets": {
             "count": T_MAGNET_TOTAL,
-            "interface_face_x_mm": [-T_MAGNET_FACE_X_MM,
-                                     T_MAGNET_FACE_X_MM],
+            "interface_face_x_mm": [-land_spec.magnet_face_x_mm,
+                                     land_spec.magnet_face_x_mm],
             "axis_y_mm": list(T_AXIS_Y_MM),
             "axis_z_mm": STANDARD_MAGNET_Z_MM,
             "qualified_flat_height_mm": (
@@ -1315,5 +1465,8 @@ def design_facts(
     }
 
 
-def gen_step(profile: str = "stock"):
-    return build_model(profile).solid
+def gen_step(
+    profile: str = "stock",
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+):
+    return build_model(profile, topology).solid

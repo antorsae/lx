@@ -23,12 +23,14 @@ proven by asserting the two ear footprints are geometrically identical and by
 assembling each part against the staged UM collar, not by differencing whole
 silhouettes.
 
-Gates carrying the flush junction specifically: the mount axis is recomputed
-from the two released constraints and has to be the tighter of them; each
-assembly is projected head on against the staged collar and the plan is walked
-column by column for windows; every declared opening has to name the side it
-faces, with no exterior ones; and the free T cable has to reach the declared
-mate-face entry without being touched or exposed on the way.
+Gates carrying the flush junction specifically: the preserved BMR acoustic axis
+is preserved explicitly while the recomputed D63 limits become clearance
+floors; each assembly is projected head on against the staged collar and the
+plan is walked column by column for windows; every declared opening has to name
+the side it faces, with no exterior ones; and the free T cable has to reach the
+declared mate-face entry without being touched or exposed on the way.  The
+optional D56-core BMR-slim topology is also checked directly and exported
+under distinct, CAD-only candidate identities.
 
 Gates carrying the captive magnets: every station has to sit at the vase's own
 land-local coordinate, read back from the real vase in a proud-profile
@@ -76,6 +78,10 @@ from lx521_baffle.io import sha256_file
 from lx521_baffle.obiwan import bmr_pod
 from lx521_baffle.obiwan import bmr_crescent as coaxial
 from lx521_baffle.obiwan import bmr_crescent_opposed as opposed
+from lx521_baffle.obiwan import bmr_crescent_bmr_slim as coaxial_bmr_slim
+from lx521_baffle.obiwan import (
+    bmr_crescent_opposed_bmr_slim as opposed_bmr_slim,
+)
 from lx521_baffle.obiwan.carriers import (
     CORE_REAR_Z,
     T_UM_CABLE_MOUTH_HALF_WIDTH,
@@ -98,6 +104,7 @@ from lx521_baffle.obiwan.carriers import (
 )
 from lx521_baffle.base import THICKNESS_MM, UM_CUTOUT
 from lx521_baffle.magnet_contract import (
+    CAPTIVE_LAND_MM,
     CAVITY_DEPTH_MM,
     CAVITY_DIAMETER_MM,
     FACE_SKIN_MM,
@@ -110,7 +117,7 @@ STAGE_STATES = ("floor_stand", "no_floor_stand")
 BED_LIMIT_MM = 256.0
 BASE_SLICING_PROFILE = PROJECT_ROOT / "captive_magnet_slicing_profile.json"
 PETG_GF_SLICING_PROFILE = (
-    PROJECT_ROOT / "captive_magnet_slicing_profile_petg_gf.json")
+    PROJECT_ROOT / "captive_magnet_slicing_profile_petg_gf_06hf.json")
 
 # The released totals both candidates' deliveries must leave alone.  A
 # candidate that slices its own pauses is exactly the situation in which
@@ -286,6 +293,167 @@ def test_the_two_variants_share_one_family_module() -> None:
           "variants")
 
 
+def test_bmr_slim_land_is_driver_following_and_locally_reinforced() -> None:
+    """The optional slim plan removes the annulus, not required interfaces.
+
+    The two default Obi-Wan artifacts remain full-D63 candidates.  This shared
+    plan gate also qualifies the separately exported BMR-slim candidates: a
+    D56 driver ring, four local M2 pads and two captive-magnet lobes ending on
+    the same side faces as D63.
+    """
+    from shapely.geometry import Point as _Point, box as _Box
+
+    full = bmr_pod.FULL_CIRCULAR_LAND
+    slim = bmr_pod.BMR_SLIM_LAND
+    assert full.key == "full" and slim.key == "bmr-slim"
+    assert _close(full.core_d_mm, 63.0)
+    assert _close(slim.core_d_mm, 56.0)
+    assert _close(slim.parent_d_mm, 63.0)
+    assert _close(slim.magnet_face_x_mm, full.magnet_face_x_mm)
+
+    full_plan = bmr_pod.land_plan(0.0, full)
+    slim_plan = bmr_pod.land_plan(0.0, slim)
+    for name, topology, plan in (
+        ("full", full, full_plan), ("bmr-slim", slim, slim_plan),
+    ):
+        assert plan.geom_type == "Polygon" and not plan.interiors, (
+            f"{name} land is not one simple plan")
+        minx, miny, maxx, maxy = plan.bounds
+        assert _close(minx, -topology.magnet_face_x_mm, 1.0e-6)
+        assert _close(maxx, topology.magnet_face_x_mm, 1.0e-6)
+        assert _close(maxy - miny, topology.core_d_mm, 1.0e-6)
+        assert _close(maxx - minx, topology.plan_width_mm, 1.0e-6)
+
+        # The published D54 maximum driver envelope remains wholly supported.
+        flange = _Point(0.0, 0.0).buffer(
+            bmr_pod.TEBM_MAX_D_MM / 2.0,
+            resolution=bmr_pod.SKIRT_PLAN_RESOLUTION,
+        )
+        assert flange.difference(plan).area < 1.0e-8, (
+            f"{name} land does not contain the D54 driver envelope")
+
+        # All four M2 bores retain the established 2.40-mm radial wall.  The
+        # slim pads deliberately provide 2.50 mm, leaving construction margin.
+        mount_r = bmr_pod.TEBM_MOUNT_PCD_MM / 2.0
+        required_boss_r = bmr_pod.M2_INSERT_BORE_D_MM / 2.0 + 2.40
+        for index in range(bmr_pod.TEBM_MOUNT_HOLE_COUNT):
+            angle = math.radians(
+                bmr_pod.LOWER_T_MOUNT_CLOCK_DEG + 90.0 * index)
+            centre = (
+                mount_r * math.cos(angle), mount_r * math.sin(angle))
+            required = _Point(*centre).buffer(
+                required_boss_r, resolution=bmr_pod.SKIRT_PLAN_RESOLUTION)
+            assert required.difference(plan).area < 1.0e-8, (
+                f"{name} land loses the M2 wall at index {index}")
+
+        # Each side face contains the complete qualified captive land.  Its
+        # transverse 0.10-mm edge margin is checked separately below.
+        for sign in (-1.0, 1.0):
+            face_x = sign * topology.magnet_face_x_mm
+            inner_x = face_x - sign * CAPTIVE_LAND_MM
+            required = _Box(
+                min(face_x, inner_x),
+                -bmr_pod.T_MAGNET_REQUIRED_FLAT_HALF_HEIGHT_MM,
+                max(face_x, inner_x),
+                bmr_pod.T_MAGNET_REQUIRED_FLAT_HALF_HEIGHT_MM,
+            )
+            assert required.difference(plan).area < 1.0e-8, (
+                f"{name} land loses the captive pad at x={face_x:+.4f}")
+
+    # Slim is genuinely driver-following: only local pads/lobes survive beyond
+    # the D56 ring, while the same magnet interfaces set the maximum width.
+    slim_core = _Point(0.0, 0.0).buffer(
+        slim.core_r_mm, resolution=bmr_pod.SKIRT_PLAN_RESOLUTION)
+    assert slim_core.difference(slim_plan).area < 1.0e-8
+    assert 40.0 < slim_plan.difference(slim_core).area < 60.0
+    assert slim_plan.area < full_plan.area
+    assert _close(
+        bmr_pod.T_MAGNET_FLAT_HALF_HEIGHT_MM
+        - bmr_pod.T_MAGNET_REQUIRED_FLAT_HALF_HEIGHT_MM,
+        bmr_pod.T_MAGNET_FLAT_EDGE_MARGIN_MM,
+    )
+
+    facts = bmr_pod.land_facts(slim)
+    assert facts["profile"] == (
+        "d56_driver_ring_with_m2_pads_and_side_magnet_lobes")
+    assert _close(facts["core_d_mm"], 56.0)
+    assert _close(facts["parent_d_mm"], 63.0)
+    assert _close(facts["plan_depth_mm"], 56.0)
+    assert _close(facts["max_plan_width_mm"], full.plan_width_mm)
+    assert _close(facts["m2_radial_wall_mm"], 2.50)
+    assert _close(facts["pocket_wall_mm"], 6.537)
+    assert facts["physical_measure_required"] is True
+
+    # The fixed acoustic axis, flush skirt and hidden cable collar remain valid
+    # when their calculations consume the actual slim plan rather than R31.5.
+    placement = bmr_pod.axis_placement_facts(slim)
+    assert _close(placement["preserved_axis_y_mm"], 452.494193004, 1.0e-9)
+    assert placement["pod_wall_off_um_core_ring_mm"] > 6.7
+    assert placement["pod_wall_off_ear_notch_mm"] > 6.2
+    assert bmr_pod.base_um_ring_clearance_mm(slim) >= bmr_pod.UM_MATE_GAP_MM
+    assert 0.0 < bmr_pod.skirt_um_ring_clearance_mm(slim) < (
+        bmr_pod.UM_MATE_GAP_MM)
+    section = bmr_pod.ear_load_path_section_mm2(slim)
+    assert section / bmr_pod.EAR_NET_SECTION_MM2 >= (
+        bmr_pod.SUPERSEDED_STRUT_SECTION_RATIO)
+    collar = bmr_pod.entry_collar_plan(slim)
+    assert collar.geom_type == "Polygon" and not collar.interiors
+    assert collar.area < 150.0
+
+    # The opposed topology remains one overlapping body with ample side cover
+    # around its D4.6 inter-pocket lead branch.
+    assert _close(opposed.topology_land_overlap_mm(slim), 6.7, 1.0e-6)
+    waist = opposed.topology_waist_half_width_mm(slim)
+    assert _close(waist, 13.280719107, 1.0e-6)
+    assert waist - opposed.INTER_POCKET_BRANCH_R_MM > 10.9
+    print(
+        f"    BMR-slim D{slim.core_d_mm:.0f} ring, "
+        f"{slim.plan_width_mm:.3f} mm over magnet faces, "
+        f"{slim_plan.area:.1f} mm2 plan, {section:.2f} mm2 ear section")
+
+
+def test_bmr_slim_wrappers_build_the_declared_candidates() -> None:
+    """Exercise both exact wrapper modules selected by the CAD exporter."""
+    for wrapper, expected_count, expected_variant in (
+        (coaxial_bmr_slim, 2, "coaxial-bmr-slim"),
+        (opposed_bmr_slim, 4, "opposed-bmr-slim"),
+    ):
+        assert wrapper.LAND_TOPOLOGY is bmr_pod.BMR_SLIM_LAND
+        assert wrapper.VARIANT == expected_variant
+        assert wrapper.RELEASE_AUTHORIZED is False
+        assert wrapper.PHYSICAL_MEASURE_REQUIRED is True
+
+        model = wrapper.build_model()
+        assert model.solid.is_valid and len(model.solid.solids()) == 1
+        assert len(model.solid.shells()) == 1 + expected_count
+        assert len(model.magnet_tools) == wrapper.MAGNET_COUNT == expected_count
+
+        facts = wrapper.design_facts(model.magnet_tools)
+        assert facts["part"] == wrapper.PART_NAME
+        assert facts["variant"] == wrapper.VARIANT
+        assert facts["release_variant"] == wrapper.RELEASE_VARIANT
+        assert facts["pod"]["key"] == "bmr-slim"
+        assert facts["magnet_count"] == expected_count
+        assert facts["release_authorized"] is False
+        assert facts["physical_measure_required"] is True
+        assert "CAD-only physical-fit candidate" in (
+            facts["magnets"]["release_wiring"])
+        assert "no auxiliary catalog" in facts["magnets"]["release_wiring"]
+        assert _close(
+            facts["axis_placement"]["preserved_axis_y_mm"],
+            bmr_pod.PRESERVED_MOUNT_AXIS_Y_MM,
+        )
+        if wrapper is opposed_bmr_slim:
+            assert _close(facts["driver"]["axis_pitch_mm"], 49.3)
+            branch = next(
+                opening for opening in facts["declared_openings"]
+                if opening["name"] == "inter_pocket_lead_branch")
+            assert _close(
+                branch["side_cover_mm"],
+                facts["cable"]["branch_side_cover_mm"],
+            )
+
+
 def test_mount_constants_equal_the_released_joint_authority(
         variant: Variant) -> None:
     """Numeric identity with the released UM half-lap interface.
@@ -372,37 +540,44 @@ def test_depth_stack_is_the_variant_it_claims(variant: Variant) -> None:
 
 
 def test_pod_outer_wall_is_the_driver_land(variant: Variant) -> None:
-    """The wall is the D66 land itself, and that is the printable minimum.
+    """The two default candidates use the conservative full D63 topology.
 
-    Every mounting face has to carry the qualified D66 land and both parts
-    print front-face-down, so the plan may never grow rearward.  Anything
-    under R33 loses land; anything over R33 at the front cannot come back
-    down to R33 at the rear without an overhang.  A straight D66 cylinder is
-    the only radius that satisfies both, which is what this checks -- together
-    with the two flats the vase cuts into it so each captive magnet has a
-    plane to seat behind rather than a tangent to a circle.
+    D63 is independent of the optional driver-following BMR-slim topology.
+    Both keep a constant plan through their depth for front-face-down printing
+    and share the same two side-magnet interface faces.
     """
     module = variant.module
+    topology = bmr_pod.FULL_CIRCULAR_LAND
+    facts = bmr_pod.land_facts(topology)
+    assert bmr_pod.DEFAULT_LAND_TOPOLOGY is topology
+    assert facts["key"] == "full"
+    assert facts["profile"] == "d63_circle_with_side_magnet_flats"
+    assert module.design_facts()["pod"]["key"] == "full"
     assert _close(bmr_pod.POD_OUTER_R_MM, bmr_pod.TEBM_LAND_R_MM)
-    assert _close(bmr_pod.POD_OUTER_D_MM, 66.0)
+    assert _close(bmr_pod.POD_OUTER_D_MM, 63.0)
+    assert _close(bmr_pod.POD_OUTER_R_MM, 31.5)
     radius_at = (module.pod_radius_at if variant.key == "coaxial"
                  else module.land_radius_at_z)
     low, high = variant.z_span
     for z in (low, (low + high) / 2.0, CORE_REAR_Z, high):
-        assert _close(radius_at(z), bmr_pod.TEBM_LAND_R_MM), (
-            "the land must be a straight cylinder; a varying radius either "
-            "loses land or leans the wrong way for this print orientation")
-    # The wall the land leaves is far above any minimum-wall rule.
-    assert _close(bmr_pod.POD_WALL_OVER_POCKET_MM, 11.537)
-    assert _close(bmr_pod.POD_WALL_OVER_INSERT_MM, 7.27)
+        assert _close(radius_at(z, topology), topology.core_r_mm), (
+            "the land core must remain constant through the print stack")
+    # D63 still leaves generous pocket and insert walls.
+    assert _close(bmr_pod.POD_WALL_OVER_POCKET_MM, 10.037)
+    assert _close(bmr_pod.POD_WALL_OVER_INSERT_MM, 5.77)
     assert bmr_pod.POD_WALL_OVER_POCKET_MM >= 2.4
     assert bmr_pod.POD_WALL_OVER_INSERT_MM >= 2.4
-    assert _close(bmr_pod.POD_LAND_MARGIN_OVER_FLANGE_MM, 6.0)
-    # The flat is exactly the vase's, and it takes so little off the land
-    # that the D54 flange still lands on 5.8 mm of it at its narrowest.
+    assert _close(bmr_pod.POD_LAND_MARGIN_OVER_FLANGE_MM, 4.5)
+    # The D63-derived flat carries the entire D54 flange and magnet land.
     assert _close(bmr_pod.POD_FLAT_HALF_WIDTH_MM, bmr_pod.T_MAGNET_FACE_X_MM)
-    assert _close(bmr_pod.POD_FLAT_DEPTH_MM, 0.165414575, 1.0e-6)
-    assert bmr_pod.POD_FLAT_MARGIN_OVER_FLANGE_MM > 5.8
+    assert _close(bmr_pod.POD_FLAT_DEPTH_MM, 0.173334043, 1.0e-6)
+    assert bmr_pod.POD_FLAT_MARGIN_OVER_FLANGE_MM > 4.3
+    assert _close(
+        bmr_pod.POD_PLAN_WIDTH_MM,
+        2.0 * bmr_pod.T_MAGNET_FACE_X_MM,
+        1.0e-9,
+    )
+    assert bmr_pod.POD_PLAN_WIDTH_MM < bmr_pod.POD_OUTER_D_MM
     # And the flat is wide enough for the whole captive land, which is what
     # makes the magnet interface planar rather than nearly planar.
     land_half_width = CAVITY_DIAMETER_MM / 2.0 + 0.60
@@ -415,15 +590,9 @@ def test_pod_outer_wall_is_the_driver_land(variant: Variant) -> None:
           f"{bmr_pod.POD_WALL_OVER_INSERT_MM:.3f} mm outside each M2 bore")
 
 
-def test_pod_is_dropped_as_far_as_the_mate_allows(variant: Variant) -> None:
-    """The mount axis is set by the tighter of two UM constraints, not chosen.
-
-    Two things stop the drop: the released 0.20 mm clearance on the UM's
-    native R51.7 core ring, and the UM half-lap's own receiver notch, which
-    the D66 land may not be nicked by.  Both are computed here from the same
-    released datums the parts use, and the axis has to be the larger.  Both
-    variants mount on the same land, so both get the same answer.
-    """
+def test_pod_preserves_its_acoustic_axis_and_clears_the_mate(
+        variant: Variant) -> None:
+    """D63 improves mate clearance without moving either BMR acoustic axis."""
     ring = (UM_CUTOUT[1] + UM_CORE_R + bmr_pod.UM_MATE_GAP_MM
             + bmr_pod.POD_OUTER_R_MM)
     notch = TWEETER_JOINT_Y + math.sqrt(
@@ -431,21 +600,33 @@ def test_pod_is_dropped_as_far_as_the_mate_allows(variant: Variant) -> None:
          + bmr_pod.EAR_NOTCH_LIGAMENT_MM) ** 2 - TWEETER_JOINT_X[1] ** 2)
     assert _close(bmr_pod.AXIS_Y_LIMIT_FROM_UM_RING_MM, ring, 1.0e-6)
     assert _close(bmr_pod.AXIS_Y_LIMIT_FROM_EAR_NOTCH_MM, notch, 1.0e-6)
-    assert _close(bmr_pod.MOUNT_AXIS_XY[1], max(ring, notch), 1.0e-6)
-    assert bmr_pod.AXIS_GOVERNING_CONSTRAINT == "um_half_lap_receiver_notch"
+    assert bmr_pod.MOUNT_AXIS_XY[1] >= max(ring, notch)
+    assert bmr_pod.AXIS_GOVERNING_CONSTRAINT == "preserved_acoustic_axis"
     assert _close(bmr_pod.MOUNT_AXIS_XY[0], 0.0)
-    assert _close(bmr_pod.MOUNT_AXIS_XY[1], 452.494193004, 1.0e-6)
+    assert _close(
+        bmr_pod.MOUNT_AXIS_XY[1], bmr_pod.PRESERVED_MOUNT_AXIS_Y_MM, 1.0e-9)
+    assert _close(bmr_pod.MOUNT_AXIS_XY[1], 452.494193004, 1.0e-9)
+    assert _close(
+        bmr_pod.MOUNT_AXIS_XY[1] - max(ring, notch), 1.920321573, 1.0e-6)
 
-    # The notch's ligament is the vase's own qualified minimum wall, and the
-    # D66 land really does clear it: a nick there would show up at z=6.7 as
-    # rearward plan growth, which this print orientation cannot take.
+    # The scalar floor and the actual flat-clipped plan both clear the mate by
+    # more than the released minimums.
     assert _close(bmr_pod.EAR_NOTCH_R_MM,
                   TWEETER_JOINT_FUNCTIONAL_BOSS_D / 2.0 + TWEETER_JOINT_CLEAR)
     assert _close(bmr_pod.EAR_NOTCH_R_MM, 5.0)
     assert _close(bmr_pod.EAR_NOTCH_LIGAMENT_MM,
                   bmr_pod.T_BLIND_BACK_WALL_THICKNESS_MM)
-    assert _close(bmr_pod.POD_WALL_OFF_EAR_NOTCH_MM, 1.20, 1.0e-6)
-    assert bmr_pod.POD_WALL_OFF_UM_RING_MM >= bmr_pod.UM_MATE_GAP_MM
+    assert _close(bmr_pod.POD_WALL_OFF_EAR_NOTCH_MM, 2.70, 1.0e-6)
+    assert _close(bmr_pod.POD_WALL_OFF_UM_RING_MM, 3.213193004, 1.0e-6)
+    actual_ring = bmr_pod.land_to_um_core_clearance_mm()
+    actual_notch = bmr_pod.land_to_ear_notch_clearance_mm()
+    assert actual_ring >= bmr_pod.UM_MATE_GAP_MM
+    assert actual_notch >= bmr_pod.EAR_NOTCH_LIGAMENT_MM
+    placement = variant.module.design_facts()["axis_placement"]
+    assert placement["governing_constraint"] == "preserved_acoustic_axis"
+    assert _close(placement["preserved_axis_y_mm"], 452.494193004, 1.0e-9)
+    assert _close(placement["pod_wall_off_um_core_ring_mm"], actual_ring)
+    assert _close(placement["pod_wall_off_ear_notch_mm"], actual_notch)
 
     # The move is real and recorded against the released axis it left.
     assert _close(bmr_pod.RELEASED_AXIS_XY[1], 468.193)
@@ -465,11 +646,11 @@ def test_pod_is_dropped_as_far_as_the_mate_allows(variant: Variant) -> None:
         assert _close(module.UPPER_AXIS_XY[1],
                       module.LOWER_AXIS_XY[1] + module.AXIS_PITCH_MM, 1.0e-6)
         assert _close(module.UPPER_AXIS_XY[1], 501.794193004, 1.0e-6)
-        # The two D66 circles overlap, so the body is one plan and not two
+        # The two D63 circles overlap, so the body is one plan and not two
         # discs joined by a neck someone had to invent.
         assert module.LAND_OVERLAP_MM > 0.0
-        assert _close(module.LAND_OVERLAP_MM, 16.7, 1.0e-6)
-        assert _close(module.WAIST_HALF_WIDTH_MM, 21.940316771, 1.0e-6)
+        assert _close(module.LAND_OVERLAP_MM, 13.7, 1.0e-6)
+        assert _close(module.WAIST_HALF_WIDTH_MM, 19.611922394, 1.0e-6)
         print(f"    lower axis y {bmr_pod.MOUNT_AXIS_XY[1]:.6f}, upper "
               f"{module.UPPER_AXIS_XY[1]:.6f} at the vase's "
               f"{module.AXIS_PITCH_MM} mm pitch; lands overlap "
@@ -530,7 +711,9 @@ def test_skirt_fills_the_junction_and_outsections_the_struts(
     # magnitude bigger than that.
     keepout = bmr_pod._wing_keepout_plan().buffer(
         2.0 * bmr_pod.SKIRT_PLAN_SIMPLIFY_MM)
-    for x in [value / 2.0 for value in range(-66, 67)]:
+    scan_half_steps = math.ceil(2.0 * bmr_pod.POD_FLAT_HALF_WIDTH_MM)
+    for x in [value / 2.0
+              for value in range(-scan_half_steps, scan_half_steps + 1)]:
         column = _Line([(x, 380.0), (x, bmr_pod.MOUNT_AXIS_XY[1])])
         run = column.intersection(plan)
         # A grazing column at the land's own edge meets it in a single point,
@@ -561,7 +744,7 @@ def test_skirt_fills_the_junction_and_outsections_the_struts(
         f"R{bmr_pod.UM_MATE_R_MM} mate face at {mate_y:.4f}")
 
     # And it is strictly a fill: nothing reaches outboard of the flat-clipped
-    # D66 land, and the fill stops at the mount land's own top.
+    # D63 land, and the fill stops at the mount land's own top.
     minx, miny, maxx, maxy = plan.bounds
     assert _close(maxx, bmr_pod.POD_FLAT_HALF_WIDTH_MM, 1.0e-6)
     assert _close(minx, -bmr_pod.POD_FLAT_HALF_WIDTH_MM, 1.0e-6)
@@ -941,7 +1124,7 @@ def test_part_is_not_wired_into_the_release(variant: Variant) -> None:
         "the released captive-magnet total moved; a candidate's stations must "
         "never be counted against it")
     for profile in ("captive_magnet_slicing_profile.json",
-                    "captive_magnet_slicing_profile_petg_gf.json"):
+                    "captive_magnet_slicing_profile_petg_gf_06hf.json"):
         text = (PROJECT_ROOT / profile).read_text(encoding="utf-8")
         assert "bmr" not in text.lower(), (
             f"{stem} has reached the released slicing profile {profile}")
@@ -1206,10 +1389,10 @@ def test_exported_solid_is_one_body_with_only_its_magnet_voids(
     assert max(printed) <= BED_LIMIT_MM
     assert facts["print_geometry"]["p2s_256mm_fit"] is True
     assert facts["print_geometry"]["support_enabled"] is False
-    # X is set by the land alone -- now the flat-clipped land, because the
+    # X is set by the land alone -- the flat-clipped D63 land, because the
     # magnet flats are the widest thing on the part.
     assert _close(size.X, bmr_pod.POD_PLAN_WIDTH_MM, 0.01), (
-        f"the X extent is {size.X:.3f} mm, not the flat-clipped D66 land; "
+        f"the X extent is {size.X:.3f} mm, not the flat-clipped D63 land; "
         "something still reaches outboard of it")
     print(f"    envelope {size.X:.3f} x {size.Y:.3f} x {size.Z:.3f} mm, "
           f"{solid.volume / 1000.0:.2f} cm3, "
@@ -1729,11 +1912,12 @@ def test_exterior_never_grows_rearward(variant: Variant) -> None:
         lands = [bmr_pod.MOUNT_AXIS_XY[1]]
     else:
         lands = [module.LOWER_AXIS_XY[1], module.UPPER_AXIS_XY[1]]
-    envelope = _plan_prism(bmr_pod.entry_collar_plan(), *bmr_pod.ENTRY_COLLAR_Z)
+    topology = bmr_pod.FULL_CIRCULAR_LAND
+    envelope = _plan_prism(
+        bmr_pod.entry_collar_plan(topology), *bmr_pod.ENTRY_COLLAR_Z)
     for axis_y in lands:
-        envelope = envelope.fuse(
-            Pos(0.0, axis_y, (low + high) / 2.0)
-            * Cylinder(bmr_pod.POD_OUTER_R_MM, high - low))
+        envelope = envelope.fuse(_plan_prism(
+            bmr_pod.land_plan(axis_y, topology), low, high))
     probe = solid.fuse(bmr_pod.duct_cutter() & envelope).clean()
 
     centre_y = bmr_pod.MOUNT_AXIS_XY[1]
@@ -1786,13 +1970,15 @@ def test_wing_clearance_is_unchanged(variant: Variant) -> None:
 FAMILY_TESTS = (
     test_vase_authority_is_mirrored_exactly,
     test_the_two_variants_share_one_family_module,
+    test_bmr_slim_land_is_driver_following_and_locally_reinforced,
+    test_bmr_slim_wrappers_build_the_declared_candidates,
 )
 
 VARIANT_TESTS = (
     test_mount_constants_equal_the_released_joint_authority,
     test_depth_stack_is_the_variant_it_claims,
     test_pod_outer_wall_is_the_driver_land,
-    test_pod_is_dropped_as_far_as_the_mate_allows,
+    test_pod_preserves_its_acoustic_axis_and_clears_the_mate,
     test_skirt_fills_the_junction_and_outsections_the_struts,
     test_cable_path_is_one_hidden_entry_and_one_declared_pass,
     test_captive_stations_are_the_vase_s_own,

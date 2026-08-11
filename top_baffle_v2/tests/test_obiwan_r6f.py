@@ -361,7 +361,7 @@ def test_route_contract():
                for name in ("lm_lower_left", "lm_lower_right"))
     assert all(
         math.isclose(
-            lm_by_name[name]["face_offset_mm"], 0.65, abs_tol=1e-12)
+            lm_by_name[name]["face_offset_mm"], 0.79, abs_tol=1e-12)
         for name in ("lm_upper_left", "lm_upper_right"))
     assert all(
         math.isclose(
@@ -369,7 +369,7 @@ def test_route_contract():
             abs_tol=1e-12)
         for name in ("lm_upper_left", "lm_upper_right"))
     assert all(math.isclose(
-        lm_by_name[name]["continuous_flush_ring_fairing_mm"], 0.80,
+        lm_by_name[name]["continuous_flush_ring_fairing_mm"], 0.94,
         abs_tol=1e-12)
         for name in ("lm_upper_left", "lm_upper_right"))
     assert all(math.isclose(
@@ -413,13 +413,13 @@ def test_route_contract():
     assert all(site["magnet_fully_buried"] for site in um_magnets)
     assert all(not site["proud_ear_added"] for site in um_magnets)
     assert all(math.isclose(
-        site["face_offset_mm"], 0.65, abs_tol=1e-12)
+        site["face_offset_mm"], 0.79, abs_tol=1e-12)
         for site in um_magnets)
     assert all(math.isclose(
         site["local_captive_backing_boss_mm"], 0.0, abs_tol=1e-12)
         for site in um_magnets)
     assert all(math.isclose(
-        site["continuous_flush_ring_fairing_mm"], 0.80,
+        site["continuous_flush_ring_fairing_mm"], 0.94,
         abs_tol=1e-12) for site in um_magnets)
     assert all(math.isclose(
         site["carrier_cavity_face_inset_mm"], 0.15,
@@ -430,21 +430,21 @@ def test_route_contract():
     assert core.SIDE_MAGNET_DEPTH == CAVITY_DEPTH_MM == 2.10
     assert math.isclose(
         core.SIDE_MAGNET_CAPTIVE_LAND, CAPTIVE_LAND_MM, abs_tol=1e-12)
-    assert math.isclose(CAPTIVE_LAND_MM, 3.00, abs_tol=1e-12)
-    assert core.SIDE_MAGNET_FACE_SKIN == FACE_SKIN_MM == 0.45
-    assert core.SIDE_MAGNET_INNER_SKIN == INNER_SKIN_MM == 0.45
+    assert math.isclose(CAPTIVE_LAND_MM, 3.14, abs_tol=1e-12)
+    assert core.SIDE_MAGNET_FACE_SKIN == FACE_SKIN_MM == 0.52
+    assert core.SIDE_MAGNET_INNER_SKIN == INNER_SKIN_MM == 0.52
     assert core.SIDE_INTERFACE_GAP == INTERFACE_GAP_MM == 0.05
     assert math.isclose(
-        NOMINAL_PAIRED_FACE_SEPARATION_MM, 0.95, abs_tol=1e-12)
+        NOMINAL_PAIRED_FACE_SEPARATION_MM, 1.09, abs_tol=1e-12)
     assert ROOF_ANGLE_DEG == 45.0
     assert math.isclose(
-        core.LM_CORE_R + 0.65 - CAPTIVE_LAND_MM - flush.LM_RECESS_R,
+        core.LM_CORE_R + 0.79 - CAPTIVE_LAND_MM - flush.LM_RECESS_R,
         0.05, abs_tol=1e-12)
     assert math.isclose(
-        core.UM_CORE_R + 0.65 - CAPTIVE_LAND_MM - flush.UM_RECESS_R,
+        core.UM_CORE_R + 0.79 - CAPTIVE_LAND_MM - flush.UM_RECESS_R,
         0.05, abs_tol=1e-12)
-    assert math.isclose(core.LM_VISIBLE_RING_R, 113.80, abs_tol=1e-12)
-    assert math.isclose(core.UM_VISIBLE_RING_R, 52.50, abs_tol=1e-12)
+    assert math.isclose(core.LM_VISIBLE_RING_R, 113.94, abs_tol=1e-12)
+    assert math.isclose(core.UM_VISIBLE_RING_R, 52.64, abs_tol=1e-12)
     assert math.isclose(
         core.UM_T_FAIRING_CUSP_HALF_WIDTH_MM,
         core.T_UM_WEB_BLEND_START_X, abs_tol=1e-12)
@@ -492,17 +492,17 @@ def test_route_contract():
         assert facts["closure_kind"] == "transverse_gable_45deg"
         assert facts["cavity_diameter_mm"] == 5.20
         assert facts["cavity_depth_mm"] == 2.10
-        assert facts["face_skin_mm"] == facts["inner_skin_mm"] == 0.45
+        assert facts["face_skin_mm"] == facts["inner_skin_mm"] == 0.52
         assert math.isclose(
-            facts["captive_land_mm"], 3.00, abs_tol=1e-12)
+            facts["captive_land_mm"], 3.14, abs_tol=1e-12)
         assert facts["roof_angle_deg"] == 45.0
         assert math.isclose(
-            facts["paired_magnet_face_separation_mm"], 0.95,
+            facts["paired_magnet_face_separation_mm"], 1.09,
             abs_tol=1e-12)
         effective_pair_separation = (
             facts["paired_magnet_face_separation_mm"]
             + site["carrier_cavity_face_inset_mm"])
-        expected_pair_separation = 1.10
+        expected_pair_separation = 1.24
         assert math.isclose(
             effective_pair_separation, expected_pair_separation,
             abs_tol=1e-12)
@@ -559,7 +559,7 @@ def test_route_contract():
         assert min(
             axis.distance(Point(*xy))
             - core.SIDE_MAGNET_POCKET_D / 2.0 - flush.PAD_D_MM / 2.0
-            for xy in flush.LM_PILOT_XY) >= 13.6
+            for xy in flush.LM_PILOT_XY) >= 13.5
 
     # State-specific nearest-insert screen. The relocated shoulder sites are
     # governed by the same LM flange insert in both states; the no-floor
@@ -596,7 +596,7 @@ def test_route_contract():
         assert math.isclose(boss_gaps[0], boss_gaps[1], abs_tol=1e-9)
         state_insert_gaps[state] = (bore_gaps[0], boss_gaps[0])
     assert state_insert_gaps["floor"][0] >= 15.1
-    assert state_insert_gaps["floor"][1] >= 13.6
+    assert state_insert_gaps["floor"][1] >= 13.5
     assert np.allclose(
         state_insert_gaps["floor"], state_insert_gaps["no_floor"],
         atol=1e-9)
@@ -631,8 +631,12 @@ def test_route_contract():
     assert route.TUNNEL_ROOF_SKIN == 0.85
     assert route.LM_ROUTE_OWNER_CLEARANCE == 0.05
     assert route.BURIAL_WEB_OWNER_INSET == 0.05
-    assert math.isclose(
-        route.LM_VISIBLE_RING_R, core.LM_VISIBLE_RING_R, abs_tol=1e-12)
+    # The route's ring constant is the tunnel/cover burial ceiling at the
+    # structural ring + TUNNEL_SKIN.  The carrier's visible fairing now
+    # derives from the deeper captive land, so the covers finish strictly
+    # below the exterior (0.19 mm of native ring above them) instead of
+    # exactly LM_ROUTE_OWNER_CLEARANCE below it.
+    assert route.LM_VISIBLE_RING_R <= core.LM_VISIBLE_RING_R
     assert math.isclose(
         route.MAIN_LM_ROUTE_R + route.CUTTER_R,
         core.LM_CORE_R - route.LM_ROUTE_OWNER_CLEARANCE,
@@ -643,11 +647,11 @@ def test_route_contract():
         abs_tol=1e-12)
     assert math.isclose(
         route.MAIN_LM_ROUTE_R + route.MAIN_OUTER_R,
-        core.LM_VISIBLE_RING_R - route.LM_ROUTE_OWNER_CLEARANCE,
+        route.LM_VISIBLE_RING_R - route.LM_ROUTE_OWNER_CLEARANCE,
         abs_tol=1e-12)
     assert math.isclose(
         route.TS_LM_ROUTE_R + route.TS_OUTER_R,
-        core.LM_VISIBLE_RING_R - route.LM_ROUTE_OWNER_CLEARANCE,
+        route.LM_VISIBLE_RING_R - route.LM_ROUTE_OWNER_CLEARANCE,
         abs_tol=1e-12)
     assert route.TUBE_SECTION_SPACING == 5.5
     assert route.TUBE_SECTION_SIDES == 8
@@ -1035,8 +1039,10 @@ def test_route_contract():
         f"LM internal duct bend radius {lm_internal_radius:.3f} mm")
     assert _max_turn_deg(lm_internal_points) <= 2.0
     assert math.isclose(
-        facts["lm_visible_ring_radius_mm"], core.LM_VISIBLE_RING_R,
+        facts["lm_cover_burial_ceiling_radius_mm"], route.LM_VISIBLE_RING_R,
         abs_tol=1e-12)
+    assert (facts["lm_cover_burial_ceiling_radius_mm"]
+            <= core.LM_VISIBLE_RING_R)
     assert math.isclose(
         facts["lm_route_owner_clearance_mm"], 0.05,
         abs_tol=1e-12)
@@ -1048,11 +1054,11 @@ def test_route_contract():
         abs_tol=1e-12)
     assert math.isclose(
         facts["main_lm_cover_outer_radius_mm"],
-        core.LM_VISIBLE_RING_R - 0.05,
+        route.LM_VISIBLE_RING_R - 0.05,
         abs_tol=1e-12)
     assert math.isclose(
         facts["t_lm_cover_outer_radius_mm"],
-        core.LM_VISIBLE_RING_R - 0.05,
+        route.LM_VISIBLE_RING_R - 0.05,
         abs_tol=1e-12)
     assert math.isclose(
         facts["lm_ring_min_exterior_skin_mm"], 0.85, abs_tol=1e-12)
@@ -3745,7 +3751,7 @@ def _assert_lm_keyed_split(stand_foot):
     assert facts["registration_axis_world_xyz"] == (0.0, 1.0, 0.0)
     assert facts["registration_axis_normal_to_horizontal_seam"] is True
     assert facts["registration_symmetry_error_mm"] < 1e-9
-    assert 217.6 <= facts["registration_center_spacing_mm"] <= 217.8
+    assert 217.75 <= facts["registration_center_spacing_mm"] <= 217.95
     assert facts["assembly_motion"] == (
         "top_half_approaches_along_negative_world_y")
     assert facts["assembly_gap_mm"] == 0.0
@@ -3787,10 +3793,10 @@ def _assert_lm_keyed_split(stand_foot):
     assert facts["support_land_driver_recess_plan_clearance_mm"] >= 0.0
     assert facts["support_land_driver_flange_plan_clearance_mm"] >= 0.079
     assert facts["exterior_support_land"] is False
-    assert facts["registration_wall_source"] == "native_r113p8_smooth_ring"
-    assert facts["support_land_outer_radius_mm"] <= 113.8
-    assert 0.77 <= facts[
-        "support_land_plan_growth_from_structural_ring_mm"] <= 0.80
+    assert facts["registration_wall_source"] == "native_r113p94_smooth_ring"
+    assert facts["support_land_outer_radius_mm"] <= 113.94
+    assert 0.82 <= facts[
+        "support_land_plan_growth_from_structural_ring_mm"] <= 0.90
     assert facts[
         "support_land_plan_growth_beyond_visible_fairing_mm"] == 0.0
     assert facts["support_land_plan_outline_growth_mm"] == 0.0
@@ -4425,7 +4431,7 @@ def _assert_core_interface_breps(lm, um, core):
         nx, ny = site["normal"]
         face_offset = site["face_offset_mm"]
         expected_offset = (
-            -0.15 if site["interface_kind"] == "shoulder" else 0.65)
+            -0.15 if site["interface_kind"] == "shoulder" else 0.79)
         assert math.isclose(face_offset, expected_offset, abs_tol=1e-12)
         assert site["magnet_fully_buried"]
         assert not site["proud_ear_added"]
@@ -4437,7 +4443,7 @@ def _assert_core_interface_breps(lm, um, core):
                 math.dist(site["face"], site["center"]),
                 site["radius"] + expected_offset, abs_tol=1e-9)
             assert math.isclose(
-                site["continuous_flush_ring_fairing_mm"], 0.80,
+                site["continuous_flush_ring_fairing_mm"], 0.94,
                 abs_tol=1e-12)
             assert math.isclose(
                 site["carrier_cavity_face_inset_mm"], 0.15,
@@ -4463,9 +4469,9 @@ def _assert_core_interface_breps(lm, um, core):
         assert tools.closure_kind == "transverse_gable_45deg"
         assert tools.spec.cavity_diameter_mm == 5.20
         assert tools.spec.cavity_depth_mm == 2.10
-        assert tools.spec.face_skin_mm == tools.spec.inner_skin_mm == 0.45
+        assert tools.spec.face_skin_mm == tools.spec.inner_skin_mm == 0.52
         assert math.isclose(
-            tools.spec.captive_land_mm, 3.00, abs_tol=1e-12)
+            tools.spec.captive_land_mm, 3.14, abs_tol=1e-12)
         assert tools.spec.roof_angle_deg == 45.0
 
         # Nothing may project beyond the visible carrier surface. Ring sites

@@ -10,27 +10,39 @@ intentionally not here.
 to_print/
 ├── catalog.json                 # tracked friendly-name/source map
 ├── README.md
+├── catalog_06hf.json            # 0.6-mm-lane hash manifest
 ├── stock/
-│   ├── stl/                     # 11 printable Stock pieces
-│   └── 3mf/                     # matching ready P2S projects
+│   ├── stl/                     # 11 printable Stock pieces (shared by both lanes)
+│   ├── 3mf_04/                  # ready P2S projects, 0.4 mm nozzle lane
+│   └── 3mf_06hf/                # ready projects, 0.6 mm high-flow lane (magnet parts)
 ├── slim/
 │   ├── stl/                     # 11 printable Slim pieces
-│   └── 3mf/                     # matching ready P2S projects
+│   ├── 3mf_04/                  # 0.4 mm lane
+│   └── 3mf_06hf/                # 0.6 mm high-flow lane
 └── obiwan/
     ├── stl/                     # 31: pieces + 4 plate alternatives + 2 candidates
-    └── 3mf/                     # matching ready P2S projects
+    ├── 3mf_04/                  # 0.4 mm lane
+    └── 3mf_06hf/                # 0.6 mm high-flow lane
 ```
 
-Open the `.gcode.3mf` from `3mf/` directly in Bambu Studio.  Do not reorient
+Open the `.gcode.3mf` from the lane folder matching the installed nozzle
+(`3mf_04/` for the 0.4 mm nozzle, `3mf_06hf/` for the 0.6 mm high-flow
+nozzle) directly in Bambu Studio. The 0.6-mm lane appends `_06hf` to
+every filename, so a Studio tab is never ambiguous about its lane; the
+same base name in both folders is the same part with the same pause; combo plates, candidates, and
+non-magnet pieces currently ship in `3mf_04/` only.  Do not reorient
 or re-slice it.  The project already has the front face on the build plate,
 the P2S 0.4 mm / 0.16 mm Arachne profile and the verified magnet events.
-Ordinary parts use Bambu PLA Tough+ with six general walls and 30% gyroid
+Ordinary parts use Bambu PLA Basic (PLA Tough+ is deprecated) with six
+general walls on the 0.4 lane and four on the 0.6 lane and 30% gyroid
 infill (40% for both UM carriers). Both standalone keyed LM `01` bottoms,
 plus both combined `01+02+03+04` core plates, are the structural
 exceptions: they use the hash-pinned saved
-**TINMORRY PETG-GF Profile @BBL P2S** preset and eight walls. The no-floor-stand `01`
+**TINMORRY PETG-GF Profile @BBL P2S** preset with six 0.62 mm walls on the
+**0.6 mm high-flow nozzle only** — PETG-GF projects ship exclusively in
+`3mf_06hf/`. The no-floor-stand `01`
 uses 40% gyroid globally plus its 100%-solid bridge/root modifier; the
-floor-stand `01` uses global 100% zig-zag. Flat/graded wings and shoulders remain PLA Tough+;
+floor-stand `01` uses global 100% zig-zag. Flat/graded wings and shoulders remain PLA Basic;
 do not print them in PETG-GF.
 Each magnetic event makes no XY move: it raises the nozzle to Z=250 mm at
 20 mm/s (lowering the P2S bed to within 6 mm of its bottom), executes the
@@ -66,7 +78,8 @@ speaker.
 floor-stand combo plates for 01+02+03+04. Each is one Bambu
 printable object containing four normal volumes and three aligned
 state-specific duct-blocker volumes at locked, translation-only positions.
-Both use TINMORRY PETG-GF and eight walls. The no-floor plate uses 40% gyroid
+Both use TINMORRY PETG-GF with six 0.62 mm walls on the 0.6 mm high-flow
+nozzle only. The no-floor plate uses 40% gyroid
 globally plus a 100% zig-zag parameter modifier through the complete no-floor-stand `01`
 bridge/root; the floor plate preserves the integral-floor bottom's global
 100% zig-zag profile. Both pin all four support fields globally and on the

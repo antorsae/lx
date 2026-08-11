@@ -391,9 +391,10 @@ def _obiwan_sites(*, owner: str, driver: str) -> dict[str, dict[str, Any]]:
             "paired_magnet_face_separation_mm": round(
                 NOMINAL_PAIRED_FACE_SEPARATION_MM + cavity_inset, 9),
         })
-        expected_separation = (
-            1.10 if record["interface_kind"] in {"ring", "shoulder"}
-            else 0.95)
+        expected_separation = round(
+            NOMINAL_PAIRED_FACE_SEPARATION_MM
+            + (0.15 if record["interface_kind"] in {"ring", "shoulder"}
+               else 0.0), 9)
         if record["paired_magnet_face_separation_mm"] != expected_separation:
             raise RuntimeError(
                 f"{site['name']}: Obi-Wan paired magnet-face separation "
@@ -634,8 +635,9 @@ def _wing_release_site(
         * (-float(normal[1]) if index == 0 else float(normal[0]))
         for index in range(2)
     ))
-    expected_separation = (
-        1.10 if interface_kind in {"ring", "shoulder"} else 0.95)
+    expected_separation = round(
+        NOMINAL_PAIRED_FACE_SEPARATION_MM
+        + (0.15 if interface_kind in {"ring", "shoulder"} else 0.0), 9)
     actual_separation = float(site["paired_magnet_face_separation_mm"])
     expected_inset = (
         0.15 if interface_kind in {"ring", "shoulder"} else 0.0)
@@ -959,10 +961,13 @@ def generate(output: Path) -> dict[str, Any]:
             **global_geometry,
             "nominal_magnet": "D5.0 x 2.0 mm disc",
             "paired_magnet_face_separation_by_interface_profile_mm": {
-                "standard_straight": 0.95,
-                "standard_curved": 1.09,
-                "obiwan_shoulder": 1.10,
-                "obiwan_ring": 1.10,
+                "standard_straight": NOMINAL_PAIRED_FACE_SEPARATION_MM,
+                "standard_curved": round(
+                    NOMINAL_PAIRED_FACE_SEPARATION_MM + 0.14, 9),
+                "obiwan_shoulder": round(
+                    NOMINAL_PAIRED_FACE_SEPARATION_MM + 0.15, 9),
+                "obiwan_ring": round(
+                    NOMINAL_PAIRED_FACE_SEPARATION_MM + 0.15, 9),
             },
             "glue": False,
             "external_access_opening": False,

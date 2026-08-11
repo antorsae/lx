@@ -51,6 +51,7 @@ from lx521_baffle.proud.b import (
 from lx521_baffle.proud.b2 import OUTLINE_B2
 from lx521_baffle.proud.b2_split import SEAM_B_Y
 from lx521_baffle.proud.vase_tebm35c10_4 import (
+    TEBM_LAND_D_MM,
     T_MAGNET_FACE_X_MM,
     T_MAGNET_FLAT_EDGE_MARGIN_MM,
     T_MAGNET_FLAT_HALF_HEIGHT_MM,
@@ -64,7 +65,7 @@ UM_FLANGE_D_MM = 97.5
 RELEASED_FRONT_T_AXIS_Y_MM = 483.78 - TWEETER_DROP_MM
 RELEASED_REAR_T_AXIS_Y_MM = 549.05 - TWEETER_DROP_MM
 
-# Tectonic Audio Labs TEBM35C10-4 outline drawing, rev. 1.6/1.8.
+# Tectonic Audio Labs TEBM35C10-4 outline drawing, rev. 1.0.
 TEBM_NOMINAL_D_MM = 52.0
 TEBM_MAX_D_MM = 54.0
 TEBM_BASKET_D_MM = 43.6
@@ -79,7 +80,6 @@ TEBM_MOUNT_HOLE_COUNT = 4
 PRESERVED_FRONT_EDGE_GAP_MM = 2.10
 BODY_TO_OPPOSITE_FLANGE_CLEARANCE_MM = 0.50
 TEBM_BORE_D_MM = TEBM_CUTOUT_D_MM
-TEBM_LAND_D_MM = 66.0
 M2_INSERT_BORE_D_MM = 3.2
 M2_INSERT_DEPTH_MM = 4.0
 M2_INSERTS_PER_DRIVER = TEBM_MOUNT_HOLE_COUNT
@@ -99,7 +99,7 @@ M2_INSERT_OUTER_LAND_MM = (
 )
 
 # One released-size captive D5x2 station at the left and right outer edge of
-# each T land.  Production CAD trims the D66 lands to qualified planar side
+# each T land.  Production CAD trims the D63 lands to planar side
 # faces, including 0.10 mm beyond the captive helper's required half-height.
 # The cavity axis is +/-X and retains the released 0.45-mm face skin.
 T_MAGNETS_PER_DRIVER = 2
@@ -409,7 +409,7 @@ def _front_panel(ax):
     ax.text(
         -87.0, 531.5,
         "Grey = current Stock\n"
-        "Blue = proposed Ø66 lands\n"
+        "Blue = proposed Ø63 lands\n"
         "Gold = 4×/T M2 bores\n"
         "Orange = 2×/T D5×2 magnets",
         color=COLORS["muted"], fontsize=6.7, ha="left", va="top",

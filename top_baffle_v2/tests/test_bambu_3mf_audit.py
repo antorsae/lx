@@ -299,7 +299,7 @@ def test_rejects_non_rz_or_non_unit_build_transforms(
         audit_bambu_3mf(project, stl)
 
 
-@pytest.mark.parametrize("delta", [5.0e-5, -8.0e-5])
+@pytest.mark.parametrize("delta", [2.0e-4, -3.0e-4])
 def test_rejects_changed_mesh(tmp_path: Path, delta: float) -> None:
     project, stl = _fixture(tmp_path, vertex_delta_mm=delta)
     with pytest.raises(Bambu3MFAuditError, match="mesh differs"):

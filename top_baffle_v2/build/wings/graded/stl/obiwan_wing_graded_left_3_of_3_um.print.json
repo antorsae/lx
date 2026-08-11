@@ -9,7 +9,7 @@
   "part": "obiwan_wing_graded_left_3_of_3_um",
   "piece_count": 3,
   "pre_translation_bbox_min_mm": [
-    98.24524828997471,
+    98.36264690528795,
     374.1489017684622,
     -18.30000009999996
   ],
@@ -26,7 +26,7 @@
       -0.9831615296572087,
       0.18273862920055373,
       0.0,
-      -98.24524828997471
+      -98.36264690528795
     ],
     [
       0.18273862920055373,
@@ -49,12 +49,12 @@
   ],
   "split_variant": "a",
   "stl": "obiwan_wing_graded_left_3_of_3_um.stl",
-  "stl_bytes": 2138884,
+  "stl_bytes": 2177884,
   "stl_origin_translation_mm": [
-    -98.24524828997471,
+    -98.36264690528795,
     -374.1489017684622,
     18.30000009999996
   ],
-  "stl_sha256": "3c5ac8e79fb2c674d53ad930c0811ca6c0d4c51a2ae87b9e103736b7709a359e",
+  "stl_sha256": "8bf42cf1c3231a094e6c70f72cc2dc8582daecbcfdd97f8877e466a016c223c7",
   "variant_slug": "graded"
 }

@@ -549,19 +549,20 @@ def test_magnet_top_site_walls():
 
     # One fit rule applies to every generated variant: the purchased
     # magnet remains D5 x 2 while all base/receiver cavities are D5.2 x 2.1,
-    # buried between one printable 0.45 mm extrusion at each axial face.
+    # buried between one printable 0.52 mm bead at each axial face (the
+    # dual 0.4/0.6-nozzle single-Arachne-bead value).
     assert MAGNET_D_MM == 5.0
     assert MAGNET_T_MM == 2.0
     assert MAG_CAVITY_D_MM == 5.2
     assert MAG_CAVITY_DEPTH_MM == 2.10
-    assert MAG_FACE_SKIN_MM == MAG_INNER_SKIN_MM == 0.45
+    assert MAG_FACE_SKIN_MM == MAG_INNER_SKIN_MM == 0.52
     assert MAG_INTERFACE_GAP_MM == 0.05
     assert math.isclose(
         MAG_CAVITY_DEPTH_MM - MAGNET_T_MM, 0.10, abs_tol=1e-12)
-    assert math.isclose(MAG_LAND_DEPTH_MM, 3.0, abs_tol=1e-12)
+    assert math.isclose(MAG_LAND_DEPTH_MM, 3.14, abs_tol=1e-12)
     assert math.isclose(
         2.0 * MAG_FACE_SKIN_MM + MAG_INTERFACE_GAP_MM,
-        0.95, abs_tol=1e-12)
+        1.09, abs_tol=1e-12)
 
     x, y, nx, ny, _pin, zc = MAGNET_SITES[1]
     p0, nc = _chamfer_plane()
@@ -639,7 +640,8 @@ def test_magnet_cavities_vs_t_ducts():
 def test_ts_captive_keepout_nudge():
     """Every stock/slim variant retains D6 and the lower-left land.
 
-    One short, smooth positive-X detour moves the duct inward by 0.60 mm;
+    One short, smooth positive-X detour moves the duct inward by up to
+    0.80 mm (raised from 0.60 for the deeper 3.14-mm dual-nozzle land);
     exact BREP screening leaves the complete helper land untouched while
     preserving every duct section.
     """
@@ -727,7 +729,7 @@ def test_stock_captive_magnet_contract():
                 pair["interface_gap_mm"], 0.05 + inset, abs_tol=1e-9)
             assert math.isclose(
                 pair["nominal_magnet_face_separation_mm"],
-                0.95 + inset, abs_tol=1e-9)
+                1.09 + inset, abs_tol=1e-9)
             assert np.allclose(
                 pair["base_marked_pole_axis_xyz"],
                 pair["receiver_marked_pole_axis_xyz"], atol=1.0e-12)
@@ -737,7 +739,7 @@ def test_stock_captive_magnet_contract():
                 receiver.roof_start_print_z_mm, 5.80, abs_tol=1e-9)
             assert math.isclose(
                 base.required_land.bounding_box().min.Z,
-                9.45, abs_tol=0.01)
+                9.38, abs_tol=0.01)
             assert math.isclose(
                 base.required_land.bounding_box().max.Z,
                 THICKNESS_MM, abs_tol=0.01)

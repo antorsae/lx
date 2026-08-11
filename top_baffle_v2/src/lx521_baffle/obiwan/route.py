@@ -1803,7 +1803,7 @@ def route_facts():
         "um_telescoping_handoff_count": 0,
         "t_handoff_mode": "lm_um_core_then_free_behind_tweeter",
         "t_lower_lm_flush_radius_mm": LM_CORE_R,
-        "lm_visible_ring_radius_mm": LM_VISIBLE_RING_R,
+        "lm_cover_burial_ceiling_radius_mm": LM_VISIBLE_RING_R,
         "lm_route_owner_clearance_mm": LM_ROUTE_OWNER_CLEARANCE,
         "main_lm_route_radius_mm": MAIN_LM_ROUTE_R,
         "t_lm_route_radius_mm": TS_LM_ROUTE_R,

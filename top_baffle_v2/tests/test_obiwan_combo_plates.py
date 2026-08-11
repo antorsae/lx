@@ -25,7 +25,7 @@ EXPECTED = {
         "bottom_name": (
             "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand"
         ),
-        "triangle_count": 63_008,
+        "triangle_count": 63_004,
         "make_slug": "no_floor",
         "infill": (40.0, "gyroid"),
     },
@@ -36,7 +36,7 @@ EXPECTED = {
         "bottom_name": (
             "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand"
         ),
-        "triangle_count": 165_892,
+        "triangle_count": 165_848,
         "make_slug": "floor",
         "infill": (100.0, "zig-zag"),
     },
@@ -47,7 +47,7 @@ SHARED_NAMES = (
     "obiwan_03_UM_carrier_1_of_1",
     "obiwan_04_T_tweeter_crescent_1_of_1",
 )
-PETG_GF_PROFILE = ROOT / "captive_magnet_slicing_profile_petg_gf.json"
+PETG_GF_PROFILE = ROOT / "captive_magnet_slicing_profile_petg_gf_06hf.json"
 
 
 def check(condition: bool, message: str) -> None:
@@ -138,8 +138,10 @@ def check_variant(state: str) -> None:
     check(
         profile["user_filament_preset"]
         == "TINMORRY PETG-GF Profile @BBL P2S"
-        and profile["repo_overrides"]["process"]["wall_loops"] == "8",
-        "combined core profile must pin saved TINMORRY PETG-GF and 8 walls",
+        and profile["repo_overrides"]["process"]["wall_loops"] == "6"
+        and profile["requirements"]["nozzle_diameter_mm"] == 0.6,
+        "combined core profile must pin saved TINMORRY PETG-GF on the "
+        "0.6-mm high-flow lane with its six 0.62 mm walls",
     )
     make_slug = expected["make_slug"]
     for target in (

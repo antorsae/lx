@@ -9,7 +9,7 @@
   "part": "obiwan_wing_flat_left_split2_2_of_2_lm_um_upper",
   "piece_count": 2,
   "pre_translation_bbox_min_mm": [
-    224.57655364081867,
+    224.62940923973395,
     -32.52260691272679,
     -18.29999999999998
   ],
@@ -26,7 +26,7 @@
       -0.4500984410374348,
       0.8929789434111371,
       0.0,
-      -224.57655364081867
+      -224.62940923973395
     ],
     [
       0.8929789434111371,
@@ -51,10 +51,10 @@
   "stl": "obiwan_wing_flat_left_split2_2_of_2_lm_um_upper.stl",
   "stl_bytes": 326084,
   "stl_origin_translation_mm": [
-    -224.57655364081867,
+    -224.62940923973395,
     32.52260691272679,
     18.29999999999998
   ],
-  "stl_sha256": "ce52243ab408d731ff338d901d7438c4ddec46b8fd70c0a8fca188cc07676b79",
+  "stl_sha256": "51f04ddb3159f2d3bd11dc31f1ff66a91613cb762214c6e11a618e6342e037de",
   "variant_slug": "flat"
 }

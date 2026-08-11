@@ -11,7 +11,7 @@ Two variants share that child directory and every gate:
 
 * ``coaxial`` -- ``obiwan_bmr_crescent_TEBM35C10-4``, the two BMRs stacked
   back to back on one axis, 50.2 mm deep, with two captive magnets on its one
-  outward D66 land; and
+  outward D63 land; and
 * ``opposed`` -- ``obiwan_bmr_crescent_opposed_TEBM35C10-4``, the qualified
   vase's side-by-side layout on the same crescent mount, 25.1 mm deep and much
   taller, with all four of the vase's captive magnets.
@@ -99,6 +99,7 @@ SOURCE_FILES = (
     "src/lx521_baffle/magnets.py",
     "src/lx521_baffle/print_contract.py",
     "src/lx521_baffle/stl_export.py",
+    "src/lx521_baffle/tebm35c10_4_land.py",
     "src/lx521_baffle/proud/b.py",
     "src/lx521_baffle/proud/b2.py",
     "src/lx521_baffle/proud/v1.py",
@@ -126,7 +127,7 @@ SOURCE_FILES = (
 _SHARED_OPEN_ITEMS = (
     "TEBM35C10-4 flange/basket/depth measured on the actual driver, "
     "not taken from the published envelope",
-    "M2 x 4 heat-set installation in every D66 land without breakthrough "
+    "M2 x 4 heat-set installation in every selected land without breakthrough "
     "into a pocket or a magnet cavity",
     "a pull test on the printed land: the captive D5 x 2 stations now slice "
     "with real park/pause/restore events out of their own isolated catalog, "
@@ -474,7 +475,7 @@ _OPPOSED_OPEN_ITEMS = (
     "UM-to-pod two-screw joint re-proven at this part's hanging mass on a "
     "far longer arm than either the coaxial pod or the released crescent: "
     "the upper driver axis stands 80.294 mm above the half-lap line",
-    "the junction skirt and the 43.88 mm waist between the two lands loaded "
+    "the junction skirt and the 39.224 mm waist between the two lands loaded "
     "at that hanging moment; the skirt's ear section is chosen to keep the "
     "qualified half-lap governing, but nothing has been printed or loaded",
     "an acoustic opinion on both axes: the lower BMR sits 86.413 mm from "

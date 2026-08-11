@@ -129,9 +129,9 @@
         "cavity_depth_mm": {"type": "number", "exclusiveMinimum": 0},
         "face_skin_mm": {"type": "number", "exclusiveMinimum": 0},
         "inner_skin_mm": {"type": "number", "exclusiveMinimum": 0},
-        "captive_land_mm": {"const": 3.0},
+        "captive_land_mm": {"const": 3.14},
         "interface_gap_mm": {"const": 0.05},
-        "paired_magnet_face_separation_mm": {"enum": [0.95, 1.09, 1.1]},
+        "paired_magnet_face_separation_mm": {"enum": [1.09, 1.23, 1.24]},
         "interface_profile": {
           "enum": ["standard_straight", "standard_curved"]
         },
@@ -211,7 +211,7 @@
           "then": {
             "properties": {
               "carrier_cavity_face_inset_mm": {"const": 0.15},
-              "paired_magnet_face_separation_mm": {"const": 1.1}
+              "paired_magnet_face_separation_mm": {"const": 1.24}
             }
           }
         },
@@ -223,7 +223,7 @@
           "then": {
             "properties": {
               "carrier_cavity_face_inset_mm": {"const": 0.15},
-              "paired_magnet_face_separation_mm": {"const": 1.1}
+              "paired_magnet_face_separation_mm": {"const": 1.24}
             }
           }
         }

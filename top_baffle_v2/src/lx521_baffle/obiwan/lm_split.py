@@ -420,7 +420,7 @@ def registration_fit_facts() -> dict:
         "wing_clearance_compatible_variants": ("flat", "graded"),
         "wing_clearance_pocket_between_front_and_rear": True,
         "exterior_support_land": False,
-        "registration_wall_source": "native_r113p8_smooth_ring",
+        "registration_wall_source": "native_r113p94_smooth_ring",
         "support_land_outer_radius_mm": outer_witness_r,
         "support_land_plan_growth_from_structural_ring_mm": (
             plan_growth_from_structural),

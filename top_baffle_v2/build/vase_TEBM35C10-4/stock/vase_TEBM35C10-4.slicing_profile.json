@@ -9,8 +9,8 @@
   ],
   "backend": "BambuStudio",
   "catalog_mode": "auxiliary",
-  "filament": "Bambu PLA Tough+ @BBL P2S",
-  "filament_preset": "filament/Bambu PLA Tough+ @BBL P2S.json",
+  "filament": "Bambu PLA Basic @BBL P2S",
+  "filament_preset": "filament/Bambu PLA Basic @BBL P2S.json",
   "generated_from": "../../../captive_magnet_slicing_profile.json",
   "machine_bounds_mm": {
     "x": [
@@ -37,29 +37,8 @@
   "process_preset": "process/0.16mm High Quality @BBL P2S.json",
   "repo_overrides": {
     "filament": {
-      "fan_max_speed": [
-        "60"
-      ],
-      "filament_max_volumetric_speed": [
-        "16",
-        "16"
-      ],
-      "nozzle_temperature": [
-        "225",
-        "225"
-      ],
-      "nozzle_temperature_initial_layer": [
-        "225",
-        "225"
-      ],
       "overhang_fan_speed": [
         "100"
-      ],
-      "textured_plate_temp": [
-        "55"
-      ],
-      "textured_plate_temp_initial_layer": [
-        "55"
       ]
     },
     "machine": {
@@ -73,6 +52,7 @@
       "elefant_foot_compensation": "0.15",
       "enable_support": "0",
       "ensure_vertical_shell_thickness": "enabled",
+      "min_bead_width": "100%",
       "outer_wall_speed": [
         "60",
         "60"

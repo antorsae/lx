@@ -142,7 +142,14 @@ TRANSVERSE_SAME_PATH_EDGE_RETURN_BIN_LIMIT = 3
 # Bambu's one-path adaptive bead reaches 0.661027 mm on the legacy V1 inner
 # skin.  Width alone never grants release: the same stage must still prove one
 # physical traversal and a path-width-aware D5 x 2 loading aperture.
-TRANSVERSE_RETAINING_BEAD_WIDTH_RANGE_MM = (0.42, 0.67)
+# The 0.52-mm dual-nozzle skins raise the inset-under-curved-face wedge
+# family (stock/slim curved receivers 0.57..0.70 physical, Obi-Wan
+# shoulder/ring carriers 0.67..0.78) past Arachne's default two-bead split
+# threshold; the pinned min_bead_width=0.40 override forces those wedges to
+# one adaptive bead, whose boundary width may legitimately reach the wedge
+# maximum.  0.78 is that geometric ceiling, not an allowance for arbitrary
+# fat beads.
+TRANSVERSE_RETAINING_BEAD_WIDTH_RANGE_MM = (0.42, 0.78)
 AXIAL_RETAINING_BEAD_WIDTH_RANGE_MM = (0.42, 0.65)
 # Arachne reports the resolved variable-width bead rather than simply echoing
 # the 0.42-mm nominal outer-wall setting.  Angled transverse/interface paths
@@ -151,6 +158,68 @@ AXIAL_RETAINING_BEAD_WIDTH_RANGE_MM = (0.42, 0.65)
 # topology only the lower-side margin its measured output requires.
 TRANSVERSE_RETAINING_BEAD_LOWER_WIDTH_TOLERANCE_MM = 0.005
 AXIAL_RETAINING_BEAD_LOWER_WIDTH_TOLERANCE_MM = 0.000005
+# The four constants above are the pinned 0.4-mm-nozzle-lane qualification.
+# Another nozzle lane pins its own acceptance through the profile's
+# requirements.retaining_bead_acceptance object; prepare_profiles() installs
+# the active lane into this shared mapping exactly once per CLI invocation
+# (each run resolves exactly one profile) and the effective profile contract
+# records the installed values so every audit output names the acceptance it
+# was judged against.  gcode_analysis reads this mapping, never the raw
+# constants, at its band-gated call sites.
+RETAINING_BEAD_ACCEPTANCE: dict[str, Any] = {
+    "transverse_width_range_mm": TRANSVERSE_RETAINING_BEAD_WIDTH_RANGE_MM,
+    "axial_width_range_mm": AXIAL_RETAINING_BEAD_WIDTH_RANGE_MM,
+    "transverse_lower_width_tolerance_mm": (
+        TRANSVERSE_RETAINING_BEAD_LOWER_WIDTH_TOLERANCE_MM),
+    "axial_lower_width_tolerance_mm": (
+        AXIAL_RETAINING_BEAD_LOWER_WIDTH_TOLERANCE_MM),
+}
+
+
+def _resolve_retaining_bead_acceptance(
+    config: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Validate one lane's retaining-bead acceptance from requirements."""
+    defaults: dict[str, Any] = {
+        "transverse_width_range_mm": (
+            TRANSVERSE_RETAINING_BEAD_WIDTH_RANGE_MM),
+        "axial_width_range_mm": AXIAL_RETAINING_BEAD_WIDTH_RANGE_MM,
+        "transverse_lower_width_tolerance_mm": (
+            TRANSVERSE_RETAINING_BEAD_LOWER_WIDTH_TOLERANCE_MM),
+        "axial_lower_width_tolerance_mm": (
+            AXIAL_RETAINING_BEAD_LOWER_WIDTH_TOLERANCE_MM),
+    }
+    requirements = config.get("requirements")
+    supplied = (
+        requirements.get("retaining_bead_acceptance")
+        if isinstance(requirements, Mapping) else None)
+    if supplied is None:
+        return defaults
+    if not isinstance(supplied, Mapping) or set(supplied) != set(defaults):
+        raise AuditError(
+            "requirements.retaining_bead_acceptance must define exactly: "
+            + ", ".join(sorted(defaults)))
+    resolved: dict[str, Any] = {}
+    for key in ("transverse_width_range_mm", "axial_width_range_mm"):
+        pair = supplied[key]
+        if (not isinstance(pair, Sequence) or isinstance(pair, (str, bytes))
+                or len(pair) != 2):
+            raise AuditError(
+                f"retaining_bead_acceptance.{key} must be [low, high]")
+        low = _float(pair[0], f"retaining_bead_acceptance.{key}[0]")
+        high = _float(pair[1], f"retaining_bead_acceptance.{key}[1]")
+        if not 0.0 < low < high:
+            raise AuditError(
+                f"retaining_bead_acceptance.{key} must satisfy 0 < low < high")
+        resolved[key] = (low, high)
+    for key in ("transverse_lower_width_tolerance_mm",
+                "axial_lower_width_tolerance_mm"):
+        value = _float(supplied[key], f"retaining_bead_acceptance.{key}")
+        if value < 0.0:
+            raise AuditError(
+                f"retaining_bead_acceptance.{key} must be non-negative")
+        resolved[key] = value
+    return resolved
 ANNULAR_COMPONENT_SEAM_WIDTH_MARGIN_MM = 0.04
 ANNULAR_COMPONENT_SEAM_SEARCH_RAYS = 2.0
 EVIDENCE_CELL_PX = 218
@@ -159,8 +228,25 @@ EVIDENCE_MARGIN_MM = 4.0
 # keys without reporting that they are inert, so every authority we intentionally
 # inject must be registered here as a setting the audit understands and checks.
 PROFILE_OVERRIDE_KEYS = {
-    "machine": frozenset({"machine_pause_gcode"}),
+    "machine": frozenset({
+        "machine_pause_gcode",
+        # The 0.6-mm lane runs the high-flow hotend: pin the nozzle
+        # volume type so every preset resolves its High Flow variant
+        # column (temps, pressure advance, volumetric ceilings) and the
+        # device-side nozzle check matches at send time.
+        "default_nozzle_volume_type",
+    }),
     "process": frozenset({
+        # The 0.6-mm lane bases its process on a stock 0.6-nozzle preset and
+        # pins the release-wide 0.16/0.20 layer schedule through overrides so
+        # both nozzle lanes share one Z stack and one pause table.
+        "layer_height",
+        "initial_layer_print_height",
+        # Deterministic single-bead retaining skins: each lane pins the
+        # Arachne minimum bead so the inset/curved-face skin wedges can never
+        # split into sub-floor bead pairs (0.40 on the 0.4 lane, 0.51 on the
+        # 0.6 lane).
+        "min_bead_width",
         "wall_loops",
         "top_shell_layers",
         "bottom_shell_layers",
@@ -202,12 +288,18 @@ RELEASE_SITE_GEOMETRY_MM = {
     "roof_angle_deg": DEFAULT_MAGNET_SPEC.roof_angle_deg,
     "minimum_retaining_path_mm": DEFAULT_MAGNET_SPEC.retaining_path_mm,
 }
+# Derived per-interface separations: base is two qualified face skins plus
+# the 0.05-mm solid spacing standoff; the curved carrier stations add their
+# 0.14-mm cavity-face inset and the Obi-Wan shoulder/ring interfaces add
+# their 0.15-mm inset.  Deriving from the contract keeps this map correct
+# across skin respins (0.45 -> 0.52 dual-nozzle).
+_PAIRED_BASE_MM = DEFAULT_MAGNET_SPEC.paired_face_separation_mm
 PAIRED_MAGNET_FACE_SEPARATION_MM = {
-    None: 0.95,
-    "standard_straight": 0.95,
-    "standard_curved": 1.09,
-    "shoulder": 1.10,
-    "ring": 1.10,
+    None: _PAIRED_BASE_MM,
+    "standard_straight": _PAIRED_BASE_MM,
+    "standard_curved": round(_PAIRED_BASE_MM + 0.14, 9),
+    "shoulder": round(_PAIRED_BASE_MM + 0.15, 9),
+    "ring": round(_PAIRED_BASE_MM + 0.15, 9),
 }
 SUPPORT_PROCESS_KEYS = (
     "enable_support",
@@ -779,6 +871,12 @@ def _profile_value_equal(actual: Any, expected: Any) -> bool:
             and all(_profile_value_equal(a, e)
                     for a, e in zip(actual, expected, strict=True))
         )
+    if isinstance(actual, list) and len(actual) == 1:
+        # Bambu serializes single-extruder machine scalars as one-element
+        # vectors (observed: default_nozzle_volume_type=['High Flow'] echoed
+        # for the scalar 'High Flow' override).  Unwrap only for scalar
+        # expectations; vector expectations keep strict cardinality above.
+        return _profile_value_equal(actual[0], expected)
     if isinstance(expected, bool):
         return _boolish(actual) is expected
     if isinstance(expected, (int, float)):
@@ -1030,9 +1128,14 @@ def _effective_profile_contract(
     if str(machine.get("machine_pause_gcode", "")).strip() != "M400 U1":
         raise AuditError(
             "resolved machine_pause_gcode must be exactly 'M400 U1'")
+    lane_acceptance = _resolve_retaining_bead_acceptance(config)
     return {
         "printer_model": model,
         "nozzle_diameter_mm": checks["nozzle diameter"][0],
+        "retaining_bead_acceptance": {
+            key: (list(value) if isinstance(value, tuple) else value)
+            for key, value in lane_acceptance.items()
+        },
         "layer_height_mm": checks["layer height"][0],
         "first_layer_height_mm": checks["first layer height"][0],
         "wall_generator": wall_generator,
@@ -1148,6 +1251,11 @@ def prepare_profiles(
         raise AuditError("slicing profile must define non-empty repo_overrides")
     resolved = _apply_profile_overrides(
         flattened, repo_overrides, label="repo_overrides")
+    # Install this lane's retaining-bead acceptance before any audit reads
+    # the shared mapping.  Each CLI invocation resolves exactly one profile,
+    # so the install is a one-shot lane selection, not a mutable setting.
+    RETAINING_BEAD_ACCEPTANCE.update(
+        _resolve_retaining_bead_acceptance(config))
     effective = _effective_profile_contract(
         resolved, config, repo_overrides)
 

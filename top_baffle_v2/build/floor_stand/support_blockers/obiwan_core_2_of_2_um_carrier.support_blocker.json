@@ -3286,11 +3286,11 @@
   },
   "kind": "bambu_support_blocker",
   "main_stl": "../stl/obiwan_core_2_of_2_um_carrier.stl",
-  "main_stl_sha256": "339c12af4ef1c282cd4497c1248ff51b9a9db1d3db62abbdf2dca89c0821c52c",
+  "main_stl_sha256": "2efb59bf135c5605f44dfa46253ad3cd3f66bb63b8ee09deaeae7dbe65fe3301",
   "mesh": {
     "component_error": 0,
     "component_signed_volumes": [
-      4948.024475375917
+      4948.02386287573
     ],
     "components": 1,
     "degenerate": 0,
@@ -3303,7 +3303,7 @@
     "open": 0,
     "outer_components": 1,
     "over_shared": 0,
-    "signed_volume": 4948.024475375917,
+    "signed_volume": 4948.02386287573,
     "triangles": 464,
     "winding": 0,
     "zero_volume": 0,
@@ -3318,7 +3318,7 @@
       1.0,
       0.0,
       0.0,
-      52.500000099999994
+      52.640000099999995
     ],
     [
       0.0,
@@ -3340,5 +3340,5 @@
     ]
   ],
   "support_blocker": "obiwan_core_2_of_2_um_carrier.support_blocker.stl",
-  "support_blocker_sha256": "0dea9329c56636ac6bcb1b3652a8d638c77301b1bd21d89151601d4701fab06d"
+  "support_blocker_sha256": "b2b7e6bb2e34ff1a6b7c5169fcb5150fbedd5e83dd757c76b83efd6ef791186e"
 }

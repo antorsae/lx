@@ -124,14 +124,24 @@ front, ISO and rear — are in
 the release snapshots are in
 [`review/tebm_release_snapshots/`](../review/tebm_release_snapshots/).
 
-`vase_TEBM35C10-4` is a first-class optional vase family with two released
-envelope profiles. Both replace the Dayton tweeter crescent with two opposed
+`vase_TEBM35C10-4` is a first-class optional vase family with two envelope
+profiles. Both replace the Dayton tweeter crescent with two opposed
 TEBM35C10-4 BMRs: the lower driver faces front, the upper driver faces rear,
-both use four M2 × 4 × Ø3.2 insert bores, and each D66 land has two captive
+both use four M2 × 4 × Ø3.2 insert bores, and each default Ø63 land has two captive
 D5 × 2 side magnets. The driver pockets keep 1.2 mm blind rear/front walls.
 The shared T route terminates at the lower pocket while a separate tangent
 branch reaches the upper pocket; the guarded BREP gates allow no exterior
 opening except the seam-B inlet and the two declared pocket outlets.
+
+The land choice is independent of the Stock/Slim rear envelope. `full` is a
+clipped Ø63 circle whose side-magnet faces at `x=±31.326666` set a 62.653 mm
+maximum width, moving each face inward by about 1.508 mm. `bmr-slim` is an
+unqualified driver-following alternative: a
+Ø56 core, four local M2 pads and two discrete side-magnet lobes reaching the
+same faces and width. It retains the magnets instead of deleting or moving
+them, but reduces the local land plan area by about 19.5%. The drawing gives
+no tolerance, flange thickness, lug detail or terminal envelope, so both new
+land topologies are prototypes and `physical_measure_required` remains true.
 
 The acoustic plane remains z=18.3 and both profiles reach the same local BMR
 rear plane z=-6.8, giving the published 25.1 mm flush driver depth. Both use
@@ -144,12 +154,16 @@ the same regular seam-B XY profile; only the local vase thickness differs:
 
 The Stock and Slim BMR vases use the same seam-B plan interface as the normal
 B2/V1 vases. Mixed thicknesses retain the documented hidden rear step/open
-notch behavior. The two public CAD children live under
-`build/vase_TEBM35C10-4/{stock,slim}/`; build both with
+notch behavior. The two default full-land CAD children live under
+`build/vase_TEBM35C10-4/{stock,slim}/`; their BMR-slim counterparts live under
+`build/bmr_slim_TEBM35C10-4/proud/{stock,slim}/`. Build the full-land profiles with
 `make vase_tebm35c10_4_cad`, or one named child with
 `make vase_tebm35c10_4_{stock,slim}_cad`. Ready Bambu projects are local-only
 targets named `vase_tebm35c10_4_{stock,slim}_3mf` and are promoted to the
 stable sibling file `vase_TEBM35C10-4.gcode.3mf` in each child root.
+Build all four CAD-only BMR-slim alternatives with
+`make bmr_slim_candidates_cad`; that target intentionally creates no slicer,
+release-catalog or `to_print` artifact.
 
 ## Candidate TEBM35C10-4 BMR crescents (Obi-Wan)
 
@@ -159,21 +173,22 @@ candidates, both built by the local-only `make obiwan_bmr_crescent_cad` into
 `build/bmr_crescent_TEBM35C10-4/`, and both keeping the released ND25FW-4
 crescent's UM-collar mate exactly — so any of the three is swappable for the
 others without touching the UM print — while keeping nothing else of that
-crescent's outline. Each is a D66 driver land, or two, dropped onto the collar
-and joined to it by the same solid flush skirt, fed by the same one hidden
-Ø6.00 cable entry on the mate face, and carrying the qualified vase's own
-captive D5 × 2 side magnets.
+crescent's outline. Each default artifact uses one or two clipped Ø63 lands,
+joined to the collar by the same solid flush skirt, fed by the same hidden
+Ø6.00 cable entry on the mate face, and carrying the vase layout's captive
+D5 × 2 side magnets.
 
-- **`obiwan_bmr_crescent_TEBM35C10-4`** — *coaxial*. Both BMRs on one axis at
-  `(0, 452.494193)`, back to back, 15.699 mm below the released tweeter axis,
+- **`obiwan_bmr_crescent_TEBM35C10-4`** — *coaxial*. Both BMRs on the fixed
+  axis `(0, 452.494193)`, back to back, 15.699 mm below the released tweeter axis,
   which puts them 86.413 mm from the MU10 axis instead of 102.112 mm. Two
-  25.1 mm envelopes stack to 50.2 mm. 65.67 × 73.97 × 50.20 mm, 106.07 cm³,
-  **2 captive magnets** on its one outward land.
-- **`obiwan_bmr_crescent_opposed_TEBM35C10-4`** — *opposed*. The qualified
-  vase's own side-by-side layout on the crescent mount: the same lower axis at
+  25.1 mm envelopes stack to 50.2 mm. The full-land prototype is 62.653 mm
+  wide and has **2 captive magnets** on its one outward land.
+- **`obiwan_bmr_crescent_opposed_TEBM35C10-4`** — *opposed*. The vase's
+  side-by-side layout on the crescent mount: the same lower axis at
   `(0, 452.494193)` facing front and a second at `(0, 501.794193)` facing
   rear, one vase pitch (49.3 mm) above it, both inside one 25.1 mm envelope.
-  65.67 × 123.27 × 25.10 mm, 93.27 cm³, **4 captive magnets**, two per land.
+  The full-land prototype is 62.653 mm wide and has **4 captive magnets**,
+  two per land.
 
 Full descriptions, including the per-variant open qualification items, are in
 [`obiwan.md`](obiwan.md#tweeter-options).
@@ -182,22 +197,25 @@ Full descriptions, including the per-variant open qualification items, are in
 
 ![Candidate opposed BMR crescent](../images/generated/iso/tweeter_tebm35c10_4_crescent_opposed.png)
 
-All three BMR parts use the same driver, the same D66 land with its two
-magnet flats, and the same 1.20 mm blind pocket wall. What differs is how the
-pair is arranged and what carries it, and that drives everything else below:
+All three BMR arrangements use the same driver, the same fixed acoustic axes,
+the same 1.20 mm blind pocket wall and the same side-magnet interface. Their
+default `full` topology is the clipped Ø63 land; the unqualified BMR-slim
+alternative substitutes a Ø56 core with M2 pads and local lobes without
+moving the magnet faces. What differs is how the pair is arranged and what
+carries it, and that drives everything else below:
 
 | | Opposed vase (Stock, Slim) | Coaxial crescent (Obi-Wan) | Opposed crescent (Obi-Wan) |
 |---|---|---|---|
-| Driver axes | two, 49.3 mm apart in Y at y=443.931 and y=493.231 | one, at y=452.494193 — dropped as close to the UM as the half-lap notch allows | two, the same 49.3 mm apart, at y=452.494193 and y=501.794193 — the lower one on that same drop limit |
+| Driver axes | two, 49.3 mm apart in Y at y=443.931 and y=493.231 | one fixed axis at y=452.494193; changing land topology does not move it | two fixed axes at y=452.494193 and y=501.794193, preserving the same 49.3 mm pitch |
 | Facing | lower driver front, upper driver rear | front driver +z, rear driver −z, back to back | lower driver front, upper driver rear |
 | Local depth | 25.1 mm; both drivers share one envelope, z=18.3 to z=−6.8 | 50.2 mm; the envelopes stack, z=18.3 to z=−31.9 | 25.1 mm; both drivers share one envelope, z=18.3 to z=−6.8 |
 | Shared wall | none — the two pockets sit side by side | a 2.40 mm partition, two independent 1.20 mm blind walls back to back, with one declared Ø4.60 lead pass | none — the two pockets sit side by side, 6.374 mm apart on the axis line |
 | Mounts on | the seam-B vase interface, replacing piece `04` | the UM half-lap ears at x=±24, y=421.5 | the same UM half-lap ears |
-| Surrounding structure | the full vase piece it replaces | a straight D66 pod — the driver land itself — plus a solid skirt filling the whole plan between it and the collar | two overlapping D66 lands with a 43.88 mm waist, plus the same solid skirt under the lower one |
+| Surrounding structure | the full vase piece it replaces | one constant-plan Ø63 land, or the Ø56-core BMR-slim land, plus a solid skirt filling the plan between it and the collar | two constant-plan lands plus the same solid skirt under the lower one; the default Ø63 circles overlap by 13.7 mm |
 | Cabling | the vase's own Ø4.6 lead outlets | one Ø6.00 entry on the UM mate face, in line with the collar's T emergence; nothing opens on the assembled exterior | the same Ø6.00 entry into the lower chamber, then one Ø4.60 branch across the waist to the upper one; nothing opens on the exterior |
-| Captive magnets | 4, two per D66 land | 2, the vase's lower/front pair on its one outward land | 4, the vase's own two pairs |
-| Envelope / volume | the whole vase piece | 65.67 × 73.97 × 50.20 mm, 106.07 cm³ | 65.67 × 123.27 × 25.10 mm, 93.27 cm³ |
-| Status | released in Stock and Slim envelope profiles | candidate; not release-authorized | candidate; not release-authorized |
+| Captive magnets | 4, two per selected land | 2, the vase's lower/front pair on its one outward land | 4, the vase's own two pairs |
+| Maximum land width | 62.653 mm for both full and BMR-slim | 62.653 mm for both full and BMR-slim | 62.653 mm for both full and BMR-slim |
+| Status | prototype; not release-authorized after the land change | candidate; not release-authorized | candidate; not release-authorized |
 
 ## Add-ons (outline experiments)
 
@@ -208,7 +226,7 @@ pair is arranged and what carries it, and that drives everything else below:
 | **V1 A-shoulders** (11.5) | 4: `v1addonA_*` | V1 vase (V1L sets) | both captive stations share source Z=15.10; the upper land is contained by the broad symmetric smooth taper shelf, with no local magnet geometry; lower/upper nominal pair spacing 0.95/1.09 mm |
 | **V1 B1-wings** (11.5) | 2: `v1addonB1_*` | V1 vase (V1L sets) | same common-Z captive stations and broad smooth taper shelf |
 | V0 scarf family *(retired)* | (concept only; never released) | V0 | no released mate or pairing polarity; V0's two rear-axis base cavities print front-face-down at symmetric `(±6.690,321.290)`. The detached legacy `(±46,324)` and interim `(±37.697,326.470)` pair are rejected. Both released R3.20 lands fit wholly inside the immutable post-bevel host, clear the D82 cutout, UM pilots, grown seam-B keepout, and all ducts, and require no local backing, boss, or visible rear cue. |
-| **Obi-Wan BMR crescents** *(candidates)* | `obiwan_bmr_crescent_TEBM35C10-4.stl`, `obiwan_bmr_crescent_opposed_TEBM35C10-4.stl` | Obi-Wan UM collar only; mutually exclusive with the ND25FW-4 crescent and with each other | the identical half-laps at x=±24, y=421.5, blind Ø4.6 x 4.0 receivers, 1.9 mm front floors and 0.20 mm axial gap, proven ear-for-ear against the released crescent and by assembling on the staged UM collar; the rest is one or two dropped D66 lands joined to the collar by a solid skirt landing on the released crescent's own seam, with no inherited crescent outline and no M4 clamp holes; one hidden Ø6.00 cable entry on the mate face and no exterior opening at all; the qualified vase's captive D5 × 2 side stations at source Z=15.10 on each land's own flat — 2 on the coaxial pod, 4 on the opposed one — buried behind the 0.45 mm skin and sliced with real park/pause/restore events out of each pod's **own isolated one-artifact catalog and profile**, never the released ones; both parts stay **not release-authorized** and absent from the release inventory, the stage manifests, the captive-magnet catalog and the two released slicing profiles, and the P2S shelf carries each as a labelled CANDIDATE pair hard-linked from that isolated delivery |
+| **Obi-Wan BMR crescents** *(candidates)* | `obiwan_bmr_crescent_TEBM35C10-4.stl`, `obiwan_bmr_crescent_opposed_TEBM35C10-4.stl` | Obi-Wan UM collar only; mutually exclusive with the ND25FW-4 crescent and with each other | the identical half-laps at x=±24, y=421.5, blind Ø4.6 x 4.0 receivers, 1.9 mm front floors and 0.20 mm axial gap, proven ear-for-ear against the released crescent and by assembling on the staged UM collar; one or two constant-plan Ø63 lands are joined to the collar by a solid skirt landing on the released crescent's own seam, with no inherited crescent outline and no M4 clamp holes; the lower axis stays fixed at y=452.494193 independently of land radius; one hidden Ø6.00 cable entry on the mate face and no exterior opening at all; the vase's captive D5 × 2 side stations at source Z=15.10 on each land's own flat — 2 on the coaxial pod, 4 on the opposed one — remain at x=±31.326666 and are buried behind the 0.45 mm skin; the optional BMR-slim plan keeps those stations on discrete lobes around a Ø56 core but remains physically unqualified; both parts stay **not release-authorized** and absent from the release inventory, the stage manifests and the released captive-magnet catalog |
 | **Obi-Wan tweeter crescent** | `obiwan_addon_tweeter_crescent.stl` | Obi-Wan UM collar only | direct half-laps at x=±24, y=421.5; UM owns complete rear Ø3.4 ears and the crescent owns complete front local-Ø9.8 ears with standalone blind Ø4.6 x 4.0 insert receivers, 360° walls, 1.9 mm front floors, and a 0.20 mm axial gap; no printed T-cable arc or conduit, so T remains free behind the crescent |
 | **Proud split grommet** | `stock_um_grommet_half_{a,b}.stl` | ordinary B2/V1 R14 outlet; **not V1L** | TPU; short curved D8 shank follows the final bore and seats at rear z=0 |
 | **V1L split grommet** | `slim_um_grommet_half_{a,b}.stl` | keyed V1L 283° outlet only | TPU; Ø8 curved body / Ø7.1 bore / 2.5 mm insertion / Ø13 × 2 flange seated at rear z=6.8; no fastener |

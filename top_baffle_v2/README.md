@@ -59,14 +59,23 @@ each one carries its tweeters on a different part:
 
 The three BMR implementations arrange the drivers differently. On Stock and
 Slim they are **opposed**: the lower BMR faces front and the upper one faces
-rear. Obi-Wan offers both arrangements on one mount, on an axis dropped as
-close to the UM collar as the half-lap mate allows — **coaxial**, the two
-stacked back to back, 50.2 mm deep; or **opposed**, the vase's own layout on a
-second land 49.3 mm above the first, 25.1 mm deep but 49.3 mm taller. Both put
-the lower driver 86.413 mm from the MU10 axis. Both Obi-Wan BMR crescents are
-**candidates**: they are not release-authorized, are deliberately absent from
-the release inventory, the stage manifests, `to_print/` and the captive-magnet
-catalog, and are built only by the local target above.
+rear. Obi-Wan offers both arrangements on one mount, with the lower acoustic
+axis fixed at `(0, 452.494193)` rather than recomputed from the land radius —
+**coaxial**, the two stacked back to back, 50.2 mm deep; or **opposed**, the
+vase's own layout on a second land 49.3 mm above the first, 25.1 mm deep but
+49.3 mm taller. Both put the lower driver 86.413 mm from the MU10 axis.
+
+The default BMR land is now a conservative clipped **Ø63** full-circle
+prototype. Its two side-magnet faces are at `x=±31.326666`, so its actual
+maximum width is **62.653 mm**; each face moved inward by about **1.508 mm**
+from the former land. The alternate, explicitly unqualified
+**BMR-slim** topology keeps those same side magnets and maximum width while
+removing the unused circular field: it uses a **Ø56 driver-following core**,
+four local M2 pads and two discrete magnet lobes. Both topologies require
+physical driver-fit, insert, cable and magnet-pull qualification. The Obi-Wan
+BMR crescents remain **candidates**: they are not release-authorized and are
+deliberately absent from the release inventory, the stage manifests and the
+released captive-magnet catalog.
 [`docs/VARIANTS.md`](docs/VARIANTS.md#candidate-tebm35c10-4-bmr-crescents-obi-wan)
 puts the three BMR parts side by side.
 
@@ -145,8 +154,10 @@ The default remote `make` builds BOTH stand-foot states. Use
     build/no_floor_stand/   LX_STAND_FOOT=0: Stock/Slim flat piece_bottom + bridge;
       stl/  *.step  *.png     Obi-Wan solid bridge web fused into the LM core
     build/wings/{flat,graded}/    Obi-Wan acoustic wing families
-    build/vase_TEBM35C10-4/{stock,slim}/   opposed-BMR vase children
+    build/vase_TEBM35C10-4/{stock,slim}/   opposed-BMR vase, full Ø63 lands
+    build/bmr_slim_TEBM35C10-4/proud/{stock,slim}/  Ø56-core/lobed vase alternatives
     build/bmr_crescent_TEBM35C10-4/       candidate BMR crescents, both variants
+    build/bmr_slim_TEBM35C10-4/           lobed Obi-Wan CAD-only candidates
     build/common/           flag-independent shared outputs
     images/generated/iso/   the product-comparison cells and rows/ images
 

@@ -20,6 +20,22 @@
       "rear_plane_z_mm": 6.8,
       "units": "mm"
     },
+    "land_topology": {
+      "conservative_driver_ligament_mm": 1.1866659572958689,
+      "core_d_mm": 63.0,
+      "key": "full",
+      "m2_radial_wall_mm": 5.77,
+      "magnet_face_x_mm": 31.32666595729587,
+      "magnet_flat_height_mm": 6.6000000000000005,
+      "magnet_inner_edge_x_mm": 28.18666595729587,
+      "max_plan_width_mm": 62.65333191459174,
+      "parent_d_mm": 63.0,
+      "physical_measure_required": true,
+      "plan_area_mm2": 3115.589248652531,
+      "plan_depth_mm": 63.0,
+      "pocket_wall_mm": 10.037000000000003,
+      "profile": "d63_circle_with_side_magnet_flats"
+    },
     "m2_insert_bores": {
       "count": 8,
       "depth_mm": 4.0,
@@ -29,6 +45,7 @@
       "upper_clock_deg": -45.0
     },
     "part": "vase_TEBM35C10-4",
+    "physical_measure_required": true,
     "profile": "slim",
     "rear_growth": {
       "continuity": "C2 degree-five smootherstep Bezier",
@@ -39,6 +56,7 @@
       "ramp_start_y_mm": 315.95,
       "starts_at_released_rear_z_mm": 6.8
     },
+    "release_authorized": false,
     "release_variant": "Slim-TEBM35C10-4",
     "released_interfaces": {
       "cable_routes": [
@@ -69,11 +87,14 @@
       "um_opening_d_mm": 82.0,
       "upstream_ts_route": "captive_keepout"
     },
+    "status": "prototype_not_release_authorized",
     "t_cable_routing": {
       "exterior_containment": {
         "approved_exterior_mouths": [
           "seam_b_ts_entry"
         ],
+        "bmr_slim_fairing_reserve_mm": 0.0,
+        "bmr_slim_plan_fairing": false,
         "brep_gate": "expanded_cutter_minus_unbored_envelope",
         "driver_pocket_terminations": [
           "lower_front_t_pocket",
@@ -85,13 +106,13 @@
         "volume_tolerance_mm3": 1e-05
       },
       "shared_main": {
-        "accumulated_3d_turn_deg": 213.37779789603835,
-        "accumulated_plan_turn_deg": 209.70141728038953,
+        "accumulated_3d_turn_deg": 220.3619111834639,
+        "accumulated_plan_turn_deg": 216.9404973349148,
         "carries": [
           "lower_t_pair",
           "upper_t_pair"
         ],
-        "centerline_length_mm": 140.54645699965556,
+        "centerline_length_mm": 141.00780153598737,
         "entry_xyz_mm": [
           -34.082604,
           313.202641,
@@ -107,58 +128,59 @@
           433.0,
           0.0
         ],
-        "minimum_3d_bend_radius_mm": 15.505026428651453,
-        "minimum_center_radius_about_um_mm": 46.24140068053098,
-        "minimum_plan_bend_radius_mm": 15.51000339620077,
+        "minimum_3d_bend_radius_mm": 15.505395630495412,
+        "minimum_center_radius_about_um_mm": 46.2414006742372,
+        "minimum_plan_bend_radius_mm": 15.510005083464453,
         "minimum_um_pilot_vertical_ligament_mm": 1.6500000000000021,
-        "minimum_um_plan_ligament_mm": 1.9414006805309798,
-        "neck_exit_arc_radius_mm": 26.99645994731181,
+        "minimum_um_plan_ligament_mm": 1.9414006742371983,
+        "neck_exit_arc_radius_mm": 24.24539980926357,
         "path_form": "G1 plan spline + UM-clearance arc + opposing exit arc; normal-section ruled loft follows the 3D centerline",
-        "plan_length_mm": 139.87426070165805,
+        "plan_length_mm": 140.33791600262037,
         "seam_b_crossing_xy_mm": [
           -33.3077,
           315.95
         ],
         "split_xyz_mm": [
-          -19.200297134983867,
-          408.21220684158396,
+          -18.090851249053376,
+          408.700374714848,
           2.5
         ],
-        "um_clearance_arc_exit_angle_deg": 114.5,
+        "um_clearance_arc_exit_angle_deg": 113.0,
         "um_clearance_arc_radius_mm": 46.3,
         "z_transition": "two endpoint-flat minimum-jerk quintics over normalized path length; C2 at entry, split, and outlet"
       },
       "upper_t_branch": {
-        "accumulated_3d_turn_deg": 130.18038449849035,
-        "accumulated_plan_turn_deg": 123.46599405859352,
-        "actual_minimum_lower_center_radius_mm": 25.497577232759845,
+        "accumulated_3d_turn_deg": 128.99942634396842,
+        "accumulated_plan_turn_deg": 121.69001588991176,
+        "actual_minimum_lower_center_radius_mm": 25.497768916802357,
         "carries": [
           "upper_t_pair"
         ],
-        "centerline_length_mm": 104.89133493342324,
+        "centerline_length_mm": 103.68460894745691,
         "clearance_guide_radius_mm": 25.5,
         "connects": [
           "shared_t_main",
           "upper_rear_t_pocket"
         ],
         "diameter_mm": 4.6,
+        "lower_land_outer_ligament_authority": "D63 core radius minus guide radius and nominal branch radius",
         "lower_t_outlet_xyz_mm": [
           -3.4,
           433.0,
           0.0
         ],
-        "minimum_3d_bend_radius_mm": 22.231405991237676,
-        "minimum_inner_ligament_mm": 1.7345772327598477,
+        "minimum_3d_bend_radius_mm": 22.503283062257683,
+        "minimum_inner_ligament_mm": 1.7347689168023601,
         "minimum_lower_insert_vertical_ligament_mm": 9.5,
-        "minimum_plan_bend_radius_mm": 22.25685801198994,
+        "minimum_plan_bend_radius_mm": 22.531044905441863,
         "minimum_required_lower_center_radius_mm": 25.3,
-        "nominal_lower_land_outer_ligament_mm": 5.2,
+        "nominal_lower_land_outer_ligament_mm": 3.7,
         "opposed_mount_face_inset_mm": 6.800000000000001,
         "path_form": "single tangent-constrained 3D spline from a G1 clearance guide",
         "split_3d_tangent_error_deg": 0.0,
         "split_xyz_mm": [
-          -19.200297134983867,
-          408.21220684158396,
+          -18.090851249053376,
+          408.700374714848,
           2.5
         ],
         "upper_outlet_face_bias": "front",
@@ -179,8 +201,8 @@
       "count": 4,
       "flat_edge_margin_mm": 0.1,
       "interface_face_x_mm": [
-        -32.83458542451846,
-        32.83458542451846
+        -31.32666595729587,
+        31.32666595729587
       ],
       "qualified_flat_height_mm": 6.6000000000000005
     },
@@ -193,7 +215,8 @@
       "basket_d_mm": 43.6,
       "cutout_d_mm": 42.925999999999995,
       "depth_mm": 25.1,
-      "land_d_mm": 66.0,
+      "land_core_d_mm": 63.0,
+      "land_d_mm": 63.0,
       "lower_mount_face": "front",
       "mass_g_each": 51.3,
       "maximum_d_mm": 54.0,
@@ -206,26 +229,26 @@
   "files": {
     "brep": {
       "path": "vase_TEBM35C10-4.brep",
-      "sha256": "6ac8a1312bee2a83e33ed9337cbb3155263d9b8d9470850456b0bf1282d22f00"
+      "sha256": "da5dc4cd88fc02ef87400505120a464b8f24c85a42958692e52a58180d3fdb95"
     },
     "print_sidecar": {
       "path": "vase_TEBM35C10-4.print.json",
-      "sha256": "5b69d922da7bf354433d50bcee34c270c486c1898abd44d7ccccd8bb0aa30002"
+      "sha256": "04aca012be5f2ac7f3551ff431910a1ccd00beadd142e0878b1b330a03ac0c94"
     },
     "step": {
       "path": "vase_TEBM35C10-4.step",
-      "sha256": "9041eb64068a9fc774f07bbcba680950402dc438b518a0567c7f2286576eaea9"
+      "sha256": "3267c8d14ec10e1ed9e567e8b0c0f6ffc30834d6eed8a249666ef991d5714e22"
     },
     "stl": {
       "path": "vase_TEBM35C10-4.stl",
-      "sha256": "3108e08602927d19d3d02f8f4b420cd47d5d4ad94298b76da3a5aed57aab6016"
+      "sha256": "cea35a1c1bf02706ae6fe016fcd651f6c5d74f1622158136f55c95656355a8d6"
     }
   },
   "generated_by": "export_vase_tebm35c10_4.py",
   "magnet_sites": [
     {
       "actual_face_xyz_mm": [
-        -32.83458542451846,
+        -31.32666595729587,
         443.93100000000004,
         15.1
       ],
@@ -234,25 +257,25 @@
         0.0,
         18.3
       ],
-      "captive_land_mm": 3.0,
+      "captive_land_mm": 3.14,
       "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
       "cavity_center_xyz_mm": [
-        -31.33458542451846,
+        -29.75666595729587,
         443.93100000000004,
         15.1
       ],
       "cavity_depth_mm": 2.1,
       "cavity_diameter_mm": 5.2,
       "closure_kind": "transverse_gable_45deg",
-      "face_skin_mm": 0.45,
-      "inner_skin_mm": 0.45,
+      "face_skin_mm": 0.52,
+      "inner_skin_mm": 0.52,
       "insertion_direction_xyz": [
         -0.0,
         -0.0,
         1.0
       ],
       "interface_datum_xyz_mm": [
-        -32.83458542451846,
+        -31.32666595729587,
         443.93100000000004,
         15.1
       ],
@@ -278,7 +301,7 @@
         0.0,
         0.0
       ],
-      "paired_magnet_face_separation_mm": 0.95,
+      "paired_magnet_face_separation_mm": 1.09,
       "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
       "print_up_source_xyz": [
         0.0,
@@ -286,20 +309,20 @@
         -1.0
       ],
       "raw_roof_start_print_z_mm": 5.800000000000001,
-      "required_min_part_top_print_z_mm": 8.850000000000001,
+      "required_min_part_top_print_z_mm": 8.920000000000002,
       "roof_angle_deg": 45.0,
       "roof_apex_print_z_mm": 8.400000000000002,
       "roof_height_mm": 2.6000000000000005,
       "roof_plane_grid_mm": 0.2,
       "seated_magnet_center_xyz_mm": [
-        -31.38458542451846,
+        -29.80666595729587,
         443.93100000000004,
         15.1
       ]
     },
     {
       "actual_face_xyz_mm": [
-        32.83458542451846,
+        31.32666595729587,
         443.93100000000004,
         15.1
       ],
@@ -308,25 +331,25 @@
         0.0,
         18.3
       ],
-      "captive_land_mm": 3.0,
+      "captive_land_mm": 3.14,
       "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
       "cavity_center_xyz_mm": [
-        31.33458542451846,
+        29.75666595729587,
         443.93100000000004,
         15.1
       ],
       "cavity_depth_mm": 2.1,
       "cavity_diameter_mm": 5.2,
       "closure_kind": "transverse_gable_45deg",
-      "face_skin_mm": 0.45,
-      "inner_skin_mm": 0.45,
+      "face_skin_mm": 0.52,
+      "inner_skin_mm": 0.52,
       "insertion_direction_xyz": [
         -0.0,
         -0.0,
         1.0
       ],
       "interface_datum_xyz_mm": [
-        32.83458542451846,
+        31.32666595729587,
         443.93100000000004,
         15.1
       ],
@@ -352,7 +375,7 @@
         0.0,
         0.0
       ],
-      "paired_magnet_face_separation_mm": 0.95,
+      "paired_magnet_face_separation_mm": 1.09,
       "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
       "print_up_source_xyz": [
         0.0,
@@ -360,20 +383,20 @@
         -1.0
       ],
       "raw_roof_start_print_z_mm": 5.800000000000001,
-      "required_min_part_top_print_z_mm": 8.850000000000001,
+      "required_min_part_top_print_z_mm": 8.920000000000002,
       "roof_angle_deg": 45.0,
       "roof_apex_print_z_mm": 8.400000000000002,
       "roof_height_mm": 2.6000000000000005,
       "roof_plane_grid_mm": 0.2,
       "seated_magnet_center_xyz_mm": [
-        31.38458542451846,
+        29.80666595729587,
         443.93100000000004,
         15.1
       ]
     },
     {
       "actual_face_xyz_mm": [
-        -32.83458542451846,
+        -31.32666595729587,
         493.23100000000005,
         15.1
       ],
@@ -382,25 +405,25 @@
         0.0,
         18.3
       ],
-      "captive_land_mm": 3.0,
+      "captive_land_mm": 3.14,
       "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
       "cavity_center_xyz_mm": [
-        -31.33458542451846,
+        -29.75666595729587,
         493.23100000000005,
         15.1
       ],
       "cavity_depth_mm": 2.1,
       "cavity_diameter_mm": 5.2,
       "closure_kind": "transverse_gable_45deg",
-      "face_skin_mm": 0.45,
-      "inner_skin_mm": 0.45,
+      "face_skin_mm": 0.52,
+      "inner_skin_mm": 0.52,
       "insertion_direction_xyz": [
         -0.0,
         -0.0,
         1.0
       ],
       "interface_datum_xyz_mm": [
-        -32.83458542451846,
+        -31.32666595729587,
         493.23100000000005,
         15.1
       ],
@@ -426,7 +449,7 @@
         0.0,
         0.0
       ],
-      "paired_magnet_face_separation_mm": 0.95,
+      "paired_magnet_face_separation_mm": 1.09,
       "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
       "print_up_source_xyz": [
         0.0,
@@ -434,20 +457,20 @@
         -1.0
       ],
       "raw_roof_start_print_z_mm": 5.800000000000001,
-      "required_min_part_top_print_z_mm": 8.850000000000001,
+      "required_min_part_top_print_z_mm": 8.920000000000002,
       "roof_angle_deg": 45.0,
       "roof_apex_print_z_mm": 8.400000000000002,
       "roof_height_mm": 2.6000000000000005,
       "roof_plane_grid_mm": 0.2,
       "seated_magnet_center_xyz_mm": [
-        -31.38458542451846,
+        -29.80666595729587,
         493.23100000000005,
         15.1
       ]
     },
     {
       "actual_face_xyz_mm": [
-        32.83458542451846,
+        31.32666595729587,
         493.23100000000005,
         15.1
       ],
@@ -456,25 +479,25 @@
         0.0,
         18.3
       ],
-      "captive_land_mm": 3.0,
+      "captive_land_mm": 3.14,
       "cavity_bury_roof_start_print_z_mm": 5.800000000000001,
       "cavity_center_xyz_mm": [
-        31.33458542451846,
+        29.75666595729587,
         493.23100000000005,
         15.1
       ],
       "cavity_depth_mm": 2.1,
       "cavity_diameter_mm": 5.2,
       "closure_kind": "transverse_gable_45deg",
-      "face_skin_mm": 0.45,
-      "inner_skin_mm": 0.45,
+      "face_skin_mm": 0.52,
+      "inner_skin_mm": 0.52,
       "insertion_direction_xyz": [
         -0.0,
         -0.0,
         1.0
       ],
       "interface_datum_xyz_mm": [
-        32.83458542451846,
+        31.32666595729587,
         493.23100000000005,
         15.1
       ],
@@ -500,7 +523,7 @@
         0.0,
         0.0
       ],
-      "paired_magnet_face_separation_mm": 0.95,
+      "paired_magnet_face_separation_mm": 1.09,
       "pause_marker_source": "slice/G-code first closing layer; never CAD-only",
       "print_up_source_xyz": [
         0.0,
@@ -508,13 +531,13 @@
         -1.0
       ],
       "raw_roof_start_print_z_mm": 5.800000000000001,
-      "required_min_part_top_print_z_mm": 8.850000000000001,
+      "required_min_part_top_print_z_mm": 8.920000000000002,
       "roof_angle_deg": 45.0,
       "roof_apex_print_z_mm": 8.400000000000002,
       "roof_height_mm": 2.6000000000000005,
       "roof_plane_grid_mm": 0.2,
       "seated_magnet_center_xyz_mm": [
-        31.38458542451846,
+        29.80666595729587,
         493.23100000000005,
         15.1
       ]
@@ -523,42 +546,42 @@
   "native_geometry": {
     "bounds_mm": {
       "maximum": [
-        60.65400010000001,
-        526.231,
+        60.654000100000026,
+        524.731,
         18.300000100000005
       ],
       "minimum": [
         -60.654000100000005,
-        315.9999998999999,
+        315.9999998999998,
         -6.800000100000001
       ],
       "size": [
-        121.30800020000001,
-        210.23100010000007,
+        121.30800020000004,
+        208.7310001000002,
         25.100000200000007
       ]
     },
     "solid_count": 1,
     "valid": true,
-    "volume_mm3": 151929.68397518672
+    "volume_mm3": 141273.9806990603
   },
   "print_geometry": {
     "bounds_size_mm": [
-      121.30800020000001,
-      210.23100010000007,
+      121.30800020000004,
+      208.7310001000002,
       25.100000200000032
     ],
     "mesh": {
-      "brep_volume_abs_error_mm3": 34.19486365409102,
-      "brep_volume_relative_error": 0.00022507032700519377,
+      "brep_volume_abs_error_mm3": 41.58731395442737,
+      "brep_volume_relative_error": 0.0002943734844069839,
       "collapsed_apex_facets_removed": 0,
       "component_error": 0,
       "component_signed_volumes": [
-        152155.02122374266,
-        -64.88298595086404,
-        -64.88301122353641,
-        -64.88304488160911,
-        -64.88307015430205
+        141491.9254970863,
+        -64.88298583598372,
+        -64.88301122353373,
+        -64.88304476672805,
+        -64.88307015430163
       ],
       "components": 5,
       "degenerate": 0,
@@ -571,9 +594,9 @@
       "open": 0,
       "outer_components": 1,
       "over_shared": 0,
-      "signed_volume": 151895.48911153263,
-      "transform_zero_coordinates_canonicalized": 11099,
-      "triangles": 81350,
+      "signed_volume": 141232.39338510588,
+      "transform_zero_coordinates_canonicalized": 11124,
+      "triangles": 107592,
       "winding": 0,
       "zero_volume": 0,
       "zero_volume_components": 0

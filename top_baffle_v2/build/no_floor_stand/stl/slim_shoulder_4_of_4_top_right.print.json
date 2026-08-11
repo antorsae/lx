@@ -4,7 +4,7 @@
     "component_error": 0,
     "component_signed_volumes": [
       15317.67625278902,
-      -64.8531365600817
+      -64.85313578676168
     ],
     "components": 2,
     "degenerate": 0,
@@ -17,7 +17,7 @@
     "open": 0,
     "outer_components": 1,
     "over_shared": 0,
-    "signed_volume": 15252.823116228943,
+    "signed_volume": 15252.823117002255,
     "triangles": 3812,
     "winding": 0,
     "zero_volume": 0,
@@ -70,6 +70,6 @@
     453.4570001000002,
     18.300000099999956
   ],
-  "stl_sha256": "52bb0603329ce41bbe52029862d8a86dfed7ed72f6758e1470c5cc04892f3030",
+  "stl_sha256": "647ee1a713b756e5fc4900af2d5f824c204598c99108a6b34ab602f12e1f562e",
   "variant_export": "v1"
 }

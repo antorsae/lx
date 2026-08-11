@@ -4,7 +4,7 @@ This module is the production geometry authority derived from the physically
 validated ``coupons/obiwan_ae_embed`` coupon.  It deliberately owns no baffle
 outline, driver, route, insert, or backing-pad geometry.  Callers provide an
 installed interface datum, and production geometry must already contain the
-complete 3.00 mm captive land.  The helper never changes the exterior form.
+complete 3.14 mm captive land.  The helper never changes the exterior form.
 
 Coordinate contract
 -------------------
@@ -12,8 +12,8 @@ Coordinate contract
 ``outward`` always points from a base/carrier toward its mating
 receiver/attachment.  ``face`` is the shared physical interface datum.  A
 receiver cavity-face datum is placed at ``face + interface_gap * outward``;
-the offset remains solid and produces a flush 0.50-mm physical receiver skin
-(0.05-mm spacing standoff plus the qualified 0.45-mm skin), not a local air
+the offset remains solid and produces a flush 0.57-mm physical receiver skin
+(0.05-mm spacing standoff plus the qualified 0.52-mm skin), not a local air
 notch.  The helper then derives the material-inward direction from ``owner``:
 
 * ``base`` / ``carrier``: ``-outward``;
@@ -30,8 +30,8 @@ upper half, full-width loading chimney, and a 45-degree gable roof.  The
 separate axial helper handles a magnet axis parallel to print-up with a
 45-degree conical roof.  It also handles an axis opposed to print-up by
 placing the cone between the exterior skin and a deeper cavity.  That latter
-layout is the front-face-down treatment: rear skin 0.00..0.45, cone
-0.45..3.05, cavity 3.05..5.15, and inner skin through 5.60 mm.
+layout is the front-face-down treatment: rear skin 0.00..0.52, cone
+0.52..3.12, cavity 3.12..5.22, and inner skin through 5.74 mm.
 """
 
 from __future__ import annotations
@@ -280,7 +280,7 @@ def wall_cavity_tools(
     ``face`` is the base/carrier interface datum, even for a receiver.  The
     receiver's cavity-face datum is offset by ``interface_gap_mm`` along
     ``outward``.  The offset is deliberately *solid*: together with the
-    receiver's 0.45-mm qualified face skin it gives a 0.50-mm physical skin
+    receiver's 0.52-mm qualified face skin it gives a 0.57-mm physical skin
     behind the shared flush exterior.  This preserves the released magnet-
     face spacing without cutting a local 6.4-mm-wide exterior notch that
     reveals the pocket position.  No cavity cutter overshoots either axial
@@ -441,7 +441,7 @@ def axial_cavity_tools(
     * ``inward == print_up``: exterior skin, cavity, then closing cone;
     * ``inward == -print_up``: exterior skin, expanding cone, then the
       deeper cavity.  This second form keeps the host front-face-down while
-      moving its rear-axis magnet centre 4.10 mm inward from the rear face.
+      moving its rear-axis magnet centre 4.17 mm inward from the rear face.
 
     Oblique axes are rejected because neither layout is the qualified coupon
     topology.

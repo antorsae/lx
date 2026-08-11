@@ -127,17 +127,22 @@ LOCKED_PLACEMENTS_BY_VARIANT = {
     # upper footprint has a 90-degree source-space clocking, so it needs its
     # own rigid transform to retain the common packed layout. The lower-root
     # placements are the locally re-optimized G1 tangent-root arrangement.
+    # The 0.52-mm captive respin re-ran the exporters' bed-fit clocking and
+    # both LM-lower left frames came back rotated 89.949 degrees (the rights
+    # moved 0.051 degrees); these transforms are the exact composition
+    # old_placement . old_sidecar_frame . new_sidecar_frame^-1, so every
+    # part keeps the previously validated physical plate pose.
     "flat": (
-        (58.724273577150, (51.156885879315, 86.406547312980)),
-        (-172.921230563781, (248.183921832446, 252.320989480231)),
-        (-89.203304927416, (202.926578585501, 167.723983347523)),
-        (110.702555432118, (231.314810940662, 67.458534877173)),
+        (148.673618918536, (131.551505872890, 218.602019134256)),
+        (-172.921230563781, (248.131469116377, 252.314475885703)),
+        (-89.152650268801, (202.921490225089, 167.723516645915)),
+        (110.702555432118, (231.296125610898, 67.507977498345)),
     ),
     "graded": (
-        (58.724273577150, (51.156885879315, 86.406547312980)),
+        (148.673618918536, (131.551505976751, 218.602019305070)),
         (-82.921230563781, (50.756431596864, 227.804382692246)),
-        (-89.203304927416, (202.926578585501, 167.723983347523)),
-        (110.702555432118, (231.314810940662, 67.458534877173)),
+        (-89.152650268801, (202.921490225002, 167.723516645825)),
+        (110.702555432118, (231.296125610898, 67.507977498345)),
     ),
 }
 
@@ -200,8 +205,8 @@ def _variant(
 # it was moved this builder failed while the previous, phantom-walled plate
 # STL stayed on disk and stayed hard-linked onto the shelf.
 VARIANTS = {
-    "flat": _variant("flat", "Flat", ("05", "06", "08", "09"), 17_836),
-    "graded": _variant("graded", "Graded", ("11", "12", "14", "15"), 734_014),
+    "flat": _variant("flat", "Flat", ("05", "06", "08", "09"), 17_804),
+    "graded": _variant("graded", "Graded", ("11", "12", "14", "15"), 738_432),
 }
 
 

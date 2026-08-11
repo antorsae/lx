@@ -134,22 +134,29 @@ PRINT_ORIENTATION = "front-face-down"
 CORE_REAR_Z = 6.8
 LM_CORE_R = LM_RECESS_R + 2.4       # 113.0
 UM_CORE_R = UM_RECESS_R + 2.4       # 51.7
-# The D5 x 2 captive stack is 3.00 mm deep, while the structural lip is only
-# 2.40 mm.  A local flat pad was visibly proud of the circular ring.  Replace
-# it with one continuous cylindrical fairing around each exposed carrier
-# side.  Only the pre-existing LM--UM and T--UM cusp/service regions retain
-# the structural radius;
+# The D5 x 2 captive stack is 3.14 mm deep (dual 0.4/0.6-nozzle 0.52-mm
+# skins), while the structural lip is only 2.40 mm.  A local flat pad was
+# visibly proud of the circular ring.  Replace it with one continuous
+# cylindrical fairing around each exposed carrier side.  Only the
+# pre-existing LM--UM and T--UM cusp/service regions retain the structural
+# radius;
 # every magnet station shares one exact exterior radius, so its location is
 # impossible to infer from the outer silhouette.  The cavity datum remains
 # 0.15 mm below that surface; the extra skin is intentional and keeps the
 # rectangular D5.20+walls land wholly inside the circular fairing even on the
-# tighter UM radius.
+# tighter UM radius.  The fairing depth is derived, not literal: a deeper
+# captive land pushes the cavity datum outward, and the visible radius must
+# follow it or the designed 0.15-mm inset silently collapses (the former
+# 0.80 literal left 0.01 mm at the 3.14-mm land and the ring land check
+# refused the chord-bulge corners).
 SIDE_RING_CAVITY_RECESS_CLEAR_MM = 0.05
 SIDE_RING_CAVITY_FACE_OFFSET_MM = (
     CAPTIVE_LAND_MM - (LM_CORE_R - LM_RECESS_R)
     + SIDE_RING_CAVITY_RECESS_CLEAR_MM
 )
-SIDE_RING_FLUSH_FAIRING_MM = 0.80
+SIDE_RING_CAVITY_INTENDED_INSET_MM = 0.15
+SIDE_RING_FLUSH_FAIRING_MM = (
+    SIDE_RING_CAVITY_FACE_OFFSET_MM + SIDE_RING_CAVITY_INTENDED_INSET_MM)
 LM_VISIBLE_RING_R = LM_CORE_R + SIDE_RING_FLUSH_FAIRING_MM
 UM_VISIBLE_RING_R = UM_CORE_R + SIDE_RING_FLUSH_FAIRING_MM
 SIDE_RING_CAVITY_FACE_INSET_MM = (

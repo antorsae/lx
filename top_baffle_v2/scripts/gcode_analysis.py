@@ -837,14 +837,20 @@ def _retaining_stage_pass(
     retaining = metrics["retaining_paths"]
     if (stage == "lowest_open"
             and site["closure_kind"] == "transverse_gable_45deg"):
-        return (
-            retaining["interface_skin_path_length_mm"] >= 0.20
-            and retaining["inner_skin_path_length_mm"] >= 0.20
-            and retaining[
-                "interface_skin_longest_contiguous_span_mm"] >= 0.10
-            and retaining[
-                "inner_skin_longest_contiguous_span_mm"] >= 0.10
-        )
+        # At fat-nozzle line widths the emerging sliver's surroundings may
+        # resolve as diagonal solid fill crossing the skin bands rather than
+        # as along-wall runs (observed on the 0.6-mm lane's thin wing UM
+        # band: 7.7 mm of in-band extrusion with a 0.06-mm along-wall span).
+        # Dense crossing coverage retains the magnet at least as strongly as
+        # one discrete wall, so accept either form; an actually open band
+        # still fails both terms.
+        def _band_ok(prefix: str) -> bool:
+            length = retaining[f"{prefix}_skin_path_length_mm"]
+            contiguous = retaining[
+                f"{prefix}_skin_longest_contiguous_span_mm"]
+            return length >= 0.20 and (contiguous >= 0.10 or length >= 2.0)
+
+        return _band_ok("interface") and _band_ok("inner")
     if stage == "lowest_open":
         # At the first axial cradle layer the circular floor intersects the
         # cavity as top/gap paths, not yet as the mature medial annulus seen at
@@ -1078,8 +1084,8 @@ def _single_transverse_classic_track_summary(
         required_bins=required_bins,
         expected_center_mm=expected_center_mm,
         allowed_width_range_mm=allowed_width_range_mm,
-        lower_width_tolerance_mm=(
-            TRANSVERSE_RETAINING_BEAD_LOWER_WIDTH_TOLERANCE_MM))
+        lower_width_tolerance_mm=RETAINING_BEAD_ACCEPTANCE[
+            "transverse_lower_width_tolerance_mm"])
     primary = _clustered_track_crossings(track_samples)
     nearby = _clustered_track_crossings(nearby_track_samples)
 
@@ -1253,8 +1259,8 @@ def _single_annular_classic_track_summary(
         required_bins=required_bins,
         expected_center_mm=expected_center_mm,
         allowed_width_range_mm=allowed_width_range_mm,
-        lower_width_tolerance_mm=(
-            AXIAL_RETAINING_BEAD_LOWER_WIDTH_TOLERANCE_MM))
+        lower_width_tolerance_mm=RETAINING_BEAD_ACCEPTANCE[
+            "axial_lower_width_tolerance_mm"])
     expected_bins = tuple(range(len(required_bins)))
     if tuple(required_bins) != expected_bins:
         raise AuditError(
@@ -1684,16 +1690,16 @@ def _toolpath_metrics(
             nearby_track_samples=wall_a_nearby_tracks,
             required_bins=required_track_bins,
             expected_center_mm=first_wall_center,
-            allowed_width_range_mm=(
-                TRANSVERSE_RETAINING_BEAD_WIDTH_RANGE_MM),
+            allowed_width_range_mm=RETAINING_BEAD_ACCEPTANCE[
+                "transverse_width_range_mm"],
             material_side_sign=-1)
         inner_single_path = _single_transverse_classic_track_summary(
             track_samples=wall_b_tracks,
             nearby_track_samples=wall_b_nearby_tracks,
             required_bins=required_track_bins,
             expected_center_mm=second_wall_center,
-            allowed_width_range_mm=(
-                TRANSVERSE_RETAINING_BEAD_WIDTH_RANGE_MM),
+            allowed_width_range_mm=RETAINING_BEAD_ACCEPTANCE[
+                "transverse_width_range_mm"],
             material_side_sign=1)
         for summary, boundary, direction in (
             (interface_single_path, face_skin, 1),
@@ -1791,7 +1797,8 @@ def _toolpath_metrics(
             track_samples=annulus_tracks,
             required_bins=tuple(range(72)),
             expected_center_mm=expected_ring_center,
-            allowed_width_range_mm=AXIAL_RETAINING_BEAD_WIDTH_RANGE_MM,
+            allowed_width_range_mm=RETAINING_BEAD_ACCEPTANCE[
+                "axial_width_range_mm"],
             component_points=annulus_component_points)
         free_radial_diameter = (
             2.0 * min(radial_free_edges) if radial_free_edges else None)

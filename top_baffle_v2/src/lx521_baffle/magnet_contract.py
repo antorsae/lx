@@ -15,8 +15,12 @@ MAGNET_DIAMETER_MM = 5.0
 MAGNET_DEPTH_MM = 2.0
 CAVITY_DIAMETER_MM = 5.20
 CAVITY_DEPTH_MM = 2.10
-FACE_SKIN_MM = 0.45
-INNER_SKIN_MM = 0.45
+# Dual-nozzle retaining skin.  0.52 mm is inside the forced single-Arachne-
+# bead window of both release nozzles: the 0.4-mm lane cannot split it
+# (2 x 0.26 sits below the 85% min bead of 0.34) and the 0.6-mm lane can
+# just print it (85% min bead 0.51).  The former 0.45-mm skin was 0.4-only.
+FACE_SKIN_MM = 0.52
+INNER_SKIN_MM = 0.52
 INTERFACE_GAP_MM = 0.05
 ROOF_ANGLE_DEG = 45.0
 ROOF_PLANE_GRID_MM = 0.20

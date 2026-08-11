@@ -39,11 +39,18 @@ Matrix4 = tuple[
 ]
 
 
-# Bambu serializes imported float32 mesh coordinates through decimal XML.  A
-# 10-nanometre coordinate tolerance covers the observed round-trip maximum
-# (4.55e-6 mm across small, 210-mm, and high-triangle-count production parts)
-# while remaining far below any printable or CAD modelling tolerance.
-DEFAULT_MESH_TOLERANCE_MM = 1.0e-5
+# Bambu serializes imported float32 mesh coordinates through decimal XML,
+# recentring each volume about its own bounding box on the way.  The float32
+# lattice spacing is 1.53e-5 mm for coordinates in [128, 256) and 3.05e-5 mm
+# at the bed maximum, so the former 1.0e-5 tolerance sat *below* one ulp of
+# the representable grid: any respun mesh whose bbox moves the recentring
+# offset can legitimately land one lattice step away (observed 1.143e-5 mm
+# on the no-floor combo's keyed-bottom support blocker after the 0.52-mm
+# captive respin; the pre-respin maximum of 4.55e-6 was luck of the offsets).
+# Two rounding steps at bed scale bound the true round-trip at ~6.1e-5, so
+# 1.0e-4 keeps the gate exact-in-practice while sitting above the lattice --
+# and remains three orders of magnitude below any printable tolerance.
+DEFAULT_MESH_TOLERANCE_MM = 1.0e-4
 DEFAULT_TRANSFORM_TOLERANCE = 2.0e-6
 DEFAULT_BBOX_TOLERANCE_MM = 2.0e-4
 DEFAULT_BED_Z_TOLERANCE_MM = 2.0e-2

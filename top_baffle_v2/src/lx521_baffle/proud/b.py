@@ -128,11 +128,11 @@ A_COMP_CREST_Y = 391.709  # split plane between top and bottom shoulders
 #     top shoulder and the wing's top end. (Any point of this wall is
 #     ~51 mm from the tweeter center -- the wall is an arc about it --
 #     so no driver-distance freedom exists.)
-# Both magnets are printed captive behind 0.45 mm plastic skins.  The
-# receiver keeps a solid 0.05 mm spacing standoff ahead of its qualified
-# 0.45 mm skin, so the nominal magnet-face spacing remains
-# 0.45 + 0.05 + 0.45 = 0.95 mm without a visible local air notch. There is
-# no glue or post-print access.
+# Both magnets are printed captive behind 0.52 mm plastic skins (the dual
+# 0.4/0.6-nozzle single-bead value).  The receiver keeps a solid 0.05 mm
+# spacing standoff ahead of its qualified 0.52 mm skin, so the nominal
+# magnet-face spacing remains 0.52 + 0.05 + 0.52 = 1.09 mm without a visible
+# local air notch. There is no glue or post-print access.
 # The 45-degree roofs close only after the insertion pause; the outline
 # kinks/corners continue to provide shear registration and magnets receive
 # no structural-load credit.  Standard/V1/V1L parts print front-face-down.
@@ -148,7 +148,7 @@ MAGNET_QUALIFIED_LAND_WIDTH_MM = MAG_CAVITY_D_MM + 1.20
 # One front-biased source plane governs every stock and slim transverse
 # station.  Front-face-down export maps it to a 3.20-mm print-space axis;
 # the D5.20 cradle begins 0.60 mm behind the acoustic front and the complete
-# gable/inner-skin land remains at source Z >= 9.45 mm.  No local rear cap or
+# gable/inner-skin land remains at source Z >= 9.38 mm.  No local rear cap or
 # station-shaped taper backfill is permitted.
 STANDARD_MAGNET_Z_MM = 15.10
 # Exact plan deviations at the released, rounded interface datums.  These are

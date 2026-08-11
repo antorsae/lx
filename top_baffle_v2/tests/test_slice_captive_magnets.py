@@ -31,11 +31,11 @@ def _release_site_contract(axis=(1.0, 0.0, 0.0)) -> dict:
         "magnet_depth_mm": 2.0,
         "cavity_diameter_mm": 5.2,
         "cavity_depth_mm": 2.1,
-        "face_skin_mm": 0.45,
-        "inner_skin_mm": 0.45,
-        "captive_land_mm": 3.0,
+        "face_skin_mm": 0.52,
+        "inner_skin_mm": 0.52,
+        "captive_land_mm": 3.14,
         "interface_gap_mm": 0.05,
-        "paired_magnet_face_separation_mm": 0.95,
+        "paired_magnet_face_separation_mm": 1.09,
         "roof_angle_deg": 45.0,
         "minimum_retaining_path_mm": 0.42,
         "polarity_instruction": "marked/N pole follows installed axis",
@@ -244,8 +244,8 @@ def test_actual_bambu_layer_regression(tmp_path: Path):
         "cavity_depth_mm": 2.1,
         "magnet_diameter_mm": 5.0,
         "magnet_depth_mm": 2.0,
-        "face_skin_mm": 0.45,
-        "inner_skin_mm": 0.45,
+        "face_skin_mm": 0.52,
+        "inner_skin_mm": 0.52,
         "print_actual_face_xyz_mm": (0.0, 0.0, 0.0),
         "print_material_inward_xyz": (1.0, 0.0, 0.0),
         "print_marked_pole_axis_xyz": (1.0, 0.0, 0.0),
@@ -304,8 +304,8 @@ def test_actual_closure_discovery_rejects_early_or_missing_roof(
         "cavity_depth_mm": 2.1,
         "magnet_diameter_mm": 5.0,
         "magnet_depth_mm": 2.0,
-        "face_skin_mm": 0.45,
-        "inner_skin_mm": 0.45,
+        "face_skin_mm": 0.52,
+        "inner_skin_mm": 0.52,
         "print_actual_face_xyz_mm": (0.0, 0.0, 0.0),
         "print_material_inward_xyz": (1.0, 0.0, 0.0),
         "print_cavity_center_xyz_mm": (1.50, 0.0, 3.20),
@@ -620,11 +620,17 @@ def test_profile_nil_vector_slots_inherit_parent_values(
 
 
 def test_petg_gf_profile_is_scoped_to_structural_core_only() -> None:
+    # TINMORRY PETG-GF is exclusive to the 0.6-mm high-flow lane; the former
+    # 0.4-mm PETG profile is retired and must not resurface.
+    assert not (
+        PROJECT_ROOT / "captive_magnet_slicing_profile_petg_gf.json"
+    ).exists()
     config = audit._load_json(
-        PROJECT_ROOT / "captive_magnet_slicing_profile_petg_gf.json")
+        PROJECT_ROOT / "captive_magnet_slicing_profile_petg_gf_06hf.json")
     assert config["user_filament_preset"] == (
         "TINMORRY PETG-GF Profile @BBL P2S")
-    assert config["repo_overrides"]["process"]["wall_loops"] == "8"
+    assert config["requirements"]["nozzle_diameter_mm"] == 0.6
+    assert config["repo_overrides"]["process"]["wall_loops"] == "6"
     assert config["user_filament_preset_sha256"] == (
         "2fe46f552422a202b221743c3a6a913243e375149fe080598ffd9b084a8b0346")
 
@@ -721,7 +727,7 @@ def _synthetic_profile_bundle(tmp_path: Path | None = None) -> dict:
             "xy_hole_compensation": "0",
         },
         "filament": {
-            "name": "Bambu PLA Tough+ @BBL P2S",
+            "name": "Bambu PLA Basic @BBL P2S",
             "nozzle_temperature": ["245", "245"],
             "nozzle_temperature_initial_layer": ["245", "245"],
             "fan_max_speed": ["100"],
@@ -763,6 +769,7 @@ def test_repo_overrides_apply_after_flattening_and_are_exact() -> None:
     assert process["sparse_infill_pattern"] == "gyroid"
     assert process["sparse_infill_density"] == "30%"
     assert process["wall_generator"] == "arachne"
+    assert process["min_bead_width"] == "100%"
     assert process["enable_support"] == "0"
     assert process["support_on_build_plate_only"] == "0"
     assert process["support_critical_regions_only"] == "0"
@@ -773,12 +780,12 @@ def test_repo_overrides_apply_after_flattening_and_are_exact() -> None:
     assert process["detect_narrow_internal_solid_infill"] == "1"
     assert process["elefant_foot_compensation"] == "0.15"
     assert process["xy_hole_compensation"] == "0"
-    assert filament["nozzle_temperature"] == ["225", "225"]
-    assert filament["fan_max_speed"] == ["60"]
+    assert filament["nozzle_temperature"] == ["245", "245"]
+    assert filament["fan_max_speed"] == ["100"]
     assert filament["overhang_fan_speed"] == ["100"]
-    assert filament["filament_max_volumetric_speed"] == ["16", "16"]
-    assert filament["textured_plate_temp"] == ["55"]
-    assert filament["textured_plate_temp_initial_layer"] == ["55"]
+    assert filament["filament_max_volumetric_speed"] == ["21", "21"]
+    assert filament["textured_plate_temp"] == ["60"]
+    assert filament["textured_plate_temp_initial_layer"] == ["60"]
     assert bundle["resolved"]["machine"]["machine_pause_gcode"] == "M400 U1"
     assert bundle["identity"]["effective"]["detect_thin_wall"] is True
     assert bundle["identity"]["effective"]["support_enabled"] is False
@@ -1048,13 +1055,13 @@ def test_actual_gcode_profile_checks_every_pinned_setting(
         "curr_bed_type": "Textured PEI Plate",
         "elefant_foot_compensation": "0.15",
         "xy_hole_compensation": "0",
-        "nozzle_temperature": "225",
-        "nozzle_temperature_initial_layer": "225",
-        "fan_max_speed": "60",
+        "nozzle_temperature": "245",
+        "nozzle_temperature_initial_layer": "245",
+        "fan_max_speed": "100",
         "overhang_fan_speed": "100",
-        "filament_max_volumetric_speed": "16",
-        "textured_plate_temp": "55",
-        "textured_plate_temp_initial_layer": "55",
+        "filament_max_volumetric_speed": "21",
+        "textured_plate_temp": "60",
+        "textured_plate_temp_initial_layer": "60",
         "wall_generator": "arachne",
         "enable_support": "0",
         "support_on_build_plate_only": "0",
@@ -1097,12 +1104,12 @@ def test_actual_gcode_profile_checks_every_pinned_setting(
         "detect_narrow_internal_solid_infill": "0",
         "elefant_foot_compensation": "0",
         "xy_hole_compensation": "0.05",
-        "nozzle_temperature": "245",
-        "fan_max_speed": "100",
+        "nozzle_temperature": "225",
+        "fan_max_speed": "60",
         "overhang_fan_speed": "50",
-        "filament_max_volumetric_speed": "21",
-        "textured_plate_temp": "60",
-        "textured_plate_temp_initial_layer": "60",
+        "filament_max_volumetric_speed": "16",
+        "textured_plate_temp": "55",
+        "textured_plate_temp_initial_layer": "55",
         "machine_pause_gcode": "M0",
     }
     for key, value in mutations.items():
@@ -1379,7 +1386,7 @@ def test_pause_group_preserves_insertion_and_full_polarity_instruction() -> None
             "actual": {
                 "bambu_studio_pause_marker_z_mm": 15.32,
                 "last_completely_open_layer_z_mm": 15.16,
-                "cavity_bury_roof_start_plane_z_mm": 15.25,
+                "cavity_bury_roof_start_plane_z_mm": 15.18,
             },
             "seated_magnet": {
                 "below_last_open_layer_mm": 0.20,
@@ -1890,9 +1897,9 @@ def test_gcode_skill_wrapper_uses_active_bed_and_native_profile_stack(
     }
     wrapper = audit._gcode_validation_wrapper(bundle)
     assert wrapper["filament"] == {
-        "type": "Bambu PLA Tough+ @BBL P2S",
-        "nozzle_temp_c": 225.0,
-        "bed_temp_c": 55.0,
+        "type": "Bambu PLA Basic @BBL P2S",
+        "nozzle_temp_c": 245.0,
+        "bed_temp_c": 60.0,
     }
     assert wrapper["native_settings"] == [
         str(bundle["paths"]["machine"]),
@@ -1926,7 +1933,7 @@ def test_generator_style_source_matrix_is_consumed(tmp_path: Path):
                 "carrier_cavity_face_inset_mm": 0.15,
                 "carrier_cavity_datum_xy_mm": [2.0, 2.0],
                 "outer_surface_face_xy_mm": [2.15, 2.0],
-                "paired_magnet_face_separation_mm": 1.10,
+                "paired_magnet_face_separation_mm": 1.24,
                 "cavity_bury_roof_start_print_z_mm": 8.4,
                 "roof_apex_print_z_mm": 11.0,
                 "cavity_center_xyz_mm": [1.0, 2.0, 12.55],
@@ -1993,8 +2000,8 @@ def test_explicit_print_space_must_match_source_matrix(tmp_path: Path):
             "sites": [{
                 **_release_site_contract((0.0, 0.0, -1.0)),
                 "name": "axial", "closure_kind": "axis_opposed_conical_45deg",
-                "cavity_bury_roof_start_print_z_mm": 15.25,
-                "roof_apex_print_z_mm": 17.85,
+                "cavity_bury_roof_start_print_z_mm": 15.18,
+                "roof_apex_print_z_mm": 17.78,
                 "cavity_center_xyz_mm": [2.0, 3.0, 4.1],
                 "seated_magnet_center_xyz_mm": [2.0, 3.0, 4.1],
                 "marked_pole_axis_xyz": [0.0, 0.0, -1.0],
@@ -2041,8 +2048,8 @@ def test_transverse_retaining_gate_requires_continuous_paths():
         "print_material_inward_xyz": (1.0, 0.0, 0.0),
         "cavity_diameter_mm": 5.2,
         "cavity_depth_mm": 2.1,
-        "face_skin_mm": 0.45,
-        "inner_skin_mm": 0.45,
+        "face_skin_mm": 0.52,
+        "inner_skin_mm": 0.52,
     }
 
     def segment(
@@ -2056,10 +2063,10 @@ def test_transverse_retaining_gate_requires_continuous_paths():
 
     def side_wall(y: float) -> audit.Segment:
         return audit.Segment(
-            0.45, y, 2.55, y, 0.1, "Outer wall", 0.42, 1)
+            0.52, y, 2.62, y, 0.1, "Outer wall", 0.42, 1)
 
-    interface_x = 0.45 / 2.0
-    inner_x = 0.45 + 2.1 + 0.45 / 2.0
+    interface_x = 0.52 / 2.0
+    inner_x = 0.52 + 2.1 + 0.52 / 2.0
     fragments = []
     for x in (interface_x, inner_x):
         fragments.extend((
@@ -2139,10 +2146,10 @@ def test_transverse_retaining_gate_requires_continuous_paths():
 
     overwide = audit._toolpath_metrics(
         audit.Layer(3.0, 0.16, [
-            segment(interface_x - (0.671 - 0.45) / 2.0,
-                    -2.1, 2.1, width=0.671),
-            segment(inner_x + (0.671 - 0.45) / 2.0,
-                    -2.1, 2.1, width=0.671),
+            segment(interface_x - (0.785 - 0.52) / 2.0,
+                    -2.1, 2.1, width=0.785),
+            segment(inner_x + (0.785 - 0.52) / 2.0,
+                    -2.1, 2.1, width=0.785),
             side_wall(-2.81), side_wall(2.81),
         ], 1), site, (0.0, 0.0))
     assert overwide["retaining_paths"]["pass"] is False
@@ -2160,13 +2167,15 @@ def test_transverse_retaining_gate_requires_continuous_paths():
 
     # The two real Bambu traces separated by only 0.03 mm are still two
     # extrusion passes.  Neither a full parallel pass nor a short second pass
-    # may be hidden by loose spatial clustering.
+    # may be hidden by loose spatial clustering.  Both 0.42-mm passes keep
+    # their cavity-facing edges within the 0.06-mm boundary tolerance of the
+    # 0.52-mm skin, so the strict exact-one gate sees them both.
     two_full = audit._toolpath_metrics(
         audit.Layer(3.0, 0.16, [
-            segment(interface_x - 0.015, -2.1, 2.1),
-            segment(interface_x + 0.015, -2.1, 2.1),
-            segment(inner_x - 0.015, -2.1, 2.1),
-            segment(inner_x + 0.015, -2.1, 2.1),
+            segment(interface_x + 0.02, -2.1, 2.1),
+            segment(interface_x + 0.05, -2.1, 2.1),
+            segment(inner_x - 0.05, -2.1, 2.1),
+            segment(inner_x - 0.02, -2.1, 2.1),
         ], 1), site, (0.0, 0.0))
     assert two_full["retaining_paths"][
         "interface_skin_single_path"]["estimated_path_count"] == 2
@@ -2289,7 +2298,7 @@ def test_axial_retaining_gate_requires_complete_annular_coverage():
         "cavity_depth_mm": 2.1,
         "magnet_diameter_mm": 5.0,
         "magnet_depth_mm": 2.0,
-        "face_skin_mm": 0.45,
+        "face_skin_mm": 0.52,
     }
 
     def ring(
@@ -2508,8 +2517,8 @@ def test_last_open_loading_aperture_checks_diameter_slot_and_obstruction():
         "print_material_inward_xyz": (1.0, 0.0, 0.0),
         "cavity_diameter_mm": 5.2,
         "cavity_depth_mm": 2.1,
-        "face_skin_mm": 0.45,
-        "inner_skin_mm": 0.45,
+        "face_skin_mm": 0.52,
+        "inner_skin_mm": 0.52,
         "magnet_diameter_mm": 5.0,
         "magnet_depth_mm": 2.0,
     }
@@ -2585,8 +2594,8 @@ def test_manifest_part_name_does_not_alias_artifact_id(tmp_path: Path):
             "sites": [{
                 **_release_site_contract((0.0, 0.0, -1.0)),
                 "name": "axial", "closure_kind": "axis_opposed_conical_45deg",
-                "cavity_bury_roof_start_print_z_mm": 15.25,
-                "roof_apex_print_z_mm": 17.85,
+                "cavity_bury_roof_start_print_z_mm": 15.18,
+                "roof_apex_print_z_mm": 17.78,
                 "cavity_center_xyz_mm": [2.0, 3.0, 4.1],
                 "seated_magnet_center_xyz_mm": [2.0, 3.0, 4.1],
                 "marked_pole_axis_xyz": [0.0, 0.0, -1.0],
@@ -2628,14 +2637,14 @@ def _exact_split_proxy_catalog() -> dict:
             "magnet_depth_mm": 2.0,
             "cavity_diameter_mm": 5.2,
             "cavity_depth_mm": 2.1,
-            "face_skin_mm": 0.45,
-            "inner_skin_mm": 0.45,
+            "face_skin_mm": 0.52,
+            "inner_skin_mm": 0.52,
             "roof_angle_deg": 45.0,
             "polarity_instruction": "marked/N pole follows installed axis",
-            "captive_land_mm": 3.0,
+            "captive_land_mm": 3.14,
             "interface_gap_mm": 0.05,
             "paired_magnet_face_separation_mm": round(
-                0.95 + cavity_inset, 9),
+                1.09 + cavity_inset, 9),
             "interface_kind": interface_kind,
             "carrier_cavity_face_inset_mm": cavity_inset,
             "carrier_cavity_datum_xy_mm": [x - 1.5, 10.0],
@@ -2674,7 +2683,7 @@ def _exact_split_proxy_catalog() -> dict:
     ])
 
 
-def test_obiwan_ring_and_shoulder_pair_spacing_is_1p10_mm(
+def test_obiwan_ring_and_shoulder_pair_spacing_is_1p24_mm(
         tmp_path: Path) -> None:
     payload = _exact_split_proxy_catalog()
     path = tmp_path / "catalog.json"
@@ -2686,9 +2695,9 @@ def test_obiwan_ring_and_shoulder_pair_spacing_is_1p10_mm(
         for site in normalized["artifacts"][0]["sites"]
     }
     assert monolith_sites["lm_lower_left"][
-        "paired_magnet_face_separation_mm"] == 1.10
+        "paired_magnet_face_separation_mm"] == 1.24
     assert monolith_sites["lm_upper_left"][
-        "paired_magnet_face_separation_mm"] == 1.10
+        "paired_magnet_face_separation_mm"] == 1.24
 
     payload["artifacts"][0]["sites"][0][
         "paired_magnet_face_separation_mm"] = 0.95
@@ -2697,9 +2706,11 @@ def test_obiwan_ring_and_shoulder_pair_spacing_is_1p10_mm(
         audit.normalize_catalog(path, enforce_release_inventory=False)
     except audit.AuditError as exc:
         assert (
-            "paired magnet-face separation must be 1.100" in str(exc)
+            "paired magnet-face separation must be 1.240" in str(exc)
             or "paired_magnet_face_separation_mm: value does not equal "
-               "const 1.1" in str(exc))
+               "const 1.24" in str(exc)
+            or "paired_magnet_face_separation_mm: value is not in enum"
+            in str(exc))
     else:
         raise AssertionError("stale 0.95-mm Obi-Wan shoulder spacing passed")
 
@@ -2726,7 +2737,7 @@ def test_standard_curved_pair_spacing_uses_declared_interface_profile(
         "marked_pole_axis_xyz": [1.0, 0.0, 0.0],
         "interface_profile": "standard_curved",
         "carrier_cavity_face_inset_mm": 0.14,
-        "paired_magnet_face_separation_mm": 1.09,
+        "paired_magnet_face_separation_mm": 1.23,
     }
     artifact = {
         "id": "floor_stand:A:curved",
@@ -2745,7 +2756,7 @@ def test_standard_curved_pair_spacing_uses_declared_interface_profile(
     normalized = audit.normalize_catalog(
         path, enforce_release_inventory=False)
     assert normalized["artifacts"][0]["sites"][0][
-        "paired_magnet_face_separation_mm"] == 1.09
+        "paired_magnet_face_separation_mm"] == 1.23
 
     payload["artifacts"][0]["sites"][0][
         "paired_magnet_face_separation_mm"] = 0.95
@@ -2753,7 +2764,10 @@ def test_standard_curved_pair_spacing_uses_declared_interface_profile(
     try:
         audit.normalize_catalog(path, enforce_release_inventory=False)
     except audit.AuditError as exc:
-        assert "paired magnet-face separation must be 1.090" in str(exc)
+        assert (
+            "paired magnet-face separation must be 1.230" in str(exc)
+            or "paired_magnet_face_separation_mm: value is not in enum"
+            in str(exc))
     else:
         raise AssertionError("stale 0.95-mm standard curved spacing passed")
 
@@ -2836,7 +2850,7 @@ def test_wing_facts_and_transaction_manifest_are_hash_bound(
         "carrier_cavity_face_inset_mm": 0.15,
         "carrier_cavity_datum_xy_mm": [0.0, 0.0],
         "outer_surface_face_xy_mm": [0.0, 0.15],
-        "paired_magnet_face_separation_mm": 1.10,
+        "paired_magnet_face_separation_mm": 1.24,
     })
     raw = {
         "id": "shared:Obi-Wan-Flat:wing", "part": "wing",

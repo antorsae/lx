@@ -3,9 +3,9 @@
 
 This is ``gen_vase_tebm35c10_4_slicing_profile.py`` for the two candidate
 Obi-Wan BMR pods, and it deliberately makes the same material choice.  The
-base ``captive_magnet_slicing_profile.json`` (Bambu PLA Tough+, six walls,
+base ``captive_magnet_slicing_profile.json`` (Bambu PLA Basic, six walls,
 30% gyroid) is the profile for magnet-bearing parts that are not the
-structural core; ``captive_magnet_slicing_profile_petg_gf.json`` exists only
+structural core; ``captive_magnet_slicing_profile_petg_gf_06hf.json`` exists only
 for the three parts that *are* -- the two LM keyed halves and the UM carrier
 -- and it is scoped to exactly those by ``artifact_scope``.  A crescent hangs
 off the UM carrier's already-qualified M3 half-lap; it is the hanging part,

@@ -45,10 +45,12 @@ build/vase_TEBM35C10-4/*/.*.step.glb
 # Release inputs/summaries are JSON by design; the repository root otherwise
 # ignores generic extraction JSON files.
 !captive_magnet_slicing_profile.json
-!captive_magnet_slicing_profile_petg_gf.json
+!captive_magnet_slicing_profile_06hf.json
+!captive_magnet_slicing_profile_petg_gf_06hf.json
 !captive_magnet_release_catalog.schema.json
 !review/captive_magnet_release_catalog.json
 !review/captive_magnet_slice_audit/captive_magnet_pause_manifest.json
+!review/captive_magnet_slice_audit_06hf/captive_magnet_pause_manifest.json
 
 # Local P2S print shelf.  The friendly source map and selection guide are
 # reviewed in Git; its rendered STL/3MF delivery files and slicer workspace
@@ -58,6 +60,7 @@ to_print/*/3mf/
 review/to_print_slice_workspace/
 to_print/release_manifest.json
 !to_print/catalog.json
+!to_print/catalog_06hf.json
 
 # Adjacent front-down print authorities are part of every released STL.  The
 # repository root ignores generic JSON, so explicitly keep all three release

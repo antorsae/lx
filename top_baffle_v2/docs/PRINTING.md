@@ -36,7 +36,7 @@ bridge-web load case is treated explicitly below. PLA still relaxes
 | Obi-Wan fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening unchanged 6.8 mm-total bores with Ø6.5 x 2.0 entries followed by Ø6.4 | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders; LM/T/UM entries packed inside the D20 support opening as LM above, T lower-left, UM lower-right at z=5.3; solid acoustic front; immutable 40 × 50 pattern; no geometry behind the existing LM pads; magnets receive zero load credit |
 | Obi-Wan optional LM keyed seam | two symmetric Ø1.60 cylindrical pins at x=±109.187/z=14.30, normal to the world-Y=172.481 mm zero-gap seam and pointing +Y; 2.40 mm engagement plus 0.50 mm root overlap. Right blind socket Ø1.84 round; left blind socket 1.96 × 1.84 mm X-relieved; both 2.65 mm deep with 0.12 mm radial and 0.25 mm end clearance. Small exterior lands outside the LM recess preserve ≥0.50 mm radial/end walls, ≥0.05 mm recess plan clearance and ≥0.13 mm conservative W22-flange clearance. | registration only | mutually exclusive replacement print form for the canonical monolithic LM. Round+relieved sockets tolerate ±0.30 mm relative pitch error; the lands reach R114.4036, which is 1.4036 mm beyond structural R113.0 but only 0.6036 mm beyond the finalized R113.8 visible fairing. They add no extra screw or standalone retention/load credit. Print and assemble front-face-down on a flat datum, moving the top straight along -Y; the installed LM driver flange and its normal fasteners are the structural splice. |
 | Obi-Wan UM-to-tweeter half-laps | 2 x rear-driven M3 screws through the UM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the crescent's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±24, y=421.5; nominal Ø9 closure-base teardrops, complete local Ø9.8 Z-owned functional bosses, 0.20 mm axial gap, complete 360° receiver walls, and 1.9 mm acoustic-front floors. Install both inserts in the individual crescent before assembly; no front bolt head or cross-owner receiver wall. |
-| Obi-Wan alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and the lower pair at cubic parameter `u=0.50` on the shared curved shoulder. The right visible datum is `(x,y,z)=(45.285011,89.190370,15.10)` with outward normal `(0.706451,-0.707762)`; the left is its exact X mirror. UM keeps its 50.5°/129.5° axes; all six stations share source Z=15.10. Every station has 0.45 mm axial skins and a 45° support-free roof. The R113.0/R51.7 structural rings have continuous exposed R113.8/R52.5 side fairings, clipped only inside the existing LM--UM and T--UM cusp/service regions; the LM--UM stop preserves the 0.40 mm gap. Ring cavity datums sit at structural radius +0.65 mm; ring and shoulder cavity datums are 0.15 mm beneath their exposed surfaces. There is no magnet-local backing, boss, relief, rear cap, flat, or visible cue: the magnet-free exterior is immutable. Magnets are fully buried at the manifest pause, never glued or externally accessible. Flat/graded have matching captive LM-lower, LM-upper, and UM receivers. Their mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm allowance is a solid standoff. Nominal paired magnet-face separation is 1.10 mm at LM-lower, LM-upper, and UM. Alignment/anti-rattle only: **zero structural load credit**. |
+| Obi-Wan alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and the lower pair at cubic parameter `u=0.50` on the shared curved shoulder. The right visible datum is `(x,y,z)=(45.285011,89.190370,15.10)` with outward normal `(0.706451,-0.707762)`; the left is its exact X mirror. UM keeps its 50.5°/129.5° axes; all six stations share source Z=15.10. Every station has 0.52 mm axial skins (the dual 0.4/0.6-nozzle single-bead value) and a 45° support-free roof. The R113.0/R51.7 structural rings have continuous exposed R113.94/R52.64 side fairings, clipped only inside the existing LM--UM and T--UM cusp/service regions; the LM--UM stop preserves the 0.40 mm gap. Ring cavity datums sit at structural radius +0.79 mm; ring and shoulder cavity datums are 0.15 mm beneath their exposed surfaces. There is no magnet-local backing, boss, relief, rear cap, flat, or visible cue: the magnet-free exterior is immutable. Magnets are fully buried at the manifest pause, never glued or externally accessible. Flat/graded have matching captive LM-lower, LM-upper, and UM receivers. Their mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm allowance is a solid standoff. Nominal paired magnet-face separation is 1.24 mm at LM-lower, LM-upper, and UM. Alignment/anti-rattle only: **zero structural load credit**. |
 | Tweeter pair | M4 through-bolts + nyloc + wave washer; length = septum + faceplates (stock 18.3 septum → ~M4 x 35; V1/Obi-Wan crescent → ~M4 x 30 — verify stacked) | snug, ~0.5 N·m | clamps the 4.0 mm crescent seat; recheck after a week |
 | Optional TEBM35C10-4 BMR pair | 8 × M2 screws into M2 × 4 × Ø3.2 heat-set inserts | hand-snug; establish on a coupon | lower BMR mounts from the acoustic front and upper BMR from the rear; each pocket has a 1.2 mm blind opposite wall. Use the Stock BMR vase only with Stock receivers and the Slim BMR vase only with Slim/V1L receivers. Both print front-face-down with supports explicitly disabled; four same-height captive side magnets share one audited insertion pause. |
 
@@ -281,13 +281,15 @@ reuse a 0.20-mm pause height or derive one by scaling.
   floor) and both combined `01+02+03+04` core plates use **8 loops** under
   their PETG-GF structural profile. The wall setting makes the material
   around every insert bore, dovetail key, and knife edge fully solid.
-  Every 0.45 mm captive-magnet retaining skin is the exception: Arachne must
+  Every 0.52 mm captive-magnet retaining skin is the exception: Arachne must
   slice it as exactly one bounded variable-width bead/traversal, never six
   paths. *Detect thin wall: on* remains pinned and the actual toolpath is
   audited independently. Transverse skin widths have a nominal
-  0.42--0.67 mm bound; the audit permits only a 0.005 mm lower-side Arachne
+  0.42--0.78 mm bound (0.78 is the inset/curved-face wedge ceiling; the
+  per-lane pinned Arachne minimum bead — 100% of nozzle at 0.4 mm, 85%
+  at 0.6 mm — keeps every wedge a single bead); the audit permits only a 0.005 mm lower-side Arachne
   tolerance (effective floor 0.415 mm), and the pinned release reaches
-  0.415656 mm at its narrowest path. The orthogonal 0.45 mm coupon spacing is
+  0.415656 mm at its narrowest path. The orthogonal 0.45 mm-era coupon spacing was
   deterministically 0.484336 mm at 0.16 mm layers; angled Obi-Wan LM/UM skins
   reached 0.586 mm and the legacy V1 adaptive inner bead reached the full-run
   maximum of 0.661027 mm. The audit selects a skin by its cavity-facing bead
@@ -341,28 +343,28 @@ reuse a 0.20-mm pause height or derive one by scaling.
   are nominal. Use *Precise wall: on*, **elephant-foot compensation
   0.15 mm**, and start X-Y hole compensation at **+0.05** for general fit
   coupons only. Captive-magnet artifacts require **0.00 mm**: +0.05 mm was
-  observed to delete the 0.45 mm retaining skin.
+  observed to delete the then-0.45 mm retaining skin.
 
 ### Captive-magnet pause procedure
 
 All released magnet-bearing parts print **front-face-down**. The approved
 system encloses each actual D5.0 × 2.0 disc in an Ø5.20 × 2.10 cavity with
-0.45 mm plastic at each axial face, a vertically open loading cradle, and a
+0.52 mm plastic at each axial face, a vertically open loading cradle, and a
 self-supporting 45° roof. There is no magnet glue and no external access
 opening. Stock, slim, and Obi-Wan paired transverse stations all use source
 Z=**15.10 mm**. Their magnet-free exterior is immutable: no cavity operation
 may add a local backing, boss, relief, rear cap, flat, or visible pocket cue.
 The mating surfaces are flush with **0 mm physical air gap**. The receiver's
 0.05 mm allowance is a solid internal spacing standoff, not an air-gap cutter.
-Stock lower stations are therefore **0.95 mm** apart. The `standard_curved`
+Stock lower stations are therefore **1.09 mm** apart. The `standard_curved`
 upper base datum is recessed 0.14 mm inside
-the unchanged host, giving **1.09 mm**. Obi-Wan LM-upper and UM ring datums are
+the unchanged host, giving **1.23 mm**. Obi-Wan LM-upper and UM ring datums are
 0.15 mm beneath their smooth carrier fairings, and the Obi-Wan LM-lower datum
 is 0.15 mm beneath its smooth shared shoulder; all three interfaces therefore
-give **1.10 mm** to matching flat/graded receivers. The slim upper station is
+give **1.24 mm** to matching flat/graded receivers. The slim upper station is
 contained by a broad, symmetric,
 smooth rear-taper shelf rather than a local magnet-shaped patch. The D5 × 2
-cavities and both 0.45 mm Arachne one-bead skins are unchanged.
+cavities and both 0.52 mm Arachne one-bead skins are unchanged.
 
 Use the exact part/variant rows in
 [`CAPTIVE_MAGNET_PAUSE_MANIFEST.md`](../review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md). Pause at the listed

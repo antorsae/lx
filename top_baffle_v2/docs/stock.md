@@ -24,7 +24,7 @@ cell, so they are directly comparable; `make iso_matrix` regenerates them.
 | `src/lx521_baffle/proud/b1.py` | B1: flank is ONE straight line from the crescent horn corner (36.8, 432.9) through the max-width point (83.8, 399.6) to the V-waist at (+/-56.12, 306.5) -- extended to the horn so the top magnet site lands in the B1 wing |
 | `src/lx521_baffle/proud/b2.py` | B2: constant wall around the 10F -- flare and chamfer keep the LM tilts but are both tangent to the r=50.83 circle about the UM center (9.8 mm wall at the D82, 2.1 mm to the D97.5 flange at both tangential points). Chamfer runs from the flare corner (+/-60.65, 391.71; max width 121.3 mm) to the crescent's D102.11 arc extended to (+/-10.08, 418.18); waist (+/-38.1, 315.95). |
 | `src/lx521_baffle/proud/b2_split.py` | 4-piece print split of variant B2 (the universal **proud-family** base set) with seven regular through-thickness dovetails |
-| `src/lx521_baffle/proud/vase_tebm35c10_4.py` | Parameterized Stock/Slim alternative vase for two opposed Tectonic TEBM35C10-4 BMRs: front/rear mounting, eight M2 insert bores, four captive side magnets, blind pocket walls, independent cable branches, smooth rear growth, and the regular seam-B female dovetails |
+| `src/lx521_baffle/proud/vase_tebm35c10_4.py` | Parameterized Stock/Slim alternative vase for two opposed Tectonic TEBM35C10-4 BMRs: fixed driver axes, conservative clipped Ø63 or unqualified Ø56-core BMR-slim lands, eight M2 insert bores, four captive side magnets, blind pocket walls, guarded cable branches, smooth rear growth, and the regular seam-B female dovetails |
 | `src/lx521_baffle/cables.py` | Proud-family subtractive routing and routing-profile dispatch: standard B2/V1 UM tail plus the keyed V1L-only 283-degree alternate |
 | `src/lx521_baffle/um_fit.py` | 283-degree MU terminal service model: terminal-less MU body, hash-pinned W22 reference and declared-placement conservative rear keepout, independent low-profile flag-Faston pull states, physical OD8/OD4 Y-breakout harness, and the proud/V1L split strain reliefs; `PHYSICAL_MEASURE_REQUIRED` remains true |
 
@@ -308,8 +308,15 @@ the four-piece set changes.
   and needs no separate part. This is `stock_4_of_4_vase_b2`.
 - **Opposed TEBM35C10-4 BMR vase** — replaces that vase entirely, crescent
   included: two Tectonic TEBM35C10-4 BMRs, the lower facing front and the
-  upper facing rear, released in a Stock envelope profile. Build it with
-  `make vase_tebm35c10_4_cad` and take it from `build/vase_TEBM35C10-4/stock/`.
+  upper facing rear, in a Stock envelope profile. The default full land is a
+  clipped Ø63 prototype, 62.653 mm wide across side-magnet faces at
+  `x=±31.326666`. The optional **BMR-slim** plan keeps those magnets but uses
+  a Ø56 driver-following core, four local M2 pads and two discrete side lobes.
+  Both are unqualified prototypes pending actual-driver fit, insert, cable and
+  magnet-pull checks. Build the full land with `make vase_tebm35c10_4_cad`
+  and all lobed alternatives with `make bmr_slim_candidates_cad`; the
+  default full artifact is under `build/vase_TEBM35C10-4/stock/` and the
+  alternate under `build/bmr_slim_TEBM35C10-4/proud/stock/`.
 
 Pick one; they are never combined. See
 [`VARIANTS.md`](VARIANTS.md#opposed-tebm35c10-4-bmr-vase-alternative) for the

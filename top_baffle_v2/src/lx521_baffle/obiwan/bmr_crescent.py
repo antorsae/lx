@@ -3,8 +3,8 @@
 This is one of two candidate alternatives to the released ND25FW-4 tweeter
 crescent, not a replacement for either.  Its sibling,
 ``bmr_crescent_opposed``, carries the same two drivers on the qualified vase's
-side-by-side layout; everything the two share -- the mount, the drop limit,
-the flush skirt, the hidden cable entry, the D66 land and its captive magnets
+side-by-side layout; everything the two share -- the mount, preserved axis,
+the flush skirt, hidden cable entry, selected land and captive magnets
 -- lives in ``bmr_pod`` and is imported, not restated.
 
 This variant presents the *identical* half-lap interface to an unmodified
@@ -17,7 +17,7 @@ Where the released crescent is a full acoustic silhouette carrying a
 face-to-face Dayton pair, this part keeps only what the two BMRs, that one
 mate and one hidden cable actually need:
 
-* a D66 pod carrying the front driver on the shared z=18.3 plane and the rear
+* a D63 pod carrying the front driver on the shared z=18.3 plane and the rear
   driver on z=-31.9 facing -z, with each driver keeping the vase's qualified
   1.20 mm blind wall (a 2.40 mm back-to-back partition and two rear chambers);
 * a solid junction skirt that closes the whole plan between the pod and the UM
@@ -32,33 +32,28 @@ faceplate clamp passages are all gone: this variant clamps no tweeter, so
 those four holes carried no fastener and only existed to keep a silhouette
 this part no longer has.
 
-The pod is as close to the UM as it can get
--------------------------------------------
+The acoustic axis stays fixed
+-----------------------------
 The first candidate parked the pod on the released ND25FW-4 acoustic axis and
 hung it off two struts, which left an open window between the pod and the UM
-collar.  The pod is now dropped until its own D66 wall runs out of room, and
-the space it used to float above is solid material.  Two released constraints
-stop the drop and the tighter one governs; ``bmr_pod`` computes both.
+collar.  Its later BMR acoustic axis is now an explicit datum and does not
+move when the land is reduced.  ``bmr_pod`` recomputes clearance to the UM
+ring and receiver ears for each topology and rejects one that violates them.
 
-Why D66 and not more
---------------------
-The pod's outer wall is exactly the driver land.  Both mounting faces must
-carry the vase's qualified D66 land, and the part prints front-face-down, so
-the plan may never grow rearward.  A radius below 33 would lose land at one
-face and a radius above 33 at the front would have to come back down to 33 at
-the rear, which is the one direction this print orientation cannot take.  A
-straight D66 cylinder is therefore the unique minimum, and it is also how the
-qualified ``proud.vase_tebm35c10_4`` treats its own drivers, where the D66
-land *is* the exterior surface around each one.
+The reduced land
+----------------
+The default pod wall is the conservative D63 prototype land.  Both mounting
+faces use one constant plan through the stack, so the front-face-down print
+never grows rearward.  The optional BMR-slim plan instead follows a D56 core,
+with four local M2 pads and discrete side lobes at the same magnet datums.
 
 The land carries the vase's two magnet flats with it, because a magnet needs a
-plane and a cylinder only offers a tangent line.  They take 0.165 mm off the
-land at its two widest points and leave 5.835 mm of land outside the D54
-flange there, so nothing a driver touches moves.
+plane and a cylinder only offers a tangent line.  The D63 faces sit at
+x=+/-31.3267 mm, 4.3267 mm outside the conservative D54 envelope.
 
 Two captive magnets, on the front land
 --------------------------------------
-The vase buries four captive D5 x 2 discs, two per D66 land, on those flats at
+The vase buries four captive D5 x 2 discs, two per driver land, on those flats at
 the project-wide source Z=15.10.  This variant has one land facing the world,
 so it takes that land's pair -- the vase's lower/front stations, at the same
 land-local coordinates, through the same ``magnets.py`` helper.  They are
@@ -142,6 +137,8 @@ from .bmr_pod import (  # noqa: F401
     AXIS_GOVERNING_CONSTRAINT,
     AXIS_Y_LIMIT_FROM_EAR_NOTCH_MM,
     AXIS_Y_LIMIT_FROM_UM_RING_MM,
+    BMR_SLIM_LAND,
+    BmrLandTopology,
     CABLE_DUCT,
     CABLE_DUCT_D_MM,
     CABLE_DUCT_DIR,
@@ -161,6 +158,7 @@ from .bmr_pod import (  # noqa: F401
     ENTRY_COLLAR_REACH_MM,
     ENTRY_COLLAR_WALL_MM,
     ENTRY_COLLAR_Z,
+    FULL_CIRCULAR_LAND,
     LOWER_T_MOUNT_CLOCK_DEG,
     LOWER_T_POCKET_REAR_Z_MM,
     M2_INSERT_BORE_D_MM,
@@ -224,6 +222,7 @@ from .bmr_pod import (  # noqa: F401
     land_solid,
     magnet_facts,
     mate_facts,
+    resolve_land_topology,
     skirt_facts,
     skirt_plan,
     skirt_um_ring_clearance_mm,
@@ -235,7 +234,7 @@ PART_NAME = "obiwan_bmr_crescent_TEBM35C10-4"
 RELEASE_VARIANT = "Obiwan-TEBM35C10-4-BMR-crescent"
 VARIANT = "coaxial"
 
-# One D66 land faces the world, so this variant takes that land's captive
+# One driver land faces the world, so this variant takes that land's captive
 # pair: the vase's lower/front stations at the same land-local coordinates.
 MAGNET_LANDS = (("front", MOUNT_AXIS_XY[1]),)
 MAGNET_COUNT = MAGNETS_PER_LAND * len(MAGNET_LANDS)
@@ -286,14 +285,19 @@ FRONT_MOUNT_CLOCK_DEG = LOWER_T_MOUNT_CLOCK_DEG
 REAR_MOUNT_CLOCK_DEG = UPPER_T_MOUNT_CLOCK_DEG
 
 
-def pod_radius_at(z: float) -> float:
-    """Pod outer radius at one Z.  It is the D66 land at every Z."""
-    return land_radius_at(z, POD_Z_SPAN)
+def pod_radius_at(
+    z: float,
+    topology: str | BmrLandTopology = FULL_CIRCULAR_LAND,
+) -> float:
+    """Pod core radius at one Z; its plan is constant through the stack."""
+    return land_radius_at(z, POD_Z_SPAN, topology)
 
 
-def _pod_solid():
-    """The D66 land, with its two magnet flats, over the whole stack."""
-    return land_solid(BMR_AXIS_XY[1], *POD_Z_SPAN)
+def _pod_solid(
+    topology: str | BmrLandTopology = FULL_CIRCULAR_LAND,
+):
+    """The selected land, including its two side-magnet faces."""
+    return land_solid(BMR_AXIS_XY[1], *POD_Z_SPAN, topology)
 
 
 def _apply_driver_interfaces(part):
@@ -329,16 +333,18 @@ def _apply_driver_interfaces(part):
     return part
 
 
-def bmr_crescent_body():
+def bmr_crescent_body(
+    topology: str | BmrLandTopology = FULL_CIRCULAR_LAND,
+):
     """The finished exterior, before any captive cavity is buried in it."""
     _require_guarded_build()
     check_released_mate()
 
     part = _fuse_required(
-        _pod_solid(), _plan_prism(skirt_plan(), *SKIRT_Z),
+        _pod_solid(topology), _plan_prism(skirt_plan(topology), *SKIRT_Z),
         "flush junction skirt onto the BMR pod")
     part = _fuse_required(
-        part, _plan_prism(entry_collar_plan(), *ENTRY_COLLAR_Z),
+        part, _plan_prism(entry_collar_plan(topology), *ENTRY_COLLAR_Z),
         "mate-face cable entry collar onto the BMR pod")
     # Hand the UM back its own half of the T--UM closure envelope and the
     # released 0.05 mm fit seam.  The crescent half this part owns is already
@@ -361,9 +367,11 @@ def bmr_crescent_body():
     return Part([solids[0]])
 
 
-def bmr_crescent():
+def bmr_crescent(
+    topology: str | BmrLandTopology = FULL_CIRCULAR_LAND,
+):
     """Dropped BMR pod flush-skirted onto the released UM half-lap mate."""
-    return build_model().solid
+    return build_model(topology).solid
 
 
 @dataclass(frozen=True)
@@ -374,11 +382,14 @@ class BmrCrescentModel:
     magnet_tools: tuple = field(default=())
 
 
-def build_model() -> BmrCrescentModel:
+def build_model(
+    topology: str | BmrLandTopology = FULL_CIRCULAR_LAND,
+) -> BmrCrescentModel:
     # Magnets go last, into a finished exterior: ``apply_wall_cavity`` refuses
     # a host that does not already carry the complete captive land, and only
     # ever subtracts, so no station can move a surface.
-    part, magnet_tools = apply_land_magnets(bmr_crescent_body(), MAGNET_LANDS)
+    part, magnet_tools = apply_land_magnets(
+        bmr_crescent_body(topology), MAGNET_LANDS, topology)
     solids = list(part.solids())
     if not part.is_valid or len(solids) != 1:
         raise RuntimeError(
@@ -462,8 +473,12 @@ def declared_openings() -> list[dict]:
     ]
 
 
-def design_facts(magnet_tools: tuple = ()) -> dict:
+def design_facts(
+    magnet_tools: tuple = (),
+    topology: str | BmrLandTopology = FULL_CIRCULAR_LAND,
+) -> dict:
     """Envelope, mate coordinates, hidden cable path and candidate flags."""
+    land_spec = resolve_land_topology(topology)
     return {
         "part": PART_NAME,
         "release_variant": RELEASE_VARIANT,
@@ -474,7 +489,7 @@ def design_facts(magnet_tools: tuple = ()) -> dict:
         "status": "candidate_not_release_authorized",
         "counts_against_release_inventory": False,
         "magnet_count": MAGNET_COUNT,
-        "magnets": magnet_facts(magnet_tools, MAGNET_LANDS),
+        "magnets": magnet_facts(magnet_tools, MAGNET_LANDS, topology),
         "silhouette": {
             "shape": "dropped_pod_flush_junction_skirt_two_ears",
             "inherits_released_crescent_outline": False,
@@ -503,8 +518,8 @@ def design_facts(magnet_tools: tuple = ()) -> dict:
             "arrangement": "coaxial_back_to_back_one_axis",
             "axis_xy_mm": list(BMR_AXIS_XY),
             "axis_authority": (
-                "dropped until the pod wall keeps the vase's 1.20 mm wall "
-                "outside the UM half-lap receiver notch"),
+                "preserved BMR acoustic datum; actual selected-land "
+                "clearance to the UM ring and receiver notch is gated"),
             "released_axis_xy_mm": list(RELEASED_AXIS_XY),
             "drop_below_released_axis_mm": POD_DROP_MM,
             "um_to_bmr_axis_spacing_mm": UM_AXIS_SPACING_MM,
@@ -516,7 +531,8 @@ def design_facts(magnet_tools: tuple = ()) -> dict:
             "max_flange_d_mm": TEBM_MAX_D_MM,
             "basket_d_mm": TEBM_BASKET_D_MM,
             "cutout_d_mm": TEBM_CUTOUT_D_MM,
-            "land_d_mm": TEBM_LAND_D_MM,
+            "land_d_mm": land_spec.parent_d_mm,
+            "land_core_d_mm": land_spec.core_d_mm,
             "mount_pcd_mm": TEBM_MOUNT_PCD_MM,
             "mount_hole_count": TEBM_MOUNT_HOLE_COUNT,
             "mount_clock_deg": {
@@ -525,7 +541,7 @@ def design_facts(magnet_tools: tuple = ()) -> dict:
             },
             "pair_mass_g": 2.0 * TEBM_MASS_G,
         },
-        "axis_placement": axis_placement_facts(),
+        "axis_placement": axis_placement_facts(topology),
         "depth_stack": {
             "acoustic_front_z_mm": FRONT_MOUNT_Z_MM,
             "front_pocket_floor_z_mm": FRONT_POCKET_FLOOR_Z_MM,
@@ -543,11 +559,11 @@ def design_facts(magnet_tools: tuple = ()) -> dict:
             "stack_depth_mm": STACK_DEPTH_MM,
             "rear_protrusion_behind_core_rear_mm": REAR_PROTRUSION_MM,
         },
-        "pod": land_facts(),
-        "skirt": skirt_facts(),
+        "pod": land_facts(topology),
+        "skirt": skirt_facts(topology),
         "mate": mate_facts(),
         "cable": {
-            **cable_entry_facts(),
+            **cable_entry_facts(topology),
             "partition_pass_d_mm": PARTITION_PASS_D_MM,
             "partition_pass_xy_mm": list(PARTITION_PASS_XY),
             "note": (

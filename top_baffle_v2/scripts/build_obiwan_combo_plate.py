@@ -59,7 +59,7 @@ import release_validation as captive
 
 ROOT = PROJECT_ROOT
 PLATE_OUTPUT_DIR = ROOT / "build" / "print_plates" / "obiwan"
-DEFAULT_PROFILE = ROOT / "captive_magnet_slicing_profile_petg_gf.json"
+DEFAULT_PROFILE = ROOT / "captive_magnet_slicing_profile_petg_gf_06hf.json"
 DEFAULT_RELEASE_CATALOG = ROOT / "review" / "captive_magnet_release_catalog.json"
 DEFAULT_RELEASE_AUDIT = ROOT / "review" / "captive_magnet_slice_audit"
 PAUSE_Z_MM = 5.96
@@ -116,11 +116,15 @@ class ComboPlateVariant:
     parts: tuple[PlatePart, ...]
 
 
+# The 04 crescent moved +0.124/+0.273 mm along the exact 02-to-04
+# nearest-point direction: the land-derived R113.94 keyed-top fairing ate
+# 0.113 mm of the former 2.0-mm plate gap (measured 1.887), and this nudge
+# restores ~2.19 mm while keeping the crescent 5 mm inside the 256 bed.
 LOCKED_TRANSLATIONS_MM = (
     (2.697, 34.319, 0.0),
     (27.025, 2.010, 0.0),
     (71.034, 28.412, 0.0),
-    (108.678, 208.859, 0.0),
+    (108.802, 209.132, 0.0),
 )
 
 
@@ -194,7 +198,7 @@ VARIANTS = {
         plate_name=(
             "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand"
         ),
-        expected_triangle_count=63_008,
+        expected_triangle_count=63_004,
         sparse_infill_density_percent=40.0,
         sparse_infill_pattern="gyroid",
     ),
@@ -204,7 +208,7 @@ VARIANTS = {
         plate_name=(
             "obiwan_01_02_03_04_LM_UM_combo_floor_stand"
         ),
-        expected_triangle_count=165_892,
+        expected_triangle_count=165_848,
         sparse_infill_density_percent=100.0,
         sparse_infill_pattern="zig-zag",
     ),
@@ -1118,16 +1122,21 @@ def validate_ready_plate(
     if petg_gf_core:
         expected_modifier_count = (
             1 if ACTIVE_VARIANT.state == "no_floor_stand" else 0)
+        # TINMORRY PETG-GF is exclusive to the 0.6-mm high-flow lane: six
+        # 0.62-mm walls give the same ~3.7-mm structural shell the former
+        # 0.4-mm lane built from eight 0.45-mm walls.
         if (modifier_count != expected_modifier_count
                 or project_audit.parameter_modifier_count
                 != expected_modifier_count
-                or effective.get("wall_loops") != 8
+                or effective.get("wall_loops") != 6
+                or effective.get("nozzle_diameter_mm") != 0.6
                 or effective.get("filament")
                 != "TINMORRY PETG-GF Profile @BBL P2S"):
             raise ComboPlateError(
-                "structural core plate must use eight walls and the saved "
-                "TINMORRY PETG-GF profile; no-floor additionally requires "
-                "one audited 100%-solid bridge/root modifier")
+                "structural core plate must use six 0.62-mm walls on the "
+                "0.6-mm high-flow lane and the saved TINMORRY PETG-GF "
+                "profile; no-floor additionally requires one audited "
+                "100%-solid bridge/root modifier")
     record = {
         "schema_version": 1,
         "audit_kind": "lx521_locked_composite_print_plate",

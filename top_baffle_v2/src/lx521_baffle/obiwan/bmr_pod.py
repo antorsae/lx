@@ -8,9 +8,10 @@ definition of each:
 
 * the mirrored ``proud.vase_tebm35c10_4`` driver authority, which cannot be
   imported beside an obiwan-profile part;
-* the D66 land, its two magnet flats and the pocket/insert datums cut into it;
-* the drop limit -- how close the mount land may come to the UM collar, and
-  which released constraint stops it;
+* the conservative D63 land, the optional driver-following BMR-slim land,
+  their side-magnet flats and the pocket/insert datums cut into them;
+* the preserved acoustic axis, plus explicit clearance checks against the UM
+  collar and receiver ears for each selected land topology;
 * the flush junction skirt between that land and the collar, its wing keep-out,
   its ownership relief and the ear-to-pod section it has to hold;
 * the one hidden Ø6.00 cable entry on the mate face, aligned with the free T
@@ -54,6 +55,36 @@ from ..base import (
 )
 from ..cables import ROUTING_PROFILE
 from ..magnets import CaptiveMagnetTools, apply_wall_cavity
+from ..tebm35c10_4_land import (
+    BMR_SLIM_CORE_R_MM,
+    BMR_SLIM_LAND,
+    BMR_SLIM_LOBE_ROOT_X_MM,
+    BMR_SLIM_M2_BOSS_R_MM,
+    FULL_CIRCULAR_LAND,
+    LOWER_T_MOUNT_CLOCK_DEG,
+    M2_INSERT_BORE_D_MM,
+    M2_INSERT_DEPTH_MM,
+    T_BLIND_BACK_WALL_THICKNESS_MM,
+    TEBM_BASKET_D_MM,
+    TEBM_CUTOUT_D_MM,
+    TEBM_DEPTH_MM,
+    TEBM_MASS_G,
+    TEBM_MAX_D_MM,
+    TEBM_MOUNT_HOLE_COUNT,
+    TEBM_MOUNT_PCD_MM,
+    T_MAGNET_FACE_X_MM,
+    T_MAGNET_FLAT_EDGE_MARGIN_MM,
+    T_MAGNET_FLAT_HALF_HEIGHT_MM,
+    T_MAGNET_REQUIRED_FLAT_HALF_HEIGHT_MM,
+    T_MAGNET_TOTAL,
+    UPPER_T_BRANCH_D_MM,
+    UPPER_T_MOUNT_CLOCK_DEG,
+    BmrLandTopology,
+    land_topology as resolve_land_topology,
+    mount_centres,
+    placed_land_plan,
+    topology_facts,
+)
 from ..proud.b import STANDARD_MAGNET_Z_MM, TWEETER_DROP_MM
 from .attachments import _cylinder_at
 from .carriers import (
@@ -71,6 +102,7 @@ from .carriers import (
     TWEETER_JOINT_X,
     TWEETER_JOINT_Y,
     UM_CORE_R,
+    _plan_prism,
     junction_closure_polygons,
 )
 from . import route
@@ -99,21 +131,9 @@ PHYSICAL_MEASURE_REQUIRED = True
 # ``tests/test_bmr_crescent.py`` evaluates the real vase module in a
 # proud-profile subprocess and asserts exact equality for every entry, so a
 # drift in the vase fails these parts rather than silently diverging.
-TEBM_DEPTH_MM = 25.1
-TEBM_MAX_D_MM = 54.0
-TEBM_BASKET_D_MM = 43.6
-TEBM_MASS_G = 51.3
-TEBM_CUTOUT_D_MM = 1.69 * 25.4
-TEBM_MOUNT_PCD_MM = 1.90 * 25.4
-TEBM_MOUNT_HOLE_COUNT = 4
-TEBM_LAND_D_MM = 66.0
+DEFAULT_LAND_TOPOLOGY = FULL_CIRCULAR_LAND
+TEBM_LAND_D_MM = DEFAULT_LAND_TOPOLOGY.parent_d_mm
 TEBM_LAND_R_MM = TEBM_LAND_D_MM / 2.0
-M2_INSERT_BORE_D_MM = 3.2
-M2_INSERT_DEPTH_MM = 4.0
-LOWER_T_MOUNT_CLOCK_DEG = 45.0
-UPPER_T_MOUNT_CLOCK_DEG = -45.0
-T_BLIND_BACK_WALL_THICKNESS_MM = 1.20
-UPPER_T_BRANCH_D_MM = 4.60
 
 # The vase's opposed pitch: half a flange plus half a basket, because each
 # driver's basket crosses the other's mounting face, plus 0.50 mm.
@@ -124,19 +144,10 @@ PAIR_AXIS_PITCH_MM = (
     + BODY_TO_OPPOSITE_FLANGE_CLEARANCE_MM
 )
 
-# The vase's two captive side-magnet flats on each D66 land.  A 0.10 mm
+# The vase's two captive side-magnet flats on each selected land.  A 0.10 mm
 # straight-face margin beyond the captive helper's exact 6.40 mm qualified
 # land gives each magnet a real planar interface instead of a face that only
 # touches the circular silhouette at the land corners.
-T_MAGNET_REQUIRED_FLAT_HALF_HEIGHT_MM = 3.20
-T_MAGNET_FLAT_EDGE_MARGIN_MM = 0.10
-T_MAGNET_FLAT_HALF_HEIGHT_MM = (
-    T_MAGNET_REQUIRED_FLAT_HALF_HEIGHT_MM + T_MAGNET_FLAT_EDGE_MARGIN_MM
-)
-T_MAGNET_FACE_X_MM = math.sqrt(
-    TEBM_LAND_R_MM ** 2 - T_MAGNET_FLAT_HALF_HEIGHT_MM ** 2
-)
-T_MAGNET_TOTAL = 4
 
 # Everything below is derived from the mirrored primitives, never restated.
 # Rounding to 9 places keeps binary dust out of the datums the exporter
@@ -181,13 +192,11 @@ VASE_AUTHORITY = {
 }
 
 
-# --- pod envelope: the D66 land is the exterior ------------------------------
-# Both mounting faces must carry the vase's qualified D66 land and the parts
-# print front-face-down with a plan that may never grow rearward, so a straight
-# D66 cylinder is the unique minimum -- which is also how the qualified vase
-# treats its own drivers, where the D66 land *is* the exterior surface around
-# each one.  The vase's two magnet flats come with the land: they are what
-# makes each captive station a plane rather than a tangent to a circle.
+# --- pod envelope: the selected driver land is the exterior -----------------
+# The D63 prototype and the D56-core BMR-slim topology are constant through
+# the depth stack so the front-face-down plan never grows rearward.  Both keep
+# the same side-magnet faces; the lobed topology removes only material that is
+# unnecessary for the conservative driver, M2 and magnet interface envelopes.
 POD_OUTER_R_MM = TEBM_LAND_R_MM
 POD_OUTER_D_MM = TEBM_LAND_D_MM
 POD_FLAT_HALF_WIDTH_MM = T_MAGNET_FACE_X_MM
@@ -202,7 +211,7 @@ POD_FLAT_MARGIN_OVER_FLANGE_MM = round(
     POD_FLAT_HALF_WIDTH_MM - TEBM_MAX_D_MM / 2.0, 9)
 
 
-# --- how far the mount land may drop toward the UM ---------------------------
+# --- preserved acoustic axis and its improved clearance ----------------------
 # The released crescent clears the UM's native R51.7 core ring by 0.20 mm and
 # recuts itself on that circle; that is the mate gap for every face these parts
 # present to the UM, including the skirt's own.
@@ -211,7 +220,7 @@ UM_MATE_R_MM = round(UM_CORE_R + UM_MATE_GAP_MM, 9)
 
 # The opposing UM half-lap's receiver notch is the complete D9.8 functional
 # ear grown by the released 0.10 mm joint clearance.  Its widest point is that
-# boss circle, and it is cut out of these parts over z=6.7..12.4 while the D66
+# boss circle, and it is cut out of these parts over z=6.7..12.4 while the land
 # land runs the full depth -- so the land wall must stay outside it or the plan
 # grows rearward at z=6.7.  The wall left between the two is held to the
 # vase's own qualified 1.20 mm minimum.
@@ -226,13 +235,17 @@ AXIS_Y_LIMIT_FROM_EAR_NOTCH_MM = round(
         (POD_OUTER_R_MM + EAR_NOTCH_R_MM + EAR_NOTCH_LIGAMENT_MM) ** 2
         - TWEETER_JOINT_X[1] ** 2), 9)
 
-# The one land both variants share: the one that mounts on the collar.
-MOUNT_AXIS_XY = (0.0, max(AXIS_Y_LIMIT_FROM_UM_RING_MM,
-                          AXIS_Y_LIMIT_FROM_EAR_NOTCH_MM))
-AXIS_GOVERNING_CONSTRAINT = (
-    "um_half_lap_receiver_notch"
-    if AXIS_Y_LIMIT_FROM_EAR_NOTCH_MM >= AXIS_Y_LIMIT_FROM_UM_RING_MM
-    else "um_core_ring")
+# D63 must not move the BMR acoustic datum.  The former D66 construction
+# derived this exact Y from the receiver-notch limit; it is now an explicit
+# preserved axis while the recomputed D63 limits become clearance floors.
+PRESERVED_MOUNT_AXIS_Y_MM = 452.494193004
+MOUNT_AXIS_XY = (0.0, PRESERVED_MOUNT_AXIS_Y_MM)
+AXIS_GOVERNING_CONSTRAINT = "preserved_acoustic_axis"
+if MOUNT_AXIS_XY[1] < max(
+        AXIS_Y_LIMIT_FROM_UM_RING_MM,
+        AXIS_Y_LIMIT_FROM_EAR_NOTCH_MM,
+):
+    raise RuntimeError("the preserved BMR axis violates a released mate limit")
 
 # The released ND25FW-4 acoustic axis, kept only as the datum these parts moved
 # away from.  The scallop that carried the released face-to-face Dayton pair
@@ -312,10 +325,14 @@ CABLE_TANGENT_WINDOW_MM = 0.60
 CABLE_TAIL_MIN_Y_MM = 405.0
 CABLE_DUCT_MOUTH_OVERSHOOT_MM = 2.0
 CABLE_DUCT_POCKET_OVERSHOOT_MM = 1.0
+# Preserve the already-modelled UM cable handoff independently of the land
+# reduction.  The former Ø66 construction set this ray; retaining its radius
+# holds the mouth, bearing and chamber endpoint fixed for D63 and BMR-slim.
+CABLE_HANDOFF_REFERENCE_R_MM = 33.0
 
 
 # --- captive magnets ---------------------------------------------------------
-# Straight from the qualified vase: two D5x2 pause-and-bury cavities per D66
+# Straight from the vase interface: two D5x2 pause-and-bury cavities per
 # land, on the land's own two flats, at the project-wide source Z=15.10, with
 # the same front-face-down print frame.  ``magnets.py`` owns every dimension;
 # nothing about the cavity is restated here.
@@ -392,10 +409,33 @@ def mate_facts() -> dict:
     }
 
 
-def axis_placement_facts() -> dict:
-    """Why the mount land sits where it does, from the released datums."""
+def land_to_um_core_clearance_mm(
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+) -> float:
+    land = land_plan(MOUNT_AXIS_XY[1], topology)
+    core = Point(*UM_CUTOUT[:2]).buffer(
+        UM_CORE_R, resolution=SKIRT_PLAN_RESOLUTION)
+    return land.distance(core)
+
+
+def land_to_ear_notch_clearance_mm(
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+) -> float:
+    land = land_plan(MOUNT_AXIS_XY[1], topology)
+    return min(
+        land.distance(Point(x, TWEETER_JOINT_Y).buffer(
+            EAR_NOTCH_R_MM, resolution=SKIRT_PLAN_RESOLUTION))
+        for x in TWEETER_JOINT_X
+    )
+
+
+def axis_placement_facts(
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+) -> dict:
+    """The preserved axis and its current clearances to the released mate."""
     return {
         "governing_constraint": AXIS_GOVERNING_CONSTRAINT,
+        "preserved_axis_y_mm": MOUNT_AXIS_XY[1],
         "limit_from_um_core_ring_y_mm": AXIS_Y_LIMIT_FROM_UM_RING_MM,
         "limit_from_ear_notch_y_mm": AXIS_Y_LIMIT_FROM_EAR_NOTCH_MM,
         "um_mate_gap_mm": UM_MATE_GAP_MM,
@@ -404,49 +444,70 @@ def axis_placement_facts() -> dict:
         "ear_notch_ligament_authority": (
             "the vase's qualified 1.20 mm blind wall, the smallest wall "
             "these parts print anywhere"),
-        "pod_wall_off_um_core_ring_mm": POD_WALL_OFF_UM_RING_MM,
-        "pod_wall_off_ear_notch_mm": POD_WALL_OFF_EAR_NOTCH_MM,
-        "why_the_notch_governs": (
-            "the notch is cut over z=6.7..12.4 while the D66 land runs "
-            "the full depth, so a land nicked by it would either lose land "
-            "or grow its plan rearward at z=6.7"),
+        "pod_wall_off_um_core_ring_mm": (
+            land_to_um_core_clearance_mm(topology)),
+        "pod_wall_off_ear_notch_mm": (
+            land_to_ear_notch_clearance_mm(topology)),
+        "placement_rule": (
+            "the legacy acoustic axis is preserved explicitly; the "
+            "recomputed D63 ring/notch limits are lower bounds and the "
+            "actual selected land plan is measured against both"),
     }
 
 
-def land_facts() -> dict:
-    """The D66 land and its two magnet flats, shared by both variants."""
+def land_facts(
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+) -> dict:
+    """The selected land and its two magnet flats."""
+    land_spec = resolve_land_topology(topology)
+    shared = topology_facts(land_spec)
+    if land_spec.key == FULL_CIRCULAR_LAND.key:
+        flat_depth = (
+            land_spec.core_r_mm - land_spec.magnet_face_x_mm)
+        flat_depth_basis = "trim_from_full_circle"
+    else:
+        flat_depth = (
+            land_spec.magnet_face_x_mm - land_spec.core_r_mm)
+        flat_depth_basis = "lobe_extension_beyond_driver_core"
     return {
-        "profile": "straight_cylinder_with_two_magnet_flats",
-        "outer_d_mm": POD_OUTER_D_MM,
-        "outer_r_mm": POD_OUTER_R_MM,
-        "outer_wall_authority": "tebm35c10_4_driver_land_d66",
+        **shared,
+        "outer_d_mm": land_spec.core_d_mm,
+        "outer_r_mm": land_spec.core_r_mm,
+        "outer_wall_authority": "tebm35c10_4_shared_land_topology",
         "outer_wall_basis": (
-            "both mounting faces must carry the vase's qualified D66 "
-            "land and the parts print front-face-down, so the plan may "
-            "never grow rearward; a straight D66 cylinder is the unique "
-            "minimum, and it is also how the qualified vase treats its "
-            "own drivers, where the D66 land is the exterior surface"),
-        "flat_half_width_mm": POD_FLAT_HALF_WIDTH_MM,
-        "flat_depth_mm": POD_FLAT_DEPTH_MM,
+            "D63 is the conservative full-circular prototype; BMR-slim "
+            "keeps a D56 driver ring with local M2 pads and side-magnet "
+            "lobes.  Both use one constant plan through Z for front-face-"
+            "down printing and share the same magnet interface faces"),
+        "flat_half_width_mm": land_spec.magnet_face_x_mm,
+        "flat_depth_mm": round(flat_depth, 9),
+        "flat_depth_basis": flat_depth_basis,
         "flat_half_height_mm": T_MAGNET_FLAT_HALF_HEIGHT_MM,
         "flat_authority": (
-            "the vase's own captive side-magnet flat: the qualified 6.40 mm "
-            "land plus a 0.10 mm straight-face margin, so each magnet has a "
-            "real planar interface instead of a tangent to the D66 circle"),
-        "plan_width_mm": POD_PLAN_WIDTH_MM,
-        "wall_outside_pocket_mm": POD_WALL_OVER_POCKET_MM,
-        "wall_outside_m2_insert_bore_mm": POD_WALL_OVER_INSERT_MM,
-        "land_margin_over_max_flange_mm": POD_LAND_MARGIN_OVER_FLANGE_MM,
-        "flat_margin_over_max_flange_mm": POD_FLAT_MARGIN_OVER_FLANGE_MM,
+            "the shared captive side-magnet flat: the helper's 6.40 mm "
+            "required land plus a 0.10 mm straight-face margin, so each "
+            "magnet has a "
+            "real planar interface instead of a tangent to the parent arc"),
+        "plan_width_mm": land_spec.plan_width_mm,
+        "wall_outside_pocket_mm": land_spec.pocket_wall_mm,
+        "wall_outside_m2_insert_bore_mm": land_spec.m2_radial_wall_mm,
+        "land_margin_over_max_flange_mm": (
+            land_spec.core_r_mm - TEBM_MAX_D_MM / 2.0),
+        "flat_margin_over_max_flange_mm": (
+            land_spec.magnet_face_x_mm - TEBM_MAX_D_MM / 2.0),
         "released_scallop_radius_mm": SCALLOP_R_MM,
     }
 
 
-def land_radius_at(z: float, z_span: tuple[float, float]) -> float:
-    """Land radius at one Z.  It is the D66 circle at every Z."""
+def land_radius_at(
+    z: float,
+    z_span: tuple[float, float],
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+) -> float:
+    """Return the constant core radius at one Z."""
     if not (z_span[0] - 1.0e-9 <= z <= z_span[1] + 1.0e-9):
         raise ValueError(f"z={z} is outside the BMR depth stack")
-    return POD_OUTER_R_MM
+    return resolve_land_topology(topology).core_r_mm
 
 
 # --- plan helpers ------------------------------------------------------------
@@ -456,7 +517,7 @@ def land_radius_at(z: float, z_span: tuple[float, float]) -> float:
 
 @lru_cache(maxsize=1)
 def _flat_clip_polygon():
-    """The band both magnet flats cut every D66 land back to, in plan."""
+    """The band that bounds both full-land magnet flats in plan."""
     return shapely_box(
         -POD_FLAT_HALF_WIDTH_MM, -4000.0, POD_FLAT_HALF_WIDTH_MM, 4000.0)
 
@@ -467,16 +528,45 @@ def _flat_clip_solid():
 
 
 @lru_cache(maxsize=None)
-def land_plan(axis_y: float):
-    """One D66 driver land in plan, cut back to its two magnet flats."""
-    disc = Point(0.0, axis_y).buffer(
-        POD_OUTER_R_MM, resolution=SKIRT_PLAN_RESOLUTION)
-    return disc.intersection(_flat_clip_polygon())
+def land_plan(
+    axis_y: float,
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+):
+    """One shared driver land placed on its acoustic axis."""
+    return placed_land_plan(axis_y, resolve_land_topology(topology))
 
 
-def land_solid(axis_y: float, z0: float, z1: float):
-    """One D66 land swept over a Z span, exact cylinder and exact flats."""
-    return _cylinder_at(0.0, axis_y, POD_OUTER_R_MM, z0, z1) & _flat_clip_solid()
+def land_solid(
+    axis_y: float,
+    z0: float,
+    z1: float,
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+):
+    """One constant-plan land swept over a Z span."""
+    land_spec = resolve_land_topology(topology)
+    if land_spec.key == FULL_CIRCULAR_LAND.key:
+        return (
+            _cylinder_at(0.0, axis_y, land_spec.core_r_mm, z0, z1)
+            & _flat_clip_solid()
+        )
+    height = float(z1) - float(z0)
+    middle_z = (float(z0) + float(z1)) / 2.0
+    result = Pos(0.0, float(axis_y), middle_z) * Cylinder(
+        BMR_SLIM_CORE_R_MM, height)
+    lobe_width = (
+        land_spec.magnet_face_x_mm - BMR_SLIM_LOBE_ROOT_X_MM)
+    for sign in (-1.0, 1.0):
+        result += Pos(
+            sign * (
+                land_spec.magnet_face_x_mm + BMR_SLIM_LOBE_ROOT_X_MM
+            ) / 2.0,
+            float(axis_y), middle_z,
+        ) * Box(
+            lobe_width, 2.0 * T_MAGNET_FLAT_HALF_HEIGHT_MM, height)
+    for x, y in mount_centres():
+        result += Pos(float(x), float(axis_y + y), middle_z) * Cylinder(
+            BMR_SLIM_M2_BOSS_R_MM, height)
+    return result.clean()
 
 
 @lru_cache(maxsize=1)
@@ -562,8 +652,10 @@ def _simplified(polygon, label: str):
     return polygon
 
 
-@lru_cache(maxsize=1)
-def base_plan():
+@lru_cache(maxsize=None)
+def base_plan(
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+):
     """Mount land, bosses and the flush fill between them, bounded by the recut.
 
     The fill is the convex hull of the mount land and the two complete D9.8
@@ -577,7 +669,8 @@ def base_plan():
     stacked above would drag the hull over the waist between the two and put
     material where neither the mate nor either driver needs any.
     """
-    land = land_plan(MOUNT_AXIS_XY[1])
+    land_spec = resolve_land_topology(topology)
+    land = land_plan(MOUNT_AXIS_XY[1], land_spec)
     bosses = list(_boss_discs())
     hull = unary_union([land] + bosses).convex_hull
     plan = unary_union(
@@ -585,8 +678,10 @@ def base_plan():
     return _simplified(plan, "junction fill plan")
 
 
-@lru_cache(maxsize=1)
-def skirt_plan():
+@lru_cache(maxsize=None)
+def skirt_plan(
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+):
     """The plate-band plan: the fill, the released web half, less the wings.
 
     The T--UM closure web is the released authority for this seam.  Its
@@ -597,32 +692,67 @@ def skirt_plan():
     the convex fill overreaches, just outboard of each boss.
     """
     web = junction_closure_polygons()["t_um"]["tweeter"]
-    plan = unary_union([base_plan(), web]).difference(
+    plan = unary_union([base_plan(topology), web]).difference(
         _wing_keepout_plan()).buffer(0)
     return _simplified(plan, "junction skirt plan")
 
 
-def base_um_ring_clearance_mm() -> float:
+def base_um_ring_clearance_mm(
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+) -> float:
     """Closest approach of the flush fill itself to the UM core ring.
 
     This is the fill's own boundary, so it is the released R51.90 recut and
     has to read back as the 0.20 mm mate gap.
     """
-    return base_plan().distance(Point(*UM_CUTOUT[:2])) - UM_CORE_R
+    return base_plan(topology).distance(Point(*UM_CUTOUT[:2])) - UM_CORE_R
 
 
-def skirt_um_ring_clearance_mm() -> float:
+def skirt_um_ring_clearance_mm(
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+) -> float:
     """Closest approach of the whole plate-band plan to the UM core ring.
 
     Below the recut this is the released closure web's own seam, which runs
     closer to the ring than 0.20 mm by design; the released crescent reads
     back the same figure.
     """
-    return skirt_plan().distance(Point(*UM_CUTOUT[:2])) - UM_CORE_R
+    return skirt_plan(topology).distance(Point(*UM_CUTOUT[:2])) - UM_CORE_R
 
 
-@lru_cache(maxsize=1)
-def ear_load_path_section_mm2() -> float:
+def _first_land_entry_distance_mm(
+    start: np.ndarray,
+    axis: np.ndarray,
+    topology: str | BmrLandTopology,
+) -> float:
+    """Distance from one ear centre to the first actual land boundary."""
+    ray = LineString([tuple(start), tuple(axis)])
+    crossing = ray.intersection(land_plan(MOUNT_AXIS_XY[1], topology))
+    if crossing.is_empty:
+        raise RuntimeError("the ear-to-axis ray never reaches the driver land")
+    geometries = (
+        [crossing]
+        if crossing.geom_type in {"Point", "LineString"}
+        else list(crossing.geoms)
+    )
+    stations: list[float] = []
+    for geometry in geometries:
+        if geometry.geom_type == "Point":
+            stations.append(ray.project(geometry))
+        elif geometry.geom_type == "LineString":
+            stations.extend(
+                ray.project(Point(*coordinate))
+                for coordinate in geometry.coords
+            )
+    if not stations:
+        raise RuntimeError("the land intersection has no measurable station")
+    return min(stations)
+
+
+@lru_cache(maxsize=None)
+def ear_load_path_section_mm2(
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+) -> float:
     """Narrowest printed section on either ear-to-land load path.
 
     Measured, not asserted: at stations along the line from each boss centre
@@ -632,7 +762,8 @@ def ear_load_path_section_mm2() -> float:
     than from the plan so that a station running through the bore still
     reports the real ligament either side of it instead of nothing at all.
     """
-    plan = skirt_plan()
+    land_spec = resolve_land_topology(topology)
+    plan = skirt_plan(land_spec)
     receivers = unary_union([
         Point(x, TWEETER_JOINT_Y).buffer(
             TWEETER_JOINT_INSERT_BORE_D / 2.0,
@@ -644,7 +775,7 @@ def ear_load_path_section_mm2() -> float:
     for ear_x in TWEETER_JOINT_X:
         start = np.array([ear_x, TWEETER_JOINT_Y], dtype=float)
         along = axis - start
-        reach = float(np.linalg.norm(along)) - POD_OUTER_R_MM
+        reach = _first_land_entry_distance_mm(start, axis, land_spec)
         along = along / np.linalg.norm(along)
         across = np.array([-along[1], along[0]])
         for step in np.linspace(0.0, reach, 121):
@@ -665,7 +796,9 @@ def ear_load_path_section_mm2() -> float:
     return round(narrowest * EAR_THICKNESS_MM, 6)
 
 
-def skirt_facts() -> dict:
+def skirt_facts(
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+) -> dict:
     """The flush junction, as both variants publish it."""
     return {
         "role": "flush_solid_junction_between_the_mount_land_and_the_um",
@@ -683,17 +816,17 @@ def skirt_facts() -> dict:
             "cable mouth and the 0.05 mm fit seam across the closure web"),
         "um_mate_r_mm": UM_MATE_R_MM,
         "fill_um_core_ring_clearance_mm": round(
-            base_um_ring_clearance_mm(), 6),
+            base_um_ring_clearance_mm(topology), 6),
         "web_seam_um_core_ring_clearance_mm": round(
-            skirt_um_ring_clearance_mm(), 6),
+            skirt_um_ring_clearance_mm(topology), 6),
         "web_seam_clearance_note": (
             "below the 0.20 mm recut because the released closure web's "
             "own seam runs closer to the ring; the released crescent "
             "reads back the same figure"),
-        "ear_load_path_section_mm2": ear_load_path_section_mm2(),
+        "ear_load_path_section_mm2": ear_load_path_section_mm2(topology),
         "half_lap_net_section_mm2": EAR_NET_SECTION_MM2,
         "ear_load_path_section_ratio": round(
-            ear_load_path_section_mm2() / EAR_NET_SECTION_MM2, 6),
+            ear_load_path_section_mm2(topology) / EAR_NET_SECTION_MM2, 6),
         "superseded_strut_section_ratio": SUPERSEDED_STRUT_SECTION_RATIO,
         "section_rule": (
             "the narrowest printed section on either ear-to-land load "
@@ -744,12 +877,12 @@ def _cable_duct_axis():
     tail = _free_t_plan_tail()
     axis = np.asarray(MOUNT_AXIS_XY, dtype=float)
     radius_pod = np.hypot(tail[:, 0] - axis[0], tail[:, 1] - axis[1])
-    inside = np.flatnonzero(radius_pod <= POD_OUTER_R_MM)
+    inside = np.flatnonzero(radius_pod <= CABLE_HANDOFF_REFERENCE_R_MM)
     if not len(inside) or inside[0] == 0:
         raise RuntimeError("the free T cable never crosses the pod wall")
     index = int(inside[0])
     before, after = radius_pod[index - 1], radius_pod[index]
-    blend = (POD_OUTER_R_MM - before) / (after - before)
+    blend = (CABLE_HANDOFF_REFERENCE_R_MM - before) / (after - before)
     wall = tail[index - 1] + blend * (tail[index] - tail[index - 1])
 
     stations = np.concatenate(([0.0], np.cumsum(
@@ -857,12 +990,51 @@ ENTRY_COLLAR_Z = (round(CABLE_DUCT_Z_MM - ENTRY_COLLAR_R_MM, 9), CORE_REAR_Z)
 # one radius past the point where the cable crosses the land wall, beyond which
 # the land's own body is the duct's wall.
 ENTRY_COLLAR_BACK_MM = ENTRY_COLLAR_R_MM
-ENTRY_COLLAR_REACH_MM = round(
-    CABLE_DUCT["mouth_to_wall_mm"] + ENTRY_COLLAR_R_MM, 9)
+def _duct_distance_to_land_mm(
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+) -> float:
+    """First intersection of the preserved duct ray with the actual land."""
+    mouth = np.asarray(CABLE_ENTRY_XY, dtype=float)
+    direction = np.asarray(CABLE_DUCT_DIR, dtype=float)
+    ray = LineString([
+        tuple(mouth), tuple(mouth + 100.0 * direction),
+    ])
+    crossing = ray.intersection(land_plan(MOUNT_AXIS_XY[1], topology))
+    if crossing.is_empty:
+        raise RuntimeError("the preserved cable duct never reaches the land")
+    geometries = (
+        [crossing]
+        if crossing.geom_type in {"Point", "LineString"}
+        else list(crossing.geoms)
+    )
+    stations: list[float] = []
+    for geometry in geometries:
+        if geometry.geom_type == "Point":
+            stations.append(ray.project(geometry))
+        elif geometry.geom_type == "LineString":
+            stations.extend(
+                ray.project(Point(*coordinate))
+                for coordinate in geometry.coords
+            )
+    positive = [station for station in stations if station >= -1.0e-8]
+    if not positive:
+        raise RuntimeError("the cable/land intersection is behind its mouth")
+    return min(positive)
 
 
-@lru_cache(maxsize=1)
-def entry_collar_plan():
+def entry_collar_reach_mm(
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+) -> float:
+    return round(_duct_distance_to_land_mm(topology) + ENTRY_COLLAR_R_MM, 9)
+
+
+ENTRY_COLLAR_REACH_MM = entry_collar_reach_mm(DEFAULT_LAND_TOPOLOGY)
+
+
+@lru_cache(maxsize=None)
+def entry_collar_plan(
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+):
     """The stadium of material that carries the duct behind the skirt.
 
     The duct's own plan sweep offset by one wall, clipped to what the skirt
@@ -881,9 +1053,9 @@ def entry_collar_plan():
     direction = np.asarray(CABLE_DUCT_DIR, dtype=float)
     sweep = LineString([
         tuple(mouth - ENTRY_COLLAR_BACK_MM * direction),
-        tuple(mouth + ENTRY_COLLAR_REACH_MM * direction),
+        tuple(mouth + entry_collar_reach_mm(topology) * direction),
     ])
-    plan = skirt_plan().difference(_um_owned_relief_plan()).intersection(
+    plan = skirt_plan(topology).difference(_um_owned_relief_plan()).intersection(
         sweep.buffer(ENTRY_COLLAR_R_MM, resolution=SKIRT_PLAN_RESOLUTION))
     if plan.geom_type != "Polygon" or plan.interiors:
         raise RuntimeError(
@@ -927,7 +1099,9 @@ def cable_entry_opening() -> dict:
     }
 
 
-def cable_entry_facts() -> dict:
+def cable_entry_facts(
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+) -> dict:
     """The shared half of each variant's ``cable`` fact block."""
     return {
         "external_outlets": 0,
@@ -954,18 +1128,23 @@ def cable_entry_facts() -> dict:
             "not taken, for 0.35 mm of radius against that invariant"),
         "entry_collar_r_mm": ENTRY_COLLAR_R_MM,
         "entry_collar_sweep_mm": [
-            -ENTRY_COLLAR_BACK_MM, ENTRY_COLLAR_REACH_MM],
-        "entry_collar_area_mm2": round(entry_collar_plan().area, 6),
+            -ENTRY_COLLAR_BACK_MM, entry_collar_reach_mm(topology)],
+        "entry_collar_area_mm2": round(
+            entry_collar_plan(topology).area, 6),
     }
 
 
 # --- captive side magnets ----------------------------------------------------
 
-def land_magnet_faces(axis_y: float) -> tuple[dict, ...]:
-    """The vase's own two side-magnet interface datums on one D66 land."""
+def land_magnet_faces(
+    axis_y: float,
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+) -> tuple[dict, ...]:
+    """The shared two side-magnet interface datums on one land."""
+    land_spec = resolve_land_topology(topology)
     return tuple({
         "side": side,
-        "face_xyz_mm": (sign * T_MAGNET_FACE_X_MM, float(axis_y),
+        "face_xyz_mm": (sign * land_spec.magnet_face_x_mm, float(axis_y),
                         MAGNET_AXIS_Z_MM),
         "outward_xyz": (sign, 0.0, 0.0),
     } for side, sign in (("left", -1.0), ("right", 1.0)))
@@ -973,8 +1152,9 @@ def land_magnet_faces(axis_y: float) -> tuple[dict, ...]:
 
 def apply_land_magnets(
     part, lands: tuple[tuple[str, float], ...],
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
 ) -> tuple[object, tuple[CaptiveMagnetTools, ...]]:
-    """Bury the vase's captive D5x2 side cavities on each named D66 land.
+    """Bury the vase's captive D5x2 side cavities on each named land.
 
     Every dimension, the loading chimney, the 45-degree gable and the two
     0.45 mm skins come from ``magnets.py``; the only thing said here is where
@@ -985,7 +1165,7 @@ def apply_land_magnets(
     """
     records: list[CaptiveMagnetTools] = []
     for land, axis_y in lands:
-        for station in land_magnet_faces(axis_y):
+        for station in land_magnet_faces(axis_y, topology):
             part, tools = apply_wall_cavity(
                 part,
                 name=f"tebm_{land}_{station['side']}_base",
@@ -1002,6 +1182,7 @@ def apply_land_magnets(
 def magnet_facts(
     magnet_tools: tuple[CaptiveMagnetTools, ...],
     lands: tuple[tuple[str, float], ...],
+    topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
 ) -> dict:
     """Serializable record of every captive station this variant carries.
 
@@ -1010,10 +1191,30 @@ def magnet_facts(
     buried, and the two are cross-checked whenever both exist.
     """
     declared = MAGNETS_PER_LAND * len(lands)
+    land_spec = resolve_land_topology(topology)
     if magnet_tools and len(magnet_tools) != declared:
         raise RuntimeError(
             f"{len(magnet_tools)} captive stations were buried but "
             f"{declared} are declared over {len(lands)} land(s)")
+    if land_spec.key == BMR_SLIM_LAND.key:
+        release_wiring = (
+            "CAD-only physical-fit candidate: the captive stations are "
+            "modeled and shell-counted, but this topology has no auxiliary "
+            "catalog, slicer profile, pause plan, 3MF, or to_print entry. "
+            "It remains absent from the released captive-magnet catalog and "
+            "release_validation inventory until actual-driver, cable and "
+            "magnet fit is qualified.")
+    else:
+        release_wiring = (
+            "candidate only: the stations do slice with real park/pause/"
+            "restore events, out of the part's own isolated auxiliary "
+            "catalog and profile rather than the released ones, so the "
+            "pause wiring exists.  They remain deliberately absent from the "
+            "released captive-magnet catalog, the release_validation counts "
+            "and the two released slicing profiles; to_print carries the pod "
+            "as a labelled candidate so it can be printed and physically "
+            "qualified, and that released-catalog entry is what the stations "
+            "still owe")
     return {
         "count": declared,
         "stations_recorded": len(magnet_tools),
@@ -1026,7 +1227,8 @@ def magnet_facts(
             "proud.vase_tebm35c10_4._apply_t_magnets, applied through the "
             "same lx521_baffle.magnets.apply_wall_cavity helper at the same "
             "land-local station"),
-        "interface_face_x_mm": [-T_MAGNET_FACE_X_MM, T_MAGNET_FACE_X_MM],
+        "interface_face_x_mm": [
+            -land_spec.magnet_face_x_mm, land_spec.magnet_face_x_mm],
         "axis_z_mm": MAGNET_AXIS_Z_MM,
         "flat_height_mm": round(2.0 * T_MAGNET_FLAT_HALF_HEIGHT_MM, 9),
         "flat_edge_margin_mm": T_MAGNET_FLAT_EDGE_MARGIN_MM,
@@ -1040,15 +1242,6 @@ def magnet_facts(
             "station reaches the exterior, so the zero-exterior-openings "
             "claim is unaffected and the sealed voids are what the shell "
             "count gate now expects"),
-        "release_wiring": (
-            "candidate only: the stations do slice with real park/pause/"
-            "restore events, out of the part's own isolated auxiliary "
-            "catalog and profile rather than the released ones, so the "
-            "pause wiring exists.  They remain deliberately absent from the "
-            "released captive-magnet catalog, the release_validation counts "
-            "and the two released slicing profiles; to_print carries the pod "
-            "as a labelled candidate so it can be printed and physically "
-            "qualified, and that released-catalog entry is what the stations "
-            "still owe"),
+        "release_wiring": release_wiring,
         "stations": [tools.facts() for tools in magnet_tools],
     }

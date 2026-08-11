@@ -38,12 +38,12 @@
     ]
   ],
   "stl": "lx521_coupon_7_recess_seat.stl",
-  "stl_bytes": 126084,
+  "stl_bytes": 125684,
   "stl_origin_translation_mm": [
     82.00000010000002,
     141.0000001,
     18.30000009999999
   ],
-  "stl_sha256": "ad371b61619de426cde7588edc2dc72896a6c7001bdd27673aabb170ce3f8e39",
+  "stl_sha256": "9e54093032bf60dfbacaa779d8d009e0e7d9c7e5b6a654e8e7691a06a72c5d52",
   "variant_export": "coupon"
 }

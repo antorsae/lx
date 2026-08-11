@@ -207,8 +207,15 @@ the set changing.
   This is `slim_4_of_4_vase_b2`.
 - **Opposed TEBM35C10-4 BMR vase** — replaces that vase and its crescent with
   two Tectonic TEBM35C10-4 BMRs, the lower facing front and the upper facing
-  rear, released in a Slim envelope profile. Build it with
-  `make vase_tebm35c10_4_cad` and take it from `build/vase_TEBM35C10-4/slim/`.
+  rear, in a Slim envelope profile. Its default land is a clipped Ø63
+  prototype, 62.653 mm wide across the two retained side-magnet faces at
+  `x=±31.326666`. The optional, unqualified **BMR-slim** plan keeps those
+  magnets on discrete lobes around a Ø56 driver-following core and adds four
+  local M2 pads. Build the full land with `make vase_tebm35c10_4_cad` and all
+  lobed alternatives with `make bmr_slim_candidates_cad`; the full
+  artifact is under `build/vase_TEBM35C10-4/slim/` and BMR-slim under
+  `build/bmr_slim_TEBM35C10-4/proud/slim/`. Both require actual-driver fit,
+  insert, cable and magnet-pull qualification.
 
 Pick one; they are never combined. See
 [`VARIANTS.md`](VARIANTS.md#opposed-tebm35c10-4-bmr-vase-alternative) for the

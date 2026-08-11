@@ -1,13 +1,13 @@
 {
   "mesh": {
-    "collapsed_apex_facets_removed": 1,
+    "collapsed_apex_facets_removed": 0,
     "component_error": 0,
     "component_signed_volumes": [
-      49957.74493650688,
-      -64.8530885070623,
-      -64.85309225815419,
-      -64.85310227938527,
-      -64.8531028575759
+      49954.61035457277,
+      -64.85309301252474,
+      -64.85309694216583,
+      -64.85314258312744,
+      -64.85314662156776
     ],
     "components": 5,
     "degenerate": 0,
@@ -20,8 +20,8 @@
     "open": 0,
     "outer_components": 1,
     "over_shared": 0,
-    "signed_volume": 49698.332550604646,
-    "triangles": 8072,
+    "signed_volume": 49695.19787541326,
+    "triangles": 8044,
     "winding": 0,
     "zero_volume": 0,
     "zero_volume_components": 0
@@ -67,12 +67,12 @@
     ]
   ],
   "stl": "slim_4_of_4_vase_b2.stl",
-  "stl_bytes": 403684,
+  "stl_bytes": 402284,
   "stl_origin_translation_mm": [
     60.65400010000052,
     453.4570001,
     18.300000099999963
   ],
-  "stl_sha256": "5291bb99a277bf2428c2d6c4da97c090079e8244d795dd4c355519af6afe787e",
+  "stl_sha256": "894fdc60dc89f515b7b8f15b1e6af96d493423f4f0f8ec213e6f66643602de7a",
   "variant_export": "v1l"
 }

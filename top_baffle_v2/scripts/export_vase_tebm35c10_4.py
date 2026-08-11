@@ -80,6 +80,7 @@ SOURCE_FILES = (
     "src/lx521_baffle/magnets.py",
     "src/lx521_baffle/print_contract.py",
     "src/lx521_baffle/stl_export.py",
+    "src/lx521_baffle/tebm35c10_4_land.py",
     "src/lx521_baffle/proud/b.py",
     "src/lx521_baffle/proud/b2.py",
     "src/lx521_baffle/proud/b2_split.py",

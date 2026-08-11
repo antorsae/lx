@@ -23,9 +23,16 @@ or a printer address, and cannot upload or start a print.
 - Printer: Bambu Lab P2S, 0.4 mm nozzle
 - Process: 0.16 mm High Quality
 - Wall generator: Arachne
-- Nominal wall paths: 0.42 mm outer / 0.45 mm inner
+- Nominal wall paths: 0.42 mm outer / 0.45 mm inner (0.4-mm lane); the
+  0.6-mm high-flow lane uses the preset 0.62 mm paths
+- Arachne minimum bead pinned per lane: 100% of nozzle on the 0.4-mm
+  lane (0.40 mm) and 85% on the 0.6-mm lane (0.51 mm), so the
+  inset-under-curved-face skin wedges (0.57..0.78 mm physical) always
+  resolve as one bead instead of nondeterministically splitting
 - Detect thin wall: enabled for the captive-magnet retaining skins
-- Filament used for the general release: Bambu PLA Tough+. Both standalone
+- Filament used for the general release: Bambu PLA Basic on both nozzle
+  lanes (PLA Tough+ is deprecated). TINMORRY PETG-GF is exclusive to the
+  0.6-mm high-flow lane. Both standalone
   Obi-Wan keyed LM bottoms (`01a` no-floor and `01b` floor) and both combined
   `01+02+03+04` core plates use the separately pinned saved TINMORRY PETG-GF
   profile.
@@ -45,15 +52,20 @@ The production overrides retain the general project's structural profile: six wa
 loops as the requested **maximum** where the local geometry has room, six top
 and five bottom shell layers, and gyroid infill at the artifact-specific 30 or
 40 percent requirement. Six loops is not a promise of six parallel paths in a
-feature that is physically thinner. In particular, every 0.45 mm captive-
-magnet retaining skin must resolve to exactly one bounded Arachne variable-
+feature that is physically thinner. In particular, every 0.52 mm captive-
+magnet retaining skin (the dual 0.4/0.6-nozzle single-bead value) must
+resolve to exactly one bounded Arachne variable-
 width bead or traversal; `detect_thin_wall=1` remains pinned and the actual
 toolpaths are audited independently. The configured nominal outer-wall
 width is not an exact-width promise for this thin feature. Transverse skins
-have a nominal 0.42--0.67 mm bound. The audit allows only a 0.005 mm
+have a nominal 0.42--0.78 mm bound on the 0.4-mm lane (the 0.78 ceiling is
+the inset/curved-face wedge maximum at the Obi-Wan shoulder and ring
+carriers, not an arbitrary-fat-bead allowance) and a seed 0.51--0.93 mm
+bound on the 0.6-mm lane. The audit allows only a 0.005 mm
 lower-side Arachne tolerance (an effective 0.415 mm floor); the pinned full
-release reaches 0.415656 mm at its narrowest path. The orthogonal 0.45 mm
-coupon spacing emits a deterministic 0.484336 mm bead at 0.16 mm layers;
+release reaches 0.415656 mm at its narrowest path. The historical 0.45 mm-era observations remain the derivation record: the
+orthogonal coupon spacing emitted a deterministic 0.484336 mm bead at
+0.16 mm layers;
 angled Obi-Wan LM/UM skins reached 0.586 mm and the legacy V1 adaptive inner
 bead reached the full-run maximum of 0.661027 mm. Every transverse station must independently retain at
 least 2.0 mm of path-width-aware free loading slot (observed full-run range
@@ -65,7 +77,7 @@ that single path is absent, doubled, broken, outside its width bound, or moved
 into the loading aperture.
 
 X-Y hole compensation is fixed at 0.00 mm for this pipeline. An empirical
-slice with +0.05 mm deleted the 0.45 mm retaining skin, so the general fit-
+slice with +0.05 mm deleted the then-0.45 mm retaining skin, so the general fit-
 tuning starting point does not apply to captive-magnet artifacts.
 
 The no-floor LM bridge/root requires local solid material. Its structural
@@ -131,9 +143,9 @@ Every production transverse family uses one source magnet plane at
 matching flat/graded receivers may not drift onto separate source-Z or roof planes.
 The interface contract records a 0.05 mm **solid receiver construction
 standoff** and a 0.00 mm physical mating gap; the standoff must never be
-reported as an air gap. Nominal opposing magnet-face spacing is 0.95 mm for
-straight pairs, 1.09 mm for `standard_curved` pairs with the 0.14 mm base inset,
-and 1.10 mm for Obi-Wan ring pairs with the 0.15 mm carrier inset. The cavity
+reported as an air gap. Nominal opposing magnet-face spacing is 1.09 mm for
+straight pairs, 1.23 mm for `standard_curved` pairs with the 0.14 mm base inset,
+and 1.24 mm for Obi-Wan ring pairs with the 0.15 mm carrier inset. The cavity
 contract is wholly internal: a local exterior box, cap, flat, dent, boss, or
 other magnet-location cue is a release failure.
 
@@ -209,8 +221,8 @@ exclusions, and complete artifact IDs):
       "expected_pause_marker_z_mm": 5.96,
       "cavity_diameter_mm": 5.20,
       "cavity_depth_mm": 2.10,
-      "face_skin_mm": 0.45,
-      "inner_skin_mm": 0.45,
+      "face_skin_mm": 0.52,
+      "inner_skin_mm": 0.52,
       "polarity_instruction": "marked/N pole points along the listed axis",
       "installed_marked_pole_axis_xyz": [0.438371, 0.898794, 0],
       "cavity_center_xyz_mm": [48.878, 301.196, 15.10],
@@ -389,8 +401,9 @@ For every cavity the audit selects and records five actual G-code layers:
 At the first emerging cradle layer, the audit requires continuous retaining
 material but does not misclassify its sub-line-width circular chord as a
 mature wall. At the representative and last-open layers, both transverse
-skins must each form exactly one connected medial traversal within the nominal
-0.42--0.67 mm width bound, with only the documented 0.005 mm lower-side
+skins must each form exactly one connected medial traversal within the
+lane's nominal width bound (0.42--0.78 mm at 0.4 mm; 0.51--0.93 mm at
+0.6 mm), with only the documented 0.005 mm lower-side
 Arachne tolerance. Candidates are classified by the physical bead edge
 that forms the cavity boundary, within 0.06 mm of nominal, before the exact-one
 test. This excludes a surrounding-body path that merely passes through the

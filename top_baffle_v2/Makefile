@@ -50,9 +50,14 @@ export PYTHONPATH := $(CURDIR)/src:$(CURDIR)/scripts
 # fall through to the remote CAD dispatcher.
 CAPTIVE_MAGNET_CATALOG ?= review/captive_magnet_release_catalog.json
 BAMBU_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit
-PETG_GF_PROFILE := captive_magnet_slicing_profile_petg_gf.json
-PETG_GF_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit_petg_gf_01a
-PETG_GF_01B_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit_petg_gf_01b
+NOZZLE06_HF_PROFILE := captive_magnet_slicing_profile_06hf.json
+BAMBU_AUDIT_OUTPUT_06HF ?= review/captive_magnet_slice_audit_06hf
+# TINMORRY PETG-GF is exclusive to the 0.6-mm high-flow nozzle: every
+# structural PETG-GF target (keyed LM bottoms and both combined core
+# plates) slices under the 0.6 lane profile and shelves into 3mf_06hf.
+PETG_GF_PROFILE := captive_magnet_slicing_profile_petg_gf_06hf.json
+PETG_GF_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit_petg_gf_06hf_01a
+PETG_GF_01B_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit_petg_gf_06hf_01b
 TO_PRINT_SHELF ?= to_print
 OBIWAN_01A_ARTIFACT_ID := no_floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_1_of_2_bottom
 OBIWAN_01A_SLUG := no_floor_stand_Obi-Wan-split_obiwan_optional_lm_keyed_1_of_2_bottom
@@ -71,7 +76,7 @@ OBIWAN_01A_PETG_GF_STAMP := $(OBIWAN_01A_PETG_GF_READY_DIR)/.stamp_petg_gf_valid
 OBIWAN_01A_FRIENDLY_NAME := obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand
 OBIWAN_01A_PETG_GF_PROMOTION_STAMP := $(OBIWAN_01A_PETG_GF_READY_DIR)/.stamp_to_print_promoted
 OBIWAN_01A_PETG_GF_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_01A_FRIENDLY_NAME).stl
-OBIWAN_01A_PETG_GF_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_01A_FRIENDLY_NAME).gcode.3mf
+OBIWAN_01A_PETG_GF_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf_06hf/$(OBIWAN_01A_FRIENDLY_NAME)_06hf.gcode.3mf
 OBIWAN_01A_PETG_GF_SHELF_OUTPUTS := $(OBIWAN_01A_PETG_GF_SHELF_STL) \
                                    $(OBIWAN_01A_PETG_GF_SHELF_PROJECT)
 OBIWAN_01B_ARTIFACT_ID := floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_1_of_2_bottom
@@ -87,7 +92,7 @@ OBIWAN_01B_PETG_GF_STAMP := $(OBIWAN_01B_PETG_GF_READY_DIR)/.stamp_petg_gf_valid
 OBIWAN_01B_FRIENDLY_NAME := obiwan_01_LM_bottom_keyed_1_of_2_floor_stand
 OBIWAN_01B_PETG_GF_PROMOTION_STAMP := $(OBIWAN_01B_PETG_GF_READY_DIR)/.stamp_to_print_promoted
 OBIWAN_01B_PETG_GF_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_01B_FRIENDLY_NAME).stl
-OBIWAN_01B_PETG_GF_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_01B_FRIENDLY_NAME).gcode.3mf
+OBIWAN_01B_PETG_GF_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf_06hf/$(OBIWAN_01B_FRIENDLY_NAME)_06hf.gcode.3mf
 OBIWAN_01B_PETG_GF_SHELF_OUTPUTS := $(OBIWAN_01B_PETG_GF_SHELF_STL) \
                                    $(OBIWAN_01B_PETG_GF_SHELF_PROJECT)
 OBIWAN_COMBO_SOURCE_DIR := build/print_plates/obiwan
@@ -108,7 +113,7 @@ OBIWAN_NO_FLOOR_COMBO_READY_OUTPUTS := $(OBIWAN_NO_FLOOR_COMBO_PROJECT) \
                                       $(OBIWAN_NO_FLOOR_COMBO_AUDIT)
 OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP := $(OBIWAN_NO_FLOOR_COMBO_READY_DIR)/.stamp_to_print_promoted
 OBIWAN_NO_FLOOR_COMBO_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_NO_FLOOR_COMBO_NAME).stl
-OBIWAN_NO_FLOOR_COMBO_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_NO_FLOOR_COMBO_NAME).gcode.3mf
+OBIWAN_NO_FLOOR_COMBO_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf_06hf/$(OBIWAN_NO_FLOOR_COMBO_NAME)_06hf.gcode.3mf
 OBIWAN_NO_FLOOR_COMBO_SHELF_OUTPUTS := $(OBIWAN_NO_FLOOR_COMBO_SHELF_STL) \
                                       $(OBIWAN_NO_FLOOR_COMBO_SHELF_PROJECT)
 OBIWAN_FLOOR_COMBO_NAME := obiwan_01_02_03_04_LM_UM_combo_floor_stand
@@ -128,7 +133,7 @@ OBIWAN_FLOOR_COMBO_READY_OUTPUTS := $(OBIWAN_FLOOR_COMBO_PROJECT) \
                                    $(OBIWAN_FLOOR_COMBO_AUDIT)
 OBIWAN_FLOOR_COMBO_PROMOTION_STAMP := $(OBIWAN_FLOOR_COMBO_READY_DIR)/.stamp_to_print_promoted
 OBIWAN_FLOOR_COMBO_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_FLOOR_COMBO_NAME).stl
-OBIWAN_FLOOR_COMBO_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_FLOOR_COMBO_NAME).gcode.3mf
+OBIWAN_FLOOR_COMBO_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf_06hf/$(OBIWAN_FLOOR_COMBO_NAME)_06hf.gcode.3mf
 OBIWAN_FLOOR_COMBO_SHELF_OUTPUTS := $(OBIWAN_FLOOR_COMBO_SHELF_STL) \
                                    $(OBIWAN_FLOOR_COMBO_SHELF_PROJECT)
 OBIWAN_FLAT_WING_PLATE_NAME := obiwan_flat_wings_split2_combo
@@ -150,7 +155,7 @@ OBIWAN_FLAT_WING_PLATE_READY_OUTPUTS := $(OBIWAN_FLAT_WING_PLATE_PROJECT) \
                                      $(OBIWAN_FLAT_WING_PLATE_AUDIT)
 OBIWAN_FLAT_WING_PLATE_PROMOTION_STAMP := $(OBIWAN_FLAT_WING_PLATE_READY_DIR)/.stamp_to_print_promoted
 OBIWAN_FLAT_WING_PLATE_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_FLAT_WING_PLATE_NAME).stl
-OBIWAN_FLAT_WING_PLATE_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_FLAT_WING_PLATE_NAME).gcode.3mf
+OBIWAN_FLAT_WING_PLATE_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf_04/$(OBIWAN_FLAT_WING_PLATE_NAME).gcode.3mf
 OBIWAN_FLAT_WING_PLATE_SHELF_OUTPUTS := $(OBIWAN_FLAT_WING_PLATE_SHELF_STL) \
                                      $(OBIWAN_FLAT_WING_PLATE_SHELF_PROJECT)
 OBIWAN_GRADED_WING_PLATE_NAME := obiwan_graded_wings_split2_combo
@@ -172,7 +177,7 @@ OBIWAN_GRADED_WING_PLATE_READY_OUTPUTS := $(OBIWAN_GRADED_WING_PLATE_PROJECT) \
                                      $(OBIWAN_GRADED_WING_PLATE_AUDIT)
 OBIWAN_GRADED_WING_PLATE_PROMOTION_STAMP := $(OBIWAN_GRADED_WING_PLATE_READY_DIR)/.stamp_to_print_promoted
 OBIWAN_GRADED_WING_PLATE_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_GRADED_WING_PLATE_NAME).stl
-OBIWAN_GRADED_WING_PLATE_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf/$(OBIWAN_GRADED_WING_PLATE_NAME).gcode.3mf
+OBIWAN_GRADED_WING_PLATE_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf_04/$(OBIWAN_GRADED_WING_PLATE_NAME).gcode.3mf
 OBIWAN_GRADED_WING_PLATE_SHELF_OUTPUTS := $(OBIWAN_GRADED_WING_PLATE_SHELF_STL) \
                                      $(OBIWAN_GRADED_WING_PLATE_SHELF_PROJECT)
 
@@ -239,6 +244,8 @@ VASE_TEBM_CAD_OUTPUTS := $(VASE_TEBM_STOCK_CAD_OUTPUTS) \
 LOCAL_BAMBU_GOALS := check_bambu_3mf_audit \
                      bambu_profiles bambu_dry_run \
                      bambu_slice_obiwan bambu_slice_release \
+                     bambu_dry_run_06hf bambu_slice_release_06hf \
+                     to_print_06hf \
                      vase_tebm35c10_4_3mf \
                      vase_tebm35c10_4_3mf_validate \
                      vase_tebm35c10_4_stock_3mf \
@@ -354,7 +361,7 @@ endif
 # the release inventory and the remote promotion roots; they run locally
 # under the ordinary guard.  Promotion to a remote target happens if and
 # when a candidate is release-authorized.
-LOCAL_CANDIDATE_GOALS := obiwan_bmr_crescent_cad
+LOCAL_CANDIDATE_GOALS := obiwan_bmr_crescent_cad bmr_slim_candidates_cad
 CANDIDATE_GOALS_REQUESTED := $(filter $(LOCAL_CANDIDATE_GOALS),$(MAKECMDGOALS))
 ifneq ($(strip $(CANDIDATE_GOALS_REQUESTED)),)
 ifneq ($(strip $(filter-out $(LOCAL_CANDIDATE_GOALS),$(MAKECMDGOALS))),)
@@ -444,15 +451,21 @@ MU10_REFS := ../linkwitz/H1658-04_MU10RB-SL_driver.stl \
              ../linkwitz/H1658-04_MU10RB-SL_driver_STL_notes.md \
              ../linkwitz/H1658-04_MU10RB-SL_Datasheet.pdf
 W22_REFS := ../E0022_W22EX001.stp
-# Candidate-only BMR modules are consumed exclusively by the local
-# obiwan_bmr_crescent_cad target, which lists them explicitly in
-# BMR_CRESCENT_CAD_SRCS.  Nothing released imports them, so they are
-# filtered out of the release prerequisite groups — a BMR edit must not
-# rebuild the stock/slim/obiwan CAD trees.
+# Candidate-only TEBM/BMR modules are consumed by the explicit vase and pod
+# targets, which list them in VASE_TEBM_CAD_SRCS or BMR_CRESCENT_CAD_SRCS.
+# Nothing released imports them, so they are filtered out of the protected
+# release prerequisite groups — a candidate edit must not rebuild the
+# stock/slim/obiwan release CAD trees.
 BMR_CANDIDATE_CAD_SRCS := \
+        src/lx521_baffle/tebm35c10_4_land.py \
+        src/lx521_baffle/proud/vase_tebm35c10_4.py \
+        src/lx521_baffle/proud/vase_tebm35c10_4_stock_bmr_slim.py \
+        src/lx521_baffle/proud/vase_tebm35c10_4_slim_bmr_slim.py \
         src/lx521_baffle/obiwan/bmr_pod.py \
         src/lx521_baffle/obiwan/bmr_crescent.py \
-        src/lx521_baffle/obiwan/bmr_crescent_opposed.py
+        src/lx521_baffle/obiwan/bmr_crescent_opposed.py \
+        src/lx521_baffle/obiwan/bmr_crescent_bmr_slim.py \
+        src/lx521_baffle/obiwan/bmr_crescent_opposed_bmr_slim.py
 CAD_SRCS_ALL := $(filter-out $(BMR_CANDIDATE_CAD_SRCS),\
         $(wildcard src/lx521_baffle/*.py) \
         $(wildcard src/lx521_baffle/proud/*.py) \
@@ -886,7 +899,10 @@ VARIANT_TARGETS = $(1)/stl/.stamp_coupon $(1)/stl/.stamp $(1)/stl/.stamp_v1 $(1)
         check_obiwan_lm_profile_brep manifold _manifold_parallel clean \
         check_bambu_3mf_audit bambu_profiles bambu_dry_run \
         bambu_slice_obiwan bambu_slice_release \
+        bambu_dry_run_06hf bambu_slice_release_06hf \
+        to_print_06hf \
         obiwan_bmr_crescent_cad \
+        bmr_slim_candidates_cad \
         obiwan_bmr_crescent_3mf obiwan_bmr_crescent_3mf_validate \
         obiwan_bmr_crescent_coaxial_3mf obiwan_bmr_crescent_opposed_3mf \
         obiwan_bmr_crescent_coaxial_3mf_validate \
@@ -933,6 +949,7 @@ all: validate_obiwan_stages floor_stand_artifacts no_floor_stand_artifacts commo
 # root.  Both children use the same generator and differ only in their
 # released rear envelope; both retain the regular seam-B female dovetails.
 VASE_TEBM_CAD_SRCS := \
+        src/lx521_baffle/tebm35c10_4_land.py \
         src/lx521_baffle/proud/vase_tebm35c10_4.py \
         src/lx521_baffle/proud/b.py \
         src/lx521_baffle/proud/b2.py \
@@ -1007,6 +1024,20 @@ vase_tebm35c10_4_stock_cad: $(VASE_TEBM_STOCK_CAD_OUTPUTS)
 
 vase_tebm35c10_4_slim_cad: $(VASE_TEBM_SLIM_CAD_OUTPUTS)
 	@echo "Slim BMR vase: $(VASE_TEBM_SLIM_STEP)"
+
+# CAD-only BMR-slim prototypes.  They deliberately stop at native BREP/STEP
+# plus facts: no protected catalog, slicer profile, 3MF or to_print entry is
+# created until physical qualification closes the candidate gates.
+bmr_slim_candidates_cad:
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=proud $(PYTHON_RUN) \
+	    scripts/export_bmr_slim_candidates.py --variant proud-stock
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=proud $(PYTHON_RUN) \
+	    scripts/export_bmr_slim_candidates.py --variant proud-slim
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan $(PYTHON_RUN) \
+	    scripts/export_bmr_slim_candidates.py --variant obiwan-coaxial
+	LX_STAND_FOOT=0 LX_ROUTING_PROFILE=obiwan $(PYTHON_RUN) \
+	    scripts/export_bmr_slim_candidates.py --variant obiwan-opposed
+	@echo "BMR-slim CAD candidates exported; no release/slicing artifacts changed"
 
 # Candidate TEBM35C10-4 BMR crescents for the Obi-Wan UM collar: the coaxial
 # pod and the opposed one, built together because they share one family
@@ -1102,6 +1133,7 @@ BMR_CRESCENT_OPPOSED_REVIEW_AUDIT := \
         $(BMR_CRESCENT_REVIEW)/opposed_delivery.json
 
 BMR_CRESCENT_CAD_SRCS := src/lx521_baffle/obiwan/bmr_pod.py \
+        src/lx521_baffle/tebm35c10_4_land.py \
         src/lx521_baffle/obiwan/bmr_crescent.py \
         src/lx521_baffle/obiwan/bmr_crescent_opposed.py \
         src/lx521_baffle/obiwan/attachments.py \
@@ -1502,6 +1534,38 @@ bambu_slice_release: check_slice_metadata check_bambu_3mf_audit
 		--output "$(BAMBU_AUDIT_OUTPUT)" \
 		--jobs "$(BAMBU_JOBS)" \
 		--emit-ready-projects
+
+# The 0.6-mm high-flow nozzle lane: identical catalog, geometry, Z schedule
+# and pause table; only the machine/process/filament presets and the
+# retaining-bead acceptance differ (see captive_magnet_slicing_profile_06hf).
+# Its audit output is isolated so neither lane can overwrite the other's
+# canonical manifests.
+bambu_dry_run_06hf: check_slice_metadata check_bambu_3mf_audit
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
+		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--profile "$(NOZZLE06_HF_PROFILE)" \
+		--output "$(BAMBU_AUDIT_OUTPUT_06HF)" \
+		--jobs "$(BAMBU_JOBS)" \
+		--dry-run
+
+bambu_slice_release_06hf: check_slice_metadata check_bambu_3mf_audit
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/slice_captive_magnets.py \
+		--catalog "$(CAPTIVE_MAGNET_CATALOG)" \
+		--profile "$(NOZZLE06_HF_PROFILE)" \
+		--output "$(BAMBU_AUDIT_OUTPUT_06HF)" \
+		--jobs "$(BAMBU_JOBS)" \
+		--emit-ready-projects
+
+# Second-lane shelf view: copies the audited 0.6-mm ready projects next to
+# the canonical 0.4-mm shelf under to_print/<family>/3mf_06hf/ with a hash
+# manifest.  Requires an authoritative bambu_slice_release_06hf run.
+to_print_06hf: scripts/build_to_print_shelf_06hf.py
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/build_to_print_shelf_06hf.py \
+		--shelf "$(TO_PRINT_SHELF)" \
+		--audit-output "$(BAMBU_AUDIT_OUTPUT_06HF)"
 
 # The optional TEBM vase family is deliberately outside the protected
 # 58-artifact release inventory.  Each profile catalog still uses every

@@ -3,33 +3,33 @@
   "files": [
     {
       "path": "vase_TEBM35C10-4.brep",
-      "sha256": "6ac8a1312bee2a83e33ed9337cbb3155263d9b8d9470850456b0bf1282d22f00",
-      "size": 2367157
+      "sha256": "da5dc4cd88fc02ef87400505120a464b8f24c85a42958692e52a58180d3fdb95",
+      "size": 2211019
     },
     {
       "path": "vase_TEBM35C10-4.catalog.json",
-      "sha256": "2eada37958521f6b513f4df25b55dc00f60cc3c6f8964beb13c53215f63bcabf",
-      "size": 20515
+      "sha256": "0964ec225b9f6c4b015aa57d7e0284817978bf90554f5a4c9f240a0f38af9c57",
+      "size": 20708
     },
     {
       "path": "vase_TEBM35C10-4.facts.json",
-      "sha256": "b0081ee2cc5caa40d4137618897e70b9b486218f15bb357cec1dae5d0cbe19b9",
-      "size": 16205
+      "sha256": "236020ea82b8832e00e9d1e7d3711efe42a93547cf05e800663a0591ddc2abe6",
+      "size": 17147
     },
     {
       "path": "vase_TEBM35C10-4.print.json",
-      "sha256": "5b69d922da7bf354433d50bcee34c270c486c1898abd44d7ccccd8bb0aa30002",
-      "size": 1729
+      "sha256": "04aca012be5f2ac7f3551ff431910a1ccd00beadd142e0878b1b330a03ac0c94",
+      "size": 1728
     },
     {
       "path": "vase_TEBM35C10-4.step",
-      "sha256": "9041eb64068a9fc774f07bbcba680950402dc438b518a0567c7f2286576eaea9",
-      "size": 5831067
+      "sha256": "3267c8d14ec10e1ed9e567e8b0c0f6ffc30834d6eed8a249666ef991d5714e22",
+      "size": 5571536
     },
     {
       "path": "vase_TEBM35C10-4.stl",
-      "sha256": "3108e08602927d19d3d02f8f4b420cd47d5d4ad94298b76da3a5aed57aab6016",
-      "size": 4067584
+      "sha256": "cea35a1c1bf02706ae6fe016fcd651f6c5d74f1622158136f55c95656355a8d6",
+      "size": 5379684
     }
   ],
   "profile": "slim",
@@ -39,7 +39,7 @@
     "front_down_print_contract": "pass",
     "native_brep_round_trip": "pass",
     "step_transaction": "pass",
-    "stl_brep_volume_relative_error": 0.00022507032700519377,
+    "stl_brep_volume_relative_error": 0.0002943734844069839,
     "stl_strict_two_manifold": "pass"
   }
 }

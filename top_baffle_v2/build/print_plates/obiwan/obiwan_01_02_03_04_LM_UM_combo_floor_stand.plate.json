@@ -2,11 +2,11 @@
   "bed_clearances_mm": {
     "x": [
       2.697000026702881,
-      17.133926391601562
+      16.875900268554688
     ],
     "y": [
-      2.02585506439209,
-      2.4043426513671875
+      2.0100862979888916,
+      2.372650146484375
     ],
     "z": [
       0.0,
@@ -15,18 +15,18 @@
   },
   "bounds_mm": {
     "maximum_mm": [
-      238.86607360839844,
-      253.5956573486328,
+      239.1240997314453,
+      253.62734985351562,
       168.3000030517578
     ],
     "minimum_mm": [
       2.697000026702881,
-      2.02585506439209,
+      2.0100862979888916,
       0.0
     ],
     "size_mm": [
-      236.16907358169556,
-      251.56980228424072,
+      236.42709970474243,
+      251.61726355552673,
       168.3000030517578
     ]
   },
@@ -48,44 +48,44 @@
   "mesh_max_abs_error_mm": 0.0,
   "name": "obiwan_01_02_03_04_LM_UM_combo_floor_stand",
   "packing": {
-    "minimum_actual_xy_gap_mm": 2.20013923975397,
+    "minimum_actual_xy_gap_mm": 2.1802421354655928,
     "minimum_required_xy_gap_mm": 2.0,
     "pairwise": [
       {
         "intersects": false,
         "left": "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand",
         "right": "obiwan_02_LM_top_keyed_2_of_2",
-        "xy_gap_mm": 2.4397178842481506
+        "xy_gap_mm": 2.4397821431129625
       },
       {
         "intersects": false,
         "left": "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand",
         "right": "obiwan_03_UM_carrier_1_of_1",
-        "xy_gap_mm": 2.2709595817741977
+        "xy_gap_mm": 2.240504373273433
       },
       {
         "intersects": false,
         "left": "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand",
         "right": "obiwan_04_T_tweeter_crescent_1_of_1",
-        "xy_gap_mm": 23.94266495316074
+        "xy_gap_mm": 24.15989333507424
       },
       {
         "intersects": false,
         "left": "obiwan_02_LM_top_keyed_2_of_2",
         "right": "obiwan_03_UM_carrier_1_of_1",
-        "xy_gap_mm": 3.724410872823487
+        "xy_gap_mm": 3.6027541713469837
       },
       {
         "intersects": false,
         "left": "obiwan_02_LM_top_keyed_2_of_2",
         "right": "obiwan_04_T_tweeter_crescent_1_of_1",
-        "xy_gap_mm": 2.20013923975397
+        "xy_gap_mm": 2.1802421354655928
       },
       {
         "intersects": false,
         "left": "obiwan_03_UM_carrier_1_of_1",
         "right": "obiwan_04_T_tweeter_crescent_1_of_1",
-        "xy_gap_mm": 66.99125753360117
+        "xy_gap_mm": 67.25264157586803
       }
     ]
   },
@@ -96,9 +96,9 @@
       "mesh_diagnostics": {
         "component_error": 0,
         "component_signed_volumes": [
-          246369.61153334222,
-          -64.88306359149581,
-          -64.88307104379503
+          246620.92435273432,
+          -64.88300469126904,
+          -64.88307570252934
         ],
         "components": 3,
         "degenerate": 0,
@@ -111,19 +111,19 @@
         "open": 0,
         "outer_components": 1,
         "over_shared": 0,
-        "signed_volume": 246239.8453987071,
-        "triangles": 126924,
+        "signed_volume": 246491.15827234063,
+        "triangles": 126892,
         "winding": 0,
         "zero_volume": 0,
         "zero_volume_components": 0
       },
       "source_print_sidecar": "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json",
-      "source_print_sidecar_sha256": "d5484668628e1fce8f15d3b2c4cd593e361ee27b3e2421526baf40c322cdc498",
+      "source_print_sidecar_sha256": "40378764d5a08680ce97976f43d60d4d93e99875d25dc63adffa56025fd984fa",
       "source_stl": "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
-      "source_stl_sha256": "59749df15f185f0abb23720a0800bf6e5b35aecf5ae8ee20ba997cba752f8b63",
+      "source_stl_sha256": "bf800683df05d358c3a9eab28b00c3f69d7bdb61ca50a716c555e7384b006f66",
       "support_blocker": {
         "path": "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl",
-        "sha256": "5cdc411ddc962fab5369ec4730ca1df7cc774bd0008c24def680d76520a77f27",
+        "sha256": "aa5edfa9e07e301335126631788b38d41a056a7c51532caf7791251631af4f41",
         "triangle_count": 18966
       },
       "translation_mm": [
@@ -131,7 +131,7 @@
         34.319,
         0.0
       ],
-      "triangle_count": 126924
+      "triangle_count": 126892
     },
     {
       "catalog_artifact_id": "floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_2_of_2_top",
@@ -139,9 +139,9 @@
       "mesh_diagnostics": {
         "component_error": 0,
         "component_signed_volumes": [
-          35827.00305053487,
-          -64.88297642672588,
-          -64.88302384616591
+          36400.16624365592,
+          -64.88303332272068,
+          -64.88311486900996
         ],
         "components": 3,
         "degenerate": 0,
@@ -154,19 +154,19 @@
         "open": 0,
         "outer_components": 1,
         "over_shared": 0,
-        "signed_volume": 35697.237050262025,
-        "triangles": 18496,
+        "signed_volume": 36270.40009546424,
+        "triangles": 18484,
         "winding": 0,
         "zero_volume": 0,
         "zero_volume_components": 0
       },
       "source_print_sidecar": "build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.print.json",
-      "source_print_sidecar_sha256": "bc9203b4c74b4662e0a5b09f518c3499222052a3e83469d51550abc2eeb7500c",
+      "source_print_sidecar_sha256": "dd1237cf304a9e94ff0dc8bbd6e8721a8fd5f00816579657b43eef74174ee962",
       "source_stl": "build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
-      "source_stl_sha256": "69aec18729c4aff5618ab122f65927fc56196b865f6f22cc4f2861512e5fb69a",
+      "source_stl_sha256": "140e895a7a2a283470a4df911d85cfdfb8818717d3bd58d6a3c0190a5c3774c8",
       "support_blocker": {
         "path": "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl",
-        "sha256": "1cd30c1d81bcc89e9268098debf80662fd5389182c269ab933fb1ccd14c45873",
+        "sha256": "72fbd4b13bf11f054917b3f04ddc162bae86b8586e13463ea6a1ec964a8340a5",
         "triangle_count": 1244
       },
       "translation_mm": [
@@ -174,7 +174,7 @@
         2.01,
         0.0
       ],
-      "triangle_count": 18496
+      "triangle_count": 18484
     },
     {
       "catalog_artifact_id": "floor_stand:Obi-Wan:obiwan_core_2_of_2_um_carrier",
@@ -182,10 +182,10 @@
       "mesh_diagnostics": {
         "component_error": 0,
         "component_signed_volumes": [
-          20874.00362365901,
-          -0.0034526847699056784,
-          -64.88303894902727,
-          -64.88304643207017
+          21232.397608728003,
+          -0.0034526576549910315,
+          -64.8830427257169,
+          -64.8830671733046
         ],
         "components": 4,
         "degenerate": 0,
@@ -198,19 +198,19 @@
         "open": 0,
         "outer_components": 1,
         "over_shared": 0,
-        "signed_volume": 20744.234085593154,
+        "signed_volume": 21102.628046171387,
         "triangles": 14454,
         "winding": 0,
         "zero_volume": 0,
         "zero_volume_components": 0
       },
       "source_print_sidecar": "build/floor_stand/stl/obiwan_core_2_of_2_um_carrier.print.json",
-      "source_print_sidecar_sha256": "f3f12ac8155517ce85cafb489c81a4b3360881ebbc837e1ae64d9621ff93cfb3",
+      "source_print_sidecar_sha256": "73eddfa1b2047348e1db5513001ab063702799edfeb2d5fef4fcb38741c6d561",
       "source_stl": "build/floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
-      "source_stl_sha256": "339c12af4ef1c282cd4497c1248ff51b9a9db1d3db62abbdf2dca89c0821c52c",
+      "source_stl_sha256": "2efb59bf135c5605f44dfa46253ad3cd3f66bb63b8ee09deaeae7dbe65fe3301",
       "support_blocker": {
         "path": "build/floor_stand/support_blockers/obiwan_core_2_of_2_um_carrier.support_blocker.stl",
-        "sha256": "0dea9329c56636ac6bcb1b3652a8d638c77301b1bd21d89151601d4701fab06d",
+        "sha256": "b2b7e6bb2e34ff1a6b7c5169fcb5150fbedd5e83dd757c76b83efd6ef791186e",
         "triangle_count": 464
       },
       "translation_mm": [
@@ -251,8 +251,8 @@
       "source_stl_sha256": "e0cde38643f513045565106a7dae452d3b2f03d32508f8f1e2cf6542ff7135f3",
       "support_blocker": null,
       "translation_mm": [
-        108.678,
-        208.859,
+        108.802,
+        209.132,
         0.0
       ],
       "triangle_count": 6018
@@ -263,12 +263,12 @@
     "sparse_infill_pattern": "zig-zag"
   },
   "schema_version": 1,
-  "source_bundle_fingerprint": "acc9b84267d4a9ecbac41d601b92acb92dd2e9d0e0adf96fcf3b39ed166e4583",
+  "source_bundle_fingerprint": "4092a3b25a2c781fe90135d79e927b63f5f74cd3bdaebb131e09005d0ca742f4",
   "source_policy": "translation-only concatenation of four released floor_stand front-down STLs; no CAD or structure regeneration",
   "stand_state": "floor_stand",
   "stl": "obiwan_01_02_03_04_LM_UM_combo_floor_stand.stl",
-  "stl_bytes": 8294684,
-  "stl_sha256": "33cc9aeb13eff9d6baa51fd5d4a4b9994ffa4f2aecb286d8875aa3607d2fbb91",
+  "stl_bytes": 8292484,
+  "stl_sha256": "8f968c38d54a03d608bd830811b5b24088872b82e540e24f9d0128d8265ca6d2",
   "support_policy": {
     "duct_blocker_count": 3,
     "enabled": true,
@@ -280,5 +280,5 @@
     },
     "support_toolpath_vs_duct_collision_gate": "mandatory"
   },
-  "triangle_count": 165892
+  "triangle_count": 165848
 }

@@ -1,6 +1,6 @@
 # Captive-magnet pause manifest
 
-Authoritative for the exact STL and profile hashes below. This run used Bambu Lab P2S, 0.4 mm nozzle, 0.16 mm High Quality, Arachne walls, and Bambu PLA Tough+. All parts are front-face-down.
+Authoritative for the exact STL and profile hashes below. This run used Bambu Lab P2S 0.4 nozzle, 0.16 mm Arachne layers, and Bambu PLA Basic @BBL P2S. All parts are front-face-down.
 
 This audit did not contact a printer and did not upload or start a print.
 
@@ -24,12 +24,12 @@ Every listed 3MF was exported by the same Bambu slice invocation, hash-bound to 
 
 | State | Variant / part | Arrange Rz | Ready-to-print 3MF | SHA-256 | Ready fingerprint |
 |---|---|---:|---|---|---|
-| shared | Obiwan-TEBM35C10-4-BMR-crescent-opposed / `obiwan_bmr_crescent_opposed_TEBM35C10-4` | 0.000000 deg | `/Users/antor/gh/lx/top_baffle_v2/build/bmr_crescent_TEBM35C10-4/slice_audit_opposed/slices/shared_Obiwan-TEBM35C10-4-BMR-crescent-opposed_obiwan_bmr_crescent_opposed_TEBM35C10-4/ready/ready_to_print.gcode.3mf` | `0c216505bfeba222c1c1878397ab89f45d002552333c31a5a3bedeef657350fd` | `d519955a3d4118d4aec8eb69234b015f6a9502748ac592fb3f92c239ff3fb7a5` |
+| shared | Obiwan-TEBM35C10-4-BMR-crescent-opposed / `obiwan_bmr_crescent_opposed_TEBM35C10-4` | 0.000000 deg | `/Users/antor/gh/lx/top_baffle_v2/build/bmr_crescent_TEBM35C10-4/slice_audit_opposed/slices/shared_Obiwan-TEBM35C10-4-BMR-crescent-opposed_obiwan_bmr_crescent_opposed_TEBM35C10-4/ready/ready_to_print.gcode.3mf` | `201d4035999f7ab16d86aea81c63c78f10bc7b85df5bf848f0a020273c4ebabc` | `551cd0d9d6a8504d021c5bbbd03f198f67eb579ccb198ca5e8565df4f8ccf119` |
 
 ## Profile and evidence
 
-- Catalog SHA-256: `574e203012b64b44d379be390f3ca69464b6b18c365c5911c445d49a344799ae`
-- Resolved profile-set SHA-256: `2a86ec4ee439a3512f6733c0d52eb65aa7f646054041e392d04278fb786bb638`
+- Catalog SHA-256: `411a829c4508c1b9d05d31e6236b9d33a7be002db3b7f31e923df2ed2afe7f6c`
+- Resolved profile-set SHA-256: `83151d56c495b6964e835fdb0a79797dfd6caace5157052e00494101d77aaaeb`
 - Bambu Studio binary SHA-256: `b022be6750898454803e9e07178b7c7446c0e5b4d148c593b4b56efde09ba281`
 - Artifacts: 1 passed, 0 failed
 - Each printable artifact directory under `slices/` contains the hash-bound arranged Bambu 3MF, plain G-code, Bambu `result.json`, static validator output, and five-layer SVG/PNG toolpath evidence for every cavity.
