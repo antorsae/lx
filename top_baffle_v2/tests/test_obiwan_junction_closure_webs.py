@@ -1201,6 +1201,10 @@ def test_final_owner_breps_keep_safe_web_interiors_solid_full_depth() -> None:
             required -= cad.lm_rear_exit_port_cutter()
             for cutter in cad._lm_t_closure_handoff_cutters():
                 required -= cutter
+        # The vertical M2 center ties are intentional full-depth-crossing
+        # passages; their exact cutters are the only extra voids allowed.
+        for cutter in _tie_feature_cutters(cad, junction, owner):
+            required -= cutter
         required = required.clean()
         difference_shape = (required - actual[owner]).clean()
         difference_solids = tuple(difference_shape.solids())
@@ -1407,6 +1411,112 @@ def _route_void_plan(owner: str, z_mm: float):
     return unary_union(polygons).buffer(0) if polygons else None
 
 
+def _tie_hole_plans(cad, junction: str, z_mm: float):
+    """Plan footprints of the vertical M2 center-tie features at z.
+
+    The ties are Y-axis cylinders, so a z section sees a chord-wide
+    rectangle spanning the feature's y range.  Owners: the LM carries
+    counterbore+clearance at the LM--UM crown, the UM carries the
+    receiver there; at T--UM the UM carries counterbore+clearance and
+    the crescent carries the receivers.
+    """
+    from shapely.geometry import box as shapely_box
+    from shapely.ops import unary_union
+
+    def chord(x0, z_axis, radius, y0, y1):
+        dz = z_mm - z_axis
+        if abs(dz) >= radius:
+            return None
+        half_w = math.sqrt(radius * radius - dz * dz)
+        return shapely_box(x0 - half_w, y0, x0 + half_w, y1)
+
+    if junction == "lm_um":
+        pieces = {
+            "lm": [
+                chord(cad.LM_UM_TIE_X, cad.LM_UM_TIE_AXIS_Z,
+                      cad.LM_UM_TIE_CBORE_D / 2.0,
+                      cad.LM_UM_TIE_SEAT_Y - 4.0, cad.LM_UM_TIE_SEAT_Y),
+                chord(cad.LM_UM_TIE_X, cad.LM_UM_TIE_AXIS_Z,
+                      cad.LM_UM_TIE_CLEARANCE_BORE_D / 2.0,
+                      cad.LM_UM_TIE_SEAT_Y - 0.2,
+                      cad.LM_UM_TIE_LM_FACE_Y + 0.30),
+            ],
+            "um": [
+                chord(cad.LM_UM_TIE_X, cad.LM_UM_TIE_AXIS_Z,
+                      cad.LM_UM_TIE_INSERT_BORE_D / 2.0,
+                      cad.LM_UM_TIE_UM_FACE_Y - 0.30,
+                      cad.LM_UM_TIE_POCKET_TOP_Y),
+            ],
+        }
+    elif junction == "t_um":
+        pieces = {"um": [], "tweeter": []}
+        for tie_x in cad.T_UM_TIE_X:
+            pieces["um"].append(chord(
+                tie_x, cad.T_UM_TIE_AXIS_Z, cad.T_UM_TIE_CBORE_D / 2.0,
+                cad.T_UM_TIE_SEAT_Y - 4.0, cad.T_UM_TIE_SEAT_Y))
+            pieces["um"].append(chord(
+                tie_x, cad.T_UM_TIE_AXIS_Z,
+                cad.T_UM_TIE_CLEARANCE_BORE_D / 2.0,
+                cad.T_UM_TIE_SEAT_Y - 0.2,
+                cad.T_UM_TIE_UM_FACE_Y + 0.30))
+            pieces["tweeter"].append(chord(
+                tie_x, cad.T_UM_TIE_AXIS_Z,
+                cad.T_UM_TIE_INSERT_BORE_D / 2.0,
+                cad.T_UM_TIE_CRES_FACE_Y - 0.30,
+                cad.T_UM_TIE_POCKET_TOP_Y))
+    else:
+        raise ValueError(junction)
+    return {
+        owner: (unary_union([p for p in shapes if p is not None]).buffer(0)
+                if any(p is not None for p in shapes) else None)
+        for owner, shapes in pieces.items()
+    }
+
+
+def _tie_feature_cutters(cad, junction: str, owner: str):
+    """Exact 3D tie cutters this owner's final BREP is allowed to lack."""
+    if junction == "lm_um":
+        if owner == "lm":
+            return (
+                cad._y_cylinder_at(
+                    cad.LM_UM_TIE_X, cad.LM_UM_TIE_SEAT_Y - 4.0,
+                    cad.LM_UM_TIE_SEAT_Y, cad.LM_UM_TIE_AXIS_Z,
+                    cad.LM_UM_TIE_CBORE_D / 2.0),
+                cad._y_cylinder_at(
+                    cad.LM_UM_TIE_X, cad.LM_UM_TIE_SEAT_Y - 0.2,
+                    cad.LM_UM_TIE_LM_FACE_Y + 0.30,
+                    cad.LM_UM_TIE_AXIS_Z,
+                    cad.LM_UM_TIE_CLEARANCE_BORE_D / 2.0),
+            )
+        if owner == "um":
+            return (
+                cad._y_cylinder_at(
+                    cad.LM_UM_TIE_X, cad.LM_UM_TIE_UM_FACE_Y - 0.30,
+                    cad.LM_UM_TIE_POCKET_TOP_Y, cad.LM_UM_TIE_AXIS_Z,
+                    cad.LM_UM_TIE_INSERT_BORE_D / 2.0),
+            )
+        return ()
+    if junction == "t_um":
+        cutters = []
+        for tie_x in cad.T_UM_TIE_X:
+            if owner == "um":
+                cutters.append(cad._y_cylinder_at(
+                    tie_x, cad.T_UM_TIE_SEAT_Y - 4.0, cad.T_UM_TIE_SEAT_Y,
+                    cad.T_UM_TIE_AXIS_Z, cad.T_UM_TIE_CBORE_D / 2.0))
+                cutters.append(cad._y_cylinder_at(
+                    tie_x, cad.T_UM_TIE_SEAT_Y - 0.2,
+                    cad.T_UM_TIE_UM_FACE_Y + 0.30,
+                    cad.T_UM_TIE_AXIS_Z,
+                    cad.T_UM_TIE_CLEARANCE_BORE_D / 2.0))
+            elif owner == "tweeter":
+                cutters.append(cad._y_cylinder_at(
+                    tie_x, cad.T_UM_TIE_CRES_FACE_Y - 0.30,
+                    cad.T_UM_TIE_POCKET_TOP_Y, cad.T_UM_TIE_AXIS_Z,
+                    cad.T_UM_TIE_INSERT_BORE_D / 2.0))
+        return tuple(cutters)
+    raise ValueError(junction)
+
+
 def _assembled_plan_oracle(cad, junction: str, z_mm: float):
     """Expected material from full webs plus complementary Z-half ears."""
     from shapely.geometry import Point
@@ -1578,6 +1688,16 @@ def _assembled_plan_oracle(cad, junction: str, z_mm: float):
     else:
         raise ValueError(junction)
 
+    # The vertical M2 center ties are declared functional passages: their
+    # chord sections leave each owner's plan and join the allowed-void set.
+    tie_holes = _tie_hole_plans(cad, junction, z_mm)
+    tie_pieces = []
+    for owner, hole in tie_holes.items():
+        if hole is None or owner not in owner_plans:
+            continue
+        owner_plans[owner] = owner_plans[owner].difference(hole).buffer(0)
+        tie_pieces.append(hole)
+
     route_plans = []
     for owner, plan in tuple(owner_plans.items()):
         if owner not in {"lm", "um"}:
@@ -1594,7 +1714,8 @@ def _assembled_plan_oracle(cad, junction: str, z_mm: float):
     expected_void = record["audit_domain"].difference(material).buffer(0)
     terminal_drain = record["terminal_drain"]
     return owner_plans, expected_void, unary_union(
-        (functional_bores, route_union, terminal_drain)).buffer(0)
+        (functional_bores, route_union, terminal_drain,
+         *tie_pieces)).buffer(0)
 
 
 def test_assembled_sections_match_complementary_ownership_through_depth():

@@ -632,7 +632,7 @@ def test_petg_gf_profile_is_scoped_to_structural_core_only() -> None:
     assert config["requirements"]["nozzle_diameter_mm"] == 0.6
     assert config["repo_overrides"]["process"]["wall_loops"] == "6"
     assert config["user_filament_preset_sha256"] == (
-        "2fe46f552422a202b221743c3a6a913243e375149fe080598ffd9b084a8b0346")
+        "e7ab920a781118a557b6c819275a6f5a7217e0faa4a9c803e16c2f8ed4da0c11")
 
     scope = config["artifact_scope"]
     assert len(scope) == 6
@@ -795,6 +795,48 @@ def test_repo_overrides_apply_after_flattening_and_are_exact() -> None:
         "support_critical_regions_only"] is False
     assert bundle["identity"]["effective"][
         "support_remove_small_overhang"] is False
+
+
+def test_resolved_profiles_are_standalone_cli_configs() -> None:
+    """A saved preset without ``type`` must still slice.
+
+    Bambu's GUI infers a preset's kind from its directory and rewrites
+    saved presets without the key (observed on the TINMORRY PETG-GF
+    filament preset); the CLI then refuses the flattened config with
+    "unknown config type".  Every emitted section therefore stamps its
+    own kind and drops the now-meaningless parent name.
+    """
+    bundle = _synthetic_profile_bundle()
+    for section, data in bundle["resolved"].items():
+        emitted = audit._standalone_cli_config(
+            section, {**data, "inherits": "Some Parent Preset"})
+        assert emitted["type"] == section, (
+            f"{section} config must declare its own type")
+        assert emitted["instantiation"] == "true"
+        assert "inherits" not in emitted, (
+            f"{section} config is flattened; a parent name would send the "
+            "CLI looking for a preset outside its search path")
+        for key, value in data.items():
+            if key in ("type", "instantiation", "inherits"):
+                continue
+            assert emitted[key] == value, f"{section}.{key} was altered"
+
+    # Both writers must route through the normalizer: a bare _write_json
+    # would silently ship whatever shape the saved preset happened to have.
+    for name in ("prepare_profiles", "_artifact_profile_bundle"):
+        source = inspect.getsource(getattr(audit, name))
+        assert "_standalone_cli_config(" in source, (
+            f"{name} must normalize resolved sections before writing")
+
+    for bad in (
+            ("filament", {"type": "process"}),
+            ("nonsense", {}),
+    ):
+        try:
+            audit._standalone_cli_config(*bad)
+        except audit.AuditError:
+            continue
+        raise AssertionError(f"{bad!r} must fail closed")
 
 
 def test_profile_override_typo_fails_closed() -> None:

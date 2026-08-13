@@ -3521,7 +3521,7 @@
   },
   "kind": "bambu_support_blocker",
   "main_stl": "../stl/obiwan_core_2_of_2_um_carrier.stl",
-  "main_stl_sha256": "a3faa22ec64b3e4db0397c0497125e48af8586124e605ed9f0a8f840507dc9f6",
+  "main_stl_sha256": "ca2e2e725e487ad179e1b4bdc6e972bbf295ae4293d7436f07fe26ef8e85c64e",
   "mesh": {
     "component_error": 0,
     "component_signed_volumes": [

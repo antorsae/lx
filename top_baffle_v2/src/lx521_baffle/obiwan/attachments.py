@@ -91,6 +91,39 @@ def tweeter_crescent():
     # closure material is final.
     part = _apply_complete_um_tweeter_joint(part, "tweeter")
 
+    # Mirrored vertical M2 tie receivers: blind heat-set pockets opening
+    # on the crescent web underside, engaged by rear-driven M2 x 8 screws
+    # whose heads live in the UM carrier's rear-open flange void.  Each
+    # pocket must be completely buried before it is cut: a coaxial probe
+    # cylinder (pocket plus 0.60 wall and roof) has to intersect the
+    # crescent at its own full volume, which proves the rear acoustic
+    # taper and the R51.9 clearance recut stay clear of the receiver.
+    from .carriers import (
+        T_UM_TIE_AXIS_Z,
+        T_UM_TIE_CRES_FACE_Y,
+        T_UM_TIE_INSERT_BORE_D,
+        T_UM_TIE_POCKET_TOP_Y,
+        T_UM_TIE_X,
+        _verify_t_um_tie_route_clearance,
+        _y_cylinder_at,
+    )
+    _verify_t_um_tie_route_clearance()
+    for tie_x in T_UM_TIE_X:
+        # +0.12 clears the <=0.05 face rise across the footprint edge
+        # (the seam is circle-exact only inboard of the x=14 blend).
+        probe = _y_cylinder_at(
+            tie_x, T_UM_TIE_CRES_FACE_Y + 0.12,
+            T_UM_TIE_POCKET_TOP_Y + 0.60,
+            T_UM_TIE_AXIS_Z, T_UM_TIE_INSERT_BORE_D / 2.0 + 0.60)
+        buried = (part & probe).clean()
+        if abs(buried.volume - probe.volume) > probe.volume * 0.005:
+            raise RuntimeError(
+                f"T-UM tie receiver at x={tie_x} is not fully buried: "
+                f"probe {probe.volume:.3f} vs solid {buried.volume:.3f}")
+        part -= _y_cylinder_at(
+            tie_x, T_UM_TIE_CRES_FACE_Y - 0.30, T_UM_TIE_POCKET_TOP_Y,
+            T_UM_TIE_AXIS_Z, T_UM_TIE_INSERT_BORE_D / 2.0)
+
     # The cable leaves through the intentional central plan mouth and floats
     # behind this add-on.  There is no horn, trench or hidden suffix; only the
     # two solid, tangent-blended side webs bridge to the UM carrier.

@@ -397,6 +397,41 @@ def _write_json(path: Path, data: Any) -> None:
     temporary.replace(path)
 
 
+# Bambu's CLI refuses a --load config that carries no ``type`` ("unknown
+# config type"), and a saved user preset does not have to carry one: the
+# GUI knows a preset's kind from the directory it was saved in, and it
+# rewrites presets without that key (observed on the TINMORRY PETG-GF
+# filament preset).  A resolved section IS a standalone CLI config, so
+# stamp the section's own kind rather than trusting the serialization
+# of whichever preset the chain happened to end at.  ``inherits`` is
+# dropped for the same reason: the file is already flattened, so a
+# leftover parent name would send the CLI looking for a preset that its
+# own search path need not contain.
+_CLI_CONFIG_TYPES = {
+    "machine": "machine",
+    "process": "process",
+    "filament": "filament",
+}
+
+
+def _standalone_cli_config(section: str, data: Mapping[str, Any]) -> dict:
+    try:
+        config_type = _CLI_CONFIG_TYPES[section]
+    except KeyError as exc:
+        raise AuditError(
+            f"unknown resolved profile section: {section!r}") from exc
+    payload = {
+        key: value for key, value in data.items() if key != "inherits"
+    }
+    existing = payload.get("type")
+    if existing is not None and str(existing) != config_type:
+        raise AuditError(
+            f"resolved {section} preset declares type {existing!r}")
+    payload["type"] = config_type
+    payload.setdefault("instantiation", "true")
+    return payload
+
+
 def _load_json(path: Path) -> Any:
     try:
         return json.loads(path.read_text(encoding="utf-8"))
@@ -1269,7 +1304,7 @@ def prepare_profiles(
     paths: dict[str, Path] = {}
     for label, data in resolved.items():
         path = profile_dir / f"resolved_{label}.json"
-        _write_json(path, data)
+        _write_json(path, _standalone_cli_config(label, data))
         paths[label] = path
     dependency_records = []
     for path in sorted(resolver.dependencies):
@@ -1397,7 +1432,7 @@ def _artifact_profile_bundle(
     paths: dict[str, Path] = {}
     for section, data in resolved.items():
         path = profile_dir / f"resolved_{section}.json"
-        _write_json(path, data)
+        _write_json(path, _standalone_cli_config(section, data))
         paths[section] = path
     identity = copy.deepcopy(profile_bundle["identity"])
     identity["effective"] = effective

@@ -198,7 +198,7 @@ VARIANTS = {
         plate_name=(
             "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand"
         ),
-        expected_triangle_count=63_004,
+        expected_triangle_count=68_794,
         sparse_infill_density_percent=40.0,
         sparse_infill_pattern="gyroid",
     ),
@@ -208,7 +208,7 @@ VARIANTS = {
         plate_name=(
             "obiwan_01_02_03_04_LM_UM_combo_floor_stand"
         ),
-        expected_triangle_count=165_848,
+        expected_triangle_count=171_638,
         sparse_infill_density_percent=100.0,
         sparse_infill_pattern="zig-zag",
     ),

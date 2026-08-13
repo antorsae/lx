@@ -12,7 +12,7 @@
  "process_preset": "process/0.18mm Balanced Quality @BBL P2S 0.6 nozzle.json",
  "filament_preset": "filament/Generic PETG-CF @BBL P2S.json",
  "user_filament_preset": "TINMORRY PETG-GF Profile @BBL P2S",
- "user_filament_preset_sha256": "2fe46f552422a202b221743c3a6a913243e375149fe080598ffd9b084a8b0346",
+ "user_filament_preset_sha256": "e7ab920a781118a557b6c819275a6f5a7217e0faa4a9c803e16c2f8ed4da0c11",
  "repo_overrides": {
   "machine": {
    "machine_pause_gcode": "M400 U1",
