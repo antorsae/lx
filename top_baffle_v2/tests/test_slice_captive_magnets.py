@@ -704,7 +704,7 @@ def _synthetic_profile_bundle(tmp_path: Path | None = None) -> dict:
             "name": "process",
             "layer_height": "0.16",
             "initial_layer_print_height": "0.2",
-            "outer_wall_line_width": "0.42",
+            "outer_wall_line_width": "0.52",
             "inner_wall_line_width": "0.45",
             "wall_generator": "classic",
             "enable_support": "1",
@@ -1045,7 +1045,7 @@ def test_actual_gcode_profile_checks_every_pinned_setting(
     config = {
         "layer_height": "0.16",
         "initial_layer_print_height": "0.2",
-        "outer_wall_line_width": "0.42",
+        "outer_wall_line_width": "0.52",
         "inner_wall_line_width": "0.45",
         "wall_loops": "6",
         "top_shell_layers": "6",
@@ -1453,9 +1453,16 @@ def test_ready_custom_gcodes_and_archive_are_self_contained(
     for values in bundle["enforced_overrides"].values():
         settings.update(values)
     gcode = tmp_path / "plate_1.gcode"
+    # Bambu's remaining-time post-processor may inject an M73 progress
+    # report between the pause program's own commands (observed on the
+    # 0.4-lane stock wing); the pause audit must skip it while keeping
+    # the motion sequence around it exact.
+    interrupted_program = program.replace(
+        "M400 U1\n", "M400 U1\nM73 P37 R67\n", 1)
+    assert interrupted_program != program
     gcode.write_text("\n".join((
         "; CHANGE_LAYER", "; Z_HEIGHT: 5.96", "; CUSTOM_GCODE",
-        program, "G1 X1 Y1 E0.1",
+        interrupted_program, "G1 X1 Y1 E0.1",
     )) + "\n", encoding="utf-8")
     xml_program = (program.replace("&", "&amp;")
                    .replace("\"", "&quot;")

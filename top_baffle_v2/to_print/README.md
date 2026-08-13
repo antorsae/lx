@@ -38,7 +38,7 @@ general walls on the 0.4 lane and four on the 0.6 lane and 30% gyroid
 infill (40% for both UM carriers). Both standalone keyed LM `01` bottoms,
 plus both combined `01+02+03+04` core plates, are the structural
 exceptions: they use the hash-pinned saved
-**TINMORRY PETG-GF Profile @BBL P2S** preset with six 0.62 mm walls on the
+**TINMORRY PETG-GF Profile @BBL P2S** preset with six walls (0.52 mm outer + five 0.62 mm) on the
 **0.6 mm high-flow nozzle only** — PETG-GF projects ship exclusively in
 `3mf_06hf/`. The no-floor-stand `01`
 uses 40% gyroid globally plus its 100%-solid bridge/root modifier; the
@@ -78,7 +78,8 @@ speaker.
 floor-stand combo plates for 01+02+03+04. Each is one Bambu
 printable object containing four normal volumes and three aligned
 state-specific duct-blocker volumes at locked, translation-only positions.
-Both use TINMORRY PETG-GF with six 0.62 mm walls on the 0.6 mm high-flow
+Both use TINMORRY PETG-GF with six walls (0.52 mm outer + five
+0.62 mm) on the 0.6 mm high-flow
 nozzle only. The no-floor plate uses 40% gyroid
 globally plus a 100% zig-zag parameter modifier through the complete no-floor-stand `01`
 bridge/root; the floor plate preserves the integral-floor bottom's global

@@ -53,6 +53,7 @@
       "enable_support": "0",
       "ensure_vertical_shell_thickness": "enabled",
       "min_bead_width": "100%",
+      "outer_wall_line_width": "0.52",
       "outer_wall_speed": [
         "60",
         "60"
@@ -75,7 +76,7 @@
     "inner_wall_line_width_mm": 0.45,
     "layer_height_mm": 0.16,
     "nozzle_diameter_mm": 0.4,
-    "outer_wall_line_width_mm": 0.42,
+    "outer_wall_line_width_mm": 0.52,
     "print_orientation": "front_face_down",
     "printer_model": "Bambu Lab P2S",
     "support_enabled": false,

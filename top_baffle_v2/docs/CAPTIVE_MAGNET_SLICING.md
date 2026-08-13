@@ -23,8 +23,10 @@ or a printer address, and cannot upload or start a print.
 - Printer: Bambu Lab P2S, 0.4 mm nozzle
 - Process: 0.16 mm High Quality
 - Wall generator: Arachne
-- Nominal wall paths: 0.42 mm outer / 0.45 mm inner (0.4-mm lane); the
-  0.6-mm high-flow lane uses the preset 0.62 mm paths
+- Nominal wall paths: 0.52 mm outer on every lane (the outer wall prints
+  at the captive-skin width, so Arachne never modulates bead width over
+  a magnet pocket and stations stay invisible on the exterior); inner
+  walls stay 0.45 mm (0.4-mm lane) / 0.62 mm (0.6-mm high-flow lane)
 - Arachne minimum bead pinned per lane: 100% of nozzle on the 0.4-mm
   lane (0.40 mm) and 85% on the 0.6-mm lane (0.51 mm), so the
   inset-under-curved-face skin wedges (0.57..0.78 mm physical) always

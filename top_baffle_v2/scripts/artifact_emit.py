@@ -1150,7 +1150,15 @@ def _gcode_pause_events(
             command = line.split(";", 1)[0].strip()
             if not command:
                 continue
-            awaiting["commands"].append((" ".join(command.split()), line_number))
+            normalized = " ".join(command.split())
+            if normalized.split(" ", 1)[0] == "M73":
+                # Bambu's remaining-time post-processor injects M73 P/R
+                # progress reports on a wall-clock cadence, so one can land
+                # anywhere - including between the pause program's own
+                # commands.  M73 only updates the LCD; the park/pause/
+                # restore motion sequence around it stays exact.
+                continue
+            awaiting["commands"].append((normalized, line_number))
     if awaiting is not None:
         raise AuditError(
             f"{path}:{awaiting['line_number']}: custom magnet pause has no "

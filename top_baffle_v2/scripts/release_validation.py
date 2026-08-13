@@ -247,6 +247,11 @@ PROFILE_OVERRIDE_KEYS = {
         # split into sub-floor bead pairs (0.40 on the 0.4 lane, 0.51 on the
         # 0.6 lane).
         "min_bead_width",
+        # The outer wall prints at the captive-skin width (0.52 mm) on
+        # every lane: a uniform outer bead means Arachne never modulates
+        # width over a magnet pocket, so the stations stay invisible on
+        # the exterior while the skin remains exactly one bead.
+        "outer_wall_line_width",
         "wall_loops",
         "top_shell_layers",
         "bottom_shell_layers",
