@@ -91,38 +91,63 @@ def tweeter_crescent():
     # closure material is final.
     part = _apply_complete_um_tweeter_joint(part, "tweeter")
 
-    # Mirrored vertical M2 tie receivers: blind heat-set pockets opening
-    # on the crescent web underside, engaged by rear-driven M2 x 8 screws
-    # whose heads live in the UM carrier's rear-open flange void.  Each
-    # pocket must be completely buried before it is cut: a coaxial probe
-    # cylinder (pocket plus 0.60 wall and roof) has to intersect the
-    # crescent at its own full volume, which proves the rear acoustic
-    # taper and the R51.9 clearance recut stay clear of the receiver.
+    # Mirrored vertical M2 tie heads.  The crescent owns the head end,
+    # because the UM's rear recess is filled here by the buried tweeter
+    # cover and offers no corridor at all.  To keep the acoustic scallop
+    # almost unmarked, the head is NOT threaded down an axial bore wide
+    # enough to swallow it: it is laid in sideways through a rear-facing
+    # channel -- the back of the baffle is not a display surface -- and
+    # only a 2.0 hex-key passage continues up to the scallop edge.
     from .carriers import (
         T_UM_TIE_AXIS_Z,
+        T_UM_TIE_CHANNEL_HIGH_Y,
+        T_UM_TIE_CHANNEL_LOW_Y,
+        T_UM_TIE_CHANNEL_TOP_Z,
+        T_UM_TIE_CLEARANCE_BORE_D,
         T_UM_TIE_CRES_FACE_Y,
-        T_UM_TIE_INSERT_BORE_D,
-        T_UM_TIE_POCKET_TOP_Y,
+        T_UM_TIE_CBORE_OVERSHOOT_MM,
+        T_UM_TIE_HEAD_POCKET_D,
+        T_UM_TIE_HEAD_POCKET_L,
+        T_UM_TIE_HEAD_TOP_Y,
+        T_UM_TIE_KEY_BORE_D,
+        T_UM_TIE_REAR_CHANNEL_W,
+        T_UM_TIE_SEAT_Y,
         T_UM_TIE_X,
+        TIE_ACCESS_KEY_CLEAR_MM,
         _verify_t_um_tie_route_clearance,
+        _verify_tie_access,
+        _verify_tie_rear_channel,
         _y_cylinder_at,
     )
     _verify_t_um_tie_route_clearance()
     for tie_x in T_UM_TIE_X:
-        # +0.12 clears the <=0.05 face rise across the footprint edge
-        # (the seam is circle-exact only inboard of the x=14 blend).
-        probe = _y_cylinder_at(
-            tie_x, T_UM_TIE_CRES_FACE_Y + 0.12,
-            T_UM_TIE_POCKET_TOP_Y + 0.60,
-            T_UM_TIE_AXIS_Z, T_UM_TIE_INSERT_BORE_D / 2.0 + 0.60)
-        buried = (part & probe).clean()
-        if abs(buried.volume - probe.volume) > probe.volume * 0.005:
-            raise RuntimeError(
-                f"T-UM tie receiver at x={tie_x} is not fully buried: "
-                f"probe {probe.volume:.3f} vs solid {buried.volume:.3f}")
+        label = f"T-UM tie x={tie_x}"
+        # Only the key travels this axis; the screw arrives sideways.
+        _verify_tie_access(
+            part, label, tie_x, T_UM_TIE_AXIS_Z, T_UM_TIE_SEAT_Y,
+            outward=1.0, cbore_length=T_UM_TIE_CBORE_OVERSHOOT_MM,
+            probes=((T_UM_TIE_KEY_BORE_D, TIE_ACCESS_KEY_CLEAR_MM, "key"),))
+        _verify_tie_rear_channel(
+            part, label, tie_x, T_UM_TIE_CHANNEL_LOW_Y,
+            T_UM_TIE_CHANNEL_HIGH_Y, T_UM_TIE_REAR_CHANNEL_W,
+            T_UM_TIE_CHANNEL_TOP_Z)
         part -= _y_cylinder_at(
-            tie_x, T_UM_TIE_CRES_FACE_Y - 0.30, T_UM_TIE_POCKET_TOP_Y,
-            T_UM_TIE_AXIS_Z, T_UM_TIE_INSERT_BORE_D / 2.0)
+            tie_x, T_UM_TIE_SEAT_Y, T_UM_TIE_HEAD_TOP_Y,
+            T_UM_TIE_AXIS_Z, T_UM_TIE_HEAD_POCKET_D / 2.0)
+        part -= _y_cylinder_at(
+            tie_x, T_UM_TIE_HEAD_TOP_Y,
+            T_UM_TIE_SEAT_Y + T_UM_TIE_CBORE_OVERSHOOT_MM,
+            T_UM_TIE_AXIS_Z, T_UM_TIE_KEY_BORE_D / 2.0)
+        part -= _y_cylinder_at(
+            tie_x, T_UM_TIE_CRES_FACE_Y - 0.30, T_UM_TIE_SEAT_Y + 0.20,
+            T_UM_TIE_AXIS_Z, T_UM_TIE_CLEARANCE_BORE_D / 2.0)
+        channel_height = T_UM_TIE_CHANNEL_TOP_Z + 2.0
+        part -= Pos(tie_x,
+                    (T_UM_TIE_CHANNEL_LOW_Y + T_UM_TIE_CHANNEL_HIGH_Y) / 2.0,
+                    T_UM_TIE_CHANNEL_TOP_Z - channel_height / 2.0) * Box(
+            T_UM_TIE_REAR_CHANNEL_W,
+            T_UM_TIE_CHANNEL_HIGH_Y - T_UM_TIE_CHANNEL_LOW_Y,
+            channel_height)
 
     # The cable leaves through the intentional central plan mouth and floats
     # behind this add-on.  There is no horn, trench or hidden suffix; only the

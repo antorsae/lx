@@ -1411,110 +1411,116 @@ def _route_void_plan(owner: str, z_mm: float):
     return unary_union(polygons).buffer(0) if polygons else None
 
 
-def _tie_hole_plans(cad, junction: str, z_mm: float):
-    """Plan footprints of the vertical M2 center-tie features at z.
+def _tie_features(cad, junction: str):
+    """Every vertical M2 center-tie cut, keyed by the owner that makes it.
 
-    The ties are Y-axis cylinders, so a z section sees a chord-wide
-    rectangle spanning the feature's y range.  Owners: the LM carries
-    counterbore+clearance at the LM--UM crown, the UM carries the
-    receiver there; at T--UM the UM carries counterbore+clearance and
-    the crescent carries the receivers.
+    Each entry is (x, y_low, y_high, diameter).  Ownership follows
+    access, not symmetry: the head end belongs to whichever carrier has
+    an open corridor for a screw, and the blind receiver to the other.
     """
+    if junction == "lm_um":
+        return {
+            "lm": [
+                (cad.LM_UM_TIE_X, cad.LM_UM_TIE_POCKET_BOTTOM_Y,
+                 cad.LM_UM_TIE_INSERT_MOUTH_Y, cad.LM_UM_TIE_INSERT_BORE_D),
+                (cad.LM_UM_TIE_X, cad.LM_UM_TIE_INSERT_MOUTH_Y,
+                 cad.LM_UM_TIE_LM_FACE_Y + 0.30,
+                 cad.LM_UM_TIE_CLEARANCE_BORE_D),
+            ],
+            "um": [
+                (cad.LM_UM_TIE_X, cad.LM_UM_TIE_SEAT_Y,
+                 cad.LM_UM_TIE_SEAT_Y + cad.LM_UM_TIE_SEAT_DEPTH_MM + 1.0,
+                 cad.LM_UM_TIE_CBORE_D),
+                (cad.LM_UM_TIE_X, cad.LM_UM_TIE_UM_FACE_Y - 0.30,
+                 cad.LM_UM_TIE_SEAT_Y + 0.20,
+                 cad.LM_UM_TIE_CLEARANCE_BORE_D),
+            ],
+        }
+    if junction == "t_um":
+        features = {"um": [], "tweeter": []}
+        for tie_x in cad.T_UM_TIE_X:
+            features["um"].append(
+                (tie_x, cad.T_UM_TIE_POCKET_BOTTOM_Y,
+                 cad.T_UM_TIE_INSERT_MOUTH_Y, cad.T_UM_TIE_INSERT_BORE_D))
+            features["um"].append(
+                (tie_x, cad.T_UM_TIE_INSERT_MOUTH_Y,
+                 cad.T_UM_TIE_UM_FACE_Y + 0.30,
+                 cad.T_UM_TIE_CLEARANCE_BORE_D))
+            features["tweeter"].append(
+                (tie_x, cad.T_UM_TIE_SEAT_Y, cad.T_UM_TIE_HEAD_TOP_Y,
+                 cad.T_UM_TIE_HEAD_POCKET_D))
+            features["tweeter"].append(
+                (tie_x, cad.T_UM_TIE_HEAD_TOP_Y,
+                 cad.T_UM_TIE_SEAT_Y + cad.T_UM_TIE_CBORE_OVERSHOOT_MM,
+                 cad.T_UM_TIE_KEY_BORE_D))
+            features["tweeter"].append(
+                (tie_x, cad.T_UM_TIE_CRES_FACE_Y - 0.30,
+                 cad.T_UM_TIE_SEAT_Y + 0.20,
+                 cad.T_UM_TIE_CLEARANCE_BORE_D))
+        return features
+    raise ValueError(junction)
+
+
+def _tie_rear_channels(cad, junction: str):
+    """Sideways head-loading channels, as (owner, x, y0, y1, w, top_z)."""
+    if junction != "t_um":
+        return ()
+    return tuple(
+        ("tweeter", tie_x, cad.T_UM_TIE_CHANNEL_LOW_Y,
+         cad.T_UM_TIE_CHANNEL_HIGH_Y, cad.T_UM_TIE_REAR_CHANNEL_W,
+         cad.T_UM_TIE_CHANNEL_TOP_Z)
+        for tie_x in cad.T_UM_TIE_X
+    )
+
+
+def _tie_axis_z(cad, junction: str):
+    return (cad.LM_UM_TIE_AXIS_Z if junction == "lm_um"
+            else cad.T_UM_TIE_AXIS_Z)
+
+
+def _tie_hole_plans(cad, junction: str, z_mm: float):
+    """Plan footprints of the tie features at z (chords of Y cylinders)."""
     from shapely.geometry import box as shapely_box
     from shapely.ops import unary_union
 
-    def chord(x0, z_axis, radius, y0, y1):
-        dz = z_mm - z_axis
-        if abs(dz) >= radius:
-            return None
-        half_w = math.sqrt(radius * radius - dz * dz)
-        return shapely_box(x0 - half_w, y0, x0 + half_w, y1)
-
-    if junction == "lm_um":
-        pieces = {
-            "lm": [
-                chord(cad.LM_UM_TIE_X, cad.LM_UM_TIE_AXIS_Z,
-                      cad.LM_UM_TIE_CBORE_D / 2.0,
-                      cad.LM_UM_TIE_SEAT_Y - 4.0, cad.LM_UM_TIE_SEAT_Y),
-                chord(cad.LM_UM_TIE_X, cad.LM_UM_TIE_AXIS_Z,
-                      cad.LM_UM_TIE_CLEARANCE_BORE_D / 2.0,
-                      cad.LM_UM_TIE_SEAT_Y - 0.2,
-                      cad.LM_UM_TIE_LM_FACE_Y + 0.30),
-            ],
-            "um": [
-                chord(cad.LM_UM_TIE_X, cad.LM_UM_TIE_AXIS_Z,
-                      cad.LM_UM_TIE_INSERT_BORE_D / 2.0,
-                      cad.LM_UM_TIE_UM_FACE_Y - 0.30,
-                      cad.LM_UM_TIE_POCKET_TOP_Y),
-            ],
-        }
-    elif junction == "t_um":
-        pieces = {"um": [], "tweeter": []}
-        for tie_x in cad.T_UM_TIE_X:
-            pieces["um"].append(chord(
-                tie_x, cad.T_UM_TIE_AXIS_Z, cad.T_UM_TIE_CBORE_D / 2.0,
-                cad.T_UM_TIE_SEAT_Y - 4.0, cad.T_UM_TIE_SEAT_Y))
-            pieces["um"].append(chord(
-                tie_x, cad.T_UM_TIE_AXIS_Z,
-                cad.T_UM_TIE_CLEARANCE_BORE_D / 2.0,
-                cad.T_UM_TIE_SEAT_Y - 0.2,
-                cad.T_UM_TIE_UM_FACE_Y + 0.30))
-            pieces["tweeter"].append(chord(
-                tie_x, cad.T_UM_TIE_AXIS_Z,
-                cad.T_UM_TIE_INSERT_BORE_D / 2.0,
-                cad.T_UM_TIE_CRES_FACE_Y - 0.30,
-                cad.T_UM_TIE_POCKET_TOP_Y))
-    else:
-        raise ValueError(junction)
-    return {
-        owner: (unary_union([p for p in shapes if p is not None]).buffer(0)
-                if any(p is not None for p in shapes) else None)
-        for owner, shapes in pieces.items()
-    }
+    z_axis = _tie_axis_z(cad, junction)
+    plans = {}
+    for owner, features in _tie_features(cad, junction).items():
+        pieces = []
+        for x, y_low, y_high, diameter in features:
+            radius = diameter / 2.0
+            dz = z_mm - z_axis
+            if abs(dz) >= radius:
+                continue
+            half_w = math.sqrt(radius * radius - dz * dz)
+            pieces.append(shapely_box(x - half_w, y_low, x + half_w, y_high))
+        for c_owner, x, y0, y1, width, top_z in _tie_rear_channels(
+                cad, junction):
+            if c_owner == owner and z_mm <= top_z:
+                pieces.append(
+                    shapely_box(x - width / 2.0, y0, x + width / 2.0, y1))
+        plans[owner] = (unary_union(pieces).buffer(0) if pieces else None)
+    return plans
 
 
 def _tie_feature_cutters(cad, junction: str, owner: str):
     """Exact 3D tie cutters this owner's final BREP is allowed to lack."""
-    if junction == "lm_um":
-        if owner == "lm":
-            return (
-                cad._y_cylinder_at(
-                    cad.LM_UM_TIE_X, cad.LM_UM_TIE_SEAT_Y - 4.0,
-                    cad.LM_UM_TIE_SEAT_Y, cad.LM_UM_TIE_AXIS_Z,
-                    cad.LM_UM_TIE_CBORE_D / 2.0),
-                cad._y_cylinder_at(
-                    cad.LM_UM_TIE_X, cad.LM_UM_TIE_SEAT_Y - 0.2,
-                    cad.LM_UM_TIE_LM_FACE_Y + 0.30,
-                    cad.LM_UM_TIE_AXIS_Z,
-                    cad.LM_UM_TIE_CLEARANCE_BORE_D / 2.0),
-            )
-        if owner == "um":
-            return (
-                cad._y_cylinder_at(
-                    cad.LM_UM_TIE_X, cad.LM_UM_TIE_UM_FACE_Y - 0.30,
-                    cad.LM_UM_TIE_POCKET_TOP_Y, cad.LM_UM_TIE_AXIS_Z,
-                    cad.LM_UM_TIE_INSERT_BORE_D / 2.0),
-            )
-        return ()
-    if junction == "t_um":
-        cutters = []
-        for tie_x in cad.T_UM_TIE_X:
-            if owner == "um":
-                cutters.append(cad._y_cylinder_at(
-                    tie_x, cad.T_UM_TIE_SEAT_Y - 4.0, cad.T_UM_TIE_SEAT_Y,
-                    cad.T_UM_TIE_AXIS_Z, cad.T_UM_TIE_CBORE_D / 2.0))
-                cutters.append(cad._y_cylinder_at(
-                    tie_x, cad.T_UM_TIE_SEAT_Y - 0.2,
-                    cad.T_UM_TIE_UM_FACE_Y + 0.30,
-                    cad.T_UM_TIE_AXIS_Z,
-                    cad.T_UM_TIE_CLEARANCE_BORE_D / 2.0))
-            elif owner == "tweeter":
-                cutters.append(cad._y_cylinder_at(
-                    tie_x, cad.T_UM_TIE_CRES_FACE_Y - 0.30,
-                    cad.T_UM_TIE_POCKET_TOP_Y, cad.T_UM_TIE_AXIS_Z,
-                    cad.T_UM_TIE_INSERT_BORE_D / 2.0))
-        return tuple(cutters)
-    raise ValueError(junction)
+    from build123d import Box, Pos
+
+    z_axis = _tie_axis_z(cad, junction)
+    cutters = [
+        cad._y_cylinder_at(x, y_low, y_high, z_axis, diameter / 2.0)
+        for x, y_low, y_high, diameter
+        in _tie_features(cad, junction).get(owner, ())
+    ]
+    for c_owner, x, y0, y1, width, top_z in _tie_rear_channels(cad, junction):
+        if c_owner != owner:
+            continue
+        height = top_z + 2.0
+        cutters.append(
+            Pos(x, (y0 + y1) / 2.0, top_z - height / 2.0)
+            * Box(width, y1 - y0, height))
+    return tuple(cutters)
 
 
 def _assembled_plan_oracle(cad, junction: str, z_mm: float):

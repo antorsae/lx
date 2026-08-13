@@ -412,27 +412,31 @@ UM_T_REAR_BACKFILL_RADIAL_WIDTH_MM = 3.40
 UM_T_REAR_BACKFILL_Z = (
     CORE_REAR_Z, UM_SEAT_Z - SEAT_MEMBRANE_T)
 
-# One vertical M2 center tie supplements the two Z-axis half-lap ears at
-# the LM--UM junction.  The buried tweeter route owns the right half of
-# the junction at every usable depth (it crosses the seam plan-line
-# inside x=+8..+22 at z 8.2..10.0 in both floor states) and the
-# flush-mounted U22 flange owns the complete front band, so the single
-# tie sits left of center with its head inside the rear-open flange
-# void: driven with an M2 L-key from the permanently open rear,
-# invisible from the front, and every feature is a cut -- no material is
-# added anywhere.  The clearance bore climbs the one continuous solid
-# column (mirror backfill crescent -> R110.6..R113 lip -> LM closure
-# web); the receiver is the owner's M2 x 2.5 x 3.2 brass heat-set in the
-# UM web underside, whose roof continues into the UM outer lip.
-LM_UM_TIE_X = -20.0
-LM_UM_TIE_AXIS_Z = 9.25
+# One vertical M2 center tie supplements the two Z-axis half-lap ears
+# at the LM--UM junction.  Both the tie's direction and its position are
+# forced by where an M2 screw can physically be introduced:
+#
+#   * The LM's rear flange void looks open below the junction, but the
+#     buried tweeter cover crosses it about 4 mm under the LM lip, so a
+#     head seated on the LM side would sit in a blind pocket that no
+#     screw could ever enter.  The head therefore lives on the UM side,
+#     seated just inside the UM driver recess, whose void is genuinely
+#     open until the MU10 is installed -- and hidden by its flange after.
+#   * x=-17 clears the 238-degree UM insert boss (whose Z8 footprint
+#     reaches x=-19.7) and stays inboard of the x=+/-20 tangent-blend
+#     start, so both seam faces are still the exact circle midline.
+#
+# The LM owns a blind M2 heat-set receiver on its seam face; the UM owns
+# the counterbore seat and clearance bore.  Every feature is a cut.
+LM_UM_TIE_X = -17.0
+LM_UM_TIE_AXIS_Z = 10.0
 LM_UM_TIE_INSERT_BORE_D = 3.2
 LM_UM_TIE_INSERT_L_MM = 2.5
-LM_UM_TIE_INSERT_BORE_DEPTH_MM = LM_UM_TIE_INSERT_L_MM + 0.4
 LM_UM_TIE_CLEARANCE_BORE_D = 2.4
 LM_UM_TIE_CBORE_D = 4.4
 LM_UM_TIE_SCREW_L_MM = 8.0
-LM_UM_TIE_INSERT_RECESS_MM = 0.10
+LM_UM_TIE_SEAT_DEPTH_MM = 0.50
+LM_UM_TIE_POCKET_RELIEF_MM = 0.15
 _LM_UM_TIE_LM_TOP_Y = L22_CUTOUT[1] + math.sqrt(
     LM_CORE_R ** 2 - LM_UM_TIE_X ** 2)
 _LM_UM_TIE_UM_BOT_Y = UM_CUTOUT[1] - math.sqrt(
@@ -440,60 +444,68 @@ _LM_UM_TIE_UM_BOT_Y = UM_CUTOUT[1] - math.sqrt(
 LM_UM_TIE_SEAM_Y = 0.5 * (_LM_UM_TIE_LM_TOP_Y + _LM_UM_TIE_UM_BOT_Y)
 LM_UM_TIE_LM_FACE_Y = LM_UM_TIE_SEAM_Y - SIDE_INTERFACE_GAP / 2.0
 LM_UM_TIE_UM_FACE_Y = LM_UM_TIE_SEAM_Y + SIDE_INTERFACE_GAP / 2.0
-LM_UM_TIE_TIP_Y = (LM_UM_TIE_UM_FACE_Y + LM_UM_TIE_INSERT_RECESS_MM
-                   + LM_UM_TIE_INSERT_L_MM)
-LM_UM_TIE_SEAT_Y = LM_UM_TIE_TIP_Y - LM_UM_TIE_SCREW_L_MM
-LM_UM_TIE_POCKET_TOP_Y = (LM_UM_TIE_UM_FACE_Y
-                          + LM_UM_TIE_INSERT_BORE_DEPTH_MM)
-_LM_UM_TIE_CRESCENT_INNER_Y = L22_CUTOUT[1] + math.sqrt(
-    (LM_UM_REAR_BACKFILL_CENTER_R
-     - LM_UM_REAR_BACKFILL_RADIAL_WIDTH_MM / 2.0) ** 2
-    - LM_UM_TIE_X ** 2)
-# The head seat is the counterbore's flat end face; it must land inside
-# the crescent-plus-lip column, deep enough for a full facing annulus
-# but never through the 2.4-mm lip band into the web above.
-LM_UM_TIE_SEAT_DEPTH_MM = LM_UM_TIE_SEAT_Y - _LM_UM_TIE_CRESCENT_INNER_Y
+# The UM driver-recess wall is the surface the head is countersunk into,
+# and the LM flange-recess wall is the floor the receiver must stay above.
+LM_UM_TIE_UM_WALL_Y = UM_CUTOUT[1] - math.sqrt(
+    UM_RECESS_R ** 2 - LM_UM_TIE_X ** 2)
+LM_UM_TIE_LM_WALL_Y = L22_CUTOUT[1] + math.sqrt(
+    LM_RECESS_R ** 2 - LM_UM_TIE_X ** 2)
+LM_UM_TIE_SEAT_Y = LM_UM_TIE_UM_WALL_Y - LM_UM_TIE_SEAT_DEPTH_MM
+LM_UM_TIE_TIP_Y = LM_UM_TIE_SEAT_Y - LM_UM_TIE_SCREW_L_MM
+LM_UM_TIE_INSERT_MOUTH_Y = LM_UM_TIE_TIP_Y + LM_UM_TIE_INSERT_L_MM
+LM_UM_TIE_INSERT_RECESS_MM = (
+    LM_UM_TIE_LM_FACE_Y - LM_UM_TIE_INSERT_MOUTH_Y)
+LM_UM_TIE_POCKET_BOTTOM_Y = LM_UM_TIE_TIP_Y - LM_UM_TIE_POCKET_RELIEF_MM
+LM_UM_TIE_RECEIVER_FLOOR_MM = (
+    LM_UM_TIE_POCKET_BOTTOM_Y - LM_UM_TIE_LM_WALL_Y)
+
+
+# A screw has to be brought in along its own axis, so every tie states
+# how much clear corridor its head end needs.  ``SCREW`` covers the
+# screw plus head passing through the counterbore mouth; ``KEY`` is the
+# far thinner hex-key shaft, checked over a longer reach.
+TIE_ACCESS_SCREW_CLEAR_MM = 9.0
+TIE_ACCESS_SCREW_PROBE_D = 4.0
+TIE_ACCESS_KEY_CLEAR_MM = 20.0
+TIE_ACCESS_KEY_PROBE_D = 2.0
+TIE_ACCESS_STANDOFF_MM = 2.0
+TIE_ACCESS_OCCUPANCY_TOLERANCE = 0.002
+TIE_BURIAL_WALL_MM = 0.60
 
 
 def _validate_lm_um_tie():
+    for label, diameter in (("receiver", LM_UM_TIE_INSERT_BORE_D),
+                            ("counterbore", LM_UM_TIE_CBORE_D)):
+        skin = LM_UM_TIE_AXIS_Z - diameter / 2.0 - CORE_REAR_Z
+        if skin + 1.0e-9 < TUNNEL_ROOF_SKIN:
+            raise RuntimeError(
+                f"LM-UM tie {label} leaves only {skin:.3f} mm of rear skin")
     if LM_UM_TIE_AXIS_Z + LM_UM_TIE_CBORE_D / 2.0 \
-            > LM_SEAT_Z - SEAT_MEMBRANE_T + 1.0e-9:
+            > UM_SEAT_Z - SEAT_MEMBRANE_T + 1.0e-9:
         raise RuntimeError(
-            "LM-UM tie counterbore breaks the seat membrane underside")
-    rear_skin = (LM_UM_TIE_AXIS_Z - LM_UM_TIE_INSERT_BORE_D / 2.0
-                 - CORE_REAR_Z)
-    if rear_skin + 1.0e-9 < TUNNEL_ROOF_SKIN:
+            "LM-UM tie counterbore breaks the UM seat membrane underside")
+    if not 0.3 <= LM_UM_TIE_SEAT_DEPTH_MM <= 2.0:
+        raise RuntimeError("LM-UM tie head seat depth out of range")
+    if LM_UM_TIE_SEAT_Y <= LM_UM_TIE_UM_FACE_Y:
+        raise RuntimeError("LM-UM tie head seat is not inside the UM")
+    if LM_UM_TIE_INSERT_MOUTH_Y >= LM_UM_TIE_LM_FACE_Y:
+        raise RuntimeError("LM-UM tie receiver mouth is above the LM face")
+    if not 0.0 <= LM_UM_TIE_INSERT_RECESS_MM <= 2.0:
         raise RuntimeError(
-            "LM-UM tie receiver violates the rear roof-skin convention")
-    if not 1.0 <= LM_UM_TIE_SEAT_DEPTH_MM <= 2.0:
+            "LM-UM tie insert recess out of range: "
+            f"{LM_UM_TIE_INSERT_RECESS_MM:.3f}")
+    if LM_UM_TIE_RECEIVER_FLOOR_MM < 0.80:
         raise RuntimeError(
-            "LM-UM tie head seat must land 1..2 mm inside the "
-            f"crescent/lip column, got {LM_UM_TIE_SEAT_DEPTH_MM:.3f}")
-    engagement = LM_UM_TIE_TIP_Y - (
-        LM_UM_TIE_UM_FACE_Y + LM_UM_TIE_INSERT_RECESS_MM)
-    if not math.isclose(engagement, LM_UM_TIE_INSERT_L_MM,
-                        abs_tol=1.0e-9):
-        raise RuntimeError("LM-UM tie must engage the full insert")
-    if LM_UM_TIE_POCKET_TOP_Y < LM_UM_TIE_TIP_Y + 0.25:
-        raise RuntimeError("LM-UM tie screw tip needs 0.25 bore margin")
-    roof_radius = math.hypot(
-        LM_UM_TIE_X, UM_CUTOUT[1] - LM_UM_TIE_POCKET_TOP_Y)
-    if roof_radius < UM_RECESS_R + 1.0:
+            "LM-UM tie receiver floor is too thin: "
+            f"{LM_UM_TIE_RECEIVER_FLOOR_MM:.3f}")
+    if abs(LM_UM_TIE_X) >= LM_UM_WEB_BLEND_START_X:
         raise RuntimeError(
-            "LM-UM tie receiver roof runs into the UM flange recess")
-    if abs(LM_UM_TIE_X) > abs(JOINT_EAR_X[0]) - 2.0 \
-            - (JOINT_FUNCTIONAL_BOSS_D + LM_UM_TIE_CBORE_D) / 2.0:
-        raise RuntimeError("LM-UM tie crowds the half-lap ear boss")
-    # The mirror backfill crescent may be notched, but the notch must
-    # stay clear of the real cover/lip pinch band it closes on the left.
-    notch_center_deg = math.degrees(math.atan2(
-        LM_UM_TIE_SEAT_Y - L22_CUTOUT[1], LM_UM_TIE_X))
-    notch_half_deg = math.degrees(math.atan(
-        (LM_UM_TIE_CBORE_D / 2.0) / LM_UM_REAR_BACKFILL_CENTER_R))
-    pinch_lo_deg = 103.1
-    if notch_center_deg + notch_half_deg > pinch_lo_deg - 1.0:
-        raise RuntimeError(
-            "LM-UM tie counterbore notch reaches the closed pinch band")
+            "LM-UM tie must stay inboard of the tangent blend, where both "
+            "seam faces are still the exact circle midline")
+    ear_gap = (abs(LM_UM_TIE_X - JOINT_EAR_X[0])
+               - (JOINT_FUNCTIONAL_BOSS_D + LM_UM_TIE_CBORE_D) / 2.0)
+    if ear_gap < 2.0:
+        raise RuntimeError(f"LM-UM tie crowds the ear boss: {ear_gap:.3f}")
 
 
 _validate_lm_um_tie()
@@ -515,78 +527,157 @@ T_CRESCENT_ARC_CENTER = (-0.016809359544911025, 468.21906343086)
 T_CRESCENT_ARC_R = 51.05167922220417
 
 # Two vertical M2 center ties supplement the tweeter half-lap ears at
-# the T--UM junction.  Unlike the LM--UM crown, the tweeter cable is
-# already free air behind the rear face here (z 3.8..5.5), so BOTH
-# mirrored positions are legal and the binding constraints are local:
-# the ties sit at |x|=13, inboard of the x=14 tangent-blend start, so
-# the seam faces are exactly the circle midline (inside the blend the
-# crescent underside climbs toward the ear boss and a receiver there
-# would open into air); and the axis rides at z=11.0 because the
-# crescent's rear acoustic taper rises to z~8.1 over the receiver
-# footprint (measured on the released BREP) while the UM counterbore
-# top must stay under the z=13.45 seat-membrane underside.  Heads live
-# in the UM rear-open flange void, driven from the permanently open
-# rear.  Every feature is a cut.
+# the T--UM junction.  As at the LM--UM crown, the direction is decided
+# by access rather than by preference: the UM's rear recess is filled
+# here by the buried tweeter cover, which merges into the ring band and
+# leaves no corridor at all, so the head cannot live on the UM side.
+# The crescent, in contrast, is a solid ~13.7-mm band above the seam and
+# then open air (the acoustic scallop), so a counterbore driven down
+# from the scallop breaks out cleanly.  The UM therefore owns the blind
+# heat-set receivers and the crescent owns the counterbore seats and
+# clearance bores; each head ends up roughly 8 mm inside its bore, so
+# only a small hole shows on the scallop's lower edge.
+#
+# x=+/-13 stays inboard of the |x|=14 blend start (exact circle midline
+# at both seam faces) and outside the free-cable mouth; z=12.0 keeps the
+# counterbore's rear wall clear of the crescent's rear acoustic taper,
+# which rises to about z=8.6 over the seat.
 T_UM_TIE_ABS_X = 13.0
 T_UM_TIE_X = (-T_UM_TIE_ABS_X, T_UM_TIE_ABS_X)
-T_UM_TIE_AXIS_Z = 11.0
+T_UM_TIE_AXIS_Z = 12.0
 T_UM_TIE_INSERT_BORE_D = 3.2
 T_UM_TIE_INSERT_L_MM = 2.5
 T_UM_TIE_CLEARANCE_BORE_D = 2.4
-T_UM_TIE_CBORE_D = 4.4
 T_UM_TIE_SCREW_L_MM = 8.0
-# The head seat lands this far inside the R49.3..R51.7 band (measured
-# from the R49.3 recess-wall arc); the insert recess below the crescent
-# face is derived so an off-the-shelf M2 x 8 then engages the complete
-# insert.
-T_UM_TIE_SEAT_DEPTH_MM = 0.2
+# An M2 socket-head cap screw has a 3.8 x 2.0 head with a 1.5 hex, and
+# no M2 head in any drive style is smaller, so a bore that swallows one
+# can never be less than about 4.2 across.  Rather than show that on the
+# scallop, the head is loaded sideways through a rear-facing channel --
+# the back of the baffle is not a display surface -- and only a 2.0 hex
+# key passage continues up to the scallop edge.  The visible feature
+# shrinks from 4.4 to 2.0 across, about a fifth of the area, and the
+# head itself ends up more than 8 mm inside the part.  The screw stays
+# the shortest that reaches (M2 x 8): a longer one would only push the
+# head nearer the scallop, since its far end is pinned by the receiver.
+T_UM_TIE_HEAD_D = 3.8
+T_UM_TIE_HEAD_H = 2.0
+T_UM_TIE_HEAD_POCKET_D = 4.2
+T_UM_TIE_HEAD_POCKET_L = 2.6
+# The key passage is the ONE feature that reaches a visible surface, so
+# it is sized by what must actually pass through it rather than by looks:
+# a 1.5 hex measures 1.73 across corners, and a horizontal FDM hole comes
+# out roughly 0.2 under nominal, so anything below ~2.2 risks a passage
+# no key can enter.  It therefore matches the clearance bore exactly,
+# which also makes the whole passage one diameter above and below the
+# head pocket.  A countersunk M2 would allow 1.8 here (1.3 hex), but its
+# head is Ø4.0 rather than Ø3.8 and a 1.3 key rounds off far too easily
+# against a heat-set insert.
+T_UM_TIE_KEY_BORE_D = 2.4
+# The channel is deliberately NOT flush with the pocket it opens: a box
+# whose roof grazed the pocket's lowest generatrix and whose walls grazed
+# its sides met the cylinder tangentially on three faces at once, and OCC
+# turned each of those contacts into an edge shared by more than two
+# triangles.  Clearing the pocket by 0.2 radially and overshooting its
+# axis by 0.3 makes every contact a frank intersection.  The roof sitting
+# above the bore axis is also what lets the shank drop in sideways at
+# all: a lower roof would leave an overhanging lip that traps it.
+T_UM_TIE_REAR_CHANNEL_W = 4.6
+T_UM_TIE_REAR_CHANNEL_MARGIN_MM = 0.40
+T_UM_TIE_CHANNEL_ROOF_OVERSHOOT_MM = 0.30
+# The channel stops short of the mating face: the tie exists to clamp
+# that seam, so cutting a trough through it would undo the point.
+T_UM_TIE_CHANNEL_SEAM_STANDOFF_MM = 1.50
+T_UM_TIE_INSERT_RECESS_MM = 0.10
+T_UM_TIE_POCKET_RELIEF_MM = 0.30
+# The counterbore is cut well past the crescent's scallop edge so the
+# breakout lands on whatever surface the band actually ends at, rather
+# than on a modelled guess at that edge.
+T_UM_TIE_CBORE_OVERSHOOT_MM = 14.0
 _T_UM_TIE_UM_TOP_Y = UM_CUTOUT[1] + math.sqrt(
     UM_CORE_R ** 2 - T_UM_TIE_ABS_X ** 2)
-# The T--UM web is constructed from the +x boundary and mirrored, so
-# both ties share the +x crescent-branch value exactly.
 _T_UM_TIE_CRES_BOT_Y = T_CRESCENT_ARC_CENTER[1] - math.sqrt(
     T_CRESCENT_ARC_R ** 2
     - (T_UM_TIE_ABS_X - T_CRESCENT_ARC_CENTER[0]) ** 2)
 T_UM_TIE_SEAM_Y = 0.5 * (_T_UM_TIE_UM_TOP_Y + _T_UM_TIE_CRES_BOT_Y)
 T_UM_TIE_UM_FACE_Y = T_UM_TIE_SEAM_Y - SIDE_INTERFACE_GAP / 2.0
 T_UM_TIE_CRES_FACE_Y = T_UM_TIE_SEAM_Y + SIDE_INTERFACE_GAP / 2.0
-_T_UM_TIE_WALL_ARC_Y = UM_CUTOUT[1] + math.sqrt(
+T_UM_TIE_INSERT_MOUTH_Y = T_UM_TIE_UM_FACE_Y - T_UM_TIE_INSERT_RECESS_MM
+T_UM_TIE_TIP_Y = T_UM_TIE_INSERT_MOUTH_Y - T_UM_TIE_INSERT_L_MM
+T_UM_TIE_POCKET_BOTTOM_Y = T_UM_TIE_TIP_Y - T_UM_TIE_POCKET_RELIEF_MM
+T_UM_TIE_SEAT_Y = T_UM_TIE_TIP_Y + T_UM_TIE_SCREW_L_MM
+T_UM_TIE_HEAD_TOP_Y = T_UM_TIE_SEAT_Y + T_UM_TIE_HEAD_POCKET_L
+# The rear loading channel spans the whole length the screw occupies
+# inside the crescent, so it can simply be laid in from behind instead
+# of threaded down an axial bore it could never pass.
+T_UM_TIE_CHANNEL_LOW_Y = (
+    T_UM_TIE_CRES_FACE_Y + T_UM_TIE_CHANNEL_SEAM_STANDOFF_MM)
+T_UM_TIE_CHANNEL_HIGH_Y = (
+    T_UM_TIE_HEAD_TOP_Y + T_UM_TIE_REAR_CHANNEL_MARGIN_MM)
+T_UM_TIE_CHANNEL_TOP_Z = (
+    T_UM_TIE_AXIS_Z + T_UM_TIE_CHANNEL_ROOF_OVERSHOOT_MM)
+T_UM_TIE_UM_WALL_Y = UM_CUTOUT[1] + math.sqrt(
     UM_RECESS_R ** 2 - T_UM_TIE_ABS_X ** 2)
-T_UM_TIE_SEAT_Y = _T_UM_TIE_WALL_ARC_Y + T_UM_TIE_SEAT_DEPTH_MM
-T_UM_TIE_TIP_Y = T_UM_TIE_SEAT_Y + T_UM_TIE_SCREW_L_MM
-T_UM_TIE_INSERT_RECESS_MM = (
-    T_UM_TIE_TIP_Y - T_UM_TIE_INSERT_L_MM - T_UM_TIE_CRES_FACE_Y)
-T_UM_TIE_POCKET_DEPTH_MM = (
-    T_UM_TIE_INSERT_RECESS_MM + T_UM_TIE_INSERT_L_MM + 0.30)
-T_UM_TIE_POCKET_TOP_Y = T_UM_TIE_CRES_FACE_Y + T_UM_TIE_POCKET_DEPTH_MM
+T_UM_TIE_RECEIVER_FLOOR_MM = (
+    T_UM_TIE_POCKET_BOTTOM_Y - T_UM_TIE_UM_WALL_Y)
 
 
 def _validate_t_um_tie():
-    if T_UM_TIE_AXIS_Z + T_UM_TIE_CBORE_D / 2.0 \
-            > UM_SEAT_Z - SEAT_MEMBRANE_T + 1.0e-9:
+    for label, diameter in (("receiver", T_UM_TIE_INSERT_BORE_D),
+                            ("head pocket", T_UM_TIE_HEAD_POCKET_D)):
+        skin = T_UM_TIE_AXIS_Z - diameter / 2.0 - CORE_REAR_Z
+        if skin + 1.0e-9 < TUNNEL_ROOF_SKIN:
+            raise RuntimeError(
+                f"T-UM tie {label} leaves only {skin:.3f} mm of rear skin")
+    # The counterbore belongs to the crescent here, so the UM seat
+    # membrane only constrains the receiver -- and that sits outboard of
+    # the membrane's radial reach, not merely under it.
+    receiver_r = math.hypot(
+        T_UM_TIE_ABS_X, T_UM_TIE_INSERT_MOUTH_Y - UM_CUTOUT[1])
+    if (receiver_r <= UM_RECESS_R + SEAT_MEMBRANE_LIP_OVERLAP
+            and T_UM_TIE_AXIS_Z + T_UM_TIE_INSERT_BORE_D / 2.0
+            > UM_SEAT_Z - SEAT_MEMBRANE_T + 1.0e-9):
         raise RuntimeError(
-            "T-UM tie counterbore breaks the UM seat membrane underside")
-    rear_skin = (T_UM_TIE_AXIS_Z - T_UM_TIE_INSERT_BORE_D / 2.0
-                 - CORE_REAR_Z)
-    if rear_skin + 1.0e-9 < TUNNEL_ROOF_SKIN:
+            "T-UM tie receiver breaks the UM seat membrane underside")
+    if T_UM_TIE_SEAT_Y <= T_UM_TIE_CRES_FACE_Y:
+        raise RuntimeError("T-UM tie head seat is not inside the crescent")
+    if T_UM_TIE_TIP_Y >= T_UM_TIE_UM_FACE_Y:
+        raise RuntimeError("T-UM tie receiver is not inside the UM")
+    if T_UM_TIE_RECEIVER_FLOOR_MM < 0.80:
         raise RuntimeError(
-            "T-UM tie receiver violates the rear roof-skin convention")
-    if not 0.5 <= T_UM_TIE_INSERT_RECESS_MM <= 2.0:
+            "T-UM tie receiver floor is too thin: "
+            f"{T_UM_TIE_RECEIVER_FLOOR_MM:.3f}")
+    if T_UM_TIE_ABS_X >= T_UM_WEB_BLEND_START_X:
         raise RuntimeError(
-            "T-UM tie insert recess out of range: "
-            f"{T_UM_TIE_INSERT_RECESS_MM:.3f}")
-    ear_x = abs(TWEETER_JOINT_X[1])
-    pocket_edge_x = T_UM_TIE_ABS_X + T_UM_TIE_INSERT_BORE_D / 2.0
-    ear_wall = math.hypot(
-        ear_x - pocket_edge_x,
-        TWEETER_JOINT_Y - min(T_UM_TIE_POCKET_TOP_Y, TWEETER_JOINT_Y),
-    ) - TWEETER_JOINT_FUNCTIONAL_BOSS_D / 2.0
-    if ear_wall < 0.95:
+            "T-UM tie must stay inboard of the tangent blend, where both "
+            "seam faces are still the exact circle midline")
+    if T_UM_TIE_HEAD_POCKET_D < T_UM_TIE_HEAD_D + 0.3:
+        raise RuntimeError("T-UM tie head pocket cannot swallow the head")
+    if T_UM_TIE_HEAD_POCKET_L < T_UM_TIE_HEAD_H + 0.4:
+        raise RuntimeError("T-UM tie head pocket is shorter than the head")
+    if T_UM_TIE_KEY_BORE_D >= T_UM_TIE_HEAD_D:
         raise RuntimeError(
-            f"T-UM tie receiver crowds the ear boss: wall {ear_wall:.3f}")
-    if T_UM_TIE_ABS_X - T_UM_TIE_CBORE_D / 2.0 \
+            "T-UM tie key passage must be narrower than the head, or the "
+            "head would simply show through it")
+    ear_gap = (abs(T_UM_TIE_ABS_X - abs(TWEETER_JOINT_X[1]))
+               - (TWEETER_JOINT_FUNCTIONAL_BOSS_D
+                  + T_UM_TIE_HEAD_POCKET_D) / 2.0)
+    if ear_gap < 2.0:
+        raise RuntimeError(f"T-UM tie crowds the ear boss: {ear_gap:.3f}")
+    if T_UM_TIE_ABS_X - T_UM_TIE_REAR_CHANNEL_W / 2.0 \
             < T_UM_CABLE_MOUTH_HALF_WIDTH + 1.0:
         raise RuntimeError("T-UM tie enters the free-cable mouth keepout")
+    if T_UM_TIE_CHANNEL_LOW_Y <= T_UM_TIE_CRES_FACE_Y + 0.5:
+        raise RuntimeError(
+            "T-UM tie rear channel would cut the mating face it exists "
+            "to clamp")
+    if T_UM_TIE_CHANNEL_TOP_Z <= T_UM_TIE_AXIS_Z:
+        raise RuntimeError(
+            "T-UM tie rear channel roof must clear the bore axis, or the "
+            "shank cannot be laid in past the overhang")
+    if T_UM_TIE_REAR_CHANNEL_W <= T_UM_TIE_HEAD_POCKET_D + 0.2:
+        raise RuntimeError(
+            "T-UM tie rear channel must clear the head pocket radially; "
+            "a tangential contact makes the mesh non-manifold")
 
 
 _validate_t_um_tie()
@@ -595,9 +686,9 @@ _validate_t_um_tie()
 def _verify_t_um_tie_route_clearance():
     """The free tweeter cable must stay clear of both tie columns."""
     from . import route as _route
-    required = 2.6 + T_UM_TIE_CLEARANCE_BORE_D / 2.0 + 1.0
-    seg_lo = T_UM_TIE_SEAT_Y - 2.0
-    seg_hi = T_UM_TIE_POCKET_TOP_Y
+    required = TS_CUTTER_R + T_UM_TIE_HEAD_POCKET_D / 2.0 + 1.0
+    seg_lo = T_UM_TIE_POCKET_BOTTOM_Y
+    seg_hi = T_UM_TIE_SEAT_Y
     for tie_x in T_UM_TIE_X:
         worst = float("inf")
         for px, py, pz in _route.ts_cable_points():
@@ -638,11 +729,82 @@ def _y_cylinder_at(x: float, y0: float, y1: float, z: float,
             * Rot(X=90.0) * Cylinder(radius, y1 - y0))
 
 
+def _verify_tie_access(part, label: str, x: float, z: float,
+                       seat_y: float, outward: float, cbore_length: float,
+                       probes=None):
+    """Prove a screw and its key can actually reach this tie's head seat.
+
+    A declared hole is not a reachable one: the first LM--UM attempt
+    seated its head in a pocket the buried tweeter cover sealed off, and
+    no plan or section audit can see that, because the hole itself is
+    intentional.  The check looks *past* the drilled length on the uncut
+    owner: if that is open air, the passage reaches the outside no
+    matter what it crossed on the way.  Checking after the cut would
+    prove nothing -- the cutter empties the corridor either way.
+
+    ``probes`` names what has to fit down this axis.  Where the head is
+    loaded sideways instead, only the key is listed here and the rear
+    channel carries its own gate.
+    """
+    if probes is None:
+        probes = ((TIE_ACCESS_SCREW_PROBE_D, TIE_ACCESS_SCREW_CLEAR_MM,
+                   "screw"),
+                  (TIE_ACCESS_KEY_PROBE_D, TIE_ACCESS_KEY_CLEAR_MM, "key"))
+    for probe_d, clear, kind in probes:
+        start = seat_y + outward * (cbore_length + TIE_ACCESS_STANDOFF_MM)
+        stop = start + outward * clear
+        corridor = _y_cylinder_at(
+            x, min(start, stop), max(start, stop), z, probe_d / 2.0)
+        blocked = (part & corridor).clean().volume
+        if blocked > corridor.volume * TIE_ACCESS_OCCUPANCY_TOLERANCE:
+            raise RuntimeError(
+                f"{label}: {kind} corridor is obstructed -- "
+                f"{blocked:.3f} of {corridor.volume:.3f} mm3 is solid; "
+                "a screw could never be introduced along this axis")
+
+
+def _verify_tie_rear_channel(part, label: str, x: float, y_low: float,
+                             y_high: float, width: float, top_z: float):
+    """The sideways loading channel must reach open air behind the part."""
+    depth = 2.0
+    probe = Pos(x, (y_low + y_high) / 2.0,
+                CORE_REAR_Z - depth / 2.0 - 0.4) * Box(
+        width, y_high - y_low, depth)
+    blocked = (part & probe).clean().volume
+    if blocked > probe.volume * TIE_ACCESS_OCCUPANCY_TOLERANCE:
+        raise RuntimeError(
+            f"{label}: rear loading channel does not reach open air -- "
+            f"{blocked:.3f} of {probe.volume:.3f} mm3 behind the part is "
+            "solid, so the head could not be laid in from behind")
+    if top_z <= CORE_REAR_Z:
+        raise RuntimeError(
+            f"{label}: rear channel roof is at or behind the rear plane")
+
+
+def _verify_tie_receiver_burial(part, label: str, x: float, z: float,
+                                mouth_y: float, bottom_y: float,
+                                bore_d: float):
+    """The receiver must be radially surrounded by solid before cutting.
+
+    Only the sides are probed: the floor is a separate analytic gate,
+    and a probe that reached past the blind end would read the owner's
+    own curved recess wall as a defect.
+    """
+    probe = _y_cylinder_at(
+        x, min(mouth_y, bottom_y), max(mouth_y, bottom_y),
+        z, bore_d / 2.0 + TIE_BURIAL_WALL_MM)
+    buried = (part & probe).clean().volume
+    if abs(buried - probe.volume) > probe.volume * 0.005:
+        raise RuntimeError(
+            f"{label}: receiver is not fully buried -- probe "
+            f"{probe.volume:.3f} vs solid {buried:.3f} mm3")
+
+
 def _verify_lm_um_tie_route_clearance():
     """This state's buried tweeter path must stay far from the tie."""
-    required = (TS_CUTTER_R + LM_UM_TIE_CLEARANCE_BORE_D / 2.0 + 2.0)
-    seg_lo = LM_UM_TIE_SEAT_Y - 2.0
-    seg_hi = LM_UM_TIE_POCKET_TOP_Y
+    required = (TS_CUTTER_R + LM_UM_TIE_CBORE_D / 2.0 + 1.0)
+    seg_lo = LM_UM_TIE_POCKET_BOTTOM_Y
+    seg_hi = LM_UM_TIE_SEAT_Y + TIE_ACCESS_STANDOFF_MM
     worst = float("inf")
     for px, py, pz in route.ts_cable_points():
         dy = 0.0 if seg_lo <= py <= seg_hi else min(
@@ -1187,16 +1349,20 @@ def lm_carrier_outer_blank():
     # lower lands point entirely inward and add no proud material.
     part = _verify_side_magnet_lands(part, "lm")
 
-    # Vertical M2 center-tie cuts: the counterbore's flat end face IS the
-    # head seat, and the clearance bore climbs from it through crescent,
-    # lip and web to the LM top face.  Both live entirely in the rear
-    # band; the front face and every seat stay untouched.
+    # Vertical M2 center tie: the LM owns the blind heat-set receiver,
+    # recessed below its seam face with a short clearance lead-in.  The
+    # head end belongs to the UM, whose driver recess is the only open
+    # corridor at this junction.
     _verify_lm_um_tie_route_clearance()
+    _verify_tie_receiver_burial(
+        part, "LM-UM tie", LM_UM_TIE_X, LM_UM_TIE_AXIS_Z,
+        LM_UM_TIE_INSERT_MOUTH_Y, LM_UM_TIE_POCKET_BOTTOM_Y,
+        LM_UM_TIE_INSERT_BORE_D)
     part -= _y_cylinder_at(
-        LM_UM_TIE_X, LM_UM_TIE_SEAT_Y - 4.0, LM_UM_TIE_SEAT_Y,
-        LM_UM_TIE_AXIS_Z, LM_UM_TIE_CBORE_D / 2.0)
+        LM_UM_TIE_X, LM_UM_TIE_POCKET_BOTTOM_Y, LM_UM_TIE_INSERT_MOUTH_Y,
+        LM_UM_TIE_AXIS_Z, LM_UM_TIE_INSERT_BORE_D / 2.0)
     part -= _y_cylinder_at(
-        LM_UM_TIE_X, LM_UM_TIE_SEAT_Y - 0.2,
+        LM_UM_TIE_X, LM_UM_TIE_INSERT_MOUTH_Y,
         LM_UM_TIE_LM_FACE_Y + 0.30,
         LM_UM_TIE_AXIS_Z, LM_UM_TIE_CLEARANCE_BORE_D / 2.0)
 
@@ -1502,24 +1668,38 @@ def um_carrier():
             x, TWEETER_JOINT_Y, TWEETER_JOINT_HOLE_D / 2.0,
             TWEETER_CORE_JOINT_Z[0] - 0.2,
             TWEETER_CORE_BORE_TOP_Z)
-    # Vertical M2 center-tie receiver: a blind heat-set pocket opening on
-    # the UM web underside; its roof continues into the UM outer lip.
+    # Vertical M2 center tie down to the LM: the UM owns the counterbore
+    # head seat, countersunk just inside its driver-recess wall, plus the
+    # clearance bore through band and web.  The corridor above the seat
+    # is the driver recess itself -- open until the MU10 goes in, and
+    # covered by its flange afterwards.
     _verify_lm_um_tie_route_clearance()
+    _verify_tie_access(
+        part, "LM-UM tie", LM_UM_TIE_X, LM_UM_TIE_AXIS_Z,
+        LM_UM_TIE_SEAT_Y, outward=1.0,
+        cbore_length=LM_UM_TIE_SEAT_DEPTH_MM + 1.0)
+
     part -= _y_cylinder_at(
-        LM_UM_TIE_X, LM_UM_TIE_UM_FACE_Y - 0.30,
-        LM_UM_TIE_POCKET_TOP_Y,
-        LM_UM_TIE_AXIS_Z, LM_UM_TIE_INSERT_BORE_D / 2.0)
-    # Mirrored vertical M2 ties up to the tweeter crescent: counterbore
-    # head seats plus clearance bores through the R49.3..R51.7 band and
-    # the UM-owned T--UM web.  Heads sit in the UM rear-open void.
+        LM_UM_TIE_X, LM_UM_TIE_SEAT_Y,
+        LM_UM_TIE_SEAT_Y + LM_UM_TIE_SEAT_DEPTH_MM + 1.0,
+        LM_UM_TIE_AXIS_Z, LM_UM_TIE_CBORE_D / 2.0)
+    part -= _y_cylinder_at(
+        LM_UM_TIE_X, LM_UM_TIE_UM_FACE_Y - 0.30, LM_UM_TIE_SEAT_Y + 0.20,
+        LM_UM_TIE_AXIS_Z, LM_UM_TIE_CLEARANCE_BORE_D / 2.0)
+    # Mirrored vertical M2 ties up to the tweeter crescent: the UM owns
+    # the blind heat-set receivers here, because the buried tweeter cover
+    # fills its rear recess and leaves no corridor for a head.
     _verify_t_um_tie_route_clearance()
     for tie_x in T_UM_TIE_X:
+        _verify_tie_receiver_burial(
+            part, f"T-UM tie x={tie_x}", tie_x, T_UM_TIE_AXIS_Z,
+            T_UM_TIE_INSERT_MOUTH_Y, T_UM_TIE_POCKET_BOTTOM_Y,
+            T_UM_TIE_INSERT_BORE_D)
         part -= _y_cylinder_at(
-            tie_x, T_UM_TIE_SEAT_Y - 4.0, T_UM_TIE_SEAT_Y,
-            T_UM_TIE_AXIS_Z, T_UM_TIE_CBORE_D / 2.0)
+            tie_x, T_UM_TIE_POCKET_BOTTOM_Y, T_UM_TIE_INSERT_MOUTH_Y,
+            T_UM_TIE_AXIS_Z, T_UM_TIE_INSERT_BORE_D / 2.0)
         part -= _y_cylinder_at(
-            tie_x, T_UM_TIE_SEAT_Y - 0.2,
-            T_UM_TIE_UM_FACE_Y + 0.30,
+            tie_x, T_UM_TIE_INSERT_MOUTH_Y, T_UM_TIE_UM_FACE_Y + 0.30,
             T_UM_TIE_AXIS_Z, T_UM_TIE_CLEARANCE_BORE_D / 2.0)
     part = part.clean()
     solids = list(part.solids())
