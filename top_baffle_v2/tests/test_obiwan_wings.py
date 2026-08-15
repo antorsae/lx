@@ -113,7 +113,16 @@ UNCUT_RIM_LATTICE_MM = 0.05
 UNCUT_RIM_INBOARD_MM = 0.60
 UNCUT_RIM_REACH_MM = 0.90
 UNCUT_RIM_MAX_STAND_MM = 1.00
-DOVETAIL_CLEARANCE_MM = 0.05
+# The female relief is depth-varying: the coupon-calibrated fit at the
+# visible front face, the full rear clearance at the rear.  Its widest
+# section is the plan gap the 2-D gates below still measure; the wedge
+# between them is the epoxy gallery that gives the joint its Z retention.
+# The front value is deliberately NOT zero -- a wedge cannot pass the
+# station where its clearance equals the printer's oversize, so a zero
+# front leaves coplanar panels standing proud by 57 mm per mm of oversize.
+DOVETAIL_FRONT_CLEARANCE_MM = 0.05
+DOVETAIL_REAR_CLEARANCE_MM = 0.20
+DOVETAIL_TAPER_APEX_OFFSET_MM = 0.02
 T_WING_CLEARANCE_MM = 0.20
 DOVETAIL_ENDPOINT_TAPER_MM = 2.0
 DOVETAIL_MIN_LIGAMENT_MM = 2.0
@@ -886,6 +895,31 @@ def _assert_bbox_facts(bbox, label: str) -> dict:
     return bbox
 
 
+def test_dovetail_constant_mirrors_match_the_contract() -> None:
+    """These mirrors are drift detectors, so make them prove they still match.
+
+    Three separate gates encoded a zero front clearance while the design
+    carried one, and each surfaced only on a remote round.  Comparing the
+    mirrors against the authored constants catches that class locally.
+    """
+    import gen_obiwan_wing_design_map as authored
+
+    for name, mirrored in (
+            ("DOVETAIL_FRONT_CLEARANCE_MM", DOVETAIL_FRONT_CLEARANCE_MM),
+            ("DOVETAIL_REAR_CLEARANCE_MM", DOVETAIL_REAR_CLEARANCE_MM),
+            ("DOVETAIL_TAPER_APEX_OFFSET_MM", DOVETAIL_TAPER_APEX_OFFSET_MM),
+            ("DOVETAIL_ENDPOINT_TAPER_MM", DOVETAIL_ENDPOINT_TAPER_MM),
+            ("DOVETAIL_MIN_LIGAMENT_MM", DOVETAIL_MIN_LIGAMENT_MM),
+            ("DOVETAIL_ROOT_OVERLAP_MM", DOVETAIL_ROOT_OVERLAP_MM)):
+        assert math.isclose(getattr(authored, name), mirrored,
+                            abs_tol=1e-12), (
+            f"{name}: this test mirrors {mirrored!r} but the design map "
+            f"authors {getattr(authored, name)!r}")
+    assert DOVETAIL_FRONT_CLEARANCE_MM > 0.0, (
+        "a zero front clearance cannot seat a wedge on a real printer")
+    assert DOVETAIL_REAR_CLEARANCE_MM > DOVETAIL_FRONT_CLEARANCE_MM
+
+
 def test_exported_artifact_contract() -> None:
     """Gate the exact flat/graded release transaction and every printable mesh."""
     _require_remote_guard()
@@ -1182,11 +1216,41 @@ def test_exported_artifact_contract() -> None:
         dovetails = geometry.get("dovetail_contract")
         assert isinstance(dovetails, dict)
         assert dovetails.get("method") == (
-            "v1l_style_through_thickness_xy_dovetails")
+            "bonded_depth_tapered_through_thickness_xy_dovetails")
+        # The front clearance is the coupon-calibrated fit, not zero: a
+        # wedge stops proud by 57 mm per mm of print oversize, and these
+        # panels must finish flush.  Bind the fact to the constant so the
+        # two cannot drift apart, and require it to stay positive.
         assert math.isclose(
-            dovetails.get("clearance_mm"), 0.05, abs_tol=1e-9)
+            dovetails.get("front_clearance_mm"),
+            DOVETAIL_FRONT_CLEARANCE_MM, abs_tol=1e-9)
+        assert dovetails.get("front_clearance_mm") > 0.0
+        assert math.isclose(
+            dovetails.get("rear_clearance_mm"),
+            DOVETAIL_REAR_CLEARANCE_MM, abs_tol=1e-9)
+        assert (dovetails.get("rear_clearance_mm")
+                > dovetails.get("front_clearance_mm")), (
+            "the relief must open toward the rear or there is no gallery")
+        assert dovetails.get("clearance_law") == (
+            "linear_in_depth_calibrated_at_front_face")
+        # The law is anchored a hair ahead of the front datum so the swept
+        # relief crosses it transversally; the price is well under a micron.
+        assert math.isclose(
+            dovetails.get("taper_apex_offset_mm"),
+            DOVETAIL_TAPER_APEX_OFFSET_MM, abs_tol=1e-12)
+        assert math.isclose(
+            dovetails.get("built_front_clearance_mm"),
+            DOVETAIL_FRONT_CLEARANCE_MM
+            + (DOVETAIL_REAR_CLEARANCE_MM - DOVETAIL_FRONT_CLEARANCE_MM)
+            * DOVETAIL_TAPER_APEX_OFFSET_MM / FULL_DEPTH_MM, rel_tol=1e-6)
+        assert math.isclose(
+            dovetails.get("built_rear_clearance_mm"), 0.20, abs_tol=0.001)
+        assert dovetails.get("female_relief_construction") == (
+            "swept_loft_front_to_rear_offset")
+        assert dovetails.get("male_key_construction") == "constant_prism"
         assert math.isclose(
             dovetails.get("endpoint_taper_mm"), 2.0, abs_tol=1e-9)
+        assert 0.30 <= dovetails.get("endpoint_dry_land_mm") <= 1.00
         assert math.isclose(
             dovetails.get("male_root_overlap_mm"), 0.05, abs_tol=1e-9)
         assert dovetails.get("key_count_per_side") == 2
@@ -1200,7 +1264,39 @@ def test_exported_artifact_contract() -> None:
             "neck": 7.0, "head": 8.5, "depth": 4.0}
         assert dovetails.get("no_envelope_growth") is True
         assert dovetails.get("through_local_thickness") is True
-        assert dovetails.get("z_retention") is False
+        # Retention is cured epoxy, not friction: PLA creeps out of stored
+        # elastic strain within days and the old joint went loose in a week.
+        assert dovetails.get("z_retention") is True
+        assert dovetails.get("adhesive") == "two_part_epoxy"
+        assert dovetails.get("front_face_features_added") == 0
+        assert dovetails.get("injection_path") == (
+            "rear_seam_gap_open_along_the_whole_joint")
+        assert dovetails.get("assembly_motion") == "z_axis_slide_from_the_rear"
+        rear_features = dovetails.get("rear_face_features_added_per_joint")
+        assert isinstance(rear_features, list) and len(rear_features) == 2
+        assert all(count == 0 for count in rear_features)
+        gallery = dovetails.get("adhesive_gallery")
+        assert isinstance(gallery, list) and len(gallery) == 2
+        for record, owner in zip(gallery, ("lm_upper", "um"), strict=True):
+            assert record.get("female_owner") == owner
+            assert 25.0 <= record.get("adhesive_volume_mm3") <= 200.0
+            channel = record.get("serpentine_channel")
+            assert isinstance(channel, dict), (
+                f"{record.get('joint')} joint lost its adhesive channel")
+            assert channel.get("periods") >= 1
+            assert channel.get("groove_depth_mm") >= 0.35
+            assert channel.get("rear_land_mm") >= 1.19
+            assert channel.get("front_land_mm") >= 1.59
+            assert channel.get("min_female_wall_mm") >= (
+                DOVETAIL_MIN_LIGAMENT_MM - 0.01)
+            # No bored port and no slot: either one has to sit alongside
+            # the rear seam gap, and the land left between the two openings
+            # is thinner than a printable wall wherever their boundaries
+            # meet.  The seam gap itself is the injection path.
+            assert channel.get("fed_through") == "rear_seam_gap"
+            assert math.isclose(
+                channel.get("feed_gap_mm"), DOVETAIL_REAR_CLEARANCE_MM,
+                abs_tol=1e-9)
         joint_area = dovetails.get("graded_joint_interface_area_mm2")
         assert isinstance(joint_area, list) and len(joint_area) == 2
         assert joint_area[0] >= 75.0
@@ -1649,7 +1745,7 @@ def _assert_plan_dovetail_contract(cad) -> None:
         assert gap.intersection(layout.print_parts[owners[0]]).area <= 1e-6
         assert gap.intersection(layout.print_parts[owners[1]]).area <= 1e-6
         required_key_relief = polygon.buffer(
-            DOVETAIL_CLEARANCE_MM, join_style=2,
+            DOVETAIL_REAR_CLEARANCE_MM, join_style=2,
             mitre_limit=10).difference(
                 layout.nominal_parts[owners[0]]).intersection(
                     layout.field_right)
@@ -1657,13 +1753,66 @@ def _assert_plan_dovetail_contract(cad) -> None:
             gap.buffer(1.0e-6)).area <= 0.01, (
                 f"dovetail {index}: female key relief is under-clearanced")
 
-        # The straight-seam fit gap is one-sided and tapers to zero over the
-        # first/last 2 mm.  Both exposed plan endpoints must therefore remain
-        # exact, closed continuations of the monolithic outer edge.
+        # The straight-seam fit gap is one-sided and now crosses zero before
+        # each exposed endpoint, so both acoustic edges keep a short fully
+        # closed dry land instead of an asymptotically thin sliver.
+        dry_land = cad.contract.dovetail_endpoint_dry_land_mm()
+        assert 0.30 <= dry_land <= 1.00
         endpoints = (Point(*seam.coords[0]), Point(*seam.coords[-1]))
         for endpoint in endpoints:
-            assert endpoint.distance(gap) <= 1.0e-4
+            assert endpoint.distance(gap) >= 0.5 * dry_land, (
+                f"dovetail {index}: fit gap reaches the acoustic edge")
             assert gap.intersection(endpoint.buffer(0.1)).area <= 0.001
+
+        # The relief itself is a sweep between a front section and a rear
+        # one.  Check both ends of that loft in plan: the rear section has to
+        # reproduce the fit gap, and the front section must take essentially
+        # nothing, because the front seam is the visible one.
+        sweep = cad.contract.dovetail_relief_sweep(layout, index)
+        assert sweep["female_owner"] == owners[1]
+        front_scale = cad.contract.dovetail_depth_clearance_scale(
+            cad.FRONT_Z_MM, cad.FRONT_Z_MM)
+        rear_scale = cad.contract.dovetail_depth_clearance_scale(
+            cad.REAR_LIMIT_Z_MM, cad.FRONT_Z_MM)
+        # The front section is the calibrated fit, not zero: a wedge turns
+        # print oversize into panels standing proud by 57 mm per mm, and
+        # these panels must finish flush.  Pin the ratio the constants
+        # actually express rather than a hard-coded number, so moving the
+        # front clearance against a measured coupon cannot silently drift
+        # the loft.
+        expected_front = (cad.contract.DOVETAIL_FRONT_CLEARANCE_MM
+                          / cad.contract.DOVETAIL_REAR_CLEARANCE_MM)
+        assert math.isclose(front_scale, expected_front, abs_tol=0.01), (
+            f"front clearance scale {front_scale:.4f} does not match the "
+            f"{cad.contract.DOVETAIL_FRONT_CLEARANCE_MM:.3f} / "
+            f"{cad.contract.DOVETAIL_REAR_CLEARANCE_MM:.3f} contract")
+        assert cad.contract.DOVETAIL_FRONT_CLEARANCE_MM > 0.0, (
+            "a zero front clearance cannot seat a wedge on a real printer")
+        assert math.isclose(rear_scale, 1.0, abs_tol=0.005)
+        female = layout.nominal_parts[owners[1]]
+        rear_bite = cad.contract.dovetail_sweep_plan(
+            sweep, rear_scale).intersection(female).intersection(
+                layout.field_right)
+        front_bite = cad.contract.dovetail_sweep_plan(
+            sweep, front_scale).intersection(female).intersection(
+                layout.field_right)
+        assert math.isclose(rear_bite.area, gap.area, rel_tol=0.02), (
+            f"dovetail {index}: swept rear section is {rear_bite.area:.4f} "
+            f"mm2 against a {gap.area:.4f}-mm2 plan gap")
+        assert gap.difference(rear_bite.buffer(1.0e-6)).area <= 0.01
+        # The front section is not zero-area: a calibrated front clearance
+        # opens exactly that gap at the visible seam, which is the same gap
+        # the previous uniform joint already showed there.  Pin it to what
+        # the clearance implies -- roughly the swept contour times the front
+        # clearance -- so the seam cannot widen without the constant moving.
+        front_allowance = (rear_bite.area
+                           * cad.contract.DOVETAIL_FRONT_CLEARANCE_MM
+                           / cad.contract.DOVETAIL_REAR_CLEARANCE_MM)
+        assert front_bite.area <= front_allowance + 0.02, (
+            f"dovetail {index}: the front face loses {front_bite.area:.5f} "
+            f"mm2, more than the {front_allowance:.5f} mm2 its "
+            f"{cad.contract.DOVETAIL_FRONT_CLEARANCE_MM:.3f}-mm front "
+            "clearance accounts for")
 
     assert len(set(names)) == 2 and all(
         isinstance(name, str) and name for name in names)

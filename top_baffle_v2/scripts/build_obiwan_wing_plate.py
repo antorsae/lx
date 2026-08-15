@@ -203,10 +203,12 @@ def _variant(
 # move in the same commit as any deliberate wing regeneration: the graded
 # count fell from 2_169_008 to 734_014 when the uncut rim was cut, and until
 # it was moved this builder failed while the previous, phantom-walled plate
-# STL stayed on disk and stayed hard-linked onto the shelf.
+# STL stayed on disk and stayed hard-linked onto the shelf.  The current
+# values follow the tapered-key/bonded-labyrinth seam redesign, which
+# replaced the straight dovetail with a swept female relief.
 VARIANTS = {
-    "flat": _variant("flat", "Flat", ("05", "06", "08", "09"), 17_804),
-    "graded": _variant("graded", "Graded", ("11", "12", "14", "15"), 738_432),
+    "flat": _variant("flat", "Flat", ("05", "06", "08", "09"), 21_656),
+    "graded": _variant("graded", "Graded", ("11", "12", "14", "15"), 747_702),
 }
 
 
@@ -410,7 +412,7 @@ def _authoritative_footprints() -> dict[str, Any]:
     try:
         from shapely import affinity
         from lx521_baffle.obiwan.wings import (
-            wing_two_piece_print_plan_parts,
+            wing_two_piece_nominal_plan_parts,
         )
     except ImportError as exc:
         raise WingPlateError(
@@ -418,7 +420,13 @@ def _authoritative_footprints() -> dict[str, Any]:
 
     footprints = {}
     for part in PARTS:
-        plan = wing_two_piece_print_plan_parts(
+        # The nominal mask, not the print-plan one: a piece is cut from
+        # this mask's prism and then has the relief swept into it, so this
+        # bounds its plan projection exactly.  The print plan subtracts the
+        # relief at its widest rear section, which the piece's own front
+        # half still fills -- packing against that mask would under-report
+        # every upper piece's footprint by up to the rear clearance.
+        plan = wing_two_piece_nominal_plan_parts(
             ACTIVE_VARIANT.slug, part.side)[part.role]
         sidecar = _read_json(
             part.source_stl.with_suffix(".print.json"),

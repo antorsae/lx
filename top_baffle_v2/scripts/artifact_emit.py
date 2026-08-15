@@ -374,12 +374,22 @@ def _bambu_command(
 ) -> list[str]:
     settings = ";".join(str(profile_bundle["paths"][key])
                         for key in ("machine", "process"))
+    # The support-interface filament is loaded as extruder 2 only where the
+    # resolved process actually generates support; a part that needs none
+    # would otherwise carry a second material, and a prime tower, for
+    # nothing.  Support ownership is already an audited per-artifact
+    # decision, so this simply follows it.
+    filaments = [str(profile_bundle["paths"]["filament"])]
+    interface_path = profile_bundle["paths"].get("support_interface_filament")
+    if interface_path is not None and _boolish(
+            profile_bundle["resolved"]["process"].get("enable_support")):
+        filaments.append(str(interface_path))
     command = [
         str(bambu), "--debug", "2", "--slice", "0", "--arrange", "1",
         "--orient", "0", "--allow-rotations=0",
         "--export-3mf", project_filename,
         "--load-settings", settings,
-        "--load-filaments", str(profile_bundle["paths"]["filament"]),
+        "--load-filaments", ";".join(filaments),
         "--outputdir", str(output),
     ]
     if custom_gcodes is not None:
@@ -1429,9 +1439,21 @@ def _validate_ready_project_archive(
         raise AuditError(
             f"{project_3mf}: profile has no magnet insertion pause policy")
     embedded_settings = {}
+    interface_filament = profile_bundle["resolved"].get(
+        "support_interface_filament")
     for section, values in profile_bundle["enforced_overrides"].items():
         for key, expected in values.items():
             actual = settings.get(key)
+            # When a lane loads a second filament for the support interface,
+            # the project concatenates every loaded filament's vector, so a
+            # model-only expectation can never match a vector setting.  Line
+            # them up as model + interface and compare the whole thing.
+            if (section == "filament" and interface_filament is not None
+                    and isinstance(actual, list) and isinstance(expected, list)
+                    and len(actual) > len(expected)):
+                interface_expected = interface_filament.get(key)
+                if isinstance(interface_expected, list):
+                    expected = [*expected, *interface_expected]
             if not _profile_value_equal(actual, expected):
                 raise AuditError(
                     f"{project_3mf}: embedded setting {key}={actual!r}, "

@@ -93,61 +93,35 @@ def tweeter_crescent():
 
     # Mirrored vertical M2 tie heads.  The crescent owns the head end,
     # because the UM's rear recess is filled here by the buried tweeter
-    # cover and offers no corridor at all.  To keep the acoustic scallop
-    # almost unmarked, the head is NOT threaded down an axial bore wide
-    # enough to swallow it: it is laid in sideways through a rear-facing
-    # channel -- the back of the baffle is not a display surface -- and
-    # only a 2.0 hex-key passage continues up to the scallop edge.
+    # cover and offers no corridor at all.  A single passthrough does the
+    # job: the entry bore is cut from the acoustic scallop straight down
+    # to the seat, so the screw drops in and nothing whatsoever appears
+    # on the rear -- which on an open baffle is a face you see.
     from .carriers import (
         T_UM_TIE_AXIS_Z,
-        T_UM_TIE_CHANNEL_HIGH_Y,
-        T_UM_TIE_CHANNEL_LOW_Y,
-        T_UM_TIE_CHANNEL_TOP_Z,
+        T_UM_TIE_CBORE_D,
+        T_UM_TIE_CBORE_OVERSHOOT_MM,
         T_UM_TIE_CLEARANCE_BORE_D,
         T_UM_TIE_CRES_FACE_Y,
-        T_UM_TIE_CBORE_OVERSHOOT_MM,
-        T_UM_TIE_HEAD_POCKET_D,
-        T_UM_TIE_HEAD_POCKET_L,
-        T_UM_TIE_HEAD_TOP_Y,
-        T_UM_TIE_KEY_BORE_D,
-        T_UM_TIE_REAR_CHANNEL_W,
         T_UM_TIE_SEAT_Y,
         T_UM_TIE_X,
-        TIE_ACCESS_KEY_CLEAR_MM,
         _verify_t_um_tie_route_clearance,
         _verify_tie_access,
-        _verify_tie_rear_channel,
         _y_cylinder_at,
     )
     _verify_t_um_tie_route_clearance()
     for tie_x in T_UM_TIE_X:
-        label = f"T-UM tie x={tie_x}"
-        # Only the key travels this axis; the screw arrives sideways.
         _verify_tie_access(
-            part, label, tie_x, T_UM_TIE_AXIS_Z, T_UM_TIE_SEAT_Y,
-            outward=1.0, cbore_length=T_UM_TIE_CBORE_OVERSHOOT_MM,
-            probes=((T_UM_TIE_KEY_BORE_D, TIE_ACCESS_KEY_CLEAR_MM, "key"),))
-        _verify_tie_rear_channel(
-            part, label, tie_x, T_UM_TIE_CHANNEL_LOW_Y,
-            T_UM_TIE_CHANNEL_HIGH_Y, T_UM_TIE_REAR_CHANNEL_W,
-            T_UM_TIE_CHANNEL_TOP_Z)
+            part, f"T-UM tie x={tie_x}", tie_x, T_UM_TIE_AXIS_Z,
+            T_UM_TIE_SEAT_Y, outward=1.0,
+            cbore_length=T_UM_TIE_CBORE_OVERSHOOT_MM)
         part -= _y_cylinder_at(
-            tie_x, T_UM_TIE_SEAT_Y, T_UM_TIE_HEAD_TOP_Y,
-            T_UM_TIE_AXIS_Z, T_UM_TIE_HEAD_POCKET_D / 2.0)
-        part -= _y_cylinder_at(
-            tie_x, T_UM_TIE_HEAD_TOP_Y,
+            tie_x, T_UM_TIE_SEAT_Y,
             T_UM_TIE_SEAT_Y + T_UM_TIE_CBORE_OVERSHOOT_MM,
-            T_UM_TIE_AXIS_Z, T_UM_TIE_KEY_BORE_D / 2.0)
+            T_UM_TIE_AXIS_Z, T_UM_TIE_CBORE_D / 2.0)
         part -= _y_cylinder_at(
             tie_x, T_UM_TIE_CRES_FACE_Y - 0.30, T_UM_TIE_SEAT_Y + 0.20,
             T_UM_TIE_AXIS_Z, T_UM_TIE_CLEARANCE_BORE_D / 2.0)
-        channel_height = T_UM_TIE_CHANNEL_TOP_Z + 2.0
-        part -= Pos(tie_x,
-                    (T_UM_TIE_CHANNEL_LOW_Y + T_UM_TIE_CHANNEL_HIGH_Y) / 2.0,
-                    T_UM_TIE_CHANNEL_TOP_Z - channel_height / 2.0) * Box(
-            T_UM_TIE_REAR_CHANNEL_W,
-            T_UM_TIE_CHANNEL_HIGH_Y - T_UM_TIE_CHANNEL_LOW_Y,
-            channel_height)
 
     # The cable leaves through the intentional central plan mouth and floats
     # behind this add-on.  There is no horn, trench or hidden suffix; only the

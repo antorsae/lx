@@ -19,6 +19,7 @@ for _canonical_import_root in (PROJECT_ROOT / "src", PROJECT_ROOT / "scripts"):
 import sys
 
 import build_to_print_shelf as shelf
+import build_to_print_shelf_06hf as shelf_06hf
 
 
 ROOT = PROJECT_ROOT
@@ -229,6 +230,26 @@ def main() -> int:
         record = database_output[start + 1:].split("\n\n", 1)[0]
         check("#  Phony target" not in record and ".stamp_" in record,
               f"{target} must be a non-phony stamp-backed artifact")
+
+    # The wing plates ship on BOTH lanes: 0.4-mm PLA above, and 0.6-mm
+    # high-flow here.  They are not plain slices -- a plate carries the same
+    # six-magnet pause as the four pieces it replaces -- so the 0.6 lane has
+    # to route them through the wing plate builder's own audit rather than
+    # skipping them as it does the PETG-GF core and the BMR candidates.
+    lane_catalog = json.loads(
+        (ROOT / "to_print" / "catalog.json").read_text(encoding="utf-8"))
+    audited, plain, wing_plates, skipped_06hf = shelf_06hf.route_entries(
+        lane_catalog["entries"])
+    routed = len(audited) + len(plain) + len(wing_plates) + len(skipped_06hf)
+    check(routed == len(lane_catalog["entries"]),
+          f"0.6-lane routing covers {routed} of "
+          f"{len(lane_catalog['entries'])} catalog entries")
+    check({entry["name"] for entry, _ in wing_plates} == wing_plate_names,
+          f"0.6 lane must re-slice exactly the two wing plates, got "
+          f"{sorted(entry['name'] for entry, _ in wing_plates)}")
+    for name in wing_plate_names:
+        check(name not in skipped_06hf,
+              f"{name} must not be skipped by the 0.6-mm lane")
 
     resolver_cases = {
         "floor_stand/stl/part.stl": "build/floor_stand/stl/part.stl",

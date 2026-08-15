@@ -36,7 +36,9 @@ from OCP.BRep import BRep_Tool
 from OCP.BRepBuilderAPI import (
     BRepBuilderAPI_MakeEdge,
     BRepBuilderAPI_MakeFace,
+    BRepBuilderAPI_MakeSolid,
     BRepBuilderAPI_MakeWire,
+    BRepBuilderAPI_Sewing,
 )
 from OCP.BRepGProp import BRepGProp
 from OCP.BRepClass3d import BRepClass3d_SolidClassifier
@@ -49,8 +51,9 @@ from OCP.gp import gp_Ax3, gp_Dir, gp_Dir2d, gp_Lin, gp_Pnt, gp_Pnt2d
 from OCP.Precision import Precision
 from OCP.TColgp import TColgp_Array2OfPnt
 from OCP.TColStd import TColStd_Array1OfInteger, TColStd_Array1OfReal
-from OCP.TopAbs import TopAbs_IN
+from OCP.TopAbs import TopAbs_IN, TopAbs_SHELL
 from OCP.TopLoc import TopLoc_Location
+from OCP.TopoDS import TopoDS
 
 from build123d import (
     Axis,
@@ -58,6 +61,7 @@ from build123d import (
     Face,
     Part,
     Plane,
+    Solid,
     Wire,
     extrude,
     import_brep,
@@ -181,6 +185,13 @@ GRADED_PROTECTED_COLLAR_OFFSETS_MM = (0.25, 0.50, 1.00, 2.00, 4.00)
 # dovetail ownership and fit-clearance gaps therefore remain exact, while the
 # Boolean tool crosses every exposed perimeter by a deterministic margin.
 PRINT_MASK_EXTERIOR_OVERSHOOT_MM = 0.05
+# Carry every dovetail tool this far past both Z datums.  The relief's own
+# apex already sits ahead of the front face, so the tool crosses that datum
+# transversally and no wall ever lands tangent on it.
+DOVETAIL_TOOL_Z_MARGIN_MM = 0.60
+# Which joint each print piece owns the female half of.
+DOVETAIL_FEMALE_JOINTS = {"lm_lower": (), "lm_upper": (0,), "um": (1,)}
+DOVETAIL_TWO_PIECE_FEMALE_JOINTS = {"lm_lower": (), "lm_um_upper": (0,)}
 GRADED_PROTECTED_GHOST_MAX_DEPTH_MM = 2.0 * FULL_DEPTH_MM - GRADED_EDGE_DEPTH_MM
 GRADED_PROTECTED_GHOST_REGULARIZATION = 1.0e-5
 GRADED_PROTECTED_OUTWARD_REGULARIZATION = 1.0e-3
@@ -319,6 +330,26 @@ def wing_two_piece_print_plan_parts(
     _normalize_variant(variant_id)
     side = _normalize_side(side)
     result = _layout().two_piece_print_parts
+    if side == "right":
+        return dict(result)
+    return {key: _mirror_plan(value) for key, value in result.items()}
+
+
+def wing_two_piece_nominal_plan_parts(
+        variant_id: str, side: str) -> dict[str, Polygon]:
+    """Return the XY masks the two-piece pieces are actually cut from.
+
+    These bound each piece's plan projection exactly: every piece is the
+    monolith intersected with the prism of its mask here, and the relief is
+    then swept *into* that solid, so no printed geometry can ever leave the
+    mask.  The print-plan masks cannot serve that purpose -- they subtract
+    the relief at its widest, rear section, while the piece keeps material
+    there all the way forward to the front face, where the relief has
+    narrowed to the front clearance.
+    """
+    _normalize_variant(variant_id)
+    side = _normalize_side(side)
+    result = _layout().two_piece_nominal_parts
     if side == "right":
         return dict(result)
     return {key: _mirror_plan(value) for key, value in result.items()}
@@ -1744,6 +1775,270 @@ def _mirror_left(part: Part, label: str) -> Part:
         _direct_planar_frames(mirror(part, about=Plane.YZ)), label)
 
 
+def _bilinear_face(corners) -> Face:
+    """One ruled quadrilateral face through four ordered corner points.
+
+    The relief's outer wall is a hyperbolic paraboloid wherever the plan
+    clearance is still changing, so a planar face would not do and a
+    triangulated one would facet a mating surface.  A degree-1 tensor
+    B-spline through the four corners is that surface exactly.
+    """
+    poles = TColgp_Array2OfPnt(1, 2, 1, 2)
+    poles.SetValue(1, 1, gp_Pnt(*corners[0]))
+    poles.SetValue(1, 2, gp_Pnt(*corners[1]))
+    poles.SetValue(2, 1, gp_Pnt(*corners[3]))
+    poles.SetValue(2, 2, gp_Pnt(*corners[2]))
+    knots = TColStd_Array1OfReal(1, 2)
+    knots.SetValue(1, 0.0)
+    knots.SetValue(2, 1.0)
+    mults = TColStd_Array1OfInteger(1, 2)
+    mults.SetValue(1, 2)
+    mults.SetValue(2, 2)
+    surface = Geom_BSplineSurface(poles, knots, knots, mults, mults, 1, 1)
+    builder = BRepBuilderAPI_MakeFace(surface, Precision.Confusion_s())
+    if not builder.IsDone():
+        raise RuntimeError("dovetail tool face construction failed")
+    return Face(builder.Face())
+
+
+def _swept_solid(sections, label: str) -> Solid:
+    """Sew one closed solid through an ordered list of quadrilateral sections.
+
+    Sections are given as four ordered 3-D corners each and are joined corner
+    to corner, which keeps the correspondence explicit instead of leaving it
+    to a lofter's parameterisation.
+    """
+    sections = [np.asarray(section, dtype=float) for section in sections]
+    if len(sections) < 2 or any(section.shape != (4, 3)
+                                for section in sections):
+        raise RuntimeError(f"{label} needs two or more 4-corner sections")
+    faces = [_bilinear_face(sections[0][::-1]), _bilinear_face(sections[-1])]
+    for lead, trail in zip(sections[:-1], sections[1:]):
+        for corner in range(4):
+            following = (corner + 1) % 4
+            faces.append(_bilinear_face((
+                lead[corner], lead[following],
+                trail[following], trail[corner])))
+    sewing = BRepBuilderAPI_Sewing(1.0e-6)
+    for face in faces:
+        sewing.Add(face.wrapped)
+    sewing.Perform()
+    sewn = sewing.SewedShape()
+    if sewn.ShapeType() != TopAbs_SHELL:
+        raise RuntimeError(f"{label} did not sew into one shell")
+    solid = BRepBuilderAPI_MakeSolid(TopoDS.Shell_s(sewn)).Solid()
+    properties = GProp_GProps()
+    BRepGProp.VolumeProperties_s(solid, properties)
+    if properties.Mass() < 0.0:
+        solid = TopoDS.Solid_s(solid.Reversed())
+    swept = Solid(solid)
+    if swept.volume <= 1.0e-6:
+        raise RuntimeError(f"{label} swept an empty solid")
+    if not swept.is_valid:
+        raise RuntimeError(f"{label} swept an invalid solid")
+    return swept
+
+
+def _relief_section(point, frame, clearance, back, z_low, z_high):
+    """One relief section: backed into the male, tapered across the depth."""
+    low = clearance * contract.dovetail_depth_clearance_scale(
+        z_low, FRONT_Z_MM)
+    high = clearance * contract.dovetail_depth_clearance_scale(
+        z_high, FRONT_Z_MM)
+    inner = point - back * frame
+    return (
+        (inner[0], inner[1], z_low),
+        (point[0] + low * frame[0], point[1] + low * frame[1], z_low),
+        (point[0] + high * frame[0], point[1] + high * frame[1], z_high),
+        (inner[0], inner[1], z_high),
+    )
+
+
+@lru_cache(maxsize=1)
+def _dovetail_relief_tools() -> tuple[Solid, ...]:
+    """Both depth-varying female reliefs, as one swept solid per joint.
+
+    The same pair serves flat and graded: the clearance law is anchored to
+    the flat front datum and to the flat rear depth, so a graded panel simply
+    keeps the part of the wedge its own thinner section still reaches.
+    """
+    layout = _layout()
+    z_low = REAR_LIMIT_Z_MM - DOVETAIL_TOOL_Z_MARGIN_MM
+    z_high = FRONT_Z_MM + DOVETAIL_TOOL_Z_MARGIN_MM
+    tools = []
+    for index in range(len(layout.dovetail_keys)):
+        sweep = contract.dovetail_relief_sweep(layout, index)
+        sections = [
+            _relief_section(point, frame, clearance, sweep["back_mm"],
+                            z_low, z_high)
+            for point, frame, clearance in zip(
+                sweep["xy_mm"], sweep["frame_xy"], sweep["clearance_mm"],
+                strict=True)]
+        tools.append(_swept_solid(
+            sections, f"{sweep['name']} dovetail relief"))
+    return tuple(tools)
+
+
+def _variant_depth_law(slug: str):
+    """Return the plan-point to panel-depth map for one variant."""
+    if slug == "flat":
+        return lambda coords: np.full(len(coords), FULL_DEPTH_MM, dtype=float)
+    solution, depth_field, _sections = _graded_analytics()
+
+    def graded(coords):
+        return contract._graded_weighted_depth(
+            shapely.points(coords[:, 0], coords[:, 1]),
+            depth_field.protected_components,
+            depth_field.exposed_outer_edge, solution)
+
+    return graded
+
+
+def _channel_section(point, frame, depth_mm, rear_edge, front_edge,
+                     cut_depth, ramp):
+    """One channel section: open to the gap, ramped closed on the rear.
+
+    Where a rear-face slot lifts the land away, ``rear_edge`` is the rear
+    face itself and ``ramp`` collapses with it, so the groove surfaces at
+    full width instead of tapering to a knife edge at the mouth.
+    """
+    rear_z = FRONT_Z_MM - depth_mm
+    overshoot = float(contract.DOVETAIL_CHANNEL_GAP_OVERSHOOT_MM)
+    return (
+        (point[0] - overshoot * frame[0], point[1] - overshoot * frame[1],
+         rear_z + rear_edge),
+        (point[0] - overshoot * frame[0], point[1] - overshoot * frame[1],
+         rear_z + front_edge),
+        (point[0] + cut_depth * frame[0], point[1] + cut_depth * frame[1],
+         rear_z + front_edge),
+        (point[0] + cut_depth * frame[0], point[1] + cut_depth * frame[1],
+         rear_z + rear_edge + ramp),
+    )
+
+
+@lru_cache(maxsize=2)
+def _dovetail_channel_tools(slug: str) -> tuple[Part | None, ...]:
+    """Serpentine adhesive channel, injection port and vent, per joint."""
+    layout = _layout()
+    tools: list[Part | None] = []
+    for index in range(len(layout.dovetail_keys)):
+        channel = _dovetail_channel_plan(slug, index)
+        if channel is None:
+            tools.append(None)
+            continue
+        sections = [
+            _channel_section(point, frame, depth, rear_edge, front_edge,
+                             cut_depth, ramp)
+            for point, frame, depth, rear_edge, front_edge, cut_depth, ramp
+            in zip(channel["xy_mm"], channel["frame_xy"],
+                   channel["local_depth_mm"], channel["rear_edge_mm"],
+                   channel["front_edge_mm"], channel["cut_depth_mm"],
+                   channel["ramp_mm"], strict=True)]
+        tools.append(_swept_solid(
+            sections, f"{channel['name']} adhesive channel"))
+    return tuple(tools)
+
+
+def _cut_dovetail_relief(piece: Part, role: str, slug: str,
+                         joints) -> Part:
+    """Relieve one female print piece and cut its adhesive channel."""
+    layout = _layout()
+    reliefs = _dovetail_relief_tools()
+    channels = _dovetail_channel_tools(slug)
+    for index in joints:
+        result = piece - reliefs[index]
+        if result is None:
+            raise RuntimeError(
+                f"{slug} {role} relief {index} returned no shape")
+        piece = _one_solid(
+            result.clean(),
+            f"{slug} {role} with {layout.dovetail_keys[index]['name']} "
+            "dovetail relief")
+        if channels[index] is None:
+            continue
+        result = piece - channels[index]
+        if result is None:
+            raise RuntimeError(
+                f"{slug} {role} channel {index} returned no shape")
+        piece = _one_solid(
+            result.clean(),
+            f"{slug} {role} with {layout.dovetail_keys[index]['name']} "
+            "adhesive channel")
+    return piece
+
+
+@lru_cache(maxsize=8)
+def _dovetail_channel_plan(slug: str, index: int):
+    """Cache one joint's channel plan; the graded depth law is not cheap."""
+    layout = _layout()
+    return contract.dovetail_channel_sweep(
+        layout, index, layout.field_right,
+        _variant_depth_law(_normalize_variant(slug)))
+
+
+@lru_cache(maxsize=2)
+def _dovetail_gallery_volume_mm3(slug: str) -> tuple[float, ...]:
+    """Cured-adhesive volume each joint's relief and channel opens.
+
+    The wedge closes in one integral along the joint contour and the channel
+    in one along its own path, so both are computed rather than booleaned
+    out of the wing.  On a graded wing that is not merely cheaper: OCC
+    integrates a whole trimmed rear to about half a percent, which is larger
+    than the entire answer.
+    """
+    slug = _normalize_variant(slug)
+    layout = _layout()
+    depth_law = _variant_depth_law(slug)
+    volumes = []
+    for index in range(len(layout.dovetail_keys)):
+        wedge = contract.dovetail_wedge_volume_mm3(layout, index, depth_law)
+        channel = _dovetail_channel_plan(slug, index)
+        volumes.append(
+            wedge + (0.0 if channel is None else channel["volume_mm3"]))
+    return tuple(volumes)
+
+
+def _adhesive_gallery_facts(slug: str) -> list[dict]:
+    """Per-joint adhesive gallery, channel, port and vent geometry."""
+    layout = _layout()
+    slug = _normalize_variant(slug)
+    volumes = _dovetail_gallery_volume_mm3(slug)
+    facts = []
+    for index, key in enumerate(layout.dovetail_keys):
+        channel = _dovetail_channel_plan(slug, index)
+        record = {
+            "joint": key["name"],
+            "female_owner": key["female_owner"],
+            "joint_contour_mm": float(
+                contract.dovetail_joint_contour(layout, index).length),
+            "adhesive_volume_mm3": float(volumes[index]),
+            "adhesive_volume_basis": (
+                "wedge_and_channel_integrals_excluding_port_and_vent"),
+            "serpentine_channel": None,
+        }
+        if channel is not None:
+            record["serpentine_channel"] = {
+                "run_mm": float(channel["run_mm"]),
+                "contour_fraction": float(channel["contour_fraction"]),
+                "path_mm": float(channel["path_mm"]),
+                "periods": int(channel["periods"]),
+                "wavelength_mm": float(channel["wavelength_mm"]),
+                "amplitude_mm": float(
+                    contract.DOVETAIL_CHANNEL_AMPLITUDE_MM),
+                "groove_depth_mm": float(channel["max_groove_depth_mm"]),
+                "height_mm": float(contract.DOVETAIL_CHANNEL_HEIGHT_MM),
+                "rear_land_mm": float(channel["min_rear_land_mm"]),
+                "front_land_mm": float(channel["min_front_land_mm"]),
+                "min_female_wall_mm": float(channel["min_wall_after_cut_mm"]),
+                "volume_mm3": float(channel["volume_mm3"]),
+                "trap_length_mm": float(contract.DOVETAIL_TRAP_LENGTH_MM),
+                "fed_through": channel["fed_through"],
+                "feed_gap_mm": float(contract.DOVETAIL_REAR_CLEARANCE_MM),
+            }
+        facts.append(record)
+    return facts
+
+
 def _print_mask_plan(plan: Polygon) -> Polygon:
     """Cross the exterior perimeter without changing internal split seams."""
     field = _layout().field_right
@@ -1819,12 +2114,14 @@ def wing_monolithic(variant_id: str, side: str):
 
 @lru_cache(maxsize=2)
 def _right_print_parts_cached(slug: str) -> tuple[Part, ...]:
-    """Intersect exact print masks only after finalizing the monolith."""
+    """Intersect exact print masks, then sweep each female relief."""
     monolith = deepcopy(_right_monolith_cached(slug))
     result = []
     for order, role in enumerate(PRINT_PART_KEYS, start=1):
+        # Cut against the nominal partition, not a plan-relieved one: the
+        # female relief is depth-varying now and has to be a swept solid.
         mask = _plan_prism(
-            _print_mask_plan(_layout().print_parts[role]),
+            _print_mask_plan(_layout().nominal_parts[role]),
             REAR_LIMIT_Z_MM - 0.5, FRONT_Z_MM + 0.5)
         common = monolith & mask
         if common is None:
@@ -1832,6 +2129,8 @@ def _right_print_parts_cached(slug: str) -> tuple[Part, ...]:
                 f"{slug} right {role} print-mask intersection is empty")
         piece = _one_solid(
             common.clean(), f"{slug} right {role} print piece")
+        piece = _cut_dovetail_relief(
+            piece, role, slug, DOVETAIL_FEMALE_JOINTS[role])
         piece.label = f"obiwan_wing_{slug}_right_{order}of3_{role}"
         result.append(piece)
     return tuple(result)
@@ -1861,7 +2160,7 @@ def _right_two_piece_print_parts_cached(slug: str) -> tuple[Part, ...]:
     lower = deepcopy(_right_print_parts_cached(slug)[0])
     lower.label = f"obiwan_wing_{slug}_right_b_1of2_lm_lower"
     upper_mask = _plan_prism(
-        _print_mask_plan(_layout().two_piece_print_parts["lm_um_upper"]),
+        _print_mask_plan(_layout().two_piece_nominal_parts["lm_um_upper"]),
         REAR_LIMIT_Z_MM - 0.5, FRONT_Z_MM + 0.5)
     common = monolith & upper_mask
     if common is None:
@@ -1869,6 +2168,11 @@ def _right_two_piece_print_parts_cached(slug: str) -> tuple[Part, ...]:
             f"{slug} right two-piece LM/UM upper intersection is empty")
     upper = _one_solid(
         common.clean(), f"{slug} right two-piece LM/UM upper print piece")
+    # Option B fuses LM-upper and UM: it keeps the lower joint's relief and
+    # gives the upper joint's back by simply never cutting it.
+    upper = _cut_dovetail_relief(
+        upper, "lm_um_upper", slug,
+        DOVETAIL_TWO_PIECE_FEMALE_JOINTS["lm_um_upper"])
     upper.label = f"obiwan_wing_{slug}_right_b_2of2_lm_um_upper"
     return lower, upper
 
@@ -2445,13 +2749,30 @@ def wing_facts(variant_id: str) -> dict:
             },
         },
         "dovetail_contract": {
-            "method": "v1l_style_through_thickness_xy_dovetails",
+            "method": "bonded_depth_tapered_through_thickness_xy_dovetails",
             "part_roles": list(PRINT_PART_KEYS),
             "two_piece_part_roles": list(TWO_PIECE_PRINT_PART_KEYS),
             "key_count_per_side": len(layout.dovetail_keys),
-            "clearance_mm": float(contract.DOVETAIL_CLEARANCE_MM),
+            "front_clearance_mm": float(
+                contract.DOVETAIL_FRONT_CLEARANCE_MM),
+            "rear_clearance_mm": float(contract.DOVETAIL_REAR_CLEARANCE_MM),
+            "clearance_law": "linear_in_depth_calibrated_at_front_face",
+            "taper_apex_offset_mm": float(
+                contract.DOVETAIL_TAPER_APEX_OFFSET_MM),
+            "built_front_clearance_mm": float(
+                contract.DOVETAIL_REAR_CLEARANCE_MM
+                * contract.dovetail_depth_clearance_scale(
+                    FRONT_Z_MM, FRONT_Z_MM)),
+            "built_rear_clearance_mm": float(
+                contract.DOVETAIL_REAR_CLEARANCE_MM
+                * contract.dovetail_depth_clearance_scale(
+                    REAR_LIMIT_Z_MM, FRONT_Z_MM)),
+            "female_relief_construction": "swept_loft_front_to_rear_offset",
+            "male_key_construction": "constant_prism",
             "endpoint_taper_mm": float(
                 contract.DOVETAIL_ENDPOINT_TAPER_MM),
+            "endpoint_dry_land_mm": float(
+                contract.dovetail_endpoint_dry_land_mm()),
             "endpoint_taper_location": "both_seam_endpoints",
             "male_root_overlap_mm": float(
                 contract.DOVETAIL_ROOT_OVERLAP_MM),
@@ -2484,8 +2805,23 @@ def wing_facts(variant_id: str) -> dict:
             ],
             "no_envelope_growth": True,
             "through_local_thickness": True,
-            "assembly_motion": "z_axis_slide",
-            "z_retention": False,
+            "assembly_motion": "z_axis_slide_from_the_rear",
+            "z_retention": True,
+            "z_retention_method": (
+                "cured_two_part_epoxy_in_shear_across_the_tapered_gallery_"
+                "and_bearing_in_the_serpentine_channel"),
+            "injection_path": "rear_seam_gap_open_along_the_whole_joint",
+            "adhesive": "two_part_epoxy",
+            "front_face_features_added": 0,
+            "rear_face_features_added_per_joint": [
+                0 for _index in range(len(layout.dovetail_keys))],
+            "assembly_procedure": [
+                "slide dry from the rear until the panels are flush",
+                "clamp the seam closed",
+                "inject epoxy along the open rear seam gap until it stops "
+                "drawing in",
+            ],
+            "adhesive_gallery": _adhesive_gallery_facts(slug),
             "coupon_qualification_required": True,
             "graded_joint_interface_area_mm2": [
                 float(value) for value in depth_field.joint_area_mm2
@@ -2557,6 +2893,7 @@ __all__ = (
     "receiver_required_lands",
     "wing_plan",
     "wing_print_plan_parts",
+    "wing_two_piece_nominal_plan_parts",
     "wing_two_piece_print_plan_parts",
     "wing_depth_at",
     "wing_section_samples",

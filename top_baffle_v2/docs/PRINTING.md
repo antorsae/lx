@@ -226,14 +226,77 @@ translated to locked positions inside one Bambu object. Each project carries
 the three released state-specific duct blockers, all four support fields
 pinned globally and per object, and one six-magnet pause at Z=5.96 mm. Both
 combined core projects use the hash-pinned saved TINMORRY PETG-GF preset and
-eight walls. The no-floor project uses 40% gyroid globally plus a 100%-solid
-zig-zag parameter modifier through the complete `01a` bridge/root; the floor
-project preserves the integral-floor bottom's global 100% zig-zag contract.
+eight walls. Both projects print 100% zig-zag: the floor project always did,
+to preserve its integral-floor bottom's contract, and the no-floor project was
+raised from 40% gyroid to match, which leaves its 100%-solid zig-zag parameter
+modifier through the complete `01a` bridge/root redundant rather than wrong.
 Promotion requires exact four-volume
 project/STL equivalence, actual support under every carrier, no support under
 the tweeter footprint, and zero support-bead collisions against every LM/UM
 functional duct. Never print a combined plate with its individual 01, 02, 03,
 or 04 files, and never mix the two stand states.
+
+**Flow ceilings come from TINMORRY's own profile, mirrored into both
+variant columns.** Their store page states 240--270 °C, a 65--75 °C bed and
+"< 250 mm/s", but no volumetric figure; the authoritative numbers live in
+their Bambu profile, vendored verbatim with its hash under
+`vendor/TINMORRY/` (see that directory's `PROVENANCE.md`). Every filament
+value there is a two-slot vector -- Standard variant, then High Flow -- and
+TINMORRY filled only the Standard slot, leaving High Flow as `nil` so it
+inherits `Generic PETG-CF @BBL P2S`: 11.5 mm³/s, 255 °C and a 0.95 flow
+ratio, none of it measured on this material. Because the lane pins the
+hotend to High Flow, that is exactly the column being selected, so
+`repo_overrides.filament` mirrors the vendor's Standard figures into both
+slots: 12 mm³/s, 260 °C, 0.93 flow ratio. Do not read the ceiling as a
+speed lever -- 12 is 4% above the 11.5 it replaces, worth 116 → 121 mm/s at
+0.62 × 0.16 mm. Wall count, infill density and support density set the
+print time.
+
+**The PLA support interface is blocked upstream and nothing PETG-GF
+publishes until it is resolved.** The structural-core profile asks for the
+part in TINMORRY PETG-GF and the support interface in Bambu PLA Basic,
+because a PETG interface welds to a PETG part and cannot be removed at all,
+while PLA does not fuse to it and peels off at a zero Z gap. Bambu Studio's
+CLI cannot deliver that on this one-nozzle P2S: every structural path loads
+an assemble list (the support blockers and the bridge/root modifier require
+one), and on that path Studio resolves `filament_map` to `1,0` -- the second
+filament is assigned to nozzle 0, which does not exist. It then prints the
+interface in the model filament and reports the plate as a success. Verified
+on 02.07.01.62 against `filament_map`/`filament_map_mode`/`nozzle_volume_type`
+/`physical_extruder_map` overrides, per-object `support_interface_filament`
+params, and `--load-filament-ids` (rejected alongside `--load-assemble-list`);
+`filaments: [1, 2]` is refused outright because the count must equal the clone
+count. 02.08.02.60 segfaults on the same two-filament plate
+(BambuStudio issue 11893). Only the direct-STL path, which cannot carry the
+blockers, resolves `1,1`.
+
+`_validate_actual_gcode_profile` now fails closed on this: a profile that
+declares a support-interface filament whose `filament_map` entry is `0` is
+rejected, so no project can ship claiming a PLA interface it did not print.
+Until Bambu fixes the mapping, `make obiwan_petg_gui_projects` writes both
+core plates into `to_print/obiwan/3mf_06hf_petg-cf_pla/` as *projects* --
+same 0.6-mm high-flow lane, named for its material pair, no G-code -- to be
+sliced in the GUI once PLA is assigned to its AMS slot. Two things have to
+be corrected on the way out or Studio quietly ignores the project:
+
+* **the process preset is renamed.** Shipped under the stock
+  `0.18mm Balanced Quality @BBL P2S 0.6 nozzle` name, Studio matches the
+  installed preset and serves *its* values instead: support switched off,
+  tree(auto), Default/Default support filaments, a 0.18 mm top Z gap and 15%
+  sparse infill in place of the plate's 100% zig-zag. Nothing
+  in the project is read. It now ships as
+  `LX521 ObiWan PETG-GF core 0.6HF (GUI)`, a name no install carries, which
+  is the same defence `LOCKED_PROCESS_ID` gives the audited shelf copies.
+* **the nozzle variant is pinned.** An exported project records
+  `nozzle_volume_type: ["Standard"]` -- Studio takes the first entry of
+  `extruder_variant_list` -- on a machine whose own
+  `default_nozzle_volume_type` is `High Flow`. That selects the Standard
+  column of every per-variant filament value, so the builder writes the
+  machine's own default back and refuses anything but `High Flow`.
+
+The alternative is to print the structural core with weldable PETG supports
+by dropping `support_interface_filament` from the profile. The PLA 0.4-mm and 0.6-mm lanes are unaffected --
+they load a single filament and never reach this gate.
 
 For the flat and graded B wing splits, the shelf also provides
 `obiwan_flat_wings_split2_combo` and
@@ -314,9 +377,11 @@ reuse a 0.20-mm pause height or derive one by scaling.
   complete W64 stem/root; do not depend on nominal infill through the root or around
   the three buried lanes. *Detect narrow internal solid
   infill: on.* The generated job embeds and audits that **100% zig-zag
-  parameter modifier** while retaining 40% gyroid globally. The
-  integral-floor keyed-bottom job deliberately uses global **100% zig-zag**;
-  Bambu rejects gyroid at 100%.
+  parameter modifier**, and now runs global **100% zig-zag** as well, so the
+  modifier pins the root region to what the whole part already prints. The
+  integral-floor keyed-bottom job always used global **100% zig-zag**; note
+  that zig-zag rather than gyroid is mandatory at 100%, because Bambu
+  rejects gyroid at that density.
 * **Support:** off for every job except both optional keyed LM halves and the
   UM carrier in both floor states. Those generated projects pin **Enable
   support: on**,
@@ -333,8 +398,10 @@ reuse a 0.20-mm pause height or derive one by scaling.
   hotter = better layer adhesion), bed 55–60 °C, **max fan 60 %**
   (overhang fan 100 %), outer wall <=120 mm/s, keep the filament
   profile's volumetric limit (~12–16 mm³/s). Strength lives in layer
-  adhesion, not speed. The PETG-GF structural-core jobs instead use the exact
-  saved `TINMORRY PETG-GF Profile @BBL P2S` values: 260 °C nozzle, 80 °C
+  adhesion, not speed. The PETG-GF structural-core jobs instead use the
+  vendor's own figures, taken from TINMORRY's Bambu profile at
+  <https://github.com/TINMORRY/TINMORRY-filament-profile-for-Bambu-printers>
+  and vendored with its hash under `vendor/TINMORRY/` — 260 °C nozzle, 80 °C
   textured bed, 0.93 flow ratio, and 12 mm³/s maximum volumetric speed. Do
   not copy this material/profile to flat/graded wings or shoulders.
 * **Dimensional fits:** proud regular through-thickness dovetails use 0.05 mm
@@ -860,11 +927,25 @@ These constraints moved here from the project README during the product-first re
 - Flat and graded wing sides each print as lower, middle, and UM segments cut from
   the finalized monolith. The lower segment owns the 7/9/4 mm male dovetail
   into the middle segment; the middle segment owns the 7/8.5/4 mm male
-  dovetail into the UM segment. Both female complements use 0.05 mm clearance.
-  The clearance collapses to exact closure over the final 2 mm at each exposed
-  split endpoint, and neither key may grow the installed plan or depth
-  envelope. Both complete keys retain at least 2.0 mm measured exterior plan
-  ligament. Qualify the fit on a process-matched coupon before a complete wing.
+  dovetail into the UM segment. Each male key is a constant prism; both female
+  complements are depth-varying, from 0.05 mm of clearance at the front face to
+  0.20 mm at the rear. The front value is the coupon-calibrated fit the former
+  uniform joint assembled with, and it is a floor rather than a preference: a
+  wedge cannot pass the station where its clearance equals the printer's
+  oversize, so it stops proud by 57 mm for every millimetre of oversize, and
+  coplanar panels must finish flush. Lower it only against a measured key/plate
+  coupon. Assemble dry from the rear until flush, clamp, then
+  inject two-part epoxy along the open rear seam gap, which the taper holds
+  open at 0.20 mm the whole length of the joint and which feeds the buried
+  channel through its own flank — the joint is bonded, not friction-fitted.
+  There is deliberately no bored port: any opening from the rear face into
+  the channel sits alongside that same gap and leaves a sub-printable fin
+  between the two. The clearance collapses to exact
+  closure short of each exposed split endpoint, and neither key may grow the
+  installed plan or depth envelope. Both complete keys retain at least 2.0 mm
+  measured exterior plan ligament, and so do the adhesive channel and its two
+  rear-face openings. Qualify the fit on a process-matched coupon before a
+  complete wing.
 
 ### Magnet insertion and the print sidecar
 

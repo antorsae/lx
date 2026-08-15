@@ -105,6 +105,40 @@ class BambuComposite3MFAudit:
         }
 
 
+def placed_float32_triangles(
+    triangles: Sequence[Triangle],
+    matrix: Sequence[Sequence[float]],
+) -> tuple[Triangle, ...]:
+    """Apply a locked float32 bed placement exactly as the STL writer does.
+
+    Parts on a composite plate may be rotated as well as moved, so the
+    audit has to reproduce the same 4x4 the writer used -- and in the same
+    float32 steps, or the re-derived mesh will not match bit-for-bit.
+    """
+    as_float32 = lambda value: struct.unpack(
+        "<f", struct.pack("<f", value))[0]
+    rows = tuple(
+        tuple(as_float32(_finite(float(value), "composite-part placement"))
+              for value in matrix[row][:4])
+        for row in range(3)
+    )
+    placed = []
+    for triangle in triangles:
+        points = []
+        for point in triangle:
+            source = tuple(as_float32(float(value)) for value in point)
+            moved = []
+            for row in rows:
+                total = row[3]
+                for column in range(3):
+                    total = as_float32(
+                        total + as_float32(row[column] * source[column]))
+                moved.append(total)
+            points.append(tuple(moved))
+        placed.append(tuple(points))
+    return tuple(placed)
+
+
 def translated_float32_triangles(
     triangles: Sequence[Triangle],
     translation: Sequence[float],

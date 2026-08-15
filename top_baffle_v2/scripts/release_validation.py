@@ -247,6 +247,40 @@ PROFILE_OVERRIDE_KEYS = {
         # split into sub-floor bead pairs (0.40 on the 0.4 lane, 0.51 on the
         # 0.6 lane).
         "min_bead_width",
+        # The PETG lane prints supports in the model material with a
+        # PLA interface, because a PETG interface welds to a PETG
+        # part and cannot be stripped.  Whether a given part gets
+        # support stays an artifact_overrides decision; these keys
+        # pin the recipe it uses when it does.
+        "support_type",
+        "tree_support_branch_distance",
+        "support_style",
+        "support_filament",
+        "support_interface_filament",
+        "support_top_z_distance",
+        "support_interface_spacing",
+        "support_interface_top_layers",
+        "support_interface_bottom_layers",
+        "support_interface_pattern",
+        "support_object_xy_distance",
+        "enable_prime_tower",
+        "prime_tower_width",
+        "flush_into_support",
+        "flush_into_objects",
+        "flush_into_infill",
+        "independent_support_layer_height",
+        # Sloping skins: Bambu counts the top shell VERTICALLY,
+        # so a face at 50 degrees keeps only cos(50) of it
+        # normal to the surface. These parts run a third of
+        # their upward area at 20-50 degrees, which is where
+        # PETG-GF stopped being watertight.
+        "top_surface_speed",
+        "ironing_type",
+        "ironing_flow",
+        "ironing_spacing",
+        "ironing_speed",
+        "wipe_tower_x",
+        "wipe_tower_y",
         # The outer wall prints at the captive-skin width (0.52 mm) on
         # every lane: a uniform outer bead means Arachne never modulates
         # width over a magnet pocket, so the stations stay invisible on
@@ -277,6 +311,7 @@ PROFILE_OVERRIDE_KEYS = {
         "fan_max_speed",
         "overhang_fan_speed",
         "filament_max_volumetric_speed",
+        "filament_flow_ratio",
         "textured_plate_temp",
         "textured_plate_temp_initial_layer",
     }),
@@ -411,6 +446,7 @@ _CLI_CONFIG_TYPES = {
     "machine": "machine",
     "process": "process",
     "filament": "filament",
+    "support_interface_filament": "filament",
 }
 
 
@@ -1280,6 +1316,16 @@ def prepare_profiles(
             else root / config["filament_preset"]
         ),
     }
+    # A lane may name a second filament used ONLY as the support interface.
+    # PETG support welds to a PETG part and cannot be stripped; PLA does not
+    # fuse to PETG, so a zero Z gap still peels apart.  It is a distinct key
+    # rather than a filament list because that is all it may ever be.
+    interface_preset = config.get("support_interface_filament_preset")
+    if interface_preset is not None:
+        if not isinstance(interface_preset, str) or not interface_preset:
+            raise AuditError(
+                "support_interface_filament_preset must be a preset path")
+        sources["support_interface_filament"] = root / interface_preset
     for label, path in sources.items():
         if path.resolve() not in resolver.raw:
             raise AuditError(f"configured {label} preset was not found: {path}")

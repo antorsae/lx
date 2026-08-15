@@ -265,6 +265,7 @@ LOCAL_BAMBU_GOALS := check_bambu_3mf_audit \
                      obiwan_floor_petg_gf_01b \
                      obiwan_floor_petg_gf_01b_validate \
                      obiwan_floor_petg_gf_01b_to_print \
+                     obiwan_petg_gui_projects \
                      obiwan_combo_plate_source obiwan_combo_plate \
                      obiwan_combo_plate_validate obiwan_combo_plate_to_print \
                      obiwan_no_floor_combo_plate_source \
@@ -2485,6 +2486,17 @@ $(OBIWAN_01B_PETG_GF_SHELF_OUTPUTS): | \
 
 obiwan_floor_petg_gf_01b_to_print: \
         $(OBIWAN_01B_PETG_GF_SHELF_OUTPUTS)
+
+# The PETG-GF structural plates Bambu's CLI cannot slice: it maps the second
+# filament to nozzle 0 on the assemble-list path and prints the PLA support
+# interface in PETG.  These are projects, not deliveries -- no G-code, kept
+# out of the audited 3mf_06hf view -- to be sliced in the Studio GUI once the
+# PLA filament is assigned to its AMS slot.
+obiwan_petg_gui_projects: scripts/build_petg_gui_projects.py \
+        scripts/build_obiwan_combo_plate.py $(PETG_GF_PROFILE) \
+        $(CAPTIVE_MAGNET_CATALOG)
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/build_petg_gui_projects.py
 
 $(OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP): \
         $(OBIWAN_NO_FLOOR_COMBO_READY_STAMP) \

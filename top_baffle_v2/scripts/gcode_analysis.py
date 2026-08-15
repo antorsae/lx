@@ -614,6 +614,33 @@ def _validate_actual_gcode_profile(
             errors.append(
                 f"G-code {key}={actual:g} != resolved {expected_value:g}")
 
+    # A declared support-interface filament has to actually reach the
+    # nozzle.  Bambu resolves filament->nozzle assignments into filament_map,
+    # and on this one-nozzle P2S the CLI assigns the second filament to
+    # nozzle 0, which does not exist: the interface silently prints in the
+    # model filament instead, so a PETG part would come back with welded-on
+    # PETG supports while every other gate still passed.  Fail closed rather
+    # than ship a project whose second filament was quietly dropped.
+    if (profile_bundle["resolved"].get("support_interface_filament")
+            is not None
+            and _boolish(profile_bundle["resolved"]["process"].get(
+                "enable_support"))):
+        raw_map = parsed.config.get("filament_map")
+        entries = [
+            item.strip() for item in str(raw_map).split(",")
+        ] if raw_map is not None else []
+        if raw_map is None:
+            errors.append("G-code CONFIG_BLOCK lacks filament_map")
+        elif len(entries) < 2:
+            errors.append(
+                f"support interface filament declared but filament_map "
+                f"carries one filament: {raw_map!r}")
+        elif any(entry in {"", "0"} for entry in entries):
+            errors.append(
+                f"support interface filament is mapped to no nozzle "
+                f"(filament_map={raw_map!r}); Bambu would print the "
+                "interface in the model filament")
+
     # Bambu serializes process vectors as comma-separated values.  Comparing
     # only the first process item would let a second speed silently retain an
     # unsafe value (for example outer_wall_speed=60,200).  Filament presets
@@ -641,6 +668,21 @@ def _validate_actual_gcode_profile(
         expected_items = (
             list(raw_expected) if isinstance(raw_expected, list)
             else [raw_expected])
+        # A lane may load a second filament as the support interface.  The
+        # G-code then reports one entry per loaded filament, where a preset
+        # reports one per extruder variant, so the model filament alone can
+        # never match: expect [model, interface] and check each against its
+        # own filament.  Every other lane still resolves a single filament
+        # and takes the paths below unchanged.
+        interface = profile_bundle["resolved"].get(
+            "support_interface_filament")
+        if (section == "filament" and interface is not None
+                and len(actual_items := raw_actual.split(",")) == 2):
+            raw_interface = interface.get(profile_key)
+            interface_items = (
+                list(raw_interface) if isinstance(raw_interface, list)
+                else [raw_interface])
+            expected_items = [expected_items[0], interface_items[0]]
         actual_items = raw_actual.split(",")
         try:
             expected_vector = [

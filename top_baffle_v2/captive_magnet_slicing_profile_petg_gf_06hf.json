@@ -3,7 +3,7 @@
  "backend": "BambuStudio",
  "required_bambu_studio_version": "02.07.01.62",
  "lane": "0.6mm_high_flow",
- "lane_notes": "PETG-GF structural lane on the 0.6 mm high-flow nozzle. Reuses the exact hash-pinned saved TINMORRY user preset from the 0.4 lane: its Generic PETG-CF @BBL P2S base declares compatibility with the 0.4, 0.6 and 0.8 P2S machines, and the preset already carries Direct Drive Standard / High Flow extruder-variant columns, so one saved preset serves both lanes. Wall loops drop 8 -> 6 to keep the structural shell width (6 x 0.62 = 3.72 mm vs the 0.4 lane's ~3.6 mm). The process is rebased onto the release-wide 0.16 mm / 0.20 mm first-layer schedule so this lane shares the 0.4 lane's Z stack and pause table. Retaining-bead acceptance is a nominal first-qualification seed; tighten to observed widths after the first audited run.",
+ "lane_notes": "PETG-GF structural lane on the 0.6 mm high-flow nozzle, printed on the owner's saved TINMORRY PETG-GF preset. That preset is hash-pinned because Bambu Studio rewrites saved presets in place: on 2026-08-13 it dropped the file's type key, which makes the CLI refuse the config, and collapsed compatible_printers to a name no printer preset matches, which makes the GUI show the filament as unsupported on every machine. Both were repaired by hand and the hash re-pinned; a pin failure here usually means Studio has rewritten it again rather than that the filament changed. Supports print in PETG with a PLA Basic interface, because a PETG interface welds to a PETG part and cannot be stripped, while PLA does not fuse to it, so a zero Z gap still peels apart.",
  "printer": "Bambu Lab P2S 0.6 nozzle",
  "process": "0.18mm Balanced Quality @BBL P2S 0.6 nozzle",
  "filament": "TINMORRY PETG-GF Profile @BBL P2S",
@@ -11,8 +11,6 @@
  "machine_preset": "machine/Bambu Lab P2S 0.6 nozzle.json",
  "process_preset": "process/0.18mm Balanced Quality @BBL P2S 0.6 nozzle.json",
  "filament_preset": "filament/Generic PETG-CF @BBL P2S.json",
- "user_filament_preset": "TINMORRY PETG-GF Profile @BBL P2S",
- "user_filament_preset_sha256": "e7ab920a781118a557b6c819275a6f5a7217e0faa4a9c803e16c2f8ed4da0c11",
  "repo_overrides": {
   "machine": {
    "machine_pause_gcode": "M400 U1",
@@ -22,7 +20,7 @@
    "layer_height": "0.16",
    "initial_layer_print_height": "0.2",
    "wall_loops": "6",
-   "top_shell_layers": "6",
+   "top_shell_layers": "10",
    "bottom_shell_layers": "5",
    "outer_wall_speed": [
     "60",
@@ -43,7 +41,52 @@
    "ensure_vertical_shell_thickness": "enabled",
    "detect_narrow_internal_solid_infill": "1",
    "elefant_foot_compensation": "0.15",
-   "xy_hole_compensation": "0"
+   "xy_hole_compensation": "0",
+   "support_type": "tree(auto)",
+   "support_style": "default",
+   "support_filament": "1",
+   "support_interface_filament": "2",
+   "support_top_z_distance": "0",
+   "support_interface_spacing": "0",
+   "support_interface_top_layers": "3",
+   "support_interface_bottom_layers": "3",
+   "support_interface_pattern": "rectilinear",
+   "support_object_xy_distance": "0.7",
+   "enable_prime_tower": "1",
+   "flush_into_support": "1",
+   "flush_into_objects": "0",
+   "flush_into_infill": "0",
+   "independent_support_layer_height": "0",
+   "wipe_tower_x": "128.327",
+   "wipe_tower_y": "219.551",
+   "prime_tower_width": "35",
+   "top_surface_speed": [
+    "80",
+    "80"
+   ],
+   "ironing_type": "top",
+   "ironing_flow": "10%",
+   "ironing_spacing": "0.15",
+   "ironing_speed": "60",
+   "tree_support_branch_distance": "1"
+  },
+  "filament": {
+   "nozzle_temperature": [
+    "260",
+    "260"
+   ],
+   "nozzle_temperature_initial_layer": [
+    "260",
+    "260"
+   ],
+   "filament_max_volumetric_speed": [
+    "12",
+    "12"
+   ],
+   "filament_flow_ratio": [
+    "0.93",
+    "0.93"
+   ]
   }
  },
  "artifact_overrides": [
@@ -59,7 +102,9 @@
     "enable_support": "1",
     "support_on_build_plate_only": "1",
     "support_critical_regions_only": "1",
-    "support_remove_small_overhang": "1"
+    "support_remove_small_overhang": "1",
+    "wipe_tower_x": "140",
+    "wipe_tower_y": "10"
    }
   },
   {
@@ -69,11 +114,12 @@
     "part": "obiwan_optional_lm_keyed_1_of_2_bottom"
    },
    "process": {
-    "sparse_infill_density": "40%",
+    "sparse_infill_density": "100%",
     "enable_support": "1",
     "support_on_build_plate_only": "1",
     "support_critical_regions_only": "1",
-    "support_remove_small_overhang": "1"
+    "support_remove_small_overhang": "1",
+    "sparse_infill_pattern": "zig-zag"
    }
   },
   {
@@ -109,11 +155,12 @@
     "part": "obiwan_core_2_of_2_um_carrier"
    },
    "process": {
-    "sparse_infill_density": "40%",
+    "sparse_infill_density": "100%",
     "enable_support": "1",
     "support_on_build_plate_only": "1",
     "support_critical_regions_only": "1",
-    "support_remove_small_overhang": "1"
+    "support_remove_small_overhang": "1",
+    "sparse_infill_pattern": "zig-zag"
    }
   },
   {
@@ -123,11 +170,12 @@
     "part": "obiwan_core_2_of_2_um_carrier"
    },
    "process": {
-    "sparse_infill_density": "40%",
+    "sparse_infill_density": "100%",
     "enable_support": "1",
     "support_on_build_plate_only": "1",
     "support_critical_regions_only": "1",
-    "support_remove_small_overhang": "1"
+    "support_remove_small_overhang": "1",
+    "sparse_infill_pattern": "zig-zag"
    }
   }
  ],
@@ -195,7 +243,10 @@
    "transverse_lower_width_tolerance_mm": 0.005,
    "axial_lower_width_tolerance_mm": 0.005
   },
-  "xy_hole_compensation_policy": "0 mm is mandatory for captive-magnet parts on every nozzle lane: hole compensation moves the cavity boundary that the 0.52 mm retaining skins are judged against, while Arachne variable-width generation and the independent toolpath audit require exactly one bounded retaining traversal per skin"
+  "xy_hole_compensation_policy": "0 mm is mandatory for captive-magnet parts on every nozzle lane: hole compensation moves the cavity boundary that the 0.52 mm retaining skins are judged against, while Arachne variable-width generation and the independent toolpath audit require exactly one bounded retaining traversal per skin",
+  "support_interface_filament_index": 2,
+  "support_top_z_distance_mm": 0.0,
+  "support_interface_spacing_mm": 0.0
  },
  "machine_bounds_mm": {
   "x": [
@@ -221,5 +272,16 @@
   "park_z_mm": 250.0,
   "z_travel_speed_mm_s": 20.0,
   "policy": "The P2S has a 256 mm Z envelope. At each captive-magnet insertion layer, raise the nozzle to Z=250 mm (which lowers the bed to within 6 mm of its lowest position), pause with M400 U1, then restore the exact insertion-layer Z before the next print move. No XY motion is injected."
+ },
+ "support_interface_filament": "Bambu PLA Basic @BBL P2S 0.6 nozzle",
+ "support_interface_filament_preset": "filament/Bambu PLA Basic @BBL P2S 0.6 nozzle.json",
+ "user_filament_preset": "TINMORRY PETG-GF Profile @BBL P2S",
+ "user_filament_preset_sha256": "cab1d2484c404b01d06bbf4123e6e6a03b614a20da33ea0b7fc17087ad6f1bcb",
+ "vendor_filament_profile": {
+  "source": "https://github.com/TINMORRY/TINMORRY-filament-profile-for-Bambu-printers/blob/main/PETG-GF(P2S-Bambu-TINMORRY).json",
+  "vendored": "vendor/TINMORRY/PETG-GF(P2S-Bambu-TINMORRY).json",
+  "sha256": "90f9bb69f3f043996ec0bdc443d6d4165d425d070232817a173efea9acb381b1",
+  "retrieved": "2026-08-15",
+  "note": "TINMORRY fills only the Standard variant column and leaves High Flow as nil, which falls back to Generic PETG-CF @BBL P2S. This lane pins High Flow to match the hotend, so repo_overrides.filament mirrors the vendor's Standard figures into both columns."
  }
 }

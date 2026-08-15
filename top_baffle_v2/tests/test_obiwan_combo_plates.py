@@ -25,9 +25,9 @@ EXPECTED = {
         "bottom_name": (
             "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand"
         ),
-        "triangle_count": 71_318,
+        "triangle_count": 70_834,
         "make_slug": "no_floor",
-        "infill": (40.0, "gyroid"),
+        "infill": (100.0, "zig-zag"),
     },
     "floor_stand": {
         "plate_name": (
@@ -36,7 +36,7 @@ EXPECTED = {
         "bottom_name": (
             "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand"
         ),
-        "triangle_count": 174_162,
+        "triangle_count": 173_678,
         "make_slug": "floor",
         "infill": (100.0, "zig-zag"),
     },
@@ -72,11 +72,26 @@ def check_variant(state: str) -> None:
         tuple(part.friendly_name for part in api.PARTS) == expected_names,
         f"{state}: four-part friendly inventory or ordering drifted",
     )
-    check(
-        tuple(part.translation_mm for part in api.PARTS)
-        == plate.LOCKED_TRANSLATIONS_MM,
-        f"{state}: locked translation-only disposition drifted",
-    )
+    # A plate may be hand-arranged, in which case parts carry a rotation and
+    # their placement is the position of the part's centre rather than an
+    # offset added to its coordinates.  Both forms stay locked; what must
+    # never drift is which form a state uses, or the numbers in it.
+    expected_placements = plate.LOCKED_PLACEMENTS.get(state)
+    if expected_placements is None:
+        check(
+            tuple(part.translation_mm for part in api.PARTS)
+            == plate.LOCKED_TRANSLATIONS_MM
+            and not any(part.rotation_deg for part in api.PARTS)
+            and not any(part.placement_is_centre for part in api.PARTS),
+            f"{state}: locked translation-only disposition drifted",
+        )
+    else:
+        check(
+            tuple((part.rotation_deg, part.translation_mm)
+                  for part in api.PARTS) == expected_placements
+            and all(part.placement_is_centre for part in api.PARTS),
+            f"{state}: locked hand-arranged disposition drifted",
+        )
     for part in api.PARTS:
         check(
             f"/build/{state}/" in str(part.source_stl),
@@ -136,12 +151,16 @@ def check_variant(state: str) -> None:
     )
     profile = json.loads(PETG_GF_PROFILE.read_text(encoding="utf-8"))
     check(
-        profile["user_filament_preset"]
-        == "TINMORRY PETG-GF Profile @BBL P2S"
+        profile["filament"] == "TINMORRY PETG-GF Profile @BBL P2S"
+        and profile["user_filament_preset"] == profile["filament"]
+        and len(profile["user_filament_preset_sha256"]) == 64
+        and profile["support_interface_filament"]
+        == "Bambu PLA Basic @BBL P2S 0.6 nozzle"
         and profile["repo_overrides"]["process"]["wall_loops"] == "6"
         and profile["requirements"]["nozzle_diameter_mm"] == 0.6,
-        "combined core profile must pin saved TINMORRY PETG-GF on the "
-        "0.6-mm high-flow lane with its six 0.62 mm walls",
+        "combined core profile must pin the owner's hash-pinned TINMORRY "
+        "PETG-GF preset with a PLA support interface on the 0.6-mm "
+        "high-flow lane, six walls",
     )
     make_slug = expected["make_slug"]
     for target in (

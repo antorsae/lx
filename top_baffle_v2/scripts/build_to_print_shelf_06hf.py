@@ -12,10 +12,14 @@ Two sources feed ``to_print/<family>/3mf_06hf/``:
   there is no pause to embed, so a profile- and hash-bound plain slice is
   the complete deliverable.
 
-Still outside this lane view: the two PLA wing combo plates (0.4-mm lane
-deliveries), the two auxiliary BMR crescent candidates, and the four
-``lane: 06hf`` structural PETG-GF entries -- the canonical builder already
-delivers those directly into ``3mf_06hf`` from the PETG-GF 0.6 outputs.
+* the two PLA wing combo plates re-slice here through the wing plate
+  builder's own audit, because a plate carries the same six-magnet pause
+  as the pieces it replaces and so cannot go down the plain path.
+
+Still outside this lane view: the two auxiliary BMR crescent candidates and
+the four ``lane: 06hf`` structural PETG-GF entries -- the canonical builder
+already delivers those directly into ``3mf_06hf`` from the PETG-GF 0.6
+outputs.
 
 Fail-closed: every artifact-bound entry must have a passing 0.6 audit and
 every plain slice must pass the result/mesh/bed gates, or nothing is
@@ -168,6 +172,101 @@ def _slice_plain_entry(
     }
 
 
+def route_entries(
+    entries: list[dict],
+) -> tuple[list[dict], list[dict], list[tuple[dict, dict]], dict[str, str]]:
+    """Sort shelf entries into the four 0.6-lane dispositions.
+
+    Returns ``(audited, plain, wing_plates, skipped)``; every catalog entry
+    lands in exactly one of them, and ``skipped`` carries the reason so the
+    lane manifest can record what it did not publish.
+    """
+    audited: list[dict] = []
+    plain: list[dict] = []
+    wing_plates: list[tuple[dict, dict]] = []
+    skipped: dict[str, str] = {}
+    for entry in entries:
+        if entry.get("lane") == "06hf":
+            skipped[entry["name"]] = (
+                "PETG-GF structural delivery; the canonical shelf builder "
+                "publishes it into 3mf_06hf from the PETG-GF 0.6 outputs")
+        elif "auxiliary_delivery" in entry:
+            skipped[entry["name"]] = (
+                "auxiliary candidate delivery; 0.4-mm lane only for now")
+        elif "composite_plate" in entry:
+            spec = canonical.COMPOSITE_SPECS.get(entry["name"])
+            if (spec is None
+                    or spec["project_kind"] != "local_locked_wing_plate_slice"):
+                skipped[entry["name"]] = (
+                    "composite plate with no 0.6-mm recipe of its own")
+            else:
+                wing_plates.append((entry, spec))
+        elif "catalog_artifact_id" in entry:
+            audited.append(entry)
+        else:
+            plain.append(entry)
+    return audited, plain, wing_plates, skipped
+
+
+def _slice_wing_plate(
+    *,
+    entry: dict,
+    spec: dict,
+    audit_root: Path,
+    bambu: Path,
+) -> tuple[Path, dict]:
+    """Re-slice one locked wing combo plate on the 0.6-mm lane.
+
+    The plate is not a plain slice: it carries the same six-magnet pause as
+    the individual wing pieces, so it goes through the wing plate builder's
+    own audit, which re-derives the pause from this lane's 0.6 profile and
+    checks every part against this lane's release audit rather than the
+    0.4-mm one.  Wings stay PLA -- the PETG-GF recipe is scoped to the
+    structural core -- so the lane's stock 0.6 high-flow profile applies
+    unchanged.
+    """
+    module = spec["module"]
+    try:
+        result = module.build_or_validate_ready_plate(
+            workspace=LANE_WORKSPACE / "composite" / module.PLATE_NAME,
+            profile_path=LANE_PROFILE,
+            release_catalog=canonical.DEFAULT_RELEASE_CATALOG,
+            release_audit=audit_root,
+            system_root=None,
+            bambu_binary=str(bambu),
+            allow_slice=True,
+        )
+    except canonical.wing_plate.WingPlateError as exc:
+        raise ShelfError(
+            f"{entry['name']}: 0.6-lane wing plate audit failed: {exc}"
+        ) from exc
+    audit = result["audit"]
+    sites = [
+        site["site"]
+        for record in audit["captive_cavity_audit"].values()
+        for site in record
+    ]
+    declared = int(entry["composite_plate"]["magnet_insertions"])
+    if len(sites) != declared or len(set(sites)) != declared:
+        raise ShelfError(
+            f"{entry['name']}: 0.6-lane plate audits {len(sites)} magnet "
+            f"sites ({len(set(sites))} distinct), catalog declares {declared}")
+    pauses = audit["pause_before_first_layer_extrusion"]
+    if len(pauses) != 1 or not pauses[0]["pass"]:
+        raise ShelfError(
+            f"{entry['name']}: 0.6-lane plate needs exactly one pause that "
+            f"precedes its layer's extrusion; got {pauses}")
+    return Path(result["project"]), {
+        "reused": bool(result["reused"]),
+        "magnet_insertions": len(sites),
+        "pause_layer_z_mm": pauses[0]["z_mm"],
+        "source_audit": str(
+            Path(result["audit_path"]).relative_to(PROJECT_ROOT)),
+        "source_workspace": str(
+            Path(result["project"]).relative_to(PROJECT_ROOT)),
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Publish the complete 0.6-mm lane onto the shelf")
@@ -189,24 +288,7 @@ def main(argv: list[str] | None = None) -> int:
         (audit_root / "profiles" / "profile_provenance.json")
         .read_text(encoding="utf-8"))
 
-    audited = []
-    plain = []
-    skipped: dict[str, str] = {}
-    for entry in catalog["entries"]:
-        if entry.get("lane") == "06hf":
-            skipped[entry["name"]] = (
-                "PETG-GF structural delivery; the canonical shelf builder "
-                "publishes it into 3mf_06hf from the PETG-GF 0.6 outputs")
-        elif "auxiliary_delivery" in entry:
-            skipped[entry["name"]] = (
-                "auxiliary candidate delivery; 0.4-mm lane only for now")
-        elif "composite_plate" in entry:
-            skipped[entry["name"]] = (
-                "PLA wing combo plate; 0.4-mm lane delivery")
-        elif "catalog_artifact_id" in entry:
-            audited.append(entry)
-        else:
-            plain.append(entry)
+    audited, plain, wing_plates, skipped = route_entries(catalog["entries"])
 
     failures: list[str] = []
     audited_records = []
@@ -270,6 +352,21 @@ def main(argv: list[str] | None = None) -> int:
             **detail,
         })
 
+    for entry, spec in wing_plates:
+        project, detail = _slice_wing_plate(
+            entry=entry, spec=spec, audit_root=audit_root, bambu=bambu)
+        destination = _publish(
+            project, shelf / entry["family"] / "3mf_06hf", entry["name"])
+        manifest_entries.append({
+            "name": entry["name"],
+            "family": entry["family"],
+            "state": entry["state"],
+            "kind": "locked_wing_plate_slice",
+            "project": str(destination.relative_to(shelf)),
+            "project_sha256": _sha256(destination),
+            **detail,
+        })
+
     manifest = {
         "schema_version": MANIFEST_SCHEMA_VERSION,
         "lane": LANE,
@@ -287,13 +384,13 @@ def main(argv: list[str] | None = None) -> int:
     manifest_path.write_text(
         json.dumps(manifest, indent=1, sort_keys=False) + "\n",
         encoding="utf-8")
-    audited_count = sum(
-        1 for record in manifest_entries
-        if record["kind"] == "audited_captive_magnet_project")
-    plain_count = len(manifest_entries) - audited_count
+    counts: dict[str, int] = {}
+    for record in manifest_entries:
+        counts[record["kind"]] = counts.get(record["kind"], 0) + 1
+    breakdown = ", ".join(
+        f"{count} {kind}" for kind, count in sorted(counts.items()))
     print(f"published {len(manifest_entries)} 0.6-lane projects "
-          f"({audited_count} pause-bearing, {plain_count} plain); "
-          f"manifest: {manifest_path}")
+          f"({breakdown}); manifest: {manifest_path}")
     return 0
 
 

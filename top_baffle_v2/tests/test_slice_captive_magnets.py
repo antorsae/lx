@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import inspect
 import math
@@ -620,19 +621,94 @@ def test_profile_nil_vector_slots_inherit_parent_values(
 
 
 def test_petg_gf_profile_is_scoped_to_structural_core_only() -> None:
-    # TINMORRY PETG-GF is exclusive to the 0.6-mm high-flow lane; the former
-    # 0.4-mm PETG profile is retired and must not resurface.
+    # The structural lane is exclusive to the 0.6-mm high-flow nozzle; the
+    # former 0.4-mm PETG profile is retired and must not resurface.
     assert not (
         PROJECT_ROOT / "captive_magnet_slicing_profile_petg_gf.json"
     ).exists()
     config = audit._load_json(
         PROJECT_ROOT / "captive_magnet_slicing_profile_petg_gf_06hf.json")
-    assert config["user_filament_preset"] == (
-        "TINMORRY PETG-GF Profile @BBL P2S")
+    # The owner's saved TINMORRY PETG-GF preset, hash-pinned because Bambu
+    # Studio rewrites saved presets in place: it has dropped the file's type
+    # key, which makes the CLI refuse the config outright, and collapsed
+    # compatible_printers to a name no printer preset matches, which makes
+    # the GUI show the filament as unsupported on every machine.  A pin
+    # failure here usually means Studio rewrote it again, not that the
+    # filament changed -- diff it before re-pinning.
+    assert config["filament"] == "TINMORRY PETG-GF Profile @BBL P2S"
+    assert config["user_filament_preset"] == config["filament"]
+    assert len(config["user_filament_preset_sha256"]) == 64
+    # Supports print in the model material with a PLA interface: a PETG
+    # interface welds to a PETG part and cannot be stripped, while PLA
+    # does not fuse to it, so a zero Z gap still peels apart.
+    assert config["support_interface_filament"] == (
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle")
+    process = config["repo_overrides"]["process"]
+    assert process["support_filament"] == "1"
+    assert process["support_interface_filament"] == "2"
+    assert process["support_top_z_distance"] == "0"
+    assert process["support_interface_spacing"] == "0"
+    # The zero *vertical* gap above is only safe because the interface is
+    # PLA, which does not fuse to PETG.  The XY gap gets no interface -- it
+    # is the support body, filament 1, PETG against a PETG wall -- so it has
+    # to be a real air gap on its own.  Wider than the 0.62 mm support line
+    # width, or the slicer lays two extrusions close enough to weld and the
+    # support cannot come off; stock 0.35 is barely half a line width.
+    assert float(process["support_object_xy_distance"]) > 0.62
+    # Tree supports on the structural core, with the branches spaced
+    # 1 mm apart.  The style has to be a *tree* style: "snug" is a
+    # normal-support value, and Bambu falls back silently rather than
+    # rejecting an enum it does not recognise.
+    assert process["support_type"] == "tree(auto)"
+    assert process["support_style"] == "default"
+    assert process["tree_support_branch_distance"] == "1"
+    # Sloping skins: Bambu counts the top shell VERTICALLY, so a face at 50
+    # degrees keeps only cos(50) of it normal to the surface.  These
+    # carriers run a third of their upward-facing area at 20-50 degrees,
+    # where six layers left 0.62 mm of skin and PETG-GF stopped being
+    # watertight; ten give 1.03 mm there.
+    assert process["top_shell_layers"] == "10"
+    # "top", not the GUI's "top surfaces" label: Bambu silently falls back
+    # to "no ironing" on an unrecognised enum, so the label spelling shipped
+    # ironing switched off while every profile echo still looked right.
+    assert process["ironing_type"] == "top"
+    # Off the volumetric ceiling -- 150 mm/s would demand 14.9 mm3/s against
+    # the filament's cap, so the sealing layers printed at the flow limit.
+    assert process["top_surface_speed"] == ["80", "80"]
+    # Every filament value is a two-slot vector -- Standard variant, then
+    # High Flow -- and TINMORRY's own profile fills only the Standard slot,
+    # leaving High Flow as "nil" so it falls back to the inherited Bambu
+    # Generic PETG-CF preset (11.5 mm3/s, 255 C, 0.95 flow).  This lane pins
+    # the hotend to High Flow, which selects exactly the column the vendor
+    # never measured, so the vendor's Standard figures are mirrored into
+    # both slots.  See vendor/TINMORRY/PROVENANCE.md.
+    filament = config["repo_overrides"]["filament"]
+    assert filament["nozzle_temperature"] == ["260", "260"]
+    assert filament["nozzle_temperature_initial_layer"] == ["260", "260"]
+    assert filament["filament_max_volumetric_speed"] == ["12", "12"]
+    assert filament["filament_flow_ratio"] == ["0.93", "0.93"]
+    vendor = config["vendor_filament_profile"]
+    assert vendor["source"].startswith("https://github.com/TINMORRY/")
+    # The vendored copy is the evidence for every number above, so it has to
+    # still be the file that was read: a re-pin without re-reading it would
+    # let the lane claim vendor backing it no longer has.
+    vendored = PROJECT_ROOT / vendor["vendored"]
+    assert hashlib.sha256(vendored.read_bytes()).hexdigest() == vendor["sha256"]
+    upstream = json.loads(vendored.read_text(encoding="utf-8"))
+    assert upstream["inherits"] == "Generic PETG-CF @BBL P2S"
+    for key, mirrored in (
+            ("filament_max_volumetric_speed", "12"),
+            ("nozzle_temperature", "260"),
+            ("nozzle_temperature_initial_layer", "260"),
+            ("filament_flow_ratio", "0.93")):
+        standard, high_flow = upstream[key]
+        assert standard == mirrored, key
+        # If TINMORRY ever fills the High Flow slot, stop mirroring and use
+        # what they measured instead.
+        assert high_flow == "nil", key
+        assert filament[key] == [mirrored, mirrored], key
     assert config["requirements"]["nozzle_diameter_mm"] == 0.6
-    assert config["repo_overrides"]["process"]["wall_loops"] == "6"
-    assert config["user_filament_preset_sha256"] == (
-        "e7ab920a781118a557b6c819275a6f5a7217e0faa4a9c803e16c2f8ed4da0c11")
+    assert process["wall_loops"] == "6"
 
     scope = config["artifact_scope"]
     assert len(scope) == 6

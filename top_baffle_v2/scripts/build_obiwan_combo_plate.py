@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 from dataclasses import dataclass
 import json
+import functools
 import math
 import os
 from pathlib import Path
@@ -97,6 +98,11 @@ class PlatePart:
     friendly_name: str
     source_stl: Path
     translation_mm: tuple[float, float, float]
+    rotation_deg: float = 0.0
+    # Historic layouts store a raw offset added to the STL's own
+    # coordinates; hand-arranged ones store where the part's centre
+    # must land, which is what Bambu Studio actually reports.
+    placement_is_centre: bool = False
     artifact_id: str | None = None
     support_blocker: Path | None = None
 
@@ -120,7 +126,23 @@ class ComboPlateVariant:
 # nearest-point direction: the land-derived R113.94 keyed-top fairing ate
 # 0.113 mm of the former 2.0-mm plate gap (measured 1.887), and this nudge
 # restores ~2.19 mm while keeping the crescent 5 mm inside the 256 bed.
+# Bed placement of each part, as (rotation about Z in degrees, position of
+# the part's own bounding-box centre).  Rotation is not cosmetic here: the
+# no-floor plate only fits with three of the four pieces turned, and the
+# duct-collision gate has to compose the same rotation or it looks for a
+# part's cable ducts where the part no longer is.  These four came from a
+# hand-arranged plate in Bambu Studio; the floor variant keeps its historic
+# axis-aligned layout until it is re-arranged the same way.
+LOCKED_PLACEMENTS = {
+    "no_floor_stand": (
+        (0.000, (111.8068, 144.1545, 11.7099)),
+        (9.411, (140.4841, 108.6184, 11.8206)),
+        (-112.403, (115.2316, 84.7910, 9.1467)),
+        (-84.619, (187.6450, 91.2199, 5.7500)),
+    ),
+}
 LOCKED_TRANSLATIONS_MM = (
+
     (2.697, 34.319, 0.0),
     (27.025, 2.010, 0.0),
     (71.034, 28.412, 0.0),
@@ -164,9 +186,14 @@ def _variant(
             None,
         ),
     )
+    placements = LOCKED_PLACEMENTS.get(state)
+    centre_based = placements is not None
+    if placements is None:
+        placements = tuple(
+            (0.0, translation) for translation in LOCKED_TRANSLATIONS_MM)
     parts = []
-    for identity, translation in zip(
-            identities, LOCKED_TRANSLATIONS_MM, strict=True):
+    for identity, (rotation, translation) in zip(
+            identities, placements, strict=True):
         friendly_name, stem, artifact_id = identity
         support_blocker = (
             ROOT / "build" / state / "support_blockers"
@@ -177,6 +204,8 @@ def _variant(
             friendly_name=friendly_name,
             source_stl=ROOT / "build" / state / "stl" / f"{stem}.stl",
             translation_mm=translation,
+            rotation_deg=rotation,
+            placement_is_centre=centre_based,
             artifact_id=artifact_id,
             support_blocker=support_blocker,
         ))
@@ -198,9 +227,14 @@ VARIANTS = {
         plate_name=(
             "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand"
         ),
-        expected_triangle_count=71_318,
-        sparse_infill_density_percent=40.0,
-        sparse_infill_pattern="gyroid",
+        expected_triangle_count=70_834,
+        # Solid, like the floor-stand plate: these are structural carriers,
+        # and the owner asked for both plates at 100%.  The bridge/root
+        # modifier below is now redundant rather than wrong -- it pins the
+        # same 100% zig-zag it always did, through the region that most
+        # needs it.
+        sparse_infill_density_percent=100.0,
+        sparse_infill_pattern="zig-zag",
     ),
     "floor_stand": _variant(
         state="floor_stand",
@@ -208,7 +242,7 @@ VARIANTS = {
         plate_name=(
             "obiwan_01_02_03_04_LM_UM_combo_floor_stand"
         ),
-        expected_triangle_count=174_162,
+        expected_triangle_count=173_678,
         sparse_infill_density_percent=100.0,
         sparse_infill_pattern="zig-zag",
     ),
@@ -351,19 +385,31 @@ def _float32(value: float) -> float:
     return struct.unpack("<f", struct.pack("<f", value))[0]
 
 
-def _translate_stl_record(
+def _place_stl_record(
     record: bytes,
-    translation: Sequence[float],
+    matrix: Sequence[Sequence[float]],
 ) -> bytes:
-    if len(record) != 50 or len(translation) != 3:
-        raise ComboPlateError("invalid STL record or translation")
-    offsets = tuple(_float32(float(value)) for value in translation)
+    """Apply a part's bed placement to one binary STL facet.
+
+    Kept in float32 at every step: the composite mesh is re-derived and
+    compared bit-for-bit by the plate audits, so an intermediate double
+    would make the written STL and the audited one disagree.
+    """
+    if len(record) != 50:
+        raise ComboPlateError("invalid STL record")
     values = list(struct.unpack_from("<9f", record, 12))
+    placed = list(values)
     for vertex in range(3):
+        point = [_float32(values[vertex * 3 + axis]) for axis in range(3)]
         for axis in range(3):
-            index = vertex * 3 + axis
-            values[index] = _float32(
-                _float32(values[index]) + offsets[axis])
+            row = matrix[axis]
+            total = _float32(float(row[3]))
+            for column in range(3):
+                total = _float32(
+                    total + _float32(_float32(float(row[column]))
+                                     * point[column]))
+            placed[vertex * 3 + axis] = total
+    values = placed
     result = bytearray(record)
     struct.pack_into("<9f", result, 12, *values)
     return bytes(result)
@@ -393,11 +439,11 @@ def _part_footprint(part: PlatePart):
         raise ComboPlateError(
             "Shapely is required for exact composite-plate gap validation"
         ) from exc
-    dx, dy, _dz = part.translation_mm
+    matrix = _placement_matrix(part)
     polygons = []
     for triangle in read_stl_triangles(part.source_stl):
         polygon = Polygon(tuple(
-            (point[0] + dx, point[1] + dy) for point in triangle))
+            _place_point(point, matrix)[:2] for point in triangle))
         if polygon.area > 1.0e-10:
             polygons.append(polygon)
     if not polygons:
@@ -444,8 +490,8 @@ def _combined_expected_triangles():
     return tuple(
         triangle
         for part in PARTS
-        for triangle in composite_audit.translated_float32_triangles(
-            read_stl_triangles(part.source_stl), part.translation_mm)
+        for triangle in composite_audit.placed_float32_triangles(
+            read_stl_triangles(part.source_stl), _placement_matrix(part))
     )
 
 
@@ -469,8 +515,9 @@ def build_source_bundle(
             ) from exc
         mesh = _strict_source_mesh(part.source_stl)
         source_records = _binary_stl_records(part.source_stl)
+        placement = _placement_matrix(part)
         translated_records.extend(
-            _translate_stl_record(record, part.translation_mm)
+            _place_stl_record(record, placement)
             for record in source_records
         )
         blocker_record = None
@@ -493,6 +540,7 @@ def build_source_bundle(
             "source_print_sidecar_sha256": sha256_file(sidecar),
             "catalog_artifact_id": part.artifact_id,
             "translation_mm": list(part.translation_mm),
+            "rotation_deg": part.rotation_deg,
             "triangle_count": len(source_records),
             "mesh_diagnostics": mesh,
             "support_blocker": blocker_record,
@@ -642,6 +690,7 @@ def validate_source_bundle(
                 part.source_stl.with_suffix(".print.json")),
             "catalog_artifact_id": part.artifact_id,
             "translation_mm": list(part.translation_mm),
+            "rotation_deg": part.rotation_deg,
         }
         for key, value in expected.items():
             if record.get(key) != value:
@@ -702,17 +751,64 @@ def _local_slice_guard() -> None:
             f"refusing local slicing under LX_CAD_EXECUTION={execution}")
 
 
-def _materialize(source: Path, destination: Path) -> None:
+STAGED_OFFSET_MM = (0.0, 0.0, 0.0)
+
+
+def _materialize(
+    source: Path,
+    destination: Path,
+    matrix: Sequence[Sequence[float]] | None = None,
+) -> None:
+    """Stage one input mesh, baking its bed placement into the geometry.
+
+    Bambu's assemble list has no per-object rotation, and its ``pos_*``
+    fields are a plain translation added to the mesh's own coordinates --
+    not the "place this centre here" the locked placements are written in.
+    Verified against 02.07.01.62: an object staged raw and given pos_z of
+    its half-height floats that far off the bed ("empty layer between 0.2
+    and 9.32"), and the project stores ``transform = pos + mesh centre``.
+    So the placement is baked in here and the assemble list ships a zero
+    translation, which also keeps every support blocker and modifier
+    registered to its part instead of being centred independently.
+    """
     if not source.is_file():
         raise ComboPlateError(f"cannot stage missing input {source}")
     destination.parent.mkdir(parents=True, exist_ok=True)
-    if destination.is_file() and sha256_file(destination) == sha256_file(source):
+    if matrix is None:
+        if (destination.is_file()
+                and sha256_file(destination) == sha256_file(source)):
+            return
+        destination.unlink(missing_ok=True)
+        try:
+            os.link(source, destination)
+        except OSError:
+            shutil.copy2(source, destination)
+        return
+    payload = _placed_stl_bytes(source, matrix)
+    if destination.is_file() and destination.read_bytes() == payload:
         return
     destination.unlink(missing_ok=True)
-    try:
-        os.link(source, destination)
-    except OSError:
-        shutil.copy2(source, destination)
+    temporary = destination.with_suffix(destination.suffix + ".tmp")
+    temporary.write_bytes(payload)
+    temporary.replace(destination)
+
+
+def _placed_stl_bytes(
+    source: Path,
+    matrix: Sequence[Sequence[float]],
+) -> bytes:
+    """Return ``source`` as a binary STL with ``matrix`` applied."""
+    raw = source.read_bytes()
+    if len(raw) < 84:
+        raise ComboPlateError(f"{source}: not a binary STL")
+    (count,) = struct.unpack_from("<I", raw, 80)
+    if len(raw) < 84 + count * 50:
+        raise ComboPlateError(f"{source}: truncated binary STL")
+    records = [
+        _place_stl_record(raw[84 + index * 50:84 + (index + 1) * 50], matrix)
+        for index in range(count)
+    ]
+    return raw[:84] + b"".join(records)
 
 
 def _normalized_artifacts(
@@ -760,16 +856,16 @@ def _write_assemble_list(
             subtype: str,
             print_params: Mapping[str, Any] | None = None,
         ) -> dict[str, Any]:
-            dx, dy, dz = part.translation_mm
             payload = {
                 "path": str(mesh.resolve()),
                 "subtype": subtype,
                 "count": 1,
                 "filaments": [1],
                 "assemble_index": [1],
-                "pos_x": [dx],
-                "pos_y": [dy],
-                "pos_z": [dz],
+                # The staged mesh is already in bed coordinates.
+                "pos_x": [0.0],
+                "pos_y": [0.0],
+                "pos_z": [0.0],
             }
             if print_params:
                 payload["print_params"] = dict(print_params)
@@ -849,6 +945,48 @@ def _write_custom_gcodes(
             "extra": emit._magnet_pause_program(group, pause_policy),
         }],
     })
+
+
+@functools.lru_cache(maxsize=None)
+def _stl_centre(path: Path) -> tuple[float, float, float]:
+    """Bounding-box centre of an STL, in its own coordinates.
+
+    Bambu Studio positions an object by its centre, so a placement lifted
+    from a hand-arranged project means "put this part's centre here" -- not
+    "add this offset to its coordinates".
+    """
+    lo = [float("inf")] * 3
+    hi = [float("-inf")] * 3
+    for triangle in read_stl_triangles(path):
+        for point in triangle:
+            for axis in range(3):
+                lo[axis] = min(lo[axis], float(point[axis]))
+                hi[axis] = max(hi[axis], float(point[axis]))
+    return tuple((lo[axis] + hi[axis]) / 2.0 for axis in range(3))
+
+
+def _placement_matrix(part: "PlatePart") -> tuple[tuple[float, ...], ...]:
+    """Bed transform for a part: centre it, rotate about Z, then position."""
+    if not part.placement_is_centre:
+        return _translation_matrix(part.translation_mm)
+    angle = math.radians(float(part.rotation_deg))
+    cos_a, sin_a = math.cos(angle), math.sin(angle)
+    cx, cy, cz = _stl_centre(part.source_stl)
+    tx, ty, tz = (float(value) for value in part.translation_mm)
+    return (
+        (cos_a, -sin_a, 0.0, tx - (cos_a * cx - sin_a * cy)),
+        (sin_a, cos_a, 0.0, ty - (sin_a * cx + cos_a * cy)),
+        (0.0, 0.0, 1.0, tz - cz),
+        (0.0, 0.0, 0.0, 1.0),
+    )
+
+
+def _place_point(point, matrix):
+    return tuple(
+        matrix[row][0] * float(point[0]) + matrix[row][1] * float(point[1])
+        + matrix[row][2] * float(point[2]) + matrix[row][3]
+        for row in range(3)
+    )
 
 
 def _translation_matrix(
@@ -969,18 +1107,21 @@ def validate_ready_plate(
         project_audit = audit_bambu_composite_3mf(
             project,
             PLATE_STL,
+            # Zero offsets: the staged meshes carry their own placement
+            # now, and the assemble list ships a zero translation, so the
+            # project must reproduce them exactly where they already are.
             normal_part_stls=[
-                (staged_parts[part.friendly_name], part.translation_mm)
+                (staged_parts[part.friendly_name], STAGED_OFFSET_MM)
                 for part in PARTS
             ],
             support_blocker_stls=[
-                (staged_blockers[part.friendly_name], part.translation_mm)
+                (staged_blockers[part.friendly_name], STAGED_OFFSET_MM)
                 for part in PARTS if part.support_blocker is not None
             ],
             parameter_modifier_stls=[
                 (
                     Path(modifier["path"]),
-                    part.translation_mm,
+                    STAGED_OFFSET_MM,
                     modifier["process"],
                 )
                 for part in PARTS
@@ -1043,8 +1184,7 @@ def validate_ready_plate(
                 discovery_record=_discovery_record(
                     release_audit, part.artifact_id),
                 gcode=gcode,
-                stl_to_bed_matrix=_translation_matrix(
-                    part.translation_mm),
+                stl_to_bed_matrix=_placement_matrix(part),
             )
         except captive.AuditError as exc:
             raise ComboPlateError(
@@ -1087,7 +1227,7 @@ def validate_ready_plate(
                 contract=artifact["duct_collision_contract"],
                 source_to_stl_matrix=artifact["source_to_stl_matrix"],
                 stl_to_bed_matrix=_matrix_multiply(
-                    outer, _translation_matrix(part.translation_mm)),
+                    outer, _placement_matrix(part)),
             )
         except captive.AuditError as exc:
             raise ComboPlateError(
@@ -1258,12 +1398,13 @@ def _prepare_slice(
     staged_blockers = {}
     staged_modifiers: dict[str, tuple[dict[str, Any], ...]] = {}
     for part in PARTS:
+        placement = _placement_matrix(part)
         staged = inputs / part.staged_name
-        _materialize(part.source_stl, staged)
+        _materialize(part.source_stl, staged, placement)
         staged_parts[part.friendly_name] = staged
         if part.support_blocker is not None:
             staged_blocker = inputs / part.support_blocker.name
-            _materialize(part.support_blocker, staged_blocker)
+            _materialize(part.support_blocker, staged_blocker, placement)
             staged_blockers[part.friendly_name] = staged_blocker
         modifiers = []
         if part.artifact_id is not None:
@@ -1278,7 +1419,7 @@ def _prepare_slice(
                 source_modifier = Path(modifier["path"])
                 staged_modifier = (
                     inputs / "parameter_modifiers" / source_modifier.name)
-                _materialize(source_modifier, staged_modifier)
+                _materialize(source_modifier, staged_modifier, placement)
                 modifiers.append({**modifier, "path": staged_modifier})
         staged_modifiers[part.friendly_name] = tuple(modifiers)
     ready = workspace / "ready"

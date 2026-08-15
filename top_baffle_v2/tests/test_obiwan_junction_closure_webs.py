@@ -1447,30 +1447,15 @@ def _tie_features(cad, junction: str):
                  cad.T_UM_TIE_UM_FACE_Y + 0.30,
                  cad.T_UM_TIE_CLEARANCE_BORE_D))
             features["tweeter"].append(
-                (tie_x, cad.T_UM_TIE_SEAT_Y, cad.T_UM_TIE_HEAD_TOP_Y,
-                 cad.T_UM_TIE_HEAD_POCKET_D))
-            features["tweeter"].append(
-                (tie_x, cad.T_UM_TIE_HEAD_TOP_Y,
+                (tie_x, cad.T_UM_TIE_SEAT_Y,
                  cad.T_UM_TIE_SEAT_Y + cad.T_UM_TIE_CBORE_OVERSHOOT_MM,
-                 cad.T_UM_TIE_KEY_BORE_D))
+                 cad.T_UM_TIE_CBORE_D))
             features["tweeter"].append(
                 (tie_x, cad.T_UM_TIE_CRES_FACE_Y - 0.30,
                  cad.T_UM_TIE_SEAT_Y + 0.20,
                  cad.T_UM_TIE_CLEARANCE_BORE_D))
         return features
     raise ValueError(junction)
-
-
-def _tie_rear_channels(cad, junction: str):
-    """Sideways head-loading channels, as (owner, x, y0, y1, w, top_z)."""
-    if junction != "t_um":
-        return ()
-    return tuple(
-        ("tweeter", tie_x, cad.T_UM_TIE_CHANNEL_LOW_Y,
-         cad.T_UM_TIE_CHANNEL_HIGH_Y, cad.T_UM_TIE_REAR_CHANNEL_W,
-         cad.T_UM_TIE_CHANNEL_TOP_Z)
-        for tie_x in cad.T_UM_TIE_X
-    )
 
 
 def _tie_axis_z(cad, junction: str):
@@ -1494,33 +1479,18 @@ def _tie_hole_plans(cad, junction: str, z_mm: float):
                 continue
             half_w = math.sqrt(radius * radius - dz * dz)
             pieces.append(shapely_box(x - half_w, y_low, x + half_w, y_high))
-        for c_owner, x, y0, y1, width, top_z in _tie_rear_channels(
-                cad, junction):
-            if c_owner == owner and z_mm <= top_z:
-                pieces.append(
-                    shapely_box(x - width / 2.0, y0, x + width / 2.0, y1))
         plans[owner] = (unary_union(pieces).buffer(0) if pieces else None)
     return plans
 
 
 def _tie_feature_cutters(cad, junction: str, owner: str):
     """Exact 3D tie cutters this owner's final BREP is allowed to lack."""
-    from build123d import Box, Pos
-
     z_axis = _tie_axis_z(cad, junction)
-    cutters = [
+    return tuple(
         cad._y_cylinder_at(x, y_low, y_high, z_axis, diameter / 2.0)
         for x, y_low, y_high, diameter
         in _tie_features(cad, junction).get(owner, ())
-    ]
-    for c_owner, x, y0, y1, width, top_z in _tie_rear_channels(cad, junction):
-        if c_owner != owner:
-            continue
-        height = top_z + 2.0
-        cutters.append(
-            Pos(x, (y0 + y1) / 2.0, top_z - height / 2.0)
-            * Box(width, y1 - y0, height))
-    return tuple(cutters)
+    )
 
 
 def _assembled_plan_oracle(cad, junction: str, z_mm: float):

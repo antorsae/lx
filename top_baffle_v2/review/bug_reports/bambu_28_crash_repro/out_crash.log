@@ -1,0 +1,3 @@
+[2026-08-14 18:53:31.009027] [0x00000001fa8e5e80] [trace]   Initializing StaticPrintConfigs
+[2026-08-14 18:53:31.014473] [0x00000001fa8e5e80] [warning] cli mode, Current BambuStudio Version 02.08.02.60
+[2026-08-14 18:53:31.058707] [0x00000001fa8e5e80] [warning] no filament colors found in projects
