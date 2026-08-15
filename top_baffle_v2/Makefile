@@ -266,6 +266,7 @@ LOCAL_BAMBU_GOALS := check_bambu_3mf_audit \
                      obiwan_floor_petg_gf_01b_validate \
                      obiwan_floor_petg_gf_01b_to_print \
                      obiwan_petg_gui_projects \
+                     obiwan_petg_wing_plates \
                      obiwan_combo_plate_source obiwan_combo_plate \
                      obiwan_combo_plate_validate obiwan_combo_plate_to_print \
                      obiwan_no_floor_combo_plate_source \
@@ -2497,6 +2498,17 @@ obiwan_petg_gui_projects: scripts/build_petg_gui_projects.py \
         $(CAPTIVE_MAGNET_CATALOG)
 	$(REQUIRE_BAMBU_CATALOG)
 	$(PYTHON_RUN) scripts/build_petg_gui_projects.py
+
+# The wing combo plates in PETG-GF.  Unlike the structural core these are
+# ordinary ready-to-print deliveries: the wings are support-off by contract,
+# so their profile carries no support recipe and no PLA interface, one
+# filament is loaded, and the Bambu CLI slices them normally.
+PETG_GF_WINGS_PROFILE := captive_magnet_slicing_profile_petg_gf_wings_06hf.json
+obiwan_petg_wing_plates: scripts/build_petg_wing_plates.py \
+        scripts/build_obiwan_wing_plate.py $(PETG_GF_WINGS_PROFILE) \
+        $(CAPTIVE_MAGNET_CATALOG)
+	$(REQUIRE_BAMBU_CATALOG)
+	$(PYTHON_RUN) scripts/build_petg_wing_plates.py
 
 $(OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP): \
         $(OBIWAN_NO_FLOOR_COMBO_READY_STAMP) \

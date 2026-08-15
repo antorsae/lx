@@ -236,6 +236,21 @@ the tweeter footprint, and zero support-bead collisions against every LM/UM
 functional duct. Never print a combined plate with its individual 01, 02, 03,
 or 04 files, and never mix the two stand states.
 
+**The wing combo plates print PETG-GF too, and they are ordinary ready-to-
+print deliveries.** `make obiwan_petg_wing_plates` slices both split2 wing
+plates -- flat and graded, four pieces and one six-magnet pause each -- into
+`to_print/obiwan/3mf_06hf_petg-cf/`. They are not blocked the way the
+structural core is, because the wings print support-off by their own
+contract: their profile,
+`captive_magnet_slicing_profile_petg_gf_wings_06hf.json`, carries no support
+recipe and therefore no PLA interface filament, so one filament is loaded
+and the CLI slices normally. Each profile is scoped by `artifact_scope` to
+the artifacts it may print -- six structural pieces, eight split2 wing
+pieces, disjoint -- and `build_obiwan_wing_plate.py` now enforces that
+scope, which it previously did not: the structural profile could be pointed
+at a wing plate and would slice it under a support recipe the wings never
+wanted.
+
 **Flow ceilings come from TINMORRY's own profile, mirrored into both
 variant columns.** Their store page states 240--270 °C, a 65--75 °C bed and
 "< 250 mm/s", but no volumetric figure; the authoritative numbers live in

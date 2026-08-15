@@ -235,6 +235,11 @@ PROFILE_OVERRIDE_KEYS = {
         # column (temps, pressure advance, volumetric ceilings) and the
         # device-side nozzle check matches at send time.
         "default_nozzle_volume_type",
+        # default_nozzle_volume_type alone does not stick: Studio resolves
+        # the variant column from the first entry of extruder_variant_list
+        # and lands on Standard.  Pin the type itself so the High Flow
+        # column is what actually gets sliced.
+        "nozzle_volume_type",
     }),
     "process": frozenset({
         # The 0.6-mm lane bases its process on a stock 0.6-nozzle preset and
@@ -312,6 +317,7 @@ PROFILE_OVERRIDE_KEYS = {
         "overhang_fan_speed",
         "filament_max_volumetric_speed",
         "filament_flow_ratio",
+        "filament_retraction_length",
         "textured_plate_temp",
         "textured_plate_temp_initial_layer",
     }),

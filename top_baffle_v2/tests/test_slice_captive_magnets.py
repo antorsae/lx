@@ -710,8 +710,30 @@ def test_petg_gf_profile_is_scoped_to_structural_core_only() -> None:
     assert config["requirements"]["nozzle_diameter_mm"] == 0.6
     assert process["wall_loops"] == "6"
 
+    # The wing plates get their own PETG-GF profile rather than sharing this
+    # one.  They print support-off by contract, so they need none of the
+    # support recipe above and none of the PLA interface the CLI cannot map;
+    # keeping the scopes disjoint means neither profile can slice the
+    # other's artifacts, which build_obiwan_wing_plate now enforces too.
+    wings = audit._load_json(
+        PROJECT_ROOT
+        / "captive_magnet_slicing_profile_petg_gf_wings_06hf.json")
+    assert wings["filament"] == config["filament"]
+    assert "support_interface_filament" not in wings
+    assert wings["repo_overrides"]["process"]["enable_support"] == "0"
+    assert wings["repo_overrides"]["process"]["sparse_infill_density"] == "30%"
+    for key in ("filament_max_volumetric_speed", "filament_flow_ratio",
+                "nozzle_temperature", "filament_retraction_length"):
+        assert wings["repo_overrides"]["filament"][key] == filament[key], key
+    assert wings["repo_overrides"]["machine"]["nozzle_volume_type"] == [
+        "High Flow"]
+    wing_scope = {entry["part"] for entry in wings["artifact_scope"]}
+    assert len(wings["artifact_scope"]) == 8
+    assert all("wing" in part and "split2" in part for part in wing_scope)
+
     scope = config["artifact_scope"]
     assert len(scope) == 6
+    assert not wing_scope & {entry["part"] for entry in scope}
     assert {
         (match["state"], match["variant"], match["part"])
         for match in scope

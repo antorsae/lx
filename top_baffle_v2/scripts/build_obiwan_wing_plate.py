@@ -1172,6 +1172,19 @@ def _prepare_slice(
     except captive.AuditError as exc:
         raise WingPlateError(str(exc)) from exc
     catalog, artifacts = _normalized_artifacts(release_catalog)
+    # A material profile carries an artifact_scope naming what it may print,
+    # and nothing here used to check it: the structural PETG-GF profile,
+    # scoped to the six core pieces and carrying a support recipe with a PLA
+    # interface these support-off wings never wanted, could be pointed at a
+    # wing plate and would slice it.  Every other consumer of a scoped
+    # profile enforces this; the wing plate now does too.
+    try:
+        captive._validate_profile_artifact_scope(
+            [artifacts[part.artifact_id] for part in PARTS],
+            base_profile["config"])
+    except captive.AuditError as exc:
+        raise WingPlateError(
+            f"{PLATE_NAME}: {exc}") from exc
     first = artifacts[PARTS[0].artifact_id]
     try:
         profile_bundle = captive._artifact_profile_bundle(
