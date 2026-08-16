@@ -236,6 +236,30 @@ the tweeter footprint, and zero support-bead collisions against every LM/UM
 functional duct. Never print a combined plate with its individual 01, 02, 03,
 or 04 files, and never mix the two stand states.
 
+**Support may not be sealed into a blind pocket, and the blockers now cover
+the joint ears.** Printed front-face-down, the M3 joint receivers open toward
+the plate, so `support_on_build_plate_only` does not protect them. Measured
+on the four-piece core plate, each of the six D4.6 ears carried a support
+column fully enclosed on every layer from Z 7.08 to 12.20 mm -- 5.1 mm of
+PETG welded to PETG exactly where a heat-set insert goes. The duct and
+cavity audits could not see it: they check named geometry, and nothing named
+the bores. `obiwan_support_blocker.py` now emits one tool per ear over the
+whole joint span, alongside the duct tools it always had.
+
+Two things follow. Support type is back to `normal(auto)` + `snug`: tree at
+a 1 mm branch distance drove 139_325 support extrusions into closed pockets
+against 14_307 for normal -- ten times the material packed into those bores,
+because tree branches lean into cavities while normal support projects
+straight down -- and it cost 2.6 h of print time. And
+`_enclosed_support_audit` in `artifact_emit.py` measures the shape directly
+rather than trusting names: at each layer it marks where the part extrudes,
+then asks of every support point whether part material exists on both sides
+in X *and* Y. Both plate builders fail closed on it, bounding the height of
+a fully-enclosed run (3 mm) and the bulk of enclosed support relative to the
+part's own extrusion count (0.06). The first bound catches a packed bore,
+the second catches tree-style bulk; the tree and normal slices measured
+0.187 and 0.019 respectively.
+
 **The wing combo plates print PETG-GF too, and they are ordinary ready-to-
 print deliveries.** `make obiwan_petg_wing_plates` slices both split2 wing
 plates -- flat and graded, four pieces and one six-magnet pause each -- into

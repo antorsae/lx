@@ -19,6 +19,7 @@ for _canonical_import_root in (PROJECT_ROOT / "src", PROJECT_ROOT / "scripts"):
 import tempfile
 import zipfile
 
+import artifact_emit as emit
 import slice_captive_magnets as audit
 from lx521_baffle.print_contract import (
     RELEASE_ACOUSTIC_PRINT_CONTRACT,
@@ -655,13 +656,28 @@ def test_petg_gf_profile_is_scoped_to_structural_core_only() -> None:
     # width, or the slicer lays two extrusions close enough to weld and the
     # support cannot come off; stock 0.35 is barely half a line width.
     assert float(process["support_object_xy_distance"]) > 0.62
-    # Tree supports on the structural core, with the branches spaced
-    # 1 mm apart.  The style has to be a *tree* style: "snug" is a
-    # normal-support value, and Bambu falls back silently rather than
-    # rejecting an enum it does not recognise.
-    assert process["support_type"] == "tree(auto)"
-    assert process["support_style"] == "default"
-    assert process["tree_support_branch_distance"] == "1"
+    # Normal supports, not tree.  Measured on the four-piece plate, tree at
+    # a 1 mm branch distance drove 139_325 support extrusions into pockets
+    # closed on all four sides by part walls, against 14_307 here -- ten
+    # times the material packed into blind bores like the D4.6 joint-insert
+    # receivers, where it welds PETG to PETG and blocks the heat-set.  It
+    # also cost 2.6 h.  Tree branches lean into cavities; normal support
+    # projects straight down.
+    assert process["support_type"] == "normal(auto)"
+    assert process["support_style"] == "snug"
+    assert "tree_support_branch_distance" not in process
+
+    # Support sealed inside a blind pocket is unremovable and invisible to
+    # the duct and cavity audits, which watch named geometry rather than
+    # shape.  Both plate builders now measure it directly and fail closed.
+    assert emit.MAX_ENCLOSED_SUPPORT_RUN_MM > 0.0
+    assert emit.MAX_ENCLOSED_SUPPORT_PER_PART_EXTRUSION > 0.0
+    for module in ("build_obiwan_combo_plate",
+                   "build_obiwan_wing_plate"):
+        source = (PROJECT_ROOT / "scripts" / f"{module}.py").read_text(
+            encoding="utf-8")
+        assert "_enclosed_support_audit(gcode)" in source, module
+        assert 'enclosed_support["failures"]' in source, module
     # Sloping skins: Bambu counts the top shell VERTICALLY, so a face at 50
     # degrees keeps only cos(50) of it normal to the surface.  These
     # carriers run a third of their upward-facing area at 20-50 degrees,
@@ -715,13 +731,36 @@ def test_petg_gf_profile_is_scoped_to_structural_core_only() -> None:
     # support recipe above and none of the PLA interface the CLI cannot map;
     # keeping the scopes disjoint means neither profile can slice the
     # other's artifacts, which build_obiwan_wing_plate now enforces too.
+    import build_obiwan_wing_plate as wing_plate_contract
+    wing_parts = {
+        f"obiwan_wing_{variant}_{side}_{piece}"
+        for variant in ("flat", "graded") for side in ("left", "right")
+        for piece in ("split2_1_of_2_lm_lower", "split2_2_of_2_lm_um_upper",
+                      "1_of_3_lm_lower", "2_of_3_lm_upper", "3_of_3_um")}
     wings = audit._load_json(
         PROJECT_ROOT
         / "captive_magnet_slicing_profile_petg_gf_wings_06hf.json")
     assert wings["filament"] == config["filament"]
     assert "support_interface_filament" not in wings
     assert wings["repo_overrides"]["process"]["enable_support"] == "0"
-    assert wings["repo_overrides"]["process"]["sparse_infill_density"] == "30%"
+    # The wings print a 10% gyroid lattice, lighter than the 30% lane base:
+    # they are stiffened by their own curvature and the bonded labyrinth
+    # seam, not by fill.  This profile's scope is the wing artifacts, so its
+    # base moves; the shared PLA lanes keep 30% and carry per-artifact
+    # overrides instead, leaving every non-wing part untouched.
+    assert wings["repo_overrides"]["process"]["sparse_infill_density"] == "10%"
+    assert (wing_plate_contract.WING_SPARSE_INFILL_PERCENT
+            == float(wings["repo_overrides"]["process"][
+                "sparse_infill_density"].rstrip("%")))
+    for lane in ("captive_magnet_slicing_profile.json",
+                 "captive_magnet_slicing_profile_06hf.json"):
+        shared = audit._load_json(PROJECT_ROOT / lane)
+        assert shared["repo_overrides"]["process"][
+            "sparse_infill_density"] == "30%", lane
+        lowered = {
+            rule["match"]["part"] for rule in shared["artifact_overrides"]
+            if rule["process"].get("sparse_infill_density") == "10%"}
+        assert lowered == wing_parts, lane
     for key in ("filament_max_volumetric_speed", "filament_flow_ratio",
                 "nozzle_temperature", "filament_retraction_length"):
         assert wings["repo_overrides"]["filament"][key] == filament[key], key

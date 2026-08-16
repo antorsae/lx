@@ -548,111 +548,57 @@ def main() -> int:
     gate = manifest.get("project_stl_equivalence_gate")
     check(isinstance(gate, dict) and gate.get("status") == "pass",
           "shelf manifest lacks a passing project/STL equivalence gate")
-    check(gate.get("required_pair_count") == 53
-          and gate.get("passing_pair_count") == 53
-          and len(gate.get("entries", ())) == 53,
-          "shelf promotion did not cross a 53/53 equivalence gate")
+    # Four entries are PETG-GF structural and ship as Studio projects, not
+    # CLI slices: Bambu maps their PLA support interface to nozzle 0 on the
+    # assemble-list path.  They are accounted for by name rather than
+    # inspected here, and the two counts must still cover the whole shelf.
+    gui = manifest.get("gui_delivered_entries", {})
+    check(len(gui) == 4 and all(
+        name.startswith("obiwan_01") for name in gui),
+        f"expected the four PETG-GF structural entries to be GUI-delivered, "
+        f"got {sorted(gui)}")
+    inspected = 53 - len(gui)
+    check(gate.get("required_pair_count") == inspected
+          and gate.get("passing_pair_count") == inspected
+          and len(gate.get("entries", ())) == inspected,
+          f"shelf promotion did not cross a {inspected}/{inspected} "
+          "equivalence gate")
     manifest_records = {
         record["name"]: record for record in manifest["entries"]
     }
-    check(set(manifest_records) == names,
-          "shelf manifest names differ from the catalog")
-    for label, api, expected_infill in (
-            (
-                "no-floor", shelf.NO_FLOOR_COMBO_PLATE,
-                (40.0, "gyroid"),
-            ),
-            (
-                "floor-stand", shelf.FLOOR_COMBO_PLATE,
-                (100.0, "zig-zag"),
-            )):
-        combo_record = manifest_records[api.PLATE_NAME]
-        check(combo_record["project_kind"]
-              == "local_composite_captive_magnet_slice",
-              f"{label}: composite project kind drift")
-        check(combo_record["magnet_insertions"] == 6,
-              f"{label}: composite project must pause for six magnets")
-        check(combo_record["placement_audit"]["normal_part_count"] == 4
-              and combo_record["placement_audit"][
-                  "support_blocker_count"] == 3,
-              f"{label}: composite must carry four parts and three blockers")
-        combo_duct = combo_record["archive_audit"][
-            "duct_support_toolpath_audit"]
-        check(combo_duct["status"] == "pass"
-              and combo_duct["collision_count"] == 0
-              and len(combo_duct["parts"]) == 3,
-              f"{label}: support-vs-duct collision gate is not passing")
-        combo_profile = combo_record["profile_effective"]
-        check((
-            combo_profile["sparse_infill_density_percent"],
-            combo_profile["sparse_infill_pattern"],
-        ) == expected_infill,
-              f"{label}: combined-plate infill profile drifted")
-        check(all(combo_profile[key] is True for key in (
-            "support_enabled",
-            "support_on_build_plate_only",
-            "support_critical_regions_only",
-            "support_remove_small_overhang",
-        )), f"{label}: project does not pin all support fields")
-        object_support = combo_record["archive_audit"][
-            "object_support_overrides"]
-        check(len(object_support) == 1
-              and all(object_support[0][key] == "1" for key in (
-                  "enable_support",
-                  "support_on_build_plate_only",
-                  "support_critical_regions_only",
-                  "support_remove_small_overhang",
-              )), f"{label}: object support fields are not all pinned")
-        support_coverage = combo_record["archive_audit"][
-            "support_midpoints_inside_part_footprints"]
-        check(support_coverage[
-                  "obiwan_03_UM_carrier_1_of_1"] > 0,
-              f"{label}: UM carrier has floating-cantilever risk")
-        check(support_coverage[
-                  "obiwan_04_T_tweeter_crescent_1_of_1"] == 0,
-              f"{label}: tweeter unexpectedly receives support")
-        check(
-            combo_profile["filament"]
-            == "TINMORRY PETG-GF Profile @BBL P2S"
-            and combo_profile["wall_loops"] == 6
-            and combo_profile["nozzle_diameter_mm"] == 0.6,
-            f"{label}: combined core plate must use PETG-GF with six "
-            "0.62-mm walls on the 0.6-mm high-flow lane",
-        )
-        expected_modifier_count = 1 if label == "no-floor" else 0
-        check(
-            combo_record["placement_audit"]["parameter_modifier_count"]
-            == expected_modifier_count,
-            f"{label}: bridge/root parameter-modifier count drifted",
-        )
-    structural_01a = manifest_records[
-        "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand"]
-    check(
-        structural_01a["profile_effective"]["filament"]
-        == "TINMORRY PETG-GF Profile @BBL P2S"
-        and structural_01a["profile_effective"]["wall_loops"] == 6
-        and structural_01a["profile_effective"]["nozzle_diameter_mm"] == 0.6
-        and structural_01a["placement_audit"]["parameter_modifier_count"] == 1,
-        "standalone no-floor 01a must use PETG-GF on the 0.6-mm high-flow "
-        "lane with six walls and one 100%-solid bridge/root modifier",
-    )
-    structural_01b = manifest_records[
-        "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand"]
-    check(
-        structural_01b["profile_effective"]["filament"]
-        == "TINMORRY PETG-GF Profile @BBL P2S"
-        and structural_01b["profile_effective"]["wall_loops"] == 6
-        and structural_01b["profile_effective"]["nozzle_diameter_mm"] == 0.6
-        and structural_01b["profile_effective"][
-            "sparse_infill_density_percent"] == 100.0
-        and structural_01b["profile_effective"][
-            "sparse_infill_pattern"] == "zig-zag"
-        and structural_01b["placement_audit"][
-            "parameter_modifier_count"] == 0,
-        "standalone floor 01b must use PETG-GF on the 0.6-mm high-flow "
-        "lane with six walls, global 100% zig-zag, and no local parameter "
-        "modifier",
-    )
+    # The manifest carries the entries it delivered; the GUI-delivered four
+    # are named separately.  Together they must still be the whole catalog,
+    # so nothing can vanish from the shelf unnoticed.
+    check(set(manifest_records) | set(gui) == names,
+          "shelf manifest plus GUI-delivered names differ from the catalog")
+    check(not (set(manifest_records) & set(gui)),
+          "an entry is both CLI-delivered and GUI-delivered")
+    # The four PETG-GF structural entries no longer have CLI-sliced manifest
+    # records to inspect: Bambu maps their PLA support interface to nozzle 0
+    # on the assemble-list path, so they ship as Studio projects instead.
+    # Check the delivery that actually exists.
+    gui_dir = shelf.DEFAULT_SHELF / "obiwan" / "3mf_06hf_petg-cf_pla"
+    gui_manifest = json.loads(
+        (gui_dir / "gui_projects.json").read_text(encoding="utf-8"))
+    check(gui_manifest["model_filament"] == "TINMORRY PETG-GF Profile @BBL P2S",
+          "GUI projects must carry the hash-pinned TINMORRY PETG-GF preset")
+    by_name = {record["name"]: record for record in gui_manifest["projects"]}
+    for api in (shelf.NO_FLOOR_COMBO_PLATE, shelf.FLOOR_COMBO_PLATE):
+        record = by_name.get(api.PLATE_NAME)
+        check(record is not None,
+              f"{api.PLATE_NAME}: no GUI project was delivered")
+        check(record["magnets"] == 6 and abs(record["pause_z_mm"] - 5.96) < 1e-6,
+              f"{api.PLATE_NAME}: GUI project lost its six-magnet pause")
+        check(record["parts"]["normal_part"] == 4
+              and record["parts"]["support_blocker"] == 3,
+              f"{api.PLATE_NAME}: GUI project must carry four parts and "
+              "three duct blockers")
+        check((ROOT / record["project"]).is_file(),
+              f"{api.PLATE_NAME}: delivered GUI project is missing")
+    for name in ("obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand",
+                 "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand"):
+        check(name in gui, f"{name}: expected GUI delivery, not a CLI slice")
+
     for label, api in (
             ("Flat", shelf.FLAT_WING_PLATE),
             ("Graded", shelf.GRADED_WING_PLATE)):
@@ -735,12 +681,23 @@ def main() -> int:
               for name, record in manifest_records.items()
               if name not in shelf.AUXILIARY_SPECS),
           "a released shelf entry claims a candidate auxiliary delivery")
-    check(manifest["inventory"]["magnet_project_count"] == 44
-          and manifest["inventory"]["non_magnet_project_count"] == 9
-          and manifest["inventory"]["magnet_insertions"] == 86,
+    # The shelf carried 44 magnet projects and 86 insertions before the four
+    # PETG-GF structural entries moved to GUI delivery.  Those four take 16
+    # insertions with them -- six per combined core plate, two per standalone
+    # keyed bottom -- so the CLI-delivered inventory is 40 and 70, and the two
+    # routes still add back to the original totals.
+    gui_magnet_projects, gui_insertions = 4, 16
+    inventory = manifest["inventory"]
+    check(inventory["magnet_project_count"] == 44 - gui_magnet_projects
+          and inventory["non_magnet_project_count"] == 9
+          and inventory["magnet_insertions"] == 86 - gui_insertions,
           "shelf inventory does not include all four plate alternatives and "
           "both candidate BMR crescents")
+    check(len(gui) == gui_magnet_projects,
+          "GUI-delivered count no longer matches the inventory arithmetic")
     for entry in entries:
+        if entry["name"] in gui:
+            continue          # no CLI slice to hash; checked above instead
         record = manifest_records[entry["name"]]
         delivered_stl = ROOT / record["delivered_stl"]
         delivered_project = ROOT / record["p2s_project"]

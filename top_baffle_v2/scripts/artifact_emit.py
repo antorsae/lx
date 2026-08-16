@@ -1576,6 +1576,154 @@ def _support_toolpath_summary(path: Path) -> dict[str, int]:
     }
 
 
+_GCODE_XY = re.compile(r"X(-?\d+(?:\.\d+)?)\s+Y(-?\d+(?:\.\d+)?)")
+ENCLOSED_SUPPORT_GRID_MM = 1.0
+# A little enclosed support is normal and pickable: shallow scallops and the
+# odd recess close on all four sides for a layer or two.  A blind bore packed
+# from the plate is not, and it reads very differently -- the joint-insert
+# receivers held a fully enclosed column six millimetres tall, every layer
+# 100% enclosed, and tree supports at a 1 mm branch distance drove ten times
+# that volume into pockets.  Bound both shapes: how tall an all-enclosed run
+# may get, and how much enclosed material may exist overall.
+MAX_ENCLOSED_SUPPORT_RUN_MM = 3.0
+MAX_ENCLOSED_SUPPORT_FRACTION = 0.75
+# Bulk, measured against the part's own extrusion count so the bound does not
+# depend on plate size.  The four-piece core plate runs 0.018 enclosed with
+# normal supports and 0.179 with tree at a 1 mm branch distance -- the same
+# ten-to-one that packed the blind bores -- so 0.06 separates them with room
+# for a plate that genuinely needs more.
+MAX_ENCLOSED_SUPPORT_PER_PART_EXTRUSION = 0.06
+
+
+def _enclosed_support_audit(
+    path: Path,
+    *,
+    grid_mm: float = ENCLOSED_SUPPORT_GRID_MM,
+) -> dict[str, Any]:
+    """Find support walled in by the part on all four sides at its own layer.
+
+    Support that a blocker should have kept out of a pocket cannot be seen by
+    the duct or cavity audits -- those watch named geometry -- so detect the
+    shape instead: at each layer, mark where the part extrudes, then ask of
+    every support point whether part material exists on both sides of it in
+    X *and* in Y.  Anything answering yes is inside a closed pocket, and the
+    printed part comes off the plate with it fused in place.
+    """
+    import numpy as np
+
+    size = int(256.0 / grid_mm) + 1
+    layers: dict[float, dict[str, list]] = {}
+    z: float | None = None
+    feature = ""
+    part_extrusions = 0
+    with path.open("r", encoding="utf-8", errors="replace") as stream:
+        for raw in stream:
+            if raw.startswith("; Z_HEIGHT: "):
+                try:
+                    z = round(float(raw[12:].strip()), 3)
+                except ValueError:
+                    z = None
+            elif raw.startswith("; FEATURE: "):
+                feature = raw[11:].strip()
+            elif raw.startswith("G1 ") and " E" in raw and z is not None:
+                match = _GCODE_XY.search(raw)
+                if match is None:
+                    continue
+                record = layers.setdefault(z, {"support": [], "part": []})
+                key = "support" if feature.startswith("Support") else "part"
+                part_extrusions += key == "part"
+                record[key].append(
+                    (float(match.group(1)), float(match.group(2))))
+
+    enclosed_total = 0
+    support_total = 0
+    run_mm = 0.0
+    previous_height: float | None = None
+    worst_run_mm = 0.0
+    worst_run_z: float | None = None
+    per_layer: list[dict[str, Any]] = []
+    for height in sorted(layers):
+        record = layers[height]
+        support_points = record["support"]
+        if not support_points:
+            run_mm = 0.0
+            previous_height = height
+            continue
+        occupied = np.zeros((size, size), dtype=bool)
+        for x, y in record["part"]:
+            if 0.0 <= x < 256.0 and 0.0 <= y < 256.0:
+                occupied[int(y / grid_mm), int(x / grid_mm)] = True
+        enclosed = 0
+        counted = 0
+        for x, y in support_points:
+            if not (0.0 <= x < 256.0 and 0.0 <= y < 256.0):
+                continue
+            row, column = int(y / grid_mm), int(x / grid_mm)
+            counted += 1
+            if (occupied[row, :column].any() and occupied[row, column + 1:].any()
+                    and occupied[:row, column].any()
+                    and occupied[row + 1:, column].any()):
+                enclosed += 1
+        if not counted:
+            continue
+        support_total += counted
+        enclosed_total += enclosed
+        fraction = enclosed / counted
+        step = (
+            height - previous_height
+            if previous_height is not None and height > previous_height
+            else 0.0)
+        previous_height = height
+        if fraction >= 1.0:
+            run_mm += step
+            if run_mm > worst_run_mm:
+                worst_run_mm, worst_run_z = run_mm, height
+        else:
+            run_mm = 0.0
+        per_layer.append({
+            "z_mm": height,
+            "support_points": counted,
+            "enclosed_points": enclosed,
+        })
+
+    fraction = enclosed_total / support_total if support_total else 0.0
+    failures = []
+    if worst_run_mm > MAX_ENCLOSED_SUPPORT_RUN_MM:
+        failures.append(
+            f"support is fully enclosed for {worst_run_mm:.2f} mm of "
+            f"continuous height ending at Z={worst_run_z}, above the "
+            f"{MAX_ENCLOSED_SUPPORT_RUN_MM:.2f} mm bound: a blind pocket is "
+            "being packed and needs a support blocker")
+    density = enclosed_total / part_extrusions if part_extrusions else 0.0
+    if density > MAX_ENCLOSED_SUPPORT_PER_PART_EXTRUSION:
+        failures.append(
+            f"enclosed support runs {density:.3f} per part extrusion, above "
+            f"{MAX_ENCLOSED_SUPPORT_PER_PART_EXTRUSION:.3f}: pockets are "
+            "being packed in bulk (tree supports lean into cavities; normal "
+            "support projects straight down)")
+    if fraction > MAX_ENCLOSED_SUPPORT_FRACTION:
+        failures.append(
+            f"{100.0 * fraction:.1f}% of support extrusions sit in closed "
+            f"pockets, above the {100.0 * MAX_ENCLOSED_SUPPORT_FRACTION:.0f}% "
+            "bound")
+    return {
+        "status": "pass" if not failures else "fail",
+        "grid_mm": grid_mm,
+        "support_points": support_total,
+        "enclosed_points": enclosed_total,
+        "enclosed_fraction": fraction,
+        "part_extrusions": part_extrusions,
+        "enclosed_per_part_extrusion": density,
+        "max_per_part_extrusion": MAX_ENCLOSED_SUPPORT_PER_PART_EXTRUSION,
+        "longest_fully_enclosed_run_mm": worst_run_mm,
+        "longest_fully_enclosed_run_top_z_mm": worst_run_z,
+        "max_run_mm": MAX_ENCLOSED_SUPPORT_RUN_MM,
+        "max_fraction": MAX_ENCLOSED_SUPPORT_FRACTION,
+        "failures": failures,
+        "layers": per_layer,
+    }
+
+
 def _validate_ready_cavity_toolpaths(
     *,
     artifact: Mapping[str, Any],

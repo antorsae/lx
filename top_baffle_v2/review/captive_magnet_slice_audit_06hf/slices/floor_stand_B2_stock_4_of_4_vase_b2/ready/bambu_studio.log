@@ -1,5 +1,5 @@
-[2026-08-15 11:11:27.129426] [0x00000001fa8e5e80] [trace]   Initializing StaticPrintConfigs
-[2026-08-15 11:11:27.140850] [0x00000001fa8e5e80] [warning] cli mode, Current BambuStudio Version 02.07.01.62
-[2026-08-15 11:11:27.157081] [0x00000001fa8e5e80] [warning] no filament colors found in projects
-[2026-08-15 11:11:31.121726] [0x00000001fa8e5e80] [warning] tree support default to organic support
-[2026-08-15 11:11:33.132848] [0x00000001fa8e5e80] [error]   Invalid T command (T65535).
+[2026-08-16 11:37:01.953580] [0x00000001fa8e5e80] [trace]   Initializing StaticPrintConfigs
+[2026-08-16 11:37:01.964748] [0x00000001fa8e5e80] [warning] cli mode, Current BambuStudio Version 02.07.01.62
+[2026-08-16 11:37:01.975425] [0x00000001fa8e5e80] [warning] no filament colors found in projects
+[2026-08-16 11:37:03.262329] [0x00000001fa8e5e80] [warning] tree support default to organic support
+[2026-08-16 11:37:04.405869] [0x00000001fa8e5e80] [error]   Invalid T command (T65535).

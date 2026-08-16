@@ -127,6 +127,206 @@
     "support_critical_regions_only": "1",
     "support_remove_small_overhang": "1"
    }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Flat",
+    "part": "obiwan_wing_flat_left_split2_1_of_2_lm_lower"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Flat",
+    "part": "obiwan_wing_flat_left_split2_2_of_2_lm_um_upper"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Flat",
+    "part": "obiwan_wing_flat_left_1_of_3_lm_lower"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Flat",
+    "part": "obiwan_wing_flat_left_2_of_3_lm_upper"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Flat",
+    "part": "obiwan_wing_flat_left_3_of_3_um"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Flat",
+    "part": "obiwan_wing_flat_right_split2_1_of_2_lm_lower"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Flat",
+    "part": "obiwan_wing_flat_right_split2_2_of_2_lm_um_upper"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Flat",
+    "part": "obiwan_wing_flat_right_1_of_3_lm_lower"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Flat",
+    "part": "obiwan_wing_flat_right_2_of_3_lm_upper"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Flat",
+    "part": "obiwan_wing_flat_right_3_of_3_um"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Graded",
+    "part": "obiwan_wing_graded_left_split2_1_of_2_lm_lower"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Graded",
+    "part": "obiwan_wing_graded_left_split2_2_of_2_lm_um_upper"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Graded",
+    "part": "obiwan_wing_graded_left_1_of_3_lm_lower"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Graded",
+    "part": "obiwan_wing_graded_left_2_of_3_lm_upper"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Graded",
+    "part": "obiwan_wing_graded_left_3_of_3_um"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Graded",
+    "part": "obiwan_wing_graded_right_split2_1_of_2_lm_lower"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Graded",
+    "part": "obiwan_wing_graded_right_split2_2_of_2_lm_um_upper"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Graded",
+    "part": "obiwan_wing_graded_right_1_of_3_lm_lower"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Graded",
+    "part": "obiwan_wing_graded_right_2_of_3_lm_upper"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
+  },
+  {
+   "match": {
+    "state": "shared",
+    "variant": "Obi-Wan-Graded",
+    "part": "obiwan_wing_graded_right_3_of_3_um"
+   },
+   "process": {
+    "sparse_infill_density": "10%"
+   }
   }
  ],
  "requirements": {

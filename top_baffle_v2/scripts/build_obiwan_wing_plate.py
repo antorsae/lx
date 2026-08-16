@@ -51,6 +51,11 @@ import release_validation as captive
 ROOT = PROJECT_ROOT
 PLATE_OUTPUT_DIR = ROOT / "build" / "print_plates" / "obiwan"
 DEFAULT_PROFILE = ROOT / "captive_magnet_slicing_profile.json"
+# The wings print a light lattice: they are stiffened by their own
+# curvature and the bonded labyrinth seam, not by fill.  Pinned here
+# rather than left to each profile so no lane can quietly ship a wing
+# at a different density from its plate.
+WING_SPARSE_INFILL_PERCENT = 10.0
 DEFAULT_RELEASE_CATALOG = ROOT / "review" / "captive_magnet_release_catalog.json"
 DEFAULT_RELEASE_AUDIT = ROOT / "review" / "captive_magnet_slice_audit"
 PAUSE_Z_MM = 5.96
@@ -1074,6 +1079,14 @@ def validate_ready_plate(
 
     parsed_profile = parse_gcode(gcode, retain_regions=())
     support_summary = emit._support_toolpath_summary(gcode)
+    # Support sealed inside a blind pocket cannot be removed and is invisible
+    # to the duct and cavity audits, which watch named geometry rather than
+    # shape.  This measures it directly.
+    enclosed_support = emit._enclosed_support_audit(gcode)
+    if enclosed_support["failures"]:
+        raise WingPlateError(
+            "enclosed-support audit failed: "
+            + "; ".join(enclosed_support["failures"]))
     if (support_summary["support_feature_blocks"] != 0
             or support_summary["support_interface_feature_blocks"] != 0):
         raise WingPlateError(
@@ -1089,11 +1102,12 @@ def validate_ready_plate(
         raise WingPlateError(
             "wing G-code static validation did not pass")
     effective = profile_bundle["identity"]["effective"]
-    if (effective.get("sparse_infill_density_percent") != 30.0
+    if (effective.get("sparse_infill_density_percent")
+            != WING_SPARSE_INFILL_PERCENT
             or effective.get("sparse_infill_pattern") != "gyroid"
             or effective.get("support_enabled") is not False):
         raise WingPlateError(
-            "wing effective profile is not support-off 30% gyroid")
+            "wing effective profile is not support-off wing-contract gyroid")
 
     archive["duct_support_toolpath_audit"] = {
         "status": "pass",
@@ -1131,6 +1145,7 @@ def validate_ready_plate(
         "captive_cavity_audit": cavity_records,
         "pause_before_first_layer_extrusion": pause_before_extrusion,
         "support_toolpaths": support_summary,
+        "enclosed_support_audit": enclosed_support,
         "duct_support_toolpath_audit": archive[
             "duct_support_toolpath_audit"],
         "gcode_static_validation": static_validation,
@@ -1194,10 +1209,11 @@ def _prepare_slice(
             f"cannot prepare wing profile: {exc}") from exc
     effective = profile_bundle["identity"]["effective"]
     if (effective.get("support_enabled") is not False
-            or effective.get("sparse_infill_density_percent") != 30.0
+            or effective.get("sparse_infill_density_percent")
+            != WING_SPARSE_INFILL_PERCENT
             or effective.get("sparse_infill_pattern") != "gyroid"):
         raise WingPlateError(
-            "released wing profile is not support-off 30% gyroid")
+            "released wing profile is not support-off wing-contract gyroid")
     process = profile_bundle["resolved"]["process"]
     if any(captive._boolish(process.get(key)) for key in SUPPORT_KEYS):
         raise WingPlateError(

@@ -124,8 +124,8 @@
       "source_stl_sha256": "c99727fc462885ebe49b8f374873d2ee61ba7fe9c159d86ec05dba928ea69ae5",
       "support_blocker": {
         "path": "build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl",
-        "sha256": "c6179de9c2ea6f73fe5a7a7b6ec7a1fd8bf1f488114d0e4c2266f448b8c8124f",
-        "triangle_count": 3750
+        "sha256": "2c150028d8af8c289611ca976571dcd6537ad94721aa1d00f3c0b2013db7e4cd",
+        "triangle_count": 5238
       },
       "translation_mm": [
         111.8068,
@@ -168,8 +168,8 @@
       "source_stl_sha256": "557e78934785ba317f9721becbb4dc3442f9ed81aec296c83885b813257e3099",
       "support_blocker": {
         "path": "build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl",
-        "sha256": "9393f65c886435fdf13a56c4de12379212077d41cecd1100388e45069b77f682",
-        "triangle_count": 1236
+        "sha256": "a35bf8b25764bee02cbedd4ca5c5a9735ca3f357b36634135e79b0c48125fe95",
+        "triangle_count": 2724
       },
       "translation_mm": [
         140.4841,
@@ -213,8 +213,8 @@
       "source_stl_sha256": "a2b070ecc6406c392eb7f652a823b5efb38f5fcbd8f17acc2270820a4126f6bd",
       "support_blocker": {
         "path": "build/no_floor_stand/support_blockers/obiwan_core_2_of_2_um_carrier.support_blocker.stl",
-        "sha256": "9db0b1834c092515815c270d58a3acd2bf60881f0d20ab43b77f4dc3d91bfa2d",
-        "triangle_count": 452
+        "sha256": "2f36cd87d9204b67c780950c913d98b4df6af89e68699fc9f6294f6f639ce0af",
+        "triangle_count": 1940
       },
       "translation_mm": [
         115.2316,
@@ -267,7 +267,7 @@
     "sparse_infill_pattern": "zig-zag"
   },
   "schema_version": 1,
-  "source_bundle_fingerprint": "ac48d6c9a66da2c2110f55e5bd33e186cc97543a2920cabdbb8638af4198ebf4",
+  "source_bundle_fingerprint": "5ee07106a2eaa16b11f682f796293eb57975cbd8be287bad0b931b780c917270",
   "source_policy": "translation-only concatenation of four released no_floor_stand front-down STLs; no CAD or structure regeneration",
   "stand_state": "no_floor_stand",
   "stl": "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand.stl",

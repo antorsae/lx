@@ -95,6 +95,14 @@ NO_FLOOR_COMBO_PLATE = combo.get_variant("no_floor_stand")
 FLOOR_COMBO_PLATE = combo.get_variant("floor_stand")
 COMPOSITE_SPECS = {
     NO_FLOOR_COMBO_PLATE.PLATE_NAME: {
+        # Bambu's CLI cannot slice this plate: it loads an assemble list for
+        # the duct blockers, and on that path the second filament -- the PLA
+        # support interface -- is mapped to nozzle 0 and the interface prints
+        # in PETG.  The plate ships as a Studio project from
+        # ``make obiwan_petg_gui_projects`` instead, so the shelf must not
+        # attempt the slice; attempting it fails the whole publication and
+        # leaves every other delivery stale.
+        "gui_delivered": True,
         "module": NO_FLOOR_COMBO_PLATE,
         "builder": "scripts/build_obiwan_combo_plate.py",
         "state": "no_floor_stand",
@@ -103,6 +111,14 @@ COMPOSITE_SPECS = {
         "profile_path": PETG_GF_PROFILE,
     },
     FLOOR_COMBO_PLATE.PLATE_NAME: {
+        # Bambu's CLI cannot slice this plate: it loads an assemble list for
+        # the duct blockers, and on that path the second filament -- the PLA
+        # support interface -- is mapped to nozzle 0 and the interface prints
+        # in PETG.  The plate ships as a Studio project from
+        # ``make obiwan_petg_gui_projects`` instead, so the shelf must not
+        # attempt the slice; attempting it fails the whole publication and
+        # leaves every other delivery stale.
+        "gui_delivered": True,
         "module": FLOOR_COMBO_PLATE,
         "builder": "scripts/build_obiwan_combo_plate.py",
         "state": "floor_stand",
@@ -1359,7 +1375,23 @@ def build_shelf(
     # STL or 3MF.  Targeted refreshes still cross the complete equivalence barrier;
     # ``selected_entries`` controls only the later promotion step.
     validated: list[dict[str, Any]] = []
+    gui_delivered: dict[str, str] = {}
     for entry in entries:
+        spec = entry.get("composite_spec")
+        # Every ``lane: 06hf`` entry is PETG-GF structural: the part in
+        # TINMORRY PETG-GF with the support interface in PLA.  Bambu's CLI
+        # cannot produce any of them -- each loads an assemble list for its
+        # duct blockers, and on that path the second filament resolves to
+        # nozzle 0 and the interface prints in the model material.  They ship
+        # as Studio projects instead.  Requiring them here fails the whole
+        # publication and strands the ~54 PLA deliveries that are fine.
+        if entry.get("lane") == "06hf" or (
+                isinstance(spec, Mapping) and spec.get("gui_delivered")):
+            gui_delivered[entry["name"]] = (
+                "Bambu CLI maps the PLA support interface to nozzle 0 on the "
+                "assemble-list path; delivered as a Studio project by "
+                "make obiwan_petg_gui_projects")
+            continue
         source = Path(entry["source_path"])
         source_sidecar = Path(entry["source_contract_path"])
         artifact = entry.get("artifact")
@@ -1456,9 +1488,14 @@ def build_shelf(
                 "placement_audit": placement,
             },
         })
-    if len(validated) != EXPECTED_ENTRY_COUNT:
+    # Every entry must be accounted for, either inspected here or routed to
+    # GUI delivery on purpose -- a silently dropped entry is the failure this
+    # gate exists to catch.
+    if len(validated) + len(gui_delivered) != EXPECTED_ENTRY_COUNT:
         raise ShelfError(
-            "project/STL equivalence gate did not inspect every shelf entry")
+            "project/STL equivalence gate did not account for every shelf "
+            f"entry: {len(validated)} inspected + {len(gui_delivered)} "
+            f"GUI-delivered != {EXPECTED_ENTRY_COUNT}")
     equivalence_entries = []
     for item in validated:
         record = item["record"]
@@ -1491,7 +1528,10 @@ def build_shelf(
         })
     equivalence_gate = {
         "status": "pass",
-        "required_pair_count": EXPECTED_ENTRY_COUNT,
+        # what this gate actually had to inspect: the shelf minus the
+        # entries routed to GUI delivery, which carry no CLI slice
+        "required_pair_count": EXPECTED_ENTRY_COUNT - len(gui_delivered),
+        "gui_delivered_count": len(gui_delivered),
         "passing_pair_count": len(equivalence_entries),
         "mesh_tolerance_mm": 0.02,
         "promotion_started_after_complete_gate": True,
@@ -1557,6 +1597,7 @@ def build_shelf(
             "magnet_insertions": sum(record["magnet_insertions"] for record in records),
         },
         "entries": records,
+        "gui_delivered_entries": dict(sorted(gui_delivered.items())),
     }
     manifest["manifest_sha256"] = _sha256_bytes(_canonical_json({
         key: value for key, value in manifest.items() if key != "manifest_sha256"

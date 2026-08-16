@@ -6820,21 +6820,23 @@
     "component_signed_volumes": [
       18650.429005393857,
       13274.178513141198,
-      9927.864407829522
+      9927.864407829522,
+      268.77895277246716,
+      268.7788565747839
     ],
-    "components": 3,
+    "components": 5,
     "degenerate": 0,
-    "disconnected_material_components": 2,
+    "disconnected_material_components": 4,
     "duplicates": 0,
     "negative_volume": 0,
     "nested_void_components": 0,
     "nonfinite": 0,
     "nonnested_void_components": 0,
     "open": 0,
-    "outer_components": 3,
+    "outer_components": 5,
     "over_shared": 0,
-    "signed_volume": 41852.471926364386,
-    "triangles": 18966,
+    "signed_volume": 42390.02973571164,
+    "triangles": 19462,
     "winding": 0,
     "zero_volume": 0,
     "zero_volume_components": 0
@@ -6870,5 +6872,5 @@
     ]
   ],
   "support_blocker": "obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl",
-  "support_blocker_sha256": "aa5edfa9e07e301335126631788b38d41a056a7c51532caf7791251631af4f41"
+  "support_blocker_sha256": "2a6838018021b14dfb034c8e976196bb9ae7863aaaeb7e1806125b703b5ef665"
 }

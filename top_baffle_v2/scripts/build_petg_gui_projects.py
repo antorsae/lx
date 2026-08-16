@@ -198,9 +198,8 @@ def _validate(
             "Studio has installed, it replaces every value below with the "
             "installed preset's")
     for key, expected in (
-            ("support_type", "tree(auto)"),
-            ("support_style", "default"),
-            ("tree_support_branch_distance", "1"),
+            ("support_type", "normal(auto)"),
+            ("support_style", "snug"),
             ("support_top_z_distance", "0"),
             ("support_interface_spacing", "0"),
             ("support_on_build_plate_only", "1"),

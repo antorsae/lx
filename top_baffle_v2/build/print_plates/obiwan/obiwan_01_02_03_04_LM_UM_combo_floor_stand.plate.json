@@ -124,8 +124,8 @@
       "source_stl_sha256": "ef9fc6f41df88e938267656f651b4d58162bc6cbe1a7b00231d09d1a88fdb782",
       "support_blocker": {
         "path": "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl",
-        "sha256": "aa5edfa9e07e301335126631788b38d41a056a7c51532caf7791251631af4f41",
-        "triangle_count": 18966
+        "sha256": "2a6838018021b14dfb034c8e976196bb9ae7863aaaeb7e1806125b703b5ef665",
+        "triangle_count": 19462
       },
       "translation_mm": [
         2.697,
@@ -168,8 +168,8 @@
       "source_stl_sha256": "6b835da885eea11b3068375e67aa12c1356b3791987c8cd981a8c4d0d428b0c3",
       "support_blocker": {
         "path": "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl",
-        "sha256": "72fbd4b13bf11f054917b3f04ddc162bae86b8586e13463ea6a1ec964a8340a5",
-        "triangle_count": 1244
+        "sha256": "d2250acaedf2e49ee4a1000bb808732a070776cc6c02fbda9a319c8a419c2e9e",
+        "triangle_count": 2732
       },
       "translation_mm": [
         27.025,
@@ -213,8 +213,8 @@
       "source_stl_sha256": "775e47af7a1ee0b0092762a3080c525e32259d98ba29c926ae17f3a089a8b340",
       "support_blocker": {
         "path": "build/floor_stand/support_blockers/obiwan_core_2_of_2_um_carrier.support_blocker.stl",
-        "sha256": "b2b7e6bb2e34ff1a6b7c5169fcb5150fbedd5e83dd757c76b83efd6ef791186e",
-        "triangle_count": 464
+        "sha256": "1599fb7901e5f8d5f2b0679646779509ac7319fc9804454fc2956637c706e056",
+        "triangle_count": 1952
       },
       "translation_mm": [
         71.034,
@@ -267,7 +267,7 @@
     "sparse_infill_pattern": "zig-zag"
   },
   "schema_version": 1,
-  "source_bundle_fingerprint": "342e7398dfd259f4876d9359c45a9a03d8e55abd296f13c5f4274ad02466dd8f",
+  "source_bundle_fingerprint": "04dcfb7df1cf25b2b83db03049373172d3da7e1f53e5190efd1b59e89cc991c9",
   "source_policy": "translation-only concatenation of four released floor_stand front-down STLs; no CAD or structure regeneration",
   "stand_state": "floor_stand",
   "stl": "obiwan_01_02_03_04_LM_UM_combo_floor_stand.stl",

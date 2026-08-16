@@ -35,6 +35,29 @@ from lx521_baffle.obiwan.floor import (
     floor_lane_control_points,
     floor_lane_path,
 )
+from lx521_baffle.obiwan.carriers import (
+    JOINT_CLEARANCE_BORE_D,
+    JOINT_CLEARANCE_BORE_TOP_Z,
+    JOINT_EAR_X,
+    JOINT_EAR_Y,
+    JOINT_INSERT_BORE_D,
+    JOINT_INSERT_BORE_Z,
+    LM_JOINT_Z,
+)
+from lx521_baffle.base import (
+    BRIDGE_HOLE_XY,
+    BRIDGE_INSERT_DEPTH_MM,
+    M5_INSERT_ENTRY_D_MM,
+    UM_PILOT_D_MM,
+    UM_PILOT_DEPTH_MM,
+)
+from lx521_baffle.flush import (
+    LM_BORE_DEPTH_MM,
+    LM_PILOT_XY,
+    LM_SEAT_Z,
+    UM_PILOT_XY,
+    UM_SEAT_Z,
+)
 from lx521_baffle.obiwan.lm_split import LM_SPLIT_SEAM_Y
 from lx521_baffle.obiwan.rear_entry import (
     _round_tube,
@@ -75,6 +98,13 @@ def _split_region(part_key: str):
 
 
 def _clipped_solids(shape, region, label: str):
+    if region is None:
+        # Unsplit owner (the UM carrier): nothing to clip against.
+        solids = tuple(
+            solid for solid in shape.solids() if solid.volume > 1.0e-6)
+        if any(not solid.is_valid for solid in solids):
+            raise RuntimeError(f"{label}: blocker solid is invalid")
+        return solids
     clipped = shape & region
     if clipped is None:
         return ()
@@ -129,6 +159,88 @@ def _um_owner_t_route_blockers(
             or any(not solid.is_valid for solid in solids)):
         raise RuntimeError("UM owner T-route blocker is invalid")
     yield from solids
+
+
+def _insert_bore_blockers(
+    *, clearance_mm: float, region, owner: str,
+) -> Iterable[Any]:
+    """Keep support out of the heat-set insert bores on the inner ring.
+
+    These are blind bores in the front face, and printed front-face-down
+    they open toward the plate, so ``support_on_build_plate_only`` does not
+    protect them -- support grows straight up inside from the bed.  Measured
+    on the four-piece plate, all six LM M5 bores were packed with a fully
+    enclosed 5.1 mm column of PETG, welded to PETG exactly where the insert
+    has to be set.
+
+    ``owner`` selects the ring: the LM carries six M5 bores on the 209.5 mm
+    PCD, split two/four across the keyed halves by the seam, and the UM
+    carries four M3 bores on the 89.5 mm PCD.  Each is covered mouth to
+    blind floor, at the widest step of the bore.
+    """
+    margin = DUCT_SUPPORT_BLOCKER_BOOLEAN_MARGIN_MM
+    if owner == "lm":
+        centres = LM_PILOT_XY
+        radius = M5_INSERT_ENTRY_D_MM / 2.0
+        floor_z = LM_SEAT_Z - LM_BORE_DEPTH_MM
+        mouth_z = LM_SEAT_Z
+        label = "LM M5 insert bore"
+    elif owner == "lm_rear":
+        # The four bridge inserts, no-floor only.  They open at the rear
+        # face, which prints upward, so support cannot climb in from the
+        # plate -- covered for completeness, not because it was packed.
+        if STAND_FOOT:
+            return
+        centres = BRIDGE_HOLE_XY
+        radius = M5_INSERT_ENTRY_D_MM / 2.0
+        floor_z = 0.0
+        mouth_z = BRIDGE_INSERT_DEPTH_MM
+        label = "LM M5 bridge insert bore"
+    else:
+        centres = UM_PILOT_XY
+        radius = UM_PILOT_D_MM / 2.0
+        floor_z = UM_SEAT_Z - UM_PILOT_DEPTH_MM
+        mouth_z = UM_SEAT_Z
+        label = "UM M3 insert bore"
+    for index, (x, y) in enumerate(centres):
+        yield from _clipped_solids(
+            _z_axis_bore(
+                (x, y), radius + clearance_mm + margin,
+                floor_z - clearance_mm - margin,
+                mouth_z + clearance_mm + margin),
+            region, f"{label} {index}")
+
+
+def _joint_fastener_blockers(
+    *, clearance_mm: float, region,
+) -> Iterable[Any]:
+    """Keep support out of the M3 joint ears' blind bores.
+
+    Printed front-face-down these receivers open toward the plate, so
+    ``support_on_build_plate_only`` does not protect them: measured on the
+    four-piece plate, each of the six D4.6 ears carried a 5.1 mm support
+    column, fully enclosed on every layer from Z 7.08 to 12.20, welded PETG
+    to PETG where a heat-set insert has to go.  The ducts were blocked from
+    the start; these bores never were.
+
+    Both the receiver and the clearance bore below it are covered, over the
+    full joint span rather than each half's own range, so the same tool
+    works for whichever part owns the ear after the split.
+    """
+    margin = DUCT_SUPPORT_BLOCKER_BOOLEAN_MARGIN_MM
+    lower = min(LM_JOINT_Z[0], JOINT_INSERT_BORE_Z[0]) - clearance_mm - margin
+    upper = max(JOINT_INSERT_BORE_Z[1], JOINT_CLEARANCE_BORE_TOP_Z)
+    # One tool per ear at the receiver radius: it is coaxial with, and
+    # strictly larger than, the D3.4 clearance bore below it, so a second
+    # cylinder would only add coincident faces of the kind that tessellate
+    # as over-shared edges.
+    radius = max(JOINT_INSERT_BORE_D, JOINT_CLEARANCE_BORE_D) / 2.0
+    for x in JOINT_EAR_X:
+        yield from _clipped_solids(
+            _z_axis_bore(
+                (x, JOINT_EAR_Y), radius + clearance_mm + margin,
+                lower, upper + clearance_mm + margin),
+            region, f"joint ear x={x:g} fastener bore")
 
 
 def _no_floor_entry_blockers(
@@ -285,8 +397,12 @@ def duct_support_blocker(
         raise ValueError("support-blocker clearance must be positive")
     if part_key == "core_2_of_2_um_carrier":
         combined = _fuse_components(
-            _um_owner_t_route_blockers(clearance_mm=clearance_mm),
-            f"{part_key} UM owner T route")
+            (*_um_owner_t_route_blockers(clearance_mm=clearance_mm),
+             *_joint_fastener_blockers(
+                 clearance_mm=clearance_mm, region=None),
+             *_insert_bore_blockers(
+                 clearance_mm=clearance_mm, region=None, owner="um")),
+            f"{part_key} UM owner T route and joint ears")
         blocker_solids = tuple(combined.solids())
         if (not combined.is_valid or not blocker_solids
                 or any(not solid.is_valid or solid.volume <= 1.0e-6
@@ -309,6 +425,12 @@ def duct_support_blocker(
     region = _split_region(part_key)
     owner_components = list(_lm_owner_route_blockers(
         clearance_mm=clearance_mm, region=region))
+    owner_components.extend(_joint_fastener_blockers(
+        clearance_mm=clearance_mm, region=region))
+    owner_components.extend(_insert_bore_blockers(
+        clearance_mm=clearance_mm, region=region, owner="lm"))
+    owner_components.extend(_insert_bore_blockers(
+        clearance_mm=clearance_mm, region=region, owner="lm_rear"))
     groups = [_fuse_components(
         owner_components,
         f"{part_key} LM owner routes",

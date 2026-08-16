@@ -3288,23 +3288,29 @@
   "main_stl": "../stl/obiwan_core_2_of_2_um_carrier.stl",
   "main_stl_sha256": "775e47af7a1ee0b0092762a3080c525e32259d98ba29c926ae17f3a089a8b340",
   "mesh": {
-    "component_error": 0,
+    "component_error": 1,
     "component_signed_volumes": [
-      4948.02386287573
+      4948.02386287573,
+      216.26014497750754,
+      216.26014010976726,
+      97.5291122349458,
+      97.52910807516619,
+      97.52909453254114,
+      97.52909368716772
     ],
-    "components": 1,
+    "components": 7,
     "degenerate": 0,
-    "disconnected_material_components": 0,
+    "disconnected_material_components": 6,
     "duplicates": 0,
     "negative_volume": 0,
     "nested_void_components": 0,
     "nonfinite": 0,
     "nonnested_void_components": 0,
     "open": 0,
-    "outer_components": 1,
+    "outer_components": 7,
     "over_shared": 0,
-    "signed_volume": 4948.02386287573,
-    "triangles": 464,
+    "signed_volume": 5770.660556492828,
+    "triangles": 1952,
     "winding": 0,
     "zero_volume": 0,
     "zero_volume_components": 0
@@ -3340,5 +3346,5 @@
     ]
   ],
   "support_blocker": "obiwan_core_2_of_2_um_carrier.support_blocker.stl",
-  "support_blocker_sha256": "b2b7e6bb2e34ff1a6b7c5169fcb5150fbedd5e83dd757c76b83efd6ef791186e"
+  "support_blocker_sha256": "1599fb7901e5f8d5f2b0679646779509ac7319fc9804454fc2956637c706e056"
 }

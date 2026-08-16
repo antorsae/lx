@@ -2636,9 +2636,13 @@ obiwan_graded_wing_plate_to_print: $(OBIWAN_GRADED_WING_PLATE_SHELF_OUTPUTS)
 # It consumes the existing authoritative magnet projects and fails closed if
 # one is absent; the expensive full 58-artifact reslice remains an explicit
 # ``make bambu_slice_release`` operation rather than an implicit shelf step.
-to_print: $(OBIWAN_NO_FLOOR_COMBO_READY_STAMP) \
-        $(OBIWAN_FLOOR_COMBO_READY_STAMP) \
-        $(OBIWAN_FLAT_WING_PLATE_READY_STAMP) \
+# The two PETG-GF core plates are deliberately NOT prerequisites: Bambu's
+# CLI cannot slice them (it maps the PLA support interface to nozzle 0 on the
+# assemble-list path), so requiring their ready stamps fails the whole shelf
+# and leaves every other delivery stale.  They ship as Studio projects from
+# make obiwan_petg_gui_projects, and build_to_print_shelf.py records them
+# under gui_delivered_entries.
+to_print: $(OBIWAN_FLAT_WING_PLATE_READY_STAMP) \
         $(OBIWAN_GRADED_WING_PLATE_READY_STAMP) \
         $(BMR_CRESCENT_SHELF_INPUTS)
 	$(REQUIRE_BAMBU_CATALOG)

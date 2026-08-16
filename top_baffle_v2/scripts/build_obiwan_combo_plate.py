@@ -1205,6 +1205,14 @@ def validate_ready_plate(
     support_coverage, support_parsed = _support_coverage(
         gcode, footprints)
     support_summary = emit._support_toolpath_summary(gcode)
+    # Support sealed inside a blind pocket cannot be removed and is invisible
+    # to the duct and cavity audits, which watch named geometry rather than
+    # shape.  This measures it directly.
+    enclosed_support = emit._enclosed_support_audit(gcode)
+    if enclosed_support["failures"]:
+        raise ComboPlateError(
+            "enclosed-support audit failed: "
+            + "; ".join(enclosed_support["failures"]))
     if support_summary["support_feature_blocks"] <= 0:
         raise ComboPlateError(
             "support is enabled but no support feature blocks were emitted")
@@ -1309,6 +1317,7 @@ def validate_ready_plate(
         "captive_cavity_audit": cavity_records,
         "pause_before_first_layer_extrusion": pause_before_extrusion,
         "support_toolpaths": support_summary,
+        "enclosed_support_audit": enclosed_support,
         "support_midpoints_inside_part_footprints": support_coverage,
         "duct_support_toolpath_audit": {
             "status": "pass",
