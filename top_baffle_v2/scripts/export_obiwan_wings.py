@@ -1428,19 +1428,12 @@ def _export_variant(slug: str, output_root_arg: Path) -> dict[str, Any]:
         part_facts = []
         stl_relatives = []
         sidecar_relatives = []
+        # Only the two-piece split ships.  The three-piece decomposition
+        # stays in the CAD because the two-piece lower is taken from it
+        # verbatim (see wings._right_two_piece_print_parts_cached), and its
+        # STEP/review outputs remain, but no three-piece STL, sidecar or
+        # catalog artifact is emitted.
         part_specs = [
-            {
-                "split_variant": "a",
-                "piece_count": 3,
-                "side": side,
-                "order": order,
-                "role": role,
-                "shape": print_parts[(side, role)],
-                "name": _stl_name(slug, side, order, role),
-            }
-            for side in SIDES
-            for order, role in enumerate(PART_ORDER, start=1)
-        ] + [
             {
                 "split_variant": "b",
                 "piece_count": 2,

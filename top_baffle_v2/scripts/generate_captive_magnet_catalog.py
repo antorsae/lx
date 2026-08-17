@@ -58,12 +58,12 @@ HERE = PROJECT_ROOT
 DEFAULT_OUTPUT = HERE / "review" / "captive_magnet_release_catalog.json"
 SCHEMA_PATH = HERE / "captive_magnet_release_catalog.schema.json"
 SCHEMA_VERSION = 1
-EXPECTED_ARTIFACT_COUNT = 58
-EXPECTED_MAGNET_COUNT = 94
+EXPECTED_ARTIFACT_COUNT = 46
+EXPECTED_MAGNET_COUNT = 82
 EXPECTED_STATE_ARTIFACT_COUNT = 19
 EXPECTED_STATE_MAGNET_COUNT = 35
-EXPECTED_SHARED_ARTIFACT_COUNT = 20
-EXPECTED_SHARED_MAGNET_COUNT = 24
+EXPECTED_SHARED_ARTIFACT_COUNT = 8
+EXPECTED_SHARED_MAGNET_COUNT = 12
 EXPECTED_FAMILY_COUNTS = {
     # family: (released STL count, total captive-station count)
     "B2": (2, 8),
@@ -74,8 +74,8 @@ EXPECTED_FAMILY_COUNTS = {
     "V1L": (2, 8),
     "Obi-Wan": (4, 12),
     "Obi-Wan-split": (4, 8),
-    "Obi-Wan-Flat": (10, 12),
-    "Obi-Wan-Graded": (10, 12),
+    "Obi-Wan-Flat": (4, 6),
+    "Obi-Wan-Graded": (4, 6),
     "coupon1": (2, 2),
 }
 RELEASED_WING_VARIANTS = {
@@ -817,24 +817,21 @@ def _wing_artifacts(slug: str, output: Path) -> list[dict[str, Any]]:
     ), output)
     receivers = facts["geometry"]["interface_contract"]["receivers"]
     parts = facts["exports"]["print_parts"]
-    if not isinstance(parts, list) or len(parts) != 10:
-        raise RuntimeError(f"{slug}: expected ten transactional wing parts")
+    # Only the two-piece split ships: four transactional parts per variant.
+    if not isinstance(parts, list) or len(parts) != 4:
+        raise RuntimeError(f"{slug}: expected four transactional wing parts")
     expected_stls = [item.get("path") for item in parts]
     expected_sidecars = [item.get("print_sidecar") for item in parts]
     if (any(not isinstance(path, str) or not path
             for path in (*expected_stls, *expected_sidecars))
-            or len(set(expected_stls)) != 10
-            or len(set(expected_sidecars)) != 10
+            or len(set(expected_stls)) != 4
+            or len(set(expected_sidecars)) != 4
             or manifest.get("print_parts") != expected_stls
             or manifest.get("print_sidecars") != expected_sidecars):
         raise RuntimeError(
-            f"{slug}: facts/manifest do not bind ten unique "
+            f"{slug}: facts/manifest do not bind four unique "
             "STL/sidecar pairs")
     expected_keys = {
-        ("a", side, role)
-        for side in ("left", "right")
-        for role in ("lm_lower", "lm_upper", "um")
-    } | {
         ("b", side, role)
         for side in ("left", "right")
         for role in ("lm_lower", "lm_um_upper")
@@ -866,8 +863,8 @@ def _wing_artifacts(slug: str, output: Path) -> list[dict[str, Any]]:
             receiver_by_name=receiver_by_name,
             entry=entry,
         ))
-    if len(result) != 10:
-        raise RuntimeError(f"{slug}: expected ten wing STLs, got {len(result)}")
+    if len(result) != 4:
+        raise RuntimeError(f"{slug}: expected four wing STLs, got {len(result)}")
     return result
 
 

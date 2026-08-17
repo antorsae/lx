@@ -732,11 +732,11 @@ def test_petg_gf_profile_is_scoped_to_structural_core_only() -> None:
     # keeping the scopes disjoint means neither profile can slice the
     # other's artifacts, which build_obiwan_wing_plate now enforces too.
     import build_obiwan_wing_plate as wing_plate_contract
+    # Only the two-piece split ships; the split3 artifacts are retired.
     wing_parts = {
         f"obiwan_wing_{variant}_{side}_{piece}"
         for variant in ("flat", "graded") for side in ("left", "right")
-        for piece in ("split2_1_of_2_lm_lower", "split2_2_of_2_lm_um_upper",
-                      "1_of_3_lm_lower", "2_of_3_lm_upper", "3_of_3_um")}
+        for piece in ("split2_1_of_2_lm_lower", "split2_2_of_2_lm_um_upper")}
     wings = audit._load_json(
         PROJECT_ROOT
         / "captive_magnet_slicing_profile_petg_gf_wings_06hf.json")
@@ -2976,7 +2976,7 @@ def test_catalog_envelope_and_frozen_inventory_are_fail_closed(
     try:
         audit.normalize_catalog(path)
     except audit.AuditError as exc:
-        assert "58 artifacts / 94 captive stations" in str(exc)
+        assert "46 artifacts / 82 captive stations" in str(exc)
     else:
         raise AssertionError("truncated production inventory passed")
 

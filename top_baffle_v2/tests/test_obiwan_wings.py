@@ -341,17 +341,14 @@ def _assert_complete_step(path: Path, required_tokens: tuple[str, ...]) -> None:
 
 
 def _expected_stl_names(slug: str) -> tuple[str, ...]:
-    three_piece = tuple(
-        f"obiwan_wing_{slug}_{side}_{order}_of_3_{role}.stl"
-        for side in SIDE_NAMES
-        for order, role in enumerate(PRINT_PART_ROLES, start=1)
-    )
-    two_piece = tuple(
+    # Only the two-piece split ships.  The three-piece decomposition stays in
+    # the CAD -- the two-piece lower is taken from it verbatim -- but emits no
+    # STL, sidecar or catalog artifact.
+    return tuple(
         f"obiwan_wing_{slug}_{side}_split2_{order}_of_2_{role}.stl"
         for side in SIDE_NAMES
         for order, role in enumerate(TWO_PIECE_PART_ROLES, start=1)
     )
-    return three_piece + two_piece
 
 
 def _variant_paths(slug: str) -> dict[str, Path | tuple[Path, ...]]:
@@ -950,7 +947,7 @@ def test_exported_artifact_contract() -> None:
         assert isinstance(manifest_path, Path)
         assert isinstance(stls, tuple)
         assert isinstance(sidecars, tuple)
-        assert len(stls) == len(sidecars) == 10
+        assert len(stls) == len(sidecars) == 4
 
         review_paths = tuple(
             directory / "review" / f"obiwan_wing_{slug}_{kind}.png"
@@ -1386,13 +1383,11 @@ def test_exported_artifact_contract() -> None:
             _assert_review_png(path, slug, kind)
 
         print_records = facts.get("exports", {}).get("print_parts")
-        assert isinstance(print_records, list) and len(print_records) == 10, (
-            f"{slug}: facts must contain ten print records")
+        assert isinstance(print_records, list) and len(print_records) == 4, (
+            f"{slug}: facts must contain the four split2 print records")
+        # Only split B ships; the three-piece decomposition stays in the CAD
+        # and its STEP children, but emits no STL, sidecar or manifest record.
         expected_keys = {
-            ("a", side, role, order)
-            for side in SIDE_NAMES
-            for order, role in enumerate(PRINT_PART_ROLES, start=1)
-        } | {
             ("b", side, role, order)
             for side in SIDE_NAMES
             for order, role in enumerate(TWO_PIECE_PART_ROLES, start=1)
@@ -1402,13 +1397,9 @@ def test_exported_artifact_contract() -> None:
         }
         assert set(record_map) == expected_keys, (
             f"{slug}: print role/order inventory drifted")
-        for side in SIDE_NAMES:
-            a_lower = _resolve_variant_relative(
-                directory, record_map[("a", side, "lm_lower", 1)]["path"])
-            b_lower = _resolve_variant_relative(
-                directory, record_map[("b", side, "lm_lower", 1)]["path"])
-            assert _sha256_file(a_lower) == _sha256_file(b_lower), (
-                f"{slug}/{side}: B lower is not byte-identical to A lower")
+        # The A/B lower equality is now proved in the CAD rather than by
+        # comparing two shipped meshes: wings._right_two_piece_print_parts_cached
+        # takes the two-piece lower straight from the three-piece decomposition.
         assert manifest.get("print_parts") == [
             record["path"] for record in print_records], (
                 f"{slug}: facts/manifest print inventory differs")
@@ -1417,7 +1408,7 @@ def test_exported_artifact_contract() -> None:
                 f"{slug}: facts/manifest sidecar inventory differs")
         assert set(manifest["print_sidecars"]) == {
             path.relative_to(directory).as_posix() for path in sidecars
-        }, f"{slug}: manifest does not bind exactly ten real sidecars"
+        }, f"{slug}: manifest does not bind exactly four real sidecars"
 
         for split_variant, side, role, order in sorted(expected_keys):
             record = record_map[(split_variant, side, role, order)]
@@ -1545,16 +1536,10 @@ def test_exported_artifact_contract() -> None:
                 mesh["signed_volume"], record["volume_mm3"],
                 rel_tol=0.003, abs_tol=0.5), (
                     f"{slug} {side}/{role}: STL/source volume mismatch")
-        for side in SIDE_NAMES:
-            a_lower = record_map[("a", side, "lm_lower", 1)]
-            b_lower = record_map[("b", side, "lm_lower", 1)]
-            assert math.isclose(
-                a_lower["volume_mm3"], b_lower["volume_mm3"],
-                rel_tol=0.0, abs_tol=1.0e-6), (
-                    f"{slug}/{side}: B lower is not A lower")
-            assert a_lower["assembly_bbox_mm"] == b_lower[
-                "assembly_bbox_mm"], (
-                    f"{slug}/{side}: B lower bounds differ from A lower")
+        # The A/B lower identity is structural now: with only split B
+        # exported there is no A record to compare, and the two-piece lower
+        # is taken verbatim from the three-piece decomposition inside
+        # wings._right_two_piece_print_parts_cached.
 
         canonical_record = facts.get("exports", {}).get("canonical_step")
         assembled_record = facts.get("exports", {}).get("assembled_step")

@@ -83,8 +83,8 @@ SCHEMA_VERSION = 1
 AUDIT_SCHEMA_VERSION = 1
 OVERSIZE_COVERED_STATUS = (
     "not_p2s_printable__cavity_covered_by_exact_split")
-EXPECTED_RELEASE_ARTIFACT_COUNT = 58
-EXPECTED_RELEASE_MAGNET_COUNT = 94
+EXPECTED_RELEASE_ARTIFACT_COUNT = 46
+EXPECTED_RELEASE_MAGNET_COUNT = 82
 CANONICAL_MANIFEST_FILENAMES = (
     "captive_magnet_pause_manifest.json",
     "captive_magnet_pause_manifest.csv",

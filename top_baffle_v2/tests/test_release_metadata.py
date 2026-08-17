@@ -565,15 +565,18 @@ def test_catalog_source_freezes_58_stls_and_94_stations() -> None:
             "EXPECTED_FAMILY_COUNTS",
         }
     }
-    assert assignments["EXPECTED_ARTIFACT_COUNT"] == 58
-    assert assignments["EXPECTED_MAGNET_COUNT"] == 94
+    # Only the two-piece wing split ships: retiring the twelve split3
+    # artifacts (one captive station each, all state "shared") moved every
+    # inventory total down in lockstep.
+    assert assignments["EXPECTED_ARTIFACT_COUNT"] == 46
+    assert assignments["EXPECTED_MAGNET_COUNT"] == 82
     assert assignments["EXPECTED_STATE_ARTIFACT_COUNT"] == 19
     assert assignments["EXPECTED_STATE_MAGNET_COUNT"] == 35
-    assert assignments["EXPECTED_SHARED_ARTIFACT_COUNT"] == 20
-    assert assignments["EXPECTED_SHARED_MAGNET_COUNT"] == 24
+    assert assignments["EXPECTED_SHARED_ARTIFACT_COUNT"] == 8
+    assert assignments["EXPECTED_SHARED_MAGNET_COUNT"] == 12
     families = assignments["EXPECTED_FAMILY_COUNTS"]
-    assert sum(counts[0] for counts in families.values()) == 58
-    assert sum(counts[1] for counts in families.values()) == 94
+    assert sum(counts[0] for counts in families.values()) == 46
+    assert sum(counts[1] for counts in families.values()) == 82
     assert set(families) == {
         "B2", "A", "B1", "V1-A", "V1-B1",
         "V1L", "Obi-Wan", "Obi-Wan-split", "Obi-Wan-Flat", "Obi-Wan-Graded",
@@ -1308,7 +1311,7 @@ def test_release_sidecars_fail_closed() -> None:
 
 def test_sidecar_inventory_exact_counts_and_only_polar_exclusion() -> None:
     assert EXPECTED_NONPOLAR_STATE_STL_COUNT == 39
-    assert EXPECTED_WING_STL_COUNT == 10
+    assert EXPECTED_WING_STL_COUNT == 4
     assert FLOOR_POLAR_SIDECAR_EXCLUSIONS == {
         "lx521_polar_base_1of2_base.stl",
         "lx521_polar_base_2of2_rotor.stl",

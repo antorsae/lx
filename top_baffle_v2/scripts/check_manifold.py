@@ -55,26 +55,21 @@ FLOOR_POLAR_SIDECAR_EXCLUSIONS = frozenset({
 })
 WING_SLUGS = ("flat", "graded")
 WING_SIDES = ("left", "right")
-WING_ROLES = ("lm_lower", "lm_upper", "um")
 WING_TWO_PIECE_ROLES = ("lm_lower", "lm_um_upper")
 EXPECTED_NONPOLAR_STATE_STL_COUNT = 39
-EXPECTED_WING_STL_COUNT = 10
+# Only the two-piece split ships; the three-piece decomposition stays in
+# the CAD (the two-piece lower is taken from it verbatim) but exports no STL.
+EXPECTED_WING_STL_COUNT = 4
 
 
 def expected_wing_stl_names(slug: str) -> frozenset[str]:
     if slug not in WING_SLUGS:
         raise ValueError(f"unknown released wing slug: {slug}")
-    three_piece = {
-        f"obiwan_wing_{slug}_{side}_{order}_of_3_{role}.stl"
-        for side in WING_SIDES
-        for order, role in enumerate(WING_ROLES, start=1)
-    }
-    two_piece = {
+    names = frozenset(
         f"obiwan_wing_{slug}_{side}_split2_{order}_of_2_{role}.stl"
         for side in WING_SIDES
         for order, role in enumerate(WING_TWO_PIECE_ROLES, start=1)
-    }
-    names = frozenset(three_piece | two_piece)
+    )
     if len(names) != EXPECTED_WING_STL_COUNT:
         raise RuntimeError(
             f"{slug}: released wing inventory count drifted to {len(names)}")

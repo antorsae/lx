@@ -251,9 +251,11 @@ def _obiwan_wing_links(slug: str) -> list[Link]:
                 "generated_wing_review",
             )
         )
+    # Only the two-piece split ships; the three-piece decomposition stays
+    # in the CAD but exports no STL to link.
     for side in ("left", "right"):
-        for order, role in ((1, "lm_lower"), (2, "lm_upper"), (3, "um")):
-            stem = f"obiwan_wing_{slug}_{side}_{order}_of_3_{role}"
+        for order, role in ((1, "lm_lower"), (2, "lm_um_upper")):
+            stem = f"obiwan_wing_{slug}_{side}_split2_{order}_of_2_{role}"
             links.extend(_print_pair(f"{destination}/stl", f"{source}/stl", stem))
     return links
 

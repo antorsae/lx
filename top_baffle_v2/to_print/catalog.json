@@ -315,36 +315,6 @@
    "lane": "06hf"
   },
   {
-   "name": "obiwan_05_split3_flat_wing_LM_lower_left_1_of_3",
-   "family": "obiwan",
-   "logical_slot": "05",
-   "state": "shared",
-   "selection": "flat_wings_a_3piece",
-   "description": "Obi-Wan flat wing split3, LM lower-left, 1 of 3",
-   "source_stl": "wings/flat/stl/obiwan_wing_flat_left_1_of_3_lm_lower.stl",
-   "catalog_artifact_id": "shared:Obi-Wan-Flat:obiwan_wing_flat_left_1_of_3_lm_lower"
-  },
-  {
-   "name": "obiwan_06_split3_flat_wing_LM_upper_left_2_of_3",
-   "family": "obiwan",
-   "logical_slot": "06",
-   "state": "shared",
-   "selection": "flat_wings_a_3piece",
-   "description": "Obi-Wan flat wing split3, LM upper-left, 2 of 3",
-   "source_stl": "wings/flat/stl/obiwan_wing_flat_left_2_of_3_lm_upper.stl",
-   "catalog_artifact_id": "shared:Obi-Wan-Flat:obiwan_wing_flat_left_2_of_3_lm_upper"
-  },
-  {
-   "name": "obiwan_07_split3_flat_wing_UM_left_3_of_3",
-   "family": "obiwan",
-   "logical_slot": "07",
-   "state": "shared",
-   "selection": "flat_wings_a_3piece",
-   "description": "Obi-Wan flat wing split3, UM left, 3 of 3",
-   "source_stl": "wings/flat/stl/obiwan_wing_flat_left_3_of_3_um.stl",
-   "catalog_artifact_id": "shared:Obi-Wan-Flat:obiwan_wing_flat_left_3_of_3_um"
-  },
-  {
    "name": "obiwan_05_split2_flat_wing_LM_lower_left_1_of_2",
    "family": "obiwan",
    "logical_slot": "05",
@@ -363,36 +333,6 @@
    "description": "Obi-Wan flat wing split2, fused LM/UM upper-left, 2 of 2",
    "source_stl": "wings/flat/stl/obiwan_wing_flat_left_split2_2_of_2_lm_um_upper.stl",
    "catalog_artifact_id": "shared:Obi-Wan-Flat:obiwan_wing_flat_left_split2_2_of_2_lm_um_upper"
-  },
-  {
-   "name": "obiwan_08_split3_flat_wing_LM_lower_right_1_of_3",
-   "family": "obiwan",
-   "logical_slot": "08",
-   "state": "shared",
-   "selection": "flat_wings_a_3piece",
-   "description": "Obi-Wan flat wing split3, LM lower-right, 1 of 3",
-   "source_stl": "wings/flat/stl/obiwan_wing_flat_right_1_of_3_lm_lower.stl",
-   "catalog_artifact_id": "shared:Obi-Wan-Flat:obiwan_wing_flat_right_1_of_3_lm_lower"
-  },
-  {
-   "name": "obiwan_09_split3_flat_wing_LM_upper_right_2_of_3",
-   "family": "obiwan",
-   "logical_slot": "09",
-   "state": "shared",
-   "selection": "flat_wings_a_3piece",
-   "description": "Obi-Wan flat wing split3, LM upper-right, 2 of 3",
-   "source_stl": "wings/flat/stl/obiwan_wing_flat_right_2_of_3_lm_upper.stl",
-   "catalog_artifact_id": "shared:Obi-Wan-Flat:obiwan_wing_flat_right_2_of_3_lm_upper"
-  },
-  {
-   "name": "obiwan_10_split3_flat_wing_UM_right_3_of_3",
-   "family": "obiwan",
-   "logical_slot": "10",
-   "state": "shared",
-   "selection": "flat_wings_a_3piece",
-   "description": "Obi-Wan flat wing split3, UM right, 3 of 3",
-   "source_stl": "wings/flat/stl/obiwan_wing_flat_right_3_of_3_um.stl",
-   "catalog_artifact_id": "shared:Obi-Wan-Flat:obiwan_wing_flat_right_3_of_3_um"
   },
   {
    "name": "obiwan_08_split2_flat_wing_LM_lower_right_1_of_2",
@@ -435,36 +375,6 @@
    }
   },
   {
-   "name": "obiwan_11_split3_graded_wing_LM_lower_left_1_of_3",
-   "family": "obiwan",
-   "logical_slot": "11",
-   "state": "shared",
-   "selection": "graded_wings_a_3piece",
-   "description": "Obi-Wan graded wing split3, LM lower-left, 1 of 3",
-   "source_stl": "wings/graded/stl/obiwan_wing_graded_left_1_of_3_lm_lower.stl",
-   "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_1_of_3_lm_lower"
-  },
-  {
-   "name": "obiwan_12_split3_graded_wing_LM_upper_left_2_of_3",
-   "family": "obiwan",
-   "logical_slot": "12",
-   "state": "shared",
-   "selection": "graded_wings_a_3piece",
-   "description": "Obi-Wan graded wing split3, LM upper-left, 2 of 3",
-   "source_stl": "wings/graded/stl/obiwan_wing_graded_left_2_of_3_lm_upper.stl",
-   "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_2_of_3_lm_upper"
-  },
-  {
-   "name": "obiwan_13_split3_graded_wing_UM_left_3_of_3",
-   "family": "obiwan",
-   "logical_slot": "13",
-   "state": "shared",
-   "selection": "graded_wings_a_3piece",
-   "description": "Obi-Wan graded wing split3, UM left, 3 of 3",
-   "source_stl": "wings/graded/stl/obiwan_wing_graded_left_3_of_3_um.stl",
-   "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_3_of_3_um"
-  },
-  {
    "name": "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2",
    "family": "obiwan",
    "logical_slot": "11",
@@ -483,36 +393,6 @@
    "description": "Obi-Wan graded wing split2, fused LM/UM upper-left, 2 of 2",
    "source_stl": "wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.stl",
    "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_split2_2_of_2_lm_um_upper"
-  },
-  {
-   "name": "obiwan_14_split3_graded_wing_LM_lower_right_1_of_3",
-   "family": "obiwan",
-   "logical_slot": "14",
-   "state": "shared",
-   "selection": "graded_wings_a_3piece",
-   "description": "Obi-Wan graded wing split3, LM lower-right, 1 of 3",
-   "source_stl": "wings/graded/stl/obiwan_wing_graded_right_1_of_3_lm_lower.stl",
-   "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_right_1_of_3_lm_lower"
-  },
-  {
-   "name": "obiwan_15_split3_graded_wing_LM_upper_right_2_of_3",
-   "family": "obiwan",
-   "logical_slot": "15",
-   "state": "shared",
-   "selection": "graded_wings_a_3piece",
-   "description": "Obi-Wan graded wing split3, LM upper-right, 2 of 3",
-   "source_stl": "wings/graded/stl/obiwan_wing_graded_right_2_of_3_lm_upper.stl",
-   "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_right_2_of_3_lm_upper"
-  },
-  {
-   "name": "obiwan_16_split3_graded_wing_UM_right_3_of_3",
-   "family": "obiwan",
-   "logical_slot": "16",
-   "state": "shared",
-   "selection": "graded_wings_a_3piece",
-   "description": "Obi-Wan graded wing split3, UM right, 3 of 3",
-   "source_stl": "wings/graded/stl/obiwan_wing_graded_right_3_of_3_um.stl",
-   "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_right_3_of_3_um"
   },
   {
    "name": "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",

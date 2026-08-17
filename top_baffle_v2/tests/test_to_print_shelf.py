@@ -273,8 +273,8 @@ def main() -> int:
               and raw.get("printer") == "Bambu Lab P2S"
               and isinstance(raw_entries, list),
               "remote shelf catalog header is invalid")
-        check(len(raw_entries) == 53,
-              "remote shelf catalog must contain exactly 53 entries")
+        check(len(raw_entries) == 41,
+              "remote shelf catalog must contain exactly 41 entries")
         names = []
         families = {family: 0 for family in shelf.EXPECTED_FAMILY_COUNTS}
         for index, entry in enumerate(raw_entries):
@@ -297,10 +297,10 @@ def main() -> int:
             families[family] += 1
         check(len(set(names)) == len(names),
               "remote shelf catalog contains duplicate names")
-        check(families == {"stock": 11, "slim": 11, "obiwan": 31},
+        check(families == {"stock": 11, "slim": 11, "obiwan": 19},
               f"remote shelf family counts drifted: {families}")
         check(sum(shelf._is_magnet_entry(entry)
-                  for entry in raw_entries) == 44,
+                  for entry in raw_entries) == 32,
               "remote shelf magnet-project count drifted")
         check(sum(entry.get("composite_plate") is not None
                   for entry in raw_entries) == 4,
@@ -315,8 +315,8 @@ def main() -> int:
               "a candidate shelf entry claims release authorization")
         release, by_id = shelf._release_artifacts(
             shelf.DEFAULT_RELEASE_CATALOG)
-        check(len(by_id) == 58
-              and release["inventory"]["artifact_count"] == 58,
+        check(len(by_id) == 46
+              and release["inventory"]["artifact_count"] == 46,
               "remote captive-magnet release inventory drifted")
         referenced = {
             entry["catalog_artifact_id"] for entry in raw_entries
@@ -337,8 +337,8 @@ def main() -> int:
                       for artifact in release_blockers),
               "remote release lacks all six duct support blockers")
         print(
-            "to_print remote contracts: neutralized Make graph, 53-entry "
-            "shelf catalog, and 58-artifact release catalog pass; "
+            "to_print remote contracts: neutralized Make graph, 41-entry "
+            "shelf catalog, and 46-artifact release catalog pass; "
             "project/STL equivalence remains local-only"
         )
         return 0
@@ -371,15 +371,15 @@ def main() -> int:
         },
         "both standalone keyed LM bottoms must use structural PETG-GF audits",
     )
-    check(len(entries) == 53, "shelf must contain exactly 53 entries")
+    check(len(entries) == 41, "shelf must contain exactly 41 entries")
     families = {
         family: sum(entry["family"] == family for entry in entries)
         for family in shelf.EXPECTED_FAMILY_COUNTS
     }
-    check(families == {"stock": 11, "slim": 11, "obiwan": 31},
+    check(families == {"stock": 11, "slim": 11, "obiwan": 19},
           f"unexpected family counts: {families}")
     magnetic = [entry for entry in entries if shelf._is_magnet_entry(entry)]
-    check(len(magnetic) == 44, "expected 44 audited magnet projects")
+    check(len(magnetic) == 32, "expected 32 audited magnet projects")
     check(len(entries) - len(magnetic) == 9,
           "expected 9 locally sliced non-magnet projects")
     canonical_magnetic = [
@@ -436,30 +436,20 @@ def main() -> int:
         if entry["family"] == "obiwan"
         and entry["selection"].startswith(("flat_wings_", "graded_wings_"))
     }
+    # Only the two-piece split ships; the twelve split3 entries left the
+    # shelf with the three-piece retirement.
     check(wing_names == {
-        "obiwan_05_split3_flat_wing_LM_lower_left_1_of_3",
-        "obiwan_06_split3_flat_wing_LM_upper_left_2_of_3",
-        "obiwan_07_split3_flat_wing_UM_left_3_of_3",
-        "obiwan_08_split3_flat_wing_LM_lower_right_1_of_3",
-        "obiwan_09_split3_flat_wing_LM_upper_right_2_of_3",
-        "obiwan_10_split3_flat_wing_UM_right_3_of_3",
         "obiwan_05_split2_flat_wing_LM_lower_left_1_of_2",
         "obiwan_06_split2_flat_wing_LM_UM_upper_left_2_of_2",
         "obiwan_08_split2_flat_wing_LM_lower_right_1_of_2",
         "obiwan_09_split2_flat_wing_LM_UM_upper_right_2_of_2",
         "obiwan_flat_wings_split2_combo",
-        "obiwan_11_split3_graded_wing_LM_lower_left_1_of_3",
-        "obiwan_12_split3_graded_wing_LM_upper_left_2_of_3",
-        "obiwan_13_split3_graded_wing_UM_left_3_of_3",
-        "obiwan_14_split3_graded_wing_LM_lower_right_1_of_3",
-        "obiwan_15_split3_graded_wing_LM_upper_right_2_of_3",
-        "obiwan_16_split3_graded_wing_UM_right_3_of_3",
         "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2",
         "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2",
         "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",
         "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2",
         "obiwan_graded_wings_split2_combo",
-    }, "flat/graded A/B left/right wing shelf names drifted")
+    }, "flat/graded split2 wing shelf names drifted")
     for required in (
         "stock_01_LM_bottom_1_of_3_no_floor_stand",
         "stock_01_LM_bottom_1_of_3_floor_stand",
@@ -474,7 +464,6 @@ def main() -> int:
         "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand",
         "obiwan_01_02_03_04_LM_UM_combo_floor_stand",
         "obiwan_flat_wings_split2_combo",
-        "obiwan_16_split3_graded_wing_UM_right_3_of_3",
         "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2",
         "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2",
         "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",
@@ -540,7 +529,7 @@ def main() -> int:
             check(len(entry["composite_artifacts"]) == expected_bindings,
                   f"{entry['name']}: captive release bindings are incomplete")
 
-    check(release["inventory"]["artifact_count"] == 58,
+    check(release["inventory"]["artifact_count"] == 46,
           "unexpected canonical captive-magnet release inventory")
     manifest = json.loads(
         (shelf.DEFAULT_SHELF / "release_manifest.json").read_text(
@@ -557,7 +546,7 @@ def main() -> int:
         name.startswith("obiwan_01") for name in gui),
         f"expected the four PETG-GF structural entries to be GUI-delivered, "
         f"got {sorted(gui)}")
-    inspected = 53 - len(gui)
+    inspected = 41 - len(gui)
     check(gate.get("required_pair_count") == inspected
           and gate.get("passing_pair_count") == inspected
           and len(gate.get("entries", ())) == inspected,
@@ -653,7 +642,7 @@ def main() -> int:
     # Both BMR pods ship as printable candidates.  The shelf may deliver
     # them, but nothing here may quietly promote them: they are sliced out of
     # their own auxiliary catalog and profile and stay outside the released
-    # 58-artifact inventory.
+    # 46-artifact inventory.
     check(set(shelf.AUXILIARY_SPECS) == {
         "obiwan_17_BMR_crescent_coaxial_1_of_1",
         "obiwan_18_BMR_crescent_opposed_1_of_1",
@@ -681,16 +670,17 @@ def main() -> int:
               for name, record in manifest_records.items()
               if name not in shelf.AUXILIARY_SPECS),
           "a released shelf entry claims a candidate auxiliary delivery")
-    # The shelf carried 44 magnet projects and 86 insertions before the four
+    # The shelf carried 32 magnet projects and 74 insertions after the
+    # split3 retirement (12 entries, one station each) and before the four
     # PETG-GF structural entries moved to GUI delivery.  Those four take 16
     # insertions with them -- six per combined core plate, two per standalone
-    # keyed bottom -- so the CLI-delivered inventory is 40 and 70, and the two
-    # routes still add back to the original totals.
+    # keyed bottom -- so the CLI-delivered inventory is 28 and 58, and the
+    # two routes still add back to the shelf totals.
     gui_magnet_projects, gui_insertions = 4, 16
     inventory = manifest["inventory"]
-    check(inventory["magnet_project_count"] == 44 - gui_magnet_projects
+    check(inventory["magnet_project_count"] == 32 - gui_magnet_projects
           and inventory["non_magnet_project_count"] == 9
-          and inventory["magnet_insertions"] == 86 - gui_insertions,
+          and inventory["magnet_insertions"] == 74 - gui_insertions,
           "shelf inventory does not include all four plate alternatives and "
           "both candidate BMR crescents")
     check(len(gui) == gui_magnet_projects,

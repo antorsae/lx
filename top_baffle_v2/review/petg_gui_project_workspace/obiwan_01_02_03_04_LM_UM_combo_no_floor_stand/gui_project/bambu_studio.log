@@ -1,4 +1,4 @@
-[2026-08-16 11:49:44.305004] [0x00000001fa8e5e80] [trace]   Initializing StaticPrintConfigs
-[2026-08-16 11:49:44.313357] [0x00000001fa8e5e80] [warning] cli mode, Current BambuStudio Version 02.07.01.62
-[2026-08-16 11:49:44.364647] [0x00000001fa8e5e80] [warning] no filament colors found in projects
-[2026-08-16 11:49:44.365693] [0x00000001fa8e5e80] [warning] load_nozzle_infos_with_compatibility: building nozzle list from filament map and volume types
+[2026-08-17 10:04:00.605874] [0x00000001fa8e5e80] [trace]   Initializing StaticPrintConfigs
+[2026-08-17 10:04:00.614325] [0x00000001fa8e5e80] [warning] cli mode, Current BambuStudio Version 02.07.01.62
+[2026-08-17 10:04:00.666175] [0x00000001fa8e5e80] [warning] no filament colors found in projects
+[2026-08-17 10:04:00.667236] [0x00000001fa8e5e80] [warning] load_nozzle_infos_with_compatibility: building nozzle list from filament map and volume types
