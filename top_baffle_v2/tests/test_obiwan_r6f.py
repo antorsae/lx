@@ -5163,7 +5163,7 @@ def test_floor_integrated_mount():
     # reusing the solid builders.  A negative witness in the former straight
     # upright proves the old hard-corner envelope was actually removed.
     # The boss trumpet narrows the rear: at Z -110..-90 the half-width is
-    # 25.2..29.5, so the retained-flat witness sits at x=22, inboard of the
+    # 24.9..29.1, so the retained-flat witness sits at x=22, inboard of the
     # taper yet outboard of the trough wall and its clip pockets (18.1).
     rear_flat_witness = Pos(22.0, 9.15, -100.0) * Box(2.0, 16.0, 20.0)
     bend_mid_witness = Pos(28.0, 28.93061224489796, -3.0375) * Box(

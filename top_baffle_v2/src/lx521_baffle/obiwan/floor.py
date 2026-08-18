@@ -25,6 +25,7 @@ from build123d import (
     Plane,
     Polyline,
     Pos,
+    Rectangle,
     RectangleRounded,
     Rot,
     ThreePointArc,
@@ -49,8 +50,9 @@ from ..floor_bend import (
     BEND_VERTICAL_HANDLE_MM,
     FUSION_OVERLAP_MM as FLOOR_BEND_FUSION_OVERLAP_MM,
     bend_facts,
-    bent_wall_prism,
     canonical_lane_controls,
+    centerline_controls,
+    cubic_point,
     sampled_minimum_radius,
 )
 from .floor_strength import (
@@ -78,16 +80,17 @@ NL8_CENTER_Y_MM = BOSS_TOP_W_MM / 2.0          # square face, derived
 BOSS_FLANGE_T_MM = 5.6                         # insert seat 4.0 + 1.6 roof
 BOSS_CREST_HOLD_Z_MM = -120.0
 BOSS_FALL_SPAN_MM = 44.0
-# The neck must meet the square W64 bend wall with NOTHING to see: the
-# trumpet reaches exactly 64.0 and the corner fillets fade to a sharp
-# edge at the same station, just before the bend's horizontal tangent
-# (-65.85) where the perpendicular walls take over.  The fade runs over
-# the flat foot segment between the dome landing (-76) and that station,
-# so the whole visible neck keeps its curved corners and they sharpen
-# gradually only where the walls go straight.
-BOSS_SQUARE_Z_MM = -66.0
-BOSS_WIDTH_EASE_END_Z_MM = BOSS_SQUARE_Z_MM
-BOSS_FILLET_FADE_SPAN_MM = 10.0
+# Subtle tail: the transition never visibly "ends".  The straight-region
+# ease arrives at 63.0 exactly at the bend's horizontal tangent, and the
+# final 63.0 -> 64.0 millimetre is distributed along the WHOLE bend arc
+# (cosine in arc parameter, tangent-continuous at both ends), landing on
+# 64.0 exactly at the vertical tangent into the stem.  The corner
+# fillets ride the same idea: full radius through the dome, blending to
+# 2.0 at the tangent, then fading to a sharp edge around the arc -- soft
+# wherever the wall still leans, sharp only where it is perpendicular.
+BOSS_BEND_START_W_MM = 63.0
+BOSS_BEND_START_R_MM = 2.0
+BOSS_LANDING_Z_MM = BOSS_CREST_HOLD_Z_MM + BOSS_FALL_SPAN_MM
 # The loft runs past the tangent for a deep, OCC-stable fusion; its last
 # section's bottom edge is raised to 1.2 so the end cap hides above the
 # bend's rising underside (0.76 there) instead of leaving a downward
@@ -293,17 +296,20 @@ def boss_height_mm(z: float) -> float:
 
 
 def boss_width_mm(z: float) -> float:
-    return BOSS_TOP_W_MM + (FOOT_WIDTH_MM - BOSS_TOP_W_MM) * _boss_ease(
+    return BOSS_TOP_W_MM + (BOSS_BEND_START_W_MM - BOSS_TOP_W_MM) * _boss_ease(
         (z - FOOT_REAR_Z_MM)
-        / (BOSS_WIDTH_EASE_END_Z_MM - FOOT_REAR_Z_MM))
+        / (FLOOR_BEND_HORIZONTAL_TANGENT_Z_MM - FOOT_REAR_Z_MM))
 
 
 def _boss_section(z: float, y0: float = 0.0):
     w, h = boss_width_mm(z), boss_height_mm(z)
-    fade = _boss_ease((BOSS_SQUARE_Z_MM - z) / BOSS_FILLET_FADE_SPAN_MM)
-    r = fade * min(
+    u = _boss_ease((z - BOSS_LANDING_Z_MM)
+                   / (FLOOR_BEND_HORIZONTAL_TANGENT_Z_MM
+                      - BOSS_LANDING_Z_MM))
+    r_full = min(
         4.2 + 3.8 * _boss_ease((z - FOOT_REAR_Z_MM) / 40.0),
         h / 3.0, w / 4.0)
+    r = (1.0 - u) * r_full + u * BOSS_BEND_START_R_MM
     half = w / 2.0
     wire = (Polyline((half, y0), (-half, y0), (-half, h))
             + Line((-half, h), (half, h)) + Line((half, h), (half, y0)))
@@ -314,6 +320,62 @@ def _boss_section(z: float, y0: float = 0.0):
     if r > 0.2 and corners:
         face = fillet(corners, r)
     return Plane.XY.offset(z) * face
+
+
+def _bend_taper_w_r(u: float):
+    tail = _boss_ease(u)
+    return (BOSS_BEND_START_W_MM
+            + (FOOT_WIDTH_MM - BOSS_BEND_START_W_MM) * tail,
+            BOSS_BEND_START_R_MM * (1.0 - tail))
+
+
+def _tapered_bend_loft():
+    """The Option-B wall as perpendicular sections along its centerline.
+
+    Constant 18.3 normal thickness like ``bent_wall_prism``, but the
+    width carries the trumpet's final millimetre (63.0 -> 64.0) and the
+    corner radius fades 2.0 -> sharp around the arc, so the boss taper
+    only completes where the wall is perpendicular.
+    """
+    controls = centerline_controls()
+
+    def frame(u: float):
+        point = cubic_point(controls, u)
+        step = 1.0e-4
+        rear = cubic_point(controls, max(0.0, u - step))
+        fore = cubic_point(controls, min(1.0, u + step))
+        ty, tz = fore[1] - rear[1], fore[2] - rear[2]
+        norm = math.hypot(ty, tz)
+        return (point[1], point[2]), (ty / norm, tz / norm)
+
+    def section(origin_yz, tangent_yz, w, r):
+        plane = Plane(
+            origin=(0.0, origin_yz[0], origin_yz[1]),
+            x_dir=(1.0, 0.0, 0.0),
+            z_dir=(0.0, tangent_yz[0], tangent_yz[1]))
+        if r > 0.15:
+            return plane * RectangleRounded(w, FOOT_HEIGHT_MM, r)
+        return plane * Rectangle(w, FOOT_HEIGHT_MM)
+
+    sections = []
+    (y0, z0), t0 = frame(0.0)
+    for back in (FLOOR_BEND_FUSION_OVERLAP_MM,
+                 FLOOR_BEND_FUSION_OVERLAP_MM / 2.0):
+        sections.append(section(
+            (y0 - t0[0] * back, z0 - t0[1] * back), t0,
+            BOSS_BEND_START_W_MM, BOSS_BEND_START_R_MM))
+    for index in range(33):
+        u = index / 32.0
+        origin, tangent = frame(u)
+        w, r = _bend_taper_w_r(u)
+        sections.append(section(origin, tangent, w, r))
+    (y1, z1), t1 = frame(1.0)
+    for fore in (FLOOR_BEND_FUSION_OVERLAP_MM / 2.0,
+                 FLOOR_BEND_FUSION_OVERLAP_MM):
+        sections.append(section(
+            (y1 + t1[0] * fore, z1 + t1[1] * fore), t1,
+            FOOT_WIDTH_MM, 0.0))
+    return loft(sections, ruled=True)
 
 
 def _boss_prism():
@@ -564,7 +626,7 @@ def integrated_floor_addition():
     # The boss loft owns the whole rear: its sections carry the foot
     # cross-section (trumpet 38.4 -> W64) from the flange to 5 mm past
     # the bend's horizontal tangent, so no separate flat foot box exists.
-    bend = bent_wall_prism(FOOT_WIDTH_MM)
+    bend = _tapered_bend_loft()
     boss = _boss_prism()
     body = boss.fuse(
         bend, _stem_prism(),
@@ -900,6 +962,11 @@ def integrated_floor_facts() -> dict:
             "lid_pad_spans_z_mm": LID_PAD_SPANS_Z_MM,
             "lid_clip_spans_z_mm": LID_CLIP_SPANS_Z_MM,
             "lid_pocket_preload_mm": LID_POCKET_PRELOAD_MM,
+            "bend_taper": {
+                "start_width_mm": BOSS_BEND_START_W_MM,
+                "start_corner_r_mm": BOSS_BEND_START_R_MM,
+                "completes_at": "vertical_tangent",
+            },
         },
         "nl8_center_y_mm": NL8_CENTER_Y_MM,
         "nl8_cutout_d_mm": NL8_CUTOUT_D_MM,
