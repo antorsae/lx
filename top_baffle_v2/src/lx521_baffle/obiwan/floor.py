@@ -78,14 +78,22 @@ NL8_CENTER_Y_MM = BOSS_TOP_W_MM / 2.0          # square face, derived
 BOSS_FLANGE_T_MM = 5.6                         # insert seat 4.0 + 1.6 roof
 BOSS_CREST_HOLD_Z_MM = -120.0
 BOSS_FALL_SPAN_MM = 44.0
-BOSS_WIDTH_EASE_END_Z_MM = -56.0               # approved trumpet span
-# The loft runs 7.85 past the bend's horizontal tangent for a deep,
-# OCC-stable fusion; its last section's bottom edge is raised to 1.2 so
-# the end cap hides above the bend's rising underside (0.76 there)
-# instead of leaving a downward sliver.
+# The neck must meet the square W64 bend wall with NOTHING to see: the
+# trumpet reaches exactly 64.0 and the corner fillets fade to a sharp
+# edge at the same station, just before the bend's horizontal tangent
+# (-65.85) where the perpendicular walls take over.  The fade runs over
+# the flat foot segment between the dome landing (-76) and that station,
+# so the whole visible neck keeps its curved corners and they sharpen
+# gradually only where the walls go straight.
+BOSS_SQUARE_Z_MM = -66.0
+BOSS_WIDTH_EASE_END_Z_MM = BOSS_SQUARE_Z_MM
+BOSS_FILLET_FADE_SPAN_MM = 10.0
+# The loft runs past the tangent for a deep, OCC-stable fusion; its last
+# section's bottom edge is raised to 1.2 so the end cap hides above the
+# bend's rising underside (0.76 there) instead of leaving a downward
+# sliver.
 BOSS_END_Z_MM = -58.0
 BOSS_END_LIFT_MM = 1.2
-BOSS_FILLET_FADE_SPAN_MM = 14.0
 PANEL_INNER_Z_MM = FOOT_REAR_Z_MM + BOSS_FLANGE_T_MM
 PANEL_T_MM = PANEL_INNER_Z_MM - FOOT_REAR_Z_MM
 PANEL_H_MM = BOSS_TOP_W_MM
@@ -292,7 +300,7 @@ def boss_width_mm(z: float) -> float:
 
 def _boss_section(z: float, y0: float = 0.0):
     w, h = boss_width_mm(z), boss_height_mm(z)
-    fade = _boss_ease((BOSS_END_Z_MM - z) / BOSS_FILLET_FADE_SPAN_MM)
+    fade = _boss_ease((BOSS_SQUARE_Z_MM - z) / BOSS_FILLET_FADE_SPAN_MM)
     r = fade * min(
         4.2 + 3.8 * _boss_ease((z - FOOT_REAR_Z_MM) / 40.0),
         h / 3.0, w / 4.0)

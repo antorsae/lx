@@ -1,7 +1,7 @@
-[2026-08-18 00:55:26.302910] [0x00000001fa8e5e80] [trace]   Initializing StaticPrintConfigs
-[2026-08-18 00:55:26.310832] [0x00000001fa8e5e80] [warning] cli mode, Current BambuStudio Version 02.07.01.62
-[2026-08-18 00:55:26.327183] [0x00000001fa8e5e80] [warning] no filament colors found in projects
-[2026-08-18 00:55:26.328241] [0x00000001fa8e5e80] [warning] load_nozzle_infos_with_compatibility: building nozzle list from filament map and volume types
-[2026-08-18 00:55:27.097505] [0x00000001fa8e5e80] [warning] tree support default to organic support
-[2026-08-18 00:55:27.372804] [0x00000001fa8e5e80] [warning] tree support default to organic support
-[2026-08-18 00:55:28.874941] [0x00000001fa8e5e80] [error]   Invalid T command (T65535).
+[2026-08-18 10:43:46.971497] [0x00000001fa8e5e80] [trace]   Initializing StaticPrintConfigs
+[2026-08-18 10:43:46.976293] [0x00000001fa8e5e80] [warning] cli mode, Current BambuStudio Version 02.07.01.62
+[2026-08-18 10:43:46.985410] [0x00000001fa8e5e80] [warning] no filament colors found in projects
+[2026-08-18 10:43:46.985984] [0x00000001fa8e5e80] [warning] load_nozzle_infos_with_compatibility: building nozzle list from filament map and volume types
+[2026-08-18 10:43:47.993778] [0x00000001fa8e5e80] [warning] tree support default to organic support
+[2026-08-18 10:43:48.263587] [0x00000001fa8e5e80] [warning] tree support default to organic support
+[2026-08-18 10:43:49.828217] [0x00000001fa8e5e80] [error]   Invalid T command (T65535).

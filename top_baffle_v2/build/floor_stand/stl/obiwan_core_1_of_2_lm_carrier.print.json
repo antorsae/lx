@@ -3,10 +3,10 @@
     "collapsed_apex_facets_removed": 0,
     "component_error": 0,
     "component_signed_volumes": [
-      260884.431729303,
-      -64.88303136737977,
+      264533.5576536428,
+      -64.88302194146536,
       -64.88306131907763,
-      -64.88307057181378,
+      -64.8830704813348,
       -64.88312737088262
     ],
     "components": 5,
@@ -20,8 +20,8 @@
     "open": 0,
     "outer_components": 1,
     "over_shared": 0,
-    "signed_volume": 260624.89943867378,
-    "triangles": 163964,
+    "signed_volume": 264274.02537253057,
+    "triangles": 166818,
     "winding": 0,
     "zero_volume": 0,
     "zero_volume_components": 0
@@ -30,7 +30,7 @@
   "mesh_tolerance_mm": 0.01,
   "part": "obiwan_core_1_of_2_lm_carrier",
   "pre_translation_bbox_min_mm": [
-    -28.254323071485672,
+    -28.254323071485707,
     -298.7315299057354,
     -18.300000099999995
   ],
@@ -45,7 +45,7 @@
       0.882947592858927,
       0.4694715627858908,
       0.0,
-      28.254323071485672
+      28.254323071485707
     ],
     [
       0.4694715627858908,
@@ -67,12 +67,12 @@
     ]
   ],
   "stl": "obiwan_core_1_of_2_lm_carrier.stl",
-  "stl_bytes": 8198284,
+  "stl_bytes": 8340984,
   "stl_origin_translation_mm": [
-    28.254323071485672,
+    28.254323071485707,
     298.7315299057354,
     18.300000099999995
   ],
-  "stl_sha256": "50b49868f29ca1fcdb824de0cd9b47f88660c92b75a77bbb792d75cfc5fd63f0",
+  "stl_sha256": "d250ffca234f7834200c222b927a65215f47b77489ac40665313e16dce038400",
   "variant_export": "obiwan"
 }
