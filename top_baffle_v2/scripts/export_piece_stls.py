@@ -676,6 +676,7 @@ def main() -> None:
             "obiwan_optional_lm_keyed_1_of_2_bottom.stl",
             "obiwan_optional_lm_keyed_2_of_2_top.stl",
             "obiwan_addon_tweeter_crescent.stl",
+            "obiwan_addon_nl8_service_lid.stl",
         }
         for legacy in (
                 *out_dir.glob("obiwan_addon_*.stl"),

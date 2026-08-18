@@ -36,7 +36,7 @@ EXPECTED = {
         "bottom_name": (
             "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand"
         ),
-        "triangle_count": 173_678,
+        "triangle_count": 196_304,
         "make_slug": "floor",
         "infill": (100.0, "zig-zag"),
     },
@@ -60,6 +60,9 @@ def check_variant(state: str) -> None:
     api.activate()
     expected = EXPECTED[state]
     expected_names = (expected["bottom_name"], *SHARED_NAMES)
+    if state == "floor_stand":
+        expected_names = (
+            *expected_names, "obiwan_NL8_service_lid_1_of_1")
     check(
         api.PLATE_NAME == expected["plate_name"],
         f"{state}: plate identity drifted",
@@ -70,7 +73,7 @@ def check_variant(state: str) -> None:
     )
     check(
         tuple(part.friendly_name for part in api.PARTS) == expected_names,
-        f"{state}: four-part friendly inventory or ordering drifted",
+        f"{state}: friendly part inventory or ordering drifted",
     )
     # A plate may be hand-arranged, in which case parts carry a rotation and
     # their placement is the position of the part's centre rather than an
@@ -117,8 +120,9 @@ def check_variant(state: str) -> None:
     )
     check(
         contract["triangle_count"] == expected["triangle_count"]
-        and contract["expected_disconnected_printable_part_count"] == 4,
-        f"{state}: exact four-part triangle contract drifted",
+        and contract["expected_disconnected_printable_part_count"]
+        == len(expected_names),
+        f"{state}: exact per-part triangle contract drifted",
     )
     check(
         contract["packing"]["minimum_actual_xy_gap_mm"]

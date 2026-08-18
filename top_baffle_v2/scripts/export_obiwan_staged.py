@@ -169,6 +169,15 @@ PRINT_PART_SPECS = {
         "stl_name": "obiwan_addon_tweeter_crescent",
         "group": "tweeter",
     },
+    # The floor-state service-trough lid is carved from the same boss
+    # loft as the keyed bottom; the no-floor state has no boss or lid.
+    "addon_nl8_service_lid": {
+        "filename": "addon_nl8_service_lid.brep",
+        "label": "addon_nl8_service_lid",
+        "stl_name": "obiwan_addon_nl8_service_lid",
+        "group": "tweeter",
+        "floor_only": True,
+    },
 }
 
 
@@ -372,6 +381,8 @@ def _validate_brep_transaction(path: Path) -> None:
 def _expected_print_keys(stand_foot: bool) -> tuple[str, ...]:
     keys = [*CORE_KEYS, *OPTIONAL_LM_SPLIT_KEYS]
     keys.extend(ATTACHMENT_KEYS_BASE)
+    if stand_foot:
+        keys.append("addon_nl8_service_lid")
     return tuple(keys)
 
 
@@ -694,12 +705,16 @@ def _worker_print_group(group: str, output_dir: Path) -> None:
     elif group == "tweeter":
         from lx521_baffle.obiwan.attachments import tweeter_crescent
         parts = {"addon_tweeter_crescent": tweeter_crescent()}
+        if _stand_foot():
+            from lx521_baffle.obiwan.floor import floor_service_lid
+            parts["addon_nl8_service_lid"] = floor_service_lid()
     else:
         raise RuntimeError(f"unknown Obi-Wan print group: {group}")
 
     expected = {
         key for key, spec in PRINT_PART_SPECS.items()
         if spec["group"] == group
+        and (not spec.get("floor_only") or _stand_foot())
     }
     if set(parts) != expected:
         raise RuntimeError(

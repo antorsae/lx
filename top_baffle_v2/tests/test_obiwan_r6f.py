@@ -681,8 +681,17 @@ def test_route_contract():
         "optional_lm_keyed_1_of_2_bottom",
         "optional_lm_keyed_2_of_2_top",
         "addon_tweeter_crescent",
+        "addon_nl8_service_lid",
     }
     assert staged._expected_print_keys(True) == (
+        "core_lm_carrier",
+        "core_um_carrier",
+        "optional_lm_keyed_1_of_2_bottom",
+        "optional_lm_keyed_2_of_2_top",
+        "addon_tweeter_crescent",
+        "addon_nl8_service_lid",
+    )
+    assert staged._expected_print_keys(False) == (
         "core_lm_carrier",
         "core_um_carrier",
         "optional_lm_keyed_1_of_2_bottom",
@@ -5070,7 +5079,7 @@ def test_floor_integrated_mount():
     facts = floor.integrated_floor_facts()
     assert facts["ownership"] == (
         "floor_core_lm_and_optional_keyed_bottom")
-    assert facts["feature_group_count"] == 5
+    assert facts["feature_group_count"] == 6
     assert facts["floor_y_mm"] == 0.0
     assert facts["lm_axis_y_mm"] == 200.981
     assert facts["lm_axis_to_floor_mm"] == 200.981
@@ -5099,11 +5108,13 @@ def test_floor_integrated_mount():
     assert math.isclose(
         facts["upright_start_y_mm"],
         74.15 - bend["fusion_overlap_mm"], abs_tol=1e-12)
-    assert facts["panel_z_mm"] == (-150.0, -146.0)
-    assert facts["panel_height_mm"] == 44.0
-    assert facts["nl8_center_y_mm"] == 22.0
+    assert facts["panel_z_mm"] == (-150.0, -144.4)
+    assert facts["panel_height_mm"] == 38.4
+    assert facts["nl8_center_y_mm"] == 19.2
     assert facts["nl8_cutout_d_mm"] == 31.0
-    assert facts["nl8_screw_d_mm"] == 3.2
+    assert facts["nl8_screw_d_mm"] == 4.6
+    assert facts["boss"]["duct_entry_wall_z_mm"] == -77.0
+    assert facts["boss"]["lid_thickness_mm"] == 1.8
     assert facts["nl8_screw_pitch_mm"] == 29.2
     assert facts["floor_lane_count"] == 3
     assert set(facts["floor_lanes"]) == {"lm", "um", "t"}
@@ -5151,7 +5162,10 @@ def test_floor_integrated_mount():
     # the exact Option-B mid-bend and the retained upper upright without
     # reusing the solid builders.  A negative witness in the former straight
     # upright proves the old hard-corner envelope was actually removed.
-    rear_flat_witness = Pos(28.0, 9.15, -100.0) * Box(2.0, 16.0, 20.0)
+    # The boss trumpet narrows the rear: at Z -110..-90 the half-width is
+    # 24.4..27.3, so the retained-flat witness sits at x=22, inboard of the
+    # taper yet outboard of the trough wall and its clip pockets (18.1).
+    rear_flat_witness = Pos(22.0, 9.15, -100.0) * Box(2.0, 16.0, 20.0)
     bend_mid_witness = Pos(28.0, 28.93061224489796, -3.0375) * Box(
         2.0, 2.0, 2.0)
     upper_upright_witness = Pos(28.0, 80.0, 9.15) * Box(2.0, 8.0, 16.0)
@@ -5187,22 +5201,32 @@ def test_floor_integrated_mount():
     # The rear connector panel is real, with a bounded service scoop behind
     # it and the exact NL8 plus four-hole pattern open through the panel.
     cavity_x, cavity_y, cavity_z = facts["service_cavity_xyz_mm"]
+    # The barrel chamber is a rounded loft: a D31.4 throat over the first
+    # 8 mm, then RectangleRounded r6 walls to the crest hold.  Probe it
+    # with matching shapes instead of a sharp-cornered box.
+    throat_probe = Pos(
+        0.0, facts["nl8_center_y_mm"], cavity_z[0] + 4.1
+    ) * Cylinder(15.3, 7.6)
+    assert _intersection_volume(lm, throat_probe) < 0.05
     cavity_probe = Pos(
         sum(cavity_x) / 2.0,
         sum(cavity_y) / 2.0,
-        sum(cavity_z) / 2.0,
+        (cavity_z[0] + 8.0 + cavity_z[1]) / 2.0,
     ) * Box(
-        cavity_x[1] - cavity_x[0] - 0.4,
-        cavity_y[1] - cavity_y[0] - 0.4,
-        cavity_z[1] - cavity_z[0] - 0.4,
+        cavity_x[1] - cavity_x[0] - 8.0,
+        cavity_y[1] - cavity_y[0] - 8.0,
+        cavity_z[1] - (cavity_z[0] + 8.0) - 0.4,
     )
     assert _intersection_volume(lm, cavity_probe) < 0.05
     panel_z = sum(facts["panel_z_mm"]) / 2.0
     panel_h = facts["panel_z_mm"][1] - facts["panel_z_mm"][0]
+    insert_l = facts["boss"]["insert_depth_mm"]
     panel_voids = [
         Pos(0.0, facts["nl8_center_y_mm"], panel_z)
         * Cylinder(facts["nl8_cutout_d_mm"] / 2.0 - 0.15, panel_h + 0.2),
     ]
+    # the four mounting bores are BLIND heat-set insert pockets now, so
+    # each void probe stops short of the 1.6-mm seat roof
     for sx in (-1.0, 1.0):
         for sy in (-1.0, 1.0):
             panel_voids.append(
@@ -5210,10 +5234,10 @@ def test_floor_integrated_mount():
                     sx * facts["nl8_screw_pitch_mm"] / 2.0,
                     facts["nl8_center_y_mm"]
                     + sy * facts["nl8_screw_pitch_mm"] / 2.0,
-                    panel_z,
+                    facts["foot_z_mm"][0] + insert_l / 2.0,
                 ) * Cylinder(
                     facts["nl8_screw_d_mm"] / 2.0 - 0.10,
-                    panel_h + 0.2))
+                    insert_l - 0.20))
     assert all(_intersection_volume(lm, void) < 0.02
                for void in panel_voids)
 
@@ -5227,32 +5251,34 @@ def test_floor_integrated_mount():
         x = record["x_mm"]
         y = record["floor_y_mm"]
         radius = record["diameter_mm"] / 2.0
-        lumen = Pos(x, y, -90.0) * Cylinder(radius - 0.15, 10.0)
+        # rear of the duct-entry wall the lanes are OPEN trough; the
+        # buried-run probes therefore sit forward of Z=-77
+        lumen = Pos(x, y, -70.0) * Cylinder(radius - 0.15, 10.0)
         assert _intersection_volume(lm, lumen) < 0.02, (
             f"{name} floor lumen is obstructed")
         wall = (
-            Pos(x, y, -90.0) * Cylinder(radius + 0.55, 8.0)
-            - Pos(x, y, -90.0) * Cylinder(radius + 0.10, 8.0)
+            Pos(x, y, -70.0) * Cylinder(radius + 0.55, 8.0)
+            - Pos(x, y, -70.0) * Cylinder(radius + 0.10, 8.0)
         )
         retained = _intersection_volume(lm, wall)
         assert retained > 0.97 * wall.volume, (
             f"{name} floor lumen is not fully buried: "
             f"{retained / wall.volume:.1%} wall retained")
 
-        connector_margin = min(
-            x - radius - cavity_x[0],
-            cavity_x[1] - (x + radius),
-            y - radius - cavity_y[0],
-            cavity_y[1] - (y + radius),
+        trough_half = facts["boss"]["trough_half_w_mm"]
+        trough_floor = facts["boss"]["trough_floor_y_mm"]
+        entry_margin = min(
+            trough_half - (abs(x) + radius),
+            y - radius - trough_floor,
         )
-        assert connector_margin >= 0.49, (
-            f"{name} full connector opening margin "
-            f"{connector_margin:.3f} mm")
-        connector_opening = Pos(
-            x, y, cavity_z[1] + 0.50
+        # the UM mouth grazes the trough side wall by design (0.45 web)
+        assert entry_margin >= 0.40, (
+            f"{name} duct-entry margin {entry_margin:.3f} mm")
+        entry_opening = Pos(
+            x, y, facts["floor_lanes"][name]["service_start_z_mm"] + 0.50
         ) * Cylinder(radius - 0.10, 0.60)
-        assert _intersection_volume(lm, connector_opening) < 0.02, (
-            f"{name} connector-side full-diameter opening is capped")
+        assert _intersection_volume(lm, entry_opening) < 0.02, (
+            f"{name} duct-entry full-diameter opening is capped")
 
         path = floor.floor_lane_path(name)
         assert path.is_valid and not path.is_closed

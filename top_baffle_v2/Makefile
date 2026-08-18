@@ -2752,13 +2752,17 @@ $(JUNCTION_CLOSURE_BASE_STAMP): $(JUNCTION_CLOSURE_BASE_STATE_STAMPS)
 	@touch $@
 
 define JUNCTION_CLOSURE_BASE_STATE_RULE
+# The stage manifest is a NORMAL prerequisite: the closure test reads it
+# and refuses a stale fingerprint, so Make must order it after the stage
+# regeneration -- an order-only dependency raced on warm-cache seeds.
 $(call junction_closure_base_state_stamp,$(1)): \
 		$(call r6f_check_stamp,$(3)) \
 		tests/test_obiwan_junction_closure_webs.py \
 		src/lx521_baffle/obiwan/carriers.py \
 		src/lx521_baffle/obiwan/attachments.py \
-		$(OBIWAN_SRCS) $(EXECUTION_SRCS) $(CHECK_REVALIDATE) | \
-		$(4)
+		$(OBIWAN_SRCS) $(EXECUTION_SRCS) $(CHECK_REVALIDATE) \
+		build/floor_stand/.obiwan_stage/manifest.json \
+		build/no_floor_stand/.obiwan_stage/manifest.json
 	@mkdir -p $$(@D)
 	# Each state is compared with its own route oracle in an independent Make
 	# slot; the aggregate base stamp joins the two successful results.
@@ -2779,7 +2783,7 @@ $(call junction_closure_dense_stamp,$(1),$(2)): \
 		tests/test_obiwan_junction_closure_webs.py \
 		src/lx521_baffle/obiwan/carriers.py \
 		src/lx521_baffle/obiwan/attachments.py \
-		$$(OBIWAN_SRCS) $$(EXECUTION_SRCS) $$(CHECK_REVALIDATE) | \
+		$$(OBIWAN_SRCS) $$(EXECUTION_SRCS) $$(CHECK_REVALIDATE) \
 		build/floor_stand/.obiwan_stage/manifest.json \
 		build/no_floor_stand/.obiwan_stage/manifest.json
 	@mkdir -p $$(@D)

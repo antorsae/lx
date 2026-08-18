@@ -147,6 +147,7 @@ LOCKED_TRANSLATIONS_MM = (
     (27.025, 2.010, 0.0),
     (71.034, 28.412, 0.0),
     (108.802, 209.132, 0.0),
+    (210.0, 218.0, 0.0),
 )
 
 
@@ -186,6 +187,15 @@ def _variant(
             None,
         ),
     )
+    if state == "floor_stand":
+        # The snap-in service-trough lid exists only where the boss does.
+        # It stands front-tip-down in the plate's free top-right corner
+        # (34.7 x 28.1 plan envelope, >=2 mm from every neighbour).
+        identities = (*identities, (
+            "obiwan_NL8_service_lid_1_of_1",
+            "obiwan_addon_nl8_service_lid",
+            None,
+        ))
     placements = LOCKED_PLACEMENTS.get(state)
     centre_based = placements is not None
     if placements is None:
@@ -242,7 +252,7 @@ VARIANTS = {
         plate_name=(
             "obiwan_01_02_03_04_LM_UM_combo_floor_stand"
         ),
-        expected_triangle_count=173_678,
+        expected_triangle_count=196_304,
         sparse_infill_density_percent=100.0,
         sparse_infill_pattern="zig-zag",
     ),

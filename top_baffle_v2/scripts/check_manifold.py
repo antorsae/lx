@@ -56,7 +56,9 @@ FLOOR_POLAR_SIDECAR_EXCLUSIONS = frozenset({
 WING_SLUGS = ("flat", "graded")
 WING_SIDES = ("left", "right")
 WING_TWO_PIECE_ROLES = ("lm_lower", "lm_um_upper")
-EXPECTED_NONPOLAR_STATE_STL_COUNT = 39
+# floor_stand carries one more STL than no_floor_stand: the NL8
+# service-trough lid exists only where the boss does.
+EXPECTED_NONPOLAR_STATE_STL_COUNT = {"floor_stand": 40, "no_floor_stand": 39}
 # Only the two-piece split ships; the three-piece decomposition stays in
 # the CAD (the two-piece lower is taken from it verbatim) but exports no STL.
 EXPECTED_WING_STL_COUNT = 4
@@ -895,6 +897,9 @@ def _obiwan_manifest_errors(
         "obiwan_optional_lm_keyed_2_of_2_top.stl",
         "obiwan_addon_tweeter_crescent.stl",
     }
+    if state == "floor_stand":
+        # the snap-in service-trough lid exists only where the boss does
+        expected.add("obiwan_addon_nl8_service_lid.stl")
     errors = []
     missing = sorted(expected - actual)
     extra = sorted(actual - expected)
@@ -1010,10 +1015,10 @@ def _obiwan_manifest_errors(
     )
     if (not obiwan_only
             and len(complete_expected - set(polar_exclusions))
-            != EXPECTED_NONPOLAR_STATE_STL_COUNT):
+            != EXPECTED_NONPOLAR_STATE_STL_COUNT[state]):
         errors.append(
             f"{state}: nonpolar release STL count drifted from "
-            f"{EXPECTED_NONPOLAR_STATE_STL_COUNT} to "
+            f"{EXPECTED_NONPOLAR_STATE_STL_COUNT[state]} to "
             f"{len(complete_expected - set(polar_exclusions))}")
     errors.extend(_print_sidecar_inventory_errors(
         root, complete_expected, excluded_stl_names=polar_exclusions,

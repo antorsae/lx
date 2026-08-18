@@ -578,10 +578,11 @@ def main() -> int:
               f"{api.PLATE_NAME}: no GUI project was delivered")
         check(record["magnets"] == 6 and abs(record["pause_z_mm"] - 5.96) < 1e-6,
               f"{api.PLATE_NAME}: GUI project lost its six-magnet pause")
-        check(record["parts"]["normal_part"] == 4
+        expected_parts = len(api.PARTS)
+        check(record["parts"]["normal_part"] == expected_parts
               and record["parts"]["support_blocker"] == 3,
-              f"{api.PLATE_NAME}: GUI project must carry four parts and "
-              "three duct blockers")
+              f"{api.PLATE_NAME}: GUI project must carry "
+              f"{expected_parts} parts and three duct blockers")
         check((ROOT / record["project"]).is_file(),
               f"{api.PLATE_NAME}: delivered GUI project is missing")
     for name in ("obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand",

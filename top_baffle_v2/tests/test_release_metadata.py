@@ -253,9 +253,13 @@ def test_obiwan_release_manifest_binds_print_sidecars() -> None:
     for stand_foot in (False, True):
         names = set(release_manifest.expected_artifact_names(stand_foot))
         actual_sidecars = {name for name in names if name.endswith(".print.json")}
-        assert actual_sidecars == expected_obiwan
-        assert len(actual_sidecars) == 15
-        assert len(names) == (48 if stand_foot else 46)
+        expected_state = set(expected_obiwan)
+        if stand_foot:
+            # the floor-state boss ships its snap-in service-trough lid
+            expected_state.add("stl/obiwan_addon_nl8_service_lid.print.json")
+        assert actual_sidecars == expected_state
+        assert len(actual_sidecars) == (16 if stand_foot else 15)
+        assert len(names) == (50 if stand_foot else 46)
         stls = {
             name for name in names
             if name.startswith("stl/") and name.endswith(".stl")
@@ -1310,7 +1314,8 @@ def test_release_sidecars_fail_closed() -> None:
 
 
 def test_sidecar_inventory_exact_counts_and_only_polar_exclusion() -> None:
-    assert EXPECTED_NONPOLAR_STATE_STL_COUNT == 39
+    assert EXPECTED_NONPOLAR_STATE_STL_COUNT == {
+        "floor_stand": 40, "no_floor_stand": 39}
     assert EXPECTED_WING_STL_COUNT == 4
     assert FLOOR_POLAR_SIDECAR_EXCLUSIONS == {
         "lx521_polar_base_1of2_base.stl",

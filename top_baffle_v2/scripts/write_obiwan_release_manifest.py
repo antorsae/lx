@@ -167,6 +167,9 @@ def expected_artifact_names(stand_foot: bool) -> tuple[str, ...]:
         "stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
         "stl/obiwan_addon_tweeter_crescent.stl",
     ]
+    if stand_foot:
+        # the floor-state boss carries a snap-in service-trough lid
+        obiwan_stls.append("stl/obiwan_addon_nl8_service_lid.stl")
     # Print orientation is part of the release, not an informal slicer note.
     # Bind every installed Obi-Wan STL to the hash-backed X180/front-down plus
     # optional in-bed-Z transform emitted by export_piece_stls.py.  Include

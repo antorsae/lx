@@ -142,6 +142,7 @@ def _validate(
     label: str,
     expected_infill: str,
     expected_pattern: str,
+    expected_parts: int = 4,
 ) -> dict:
     """Refuse to hand over a project that lost anything on the way out.
 
@@ -236,10 +237,10 @@ def _validate(
         subtype: models.count(f'subtype="{subtype}"')
         for subtype in ("normal_part", "support_blocker", "modifier_part")
     }
-    if counts["normal_part"] != 4:
+    if counts["normal_part"] != expected_parts:
         raise GuiProjectError(
             f"{label}: project holds {counts['normal_part']} parts, "
-            "expected the four core pieces")
+            f"expected {expected_parts}")
     if counts["support_blocker"] != 3:
         raise GuiProjectError(
             f"{label}: project holds {counts['support_blocker']} duct "
@@ -289,6 +290,7 @@ def _build_one(slug: str, output: Path) -> dict:
         expected_infill=(
             f"{api.variant.sparse_infill_density_percent:g}%"),
         expected_pattern=api.variant.sparse_infill_pattern,
+        expected_parts=len(api.PARTS),
     )
     output.mkdir(parents=True, exist_ok=True)
     destination = output / name

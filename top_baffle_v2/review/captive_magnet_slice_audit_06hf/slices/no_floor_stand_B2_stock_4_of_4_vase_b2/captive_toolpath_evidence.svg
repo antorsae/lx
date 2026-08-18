@@ -1652,8 +1652,6 @@
 <text x="662" y="309" font-family="monospace" font-size="10">stock_lower_left_base Z=5.96</text>
 <text x="662" y="503" font-family="monospace" font-size="9">roof interior=0.00 mm</text>
 <rect x="873" y="293" width="216" height="216" fill="#fbfcfd" stroke="#d7dde4"/>
-<line x1="1074.49" y1="497.60" x2="1075.44" y2="495.32" stroke="#1769aa" stroke-width="4.12" stroke-linecap="round"/>
-<line x1="1075.44" y1="495.32" x2="1082.16" y2="480.55" stroke="#1769aa" stroke-width="4.12" stroke-linecap="round"/>
 <line x1="960.32" y1="464.34" x2="972.44" y2="423.61" stroke="#00a878" stroke-width="6.19" stroke-linecap="round"/>
 <line x1="972.44" y1="423.61" x2="974.08" y2="418.08" stroke="#00a878" stroke-width="6.19" stroke-linecap="round"/>
 <line x1="974.08" y1="418.08" x2="975.23" y2="414.69" stroke="#00a878" stroke-width="6.57" stroke-linecap="round"/>
@@ -1830,6 +1828,8 @@
 <line x1="965.97" y1="489.94" x2="964.78" y2="492.30" stroke="#1769aa" stroke-width="4.12" stroke-linecap="round"/>
 <line x1="964.78" y1="492.30" x2="963.61" y2="494.67" stroke="#1769aa" stroke-width="4.12" stroke-linecap="round"/>
 <line x1="963.61" y1="494.67" x2="950.50" y2="520.31" stroke="#1769aa" stroke-width="4.12" stroke-linecap="round"/>
+<line x1="1074.49" y1="497.60" x2="1075.44" y2="495.32" stroke="#1769aa" stroke-width="4.12" stroke-linecap="round"/>
+<line x1="1075.44" y1="495.32" x2="1082.16" y2="480.55" stroke="#1769aa" stroke-width="4.12" stroke-linecap="round"/>
 <polygon points="955.84,432.56 984.81,441.18 1006.16,369.44 977.19,360.82" fill="none" stroke="#d62828" stroke-width="1.2" stroke-dasharray="4 3"/>
 <text x="880" y="309" font-family="monospace" font-size="10">stock_lower_left_base Z=8.52</text>
 <text x="880" y="503" font-family="monospace" font-size="9">roof interior=15.77 mm</text>

@@ -1,0 +1,74 @@
+{
+  "mesh": {
+    "collapsed_apex_facets_removed": 0,
+    "component_error": 0,
+    "component_signed_volumes": [
+      3626.480656811119
+    ],
+    "components": 1,
+    "degenerate": 0,
+    "disconnected_material_components": 0,
+    "duplicates": 0,
+    "negative_volume": 0,
+    "nested_void_components": 0,
+    "nonfinite": 0,
+    "nonnested_void_components": 0,
+    "open": 0,
+    "outer_components": 1,
+    "over_shared": 0,
+    "signed_volume": 3626.480656811119,
+    "triangles": 1136,
+    "winding": 0,
+    "zero_volume": 0,
+    "zero_volume_components": 0
+  },
+  "mesh_angular_tolerance": 0.08,
+  "mesh_tolerance_mm": 0.01,
+  "part": "obiwan_addon_nl8_service_lid",
+  "pre_translation_bbox_min_mm": [
+    -17.308252177595435,
+    -38.400000100000035,
+    77.1999998301863
+  ],
+  "print_orientation": "front_face_down",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      17.308252177595435
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      38.400000100000035
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      -77.1999998301863
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "obiwan_addon_nl8_service_lid.stl",
+  "stl_bytes": 56884,
+  "stl_origin_translation_mm": [
+    17.308252177595435,
+    38.400000100000035,
+    -77.1999998301863
+  ],
+  "stl_sha256": "12f9e091a89f4d347a64ae7312feb7f024a1cc6172224a7be9612fc8f1f0a133",
+  "variant_export": "obiwan"
+}
