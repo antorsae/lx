@@ -5,7 +5,7 @@
  "profile_config_sha256": "fd49aee6fc69a61a2ad5f79f5f745b15c7503e0f7da19997c248a7bf4fa9ac9a",
  "profile_config_path": "/Users/antor/gh/lx/top_baffle_v2/captive_magnet_slicing_profile_06hf.json",
  "plain_slice_profile_sha256": "fd49aee6fc69a61a2ad5f79f5f745b15c7503e0f7da19997c248a7bf4fa9ac9a",
- "entry_count": 35,
+ "entry_count": 32,
  "entries": [
   {
    "name": "stock_04_UM_vase_1_of_1",
@@ -14,7 +14,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "no_floor_stand:B2:stock_4_of_4_vase_b2",
    "project": "stock/3mf_06hf/stock_04_UM_vase_1_of_1_06hf.gcode.3mf",
-   "project_sha256": "9af06faa3c916e367f8e0f6fe3e43d8d969a30461b493b086d53abba20f06444",
+   "project_sha256": "3619f71a3e8054bf6585131b177db1e7c4ed87a2f922763d3294445497551d2a",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_B2_stock_4_of_4_vase_b2/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_B2_stock_4_of_4_vase_b2/captive_magnet_slice_audit.json"
   },
@@ -25,7 +25,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "no_floor_stand:A:stock_shoulder_3_of_4_bottom_left",
    "project": "stock/3mf_06hf/stock_05_A_shoulder_bottom_left_1_of_4_06hf.gcode.3mf",
-   "project_sha256": "df0844aed066242e67af084e345e2dafee942aff6c8eef50bfcd2ee2a4849b62",
+   "project_sha256": "e1a5ca8d6e28fd4145a350dec771a525f2dba0f7441bbfd00fd2460aeca69710",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_A_stock_shoulder_3_of_4_bottom_left/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_A_stock_shoulder_3_of_4_bottom_left/captive_magnet_slice_audit.json"
   },
@@ -36,7 +36,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "no_floor_stand:A:stock_shoulder_1_of_4_top_left",
    "project": "stock/3mf_06hf/stock_06_A_shoulder_top_left_2_of_4_06hf.gcode.3mf",
-   "project_sha256": "1d6fe2342757896e76273e41af465776d496470e736d4964aefabc84aa211a02",
+   "project_sha256": "861c44877d2efb275f30ec27d69ba15acead5103bd2af698aba32be6be54f133",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_A_stock_shoulder_1_of_4_top_left/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_A_stock_shoulder_1_of_4_top_left/captive_magnet_slice_audit.json"
   },
@@ -47,7 +47,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "no_floor_stand:A:stock_shoulder_4_of_4_bottom_right",
    "project": "stock/3mf_06hf/stock_07_A_shoulder_bottom_right_3_of_4_06hf.gcode.3mf",
-   "project_sha256": "fc82332802f0c6fde255811e18c3636ca945feeb0462127ae631abe931a23889",
+   "project_sha256": "f1b828f3112b6310fa97965dc9d42e3195d051d3932b9da58ef8576529e162a3",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_A_stock_shoulder_4_of_4_bottom_right/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_A_stock_shoulder_4_of_4_bottom_right/captive_magnet_slice_audit.json"
   },
@@ -58,7 +58,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "no_floor_stand:A:stock_shoulder_2_of_4_top_right",
    "project": "stock/3mf_06hf/stock_08_A_shoulder_top_right_4_of_4_06hf.gcode.3mf",
-   "project_sha256": "abb452c1e3c740b97403f71b637d1c1d9c414a21cf656dfffbce97d502d442ba",
+   "project_sha256": "2b21ff6cdcd41d32dcc1811488ae77f659f60cdeb94ade08359d317d64825190",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_A_stock_shoulder_2_of_4_top_right/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_A_stock_shoulder_2_of_4_top_right/captive_magnet_slice_audit.json"
   },
@@ -69,7 +69,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "no_floor_stand:B1:stock_wing_1_of_2_left",
    "project": "stock/3mf_06hf/stock_09_B1_wing_left_1_of_2_06hf.gcode.3mf",
-   "project_sha256": "a6acecebf305490ca4952d8e576e05c6a9700c54eca1dfbe4b7536bcc0199468",
+   "project_sha256": "20dc1397412da44fb9cb674004e0b8c1de8fd5c1767229f4aeedc10678c45173",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_B1_stock_wing_1_of_2_left/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_B1_stock_wing_1_of_2_left/captive_magnet_slice_audit.json"
   },
@@ -80,7 +80,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "no_floor_stand:B1:stock_wing_2_of_2_right",
    "project": "stock/3mf_06hf/stock_10_B1_wing_right_2_of_2_06hf.gcode.3mf",
-   "project_sha256": "abfe3a836a4def9072bbc5527a1d2cad8ed9e3a629b9698cb6cb4b4561b24939",
+   "project_sha256": "ec618bb9bf080191ffce097e0c5f40300c10314d50fff6703937ab88c268ac8e",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_B1_stock_wing_2_of_2_right/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_B1_stock_wing_2_of_2_right/captive_magnet_slice_audit.json"
   },
@@ -91,7 +91,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "no_floor_stand:V1L:slim_4_of_4_vase_b2",
    "project": "slim/3mf_06hf/slim_04_UM_vase_1_of_1_06hf.gcode.3mf",
-   "project_sha256": "afe32949a734506cd18ab8d208d379742da0181e3c1d7fba44cb4e046de88528",
+   "project_sha256": "a017024e8c718888e3d2003c9e64c41740aa503121166dc75224ecf32d908c69",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_V1L_slim_4_of_4_vase_b2/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_V1L_slim_4_of_4_vase_b2/captive_magnet_slice_audit.json"
   },
@@ -102,7 +102,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "no_floor_stand:V1-A:slim_shoulder_1_of_4_bottom_left",
    "project": "slim/3mf_06hf/slim_05_A_shoulder_bottom_left_1_of_4_06hf.gcode.3mf",
-   "project_sha256": "3cb1adf84f7192af3e858e5519daf6e56e3124afd1538ae086015ffccf902679",
+   "project_sha256": "4b4e7e6a8e5698b608cf472eb18066c88276a66d52a54506bd8e33bc178da9a7",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_V1-A_slim_shoulder_1_of_4_bottom_left/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_V1-A_slim_shoulder_1_of_4_bottom_left/captive_magnet_slice_audit.json"
   },
@@ -113,7 +113,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "no_floor_stand:V1-A:slim_shoulder_2_of_4_top_left",
    "project": "slim/3mf_06hf/slim_06_A_shoulder_top_left_2_of_4_06hf.gcode.3mf",
-   "project_sha256": "8ef81c99af24d9b27a6dcc737bc2cea669779c0e5c8136e241bc1eaafe001b77",
+   "project_sha256": "1ea26062da85e7ad876af4d57bdf4fda6604eb1c212ca532c215e732d0c27982",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_V1-A_slim_shoulder_2_of_4_top_left/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_V1-A_slim_shoulder_2_of_4_top_left/captive_magnet_slice_audit.json"
   },
@@ -124,7 +124,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "no_floor_stand:V1-A:slim_shoulder_3_of_4_bottom_right",
    "project": "slim/3mf_06hf/slim_07_A_shoulder_bottom_right_3_of_4_06hf.gcode.3mf",
-   "project_sha256": "0d662c56def6a5ac89a7efc7b297e32801d1fb8f02871ac5bcb648561bed4b92",
+   "project_sha256": "edb41158654d55f77f1390e08de338d371bd6755d8d57f0975412b064edecb54",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_V1-A_slim_shoulder_3_of_4_bottom_right/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_V1-A_slim_shoulder_3_of_4_bottom_right/captive_magnet_slice_audit.json"
   },
@@ -135,7 +135,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "no_floor_stand:V1-A:slim_shoulder_4_of_4_top_right",
    "project": "slim/3mf_06hf/slim_08_A_shoulder_top_right_4_of_4_06hf.gcode.3mf",
-   "project_sha256": "132635e0b7617b6b7f40ff0ea9fe84bc40db0993df95b5701771f4f8593cb704",
+   "project_sha256": "7bdb367c775d0608e344d559b1037f5209c17b6b5cb34d60b29dd2041bf6beb2",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_V1-A_slim_shoulder_4_of_4_top_right/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_V1-A_slim_shoulder_4_of_4_top_right/captive_magnet_slice_audit.json"
   },
@@ -146,7 +146,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "no_floor_stand:V1-B1:slim_wing_1_of_2_left",
    "project": "slim/3mf_06hf/slim_09_B1_wing_left_1_of_2_06hf.gcode.3mf",
-   "project_sha256": "b5244c88e65104c690674c2461d44d9e08964fe9f7116fe9d33e0dd1792072c6",
+   "project_sha256": "9c2729fcdae864b0eea721a73a50ff30dc9adf7b8597d1c7c54d94e160e5d946",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_V1-B1_slim_wing_1_of_2_left/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_V1-B1_slim_wing_1_of_2_left/captive_magnet_slice_audit.json"
   },
@@ -157,31 +157,9 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "no_floor_stand:V1-B1:slim_wing_2_of_2_right",
    "project": "slim/3mf_06hf/slim_10_B1_wing_right_2_of_2_06hf.gcode.3mf",
-   "project_sha256": "af9a1c5165da7251e80ff95021695eae627473eb2e892d793d1a4fb1c8023a05",
+   "project_sha256": "48564746e48156db616da9eaa363dc06f03be1f6e9fe485d25c77afba64a7869",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_V1-B1_slim_wing_2_of_2_right/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_V1-B1_slim_wing_2_of_2_right/captive_magnet_slice_audit.json"
-  },
-  {
-   "name": "obiwan_02_LM_top_keyed_2_of_2",
-   "family": "obiwan",
-   "state": "shared",
-   "kind": "audited_captive_magnet_project",
-   "catalog_artifact_id": "no_floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_2_of_2_top",
-   "project": "obiwan/3mf_06hf/obiwan_02_LM_top_keyed_2_of_2_06hf.gcode.3mf",
-   "project_sha256": "c8d388c16d69697fa2bc3edbfa86a02150b1087b25d9ce174f3ada02dc60b07b",
-   "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_Obi-Wan-split_obiwan_optional_lm_keyed_2_of_2_top/ready/ready_to_print.gcode.3mf",
-   "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_Obi-Wan-split_obiwan_optional_lm_keyed_2_of_2_top/captive_magnet_slice_audit.json"
-  },
-  {
-   "name": "obiwan_03_UM_carrier_1_of_1",
-   "family": "obiwan",
-   "state": "shared",
-   "kind": "audited_captive_magnet_project",
-   "catalog_artifact_id": "no_floor_stand:Obi-Wan:obiwan_core_2_of_2_um_carrier",
-   "project": "obiwan/3mf_06hf/obiwan_03_UM_carrier_1_of_1_06hf.gcode.3mf",
-   "project_sha256": "a1bac2c5c30d75590a60f43fd3721a0eb51568c590e775c120746c3ac4a15fcd",
-   "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_Obi-Wan_obiwan_core_2_of_2_um_carrier/ready/ready_to_print.gcode.3mf",
-   "source_audit": "review/captive_magnet_slice_audit_06hf/slices/no_floor_stand_Obi-Wan_obiwan_core_2_of_2_um_carrier/captive_magnet_slice_audit.json"
   },
   {
    "name": "obiwan_05_split2_flat_wing_LM_lower_left_1_of_2",
@@ -190,7 +168,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "shared:Obi-Wan-Flat:obiwan_wing_flat_left_split2_1_of_2_lm_lower",
    "project": "obiwan/3mf_06hf/obiwan_05_split2_flat_wing_LM_lower_left_1_of_2_06hf.gcode.3mf",
-   "project_sha256": "ff5415681e24d30dcf6c5220e8da2e28575a6a515fc6495e114ef14a40b97d1a",
+   "project_sha256": "9a3866a5208ffe5ceda5a3e7797adaf62ce646fff0a1a541431a9767e25621fd",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Flat_obiwan_wing_flat_left_split2_1_of_2_lm_lower/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Flat_obiwan_wing_flat_left_split2_1_of_2_lm_lower/captive_magnet_slice_audit.json"
   },
@@ -201,7 +179,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "shared:Obi-Wan-Flat:obiwan_wing_flat_left_split2_2_of_2_lm_um_upper",
    "project": "obiwan/3mf_06hf/obiwan_06_split2_flat_wing_LM_UM_upper_left_2_of_2_06hf.gcode.3mf",
-   "project_sha256": "dbf46db2d1fcc4e453ac1c7f80450573fa566ca0bdb86a1deebc07a8fdcb46e5",
+   "project_sha256": "3a4fe2671408ec360ed0c4f6b3b386e8c0c5d76f3e7c7ba9a29d891f43b833d1",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Flat_obiwan_wing_flat_left_split2_2_of_2_lm_um_upper/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Flat_obiwan_wing_flat_left_split2_2_of_2_lm_um_upper/captive_magnet_slice_audit.json"
   },
@@ -212,7 +190,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "shared:Obi-Wan-Flat:obiwan_wing_flat_right_split2_1_of_2_lm_lower",
    "project": "obiwan/3mf_06hf/obiwan_08_split2_flat_wing_LM_lower_right_1_of_2_06hf.gcode.3mf",
-   "project_sha256": "0ca6f14cf4186f0d3e5f8e2d0037ad8b88a1dad128b293b6deebbf151792fb73",
+   "project_sha256": "408c64f370fc68ff74d4ef803ce40baa749c4d85ece8438dff39d149c83beacf",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Flat_obiwan_wing_flat_right_split2_1_of_2_lm_lower/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Flat_obiwan_wing_flat_right_split2_1_of_2_lm_lower/captive_magnet_slice_audit.json"
   },
@@ -223,7 +201,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "shared:Obi-Wan-Flat:obiwan_wing_flat_right_split2_2_of_2_lm_um_upper",
    "project": "obiwan/3mf_06hf/obiwan_09_split2_flat_wing_LM_UM_upper_right_2_of_2_06hf.gcode.3mf",
-   "project_sha256": "3f5296535c99c820df5db375e2f3eccbbd9e26e4451fa901b23599e85e1bc925",
+   "project_sha256": "9b2d5c3d409d20e414ccee5cf3161b6a55508e6097b2df85395088914c79a484",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Flat_obiwan_wing_flat_right_split2_2_of_2_lm_um_upper/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Flat_obiwan_wing_flat_right_split2_2_of_2_lm_um_upper/captive_magnet_slice_audit.json"
   },
@@ -234,7 +212,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_split2_1_of_2_lm_lower",
    "project": "obiwan/3mf_06hf/obiwan_11_split2_graded_wing_LM_lower_left_1_of_2_06hf.gcode.3mf",
-   "project_sha256": "9035107c377eed6fb5ef0990c8ee21e8cceeca2645f63efe59e08f97c5536749",
+   "project_sha256": "5fbd8797d91172cb8586786e724f32e2cb442c88732ff10c9e2c27c21df44ef4",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Graded_obiwan_wing_graded_left_split2_1_of_2_lm_lower/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Graded_obiwan_wing_graded_left_split2_1_of_2_lm_lower/captive_magnet_slice_audit.json"
   },
@@ -245,7 +223,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_split2_2_of_2_lm_um_upper",
    "project": "obiwan/3mf_06hf/obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2_06hf.gcode.3mf",
-   "project_sha256": "1c6f900c56854320feb66ab8c8572bd1b2826f4014bbcf853d3f29284fa0c660",
+   "project_sha256": "ac2fdc11d338c5ba140145c3aaa016b7a8f30a21e95a4d16c3b385747c4ca9b8",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Graded_obiwan_wing_graded_left_split2_2_of_2_lm_um_upper/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Graded_obiwan_wing_graded_left_split2_2_of_2_lm_um_upper/captive_magnet_slice_audit.json"
   },
@@ -256,7 +234,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_right_split2_1_of_2_lm_lower",
    "project": "obiwan/3mf_06hf/obiwan_14_split2_graded_wing_LM_lower_right_1_of_2_06hf.gcode.3mf",
-   "project_sha256": "d1692d459cf21b4e35701a5a80e1194d780a56c3ef59979c26ededc263b2d923",
+   "project_sha256": "5733a2bd8df7e7dba5490c97887a7a3ba1cc7e94588365ca4507d8a41963cb5d",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Graded_obiwan_wing_graded_right_split2_1_of_2_lm_lower/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Graded_obiwan_wing_graded_right_split2_1_of_2_lm_lower/captive_magnet_slice_audit.json"
   },
@@ -267,7 +245,7 @@
    "kind": "audited_captive_magnet_project",
    "catalog_artifact_id": "shared:Obi-Wan-Graded:obiwan_wing_graded_right_split2_2_of_2_lm_um_upper",
    "project": "obiwan/3mf_06hf/obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2_06hf.gcode.3mf",
-   "project_sha256": "9d2fa7a362a24b9b873fdcda2d2ef246ee41bb46610076214ea7e107acc8e143",
+   "project_sha256": "6f180203ef4dd5302a04c047bd28b03769200ba8632f7f69be3b80e006208267",
    "source_ready_project": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Graded_obiwan_wing_graded_right_split2_2_of_2_lm_um_upper/ready/ready_to_print.gcode.3mf",
    "source_audit": "review/captive_magnet_slice_audit_06hf/slices/shared_Obi-Wan-Graded_obiwan_wing_graded_right_split2_2_of_2_lm_um_upper/captive_magnet_slice_audit.json"
   },
@@ -277,7 +255,7 @@
    "state": "no_floor_stand",
    "kind": "plain_slice_no_magnets",
    "project": "stock/3mf_06hf/stock_01_LM_bottom_1_of_3_no_floor_stand_06hf.gcode.3mf",
-   "project_sha256": "b1adf5122d85eff2b30c6640efb00dff0dc2ae826c924b666a18d7d0d2be5970",
+   "project_sha256": "3b4b9128b17453c7c048ba3357602ab76002306b7a50e4b3097621f86fa7a3e0",
    "reused": false,
    "rz_degrees": 0.0,
    "triangle_count": 17176,
@@ -303,7 +281,7 @@
    "state": "floor_stand",
    "kind": "plain_slice_no_magnets",
    "project": "stock/3mf_06hf/stock_01_LM_bottom_1_of_3_floor_stand_06hf.gcode.3mf",
-   "project_sha256": "f3969f7d3ed9caf140bbb7ce96a496ac8cc826c78b9a768fc7dec251a59d5569",
+   "project_sha256": "f0811db096054b099082d12894c32d761ff06ea566feab84b3200f83caf23730",
    "reused": false,
    "rz_degrees": 0.0,
    "triangle_count": 25788,
@@ -329,7 +307,7 @@
    "state": "shared",
    "kind": "plain_slice_no_magnets",
    "project": "stock/3mf_06hf/stock_02_LM_mid_left_2_of_3_06hf.gcode.3mf",
-   "project_sha256": "8eab44b534bb9479b94739a01dc9aef862acac603ef3c0a980351fdafde47df3",
+   "project_sha256": "53c0be230c72451ca32d009173d45fcc7e524b7622ae3c87e614b643092e7c78",
    "reused": false,
    "rz_degrees": 0.0,
    "triangle_count": 8154,
@@ -355,7 +333,7 @@
    "state": "shared",
    "kind": "plain_slice_no_magnets",
    "project": "stock/3mf_06hf/stock_03_LM_mid_right_3_of_3_06hf.gcode.3mf",
-   "project_sha256": "78cff243ba058ed965e6dd9515183efeae42325d80273f1f15be58d75799a98f",
+   "project_sha256": "3b9d8603f6feddfc2be5ebe78f5d24a7e7c3222b5c34d8c9a3abd832e4dc427c",
    "reused": false,
    "rz_degrees": 0.0,
    "triangle_count": 14976,
@@ -381,7 +359,7 @@
    "state": "no_floor_stand",
    "kind": "plain_slice_no_magnets",
    "project": "slim/3mf_06hf/slim_01_LM_bottom_1_of_3_no_floor_stand_06hf.gcode.3mf",
-   "project_sha256": "806183a914b857862635a26cfc6cecede2aab80e334230426f126cccb25b790a",
+   "project_sha256": "e97ee92440fcd50eb53e2a5ee0449547f4ce3c8f56af7432d5bca660e26ff8d4",
    "reused": false,
    "rz_degrees": 0.0,
    "triangle_count": 16260,
@@ -407,7 +385,7 @@
    "state": "floor_stand",
    "kind": "plain_slice_no_magnets",
    "project": "slim/3mf_06hf/slim_01_LM_bottom_1_of_3_floor_stand_06hf.gcode.3mf",
-   "project_sha256": "655c1b7289864f6959b724a6b720b5bb582649dbc4eb2a4362188198e08192ce",
+   "project_sha256": "858003e385b62cf33d40d7d027b800d5bb83bf484b5bc2969580c676fb3d8eaf",
    "reused": false,
    "rz_degrees": 0.0,
    "triangle_count": 25048,
@@ -433,7 +411,7 @@
    "state": "shared",
    "kind": "plain_slice_no_magnets",
    "project": "slim/3mf_06hf/slim_02_LM_mid_left_2_of_3_06hf.gcode.3mf",
-   "project_sha256": "90598603d52bfba26c13059c9b7c7c8dd670442dcff1b1f77b6ac6dd2317290f",
+   "project_sha256": "22601b5676b633f547699f2127513d3e14b39a1698e71315400abd0bd5330002",
    "reused": false,
    "rz_degrees": 0.0,
    "triangle_count": 7152,
@@ -459,7 +437,7 @@
    "state": "shared",
    "kind": "plain_slice_no_magnets",
    "project": "slim/3mf_06hf/slim_03_LM_mid_right_3_of_3_06hf.gcode.3mf",
-   "project_sha256": "888598b69f3100118b6c1686aeeea32554694893f1dac9f4c8cdfdcb5f16df65",
+   "project_sha256": "2d4caa293757d86ce5a7a4d9b3a5adcc1fbd301ff926b7a823774c58b0959df9",
    "reused": false,
    "rz_degrees": 0.0,
    "triangle_count": 14482,
@@ -480,39 +458,13 @@
    "source_workspace": "review/to_print_slice_workspace_06hf/non_magnet/slim_03_LM_mid_right_3_of_3/slim_03_LM_mid_right_3_of_3.gcode.3mf"
   },
   {
-   "name": "obiwan_04_T_tweeter_crescent_1_of_1",
-   "family": "obiwan",
-   "state": "shared",
-   "kind": "plain_slice_no_magnets",
-   "project": "obiwan/3mf_06hf/obiwan_04_T_tweeter_crescent_1_of_1_06hf.gcode.3mf",
-   "project_sha256": "6d3305b0c979648da65bcd0fe188d07ff3f304108b03784b09e14ef3798304ee",
-   "reused": false,
-   "rz_degrees": 0.0,
-   "triangle_count": 8768,
-   "bed_clearances_mm": {
-    "x": [
-     78.83088,
-     78.83112256347658
-    ],
-    "y": [
-     107.03314,
-     107.03313655029297
-    ],
-    "z": [
-     0.0,
-     244.5
-    ]
-   },
-   "source_workspace": "review/to_print_slice_workspace_06hf/non_magnet/obiwan_04_T_tweeter_crescent_1_of_1/obiwan_04_T_tweeter_crescent_1_of_1.gcode.3mf"
-  },
-  {
    "name": "obiwan_flat_wings_split2_combo",
    "family": "obiwan",
    "state": "shared",
    "kind": "locked_wing_plate_slice",
    "project": "obiwan/3mf_06hf/obiwan_flat_wings_split2_combo_06hf.gcode.3mf",
-   "project_sha256": "a2b0a60a9fa895f0c3a48810a5498e90b3c57acd093489f37bc650cdc2bb5d6c",
-   "reused": false,
+   "project_sha256": "3ab9e8bc0f0e51519f01be363017db741c64afa2c3546dfef4947dfc33a0f138",
+   "reused": true,
    "magnet_insertions": 6,
    "pause_layer_z_mm": 5.96,
    "source_audit": "review/to_print_slice_workspace_06hf/composite/obiwan_flat_wings_split2_combo/ready/plate_audit.json",
@@ -524,8 +476,8 @@
    "state": "shared",
    "kind": "locked_wing_plate_slice",
    "project": "obiwan/3mf_06hf/obiwan_graded_wings_split2_combo_06hf.gcode.3mf",
-   "project_sha256": "e1560702087c8400166ebb6d85a7957c11402e6cb772aebc48d06b377e133679",
-   "reused": false,
+   "project_sha256": "5f4b43d813cf27b7b04d40ef6f37001fd60a7022eb7d3735771f6d3909a663d0",
+   "reused": true,
    "magnet_insertions": 6,
    "pause_layer_z_mm": 5.96,
    "source_audit": "review/to_print_slice_workspace_06hf/composite/obiwan_graded_wings_split2_combo/ready/plate_audit.json",
@@ -537,7 +489,11 @@
   "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand": "PETG-GF structural delivery; the canonical shelf builder publishes it into 3mf_06hf from the PETG-GF 0.6 outputs",
   "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand": "PETG-GF structural delivery; the canonical shelf builder publishes it into 3mf_06hf from the PETG-GF 0.6 outputs",
   "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand": "PETG-GF structural delivery; the canonical shelf builder publishes it into 3mf_06hf from the PETG-GF 0.6 outputs",
+  "obiwan_02_LM_top_keyed_2_of_2": "PETG-GF structural delivery; the canonical shelf builder publishes it into 3mf_06hf from the PETG-GF 0.6 outputs",
+  "obiwan_03_UM_carrier_1_of_1": "PETG-GF structural delivery; the canonical shelf builder publishes it into 3mf_06hf from the PETG-GF 0.6 outputs",
+  "obiwan_04_T_tweeter_crescent_1_of_1": "PETG-GF structural delivery; the canonical shelf builder publishes it into 3mf_06hf from the PETG-GF 0.6 outputs",
   "obiwan_17_BMR_crescent_coaxial_1_of_1": "auxiliary candidate delivery; 0.4-mm lane only for now",
-  "obiwan_18_BMR_crescent_opposed_1_of_1": "auxiliary candidate delivery; 0.4-mm lane only for now"
+  "obiwan_18_BMR_crescent_opposed_1_of_1": "auxiliary candidate delivery; 0.4-mm lane only for now",
+  "obiwan_NL8_service_lid_1_of_1": "PETG-GF structural delivery; the canonical shelf builder publishes it into 3mf_06hf from the PETG-GF 0.6 outputs"
  }
 }

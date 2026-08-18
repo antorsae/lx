@@ -251,7 +251,8 @@
    "selection": "core",
    "description": "Obi-Wan keyed LM top, 2 of 2 \u2014 shared",
    "source_stl": "no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
-   "catalog_artifact_id": "no_floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_2_of_2_top"
+   "catalog_artifact_id": "no_floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_2_of_2_top",
+   "lane": "06hf"
   },
   {
    "name": "obiwan_03_UM_carrier_1_of_1",
@@ -261,7 +262,8 @@
    "selection": "core",
    "description": "Obi-Wan UM carrier, 1 of 1 \u2014 shared",
    "source_stl": "no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
-   "catalog_artifact_id": "no_floor_stand:Obi-Wan:obiwan_core_2_of_2_um_carrier"
+   "catalog_artifact_id": "no_floor_stand:Obi-Wan:obiwan_core_2_of_2_um_carrier",
+   "lane": "06hf"
   },
   {
    "name": "obiwan_04_T_tweeter_crescent_1_of_1",
@@ -270,7 +272,18 @@
    "state": "shared",
    "selection": "core",
    "description": "Obi-Wan tweeter crescent, 1 of 1",
-   "source_stl": "no_floor_stand/stl/obiwan_addon_tweeter_crescent.stl"
+   "source_stl": "no_floor_stand/stl/obiwan_addon_tweeter_crescent.stl",
+   "lane": "06hf"
+  },
+  {
+   "name": "obiwan_NL8_service_lid_1_of_1",
+   "family": "obiwan",
+   "logical_slot": "NL8",
+   "state": "floor_stand",
+   "selection": "floor_service_lid",
+   "description": "Obi-Wan NL8 service-trough snap lid, 1 of 1 \u2014 floor stand",
+   "source_stl": "floor_stand/stl/obiwan_addon_nl8_service_lid.stl",
+   "lane": "06hf"
   },
   {
    "name": "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand",

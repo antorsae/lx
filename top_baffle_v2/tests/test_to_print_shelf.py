@@ -273,8 +273,8 @@ def main() -> int:
               and raw.get("printer") == "Bambu Lab P2S"
               and isinstance(raw_entries, list),
               "remote shelf catalog header is invalid")
-        check(len(raw_entries) == 41,
-              "remote shelf catalog must contain exactly 41 entries")
+        check(len(raw_entries) == 42,
+              "remote shelf catalog must contain exactly 42 entries")
         names = []
         families = {family: 0 for family in shelf.EXPECTED_FAMILY_COUNTS}
         for index, entry in enumerate(raw_entries):
@@ -297,7 +297,7 @@ def main() -> int:
             families[family] += 1
         check(len(set(names)) == len(names),
               "remote shelf catalog contains duplicate names")
-        check(families == {"stock": 11, "slim": 11, "obiwan": 19},
+        check(families == {"stock": 11, "slim": 11, "obiwan": 20},
               f"remote shelf family counts drifted: {families}")
         check(sum(shelf._is_magnet_entry(entry)
                   for entry in raw_entries) == 32,
@@ -337,7 +337,7 @@ def main() -> int:
                       for artifact in release_blockers),
               "remote release lacks all six duct support blockers")
         print(
-            "to_print remote contracts: neutralized Make graph, 41-entry "
+            "to_print remote contracts: neutralized Make graph, 42-entry "
             "shelf catalog, and 46-artifact release catalog pass; "
             "project/STL equivalence remains local-only"
         )
@@ -371,17 +371,17 @@ def main() -> int:
         },
         "both standalone keyed LM bottoms must use structural PETG-GF audits",
     )
-    check(len(entries) == 41, "shelf must contain exactly 41 entries")
+    check(len(entries) == 42, "shelf must contain exactly 42 entries")
     families = {
         family: sum(entry["family"] == family for entry in entries)
         for family in shelf.EXPECTED_FAMILY_COUNTS
     }
-    check(families == {"stock": 11, "slim": 11, "obiwan": 19},
+    check(families == {"stock": 11, "slim": 11, "obiwan": 20},
           f"unexpected family counts: {families}")
     magnetic = [entry for entry in entries if shelf._is_magnet_entry(entry)]
     check(len(magnetic) == 32, "expected 32 audited magnet projects")
-    check(len(entries) - len(magnetic) == 9,
-          "expected 9 locally sliced non-magnet projects")
+    check(len(entries) - len(magnetic) == 10,
+          "expected 10 catalog non-magnet projects")
     canonical_magnetic = [
         entry for entry in entries if entry.get("catalog_artifact_id")
     ]
@@ -461,6 +461,7 @@ def main() -> int:
         "obiwan_02_LM_top_keyed_2_of_2",
         "obiwan_03_UM_carrier_1_of_1",
         "obiwan_04_T_tweeter_crescent_1_of_1",
+        "obiwan_NL8_service_lid_1_of_1",
         "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand",
         "obiwan_01_02_03_04_LM_UM_combo_floor_stand",
         "obiwan_flat_wings_split2_combo",
@@ -542,11 +543,19 @@ def main() -> int:
     # assemble-list path.  They are accounted for by name rather than
     # inspected here, and the two counts must still cover the whole shelf.
     gui = manifest.get("gui_delivered_entries", {})
-    check(len(gui) == 4 and all(
-        name.startswith("obiwan_01") for name in gui),
-        f"expected the four PETG-GF structural entries to be GUI-delivered, "
-        f"got {sorted(gui)}")
-    inspected = 41 - len(gui)
+    expected_gui = {
+        "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand",
+        "obiwan_01_02_03_04_LM_UM_combo_floor_stand",
+        "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand",
+        "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand",
+        "obiwan_02_LM_top_keyed_2_of_2",
+        "obiwan_03_UM_carrier_1_of_1",
+        "obiwan_04_T_tweeter_crescent_1_of_1",
+        "obiwan_NL8_service_lid_1_of_1",
+    }
+    check(set(gui) == expected_gui,
+          f"PETG-GF GUI-delivered entry set drifted: {sorted(gui)}")
+    inspected = 42 - len(gui)
     check(gate.get("required_pair_count") == inspected
           and gate.get("passing_pair_count") == inspected
           and len(gate.get("entries", ())) == inspected,
@@ -671,20 +680,24 @@ def main() -> int:
               for name, record in manifest_records.items()
               if name not in shelf.AUXILIARY_SPECS),
           "a released shelf entry claims a candidate auxiliary delivery")
-    # The shelf carried 32 magnet projects and 74 insertions after the
-    # split3 retirement (12 entries, one station each) and before the four
-    # PETG-GF structural entries moved to GUI delivery.  Those four take 16
-    # insertions with them -- six per combined core plate, two per standalone
-    # keyed bottom -- so the CLI-delivered inventory is 28 and 58, and the
-    # two routes still add back to the shelf totals.
-    gui_magnet_projects, gui_insertions = 4, 16
+    # Everything Obi-Wan except the wings is PETG-GF + PLA now: the two
+    # combo plates (6 insertions each), the standalone keyed bottoms (2
+    # each), the keyed top (2), the UM carrier (2), the crescent (0) and
+    # the NL8 service lid (0) all ship as Studio GUI projects.  That is 6
+    # GUI magnet projects taking 20 insertions and 2 GUI non-magnet
+    # projects, so the CLI-delivered inventory is 26 magnet + 8 non-magnet
+    # projects with 54 insertions, and the two routes still add back to
+    # the catalog totals of 32/10/74.
+    gui_magnet_projects, gui_insertions = 6, 20
+    gui_non_magnet_projects = 2
     inventory = manifest["inventory"]
     check(inventory["magnet_project_count"] == 32 - gui_magnet_projects
-          and inventory["non_magnet_project_count"] == 9
+          and inventory["non_magnet_project_count"]
+          == 10 - gui_non_magnet_projects
           and inventory["magnet_insertions"] == 74 - gui_insertions,
           "shelf inventory does not include all four plate alternatives and "
           "both candidate BMR crescents")
-    check(len(gui) == gui_magnet_projects,
+    check(len(gui) == gui_magnet_projects + gui_non_magnet_projects,
           "GUI-delivered count no longer matches the inventory arithmetic")
     for entry in entries:
         if entry["name"] in gui:

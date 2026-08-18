@@ -81,10 +81,10 @@ LEGACY_SHELF_SOURCE_ROOTS = {
 # Obi-Wan ships the two-piece wing split only; the three-piece
 # decomposition stays in the CAD (the two-piece lower is taken from it)
 # but no longer produces artifacts, which is 12 fewer entries.
-EXPECTED_FAMILY_COUNTS = {"stock": 11, "slim": 11, "obiwan": 19}
+EXPECTED_FAMILY_COUNTS = {"stock": 11, "slim": 11, "obiwan": 20}
 EXPECTED_ENTRY_COUNT = sum(EXPECTED_FAMILY_COUNTS.values())
 EXPECTED_MAGNET_PROJECT_COUNT = 32
-EXPECTED_NON_MAGNET_PROJECT_COUNT = 9
+EXPECTED_NON_MAGNET_PROJECT_COUNT = 10
 NAME_RE = re.compile(r"^[A-Za-z0-9_]+$")
 # The last token is the pre-rename name of the retired standalone V1 vase;
 # it stays literal so a stale checkout cannot reintroduce that file.

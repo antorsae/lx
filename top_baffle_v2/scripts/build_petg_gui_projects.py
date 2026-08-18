@@ -44,6 +44,7 @@ for _root in (PROJECT_ROOT / "src", PROJECT_ROOT / "scripts"):
         sys.path.insert(0, _text)
 
 import build_obiwan_combo_plate as combo
+import artifact_emit as emit
 
 PETG_PROFILE = PROJECT_ROOT / "captive_magnet_slicing_profile_petg_gf_06hf.json"
 RELEASE_CATALOG = PROJECT_ROOT / "review" / "captive_magnet_release_catalog.json"
@@ -62,6 +63,28 @@ GUI_PROCESS_ID = "LX521 ObiWan PETG-GF core 0.6HF (GUI)"
 EXPECTED_NOZZLE_VOLUME = "High Flow"
 MODEL_FILAMENT = "TINMORRY PETG-GF Profile @BBL P2S"
 INTERFACE_FILAMENT = "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+
+# Standalone PETG-GF projects: everything Obi-Wan except the wings.  The
+# audited singles carry captive-magnet stations and stage through the
+# release-catalog dry-run (per-part profile overrides, blockers, pause);
+# the plain singles have no stations and load their STL directly on the
+# base 30%-gyroid, support-free process.
+AUDITED_SINGLES = (
+    ("obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand",
+     "no_floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_1_of_2_bottom"),
+    ("obiwan_01_LM_bottom_keyed_1_of_2_floor_stand",
+     "floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_1_of_2_bottom"),
+    ("obiwan_02_LM_top_keyed_2_of_2",
+     "no_floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_2_of_2_top"),
+    ("obiwan_03_UM_carrier_1_of_1",
+     "no_floor_stand:Obi-Wan:obiwan_core_2_of_2_um_carrier"),
+)
+PLAIN_SINGLES = (
+    ("obiwan_04_T_tweeter_crescent_1_of_1",
+     "build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.stl"),
+    ("obiwan_NL8_service_lid_1_of_1",
+     "build/floor_stand/stl/obiwan_addon_nl8_service_lid.stl"),
+)
 
 
 class GuiProjectError(RuntimeError):
@@ -253,6 +276,330 @@ def _validate(
     }
 
 
+def _validate_single(project: Path, *, label: str, expects: dict) -> dict:
+    """Single-part flavour of _validate, driven by per-part expectations."""
+    with zipfile.ZipFile(project) as archive:
+        names = set(archive.namelist())
+        for required in (
+                "Metadata/project_settings.config",
+                "Metadata/model_settings.config",
+                "3D/3dmodel.model"):
+            if required not in names:
+                raise GuiProjectError(f"{label}: project lacks {required}")
+        settings = json.loads(
+            archive.read("Metadata/project_settings.config"))
+        models = archive.read("Metadata/model_settings.config").decode("utf-8")
+        pause_xml = (
+            archive.read("Metadata/custom_gcode_per_layer.xml")
+            if "Metadata/custom_gcode_per_layer.xml" in names else None)
+        if "Metadata/plate_1.gcode" in names:
+            raise GuiProjectError(
+                f"{label}: project carries G-code and would look like an "
+                "audited shelf delivery")
+    filaments = settings.get("filament_settings_id")
+    expected_filaments = (
+        [MODEL_FILAMENT, INTERFACE_FILAMENT]
+        if expects["support"] else [MODEL_FILAMENT])
+    if filaments != expected_filaments:
+        raise GuiProjectError(
+            f"{label}: filaments are {filaments!r}, "
+            f"expected {expected_filaments!r}")
+    if settings.get("filament_map") != ["1"] * len(filaments):
+        raise GuiProjectError(
+            f"{label}: filament_map={settings.get('filament_map')!r}")
+    if settings.get("nozzle_volume_type") != [EXPECTED_NOZZLE_VOLUME]:
+        raise GuiProjectError(
+            f"{label}: nozzle_volume_type="
+            f"{settings.get('nozzle_volume_type')!r}")
+    if settings.get("print_settings_id") != GUI_PROCESS_ID:
+        raise GuiProjectError(
+            f"{label}: process ships as "
+            f"{settings.get('print_settings_id')!r}")
+    checks = [
+        ("enable_support", "1" if expects["support"] else "0"),
+        ("sparse_infill_density", expects["infill"]),
+        ("sparse_infill_pattern", expects["pattern"]),
+    ]
+    if expects["support"]:
+        checks += [
+            ("support_filament", "1"),
+            ("support_interface_filament", "2"),
+            ("support_on_build_plate_only", "1"),
+        ]
+    for key, expected in checks:
+        if str(settings.get(key)) != expected:
+            raise GuiProjectError(
+                f"{label}: {key}={settings.get(key)!r}, "
+                f"expected {expected!r}")
+    magnets = int(expects["magnets"])
+    pause_z = None
+    if magnets:
+        if pause_xml is None:
+            raise GuiProjectError(f"{label}: magnet pause layer is missing")
+        root = ElementTree.fromstring(pause_xml)
+        layers = [
+            layer for layer in root.iter()
+            if layer.tag.rsplit("}", 1)[-1] == "layer"]
+        if len(layers) != 1:
+            raise GuiProjectError(
+                f"{label}: {len(layers)} custom G-code layers, expected 1")
+        pause_z = float(layers[0].get("top_z", "nan"))
+        if abs(pause_z - EXPECTED_PAUSE_Z_MM) > 1.0e-6:
+            raise GuiProjectError(
+                f"{label}: magnet pause at Z={pause_z}")
+        program = layers[0].get("extra", "")
+        if f"Insert {magnets} magnet(s)" not in program:
+            raise GuiProjectError(
+                f"{label}: pause does not announce {magnets} magnet(s)")
+        if "M400" not in program:
+            raise GuiProjectError(f"{label}: pause program has no M400 park")
+    elif pause_xml is not None:
+        root = ElementTree.fromstring(pause_xml)
+        layers = [
+            layer for layer in root.iter()
+            if layer.tag.rsplit("}", 1)[-1] == "layer"]
+        if layers:
+            raise GuiProjectError(
+                f"{label}: unexpected custom G-code layers on a part "
+                "with no magnet stations")
+    counts = {
+        subtype: models.count(f'subtype="{subtype}"')
+        for subtype in ("normal_part", "support_blocker", "modifier_part")
+    }
+    if counts["normal_part"] != 1:
+        raise GuiProjectError(f"{label}: part inventory {counts}")
+    if counts["modifier_part"] != expects.get("modifiers", 0):
+        raise GuiProjectError(
+            f"{label}: {counts['modifier_part']} modifiers, "
+            f"expected {expects.get('modifiers', 0)}")
+    if counts["support_blocker"] != expects["blockers"]:
+        raise GuiProjectError(
+            f"{label}: {counts['support_blocker']} blockers, "
+            f"expected {expects['blockers']}")
+    return {
+        "filaments": filaments,
+        "pause_z_mm": pause_z,
+        "magnets": magnets,
+        "parts": counts,
+    }
+
+
+def _resolved_process_expectations(process_path: Path) -> tuple[str, str, bool]:
+    resolved = json.loads(process_path.read_text(encoding="utf-8"))
+    def scalar(key):
+        value = resolved.get(key)
+        return value[0] if isinstance(value, list) and value else value
+    support = str(scalar("enable_support")) == "1"
+    return (str(scalar("sparse_infill_density")),
+            str(scalar("sparse_infill_pattern")), support)
+
+
+def _pause_policy(profiles_dir: Path) -> dict:
+    provenance = json.loads(
+        (profiles_dir / "profile_provenance.json").read_text(
+            encoding="utf-8"))
+    policy = provenance.get("effective", {}).get("magnet_insertion_pause")
+    if not isinstance(policy, dict):
+        raise GuiProjectError(
+            "resolved PETG-GF profile lacks the magnet insertion pause "
+            "policy")
+    return policy
+
+
+def _remap_assemble_paths(assemble: Path) -> None:
+    """Point staged object paths back at the durable build/ originals.
+
+    The dry-run stages its inputs in a TemporaryDirectory that no longer
+    exists by the time this export runs.
+    """
+    payload = json.loads(assemble.read_text(encoding="utf-8"))
+    candidates = {}
+    for state in ("floor_stand", "no_floor_stand"):
+        for sub in ("stl", "support_blockers", "process_modifiers"):
+            root = PROJECT_ROOT / "build" / state / sub
+            if root.is_dir():
+                for path in root.glob("*.stl"):
+                    candidates.setdefault(f"{state}/{path.name}", path)
+                    candidates.setdefault(path.name, path)
+    for plate in payload.get("plates", ()):
+        for obj in plate.get("objects", ()):
+            name = Path(obj["path"]).name
+            replacement = candidates.get(name)
+            if replacement is None or not replacement.is_file():
+                raise GuiProjectError(
+                    f"{assemble}: no durable source for {name}")
+            obj["path"] = str(replacement)
+    assemble.write_text(
+        json.dumps(payload, indent=1) + "\n", encoding="utf-8")
+
+
+def _dry_run_single(name: str, artifact_id: str, workspace: Path) -> dict:
+    if workspace.exists():
+        shutil.rmtree(workspace)
+    workspace.mkdir(parents=True, exist_ok=True)
+    run = subprocess.run(
+        [sys.executable, str(PROJECT_ROOT / "scripts/slice_captive_magnets.py"),
+         "--catalog", str(RELEASE_CATALOG),
+         "--profile", str(PETG_PROFILE),
+         "--output", str(workspace),
+         "--jobs", "1", "--dry-run", "--only", artifact_id],
+        cwd=PROJECT_ROOT, text=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT, check=False,
+        env={**os.environ, "LC_ALL": "C",
+             "LX_ROUTING_PROFILE": "obiwan"})
+    (workspace / "dry_run.log").write_text(
+        run.stdout, encoding="utf-8", errors="replace")
+    if run.returncode != 0:
+        raise GuiProjectError(
+            f"{name}: dry-run staging exited {run.returncode}; see "
+            f"{workspace / 'dry_run.log'}")
+    records = json.loads(
+        (workspace / "dry_run_commands.json").read_text(
+            encoding="utf-8"))["records"]
+    if len(records) != 1 or records[0]["id"] != artifact_id:
+        raise GuiProjectError(f"{name}: dry-run staged {len(records)} records")
+    return records[0]
+
+
+def _catalog_sites(artifact_id: str) -> list[dict]:
+    catalog = json.loads(RELEASE_CATALOG.read_text(encoding="utf-8"))
+    for row in catalog["artifacts"]:
+        if row["id"] == artifact_id:
+            return list(row.get("sites", ()))
+    raise GuiProjectError(f"{artifact_id}: not in the release catalog")
+
+
+def _build_single_audited(name: str, artifact_id: str, output: Path) -> dict:
+    workspace = WORKSPACE / "singles" / name
+    record = _dry_run_single(name, artifact_id, workspace)
+    slug = artifact_id.replace(":", "_")
+    slice_dir = workspace / "slices" / slug
+    assemble = slice_dir / "bambu_assemble_list.json"
+    _remap_assemble_paths(assemble)
+    command = list(record["command"])
+    sites = _catalog_sites(artifact_id)
+    if sites:
+        pause_values = {
+            float(site["expected_pause_marker_z_mm"]) for site in sites}
+        if pause_values != {EXPECTED_PAUSE_Z_MM}:
+            raise GuiProjectError(
+                f"{name}: pause markers {sorted(pause_values)}")
+        group = {
+            "pause_marker_z_mm": EXPECTED_PAUSE_Z_MM,
+            "sites": [str(site["name"]) for site in sites],
+            "magnet_count": len(sites),
+        }
+        custom = slice_dir / "custom_gcodes.json"
+        custom.write_text(json.dumps({
+            "mode": "SingleExtruder",
+            "gcodes": [{
+                "type": emit.MAGNET_INSERTION_CUSTOM_GCODE_TYPE,
+                "print_z": EXPECTED_PAUSE_Z_MM,
+                "color": "",
+                "extruder": 1,
+                "extra": emit._magnet_pause_program(
+                    group, _pause_policy(workspace / "profiles")),
+            }],
+        }, indent=1) + "\n", encoding="utf-8")
+        command.extend(("--load-custom-gcodes", str(custom)))
+    export_dir = workspace / "gui_project"
+    if export_dir.exists():
+        shutil.rmtree(export_dir)
+    export_dir.mkdir(parents=True, exist_ok=True)
+    project_name = f"{name}_GUI.3mf"
+    command = _export_command({"command": command}, project_name)
+    outputdir = command.index("--outputdir")
+    command[outputdir + 1] = str(export_dir)
+    run = subprocess.run(
+        command, cwd=export_dir, text=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT, check=False,
+        env={**os.environ, "LC_ALL": "C"})
+    (export_dir / "bambu_studio.log").write_text(
+        run.stdout, encoding="utf-8", errors="replace")
+    project = export_dir / project_name
+    if run.returncode != 0 or not project.is_file():
+        raise GuiProjectError(
+            f"{name}: Bambu exited {run.returncode}; see "
+            f"{export_dir / 'bambu_studio.log'}")
+    _finalize_project_settings(project)
+    payload = json.loads(assemble.read_text(encoding="utf-8"))
+    blockers = sum(
+        1 for plate in payload.get("plates", ())
+        for obj in plate.get("objects", ())
+        if obj.get("subtype") == "support_blocker")
+    modifiers = sum(
+        1 for plate in payload.get("plates", ())
+        for obj in plate.get("objects", ())
+        if obj.get("subtype") == "modifier_part")
+    infill, pattern, support = _resolved_process_expectations(
+        slice_dir / "slice_profile" / "resolved_process.json")
+    facts = _validate_single(project, label=name, expects={
+        "support": support, "infill": infill, "pattern": pattern,
+        "magnets": len(sites), "blockers": blockers,
+        "modifiers": modifiers,
+    })
+    output.mkdir(parents=True, exist_ok=True)
+    destination = output / project_name
+    shutil.copy2(project, destination)
+    facts["project"] = str(destination.relative_to(PROJECT_ROOT))
+    facts["name"] = name
+    facts["kind"] = "single"
+    return facts
+
+
+def _build_single_plain(
+        name: str, stl_relative: str, output: Path,
+        template_command: list[str], profiles_dir: Path) -> dict:
+    workspace = WORKSPACE / "singles" / name
+    if workspace.exists():
+        shutil.rmtree(workspace)
+    workspace.mkdir(parents=True, exist_ok=True)
+    stl = PROJECT_ROOT / stl_relative
+    if not stl.is_file():
+        raise GuiProjectError(f"{name}: missing source STL {stl}")
+    project_name = f"{name}_GUI.3mf"
+    settings = ";".join(str(profiles_dir / part) for part in (
+        "resolved_machine.json", "resolved_process.json"))
+    command = [
+        template_command[0], "--debug", "2", "--arrange", "1",
+        "--orient", "0", "--allow-rotations=0",
+        "--export-3mf", project_name,
+        "--load-settings", settings,
+        "--load-filaments", str(profiles_dir / "resolved_filament.json"),
+        "--outputdir", str(workspace),
+        str(stl),
+    ]
+    run = subprocess.run(
+        command, cwd=workspace, text=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT, check=False,
+        env={**os.environ, "LC_ALL": "C"})
+    (workspace / "bambu_studio.log").write_text(
+        run.stdout, encoding="utf-8", errors="replace")
+    project = workspace / project_name
+    if run.returncode != 0 or not project.is_file():
+        raise GuiProjectError(
+            f"{name}: Bambu exited {run.returncode}; see "
+            f"{workspace / 'bambu_studio.log'}")
+    _finalize_project_settings(project)
+    infill, pattern, support = _resolved_process_expectations(
+        profiles_dir / "resolved_process.json")
+    if support:
+        raise GuiProjectError(
+            f"{name}: base process enables support; the plain single "
+            "path expects the support-free base")
+    facts = _validate_single(project, label=name, expects={
+        "support": False, "infill": infill, "pattern": pattern,
+        "magnets": 0, "blockers": 0,
+    })
+    output.mkdir(parents=True, exist_ok=True)
+    destination = output / project_name
+    shutil.copy2(project, destination)
+    facts["project"] = str(destination.relative_to(PROJECT_ROOT))
+    facts["name"] = name
+    facts["kind"] = "single"
+    return facts
+
+
 def _build_one(slug: str, output: Path) -> dict:
     api = combo.get_variant(slug)
     api.activate()
@@ -353,12 +700,37 @@ def main(argv: list[str] | None = None) -> int:
     records = []
     for slug in slugs:
         record = _build_one(slug, args.output.resolve())
+        record["kind"] = "plate"
         records.append(record)
         print(f"{record['name']}: {record['project']} "
               f"(pause Z={record['pause_z_mm']} mm, "
               f"{record['magnets']} magnets, "
               f"{record['parts']['normal_part']} parts, "
               f"{record['parts']['support_blocker']} blockers)")
+    template_command: list[str] | None = None
+    profiles_dir: Path | None = None
+    for name, artifact_id in AUDITED_SINGLES:
+        record = _build_single_audited(
+            name, artifact_id, args.output.resolve())
+        records.append(record)
+        if template_command is None:
+            staged = json.loads(
+                (WORKSPACE / "singles" / name
+                 / "dry_run_commands.json").read_text(encoding="utf-8"))
+            template_command = list(staged["records"][0]["command"])
+            profiles_dir = WORKSPACE / "singles" / name / "profiles"
+        print(f"{record['name']}: {record['project']} "
+              f"({record['magnets']} magnets, "
+              f"{record['parts']['support_blocker']} blockers)")
+    if template_command is None or profiles_dir is None:
+        raise GuiProjectError(
+            "plain singles need an audited single's resolved profiles")
+    for name, stl_relative in PLAIN_SINGLES:
+        record = _build_single_plain(
+            name, stl_relative, args.output.resolve(),
+            template_command, profiles_dir)
+        records.append(record)
+        print(f"{record['name']}: {record['project']} (plain, no magnets)")
     (args.output.resolve() / "README.md").write_text(README, encoding="utf-8")
     manifest = args.output.resolve() / "gui_projects.json"
     manifest.write_text(
