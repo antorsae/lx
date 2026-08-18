@@ -1,7 +1,7 @@
-[2026-08-18 13:48:18.689972] [0x00000001fa8e5e80] [trace]   Initializing StaticPrintConfigs
-[2026-08-18 13:48:18.694219] [0x00000001fa8e5e80] [warning] cli mode, Current BambuStudio Version 02.07.01.62
-[2026-08-18 13:48:18.703089] [0x00000001fa8e5e80] [warning] no filament colors found in projects
-[2026-08-18 13:48:20.503657] [0x00000001fa8e5e80] [warning] tree support default to organic support
-[2026-08-18 13:48:20.740986] [0x00000001fa8e5e80] [warning] plate 1: found NON_CRITICAL slicing warnings: It seems object stock_1_of_4_bottom.stl has floating cantilever. Please re-orient the object or enable support generation.
+[2026-08-18 17:03:10.200602] [0x00000001fa8e5e80] [trace]   Initializing StaticPrintConfigs
+[2026-08-18 17:03:10.205002] [0x00000001fa8e5e80] [warning] cli mode, Current BambuStudio Version 02.07.01.62
+[2026-08-18 17:03:10.213898] [0x00000001fa8e5e80] [warning] no filament colors found in projects
+[2026-08-18 17:03:12.007657] [0x00000001fa8e5e80] [warning] tree support default to organic support
+[2026-08-18 17:03:12.242978] [0x00000001fa8e5e80] [warning] plate 1: found NON_CRITICAL slicing warnings: It seems object stock_1_of_4_bottom.stl has floating cantilever. Please re-orient the object or enable support generation.
 
-[2026-08-18 13:48:22.007147] [0x00000001fa8e5e80] [error]   Invalid T command (T65535).
+[2026-08-18 17:03:13.528101] [0x00000001fa8e5e80] [error]   Invalid T command (T65535).

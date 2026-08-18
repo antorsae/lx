@@ -147,7 +147,7 @@ LOCKED_TRANSLATIONS_MM = (
     # corner moved the rotated part's own bbox origin), so every feature
     # keeps its exact historic plate position and the 2.24 gap to the UM
     # carrier.
-    (3.821, 34.319, 0.0),
+    (5.623, 34.319, 0.0),
     (27.025, 2.010, 0.0),
     (71.034, 28.412, 0.0),
     (108.802, 209.132, 0.0),
@@ -256,7 +256,7 @@ VARIANTS = {
         plate_name=(
             "obiwan_01_02_03_04_LM_UM_combo_floor_stand"
         ),
-        expected_triangle_count=205_046,
+        expected_triangle_count=208_504,
         sparse_infill_density_percent=100.0,
         sparse_infill_pattern="zig-zag",
     ),

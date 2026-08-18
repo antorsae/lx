@@ -80,23 +80,18 @@ NL8_CENTER_Y_MM = BOSS_TOP_W_MM / 2.0          # square face, derived
 BOSS_FLANGE_T_MM = 5.6                         # insert seat 4.0 + 1.6 roof
 BOSS_CREST_HOLD_Z_MM = -120.0
 BOSS_FALL_SPAN_MM = 44.0
-# Subtle tail: the transition never visibly "ends".  The straight-region
-# ease arrives at 63.0 exactly at the bend's horizontal tangent, and the
-# final 63.0 -> 64.0 millimetre is distributed along the WHOLE bend arc
-# (cosine in arc parameter, tangent-continuous at both ends), landing on
-# 64.0 exactly at the vertical tangent into the stem.  The corner
-# fillets ride the same idea: full radius through the dome, blending to
-# 2.0 at the tangent, then fading to a sharp edge around the arc -- soft
-# wherever the wall still leans, sharp only where it is perpendicular.
-BOSS_BEND_START_W_MM = 63.0
-BOSS_BEND_START_R_MM = 2.0
-BOSS_LANDING_Z_MM = BOSS_CREST_HOLD_Z_MM + BOSS_FALL_SPAN_MM
-# The loft runs past the tangent for a deep, OCC-stable fusion; its last
-# section's bottom edge is raised to 1.2 so the end cap hides above the
-# bend's rising underside (0.76 there) instead of leaving a downward
-# sliver.
-BOSS_END_Z_MM = -58.0
-BOSS_END_LIFT_MM = 1.2
+# Full re-span: ONE cosine ease carries the whole 38.4 -> 64.0 widening
+# over the complete wall path -- flange face, straight run, and the
+# entire bend arc -- reaching 64.0 exactly at the vertical tangent into
+# the stem.  Nothing completes at the junction: width and corner radius
+# are both continuous there, the lower stand reads as one narrowing
+# waist wrapping around the arc, and the corner fillets stay at full
+# radius wherever the wall leans, fading to a sharp edge only where it
+# is perpendicular.
+# The boss loft and the bend loft BUTT at the horizontal tangent with
+# identical cross-sections: a clean planar union interface, no lateral
+# coincident surfaces (which shed sub-mm3 boolean debris into the keyed
+# split mass audit) and no proud overlap.
 PANEL_INNER_Z_MM = FOOT_REAR_Z_MM + BOSS_FLANGE_T_MM
 PANEL_T_MM = PANEL_INNER_Z_MM - FOOT_REAR_Z_MM
 PANEL_H_MM = BOSS_TOP_W_MM
@@ -295,21 +290,36 @@ def boss_height_mm(z: float) -> float:
         1.0 - _boss_ease((z - BOSS_CREST_HOLD_Z_MM) / BOSS_FALL_SPAN_MM))
 
 
+def _bend_arc_lengths():
+    controls = centerline_controls()
+    points = [cubic_point(controls, index / 400.0) for index in range(401)]
+    cumulative = [0.0]
+    for left, right in zip(points, points[1:]):
+        cumulative.append(cumulative[-1] + math.dist(left, right))
+    return tuple(cumulative)
+
+
+_BEND_ARC_CUMULATIVE = _bend_arc_lengths()
+BOSS_PATH_STRAIGHT_MM = (
+    FLOOR_BEND_HORIZONTAL_TANGENT_Z_MM - FOOT_REAR_Z_MM)
+BOSS_PATH_TOTAL_MM = BOSS_PATH_STRAIGHT_MM + _BEND_ARC_CUMULATIVE[-1]
+
+
+def _boss_path_width_mm(s: float) -> float:
+    return BOSS_TOP_W_MM + (FOOT_WIDTH_MM - BOSS_TOP_W_MM) * _boss_ease(
+        s / BOSS_PATH_TOTAL_MM)
+
+
 def boss_width_mm(z: float) -> float:
-    return BOSS_TOP_W_MM + (BOSS_BEND_START_W_MM - BOSS_TOP_W_MM) * _boss_ease(
-        (z - FOOT_REAR_Z_MM)
-        / (FLOOR_BEND_HORIZONTAL_TANGENT_Z_MM - FOOT_REAR_Z_MM))
+    return _boss_path_width_mm(
+        min(z - FOOT_REAR_Z_MM, BOSS_PATH_STRAIGHT_MM))
 
 
 def _boss_section(z: float, y0: float = 0.0):
     w, h = boss_width_mm(z), boss_height_mm(z)
-    u = _boss_ease((z - BOSS_LANDING_Z_MM)
-                   / (FLOOR_BEND_HORIZONTAL_TANGENT_Z_MM
-                      - BOSS_LANDING_Z_MM))
-    r_full = min(
+    r = min(
         4.2 + 3.8 * _boss_ease((z - FOOT_REAR_Z_MM) / 40.0),
         h / 3.0, w / 4.0)
-    r = (1.0 - u) * r_full + u * BOSS_BEND_START_R_MM
     half = w / 2.0
     wire = (Polyline((half, y0), (-half, y0), (-half, h))
             + Line((-half, h), (half, h)) + Line((half, h), (half, y0)))
@@ -323,10 +333,12 @@ def _boss_section(z: float, y0: float = 0.0):
 
 
 def _bend_taper_w_r(u: float):
-    tail = _boss_ease(u)
-    return (BOSS_BEND_START_W_MM
-            + (FOOT_WIDTH_MM - BOSS_BEND_START_W_MM) * tail,
-            BOSS_BEND_START_R_MM * (1.0 - tail))
+    arc = _BEND_ARC_CUMULATIVE[
+        min(len(_BEND_ARC_CUMULATIVE) - 1, round(u * 400))]
+    w = _boss_path_width_mm(BOSS_PATH_STRAIGHT_MM + arc)
+    r = (FOOT_HEIGHT_MM / 3.0) * (
+        1.0 - _boss_ease(arc / _BEND_ARC_CUMULATIVE[-1]))
+    return w, min(r, w / 4.0)
 
 
 def _tapered_bend_loft():
@@ -341,6 +353,13 @@ def _tapered_bend_loft():
 
     def frame(u: float):
         point = cubic_point(controls, u)
+        # The Option-B endpoints are exactly horizontal/vertical; the
+        # analytic tangents keep the first section coplanar with the
+        # boss loft's butt face so the union dissolves the interface.
+        if u <= 0.0:
+            return (point[1], point[2]), (0.0, 1.0)
+        if u >= 1.0:
+            return (point[1], point[2]), (1.0, 0.0)
         step = 1.0e-4
         rear = cubic_point(controls, max(0.0, u - step))
         fore = cubic_point(controls, min(1.0, u + step))
@@ -358,12 +377,6 @@ def _tapered_bend_loft():
         return plane * Rectangle(w, FOOT_HEIGHT_MM)
 
     sections = []
-    (y0, z0), t0 = frame(0.0)
-    for back in (FLOOR_BEND_FUSION_OVERLAP_MM,
-                 FLOOR_BEND_FUSION_OVERLAP_MM / 2.0):
-        sections.append(section(
-            (y0 - t0[0] * back, z0 - t0[1] * back), t0,
-            BOSS_BEND_START_W_MM, BOSS_BEND_START_R_MM))
     for index in range(33):
         u = index / 32.0
         origin, tangent = frame(u)
@@ -384,8 +397,8 @@ def _tapered_bend_loft():
 
 def _boss_prism():
     """The uncut boss loft; also the blank the lid is carved from."""
-    sections = [_boss_section(FOOT_REAR_Z_MM + 3.0 * i) for i in range(31)]
-    sections.append(_boss_section(BOSS_END_Z_MM, y0=BOSS_END_LIFT_MM))
+    sections = [_boss_section(FOOT_REAR_Z_MM + 3.0 * i) for i in range(29)]
+    sections.append(_boss_section(FLOOR_BEND_HORIZONTAL_TANGENT_Z_MM))
     return loft(sections, ruled=True)
 
 
@@ -966,9 +979,10 @@ def integrated_floor_facts() -> dict:
             "lid_pad_spans_z_mm": LID_PAD_SPANS_Z_MM,
             "lid_clip_spans_z_mm": LID_CLIP_SPANS_Z_MM,
             "lid_pocket_preload_mm": LID_POCKET_PRELOAD_MM,
-            "bend_taper": {
-                "start_width_mm": BOSS_BEND_START_W_MM,
-                "start_corner_r_mm": BOSS_BEND_START_R_MM,
+            "full_respan": {
+                "path_total_mm": BOSS_PATH_TOTAL_MM,
+                "root_width_mm": _boss_path_width_mm(
+                    BOSS_PATH_STRAIGHT_MM),
                 "completes_at": "vertical_tangent",
             },
         },

@@ -175,12 +175,13 @@ MIN_SF_5G_TRANSIENT = 1.05
 MAX_DIAGNOSTIC_DEFLECTION_1G_MM = 2.0
 
 
-# The boss trumpet's subtle tail means the wall is 63.0 wide (not 64.0)
-# at the governing horizontal-tangent root section, reaching 64.0 only
-# at the vertical tangent.  The 2.0-mm corner rounding there removes
-# under 1% of the lateral modulus and is folded into the existing 1.25
-# stress-concentration factor rather than modelled.
-ROOT_SECTION_WIDTH_MM = 63.0
+# The boss trumpet's full re-span carries one 38.4 -> 64.0 ease over the
+# whole wall path (flange + straight run + bend arc, total 199.9), so
+# the governing horizontal-tangent root section is 48.06 wide, reaching
+# 64.0 only at the vertical tangent.  The 6.1-mm corner rounding there
+# is folded into the existing 1.25 stress-concentration factor rather
+# than modelled.
+ROOT_SECTION_WIDTH_MM = 48.06
 
 
 def _net_root_section() -> dict:
