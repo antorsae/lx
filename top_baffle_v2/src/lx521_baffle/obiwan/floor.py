@@ -375,7 +375,11 @@ def _tapered_bend_loft():
         sections.append(section(
             (y1 + t1[0] * fore, z1 + t1[1] * fore), t1,
             FOOT_WIDTH_MM, 0.0))
-    return loft(sections, ruled=True)
+    shape = loft(sections, ruled=True)
+    # The ruled chords between rotated sections overshoot the exact
+    # Y=0/Z=18.3 datum planes by nanometres; the coplanarity gates demand
+    # exact, so clip to the analytic envelope like bent_wall_prism kept.
+    return shape & Pos(0.0, 60.0, -70.85) * Box(80.0, 120.0, 178.3)
 
 
 def _boss_prism():

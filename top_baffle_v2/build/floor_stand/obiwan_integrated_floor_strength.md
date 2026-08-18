@@ -4,16 +4,16 @@ This is a conservative closed-form net-section screen, not FEA or physical quali
 
 | Material | Vertical 1g/3g/5g SF | Anchored lateral 1g/3g/5g SF | 1g deflection (mm) | Result |
 |---|---:|---:|---:|---|
-| Bambu PLA Tough+ | 3.05 / 1.97 / 1.18 | 3.80 / 2.46 / 1.48 | 1.30 | PASS (analytical) |
-| Bambu PLA Basic | 4.39 / 2.78 / 1.67 | 5.48 / 3.47 / 2.08 | 1.15 | PASS (analytical) |
-| Bambu PLA Lite | 2.69 / 1.73 / 1.04 | 3.35 / 2.16 / 1.30 | 1.54 | FAIL; provisional data |
-| Bambu PLA Matte | 2.78 / 1.79 / 1.08 | 3.47 / 2.24 / 1.34 | 1.65 | PASS (analytical) |
-| Bambu PLA Silk+ | 3.23 / 2.09 / 1.25 | 4.03 / 2.61 / 1.57 | 1.29 | PASS (analytical) |
+| Bambu PLA Tough+ | 2.99 / 1.94 / 1.16 | 3.68 / 2.38 / 1.43 | 1.32 | PASS (analytical) |
+| Bambu PLA Basic | 4.32 / 2.73 / 1.64 | 5.30 / 3.35 / 2.01 | 1.17 | PASS (analytical) |
+| Bambu PLA Lite | 2.64 / 1.70 / 1.02 | 3.25 / 2.09 / 1.25 | 1.57 | FAIL; provisional data |
+| Bambu PLA Matte | 2.73 / 1.76 / 1.06 | 3.35 / 2.16 / 1.30 | 1.67 | PASS (analytical) |
+| Bambu PLA Silk+ | 3.17 / 2.06 / 1.23 | 3.89 / 2.52 / 1.51 | 1.31 | PASS (analytical) |
 
 ## Bound production geometry
 
-- `build/floor_stand/obiwan_split.step` — SHA-256 `0565ed547b8a8b44893aa022686378820cfde890271cecd5bedf75e6a617b8e4`
-- `build/floor_stand/obiwan_lm_split.step` — SHA-256 `7d4f8f0379793f2831c670d62faef383cdbb6fde5b7374fce188284a0608d59f`
+- `build/floor_stand/obiwan_split.step` — SHA-256 `d4021eed0fa8df19e153b5981c661c7d12c7e2595e58e3f61ee40d2b37240ac9`
+- `build/floor_stand/obiwan_lm_split.step` — SHA-256 `1309ad64d132b7b7f4d1ebe84e1c69f8d2dbeaa932be2e7e59f02c0c70b7a6bc`
 
 ## Shoulder-to-LM-ring diagnostic
 
@@ -31,7 +31,7 @@ The lip-only lower bound is below the project thresholds. The installed LM flang
 
 ## Governing limitations
 
-- Exact nominal root section: 1026.5 mm²; governing section modulus 3214.4 mm³ after subtracting D9, D8.2 and D6 lumens.
+- Exact nominal root section: 1008.2 mm²; governing section modulus 3158.4 mm³ after subtracting D9, D8.2 and D6 lumens.
 - The section result is valid only with the required 100% local solid modifier through the complete stem/root; sparse infill gets no structural credit.
 - Free-standing lateral tip threshold: 0.139 g. This is a stability limit, not a PLA strength limit.
 - The optional hidden split key receives 0 N structural credit; the installed LM driver flange must bridge the seam.
