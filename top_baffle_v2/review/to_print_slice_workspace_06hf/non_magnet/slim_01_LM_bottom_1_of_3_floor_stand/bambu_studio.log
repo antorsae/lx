@@ -1,7 +1,0 @@
-[2026-08-18 19:32:44.509489] [0x00000001fa8e5e80] [trace]   Initializing StaticPrintConfigs
-[2026-08-18 19:32:44.514089] [0x00000001fa8e5e80] [warning] cli mode, Current BambuStudio Version 02.07.01.62
-[2026-08-18 19:32:44.522477] [0x00000001fa8e5e80] [warning] no filament colors found in projects
-[2026-08-18 19:32:46.327023] [0x00000001fa8e5e80] [warning] tree support default to organic support
-[2026-08-18 19:32:46.545584] [0x00000001fa8e5e80] [warning] plate 1: found NON_CRITICAL slicing warnings: It seems object slim_1_of_4_bottom.stl has floating cantilever. Please re-orient the object or enable support generation.
-
-[2026-08-18 19:32:47.728104] [0x00000001fa8e5e80] [error]   Invalid T command (T65535).

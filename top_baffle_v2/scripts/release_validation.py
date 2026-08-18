@@ -309,6 +309,12 @@ PROFILE_OVERRIDE_KEYS = {
         "detect_narrow_internal_solid_infill",
         "elefant_foot_compensation",
         "xy_hole_compensation",
+        # Duct-roof crowns are bridged (support is blocker-excluded
+        # inside the lumens, where it could never be removed), and
+        # glass-filled PETG drops loops at the preset 25-30 mm/s.  Both
+        # bridge-speed authorities slow to 12 so each strand freezes
+        # under the preset's full overhang/bridge fan before it sags.
+        "bridge_speed",
     }),
     "filament": frozenset({
         "nozzle_temperature",
@@ -320,6 +326,7 @@ PROFILE_OVERRIDE_KEYS = {
         "filament_retraction_length",
         "textured_plate_temp",
         "textured_plate_temp_initial_layer",
+        "filament_bridge_speed",
     }),
 }
 RELEASE_SITE_GEOMETRY_MM = {
