@@ -5258,8 +5258,8 @@ def test_floor_integrated_mount():
         x = record["x_mm"]
         y = record["floor_y_mm"]
         radius = record["diameter_mm"] / 2.0
-        # rear of the duct-entry wall the lanes are OPEN trough; the
-        # buried-run probes therefore sit forward of Z=-77
+        # rear of the duct-entry wall the lanes are OPEN into the
+        # underside bay; the buried-run probes sit forward of Z=-77
         lumen = Pos(x, y, -70.0) * Cylinder(radius - 0.15, 10.0)
         assert _intersection_volume(lm, lumen) < 0.02, (
             f"{name} floor lumen is obstructed")
@@ -5272,13 +5272,16 @@ def test_floor_integrated_mount():
             f"{name} floor lumen is not fully buried: "
             f"{retained / wall.volume:.1%} wall retained")
 
-        trough_half = facts["boss"]["trough_half_w_mm"]
-        trough_floor = facts["boss"]["trough_floor_y_mm"]
+        bay_half = facts["boss"]["bay_half_w_mm"]
+        bay_ceiling = facts["boss"]["bay_ceiling_y_mm"]
+        lid_top = (facts["boss"]["lid_recess_y_mm"]
+                   + facts["boss"]["lid_thickness_mm"])
         entry_margin = min(
-            trough_half - (abs(x) + radius),
-            y - radius - trough_floor,
+            bay_half - (abs(x) + radius),
+            bay_ceiling - (y + radius),
+            y - radius - lid_top,
         )
-        # the UM mouth grazes the trough side wall by design (0.45 web)
+        # the UM mouth grazes the bay side wall by design (0.45 web)
         assert entry_margin >= 0.40, (
             f"{name} duct-entry margin {entry_margin:.3f} mm")
         entry_opening = Pos(
@@ -5290,7 +5293,7 @@ def test_floor_integrated_mount():
         path = floor.floor_lane_path(name)
         assert path.is_valid and not path.is_closed
         edges = tuple(path.edges())
-        assert len(edges) == (4 if name == "lm" else 2)
+        assert len(edges) == (6 if name == "lm" else 2)
 
         def xyz(edge, parameter):
             point = edge @ parameter

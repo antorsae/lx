@@ -37,7 +37,12 @@ from build123d import (
     sweep,
 )
 
-from ..base import L22_CUTOUT, STAND_FOOT, THICKNESS_MM
+from ..base import (
+    L22_CUTOUT,
+    STAND_FOOT,
+    THICKNESS_MM,
+    m5_insert_bore_cutter,
+)
 from ..cables import (
     LM_DUCT_OUT_REAR_Z_MM,
     LM_EXIT_BEND_R_MM,
@@ -66,16 +71,16 @@ from .floor_strength import (
 )
 
 
-# --- NL8 boss, service trough and snap lid (concept sign-off 2026-08-17)
+# --- NL8 boss, underside service bay and snap lid ---------------------
 # The rear is no longer a flat W64 panel: a 38.4-square mating face
 # (NL8MPRXX flange 38.16 + 0.12/side lip, all four corners r4.2) crowns a
 # body whose crest holds level over the connector barrel (true penetration
 # 25.85 mm, vendor-STEP contact plane 7.15 behind the D-face tip) and
-# falls as one cosine to the foot.  Window and service cavity merge into
-# ONE trough ending in a flat duct-entry wall at Z=-77 -- exactly 73 mm
-# from the face, the toe of the rise -- so the Faston flags get ~47 mm of
-# open run.  A same-solid lid clips over the trough on four hidden
-# cantilever fingers.
+# falls as one cosine to the foot.  The service opening moved from the
+# dome to the foot's UNDERSIDE (2026-08-19): the same crown-to-end-wall
+# plan is cut upward from the flat floor face, the dome stays unbroken,
+# and a flat recessed lid clips in from below on four hidden cantilever
+# fingers.  The duct-entry wall stays at Z=-77.
 BOSS_TOP_W_MM = 38.4
 NL8_CENTER_Y_MM = BOSS_TOP_W_MM / 2.0          # square face, derived
 BOSS_FLANGE_T_MM = 5.6                         # insert seat 4.0 + 1.6 roof
@@ -110,33 +115,47 @@ TROUGH_CROWN_Z_MM = -141.0
 TROUGH_R_SPRING_MM = 8.0
 TROUGH_R_CROWN_MM = 4.0
 
+# The service opening lives on the foot's UNDERSIDE: the same crown/
+# spring/straight/end-wall plan that proved printable as the old top
+# trough is cut upward from the flat floor face instead, so the dome
+# above stays completely unbroken (which also retired the top lip's
+# razor-fin rabbet).  The bay ceiling clears the tallest lane mouth
+# (LM D9 at y 10.5 tops at 15.0) by 0.6 while keeping >=2.4 mm of roof
+# under the dome at the shallowest station.  A 1.0-mm perimeter rebate
+# seats a flat lid recessed 0.1 below the floor plane: the frame rails
+# carry the stand, the floor presses the lid into its seat when the
+# stand is upright, and four cantilever fingers retain it in handling.
+BAY_CEILING_Y_MM = 15.6
+BAY_REBATE_OFF_MM = 1.0
 LID_T_MM = 1.8                                 # 3 beads at 0.6
+LID_RECESS_Y_MM = 0.1
+BAY_REBATE_DEPTH_Y_MM = LID_T_MM + LID_RECESS_Y_MM
 LID_CLEARANCE_MM = 0.2
-LID_STEP_RING_OFF_MM = 1.0                     # rebate in the crest roof
-LID_REAR_OVERLAP_OFF_MM = 0.8
-LID_PAD_SPANS_Z_MM = ((-111.0, -105.0), (-93.0, -87.0))
 LID_CLIP_SPANS_Z_MM = ((-120.0, -112.5), (-86.5, -79.5))
-LID_BLOCK_SPANS_X_MM = ((-7.5, -5.0), (5.0, 7.5))
-LID_HOOK_DROP_MM = 6.0                         # hook top below the seat
+LID_POCKET_X_MM = (16.5, 18.1)
+LID_POCKET_CEILING_Y_MM = 8.6                  # hook bearing plane
+LID_POCKET_FLOOR_Y_MM = 5.1
 LID_POCKET_PRELOAD_MM = 0.05
+LID_BLADE_T_MM = 1.2
+LID_NAIL_GROOVE_HALF_X_MM = 4.0
+LID_NAIL_GROOVE_DEPTH_MM = 0.8
 
-# The full-respan corner arcs meet the vertical x=+-16.55 trough walls at a
-# near-tangent angle, so the dome skin outboard of each wall thinned to a
-# ~1-mm-tall zero-thickness fin that tore off in print.  A shallow rim
-# rabbet sinks each side lip so the wall tops out on a flat ledge whose
-# outboard edge lands where the dome has already fallen the same amount:
-# no free-standing feature under one nozzle width survives at the lip.
-TROUGH_RIM_RABBET_DROP_MM = 1.0
-TROUGH_RIM_RABBET_OVERRUN_MM = 0.4
-# Straight-wall (flush-plug) territory only: rear of the spring tangent the
-# step-ring/rear-overlap rim system owns the lip, and the residual fins
-# there are <=0.4 mm tall and sit under the lid's overlap flange.
-TROUGH_RIM_RABBET_SPAN_Z_MM = (-121.3, TROUGH_END_WALL_Z_MM)
-TROUGH_RIM_RABBET_FADE_MM = 2.0
-TROUGH_RIM_RABBET_INNER_OVERLAP_MM = 0.45
+# M5 floor anchor: the stand bolts down through the owner's base from
+# below.  The shared stepped insert bore (D6.5 x 2.0 entry + D6.4 body,
+# 6.8 deep -- the same insert type as the driver pilots and wing bores)
+# opens flush with the floor face on the centre axis, as far forward as
+# the 130-mm flat allows (rim 0.75 behind the z=-20 lift-off).  The LM
+# lane ramps from its 10.5 mouth height to 12.55 across a buried cosine
+# ramp (min R 44) and runs raised over the anchor: 1.25 of web above the
+# bore and 1.25 of roof under the foot's top face, both two perimeters.
+FLOOR_M5_ANCHOR_Z_MM = -24.0
+FLOOR_M5_ANCHOR_DEPTH_MM = 6.8
+FLOOR_LM_RAISED_Y_MM = 12.55
+FLOOR_LM_RAMP_Z_MM = (-60.0, -40.0)
+FLOOR_LM_RAMP_HANDLE_MM = 8.0
 
 # The enclosed cavity is now exactly the barrel chamber: flush with the
-# trough walls, under a 3.6 roof, ending where the open trough takes over.
+# bay walls, ending where the open underside bay takes over.
 SERVICE_CAVITY_Z_MM = (PANEL_INNER_Z_MM, BOSS_CREST_HOLD_Z_MM)
 SERVICE_CAVITY_X_MM = (-TROUGH_HALF_W_MM, TROUGH_HALF_W_MM)
 SERVICE_CAVITY_Y_MM = (3.6, 34.8)
@@ -343,17 +362,43 @@ def _boss_section_w_h_r(z: float):
     return w, h, r
 
 
+def _boss_bottom_r_mm(z: float, r_top: float, h: float, w: float) -> float:
+    """Bottom-corner radius: tight through the underside bay span.
+
+    The full-respan radius applies where the wall leans (the dome and the
+    bend); the foot's BOTTOM corners instead cap at 2.4 through the bay
+    span so the lid rebate's x=17.55 wall stays buried inside the corner
+    arc (the full radius crossed it and shed tangential slivers).  The
+    radius blends from the NL8 flange's face rounding behind the crown and
+    back up to the shared respan value at the horizontal tangent, keeping
+    the boss/bend butt joint's sections identical.
+    """
+    if z <= -146.0:
+        raw = r_top
+    elif z <= -141.0:
+        raw = r_top + (2.4 - r_top) * _boss_ease((z + 146.0) / 5.0)
+    elif z <= -50.0:
+        raw = 2.4
+    else:
+        raw = 2.4 + (r_top - 2.4) * _boss_ease((z + 50.0) / 30.0)
+    return min(raw, h / 3.0, w / 4.0)
+
+
 def _boss_section(z: float, y0: float = 0.0):
     w, h, r = _boss_section_w_h_r(z)
+    rb = _boss_bottom_r_mm(z, r, h, w)
     half = w / 2.0
     wire = (Polyline((half, y0), (-half, y0), (-half, h))
             + Line((-half, h), (half, h)) + Line((half, h), (half, y0)))
     face = make_face(wire)
-    # all four corners alike: the NL8 flange is rounded on all four
-    corners = [v for v in face.vertices() if abs(abs(v.X) - half) < 1e-6
-               and (abs(v.Y - h) < 1e-6 or abs(v.Y - y0) < 1e-6)]
-    if r > 0.2 and corners:
-        face = fillet(corners, r)
+    top = [v for v in face.vertices() if abs(abs(v.X) - half) < 1e-6
+           and abs(v.Y - h) < 1e-6]
+    if r > 0.2 and top:
+        face = fillet(top, r)
+    bottom = [v for v in face.vertices() if abs(abs(v.X) - half) < 1e-6
+              and abs(v.Y - y0) < 1e-6]
+    if rb > 0.2 and bottom:
+        face = fillet(bottom, rb)
     return Plane.XY.offset(z) * face
 
 
@@ -508,149 +553,59 @@ def _trough_plan_offset(off_rear: float, off_front: float,
     return out
 
 
-def _trough_prism(outline):
-    return (Pos(0.0, 75.0, 0.0) * Rot(90, 0, 0)
-            * extrude(make_face(Polyline(outline)), 75.0 - TROUGH_FLOOR_Y_MM))
+def _bay_prism(outline, y0: float, y1: float):
+    """The plan outline as a vertical prism spanning y0..y1."""
+    return (Pos(0.0, y1, 0.0) * Rot(90, 0, 0)
+            * extrude(make_face(Polyline(outline)), y1 - y0))
 
 
-def lid_seat_y_mm(z: float) -> float:
-    return boss_height_mm(z) - LID_T_MM
+def _bay_cutter():
+    """Underside service bay plus the lid's perimeter rebate ring.
 
-
-def _lid_seat_pads():
-    pads = []
-    for z0, z1 in LID_PAD_SPANS_Z_MM:
-        for sx in (-1, 1):
-            prof = [(lid_seat_y_mm(z0 + u * (z1 - z0) / 6.0),
-                     z0 + u * (z1 - z0) / 6.0) for u in range(7)]
-            prof += [(lid_seat_y_mm(z1) - 2.5, z1 - 2.5),
-                     (lid_seat_y_mm(z0) - 2.5, z0)]
-            face = Plane.YZ.offset(
-                min(sx * (TROUGH_HALF_W_MM - 2.5),
-                    sx * TROUGH_HALF_W_MM)) * make_face(
-                Polyline(prof + [prof[0]]))
-            pads.append(extrude(face, 2.5) & _trough_prism(
-                _trough_plan_points()))
-    return pads
-
-
-def _lid_nose_blocks():
-    blocks = []
-    bt = lid_seat_y_mm(TROUGH_END_WALL_Z_MM)
-    for xa, xb in LID_BLOCK_SPANS_X_MM:
-        face = Plane.YZ.offset(xa) * make_face(Polyline([
-            (bt, -78.2), (bt, -76.6), (bt - 1.6, -76.6), (bt, -78.2)]))
-        blocks.append(extrude(face, xb - xa)
-                      & Pos(0, 40.0, -110.0) * Box(40.0, 80.0, 70.0))
-    return blocks
-
-
-def _lid_clip_geo(z0: float, z1: float):
-    zc = (z0 + z1) / 2.0
-    ys = lid_seat_y_mm(zc)
-    return zc, ys, ys - LID_HOOK_DROP_MM
+    The bay reuses the crown/spring/straight/end-wall plan unchanged (its
+    flank and spring angles are what made the old top trough printable in
+    the front-face-down orientation; as the print-roof of an underside bay
+    they work identically).  The rebate ring sinks the flat lid 0.1 below
+    the floor plane so the frame rails seat the stand deterministically.
+    """
+    bay = _bay_prism(_trough_plan_points(), -1.0, BAY_CEILING_Y_MM)
+    rebate = _bay_prism(
+        _trough_plan_offset(BAY_REBATE_OFF_MM, BAY_REBATE_OFF_MM),
+        -1.0, BAY_REBATE_DEPTH_Y_MM)
+    return bay.fuse(rebate).clean()
 
 
 def _lid_pocket_cutters():
+    """Blind finger pockets in both bay side walls.
+
+    The pocket's z0 leg keeps the 45-degree slope: z0 is the print-top of
+    a side cavity in the front-face-down orientation, exactly like the old
+    top-trough pockets it mirrors.
+    """
+    x0, x1 = LID_POCKET_X_MM
     cutters = []
     for z0, z1 in LID_CLIP_SPANS_Z_MM:
-        zc, ys, yh = _lid_clip_geo(z0, z1)
-        yp = yh - LID_POCKET_PRELOAD_MM
         z0p, z1p = z0 - 0.6, z1 + 0.6
         for sx in (-1, 1):
             face = Plane.YZ.offset(
-                min(sx * (TROUGH_HALF_W_MM - 0.05),
-                    sx * (TROUGH_HALF_W_MM + 1.55))) * make_face(
-                Polyline([(yp, z0p), (yp, z1p), (yp - 3.5, z1p),
-                          (yp - 3.5, z0p + 3.5), (yp, z0p)]))
-            cutters.append(extrude(face, 1.6))
+                min(sx * x0, sx * x1)) * make_face(
+                Polyline([
+                    (LID_POCKET_CEILING_Y_MM, z0p),
+                    (LID_POCKET_CEILING_Y_MM, z1p),
+                    (LID_POCKET_FLOOR_Y_MM, z1p),
+                    (LID_POCKET_FLOOR_Y_MM, z0p + 3.5),
+                    (LID_POCKET_CEILING_Y_MM, z0p)]))
+            cutters.append(extrude(face, x1 - x0))
     return cutters
 
 
-def _lid_step_cutter():
-    ring = (_trough_prism(_trough_plan_offset(LID_STEP_RING_OFF_MM, -0.01))
-            - _trough_prism(_trough_plan_points()))
-    band = Pos(0.0, 57.4 + (BOSS_TOP_W_MM - LID_T_MM), -110.0) * Box(
-        60.0, 114.8, 90.0)
-    return ring & band
-
-
-def _dome_lip_y_mm(z: float, x_abs: float) -> float:
-    """Dome surface height where the vertical plane |x| = x_abs meets it."""
-    w, h, r = _boss_section_w_h_r(z)
-    xc = w / 2.0 - r
-    if x_abs <= xc:
-        return h
-    dx = min(x_abs - xc, r)
-    return (h - r) + math.sqrt(max(r * r - dx * dx, 0.0))
-
-
-def _trough_wall_plan_x(z: float) -> float:
-    """|x| of the trough plan wall at z: straight, spring, flank or corner."""
-    t_off = TROUGH_R_SPRING_MM / math.tan(math.radians(67.5))
-    sp_side = TROUGH_SPRING_Z_MM + t_off
-    sp_flank = t_off / math.sqrt(2.0)
-    flank_z = TROUGH_SPRING_Z_MM - sp_flank
-    corner_z = TROUGH_END_WALL_Z_MM - TROUGH_CORNER_R_MM
-    if z >= corner_z:
-        dz = min(z - corner_z, TROUGH_CORNER_R_MM)
-        return (TROUGH_HALF_W_MM - TROUGH_CORNER_R_MM + math.sqrt(
-            max(TROUGH_CORNER_R_MM ** 2 - dz * dz, 0.0)))
-    if z <= flank_z:
-        return TROUGH_HALF_W_MM - sp_flank - (flank_z - z)
-    if z <= sp_side:
-        dz = sp_side - z
-        return (TROUGH_HALF_W_MM - TROUGH_R_SPRING_MM + math.sqrt(
-            max(TROUGH_R_SPRING_MM ** 2 - dz * dz, 0.0)))
-    return TROUGH_HALF_W_MM
-
-
-def _trough_rim_rabbet_cutters():
-    """Both side-lip ledges; see the TROUGH_RIM_RABBET constants."""
-    z0, z1 = TROUGH_RIM_RABBET_SPAN_Z_MM
-    count = 61
-    cutters = []
-    for sx in (-1.0, 1.0):
-        faces = []
-        for i in range(count + 1):
-            z = z0 + (z1 - z0) * i / count
-            k = _boss_ease((z - z0) / TROUGH_RIM_RABBET_FADE_MM)
-            w, h, r = _boss_section_w_h_r(z)
-            xc, yc = w / 2.0 - r, h - r
-            wall = _trough_wall_plan_x(z)
-            # The inner edge overlaps past the live wall plane so no cutter
-            # face is ever coincident with the trough wall (boolean shards),
-            # and it follows the spring/flank/corner plan inboard so no
-            # wall-top sliver stands outboard of an arcing wall.
-            inner = wall - TROUGH_RIM_RABBET_INNER_OVERLAP_MM
-            lip = _dome_lip_y_mm(z, wall)
-            # The un-eased sections lift clear of the dome instead of
-            # degenerating to a zero-width face.
-            floor_y = lip - TROUGH_RIM_RABBET_DROP_MM * k + 6.0 * (1.0 - k)
-            dx = math.sqrt(max(r * r - max(floor_y - yc, 0.0) ** 2, 0.0))
-            outer = max(xc + dx + TROUGH_RIM_RABBET_OVERRUN_MM * k,
-                        inner + 1.0)
-            pts = [(sx * inner, floor_y),
-                   (sx * outer, floor_y),
-                   (sx * outer, h + 2.0),
-                   (sx * inner, h + 2.0),
-                   (sx * inner, floor_y)]
-            faces.append(Plane.XY.offset(z) * make_face(Polyline(pts)))
-        cutter = loft(faces, ruled=True)
-        # Spare the lid seat pads exactly like the trough cutter does: the
-        # ledge otherwise slices their outboard strips and sheds sub-0.1-mm
-        # flakes at the pad end planes.
-        for keep in _lid_seat_pads():
-            cutter -= keep
-        cutters.append(cutter)
-    return tuple(cutters)
-
-
-def _trough_cutter():
-    cutter = _trough_prism(_trough_plan_points())
-    for keep in (*_lid_seat_pads(), *_lid_nose_blocks()):
-        cutter -= keep
-    return cutter
+def _floor_m5_anchor_cutter():
+    """Vertical stepped M5 insert bore, mouth flush with the floor face."""
+    return (Pos(0.0, 0.0, FLOOR_M5_ANCHOR_Z_MM) * Rot(-90, 0, 0)
+            * m5_insert_bore_cutter(
+                (0.0, 0.0), opening_z=0.0,
+                total_depth=FLOOR_M5_ANCHOR_DEPTH_MM,
+                opening_side="-z"))
 
 
 def _boss_cavity_cutter():
@@ -686,43 +641,56 @@ def _boss_panel_cutters():
 
 
 def floor_service_lid():
-    """The snap-in trough lid, carved from the same boss loft."""
+    """The snap-in underside bay lid: a flat recessed plate on four fingers.
+
+    The plate drops into the perimeter rebate from below with 0.2 shutline
+    clearance and 0.8 of ledge overlap all around; standing, the floor
+    presses it into its seat.  Four cantilever blades rise along the bay
+    walls into the blind pockets, hooks bearing upward with 0.05 preload,
+    mirroring the proven top-lid finger geometry.  A 45-degree nail groove
+    across the front edge (facing the floor, invisible in service) opens
+    it.
+    """
     _require_guarded_build()
     if not STAND_FOOT:
         raise RuntimeError("no-floor Obi-Wan has no service lid")
-    blank = _boss_prism()
-    lid = blank & _trough_prism(_trough_plan_offset(
-        LID_REAR_OVERLAP_OFF_MM, -LID_CLEARANCE_MM))
-    below = Plane.YZ.offset(-20.0) * make_face(Polyline(
-        [(lid_seat_y_mm(-144.0 + i), -144.0 + i) for i in range(0, 70)]
-        + [(0.0, -74.0), (0.0, -144.0), (lid_seat_y_mm(-144.0), -144.0)]))
-    lid -= extrude(below, 40.0)
-    for z0, z1 in LID_PAD_SPANS_Z_MM:
-        zc = (z0 + z1) / 2.0
-        for sx in (-1, 1):
-            lid += Pos(sx * (TROUGH_HALF_W_MM - 0.05),
-                       lid_seat_y_mm(zc) + 0.8, zc) * Box(0.4, 1.2, 0.6)
+    inset = BAY_REBATE_OFF_MM - LID_CLEARANCE_MM
+    lid = _bay_prism(_trough_plan_offset(inset, inset),
+                     LID_RECESS_Y_MM, LID_RECESS_Y_MM + LID_T_MM)
+    plate_top = LID_RECESS_Y_MM + LID_T_MM
+    hook_bearing = LID_POCKET_CEILING_Y_MM + LID_POCKET_PRELOAD_MM
     for z0, z1 in LID_CLIP_SPANS_Z_MM:
-        zc, ys, yh = _lid_clip_geo(z0, z1)
         for sx in (-1, 1):
+            blade_out = TROUGH_HALF_W_MM - LID_CLEARANCE_MM
             blade = Plane.YZ.offset(
-                min(sx * (TROUGH_HALF_W_MM - 1.4),
-                    sx * (TROUGH_HALF_W_MM - 0.2))) * make_face(
-                Polyline([(yh - 1.4, z0), (ys + 0.4, z0),
-                          (ys + 0.4, z1), (yh - 1.4, z1), (yh - 1.4, z0)]))
-            lid += extrude(blade, 1.2)
+                min(sx * blade_out,
+                    sx * (blade_out - LID_BLADE_T_MM))) * make_face(
+                Polyline([(plate_top - 1.4, z0), (hook_bearing - 0.1, z0),
+                          (hook_bearing - 0.1, z1), (plate_top - 1.4, z1),
+                          (plate_top - 1.4, z0)]))
+            lid += extrude(blade, LID_BLADE_T_MM)
             hook = Plane.XY.offset(z0 + 0.6) * make_face(Polyline(
-                [(sx * (TROUGH_HALF_W_MM - 0.2), yh),
-                 (sx * (TROUGH_HALF_W_MM + 0.4), yh - 0.16),
-                 (sx * (TROUGH_HALF_W_MM - 0.2), yh - 1.36),
-                 (sx * (TROUGH_HALF_W_MM - 0.2), yh)]))
+                [(sx * blade_out, hook_bearing),
+                 (sx * (blade_out + 0.6), hook_bearing - 0.16),
+                 (sx * blade_out, hook_bearing - 1.36),
+                 (sx * blade_out, hook_bearing)]))
             lid += extrude(hook, (z1 - 1.8) - (z0 + 0.6))
-            cut_top = lid_seat_y_mm(z1) - 0.05
-            lid -= (Pos(sx * (TROUGH_HALF_W_MM - 0.8),
-                        (cut_top + yh - 1.5) / 2.0, z1)
-                    * Rot(0, 45, 0)
-                    * Box(1.71, cut_top - (yh - 1.5), 1.71))
-    lid = lid.clean()
+            release = Pos(
+                sx * (TROUGH_HALF_W_MM - 0.8),
+                (plate_top - 0.05 + hook_bearing - 1.5) / 2.0, z1) \
+                * Rot(0, 45, 0) * Box(
+                    1.71, (hook_bearing - 1.5) - (plate_top - 0.05), 1.71)
+            lid -= release
+    lid -= (Pos(0.0, LID_RECESS_Y_MM,
+                TROUGH_END_WALL_Z_MM + BAY_REBATE_OFF_MM - LID_CLEARANCE_MM)
+            * Rot(45, 0, 0)
+            * Box(2.0 * LID_NAIL_GROOVE_HALF_X_MM,
+                  2.0 * LID_NAIL_GROOVE_DEPTH_MM,
+                  2.0 * LID_NAIL_GROOVE_DEPTH_MM))
+    # Emit in a front-face-down-compatible frame: the shared X180 export
+    # contract then lands the flat lid outer-face-down with the fingers
+    # up, instead of standing a 1.8-mm plate 65 mm tall on its end.
+    lid = (Rot(-90, 0, 0) * lid).clean()
     solids = tuple(lid.solids())
     if (not lid.is_valid or len(solids) != 1
             or solids[0].volume <= 0.01):
@@ -743,9 +711,7 @@ def integrated_floor_addition():
     # the bend's horizontal tangent, so no separate flat foot box exists.
     bend = _tapered_bend_loft()
     boss = _boss_prism()
-    body = boss.fuse(
-        bend, _stem_prism(),
-        *_lid_seat_pads(), *_lid_nose_blocks()).clean()
+    body = boss.fuse(bend, _stem_prism()).clean()
     solids = tuple(body.solids())
     if (not body.is_valid or len(solids) != 1
             or solids[0].volume <= 0.01):
@@ -774,8 +740,10 @@ def _floor_lane_entry_components(name: str):
 def _floor_lane_bezier_points(name: str):
     """G1 cubic from the straight foot lane to its selected handoff."""
     spec = FLOOR_LANE_SPECS[name]
+    lane_y = (FLOOR_LM_RAISED_Y_MM if name == "lm"
+              else spec["floor_y_mm"])
     canonical = canonical_lane_controls(
-        spec["x_mm"], spec["floor_y_mm"], spec["stem_z_mm"],
+        spec["x_mm"], lane_y, spec["stem_z_mm"],
         **FLOOR_BEND_KW)
     if name == "lm":
         endpoint = FLOOR_LM_EXIT_HANDOFF["start"]
@@ -830,6 +798,18 @@ def _floor_lane_overlap_end(name: str):
     )
 
 
+def _lm_ramp_controls():
+    """Buried cosine ramp lifting the LM run over the M5 floor anchor."""
+    spec = FLOOR_LANE_SPECS["lm"]
+    x = spec["x_mm"]
+    low = spec["floor_y_mm"]
+    z0, z1 = FLOOR_LM_RAMP_Z_MM
+    handle = FLOOR_LM_RAMP_HANDLE_MM
+    return ((x, low, z0), (x, low, z0 + handle),
+            (x, FLOOR_LM_RAISED_Y_MM, z1 - handle),
+            (x, FLOOR_LM_RAISED_Y_MM, z1))
+
+
 def floor_lane_path(name: str):
     """Floor-body cutter path following the Option-B wall transition.
 
@@ -843,7 +823,12 @@ def floor_lane_path(name: str):
     except KeyError as exc:
         raise ValueError(name) from exc
     line_start, controls = _floor_lane_entry_components(name)
-    edges = [Line(line_start, controls[0])]
+    if name == "lm":
+        edges = [Line(line_start, _lm_ramp_controls()[0]),
+                 Bezier(*_lm_ramp_controls()),
+                 Line(_lm_ramp_controls()[-1], controls[0])]
+    else:
+        edges = [Line(line_start, controls[0])]
     if spec["handoff_mode"] == "buried_route_overlap":
         edges.append(Bezier(*_prefusion_cubic_controls(name)))
     else:
@@ -917,7 +902,14 @@ def floor_lane_control_points(name: str):
     except KeyError as exc:
         raise ValueError(name) from exc
     line_start, controls = _floor_lane_entry_components(name)
-    points = [line_start, controls[0]]
+    if name == "lm":
+        ramp = _lm_ramp_controls()
+        points = [line_start, ramp[0]]
+        points.extend(
+            _cubic_point(ramp, index / 16.0) for index in range(1, 17))
+        points.append(controls[0])
+    else:
+        points = [line_start, controls[0]]
     if spec["handoff_mode"] == "buried_route_overlap":
         points.extend(
             _cubic_point(controls, index / 64.0)
@@ -974,9 +966,9 @@ def integrated_floor_feature_group(index: int):
             cutters.append(_floor_feed_mouth_relief(name))
         return f"floor_lane_{name}", tuple(cutters)
     if index == 2 + len(lane_names):
-        return "service_trough_and_lid_seats", (
-            _trough_cutter(), _lid_step_cutter(), *_lid_pocket_cutters(),
-            *_trough_rim_rabbet_cutters())
+        return "underside_service_bay_lid_seats_and_anchor", (
+            _bay_cutter(), *_lid_pocket_cutters(),
+            _floor_m5_anchor_cutter())
     raise IndexError(index)
 
 
@@ -1071,14 +1063,27 @@ def integrated_floor_facts() -> dict:
             "flange_t_mm": BOSS_FLANGE_T_MM,
             "insert_bore_d_mm": NL8_SCREW_D_MM,
             "insert_depth_mm": NL8_INSERT_L_MM,
-            "trough_half_w_mm": TROUGH_HALF_W_MM,
-            "trough_floor_y_mm": TROUGH_FLOOR_Y_MM,
+            "bay_half_w_mm": TROUGH_HALF_W_MM,
+            "bay_side": "underside",
+            "bay_ceiling_y_mm": BAY_CEILING_Y_MM,
+            "bay_rebate_off_mm": BAY_REBATE_OFF_MM,
             "duct_entry_wall_z_mm": TROUGH_END_WALL_Z_MM,
             "lid_thickness_mm": LID_T_MM,
+            "lid_recess_y_mm": LID_RECESS_Y_MM,
             "lid_shutline_clearance_mm": LID_CLEARANCE_MM,
-            "lid_pad_spans_z_mm": LID_PAD_SPANS_Z_MM,
             "lid_clip_spans_z_mm": LID_CLIP_SPANS_Z_MM,
             "lid_pocket_preload_mm": LID_POCKET_PRELOAD_MM,
+            "m5_floor_anchor": {
+                "center_xz_mm": (0.0, FLOOR_M5_ANCHOR_Z_MM),
+                "bore_depth_mm": FLOOR_M5_ANCHOR_DEPTH_MM,
+                "opens": "floor_face_flush",
+                "lm_raised_y_mm": FLOOR_LM_RAISED_Y_MM,
+                "web_above_bore_mm": (
+                    FLOOR_LM_RAISED_Y_MM - 4.5
+                    - FLOOR_M5_ANCHOR_DEPTH_MM),
+                "roof_above_lane_mm": (
+                    FOOT_HEIGHT_MM - (FLOOR_LM_RAISED_Y_MM + 4.5)),
+            },
             "full_respan": {
                 "path_total_mm": BOSS_PATH_TOTAL_MM,
                 "root_width_mm": _boss_path_width_mm(

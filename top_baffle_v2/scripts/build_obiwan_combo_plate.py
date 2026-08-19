@@ -151,7 +151,10 @@ LOCKED_TRANSLATIONS_MM = (
     (27.025, 2.010, 0.0),
     (71.034, 28.412, 0.0),
     (108.802, 209.132, 0.0),
-    (210.0, 218.0, 0.0),
+    # The flat underside lid prints outer-face-down (34.7 x 63.9 plan);
+    # the old dome lid's edge slot cannot hold it, but the pocket between
+    # the rotated keyed bottom and the carrier can.
+    (105.5, 55.5, 0.0),
 )
 
 
@@ -256,7 +259,7 @@ VARIANTS = {
         plate_name=(
             "obiwan_01_02_03_04_LM_UM_combo_floor_stand"
         ),
-        expected_triangle_count=188_374,
+        expected_triangle_count=191_364,
         sparse_infill_density_percent=100.0,
         sparse_infill_pattern="zig-zag",
     ),
