@@ -575,6 +575,21 @@ LM_DUCT_OUT_CLEARANCE_FROM_APERTURE_MM = 10.0
 LM_DUCT_OUT_Y_MM = (
     L22_CUTOUT[1] - L22_CUTOUT[2] / 2.0
     - LM_DUCT_OUT_CLEARANCE_FROM_APERTURE_MM)
+# The Obi-Wan floor stand's R14 turn rides the z=12.55 stem lane; with the
+# common 10-mm outlet its D9 cutter broke through the R110.6 driver-recess
+# floor between the pilot bores (the printed part showed the window).  The
+# no-floor state hit the same grazing earlier and moved its mouth via a
+# 17.8-mm aperture clearance; the floor stand's own figure is 16.4: any
+# lower and the port tube's octagon clips the former-T-stem-mouth rear
+# skin witness at (-8, 82), any higher and the turn's high portion nears
+# the recess annulus.  At 16.4 the whole turn stays under the full-depth
+# shoulder front (3.9 mm of plan margin to the R110.6 annulus), the
+# recess floor closes, the witness keeps 0.3 mm of clearance, and the
+# R14 radius and 5.9-degree near-normal exit are unchanged.
+FLOOR_LM_DUCT_OUT_CLEARANCE_FROM_APERTURE_MM = 16.4
+FLOOR_LM_DUCT_OUT_Y_MM = (
+    L22_CUTOUT[1] - L22_CUTOUT[2] / 2.0
+    - FLOOR_LM_DUCT_OUT_CLEARANCE_FROM_APERTURE_MM)
 # The centerline exits 2 mm behind the rear datum, matching the established
 # stock/slim exit bore and allowing the floor lane to make its final R14 turn
 # without opening a second slot through the lower stem.

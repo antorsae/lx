@@ -120,7 +120,7 @@
       "mesh_diagnostics": {
         "component_error": 0,
         "component_signed_volumes": [
-          214628.7629194048,
+          201826.12561428448,
           -64.8830239363071,
           -64.88304705410363
         ],
@@ -135,28 +135,28 @@
         "open": 0,
         "outer_components": 1,
         "over_shared": 0,
-        "signed_volume": 214498.9968484146,
-        "triangles": 144102,
+        "signed_volume": 201696.35954329427,
+        "triangles": 147464,
         "winding": 0,
         "zero_volume": 0,
         "zero_volume_components": 0
       },
       "rotation_deg": 0.0,
       "source_print_sidecar": "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json",
-      "source_print_sidecar_sha256": "ab672c28520310c6225fbb5df5130fb53abb3145dbc5f3790b4abe54c4813e51",
+      "source_print_sidecar_sha256": "74053267e95f9492732143b95f9f9784a78db5a17bc0458d5db092f34f4d2c45",
       "source_stl": "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
-      "source_stl_sha256": "a3ea8eca8835123c888debd72893bd7103cd98d8589da2341f9dc5c1b247769e",
+      "source_stl_sha256": "d4c043e2b3330a181d98fcf3d5980ba4feebcf16e5299b6f9813201a9003755c",
       "support_blocker": {
         "path": "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl",
-        "sha256": "16f3a486d623376d8dc16a307ae5d96a8e000a86043bd74e171c61b16022d21c",
-        "triangle_count": 16556
+        "sha256": "5ebb97fe15a80fd75e5a9aa602b0b0cc161624d22dc1162aeba5bd3669b79619",
+        "triangle_count": 16336
       },
       "translation_mm": [
         5.623,
         34.319,
         0.0
       ],
-      "triangle_count": 144102
+      "triangle_count": 147464
     },
     {
       "catalog_artifact_id": "floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_2_of_2_top",
@@ -164,7 +164,7 @@
       "mesh_diagnostics": {
         "component_error": 0,
         "component_signed_volumes": [
-          36373.670087209764,
+          36373.67008720981,
           -64.88303332272068,
           -64.88311486900996
         ],
@@ -179,7 +179,7 @@
         "open": 0,
         "outer_components": 1,
         "over_shared": 0,
-        "signed_volume": 36243.903939018084,
+        "signed_volume": 36243.90393901813,
         "triangles": 19794,
         "winding": 0,
         "zero_volume": 0,
@@ -187,9 +187,9 @@
       },
       "rotation_deg": 0.0,
       "source_print_sidecar": "build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.print.json",
-      "source_print_sidecar_sha256": "0293557e5e62c291ae91e9209d1646a7cf7a81154b2e993a91a1b51825808dfc",
+      "source_print_sidecar_sha256": "0d5c3e4588d691fa201bf53409a4d9df04fecb919f997ae2ee35820dfbc4a97d",
       "source_stl": "build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
-      "source_stl_sha256": "2d56b8d9d393df23d383d53e2b319c913bfd4862e9c0b778c6dc8e3ef791f7ad",
+      "source_stl_sha256": "a2586e3c12b79c34691b7fecc18e3e6626fcef95bb1c431cf1c8771cb5fbbc04",
       "support_blocker": {
         "path": "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl",
         "sha256": "d2250acaedf2e49ee4a1000bb808732a070776cc6c02fbda9a319c8a419c2e9e",
@@ -329,12 +329,12 @@
     "sparse_infill_pattern": "zig-zag"
   },
   "schema_version": 1,
-  "source_bundle_fingerprint": "75641c24f2cd23a314b55f9d3e22a4079206a072d1725c700abb694de2cab39c",
+  "source_bundle_fingerprint": "f2c105e6b7ea3fa304eaea4e7443cca168143c640fa15dae7508c5cf4b193369",
   "source_policy": "translation-only concatenation of four released floor_stand front-down STLs; no CAD or structure regeneration",
   "stand_state": "floor_stand",
   "stl": "obiwan_01_02_03_04_LM_UM_combo_floor_stand.stl",
-  "stl_bytes": 9568284,
-  "stl_sha256": "e5716accf813e64e8ff6d639d4bb151ff9fd109a8d3c7f0dc9b3d1378b5e6bb4",
+  "stl_bytes": 9736384,
+  "stl_sha256": "6bd5cd63c5ed56ef7604cd3599a9f0bf60fc32b6b0e29704f74afebc9442d422",
   "support_policy": {
     "duct_blocker_count": 3,
     "enabled": true,
@@ -346,5 +346,5 @@
     },
     "support_toolpath_vs_duct_collision_gate": "mandatory"
   },
-  "triangle_count": 191364
+  "triangle_count": 194726
 }

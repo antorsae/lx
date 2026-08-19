@@ -5259,13 +5259,21 @@ def test_floor_integrated_mount():
         y = record["floor_y_mm"]
         radius = record["diameter_mm"] / 2.0
         # rear of the duct-entry wall the lanes are OPEN into the
-        # underside bay; the buried-run probes sit forward of Z=-77
-        lumen = Pos(x, y, -70.0) * Cylinder(radius - 0.15, 10.0)
+        # underside bay.  The LM lane climbs to its raised 12.55 run right
+        # behind the entry wall (rear M5 anchor), so its buried-run probes
+        # sit on the raised straight; UM/T keep the mouth-height station.
+        if name == "lm":
+            probe_y = facts["boss"]["m5_floor_anchor"]["lm_raised_y_mm"]
+            probe_z = -40.0
+        else:
+            probe_y = y
+            probe_z = -70.0
+        lumen = Pos(x, probe_y, probe_z) * Cylinder(radius - 0.15, 10.0)
         assert _intersection_volume(lm, lumen) < 0.02, (
             f"{name} floor lumen is obstructed")
         wall = (
-            Pos(x, y, -70.0) * Cylinder(radius + 0.55, 8.0)
-            - Pos(x, y, -70.0) * Cylinder(radius + 0.10, 8.0)
+            Pos(x, probe_y, probe_z) * Cylinder(radius + 0.55, 8.0)
+            - Pos(x, probe_y, probe_z) * Cylinder(radius + 0.10, 8.0)
         )
         retained = _intersection_volume(lm, wall)
         assert retained > 0.97 * wall.volume, (
@@ -5293,7 +5301,7 @@ def test_floor_integrated_mount():
         path = floor.floor_lane_path(name)
         assert path.is_valid and not path.is_closed
         edges = tuple(path.edges())
-        assert len(edges) == (6 if name == "lm" else 2)
+        assert len(edges) == (5 if name == "lm" else 2)
 
         def xyz(edge, parameter):
             point = edge @ parameter

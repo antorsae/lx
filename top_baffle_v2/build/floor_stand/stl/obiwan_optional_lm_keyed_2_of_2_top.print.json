@@ -3,7 +3,7 @@
     "collapsed_apex_facets_removed": 0,
     "component_error": 0,
     "component_signed_volumes": [
-      36373.670087209764,
+      36373.67008720981,
       -64.88303332272068,
       -64.88311486900996
     ],
@@ -18,7 +18,7 @@
     "open": 0,
     "outer_components": 1,
     "over_shared": 0,
-    "signed_volume": 36243.903939018084,
+    "signed_volume": 36243.90393901813,
     "triangles": 19794,
     "winding": 0,
     "zero_volume": 0,
@@ -71,6 +71,6 @@
     256.0550280896535,
     18.300000099999984
   ],
-  "stl_sha256": "2d56b8d9d393df23d383d53e2b319c913bfd4862e9c0b778c6dc8e3ef791f7ad",
+  "stl_sha256": "a2586e3c12b79c34691b7fecc18e3e6626fcef95bb1c431cf1c8771cb5fbbc04",
   "variant_export": "obiwan"
 }

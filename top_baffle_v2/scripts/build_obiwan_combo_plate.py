@@ -259,7 +259,7 @@ VARIANTS = {
         plate_name=(
             "obiwan_01_02_03_04_LM_UM_combo_floor_stand"
         ),
-        expected_triangle_count=191_364,
+        expected_triangle_count=194_726,
         sparse_infill_density_percent=100.0,
         sparse_infill_pattern="zig-zag",
     ),

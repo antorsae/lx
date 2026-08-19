@@ -44,7 +44,9 @@ from ..base import (
     m5_insert_bore_cutter,
 )
 from ..cables import (
+    FLOOR_LM_DUCT_OUT_Y_MM,
     LM_DUCT_OUT_REAR_Z_MM,
+    LM_DUCT_OUT_X_MM,
     LM_EXIT_BEND_R_MM,
     lm_exit_handoff_points,
     lm_exit_handoff_spec,
@@ -148,11 +150,20 @@ LID_NAIL_GROOVE_DEPTH_MM = 0.8
 # lane ramps from its 10.5 mouth height to 12.55 across a buried cosine
 # ramp (min R 44) and runs raised over the anchor: 1.25 of web above the
 # bore and 1.25 of roof under the foot's top face, both two perimeters.
-FLOOR_M5_ANCHOR_Z_MM = -24.0
+# Interior top wall carried forward from the barrel chamber's 3.6 roof
+# when the dead block between the chamber and the entry wall was hollowed.
+HOLLOW_TOP_WALL_MM = 3.6
+
+# Two anchors: the front one as far forward as the flat allows, and a
+# rear one as close to the lid as the LM lane's climb permits -- the lane
+# leaves its 10.5 mouth immediately behind the entry wall and reaches the
+# raised 12.55 run in 13 mm (cosine ramp, min R 18.8), so the rear bore's
+# rim sits at z=-65, 12 mm forward of the bay's end wall.
+FLOOR_M5_ANCHOR_Z_MM = (-61.75, -24.0)
 FLOOR_M5_ANCHOR_DEPTH_MM = 6.8
 FLOOR_LM_RAISED_Y_MM = 12.55
-FLOOR_LM_RAMP_Z_MM = (-60.0, -40.0)
-FLOOR_LM_RAMP_HANDLE_MM = 8.0
+FLOOR_LM_RAMP_Z_MM = (-78.0, -65.0)
+FLOOR_LM_RAMP_HANDLE_MM = 5.2
 
 # The enclosed cavity is now exactly the barrel chamber: flush with the
 # bay walls, ending where the open underside bay takes over.
@@ -199,8 +210,12 @@ FLOOR_LANE_EFFECTIVE_OVERLAP_MM = (
     - FLOOR_LANE_PREFUSION_HANDOFF_GAP_MM)
 FLOOR_LANE_UM_END_HANDLE_MM = 35.0
 FLOOR_LANE_T_END_HANDLE_MM = 32.0
+# The mouth sits at the unified Obi-Wan 17.8-mm aperture clearance (see
+# cables.py): with the old shared 10-mm outlet the R14 turn's cutter broke
+# through the driver-recess floor between the pilot bores.
 FLOOR_LM_EXIT_HANDOFF = lm_exit_handoff_spec(
-    12.55, STEM_Z_MM[0], LM_DUCT_OUT_REAR_Z_MM)
+    12.55, STEM_Z_MM[0], LM_DUCT_OUT_REAR_Z_MM,
+    face_xy_mm=(LM_DUCT_OUT_X_MM, FLOOR_LM_DUCT_OUT_Y_MM))
 # UM/T need clearance behind their complete printed cover envelopes, not just
 # their nominal lumens.  That clearance is now internal: a 0.45-mm rear skin
 # closes the former visible lower-stem mouths while keeping the same robust
@@ -599,18 +614,43 @@ def _lid_pocket_cutters():
     return cutters
 
 
-def _floor_m5_anchor_cutter():
-    """Vertical stepped M5 insert bore, mouth flush with the floor face."""
-    return (Pos(0.0, 0.0, FLOOR_M5_ANCHOR_Z_MM) * Rot(-90, 0, 0)
-            * m5_insert_bore_cutter(
-                (0.0, 0.0), opening_z=0.0,
-                total_depth=FLOOR_M5_ANCHOR_DEPTH_MM,
-                opening_side="-z"))
+def _floor_m5_anchor_cutters():
+    """Vertical stepped M5 insert bores, mouths flush with the floor face."""
+    return tuple(
+        Pos(0.0, 0.0, z) * Rot(-90, 0, 0)
+        * m5_insert_bore_cutter(
+            (0.0, 0.0), opening_z=0.0,
+            total_depth=FLOOR_M5_ANCHOR_DEPTH_MM,
+            opening_side="-z")
+        for z in FLOOR_M5_ANCHOR_Z_MM)
+
+
+def _hollow_end_z_mm() -> float:
+    """Where the dome-following interior ceiling meets the bay ceiling."""
+    lo, hi = BOSS_CREST_HOLD_Z_MM, TROUGH_END_WALL_Z_MM
+    for _ in range(60):
+        mid = 0.5 * (lo + hi)
+        if boss_height_mm(mid) - HOLLOW_TOP_WALL_MM > BAY_CEILING_Y_MM:
+            lo = mid
+        else:
+            hi = mid
+    return lo
 
 
 def _boss_cavity_cutter():
+    """Barrel chamber plus the hollowed run to the duct-entry wall.
+
+    Forward of the crest hold the interior used to be dead solid between
+    the bay ceiling and the dome; it carries no meaningful load (the
+    strength root is the bend tangent 60 mm forward), so the chamber now
+    continues as one cavity whose ceiling tracks the falling dome at a
+    constant 3.6 top wall, walls flush with the bay's +-16.55, until the
+    ceiling meets the bay ceiling and the existing (thinner) roof takes
+    over toward the entry wall.
+    """
     cy = NL8_CENTER_Y_MM
-    return loft([
+    y_lo = SERVICE_CAVITY_Y_MM[0]
+    sections = [
         Plane.XY.offset(PANEL_INNER_Z_MM) * Pos(0.0, cy)
         * RectangleRounded(31.4, 31.4, 15.6),
         Plane.XY.offset(PANEL_INNER_Z_MM + 8.0) * Pos(0.0, cy)
@@ -621,7 +661,19 @@ def _boss_cavity_cutter():
         * RectangleRounded(2 * TROUGH_HALF_W_MM,
                            SERVICE_CAVITY_Y_MM[1] - SERVICE_CAVITY_Y_MM[0],
                            6.0),
-    ], ruled=True)
+    ]
+    end_z = _hollow_end_z_mm()
+    count = max(2, int((end_z - BOSS_CREST_HOLD_Z_MM) // 3.0))
+    for index in range(1, count + 1):
+        z = (BOSS_CREST_HOLD_Z_MM
+             + (end_z - BOSS_CREST_HOLD_Z_MM) * index / count)
+        top = boss_height_mm(z) - HOLLOW_TOP_WALL_MM
+        height = top - y_lo
+        sections.append(
+            Plane.XY.offset(z) * Pos(0.0, (y_lo + top) / 2.0)
+            * RectangleRounded(2 * TROUGH_HALF_W_MM, height,
+                               min(6.0, height / 2.0 - 0.1)))
+    return loft(sections, ruled=True)
 
 
 def _boss_panel_cutters():
@@ -824,8 +876,10 @@ def floor_lane_path(name: str):
         raise ValueError(name) from exc
     line_start, controls = _floor_lane_entry_components(name)
     if name == "lm":
-        edges = [Line(line_start, _lm_ramp_controls()[0]),
-                 Bezier(*_lm_ramp_controls()),
+        # The ramp's rear tangent is horizontal at the mouth itself, so
+        # the straight low segment vanished when the rear anchor pulled
+        # the climb back to the entry wall.
+        edges = [Bezier(*_lm_ramp_controls()),
                  Line(_lm_ramp_controls()[-1], controls[0])]
     else:
         edges = [Line(line_start, controls[0])]
@@ -904,7 +958,7 @@ def floor_lane_control_points(name: str):
     line_start, controls = _floor_lane_entry_components(name)
     if name == "lm":
         ramp = _lm_ramp_controls()
-        points = [line_start, ramp[0]]
+        points = [ramp[0]]
         points.extend(
             _cubic_point(ramp, index / 16.0) for index in range(1, 17))
         points.append(controls[0])
@@ -966,9 +1020,9 @@ def integrated_floor_feature_group(index: int):
             cutters.append(_floor_feed_mouth_relief(name))
         return f"floor_lane_{name}", tuple(cutters)
     if index == 2 + len(lane_names):
-        return "underside_service_bay_lid_seats_and_anchor", (
+        return "underside_service_bay_lid_seats_and_anchors", (
             _bay_cutter(), *_lid_pocket_cutters(),
-            _floor_m5_anchor_cutter())
+            *_floor_m5_anchor_cutters())
     raise IndexError(index)
 
 
@@ -1074,7 +1128,8 @@ def integrated_floor_facts() -> dict:
             "lid_clip_spans_z_mm": LID_CLIP_SPANS_Z_MM,
             "lid_pocket_preload_mm": LID_POCKET_PRELOAD_MM,
             "m5_floor_anchor": {
-                "center_xz_mm": (0.0, FLOOR_M5_ANCHOR_Z_MM),
+                "centers_xz_mm": tuple(
+                    (0.0, z) for z in FLOOR_M5_ANCHOR_Z_MM),
                 "bore_depth_mm": FLOOR_M5_ANCHOR_DEPTH_MM,
                 "opens": "floor_face_flush",
                 "lm_raised_y_mm": FLOOR_LM_RAISED_Y_MM,

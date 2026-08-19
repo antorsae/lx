@@ -20,6 +20,7 @@ from build123d import (
     Cylinder,
     Plane,
     Pos,
+    Rot,
     Sphere,
     sweep,
 )
@@ -32,6 +33,8 @@ from lx521_baffle.obiwan.floor import (
     FLOOR_FEED_MOUTH_RELIEF_Z_MM,
     FLOOR_FEED_MOUTH_SHELL_MM,
     FLOOR_LANE_SPECS,
+    FLOOR_M5_ANCHOR_DEPTH_MM,
+    FLOOR_M5_ANCHOR_Z_MM,
     floor_lane_control_points,
     floor_lane_path,
 )
@@ -304,6 +307,27 @@ def _floor_lane_blockers(
                 region, f"floor {name} feed relief")
 
 
+def _floor_anchor_blockers(
+    *, clearance_mm: float, region,
+) -> Iterable[Any]:
+    """Keep support out of the two centre-axis M5 floor-anchor bores.
+
+    They open on the floor face, a vertical surface in the front-face-down
+    print, so plate-only support should never enter -- covered mouth to
+    blind floor at the widest (entry) step for the same completeness the
+    LM rear bridge bores get.
+    """
+    margin = DUCT_SUPPORT_BLOCKER_BOOLEAN_MARGIN_MM
+    radius = M5_INSERT_ENTRY_D_MM / 2.0 + clearance_mm + margin
+    y0 = -(clearance_mm + margin)
+    y1 = FLOOR_M5_ANCHOR_DEPTH_MM + clearance_mm + margin
+    for index, z in enumerate(FLOOR_M5_ANCHOR_Z_MM):
+        bore = Pos(0.0, (y0 + y1) / 2.0, z) * Rot(90, 0, 0) * Cylinder(
+            radius, y1 - y0)
+        yield from _clipped_solids(
+            bore, region, f"floor M5 anchor bore {index}")
+
+
 def _fuse_components(components: Iterable[Any], label: str):
     """Fuse incrementally; OCC can invalidate the equivalent many-way union."""
     items = list(components)
@@ -437,6 +461,8 @@ def duct_support_blocker(
     )]
     if STAND_FOOT:
         extra_components = list(_floor_lane_blockers(
+            clearance_mm=clearance_mm, region=region))
+        extra_components.extend(_floor_anchor_blockers(
             clearance_mm=clearance_mm, region=region))
         extra_label = f"{part_key} floor lanes"
     else:
