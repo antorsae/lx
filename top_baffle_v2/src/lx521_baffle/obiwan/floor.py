@@ -46,7 +46,6 @@ from ..cables import (
 )
 from ..flush import PAD_FACE_Z
 from ..floor_bend import (
-    BEND_MIN_CENTERLINE_RADIUS_MM,
     BEND_VERTICAL_HANDLE_MM,
     FUSION_OVERLAP_MM as FLOOR_BEND_FUSION_OVERLAP_MM,
     bend_facts,
@@ -56,6 +55,8 @@ from ..floor_bend import (
     sampled_minimum_radius,
 )
 from .floor_strength import (
+    FLOOR_BEND_KW,
+    FLOOR_FOOT_FLAT_MM,
     FLOOR_Y_MM,
     FOOT_FRONT_Z_MM,
     FOOT_HEIGHT_MM,
@@ -150,16 +151,20 @@ STEM_SHOULDER_HALF_WIDTH_MM = 58.0
 STEM_SHOULDER_START_Y_MM = 68.0
 STEM_TOP_Y_MM = LM_AXIS_Y_MM - L22_CUTOUT[2] / 2.0
 STEM_SHOULDER_SAMPLES = 32
-FLOOR_BEND_VERTICAL_TANGENT_Y_MM = bend_facts()[
+# The Obi-Wan stand rides the shortened long-foot bend (130-mm flat,
+# lift-off z=-20); Stock/Slim keep the shared 75-mm span via the
+# parameter defaults.  See FLOOR_BEND_KW in floor_strength.py.
+FLOOR_BEND_VERTICAL_TANGENT_Y_MM = bend_facts(**FLOOR_BEND_KW)[
     "vertical_tangent_xyz_mm"][1]
-FLOOR_BEND_HORIZONTAL_TANGENT_Z_MM = bend_facts()[
+FLOOR_BEND_HORIZONTAL_TANGENT_Z_MM = bend_facts(**FLOOR_BEND_KW)[
     "horizontal_tangent_xyz_mm"][2]
 FLOOR_BEND_UPRIGHT_START_Y_MM = (
     FLOOR_BEND_VERTICAL_TANGENT_Y_MM - FLOOR_BEND_FUSION_OVERLAP_MM)
 FLOOR_BEND_REAR_FLAT_END_Z_MM = (
     FLOOR_BEND_HORIZONTAL_TANGENT_Z_MM + FLOOR_BEND_FUSION_OVERLAP_MM)
 
-FLOOR_LANE_BEND_R_MM = BEND_MIN_CENTERLINE_RADIUS_MM
+FLOOR_LANE_BEND_R_MM = bend_facts(**FLOOR_BEND_KW)[
+    "minimum_centerline_radius_mm"]
 FLOOR_LANE_SERVICE_START_Z_MM = TROUGH_END_WALL_Z_MM - 1.0
 # The body-only UM/T sweep stops before the annular feed.  After fusion, the
 # globally phased owner cutter reaches 2.0 mm backward through this temporary
@@ -306,7 +311,7 @@ def boss_height_mm(z: float) -> float:
 
 
 def _bend_arc_lengths():
-    controls = centerline_controls()
+    controls = centerline_controls(**FLOOR_BEND_KW)
     points = [cubic_point(controls, index / 400.0) for index in range(401)]
     cumulative = [0.0]
     for left, right in zip(points, points[1:]):
@@ -369,7 +374,7 @@ def _tapered_bend_loft():
     corner radius fades 2.0 -> sharp around the arc, so the boss taper
     only completes where the wall is perpendicular.
     """
-    controls = centerline_controls()
+    controls = centerline_controls(**FLOOR_BEND_KW)
 
     def frame(u: float):
         point = cubic_point(controls, u)
@@ -417,7 +422,9 @@ def _tapered_bend_loft():
 
 def _boss_prism():
     """The uncut boss loft; also the blank the lid is carved from."""
-    sections = [_boss_section(FOOT_REAR_Z_MM + 3.0 * i) for i in range(29)]
+    count = int(BOSS_PATH_STRAIGHT_MM // 3.0)
+    sections = [_boss_section(FOOT_REAR_Z_MM + 3.0 * i)
+                for i in range(count + 1)]
     sections.append(_boss_section(FLOOR_BEND_HORIZONTAL_TANGENT_Z_MM))
     return loft(sections, ruled=True)
 
@@ -768,7 +775,8 @@ def _floor_lane_bezier_points(name: str):
     """G1 cubic from the straight foot lane to its selected handoff."""
     spec = FLOOR_LANE_SPECS[name]
     canonical = canonical_lane_controls(
-        spec["x_mm"], spec["floor_y_mm"], spec["stem_z_mm"])
+        spec["x_mm"], spec["floor_y_mm"], spec["stem_z_mm"],
+        **FLOOR_BEND_KW)
     if name == "lm":
         endpoint = FLOOR_LM_EXIT_HANDOFF["start"]
         tangent = FLOOR_LM_EXIT_HANDOFF["plan_tangent"]
@@ -1051,7 +1059,7 @@ def integrated_floor_facts() -> dict:
         "stem_top_y_mm": STEM_TOP_Y_MM,
         "stem_shoulder_half_width_mm": STEM_SHOULDER_HALF_WIDTH_MM,
         "root_fillet_r_mm": None,
-        "floor_bend": bend_facts(),
+        "floor_bend": bend_facts(**FLOOR_BEND_KW),
         "rear_flat_end_z_mm": FLOOR_BEND_REAR_FLAT_END_Z_MM,
         "upright_start_y_mm": FLOOR_BEND_UPRIGHT_START_Y_MM,
         "panel_z_mm": (FOOT_REAR_Z_MM, PANEL_INNER_Z_MM),

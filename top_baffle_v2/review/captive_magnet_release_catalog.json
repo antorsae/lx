@@ -1940,7 +1940,7 @@
       "part": "obiwan_optional_lm_keyed_1_of_2_bottom",
       "print_orientation": "front_face_down",
       "print_sidecar": "../build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json",
-      "print_sidecar_sha256": "56c08932c21f17c7eea45ee061b4831e07470c1b8bed9af08da455959fbdbb30",
+      "print_sidecar_sha256": "b869c28711479029742e7caefa9d00bc895920c2f76e370625f37e7b37ceeb45",
       "rotation_deg": {
         "x": 180.0,
         "z": 26.0
@@ -2198,7 +2198,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/floor_stand/.obiwan_stage/manifest.json": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
+        "../build/floor_stand/.obiwan_stage/manifest.json": "51f4aa42d163a80746d779c6f54b1adf6f5dd8d4d9b1aef42aefb7d298b603da",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -2264,10 +2264,10 @@
         ]
       ],
       "stage_manifest": "../build/floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
+      "stage_manifest_sha256": "51f4aa42d163a80746d779c6f54b1adf6f5dd8d4d9b1aef42aefb7d298b603da",
       "state": "floor_stand",
       "stl": "../build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
-      "stl_sha256": "508353732793ed358ee0d6004bc27882be6b8cb9760414b040348754337e965e",
+      "stl_sha256": "0e6cff79a0400c31d202d0c9337fd62db7ef152b299c624383d36eb67ab9b6e9",
       "variant": "Obi-Wan-split"
     },
     {
@@ -2533,7 +2533,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/floor_stand/.obiwan_stage/manifest.json": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
+        "../build/floor_stand/.obiwan_stage/manifest.json": "51f4aa42d163a80746d779c6f54b1adf6f5dd8d4d9b1aef42aefb7d298b603da",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -2599,7 +2599,7 @@
         ]
       ],
       "stage_manifest": "../build/floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
+      "stage_manifest_sha256": "51f4aa42d163a80746d779c6f54b1adf6f5dd8d4d9b1aef42aefb7d298b603da",
       "state": "floor_stand",
       "stl": "../build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
       "stl_sha256": "2d56b8d9d393df23d383d53e2b319c913bfd4862e9c0b778c6dc8e3ef791f7ad",
@@ -2633,7 +2633,7 @@
       "part": "obiwan_core_1_of_2_lm_carrier",
       "print_orientation": "front_face_down",
       "print_sidecar": "../build/floor_stand/stl/obiwan_core_1_of_2_lm_carrier.print.json",
-      "print_sidecar_sha256": "06afe9e283ed4935acf98b61235835a8eb2530d5cddb3345cb50025ce9f92bcb",
+      "print_sidecar_sha256": "e1f5344def7b4c296784aa7130ee06214700d0c4be7eabe3258251ff6735244a",
       "rotation_deg": {
         "x": 180.0,
         "z": 28.0
@@ -2716,12 +2716,12 @@
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              22.783985342213086,
+              24.740548254823956,
               198.67709383181327,
               3.200000099999995
             ],
             "cavity_center_xyz_mm": [
-              24.284957852012923,
+              26.241520764623793,
               198.21667931767934,
               3.200000099999995
             ],
@@ -2741,7 +2741,7 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              24.23715617972629,
+              26.19371909233716,
               198.23134220029507,
               3.200000099999995
             ]
@@ -2841,12 +2841,12 @@
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              102.56544113832315,
+              104.52200405093402,
               241.09764635028833,
               3.200000099999995
             ],
             "cavity_center_xyz_mm": [
-              102.1078088937051,
+              104.06437180631596,
               239.5958232153334,
               3.200000099999995
             ],
@@ -2866,7 +2866,7 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              102.1223831690114,
+              104.07894608162226,
               239.64365197759312,
               3.200000099999995
             ]
@@ -2966,12 +2966,12 @@
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              119.07860772542408,
+              121.03517063803494,
               7.555157538852484,
               3.200000099999995
             ],
             "cavity_center_xyz_mm": [
-              119.02381551560114,
+              120.98037842821202,
               9.12420113727245,
               3.200000099999995
             ],
@@ -2991,7 +2991,7 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              119.02556049043626,
+              120.98212340304713,
               9.074231595921503,
               3.200000099999995
             ]
@@ -3091,12 +3091,12 @@
           "polarity_instruction": "marked/N pole points OUT from carrier toward its mating piece, along installed_marked_pole_axis_xyz",
           "print_space": {
             "actual_face_xyz_mm": [
-              207.16543778557178,
+              209.12200069818263,
               54.39175588699487,
               3.200000099999995
             ],
             "cavity_center_xyz_mm": [
-              205.89528110440307,
+              207.85184401701395,
               55.31457873309404,
               3.200000099999995
             ],
@@ -3116,7 +3116,7 @@
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
-              205.93573195412182,
+              207.8922948667327,
               55.28518947047945,
               3.200000099999995
             ]
@@ -3141,7 +3141,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/floor_stand/.obiwan_stage/manifest.json": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
+        "../build/floor_stand/.obiwan_stage/manifest.json": "51f4aa42d163a80746d779c6f54b1adf6f5dd8d4d9b1aef42aefb7d298b603da",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -3183,7 +3183,7 @@
           0.882947592858927,
           0.4694715627858908,
           0.0,
-          20.75252983537537
+          22.70909274798624
         ],
         [
           0.4694715627858908,
@@ -3205,10 +3205,10 @@
         ]
       ],
       "stage_manifest": "../build/floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
+      "stage_manifest_sha256": "51f4aa42d163a80746d779c6f54b1adf6f5dd8d4d9b1aef42aefb7d298b603da",
       "state": "floor_stand",
       "stl": "../build/floor_stand/stl/obiwan_core_1_of_2_lm_carrier.stl",
-      "stl_sha256": "b9f925bb5420aa06bf966c474fad4e28f74b51e7862153160423efe550e88bae",
+      "stl_sha256": "e9a3aa774ec102a410bb8ecd99d5869d4fe9384c02c6c20061e611933bec2453",
       "variant": "Obi-Wan"
     },
     {
@@ -3474,7 +3474,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/floor_stand/.obiwan_stage/manifest.json": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
+        "../build/floor_stand/.obiwan_stage/manifest.json": "51f4aa42d163a80746d779c6f54b1adf6f5dd8d4d9b1aef42aefb7d298b603da",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -3538,7 +3538,7 @@
         ]
       ],
       "stage_manifest": "../build/floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
+      "stage_manifest_sha256": "51f4aa42d163a80746d779c6f54b1adf6f5dd8d4d9b1aef42aefb7d298b603da",
       "state": "floor_stand",
       "stl": "../build/floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
       "stl_sha256": "775e47af7a1ee0b0092762a3080c525e32259d98ba29c926ae17f3a089a8b340",
@@ -7872,7 +7872,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/no_floor_stand/.obiwan_stage/manifest.json": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
+        "../build/no_floor_stand/.obiwan_stage/manifest.json": "069c6dfed18cafda173bd02332bd94bb97f5addccc295e73bd74c56b3332afbe",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -7938,7 +7938,7 @@
         ]
       ],
       "stage_manifest": "../build/no_floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
+      "stage_manifest_sha256": "069c6dfed18cafda173bd02332bd94bb97f5addccc295e73bd74c56b3332afbe",
       "state": "no_floor_stand",
       "stl": "../build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
       "stl_sha256": "c99727fc462885ebe49b8f374873d2ee61ba7fe9c159d86ec05dba928ea69ae5",
@@ -8207,7 +8207,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/no_floor_stand/.obiwan_stage/manifest.json": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
+        "../build/no_floor_stand/.obiwan_stage/manifest.json": "069c6dfed18cafda173bd02332bd94bb97f5addccc295e73bd74c56b3332afbe",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -8273,7 +8273,7 @@
         ]
       ],
       "stage_manifest": "../build/no_floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
+      "stage_manifest_sha256": "069c6dfed18cafda173bd02332bd94bb97f5addccc295e73bd74c56b3332afbe",
       "state": "no_floor_stand",
       "stl": "../build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
       "stl_sha256": "557e78934785ba317f9721becbb4dc3442f9ed81aec296c83885b813257e3099",
@@ -8815,7 +8815,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/no_floor_stand/.obiwan_stage/manifest.json": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
+        "../build/no_floor_stand/.obiwan_stage/manifest.json": "069c6dfed18cafda173bd02332bd94bb97f5addccc295e73bd74c56b3332afbe",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -8879,7 +8879,7 @@
         ]
       ],
       "stage_manifest": "../build/no_floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
+      "stage_manifest_sha256": "069c6dfed18cafda173bd02332bd94bb97f5addccc295e73bd74c56b3332afbe",
       "state": "no_floor_stand",
       "stl": "../build/no_floor_stand/stl/obiwan_core_1_of_2_lm_carrier.stl",
       "stl_sha256": "f4b46f7e6c266d874ba5cdcb0e275abdccadb9283fb48ddce0fdf1c18e5f9d51",
@@ -9148,7 +9148,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/no_floor_stand/.obiwan_stage/manifest.json": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
+        "../build/no_floor_stand/.obiwan_stage/manifest.json": "069c6dfed18cafda173bd02332bd94bb97f5addccc295e73bd74c56b3332afbe",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -9212,7 +9212,7 @@
         ]
       ],
       "stage_manifest": "../build/no_floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
+      "stage_manifest_sha256": "069c6dfed18cafda173bd02332bd94bb97f5addccc295e73bd74c56b3332afbe",
       "state": "no_floor_stand",
       "stl": "../build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
       "stl_sha256": "a2b070ecc6406c392eb7f652a823b5efb38f5fcbd8f17acc2270820a4126f6bd",
@@ -11350,7 +11350,7 @@
     },
     {
       "facts": "../build/wings/flat/obiwan_wing_flat_facts.json",
-      "facts_sha256": "ac090f754b90fc10231987e8ad4778e90ad688e7da0ae0855a35097bc7271617",
+      "facts_sha256": "118450a42f1bdd713f32aa7d01e53ac5a01c550db0958c4952d5516341122d8a",
       "id": "shared:Obi-Wan-Flat:obiwan_wing_flat_left_split2_1_of_2_lm_lower",
       "part": "obiwan_wing_flat_left_split2_1_of_2_lm_lower",
       "print_orientation": "front_face_down",
@@ -11577,12 +11577,12 @@
       "stl": "../build/wings/flat/stl/obiwan_wing_flat_left_split2_1_of_2_lm_lower.stl",
       "stl_sha256": "6a810e136c585d3419011ae003ff4445b09fa76a2b6eaa912f0850ff50eb1d3a",
       "transaction_manifest": "../build/wings/flat/obiwan_wing_flat_print_manifest.json",
-      "transaction_manifest_sha256": "a1a909a15f3065cb84962a26b33023d3d02eca35e952048229d4f758a4a2d299",
+      "transaction_manifest_sha256": "b00ef434b030bb3a3275f3b3e941edcea2be55327ce42f42b5b7671828980fba",
       "variant": "Obi-Wan-Flat"
     },
     {
       "facts": "../build/wings/flat/obiwan_wing_flat_facts.json",
-      "facts_sha256": "ac090f754b90fc10231987e8ad4778e90ad688e7da0ae0855a35097bc7271617",
+      "facts_sha256": "118450a42f1bdd713f32aa7d01e53ac5a01c550db0958c4952d5516341122d8a",
       "id": "shared:Obi-Wan-Flat:obiwan_wing_flat_left_split2_2_of_2_lm_um_upper",
       "part": "obiwan_wing_flat_left_split2_2_of_2_lm_um_upper",
       "print_orientation": "front_face_down",
@@ -11954,12 +11954,12 @@
       "stl": "../build/wings/flat/stl/obiwan_wing_flat_left_split2_2_of_2_lm_um_upper.stl",
       "stl_sha256": "c750c0025c0a168f50705ede3a77e84d3954432f56155d29a86d494c6d5cef79",
       "transaction_manifest": "../build/wings/flat/obiwan_wing_flat_print_manifest.json",
-      "transaction_manifest_sha256": "a1a909a15f3065cb84962a26b33023d3d02eca35e952048229d4f758a4a2d299",
+      "transaction_manifest_sha256": "b00ef434b030bb3a3275f3b3e941edcea2be55327ce42f42b5b7671828980fba",
       "variant": "Obi-Wan-Flat"
     },
     {
       "facts": "../build/wings/flat/obiwan_wing_flat_facts.json",
-      "facts_sha256": "ac090f754b90fc10231987e8ad4778e90ad688e7da0ae0855a35097bc7271617",
+      "facts_sha256": "118450a42f1bdd713f32aa7d01e53ac5a01c550db0958c4952d5516341122d8a",
       "id": "shared:Obi-Wan-Flat:obiwan_wing_flat_right_split2_1_of_2_lm_lower",
       "part": "obiwan_wing_flat_right_split2_1_of_2_lm_lower",
       "print_orientation": "front_face_down",
@@ -12186,12 +12186,12 @@
       "stl": "../build/wings/flat/stl/obiwan_wing_flat_right_split2_1_of_2_lm_lower.stl",
       "stl_sha256": "d2c17b218d7c5a2898e334d0edfc0d54c6a15c8f73c4850585661a977ac522d8",
       "transaction_manifest": "../build/wings/flat/obiwan_wing_flat_print_manifest.json",
-      "transaction_manifest_sha256": "a1a909a15f3065cb84962a26b33023d3d02eca35e952048229d4f758a4a2d299",
+      "transaction_manifest_sha256": "b00ef434b030bb3a3275f3b3e941edcea2be55327ce42f42b5b7671828980fba",
       "variant": "Obi-Wan-Flat"
     },
     {
       "facts": "../build/wings/flat/obiwan_wing_flat_facts.json",
-      "facts_sha256": "ac090f754b90fc10231987e8ad4778e90ad688e7da0ae0855a35097bc7271617",
+      "facts_sha256": "118450a42f1bdd713f32aa7d01e53ac5a01c550db0958c4952d5516341122d8a",
       "id": "shared:Obi-Wan-Flat:obiwan_wing_flat_right_split2_2_of_2_lm_um_upper",
       "part": "obiwan_wing_flat_right_split2_2_of_2_lm_um_upper",
       "print_orientation": "front_face_down",
@@ -12563,12 +12563,12 @@
       "stl": "../build/wings/flat/stl/obiwan_wing_flat_right_split2_2_of_2_lm_um_upper.stl",
       "stl_sha256": "8be9c65c59b2a961419d2af159bd585c20e49ded7b1a266ae8070b4ec3fa1ae5",
       "transaction_manifest": "../build/wings/flat/obiwan_wing_flat_print_manifest.json",
-      "transaction_manifest_sha256": "a1a909a15f3065cb84962a26b33023d3d02eca35e952048229d4f758a4a2d299",
+      "transaction_manifest_sha256": "b00ef434b030bb3a3275f3b3e941edcea2be55327ce42f42b5b7671828980fba",
       "variant": "Obi-Wan-Flat"
     },
     {
       "facts": "../build/wings/graded/obiwan_wing_graded_facts.json",
-      "facts_sha256": "4747038c62f08b35cc3aa1121d4b1d2f324159e4f727c767713dd5d3324bec52",
+      "facts_sha256": "7a7e205944105bf23a7ea8f9057927df018950e0d81cd1c24e9a4bd2b985ef33",
       "id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_split2_1_of_2_lm_lower",
       "part": "obiwan_wing_graded_left_split2_1_of_2_lm_lower",
       "print_orientation": "front_face_down",
@@ -12795,12 +12795,12 @@
       "stl": "../build/wings/graded/stl/obiwan_wing_graded_left_split2_1_of_2_lm_lower.stl",
       "stl_sha256": "bb82846c5a0581c4eab2b7e84750b67c6d12be3abf59d5ced1d727ac80e4bb4b",
       "transaction_manifest": "../build/wings/graded/obiwan_wing_graded_print_manifest.json",
-      "transaction_manifest_sha256": "b22f41749a47225e7b74148f078acdd28c76b5e1e4a02ae643b4a2a1e77538f4",
+      "transaction_manifest_sha256": "2a4d52364943bdce03933e4422b6b7170ec42a17e0c0646a035d037749153eca",
       "variant": "Obi-Wan-Graded"
     },
     {
       "facts": "../build/wings/graded/obiwan_wing_graded_facts.json",
-      "facts_sha256": "4747038c62f08b35cc3aa1121d4b1d2f324159e4f727c767713dd5d3324bec52",
+      "facts_sha256": "7a7e205944105bf23a7ea8f9057927df018950e0d81cd1c24e9a4bd2b985ef33",
       "id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_split2_2_of_2_lm_um_upper",
       "part": "obiwan_wing_graded_left_split2_2_of_2_lm_um_upper",
       "print_orientation": "front_face_down",
@@ -13172,12 +13172,12 @@
       "stl": "../build/wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.stl",
       "stl_sha256": "fa15e5f241e426367f4c85aba41c417f5cf037c3cd152956cb67bba51b77cac5",
       "transaction_manifest": "../build/wings/graded/obiwan_wing_graded_print_manifest.json",
-      "transaction_manifest_sha256": "b22f41749a47225e7b74148f078acdd28c76b5e1e4a02ae643b4a2a1e77538f4",
+      "transaction_manifest_sha256": "2a4d52364943bdce03933e4422b6b7170ec42a17e0c0646a035d037749153eca",
       "variant": "Obi-Wan-Graded"
     },
     {
       "facts": "../build/wings/graded/obiwan_wing_graded_facts.json",
-      "facts_sha256": "4747038c62f08b35cc3aa1121d4b1d2f324159e4f727c767713dd5d3324bec52",
+      "facts_sha256": "7a7e205944105bf23a7ea8f9057927df018950e0d81cd1c24e9a4bd2b985ef33",
       "id": "shared:Obi-Wan-Graded:obiwan_wing_graded_right_split2_1_of_2_lm_lower",
       "part": "obiwan_wing_graded_right_split2_1_of_2_lm_lower",
       "print_orientation": "front_face_down",
@@ -13404,12 +13404,12 @@
       "stl": "../build/wings/graded/stl/obiwan_wing_graded_right_split2_1_of_2_lm_lower.stl",
       "stl_sha256": "e94e8cb163407d9e608e1345d9041207bda0b228b190ac8764effdcc4ba750af",
       "transaction_manifest": "../build/wings/graded/obiwan_wing_graded_print_manifest.json",
-      "transaction_manifest_sha256": "b22f41749a47225e7b74148f078acdd28c76b5e1e4a02ae643b4a2a1e77538f4",
+      "transaction_manifest_sha256": "2a4d52364943bdce03933e4422b6b7170ec42a17e0c0646a035d037749153eca",
       "variant": "Obi-Wan-Graded"
     },
     {
       "facts": "../build/wings/graded/obiwan_wing_graded_facts.json",
-      "facts_sha256": "4747038c62f08b35cc3aa1121d4b1d2f324159e4f727c767713dd5d3324bec52",
+      "facts_sha256": "7a7e205944105bf23a7ea8f9057927df018950e0d81cd1c24e9a4bd2b985ef33",
       "id": "shared:Obi-Wan-Graded:obiwan_wing_graded_right_split2_2_of_2_lm_um_upper",
       "part": "obiwan_wing_graded_right_split2_2_of_2_lm_um_upper",
       "print_orientation": "front_face_down",
@@ -13781,7 +13781,7 @@
       "stl": "../build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.stl",
       "stl_sha256": "cd1c013a5d78a0478261d8665b91cd44e7bbd098b1e45f35a77d36994507fd60",
       "transaction_manifest": "../build/wings/graded/obiwan_wing_graded_print_manifest.json",
-      "transaction_manifest_sha256": "b22f41749a47225e7b74148f078acdd28c76b5e1e4a02ae643b4a2a1e77538f4",
+      "transaction_manifest_sha256": "2a4d52364943bdce03933e4422b6b7170ec42a17e0c0646a035d037749153eca",
       "variant": "Obi-Wan-Graded"
     }
   ],
@@ -13914,5 +13914,5 @@
   },
   "schema_sha256": "d2a87d8c5d7e3c45a431ae1dbb02d6b6683c6b5b382e51d243c8f408514a35d5",
   "schema_version": 1,
-  "source_revision": "c81008794d909d21914ff159c2e0fbd9ec4d339c11cb924d03e7471c7092a245"
+  "source_revision": "0982471e3786b306b865b5bd5cee7ae57367a35d60f79628f25ae4d4e669489f"
 }

@@ -5091,20 +5091,20 @@ def test_floor_integrated_mount():
     bend = facts["floor_bend"]
     assert bend["profile"] == "option_b_tangent_cubic"
     assert bend["wall_thickness_mm"] == 18.3
-    assert bend["rear_span_mm"] == 75.0
+    assert bend["rear_span_mm"] == 29.15
     assert bend["rise_mm"] == 65.0
-    assert bend["horizontal_handle_mm"] == 67.5
+    assert bend["horizontal_handle_mm"] == 27.69
     assert math.isclose(
-        bend["vertical_handle_mm"], 33.91836734693878,
+        bend["vertical_handle_mm"], 30.88,
         abs_tol=1e-12)
-    assert bend["minimum_centerline_radius_mm"] >= 41.0
+    assert bend["minimum_centerline_radius_mm"] >= 21.0
     assert bend["curvature_reversals"] == 0
     assert bend["horizontal_tangent_xyz_mm"] == (
-        0.0, 9.15, -65.85)
+        0.0, 9.15, -20.0)
     assert bend["vertical_tangent_xyz_mm"] == (0.0, 74.15, 9.15)
     assert math.isclose(
         facts["rear_flat_end_z_mm"],
-        -65.85 + bend["fusion_overlap_mm"], abs_tol=1e-12)
+        -20.0 + bend["fusion_overlap_mm"], abs_tol=1e-12)
     assert math.isclose(
         facts["upright_start_y_mm"],
         74.15 - bend["fusion_overlap_mm"], abs_tol=1e-12)
@@ -5169,7 +5169,7 @@ def test_floor_integrated_mount():
     # outboard of the trough wall (16.55), and clear in Z of the clip
     # pockets (which reach 18.1 only at -120.6..-111.9 and -87.1..-78.9).
     rear_flat_witness = Pos(17.9, 9.6, -100.0) * Box(1.8, 12.0, 20.0)
-    bend_mid_witness = Pos(28.0, 28.93061224489796, -3.0375) * Box(
+    bend_mid_witness = Pos(28.0, 30.07, 4.95875) * Box(
         2.0, 2.0, 2.0)
     upper_upright_witness = Pos(28.0, 80.0, 9.15) * Box(2.0, 8.0, 16.0)
     for label, witness in (
@@ -5180,7 +5180,11 @@ def test_floor_integrated_mount():
         assert retained > 0.97 * witness.volume, (
             f"integral {label} retained only "
             f"{retained / witness.volume:.1%}")
-    former_upright = Pos(28.0, 29.0, 15.0) * Box(2.0, 2.0, 2.0)
+    # The long-foot bend (rear span 29.15) sweeps forward enough to fill
+    # the old (28, 29, 15) probe legitimately; at y=12 the shortened cubic
+    # is still 13 mm rearward of the front face, so the former hard-corner
+    # upright envelope remains provably empty there.
+    former_upright = Pos(28.0, 12.0, 15.0) * Box(2.0, 2.0, 2.0)
     assert _intersection_volume(lm, former_upright) < 0.02, (
         "former hard-corner upright material remains outside Option B")
 
@@ -5371,7 +5375,8 @@ def test_floor_integrated_mount():
                 cubic_derivatives,
                 cubic_point,
             )
-            controls = centerline_controls()
+            from lx521_baffle.obiwan.floor_strength import FLOOR_BEND_KW
+            controls = centerline_controls(**FLOOR_BEND_KW)
             low, high = 0.0, 1.0
             for _index in range(80):
                 parameter = 0.5 * (low + high)
@@ -5559,7 +5564,7 @@ def test_floor_integrated_mount():
     assert geometry["foot_z_mm"] == (-150.0, 18.3)
     assert geometry["root_fillet_r_mm"] is None
     assert geometry["floor_bend"] == bend
-    assert geometry["bend_min_centerline_radius_mm"] >= 41.0
+    assert geometry["bend_min_centerline_radius_mm"] >= 21.0
     assert geometry["root_stress_concentration_factor"] == 1.25
     assert {
         item["name"]: item["diameter_mm"]
@@ -5611,19 +5616,20 @@ def test_floor_integrated_mount():
     assert thresholds["min_sf_1g_sustained"] == 2.0
     assert thresholds["min_sf_3g_transient"] == 1.5
     assert thresholds["min_sf_5g_transient"] == 1.05
-    # The full re-span waist puts the governing root section at 48.06 mm
-    # wide, and this conservative PLA-family screen now clears only
-    # Bambu PLA Basic (3.17/2.00/1.20, deflection 1.58).  The shipped
-    # structural material is TINMORRY PETG-GF (not modelled here), the
-    # installed driver flange reinforces the assembly, and the physical
-    # proof/creep gate remains the authority -- but the screen reports
-    # the thinner paper margins honestly instead of hiding them.
+    # The 130-mm long-foot bend widens the governing root section to
+    # 55.90 mm, and the conservative PLA-family screen now clears
+    # Bambu PLA Basic (3.77/2.39/1.43, deflection 1.34) and Bambu PLA
+    # Silk+ (2.77/1.80/1.08, deflection 1.49).  The shipped structural
+    # material is TINMORRY PETG-GF (not modelled here), the installed
+    # driver flange reinforces the assembly, and the physical proof/creep
+    # gate remains the authority -- but the screen reports the paper
+    # margins honestly instead of hiding them.
     expected_result = {
         "Bambu PLA Tough+": False,
         "Bambu PLA Basic": True,
         "Bambu PLA Lite": False,
         "Bambu PLA Matte": False,
-        "Bambu PLA Silk+": False,
+        "Bambu PLA Silk+": True,
     }
     assert set(screen["materials"]) == set(expected_result)
     for name, expected_pass in expected_result.items():

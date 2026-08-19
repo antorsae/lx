@@ -25,7 +25,7 @@ import math
 from pathlib import Path
 
 from ..floor_bend import (
-    BEND_MIN_CENTERLINE_RADIUS_MM,
+    WALL_HALF_THICKNESS_MM,
     bend_facts,
 )
 from ..io import sha256_file
@@ -43,6 +43,27 @@ FOOT_WIDTH_MM = 64.0
 FOOT_HEIGHT_MM = 18.3
 FOOT_REAR_Z_MM = -150.0
 FOOT_FRONT_Z_MM = 18.3
+
+# The printed stand tipped forward onto its face with the L22 mounted: the
+# shared 75-mm Option-B rear span put the bend's lift-off at z=-65.85, an
+# 84.15-mm flat foot, while the part's own centroid sits at z=-25 and the
+# part-plus-driver centre of mass lands around z=-25..-37.  Shortening the
+# Obi-Wan stand's rear span moves the lift-off to z=-20.0 -- a 130.0-mm
+# flat foot and a 5..16-mm static stability margin across driver CoM
+# assumptions.  The handles maximise the shortened cubic's minimum radius
+# (centerline 21.03 mm at u=0.183), keeping the worst duct-lane fiber near
+# 16.5 mm, above the R14 cable contract; a longer flat would break R14.
+# Stock and Slim keep the shared 75-mm bend untouched.
+FLOOR_FOOT_FLAT_MM = 130.0
+FLOOR_BEND_REAR_SPAN_MM = (
+    WALL_HALF_THICKNESS_MM - (FOOT_REAR_Z_MM + FLOOR_FOOT_FLAT_MM))  # 29.15
+FLOOR_BEND_HORIZONTAL_HANDLE_MM = 27.69
+FLOOR_BEND_VERTICAL_HANDLE_MM = 30.88
+FLOOR_BEND_KW = {
+    "rear_span_mm": FLOOR_BEND_REAR_SPAN_MM,
+    "horizontal_handle_mm": FLOOR_BEND_HORIZONTAL_HANDLE_MM,
+    "vertical_handle_mm": FLOOR_BEND_VERTICAL_HANDLE_MM,
+}
 # The conservative section station is the horizontal Option-B tangent, not
 # the former hard-corner fillet crown.  Using the lowest centreline station also gives
 # the anchored lateral screen its largest credible Y lever.  The complete
@@ -176,12 +197,12 @@ MAX_DIAGNOSTIC_DEFLECTION_1G_MM = 2.0
 
 
 # The boss trumpet's full re-span carries one 38.4 -> 64.0 ease over the
-# whole wall path (flange + straight run + bend arc, total 199.9), so
-# the governing horizontal-tangent root section is 48.06 wide, reaching
-# 64.0 only at the vertical tangent.  The 6.1-mm corner rounding there
-# is folded into the existing 1.25 stress-concentration factor rather
-# than modelled.
-ROOT_SECTION_WIDTH_MM = 48.06
+# whole wall path (flange + 130.0 straight run + 79.75 bend arc, total
+# 209.75), so the governing horizontal-tangent root section is
+# 38.4 + 25.6*ease(130/209.75) = 55.90 wide, reaching 64.0 only at the
+# vertical tangent.  The corner rounding there is folded into the
+# existing 1.25 stress-concentration factor rather than modelled.
+ROOT_SECTION_WIDTH_MM = 55.90
 
 
 def _net_root_section() -> dict:
@@ -463,8 +484,14 @@ def integral_floor_strength_facts() -> dict:
         })
         materials[name] = record
 
+    # The forward support edge is the bend's horizontal tangent (where the
+    # flat foot ends), not the wall's front face: the printed stand proved
+    # it by falling on its face while the shared 75-mm bend left only an
+    # 84.15-mm flat (4.15 mm of real front margin).  The 130-mm foot makes
+    # this 50.0 mm.
+    front_support_edge_z = FOOT_REAR_Z_MM + FLOOR_FOOT_FLAT_MM
     rear_margin = abs(FOOT_REAR_Z_MM) - abs(DESIGN_REAR_CG_MM)
-    front_margin = FOOT_FRONT_Z_MM + abs(DESIGN_REAR_CG_MM)
+    front_margin = front_support_edge_z + abs(DESIGN_REAR_CG_MM)
     return {
         "schema_version": SCHEMA_VERSION,
         "analysis_kind": "closed_form_net_section_screen_not_fea",
@@ -476,9 +503,9 @@ def integral_floor_strength_facts() -> dict:
             "foot_height_mm": FOOT_HEIGHT_MM,
             "foot_z_mm": (FOOT_REAR_Z_MM, FOOT_FRONT_Z_MM),
             "root_fillet_r_mm": None,
-            "floor_bend": bend_facts(),
-            "bend_min_centerline_radius_mm": (
-                BEND_MIN_CENTERLINE_RADIUS_MM),
+            "floor_bend": bend_facts(**FLOOR_BEND_KW),
+            "bend_min_centerline_radius_mm": bend_facts(
+                **FLOOR_BEND_KW)["minimum_centerline_radius_mm"],
             "root_section_y_mm": ROOT_SECTION_Y_MM,
             "stem_effective_length_mm": STEM_EFFECTIVE_LENGTH_MM,
             "root_stress_concentration_factor": (
@@ -507,6 +534,8 @@ def integral_floor_strength_facts() -> dict:
         "materials": materials,
         "stability": {
             "lateral_half_width_mm": FOOT_WIDTH_MM / 2.0,
+            "flat_foot_mm": FLOOR_FOOT_FLAT_MM,
+            "front_support_edge_z_mm": front_support_edge_z,
             "rear_margin_mm": rear_margin,
             "front_margin_mm": front_margin,
             "lateral_tip_acceleration_g": (

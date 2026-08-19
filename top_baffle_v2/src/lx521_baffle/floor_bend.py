@@ -86,18 +86,34 @@ def centerline_controls(
     x_mm: float = 0.0,
     floor_y_mm: float = 0.0,
     upright_rear_z_mm: float = 0.0,
+    rear_span_mm: float | None = None,
+    horizontal_handle_mm: float | None = None,
+    vertical_handle_mm: float | None = None,
 ) -> tuple[tuple[float, float, float], ...]:
-    """Return the exact Option-B cubic controls in world XYZ."""
+    """Return the exact Option-B cubic controls in world XYZ.
+
+    The default span and handles reproduce the shared Stock/Slim bend
+    byte-for-byte; a product may pass its own rear span and handles (the
+    Obi-Wan floor stand shortens the span for a longer flat foot) while
+    keeping the same tangent construction and rise.
+    """
+    rear_span = (
+        BEND_REAR_SPAN_MM if rear_span_mm is None else float(rear_span_mm))
+    h_handle = (
+        BEND_HORIZONTAL_HANDLE_MM if horizontal_handle_mm is None
+        else float(horizontal_handle_mm))
+    v_handle = (
+        BEND_VERTICAL_HANDLE_MM if vertical_handle_mm is None
+        else float(vertical_handle_mm))
     horizontal_y = float(floor_y_mm) + WALL_HALF_THICKNESS_MM
     vertical_z = float(upright_rear_z_mm) + WALL_HALF_THICKNESS_MM
-    horizontal_z = vertical_z - BEND_REAR_SPAN_MM
+    horizontal_z = vertical_z - rear_span
     vertical_y = horizontal_y + BEND_RISE_MM
     x = float(x_mm)
     return (
         (x, horizontal_y, horizontal_z),
-        (x, horizontal_y,
-         horizontal_z + BEND_HORIZONTAL_HANDLE_MM),
-        (x, vertical_y - BEND_VERTICAL_HANDLE_MM, vertical_z),
+        (x, horizontal_y, horizontal_z + h_handle),
+        (x, vertical_y - v_handle, vertical_z),
         (x, vertical_y, vertical_z),
     )
 
@@ -106,23 +122,37 @@ def canonical_lane_controls(
     x_mm: float,
     floor_y_mm: float,
     upright_z_mm: float,
+    *,
+    rear_span_mm: float | None = None,
+    horizontal_handle_mm: float | None = None,
+    vertical_handle_mm: float | None = None,
 ) -> tuple[tuple[float, float, float], ...]:
     """Translate the Option-B cubic to one constant-X duct lane.
 
-    The lane has the same 75 x 65 mm side projection and therefore the same
-    curvature contract as the wall centreline.  Callers may use a longer
-    endpoint/tangent-specific cubic where a qualified upper route requires
-    it; this canonical form remains the reference containment datum.
+    The lane has the same side projection and therefore the same curvature
+    contract as the wall centreline it accompanies (75 x 65 mm by default;
+    a caller-specific rear span reshapes both together).  Callers may use a
+    longer endpoint/tangent-specific cubic where a qualified upper route
+    requires it; this canonical form remains the reference containment
+    datum.
     """
+    rear_span = (
+        BEND_REAR_SPAN_MM if rear_span_mm is None else float(rear_span_mm))
+    h_handle = (
+        BEND_HORIZONTAL_HANDLE_MM if horizontal_handle_mm is None
+        else float(horizontal_handle_mm))
+    v_handle = (
+        BEND_VERTICAL_HANDLE_MM if vertical_handle_mm is None
+        else float(vertical_handle_mm))
     x = float(x_mm)
     floor_y = float(floor_y_mm)
     upright_z = float(upright_z_mm)
-    horizontal_z = upright_z - BEND_REAR_SPAN_MM
+    horizontal_z = upright_z - rear_span
     vertical_y = floor_y + BEND_RISE_MM
     return (
         (x, floor_y, horizontal_z),
-        (x, floor_y, horizontal_z + BEND_HORIZONTAL_HANDLE_MM),
-        (x, vertical_y - BEND_VERTICAL_HANDLE_MM, upright_z),
+        (x, floor_y, horizontal_z + h_handle),
+        (x, vertical_y - v_handle, upright_z),
         (x, vertical_y, upright_z),
     )
 
@@ -536,24 +566,56 @@ def bent_wall_lateral_hermite(
     return Part([solids[0]])
 
 
-def bend_facts() -> dict:
-    """Stable analytic contract for manifests, drawings and tests."""
-    controls = centerline_controls()
+def bend_facts(
+    *,
+    rear_span_mm: float | None = None,
+    horizontal_handle_mm: float | None = None,
+    vertical_handle_mm: float | None = None,
+) -> dict:
+    """Stable analytic contract for manifests, drawings and tests.
+
+    With default arguments this reproduces the pinned Option-B numbers
+    exactly.  A caller-specific span/handle set (the Obi-Wan long-foot
+    bend) recomputes the radius rows numerically from the same cubic.
+    """
+    custom = any(value is not None for value in (
+        rear_span_mm, horizontal_handle_mm, vertical_handle_mm))
+    rear_span = (
+        BEND_REAR_SPAN_MM if rear_span_mm is None else float(rear_span_mm))
+    h_handle = (
+        BEND_HORIZONTAL_HANDLE_MM if horizontal_handle_mm is None
+        else float(horizontal_handle_mm))
+    v_handle = (
+        BEND_VERTICAL_HANDLE_MM if vertical_handle_mm is None
+        else float(vertical_handle_mm))
+    controls = centerline_controls(
+        rear_span_mm=rear_span,
+        horizontal_handle_mm=h_handle,
+        vertical_handle_mm=v_handle)
+    if custom:
+        minimum_radius, minimum_parameter = sampled_minimum_radius(
+            controls, samples=20_000)
+        horizontal_endpoint_radius = curvature_radius(controls, 0.0)
+        vertical_endpoint_radius = curvature_radius(controls, 1.0)
+    else:
+        minimum_radius = BEND_MIN_CENTERLINE_RADIUS_MM
+        minimum_parameter = BEND_MIN_RADIUS_PARAMETER
+        horizontal_endpoint_radius = BEND_HORIZONTAL_ENDPOINT_RADIUS_MM
+        vertical_endpoint_radius = BEND_VERTICAL_ENDPOINT_RADIUS_MM
     return {
         "profile": "option_b_tangent_cubic",
         "wall_thickness_mm": WALL_THICKNESS_MM,
-        "rear_span_mm": BEND_REAR_SPAN_MM,
+        "rear_span_mm": rear_span,
         "rise_mm": BEND_RISE_MM,
-        "horizontal_handle_mm": BEND_HORIZONTAL_HANDLE_MM,
-        "vertical_handle_mm": BEND_VERTICAL_HANDLE_MM,
+        "horizontal_handle_mm": h_handle,
+        "vertical_handle_mm": v_handle,
         "centerline_controls_xyz_mm": controls,
         "horizontal_tangent_xyz_mm": controls[0],
         "vertical_tangent_xyz_mm": controls[-1],
-        "minimum_centerline_radius_mm": BEND_MIN_CENTERLINE_RADIUS_MM,
-        "minimum_radius_parameter": BEND_MIN_RADIUS_PARAMETER,
-        "horizontal_endpoint_radius_mm": (
-            BEND_HORIZONTAL_ENDPOINT_RADIUS_MM),
-        "vertical_endpoint_radius_mm": BEND_VERTICAL_ENDPOINT_RADIUS_MM,
+        "minimum_centerline_radius_mm": minimum_radius,
+        "minimum_radius_parameter": minimum_parameter,
+        "horizontal_endpoint_radius_mm": horizontal_endpoint_radius,
+        "vertical_endpoint_radius_mm": vertical_endpoint_radius,
         "curvature_reversals": 0,
         "fusion_overlap_mm": FUSION_OVERLAP_MM,
         "offset_spline_samples": WALL_OFFSET_SPLINE_SAMPLES,
