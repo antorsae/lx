@@ -36,7 +36,7 @@ EXPECTED = {
         "bottom_name": (
             "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand"
         ),
-        "triangle_count": 208_504,
+        "triangle_count": 210_680,
         "make_slug": "floor",
         "infill": (100.0, "zig-zag"),
     },

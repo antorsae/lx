@@ -1940,7 +1940,7 @@
       "part": "obiwan_optional_lm_keyed_1_of_2_bottom",
       "print_orientation": "front_face_down",
       "print_sidecar": "../build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json",
-      "print_sidecar_sha256": "d4d16e58a87a2edd646a0471af7a45410e23c025eb7b8cb1a63d193101b2b2be",
+      "print_sidecar_sha256": "56c08932c21f17c7eea45ee061b4831e07470c1b8bed9af08da455959fbdbb30",
       "rotation_deg": {
         "x": 180.0,
         "z": 26.0
@@ -2198,7 +2198,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/floor_stand/.obiwan_stage/manifest.json": "42d68983c0237818b05b0cab932a63e7c7b2b349dd6d6777c5ab139e2af65fa6",
+        "../build/floor_stand/.obiwan_stage/manifest.json": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -2207,7 +2207,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/lm_split.py": "30286abb1d5427c924d0ccb53042c819fea54cdf0b5689bc9aa9ae15c48221dd",
@@ -2264,10 +2264,10 @@
         ]
       ],
       "stage_manifest": "../build/floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "42d68983c0237818b05b0cab932a63e7c7b2b349dd6d6777c5ab139e2af65fa6",
+      "stage_manifest_sha256": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
       "state": "floor_stand",
       "stl": "../build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
-      "stl_sha256": "bcc44410acce497bb580d4e382f519feaeebad130b24ab47ff0dec8b5597b859",
+      "stl_sha256": "508353732793ed358ee0d6004bc27882be6b8cb9760414b040348754337e965e",
       "variant": "Obi-Wan-split"
     },
     {
@@ -2275,7 +2275,7 @@
       "part": "obiwan_optional_lm_keyed_2_of_2_top",
       "print_orientation": "front_face_down",
       "print_sidecar": "../build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.print.json",
-      "print_sidecar_sha256": "4cbd61d683eb4288bc09d9723a407a22d83623ec4b211f1b5bee115e9e04ffb1",
+      "print_sidecar_sha256": "0293557e5e62c291ae91e9209d1646a7cf7a81154b2e993a91a1b51825808dfc",
       "rotation_deg": {
         "x": 180.0,
         "z": 45.0
@@ -2533,7 +2533,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/floor_stand/.obiwan_stage/manifest.json": "42d68983c0237818b05b0cab932a63e7c7b2b349dd6d6777c5ab139e2af65fa6",
+        "../build/floor_stand/.obiwan_stage/manifest.json": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -2542,7 +2542,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/lm_split.py": "30286abb1d5427c924d0ccb53042c819fea54cdf0b5689bc9aa9ae15c48221dd",
@@ -2599,10 +2599,10 @@
         ]
       ],
       "stage_manifest": "../build/floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "42d68983c0237818b05b0cab932a63e7c7b2b349dd6d6777c5ab139e2af65fa6",
+      "stage_manifest_sha256": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
       "state": "floor_stand",
       "stl": "../build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
-      "stl_sha256": "dbf92a2b099e3b67366eb4238d342c94c158ae1e1a0c237e4f3c9b0df43f5f6b",
+      "stl_sha256": "2d56b8d9d393df23d383d53e2b319c913bfd4862e9c0b778c6dc8e3ef791f7ad",
       "variant": "Obi-Wan-split"
     },
     {
@@ -2633,7 +2633,7 @@
       "part": "obiwan_core_1_of_2_lm_carrier",
       "print_orientation": "front_face_down",
       "print_sidecar": "../build/floor_stand/stl/obiwan_core_1_of_2_lm_carrier.print.json",
-      "print_sidecar_sha256": "669fb18748bd71744ebcd9ec3b88eac6a721bc3bf240b02db8543a6341b4630a",
+      "print_sidecar_sha256": "06afe9e283ed4935acf98b61235835a8eb2530d5cddb3345cb50025ce9f92bcb",
       "rotation_deg": {
         "x": 180.0,
         "z": 28.0
@@ -3141,7 +3141,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/floor_stand/.obiwan_stage/manifest.json": "42d68983c0237818b05b0cab932a63e7c7b2b349dd6d6777c5ab139e2af65fa6",
+        "../build/floor_stand/.obiwan_stage/manifest.json": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -3150,7 +3150,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -3205,10 +3205,10 @@
         ]
       ],
       "stage_manifest": "../build/floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "42d68983c0237818b05b0cab932a63e7c7b2b349dd6d6777c5ab139e2af65fa6",
+      "stage_manifest_sha256": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
       "state": "floor_stand",
       "stl": "../build/floor_stand/stl/obiwan_core_1_of_2_lm_carrier.stl",
-      "stl_sha256": "8dd9fec5da1b87b8dc649789b4a4c09748b243baccca9cf7331f0344afe603c0",
+      "stl_sha256": "b9f925bb5420aa06bf966c474fad4e28f74b51e7862153160423efe550e88bae",
       "variant": "Obi-Wan"
     },
     {
@@ -3474,7 +3474,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/floor_stand/.obiwan_stage/manifest.json": "42d68983c0237818b05b0cab932a63e7c7b2b349dd6d6777c5ab139e2af65fa6",
+        "../build/floor_stand/.obiwan_stage/manifest.json": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -3483,7 +3483,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -3538,7 +3538,7 @@
         ]
       ],
       "stage_manifest": "../build/floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "42d68983c0237818b05b0cab932a63e7c7b2b349dd6d6777c5ab139e2af65fa6",
+      "stage_manifest_sha256": "07d25e55d2b28e5c15b220f15e18d112608d348ccff5c2988aecaaf108b18731",
       "state": "floor_stand",
       "stl": "../build/floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
       "stl_sha256": "775e47af7a1ee0b0092762a3080c525e32259d98ba29c926ae17f3a089a8b340",
@@ -7872,7 +7872,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/no_floor_stand/.obiwan_stage/manifest.json": "052e2ff9714c5d6486096f4d6914bab39554299553eeacbdc665fbfa3d88217a",
+        "../build/no_floor_stand/.obiwan_stage/manifest.json": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -7881,7 +7881,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/lm_split.py": "30286abb1d5427c924d0ccb53042c819fea54cdf0b5689bc9aa9ae15c48221dd",
@@ -7938,7 +7938,7 @@
         ]
       ],
       "stage_manifest": "../build/no_floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "052e2ff9714c5d6486096f4d6914bab39554299553eeacbdc665fbfa3d88217a",
+      "stage_manifest_sha256": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
       "state": "no_floor_stand",
       "stl": "../build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
       "stl_sha256": "c99727fc462885ebe49b8f374873d2ee61ba7fe9c159d86ec05dba928ea69ae5",
@@ -8207,7 +8207,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/no_floor_stand/.obiwan_stage/manifest.json": "052e2ff9714c5d6486096f4d6914bab39554299553eeacbdc665fbfa3d88217a",
+        "../build/no_floor_stand/.obiwan_stage/manifest.json": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -8216,7 +8216,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/lm_split.py": "30286abb1d5427c924d0ccb53042c819fea54cdf0b5689bc9aa9ae15c48221dd",
@@ -8273,7 +8273,7 @@
         ]
       ],
       "stage_manifest": "../build/no_floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "052e2ff9714c5d6486096f4d6914bab39554299553eeacbdc665fbfa3d88217a",
+      "stage_manifest_sha256": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
       "state": "no_floor_stand",
       "stl": "../build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
       "stl_sha256": "557e78934785ba317f9721becbb4dc3442f9ed81aec296c83885b813257e3099",
@@ -8815,7 +8815,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/no_floor_stand/.obiwan_stage/manifest.json": "052e2ff9714c5d6486096f4d6914bab39554299553eeacbdc665fbfa3d88217a",
+        "../build/no_floor_stand/.obiwan_stage/manifest.json": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -8824,7 +8824,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -8879,7 +8879,7 @@
         ]
       ],
       "stage_manifest": "../build/no_floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "052e2ff9714c5d6486096f4d6914bab39554299553eeacbdc665fbfa3d88217a",
+      "stage_manifest_sha256": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
       "state": "no_floor_stand",
       "stl": "../build/no_floor_stand/stl/obiwan_core_1_of_2_lm_carrier.stl",
       "stl_sha256": "f4b46f7e6c266d874ba5cdcb0e275abdccadb9283fb48ddce0fdf1c18e5f9d51",
@@ -9148,7 +9148,7 @@
         }
       ],
       "source_file_sha256": {
-        "../build/no_floor_stand/.obiwan_stage/manifest.json": "052e2ff9714c5d6486096f4d6914bab39554299553eeacbdc665fbfa3d88217a",
+        "../build/no_floor_stand/.obiwan_stage/manifest.json": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
         "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
@@ -9157,7 +9157,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -9212,7 +9212,7 @@
         ]
       ],
       "stage_manifest": "../build/no_floor_stand/.obiwan_stage/manifest.json",
-      "stage_manifest_sha256": "052e2ff9714c5d6486096f4d6914bab39554299553eeacbdc665fbfa3d88217a",
+      "stage_manifest_sha256": "a44e18163500ed209e7369bd5eb0b1b0bd20c5cbf8fd176a73ca3dde91afeab3",
       "state": "no_floor_stand",
       "stl": "../build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
       "stl_sha256": "a2b070ecc6406c392eb7f652a823b5efb38f5fcbd8f17acc2270820a4126f6bd",
@@ -11350,7 +11350,7 @@
     },
     {
       "facts": "../build/wings/flat/obiwan_wing_flat_facts.json",
-      "facts_sha256": "c75ff26e4ce5e772b631c52b4f0db3692bcfe8338243f1698361479d1ba685f1",
+      "facts_sha256": "ac090f754b90fc10231987e8ad4778e90ad688e7da0ae0855a35097bc7271617",
       "id": "shared:Obi-Wan-Flat:obiwan_wing_flat_left_split2_1_of_2_lm_lower",
       "part": "obiwan_wing_flat_left_split2_1_of_2_lm_lower",
       "print_orientation": "front_face_down",
@@ -11517,7 +11517,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -11577,12 +11577,12 @@
       "stl": "../build/wings/flat/stl/obiwan_wing_flat_left_split2_1_of_2_lm_lower.stl",
       "stl_sha256": "6a810e136c585d3419011ae003ff4445b09fa76a2b6eaa912f0850ff50eb1d3a",
       "transaction_manifest": "../build/wings/flat/obiwan_wing_flat_print_manifest.json",
-      "transaction_manifest_sha256": "5b9ab56b4dcbad1c2233a627432e332fba19ae28456ef32e6c7895ff32005406",
+      "transaction_manifest_sha256": "a1a909a15f3065cb84962a26b33023d3d02eca35e952048229d4f758a4a2d299",
       "variant": "Obi-Wan-Flat"
     },
     {
       "facts": "../build/wings/flat/obiwan_wing_flat_facts.json",
-      "facts_sha256": "c75ff26e4ce5e772b631c52b4f0db3692bcfe8338243f1698361479d1ba685f1",
+      "facts_sha256": "ac090f754b90fc10231987e8ad4778e90ad688e7da0ae0855a35097bc7271617",
       "id": "shared:Obi-Wan-Flat:obiwan_wing_flat_left_split2_2_of_2_lm_um_upper",
       "part": "obiwan_wing_flat_left_split2_2_of_2_lm_um_upper",
       "print_orientation": "front_face_down",
@@ -11894,7 +11894,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -11954,12 +11954,12 @@
       "stl": "../build/wings/flat/stl/obiwan_wing_flat_left_split2_2_of_2_lm_um_upper.stl",
       "stl_sha256": "c750c0025c0a168f50705ede3a77e84d3954432f56155d29a86d494c6d5cef79",
       "transaction_manifest": "../build/wings/flat/obiwan_wing_flat_print_manifest.json",
-      "transaction_manifest_sha256": "5b9ab56b4dcbad1c2233a627432e332fba19ae28456ef32e6c7895ff32005406",
+      "transaction_manifest_sha256": "a1a909a15f3065cb84962a26b33023d3d02eca35e952048229d4f758a4a2d299",
       "variant": "Obi-Wan-Flat"
     },
     {
       "facts": "../build/wings/flat/obiwan_wing_flat_facts.json",
-      "facts_sha256": "c75ff26e4ce5e772b631c52b4f0db3692bcfe8338243f1698361479d1ba685f1",
+      "facts_sha256": "ac090f754b90fc10231987e8ad4778e90ad688e7da0ae0855a35097bc7271617",
       "id": "shared:Obi-Wan-Flat:obiwan_wing_flat_right_split2_1_of_2_lm_lower",
       "part": "obiwan_wing_flat_right_split2_1_of_2_lm_lower",
       "print_orientation": "front_face_down",
@@ -12126,7 +12126,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -12186,12 +12186,12 @@
       "stl": "../build/wings/flat/stl/obiwan_wing_flat_right_split2_1_of_2_lm_lower.stl",
       "stl_sha256": "d2c17b218d7c5a2898e334d0edfc0d54c6a15c8f73c4850585661a977ac522d8",
       "transaction_manifest": "../build/wings/flat/obiwan_wing_flat_print_manifest.json",
-      "transaction_manifest_sha256": "5b9ab56b4dcbad1c2233a627432e332fba19ae28456ef32e6c7895ff32005406",
+      "transaction_manifest_sha256": "a1a909a15f3065cb84962a26b33023d3d02eca35e952048229d4f758a4a2d299",
       "variant": "Obi-Wan-Flat"
     },
     {
       "facts": "../build/wings/flat/obiwan_wing_flat_facts.json",
-      "facts_sha256": "c75ff26e4ce5e772b631c52b4f0db3692bcfe8338243f1698361479d1ba685f1",
+      "facts_sha256": "ac090f754b90fc10231987e8ad4778e90ad688e7da0ae0855a35097bc7271617",
       "id": "shared:Obi-Wan-Flat:obiwan_wing_flat_right_split2_2_of_2_lm_um_upper",
       "part": "obiwan_wing_flat_right_split2_2_of_2_lm_um_upper",
       "print_orientation": "front_face_down",
@@ -12503,7 +12503,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -12563,12 +12563,12 @@
       "stl": "../build/wings/flat/stl/obiwan_wing_flat_right_split2_2_of_2_lm_um_upper.stl",
       "stl_sha256": "8be9c65c59b2a961419d2af159bd585c20e49ded7b1a266ae8070b4ec3fa1ae5",
       "transaction_manifest": "../build/wings/flat/obiwan_wing_flat_print_manifest.json",
-      "transaction_manifest_sha256": "5b9ab56b4dcbad1c2233a627432e332fba19ae28456ef32e6c7895ff32005406",
+      "transaction_manifest_sha256": "a1a909a15f3065cb84962a26b33023d3d02eca35e952048229d4f758a4a2d299",
       "variant": "Obi-Wan-Flat"
     },
     {
       "facts": "../build/wings/graded/obiwan_wing_graded_facts.json",
-      "facts_sha256": "3f1f41f54296c0bc516494214cff05d4be489f5ec0b6f76fa8e5a60b6d5aa4bf",
+      "facts_sha256": "4747038c62f08b35cc3aa1121d4b1d2f324159e4f727c767713dd5d3324bec52",
       "id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_split2_1_of_2_lm_lower",
       "part": "obiwan_wing_graded_left_split2_1_of_2_lm_lower",
       "print_orientation": "front_face_down",
@@ -12735,7 +12735,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -12795,12 +12795,12 @@
       "stl": "../build/wings/graded/stl/obiwan_wing_graded_left_split2_1_of_2_lm_lower.stl",
       "stl_sha256": "bb82846c5a0581c4eab2b7e84750b67c6d12be3abf59d5ced1d727ac80e4bb4b",
       "transaction_manifest": "../build/wings/graded/obiwan_wing_graded_print_manifest.json",
-      "transaction_manifest_sha256": "9c5a8ea71b49ff22c63499ed488d2c7a15ba3ee5c802168207876481c050940d",
+      "transaction_manifest_sha256": "b22f41749a47225e7b74148f078acdd28c76b5e1e4a02ae643b4a2a1e77538f4",
       "variant": "Obi-Wan-Graded"
     },
     {
       "facts": "../build/wings/graded/obiwan_wing_graded_facts.json",
-      "facts_sha256": "3f1f41f54296c0bc516494214cff05d4be489f5ec0b6f76fa8e5a60b6d5aa4bf",
+      "facts_sha256": "4747038c62f08b35cc3aa1121d4b1d2f324159e4f727c767713dd5d3324bec52",
       "id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_split2_2_of_2_lm_um_upper",
       "part": "obiwan_wing_graded_left_split2_2_of_2_lm_um_upper",
       "print_orientation": "front_face_down",
@@ -13112,7 +13112,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -13172,12 +13172,12 @@
       "stl": "../build/wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.stl",
       "stl_sha256": "fa15e5f241e426367f4c85aba41c417f5cf037c3cd152956cb67bba51b77cac5",
       "transaction_manifest": "../build/wings/graded/obiwan_wing_graded_print_manifest.json",
-      "transaction_manifest_sha256": "9c5a8ea71b49ff22c63499ed488d2c7a15ba3ee5c802168207876481c050940d",
+      "transaction_manifest_sha256": "b22f41749a47225e7b74148f078acdd28c76b5e1e4a02ae643b4a2a1e77538f4",
       "variant": "Obi-Wan-Graded"
     },
     {
       "facts": "../build/wings/graded/obiwan_wing_graded_facts.json",
-      "facts_sha256": "3f1f41f54296c0bc516494214cff05d4be489f5ec0b6f76fa8e5a60b6d5aa4bf",
+      "facts_sha256": "4747038c62f08b35cc3aa1121d4b1d2f324159e4f727c767713dd5d3324bec52",
       "id": "shared:Obi-Wan-Graded:obiwan_wing_graded_right_split2_1_of_2_lm_lower",
       "part": "obiwan_wing_graded_right_split2_1_of_2_lm_lower",
       "print_orientation": "front_face_down",
@@ -13344,7 +13344,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -13404,12 +13404,12 @@
       "stl": "../build/wings/graded/stl/obiwan_wing_graded_right_split2_1_of_2_lm_lower.stl",
       "stl_sha256": "e94e8cb163407d9e608e1345d9041207bda0b228b190ac8764effdcc4ba750af",
       "transaction_manifest": "../build/wings/graded/obiwan_wing_graded_print_manifest.json",
-      "transaction_manifest_sha256": "9c5a8ea71b49ff22c63499ed488d2c7a15ba3ee5c802168207876481c050940d",
+      "transaction_manifest_sha256": "b22f41749a47225e7b74148f078acdd28c76b5e1e4a02ae643b4a2a1e77538f4",
       "variant": "Obi-Wan-Graded"
     },
     {
       "facts": "../build/wings/graded/obiwan_wing_graded_facts.json",
-      "facts_sha256": "3f1f41f54296c0bc516494214cff05d4be489f5ec0b6f76fa8e5a60b6d5aa4bf",
+      "facts_sha256": "4747038c62f08b35cc3aa1121d4b1d2f324159e4f727c767713dd5d3324bec52",
       "id": "shared:Obi-Wan-Graded:obiwan_wing_graded_right_split2_2_of_2_lm_um_upper",
       "part": "obiwan_wing_graded_right_split2_2_of_2_lm_um_upper",
       "print_orientation": "front_face_down",
@@ -13721,7 +13721,7 @@
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
         "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
         "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "747435b218e317d58f265752aec96604bbf786b126aefbcfc518a7318c0e32f6",
+        "../src/lx521_baffle/obiwan/carriers.py": "006be4b5f5feb36825772b907d3eecbe96cf8a46de188f9ffc727ed2800df8a6",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -13781,7 +13781,7 @@
       "stl": "../build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.stl",
       "stl_sha256": "cd1c013a5d78a0478261d8665b91cd44e7bbd098b1e45f35a77d36994507fd60",
       "transaction_manifest": "../build/wings/graded/obiwan_wing_graded_print_manifest.json",
-      "transaction_manifest_sha256": "9c5a8ea71b49ff22c63499ed488d2c7a15ba3ee5c802168207876481c050940d",
+      "transaction_manifest_sha256": "b22f41749a47225e7b74148f078acdd28c76b5e1e4a02ae643b4a2a1e77538f4",
       "variant": "Obi-Wan-Graded"
     }
   ],
@@ -13914,5 +13914,5 @@
   },
   "schema_sha256": "d2a87d8c5d7e3c45a431ae1dbb02d6b6683c6b5b382e51d243c8f408514a35d5",
   "schema_version": 1,
-  "source_revision": "02c00f2b5dc13f86a47f27e7ee647b697b09cf24da5e4850920d18fa062eeb08"
+  "source_revision": "c81008794d909d21914ff159c2e0fbd9ec4d339c11cb924d03e7471c7092a245"
 }

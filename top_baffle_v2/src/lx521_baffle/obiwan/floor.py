@@ -119,6 +119,21 @@ LID_BLOCK_SPANS_X_MM = ((-7.5, -5.0), (5.0, 7.5))
 LID_HOOK_DROP_MM = 6.0                         # hook top below the seat
 LID_POCKET_PRELOAD_MM = 0.05
 
+# The full-respan corner arcs meet the vertical x=+-16.55 trough walls at a
+# near-tangent angle, so the dome skin outboard of each wall thinned to a
+# ~1-mm-tall zero-thickness fin that tore off in print.  A shallow rim
+# rabbet sinks each side lip so the wall tops out on a flat ledge whose
+# outboard edge lands where the dome has already fallen the same amount:
+# no free-standing feature under one nozzle width survives at the lip.
+TROUGH_RIM_RABBET_DROP_MM = 1.0
+TROUGH_RIM_RABBET_OVERRUN_MM = 0.4
+# Straight-wall (flush-plug) territory only: rear of the spring tangent the
+# step-ring/rear-overlap rim system owns the lip, and the residual fins
+# there are <=0.4 mm tall and sit under the lid's overlap flange.
+TROUGH_RIM_RABBET_SPAN_Z_MM = (-121.3, TROUGH_END_WALL_Z_MM)
+TROUGH_RIM_RABBET_FADE_MM = 2.0
+TROUGH_RIM_RABBET_INNER_OVERLAP_MM = 0.45
+
 # The enclosed cavity is now exactly the barrel chamber: flush with the
 # trough walls, under a 3.6 roof, ending where the open trough takes over.
 SERVICE_CAVITY_Z_MM = (PANEL_INNER_Z_MM, BOSS_CREST_HOLD_Z_MM)
@@ -315,11 +330,16 @@ def boss_width_mm(z: float) -> float:
         min(z - FOOT_REAR_Z_MM, BOSS_PATH_STRAIGHT_MM))
 
 
-def _boss_section(z: float, y0: float = 0.0):
+def _boss_section_w_h_r(z: float):
     w, h = boss_width_mm(z), boss_height_mm(z)
     r = min(
         4.2 + 3.8 * _boss_ease((z - FOOT_REAR_Z_MM) / 40.0),
         h / 3.0, w / 4.0)
+    return w, h, r
+
+
+def _boss_section(z: float, y0: float = 0.0):
+    w, h, r = _boss_section_w_h_r(z)
     half = w / 2.0
     wire = (Polyline((half, y0), (-half, y0), (-half, h))
             + Line((-half, h), (half, h)) + Line((half, h), (half, y0)))
@@ -546,6 +566,77 @@ def _lid_step_cutter():
     band = Pos(0.0, 57.4 + (BOSS_TOP_W_MM - LID_T_MM), -110.0) * Box(
         60.0, 114.8, 90.0)
     return ring & band
+
+
+def _dome_lip_y_mm(z: float, x_abs: float) -> float:
+    """Dome surface height where the vertical plane |x| = x_abs meets it."""
+    w, h, r = _boss_section_w_h_r(z)
+    xc = w / 2.0 - r
+    if x_abs <= xc:
+        return h
+    dx = min(x_abs - xc, r)
+    return (h - r) + math.sqrt(max(r * r - dx * dx, 0.0))
+
+
+def _trough_wall_plan_x(z: float) -> float:
+    """|x| of the trough plan wall at z: straight, spring, flank or corner."""
+    t_off = TROUGH_R_SPRING_MM / math.tan(math.radians(67.5))
+    sp_side = TROUGH_SPRING_Z_MM + t_off
+    sp_flank = t_off / math.sqrt(2.0)
+    flank_z = TROUGH_SPRING_Z_MM - sp_flank
+    corner_z = TROUGH_END_WALL_Z_MM - TROUGH_CORNER_R_MM
+    if z >= corner_z:
+        dz = min(z - corner_z, TROUGH_CORNER_R_MM)
+        return (TROUGH_HALF_W_MM - TROUGH_CORNER_R_MM + math.sqrt(
+            max(TROUGH_CORNER_R_MM ** 2 - dz * dz, 0.0)))
+    if z <= flank_z:
+        return TROUGH_HALF_W_MM - sp_flank - (flank_z - z)
+    if z <= sp_side:
+        dz = sp_side - z
+        return (TROUGH_HALF_W_MM - TROUGH_R_SPRING_MM + math.sqrt(
+            max(TROUGH_R_SPRING_MM ** 2 - dz * dz, 0.0)))
+    return TROUGH_HALF_W_MM
+
+
+def _trough_rim_rabbet_cutters():
+    """Both side-lip ledges; see the TROUGH_RIM_RABBET constants."""
+    z0, z1 = TROUGH_RIM_RABBET_SPAN_Z_MM
+    count = 61
+    cutters = []
+    for sx in (-1.0, 1.0):
+        faces = []
+        for i in range(count + 1):
+            z = z0 + (z1 - z0) * i / count
+            k = _boss_ease((z - z0) / TROUGH_RIM_RABBET_FADE_MM)
+            w, h, r = _boss_section_w_h_r(z)
+            xc, yc = w / 2.0 - r, h - r
+            wall = _trough_wall_plan_x(z)
+            # The inner edge overlaps past the live wall plane so no cutter
+            # face is ever coincident with the trough wall (boolean shards),
+            # and it follows the spring/flank/corner plan inboard so no
+            # wall-top sliver stands outboard of an arcing wall.
+            inner = wall - TROUGH_RIM_RABBET_INNER_OVERLAP_MM
+            lip = _dome_lip_y_mm(z, wall)
+            # The un-eased sections lift clear of the dome instead of
+            # degenerating to a zero-width face.
+            floor_y = lip - TROUGH_RIM_RABBET_DROP_MM * k + 6.0 * (1.0 - k)
+            dx = math.sqrt(max(r * r - max(floor_y - yc, 0.0) ** 2, 0.0))
+            outer = max(xc + dx + TROUGH_RIM_RABBET_OVERRUN_MM * k,
+                        inner + 1.0)
+            pts = [(sx * inner, floor_y),
+                   (sx * outer, floor_y),
+                   (sx * outer, h + 2.0),
+                   (sx * inner, h + 2.0),
+                   (sx * inner, floor_y)]
+            faces.append(Plane.XY.offset(z) * make_face(Polyline(pts)))
+        cutter = loft(faces, ruled=True)
+        # Spare the lid seat pads exactly like the trough cutter does: the
+        # ledge otherwise slices their outboard strips and sheds sub-0.1-mm
+        # flakes at the pad end planes.
+        for keep in _lid_seat_pads():
+            cutter -= keep
+        cutters.append(cutter)
+    return tuple(cutters)
 
 
 def _trough_cutter():
@@ -876,7 +967,8 @@ def integrated_floor_feature_group(index: int):
         return f"floor_lane_{name}", tuple(cutters)
     if index == 2 + len(lane_names):
         return "service_trough_and_lid_seats", (
-            _trough_cutter(), _lid_step_cutter(), *_lid_pocket_cutters())
+            _trough_cutter(), _lid_step_cutter(), *_lid_pocket_cutters(),
+            *_trough_rim_rabbet_cutters())
     raise IndexError(index)
 
 

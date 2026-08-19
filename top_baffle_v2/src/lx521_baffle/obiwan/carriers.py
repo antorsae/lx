@@ -755,6 +755,53 @@ def _polar_xy(center, radius, angle_deg):
             center[1] + radius * math.sin(a))
 
 
+# The stand fork's plan corner, the ring's lower skirt and the main
+# trench's pilot-bypass descent all meet between about 29 and 31.5 degrees
+# off the LM ring's lowest point on the +x side.  The boolean chain leaves
+# a free-standing 0.0-0.3-mm petal of skin standing in the belly/shoulder
+# groove there; it tore off in print and exposed the conduit.  Relieving
+# the whole sliver band lets the shoulder's leading edge begin where it is
+# already a printable >=0.75-mm wall (a clean radial start face), without
+# touching the R113.8 visible ring band outboard of it.
+FORK_SHOULDER_TIP_RELIEF_AZ_DEG = (26.0, 31.8)
+# Cut pre-cover through solid material only.  The later-fused main cover
+# (octagon corners to r_c+5.30 = 110.1, burial web to ~110.4) buries the
+# inner face; the outer face passes the skirt's whole ramp (to ~112.7) and
+# notches the shelf underside, staying under the R113.0 structural lip.
+FORK_SHOULDER_TIP_RELIEF_R_MM = (109.8, 112.9)
+FORK_SHOULDER_TIP_RELIEF_Z_MM = (-2.0, 7.5)
+# Above the z=6.8 seat-membrane bottom the inner face steps out past the
+# burial web's ~110.5 outer overlap band, so the retained membrane lip is a
+# solid >=0.8-mm shoulder the web bonds into instead of a sliced 0.1-mm fin.
+# The step's two sectors overlap 0.30 in z and the ledge underside sits at
+# 6.85, clear of the membrane's own 6.8 design plane (no coincident faces).
+FORK_SHOULDER_TIP_RELIEF_LIP_R_MM = 110.6
+FORK_SHOULDER_TIP_RELIEF_STEP_Z_MM = (6.55, 6.85)
+
+
+def _fork_shoulder_sector(r0, r1, z0, z1):
+    cx, cy = float(L22_CUTOUT[0]), float(L22_CUTOUT[1])
+    a0, a1 = FORK_SHOULDER_TIP_RELIEF_AZ_DEG
+    steps = 12
+    arc = [a0 + (a1 - a0) * i / steps for i in range(steps + 1)]
+    ring = [(cx + r1 * math.sin(math.radians(a)),
+             cy - r1 * math.cos(math.radians(a))) for a in arc]
+    ring += [(cx + r0 * math.sin(math.radians(a)),
+              cy - r0 * math.cos(math.radians(a))) for a in reversed(arc)]
+    return _plan_prism(Polygon(ring), z0, z1)
+
+
+def _fork_shoulder_tip_relief():
+    """Stepped annular-sector prism over the shoulder-tip sliver band."""
+    r0, r1 = FORK_SHOULDER_TIP_RELIEF_R_MM
+    z0, z1 = FORK_SHOULDER_TIP_RELIEF_Z_MM
+    step_lo, step_hi = FORK_SHOULDER_TIP_RELIEF_STEP_Z_MM
+    lower = _fork_shoulder_sector(r0, r1, z0, step_hi)
+    upper = _fork_shoulder_sector(
+        FORK_SHOULDER_TIP_RELIEF_LIP_R_MM, r1, step_lo, z1)
+    return lower.fuse(upper).clean()
+
+
 def _plan_prism(polygon, z0: float, z1: float):
     """Extrude a Shapely Polygon/MultiPolygon, preserving every hole."""
     if polygon.geom_type != "Polygon":
@@ -1240,6 +1287,16 @@ def lm_carrier_outer_blank():
         part = _fuse_attached(
             part, bridge, "fused no-floor solid bridge web")
 
+    # The fork-shoulder tip relief must cut ONLY native solid: applied here,
+    # before the thin covers exist, every relief face passes through bulk
+    # material and can shed no sliver against a cover skin.  The covers then
+    # fuse over the opened sector with their own natural conduit surfaces
+    # (this is how the belly already stands in the open groove elsewhere
+    # along the arc).  The floor body gets the same pre-fusion cut below,
+    # because the stand fork's plan corner would otherwise refill the band.
+    if STAND_FOOT:
+        part -= _fork_shoulder_tip_relief()
+
     # One continuous outer sweep per route is fused before the nominal voids
     # are cut.  This keeps every Z bump covered and avoids the old fragmented
     # coplanar rear-floor topology.
@@ -1264,6 +1321,7 @@ def lm_carrier_outer_blank():
         for index in range(integrated_floor_feature_group_count()):
             floor_body = apply_integrated_floor_feature_group(
                 floor_body, index)
+        floor_body -= _fork_shoulder_tip_relief()
         part = _fuse_attached(
             part, floor_body,
             "integral floor stem/foot/NL8 body")

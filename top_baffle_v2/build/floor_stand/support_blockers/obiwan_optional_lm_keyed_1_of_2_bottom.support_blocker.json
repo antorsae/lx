@@ -6814,7 +6814,7 @@
   },
   "kind": "bambu_support_blocker",
   "main_stl": "../stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
-  "main_stl_sha256": "bcc44410acce497bb580d4e382f519feaeebad130b24ab47ff0dec8b5597b859",
+  "main_stl_sha256": "508353732793ed358ee0d6004bc27882be6b8cb9760414b040348754337e965e",
   "mesh": {
     "component_error": 1,
     "component_signed_volumes": [

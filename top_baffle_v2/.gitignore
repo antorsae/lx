@@ -86,3 +86,6 @@ to_print/release_manifest.json
 # artifact manifests, so provenance survives without the bytes in git.
 build/*/obiwan_assembled.step
 build/print_plates/obiwan/obiwan_graded_wings_split2_combo.stl
+
+# transient slicer input staging (orphaned when a slice run is interrupted)
+.captive-input-stage-*/
