@@ -38,12 +38,12 @@
     ]
   ],
   "stl": "lx521_coupon_12_obiwan_closed_bore_bump.stl",
-  "stl_bytes": 44984,
+  "stl_bytes": 62584,
   "stl_origin_translation_mm": [
     -61.99999989999998,
     180.00000010000002,
     18.300000099999984
   ],
-  "stl_sha256": "1ba7da6bd1c633682f3d9aa17a3e601da2bb56d395fd18d79e9dc78bac58475f",
+  "stl_sha256": "88aaa0105c0dcfcd8706b92aeb683b8e595d493d295f5fc2948c92b950abbeda",
   "variant_export": "coupon"
 }

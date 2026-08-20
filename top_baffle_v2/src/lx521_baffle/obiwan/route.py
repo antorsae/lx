@@ -157,7 +157,15 @@ MAIN_OUTER_R = CUTTER_R + TUNNEL_SKIN
 TS_OUTER_R = TS_CUTTER_R + TUNNEL_SKIN
 TUNNEL_ROOF_SKIN = 0.85  # 0.05 mm avoids a tangent seat-plane union
 TUBE_SECTION_SPACING = 5.5
-TUBE_SECTION_SIDES = 8
+# 16 sides: the octagon's print-up crown flat (3.4-3.7 mm on the ring
+# ducts) bridged so long that GF-PETG dropped or sagged it, opening slits
+# through the duct roofs in print.  The 16-gon halves that flat to under
+# two nozzle widths while its neighbours stay one printable step (22.5
+# degrees), the cutter corner overshoot falls from 8.2% to 1.0% of the
+# guaranteed radius (uniform ~0.8 duct walls instead of 0.46 worst-case
+# corner-on-flat), and the cover's radial corrugation shrinks enough to
+# bury the fork-shoulder relief face without hair slivers.
+TUBE_SECTION_SIDES = 16
 ANCHOR_SECTION_SPACING = 5.0
 BURIAL_WEB_TUBE_OVERLAP = TUNNEL_FUSE_OVERLAP
 BURIAL_WEB_LATERAL_OVERLAP = TUNNEL_FUSE_OVERLAP

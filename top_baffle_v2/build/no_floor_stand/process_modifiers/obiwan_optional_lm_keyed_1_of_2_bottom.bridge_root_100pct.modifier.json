@@ -22,7 +22,7 @@
     ]
   },
   "print_sidecar": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json",
-  "print_sidecar_sha256": "ddfa6f182c8aa94569c92af247012ecc3a7267965949f3670eb9fe5858ab4e45",
+  "print_sidecar_sha256": "5823ecf29a94c2b09512c38baaab6f8c3db1d8c825bb50ee060214cf85c63384",
   "process": {
     "sparse_infill_density": "100%",
     "sparse_infill_pattern": "zig-zag"
@@ -76,7 +76,7 @@
     ]
   ],
   "source_stl": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
-  "source_stl_sha256": "c99727fc462885ebe49b8f374873d2ee61ba7fe9c159d86ec05dba928ea69ae5",
+  "source_stl_sha256": "87bcfde710cf16eb7ff094631e27071721a913945b55f23fdc34ebd36660eb23",
   "source_z_mm": [
     5.3,
     18.3

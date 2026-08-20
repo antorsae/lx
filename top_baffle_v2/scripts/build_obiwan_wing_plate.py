@@ -687,7 +687,8 @@ def build_source_bundle(
     witnesses = _validate_mesh_witnesses(footprints)
     _render_layout(preview_path, footprints, packing)
     mesh = captive.inspect_stl(output_stl)
-    clearances = validate_bed_fit(_bounds3d(mesh), MACHINE_BOUNDS_MM)
+    clearances = validate_bed_fit(
+        _bounds3d(mesh), MACHINE_BOUNDS_MM, tolerance_mm=0.01)
     manifest = {
         "schema_version": 1,
         "manifest_kind": "lx521_locked_composite_print_plate",

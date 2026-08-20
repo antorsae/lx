@@ -405,9 +405,13 @@ LM_UM_REAR_BACKFILL_Z = (
 # Two mirrored rear crescents span the complete possible cover/lip pinch band
 # (R46.8..50.2) without entering the D82 opening or the UM flange seat.  The
 # later route cutter remains authoritative wherever the land meets its lumen.
+# The 16-gon cover sections shifted the pinch pocket about 2.5 degrees
+# further from each crescent's centre (undeclared 0.03-0.31 mm2 islands at
+# 301 degrees, z 13.1-13.3), so the half-span grew 5.0 -> 8.5 to cover the
+# migrated band on both mirrored sides.
 UM_T_REAR_BACKFILL_CENTER_ANGLES_DEG = (231.7, 308.3)
 UM_T_REAR_BACKFILL_CENTER_R = 48.50
-UM_T_REAR_BACKFILL_ARC_HALF_SPAN_DEG = 5.0
+UM_T_REAR_BACKFILL_ARC_HALF_SPAN_DEG = 8.5
 UM_T_REAR_BACKFILL_RADIAL_WIDTH_MM = 3.40
 UM_T_REAR_BACKFILL_Z = (
     CORE_REAR_Z, UM_SEAT_Z - SEAT_MEMBRANE_T)
@@ -765,10 +769,14 @@ def _polar_xy(center, radius, angle_deg):
 # touching the R113.8 visible ring band outboard of it.
 FORK_SHOULDER_TIP_RELIEF_AZ_DEG = (26.0, 31.8)
 # Cut pre-cover through solid material only.  The later-fused main cover
-# (octagon corners to r_c+5.30 = 110.1, burial web to ~110.4) buries the
-# inner face; the outer face passes the skirt's whole ramp (to ~112.7) and
-# notches the shelf underside, staying under the R113.0 structural lip.
-FORK_SHOULDER_TIP_RELIEF_R_MM = (109.8, 112.9)
+# (16-gon: reach r_c+4.90..+4.997 across the window, corrugation +-0.05)
+# buries the inner face everywhere native skirt exists (the skirt's tip
+# begins near azimuth 29.4 where the cover reach bottoms at 108.88); the
+# outer face passes the skirt's whole ramp (to ~112.7) and notches the
+# shelf underside, staying under the R113.0 structural lip.  The former
+# 109.8 face straddled the octagon cover's +-0.45 corner corrugation and
+# shed 0.04-0.07 hair slivers where a corner stopped just short of it.
+FORK_SHOULDER_TIP_RELIEF_R_MM = (108.6, 112.9)
 FORK_SHOULDER_TIP_RELIEF_Z_MM = (-2.0, 7.5)
 # Above the z=6.8 seat-membrane bottom the inner face steps out past the
 # burial web's ~110.5 outer overlap band, so the retained membrane lip is a

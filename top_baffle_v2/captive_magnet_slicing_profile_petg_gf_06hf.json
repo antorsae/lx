@@ -68,7 +68,7 @@
    "ironing_flow": "10%",
    "ironing_spacing": "0.15",
    "ironing_speed": "60",
-   "bridge_speed": "12"
+   "bridge_speed": "20"
   },
   "filament": {
    "nozzle_temperature": [
@@ -91,7 +91,7 @@
     "1",
     "1"
    ],
-   "filament_bridge_speed": "12"
+   "filament_bridge_speed": "20"
   }
  },
  "artifact_overrides": [

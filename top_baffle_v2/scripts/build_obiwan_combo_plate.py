@@ -244,7 +244,7 @@ VARIANTS = {
         plate_name=(
             "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand"
         ),
-        expected_triangle_count=70_834,
+        expected_triangle_count=75_456,
         # Solid, like the floor-stand plate: these are structural carriers,
         # and the owner asked for both plates at 100%.  The bridge/root
         # modifier below is now redundant rather than wrong -- it pins the
@@ -259,7 +259,7 @@ VARIANTS = {
         plate_name=(
             "obiwan_01_02_03_04_LM_UM_combo_floor_stand"
         ),
-        expected_triangle_count=194_726,
+        expected_triangle_count=188_120,
         sparse_infill_density_percent=100.0,
         sparse_infill_pattern="zig-zag",
     ),
@@ -591,7 +591,11 @@ def build_source_bundle(
             f"generated composite STL is not the exact translated union: {exc}"
         ) from exc
     bounds = mesh_bounds(actual)
-    clearances = validate_bed_fit(bounds, MACHINE_BOUNDS_MM)
+    # The exporter zeroes each part against its BREP bounding box; the
+    # tessellated mesh can dip a few microns past that box, so allow
+    # sub-layer-height noise instead of the 0.1-um default.
+    clearances = validate_bed_fit(
+        bounds, MACHINE_BOUNDS_MM, tolerance_mm=0.01)
     packing, _footprints = _packing_facts()
     manifest = {
         "schema_version": 1,
@@ -744,7 +748,7 @@ def validate_source_bundle(
             f"composite STL is not the exact translated source union: {exc}"
         ) from exc
     bounds = mesh_bounds(actual)
-    validate_bed_fit(bounds, MACHINE_BOUNDS_MM)
+    validate_bed_fit(bounds, MACHINE_BOUNDS_MM, tolerance_mm=0.01)
     packing, _footprints = _packing_facts()
     if not math.isclose(
             float(payload.get("packing", {}).get(
@@ -1165,7 +1169,8 @@ def validate_ready_plate(
             "composite build transform moved or rotated the locked plate")
     clearances = validate_bed_fit(
         project_audit.transformed_actual_mesh_bounds,
-        profile_bundle["identity"]["machine_bounds_mm"])
+        profile_bundle["identity"]["machine_bounds_mm"],
+        tolerance_mm=0.01)
     plate, obj = _result_object(result_path)
     bbox = obj.get("bbox")
     if not isinstance(bbox, Mapping):

@@ -1,7 +1,7 @@
 {
   "part": "lx521_coupon_7_recess_seat",
   "pre_translation_bbox_min_mm": [
-    -82.00000010000002,
+    -82.0000001,
     -141.0000001,
     -18.30000009999999
   ],
@@ -16,7 +16,7 @@
       1.0,
       0.0,
       0.0,
-      82.00000010000002
+      82.0000001
     ],
     [
       0.0,
@@ -38,12 +38,12 @@
     ]
   ],
   "stl": "lx521_coupon_7_recess_seat.stl",
-  "stl_bytes": 121684,
+  "stl_bytes": 139384,
   "stl_origin_translation_mm": [
-    82.00000010000002,
+    82.0000001,
     141.0000001,
     18.30000009999999
   ],
-  "stl_sha256": "2dbdaf4b75d46c400cbd51ba04789f2dc83ba06a66618fdd98b4f690e802a1a9",
+  "stl_sha256": "9fe4a4363bf45c627e452e58b9d7c5ec59da6c974af5fd0bad67fa6e116443a5",
   "variant_export": "coupon"
 }

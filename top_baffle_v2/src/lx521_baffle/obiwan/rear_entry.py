@@ -528,8 +528,14 @@ def lm_rear_exit_port_cutter():
         handoff[0] - LM_REAR_PORT_PREFUSION_MM * tangent_start,
         handoff,
     ))
+    # The prefusion segment reaches back through the already-cut circular
+    # floor lane.  A 16-gon tube of the exact lane radius meets that wall
+    # on sixteen tangent strips and OCC returned an inverted residual
+    # shell; 0.05 of radial boolean margin cuts decisively into the wall
+    # instead of kissing it (the D9 outlet contract is the spec figure,
+    # not this cutter's overtravel).
     return _round_tube(
-        points, LM_REAR_PORT_R,
+        points, LM_REAR_PORT_R + 0.05,
         section_spacing_mm=LM_EXIT_TUBE_SECTION_SPACING_MM)
 
 def no_floor_lm_bottom_support_blocker(

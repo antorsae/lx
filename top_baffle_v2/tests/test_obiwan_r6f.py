@@ -654,7 +654,7 @@ def test_route_contract():
         route.LM_VISIBLE_RING_R - route.LM_ROUTE_OWNER_CLEARANCE,
         abs_tol=1e-12)
     assert route.TUBE_SECTION_SPACING == 5.5
-    assert route.TUBE_SECTION_SIDES == 8
+    assert route.TUBE_SECTION_SIDES == 16
     assert (20.0 - math.sqrt(
         20.0 ** 2 - (route.TUBE_SECTION_SPACING / 2.0) ** 2)) < 0.20
     assert memory_guard.MEMORY_PROFILES["local-macos"] == {
