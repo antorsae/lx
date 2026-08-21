@@ -8,26 +8,31 @@ centre spacing.  Solid body in the waveguide's own shape language: one
 tangent-smooth smoothstep flare per form (rolled front edge and rear
 corner, no exterior steps) and a rounded-plan waist web.
 
+OBI-WAN ONLY: this crescent pairs with the Obi-Wan UM carrier's
+released tweeter-joint contract and replaces that profile's crescent
+slot options; it does not apply to stock or slim.
+
 Fastening and cabling (all datasheet/STEP-verified):
 
   * Each driver bolts with SIX M3 screws on the vendor's D98 pattern
     (D3.5 rim holes verified on the STEP at 30 deg + k*60 from the
     terminal block): the body carries 6 heat-set insert bores D4.6 x 6
     behind each rim recess floor, clocked so the terminal block faces
-    the buried waist chamber.
-  * Both units clock their tabs into that chamber; connections are fully
-    internal (1.75-mm skins under each rim recess).
-  * A concealed D6.5 cable lumen runs from the chamber down a riser at
-    x=+20 (the corridor clearing both drivers), S-bends on the hidden
-    rear side to the centreline, and exits through the FOOT face into a
-    D8 x 2.5 socket -- the seamless T-duct handoff to the UM support.
-    The foot pad also carries two blind M3 heat-set receivers (rear-
-    opening, the same idiom as the released crescent joints) so the UM
-    support clamps the crescent with rear-driven screws.
-  * The old slab stem is gone: the only rear-side material is a slim
-    17-mm spine following the lumen path plus the compact foot pad, both
-    carved 1 mm clear of the rear waveguide mouth and relieved 0.5 off
-    the front unit's exposed back plate.
+    the buried waist chamber.  Both units clock their tabs into that
+    chamber; connections are fully internal.
+  * TWIN redundant D4.2 cable ducts, fully buried inside the body,
+    follow the front unit's circle at r=50 at the baffle's own duct
+    depth: each starts at a waist-chamber wall (x=+-21), sweeps its own
+    side, and converges into the stepped D8 T-duct socket in the lower
+    edge -- the seamless handoff to the UM support's duct nozzle.
+  * The crescent attaches exactly per the released Obi-Wan tweeter
+    joint: bosses on the +-24 spacing (TWEETER_JOINT_X) in the addon's
+    front z-band, rear-opening M3 heat-set receivers D4.6 x 4.2 at the
+    released bore band, ear notches clearing the UM core's functional
+    ears; the core's rear-driven M3 screws clamp it.  The FIRST tweeter
+    (front-firing) is the one nearest this joint.
+  * NOTHING remains behind the rear face: both waveguide mouths and
+    back plates sit in a completely clean surface.
 
 Geometry facts are asserted, not assumed: every land, skin, reveal,
 insert bore and lumen probe must hold or the build fails.  Driver
@@ -131,30 +136,18 @@ web = Pos(0, SPACING / 2.0, -1.0) * extrude(
 chamber = Pos(0, (37.5 + 54.5) / 2.0, (-6.5 - 36.0) / 2.0) * Box(
     42.0, 54.5 - 37.5, 36.0 - 6.5)
 
-# ---- concealed cable lumen -------------------------------------------------
-# Riser at x=+20 (clears the front cavity by 2.5 and the rear rim recess
-# by 0.8), then at z -46.25 an S-bend on the hidden rear side brings the
-# run to the centreline and out through the foot face.
-LUM_X, LUM_Y, LUM_Z = 20.0, 38.9, -46.25
-S_R = 38.8
-S_TH = 42.1  # degrees; lateral shift 20 over ~52 of run
-ARC1_C = (LUM_X - S_R, 12.0)          # az 0 -> -S_TH
-ARC2_C = (S_R, -40.0)                 # az 180-S_TH -> 180
-
-def lumen_path_points():
-    """The S-path at z=LUM_Z, chamber riser base to past the foot face."""
-    pts = [(LUM_X, LUM_Y)]
-    for t in np.linspace(0.0, 1.0, 4)[1:]:
-        pts.append((LUM_X, LUM_Y - (LUM_Y - 12.0) * t))
-    for t in np.linspace(0.0, 1.0, 9)[1:]:
-        a = math.radians(-S_TH * t)
-        pts.append((ARC1_C[0] + S_R * math.cos(a),
-                    ARC1_C[1] + S_R * math.sin(a)))
-    for t in np.linspace(0.0, 1.0, 9)[1:]:
-        a = math.radians(180.0 - S_TH + S_TH * t)
-        pts.append((ARC2_C[0] + S_R * math.cos(a),
-                    ARC2_C[1] + S_R * math.sin(a)))
-    return pts
+# ---- twin concealed cable ducts on the back-circle outline -----------------
+# Two redundant D4.2 ducts, fully buried inside the body, following the
+# front unit's circle at r=50 (between the driver cavity, the M3 insert
+# bores above, and the flare skin outside), at the baffle's own duct
+# depth (z centre -13.6 = baffle 4.7).  Each starts at a waist-chamber
+# wall (x=+-21), sweeps its own side of the circle, and converges at the
+# bottom into the stepped T-duct socket in the crescent's lower edge --
+# NOTHING remains behind the rear face.
+DUCT_R = 50.0
+DUCT_Z = -13.6
+DUCT_D = 4.2
+DUCT_AZ_TOP = math.degrees(math.acos(21.0 / DUCT_R))   # chamber wall
 
 def _segment_cyl(p, q, r, over=0.8):
     d = (q[0] - p[0], q[1] - p[1], q[2] - p[2])
@@ -164,63 +157,56 @@ def _segment_cyl(p, q, r, over=0.8):
     return Plane(origin=start, z_dir=u) * Cylinder(
         r, ln + 2 * over, align=(Align.CENTER, Align.CENTER, Align.MIN))
 
-# The lumen is cut as a chain of short overlapping cylinders: exact
-# torus segments defeat the kernel at their tangent junctions, and a
-# 3.5-deg faceted bore (sagitta 0.02) is identical for a cable.
-lumen_pieces = [
-    Pos(LUM_X, LUM_Y, -47.0) * Cylinder(
-        3.25, 17.0, align=(Align.CENTER, Align.CENTER, Align.MIN))
-]
-_path = [(px, py, LUM_Z) for px, py in lumen_path_points()]
-for _p, _q in zip(_path[:-1], _path[1:]):
-    lumen_pieces.append(_segment_cyl(_p, _q, 3.25))
-# Tail + T-duct handoff socket as ONE stepped coaxial cutter (the D6.5
-# tail run to the foot face with the D8 nozzle counterbore): pre-unioned
-# so the kernel never cuts coaxially through an existing void.
+def duct_arc_points(side):
+    pts = []
+    for i in range(21):
+        a = math.radians(DUCT_AZ_TOP + (-90.0 - DUCT_AZ_TOP) * i / 20)
+        pts.append((side * DUCT_R * math.cos(a), DUCT_R * math.sin(a),
+                    DUCT_Z))
+    return pts
+
+duct_pieces = []
+for side in (1.0, -1.0):
+    pp = duct_arc_points(side)
+    for p, q in zip(pp[:-1], pp[1:]):
+        duct_pieces.append(_segment_cyl(p, q, DUCT_D / 2.0))
+
+# Stepped T-duct handoff socket in the crescent's lower edge: D8 nozzle
+# seat, then a D4.5 wire neck meeting the two arc ends at (0, -50).
 tail_socket = (
-    Pos(0, -55.0, LUM_Z) * Rot(X=-90) * Cylinder(
-        3.25, 15.8, align=(Align.CENTER, Align.CENTER, Align.MIN))
-    + Pos(0, -55.0, LUM_Z) * Rot(X=-90) * Cylinder(
-        4.0, 5.5, align=(Align.CENTER, Align.CENTER, Align.MIN))
+    Pos(0, -56.0, DUCT_Z) * Rot(X=-90) * Cylinder(
+        4.0, 6.5, align=(Align.CENTER, Align.CENTER, Align.MIN))
+    + Pos(0, -56.0, DUCT_Z) * Rot(X=-90) * Cylinder(
+        2.25, 9.0, align=(Align.CENTER, Align.CENTER, Align.MIN))
 )
 
-# ---- minimal rear spine + ducted foot --------------------------------------
-def chain_plan():
-    faces = []
-    def add(px, py):
-        faces.append(Pos(px, py) * Circle(8.5))
-    for t in np.linspace(0.0, 1.0, 14):
-        add(LUM_X, LUM_Y - (LUM_Y - 12.0) * t)
-    for t in np.linspace(0.0, 1.0, 12):
-        a = math.radians(-S_TH * t)
-        add(ARC1_C[0] + S_R * math.cos(a), ARC1_C[1] + S_R * math.sin(a))
-    for t in np.linspace(0.0, 1.0, 12):
-        a = math.radians(180.0 - S_TH + S_TH * t)
-        add(ARC2_C[0] + S_R * math.cos(a), ARC2_C[1] + S_R * math.sin(a))
-    for t in np.linspace(0.0, 1.0, 6):
-        add(0.0, -40.0 - 8.0 * t)
-    plan = faces[0]
-    for f in faces[1:]:
-        plan += f
-    pad = Pos(0, -44.0) * RectangleRounded(42.0, 16.0, 7.0)
-    pad &= Circle(53.0)               # keep the corners inside the flare
-    return plan + pad
-
-spine = Pos(0, 0, -15.0) * extrude(chain_plan(), amount=-35.0)
-# 1-mm reveal to the rear waveguide mouth, behind the rear face only
-spine -= Pos(0, SPACING, -55.0) * Cylinder(
-    53.35, 12.6, align=(Align.CENTER, Align.CENTER, Align.MIN))
-# 0.5 relief off the front unit's exposed back plate
-spine -= Pos(0, 0, -43.0) * Cylinder(
-    39.5, 0.5, align=(Align.CENTER, Align.CENTER, Align.MIN))
-
-# blind M3 receivers in the foot (rear-opening, crescent-joint idiom)
-foot_inserts = [
-    Pos(sx * 14.0, -44.0, -50.0 - 0.1) * Cylinder(
-        INSERT_BORE_D / 2.0, INSERT_BORE_DEPTH + 0.1,
-        align=(Align.CENTER, Align.CENTER, Align.MIN))
-    for sx in (-1.0, 1.0)
-]
+# ---- UM tweeter-joint interface (released contract, local frame) -----------
+# Baffle -> local: z_local = z_baffle - 18.3.  The addon owns the front
+# band (TWEETER_ADDON_JOINT_Z 12.4..18.3 -> local -5.9..0) and carries
+# rear-opening M3 insert receivers at TWEETER_JOINT_INSERT_BORE_Z
+# 12.2..16.4 -> local -6.1..-1.9, on the released +-24 spacing
+# (TWEETER_JOINT_X), boss D9.8; the UM core's rear-driven M3 screws pass
+# through its D3.4 holes into these inserts.  The first tweeter (the
+# front-firing unit) is the one nearest this joint.
+JOINT_X = 24.0
+JOINT_Y = -50.0
+joint_bosses = []
+joint_bores = []
+ear_notches = []
+for sx in (-1.0, 1.0):
+    joint_bosses.append(
+        Pos(sx * JOINT_X, JOINT_Y, -5.9) * Cylinder(
+            4.9, 5.9, align=(Align.CENTER, Align.CENTER, Align.MIN))
+        + Pos(sx * JOINT_X, JOINT_Y + 3.0, -5.9) * extrude(
+            RectangleRounded(9.8, 8.0, 2.4), amount=5.9))
+    joint_bores.append(
+        Pos(sx * JOINT_X, JOINT_Y, -6.1) * Cylinder(
+            2.3, 4.2, align=(Align.CENTER, Align.CENTER, Align.MIN)))
+    # notch the core band so the UM core's functional ear (D9.8 + clear)
+    # laps under the boss
+    ear_notches.append(
+        Pos(sx * JOINT_X, JOINT_Y - 2.0, (-11.7 - 6.0) / 2.0) * Box(
+            10.4, 14.0, 11.7 - 6.0))
 
 # ---- driver mounting inserts: 6 x M3 on the vendor D98 pattern -------------
 def driver_insert_cutters():
@@ -238,10 +224,12 @@ def driver_insert_cutters():
 front_bores = driver_insert_cutters()
 rear_bores = [Pos(0, SPACING, -DEPTH) * Rot(X=180) * c for c in front_bores]
 
-body = (wrap + upper_wrap + web + spine
-        - cav - upper_cav - chamber)
-for c in (*lumen_pieces, tail_socket, *front_bores, *rear_bores,
-          *foot_inserts):
+body = wrap + upper_wrap + web
+for b in joint_bosses:
+    body += b
+body = body - cav - upper_cav - chamber
+for c in (*duct_pieces, tail_socket, *front_bores, *rear_bores,
+          *joint_bores, *ear_notches):
     body -= c
 body = body.clean()
 solids = list(body.solids())
@@ -259,20 +247,21 @@ checks["through_bores_open_both_faces"] = True
 assert blocked(Pos(0, 44.0, -24.0) * Box(3, 3, 3)) < 1e-6
 assert blocked(Pos(0, 48.5, -18.0) * Box(3, 3, 3)) < 1e-6
 checks["terminal_chamber_reaches_both_tab_positions"] = True
-_pp = lumen_path_points()
-lum_probes = (
-    (LUM_X, LUM_Y, -34.0),                    # riser
-    (_pp[2][0], _pp[2][1], LUM_Z),            # straight run
-    (_pp[7][0], _pp[7][1], LUM_Z),            # arc 1 mid
-    (_pp[15][0], _pp[15][1], LUM_Z),          # arc 2 mid
-    (0.0, -48.0, LUM_Z),                      # tail
-    (0.0, -52.4, LUM_Z),                      # through the foot face / socket
-)
-for p in lum_probes:
-    assert blocked(Pos(*p) * Box(1.6, 1.6, 1.6)) < 1e-6, p
-checks["cable_lumen_continuous_chamber_to_foot_socket"] = True
-assert blocked(Pos(19.0, 35.5, -40.0) * Box(1.0, 1.0, 1.0)) > 1e-5
-checks["riser_wall_to_front_can_solid"] = True
+for side in (1.0, -1.0):
+    for az_deg in (45.0, 0.0, -45.0, -88.0):
+        a = math.radians(az_deg)
+        p = (side * DUCT_R * math.cos(a), DUCT_R * math.sin(a), DUCT_Z)
+        assert blocked(Pos(*p) * Box(1.6, 1.6, 1.6)) < 1e-6, (side, az_deg)
+assert blocked(Pos(0, -54.5, DUCT_Z) * Box(1.6, 1.6, 1.6)) < 1e-6
+checks["twin_ducts_continuous_chamber_to_socket_both_sides"] = True
+# duct burial: flare cover outside, wall to the cavity inside, and the
+# separation up to the driver insert bores
+assert blocked(Pos(52.9 * math.cos(math.radians(-30)),
+                   52.9 * math.sin(math.radians(-30)), DUCT_Z)
+               * Box(0.8, 0.8, 2.0)) > 1e-5
+assert blocked(Pos(46.9, 0.0, DUCT_Z) * Box(0.8, 0.8, 2.0)) > 1e-5
+assert blocked(Pos(49.0, 0.0, -11.22) * Box(1.0, 1.0, 0.3)) > 1e-6
+checks["ducts_fully_buried_with_solid_walls"] = True
 for az_deg in (120.0, 240.0):
     az = math.radians(az_deg)
     px, py = MOUNT_BC_R * math.cos(az), MOUNT_BC_R * math.sin(az)
@@ -283,20 +272,21 @@ checks["driver_insert_bores_open_D98_pattern_both_units"] = True
 assert blocked(Pos(21.6, 42.4, -8.0) * Box(0.5, 0.5, 2.0)) > 1e-6
 checks["insert_bore_to_chamber_wall_solid"] = True
 for sx in (-1.0, 1.0):
-    assert blocked(Pos(sx * 14.0, -44.0, -46.5) * Box(1.5, 1.5, 1.5)) < 1e-6
-checks["foot_M3_receivers_open"] = True
+    assert blocked(Pos(sx * JOINT_X, JOINT_Y, -4.0) * Box(1.5, 1.5, 1.5)) < 1e-6
+    assert blocked(Pos(sx * JOINT_X, JOINT_Y, -0.9) * Box(1.4, 1.4, 1.0)) > 1e-4
+    assert blocked(Pos(sx * JOINT_X, JOINT_Y - 2.0, -9.0) * Box(2, 2, 2)) < 1e-6
+checks["um_joint_receivers_on_released_24mm_spacing"] = True
 assert blocked(Pos(0, 46.0, -5.6) * Box(2, 2, 1.2)) > 1e-4
 assert blocked(Pos(0, 46.0, -36.85) * Box(2, 2, 1.2)) > 1e-4
 assert blocked(Pos(0, 53.8, -1.5) * Box(2, 2, 2)) > 1e-3
 assert blocked(Pos(0, 39.4, -41.0) * Box(1.2, 1.2, 2)) > 1e-4
 checks["chamber_fully_buried_all_skins_intact"] = True
-for xx in (0.0, 12.0, 20.0):
-    yy = SPACING - math.sqrt(52.9 ** 2 - xx ** 2)
-    assert blocked(Pos(xx, yy, -43.2) * Box(0.6, 0.6, 0.8)) < 1e-6, xx
-checks["spine_reveal_ring_clear_of_rear_waveguide_mouth"] = True
+assert blocked(Pos(0, 20.0, -44.0) * Box(3, 3, 2.0)) < 1e-6
+assert blocked(Pos(30.0, -30.0, -44.0) * Box(3, 3, 2.0)) < 1e-6
+checks["rear_face_completely_clean_nothing_behind_it"] = True
 bb = body.bounding_box()
 assert abs(bb.max.X) <= 55.31 and abs(bb.min.X) <= 55.31
-assert abs(bb.min.Z - (-50.0)) < 1e-6 and abs(bb.max.Z) < 1e-6
+assert abs(bb.min.Z - (-DEPTH)) < 1e-6 and abs(bb.max.Z) < 1e-6
 checks["silhouette_clean_no_flank_features"] = True
 
 os.makedirs(OUT, exist_ok=True)
@@ -384,32 +374,44 @@ facts = {
         "spacing_rationale": "max over depth of r_front+r_rear = 90.2 "
                              "+ 2.3 clearance",
     },
+    "scope": "Obi-Wan profile only (pairs with the obiwan UM carrier's "
+             "tweeter joint); not applicable to stock or slim",
     "mounting": {
         "per_driver": "6 x M3 heat-set inserts, bores D4.6 x 6.0, on the "
                       "vendor D98 pattern (D3.5 rim holes), clocked "
                       "terminal+30+k*60 with the terminal at the waist",
-        "crescent_to_um_support": "2 x blind M3 heat-set receivers in the "
-                                  "foot pad at (+-14, -44), rear-opening "
-                                  "(rear-driven screws, crescent-joint "
-                                  "idiom)",
+        "crescent_to_um_support": "released Obi-Wan tweeter-joint "
+                                  "contract: D9.8 bosses at the +-24 "
+                                  "spacing (TWEETER_JOINT_X) in the "
+                                  "addon front z-band (local -5.9..0), "
+                                  "rear-opening M3 heat-set receivers "
+                                  "D4.6 x 4.2 at local z -6.1..-1.9 "
+                                  "(TWEETER_JOINT_INSERT_BORE_Z mapped), "
+                                  "ear notches for the core's functional "
+                                  "ears; first tweeter = front unit, "
+                                  "nearest the joint; final y-"
+                                  "registration to TWEETER_JOINT_Y at "
+                                  "release integration",
     },
     "cabling": {
-        "lumen_d_mm": 6.5,
-        "path": "waist chamber -> riser at x=+20 (corridor clearing both "
-                "drivers) -> z -46.25 S-bend (R38.8, tangent-continuous) "
-                "to the centreline on the hidden rear side -> foot face",
-        "handoff": "D8 x 2.5 socket in the foot face at (0, -52, -46.25) "
-                   "seats the UM support's T-duct nozzle: continuous "
-                   "concealed duct, zero exposed cable",
+        "duct_d_mm": 4.2,
+        "path": "TWIN redundant ducts fully buried at r=50 around the "
+                "front unit, z centre -13.6 (baffle duct depth): waist "
+                "chamber wall (x=+-21) -> each side's circle arc -> "
+                "converge at the bottom",
+        "handoff": "stepped socket in the lower edge at (0, y -56..-49.5, "
+                   "z -13.6): D8 nozzle seat + D4.5 wire neck meeting "
+                   "both arcs: continuous concealed duct, zero exposed "
+                   "cable, nothing behind the rear face",
     },
     "body": {
         "volume_cm3": round(vol / 1000.0, 1),
         "exterior": "waveguide-family smoothstep flare R55.3->R44 over "
                     "31 mm per form, rolled front edge r2.5 and rear "
-                    "corner, rounded-plan waist web r14; rear side "
-                    "carries only a 17-mm lumen spine and the compact "
-                    "foot pad (carved 1 mm clear of the rear waveguide "
-                    "mouth, relieved 0.5 off the front back plate)",
+                    "corner, rounded-plan waist web r14, two joint boss "
+                    "lobes at the bottom edge; the rear face is "
+                    "completely clean -- no spine, no stem, no ducts "
+                    "visible anywhere",
         "interior": "stepped shrink-wrap bores (retention shoulders "
                     "back up the 6 rim screws), buried waist terminal "
                     "chamber z -6.5..-36",
@@ -418,7 +420,9 @@ facts = {
             "rim_recess_to_chamber_skin": 1.75,
             "front_rim_recess_to_rear_cavity_pinch": 1.5,
             "flare_to_cavity_bands": 0.77,
-            "lumen_wall_at_reveal_carve": 0.6,
+            "duct_to_cavity_wall": 1.55,
+            "duct_flare_cover": 1.7,
+            "duct_to_driver_insert_bore": 0.55,
             "insert_bore_to_chamber": 1.2,
         },
     },
@@ -427,16 +431,16 @@ facts = {
         "print.stl is front-face-down (source rotated 180 deg about X); "
         "the front faces and rim ring sit on the bed",
         "no captive magnets, no pause: slice normally",
-        "the foot pad and spine sit at print z 42.5-50 partly over the "
-        "flare: enable support for that small rear region only",
-        "all 14 insert bores are blind and print support-free",
+        "prints fully support-free: nothing behind the rear face, all "
+        "16 insert/joint bores are blind, and the buried D4.2/D8 ducts "
+        "are self-bridging",
         "body is designed solid: print with high wall count / infill if "
         "the acoustic deadness of a solid part is wanted",
-        "assembly: feed the cable pair up the foot socket and lumen into "
-        "the chamber; wire each unit, seat it, and fit 6 x M3 into the "
-        "heat-set inserts behind the rim; the UM support clamps the foot "
-        "with 2 rear-driven M3 screws while its duct nozzle seats in the "
-        "D8 socket",
+        "assembly: feed the cable pairs up the socket and twin ducts "
+        "into the chamber; wire each unit, seat it, and fit 6 x M3 into "
+        "the heat-set inserts behind the rim; the UM core's rear-driven "
+        "M3 screws clamp the joint bosses while its duct nozzle seats "
+        "in the D8 socket",
     ],
     "exports": {
         "stl_source_frame": f"{PART}.stl",
