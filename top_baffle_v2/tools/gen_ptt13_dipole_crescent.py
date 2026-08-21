@@ -89,8 +89,16 @@ BANDS = (
 # vendor mounting pattern (datasheet Table 4, verified on the STEP)
 MOUNT_BC_R = 49.0
 MOUNT_AZ_FROM_TERMINAL_DEG = 30.0
-INSERT_BORE_D = 4.6    # the released M3 heat-set receiver bore, exactly
-INSERT_BORE_DEPTH = 4.2  # as the tweeter-joint receivers: 4.0 insert + 0.2
+INSERT_BORE_D = 4.6    # the released M3 heat-set receiver bore (joint)
+INSERT_BORE_DEPTH = 4.2  # 4.0 insert + 0.2 relief
+# Driver rim screws CANNOT use heat-set inserts: at the vendor's D98
+# pattern a D4.6 pocket leaves only 0.35 to the D92.7 skirt bore --
+# unprintable (the 0.6 nozzle drops the wall and the pocket opens
+# sideways).  The vendor's own drawing specifies plain D3.5 through
+# holes; here the 12 rim screws thread-form into D2.5 printed pilots
+# (1.4-mm walls to the skirt bore, ~5.8 mm engagement in PETG).
+DRIVER_PILOT_D = 2.5
+DRIVER_PILOT_DEPTH = 6.0
 TERMINAL_AZ_DEG = 90.0  # both units clock their tabs toward the waist
 
 def cavity_profile(extra, over=0.0):
@@ -223,28 +231,40 @@ for k in range(6):
     az = math.radians(
         TERMINAL_AZ_DEG + MOUNT_AZ_FROM_TERMINAL_DEG + 60.0 * k)
     px, py = MOUNT_BC_R * math.cos(az), MOUNT_BC_R * math.sin(az)
-    # front unit: opening at its recess floor z -4.75 (+0.2 overshoot)
+    # front unit: pilot opens at its recess floor z -4.75 (+0.2 overshoot)
     front_bores.append(
-        Pos(px, py, -4.55 - INSERT_BORE_DEPTH) * Cylinder(
-            INSERT_BORE_D / 2.0, INSERT_BORE_DEPTH + 0.2,
+        Pos(px, py, -4.55 - DRIVER_PILOT_DEPTH) * Cylinder(
+            DRIVER_PILOT_D / 2.0, DRIVER_PILOT_DEPTH + 0.2,
             align=(Align.CENTER, Align.CENTER, Align.MIN)))
-    # rear unit: mirrored, opening at its recess floor z -37.75
+    # rear unit: mirrored, pilot opens at its recess floor z -37.75
     rear_bores.append(
         Pos(px, SPACING - py, -DEPTH + 4.35) * Cylinder(
-            INSERT_BORE_D / 2.0, INSERT_BORE_DEPTH + 0.2,
+            DRIVER_PILOT_D / 2.0, DRIVER_PILOT_DEPTH + 0.2,
             align=(Align.CENTER, Align.CENTER, Align.MIN)))
 
 body = wrap + upper_wrap + web
 for b in joint_bosses:
     body += b
+def _vol(s):
+    return sum(x.volume for x in s.solids())
 body = body - cav - upper_cav - chamber
 for group in (duct_pieces, [tail_socket], front_bores, rear_bores,
               joint_bores, ear_notches):
     body = body.clean()
     for c in group:
+        before = _vol(body)
         cut = body - c
-        if not cut.is_valid:
-            cut = (body.clean() - c).clean()
+        removed = before - _vol(cut)
+        if not cut.is_valid or removed < 0.05:
+            # the kernel sometimes silently drops a cut (still "valid",
+            # zero material removed); retry with micro-jittered copies
+            for jit in (Pos(0, 0, 0.003), Pos(0.003, 0, 0),
+                        Pos(0, 0.003, 0.001), Rot(Z=0.05)):
+                cut = (body.clean() - (jit * c)).clean()
+                removed = before - _vol(cut)
+                if cut.is_valid and removed >= 0.05:
+                    break
+            assert removed >= 0.05, f"cutter silently dropped: {c}"
         body = cut
 body = body.clean()
 solids = list(body.solids())
@@ -286,7 +306,7 @@ for k in range(6):
     assert blocked(
         Pos(px, SPACING - py, -DEPTH + 7.0) * Box(1.5, 1.5, 1.2)) < 1e-6, (
         "rear bore", k)
-checks["driver_insert_bores_open_D98_pattern_all_12"] = True
+checks["driver_pilot_bores_open_D98_pattern_all_12"] = True
 assert blocked(Pos(21.6, 42.4, -8.0) * Box(0.5, 0.5, 2.0)) > 1e-6
 checks["insert_bore_to_chamber_wall_solid"] = True
 for sx in (-1.0, 1.0):
@@ -368,16 +388,22 @@ def _mesh_solid_fn(tris):
     return solid
 
 _solid = _mesh_solid_fn(src)
+# Probes are offset 0.38 off each bore axis: dead-centre rays on the
+# symmetry-plane azimuths (az 0/180, y exactly 0 / 92.5) pierce shared
+# tessellation edges and double-count, reporting phantom solid.
+_du, _dv = 0.31, 0.23
 for k in range(6):
     az = math.radians(
         TERMINAL_AZ_DEG + MOUNT_AZ_FROM_TERMINAL_DEG + 60.0 * k)
     px, py = MOUNT_BC_R * math.cos(az), MOUNT_BC_R * math.sin(az)
-    assert not _solid(px, py, -7.0), f"front bore {k} closed in the mesh"
-    assert not _solid(px, SPACING - py, -DEPTH + 7.0), (
-        f"rear bore {k} closed in the mesh")
+    assert not _solid(px + _du, py + _dv, -7.0), (
+        f"front pilot {k} closed in the mesh")
+    assert not _solid(px + _du, SPACING - py + _dv, -DEPTH + 7.0), (
+        f"rear pilot {k} closed in the mesh")
 for sx in (1.0, -1.0):
-    assert not _solid(sx * JOINT_X, JOINT_Y, -4.0), "joint receiver closed"
-assert not _solid(0.0, -54.5, DUCT_Z), "duct socket closed in the mesh"
+    assert not _solid(sx * JOINT_X + _du, JOINT_Y + _dv, -4.0), (
+        "joint receiver closed")
+assert not _solid(0.37, -54.5, DUCT_Z), "duct socket closed in the mesh"
 checks["mesh_verified_all_fastener_bores_and_socket"] = True
 
 # 180-deg rotation about X (det=+1): winding is preserved, no reversal.
@@ -432,10 +458,14 @@ facts = {
     "scope": "Obi-Wan profile only (pairs with the obiwan UM carrier's "
              "tweeter joint); not applicable to stock or slim",
     "mounting": {
-        "per_driver": "6 x M3 heat-set inserts, bores D4.6 x 4.2 (the "
-                      "released receiver recipe), on the "
+        "per_driver": "6 x M3 THREAD-FORMING pilots D2.5 x 6.0 on the "
                       "vendor D98 pattern (D3.5 rim holes), clocked "
-                      "terminal+30+k*60 with the terminal at the waist",
+                      "terminal+30+k*60 with the terminal at the waist. "
+                      "Heat-set inserts do not fit here: a D4.6 pocket "
+                      "leaves 0.35 to the D92.7 skirt bore, which a 0.6 "
+                      "nozzle cannot print (pocket opens sideways); the "
+                      "D2.5 pilot leaves 1.4-mm walls and ~5.8 mm of M3 "
+                      "engagement in PETG",
         "crescent_to_um_support": "released Obi-Wan tweeter-joint "
                                   "contract: D9.8 bosses at the +-24 "
                                   "spacing (TWEETER_JOINT_X) in the "
@@ -477,7 +507,7 @@ facts = {
             "front_rim_recess_to_rear_cavity_pinch": 1.5,
             "flare_to_cavity_bands": 0.77,
             "duct_to_cavity_wall": 1.55,
-            "insert_pocket_to_skirt_clearance": 0.35,
+            "driver_pilot_to_skirt_bore": 1.4,
             "duct_flare_cover": 1.7,
             "duct_to_driver_insert_bore": 2.75,
             "insert_bore_to_chamber": 1.2,
@@ -489,14 +519,13 @@ facts = {
         "the front faces and rim ring sit on the bed",
         "no captive magnets, no pause: slice normally",
         "prints fully support-free: nothing behind the rear face, all "
-        "16 insert/joint bores are blind, and the buried D4.2/D8 ducts "
-        "are self-bridging",
+        "14 pilot/receiver bores are blind, and the buried D4.2/D8 "
+        "ducts are self-bridging",
         "body is designed solid: print with high wall count / infill if "
         "the acoustic deadness of a solid part is wanted",
-        "install the 12 heat-set inserts BEFORE the drivers: the inner "
-        "arc of each pocket wall is 0.35 to the skirt clearance gap, so "
-        "any melt bulge lands in that gap and is cleared before the "
-        "driver goes in",
+        "the 12 driver rim screws are M3 thread-forming into the D2.5 "
+        "pilots (pre-run each pilot once with a screw before final "
+        "assembly); only the 2 UM-joint receivers take heat-set inserts",
         "assembly: feed the cable pairs up the socket and twin ducts "
         "into the chamber; wire each unit, seat it, and fit 6 x M3 into "
         "the heat-set inserts behind the rim; the UM core's rear-driven "
