@@ -26,14 +26,25 @@ def write_selection_guide():
     rows=['# Three tweeter families', '',
         'Generated from `src/lx521_baffle/tweeter_options.py` by `make h2c_docs`. '+
         'Stock, Slim and Obiwan are baffle designs; the following are the three tweeter families.', '',
+        '![Three tweeter families and five arrangements at one scale](../images/generated/iso/rows/tweeter_row.png)', '',
+        'Left to right: ND25FW-4 crescent, BMR Stock/Slim vase, BMR Obiwan coaxial crescent, '+
+        'BMR Obiwan opposed crescent, and ND25FN-4 integrated UM/waveguide. '+
+        'Actual printed carriers share one scale; drivers and removable service caps are omitted.', '',
         *tweeter_table(), '',
         '## What to change', '',
+        '![Obiwan upper choices aligned at the common LM joint](../images/generated/iso/rows/obiwan_upper_row.png)', '',
         '| Baffle | ND25FW-4 | TEBM35C10-4 BMR | ND25FN-4 waveguide |', '|---|---|---|---|',
         '| Stock / Slim | Standard upper module, integral crescent | Opposed-BMR upper module replaces the whole standard upper | No compatible upper currently provided |',
         '| Obiwan | Regular UM + separate crescent + regular wings | Regular UM + coaxial or opposed BMR crescent + regular wings | Fused UM/waveguide body + matching ND25FN-4 wings |', '',
         'BMR coaxial and opposed mounts use the same driver family. On Obiwan they share the regular UM half-lap mount. '+
         'The ND25FN-4 body instead includes the UM carrier: its new surround and buried upper magnets need the matching wings. '+
         'All three Obiwan selections retain the common LM interface. Choose one upper arrangement per speaker.', '',
+        '![Regular and ND25FN-4 uppers with their flat and graded H2C wings](../images/generated/iso/rows/obiwan_wing_row.png)', '',
+        '| Obiwan upper | Buried upper contacts | Each matching H2C wing | Hardware / assembly |',
+        '|---|---|---|---|',
+        '| ND25FW-4 | 2 × Ø5 × 2 mm N52 in regular UM | 3 × Ø5 × 2 mm N52 | [Regular crescent](obiwan.md#dayton-nd25fw-4-crescent) |',
+        '| TEBM35C10-4 BMR | Same regular UM contacts | Same regular wings | [Coaxial](obiwan.md#candidate-coaxial-tebm35c10-4-bmr-crescent) / [opposed](obiwan.md#candidate-opposed-tebm35c10-4-bmr-crescent) |',
+        '| ND25FN-4 waveguide | 4 × Ø6 × 3 mm N45 in fused body | 2 × Ø6 × 3 mm N45 at UM + 2 × Ø5 × 2 mm N52 at LM | [Body, caps and M3 retainers](DAYTON_ND25FN4_WAVEGUIDE.md) |', '',
         'Stock/Slim standard shoulders and B1 wings are for ND25FW-4 only: BMR upper magnet seats differ and no matching '+
         'BMR perimeter is supplied. The extra side magnets on the Obiwan BMR pods also have no supplied mate; '+
         'regular Obiwan wings retain their existing LM/UM contacts.', '',
@@ -78,7 +89,9 @@ def main():
         'Their reports are retained under `build/h2c/experiments/rejected_one_piece_floor/`; trial meshes and slices remain local, outside this shelf. '+
         'The current floor-stand pair removes the old vertical LM seam and keeps the original outline.', '',
         '## Tweeter families', '',
+        '![Three tweeter families and five arrangements at one scale](../../images/generated/iso/rows/tweeter_row.png)', '',
         *tweeter_table(), '',
+        '![Complete Obiwan upper choices at the same LM datum](../../images/generated/iso/rows/obiwan_upper_row.png)', '',
         'The ND25FN-4 selection replaces the entire regular UM and crescent. Use its matching continuous wings; '+
         'the same fused body fits both stand states. Stock/Slim currently have no ND25FN-4 upper. '+
         link('Three-family selection guide',ROOT/'docs/TWEETER_OPTIONS.md',out)+' · '+
@@ -126,6 +139,9 @@ def main():
     lines+=['','## Policy exceptions','']
     lines += ['- '+entry for entry in cfg['exceptions']]
     lines+=['','## Geometry review','',
+        '![Regular and ND25FN-4 waveguide assemblies with matching flat or graded H2C wings](../../images/generated/iso/rows/obiwan_wing_row.png)', '',
+        'The four panels use one camera and scale, with the common no-floor-stand LM. '+
+        'Regular wings also fit the regular-UM BMR selections. Drivers and service caps are omitted.', '',
         link('Stock/Slim orthographic assembly sheet',ROOT/'build/h2c/views/primary_review_contact_sheet.png',out)+' · '+
         link('Dayton ND25FN-4 waveguide with continuous wings — front',ROOT/'build/h2c/views/H2C_Dayton_ND25FN4_graded_front.png',out)+' · '+
         link('Dayton ND25FN-4 waveguide with continuous wings — rear',ROOT/'build/h2c/views/H2C_Dayton_ND25FN4_flat_rear_oblique.png',out), '',

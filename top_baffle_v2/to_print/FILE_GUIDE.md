@@ -1,6 +1,18 @@
-# Files and slicer estimates
+# P2S files and slicer estimates
 
-Generated from `catalog.json` and `delivery_manifest.json`; run `make delivery_refresh` to update.
+Generated from `catalog.json` and `delivery_manifest.json`; run `make PRINTER=P2S delivery_refresh` to update.
+
+For the current printer, use the [H2C file catalog](h2c/README.md). The three families below are alternative upper selections, with their own compatible parts.
+
+![Three tweeter families and five carrier arrangements at one scale](../images/generated/iso/rows/tweeter_row.png)
+
+| Tweeter family | Earlier P2S selection | Print guide |
+|---|---|---|
+| Dayton ND25FW-4 | Stock/Slim standard vase or regular Obiwan UM + crescent | Jobs below |
+| Tectonic TEBM35C10-4 BMR | Obiwan coaxial/opposed crescent on regular UM; separate Stock/Slim BMR vase delivery | Obiwan jobs below; [other mounts](../docs/VARIANTS.md) |
+| Dayton ND25FN-4 waveguide | Fused Obiwan UM/body + two caps + two M3 retainers; matching optional wings | [PETG-GF + PLA](../candidates/nd25fn4_crescent/print/README.md) · [PETG Translucent + PLA](../candidates/nd25fn4_crescent/print_translucent/README.md) |
+
+The ND25FN-4 material bundles have their own manifests and estimates. Counts below describe the earlier regular ND25FW-4/BMR shelf.
 
 42 choices; 68 sliced projects and 8 GUI projects across all lanes. These are alternatives, not a per-speaker part count.
 

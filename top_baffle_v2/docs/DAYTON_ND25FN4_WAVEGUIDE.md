@@ -6,6 +6,13 @@ It combines the MU10 upper-mid (UM) carrier and two printed tweeter
 waveguides into one organic body. The lower tweeter faces front; the upper
 one faces rear. Two removable caps and two retainers provide service access.
 
+![Obiwan upper comparison: ND25FW-4, coaxial BMR, opposed BMR and ND25FN-4 waveguide](../images/generated/iso/rows/obiwan_upper_row.png)
+
+The ND25FN-4 is the rightmost upper, aligned to the same LM joint and scale
+as the other three arrangements. These views show the exported printed
+parts with drivers and service caps omitted. See the
+[three-family selection table](TWEETER_OPTIONS.md) for compatibility.
+
 The ND25FN-4 is a 4-ohm, 25 mm silk-dome element supplied without a
 faceplate, intended for custom mounting. Its nominal envelope is Ø41 mm
 with a 21 mm depth and Ø34 mm cutout. The ND25FW-4 has a different mounting
@@ -111,6 +118,32 @@ its documented separate exception. Retain the cap seals, two 53 × 2 mm
 O-rings and the specified driver gasket/pad sets.
 [Hardware measurements](../candidates/nd25fn4_crescent/hardware_validation.json)
 and [insert inventory](INSERT_CATALOG.md).
+
+## Assembly order
+
+1. Print one body, one accessories plate and the optional matching wing pair
+   from a single material lane. Install the magnets at the embedded pauses,
+   checking polarity against their mates before burial.
+2. Remove supports and confirm that the enclosed cable gallery, cap seats
+   and insert interiors are clear. Install the twelve M3 inserts in the
+   individual body, using the specified Ø5 × 4 mm metal inserts and blind
+   Ø4.6 × 4 mm pilots. Keep the common LM/UM M2 tie as its separate hardware
+   convention.
+3. Rehearse the actual UM terminals and tweeter leads before closing the
+   assembly. Route the shared tweeter cable through the covered LM handoff
+   and enclosed upper gallery, keeping the UM lead on its own service path.
+4. Mate the body to the selected LM at the preserved half-laps. Fit the
+   existing LM-to-UM fasteners and service tie, retain the 0.20 mm axial
+   clearance, and verify the lower front is flush and leaves the LM face
+   uncovered. The H2C LM is one piece; older P2S LM halves must first be
+   assembled according to their keyed-split instructions.
+5. Fit the MU10 and both ND25FN-4 elements with their specified gaskets and
+   pads. Secure the two retainers with six M3 × 8 screws, then fit the two
+   service caps and 53 × 2 mm O-rings. Check screw engagement and cap sealing
+   on the real parts before final tightening.
+6. Fit the optional ND25FN-4 wings and check all upper and LM magnetic
+   contacts. Complete the actual driver, cable, material and loaded-retention
+   checks recorded by the project before treating the assembly as qualified.
 
 ## Geometry and verification
 

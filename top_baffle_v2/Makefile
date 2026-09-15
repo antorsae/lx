@@ -2,7 +2,7 @@ PRINTER ?= H2C
 ifeq ($(filter $(PRINTER),H2C P2S),)
 $(error Unsupported PRINTER=$(PRINTER); choose H2C or P2S)
 endif
-H2C_GOALS := all help to_print to_print_validate h2c h2c_geometry h2c_prepare h2c_validate h2c_review h2c_docs
+H2C_GOALS := all help to_print to_print_validate h2c h2c_geometry h2c_prepare h2c_validate h2c_review h2c_docs iso_matrix
 H2C_REQUESTED := $(if $(strip $(MAKECMDGOALS)),$(MAKECMDGOALS),all)
 ifeq ($(PRINTER),H2C)
 ifneq ($(filter $(H2C_GOALS),$(H2C_REQUESTED)),)

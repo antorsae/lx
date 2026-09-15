@@ -1,0 +1,123 @@
+{
+  "status": "pass",
+  "tweeter_families": [
+    "dayton_nd25fn4",
+    "dayton_nd25fw4",
+    "tectonic_tebm35c10_4"
+  ],
+  "camera": {
+    "projection": "orthographic",
+    "elevation_degrees": 22.0,
+    "azimuth_degrees": -58.0
+  },
+  "rows": [
+    {
+      "path": "images/generated/iso/rows/tweeter_row.png",
+      "sha256": "7173c9cfe8f59a20f9150e832cd2c8216272c4ee2c0765abd49578fd2c934bb5",
+      "dimensions_px": [
+        3013,
+        1216
+      ],
+      "cells": [
+        "tweeter_nd25fw4_crescent",
+        "tweeter_tebm35c10_4_vase",
+        "tweeter_tebm35c10_4_crescent",
+        "tweeter_tebm35c10_4_crescent_opposed",
+        "tweeter_nd25fn4_waveguide"
+      ],
+      "families_shown": [
+        "dayton_nd25fn4",
+        "dayton_nd25fw4",
+        "tectonic_tebm35c10_4"
+      ],
+      "scale_group": "tweeter_option",
+      "frame": {
+        "label": "tweeter-option scale",
+        "span": [
+          145.0,
+          60.0,
+          260.0
+        ],
+        "center": null,
+        "zoom": 1.08
+      },
+      "visual_review": "pass: upright, common scale within row, complete silhouettes, readable captions; actual printed geometry with drivers/service caps omitted"
+    },
+    {
+      "path": "images/generated/iso/rows/obiwan_upper_row.png",
+      "sha256": "216ab980e913ebbf4415ca8b22ca06716efcfd786f8bfb441f5f26a62a4f3881",
+      "dimensions_px": [
+        2411,
+        1210
+      ],
+      "cells": [
+        "obiwan_upper_nd25fw4",
+        "obiwan_upper_bmr_coaxial",
+        "obiwan_upper_bmr_opposed",
+        "obiwan_upper_nd25fn4"
+      ],
+      "families_shown": [
+        "dayton_nd25fn4",
+        "dayton_nd25fw4",
+        "tectonic_tebm35c10_4"
+      ],
+      "scale_group": "obiwan_upper",
+      "frame": {
+        "label": "shared Obiwan upper scale / LM joint datum",
+        "span": [
+          145.0,
+          60.0,
+          260.0
+        ],
+        "center": [
+          0.0,
+          6.8,
+          432.0
+        ],
+        "zoom": 1.08
+      },
+      "visual_review": "pass: upright, common scale within row, complete silhouettes, readable captions; actual printed geometry with drivers/service caps omitted"
+    },
+    {
+      "path": "images/generated/iso/rows/obiwan_wing_row.png",
+      "sha256": "b0c5fc2e865b40e588e9d23638b8fab4768368ca3c155f5449c27880e6d7ab16",
+      "dimensions_px": [
+        2248,
+        1179
+      ],
+      "cells": [
+        "obiwan_wings_regular_flat",
+        "obiwan_wings_regular_graded",
+        "obiwan_wings_nd25fn4_flat",
+        "obiwan_wings_nd25fn4_graded"
+      ],
+      "families_shown": [
+        "dayton_nd25fn4",
+        "dayton_nd25fw4"
+      ],
+      "scale_group": "obiwan_complete",
+      "frame": {
+        "label": "shared Obiwan assembly scale",
+        "span": [
+          340.0,
+          180.0,
+          580.0
+        ],
+        "center": [
+          0.0,
+          65.0,
+          275.0
+        ],
+        "zoom": 1.08
+      },
+      "visual_review": "pass: upright, common scale within row, complete silhouettes, readable captions; actual printed geometry with drivers/service caps omitted"
+    }
+  ],
+  "inputs": {
+    "scripts/gen_product_iso_matrix.py": "f253502ff680e52b493e2ef9d88b2fe1a4e7d58a767f5a2e7c0964a0db941987",
+    "src/lx521_baffle/tweeter_options.py": "4e13db23df7b60b9278d0e15ec3810b033376a6ee72cc33dfa8fe40518703f5a",
+    "scripts/document_h2c_release.py": "8d4982f1ca82303f3916e9f0760e008594b37c717b017f279bb7a80256968592",
+    "scripts/h2c_pipeline.py": "c2cdf6cd9c6caead21aa82a1bff583dfa79a2a2bf80c59806d20850287188443"
+  },
+  "scope": "Documentation and existing-geometry renders. No CAD, mesh, print-policy, project or sliced toolpath changes."
+}

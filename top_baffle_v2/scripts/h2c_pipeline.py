@@ -51,6 +51,14 @@ def main():
         subprocess.run([sys.executable,'scripts/validate_h2c_catalog.py'],cwd=ROOT,check=True)
     if args.command in ('all','review'):
         subprocess.run([sys.executable,'scripts/review_h2c_geometry.py'],cwd=ROOT,check=True)
+        comparison=[sys.executable,'scripts/gen_product_iso_matrix.py']
+        for cell in ('tweeter_nd25fw4_crescent','tweeter_tebm35c10_4_vase',
+                     'tweeter_tebm35c10_4_crescent','tweeter_tebm35c10_4_crescent_opposed',
+                     'tweeter_nd25fn4_waveguide'):
+            comparison+=['--cell',cell]
+        for row in ('tweeter_row','obiwan_upper_row','obiwan_wing_row'):
+            comparison+=['--row',row]
+        subprocess.run(comparison,cwd=ROOT,check=True)
     if args.command in ('all','validate','docs'):
         subprocess.run([sys.executable,'scripts/document_h2c_release.py'],cwd=ROOT,check=True)
 

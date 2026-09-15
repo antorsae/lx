@@ -180,8 +180,17 @@ def validate(shelf, catalog=None, *, geometry=True):
 
 
 def guide_text(entries, manifest):
-    rows = ['# Files and slicer estimates', '',
-            'Generated from `catalog.json` and `delivery_manifest.json`; run `make delivery_refresh` to update.', '',
+    rows = ['# P2S files and slicer estimates', '',
+            'Generated from `catalog.json` and `delivery_manifest.json`; run `make PRINTER=P2S delivery_refresh` to update.', '',
+            'For the current printer, use the [H2C file catalog](h2c/README.md). '+
+            'The three families below are alternative upper selections, with their own compatible parts.', '',
+            '![Three tweeter families and five carrier arrangements at one scale](../images/generated/iso/rows/tweeter_row.png)', '',
+            '| Tweeter family | Earlier P2S selection | Print guide |', '|---|---|---|',
+            '| Dayton ND25FW-4 | Stock/Slim standard vase or regular Obiwan UM + crescent | Jobs below |',
+            '| Tectonic TEBM35C10-4 BMR | Obiwan coaxial/opposed crescent on regular UM; separate Stock/Slim BMR vase delivery | Obiwan jobs below; [other mounts](../docs/VARIANTS.md) |',
+            '| Dayton ND25FN-4 waveguide | Fused Obiwan UM/body + two caps + two M3 retainers; matching optional wings | [PETG-GF + PLA](../candidates/nd25fn4_crescent/print/README.md) · [PETG Translucent + PLA](../candidates/nd25fn4_crescent/print_translucent/README.md) |', '',
+            'The ND25FN-4 material bundles have their own manifests and estimates. '+
+            'Counts below describe the earlier regular ND25FW-4/BMR shelf.', '',
             f"{len(entries)} choices; {manifest['disposition_counts'].get('sliced_project', 0)} sliced projects and {manifest['disposition_counts'].get('gui_project', 0)} GUI projects across all lanes. These are alternatives, not a per-speaker part count.", '',
             'Times and grams are slicer estimates per job, including its encoded setup/purge where reported. GUI estimates remain pending until sliced. Multiply the chosen jobs by two for stereo.', '',
             '| Part / plate | Lane | State | Delivery | Time | Filament (g) |',

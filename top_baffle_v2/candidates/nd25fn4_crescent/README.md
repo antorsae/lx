@@ -16,6 +16,12 @@ This directory retains the approved design sources and earlier P2S evidence.
 P2S filenames retain it for hash/provenance continuity; it is no longer the
 product or current H2C filename. No deliverable ZIP is produced.
 
+![ND25FW-4, coaxial BMR, opposed BMR and ND25FN-4 integrated upper compared at one scale](../../images/generated/iso/rows/obiwan_upper_row.png)
+
+The ND25FN-4 body is the rightmost upper, shown at the same LM datum as
+the regular-UM alternatives. This retained source folder supplies the
+current [H2C family catalog](../../to_print/h2c/README.md).
+
 ## Surface and interface evidence
 
 The UM follows the supplied outline with a rounded middle, tighter lower

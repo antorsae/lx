@@ -19,11 +19,15 @@ The unchanged one-piece Stock/Slim floor-stand trials failed the actual PLA-nozz
 
 ## Tweeter families
 
+![Three tweeter families and five arrangements at one scale](../../images/generated/iso/rows/tweeter_row.png)
+
 | Tweeter family | Construction | Compatible baffles |
 |---|---|---|
 | Dayton ND25FW-4 face-to-face | Two domes with factory waveguide faceplates clamping the crescent | Stock, Slim, Obiwan |
 | Tectonic TEBM35C10-4 BMR | Two BMR drivers in an opposed vase or a coaxial/opposed crescent | Stock, Slim, Obiwan |
 | Dayton ND25FN-4 waveguide | Two faceplate-free domes in printed front/rear waveguides, fused with the MU10 UM carrier | Obiwan |
+
+![Complete Obiwan upper choices at the same LM datum](../../images/generated/iso/rows/obiwan_upper_row.png)
 
 The ND25FN-4 selection replaces the entire regular UM and crescent. Use its matching continuous wings; the same fused body fits both stand states. Stock/Slim currently have no ND25FN-4 upper. [Three-family selection guide](../../docs/TWEETER_OPTIONS.md) · [ND25FN-4 assembly, hardware and print guide](../../docs/DAYTON_ND25FN4_WAVEGUIDE.md)
 
@@ -109,6 +113,10 @@ Retain existing driver, LM/UM, stand and wing hardware. Dayton ND25FN-4 waveguid
 - Stock/Slim floor lower pieces extend the three cable-entry support keepouts through the rear service panel. This prevents supports for the panel from being routed down the cable entries. The small regions above those entries bridge; surrounding panel supports remain enabled.
 
 ## Geometry review
+
+![Regular and ND25FN-4 waveguide assemblies with matching flat or graded H2C wings](../../images/generated/iso/rows/obiwan_wing_row.png)
+
+The four panels use one camera and scale, with the common no-floor-stand LM. Regular wings also fit the regular-UM BMR selections. Drivers and service caps are omitted.
 
 [Stock/Slim orthographic assembly sheet](../../build/h2c/views/primary_review_contact_sheet.png) · [Dayton ND25FN-4 waveguide with continuous wings — front](../../build/h2c/views/H2C_Dayton_ND25FN4_graded_front.png) · [Dayton ND25FN-4 waveguide with continuous wings — rear](../../build/h2c/views/H2C_Dayton_ND25FN4_flat_rear_oblique.png)
 

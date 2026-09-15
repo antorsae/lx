@@ -1,25 +1,26 @@
 #!/usr/bin/env python3
 """Standardized ISO render set for the README product-comparison matrix.
 
-Every cell is rendered from an already-built STEP file with one shared camera
+Every cell is rendered from an already-built, hash-checked print mesh with one shared camera
 (`ISO_ELEV_DEG`/`ISO_AZIM_DEG`), one shared background, and a frame declared as
 a constant rather than fitted to the input.  A declared frame is what makes the
 matrix comparable: rendering a single cell with ``--cell`` produces exactly the
 same pixels as rendering it inside a complete sweep, and the floor-stand and
 no-floor-stand cells of one product stay registered against each other.
 
-Two scale groups exist.  The six product cells share one absolute world frame,
-so their parts are directly comparable in size and position.  The three
+The product cells share one absolute world frame,
+so their parts are directly comparable in size and position.  The five
 tweeter-option cells share one fixed *span* but are centred on their own
 geometry, because a tweeter carrier drawn inside the whole-product frame would
 be a few dozen pixels tall.  Scale is exact within a group and deliberately
 different between groups; each render states its group in the corner label.
+Obiwan upper and wing comparisons use their own shared assembly frames.
 
 The same cells are written in two shapes.  ``images/generated/iso/`` holds one
 square PNG per cell, which the product docs embed individually.
-``images/generated/iso/rows/`` holds the four wide images the README stacks
+``images/generated/iso/rows/`` holds the comparison images the guides embed
 full-width: one row per product carrying that product's two stand states side
-by side, and one row carrying the three tweeter options.  A row panel is drawn
+by side, all five tweeter arrangements, and the Obiwan upper/wing choices. A row panel is drawn
 by the same code, under the same camera and the same declared frame, as the
 matching single cell, so a row and its cells cannot disagree.
 
@@ -54,6 +55,8 @@ for _canonical_import_root in (PROJECT_ROOT / "src", PROJECT_ROOT / "scripts"):
     _canonical_import_text = str(_canonical_import_root)
     if _canonical_import_text not in sys.path:
         sys.path.insert(0, _canonical_import_text)
+
+from lx521_baffle.tweeter_options import ND25FW, BMR, ND25FN, TWEETER_FAMILIES
 
 if __name__ == "__main__":
     import run_memory_guarded as memory_guard
@@ -128,16 +131,22 @@ SCALE_GROUPS = {
     "assembly": {"label": "assembly illustration scale", "span": (390.0, 180.0, 620.0), "center": (0.0, 66.0, 260.0), "zoom": 1.0},
     "tweeter_option": {
         "label": "tweeter-option scale",
-        # Sized to the extreme of each axis across all four options with a
-        # small margin: the opposed-BMR vase is the widest (121.3) and tallest
-        # (210.2), the coaxial BMR crescent is by far the deepest (50.2), and
-        # the opposed BMR crescent is the second tallest (123.3) on the
-        # crescent mount.  All four cells share the frame, so their relative
-        # sizes stay honest — the ND25FW-4 crescent really is that much
-        # smaller, and the opposed crescent really is that much taller than
-        # the coaxial one for the same two drivers.
-        "span": (132.0, 56.0, 215.0),
+        # Includes the fused ND25FN-4 upper (134 x 38.2 x 246.8 mm) and
+        # the deeper coaxial BMR (50.2 mm). Every option uses the same scale.
+        "span": (145.0, 60.0, 260.0),
         "center": None,
+        "zoom": 1.08,
+    },
+    "obiwan_upper": {
+        "label": "shared Obiwan upper scale / LM joint datum",
+        "span": (145.0, 60.0, 260.0),
+        "center": (0.0, 6.8, 432.0),
+        "zoom": 1.08,
+    },
+    "obiwan_complete": {
+        "label": "shared Obiwan assembly scale",
+        "span": (340.0, 180.0, 580.0),
+        "center": (0.0, 65.0, 275.0),
         "zoom": 1.08,
     },
 }
@@ -165,8 +174,13 @@ TEBM_CRESCENT = Path(
 TEBM_CRESCENT_OPPOSED = Path(
     "build/bmr_crescent_TEBM35C10-4/"
     "obiwan_bmr_crescent_opposed_TEBM35C10-4.step")
+H2C_STL = Path("to_print/h2c/STL")
+ND25FN_BODY = H2C_STL / "dayton_nd25fn4/h2c_dayton_nd25fn4_body.stl"
+H2C_UM = H2C_STL / "h2c_obiwan_core_2_of_2_um_carrier.stl"
+H2C_LM = H2C_STL / "h2c_obiwan_core_lm_carrier_no_floor_stand.stl"
 
 MAKE_TARGET_FOR_PREFIX = (
+    (H2C_STL, "make h2c_prepare"),
     (Path("build/floor_stand"), "make floor_stand"),
     (Path("build/no_floor_stand"), "make no_floor_stand"),
     (Path("build/wings"), "make obiwan_wings"),
@@ -176,7 +190,8 @@ MAKE_TARGET_FOR_PREFIX = (
 
 
 def _cell(key: str, title: str, caption: str, scale_group: str,
-          parts: tuple[tuple[str, Path], ...], note: str | None = None) -> dict:
+          parts: tuple[tuple[str, Path], ...], note: str | None = None,
+          family: str | None = None) -> dict:
     """One render.  `title` heads its own PNG; `caption`/`note` head its row
     panel, where the row title already carries the product name."""
     return {
@@ -186,6 +201,7 @@ def _cell(key: str, title: str, caption: str, scale_group: str,
         "note": note,
         "scale_group": scale_group,
         "parts": parts,
+        "family": family,
     }
 
 
@@ -214,6 +230,34 @@ def _product_cells() -> tuple[dict, ...]:
     return tuple(cells)
 
 
+def _obiwan_comparison_cells() -> tuple[dict, ...]:
+    cells = []
+    for key, caption, family, path in (
+        ("nd25fw4", "ND25FW-4 face-to-face", ND25FW,
+         _state_sources("no_floor_stand")["obiwan_crescent"]),
+        ("bmr_coaxial", "TEBM35C10-4 coaxial BMR", BMR, TEBM_CRESCENT),
+        ("bmr_opposed", "TEBM35C10-4 opposed BMR", BMR, TEBM_CRESCENT_OPPOSED),
+        ("nd25fn4", "ND25FN-4 printed waveguide", ND25FN, ND25FN_BODY),
+    ):
+        parts = (("top", path),) if family == ND25FN else (("base", H2C_UM), ("top", path))
+        note = "Fused UM + waveguides; matching wings" if family == ND25FN else "Regular UM + separate carrier; regular wings"
+        cells.append(_cell(f"obiwan_upper_{key}", caption, caption, "obiwan_upper",
+                           parts, note=note, family=family))
+    for family, slug, caption in ((ND25FW, "regular", "ND25FW-4 / regular"),
+                                  (ND25FN, "nd25fn4", "ND25FN-4 / waveguide")):
+        for style in ("flat", "graded"):
+            upper = (("top", ND25FN_BODY),) if family == ND25FN else (
+                ("base", H2C_UM), ("top", _state_sources("no_floor_stand")["obiwan_crescent"]))
+            prefix = "h2c_dayton_nd25fn4_wing" if family == ND25FN else "h2c_obiwan_wing"
+            wings = tuple(("perimeter", H2C_STL / f"{prefix}_{style}_{side}.stl")
+                          for side in ("left", "right"))
+            cells.append(_cell(f"obiwan_wings_{slug}_{style}", f"{caption} — {style} wings",
+                               f"{caption} — {style}", "obiwan_complete",
+                               (("base", H2C_LM),) + upper + wings,
+                               note="One continuous H2C wing per side", family=family))
+    return tuple(cells)
+
+
 CELLS = (
     *_product_cells(),
     _cell("obiwan_bare", "Obi-Wan — bare collars", "Bare collars", "product",
@@ -228,21 +272,21 @@ CELLS = (
         "ND25FW-4 face-to-face pair",
         "tweeter_option",
         (("top", _state_sources("no_floor_stand")["obiwan_crescent"]),),
-        note="default on every product · Obi-Wan crescent shown"),
+        note="Stock / Slim / Obiwan · separate crescent shown", family=ND25FW),
     _cell(
         "tweeter_tebm35c10_4_vase",
         "TEBM35C10-4 opposed BMR vase",
         "TEBM35C10-4 opposed BMR vase",
         "tweeter_option",
         (("top", TEBM_VASE),),
-        note="Stock and Slim only · replaces the standard vase"),
+        note="Stock / Slim · integrated UM and BMR vase", family=BMR),
     _cell(
         "tweeter_tebm35c10_4_crescent",
         "TEBM35C10-4 coaxial BMR crescent (candidate)",
         "TEBM35C10-4 coaxial BMR crescent",
         "tweeter_option",
         (("top", TEBM_CRESCENT),),
-        note="Obi-Wan only · candidate, not release-authorized"),
+        note="Obiwan · fits the regular UM", family=BMR),
     _cell(
         "tweeter_tebm35c10_4_crescent_opposed",
         "TEBM35C10-4 opposed BMR crescent (candidate)",
@@ -252,7 +296,13 @@ CELLS = (
         # Row notes are centred on a panel and Matplotlib does not wrap them,
         # so anything much past the coaxial cell's own note runs into its
         # neighbour.  The arrangement is already in the caption.
-        note="Obi-Wan only · candidate, not release-authorized"),
+        note="Obiwan · fits the regular UM", family=BMR),
+    _cell(
+        "tweeter_nd25fn4_waveguide", "Dayton ND25FN-4 printed waveguide",
+        "ND25FN-4 printed waveguide", "tweeter_option",
+        (("top", ND25FN_BODY),),
+        note="Obiwan · fused UM + two waveguides", family=ND25FN),
+    *_obiwan_comparison_cells(),
 )
 
 # One row per README block.  Every panel of a row belongs to one scale group,
@@ -275,16 +325,33 @@ ROWS = (
     },
     {
         "key": "tweeter_row",
-        "title": "Tweeter options — two driver choices, four implementations",
+        "title": f"Tweeter options — {len(TWEETER_FAMILIES)} driver families, 5 arrangements",
         "cells": ("tweeter_nd25fw4_crescent", "tweeter_tebm35c10_4_vase",
                   "tweeter_tebm35c10_4_crescent",
-                  "tweeter_tebm35c10_4_crescent_opposed"),
+                  "tweeter_tebm35c10_4_crescent_opposed", "tweeter_nd25fn4_waveguide"),
+        "show_all_families": True,
+        "geometry_note": "Printed carriers shown; drivers and removable service parts omitted. Same scale in every panel.",
+    },
+    {
+        "key": "obiwan_upper_row",
+        "title": "Obiwan upper choices — all 3 tweeter families",
+        "cells": ("obiwan_upper_nd25fw4", "obiwan_upper_bmr_coaxial",
+                  "obiwan_upper_bmr_opposed", "obiwan_upper_nd25fn4"),
+        "show_all_families": True,
+        "geometry_note": "Same installed LM joint datum and scale. Drivers, caps and retainers omitted.",
+    },
+    {
+        "key": "obiwan_wing_row",
+        "title": "Obiwan wings — regular and ND25FN-4 waveguide",
+        "cells": ("obiwan_wings_regular_flat", "obiwan_wings_regular_graded",
+                  "obiwan_wings_nd25fn4_flat", "obiwan_wings_nd25fn4_graded"),
+        "geometry_note": "Same no-floor LM and scale. BMR uses regular wings. Waveguide wings have different upper contacts.",
     },
 )
 
 ROLE_LEGEND = {
     "base": "base / carrier",
-    "top": "vase / tweeter carrier",
+    "top": "tweeter carrier / fused upper",
     "perimeter": "optional perimeter",
 }
 
@@ -299,6 +366,11 @@ for _row in ROWS:
         raise SystemExit(
             f"row {_row['key']} names unknown cell(s): "
             f"{', '.join(_unknown_panels)}")
+    if _row.get("show_all_families"):
+        shown = {CELL_BY_KEY[key]["family"] for key in _row["cells"]}
+        expected = {family["id"] for family in TWEETER_FAMILIES}
+        if shown != expected:
+            raise ValueError(f"{_row['key']} must depict every tweeter family: missing {expected - shown}")
 
 
 def _make_target_hint(path: Path) -> str:
@@ -581,7 +653,7 @@ def _render_row(row: dict, output: Path) -> None:
     panels = len(cropped)
     panel_height, panel_width = cropped[0].shape[:2]
     header = round(ROW_HEADER_INCHES * FIGURE_DPI)
-    footer = round(ROW_FOOTER_INCHES * FIGURE_DPI)
+    footer = round((ROW_FOOTER_INCHES + (0.28 if row.get("geometry_note") else 0)) * FIGURE_DPI)
     width = (panels * panel_width + (panels - 1) * ROW_GUTTER_PX
              + 2 * ROW_PAD_PX)
     height = header + panel_height + footer
@@ -612,8 +684,11 @@ def _render_row(row: dict, output: Path) -> None:
         fontsize=10, color="#66717e", va="top")
     fig.legend(
         handles=_legend_handles(roles), loc="lower left",
-        bbox_to_anchor=(ROW_PAD_PX / width, 0.0), borderaxespad=0.0,
+        bbox_to_anchor=(ROW_PAD_PX / width, (0.28 * FIGURE_DPI / height) if row.get("geometry_note") else 0.0), borderaxespad=0.0,
         fontsize=9, ncols=len(roles), frameon=False)
+    if row.get("geometry_note"):
+        fig.text(ROW_PAD_PX / width, 0.06 * FIGURE_DPI / height, row["geometry_note"],
+                 fontsize=9, color="#66717e", va="bottom")
 
     _save(
         fig, output,

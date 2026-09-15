@@ -4,15 +4,20 @@
 tweeter families: ND25FW-4, TEBM35C10-4 BMR and ND25FN-4 printed waveguide.
 This page retains the earlier P2S files and split arrangement.
 
+![Three tweeter families and five arrangements at the same scale](../images/generated/iso/rows/tweeter_row.png)
 
 Start with the [build guide](../docs/BUILD_GUIDE.md), then use the generated
 [file guide and estimates](FILE_GUIDE.md) to choose exact files.
 
-For the fused **Dayton ND25FN-4 waveguide + UM**, use its separate [sliced 0.6 HF Tinmorry
-PETG-GF + PLA print guide](../candidates/nd25fn4_crescent/print/README.md).
-It includes the shared body with 15% tweeter gyroid / 100% UM infill,
-caps/retainers, matching upper wings and native magnet pauses. Those six jobs
-are outside the regular shelf counts below.
+| Tweeter family | Earlier P2S selection | Files |
+|---|---|---|
+| Dayton ND25FW-4 | Standard Stock/Slim upper or regular Obiwan UM + crescent | [Regular shelf and estimates](FILE_GUIDE.md) |
+| Tectonic TEBM35C10-4 BMR | Regular Obiwan UM + coaxial/opposed crescent; Stock/Slim BMR vase has separate source delivery | [Obiwan shelf](FILE_GUIDE.md) · [Other BMR mounts](../docs/VARIANTS.md) |
+| Dayton ND25FN-4 waveguide | Fused UM/body + two caps + two M3 retainers + matching optional upper wings | [PETG-GF + PLA jobs](../candidates/nd25fn4_crescent/print/README.md) · [PETG Translucent + PLA jobs](../candidates/nd25fn4_crescent/print_translucent/README.md) |
+
+ND25FN-4 keeps 15% tweeter gyroid / 100% UM infill and native magnet
+pauses. Its six-job material bundles have their own manifests; the regular
+shelf counts below cover the earlier ND25FW-4/BMR selection inventory.
 
 The shelf contains **42 choices**: 11 Stock, 11 Slim and 20 Obi-Wan. Across
 alternative material/nozzle lanes there are **68 sliced projects and
@@ -42,13 +47,13 @@ Obi-Wan remains a physical-qualification candidate. See the
 contacted by these commands.
 
 ```sh
-make to_print_validate  # read-only: inventory, hashes, source and GUI geometry
-make delivery_refresh  # bind an audited shelf and update the file guide
-make delivery_package  # validate, zip actual files and verify checksums
+make PRINTER=P2S to_print_validate  # read-only: inventory, hashes, source and GUI geometry
+make PRINTER=P2S delivery_refresh  # bind an audited shelf and update the file guide
+make PRINTER=P2S delivery_package  # validate, zip actual files and verify checksums
 ```
 
-Publishers remain available through `make to_print`, `make to_print_06hf`,
-`make obiwan_petg_gui_projects` and `make obiwan_petg_wing_plates`. They may
+Publishers remain available through `make PRINTER=P2S to_print`, `make PRINTER=P2S to_print_06hf`,
+`make PRINTER=P2S obiwan_petg_gui_projects` and `make PRINTER=P2S obiwan_petg_wing_plates`. They may
 regenerate files and require current CAD/slice provenance. Run
-`make delivery_refresh` after publishing. Validation never repairs files,
+`make PRINTER=P2S delivery_refresh` after publishing. Validation never repairs files,
 creates slice workspaces, or touches promotion stamps.

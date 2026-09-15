@@ -7,6 +7,12 @@ families are in the [H2C catalog](../../../to_print/h2c/README.md) and
 not change the 78 depicted part variants.
 
 
+![Regular and integrated-waveguide Obiwan upper choices at one scale](../iso/rows/obiwan_upper_row.png)
+
+This overview puts ND25FW-4, coaxial BMR, opposed BMR and ND25FN-4 waveguide
+on the same LM datum. The detailed poster below shows their individual
+parts and hidden magnet locations.
+
 [Open the full-resolution PNG](ALL_ITEMS_MAGNET_CATALOG.png).
 
 The sheet covers 78 individual part variants: Stock, Slim, regular Obi-Wan,

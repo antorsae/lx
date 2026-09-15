@@ -297,6 +297,14 @@ through the integral stem continuation before driver installation.
 
 ## Tweeter options
 
+![ND25FW-4, BMR and ND25FN-4 carrier arrangements at one scale](../images/generated/iso/rows/tweeter_row.png)
+
+| Tweeter family | Stock compatibility | Upper / perimeter |
+|---|---|---|
+| Dayton ND25FW-4 | Yes | Standard vase with integral crescent; matching standard shoulders or B1 wings |
+| Tectonic TEBM35C10-4 BMR | Yes, opposed vase | Replaces whole vase; no supplied matching BMR perimeter |
+| Dayton ND25FN-4 waveguide | Obiwan only | Fused UM/waveguide and its matching wings; [Obiwan selection](obiwan.md#tweeter-options) |
+
 Stock supports two of the project's **three tweeter families**:
 Dayton ND25FW-4 and Tectonic TEBM35C10-4 BMR. Each uses its own upper
 module (vase), including the MU10 seat. The third family,

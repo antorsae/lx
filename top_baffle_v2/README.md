@@ -14,8 +14,9 @@ and mounting seats remain unchanged. The Dayton ND25FN-4 waveguide has separate 
 PETG Translucent/PLA Translucent projects.
 
 Three printable top-baffle designs for an LX521.4 modification: Stock's
-full-depth outline, Slim's thinner acoustic field, and Obi-Wan's separate
-driver collars with optional wings. Choose one mounting state and one
+full-depth outline, Slim's thinner acoustic field, and Obiwan's driver
+carriers with a choice of regular or integrated waveguide upper and optional
+wings. Choose one mounting state and one
 complete configuration per speaker.
 
 The earlier [P2S build guide](docs/BUILD_GUIDE.md) remains a hardware and
@@ -46,8 +47,8 @@ checks. See the [current test procedure](docs/PETG_GF_QUALIFICATION.md).
 One row per product, each showing both stand states, then one row for the
 tweeter options. Every render uses one camera and one declared frame per scale
 group, so the panels within a row and the three product rows against each
-other are directly comparable. Regenerate them with `make iso_matrix` after
-any CAD change.
+other are directly comparable. Regenerate the product rows with
+`make iso_matrix`; `make h2c_review` also refreshes the upper and wing comparisons.
 
 ![Stock, both stand states](images/generated/iso/rows/stock_row.png)
 
@@ -62,17 +63,28 @@ one front plane end to end — [`docs/slim.md`](docs/slim.md).
 
 ![Obi-Wan, both stand states](images/generated/iso/rows/obiwan_row.png)
 
-Obi-Wan keeps only the two driver collars; both panels add its optional
-crescent and flat wings, because the mandatory geometry alone is two bare
-rings — [`docs/obiwan.md`](docs/obiwan.md).
+These two Obiwan panels show the regular UM, ND25FW-4 crescent and flat
+wings. The integrated ND25FN-4 upper is a second body choice on the same LM,
+shown alongside the regular uppers below — [`docs/obiwan.md`](docs/obiwan.md).
 
-![The four tweeter carriers](images/generated/iso/rows/tweeter_row.png)
+![Three tweeter families, five arrangements, at the same scale](images/generated/iso/rows/tweeter_row.png)
 
-This earlier comparison shows the ND25FW-4 carrier and three BMR mounts.
-The third driver family, **Dayton ND25FN-4 waveguide**, is shown below in its
-current H2C assembly. These two sets use different scales.
+Left to right: ND25FW-4 crescent; BMR Stock/Slim vase; BMR Obiwan coaxial
+crescent; BMR Obiwan opposed crescent; **ND25FN-4 integrated UM/waveguide**.
+These are the actual printed carriers at one scale. Drivers and removable
+service caps are omitted so their construction can be compared.
 
-![Obiwan with Dayton ND25FN-4 waveguide and continuous graded wings](build/h2c/views/H2C_Dayton_ND25FN4_graded_front.png)
+![Obiwan complete upper choices, aligned at the common LM joint](images/generated/iso/rows/obiwan_upper_row.png)
+
+The complete Obiwan uppers share the same LM joint datum in this row:
+ND25FW-4, coaxial BMR, opposed BMR and ND25FN-4 waveguide. The first three
+retain the regular UM; the fourth includes its UM in the curved body.
+
+![Regular and ND25FN-4 Obiwan assemblies with flat and graded H2C wings](images/generated/iso/rows/obiwan_wing_row.png)
+
+Choose flat or graded wings to match the selected upper. The two regular
+wing styles fit ND25FW-4 and BMR. ND25FN-4 uses its own curved upper contacts
+and matching wings, shown on the same no-floor-stand LM here.
 
 ## Tweeter options
 
@@ -119,7 +131,7 @@ product-grouped CAD facade is:
 |---|---|---|---|---|---|
 | [Stock](artifacts/stock/) | B2, 304.802 x 453.457 x 18.3 mm | A-comp shoulders **or** B1 wings | ND25FW-4 crescent (integral) or TEBM35C10-4 BMR vase | Canonical CAD | [`docs/stock.md`](docs/stock.md) |
 | [Slim](artifacts/slim/) | V1L + V1; 11.5 mm front-flush acoustic field, full-depth bottom strip | matching V1 shoulders **or** V1 wings | ND25FW-4 crescent (integral) or TEBM35C10-4 BMR vase | Experimental | [`docs/slim.md`](docs/slim.md) |
-| [Obi-Wan](artifacts/obiwan/) | separate LM/UM collars; floor and stock-bridge states | flat constant-depth or graded weighted-depth wings | ND25FW-4 crescent, coaxial/opposed BMR crescent, or fused ND25FN-4 waveguide + UM | Candidate; not release-authorized | [`docs/obiwan.md`](docs/obiwan.md) |
+| [Obiwan](artifacts/obiwan/) | LM + regular UM or integrated UM/waveguide; floor and stock-bridge states | flat or graded wings matched to the upper | ND25FW-4 crescent, coaxial/opposed BMR crescent, or fused ND25FN-4 waveguide + UM | Candidate; not release-authorized | [`docs/obiwan.md`](docs/obiwan.md) |
 
 The original state-oriented build outputs remain in `build/floor_stand/`,
 `build/no_floor_stand/`, and `build/wings/` because the validation pipeline depends on

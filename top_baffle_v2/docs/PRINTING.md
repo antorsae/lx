@@ -1,10 +1,24 @@
-# Printing the top baffle — Bambu PLA families (Bambu Studio)
+# Printing the top baffle — current selections and earlier PLA reference
 
-Current PETG-GF decisions and exceptions: [generated print policies](PRINT_POLICIES.md).
+For current **H2C / 0.6 HF** files, use the [H2C print catalog](../to_print/h2c/README.md)
+and [generated print policies](PRINT_POLICIES.md). The earlier P2S selection
+and assembly reference is [BUILD_GUIDE.md](BUILD_GUIDE.md).
 
-Current builder instructions and exact delivery dispositions are in
-[BUILD_GUIDE.md](BUILD_GUIDE.md) and the generated
-[file guide](../to_print/FILE_GUIDE.md). Use
+![ND25FW-4, coaxial BMR, opposed BMR and ND25FN-4 waveguide Obiwan uppers](../images/generated/iso/rows/obiwan_upper_row.png)
+
+| Upper family | H2C main prints | Upper hardware / infill |
+|---|---|---|
+| ND25FW-4 | Stock/Slim vase or regular Obiwan UM + crescent | M4 driver clamp; structural UM 100%, regular crescent 30% |
+| TEBM35C10-4 BMR | Stock/Slim opposed vase or regular Obiwan UM + coaxial/opposed crescent | Documented M2 driver hardware exception; use the selected job's policy |
+| ND25FN-4 waveguide | Fused Obiwan UM/body + two caps + two M3 retainers | Hanglife M3 × 5 × 4 inserts; 100% UM / 15% tweeter region and accessories; [complete guide](DAYTON_ND25FN4_WAVEGUIDE.md) |
+
+All H2C wings use 10% gyroid and must match the selected upper interface.
+ND25FN-4 has separate PETG-GF/PLA and PETG Translucent/PLA Translucent projects.
+The project files retain supports, modifiers and measured magnet pauses.
+
+## Earlier 0.4 mm PLA reference
+
+Use
 [PETG_GF_QUALIFICATION.md](PETG_GF_QUALIFICATION.md) for current material testing.
 The PLA strength calculations below are historical analytical screens, not
 physical qualification of the PETG-GF process.
@@ -44,19 +58,26 @@ bridge-web load case is treated explicitly below. PLA still relaxes
 | Obi-Wan LM-to-UM half-laps | 2 x rear-driven M3 screws through the LM's standalone Ø3.4 clearance bores into M3 thread × Ø5 × L4 heat-set inserts installed in the UM's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±32, y=315.770; the closure-web/base teardrops remain nominal Ø9, while the complete Z-owned cylindrical functional bosses are locally Ø9.8. The UM receivers retain a 1.9 mm acoustic-front floor and the Z-halves retain a 0.20 mm axial gap. Select screw length for full insert engagement without bottoming. No washer, nut, or front bolt head belongs to this interface. |
 | Obi-Wan fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening unchanged 6.8 mm-total bores with Ø6.5 x 2.0 entries followed by Ø6.4 | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders; LM/T/UM entries packed inside the D20 support opening as LM above, T lower-left, UM lower-right at z=5.3; solid acoustic front; immutable 40 × 50 pattern; no geometry behind the existing LM pads; magnets receive zero load credit |
 | Obi-Wan optional LM keyed seam | Ø1.60 pins; right Ø1.80 socket, left 1.84 × 1.80 socket; 0.10 radial / 0.25 end clearance; ≥0.38 radial / ≥0.50 end wall in native ring, no exterior lands | registration only | Current dimensions and 0.6-mm coupon acceptance: [qualification procedure](PETG_GF_QUALIFICATION.md). Driver flange and normal fasteners splice the seam. |
-| Obi-Wan UM-to-tweeter half-laps | 2 x rear-driven M3 screws through the UM's standalone Ø3.4 clearance bores into M3 thread × Ø5 × L4 heat-set inserts installed in the crescent's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±24, y=421.5; nominal Ø9 closure-base teardrops, complete local Ø9.8 Z-owned functional bosses, 0.20 mm axial gap, complete 360° receiver walls, and 1.9 mm acoustic-front floors. Install both inserts in the individual crescent before assembly; no front bolt head or cross-owner receiver wall. |
-| Obi-Wan alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and the lower pair at cubic parameter `u=0.50` on the shared curved shoulder. The right visible datum is `(x,y,z)=(45.285011,89.190370,15.10)` with outward normal `(0.706451,-0.707762)`; the left is its exact X mirror. UM keeps its 50.5°/129.5° axes; all six stations share source Z=15.10. Every station has 0.52 mm axial skins (the dual 0.4/0.6-nozzle single-bead value) and a 45° support-free roof. The R113.0/R51.7 structural rings have continuous exposed R113.94/R52.64 side fairings, clipped only inside the existing LM--UM and T--UM cusp/service regions; the LM--UM stop preserves the 0.40 mm gap. Ring cavity datums sit at structural radius +0.79 mm; ring and shoulder cavity datums are 0.15 mm beneath their exposed surfaces. There is no magnet-local backing, boss, relief, rear cap, flat, or visible cue: the magnet-free exterior is immutable. Magnets are fully buried at the manifest pause, never glued or externally accessible. Flat/graded have matching captive LM-lower, LM-upper, and UM receivers. Their mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm allowance is a solid standoff. Nominal paired magnet-face separation is 1.24 mm at LM-lower, LM-upper, and UM. Alignment/anti-rattle only: **zero structural load credit**. |
-| Tweeter pair | M4 through-bolts + nyloc + wave washer; length = septum + faceplates (stock 18.3 septum → ~M4 x 35; V1/Obi-Wan crescent → ~M4 x 30 — verify stacked) | snug, ~0.5 N·m | clamps the 4.0 mm crescent seat; recheck after a week |
+| Regular Obiwan UM-to-tweeter half-laps (ND25FW-4/BMR) | 2 x rear-driven M3 screws through the UM's standalone Ø3.4 clearance bores into M3 thread × Ø5 × L4 heat-set inserts installed in the crescent's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±24, y=421.5; nominal Ø9 closure-base teardrops, complete local Ø9.8 Z-owned functional bosses, 0.20 mm axial gap, complete 360° receiver walls, and 1.9 mm acoustic-front floors. Install both inserts in the individual crescent before assembly; no front bolt head or cross-owner receiver wall. |
+| Regular Obiwan LM/UM alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and the lower pair at cubic parameter `u=0.50` on the shared curved shoulder. The right visible datum is `(x,y,z)=(45.285011,89.190370,15.10)` with outward normal `(0.706451,-0.707762)`; the left is its exact X mirror. UM keeps its 50.5°/129.5° axes; all six stations share source Z=15.10. Every station has 0.52 mm axial skins (the dual 0.4/0.6-nozzle single-bead value) and a 45° support-free roof. The R113.0/R51.7 structural rings have continuous exposed R113.94/R52.64 side fairings, clipped only inside the existing LM--UM and T--UM cusp/service regions; the LM--UM stop preserves the 0.40 mm gap. Ring cavity datums sit at structural radius +0.79 mm; ring and shoulder cavity datums are 0.15 mm beneath their exposed surfaces. There is no magnet-local backing, boss, relief, rear cap, flat, or visible cue: the magnet-free exterior is immutable. Magnets are fully buried at the manifest pause, never glued or externally accessible. Flat/graded have matching captive LM-lower, LM-upper, and UM receivers. Their mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm allowance is a solid standoff. Nominal paired magnet-face separation is 1.24 mm at LM-lower, LM-upper, and UM. Alignment/anti-rattle only: **zero structural load credit**. |
+| ND25FW-4 tweeter pair | M4 through-bolts + nyloc + wave washer; length = septum + faceplates (stock 18.3 septum → ~M4 x 35; V1/Obi-Wan crescent → ~M4 x 30 — verify stacked) | snug, ~0.5 N·m | clamps the 4.0 mm crescent seat; recheck after a week |
 | Optional TEBM35C10-4 BMR pair | 8 × M2 screws into M2 × 4 × Ø3.2 heat-set inserts | hand-snug; establish on a coupon | lower BMR mounts from the acoustic front and upper BMR from the rear; each pocket has a 1.2 mm blind opposite wall. Use the Stock BMR vase only with Stock receivers and the Slim BMR vase only with Slim/V1L receivers. Both print front-face-down with supports explicitly disabled; four same-height captive side magnets share one audited insertion pause. |
+| ND25FN-4 waveguide pair | Six M3 × 8 screws and six Hanglife HLTI-M3-001 M3 × 5 × 4 inserts across two retainers | Verify actual engagement; do not bottom out | Ø4.6 × 4 mm printed pilots; fused body has twelve M3 insert sites including MU10 and LM receivers. Separate UM-to-tweeter half-laps are absent. |
+| ND25FN-4 upper/wing magnets | Four Ø6 × 3 N45 in body; two matching D6 in each full wing | — | Each full wing also has two Ø5 × 2 N52 LM contacts. Complete winged speaker: eight D6 + eight D5. Install at the selected project’s measured pauses; [assembly guide](DAYTON_ND25FN4_WAVEGUIDE.md). |
 
 **Installing the inserts:** soldering iron at 230–250 °C, press
 slowly and square, stop flush. The bores carry +1.0 mm melt room by
-design. Before bringing any joint halves together, install both LM-to-UM M3
+design. For the regular UM and separate crescent, before bringing any joint halves together, install both LM-to-UM M3
 inserts through the rear/mating openings of the individual UM print and both
 UM-to-tweeter M3 inserts through the rear/mating openings of the individual
 crescent. Every Ø4.6 x 4.0 receiver must remain fully surrounded by its local
 Ø9.8 functional boss and retain its 1.9 mm solid front floor; reject any
 insert that cracks, laterally opens, moves, or marks the acoustic face.
+
+For the integrated ND25FN-4 body, use its [insert inventory and assembly
+order](DAYTON_ND25FN4_WAVEGUIDE.md#assembly-order): its retainer pilots are
+4 mm blind bores and it has no UM-to-crescent half-laps. The regular
+joint-boss dimensions above do not describe all twelve body insert sites.
 
 ### Obi-Wan structural screens
 

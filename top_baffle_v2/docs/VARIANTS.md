@@ -5,6 +5,16 @@ Current printer splits and files are in the [H2C catalog](../to_print/h2c/README
 Use the [tweeter selection guide](TWEETER_OPTIONS.md) to compare ND25FW-4,
 TEBM35C10-4 BMR and ND25FN-4 printed waveguide.
 
+![Three tweeter families and five carrier arrangements, all at one scale](../images/generated/iso/rows/tweeter_row.png)
+
+| Tweeter family | Stock / Slim upper | Obiwan upper | Optional perimeter |
+|---|---|---|---|
+| Dayton ND25FW-4 | Standard vase with integral crescent | Regular UM + separate crescent | Standard Stock/Slim shoulders or B1 wings; regular Obiwan flat/graded wings |
+| Tectonic TEBM35C10-4 BMR | Opposed-BMR vase | Regular UM + coaxial or opposed BMR crescent | Regular Obiwan wings; no supplied matching Stock/Slim BMR perimeter |
+| Dayton ND25FN-4 waveguide | No compatible upper supplied | Fused curved UM/waveguide + two caps + two M3 retainers | Matching ND25FN-4 flat/graded wings |
+
+![Complete Obiwan upper variants sharing the same LM datum](../images/generated/iso/rows/obiwan_upper_row.png)
+
 The [ND25FN-4 waveguide](DAYTON_ND25FN4_WAVEGUIDE.md) is an integrated
 Obiwan UM/tweeter body with its own matching wings. It shares the Obiwan LM
 interface in both stand states, and has no Stock/Slim mount. BMR's coaxial,
@@ -30,8 +40,8 @@ mounting systems; their historical split counts are not the current H2C counts:
   three-port D20 interface relative to the four bridge inserts: LM
   `(-0.35,64.76)`, one Ø6 shared-T trunk `(-4.75,55.91)`, and UM
   `(3.17,55.91)`.
-- **Obi-Wan** is an extreme skeletal system: only one LM carrier and
-  one UM collar are mandatory. It has no proud-family seams or full
+- **Regular Obiwan** uses one LM carrier and
+  one UM collar beneath its separate ND25FW-4 or BMR crescent. It has no proud-family seams or full
   outline. UM is buried only through the LM
   carrier and is free behind UM; T is buried through LM/UM and is free behind
   the tweeter crescent. The surviving printed spans retain 0.8 mm minimum
@@ -47,6 +57,14 @@ mounting systems; their historical split counts are not the current H2C counts:
   remain selectable add-ons. The canonical floor LM is a large-format
   monolith; an optional two-print keyed split may replace it, but is never
   added to it, and its bottom half inherits the complete stand.
+- **Obiwan ND25FN-4 waveguide** shares that LM and its stand choices,
+  replacing the regular UM and crescent with one organic body. Its UM
+  bowl, sloped rim and two front/rear waveguides form a continuous surface.
+  Four buried D6 magnets mate to matching wings; their LM contacts remain
+  D5. The cable gallery is enclosed within the upper. Two caps and two
+  M3 retainers remain separate service prints. H2C offers both PETG-GF/PLA
+  and PETG Translucent/PLA Translucent lanes; see the
+  [body, hardware and print guide](DAYTON_ND25FN4_WAVEGUIDE.md).
 
 Both systems are generated in `build/floor_stand/` and `build/no_floor_stand/`.
 Their review sheets are `baffle_cable_routing_proud.png` (normal proud
@@ -68,6 +86,14 @@ flange O98 x 4.0 measured). Older comments naming the LX521 prototype
 drivers (W22EX001 / 10F) refer to the same cutout/pilot geometry.
 
 ## Base variants
+
+The regular-carrier rows below describe the earlier source split. The
+integrated waveguide is included as its own Obiwan upper choice:
+
+| Current Obiwan construction | LM / UM relationship | H2C upper STL |
+|---|---|---|
+| Regular UM + ND25FW-4 or BMR crescent | Separate UM and tweeter carrier on common LM half-laps | [Regular UM](../to_print/h2c/STL/h2c_obiwan_core_2_of_2_um_carrier.stl), plus the selected crescent in the [catalog](../to_print/h2c/README.md) |
+| ND25FN-4 integrated UM/waveguide | Same LM half-laps, fused UM/tweeter surround, two caps and two M3 retainers | [ND25FN-4 body](../to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_body.stl) |
 
 > **C7 and V0 were retired from the build in August 2026** — no build targets,
 > exports, or catalog entries remain; their geometry modules live in git history
