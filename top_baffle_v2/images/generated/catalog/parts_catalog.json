@@ -1,0 +1,5913 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-15",
+  "magnet_types": {
+    "D5": {
+      "size_mm": [
+        5,
+        2
+      ],
+      "grade": "N52",
+      "color": "#007a60",
+      "supplier": "Superimanes D-05-02-N52",
+      "label": "\u00d85\u00d72 mm \u00b7 N52",
+      "url": "https://www.superimanes.com/imanes-de-neodimio/discos/iman-neodimio-disco-5x2-mm-n52"
+    },
+    "D6": {
+      "size_mm": [
+        6,
+        3
+      ],
+      "grade": "N45",
+      "color": "#ca481d",
+      "supplier": "Superimanes D-06-03",
+      "label": "\u00d86\u00d73 mm \u00b7 N45",
+      "url": "https://www.superimanes.com/imanes-de-neodimio/discos/iman-neodimio-disco-6x3-mm"
+    }
+  },
+  "parts": [
+    {
+      "id": "stock_01_LM_bottom_1_of_3_no_floor_stand",
+      "path": "build/no_floor_stand/stl/stock_1_of_4_bottom.stl",
+      "sha256": "8554cd3d0f0fabdf82637c8ef4a044d9efdfe8961bf544871f784594612b1ede",
+      "title": "Stock LM lower, 1 of 3 \u2014 no-floor stand",
+      "label": "No floor stand",
+      "family": "stock",
+      "state": "no_floor_stand",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -111.89707353210773
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          125.00000010000622
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999988
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "stock_01_LM_bottom_1_of_3_floor_stand",
+      "path": "build/floor_stand/stl/stock_1_of_4_bottom.stl",
+      "sha256": "557d8cf9ae155bb5c39ac566248f38588b502a557a30bffee476f09107f5c1bf",
+      "title": "Stock LM lower, 1 of 3 \u2014 floor stand",
+      "label": "Floor stand",
+      "family": "stock",
+      "state": "floor_stand",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -111.89707353210773
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          125.00000010000622
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999995
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "stock_02_LM_mid_left_2_of_3",
+      "path": "build/no_floor_stand/stl/stock_2_of_4_mid_left.stl",
+      "sha256": "260bbd556f7755e52b3ce6d35d2aa4bdef83395abb91ea8f6c679ac3e085b640",
+      "title": "Stock LM middle-left, 2 of 3",
+      "label": "Middle left",
+      "family": "stock",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -152.40100010001325
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          321.9500001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999988
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "stock_03_LM_mid_right_3_of_3",
+      "path": "build/no_floor_stand/stl/stock_3_of_4_mid_right.stl",
+      "sha256": "aac8e8ad3f123edcd3afd33c9d735ef462ea256f8bd084dbddfe2c8c1ae5e29c",
+      "title": "Stock LM middle-right, 3 of 3 \u2014 shared",
+      "label": "Middle right",
+      "family": "stock",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -9.600000100001898
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          321.9500001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999988
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "stock_04_UM_vase_1_of_1",
+      "path": "build/no_floor_stand/stl/stock_4_of_4_vase_b2.stl",
+      "sha256": "b8bf6122dbb5fa5e9f26f401264ef92a13c94149629db6742231b4a35ed38833",
+      "title": "Stock UM vase/top, 1 of 1",
+      "label": "UM + integral tweeter",
+      "family": "stock",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -60.654000100000005
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          453.4570001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999963
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "stock_lower_right_base",
+          "type": "D5",
+          "center_mm": [
+            38.54311262787108,
+            322.8334503257944,
+            15.1
+          ],
+          "axis": [
+            0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "stock_lower_left_base",
+          "type": "D5",
+          "center_mm": [
+            -38.54311262787108,
+            322.8334503257944,
+            15.1
+          ],
+          "axis": [
+            -0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "stock_upper_right_base",
+          "type": "D5",
+          "center_mm": [
+            17.298650741040237,
+            421.9258739624506,
+            15.1
+          ],
+          "axis": [
+            0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "stock_upper_left_base",
+          "type": "D5",
+          "center_mm": [
+            -17.298650741040237,
+            421.9258739624506,
+            15.1
+          ],
+          "axis": [
+            -0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "stock_05_A_shoulder_bottom_left_1_of_4",
+      "path": "build/no_floor_stand/stl/stock_shoulder_3_of_4_bottom_left.stl",
+      "sha256": "498086f24109d792c45212144855bd570c06af4b5128fdca371a8cdb00960cf3",
+      "title": "Stock A shoulder bottom-left, 1 of 4",
+      "label": "Lower left",
+      "family": "stock",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -60.654000100000005
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          390.0000001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.299999999999965
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "stock_lower_left_receiver",
+          "type": "D5",
+          "center_mm": [
+            -41.504811298843684,
+            321.9522914398044,
+            15.1
+          ],
+          "axis": [
+            -0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "stock_06_A_shoulder_top_left_2_of_4",
+      "path": "build/no_floor_stand/stl/stock_shoulder_1_of_4_top_left.stl",
+      "sha256": "c226846fba25d831631e1ae83f2d20bd4229407e62ae8a196c1116f13d903091",
+      "title": "Stock A shoulder top-left, 2 of 4",
+      "label": "Upper left",
+      "family": "stock",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -60.654000100000005
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          453.45700010000036
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999956
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "stock_upper_left_receiver",
+          "type": "D5",
+          "center_mm": [
+            -18.429830323233023,
+            418.90042643310386,
+            15.1
+          ],
+          "axis": [
+            -0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "stock_07_A_shoulder_bottom_right_3_of_4",
+      "path": "build/no_floor_stand/stl/stock_shoulder_4_of_4_bottom_right.stl",
+      "sha256": "43fa254e1c788a6b9ec2170bf892955be8ec8321bc9aea0408f494038ea10792",
+      "title": "Stock A shoulder bottom-right, 3 of 4",
+      "label": "Lower right",
+      "family": "stock",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          38.1129999
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          390.0000001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.299999999999965
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "stock_lower_right_receiver",
+          "type": "D5",
+          "center_mm": [
+            41.504811298843684,
+            321.9522914398044,
+            15.1
+          ],
+          "axis": [
+            0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "stock_08_A_shoulder_top_right_4_of_4",
+      "path": "build/no_floor_stand/stl/stock_shoulder_2_of_4_top_right.stl",
+      "sha256": "97d976c11078ed0a4e6e6f4f3862bbcd9042994b48a21ef5ee254f8f71fd838f",
+      "title": "Stock A shoulder top-right, 4 of 4",
+      "label": "Upper right",
+      "family": "stock",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          10.080999899999998
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          453.45700010000036
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999956
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "stock_upper_right_receiver",
+          "type": "D5",
+          "center_mm": [
+            18.429830323233023,
+            418.90042643310386,
+            15.1
+          ],
+          "axis": [
+            0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "stock_09_B1_wing_left_1_of_2",
+      "path": "build/no_floor_stand/stl/stock_wing_1_of_2_left.stl",
+      "sha256": "7749a25921f930432d155f8988afe0dd8516f2b119560c11890f4f2a309794f1",
+      "title": "Stock B1 wing left, 1 of 2",
+      "label": "Left",
+      "family": "stock",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -83.80700010000001
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          432.87900010000004
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999952
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "stock_lower_left_receiver",
+          "type": "D5",
+          "center_mm": [
+            -41.504811298843684,
+            321.9522914398044,
+            15.1
+          ],
+          "axis": [
+            -0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "stock_upper_left_receiver",
+          "type": "D5",
+          "center_mm": [
+            -18.429830323233023,
+            418.90042643310386,
+            15.1
+          ],
+          "axis": [
+            -0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "stock_10_B1_wing_right_2_of_2",
+      "path": "build/no_floor_stand/stl/stock_wing_2_of_2_right.stl",
+      "sha256": "8da84750e2cff0075955bd8245831ebfc0ddfc97d9bc36e97789069cadf5d67b",
+      "title": "Stock B1 wing right, 2 of 2",
+      "label": "Right",
+      "family": "stock",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          10.080999899999998
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          432.8660001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999956
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "stock_lower_right_receiver",
+          "type": "D5",
+          "center_mm": [
+            41.504811298843684,
+            321.9522914398044,
+            15.1
+          ],
+          "axis": [
+            0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "stock_upper_right_receiver",
+          "type": "D5",
+          "center_mm": [
+            18.429830323233023,
+            418.90042643310386,
+            15.1
+          ],
+          "axis": [
+            0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "stock_grommet_a",
+      "path": "build/no_floor_stand/stl/stock_um_grommet_half_a.stl",
+      "sha256": "3dd565076e1c41b8d2372ff05a279fa088dcf8f0ca69711b08dd386ae7bacdd4",
+      "title": "Stock UM grommet half A",
+      "label": "Half A",
+      "family": "stock",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          26.96375061534557
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          301.82673887643085
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          3.628218794876721
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "stock_grommet_b",
+      "path": "build/no_floor_stand/stl/stock_um_grommet_half_b.stl",
+      "sha256": "819fca249c4154fa211214f51978e665f9ce56a27b852b7678db23cc0e477cf7",
+      "title": "Stock UM grommet half B",
+      "label": "Half B",
+      "family": "stock",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          26.938433917323188
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          307.9530792473923
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          3.6282187948767084
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "slim_01_LM_bottom_1_of_3_no_floor_stand",
+      "path": "build/no_floor_stand/stl/slim_1_of_4_bottom.stl",
+      "sha256": "a5e8c5901f6eacfdd195b897fd2ee213f036b81e60c7ad4179d50aba5a4c5691",
+      "title": "Slim LM lower, 1 of 3 \u2014 no-floor stand",
+      "label": "No floor stand",
+      "family": "slim",
+      "state": "no_floor_stand",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -111.8970735321
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          125.00000010000167
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999988
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "slim_01_LM_bottom_1_of_3_floor_stand",
+      "path": "build/floor_stand/stl/slim_1_of_4_bottom.stl",
+      "sha256": "339e8735061dee9abfba32e301898cc47e570884115201ee21a50a2fa2596b4c",
+      "title": "Slim LM lower, 1 of 3 \u2014 floor stand",
+      "label": "Floor stand",
+      "family": "slim",
+      "state": "floor_stand",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -111.89707353210773
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          125.00000000000622
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000100000577
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "slim_02_LM_mid_left_2_of_3",
+      "path": "build/no_floor_stand/stl/slim_2_of_4_mid_left.stl",
+      "sha256": "448af41d309e381d9b70f4e95ff7b85f5b7d717c25bb8c42ce9ce2c514b803b9",
+      "title": "Slim LM middle-left, 2 of 3",
+      "label": "Middle left",
+      "family": "slim",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -152.40100010000512
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          321.9500001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999988
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "slim_03_LM_mid_right_3_of_3",
+      "path": "build/no_floor_stand/stl/slim_3_of_4_mid_right.stl",
+      "sha256": "4d20f742c21435bb157397c56931b3173c4ccf987c71b284f4b2f774201ac428",
+      "title": "Slim LM middle-right, 3 of 3 \u2014 shared",
+      "label": "Middle right",
+      "family": "slim",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -9.600000100000683
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          321.9500001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999988
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "slim_04_UM_vase_1_of_1",
+      "path": "build/no_floor_stand/stl/slim_4_of_4_vase_b2.stl",
+      "sha256": "33ee34409d1de413ca149d16c06fd670b093f110a6e9ce60fa7248821068ea0d",
+      "title": "Slim UM vase/top, 1 of 1",
+      "label": "UM + integral tweeter",
+      "family": "slim",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -60.65400010000052
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          453.4570001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999963
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "v1_lower_right_base",
+          "type": "D5",
+          "center_mm": [
+            38.54311262787108,
+            322.8334503257944,
+            15.1
+          ],
+          "axis": [
+            0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "v1_lower_left_base",
+          "type": "D5",
+          "center_mm": [
+            -38.54311262787108,
+            322.8334503257944,
+            15.1
+          ],
+          "axis": [
+            -0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "v1_upper_right_base",
+          "type": "D5",
+          "center_mm": [
+            17.298650741040237,
+            421.9258739624506,
+            15.1
+          ],
+          "axis": [
+            0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "v1_upper_left_base",
+          "type": "D5",
+          "center_mm": [
+            -17.298650741040237,
+            421.9258739624506,
+            15.1
+          ],
+          "axis": [
+            -0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "slim_05_A_shoulder_bottom_left_1_of_4",
+      "path": "build/no_floor_stand/stl/slim_shoulder_1_of_4_bottom_left.stl",
+      "sha256": "7ece5a1b6edf2e30a5764feb5abc982f8bb85bffb5269ebc66cbfacff1bcd2af",
+      "title": "Slim A shoulder bottom-left, 1 of 4",
+      "label": "Lower left",
+      "family": "slim",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -60.654000100000005
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          391.7090001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.299999999999965
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "v1_lower_left_receiver",
+          "type": "D5",
+          "center_mm": [
+            -41.504811298843684,
+            321.9522914398044,
+            15.1
+          ],
+          "axis": [
+            -0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "slim_06_A_shoulder_top_left_2_of_4",
+      "path": "build/no_floor_stand/stl/slim_shoulder_2_of_4_top_left.stl",
+      "sha256": "6336437600757c539da9e109d44901fdb078da56c6e41d37c03b7c4717e5c6a1",
+      "title": "Slim A shoulder top-left, 2 of 4",
+      "label": "Upper left",
+      "family": "slim",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -60.654000100000005
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          453.4570001000002
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999956
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "v1_upper_left_receiver",
+          "type": "D5",
+          "center_mm": [
+            -18.429830323233023,
+            418.90042643310386,
+            15.1
+          ],
+          "axis": [
+            -0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "slim_07_A_shoulder_bottom_right_3_of_4",
+      "path": "build/no_floor_stand/stl/slim_shoulder_3_of_4_bottom_right.stl",
+      "sha256": "3c520a232faa90973f9b422c8f8f549dc2d4d25cbb67ba466989bdb5f079b398",
+      "title": "Slim A shoulder bottom-right, 3 of 4",
+      "label": "Lower right",
+      "family": "slim",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          38.1129999
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          391.7090001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.299999999999965
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "v1_lower_right_receiver",
+          "type": "D5",
+          "center_mm": [
+            41.504811298843684,
+            321.9522914398044,
+            15.1
+          ],
+          "axis": [
+            0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "slim_08_A_shoulder_top_right_4_of_4",
+      "path": "build/no_floor_stand/stl/slim_shoulder_4_of_4_top_right.stl",
+      "sha256": "647ee1a713b756e5fc4900af2d5f824c204598c99108a6b34ab602f12e1f562e",
+      "title": "Slim A shoulder top-right, 4 of 4",
+      "label": "Upper right",
+      "family": "slim",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          10.080999899999998
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          453.4570001000002
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999956
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "v1_upper_right_receiver",
+          "type": "D5",
+          "center_mm": [
+            18.429830323233023,
+            418.90042643310386,
+            15.1
+          ],
+          "axis": [
+            0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "slim_09_B1_wing_left_1_of_2",
+      "path": "build/no_floor_stand/stl/slim_wing_1_of_2_left.stl",
+      "sha256": "7b8a1ef0d700cd196d177ad16eed0e51da2601f81e91f777a77df314e40cd788",
+      "title": "Slim B1 wing left, 1 of 2",
+      "label": "Left",
+      "family": "slim",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -83.80700010000001
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          432.87900010000004
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999952
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "v1_lower_left_receiver",
+          "type": "D5",
+          "center_mm": [
+            -41.504811298843684,
+            321.9522914398044,
+            15.1
+          ],
+          "axis": [
+            -0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "v1_upper_left_receiver",
+          "type": "D5",
+          "center_mm": [
+            -18.429830323233023,
+            418.90042643310386,
+            15.1
+          ],
+          "axis": [
+            -0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "slim_10_B1_wing_right_2_of_2",
+      "path": "build/no_floor_stand/stl/slim_wing_2_of_2_right.stl",
+      "sha256": "52491d7e9e756a76699d176edd2f0303dbb2ab9a473b85f588fb0dee194d73e9",
+      "title": "Slim B1 wing right, 2 of 2",
+      "label": "Right",
+      "family": "slim",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          10.080999899999998
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          432.8660001000001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999956
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "v1_lower_right_receiver",
+          "type": "D5",
+          "center_mm": [
+            41.504811298843684,
+            321.9522914398044,
+            15.1
+          ],
+          "axis": [
+            0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "v1_upper_right_receiver",
+          "type": "D5",
+          "center_mm": [
+            18.429830323233023,
+            418.90042643310386,
+            15.1
+          ],
+          "axis": [
+            0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "slim_grommet_a",
+      "path": "build/no_floor_stand/stl/slim_um_grommet_half_a.stl",
+      "sha256": "60059ced966c08fc7f9d23061361e7a0bd9d8ad32c52ed182240302f58388cc9",
+      "title": "Slim UM grommet half A",
+      "label": "Half A",
+      "family": "slim",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          6.997832436923127
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          307.5187962128859
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          12.893796470932193
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "slim_grommet_b",
+      "path": "build/no_floor_stand/stl/slim_um_grommet_half_b.stl",
+      "sha256": "74557afce53bdc5d55e73500202fae97a08f5307ab2eba59872732a4faf3a669",
+      "title": "Slim UM grommet half B",
+      "label": "Half B",
+      "family": "slim",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          6.997832436923127
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          314.1187962128859
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          12.591576227955409
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand",
+      "path": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
+      "sha256": "87bcfde710cf16eb7ff094631e27071721a913945b55f23fdc34ebd36660eb23",
+      "title": "Obi-Wan keyed LM bottom, 1 of 2 \u2014 no-floor stand",
+      "label": "No floor stand",
+      "family": "obiwan",
+      "state": "no_floor_stand",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.8987940462991669,
+          0.43837114678907735,
+          0.0,
+          -115.83962308915838
+        ],
+        [
+          0.4383711467890773,
+          -0.8987940462991669,
+          -0.0,
+          171.8967010681445
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999984
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "lm_lower_left",
+          "type": "D5",
+          "center_mm": [
+            -44.105237739590976,
+            90.37233179199616,
+            15.1
+          ],
+          "axis": [
+            -0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "lm_lower_right",
+          "type": "D5",
+          "center_mm": [
+            44.105237739590976,
+            90.37233179199616,
+            15.1
+          ],
+          "axis": [
+            0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand",
+      "path": "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
+      "sha256": "df222c6fbf8a2b7ddaee8c7ca5e467389eafd219b15c17d546d7a956cc03dd49",
+      "title": "Obi-Wan keyed LM bottom, 1 of 2 \u2014 floor stand",
+      "label": "Floor stand",
+      "family": "obiwan",
+      "state": "floor_stand",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.8987940462991669,
+          0.43837114678907735,
+          0.0,
+          -113.21003848395863
+        ],
+        [
+          0.4383711467890773,
+          -0.8987940462991669,
+          -0.0,
+          173.1792351744915
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999995
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "lm_lower_left",
+          "type": "D5",
+          "center_mm": [
+            -44.105237739590976,
+            90.37233179199616,
+            15.1
+          ],
+          "axis": [
+            -0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "lm_lower_right",
+          "type": "D5",
+          "center_mm": [
+            44.105237739590976,
+            90.37233179199616,
+            15.1
+          ],
+          "axis": [
+            0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "obiwan_02_LM_top_keyed_2_of_2",
+      "path": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
+      "sha256": "8070ccbdd173aabe88e62020ce03f729a184750a8c3665caf8cc7d9e671adfe5",
+      "title": "Obi-Wan keyed LM top, 2 of 2 \u2014 shared",
+      "label": "Shared LM top",
+      "family": "obiwan",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.7071067811865476,
+          0.7071067811865475,
+          0.0,
+          -149.97677506262065
+        ],
+        [
+          0.7071067811865475,
+          -0.7071067811865476,
+          -0.0,
+          212.13971837559114
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999984
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "lm_upper_left",
+          "type": "D5",
+          "center_mm": [
+            -49.21592865000973,
+            301.88860757800745,
+            15.1
+          ],
+          "axis": [
+            -0.4383711467890776,
+            0.8987940462991671,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "lm_upper_right",
+          "type": "D5",
+          "center_mm": [
+            49.21592865000972,
+            301.88860757800745,
+            15.1
+          ],
+          "axis": [
+            0.43837114678907757,
+            0.8987940462991671,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "obiwan_03_UM_carrier_1_of_1",
+      "path": "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
+      "sha256": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
+      "title": "Obi-Wan UM carrier, 1 of 1 \u2014 shared",
+      "label": "Regular UM",
+      "family": "obiwan",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -52.640000099999995
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          426.4000001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999966
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "um_left",
+          "type": "D5",
+          "center_mm": [
+            -32.42090688755763,
+            405.4107050152721,
+            15.1
+          ],
+          "axis": [
+            -0.6360782202777641,
+            0.7716245833877199,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "um_right",
+          "type": "D5",
+          "center_mm": [
+            32.42090688755762,
+            405.4107050152721,
+            15.1
+          ],
+          "axis": [
+            0.636078220277764,
+            0.77162458338772,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "obiwan_04_T_tweeter_crescent_1_of_1",
+      "path": "build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.stl",
+      "sha256": "9d0dcf380b97860f647a9577b4096f3add46dcb127c246be4a0a974bc64fb6a3",
+      "title": "Obi-Wan tweeter crescent, 1 of 1",
+      "label": "ND25FW-4 crescent",
+      "family": "obiwan",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -49.16100010000001
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          453.4570001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999952
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "obiwan_NL8_service_lid_1_of_1",
+      "path": "build/floor_stand/stl/obiwan_addon_nl8_service_lid.stl",
+      "sha256": "a283e1574cb11c87ecf81c8f0cdaeee9486b7b07e6bb53a2a08a991872cf9abf",
+      "title": "Obi-Wan NL8 service-trough snap lid, 1 of 1 \u2014 floor stand",
+      "label": "Floor service lid",
+      "family": "obiwan",
+      "state": "floor_stand",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -17.34999993566385
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          -76.2000006792547
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          -0.0999999999999827
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "obi_monolith_no_floor_stand",
+      "path": "build/no_floor_stand/stl/obiwan_core_1_of_2_lm_carrier.stl",
+      "sha256": "16d0b4d604a660cfad61011077b3b496a86b5211cc550d8b2db15c50284e5f87",
+      "title": "LM monolith / no_floor_stand",
+      "label": "No floor",
+      "family": "obiwan",
+      "state": "no_floor_stand",
+      "status": "Large-format STL; outside P2S shelf",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.8829475928589269,
+          0.46947156278589075,
+          0.0,
+          -165.19304474209235
+        ],
+        [
+          0.46947156278589075,
+          -0.8829475928589269,
+          -0.0,
+          250.49968403350576
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999963
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "lm_lower_left",
+          "type": "D5",
+          "center_mm": [
+            -44.105237739590976,
+            90.37233179199616,
+            15.1
+          ],
+          "axis": [
+            -0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "lm_lower_right",
+          "type": "D5",
+          "center_mm": [
+            44.105237739590976,
+            90.37233179199616,
+            15.1
+          ],
+          "axis": [
+            0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "lm_upper_left",
+          "type": "D5",
+          "center_mm": [
+            -49.21592865000973,
+            301.88860757800745,
+            15.1
+          ],
+          "axis": [
+            -0.4383711467890776,
+            0.8987940462991671,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "lm_upper_right",
+          "type": "D5",
+          "center_mm": [
+            49.21592865000972,
+            301.88860757800745,
+            15.1
+          ],
+          "axis": [
+            0.43837114678907757,
+            0.8987940462991671,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "obi_monolith_floor_stand",
+      "path": "build/floor_stand/stl/obiwan_core_1_of_2_lm_carrier.stl",
+      "sha256": "53f869edf67a3f760413e3615dae0fc59f4dae6eab029b767552ac3a78241587",
+      "title": "LM monolith / floor_stand",
+      "label": "Floor",
+      "family": "obiwan",
+      "state": "floor_stand",
+      "status": "Large-format STL; outside P2S shelf",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.8829475928589269,
+          0.46947156278589075,
+          0.0,
+          -160.2968969761102
+        ],
+        [
+          0.46947156278589075,
+          -0.8829475928589269,
+          -0.0,
+          253.10301197948672
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999995
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "lm_lower_left",
+          "type": "D5",
+          "center_mm": [
+            -44.105237739590976,
+            90.37233179199616,
+            15.1
+          ],
+          "axis": [
+            -0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "lm_lower_right",
+          "type": "D5",
+          "center_mm": [
+            44.105237739590976,
+            90.37233179199616,
+            15.1
+          ],
+          "axis": [
+            0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "lm_upper_left",
+          "type": "D5",
+          "center_mm": [
+            -49.21592865000973,
+            301.88860757800745,
+            15.1
+          ],
+          "axis": [
+            -0.4383711467890776,
+            0.8987940462991671,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "lm_upper_right",
+          "type": "D5",
+          "center_mm": [
+            49.21592865000972,
+            301.88860757800745,
+            15.1
+          ],
+          "axis": [
+            0.43837114678907757,
+            0.8987940462991671,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "obiwan_wing_flat_left_split2_1_of_2_lm_lower",
+      "path": "build/wings/flat/stl/obiwan_wing_flat_left_split2_1_of_2_lm_lower.stl",
+      "sha256": "6a810e136c585d3419011ae003ff4445b09fa76a2b6eaa912f0850ff50eb1d3a",
+      "title": "flat lm_lower left",
+      "label": "Left",
+      "family": "obiwan",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.8313234731519206,
+          0.5557888834680196,
+          0.0,
+          -156.92408402096956
+        ],
+        [
+          0.5557888834680196,
+          -0.8313234731519207,
+          -0.0,
+          178.1758306335092
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.29999999999999
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "lm_lower_left",
+          "type": "D5",
+          "center_mm": [
+            -46.394139955708944,
+            88.07918403289946,
+            15.1
+          ],
+          "axis": [
+            -0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "obiwan_wing_flat_right_split2_1_of_2_lm_lower",
+      "path": "build/wings/flat/stl/obiwan_wing_flat_right_split2_1_of_2_lm_lower.stl",
+      "sha256": "d2c17b218d7c5a2898e334d0edfc0d54c6a15c8f73c4850585661a977ac522d8",
+      "title": "flat lm_lower right",
+      "label": "Right",
+      "family": "obiwan",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.5557888834680196,
+          0.8313234731519206,
+          0.0,
+          33.695383576334486
+        ],
+        [
+          0.8313234731519207,
+          -0.5557888834680196,
+          0.0,
+          74.39888833211431
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.29999999999999
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "lm_lower_right",
+          "type": "D5",
+          "center_mm": [
+            46.394139955708944,
+            88.07918403289946,
+            15.1
+          ],
+          "axis": [
+            0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "obiwan_wing_flat_left_split2_2_of_2_lm_um_upper",
+      "path": "build/wings/flat/stl/obiwan_wing_flat_left_split2_2_of_2_lm_um_upper.stl",
+      "sha256": "c750c0025c0a168f50705ede3a77e84d3954432f56155d29a86d494c6d5cef79",
+      "title": "flat lm_um_upper left",
+      "label": "Left",
+      "family": "obiwan",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          -0.4500984410374348,
+          0.8929789434111371,
+          0.0,
+          -130.1473501121548
+        ],
+        [
+          0.892978943411137,
+          0.4500984410374348,
+          0.0,
+          185.95095771776616
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999977
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "lm_upper_left",
+          "type": "D5",
+          "center_mm": [
+            -50.63625116560634,
+            304.80070028801674,
+            15.1
+          ],
+          "axis": [
+            -0.4383711467890776,
+            0.8987940462991671,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "um_left",
+          "type": "D5",
+          "center_mm": [
+            -34.48180032125759,
+            407.9107686654483,
+            15.1
+          ],
+          "axis": [
+            -0.6360782202777641,
+            0.7716245833877199,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "obiwan_wing_flat_right_split2_2_of_2_lm_um_upper",
+      "path": "build/wings/flat/stl/obiwan_wing_flat_right_split2_2_of_2_lm_um_upper.stl",
+      "sha256": "8be9c65c59b2a961419d2af159bd585c20e49ded7b1a266ae8070b4ec3fa1ae5",
+      "title": "flat lm_um_upper right",
+      "label": "Right",
+      "family": "obiwan",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.4500984410374352,
+          0.892978943411137,
+          0.0,
+          -47.75602632831868
+        ],
+        [
+          0.892978943411137,
+          -0.4500984410374351,
+          0.0,
+          275.62164142423086
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999977
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "lm_upper_right",
+          "type": "D5",
+          "center_mm": [
+            50.63625116560634,
+            304.80070028801674,
+            15.1
+          ],
+          "axis": [
+            0.43837114678907746,
+            0.898794046299167,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "um_right",
+          "type": "D5",
+          "center_mm": [
+            34.48180032125758,
+            407.9107686654483,
+            15.1
+          ],
+          "axis": [
+            0.636078220277764,
+            0.77162458338772,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "obiwan_wing_graded_left_split2_1_of_2_lm_lower",
+      "path": "build/wings/graded/stl/obiwan_wing_graded_left_split2_1_of_2_lm_lower.stl",
+      "sha256": "bb82846c5a0581c4eab2b7e84750b67c6d12be3abf59d5ced1d727ac80e4bb4b",
+      "title": "graded lm_lower left",
+      "label": "Left",
+      "family": "obiwan",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.8313234731519206,
+          0.5557888834680196,
+          0.0,
+          -156.9240841596808
+        ],
+        [
+          0.5557888834680196,
+          -0.8313234731519207,
+          -0.0,
+          178.17583066106263
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.30000009999999
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "lm_lower_left",
+          "type": "D5",
+          "center_mm": [
+            -46.394139955708944,
+            88.07918403289946,
+            15.1
+          ],
+          "axis": [
+            -0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "obiwan_wing_graded_right_split2_1_of_2_lm_lower",
+      "path": "build/wings/graded/stl/obiwan_wing_graded_right_split2_1_of_2_lm_lower.stl",
+      "sha256": "e94e8cb163407d9e608e1345d9041207bda0b228b190ac8764effdcc4ba750af",
+      "title": "graded lm_lower right",
+      "label": "Right",
+      "family": "obiwan",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.5557888834680196,
+          0.8313234731519206,
+          0.0,
+          33.695383437623256
+        ],
+        [
+          0.8313234731519207,
+          -0.5557888834680196,
+          0.0,
+          74.39888830456086
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.30000009999999
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "lm_lower_right",
+          "type": "D5",
+          "center_mm": [
+            46.394139955708944,
+            88.07918403289946,
+            15.1
+          ],
+          "axis": [
+            0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "obiwan_wing_graded_left_split2_2_of_2_lm_um_upper",
+      "path": "build/wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.stl",
+      "sha256": "fa15e5f241e426367f4c85aba41c417f5cf037c3cd152956cb67bba51b77cac5",
+      "title": "graded lm_um_upper left",
+      "label": "Left",
+      "family": "obiwan",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.892978943411137,
+          0.45009844103743496,
+          0.0,
+          -219.66790207647963
+        ],
+        [
+          0.4500984410374349,
+          -0.892978943411137,
+          -0.0,
+          363.5564782399665
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999977
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "lm_upper_left",
+          "type": "D5",
+          "center_mm": [
+            -50.63625116560634,
+            304.80070028801674,
+            15.1
+          ],
+          "axis": [
+            -0.4383711467890776,
+            0.8987940462991671,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "um_left",
+          "type": "D5",
+          "center_mm": [
+            -34.48180032125759,
+            407.9107686654483,
+            15.1
+          ],
+          "axis": [
+            -0.6360782202777641,
+            0.7716245833877199,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "obiwan_wing_graded_right_split2_2_of_2_lm_um_upper",
+      "path": "build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.stl",
+      "sha256": "cd1c013a5d78a0478261d8665b91cd44e7bbd098b1e45f35a77d36994507fd60",
+      "title": "graded lm_um_upper right",
+      "label": "Right",
+      "family": "obiwan",
+      "state": "shared",
+      "status": "Current STL",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.4500984410374352,
+          0.892978943411137,
+          0.0,
+          -47.75602632831868
+        ],
+        [
+          0.892978943411137,
+          -0.4500984410374351,
+          0.0,
+          275.62164142423086
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999977
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "lm_upper_right",
+          "type": "D5",
+          "center_mm": [
+            50.63625116560634,
+            304.80070028801674,
+            15.1
+          ],
+          "axis": [
+            0.43837114678907746,
+            0.898794046299167,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "um_right",
+          "type": "D5",
+          "center_mm": [
+            34.48180032125758,
+            407.9107686654483,
+            15.1
+          ],
+          "axis": [
+            0.636078220277764,
+            0.77162458338772,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "v4_body",
+      "path": "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl",
+      "sha256": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+      "title": "Fused UM + ND25FN-4 waveguide",
+      "label": "Shared fused body",
+      "family": "v4",
+      "state": "shared",
+      "status": "Sliced; physical qualification pending",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.7071067811865476,
+          0.7071067811865475,
+          0.0,
+          -161.70609474182135
+        ],
+        [
+          0.7071067811865475,
+          -0.7071067811865476,
+          -0.0,
+          430.5531251169842
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          20.67987861633301
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "body_168deg",
+          "type": "D6",
+          "center_mm": [
+            -55.0380091712422,
+            377.22810270467494,
+            14.53258691129412
+          ],
+          "axis": [
+            -0.8052320281747014,
+            0.3889848960175594,
+            -0.4475400892343224
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        },
+        {
+          "name": "body_192deg",
+          "type": "D6",
+          "center_mm": [
+            -55.05614342610275,
+            354.84134873282983,
+            14.52262414142711
+          ],
+          "axis": [
+            -0.8193543572217301,
+            -0.35850786033881415,
+            -0.4473595325653078
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        },
+        {
+          "name": "body_12deg",
+          "type": "D6",
+          "center_mm": [
+            55.036749193801526,
+            377.2279402487315,
+            14.53267410706483
+          ],
+          "axis": [
+            0.805372962265877,
+            0.3888778391438902,
+            -0.44737950095401685
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        },
+        {
+          "name": "body_-12deg",
+          "type": "D6",
+          "center_mm": [
+            55.05660756395572,
+            354.84132298235875,
+            14.522521727090963
+          ],
+          "axis": [
+            0.8193124252480259,
+            -0.35855893886390505,
+            -0.4473953924606156
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "v4_cap",
+      "path": "candidates/nd25fn4_crescent/STL/02_Closed_Cap_PRINT_TWO.stl",
+      "sha256": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+      "title": "ND25FN-4 closed cap",
+      "label": "Print TWO",
+      "family": "v4",
+      "state": "shared",
+      "status": "Sliced; physical qualification pending",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "v4_retainer",
+      "path": "candidates/nd25fn4_crescent/STL/03_Tweeter_Retainer_PRINT_TWO.stl",
+      "sha256": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc",
+      "title": "ND25FN-4 tweeter retainer",
+      "label": "Print TWO",
+      "family": "v4",
+      "state": "shared",
+      "status": "Sliced; physical qualification pending",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "v4_flat_left",
+      "path": "candidates/nd25fn4_crescent/STL/wings/V4_flat_left_UPPER.stl",
+      "sha256": "9543913be00c4accad26e9f77995cf9667f0beeae46a4ca132ce5804920e16c1",
+      "title": "ND25FN-4 flat upper left",
+      "label": "Left",
+      "family": "v4",
+      "state": "shared",
+      "status": "Sliced; physical qualification pending",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          -0.4500984410374348,
+          0.8929789434111371,
+          0.0,
+          -130.1473501121548
+        ],
+        [
+          0.892978943411137,
+          0.4500984410374348,
+          0.0,
+          185.95095771776613
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999977
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "preserved_LM",
+          "type": "D5",
+          "center_mm": [
+            -50.63625116560635,
+            304.80070028801674,
+            15.1
+          ],
+          "axis": [
+            -0.4383711467890776,
+            0.898794046299167,
+            0.0
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        },
+        {
+          "name": "wing_168deg",
+          "type": "D6",
+          "center_mm": [
+            -59.23480821971415,
+            379.25546134883524,
+            12.200047162218418
+          ],
+          "axis": [
+            -0.8052320281747014,
+            0.3889848960175592,
+            -0.4475400892343224
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        },
+        {
+          "name": "wing_192deg",
+          "type": "D6",
+          "center_mm": [
+            -59.31217372975621,
+            352.9791289026467,
+            12.198874765187444
+          ],
+          "axis": [
+            -0.8193543572217301,
+            -0.3585078603388142,
+            -0.4473595325653078
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "v4_flat_right",
+      "path": "candidates/nd25fn4_crescent/STL/wings/V4_flat_right_UPPER.stl",
+      "sha256": "a23e3cc6b59c172ff0ba5cb9e2a2c86eb5a68f0c9cdc6c7d0d2034b44a24866f",
+      "title": "ND25FN-4 flat upper right",
+      "label": "Right",
+      "family": "v4",
+      "state": "shared",
+      "status": "Sliced; physical qualification pending",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.4500984410374352,
+          0.892978943411137,
+          0.0,
+          -42.598478846227565
+        ],
+        [
+          0.892978943411137,
+          -0.4500984410374351,
+          0.0,
+          273.0220234843071
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999977
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "preserved_LM",
+          "type": "D5",
+          "center_mm": [
+            50.63625116560635,
+            304.80070028801674,
+            15.1
+          ],
+          "axis": [
+            0.43837114678907746,
+            0.898794046299167,
+            0.0
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        },
+        {
+          "name": "wing_12deg",
+          "type": "D6",
+          "center_mm": [
+            59.234350515424524,
+            379.25477160383787,
+            12.200932901161538
+          ],
+          "axis": [
+            0.8053729622658771,
+            0.3888778391438902,
+            -0.44737950095401685
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        },
+        {
+          "name": "wing_-12deg",
+          "type": "D6",
+          "center_mm": [
+            59.31227588391885,
+            352.9788973538075,
+            12.19866010616736
+          ],
+          "axis": [
+            0.8193124252480258,
+            -0.35855893886390505,
+            -0.4473953924606156
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "v4_graded_left",
+      "path": "candidates/nd25fn4_crescent/STL/wings/V4_graded_left_UPPER.stl",
+      "sha256": "8c809f13e8c6579e398be1a8615a7f6aeb3ba71882bcc3aa3d62222f242caadc",
+      "title": "ND25FN-4 graded upper left",
+      "label": "Left",
+      "family": "v4",
+      "state": "shared",
+      "status": "Sliced; physical qualification pending",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.892978943411137,
+          0.45009844103743496,
+          0.0,
+          -212.1365500374789
+        ],
+        [
+          0.4500984410374349,
+          -0.892978943411137,
+          -0.0,
+          348.6145496015493
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999977
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "preserved_LM",
+          "type": "D5",
+          "center_mm": [
+            -50.63625116560634,
+            304.80070028801674,
+            15.1
+          ],
+          "axis": [
+            -0.4383711467890776,
+            0.8987940462991671,
+            0.0
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        },
+        {
+          "name": "wing_168deg",
+          "type": "D6",
+          "center_mm": [
+            -59.235059302360895,
+            379.25557876618615,
+            12.200592879198872
+          ],
+          "axis": [
+            -0.8052320281747014,
+            0.38898489601755937,
+            -0.4475400892343224
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        },
+        {
+          "name": "wing_192deg",
+          "type": "D6",
+          "center_mm": [
+            -59.31242338398222,
+            352.97901616408194,
+            12.199424502854756
+          ],
+          "axis": [
+            -0.8193543572217301,
+            -0.3585078603388141,
+            -0.4473595325653078
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "v4_graded_right",
+      "path": "candidates/nd25fn4_crescent/STL/wings/V4_graded_right_UPPER.stl",
+      "sha256": "1929259f485cf7b1f9789ee876bc493e2c4ee610e771654971c9b2016d686f29",
+      "title": "ND25FN-4 graded upper right",
+      "label": "Right",
+      "family": "v4",
+      "state": "shared",
+      "status": "Sliced; physical qualification pending",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          0.4500984410374352,
+          0.892978943411137,
+          0.0,
+          -42.598478846227565
+        ],
+        [
+          0.892978943411137,
+          -0.4500984410374351,
+          0.0,
+          273.0220234843071
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999977
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "preserved_LM",
+          "type": "D5",
+          "center_mm": [
+            50.63625116560635,
+            304.80070028801674,
+            15.1
+          ],
+          "axis": [
+            0.43837114678907746,
+            0.898794046299167,
+            0.0
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        },
+        {
+          "name": "wing_12deg",
+          "type": "D6",
+          "center_mm": [
+            59.23459587764484,
+            379.2548900780535,
+            12.201483377328133
+          ],
+          "axis": [
+            0.8053729622658771,
+            0.3888778391438902,
+            -0.44737950095401685
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        },
+        {
+          "name": "wing_-12deg",
+          "type": "D6",
+          "center_mm": [
+            59.31252656372951,
+            352.97878753470314,
+            12.199207721171128
+          ],
+          "axis": [
+            0.8193124252480258,
+            -0.35855893886390505,
+            -0.4473953924606156
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "bmr_vase_stock",
+      "path": "build/vase_TEBM35C10-4/stock/vase_TEBM35C10-4.stl",
+      "sha256": "8e1cb45c5e0dff1af7921776cea657efc70dd7e31d9c39f3675d0097ab188963",
+      "title": "BMR vase / stock",
+      "label": "BMR vase / stock",
+      "family": "candidate",
+      "state": "shared",
+      "status": "Qualification candidate",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -60.654000100000005
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          524.731
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999963
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "tebm_lower_left_base",
+          "type": "D5",
+          "center_mm": [
+            -29.80666595729587,
+            443.93100000000004,
+            15.1
+          ],
+          "axis": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/vase_TEBM35C10-4/stock/vase_TEBM35C10-4.catalog.json"
+        },
+        {
+          "name": "tebm_lower_right_base",
+          "type": "D5",
+          "center_mm": [
+            29.80666595729587,
+            443.93100000000004,
+            15.1
+          ],
+          "axis": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/vase_TEBM35C10-4/stock/vase_TEBM35C10-4.catalog.json"
+        },
+        {
+          "name": "tebm_upper_left_base",
+          "type": "D5",
+          "center_mm": [
+            -29.80666595729587,
+            493.23100000000005,
+            15.1
+          ],
+          "axis": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/vase_TEBM35C10-4/stock/vase_TEBM35C10-4.catalog.json"
+        },
+        {
+          "name": "tebm_upper_right_base",
+          "type": "D5",
+          "center_mm": [
+            29.80666595729587,
+            493.23100000000005,
+            15.1
+          ],
+          "axis": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/vase_TEBM35C10-4/stock/vase_TEBM35C10-4.catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "bmr_vase_slim",
+      "path": "build/vase_TEBM35C10-4/slim/vase_TEBM35C10-4.stl",
+      "sha256": "cea35a1c1bf02706ae6fe016fcd651f6c5d74f1622158136f55c95656355a8d6",
+      "title": "BMR vase / slim",
+      "label": "BMR vase / slim",
+      "family": "candidate",
+      "state": "shared",
+      "status": "Qualification candidate",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -60.654000100000005
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          524.731
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999966
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "tebm_lower_left_base",
+          "type": "D5",
+          "center_mm": [
+            -29.80666595729587,
+            443.93100000000004,
+            15.1
+          ],
+          "axis": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/vase_TEBM35C10-4/slim/vase_TEBM35C10-4.catalog.json"
+        },
+        {
+          "name": "tebm_lower_right_base",
+          "type": "D5",
+          "center_mm": [
+            29.80666595729587,
+            443.93100000000004,
+            15.1
+          ],
+          "axis": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/vase_TEBM35C10-4/slim/vase_TEBM35C10-4.catalog.json"
+        },
+        {
+          "name": "tebm_upper_left_base",
+          "type": "D5",
+          "center_mm": [
+            -29.80666595729587,
+            493.23100000000005,
+            15.1
+          ],
+          "axis": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/vase_TEBM35C10-4/slim/vase_TEBM35C10-4.catalog.json"
+        },
+        {
+          "name": "tebm_upper_right_base",
+          "type": "D5",
+          "center_mm": [
+            29.80666595729587,
+            493.23100000000005,
+            15.1
+          ],
+          "axis": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/vase_TEBM35C10-4/slim/vase_TEBM35C10-4.catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "bmr_coaxial",
+      "path": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.stl",
+      "sha256": "18ef6af2177b370238b49462ef77cf17faf0c55cf3cedf694e1681f2bb9b8d09",
+      "title": "Obi-Wan BMR coaxial",
+      "label": "Obi-Wan BMR coaxial",
+      "family": "candidate",
+      "state": "shared",
+      "status": "Qualification candidate",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -31.3266659575
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          483.994193004
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999952
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "tebm_front_left_base",
+          "type": "D5",
+          "center_mm": [
+            -29.80666595729587,
+            452.494193004,
+            15.1
+          ],
+          "axis": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.catalog.json"
+        },
+        {
+          "name": "tebm_front_right_base",
+          "type": "D5",
+          "center_mm": [
+            29.80666595729587,
+            452.494193004,
+            15.1
+          ],
+          "axis": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "bmr_opposed",
+      "path": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.stl",
+      "sha256": "617bafd03e36d0db1e2f905303b45b3f16615ea16e075ddcb8dc4d40aed5ae65",
+      "title": "Obi-Wan BMR opposed",
+      "label": "Obi-Wan BMR opposed",
+      "family": "candidate",
+      "state": "shared",
+      "status": "Qualification candidate",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -31.3266659575
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          533.294193004
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.30000009999995
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "tebm_lower_left_base",
+          "type": "D5",
+          "center_mm": [
+            -29.80666595729587,
+            452.494193004,
+            15.1
+          ],
+          "axis": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.catalog.json"
+        },
+        {
+          "name": "tebm_lower_right_base",
+          "type": "D5",
+          "center_mm": [
+            29.80666595729587,
+            452.494193004,
+            15.1
+          ],
+          "axis": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.catalog.json"
+        },
+        {
+          "name": "tebm_upper_left_base",
+          "type": "D5",
+          "center_mm": [
+            -29.80666595729587,
+            501.794193004,
+            15.1
+          ],
+          "axis": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.catalog.json"
+        },
+        {
+          "name": "tebm_upper_right_base",
+          "type": "D5",
+          "center_mm": [
+            29.80666595729587,
+            501.794193004,
+            15.1
+          ],
+          "axis": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "purifi",
+      "path": "build/ptt_crescent_PTT1.3T04-HAG-01/obiwan_ptt13_dipole_crescent_PTT1.3T04-HAG-01.stl",
+      "sha256": "1cee49af3bccf7017dc96f83f7181271fe9032bac348fe1ca0e1a37b91799313",
+      "title": "Purifi dipole crescent",
+      "label": "Purifi dipole crescent",
+      "family": "candidate",
+      "state": "shared",
+      "status": "Qualification candidate",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "bmr_slim_vase_stock",
+      "path": "build/bmr_slim_TEBM35C10-4/proud/stock/vase_TEBM35C10-4.step",
+      "sha256": "d2c957fcf2040a7ce9c207fad08a9493b1071314746a01c29477449bf07a3f87",
+      "title": "BMR-slim vase / stock",
+      "label": "BMR-slim vase / stock",
+      "family": "candidate",
+      "state": "shared",
+      "status": "STEP only; no print project",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "land_0_0",
+          "type": "D5",
+          "center_mm": [
+            -29.87666595729587,
+            443.93100000000004,
+            15.1
+          ],
+          "axis": [
+            -1.0,
+            0,
+            0
+          ],
+          "authority": "build/bmr_slim_TEBM35C10-4/proud/stock/vase_TEBM35C10-4.facts.json"
+        },
+        {
+          "name": "land_0_1",
+          "type": "D5",
+          "center_mm": [
+            29.87666595729587,
+            443.93100000000004,
+            15.1
+          ],
+          "axis": [
+            1.0,
+            0,
+            0
+          ],
+          "authority": "build/bmr_slim_TEBM35C10-4/proud/stock/vase_TEBM35C10-4.facts.json"
+        },
+        {
+          "name": "land_1_0",
+          "type": "D5",
+          "center_mm": [
+            -29.87666595729587,
+            493.23100000000005,
+            15.1
+          ],
+          "axis": [
+            -1.0,
+            0,
+            0
+          ],
+          "authority": "build/bmr_slim_TEBM35C10-4/proud/stock/vase_TEBM35C10-4.facts.json"
+        },
+        {
+          "name": "land_1_1",
+          "type": "D5",
+          "center_mm": [
+            29.87666595729587,
+            493.23100000000005,
+            15.1
+          ],
+          "axis": [
+            1.0,
+            0,
+            0
+          ],
+          "authority": "build/bmr_slim_TEBM35C10-4/proud/stock/vase_TEBM35C10-4.facts.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "bmr_slim_vase_slim",
+      "path": "build/bmr_slim_TEBM35C10-4/proud/slim/vase_TEBM35C10-4.step",
+      "sha256": "d1b670c9c0e699a92405b68bc0fce0c674132ee0ea81bca1e8924ee4339a1979",
+      "title": "BMR-slim vase / slim",
+      "label": "BMR-slim vase / slim",
+      "family": "candidate",
+      "state": "shared",
+      "status": "STEP only; no print project",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "land_0_0",
+          "type": "D5",
+          "center_mm": [
+            -29.87666595729587,
+            443.93100000000004,
+            15.1
+          ],
+          "axis": [
+            -1.0,
+            0,
+            0
+          ],
+          "authority": "build/bmr_slim_TEBM35C10-4/proud/slim/vase_TEBM35C10-4.facts.json"
+        },
+        {
+          "name": "land_0_1",
+          "type": "D5",
+          "center_mm": [
+            29.87666595729587,
+            443.93100000000004,
+            15.1
+          ],
+          "axis": [
+            1.0,
+            0,
+            0
+          ],
+          "authority": "build/bmr_slim_TEBM35C10-4/proud/slim/vase_TEBM35C10-4.facts.json"
+        },
+        {
+          "name": "land_1_0",
+          "type": "D5",
+          "center_mm": [
+            -29.87666595729587,
+            493.23100000000005,
+            15.1
+          ],
+          "axis": [
+            -1.0,
+            0,
+            0
+          ],
+          "authority": "build/bmr_slim_TEBM35C10-4/proud/slim/vase_TEBM35C10-4.facts.json"
+        },
+        {
+          "name": "land_1_1",
+          "type": "D5",
+          "center_mm": [
+            29.87666595729587,
+            493.23100000000005,
+            15.1
+          ],
+          "axis": [
+            1.0,
+            0,
+            0
+          ],
+          "authority": "build/bmr_slim_TEBM35C10-4/proud/slim/vase_TEBM35C10-4.facts.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "bmr_slim_coaxial",
+      "path": "build/bmr_slim_TEBM35C10-4/obiwan_bmr_slim_crescent_TEBM35C10-4.step",
+      "sha256": "0072bef874b00134af68dd7cdb89774c217e9e0e7f18356237808f45c5511693",
+      "title": "Obi-Wan BMR-slim coaxial",
+      "label": "Obi-Wan BMR-slim coaxial",
+      "family": "candidate",
+      "state": "shared",
+      "status": "STEP only; no print project",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "tebm_front_left_base",
+          "type": "D5",
+          "center_mm": [
+            -29.87666595729587,
+            452.494193004,
+            15.1
+          ],
+          "axis": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/bmr_slim_TEBM35C10-4/obiwan_bmr_slim_crescent_TEBM35C10-4.facts.json"
+        },
+        {
+          "name": "tebm_front_right_base",
+          "type": "D5",
+          "center_mm": [
+            29.87666595729587,
+            452.494193004,
+            15.1
+          ],
+          "axis": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/bmr_slim_TEBM35C10-4/obiwan_bmr_slim_crescent_TEBM35C10-4.facts.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "bmr_slim_opposed",
+      "path": "build/bmr_slim_TEBM35C10-4/obiwan_bmr_slim_crescent_opposed_TEBM35C10-4.step",
+      "sha256": "d9c84b91a26bb90ed480a9a2ea263503641681c24cfb4193e96704b08cf4ea36",
+      "title": "Obi-Wan BMR-slim opposed",
+      "label": "Obi-Wan BMR-slim opposed",
+      "family": "candidate",
+      "state": "shared",
+      "status": "STEP only; no print project",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "tebm_lower_left_base",
+          "type": "D5",
+          "center_mm": [
+            -29.87666595729587,
+            452.494193004,
+            15.1
+          ],
+          "axis": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/bmr_slim_TEBM35C10-4/obiwan_bmr_slim_crescent_opposed_TEBM35C10-4.facts.json"
+        },
+        {
+          "name": "tebm_lower_right_base",
+          "type": "D5",
+          "center_mm": [
+            29.87666595729587,
+            452.494193004,
+            15.1
+          ],
+          "axis": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/bmr_slim_TEBM35C10-4/obiwan_bmr_slim_crescent_opposed_TEBM35C10-4.facts.json"
+        },
+        {
+          "name": "tebm_upper_left_base",
+          "type": "D5",
+          "center_mm": [
+            -29.87666595729587,
+            501.794193004,
+            15.1
+          ],
+          "axis": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/bmr_slim_TEBM35C10-4/obiwan_bmr_slim_crescent_opposed_TEBM35C10-4.facts.json"
+        },
+        {
+          "name": "tebm_upper_right_base",
+          "type": "D5",
+          "center_mm": [
+            29.87666595729587,
+            501.794193004,
+            15.1
+          ],
+          "axis": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "authority": "build/bmr_slim_TEBM35C10-4/obiwan_bmr_slim_crescent_opposed_TEBM35C10-4.facts.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "coupon_1",
+      "path": "build/no_floor_stand/stl/lx521_coupon_1_fit_plate.stl",
+      "sha256": "88ec70cfeaf03b854e8271aaac5d0646c24efbdba8d6f374fad12a644df425a3",
+      "title": "coupon 1 fit plate",
+      "label": "Coupon 01",
+      "family": "test",
+      "state": "shared",
+      "status": "Diagnostic; not an assembly part",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -46.0
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          40.000000000000014
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.3
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "coupon1_v1_upper_base",
+          "type": "D5",
+          "center_mm": [
+            28.0,
+            1.52,
+            14.4
+          ],
+          "axis": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "coupon_2",
+      "path": "build/no_floor_stand/stl/lx521_coupon_2_fit_key.stl",
+      "sha256": "0dddda60f59732fba879c7b7756389d186a4b8d8243864219a04df4b9ffcf012",
+      "title": "coupon 2 fit key",
+      "label": "Coupon 02",
+      "family": "test",
+      "state": "shared",
+      "status": "Diagnostic; not an assembly part",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -10.0
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          18.000000000000004
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.3
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "coupon_3",
+      "path": "build/no_floor_stand/stl/lx521_coupon_3_fish_entry.stl",
+      "sha256": "7b4b7348837d38f0e4eb84244ef6586635e7c09fd3c966524196681966d04cd2",
+      "title": "coupon 3 fish entry",
+      "label": "Coupon 03",
+      "family": "test",
+      "state": "shared",
+      "status": "Diagnostic; not an assembly part",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -24.00000010000001
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          70.00000010000001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.3000001
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "coupon_4",
+      "path": "build/no_floor_stand/stl/lx521_coupon_4_um_outlet_proud.stl",
+      "sha256": "69fa404db522d969865b989cda2b9e75fa034907b10be9ec395816654e94590c",
+      "title": "coupon 4 um outlet proud",
+      "label": "Coupon 04",
+      "family": "test",
+      "state": "shared",
+      "status": "Diagnostic; not an assembly part",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -6.0000001000034375
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          323.0000001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999966
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "coupon_5",
+      "path": "build/no_floor_stand/stl/lx521_coupon_5_fish_ts_dive.stl",
+      "sha256": "69fa4481dfb4db2f7a8a59993751eed6fafe76487a5402a34fdebb70452f9f13",
+      "title": "coupon 5 fish ts dive",
+      "label": "Coupon 05",
+      "family": "test",
+      "state": "shared",
+      "status": "Diagnostic; not an assembly part",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -44.0000001
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          434.0
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999956
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "coupon_6",
+      "path": "build/no_floor_stand/stl/lx521_coupon_6_fish_foot.stl",
+      "sha256": "592bb73c8f04d1800e89fb199fb5182183d235a25dad8e223255f1d84c6dcd55",
+      "title": "coupon 6 fish foot",
+      "label": "Coupon 06",
+      "family": "test",
+      "state": "shared",
+      "status": "Diagnostic; not an assembly part",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -20.0000001
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          37.33364810908099
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000100000002
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "coupon_7",
+      "path": "build/no_floor_stand/stl/lx521_coupon_7_recess_seat.stl",
+      "sha256": "9fe4a4363bf45c627e452e58b9d7c5ec59da6c974af5fd0bad67fa6e116443a5",
+      "title": "coupon 7 recess seat",
+      "label": "Coupon 07",
+      "family": "test",
+      "state": "shared",
+      "status": "Diagnostic; not an assembly part",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -82.0000001
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          141.0000001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.30000009999999
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "coupon_8",
+      "path": "build/no_floor_stand/stl/lx521_coupon_8_fish_ts_oval_proud.stl",
+      "sha256": "eb158c5a1e973e3c2abb1d1426d4e0d652685619f9ece240d9375cc8b751d7b3",
+      "title": "coupon 8 fish ts oval proud",
+      "label": "Coupon 08",
+      "family": "test",
+      "state": "shared",
+      "status": "Diagnostic; not an assembly part",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -58.0000001
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          430.0
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999963
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "coupon_9",
+      "path": "build/no_floor_stand/stl/lx521_coupon_9_um_faston_clocking.stl",
+      "sha256": "bbe52af5443c66ddea04095e927c609622bf2a21bd4965df85259fbdce5e9bfd",
+      "title": "coupon 9 um faston clocking",
+      "label": "Coupon 09",
+      "family": "test",
+      "state": "shared",
+      "status": "Diagnostic; not an assembly part",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -52.0
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          52.0
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          2.000000000000006
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "coupon_12",
+      "path": "build/no_floor_stand/stl/lx521_coupon_12_obiwan_closed_bore_bump.stl",
+      "sha256": "ab11ead824ead0c66f6020ce0deebaffe22bcb87f66f1647d2df5493ba90b401",
+      "title": "coupon 12 obiwan closed bore bump",
+      "label": "Coupon 12",
+      "family": "test",
+      "state": "shared",
+      "status": "Diagnostic; not an assembly part",
+      "frame": "installed",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          61.99999989999998
+        ],
+        [
+          -0.0,
+          -1.0,
+          -0.0,
+          180.0000001000001
+        ],
+        [
+          -0.0,
+          -0.0,
+          -1.0,
+          18.300000099999988
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "d5_coupon_carrier",
+      "path": "coupons/obiwan_ae_embed/stl/lx521_coupon_obiwan_ae_embed_carrier.stl",
+      "sha256": "3255ddb4e17092be3a621257b6dfb517783eacbcb8ed6729c5817f62ba6a53c2",
+      "title": "D5 process coupon carrier",
+      "label": "Carrier",
+      "family": "test",
+      "state": "shared",
+      "status": "Diagnostic; frozen coupon",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "cavity_2",
+          "type": "D5",
+          "center_mm": [
+            1.6052471995353697,
+            18.600000330263168,
+            6.724302141292809
+          ],
+          "axis": null,
+          "authority": "coupons/obiwan_ae_embed/stl/lx521_coupon_obiwan_ae_embed_carrier.stl: enclosed cavity centroid"
+        },
+        {
+          "name": "cavity_3",
+          "type": "D5",
+          "center_mm": [
+            1.6052471995353699,
+            6.500000147032599,
+            4.1494597094239305
+          ],
+          "axis": null,
+          "authority": "coupons/obiwan_ae_embed/stl/lx521_coupon_obiwan_ae_embed_carrier.stl: enclosed cavity centroid"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "d5_coupon_ae_wing",
+      "path": "coupons/obiwan_ae_embed/stl/lx521_coupon_obiwan_ae_embed_ae_wing.stl",
+      "sha256": "13cdd987c938aef33569a1ad084bb4c87cecc38a4540460452980eeb7e3b7c7e",
+      "title": "D5 process coupon ae_wing",
+      "label": "Wing",
+      "family": "test",
+      "state": "shared",
+      "status": "Diagnostic; frozen coupon",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "cavity_2",
+          "type": "D5",
+          "center_mm": [
+            1.9102348983287816,
+            18.60000033026317,
+            6.72430214129281
+          ],
+          "axis": null,
+          "authority": "coupons/obiwan_ae_embed/stl/lx521_coupon_obiwan_ae_embed_ae_wing.stl: enclosed cavity centroid"
+        },
+        {
+          "name": "cavity_3",
+          "type": "D5",
+          "center_mm": [
+            1.9102348983287818,
+            6.500000147032598,
+            4.1494597094239305
+          ],
+          "axis": null,
+          "authority": "coupons/obiwan_ae_embed/stl/lx521_coupon_obiwan_ae_embed_ae_wing.stl: enclosed cavity centroid"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "01_D6_body_coupon",
+      "path": "candidates/nd25fn4_crescent/print/qualification/01_D6_body_coupon.stl",
+      "sha256": "e9caca35dfd8bc34866865cc2451a981fe37cb0e7d74517775baabf862dd6506",
+      "title": "D6 test Body station",
+      "label": "Body station",
+      "family": "test",
+      "state": "shared",
+      "status": "Sliced qualification pair; physical result pending",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "cavity_2",
+          "type": "D6",
+          "center_mm": [
+            13.196057540311097,
+            7.443653490593402,
+            7.170892491560336
+          ],
+          "axis": null,
+          "authority": "candidates/nd25fn4_crescent/print/qualification/01_D6_body_coupon.stl: enclosed cavity centroid"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "D6_wing_coupon",
+      "path": "candidates/nd25fn4_crescent/print/qualification/D6_wing_coupon.stl",
+      "sha256": "9883557ade16c84bc39ee9718f71fdc892cbd6bcf8f1da6e367260463139ef17",
+      "title": "D6 test Wing station",
+      "label": "Wing station",
+      "family": "test",
+      "state": "shared",
+      "status": "Sliced qualification pair; physical result pending",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [
+        {
+          "name": "cavity_2",
+          "type": "D6",
+          "center_mm": [
+            12.620585422987844,
+            13.290777751921873,
+            7.159708215881311
+          ],
+          "axis": null,
+          "authority": "candidates/nd25fn4_crescent/print/qualification/D6_wing_coupon.stl: enclosed cavity centroid"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "registration_male_pin",
+      "path": "qualification/male_pin_pair.stl",
+      "sha256": "3f85e167677cbfd2442e6bc364f79427f44f998ab309f170daefe26483b033e2",
+      "title": "male pin",
+      "label": "Pins",
+      "family": "test",
+      "state": "shared",
+      "status": "Unsliced qualification fixture",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "registration_female_socket",
+      "path": "qualification/female_socket_pair.stl",
+      "sha256": "042a9df5f746d2f753040d21d57876c58244309ce600a385b0c5068131d5591d",
+      "title": "female socket",
+      "label": "Sockets",
+      "family": "test",
+      "state": "shared",
+      "status": "Unsliced qualification fixture",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "native_route_cover",
+      "path": "qualification/native_route_cover.stl",
+      "sha256": "34f20ce53e7ecda248139947d10a8308834953b81f19a88db33bb63fb2bea866",
+      "title": "native route cover",
+      "label": "Route cover",
+      "family": "test",
+      "state": "shared",
+      "status": "Unsliced qualification fixture",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "supported_roof_and_wall_steps",
+      "path": "qualification/supported_roof_and_wall_steps.stl",
+      "sha256": "07a554d68e07099cf1d943ac1b9ecf07686eb5cab8bcfe74da98a51904b00814",
+      "title": "supported roof and wall steps",
+      "label": "Roof / wall steps",
+      "family": "test",
+      "state": "shared",
+      "status": "Unsliced qualification fixture",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "polar_1of2_base",
+      "path": "build/floor_stand/stl/lx521_polar_base_1of2_base.stl",
+      "sha256": "f4ea27ee6a10ce4581529efeaf87c71f4f1055d66da0bec0914c9d72c2842536",
+      "title": "Polar index base",
+      "label": "Base",
+      "family": "test",
+      "state": "shared",
+      "status": "Measurement accessory",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    },
+    {
+      "id": "polar_2of2_rotor",
+      "path": "build/floor_stand/stl/lx521_polar_base_2of2_rotor.stl",
+      "sha256": "6f7cdfb6a1f7f7b9115666614426e1cf51a20d959130c464210cdefeb4f3aed1",
+      "title": "Polar index rotor",
+      "label": "Rotor",
+      "family": "test",
+      "state": "shared",
+      "status": "Measurement accessory",
+      "frame": "raw",
+      "mesh_to_view_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "sites": [],
+      "note": ""
+    }
+  ],
+  "cards": [
+    {
+      "id": "stock_lower",
+      "title": "01 \u00b7 LM bottom",
+      "parts": [
+        "stock_01_LM_bottom_1_of_3_no_floor_stand",
+        "stock_01_LM_bottom_1_of_3_floor_stand"
+      ],
+      "note": "Choose ONE stand state; 02\u201304 stay shared.",
+      "columns": 2,
+      "subtitle": "2 stand alternatives",
+      "view": "front"
+    },
+    {
+      "id": "stock_mids",
+      "title": "02 + 03 \u00b7 LM middle",
+      "parts": [
+        "stock_02_LM_mid_left_2_of_3",
+        "stock_03_LM_mid_right_3_of_3"
+      ],
+      "note": "Print both left and right pieces.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "stock_vase",
+      "title": "04 \u00b7 UM / tweeter vase",
+      "parts": [
+        "stock_04_UM_vase_1_of_1"
+      ],
+      "note": "4 D5 buried in the vase: upper/lower, left/right.",
+      "columns": 1,
+      "subtitle": "Dayton ND25FW-4 pair",
+      "view": "front"
+    },
+    {
+      "id": "stock_shoulders",
+      "title": "05\u201308 \u00b7 A shoulders",
+      "parts": [
+        "stock_06_A_shoulder_top_left_2_of_4",
+        "stock_08_A_shoulder_top_right_4_of_4",
+        "stock_05_A_shoulder_bottom_left_1_of_4",
+        "stock_07_A_shoulder_bottom_right_3_of_4"
+      ],
+      "note": "1 D5 per piece; four pieces = 4 D5.",
+      "columns": 2,
+      "subtitle": "Alternative to B1 wings",
+      "view": "front"
+    },
+    {
+      "id": "stock_wings",
+      "title": "09 + 10 \u00b7 B1 wings",
+      "parts": [
+        "stock_09_B1_wing_left_1_of_2",
+        "stock_10_B1_wing_right_2_of_2"
+      ],
+      "note": "2 D5 per wing; left + right = 4 D5.",
+      "columns": 2,
+      "subtitle": "Alternative to A shoulders",
+      "view": "front"
+    },
+    {
+      "id": "stock_grommets",
+      "title": "UM cable grommet",
+      "parts": [
+        "stock_grommet_a",
+        "stock_grommet_b"
+      ],
+      "note": "TPU pair; use the matching Stock/Slim outlet.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "slim_lower",
+      "title": "01 \u00b7 LM bottom",
+      "parts": [
+        "slim_01_LM_bottom_1_of_3_no_floor_stand",
+        "slim_01_LM_bottom_1_of_3_floor_stand"
+      ],
+      "note": "Choose ONE stand state; 02\u201304 stay shared.",
+      "columns": 2,
+      "subtitle": "2 stand alternatives",
+      "view": "front"
+    },
+    {
+      "id": "slim_mids",
+      "title": "02 + 03 \u00b7 LM middle",
+      "parts": [
+        "slim_02_LM_mid_left_2_of_3",
+        "slim_03_LM_mid_right_3_of_3"
+      ],
+      "note": "Print both left and right pieces.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "slim_vase",
+      "title": "04 \u00b7 UM / tweeter vase",
+      "parts": [
+        "slim_04_UM_vase_1_of_1"
+      ],
+      "note": "4 D5 buried in the vase: upper/lower, left/right.",
+      "columns": 1,
+      "subtitle": "Dayton ND25FW-4 pair",
+      "view": "front"
+    },
+    {
+      "id": "slim_shoulders",
+      "title": "05\u201308 \u00b7 A shoulders",
+      "parts": [
+        "slim_06_A_shoulder_top_left_2_of_4",
+        "slim_08_A_shoulder_top_right_4_of_4",
+        "slim_05_A_shoulder_bottom_left_1_of_4",
+        "slim_07_A_shoulder_bottom_right_3_of_4"
+      ],
+      "note": "1 D5 per piece; four pieces = 4 D5.",
+      "columns": 2,
+      "subtitle": "Alternative to B1 wings",
+      "view": "front"
+    },
+    {
+      "id": "slim_wings",
+      "title": "09 + 10 \u00b7 B1 wings",
+      "parts": [
+        "slim_09_B1_wing_left_1_of_2",
+        "slim_10_B1_wing_right_2_of_2"
+      ],
+      "note": "2 D5 per wing; left + right = 4 D5.",
+      "columns": 2,
+      "subtitle": "Alternative to A shoulders",
+      "view": "front"
+    },
+    {
+      "id": "slim_grommets",
+      "title": "UM cable grommet",
+      "parts": [
+        "slim_grommet_a",
+        "slim_grommet_b"
+      ],
+      "note": "TPU pair; use the matching Stock/Slim outlet.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "obi_lower",
+      "title": "01 \u00b7 Keyed LM bottom",
+      "parts": [
+        "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand",
+        "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand"
+      ],
+      "note": "2 D5 per version, one at each lower shoulder.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "obi_top",
+      "title": "02 \u00b7 Keyed LM top",
+      "parts": [
+        "obiwan_02_LM_top_keyed_2_of_2"
+      ],
+      "note": "2 D5: upper left + upper right LM rim.",
+      "columns": 1,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "obi_um",
+      "title": "03 \u00b7 Regular UM",
+      "parts": [
+        "obiwan_03_UM_carrier_1_of_1"
+      ],
+      "note": "2 D5: upper left + upper right UM rim.",
+      "columns": 1,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "obi_t",
+      "title": "04 \u00b7 Regular crescent",
+      "parts": [
+        "obiwan_04_T_tweeter_crescent_1_of_1"
+      ],
+      "note": "No magnets. Screws attach it to the UM.",
+      "columns": 1,
+      "subtitle": "Dayton ND25FW-4 pair",
+      "view": "front"
+    },
+    {
+      "id": "obi_lid",
+      "title": "NL8 service lid",
+      "parts": [
+        "obiwan_NL8_service_lid_1_of_1"
+      ],
+      "note": "Floor-stand service cover; no magnets.",
+      "columns": 1,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "obi_monolith",
+      "title": "Alternative \u00b7 LM monolith",
+      "parts": [
+        "obi_monolith_no_floor_stand",
+        "obi_monolith_floor_stand"
+      ],
+      "note": "4 D5 each. Replaces BOTH keyed LM halves.",
+      "columns": 2,
+      "subtitle": "Large printer only \u00b7 not P2S",
+      "view": "front"
+    },
+    {
+      "id": "wings_flat_lm_lower",
+      "title": "Flat \u00b7 LOWER wings",
+      "parts": [
+        "obiwan_wing_flat_left_split2_1_of_2_lm_lower",
+        "obiwan_wing_flat_right_split2_1_of_2_lm_lower"
+      ],
+      "note": "1 D5 per side at lower LM. Shared with Dayton ND25FN-4.",
+      "columns": 2,
+      "subtitle": "Left + right \u00b7 same in both stand states",
+      "view": "front"
+    },
+    {
+      "id": "wings_flat_lm_um_upper",
+      "title": "Flat \u00b7 regular UPPER wings",
+      "parts": [
+        "obiwan_wing_flat_left_split2_2_of_2_lm_um_upper",
+        "obiwan_wing_flat_right_split2_2_of_2_lm_um_upper"
+      ],
+      "note": "2 D5 per side: upper LM + regular UM. Use only with regular UM.",
+      "columns": 2,
+      "subtitle": "Left + right \u00b7 same in both stand states",
+      "view": "front"
+    },
+    {
+      "id": "wings_graded_lm_lower",
+      "title": "Graded \u00b7 LOWER wings",
+      "parts": [
+        "obiwan_wing_graded_left_split2_1_of_2_lm_lower",
+        "obiwan_wing_graded_right_split2_1_of_2_lm_lower"
+      ],
+      "note": "1 D5 per side at lower LM. Shared with Dayton ND25FN-4.",
+      "columns": 2,
+      "subtitle": "Left + right \u00b7 same in both stand states",
+      "view": "front"
+    },
+    {
+      "id": "wings_graded_lm_um_upper",
+      "title": "Graded \u00b7 regular UPPER wings",
+      "parts": [
+        "obiwan_wing_graded_left_split2_2_of_2_lm_um_upper",
+        "obiwan_wing_graded_right_split2_2_of_2_lm_um_upper"
+      ],
+      "note": "2 D5 per side: upper LM + regular UM. Use only with regular UM.",
+      "columns": 2,
+      "subtitle": "Left + right \u00b7 same in both stand states",
+      "view": "front"
+    },
+    {
+      "id": "v4_body",
+      "title": "01 \u00b7 Fused UM + ND25FN-4",
+      "parts": [
+        "v4_body"
+      ],
+      "note": "4 D6: two buried at each UM flank. Same body for both stands.",
+      "columns": 1,
+      "subtitle": "Dayton ND25FN-4 pair",
+      "view": "front"
+    },
+    {
+      "id": "v4_caps",
+      "title": "02 \u00b7 Closed caps",
+      "parts": [
+        "v4_cap"
+      ],
+      "note": "2 caps per body. No magnets; O-ring fit.",
+      "columns": 1,
+      "subtitle": "",
+      "view": "rear"
+    },
+    {
+      "id": "v4_retainers",
+      "title": "03 \u00b7 Tweeter retainers",
+      "parts": [
+        "v4_retainer"
+      ],
+      "note": "2 retainers. M3 screws + \u00d85\u00d74 mm M3 inserts; no magnets.",
+      "columns": 1,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "v4_flat_wings",
+      "title": "Flat \u00b7 ND25FN-4 UPPER wings",
+      "parts": [
+        "v4_flat_left",
+        "v4_flat_right"
+      ],
+      "note": "Each: 2 D6 at UM + 1 D5 at LM. Use the matching regular LOWER pair.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "v4_graded_wings",
+      "title": "Graded \u00b7 ND25FN-4 UPPER wings",
+      "parts": [
+        "v4_graded_left",
+        "v4_graded_right"
+      ],
+      "note": "Each: 2 D6 at UM + 1 D5 at LM. Use the matching regular LOWER pair.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "bmr_vase_stock",
+      "title": "Stock \u00b7 BMR vase",
+      "parts": [
+        "bmr_vase_stock"
+      ],
+      "note": "4 D5 on the two tweeter lands; matching perimeter not supplied.",
+      "columns": 1,
+      "subtitle": "TEBM35C10-4 opposed pair",
+      "view": "front"
+    },
+    {
+      "id": "bmr_vase_slim",
+      "title": "Slim \u00b7 BMR vase",
+      "parts": [
+        "bmr_vase_slim"
+      ],
+      "note": "4 D5 on the two tweeter lands; matching perimeter not supplied.",
+      "columns": 1,
+      "subtitle": "TEBM35C10-4 opposed pair",
+      "view": "front"
+    },
+    {
+      "id": "bmr_coaxial",
+      "title": "Obi-Wan \u00b7 BMR coaxial",
+      "parts": [
+        "bmr_coaxial"
+      ],
+      "note": "2 D5; future side attachments, no released magnet mate.",
+      "columns": 1,
+      "subtitle": "TEBM35C10-4 pair",
+      "view": "front"
+    },
+    {
+      "id": "bmr_opposed",
+      "title": "Obi-Wan \u00b7 BMR opposed",
+      "parts": [
+        "bmr_opposed"
+      ],
+      "note": "4 D5; future side attachments, no released magnet mate.",
+      "columns": 1,
+      "subtitle": "TEBM35C10-4 pair",
+      "view": "front"
+    },
+    {
+      "id": "purifi",
+      "title": "Obi-Wan \u00b7 Purifi crescent",
+      "parts": [
+        "purifi"
+      ],
+      "note": "No magnets. UM joint integration / physical fit remain to qualify.",
+      "columns": 1,
+      "subtitle": "PTT1.3T04-HAG-01 + WG104 pair",
+      "view": "front"
+    },
+    {
+      "id": "bmr_slim_vase_stock",
+      "title": "Stock \u00b7 BMR-slim vase",
+      "parts": [
+        "bmr_slim_vase_stock"
+      ],
+      "note": "4 D5. Slim driver lands; matching perimeter not supplied.",
+      "columns": 1,
+      "subtitle": "STEP-only candidate",
+      "view": "front"
+    },
+    {
+      "id": "bmr_slim_vase_slim",
+      "title": "Slim \u00b7 BMR-slim vase",
+      "parts": [
+        "bmr_slim_vase_slim"
+      ],
+      "note": "4 D5. Slim driver lands; matching perimeter not supplied.",
+      "columns": 1,
+      "subtitle": "STEP-only candidate",
+      "view": "front"
+    },
+    {
+      "id": "bmr_slim_coaxial",
+      "title": "Obi-Wan \u00b7 BMR-slim coaxial",
+      "parts": [
+        "bmr_slim_coaxial"
+      ],
+      "note": "2 D5. No released magnet mate.",
+      "columns": 1,
+      "subtitle": "STEP-only candidate",
+      "view": "front"
+    },
+    {
+      "id": "bmr_slim_opposed",
+      "title": "Obi-Wan \u00b7 BMR-slim opposed",
+      "parts": [
+        "bmr_slim_opposed"
+      ],
+      "note": "4 D5. No released magnet mate.",
+      "columns": 1,
+      "subtitle": "STEP-only candidate",
+      "view": "front"
+    },
+    {
+      "id": "coupon_1",
+      "title": "01 + 02 \u00b7 Fit plate / key",
+      "parts": [
+        "coupon_1",
+        "coupon_2"
+      ],
+      "note": "Fit, inserts and keys; plate has 1 D5.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "coupon_3",
+      "title": "03 + 04 \u00b7 Cable entries",
+      "parts": [
+        "coupon_3",
+        "coupon_4"
+      ],
+      "note": "Fish entry / proud UM outlet. No magnets.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "coupon_5",
+      "title": "05 + 06 \u00b7 Cable turns",
+      "parts": [
+        "coupon_5",
+        "coupon_6"
+      ],
+      "note": "Tweeter dive / foot route. No magnets.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "coupon_7",
+      "title": "07 + 08 \u00b7 Seat / oval duct",
+      "parts": [
+        "coupon_7",
+        "coupon_8"
+      ],
+      "note": "Recess seat / proud tweeter oval. No magnets.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "coupon_9",
+      "title": "09 + 12 \u00b7 UM fit / bypass",
+      "parts": [
+        "coupon_9",
+        "coupon_12"
+      ],
+      "note": "Faston clocking / closed-bore bump. No magnets.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "d5_coupon",
+      "title": "D5 embedded-magnet test",
+      "parts": [
+        "d5_coupon_carrier",
+        "d5_coupon_ae_wing"
+      ],
+      "note": "2 D5 per strip. Frozen process coupon; not production pull-force proof.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "d6_coupon",
+      "title": "D6 body / wing test",
+      "parts": [
+        "01_D6_body_coupon",
+        "D6_wing_coupon"
+      ],
+      "note": "1 D6 per piece. Actual ND25FN-4 pocket and skin; physical print result pending.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "registration",
+      "title": "LM registration test",
+      "parts": [
+        "registration_male_pin",
+        "registration_female_socket"
+      ],
+      "note": "Braced pin / socket pair. No magnets; not a carrier alternative.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "process",
+      "title": "Route / support witnesses",
+      "parts": [
+        "native_route_cover",
+        "supported_roof_and_wall_steps"
+      ],
+      "note": "Support removal, cover and wall tests. No magnets.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    },
+    {
+      "id": "polar",
+      "title": "Polar measurement base",
+      "parts": [
+        "polar_1of2_base",
+        "polar_2of2_rotor"
+      ],
+      "note": "Measurement / indexing accessory. No magnets.",
+      "columns": 2,
+      "subtitle": "",
+      "view": "front"
+    }
+  ],
+  "sections": [
+    {
+      "title": "STOCK  /  full-depth 18.3 mm",
+      "description": "Bare, A shoulders or B1 wings. Select one perimeter set. All magnetic stations are D5.",
+      "cards": [
+        "stock_lower",
+        "stock_mids",
+        "stock_vase",
+        "stock_shoulders",
+        "stock_wings",
+        "stock_grommets"
+      ],
+      "columns": 6,
+      "height": 590,
+      "color": "#608ca9"
+    },
+    {
+      "title": "SLIM  /  11.5 mm acoustic field",
+      "description": "Bare, A shoulders or B1 wings. Select one perimeter set. All magnetic stations are D5.",
+      "cards": [
+        "slim_lower",
+        "slim_mids",
+        "slim_vase",
+        "slim_shoulders",
+        "slim_wings",
+        "slim_grommets"
+      ],
+      "columns": 6,
+      "height": 590,
+      "color": "#83aba7"
+    },
+    {
+      "title": "OBI-WAN  /  regular core and crescent",
+      "description": "The same LM top accepts the regular UM or fused Dayton ND25FN-4. Floor / no-floor changes the lower LM only.",
+      "cards": [
+        "obi_lower",
+        "obi_top",
+        "obi_um",
+        "obi_t",
+        "obi_lid",
+        "obi_monolith"
+      ],
+      "columns": 6,
+      "height": 620,
+      "color": "#548ab4"
+    },
+    {
+      "title": "OBI-WAN WINGS  /  flat or graded",
+      "description": "Two pieces per side: LOWER + UPPER. Choose one style. The LOWER pieces also fit the Dayton ND25FN-4 assembly.",
+      "cards": [
+        "wings_flat_lm_lower",
+        "wings_flat_lm_um_upper",
+        "wings_graded_lm_lower",
+        "wings_graded_lm_um_upper"
+      ],
+      "columns": 4,
+      "height": 590,
+      "color": "#548ab4"
+    },
+    {
+      "title": "OBI-WAN + DAYTON ND25FN-4  /  fused UM and waveguide",
+      "description": "Replaces regular UM + separate crescent. Uses its own UPPER wings. 8 D6 + 8 D5 for a complete winged speaker.",
+      "cards": [
+        "v4_body",
+        "v4_caps",
+        "v4_retainers",
+        "v4_flat_wings",
+        "v4_graded_wings"
+      ],
+      "columns": 5,
+      "height": 650,
+      "color": "#3a779f"
+    },
+    {
+      "title": "ALTERNATE TWEETERS  /  full-land BMR and Purifi",
+      "description": "Prototype alternatives: select one compatible carrier per assembly. BMR magnet stations have no delivered matching perimeter.",
+      "cards": [
+        "bmr_vase_stock",
+        "bmr_vase_slim",
+        "bmr_coaxial",
+        "bmr_opposed",
+        "purifi"
+      ],
+      "columns": 5,
+      "height": 600,
+      "color": "#9382a4"
+    },
+    {
+      "title": "BMR-SLIM  /  additional CAD-only variants",
+      "description": "\u00d856 driver-following core with local magnet lobes. These four alternatives have STEP geometry, but no delivered STL / 3MF.",
+      "cards": [
+        "bmr_slim_vase_stock",
+        "bmr_slim_vase_slim",
+        "bmr_slim_coaxial",
+        "bmr_slim_opposed"
+      ],
+      "columns": 4,
+      "height": 540,
+      "color": "#9382a4"
+    },
+    {
+      "title": "TEST PIECES & MEASUREMENT ACCESSORIES",
+      "description": "Separate fixtures, not extra parts in a speaker. Stock/Slim grommets above replace the old coupon 10/11 names.",
+      "cards": [
+        "coupon_1",
+        "coupon_3",
+        "coupon_5",
+        "coupon_7",
+        "coupon_9",
+        "d5_coupon",
+        "d6_coupon",
+        "registration",
+        "process",
+        "polar"
+      ],
+      "columns": 5,
+      "height": 560,
+      "color": "#92a1ac"
+    }
+  ],
+  "assembly_maps": [
+    {
+      "id": "assembly_stock",
+      "title": "Stock + A shoulders",
+      "parts": [
+        "stock_01_LM_bottom_1_of_3_no_floor_stand",
+        "stock_02_LM_mid_left_2_of_3",
+        "stock_03_LM_mid_right_3_of_3",
+        "stock_04_UM_vase_1_of_1",
+        "stock_06_A_shoulder_top_left_2_of_4",
+        "stock_08_A_shoulder_top_right_4_of_4",
+        "stock_05_A_shoulder_bottom_left_1_of_4",
+        "stock_07_A_shoulder_bottom_right_3_of_4"
+      ],
+      "pairs": [
+        {
+          "name": "stock_lower_right_base <> stock_lower_right_receiver",
+          "type": "D5",
+          "center_mm": [
+            40.02396196335738,
+            322.3928708827994,
+            15.1
+          ],
+          "axis": [
+            0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "stock_lower_left_base <> stock_lower_left_receiver",
+          "type": "D5",
+          "center_mm": [
+            -40.02396196335738,
+            322.3928708827994,
+            15.1
+          ],
+          "axis": [
+            -0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "stock_upper_right_base <> stock_upper_right_receiver",
+          "type": "D5",
+          "center_mm": [
+            17.86424053213663,
+            420.4131501977772,
+            15.1
+          ],
+          "axis": [
+            0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "stock_upper_left_base <> stock_upper_left_receiver",
+          "type": "D5",
+          "center_mm": [
+            -17.86424053213663,
+            420.4131501977772,
+            15.1
+          ],
+          "axis": [
+            -0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "pair_counts": {
+        "D5": 4
+      }
+    },
+    {
+      "id": "assembly_slim",
+      "title": "Slim + B1 wings",
+      "parts": [
+        "slim_01_LM_bottom_1_of_3_no_floor_stand",
+        "slim_02_LM_mid_left_2_of_3",
+        "slim_03_LM_mid_right_3_of_3",
+        "slim_04_UM_vase_1_of_1",
+        "slim_09_B1_wing_left_1_of_2",
+        "slim_10_B1_wing_right_2_of_2"
+      ],
+      "pairs": [
+        {
+          "name": "v1_lower_right_base <> v1_lower_right_receiver",
+          "type": "D5",
+          "center_mm": [
+            40.02396196335738,
+            322.3928708827994,
+            15.1
+          ],
+          "axis": [
+            0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "v1_lower_left_base <> v1_lower_left_receiver",
+          "type": "D5",
+          "center_mm": [
+            -40.02396196335738,
+            322.3928708827994,
+            15.1
+          ],
+          "axis": [
+            -0.9584785342953424,
+            -0.2851646880226448,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "v1_upper_right_base <> v1_upper_right_receiver",
+          "type": "D5",
+          "center_mm": [
+            17.86424053213663,
+            420.4131501977772,
+            15.1
+          ],
+          "axis": [
+            0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "v1_upper_left_base <> v1_upper_left_receiver",
+          "type": "D5",
+          "center_mm": [
+            -17.86424053213663,
+            420.4131501977772,
+            15.1
+          ],
+          "axis": [
+            -0.35021039696371,
+            -0.9366710617172503,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "pair_counts": {
+        "D5": 4
+      }
+    },
+    {
+      "id": "assembly_obiwan",
+      "title": "Regular Obi-Wan + graded wings",
+      "parts": [
+        "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand",
+        "obiwan_02_LM_top_keyed_2_of_2",
+        "obiwan_03_UM_carrier_1_of_1",
+        "obiwan_04_T_tweeter_crescent_1_of_1",
+        "obiwan_wing_graded_left_split2_1_of_2_lm_lower",
+        "obiwan_wing_graded_right_split2_1_of_2_lm_lower",
+        "obiwan_wing_graded_left_split2_2_of_2_lm_um_upper",
+        "obiwan_wing_graded_right_split2_2_of_2_lm_um_upper"
+      ],
+      "pairs": [
+        {
+          "name": "lm_lower_left <> lm_lower_left",
+          "type": "D5",
+          "center_mm": [
+            -45.24968884764996,
+            89.22575791244782,
+            15.1
+          ],
+          "axis": [
+            -0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "lm_lower_right <> lm_lower_right",
+          "type": "D5",
+          "center_mm": [
+            45.24968884764996,
+            89.22575791244782,
+            15.1
+          ],
+          "axis": [
+            0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "lm_upper_left <> lm_upper_left",
+          "type": "D5",
+          "center_mm": [
+            -49.926089907808034,
+            303.34465393301207,
+            15.1
+          ],
+          "axis": [
+            -0.4383711467890776,
+            0.8987940462991671,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "lm_upper_right <> lm_upper_right",
+          "type": "D5",
+          "center_mm": [
+            49.926089907808034,
+            303.34465393301207,
+            15.1
+          ],
+          "axis": [
+            0.43837114678907757,
+            0.8987940462991671,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "um_left <> um_left",
+          "type": "D5",
+          "center_mm": [
+            -33.45135360440761,
+            406.6607368403602,
+            15.1
+          ],
+          "axis": [
+            -0.6360782202777641,
+            0.7716245833877199,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "um_right <> um_right",
+          "type": "D5",
+          "center_mm": [
+            33.4513536044076,
+            406.6607368403602,
+            15.1
+          ],
+          "axis": [
+            0.636078220277764,
+            0.77162458338772,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        }
+      ],
+      "pair_counts": {
+        "D5": 6
+      }
+    },
+    {
+      "id": "assembly_v4",
+      "title": "Dayton ND25FN-4 + matching graded wings",
+      "parts": [
+        "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand",
+        "obiwan_02_LM_top_keyed_2_of_2",
+        "v4_body",
+        "obiwan_wing_graded_left_split2_1_of_2_lm_lower",
+        "obiwan_wing_graded_right_split2_1_of_2_lm_lower",
+        "v4_graded_left",
+        "v4_graded_right"
+      ],
+      "pairs": [
+        {
+          "name": "lm_lower_left <> lm_lower_left",
+          "type": "D5",
+          "center_mm": [
+            -45.24968884764996,
+            89.22575791244782,
+            15.1
+          ],
+          "axis": [
+            -0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "lm_lower_right <> lm_lower_right",
+          "type": "D5",
+          "center_mm": [
+            45.24968884764996,
+            89.22575791244782,
+            15.1
+          ],
+          "axis": [
+            0.7064513012709772,
+            -0.7077616540421945,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "lm_upper_left <> preserved_LM",
+          "type": "D5",
+          "center_mm": [
+            -49.926089907808034,
+            303.34465393301207,
+            15.1
+          ],
+          "axis": [
+            -0.4383711467890776,
+            0.8987940462991671,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "lm_upper_right <> preserved_LM",
+          "type": "D5",
+          "center_mm": [
+            49.926089907808034,
+            303.34465393301207,
+            15.1
+          ],
+          "axis": [
+            0.43837114678907757,
+            0.8987940462991671,
+            0.0
+          ],
+          "authority": "review/captive_magnet_release_catalog.json"
+        },
+        {
+          "name": "body_168deg <> wing_168deg",
+          "type": "D6",
+          "center_mm": [
+            -57.13653423680155,
+            378.2418407354305,
+            13.366589895246495
+          ],
+          "axis": [
+            -0.8052320281747014,
+            0.3889848960175594,
+            -0.4475400892343224
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        },
+        {
+          "name": "body_192deg <> wing_192deg",
+          "type": "D6",
+          "center_mm": [
+            -57.184283405042486,
+            353.9101824484559,
+            13.361024322140933
+          ],
+          "axis": [
+            -0.8193543572217301,
+            -0.35850786033881415,
+            -0.4473595325653078
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        },
+        {
+          "name": "body_12deg <> wing_12deg",
+          "type": "D6",
+          "center_mm": [
+            57.13567253572319,
+            378.2414151633925,
+            13.367078742196481
+          ],
+          "axis": [
+            0.805372962265877,
+            0.3888778391438902,
+            -0.44737950095401685
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        },
+        {
+          "name": "body_-12deg <> wing_-12deg",
+          "type": "D6",
+          "center_mm": [
+            57.18456706384262,
+            353.910055258531,
+            13.360864724131044
+          ],
+          "axis": [
+            0.8193124252480259,
+            -0.35855893886390505,
+            -0.4473953924606156
+          ],
+          "authority": "candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"
+        }
+      ],
+      "pair_counts": {
+        "D5": 4,
+        "D6": 4
+      }
+    }
+  ],
+  "source_sha256": {
+    "review/captive_magnet_release_catalog.json": "de733fc0603c22191d70ffe7caf355c5f986b6e76497b80bb70eead3b172762f",
+    "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.catalog.json": "cf910de26961093f4d1804c205b755441bfe93071ef661d5a583b03fdee42ca4",
+    "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.catalog.json": "411a829c4508c1b9d05d31e6236b9d33a7be002db3b7f31e923df2ed2afe7f6c",
+    "build/vase_TEBM35C10-4/slim/vase_TEBM35C10-4.catalog.json": "0964ec225b9f6c4b015aa57d7e0284817978bf90554f5a4c9f240a0f38af9c57",
+    "build/vase_TEBM35C10-4/stock/vase_TEBM35C10-4.catalog.json": "cb5fe2226a125b17ac7e3f4671d3eda9762edae812ef427c75c25bbfc388394c",
+    "to_print/catalog.json": "877da2d2b27e05d1f44cd7b6ca7d4d6c2bf36a348dbed58fb792c9611715a223",
+    "build/no_floor_stand/stl/stock_1_of_4_bottom.stl": "8554cd3d0f0fabdf82637c8ef4a044d9efdfe8961bf544871f784594612b1ede",
+    "build/no_floor_stand/stl/stock_1_of_4_bottom.print.json": "942069fd682c33b1cc4b7802ad6a1adaa41d8972269514c8c1d2f2ba5ddcc4ab",
+    "build/floor_stand/stl/stock_1_of_4_bottom.stl": "557d8cf9ae155bb5c39ac566248f38588b502a557a30bffee476f09107f5c1bf",
+    "build/floor_stand/stl/stock_1_of_4_bottom.print.json": "748d25629bab4c2c55d61a880c17fb2db1705be1ce7716de3f13d82a37795cfb",
+    "build/no_floor_stand/stl/stock_2_of_4_mid_left.stl": "260bbd556f7755e52b3ce6d35d2aa4bdef83395abb91ea8f6c679ac3e085b640",
+    "build/no_floor_stand/stl/stock_2_of_4_mid_left.print.json": "8f573f648b54e4ce04c87a57c44bd2b3cfab293b4a3e5fee138a5d49285b80d5",
+    "build/no_floor_stand/stl/stock_3_of_4_mid_right.stl": "aac8e8ad3f123edcd3afd33c9d735ef462ea256f8bd084dbddfe2c8c1ae5e29c",
+    "build/no_floor_stand/stl/stock_3_of_4_mid_right.print.json": "00c71320417dae805edc3faf43890dc4f112f1fe61302da901489c1bb34d55ea",
+    "build/no_floor_stand/stl/stock_4_of_4_vase_b2.stl": "b8bf6122dbb5fa5e9f26f401264ef92a13c94149629db6742231b4a35ed38833",
+    "build/no_floor_stand/stl/stock_4_of_4_vase_b2.print.json": "7412c68b8b62e99d97c59bef658faffe69e8b57ef56c1be6ece0a9c39a702871",
+    "build/no_floor_stand/stl/stock_shoulder_3_of_4_bottom_left.stl": "498086f24109d792c45212144855bd570c06af4b5128fdca371a8cdb00960cf3",
+    "build/no_floor_stand/stl/stock_shoulder_3_of_4_bottom_left.print.json": "d7d7cbcfbebd53e2afaf800140a635dd88b08c273249e660e9e585830308a01b",
+    "build/no_floor_stand/stl/stock_shoulder_1_of_4_top_left.stl": "c226846fba25d831631e1ae83f2d20bd4229407e62ae8a196c1116f13d903091",
+    "build/no_floor_stand/stl/stock_shoulder_1_of_4_top_left.print.json": "a436423f18bb2539544317febb6b59ff428f8667a68ba4fbbd87281f82c74361",
+    "build/no_floor_stand/stl/stock_shoulder_4_of_4_bottom_right.stl": "43fa254e1c788a6b9ec2170bf892955be8ec8321bc9aea0408f494038ea10792",
+    "build/no_floor_stand/stl/stock_shoulder_4_of_4_bottom_right.print.json": "b1be2b12a7aecea21cff86be1c195065aff2a19832a22ca3b9626fd05b8eb02e",
+    "build/no_floor_stand/stl/stock_shoulder_2_of_4_top_right.stl": "97d976c11078ed0a4e6e6f4f3862bbcd9042994b48a21ef5ee254f8f71fd838f",
+    "build/no_floor_stand/stl/stock_shoulder_2_of_4_top_right.print.json": "58532971771c35d04af82064ec6030a8765006c82def7ad05d7fa0f9bc1da78a",
+    "build/no_floor_stand/stl/stock_wing_1_of_2_left.stl": "7749a25921f930432d155f8988afe0dd8516f2b119560c11890f4f2a309794f1",
+    "build/no_floor_stand/stl/stock_wing_1_of_2_left.print.json": "d79e6f0b1948f72fb85f362985798e6a292f7fd0aeb7b2ecf82845527f1f0804",
+    "build/no_floor_stand/stl/stock_wing_2_of_2_right.stl": "8da84750e2cff0075955bd8245831ebfc0ddfc97d9bc36e97789069cadf5d67b",
+    "build/no_floor_stand/stl/stock_wing_2_of_2_right.print.json": "c566892514e8c03c4cb70cbaaa5aedb2a3b3d062b504fc75634697262d659cb0",
+    "build/no_floor_stand/stl/stock_um_grommet_half_a.stl": "3dd565076e1c41b8d2372ff05a279fa088dcf8f0ca69711b08dd386ae7bacdd4",
+    "build/no_floor_stand/stl/stock_um_grommet_half_a.print.json": "f100b0d3dce4d9f48305d61c5072cf51240b547a39e408ab8c9d500674cc5753",
+    "build/no_floor_stand/stl/stock_um_grommet_half_b.stl": "819fca249c4154fa211214f51978e665f9ce56a27b852b7678db23cc0e477cf7",
+    "build/no_floor_stand/stl/stock_um_grommet_half_b.print.json": "d04d0d7f7071d1ba632d9030251d070ab9fd1b5dec73fa2d5818f56742cf0220",
+    "build/no_floor_stand/stl/slim_1_of_4_bottom.stl": "a5e8c5901f6eacfdd195b897fd2ee213f036b81e60c7ad4179d50aba5a4c5691",
+    "build/no_floor_stand/stl/slim_1_of_4_bottom.print.json": "dd30ac356d3af803231b1ec691d3f5d50c543bd72e6cad7dc90971cc398a378d",
+    "build/floor_stand/stl/slim_1_of_4_bottom.stl": "339e8735061dee9abfba32e301898cc47e570884115201ee21a50a2fa2596b4c",
+    "build/floor_stand/stl/slim_1_of_4_bottom.print.json": "7bf6ab964c293f21143e948b73ab52a33407c7af823cb28aeb4f9837814150a3",
+    "build/no_floor_stand/stl/slim_2_of_4_mid_left.stl": "448af41d309e381d9b70f4e95ff7b85f5b7d717c25bb8c42ce9ce2c514b803b9",
+    "build/no_floor_stand/stl/slim_2_of_4_mid_left.print.json": "b2710e4c1f3bd488c1a97e262f9eb2ed97e29749fbf18074a9208d2a781c19fd",
+    "build/no_floor_stand/stl/slim_3_of_4_mid_right.stl": "4d20f742c21435bb157397c56931b3173c4ccf987c71b284f4b2f774201ac428",
+    "build/no_floor_stand/stl/slim_3_of_4_mid_right.print.json": "1bfd82a3dcb05713633f258d8f2035bb80845a39bead9c16fea2ad1c6f1e98a9",
+    "build/no_floor_stand/stl/slim_4_of_4_vase_b2.stl": "33ee34409d1de413ca149d16c06fd670b093f110a6e9ce60fa7248821068ea0d",
+    "build/no_floor_stand/stl/slim_4_of_4_vase_b2.print.json": "a9b97bc5ea362c52c4615602044c4e253942aeb5d09bf39317f498b6eee57d47",
+    "build/no_floor_stand/stl/slim_shoulder_1_of_4_bottom_left.stl": "7ece5a1b6edf2e30a5764feb5abc982f8bb85bffb5269ebc66cbfacff1bcd2af",
+    "build/no_floor_stand/stl/slim_shoulder_1_of_4_bottom_left.print.json": "88b33fb027cf01fb8cc0f7f3377b24f9c56a101f58db36699f004b65bde2e33d",
+    "build/no_floor_stand/stl/slim_shoulder_2_of_4_top_left.stl": "6336437600757c539da9e109d44901fdb078da56c6e41d37c03b7c4717e5c6a1",
+    "build/no_floor_stand/stl/slim_shoulder_2_of_4_top_left.print.json": "a41d0a596fae2f275188a39d9b77a6cb64c36820aeb92fc2ecfef8ca2fd73341",
+    "build/no_floor_stand/stl/slim_shoulder_3_of_4_bottom_right.stl": "3c520a232faa90973f9b422c8f8f549dc2d4d25cbb67ba466989bdb5f079b398",
+    "build/no_floor_stand/stl/slim_shoulder_3_of_4_bottom_right.print.json": "65ff54ad47f93607d64b22c237061c3e175cf280f7fa264075be1ed796ee04e4",
+    "build/no_floor_stand/stl/slim_shoulder_4_of_4_top_right.stl": "647ee1a713b756e5fc4900af2d5f824c204598c99108a6b34ab602f12e1f562e",
+    "build/no_floor_stand/stl/slim_shoulder_4_of_4_top_right.print.json": "95bf92433f72b0fe88eb5ab76d79a2219d957cc74d355706763c8b977da4863f",
+    "build/no_floor_stand/stl/slim_wing_1_of_2_left.stl": "7b8a1ef0d700cd196d177ad16eed0e51da2601f81e91f777a77df314e40cd788",
+    "build/no_floor_stand/stl/slim_wing_1_of_2_left.print.json": "5ff72a61f5c8eb9445c3740f9f79b927ac242510e3b504ec6b95c97b2f3ed269",
+    "build/no_floor_stand/stl/slim_wing_2_of_2_right.stl": "52491d7e9e756a76699d176edd2f0303dbb2ab9a473b85f588fb0dee194d73e9",
+    "build/no_floor_stand/stl/slim_wing_2_of_2_right.print.json": "1c9cc64a48c39cba7d64ce94b1d406bd56d55fb43e305b39a7b9497780924b02",
+    "build/no_floor_stand/stl/slim_um_grommet_half_a.stl": "60059ced966c08fc7f9d23061361e7a0bd9d8ad32c52ed182240302f58388cc9",
+    "build/no_floor_stand/stl/slim_um_grommet_half_a.print.json": "07b09c6794e3fcfb1eecb23ae2f17c3e824d8ae89ee14b3a533bd98d8bac3293",
+    "build/no_floor_stand/stl/slim_um_grommet_half_b.stl": "74557afce53bdc5d55e73500202fae97a08f5307ab2eba59872732a4faf3a669",
+    "build/no_floor_stand/stl/slim_um_grommet_half_b.print.json": "3cddc11401eecb722773d0683a1a052e38426c9e98afb36ecf1481d030e82421",
+    "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl": "87bcfde710cf16eb7ff094631e27071721a913945b55f23fdc34ebd36660eb23",
+    "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json": "5823ecf29a94c2b09512c38baaab6f8c3db1d8c825bb50ee060214cf85c63384",
+    "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl": "df222c6fbf8a2b7ddaee8c7ca5e467389eafd219b15c17d546d7a956cc03dd49",
+    "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json": "5b9ee215779c28bfb1f4fcba762d2b62689d59154f3faf1620604c04cd9d8ac4",
+    "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl": "8070ccbdd173aabe88e62020ce03f729a184750a8c3665caf8cc7d9e671adfe5",
+    "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.print.json": "0e0c95c72d53af3f16a35daff584eaa25af35d1d8d118fec96bb15bf66bb306f",
+    "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
+    "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.print.json": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23",
+    "build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.stl": "9d0dcf380b97860f647a9577b4096f3add46dcb127c246be4a0a974bc64fb6a3",
+    "build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.print.json": "ad12ede544f07345e41322f177068094c20136f26b9b06a1b297c840bfd18b26",
+    "build/floor_stand/stl/obiwan_addon_nl8_service_lid.stl": "a283e1574cb11c87ecf81c8f0cdaeee9486b7b07e6bb53a2a08a991872cf9abf",
+    "build/floor_stand/stl/obiwan_addon_nl8_service_lid.print.json": "13ba259ac1ef6d862126d1393e38e3cac805fb3d10385171412a382759856aa1",
+    "build/no_floor_stand/stl/obiwan_core_1_of_2_lm_carrier.stl": "16d0b4d604a660cfad61011077b3b496a86b5211cc550d8b2db15c50284e5f87",
+    "build/no_floor_stand/stl/obiwan_core_1_of_2_lm_carrier.print.json": "e0ea9c142eaba9512c143c9fad956054151a3361fc593b2683ba017c3e55d7ef",
+    "build/floor_stand/stl/obiwan_core_1_of_2_lm_carrier.stl": "53f869edf67a3f760413e3615dae0fc59f4dae6eab029b767552ac3a78241587",
+    "build/floor_stand/stl/obiwan_core_1_of_2_lm_carrier.print.json": "c849f60123eb5f86cbaf6cb499dbc871f06e1094ba0f5dc39e2a85f2aa1d5d45",
+    "build/wings/flat/stl/obiwan_wing_flat_left_split2_1_of_2_lm_lower.stl": "6a810e136c585d3419011ae003ff4445b09fa76a2b6eaa912f0850ff50eb1d3a",
+    "build/wings/flat/stl/obiwan_wing_flat_left_split2_1_of_2_lm_lower.print.json": "71e19818d8a4bfa1b8c932f7d532a8776e6719ea1c30cc04aad6e603fea5202c",
+    "build/wings/flat/stl/obiwan_wing_flat_right_split2_1_of_2_lm_lower.stl": "d2c17b218d7c5a2898e334d0edfc0d54c6a15c8f73c4850585661a977ac522d8",
+    "build/wings/flat/stl/obiwan_wing_flat_right_split2_1_of_2_lm_lower.print.json": "fae1e6c27de5164d94a573dcdcb087dc636a5b04cd6f98a498f9f09541d11651",
+    "build/wings/flat/stl/obiwan_wing_flat_left_split2_2_of_2_lm_um_upper.stl": "c750c0025c0a168f50705ede3a77e84d3954432f56155d29a86d494c6d5cef79",
+    "build/wings/flat/stl/obiwan_wing_flat_left_split2_2_of_2_lm_um_upper.print.json": "3881c48e59c0f542bfb2e93292d52d89d042cac9b6bd1fe8f90a77e03c6abf01",
+    "build/wings/flat/stl/obiwan_wing_flat_right_split2_2_of_2_lm_um_upper.stl": "8be9c65c59b2a961419d2af159bd585c20e49ded7b1a266ae8070b4ec3fa1ae5",
+    "build/wings/flat/stl/obiwan_wing_flat_right_split2_2_of_2_lm_um_upper.print.json": "30b4050905258dc7dab8c192d1299745e39112d2ec5ba1f1ae2a0d31ec8402ad",
+    "build/wings/graded/stl/obiwan_wing_graded_left_split2_1_of_2_lm_lower.stl": "bb82846c5a0581c4eab2b7e84750b67c6d12be3abf59d5ced1d727ac80e4bb4b",
+    "build/wings/graded/stl/obiwan_wing_graded_left_split2_1_of_2_lm_lower.print.json": "532380d8cc4f93e50b4a01e1c4bca701e2ef4271d5335de57c66f010b615a92b",
+    "build/wings/graded/stl/obiwan_wing_graded_right_split2_1_of_2_lm_lower.stl": "e94e8cb163407d9e608e1345d9041207bda0b228b190ac8764effdcc4ba750af",
+    "build/wings/graded/stl/obiwan_wing_graded_right_split2_1_of_2_lm_lower.print.json": "da9b4d7ff688f792275541eacf9f60a34b99bef4395ad188b66562ee7c375cee",
+    "build/wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.stl": "fa15e5f241e426367f4c85aba41c417f5cf037c3cd152956cb67bba51b77cac5",
+    "build/wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.print.json": "c4bd634b57d228a090b427b492c1a3ca915e084a5c834788cdfeb6f0307f799c",
+    "build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.stl": "cd1c013a5d78a0478261d8665b91cd44e7bbd098b1e45f35a77d36994507fd60",
+    "build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.print.json": "221d01eba32c988f94bb8fa9137be491b6740914e82518f68e1f4dd8a885f12b",
+    "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.print.json": "c49a6e206621406c80626bd3871713b4fb15527b10f72774057f93a3760a1627",
+    "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+    "candidates/nd25fn4_crescent/STL/02_Closed_Cap_PRINT_TWO.stl": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+    "candidates/nd25fn4_crescent/STL/03_Tweeter_Retainer_PRINT_TWO.stl": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc",
+    "candidates/nd25fn4_crescent/STL/wings/V4_flat_left_UPPER.print.json": "e380953a633f0e2a8c6844e732814927ab8674cbad0c5100445379a8c7a78565",
+    "candidates/nd25fn4_crescent/STL/wings/V4_flat_left_UPPER.stl": "9543913be00c4accad26e9f77995cf9667f0beeae46a4ca132ce5804920e16c1",
+    "candidates/nd25fn4_crescent/STL/wings/V4_flat_right_UPPER.print.json": "bbe2b4352d572f9f4580ac2ae2562e400851f4a63f94fd4b4e967f954e49ab5e",
+    "candidates/nd25fn4_crescent/STL/wings/V4_flat_right_UPPER.stl": "a23e3cc6b59c172ff0ba5cb9e2a2c86eb5a68f0c9cdc6c7d0d2034b44a24866f",
+    "candidates/nd25fn4_crescent/STL/wings/V4_graded_left_UPPER.print.json": "6d85d82635d0ffc8818f0eb8ab61b951b835009bee1c1e84f2b691e20f72e743",
+    "candidates/nd25fn4_crescent/STL/wings/V4_graded_left_UPPER.stl": "8c809f13e8c6579e398be1a8615a7f6aeb3ba71882bcc3aa3d62222f242caadc",
+    "candidates/nd25fn4_crescent/STL/wings/V4_graded_right_UPPER.print.json": "e8c1eac3da32f8992abc596a1e409333a252f63e2a1997b5a027e57af54de0c3",
+    "candidates/nd25fn4_crescent/STL/wings/V4_graded_right_UPPER.stl": "1929259f485cf7b1f9789ee876bc493e2c4ee610e771654971c9b2016d686f29",
+    "build/vase_TEBM35C10-4/stock/vase_TEBM35C10-4.stl": "8e1cb45c5e0dff1af7921776cea657efc70dd7e31d9c39f3675d0097ab188963",
+    "build/vase_TEBM35C10-4/stock/vase_TEBM35C10-4.print.json": "10388821b8aea8d83b58f0b6d3a1bdbeee059a5adca2cd140d86a28a98a71f9f",
+    "build/vase_TEBM35C10-4/slim/vase_TEBM35C10-4.stl": "cea35a1c1bf02706ae6fe016fcd651f6c5d74f1622158136f55c95656355a8d6",
+    "build/vase_TEBM35C10-4/slim/vase_TEBM35C10-4.print.json": "04aca012be5f2ac7f3551ff431910a1ccd00beadd142e0878b1b330a03ac0c94",
+    "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.stl": "18ef6af2177b370238b49462ef77cf17faf0c55cf3cedf694e1681f2bb9b8d09",
+    "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.print.json": "1d56cfac3d4191c5937d5fae46aae6831d57889d0ef56d0c5eb6b98ef846d3d0",
+    "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.stl": "617bafd03e36d0db1e2f905303b45b3f16615ea16e075ddcb8dc4d40aed5ae65",
+    "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.print.json": "c9fc01840284d2d633272e73fef8c33e55afd9b193784ef8d240a9fd1d6d6402",
+    "build/ptt_crescent_PTT1.3T04-HAG-01/obiwan_ptt13_dipole_crescent_PTT1.3T04-HAG-01.stl": "1cee49af3bccf7017dc96f83f7181271fe9032bac348fe1ca0e1a37b91799313",
+    "build/bmr_slim_TEBM35C10-4/proud/stock/vase_TEBM35C10-4.facts.json": "de2f7c132c9fc600c29137263b864cf0091617ddeca8cb93b60fa3896240e9aa",
+    "build/bmr_slim_TEBM35C10-4/proud/stock/vase_TEBM35C10-4.step": "d2c957fcf2040a7ce9c207fad08a9493b1071314746a01c29477449bf07a3f87",
+    "build/bmr_slim_TEBM35C10-4/proud/slim/vase_TEBM35C10-4.facts.json": "3aaa0c5754bffd6a5698cbf9f34bcb6978db38c8050fcf8a2112dca3fa7efdb0",
+    "build/bmr_slim_TEBM35C10-4/proud/slim/vase_TEBM35C10-4.step": "d1b670c9c0e699a92405b68bc0fce0c674132ee0ea81bca1e8924ee4339a1979",
+    "build/bmr_slim_TEBM35C10-4/obiwan_bmr_slim_crescent_TEBM35C10-4.facts.json": "77e28df798b597b67229e21545399b37d94f7c1d34c9430a3537678d1192861a",
+    "build/bmr_slim_TEBM35C10-4/obiwan_bmr_slim_crescent_TEBM35C10-4.step": "0072bef874b00134af68dd7cdb89774c217e9e0e7f18356237808f45c5511693",
+    "build/bmr_slim_TEBM35C10-4/obiwan_bmr_slim_crescent_opposed_TEBM35C10-4.facts.json": "922fd625b044237f53b8165a9abb0f4e2f1b0c394578084afff59e33964ab435",
+    "build/bmr_slim_TEBM35C10-4/obiwan_bmr_slim_crescent_opposed_TEBM35C10-4.step": "d9c84b91a26bb90ed480a9a2ea263503641681c24cfb4193e96704b08cf4ea36",
+    "build/no_floor_stand/stl/lx521_coupon_1_fit_plate.stl": "88ec70cfeaf03b854e8271aaac5d0646c24efbdba8d6f374fad12a644df425a3",
+    "build/no_floor_stand/stl/lx521_coupon_1_fit_plate.print.json": "6866ba91c5506fbe26f77c8c8e3e60683f9f1351dbaa4d0953f5d0db6bd254a3",
+    "build/no_floor_stand/stl/lx521_coupon_2_fit_key.stl": "0dddda60f59732fba879c7b7756389d186a4b8d8243864219a04df4b9ffcf012",
+    "build/no_floor_stand/stl/lx521_coupon_2_fit_key.print.json": "86602d5897d0aaa429bd17a289a59ec7e73b5393a1708170234c733e300563d2",
+    "build/no_floor_stand/stl/lx521_coupon_3_fish_entry.stl": "7b4b7348837d38f0e4eb84244ef6586635e7c09fd3c966524196681966d04cd2",
+    "build/no_floor_stand/stl/lx521_coupon_3_fish_entry.print.json": "5bc18ca191c60050f17e1716ac492a97e62f6177b9d0a4a75ffc4a0376a722d6",
+    "build/no_floor_stand/stl/lx521_coupon_4_um_outlet_proud.stl": "69fa404db522d969865b989cda2b9e75fa034907b10be9ec395816654e94590c",
+    "build/no_floor_stand/stl/lx521_coupon_4_um_outlet_proud.print.json": "49c5a8401adec4ced73de38031c01d3d3b8289f6e8e0923cf70556032238bf61",
+    "build/no_floor_stand/stl/lx521_coupon_5_fish_ts_dive.stl": "69fa4481dfb4db2f7a8a59993751eed6fafe76487a5402a34fdebb70452f9f13",
+    "build/no_floor_stand/stl/lx521_coupon_5_fish_ts_dive.print.json": "abc752853842ca0db124d2ee8aaadaf89c9df6f07c5a56a9016c70ecc0442dbc",
+    "build/no_floor_stand/stl/lx521_coupon_6_fish_foot.stl": "592bb73c8f04d1800e89fb199fb5182183d235a25dad8e223255f1d84c6dcd55",
+    "build/no_floor_stand/stl/lx521_coupon_6_fish_foot.print.json": "1f36f5a404e240dbe9c49a4cbf841b791d89c16d8054eb22bebd2eaa584047e9",
+    "build/no_floor_stand/stl/lx521_coupon_7_recess_seat.stl": "9fe4a4363bf45c627e452e58b9d7c5ec59da6c974af5fd0bad67fa6e116443a5",
+    "build/no_floor_stand/stl/lx521_coupon_7_recess_seat.print.json": "2f3833ab8b4a92937dc4007e17625f95bb8f8dc078ea380692ef48d5162430cf",
+    "build/no_floor_stand/stl/lx521_coupon_8_fish_ts_oval_proud.stl": "eb158c5a1e973e3c2abb1d1426d4e0d652685619f9ece240d9375cc8b751d7b3",
+    "build/no_floor_stand/stl/lx521_coupon_8_fish_ts_oval_proud.print.json": "2e971b1be8dfb8769aea74da454dd6d9f00ad4f2ddf449359aaa259dccde34dc",
+    "build/no_floor_stand/stl/lx521_coupon_9_um_faston_clocking.stl": "bbe52af5443c66ddea04095e927c609622bf2a21bd4965df85259fbdce5e9bfd",
+    "build/no_floor_stand/stl/lx521_coupon_9_um_faston_clocking.print.json": "adb123d1c7cfc09dd4bf3373507c03f78d149f303fc0ae50907522f9fc73667d",
+    "build/no_floor_stand/stl/lx521_coupon_12_obiwan_closed_bore_bump.stl": "ab11ead824ead0c66f6020ce0deebaffe22bcb87f66f1647d2df5493ba90b401",
+    "build/no_floor_stand/stl/lx521_coupon_12_obiwan_closed_bore_bump.print.json": "ccb68e1498a3a1ada415f161f191a15ac01f7c47eebdb4b21225f0c8c151bba0",
+    "coupons/obiwan_ae_embed/stl/lx521_coupon_obiwan_ae_embed_carrier.stl": "3255ddb4e17092be3a621257b6dfb517783eacbcb8ed6729c5817f62ba6a53c2",
+    "coupons/obiwan_ae_embed/stl/lx521_coupon_obiwan_ae_embed_ae_wing.stl": "13cdd987c938aef33569a1ad084bb4c87cecc38a4540460452980eeb7e3b7c7e",
+    "candidates/nd25fn4_crescent/print/qualification/01_D6_body_coupon.stl": "e9caca35dfd8bc34866865cc2451a981fe37cb0e7d74517775baabf862dd6506",
+    "candidates/nd25fn4_crescent/print/qualification/D6_wing_coupon.stl": "9883557ade16c84bc39ee9718f71fdc892cbd6bcf8f1da6e367260463139ef17",
+    "qualification/male_pin_pair.stl": "3f85e167677cbfd2442e6bc364f79427f44f998ab309f170daefe26483b033e2",
+    "qualification/female_socket_pair.stl": "042a9df5f746d2f753040d21d57876c58244309ce600a385b0c5068131d5591d",
+    "qualification/native_route_cover.stl": "34f20ce53e7ecda248139947d10a8308834953b81f19a88db33bb63fb2bea866",
+    "qualification/supported_roof_and_wall_steps.stl": "07a554d68e07099cf1d943ac1b9ecf07686eb5cab8bcfe74da98a51904b00814",
+    "build/floor_stand/stl/lx521_polar_base_1of2_base.stl": "f4ea27ee6a10ce4581529efeaf87c71f4f1055d66da0bec0914c9d72c2842536",
+    "build/floor_stand/stl/lx521_polar_base_2of2_rotor.stl": "6f7cdfb6a1f7f7b9115666614426e1cf51a20d959130c464210cdefeb4f3aed1",
+    "scripts/generate_parts_magnet_poster.py": "4c63999e96739e59f0295b328ccbcc6f13b604a208b14b5c0f03c9559fc5cd35",
+    "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
+    "candidates/nd25fn4_crescent/v4_model.py": "d79c5db514c5318a27c44c6f34d6fbbeeb96715079967a86064608ad92b88d28"
+  },
+  "coverage": {
+    "status": "passed",
+    "individual_part_variants": 78,
+    "shelf_choices": 42,
+    "shelf_part_choices_covered": [
+      "stock_01_LM_bottom_1_of_3_no_floor_stand",
+      "stock_01_LM_bottom_1_of_3_floor_stand",
+      "stock_02_LM_mid_left_2_of_3",
+      "stock_03_LM_mid_right_3_of_3",
+      "stock_04_UM_vase_1_of_1",
+      "stock_05_A_shoulder_bottom_left_1_of_4",
+      "stock_06_A_shoulder_top_left_2_of_4",
+      "stock_07_A_shoulder_bottom_right_3_of_4",
+      "stock_08_A_shoulder_top_right_4_of_4",
+      "stock_09_B1_wing_left_1_of_2",
+      "stock_10_B1_wing_right_2_of_2",
+      "slim_01_LM_bottom_1_of_3_no_floor_stand",
+      "slim_01_LM_bottom_1_of_3_floor_stand",
+      "slim_02_LM_mid_left_2_of_3",
+      "slim_03_LM_mid_right_3_of_3",
+      "slim_04_UM_vase_1_of_1",
+      "slim_05_A_shoulder_bottom_left_1_of_4",
+      "slim_06_A_shoulder_top_left_2_of_4",
+      "slim_07_A_shoulder_bottom_right_3_of_4",
+      "slim_08_A_shoulder_top_right_4_of_4",
+      "slim_09_B1_wing_left_1_of_2",
+      "slim_10_B1_wing_right_2_of_2",
+      "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand",
+      "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand",
+      "obiwan_02_LM_top_keyed_2_of_2",
+      "obiwan_03_UM_carrier_1_of_1",
+      "obiwan_04_T_tweeter_crescent_1_of_1",
+      "obiwan_NL8_service_lid_1_of_1",
+      "obiwan_05_split2_flat_wing_LM_lower_left_1_of_2",
+      "obiwan_06_split2_flat_wing_LM_UM_upper_left_2_of_2",
+      "obiwan_08_split2_flat_wing_LM_lower_right_1_of_2",
+      "obiwan_09_split2_flat_wing_LM_UM_upper_right_2_of_2",
+      "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2",
+      "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2",
+      "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",
+      "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2",
+      "obiwan_17_BMR_crescent_coaxial_1_of_1",
+      "obiwan_18_BMR_crescent_opposed_1_of_1"
+    ],
+    "composite_plate_choices_accounted_for": [
+      "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand",
+      "obiwan_01_02_03_04_LM_UM_combo_floor_stand",
+      "obiwan_flat_wings_split2_combo",
+      "obiwan_graded_wings_split2_combo"
+    ],
+    "scope": "Earlier P2S product and diagnostic identities; identical stand copies and plate layouts are not extra part variants.",
+    "required_meshes": 78,
+    "magnet_position_authorities": "Bound per part/site; source bytes hashed."
+  }
+}

@@ -2,7 +2,7 @@
 
 45 of 45 jobs digitally audited. Printer: **H2C, two 0.6 mm High Flow nozzles**.
 
-The pre-migration project is preserved in commit `c261f32`. These projects use native H2C machine programs. The P2S files are a separate earlier release.
+The pre-migration source checkpoint is recorded in the [generated-file history guide](../../docs/GENERATED_HISTORY.md). These projects use native H2C machine programs. The P2S files are a separate earlier release.
 
 **Choose one family, one stand state and one tweeter/wing alternative per speaker.** Print twice for a stereo pair. The Dayton ND25FN-4 waveguide accessories plate already contains two caps and two retainers.
 
@@ -15,7 +15,7 @@ The pre-migration project is preserved in commit `c261f32`. These projects use n
 
 Stock/Slim standard shoulders and B1 wings are optional for ND25FW-4; no matching BMR perimeter is supplied. The upper module and BMR alternative are shared between stand states. A-style shoulders remain four pieces: their upper and lower outlines meet only at a tangent point, so joining them would require an outline change. The B1 alternative already uses one continuous wing per side. Use the new H2C upper module with the new contained-pin LM joint; its two Ø3 mm pins replace the old upward dovetails. The hidden M3 × 20 clamp and Hanglife M3, Ø5 × 4 mm insert remain. Floor-stand LM halves retain the established lower dovetail joint.
 
-The unchanged one-piece Stock/Slim floor-stand trials failed the actual PLA-nozzle reach check. They are retained under `build/h2c/experiments/rejected_one_piece_floor/`, outside this shelf. The current floor-stand pair removes the old vertical LM seam and keeps the original outline.
+The unchanged one-piece Stock/Slim floor-stand trials failed the actual PLA-nozzle reach check. Their reports are retained under `build/h2c/experiments/rejected_one_piece_floor/`; trial meshes and slices remain local, outside this shelf. The current floor-stand pair removes the old vertical LM seam and keeps the original outline.
 
 ## Tweeter families
 
@@ -123,6 +123,8 @@ The audit checks sliced geometry and modifier identity, machine/material setting
 Passing those checks does not establish physical adhesion, magnet retention, loaded stand strength or acoustic performance. The first H2C build still needs the project’s hardware/material qualification. BMR and Dayton ND25FN-4 waveguide retain their candidate status.
 
 ## Rebuild
+
+On a fresh checkout, first follow the [retained-source setup](../../docs/GENERATED_HISTORY.md#fresh-checkout-validation).
 
 ```sh
 make                    # H2C geometry, projects, slicing, audit and generated guide

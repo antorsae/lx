@@ -1,6 +1,7 @@
 # H2C migration
 
-The pre-migration project is preserved in commit `c261f32`. H2C outputs live
+The pre-migration source checkpoint is recorded in the
+[generated-file history guide](GENERATED_HISTORY.md). H2C outputs live
 in `to_print/h2c/`; the older printer shelf remains a separate P2S release.
 
 ## Geometry and interfaces
@@ -11,8 +12,8 @@ in `to_print/h2c/`; the older printer shelf remains a separate P2S release.
 - Stock and Slim: one complete LM without the stand, plus a matching
   upper vase. The stand version keeps the lower Y120 dovetail seam and
   combines the two former middle panels. Its one-piece trial failed actual
-  PLA-nozzle reach in both 90-degree orientations; preserve those trials
-  outside the print shelf. Replace the broad upward seam-B keys with two smaller,
+  PLA-nozzle reach in both 90-degree orientations; preserve their reports
+  outside the print shelf and keep trial meshes local. Replace the broad upward seam-B keys with two smaller,
   rear-biased round registration pins integral with the upper vase. Their
   receiving holes stay inside the LM envelope. Retain the hidden M3 clamp
   screw at the original joint. Validate pin clearance against the driver

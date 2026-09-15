@@ -4,7 +4,8 @@
 Flow nozzles.** Start with the [H2C file guide](to_print/h2c/README.md) for
 STLs, editable projects, audited slices, materials and per-speaker quantities.
 `make` now builds the H2C shelf; `make PRINTER=P2S all` selects the earlier
-pipeline. The pre-migration project is preserved in commit `c261f32`.
+pipeline. The pre-migration source checkpoint and rewritten commit references
+are recorded in the [generated-file history guide](docs/GENERATED_HISTORY.md).
 
 H2C uses one LM carrier for Obiwan and one full wing per side, including
 Dayton ND25FN-4 waveguide wings. Stock/Slim use one complete LM without the stand, or two

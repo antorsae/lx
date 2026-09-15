@@ -168,12 +168,45 @@ build/h2c/experiments/**/plate_1.gcode
 build/h2c/experiments/**/*.gcode.3mf
 build/h2c/experiments/**/*.log
 !build/h2c/views/*.json
+!images/generated/catalog/parts_catalog.json
+!images/generated/catalog/validation.json
 # Curated current packets are added explicitly; repeated timestamped snapshot
 # runs remain local. Stable contact sheets and named Dayton views stay trackable.
 build/h2c/views/*_20*T*.png
 
-# Pre-rename H2C deliverables are preserved in commit 07206ed.
+# Retired H2C names remain local; source checkpoints are mapped in
+# docs/GENERATED_HISTORY.md.
 build/h2c/experiments/retired_dayton_revision_names/
+
+# Archived meshes, duplicate slicer projects and raw toolpaths are local
+# workspaces. Keep reports/images and the explicit live build inputs below.
+# Current printer-facing projects remain in to_print/ and candidates/.
+review/**/*.3mf
+review/**/*.gcode
+review/**/*.stl
+review/**/*.step
+review/**/*.stp
+review/**/*.brep
+review/**/*.glb
+review/**/*.gltf
+review/**/*.obj
+review/**/*.ply
+review/**/*.zip
+review/**/*.log
+!review/bug_reports/**/*.stl
+!review/bug_reports/**/*.3mf
+!review/part_views/concept/*.stl
+!review/nd25fn4_print/inputs/*.stl
+!review/nd25fn4_print/D6_coupon/*.stl
+!review/nd25fn4_print/body/ND25FN_V4_body_discovery.3mf
+!review/nd25fn4_print/accessories/ND25FN_V4_caps_retainers.3mf
+!review/nd25fn4_engineering_guide/pla_basic_supports_petg_hf_P2S.3mf
+build/**/slice_audit*/**/*.3mf
+build/**/slice_audit*/**/*.gcode
+build/**/slice_audit*/**/*.stl
+build/**/slice_audit*/**/*.log
+build/h2c/experiments/**/*.3mf
+build/h2c/experiments/**/*.stl
 
 # Local credentials must stay out of source and generated release trees.
 # Keep these after JSON release exceptions so those exceptions cannot expose

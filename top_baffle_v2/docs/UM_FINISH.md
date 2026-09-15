@@ -13,7 +13,7 @@ The latest fused-body revision also sculpts the UM's depth and regenerates its u
 | Use | STL | Geometry checks |
 |---|---|---|
 | Fused ND25FN crescent + UM, either LM | [One shared body](../candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl) | [Complete candidate report](../candidates/nd25fn4_crescent/validation.json) |
-| Standalone UM, shared shelf part | [UM carrier](../to_print/obiwan/stl/obiwan_03_UM_carrier_1_of_1.stl) | [No-floor assembly](../build/no_floor_stand/um_finish/validation.json) |
+| Standalone UM, shared shelf part | [UM carrier](../build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl) | [No-floor assembly](../build/no_floor_stand/um_finish/validation.json) |
 | Standalone UM in the floor-state source set | [Floor-state UM](../build/floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl) | [Floor assembly](../build/floor_stand/um_finish/validation.json) |
 
 The standalone UM's native STEP files and build records are under `build/{state}/um_finish/`. Both `obiwan_split.step` and `obiwan_assembled.step` contain the new UM; their other children retain their geometry. The full release's original source-stage record remains historical, with the focused UM revision identified in each `obiwan_release_manifest.json`.

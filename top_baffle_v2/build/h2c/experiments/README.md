@@ -1,6 +1,7 @@
 # H2C development trials
 
-These are diagnostic inputs and reports, outside the manufacturing shelf.
+These are diagnostic reports, outside the manufacturing shelf. Trial meshes,
+editable projects, raw toolpaths and duplicate slices are local workspaces.
 Use the current projects in `../../../to_print/h2c/` for printing.
 
 - `rejected_one_piece_floor/`: unchanged Stock/Slim full floor-stand LM
@@ -23,5 +24,8 @@ remain disposable local caches; release G-code is stored in the published
 
 The public-name migration is recorded in
 [`tweeter_name_migration.json`](../tweeter_name_migration.json). The previous
-H2C names are preserved in commit `07206ed` and the local ignored
-`retired_dayton_revision_names/` archive. They are not current print files.
+H2C names survive in the source history and the local ignored
+`retired_dayton_revision_names/` archive. The
+[history guide](../../../docs/GENERATED_HISTORY.md) maps the original commit
+identifiers; old generated versions are omitted from the published rewrite.
+They are not current print files.

@@ -75,7 +75,16 @@ facade remains a generated view and does not duplicate CAD bytes.
 Keep source, manifests, current STEP/STL/PNG outputs, and physical
 qualification evidence. Ignore or trash viewer GLBs, `__pycache__`, pytest
 caches, remote jobs, Make stamps, G-code workspaces, failed slice runs, and
-dated one-off review PNGs. Regenerate the product catalog after any promoted
+dated one-off review PNGs. Explicit review inputs used by the current H2C
+release stay tracked; archived slicer workspaces do not. Current print files
+use ordinary Git, with no new Git LFS types. The
+[history guide](GENERATED_HISTORY.md) documents the unpublished-history cleanup,
+source checkpoint mapping, and fresh-checkout setup.
+
+The artifact facade also links oversized local CAD assemblies and the graded
+wing plate, which are intentionally ignored by Git. Regenerate those before
+running the full facade check; they are not required to validate the H2C print
+shelf. Regenerate the product catalog after any promoted
 artifact change:
 
 ```bash

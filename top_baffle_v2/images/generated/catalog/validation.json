@@ -1,0 +1,77 @@
+{
+  "status": "passed",
+  "individual_part_variants": 78,
+  "shelf_choices": 42,
+  "shelf_part_choices_covered": [
+    "stock_01_LM_bottom_1_of_3_no_floor_stand",
+    "stock_01_LM_bottom_1_of_3_floor_stand",
+    "stock_02_LM_mid_left_2_of_3",
+    "stock_03_LM_mid_right_3_of_3",
+    "stock_04_UM_vase_1_of_1",
+    "stock_05_A_shoulder_bottom_left_1_of_4",
+    "stock_06_A_shoulder_top_left_2_of_4",
+    "stock_07_A_shoulder_bottom_right_3_of_4",
+    "stock_08_A_shoulder_top_right_4_of_4",
+    "stock_09_B1_wing_left_1_of_2",
+    "stock_10_B1_wing_right_2_of_2",
+    "slim_01_LM_bottom_1_of_3_no_floor_stand",
+    "slim_01_LM_bottom_1_of_3_floor_stand",
+    "slim_02_LM_mid_left_2_of_3",
+    "slim_03_LM_mid_right_3_of_3",
+    "slim_04_UM_vase_1_of_1",
+    "slim_05_A_shoulder_bottom_left_1_of_4",
+    "slim_06_A_shoulder_top_left_2_of_4",
+    "slim_07_A_shoulder_bottom_right_3_of_4",
+    "slim_08_A_shoulder_top_right_4_of_4",
+    "slim_09_B1_wing_left_1_of_2",
+    "slim_10_B1_wing_right_2_of_2",
+    "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand",
+    "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand",
+    "obiwan_02_LM_top_keyed_2_of_2",
+    "obiwan_03_UM_carrier_1_of_1",
+    "obiwan_04_T_tweeter_crescent_1_of_1",
+    "obiwan_NL8_service_lid_1_of_1",
+    "obiwan_05_split2_flat_wing_LM_lower_left_1_of_2",
+    "obiwan_06_split2_flat_wing_LM_UM_upper_left_2_of_2",
+    "obiwan_08_split2_flat_wing_LM_lower_right_1_of_2",
+    "obiwan_09_split2_flat_wing_LM_UM_upper_right_2_of_2",
+    "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2",
+    "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2",
+    "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",
+    "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2",
+    "obiwan_17_BMR_crescent_coaxial_1_of_1",
+    "obiwan_18_BMR_crescent_opposed_1_of_1"
+  ],
+  "composite_plate_choices_accounted_for": [
+    "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand",
+    "obiwan_01_02_03_04_LM_UM_combo_floor_stand",
+    "obiwan_flat_wings_split2_combo",
+    "obiwan_graded_wings_split2_combo"
+  ],
+  "scope": "Earlier P2S product and diagnostic identities; identical stand copies and plate layouts are not extra part variants.",
+  "required_meshes": 78,
+  "magnet_position_authorities": "Bound per part/site; source bytes hashed.",
+  "png": "images/generated/catalog/ALL_ITEMS_MAGNET_CATALOG.png",
+  "png_sha256": "8af1a73cf883cbfd879db02ab1b53c6e8a410c57f83d9bab133a7370704dcaf6",
+  "pixels": [
+    4200,
+    8427
+  ],
+  "marker_count": 103,
+  "assembly_pair_counts": {
+    "assembly_stock": {
+      "D5": 4
+    },
+    "assembly_slim": {
+      "D5": 4
+    },
+    "assembly_obiwan": {
+      "D5": 6
+    },
+    "assembly_v4": {
+      "D5": 4,
+      "D6": 4
+    }
+  },
+  "visual_review": "Reviewed 2026-09-15: updated ND25FN-4 labels, P2S scope, 78 cards and magnet maps visible; no clipping."
+}
