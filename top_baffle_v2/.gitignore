@@ -174,3 +174,24 @@ build/h2c/views/*_20*T*.png
 
 # Pre-rename H2C deliverables are preserved in commit 07206ed.
 build/h2c/experiments/retired_dayton_revision_names/
+
+# Local credentials must stay out of source and generated release trees.
+# Keep these after JSON release exceptions so those exceptions cannot expose
+# a credential file copied into an artifact directory.
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+.netrc
+.npmrc
+.pypirc
+*.pem
+*.p12
+*.pfx
+*.key
+id_rsa
+id_ed25519
+credentials*.json
+secrets*.json
+.bambu-lan*
