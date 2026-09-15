@@ -1,5 +1,12 @@
 # Product artifact catalog
 
+This is the earlier product-oriented CAD facade. Use the
+[current H2C manufacturing catalog](../to_print/h2c/README.md) for current
+STLs, projects and slices. The [three-family tweeter guide](../docs/TWEETER_OPTIONS.md)
+includes **Dayton ND25FN-4 waveguide**, an integrated Obiwan upper with
+matching wings, alongside ND25FW-4 and TEBM35C10-4 BMR.
+
+
 This is the human-facing inventory for the three supported LX521.4 top-baffle
 product choices. Relative symlinks point to validated generator outputs, so
 the catalog does not duplicate large STEP or STL files.

@@ -1,4 +1,10 @@
-# V4 — PETG Translucent + PLA Translucent
+# waveguide — PETG Translucent + PLA Translucent
+
+**Earlier P2S files.** For the current H2C printer, use the
+[H2C catalog](../../../to_print/h2c/README.md) and
+[Dayton ND25FN-4 waveguide guide](../../../docs/DAYTON_ND25FN4_WAVEGUIDE.md).
+Original revision strings in these filenames are retained for provenance.
+
 
 Separate **sliced Bambu Studio 3MF files for the P2S with a 0.6 mm High Flow nozzle**. The installed Bambu translucent filament recipes have been resolved in full and the toolpaths regenerated. This lane has its own material and changeover policy; later PETG-GF/PLA calibration changes do not alter these translucent print files.
 
@@ -21,7 +27,7 @@ For one speaker: print the body once, the accessories plate once, and one matchi
 
 | File | Estimated time | PETG Translucent | PLA Translucent |
 |---|---:|---:|---:|
-| [01 — fused UM + V4 body](01_UM_Crescent_V4_SMOOTH_WALLS_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf) | 12 h 10 min | 322.8 g | 23.9 g |
+| [01 — fused UM + ND25FN-4 waveguide body](01_UM_Crescent_V4_SMOOTH_WALLS_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf) | 12 h 10 min | 322.8 g | 23.9 g |
 | [02 — two caps + two M3 retainers](02_Caps_TWO_Retainers_TWO_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf) | 2 h 09 min | 53.7 g | 2.6 g |
 | [Flat left upper wing](V4_flat_left_UPPER_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf) | 2 h 20 min | 60.9 g | 3.7 g |
 | [Flat right upper wing](V4_flat_right_UPPER_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf) | 2 h 25 min | 61.8 g | 4.1 g |

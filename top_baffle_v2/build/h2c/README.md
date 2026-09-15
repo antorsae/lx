@@ -26,7 +26,7 @@ including the complete manifests and referenced BREP files. The exporter checks
 the state, transaction and hashes before importing them. Changing shared Obiwan
 CAD requires regenerating those canonical inputs before rebuilding H2C outputs.
 
-The retained V4 body uses its original installed-to-print transform metadata.
+The retained Dayton ND25FN-4 waveguide body uses its original installed-to-print transform metadata.
 Caps and retainers were authored directly in print coordinates and use their
 original hash-bound build records. The release validator recognizes exactly
 those three retained files and verifies them against the original sources; all

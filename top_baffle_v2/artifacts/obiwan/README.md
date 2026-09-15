@@ -1,5 +1,11 @@
 # Obi-Wan R6F
 
+For current H2C print files and the integrated **Dayton ND25FN-4 waveguide**
+upper, use the [H2C catalog](../../to_print/h2c/README.md) and
+[three-family selection guide](../../docs/TWEETER_OPTIONS.md).
+This facade retains the regular carrier and earlier split geometry.
+
+
 ![Obi-Wan no-floor core](states/no_floor/images/iso.png)
 
 Obi-Wan replaces the full plate with mandatory front-flush LM and UM carriers.

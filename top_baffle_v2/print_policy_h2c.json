@@ -114,15 +114,15 @@
     "Retain native H2C retraction, temperature standby, nozzle changing, start/end and priming G-code. Transfer only explicit Tinmorry thermal/flow calibrations. Do not apply the P2S 560 mm3 same-nozzle purge to every dual-nozzle switch.",
     "Both materials use a shared 70 C Engineering Plate with glue. No raft. This is the user's plate process and requires a first-print adhesion check, especially the 2 mm Stock/Slim brim.",
     "Use three dense zero-gap PLA interface layers above and below support for H2C. Keep PETG as the support base. Disable flushing into model, infill and support.",
-    "V4 translucent body keeps Classic outer-first walls to reduce visible magnet-cover width changes. Other parts retain their existing wall policy.",
+    "Dayton ND25FN-4 translucent body keeps Classic outer-first walls to reduce visible magnet-cover width changes. Other parts retain their existing wall policy.",
     "The native H2C firmware programs and generated material/nozzle assignments must be checked from the actual slice; prepared projects alone are not print qualification.",
-    "Continuous V4 wings retain Arachne. Rotate right-hand wings 224 degrees in the print plane: the original 44-degree placement caused an early D6 loading-path intrusion. Recheck every D5/D6 site against the resulting toolpaths.",
-    "Expand regular cable/fastener support blockers by 0.8 mm along each print axis. Exact surface-only blockers allowed support in duct ceilings; the model geometry is unchanged. Approved V4 body/accessory blockers retain their own qualified dimensions.",
+    "Continuous Dayton ND25FN-4 wings retain Arachne. Rotate right-hand wings 224 degrees in the print plane: the original 44-degree placement caused an early D6 loading-path intrusion. Recheck every D5/D6 site against the resulting toolpaths.",
+    "Expand regular cable/fastener support blockers by 0.8 mm along each print axis. Exact surface-only blockers allowed support in duct ceilings; the model geometry is unchanged. Approved Dayton ND25FN-4 body/accessory blockers retain their own qualified dimensions.",
     "Stock/Slim floor lower pieces extend the three cable-entry support keepouts through the rear service panel. This prevents supports for the panel from being routed down the cable entries. The small regions above those entries bridge; surrounding panel supports remain enabled."
   ],
   "print_orientation_z_deg": {
-    "h2c_v4_wing_flat_right": 224,
-    "h2c_v4_wing_graded_right": 224
+    "h2c_dayton_nd25fn4_wing_flat_right": 224,
+    "h2c_dayton_nd25fn4_wing_graded_right": 224
   },
   "support_blocker_extra_xyz_mm": 0.8,
   "part_process_overrides": {

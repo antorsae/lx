@@ -1,6 +1,6 @@
 # UM seat and cable-handoff revision
 
-The shared ND25FN-4 V4 body and both standalone Obi-Wan UM carriers now have a closed T-cable collar at the LM handoff, solid backing beneath the MU10 driver seat, and rounded access to the LM/UM M2 tie. The crescent's backing continues into its curved lower exterior; the separate UM-driver lead retains its rear service clearance.
+The shared Dayton ND25FN-4 waveguide body and both standalone Obi-Wan UM carriers now have a closed T-cable collar at the LM handoff, solid backing beneath the MU10 driver seat, and rounded access to the LM/UM M2 tie. The crescent's backing continues into its curved lower exterior; the separate UM-driver lead retains its rear service clearance.
 
 The T collar reaches the existing LM cover with a nominal 0.05 mm fit seam. The former circular underside recess is filled, while the Ø82 driver bore, Ø98.6 flange recess, Z14.3 seat, driver pilots, M3 half-laps and captive magnets remain functional. The M2 bearing plane stays at Y319.304764 mm on X−17/Z10; the head corridor opens into the driver bore through an R0.5 mm mouth. Install this screw before installing the UM driver.
 

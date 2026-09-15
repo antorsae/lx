@@ -1,5 +1,5 @@
 {
-  "policy_sha256": "c8cb56acd65cc809128815af74ed9e7e7c12c8b502b2ce48cb60b720e64fc2dc",
+  "policy_sha256": "1c545d0f9365ed36563bdea5d7bab7d027fb5fa04d66ce553c2ee1485c629135",
   "shared_policy_sha256": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
   "native_sources": {
     "filament/Bambu PETG Translucent @BBL H2C.json": "c4d638bf084ce71be70b1221b0d812b3bf3eb5269c318a5b72cfc30580b92582",

@@ -1,9 +1,9 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "b8fbc475bc5553c0382d0e09e29cdeb8347ef94dfbbde9b5ebbb6da42cdcf307",
-  "sliced_project_sha256": "b8c258874d4b8b54bb6eaa95bac5a6ff5141c69343f0c21276b1d7dd5746d114",
-  "gcode_sha256": "fa30bd0b36b1194777c7ceb29166f768ddd79ca6a0cf2cd0de5d5ca381601b54",
+  "project_sha256": "3b835ab70ef5fc7fbdfd689e6226267cd8328caff216a186ef73a8f54c3e33ad",
+  "sliced_project_sha256": "e6ab6ae21b8ac192297e3aaa69d35bdd40ba89c2f7c8c23741590981347ccea8",
+  "gcode_sha256": "aec5316c040be9eef1ec4e42f6fb14e51a3cd944068a6edba3adf112b986ad7a",
   "audit_version": 4,
   "inputs": {
     "build/floor_stand/stl/obiwan_addon_nl8_service_lid.stl": "a283e1574cb11c87ecf81c8f0cdaeee9486b7b07e6bb53a2a08a991872cf9abf",
@@ -16,14 +16,16 @@
     "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "c8cb56acd65cc809128815af74ed9e7e7c12c8b502b2ce48cb60b720e64fc2dc",
+    "print_policy_h2c.json": "1c545d0f9365ed36563bdea5d7bab7d027fb5fa04d66ce553c2ee1485c629135",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
-    "scripts/audit_h2c_print.py": "ae2eaff5b775b7d7ee4a2d97204c744d6e41046662ccd1977865108e9e64d0c4",
+    "scripts/audit_h2c_print.py": "8e0dfe9914603f00a175ffa22d340d25f0ab9e3c99fe4adb5cafb85ee65ed646",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "src/lx521_baffle/h2c/dayton.py": "034817fb267162508cd59882a4b65c41f7f6e29233cf8164fc444a3d53bc1bf7",
     "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
+    "src/lx521_baffle/tweeter_options.py": "4e13db23df7b60b9278d0e15ec3810b033376a6ee72cc33dfa8fe40518703f5a",
     "to_print/h2c/STL/h2c_obiwan_addon_nl8_service_lid.stl": "719a842494a70a2318664db07f8f71ad4c87aefd7dbcdb8d16a9fb28da77007b",
-    "to_print/h2c/obiwan/petg_gf_pla/h2c_obiwan_addon_nl8_service_lid.3mf": "b8fbc475bc5553c0382d0e09e29cdeb8347ef94dfbbde9b5ebbb6da42cdcf307"
+    "to_print/h2c/obiwan/petg_gf_pla/h2c_obiwan_addon_nl8_service_lid.3mf": "3b835ab70ef5fc7fbdfd689e6226267cd8328caff216a186ef73a8f54c3e33ad"
   },
   "deposition": {
     "status": "pass",

@@ -23,6 +23,8 @@ from shapely.geometry import MultiPoint, box
 from lx521_baffle.io import sha256_file
 from lx521_baffle.print_contract import front_down_transform_record, validate_print_sidecar
 from lx521_baffle.h2c.printing import resolve_profiles, project_settings, job_settings, job_process, write_json, policy
+from lx521_baffle.h2c.dayton import BODY, mesh_name, body_authority
+from lx521_baffle.tweeter_options import ND25FN, TWEETER_FAMILIES, compatible_tweeters
 from prepare_print import write_project
 
 OUT = ROOT / 'to_print/h2c'
@@ -40,6 +42,7 @@ def preparation_inputs(paths, bundle, definition):
         if sidecar.exists():files.add(sidecar)
     files.update(ROOT/p for p in ('print_policy_h2c.json','print_policy.json',
         'scripts/build_h2c_release.py','src/lx521_baffle/h2c/printing.py',
+        'src/lx521_baffle/h2c/dayton.py','src/lx521_baffle/tweeter_options.py',
         'candidates/nd25fn4_crescent/prepare_print.py','candidates/nd25fn4_crescent/mesh_ops.py'))
     return dict(files={rel(p):sha256_file(p) for p in sorted(files)},definition=definition,
         profiles_sha256=hashlib.sha256(json.dumps(bundle,sort_keys=True).encode()).hexdigest())
@@ -62,10 +65,10 @@ def source_mesh(path):
     return mesh, authority
 
 
-def v4_wings():
+def dayton_wings():
     """Replace the old lower split with the actual canonical continuous wing.
 
-    The join lies below the V4 clearance cutter's Y308.4 start, above all
+    The join lies below the Dayton ND25FN-4 clearance cutter's Y308.4 start, above all
     preserved LM magnets. The 0.2 mm overlap is in unchanged source material.
     Buried cavities keep their inward winding throughout the Boolean.
     """
@@ -75,7 +78,7 @@ def v4_wings():
         for side in ('left', 'right'):
             a = WORK / f'STL/h2c_obiwan_wing_{slug}_{side}.stl'
             b = ROOT / f'candidates/nd25fn4_crescent/print/geometry/V4_{slug}_{side}_UPPER_PRINT.stl'
-            name = f'h2c_v4_wing_{slug}_{side}'
+            name = f'h2c_dayton_nd25fn4_wing_{slug}_{side}'
             target = WORK / 'STL' / (name + '.stl')
             inputs = {rel(p):sha256_file(p) for p in (a,b)}
             if target.exists() and target.with_suffix('.print.json').exists():
@@ -89,7 +92,7 @@ def v4_wings():
             mesh = trimesh.boolean.union([low, high], engine='manifold')
             mesh = to_trimesh(solid(mesh).simplify(.0001))
             if not mesh.is_watertight or not mesh.is_winding_consistent or mesh.volume <= 0:
-                raise ValueError(f'Invalid V4 monolithic wing {name}')
+                raise ValueError(f'Invalid Dayton ND25FN-4 monolithic wing {name}')
             components = mesh.split(only_watertight=False)
             if sum(c.volume > 0 for c in components) != 1 or sum(c.volume < 0 for c in components) != 4:
                 raise ValueError(f'{name}: expected one body and four buried magnet cavities')
@@ -104,14 +107,15 @@ def v4_wings():
                 boolean_simplification_tolerance_mm=.001,boolean_version=2,
                 **front_down_transform_record(minimum.tolist()))
             write_json(target.with_suffix('.print.json'), authority)
-            print('V4 continuous wing:', name, flush=True)
+            print('Dayton ND25FN-4 continuous wing:', name, flush=True)
 
 
 def inventory():
     rows = []
     def add(name, family, role, source, *, state='shared', candidate=False, blockers=(), angle=None):
         angle=policy().get('print_orientation_z_deg',{}).get(name,angle)
-        rows.append(dict(name=name, family=family, role=role, source=rel(source),
+        rows.append(dict(name=name, family=family, product_family='obiwan' if family==ND25FN else family,
+            tweeter_families=compatible_tweeters(name,family,role),role=role, source=rel(source),
             state=state, candidate=candidate, blockers=list(blockers), angle=angle))
     for family in ('stock', 'slim'):
         for state in ('no_floor_stand',):
@@ -151,8 +155,8 @@ def inventory():
         for side in ('left','right'):
             name=f'h2c_obiwan_wing_{slug}_{side}'
             add(name,'obiwan','regular_wing',WORK/'STL'/f'{name}.stl')
-            name=f'h2c_v4_wing_{slug}_{side}'
-            add(name,'v4','crescent_wing',WORK/'STL'/f'{name}.stl')
+            name=f'h2c_dayton_nd25fn4_wing_{slug}_{side}'
+            add(name,'dayton_nd25fn4','crescent_wing',WORK/'STL'/f'{name}.stl')
     for stem in ('obiwan_bmr_crescent_TEBM35C10-4','obiwan_bmr_crescent_opposed_TEBM35C10-4'):
         add('h2c_'+stem,'obiwan','regular_tweeter',ROOT/'build/bmr_crescent_TEBM35C10-4'/f'{stem}.stl',candidate=True)
     return rows
@@ -307,23 +311,36 @@ def slice_command(project, lane, work):
 
 
 def prepare(selected=None):
-    v4_wings()
+    dayton_wings()
     bundles={lane:resolve_profiles(lane,WORK/'profiles'/lane) for lane in policy()['lanes']}
     rows=inventory()
     manifest_path=OUT/'catalog.json'
     previous=json.loads(manifest_path.read_text())['jobs'] if manifest_path.exists() else []
     retired={f'h2c_{f}_lm_floor_stand__petg_gf_pla' for f in ('stock','slim')}
+    renamed={j['id'] for j in previous if j['id'].startswith('h2c_v4_')}
+    retired.update(renamed)
     jobs={j['id']:j for j in previous if j['id'] not in retired}
     for job in previous:
         if job['id'] not in retired:continue
         for key in ('project','sliced_project','stl','authority'):
             path=ROOT/job[key] if key in job else None
             if path and path.exists() and path.is_relative_to(OUT):
-                target=WORK/'experiments/rejected_one_piece_floor'/path.relative_to(OUT)
+                archive='retired_dayton_revision_names' if job['id'] in renamed else 'rejected_one_piece_floor'
+                target=WORK/'experiments'/archive/path.relative_to(OUT)
                 target.parent.mkdir(parents=True,exist_ok=True);shutil.move(path,target)
+    if renamed:
+        # The accessory job has two distinct source STLs. Archive the whole
+        # old folder so its second mesh cannot remain as an orphan deliverable.
+        for path in [OUT/'v4',OUT/'STL/v4']:
+            if path.exists():
+                target=WORK/'experiments/retired_dayton_revision_names'/path.relative_to(OUT)
+                shutil.copytree(path,target,dirs_exist_ok=True);shutil.rmtree(path)
+    def save_manifest():
+        write_json(manifest_path,dict(schema_version=2,printer='Bambu Lab H2C 0.6 High Flow',
+            checkpoint='c261f32',tweeter_families=TWEETER_FAMILIES,jobs=list(jobs.values())))
     for row in rows:
         if selected and row['name'] not in selected:continue
-        lanes=tuple(bundles) if row['family']=='v4' else ('petg_gf_pla',)
+        lanes=tuple(bundles) if row['family']=='dayton_nd25fn4' else ('petg_gf_pla',)
         inputs={}
         sources=[ROOT/row['source']]
         contract=WORK/'contracts'/(row['name']+'.bores.json')
@@ -346,11 +363,11 @@ def prepare(selected=None):
             jobs[job_id]=dict(id=job_id,lane=lane,status='prepared',**row,preparation=prep,project=rel(project),work=rel(work),
                 prepare_inputs=inputs[lane],project_sha256=sha256_file(project))
             print('PREPARED',job_id,flush=True)
-            write_json(manifest_path,dict(schema_version=1,printer='Bambu Lab H2C 0.6 High Flow',checkpoint='c261f32',jobs=list(jobs.values())))
-    # Approved V4 body and accessory groups retain their exact local meshes.
+            save_manifest()
+    # Approved Dayton ND25FN-4 body and accessory groups retain their exact local meshes.
     prep_old=json.loads((ROOT/'review/nd25fn4_print/preparation.json').read_text())
     for key,role in [('body','crescent_body'),('accessories','crescent_accessories')]:
-        name='h2c_v4_'+key
+        name='h2c_dayton_nd25fn4_'+key
         if selected and name not in selected:continue
         r=deepcopy(prep_old[key])
         inputs={lane:preparation_inputs([ROOT/s['path'] for s in r['sources']],bundle,dict(key=key,preparation=r))
@@ -359,12 +376,12 @@ def prepare(selected=None):
         if not pending:continue
         groups=[]
         for s in r['sources']:
-            if sha256_file(ROOT/s['path'])!=s['sha256']:raise ValueError('V4 source changed')
+            if sha256_file(ROOT/s['path'])!=s['sha256']:raise ValueError('Dayton ND25FN-4 source changed')
             source=ROOT/s['path']
             if s['subtype']=='normal_part':
-                target=OUT/'STL/v4'/source.name;target.parent.mkdir(parents=True,exist_ok=True)
+                target=OUT/'STL/dayton_nd25fn4'/mesh_name(source);target.parent.mkdir(parents=True,exist_ok=True)
                 shutil.copy2(source,target)
-                if source.with_suffix('.print.json').exists():shutil.copy2(source.with_suffix('.print.json'),target.with_suffix('.print.json'))
+                if target.name==BODY:write_json(target.with_suffix('.print.json'),body_authority())
                 source=target
             item=(source,s['subtype'],s['overrides'],s['translation'])
             if key=='accessories' or not groups:groups.append([item])
@@ -379,25 +396,26 @@ def prepare(selected=None):
                 # Its existing pose is diagonally arranged for 256 mm. Use a
                 # small shift of the complete group instead of new geometry.
                 offset=[35.,35.,0.]
-            project=OUT/'v4'/lane/(name+'.3mf')
+            project=OUT/'dayton_nd25fn4'/lane/(name+'.3mf')
             prep=write_project(project,groups,settings,offset)
             write_json(work/'process.json',job_process(bundle,settings))
             write_json(work/'dry_run.json',slice_command(project,lane,work))
             matrix=json.loads((ROOT/r['sources'][0]['path']).with_suffix('.print.json').read_text()).get('source_to_stl_matrix') if key=='body' else None
-            jobs[job_id]=dict(id=job_id,name=name,family='v4',role=role,lane=lane,state='shared',candidate=True,status='prepared',
+            jobs[job_id]=dict(id=job_id,name=name,family=ND25FN,product_family='obiwan',tweeter_families=[ND25FN],
+                role=role,lane=lane,state='shared',candidate=True,status='prepared',
                 preparation=prep,project=rel(project),work=rel(work),offset=offset,source_to_stl_matrix=matrix,
                 stl=rel(groups[0][0][0]),magnet_count=4 if key=='body' else 0,
                 prepare_inputs=inputs[lane],project_sha256=sha256_file(project))
             print('PREPARED',job_id,flush=True)
-            write_json(manifest_path,dict(schema_version=1,printer='Bambu Lab H2C 0.6 High Flow',checkpoint='c261f32',jobs=list(jobs.values())))
+            save_manifest()
 
 
 def main():
     ap=argparse.ArgumentParser()
-    ap.add_argument('command',choices=('prepare','v4-wings'))
+    ap.add_argument('command',choices=('prepare','dayton-wings'))
     ap.add_argument('--only',action='append')
     args=ap.parse_args()
-    if args.command=='v4-wings':v4_wings()
+    if args.command=='dayton-wings':dayton_wings()
     else:prepare(args.only)
 
 

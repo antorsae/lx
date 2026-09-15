@@ -151,7 +151,7 @@ def inventory():
         monoliths.append(add_part(f"obi_monolith_{state}", f"build/{state}/stl/obiwan_core_1_of_2_lm_carrier.stl",
             f"LM monolith / {state}", family="obiwan", state=state, status="Large-format STL; outside P2S shelf",
             label="Floor" if state == "floor_stand" else "No floor"))
-    sections.append(dict(title="OBI-WAN  /  regular core and crescent", description="The same LM top accepts the regular UM or fused Dayton V4. Floor / no-floor changes the lower LM only.",
+    sections.append(dict(title="OBI-WAN  /  regular core and crescent", description="The same LM top accepts the regular UM or fused Dayton ND25FN-4. Floor / no-floor changes the lower LM only.",
                          cards=[card("obi_lower", "01 · Keyed LM bottom", oi[:2], "2 D5 per version, one at each lower shoulder."),
                                 card("obi_top", "02 · Keyed LM top", oi[2:3], "2 D5: upper left + upper right LM rim."),
                                 card("obi_um", "03 · Regular UM", oi[3:4], "2 D5: upper left + upper right UM rim."),
@@ -166,10 +166,10 @@ def inventory():
             for side in ["left", "right"]:
                 stem = f"obiwan_wing_{style}_{side}_split2_{number}_of_2_{role}"
                 pair.append(add_part(stem, f"build/wings/{style}/stl/{stem}.stl", f"{style} {role} {side}", family="obiwan", label=side.title()))
-            note = ("1 D5 per side at lower LM. Shared with Dayton V4." if number == 1 else
+            note = ("1 D5 per side at lower LM. Shared with Dayton ND25FN-4." if number == 1 else
                     "2 D5 per side: upper LM + regular UM. Use only with regular UM.")
             wings.append(card(f"wings_{style}_{role}", f"{style.title()} · {label} wings", pair, note, subtitle="Left + right · same in both stand states"))
-    sections.append(dict(title="OBI-WAN WINGS  /  flat or graded", description="Two pieces per side: LOWER + UPPER. Choose one style. The LOWER pieces also fit the Dayton V4 assembly.",
+    sections.append(dict(title="OBI-WAN WINGS  /  flat or graded", description="Two pieces per side: LOWER + UPPER. Choose one style. The LOWER pieces also fit the Dayton ND25FN-4 assembly.",
                          cards=wings, columns=4, height=590, color=COLORS["obiwan"]))
 
     # V4 seats are recovered from the actual closed cavities using the same
@@ -187,18 +187,18 @@ def inventory():
                 axis=(inverse[:3, :3] @ spec["pole_axis_bed"]).tolist(),
                 authority="candidates/nd25fn4_crescent/print_magnets.py:magnet_geometry"))
         return add_part(key, path, title, label=label, family="v4", sites=sites, status="Sliced; physical qualification pending")
-    body = v4_part("v4_body", V4 / "STL/01_UM_Crescent_V4.stl", "Fused UM + ND25FN-4 V4", "Shared fused body")
-    cap = add_part("v4_cap", V4 / "STL/02_Closed_Cap_PRINT_TWO.stl", "V4 closed cap", family="v4", frame="raw", label="Print TWO", status="Sliced; physical qualification pending")
-    retainer = add_part("v4_retainer", V4 / "STL/03_Tweeter_Retainer_PRINT_TWO.stl", "V4 tweeter retainer", family="v4", frame="raw", label="Print TWO", status="Sliced; physical qualification pending")
-    v4cards = [card("v4_body", "01 · Fused UM + V4", [body], "4 D6: two buried at each UM flank. Same body for both stands.", subtitle="Dayton ND25FN-4 pair"),
+    body = v4_part("v4_body", V4 / "STL/01_UM_Crescent_V4.stl", "Fused UM + ND25FN-4 waveguide", "Shared fused body")
+    cap = add_part("v4_cap", V4 / "STL/02_Closed_Cap_PRINT_TWO.stl", "ND25FN-4 closed cap", family="v4", frame="raw", label="Print TWO", status="Sliced; physical qualification pending")
+    retainer = add_part("v4_retainer", V4 / "STL/03_Tweeter_Retainer_PRINT_TWO.stl", "ND25FN-4 tweeter retainer", family="v4", frame="raw", label="Print TWO", status="Sliced; physical qualification pending")
+    v4cards = [card("v4_body", "01 · Fused UM + ND25FN-4", [body], "4 D6: two buried at each UM flank. Same body for both stands.", subtitle="Dayton ND25FN-4 pair"),
                card("v4_caps", "02 · Closed caps", [cap], "2 caps per body. No magnets; O-ring fit.", view="rear"),
                card("v4_retainers", "03 · Tweeter retainers", [retainer], "2 retainers. M3 screws + Ø5×4 mm M3 inserts; no magnets.")]
     for style in ["flat", "graded"]:
         pair = [v4_part(f"v4_{style}_{side}", V4 / f"STL/wings/V4_{style}_{side}_UPPER.stl",
-                        f"V4 {style} upper {side}", side.title()) for side in ["left", "right"]]
-        v4cards.append(card(f"v4_{style}_wings", f"{style.title()} · V4 UPPER wings", pair,
+                        f"ND25FN-4 {style} upper {side}", side.title()) for side in ["left", "right"]]
+        v4cards.append(card(f"v4_{style}_wings", f"{style.title()} · ND25FN-4 UPPER wings", pair,
                             "Each: 2 D6 at UM + 1 D5 at LM. Use the matching regular LOWER pair."))
-    sections.append(dict(title="OBI-WAN + DAYTON V4  /  fused UM and waveguide", description="Replaces regular UM + separate crescent. Uses its own UPPER wings. 8 D6 + 8 D5 for a complete winged speaker.",
+    sections.append(dict(title="OBI-WAN + DAYTON ND25FN-4  /  fused UM and waveguide", description="Replaces regular UM + separate crescent. Uses its own UPPER wings. 8 D6 + 8 D5 for a complete winged speaker.",
                          cards=v4cards, columns=5, height=650, color=COLORS["v4"]))
 
     alternatives = []
@@ -267,7 +267,7 @@ def inventory():
         p = V4 / f"print/qualification/{stem}.stl"
         pair.append(add_part(stem, p, f"D6 test {label}", family="test", frame="raw", sites=buried_void_sites(p, 6), label=label,
                              status="Sliced qualification pair; physical result pending"))
-    tests.append(card("d6_coupon", "D6 body / wing test", pair, "1 D6 per piece. Actual V4 pocket and skin; physical print result pending."))
+    tests.append(card("d6_coupon", "D6 body / wing test", pair, "1 D6 per piece. Actual ND25FN-4 pocket and skin; physical print result pending."))
     pair = [add_part(f"registration_{s}", f"qualification/{s}_pair.stl", s.replace("_", " "), family="test", frame="raw", label=label,
                      status="Unsliced qualification fixture") for s,label in [("male_pin","Pins"),("female_socket","Sockets")]]
     tests.append(card("registration", "LM registration test", pair, "Braced pin / socket pair. No magnets; not a carrier alternative."))
@@ -448,7 +448,7 @@ def assembly_maps():
     lower=CARDS["wings_graded_lm_lower"]["parts"]
     scenes.append(("obiwan", "Regular Obi-Wan + graded wings",lm+CARDS["obi_um"]["parts"]+CARDS["obi_t"]["parts"]+
                    lower+CARDS["wings_graded_lm_um_upper"]["parts"], "6 paired D5 joints · 12 magnets total"))
-    scenes.append(("v4", "Dayton V4 + matching graded wings",lm+["v4_body"]+lower+CARDS["v4_graded_wings"]["parts"],
+    scenes.append(("v4", "Dayton ND25FN-4 + matching graded wings",lm+["v4_body"]+lower+CARDS["v4_graded_wings"]["parts"],
                    "4 paired D5 + 4 paired D6 · 16 magnets total"))
     result=[]
     for family,title,ids,caption in scenes:
@@ -476,9 +476,9 @@ def poster(sections, assemblies):
     canvas=Image.new("RGB",(width,height),BG); d=ImageDraw.Draw(canvas)
     d.rectangle((0,0,width,header-25),fill=INK)
     d.text((margin,40),"LX521.4  /  ALL PARTS & MAGNETS",font=font(78,True),fill="white")
-    d.text((margin,142),"STOCK  ·  SLIM  ·  OBI-WAN  ·  DAYTON V4  ·  TWEETER ALTERNATIVES  ·  TEST PIECES",font=font(31),fill="#c3d6df")
-    d.text((margin,201),"Printed-parts catalog · 12 September 2026 · 78 individual part variants · magnify to inspect",font=font(31),fill="white")
-    for x,kind,desc in [(margin,"D5","Regular Stock / Slim / Obi-Wan; BMR side stations"), (width//2+50,"D6","Dayton V4: fused UM + matching upper-wing stations")]:
+    d.text((margin,142),"STOCK  ·  SLIM  ·  OBI-WAN  ·  DAYTON ND25FN-4  ·  TWEETER ALTERNATIVES  ·  TEST PIECES",font=font(31),fill="#c3d6df")
+    d.text((margin,201),"Earlier P2S parts · labels updated 15 September 2026 · 78 individual part variants · magnify to inspect",font=font(31),fill="white")
+    for x,kind,desc in [(margin,"D5","Regular Stock / Slim / Obi-Wan; BMR side stations"), (width//2+50,"D6","Dayton ND25FN-4: fused UM + matching upper-wing stations")]:
         d.ellipse((x,281,x+65,346),fill=MAGNETS[kind]["color"])
         d.text((x+32,313),kind[-1],font=font(42,True),fill="white",anchor="mm")
         d.text((x+86,280),f"{kind}  {MAGNETS[kind]['label']}  /  {MAGNETS[kind]['supplier']}",font=font(35,True),fill="white")
@@ -510,11 +510,11 @@ def poster(sections, assemblies):
     y+=46
     d.text((margin,y),"ASSEMBLY COUNTS  /  one speaker with one complete wing or shoulder set",font=font(34,True),fill=INK)
     y+=55
-    d.text((margin,y),"Stock or Slim: 8 D5     ·     Regular Obi-Wan: 12 D5     ·     Fused Dayton V4: 8 D5 + 8 D6",font=font(34,True),fill=INK)
+    d.text((margin,y),"Stock or Slim: 8 D5     ·     Regular Obi-Wan: 12 D5     ·     Fused Dayton ND25FN-4: 8 D5 + 8 D6",font=font(34,True),fill=INK)
     y+=61
     y=wrapped(d,"These totals exclude alternatives and coupons. Each magnet pair has one magnet in the body and one in the attachment. Magnets align and retain optional wings; screws carry the structural joints. Insert at the verified print pause, check attraction, then bury under the printed roof.",(margin,y),width-2*margin,29,color=MUTED)+18
-    y=wrapped(d,"Stock + Slim mixed-thickness alternatives: Stock lower/mids + Slim vase, or Slim lower/mids + Stock vase. Use perimeter parts matching the vase; the hidden rear face has a 6.8 mm step. Obi-Wan does not mix with Stock/Slim. The V4 fused body needs V4 upper wings; its lower wings and LM remain common.",(margin,y),width-2*margin,27,color=MUTED)+15
-    y=wrapped(d,"Scope: all current product meshes, STEP-only BMR-slim alternatives, monolithic LM options and diagnostic fixtures. The 4 Obi-Wan combo plates only regroup the pictured parts. Stand-duplicate copies, review assemblies, support blockers and retired C7 / V0 / three-piece wings are not extra products. Views fit each part to its frame; size is not comparable across cards.",(margin,y),width-2*margin,25,color=MUTED)+14
+    y=wrapped(d,"Stock + Slim mixed-thickness alternatives: Stock lower/mids + Slim vase, or Slim lower/mids + Stock vase. Use perimeter parts matching the vase; the hidden rear face has a 6.8 mm step. Obi-Wan does not mix with Stock/Slim. The ND25FN-4 fused body needs its matching upper wings; its lower wings and LM remain common.",(margin,y),width-2*margin,27,color=MUTED)+15
+    y=wrapped(d,"Scope: earlier P2S product meshes, STEP-only BMR-slim alternatives, monolithic LM options and diagnostic fixtures. The 4 Obi-Wan combo plates only regroup the pictured parts. Stand-duplicate copies, review assemblies, support blockers and retired C7 / V0 / three-piece wings are not extra products. Views fit each part to its frame; size is not comparable across cards.",(margin,y),width-2*margin,25,color=MUTED)+14
     y=wrapped(d,"Sources: to_print/catalog.json · review/captive_magnet_release_catalog.json · candidate facts / manifests · current STL sidecars. Dot positions come from declared seats or enclosed coupon cavities. CAD-only is not print-ready; physical fit, retention and acoustic performance remain to qualify. Generator and file map: scripts/generate_parts_magnet_poster.py / images/generated/catalog/parts_catalog.json.",(margin,y),width-2*margin,24,color=MUTED)
     assert y<height,(y,height)
     path=OUT/"ALL_ITEMS_MAGNET_CATALOG.png"
@@ -543,7 +543,7 @@ def validate(sections):
     assert counts(["01_D6_body_coupon","D6_wing_coupon"])==Counter(D6=2)
     return dict(status="passed",individual_part_variants=len(PARTS),shelf_choices=len(SHELF),
                 shelf_part_choices_covered=covered,composite_plate_choices_accounted_for=combos,
-                scope="Current product and diagnostic identities; identical stand copies and plate layouts are not extra part variants.",
+                scope="Earlier P2S product and diagnostic identities; identical stand copies and plate layouts are not extra part variants.",
                 required_meshes=len(PARTS),magnet_position_authorities="Bound per part/site; source bytes hashed.")
 
 
@@ -562,7 +562,7 @@ def main():
         sources[str(path.relative_to(ROOT))]=sha(path)
     pairing_maps=[dict(id=a["id"],title=a["title"],parts=[p["id"] for p in a["components"]],pairs=a["sites"],
                        pair_counts=dict(Counter(s["type"] for s in a["sites"]))) for a in assemblies]
-    data=dict(schema_version=1,date="2026-09-12",magnet_types=MAGNETS,parts=list(PARTS.values()),cards=list(CARDS.values()),
+    data=dict(schema_version=1,date="2026-09-15",magnet_types=MAGNETS,parts=list(PARTS.values()),cards=list(CARDS.values()),
               sections=sections,assembly_maps=pairing_maps,source_sha256=sources,coverage=proof)
     (OUT/"parts_catalog.json").write_text(json.dumps(data,indent=2)+"\n")
     if args.inventory_only:

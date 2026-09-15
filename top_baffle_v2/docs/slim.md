@@ -198,9 +198,16 @@ fit.
 
 ## Tweeter options
 
-Exactly as on Stock, the tweeter choice on Slim is a **choice of vase**: two
-interchangeable `04` pieces on the same seam-B interface, with nothing else in
-the set changing.
+Slim supports two of the project's **three tweeter families**:
+Dayton ND25FW-4 and Tectonic TEBM35C10-4 BMR. Each uses its own upper
+module (vase), including the MU10 seat. The third family,
+[Dayton ND25FN-4 printed waveguide](DAYTON_ND25FN4_WAVEGUIDE.md), currently
+has an Obiwan mount only; it does not fit the Slim upper interface.
+
+For H2C, select the standard or opposed-BMR upper from the
+[current catalog](../to_print/h2c/README.md). Both fit the new H2C LM pin
+joint in either stand state. The `04` filenames and seam-B dovetails below
+refer to the earlier P2S arrangement. Use a complete set for your printer.
 
 - **Standard V1 vase** (default) — carries the face-to-face ND25FW-4 pair
   clamped through the V1 crescent, plus the MU10 seat, on the 11.5 mm field.
@@ -217,6 +224,11 @@ the set changing.
   `build/bmr_slim_TEBM35C10-4/proud/slim/`. Both require actual-driver fit,
   insert, cable and magnet-pull qualification.
 
-Pick one; they are never combined. See
+The standard shoulders and B1 wings match the ND25FW-4 upper's magnet
+locations. The BMR upper uses different side stations and has no supplied
+matching perimeter. Its LM mounting joint is compatible; this does not make
+the standard magnetic perimeter interchangeable.
+
+Pick one upper; they are never combined. See
 [`VARIANTS.md`](VARIANTS.md#opposed-tebm35c10-4-bmr-vase-alternative) for the
 BMR vase's geometry and the two envelope profiles.

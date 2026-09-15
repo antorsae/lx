@@ -1,9 +1,9 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "87d40b4a1fb4e9705537663d2af05883223253234e7961a86bc0805b704613ef",
-  "sliced_project_sha256": "b4e485a1e9f535929dac1971b140f73c9b8cd58195434bc8c27b9378815ab6c7",
-  "gcode_sha256": "ea97e0d859c9eb694fa6fb4d65dd3ff456bce313ba297c10beb60e482f9fc455",
+  "project_sha256": "943b49f955fbbccd504c45e9a438f0ecee16003ad9a3439b095de96450103a48",
+  "sliced_project_sha256": "e03a7e1ab502ad4539a9f832bb203adb99af01d5302fe947b4f34e4bf6e940e9",
+  "gcode_sha256": "a828cea615d40f32699990d1741e0bdef6b53256fb7daccbc71370e84e6f0132",
   "audit_version": 4,
   "inputs": {
     "build/h2c/STL/h2c_slim_upper_bmr.stl": "d4d6f70edf569eb7c619369bacc32696d1134d0db2cb8da0d6f6e7a25bfa90c7",
@@ -19,21 +19,23 @@
     "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "c8cb56acd65cc809128815af74ed9e7e7c12c8b502b2ce48cb60b720e64fc2dc",
+    "print_policy_h2c.json": "1c545d0f9365ed36563bdea5d7bab7d027fb5fa04d66ce553c2ee1485c629135",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
-    "scripts/audit_h2c_print.py": "ae2eaff5b775b7d7ee4a2d97204c744d6e41046662ccd1977865108e9e64d0c4",
+    "scripts/audit_h2c_print.py": "8e0dfe9914603f00a175ffa22d340d25f0ab9e3c99fe4adb5cafb85ee65ed646",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "src/lx521_baffle/h2c/dayton.py": "034817fb267162508cd59882a4b65c41f7f6e29233cf8164fc444a3d53bc1bf7",
     "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
+    "src/lx521_baffle/tweeter_options.py": "4e13db23df7b60b9278d0e15ec3810b033376a6ee72cc33dfa8fe40518703f5a",
     "to_print/h2c/STL/h2c_slim_upper_bmr.stl": "01f3671ffdcc04535c12eeba60976f78f114a6c10c8c7922c433205d6f771c72",
-    "to_print/h2c/slim/petg_gf_pla/h2c_slim_upper_bmr.3mf": "87d40b4a1fb4e9705537663d2af05883223253234e7961a86bc0805b704613ef"
+    "to_print/h2c/slim/petg_gf_pla/h2c_slim_upper_bmr.3mf": "943b49f955fbbccd504c45e9a438f0ecee16003ad9a3439b095de96450103a48"
   },
   "deposition": {
     "status": "pass",
     "counts": {
       "tower": 7258,
       "support": 5391,
-      "model": 376939,
+      "model": 376945,
       "interface": 437
     },
     "deposition_bounds_mm": {
@@ -108,27 +110,27 @@
       "last_open_layer_z_mm": 5.96,
       "collision_witnesses": [
         {
-          "line": 172646,
+          "line": 172648,
           "feature": "Outer wall",
           "intrusion_mm": 0.12582835468607234
         },
         {
-          "line": 172648,
+          "line": 172650,
           "feature": "Outer wall",
           "intrusion_mm": 0.15277029696843392
         },
         {
-          "line": 172650,
+          "line": 172652,
           "feature": "Outer wall",
           "intrusion_mm": 0.13814265248867785
         },
         {
-          "line": 172652,
+          "line": 172654,
           "feature": "Outer wall",
           "intrusion_mm": 0.1421300703124534
         },
         {
-          "line": 172654,
+          "line": 172656,
           "feature": "Outer wall",
           "intrusion_mm": 0.1417400703124534
         }
@@ -631,27 +633,27 @@
       "last_open_layer_z_mm": 5.96,
       "collision_witnesses": [
         {
-          "line": 172906,
+          "line": 172907,
           "feature": "Outer wall",
           "intrusion_mm": 0.1292871514222197
         },
         {
-          "line": 172908,
+          "line": 172909,
           "feature": "Outer wall",
           "intrusion_mm": 0.15734141550009556
         },
         {
-          "line": 172910,
+          "line": 172911,
           "feature": "Outer wall",
           "intrusion_mm": 0.1379119334599433
         },
         {
-          "line": 172912,
+          "line": 172913,
           "feature": "Outer wall",
           "intrusion_mm": 0.14141092968753272
         },
         {
-          "line": 172914,
+          "line": 172915,
           "feature": "Outer wall",
           "intrusion_mm": 0.14112592968753274
         }
@@ -1154,27 +1156,27 @@
       "last_open_layer_z_mm": 5.96,
       "collision_witnesses": [
         {
-          "line": 172735,
+          "line": 172737,
           "feature": "Outer wall",
           "intrusion_mm": 0.12582835468606948
         },
         {
-          "line": 172737,
+          "line": 172739,
           "feature": "Outer wall",
           "intrusion_mm": 0.15277029696842298
         },
         {
-          "line": 172739,
+          "line": 172741,
           "feature": "Outer wall",
           "intrusion_mm": 0.13814265248866409
         },
         {
-          "line": 172741,
+          "line": 172743,
           "feature": "Outer wall",
           "intrusion_mm": 0.14213007031243918
         },
         {
-          "line": 172743,
+          "line": 172745,
           "feature": "Outer wall",
           "intrusion_mm": 0.14174007031243918
         }
@@ -1677,27 +1679,27 @@
       "last_open_layer_z_mm": 5.96,
       "collision_witnesses": [
         {
-          "line": 172819,
+          "line": 172821,
           "feature": "Outer wall",
           "intrusion_mm": 0.12928715142222091
         },
         {
-          "line": 172821,
+          "line": 172823,
           "feature": "Outer wall",
           "intrusion_mm": 0.15734141550011163
         },
         {
-          "line": 172824,
+          "line": 172825,
           "feature": "Outer wall",
           "intrusion_mm": 0.1379119334599709
         },
         {
-          "line": 172826,
+          "line": 172827,
           "feature": "Outer wall",
           "intrusion_mm": 0.14141092968756114
         },
         {
-          "line": 172828,
+          "line": 172829,
           "feature": "Outer wall",
           "intrusion_mm": 0.14112592968756116
         }
@@ -2177,7 +2179,7 @@
   "retaining_walls": {
     "status": "pass",
     "physical_qualification": "pending same-geometry coupon print",
-    "gcode_sha256": "ea97e0d859c9eb694fa6fb4d65dd3ff456bce313ba297c10beb60e482f9fc455",
+    "gcode_sha256": "a828cea615d40f32699990d1741e0bdef6b53256fb7daccbc71370e84e6f0132",
     "stl_sha256": "01f3671ffdcc04535c12eeba60976f78f114a6c10c8c7922c433205d6f771c72",
     "source_sha256": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "sample_spacing_mm": 0.06,
@@ -4226,8 +4228,8 @@
   "pause_program": [
     {
       "z_mm": 6.12,
-      "pause_command_line_number": 170217,
-      "first_extrusion_line_number": 170261,
+      "pause_command_line_number": 170216,
+      "first_extrusion_line_number": 170260,
       "pass": true
     }
   ],
@@ -4271,15 +4273,15 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 388256,
-      "lines": 648744,
-      "movement_commands": 509598,
-      "non_comment_lines": 559494,
+      "extrusion_moves": 388262,
+      "lines": 648872,
+      "movement_commands": 509552,
+      "non_comment_lines": 559447,
       "temperature_commands": 54
     },
     "warnings": [
       "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-      "Unknown or unsupported commands were left unchanged: ========== line 1086, G150 line 916, G150.1 line 701, G150.2 line 902, G150.3 line 683, G151 line 743, G17 line 1412, G28.14 line 1078, G28.140 line 626, G29.1 line 622, G29.2 line 757, G29.20 line 965."
+      "Unknown or unsupported commands were left unchanged: ========== line 1085, G150 line 916, G150.1 line 701, G150.2 line 902, G150.3 line 683, G151 line 743, G17 line 1411, G28.14 line 1077, G28.140 line 626, G29.1 line 622, G29.2 line 757, G29.20 line 964."
     ]
   }
 }

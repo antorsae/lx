@@ -1,11 +1,17 @@
-# V4 — PETG Translucent + PLA support, alternate changeover calibration
+# waveguide — PETG Translucent + PLA support, alternate changeover calibration
+
+**Earlier P2S files.** For the current H2C printer, use the
+[H2C catalog](../../../to_print/h2c/README.md) and
+[Dayton ND25FN-4 waveguide guide](../../../docs/DAYTON_ND25FN4_WAVEGUIDE.md).
+Original revision strings in these filenames are retained for provenance.
+
 
 Sliced native Bambu Studio files for the **P2S, 0.6 mm High Flow nozzle**, using the **Engineering Plate with glue, 70 °C, a 5 mm outer brim and no raft**. The plate selection is stored in each project; re-open the updated files before printing.
 Use **Bambu PETG Translucent in AMS slot 4** and **Bambu PLA Translucent in AMS slot 2**, as previously confirmed. Open as a project and map the two filaments in the Send dialog. Native nozzle-map numbers are not AMS slots.
 
 | File | Estimated time |
 |---|---:|
-| [V4 fused UM + crescent body](01_UM_Crescent_V4_SMOOTH_WALLS_PURGE560_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf) | 12 h 22 min |
+| [ND25FN-4 fused UM/waveguide body](01_UM_Crescent_V4_SMOOTH_WALLS_PURGE560_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf) | 12 h 22 min |
 | [Two caps + two M3 retainers](02_Caps_TWO_Retainers_TWO_PURGE560_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf) | 2 h 10 min |
 
 This alternate pair uses **560 mm³ purge in both directions**, multiplier **1**, and an explicit **12 mm³/s PLA flush**. The preceding translucent files used 298 mm³ PETG → PLA and 575 mm³ PLA → PETG; their generated PLA flush already ran at 12 mm³/s. The new calibration increases the PETG → PLA purge and standardizes the return purge. It has not been physically shown to resolve a blockage.

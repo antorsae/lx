@@ -1,6 +1,6 @@
 {
   "status": "pass",
-  "V4": {
+  "Dayton_ND25FN4": {
     "path": "candidates/nd25fn4_crescent/print/geometry/01_UM_Crescent_V4_PRINT.stl",
     "sha256": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
     "sidecar_sha256": "a3d732f8c0affa29b6f3a4c5012eb37ad675bf366972951d4daa950e655fd7da"
@@ -10,7 +10,7 @@
     "sha256": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
     "sidecar_sha256": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23"
   },
-  "source_sha256": "625e436822c440e65d17e47ec8f36f395c43ddce0e8d135d0198c8cf09090bc5",
+  "source_sha256": "3aad7926b97121329e708c006d39c04f2701b9db5822088d6d6b01c9fafd81b4",
   "checks": [
     {
       "state": "no_floor_stand",
@@ -19,7 +19,7 @@
         "sha256": "44610f8a41ee7fa477082b8e046805dc1684fd61bad7ee986d2b3b5d64b53161",
         "sidecar_sha256": "20d30e857d0e4caf3159e9f1a0de306bafb283a2fa61728b70eaea56d78d7286"
       },
-      "V4_overlap_mm3": 0.0,
+      "Dayton_ND25FN4_overlap_mm3": 0.0,
       "regular_UM_overlap_mm3": 7.632783294297951e-17,
       "receivers": [
         {
@@ -33,7 +33,7 @@
           "half_lap_gap_mm": 0.19999980463261124
         }
       ],
-      "V4_LM_front_occlusion_mm2": 0.0,
+      "Dayton_ND25FN4_LM_front_occlusion_mm2": 0.0,
       "seam_samples": [
         {
           "x_mm": -30.0,
@@ -109,7 +109,7 @@
         "sha256": "6544be563cc0986339109c5e6bc11b6cd0c54cae709a092937ef3f83cf8d2873",
         "sidecar_sha256": "ef1796aeec9676cb28bde6defcd29282f705790dabc820d49875df36465e00fa"
       },
-      "V4_overlap_mm3": 0.0,
+      "Dayton_ND25FN4_overlap_mm3": 0.0,
       "regular_UM_overlap_mm3": 0.0,
       "receivers": [
         {
@@ -123,7 +123,7 @@
           "half_lap_gap_mm": 0.19999980463257927
         }
       ],
-      "V4_LM_front_occlusion_mm2": 0.0,
+      "Dayton_ND25FN4_LM_front_occlusion_mm2": 0.0,
       "seam_samples": [
         {
           "x_mm": -30.0,

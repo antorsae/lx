@@ -7,44 +7,40 @@ sys.path[:0]=[str(ROOT/'src'),str(ROOT/'scripts')]
 from lx521_baffle.h2c.printing import policy,write_json
 from lx521_baffle.io import sha256_file
 from lx521_baffle.print_contract import validate_print_sidecar
+from lx521_baffle.h2c.dayton import BODY, RETAINED_SOURCES, SOURCE_ROOT, body_authority
+from lx521_baffle.tweeter_options import TWEETER_FAMILIES, ND25FN, compatible_tweeters
 from build_h2c_release import inventory,prepared_is_current
 from audit_h2c_print import audit_is_current
 
 
 def validate_mesh_authority(path):
-    """Validate native print datums or the three unchanged retained V4 meshes.
+    """Validate native print datums or the three unchanged retained Dayton ND25FN-4 meshes.
 
     The retained cap and retainer were authored directly in print coordinates.
     They have hash-bound build records, not installed-baffle front-down datums.
-    The retained body carries its original V4 transform schema. Do not invent
+    The retained body carries its original Dayton ND25FN-4 transform schema. Do not invent
     canonical front-down sidecars for those different source contracts.
     """
-    source_root=ROOT/'candidates/nd25fn4_crescent'
-    retained={
-        '01_UM_Crescent_V4_PRINT.stl':source_root/'print/geometry/01_UM_Crescent_V4_PRINT.stl',
-        '02_Closed_Cap_PRINT_TWO.stl':source_root/'STL/02_Closed_Cap_PRINT_TWO.stl',
-        '03_Tweeter_Retainer_PRINT_TWO.stl':source_root/'STL/03_Tweeter_Retainer_PRINT_TWO.stl',
-    }
-    if path.parent!=ROOT/'to_print/h2c/STL/v4':
+    if path.parent!=ROOT/'to_print/h2c/STL/dayton_nd25fn4':
         validate_print_sidecar(path)
         return None
-    assert path.name in retained,('Unknown retained V4 mesh',path)
-    source=retained[path.name];digest=sha256_file(path)
-    assert digest==sha256_file(source),('Retained V4 geometry changed',path)
+    assert path.name in RETAINED_SOURCES,('Unknown retained Dayton ND25FN-4 mesh',path)
+    source=RETAINED_SOURCES[path.name];digest=sha256_file(path)
+    assert digest==sha256_file(source),('Retained Dayton ND25FN-4 geometry changed',path)
     evidence={str(source.relative_to(ROOT)):digest}
-    if path.name=='01_UM_Crescent_V4_PRINT.stl':
+    if path.name==BODY:
         authority=source.with_suffix('.print.json')
-        assert sha256_file(path.with_suffix('.print.json'))==sha256_file(authority)
-        payload=json.loads(authority.read_text())
+        payload=json.loads(path.with_suffix('.print.json').read_text())
+        assert payload==body_authority(),('Renamed body authority differs',path)
         assert payload['stl_sha256']==digest and payload['stl']==path.name
         approved=ROOT/payload['approved_source']
         assert sha256_file(approved)==payload['approved_source_sha256']
         evidence.update({str(authority.relative_to(ROOT)):sha256_file(authority),
                          str(approved.relative_to(ROOT)):sha256_file(approved)})
-        kind='retained V4 installed-to-print transform'
+        kind='retained Dayton ND25FN-4 installed-to-print transform'
     else:
-        manifest=source_root/'build_manifest.json'
-        record=json.loads(manifest.read_text())['files'][path.name]
+        manifest=SOURCE_ROOT/'build_manifest.json'
+        record=json.loads(manifest.read_text())['files'][source.name]
         assert record['sha256']==digest and record['watertight'] and record['winding_consistent']
         assert record['components']==1 and record['volume_mm3']>0 and abs(record['bounds_mm'][0][2])<1e-6
         evidence[str(manifest.relative_to(ROOT))]=sha256_file(manifest)
@@ -54,12 +50,20 @@ def validate_mesh_authority(path):
 
 def main():
     shelf=ROOT/'to_print/h2c';catalog=json.loads((shelf/'catalog.json').read_text());jobs=catalog['jobs']
-    expected={row['name']+'__'+lane for row in inventory() for lane in (policy()['lanes'] if row['family']=='v4' else ['petg_gf_pla'])}
-    expected|={f'h2c_v4_{role}__{lane}' for role in ['body','accessories'] for lane in policy()['lanes']}
+    assert catalog['tweeter_families']==list(TWEETER_FAMILIES)
+    family_products={row['id']:set(row['products']) for row in TWEETER_FAMILIES}
+    expected={row['name']+'__'+lane for row in inventory() for lane in (policy()['lanes'] if row['family']=='dayton_nd25fn4' else ['petg_gf_pla'])}
+    expected|={f'h2c_dayton_nd25fn4_{role}__{lane}' for role in ['body','accessories'] for lane in policy()['lanes']}
     ids=[j['id'] for j in jobs]
     assert len(ids)==len(set(ids)) and set(ids)==expected,('Catalog inventory differs',sorted(expected-set(ids)),sorted(set(ids)-expected))
     meshes=set();slices=set();projects=set()
     for job in jobs:
+        assert job['tweeter_families'],('Missing tweeter compatibility',job['id'])
+        assert job['tweeter_families']==compatible_tweeters(job['name'],job['family'],job['role']),('Stale tweeter compatibility',job['id'])
+        for tweeter in job['tweeter_families']:
+            assert job['product_family'] in family_products[tweeter],('Incompatible tweeter family',job['id'],tweeter)
+        if job['family']==ND25FN:
+            assert job['product_family']=='obiwan' and job['tweeter_families']==[ND25FN]
         # Recover the disposable plain-G-code cache from the qualified 3MF
         # when validating a fresh checkout. Never infer a new qualification.
         raw=ROOT/job['work']/'plate_1.gcode'
@@ -79,6 +83,9 @@ def main():
     retained=[record for path in sorted(meshes) if (record:=validate_mesh_authority(path)) is not None]
     actual={p.resolve() for p in shelf.rglob('*.gcode.3mf')}
     assert actual==slices,('Unlisted or missing slices',sorted(map(str,actual-slices)),sorted(map(str,slices-actual)))
+    editable={p.resolve() for p in shelf.rglob('*.3mf') if not p.name.endswith('.gcode.3mf')}
+    assert editable==projects,('Unlisted or missing editable projects',editable-projects,projects-editable)
+    assert {p.resolve() for p in shelf.rglob('*.stl')}=={p.resolve() for p in meshes},'Unlisted or missing print meshes'
     for path in [ROOT/'build/h2c/geometry_validation.json',ROOT/'build/h2c/obiwan_interface_validation.json']:
         data=json.loads(path.read_text());assert data['status']=='pass'
     result=dict(status='pass',jobs=len(jobs),editable_projects=len(projects),sliced_projects=len(slices),

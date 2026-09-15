@@ -21,6 +21,7 @@ import numpy as np
 import trimesh
 from lx521_baffle.io import sha256_file
 from lx521_baffle.h2c.printing import write_json,policy,job_settings
+from lx521_baffle.h2c.dayton import original_accessory_preparation
 from print_magnets import magnet_geometry, discover_specs
 from captive_wall_audit import audit_captive_walls
 
@@ -39,6 +40,7 @@ def qualification_inputs(job):
     if job.get('source'):paths.add(ROOT/job['source'])
     for p in ('scripts/audit_h2c_print.py','scripts/captive_wall_audit.py','scripts/gcode_analysis.py',
               'scripts/artifact_emit.py','src/lx521_baffle/h2c/printing.py',
+              'src/lx521_baffle/h2c/dayton.py','src/lx521_baffle/tweeter_options.py',
               'candidates/nd25fn4_crescent/print_magnets.py','candidates/nd25fn4_crescent/audit_print.py',
               'candidates/nd25fn4_crescent/cap_support_check.py'):
         paths.add(ROOT/p)
@@ -229,7 +231,7 @@ def support_audit(job,gcode):
         report['ducts_and_insert_bores']=support_ducts(gcode,prep)
     elif job['role']=='crescent_accessories':
         from cap_support_check import ceiling_supports
-        report['cap_ceilings']=ceiling_supports(gcode,job['preparation'])
+        report['cap_ceilings']=ceiling_supports(gcode,original_accessory_preparation(job['preparation']))
     else:
         for source in job.get('blockers',[]):
             if not source.endswith('.json'):continue
@@ -316,7 +318,7 @@ def run_job(job):
     paths=deposition(gcode)
     specs=[];records=[];pause_z=[]
     if job['magnet_count']:
-        if job['family']=='v4':
+        if job['family']=='dayton_nd25fn4':
             stl=ROOT/job['stl'];auth=json.loads(stl.with_suffix('.print.json').read_text())
             specs=magnet_geometry(stl,auth,job['offset'],owner='body' if job['role']=='crescent_body' else 'wing')
         else:specs=regular_specs(job)

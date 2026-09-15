@@ -141,6 +141,11 @@ candidates/nd25fn4_crescent/assembly/
 # .gcode.3mf files and are not a second set of deliverables.
 !print_policy_h2c.json
 !to_print/h2c/catalog.json
+# Git on the default macOS filesystem also matches the older lowercase
+# stl/ ignore rule against STL/. Keep the current H2C geometry trackable.
+!to_print/h2c/STL/
+!to_print/h2c/STL/**/*.stl
+!to_print/h2c/STL/*.stl
 !to_print/h2c/STL/**/*.print.json
 !to_print/h2c/STL/*.print.json
 !build/h2c/*.json
@@ -164,5 +169,8 @@ build/h2c/experiments/**/*.gcode.3mf
 build/h2c/experiments/**/*.log
 !build/h2c/views/*.json
 # Curated current packets are added explicitly; repeated timestamped snapshot
-# runs remain local. Stable contact sheets and named V4 views stay trackable.
+# runs remain local. Stable contact sheets and named Dayton views stay trackable.
 build/h2c/views/*_20*T*.png
+
+# Pre-rename H2C deliverables are preserved in commit 07206ed.
+build/h2c/experiments/retired_dayton_revision_names/

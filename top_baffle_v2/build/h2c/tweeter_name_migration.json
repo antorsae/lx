@@ -1,0 +1,279 @@
+{
+  "status": "pass",
+  "previous_commit": "07206ed",
+  "family": "dayton_nd25fn4",
+  "product": "obiwan",
+  "retained_print_meshes": [
+    {
+      "previous": "STL/h2c_v4_wing_graded_right.stl",
+      "current": "to_print/h2c/STL/h2c_dayton_nd25fn4_wing_graded_right.stl",
+      "sha256": "fc26f484feac7d70a5546155b44d559486504db036c9e0f126b6fed354de5c2d",
+      "geometry_bytes_identical": true
+    },
+    {
+      "previous": "STL/h2c_v4_wing_flat_right.stl",
+      "current": "to_print/h2c/STL/h2c_dayton_nd25fn4_wing_flat_right.stl",
+      "sha256": "ae71a3c6d1d81551d013328cd06f36512cce9557f274140ed826384b4e4eb5ed",
+      "geometry_bytes_identical": true
+    },
+    {
+      "previous": "STL/h2c_v4_wing_graded_left.stl",
+      "current": "to_print/h2c/STL/h2c_dayton_nd25fn4_wing_graded_left.stl",
+      "sha256": "f2bd7c7e29264b849d5163ea2f5edd1dac2f8aaddcfcf8f12bafad6d0a9dfe72",
+      "geometry_bytes_identical": true
+    },
+    {
+      "previous": "STL/h2c_v4_wing_flat_left.stl",
+      "current": "to_print/h2c/STL/h2c_dayton_nd25fn4_wing_flat_left.stl",
+      "sha256": "f450c576543f468c6139abf74d1178b15cd528f2d258e65a150ab3ce3dcd19f1",
+      "geometry_bytes_identical": true
+    },
+    {
+      "previous": "STL/v4/03_Tweeter_Retainer_PRINT_TWO.stl",
+      "current": "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_retainer.stl",
+      "sha256": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc",
+      "geometry_bytes_identical": true
+    },
+    {
+      "previous": "STL/v4/01_UM_Crescent_V4_PRINT.stl",
+      "current": "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_body.stl",
+      "sha256": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
+      "geometry_bytes_identical": true
+    },
+    {
+      "previous": "STL/v4/02_Closed_Cap_PRINT_TWO.stl",
+      "current": "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_cap.stl",
+      "sha256": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+      "geometry_bytes_identical": true
+    }
+  ],
+  "scope": "Public naming and compatibility metadata; approved geometry and process values unchanged.",
+  "processes": [
+    {
+      "job": "h2c_stock_lm_no_floor_stand__petg_gf_pla",
+      "process_sha256": "a8fd5cf34c6f7b1ea4cb00726b3bee4d5e5258d49fff9c8487fbd9317f2a68db",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_stock_upper__petg_gf_pla",
+      "process_sha256": "fcf9d3f54151331b4e516f2b2ed522e46bca39308174536d0f2c899a4c52baa0",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_stock_upper_bmr__petg_gf_pla",
+      "process_sha256": "fcf9d3f54151331b4e516f2b2ed522e46bca39308174536d0f2c899a4c52baa0",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_slim_lm_no_floor_stand__petg_gf_pla",
+      "process_sha256": "a8fd5cf34c6f7b1ea4cb00726b3bee4d5e5258d49fff9c8487fbd9317f2a68db",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_slim_upper__petg_gf_pla",
+      "process_sha256": "fcf9d3f54151331b4e516f2b2ed522e46bca39308174536d0f2c899a4c52baa0",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_slim_upper_bmr__petg_gf_pla",
+      "process_sha256": "fcf9d3f54151331b4e516f2b2ed522e46bca39308174536d0f2c899a4c52baa0",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_stock_05_A_shoulder_bottom_left_1_of_4__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_stock_06_A_shoulder_top_left_2_of_4__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_stock_07_A_shoulder_bottom_right_3_of_4__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_stock_08_A_shoulder_top_right_4_of_4__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_stock_09_B1_wing_left_1_of_2__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_stock_10_B1_wing_right_2_of_2__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_slim_05_A_shoulder_bottom_left_1_of_4__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_slim_06_A_shoulder_top_left_2_of_4__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_slim_07_A_shoulder_bottom_right_3_of_4__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_slim_08_A_shoulder_top_right_4_of_4__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_slim_09_B1_wing_left_1_of_2__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_slim_10_B1_wing_right_2_of_2__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_obiwan_core_lm_carrier_no_floor_stand__petg_gf_pla",
+      "process_sha256": "0563c9cebd4116d5452db72ac16ad80091e3e48c6bc618128595030a202eb9f7",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_obiwan_core_lm_carrier_floor_stand__petg_gf_pla",
+      "process_sha256": "0563c9cebd4116d5452db72ac16ad80091e3e48c6bc618128595030a202eb9f7",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_obiwan_core_2_of_2_um_carrier__petg_gf_pla",
+      "process_sha256": "fcf9d3f54151331b4e516f2b2ed522e46bca39308174536d0f2c899a4c52baa0",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_obiwan_addon_tweeter_crescent__petg_gf_pla",
+      "process_sha256": "91ed35b5735825095b9f9cc83b5961fb2f2de2ebaffff77a4091cc422fe01c8e",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_obiwan_addon_nl8_service_lid__petg_gf_pla",
+      "process_sha256": "29f0a9eea0c6c9ea94673cbdc5149e9413d80f24e8a13483fc370e108193f904",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_obiwan_wing_flat_left__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_obiwan_wing_flat_right__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_obiwan_wing_graded_left__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_obiwan_wing_graded_right__petg_gf_pla",
+      "process_sha256": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_obiwan_bmr_crescent_TEBM35C10-4__petg_gf_pla",
+      "process_sha256": "91ed35b5735825095b9f9cc83b5961fb2f2de2ebaffff77a4091cc422fe01c8e",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_obiwan_bmr_crescent_opposed_TEBM35C10-4__petg_gf_pla",
+      "process_sha256": "91ed35b5735825095b9f9cc83b5961fb2f2de2ebaffff77a4091cc422fe01c8e",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_stock_lm_lower_floor_stand__petg_gf_pla",
+      "process_sha256": "0563c9cebd4116d5452db72ac16ad80091e3e48c6bc618128595030a202eb9f7",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_stock_lm_upper_floor_stand__petg_gf_pla",
+      "process_sha256": "c40d75eae21d46ba6286e6c8dddb98fcca2dea41e51bdc20bbfd5331d032a3b1",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_slim_lm_lower_floor_stand__petg_gf_pla",
+      "process_sha256": "0563c9cebd4116d5452db72ac16ad80091e3e48c6bc618128595030a202eb9f7",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_slim_lm_upper_floor_stand__petg_gf_pla",
+      "process_sha256": "c40d75eae21d46ba6286e6c8dddb98fcca2dea41e51bdc20bbfd5331d032a3b1",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_dayton_nd25fn4_wing_flat_left__petg_gf_pla",
+      "process_sha256": "a756ea566cd01baf92d4594b8aa5ba76a8ec571b9553d9553bd0a7e8f5517eaa",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_dayton_nd25fn4_wing_flat_left__petg_translucent_pla",
+      "process_sha256": "c0a38713f1fe54cc6b145c9beba2ef22479bdbfab0069bd0550355e3cee5813f",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_dayton_nd25fn4_wing_flat_right__petg_gf_pla",
+      "process_sha256": "a756ea566cd01baf92d4594b8aa5ba76a8ec571b9553d9553bd0a7e8f5517eaa",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_dayton_nd25fn4_wing_flat_right__petg_translucent_pla",
+      "process_sha256": "c0a38713f1fe54cc6b145c9beba2ef22479bdbfab0069bd0550355e3cee5813f",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_dayton_nd25fn4_wing_graded_left__petg_gf_pla",
+      "process_sha256": "a756ea566cd01baf92d4594b8aa5ba76a8ec571b9553d9553bd0a7e8f5517eaa",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_dayton_nd25fn4_wing_graded_left__petg_translucent_pla",
+      "process_sha256": "c0a38713f1fe54cc6b145c9beba2ef22479bdbfab0069bd0550355e3cee5813f",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_dayton_nd25fn4_wing_graded_right__petg_gf_pla",
+      "process_sha256": "a756ea566cd01baf92d4594b8aa5ba76a8ec571b9553d9553bd0a7e8f5517eaa",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_dayton_nd25fn4_wing_graded_right__petg_translucent_pla",
+      "process_sha256": "c0a38713f1fe54cc6b145c9beba2ef22479bdbfab0069bd0550355e3cee5813f",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_dayton_nd25fn4_body__petg_gf_pla",
+      "process_sha256": "43d655692a206b9ff92554e47b8f722e529f955f109f5d20ec0d04388a1385bc",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_dayton_nd25fn4_body__petg_translucent_pla",
+      "process_sha256": "802f8d94a18de397c950448040fae148aa32fe66f5065129b3411d53a2f53e46",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_dayton_nd25fn4_accessories__petg_gf_pla",
+      "process_sha256": "02878999fa1255e3edfefc72f4ad218f0726dd0bb671d5134dc7a30ff648821c",
+      "settings_identical": true
+    },
+    {
+      "job": "h2c_dayton_nd25fn4_accessories__petg_translucent_pla",
+      "process_sha256": "e01eba829b4ea6c55dfbed82375c65f3734ad401f3a46c5085abf4f4cd1ee553",
+      "settings_identical": true
+    }
+  ],
+  "unchanged_process_count": 45
+}

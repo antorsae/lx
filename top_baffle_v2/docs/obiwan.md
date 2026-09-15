@@ -1,10 +1,17 @@
 # Obi-Wan — extreme two-collar barebone
 
-Obi-Wan removes the full baffle outline and keeps only what carries a driver:
-one LM collar and one UM collar, plus optional tweeter crescent and optional
-flat/graded acoustic wings. It shares no seam, duct, or attachment interface
-with the proud family. Catalog entry:
-[`artifacts/obiwan/`](../artifacts/obiwan/).
+Obiwan uses separate driver carriers with optional flat or graded wings.
+It offers three tweeter families: **Dayton ND25FW-4**, **Tectonic TEBM35C10-4
+BMR**, and **Dayton ND25FN-4 waveguide**. The first two use the regular UM
+collar and a separate crescent. ND25FN-4 combines the UM and printed
+waveguides into a curved body with matching wings.
+
+For the current printer, use the [H2C catalog](../to_print/h2c/README.md):
+one LM carrier in either stand state and one continuous wing per side.
+The [three-family guide](TWEETER_OPTIONS.md) covers selection; the
+[ND25FN-4 guide](DAYTON_ND25FN4_WAVEGUIDE.md) covers that integrated upper.
+The technical sections below describe the regular carrier geometry and its
+earlier P2S splits unless explicitly labelled otherwise.
 
 This product is a **candidate**: its state manifests record
 `release_authorized: false`, and the physical qualification record in
@@ -409,25 +416,32 @@ Print settings, magnet pauses and the refresh procedure are in
 
 ## Tweeter options
 
-Obi-Wan has no vase, so where Stock and Slim choose between two vases, Obi-Wan
-chooses between three **crescents** on one unchanged mount: the pair of
-half-lap ears at `x=±24, y=421.5` on the UM collar, with blind M3 receivers,
-360° walls, 1.9 mm acoustic-front floors and a 0.20 mm axial gap. All three
-present that interface identically, so swapping them touches nothing else —
-not the UM print, not the wings.
+Obiwan has **three tweeter families**, with two BMR layouts inside the BMR
+family. Choose one of these upper arrangements per speaker:
 
-- **Released ND25FW-4 face-to-face crescent** (default) —
-  `obiwan_addon_tweeter_crescent.stl`, the same arrangement Stock and Slim get
-  from their vase: two Dayton ND25FW-4 domes whose faceplates clamp the
-  crescent between them. This is the only release-authorized carrier.
-- **Candidate coaxial TEBM35C10-4 BMR crescent** — two Tectonic BMRs stacked
-  back to back on one fixed acoustic axis, carried by a clipped Ø63 pod on the
-  collar and joined to it by a solid flush skirt rather than by a crescent
-  outline. Documented below; **not** release-authorized.
-- **Candidate opposed TEBM35C10-4 BMR crescent** — the same two BMRs in the
-  proud vase's side-by-side arrangement, on the same fixed lower axis plus a
-  second axis one vase pitch above it, inside one 25.1 mm envelope.
-  Documented below; **not** release-authorized.
+| Tweeter family | Parts | Wing compatibility |
+|---|---|---|
+| Dayton ND25FW-4 face-to-face | Regular UM + separate crescent; driver faceplates clamp the crescent | Regular flat or graded wings |
+| Tectonic TEBM35C10-4 BMR | Regular UM + coaxial **or** opposed BMR crescent | Regular flat or graded wings |
+| Dayton ND25FN-4 waveguide | One fused UM/waveguide body + two caps + two M3 retainers | Matching ND25FN-4 flat or graded wings |
+
+The ND25FW-4 and both BMR crescents share the half-lap mount at
+`x=±24, y=421.5` on the regular UM: blind M3 receivers, 360° walls,
+1.9 mm front floors and a 0.20 mm axial gap. Switching among those three
+carrier layouts retains the UM and wings.
+
+The **ND25FN-4 waveguide replaces that entire UM/crescent assembly**.
+It uses faceplate-free Dayton elements seated in printed front/rear flares,
+an organic UM surround, buried Ø6 × 3 mm shoulder magnets and a concealed
+cable gallery. Its matching H2C wings retain the regular LM contacts.
+The same body fits both stand states; the actual LM front remains flush
+and uncovered. See the [assembly, print and hardware guide](DAYTON_ND25FN4_WAVEGUIDE.md).
+
+All three families appear in the [H2C print catalog](../to_print/h2c/README.md).
+BMR and ND25FN-4 retain candidate qualification status. Digital checks do
+not qualify driver fit, retention or acoustics. The extra BMR pod side magnets have no supplied mating perimeter; regular
+Obiwan wings retain their LM/UM contacts. The regular crescent is the
+established geometry; the two BMR forms below are its alternate mounts.
 
 The packaged candidates default to the conservative `full` land: a clipped
 Ø63 circle with side-magnet faces at `x=±31.326666`, for an actual maximum
@@ -438,9 +452,9 @@ same side magnets and faces but replaces the unused circular field with a
 Changing topology never moves either acoustic axis. BMR-slim requires actual
 driver fit, insert, cable, magnet-pull and load qualification before release.
 
-Fitting no crescent at all is also a supported configuration.
+The regular UM can also be fitted without a crescent. The ND25FN-4 waveguide is integral to its UM body.
 
-All three are on the P2S shelf — `obiwan_04_T_tweeter_crescent_1_of_1`,
+The three separate crescent layouts are also on the earlier P2S shelf — `obiwan_04_T_tweeter_crescent_1_of_1`,
 `obiwan_17_BMR_crescent_coaxial_1_of_1` and
 `obiwan_18_BMR_crescent_opposed_1_of_1` — and the choice is exclusive: take
 one or none. `17` and `18` are labelled CANDIDATE there and are hard-linked

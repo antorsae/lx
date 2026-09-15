@@ -26,7 +26,7 @@
     "last_open_layer_z_mm": 5.8,
     "collision_witnesses": [
       {
-        "line": 254494,
+        "line": 254493,
         "feature": "Outer wall",
         "intrusion_mm": 0.06135987081150657
       }
@@ -529,7 +529,7 @@
     "last_open_layer_z_mm": 5.8,
     "collision_witnesses": [
       {
-        "line": 254868,
+        "line": 254867,
         "feature": "Outer wall",
         "intrusion_mm": 0.060910229297779256
       }
@@ -1032,27 +1032,27 @@
     "last_open_layer_z_mm": 5.96,
     "collision_witnesses": [
       {
-        "line": 267021,
+        "line": 267020,
         "feature": "Outer wall",
         "intrusion_mm": 0.08625593721610411
       },
       {
-        "line": 267023,
+        "line": 267022,
         "feature": "Outer wall",
         "intrusion_mm": 0.1185935382625675
       },
       {
-        "line": 267025,
+        "line": 267024,
         "feature": "Outer wall",
         "intrusion_mm": 0.13248440128429204
       },
       {
-        "line": 267027,
+        "line": 267026,
         "feature": "Outer wall",
         "intrusion_mm": 0.13985162984833968
       },
       {
-        "line": 267029,
+        "line": 267028,
         "feature": "Outer wall",
         "intrusion_mm": 0.1390932122772453
       }
@@ -1555,27 +1555,27 @@
     "last_open_layer_z_mm": 5.96,
     "collision_witnesses": [
       {
-        "line": 267151,
+        "line": 267150,
         "feature": "Outer wall",
         "intrusion_mm": 0.1399230556660342
       },
       {
-        "line": 267153,
+        "line": 267152,
         "feature": "Outer wall",
         "intrusion_mm": 0.15530836548951915
       },
       {
-        "line": 267155,
+        "line": 267154,
         "feature": "Outer wall",
         "intrusion_mm": 0.1389742045110339
       },
       {
-        "line": 267157,
+        "line": 267156,
         "feature": "Outer wall",
         "intrusion_mm": 0.13947715776957392
       },
       {
-        "line": 267159,
+        "line": 267158,
         "feature": "Outer wall",
         "intrusion_mm": 0.14000203292370667
       }

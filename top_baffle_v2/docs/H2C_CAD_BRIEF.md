@@ -19,8 +19,8 @@ in `to_print/h2c/`; the older printer shelf remains a separate P2S release.
   envelope, cable ducts and magnets. Do not scale the baffle.
 - Obiwan: use its canonical unsplit LM and full detachable left/right
   wings (flat and graded). Keep the regular UM and tweeter service joint.
-- V4: retain the approved body, caps and retainers. Extend each matched
-  V4 upper wing continuously into the canonical lower wing, eliminating
+- Dayton ND25FN-4 waveguide: retain the approved body, caps and retainers. Extend each matched
+  Dayton ND25FN-4 waveguide upper wing continuously into the canonical lower wing, eliminating
   the old print split without changing the magnetic interfaces.
 - Retain Stock/Slim shoulder and wing alternatives and the experimental
   BMR alternatives, clearly labelled as alternatives.
@@ -30,13 +30,13 @@ in `to_print/h2c/`; the older printer shelf remains a separate P2S release.
 - H2C with 0.6 mm High Flow hotends. Model material on the left nozzle;
   PLA interface material on the right. These are physical feed paths,
   not the old P2S AMS slot numbers.
-- Tinmorry PETG-GF/PLA is the normal lane. V4 also receives a separate
+- Tinmorry PETG-GF/PLA is the normal lane. Dayton ND25FN-4 waveguide also receives a separate
   PETG Translucent/PLA Translucent lane for the Engineering Plate with glue.
 - Resolve actual installed H2C profiles. Preserve machine tool-change,
   heating and priming programs; do not transplant P2S machine G-code or
   same-nozzle purge volumes into a two-nozzle job.
 - Preserve centralized role, insert, magnet, infill and support policies.
-  Structural LM/UM 100%; wings 10% gyroid; V4 tweeter region 15% gyroid.
+  Structural LM/UM 100%; wings 10% gyroid; Dayton ND25FN-4 waveguide tweeter region 15% gyroid.
 - Stock/Slim complete no-floor LM uses a 2 mm outer brim; other parts start with
   5 mm. Check model, brim, supports and prime tower against each nozzle's
   reachable region. A bounding-box fit alone is insufficient.

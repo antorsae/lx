@@ -1,9 +1,16 @@
 # Complete parts and magnet catalog
 
+This poster covers the earlier **P2S split arrangement** and diagnostic
+parts. Current H2C quantities, continuous wings and all three tweeter
+families are in the [H2C catalog](../../../to_print/h2c/README.md) and
+[selection guide](../../../docs/TWEETER_OPTIONS.md). The naming update does
+not change the 78 depicted part variants.
+
+
 [Open the full-resolution PNG](ALL_ITEMS_MAGNET_CATALOG.png).
 
 The sheet covers 78 individual part variants: Stock, Slim, regular Obi-Wan,
-the fused Dayton ND25FN-4 V4, full-land and slim-land BMR alternatives,
+the fused Dayton ND25FN-4 waveguide, full-land and slim-land BMR alternatives,
 Purifi, monolithic LM options, grommets, service parts and test fixtures.
 It follows the print shelf's declared shared sources and includes both offered
 stand states. Unselected raw-build copies, combo plate layouts and review
@@ -20,11 +27,11 @@ are not comparable.
 
 | Magnet | Selected stock | Used at |
 |---|---|---|
-| D5 | Ø5×2 mm N52, Superimanes D-05-02-N52 | Regular Stock/Slim/Obi-Wan, preserved V4 LM interfaces, BMR side stations and D5 fixtures |
-| D6 | Ø6×3 mm N45, Superimanes D-06-03 | V4 UM body and matching upper-wing stations, plus D6 test pair |
+| D5 | Ø5×2 mm N52, Superimanes D-05-02-N52 | Regular Stock/Slim/Obi-Wan, preserved ND25FN-4 LM interfaces, BMR side stations and D5 fixtures |
+| D6 | Ø6×3 mm N45, Superimanes D-06-03 | ND25FN-4 UM body and matching upper-wing stations, plus D6 test pair |
 
 Counts for one complete speaker with one perimeter set: Stock/Slim 8 D5;
-regular Obi-Wan 12 D5; V4 8 D5 + 8 D6. These totals exclude alternate styles,
+regular Obi-Wan 12 D5; ND25FN-4 8 D5 + 8 D6. These totals exclude alternate styles,
 alternate stand states and test fixtures. BMR side stations have no delivered
 matching perimeter. Magnet counts describe the CAD pockets, not measured
 holding force or proof of physical qualification.
@@ -36,9 +43,9 @@ type and authority, plus the grouping and assembled mating pairs used on the PNG
 part choices and four combo layouts of those same pieces. CAD/print files are
 read as inputs and are not modified by this catalog.
 
-V4 views use the approved design STLs. Its prepared print variants add internal
-magnet-loading relief; use the [V4 print guide](../../../candidates/nd25fn4_crescent/print/README.md)
-for the prepared 3MF jobs.
+ND25FN-4 views use the approved design STLs. Its prepared print variants add internal
+magnet-loading relief; use the [ND25FN-4 print guide](../../../candidates/nd25fn4_crescent/print/README.md)
+for the earlier P2S jobs, or the [H2C catalog](../../../to_print/h2c/README.md) for current files.
 
 Regenerate from the project root:
 
@@ -54,7 +61,7 @@ after regeneration before updating its visual-review record.
 
 Source authorities: `to_print/catalog.json`,
 `review/captive_magnet_release_catalog.json`, candidate facts/catalogs and
-current `.print.json` orientation records. V4 seats are recovered from actual
+current `.print.json` orientation records. ND25FN-4 seats are recovered from actual
 closed cavities using its print-pause geometry routine. Frozen diagnostic
 coupon markers use enclosed cavity centroids rather than production seat
 datums. Source-only history and retired C7/V0/three-piece-wing layouts are

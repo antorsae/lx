@@ -13,10 +13,10 @@
       "source": "build/common/obiwan_wing_design_map.png"
     },
     {
-      "bytes": 32472,
+      "bytes": 32536,
       "path": "qualification.md",
       "role": "physical_qualification_template",
-      "sha256": "b7276e6bfa7e578ce644be9934b070e1eaf2e72606071e3b4592eed3dc3420af",
+      "sha256": "d0e4628cd1c4fa0d3a6f3fe7001fd99c8b01046614529a2ac458316f0f6b12d5",
       "source": "docs/obiwan_physical_qualification.md"
     },
     {

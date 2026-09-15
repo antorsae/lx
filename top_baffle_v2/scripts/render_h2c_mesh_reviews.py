@@ -13,6 +13,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT/'src')]
 from lx521_baffle.io import sha256_file
 from lx521_baffle.h2c.printing import write_json
+from lx521_baffle.h2c.dayton import BODY
 
 
 def restored(path):
@@ -56,10 +57,10 @@ def render(parts,path,direction,size=(950,1400)):
 def main():
     work=ROOT/'build/h2c';out=work/'views';out.mkdir(exist_ok=True)
     lm=ROOT/'to_print/h2c/STL/h2c_obiwan_core_lm_carrier_no_floor_stand.stl'
-    body=ROOT/'to_print/h2c/STL/v4/01_UM_Crescent_V4_PRINT.stl'
+    body=ROOT/'to_print/h2c/STL/dayton_nd25fn4'/BODY
     manifest={}
     for slug in ('flat','graded'):
-        sources=[lm,body]+[ROOT/f'to_print/h2c/STL/h2c_v4_wing_{slug}_{s}.stl' for s in ('left','right')]
+        sources=[lm,body]+[ROOT/f'to_print/h2c/STL/h2c_dayton_nd25fn4_wing_{slug}_{s}.stl' for s in ('left','right')]
         colors=[(133,151,163),(66,141,189),(213,216,219),(213,216,219)]
         parts=[(restored(p),c) for p,c in zip(sources,colors)]
         scene=trimesh.Scene()
@@ -68,13 +69,13 @@ def main():
             preview=mesh.copy()
             preview.visual=trimesh.visual.TextureVisuals(material=trimesh.visual.material.PBRMaterial(baseColorFactor=[*color,255],roughnessFactor=.75))
             preview.apply_scale(.001);scene.add_geometry(preview,node_name=source.stem,geom_name=source.stem)
-        glb=out/f'H2C_V4_{slug}_assembly.glb';scene.export(glb)
+        glb=out/f'H2C_Dayton_ND25FN4_{slug}_assembly.glb';scene.export(glb)
         views={}
         for name,direction in [('front',[0,0,1]),('rear_oblique',[-.7,.2,-1])]:
-            path=out/f'H2C_V4_{slug}_{name}.png';views[name]=render(parts,path,direction)
+            path=out/f'H2C_Dayton_ND25FN4_{slug}_{name}.png';views[name]=render(parts,path,direction)
         manifest[slug]=dict(sources={str(p.relative_to(ROOT)):sha256_file(p) for p in sources},views=views,
             glb_sha256=sha256_file(glb),glb_units='metres',glb_is_decimated_preview=False)
-        print('Rendered V4 continuous wings:',slug,flush=True)
+        print('Rendered Dayton ND25FN-4 continuous wings:',slug,flush=True)
     write_json(out/'mesh_review_manifest.json',manifest)
 
 

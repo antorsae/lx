@@ -1,9 +1,9 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "7332922e5d3bb4e6a1c03fa3c5fe3c444e5afbd6ec833cc1d36c64b3c4619215",
-  "sliced_project_sha256": "7f8af4d90cfb9e16678c4f0d8b95276b8f884411c1f4d67083b2860bfd4e0c7c",
-  "gcode_sha256": "3c160d591cb9f87e60028180c2a4fa9fb2db447300da91e47e3d6aa3405db350",
+  "project_sha256": "e094b12408a151480476b95e50f558e6e4cb6415ef8a1e46aed9d06711938b4d",
+  "sliced_project_sha256": "a3edaa74da7c941e39df6af61ebf79bc395593f357f1725e091d34f264f9bf89",
+  "gcode_sha256": "0297f2473010ff44e84d1d84523b1e4a8207e3dd257bf6eadb88d88688e9d150",
   "audit_version": 4,
   "inputs": {
     "build/h2c/jobs/h2c_obiwan_addon_tweeter_crescent__petg_gf_pla/dry_run.json": "ed9f7b0e5e29ad430aff9f2e8f749b07a6879efb955a7cfd89298ccd386e77d2",
@@ -16,19 +16,21 @@
     "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "c8cb56acd65cc809128815af74ed9e7e7c12c8b502b2ce48cb60b720e64fc2dc",
+    "print_policy_h2c.json": "1c545d0f9365ed36563bdea5d7bab7d027fb5fa04d66ce553c2ee1485c629135",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
-    "scripts/audit_h2c_print.py": "ae2eaff5b775b7d7ee4a2d97204c744d6e41046662ccd1977865108e9e64d0c4",
+    "scripts/audit_h2c_print.py": "8e0dfe9914603f00a175ffa22d340d25f0ab9e3c99fe4adb5cafb85ee65ed646",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "src/lx521_baffle/h2c/dayton.py": "034817fb267162508cd59882a4b65c41f7f6e29233cf8164fc444a3d53bc1bf7",
     "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
+    "src/lx521_baffle/tweeter_options.py": "4e13db23df7b60b9278d0e15ec3810b033376a6ee72cc33dfa8fe40518703f5a",
     "to_print/h2c/STL/h2c_obiwan_addon_tweeter_crescent.stl": "4aa5ffcf66543ba9339d000b0a5cba929ac1b7856e41148b90599f14623f49d1",
-    "to_print/h2c/obiwan/petg_gf_pla/h2c_obiwan_addon_tweeter_crescent.3mf": "7332922e5d3bb4e6a1c03fa3c5fe3c444e5afbd6ec833cc1d36c64b3c4619215"
+    "to_print/h2c/obiwan/petg_gf_pla/h2c_obiwan_addon_tweeter_crescent.3mf": "e094b12408a151480476b95e50f558e6e4cb6415ef8a1e46aed9d06711938b4d"
   },
   "deposition": {
     "status": "pass",
     "counts": {
-      "model": 65422
+      "model": 65421
     },
     "deposition_bounds_mm": {
       "0": [
@@ -105,10 +107,10 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 66989,
-      "lines": 117660,
-      "movement_commands": 90886,
-      "non_comment_lines": 98964,
+      "extrusion_moves": 66988,
+      "lines": 117664,
+      "movement_commands": 90892,
+      "non_comment_lines": 98969,
       "temperature_commands": 22
     },
     "warnings": [

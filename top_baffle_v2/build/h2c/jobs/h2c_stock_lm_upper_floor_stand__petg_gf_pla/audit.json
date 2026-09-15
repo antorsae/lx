@@ -1,9 +1,9 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "f8a1ba108b181f92527aaed8ccd0e1d3b4f47da56397b78ad9d77a8b22844b2a",
-  "sliced_project_sha256": "3632f63d901a937a9da34c8346f43ea9257dbf5669a7dcf03db49fa3cb28fb41",
-  "gcode_sha256": "40b9ad77dca51177cd70cf164ba573d72cbc24598a15c60f4cd1ff5c9f4e799f",
+  "project_sha256": "316c6ece371b2d342f0b106f265c2e91b6508edd706b55f728d5e6e2908cf7d9",
+  "sliced_project_sha256": "7f7e01db8d5fd7e9a656bc63e8a7bb1859b886282d2600a2e91dc966fbd4b0d3",
+  "gcode_sha256": "02c42704791fc81d5dbc2ec19a9ba791f886f2a5d364fecfbbf4a818b7859d46",
   "audit_version": 4,
   "inputs": {
     "build/h2c/STL/h2c_stock_lm_upper_floor_stand.stl": "9fc2905baee2b33072ff3cf30e4b1f8813e7187384392f666e3852ccbf8be15a",
@@ -19,19 +19,21 @@
     "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "c8cb56acd65cc809128815af74ed9e7e7c12c8b502b2ce48cb60b720e64fc2dc",
+    "print_policy_h2c.json": "1c545d0f9365ed36563bdea5d7bab7d027fb5fa04d66ce553c2ee1485c629135",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
-    "scripts/audit_h2c_print.py": "ae2eaff5b775b7d7ee4a2d97204c744d6e41046662ccd1977865108e9e64d0c4",
+    "scripts/audit_h2c_print.py": "8e0dfe9914603f00a175ffa22d340d25f0ab9e3c99fe4adb5cafb85ee65ed646",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "src/lx521_baffle/h2c/dayton.py": "034817fb267162508cd59882a4b65c41f7f6e29233cf8164fc444a3d53bc1bf7",
     "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
+    "src/lx521_baffle/tweeter_options.py": "4e13db23df7b60b9278d0e15ec3810b033376a6ee72cc33dfa8fe40518703f5a",
     "to_print/h2c/STL/h2c_stock_lm_upper_floor_stand.stl": "9d98f5f6cbdf6ef966ce0571947d144732c6f1db06f50f7711ab5f3c8e395f0d",
-    "to_print/h2c/stock/petg_gf_pla/h2c_stock_lm_upper_floor_stand.3mf": "f8a1ba108b181f92527aaed8ccd0e1d3b4f47da56397b78ad9d77a8b22844b2a"
+    "to_print/h2c/stock/petg_gf_pla/h2c_stock_lm_upper_floor_stand.3mf": "316c6ece371b2d342f0b106f265c2e91b6508edd706b55f728d5e6e2908cf7d9"
   },
   "deposition": {
     "status": "pass",
     "counts": {
-      "model": 475609
+      "model": 475596
     },
     "deposition_bounds_mm": {
       "0": [
@@ -125,15 +127,15 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 479565,
-      "lines": 637020,
-      "movement_commands": 555767,
-      "non_comment_lines": 581195,
+      "extrusion_moves": 479552,
+      "lines": 636977,
+      "movement_commands": 555743,
+      "non_comment_lines": 581169,
       "temperature_commands": 22
     },
     "warnings": [
       "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-      "Unknown or unsupported commands were left unchanged: ========== line 1072, G150 line 912, G150.1 line 696, G150.2 line 898, G150.3 line 683, G151 line 738, G17 line 7350, G28.14 line 1063, G28.140 line 626, G29.1 line 622, G29.2 line 752, G29.20 line 952."
+      "Unknown or unsupported commands were left unchanged: ========== line 1070, G150 line 911, G150.1 line 696, G150.2 line 897, G150.3 line 683, G151 line 738, G17 line 7348, G28.14 line 1062, G28.140 line 626, G29.1 line 622, G29.2 line 752, G29.20 line 951."
     ]
   }
 }

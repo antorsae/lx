@@ -1,6 +1,17 @@
 # Variant catalog
 
-There are now two intentionally isolated systems:
+The project has three baffle designs and **three tweeter families**.
+Current printer splits and files are in the [H2C catalog](../to_print/h2c/README.md).
+Use the [tweeter selection guide](TWEETER_OPTIONS.md) to compare ND25FW-4,
+TEBM35C10-4 BMR and ND25FN-4 printed waveguide.
+
+The [ND25FN-4 waveguide](DAYTON_ND25FN4_WAVEGUIDE.md) is an integrated
+Obiwan UM/tweeter body with its own matching wings. It shares the Obiwan LM
+interface in both stand states, and has no Stock/Slim mount. BMR's coaxial,
+opposed and CAD-only slim topologies belong to the same BMR driver family.
+
+The source geometry and earlier P2S variants below belong to two distinct
+mounting systems; their historical split counts are not the current H2C counts:
 
 - The **proud family** — Stock and Slim — prints as four pieces joined at
   three seams:

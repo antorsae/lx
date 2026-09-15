@@ -1,4 +1,4 @@
-# LX521.4 top baffle — ND25FW-4 face-to-face mod (V2)
+# LX521.4 top baffle — Stock, Slim and Obiwan
 
 **The current manufacturing target is the Bambu H2C with two 0.6 mm High
 Flow nozzles.** Start with the [H2C file guide](to_print/h2c/README.md) for
@@ -7,9 +7,9 @@ STLs, editable projects, audited slices, materials and per-speaker quantities.
 pipeline. The pre-migration project is preserved in commit `c261f32`.
 
 H2C uses one LM carrier for Obiwan and one full wing per side, including
-V4-matched wings. Stock/Slim use one complete LM without the stand, or two
+Dayton ND25FN-4 waveguide wings. Stock/Slim use one complete LM without the stand, or two
 LM pieces with the stand, plus their matching upper module. Driver spacing
-and mounting seats remain unchanged. V4 has separate PETG-GF/PLA and
+and mounting seats remain unchanged. The Dayton ND25FN-4 waveguide has separate PETG-GF/PLA and
 PETG Translucent/PLA Translucent projects.
 
 Three printable top-baffle designs for an LX521.4 modification: Stock's
@@ -31,7 +31,7 @@ shared parts, alternate tweeters and separate test fixtures. The accompanying
 For H2C material mapping and process exceptions, use the generated
 [H2C file guide](to_print/h2c/README.md). The shared [print and hardware
 policies](docs/PRINT_POLICIES.md) retain the earlier printer details: structural LM/UM infill is 100%, wings
-are 10%, and the retained ND25FN V4 uses M3 fasteners. The [current update
+are 10%, and the Dayton ND25FN-4 waveguide uses M3 fasteners. The [current update
 report](review/print_policy_update_20260912/SUMMARY.md) links the regenerated
 print files, support exceptions and D6 magnet test pair.
 
@@ -67,95 +67,58 @@ rings — [`docs/obiwan.md`](docs/obiwan.md).
 
 ![The four tweeter carriers](images/generated/iso/rows/tweeter_row.png)
 
-The four tweeter carriers share their own larger scale, so they are
-comparable with each other but not with the product rows above.
+This earlier comparison shows the ND25FW-4 carrier and three BMR mounts.
+The third driver family, **Dayton ND25FN-4 waveguide**, is shown below in its
+current H2C assembly. These two sets use different scales.
+
+![Obiwan with Dayton ND25FN-4 waveguide and continuous graded wings](build/h2c/views/H2C_Dayton_ND25FN4_graded_front.png)
 
 ## Tweeter options
 
-The established shelf offers two driver families:
+The project offers **three tweeter families**. BMR has multiple mount layouts;
+those layouts are alternatives within one driver family.
 
-- **Dayton ND25FW-4 face-to-face pair** — two dome tweeters with waveguide,
-  bolted through the baffle so their faceplates clamp the crescent between
-  them. This is the default on every product.
-- **Tectonic TEBM35C10-4 BMR pair** — balanced-mode radiators fitted in place
-  of the domes.
-
-What you actually swap to take the BMR option depends on the product, because
-each one carries its tweeters on a different part:
-
-| Product | Interchangeable part | ND25FW-4 (default) | TEBM35C10-4 |
+| Tweeter family | Construction | Stock / Slim | Obiwan |
 |---|---|---|---|
-| Stock | the **vase**, piece `04` | the standard B2 vase: it carries both the dome pair on its integral crescent and the MU10 upper-mid seat | the opposed-BMR vase replaces that whole vase; `make vase_tebm35c10_4_cad` |
-| Slim | the **vase**, piece `04` | the standard V1 vase — the same arrangement thinned to 11.5 mm | the Slim-profile opposed-BMR vase, the same one-piece swap |
-| Obi-Wan | the **crescent** on the UM collar | the released tweeter crescent add-on | two candidate BMR crescents, coaxial or opposed, on the identical half-lap mount; `make obiwan_bmr_crescent_cad` |
+| **Dayton ND25FW-4 face-to-face** | Two domes with factory waveguide faceplates | Standard upper module with integral crescent | Separate crescent on the regular UM |
+| **Tectonic TEBM35C10-4 BMR** | Two balanced-mode radiators; opposed or coaxial layout | Replace the whole upper module with the opposed-BMR version | Choose the coaxial or opposed BMR crescent on the regular UM |
+| **Dayton ND25FN-4 waveguide** | Two faceplate-free domes in printed front/rear waveguides | No compatible upper module currently provided | Replace the whole UM and crescent with one fused body; use the matching waveguide wings |
 
-The three BMR implementations arrange the drivers differently. On Stock and
-Slim they are **opposed**: the lower BMR faces front and the upper one faces
-rear. Obi-Wan offers both arrangements on one mount, with the lower acoustic
-axis fixed at `(0, 452.494193)` rather than recomputed from the land radius —
-**coaxial**, the two stacked back to back, 50.2 mm deep; or **opposed**, the
-vase's own layout on a second land 49.3 mm above the first, 25.1 mm deep but
-49.3 mm taller. Both put the lower driver 86.413 mm from the MU10 axis.
+The **ND25FN-4 waveguide** is the former retained-package design, now named
+for its driver and construction. Its organic MU10 surround and tweeter
+waveguides form one piece, with an enclosed cable gallery, two service caps
+and two M3 retainers. The same body fits both Obiwan stand configurations;
+it retains the LM joint and meets the LM front flush without covering it.
+H2C provides one continuous matching wing per side, in flat or graded form.
+Regular Obiwan wings have different upper contacts and cannot substitute.
+Stock/Slim BMR uppers also have different magnet stations: their matching
+perimeter is not supplied, so use the standard shoulders or B1 wings only
+with ND25FW-4.
 
-The default BMR land is now a conservative clipped **Ø63** full-circle
-prototype. Its two side-magnet faces are at `x=±31.326666`, so its actual
-maximum width is **62.653 mm**; each face moved inward by about **1.508 mm**
-from the former land. The alternate, explicitly unqualified
-**BMR-slim** topology keeps those same side magnets and maximum width while
-removing the unused circular field: it uses a **Ø56 driver-following core**,
-four local M2 pads and two discrete magnet lobes. Both topologies require
-physical driver-fit, insert, cable and magnet-pull qualification. The Obi-Wan
-BMR crescents remain **candidates**: they are not release-authorized and are
-deliberately absent from the release inventory, the stage manifests and the
-released captive-magnet catalog.
-[`docs/VARIANTS.md`](docs/VARIANTS.md#candidate-tebm35c10-4-bmr-crescents-obi-wan)
-puts the three BMR parts side by side.
+Start with the [three-family selection guide](docs/TWEETER_OPTIONS.md) and
+[Dayton ND25FN-4 waveguide assembly guide](docs/DAYTON_ND25FN4_WAVEGUIDE.md).
+The [H2C file catalog](to_print/h2c/README.md) includes all three families,
+with separate PETG-GF/PLA and PETG Translucent/PLA Translucent jobs for the
+ND25FN-4 body, accessories and wings. BMR and ND25FN-4 remain qualification
+candidates: inclusion and successful slice checks do not establish physical
+fit, retention or acoustic performance. The earlier P2S catalog and CAD-only
+BMR-slim variants are documented separately in [Variants](docs/VARIANTS.md).
 
-The [UM finish revision](docs/UM_FINISH.md) closes the LM handoff cover, fills the UM seat underside and rounds M2 access in the standalone UM and fused ND25FN candidate.
-The fused candidate also blends the lower rear band into its organic surround, removing the rectangular thickness steps between the LM ears. [Updated rear detail](candidates/nd25fn4_crescent/views/UM_lower_band_oblique.png).
-Its latest UM follows the supplied concept outline, with a tighter lower waist and flowing shoulders. The lower edge now meets the existing LM front at Z18.30 mm without covering it. The front is wider than the rear, with an inclined outer wall and broad shallow bowl. Four Ø6×3 mm magnets remain buried, and the upper wings and enclosed gallery are reshaped to fit. The driver seat and LM mating faces retain their datums. [Reference overlay](candidates/nd25fn4_crescent/views/UM_reference_overlay.png) · [Outline validation](candidates/nd25fn4_crescent/reference_validation.json) · [Magnet selection](candidates/nd25fn4_crescent/MAGNET_SELECTION.md).
-
-Separate CAD candidates include the [Dayton ND25FN-4 retained V4
-crescent](candidates/nd25fn4_crescent/README.md), recreated from the supplied
-`MU10_ND25FN_V4_Retained_Package.zip` and fused with the actual Obi-Wan UM carrier.
-The compact revision lowers the tweeters 20.13 mm, steepens the lower forward
-flare, and gives the UM a broad, curved surround with a smooth waist. The tweeter retains
-its 35.8 mm depth, 62 mm pitch, service caps and screw retainers; the new UM bowl
-makes the complete body approximately 38.20 mm deep.
-One shared body fits both stand configurations, retaining their LM mounting
-interfaces and an enclosed cable gallery buried in the UM surround. A broad rear
-thickness loft removes the abrupt UM-to-tweeter arc junction. Flat and graded upper wings
-match its outline and four concealed shoulder magnets. The changed acoustic
-surfaces need acoustic validation.
-Its [prepared P2S 0.6 HF PETG-GF + PLA jobs](candidates/nd25fn4_crescent/print/README.md)
-use 15% gyroid in the tweeters and the regular UM's 100% zig-zag infill.
-The shared body, caps/retainers and matching upper wings have passed slice checks,
-including buried-magnet pauses. The user reports printing the earlier body with
-PETG Translucent and PLA; physical finish, fit and retention qualification remain pending.
-Separate [PETG Translucent + PLA Translucent jobs](candidates/nd25fn4_crescent/print_translucent/README.md)
-use the same 0.6 mm HF nozzle with PETG in AMS slot 4 and PLA in slot 2. Their revised
-body keeps the exterior magnet-cover paths at a constant 0.52 mm width; a small
-surface test is included for physical confirmation.
-An [alternate translucent body and caps/retainers set](candidates/nd25fn4_crescent/print_translucent_changeover/README.md)
-uses the Engineering Plate with glue at 70 °C, a 5 mm outer brim, no raft, 560 mm³ purge
-each way and an explicit 12 mm³/s PLA flush following the reported changeover blockage.
-The file guide records the support checks and exceptions: Bambu's mutual-support guide
-excludes PETG Translucent and only covers PLA Basic with PETG Basic/HF. This custom
-material/plate calibration has not yet been physically qualified.
-These files and their mounting checks remain outside the regular 42-choice shelf.
-The existing Purifi PTT1.3 crescent remains in
-`build/ptt_crescent_PTT1.3T04-HAG-01/`.
+The separate Purifi PTT1.3 experiment remains in
+`build/ptt_crescent_PTT1.3T04-HAG-01/`; it is not one of the three supported
+selection families in the current H2C print catalog.
 
 ## Products
 
-The project has one human-facing artifact catalog:
+The current print catalog is [H2C](to_print/h2c/README.md). The earlier
+product-grouped CAD facade is:
 [`artifacts/`](artifacts/README.md).
 
 | Product | Geometry | Optional perimeter | Tweeter options | Status | Doc |
 |---|---|---|---|---|---|
 | [Stock](artifacts/stock/) | B2, 304.802 x 453.457 x 18.3 mm | A-comp shoulders **or** B1 wings | ND25FW-4 crescent (integral) or TEBM35C10-4 BMR vase | Canonical CAD | [`docs/stock.md`](docs/stock.md) |
 | [Slim](artifacts/slim/) | V1L + V1; 11.5 mm front-flush acoustic field, full-depth bottom strip | matching V1 shoulders **or** V1 wings | ND25FW-4 crescent (integral) or TEBM35C10-4 BMR vase | Experimental | [`docs/slim.md`](docs/slim.md) |
-| [Obi-Wan](artifacts/obiwan/) | separate LM/UM collars; floor and stock-bridge states | flat constant-depth or graded weighted-depth wings | ND25FW-4 crescent add-on, or a candidate coaxial or opposed BMR crescent | Candidate; not release-authorized | [`docs/obiwan.md`](docs/obiwan.md) |
+| [Obi-Wan](artifacts/obiwan/) | separate LM/UM collars; floor and stock-bridge states | flat constant-depth or graded weighted-depth wings | ND25FW-4 crescent, coaxial/opposed BMR crescent, or fused ND25FN-4 waveguide + UM | Candidate; not release-authorized | [`docs/obiwan.md`](docs/obiwan.md) |
 
 The original state-oriented build outputs remain in `build/floor_stand/`,
 `build/no_floor_stand/`, and `build/wings/` because the validation pipeline depends on
@@ -167,18 +130,21 @@ documents the implemented source/package and generated-state boundary.
 
 ## Use the delivered files
 
-Open [to_print/](to_print/README.md) and select the correct material/nozzle
-lane. Sliced `.gcode.3mf` jobs retain their audited orientation and magnet
-pauses. PETG-GF core `_GUI.3mf` projects must be sliced in Bambu Studio and
-the exported result audited. Do not print both a combo and its contents.
+Open the [H2C file guide](to_print/h2c/README.md), choose a compatible
+configuration and material lane, and use its editable `.3mf` or audited
+`.gcode.3mf`. Those projects retain the supports, infill modifiers and
+measured magnet insertion pauses. An STL contains geometry only.
 
 ```sh
-make to_print_validate  # read-only validation of every delivery and the CAD facade
-make delivery_package  # verified local dist/lx521-print-pack.zip
+make h2c_prepare        # prepare H2C projects from current geometry
+make h2c_validate       # slice and audit; reuse current verified results
+make h2c_review         # upright assembly views
+make h2c_docs           # refresh the file and tweeter-family guides
 ```
 
-The print pack contains actual files and checksums, so it works independently
-of the source checkout's relative symlinks. Physical evidence remains pending.
+The [earlier P2S file guide](to_print/FILE_GUIDE.md) remains available for
+that printer. Its material mapping and split wings are specific to P2S.
+No ZIP is required for either workflow.
 
 ## Develop and regenerate
 
@@ -188,22 +154,24 @@ sibling checkout is needed for those inputs. VTK renders CAD with an actual
 depth buffer, and Matplotlib/Pillow compose the comparison panels.
 
 ```sh
-LX_CAD_EXECUTION=local make PYTHON=<venv>/bin/python -j1
-make artifacts          # relink and rehash the CAD facade
-make iso_matrix         # regenerate the CAD comparison images
-make delivery_refresh   # bind already-published files and regenerate the file guide
+make PYTHON=<venv>/bin/python             # current H2C pipeline
+make PRINTER=P2S artifacts          # relink and rehash the CAD facade
+make PRINTER=P2S iso_matrix # regenerate the CAD comparison images
+make PRINTER=P2S delivery_refresh # bind already-published files and regenerate the file guide
 ```
 
-CAD builds default to the original maintainer's remote host `osado.lan`.
-Set `LX_CAD_EXECUTION=local` on another workstation. Remote execution,
+The current H2C pipeline runs locally. The earlier P2S CAD pipeline defaults
+to the original maintainer's remote host `osado.lan`; select
+`LX_CAD_EXECUTION=local` when running that pipeline on another workstation. Remote execution,
 resource limits and promotion are documented in [REMOTE_BUILD.md](docs/REMOTE_BUILD.md).
 A source change requires current CAD/slice provenance before republishing;
 validation does not silently regenerate or re-certify old geometry.
 
 ## Generated artifact layout
 
-The default remote `make` builds BOTH stand-foot states. Use
-`LX_CAD_EXECUTION=local make -j1` only for an intentional local build:
+Current H2C manufacturing outputs live in `build/h2c/`; the current print
+catalog lives in `to_print/h2c/`. Both stand states are included. The earlier
+P2S pipeline and the shared source authorities use the following layout:
 
     build/floor_stand/      LX_STAND_FOOT=1: Stock/Slim fused foot + NL8 panel;
       stl/  *.step  *.png     Obi-Wan integral LM-owned W64 floor stem/foot + NL8 panel

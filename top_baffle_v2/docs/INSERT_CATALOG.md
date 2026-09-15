@@ -1,6 +1,6 @@
 # Heat-set insert catalog
 
-Base inventory compiled 2026-08-21; V4 M3 addition 2026-09-12. Based on the source constants (every bore cited to its
+Base inventory compiled 2026-08-21; Dayton ND25FN-4 waveguide M3 addition 2026-09-12. Based on the source constants (every bore cited to its
 constant block).  Counts are **per speaker**; double everything for a
 stereo pair.  Candidate parts (BMR crescents 17/18, PTT1.3 dipole
 crescent) are listed separately from the released inventory.
@@ -39,7 +39,7 @@ bore depth is relief).
 
 | Site | Host part | Insert | Count | Constants |
 |------|-----------|--------|-------|-----------|
-| ND25FN-4 V4 retainers (two drivers, three screws each) | Fused V4 UM/crescent | M3, Ø4.6 × 4 mm bore | 6 | `print_policy.json`; `v4_model.py`; exact final cylinders |
+| Dayton ND25FN-4 waveguide retainers (two drivers, three screws each) | Fused Dayton ND25FN-4 waveguide UM/crescent | M3, Ø4.6 × 4 mm bore | 6 | `print_policy.json`; `v4_model.py`; exact final cylinders |
 | TEBM35C10-4 mounts, PCD 48.26, 4 × 90° | BMR vases (2 drivers) | M2 | 8 | `tebm35c10_4_land.py` `TEBM_MOUNT_*`, `M2_INSERT_*` |
 | TEBM35C10-4 mounts | BMR crescents 17/18 (2 drivers) | M2 | 8 | same |
 | UM–tweeter joint receivers | BMR crescents 17/18, PTT1.3 dipole crescent | M3 | 2 | `TWEETER_JOINT_INSERT_*` (inherited contract) |
@@ -67,4 +67,4 @@ through-clamping, never a thin-walled insert pocket.
 | … with the PTT1.3 dipole crescent instead | +0 | +0 (joint pair already counted; rim screws are pilots) | +0 |
 | stock A/B1/B2 or slim V1-A/B1/V1L, bridge | 10 (6 LM + 4 bridge) | 5 (4 UM + 1 vase seam) | 0 (+8 if the BMR vase variant) |
 
-V4 uses 12 M3 insert sites on its shared body: 4 UM driver, 2 LM receivers, 6 tweeter retainers. The former separate UM/T joint is fused away. All use the existing Hanglife M3 × 5 × 4 insert stock and the shared Ø4.6 × 4 mm bore convention. Older 3 mm insert-length references are superseded. See [generated current policies](PRINT_POLICIES.md).
+Dayton ND25FN-4 waveguide uses 12 M3 insert sites on its shared body: 4 UM driver, 2 LM receivers, 6 tweeter retainers. The former separate UM/T joint is fused away. All use the existing Hanglife M3 × 5 × 4 insert stock and the shared Ø4.6 × 4 mm bore convention. Older 3 mm insert-length references are superseded. See [generated current policies](PRINT_POLICIES.md).

@@ -2,9 +2,9 @@
   "flat": {
     "sources": {
       "to_print/h2c/STL/h2c_obiwan_core_lm_carrier_no_floor_stand.stl": "1a1ed6209bb726c41a2853bae9f427e6e4ed92814af9164a27795d6f716664d0",
-      "to_print/h2c/STL/v4/01_UM_Crescent_V4_PRINT.stl": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
-      "to_print/h2c/STL/h2c_v4_wing_flat_left.stl": "f450c576543f468c6139abf74d1178b15cd528f2d258e65a150ab3ce3dcd19f1",
-      "to_print/h2c/STL/h2c_v4_wing_flat_right.stl": "ae71a3c6d1d81551d013328cd06f36512cce9557f274140ed826384b4e4eb5ed"
+      "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_body.stl": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
+      "to_print/h2c/STL/h2c_dayton_nd25fn4_wing_flat_left.stl": "f450c576543f468c6139abf74d1178b15cd528f2d258e65a150ab3ce3dcd19f1",
+      "to_print/h2c/STL/h2c_dayton_nd25fn4_wing_flat_right.stl": "ae71a3c6d1d81551d013328cd06f36512cce9557f274140ed826384b4e4eb5ed"
     },
     "views": {
       "front": {
@@ -38,16 +38,16 @@
         "image_sha256": "71e22f869dd1b38b337c85123c22be2d269aeaebd3b732075d82b9dc89dd5324"
       }
     },
-    "glb_sha256": "a960756d09cf0f1b6b06992a246f4b201ba1d8620c60f6405cae8777b4fe9f00",
+    "glb_sha256": "047475179c1edf80100a19ccf5c6623e724284142a8f75babd9f068f449ab7c4",
     "glb_units": "metres",
     "glb_is_decimated_preview": false
   },
   "graded": {
     "sources": {
       "to_print/h2c/STL/h2c_obiwan_core_lm_carrier_no_floor_stand.stl": "1a1ed6209bb726c41a2853bae9f427e6e4ed92814af9164a27795d6f716664d0",
-      "to_print/h2c/STL/v4/01_UM_Crescent_V4_PRINT.stl": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
-      "to_print/h2c/STL/h2c_v4_wing_graded_left.stl": "f2bd7c7e29264b849d5163ea2f5edd1dac2f8aaddcfcf8f12bafad6d0a9dfe72",
-      "to_print/h2c/STL/h2c_v4_wing_graded_right.stl": "fc26f484feac7d70a5546155b44d559486504db036c9e0f126b6fed354de5c2d"
+      "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_body.stl": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
+      "to_print/h2c/STL/h2c_dayton_nd25fn4_wing_graded_left.stl": "f2bd7c7e29264b849d5163ea2f5edd1dac2f8aaddcfcf8f12bafad6d0a9dfe72",
+      "to_print/h2c/STL/h2c_dayton_nd25fn4_wing_graded_right.stl": "fc26f484feac7d70a5546155b44d559486504db036c9e0f126b6fed354de5c2d"
     },
     "views": {
       "front": {
@@ -81,7 +81,7 @@
         "image_sha256": "3137f2e1d2456006c4603b58e4e77002c752f8840c5663785b846fe80d0b7bdc"
       }
     },
-    "glb_sha256": "016e140700b0ab5ec8b479dd57b30957e6fadd913f18c106dd3594f2c517b8ef",
+    "glb_sha256": "ecb0c75a5fd2140adc997c2ad6db116eb5392d629fe0162d766253f25d3ecf99",
     "glb_units": "metres",
     "glb_is_decimated_preview": false
   }

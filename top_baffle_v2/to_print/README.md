@@ -1,9 +1,14 @@
 # P2S print shelf
 
+**Current printer: [H2C](h2c/README.md).** Its catalog includes all three
+tweeter families: ND25FW-4, TEBM35C10-4 BMR and ND25FN-4 printed waveguide.
+This page retains the earlier P2S files and split arrangement.
+
+
 Start with the [build guide](../docs/BUILD_GUIDE.md), then use the generated
 [file guide and estimates](FILE_GUIDE.md) to choose exact files.
 
-For the fused **ND25FN-4 V4 + UM**, use its separate [sliced 0.6 HF Tinmorry
+For the fused **Dayton ND25FN-4 waveguide + UM**, use its separate [sliced 0.6 HF Tinmorry
 PETG-GF + PLA print guide](../candidates/nd25fn4_crescent/print/README.md).
 It includes the shared body with 15% tweeter gyroid / 100% UM infill,
 caps/retainers, matching upper wings and native magnet pauses. Those six jobs

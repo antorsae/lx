@@ -1,6 +1,12 @@
 # Buried UM magnets — selection and limits
 
-Use **eight Ø6×3 mm, axially magnetized neodymium disks per body plus upper-wing pair**: four in the shared UM/V4 body, two in each upper wing. The two existing LM magnets in the upper wings remain Ø5×2 mm at their original datums. The body and its matching wings must use the same new revision.
+Current part selection and quantities are in the
+[Dayton ND25FN-4 waveguide guide](../../docs/DAYTON_ND25FN4_WAVEGUIDE.md).
+H2C uses one continuous matching wing per side; the source measurements
+below also describe the earlier P2S upper-wing sections.
+
+
+Use **eight Ø6×3 mm, axially magnetized neodymium disks per body plus upper-wing pair**: four in the shared UM/ND25FN-4 waveguide body, two in each upper wing. In the current H2C arrangement, each full wing has two Ø5×2 mm LM magnets and two Ø6×3 mm UM magnets. The earlier P2S upper section had one Ø5×2 mm LM magnet per side; the other was in its separate lower section. The body and its matching wings must use the same new revision.
 
 ## Why the crescent uses a different size
 

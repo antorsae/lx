@@ -6,31 +6,85 @@
       "outputs": [
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_no_floor_stand_iso.png",
-          "camera": "iso"
+          "camera": {
+            "name": "Front three-quarter",
+            "direction": [
+              0.8,
+              0.3,
+              1
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          },
+          "width": 1100,
+          "height": 1600
         },
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_no_floor_stand_opposite.png",
           "camera": {
+            "name": "Rear three-quarter",
             "direction": [
-              -1,
+              -0.8,
+              0.3,
+              -1
+            ],
+            "up": [
+              0,
               1,
-              -0.8
+              0
             ]
-          }
+          },
+          "width": 1100,
+          "height": 1600
         },
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_no_floor_stand_front.png",
-          "camera": "top"
+          "camera": {
+            "name": "Front",
+            "direction": [
+              0,
+              0,
+              1
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          },
+          "width": 1100,
+          "height": 1600
         },
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_no_floor_stand_edge.png",
-          "camera": "front"
+          "camera": {
+            "name": "Right side",
+            "direction": [
+              1,
+              0,
+              0
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          },
+          "width": 1100,
+          "height": 1600
         }
       ],
+      "appearance": {
+        "floor": {
+          "enabled": false
+        }
+      },
       "render": {
-        "viewLabels": true,
-        "padding": 0.12,
-        "sizeProfile": "diagnostic"
+        "viewLabels": false,
+        "padding": 0.06
       }
     },
     {
@@ -39,31 +93,85 @@
       "outputs": [
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_floor_stand_iso.png",
-          "camera": "iso"
+          "camera": {
+            "name": "Front three-quarter",
+            "direction": [
+              0.8,
+              0.3,
+              1
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          },
+          "width": 1100,
+          "height": 1600
         },
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_floor_stand_opposite.png",
           "camera": {
+            "name": "Rear three-quarter",
             "direction": [
-              -1,
+              -0.8,
+              0.3,
+              -1
+            ],
+            "up": [
+              0,
               1,
-              -0.8
+              0
             ]
-          }
+          },
+          "width": 1100,
+          "height": 1600
         },
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_floor_stand_front.png",
-          "camera": "top"
+          "camera": {
+            "name": "Front",
+            "direction": [
+              0,
+              0,
+              1
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          },
+          "width": 1100,
+          "height": 1600
         },
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_floor_stand_edge.png",
-          "camera": "front"
+          "camera": {
+            "name": "Right side",
+            "direction": [
+              1,
+              0,
+              0
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          },
+          "width": 1100,
+          "height": 1600
         }
       ],
+      "appearance": {
+        "floor": {
+          "enabled": false
+        }
+      },
       "render": {
-        "viewLabels": true,
-        "padding": 0.12,
-        "sizeProfile": "diagnostic"
+        "viewLabels": false,
+        "padding": 0.06
       }
     },
     {
@@ -72,31 +180,85 @@
       "outputs": [
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_no_floor_stand_iso.png",
-          "camera": "iso"
+          "camera": {
+            "name": "Front three-quarter",
+            "direction": [
+              0.8,
+              0.3,
+              1
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          },
+          "width": 1100,
+          "height": 1600
         },
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_no_floor_stand_opposite.png",
           "camera": {
+            "name": "Rear three-quarter",
             "direction": [
-              -1,
+              -0.8,
+              0.3,
+              -1
+            ],
+            "up": [
+              0,
               1,
-              -0.8
+              0
             ]
-          }
+          },
+          "width": 1100,
+          "height": 1600
         },
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_no_floor_stand_front.png",
-          "camera": "top"
+          "camera": {
+            "name": "Front",
+            "direction": [
+              0,
+              0,
+              1
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          },
+          "width": 1100,
+          "height": 1600
         },
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_no_floor_stand_edge.png",
-          "camera": "front"
+          "camera": {
+            "name": "Right side",
+            "direction": [
+              1,
+              0,
+              0
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          },
+          "width": 1100,
+          "height": 1600
         }
       ],
+      "appearance": {
+        "floor": {
+          "enabled": false
+        }
+      },
       "render": {
-        "viewLabels": true,
-        "padding": 0.12,
-        "sizeProfile": "diagnostic"
+        "viewLabels": false,
+        "padding": 0.06
       }
     },
     {
@@ -105,31 +267,85 @@
       "outputs": [
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_floor_stand_iso.png",
-          "camera": "iso"
+          "camera": {
+            "name": "Front three-quarter",
+            "direction": [
+              0.8,
+              0.3,
+              1
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          },
+          "width": 1100,
+          "height": 1600
         },
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_floor_stand_opposite.png",
           "camera": {
+            "name": "Rear three-quarter",
             "direction": [
-              -1,
+              -0.8,
+              0.3,
+              -1
+            ],
+            "up": [
+              0,
               1,
-              -0.8
+              0
             ]
-          }
+          },
+          "width": 1100,
+          "height": 1600
         },
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_floor_stand_front.png",
-          "camera": "top"
+          "camera": {
+            "name": "Front",
+            "direction": [
+              0,
+              0,
+              1
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          },
+          "width": 1100,
+          "height": 1600
         },
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_floor_stand_edge.png",
-          "camera": "front"
+          "camera": {
+            "name": "Right side",
+            "direction": [
+              1,
+              0,
+              0
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          },
+          "width": 1100,
+          "height": 1600
         }
       ],
+      "appearance": {
+        "floor": {
+          "enabled": false
+        }
+      },
       "render": {
-        "viewLabels": true,
-        "padding": 0.12,
-        "sizeProfile": "diagnostic"
+        "viewLabels": false,
+        "padding": 0.06
       }
     },
     {
@@ -138,13 +354,31 @@
       "outputs": [
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_upper_bmr.png",
-          "camera": "iso"
+          "camera": {
+            "name": "Front three-quarter",
+            "direction": [
+              0.8,
+              0.3,
+              1
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          },
+          "width": 1000,
+          "height": 1000
         }
       ],
+      "appearance": {
+        "floor": {
+          "enabled": false
+        }
+      },
       "render": {
-        "viewLabels": true,
-        "padding": 0.12,
-        "sizeProfile": "diagnostic"
+        "viewLabels": false,
+        "padding": 0.06
       }
     },
     {
@@ -153,13 +387,31 @@
       "outputs": [
         {
           "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_upper_bmr.png",
-          "camera": "iso"
+          "camera": {
+            "name": "Front three-quarter",
+            "direction": [
+              0.8,
+              0.3,
+              1
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          },
+          "width": 1000,
+          "height": 1000
         }
       ],
+      "appearance": {
+        "floor": {
+          "enabled": false
+        }
+      },
       "render": {
-        "viewLabels": true,
-        "padding": 0.12,
-        "sizeProfile": "diagnostic"
+        "viewLabels": false,
+        "padding": 0.06
       }
     }
   ]

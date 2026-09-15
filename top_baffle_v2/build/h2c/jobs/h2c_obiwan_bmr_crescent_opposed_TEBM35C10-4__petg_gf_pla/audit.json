@@ -1,9 +1,9 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "e38d83155388147e53c6bc1add4ae098c35f30e9deade48832d54eb35d696ca8",
-  "sliced_project_sha256": "5136d14775080d56578ed96212af94828bd81f7831798caad01c8e9d02c3781a",
-  "gcode_sha256": "d64d48e79ffb0f366c4e2c1a6379adb80a40bb6d0998e9e7f647df7d56c5ef9e",
+  "project_sha256": "09fa8cb4f8142ded6cf5824877b89a9c481b047083f4a565999c4169673163d0",
+  "sliced_project_sha256": "8c74082241b1ab5928ec34c48e32baf03db4d70a834f61933be5a7dafc6f9bf5",
+  "gcode_sha256": "d3393e54a2ff27845661cc590aea888e1f85649cc69e0c56337ba88eeb183c79",
   "audit_version": 4,
   "inputs": {
     "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.stl": "617bafd03e36d0db1e2f905303b45b3f16615ea16e075ddcb8dc4d40aed5ae65",
@@ -17,19 +17,21 @@
     "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "c8cb56acd65cc809128815af74ed9e7e7c12c8b502b2ce48cb60b720e64fc2dc",
+    "print_policy_h2c.json": "1c545d0f9365ed36563bdea5d7bab7d027fb5fa04d66ce553c2ee1485c629135",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
-    "scripts/audit_h2c_print.py": "ae2eaff5b775b7d7ee4a2d97204c744d6e41046662ccd1977865108e9e64d0c4",
+    "scripts/audit_h2c_print.py": "8e0dfe9914603f00a175ffa22d340d25f0ab9e3c99fe4adb5cafb85ee65ed646",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "src/lx521_baffle/h2c/dayton.py": "034817fb267162508cd59882a4b65c41f7f6e29233cf8164fc444a3d53bc1bf7",
     "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
+    "src/lx521_baffle/tweeter_options.py": "4e13db23df7b60b9278d0e15ec3810b033376a6ee72cc33dfa8fe40518703f5a",
     "to_print/h2c/STL/h2c_obiwan_bmr_crescent_opposed_TEBM35C10-4.stl": "84353f89230594fbcffd4f7aa2b15aefdbb35b93b7d12e64d6dc5685bb8dab59",
-    "to_print/h2c/obiwan/petg_gf_pla/h2c_obiwan_bmr_crescent_opposed_TEBM35C10-4.3mf": "e38d83155388147e53c6bc1add4ae098c35f30e9deade48832d54eb35d696ca8"
+    "to_print/h2c/obiwan/petg_gf_pla/h2c_obiwan_bmr_crescent_opposed_TEBM35C10-4.3mf": "09fa8cb4f8142ded6cf5824877b89a9c481b047083f4a565999c4169673163d0"
   },
   "deposition": {
     "status": "pass",
     "counts": {
-      "model": 197526
+      "model": 197525
     },
     "deposition_bounds_mm": {
       "0": [
@@ -2151,7 +2153,7 @@
   "retaining_walls": {
     "status": "pass",
     "physical_qualification": "pending same-geometry coupon print",
-    "gcode_sha256": "d64d48e79ffb0f366c4e2c1a6379adb80a40bb6d0998e9e7f647df7d56c5ef9e",
+    "gcode_sha256": "d3393e54a2ff27845661cc590aea888e1f85649cc69e0c56337ba88eeb183c79",
     "stl_sha256": "84353f89230594fbcffd4f7aa2b15aefdbb35b93b7d12e64d6dc5685bb8dab59",
     "source_sha256": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "sample_spacing_mm": 0.06,
@@ -4236,15 +4238,15 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 144860,
-      "lines": 320709,
-      "movement_commands": 259547,
-      "non_comment_lines": 278559,
+      "extrusion_moves": 144864,
+      "lines": 320719,
+      "movement_commands": 259552,
+      "non_comment_lines": 278565,
       "temperature_commands": 22
     },
     "warnings": [
       "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-      "Unknown or unsupported commands were left unchanged: ========== line 1071, G150 line 911, G150.1 line 696, G150.2 line 897, G150.3 line 683, G151 line 738, G17 line 5165, G28.14 line 1063, G28.140 line 626, G29.1 line 622, G29.2 line 752, G29.20 line 952."
+      "Unknown or unsupported commands were left unchanged: ========== line 1070, G150 line 911, G150.1 line 696, G150.2 line 897, G150.3 line 683, G151 line 738, G17 line 5164, G28.14 line 1062, G28.140 line 626, G29.1 line 622, G29.2 line 752, G29.20 line 951."
     ]
   }
 }

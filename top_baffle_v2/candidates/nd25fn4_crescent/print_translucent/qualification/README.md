@@ -1,4 +1,4 @@
-# V4 body magnet surface test
+# ND25FN-4 waveguide magnet surface test
 
 [Prepared test 3MF](00_Magnet_Surface_Test_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf) — approximately **72 minutes**, excluding the insertion pause.
 

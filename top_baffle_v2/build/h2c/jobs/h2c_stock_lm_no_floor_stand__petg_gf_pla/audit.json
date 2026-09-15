@@ -1,9 +1,9 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "c1908c6d01f35d2c0265b9c6bdee17f811137ae72a2156300605b4dacadee959",
-  "sliced_project_sha256": "5b3890826fcc86620e9d5eaca3247d24d08b5f371ae21ac042cf83590b84e434",
-  "gcode_sha256": "e898818c26a4e67ec28ae37b7712a1c9a713a2faa7fa7d5968a6780b57987c48",
+  "project_sha256": "d1be87cc20cf247a9df6300b4779b3822863c52362518fd34ca21d11bc4feea0",
+  "sliced_project_sha256": "e6b5c4f681da6b62d50c4e4bb7c07e483c5889001a29a9b1e1e82206379c2c50",
+  "gcode_sha256": "0325240fb4cd701bb25575750abfa036f09719c299e6a00bede1a811116e491d",
   "audit_version": 4,
   "inputs": {
     "build/h2c/STL/h2c_stock_lm_no_floor_stand.stl": "6463892eb699af0c0a92f1257c23d3794851aa462b5f01642f9c087c1d2f568a",
@@ -19,19 +19,21 @@
     "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "c8cb56acd65cc809128815af74ed9e7e7c12c8b502b2ce48cb60b720e64fc2dc",
+    "print_policy_h2c.json": "1c545d0f9365ed36563bdea5d7bab7d027fb5fa04d66ce553c2ee1485c629135",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
-    "scripts/audit_h2c_print.py": "ae2eaff5b775b7d7ee4a2d97204c744d6e41046662ccd1977865108e9e64d0c4",
+    "scripts/audit_h2c_print.py": "8e0dfe9914603f00a175ffa22d340d25f0ab9e3c99fe4adb5cafb85ee65ed646",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "src/lx521_baffle/h2c/dayton.py": "034817fb267162508cd59882a4b65c41f7f6e29233cf8164fc444a3d53bc1bf7",
     "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
+    "src/lx521_baffle/tweeter_options.py": "4e13db23df7b60b9278d0e15ec3810b033376a6ee72cc33dfa8fe40518703f5a",
     "to_print/h2c/STL/h2c_stock_lm_no_floor_stand.stl": "41ba82d53b0753405a333ccc529a90fde10b8ebe9f801263a232d19323c5bceb",
-    "to_print/h2c/stock/petg_gf_pla/h2c_stock_lm_no_floor_stand.3mf": "c1908c6d01f35d2c0265b9c6bdee17f811137ae72a2156300605b4dacadee959"
+    "to_print/h2c/stock/petg_gf_pla/h2c_stock_lm_no_floor_stand.3mf": "d1be87cc20cf247a9df6300b4779b3822863c52362518fd34ca21d11bc4feea0"
   },
   "deposition": {
     "status": "pass",
     "counts": {
-      "model": 739362
+      "model": 739276
     },
     "deposition_bounds_mm": {
       "0": [
@@ -125,10 +127,10 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 745082,
-      "lines": 991874,
-      "movement_commands": 864622,
-      "non_comment_lines": 903031,
+      "extrusion_moves": 744998,
+      "lines": 991603,
+      "movement_commands": 864441,
+      "non_comment_lines": 902850,
       "temperature_commands": 22
     },
     "warnings": [

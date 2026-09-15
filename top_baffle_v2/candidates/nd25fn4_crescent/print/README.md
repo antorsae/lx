@@ -1,4 +1,10 @@
-# ND25FN-4 V4 — prepared P2S print jobs
+# ND25FN-4 waveguide — prepared P2S print jobs
+
+**Earlier P2S files.** For the current H2C printer, use the
+[H2C catalog](../../../to_print/h2c/README.md) and
+[Dayton ND25FN-4 waveguide guide](../../../docs/DAYTON_ND25FN4_WAVEGUIDE.md).
+Original revision strings in these filenames are retained for provenance.
+
 
 These are **sliced Bambu Studio projects** for the **P2S, hardened 0.6 mm High Flow nozzle, Tinmorry PETG-GF and PLA support interfaces**. Geometry, material assignments, embedded magnet pauses and toolpaths have passed static checks. This regenerated revision has not yet been physically tested.
 

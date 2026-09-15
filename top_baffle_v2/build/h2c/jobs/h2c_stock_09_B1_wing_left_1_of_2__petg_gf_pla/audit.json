@@ -1,8 +1,8 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "111662d951253e141c0d2b528515d7e9349902accc1b3d7dd2c9c3fa34eb6d89",
-  "sliced_project_sha256": "677807ba6a662c18c6da8c4a968dad07f1355665d61d06b919bb592694bc32af",
+  "project_sha256": "8de95a5341dfce068c4dd5dbbb1753220186593576e5085592b76b83956800d4",
+  "sliced_project_sha256": "022b8f42812bc157eb20e1f79695240514072f4b809f002804d09202e036dc33",
   "gcode_sha256": "f653eab6e1bf9fa07f6e9ce0af556c1f9e73be2f951f067c11e3ba7e40adf59b",
   "audit_version": 4,
   "inputs": {
@@ -17,14 +17,16 @@
     "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "c8cb56acd65cc809128815af74ed9e7e7c12c8b502b2ce48cb60b720e64fc2dc",
+    "print_policy_h2c.json": "1c545d0f9365ed36563bdea5d7bab7d027fb5fa04d66ce553c2ee1485c629135",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
-    "scripts/audit_h2c_print.py": "ae2eaff5b775b7d7ee4a2d97204c744d6e41046662ccd1977865108e9e64d0c4",
+    "scripts/audit_h2c_print.py": "8e0dfe9914603f00a175ffa22d340d25f0ab9e3c99fe4adb5cafb85ee65ed646",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "src/lx521_baffle/h2c/dayton.py": "034817fb267162508cd59882a4b65c41f7f6e29233cf8164fc444a3d53bc1bf7",
     "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
+    "src/lx521_baffle/tweeter_options.py": "4e13db23df7b60b9278d0e15ec3810b033376a6ee72cc33dfa8fe40518703f5a",
     "to_print/h2c/STL/h2c_stock_09_B1_wing_left_1_of_2.stl": "d07d78f8b2c3a6d64373146c7cb7227819578f105b16a05c0c5719636f5a0715",
-    "to_print/h2c/stock/petg_gf_pla/h2c_stock_09_B1_wing_left_1_of_2.3mf": "111662d951253e141c0d2b528515d7e9349902accc1b3d7dd2c9c3fa34eb6d89"
+    "to_print/h2c/stock/petg_gf_pla/h2c_stock_09_B1_wing_left_1_of_2.3mf": "8de95a5341dfce068c4dd5dbbb1753220186593576e5085592b76b83956800d4"
   },
   "deposition": {
     "status": "pass",

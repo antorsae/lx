@@ -1,0 +1,260 @@
+{
+  "status": "pass",
+  "qualification": "digital; physical H2C qualification pending",
+  "project_sha256": "ba45c3724e69cc818d19545c35c10f3a02f467c303b9b030692a0b894e8ee0d2",
+  "sliced_project_sha256": "ba26c7cdc44dca52d7de9392da7cb07c53c20b787a5b201960a3c86ab5efe427",
+  "gcode_sha256": "6b31dbfed52225febf0fd7dbacdc1f4f262c3c4d882959bfa4af9c95676d3452",
+  "audit_version": 4,
+  "inputs": {
+    "build/h2c/jobs/h2c_dayton_nd25fn4_accessories__petg_gf_pla/dry_run.json": "48c13d424b8156b64de7ba063fb17803269ca785e9b431b8b94fc285963f3301",
+    "build/h2c/jobs/h2c_dayton_nd25fn4_accessories__petg_gf_pla/process.json": "02878999fa1255e3edfefc72f4ad218f0726dd0bb671d5134dc7a30ff648821c",
+    "build/h2c/profiles/petg_gf_pla/interface.json": "de9f413cd7e43e5bb30bb4b79cd48ed1b4680e9a0c27fae68042facf0f25cc1e",
+    "build/h2c/profiles/petg_gf_pla/machine.json": "488f1222c244471ec147ad2960b403a9cb8e07463473123575354cdd85719dbb",
+    "build/h2c/profiles/petg_gf_pla/model.json": "7204a547fddf4215cce3929c76208ff0fc2029447be43ce64f9a5f763c1e61bc",
+    "candidates/nd25fn4_crescent/audit_print.py": "c297b070b299b3ce910c9a543c909fe38a9c3e9bc5b2a705636d30338112d657",
+    "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
+    "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
+    "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
+    "print_policy_h2c.json": "1c545d0f9365ed36563bdea5d7bab7d027fb5fa04d66ce553c2ee1485c629135",
+    "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
+    "scripts/audit_h2c_print.py": "8e0dfe9914603f00a175ffa22d340d25f0ab9e3c99fe4adb5cafb85ee65ed646",
+    "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
+    "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "src/lx521_baffle/h2c/dayton.py": "034817fb267162508cd59882a4b65c41f7f6e29233cf8164fc444a3d53bc1bf7",
+    "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
+    "src/lx521_baffle/tweeter_options.py": "4e13db23df7b60b9278d0e15ec3810b033376a6ee72cc33dfa8fe40518703f5a",
+    "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_cap.stl": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+    "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_retainer.stl": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc",
+    "to_print/h2c/dayton_nd25fn4/petg_gf_pla/h2c_dayton_nd25fn4_accessories.3mf": "ba45c3724e69cc818d19545c35c10f3a02f467c303b9b030692a0b894e8ee0d2"
+  },
+  "deposition": {
+    "status": "pass",
+    "counts": {
+      "tower": 3235,
+      "support": 6984,
+      "model": 110856,
+      "interface": 5752
+    },
+    "deposition_bounds_mm": {
+      "0": [
+        [
+          41.361999999999995,
+          64.364,
+          0.2
+        ],
+        [
+          303.48503676827585,
+          287.1214729818795,
+          11.88
+        ]
+      ],
+      "1": [
+        [
+          45.870999999999995,
+          68.367,
+          0.68
+        ],
+        [
+          298.613,
+          269.646,
+          9.0
+        ]
+      ]
+    },
+    "interface_layers_mm": [
+      0.68,
+      0.84,
+      1.0,
+      1.16,
+      2.76,
+      2.92,
+      3.08,
+      8.52,
+      8.68,
+      8.84,
+      9.0
+    ],
+    "bed_temperatures_c": [
+      70.0
+    ],
+    "failures": []
+  },
+  "magnet_pauses_mm": [],
+  "magnet_discovery": [],
+  "retaining_walls": null,
+  "geometry": [
+    {
+      "source": "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_cap.stl",
+      "sha256": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+      "subtype": "normal_part",
+      "triangles": 325112,
+      "maximum_vertex_error_mm": 5.062083209474076e-08,
+      "winding_and_connectivity_match": true
+    },
+    {
+      "source": "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_cap.stl",
+      "sha256": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+      "subtype": "normal_part",
+      "triangles": 325112,
+      "maximum_vertex_error_mm": 5.062083209474076e-08,
+      "winding_and_connectivity_match": true
+    },
+    {
+      "source": "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_retainer.stl",
+      "sha256": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc",
+      "subtype": "normal_part",
+      "triangles": 196480,
+      "maximum_vertex_error_mm": 1.2469649144132397e-07,
+      "winding_and_connectivity_match": true
+    },
+    {
+      "source": "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_retainer.stl",
+      "sha256": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc",
+      "subtype": "normal_part",
+      "triangles": 196480,
+      "maximum_vertex_error_mm": 1.2469649144132397e-07,
+      "winding_and_connectivity_match": true
+    }
+  ],
+  "supports": {
+    "cap_ceilings": {
+      "status": "pass",
+      "gcode_sha256": "6b31dbfed52225febf0fd7dbacdc1f4f262c3c4d882959bfa4af9c95676d3452",
+      "source_sha256": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
+      "cap_stl_sha256": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+      "caps": [
+        {
+          "center_bed_xy_mm": [
+            74.0,
+            97.0
+          ],
+          "ceiling_cad_z_mm": 9.050000190734863,
+          "ceiling_diameter_mm": 44.598206241955516,
+          "first_ceiling_layer_z_mm": 9.16,
+          "interface_to_ceiling_layer_gap_mm": 0.0,
+          "inner_test_perimeter_allowance_mm": 1.0,
+          "interface_layers": [
+            {
+              "z_mm": 8.68,
+              "full_ceiling_coverage": 0.9313775630891659,
+              "inner_ceiling_coverage": 0.9986959964459903,
+              "interface_segments": 396
+            },
+            {
+              "z_mm": 8.84,
+              "full_ceiling_coverage": 0.9291434015059459,
+              "inner_ceiling_coverage": 0.9978747174746774,
+              "interface_segments": 385
+            },
+            {
+              "z_mm": 9.0,
+              "full_ceiling_coverage": 0.9242410472384319,
+              "inner_ceiling_coverage": 0.9935411971648321,
+              "interface_segments": 384
+            }
+          ]
+        },
+        {
+          "center_bed_xy_mm": [
+            144.0,
+            97.0
+          ],
+          "ceiling_cad_z_mm": 9.050000190734863,
+          "ceiling_diameter_mm": 44.598206241955516,
+          "first_ceiling_layer_z_mm": 9.16,
+          "interface_to_ceiling_layer_gap_mm": 0.0,
+          "inner_test_perimeter_allowance_mm": 1.0,
+          "interface_layers": [
+            {
+              "z_mm": 8.68,
+              "full_ceiling_coverage": 0.9313775644076124,
+              "inner_ceiling_coverage": 0.9986959964451417,
+              "interface_segments": 396
+            },
+            {
+              "z_mm": 8.84,
+              "full_ceiling_coverage": 0.9291434015059443,
+              "inner_ceiling_coverage": 0.9978747174746772,
+              "interface_segments": 385
+            },
+            {
+              "z_mm": 9.0,
+              "full_ceiling_coverage": 0.9242410476198101,
+              "inner_ceiling_coverage": 0.9935411971440502,
+              "interface_segments": 384
+            }
+          ]
+        }
+      ],
+      "retainers": [
+        {
+          "center_bed_xy_mm": [
+            74,
+            166
+          ],
+          "support_segments": 0
+        },
+        {
+          "center_bed_xy_mm": [
+            144,
+            166
+          ],
+          "support_segments": 0
+        }
+      ],
+      "method": "Actual extrusion-width footprints in three consecutive PLA interface layers immediately below each printed ceiling; material identity is independently checked by audit_print.py."
+    }
+  },
+  "pause_program": [],
+  "static_validation": {
+    "errors": [],
+    "ok": true,
+    "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/jobs/h2c_dayton_nd25fn4_accessories__petg_gf_pla/plate_1.gcode",
+    "profile": {
+      "backend": "orcaslicer",
+      "bed_size_mm": [
+        330.0,
+        320.0
+      ],
+      "bed_temp_c": 70.0,
+      "filament_type": "PETG",
+      "machine_name": "Bambu Lab H2C 0.6 High Flow",
+      "motion_bounds_mm": {
+        "x": [
+          0.0,
+          330.0
+        ],
+        "y": [
+          -16.0,
+          320.0
+        ],
+        "z": [
+          0.0,
+          325.0
+        ]
+      },
+      "native_config": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/machine.json",
+      "native_filaments": [
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/model.json",
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/interface.json"
+      ],
+      "native_settings": [
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/machine.json",
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/jobs/h2c_dayton_nd25fn4_accessories__petg_gf_pla/process.json"
+      ],
+      "nozzle_temp_c": 260.0,
+      "z_height_mm": 325.0
+    },
+    "stats": {
+      "extrusion_moves": 129104,
+      "lines": 239806,
+      "movement_commands": 178044,
+      "non_comment_lines": 195915,
+      "temperature_commands": 60
+    },
+    "warnings": [
+      "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
+      "Unknown or unsupported commands were left unchanged: ========== line 1087, G150 line 918, G150.1 line 703, G150.2 line 904, G150.3 line 685, G151 line 745, G17 line 1428, G28.14 line 1079, G28.140 line 628, G29.1 line 624, G29.2 line 759, G29.20 line 966."
+    ]
+  }
+}

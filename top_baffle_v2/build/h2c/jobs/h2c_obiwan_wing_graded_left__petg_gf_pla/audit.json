@@ -1,9 +1,9 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "7e3bb5976d8714581409671103a809f7357838465fb1a4e5fe4f69aa761be983",
-  "sliced_project_sha256": "4feccbe24f1887ff8ee27f0155af2a869a163fe1280afa71c8297f9de2c4fc86",
-  "gcode_sha256": "4059420be07b95b1e614c958e72a920bd695b85d64710c9d4291c97540923729",
+  "project_sha256": "9fb7456dfcfdf264654c3bb46a297bd3bdc8f31dbfbc5c59ca4eda3724361ecb",
+  "sliced_project_sha256": "82555346334d8f0f961675ea9187e480984b4659aa7c30bd8e538942e3947c9b",
+  "gcode_sha256": "86178b5199930b060db249bbcbd33daf7a1e55aaed0b6785a2566681a51cab2f",
   "audit_version": 4,
   "inputs": {
     "build/h2c/STL/h2c_obiwan_wing_graded_left.stl": "57fa804b6e53b98068f46275e49c1fb32e84c1c7f3ca3d7ae1b075b8b7f0fc9d",
@@ -17,19 +17,21 @@
     "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "c8cb56acd65cc809128815af74ed9e7e7c12c8b502b2ce48cb60b720e64fc2dc",
+    "print_policy_h2c.json": "1c545d0f9365ed36563bdea5d7bab7d027fb5fa04d66ce553c2ee1485c629135",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
-    "scripts/audit_h2c_print.py": "ae2eaff5b775b7d7ee4a2d97204c744d6e41046662ccd1977865108e9e64d0c4",
+    "scripts/audit_h2c_print.py": "8e0dfe9914603f00a175ffa22d340d25f0ab9e3c99fe4adb5cafb85ee65ed646",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "src/lx521_baffle/h2c/dayton.py": "034817fb267162508cd59882a4b65c41f7f6e29233cf8164fc444a3d53bc1bf7",
     "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
+    "src/lx521_baffle/tweeter_options.py": "4e13db23df7b60b9278d0e15ec3810b033376a6ee72cc33dfa8fe40518703f5a",
     "to_print/h2c/STL/h2c_obiwan_wing_graded_left.stl": "8385079bf57b13f5432da80ee384e54b5d7b56b87382a3088d623036e7102bc0",
-    "to_print/h2c/obiwan/petg_gf_pla/h2c_obiwan_wing_graded_left.3mf": "7e3bb5976d8714581409671103a809f7357838465fb1a4e5fe4f69aa761be983"
+    "to_print/h2c/obiwan/petg_gf_pla/h2c_obiwan_wing_graded_left.3mf": "9fb7456dfcfdf264654c3bb46a297bd3bdc8f31dbfbc5c59ca4eda3724361ecb"
   },
   "deposition": {
     "status": "pass",
     "counts": {
-      "model": 175291
+      "model": 175223
     },
     "deposition_bounds_mm": {
       "0": [
@@ -82,27 +84,27 @@
       "last_open_layer_z_mm": 5.96,
       "collision_witnesses": [
         {
-          "line": 155201,
+          "line": 155295,
           "feature": "Outer wall",
           "intrusion_mm": 0.12820696541725143
         },
         {
-          "line": 155203,
+          "line": 155297,
           "feature": "Outer wall",
           "intrusion_mm": 0.14804072022644363
         },
         {
-          "line": 155205,
+          "line": 155299,
           "feature": "Outer wall",
           "intrusion_mm": 0.13919594647527922
         },
         {
-          "line": 155207,
+          "line": 155301,
           "feature": "Outer wall",
           "intrusion_mm": 0.13970436481334536
         },
         {
-          "line": 155209,
+          "line": 155303,
           "feature": "Outer wall",
           "intrusion_mm": 0.1399987948576099
         }
@@ -480,27 +482,27 @@
       "last_open_layer_z_mm": 5.96,
       "collision_witnesses": [
         {
-          "line": 155056,
+          "line": 155150,
           "feature": "Outer wall",
           "intrusion_mm": 0.10914845844043766
         },
         {
-          "line": 155057,
+          "line": 155151,
           "feature": "Outer wall",
           "intrusion_mm": 0.13989640619447435
         },
         {
-          "line": 155058,
+          "line": 155152,
           "feature": "Outer wall",
           "intrusion_mm": 0.13997399177232775
         },
         {
-          "line": 155059,
+          "line": 155153,
           "feature": "Outer wall",
           "intrusion_mm": 0.14005157735017948
         },
         {
-          "line": 155060,
+          "line": 155154,
           "feature": "Outer wall",
           "intrusion_mm": 0.1402423661418013
         }
@@ -878,27 +880,27 @@
       "last_open_layer_z_mm": 5.96,
       "collision_witnesses": [
         {
-          "line": 155103,
+          "line": 155197,
           "feature": "Outer wall",
           "intrusion_mm": 0.12941193370611212
         },
         {
-          "line": 155105,
+          "line": 155199,
           "feature": "Outer wall",
           "intrusion_mm": 0.14615252656742483
         },
         {
-          "line": 155107,
+          "line": 155201,
           "feature": "Outer wall",
           "intrusion_mm": 0.1373875790934662
         },
         {
-          "line": 155109,
+          "line": 155203,
           "feature": "Outer wall",
           "intrusion_mm": 0.1387884521804008
         },
         {
-          "line": 155111,
+          "line": 155205,
           "feature": "Outer wall",
           "intrusion_mm": 0.13883981107516827
         }
@@ -1253,7 +1255,7 @@
   "retaining_walls": {
     "status": "pass",
     "physical_qualification": "pending same-geometry coupon print",
-    "gcode_sha256": "4059420be07b95b1e614c958e72a920bd695b85d64710c9d4291c97540923729",
+    "gcode_sha256": "86178b5199930b060db249bbcbd33daf7a1e55aaed0b6785a2566681a51cab2f",
     "stl_sha256": "8385079bf57b13f5432da80ee384e54b5d7b56b87382a3088d623036e7102bc0",
     "source_sha256": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "sample_spacing_mm": 0.06,
@@ -2792,8 +2794,8 @@
   "pause_program": [
     {
       "z_mm": 6.12,
-      "pause_command_line_number": 153488,
-      "first_extrusion_line_number": 153502,
+      "pause_command_line_number": 153206,
+      "first_extrusion_line_number": 153219,
       "pass": true
     }
   ],
@@ -2837,15 +2839,15 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 130889,
-      "lines": 361260,
-      "movement_commands": 270740,
-      "non_comment_lines": 284116,
+      "extrusion_moves": 130765,
+      "lines": 361161,
+      "movement_commands": 270606,
+      "non_comment_lines": 283983,
       "temperature_commands": 22
     },
     "warnings": [
       "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-      "Unknown or unsupported commands were left unchanged: ========== line 1071, G150 line 911, G150.1 line 696, G150.2 line 897, G150.3 line 683, G151 line 738, G17 line 5486, G28.14 line 1063, G28.140 line 626, G29.1 line 622, G29.2 line 752, G29.20 line 952."
+      "Unknown or unsupported commands were left unchanged: ========== line 1071, G150 line 912, G150.1 line 696, G150.2 line 897, G150.3 line 683, G151 line 738, G17 line 5487, G28.14 line 1063, G28.140 line 626, G29.1 line 622, G29.2 line 752, G29.20 line 952."
     ]
   }
 }

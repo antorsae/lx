@@ -6,7 +6,7 @@ Use the current projects in `../../../to_print/h2c/` for printing.
 - `rejected_one_piece_floor/`: unchanged Stock/Slim full floor-stand LM
   proposals. Actual PLA support deposition exceeded the right nozzle's reach.
   The released floor version uses the established lower LM joint instead.
-- `classic_wing/`: changing the full V4 right wing to Classic fixed the D6
+- `classic_wing/`: changing the full Dayton ND25FN-4 waveguide right wing to Classic fixed the D6
   insertion path but obstructed a D5 pocket too early. This setting was rejected.
 - `wing_arachne_43.5_inner/`: a small orientation change still obstructed a D6
   insertion path. `wing_arachne_224.0_inner/` established the successful opposite
@@ -20,3 +20,8 @@ Trial hashes describe the inputs at the time of each experiment. They do not
 qualify current print files. Plain G-code and duplicate trial slice archives
 remain disposable local caches; release G-code is stored in the published
 `.gcode.3mf` files.
+
+The public-name migration is recorded in
+[`tweeter_name_migration.json`](../tweeter_name_migration.json). The previous
+H2C names are preserved in commit `07206ed` and the local ignored
+`retired_dayton_revision_names/` archive. They are not current print files.

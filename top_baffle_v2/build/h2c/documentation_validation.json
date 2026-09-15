@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "files_checked": 19,
+  "local_links_checked": 413,
+  "missing": [],
+  "inputs": {
+    "README.md": "b64a318bee3bfc3abba55e219032656a4239cdde2a3a0187f17b040044aaa3ce",
+    "to_print/h2c/README.md": "cd780e1cbe9264f773b75273c7f6bc2ed0362b5d539f8a84cc56938ffc16d261",
+    "to_print/README.md": "ea45858de48ed148c3b0a453f6888b17a9a14e57e751095f9d6c0b65d8f0e64a",
+    "artifacts/README.md": "aef2d50c9d3a833f79fdfcf793006c6e89da7198014aa17a24c76de0bbc80b5f",
+    "artifacts/obiwan/README.md": "91323d1cd35c3b2880dabbf942fe6fdd427643423b8a73f122fceacfc04244d2",
+    "images/generated/catalog/README.md": "0932c0e452ecca2345853946c384e233871b1fb1577fc08bdaabf4e67e578748",
+    "candidates/nd25fn4_crescent/README.md": "9f5a21dce8b0e0dad7129899232e65be36285145d65bcfe343077489afb87190",
+    "candidates/nd25fn4_crescent/MAGNET_SELECTION.md": "f5d077adc6ef3c995bcea6eb293d49cc4013bc3b1329de6a25884ee15de68d2a",
+    "docs/TWEETER_OPTIONS.md": "9edd6588e4c496b4baafad23d6e199ad96a2e116f987015936cd16e9e0874004",
+    "docs/DAYTON_ND25FN4_WAVEGUIDE.md": "14b85054818f36ff8badabd4b07a193859e26764bb7432bd0547aef26169352a",
+    "docs/obiwan.md": "3ae76b962c13446c0d2afbd2f3f0136e08874e1fa17d06f708978defd191d49b",
+    "docs/stock.md": "1c43a7fec7c2840c45d0abc024a7aa1e17ac6aef0d22fb43c6fbbcc32bb2e333",
+    "docs/slim.md": "758442412ab25514c036aa01ea7de551b3acdc010e6ec6cbdfde4f34b4bc5de1",
+    "docs/VARIANTS.md": "9dc357891257285e4ea1b4466fa13995c506c949a24936d28a52f80905a31b41",
+    "docs/PRINT_POLICIES.md": "742f476800d82a87afce6cd19295b40c88ed9778ebeec13e02fe87cbd0080746",
+    "docs/INSERT_CATALOG.md": "c917263e5737e92dd9b2007d628c9d58b61a8cb7c4e6ab1c1562729ab35fdf8a",
+    "docs/UM_FINISH.md": "e291ffac368a3c7587de536935871af9c34b1fed6d18a486e2873ef7dec965b0",
+    "docs/H2C_CAD_BRIEF.md": "c77a92bdbef188f27d2a041b892d6a150fdeceea687f42c1eeae7277955cb864",
+    "docs/BUILD_GUIDE.md": "d600e37152394571877aafcff4e7e3da68aeaa976aafea2e2cb3a42347c6b506"
+  }
+}

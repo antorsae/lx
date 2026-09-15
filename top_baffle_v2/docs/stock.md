@@ -297,9 +297,16 @@ through the integral stem continuation before driver installation.
 
 ## Tweeter options
 
-On Stock the tweeter choice is a **choice of vase**: the two options are
-interchangeable `04` pieces on the same seam-B interface, and nothing else in
-the four-piece set changes.
+Stock supports two of the project's **three tweeter families**:
+Dayton ND25FW-4 and Tectonic TEBM35C10-4 BMR. Each uses its own upper
+module (vase), including the MU10 seat. The third family,
+[Dayton ND25FN-4 printed waveguide](DAYTON_ND25FN4_WAVEGUIDE.md), currently
+has an Obiwan mount only; it does not fit the Stock upper interface.
+
+For H2C, select the standard or opposed-BMR upper from the
+[current catalog](../to_print/h2c/README.md). Both fit the new H2C LM pin
+joint in either stand state. The `04` filenames and seam-B dovetails below
+refer to the earlier P2S arrangement. Use a complete set for your printer.
 
 - **Standard B2 vase** (default) — carries the face-to-face ND25FW-4 pair
   *and* the MU10 upper-mid seat. Two Dayton ND25FW-4 dome tweeters with
@@ -318,7 +325,12 @@ the four-piece set changes.
   default full artifact is under `build/vase_TEBM35C10-4/stock/` and the
   alternate under `build/bmr_slim_TEBM35C10-4/proud/stock/`.
 
-Pick one; they are never combined. See
+The standard shoulders and B1 wings match the ND25FW-4 upper's magnet
+locations. The BMR upper uses different side stations and has no supplied
+matching perimeter. Its LM mounting joint is compatible; this does not make
+the standard magnetic perimeter interchangeable.
+
+Pick one upper; they are never combined. See
 [`VARIANTS.md`](VARIANTS.md#opposed-tebm35c10-4-bmr-vase-alternative) for the
 BMR vase's own geometry, and the [README tweeter
 section](../README.md#tweeter-options) for how this choice looks on the other
@@ -327,7 +339,7 @@ two products.
 ## Magnet attachment (swappable shoulders/wings)
 
 Attachments mount with neodymium N52 D5 x 2 disc magnets (superimanes
-ref D-05-02-N52; supplier figure 0.68 kg/pair; 12 needed + spares) so B2 <-> A-comp <->
+ref D-05-02-N52; supplier figure 0.68 kg/pair; 8 per speaker with one complete perimeter set, plus spares) so B2 <-> A-comp <->
 B1 are interchangeable without magnet adhesive. TWO sites per flank side
 (4 magnets in the base total). Every released base and receiver uses the same
 pause-and-bury captive cavity derived from

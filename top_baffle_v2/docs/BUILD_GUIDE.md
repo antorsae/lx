@@ -1,4 +1,11 @@
-# Build your top baffle
+# Build your top baffle — earlier P2S arrangement
+
+For the current H2C printer, start with the [H2C file guide](../to_print/h2c/README.md)
+and [three-family tweeter selection](TWEETER_OPTIONS.md). The integrated
+[Dayton ND25FN-4 waveguide](DAYTON_ND25FN4_WAVEGUIDE.md) is an Obiwan upper
+option with its own matching wings. Quantities and splits below describe
+the earlier P2S arrangement with regular uppers.
+
 
 Choose the shape, mounting state and tweeter before opening a print file.
 These are DIY CAD designs for an LX521.4 modification. Stock is the canonical

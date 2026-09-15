@@ -39,9 +39,9 @@
   },
   "stats": {
     "extrusion_moves": 36755,
-    "lines": 89496,
-    "movement_commands": 67598,
-    "non_comment_lines": 73983,
+    "lines": 89482,
+    "movement_commands": 67602,
+    "non_comment_lines": 73987,
     "temperature_commands": 22
   },
   "warnings": [
