@@ -1,4 +1,27 @@
-# LX521.4 top baffle — Stock, Slim and Obiwan
+# Open-baffle experiments — Stock, Slim and Obiwan
+
+Inspired by **Siegfried Linkwitz’s ideas and openness in sharing his work**,
+this project explores a compromise in his design: the roughly **7.5 kHz
+crossover between the upper midrange and tweeters**. A high crossover helped
+preserve the intended dipole radiation pattern through that transition,
+leaving the small upper-midrange driver covering roughly **1–7.5 kHz**.
+See Linkwitz’s [design rationale](https://www.linkwitzlab.com/LX521/Description.htm)
+and [frequency-range discussion](https://www.linkwitzlab.com/LX521/FAQ.htm).
+
+The goal is to explore alternative tweeters, waveguides and baffle shapes
+that support **a lower crossover while preserving dipole behavior**. By
+handing more of the high-frequency work to the tweeters, we aim to reduce
+upper-midrange distortion and improve the performance of the whole system.
+Measurements of directivity and distortion, together with listening
+comparisons, will determine whether that goal is achieved.
+
+**Stock and Slim** closely follow Linkwitz’s baffle design. **Obiwan** is a
+new modular design built as an experimentation platform: interchangeable
+tweeter arrangements and quickly removable wings make it easier to compare
+drivers, waveguides and acoustic boundaries without rebuilding the entire
+baffle.
+
+## Build and print
 
 **The current manufacturing target is the Bambu H2C with two 0.6 mm High
 Flow nozzles.** Start with the [H2C file guide](to_print/h2c/README.md) for
@@ -13,11 +36,7 @@ LM pieces with the stand, plus their matching upper module. Driver spacing
 and mounting seats remain unchanged. The Dayton ND25FN-4 waveguide has separate PETG-GF/PLA and
 PETG Translucent/PLA Translucent projects.
 
-Three printable top-baffle designs for an LX521.4 modification: Stock's
-full-depth outline, Slim's thinner acoustic field, and Obiwan's driver
-carriers with a choice of regular or integrated waveguide upper and optional
-wings. Choose one mounting state and one
-complete configuration per speaker.
+Choose one mounting state and one complete configuration per speaker.
 
 The earlier [P2S build guide](docs/BUILD_GUIDE.md) remains a hardware and
 assembly reference. Its generated P2S
