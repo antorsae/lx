@@ -1,0 +1,295 @@
+{
+  "status": "pass",
+  "qualification": "digital; physical H2C qualification pending",
+  "project_sha256": "d74f0086a97a844dbcda5e522110754b93c94861440d4fbdfa32f2ee21386766",
+  "sliced_project_sha256": "a7c64cbe07e2f7a6744c2fe72806e80bd89e4fcd92ccd6a0edf4df234f9b2341",
+  "gcode_sha256": "f99bceb8d7d2c9491db63a2866f17a1269cdba0a296dc74e7a7bf5b842979566",
+  "audit_version": 4,
+  "inputs": {
+    "build/h2c/STL/h2c_slim_lm_lower_floor_stand.stl": "80081a862f321c8e803847b1d0b5118b54517b364fc443bad76c8081c5030743",
+    "build/h2c/contracts/h2c_slim_lm_lower_floor_stand.bores.json": "fabf565e597b64eacc5955b072f18d94026ebfb97af700d77cd21d1ddee2d1ff",
+    "build/h2c/experiments/h2c_slim_lm_lower_floor_stand_shadow_trial/dry_run.json": "76ebba67cca8120ef40a1b43ec012ee6021d8af8d13e8609b1319deab323f01b",
+    "build/h2c/experiments/h2c_slim_lm_lower_floor_stand_shadow_trial/h2c_slim_lm_lower_floor_stand.3mf": "d74f0086a97a844dbcda5e522110754b93c94861440d4fbdfa32f2ee21386766",
+    "build/h2c/experiments/h2c_slim_lm_lower_floor_stand_shadow_trial/process.json": "0563c9cebd4116d5452db72ac16ad80091e3e48c6bc618128595030a202eb9f7",
+    "build/h2c/inputs/h2c_slim_lm_lower_floor_stand_support_blocker.stl": "78ade92ad3968e742b6b8e3db6e365a9bb556ab4e0c76a4f5da6d9f28967f98a",
+    "build/h2c/profiles/petg_gf_pla/interface.json": "de9f413cd7e43e5bb30bb4b79cd48ed1b4680e9a0c27fae68042facf0f25cc1e",
+    "build/h2c/profiles/petg_gf_pla/machine.json": "488f1222c244471ec147ad2960b403a9cb8e07463473123575354cdd85719dbb",
+    "build/h2c/profiles/petg_gf_pla/model.json": "7204a547fddf4215cce3929c76208ff0fc2029447be43ce64f9a5f763c1e61bc",
+    "build/h2c/support_blockers/h2c_slim_lm_lower_floor_stand.stl": "86a24c5c7e487ae603eeb5167d9ebcbfe518ca7cc0435ed8d3e467b088bb48b1",
+    "candidates/nd25fn4_crescent/audit_print.py": "c297b070b299b3ce910c9a543c909fe38a9c3e9bc5b2a705636d30338112d657",
+    "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
+    "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
+    "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
+    "print_policy_h2c.json": "c8cb56acd65cc809128815af74ed9e7e7c12c8b502b2ce48cb60b720e64fc2dc",
+    "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
+    "scripts/audit_h2c_print.py": "ae2eaff5b775b7d7ee4a2d97204c744d6e41046662ccd1977865108e9e64d0c4",
+    "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
+    "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
+    "to_print/h2c/STL/h2c_slim_lm_lower_floor_stand.stl": "37306dc9966d289a3604698df1c7af5531a3d1df0ab5b0668e6a6d4dd4a2c304"
+  },
+  "deposition": {
+    "status": "pass",
+    "counts": {
+      "support": 57712,
+      "model": 1101487,
+      "tower": 45799,
+      "interface": 12439
+    },
+    "deposition_bounds_mm": {
+      "0": [
+        [
+          27.485,
+          6.491003618115438,
+          0.2
+        ],
+        [
+          262.502,
+          272.303,
+          168.36
+        ]
+      ],
+      "1": [
+        [
+          27.485,
+          12.575,
+          0.2
+        ],
+        [
+          199.029,
+          267.815,
+          164.52
+        ]
+      ]
+    },
+    "interface_layers_mm": [
+      0.2,
+      0.36,
+      0.52,
+      0.68,
+      0.84,
+      1.0,
+      1.16,
+      1.32,
+      1.48,
+      1.64,
+      1.8,
+      1.96,
+      2.12,
+      2.28,
+      2.44,
+      2.6,
+      2.76,
+      2.92,
+      3.08,
+      3.24,
+      3.4,
+      3.56,
+      3.72,
+      3.88,
+      4.04,
+      4.2,
+      4.36,
+      4.52,
+      4.68,
+      4.84,
+      5.0,
+      5.16,
+      5.32,
+      5.48,
+      5.64,
+      5.8,
+      5.96,
+      6.12,
+      6.28,
+      6.44,
+      6.6,
+      6.76,
+      6.92,
+      7.08,
+      7.24,
+      7.4,
+      7.56,
+      7.72,
+      7.88,
+      8.04,
+      8.2,
+      8.36,
+      8.52,
+      8.68,
+      8.84,
+      19.56,
+      19.72,
+      19.88,
+      20.04,
+      20.2,
+      20.36,
+      20.52,
+      20.68,
+      20.84,
+      21.0,
+      21.16,
+      21.32,
+      21.48,
+      21.64,
+      21.8,
+      21.96,
+      22.12,
+      22.28,
+      22.44,
+      22.6,
+      22.76,
+      22.92,
+      23.08,
+      23.24,
+      23.4,
+      23.56,
+      23.72,
+      23.88,
+      24.04,
+      24.2,
+      24.36,
+      24.52,
+      24.68,
+      24.84,
+      25.0,
+      25.16,
+      25.32,
+      25.48,
+      25.64,
+      25.8,
+      25.96,
+      26.12,
+      26.28,
+      26.44,
+      26.6,
+      26.76,
+      26.92,
+      27.08,
+      27.24,
+      27.4,
+      27.56,
+      27.72,
+      27.88,
+      28.04,
+      28.2,
+      28.36,
+      28.52,
+      28.68,
+      28.84,
+      29.0,
+      29.16,
+      29.32,
+      29.48,
+      29.64,
+      29.8,
+      29.96,
+      30.12,
+      30.28,
+      30.44,
+      30.6,
+      30.76,
+      30.92,
+      31.08,
+      31.24,
+      31.4,
+      31.56,
+      31.72,
+      31.88,
+      32.04,
+      117.48,
+      117.64,
+      117.8,
+      164.04,
+      164.2,
+      164.36
+    ],
+    "bed_temperatures_c": [
+      70.0
+    ],
+    "failures": []
+  },
+  "magnet_pauses_mm": [],
+  "magnet_discovery": [],
+  "retaining_walls": null,
+  "geometry": [
+    {
+      "source": "to_print/h2c/STL/h2c_slim_lm_lower_floor_stand.stl",
+      "sha256": "37306dc9966d289a3604698df1c7af5531a3d1df0ab5b0668e6a6d4dd4a2c304",
+      "subtype": "normal_part",
+      "triangles": 99814,
+      "maximum_vertex_error_mm": 5.628213439669197e-06,
+      "winding_and_connectivity_match": true
+    },
+    {
+      "source": "build/h2c/inputs/h2c_slim_lm_lower_floor_stand_support_blocker.stl",
+      "sha256": "78ade92ad3968e742b6b8e3db6e365a9bb556ab4e0c76a4f5da6d9f28967f98a",
+      "subtype": "support_blocker",
+      "triangles": 67872,
+      "maximum_vertex_error_mm": 1.3222473296605463e-05,
+      "winding_and_connectivity_match": true
+    }
+  ],
+  "supports": {
+    "native_bores": {
+      "status": "pass",
+      "bore_count": 10,
+      "support_samples": 1284690,
+      "minimum_clearance_mm": 5.276939130903892,
+      "definition_sha256": "fabf565e597b64eacc5955b072f18d94026ebfb97af700d77cd21d1ddee2d1ff",
+      "method": "0.25 mm support samples, bead width and native cylinder interiors at each layer midplane"
+    }
+  },
+  "pause_program": [],
+  "static_validation": {
+    "errors": [],
+    "ok": true,
+    "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/experiments/h2c_slim_lm_lower_floor_stand_shadow_trial/plate_1.gcode",
+    "profile": {
+      "backend": "orcaslicer",
+      "bed_size_mm": [
+        330.0,
+        320.0
+      ],
+      "bed_temp_c": 70.0,
+      "filament_type": "PETG",
+      "machine_name": "Bambu Lab H2C 0.6 High Flow",
+      "motion_bounds_mm": {
+        "x": [
+          0.0,
+          330.0
+        ],
+        "y": [
+          -16.0,
+          320.0
+        ],
+        "z": [
+          0.0,
+          325.0
+        ]
+      },
+      "native_config": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/machine.json",
+      "native_filaments": [
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/model.json",
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/interface.json"
+      ],
+      "native_settings": [
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/machine.json",
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/experiments/h2c_slim_lm_lower_floor_stand_shadow_trial/process.json"
+      ],
+      "nozzle_temp_c": 260.0,
+      "z_height_mm": 325.0
+    },
+    "stats": {
+      "extrusion_moves": 1243860,
+      "lines": 2202961,
+      "movement_commands": 1669432,
+      "non_comment_lines": 1853269,
+      "temperature_commands": 457
+    },
+    "warnings": [
+      "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
+      "Unknown or unsupported commands were left unchanged: ========== line 1089, G150 line 920, G150.1 line 701, G150.2 line 905, G150.3 line 683, G151 line 743, G17 line 4974, G28.14 line 1081, G28.140 line 626, G29.1 line 622, G29.2 line 760, G29.20 line 968."
+    ]
+  }
+}

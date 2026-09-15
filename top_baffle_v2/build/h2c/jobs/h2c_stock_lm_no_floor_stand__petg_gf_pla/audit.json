@@ -1,0 +1,139 @@
+{
+  "status": "pass",
+  "qualification": "digital; physical H2C qualification pending",
+  "project_sha256": "c1908c6d01f35d2c0265b9c6bdee17f811137ae72a2156300605b4dacadee959",
+  "sliced_project_sha256": "5b3890826fcc86620e9d5eaca3247d24d08b5f371ae21ac042cf83590b84e434",
+  "gcode_sha256": "e898818c26a4e67ec28ae37b7712a1c9a713a2faa7fa7d5968a6780b57987c48",
+  "audit_version": 4,
+  "inputs": {
+    "build/h2c/STL/h2c_stock_lm_no_floor_stand.stl": "6463892eb699af0c0a92f1257c23d3794851aa462b5f01642f9c087c1d2f568a",
+    "build/h2c/contracts/h2c_stock_lm_no_floor_stand.bores.json": "b03d8591268a5293f372300d33ce953fc1cfe77719c31b44d383172e5d6c88ab",
+    "build/h2c/inputs/h2c_stock_lm_no_floor_stand_support_blocker.stl": "ebd433e797fba42e9f53315d9ef8dafe26d033aea7f8b40db5453a44024042a0",
+    "build/h2c/jobs/h2c_stock_lm_no_floor_stand__petg_gf_pla/dry_run.json": "0c223a3582aa0875062984200f7acab303a89fa7b7c2d37e0740c523981e4348",
+    "build/h2c/jobs/h2c_stock_lm_no_floor_stand__petg_gf_pla/process.json": "a8fd5cf34c6f7b1ea4cb00726b3bee4d5e5258d49fff9c8487fbd9317f2a68db",
+    "build/h2c/profiles/petg_gf_pla/interface.json": "de9f413cd7e43e5bb30bb4b79cd48ed1b4680e9a0c27fae68042facf0f25cc1e",
+    "build/h2c/profiles/petg_gf_pla/machine.json": "488f1222c244471ec147ad2960b403a9cb8e07463473123575354cdd85719dbb",
+    "build/h2c/profiles/petg_gf_pla/model.json": "7204a547fddf4215cce3929c76208ff0fc2029447be43ce64f9a5f763c1e61bc",
+    "build/h2c/support_blockers/h2c_stock_lm_no_floor_stand.stl": "26a034e73a5de3f866689275d13ae05cbb967ddd30e412c48b5dfbe811d0010a",
+    "candidates/nd25fn4_crescent/audit_print.py": "c297b070b299b3ce910c9a543c909fe38a9c3e9bc5b2a705636d30338112d657",
+    "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
+    "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
+    "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
+    "print_policy_h2c.json": "c8cb56acd65cc809128815af74ed9e7e7c12c8b502b2ce48cb60b720e64fc2dc",
+    "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
+    "scripts/audit_h2c_print.py": "ae2eaff5b775b7d7ee4a2d97204c744d6e41046662ccd1977865108e9e64d0c4",
+    "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
+    "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
+    "to_print/h2c/STL/h2c_stock_lm_no_floor_stand.stl": "41ba82d53b0753405a333ccc529a90fde10b8ebe9f801263a232d19323c5bceb",
+    "to_print/h2c/stock/petg_gf_pla/h2c_stock_lm_no_floor_stand.3mf": "c1908c6d01f35d2c0265b9c6bdee17f811137ae72a2156300605b4dacadee959"
+  },
+  "deposition": {
+    "status": "pass",
+    "counts": {
+      "model": 739362
+    },
+    "deposition_bounds_mm": {
+      "0": [
+        [
+          3.249,
+          6.332000000000001,
+          0.2
+        ],
+        [
+          321.751,
+          313.663,
+          18.28
+        ]
+      ]
+    },
+    "interface_layers_mm": [],
+    "bed_temperatures_c": [
+      70.0
+    ],
+    "failures": []
+  },
+  "magnet_pauses_mm": [],
+  "magnet_discovery": [],
+  "retaining_walls": null,
+  "geometry": [
+    {
+      "source": "to_print/h2c/STL/h2c_stock_lm_no_floor_stand.stl",
+      "sha256": "41ba82d53b0753405a333ccc529a90fde10b8ebe9f801263a232d19323c5bceb",
+      "subtype": "normal_part",
+      "triangles": 51564,
+      "maximum_vertex_error_mm": 8.18464609748034e-06,
+      "winding_and_connectivity_match": true
+    },
+    {
+      "source": "build/h2c/inputs/h2c_stock_lm_no_floor_stand_support_blocker.stl",
+      "sha256": "ebd433e797fba42e9f53315d9ef8dafe26d033aea7f8b40db5453a44024042a0",
+      "subtype": "support_blocker",
+      "triangles": 29954,
+      "maximum_vertex_error_mm": 1.3045079710373413e-05,
+      "winding_and_connectivity_match": true
+    }
+  ],
+  "supports": {
+    "native_bores": {
+      "status": "pass",
+      "bore_count": 24,
+      "support_samples": 0,
+      "minimum_clearance_mm": null,
+      "definition_sha256": "b03d8591268a5293f372300d33ce953fc1cfe77719c31b44d383172e5d6c88ab",
+      "method": "0.25 mm support samples, bead width and native cylinder interiors at each layer midplane"
+    }
+  },
+  "pause_program": [],
+  "static_validation": {
+    "errors": [],
+    "ok": true,
+    "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/jobs/h2c_stock_lm_no_floor_stand__petg_gf_pla/plate_1.gcode",
+    "profile": {
+      "backend": "orcaslicer",
+      "bed_size_mm": [
+        330.0,
+        320.0
+      ],
+      "bed_temp_c": 70.0,
+      "filament_type": "PETG",
+      "machine_name": "Bambu Lab H2C 0.6 High Flow",
+      "motion_bounds_mm": {
+        "x": [
+          0.0,
+          330.0
+        ],
+        "y": [
+          -16.0,
+          320.0
+        ],
+        "z": [
+          0.0,
+          325.0
+        ]
+      },
+      "native_config": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/machine.json",
+      "native_filaments": [
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/model.json",
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/interface.json"
+      ],
+      "native_settings": [
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/machine.json",
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/jobs/h2c_stock_lm_no_floor_stand__petg_gf_pla/process.json"
+      ],
+      "nozzle_temp_c": 260.0,
+      "z_height_mm": 325.0
+    },
+    "stats": {
+      "extrusion_moves": 745082,
+      "lines": 991874,
+      "movement_commands": 864622,
+      "non_comment_lines": 903031,
+      "temperature_commands": 22
+    },
+    "warnings": [
+      "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
+      "Unknown or unsupported commands were left unchanged: ========== line 1071, G150 line 912, G150.1 line 696, G150.2 line 897, G150.3 line 683, G151 line 738, G17 line 5935, G28.14 line 1063, G28.140 line 626, G29.1 line 622, G29.2 line 752, G29.20 line 952."
+    ]
+  }
+}

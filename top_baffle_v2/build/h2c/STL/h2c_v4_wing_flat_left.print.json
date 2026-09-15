@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "part": "h2c_v4_wing_flat_left",
+  "stl": "h2c_v4_wing_flat_left.stl",
+  "stl_bytes": 3457784,
+  "stl_sha256": "d368d4a56ddcad06c8bd2139e0a308e94cf75099456388f7cf09b9387aab5528",
+  "source_hashes": {
+    "build/h2c/STL/h2c_obiwan_wing_flat_left.stl": "f7443e02bd11542ce430de42538acf63ab5b2f00150730080b5c290469fb40fa",
+    "candidates/nd25fn4_crescent/print/geometry/V4_flat_left_UPPER_PRINT.stl": "3388dcdff916ad96d8509e2a67d953dbfe8f8b2268ee1c01e259e9e3440097d8"
+  },
+  "join_y_mm": [
+    308.0,
+    308.2
+  ],
+  "mesh": {
+    "triangles": 69154,
+    "open": 0,
+    "over_shared": 0,
+    "winding": 0,
+    "degenerate": 0,
+    "duplicates": 0,
+    "nonfinite": 0,
+    "signed_volume": 97556.50695874794,
+    "zero_volume": 0,
+    "negative_volume": 0,
+    "components": 5,
+    "outer_components": 1,
+    "nested_void_components": 4,
+    "nonnested_void_components": 0,
+    "zero_volume_components": 0,
+    "disconnected_material_components": 0,
+    "component_signed_volumes": [
+      97965.59672093949,
+      -64.88287075323294,
+      -64.88305234465301,
+      -139.65742978863,
+      -139.66640930480168
+    ],
+    "component_error": 0
+  },
+  "boolean_simplification_tolerance_mm": 0.001,
+  "boolean_version": 2,
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      152.4010009765625
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      431.1403503417969
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.299999237060547
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -152.4010009765625,
+    -431.1403503417969,
+    -18.299999237060547
+  ],
+  "stl_origin_translation_mm": [
+    152.4010009765625,
+    431.1403503417969,
+    18.299999237060547
+  ]
+}

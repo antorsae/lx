@@ -33,7 +33,7 @@ def retaining_continuity(ring, boundary, previous):
     return dict(connected_components=len(contacts), interlayer_overlap_fraction=overlap)
 
 
-def audit_captive_walls(stl, offset, specs, gcode):
+def audit_captive_walls(stl, offset, specs, gcode, *, diameters=(6,)):
     mesh = trimesh.load_mesh(stl, process=True)
     mesh.apply_translation(offset)
     cavities = [s for s in mesh.split(only_watertight=False) if s.volume < 0]
@@ -42,7 +42,7 @@ def audit_captive_walls(stl, offset, specs, gcode):
     parsed = parse_gcode(gcode, retain_regions=rois)
     reports = []
     for spec, roi in zip(specs, rois):
-        if spec['diameter_mm'] != 6: continue  # D5 has its separate coupon gate
+        if spec['diameter_mm'] not in diameters: continue
         cavity = min(cavities, key=lambda s: np.linalg.norm(s.center_mass-spec['center_bed_mm']))
         layers = []
         widths = []
@@ -91,8 +91,9 @@ def audit_captive_walls(stl, offset, specs, gcode):
             layers.append(dict(z_mm=layer.z, sample_count=len(points), max_boundary_gap_mm=worst,
                                retaining_width_range_mm=[min(near_widths),max(near_widths)] if near_widths else None,
                                retaining_continuity=contact))
-        assert len(layers) >= 30 and widths, (spec['name'], 'insufficient wall evidence')
-        reports.append(dict(site=spec['name'], checked_layers=len(layers),
+        minimum_layers=30 if spec['diameter_mm']==6 else max(3,int(cavity.extents[2]/.16)-2)
+        assert len(layers) >= minimum_layers and widths, (spec['name'], 'insufficient wall evidence')
+        reports.append(dict(site=spec['name'], diameter_mm=spec['diameter_mm'], checked_layers=len(layers),
             width_range_mm=[min(widths),max(widths)], maximum_boundary_gap_mm=max(r['max_boundary_gap_mm'] for r in layers),
             checked_continuity_layers=len(continuity),
             minimum_interlayer_overlap_fraction=min(c['interlayer_overlap_fraction'] for c in continuity),

@@ -1,0 +1,28 @@
+{
+  "policy_sha256": "c8cb56acd65cc809128815af74ed9e7e7c12c8b502b2ce48cb60b720e64fc2dc",
+  "shared_policy_sha256": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
+  "native_sources": {
+    "filament/Bambu PETG Translucent @BBL H2C.json": "c4d638bf084ce71be70b1221b0d812b3bf3eb5269c318a5b72cfc30580b92582",
+    "filament/Bambu PETG Translucent @base.json": "9a26590c1a09f58e95c5e255619d169a5549fad9ff5edd9fc92c870548ec5039",
+    "filament/Bambu PLA Translucent @BBL H2C.json": "d2cc6d0efbbf9302911a61c678128cd053100f2fb62ae418bcba532a52276174",
+    "filament/Bambu PLA Translucent @base.json": "cedb38958d6c6230758c303ddff5fe08b3770949bdd516748ddd5b22869addf3",
+    "filament/fdm_filament_common.json": "8c7105b7d59a28f600c43a946f067b8b4d707b9711c0bf6b88e9166e48878548",
+    "filament/fdm_filament_pet.json": "3ed1b36367fe6df800103a9deaaa036f9d79c7afda3f3a17514dff23aa96c7d8",
+    "filament/fdm_filament_pla.json": "670d21ea6bdf1cd4b0a2bfddc743612ffd896cd6e5dbe767c25d2c4165c49a30",
+    "filament/fdm_filament_template_direct_dual.json": "e0f564b83f3ef70cce4de1401dd7cd855d6fbd834343cb8f4292f2a1ac3efc51",
+    "machine/Bambu Lab H2C 0.4 nozzle template change_filament_gcode.json": "e1b2fb5d05a2da2e8e0d580337be6702f8d0d8896756ebd501328b23b3978d21",
+    "machine/Bambu Lab H2C 0.4 nozzle template layer_change_gcode.json": "6a56c2b1bd15d945d68bd0b406ac44c36afd9008785c04f9b9ca73c9f2e95889",
+    "machine/Bambu Lab H2C 0.4 nozzle template machine_end_gcode.json": "996b9bdcedaec6d5a799209a61c91c913e6e7b887dacfdb5aef73569ea4c129c",
+    "machine/Bambu Lab H2C 0.4 nozzle template machine_start_gcode.json": "29ad7fe16458eca020037443e8b54597b18efe3a0441e05a488fa9474a95238d",
+    "machine/Bambu Lab H2C 0.4 nozzle template time_lapse_gcode.json": "e2bd36958e578d43fbbf4e8a42e8b9693a9613d4fd9f0c97c331c9a487c5fd2d",
+    "machine/Bambu Lab H2C 0.4 nozzle template wrapping_detection_gcode.json": "ba7dfb833eedba7e9b73086a52e24f3261c95c449d9cbe5ef266378584e1a5b3",
+    "machine/Bambu Lab H2C 0.4 nozzle.json": "f5b80e8ba7f2562f60e4b157e1b952951757287484384f6861fcb9428810f4d4",
+    "machine/Bambu Lab H2C 0.6 nozzle.json": "e9be315c5022bb3b9f883d62961bb8536020cb51f1dfeee9f0dfacdc33828021",
+    "machine/fdm_bbl_3dp_002_common.json": "f7ce729c4f2d7ba7dd9b2328b8172ada496a8a4e7e41f5f0139e2692b0a106af",
+    "machine/fdm_machine_common.json": "26ef8ee697849323e67d8e1a9026c175cebe3397e38c5091dddb5cd3fc52e94c",
+    "process/0.18mm Balanced Quality @BBL H2C 0.6 nozzle.json": "c8899c52624759b65a24204f903c158ddabc3801b6a36636eb664ba4ab49b7ce",
+    "process/fdm_process_common.json": "d7981c4b92854f251b8697e1bb621c63fe393f263fb8024ab63c401525d543d7",
+    "process/fdm_process_dual_0.18_nozzle_0.6.json": "4240537f964022cdab1874a2592dba687e956870b307f931bf3d05d1dc8899a0",
+    "process/fdm_process_dual_common.json": "743303a5c3c1962f8c8d178d21e23fc409027ea48574017db51230eac72bd063"
+  }
+}

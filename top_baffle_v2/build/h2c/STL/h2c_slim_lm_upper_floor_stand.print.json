@@ -1,0 +1,74 @@
+{
+  "mesh": {
+    "collapsed_apex_facets_removed": 2,
+    "component_error": 0,
+    "component_signed_volumes": [
+      206691.56205803028
+    ],
+    "components": 1,
+    "degenerate": 0,
+    "disconnected_material_components": 0,
+    "duplicates": 0,
+    "negative_volume": 0,
+    "nested_void_components": 0,
+    "nonfinite": 0,
+    "nonnested_void_components": 0,
+    "open": 0,
+    "outer_components": 1,
+    "over_shared": 0,
+    "signed_volume": 206691.56205803028,
+    "triangles": 80022,
+    "winding": 0,
+    "zero_volume": 0,
+    "zero_volume_components": 0
+  },
+  "mesh_angular_tolerance": 0.08,
+  "mesh_tolerance_mm": 0.01,
+  "part": "h2c_slim_lm_upper_floor_stand",
+  "pre_translation_bbox_min_mm": [
+    -152.40100010000288,
+    -315.95000010015,
+    -18.30000009999999
+  ],
+  "print_orientation": "front_face_down",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      152.40100010000288
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      315.95000010015
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.30000009999999
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "h2c_slim_lm_upper_floor_stand.stl",
+  "stl_bytes": 4001184,
+  "stl_origin_translation_mm": [
+    152.40100010000288,
+    315.95000010015,
+    18.30000009999999
+  ],
+  "stl_sha256": "0366b95c3b992eb525d9c1d0ee693ead501c31993e827a266923963fba73f586",
+  "variant_export": "h2c"
+}

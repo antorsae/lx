@@ -1,0 +1,11 @@
+{
+  "inputs": {
+    "build/h2c/experiments/h2c_slim_lm_lower_floor_stand_shadow_trial/h2c_slim_lm_lower_floor_stand.3mf": "d74f0086a97a844dbcda5e522110754b93c94861440d4fbdfa32f2ee21386766",
+    "build/h2c/experiments/h2c_slim_lm_lower_floor_stand_shadow_trial/process.json": "0563c9cebd4116d5452db72ac16ad80091e3e48c6bc618128595030a202eb9f7",
+    "build/h2c/experiments/h2c_slim_lm_lower_floor_stand_shadow_trial/dry_run.json": "76ebba67cca8120ef40a1b43ec012ee6021d8af8d13e8609b1319deab323f01b",
+    "build/h2c/profiles/petg_gf_pla/machine.json": "488f1222c244471ec147ad2960b403a9cb8e07463473123575354cdd85719dbb",
+    "build/h2c/profiles/petg_gf_pla/model.json": "7204a547fddf4215cce3929c76208ff0fc2029447be43ce64f9a5f763c1e61bc",
+    "build/h2c/profiles/petg_gf_pla/interface.json": "de9f413cd7e43e5bb30bb4b79cd48ed1b4680e9a0c27fae68042facf0f25cc1e"
+  },
+  "output_sha256": "a7c64cbe07e2f7a6744c2fe72806e80bd89e4fcd92ccd6a0edf4df234f9b2341"
+}

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_obiwan_wing_flat_right",
+  "stl": "h2c_obiwan_wing_flat_right.stl",
+  "stl_bytes": 439384,
+  "stl_sha256": "bd2eed6748b850008654fd49e8c5834afb5fd2313bf277be9d5094584e50b2e8",
+  "source_stl": "build/h2c/STL/h2c_obiwan_wing_flat_right.stl",
+  "source_sha256": "f6dab789123a0faf2cf7d81c7414723de963489f654493343137edc55a26c183",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      0.7193398003386512,
+      0.6946583704589973,
+      0.0,
+      -76.01513498844591
+    ],
+    [
+      0.6946583704589973,
+      -0.7193398003386512,
+      0.0,
+      289.8408403376052
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.29999999999999
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 44.0
+  },
+  "pre_translation_bbox_min_mm": [
+    76.01513498844591,
+    -289.8408403376052,
+    -18.29999999999999
+  ],
+  "stl_origin_translation_mm": [
+    -76.01513498844591,
+    289.8408403376052,
+    18.29999999999999
+  ]
+}

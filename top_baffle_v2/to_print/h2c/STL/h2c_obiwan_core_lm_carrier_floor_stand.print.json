@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_obiwan_core_lm_carrier_floor_stand",
+  "stl": "h2c_obiwan_core_lm_carrier_floor_stand.stl",
+  "stl_bytes": 7680884,
+  "stl_sha256": "0fe8f38a7c1854a1a50f85316f5cab4cb5946c38e5449a0b68673cb4d7308d58",
+  "source_stl": "build/h2c/STL/h2c_obiwan_core_lm_carrier_floor_stand.stl",
+  "source_sha256": "6544be563cc0986339109c5e6bc11b6cd0c54cae709a092937ef3f83cf8d2873",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      0.766044443118978,
+      -0.6427876096865393,
+      0.0,
+      243.11226223653125
+    ],
+    [
+      -0.6427876096865393,
+      -0.766044443118978,
+      0.0,
+      267.90037833803797
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999995
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": -40.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -243.11226223653125,
+    -267.90037833803797,
+    -18.300000099999995
+  ],
+  "stl_origin_translation_mm": [
+    243.11226223653125,
+    267.90037833803797,
+    18.300000099999995
+  ]
+}

@@ -1,0 +1,26 @@
+# H2C is the current manufacturing target. P2S remains reproducible with
+# `make PRINTER=P2S ...` in the main Makefile.
+H2C_PYTHON ?= $(if $(wildcard ../.venv/bin/python),../.venv/bin/python,python3)
+.DEFAULT_GOAL := all
+.PHONY: all help to_print to_print_validate h2c h2c_geometry h2c_prepare h2c_validate h2c_review h2c_docs
+all to_print h2c:
+	$(H2C_PYTHON) scripts/h2c_pipeline.py all
+h2c_geometry:
+	$(H2C_PYTHON) scripts/h2c_pipeline.py geometry
+h2c_prepare:
+	$(H2C_PYTHON) scripts/h2c_pipeline.py prepare
+h2c_validate to_print_validate:
+	$(H2C_PYTHON) scripts/h2c_pipeline.py validate
+h2c_docs:
+	$(H2C_PYTHON) scripts/h2c_pipeline.py docs
+h2c_review:
+	$(H2C_PYTHON) scripts/h2c_pipeline.py review
+help:
+	@echo 'Current printer: H2C, two 0.6 mm High Flow nozzles'
+	@echo 'make                 Build geometry, prepare, slice, audit and document all H2C parts'
+	@echo 'make h2c_geometry    Regenerate changed native geometry and check interfaces'
+	@echo 'make h2c_prepare     Prepare changed H2C projects; preserve current audited jobs'
+	@echo 'make h2c_validate    Slice and audit changed H2C projects'
+	@echo 'make h2c_review      Refresh orthographic geometry review files'
+	@echo 'make h2c_docs        Regenerate the H2C file guide'
+	@echo 'make PRINTER=P2S help    Show earlier printer targets'

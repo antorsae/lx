@@ -1,0 +1,39 @@
+{
+  "status": "pass",
+  "jobs": 45,
+  "editable_projects": 45,
+  "sliced_projects": 45,
+  "distinct_print_meshes": 40,
+  "checkpoint": "c261f32",
+  "physical_qualification": "pending H2C hardware trial",
+  "retained_mesh_authorities": [
+    {
+      "mesh": "to_print/h2c/STL/v4/01_UM_Crescent_V4_PRINT.stl",
+      "contract": "retained V4 installed-to-print transform",
+      "inputs": {
+        "candidates/nd25fn4_crescent/print/geometry/01_UM_Crescent_V4_PRINT.stl": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
+        "candidates/nd25fn4_crescent/print/geometry/01_UM_Crescent_V4_PRINT.print.json": "a3d732f8c0affa29b6f3a4c5012eb37ad675bf366972951d4daa950e655fd7da",
+        "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6"
+      }
+    },
+    {
+      "mesh": "to_print/h2c/STL/v4/02_Closed_Cap_PRINT_TWO.stl",
+      "contract": "retained accessory authored in print coordinates",
+      "inputs": {
+        "candidates/nd25fn4_crescent/STL/02_Closed_Cap_PRINT_TWO.stl": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+        "candidates/nd25fn4_crescent/build_manifest.json": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f"
+      }
+    },
+    {
+      "mesh": "to_print/h2c/STL/v4/03_Tweeter_Retainer_PRINT_TWO.stl",
+      "contract": "retained accessory authored in print coordinates",
+      "inputs": {
+        "candidates/nd25fn4_crescent/STL/03_Tweeter_Retainer_PRINT_TWO.stl": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc",
+        "candidates/nd25fn4_crescent/build_manifest.json": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f"
+      }
+    }
+  ],
+  "catalog_sha256": "16dc31bb9b8a1e8a9be54d9740b857c0263191f7a2264c62657e10a2315a3bff",
+  "policy_sha256": "c8cb56acd65cc809128815af74ed9e7e7c12c8b502b2ce48cb60b720e64fc2dc",
+  "source_sha256": "88ceebcd1207c3419561470154f4357b79e974ed663934f010136a0f264ac93e"
+}

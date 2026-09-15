@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_stock_09_B1_wing_left_1_of_2",
+  "stl": "h2c_stock_09_B1_wing_left_1_of_2.stl",
+  "stl_bytes": 153184,
+  "stl_sha256": "d07d78f8b2c3a6d64373146c7cb7227819578f105b16a05c0c5719636f5a0715",
+  "source_stl": "build/no_floor_stand/stl/stock_wing_1_of_2_left.stl",
+  "source_sha256": "7749a25921f930432d155f8988afe0dd8516f2b119560c11890f4f2a309794f1",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      83.80700010000001
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      432.87900010000004
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999952
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -83.80700010000001,
+    -432.87900010000004,
+    -18.300000099999952
+  ],
+  "stl_origin_translation_mm": [
+    83.80700010000001,
+    432.87900010000004,
+    18.300000099999952
+  ]
+}

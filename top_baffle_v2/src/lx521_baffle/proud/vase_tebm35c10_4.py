@@ -1195,6 +1195,7 @@ def _validate_duct_magnet_separation(magnet_tools) -> None:
 def build_model(
     profile: str | VaseTEBMProfile = "stock",
     topology: str | BmrLandTopology = DEFAULT_LAND_TOPOLOGY,
+    *, joint: str = "legacy",
 ) -> VaseTEBMModel:
     """Build and validate one monolithic keyed Stock/Slim replacement."""
     spec = vase_profile(profile)
@@ -1203,7 +1204,14 @@ def build_model(
     rear_growth = _rear_growth_wedge(spec, land_spec) & _plan_volume(
         REAR_T_MOUNT_Z_MM, spec.rear_surface_z_mm, land_spec)
     part = slab + rear_growth
-    seam_cutter = _prism(_grown(_below_region(SEAM_B_Y, DOVETAILS_B)))
+    if joint == "legacy":
+        seam_cutter = _prism(_grown(_below_region(SEAM_B_Y, DOVETAILS_B)))
+    elif joint == "h2c":
+        from ..h2c.proud import JOINT_GAP
+        limit = SEAM_B_Y + JOINT_GAP
+        seam_cutter = Pos(0, (limit - 500) / 2, 0) * Box(600, limit + 500, 600)
+    else:
+        raise ValueError(f"Unknown vase joint {joint!r}")
     _validate_duct_exterior_containment(part - seam_cutter, land_spec)
     part = _apply_driver_interfaces(part)
     part = _apply_cable_routes(part)
@@ -1214,6 +1222,13 @@ def build_model(
     part -= seam_b_m3_vase_insert_cutter()
     part, magnet_tools = _apply_t_magnets(part, land_spec)
     _validate_duct_magnet_separation(magnet_tools)
+    if joint == "h2c":
+        from ..h2c.proud import PIN_X, pin_tool
+        for x in PIN_X:
+            pin = pin_tool(x, socket=False)
+            if ((pin - seam_cutter) - part).volume > .01:
+                raise RuntimeError("H2C BMR registration pin has no solid root")
+            part = part.fuse(pin)
     part.label = f"{PART_NAME}_{spec.key}_{land_spec.key}"
 
     solids = list(part.solids())

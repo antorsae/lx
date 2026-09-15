@@ -1,0 +1,54 @@
+{
+  "name": "h2c_obiwan_wing_graded_left",
+  "source_files": {
+    "build/wings/graded/obiwan_wing_graded.step": "93b171782aa509a99e0474c87b6ab3775ba36b62a417a49b9fc3a8818fb2d747"
+  },
+  "step_sha256": "d0508623b3b8f6aa7ebbac5e32de744963ffc7fc5750cffe63ebcdf48e3c1902",
+  "native_valid": true,
+  "native_solids": 1,
+  "native_volume_mm3": 68547.22268339284,
+  "installed_bounds_mm": [
+    [
+      -152.401,
+      74.14999989999924,
+      6.7999998999999995
+    ],
+    [
+      -23.212651455,
+      449.08100010000004,
+      18.300000100000002
+    ]
+  ],
+  "stl_sha256": "57fa804b6e53b98068f46275e49c1fb32e84c1c7f3ca3d7ae1b075b8b7f0fc9d",
+  "mesh": {
+    "triangles": 101734,
+    "open": 0,
+    "over_shared": 0,
+    "winding": 0,
+    "degenerate": 0,
+    "duplicates": 0,
+    "nonfinite": 0,
+    "signed_volume": 70307.50954091907,
+    "zero_volume": 0,
+    "negative_volume": 0,
+    "components": 4,
+    "outer_components": 1,
+    "nested_void_components": 3,
+    "nonnested_void_components": 0,
+    "zero_volume_components": 0,
+    "disconnected_material_components": 0,
+    "component_signed_volumes": [
+      70502.15866138521,
+      -64.88300987366402,
+      -64.88305113029931,
+      -64.88305946214481
+    ],
+    "component_error": 0,
+    "collapsed_apex_facets_removed": 0
+  },
+  "print_size_mm": [
+    279.59955482212763,
+    285.06643064804507,
+    11.500000200000047
+  ]
+}

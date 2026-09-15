@@ -135,3 +135,34 @@ candidates/nd25fn4_crescent/assembly/
 !print_policy.json
 !captive_magnet_slicing_profile_petg_gf_wings_06hf.json
 !vendor/TINMORRY/resolved_P2S_06HF_PETG_GF.json
+
+# Current H2C release: keep the manufacturing shelf, frozen profiles and
+# qualification evidence. Slicer work files are recoverable from the published
+# .gcode.3mf files and are not a second set of deliverables.
+!print_policy_h2c.json
+!to_print/h2c/catalog.json
+!to_print/h2c/STL/**/*.print.json
+!to_print/h2c/STL/*.print.json
+!build/h2c/*.json
+!build/h2c/STEP/*.facts.json
+!build/h2c/STL/*.print.json
+!build/h2c/contracts/*.json
+!build/bmr_crescent_TEBM35C10-4/*.print.json
+!build/h2c/profiles/**/*.json
+build/h2c/jobs/*/*
+!build/h2c/jobs/*/audit.json
+!build/h2c/jobs/*/process.json
+!build/h2c/jobs/*/dry_run.json
+!build/h2c/jobs/*/magnet_discovery.json
+!build/h2c/jobs/*/gcode_skill_validation.json
+!build/h2c/jobs/*/gcode_validation_profile.json
+build/h2c/trial/
+!build/h2c/experiments/**/*.json
+!build/h2c/experiments/*.json
+build/h2c/experiments/**/plate_1.gcode
+build/h2c/experiments/**/*.gcode.3mf
+build/h2c/experiments/**/*.log
+!build/h2c/views/*.json
+# Curated current packets are added explicitly; repeated timestamped snapshot
+# runs remain local. Stable contact sheets and named V4 views stay trackable.
+build/h2c/views/*_20*T*.png

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_slim_06_A_shoulder_top_left_2_of_4",
+  "stl": "h2c_slim_06_A_shoulder_top_left_2_of_4.stl",
+  "stl_bytes": 167484,
+  "stl_sha256": "2ad2b053e6272c6ef565e7d0842bba68c86e2735798a14a21eb5ba645f5583a5",
+  "source_stl": "build/no_floor_stand/stl/slim_shoulder_2_of_4_top_left.stl",
+  "source_sha256": "6336437600757c539da9e109d44901fdb078da56c6e41d37c03b7c4717e5c6a1",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      60.654000100000005
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      453.4570001000002
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999956
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -60.654000100000005,
+    -453.4570001000002,
+    -18.300000099999956
+  ],
+  "stl_origin_translation_mm": [
+    60.654000100000005,
+    453.4570001000002,
+    18.300000099999956
+  ]
+}

@@ -13,7 +13,8 @@ import v4_model as model
 from gcode_analysis import parse_gcode
 
 
-def magnet_geometry(stl, authority, offset):
+def magnet_geometry(stl, authority, offset, owner=None):
+    explicit_owner = owner is not None
     matrix=np.asarray(authority['source_to_stl_matrix']).copy()
     matrix[:3,3]+=np.asarray(offset)
     printed=trimesh.load_mesh(stl,process=True)
@@ -25,7 +26,7 @@ def magnet_geometry(stl, authority, offset):
             site=min(model.magnet_sites(),key=lambda s:np.linalg.norm(s['contact']-cavity.center_mass))
             n,t,u,contact=[site[k] for k in ['normal','tangent','up','contact']]
             p=cavity.vertices-contact
-            owner='body' if stl.name.startswith('01_') else 'wing'
+            owner=owner or ('body' if stl.name.startswith('01_') else 'wing')
             axial=p@n
             a=max(axial)-1.5 if owner=='body' else min(axial)+1.5
             center=contact+a*n+((p@t).min()+(p@t).max())/2*t+((p@u).max()-3.1)*u
@@ -41,7 +42,11 @@ def magnet_geometry(stl, authority, offset):
             sites=[s for row in rows for s in row['sites']]
             s=min(sites,key=lambda s:np.linalg.norm(np.array(s['cavity_center_xyz_mm'])-cavity.center_mass))
             center=np.array(s['seated_magnet_center_xyz_mm']);n=np.array(s['installed_marked_pole_axis_xyz'])
-            u=np.array([0.,0.,1.]);t=np.cross(u,n);diam,depth=5.,2.;name='preserved_LM'
+            u=np.array([0.,0.,1.]);t=np.cross(u,n);diam,depth=5.,2.
+            # New full-length H2C wings have two LM sites. Give each its
+            # own identity and measured closure; preserve the old split
+            # wing's separately qualified pause only for legacy callers.
+            name=f'preserved_LM_{s["name"]}' if explicit_owner else 'preserved_LM'
         basis=np.eye(4);basis[:3,:3]=np.column_stack([t,u,n]);basis[:3,3]=center
         magnet=trimesh.creation.cylinder(radius=diam/2,height=depth,sections=128,transform=basis)
         magnet.apply_transform(matrix)
@@ -67,6 +72,11 @@ def section_polygon(mesh,z):
 
 def discover(stl,authority,offset,gcode):
     specs=magnet_geometry(stl,authority,offset)
+    return discover_specs(specs,gcode)
+
+
+def discover_specs(specs,gcode):
+    """Use the same bead/sweep test for an explicitly registered material part."""
     roi=[]
     for spec in specs:
         lo,hi=spec['_sweep'].bounds
@@ -83,11 +93,20 @@ def discover(stl,authority,offset,gcode):
             polygons=[section_polygon(spec['_sweep'],layer.z-height/2)]
             polygons=[p for p in polygons if p is not None]
             if not polygons:continue
+            bounds=np.asarray([p.bounds for p in polygons])
+            lo=bounds[:,:2].min(axis=0);hi=bounds[:,2:].max(axis=0)
             hits=[]
             for seg in layer.segments:
                 if seg.feature.lower() in {'custom','undefined','prime tower'}:continue
-                line=LineString([(seg.x0,seg.y0),(seg.x1,seg.y1)])
                 width=seg.line_width or .62
+                # The parser retains the union of all magnet regions. Most
+                # of those segments cannot approach this particular slot.
+                # A bead-expanded bounding box is a conservative rejection;
+                # all possible contacts retain the exact polygon test.
+                half=width/2
+                if (max(seg.x0,seg.x1)+half<lo[0] or min(seg.x0,seg.x1)-half>hi[0]
+                    or max(seg.y0,seg.y1)+half<lo[1] or min(seg.y0,seg.y1)-half>hi[1]):continue
+                line=LineString([(seg.x0,seg.y0),(seg.x1,seg.y1)])
                 penetration=max(width/2-line.distance(poly) for poly in polygons)
                 # The bead rectangle overestimates rounded bead corners; the
                 # 0.1-mm radial seating allowance is also below one layer.

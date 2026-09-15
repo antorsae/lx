@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_obiwan_bmr_crescent_opposed_TEBM35C10-4",
+  "stl": "h2c_obiwan_bmr_crescent_opposed_TEBM35C10-4.stl",
+  "stl_bytes": 709784,
+  "stl_sha256": "84353f89230594fbcffd4f7aa2b15aefdbb35b93b7d12e64d6dc5685bb8dab59",
+  "source_stl": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.stl",
+  "source_sha256": "617bafd03e36d0db1e2f905303b45b3f16615ea16e075ddcb8dc4d40aed5ae65",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      0.848048096156426,
+      -0.5299192642332049,
+      0.0,
+      297.4054418932502
+    ],
+    [
+      -0.5299192642332049,
+      -0.848048096156426,
+      0.0,
+      457.04537478004363
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.30000009999995
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": -32.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -297.4054418932502,
+    -457.04537478004363,
+    -18.30000009999995
+  ],
+  "stl_origin_translation_mm": [
+    297.4054418932502,
+    457.04537478004363,
+    18.30000009999995
+  ]
+}

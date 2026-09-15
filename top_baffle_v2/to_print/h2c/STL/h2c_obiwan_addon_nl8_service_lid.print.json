@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_obiwan_addon_nl8_service_lid",
+  "stl": "h2c_obiwan_addon_nl8_service_lid.stl",
+  "stl_bytes": 23884,
+  "stl_sha256": "719a842494a70a2318664db07f8f71ad4c87aefd7dbcdb8d16a9fb28da77007b",
+  "source_stl": "build/floor_stand/stl/obiwan_addon_nl8_service_lid.stl",
+  "source_sha256": "a283e1574cb11c87ecf81c8f0cdaeee9486b7b07e6bb53a2a08a991872cf9abf",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      17.34999993566385
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      -76.2000006792547
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      -0.0999999999999827
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -17.34999993566385,
+    76.2000006792547,
+    0.0999999999999827
+  ],
+  "stl_origin_translation_mm": [
+    17.34999993566385,
+    -76.2000006792547,
+    -0.0999999999999827
+  ]
+}

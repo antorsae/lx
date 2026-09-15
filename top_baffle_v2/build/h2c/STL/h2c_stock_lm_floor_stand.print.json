@@ -1,0 +1,74 @@
+{
+  "mesh": {
+    "collapsed_apex_facets_removed": 0,
+    "component_error": 0,
+    "component_signed_volumes": [
+      877796.5765589508
+    ],
+    "components": 1,
+    "degenerate": 0,
+    "disconnected_material_components": 0,
+    "duplicates": 0,
+    "negative_volume": 0,
+    "nested_void_components": 0,
+    "nonfinite": 0,
+    "nonnested_void_components": 0,
+    "open": 0,
+    "outer_components": 1,
+    "over_shared": 0,
+    "signed_volume": 877796.5765589508,
+    "triangles": 185414,
+    "winding": 0,
+    "zero_volume": 0,
+    "zero_volume_components": 0
+  },
+  "mesh_angular_tolerance": 0.08,
+  "mesh_tolerance_mm": 0.01,
+  "part": "h2c_stock_lm_floor_stand",
+  "pre_translation_bbox_min_mm": [
+    -1.0000002664535259e-07,
+    -152.40100010000006,
+    -18.30000009999999
+  ],
+  "print_orientation": "front_face_down",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 90.0
+  },
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      6.123233995736766e-17,
+      1.0,
+      0.0,
+      1.0000002664535259e-07
+    ],
+    [
+      1.0,
+      -6.123233995736766e-17,
+      0.0,
+      152.40100010000006
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.30000009999999
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "h2c_stock_lm_floor_stand.stl",
+  "stl_bytes": 9270784,
+  "stl_origin_translation_mm": [
+    1.0000002664535259e-07,
+    152.40100010000006,
+    18.30000009999999
+  ],
+  "stl_sha256": "a89fca70079848fc6042d25d4ef621d14fea96ddfb76b4b65566c69cd8948be0",
+  "variant_export": "h2c"
+}

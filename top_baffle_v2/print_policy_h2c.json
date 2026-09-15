@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "base_policy": "print_policy.json",
+  "machine_preset": "machine/Bambu Lab H2C 0.6 nozzle.json",
+  "process_preset": "process/0.18mm Balanced Quality @BBL H2C 0.6 nozzle.json",
+  "nozzle_variant": "High Flow",
+  "physical_material_assignment": {
+    "left": "model",
+    "right": "support_interface"
+  },
+  "filament_map": [
+    "1",
+    "2"
+  ],
+  "nozzle_volume_type": [
+    "High Flow",
+    "High Flow"
+  ],
+  "build_regions_mm": {
+    "left": [
+      0,
+      0,
+      325,
+      320
+    ],
+    "right": [
+      25,
+      0,
+      330,
+      320
+    ],
+    "shared": [
+      25,
+      0,
+      325,
+      320
+    ]
+  },
+  "maximum_z_mm": 320,
+  "plate": "Engineering Plate",
+  "bed_temperature_c": 70,
+  "native_process_defaults": {
+    "wall_sequence": "inner wall/outer wall"
+  },
+  "edge_margin_mm": 2,
+  "brim_mm": {
+    "default": 5,
+    "stock_slim_no_floor_lm": 2
+  },
+  "prime_tower_reserve_mm": {
+    "side": 60,
+    "origin_inset": 7
+  },
+  "role_overrides": {},
+  "lane_role_overrides": {
+    "petg_translucent_pla": {
+      "crescent_body": {
+        "wall_generator": "classic",
+        "detect_thin_wall": "1",
+        "wall_sequence": "outer wall/inner wall",
+        "precise_outer_wall": "0"
+      }
+    }
+  },
+  "lanes": {
+    "petg_gf_pla": {
+      "model_preset": "filament/Generic PETG-CF @BBL H2C.json",
+      "interface_preset": "filament/Bambu PLA Basic @BBL H2C 0.6 nozzle.json",
+      "model_name": "LX521 TINMORRY PETG-GF H2C 0.6 HF",
+      "model_overrides": {
+        "nozzle_temperature": [
+          "260",
+          "260"
+        ],
+        "nozzle_temperature_initial_layer": [
+          "260",
+          "260"
+        ],
+        "filament_flow_ratio": [
+          "0.93",
+          "0.93"
+        ],
+        "filament_max_volumetric_speed": [
+          "12",
+          "12"
+        ],
+        "filament_bridge_speed": "20"
+      },
+      "interface_overrides": {
+        "filament_flush_volumetric_speed": [
+          "12",
+          "12"
+        ]
+      },
+      "colours": [
+        "#456C86",
+        "#EEEEEE"
+      ]
+    },
+    "petg_translucent_pla": {
+      "model_preset": "filament/Bambu PETG Translucent @BBL H2C.json",
+      "interface_preset": "filament/Bambu PLA Translucent @BBL H2C.json",
+      "model_name": "LX521 PETG Translucent H2C 0.6 HF",
+      "model_overrides": {},
+      "interface_overrides": {},
+      "colours": [
+        "#C1C1C1",
+        "#B5001180"
+      ]
+    }
+  },
+  "exceptions": [
+    "Use dedicated left/right nozzles; old P2S AMS slot numbers are not nozzle assignments. Configure a model feed to the left and a PLA feed to the right before printing.",
+    "Retain native H2C retraction, temperature standby, nozzle changing, start/end and priming G-code. Transfer only explicit Tinmorry thermal/flow calibrations. Do not apply the P2S 560 mm3 same-nozzle purge to every dual-nozzle switch.",
+    "Both materials use a shared 70 C Engineering Plate with glue. No raft. This is the user's plate process and requires a first-print adhesion check, especially the 2 mm Stock/Slim brim.",
+    "Use three dense zero-gap PLA interface layers above and below support for H2C. Keep PETG as the support base. Disable flushing into model, infill and support.",
+    "V4 translucent body keeps Classic outer-first walls to reduce visible magnet-cover width changes. Other parts retain their existing wall policy.",
+    "The native H2C firmware programs and generated material/nozzle assignments must be checked from the actual slice; prepared projects alone are not print qualification.",
+    "Continuous V4 wings retain Arachne. Rotate right-hand wings 224 degrees in the print plane: the original 44-degree placement caused an early D6 loading-path intrusion. Recheck every D5/D6 site against the resulting toolpaths.",
+    "Expand regular cable/fastener support blockers by 0.8 mm along each print axis. Exact surface-only blockers allowed support in duct ceilings; the model geometry is unchanged. Approved V4 body/accessory blockers retain their own qualified dimensions.",
+    "Stock/Slim floor lower pieces extend the three cable-entry support keepouts through the rear service panel. This prevents supports for the panel from being routed down the cable entries. The small regions above those entries bridge; surrounding panel supports remain enabled."
+  ],
+  "print_orientation_z_deg": {
+    "h2c_v4_wing_flat_right": 224,
+    "h2c_v4_wing_graded_right": 224
+  },
+  "support_blocker_extra_xyz_mm": 0.8,
+  "part_process_overrides": {
+    "h2c_stock_lm_no_floor_stand": {
+      "enable_support": "0"
+    },
+    "h2c_slim_lm_no_floor_stand": {
+      "enable_support": "0"
+    },
+    "h2c_obiwan_addon_nl8_service_lid": {
+      "enable_support": "0"
+    }
+  }
+}

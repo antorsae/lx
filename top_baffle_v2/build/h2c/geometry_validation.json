@@ -1,0 +1,121 @@
+{
+  "status": "pass",
+  "checks": [
+    {
+      "family": "stock",
+      "state": "no_floor_stand",
+      "core_pieces": 2,
+      "maximum_interference_mm3": 0.0,
+      "pin_centres_xz_mm": [
+        [
+          -24,
+          9.5
+        ],
+        [
+          24,
+          9.5
+        ]
+      ],
+      "socket_diameter_mm": 3.3,
+      "pin_diameter_mm": 3.0,
+      "radial_clearance_mm": 0.15,
+      "axial_socket_allowance_mm": 0.25,
+      "joint_plane_gap_mm": 0.05,
+      "LM_gauge_diameter_mm": 189.98,
+      "UM_gauge_diameter_mm": 81.98,
+      "inputs": {
+        "h2c_stock_lm_no_floor_stand": "ab06ccd583c477d8cbfc3f54a446bf0c3dd30f5cb506030b1596cea09a65561d",
+        "h2c_stock_upper": "6f2b84913fd9c1a5e2312059518587546379ec3724bd4027cc500332199fb38b",
+        "h2c_stock_upper_bmr": "4e167db35d9e5a1c55f446ea7c30a87deb4a782cd578c52af92c9130fa1d0412"
+      }
+    },
+    {
+      "family": "stock",
+      "state": "floor_stand",
+      "core_pieces": 3,
+      "maximum_interference_mm3": 0.0,
+      "pin_centres_xz_mm": [
+        [
+          -24,
+          9.5
+        ],
+        [
+          24,
+          9.5
+        ]
+      ],
+      "socket_diameter_mm": 3.3,
+      "pin_diameter_mm": 3.0,
+      "radial_clearance_mm": 0.15,
+      "axial_socket_allowance_mm": 0.25,
+      "joint_plane_gap_mm": 0.05,
+      "LM_gauge_diameter_mm": 189.98,
+      "UM_gauge_diameter_mm": 81.98,
+      "inputs": {
+        "h2c_stock_lm_lower_floor_stand": "adac425be354fba94b4f579530ea42a5c3d6d1cb3534575fdffdfa1ab2adeee6",
+        "h2c_stock_lm_upper_floor_stand": "a071060c2fa3fd4ce248eb076eb349ec4b3857d2e538c101919e4044d3d5f588",
+        "h2c_stock_upper": "6f2b84913fd9c1a5e2312059518587546379ec3724bd4027cc500332199fb38b",
+        "h2c_stock_upper_bmr": "4e167db35d9e5a1c55f446ea7c30a87deb4a782cd578c52af92c9130fa1d0412"
+      }
+    },
+    {
+      "family": "slim",
+      "state": "no_floor_stand",
+      "core_pieces": 2,
+      "maximum_interference_mm3": 0.0,
+      "pin_centres_xz_mm": [
+        [
+          -24,
+          9.5
+        ],
+        [
+          24,
+          9.5
+        ]
+      ],
+      "socket_diameter_mm": 3.3,
+      "pin_diameter_mm": 3.0,
+      "radial_clearance_mm": 0.15,
+      "axial_socket_allowance_mm": 0.25,
+      "joint_plane_gap_mm": 0.05,
+      "LM_gauge_diameter_mm": 189.98,
+      "UM_gauge_diameter_mm": 81.98,
+      "inputs": {
+        "h2c_slim_lm_no_floor_stand": "f076ed41ab8ce4aa8fcaf193c153db308ead2289aac836e107cadf234391f30d",
+        "h2c_slim_upper": "31413f0047535cb0615ea5b1f3ea3c0f3ca1bc5b1a2ea7b0c13f6eb0cecc51de",
+        "h2c_slim_upper_bmr": "d0d95188f1dd320b7b0b2ba5f67220715f894d0f8e214dc352a564b17fd721ca"
+      }
+    },
+    {
+      "family": "slim",
+      "state": "floor_stand",
+      "core_pieces": 3,
+      "maximum_interference_mm3": 0.0,
+      "pin_centres_xz_mm": [
+        [
+          -24,
+          9.5
+        ],
+        [
+          24,
+          9.5
+        ]
+      ],
+      "socket_diameter_mm": 3.3,
+      "pin_diameter_mm": 3.0,
+      "radial_clearance_mm": 0.15,
+      "axial_socket_allowance_mm": 0.25,
+      "joint_plane_gap_mm": 0.05,
+      "LM_gauge_diameter_mm": 189.98,
+      "UM_gauge_diameter_mm": 81.98,
+      "inputs": {
+        "h2c_slim_lm_lower_floor_stand": "4cbcc32af63c0a523d9a4d33fa5e952163cbf3a106f81b95dd418b282ba1da23",
+        "h2c_slim_lm_upper_floor_stand": "ebc7efbc54d870aa09bb30054024c00a5e87a2b15dbbac87a484411c2b0fc883",
+        "h2c_slim_upper": "31413f0047535cb0615ea5b1f3ea3c0f3ca1bc5b1a2ea7b0c13f6eb0cecc51de",
+        "h2c_slim_upper_bmr": "d0d95188f1dd320b7b0b2ba5f67220715f894d0f8e214dc352a564b17fd721ca"
+      }
+    }
+  ],
+  "source_sha256": "cf1e5a43838a11d7990c878a318f38f1fae688d17140b28ae77b2b2383beb326",
+  "physical_fit": "pending hardware trial"
+}

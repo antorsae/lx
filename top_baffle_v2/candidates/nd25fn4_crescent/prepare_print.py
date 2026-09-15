@@ -121,8 +121,10 @@ def write_project(path, parts, process, offset=(0, 0, 0), pauses=()):
     build = ET.SubElement(root, f'{{{CORE}}}build')
     plate = ET.SubElement(config, 'plate')
     for key, value in dict(plater_id='1', plater_name=path.stem, locked='true',
-                           filament_map_mode='Manual', filament_maps='1 1',
-                           filament_volume_maps='1 1', gcode_file='').items(): metadata(plate,key,value)
+                           filament_map_mode=process.get('filament_map_mode', 'Manual'),
+                           filament_maps=' '.join(process.get('filament_map', ['1', '1'])),
+                           filament_volume_maps=' '.join(process.get('filament_volume_map', ['1', '1'])),
+                           gcode_file='').items(): metadata(plate,key,value)
     for oid in object_ids:
         ET.SubElement(build, f'{{{CORE}}}item', objectid=str(oid), printable='1',
                       transform='1 0 0 0 1 0 0 0 1 '+' '.join(map(str,offset)))

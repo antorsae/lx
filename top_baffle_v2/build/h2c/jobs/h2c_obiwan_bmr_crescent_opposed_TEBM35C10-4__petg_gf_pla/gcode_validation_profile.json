@@ -1,0 +1,39 @@
+{
+  "backend": "orcaslicer",
+  "native_config": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/machine.json",
+  "native_settings": [
+    "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/machine.json",
+    "/Users/antor/gh/lx/top_baffle_v2/build/h2c/jobs/h2c_obiwan_bmr_crescent_opposed_TEBM35C10-4__petg_gf_pla/process.json"
+  ],
+  "native_filaments": [
+    "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/model.json",
+    "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/interface.json"
+  ],
+  "machine": {
+    "name": "Bambu Lab H2C 0.6 High Flow",
+    "bed_size_mm": [
+      330,
+      320
+    ],
+    "z_height_mm": 325,
+    "motion_bounds_mm": {
+      "x": [
+        0,
+        330
+      ],
+      "y": [
+        -16,
+        320
+      ],
+      "z": [
+        0,
+        325
+      ]
+    }
+  },
+  "filament": {
+    "type": "PETG",
+    "nozzle_temp_c": 260,
+    "bed_temp_c": 70
+  }
+}

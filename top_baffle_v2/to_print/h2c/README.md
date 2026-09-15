@@ -1,0 +1,126 @@
+# H2C print files
+
+45 of 45 jobs digitally audited. Printer: **H2C, two 0.6 mm High Flow nozzles**.
+
+The pre-migration project is preserved in commit `c261f32`. These projects use native H2C machine programs. The P2S files are a separate earlier release.
+
+**Choose one family, one stand state and one tweeter/wing alternative per speaker.** Print twice for a stereo pair. The V4 accessories plate already contains two caps and two retainers.
+
+| Configuration | H2C main pieces per speaker | Previous P2S arrangement |
+|---|---|---|
+| Stock / Slim, no floor stand | 1 LM + 1 upper module | 3 LM + 1 upper |
+| Stock / Slim, floor stand | 1 lower LM with stand + 1 upper LM + 1 upper module | 3 LM + 1 upper |
+| Regular Obiwan, either stand state | 1 LM + 1 UM + 1 crescent + 2 optional wings | 2 LM + 1 UM + 1 crescent + 4 wing sections |
+| V4 Obiwan, either stand state | 1 LM + 1 fused body + 2 optional wings | 2 LM + 1 fused body + 4 wing sections |
+
+Stock/Slim shoulders or side wings remain optional. The upper module and BMR alternative are shared between stand states. A-style shoulders remain four pieces: their upper and lower outlines meet only at a tangent point, so joining them would require an outline change. The B1 alternative already uses one continuous wing per side. Use the new H2C upper module with the new contained-pin LM joint; its two Ø3 mm pins replace the old upward dovetails. The hidden M3 × 20 clamp and Hanglife M3, Ø5 × 4 mm insert remain. Floor-stand LM halves retain the established lower dovetail joint.
+
+The unchanged one-piece Stock/Slim floor-stand trials failed the actual PLA-nozzle reach check. They are retained under `build/h2c/experiments/rejected_one_piece_floor/`, outside this shelf. The current floor-stand pair removes the old vertical LM seam and keeps the original outline.
+
+## Materials and support
+
+- **Model: left nozzle. PLA support interface: right nozzle.** Configure the corresponding feeds on the H2C. The previous P2S AMS slot numbers are not nozzle assignments.
+- Default lane: Tinmorry PETG-GF + PLA. V4 also has its own PETG Translucent + PLA Translucent lane.
+- Engineering Plate with glue, 70 °C for both materials, no raft.
+- 0.16 mm layers, 0.20 mm first layer, six walls. Structural LM/UM: 100% infill. Wings: 10% gyroid. V4 tweeter modifier: 15% gyroid; caps/retainers: 15% gyroid. Regular crescent: its existing 30% policy.
+- PETG support bases with three dense, zero-gap PLA interface layers above and below. Caps have PLA directly beneath their ceilings; retainers print without supports.
+- Stock/Slim complete no-floor LM uses a 2 mm brim and no support; other parts use a 5 mm brim. The narrow brim needs an adhesion trial on the actual H2C plate.
+- Dedicated nozzles retain native H2C priming, retraction and standby programs. The P2S same-nozzle purge-volume workaround is not transferred to every H2C switch. Flushing into model, infill and supports is disabled.
+- V4 translucent body keeps Classic outer-first walls to reduce changes in surface texture around buried magnets.
+
+## Magnets and hardware
+
+Regular interfaces retain Ø5 × 2 mm N52 magnets. V4 UM/wing contacts retain Ø6 × 3 mm N45; V4 wings use the regular Ø5 × 2 mm magnets at their two LM contacts. A full regular wing has three magnets; a full V4 wing has four. All remain buried. Magnet pauses are recalculated from actual H2C extrusion and embedded in the projects.
+
+Retain existing driver, LM/UM, stand and wing hardware. V4 uses the project’s M3/Ø4.6 mm printed-bore convention for Hanglife M3 inserts, Ø5 mm outside × 4 mm long. The optional Tectonic BMR mounts retain their documented M2 hardware exception.
+
+## File list
+
+`.3mf` is the editable project with its geometry, settings and measured magnet pauses. `.gcode.3mf` contains the audited slice. STLs carry geometry only; importing an STL alone loses supports, infill modifiers and insertion pauses.
+
+| Family / part | Material lane | Infill | Magnets | Files | Status |
+|---|---|---|---:|---|---|
+| stock_lm_no_floor_stand | petg_gf_pla | 100% | 0 | [Project](stock/petg_gf_pla/h2c_stock_lm_no_floor_stand.3mf) · [Sliced](stock/petg_gf_pla/h2c_stock_lm_no_floor_stand.gcode.3mf) · [STL](STL/h2c_stock_lm_no_floor_stand.stl) · [Audit](../../build/h2c/jobs/h2c_stock_lm_no_floor_stand__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| stock_upper | petg_gf_pla | 100% | 4 | [Project](stock/petg_gf_pla/h2c_stock_upper.3mf) · [Sliced](stock/petg_gf_pla/h2c_stock_upper.gcode.3mf) · [STL](STL/h2c_stock_upper.stl) · [Audit](../../build/h2c/jobs/h2c_stock_upper__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| stock_upper_bmr (candidate) | petg_gf_pla | 100% | 4 | [Project](stock/petg_gf_pla/h2c_stock_upper_bmr.3mf) · [Sliced](stock/petg_gf_pla/h2c_stock_upper_bmr.gcode.3mf) · [STL](STL/h2c_stock_upper_bmr.stl) · [Audit](../../build/h2c/jobs/h2c_stock_upper_bmr__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| slim_lm_no_floor_stand | petg_gf_pla | 100% | 0 | [Project](slim/petg_gf_pla/h2c_slim_lm_no_floor_stand.3mf) · [Sliced](slim/petg_gf_pla/h2c_slim_lm_no_floor_stand.gcode.3mf) · [STL](STL/h2c_slim_lm_no_floor_stand.stl) · [Audit](../../build/h2c/jobs/h2c_slim_lm_no_floor_stand__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| slim_upper | petg_gf_pla | 100% | 4 | [Project](slim/petg_gf_pla/h2c_slim_upper.3mf) · [Sliced](slim/petg_gf_pla/h2c_slim_upper.gcode.3mf) · [STL](STL/h2c_slim_upper.stl) · [Audit](../../build/h2c/jobs/h2c_slim_upper__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| slim_upper_bmr (candidate) | petg_gf_pla | 100% | 4 | [Project](slim/petg_gf_pla/h2c_slim_upper_bmr.3mf) · [Sliced](slim/petg_gf_pla/h2c_slim_upper_bmr.gcode.3mf) · [STL](STL/h2c_slim_upper_bmr.stl) · [Audit](../../build/h2c/jobs/h2c_slim_upper_bmr__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| stock_05_A_shoulder_bottom_left_1_of_4 | petg_gf_pla | 10% | 1 | [Project](stock/petg_gf_pla/h2c_stock_05_A_shoulder_bottom_left_1_of_4.3mf) · [Sliced](stock/petg_gf_pla/h2c_stock_05_A_shoulder_bottom_left_1_of_4.gcode.3mf) · [STL](STL/h2c_stock_05_A_shoulder_bottom_left_1_of_4.stl) · [Audit](../../build/h2c/jobs/h2c_stock_05_A_shoulder_bottom_left_1_of_4__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| stock_06_A_shoulder_top_left_2_of_4 | petg_gf_pla | 10% | 1 | [Project](stock/petg_gf_pla/h2c_stock_06_A_shoulder_top_left_2_of_4.3mf) · [Sliced](stock/petg_gf_pla/h2c_stock_06_A_shoulder_top_left_2_of_4.gcode.3mf) · [STL](STL/h2c_stock_06_A_shoulder_top_left_2_of_4.stl) · [Audit](../../build/h2c/jobs/h2c_stock_06_A_shoulder_top_left_2_of_4__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| stock_07_A_shoulder_bottom_right_3_of_4 | petg_gf_pla | 10% | 1 | [Project](stock/petg_gf_pla/h2c_stock_07_A_shoulder_bottom_right_3_of_4.3mf) · [Sliced](stock/petg_gf_pla/h2c_stock_07_A_shoulder_bottom_right_3_of_4.gcode.3mf) · [STL](STL/h2c_stock_07_A_shoulder_bottom_right_3_of_4.stl) · [Audit](../../build/h2c/jobs/h2c_stock_07_A_shoulder_bottom_right_3_of_4__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| stock_08_A_shoulder_top_right_4_of_4 | petg_gf_pla | 10% | 1 | [Project](stock/petg_gf_pla/h2c_stock_08_A_shoulder_top_right_4_of_4.3mf) · [Sliced](stock/petg_gf_pla/h2c_stock_08_A_shoulder_top_right_4_of_4.gcode.3mf) · [STL](STL/h2c_stock_08_A_shoulder_top_right_4_of_4.stl) · [Audit](../../build/h2c/jobs/h2c_stock_08_A_shoulder_top_right_4_of_4__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| stock_09_B1_wing_left_1_of_2 | petg_gf_pla | 10% | 2 | [Project](stock/petg_gf_pla/h2c_stock_09_B1_wing_left_1_of_2.3mf) · [Sliced](stock/petg_gf_pla/h2c_stock_09_B1_wing_left_1_of_2.gcode.3mf) · [STL](STL/h2c_stock_09_B1_wing_left_1_of_2.stl) · [Audit](../../build/h2c/jobs/h2c_stock_09_B1_wing_left_1_of_2__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| stock_10_B1_wing_right_2_of_2 | petg_gf_pla | 10% | 2 | [Project](stock/petg_gf_pla/h2c_stock_10_B1_wing_right_2_of_2.3mf) · [Sliced](stock/petg_gf_pla/h2c_stock_10_B1_wing_right_2_of_2.gcode.3mf) · [STL](STL/h2c_stock_10_B1_wing_right_2_of_2.stl) · [Audit](../../build/h2c/jobs/h2c_stock_10_B1_wing_right_2_of_2__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| slim_05_A_shoulder_bottom_left_1_of_4 | petg_gf_pla | 10% | 1 | [Project](slim/petg_gf_pla/h2c_slim_05_A_shoulder_bottom_left_1_of_4.3mf) · [Sliced](slim/petg_gf_pla/h2c_slim_05_A_shoulder_bottom_left_1_of_4.gcode.3mf) · [STL](STL/h2c_slim_05_A_shoulder_bottom_left_1_of_4.stl) · [Audit](../../build/h2c/jobs/h2c_slim_05_A_shoulder_bottom_left_1_of_4__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| slim_06_A_shoulder_top_left_2_of_4 | petg_gf_pla | 10% | 1 | [Project](slim/petg_gf_pla/h2c_slim_06_A_shoulder_top_left_2_of_4.3mf) · [Sliced](slim/petg_gf_pla/h2c_slim_06_A_shoulder_top_left_2_of_4.gcode.3mf) · [STL](STL/h2c_slim_06_A_shoulder_top_left_2_of_4.stl) · [Audit](../../build/h2c/jobs/h2c_slim_06_A_shoulder_top_left_2_of_4__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| slim_07_A_shoulder_bottom_right_3_of_4 | petg_gf_pla | 10% | 1 | [Project](slim/petg_gf_pla/h2c_slim_07_A_shoulder_bottom_right_3_of_4.3mf) · [Sliced](slim/petg_gf_pla/h2c_slim_07_A_shoulder_bottom_right_3_of_4.gcode.3mf) · [STL](STL/h2c_slim_07_A_shoulder_bottom_right_3_of_4.stl) · [Audit](../../build/h2c/jobs/h2c_slim_07_A_shoulder_bottom_right_3_of_4__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| slim_08_A_shoulder_top_right_4_of_4 | petg_gf_pla | 10% | 1 | [Project](slim/petg_gf_pla/h2c_slim_08_A_shoulder_top_right_4_of_4.3mf) · [Sliced](slim/petg_gf_pla/h2c_slim_08_A_shoulder_top_right_4_of_4.gcode.3mf) · [STL](STL/h2c_slim_08_A_shoulder_top_right_4_of_4.stl) · [Audit](../../build/h2c/jobs/h2c_slim_08_A_shoulder_top_right_4_of_4__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| slim_09_B1_wing_left_1_of_2 | petg_gf_pla | 10% | 2 | [Project](slim/petg_gf_pla/h2c_slim_09_B1_wing_left_1_of_2.3mf) · [Sliced](slim/petg_gf_pla/h2c_slim_09_B1_wing_left_1_of_2.gcode.3mf) · [STL](STL/h2c_slim_09_B1_wing_left_1_of_2.stl) · [Audit](../../build/h2c/jobs/h2c_slim_09_B1_wing_left_1_of_2__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| slim_10_B1_wing_right_2_of_2 | petg_gf_pla | 10% | 2 | [Project](slim/petg_gf_pla/h2c_slim_10_B1_wing_right_2_of_2.3mf) · [Sliced](slim/petg_gf_pla/h2c_slim_10_B1_wing_right_2_of_2.gcode.3mf) · [STL](STL/h2c_slim_10_B1_wing_right_2_of_2.stl) · [Audit](../../build/h2c/jobs/h2c_slim_10_B1_wing_right_2_of_2__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| obiwan_core_lm_carrier_no_floor_stand | petg_gf_pla | 100% | 4 | [Project](obiwan/petg_gf_pla/h2c_obiwan_core_lm_carrier_no_floor_stand.3mf) · [Sliced](obiwan/petg_gf_pla/h2c_obiwan_core_lm_carrier_no_floor_stand.gcode.3mf) · [STL](STL/h2c_obiwan_core_lm_carrier_no_floor_stand.stl) · [Audit](../../build/h2c/jobs/h2c_obiwan_core_lm_carrier_no_floor_stand__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| obiwan_core_lm_carrier_floor_stand | petg_gf_pla | 100% | 4 | [Project](obiwan/petg_gf_pla/h2c_obiwan_core_lm_carrier_floor_stand.3mf) · [Sliced](obiwan/petg_gf_pla/h2c_obiwan_core_lm_carrier_floor_stand.gcode.3mf) · [STL](STL/h2c_obiwan_core_lm_carrier_floor_stand.stl) · [Audit](../../build/h2c/jobs/h2c_obiwan_core_lm_carrier_floor_stand__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| obiwan_core_2_of_2_um_carrier | petg_gf_pla | 100% | 2 | [Project](obiwan/petg_gf_pla/h2c_obiwan_core_2_of_2_um_carrier.3mf) · [Sliced](obiwan/petg_gf_pla/h2c_obiwan_core_2_of_2_um_carrier.gcode.3mf) · [STL](STL/h2c_obiwan_core_2_of_2_um_carrier.stl) · [Audit](../../build/h2c/jobs/h2c_obiwan_core_2_of_2_um_carrier__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| obiwan_addon_tweeter_crescent | petg_gf_pla | 30% | 0 | [Project](obiwan/petg_gf_pla/h2c_obiwan_addon_tweeter_crescent.3mf) · [Sliced](obiwan/petg_gf_pla/h2c_obiwan_addon_tweeter_crescent.gcode.3mf) · [STL](STL/h2c_obiwan_addon_tweeter_crescent.stl) · [Audit](../../build/h2c/jobs/h2c_obiwan_addon_tweeter_crescent__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| obiwan_addon_nl8_service_lid | petg_gf_pla | 100% | 0 | [Project](obiwan/petg_gf_pla/h2c_obiwan_addon_nl8_service_lid.3mf) · [Sliced](obiwan/petg_gf_pla/h2c_obiwan_addon_nl8_service_lid.gcode.3mf) · [STL](STL/h2c_obiwan_addon_nl8_service_lid.stl) · [Audit](../../build/h2c/jobs/h2c_obiwan_addon_nl8_service_lid__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| obiwan_wing_flat_left | petg_gf_pla | 10% | 3 | [Project](obiwan/petg_gf_pla/h2c_obiwan_wing_flat_left.3mf) · [Sliced](obiwan/petg_gf_pla/h2c_obiwan_wing_flat_left.gcode.3mf) · [STL](STL/h2c_obiwan_wing_flat_left.stl) · [Audit](../../build/h2c/jobs/h2c_obiwan_wing_flat_left__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| v4_wing_flat_left | petg_gf_pla | 10% | 4 | [Project](v4/petg_gf_pla/h2c_v4_wing_flat_left.3mf) · [Sliced](v4/petg_gf_pla/h2c_v4_wing_flat_left.gcode.3mf) · [STL](STL/h2c_v4_wing_flat_left.stl) · [Audit](../../build/h2c/jobs/h2c_v4_wing_flat_left__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| v4_wing_flat_left | petg_translucent_pla | 10% | 4 | [Project](v4/petg_translucent_pla/h2c_v4_wing_flat_left.3mf) · [Sliced](v4/petg_translucent_pla/h2c_v4_wing_flat_left.gcode.3mf) · [STL](STL/h2c_v4_wing_flat_left.stl) · [Audit](../../build/h2c/jobs/h2c_v4_wing_flat_left__petg_translucent_pla/audit.json) | Digital pass; physical trial pending |
+| obiwan_wing_flat_right | petg_gf_pla | 10% | 3 | [Project](obiwan/petg_gf_pla/h2c_obiwan_wing_flat_right.3mf) · [Sliced](obiwan/petg_gf_pla/h2c_obiwan_wing_flat_right.gcode.3mf) · [STL](STL/h2c_obiwan_wing_flat_right.stl) · [Audit](../../build/h2c/jobs/h2c_obiwan_wing_flat_right__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| v4_wing_flat_right | petg_gf_pla | 10% | 4 | [Project](v4/petg_gf_pla/h2c_v4_wing_flat_right.3mf) · [Sliced](v4/petg_gf_pla/h2c_v4_wing_flat_right.gcode.3mf) · [STL](STL/h2c_v4_wing_flat_right.stl) · [Audit](../../build/h2c/jobs/h2c_v4_wing_flat_right__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| v4_wing_flat_right | petg_translucent_pla | 10% | 4 | [Project](v4/petg_translucent_pla/h2c_v4_wing_flat_right.3mf) · [Sliced](v4/petg_translucent_pla/h2c_v4_wing_flat_right.gcode.3mf) · [STL](STL/h2c_v4_wing_flat_right.stl) · [Audit](../../build/h2c/jobs/h2c_v4_wing_flat_right__petg_translucent_pla/audit.json) | Digital pass; physical trial pending |
+| obiwan_wing_graded_left | petg_gf_pla | 10% | 3 | [Project](obiwan/petg_gf_pla/h2c_obiwan_wing_graded_left.3mf) · [Sliced](obiwan/petg_gf_pla/h2c_obiwan_wing_graded_left.gcode.3mf) · [STL](STL/h2c_obiwan_wing_graded_left.stl) · [Audit](../../build/h2c/jobs/h2c_obiwan_wing_graded_left__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| v4_wing_graded_left | petg_gf_pla | 10% | 4 | [Project](v4/petg_gf_pla/h2c_v4_wing_graded_left.3mf) · [Sliced](v4/petg_gf_pla/h2c_v4_wing_graded_left.gcode.3mf) · [STL](STL/h2c_v4_wing_graded_left.stl) · [Audit](../../build/h2c/jobs/h2c_v4_wing_graded_left__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| v4_wing_graded_left | petg_translucent_pla | 10% | 4 | [Project](v4/petg_translucent_pla/h2c_v4_wing_graded_left.3mf) · [Sliced](v4/petg_translucent_pla/h2c_v4_wing_graded_left.gcode.3mf) · [STL](STL/h2c_v4_wing_graded_left.stl) · [Audit](../../build/h2c/jobs/h2c_v4_wing_graded_left__petg_translucent_pla/audit.json) | Digital pass; physical trial pending |
+| obiwan_wing_graded_right | petg_gf_pla | 10% | 3 | [Project](obiwan/petg_gf_pla/h2c_obiwan_wing_graded_right.3mf) · [Sliced](obiwan/petg_gf_pla/h2c_obiwan_wing_graded_right.gcode.3mf) · [STL](STL/h2c_obiwan_wing_graded_right.stl) · [Audit](../../build/h2c/jobs/h2c_obiwan_wing_graded_right__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| v4_wing_graded_right | petg_gf_pla | 10% | 4 | [Project](v4/petg_gf_pla/h2c_v4_wing_graded_right.3mf) · [Sliced](v4/petg_gf_pla/h2c_v4_wing_graded_right.gcode.3mf) · [STL](STL/h2c_v4_wing_graded_right.stl) · [Audit](../../build/h2c/jobs/h2c_v4_wing_graded_right__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| v4_wing_graded_right | petg_translucent_pla | 10% | 4 | [Project](v4/petg_translucent_pla/h2c_v4_wing_graded_right.3mf) · [Sliced](v4/petg_translucent_pla/h2c_v4_wing_graded_right.gcode.3mf) · [STL](STL/h2c_v4_wing_graded_right.stl) · [Audit](../../build/h2c/jobs/h2c_v4_wing_graded_right__petg_translucent_pla/audit.json) | Digital pass; physical trial pending |
+| obiwan_bmr_crescent_TEBM35C10-4 (candidate) | petg_gf_pla | 30% | 2 | [Project](obiwan/petg_gf_pla/h2c_obiwan_bmr_crescent_TEBM35C10-4.3mf) · [Sliced](obiwan/petg_gf_pla/h2c_obiwan_bmr_crescent_TEBM35C10-4.gcode.3mf) · [STL](STL/h2c_obiwan_bmr_crescent_TEBM35C10-4.stl) · [Audit](../../build/h2c/jobs/h2c_obiwan_bmr_crescent_TEBM35C10-4__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| obiwan_bmr_crescent_opposed_TEBM35C10-4 (candidate) | petg_gf_pla | 30% | 4 | [Project](obiwan/petg_gf_pla/h2c_obiwan_bmr_crescent_opposed_TEBM35C10-4.3mf) · [Sliced](obiwan/petg_gf_pla/h2c_obiwan_bmr_crescent_opposed_TEBM35C10-4.gcode.3mf) · [STL](STL/h2c_obiwan_bmr_crescent_opposed_TEBM35C10-4.stl) · [Audit](../../build/h2c/jobs/h2c_obiwan_bmr_crescent_opposed_TEBM35C10-4__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| v4_body (candidate) | petg_gf_pla | 100% + 15% tweeter region | 4 | [Project](v4/petg_gf_pla/h2c_v4_body.3mf) · [Sliced](v4/petg_gf_pla/h2c_v4_body.gcode.3mf) · [STL](STL/v4/01_UM_Crescent_V4_PRINT.stl) · [Audit](../../build/h2c/jobs/h2c_v4_body__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| v4_body (candidate) | petg_translucent_pla | 100% + 15% tweeter region | 4 | [Project](v4/petg_translucent_pla/h2c_v4_body.3mf) · [Sliced](v4/petg_translucent_pla/h2c_v4_body.gcode.3mf) · [STL](STL/v4/01_UM_Crescent_V4_PRINT.stl) · [Audit](../../build/h2c/jobs/h2c_v4_body__petg_translucent_pla/audit.json) | Digital pass; physical trial pending |
+| v4_accessories (candidate) | petg_gf_pla | 15% | 0 | [Project](v4/petg_gf_pla/h2c_v4_accessories.3mf) · [Sliced](v4/petg_gf_pla/h2c_v4_accessories.gcode.3mf) · [02_Closed_Cap_PRINT_TWO](STL/v4/02_Closed_Cap_PRINT_TWO.stl) · [03_Tweeter_Retainer_PRINT_TWO](STL/v4/03_Tweeter_Retainer_PRINT_TWO.stl) · [Audit](../../build/h2c/jobs/h2c_v4_accessories__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| v4_accessories (candidate) | petg_translucent_pla | 15% | 0 | [Project](v4/petg_translucent_pla/h2c_v4_accessories.3mf) · [Sliced](v4/petg_translucent_pla/h2c_v4_accessories.gcode.3mf) · [02_Closed_Cap_PRINT_TWO](STL/v4/02_Closed_Cap_PRINT_TWO.stl) · [03_Tweeter_Retainer_PRINT_TWO](STL/v4/03_Tweeter_Retainer_PRINT_TWO.stl) · [Audit](../../build/h2c/jobs/h2c_v4_accessories__petg_translucent_pla/audit.json) | Digital pass; physical trial pending |
+| stock_lm_lower_floor_stand | petg_gf_pla | 100% | 0 | [Project](stock/petg_gf_pla/h2c_stock_lm_lower_floor_stand.3mf) · [Sliced](stock/petg_gf_pla/h2c_stock_lm_lower_floor_stand.gcode.3mf) · [STL](STL/h2c_stock_lm_lower_floor_stand.stl) · [Audit](../../build/h2c/jobs/h2c_stock_lm_lower_floor_stand__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| stock_lm_upper_floor_stand | petg_gf_pla | 100% | 0 | [Project](stock/petg_gf_pla/h2c_stock_lm_upper_floor_stand.3mf) · [Sliced](stock/petg_gf_pla/h2c_stock_lm_upper_floor_stand.gcode.3mf) · [STL](STL/h2c_stock_lm_upper_floor_stand.stl) · [Audit](../../build/h2c/jobs/h2c_stock_lm_upper_floor_stand__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| slim_lm_lower_floor_stand | petg_gf_pla | 100% | 0 | [Project](slim/petg_gf_pla/h2c_slim_lm_lower_floor_stand.3mf) · [Sliced](slim/petg_gf_pla/h2c_slim_lm_lower_floor_stand.gcode.3mf) · [STL](STL/h2c_slim_lm_lower_floor_stand.stl) · [Audit](../../build/h2c/jobs/h2c_slim_lm_lower_floor_stand__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| slim_lm_upper_floor_stand | petg_gf_pla | 100% | 0 | [Project](slim/petg_gf_pla/h2c_slim_lm_upper_floor_stand.3mf) · [Sliced](slim/petg_gf_pla/h2c_slim_lm_upper_floor_stand.gcode.3mf) · [STL](STL/h2c_slim_lm_upper_floor_stand.stl) · [Audit](../../build/h2c/jobs/h2c_slim_lm_upper_floor_stand__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+
+## Policy exceptions
+
+- Use dedicated left/right nozzles; old P2S AMS slot numbers are not nozzle assignments. Configure a model feed to the left and a PLA feed to the right before printing.
+- Retain native H2C retraction, temperature standby, nozzle changing, start/end and priming G-code. Transfer only explicit Tinmorry thermal/flow calibrations. Do not apply the P2S 560 mm3 same-nozzle purge to every dual-nozzle switch.
+- Both materials use a shared 70 C Engineering Plate with glue. No raft. This is the user's plate process and requires a first-print adhesion check, especially the 2 mm Stock/Slim brim.
+- Use three dense zero-gap PLA interface layers above and below support for H2C. Keep PETG as the support base. Disable flushing into model, infill and support.
+- V4 translucent body keeps Classic outer-first walls to reduce visible magnet-cover width changes. Other parts retain their existing wall policy.
+- The native H2C firmware programs and generated material/nozzle assignments must be checked from the actual slice; prepared projects alone are not print qualification.
+- Continuous V4 wings retain Arachne. Rotate right-hand wings 224 degrees in the print plane: the original 44-degree placement caused an early D6 loading-path intrusion. Recheck every D5/D6 site against the resulting toolpaths.
+- Expand regular cable/fastener support blockers by 0.8 mm along each print axis. Exact surface-only blockers allowed support in duct ceilings; the model geometry is unchanged. Approved V4 body/accessory blockers retain their own qualified dimensions.
+- Stock/Slim floor lower pieces extend the three cable-entry support keepouts through the rear service panel. This prevents supports for the panel from being routed down the cable entries. The small regions above those entries bridge; surrounding panel supports remain enabled.
+
+## Geometry review
+
+[Stock/Slim orthographic assembly sheet](../../build/h2c/views/primary_review_contact_sheet.png) · [V4 with continuous wings — front](../../build/h2c/views/H2C_V4_graded_front.png) · [V4 with continuous wings — rear](../../build/h2c/views/H2C_V4_flat_rear_oblique.png)
+
+The views use the actual exported parts in installed coordinates. Drivers and service caps are omitted. Native STEP assemblies and individual parts are in `../../build/h2c/review_models/` and `../../build/h2c/STEP/` from this guide. The installed CAD Viewer launcher was unavailable; these PNGs provide the checked visual review.
+
+[Native Stock/Slim joint checks](../../build/h2c/geometry_validation.json) · [Continuous Obiwan LM / regular UM / V4 interface checks](../../build/h2c/obiwan_interface_validation.json)
+
+## Verification and limits
+
+The audit checks sliced geometry and modifier identity, machine/material settings, actual nozzle assignments, deposition bounds including bead widths and arc extrema, support clearance, cap-ceiling coverage, captive-wall extrusion and insertion timing, plus static G-code validation. Native CAD checks cover the new Stock/Slim pin joint, solid interference and preserved driver openings.
+
+Passing those checks does not establish physical adhesion, magnet retention, loaded stand strength or acoustic performance. The first H2C build still needs the project’s hardware/material qualification. BMR and V4 retain their candidate status.
+
+## Rebuild
+
+```sh
+make                    # H2C geometry, projects, slicing, audit and generated guide
+make h2c_prepare        # prepare editable projects from existing authorities
+make h2c_validate       # slice/audit prepared projects; reuse hash-matched outputs
+make h2c_review         # regenerate native assembly and mesh review images
+make h2c_docs           # regenerate this guide
+make PRINTER=P2S all    # earlier printer pipeline
+```
+
+Policy sources: [H2C printer/material policy](../../print_policy_h2c.json) and [shared role/hardware policy](../../print_policy.json). The build does not connect to a printer.

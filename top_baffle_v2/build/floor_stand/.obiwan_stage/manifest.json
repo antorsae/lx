@@ -1,0 +1,167 @@
+{
+  "guard_policy": {
+    "aggregate_cgroup_max_mib": 524288,
+    "guard_slots": 12,
+    "max_process_tree_rss_mib": 28672,
+    "memory_profile": "osado-512g",
+    "min_immediately_reclaimable_mib": 65536,
+    "worker_launch_headroom_mib": 3200.0
+  },
+  "lm_cutter_group_count": 21,
+  "parts": {
+    "addon_nl8_service_lid": {
+      "bytes": 112925,
+      "label": "addon_nl8_service_lid",
+      "path": "addon_nl8_service_lid.brep",
+      "sha256": "66a51ef3f4e1c9a38487b2133b1e14ac573e26ae7ea61d0d3ce3024aa7d1aadc"
+    },
+    "addon_tweeter_crescent": {
+      "bytes": 1160306,
+      "label": "addon_tweeter_crescent",
+      "path": "addon_tweeter_crescent.brep",
+      "sha256": "93045ece7409ad7d53f6228d6593d47df5ee49b9dc28368dcf37a3c70d4b0f1d"
+    },
+    "core_lm_carrier": {
+      "bytes": 12663828,
+      "label": "core_lm_carrier",
+      "path": "core_lm_carrier.brep",
+      "sha256": "3b3704608aa8ebfda8c3cd85edd2e0191c81750067cfa3f4dda989a5d5069833"
+    },
+    "core_um_carrier": {
+      "bytes": 3535421,
+      "label": "core_um_carrier",
+      "path": "core_um_carrier.brep",
+      "sha256": "8761b874286d964840b1739d8cdbaa061c260bf737887499427684521c7c8e14"
+    },
+    "optional_lm_keyed_1_of_2_bottom": {
+      "bytes": 7994539,
+      "label": "optional_lm_keyed_1_of_2_bottom",
+      "path": "optional_lm_keyed_1_of_2_bottom.brep",
+      "sha256": "b2340b974986d462d37aa66c5e1ccb20fae8c71c130de8e20b1d4c361334ce0e"
+    },
+    "optional_lm_keyed_2_of_2_top": {
+      "bytes": 4795019,
+      "label": "optional_lm_keyed_2_of_2_top",
+      "path": "optional_lm_keyed_2_of_2_top.brep",
+      "sha256": "3ad0188daf7dc390a04cde5f4ebaed85da13cc2f2217b6b3153fcb03578cdd11"
+    }
+  },
+  "review_parts": {
+    "keep_clear_faston_boot_1": {
+      "bytes": 3200,
+      "label": "KEEP_CLEAR_faston_insulation_boot_1",
+      "path": "review_keep_clear_faston_boot_1.brep",
+      "sha256": "d8986d6c742a26d46e449bbb426376f8c7256fc74c02bbd7e76402ba4066abe6"
+    },
+    "keep_clear_faston_boot_2": {
+      "bytes": 3201,
+      "label": "KEEP_CLEAR_faston_insulation_boot_2",
+      "path": "review_keep_clear_faston_boot_2.brep",
+      "sha256": "b87e14f9336ee8b939fa88b31947a24ee0240f6f2ca37742479280daa9c08bf1"
+    },
+    "keep_clear_faston_pull_sweep_1": {
+      "bytes": 3201,
+      "label": "KEEP_CLEAR_faston_flag_pull_sweep_1_12mm",
+      "path": "review_keep_clear_faston_pull_sweep_1.brep",
+      "sha256": "24e9eb08d0bf1f84867c47526664eb2317bf5df7a796f8428d9120ae9d15bd48"
+    },
+    "keep_clear_faston_pull_sweep_2": {
+      "bytes": 3201,
+      "label": "KEEP_CLEAR_faston_flag_pull_sweep_2_12mm",
+      "path": "review_keep_clear_faston_pull_sweep_2.brep",
+      "sha256": "a1279e10a31e0ad17c924ef7ab1df4a421f9a068c008e98f8a6463acf6a7397b"
+    },
+    "keep_clear_removal_envelope": {
+      "bytes": 3201,
+      "label": "KEEP_CLEAR_Faston_outboard_removal_envelope",
+      "path": "review_keep_clear_removal_envelope.brep",
+      "sha256": "f71d27b70bc0f9ca689f56e3bfe59f20164ecc33c29fd5b9170d3598815556e7"
+    },
+    "reference_faston_receptacle_1": {
+      "bytes": 3201,
+      "label": "REFERENCE_faston_receptacle_1",
+      "path": "review_reference_faston_receptacle_1.brep",
+      "sha256": "6ba371e853ec062a0a9f6ae6fe857562e251643f7c5f232c5d9933f8c99bdbd6"
+    },
+    "reference_faston_receptacle_2": {
+      "bytes": 3201,
+      "label": "REFERENCE_faston_receptacle_2",
+      "path": "review_reference_faston_receptacle_2.brep",
+      "sha256": "55637e13095af6a7b4ccf094f88cb31190963715b94c9511f76548aea301a20d"
+    },
+    "reference_lm_cable": {
+      "bytes": 36593,
+      "label": "REFERENCE_LM_D7p8_short_free_span_no_micro_duct",
+      "path": "review_reference_lm_cable.brep",
+      "sha256": "2412129591b057b0634ba7caf42abcc5f67ca112f7d1670c697756659b38f35e"
+    },
+    "reference_mu10_body": {
+      "bytes": 48171,
+      "label": "REFERENCE_MU10_D98_D80_D60_BODY_TERMINALS_OMITTED_PHYSICAL_CHECK_REQUIRED",
+      "path": "review_reference_mu10_body.brep",
+      "sha256": "dc4aacd4080e566563404183edc1b2506fede79a5fe35c7f03a7af047382397a"
+    },
+    "reference_terminal_carrier": {
+      "bytes": 3151,
+      "label": "REFERENCE_terminal_carrier_proxy_clock_283deg",
+      "path": "review_reference_terminal_carrier.brep",
+      "sha256": "4c7c317da6a4351ec09248eff9f473c99ccf91ffcb224200efe205376200fe6d"
+    },
+    "reference_terminal_tab_1": {
+      "bytes": 3530,
+      "label": "REFERENCE_terminal_tab_1",
+      "path": "review_reference_terminal_tab_1.brep",
+      "sha256": "a83ee6a1638e05fcf49ad51e26d1d2ce8e1dd04c39c33f721520b76e18c15422"
+    },
+    "reference_terminal_tab_2": {
+      "bytes": 3530,
+      "label": "REFERENCE_terminal_tab_2",
+      "path": "review_reference_terminal_tab_2.brep",
+      "sha256": "636b837d6be370cbf4ec11df461c7f8750707ebaa65744c212b3a860ed5fc3e6"
+    },
+    "reference_ts_cable": {
+      "bytes": 9888143,
+      "label": "REFERENCE_TS_D5p2_LM_UM_printed_then_free_behind_tweeter",
+      "path": "review_reference_ts_cable.brep",
+      "sha256": "715991ed7c53021e8eddc97e8cff5ecb5af635b7e3dedffbfffa6ccc8f050fe4"
+    },
+    "reference_um_cable": {
+      "bytes": 23286626,
+      "label": "REFERENCE_UM_D7_LM_printed_cover_then_free_behind_UM_R15_R20_Faston_handoff",
+      "path": "review_reference_um_cable.brep",
+      "sha256": "dac52aed245e5231faac74f1aaba4e905ea9edfb83a059c7ed413d8ba7a782ce"
+    },
+    "reference_y_bundle": {
+      "bytes": 413109,
+      "label": "REFERENCE_obiwan_Y_breakout_bundle_heatshrink",
+      "path": "review_reference_y_bundle.brep",
+      "sha256": "df163d7e7ebc985a33a762d8705a117f77bddf57de1c697fb826f863abae3c4b"
+    },
+    "reference_y_terminal_lead_1": {
+      "bytes": 546457,
+      "label": "REFERENCE_obiwan_Y_breakout_terminal_lead_1_heatshrink",
+      "path": "review_reference_y_terminal_lead_1.brep",
+      "sha256": "3825d541ef4bcc0e7dc4be85e9d7936ef1cd90a313427e9761b7c01048f3ab57"
+    },
+    "reference_y_terminal_lead_2": {
+      "bytes": 323710,
+      "label": "REFERENCE_obiwan_Y_breakout_terminal_lead_2_heatshrink",
+      "path": "review_reference_y_terminal_lead_2.brep",
+      "sha256": "9a391faf18f9adfa166c779a0ef2973839c828d090522ba79d601eff85cdd3e4"
+    }
+  },
+  "routing_profile": "obiwan",
+  "runtime_identity": {
+    "packages": {
+      "build123d": "0.11.1",
+      "cadquery-ocp": "7.9.3.1.1",
+      "numpy": "2.4.6",
+      "shapely": "2.1.2"
+    },
+    "python": "3.12.12 (main, Dec  9 2025, 19:02:36) [Clang 21.1.4 ]"
+  },
+  "schema_version": 7,
+  "source_sha256": "11a2ad3c00a7866db6535a2c9ba8f317173e82620811bad0efebea02e84e5d3b",
+  "stand_foot": true,
+  "state": "floor_stand"
+}

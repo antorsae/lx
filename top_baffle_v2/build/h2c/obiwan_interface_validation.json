@@ -1,0 +1,197 @@
+{
+  "status": "pass",
+  "V4": {
+    "path": "candidates/nd25fn4_crescent/print/geometry/01_UM_Crescent_V4_PRINT.stl",
+    "sha256": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
+    "sidecar_sha256": "a3d732f8c0affa29b6f3a4c5012eb37ad675bf366972951d4daa950e655fd7da"
+  },
+  "regular_UM": {
+    "path": "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
+    "sha256": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
+    "sidecar_sha256": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23"
+  },
+  "source_sha256": "625e436822c440e65d17e47ec8f36f395c43ddce0e8d135d0198c8cf09090bc5",
+  "checks": [
+    {
+      "state": "no_floor_stand",
+      "LM": {
+        "path": "build/h2c/STL/h2c_obiwan_core_lm_carrier_no_floor_stand.stl",
+        "sha256": "44610f8a41ee7fa477082b8e046805dc1684fd61bad7ee986d2b3b5d64b53161",
+        "sidecar_sha256": "20d30e857d0e4caf3159e9f1a0de306bafb283a2fa61728b70eaea56d78d7286"
+      },
+      "V4_overlap_mm3": 0.0,
+      "regular_UM_overlap_mm3": 7.632783294297951e-17,
+      "receivers": [
+        {
+          "x_mm": -32.0,
+          "axis_error_mm": 5.492535244930126e-07,
+          "half_lap_gap_mm": 0.19999980463261124
+        },
+        {
+          "x_mm": 32.0,
+          "axis_error_mm": 9.073477973079447e-07,
+          "half_lap_gap_mm": 0.19999980463261124
+        }
+      ],
+      "V4_LM_front_occlusion_mm2": 0.0,
+      "seam_samples": [
+        {
+          "x_mm": -30.0,
+          "seam_gap_mm": 0.05479168523788758,
+          "front_face_step_mm": -4.814696872301738e-07
+        },
+        {
+          "x_mm": -25.0,
+          "seam_gap_mm": 0.05000162978410572,
+          "front_face_step_mm": -4.814696872301738e-07
+        },
+        {
+          "x_mm": -20.0,
+          "seam_gap_mm": 0.05000456261984709,
+          "front_face_step_mm": -4.814696872301738e-07
+        },
+        {
+          "x_mm": -15.0,
+          "seam_gap_mm": 0.04999758454420089,
+          "front_face_step_mm": -4.814696872301738e-07
+        },
+        {
+          "x_mm": -10.0,
+          "seam_gap_mm": 0.05000069237172511,
+          "front_face_step_mm": -4.814696872301738e-07
+        },
+        {
+          "x_mm": -5.0,
+          "seam_gap_mm": 0.04999253633917533,
+          "front_face_step_mm": -4.814696872301738e-07
+        },
+        {
+          "x_mm": 0.0,
+          "seam_gap_mm": 0.05000520117994256,
+          "front_face_step_mm": -4.814696872301738e-07
+        },
+        {
+          "x_mm": 5.0,
+          "seam_gap_mm": 0.05000351807808556,
+          "front_face_step_mm": -4.814696872301738e-07
+        },
+        {
+          "x_mm": 10.0,
+          "seam_gap_mm": 0.05000192320568431,
+          "front_face_step_mm": -4.814696872301738e-07
+        },
+        {
+          "x_mm": 15.0,
+          "seam_gap_mm": 0.050004503749903506,
+          "front_face_step_mm": -4.814696872301738e-07
+        },
+        {
+          "x_mm": 20.0,
+          "seam_gap_mm": 0.05000241972282993,
+          "front_face_step_mm": -4.814696872301738e-07
+        },
+        {
+          "x_mm": 25.0,
+          "seam_gap_mm": 0.04999133625335617,
+          "front_face_step_mm": -4.814696872301738e-07
+        },
+        {
+          "x_mm": 30.0,
+          "seam_gap_mm": 0.05478561706934215,
+          "front_face_step_mm": -4.814696872301738e-07
+        }
+      ]
+    },
+    {
+      "state": "floor_stand",
+      "LM": {
+        "path": "build/h2c/STL/h2c_obiwan_core_lm_carrier_floor_stand.stl",
+        "sha256": "6544be563cc0986339109c5e6bc11b6cd0c54cae709a092937ef3f83cf8d2873",
+        "sidecar_sha256": "ef1796aeec9676cb28bde6defcd29282f705790dabc820d49875df36465e00fa"
+      },
+      "V4_overlap_mm3": 0.0,
+      "regular_UM_overlap_mm3": 0.0,
+      "receivers": [
+        {
+          "x_mm": -32.0,
+          "axis_error_mm": 2.814299744596868e-07,
+          "half_lap_gap_mm": 0.19999980463257927
+        },
+        {
+          "x_mm": 32.0,
+          "axis_error_mm": 1.508000668974802e-06,
+          "half_lap_gap_mm": 0.19999980463257927
+        }
+      ],
+      "V4_LM_front_occlusion_mm2": 0.0,
+      "seam_samples": [
+        {
+          "x_mm": -30.0,
+          "seam_gap_mm": 0.054791659515103674,
+          "front_face_step_mm": -4.814697192045969e-07
+        },
+        {
+          "x_mm": -25.0,
+          "seam_gap_mm": 0.050004337080679306,
+          "front_face_step_mm": -4.814697192045969e-07
+        },
+        {
+          "x_mm": -20.0,
+          "seam_gap_mm": 0.05000104371629277,
+          "front_face_step_mm": -4.814697192045969e-07
+        },
+        {
+          "x_mm": -15.0,
+          "seam_gap_mm": 0.0500020963900738,
+          "front_face_step_mm": -4.814697192045969e-07
+        },
+        {
+          "x_mm": -10.0,
+          "seam_gap_mm": 0.05000496315665259,
+          "front_face_step_mm": -4.814697192045969e-07
+        },
+        {
+          "x_mm": -5.0,
+          "seam_gap_mm": 0.049996579480136916,
+          "front_face_step_mm": -4.814697192045969e-07
+        },
+        {
+          "x_mm": 0.0,
+          "seam_gap_mm": 0.05000235304424905,
+          "front_face_step_mm": -4.814697192045969e-07
+        },
+        {
+          "x_mm": 5.0,
+          "seam_gap_mm": 0.05000083792742771,
+          "front_face_step_mm": -4.814697192045969e-07
+        },
+        {
+          "x_mm": 10.0,
+          "seam_gap_mm": 0.049999378542906925,
+          "front_face_step_mm": -4.814697192045969e-07
+        },
+        {
+          "x_mm": 15.0,
+          "seam_gap_mm": 0.050007682538023346,
+          "front_face_step_mm": -4.814697192045969e-07
+        },
+        {
+          "x_mm": 20.0,
+          "seam_gap_mm": 0.050005371739359816,
+          "front_face_step_mm": -4.814697192045969e-07
+        },
+        {
+          "x_mm": 25.0,
+          "seam_gap_mm": 0.049994884612544865,
+          "front_face_step_mm": -4.814697192045969e-07
+        },
+        {
+          "x_mm": 30.0,
+          "seam_gap_mm": 0.05479294971217996,
+          "front_face_step_mm": -4.814697192045969e-07
+        }
+      ]
+    }
+  ],
+  "physical_fit": "hardware trial pending"
+}

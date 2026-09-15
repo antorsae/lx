@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_slim_lm_floor_stand",
+  "stl": "h2c_slim_lm_floor_stand.stl",
+  "stl_bytes": 9004084,
+  "stl_sha256": "b91f4b40f1a2099850027e53bda382ae72a3d5fc1d44821fe8dd23d1ea7675f4",
+  "source_stl": "build/h2c/STL/h2c_slim_lm_floor_stand.stl",
+  "source_sha256": "ebd27ff79e24487e9f8dbb98ff5430207667a79c1be477ca66bda769410ccec4",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      6.123233995736766e-17,
+      -1.0,
+      0.0,
+      315.9500121070312
+    ],
+    [
+      -1.0,
+      -6.123233995736766e-17,
+      0.0,
+      152.40100185312497
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000100000577
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": -90.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -315.9500121070312,
+    -152.40100185312497,
+    -18.300000100000577
+  ],
+  "stl_origin_translation_mm": [
+    315.9500121070312,
+    152.40100185312497,
+    18.300000100000577
+  ]
+}

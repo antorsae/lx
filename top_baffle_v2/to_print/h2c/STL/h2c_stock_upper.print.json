@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_stock_upper",
+  "stl": "h2c_stock_upper.stl",
+  "stl_bytes": 682084,
+  "stl_sha256": "e044eed4e0f7ccec54951c93fcce5b910b474ab7936cb8da8210749f7c51cab0",
+  "source_stl": "build/h2c/STL/h2c_stock_upper.stl",
+  "source_sha256": "705b5d7aa0fa95d52062219f2fd0330e0e284a41342abf7e85ea6ca003ce6992",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      60.654000100000005
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      453.4570001
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999984
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -60.654000100000005,
+    -453.4570001,
+    -18.300000099999984
+  ],
+  "stl_origin_translation_mm": [
+    60.654000100000005,
+    453.4570001,
+    18.300000099999984
+  ]
+}

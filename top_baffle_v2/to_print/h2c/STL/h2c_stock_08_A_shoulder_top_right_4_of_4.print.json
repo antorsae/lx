@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_stock_08_A_shoulder_top_right_4_of_4",
+  "stl": "h2c_stock_08_A_shoulder_top_right_4_of_4.stl",
+  "stl_bytes": 136284,
+  "stl_sha256": "59d9cc0a13fbf5cd48bf63716caddef9cb66f632f10e374426a22599da312d3a",
+  "source_stl": "build/no_floor_stand/stl/stock_shoulder_2_of_4_top_right.stl",
+  "source_sha256": "97d976c11078ed0a4e6e6f4f3862bbcd9042994b48a21ef5ee254f8f71fd838f",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      -10.080999899999998
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      453.45700010000036
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999956
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "pre_translation_bbox_min_mm": [
+    10.080999899999998,
+    -453.45700010000036,
+    -18.300000099999956
+  ],
+  "stl_origin_translation_mm": [
+    -10.080999899999998,
+    453.45700010000036,
+    18.300000099999956
+  ]
+}

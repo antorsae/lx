@@ -1,0 +1,78 @@
+{
+  "mesh": {
+    "collapsed_apex_facets_removed": 0,
+    "component_error": 0,
+    "component_signed_volumes": [
+      143233.49050481708,
+      -64.8829858359838,
+      -64.8830112235337,
+      -64.88304476672809,
+      -64.88307015430158
+    ],
+    "components": 5,
+    "degenerate": 0,
+    "disconnected_material_components": 0,
+    "duplicates": 0,
+    "negative_volume": 0,
+    "nested_void_components": 4,
+    "nonfinite": 0,
+    "nonnested_void_components": 0,
+    "open": 0,
+    "outer_components": 1,
+    "over_shared": 0,
+    "signed_volume": 142973.95839283665,
+    "triangles": 108312,
+    "winding": 0,
+    "zero_volume": 0,
+    "zero_volume_components": 0
+  },
+  "mesh_angular_tolerance": 0.08,
+  "mesh_tolerance_mm": 0.01,
+  "part": "h2c_slim_upper_bmr",
+  "pre_translation_bbox_min_mm": [
+    -60.654000100000005,
+    -524.731,
+    -18.300000099999984
+  ],
+  "print_orientation": "front_face_down",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      60.654000100000005
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      524.731
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999984
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "h2c_slim_upper_bmr.stl",
+  "stl_bytes": 5415684,
+  "stl_origin_translation_mm": [
+    60.654000100000005,
+    524.731,
+    18.300000099999984
+  ],
+  "stl_sha256": "d4d6f70edf569eb7c619369bacc32696d1134d0db2cb8da0d6f6e7a25bfa90c7",
+  "variant_export": "h2c"
+}

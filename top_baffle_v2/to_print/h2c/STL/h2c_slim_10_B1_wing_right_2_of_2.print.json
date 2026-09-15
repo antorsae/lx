@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_slim_10_B1_wing_right_2_of_2",
+  "stl": "h2c_slim_10_B1_wing_right_2_of_2.stl",
+  "stl_bytes": 183384,
+  "stl_sha256": "68f018fd78e37dd2b7c42577a0114845c121220e1e686ccfcf1310cf6887de1c",
+  "source_stl": "build/no_floor_stand/stl/slim_wing_2_of_2_right.stl",
+  "source_sha256": "52491d7e9e756a76699d176edd2f0303dbb2ab9a473b85f588fb0dee194d73e9",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      -10.080999899999998
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      432.8660001000001
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999956
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "pre_translation_bbox_min_mm": [
+    10.080999899999998,
+    -432.8660001000001,
+    -18.300000099999956
+  ],
+  "stl_origin_translation_mm": [
+    -10.080999899999998,
+    432.8660001000001,
+    18.300000099999956
+  ]
+}

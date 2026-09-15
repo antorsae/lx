@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_v4_wing_flat_right",
+  "stl": "h2c_v4_wing_flat_right.stl",
+  "stl_bytes": 3456584,
+  "stl_sha256": "5d6b9a86b162e64357906265d7dd5be9d86b963b2f12ba319c47f858b0d0c84e",
+  "source_stl": "build/h2c/STL/h2c_v4_wing_flat_right.stl",
+  "source_sha256": "24321523cda5fc2d3011df568a4b8b3905eca79609d77f7b22d44ee7e5fb29fb",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      0.7253743710122877,
+      0.6883545756937539,
+      0.0,
+      -75.75329042889867
+    ],
+    [
+      0.6883545756937539,
+      -0.7253743710122877,
+      0.0,
+      283.4603190483831
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.299999237060547
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 43.5
+  },
+  "pre_translation_bbox_min_mm": [
+    75.75329042889867,
+    -283.4603190483831,
+    -18.299999237060547
+  ],
+  "stl_origin_translation_mm": [
+    -75.75329042889867,
+    283.4603190483831,
+    18.299999237060547
+  ]
+}

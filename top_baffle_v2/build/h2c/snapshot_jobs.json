@@ -1,0 +1,166 @@
+{
+  "jobs": [
+    {
+      "input": "review_models/stock_no_floor_stand.py",
+      "mode": "view",
+      "outputs": [
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_no_floor_stand_iso.png",
+          "camera": "iso"
+        },
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_no_floor_stand_opposite.png",
+          "camera": {
+            "direction": [
+              -1,
+              1,
+              -0.8
+            ]
+          }
+        },
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_no_floor_stand_front.png",
+          "camera": "top"
+        },
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_no_floor_stand_edge.png",
+          "camera": "front"
+        }
+      ],
+      "render": {
+        "viewLabels": true,
+        "padding": 0.12,
+        "sizeProfile": "diagnostic"
+      }
+    },
+    {
+      "input": "review_models/stock_floor_stand.py",
+      "mode": "view",
+      "outputs": [
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_floor_stand_iso.png",
+          "camera": "iso"
+        },
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_floor_stand_opposite.png",
+          "camera": {
+            "direction": [
+              -1,
+              1,
+              -0.8
+            ]
+          }
+        },
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_floor_stand_front.png",
+          "camera": "top"
+        },
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_floor_stand_edge.png",
+          "camera": "front"
+        }
+      ],
+      "render": {
+        "viewLabels": true,
+        "padding": 0.12,
+        "sizeProfile": "diagnostic"
+      }
+    },
+    {
+      "input": "review_models/slim_no_floor_stand.py",
+      "mode": "view",
+      "outputs": [
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_no_floor_stand_iso.png",
+          "camera": "iso"
+        },
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_no_floor_stand_opposite.png",
+          "camera": {
+            "direction": [
+              -1,
+              1,
+              -0.8
+            ]
+          }
+        },
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_no_floor_stand_front.png",
+          "camera": "top"
+        },
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_no_floor_stand_edge.png",
+          "camera": "front"
+        }
+      ],
+      "render": {
+        "viewLabels": true,
+        "padding": 0.12,
+        "sizeProfile": "diagnostic"
+      }
+    },
+    {
+      "input": "review_models/slim_floor_stand.py",
+      "mode": "view",
+      "outputs": [
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_floor_stand_iso.png",
+          "camera": "iso"
+        },
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_floor_stand_opposite.png",
+          "camera": {
+            "direction": [
+              -1,
+              1,
+              -0.8
+            ]
+          }
+        },
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_floor_stand_front.png",
+          "camera": "top"
+        },
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_floor_stand_edge.png",
+          "camera": "front"
+        }
+      ],
+      "render": {
+        "viewLabels": true,
+        "padding": 0.12,
+        "sizeProfile": "diagnostic"
+      }
+    },
+    {
+      "input": "STEP/h2c_stock_upper_bmr.step",
+      "mode": "view",
+      "outputs": [
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/stock_upper_bmr.png",
+          "camera": "iso"
+        }
+      ],
+      "render": {
+        "viewLabels": true,
+        "padding": 0.12,
+        "sizeProfile": "diagnostic"
+      }
+    },
+    {
+      "input": "STEP/h2c_slim_upper_bmr.step",
+      "mode": "view",
+      "outputs": [
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/views/slim_upper_bmr.png",
+          "camera": "iso"
+        }
+      ],
+      "render": {
+        "viewLabels": true,
+        "padding": 0.12,
+        "sizeProfile": "diagnostic"
+      }
+    }
+  ]
+}

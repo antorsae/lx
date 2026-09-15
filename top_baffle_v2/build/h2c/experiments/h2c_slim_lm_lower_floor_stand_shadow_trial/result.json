@@ -1,0 +1,82 @@
+{
+    "error_string": "Success.",
+    "export_time": 5543,
+    "layer_height": 0.1599999964237213,
+    "plate_index": 1,
+    "prepare_time": 311,
+    "return_code": 0,
+    "sliced_plates": [
+        {
+            "feature_type_times": {
+                "Bottom surface": 185.3262939453125,
+                "Bridge": 247.4290771484375,
+                "Brim": 66.416015625,
+                "Custom": 303.62188720703125,
+                "Flush": 750.0,
+                "Gap infill": 9.971128463745117,
+                "Inner wall": 16413.3203125,
+                "Internal solid infill": 4913.337890625,
+                "Ironing": 1686.7587890625,
+                "Outer wall": 7609.48583984375,
+                "Prime tower": 5549.95654296875,
+                "Sparse infill": 21006.83984375,
+                "Support": 2879.022705078125,
+                "Support interface": 573.1317138671875,
+                "Support transition": 933.8360595703125,
+                "Top surface": 279.9104309082031,
+                "Travel": 6703.98828125,
+                "Undefined": 6702.43994140625
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFG98",
+                    "id": 1,
+                    "main_used_g": 552.2902221679688,
+                    "total_used_g": 606.9367065429688
+                },
+                {
+                    "filament_id": "GFA00",
+                    "id": 2,
+                    "main_used_g": 4.368683338165283,
+                    "total_used_g": 10.32523250579834
+                }
+            ],
+            "generate_support_material_time": 1564,
+            "id": 1,
+            "infill_time": 923,
+            "layer_filament_change": 0,
+            "main_predication": 63428.16796875,
+            "make_perimeters_time": 2053,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 215.13046264648438,
+                        "height": 168.3000030517578,
+                        "width": 165.53933715820313,
+                        "x": 92.23033142089844,
+                        "y": 52.43477249145508,
+                        "z": 0.0
+                    },
+                    "id": 5,
+                    "name": "h2c_slim_lm_lower_floor_stand",
+                    "triangle_count": 99814
+                }
+            ],
+            "sliced_time": 11673,
+            "sliced_time_with_cache": 6014,
+            "total_predication": 70045.1953125,
+            "triangle_count": 99814,
+            "warning_message": ""
+        }
+    ],
+    "sparse_infill_density": 100.0,
+    "upward_compatible_machine": [
+        "Bambu Lab H2S 0.6 nozzle",
+        "Bambu Lab H2D 0.6 nozzle",
+        "Bambu Lab H2D Pro 0.6 nozzle",
+        "Bambu Lab A2L 0.6 nozzle"
+    ],
+    "wall_loops": 6
+}

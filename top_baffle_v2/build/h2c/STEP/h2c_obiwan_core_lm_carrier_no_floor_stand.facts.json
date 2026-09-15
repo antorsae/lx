@@ -1,0 +1,56 @@
+{
+  "name": "h2c_obiwan_core_lm_carrier_no_floor_stand",
+  "source_files": {
+    "build/no_floor_stand/.obiwan_stage/manifest.json": "8d7e0ec2b0bba23326de277ca287c76a3a377b95a681926d9fc89f597bfe73a4",
+    "build/no_floor_stand/.obiwan_stage/core_lm_carrier.brep": "accc7effc64a917b36ef557c8739743c0163a5c1386f33b7b6118a5b2d6c14a3"
+  },
+  "step_sha256": "5f3a37b5909c4c0d00657aec323542d75ec1cd118dd2e23bd808e011977cc5f4",
+  "native_valid": true,
+  "native_solids": 1,
+  "native_volume_mm3": 137533.67105357716,
+  "installed_bounds_mm": [
+    [
+      -113.94000009999999,
+      -1e-07,
+      -5.340067696964395
+    ],
+    [
+      113.94000009999999,
+      320.6701021,
+      18.300000100000002
+    ]
+  ],
+  "stl_sha256": "44610f8a41ee7fa477082b8e046805dc1684fd61bad7ee986d2b3b5d64b53161",
+  "mesh": {
+    "triangles": 45122,
+    "open": 0,
+    "over_shared": 0,
+    "winding": 0,
+    "degenerate": 0,
+    "duplicates": 0,
+    "nonfinite": 0,
+    "signed_volume": 137522.13094848883,
+    "zero_volume": 0,
+    "negative_volume": 0,
+    "components": 5,
+    "outer_components": 1,
+    "nested_void_components": 4,
+    "nonnested_void_components": 0,
+    "zero_volume_components": 0,
+    "disconnected_material_components": 0,
+    "component_signed_volumes": [
+      137781.66305578477,
+      -64.88296617186845,
+      -64.88303822367118,
+      -64.88304306708544,
+      -64.88305983249852
+    ],
+    "component_error": 0,
+    "collapsed_apex_facets_removed": 2
+  },
+  "print_size_mm": [
+    230.80568113438892,
+    316.76768852626213,
+    23.640067796964395
+  ]
+}

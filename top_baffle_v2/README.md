@@ -1,23 +1,36 @@
 # LX521.4 top baffle — ND25FW-4 face-to-face mod (V2)
 
+**The current manufacturing target is the Bambu H2C with two 0.6 mm High
+Flow nozzles.** Start with the [H2C file guide](to_print/h2c/README.md) for
+STLs, editable projects, audited slices, materials and per-speaker quantities.
+`make` now builds the H2C shelf; `make PRINTER=P2S all` selects the earlier
+pipeline. The pre-migration project is preserved in commit `c261f32`.
+
+H2C uses one LM carrier for Obiwan and one full wing per side, including
+V4-matched wings. Stock/Slim use one complete LM without the stand, or two
+LM pieces with the stand, plus their matching upper module. Driver spacing
+and mounting seats remain unchanged. V4 has separate PETG-GF/PLA and
+PETG Translucent/PLA Translucent projects.
+
 Three printable top-baffle designs for an LX521.4 modification: Stock's
 full-depth outline, Slim's thinner acoustic field, and Obi-Wan's separate
 driver collars with optional wings. Choose one mounting state and one
 complete configuration per speaker.
 
-**Start with the [build guide](docs/BUILD_GUIDE.md)** for file selection,
-per-speaker/stereo quantities, hardware and assembly. The generated
+The earlier [P2S build guide](docs/BUILD_GUIDE.md) remains a hardware and
+assembly reference. Its generated P2S
 [file guide](to_print/FILE_GUIDE.md) lists all 42 choices and actual sliced
 job estimates. There are 68 sliced projects and 8 projects requiring GUI
 slicing across alternate nozzle/material lanes.
 
 The [complete parts and magnet catalog (PNG)](images/generated/catalog/ALL_ITEMS_MAGNET_CATALOG.png)
-shows all 78 current part variants, their buried magnet locations and types,
+shows the 78 pre-H2C part variants, their buried magnet locations and types,
 shared parts, alternate tweeters and separate test fixtures. The accompanying
 [file map](images/generated/catalog/README.md) identifies every source.
 
-For the 0.6 mm PETG-GF/PLA setup, use the generated [print and hardware
-policies](docs/PRINT_POLICIES.md): structural LM/UM infill is 100%, wings
+For H2C material mapping and process exceptions, use the generated
+[H2C file guide](to_print/h2c/README.md). The shared [print and hardware
+policies](docs/PRINT_POLICIES.md) retain the earlier printer details: structural LM/UM infill is 100%, wings
 are 10%, and the retained ND25FN V4 uses M3 fasteners. The [current update
 report](review/print_policy_update_20260912/SUMMARY.md) links the regenerated
 print files, support exceptions and D6 magnet test pair.
@@ -37,8 +50,9 @@ any CAD change.
 
 ![Stock, both stand states](images/generated/iso/rows/stock_row.png)
 
-Stock is the canonical product: the complete 18.3 mm outline printed as four
-registered pieces — [`docs/stock.md`](docs/stock.md).
+Stock is the canonical product: the complete 18.3 mm outline, with two core
+pieces on H2C without the stand or three with the stand. The earlier P2S
+split uses four — [`docs/stock.md`](docs/stock.md).
 
 ![Slim, both stand states](images/generated/iso/rows/slim_row.png)
 

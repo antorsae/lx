@@ -1,0 +1,119 @@
+{
+  "status": "pass",
+  "qualification": "digital; physical H2C qualification pending",
+  "project_sha256": "b8fbc475bc5553c0382d0e09e29cdeb8347ef94dfbbde9b5ebbb6da42cdcf307",
+  "sliced_project_sha256": "b8c258874d4b8b54bb6eaa95bac5a6ff5141c69343f0c21276b1d7dd5746d114",
+  "gcode_sha256": "fa30bd0b36b1194777c7ceb29166f768ddd79ca6a0cf2cd0de5d5ca381601b54",
+  "audit_version": 4,
+  "inputs": {
+    "build/floor_stand/stl/obiwan_addon_nl8_service_lid.stl": "a283e1574cb11c87ecf81c8f0cdaeee9486b7b07e6bb53a2a08a991872cf9abf",
+    "build/h2c/jobs/h2c_obiwan_addon_nl8_service_lid__petg_gf_pla/dry_run.json": "44daaf7a51e6084b0c62c20195a647c853f6696610f3ea9a8d813104238fce9c",
+    "build/h2c/jobs/h2c_obiwan_addon_nl8_service_lid__petg_gf_pla/process.json": "29f0a9eea0c6c9ea94673cbdc5149e9413d80f24e8a13483fc370e108193f904",
+    "build/h2c/profiles/petg_gf_pla/interface.json": "de9f413cd7e43e5bb30bb4b79cd48ed1b4680e9a0c27fae68042facf0f25cc1e",
+    "build/h2c/profiles/petg_gf_pla/machine.json": "488f1222c244471ec147ad2960b403a9cb8e07463473123575354cdd85719dbb",
+    "build/h2c/profiles/petg_gf_pla/model.json": "7204a547fddf4215cce3929c76208ff0fc2029447be43ce64f9a5f763c1e61bc",
+    "candidates/nd25fn4_crescent/audit_print.py": "c297b070b299b3ce910c9a543c909fe38a9c3e9bc5b2a705636d30338112d657",
+    "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
+    "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
+    "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
+    "print_policy_h2c.json": "c8cb56acd65cc809128815af74ed9e7e7c12c8b502b2ce48cb60b720e64fc2dc",
+    "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
+    "scripts/audit_h2c_print.py": "ae2eaff5b775b7d7ee4a2d97204c744d6e41046662ccd1977865108e9e64d0c4",
+    "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
+    "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
+    "to_print/h2c/STL/h2c_obiwan_addon_nl8_service_lid.stl": "719a842494a70a2318664db07f8f71ad4c87aefd7dbcdb8d16a9fb28da77007b",
+    "to_print/h2c/obiwan/petg_gf_pla/h2c_obiwan_addon_nl8_service_lid.3mf": "b8fbc475bc5553c0382d0e09e29cdeb8347ef94dfbbde9b5ebbb6da42cdcf307"
+  },
+  "deposition": {
+    "status": "pass",
+    "counts": {
+      "model": 6850
+    },
+    "deposition_bounds_mm": {
+      "0": [
+        [
+          152.912,
+          123.28999999999999,
+          0.2
+        ],
+        [
+          197.088,
+          196.704,
+          8.52
+        ]
+      ]
+    },
+    "interface_layers_mm": [],
+    "bed_temperatures_c": [
+      70.0
+    ],
+    "failures": []
+  },
+  "magnet_pauses_mm": [],
+  "magnet_discovery": [],
+  "retaining_walls": null,
+  "geometry": [
+    {
+      "source": "to_print/h2c/STL/h2c_obiwan_addon_nl8_service_lid.stl",
+      "sha256": "719a842494a70a2318664db07f8f71ad4c87aefd7dbcdb8d16a9fb28da77007b",
+      "subtype": "normal_part",
+      "triangles": 476,
+      "maximum_vertex_error_mm": 1.019384881660197e-06,
+      "winding_and_connectivity_match": true
+    }
+  ],
+  "supports": {},
+  "pause_program": [],
+  "static_validation": {
+    "errors": [],
+    "ok": true,
+    "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/jobs/h2c_obiwan_addon_nl8_service_lid__petg_gf_pla/plate_1.gcode",
+    "profile": {
+      "backend": "orcaslicer",
+      "bed_size_mm": [
+        330.0,
+        320.0
+      ],
+      "bed_temp_c": 70.0,
+      "filament_type": "PETG",
+      "machine_name": "Bambu Lab H2C 0.6 High Flow",
+      "motion_bounds_mm": {
+        "x": [
+          0.0,
+          330.0
+        ],
+        "y": [
+          -16.0,
+          320.0
+        ],
+        "z": [
+          0.0,
+          325.0
+        ]
+      },
+      "native_config": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/machine.json",
+      "native_filaments": [
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/model.json",
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/interface.json"
+      ],
+      "native_settings": [
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/machine.json",
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/jobs/h2c_obiwan_addon_nl8_service_lid__petg_gf_pla/process.json"
+      ],
+      "nozzle_temp_c": 260.0,
+      "z_height_mm": 325.0
+    },
+    "stats": {
+      "extrusion_moves": 7075,
+      "lines": 14951,
+      "movement_commands": 9489,
+      "non_comment_lines": 11522,
+      "temperature_commands": 22
+    },
+    "warnings": [
+      "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
+      "Unknown or unsupported commands were left unchanged: ========== line 1073, G150 line 913, G150.1 line 696, G150.2 line 898, G150.3 line 683, G151 line 738, G17 line 2289, G28.14 line 1065, G28.140 line 626, G29.1 line 622, G29.2 line 752, G29.20 line 954."
+    ]
+  }
+}

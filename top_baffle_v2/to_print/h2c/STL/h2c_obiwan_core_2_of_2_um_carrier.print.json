@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_obiwan_core_2_of_2_um_carrier",
+  "stl": "h2c_obiwan_core_2_of_2_um_carrier.stl",
+  "stl_bytes": 1371084,
+  "stl_sha256": "1ddbad69697aae7b6f705e919f852952e40051694abe1af2e546e9c1b8cf32db",
+  "source_stl": "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
+  "source_sha256": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      52.63996556208785
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      426.4000001
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999966
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -52.63996556208785,
+    -426.4000001,
+    -18.300000099999966
+  ],
+  "stl_origin_translation_mm": [
+    52.63996556208785,
+    426.4000001,
+    18.300000099999966
+  ]
+}

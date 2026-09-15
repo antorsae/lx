@@ -1,0 +1,2059 @@
+[
+  {
+    "name": "lm_lower_left",
+    "diameter_mm": 5.0,
+    "depth_mm": 2.0,
+    "center_bed_mm": [
+      195.1740728571851,
+      245.31022124302888,
+      3.200000099999995
+    ],
+    "pole_axis_bed": [
+      -0.08623267184322952,
+      0.9962750254356363,
+      0.0
+    ],
+    "approach_axis_bed": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "seated_top_z_mm": 5.700000099999995,
+    "seated_bottom_z_mm": 0.7000000999999934,
+    "source_site": "floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_1_of_2_bottom",
+    "site_registration_error_mm": 0.9483337386555174,
+    "first_obstructing_layer_z_mm": 5.96,
+    "last_open_layer_z_mm": 5.8,
+    "collision_witnesses": [
+      {
+        "line": 290016,
+        "feature": "Outer wall",
+        "intrusion_mm": 0.07067747589190154
+      },
+      {
+        "line": 290018,
+        "feature": "Outer wall",
+        "intrusion_mm": 0.06376449202808282
+      }
+    ],
+    "layer_records": [
+      {
+        "z": 0.84,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.0,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.16,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.32,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.48,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.64,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.8,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.96,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.12,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.28,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.44,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.6,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.76,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.92,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.08,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.24,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.4,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.56,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.72,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.88,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.04,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.2,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.36,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.52,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.68,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.84,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.0,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.16,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.32,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.48,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.64,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.8,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.96,
+        "intrusion_mm": 0.07067747589190154,
+        "count": 2
+      },
+      {
+        "z": 6.12,
+        "intrusion_mm": 0.16622886888817556,
+        "count": 34
+      },
+      {
+        "z": 6.28,
+        "intrusion_mm": 0.259998,
+        "count": 34
+      },
+      {
+        "z": 6.44,
+        "intrusion_mm": 0.259998,
+        "count": 35
+      },
+      {
+        "z": 6.6,
+        "intrusion_mm": 0.259998,
+        "count": 40
+      },
+      {
+        "z": 6.76,
+        "intrusion_mm": 0.27737248154546856,
+        "count": 41
+      },
+      {
+        "z": 6.92,
+        "intrusion_mm": 0.309998,
+        "count": 44
+      },
+      {
+        "z": 7.08,
+        "intrusion_mm": 0.309998,
+        "count": 42
+      },
+      {
+        "z": 7.24,
+        "intrusion_mm": 0.309998,
+        "count": 55
+      },
+      {
+        "z": 7.4,
+        "intrusion_mm": 0.309998,
+        "count": 64
+      },
+      {
+        "z": 7.56,
+        "intrusion_mm": 0.309998,
+        "count": 51
+      },
+      {
+        "z": 7.72,
+        "intrusion_mm": 0.309998,
+        "count": 73
+      },
+      {
+        "z": 7.88,
+        "intrusion_mm": 0.309998,
+        "count": 82
+      },
+      {
+        "z": 8.04,
+        "intrusion_mm": 0.309998,
+        "count": 77
+      },
+      {
+        "z": 8.2,
+        "intrusion_mm": 0.309998,
+        "count": 76
+      },
+      {
+        "z": 8.36,
+        "intrusion_mm": 0.309998,
+        "count": 67
+      },
+      {
+        "z": 8.52,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 8.68,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 8.84,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 9.0,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 9.16,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 9.32,
+        "intrusion_mm": 0.309998,
+        "count": 115
+      },
+      {
+        "z": 9.48,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 9.64,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 9.8,
+        "intrusion_mm": 0.309998,
+        "count": 115
+      },
+      {
+        "z": 9.96,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 10.12,
+        "intrusion_mm": 0.309998,
+        "count": 111
+      },
+      {
+        "z": 10.28,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 10.44,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 10.6,
+        "intrusion_mm": 0.309998,
+        "count": 114
+      },
+      {
+        "z": 10.76,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 10.92,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 11.08,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 11.24,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 11.4,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 11.56,
+        "intrusion_mm": 0.309998,
+        "count": 135
+      },
+      {
+        "z": 11.72,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 11.88,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 12.04,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 12.2,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 12.36,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 12.52,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 12.68,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 12.84,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 13.0,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 13.16,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 13.32,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 13.48,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 13.64,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 13.8,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 13.96,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 14.12,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 14.28,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 14.44,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 14.6,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 14.76,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 14.92,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 15.08,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 15.24,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 15.4,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 15.56,
+        "intrusion_mm": 0,
+        "count": 0
+      }
+    ],
+    "pause_before_z_mm": 5.96,
+    "magnet_below_resume_plane": true,
+    "opening_clear_through_prior_layers": true
+  },
+  {
+    "name": "lm_lower_right",
+    "diameter_mm": 5.0,
+    "depth_mm": 2.0,
+    "center_bed_mm": [
+      262.74721742289535,
+      188.6096205604524,
+      3.200000099999995
+    ],
+    "pole_axis_bed": [
+      0.9961135155023766,
+      0.08807873882780298,
+      0.0
+    ],
+    "approach_axis_bed": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "seated_top_z_mm": 5.700000099999995,
+    "seated_bottom_z_mm": 0.7000000999999934,
+    "source_site": "floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_1_of_2_bottom",
+    "site_registration_error_mm": 0.9483328293083161,
+    "first_obstructing_layer_z_mm": 5.96,
+    "last_open_layer_z_mm": 5.8,
+    "collision_witnesses": [
+      {
+        "line": 290393,
+        "feature": "Outer wall",
+        "intrusion_mm": 0.06088295106237018
+      }
+    ],
+    "layer_records": [
+      {
+        "z": 0.84,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.0,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.16,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.32,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.48,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.64,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.8,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.96,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.12,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.28,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.44,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.6,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.76,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.92,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.08,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.24,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.4,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.56,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.72,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.88,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.04,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.2,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.36,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.52,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.68,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.84,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.0,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.16,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.32,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.48,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.64,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.8,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.96,
+        "intrusion_mm": 0.06088295106237018,
+        "count": 1
+      },
+      {
+        "z": 6.12,
+        "intrusion_mm": 0.1665961397707581,
+        "count": 34
+      },
+      {
+        "z": 6.28,
+        "intrusion_mm": 0.259998,
+        "count": 34
+      },
+      {
+        "z": 6.44,
+        "intrusion_mm": 0.259998,
+        "count": 34
+      },
+      {
+        "z": 6.6,
+        "intrusion_mm": 0.259998,
+        "count": 40
+      },
+      {
+        "z": 6.76,
+        "intrusion_mm": 0.277523568489883,
+        "count": 42
+      },
+      {
+        "z": 6.92,
+        "intrusion_mm": 0.309983,
+        "count": 44
+      },
+      {
+        "z": 7.08,
+        "intrusion_mm": 0.309998,
+        "count": 53
+      },
+      {
+        "z": 7.24,
+        "intrusion_mm": 0.309998,
+        "count": 62
+      },
+      {
+        "z": 7.4,
+        "intrusion_mm": 0.309998,
+        "count": 66
+      },
+      {
+        "z": 7.56,
+        "intrusion_mm": 0.309998,
+        "count": 60
+      },
+      {
+        "z": 7.72,
+        "intrusion_mm": 0.309998,
+        "count": 69
+      },
+      {
+        "z": 7.88,
+        "intrusion_mm": 0.309998,
+        "count": 67
+      },
+      {
+        "z": 8.04,
+        "intrusion_mm": 0.309998,
+        "count": 74
+      },
+      {
+        "z": 8.2,
+        "intrusion_mm": 0.309998,
+        "count": 83
+      },
+      {
+        "z": 8.36,
+        "intrusion_mm": 0.309998,
+        "count": 91
+      },
+      {
+        "z": 8.52,
+        "intrusion_mm": 0.309998,
+        "count": 109
+      },
+      {
+        "z": 8.68,
+        "intrusion_mm": 0.309998,
+        "count": 115
+      },
+      {
+        "z": 8.84,
+        "intrusion_mm": 0.309998,
+        "count": 106
+      },
+      {
+        "z": 9.0,
+        "intrusion_mm": 0.309998,
+        "count": 104
+      },
+      {
+        "z": 9.16,
+        "intrusion_mm": 0.309998,
+        "count": 105
+      },
+      {
+        "z": 9.32,
+        "intrusion_mm": 0.309998,
+        "count": 111
+      },
+      {
+        "z": 9.48,
+        "intrusion_mm": 0.309998,
+        "count": 115
+      },
+      {
+        "z": 9.64,
+        "intrusion_mm": 0.309998,
+        "count": 115
+      },
+      {
+        "z": 9.8,
+        "intrusion_mm": 0.309998,
+        "count": 113
+      },
+      {
+        "z": 9.96,
+        "intrusion_mm": 0.309998,
+        "count": 114
+      },
+      {
+        "z": 10.12,
+        "intrusion_mm": 0.309998,
+        "count": 113
+      },
+      {
+        "z": 10.28,
+        "intrusion_mm": 0.309998,
+        "count": 104
+      },
+      {
+        "z": 10.44,
+        "intrusion_mm": 0.309998,
+        "count": 115
+      },
+      {
+        "z": 10.6,
+        "intrusion_mm": 0.309998,
+        "count": 111
+      },
+      {
+        "z": 10.76,
+        "intrusion_mm": 0.309998,
+        "count": 112
+      },
+      {
+        "z": 10.92,
+        "intrusion_mm": 0.309998,
+        "count": 104
+      },
+      {
+        "z": 11.08,
+        "intrusion_mm": 0.309998,
+        "count": 113
+      },
+      {
+        "z": 11.24,
+        "intrusion_mm": 0.309998,
+        "count": 115
+      },
+      {
+        "z": 11.4,
+        "intrusion_mm": 0.309998,
+        "count": 114
+      },
+      {
+        "z": 11.56,
+        "intrusion_mm": 0.309998,
+        "count": 152
+      },
+      {
+        "z": 11.72,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 11.88,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 12.04,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 12.2,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 12.36,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 12.52,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 12.68,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 12.84,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 13.0,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 13.16,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 13.32,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 13.48,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 13.64,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 13.8,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 13.96,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 14.12,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 14.28,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 14.44,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 14.6,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 14.76,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 14.92,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 15.08,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 15.24,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 15.4,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 15.56,
+        "intrusion_mm": 0,
+        "count": 0
+      }
+    ],
+    "pause_before_z_mm": 5.96,
+    "magnet_below_resume_plane": true,
+    "opening_clear_through_prior_layers": true
+  },
+  {
+    "name": "lm_upper_left",
+    "diameter_mm": 5.0,
+    "depth_mm": 2.0,
+    "center_bed_mm": [
+      55.29901516247114,
+      86.56444234208847,
+      3.200000099999995
+    ],
+    "pole_axis_bed": [
+      -0.9135454576426012,
+      -0.40673664307580026,
+      0.0
+    ],
+    "approach_axis_bed": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "seated_top_z_mm": 5.700000099999995,
+    "seated_bottom_z_mm": 0.7000000999999934,
+    "source_site": "floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_2_of_2_top",
+    "site_registration_error_mm": 0.9483328996981888,
+    "first_obstructing_layer_z_mm": 6.12,
+    "last_open_layer_z_mm": 5.96,
+    "collision_witnesses": [
+      {
+        "line": 303771,
+        "feature": "Outer wall",
+        "intrusion_mm": 0.0859247795173056
+      },
+      {
+        "line": 303773,
+        "feature": "Outer wall",
+        "intrusion_mm": 0.11888257269608843
+      },
+      {
+        "line": 303775,
+        "feature": "Outer wall",
+        "intrusion_mm": 0.13264476498671238
+      },
+      {
+        "line": 303777,
+        "feature": "Outer wall",
+        "intrusion_mm": 0.13922907593206016
+      },
+      {
+        "line": 303779,
+        "feature": "Outer wall",
+        "intrusion_mm": 0.13963111141728415
+      }
+    ],
+    "layer_records": [
+      {
+        "z": 0.84,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.0,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.16,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.32,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.48,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.64,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.8,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.96,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.12,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.28,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.44,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.6,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.76,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.92,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.08,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.24,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.4,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.56,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.72,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.88,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.04,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.2,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.36,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.52,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.68,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.84,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.0,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.16,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.32,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.48,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.64,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.8,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.96,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 6.12,
+        "intrusion_mm": 0.16047735160232984,
+        "count": 35
+      },
+      {
+        "z": 6.28,
+        "intrusion_mm": 0.261133,
+        "count": 27
+      },
+      {
+        "z": 6.44,
+        "intrusion_mm": 0.261828,
+        "count": 33
+      },
+      {
+        "z": 6.6,
+        "intrusion_mm": 0.261678,
+        "count": 39
+      },
+      {
+        "z": 6.76,
+        "intrusion_mm": 0.27737187841011424,
+        "count": 42
+      },
+      {
+        "z": 6.92,
+        "intrusion_mm": 0.309998,
+        "count": 44
+      },
+      {
+        "z": 7.08,
+        "intrusion_mm": 0.309998,
+        "count": 47
+      },
+      {
+        "z": 7.24,
+        "intrusion_mm": 0.309998,
+        "count": 62
+      },
+      {
+        "z": 7.4,
+        "intrusion_mm": 0.309998,
+        "count": 53
+      },
+      {
+        "z": 7.56,
+        "intrusion_mm": 0.309998,
+        "count": 55
+      },
+      {
+        "z": 7.72,
+        "intrusion_mm": 0.309998,
+        "count": 63
+      },
+      {
+        "z": 7.88,
+        "intrusion_mm": 0.309998,
+        "count": 65
+      },
+      {
+        "z": 8.04,
+        "intrusion_mm": 0.309998,
+        "count": 63
+      },
+      {
+        "z": 8.2,
+        "intrusion_mm": 0.309998,
+        "count": 67
+      },
+      {
+        "z": 8.36,
+        "intrusion_mm": 0.309998,
+        "count": 51
+      },
+      {
+        "z": 8.52,
+        "intrusion_mm": 0.309998,
+        "count": 118
+      },
+      {
+        "z": 8.68,
+        "intrusion_mm": 0.309998,
+        "count": 117
+      },
+      {
+        "z": 8.84,
+        "intrusion_mm": 0.309998,
+        "count": 115
+      },
+      {
+        "z": 9.0,
+        "intrusion_mm": 0.309998,
+        "count": 118
+      },
+      {
+        "z": 9.16,
+        "intrusion_mm": 0.309998,
+        "count": 119
+      },
+      {
+        "z": 9.32,
+        "intrusion_mm": 0.309998,
+        "count": 108
+      },
+      {
+        "z": 9.48,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 9.64,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 9.8,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 9.96,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 10.12,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 10.28,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 10.44,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 10.6,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 10.76,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 10.92,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 11.08,
+        "intrusion_mm": 0.309998,
+        "count": 10
+      },
+      {
+        "z": 11.24,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 11.4,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 11.56,
+        "intrusion_mm": 0.309998,
+        "count": 31
+      },
+      {
+        "z": 11.72,
+        "intrusion_mm": 0.309998,
+        "count": 10
+      },
+      {
+        "z": 11.88,
+        "intrusion_mm": 0.309998,
+        "count": 10
+      },
+      {
+        "z": 12.04,
+        "intrusion_mm": 0.309998,
+        "count": 10
+      },
+      {
+        "z": 12.2,
+        "intrusion_mm": 0.309998,
+        "count": 10
+      },
+      {
+        "z": 12.36,
+        "intrusion_mm": 0.309998,
+        "count": 10
+      },
+      {
+        "z": 12.52,
+        "intrusion_mm": 0.309998,
+        "count": 10
+      },
+      {
+        "z": 12.68,
+        "intrusion_mm": 0.309998,
+        "count": 10
+      },
+      {
+        "z": 12.84,
+        "intrusion_mm": 0.309998,
+        "count": 12
+      },
+      {
+        "z": 13.0,
+        "intrusion_mm": 0.309998,
+        "count": 12
+      },
+      {
+        "z": 13.16,
+        "intrusion_mm": 0.309998,
+        "count": 26
+      },
+      {
+        "z": 13.32,
+        "intrusion_mm": 0.309998,
+        "count": 16
+      },
+      {
+        "z": 13.48,
+        "intrusion_mm": 0.309998,
+        "count": 27
+      },
+      {
+        "z": 13.64,
+        "intrusion_mm": 0.309998,
+        "count": 30
+      },
+      {
+        "z": 13.8,
+        "intrusion_mm": 0.309998,
+        "count": 31
+      },
+      {
+        "z": 13.96,
+        "intrusion_mm": 0.309998,
+        "count": 34
+      },
+      {
+        "z": 14.12,
+        "intrusion_mm": 0.309998,
+        "count": 38
+      },
+      {
+        "z": 14.28,
+        "intrusion_mm": 0.381908,
+        "count": 43
+      },
+      {
+        "z": 14.44,
+        "intrusion_mm": 0.54176,
+        "count": 36
+      },
+      {
+        "z": 14.6,
+        "intrusion_mm": 0.396148,
+        "count": 31
+      },
+      {
+        "z": 14.76,
+        "intrusion_mm": 0.389855,
+        "count": 38
+      },
+      {
+        "z": 14.92,
+        "intrusion_mm": 0.355048,
+        "count": 45
+      },
+      {
+        "z": 15.08,
+        "intrusion_mm": 0.56243,
+        "count": 49
+      },
+      {
+        "z": 15.24,
+        "intrusion_mm": 0.489038,
+        "count": 42
+      },
+      {
+        "z": 15.4,
+        "intrusion_mm": 0.413673,
+        "count": 29
+      },
+      {
+        "z": 15.56,
+        "intrusion_mm": 0.379103,
+        "count": 23
+      }
+    ],
+    "pause_before_z_mm": 6.12,
+    "magnet_below_resume_plane": true,
+    "opening_clear_through_prior_layers": true
+  },
+  {
+    "name": "lm_upper_right",
+    "diameter_mm": 5.0,
+    "depth_mm": 2.0,
+    "center_bed_mm": [
+      130.70219247303126,
+      23.293664071202436,
+      3.200000099999995
+    ],
+    "pole_axis_bed": [
+      -0.2419218955996677,
+      -0.9702957262759967,
+      0.0
+    ],
+    "approach_axis_bed": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "seated_top_z_mm": 5.700000099999995,
+    "seated_bottom_z_mm": 0.7000000999999934,
+    "source_site": "floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_2_of_2_top",
+    "site_registration_error_mm": 0.9483320684926566,
+    "first_obstructing_layer_z_mm": 6.12,
+    "last_open_layer_z_mm": 5.96,
+    "collision_witnesses": [
+      {
+        "line": 303273,
+        "feature": "Outer wall",
+        "intrusion_mm": 0.129017191010556
+      },
+      {
+        "line": 303274,
+        "feature": "Outer wall",
+        "intrusion_mm": 0.1404414819071662
+      },
+      {
+        "line": 303275,
+        "feature": "Outer wall",
+        "intrusion_mm": 0.1404414819071662
+      },
+      {
+        "line": 303277,
+        "feature": "Outer wall",
+        "intrusion_mm": 0.13994001659383135
+      },
+      {
+        "line": 303281,
+        "feature": "Outer wall",
+        "intrusion_mm": 0.14014930358901545
+      }
+    ],
+    "layer_records": [
+      {
+        "z": 0.84,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.0,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.16,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.32,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.48,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.64,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.8,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 1.96,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.12,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.28,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.44,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.6,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.76,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 2.92,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.08,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.24,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.4,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.56,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.72,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 3.88,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.04,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.2,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.36,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.52,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.68,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 4.84,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.0,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.16,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.32,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.48,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.64,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.8,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 5.96,
+        "intrusion_mm": 0,
+        "count": 0
+      },
+      {
+        "z": 6.12,
+        "intrusion_mm": 0.15574563395982535,
+        "count": 35
+      },
+      {
+        "z": 6.28,
+        "intrusion_mm": 0.261993,
+        "count": 33
+      },
+      {
+        "z": 6.44,
+        "intrusion_mm": 0.261853,
+        "count": 34
+      },
+      {
+        "z": 6.6,
+        "intrusion_mm": 0.261703,
+        "count": 39
+      },
+      {
+        "z": 6.76,
+        "intrusion_mm": 0.2774948114460003,
+        "count": 42
+      },
+      {
+        "z": 6.92,
+        "intrusion_mm": 0.309983,
+        "count": 43
+      },
+      {
+        "z": 7.08,
+        "intrusion_mm": 0.309998,
+        "count": 43
+      },
+      {
+        "z": 7.24,
+        "intrusion_mm": 0.309998,
+        "count": 52
+      },
+      {
+        "z": 7.4,
+        "intrusion_mm": 0.309998,
+        "count": 53
+      },
+      {
+        "z": 7.56,
+        "intrusion_mm": 0.309998,
+        "count": 59
+      },
+      {
+        "z": 7.72,
+        "intrusion_mm": 0.309998,
+        "count": 64
+      },
+      {
+        "z": 7.88,
+        "intrusion_mm": 0.309998,
+        "count": 67
+      },
+      {
+        "z": 8.04,
+        "intrusion_mm": 0.309998,
+        "count": 63
+      },
+      {
+        "z": 8.2,
+        "intrusion_mm": 0.309998,
+        "count": 68
+      },
+      {
+        "z": 8.36,
+        "intrusion_mm": 0.309998,
+        "count": 58
+      },
+      {
+        "z": 8.52,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 8.68,
+        "intrusion_mm": 0.309998,
+        "count": 117
+      },
+      {
+        "z": 8.84,
+        "intrusion_mm": 0.309998,
+        "count": 117
+      },
+      {
+        "z": 9.0,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 9.16,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 9.32,
+        "intrusion_mm": 0.309998,
+        "count": 116
+      },
+      {
+        "z": 9.48,
+        "intrusion_mm": 0.309998,
+        "count": 20
+      },
+      {
+        "z": 9.64,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 9.8,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 9.96,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 10.12,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 10.28,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 10.44,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 10.6,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 10.76,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 10.92,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 11.08,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 11.24,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 11.4,
+        "intrusion_mm": 0.309998,
+        "count": 8
+      },
+      {
+        "z": 11.56,
+        "intrusion_mm": 0.309998,
+        "count": 30
+      },
+      {
+        "z": 11.72,
+        "intrusion_mm": 0.309998,
+        "count": 96
+      },
+      {
+        "z": 11.88,
+        "intrusion_mm": 0.309998,
+        "count": 98
+      },
+      {
+        "z": 12.04,
+        "intrusion_mm": 0.309998,
+        "count": 98
+      },
+      {
+        "z": 12.2,
+        "intrusion_mm": 0.309998,
+        "count": 98
+      },
+      {
+        "z": 12.36,
+        "intrusion_mm": 0.309998,
+        "count": 96
+      },
+      {
+        "z": 12.52,
+        "intrusion_mm": 0.309998,
+        "count": 96
+      },
+      {
+        "z": 12.68,
+        "intrusion_mm": 0.309998,
+        "count": 96
+      },
+      {
+        "z": 12.84,
+        "intrusion_mm": 0.309998,
+        "count": 96
+      },
+      {
+        "z": 13.0,
+        "intrusion_mm": 0.309998,
+        "count": 96
+      },
+      {
+        "z": 13.16,
+        "intrusion_mm": 0.309998,
+        "count": 96
+      },
+      {
+        "z": 13.32,
+        "intrusion_mm": 0.309998,
+        "count": 96
+      },
+      {
+        "z": 13.48,
+        "intrusion_mm": 0.309998,
+        "count": 98
+      },
+      {
+        "z": 13.64,
+        "intrusion_mm": 0.309998,
+        "count": 96
+      },
+      {
+        "z": 13.8,
+        "intrusion_mm": 0.309998,
+        "count": 96
+      },
+      {
+        "z": 13.96,
+        "intrusion_mm": 0.309998,
+        "count": 96
+      },
+      {
+        "z": 14.12,
+        "intrusion_mm": 0.309998,
+        "count": 91
+      },
+      {
+        "z": 14.28,
+        "intrusion_mm": 0.309998,
+        "count": 76
+      },
+      {
+        "z": 14.44,
+        "intrusion_mm": 0.309998,
+        "count": 96
+      },
+      {
+        "z": 14.6,
+        "intrusion_mm": 0.309998,
+        "count": 73
+      },
+      {
+        "z": 14.76,
+        "intrusion_mm": 0.42385253421898966,
+        "count": 76
+      },
+      {
+        "z": 14.92,
+        "intrusion_mm": 0.498598,
+        "count": 48
+      },
+      {
+        "z": 15.08,
+        "intrusion_mm": 0.4892832569021095,
+        "count": 81
+      },
+      {
+        "z": 15.24,
+        "intrusion_mm": 0.59414,
+        "count": 59
+      },
+      {
+        "z": 15.4,
+        "intrusion_mm": 0.452068,
+        "count": 51
+      },
+      {
+        "z": 15.56,
+        "intrusion_mm": 0.487488,
+        "count": 31
+      }
+    ],
+    "pause_before_z_mm": 6.12,
+    "magnet_below_resume_plane": true,
+    "opening_clear_through_prior_layers": true
+  }
+]

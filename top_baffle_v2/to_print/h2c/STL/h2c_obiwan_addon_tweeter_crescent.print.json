@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_obiwan_addon_tweeter_crescent",
+  "stl": "h2c_obiwan_addon_tweeter_crescent.stl",
+  "stl_bytes": 438484,
+  "stl_sha256": "4aa5ffcf66543ba9339d000b0a5cba929ac1b7856e41148b90599f14623f49d1",
+  "source_stl": "build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.stl",
+  "source_sha256": "9d0dcf380b97860f647a9577b4096f3add46dcb127c246be4a0a974bc64fb6a3",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      49.16100010000001
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      453.4570001
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999952
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -49.16100010000001,
+    -453.4570001,
+    -18.300000099999952
+  ],
+  "stl_origin_translation_mm": [
+    49.16100010000001,
+    453.4570001,
+    18.300000099999952
+  ]
+}

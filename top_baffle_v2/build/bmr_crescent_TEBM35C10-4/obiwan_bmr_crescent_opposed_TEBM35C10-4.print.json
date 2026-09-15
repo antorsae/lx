@@ -1,0 +1,81 @@
+{
+  "mesh": {
+    "brep_volume_abs_error_mm3": 3.179632793413475,
+    "brep_volume_relative_error": 3.8464150923012446e-05,
+    "collapsed_apex_facets_removed": 0,
+    "component_error": 0,
+    "component_signed_volumes": [
+      82921.19015217497,
+      -64.882985835983,
+      -64.883011223534,
+      -64.88303003404172,
+      -64.88305542160916
+    ],
+    "components": 5,
+    "degenerate": 0,
+    "disconnected_material_components": 0,
+    "duplicates": 0,
+    "negative_volume": 0,
+    "nested_void_components": 4,
+    "nonfinite": 0,
+    "nonnested_void_components": 0,
+    "open": 0,
+    "outer_components": 1,
+    "over_shared": 0,
+    "signed_volume": 82661.65806965942,
+    "transform_zero_coordinates_canonicalized": 9195,
+    "triangles": 14194,
+    "winding": 0,
+    "zero_volume": 0,
+    "zero_volume_components": 0
+  },
+  "mesh_angular_tolerance": 0.08,
+  "mesh_tolerance_mm": 0.01,
+  "part": "obiwan_bmr_crescent_opposed_TEBM35C10-4",
+  "pre_translation_bbox_min_mm": [
+    -31.3266659575,
+    -533.294193004,
+    -18.30000009999995
+  ],
+  "print_orientation": "front_face_down",
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "schema_version": 1,
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      31.3266659575
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      533.294193004
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.30000009999995
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "stl": "obiwan_bmr_crescent_opposed_TEBM35C10-4.stl",
+  "stl_bytes": 709784,
+  "stl_origin_translation_mm": [
+    31.3266659575,
+    533.294193004,
+    18.30000009999995
+  ],
+  "stl_sha256": "617bafd03e36d0db1e2f905303b45b3f16615ea16e075ddcb8dc4d40aed5ae65",
+  "variant_export": "Obiwan-TEBM35C10-4-BMR-crescent-opposed"
+}
