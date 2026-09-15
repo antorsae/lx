@@ -1,0 +1,203 @@
+{
+  "project_sha256": "d77c7049090661534730eae6b55d08dc9b8773354a494658fe9cd6cbc79126b3",
+  "settings": {
+    "printer_model": "Bambu Lab P2S",
+    "nozzle_diameter": [
+      "0.6"
+    ],
+    "nozzle_volume_type": [
+      "High Flow"
+    ],
+    "filament_settings_id": [
+      "TINMORRY PETG-GF Profile @BBL P2S",
+      "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+    ],
+    "filament_map": [
+      "1",
+      "1"
+    ],
+    "layer_height": "0.16",
+    "initial_layer_print_height": "0.2",
+    "wall_loops": "6",
+    "sparse_infill_density": "15%",
+    "sparse_infill_pattern": "gyroid",
+    "top_shell_layers": "10",
+    "bottom_shell_layers": "5",
+    "ironing_type": "top",
+    "nozzle_temperature": [
+      "260",
+      "260",
+      "220",
+      "220"
+    ],
+    "filament_flow_ratio": [
+      "0.93",
+      "0.93",
+      "0.98",
+      "0.98"
+    ],
+    "filament_max_volumetric_speed": [
+      "12",
+      "12",
+      "21",
+      "40"
+    ],
+    "textured_plate_temp": [
+      "80",
+      "55"
+    ],
+    "curr_bed_type": "Textured PEI Plate",
+    "enable_support": "0",
+    "support_type": "normal(auto)",
+    "support_style": "snug",
+    "support_filament": "1",
+    "support_interface_filament": "2",
+    "support_top_z_distance": "0",
+    "support_interface_spacing": "0",
+    "support_interface_top_layers": "3",
+    "support_interface_bottom_layers": "3",
+    "support_object_xy_distance": "0.7",
+    "flush_volumes_matrix": [
+      "0",
+      "280",
+      "280",
+      "0"
+    ],
+    "flush_into_infill": "0",
+    "flush_into_objects": "0",
+    "flush_into_support": "0"
+  },
+  "materials": {
+    "model": 112048,
+    "support": 0,
+    "interface": 0
+  },
+  "geometry": [
+    {
+      "source": "candidates/nd25fn4_crescent/STL/02_Closed_Cap_PRINT_TWO.stl",
+      "sha256": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+      "subtype": "normal_part",
+      "triangles": 325112,
+      "maximum_vertex_error_mm": 5.062083209474076e-08,
+      "winding_and_connectivity_match": true
+    },
+    {
+      "source": "candidates/nd25fn4_crescent/STL/02_Closed_Cap_PRINT_TWO.stl",
+      "sha256": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+      "subtype": "normal_part",
+      "triangles": 325112,
+      "maximum_vertex_error_mm": 5.062083209474076e-08,
+      "winding_and_connectivity_match": true
+    },
+    {
+      "source": "candidates/nd25fn4_crescent/STL/03_Tweeter_Retainer_PRINT_TWO.stl",
+      "sha256": "7b941dfa4dc78577a6c5e7972840a9ffed8de41972dce19ebf5f9ad8002ec913",
+      "subtype": "normal_part",
+      "triangles": 167028,
+      "maximum_vertex_error_mm": 1.18429442209218e-07,
+      "winding_and_connectivity_match": true
+    },
+    {
+      "source": "candidates/nd25fn4_crescent/STL/03_Tweeter_Retainer_PRINT_TWO.stl",
+      "sha256": "7b941dfa4dc78577a6c5e7972840a9ffed8de41972dce19ebf5f9ad8002ec913",
+      "subtype": "normal_part",
+      "triangles": 167028,
+      "maximum_vertex_error_mm": 1.18429442209218e-07,
+      "winding_and_connectivity_match": true
+    }
+  ],
+  "slicer_result": {
+    "feature_type_times": {
+      "Bridge": 458.4140930175781,
+      "Brim": 177.92758178710938,
+      "Custom": 403.4259948730469,
+      "Flush": 26.0,
+      "Gap infill": 13.42471694946289,
+      "Inner wall": 1789.451416015625,
+      "Internal solid infill": 595.1463012695312,
+      "Ironing": 780.6251831054688,
+      "Outer wall": 1015.5202026367188,
+      "Overhang wall": 76.89804077148438,
+      "Sparse infill": 24.265722274780273,
+      "Top surface": 91.17430114746094,
+      "Travel": 369.11260986328125,
+      "Undefined": 361.7406311035156
+    },
+    "filament_change_times": 0,
+    "filaments": [
+      {
+        "filament_id": "GFG98",
+        "id": 1,
+        "main_used_g": 37.869346618652344,
+        "total_used_g": 37.869346618652344
+      }
+    ],
+    "generate_support_material_time": 84,
+    "id": 1,
+    "infill_time": 165,
+    "layer_filament_change": 0,
+    "main_predication": 5366.50244140625,
+    "make_perimeters_time": 1143,
+    "obj_cached_cnt": 0,
+    "objects": [
+      {
+        "bbox": {
+          "depth": 56.0,
+          "height": 11.84999942779541,
+          "width": 56.0,
+          "x": 46.0,
+          "y": 69.0,
+          "z": 0.0
+        },
+        "id": 5,
+        "name": "02_Closed_Cap_PRINT_TWO",
+        "triangle_count": 325112
+      },
+      {
+        "bbox": {
+          "depth": 56.0,
+          "height": 11.84999942779541,
+          "width": 56.0,
+          "x": 116.0,
+          "y": 69.0,
+          "z": 0.0
+        },
+        "id": 9,
+        "name": "02_Closed_Cap_PRINT_TWO",
+        "triangle_count": 325112
+      },
+      {
+        "bbox": {
+          "depth": 52.79999542236328,
+          "height": 4.200000286102295,
+          "width": 52.80000305175781,
+          "x": 47.599998474121094,
+          "y": 139.60000610351562,
+          "z": 1.4901160305669237e-09
+        },
+        "id": 13,
+        "name": "03_Tweeter_Retainer_PRINT_TWO",
+        "triangle_count": 167028
+      },
+      {
+        "bbox": {
+          "depth": 52.79999542236328,
+          "height": 4.200000286102295,
+          "width": 52.80000305175781,
+          "x": 117.5999984741211,
+          "y": 139.60000610351562,
+          "z": 1.4901160305669237e-09
+        },
+        "id": 17,
+        "name": "03_Tweeter_Retainer_PRINT_TWO",
+        "triangle_count": 167028
+      }
+    ],
+    "sliced_time": 2658,
+    "sliced_time_with_cache": 827,
+    "total_predication": 5814.556640625,
+    "triangle_count": 984280,
+    "warning_message": ""
+  },
+  "status": "pass"
+}

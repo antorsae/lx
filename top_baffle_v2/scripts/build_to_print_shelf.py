@@ -42,6 +42,7 @@ from bambu_3mf_audit import (
     validate_bed_fit as validate_bambu_bed_fit,
     validate_result_bbox as validate_bambu_result_bbox,
 )
+from delivery_contract import is_gui, primary_lane, stl_path, authority_path, deliver_authority
 import build_obiwan_combo_plate as combo
 import build_obiwan_wing_plate as wing_plate
 from lx521_baffle.print_contract import FrontDownContractError, validate_print_sidecar
@@ -543,20 +544,8 @@ def _bind_entries_to_release(
 
 
 def _delivery_paths(shelf: Path, entry: Mapping[str, Any]) -> tuple[Path, Path]:
-    # The 0.4-mm lane owns the lane-suffixed 3mf_04 sibling; the 0.6-mm
-    # high-flow lane owns 3mf_06hf next to it.  One shared stl/ serves both
-    # lanes because the respun geometry is nozzle-agnostic.  TINMORRY
-    # PETG-GF is 0.6-HF-exclusive, so the structural entries carry
-    # ``lane: 06hf`` in the catalog and deliver into the 0.6 folder.
-    family_root = shelf / str(entry["family"])
-    lane = str(entry.get("lane", "04"))
-    # 0.6-lane deliveries carry the lane in the filename too, so two open
-    # Studio tabs of the same part are never ambiguous.
-    suffix = "" if lane == "04" else f"_{lane}"
-    return (
-        family_root / "stl" / f"{entry['name']}.stl",
-        family_root / f"3mf_{lane}" / f"{entry['name']}{suffix}.gcode.3mf",
-    )
+    lane = primary_lane(entry)
+    return shelf / stl_path(entry), shelf / lane.project_path(entry["family"], entry["name"])
 
 
 def _workspace_root(shelf: Path) -> Path:
@@ -604,8 +593,10 @@ def _prune_delivery_view(shelf: Path, entries: Sequence[Mapping[str, Any]]) -> N
     for entry in entries:
         stl, project = _delivery_paths(shelf, entry)
         expected_by_root.setdefault(stl.parent.absolute(), set()).add(stl.absolute())
-        expected_by_root.setdefault(project.parent.absolute(), set()).add(
-            project.absolute())
+        expected_by_root[stl.parent.absolute()].add((shelf / authority_path(entry)).absolute())
+        if not is_gui(entry):
+            expected_by_root.setdefault(project.parent.absolute(), set()).add(
+                project.absolute())
     for root, expected in expected_by_root.items():
         if not root.exists():
             raise ShelfError(f"managed delivery directory disappeared: {root}")
@@ -1354,11 +1345,11 @@ def build_shelf(
             record.get("name") for record in prior["entries"]
             if isinstance(record, Mapping)
         }
-        expected_names = {entry["name"] for entry in entries}
+        expected_names = {entry["name"] for entry in entries if not is_gui(entry)}
         if prior_names != expected_names:
             raise ShelfError(
                 "targeted shelf refresh requires an existing complete "
-                f"{EXPECTED_ENTRY_COUNT}-entry manifest")
+                "sliced-entry manifest")
         prior_manifest = dict(prior)
     workspace = _workspace_root(shelf)
     _migrate_legacy_workspace(shelf, workspace)
@@ -1378,7 +1369,7 @@ def build_shelf(
     # STL or 3MF.  Targeted refreshes still cross the complete equivalence barrier;
     # ``selected_entries`` controls only the later promotion step.
     validated: list[dict[str, Any]] = []
-    gui_delivered: dict[str, str] = {}
+    gui_delivered: dict[str, dict[str, Any]] = {}
     for entry in entries:
         spec = entry.get("composite_spec")
         # Every ``lane: 06hf`` entry is PETG-GF structural: the part in
@@ -1388,12 +1379,17 @@ def build_shelf(
         # nozzle 0 and the interface prints in the model material.  They ship
         # as Studio projects instead.  Requiring them here fails the whole
         # publication and strands the ~54 PLA deliveries that are fine.
-        if entry.get("lane") == "06hf" or (
+        if is_gui(entry) or (
                 isinstance(spec, Mapping) and spec.get("gui_delivered")):
-            gui_delivered[entry["name"]] = (
-                "Bambu CLI maps the PLA support interface to nozzle 0 on the "
-                "assemble-list path; delivered as a Studio project by "
-                "make obiwan_petg_gui_projects")
+            from gui_project_audit import audit_gui_geometry, audit_gui_settings
+            _stl, gui_project = _delivery_paths(shelf, entry)
+            gui_delivered[entry["name"]] = {
+                "kind": "gui_project", "project": _relative(gui_project),
+                "project_sha256": _sha256(gui_project),
+                "geometry_audit": audit_gui_geometry(ROOT, dict(entry), gui_project),
+                "settings_audit": audit_gui_settings(ROOT, dict(entry), gui_project),
+                "slicing_required": True,
+            }
             continue
         source = Path(entry["source_path"])
         source_sidecar = Path(entry["source_contract_path"])
@@ -1552,6 +1548,7 @@ def build_shelf(
         project = item["project"]
         stl_destination, project_destination = _delivery_paths(shelf, entry)
         stl_delivery = _link_or_copy(source, stl_destination)
+        deliver_authority(Path(entry['source_contract_path']), shelf / authority_path(entry))
         project_delivery = _deliver_locked_project(
             project, project_destination, str(entry.get("lane", "04")))
         if _sha256(stl_destination) != _sha256(source):
@@ -1571,6 +1568,12 @@ def build_shelf(
             refreshed.get(record["name"], dict(record))
             for record in prior_manifest["entries"]
         ]
+
+    for entry in selected_entries:
+        if is_gui(entry):
+            delivered_stl, _gui_project = _delivery_paths(shelf, entry)
+            _link_or_copy(Path(entry["source_path"]), delivered_stl)
+            deliver_authority(Path(entry['source_contract_path']), shelf / authority_path(entry))
 
     manifest = {
         "schema_version": 1,
@@ -1632,7 +1635,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="slice missing or stale non-magnet P2S projects locally")
     parser.add_argument(
         "--validate-only", action="store_true",
-        help="require a complete current shelf without slicing anything")
+        help="read-only check of every delivered file, hash, source and GUI mesh")
+    parser.add_argument("--publish-existing", action="store_true",
+                        help="publish from existing audited slices (the default)")
     parser.add_argument(
         "--only", action="append", metavar="NAME",
         help="refresh and validate only this friendly shelf entry while "
@@ -1642,9 +1647,18 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if args.slice_missing and args.publish_existing:
+        raise ShelfError("--publish-existing forbids --slice-missing")
     if args.slice_missing and args.validate_only:
         raise ShelfError("--slice-missing and --validate-only are mutually exclusive")
     shelf = args.shelf.expanduser().resolve()
+    if args.validate_only:
+        if args.only:
+            raise ShelfError("--validate-only checks the complete delivery; omit --only")
+        from manage_delivery import validate
+        result = validate(shelf, args.catalog.expanduser().resolve())
+        print(f"Delivery valid: {result['choice_count']} choices, {result['project_count']} projects")
+        return 0
     shelf.mkdir(parents=True, exist_ok=True)
     manifest = build_shelf(
         shelf=shelf,
@@ -1669,6 +1683,6 @@ def main(argv: Sequence[str] | None = None) -> int:
 if __name__ == "__main__":
     try:
         raise SystemExit(main())
-    except (ShelfError, captive.AuditError, OSError) as exc:
+    except (ShelfError, captive.AuditError, OSError, ValueError) as exc:
         print(f"to_print shelf failed: {exc}", file=sys.stderr)
         raise SystemExit(2)

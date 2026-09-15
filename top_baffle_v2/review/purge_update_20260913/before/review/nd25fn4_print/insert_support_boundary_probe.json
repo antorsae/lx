@@ -1,0 +1,35 @@
+[
+  {
+    "name": "T2_M2_1",
+    "layer_z": 24.84,
+    "bore_low": 24.779878616333008,
+    "bore_high": 28.779878616333008,
+    "vertical_overlap": 0.060121383666992045,
+    "clearance": -1.7000450890434742,
+    "features": [
+      "Support interface"
+    ]
+  },
+  {
+    "name": "T2_M2_2",
+    "layer_z": 24.84,
+    "bore_low": 24.779878616333008,
+    "bore_high": 28.779878616333008,
+    "vertical_overlap": 0.060121383666992045,
+    "clearance": -1.7000450890434173,
+    "features": [
+      "Support interface"
+    ]
+  },
+  {
+    "name": "T2_M2_3",
+    "layer_z": 24.84,
+    "bore_low": 24.779878616333008,
+    "bore_high": 28.779878616333008,
+    "vertical_overlap": 0.060121383666992045,
+    "clearance": -1.6731705859977843,
+    "features": [
+      "Support interface"
+    ]
+  }
+]

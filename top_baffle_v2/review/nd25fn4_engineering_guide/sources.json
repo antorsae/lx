@@ -1,0 +1,21 @@
+{
+  "support_settings_marked.png": {
+    "url": "https://wiki.bambulab.com/software/bambu-studio/support/support_settings_marked.png",
+    "sha256": "a8e3499c1b817f163094ff60344c406d8255491236aa1d500537448a525a96a7",
+    "bytes": 167477
+  },
+  "pla_basic_supports_petg_hf_P2S.3mf": {
+    "url": "https://wiki.bambulab.com/filament-acc/filament/pla-basic-petg-hf-support-each-other/pla_basic_%E6%94%AF%E6%92%91_petg_hf_@p2s.3mf",
+    "sha256": "6511b793354c9d9a8efd40394f1b308a5bba62f93c8fa3b6291f992bf332fdef",
+    "bytes": 25374
+  },
+  "FilamentGuide-EN-2.pdf": {
+    "url": "https://cdn1.bambulab.com/filament/FilamentGuide-EN-2.pdf",
+    "sha256": "c9034c0d2390451791883b99cdf8045e61c7fca4e759925708742762ee081c72",
+    "bytes": 931985
+  },
+  "mutual_support_guide.html": {
+    "url": "https://wiki.bambulab.com/en/filament-acc/filament/h2d-pla-and-petg-mutual-support",
+    "sha256": "d9adbf1fe25a6b32bcea3294489b8e5d4cdd64b9415a13a6002259e983d79388"
+  }
+}

@@ -144,8 +144,10 @@ class CaptiveMagnetTools:
             "pause_marker_source": (
                 "slice/G-code first closing layer; never CAD-only"),
             "magnet_seating": (
-                "seat against the interface-side 0.45-mm skin; "
-                "0.10-mm axial cavity allowance remains behind magnet"),
+                "use seated_magnet_center_xyz_mm for this closure; "
+                f"nominal face skin {self.spec.face_skin_mm:.2f} mm; "
+                "total axial cavity allowance "
+                f"{self.spec.cavity_depth_mm - self.spec.magnet_depth_mm:.2f} mm"),
         }
         result.update(self.print_frame.facts())
         result.update(self.spec.facts())
@@ -508,7 +510,7 @@ def axial_cavity_tools(
     else:
         # Front-face-down: printing advances toward the rear exterior.
         # Put the complete circular cavity deeper than the cone so it is open
-        # when paused, then close toward the rear and finish the 0.45-mm skin.
+        # when paused, then close toward the rear and finish the face skin.
         roof_apex_local_z = spec.face_skin_mm
         cavity_z0 = roof_apex_local_z + spec.roof_height_mm
         cavity_center_local_z = cavity_z0 + spec.cavity_depth_mm / 2.0
@@ -543,7 +545,8 @@ def axial_cavity_tools(
                     float(roof_start_print_z_mm), raw_roof_start,
                     abs_tol=1.0e-6)):
             raise CaptiveMagnetGeometryError(
-                "the opposed axial layout has an exact 0.45/45deg/cavity "
+                "the opposed axial layout has an exact "
+                f"{spec.face_skin_mm:.2f}-mm skin/45deg/cavity "
                 f"stack; roof_start must be {raw_roof_start:.6f} mm")
         roof_start = raw_roof_start
         roof_apex = frame.height_mm(

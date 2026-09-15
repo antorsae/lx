@@ -1,0 +1,101 @@
+{
+  "status": "passed",
+  "body_sha256": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+  "model_sha256": "d79c5db514c5318a27c44c6f34d6fbbeeb96715079967a86064608ad92b88d28",
+  "source_sha256": "1b0521b4b81fe138c3f10ecd0e8523cdf2898841d19ff79d07cf2ec26b7be9ca",
+  "source_build_manifest_sha256": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f",
+  "surface_witnesses": 4872,
+  "profiles": {
+    "across_Y_317": {
+      "surface_witnesses": 537,
+      "maximum_height_error_mm": 0.009897603758961537,
+      "maximum_tangent_change_per_0_4mm_deg": 14.635876170411915
+    },
+    "across_Y_320": {
+      "surface_witnesses": 546,
+      "maximum_height_error_mm": 0.013379292995399084,
+      "maximum_tangent_change_per_0_4mm_deg": 13.413781224472233
+    },
+    "across_Y_320.6": {
+      "surface_witnesses": 576,
+      "maximum_height_error_mm": 0.014102770796085906,
+      "maximum_tangent_change_per_0_4mm_deg": 12.222197652668138
+    },
+    "across_Y_320.9": {
+      "surface_witnesses": 605,
+      "maximum_height_error_mm": 0.014585258451621286,
+      "maximum_tangent_change_per_0_4mm_deg": 11.745730273947865
+    },
+    "across_Y_323": {
+      "surface_witnesses": 510,
+      "maximum_height_error_mm": 0.011731450594566262,
+      "maximum_tangent_change_per_0_4mm_deg": 10.370141278183022
+    },
+    "across_Y_326": {
+      "surface_witnesses": 330,
+      "maximum_height_error_mm": 0.014427461337069403,
+      "maximum_tangent_change_per_0_4mm_deg": 5.313513877968519
+    },
+    "across_Y_327": {
+      "surface_witnesses": 309,
+      "maximum_height_error_mm": 0.009979587392227707,
+      "maximum_tangent_change_per_0_4mm_deg": 2.166515214615591
+    },
+    "along_X_-32": {
+      "surface_witnesses": 130,
+      "maximum_height_error_mm": 0.011044215106178257,
+      "maximum_tangent_change_per_0_4mm_deg": 15.899522979975762
+    },
+    "along_X_-29": {
+      "surface_witnesses": 140,
+      "maximum_height_error_mm": 0.014585258451603522,
+      "maximum_tangent_change_per_0_4mm_deg": 13.609014179818582
+    },
+    "along_X_-27.1": {
+      "surface_witnesses": 164,
+      "maximum_height_error_mm": 0.01304440627782455,
+      "maximum_tangent_change_per_0_4mm_deg": 12.371666819990184
+    },
+    "along_X_-27": {
+      "surface_witnesses": 167,
+      "maximum_height_error_mm": 0.006830846221172138,
+      "maximum_tangent_change_per_0_4mm_deg": 11.86030633518912
+    },
+    "along_X_-24": {
+      "surface_witnesses": 162,
+      "maximum_height_error_mm": 0.003969990020764591,
+      "maximum_tangent_change_per_0_4mm_deg": 6.997062563305898
+    },
+    "along_X_24": {
+      "surface_witnesses": 95,
+      "maximum_height_error_mm": 0.002788690649925485,
+      "maximum_tangent_change_per_0_4mm_deg": 5.743075400349698
+    },
+    "along_X_27": {
+      "surface_witnesses": 167,
+      "maximum_height_error_mm": 0.007439465612709029,
+      "maximum_tangent_change_per_0_4mm_deg": 11.860585594617755
+    },
+    "along_X_27.1": {
+      "surface_witnesses": 164,
+      "maximum_height_error_mm": 0.00814624726664448,
+      "maximum_tangent_change_per_0_4mm_deg": 11.111429777175207
+    },
+    "along_X_29": {
+      "surface_witnesses": 140,
+      "maximum_height_error_mm": 0.008429240027286511,
+      "maximum_tangent_change_per_0_4mm_deg": 12.921267480352697
+    },
+    "along_X_32": {
+      "surface_witnesses": 130,
+      "maximum_height_error_mm": 0.010864037793297143,
+      "maximum_tangent_change_per_0_4mm_deg": 15.863927650228474
+    }
+  },
+  "limits": {
+    "height_error_mm": 0.035,
+    "tangent_change_over_0_4mm_deg": 20.0
+  },
+  "target": "Continuous envelope including the rounded rear perimeter of the front-wide taper.",
+  "intent": "Continuous curved rear surface across former X=+/-27.1 and Y=327 web partitions; exact LM receiver lands and declared service openings excluded."
+}

@@ -1,0 +1,50 @@
+{
+  "file": "to_print/obiwan/stl/obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand.stl",
+  "scale": {
+    "bbox_diagonal_mm": 300.4619,
+    "units_suspect": false,
+    "note": "bbox consistent with millimetre units"
+  },
+  "orientations": {
+    "angle_limit_used_deg": 45.0,
+    "pct_denominator": "total surface area",
+    "candidates": [
+      {
+        "orientation": "current_plus_z",
+        "support_area_mm2": 5688.61,
+        "support_area_pct": 13.2,
+        "build_height_mm": 23.42
+      },
+      {
+        "orientation": "flip_180_x",
+        "support_area_mm2": 12025.05,
+        "support_area_pct": 28.0,
+        "build_height_mm": 23.42
+      },
+      {
+        "orientation": "rot_plus_90_x",
+        "support_area_mm2": 3967.8,
+        "support_area_pct": 9.2,
+        "build_height_mm": 219.31
+      },
+      {
+        "orientation": "rot_minus_90_x",
+        "support_area_mm2": 3948.26,
+        "support_area_pct": 9.2,
+        "build_height_mm": 219.31
+      },
+      {
+        "orientation": "rot_plus_90_y",
+        "support_area_mm2": 3720.31,
+        "support_area_pct": 8.6,
+        "build_height_mm": 204.04
+      },
+      {
+        "orientation": "rot_minus_90_y",
+        "support_area_mm2": 4079.89,
+        "support_area_pct": 9.5,
+        "build_height_mm": 204.04
+      }
+    ]
+  }
+}

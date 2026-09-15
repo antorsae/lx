@@ -1,0 +1,38 @@
+[
+  {
+    "part": "Obi-Wan floor",
+    "PLA_top_interface_z_mm": [
+      5.64,
+      5.8,
+      5.96
+    ],
+    "common_interface_area_mm2": 3838.6768280368983,
+    "witness_xy_mm": [
+      49.12646069645455,
+      89.66920310130342
+    ],
+    "witness_covered_on_each_layer": [
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "part": "Regular Obi-Wan UM",
+    "PLA_top_interface_z_mm": [
+      3.72,
+      3.88,
+      4.04
+    ],
+    "common_interface_area_mm2": 2012.6167654051271,
+    "witness_xy_mm": [
+      172.51,
+      131.4515
+    ],
+    "witness_covered_on_each_layer": [
+      true,
+      true,
+      true
+    ]
+  }
+]

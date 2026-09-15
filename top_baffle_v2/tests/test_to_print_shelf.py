@@ -137,7 +137,7 @@ def main() -> int:
             "scripts/build_to_print_shelf.py")
         check(
             structural_shelf_command >= 0
-            and "--validate-only"
+            and "--publish-existing"
             in structural_promotion[structural_shelf_command:]
             and f'--only "{friendly_name}"'
             in structural_promotion[structural_shelf_command:],
@@ -157,7 +157,7 @@ def main() -> int:
         shelf_command = promotion_dry_run.rfind(
             "scripts/build_to_print_shelf.py")
         check(shelf_command >= 0
-              and "--validate-only" in promotion_dry_run[shelf_command:]
+              and "--publish-existing" in promotion_dry_run[shelf_command:]
               and f'--only "{api.PLATE_NAME}"'
               in promotion_dry_run[shelf_command:],
               f"targeted {make_slug} composite promotion must disable "
@@ -176,7 +176,7 @@ def main() -> int:
         wing_shelf_command = wing_promotion_dry_run.rfind(
             "scripts/build_to_print_shelf.py")
         check(wing_shelf_command >= 0
-              and "--validate-only"
+              and "--publish-existing"
               in wing_promotion_dry_run[wing_shelf_command:]
               and f'--only "{api.PLATE_NAME}"'
               in wing_promotion_dry_run[wing_shelf_command:],
@@ -203,10 +203,9 @@ def main() -> int:
             # PETG-GF core combos ship on the 0.6-mm high-flow lane; the
             # PLA Basic wing plates stay on the 0.4-mm lane.
             "to_print/obiwan/"
-            f"{'3mf_04' if api.PLATE_NAME in wing_plate_names else '3mf_06hf'}"
+            f"{'3mf_04' if api.PLATE_NAME in wing_plate_names else '3mf_06hf_petg-gf_pla'}"
             f"/{api.PLATE_NAME}"
-            f"{'' if api.PLATE_NAME in wing_plate_names else '_06hf'}"
-            ".gcode.3mf",
+            f"{'.gcode.3mf' if api.PLATE_NAME in wing_plate_names else '_GUI.3mf'}",
         )
     )
     for target in concrete_targets:
@@ -499,11 +498,9 @@ def main() -> int:
         check(source.is_file(), f"missing source STL {source}")
         stl, project = shelf._delivery_paths(shelf.DEFAULT_SHELF, entry)
         check(stl.name == f"{entry['name']}.stl", "friendly STL name drift")
-        expected_suffix = (
-            "" if str(entry.get("lane", "04")) == "04"
-            else f"_{entry['lane']}")
-        check(project.name == f"{entry['name']}{expected_suffix}.gcode.3mf",
-              "friendly P2S project name drift")
+        from delivery_contract import primary_lane
+        expected = primary_lane(entry).project_path(entry['family'], entry['name'])
+        check(project.name == expected.name, "friendly P2S project name drift")
         if entry.get("catalog_artifact_id"):
             # A candidate is bound to its own one-artifact catalog instead,
             # which _bind_entries_to_release already resolved onto the entry.
@@ -575,7 +572,7 @@ def main() -> int:
     # records to inspect: Bambu maps their PLA support interface to nozzle 0
     # on the assemble-list path, so they ship as Studio projects instead.
     # Check the delivery that actually exists.
-    gui_dir = shelf.DEFAULT_SHELF / "obiwan" / "3mf_06hf_petg-cf_pla"
+    gui_dir = shelf.DEFAULT_SHELF / "obiwan" / "3mf_06hf_petg-gf_pla"
     gui_manifest = json.loads(
         (gui_dir / "gui_projects.json").read_text(encoding="utf-8"))
     check(gui_manifest["model_filament"] == "TINMORRY PETG-GF Profile @BBL P2S",

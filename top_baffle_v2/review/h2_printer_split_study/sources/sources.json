@@ -1,0 +1,22 @@
+{
+  "H2C_official_machine.json": {
+    "url": "https://raw.githubusercontent.com/bambulab/BambuStudio/master/resources/profiles/BBL/machine/Bambu%20Lab%20H2C%200.4%20nozzle.json",
+    "sha256": "54236b5f3eedf6c8468a9c3b921ecaabc04e1e3404f3d0239829fb81c3488491"
+  },
+  "H2D_official_machine.json": {
+    "url": "https://raw.githubusercontent.com/bambulab/BambuStudio/master/resources/profiles/BBL/machine/Bambu%20Lab%20H2D%200.4%20nozzle.json",
+    "sha256": "49564658d34cbb1b151abcf3dfd0d074a39d6bd099602f8a499b959c665ec72c"
+  },
+  "H2D_specification.pdf": {
+    "url": "https://cdn1.bambulab.com/documentation/h2d/en/H2D_Laser_Full_Combo_20250305.pdf",
+    "sha256": "2b49824d225ae29c4410c45c7e69a64611da9368f12527ea02c3cf8b9653ef6d"
+  },
+  "H2C_announcement.html": {
+    "url": "https://blog.bambulab.com/bambu-lab-h2c-where-multi-material-vortek-system-meets-engineering-precision/",
+    "sha256": "9d444b4c3441bb3b905583914d82ff79d9090849591e4d9fe0b7031f4217691c"
+  },
+  "H2_common_official_machine.json": {
+    "url": "https://raw.githubusercontent.com/bambulab/BambuStudio/master/resources/profiles/BBL/machine/fdm_bbl_3dp_002_common.json",
+    "sha256": "f7ce729c4f2d7ba7dd9b2328b8172ada496a8a4e7e41f5f0139e2692b0a106af"
+  }
+}

@@ -868,8 +868,8 @@ def _wing_artifacts(slug: str, output: Path) -> list[dict[str, Any]]:
     return result
 
 
-def generate(output: Path) -> dict[str, Any]:
-    source_revision = _source_revision()
+def generate(output: Path, *, existing_local: bool = False) -> dict[str, Any]:
+    source_revision = None if existing_local else _source_revision()
     artifacts = [
         *_state_artifacts("floor_stand", output),
         *_state_artifacts("no_floor_stand", output),
@@ -1035,6 +1035,13 @@ def generate(output: Path) -> dict[str, Any]:
         ],
         "artifacts": sorted(artifacts, key=lambda item: item["id"]),
     }
+    if existing_local:
+        from refresh_magnet_bindings import local_binding_proof
+        proof = local_binding_proof(output, payload)
+        import hashlib
+        payload['source_revision'] = hashlib.sha256(
+            json.dumps(proof, sort_keys=True).encode()).hexdigest()
+        payload['provenance'] = proof
     # Never expose an unvalidated catalog at the authoritative path.  Render
     # beside it, run the same schema/binding contract as the slicer consumer,
     # and publish only after every gate passes.
@@ -1045,9 +1052,11 @@ def generate(output: Path) -> dict[str, Any]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument('--existing-local', action='store_true',
+                        help='Validate and rebind existing STL authorities; explicitly not a remote CAD rebuild')
     args = parser.parse_args()
     output = args.output.resolve()
-    payload = generate(output)
+    payload = generate(output, existing_local=args.existing_local)
     print(json.dumps({
         "output": str(output),
         "artifact_count": len(payload["artifacts"]),

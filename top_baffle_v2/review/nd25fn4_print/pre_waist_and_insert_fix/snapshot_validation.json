@@ -1,0 +1,30 @@
+{
+  "status": "reviewed",
+  "source_build_manifest_sha256": "cbe5f82ed773c02d1ec54c55924dbac05ba974c4e1965207d468d87441fa9c0c",
+  "source_wing_validation_sha256": "3c85384407fda5a1a79b42117d989eb5b01c9752a1a9dfa4b8376b9d0a3b72c7",
+  "source_review_sha256": "d69a0666b0ca09ef32eeb4fa50894ca4f5485d22d89285441947bda55b885a1d",
+  "reviewed_pngs": {
+    "LM_interface_orthographic_3D.png": "a397c1ace2dae4f6a6aa76fdcd847dc511aea6daed332832efbdf958f9873bfe",
+    "LM_interface_ortho_side.png": "fde31baacb53a16dbda160f871121ec8c6c99588474e019ac4aa7685d5f10f3b",
+    "UM_depth_side.png": "f8a6e6d7db0e8adecc7f631f96a8f869da16f8d3a9cf081d376dccfe342dda53",
+    "UM_outline_front.png": "dda8b80a366a3d1e2e3cc9b0425c5165677663a85969c03aa41a4676bcc11ab1",
+    "UM_outline_oblique.png": "de498a5ef70491976ada8460e46f3c28692a07d3845299d36bdc1ffda4421233",
+    "UM_lower_band_oblique.png": "b1df67c3f04cd4d73a03a0ffdd40b1eee5197968f08e17b67c5611b4ad46fc34",
+    "duct_handoff_closed.png": "9f2d6639edec4455ba58346264a83984fc977971f20d0023b85e60fd7cf965b8",
+    "magnet_alignment_section.png": "66fa718ee05d70022f8bd4ad063b07478ee06580ec787f87fe4266409a031de9",
+    "with_graded_wings.png": "2367d9ec5d6569a42d3451e898a3d5be8182be07f176a13af7894229e4701d6d",
+    "orthographic_top_front_side.png": "4525203c4181d589adfb238d024d0f87439b7ac47eba6fa4b69a6ed649043d58",
+    "UM_reference_overlay.png": "d0f66b43be3cd0075b8eb950a344009ad70018165d3b26db717d38d5cc1639d3",
+    "UM_depth_taper_sections.png": "f12ef4389bdce1f4bdc2737ae16c06331a1ff5239b1691c8fc870edfbfffb4d8"
+  },
+  "checks": [
+    "Actual full-resolution STL orthographic interface renders show the UM and LM front surfaces at the same Z18.30 plane, with the full LM front contour exposed.",
+    "The exact LM contour supersedes the concept base below installed Y322; the original organic outline and shallow bowl continue above the short Y322\u2013336 transition.",
+    "Front, side, oblique and measured sections retain the front-wide draft. The reference comparison above Y322 measures 0.3122 mm RMS.",
+    "Updated flat and graded upper wings follow the flush foot. All four pass interference, retained split-interface and closed-magnet checks.",
+    "The curved lower rear band, closed cable handoff and buried paired magnets remain visible in the actual mesh and section reviews.",
+    "The final top/front/side sheet uses blue printed pieces and orange driver references. All four current GLBs loaded in the browser without a missing-file banner."
+  ],
+  "rendering": "Actual exported STL renders using VTK parallel projection and flat surface normals. Contact sheets only arrange those renders; no generated cosmetic geometry.",
+  "visual_scope_note": "Digital geometry and fit review. Physical print finish, fit and magnet retention are untested."
+}

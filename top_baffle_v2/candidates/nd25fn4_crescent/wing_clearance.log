@@ -1,0 +1,7 @@
+Building shared V4 wing clearance surface
+Offsetting actual exterior for an even wing seam
+/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/build_wings.py:53: DeprecationWarning: Call to deprecated method SetCells. (Use ImportLegacyFormat or SetData instead.) -- Deprecated since version 9.6.0.
+  cells.SetCells(len(mesh.faces),numpy_to_vtkIdTypeArray(
+/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/build_wings.py:66: DeprecationWarning: Call to deprecated method GetData. (Use ExportLegacyFormat, or GetOffsetsArray/GetConnectivityArray instead.) -- Deprecated since version 9.6.0.
+  vtk_to_numpy(pd.GetPolys().GetData()).reshape(-1,4)[:,1:],process=True)
+Clearance surface ready

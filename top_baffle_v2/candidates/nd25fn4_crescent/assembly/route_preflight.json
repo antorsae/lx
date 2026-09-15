@@ -1,0 +1,10 @@
+{
+  "status": "source_preflight_passed",
+  "model_sha256": "6e9af98588a6e7b9fdfd5746ad36171597159dd37fac4e2db360b79b6a5fd238",
+  "sample_count": 70752,
+  "sampled_skin_mm": 0.85,
+  "exterior_field_margin": 0.06289720309488889,
+  "pilot_margin_mm": 0.12448769181639818,
+  "bore_margin_mm": 0.2899243453834899,
+  "scope": "Dense analytic geometry preflight; final exported mesh is checked separately."
+}

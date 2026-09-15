@@ -1,0 +1,10 @@
+{
+  "path": "review/print_policy_audit_20260912/um_variant_slice/plate_1.gcode",
+  "sha256": "3449a2c81ed84402a647c0bf1faa8c4861829bbbe28739743f1d202cd477c1cc",
+  "extrusion_move_counts": {
+    "support_T0": 6504,
+    "model_T0": 179308
+  },
+  "layers": [],
+  "num_lines": 352507
+}

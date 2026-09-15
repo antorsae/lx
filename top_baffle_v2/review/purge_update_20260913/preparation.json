@@ -1,0 +1,772 @@
+{
+  "status": "prepared_not_sliced",
+  "policy_sha256": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
+  "regular_GUI_projects": [
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_02_03_04_LM_UM_combo_floor_stand_GUI.3mf",
+      "before_sha256": "75062ef8b5ebac47ed565ffd82c07556a859adb48e5cafdee3289b180716cc2f",
+      "sha256": "ea0efcaa0467b3b50078dd1602879bb7b830cea057905043b8e9f4c837bf10c4",
+      "changed": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "geometry_placement_blockers_and_pauses_byte_preserved": true
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_02_03_04_LM_UM_combo_no_floor_stand_GUI.3mf",
+      "before_sha256": "8a7d6a42f475f16cd349ea086bb131c18625943de7ebd11b6f59611aaa821bc1",
+      "sha256": "6056b1a5d9b0f1e41505d52dd39337e219a19e4e993b90471c4ecaf21dd203e0",
+      "changed": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "geometry_placement_blockers_and_pauses_byte_preserved": true
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_LM_bottom_keyed_1_of_2_floor_stand_GUI.3mf",
+      "before_sha256": "6e025d4d37d569f66566c300edc1156df334c6d5616a46187d65009b7ebfb5ec",
+      "sha256": "565c412b54ec34a6944851eefe8aeabf308636b0724e77c8404d7c763037b20b",
+      "changed": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "geometry_placement_blockers_and_pauses_byte_preserved": true
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand_GUI.3mf",
+      "before_sha256": "a4d814dd7b75cdf21ba7708e2144e9718c1be116b2459e9c4127cb6ef47c28fa",
+      "sha256": "cd0e20b143d983576890f295c8592e3c07eb8f5e3743ab9996ef2561bf494c8d",
+      "changed": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "geometry_placement_blockers_and_pauses_byte_preserved": true
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_02_LM_top_keyed_2_of_2_GUI.3mf",
+      "before_sha256": "ffa5a8feaeb3d6bba5f79f5cf44a66f20b143bd95d59dd19c8c6ca7458a8b320",
+      "sha256": "5367669372e3e8954dd2e0742868c14716c90ecf78401fa0cf8922d512fad16e",
+      "changed": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "geometry_placement_blockers_and_pauses_byte_preserved": true
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_03_UM_carrier_1_of_1_GUI.3mf",
+      "before_sha256": "f92136b0317d4ceeaf3e4f0f686d298991f91b92fcfdd2362fd718395ce39e6d",
+      "sha256": "e08b4f005155de1f9c45ba9089883301ee5413dd66f929fea2b881d2e7b4324f",
+      "changed": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "geometry_placement_blockers_and_pauses_byte_preserved": true
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_04_T_tweeter_crescent_1_of_1_GUI.3mf",
+      "before_sha256": "cdb3b224492577f5f6959db14339503897405856045ef1238455d195f574da16",
+      "sha256": "6c92edb9086a2c2b94fb1cea3edb0ae0701102ecf07ff3d4d3e0066aefec98db",
+      "changed": {
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280"
+          ]
+        }
+      },
+      "geometry_placement_blockers_and_pauses_byte_preserved": true
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_NL8_service_lid_1_of_1_GUI.3mf",
+      "before_sha256": "5a99cf8903ef0d777852612f88742a4b09a1e2e064431b78104556087d434c23",
+      "sha256": "957fcc3551a84e396358cb03c4b5b1b0f31d857f823bc1aef65b18639e90b235",
+      "changed": {
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280"
+          ]
+        }
+      },
+      "geometry_placement_blockers_and_pauses_byte_preserved": true
+    }
+  ],
+  "candidate_projects": [
+    {
+      "path": "review/nd25fn4_print/body/ND25FN_V4_body_discovery.3mf",
+      "before_sha256": "bf6064f14eab635a9708fc5f696b79c3537d9a0f7323bcc89559c59fd72cc6dd",
+      "sha256": "029ef8029264f4385eabbb08ba0a290b134c61640d76d716f91f94e693b43233",
+      "changed": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "geometry_placement_blockers_and_pauses_byte_preserved": true
+    },
+    {
+      "path": "review/nd25fn4_print/accessories/ND25FN_V4_caps_retainers.3mf",
+      "before_sha256": "dffae6ca017fcd7505e013f1ce1ce4af3f7948fbfd9349eb1b154e36dacc6d19",
+      "sha256": "be120488d55151172a8ea999401d40231618da9a83b3fd815a5680811efaa847",
+      "changed": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "geometry_placement_blockers_and_pauses_byte_preserved": true
+    },
+    {
+      "path": "review/nd25fn4_print/V4_flat_left_UPPER/V4_flat_left_UPPER.3mf",
+      "before_sha256": "e6b2ba852d38ab638dd27c79669db3b6c47f717194889c31f02510d68e33e72e",
+      "sha256": "5ec521c866425362fd34945662c0caf8e8502ff958e70ae0dfdc50e0a5278f1b",
+      "changed": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "geometry_placement_blockers_and_pauses_byte_preserved": true
+    },
+    {
+      "path": "review/nd25fn4_print/V4_flat_right_UPPER/V4_flat_right_UPPER.3mf",
+      "before_sha256": "1c55460a4497c81acaecfe0f44029b41f9a17a6674e4d29dda3aa8e6992b1819",
+      "sha256": "c2b7b08006861c996cde1622c3e1338ae628a143663088da9579601e3ee79490",
+      "changed": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "geometry_placement_blockers_and_pauses_byte_preserved": true
+    },
+    {
+      "path": "review/nd25fn4_print/V4_graded_left_UPPER/V4_graded_left_UPPER.3mf",
+      "before_sha256": "7dea1e1b70506990154f207eacd76cdadc62b7c6c48eea70b4567ba4c426ee0f",
+      "sha256": "769c8b38a22584393326d4f30a1ad57ff891e3cddbcebf377bbe43758a175a81",
+      "changed": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "geometry_placement_blockers_and_pauses_byte_preserved": true
+    },
+    {
+      "path": "review/nd25fn4_print/V4_graded_right_UPPER/V4_graded_right_UPPER.3mf",
+      "before_sha256": "95f252627a6d9f2383e5aa5743f89516a9be033e13a048f98543976c494e2f81",
+      "sha256": "8ee5e109daec262e6d864673975aedea37fbb2fbc5ebe3052ed8b3fae55a27ed",
+      "changed": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "geometry_placement_blockers_and_pauses_byte_preserved": true
+    }
+  ],
+  "commands": {
+    "body": [
+      "/Applications/BambuStudio.app/Contents/MacOS/BambuStudio",
+      "--debug",
+      "2",
+      "--slice",
+      "1",
+      "--arrange",
+      "0",
+      "--orient",
+      "0",
+      "--mtcpp",
+      "5000000",
+      "--allow-mix-temp",
+      "--load-filaments",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_filament.json;/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_support_interface_filament.json",
+      "--outputdir",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/body",
+      "--export-3mf",
+      "ready.gcode.3mf",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/body/ND25FN_V4_body_discovery.3mf"
+    ],
+    "accessories": [
+      "/Applications/BambuStudio.app/Contents/MacOS/BambuStudio",
+      "--debug",
+      "2",
+      "--slice",
+      "1",
+      "--arrange",
+      "0",
+      "--orient",
+      "0",
+      "--mtcpp",
+      "5000000",
+      "--allow-mix-temp",
+      "--load-filaments",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_filament.json;/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_support_interface_filament.json",
+      "--outputdir",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/accessories",
+      "--export-3mf",
+      "ready.gcode.3mf",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/accessories/ND25FN_V4_caps_retainers.3mf"
+    ],
+    "V4_flat_left_UPPER": [
+      "/Applications/BambuStudio.app/Contents/MacOS/BambuStudio",
+      "--debug",
+      "2",
+      "--slice",
+      "1",
+      "--arrange",
+      "0",
+      "--orient",
+      "0",
+      "--mtcpp",
+      "5000000",
+      "--allow-mix-temp",
+      "--load-filaments",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_filament.json;/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_support_interface_filament.json",
+      "--outputdir",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/V4_flat_left_UPPER",
+      "--export-3mf",
+      "ready.gcode.3mf",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/V4_flat_left_UPPER/V4_flat_left_UPPER.3mf"
+    ],
+    "V4_flat_right_UPPER": [
+      "/Applications/BambuStudio.app/Contents/MacOS/BambuStudio",
+      "--debug",
+      "2",
+      "--slice",
+      "1",
+      "--arrange",
+      "0",
+      "--orient",
+      "0",
+      "--mtcpp",
+      "5000000",
+      "--allow-mix-temp",
+      "--load-filaments",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_filament.json;/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_support_interface_filament.json",
+      "--outputdir",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/V4_flat_right_UPPER",
+      "--export-3mf",
+      "ready.gcode.3mf",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/V4_flat_right_UPPER/V4_flat_right_UPPER.3mf"
+    ],
+    "V4_graded_left_UPPER": [
+      "/Applications/BambuStudio.app/Contents/MacOS/BambuStudio",
+      "--debug",
+      "2",
+      "--slice",
+      "1",
+      "--arrange",
+      "0",
+      "--orient",
+      "0",
+      "--mtcpp",
+      "5000000",
+      "--allow-mix-temp",
+      "--load-filaments",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_filament.json;/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_support_interface_filament.json",
+      "--outputdir",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/V4_graded_left_UPPER",
+      "--export-3mf",
+      "ready.gcode.3mf",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/V4_graded_left_UPPER/V4_graded_left_UPPER.3mf"
+    ],
+    "V4_graded_right_UPPER": [
+      "/Applications/BambuStudio.app/Contents/MacOS/BambuStudio",
+      "--debug",
+      "2",
+      "--slice",
+      "1",
+      "--arrange",
+      "0",
+      "--orient",
+      "0",
+      "--mtcpp",
+      "5000000",
+      "--allow-mix-temp",
+      "--load-filaments",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_filament.json;/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_support_interface_filament.json",
+      "--outputdir",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/V4_graded_right_UPPER",
+      "--export-3mf",
+      "ready.gcode.3mf",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/V4_graded_right_UPPER/V4_graded_right_UPPER.3mf"
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "status": "legacy_catalog_inspection_unavailable",
+  "attempted_input": "build/no_floor_stand/obiwan_split.step",
+  "error": "ValueError: src/lx521_baffle/obiwan/wings.py gen_step() must not require arguments",
+  "measurement_fallback": "Exact current STL vertices restored to the assembly frame with inverse source_to_stl_matrix; every STL and print sidecar hash recorded in measurements.json.",
+  "production_files_modified": false
+}

@@ -406,9 +406,11 @@ def build(check: bool) -> None:
     catalog_payload = {"schema_version": 1, "products": manifest_summaries}
     _write_or_check(ARTIFACT_ROOT / "catalog.json", _json_bytes(catalog_payload), check)
 
-    if not check and ARTIFACT_ROOT.exists():
+    if ARTIFACT_ROOT.exists():
         for path in ARTIFACT_ROOT.rglob("*"):
             if path.is_symlink() and path not in expected_links:
+                if check:
+                    raise RuntimeError(f"obsolete artifact link: {path}")
                 path.unlink()
 
 

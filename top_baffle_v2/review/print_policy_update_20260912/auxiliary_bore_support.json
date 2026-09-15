@@ -1,0 +1,490 @@
+{
+  "status": "pass",
+  "scope": "NL8 four M3 bores, LM M2 tie insert, regular UM two M2 T ties and LM tie clearance. Conservative capsules include the complete bore and extend beyond its ends.",
+  "source_sha256": "87673890519ca461e60b2139661eed908b763a3685e2dd89906662786c381dbb",
+  "jobs": [
+    {
+      "name": "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand",
+      "status": "pass",
+      "geometry": {
+        "root_object_id": 3,
+        "component_depth": 1,
+        "triangle_count": 138900,
+        "mesh_max_abs_error_mm": 1.037543944448771e-05,
+        "source_bounds": {
+          "minimum_mm": [
+            0.005686815828084946,
+            0.0,
+            0.0
+          ],
+          "maximum_mm": [
+            201.11500549316406,
+            215.61798095703125,
+            168.3000030517578
+          ],
+          "size_mm": [
+            201.10931867733598,
+            215.61798095703125,
+            168.3000030517578
+          ]
+        },
+        "transformed_actual_mesh_bounds": {
+          "minimum_mm": [
+            27.296006815828086,
+            20.34034,
+            0.0
+          ],
+          "maximum_mm": [
+            228.40532549316407,
+            235.95832095703125,
+            168.3000030517578
+          ],
+          "size_mm": [
+            201.10931867733598,
+            215.61798095703125,
+            168.3000030517578
+          ]
+        },
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            27.29032
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            20.34034
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "support_blocker_count": 1,
+        "support_blocker_triangle_counts": [
+          17422
+        ],
+        "parameter_modifier_count": 0,
+        "parameter_modifier_triangle_counts": [],
+        "parameter_modifier_names": [],
+        "parameter_modifier_settings": [],
+        "sources": {
+          "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json": "5b9ee215779c28bfb1f4fcba762d2b62689d59154f3faf1620604c04cd9d8ac4",
+          "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl": "df222c6fbf8a2b7ddaee8c7ca5e467389eafd219b15c17d546d7a956cc03dd49",
+          "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl": "e54ab8a6ec792d84c4244ea0afa74da01cf3384a1a20a2c675ae087a347279bb",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "2a619395d1009063455b6ae28c6e36b85091b7d26671e5dc1cd9055e11d1a11f"
+        },
+        "project_sha256": "7f231ed04335a581a411b6b6330572d23ac1fadad6e6b68b919637cdd01a8e31",
+        "status": "pass",
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths"
+      },
+      "regions": [
+        {
+          "name": "NL8_M3_-1_-1",
+          "points_xyz_mm": [
+            [
+              -14.6,
+              4.6,
+              -150.0
+            ],
+            [
+              -14.6,
+              4.6,
+              -146.0
+            ]
+          ],
+          "radius_mm": 2.3
+        },
+        {
+          "name": "NL8_M3_-1_1",
+          "points_xyz_mm": [
+            [
+              -14.6,
+              33.8,
+              -150.0
+            ],
+            [
+              -14.6,
+              33.8,
+              -146.0
+            ]
+          ],
+          "radius_mm": 2.3
+        },
+        {
+          "name": "NL8_M3_1_-1",
+          "points_xyz_mm": [
+            [
+              14.6,
+              4.6,
+              -150.0
+            ],
+            [
+              14.6,
+              4.6,
+              -146.0
+            ]
+          ],
+          "radius_mm": 2.3
+        },
+        {
+          "name": "NL8_M3_1_1",
+          "points_xyz_mm": [
+            [
+              14.6,
+              33.8,
+              -150.0
+            ],
+            [
+              14.6,
+              33.8,
+              -146.0
+            ]
+          ],
+          "radius_mm": 2.3
+        }
+      ],
+      "gcode_sha256": "af41a9781509f929c7614bc341e63b4a3d67da748e9f0f5de8f614b259d876d7",
+      "project_sha256": "7f231ed04335a581a411b6b6330572d23ac1fadad6e6b68b919637cdd01a8e31",
+      "materials": {
+        "model": 1005547,
+        "support": 14635,
+        "interface": 11381
+      },
+      "support_check": {
+        "status": "pass",
+        "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+        "support_extrusion_segments_checked": 774,
+        "duct_capsule_segment_count": 4,
+        "candidate_distance_checks": 0,
+        "collision_count": 0,
+        "minimum_bead_to_lumen_clearance_mm": null,
+        "closest_approach": null
+      }
+    },
+    {
+      "name": "obiwan_02_LM_top_keyed_2_of_2",
+      "status": "pass",
+      "geometry": {
+        "root_object_id": 3,
+        "component_depth": 1,
+        "triangle_count": 21446,
+        "mesh_max_abs_error_mm": 1.0879150394771386e-05,
+        "source_bounds": {
+          "minimum_mm": [
+            0.0,
+            8.620446169516072e-05,
+            0.0
+          ],
+          "maximum_mm": [
+            212.09910583496094,
+            212.09918212890625,
+            23.64006805419922
+          ],
+          "size_mm": [
+            212.09910583496094,
+            212.09909592444455,
+            23.64006805419922
+          ]
+        },
+        "transformed_actual_mesh_bounds": {
+          "minimum_mm": [
+            22.05134,
+            21.849596204461694,
+            0.0
+          ],
+          "maximum_mm": [
+            234.15044583496095,
+            233.94869212890626,
+            23.64006805419922
+          ],
+          "size_mm": [
+            212.09910583496094,
+            212.09909592444455,
+            23.64006805419922
+          ]
+        },
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            22.05134
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            21.84951
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "support_blocker_count": 1,
+        "support_blocker_triangle_counts": [
+          3968
+        ],
+        "parameter_modifier_count": 0,
+        "parameter_modifier_triangle_counts": [],
+        "parameter_modifier_names": [],
+        "parameter_modifier_settings": [],
+        "sources": {
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.print.json": "0e0c95c72d53af3f16a35daff584eaa25af35d1d8d118fec96bb15bf66bb306f",
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl": "8070ccbdd173aabe88e62020ce03f729a184750a8c3665caf8cc7d9e671adfe5",
+          "build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl": "e83384453eb3f04290a052b88f1610e23b54491ebe8a0dd291b884df736fb7c1",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "2a619395d1009063455b6ae28c6e36b85091b7d26671e5dc1cd9055e11d1a11f"
+        },
+        "project_sha256": "6407d9bff2f2f2fabe464e2883d2fbd7504847d4f55435af5f1994fa6ac83958",
+        "status": "pass",
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths"
+      },
+      "regions": [
+        {
+          "name": "LM_M2_tie_insert",
+          "points_xyz_mm": [
+            [
+              -17.0,
+              311.15476419802496,
+              10.0
+            ],
+            [
+              -17.0,
+              313.80476419802494,
+              10.0
+            ]
+          ],
+          "radius_mm": 1.6
+        }
+      ],
+      "gcode_sha256": "7eac2ed195c5da40fa702679552dcafe179f425eb58f8339f7cf26903e617dc6",
+      "project_sha256": "6407d9bff2f2f2fabe464e2883d2fbd7504847d4f55435af5f1994fa6ac83958",
+      "materials": {
+        "model": 288099,
+        "support": 11170,
+        "interface": 3240
+      },
+      "support_check": {
+        "status": "pass",
+        "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+        "support_extrusion_segments_checked": 472,
+        "duct_capsule_segment_count": 1,
+        "candidate_distance_checks": 434,
+        "collision_count": 0,
+        "minimum_bead_to_lumen_clearance_mm": 1.1451721926025962,
+        "closest_approach": {
+          "gcode_line_number": 105201,
+          "layer_z_mm": 5.96,
+          "feature": "Support interface",
+          "line_width_mm": 0.62,
+          "layer_height_mm": 0.16,
+          "duct_region": "LM_M2_tie_insert",
+          "centerline_distance_mm": 3.0653284044742386,
+          "duct_radius_mm": 1.6,
+          "support_bead_radius_mm": 0.32015621187164245,
+          "bead_to_lumen_clearance_mm": 1.1451721926025962
+        }
+      }
+    },
+    {
+      "name": "obiwan_03_UM_carrier_1_of_1",
+      "status": "pass",
+      "geometry": {
+        "root_object_id": 3,
+        "component_depth": 1,
+        "triangle_count": 27420,
+        "mesh_max_abs_error_mm": 5.661303710269294e-06,
+        "source_bounds": {
+          "minimum_mm": [
+            3.453791214269586e-05,
+            0.0,
+            0.0
+          ],
+          "maximum_mm": [
+            105.27996826171875,
+            115.52989959716797,
+            18.29081916809082
+          ],
+          "size_mm": [
+            105.27993372380661,
+            115.52989959716797,
+            18.29081916809082
+          ]
+        },
+        "transformed_actual_mesh_bounds": {
+          "minimum_mm": [
+            75.36002453791214,
+            70.23506,
+            0.0
+          ],
+          "maximum_mm": [
+            180.63995826171873,
+            185.76495959716797,
+            18.29081916809082
+          ],
+          "size_mm": [
+            105.2799337238066,
+            115.52989959716797,
+            18.29081916809082
+          ]
+        },
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            75.35999
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            70.23506
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "support_blocker_count": 1,
+        "support_blocker_triangle_counts": [
+          2420
+        ],
+        "parameter_modifier_count": 0,
+        "parameter_modifier_triangle_counts": [],
+        "parameter_modifier_names": [],
+        "parameter_modifier_settings": [],
+        "sources": {
+          "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.print.json": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23",
+          "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
+          "build/no_floor_stand/support_blockers/obiwan_core_2_of_2_um_carrier.support_blocker.stl": "81cfd387cc6bcd755e5f5fb3238b726b171f33a8f410e87ea7b527f4820b7a92",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "2a619395d1009063455b6ae28c6e36b85091b7d26671e5dc1cd9055e11d1a11f"
+        },
+        "project_sha256": "1a2c8dff023efd9558d6ce8d1a55b78052b95007d83339b8cfdaa79e4260e6ca",
+        "status": "pass",
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths"
+      },
+      "regions": [
+        {
+          "name": "UM_M2_T_tie_-13.0",
+          "points_xyz_mm": [
+            [
+              -13.0,
+              414.56231143851267,
+              12.0
+            ],
+            [
+              -13.0,
+              417.3623114385127,
+              12.0
+            ]
+          ],
+          "radius_mm": 1.6
+        },
+        {
+          "name": "UM_M2_T_tie_13.0",
+          "points_xyz_mm": [
+            [
+              13.0,
+              414.56231143851267,
+              12.0
+            ],
+            [
+              13.0,
+              417.3623114385127,
+              12.0
+            ]
+          ],
+          "radius_mm": 1.6
+        },
+        {
+          "name": "UM_LM_tie_passage",
+          "points_xyz_mm": [
+            [
+              -17.0,
+              315.00041217205074,
+              10.0
+            ],
+            [
+              -17.0,
+              319.30476419802494,
+              10.0
+            ]
+          ],
+          "radius_mm": 1.2
+        }
+      ],
+      "gcode_sha256": "6fb1b1d0eb62c92b230fb9fd8a1ec49a70c09d3ae725ca143d9fe37df0421162",
+      "project_sha256": "1a2c8dff023efd9558d6ce8d1a55b78052b95007d83339b8cfdaa79e4260e6ca",
+      "materials": {
+        "model": 179308,
+        "support": 6504,
+        "interface": 2296
+      },
+      "support_check": {
+        "status": "pass",
+        "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+        "support_extrusion_segments_checked": 1690,
+        "duct_capsule_segment_count": 3,
+        "candidate_distance_checks": 1408,
+        "collision_count": 0,
+        "minimum_bead_to_lumen_clearance_mm": 1.0868910626216075,
+        "closest_approach": {
+          "gcode_line_number": 69731,
+          "layer_z_mm": 4.04,
+          "feature": "Support interface",
+          "line_width_mm": 0.62,
+          "layer_height_mm": 0.16,
+          "duct_region": "UM_M2_T_tie_13.0",
+          "centerline_distance_mm": 3.00704727449325,
+          "duct_radius_mm": 1.6,
+          "support_bead_radius_mm": 0.32015621187164245,
+          "bead_to_lumen_clearance_mm": 1.0868910626216075
+        }
+      }
+    }
+  ]
+}

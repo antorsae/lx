@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "part": "V4_flat_right_UPPER",
+  "stl": "V4_flat_right_UPPER.stl",
+  "stl_sha256": "a23e3cc6b59c172ff0ba5cb9e2a2c86eb5a68f0c9cdc6c7d0d2034b44a24866f",
+  "source_to_stl_matrix": [
+    [
+      0.45009844103743507,
+      0.8929789434111369,
+      0.0,
+      -224.62940913973398
+    ],
+    [
+      0.8929789434111369,
+      -0.45009844103743507,
+      0.0,
+      160.92633177019857
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999977
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "print_orientation": "front_face_down",
+  "variant": "flat",
+  "side": "right",
+  "qualification": "unsliced V4 matching upper wing candidate",
+  "source_stl": "build/wings/flat/stl/obiwan_wing_flat_right_split2_2_of_2_lm_um_upper.stl"
+}

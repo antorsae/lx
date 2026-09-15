@@ -1,0 +1,106 @@
+{
+  "source": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_LM_bottom_keyed_1_of_2_floor_stand_GUI.3mf",
+  "review_only": "review/print_policy_audit_20260912/floor_mapping_normalized.3mf",
+  "changes": {
+    "filament_map_mode": {
+      "before": "Auto For Flush",
+      "after": "Manual"
+    },
+    "filament_map_2": {
+      "before": [
+        "1"
+      ],
+      "after": [
+        "1",
+        "1"
+      ]
+    },
+    "filament_nozzle_map": {
+      "before": [
+        "1"
+      ],
+      "after": [
+        "1",
+        "1"
+      ]
+    },
+    "filament_volume_map": {
+      "before": [
+        "0"
+      ],
+      "after": [
+        "1",
+        "1"
+      ]
+    },
+    "extruder_nozzle_stats": {
+      "before": [],
+      "after": [
+        "High Flow#1"
+      ]
+    },
+    "filament_colour": {
+      "before": [
+        "#00AE42"
+      ],
+      "after": [
+        "#456C86",
+        "#EEEEEE"
+      ]
+    },
+    "default_filament_colour": {
+      "before": [
+        "#FFFFFF"
+      ],
+      "after": [
+        "#456C86",
+        "#EEEEEE"
+      ]
+    },
+    "flush_volumes_matrix": {
+      "before": [
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0"
+      ],
+      "after": [
+        "0",
+        "280",
+        "280",
+        "0"
+      ]
+    },
+    "flush_volumes_vector": {
+      "before": [
+        "140",
+        "140",
+        "140",
+        "140",
+        "140",
+        "140",
+        "140",
+        "140"
+      ],
+      "after": [
+        "140",
+        "140",
+        "140",
+        "140"
+      ]
+    }
+  },
+  "scope": "Geometry and print/support settings unchanged. Normalize two-material mapping/purge vector dimensions to avoid native CLI crash; this is a reproduction, not the user print."
+}

@@ -4884,9 +4884,11 @@ def _assembled_shell_contract(stand_foot, route_name):
 
     assert um.volume < 35000.0, (
         f"UM exceeds minimal-material budget: {um.volume:.1f} mm3")
-    um_membrane_void = Pos(
+    # The UM annulus is now solid beneath the driver seat. The LM retains
+    # its material-minimal membrane; only the UM hollow was removed.
+    um_seat_witness = Pos(
         UM_CUTOUT[0] - 45.0, UM_CUTOUT[1], 11.5) * Cylinder(0.8, 1.0)
-    assert _intersection_volume(um, um_membrane_void) < 0.01
+    assert _intersection_volume(um, um_seat_witness) > .99 * um_seat_witness.volume
     for x, y in flush.UM_PILOT_XY:
         bore_z0 = flush.UM_SEAT_Z - core.UM_PILOT_DEPTH_MM
         bore_z1 = flush.UM_SEAT_Z + 0.1

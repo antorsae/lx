@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "name": "V4 body and caps \u2014 Engineering Plate, PETG Translucent + PLA Translucent, 560 mm3 changeover",
+  "shared_geometry_process_policy": "print_policy.json",
+  "model": {
+    "preset": "Bambu PETG Translucent @BBL P2S 0.6 nozzle",
+    "filament_id": "GFG01",
+    "slicer_filament": 1,
+    "gcode_tool": 0,
+    "ams_slot": 4,
+    "colour": "#C1C1C1",
+    "profile_overrides": {
+      "eng_plate_temp": [
+        "70"
+      ],
+      "eng_plate_temp_initial_layer": [
+        "70"
+      ]
+    }
+  },
+  "interface": {
+    "preset": "Bambu PLA Translucent @BBL P2S 0.6 nozzle",
+    "filament_id": "GFA17",
+    "slicer_filament": 2,
+    "gcode_tool": 1,
+    "ams_slot": 2,
+    "colour": "#B5001180",
+    "profile_overrides": {
+      "textured_plate_temp": [
+        "70"
+      ],
+      "textured_plate_temp_initial_layer": [
+        "70"
+      ],
+      "filament_flush_volumetric_speed": [
+        "12",
+        "12"
+      ],
+      "eng_plate_temp": [
+        "70"
+      ],
+      "eng_plate_temp_initial_layer": [
+        "70"
+      ]
+    }
+  },
+  "confirmation": "User confirmed 0.6 mm High Flow, PETG AMS slot 4, PLA AMS slot 2 on 2026-09-13.",
+  "colour_source": "Bambu Studio's selected translucent material colours; display colours do not bind AMS slots.",
+  "flush_volumes_matrix_mm3": [
+    0,
+    560,
+    560,
+    0
+  ],
+  "minimum_purge_mm3": 560,
+  "flush_source": "User clarified that the print used PETG Translucent with PLA and requested alternate V4 body/cap files after authorizing the 560 mm3 / 12 mm3/s changeover calibration.",
+  "body_surface_finish": {
+    "wall_generator": "classic",
+    "detect_thin_wall": "1",
+    "wall_sequence": "outer wall/inner wall",
+    "precise_outer_wall": "0"
+  },
+  "exceptions": [
+    "Resolve complete installed translucent filament presets instead of the Tinmorry/PLA Basic recipes. Keep nozzle variant columns, original geometry and shared role/support policies.",
+    "Shared-bed override: set PLA's textured plate settings to the PETG model's 70 C for both first and other layers. The body slice emitted 55 C during an early material change even with by_first_filament. Verify actual bed commands remain 70 C until shutdown. All nozzle, flow, cooling and retraction settings retain the native translucent recipes.",
+    "Use Bambu's explicit allow-mix-temp CLI option for the intentional PETG/PLA support pair. Neither material is relabelled or assigned a false support-material identity.",
+    "Body surface exception: Classic with thin-wall detection and outer-first ordering removes the measured 0.52-to-1.09 mm exterior bead-width variation at the D6 covers. Precise outer wall is disabled because Bambu ignores it for outer-first ordering. Qualify complete exterior coverage, D6 retaining continuity and insertion timing from the final slice. Caps and wings retain their existing Arachne process.",
+    "AMS slots are print-send mappings. Native filament_map/nozzle_map vectors identify the single physical nozzle, not AMS slots. Bind material 1 to slot 4 and material 2 to slot 2 in Bambu Studio's Send dialog.",
+    "Alternate changeover calibration: 560 mm3 each direction, multiplier 1, explicit 12 mm3/s PLA flush. Printing temperature and printing flow limits retain the translucent recipes.",
+    "Engineering Plate with glue: both filament engineering-plate temperatures are 70 C. No raft; 5 mm outer brim. Bottom support gap is zero; the mutual-support guide excludes these translucent filaments, so this remains a custom qualification."
+  ],
+  "plate": {
+    "type": "Engineering Plate",
+    "bed_temperature_c": 70,
+    "adhesion": "User-confirmed glue; 5 mm outer brim; no raft"
+  },
+  "process_overrides": {
+    "curr_bed_type": "Engineering Plate",
+    "raft_layers": "0",
+    "brim_type": "outer_only",
+    "brim_width": "5"
+  },
+  "support_overrides": {
+    "support_bottom_z_distance": "0"
+  },
+  "guide_review": {
+    "url": "https://wiki.bambulab.com/en/filament-acc/filament/h2d-pla-and-petg-mutual-support",
+    "source_record": "review/nd25fn4_engineering_guide/sources.json",
+    "applied": "PETG support base; PLA interface; three dense interface layers; zero top and bottom Z gaps; no raft. Keep prime tower and no contaminated flushing into model or supports.",
+    "qualification": "Outside the guide: it explicitly excludes PETG Translucent and only covers PLA Basic with PETG HF/Basic. Engineering Plate is not one of its listed plates.",
+    "material_exception": "Retain the user-selected PETG Translucent / PLA Translucent recipes (PETG 250/245 C, PLA 220 C) and Engineering Plate with glue at 70 C; do not claim the guide's 60 C / PLA Basic 230 C process is validated for these filaments.",
+    "geometry_exception": "Keep qualified snug supports, bed-only scope, 0.7 mm XY clearance and fixed 0.16 mm support layers instead of copying the guide's 0.4 mm tree-support template; these protect insert/cable bores and cap ceiling coverage.",
+    "cooling_exception": "Keep native translucent P2S cooling; the downloaded guide P2S recipe is for PLA Basic/PETG HF and must not overwrite the full translucent recipes.",
+    "operator": "Dry each material using its own supplier instructions; ventilate the P2S by opening the door and/or top cover while PLA is in use."
+  }
+}

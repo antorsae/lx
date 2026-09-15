@@ -1,0 +1,26 @@
+[
+  {
+    "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_02_LM_top_keyed_2_of_2_GUI.3mf",
+    "sha256": "e7930b84a7697ccb1a41ed6581a75ec14556d1702a6e88d5ad61748bd2a4f8c8",
+    "support_blockers": [
+      {
+        "id": "2",
+        "name": "obiwan_optional_lm_keyed_2_of_2_top.support_blocker_1",
+        "source_file": "obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl",
+        "object_id": "3"
+      }
+    ]
+  },
+  {
+    "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_03_UM_carrier_1_of_1_GUI.3mf",
+    "sha256": "24c0dbfbc55ce00fa2e4a963abdf434825d480cd1fb789c7546cd0b6855df503",
+    "support_blockers": [
+      {
+        "id": "2",
+        "name": "obiwan_core_2_of_2_um_carrier.support_blocker_1",
+        "source_file": "obiwan_core_2_of_2_um_carrier.support_blocker.stl",
+        "object_id": "3"
+      }
+    ]
+  }
+]

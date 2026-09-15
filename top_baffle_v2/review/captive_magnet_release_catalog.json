@@ -55,7 +55,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.35021039696371,
             -0.9366710617172503,
@@ -138,7 +138,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
@@ -246,7 +246,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.35021039696371,
             -0.9366710617172503,
@@ -329,7 +329,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
@@ -437,7 +437,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.9584785342953424,
             -0.2851646880226448,
@@ -520,7 +520,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
@@ -628,7 +628,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.9584785342953424,
             -0.2851646880226448,
@@ -711,7 +711,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
@@ -819,7 +819,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.9584785342953424,
             -0.2851646880226448,
@@ -939,7 +939,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.35021039696371,
             -0.9366710617172503,
@@ -1022,7 +1022,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
@@ -1130,7 +1130,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.9584785342953424,
             -0.2851646880226448,
@@ -1250,7 +1250,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.35021039696371,
             -0.9366710617172503,
@@ -1333,7 +1333,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
@@ -1441,7 +1441,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.9584785342953424,
             -0.2851646880226448,
@@ -1561,7 +1561,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.9584785342953424,
             -0.2851646880226448,
@@ -1681,7 +1681,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.35021039696371,
             -0.9366710617172503,
@@ -1801,7 +1801,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.35021039696371,
             -0.9366710617172503,
@@ -1884,7 +1884,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
         "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
@@ -1995,7 +1995,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.7064513012709772,
             -0.7077616540421945,
@@ -2120,7 +2120,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.7064513012709772,
             -0.7077616540421945,
@@ -2199,15 +2199,15 @@
       ],
       "source_file_sha256": {
         "../build/floor_stand/.obiwan_stage/manifest.json": "7600c070cca6cec27bb0e87870f4212e9af74fb371638269d777162799493926",
-        "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
+        "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/lm_split.py": "30286abb1d5427c924d0ccb53042c819fea54cdf0b5689bc9aa9ae15c48221dd",
@@ -2330,7 +2330,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.4383711467890776,
             0.8987940462991671,
@@ -2441,8 +2441,8 @@
             1.0
           ],
           "installed_marked_pole_axis_xyz": [
-            0.43837114678907746,
-            0.898794046299167,
+            0.43837114678907757,
+            0.8987940462991671,
             0.0
           ],
           "interface_datum_xyz_mm": [
@@ -2455,15 +2455,15 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
-            0.43837114678907746,
-            0.898794046299167,
+            0.43837114678907757,
+            0.8987940462991671,
             0.0
           ],
           "material_inward_xyz": [
-            -0.43837114678907746,
-            -0.898794046299167,
+            -0.43837114678907757,
+            -0.8987940462991671,
             -0.0
           ],
           "minimum_retaining_path_mm": 0.42,
@@ -2474,8 +2474,8 @@
           ],
           "owner": "base",
           "pair_axis_xyz": [
-            0.43837114678907746,
-            0.898794046299167,
+            0.43837114678907757,
+            0.8987940462991671,
             0.0
           ],
           "paired_magnet_face_separation_mm": 1.24,
@@ -2498,13 +2498,13 @@
               -1.0
             ],
             "marked_pole_axis_xyz": [
-              0.9455185755993168,
-              -0.32556815445715676,
+              0.945518575599317,
+              -0.3255681544571568,
               0.0
             ],
             "material_inward_xyz": [
-              -0.9455185755993168,
-              0.32556815445715676,
+              -0.945518575599317,
+              0.3255681544571568,
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
@@ -2534,15 +2534,15 @@
       ],
       "source_file_sha256": {
         "../build/floor_stand/.obiwan_stage/manifest.json": "7600c070cca6cec27bb0e87870f4212e9af74fb371638269d777162799493926",
-        "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
+        "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/lm_split.py": "30286abb1d5427c924d0ccb53042c819fea54cdf0b5689bc9aa9ae15c48221dd",
@@ -2688,7 +2688,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.7064513012709772,
             -0.7077616540421945,
@@ -2813,7 +2813,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.7064513012709772,
             -0.7077616540421945,
@@ -2938,7 +2938,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.4383711467890776,
             0.8987940462991671,
@@ -3049,8 +3049,8 @@
             1.0
           ],
           "installed_marked_pole_axis_xyz": [
-            0.43837114678907746,
-            0.898794046299167,
+            0.43837114678907757,
+            0.8987940462991671,
             0.0
           ],
           "interface_datum_xyz_mm": [
@@ -3063,15 +3063,15 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
-            0.43837114678907746,
-            0.898794046299167,
+            0.43837114678907757,
+            0.8987940462991671,
             0.0
           ],
           "material_inward_xyz": [
-            -0.43837114678907746,
-            -0.898794046299167,
+            -0.43837114678907757,
+            -0.8987940462991671,
             -0.0
           ],
           "minimum_retaining_path_mm": 0.42,
@@ -3082,8 +3082,8 @@
           ],
           "owner": "base",
           "pair_axis_xyz": [
-            0.43837114678907746,
-            0.898794046299167,
+            0.43837114678907757,
+            0.8987940462991671,
             0.0
           ],
           "paired_magnet_face_separation_mm": 1.24,
@@ -3106,13 +3106,13 @@
               -1.0
             ],
             "marked_pole_axis_xyz": [
-              0.8090169943749475,
-              -0.5877852522924731,
+              0.8090169943749477,
+              -0.5877852522924732,
               0.0
             ],
             "material_inward_xyz": [
-              -0.8090169943749475,
-              0.5877852522924731,
+              -0.8090169943749477,
+              0.5877852522924732,
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
@@ -3142,15 +3142,15 @@
       ],
       "source_file_sha256": {
         "../build/floor_stand/.obiwan_stage/manifest.json": "7600c070cca6cec27bb0e87870f4212e9af74fb371638269d777162799493926",
-        "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
+        "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -3216,7 +3216,7 @@
       "part": "obiwan_core_2_of_2_um_carrier",
       "print_orientation": "front_face_down",
       "print_sidecar": "../build/floor_stand/stl/obiwan_core_2_of_2_um_carrier.print.json",
-      "print_sidecar_sha256": "f3903568925208447e75de50ccdddc1de6fa737d761ba453e3f0a0ccd22aeda3",
+      "print_sidecar_sha256": "e66e046121e41ed63fb312f4a55126319ac0005fe4606f17a233a70ebf88646e",
       "rotation_deg": {
         "x": 180.0,
         "z": 0.0
@@ -3271,7 +3271,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.6360782202777641,
             0.7716245833877199,
@@ -3396,7 +3396,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.636078220277764,
             0.77162458338772,
@@ -3475,15 +3475,15 @@
       ],
       "source_file_sha256": {
         "../build/floor_stand/.obiwan_stage/manifest.json": "7600c070cca6cec27bb0e87870f4212e9af74fb371638269d777162799493926",
-        "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
+        "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -3541,7 +3541,7 @@
       "stage_manifest_sha256": "7600c070cca6cec27bb0e87870f4212e9af74fb371638269d777162799493926",
       "state": "floor_stand",
       "stl": "../build/floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
-      "stl_sha256": "098ea541fa8424e193275313a99086f745ba701e71cbfb4b6bc7e1997fdac41d",
+      "stl_sha256": "c8ec7ab952eb4182819336798f92defb5dd224e28a0135126b38bf62efb38aa9",
       "variant": "Obi-Wan"
     },
     {
@@ -3599,7 +3599,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.9584785342953424,
             -0.2851646880226448,
@@ -3682,7 +3682,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
@@ -3792,7 +3792,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.35021039696371,
             -0.9366710617172503,
@@ -3875,7 +3875,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
@@ -3985,7 +3985,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.9584785342953424,
             -0.2851646880226448,
@@ -4068,7 +4068,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
@@ -4178,7 +4178,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.35021039696371,
             -0.9366710617172503,
@@ -4261,7 +4261,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
@@ -4371,7 +4371,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.9584785342953424,
             -0.2851646880226448,
@@ -4491,7 +4491,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.35021039696371,
             -0.9366710617172503,
@@ -4574,7 +4574,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
         "../src/lx521_baffle/proud/b1.py": "f4369af0a9c7e5a283823e3c1b291fc4af0e116f6b9d10cc3d202f2db8ff170f",
@@ -4684,7 +4684,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.9584785342953424,
             -0.2851646880226448,
@@ -4804,7 +4804,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.35021039696371,
             -0.9366710617172503,
@@ -4887,7 +4887,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
         "../src/lx521_baffle/proud/b1.py": "f4369af0a9c7e5a283823e3c1b291fc4af0e116f6b9d10cc3d202f2db8ff170f",
@@ -4997,7 +4997,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.9584785342953424,
             -0.2851646880226448,
@@ -5117,7 +5117,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.9584785342953424,
             -0.2851646880226448,
@@ -5237,7 +5237,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.35021039696371,
             -0.9366710617172503,
@@ -5357,7 +5357,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.35021039696371,
             -0.9366710617172503,
@@ -5440,7 +5440,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
         "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
@@ -5548,7 +5548,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.0,
             -1.0,
@@ -5627,7 +5627,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/b2_split.py": "0eb2e20e6b2ec981a12232c1d47dfd7907f9aa20bca4cfd90a82d3358c74f486",
         "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
@@ -5729,7 +5729,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.35021039696371,
             -0.9366710617172503,
@@ -5812,7 +5812,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
@@ -5920,7 +5920,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.35021039696371,
             -0.9366710617172503,
@@ -6003,7 +6003,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
@@ -6111,7 +6111,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.9584785342953424,
             -0.2851646880226448,
@@ -6194,7 +6194,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
@@ -6302,7 +6302,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.9584785342953424,
             -0.2851646880226448,
@@ -6385,7 +6385,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
@@ -6493,7 +6493,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.9584785342953424,
             -0.2851646880226448,
@@ -6613,7 +6613,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.35021039696371,
             -0.9366710617172503,
@@ -6696,7 +6696,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
@@ -6804,7 +6804,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.9584785342953424,
             -0.2851646880226448,
@@ -6924,7 +6924,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.35021039696371,
             -0.9366710617172503,
@@ -7007,7 +7007,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
@@ -7115,7 +7115,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.9584785342953424,
             -0.2851646880226448,
@@ -7235,7 +7235,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.9584785342953424,
             -0.2851646880226448,
@@ -7355,7 +7355,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.35021039696371,
             -0.9366710617172503,
@@ -7475,7 +7475,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.35021039696371,
             -0.9366710617172503,
@@ -7558,7 +7558,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
         "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
@@ -7669,7 +7669,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.7064513012709772,
             -0.7077616540421945,
@@ -7794,7 +7794,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.7064513012709772,
             -0.7077616540421945,
@@ -7873,15 +7873,15 @@
       ],
       "source_file_sha256": {
         "../build/no_floor_stand/.obiwan_stage/manifest.json": "8d7e0ec2b0bba23326de277ca287c76a3a377b95a681926d9fc89f597bfe73a4",
-        "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
+        "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/lm_split.py": "30286abb1d5427c924d0ccb53042c819fea54cdf0b5689bc9aa9ae15c48221dd",
@@ -8004,7 +8004,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.4383711467890776,
             0.8987940462991671,
@@ -8115,8 +8115,8 @@
             1.0
           ],
           "installed_marked_pole_axis_xyz": [
-            0.43837114678907746,
-            0.898794046299167,
+            0.43837114678907757,
+            0.8987940462991671,
             0.0
           ],
           "interface_datum_xyz_mm": [
@@ -8129,15 +8129,15 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
-            0.43837114678907746,
-            0.898794046299167,
+            0.43837114678907757,
+            0.8987940462991671,
             0.0
           ],
           "material_inward_xyz": [
-            -0.43837114678907746,
-            -0.898794046299167,
+            -0.43837114678907757,
+            -0.8987940462991671,
             -0.0
           ],
           "minimum_retaining_path_mm": 0.42,
@@ -8148,8 +8148,8 @@
           ],
           "owner": "base",
           "pair_axis_xyz": [
-            0.43837114678907746,
-            0.898794046299167,
+            0.43837114678907757,
+            0.8987940462991671,
             0.0
           ],
           "paired_magnet_face_separation_mm": 1.24,
@@ -8172,13 +8172,13 @@
               -1.0
             ],
             "marked_pole_axis_xyz": [
-              0.9455185755993168,
-              -0.32556815445715676,
+              0.945518575599317,
+              -0.3255681544571568,
               0.0
             ],
             "material_inward_xyz": [
-              -0.9455185755993168,
-              0.32556815445715676,
+              -0.945518575599317,
+              0.3255681544571568,
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
@@ -8208,15 +8208,15 @@
       ],
       "source_file_sha256": {
         "../build/no_floor_stand/.obiwan_stage/manifest.json": "8d7e0ec2b0bba23326de277ca287c76a3a377b95a681926d9fc89f597bfe73a4",
-        "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
+        "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/lm_split.py": "30286abb1d5427c924d0ccb53042c819fea54cdf0b5689bc9aa9ae15c48221dd",
@@ -8362,7 +8362,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.7064513012709772,
             -0.7077616540421945,
@@ -8487,7 +8487,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.7064513012709772,
             -0.7077616540421945,
@@ -8612,7 +8612,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.4383711467890776,
             0.8987940462991671,
@@ -8723,8 +8723,8 @@
             1.0
           ],
           "installed_marked_pole_axis_xyz": [
-            0.43837114678907746,
-            0.898794046299167,
+            0.43837114678907757,
+            0.8987940462991671,
             0.0
           ],
           "interface_datum_xyz_mm": [
@@ -8737,15 +8737,15 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
-            0.43837114678907746,
-            0.898794046299167,
+            0.43837114678907757,
+            0.8987940462991671,
             0.0
           ],
           "material_inward_xyz": [
-            -0.43837114678907746,
-            -0.898794046299167,
+            -0.43837114678907757,
+            -0.8987940462991671,
             -0.0
           ],
           "minimum_retaining_path_mm": 0.42,
@@ -8756,8 +8756,8 @@
           ],
           "owner": "base",
           "pair_axis_xyz": [
-            0.43837114678907746,
-            0.898794046299167,
+            0.43837114678907757,
+            0.8987940462991671,
             0.0
           ],
           "paired_magnet_face_separation_mm": 1.24,
@@ -8780,13 +8780,13 @@
               -1.0
             ],
             "marked_pole_axis_xyz": [
-              0.8090169943749475,
-              -0.5877852522924731,
+              0.8090169943749477,
+              -0.5877852522924732,
               0.0
             ],
             "material_inward_xyz": [
-              -0.8090169943749475,
-              0.5877852522924731,
+              -0.8090169943749477,
+              0.5877852522924732,
               0.0
             ],
             "seated_magnet_center_xyz_mm": [
@@ -8816,15 +8816,15 @@
       ],
       "source_file_sha256": {
         "../build/no_floor_stand/.obiwan_stage/manifest.json": "8d7e0ec2b0bba23326de277ca287c76a3a377b95a681926d9fc89f597bfe73a4",
-        "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
+        "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -8890,7 +8890,7 @@
       "part": "obiwan_core_2_of_2_um_carrier",
       "print_orientation": "front_face_down",
       "print_sidecar": "../build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.print.json",
-      "print_sidecar_sha256": "0d43b2ef9f862afa8bee686267d6cb1d46ee4876e1f2673ff85c8e958c376305",
+      "print_sidecar_sha256": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23",
       "rotation_deg": {
         "x": 180.0,
         "z": 0.0
@@ -8945,7 +8945,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.6360782202777641,
             0.7716245833877199,
@@ -8975,12 +8975,12 @@
             "actual_face_xyz_mm": [
               19.252254317620164,
               19.816425717978575,
-              3.200000099999963
+              3.2000000999999667
             ],
             "cavity_center_xyz_mm": [
               20.250897123456255,
               21.02787631389731,
-              3.200000099999963
+              3.2000000999999667
             ],
             "insertion_direction_xyz": [
               0.0,
@@ -9000,7 +9000,7 @@
             "seated_magnet_center_xyz_mm": [
               20.219093212442367,
               20.989295084727928,
-              3.200000099999963
+              3.2000000999999667
             ]
           },
           "print_up_source_xyz": [
@@ -9070,7 +9070,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.636078220277764,
             0.77162458338772,
@@ -9100,12 +9100,12 @@
             "actual_face_xyz_mm": [
               86.02774588237982,
               19.816425717978575,
-              3.200000099999963
+              3.2000000999999667
             ],
             "cavity_center_xyz_mm": [
               85.02910307654372,
               21.02787631389731,
-              3.200000099999963
+              3.2000000999999667
             ],
             "insertion_direction_xyz": [
               0.0,
@@ -9125,7 +9125,7 @@
             "seated_magnet_center_xyz_mm": [
               85.06090698755762,
               20.989295084727928,
-              3.200000099999963
+              3.2000000999999667
             ]
           },
           "print_up_source_xyz": [
@@ -9149,15 +9149,15 @@
       ],
       "source_file_sha256": {
         "../build/no_floor_stand/.obiwan_stage/manifest.json": "8d7e0ec2b0bba23326de277ca287c76a3a377b95a681926d9fc89f597bfe73a4",
-        "../scripts/export_obiwan_staged.py": "a238faa0ea2a089d1467040ef5731cfc07b39c0ef7f027c20d6af813cb68556c",
+        "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
         "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
         "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -9202,7 +9202,7 @@
           0.0,
           0.0,
           -1.0,
-          18.300000099999963
+          18.300000099999966
         ],
         [
           0.0,
@@ -9215,7 +9215,7 @@
       "stage_manifest_sha256": "8d7e0ec2b0bba23326de277ca287c76a3a377b95a681926d9fc89f597bfe73a4",
       "state": "no_floor_stand",
       "stl": "../build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
-      "stl_sha256": "fbf826d4d10de7f28049a649c3fb9a4464d5d3713ee35baf62780667d7608750",
+      "stl_sha256": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
       "variant": "Obi-Wan"
     },
     {
@@ -9273,7 +9273,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.9584785342953424,
             -0.2851646880226448,
@@ -9356,7 +9356,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
@@ -9466,7 +9466,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.35021039696371,
             -0.9366710617172503,
@@ -9549,7 +9549,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
@@ -9659,7 +9659,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.9584785342953424,
             -0.2851646880226448,
@@ -9742,7 +9742,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
@@ -9852,7 +9852,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.35021039696371,
             -0.9366710617172503,
@@ -9935,7 +9935,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
@@ -10045,7 +10045,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.9584785342953424,
             -0.2851646880226448,
@@ -10165,7 +10165,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.35021039696371,
             -0.9366710617172503,
@@ -10248,7 +10248,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
         "../src/lx521_baffle/proud/b1.py": "f4369af0a9c7e5a283823e3c1b291fc4af0e116f6b9d10cc3d202f2db8ff170f",
@@ -10358,7 +10358,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.9584785342953424,
             -0.2851646880226448,
@@ -10478,7 +10478,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.35021039696371,
             -0.9366710617172503,
@@ -10561,7 +10561,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
         "../src/lx521_baffle/proud/b1.py": "f4369af0a9c7e5a283823e3c1b291fc4af0e116f6b9d10cc3d202f2db8ff170f",
@@ -10671,7 +10671,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.9584785342953424,
             -0.2851646880226448,
@@ -10791,7 +10791,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.9584785342953424,
             -0.2851646880226448,
@@ -10911,7 +10911,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.35021039696371,
             -0.9366710617172503,
@@ -11031,7 +11031,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             -0.35021039696371,
             -0.9366710617172503,
@@ -11114,7 +11114,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
         "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
@@ -11222,7 +11222,7 @@
           "magnet_count": 1,
           "magnet_depth_mm": 2.0,
           "magnet_diameter_mm": 5.0,
-          "magnet_seating": "seat against the interface-side 0.45-mm skin; 0.10-mm axial cavity allowance remains behind magnet",
+          "magnet_seating": "use seated_magnet_center_xyz_mm for this closure; nominal face skin 0.52 mm; total axial cavity allowance 0.10 mm",
           "marked_pole_axis_xyz": [
             0.0,
             -1.0,
@@ -11301,7 +11301,7 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
         "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
         "../src/lx521_baffle/proud/b2_split.py": "0eb2e20e6b2ec981a12232c1d47dfd7907f9aa20bca4cfd90a82d3358c74f486",
         "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
@@ -11515,9 +11515,9 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -11892,9 +11892,9 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -12124,9 +12124,9 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -12501,9 +12501,9 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -12733,9 +12733,9 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -13110,9 +13110,9 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -13342,9 +13342,9 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -13719,9 +13719,9 @@
         "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
         "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
         "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
-        "../src/lx521_baffle/magnets.py": "a98cc66cf669310cff8adad5494f8a52fe194b78435176347293b3a64de886e5",
-        "../src/lx521_baffle/obiwan/bumps.py": "1daaaa51e35698c91e84cf826fc309c5f1f05ac55b25455c8b920435bf2fc9ed",
-        "../src/lx521_baffle/obiwan/carriers.py": "d600df0c946b444d9fd44583fb2d8af86f336196c4bd19ca24632437233792f5",
+        "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+        "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+        "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
         "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
         "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
         "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
@@ -13912,7 +13912,989 @@
     "scope": "every_released_acoustic_part",
     "slicer": "Bambu Studio P2S 0.4 mm / 0.16 mm Arachne"
   },
+  "provenance": {
+    "bindings": [
+      {
+        "authority": "a436423f18bb2539544317febb6b59ff428f8667a68ba4fbbd87281f82c74361",
+        "id": "floor_stand:A:stock_shoulder_1_of_4_top_left",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "c226846fba25d831631e1ae83f2d20bd4229407e62ae8a196c1116f13d903091"
+      },
+      {
+        "authority": "58532971771c35d04af82064ec6030a8765006c82def7ad05d7fa0f9bc1da78a",
+        "id": "floor_stand:A:stock_shoulder_2_of_4_top_right",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "97d976c11078ed0a4e6e6f4f3862bbcd9042994b48a21ef5ee254f8f71fd838f"
+      },
+      {
+        "authority": "d7d7cbcfbebd53e2afaf800140a635dd88b08c273249e660e9e585830308a01b",
+        "id": "floor_stand:A:stock_shoulder_3_of_4_bottom_left",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "498086f24109d792c45212144855bd570c06af4b5128fdca371a8cdb00960cf3"
+      },
+      {
+        "authority": "b1be2b12a7aecea21cff86be1c195065aff2a19832a22ca3b9626fd05b8eb02e",
+        "id": "floor_stand:A:stock_shoulder_4_of_4_bottom_right",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "43fa254e1c788a6b9ec2170bf892955be8ec8321bc9aea0408f494038ea10792"
+      },
+      {
+        "authority": "d79e6f0b1948f72fb85f362985798e6a292f7fd0aeb7b2ecf82845527f1f0804",
+        "id": "floor_stand:B1:stock_wing_1_of_2_left",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b1.py": "f4369af0a9c7e5a283823e3c1b291fc4af0e116f6b9d10cc3d202f2db8ff170f",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "7749a25921f930432d155f8988afe0dd8516f2b119560c11890f4f2a309794f1"
+      },
+      {
+        "authority": "c566892514e8c03c4cb70cbaaa5aedb2a3b3d062b504fc75634697262d659cb0",
+        "id": "floor_stand:B1:stock_wing_2_of_2_right",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b1.py": "f4369af0a9c7e5a283823e3c1b291fc4af0e116f6b9d10cc3d202f2db8ff170f",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "8da84750e2cff0075955bd8245831ebfc0ddfc97d9bc36e97789069cadf5d67b"
+      },
+      {
+        "authority": "d524b7eb0817bae6ac829875974640c57475ea0550d2d7e86d456568ad69c4dc",
+        "id": "floor_stand:B2:stock_4_of_4_vase_b2",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/b2_split.py": "0eb2e20e6b2ec981a12232c1d47dfd7907f9aa20bca4cfd90a82d3358c74f486",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "6c7b57df55b27ffa725e07d2d034f816f8350c86876d29a788fbc33ef0dfb25a"
+      },
+      {
+        "authority": "5b9ee215779c28bfb1f4fcba762d2b62689d59154f3faf1620604c04cd9d8ac4",
+        "id": "floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_1_of_2_bottom",
+        "source": {
+          "../build/floor_stand/.obiwan_stage/manifest.json": "7600c070cca6cec27bb0e87870f4212e9af74fb371638269d777162799493926",
+          "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/lm_split.py": "30286abb1d5427c924d0ccb53042c819fea54cdf0b5689bc9aa9ae15c48221dd",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "df222c6fbf8a2b7ddaee8c7ca5e467389eafd219b15c17d546d7a956cc03dd49"
+      },
+      {
+        "authority": "29e254c13369d618e5e833d41ea79359d9da9e36057cefd3c63e14324bbf23a2",
+        "id": "floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_2_of_2_top",
+        "source": {
+          "../build/floor_stand/.obiwan_stage/manifest.json": "7600c070cca6cec27bb0e87870f4212e9af74fb371638269d777162799493926",
+          "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/lm_split.py": "30286abb1d5427c924d0ccb53042c819fea54cdf0b5689bc9aa9ae15c48221dd",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "7798396fdbc5f837dc4b79fdc2792f781bcbd6af474e6b9dbb7edb9d78768ee4"
+      },
+      {
+        "authority": "c849f60123eb5f86cbaf6cb499dbc871f06e1094ba0f5dc39e2a85f2aa1d5d45",
+        "id": "floor_stand:Obi-Wan:obiwan_core_1_of_2_lm_carrier",
+        "source": {
+          "../build/floor_stand/.obiwan_stage/manifest.json": "7600c070cca6cec27bb0e87870f4212e9af74fb371638269d777162799493926",
+          "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "53f869edf67a3f760413e3615dae0fc59f4dae6eab029b767552ac3a78241587"
+      },
+      {
+        "authority": "e66e046121e41ed63fb312f4a55126319ac0005fe4606f17a233a70ebf88646e",
+        "id": "floor_stand:Obi-Wan:obiwan_core_2_of_2_um_carrier",
+        "source": {
+          "../build/floor_stand/.obiwan_stage/manifest.json": "7600c070cca6cec27bb0e87870f4212e9af74fb371638269d777162799493926",
+          "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "c8ec7ab952eb4182819336798f92defb5dd224e28a0135126b38bf62efb38aa9"
+      },
+      {
+        "authority": "88b33fb027cf01fb8cc0f7f3377b24f9c56a101f58db36699f004b65bde2e33d",
+        "id": "floor_stand:V1-A:slim_shoulder_1_of_4_bottom_left",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/v1.py": "0565d90e792923913aa7cd38b45fe2b7c45da1c9d6be1b0ca44f66a5b0d51fb0",
+          "../src/lx521_baffle/proud/v1_attachments.py": "43e4fdb41a5c3f424b975f0534c5aa8c2149d0c0299f7cc3a15da159ac05b572",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "7ece5a1b6edf2e30a5764feb5abc982f8bb85bffb5269ebc66cbfacff1bcd2af"
+      },
+      {
+        "authority": "a41d0a596fae2f275188a39d9b77a6cb64c36820aeb92fc2ecfef8ca2fd73341",
+        "id": "floor_stand:V1-A:slim_shoulder_2_of_4_top_left",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/v1.py": "0565d90e792923913aa7cd38b45fe2b7c45da1c9d6be1b0ca44f66a5b0d51fb0",
+          "../src/lx521_baffle/proud/v1_attachments.py": "43e4fdb41a5c3f424b975f0534c5aa8c2149d0c0299f7cc3a15da159ac05b572",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "6336437600757c539da9e109d44901fdb078da56c6e41d37c03b7c4717e5c6a1"
+      },
+      {
+        "authority": "65ff54ad47f93607d64b22c237061c3e175cf280f7fa264075be1ed796ee04e4",
+        "id": "floor_stand:V1-A:slim_shoulder_3_of_4_bottom_right",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/v1.py": "0565d90e792923913aa7cd38b45fe2b7c45da1c9d6be1b0ca44f66a5b0d51fb0",
+          "../src/lx521_baffle/proud/v1_attachments.py": "43e4fdb41a5c3f424b975f0534c5aa8c2149d0c0299f7cc3a15da159ac05b572",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "3c520a232faa90973f9b422c8f8f549dc2d4d25cbb67ba466989bdb5f079b398"
+      },
+      {
+        "authority": "95bf92433f72b0fe88eb5ab76d79a2219d957cc74d355706763c8b977da4863f",
+        "id": "floor_stand:V1-A:slim_shoulder_4_of_4_top_right",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/v1.py": "0565d90e792923913aa7cd38b45fe2b7c45da1c9d6be1b0ca44f66a5b0d51fb0",
+          "../src/lx521_baffle/proud/v1_attachments.py": "43e4fdb41a5c3f424b975f0534c5aa8c2149d0c0299f7cc3a15da159ac05b572",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "647ee1a713b756e5fc4900af2d5f824c204598c99108a6b34ab602f12e1f562e"
+      },
+      {
+        "authority": "5ff72a61f5c8eb9445c3740f9f79b927ac242510e3b504ec6b95c97b2f3ed269",
+        "id": "floor_stand:V1-B1:slim_wing_1_of_2_left",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b1.py": "f4369af0a9c7e5a283823e3c1b291fc4af0e116f6b9d10cc3d202f2db8ff170f",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/v1.py": "0565d90e792923913aa7cd38b45fe2b7c45da1c9d6be1b0ca44f66a5b0d51fb0",
+          "../src/lx521_baffle/proud/v1_attachments.py": "43e4fdb41a5c3f424b975f0534c5aa8c2149d0c0299f7cc3a15da159ac05b572",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "7b8a1ef0d700cd196d177ad16eed0e51da2601f81e91f777a77df314e40cd788"
+      },
+      {
+        "authority": "1c9cc64a48c39cba7d64ce94b1d406bd56d55fb43e305b39a7b9497780924b02",
+        "id": "floor_stand:V1-B1:slim_wing_2_of_2_right",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b1.py": "f4369af0a9c7e5a283823e3c1b291fc4af0e116f6b9d10cc3d202f2db8ff170f",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/v1.py": "0565d90e792923913aa7cd38b45fe2b7c45da1c9d6be1b0ca44f66a5b0d51fb0",
+          "../src/lx521_baffle/proud/v1_attachments.py": "43e4fdb41a5c3f424b975f0534c5aa8c2149d0c0299f7cc3a15da159ac05b572",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "52491d7e9e756a76699d176edd2f0303dbb2ab9a473b85f588fb0dee194d73e9"
+      },
+      {
+        "authority": "651f54e6236f0b5e9e2ec4ebbb10dbfb41d6bba121c54f26325865350fcfd225",
+        "id": "floor_stand:V1L:slim_4_of_4_vase_b2",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/v1.py": "0565d90e792923913aa7cd38b45fe2b7c45da1c9d6be1b0ca44f66a5b0d51fb0",
+          "../src/lx521_baffle/proud/v1l.py": "5d3f5aefae0965c132ccd71fac370bf8e2ae816981394456a864eef30cb3c12f",
+          "../src/lx521_baffle/proud/v1l_split.py": "7ea4a665ad94d0215a11c971c6e6bd09a894465cb68c23faaba80c48c54a642d",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "894fdc60dc89f515b7b8f15b1e6af96d493423f4f0f8ec213e6f66643602de7a"
+      },
+      {
+        "authority": "6866ba91c5506fbe26f77c8c8e3e60683f9f1351dbaa4d0953f5d0db6bd254a3",
+        "id": "floor_stand:coupon1:lx521_coupon_1_fit_plate",
+        "source": {
+          "../scripts/export_coupon.py": "f8da33edca7cdf31411982b8faf5d62f13955dcdee5f2b1eaddde94687cf3efe",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/b2_split.py": "0eb2e20e6b2ec981a12232c1d47dfd7907f9aa20bca4cfd90a82d3358c74f486",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "88ec70cfeaf03b854e8271aaac5d0646c24efbdba8d6f374fad12a644df425a3"
+      },
+      {
+        "authority": "a436423f18bb2539544317febb6b59ff428f8667a68ba4fbbd87281f82c74361",
+        "id": "no_floor_stand:A:stock_shoulder_1_of_4_top_left",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "c226846fba25d831631e1ae83f2d20bd4229407e62ae8a196c1116f13d903091"
+      },
+      {
+        "authority": "58532971771c35d04af82064ec6030a8765006c82def7ad05d7fa0f9bc1da78a",
+        "id": "no_floor_stand:A:stock_shoulder_2_of_4_top_right",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "97d976c11078ed0a4e6e6f4f3862bbcd9042994b48a21ef5ee254f8f71fd838f"
+      },
+      {
+        "authority": "d7d7cbcfbebd53e2afaf800140a635dd88b08c273249e660e9e585830308a01b",
+        "id": "no_floor_stand:A:stock_shoulder_3_of_4_bottom_left",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "498086f24109d792c45212144855bd570c06af4b5128fdca371a8cdb00960cf3"
+      },
+      {
+        "authority": "b1be2b12a7aecea21cff86be1c195065aff2a19832a22ca3b9626fd05b8eb02e",
+        "id": "no_floor_stand:A:stock_shoulder_4_of_4_bottom_right",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "43fa254e1c788a6b9ec2170bf892955be8ec8321bc9aea0408f494038ea10792"
+      },
+      {
+        "authority": "d79e6f0b1948f72fb85f362985798e6a292f7fd0aeb7b2ecf82845527f1f0804",
+        "id": "no_floor_stand:B1:stock_wing_1_of_2_left",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b1.py": "f4369af0a9c7e5a283823e3c1b291fc4af0e116f6b9d10cc3d202f2db8ff170f",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "7749a25921f930432d155f8988afe0dd8516f2b119560c11890f4f2a309794f1"
+      },
+      {
+        "authority": "c566892514e8c03c4cb70cbaaa5aedb2a3b3d062b504fc75634697262d659cb0",
+        "id": "no_floor_stand:B1:stock_wing_2_of_2_right",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/attachments.py": "3dde6b40d1ac8896f6723281b30886edf19b1649edfe1d7500b7e5da39d43747",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b1.py": "f4369af0a9c7e5a283823e3c1b291fc4af0e116f6b9d10cc3d202f2db8ff170f",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "8da84750e2cff0075955bd8245831ebfc0ddfc97d9bc36e97789069cadf5d67b"
+      },
+      {
+        "authority": "7412c68b8b62e99d97c59bef658faffe69e8b57ef56c1be6ece0a9c39a702871",
+        "id": "no_floor_stand:B2:stock_4_of_4_vase_b2",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/b2_split.py": "0eb2e20e6b2ec981a12232c1d47dfd7907f9aa20bca4cfd90a82d3358c74f486",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "b8bf6122dbb5fa5e9f26f401264ef92a13c94149629db6742231b4a35ed38833"
+      },
+      {
+        "authority": "5823ecf29a94c2b09512c38baaab6f8c3db1d8c825bb50ee060214cf85c63384",
+        "id": "no_floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_1_of_2_bottom",
+        "source": {
+          "../build/no_floor_stand/.obiwan_stage/manifest.json": "8d7e0ec2b0bba23326de277ca287c76a3a377b95a681926d9fc89f597bfe73a4",
+          "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/lm_split.py": "30286abb1d5427c924d0ccb53042c819fea54cdf0b5689bc9aa9ae15c48221dd",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "87bcfde710cf16eb7ff094631e27071721a913945b55f23fdc34ebd36660eb23"
+      },
+      {
+        "authority": "0e0c95c72d53af3f16a35daff584eaa25af35d1d8d118fec96bb15bf66bb306f",
+        "id": "no_floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_2_of_2_top",
+        "source": {
+          "../build/no_floor_stand/.obiwan_stage/manifest.json": "8d7e0ec2b0bba23326de277ca287c76a3a377b95a681926d9fc89f597bfe73a4",
+          "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/lm_split.py": "30286abb1d5427c924d0ccb53042c819fea54cdf0b5689bc9aa9ae15c48221dd",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "8070ccbdd173aabe88e62020ce03f729a184750a8c3665caf8cc7d9e671adfe5"
+      },
+      {
+        "authority": "e0ea9c142eaba9512c143c9fad956054151a3361fc593b2683ba017c3e55d7ef",
+        "id": "no_floor_stand:Obi-Wan:obiwan_core_1_of_2_lm_carrier",
+        "source": {
+          "../build/no_floor_stand/.obiwan_stage/manifest.json": "8d7e0ec2b0bba23326de277ca287c76a3a377b95a681926d9fc89f597bfe73a4",
+          "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "16d0b4d604a660cfad61011077b3b496a86b5211cc550d8b2db15c50284e5f87"
+      },
+      {
+        "authority": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23",
+        "id": "no_floor_stand:Obi-Wan:obiwan_core_2_of_2_um_carrier",
+        "source": {
+          "../build/no_floor_stand/.obiwan_stage/manifest.json": "8d7e0ec2b0bba23326de277ca287c76a3a377b95a681926d9fc89f597bfe73a4",
+          "../scripts/export_obiwan_staged.py": "7fc7d94992f9ad17631ff228030a5164fbd037ea25083077ee33770a563f304c",
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc"
+      },
+      {
+        "authority": "88b33fb027cf01fb8cc0f7f3377b24f9c56a101f58db36699f004b65bde2e33d",
+        "id": "no_floor_stand:V1-A:slim_shoulder_1_of_4_bottom_left",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/v1.py": "0565d90e792923913aa7cd38b45fe2b7c45da1c9d6be1b0ca44f66a5b0d51fb0",
+          "../src/lx521_baffle/proud/v1_attachments.py": "43e4fdb41a5c3f424b975f0534c5aa8c2149d0c0299f7cc3a15da159ac05b572",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "7ece5a1b6edf2e30a5764feb5abc982f8bb85bffb5269ebc66cbfacff1bcd2af"
+      },
+      {
+        "authority": "a41d0a596fae2f275188a39d9b77a6cb64c36820aeb92fc2ecfef8ca2fd73341",
+        "id": "no_floor_stand:V1-A:slim_shoulder_2_of_4_top_left",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/v1.py": "0565d90e792923913aa7cd38b45fe2b7c45da1c9d6be1b0ca44f66a5b0d51fb0",
+          "../src/lx521_baffle/proud/v1_attachments.py": "43e4fdb41a5c3f424b975f0534c5aa8c2149d0c0299f7cc3a15da159ac05b572",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "6336437600757c539da9e109d44901fdb078da56c6e41d37c03b7c4717e5c6a1"
+      },
+      {
+        "authority": "65ff54ad47f93607d64b22c237061c3e175cf280f7fa264075be1ed796ee04e4",
+        "id": "no_floor_stand:V1-A:slim_shoulder_3_of_4_bottom_right",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/v1.py": "0565d90e792923913aa7cd38b45fe2b7c45da1c9d6be1b0ca44f66a5b0d51fb0",
+          "../src/lx521_baffle/proud/v1_attachments.py": "43e4fdb41a5c3f424b975f0534c5aa8c2149d0c0299f7cc3a15da159ac05b572",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "3c520a232faa90973f9b422c8f8f549dc2d4d25cbb67ba466989bdb5f079b398"
+      },
+      {
+        "authority": "95bf92433f72b0fe88eb5ab76d79a2219d957cc74d355706763c8b977da4863f",
+        "id": "no_floor_stand:V1-A:slim_shoulder_4_of_4_top_right",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/a_comp.py": "5b4a92012252b8e9d5dcbeade9cf919b87c087d673c030b409a29aae46a7d2be",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/v1.py": "0565d90e792923913aa7cd38b45fe2b7c45da1c9d6be1b0ca44f66a5b0d51fb0",
+          "../src/lx521_baffle/proud/v1_attachments.py": "43e4fdb41a5c3f424b975f0534c5aa8c2149d0c0299f7cc3a15da159ac05b572",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "647ee1a713b756e5fc4900af2d5f824c204598c99108a6b34ab602f12e1f562e"
+      },
+      {
+        "authority": "5ff72a61f5c8eb9445c3740f9f79b927ac242510e3b504ec6b95c97b2f3ed269",
+        "id": "no_floor_stand:V1-B1:slim_wing_1_of_2_left",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b1.py": "f4369af0a9c7e5a283823e3c1b291fc4af0e116f6b9d10cc3d202f2db8ff170f",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/v1.py": "0565d90e792923913aa7cd38b45fe2b7c45da1c9d6be1b0ca44f66a5b0d51fb0",
+          "../src/lx521_baffle/proud/v1_attachments.py": "43e4fdb41a5c3f424b975f0534c5aa8c2149d0c0299f7cc3a15da159ac05b572",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "7b8a1ef0d700cd196d177ad16eed0e51da2601f81e91f777a77df314e40cd788"
+      },
+      {
+        "authority": "1c9cc64a48c39cba7d64ce94b1d406bd56d55fb43e305b39a7b9497780924b02",
+        "id": "no_floor_stand:V1-B1:slim_wing_2_of_2_right",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b1.py": "f4369af0a9c7e5a283823e3c1b291fc4af0e116f6b9d10cc3d202f2db8ff170f",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/v1.py": "0565d90e792923913aa7cd38b45fe2b7c45da1c9d6be1b0ca44f66a5b0d51fb0",
+          "../src/lx521_baffle/proud/v1_attachments.py": "43e4fdb41a5c3f424b975f0534c5aa8c2149d0c0299f7cc3a15da159ac05b572",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "52491d7e9e756a76699d176edd2f0303dbb2ab9a473b85f588fb0dee194d73e9"
+      },
+      {
+        "authority": "a9b97bc5ea362c52c4615602044c4e253942aeb5d09bf39317f498b6eee57d47",
+        "id": "no_floor_stand:V1L:slim_4_of_4_vase_b2",
+        "source": {
+          "../scripts/export_piece_stls.py": "94bc06ad60532499709eab99f33056534f2b4930f7678d5a117c582675ff2838",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/b.py": "dab60d8a1390f9dae80b12e8cee997312b040a21fb8441202cad210d3cb393f5",
+          "../src/lx521_baffle/proud/b2.py": "c75607d37710d25106d2e1ed15f2bd16b5f4c3ed83305d626d74545e8830b56d",
+          "../src/lx521_baffle/proud/v1.py": "0565d90e792923913aa7cd38b45fe2b7c45da1c9d6be1b0ca44f66a5b0d51fb0",
+          "../src/lx521_baffle/proud/v1l.py": "5d3f5aefae0965c132ccd71fac370bf8e2ae816981394456a864eef30cb3c12f",
+          "../src/lx521_baffle/proud/v1l_split.py": "7ea4a665ad94d0215a11c971c6e6bd09a894465cb68c23faaba80c48c54a642d",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "33ee34409d1de413ca149d16c06fd670b093f110a6e9ce60fa7248821068ea0d"
+      },
+      {
+        "authority": "6866ba91c5506fbe26f77c8c8e3e60683f9f1351dbaa4d0953f5d0db6bd254a3",
+        "id": "no_floor_stand:coupon1:lx521_coupon_1_fit_plate",
+        "source": {
+          "../scripts/export_coupon.py": "f8da33edca7cdf31411982b8faf5d62f13955dcdee5f2b1eaddde94687cf3efe",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/proud/b2_split.py": "0eb2e20e6b2ec981a12232c1d47dfd7907f9aa20bca4cfd90a82d3358c74f486",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "88ec70cfeaf03b854e8271aaac5d0646c24efbdba8d6f374fad12a644df425a3"
+      },
+      {
+        "authority": "71e19818d8a4bfa1b8c932f7d532a8776e6719ea1c30cc04aad6e603fea5202c",
+        "id": "shared:Obi-Wan-Flat:obiwan_wing_flat_left_split2_1_of_2_lm_lower",
+        "source": {
+          "../scripts/export_obiwan_wings.py": "1b24a437a22ca7fb44ee2471daa5d7fb53c928078fe25f062408e0f764a32e8d",
+          "../scripts/export_steps.py": "98033e876a66f9eba8aa6517034015e389dc0e2a79c14ee4a5c34df953b9d53f",
+          "../scripts/gen_obiwan_wing_design_map.py": "b744ccd930c7142c47bc5351598b82b680eb6b247f33d840dd4bac28fe3e1519",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/obiwan/wings.py": "392f155db3a9190ae32b735acd344612f8577c0d8386554c4c9be0bdce8c509f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "6a810e136c585d3419011ae003ff4445b09fa76a2b6eaa912f0850ff50eb1d3a"
+      },
+      {
+        "authority": "3881c48e59c0f542bfb2e93292d52d89d042cac9b6bd1fe8f90a77e03c6abf01",
+        "id": "shared:Obi-Wan-Flat:obiwan_wing_flat_left_split2_2_of_2_lm_um_upper",
+        "source": {
+          "../scripts/export_obiwan_wings.py": "1b24a437a22ca7fb44ee2471daa5d7fb53c928078fe25f062408e0f764a32e8d",
+          "../scripts/export_steps.py": "98033e876a66f9eba8aa6517034015e389dc0e2a79c14ee4a5c34df953b9d53f",
+          "../scripts/gen_obiwan_wing_design_map.py": "b744ccd930c7142c47bc5351598b82b680eb6b247f33d840dd4bac28fe3e1519",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/obiwan/wings.py": "392f155db3a9190ae32b735acd344612f8577c0d8386554c4c9be0bdce8c509f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "c750c0025c0a168f50705ede3a77e84d3954432f56155d29a86d494c6d5cef79"
+      },
+      {
+        "authority": "fae1e6c27de5164d94a573dcdcb087dc636a5b04cd6f98a498f9f09541d11651",
+        "id": "shared:Obi-Wan-Flat:obiwan_wing_flat_right_split2_1_of_2_lm_lower",
+        "source": {
+          "../scripts/export_obiwan_wings.py": "1b24a437a22ca7fb44ee2471daa5d7fb53c928078fe25f062408e0f764a32e8d",
+          "../scripts/export_steps.py": "98033e876a66f9eba8aa6517034015e389dc0e2a79c14ee4a5c34df953b9d53f",
+          "../scripts/gen_obiwan_wing_design_map.py": "b744ccd930c7142c47bc5351598b82b680eb6b247f33d840dd4bac28fe3e1519",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/obiwan/wings.py": "392f155db3a9190ae32b735acd344612f8577c0d8386554c4c9be0bdce8c509f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "d2c17b218d7c5a2898e334d0edfc0d54c6a15c8f73c4850585661a977ac522d8"
+      },
+      {
+        "authority": "30b4050905258dc7dab8c192d1299745e39112d2ec5ba1f1ae2a0d31ec8402ad",
+        "id": "shared:Obi-Wan-Flat:obiwan_wing_flat_right_split2_2_of_2_lm_um_upper",
+        "source": {
+          "../scripts/export_obiwan_wings.py": "1b24a437a22ca7fb44ee2471daa5d7fb53c928078fe25f062408e0f764a32e8d",
+          "../scripts/export_steps.py": "98033e876a66f9eba8aa6517034015e389dc0e2a79c14ee4a5c34df953b9d53f",
+          "../scripts/gen_obiwan_wing_design_map.py": "b744ccd930c7142c47bc5351598b82b680eb6b247f33d840dd4bac28fe3e1519",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/obiwan/wings.py": "392f155db3a9190ae32b735acd344612f8577c0d8386554c4c9be0bdce8c509f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "8be9c65c59b2a961419d2af159bd585c20e49ded7b1a266ae8070b4ec3fa1ae5"
+      },
+      {
+        "authority": "532380d8cc4f93e50b4a01e1c4bca701e2ef4271d5335de57c66f010b615a92b",
+        "id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_split2_1_of_2_lm_lower",
+        "source": {
+          "../scripts/export_obiwan_wings.py": "1b24a437a22ca7fb44ee2471daa5d7fb53c928078fe25f062408e0f764a32e8d",
+          "../scripts/export_steps.py": "98033e876a66f9eba8aa6517034015e389dc0e2a79c14ee4a5c34df953b9d53f",
+          "../scripts/gen_obiwan_wing_design_map.py": "b744ccd930c7142c47bc5351598b82b680eb6b247f33d840dd4bac28fe3e1519",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/obiwan/wings.py": "392f155db3a9190ae32b735acd344612f8577c0d8386554c4c9be0bdce8c509f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "bb82846c5a0581c4eab2b7e84750b67c6d12be3abf59d5ced1d727ac80e4bb4b"
+      },
+      {
+        "authority": "c4bd634b57d228a090b427b492c1a3ca915e084a5c834788cdfeb6f0307f799c",
+        "id": "shared:Obi-Wan-Graded:obiwan_wing_graded_left_split2_2_of_2_lm_um_upper",
+        "source": {
+          "../scripts/export_obiwan_wings.py": "1b24a437a22ca7fb44ee2471daa5d7fb53c928078fe25f062408e0f764a32e8d",
+          "../scripts/export_steps.py": "98033e876a66f9eba8aa6517034015e389dc0e2a79c14ee4a5c34df953b9d53f",
+          "../scripts/gen_obiwan_wing_design_map.py": "b744ccd930c7142c47bc5351598b82b680eb6b247f33d840dd4bac28fe3e1519",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/obiwan/wings.py": "392f155db3a9190ae32b735acd344612f8577c0d8386554c4c9be0bdce8c509f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "fa15e5f241e426367f4c85aba41c417f5cf037c3cd152956cb67bba51b77cac5"
+      },
+      {
+        "authority": "da9b4d7ff688f792275541eacf9f60a34b99bef4395ad188b66562ee7c375cee",
+        "id": "shared:Obi-Wan-Graded:obiwan_wing_graded_right_split2_1_of_2_lm_lower",
+        "source": {
+          "../scripts/export_obiwan_wings.py": "1b24a437a22ca7fb44ee2471daa5d7fb53c928078fe25f062408e0f764a32e8d",
+          "../scripts/export_steps.py": "98033e876a66f9eba8aa6517034015e389dc0e2a79c14ee4a5c34df953b9d53f",
+          "../scripts/gen_obiwan_wing_design_map.py": "b744ccd930c7142c47bc5351598b82b680eb6b247f33d840dd4bac28fe3e1519",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/obiwan/wings.py": "392f155db3a9190ae32b735acd344612f8577c0d8386554c4c9be0bdce8c509f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "e94e8cb163407d9e608e1345d9041207bda0b228b190ac8764effdcc4ba750af"
+      },
+      {
+        "authority": "221d01eba32c988f94bb8fa9137be491b6740914e82518f68e1f4dd8a885f12b",
+        "id": "shared:Obi-Wan-Graded:obiwan_wing_graded_right_split2_2_of_2_lm_um_upper",
+        "source": {
+          "../scripts/export_obiwan_wings.py": "1b24a437a22ca7fb44ee2471daa5d7fb53c928078fe25f062408e0f764a32e8d",
+          "../scripts/export_steps.py": "98033e876a66f9eba8aa6517034015e389dc0e2a79c14ee4a5c34df953b9d53f",
+          "../scripts/gen_obiwan_wing_design_map.py": "b744ccd930c7142c47bc5351598b82b680eb6b247f33d840dd4bac28fe3e1519",
+          "../src/lx521_baffle/assembly.py": "5e5916277cca599dced31900f019e8f4b838cbdb549cd985ac64fce61a3a0c4c",
+          "../src/lx521_baffle/geom.py": "e20bfec078a83572b1f1f3e375c18f659e65268d7f4c270fa9ff47a19f46aebd",
+          "../src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+          "../src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+          "../src/lx521_baffle/magnets.py": "49791aedbb0ac9d959eaa2a6c4f374f94a621768828314aee6ca38bbbe85b309",
+          "../src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+          "../src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+          "../src/lx521_baffle/obiwan/closure_webs.py": "f7f6637702880901fffc8b98bfbbb53343ceb5f7a4f56493cf3adeb52a9b0747",
+          "../src/lx521_baffle/obiwan/joints.py": "32114273d6a8b4975348ee7b1305e58bbd7cd00fed7f2c0ec5ba6eccfa0af284",
+          "../src/lx521_baffle/obiwan/magnets.py": "b98eab163017130e4c66143dad3eccb70f3fdb14e86d443dc2da8692de278cde",
+          "../src/lx521_baffle/obiwan/rear_entry.py": "9a7a26e38281afd799a1f5caa8897716de5a8badfa9a16dba4df5b3a98eb3764",
+          "../src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+          "../src/lx521_baffle/obiwan/wings.py": "392f155db3a9190ae32b735acd344612f8577c0d8386554c4c9be0bdce8c509f",
+          "../src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03",
+          "../src/lx521_baffle/stl_export.py": "a9677163835d67608a908f1a706783ee5f8ba5b49aec5848876b5349a652a8ed"
+        },
+        "stl": "cd1c013a5d78a0478261d8665b91cd44e7bbd098b1e45f35a77d36994507fd60"
+      }
+    ],
+    "changed_geometry": [],
+    "kind": "existing_local_artifact_revalidation",
+    "note": "Current existing STL/sidecar and source bindings. No remote rebuild or new physical qualification claimed. Unchanged STLs retain their bytes; changed UM cavities checked against shared analytic geometry.",
+    "previous_catalog_sha256": "b0a0945629bc2533559f034f1f314531f6a818742f9fd6b8e7e66d2b1a7120db",
+    "previous_source_revision": "64b838373c9499d977055b0b83320882ad328bbd1d000d65728c73d9c14431da",
+    "validator_sha256": "2ac1160302f599b5a19ca891f88580e5b3bf7b06789e6719f9e27a06d5eb5672"
+  },
   "schema_sha256": "d2a87d8c5d7e3c45a431ae1dbb02d6b6683c6b5b382e51d243c8f408514a35d5",
   "schema_version": 1,
-  "source_revision": "f1dc4a32872c7a3cf26d7b46166c3e4fe9c07b063ffa51306cac56431f229098"
+  "source_revision": "07d6e1018e6bc61f58c63390131aad0f8def81745af80299b737ad39743e4365"
 }

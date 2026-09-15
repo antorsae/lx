@@ -1,0 +1,364 @@
+{
+  "status": "pass",
+  "scope": "static geometry/settings/material extrusion/cavities/pauses/ducts/enclosed support/machine bounds",
+  "name": "obiwan_02_LM_top_keyed_2_of_2",
+  "project_sha256": "6407d9bff2f2f2fabe464e2883d2fbd7504847d4f55435af5f1994fa6ac83958",
+  "gui_source_sha256": "ffa5a8feaeb3d6bba5f79f5cf44a66f20b143bd95d59dd19c8c6ca7458a8b320",
+  "geometry": {
+    "root_object_id": 3,
+    "component_depth": 1,
+    "triangle_count": 21446,
+    "mesh_max_abs_error_mm": 1.0879150394771386e-05,
+    "source_bounds": {
+      "minimum_mm": [
+        0.0,
+        8.620446169516072e-05,
+        0.0
+      ],
+      "maximum_mm": [
+        212.09910583496094,
+        212.09918212890625,
+        23.64006805419922
+      ],
+      "size_mm": [
+        212.09910583496094,
+        212.09909592444455,
+        23.64006805419922
+      ]
+    },
+    "transformed_actual_mesh_bounds": {
+      "minimum_mm": [
+        22.05134,
+        21.849596204461694,
+        0.0
+      ],
+      "maximum_mm": [
+        234.15044583496095,
+        233.94869212890626,
+        23.64006805419922
+      ],
+      "size_mm": [
+        212.09910583496094,
+        212.09909592444455,
+        23.64006805419922
+      ]
+    },
+    "stl_to_bed_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        22.05134
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        21.84951
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "rigid_rz": {
+      "determinant": 1.0,
+      "orthonormal_max_error": 0.0,
+      "rz_degrees": 0.0
+    },
+    "support_blocker_count": 1,
+    "support_blocker_triangle_counts": [
+      3968
+    ],
+    "parameter_modifier_count": 0,
+    "parameter_modifier_triangle_counts": [],
+    "parameter_modifier_names": [],
+    "parameter_modifier_settings": [],
+    "sources": {
+      "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.print.json": "0e0c95c72d53af3f16a35daff584eaa25af35d1d8d118fec96bb15bf66bb306f",
+      "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl": "8070ccbdd173aabe88e62020ce03f729a184750a8c3665caf8cc7d9e671adfe5",
+      "build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl": "e83384453eb3f04290a052b88f1610e23b54491ebe8a0dd291b884df736fb7c1",
+      "captive_magnet_slicing_profile_petg_gf_06hf.json": "2a619395d1009063455b6ae28c6e36b85091b7d26671e5dc1cd9055e11d1a11f"
+    },
+    "project_sha256": "6407d9bff2f2f2fabe464e2883d2fbd7504847d4f55435af5f1994fa6ac83958",
+    "status": "pass",
+    "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths"
+  },
+  "material_extrusions": {
+    "model": 288099,
+    "support": 11170,
+    "interface": 3240
+  },
+  "enclosed_support": {
+    "status": "pass",
+    "grid_mm": 1.0,
+    "support_points": 10529,
+    "enclosed_points": 578,
+    "enclosed_fraction": 0.0548960015196125,
+    "part_extrusions": 270314,
+    "enclosed_per_part_extrusion": 0.0021382540304978655,
+    "max_per_part_extrusion": 0.06,
+    "longest_fully_enclosed_run_mm": 0.0,
+    "longest_fully_enclosed_run_top_z_mm": null,
+    "max_run_mm": 3.0,
+    "max_fraction": 0.75,
+    "failures": [],
+    "layers": [
+      {
+        "z_mm": 0.2,
+        "support_points": 867,
+        "enclosed_points": 66
+      },
+      {
+        "z_mm": 0.36,
+        "support_points": 161,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 0.52,
+        "support_points": 163,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 0.68,
+        "support_points": 161,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 0.84,
+        "support_points": 161,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 1.0,
+        "support_points": 162,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 1.16,
+        "support_points": 164,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 1.32,
+        "support_points": 166,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 1.48,
+        "support_points": 162,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 1.64,
+        "support_points": 161,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 1.8,
+        "support_points": 162,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 1.96,
+        "support_points": 163,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 2.12,
+        "support_points": 163,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 2.28,
+        "support_points": 165,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 2.44,
+        "support_points": 162,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 2.6,
+        "support_points": 162,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 2.76,
+        "support_points": 161,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 2.92,
+        "support_points": 162,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 3.08,
+        "support_points": 162,
+        "enclosed_points": 8
+      },
+      {
+        "z_mm": 3.24,
+        "support_points": 162,
+        "enclosed_points": 8
+      },
+      {
+        "z_mm": 3.4,
+        "support_points": 162,
+        "enclosed_points": 8
+      },
+      {
+        "z_mm": 3.56,
+        "support_points": 160,
+        "enclosed_points": 8
+      },
+      {
+        "z_mm": 3.72,
+        "support_points": 161,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 3.88,
+        "support_points": 165,
+        "enclosed_points": 8
+      },
+      {
+        "z_mm": 4.04,
+        "support_points": 164,
+        "enclosed_points": 8
+      },
+      {
+        "z_mm": 4.2,
+        "support_points": 166,
+        "enclosed_points": 10
+      },
+      {
+        "z_mm": 4.36,
+        "support_points": 162,
+        "enclosed_points": 8
+      },
+      {
+        "z_mm": 4.52,
+        "support_points": 162,
+        "enclosed_points": 10
+      },
+      {
+        "z_mm": 4.68,
+        "support_points": 166,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 4.84,
+        "support_points": 164,
+        "enclosed_points": 7
+      },
+      {
+        "z_mm": 5.0,
+        "support_points": 165,
+        "enclosed_points": 7
+      },
+      {
+        "z_mm": 5.16,
+        "support_points": 166,
+        "enclosed_points": 6
+      },
+      {
+        "z_mm": 5.32,
+        "support_points": 888,
+        "enclosed_points": 63
+      },
+      {
+        "z_mm": 5.48,
+        "support_points": 907,
+        "enclosed_points": 61
+      },
+      {
+        "z_mm": 5.64,
+        "support_points": 907,
+        "enclosed_points": 60
+      },
+      {
+        "z_mm": 5.8,
+        "support_points": 919,
+        "enclosed_points": 58
+      },
+      {
+        "z_mm": 5.96,
+        "support_points": 922,
+        "enclosed_points": 60
+      },
+      {
+        "z_mm": 6.12,
+        "support_points": 71,
+        "enclosed_points": 0
+      }
+    ]
+  },
+  "cavities": {
+    "no_floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_2_of_2_top": [
+      {
+        "site": "lm_upper_left",
+        "first_closing_layer_z_mm": 5.96,
+        "discovery_first_closing_layer_z_mm": 5.96,
+        "same_closing_layer_pass": true,
+        "roof_progression_pass": true,
+        "retaining_paths_stage_pass": {
+          "lowest_open": true,
+          "representative_open": true,
+          "last_fully_open": true
+        },
+        "loading_aperture_pass": true,
+        "single_classic_path_pass": true
+      },
+      {
+        "site": "lm_upper_right",
+        "first_closing_layer_z_mm": 5.96,
+        "discovery_first_closing_layer_z_mm": 5.96,
+        "same_closing_layer_pass": true,
+        "roof_progression_pass": true,
+        "retaining_paths_stage_pass": {
+          "lowest_open": true,
+          "representative_open": true,
+          "last_fully_open": true
+        },
+        "loading_aperture_pass": true,
+        "single_classic_path_pass": true
+      }
+    ]
+  },
+  "ducts": {
+    "no_floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_2_of_2_top": {
+      "status": "pass",
+      "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+      "support_extrusion_segments_checked": 56504,
+      "duct_capsule_segment_count": 767,
+      "candidate_distance_checks": 508633,
+      "collision_count": 0,
+      "minimum_bead_to_lumen_clearance_mm": 0.7586173627532963,
+      "closest_approach": {
+        "gcode_line_number": 105141,
+        "layer_z_mm": 5.96,
+        "feature": "Support interface",
+        "line_width_mm": 0.62,
+        "layer_height_mm": 0.16,
+        "duct_region": "t_route_lumen",
+        "centerline_distance_mm": 4.078773574624939,
+        "duct_radius_mm": 3.0,
+        "support_bead_radius_mm": 0.32015621187164245,
+        "bead_to_lumen_clearance_mm": 0.7586173627532963
+      }
+    }
+  },
+  "physical_qualification": "pending",
+  "release_authorized": false
+}

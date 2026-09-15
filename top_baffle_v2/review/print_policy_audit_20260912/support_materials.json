@@ -1,0 +1,1074 @@
+{
+  "floor": {
+    "path": "review/print_policy_audit_20260912/floor_slice/plate_1.gcode",
+    "sha256": "3c5077fea758db92811571b8db0acc09c1af5d32e1114a98f504e749dd2252a5",
+    "extrusion_move_counts": {
+      "support_T0": 14635,
+      "model_T0": 1005547,
+      "interface_T1": 11381
+    },
+    "layers": [
+      {
+        "z": 0.2,
+        "counts": {
+          "support_T0": 1183,
+          "model_T0": 823,
+          "interface_T1": 205
+        }
+      },
+      {
+        "z": 0.36,
+        "counts": {
+          "interface_T1": 204,
+          "support_T0": 305,
+          "model_T0": 1544
+        }
+      },
+      {
+        "z": 0.52,
+        "counts": {
+          "support_T0": 304,
+          "model_T0": 1402,
+          "interface_T1": 200
+        }
+      },
+      {
+        "z": 0.68,
+        "counts": {
+          "interface_T1": 200,
+          "support_T0": 301,
+          "model_T0": 1524
+        }
+      },
+      {
+        "z": 0.84,
+        "counts": {
+          "support_T0": 301,
+          "model_T0": 1490,
+          "interface_T1": 195
+        }
+      },
+      {
+        "z": 1.0,
+        "counts": {
+          "interface_T1": 192,
+          "support_T0": 294,
+          "model_T0": 1772
+        }
+      },
+      {
+        "z": 1.16,
+        "counts": {
+          "support_T0": 298,
+          "model_T0": 1788,
+          "interface_T1": 189
+        }
+      },
+      {
+        "z": 1.32,
+        "counts": {
+          "interface_T1": 190,
+          "support_T0": 291,
+          "model_T0": 2275
+        }
+      },
+      {
+        "z": 1.48,
+        "counts": {
+          "support_T0": 285,
+          "model_T0": 2310,
+          "interface_T1": 191
+        }
+      },
+      {
+        "z": 1.64,
+        "counts": {
+          "interface_T1": 185,
+          "support_T0": 287,
+          "model_T0": 2276
+        }
+      },
+      {
+        "z": 1.8,
+        "counts": {
+          "support_T0": 289,
+          "model_T0": 2205,
+          "interface_T1": 186
+        }
+      },
+      {
+        "z": 1.96,
+        "counts": {
+          "interface_T1": 186,
+          "support_T0": 288,
+          "model_T0": 2205
+        }
+      },
+      {
+        "z": 2.12,
+        "counts": {
+          "support_T0": 284,
+          "model_T0": 2197,
+          "interface_T1": 184
+        }
+      },
+      {
+        "z": 2.28,
+        "counts": {
+          "interface_T1": 188,
+          "support_T0": 286,
+          "model_T0": 2226
+        }
+      },
+      {
+        "z": 2.44,
+        "counts": {
+          "support_T0": 282,
+          "model_T0": 2227,
+          "interface_T1": 187
+        }
+      },
+      {
+        "z": 2.6,
+        "counts": {
+          "interface_T1": 183,
+          "support_T0": 275,
+          "model_T0": 2163
+        }
+      },
+      {
+        "z": 2.76,
+        "counts": {
+          "support_T0": 272,
+          "model_T0": 2234,
+          "interface_T1": 180
+        }
+      },
+      {
+        "z": 2.92,
+        "counts": {
+          "interface_T1": 184,
+          "support_T0": 356,
+          "model_T0": 2129
+        }
+      },
+      {
+        "z": 3.08,
+        "counts": {
+          "support_T0": 267,
+          "model_T0": 2213,
+          "interface_T1": 182
+        }
+      },
+      {
+        "z": 3.24,
+        "counts": {
+          "interface_T1": 181,
+          "support_T0": 268,
+          "model_T0": 2211
+        }
+      },
+      {
+        "z": 3.4,
+        "counts": {
+          "support_T0": 360,
+          "model_T0": 2301,
+          "interface_T1": 181
+        }
+      },
+      {
+        "z": 3.56,
+        "counts": {
+          "interface_T1": 177,
+          "support_T0": 353,
+          "model_T0": 2191
+        }
+      },
+      {
+        "z": 3.72,
+        "counts": {
+          "support_T0": 349,
+          "model_T0": 2302,
+          "interface_T1": 178
+        }
+      },
+      {
+        "z": 3.88,
+        "counts": {
+          "interface_T1": 179,
+          "support_T0": 348,
+          "model_T0": 2282
+        }
+      },
+      {
+        "z": 4.04,
+        "counts": {
+          "support_T0": 353,
+          "model_T0": 2291,
+          "interface_T1": 176
+        }
+      },
+      {
+        "z": 4.2,
+        "counts": {
+          "interface_T1": 178,
+          "support_T0": 350,
+          "model_T0": 2157
+        }
+      },
+      {
+        "z": 4.36,
+        "counts": {
+          "support_T0": 351,
+          "model_T0": 2231,
+          "interface_T1": 176
+        }
+      },
+      {
+        "z": 4.52,
+        "counts": {
+          "interface_T1": 173,
+          "support_T0": 346,
+          "model_T0": 2093
+        }
+      },
+      {
+        "z": 4.68,
+        "counts": {
+          "support_T0": 344,
+          "model_T0": 2226,
+          "interface_T1": 173
+        }
+      },
+      {
+        "z": 4.84,
+        "counts": {
+          "interface_T1": 175,
+          "support_T0": 342,
+          "model_T0": 2100
+        }
+      },
+      {
+        "z": 5.0,
+        "counts": {
+          "support_T0": 348,
+          "model_T0": 2191,
+          "interface_T1": 175
+        }
+      },
+      {
+        "z": 5.16,
+        "counts": {
+          "interface_T1": 177,
+          "support_T0": 341,
+          "model_T0": 2025
+        }
+      },
+      {
+        "z": 5.32,
+        "counts": {
+          "support_T0": 924,
+          "model_T0": 2105,
+          "interface_T1": 173
+        }
+      },
+      {
+        "z": 5.48,
+        "counts": {
+          "interface_T1": 172,
+          "support_T0": 719,
+          "model_T0": 2010
+        }
+      },
+      {
+        "z": 5.64,
+        "counts": {
+          "support_T0": 206,
+          "model_T0": 2108,
+          "interface_T1": 881
+        }
+      },
+      {
+        "z": 5.8,
+        "counts": {
+          "interface_T1": 881,
+          "support_T0": 202,
+          "model_T0": 1960
+        }
+      },
+      {
+        "z": 5.96,
+        "counts": {
+          "support_T0": 198,
+          "model_T0": 2125,
+          "interface_T1": 885
+        }
+      },
+      {
+        "z": 6.12,
+        "counts": {
+          "interface_T1": 170,
+          "support_T0": 198,
+          "model_T0": 3513
+        }
+      },
+      {
+        "z": 6.28,
+        "counts": {
+          "support_T0": 199,
+          "model_T0": 3168,
+          "interface_T1": 167
+        }
+      },
+      {
+        "z": 6.44,
+        "counts": {
+          "interface_T1": 169,
+          "support_T0": 197,
+          "model_T0": 3126
+        }
+      },
+      {
+        "z": 6.6,
+        "counts": {
+          "support_T0": 196,
+          "model_T0": 3206,
+          "interface_T1": 167
+        }
+      },
+      {
+        "z": 6.76,
+        "counts": {
+          "interface_T1": 167,
+          "support_T0": 193,
+          "model_T0": 3251
+        }
+      },
+      {
+        "z": 6.92,
+        "counts": {
+          "support_T0": 194,
+          "model_T0": 6944,
+          "interface_T1": 167
+        }
+      },
+      {
+        "z": 7.08,
+        "counts": {
+          "interface_T1": 167,
+          "support_T0": 194,
+          "model_T0": 3579
+        }
+      },
+      {
+        "z": 7.24,
+        "counts": {
+          "support_T0": 36,
+          "model_T0": 3669,
+          "interface_T1": 167
+        }
+      },
+      {
+        "z": 7.4,
+        "counts": {
+          "interface_T1": 164,
+          "support_T0": 36,
+          "model_T0": 3521
+        }
+      },
+      {
+        "z": 7.56,
+        "counts": {
+          "support_T0": 27,
+          "model_T0": 3694,
+          "interface_T1": 162
+        }
+      },
+      {
+        "z": 7.72,
+        "counts": {
+          "interface_T1": 162,
+          "support_T0": 5,
+          "model_T0": 3345
+        }
+      },
+      {
+        "z": 7.88,
+        "counts": {
+          "support_T0": 7,
+          "model_T0": 3657,
+          "interface_T1": 165
+        }
+      },
+      {
+        "z": 8.04,
+        "counts": {
+          "interface_T1": 164,
+          "support_T0": 3,
+          "model_T0": 3366
+        }
+      },
+      {
+        "z": 8.2,
+        "counts": {
+          "model_T0": 3643,
+          "interface_T1": 164
+        }
+      },
+      {
+        "z": 8.36,
+        "counts": {
+          "interface_T1": 157,
+          "model_T0": 3474
+        }
+      }
+    ],
+    "num_lines": 1890183
+  },
+  "um": {
+    "path": "review/print_policy_audit_20260912/um_slice/plate_1.gcode",
+    "sha256": "9cd3b6a0d5a710e48a1637f0cc9de0422696acfdaea7b268472fee06c1a10a8c",
+    "extrusion_move_counts": {
+      "support_T0": 6504,
+      "model_T0": 179308,
+      "interface_T1": 2296
+    },
+    "layers": [
+      {
+        "z": 3.72,
+        "counts": {
+          "support_T0": 41,
+          "model_T0": 1033,
+          "interface_T1": 684
+        }
+      },
+      {
+        "z": 3.88,
+        "counts": {
+          "interface_T1": 685,
+          "support_T0": 41,
+          "model_T0": 1045
+        }
+      },
+      {
+        "z": 4.04,
+        "counts": {
+          "support_T0": 45,
+          "model_T0": 1054,
+          "interface_T1": 693
+        }
+      },
+      {
+        "z": 5.8,
+        "counts": {
+          "support_T0": 9,
+          "model_T0": 3158,
+          "interface_T1": 82
+        }
+      },
+      {
+        "z": 5.96,
+        "counts": {
+          "interface_T1": 82,
+          "support_T0": 9,
+          "model_T0": 3696
+        }
+      },
+      {
+        "z": 6.12,
+        "counts": {
+          "support_T0": 8,
+          "model_T0": 2912,
+          "interface_T1": 70
+        }
+      }
+    ],
+    "num_lines": 379930
+  },
+  "body": {
+    "path": "review/nd25fn4_print/body/plate_1.gcode",
+    "sha256": "9486143728837c327c0d026130c5c7ab7ea7b7670bb296995f7f73917b3c7d05",
+    "extrusion_move_counts": {
+      "support_T0": 71777,
+      "model_T0": 750339,
+      "interface_T1": 39020
+    },
+    "layers": [
+      {
+        "z": 0.2,
+        "counts": {
+          "support_T0": 2187,
+          "model_T0": 1872,
+          "interface_T1": 383
+        }
+      },
+      {
+        "z": 0.36,
+        "counts": {
+          "interface_T1": 339,
+          "support_T0": 798,
+          "model_T0": 1046
+        }
+      },
+      {
+        "z": 0.52,
+        "counts": {
+          "support_T0": 812,
+          "model_T0": 1077,
+          "interface_T1": 335
+        }
+      },
+      {
+        "z": 0.68,
+        "counts": {
+          "interface_T1": 328,
+          "support_T0": 806,
+          "model_T0": 1106
+        }
+      },
+      {
+        "z": 0.84,
+        "counts": {
+          "support_T0": 852,
+          "model_T0": 970,
+          "interface_T1": 325
+        }
+      },
+      {
+        "z": 1.0,
+        "counts": {
+          "interface_T1": 334,
+          "support_T0": 853,
+          "model_T0": 1091
+        }
+      },
+      {
+        "z": 1.16,
+        "counts": {
+          "support_T0": 946,
+          "model_T0": 984,
+          "interface_T1": 372
+        }
+      },
+      {
+        "z": 1.32,
+        "counts": {
+          "interface_T1": 380,
+          "support_T0": 1032,
+          "model_T0": 951
+        }
+      },
+      {
+        "z": 1.48,
+        "counts": {
+          "support_T0": 1079,
+          "model_T0": 1063,
+          "interface_T1": 418
+        }
+      },
+      {
+        "z": 1.64,
+        "counts": {
+          "interface_T1": 481,
+          "support_T0": 1176,
+          "model_T0": 1021
+        }
+      },
+      {
+        "z": 1.8,
+        "counts": {
+          "support_T0": 1948,
+          "model_T0": 1083,
+          "interface_T1": 531
+        }
+      },
+      {
+        "z": 1.96,
+        "counts": {
+          "interface_T1": 581,
+          "support_T0": 1919,
+          "model_T0": 1185
+        }
+      },
+      {
+        "z": 2.12,
+        "counts": {
+          "support_T0": 1348,
+          "model_T0": 1298,
+          "interface_T1": 1392
+        }
+      },
+      {
+        "z": 2.28,
+        "counts": {
+          "interface_T1": 1383,
+          "support_T0": 1343,
+          "model_T0": 1591
+        }
+      },
+      {
+        "z": 2.44,
+        "counts": {
+          "support_T0": 1288,
+          "model_T0": 2415,
+          "interface_T1": 1370
+        }
+      },
+      {
+        "z": 2.6,
+        "counts": {
+          "interface_T1": 798,
+          "support_T0": 1253,
+          "model_T0": 3882
+        }
+      },
+      {
+        "z": 2.76,
+        "counts": {
+          "support_T0": 1286,
+          "model_T0": 3513,
+          "interface_T1": 773
+        }
+      },
+      {
+        "z": 2.92,
+        "counts": {
+          "interface_T1": 753,
+          "support_T0": 1255,
+          "model_T0": 3780
+        }
+      },
+      {
+        "z": 3.08,
+        "counts": {
+          "support_T0": 1246,
+          "model_T0": 3594,
+          "interface_T1": 739
+        }
+      },
+      {
+        "z": 3.24,
+        "counts": {
+          "interface_T1": 741,
+          "support_T0": 1244,
+          "model_T0": 3439
+        }
+      },
+      {
+        "z": 3.4,
+        "counts": {
+          "support_T0": 1222,
+          "model_T0": 4032,
+          "interface_T1": 740
+        }
+      },
+      {
+        "z": 3.56,
+        "counts": {
+          "interface_T1": 726,
+          "support_T0": 1246,
+          "model_T0": 4183
+        }
+      },
+      {
+        "z": 3.72,
+        "counts": {
+          "support_T0": 1185,
+          "model_T0": 4498,
+          "interface_T1": 724
+        }
+      },
+      {
+        "z": 3.88,
+        "counts": {
+          "interface_T1": 723,
+          "support_T0": 1183,
+          "model_T0": 4244
+        }
+      },
+      {
+        "z": 4.04,
+        "counts": {
+          "support_T0": 1147,
+          "model_T0": 4152,
+          "interface_T1": 712
+        }
+      },
+      {
+        "z": 4.2,
+        "counts": {
+          "interface_T1": 704,
+          "support_T0": 1157,
+          "model_T0": 4375
+        }
+      },
+      {
+        "z": 4.36,
+        "counts": {
+          "support_T0": 1160,
+          "model_T0": 4133,
+          "interface_T1": 677
+        }
+      },
+      {
+        "z": 4.52,
+        "counts": {
+          "interface_T1": 664,
+          "support_T0": 1138,
+          "model_T0": 3974
+        }
+      },
+      {
+        "z": 4.68,
+        "counts": {
+          "support_T0": 1136,
+          "model_T0": 3799,
+          "interface_T1": 667
+        }
+      },
+      {
+        "z": 4.84,
+        "counts": {
+          "interface_T1": 645,
+          "support_T0": 1129,
+          "model_T0": 3834
+        }
+      },
+      {
+        "z": 5.0,
+        "counts": {
+          "support_T0": 1132,
+          "model_T0": 3829,
+          "interface_T1": 643
+        }
+      },
+      {
+        "z": 5.16,
+        "counts": {
+          "interface_T1": 648,
+          "support_T0": 1128,
+          "model_T0": 3840
+        }
+      },
+      {
+        "z": 5.32,
+        "counts": {
+          "support_T0": 1112,
+          "model_T0": 3649,
+          "interface_T1": 646
+        }
+      },
+      {
+        "z": 5.48,
+        "counts": {
+          "interface_T1": 641,
+          "support_T0": 1074,
+          "model_T0": 3724
+        }
+      },
+      {
+        "z": 5.64,
+        "counts": {
+          "support_T0": 1085,
+          "model_T0": 3626,
+          "interface_T1": 642
+        }
+      },
+      {
+        "z": 5.8,
+        "counts": {
+          "interface_T1": 637,
+          "support_T0": 1614,
+          "model_T0": 3788
+        }
+      },
+      {
+        "z": 5.96,
+        "counts": {
+          "support_T0": 1617,
+          "model_T0": 3617,
+          "interface_T1": 652
+        }
+      },
+      {
+        "z": 6.12,
+        "counts": {
+          "interface_T1": 1322,
+          "support_T0": 920,
+          "model_T0": 3753
+        }
+      },
+      {
+        "z": 6.28,
+        "counts": {
+          "support_T0": 885,
+          "model_T0": 3645,
+          "interface_T1": 1313
+        }
+      },
+      {
+        "z": 6.44,
+        "counts": {
+          "interface_T1": 1331,
+          "support_T0": 882,
+          "model_T0": 3858
+        }
+      },
+      {
+        "z": 6.6,
+        "counts": {
+          "support_T0": 829,
+          "model_T0": 5053,
+          "interface_T1": 612
+        }
+      },
+      {
+        "z": 6.76,
+        "counts": {
+          "interface_T1": 600,
+          "support_T0": 824,
+          "model_T0": 4749
+        }
+      },
+      {
+        "z": 6.92,
+        "counts": {
+          "support_T0": 790,
+          "model_T0": 4657,
+          "interface_T1": 571
+        }
+      },
+      {
+        "z": 7.08,
+        "counts": {
+          "interface_T1": 544,
+          "support_T0": 788,
+          "model_T0": 4566
+        }
+      },
+      {
+        "z": 7.24,
+        "counts": {
+          "support_T0": 756,
+          "model_T0": 4472,
+          "interface_T1": 540
+        }
+      },
+      {
+        "z": 7.4,
+        "counts": {
+          "interface_T1": 523,
+          "support_T0": 734,
+          "model_T0": 4250
+        }
+      },
+      {
+        "z": 7.56,
+        "counts": {
+          "support_T0": 706,
+          "model_T0": 4289,
+          "interface_T1": 511
+        }
+      },
+      {
+        "z": 7.72,
+        "counts": {
+          "interface_T1": 503,
+          "support_T0": 667,
+          "model_T0": 4344
+        }
+      },
+      {
+        "z": 7.88,
+        "counts": {
+          "support_T0": 611,
+          "model_T0": 4735,
+          "interface_T1": 492
+        }
+      },
+      {
+        "z": 8.04,
+        "counts": {
+          "interface_T1": 480,
+          "support_T0": 552,
+          "model_T0": 4551
+        }
+      },
+      {
+        "z": 8.2,
+        "counts": {
+          "support_T0": 451,
+          "model_T0": 5560,
+          "interface_T1": 466
+        }
+      },
+      {
+        "z": 8.36,
+        "counts": {
+          "interface_T1": 457,
+          "support_T0": 383,
+          "model_T0": 5695
+        }
+      },
+      {
+        "z": 8.52,
+        "counts": {
+          "support_T0": 277,
+          "model_T0": 4877,
+          "interface_T1": 447
+        }
+      },
+      {
+        "z": 8.68,
+        "counts": {
+          "interface_T1": 360,
+          "support_T0": 207,
+          "model_T0": 4956
+        }
+      },
+      {
+        "z": 8.84,
+        "counts": {
+          "support_T0": 152,
+          "model_T0": 4855,
+          "interface_T1": 280
+        }
+      },
+      {
+        "z": 9.0,
+        "counts": {
+          "interface_T1": 219,
+          "support_T0": 108,
+          "model_T0": 4858
+        }
+      },
+      {
+        "z": 9.16,
+        "counts": {
+          "support_T0": 105,
+          "model_T0": 5205,
+          "interface_T1": 171
+        }
+      },
+      {
+        "z": 9.32,
+        "counts": {
+          "interface_T1": 103,
+          "support_T0": 105,
+          "model_T0": 4901
+        }
+      },
+      {
+        "z": 14.12,
+        "counts": {
+          "support_T0": 126,
+          "model_T0": 4271,
+          "interface_T1": 356
+        }
+      },
+      {
+        "z": 14.28,
+        "counts": {
+          "interface_T1": 356,
+          "support_T0": 126,
+          "model_T0": 4491
+        }
+      },
+      {
+        "z": 14.44,
+        "counts": {
+          "support_T0": 126,
+          "model_T0": 8050,
+          "interface_T1": 387
+        }
+      },
+      {
+        "z": 24.52,
+        "counts": {
+          "support_T0": 170,
+          "model_T0": 1850,
+          "interface_T1": 345
+        }
+      },
+      {
+        "z": 24.68,
+        "counts": {
+          "interface_T1": 357,
+          "support_T0": 170,
+          "model_T0": 3530
+        }
+      },
+      {
+        "z": 24.84,
+        "counts": {
+          "support_T0": 125,
+          "model_T0": 4571,
+          "interface_T1": 352
+        }
+      },
+      {
+        "z": 29.64,
+        "counts": {
+          "model_T0": 2068,
+          "interface_T1": 258
+        }
+      },
+      {
+        "z": 29.8,
+        "counts": {
+          "interface_T1": 257,
+          "model_T0": 2266
+        }
+      },
+      {
+        "z": 29.96,
+        "counts": {
+          "model_T0": 2224,
+          "interface_T1": 260
+        }
+      }
+    ],
+    "num_lines": 1416885
+  },
+  "caps": {
+    "path": "review/nd25fn4_print/accessories/plate_1.gcode",
+    "sha256": "1af3a06315fb4496dfed5e2af21f01b38c7767bfc939d8b84480422df90ea56a",
+    "extrusion_move_counts": {
+      "support_T0": 3862,
+      "model_T0": 112303,
+      "interface_T1": 920
+    },
+    "layers": [
+      {
+        "z": 8.52,
+        "counts": {
+          "support_T0": 284,
+          "model_T0": 1288,
+          "interface_T1": 62
+        }
+      },
+      {
+        "z": 8.68,
+        "counts": {
+          "interface_T1": 286,
+          "model_T0": 716
+        }
+      },
+      {
+        "z": 8.84,
+        "counts": {
+          "model_T0": 1498,
+          "interface_T1": 286
+        }
+      },
+      {
+        "z": 9.0,
+        "counts": {
+          "interface_T1": 286,
+          "model_T0": 600
+        }
+      }
+    ],
+    "num_lines": 229594
+  }
+}

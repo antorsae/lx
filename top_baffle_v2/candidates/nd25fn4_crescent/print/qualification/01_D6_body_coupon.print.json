@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "part": "nd25fn4_v4_fused_um_shared",
+  "stl": "01_D6_body_coupon.stl",
+  "stl_sha256": "e9caca35dfd8bc34866865cc2451a981fe37cb0e7d74517775baabf862dd6506",
+  "source_frame": "Obi-Wan installed, X lateral / Y up / Z forward, mm",
+  "source_to_stl_matrix": [
+    [
+      0.7071067811865476,
+      0.7071067811865475,
+      0.0,
+      -214.81396890018698
+    ],
+    [
+      0.7071067811865475,
+      -0.7071067811865476,
+      0.0,
+      312.5647954241369
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      20.679855728149416
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "print_orientation": "front_face_down_45_degree_diagonal",
+  "compatible_LM_configurations": [
+    "no_floor_stand",
+    "floor_stand"
+  ],
+  "replaces": "UM carrier plus separate V4 housing, with either LM configuration",
+  "qualification": "sliced static checks passed; physical print not performed",
+  "approved_source": "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl",
+  "approved_source_sha256": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+  "print_preparation": "internal tilted-magnet loading relief; exterior, seats and interfaces retained",
+  "sliced_project": "candidates/nd25fn4_crescent/print/01_UM_Crescent_V4_06HF_PETG_GF_PLA.gcode.3mf",
+  "sliced_project_sha256": "263b5969503aaa95c7b4ebfb2e91389bf1c54e70ec16b864219a40914cd2eff8",
+  "coupon_source": "candidates/nd25fn4_crescent/print/geometry/01_UM_Crescent_V4_PRINT.stl",
+  "coupon_source_sha256": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
+  "coupon_note": "Exact local body/wing geometry and pocket angle, cropped and translated to the bed. Validate this coupon slice independently; physical result pending."
+}

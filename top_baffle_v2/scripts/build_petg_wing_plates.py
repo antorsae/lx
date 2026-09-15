@@ -5,7 +5,7 @@ Both split2 wing plates -- flat and graded -- on the 0.6 mm high-flow
 nozzle, four pieces and one six-magnet pause each.
 
 These are ordinary ready-to-print deliveries, unlike the structural core
-next door in ``3mf_06hf_petg-cf_pla``.  The difference is support: the wings
+next door in ``3mf_06hf_petg-gf_pla``.  The difference is support: the wings
 print support-off by their own contract, so this lane's profile carries no
 support recipe and therefore no PLA interface filament.  One filament means
 the Bambu CLI slices it normally, instead of mapping a second filament to a
@@ -39,7 +39,9 @@ PROFILE = (
 RELEASE_CATALOG = PROJECT_ROOT / "review" / "captive_magnet_release_catalog.json"
 RELEASE_AUDIT = PROJECT_ROOT / "review" / "captive_magnet_slice_audit_06hf"
 WORKSPACE = PROJECT_ROOT / "review" / "wing_plate_petg_gf_06hf"
-DEFAULT_OUTPUT = PROJECT_ROOT / "to_print" / "obiwan" / "3mf_06hf_petg-cf"
+from delivery_contract import PETG_WING_DIRECTORY
+
+DEFAULT_OUTPUT = PROJECT_ROOT / "to_print" / "obiwan" / PETG_WING_DIRECTORY
 EXPECTED_PAUSE_Z_MM = 5.96
 EXPECTED_MAGNETS = 6
 MODEL_FILAMENT = "TINMORRY PETG-GF Profile @BBL P2S"

@@ -1,0 +1,395 @@
+{
+  "scope": "exact print-body and LM top meshes in installed coordinates",
+  "physical_fit": "not tested",
+  "source_script_sha256": "0a874fb87d01dfc6c50ff2618e2af200519f02a05c3d9cb9019c69f16a7710be",
+  "body": {
+    "path": "candidates/nd25fn4_crescent/print/geometry/01_UM_Crescent_V4_PRINT.stl",
+    "sha256": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
+    "sidecar_sha256": "a3d732f8c0affa29b6f3a4c5012eb37ad675bf366972951d4daa950e655fd7da"
+  },
+  "configurations": {
+    "no_floor_stand": {
+      "LM": {
+        "path": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
+        "sha256": "8070ccbdd173aabe88e62020ce03f729a184750a8c3665caf8cc7d9e671adfe5",
+        "sidecar_sha256": "0e0c95c72d53af3f16a35daff584eaa25af35d1d8d118fec96bb15bf66bb306f"
+      },
+      "overlap_mm3": 0.0,
+      "receivers": [
+        {
+          "UM": {
+            "center_xy_mm": [
+              -31.999999888450983,
+              315.7701019562712
+            ],
+            "diameter_range_mm": [
+              4.599087938314602,
+              4.599996042139815
+            ]
+          },
+          "LM": {
+            "center_xy_mm": [
+              -31.99999936071124,
+              315.7701026071799
+            ],
+            "diameter_range_mm": [
+              3.3993221899151065,
+              3.400000784458836
+            ]
+          },
+          "axis_offset_mm": 8.379686010750756e-07,
+          "UM_rear_mating_z_mm": 12.400000000000006,
+          "LM_front_mating_z_mm": 12.200000195367416,
+          "half_lap_gap_mm": 0.19999980463258993
+        },
+        {
+          "UM": {
+            "center_xy_mm": [
+              31.999999891331957,
+              315.7701026719364
+            ],
+            "diameter_range_mm": [
+              4.599087182825895,
+              4.600016578574643
+            ]
+          },
+          "LM": {
+            "center_xy_mm": [
+              32.00000010560645,
+              315.7701013984245
+            ],
+            "diameter_range_mm": [
+              3.399327132909782,
+              3.400011774603605
+            ]
+          },
+          "axis_offset_mm": 1.2914124359290098e-06,
+          "UM_rear_mating_z_mm": 12.400000000000006,
+          "LM_front_mating_z_mm": 12.200000195367416,
+          "half_lap_gap_mm": 0.19999980463258993
+        }
+      ],
+      "seam_samples": [
+        {
+          "x_mm": -30.0,
+          "LM_edge_y_mm": 311.18905024949333,
+          "UM_edge_y_mm": 311.24384256023,
+          "assembly_gap_mm": 0.05479231073667279,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": -25.0,
+          "LM_edge_y_mm": 315.6236787563151,
+          "UM_edge_y_mm": 315.6736842041431,
+          "assembly_gap_mm": 0.05000544782802763,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": -20.0,
+          "LM_edge_y_mm": 315.27658941318566,
+          "UM_edge_y_mm": 315.3265875908577,
+          "assembly_gap_mm": 0.0499981776720233,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": -15.0,
+          "LM_edge_y_mm": 314.7679171814988,
+          "UM_edge_y_mm": 314.81792217096995,
+          "assembly_gap_mm": 0.050004989471176486,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": -10.0,
+          "LM_edge_y_mm": 314.4224970335975,
+          "UM_edge_y_mm": 314.4724973590712,
+          "assembly_gap_mm": 0.05000032547371802,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": -5.0,
+          "LM_edge_y_mm": 314.2218388000462,
+          "UM_edge_y_mm": 314.27183132650663,
+          "assembly_gap_mm": 0.04999252646041441,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": 0.0,
+          "LM_edge_y_mm": 314.15600470755925,
+          "UM_edge_y_mm": 314.2060039808018,
+          "assembly_gap_mm": 0.04999927324257669,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": 5.0,
+          "LM_edge_y_mm": 314.2218320780479,
+          "UM_edge_y_mm": 314.2718367862076,
+          "assembly_gap_mm": 0.05000470815969038,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": 10.0,
+          "LM_edge_y_mm": 314.42249670889646,
+          "UM_edge_y_mm": 314.47249635284055,
+          "assembly_gap_mm": 0.04999964394409062,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": 15.0,
+          "LM_edge_y_mm": 314.7679229691877,
+          "UM_edge_y_mm": 314.81792823074005,
+          "assembly_gap_mm": 0.050005261552371394,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": 20.0,
+          "LM_edge_y_mm": 315.27658992445936,
+          "UM_edge_y_mm": 315.32658758176086,
+          "assembly_gap_mm": 0.049997657301503295,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": 25.0,
+          "LM_edge_y_mm": 315.6236839757934,
+          "UM_edge_y_mm": 315.67367609783133,
+          "assembly_gap_mm": 0.04999212203790648,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": 30.0,
+          "LM_edge_y_mm": 311.1890468669932,
+          "UM_edge_y_mm": 311.2438403909028,
+          "assembly_gap_mm": 0.05479352390960912,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        }
+      ],
+      "mount_compatible": true,
+      "LM_front_occluded_area_mm2": 0.0,
+      "maximum_lower_front_z_mm": 18.299999618530276,
+      "exterior_flush": true
+    },
+    "floor_stand": {
+      "LM": {
+        "path": "build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
+        "sha256": "7798396fdbc5f837dc4b79fdc2792f781bcbd6af474e6b9dbb7edb9d78768ee4",
+        "sidecar_sha256": "29e254c13369d618e5e833d41ea79359d9da9e36057cefd3c63e14324bbf23a2"
+      },
+      "overlap_mm3": 0.0,
+      "receivers": [
+        {
+          "UM": {
+            "center_xy_mm": [
+              -31.999999888450983,
+              315.7701019562712
+            ],
+            "diameter_range_mm": [
+              4.599087938314602,
+              4.599996042139815
+            ]
+          },
+          "LM": {
+            "center_xy_mm": [
+              -31.99999936071124,
+              315.7701026071799
+            ],
+            "diameter_range_mm": [
+              3.3993221899151065,
+              3.400000784458836
+            ]
+          },
+          "axis_offset_mm": 8.379686010750756e-07,
+          "UM_rear_mating_z_mm": 12.400000000000006,
+          "LM_front_mating_z_mm": 12.200000195367416,
+          "half_lap_gap_mm": 0.19999980463258993
+        },
+        {
+          "UM": {
+            "center_xy_mm": [
+              31.999999891331957,
+              315.7701026719364
+            ],
+            "diameter_range_mm": [
+              4.599087182825895,
+              4.600016578574643
+            ]
+          },
+          "LM": {
+            "center_xy_mm": [
+              32.00000010560645,
+              315.7701013984245
+            ],
+            "diameter_range_mm": [
+              3.399327132909782,
+              3.400011774603605
+            ]
+          },
+          "axis_offset_mm": 1.2914124359290098e-06,
+          "UM_rear_mating_z_mm": 12.400000000000006,
+          "LM_front_mating_z_mm": 12.200000195367416,
+          "half_lap_gap_mm": 0.19999980463258993
+        }
+      ],
+      "seam_samples": [
+        {
+          "x_mm": -30.0,
+          "LM_edge_y_mm": 311.18905024949333,
+          "UM_edge_y_mm": 311.24384256023,
+          "assembly_gap_mm": 0.05479231073667279,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": -25.0,
+          "LM_edge_y_mm": 315.6236787563151,
+          "UM_edge_y_mm": 315.6736842041431,
+          "assembly_gap_mm": 0.05000544782802763,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": -20.0,
+          "LM_edge_y_mm": 315.27658941318566,
+          "UM_edge_y_mm": 315.3265875908577,
+          "assembly_gap_mm": 0.0499981776720233,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": -15.0,
+          "LM_edge_y_mm": 314.7679171814988,
+          "UM_edge_y_mm": 314.81792217096995,
+          "assembly_gap_mm": 0.050004989471176486,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": -10.0,
+          "LM_edge_y_mm": 314.4224970335975,
+          "UM_edge_y_mm": 314.4724973590712,
+          "assembly_gap_mm": 0.05000032547371802,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": -5.0,
+          "LM_edge_y_mm": 314.2218388000462,
+          "UM_edge_y_mm": 314.27183132650663,
+          "assembly_gap_mm": 0.04999252646041441,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": 0.0,
+          "LM_edge_y_mm": 314.15600470755925,
+          "UM_edge_y_mm": 314.2060039808018,
+          "assembly_gap_mm": 0.04999927324257669,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": 5.0,
+          "LM_edge_y_mm": 314.2218320780479,
+          "UM_edge_y_mm": 314.2718367862076,
+          "assembly_gap_mm": 0.05000470815969038,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": 10.0,
+          "LM_edge_y_mm": 314.42249670889646,
+          "UM_edge_y_mm": 314.47249635284055,
+          "assembly_gap_mm": 0.04999964394409062,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": 15.0,
+          "LM_edge_y_mm": 314.76792296917984,
+          "UM_edge_y_mm": 314.81792823074005,
+          "assembly_gap_mm": 0.050005261560215786,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": 20.0,
+          "LM_edge_y_mm": 315.27658992445936,
+          "UM_edge_y_mm": 315.32658758176086,
+          "assembly_gap_mm": 0.049997657301503295,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": 25.0,
+          "LM_edge_y_mm": 315.6236839757934,
+          "UM_edge_y_mm": 315.67367609783133,
+          "assembly_gap_mm": 0.04999212203790648,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        },
+        {
+          "x_mm": 30.0,
+          "LM_edge_y_mm": 311.1890468669932,
+          "UM_edge_y_mm": 311.2438403909028,
+          "assembly_gap_mm": 0.05479352390960912,
+          "UM_front_z_mm": 18.299999618530276,
+          "LM_front_z_mm": 18.300000099999984,
+          "front_surface_step_mm": -4.814697085464559e-07
+        }
+      ],
+      "mount_compatible": true,
+      "LM_front_occluded_area_mm2": 0.0,
+      "maximum_lower_front_z_mm": 18.299999618530276,
+      "exterior_flush": true
+    }
+  },
+  "LM_project": {
+    "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_02_LM_top_keyed_2_of_2_GUI.3mf",
+    "sha256": "5367669372e3e8954dd2e0742868c14716c90ecf78401fa0cf8922d512fad16e"
+  },
+  "body_project": {
+    "path": "candidates/nd25fn4_crescent/print/01_UM_Crescent_V4_06HF_PETG_GF_PLA.gcode.3mf",
+    "sha256": "263b5969503aaa95c7b4ebfb2e91389bf1c54e70ec16b864219a40914cd2eff8"
+  },
+  "result": "Mounts compatible; front faces flush at Z18.30; no LM front-face occlusion.",
+  "section_image": {
+    "path": "candidates/nd25fn4_crescent/print/LM_assembly_sections.png",
+    "sha256": "2eae40f85f8568a208ddf340ab6378f53f3d4163fcb17e1afe7b43e6ff422e7b"
+  }
+}

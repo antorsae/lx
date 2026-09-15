@@ -1,0 +1,45 @@
+{
+  "jobs": [
+    {
+      "input": "/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl",
+      "mode": "view",
+      "theme": "snapshot",
+      "outputs": [
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/views/fused_front.png",
+          "camera": {
+            "direction": [
+              -0.7,
+              -0.7,
+              -2.5
+            ],
+            "up": [
+              0.707,
+              -0.707,
+              0
+            ]
+          }
+        },
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/views/fused_rear.png",
+          "camera": {
+            "direction": [
+              0.7,
+              0.7,
+              2.5
+            ],
+            "up": [
+              0.707,
+              -0.707,
+              0
+            ]
+          }
+        }
+      ],
+      "render": {
+        "sizeProfile": "diagnostic",
+        "padding": 0.1
+      }
+    }
+  ]
+}

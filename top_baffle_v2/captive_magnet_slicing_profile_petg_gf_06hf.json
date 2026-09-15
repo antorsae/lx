@@ -3,6 +3,7 @@
  "backend": "BambuStudio",
  "required_bambu_studio_version": "02.07.01.62",
  "lane": "0.6mm_high_flow",
+ "material_changeover_policy": "print_policy.json",
  "lane_notes": "PETG-GF structural lane on the 0.6 mm high-flow nozzle, printed on the owner's saved TINMORRY PETG-GF preset. That preset is hash-pinned because Bambu Studio rewrites saved presets in place: on 2026-08-13 it dropped the file's type key, which makes the CLI refuse the config, and collapsed compatible_printers to a name no printer preset matches, which makes the GUI show the filament as unsupported on every machine. Both were repaired by hand and the hash re-pinned; a pin failure here usually means Studio has rewritten it again rather than that the filament changed. Supports print in PETG with a PLA Basic interface, because a PETG interface welds to a PETG part and cannot be stripped, while PLA does not fuse to it, so a zero Z gap still peels apart.",
  "printer": "Bambu Lab P2S 0.6 nozzle",
  "process": "0.18mm Balanced Quality @BBL P2S 0.6 nozzle",
@@ -53,7 +54,7 @@
    "support_interface_pattern": "rectilinear",
    "support_object_xy_distance": "0.7",
    "enable_prime_tower": "1",
-   "flush_into_support": "1",
+   "flush_into_support": "0",
    "flush_into_objects": "0",
    "flush_into_infill": "0",
    "independent_support_layer_height": "0",
@@ -68,7 +69,9 @@
    "ironing_flow": "10%",
    "ironing_spacing": "0.15",
    "ironing_speed": "60",
-   "bridge_speed": "20"
+   "bridge_speed": "20",
+   "support_bottom_interface_spacing": "0.5",
+   "support_bottom_z_distance": "0.18"
   },
   "filament": {
    "nozzle_temperature": [
@@ -137,7 +140,9 @@
     "enable_support": "1",
     "support_on_build_plate_only": "1",
     "support_critical_regions_only": "1",
-    "support_remove_small_overhang": "1"
+    "support_remove_small_overhang": "1",
+    "sparse_infill_density": "100%",
+    "sparse_infill_pattern": "zig-zag"
    }
   },
   {
@@ -150,7 +155,9 @@
     "enable_support": "1",
     "support_on_build_plate_only": "1",
     "support_critical_regions_only": "1",
-    "support_remove_small_overhang": "1"
+    "support_remove_small_overhang": "1",
+    "sparse_infill_density": "100%",
+    "sparse_infill_pattern": "zig-zag"
    }
   },
   {
@@ -288,5 +295,7 @@
   "sha256": "90f9bb69f3f043996ec0bdc443d6d4165d425d070232817a173efea9acb381b1",
   "retrieved": "2026-08-15",
   "note": "TINMORRY fills only the Standard variant column and leaves High Flow as nil, which falls back to Generic PETG-CF @BBL P2S. This lane pins High Flow to match the hotend, so repo_overrides.filament mirrors the vendor's Standard figures into both columns."
- }
+ },
+ "frozen_filament_preset": "vendor/TINMORRY/resolved_P2S_06HF_PETG_GF.json",
+ "frozen_filament_preset_sha256": "81186a77e8ababf5558d1ed505b91d204f288883be58217d0f8f053f04a93916"
 }

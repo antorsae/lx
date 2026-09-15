@@ -61,12 +61,10 @@ SUPPORT_BLOCKER_STEMS = (
     "obiwan_optional_lm_keyed_2_of_2_top",
 )
 
+from lx521_baffle.references import geometry_reference_paths
+
 REQUIRED_REFERENCE_PATHS = (
-    ROOT.parent / "linkwitz" / "H1658-04_MU10RB-SL_driver.stl",
-    ROOT.parent / "linkwitz" / "H1658-04_MU10RB-SL_driver_STL_notes.md",
-    ROOT.parent / "linkwitz" / "H1658-04_MU10RB-SL_Datasheet.pdf",
-    ROOT.parent / "E0022_W22EX001.stp",
-    QUALIFICATION_RECORD,
+    *geometry_reference_paths(), QUALIFICATION_RECORD,
 )
 
 # These modules belong only to explicit, non-release TEBM/BMR targets.  Keep

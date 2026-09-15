@@ -63,7 +63,7 @@ do the same for the B1 wing variant and for all variants together.
     “10F” in this project; four-hole flange on pitch D89.5): 4 x Ø4.6
     bores at 58/148/238/328 deg (a square clocked
     +13 deg from 45 -- 45/90 grids are geometrically impossible, see
-    VARIANTS.md), 4.0 mm deep, for BRASS HEAT-SET inserts M3 x 3 long
+    VARIANTS.md), 4.0 mm deep, for BRASS HEAT-SET inserts M3 thread × Ø5 × L4
     x Ø5 OD (soldering-iron set). The ring sits 3.75 from the D82 cutout
     wall; the slim bore keeps 1.45 mm on its inboard side. The shared TS duct
     (z=11.5) clears the rotated pattern IN PLAN (>=6.8 to every bore;

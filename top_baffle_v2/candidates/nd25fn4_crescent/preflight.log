@@ -1,0 +1,6 @@
+Retriangulated 3 precision slivers; max edge deviation 0.00000000 mm
+no_floor_stand LM overlap 0.0
+floor_stand LM overlap 0.0
+receiver -32 [16.4        20.69999924]
+receiver 32 [16.4        20.69999924]
+rear {'maximum_forward_return_mm': 0.0, 'minimum_longitudinal_radius_mm': 23.090213554707056, 'minimum_transverse_radius_mm': 144.91230894632417, 'minimum_complete_perimeter_profile_radius_mm': 1.8129893280276455, 'curvature_sample_spacing_mm': 0.25, 'curvature_fit_window_mm': 1.5, 'required_minimum_longitudinal_radius_mm': 10.0, 'required_minimum_transverse_radius_mm': 50.0}

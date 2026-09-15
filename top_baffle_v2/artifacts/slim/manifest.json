@@ -6,24 +6,24 @@
   },
   "files": [
     {
-      "bytes": 1062069,
+      "bytes": 1061977,
       "path": "cad/attachments.step",
       "role": "thin_attachment_set",
-      "sha256": "fd9138e1b9038e1dbebdcfc56ba1c2f8166df5cb0bf0676f76fc65b972b41334",
+      "sha256": "0b8a7c4c2dd3001ebc195f6f70b26a84116206f5c16ec9954f45c648a3acf3d3",
       "source": "build/no_floor_stand/v1_attachments.step"
     },
     {
-      "bytes": 46363143,
+      "bytes": 46375806,
       "path": "cad/base_print_assembly.step",
       "role": "print_assembly",
-      "sha256": "0a61b5426fa5c600dca417aca0a3beb6a279263cdf3efee2518c2906b0d0c2eb",
+      "sha256": "c8393a8b7033865b08dea83ac2e58340f01e65f18c633899f8d815cadaf62528",
       "source": "build/no_floor_stand/v1l_split.step"
     },
     {
-      "bytes": 986069,
+      "bytes": 986041,
       "path": "cad/top.step",
       "role": "thin_top_design",
-      "sha256": "55d21eb80ad59768f8abfb7dfb4caf83c8e05a3bf7d35b950a43d8333f7c786b",
+      "sha256": "8be8ae5e77bbfb25af4decbf907268b1b88f0d3c6c792c73c67db1fa751caa67",
       "source": "build/no_floor_stand/v1.step"
     },
     {
@@ -55,31 +55,31 @@
       "source": "images/generated/slim/base_top_20260718T095919Z.png"
     },
     {
-      "bytes": 1468,
+      "bytes": 1470,
       "path": "stl/slim_1_of_4_bottom.print.json",
       "role": "print_orientation_authority",
-      "sha256": "2fd145ad3e8f8c7abc05010e40d388c6ad130f69c2404fb5cdcb5e0d29ae971f",
+      "sha256": "dd30ac356d3af803231b1ec691d3f5d50c543bd72e6cad7dc90971cc398a378d",
       "source": "build/no_floor_stand/stl/slim_1_of_4_bottom.print.json"
     },
     {
-      "bytes": 812984,
+      "bytes": 813084,
       "path": "stl/slim_1_of_4_bottom.stl",
       "role": "print_mesh",
-      "sha256": "8cb2a4a48eef96e6e8feee52c1092ae4b633e0066e0c4b57eee958cad95d7994",
+      "sha256": "a5e8c5901f6eacfdd195b897fd2ee213f036b81e60c7ad4179d50aba5a4c5691",
       "source": "build/no_floor_stand/stl/slim_1_of_4_bottom.stl"
     },
     {
       "bytes": 1464,
       "path": "stl/slim_2_of_4_mid_left.print.json",
       "role": "print_orientation_authority",
-      "sha256": "60cdd41c3c4ced4a9a1b1469ec3b3644ed978a6eecc4a87e61c050391877fa5c",
+      "sha256": "b2710e4c1f3bd488c1a97e262f9eb2ed97e29749fbf18074a9208d2a781c19fd",
       "source": "build/no_floor_stand/stl/slim_2_of_4_mid_left.print.json"
     },
     {
-      "bytes": 358684,
+      "bytes": 357684,
       "path": "stl/slim_2_of_4_mid_left.stl",
       "role": "print_mesh",
-      "sha256": "3d75158a19362f30a0bb9f9dd67c764b3c1f0f3ee63dc38574beac17639d60a8",
+      "sha256": "448af41d309e381d9b70f4e95ff7b85f5b7d717c25bb8c42ce9ce2c514b803b9",
       "source": "build/no_floor_stand/stl/slim_2_of_4_mid_left.stl"
     },
     {
@@ -100,70 +100,70 @@
       "bytes": 1561,
       "path": "stl/slim_4_of_4_vase_b2.print.json",
       "role": "print_orientation_authority",
-      "sha256": "906f2bcb39982e08811cc749bfd2d48a72d39b7e0d74841200c32cc277d4e0b6",
+      "sha256": "a9b97bc5ea362c52c4615602044c4e253942aeb5d09bf39317f498b6eee57d47",
       "source": "build/no_floor_stand/stl/slim_4_of_4_vase_b2.print.json"
     },
     {
-      "bytes": 403684,
+      "bytes": 402284,
       "path": "stl/slim_4_of_4_vase_b2.stl",
       "role": "print_mesh",
-      "sha256": "dc49fc8a101729ab7aaebf7df36bb5b7e57fc81ad04e49d336793f0df2bc7598",
+      "sha256": "33ee34409d1de413ca149d16c06fd670b093f110a6e9ce60fa7248821068ea0d",
       "source": "build/no_floor_stand/stl/slim_4_of_4_vase_b2.stl"
     },
     {
-      "bytes": 1513,
+      "bytes": 1512,
       "path": "stl/slim_shoulder_1_of_4_bottom_left.print.json",
       "role": "print_orientation_authority",
-      "sha256": "fba6375004f27e27013be299834a5690252fa525365deffac3e1e993eca540d8",
+      "sha256": "88b33fb027cf01fb8cc0f7f3377b24f9c56a101f58db36699f004b65bde2e33d",
       "source": "build/no_floor_stand/stl/slim_shoulder_1_of_4_bottom_left.print.json"
     },
     {
       "bytes": 184484,
       "path": "stl/slim_shoulder_1_of_4_bottom_left.stl",
       "role": "print_mesh",
-      "sha256": "9da60537d872bf4b6f1155d2fda2485c58430aeaf86555f94d4ed247b4372b08",
+      "sha256": "7ece5a1b6edf2e30a5764feb5abc982f8bb85bffb5269ebc66cbfacff1bcd2af",
       "source": "build/no_floor_stand/stl/slim_shoulder_1_of_4_bottom_left.stl"
     },
     {
-      "bytes": 1524,
+      "bytes": 1525,
       "path": "stl/slim_shoulder_2_of_4_top_left.print.json",
       "role": "print_orientation_authority",
-      "sha256": "afa31ce581227acf8d2107822adb5cf2e4869345826325239c20f0ecd5f3c64b",
+      "sha256": "a41d0a596fae2f275188a39d9b77a6cb64c36820aeb92fc2ecfef8ca2fd73341",
       "source": "build/no_floor_stand/stl/slim_shoulder_2_of_4_top_left.print.json"
     },
     {
       "bytes": 167484,
       "path": "stl/slim_shoulder_2_of_4_top_left.stl",
       "role": "print_mesh",
-      "sha256": "cc944b474198b87588ce1747b327a557c29b371d2ac415d899753e64f893e0f2",
+      "sha256": "6336437600757c539da9e109d44901fdb078da56c6e41d37c03b7c4717e5c6a1",
       "source": "build/no_floor_stand/stl/slim_shoulder_2_of_4_top_left.stl"
     },
     {
-      "bytes": 1491,
+      "bytes": 1490,
       "path": "stl/slim_shoulder_3_of_4_bottom_right.print.json",
       "role": "print_orientation_authority",
-      "sha256": "7a521cfcf6bdeb6e5d774584bc4dbcfe0993e934ffd2d36ed2f4c8c76d36cc27",
+      "sha256": "65ff54ad47f93607d64b22c237061c3e175cf280f7fa264075be1ed796ee04e4",
       "source": "build/no_floor_stand/stl/slim_shoulder_3_of_4_bottom_right.print.json"
     },
     {
       "bytes": 207684,
       "path": "stl/slim_shoulder_3_of_4_bottom_right.stl",
       "role": "print_mesh",
-      "sha256": "e10f0aade9bacf714fe7fb90fa5e52d86aa23f0bd3b68a6f33e60a81944451d4",
+      "sha256": "3c520a232faa90973f9b422c8f8f549dc2d4d25cbb67ba466989bdb5f079b398",
       "source": "build/no_floor_stand/stl/slim_shoulder_3_of_4_bottom_right.stl"
     },
     {
-      "bytes": 1526,
+      "bytes": 1527,
       "path": "stl/slim_shoulder_4_of_4_top_right.print.json",
       "role": "print_orientation_authority",
-      "sha256": "23dee03ceb80013ca76252c157cf36fcf7b053b123ab518b97d43ff07735a162",
+      "sha256": "95bf92433f72b0fe88eb5ab76d79a2219d957cc74d355706763c8b977da4863f",
       "source": "build/no_floor_stand/stl/slim_shoulder_4_of_4_top_right.print.json"
     },
     {
       "bytes": 190684,
       "path": "stl/slim_shoulder_4_of_4_top_right.stl",
       "role": "print_mesh",
-      "sha256": "52bb0603329ce41bbe52029862d8a86dfed7ed72f6758e1470c5cc04892f3030",
+      "sha256": "647ee1a713b756e5fc4900af2d5f824c204598c99108a6b34ab602f12e1f562e",
       "source": "build/no_floor_stand/stl/slim_shoulder_4_of_4_top_right.stl"
     },
     {
@@ -195,31 +195,31 @@
       "source": "build/no_floor_stand/stl/slim_um_grommet_half_b.stl"
     },
     {
-      "bytes": 1534,
+      "bytes": 1535,
       "path": "stl/slim_wing_1_of_2_left.print.json",
       "role": "print_orientation_authority",
-      "sha256": "2e3d9f750c0ee6aecc48b8a5a7f301886c0c3e6e962b6e271929ff09a05471d8",
+      "sha256": "5ff72a61f5c8eb9445c3740f9f79b927ac242510e3b504ec6b95c97b2f3ed269",
       "source": "build/no_floor_stand/stl/slim_wing_1_of_2_left.print.json"
     },
     {
       "bytes": 160484,
       "path": "stl/slim_wing_1_of_2_left.stl",
       "role": "print_mesh",
-      "sha256": "c32880e8c446d2c46bdc3c3fe213e36d9b4392102e4dd85fb66ff0b661fb5ee2",
+      "sha256": "7b8a1ef0d700cd196d177ad16eed0e51da2601f81e91f777a77df314e40cd788",
       "source": "build/no_floor_stand/stl/slim_wing_1_of_2_left.stl"
     },
     {
       "bytes": 1538,
       "path": "stl/slim_wing_2_of_2_right.print.json",
       "role": "print_orientation_authority",
-      "sha256": "c40dd8d67a6c5bdd54d200638fea968f66cafb7c93548266f7d2069f6707cb41",
+      "sha256": "1c9cc64a48c39cba7d64ce94b1d406bd56d55fb43e305b39a7b9497780924b02",
       "source": "build/no_floor_stand/stl/slim_wing_2_of_2_right.print.json"
     },
     {
       "bytes": 183384,
       "path": "stl/slim_wing_2_of_2_right.stl",
       "role": "print_mesh",
-      "sha256": "e5ce783af19809380951895f41221a071c8d72e60edcfb5ef945225f0ff040a4",
+      "sha256": "52491d7e9e756a76699d176edd2f0303dbb2ab9a473b85f588fb0dee194d73e9",
       "source": "build/no_floor_stand/stl/slim_wing_2_of_2_right.stl"
     }
   ],

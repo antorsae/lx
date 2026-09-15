@@ -1,0 +1,5 @@
+{
+  "scope": "Attempt the standard release-catalog provenance gate before current UM cavity validation.",
+  "catalog_status": "failed",
+  "error": "floor_stand:Obi-Wan:obiwan_core_2_of_2_um_carrier: support-blocker binding hashes differ from the release meshes"
+}

@@ -1,0 +1,922 @@
+{
+  "interface_filament": "Bambu PLA Basic @BBL P2S 0.6 nozzle",
+  "kind": "petg_gf_gui_projects_no_gcode",
+  "model_filament": "TINMORRY PETG-GF Profile @BBL P2S",
+  "projects": [
+    {
+      "filaments": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "geometry_audit": {
+        "component_depth": 1,
+        "mesh_max_abs_error_mm": 4.2694824173850066e-06,
+        "parameter_modifier_count": 1,
+        "parameter_modifier_names": [
+          "obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.stl"
+        ],
+        "parameter_modifier_settings": [
+          {
+            "sparse_infill_density": "100%",
+            "sparse_infill_pattern": "zig-zag"
+          }
+        ],
+        "parameter_modifier_triangle_counts": [
+          28
+        ],
+        "project_sha256": "a4d814dd7b75cdf21ba7708e2144e9718c1be116b2459e9c4127cb6ef47c28fa",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 4,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            204.0406951904297,
+            219.308349609375,
+            23.42241096496582
+          ],
+          "minimum_mm": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "size_mm": [
+            204.0406951904297,
+            219.308349609375,
+            23.42241096496582
+          ]
+        },
+        "sources": {
+          "build/no_floor_stand/process_modifiers/obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.json": "1438e020570e019971ed72d6ddd237b4f4890f897f60965f676abc9078bc916a",
+          "build/no_floor_stand/process_modifiers/obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.stl": "8a167c8b273398c1f7f7afa777cfdfe5f3f098ae10e4ffef240cf8f7ee6bec6a",
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json": "5823ecf29a94c2b09512c38baaab6f8c3db1d8c825bb50ee060214cf85c63384",
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl": "87bcfde710cf16eb7ff094631e27071721a913945b55f23fdc34ebd36660eb23",
+          "build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl": "ec1fe57ed4e5692a31f51e0bfbdafd5ef400a782de8f09206dfebe20c8acf4b7",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "2a619395d1009063455b6ae28c6e36b85091b7d26671e5dc1cd9055e11d1a11f"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            25.84499
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            18.40728
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 1,
+        "support_blocker_triangle_counts": [
+          6688
+        ],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            229.88568519042968,
+            237.71562960937501,
+            23.42241096496582
+          ],
+          "minimum_mm": [
+            25.84499,
+            18.40728,
+            0.0
+          ],
+          "size_mm": [
+            204.0406951904297,
+            219.308349609375,
+            23.42241096496582
+          ]
+        },
+        "triangle_count": 26548
+      },
+      "kind": "single",
+      "magnets": 2,
+      "name": "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand",
+      "parts": {
+        "modifier_part": 1,
+        "normal_part": 1,
+        "support_blocker": 1
+      },
+      "pause_z_mm": 5.96,
+      "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand_GUI.3mf",
+      "project_sha256": "a4d814dd7b75cdf21ba7708e2144e9718c1be116b2459e9c4127cb6ef47c28fa"
+    },
+    {
+      "filaments": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "geometry_audit": {
+        "component_depth": 1,
+        "mesh_max_abs_error_mm": 6.37543945458674e-06,
+        "parameter_modifier_count": 0,
+        "parameter_modifier_names": [],
+        "parameter_modifier_settings": [],
+        "parameter_modifier_triangle_counts": [],
+        "project_sha256": "6e025d4d37d569f66566c300edc1156df334c6d5616a46187d65009b7ebfb5ec",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 3,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            201.11500549316406,
+            215.61798095703125,
+            168.3000030517578
+          ],
+          "minimum_mm": [
+            0.005686815828084946,
+            0.0,
+            0.0
+          ],
+          "size_mm": [
+            201.10931867733598,
+            215.61798095703125,
+            168.3000030517578
+          ]
+        },
+        "sources": {
+          "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json": "5b9ee215779c28bfb1f4fcba762d2b62689d59154f3faf1620604c04cd9d8ac4",
+          "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl": "df222c6fbf8a2b7ddaee8c7ca5e467389eafd219b15c17d546d7a956cc03dd49",
+          "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl": "e54ab8a6ec792d84c4244ea0afa74da01cf3384a1a20a2c675ae087a347279bb",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "2a619395d1009063455b6ae28c6e36b85091b7d26671e5dc1cd9055e11d1a11f"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            27.29032
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            20.34034
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 1,
+        "support_blocker_triangle_counts": [
+          17422
+        ],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            228.40532549316407,
+            235.95832095703125,
+            168.3000030517578
+          ],
+          "minimum_mm": [
+            27.296006815828086,
+            20.34034,
+            0.0
+          ],
+          "size_mm": [
+            201.10931867733598,
+            215.61798095703125,
+            168.3000030517578
+          ]
+        },
+        "triangle_count": 138900
+      },
+      "kind": "single",
+      "magnets": 2,
+      "name": "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand",
+      "parts": {
+        "modifier_part": 0,
+        "normal_part": 1,
+        "support_blocker": 1
+      },
+      "pause_z_mm": 5.96,
+      "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_LM_bottom_keyed_1_of_2_floor_stand_GUI.3mf",
+      "project_sha256": "6e025d4d37d569f66566c300edc1156df334c6d5616a46187d65009b7ebfb5ec"
+    },
+    {
+      "filaments": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "geometry_audit": {
+        "component_depth": 1,
+        "mesh_max_abs_error_mm": 6.879150390659561e-06,
+        "parameter_modifier_count": 0,
+        "parameter_modifier_names": [],
+        "parameter_modifier_settings": [],
+        "parameter_modifier_triangle_counts": [],
+        "project_sha256": "ffa5a8feaeb3d6bba5f79f5cf44a66f20b143bd95d59dd19c8c6ca7458a8b320",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 3,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            212.09910583496094,
+            212.09918212890625,
+            23.64006805419922
+          ],
+          "minimum_mm": [
+            0.0,
+            8.620446169516072e-05,
+            0.0
+          ],
+          "size_mm": [
+            212.09910583496094,
+            212.09909592444455,
+            23.64006805419922
+          ]
+        },
+        "sources": {
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.print.json": "0e0c95c72d53af3f16a35daff584eaa25af35d1d8d118fec96bb15bf66bb306f",
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl": "8070ccbdd173aabe88e62020ce03f729a184750a8c3665caf8cc7d9e671adfe5",
+          "build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl": "e83384453eb3f04290a052b88f1610e23b54491ebe8a0dd291b884df736fb7c1",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "2a619395d1009063455b6ae28c6e36b85091b7d26671e5dc1cd9055e11d1a11f"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            22.05134
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            21.84951
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 1,
+        "support_blocker_triangle_counts": [
+          3968
+        ],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            234.15044583496095,
+            233.94869212890626,
+            23.64006805419922
+          ],
+          "minimum_mm": [
+            22.05134,
+            21.849596204461694,
+            0.0
+          ],
+          "size_mm": [
+            212.09910583496094,
+            212.09909592444455,
+            23.64006805419922
+          ]
+        },
+        "triangle_count": 21446
+      },
+      "kind": "single",
+      "magnets": 2,
+      "name": "obiwan_02_LM_top_keyed_2_of_2",
+      "parts": {
+        "modifier_part": 0,
+        "normal_part": 1,
+        "support_blocker": 1
+      },
+      "pause_z_mm": 5.96,
+      "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_02_LM_top_keyed_2_of_2_GUI.3mf",
+      "project_sha256": "ffa5a8feaeb3d6bba5f79f5cf44a66f20b143bd95d59dd19c8c6ca7458a8b320"
+    },
+    {
+      "filaments": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "geometry_audit": {
+        "component_depth": 1,
+        "mesh_max_abs_error_mm": 3.761303709381991e-06,
+        "parameter_modifier_count": 0,
+        "parameter_modifier_names": [],
+        "parameter_modifier_settings": [],
+        "parameter_modifier_triangle_counts": [],
+        "project_sha256": "f92136b0317d4ceeaf3e4f0f686d298991f91b92fcfdd2362fd718395ce39e6d",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 3,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            105.27996826171875,
+            115.52989959716797,
+            18.29081916809082
+          ],
+          "minimum_mm": [
+            3.453791214269586e-05,
+            0.0,
+            0.0
+          ],
+          "size_mm": [
+            105.27993372380661,
+            115.52989959716797,
+            18.29081916809082
+          ]
+        },
+        "sources": {
+          "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.print.json": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23",
+          "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
+          "build/no_floor_stand/support_blockers/obiwan_core_2_of_2_um_carrier.support_blocker.stl": "81cfd387cc6bcd755e5f5fb3238b726b171f33a8f410e87ea7b527f4820b7a92",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "2a619395d1009063455b6ae28c6e36b85091b7d26671e5dc1cd9055e11d1a11f"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            75.35999
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            70.23506
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 1,
+        "support_blocker_triangle_counts": [
+          2420
+        ],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            180.63995826171873,
+            185.76495959716797,
+            18.29081916809082
+          ],
+          "minimum_mm": [
+            75.36002453791214,
+            70.23506,
+            0.0
+          ],
+          "size_mm": [
+            105.2799337238066,
+            115.52989959716797,
+            18.29081916809082
+          ]
+        },
+        "triangle_count": 27420
+      },
+      "kind": "single",
+      "magnets": 2,
+      "name": "obiwan_03_UM_carrier_1_of_1",
+      "parts": {
+        "modifier_part": 0,
+        "normal_part": 1,
+        "support_blocker": 1
+      },
+      "pause_z_mm": 5.96,
+      "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_03_UM_carrier_1_of_1_GUI.3mf",
+      "project_sha256": "f92136b0317d4ceeaf3e4f0f686d298991f91b92fcfdd2362fd718395ce39e6d"
+    },
+    {
+      "filaments": [
+        "TINMORRY PETG-GF Profile @BBL P2S"
+      ],
+      "geometry_audit": {
+        "component_depth": 1,
+        "mesh_max_abs_error_mm": 1.974243161839695e-06,
+        "parameter_modifier_count": 0,
+        "parameter_modifier_names": [],
+        "parameter_modifier_settings": [],
+        "parameter_modifier_triangle_counts": [],
+        "project_sha256": "cdb3b224492577f5f6959db14339503897405856045ef1238455d195f574da16",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 2,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            98.33799743652344,
+            41.93372344970703,
+            11.5
+          ],
+          "minimum_mm": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "size_mm": [
+            98.33799743652344,
+            41.93372344970703,
+            11.5
+          ]
+        },
+        "sources": {
+          "build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.print.json": "ad12ede544f07345e41322f177068094c20136f26b9b06a1b297c840bfd18b26",
+          "build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.stl": "9d0dcf380b97860f647a9577b4096f3add46dcb127c246be4a0a974bc64fb6a3",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "2a619395d1009063455b6ae28c6e36b85091b7d26671e5dc1cd9055e11d1a11f"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            78.83088
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            107.03314
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 0,
+        "support_blocker_triangle_counts": [],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            177.16887743652342,
+            148.96686344970703,
+            11.5
+          ],
+          "minimum_mm": [
+            78.83088,
+            107.03314,
+            0.0
+          ],
+          "size_mm": [
+            98.33799743652342,
+            41.93372344970703,
+            11.5
+          ]
+        },
+        "triangle_count": 8768
+      },
+      "kind": "single",
+      "magnets": 0,
+      "name": "obiwan_04_T_tweeter_crescent_1_of_1",
+      "parts": {
+        "modifier_part": 0,
+        "normal_part": 1,
+        "support_blocker": 0
+      },
+      "pause_z_mm": null,
+      "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_04_T_tweeter_crescent_1_of_1_GUI.3mf",
+      "project_sha256": "cdb3b224492577f5f6959db14339503897405856045ef1238455d195f574da16"
+    },
+    {
+      "filaments": [
+        "TINMORRY PETG-GF Profile @BBL P2S"
+      ],
+      "geometry_audit": {
+        "component_depth": 1,
+        "mesh_max_abs_error_mm": 9.94396973652556e-07,
+        "parameter_modifier_count": 0,
+        "parameter_modifier_names": [],
+        "parameter_modifier_settings": [],
+        "parameter_modifier_triangle_counts": [],
+        "project_sha256": "5a99cf8903ef0d777852612f88742a4b09a1e2e064431b78104556087d434c23",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 2,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            34.70000076293945,
+            63.943145751953125,
+            8.550000190734863
+          ],
+          "minimum_mm": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "size_mm": [
+            34.70000076293945,
+            63.943145751953125,
+            8.550000190734863
+          ]
+        },
+        "sources": {
+          "build/floor_stand/stl/obiwan_addon_nl8_service_lid.print.json": "13ba259ac1ef6d862126d1393e38e3cac805fb3d10385171412a382759856aa1",
+          "build/floor_stand/stl/obiwan_addon_nl8_service_lid.stl": "a283e1574cb11c87ecf81c8f0cdaeee9486b7b07e6bb53a2a08a991872cf9abf",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "2a619395d1009063455b6ae28c6e36b85091b7d26671e5dc1cd9055e11d1a11f"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            110.64999
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            96.02843
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 0,
+        "support_blocker_triangle_counts": [],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            145.34999076293946,
+            159.97157575195314,
+            8.550000190734863
+          ],
+          "minimum_mm": [
+            110.64999,
+            96.02843,
+            0.0
+          ],
+          "size_mm": [
+            34.70000076293945,
+            63.94314575195314,
+            8.550000190734863
+          ]
+        },
+        "triangle_count": 476
+      },
+      "kind": "single",
+      "magnets": 0,
+      "name": "obiwan_NL8_service_lid_1_of_1",
+      "parts": {
+        "modifier_part": 0,
+        "normal_part": 1,
+        "support_blocker": 0
+      },
+      "pause_z_mm": null,
+      "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_NL8_service_lid_1_of_1_GUI.3mf",
+      "project_sha256": "5a99cf8903ef0d777852612f88742a4b09a1e2e064431b78104556087d434c23"
+    },
+    {
+      "filaments": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "geometry_audit": {
+        "mesh_max_abs_error_mm": 7.930908196840392e-06,
+        "normal_part_names": [
+          "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand.stl",
+          "obiwan_02_LM_top_keyed_2_of_2.stl",
+          "obiwan_03_UM_carrier_1_of_1.stl",
+          "obiwan_04_T_tweeter_crescent_1_of_1.stl"
+        ],
+        "normal_part_triangle_counts": [
+          26548,
+          21446,
+          27420,
+          8768
+        ],
+        "parameter_modifier_count": 1,
+        "parameter_modifier_names": [
+          "obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.stl"
+        ],
+        "parameter_modifier_settings": [
+          {
+            "sparse_infill_density": "100%",
+            "sparse_infill_pattern": "zig-zag"
+          }
+        ],
+        "parameter_modifier_triangle_counts": [
+          28
+        ],
+        "project_sha256": "8a7d6a42f475f16cd349ea086bb131c18625943de7ebd11b6f59611aaa821bc1",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 9,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            248.2799072265625,
+            253.8086700439453,
+            23.640634536743164
+          ],
+          "minimum_mm": [
+            9.786452293395996,
+            1.1741399765014648,
+            -0.0013054824667051435
+          ],
+          "size_mm": [
+            238.4934549331665,
+            252.63453006744385,
+            23.64194001920987
+          ]
+        },
+        "sources": {
+          "build/no_floor_stand/process_modifiers/obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.json": "1438e020570e019971ed72d6ddd237b4f4890f897f60965f676abc9078bc916a",
+          "build/no_floor_stand/process_modifiers/obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.stl": "8a167c8b273398c1f7f7afa777cfdfe5f3f098ae10e4ffef240cf8f7ee6bec6a",
+          "build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.print.json": "ad12ede544f07345e41322f177068094c20136f26b9b06a1b297c840bfd18b26",
+          "build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.stl": "9d0dcf380b97860f647a9577b4096f3add46dcb127c246be4a0a974bc64fb6a3",
+          "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.print.json": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23",
+          "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json": "5823ecf29a94c2b09512c38baaab6f8c3db1d8c825bb50ee060214cf85c63384",
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl": "87bcfde710cf16eb7ff094631e27071721a913945b55f23fdc34ebd36660eb23",
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.print.json": "0e0c95c72d53af3f16a35daff584eaa25af35d1d8d118fec96bb15bf66bb306f",
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl": "8070ccbdd173aabe88e62020ce03f729a184750a8c3665caf8cc7d9e671adfe5",
+          "build/no_floor_stand/support_blockers/obiwan_core_2_of_2_um_carrier.support_blocker.stl": "81cfd387cc6bcd755e5f5fb3238b726b171f33a8f410e87ea7b527f4820b7a92",
+          "build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl": "ec1fe57ed4e5692a31f51e0bfbdafd5ef400a782de8f09206dfebe20c8acf4b7",
+          "build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl": "e83384453eb3f04290a052b88f1610e23b54491ebe8a0dd291b884df736fb7c1",
+          "build/print_plates/obiwan/obiwan_01_02_03_04_LM_UM_combo_no_floor_stand.plate.json": "c5faea7b8500783529df544e1abb127896d6708a9bd615dffb20b0971b4c4e1e",
+          "build/print_plates/obiwan/obiwan_01_02_03_04_LM_UM_combo_no_floor_stand.stl": "03f2a29d93bde6d4a69160bc0c280473e6eb75acf8137ef06cb95ec65632eec8",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "2a619395d1009063455b6ae28c6e36b85091b7d26671e5dc1cd9055e11d1a11f"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 3,
+        "support_blocker_names": [
+          "obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl",
+          "obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl",
+          "obiwan_core_2_of_2_um_carrier.support_blocker.stl"
+        ],
+        "support_blocker_triangle_counts": [
+          6688,
+          3968,
+          2420
+        ],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            248.2799072265625,
+            253.8086700439453,
+            23.640634536743164
+          ],
+          "minimum_mm": [
+            9.786452293395996,
+            1.1741399765014648,
+            -0.0013054824667051435
+          ],
+          "size_mm": [
+            238.4934549331665,
+            252.63453006744385,
+            23.64194001920987
+          ]
+        },
+        "triangle_count": 84182
+      },
+      "kind": "plate",
+      "magnets": 6,
+      "name": "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand",
+      "parts": {
+        "modifier_part": 1,
+        "normal_part": 4,
+        "support_blocker": 3
+      },
+      "pause_z_mm": 5.96,
+      "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_02_03_04_LM_UM_combo_no_floor_stand_GUI.3mf",
+      "project_sha256": "8a7d6a42f475f16cd349ea086bb131c18625943de7ebd11b6f59611aaa821bc1"
+    },
+    {
+      "filaments": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "geometry_audit": {
+        "mesh_max_abs_error_mm": 8.731689462138092e-06,
+        "normal_part_names": [
+          "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand.stl",
+          "obiwan_02_LM_top_keyed_2_of_2.stl",
+          "obiwan_03_UM_carrier_1_of_1.stl",
+          "obiwan_04_T_tweeter_crescent_1_of_1.stl",
+          "obiwan_NL8_service_lid_1_of_1.stl"
+        ],
+        "normal_part_triangle_counts": [
+          138900,
+          21310,
+          27402,
+          8768,
+          476
+        ],
+        "parameter_modifier_count": 0,
+        "parameter_modifier_names": [],
+        "parameter_modifier_settings": [],
+        "parameter_modifier_triangle_counts": [],
+        "project_sha256": "75062ef8b5ebac47ed565ffd82c07556a859adb48e5cafdee3289b180716cc2f",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 9,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            239.1240997314453,
+            251.06573486328125,
+            168.3000030517578
+          ],
+          "minimum_mm": [
+            5.628686904907227,
+            2.0100862979888916,
+            0.0
+          ],
+          "size_mm": [
+            233.4954128265381,
+            249.05564856529236,
+            168.3000030517578
+          ]
+        },
+        "sources": {
+          "build/floor_stand/stl/obiwan_addon_nl8_service_lid.print.json": "13ba259ac1ef6d862126d1393e38e3cac805fb3d10385171412a382759856aa1",
+          "build/floor_stand/stl/obiwan_addon_nl8_service_lid.stl": "a283e1574cb11c87ecf81c8f0cdaeee9486b7b07e6bb53a2a08a991872cf9abf",
+          "build/floor_stand/stl/obiwan_addon_tweeter_crescent.print.json": "ad12ede544f07345e41322f177068094c20136f26b9b06a1b297c840bfd18b26",
+          "build/floor_stand/stl/obiwan_addon_tweeter_crescent.stl": "9d0dcf380b97860f647a9577b4096f3add46dcb127c246be4a0a974bc64fb6a3",
+          "build/floor_stand/stl/obiwan_core_2_of_2_um_carrier.print.json": "e66e046121e41ed63fb312f4a55126319ac0005fe4606f17a233a70ebf88646e",
+          "build/floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl": "c8ec7ab952eb4182819336798f92defb5dd224e28a0135126b38bf62efb38aa9",
+          "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json": "5b9ee215779c28bfb1f4fcba762d2b62689d59154f3faf1620604c04cd9d8ac4",
+          "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl": "df222c6fbf8a2b7ddaee8c7ca5e467389eafd219b15c17d546d7a956cc03dd49",
+          "build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.print.json": "29e254c13369d618e5e833d41ea79359d9da9e36057cefd3c63e14324bbf23a2",
+          "build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl": "7798396fdbc5f837dc4b79fdc2792f781bcbd6af474e6b9dbb7edb9d78768ee4",
+          "build/floor_stand/support_blockers/obiwan_core_2_of_2_um_carrier.support_blocker.stl": "d2b815fd9443852509ca7700068eba47fc6741bb58718ca5a34f26c556fcba14",
+          "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl": "e54ab8a6ec792d84c4244ea0afa74da01cf3384a1a20a2c675ae087a347279bb",
+          "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl": "4e898bda7c2f8b6d503cd8ced29e0c90d93890275e2349f4df3ecd507c7b09e2",
+          "build/print_plates/obiwan/obiwan_01_02_03_04_LM_UM_combo_floor_stand.plate.json": "2d522182b1e2aa6d70c887aaa1e854fc869cdfc69bc269beb5a8d17935f6ea56",
+          "build/print_plates/obiwan/obiwan_01_02_03_04_LM_UM_combo_floor_stand.stl": "3672b1826f138bf810a8678f231e5a97186dc40be2f10da22b72fd18c542a8a8",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "2a619395d1009063455b6ae28c6e36b85091b7d26671e5dc1cd9055e11d1a11f"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 3,
+        "support_blocker_names": [
+          "obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl",
+          "obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl",
+          "obiwan_core_2_of_2_um_carrier.support_blocker.stl"
+        ],
+        "support_blocker_triangle_counts": [
+          17422,
+          3966,
+          2416
+        ],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            239.1240997314453,
+            251.06573486328125,
+            168.3000030517578
+          ],
+          "minimum_mm": [
+            5.628686904907227,
+            2.0100862979888916,
+            0.0
+          ],
+          "size_mm": [
+            233.4954128265381,
+            249.05564856529236,
+            168.3000030517578
+          ]
+        },
+        "triangle_count": 196856
+      },
+      "kind": "plate",
+      "magnets": 6,
+      "name": "obiwan_01_02_03_04_LM_UM_combo_floor_stand",
+      "parts": {
+        "modifier_part": 0,
+        "normal_part": 5,
+        "support_blocker": 3
+      },
+      "pause_z_mm": 5.96,
+      "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_02_03_04_LM_UM_combo_floor_stand_GUI.3mf",
+      "project_sha256": "75062ef8b5ebac47ed565ffd82c07556a859adb48e5cafdee3289b180716cc2f"
+    }
+  ],
+  "reason": "Bambu CLI maps a second filament to nozzle 0 on the assemble-list path; slice these in the GUI"
+}

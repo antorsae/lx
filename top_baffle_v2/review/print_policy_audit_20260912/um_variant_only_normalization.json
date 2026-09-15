@@ -1,0 +1,23 @@
+{
+  "source": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_03_UM_carrier_1_of_1_GUI.3mf",
+  "changes": {
+    "extruder_variant_list": {
+      "before": [
+        "Direct Drive Standard,Direct Drive High Flow"
+      ],
+      "after": [
+        "Direct Drive High Flow"
+      ]
+    },
+    "printer_extruder_variant": {
+      "before": [
+        "Direct Drive Standard",
+        "Direct Drive High Flow"
+      ],
+      "after": [
+        "Direct Drive High Flow"
+      ]
+    }
+  },
+  "scope": "Review-only reproduction of linked comment, preserving the requested High Flow nozzle."
+}

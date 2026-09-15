@@ -1,0 +1,4192 @@
+{
+  "scope": "All cavity-intersecting sliced bead midplanes; samples along the cavity boundary at <=0.06 mm spacing; model bead footprints only. This measures boundary presence, not physical extrusion, adhesion or retention.",
+  "gcode_sha256": "9486143728837c327c0d026130c5c7ab7ea7b7670bb296995f7f73917b3c7d05",
+  "stl_sha256": "7cf53f91b465cd298d9508638e30226625cb64ce30ca04ad0a44bf03c2610706",
+  "sites": [
+    {
+      "site": "body_168deg",
+      "cavity_z_bounds_mm": [
+        2.659008502960205,
+        12.362489700317383
+      ],
+      "layers": [
+        {
+          "z": 2.76,
+          "edge_length_mm": 1.533677422199782,
+          "sample_count": 63,
+          "max_edge_distance_mm": 0.0,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1219
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1220
+            },
+            {
+              "feature": "Top surface",
+              "width_mm": 0.62,
+              "path_id": 1304
+            },
+            {
+              "feature": "Ironing",
+              "width_mm": 0.600858,
+              "path_id": 1347
+            },
+            {
+              "feature": "Ironing",
+              "width_mm": 0.600858,
+              "path_id": 1347
+            }
+          ]
+        },
+        {
+          "z": 2.92,
+          "edge_length_mm": 4.637700070595354,
+          "sample_count": 131,
+          "max_edge_distance_mm": 0.00017599481004129528,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1448
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1449
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1450
+            }
+          ]
+        },
+        {
+          "z": 3.08,
+          "edge_length_mm": 6.530891149922018,
+          "sample_count": 184,
+          "max_edge_distance_mm": 0.002456942011959658,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.852326,
+              "path_id": 1546
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1547
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1548
+            }
+          ]
+        },
+        {
+          "z": 3.24,
+          "edge_length_mm": 8.091993076394175,
+          "sample_count": 206,
+          "max_edge_distance_mm": 0.0001204914932359268,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.628376,
+              "path_id": 1646
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.628376,
+              "path_id": 1662
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1663
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1664
+            }
+          ]
+        },
+        {
+          "z": 3.4,
+          "edge_length_mm": 9.478471101949888,
+          "sample_count": 247,
+          "max_edge_distance_mm": 0.0015120527442218374,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1746
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1747
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.83107,
+              "path_id": 1748
+            }
+          ]
+        },
+        {
+          "z": 3.56,
+          "edge_length_mm": 10.751891497419269,
+          "sample_count": 269,
+          "max_edge_distance_mm": 0.00026711776946455857,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.797986,
+              "path_id": 1881
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.814946,
+              "path_id": 1886
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1887
+            }
+          ]
+        },
+        {
+          "z": 3.72,
+          "edge_length_mm": 11.944024408888604,
+          "sample_count": 293,
+          "max_edge_distance_mm": 0.0011469752862025887,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2007
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2012
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 1.19228,
+              "path_id": 2013
+            }
+          ]
+        },
+        {
+          "z": 3.88,
+          "edge_length_mm": 13.073217876565545,
+          "sample_count": 319,
+          "max_edge_distance_mm": 0.000633603165030533,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2190
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2204
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.788536,
+              "path_id": 2205
+            }
+          ]
+        },
+        {
+          "z": 4.04,
+          "edge_length_mm": 14.150997524545133,
+          "sample_count": 342,
+          "max_edge_distance_mm": 0.0002567228816965571,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.683266,
+              "path_id": 2327
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.683266,
+              "path_id": 2338
+            }
+          ]
+        },
+        {
+          "z": 4.2,
+          "edge_length_mm": 15.130337262150551,
+          "sample_count": 386,
+          "max_edge_distance_mm": 0.008203596037518315,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.581826,
+              "path_id": 2499
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565466,
+              "path_id": 2507
+            }
+          ]
+        },
+        {
+          "z": 4.36,
+          "edge_length_mm": 15.873005869954294,
+          "sample_count": 378,
+          "max_edge_distance_mm": 0.02162013979453495,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.557796,
+              "path_id": 2684
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.557796,
+              "path_id": 2696
+            }
+          ]
+        },
+        {
+          "z": 4.52,
+          "edge_length_mm": 16.478114685607597,
+          "sample_count": 381,
+          "max_edge_distance_mm": 0.02371807399562556,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.559466,
+              "path_id": 2850
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.559466,
+              "path_id": 2862
+            }
+          ]
+        },
+        {
+          "z": 4.68,
+          "edge_length_mm": 16.986769480696616,
+          "sample_count": 397,
+          "max_edge_distance_mm": 0.014048374746301483,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.559536,
+              "path_id": 2977
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.559536,
+              "path_id": 2989
+            }
+          ]
+        },
+        {
+          "z": 4.84,
+          "edge_length_mm": 17.42304534706564,
+          "sample_count": 405,
+          "max_edge_distance_mm": 0.018444352360961785,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.557366,
+              "path_id": 3142
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.557366,
+              "path_id": 3152
+            }
+          ]
+        },
+        {
+          "z": 5.0,
+          "edge_length_mm": 17.793541285474483,
+          "sample_count": 411,
+          "max_edge_distance_mm": 0.01906367077770906,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08114,
+              "path_id": 3246
+            }
+          ]
+        },
+        {
+          "z": 5.16,
+          "edge_length_mm": 18.1066396539886,
+          "sample_count": 409,
+          "max_edge_distance_mm": 0.01712416076534615,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08506,
+              "path_id": 3409
+            }
+          ]
+        },
+        {
+          "z": 5.32,
+          "edge_length_mm": 18.368727716405214,
+          "sample_count": 426,
+          "max_edge_distance_mm": 0.023936843268985278,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0829,
+              "path_id": 3530
+            }
+          ]
+        },
+        {
+          "z": 5.48,
+          "edge_length_mm": 18.581913363535353,
+          "sample_count": 426,
+          "max_edge_distance_mm": 0.017479465806304644,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08532,
+              "path_id": 3700
+            }
+          ]
+        },
+        {
+          "z": 5.64,
+          "edge_length_mm": 18.760049304856302,
+          "sample_count": 403,
+          "max_edge_distance_mm": 0.018767219073526173,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08162,
+              "path_id": 3817
+            }
+          ]
+        },
+        {
+          "z": 5.8,
+          "edge_length_mm": 18.911832344559517,
+          "sample_count": 407,
+          "max_edge_distance_mm": 0.018305698365489134,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0828,
+              "path_id": 3947
+            }
+          ]
+        },
+        {
+          "z": 5.96,
+          "edge_length_mm": 19.042029937159946,
+          "sample_count": 419,
+          "max_edge_distance_mm": 0.016931886378087794,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08506,
+              "path_id": 4061
+            }
+          ]
+        },
+        {
+          "z": 6.12,
+          "edge_length_mm": 19.15323675290098,
+          "sample_count": 415,
+          "max_edge_distance_mm": 0.01738327323237176,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0851,
+              "path_id": 4222
+            }
+          ]
+        },
+        {
+          "z": 6.28,
+          "edge_length_mm": 19.24194586474367,
+          "sample_count": 400,
+          "max_edge_distance_mm": 0.017515024162077758,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0848,
+              "path_id": 4318
+            }
+          ]
+        },
+        {
+          "z": 6.44,
+          "edge_length_mm": 19.311390542508953,
+          "sample_count": 414,
+          "max_edge_distance_mm": 0.017736710989922026,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08408,
+              "path_id": 4480
+            }
+          ]
+        },
+        {
+          "z": 6.6,
+          "edge_length_mm": 19.360231858387852,
+          "sample_count": 407,
+          "max_edge_distance_mm": 0.022938854707202905,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08352,
+              "path_id": 4589
+            }
+          ]
+        },
+        {
+          "z": 6.76,
+          "edge_length_mm": 19.389453365568325,
+          "sample_count": 418,
+          "max_edge_distance_mm": 0.01843981273334771,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08344,
+              "path_id": 4723
+            }
+          ]
+        },
+        {
+          "z": 6.92,
+          "edge_length_mm": 19.40018627342621,
+          "sample_count": 400,
+          "max_edge_distance_mm": 0.0166308508348377,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08592,
+              "path_id": 4826
+            }
+          ]
+        },
+        {
+          "z": 7.08,
+          "edge_length_mm": 19.400185898549193,
+          "sample_count": 401,
+          "max_edge_distance_mm": 0.017909032413820844,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08594,
+              "path_id": 4956
+            }
+          ]
+        },
+        {
+          "z": 7.24,
+          "edge_length_mm": 19.400185408973346,
+          "sample_count": 400,
+          "max_edge_distance_mm": 0.016915962725073116,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08598,
+              "path_id": 5059
+            }
+          ]
+        },
+        {
+          "z": 7.4,
+          "edge_length_mm": 19.400184919397567,
+          "sample_count": 403,
+          "max_edge_distance_mm": 0.024060578060801655,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08554,
+              "path_id": 5199
+            }
+          ]
+        },
+        {
+          "z": 7.56,
+          "edge_length_mm": 19.400184429821756,
+          "sample_count": 405,
+          "max_edge_distance_mm": 0.02696567556253515,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08528,
+              "path_id": 5306
+            }
+          ]
+        },
+        {
+          "z": 7.72,
+          "edge_length_mm": 19.40018394024595,
+          "sample_count": 409,
+          "max_edge_distance_mm": 0.017663896925024555,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08504,
+              "path_id": 5438
+            }
+          ]
+        },
+        {
+          "z": 7.88,
+          "edge_length_mm": 19.40018345067013,
+          "sample_count": 414,
+          "max_edge_distance_mm": 0.024687639053715522,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0846,
+              "path_id": 5582
+            }
+          ]
+        },
+        {
+          "z": 8.04,
+          "edge_length_mm": 19.400182961094327,
+          "sample_count": 414,
+          "max_edge_distance_mm": 0.019729386283323384,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08406,
+              "path_id": 5733
+            }
+          ]
+        },
+        {
+          "z": 8.2,
+          "edge_length_mm": 19.400182471518548,
+          "sample_count": 418,
+          "max_edge_distance_mm": 0.016910869112267052,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08652,
+              "path_id": 5874
+            }
+          ]
+        },
+        {
+          "z": 8.36,
+          "edge_length_mm": 19.322692967022622,
+          "sample_count": 443,
+          "max_edge_distance_mm": 0.026429198946218067,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08614,
+              "path_id": 6152
+            }
+          ]
+        },
+        {
+          "z": 8.52,
+          "edge_length_mm": 19.322692942482092,
+          "sample_count": 441,
+          "max_edge_distance_mm": 0.056144170306839006,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08646,
+              "path_id": 6301
+            }
+          ]
+        },
+        {
+          "z": 8.68,
+          "edge_length_mm": 19.32269291794146,
+          "sample_count": 447,
+          "max_edge_distance_mm": 0.03459375320418512,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08636,
+              "path_id": 6487
+            }
+          ]
+        },
+        {
+          "z": 8.84,
+          "edge_length_mm": 19.322692893400827,
+          "sample_count": 452,
+          "max_edge_distance_mm": 0.03140059647791998,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08418,
+              "path_id": 6627
+            }
+          ]
+        },
+        {
+          "z": 9.0,
+          "edge_length_mm": 19.32269286886029,
+          "sample_count": 455,
+          "max_edge_distance_mm": 0.030521065551236706,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08578,
+              "path_id": 6788
+            }
+          ]
+        },
+        {
+          "z": 9.16,
+          "edge_length_mm": 19.32269284431961,
+          "sample_count": 463,
+          "max_edge_distance_mm": 0.029114481753189064,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08536,
+              "path_id": 6921
+            }
+          ]
+        },
+        {
+          "z": 9.32,
+          "edge_length_mm": 19.322692819779054,
+          "sample_count": 469,
+          "max_edge_distance_mm": 0.02870864105649065,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.07742,
+              "path_id": 7091
+            }
+          ]
+        },
+        {
+          "z": 9.48,
+          "edge_length_mm": 19.3226927952384,
+          "sample_count": 475,
+          "max_edge_distance_mm": 0.0283357402681649,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0762,
+              "path_id": 7225
+            }
+          ]
+        },
+        {
+          "z": 9.64,
+          "edge_length_mm": 19.322692770697863,
+          "sample_count": 481,
+          "max_edge_distance_mm": 0.02885718848513439,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.075,
+              "path_id": 7364
+            }
+          ]
+        },
+        {
+          "z": 9.8,
+          "edge_length_mm": 16.31262977455562,
+          "sample_count": 288,
+          "max_edge_distance_mm": 0.017034085908443058,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.11998,
+              "path_id": 7478
+            }
+          ]
+        },
+        {
+          "z": 9.96,
+          "edge_length_mm": 15.596957608279157,
+          "sample_count": 276,
+          "max_edge_distance_mm": 0.017297537270120487,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.12054,
+              "path_id": 7637
+            }
+          ]
+        },
+        {
+          "z": 10.12,
+          "edge_length_mm": 14.881285442002737,
+          "sample_count": 264,
+          "max_edge_distance_mm": 0.01681228419354891,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.12094,
+              "path_id": 7772
+            }
+          ]
+        },
+        {
+          "z": 10.28,
+          "edge_length_mm": 14.165613275726265,
+          "sample_count": 252,
+          "max_edge_distance_mm": 0.016561732534425087,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.1206,
+              "path_id": 7920
+            }
+          ]
+        },
+        {
+          "z": 10.44,
+          "edge_length_mm": 13.449941109449828,
+          "sample_count": 242,
+          "max_edge_distance_mm": 0.018918263423321403,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.1168,
+              "path_id": 8042
+            }
+          ]
+        },
+        {
+          "z": 10.6,
+          "edge_length_mm": 12.734271179648907,
+          "sample_count": 228,
+          "max_edge_distance_mm": 0.008887445853300837,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576826,
+              "path_id": 8177
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576826,
+              "path_id": 8181
+            }
+          ]
+        },
+        {
+          "z": 10.76,
+          "edge_length_mm": 12.018596776896922,
+          "sample_count": 219,
+          "max_edge_distance_mm": 0.008367587711333429,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576156,
+              "path_id": 8404
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576156,
+              "path_id": 8408
+            }
+          ]
+        },
+        {
+          "z": 10.92,
+          "edge_length_mm": 11.302924610620494,
+          "sample_count": 207,
+          "max_edge_distance_mm": 0.006700675776139943,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576536,
+              "path_id": 8528
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576536,
+              "path_id": 8532
+            }
+          ]
+        },
+        {
+          "z": 11.08,
+          "edge_length_mm": 10.506666817394196,
+          "sample_count": 186,
+          "max_edge_distance_mm": 0.008856112318560545,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577186,
+              "path_id": 8653
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577186,
+              "path_id": 8657
+            }
+          ]
+        },
+        {
+          "z": 11.24,
+          "edge_length_mm": 9.272847075203494,
+          "sample_count": 165,
+          "max_edge_distance_mm": 0.011123715046660189,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577206,
+              "path_id": 8781
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577206,
+              "path_id": 8786
+            }
+          ]
+        },
+        {
+          "z": 11.4,
+          "edge_length_mm": 8.039027333012807,
+          "sample_count": 145,
+          "max_edge_distance_mm": 0.007399592427833002,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577706,
+              "path_id": 8908
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577706,
+              "path_id": 8913
+            }
+          ]
+        },
+        {
+          "z": 11.56,
+          "edge_length_mm": 6.805211446508804,
+          "sample_count": 125,
+          "max_edge_distance_mm": 0.0015973768917513244,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576756,
+              "path_id": 9031
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576756,
+              "path_id": 9036
+            }
+          ]
+        },
+        {
+          "z": 11.72,
+          "edge_length_mm": 5.5713878486314075,
+          "sample_count": 103,
+          "max_edge_distance_mm": 0.0005350274013759148,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577476,
+              "path_id": 9143
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576796,
+              "path_id": 9146
+            }
+          ]
+        },
+        {
+          "z": 11.88,
+          "edge_length_mm": 4.337568106440706,
+          "sample_count": 83,
+          "max_edge_distance_mm": 0.00011129865380213091,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577426,
+              "path_id": 9246
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576866,
+              "path_id": 9249
+            }
+          ]
+        },
+        {
+          "z": 12.04,
+          "edge_length_mm": 3.1037483642500305,
+          "sample_count": 63,
+          "max_edge_distance_mm": 0.00011005770637385542,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577026,
+              "path_id": 9342
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576356,
+              "path_id": 9349
+            }
+          ]
+        },
+        {
+          "z": 12.2,
+          "edge_length_mm": 1.8699286220593245,
+          "sample_count": 44,
+          "max_edge_distance_mm": 0.0015257423027476961,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576546,
+              "path_id": 9436
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576536,
+              "path_id": 9443
+            }
+          ]
+        },
+        {
+          "z": 12.36,
+          "edge_length_mm": 0.6361088798686114,
+          "sample_count": 22,
+          "max_edge_distance_mm": 0.0,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.575376,
+              "path_id": 9531
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.581926,
+              "path_id": 9538
+            }
+          ]
+        }
+      ],
+      "worst_edge_distance_mm": 0.056144170306839006,
+      "sampled_layers": 61
+    },
+    {
+      "site": "body_192deg",
+      "cavity_z_bounds_mm": [
+        2.6689796447753906,
+        12.372740745544434
+      ],
+      "layers": [
+        {
+          "z": 2.76,
+          "edge_length_mm": 1.1155284088852244,
+          "sample_count": 34,
+          "max_edge_distance_mm": 0.0,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1219
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1220
+            },
+            {
+              "feature": "Top surface",
+              "width_mm": 0.62,
+              "path_id": 1332
+            },
+            {
+              "feature": "Ironing",
+              "width_mm": 0.600858,
+              "path_id": 1346
+            },
+            {
+              "feature": "Ironing",
+              "width_mm": 0.600858,
+              "path_id": 1346
+            }
+          ]
+        },
+        {
+          "z": 2.92,
+          "edge_length_mm": 4.5002878173219845,
+          "sample_count": 130,
+          "max_edge_distance_mm": 0.00039311999169085816,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1444
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1445
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1446
+            }
+          ]
+        },
+        {
+          "z": 3.08,
+          "edge_length_mm": 6.425751680311679,
+          "sample_count": 170,
+          "max_edge_distance_mm": 0.0005982663153829103,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.829586,
+              "path_id": 1543
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1544
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1545
+            }
+          ]
+        },
+        {
+          "z": 3.24,
+          "edge_length_mm": 7.9996545425773045,
+          "sample_count": 206,
+          "max_edge_distance_mm": 0.00496671478302942,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.630876,
+              "path_id": 1646
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.630876,
+              "path_id": 1659
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1660
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1661
+            }
+          ]
+        },
+        {
+          "z": 3.4,
+          "edge_length_mm": 9.397171742952303,
+          "sample_count": 247,
+          "max_edge_distance_mm": 0.002898825331898335,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1749
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1750
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.822776,
+              "path_id": 1751
+            }
+          ]
+        },
+        {
+          "z": 3.56,
+          "edge_length_mm": 10.676199786670018,
+          "sample_count": 270,
+          "max_edge_distance_mm": 0.003617900584816817,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.837556,
+              "path_id": 1881
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.833356,
+              "path_id": 1888
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1889
+            }
+          ]
+        },
+        {
+          "z": 3.72,
+          "edge_length_mm": 11.873006386138522,
+          "sample_count": 295,
+          "max_edge_distance_mm": 0.003866880548334684,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2007
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2014
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 1.20942,
+              "path_id": 2015
+            }
+          ]
+        },
+        {
+          "z": 3.88,
+          "edge_length_mm": 13.006186253168636,
+          "sample_count": 321,
+          "max_edge_distance_mm": 0.002148730902101513,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2190
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2202
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.783856,
+              "path_id": 2203
+            }
+          ]
+        },
+        {
+          "z": 4.04,
+          "edge_length_mm": 14.08585082517184,
+          "sample_count": 338,
+          "max_edge_distance_mm": 0.0030114217281251437,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.688766,
+              "path_id": 2327
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.699176,
+              "path_id": 2337
+            }
+          ]
+        },
+        {
+          "z": 4.2,
+          "edge_length_mm": 15.078248335157008,
+          "sample_count": 390,
+          "max_edge_distance_mm": 0.014612263319968753,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.549356,
+              "path_id": 2499
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.559246,
+              "path_id": 2506
+            }
+          ]
+        },
+        {
+          "z": 4.36,
+          "edge_length_mm": 15.832520147776588,
+          "sample_count": 381,
+          "max_edge_distance_mm": 0.00534779904279289,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.547876,
+              "path_id": 2684
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.547766,
+              "path_id": 2695
+            }
+          ]
+        },
+        {
+          "z": 4.52,
+          "edge_length_mm": 16.443668911931212,
+          "sample_count": 382,
+          "max_edge_distance_mm": 0.007757719783449445,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.546396,
+              "path_id": 2850
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.546396,
+              "path_id": 2861
+            }
+          ]
+        },
+        {
+          "z": 4.68,
+          "edge_length_mm": 16.957790737521016,
+          "sample_count": 394,
+          "max_edge_distance_mm": 0.012468795280507365,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.546546,
+              "path_id": 2977
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.546546,
+              "path_id": 2988
+            }
+          ]
+        },
+        {
+          "z": 4.84,
+          "edge_length_mm": 17.397374506080155,
+          "sample_count": 406,
+          "max_edge_distance_mm": 0.017699816169217633,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06018,
+              "path_id": 3122
+            }
+          ]
+        },
+        {
+          "z": 5.0,
+          "edge_length_mm": 17.772312048448267,
+          "sample_count": 410,
+          "max_edge_distance_mm": 0.017821579721858747,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06,
+              "path_id": 3249
+            }
+          ]
+        },
+        {
+          "z": 5.16,
+          "edge_length_mm": 18.088021481832662,
+          "sample_count": 414,
+          "max_edge_distance_mm": 0.019875038445089227,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.05948,
+              "path_id": 3412
+            }
+          ]
+        },
+        {
+          "z": 5.32,
+          "edge_length_mm": 18.353837764813683,
+          "sample_count": 431,
+          "max_edge_distance_mm": 0.016981831145126372,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06192,
+              "path_id": 3533
+            }
+          ]
+        },
+        {
+          "z": 5.48,
+          "edge_length_mm": 18.569688404516153,
+          "sample_count": 443,
+          "max_edge_distance_mm": 0.01702838125651998,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06176,
+              "path_id": 3697
+            }
+          ]
+        },
+        {
+          "z": 5.64,
+          "edge_length_mm": 18.749951315085962,
+          "sample_count": 399,
+          "max_edge_distance_mm": 0.016965069499626367,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06192,
+              "path_id": 3814
+            }
+          ]
+        },
+        {
+          "z": 5.8,
+          "edge_length_mm": 18.902550524397856,
+          "sample_count": 401,
+          "max_edge_distance_mm": 0.018683723008984267,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06126,
+              "path_id": 3950
+            }
+          ]
+        },
+        {
+          "z": 5.96,
+          "edge_length_mm": 19.0343771467286,
+          "sample_count": 410,
+          "max_edge_distance_mm": 0.017339406439084007,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06122,
+              "path_id": 4064
+            }
+          ]
+        },
+        {
+          "z": 6.12,
+          "edge_length_mm": 19.145383659790316,
+          "sample_count": 403,
+          "max_edge_distance_mm": 0.017060541501999035,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06204,
+              "path_id": 4225
+            }
+          ]
+        },
+        {
+          "z": 6.28,
+          "edge_length_mm": 19.236689953834464,
+          "sample_count": 380,
+          "max_edge_distance_mm": 0.016677300853613537,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06216,
+              "path_id": 4321
+            }
+          ]
+        },
+        {
+          "z": 6.44,
+          "edge_length_mm": 19.306935857354137,
+          "sample_count": 384,
+          "max_edge_distance_mm": 0.01654222099176863,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06214,
+              "path_id": 4476
+            }
+          ]
+        },
+        {
+          "z": 6.6,
+          "edge_length_mm": 19.357426595111892,
+          "sample_count": 369,
+          "max_edge_distance_mm": 0.01873913378589909,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.05974,
+              "path_id": 4588
+            }
+          ]
+        },
+        {
+          "z": 6.76,
+          "edge_length_mm": 19.38748139563377,
+          "sample_count": 379,
+          "max_edge_distance_mm": 0.018540456804181354,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0593,
+              "path_id": 4722
+            }
+          ]
+        },
+        {
+          "z": 6.92,
+          "edge_length_mm": 19.399381217340544,
+          "sample_count": 371,
+          "max_edge_distance_mm": 0.017607485753236275,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06126,
+              "path_id": 4825
+            }
+          ]
+        },
+        {
+          "z": 7.08,
+          "edge_length_mm": 19.399474467338408,
+          "sample_count": 348,
+          "max_edge_distance_mm": 0.01748937296848799,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06156,
+              "path_id": 4955
+            }
+          ]
+        },
+        {
+          "z": 7.24,
+          "edge_length_mm": 19.39947342221558,
+          "sample_count": 348,
+          "max_edge_distance_mm": 0.017264994435580147,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06178,
+              "path_id": 5058
+            }
+          ]
+        },
+        {
+          "z": 7.4,
+          "edge_length_mm": 19.39947237709283,
+          "sample_count": 348,
+          "max_edge_distance_mm": 0.017420699584361925,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0615,
+              "path_id": 5198
+            }
+          ]
+        },
+        {
+          "z": 7.56,
+          "edge_length_mm": 19.39947133197002,
+          "sample_count": 349,
+          "max_edge_distance_mm": 0.026161614148434972,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06126,
+              "path_id": 5305
+            }
+          ]
+        },
+        {
+          "z": 7.72,
+          "edge_length_mm": 19.39947028684725,
+          "sample_count": 349,
+          "max_edge_distance_mm": 0.017881745984251893,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06102,
+              "path_id": 5437
+            }
+          ]
+        },
+        {
+          "z": 7.88,
+          "edge_length_mm": 19.399469241724397,
+          "sample_count": 348,
+          "max_edge_distance_mm": 0.01787571996890552,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06062,
+              "path_id": 5581
+            }
+          ]
+        },
+        {
+          "z": 8.04,
+          "edge_length_mm": 19.399468196601607,
+          "sample_count": 348,
+          "max_edge_distance_mm": 0.017096682896670053,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06248,
+              "path_id": 5732
+            }
+          ]
+        },
+        {
+          "z": 8.2,
+          "edge_length_mm": 19.399467151478834,
+          "sample_count": 347,
+          "max_edge_distance_mm": 0.018414712032204072,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.05964,
+              "path_id": 5873
+            }
+          ]
+        },
+        {
+          "z": 8.36,
+          "edge_length_mm": 19.338640393586623,
+          "sample_count": 358,
+          "max_edge_distance_mm": 0.025786030578665495,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.05912,
+              "path_id": 6153
+            }
+          ]
+        },
+        {
+          "z": 8.52,
+          "edge_length_mm": 19.321997837717895,
+          "sample_count": 364,
+          "max_edge_distance_mm": 0.05886788326066341,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06226,
+              "path_id": 6300
+            }
+          ]
+        },
+        {
+          "z": 8.68,
+          "edge_length_mm": 19.32199676761976,
+          "sample_count": 362,
+          "max_edge_distance_mm": 0.03704966290934587,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0612,
+              "path_id": 6486
+            }
+          ]
+        },
+        {
+          "z": 8.84,
+          "edge_length_mm": 19.321995697525086,
+          "sample_count": 364,
+          "max_edge_distance_mm": 0.03197098881231997,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0623,
+              "path_id": 6628
+            }
+          ]
+        },
+        {
+          "z": 9.0,
+          "edge_length_mm": 19.32199462743039,
+          "sample_count": 362,
+          "max_edge_distance_mm": 0.030350693752690026,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06164,
+              "path_id": 6787
+            }
+          ]
+        },
+        {
+          "z": 9.16,
+          "edge_length_mm": 19.3219935573357,
+          "sample_count": 363,
+          "max_edge_distance_mm": 0.028733296048713428,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06126,
+              "path_id": 6920
+            }
+          ]
+        },
+        {
+          "z": 9.32,
+          "edge_length_mm": 19.321992487240927,
+          "sample_count": 363,
+          "max_edge_distance_mm": 0.028449346304677207,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06094,
+              "path_id": 7090
+            }
+          ]
+        },
+        {
+          "z": 9.48,
+          "edge_length_mm": 19.32199141714616,
+          "sample_count": 365,
+          "max_edge_distance_mm": 0.028933296429640848,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06056,
+              "path_id": 7224
+            }
+          ]
+        },
+        {
+          "z": 9.64,
+          "edge_length_mm": 19.321990347054868,
+          "sample_count": 365,
+          "max_edge_distance_mm": 0.028916721706029564,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0628,
+              "path_id": 7363
+            }
+          ]
+        },
+        {
+          "z": 9.8,
+          "edge_length_mm": 16.35757255967825,
+          "sample_count": 287,
+          "max_edge_distance_mm": 0.017829146193640885,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.09626,
+              "path_id": 7479
+            }
+          ]
+        },
+        {
+          "z": 9.96,
+          "edge_length_mm": 15.641972561136065,
+          "sample_count": 277,
+          "max_edge_distance_mm": 0.0184696808889506,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.09328,
+              "path_id": 7636
+            }
+          ]
+        },
+        {
+          "z": 10.12,
+          "edge_length_mm": 14.92637256259387,
+          "sample_count": 265,
+          "max_edge_distance_mm": 0.01739648931439064,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.096,
+              "path_id": 7771
+            }
+          ]
+        },
+        {
+          "z": 10.28,
+          "edge_length_mm": 14.210772564051688,
+          "sample_count": 254,
+          "max_edge_distance_mm": 0.01727507580728888,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.09582,
+              "path_id": 7919
+            }
+          ]
+        },
+        {
+          "z": 10.44,
+          "edge_length_mm": 13.495172565509511,
+          "sample_count": 242,
+          "max_edge_distance_mm": 0.01079149705239217,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564996,
+              "path_id": 8064
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564996,
+              "path_id": 8064
+            }
+          ]
+        },
+        {
+          "z": 10.6,
+          "edge_length_mm": 12.779574803217306,
+          "sample_count": 230,
+          "max_edge_distance_mm": 0.0020615066102598854,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564856,
+              "path_id": 8177
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564856,
+              "path_id": 8182
+            }
+          ]
+        },
+        {
+          "z": 10.76,
+          "edge_length_mm": 12.063972568425134,
+          "sample_count": 218,
+          "max_edge_distance_mm": 0.005607738645737135,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564636,
+              "path_id": 8404
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564636,
+              "path_id": 8409
+            }
+          ]
+        },
+        {
+          "z": 10.92,
+          "edge_length_mm": 11.348372569882947,
+          "sample_count": 208,
+          "max_edge_distance_mm": 0.006121436698662386,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564416,
+              "path_id": 8528
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564416,
+              "path_id": 8533
+            }
+          ]
+        },
+        {
+          "z": 11.08,
+          "edge_length_mm": 10.587175740880722,
+          "sample_count": 188,
+          "max_edge_distance_mm": 0.003629541510987711,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564186,
+              "path_id": 8653
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564186,
+              "path_id": 8658
+            }
+          ]
+        },
+        {
+          "z": 11.24,
+          "edge_length_mm": 9.353185911381575,
+          "sample_count": 168,
+          "max_edge_distance_mm": 0.0017507798326508559,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564816,
+              "path_id": 8781
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564816,
+              "path_id": 8787
+            }
+          ]
+        },
+        {
+          "z": 11.4,
+          "edge_length_mm": 8.119196081882396,
+          "sample_count": 147,
+          "max_edge_distance_mm": 0.008646911990152006,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564966,
+              "path_id": 8908
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564966,
+              "path_id": 8914
+            }
+          ]
+        },
+        {
+          "z": 11.56,
+          "edge_length_mm": 6.885210108601483,
+          "sample_count": 127,
+          "max_edge_distance_mm": 0.00041117930487003163,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565146,
+              "path_id": 9031
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565146,
+              "path_id": 9037
+            }
+          ]
+        },
+        {
+          "z": 11.72,
+          "edge_length_mm": 5.651216422884096,
+          "sample_count": 106,
+          "max_edge_distance_mm": 0.0003108478644122155,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565366,
+              "path_id": 9143
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564736,
+              "path_id": 9147
+            }
+          ]
+        },
+        {
+          "z": 11.88,
+          "edge_length_mm": 4.41722659338497,
+          "sample_count": 86,
+          "max_edge_distance_mm": 5.745956183881379e-05,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565396,
+              "path_id": 9246
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565156,
+              "path_id": 9250
+            }
+          ]
+        },
+        {
+          "z": 12.04,
+          "edge_length_mm": 3.1832367638857963,
+          "sample_count": 65,
+          "max_edge_distance_mm": 0.00043681428240099944,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565466,
+              "path_id": 9342
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564816,
+              "path_id": 9348
+            }
+          ]
+        },
+        {
+          "z": 12.2,
+          "edge_length_mm": 1.9492469343866805,
+          "sample_count": 44,
+          "max_edge_distance_mm": 0.0,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565606,
+              "path_id": 9436
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565606,
+              "path_id": 9442
+            }
+          ]
+        },
+        {
+          "z": 12.36,
+          "edge_length_mm": 0.7152571048874988,
+          "sample_count": 25,
+          "max_edge_distance_mm": 0.0,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564606,
+              "path_id": 9531
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564606,
+              "path_id": 9537
+            }
+          ]
+        }
+      ],
+      "worst_edge_distance_mm": 0.05886788326066341,
+      "sampled_layers": 61
+    },
+    {
+      "site": "body_12deg",
+      "cavity_z_bounds_mm": [
+        2.6589272022247314,
+        12.36265754699707
+      ],
+      "layers": [
+        {
+          "z": 2.76,
+          "edge_length_mm": 1.5366871345927149,
+          "sample_count": 55,
+          "max_edge_distance_mm": 0.0,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1226
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1228
+            },
+            {
+              "feature": "Top surface",
+              "width_mm": 0.62,
+              "path_id": 1277
+            },
+            {
+              "feature": "Ironing",
+              "width_mm": 0.600858,
+              "path_id": 1348
+            },
+            {
+              "feature": "Ironing",
+              "width_mm": 0.600858,
+              "path_id": 1348
+            }
+          ]
+        },
+        {
+          "z": 2.92,
+          "edge_length_mm": 4.638735781628108,
+          "sample_count": 140,
+          "max_edge_distance_mm": 0.0002803518419439209,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1433
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1434
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1435
+            }
+          ]
+        },
+        {
+          "z": 3.08,
+          "edge_length_mm": 6.531746724936938,
+          "sample_count": 177,
+          "max_edge_distance_mm": 0.005614203863506711,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.829726,
+              "path_id": 1534
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1535
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1536
+            }
+          ]
+        },
+        {
+          "z": 3.24,
+          "edge_length_mm": 8.092910898133164,
+          "sample_count": 210,
+          "max_edge_distance_mm": 0.002807978625535193,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.631716,
+              "path_id": 1646
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.626716,
+              "path_id": 1650
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1651
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1652
+            }
+          ]
+        },
+        {
+          "z": 3.4,
+          "edge_length_mm": 9.479497829895164,
+          "sample_count": 243,
+          "max_edge_distance_mm": 0.004551392232633082,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1758
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1759
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.824506,
+              "path_id": 1760
+            }
+          ]
+        },
+        {
+          "z": 3.56,
+          "edge_length_mm": 10.75304492631962,
+          "sample_count": 267,
+          "max_edge_distance_mm": 0.0001329392681477992,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.811546,
+              "path_id": 1881
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.811146,
+              "path_id": 1895
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1896
+            }
+          ]
+        },
+        {
+          "z": 3.72,
+          "edge_length_mm": 11.945342146319335,
+          "sample_count": 289,
+          "max_edge_distance_mm": 0.00042967190791486407,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2007
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2021
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 1.19493,
+              "path_id": 2022
+            }
+          ]
+        },
+        {
+          "z": 3.88,
+          "edge_length_mm": 13.074697704760663,
+          "sample_count": 311,
+          "max_edge_distance_mm": 2.1640328353517352e-05,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2190
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2196
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.784316,
+              "path_id": 2197
+            }
+          ]
+        },
+        {
+          "z": 4.04,
+          "edge_length_mm": 14.152673141004732,
+          "sample_count": 342,
+          "max_edge_distance_mm": 0.0017614317044835606,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.683906,
+              "path_id": 2327
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.699106,
+              "path_id": 2332
+            }
+          ]
+        },
+        {
+          "z": 4.2,
+          "edge_length_mm": 15.131439091516945,
+          "sample_count": 386,
+          "max_edge_distance_mm": 0.013412047081347375,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.559126,
+              "path_id": 2499
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.559126,
+              "path_id": 2501
+            }
+          ]
+        },
+        {
+          "z": 4.36,
+          "edge_length_mm": 15.87379569954623,
+          "sample_count": 391,
+          "max_edge_distance_mm": 0.02034119569879022,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.558416,
+              "path_id": 2684
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.557936,
+              "path_id": 2686
+            }
+          ]
+        },
+        {
+          "z": 4.52,
+          "edge_length_mm": 16.47857487335515,
+          "sample_count": 386,
+          "max_edge_distance_mm": 0.01941440121735818,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.560316,
+              "path_id": 2850
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.560316,
+              "path_id": 2852
+            }
+          ]
+        },
+        {
+          "z": 4.68,
+          "edge_length_mm": 16.98710537815216,
+          "sample_count": 400,
+          "max_edge_distance_mm": 0.01759138316060665,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.560316,
+              "path_id": 2977
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.560316,
+              "path_id": 2979
+            }
+          ]
+        },
+        {
+          "z": 4.84,
+          "edge_length_mm": 17.42324893162117,
+          "sample_count": 403,
+          "max_edge_distance_mm": 0.013179731211433473,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.559926,
+              "path_id": 3142
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.559926,
+              "path_id": 3144
+            }
+          ]
+        },
+        {
+          "z": 5.0,
+          "edge_length_mm": 17.7935988096719,
+          "sample_count": 400,
+          "max_edge_distance_mm": 0.020463207957568594,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08384,
+              "path_id": 3264
+            }
+          ]
+        },
+        {
+          "z": 5.16,
+          "edge_length_mm": 18.106674097332103,
+          "sample_count": 405,
+          "max_edge_distance_mm": 0.017447824837552174,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08544,
+              "path_id": 3427
+            }
+          ]
+        },
+        {
+          "z": 5.32,
+          "edge_length_mm": 18.36867614246825,
+          "sample_count": 399,
+          "max_edge_distance_mm": 0.01741208241027453,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0858,
+              "path_id": 3548
+            }
+          ]
+        },
+        {
+          "z": 5.48,
+          "edge_length_mm": 18.581786407494896,
+          "sample_count": 402,
+          "max_edge_distance_mm": 0.01717593131876264,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0868,
+              "path_id": 3683
+            }
+          ]
+        },
+        {
+          "z": 5.64,
+          "edge_length_mm": 18.759837179833337,
+          "sample_count": 402,
+          "max_edge_distance_mm": 0.021999590951231558,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08662,
+              "path_id": 3800
+            }
+          ]
+        },
+        {
+          "z": 5.8,
+          "edge_length_mm": 18.911574163619324,
+          "sample_count": 403,
+          "max_edge_distance_mm": 0.02549146447883565,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08638,
+              "path_id": 3967
+            }
+          ]
+        },
+        {
+          "z": 5.96,
+          "edge_length_mm": 19.04167668820722,
+          "sample_count": 417,
+          "max_edge_distance_mm": 0.01755421977427929,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08562,
+              "path_id": 4081
+            }
+          ]
+        },
+        {
+          "z": 6.12,
+          "edge_length_mm": 19.15288208873704,
+          "sample_count": 421,
+          "max_edge_distance_mm": 0.01696001725172485,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08624,
+              "path_id": 4205
+            }
+          ]
+        },
+        {
+          "z": 6.28,
+          "edge_length_mm": 19.241504132547895,
+          "sample_count": 403,
+          "max_edge_distance_mm": 0.01728459520162026,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08708,
+              "path_id": 4339
+            }
+          ]
+        },
+        {
+          "z": 6.44,
+          "edge_length_mm": 19.310907764185185,
+          "sample_count": 408,
+          "max_edge_distance_mm": 0.018548536650917654,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08348,
+              "path_id": 4498
+            }
+          ]
+        },
+        {
+          "z": 6.6,
+          "edge_length_mm": 19.35969628568384,
+          "sample_count": 413,
+          "max_edge_distance_mm": 0.018082391977558253,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08474,
+              "path_id": 4597
+            }
+          ]
+        },
+        {
+          "z": 6.76,
+          "edge_length_mm": 19.388884059429813,
+          "sample_count": 419,
+          "max_edge_distance_mm": 0.017154666486383727,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0872,
+              "path_id": 4731
+            }
+          ]
+        },
+        {
+          "z": 6.92,
+          "edge_length_mm": 19.39956644224974,
+          "sample_count": 406,
+          "max_edge_distance_mm": 0.01831097943010986,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0847,
+              "path_id": 4836
+            }
+          ]
+        },
+        {
+          "z": 7.08,
+          "edge_length_mm": 19.399565075513987,
+          "sample_count": 405,
+          "max_edge_distance_mm": 0.020132083886944596,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08714,
+              "path_id": 4965
+            }
+          ]
+        },
+        {
+          "z": 7.24,
+          "edge_length_mm": 19.399563994216564,
+          "sample_count": 404,
+          "max_edge_distance_mm": 0.016978100368597333,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08692,
+              "path_id": 5068
+            }
+          ]
+        },
+        {
+          "z": 7.4,
+          "edge_length_mm": 19.399562912919173,
+          "sample_count": 408,
+          "max_edge_distance_mm": 0.025816003750099174,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08248,
+              "path_id": 5208
+            }
+          ]
+        },
+        {
+          "z": 7.56,
+          "edge_length_mm": 19.399561831621746,
+          "sample_count": 411,
+          "max_edge_distance_mm": 0.016993048634690373,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08718,
+              "path_id": 5315
+            }
+          ]
+        },
+        {
+          "z": 7.72,
+          "edge_length_mm": 19.399560750324362,
+          "sample_count": 414,
+          "max_edge_distance_mm": 0.018956639361139768,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08316,
+              "path_id": 5446
+            }
+          ]
+        },
+        {
+          "z": 7.88,
+          "edge_length_mm": 19.399559669026946,
+          "sample_count": 419,
+          "max_edge_distance_mm": 0.018570727313239214,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08406,
+              "path_id": 5590
+            }
+          ]
+        },
+        {
+          "z": 8.04,
+          "edge_length_mm": 19.39955858772955,
+          "sample_count": 419,
+          "max_edge_distance_mm": 0.01728277405070542,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0868,
+              "path_id": 5742
+            }
+          ]
+        },
+        {
+          "z": 8.2,
+          "edge_length_mm": 19.399557506432163,
+          "sample_count": 424,
+          "max_edge_distance_mm": 0.017143524326791025,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08746,
+              "path_id": 5883
+            }
+          ]
+        },
+        {
+          "z": 8.36,
+          "edge_length_mm": 19.322083245356954,
+          "sample_count": 452,
+          "max_edge_distance_mm": 0.027165918829545728,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0862,
+              "path_id": 6141
+            }
+          ]
+        },
+        {
+          "z": 8.52,
+          "edge_length_mm": 19.3220717338226,
+          "sample_count": 450,
+          "max_edge_distance_mm": 0.057753999602362556,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08732,
+              "path_id": 6311
+            }
+          ]
+        },
+        {
+          "z": 8.68,
+          "edge_length_mm": 19.32207100056102,
+          "sample_count": 458,
+          "max_edge_distance_mm": 0.03654811996736591,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08732,
+              "path_id": 6499
+            }
+          ]
+        },
+        {
+          "z": 8.84,
+          "edge_length_mm": 19.322070267301616,
+          "sample_count": 464,
+          "max_edge_distance_mm": 0.03173456127205259,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08708,
+              "path_id": 6641
+            }
+          ]
+        },
+        {
+          "z": 9.0,
+          "edge_length_mm": 19.32206953404235,
+          "sample_count": 467,
+          "max_edge_distance_mm": 0.03194503238377014,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08292,
+              "path_id": 6769
+            }
+          ]
+        },
+        {
+          "z": 9.16,
+          "edge_length_mm": 19.322068800782937,
+          "sample_count": 475,
+          "max_edge_distance_mm": 0.03149542149486276,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0853,
+              "path_id": 6910
+            }
+          ]
+        },
+        {
+          "z": 9.32,
+          "edge_length_mm": 19.3220680675236,
+          "sample_count": 481,
+          "max_edge_distance_mm": 0.03172054422447011,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0844,
+              "path_id": 7072
+            }
+          ]
+        },
+        {
+          "z": 9.48,
+          "edge_length_mm": 19.322067334264254,
+          "sample_count": 487,
+          "max_edge_distance_mm": 0.03199809867533901,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.086,
+              "path_id": 7200
+            }
+          ]
+        },
+        {
+          "z": 9.64,
+          "edge_length_mm": 19.322066601007236,
+          "sample_count": 493,
+          "max_edge_distance_mm": 0.03192761933525332,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.08394,
+              "path_id": 7342
+            }
+          ]
+        },
+        {
+          "z": 9.8,
+          "edge_length_mm": 16.312585163100113,
+          "sample_count": 286,
+          "max_edge_distance_mm": 0.017579107216137042,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.12026,
+              "path_id": 7501
+            }
+          ]
+        },
+        {
+          "z": 9.96,
+          "edge_length_mm": 15.596975950975132,
+          "sample_count": 273,
+          "max_edge_distance_mm": 0.017724413954166848,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.12028,
+              "path_id": 7617
+            }
+          ]
+        },
+        {
+          "z": 10.12,
+          "edge_length_mm": 14.881366738850172,
+          "sample_count": 262,
+          "max_edge_distance_mm": 0.0175607403802303,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.1207,
+              "path_id": 7751
+            }
+          ]
+        },
+        {
+          "z": 10.28,
+          "edge_length_mm": 14.165757526725198,
+          "sample_count": 250,
+          "max_edge_distance_mm": 0.01695935171296288,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.12146,
+              "path_id": 7894
+            }
+          ]
+        },
+        {
+          "z": 10.44,
+          "edge_length_mm": 13.45014831460029,
+          "sample_count": 240,
+          "max_edge_distance_mm": 0.01925566234076774,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.1169,
+              "path_id": 8017
+            }
+          ]
+        },
+        {
+          "z": 10.6,
+          "edge_length_mm": 12.734541338754116,
+          "sample_count": 228,
+          "max_edge_distance_mm": 0.005323061516742046,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577026,
+              "path_id": 8158
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577026,
+              "path_id": 8177
+            }
+          ]
+        },
+        {
+          "z": 10.76,
+          "edge_length_mm": 12.01892989035034,
+          "sample_count": 216,
+          "max_edge_distance_mm": 0.010404079295145818,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577836,
+              "path_id": 8379
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577836,
+              "path_id": 8404
+            }
+          ]
+        },
+        {
+          "z": 10.92,
+          "edge_length_mm": 11.30332067822539,
+          "sample_count": 206,
+          "max_edge_distance_mm": 0.0047770812150244955,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577916,
+              "path_id": 8503
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577916,
+              "path_id": 8528
+            }
+          ]
+        },
+        {
+          "z": 11.08,
+          "edge_length_mm": 10.509252157864188,
+          "sample_count": 185,
+          "max_edge_distance_mm": 0.004887578986125602,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.578016,
+              "path_id": 8628
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.578016,
+              "path_id": 8653
+            }
+          ]
+        },
+        {
+          "z": 11.24,
+          "edge_length_mm": 9.275280828116784,
+          "sample_count": 165,
+          "max_edge_distance_mm": 0.008162130848238754,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576886,
+              "path_id": 8756
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576886,
+              "path_id": 8781
+            }
+          ]
+        },
+        {
+          "z": 11.4,
+          "edge_length_mm": 8.041309498369426,
+          "sample_count": 143,
+          "max_edge_distance_mm": 0.010756237167183375,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577576,
+              "path_id": 8883
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577576,
+              "path_id": 8908
+            }
+          ]
+        },
+        {
+          "z": 11.56,
+          "edge_length_mm": 6.807342024782481,
+          "sample_count": 123,
+          "max_edge_distance_mm": 0.0037313711403551275,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577646,
+              "path_id": 8997
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577646,
+              "path_id": 9031
+            }
+          ]
+        },
+        {
+          "z": 11.72,
+          "edge_length_mm": 5.573366838874648,
+          "sample_count": 103,
+          "max_edge_distance_mm": 0.0001971054354613694,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576786,
+              "path_id": 9117
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577886,
+              "path_id": 9143
+            }
+          ]
+        },
+        {
+          "z": 11.88,
+          "edge_length_mm": 4.339395509127288,
+          "sample_count": 82,
+          "max_edge_distance_mm": 0.0035865559028656424,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.577336,
+              "path_id": 9222
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.578026,
+              "path_id": 9246
+            }
+          ]
+        },
+        {
+          "z": 12.04,
+          "edge_length_mm": 3.10542417937991,
+          "sample_count": 63,
+          "max_edge_distance_mm": 0.0002735778413888088,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.578136,
+              "path_id": 9318
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.578136,
+              "path_id": 9342
+            }
+          ]
+        },
+        {
+          "z": 12.2,
+          "edge_length_mm": 1.871452849632597,
+          "sample_count": 42,
+          "max_edge_distance_mm": 0.00032126777795319587,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.576746,
+              "path_id": 9411
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.580676,
+              "path_id": 9436
+            }
+          ]
+        },
+        {
+          "z": 12.36,
+          "edge_length_mm": 0.6374815198852022,
+          "sample_count": 21,
+          "max_edge_distance_mm": 0.0,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.578636,
+              "path_id": 9508
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.575626,
+              "path_id": 9531
+            }
+          ]
+        }
+      ],
+      "worst_edge_distance_mm": 0.057753999602362556,
+      "sampled_layers": 61
+    },
+    {
+      "site": "body_-12deg",
+      "cavity_z_bounds_mm": [
+        2.6690800189971924,
+        12.372785568237305
+      ],
+      "layers": [
+        {
+          "z": 2.76,
+          "edge_length_mm": 1.1098459056340406,
+          "sample_count": 39,
+          "max_edge_distance_mm": 0.0,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1226
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1228
+            },
+            {
+              "feature": "Top surface",
+              "width_mm": 0.62,
+              "path_id": 1253
+            }
+          ]
+        },
+        {
+          "z": 2.92,
+          "edge_length_mm": 4.498922357914076,
+          "sample_count": 138,
+          "max_edge_distance_mm": 0.00032390624585821795,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1437
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1438
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1439
+            }
+          ]
+        },
+        {
+          "z": 3.08,
+          "edge_length_mm": 6.424626625589422,
+          "sample_count": 168,
+          "max_edge_distance_mm": 0.002000985375643822,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.852906,
+              "path_id": 1537
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1538
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1539
+            }
+          ]
+        },
+        {
+          "z": 3.24,
+          "edge_length_mm": 7.998683698550106,
+          "sample_count": 210,
+          "max_edge_distance_mm": 3.362719323289003e-05,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.627656,
+              "path_id": 1646
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.663346,
+              "path_id": 1653
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1654
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1655
+            }
+          ]
+        },
+        {
+          "z": 3.4,
+          "edge_length_mm": 9.39627109135595,
+          "sample_count": 243,
+          "max_edge_distance_mm": 0.0021310062239311895,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.619996,
+              "path_id": 1755
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1756
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.845296,
+              "path_id": 1757
+            }
+          ]
+        },
+        {
+          "z": 3.56,
+          "edge_length_mm": 10.67532086635981,
+          "sample_count": 267,
+          "max_edge_distance_mm": 0.0006075311350356487,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.804136,
+              "path_id": 1881
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.821206,
+              "path_id": 1893
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 1894
+            }
+          ]
+        },
+        {
+          "z": 3.72,
+          "edge_length_mm": 11.872107807822557,
+          "sample_count": 292,
+          "max_edge_distance_mm": 0.0004080044547797385,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2007
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2019
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 1.19424,
+              "path_id": 2020
+            }
+          ]
+        },
+        {
+          "z": 3.88,
+          "edge_length_mm": 13.005307360242517,
+          "sample_count": 313,
+          "max_edge_distance_mm": 0.00028189017198743647,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2190
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.519996,
+              "path_id": 2198
+            },
+            {
+              "feature": "Inner wall",
+              "width_mm": 0.798476,
+              "path_id": 2199
+            }
+          ]
+        },
+        {
+          "z": 4.04,
+          "edge_length_mm": 14.084940589908685,
+          "sample_count": 339,
+          "max_edge_distance_mm": 0.002042663921806568,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.689596,
+              "path_id": 2327
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.698956,
+              "path_id": 2333
+            }
+          ]
+        },
+        {
+          "z": 4.2,
+          "edge_length_mm": 15.077485274355848,
+          "sample_count": 400,
+          "max_edge_distance_mm": 0.011955562246143947,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.557456,
+              "path_id": 2499
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.559146,
+              "path_id": 2502
+            }
+          ]
+        },
+        {
+          "z": 4.36,
+          "edge_length_mm": 15.8320230834937,
+          "sample_count": 390,
+          "max_edge_distance_mm": 0.00808491051798598,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.547536,
+              "path_id": 2684
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.546626,
+              "path_id": 2687
+            }
+          ]
+        },
+        {
+          "z": 4.52,
+          "edge_length_mm": 16.443285390122057,
+          "sample_count": 397,
+          "max_edge_distance_mm": 0.0067268017808371095,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.547216,
+              "path_id": 2850
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.547216,
+              "path_id": 2853
+            }
+          ]
+        },
+        {
+          "z": 4.68,
+          "edge_length_mm": 16.957489668203856,
+          "sample_count": 408,
+          "max_edge_distance_mm": 0.01995131475108718,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.547646,
+              "path_id": 2977
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.547646,
+              "path_id": 2980
+            }
+          ]
+        },
+        {
+          "z": 4.84,
+          "edge_length_mm": 17.397128961568665,
+          "sample_count": 421,
+          "max_edge_distance_mm": 0.01722805228424784,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06116,
+              "path_id": 3131
+            }
+          ]
+        },
+        {
+          "z": 5.0,
+          "edge_length_mm": 17.772122893771833,
+          "sample_count": 432,
+          "max_edge_distance_mm": 0.016824808678488696,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0612,
+              "path_id": 3261
+            }
+          ]
+        },
+        {
+          "z": 5.16,
+          "edge_length_mm": 18.087859545360665,
+          "sample_count": 428,
+          "max_edge_distance_mm": 0.018425546771164363,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.05924,
+              "path_id": 3424
+            }
+          ]
+        },
+        {
+          "z": 5.32,
+          "edge_length_mm": 18.353751381885594,
+          "sample_count": 410,
+          "max_edge_distance_mm": 0.01709777329698428,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06088,
+              "path_id": 3545
+            }
+          ]
+        },
+        {
+          "z": 5.48,
+          "edge_length_mm": 18.569618274211045,
+          "sample_count": 407,
+          "max_edge_distance_mm": 0.017273806658086473,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06122,
+              "path_id": 3686
+            }
+          ]
+        },
+        {
+          "z": 5.64,
+          "edge_length_mm": 18.74990769417422,
+          "sample_count": 400,
+          "max_edge_distance_mm": 0.01682043411278989,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06138,
+              "path_id": 3803
+            }
+          ]
+        },
+        {
+          "z": 5.8,
+          "edge_length_mm": 18.902526087900146,
+          "sample_count": 396,
+          "max_edge_distance_mm": 0.017352965570438535,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06114,
+              "path_id": 3964
+            }
+          ]
+        },
+        {
+          "z": 5.96,
+          "edge_length_mm": 19.0343754082587,
+          "sample_count": 402,
+          "max_edge_distance_mm": 0.017342547285619018,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06074,
+              "path_id": 4078
+            }
+          ]
+        },
+        {
+          "z": 6.12,
+          "edge_length_mm": 19.14539899106211,
+          "sample_count": 403,
+          "max_edge_distance_mm": 0.017070912504572926,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06148,
+              "path_id": 4208
+            }
+          ]
+        },
+        {
+          "z": 6.28,
+          "edge_length_mm": 19.236750432353695,
+          "sample_count": 375,
+          "max_edge_distance_mm": 0.017404836499766634,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06154,
+              "path_id": 4336
+            }
+          ]
+        },
+        {
+          "z": 6.44,
+          "edge_length_mm": 19.30700873369971,
+          "sample_count": 373,
+          "max_edge_distance_mm": 0.017708100899758467,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06098,
+              "path_id": 4494
+            }
+          ]
+        },
+        {
+          "z": 6.6,
+          "edge_length_mm": 19.357521120992832,
+          "sample_count": 370,
+          "max_edge_distance_mm": 0.01824468128903434,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.05922,
+              "path_id": 4598
+            }
+          ]
+        },
+        {
+          "z": 6.76,
+          "edge_length_mm": 19.38760004908858,
+          "sample_count": 375,
+          "max_edge_distance_mm": 0.018824791027105294,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.05884,
+              "path_id": 4732
+            }
+          ]
+        },
+        {
+          "z": 6.92,
+          "edge_length_mm": 19.399511562223513,
+          "sample_count": 381,
+          "max_edge_distance_mm": 0.01897192601938383,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.05836,
+              "path_id": 4837
+            }
+          ]
+        },
+        {
+          "z": 7.08,
+          "edge_length_mm": 19.399612339470252,
+          "sample_count": 348,
+          "max_edge_distance_mm": 0.017599330901802417,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06072,
+              "path_id": 4966
+            }
+          ]
+        },
+        {
+          "z": 7.24,
+          "edge_length_mm": 19.39961132462242,
+          "sample_count": 349,
+          "max_edge_distance_mm": 0.016994038745355086,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06132,
+              "path_id": 5069
+            }
+          ]
+        },
+        {
+          "z": 7.4,
+          "edge_length_mm": 19.39961030977456,
+          "sample_count": 347,
+          "max_edge_distance_mm": 0.016925728664517685,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06154,
+              "path_id": 5209
+            }
+          ]
+        },
+        {
+          "z": 7.56,
+          "edge_length_mm": 19.3996092949267,
+          "sample_count": 350,
+          "max_edge_distance_mm": 0.017369930693471574,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06152,
+              "path_id": 5316
+            }
+          ]
+        },
+        {
+          "z": 7.72,
+          "edge_length_mm": 19.399608280078844,
+          "sample_count": 348,
+          "max_edge_distance_mm": 0.017415186645621125,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06144,
+              "path_id": 5447
+            }
+          ]
+        },
+        {
+          "z": 7.88,
+          "edge_length_mm": 19.39960726523103,
+          "sample_count": 348,
+          "max_edge_distance_mm": 0.017055137690098,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06128,
+              "path_id": 5591
+            }
+          ]
+        },
+        {
+          "z": 8.04,
+          "edge_length_mm": 19.399606250383155,
+          "sample_count": 348,
+          "max_edge_distance_mm": 0.017081612796725185,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06206,
+              "path_id": 5743
+            }
+          ]
+        },
+        {
+          "z": 8.2,
+          "edge_length_mm": 19.399605235535336,
+          "sample_count": 346,
+          "max_edge_distance_mm": 0.01723915150173851,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06196,
+              "path_id": 5884
+            }
+          ]
+        },
+        {
+          "z": 8.36,
+          "edge_length_mm": 19.338761960492075,
+          "sample_count": 360,
+          "max_edge_distance_mm": 0.024654909301546585,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06182,
+              "path_id": 6142
+            }
+          ]
+        },
+        {
+          "z": 8.52,
+          "edge_length_mm": 19.3221203075095,
+          "sample_count": 367,
+          "max_edge_distance_mm": 0.058921860464644864,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06128,
+              "path_id": 6310
+            }
+          ]
+        },
+        {
+          "z": 8.68,
+          "edge_length_mm": 19.32212082539774,
+          "sample_count": 365,
+          "max_edge_distance_mm": 0.03644178687924475,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0575,
+              "path_id": 6500
+            }
+          ]
+        },
+        {
+          "z": 8.84,
+          "edge_length_mm": 19.322121343284408,
+          "sample_count": 368,
+          "max_edge_distance_mm": 0.03168078049210899,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.05976,
+              "path_id": 6640
+            }
+          ]
+        },
+        {
+          "z": 9.0,
+          "edge_length_mm": 19.322121861170995,
+          "sample_count": 367,
+          "max_edge_distance_mm": 0.030711349386916727,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06166,
+              "path_id": 6771
+            }
+          ]
+        },
+        {
+          "z": 9.16,
+          "edge_length_mm": 19.32212237905764,
+          "sample_count": 367,
+          "max_edge_distance_mm": 0.03123220820301497,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.062,
+              "path_id": 6900
+            }
+          ]
+        },
+        {
+          "z": 9.32,
+          "edge_length_mm": 19.322122896944293,
+          "sample_count": 368,
+          "max_edge_distance_mm": 0.03136036478981513,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06194,
+              "path_id": 7074
+            }
+          ]
+        },
+        {
+          "z": 9.48,
+          "edge_length_mm": 19.322123414830912,
+          "sample_count": 370,
+          "max_edge_distance_mm": 0.03161045201019784,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06242,
+              "path_id": 7203
+            }
+          ]
+        },
+        {
+          "z": 9.64,
+          "edge_length_mm": 19.322123932715908,
+          "sample_count": 370,
+          "max_edge_distance_mm": 0.03155685868212161,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.06068,
+              "path_id": 7345
+            }
+          ]
+        },
+        {
+          "z": 9.8,
+          "edge_length_mm": 16.35797826649621,
+          "sample_count": 286,
+          "max_edge_distance_mm": 0.018960167689848255,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.09388,
+              "path_id": 7494
+            }
+          ]
+        },
+        {
+          "z": 9.96,
+          "edge_length_mm": 15.642363215199945,
+          "sample_count": 276,
+          "max_edge_distance_mm": 0.018246939996191563,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.0936,
+              "path_id": 7620
+            }
+          ]
+        },
+        {
+          "z": 10.12,
+          "edge_length_mm": 14.926748163903651,
+          "sample_count": 264,
+          "max_edge_distance_mm": 0.017540611592165124,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.09532,
+              "path_id": 7754
+            }
+          ]
+        },
+        {
+          "z": 10.28,
+          "edge_length_mm": 14.211133112607287,
+          "sample_count": 252,
+          "max_edge_distance_mm": 0.017231187734784905,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.09516,
+              "path_id": 7898
+            }
+          ]
+        },
+        {
+          "z": 10.44,
+          "edge_length_mm": 13.495518061311039,
+          "sample_count": 240,
+          "max_edge_distance_mm": 0.018012992859640062,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 1.09478,
+              "path_id": 8021
+            }
+          ]
+        },
+        {
+          "z": 10.6,
+          "edge_length_mm": 12.779905246311737,
+          "sample_count": 229,
+          "max_edge_distance_mm": 0.0012130953686791566,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565246,
+              "path_id": 8157
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565246,
+              "path_id": 8177
+            }
+          ]
+        },
+        {
+          "z": 10.76,
+          "edge_length_mm": 12.06428795871842,
+          "sample_count": 217,
+          "max_edge_distance_mm": 0.00499180191722252,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565276,
+              "path_id": 8378
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565276,
+              "path_id": 8404
+            }
+          ]
+        },
+        {
+          "z": 10.92,
+          "edge_length_mm": 11.348672907422133,
+          "sample_count": 207,
+          "max_edge_distance_mm": 0.007590950614395009,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565066,
+              "path_id": 8502
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565066,
+              "path_id": 8528
+            }
+          ]
+        },
+        {
+          "z": 11.08,
+          "edge_length_mm": 10.587251932383033,
+          "sample_count": 187,
+          "max_edge_distance_mm": 0.005344576099649313,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564246,
+              "path_id": 8627
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564246,
+              "path_id": 8653
+            }
+          ]
+        },
+        {
+          "z": 11.24,
+          "edge_length_mm": 9.353293513548277,
+          "sample_count": 166,
+          "max_edge_distance_mm": 0.0005014884621347494,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564576,
+              "path_id": 8755
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564576,
+              "path_id": 8781
+            }
+          ]
+        },
+        {
+          "z": 11.4,
+          "edge_length_mm": 8.119335094713463,
+          "sample_count": 146,
+          "max_edge_distance_mm": 0.0008852587108860768,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564826,
+              "path_id": 8881
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564826,
+              "path_id": 8908
+            }
+          ]
+        },
+        {
+          "z": 11.56,
+          "edge_length_mm": 6.885380531998819,
+          "sample_count": 125,
+          "max_edge_distance_mm": 0.0007975488669827902,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564966,
+              "path_id": 8995
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564966,
+              "path_id": 9031
+            }
+          ]
+        },
+        {
+          "z": 11.72,
+          "edge_length_mm": 5.651418257043998,
+          "sample_count": 105,
+          "max_edge_distance_mm": 0.00036356710454802467,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565156,
+              "path_id": 9118
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565156,
+              "path_id": 9143
+            }
+          ]
+        },
+        {
+          "z": 11.88,
+          "edge_length_mm": 4.417459838209229,
+          "sample_count": 85,
+          "max_edge_distance_mm": 0.00018889979735837228,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.564316,
+              "path_id": 9224
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.565236,
+              "path_id": 9246
+            }
+          ]
+        },
+        {
+          "z": 12.04,
+          "edge_length_mm": 3.1835014193744295,
+          "sample_count": 64,
+          "max_edge_distance_mm": 0.0004680833252412234,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.562096,
+              "path_id": 9319
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.563566,
+              "path_id": 9342
+            }
+          ]
+        },
+        {
+          "z": 12.2,
+          "edge_length_mm": 1.9495430005397214,
+          "sample_count": 42,
+          "max_edge_distance_mm": 0.0,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.563766,
+              "path_id": 9412
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.563766,
+              "path_id": 9436
+            }
+          ]
+        },
+        {
+          "z": 12.36,
+          "edge_length_mm": 0.7155845817049515,
+          "sample_count": 24,
+          "max_edge_distance_mm": 0.0,
+          "fraction_within_0p08": 1.0,
+          "interface_face_crossings": [
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.567616,
+              "path_id": 9509
+            },
+            {
+              "feature": "Outer wall",
+              "width_mm": 0.563596,
+              "path_id": 9531
+            }
+          ]
+        }
+      ],
+      "worst_edge_distance_mm": 0.058921860464644864,
+      "sampled_layers": 61
+    }
+  ]
+}

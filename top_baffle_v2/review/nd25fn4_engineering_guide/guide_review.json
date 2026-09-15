@@ -1,0 +1,76 @@
+{
+  "status": "outside_guide_material_scope",
+  "guide_url": "https://wiki.bambulab.com/en/filament-acc/filament/h2d-pla-and-petg-mutual-support",
+  "source_record_sha256": "2054bdaf7ad8c2d3b2ab5df1a872fb785905eb876498c4d637d4b04dcd8cfe2a",
+  "material_pair": [
+    "Bambu PETG Translucent",
+    "Bambu PLA Translucent"
+  ],
+  "printer": "Bambu Lab P2S 0.6 mm High Flow",
+  "plate": {
+    "type": "Engineering Plate",
+    "bed_temperature_c": 70,
+    "adhesion": "User-confirmed glue; 5 mm outer brim; no raft"
+  },
+  "guide_scope": {
+    "model": [
+      "Bambu PETG Basic",
+      "Bambu PETG HF"
+    ],
+    "interface": [
+      "Bambu PLA Basic"
+    ],
+    "plate": [
+      "Smooth PEI",
+      "High Temp",
+      "Textured PEI"
+    ],
+    "bed_c": 60,
+    "PLA_print_c": 230
+  },
+  "applied_support_principles": [
+    "PETG base with PLA interface",
+    "three dense PLA top-interface layers",
+    "zero top and bottom Z gaps",
+    "no raft",
+    "prime tower"
+  ],
+  "retained_exceptions": {
+    "url": "https://wiki.bambulab.com/en/filament-acc/filament/h2d-pla-and-petg-mutual-support",
+    "source_record": "review/nd25fn4_engineering_guide/sources.json",
+    "applied": "PETG support base; PLA interface; three dense interface layers; zero top and bottom Z gaps; no raft. Keep prime tower and no contaminated flushing into model or supports.",
+    "qualification": "Outside the guide: it explicitly excludes PETG Translucent and only covers PLA Basic with PETG HF/Basic. Engineering Plate is not one of its listed plates.",
+    "material_exception": "Retain the user-selected PETG Translucent / PLA Translucent recipes (PETG 250/245 C, PLA 220 C) and Engineering Plate with glue at 70 C; do not claim the guide's 60 C / PLA Basic 230 C process is validated for these filaments.",
+    "geometry_exception": "Keep qualified snug supports, bed-only scope, 0.7 mm XY clearance and fixed 0.16 mm support layers instead of copying the guide's 0.4 mm tree-support template; these protect insert/cable bores and cap ceiling coverage.",
+    "cooling_exception": "Keep native translucent P2S cooling; the downloaded guide P2S recipe is for PLA Basic/PETG HF and must not overwrite the full translucent recipes.",
+    "operator": "Dry each material using its own supplier instructions; ventilate the P2S by opening the door and/or top cover while PLA is in use."
+  },
+  "cap_geometry": {
+    "outer_diameter_mm": 56,
+    "height_mm": 11.84999942779541,
+    "inner_flat_ceiling_height_mm": 9.050000190734863,
+    "inner_flat_ceiling_diameter_mm": 44.598206241955516,
+    "external_top": "shallow dome; centre z11.850, r27 z11.401",
+    "unsupported_bridging": "not physically qualified; production caps retain supports"
+  },
+  "comparison_to_official_P2S_template": {
+    "material_numbering": "Official PLA=1, PETG=2; project PETG=1, PLA=2. Roles, not numeric IDs, were compared.",
+    "nozzle": "Official 0.4 mm; project 0.6 mm HF. No foreign printer/start G-code imported.",
+    "support_shape": "Official tree/default; project normal/snug with protected bores and existing ceiling audit.",
+    "xy_clearance_mm": {
+      "official": 0.35,
+      "project": 0.7
+    },
+    "bottom_gap_mm": {
+      "before": 0.18,
+      "now": 0
+    },
+    "interface_layers": 3,
+    "interface_spacing_mm": 0,
+    "purge_into_support": {
+      "official": true,
+      "project": false
+    }
+  },
+  "user_print_setup": "Dry each material by its own supplier procedure. Open P2S door and/or top cover while printing with PLA."
+}

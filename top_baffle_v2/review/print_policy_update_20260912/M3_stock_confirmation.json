@@ -1,0 +1,65 @@
+{
+  "status": "pass",
+  "stock": {
+    "brand": "Hanglife",
+    "model": "HLTI-M3-001",
+    "label": "M3 x 5 x 4",
+    "thread": "M3",
+    "outer_diameter_mm": 5.0,
+    "length_mm": 4.0,
+    "installation": "heat-set",
+    "source": "User-confirmed existing stock; supplied package drawing",
+    "reference_image": "vendor/HANGLIFE/M3x5x4_reference.png",
+    "bore_note": "The shared 4.6 mm pilot is the printed hole, not the insert outside diameter. The existing project convention provides 0.4 mm nominal diametral interference; the supplied label does not specify a recommended pilot."
+  },
+  "policy_sha256": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
+  "image_sha256": "ca8af7c38367385db9a310fcd1d45fba16fdb1926da2221ac375d707cc4f6130",
+  "source_sha256": "cc8b6bfb29d945132f345df182949b629d2b05ed9c37f1f0334f6321b3b61d20",
+  "dimensional_sources_sha256": {
+    "src/lx521_baffle/base.py": "ecc7aa56eb9b1e81d6b833db5cad854259f0372f5a8d675aa1ddb9928dcd3e4b",
+    "src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+    "src/lx521_baffle/obiwan/floor.py": "9cf84c7d4be8db9c14b8ccd3f21e738b56854fb0b93d8168469399c8e3e65a12",
+    "src/lx521_baffle/proud/b2_split.py": "0eb2e20e6b2ec981a12232c1d47dfd7907f9aa20bca4cfd90a82d3358c74f486",
+    "candidates/nd25fn4_crescent/v4_model.py": "d79c5db514c5318a27c44c6f34d6fbbeeb96715079967a86064608ad92b88d28"
+  },
+  "body_sha256": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+  "retainer_sha256": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc",
+  "hardware_mesh_validation_sha256": "2602d13f3246332cc1c335dd04fe33752af141cc1539ac9c8096556b48bfce70",
+  "shared_bores_mm": {
+    "UM_driver": [
+      4.6,
+      4.0
+    ],
+    "LM_UM_joint": [
+      4.6,
+      4.0
+    ],
+    "UM_T_joint": [
+      4.6,
+      4.0
+    ],
+    "NL8": [
+      4.6,
+      4.0
+    ],
+    "B2_seam": [
+      4.6,
+      4.0
+    ],
+    "V4_retainer": [
+      4.6,
+      4
+    ]
+  },
+  "nominal_diametral_interference_mm": 0.4,
+  "screw_length_under_head_mm": 8,
+  "screw_bearing_plane_x_mm": 0.2,
+  "insert_entry_x_mm": 4.5,
+  "screw_tip_x_mm": 8.2,
+  "insert_floor_x_mm": 8.5,
+  "screw_engagement_mm": 3.7,
+  "screw_tip_to_floor_mm": 0.3,
+  "metal_insert_to_driver_cavity_ligament_mm": 1.4,
+  "geometry_changed": false,
+  "physical_heat_set_fit": "not tested; uses the existing project pilot convention"
+}

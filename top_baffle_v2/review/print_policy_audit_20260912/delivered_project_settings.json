@@ -1,0 +1,2301 @@
+[
+  {
+    "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_02_03_04_LM_UM_combo_floor_stand_GUI.3mf",
+    "sha256": "1682a6b36a6c42f12fec12291531ee89aa59bdc5d47bf6bf42b7b223ae25107b",
+    "contains_gcode": false,
+    "gcode_sha256": null,
+    "settings": {
+      "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+      "filament_settings_id": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "nozzle_diameter": [
+        "0.6"
+      ],
+      "nozzle_volume_type": [
+        "High Flow"
+      ],
+      "layer_height": "0.16",
+      "initial_layer_print_height": "0.2",
+      "wall_loops": "6",
+      "outer_wall_line_width": "0.52",
+      "inner_wall_line_width": "0.62",
+      "min_bead_width": "85%",
+      "wall_generator": "arachne",
+      "xy_hole_compensation": "0",
+      "top_shell_layers": "10",
+      "bottom_shell_layers": "5",
+      "sparse_infill_density": "100%",
+      "sparse_infill_pattern": "zig-zag",
+      "enable_support": "1",
+      "support_type": "normal(auto)",
+      "support_style": "snug",
+      "support_on_build_plate_only": "1",
+      "support_critical_regions_only": "1",
+      "support_remove_small_overhang": "1",
+      "support_threshold_angle": "30",
+      "support_filament": "1",
+      "support_interface_filament": "2",
+      "support_interface_top_layers": "3",
+      "support_interface_bottom_layers": "3",
+      "support_top_z_distance": "0",
+      "support_bottom_z_distance": "0.18",
+      "support_interface_spacing": "0",
+      "support_bottom_interface_spacing": "0.5",
+      "support_object_xy_distance": "0.7",
+      "independent_support_layer_height": "0",
+      "flush_into_support": "1",
+      "flush_into_objects": "0",
+      "flush_into_infill": "0",
+      "flush_volumes_matrix": [
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0"
+      ],
+      "filament_map": [
+        "1",
+        "1"
+      ],
+      "filament_map_2": [
+        "1"
+      ],
+      "filament_nozzle_map": [
+        "1"
+      ],
+      "filament_volume_map": [
+        "0"
+      ],
+      "extruder_nozzle_stats": [],
+      "filament_map_mode": "Auto For Flush",
+      "extruder_variant_list": [
+        "Direct Drive Standard,Direct Drive High Flow"
+      ],
+      "printer_extruder_variant": [
+        "Direct Drive Standard",
+        "Direct Drive High Flow"
+      ],
+      "nozzle_temperature": [
+        "260",
+        "260",
+        "220",
+        "220"
+      ],
+      "filament_flow_ratio": [
+        "0.93",
+        "0.93",
+        "0.98",
+        "0.98"
+      ],
+      "filament_max_volumetric_speed": [
+        "12",
+        "12",
+        "21",
+        "40"
+      ]
+    },
+    "objects": [
+      {
+        "id": "9",
+        "metadata": {
+          "name": "assemble_1",
+          "enable_support": "1",
+          "sparse_infill_density": "100%",
+          "sparse_infill_pattern": "zig-zag",
+          "support_critical_regions_only": "1",
+          "support_on_build_plate_only": "1",
+          "support_remove_small_overhang": "1"
+        },
+        "parts": [
+          {
+            "id": "1",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand_1",
+              "matrix": "1 0 0 106.18334674835205 0 1 0 142.12799072265625 0 0 1 84.150001525878906 0 0 0 1",
+              "source_file": "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand.stl",
+              "source_object_id": "0",
+              "source_volume_id": "0",
+              "source_offset_x": "106.18334674835205",
+              "source_offset_y": "142.12799072265625",
+              "source_offset_z": "84.150001525878906",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "2",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker_1",
+              "matrix": "1 0 0 105.9442253112793 0 1 0 138.99295234680176 0 0 1 48.650699555873871 0 0 0 1",
+              "source_file": "obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl",
+              "source_object_id": "1",
+              "source_volume_id": "0",
+              "source_offset_x": "105.9442253112793",
+              "source_offset_y": "138.99295234680176",
+              "source_offset_z": "48.650699555873871"
+            }
+          },
+          {
+            "id": "3",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "obiwan_02_LM_top_keyed_2_of_2_1",
+              "matrix": "1 0 0 133.07454967498779 0 1 0 108.05963146686554 0 0 1 11.820408821105957 0 0 0 1",
+              "source_file": "obiwan_02_LM_top_keyed_2_of_2.stl",
+              "source_object_id": "2",
+              "source_volume_id": "0",
+              "source_offset_x": "133.07454967498779",
+              "source_offset_y": "108.05963146686554",
+              "source_offset_z": "11.820408821105957",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "4",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "obiwan_optional_lm_keyed_2_of_2_top.support_blocker_1",
+              "matrix": "1 0 0 132.98203754425049 0 1 0 108.15367150306702 0 0 1 12.349502444267273 0 0 0 1",
+              "source_file": "obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl",
+              "source_object_id": "3",
+              "source_volume_id": "0",
+              "source_offset_x": "132.98203754425049",
+              "source_offset_y": "108.15367150306702",
+              "source_offset_z": "12.349502444267273"
+            }
+          },
+          {
+            "id": "5",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "obiwan_03_UM_carrier_1_of_1_1",
+              "matrix": "1 0 0 123.67399978637695 0 1 0 86.176947593688965 0 0 1 9.1450719833374023 0 0 0 1",
+              "source_file": "obiwan_03_UM_carrier_1_of_1.stl",
+              "source_object_id": "4",
+              "source_volume_id": "0",
+              "source_offset_x": "123.67399978637695",
+              "source_offset_y": "86.176947593688965",
+              "source_offset_z": "9.1450719833374023",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "6",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "obiwan_core_2_of_2_um_carrier.support_blocker_1",
+              "matrix": "1 0 0 128.19792175292969 0 1 0 88.685413360595703 0 0 1 9.6747740507125854 0 0 0 1",
+              "source_file": "obiwan_core_2_of_2_um_carrier.support_blocker.stl",
+              "source_object_id": "5",
+              "source_volume_id": "0",
+              "source_offset_x": "128.19792175292969",
+              "source_offset_y": "88.685413360595703",
+              "source_offset_z": "9.6747740507125854"
+            }
+          },
+          {
+            "id": "7",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "obiwan_04_T_tweeter_crescent_1_of_1_1",
+              "matrix": "1 0 0 157.97100067138672 0 1 0 230.09886932373047 0 0 1 5.75 0 0 0 1",
+              "source_file": "obiwan_04_T_tweeter_crescent_1_of_1.stl",
+              "source_object_id": "6",
+              "source_volume_id": "0",
+              "source_offset_x": "157.97100067138672",
+              "source_offset_y": "230.09886932373047",
+              "source_offset_z": "5.75",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "8",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "obiwan_NL8_service_lid_1_of_1_1",
+              "matrix": "1 0 0 122.84999847412109 0 1 0 87.471572875976562 0 0 1 4.2750000953674316 0 0 0 1",
+              "source_file": "obiwan_NL8_service_lid_1_of_1.stl",
+              "source_object_id": "7",
+              "source_volume_id": "0",
+              "source_offset_x": "122.84999847412109",
+              "source_offset_y": "87.471572875976562",
+              "source_offset_z": "4.2750000953674316",
+              "extruder": "1"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_02_03_04_LM_UM_combo_no_floor_stand_GUI.3mf",
+    "sha256": "80624dde861fb53725faae73c34b2ff3c9f2313657d91959f5f98eb22894e959",
+    "contains_gcode": false,
+    "gcode_sha256": null,
+    "settings": {
+      "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+      "filament_settings_id": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "nozzle_diameter": [
+        "0.6"
+      ],
+      "nozzle_volume_type": [
+        "High Flow"
+      ],
+      "layer_height": "0.16",
+      "initial_layer_print_height": "0.2",
+      "wall_loops": "6",
+      "outer_wall_line_width": "0.52",
+      "inner_wall_line_width": "0.62",
+      "min_bead_width": "85%",
+      "wall_generator": "arachne",
+      "xy_hole_compensation": "0",
+      "top_shell_layers": "10",
+      "bottom_shell_layers": "5",
+      "sparse_infill_density": "100%",
+      "sparse_infill_pattern": "zig-zag",
+      "enable_support": "1",
+      "support_type": "normal(auto)",
+      "support_style": "snug",
+      "support_on_build_plate_only": "1",
+      "support_critical_regions_only": "1",
+      "support_remove_small_overhang": "1",
+      "support_threshold_angle": "30",
+      "support_filament": "1",
+      "support_interface_filament": "2",
+      "support_interface_top_layers": "3",
+      "support_interface_bottom_layers": "3",
+      "support_top_z_distance": "0",
+      "support_bottom_z_distance": "0.18",
+      "support_interface_spacing": "0",
+      "support_bottom_interface_spacing": "0.5",
+      "support_object_xy_distance": "0.7",
+      "independent_support_layer_height": "0",
+      "flush_into_support": "1",
+      "flush_into_objects": "0",
+      "flush_into_infill": "0",
+      "flush_volumes_matrix": [
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0"
+      ],
+      "filament_map": [
+        "1",
+        "1"
+      ],
+      "filament_map_2": [
+        "1"
+      ],
+      "filament_nozzle_map": [
+        "1"
+      ],
+      "filament_volume_map": [
+        "0"
+      ],
+      "extruder_nozzle_stats": [],
+      "filament_map_mode": "Auto For Flush",
+      "extruder_variant_list": [
+        "Direct Drive Standard,Direct Drive High Flow"
+      ],
+      "printer_extruder_variant": [
+        "Direct Drive Standard",
+        "Direct Drive High Flow"
+      ],
+      "nozzle_temperature": [
+        "260",
+        "260",
+        "220",
+        "220"
+      ],
+      "filament_flow_ratio": [
+        "0.93",
+        "0.93",
+        "0.98",
+        "0.98"
+      ],
+      "filament_max_volumetric_speed": [
+        "12",
+        "12",
+        "21",
+        "40"
+      ]
+    },
+    "objects": [
+      {
+        "id": "9",
+        "metadata": {
+          "name": "assemble_1",
+          "enable_support": "1",
+          "sparse_infill_density": "100%",
+          "sparse_infill_pattern": "zig-zag",
+          "support_critical_regions_only": "1",
+          "support_on_build_plate_only": "1",
+          "support_remove_small_overhang": "1"
+        },
+        "parts": [
+          {
+            "id": "1",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand_1",
+              "matrix": "1 0 0 111.806800365448 0 1 0 144.15449714660645 0 0 1 11.709900428017136 0 0 0 1",
+              "source_file": "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand.stl",
+              "source_object_id": "0",
+              "source_volume_id": "0",
+              "source_offset_x": "111.806800365448",
+              "source_offset_y": "144.15449714660645",
+              "source_offset_z": "11.709900428017136",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "2",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker_1",
+              "matrix": "1 0 0 113.02475833892822 0 1 0 135.42758369445801 0 0 1 11.712478637695312 0 0 0 1",
+              "source_file": "obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl",
+              "source_object_id": "1",
+              "source_volume_id": "0",
+              "source_offset_x": "113.02475833892822",
+              "source_offset_y": "135.42758369445801",
+              "source_offset_z": "11.712478637695312"
+            }
+          },
+          {
+            "id": "3",
+            "subtype": "modifier_part",
+            "metadata": {
+              "name": "obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier_1",
+              "matrix": "1 0 0 86.541142463684082 0 1 0 168.76637649536133 0 0 1 6.4986945186974481 0 0 0 1",
+              "source_file": "obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.stl",
+              "source_object_id": "2",
+              "source_volume_id": "0",
+              "source_offset_x": "86.541142463684082",
+              "source_offset_y": "168.76637649536133",
+              "source_offset_z": "6.4986945186974481",
+              "extruder": "1",
+              "sparse_infill_density": "100%",
+              "sparse_infill_pattern": "zig-zag"
+            }
+          },
+          {
+            "id": "4",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "obiwan_02_LM_top_keyed_2_of_2_1",
+              "matrix": "1 0 0 146.15581893920898 0 1 0 111.29229307174683 0 0 1 11.820600254810415 0 0 0 1",
+              "source_file": "obiwan_02_LM_top_keyed_2_of_2.stl",
+              "source_object_id": "3",
+              "source_volume_id": "0",
+              "source_offset_x": "146.15581893920898",
+              "source_offset_y": "111.29229307174683",
+              "source_offset_z": "11.820600254810415",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "5",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "obiwan_optional_lm_keyed_2_of_2_top.support_blocker_1",
+              "matrix": "1 0 0 145.22896194458008 0 1 0 111.33825135231018 0 0 1 12.348013520240784 0 0 0 1",
+              "source_file": "obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl",
+              "source_object_id": "4",
+              "source_volume_id": "0",
+              "source_offset_x": "145.22896194458008",
+              "source_offset_y": "111.33825135231018",
+              "source_offset_z": "12.348013520240784"
+            }
+          },
+          {
+            "id": "6",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "obiwan_03_UM_carrier_1_of_1_1",
+              "matrix": "1 0 0 116.75607681274414 0 1 0 83.307512283325195 0 0 1 9.1467004295554943 0 0 0 1",
+              "source_file": "obiwan_03_UM_carrier_1_of_1.stl",
+              "source_object_id": "5",
+              "source_volume_id": "0",
+              "source_offset_x": "116.75607681274414",
+              "source_offset_y": "83.307512283325195",
+              "source_offset_z": "9.1467004295554943",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "7",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "obiwan_core_2_of_2_um_carrier.support_blocker_1",
+              "matrix": "1 0 0 122.16062927246094 0 1 0 81.498725891113281 0 0 1 9.6762880682945251 0 0 0 1",
+              "source_file": "obiwan_core_2_of_2_um_carrier.support_blocker.stl",
+              "source_object_id": "6",
+              "source_volume_id": "0",
+              "source_offset_x": "122.16062927246094",
+              "source_offset_y": "81.498725891113281",
+              "source_offset_z": "9.6762880682945251"
+            }
+          },
+          {
+            "id": "8",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "obiwan_04_T_tweeter_crescent_1_of_1_1",
+              "matrix": "1 0 0 186.30690002441406 0 1 0 89.253662109375 0 0 1 5.75 0 0 0 1",
+              "source_file": "obiwan_04_T_tweeter_crescent_1_of_1.stl",
+              "source_object_id": "7",
+              "source_volume_id": "0",
+              "source_offset_x": "186.30690002441406",
+              "source_offset_y": "89.253662109375",
+              "source_offset_z": "5.75",
+              "extruder": "1"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_LM_bottom_keyed_1_of_2_floor_stand_GUI.3mf",
+    "sha256": "dfc346bdbee6ec043cd0bee0d480dbadfbd071d41cc768bc1d534303361b2e47",
+    "contains_gcode": false,
+    "gcode_sha256": null,
+    "settings": {
+      "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+      "filament_settings_id": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "nozzle_diameter": [
+        "0.6"
+      ],
+      "nozzle_volume_type": [
+        "High Flow"
+      ],
+      "layer_height": "0.16",
+      "initial_layer_print_height": "0.2",
+      "wall_loops": "6",
+      "outer_wall_line_width": "0.52",
+      "inner_wall_line_width": "0.62",
+      "min_bead_width": "85%",
+      "wall_generator": "arachne",
+      "xy_hole_compensation": "0",
+      "top_shell_layers": "10",
+      "bottom_shell_layers": "5",
+      "sparse_infill_density": "100%",
+      "sparse_infill_pattern": "zig-zag",
+      "enable_support": "1",
+      "support_type": "normal(auto)",
+      "support_style": "snug",
+      "support_on_build_plate_only": "1",
+      "support_critical_regions_only": "1",
+      "support_remove_small_overhang": "1",
+      "support_threshold_angle": "30",
+      "support_filament": "1",
+      "support_interface_filament": "2",
+      "support_interface_top_layers": "3",
+      "support_interface_bottom_layers": "3",
+      "support_top_z_distance": "0",
+      "support_bottom_z_distance": "0.18",
+      "support_interface_spacing": "0",
+      "support_bottom_interface_spacing": "0.5",
+      "support_object_xy_distance": "0.7",
+      "independent_support_layer_height": "0",
+      "flush_into_support": "1",
+      "flush_into_objects": "0",
+      "flush_into_infill": "0",
+      "flush_volumes_matrix": [
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0"
+      ],
+      "filament_map": [
+        "1",
+        "1"
+      ],
+      "filament_map_2": [
+        "1"
+      ],
+      "filament_nozzle_map": [
+        "1"
+      ],
+      "filament_volume_map": [
+        "0"
+      ],
+      "extruder_nozzle_stats": [],
+      "filament_map_mode": "Auto For Flush",
+      "extruder_variant_list": [
+        "Direct Drive Standard,Direct Drive High Flow"
+      ],
+      "printer_extruder_variant": [
+        "Direct Drive Standard",
+        "Direct Drive High Flow"
+      ],
+      "nozzle_temperature": [
+        "260",
+        "260",
+        "220",
+        "220"
+      ],
+      "filament_flow_ratio": [
+        "0.93",
+        "0.93",
+        "0.98",
+        "0.98"
+      ],
+      "filament_max_volumetric_speed": [
+        "12",
+        "12",
+        "21",
+        "40"
+      ]
+    },
+    "objects": [
+      {
+        "id": "3",
+        "metadata": {
+          "name": "assemble_1",
+          "enable_support": "1",
+          "support_critical_regions_only": "1",
+          "support_on_build_plate_only": "1",
+          "support_remove_small_overhang": "1"
+        },
+        "parts": [
+          {
+            "id": "1",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "obiwan_optional_lm_keyed_1_of_2_bottom_1",
+              "matrix": "1 0 0 100.56034615449607 0 1 0 107.80899047851562 0 0 1 84.150001525878906 0 0 0 1",
+              "source_file": "obiwan_optional_lm_keyed_1_of_2_bottom.stl",
+              "source_object_id": "0",
+              "source_volume_id": "0",
+              "source_offset_x": "100.56034615449607",
+              "source_offset_y": "107.80899047851562",
+              "source_offset_z": "84.150001525878906",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "2",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker_1",
+              "matrix": "1 0 0 100.32122457027435 0 1 0 104.67395293712616 0 0 1 48.650699555873871 0 0 0 1",
+              "source_file": "obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl",
+              "source_object_id": "1",
+              "source_volume_id": "0",
+              "source_offset_x": "100.32122457027435",
+              "source_offset_y": "104.67395293712616",
+              "source_offset_z": "48.650699555873871"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand_GUI.3mf",
+    "sha256": "b626e48757deb008c5949f8094cb33999233efc049039c469ab6c84e7ed9c92f",
+    "contains_gcode": false,
+    "gcode_sha256": null,
+    "settings": {
+      "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+      "filament_settings_id": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "nozzle_diameter": [
+        "0.6"
+      ],
+      "nozzle_volume_type": [
+        "High Flow"
+      ],
+      "layer_height": "0.16",
+      "initial_layer_print_height": "0.2",
+      "wall_loops": "6",
+      "outer_wall_line_width": "0.52",
+      "inner_wall_line_width": "0.62",
+      "min_bead_width": "85%",
+      "wall_generator": "arachne",
+      "xy_hole_compensation": "0",
+      "top_shell_layers": "10",
+      "bottom_shell_layers": "5",
+      "sparse_infill_density": "100%",
+      "sparse_infill_pattern": "zig-zag",
+      "enable_support": "1",
+      "support_type": "normal(auto)",
+      "support_style": "snug",
+      "support_on_build_plate_only": "1",
+      "support_critical_regions_only": "1",
+      "support_remove_small_overhang": "1",
+      "support_threshold_angle": "30",
+      "support_filament": "1",
+      "support_interface_filament": "2",
+      "support_interface_top_layers": "3",
+      "support_interface_bottom_layers": "3",
+      "support_top_z_distance": "0",
+      "support_bottom_z_distance": "0.18",
+      "support_interface_spacing": "0",
+      "support_bottom_interface_spacing": "0.5",
+      "support_object_xy_distance": "0.7",
+      "independent_support_layer_height": "0",
+      "flush_into_support": "1",
+      "flush_into_objects": "0",
+      "flush_into_infill": "0",
+      "flush_volumes_matrix": [
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0"
+      ],
+      "filament_map": [
+        "1",
+        "1"
+      ],
+      "filament_map_2": [
+        "1"
+      ],
+      "filament_nozzle_map": [
+        "1"
+      ],
+      "filament_volume_map": [
+        "0"
+      ],
+      "extruder_nozzle_stats": [],
+      "filament_map_mode": "Auto For Flush",
+      "extruder_variant_list": [
+        "Direct Drive Standard,Direct Drive High Flow"
+      ],
+      "printer_extruder_variant": [
+        "Direct Drive Standard",
+        "Direct Drive High Flow"
+      ],
+      "nozzle_temperature": [
+        "260",
+        "260",
+        "220",
+        "220"
+      ],
+      "filament_flow_ratio": [
+        "0.93",
+        "0.93",
+        "0.98",
+        "0.98"
+      ],
+      "filament_max_volumetric_speed": [
+        "12",
+        "12",
+        "21",
+        "40"
+      ]
+    },
+    "objects": [
+      {
+        "id": "4",
+        "metadata": {
+          "name": "assemble_1",
+          "enable_support": "1",
+          "support_critical_regions_only": "1",
+          "support_on_build_plate_only": "1",
+          "support_remove_small_overhang": "1"
+        },
+        "parts": [
+          {
+            "id": "1",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "obiwan_optional_lm_keyed_1_of_2_bottom_1",
+              "matrix": "1 0 0 102.02034759521484 0 1 0 109.6541748046875 0 0 1 11.71120548248291 0 0 0 1",
+              "source_file": "obiwan_optional_lm_keyed_1_of_2_bottom.stl",
+              "source_object_id": "0",
+              "source_volume_id": "0",
+              "source_offset_x": "102.02034759521484",
+              "source_offset_y": "109.6541748046875",
+              "source_offset_z": "11.71120548248291",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "2",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker_1",
+              "matrix": "1 0 0 103.23830544948578 0 1 0 100.9272620677948 0 0 1 11.71378368139267 0 0 0 1",
+              "source_file": "obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl",
+              "source_object_id": "1",
+              "source_volume_id": "0",
+              "source_offset_x": "103.23830544948578",
+              "source_offset_y": "100.9272620677948",
+              "source_offset_z": "11.71378368139267"
+            }
+          },
+          {
+            "id": "3",
+            "subtype": "modifier_part",
+            "metadata": {
+              "name": "obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier_1",
+              "matrix": "1 0 0 76.754689455032349 0 1 0 134.26605415344238 0 0 1 6.5000000499999899 0 0 0 1",
+              "source_file": "obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.stl",
+              "source_object_id": "2",
+              "source_volume_id": "0",
+              "source_offset_x": "76.754689455032349",
+              "source_offset_y": "134.26605415344238",
+              "source_offset_z": "6.5000000499999899",
+              "extruder": "1",
+              "sparse_infill_density": "100%",
+              "sparse_infill_pattern": "zig-zag"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_02_LM_top_keyed_2_of_2_GUI.3mf",
+    "sha256": "e7930b84a7697ccb1a41ed6581a75ec14556d1702a6e88d5ad61748bd2a4f8c8",
+    "contains_gcode": false,
+    "gcode_sha256": null,
+    "settings": {
+      "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+      "filament_settings_id": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "nozzle_diameter": [
+        "0.6"
+      ],
+      "nozzle_volume_type": [
+        "High Flow"
+      ],
+      "layer_height": "0.16",
+      "initial_layer_print_height": "0.2",
+      "wall_loops": "6",
+      "outer_wall_line_width": "0.52",
+      "inner_wall_line_width": "0.62",
+      "min_bead_width": "85%",
+      "wall_generator": "arachne",
+      "xy_hole_compensation": "0",
+      "top_shell_layers": "10",
+      "bottom_shell_layers": "5",
+      "sparse_infill_density": "30%",
+      "sparse_infill_pattern": "gyroid",
+      "enable_support": "1",
+      "support_type": "normal(auto)",
+      "support_style": "snug",
+      "support_on_build_plate_only": "1",
+      "support_critical_regions_only": "1",
+      "support_remove_small_overhang": "1",
+      "support_threshold_angle": "30",
+      "support_filament": "1",
+      "support_interface_filament": "2",
+      "support_interface_top_layers": "3",
+      "support_interface_bottom_layers": "3",
+      "support_top_z_distance": "0",
+      "support_bottom_z_distance": "0.18",
+      "support_interface_spacing": "0",
+      "support_bottom_interface_spacing": "0.5",
+      "support_object_xy_distance": "0.7",
+      "independent_support_layer_height": "0",
+      "flush_into_support": "1",
+      "flush_into_objects": "0",
+      "flush_into_infill": "0",
+      "flush_volumes_matrix": [
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0"
+      ],
+      "filament_map": [
+        "1",
+        "1"
+      ],
+      "filament_map_2": [
+        "1"
+      ],
+      "filament_nozzle_map": [
+        "1"
+      ],
+      "filament_volume_map": [
+        "0"
+      ],
+      "extruder_nozzle_stats": [],
+      "filament_map_mode": "Auto For Flush",
+      "extruder_variant_list": [
+        "Direct Drive Standard,Direct Drive High Flow"
+      ],
+      "printer_extruder_variant": [
+        "Direct Drive Standard",
+        "Direct Drive High Flow"
+      ],
+      "nozzle_temperature": [
+        "260",
+        "260",
+        "220",
+        "220"
+      ],
+      "filament_flow_ratio": [
+        "0.93",
+        "0.93",
+        "0.98",
+        "0.98"
+      ],
+      "filament_max_volumetric_speed": [
+        "12",
+        "12",
+        "21",
+        "40"
+      ]
+    },
+    "objects": [
+      {
+        "id": "3",
+        "metadata": {
+          "name": "assemble_1",
+          "enable_support": "1",
+          "support_critical_regions_only": "1",
+          "support_on_build_plate_only": "1",
+          "support_remove_small_overhang": "1"
+        },
+        "parts": [
+          {
+            "id": "1",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "obiwan_optional_lm_keyed_2_of_2_top_1",
+              "matrix": "1 0 0 106.04955291748047 0 1 0 106.04963416668397 0 0 1 11.820034027099609 0 0 0 1",
+              "source_file": "obiwan_optional_lm_keyed_2_of_2_top.stl",
+              "source_object_id": "0",
+              "source_volume_id": "0",
+              "source_offset_x": "106.04955291748047",
+              "source_offset_y": "106.04963416668397",
+              "source_offset_z": "11.820034027099609",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "2",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "obiwan_optional_lm_keyed_2_of_2_top.support_blocker_1",
+              "matrix": "1 0 0 105.94187822937965 0 1 0 106.14985942840576 0 0 1 12.347447276115417 0 0 0 1",
+              "source_file": "obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl",
+              "source_object_id": "1",
+              "source_volume_id": "0",
+              "source_offset_x": "105.94187822937965",
+              "source_offset_y": "106.14985942840576",
+              "source_offset_z": "12.347447276115417"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_03_UM_carrier_1_of_1_GUI.3mf",
+    "sha256": "24c0dbfbc55ce00fa2e4a963abdf434825d480cd1fb789c7546cd0b6855df503",
+    "contains_gcode": false,
+    "gcode_sha256": null,
+    "settings": {
+      "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+      "filament_settings_id": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "nozzle_diameter": [
+        "0.6"
+      ],
+      "nozzle_volume_type": [
+        "High Flow"
+      ],
+      "layer_height": "0.16",
+      "initial_layer_print_height": "0.2",
+      "wall_loops": "6",
+      "outer_wall_line_width": "0.52",
+      "inner_wall_line_width": "0.62",
+      "min_bead_width": "85%",
+      "wall_generator": "arachne",
+      "xy_hole_compensation": "0",
+      "top_shell_layers": "10",
+      "bottom_shell_layers": "5",
+      "sparse_infill_density": "100%",
+      "sparse_infill_pattern": "zig-zag",
+      "enable_support": "1",
+      "support_type": "normal(auto)",
+      "support_style": "snug",
+      "support_on_build_plate_only": "1",
+      "support_critical_regions_only": "1",
+      "support_remove_small_overhang": "1",
+      "support_threshold_angle": "30",
+      "support_filament": "1",
+      "support_interface_filament": "2",
+      "support_interface_top_layers": "3",
+      "support_interface_bottom_layers": "3",
+      "support_top_z_distance": "0",
+      "support_bottom_z_distance": "0.18",
+      "support_interface_spacing": "0",
+      "support_bottom_interface_spacing": "0.5",
+      "support_object_xy_distance": "0.7",
+      "independent_support_layer_height": "0",
+      "flush_into_support": "1",
+      "flush_into_objects": "0",
+      "flush_into_infill": "0",
+      "flush_volumes_matrix": [
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0"
+      ],
+      "filament_map": [
+        "1",
+        "1"
+      ],
+      "filament_map_2": [
+        "1"
+      ],
+      "filament_nozzle_map": [
+        "1"
+      ],
+      "filament_volume_map": [
+        "0"
+      ],
+      "extruder_nozzle_stats": [],
+      "filament_map_mode": "Auto For Flush",
+      "extruder_variant_list": [
+        "Direct Drive Standard,Direct Drive High Flow"
+      ],
+      "printer_extruder_variant": [
+        "Direct Drive Standard",
+        "Direct Drive High Flow"
+      ],
+      "nozzle_temperature": [
+        "260",
+        "260",
+        "220",
+        "220"
+      ],
+      "filament_flow_ratio": [
+        "0.93",
+        "0.93",
+        "0.98",
+        "0.98"
+      ],
+      "filament_max_volumetric_speed": [
+        "12",
+        "12",
+        "21",
+        "40"
+      ]
+    },
+    "objects": [
+      {
+        "id": "3",
+        "metadata": {
+          "name": "assemble_1",
+          "enable_support": "1",
+          "support_critical_regions_only": "1",
+          "support_on_build_plate_only": "1",
+          "support_remove_small_overhang": "1"
+        },
+        "parts": [
+          {
+            "id": "1",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "obiwan_core_2_of_2_um_carrier_1",
+              "matrix": "1 0 0 52.640001399815446 0 1 0 57.764949798583984 0 0 1 9.1454095840454102 0 0 0 1",
+              "source_file": "obiwan_core_2_of_2_um_carrier.stl",
+              "source_object_id": "0",
+              "source_volume_id": "0",
+              "source_offset_x": "52.640001399815446",
+              "source_offset_y": "57.764949798583984",
+              "source_offset_z": "9.1454095840454102",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "2",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "obiwan_core_2_of_2_um_carrier.support_blocker_1",
+              "matrix": "1 0 0 57.136620044708252 0 1 0 60.272377014160156 0 0 1 9.6749972105026245 0 0 0 1",
+              "source_file": "obiwan_core_2_of_2_um_carrier.support_blocker.stl",
+              "source_object_id": "1",
+              "source_volume_id": "0",
+              "source_offset_x": "57.136620044708252",
+              "source_offset_y": "60.272377014160156",
+              "source_offset_z": "9.6749972105026245"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_04_T_tweeter_crescent_1_of_1_GUI.3mf",
+    "sha256": "ad321effcad271e7944f07455d95971736c4ba5fb92bcd1410bc78ac1dae1c9d",
+    "contains_gcode": false,
+    "gcode_sha256": null,
+    "settings": {
+      "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+      "filament_settings_id": [
+        "TINMORRY PETG-GF Profile @BBL P2S"
+      ],
+      "nozzle_diameter": [
+        "0.6"
+      ],
+      "nozzle_volume_type": [
+        "High Flow"
+      ],
+      "layer_height": "0.16",
+      "initial_layer_print_height": "0.2",
+      "wall_loops": "6",
+      "outer_wall_line_width": "0.52",
+      "inner_wall_line_width": "0.62",
+      "min_bead_width": "85%",
+      "wall_generator": "arachne",
+      "xy_hole_compensation": "0",
+      "top_shell_layers": "10",
+      "bottom_shell_layers": "5",
+      "sparse_infill_density": "30%",
+      "sparse_infill_pattern": "gyroid",
+      "enable_support": "0",
+      "support_type": "normal(auto)",
+      "support_style": "snug",
+      "support_on_build_plate_only": "0",
+      "support_critical_regions_only": "0",
+      "support_remove_small_overhang": "0",
+      "support_threshold_angle": "30",
+      "support_filament": "1",
+      "support_interface_filament": "2",
+      "support_interface_top_layers": "3",
+      "support_interface_bottom_layers": "3",
+      "support_top_z_distance": "0",
+      "support_bottom_z_distance": "0.18",
+      "support_interface_spacing": "0",
+      "support_bottom_interface_spacing": "0.5",
+      "support_object_xy_distance": "0.7",
+      "independent_support_layer_height": "0",
+      "flush_into_support": "1",
+      "flush_into_objects": "0",
+      "flush_into_infill": "0",
+      "flush_volumes_matrix": [
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0"
+      ],
+      "filament_map": [
+        "1"
+      ],
+      "filament_map_2": [
+        "1"
+      ],
+      "filament_nozzle_map": [
+        "1"
+      ],
+      "filament_volume_map": [
+        "0"
+      ],
+      "extruder_nozzle_stats": [],
+      "filament_map_mode": "Auto For Flush",
+      "extruder_variant_list": [
+        "Direct Drive Standard,Direct Drive High Flow"
+      ],
+      "printer_extruder_variant": [
+        "Direct Drive Standard",
+        "Direct Drive High Flow"
+      ],
+      "nozzle_temperature": [
+        "260",
+        "260"
+      ],
+      "filament_flow_ratio": [
+        "0.93",
+        "0.93"
+      ],
+      "filament_max_volumetric_speed": [
+        "12",
+        "12"
+      ]
+    },
+    "objects": [
+      {
+        "id": "2",
+        "metadata": {
+          "name": "obiwan_addon_tweeter_crescent.stl",
+          "extruder": "1"
+        },
+        "parts": [
+          {
+            "id": "1",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "obiwan_addon_tweeter_crescent.stl",
+              "matrix": "1 0 0 49.168998718261719 0 1 0 20.966861724853516 0 0 1 5.75 0 0 0 1",
+              "source_file": "obiwan_addon_tweeter_crescent.stl",
+              "source_object_id": "0",
+              "source_volume_id": "0",
+              "source_offset_x": "49.168998718261719",
+              "source_offset_y": "20.966861724853516",
+              "source_offset_z": "5.75"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_NL8_service_lid_1_of_1_GUI.3mf",
+    "sha256": "4e18ddcaaa13607fc5fc0fcb3f0bf1dd1f1fd728afa16000fd141d618104ee4d",
+    "contains_gcode": false,
+    "gcode_sha256": null,
+    "settings": {
+      "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+      "filament_settings_id": [
+        "TINMORRY PETG-GF Profile @BBL P2S"
+      ],
+      "nozzle_diameter": [
+        "0.6"
+      ],
+      "nozzle_volume_type": [
+        "High Flow"
+      ],
+      "layer_height": "0.16",
+      "initial_layer_print_height": "0.2",
+      "wall_loops": "6",
+      "outer_wall_line_width": "0.52",
+      "inner_wall_line_width": "0.62",
+      "min_bead_width": "85%",
+      "wall_generator": "arachne",
+      "xy_hole_compensation": "0",
+      "top_shell_layers": "10",
+      "bottom_shell_layers": "5",
+      "sparse_infill_density": "30%",
+      "sparse_infill_pattern": "gyroid",
+      "enable_support": "0",
+      "support_type": "normal(auto)",
+      "support_style": "snug",
+      "support_on_build_plate_only": "0",
+      "support_critical_regions_only": "0",
+      "support_remove_small_overhang": "0",
+      "support_threshold_angle": "30",
+      "support_filament": "1",
+      "support_interface_filament": "2",
+      "support_interface_top_layers": "3",
+      "support_interface_bottom_layers": "3",
+      "support_top_z_distance": "0",
+      "support_bottom_z_distance": "0.18",
+      "support_interface_spacing": "0",
+      "support_bottom_interface_spacing": "0.5",
+      "support_object_xy_distance": "0.7",
+      "independent_support_layer_height": "0",
+      "flush_into_support": "1",
+      "flush_into_objects": "0",
+      "flush_into_infill": "0",
+      "flush_volumes_matrix": [
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0",
+        "280",
+        "280",
+        "280",
+        "280",
+        "0"
+      ],
+      "filament_map": [
+        "1"
+      ],
+      "filament_map_2": [
+        "1"
+      ],
+      "filament_nozzle_map": [
+        "1"
+      ],
+      "filament_volume_map": [
+        "0"
+      ],
+      "extruder_nozzle_stats": [],
+      "filament_map_mode": "Auto For Flush",
+      "extruder_variant_list": [
+        "Direct Drive Standard,Direct Drive High Flow"
+      ],
+      "printer_extruder_variant": [
+        "Direct Drive Standard",
+        "Direct Drive High Flow"
+      ],
+      "nozzle_temperature": [
+        "260",
+        "260"
+      ],
+      "filament_flow_ratio": [
+        "0.93",
+        "0.93"
+      ],
+      "filament_max_volumetric_speed": [
+        "12",
+        "12"
+      ]
+    },
+    "objects": [
+      {
+        "id": "2",
+        "metadata": {
+          "name": "obiwan_addon_nl8_service_lid.stl",
+          "extruder": "1"
+        },
+        "parts": [
+          {
+            "id": "1",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "obiwan_addon_nl8_service_lid.stl",
+              "matrix": "1 0 0 17.350000381469727 0 1 0 31.971572875976562 0 0 1 4.2750000953674316 0 0 0 1",
+              "source_file": "obiwan_addon_nl8_service_lid.stl",
+              "source_object_id": "0",
+              "source_volume_id": "0",
+              "source_offset_x": "17.350000381469727",
+              "source_offset_y": "31.971572875976562",
+              "source_offset_z": "4.2750000953674316"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "project": "candidates/nd25fn4_crescent/print/01_UM_Crescent_V4_06HF_PETG_GF_PLA.gcode.3mf",
+    "sha256": "da535d0859c7fc3a35fc0eca4248f71db5113b4bd52f0d3a85e449a61c709114",
+    "contains_gcode": true,
+    "gcode_sha256": "9486143728837c327c0d026130c5c7ab7ea7b7670bb296995f7f73917b3c7d05",
+    "settings": {
+      "print_settings_id": "LX521 ND25FN V4 Tinmorry 0.6HF 0.16mm",
+      "filament_settings_id": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "nozzle_diameter": [
+        "0.6"
+      ],
+      "nozzle_volume_type": [
+        "High Flow"
+      ],
+      "layer_height": "0.16",
+      "initial_layer_print_height": "0.2",
+      "wall_loops": "6",
+      "outer_wall_line_width": "0.52",
+      "inner_wall_line_width": "0.62",
+      "min_bead_width": "85%",
+      "wall_generator": "arachne",
+      "xy_hole_compensation": "0",
+      "top_shell_layers": "10",
+      "bottom_shell_layers": "5",
+      "sparse_infill_density": "100%",
+      "sparse_infill_pattern": "zig-zag",
+      "enable_support": "1",
+      "support_type": "normal(auto)",
+      "support_style": "snug",
+      "support_on_build_plate_only": "1",
+      "support_critical_regions_only": "1",
+      "support_remove_small_overhang": "1",
+      "support_threshold_angle": "30",
+      "support_filament": "1",
+      "support_interface_filament": "2",
+      "support_interface_top_layers": "3",
+      "support_interface_bottom_layers": "3",
+      "support_top_z_distance": "0",
+      "support_bottom_z_distance": "0.18",
+      "support_interface_spacing": "0",
+      "support_bottom_interface_spacing": "0.5",
+      "support_object_xy_distance": "0.7",
+      "independent_support_layer_height": "0",
+      "flush_into_support": "0",
+      "flush_into_objects": "0",
+      "flush_into_infill": "0",
+      "flush_volumes_matrix": [
+        "0",
+        "280",
+        "280",
+        "0"
+      ],
+      "filament_map": [
+        "1",
+        "1"
+      ],
+      "filament_map_2": [
+        "1",
+        "1"
+      ],
+      "filament_nozzle_map": [
+        "1",
+        "1"
+      ],
+      "filament_volume_map": [
+        "1",
+        "1"
+      ],
+      "extruder_nozzle_stats": [
+        "High Flow#1"
+      ],
+      "filament_map_mode": "Manual",
+      "extruder_variant_list": [
+        "Direct Drive Standard,Direct Drive High Flow"
+      ],
+      "printer_extruder_variant": [
+        "Direct Drive Standard",
+        "Direct Drive High Flow"
+      ],
+      "nozzle_temperature": [
+        "260",
+        "260",
+        "220",
+        "220"
+      ],
+      "filament_flow_ratio": [
+        "0.93",
+        "0.93",
+        "0.98",
+        "0.98"
+      ],
+      "filament_max_volumetric_speed": [
+        "12",
+        "12",
+        "21",
+        "40"
+      ]
+    },
+    "objects": [
+      {
+        "id": "5",
+        "metadata": {
+          "name": "01_UM_Crescent_V4_PRINT",
+          "extruder": "1"
+        },
+        "parts": [
+          {
+            "id": "1",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "01_UM_Crescent_V4_PRINT",
+              "matrix": "1 0 0 114.34347534179688 0 1 0 114.34356689453125 0 0 1 19.089939117431641 0 0 0 1",
+              "source_file": "01_UM_Crescent_V4_PRINT.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "114.34347534179688",
+              "source_offset_y": "114.34356689453125",
+              "source_offset_z": "19.089939117431641",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "2",
+            "subtype": "modifier_part",
+            "metadata": {
+              "name": "tweeters_15pct_gyroid",
+              "matrix": "1 0 0 171.2280101776123 0 1 0 57.458942413330078 0 0 1 20.679878234863281 0 0 0 1",
+              "source_file": "tweeters_15pct_gyroid.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "171.2280101776123",
+              "source_offset_y": "57.458942413330078",
+              "source_offset_z": "20.679878234863281",
+              "sparse_infill_density": "15%",
+              "sparse_infill_pattern": "gyroid"
+            }
+          },
+          {
+            "id": "3",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "duct_and_magnet_support_blocker",
+              "matrix": "1 0 0 103.78431129455566 0 1 0 149.08987426757812 0 0 1 20 0 0 0 1",
+              "source_file": "duct_and_magnet_support_blocker.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "103.78431129455566",
+              "source_offset_y": "149.08987426757812",
+              "source_offset_z": "20"
+            }
+          },
+          {
+            "id": "4",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "insert_bore_support_blocker",
+              "matrix": "1 0 0 99.607935905456543 0 1 0 129.07901954650879 0 0 1 17.07987904548645 0 0 0 1",
+              "source_file": "insert_bore_support_blocker.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "99.607935905456543",
+              "source_offset_y": "129.07901954650879",
+              "source_offset_z": "17.07987904548645"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "project": "candidates/nd25fn4_crescent/print/02_Caps_TWO_Retainers_TWO_06HF_PETG_GF_PLA.gcode.3mf",
+    "sha256": "08c203a1912ee84df6fa7fd79ce907bb831b3478387f224caf637ff87728b3fb",
+    "contains_gcode": true,
+    "gcode_sha256": "1af3a06315fb4496dfed5e2af21f01b38c7767bfc939d8b84480422df90ea56a",
+    "settings": {
+      "print_settings_id": "LX521 ND25FN V4 Tinmorry 0.6HF 0.16mm",
+      "filament_settings_id": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "nozzle_diameter": [
+        "0.6"
+      ],
+      "nozzle_volume_type": [
+        "High Flow"
+      ],
+      "layer_height": "0.16",
+      "initial_layer_print_height": "0.2",
+      "wall_loops": "6",
+      "outer_wall_line_width": "0.52",
+      "inner_wall_line_width": "0.62",
+      "min_bead_width": "85%",
+      "wall_generator": "arachne",
+      "xy_hole_compensation": "0",
+      "top_shell_layers": "10",
+      "bottom_shell_layers": "5",
+      "sparse_infill_density": "15%",
+      "sparse_infill_pattern": "gyroid",
+      "enable_support": "1",
+      "support_type": "normal(auto)",
+      "support_style": "snug",
+      "support_on_build_plate_only": "1",
+      "support_critical_regions_only": "0",
+      "support_remove_small_overhang": "0",
+      "support_threshold_angle": "30",
+      "support_filament": "1",
+      "support_interface_filament": "2",
+      "support_interface_top_layers": "3",
+      "support_interface_bottom_layers": "3",
+      "support_top_z_distance": "0",
+      "support_bottom_z_distance": "0.18",
+      "support_interface_spacing": "0",
+      "support_bottom_interface_spacing": "0.5",
+      "support_object_xy_distance": "0.7",
+      "independent_support_layer_height": "0",
+      "flush_into_support": "0",
+      "flush_into_objects": "0",
+      "flush_into_infill": "0",
+      "flush_volumes_matrix": [
+        "0",
+        "280",
+        "280",
+        "0"
+      ],
+      "filament_map": [
+        "1",
+        "1"
+      ],
+      "filament_map_2": [
+        "1",
+        "1"
+      ],
+      "filament_nozzle_map": [
+        "1",
+        "1"
+      ],
+      "filament_volume_map": [
+        "1",
+        "1"
+      ],
+      "extruder_nozzle_stats": [
+        "High Flow#1"
+      ],
+      "filament_map_mode": "Manual",
+      "extruder_variant_list": [
+        "Direct Drive Standard,Direct Drive High Flow"
+      ],
+      "printer_extruder_variant": [
+        "Direct Drive Standard",
+        "Direct Drive High Flow"
+      ],
+      "nozzle_temperature": [
+        "260",
+        "260",
+        "220",
+        "220"
+      ],
+      "filament_flow_ratio": [
+        "0.93",
+        "0.93",
+        "0.98",
+        "0.98"
+      ],
+      "filament_max_volumetric_speed": [
+        "12",
+        "12",
+        "21",
+        "40"
+      ]
+    },
+    "objects": [
+      {
+        "id": "2",
+        "metadata": {
+          "name": "02_Closed_Cap_PRINT_TWO",
+          "extruder": "1"
+        },
+        "parts": [
+          {
+            "id": "1",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "02_Closed_Cap_PRINT_TWO",
+              "matrix": "1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1",
+              "source_file": "02_Closed_Cap_PRINT_TWO.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "0",
+              "source_offset_y": "0",
+              "source_offset_z": "5.9249997138977051"
+            }
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "metadata": {
+          "name": "02_Closed_Cap_PRINT_TWO",
+          "extruder": "1"
+        },
+        "parts": [
+          {
+            "id": "3",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "02_Closed_Cap_PRINT_TWO",
+              "matrix": "1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1",
+              "source_file": "02_Closed_Cap_PRINT_TWO.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "0",
+              "source_offset_y": "0",
+              "source_offset_z": "5.9249997138977051"
+            }
+          }
+        ]
+      },
+      {
+        "id": "6",
+        "metadata": {
+          "name": "03_Tweeter_Retainer_PRINT_TWO",
+          "extruder": "1"
+        },
+        "parts": [
+          {
+            "id": "5",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "03_Tweeter_Retainer_PRINT_TWO",
+              "matrix": "1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1",
+              "source_file": "03_Tweeter_Retainer_PRINT_TWO.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "0",
+              "source_offset_y": "0",
+              "source_offset_z": "2.1000001445412635"
+            }
+          }
+        ]
+      },
+      {
+        "id": "8",
+        "metadata": {
+          "name": "03_Tweeter_Retainer_PRINT_TWO",
+          "extruder": "1"
+        },
+        "parts": [
+          {
+            "id": "7",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "03_Tweeter_Retainer_PRINT_TWO",
+              "matrix": "1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1",
+              "source_file": "03_Tweeter_Retainer_PRINT_TWO.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "0",
+              "source_offset_y": "0",
+              "source_offset_z": "2.1000001445412635"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "project": "candidates/nd25fn4_crescent/print/V4_flat_left_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+    "sha256": "ff5b9e4a6a96723e99117467ec8baf9482e82e0935f7397b404c546e37f5dbc2",
+    "contains_gcode": true,
+    "gcode_sha256": "6cdf2973c73efd07a1470c3d10c9781230928638c42f7d920022e60bf9d56668",
+    "settings": {
+      "print_settings_id": "LX521 ND25FN V4 Tinmorry 0.6HF 0.16mm",
+      "filament_settings_id": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "nozzle_diameter": [
+        "0.6"
+      ],
+      "nozzle_volume_type": [
+        "High Flow"
+      ],
+      "layer_height": "0.16",
+      "initial_layer_print_height": "0.2",
+      "wall_loops": "6",
+      "outer_wall_line_width": "0.52",
+      "inner_wall_line_width": "0.62",
+      "min_bead_width": "85%",
+      "wall_generator": "arachne",
+      "xy_hole_compensation": "0",
+      "top_shell_layers": "10",
+      "bottom_shell_layers": "5",
+      "sparse_infill_density": "30%",
+      "sparse_infill_pattern": "gyroid",
+      "enable_support": "1",
+      "support_type": "normal(auto)",
+      "support_style": "snug",
+      "support_on_build_plate_only": "1",
+      "support_critical_regions_only": "0",
+      "support_remove_small_overhang": "0",
+      "support_threshold_angle": "30",
+      "support_filament": "1",
+      "support_interface_filament": "2",
+      "support_interface_top_layers": "3",
+      "support_interface_bottom_layers": "3",
+      "support_top_z_distance": "0",
+      "support_bottom_z_distance": "0.18",
+      "support_interface_spacing": "0",
+      "support_bottom_interface_spacing": "0.5",
+      "support_object_xy_distance": "0.7",
+      "independent_support_layer_height": "0",
+      "flush_into_support": "0",
+      "flush_into_objects": "0",
+      "flush_into_infill": "0",
+      "flush_volumes_matrix": [
+        "0",
+        "280",
+        "280",
+        "0"
+      ],
+      "filament_map": [
+        "1",
+        "1"
+      ],
+      "filament_map_2": [
+        "1",
+        "1"
+      ],
+      "filament_nozzle_map": [
+        "1",
+        "1"
+      ],
+      "filament_volume_map": [
+        "1",
+        "1"
+      ],
+      "extruder_nozzle_stats": [
+        "High Flow#1"
+      ],
+      "filament_map_mode": "Manual",
+      "extruder_variant_list": [
+        "Direct Drive Standard,Direct Drive High Flow"
+      ],
+      "printer_extruder_variant": [
+        "Direct Drive Standard",
+        "Direct Drive High Flow"
+      ],
+      "nozzle_temperature": [
+        "260",
+        "260",
+        "220",
+        "220"
+      ],
+      "filament_flow_ratio": [
+        "0.93",
+        "0.93",
+        "0.98",
+        "0.98"
+      ],
+      "filament_max_volumetric_speed": [
+        "12",
+        "12",
+        "21",
+        "40"
+      ]
+    },
+    "objects": [
+      {
+        "id": "3",
+        "metadata": {
+          "name": "V4_flat_left_UPPER_PRINT",
+          "extruder": "1"
+        },
+        "parts": [
+          {
+            "id": "1",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "V4_flat_left_UPPER_PRINT",
+              "matrix": "1 0 0 92.185661315917969 0 1 0 96.72371673583983 0 0 1 8.1499996185302734 0 0 0 1",
+              "source_file": "V4_flat_left_UPPER_PRINT.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "92.185661315917969",
+              "source_offset_y": "96.72371673583983",
+              "source_offset_z": "8.1499996185302734",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "2",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "V4_flat_left_UPPER_magnet_blocker",
+              "matrix": "1 0 0 106.66360473632812 0 1 0 138.36669540405273 0 0 1 6.4809382557868958 0 0 0 1",
+              "source_file": "V4_flat_left_UPPER_magnet_blocker.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "106.66360473632812",
+              "source_offset_y": "138.36669540405273",
+              "source_offset_z": "6.4809382557868958"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "project": "candidates/nd25fn4_crescent/print/V4_flat_right_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+    "sha256": "3ff0740f1821517a3be44e92c44f35295adda74ef2c4788201005130e4d25bc3",
+    "contains_gcode": true,
+    "gcode_sha256": "ba80a5fadc0e01456bec0bbde142f27cb23d62bbf314b75702fb945d8cc1c826",
+    "settings": {
+      "print_settings_id": "LX521 ND25FN V4 Tinmorry 0.6HF 0.16mm",
+      "filament_settings_id": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "nozzle_diameter": [
+        "0.6"
+      ],
+      "nozzle_volume_type": [
+        "High Flow"
+      ],
+      "layer_height": "0.16",
+      "initial_layer_print_height": "0.2",
+      "wall_loops": "6",
+      "outer_wall_line_width": "0.52",
+      "inner_wall_line_width": "0.62",
+      "min_bead_width": "85%",
+      "wall_generator": "arachne",
+      "xy_hole_compensation": "0",
+      "top_shell_layers": "10",
+      "bottom_shell_layers": "5",
+      "sparse_infill_density": "30%",
+      "sparse_infill_pattern": "gyroid",
+      "enable_support": "1",
+      "support_type": "normal(auto)",
+      "support_style": "snug",
+      "support_on_build_plate_only": "1",
+      "support_critical_regions_only": "0",
+      "support_remove_small_overhang": "0",
+      "support_threshold_angle": "30",
+      "support_filament": "1",
+      "support_interface_filament": "2",
+      "support_interface_top_layers": "3",
+      "support_interface_bottom_layers": "3",
+      "support_top_z_distance": "0",
+      "support_bottom_z_distance": "0.18",
+      "support_interface_spacing": "0",
+      "support_bottom_interface_spacing": "0.5",
+      "support_object_xy_distance": "0.7",
+      "independent_support_layer_height": "0",
+      "flush_into_support": "0",
+      "flush_into_objects": "0",
+      "flush_into_infill": "0",
+      "flush_volumes_matrix": [
+        "0",
+        "280",
+        "280",
+        "0"
+      ],
+      "filament_map": [
+        "1",
+        "1"
+      ],
+      "filament_map_2": [
+        "1",
+        "1"
+      ],
+      "filament_nozzle_map": [
+        "1",
+        "1"
+      ],
+      "filament_volume_map": [
+        "1",
+        "1"
+      ],
+      "extruder_nozzle_stats": [
+        "High Flow#1"
+      ],
+      "filament_map_mode": "Manual",
+      "extruder_variant_list": [
+        "Direct Drive Standard,Direct Drive High Flow"
+      ],
+      "printer_extruder_variant": [
+        "Direct Drive Standard",
+        "Direct Drive High Flow"
+      ],
+      "nozzle_temperature": [
+        "260",
+        "260",
+        "220",
+        "220"
+      ],
+      "filament_flow_ratio": [
+        "0.93",
+        "0.93",
+        "0.98",
+        "0.98"
+      ],
+      "filament_max_volumetric_speed": [
+        "12",
+        "12",
+        "21",
+        "40"
+      ]
+    },
+    "objects": [
+      {
+        "id": "3",
+        "metadata": {
+          "name": "V4_flat_right_UPPER_PRINT",
+          "extruder": "1"
+        },
+        "parts": [
+          {
+            "id": "1",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "V4_flat_right_UPPER_PRINT",
+              "matrix": "1 0 0 92.185653686523438 0 1 0 96.724472045898438 0 0 1 8.1499996185302734 0 0 0 1",
+              "source_file": "V4_flat_right_UPPER_PRINT.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "92.185653686523438",
+              "source_offset_y": "96.724472045898438",
+              "source_offset_z": "8.1499996185302734",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "2",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "V4_flat_right_UPPER_magnet_blocker",
+              "matrix": "1 0 0 106.66322326660156 0 1 0 55.082271575927734 0 0 1 6.4810169339179993 0 0 0 1",
+              "source_file": "V4_flat_right_UPPER_magnet_blocker.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "106.66322326660156",
+              "source_offset_y": "55.082271575927734",
+              "source_offset_z": "6.4810169339179993"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "project": "candidates/nd25fn4_crescent/print/V4_graded_left_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+    "sha256": "289f1cb58a510ac9bac9d2c4da71aa9089858c393d9792c1cc782aba2bf2d787",
+    "contains_gcode": true,
+    "gcode_sha256": "9ef95aaaa9ba10569efd3849e0b0b72d3acdf512d5d7ccce2fbeaa1bcee6011d",
+    "settings": {
+      "print_settings_id": "LX521 ND25FN V4 Tinmorry 0.6HF 0.16mm",
+      "filament_settings_id": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "nozzle_diameter": [
+        "0.6"
+      ],
+      "nozzle_volume_type": [
+        "High Flow"
+      ],
+      "layer_height": "0.16",
+      "initial_layer_print_height": "0.2",
+      "wall_loops": "6",
+      "outer_wall_line_width": "0.52",
+      "inner_wall_line_width": "0.62",
+      "min_bead_width": "85%",
+      "wall_generator": "arachne",
+      "xy_hole_compensation": "0",
+      "top_shell_layers": "10",
+      "bottom_shell_layers": "5",
+      "sparse_infill_density": "30%",
+      "sparse_infill_pattern": "gyroid",
+      "enable_support": "1",
+      "support_type": "normal(auto)",
+      "support_style": "snug",
+      "support_on_build_plate_only": "1",
+      "support_critical_regions_only": "0",
+      "support_remove_small_overhang": "0",
+      "support_threshold_angle": "30",
+      "support_filament": "1",
+      "support_interface_filament": "2",
+      "support_interface_top_layers": "3",
+      "support_interface_bottom_layers": "3",
+      "support_top_z_distance": "0",
+      "support_bottom_z_distance": "0.18",
+      "support_interface_spacing": "0",
+      "support_bottom_interface_spacing": "0.5",
+      "support_object_xy_distance": "0.7",
+      "independent_support_layer_height": "0",
+      "flush_into_support": "0",
+      "flush_into_objects": "0",
+      "flush_into_infill": "0",
+      "flush_volumes_matrix": [
+        "0",
+        "280",
+        "280",
+        "0"
+      ],
+      "filament_map": [
+        "1",
+        "1"
+      ],
+      "filament_map_2": [
+        "1",
+        "1"
+      ],
+      "filament_nozzle_map": [
+        "1",
+        "1"
+      ],
+      "filament_volume_map": [
+        "1",
+        "1"
+      ],
+      "extruder_nozzle_stats": [
+        "High Flow#1"
+      ],
+      "filament_map_mode": "Manual",
+      "extruder_variant_list": [
+        "Direct Drive Standard,Direct Drive High Flow"
+      ],
+      "printer_extruder_variant": [
+        "Direct Drive Standard",
+        "Direct Drive High Flow"
+      ],
+      "nozzle_temperature": [
+        "260",
+        "260",
+        "220",
+        "220"
+      ],
+      "filament_flow_ratio": [
+        "0.93",
+        "0.93",
+        "0.98",
+        "0.98"
+      ],
+      "filament_max_volumetric_speed": [
+        "12",
+        "12",
+        "21",
+        "40"
+      ]
+    },
+    "objects": [
+      {
+        "id": "3",
+        "metadata": {
+          "name": "V4_graded_left_UPPER_PRINT",
+          "extruder": "1"
+        },
+        "parts": [
+          {
+            "id": "1",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "V4_graded_left_UPPER_PRINT",
+              "matrix": "1 0 0 96.723716735839844 0 1 0 91.079185485839844 0 0 1 8.1499996185302734 0 0 0 1",
+              "source_file": "V4_graded_left_UPPER_PRINT.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "96.723716735839844",
+              "source_offset_y": "91.079185485839844",
+              "source_offset_z": "8.1499996185302734",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "2",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "V4_graded_left_UPPER_magnet_blocker",
+              "matrix": "1 0 0 138.3666877746582 0 1 0 75.494710922241211 0 0 1 6.4806779325008392 0 0 0 1",
+              "source_file": "V4_graded_left_UPPER_magnet_blocker.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "138.3666877746582",
+              "source_offset_y": "75.494710922241211",
+              "source_offset_z": "6.4806779325008392"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "project": "candidates/nd25fn4_crescent/print/V4_graded_right_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+    "sha256": "4c681395bfa3d61e41830ae4e59227b781d4c8bc6580b8fdd642e835a7c11579",
+    "contains_gcode": true,
+    "gcode_sha256": "4cff1d01b68ef99463b5ebe20ae05dfbde5a0a3fd9bb29c95474cec12fb26b6f",
+    "settings": {
+      "print_settings_id": "LX521 ND25FN V4 Tinmorry 0.6HF 0.16mm",
+      "filament_settings_id": [
+        "TINMORRY PETG-GF Profile @BBL P2S",
+        "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+      ],
+      "nozzle_diameter": [
+        "0.6"
+      ],
+      "nozzle_volume_type": [
+        "High Flow"
+      ],
+      "layer_height": "0.16",
+      "initial_layer_print_height": "0.2",
+      "wall_loops": "6",
+      "outer_wall_line_width": "0.52",
+      "inner_wall_line_width": "0.62",
+      "min_bead_width": "85%",
+      "wall_generator": "arachne",
+      "xy_hole_compensation": "0",
+      "top_shell_layers": "10",
+      "bottom_shell_layers": "5",
+      "sparse_infill_density": "30%",
+      "sparse_infill_pattern": "gyroid",
+      "enable_support": "1",
+      "support_type": "normal(auto)",
+      "support_style": "snug",
+      "support_on_build_plate_only": "1",
+      "support_critical_regions_only": "0",
+      "support_remove_small_overhang": "0",
+      "support_threshold_angle": "30",
+      "support_filament": "1",
+      "support_interface_filament": "2",
+      "support_interface_top_layers": "3",
+      "support_interface_bottom_layers": "3",
+      "support_top_z_distance": "0",
+      "support_bottom_z_distance": "0.18",
+      "support_interface_spacing": "0",
+      "support_bottom_interface_spacing": "0.5",
+      "support_object_xy_distance": "0.7",
+      "independent_support_layer_height": "0",
+      "flush_into_support": "0",
+      "flush_into_objects": "0",
+      "flush_into_infill": "0",
+      "flush_volumes_matrix": [
+        "0",
+        "280",
+        "280",
+        "0"
+      ],
+      "filament_map": [
+        "1",
+        "1"
+      ],
+      "filament_map_2": [
+        "1",
+        "1"
+      ],
+      "filament_nozzle_map": [
+        "1",
+        "1"
+      ],
+      "filament_volume_map": [
+        "1",
+        "1"
+      ],
+      "extruder_nozzle_stats": [
+        "High Flow#1"
+      ],
+      "filament_map_mode": "Manual",
+      "extruder_variant_list": [
+        "Direct Drive Standard,Direct Drive High Flow"
+      ],
+      "printer_extruder_variant": [
+        "Direct Drive Standard",
+        "Direct Drive High Flow"
+      ],
+      "nozzle_temperature": [
+        "260",
+        "260",
+        "220",
+        "220"
+      ],
+      "filament_flow_ratio": [
+        "0.93",
+        "0.93",
+        "0.98",
+        "0.98"
+      ],
+      "filament_max_volumetric_speed": [
+        "12",
+        "12",
+        "21",
+        "40"
+      ]
+    },
+    "objects": [
+      {
+        "id": "3",
+        "metadata": {
+          "name": "V4_graded_right_UPPER_PRINT",
+          "extruder": "1"
+        },
+        "parts": [
+          {
+            "id": "1",
+            "subtype": "normal_part",
+            "metadata": {
+              "name": "V4_graded_right_UPPER_PRINT",
+              "matrix": "1 0 0 91.079170227050781 0 1 0 96.724472045898438 0 0 1 8.1499996185302734 0 0 0 1",
+              "source_file": "V4_graded_right_UPPER_PRINT.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "91.079170227050781",
+              "source_offset_y": "96.724472045898438",
+              "source_offset_z": "8.1499996185302734",
+              "extruder": "1"
+            }
+          },
+          {
+            "id": "2",
+            "subtype": "support_blocker",
+            "metadata": {
+              "name": "V4_graded_right_UPPER_magnet_blocker",
+              "matrix": "1 0 0 106.66327667236328 0 1 0 55.082271575927734 0 0 1 6.4807599484920502 0 0 0 1",
+              "source_file": "V4_graded_right_UPPER_magnet_blocker.stl",
+              "source_object_id": "-1",
+              "source_volume_id": "-1",
+              "source_offset_x": "106.66327667236328",
+              "source_offset_y": "55.082271575927734",
+              "source_offset_z": "6.4807599484920502"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

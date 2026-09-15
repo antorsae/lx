@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+  File "/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/validate_outline.py", line 38, in main
+    assert symmetry<.025,('asymmetric exterior',symmetry)
+           ^^^^^^^^^^^^^
+AssertionError: ('asymmetric exterior', np.float64(0.025624201364102817))

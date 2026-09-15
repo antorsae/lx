@@ -1,0 +1,1954 @@
+{
+  "status": "pass",
+  "physical_qualification": "pending same-geometry coupon print",
+  "gcode_sha256": "9486143728837c327c0d026130c5c7ab7ea7b7670bb296995f7f73917b3c7d05",
+  "stl_sha256": "7cf53f91b465cd298d9508638e30226625cb64ce30ca04ad0a44bf03c2610706",
+  "sample_spacing_mm": 0.06,
+  "boundary_tolerance_mm": 0.08,
+  "accepted_width_mm": [
+    0.442,
+    1.2
+  ],
+  "sites": [
+    {
+      "site": "body_168deg",
+      "checked_layers": 61,
+      "width_range_mm": [
+        0.513656,
+        1.08652
+      ],
+      "maximum_boundary_gap_mm": 0.056144170306839006,
+      "layers": [
+        {
+          "z_mm": 2.76,
+          "sample_count": 73,
+          "max_boundary_gap_mm": 0.0,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 2.92,
+          "sample_count": 159,
+          "max_boundary_gap_mm": 0.00017359543463218058,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 3.08,
+          "sample_count": 215,
+          "max_boundary_gap_mm": 0.0024652435690523983,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 3.24,
+          "sample_count": 243,
+          "max_boundary_gap_mm": 0.00012049149323358865,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 3.4,
+          "sample_count": 288,
+          "max_boundary_gap_mm": 0.0016223807626291374,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 3.56,
+          "sample_count": 329,
+          "max_boundary_gap_mm": 0.0002671177694645487,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 3.72,
+          "sample_count": 357,
+          "max_boundary_gap_mm": 0.0012421173824218382,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 3.88,
+          "sample_count": 385,
+          "max_boundary_gap_mm": 0.0008446170722670281,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 4.04,
+          "sample_count": 413,
+          "max_boundary_gap_mm": 0.0002567228816968953,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.715936
+          ]
+        },
+        {
+          "z_mm": 4.2,
+          "sample_count": 459,
+          "max_boundary_gap_mm": 0.008203596037518315,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.594936
+          ]
+        },
+        {
+          "z_mm": 4.36,
+          "sample_count": 447,
+          "max_boundary_gap_mm": 0.02162013979453495,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.559836
+          ]
+        },
+        {
+          "z_mm": 4.52,
+          "sample_count": 453,
+          "max_boundary_gap_mm": 0.02371807399562556,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.559466
+          ]
+        },
+        {
+          "z_mm": 4.68,
+          "sample_count": 472,
+          "max_boundary_gap_mm": 0.014048374746301483,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.559536
+          ]
+        },
+        {
+          "z_mm": 4.84,
+          "sample_count": 483,
+          "max_boundary_gap_mm": 0.018444352360961983,
+          "retaining_width_range_mm": [
+            0.513656,
+            0.557366
+          ]
+        },
+        {
+          "z_mm": 5.0,
+          "sample_count": 492,
+          "max_boundary_gap_mm": 0.019064238163166547,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08114
+          ]
+        },
+        {
+          "z_mm": 5.16,
+          "sample_count": 492,
+          "max_boundary_gap_mm": 0.017164843020586785,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08506
+          ]
+        },
+        {
+          "z_mm": 5.32,
+          "sample_count": 509,
+          "max_boundary_gap_mm": 0.023936843268995256,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0829
+          ]
+        },
+        {
+          "z_mm": 5.48,
+          "sample_count": 509,
+          "max_boundary_gap_mm": 0.017479465806304644,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08532
+          ]
+        },
+        {
+          "z_mm": 5.64,
+          "sample_count": 489,
+          "max_boundary_gap_mm": 0.018767219073526173,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08162
+          ]
+        },
+        {
+          "z_mm": 5.8,
+          "sample_count": 490,
+          "max_boundary_gap_mm": 0.018291773136462446,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0828
+          ]
+        },
+        {
+          "z_mm": 5.96,
+          "sample_count": 498,
+          "max_boundary_gap_mm": 0.016931886378087794,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08506
+          ]
+        },
+        {
+          "z_mm": 6.12,
+          "sample_count": 488,
+          "max_boundary_gap_mm": 0.017404877424898848,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0851
+          ]
+        },
+        {
+          "z_mm": 6.28,
+          "sample_count": 468,
+          "max_boundary_gap_mm": 0.01751502416208219,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0848
+          ]
+        },
+        {
+          "z_mm": 6.44,
+          "sample_count": 474,
+          "max_boundary_gap_mm": 0.017736710989922026,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08408
+          ]
+        },
+        {
+          "z_mm": 6.6,
+          "sample_count": 462,
+          "max_boundary_gap_mm": 0.022938854707202905,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08352
+          ]
+        },
+        {
+          "z_mm": 6.76,
+          "sample_count": 470,
+          "max_boundary_gap_mm": 0.01846118391070986,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08344
+          ]
+        },
+        {
+          "z_mm": 6.92,
+          "sample_count": 446,
+          "max_boundary_gap_mm": 0.0166308508348377,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08592
+          ]
+        },
+        {
+          "z_mm": 7.08,
+          "sample_count": 446,
+          "max_boundary_gap_mm": 0.017909032413820844,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08594
+          ]
+        },
+        {
+          "z_mm": 7.24,
+          "sample_count": 442,
+          "max_boundary_gap_mm": 0.016962530297748354,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08598
+          ]
+        },
+        {
+          "z_mm": 7.4,
+          "sample_count": 443,
+          "max_boundary_gap_mm": 0.024060578060804437,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08554
+          ]
+        },
+        {
+          "z_mm": 7.56,
+          "sample_count": 443,
+          "max_boundary_gap_mm": 0.02696567556253515,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08528
+          ]
+        },
+        {
+          "z_mm": 7.72,
+          "sample_count": 444,
+          "max_boundary_gap_mm": 0.01771333724201291,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08504
+          ]
+        },
+        {
+          "z_mm": 7.88,
+          "sample_count": 446,
+          "max_boundary_gap_mm": 0.024687639053715522,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0846
+          ]
+        },
+        {
+          "z_mm": 8.04,
+          "sample_count": 443,
+          "max_boundary_gap_mm": 0.019729386283323384,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08406
+          ]
+        },
+        {
+          "z_mm": 8.2,
+          "sample_count": 444,
+          "max_boundary_gap_mm": 0.016927810634818956,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08652
+          ]
+        },
+        {
+          "z_mm": 8.36,
+          "sample_count": 467,
+          "max_boundary_gap_mm": 0.026429198946218067,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08614
+          ]
+        },
+        {
+          "z_mm": 8.52,
+          "sample_count": 466,
+          "max_boundary_gap_mm": 0.056144170306839006,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08646
+          ]
+        },
+        {
+          "z_mm": 8.68,
+          "sample_count": 469,
+          "max_boundary_gap_mm": 0.03459375320418512,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08636
+          ]
+        },
+        {
+          "z_mm": 8.84,
+          "sample_count": 472,
+          "max_boundary_gap_mm": 0.03140059647791998,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08418
+          ]
+        },
+        {
+          "z_mm": 9.0,
+          "sample_count": 470,
+          "max_boundary_gap_mm": 0.030521065551236706,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08578
+          ]
+        },
+        {
+          "z_mm": 9.16,
+          "sample_count": 475,
+          "max_boundary_gap_mm": 0.029114481753189064,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.32,
+          "sample_count": 480,
+          "max_boundary_gap_mm": 0.02870864105649065,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.48,
+          "sample_count": 486,
+          "max_boundary_gap_mm": 0.0283357402681649,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.64,
+          "sample_count": 490,
+          "max_boundary_gap_mm": 0.02885718848513439,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.8,
+          "sample_count": 295,
+          "max_boundary_gap_mm": 0.016985084200131163,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.96,
+          "sample_count": 283,
+          "max_boundary_gap_mm": 0.017324707001493318,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.12,
+          "sample_count": 270,
+          "max_boundary_gap_mm": 0.016795108441994937,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.28,
+          "sample_count": 258,
+          "max_boundary_gap_mm": 0.016557647106810746,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.44,
+          "sample_count": 248,
+          "max_boundary_gap_mm": 0.01890533566905683,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.6,
+          "sample_count": 234,
+          "max_boundary_gap_mm": 0.008893260049457926,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.76,
+          "sample_count": 225,
+          "max_boundary_gap_mm": 0.006091969681491464,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.92,
+          "sample_count": 213,
+          "max_boundary_gap_mm": 0.00690638746228614,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.08,
+          "sample_count": 189,
+          "max_boundary_gap_mm": 0.009086477711808344,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.24,
+          "sample_count": 168,
+          "max_boundary_gap_mm": 0.011104513884001967,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.4,
+          "sample_count": 148,
+          "max_boundary_gap_mm": 0.007566836851608107,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.56,
+          "sample_count": 128,
+          "max_boundary_gap_mm": 0.0015810845346094626,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.72,
+          "sample_count": 106,
+          "max_boundary_gap_mm": 0.0005598612349867693,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.88,
+          "sample_count": 86,
+          "max_boundary_gap_mm": 0.0002764419705284271,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 12.04,
+          "sample_count": 66,
+          "max_boundary_gap_mm": 0.0002808550321027542,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 12.2,
+          "sample_count": 47,
+          "max_boundary_gap_mm": 0.001479277080941654,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 12.36,
+          "sample_count": 25,
+          "max_boundary_gap_mm": 0.0,
+          "retaining_width_range_mm": null
+        }
+      ]
+    },
+    {
+      "site": "body_192deg",
+      "checked_layers": 61,
+      "width_range_mm": [
+        0.519996,
+        1.06248
+      ],
+      "maximum_boundary_gap_mm": 0.05886788326066341,
+      "layers": [
+        {
+          "z_mm": 2.76,
+          "sample_count": 42,
+          "max_boundary_gap_mm": 0.0,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 2.92,
+          "sample_count": 155,
+          "max_boundary_gap_mm": 0.00040915351522199147,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 3.08,
+          "sample_count": 201,
+          "max_boundary_gap_mm": 0.0005982663153860659,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 3.24,
+          "sample_count": 243,
+          "max_boundary_gap_mm": 0.004954186737685941,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 3.4,
+          "sample_count": 289,
+          "max_boundary_gap_mm": 0.0028996174885661165,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 3.56,
+          "sample_count": 329,
+          "max_boundary_gap_mm": 0.003617900584844062,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 3.72,
+          "sample_count": 358,
+          "max_boundary_gap_mm": 0.003853754878849114,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 3.88,
+          "sample_count": 386,
+          "max_boundary_gap_mm": 0.002148730902101513,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 4.04,
+          "sample_count": 409,
+          "max_boundary_gap_mm": 0.0030114217281249325,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.699176
+          ]
+        },
+        {
+          "z_mm": 4.2,
+          "sample_count": 462,
+          "max_boundary_gap_mm": 0.014612263319968753,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.559246
+          ]
+        },
+        {
+          "z_mm": 4.36,
+          "sample_count": 444,
+          "max_boundary_gap_mm": 0.00534779904279289,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.556446
+          ]
+        },
+        {
+          "z_mm": 4.52,
+          "sample_count": 445,
+          "max_boundary_gap_mm": 0.007757719783449445,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.546396
+          ]
+        },
+        {
+          "z_mm": 4.68,
+          "sample_count": 460,
+          "max_boundary_gap_mm": 0.012468795280507365,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.546546
+          ]
+        },
+        {
+          "z_mm": 4.84,
+          "sample_count": 469,
+          "max_boundary_gap_mm": 0.017706244335527803,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06018
+          ]
+        },
+        {
+          "z_mm": 5.0,
+          "sample_count": 475,
+          "max_boundary_gap_mm": 0.017821579721858747,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06
+          ]
+        },
+        {
+          "z_mm": 5.16,
+          "sample_count": 477,
+          "max_boundary_gap_mm": 0.019875038445089227,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.05948
+          ]
+        },
+        {
+          "z_mm": 5.32,
+          "sample_count": 490,
+          "max_boundary_gap_mm": 0.01697089334193134,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06192
+          ]
+        },
+        {
+          "z_mm": 5.48,
+          "sample_count": 494,
+          "max_boundary_gap_mm": 0.017052131543843538,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06176
+          ]
+        },
+        {
+          "z_mm": 5.64,
+          "sample_count": 453,
+          "max_boundary_gap_mm": 0.016945268690711262,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06192
+          ]
+        },
+        {
+          "z_mm": 5.8,
+          "sample_count": 454,
+          "max_boundary_gap_mm": 0.018683723008984267,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06126
+          ]
+        },
+        {
+          "z_mm": 5.96,
+          "sample_count": 455,
+          "max_boundary_gap_mm": 0.01732314643159367,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06122
+          ]
+        },
+        {
+          "z_mm": 6.12,
+          "sample_count": 443,
+          "max_boundary_gap_mm": 0.01704554186124646,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06204
+          ]
+        },
+        {
+          "z_mm": 6.28,
+          "sample_count": 411,
+          "max_boundary_gap_mm": 0.016664358928060712,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06216
+          ]
+        },
+        {
+          "z_mm": 6.44,
+          "sample_count": 409,
+          "max_boundary_gap_mm": 0.016543526060065355,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06214
+          ]
+        },
+        {
+          "z_mm": 6.6,
+          "sample_count": 386,
+          "max_boundary_gap_mm": 0.01873913378589909,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.05974
+          ]
+        },
+        {
+          "z_mm": 6.76,
+          "sample_count": 393,
+          "max_boundary_gap_mm": 0.0185222641773843,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0593
+          ]
+        },
+        {
+          "z_mm": 6.92,
+          "sample_count": 379,
+          "max_boundary_gap_mm": 0.01762288324560449,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06126
+          ]
+        },
+        {
+          "z_mm": 7.08,
+          "sample_count": 357,
+          "max_boundary_gap_mm": 0.017495451604382012,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06156
+          ]
+        },
+        {
+          "z_mm": 7.24,
+          "sample_count": 357,
+          "max_boundary_gap_mm": 0.01726506372007937,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06178
+          ]
+        },
+        {
+          "z_mm": 7.4,
+          "sample_count": 357,
+          "max_boundary_gap_mm": 0.017417575363578443,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0615
+          ]
+        },
+        {
+          "z_mm": 7.56,
+          "sample_count": 358,
+          "max_boundary_gap_mm": 0.026161614148434972,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06126
+          ]
+        },
+        {
+          "z_mm": 7.72,
+          "sample_count": 358,
+          "max_boundary_gap_mm": 0.017879334104302383,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06102
+          ]
+        },
+        {
+          "z_mm": 7.88,
+          "sample_count": 357,
+          "max_boundary_gap_mm": 0.017857795900427697,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06062
+          ]
+        },
+        {
+          "z_mm": 8.04,
+          "sample_count": 357,
+          "max_boundary_gap_mm": 0.017099587228531266,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06248
+          ]
+        },
+        {
+          "z_mm": 8.2,
+          "sample_count": 356,
+          "max_boundary_gap_mm": 0.018390904210315556,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.05964
+          ]
+        },
+        {
+          "z_mm": 8.36,
+          "sample_count": 368,
+          "max_boundary_gap_mm": 0.025786030578665495,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.05912
+          ]
+        },
+        {
+          "z_mm": 8.52,
+          "sample_count": 378,
+          "max_boundary_gap_mm": 0.05886788326066341,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06226
+          ]
+        },
+        {
+          "z_mm": 8.68,
+          "sample_count": 376,
+          "max_boundary_gap_mm": 0.03704966290934587,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0612
+          ]
+        },
+        {
+          "z_mm": 8.84,
+          "sample_count": 377,
+          "max_boundary_gap_mm": 0.03197098881231997,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0623
+          ]
+        },
+        {
+          "z_mm": 9.0,
+          "sample_count": 375,
+          "max_boundary_gap_mm": 0.030350693752690026,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06164
+          ]
+        },
+        {
+          "z_mm": 9.16,
+          "sample_count": 376,
+          "max_boundary_gap_mm": 0.028733296048713428,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.32,
+          "sample_count": 376,
+          "max_boundary_gap_mm": 0.028449346304677207,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.48,
+          "sample_count": 378,
+          "max_boundary_gap_mm": 0.028933296429640848,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.64,
+          "sample_count": 376,
+          "max_boundary_gap_mm": 0.028916721706029564,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.8,
+          "sample_count": 294,
+          "max_boundary_gap_mm": 0.0177995713826549,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.96,
+          "sample_count": 284,
+          "max_boundary_gap_mm": 0.01849751977541399,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.12,
+          "sample_count": 272,
+          "max_boundary_gap_mm": 0.01737153654090412,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.28,
+          "sample_count": 260,
+          "max_boundary_gap_mm": 0.017284001957393692,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.44,
+          "sample_count": 248,
+          "max_boundary_gap_mm": 0.010786776995296603,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.6,
+          "sample_count": 236,
+          "max_boundary_gap_mm": 0.002045577050951897,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.76,
+          "sample_count": 224,
+          "max_boundary_gap_mm": 0.005676886401276426,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.92,
+          "sample_count": 214,
+          "max_boundary_gap_mm": 0.006134731727136554,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.08,
+          "sample_count": 192,
+          "max_boundary_gap_mm": 0.0037088638412623885,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.24,
+          "sample_count": 172,
+          "max_boundary_gap_mm": 0.0018110651597896313,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.4,
+          "sample_count": 151,
+          "max_boundary_gap_mm": 0.008643176770382137,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.56,
+          "sample_count": 131,
+          "max_boundary_gap_mm": 0.0004267059664754179,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.72,
+          "sample_count": 110,
+          "max_boundary_gap_mm": 0.0003068885423425139,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.88,
+          "sample_count": 90,
+          "max_boundary_gap_mm": 0.0,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 12.04,
+          "sample_count": 69,
+          "max_boundary_gap_mm": 0.000437465801674415,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 12.2,
+          "sample_count": 48,
+          "max_boundary_gap_mm": 0.0,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 12.36,
+          "sample_count": 29,
+          "max_boundary_gap_mm": 0.0,
+          "retaining_width_range_mm": null
+        }
+      ]
+    },
+    {
+      "site": "body_12deg",
+      "checked_layers": 61,
+      "width_range_mm": [
+        0.519996,
+        1.08746
+      ],
+      "maximum_boundary_gap_mm": 0.057753999602362556,
+      "layers": [
+        {
+          "z_mm": 2.76,
+          "sample_count": 64,
+          "max_boundary_gap_mm": 0.0,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 2.92,
+          "sample_count": 164,
+          "max_boundary_gap_mm": 0.00028135102838437964,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 3.08,
+          "sample_count": 207,
+          "max_boundary_gap_mm": 0.005621964863866495,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 3.24,
+          "sample_count": 247,
+          "max_boundary_gap_mm": 0.0028142574448450203,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 3.4,
+          "sample_count": 283,
+          "max_boundary_gap_mm": 0.004561587165227905,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 3.56,
+          "sample_count": 326,
+          "max_boundary_gap_mm": 0.00013293926811166177,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 3.72,
+          "sample_count": 353,
+          "max_boundary_gap_mm": 0.00042967190791486407,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 3.88,
+          "sample_count": 379,
+          "max_boundary_gap_mm": 0.0,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 4.04,
+          "sample_count": 414,
+          "max_boundary_gap_mm": 0.0018419825251439108,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.702016
+          ]
+        },
+        {
+          "z_mm": 4.2,
+          "sample_count": 459,
+          "max_boundary_gap_mm": 0.013412047081347375,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.594036
+          ]
+        },
+        {
+          "z_mm": 4.36,
+          "sample_count": 465,
+          "max_boundary_gap_mm": 0.020341195698798404,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.558416
+          ]
+        },
+        {
+          "z_mm": 4.52,
+          "sample_count": 462,
+          "max_boundary_gap_mm": 0.019414401217338093,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.560316
+          ]
+        },
+        {
+          "z_mm": 4.68,
+          "sample_count": 476,
+          "max_boundary_gap_mm": 0.01759138316060665,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.560316
+          ]
+        },
+        {
+          "z_mm": 4.84,
+          "sample_count": 479,
+          "max_boundary_gap_mm": 0.013179731211433473,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.559926
+          ]
+        },
+        {
+          "z_mm": 5.0,
+          "sample_count": 480,
+          "max_boundary_gap_mm": 0.020463207957568594,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08384
+          ]
+        },
+        {
+          "z_mm": 5.16,
+          "sample_count": 488,
+          "max_boundary_gap_mm": 0.017449532961461768,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08544
+          ]
+        },
+        {
+          "z_mm": 5.32,
+          "sample_count": 482,
+          "max_boundary_gap_mm": 0.017417267352382644,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0858
+          ]
+        },
+        {
+          "z_mm": 5.48,
+          "sample_count": 488,
+          "max_boundary_gap_mm": 0.01718150874332876,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0868
+          ]
+        },
+        {
+          "z_mm": 5.64,
+          "sample_count": 490,
+          "max_boundary_gap_mm": 0.021999590951231558,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08662
+          ]
+        },
+        {
+          "z_mm": 5.8,
+          "sample_count": 489,
+          "max_boundary_gap_mm": 0.025491464478828118,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08638
+          ]
+        },
+        {
+          "z_mm": 5.96,
+          "sample_count": 497,
+          "max_boundary_gap_mm": 0.01755421977427929,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08562
+          ]
+        },
+        {
+          "z_mm": 6.12,
+          "sample_count": 495,
+          "max_boundary_gap_mm": 0.016973465996301677,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08624
+          ]
+        },
+        {
+          "z_mm": 6.28,
+          "sample_count": 473,
+          "max_boundary_gap_mm": 0.017255128537946907,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08708
+          ]
+        },
+        {
+          "z_mm": 6.44,
+          "sample_count": 470,
+          "max_boundary_gap_mm": 0.018568943641891673,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08348
+          ]
+        },
+        {
+          "z_mm": 6.6,
+          "sample_count": 470,
+          "max_boundary_gap_mm": 0.018078916615682117,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08474
+          ]
+        },
+        {
+          "z_mm": 6.76,
+          "sample_count": 473,
+          "max_boundary_gap_mm": 0.017161172850395055,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0872
+          ]
+        },
+        {
+          "z_mm": 6.92,
+          "sample_count": 454,
+          "max_boundary_gap_mm": 0.018325849471388517,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0847
+          ]
+        },
+        {
+          "z_mm": 7.08,
+          "sample_count": 452,
+          "max_boundary_gap_mm": 0.020132083886944596,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08714
+          ]
+        },
+        {
+          "z_mm": 7.24,
+          "sample_count": 448,
+          "max_boundary_gap_mm": 0.016978100368597333,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08692
+          ]
+        },
+        {
+          "z_mm": 7.4,
+          "sample_count": 449,
+          "max_boundary_gap_mm": 0.025816003750099174,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08248
+          ]
+        },
+        {
+          "z_mm": 7.56,
+          "sample_count": 449,
+          "max_boundary_gap_mm": 0.017006547334002847,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08718
+          ]
+        },
+        {
+          "z_mm": 7.72,
+          "sample_count": 449,
+          "max_boundary_gap_mm": 0.01896081918679626,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08316
+          ]
+        },
+        {
+          "z_mm": 7.88,
+          "sample_count": 451,
+          "max_boundary_gap_mm": 0.018570727313237955,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08406
+          ]
+        },
+        {
+          "z_mm": 8.04,
+          "sample_count": 448,
+          "max_boundary_gap_mm": 0.017272846480425423,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0868
+          ]
+        },
+        {
+          "z_mm": 8.2,
+          "sample_count": 450,
+          "max_boundary_gap_mm": 0.017174355512396062,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08746
+          ]
+        },
+        {
+          "z_mm": 8.36,
+          "sample_count": 474,
+          "max_boundary_gap_mm": 0.027165918829545728,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0862
+          ]
+        },
+        {
+          "z_mm": 8.52,
+          "sample_count": 475,
+          "max_boundary_gap_mm": 0.057753999602362556,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08732
+          ]
+        },
+        {
+          "z_mm": 8.68,
+          "sample_count": 480,
+          "max_boundary_gap_mm": 0.03654811996736591,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08732
+          ]
+        },
+        {
+          "z_mm": 8.84,
+          "sample_count": 482,
+          "max_boundary_gap_mm": 0.03173456127205259,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08708
+          ]
+        },
+        {
+          "z_mm": 9.0,
+          "sample_count": 481,
+          "max_boundary_gap_mm": 0.03194503238377014,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.08652
+          ]
+        },
+        {
+          "z_mm": 9.16,
+          "sample_count": 486,
+          "max_boundary_gap_mm": 0.03149542149486276,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.32,
+          "sample_count": 492,
+          "max_boundary_gap_mm": 0.03172054422447011,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.48,
+          "sample_count": 498,
+          "max_boundary_gap_mm": 0.03199809867533901,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.64,
+          "sample_count": 502,
+          "max_boundary_gap_mm": 0.03192761933525332,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.8,
+          "sample_count": 294,
+          "max_boundary_gap_mm": 0.01756644953634823,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.96,
+          "sample_count": 281,
+          "max_boundary_gap_mm": 0.017699842240314637,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.12,
+          "sample_count": 269,
+          "max_boundary_gap_mm": 0.01754712487278196,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.28,
+          "sample_count": 257,
+          "max_boundary_gap_mm": 0.016896155703979038,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.44,
+          "sample_count": 247,
+          "max_boundary_gap_mm": 0.019272848680725874,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.6,
+          "sample_count": 235,
+          "max_boundary_gap_mm": 0.005395462174061624,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.76,
+          "sample_count": 223,
+          "max_boundary_gap_mm": 0.010399024075924612,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.92,
+          "sample_count": 213,
+          "max_boundary_gap_mm": 0.004771084243737705,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.08,
+          "sample_count": 190,
+          "max_boundary_gap_mm": 0.004966315233165995,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.24,
+          "sample_count": 170,
+          "max_boundary_gap_mm": 0.005808665611254565,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.4,
+          "sample_count": 148,
+          "max_boundary_gap_mm": 0.010756237167183375,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.56,
+          "sample_count": 128,
+          "max_boundary_gap_mm": 0.003858026051278199,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.72,
+          "sample_count": 108,
+          "max_boundary_gap_mm": 0.0001935795435504421,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.88,
+          "sample_count": 87,
+          "max_boundary_gap_mm": 0.0037647005910520343,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 12.04,
+          "sample_count": 68,
+          "max_boundary_gap_mm": 0.0002777022649453958,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 12.2,
+          "sample_count": 47,
+          "max_boundary_gap_mm": 0.00032708365757428787,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 12.36,
+          "sample_count": 26,
+          "max_boundary_gap_mm": 0.0,
+          "retaining_width_range_mm": null
+        }
+      ]
+    },
+    {
+      "site": "body_-12deg",
+      "checked_layers": 61,
+      "width_range_mm": [
+        0.519546,
+        1.06206
+      ],
+      "maximum_boundary_gap_mm": 0.058921860464644864,
+      "layers": [
+        {
+          "z_mm": 2.76,
+          "sample_count": 47,
+          "max_boundary_gap_mm": 0.0,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 2.92,
+          "sample_count": 160,
+          "max_boundary_gap_mm": 0.00032390624585821795,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 3.08,
+          "sample_count": 197,
+          "max_boundary_gap_mm": 0.002004571265312744,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 3.24,
+          "sample_count": 245,
+          "max_boundary_gap_mm": 3.362719323805787e-05,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 3.4,
+          "sample_count": 283,
+          "max_boundary_gap_mm": 0.00233966137467857,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 3.56,
+          "sample_count": 325,
+          "max_boundary_gap_mm": 0.0004885788557868985,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 3.72,
+          "sample_count": 354,
+          "max_boundary_gap_mm": 0.0004316843132151408,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 3.88,
+          "sample_count": 380,
+          "max_boundary_gap_mm": 0.00043786185714453233,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.519996
+          ]
+        },
+        {
+          "z_mm": 4.04,
+          "sample_count": 411,
+          "max_boundary_gap_mm": 0.0018976805924285358,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.698956
+          ]
+        },
+        {
+          "z_mm": 4.2,
+          "sample_count": 470,
+          "max_boundary_gap_mm": 0.011955562246143947,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.559346
+          ]
+        },
+        {
+          "z_mm": 4.36,
+          "sample_count": 461,
+          "max_boundary_gap_mm": 0.008084910517987851,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.549226
+          ]
+        },
+        {
+          "z_mm": 4.52,
+          "sample_count": 466,
+          "max_boundary_gap_mm": 0.0067268017808371095,
+          "retaining_width_range_mm": [
+            0.519996,
+            0.547216
+          ]
+        },
+        {
+          "z_mm": 4.68,
+          "sample_count": 474,
+          "max_boundary_gap_mm": 0.01995131475108718,
+          "retaining_width_range_mm": [
+            0.519546,
+            0.547646
+          ]
+        },
+        {
+          "z_mm": 4.84,
+          "sample_count": 479,
+          "max_boundary_gap_mm": 0.017228052284248233,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06116
+          ]
+        },
+        {
+          "z_mm": 5.0,
+          "sample_count": 488,
+          "max_boundary_gap_mm": 0.016824276205228014,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0612
+          ]
+        },
+        {
+          "z_mm": 5.16,
+          "sample_count": 483,
+          "max_boundary_gap_mm": 0.018397002546252355,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.05924
+          ]
+        },
+        {
+          "z_mm": 5.32,
+          "sample_count": 466,
+          "max_boundary_gap_mm": 0.017137877665439106,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06088
+          ]
+        },
+        {
+          "z_mm": 5.48,
+          "sample_count": 466,
+          "max_boundary_gap_mm": 0.017284717950495642,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06122
+          ]
+        },
+        {
+          "z_mm": 5.64,
+          "sample_count": 456,
+          "max_boundary_gap_mm": 0.01680238272415395,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06138
+          ]
+        },
+        {
+          "z_mm": 5.8,
+          "sample_count": 449,
+          "max_boundary_gap_mm": 0.017371808019168454,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06114
+          ]
+        },
+        {
+          "z_mm": 5.96,
+          "sample_count": 447,
+          "max_boundary_gap_mm": 0.017348203132522333,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06074
+          ]
+        },
+        {
+          "z_mm": 6.12,
+          "sample_count": 442,
+          "max_boundary_gap_mm": 0.017068521092080076,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06148
+          ]
+        },
+        {
+          "z_mm": 6.28,
+          "sample_count": 406,
+          "max_boundary_gap_mm": 0.01743864771745421,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06154
+          ]
+        },
+        {
+          "z_mm": 6.44,
+          "sample_count": 398,
+          "max_boundary_gap_mm": 0.017680391290471612,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06098
+          ]
+        },
+        {
+          "z_mm": 6.6,
+          "sample_count": 387,
+          "max_boundary_gap_mm": 0.018276435218876657,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.05922
+          ]
+        },
+        {
+          "z_mm": 6.76,
+          "sample_count": 389,
+          "max_boundary_gap_mm": 0.018809632839465493,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.05884
+          ]
+        },
+        {
+          "z_mm": 6.92,
+          "sample_count": 389,
+          "max_boundary_gap_mm": 0.01894360672667013,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.05836
+          ]
+        },
+        {
+          "z_mm": 7.08,
+          "sample_count": 357,
+          "max_boundary_gap_mm": 0.01762359335062992,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06072
+          ]
+        },
+        {
+          "z_mm": 7.24,
+          "sample_count": 358,
+          "max_boundary_gap_mm": 0.016951103363174215,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06132
+          ]
+        },
+        {
+          "z_mm": 7.4,
+          "sample_count": 356,
+          "max_boundary_gap_mm": 0.016961091504046018,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06154
+          ]
+        },
+        {
+          "z_mm": 7.56,
+          "sample_count": 359,
+          "max_boundary_gap_mm": 0.017361317244612807,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06152
+          ]
+        },
+        {
+          "z_mm": 7.72,
+          "sample_count": 357,
+          "max_boundary_gap_mm": 0.017430576777720627,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06144
+          ]
+        },
+        {
+          "z_mm": 7.88,
+          "sample_count": 357,
+          "max_boundary_gap_mm": 0.017030139356397078,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06128
+          ]
+        },
+        {
+          "z_mm": 8.04,
+          "sample_count": 357,
+          "max_boundary_gap_mm": 0.017077305785173594,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06206
+          ]
+        },
+        {
+          "z_mm": 8.2,
+          "sample_count": 355,
+          "max_boundary_gap_mm": 0.01723537110196024,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06196
+          ]
+        },
+        {
+          "z_mm": 8.36,
+          "sample_count": 368,
+          "max_boundary_gap_mm": 0.024654909301546585,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06182
+          ]
+        },
+        {
+          "z_mm": 8.52,
+          "sample_count": 381,
+          "max_boundary_gap_mm": 0.058921860464644864,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06128
+          ]
+        },
+        {
+          "z_mm": 8.68,
+          "sample_count": 379,
+          "max_boundary_gap_mm": 0.03644178687924475,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.0575
+          ]
+        },
+        {
+          "z_mm": 8.84,
+          "sample_count": 381,
+          "max_boundary_gap_mm": 0.03168078049210899,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.05976
+          ]
+        },
+        {
+          "z_mm": 9.0,
+          "sample_count": 380,
+          "max_boundary_gap_mm": 0.030711349386916727,
+          "retaining_width_range_mm": [
+            0.519996,
+            1.06166
+          ]
+        },
+        {
+          "z_mm": 9.16,
+          "sample_count": 380,
+          "max_boundary_gap_mm": 0.03123220820301497,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.32,
+          "sample_count": 381,
+          "max_boundary_gap_mm": 0.03136036478981513,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.48,
+          "sample_count": 382,
+          "max_boundary_gap_mm": 0.03161045201019784,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.64,
+          "sample_count": 380,
+          "max_boundary_gap_mm": 0.03155685868212161,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.8,
+          "sample_count": 294,
+          "max_boundary_gap_mm": 0.01893833574216563,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 9.96,
+          "sample_count": 284,
+          "max_boundary_gap_mm": 0.018275900725277794,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.12,
+          "sample_count": 272,
+          "max_boundary_gap_mm": 0.017535694491797395,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.28,
+          "sample_count": 259,
+          "max_boundary_gap_mm": 0.017216188421512697,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.44,
+          "sample_count": 247,
+          "max_boundary_gap_mm": 0.017995390119284006,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.6,
+          "sample_count": 236,
+          "max_boundary_gap_mm": 0.0012152222245020744,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.76,
+          "sample_count": 224,
+          "max_boundary_gap_mm": 0.005105932935572414,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 10.92,
+          "sample_count": 214,
+          "max_boundary_gap_mm": 0.00760567937139941,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.08,
+          "sample_count": 192,
+          "max_boundary_gap_mm": 0.005360213912168617,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.24,
+          "sample_count": 171,
+          "max_boundary_gap_mm": 0.0004919843416239627,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.4,
+          "sample_count": 151,
+          "max_boundary_gap_mm": 0.0008467101049907657,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.56,
+          "sample_count": 130,
+          "max_boundary_gap_mm": 0.0007903466673826022,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.72,
+          "sample_count": 110,
+          "max_boundary_gap_mm": 0.0003899838019924701,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 11.88,
+          "sample_count": 90,
+          "max_boundary_gap_mm": 0.0001969074717284373,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 12.04,
+          "sample_count": 69,
+          "max_boundary_gap_mm": 0.0004091096851003685,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 12.2,
+          "sample_count": 47,
+          "max_boundary_gap_mm": 0.0,
+          "retaining_width_range_mm": null
+        },
+        {
+          "z_mm": 12.36,
+          "sample_count": 28,
+          "max_boundary_gap_mm": 0.0,
+          "retaining_width_range_mm": null
+        }
+      ]
+    }
+  ]
+}

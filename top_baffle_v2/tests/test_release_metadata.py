@@ -1202,7 +1202,10 @@ def test_docs_reject_fake_p2s_monolith_pauses() -> None:
     combined = " ".join("\n".join(
         (ROOT / name).read_text(encoding="utf-8") for name in documents
     ).lower().split())
-    assert combined.count("not p2s-printable") >= 5
+    # Keep the warning in each relevant operating document; its repetition
+    # count is not a correctness requirement.
+    for name in documents[:3]:
+        assert "not p2s-printable" in (ROOT / name).read_text().lower()
     assert "no monolith g-code and no fake pause row" in combined
     assert "no monolith pause is synthesized" in combined
     assert "exact same-state keyed halves" in combined

@@ -1,0 +1,11 @@
+{
+  "viewer_url": "http://127.0.0.1:3246/?file=nd25fn4_crescent%2Fviews%2FLM_interface_detail.glb",
+  "catalog_file": "/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/views/LM_interface_detail.glb",
+  "asset_http_status": 200,
+  "served_sha256": "d706249987713bd2903671bdd090368e1208dab15d5be9b5764c8cb60d63c5dc",
+  "bytes": 27247948,
+  "viewer_file_parameter": "nd25fn4_crescent/views/LM_interface_detail.glb",
+  "browser_verified": true,
+  "browser_result": "Model loaded; no missing-file banner or JavaScript errors",
+  "browser_screenshot": "review/nd25fn4_print/LM_interface_detail_viewer.png"
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "part": "nd25fn4_v4_fused_um_shared",
+  "stl": "01_UM_Crescent_V4_PRINT.stl",
+  "stl_sha256": "65daa12ffca09dadaa9230aa4f9ef546e39e444e492bd964d5767227c9e0ff68",
+  "source_frame": "Obi-Wan installed, X lateral / Y up / Z forward, mm",
+  "source_to_stl_matrix": [
+    [
+      0.7071067811865476,
+      0.7071067811865475,
+      0.0,
+      -190.10355828014332
+    ],
+    [
+      0.7071067811865475,
+      -0.7071067811865476,
+      0.0,
+      418.7905105824157
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      20.67987861633301
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "print_orientation": "front_face_down_45_degree_diagonal",
+  "compatible_LM_configurations": [
+    "no_floor_stand",
+    "floor_stand"
+  ],
+  "replaces": "UM carrier plus separate V4 housing, with either LM configuration",
+  "qualification": "sliced static checks passed; physical print not performed",
+  "approved_source": "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl",
+  "approved_source_sha256": "1fa22e1d9f7c9fa8d5117e1ad7b85928a4b38f1984926cb8a0002c8b8655d6d3",
+  "print_preparation": "internal tilted-magnet loading relief; exterior, seats and interfaces retained",
+  "sliced_project": "candidates/nd25fn4_crescent/print/01_UM_Crescent_V4_06HF_PETG_GF_PLA.gcode.3mf",
+  "sliced_project_sha256": "d67a033c69b7b63504a65cabb980331c967e3e44fed443c54a37be0a9d97de62"
+}

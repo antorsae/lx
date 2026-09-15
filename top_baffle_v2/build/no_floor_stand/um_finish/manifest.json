@@ -1,0 +1,45 @@
+{
+  "state": "no_floor_stand",
+  "scope": "standalone_UM_only",
+  "qualification": "geometry_exported_unsliced",
+  "source_sha256": {
+    "scripts/rebuild_obiwan_um.py": "9e8759b29ae9f709dc98570e471be85adf56cf736f85156e2d7e9a2d905bbe12",
+    "src/lx521_baffle/obiwan/carriers.py": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+    "src/lx521_baffle/obiwan/bumps.py": "6086f2058b83912eca3adc5901aacf353d4f1a0778e430999915746e289df9c6",
+    "src/lx521_baffle/obiwan/route.py": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f"
+  },
+  "native_source_brep": "review/nd25fn4_iterations/um_finish_development/no_floor_stand/core_um_carrier.brep",
+  "native_source_sha256": "232dfebdbce55d5b027b4191aebd060d85c6416feb66511315681ef4b59a27ee",
+  "files": {
+    "obiwan_core_2_of_2_um_carrier.brep": "bf64e300a62c4489173b10592090cf5c5ec767f82a964341ef2b7d44f20941ae",
+    "obiwan_core_2_of_2_um_carrier.step": "d94ec890e7ea78d54493f2b2019de5173db6912e05136b987e6d676894fc701e",
+    "obiwan_core_2_of_2_um_carrier.stl": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
+    "obiwan_core_2_of_2_um_carrier.print.json": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23"
+  },
+  "volume_mm3": 30476.99178793915,
+  "mesh": {
+    "triangles": 27420,
+    "open": 0,
+    "over_shared": 0,
+    "winding": 0,
+    "degenerate": 0,
+    "duplicates": 0,
+    "nonfinite": 0,
+    "signed_volume": 30477.10280854752,
+    "zero_volume": 0,
+    "negative_volume": 0,
+    "components": 3,
+    "outer_components": 1,
+    "nested_void_components": 2,
+    "nonnested_void_components": 0,
+    "zero_volume_components": 0,
+    "disconnected_material_components": 0,
+    "component_signed_volumes": [
+      30606.868919088334,
+      -64.8830399104218,
+      -64.88307063043703
+    ],
+    "component_error": 0,
+    "collapsed_apex_facets_removed": 0
+  }
+}

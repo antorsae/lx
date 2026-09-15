@@ -1,0 +1,15 @@
+{
+  "before": {
+    "minimum_radius_mm": 0.08912421348901445,
+    "maximum_fit_departure_mm": 1.757136652516266,
+    "maximum_tangent_change_per_0_4mm_deg": 78.2998785647809
+  },
+  "after": {
+    "minimum_radius_mm": 3.5356106290529787,
+    "maximum_fit_departure_mm": 0.016702911655563923,
+    "maximum_tangent_change_per_0_4mm_deg": 6.998035349071595
+  },
+  "former_insert_support_intrusion": "('Support enters insert bore', 'UM_M3_1', 6.6, -1.326385710599236)",
+  "method": "Identical exported-STL cross-sections and 1.5 mm curvature fits; old slice checked with the newly enumerated bore registry.",
+  "surface_boundary_convention": "Interior support tested at the actual layer midplane; sub-half-layer PLA interface contact at the service-floor boundary is logged separately."
+}

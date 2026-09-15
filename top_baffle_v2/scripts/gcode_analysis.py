@@ -682,7 +682,10 @@ def _validate_actual_gcode_profile(
             interface_items = (
                 list(raw_interface) if isinstance(raw_interface, list)
                 else [raw_interface])
-            expected_items = [expected_items[0], interface_items[0]]
+            from lx521_baffle.print_policy import selected_filament_value
+            variant = parsed.config.get('nozzle_volume_type', 'Standard')
+            expected_items = [selected_filament_value(expected_items, variant),
+                              selected_filament_value(interface_items, variant)]
         actual_items = raw_actual.split(",")
         try:
             expected_vector = [

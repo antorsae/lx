@@ -55,7 +55,8 @@ DEFAULT_PROFILE = ROOT / "captive_magnet_slicing_profile.json"
 # curvature and the bonded labyrinth seam, not by fill.  Pinned here
 # rather than left to each profile so no lane can quietly ship a wing
 # at a different density from its plate.
-WING_SPARSE_INFILL_PERCENT = 10.0
+from lx521_baffle.print_policy import role_settings, validate_object_infill
+WING_SPARSE_INFILL_PERCENT = float(role_settings('regular_wing')['sparse_infill_density'].rstrip('%'))
 DEFAULT_RELEASE_CATALOG = ROOT / "review" / "captive_magnet_release_catalog.json"
 DEFAULT_RELEASE_AUDIT = ROOT / "review" / "captive_magnet_slice_audit"
 PAUSE_Z_MM = 5.96
@@ -893,7 +894,7 @@ def _write_assemble_list(path: Path, staged_stl: Path) -> None:
                 "assemble_index": 1,
                 "print_params": {
                     **{key: "0" for key in SUPPORT_KEYS},
-                    "sparse_infill_density": "30%",
+                    "sparse_infill_density": f"{WING_SPARSE_INFILL_PERCENT:g}%",
                     "sparse_infill_pattern": "gyroid",
                 },
             }],
@@ -1044,6 +1045,14 @@ def validate_ready_plate(
         raise WingPlateError(
             f"wing ready-project archive audit failed: {exc}") from exc
     overrides = archive.get("object_support_overrides", ())
+    import xml.etree.ElementTree as ET
+    import zipfile
+    with zipfile.ZipFile(project) as z:
+        process = json.loads(z.read('Metadata/project_settings.config'))
+        config = ET.fromstring(z.read('Metadata/model_settings.config'))
+    objects = [{m.get('key'): m.get('value') for m in obj.findall('metadata')}
+               for obj in config.findall('object')]
+    validate_object_infill(process, objects, 'regular_wing')
     if len(overrides) != 1 or any(
             str(overrides[0].get(key)) != "0" for key in SUPPORT_KEYS):
         raise WingPlateError(

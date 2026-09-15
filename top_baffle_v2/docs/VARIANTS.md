@@ -377,11 +377,11 @@ identity, coupon evidence, structural proof and signed authorization in
 
 * W22: 6x M5 x 5.8 x O6.3 heat-sets (unchanged 6.8 mm total bore:
   O6.5 x 2.0 entry, then O6.4).
-* 10F/MU10: 4x M3 x 3 x O5 heat-sets (bore O4.6 x 4.0), pattern clocked
+* 10F/MU10: 4x M3 thread × Ø5 × L4 heat-sets (bore O4.6 x 4.0), pattern clocked
   to 58/148/238/328 degrees. For Obi-Wan, select the equivalent driver
   rotation that puts the terminal carrier at the 283-degree witness.
 * Obi-Wan LM-to-UM collar structural joint: 2x rear-driven M3 screws pass through
-  the LM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts in the
+  the LM's standalone Ø3.4 clearance bores into M3 thread × Ø5 × L4 heat-set inserts in the
   UM's standalone rear-opening blind Ø4.6 x 4.0 receivers. Each receiver
   sits inside a complete local Ø9.8 cylindrical functional boss; the
   closure-web/base teardrop remains nominal Ø9. Each receiver retains a 1.9 mm

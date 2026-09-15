@@ -1,0 +1,34 @@
+{
+  "glb_sha256": "aa3daa495c500d93ce29fb97413bf732b73ba5a580ed13e76673a1171240153d",
+  "source_build_manifest_sha256": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f",
+  "source_review_sha256": "d69a0666b0ca09ef32eeb4fa50894ca4f5485d22d89285441947bda55b885a1d",
+  "units": "metres",
+  "up": "+Y",
+  "scene_parts": [
+    "fused_UM_V4",
+    "cap_lower",
+    "cap_upper",
+    "retainer_lower",
+    "retainer_upper",
+    "Dayton_ND25FN4_0_reference",
+    "Dayton_ND25FN4_1_reference",
+    "SEAS_MU10_reference_terminals_omitted",
+    "existing_LM_carrier"
+  ],
+  "LM_reference": {
+    "source_stl": "build/no_floor_stand/stl/obiwan_core_1_of_2_lm_carrier.stl",
+    "stl_sha256": "16d0b4d604a660cfad61011077b3b496a86b5211cc550d8b2db15c50284e5f87",
+    "print_authority_sha256": "e0ea9c142eaba9512c143c9fad956054151a3361fc593b2683ba017c3e55d7ef"
+  },
+  "note": "Blue is one fused UM + V4 body with separate service caps/retainers. Orange drivers are references. Grey LM is separate. Review-only decimation.",
+  "wing_scenes": {
+    "flat": {
+      "path": "nd25fn4_flat_wings.glb",
+      "sha256": "ce28d4529d11f97a363809da937d10d005a4e71f5fb48ff09673900a584b4abe"
+    },
+    "graded": {
+      "path": "nd25fn4_graded_wings.glb",
+      "sha256": "1d2ea080e14178b55b5497604eaa677fc4bdd5f0a88794226650eecda03c4c6b"
+    }
+  }
+}

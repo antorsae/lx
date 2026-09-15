@@ -1,0 +1,191 @@
+{
+  "projects": [
+    {
+      "key": "V4_flat_left_UPPER",
+      "path": "candidates/nd25fn4_crescent/print/V4_flat_left_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "ee862d9e681464b488395cdf4f8d1b5d0af47e4b06c604ba64b1544151c7c7ee",
+      "audit": "review/nd25fn4_print/V4_flat_left_UPPER/audit.json",
+      "audit_sha256": "6baaf69d6f4a83b6ebab9b5092360715eaa9a3e4ec17dd472e4420b5442d055b",
+      "static_audit": "review/nd25fn4_print/V4_flat_left_UPPER/gcode_static.json",
+      "static_audit_sha256": "39d2237b4d8af2c427397dd6e19904b23688b0c6f4a8884d47614ce4b4877c0f",
+      "seconds": 8645.2890625,
+      "filaments": [
+        {
+          "filament_id": "GFG98",
+          "id": 1,
+          "main_used_g": 47.62876510620117,
+          "total_used_g": 56.4349250793457
+        },
+        {
+          "filament_id": "GFA00",
+          "id": 2,
+          "main_used_g": 0.014469742774963379,
+          "total_used_g": 3.2435052394866943
+        }
+      ],
+      "pauses_mm": [
+        5.96,
+        9.8
+      ]
+    },
+    {
+      "key": "V4_flat_right_UPPER",
+      "path": "candidates/nd25fn4_crescent/print/V4_flat_right_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "e5b63d3b7870f1a54c72687506bb188f33465d623049eec4d41f04e23dea0c4e",
+      "audit": "review/nd25fn4_print/V4_flat_right_UPPER/audit.json",
+      "audit_sha256": "2a58a3e5af5254a5301bda15977c043b6027722398829b04fb823d0957338749",
+      "static_audit": "review/nd25fn4_print/V4_flat_right_UPPER/gcode_static.json",
+      "static_audit_sha256": "fac09948e5e87cd1e8d76609a76ca4c67bc77efb3b1a97af97a44e16831299d3",
+      "seconds": 8890.3017578125,
+      "filaments": [
+        {
+          "filament_id": "GFG98",
+          "id": 1,
+          "main_used_g": 47.73780822753906,
+          "total_used_g": 56.912776947021484
+        },
+        {
+          "filament_id": "GFA00",
+          "id": 2,
+          "main_used_g": 0.014531688764691353,
+          "total_used_g": 3.663431406021118
+        }
+      ],
+      "pauses_mm": [
+        5.96,
+        9.8
+      ]
+    },
+    {
+      "key": "V4_graded_left_UPPER",
+      "path": "candidates/nd25fn4_crescent/print/V4_graded_left_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "c5d1b69e305fe6c8d2b47a32a42dd0ccb551d142d0fe8338340eb17707cc86f5",
+      "audit": "review/nd25fn4_print/V4_graded_left_UPPER/audit.json",
+      "audit_sha256": "868740e2331014f6289380242f4fa5682aba901eaadeb51b30e0859b473b25a4",
+      "static_audit": "review/nd25fn4_print/V4_graded_left_UPPER/gcode_static.json",
+      "static_audit_sha256": "790090b9e2f0320b3a60120a2836293516e357c60a233d5869864c86658f3838",
+      "seconds": 8144.06396484375,
+      "filaments": [
+        {
+          "filament_id": "GFG98",
+          "id": 1,
+          "main_used_g": 41.0025520324707,
+          "total_used_g": 50.17752456665039
+        },
+        {
+          "filament_id": "GFA00",
+          "id": 2,
+          "main_used_g": 0.014097366482019424,
+          "total_used_g": 3.662997245788574
+        }
+      ],
+      "pauses_mm": [
+        5.96,
+        9.8
+      ]
+    },
+    {
+      "key": "V4_graded_right_UPPER",
+      "path": "candidates/nd25fn4_crescent/print/V4_graded_right_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "c19421a28912cd08f8abc1416dacf4661318ce65e122e8e92d658976e2043593",
+      "audit": "review/nd25fn4_print/V4_graded_right_UPPER/audit.json",
+      "audit_sha256": "bc1fcc57ca5198e55c86e74ec01e650edca8df1838da3c717da63ac7da05b2a5",
+      "static_audit": "review/nd25fn4_print/V4_graded_right_UPPER/gcode_static.json",
+      "static_audit_sha256": "29de1666aaaabf5f4864737faa817f604679fe9ac1f83a7b5dc2932d045559df",
+      "seconds": 8171.65869140625,
+      "filaments": [
+        {
+          "filament_id": "GFG98",
+          "id": 1,
+          "main_used_g": 40.98395538330078,
+          "total_used_g": 50.21543502807617
+        },
+        {
+          "filament_id": "GFA00",
+          "id": 2,
+          "main_used_g": 0.014604001305997372,
+          "total_used_g": 3.6676156520843506
+        }
+      ],
+      "pauses_mm": [
+        5.96,
+        9.8
+      ]
+    },
+    {
+      "key": "body",
+      "path": "candidates/nd25fn4_crescent/print/01_UM_Crescent_V4_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "2a4ff2be35af58110327252865c9166a139d83bde2023ac481357ccf15bd20fb",
+      "audit": "review/nd25fn4_print/body/audit.json",
+      "audit_sha256": "8beca4e7268fa9d50650aa14be02d1e65b3b2420798eff95e8a9afecfcf1d01b",
+      "static_audit": "review/nd25fn4_print/body/gcode_static.json",
+      "static_audit_sha256": "f5d89c2469ed871ad6253fe422416e09e3c79b526860c67cc25518dd72211a56",
+      "seconds": 44893.78125,
+      "filaments": [
+        {
+          "filament_id": "GFG98",
+          "id": 1,
+          "main_used_g": 279.8580017089844,
+          "total_used_g": 303.42657470703125
+        },
+        {
+          "filament_id": "GFA00",
+          "id": 2,
+          "main_used_g": 8.638616561889648,
+          "total_used_g": 22.761882781982422
+        }
+      ],
+      "pauses_mm": [
+        9.8
+      ]
+    },
+    {
+      "key": "accessories",
+      "path": "candidates/nd25fn4_crescent/print/02_Caps_TWO_Retainers_TWO_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "a268fea42e9042f0e56dbaeb6380e17bc4cc6fb162f00b394b52db71c6a3608f",
+      "audit": "review/nd25fn4_print/accessories/audit.json",
+      "audit_sha256": "64d4c4cbba37750af7411bdfb6cb73dce9f0309ffa4ae1ecbd9b3baed2868a5a",
+      "static_audit": "review/nd25fn4_print/accessories/gcode_static.json",
+      "static_audit_sha256": "c470432315dbd37d050f15f8bb17444397a0750748fcbbcdbf6edb0a7b1994f0",
+      "seconds": 8203.9697265625,
+      "filaments": [
+        {
+          "filament_id": "GFG98",
+          "id": 1,
+          "main_used_g": 47.2392463684082,
+          "total_used_g": 51.45606994628906
+        },
+        {
+          "filament_id": "GFA00",
+          "id": 2,
+          "main_used_g": 1.7267769575119019,
+          "total_used_g": 2.5970206260681152
+        }
+      ],
+      "pauses_mm": []
+    }
+  ],
+  "status": "sliced_static_checks_passed",
+  "physical_print_test": "not performed",
+  "printer": "Bambu Lab P2S",
+  "nozzle": "0.6 mm High Flow hardened steel",
+  "preparation": "review/nd25fn4_print/preparation.json",
+  "source_scripts": {
+    "candidates/nd25fn4_crescent/prepare_print.py": "c0239aa0a33502c11881d2bc89f3c6784a0776497f658a41f85ed81238ff4c79",
+    "candidates/nd25fn4_crescent/prepare_magnet_loading.py": "8c58f8b9345316d873c87d659ca2e26a99ef21cc8cf19d42feec185e4422e938",
+    "candidates/nd25fn4_crescent/print_magnets.py": "82e95a7e1c6d198b4d04b0af89f8d039772674f6e825d9d70884a938b834991b",
+    "candidates/nd25fn4_crescent/slice_print.py": "3229f01690e94b78f0a7766c2e603448614409a4e522ff3b9736f7cb7971f6fc",
+    "candidates/nd25fn4_crescent/audit_print.py": "ef0c18a34fe13c5516f96d04a2fba7a43ac87bdbb0f4521944ae1f6b2c4900e0",
+    "candidates/nd25fn4_crescent/finalize_print.py": "cc00068e590b8fe1c3fb7a0481b5dc7c4b491096e2adda589b5fd049512f2846",
+    "candidates/nd25fn4_crescent/print_views.py": "95f413ca80abdaa6c3e8e1d6b358276c12057812cf9f3552c29443ca29d7334d",
+    "candidates/nd25fn4_crescent/verify_print.py": "e7f9521db8075ec169e7bc9ef94015d93ed777f1a4f3a462a889c0d3f3680293",
+    "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
+    "scripts/audit_gui_slice.py": "32bcf1c6dfdba3bab1edbdfc992b8487abd5ae4bfb14650272fdc3715f38baee",
+    "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "scripts/captive_wall_audit.py": "63cc6e37eef05433837f7caef03c476729443c6d849e0a3ba3cdd6757f4cf524",
+    "src/lx521_baffle/print_policy.py": "2332b08d4fde67b06bd899cc7ec8d6547d9dc0cfe69b36642dce8a4c37dfd7db",
+    "print_policy.json": "09dcf26616da63f16ae2be88398aa8c9417cfc3e4041ac0faeeaee82bb85874e"
+  },
+  "slicer": "Bambu Studio 02.07.01.62",
+  "preparation_sha256": "bc17a56b722a31c5419c4de6a7030c085ea6a21f418ca0498bef2d3502655324"
+}

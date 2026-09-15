@@ -1,0 +1,16 @@
+{
+  "source_sha256": "6125ee2c000f75e6f18e12f81839d2bc7e98878fe60565e45960c95646b1fe39",
+  "source_build_manifest_sha256": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f",
+  "inputs": {
+    "review/nd25fn4_print/pre_waist_and_insert_fix/STL/01_UM_Crescent_V4.stl": "1fa22e1d9f7c9fa8d5117e1ad7b85928a4b38f1984926cb8a0002c8b8655d6d3",
+    "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6"
+  },
+  "images": {
+    "waist_rear_before.png": "19a49dacb92187c8aecb819cede1b7ca975687d006309b3487272b59350c6ff8",
+    "waist_front_before.png": "9b18376dd86480b40b936d5aa0ff28e0fdaa2e438f4a11de1d774ac8d793b03b",
+    "waist_rear_after.png": "99cda9df34af599cf93c3a79d05032fc53f912bcc81df8e7f607d1ee5931cd42",
+    "waist_front_after.png": "824381b6c17c688a684d953280f83646e97285ce0f8d39d2544a5cd8fdef54ec",
+    "waist_comparison.png": "6dffe87c94538a18b4c18481859c21525958e787ba47b6a343564200874550c5"
+  },
+  "note": "Actual full-resolution STL surfaces, identical orthographic cameras and flat surface lighting; no geometry retouching."
+}

@@ -140,12 +140,9 @@ SOURCE_EXCLUDED_SUFFIXES = {
 #                          `obiwan_release_manifest.json` name and remain
 #                          snapshot sources.
 SOURCE_EXCLUDED_NAMES = {"result.json", "release_manifest.json"}
-REFERENCE_INPUTS = (
-    REPO_ROOT / "E0022_W22EX001.stp",
-    REPO_ROOT / "linkwitz" / "H1658-04_MU10RB-SL_driver.stl",
-    REPO_ROOT / "linkwitz" / "H1658-04_MU10RB-SL_driver_STL_notes.md",
-    REPO_ROOT / "linkwitz" / "H1658-04_MU10RB-SL_Datasheet.pdf",
-)
+from lx521_baffle.references import geometry_reference_paths
+
+REFERENCE_INPUTS = geometry_reference_paths()
 JOB_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$")
 HOST_RE = re.compile(r"^(?:[A-Za-z0-9_.-]+@)?[A-Za-z0-9_.-]+$")
 TARGET_RE = re.compile(r"^[A-Za-z0-9_./:+%-]+$")

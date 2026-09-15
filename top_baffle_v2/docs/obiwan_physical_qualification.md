@@ -1,5 +1,11 @@
 # Obi-Wan physical qualification record
 
+Current process: **TINMORRY PETG-GF, 0.6 mm high flow; PLA interfaces where support is enabled.**
+
+Follow [PETG_GF_QUALIFICATION.md](PETG_GF_QUALIFICATION.md) and record results in
+`qualification/results_template.csv`. Earlier PLA analytical screens are not
+qualification of this material/process.
+
 Overall status: **PENDING — NOT PHYSICALLY QUALIFIED**
 
 Floor-stand status: **PENDING — RELEASE NOT AUTHORIZED**
@@ -55,37 +61,19 @@ exactly one form, release qualification must authorize **both shipped forms
 independently**. Authorization of one form does not authorize the other, and
 `N/A` is not permitted for either shipped form's identity, required evidence,
 or print-form decision. A state remains unauthorized until both print-form
-decisions pass. The keyed form is cut at world `Y=172.481 mm` with a zero-gap
-planar butt; neither keyed half may be combined with the monolithic carrier in
-an installed assembly. The bottom owns two symmetric concealed Ø1.60
-cylindrical pins at `x=±109.187 mm`, `z=14.30 mm`; both point world +Y normal
-to the seam, have 0.50 mm root overlap, and engage the top by 2.40 mm (2.90 mm
-total male length). The top owns 2.65 mm-deep blind sockets with 0.12 mm radial
-and 0.25 mm end clearance: right is round Ø1.84, while left is X-relieved to
-1.96 × 1.84 mm. This round-plus-relieved constraint accepts ±0.30 mm relative
-pitch error across the 218.374 mm spacing instead of binding like two tight
-round sockets. Small exterior lands outside the LM recess reach R114.4036:
-1.4036 mm beyond structural R113.0 and 0.6036 mm beyond the finalized R113.8
-visible fairing, but add no extra screw or standalone retention/load
-credit. Flat/graded provide 0.25 mm clearance pockets around the lands, wholly at
-the hidden carrier interface between their front and rear faces; printed fit
-remains coupon-qualified.
-Its installed load path exists only after the LM driver flange and all normal
-LM fasteners splice the seam.
+decisions pass. The keyed form uses a zero-gap seam at Y=172.481 mm. Current pins are
+Ø1.60 at x=±108.920904, z=14.30 mm, engaging 2.40 mm. Radial clearance is
+0.10 mm and blind-end clearance 0.25 mm. Right socket Ø1.80; left adds
+0.02 mm X relief per side (1.84 × 1.80). Pitch is 217.841807 mm, with a
+nominal 0.22 mm relative pitch-error allowance. Native ring walls retain
+at least 0.38 mm radially and 0.50 mm at the blind end, without exterior
+lands. These dimensions supersede the earlier Ø1.84/1.96 sockets and
+R114.4036 lands. Current source facts are exported with the coupon.
 
-With the monolithic LM, the flat/graded pockets remain as small hidden local reliefs.
-The three magnetic datums and primary wing-retention geometry are unchanged,
-but the former local saddle contact is not claimed to be geometrically identical.
-
-The keyed sockets' current CAD contract retains at least **0.50 mm local
-radial and blind-end wall**, **0.05 mm recess plan clearance**, and **0.13 mm
-conservative W22-flange plan clearance**. Each horizontal pin is four nominal
-0.4 mm nozzle widths,
-but positive CAD wall checks are not release evidence by themselves. The
-candidate slicer preview must show both complete pin toolpaths, both open blind
-mouths, both support lands, and continuous intended extrusion paths at all
-minimum socket walls. A state/process-matched two-pin/socket coupon and actual
-U22 fit must pass before the keyed form can be authorized.
+Qualify the two-pin coupon in `qualification/` and then the full LM halves
+using the current 0.6 mm high-flow PETG-GF process. Inspect every wall path
+and socket mouth. Pins receive no retention/load credit; the driver flange
+and all normal LM fasteners must splice the seam.
 
 Every released acoustic candidate prints front-face-down, whether or not it
 contains a magnet. The authoritative pause
@@ -97,7 +85,7 @@ Magnets remain alignment/anti-rattle devices and receive zero structural-load
 credit even after this process passes.
 
 The approved station uses an actual D5.0 × 2.0 disc in an Ø5.20 × 2.10 cavity,
-0.45 mm axial skins on both faces, and a support-free 45° roof. No glue or
+0.52 mm axial skins on both faces, and a support-free 45° roof. No glue or
 external access or local exterior location cue is permitted. All LM-lower,
 LM-upper, and UM stations share the common source plane **Z = 15.10 mm**. The
 LM-upper and UM ring stations retain
@@ -108,12 +96,12 @@ gap. Their cavity construction datum is structural radius
 +0.65 mm, 0.15 mm beneath the exposed surface, with no local pad, boss, flat,
 or visible cue. Opposing carrier and flat/graded solids have zero physical mating
 gap. The receiver cavity datum instead includes a 0.05 mm solid construction
-standoff. Opposing magnet faces are therefore nominally 1.10 mm apart at
-LM-lower, LM-upper, and UM (`0.45 + 0.15 + 0.05 + 0.45`). The LM-lower datum
+standoff. Opposing magnet faces are therefore nominally 1.24 mm apart at
+LM-lower, LM-upper, and UM (`0.52 + 0.15 + 0.05 + 0.52`). The LM-lower datum
 is cubic parameter `u=0.50` on the shared curved shoulder; its right visible
 point is `(45.285011,89.190370)` with outward normal
 `(0.706451,-0.707762)`, and its left point is the exact X mirror. The D5 × 2
-geometry and both 0.45 mm skins are unchanged.
+geometry and both 0.52 mm skins are unchanged.
 
 ## Per-state hardware and process identity
 
@@ -139,7 +127,7 @@ state” is acceptable only with the shared lot/serial/evidence identifier.
 | Printed orientation and support settings for every qualified part | PENDING | PENDING |
 | `review/captive_magnet_slice_audit/CAPTIVE_MAGNET_PAUSE_MANIFEST.md` revision / SHA-256 and applied pause markers | PENDING | PENDING |
 | D5 × 2 magnet supplier, grade, lot and marked-pole convention | PENDING | PENDING |
-| Heat-set manufacturer, part number and lot for M3 and M5 inserts, including the two LM-to-UM M3 x 3 inserts installed in the standalone UM carrier and two UM-to-tweeter M3 x 3 inserts installed in the standalone crescent | PENDING | PENDING |
+| Heat-set manufacturer, part number and lot for M3 and M5 inserts, including the two LM-to-UM M3 thread × Ø5 × L4 inserts installed in the standalone UM carrier and two UM-to-tweeter M3 thread × Ø5 × L4 inserts installed in the standalone crescent | PENDING | PENDING |
 | Insert tool, set temperature, dwell/process and operator | PENDING | PENDING |
 | Screw, driver-clamp washer, stock-bridge hardware, unrelated through-bolt/nut hardware, and floor anti-tip tether/anchor specification; confirm both upper interfaces use rear-driven M3 screws only, with no washer/nut or front bolt head | PENDING | PENDING |
 | Qualification ambient and maximum intended service temperature | PENDING | PENDING |
@@ -189,16 +177,16 @@ than recording only “looks good.”
 | Monolithic LM form physical fit: actual U22 seat/flange, all normal LM fasteners, insert access, front-datum seating and surrounding-clearance inspection on the printed monolithic carrier | PENDING | PENDING |
 | Monolithic LM form cable check: actual UM/T cables fished through the intact buried lumens, free LM lead placed, cable service repeated without snag or insulation damage, and continuity/insulation verified | PENDING | PENDING |
 | Keyed LM form physical fit: both printed halves front-face-down on one flat datum; top translated straight along world -Y so the two pins enter together without flex/twist; actual U22 flange and all normal LM fasteners installed; full seating, front-datum coplanarity and post-fit crack/damage inspection | PENDING | PENDING |
-| Keyed LM dedicated two-pin/socket coupon: candidate material/process; two symmetric Ø1.60 +Y pins, 2.40 mm engagement; right Ø1.84 round and left 1.96 × 1.84 X-relieved blind sockets; assembly force; simultaneous straight -Y insertion; no pin used as a hinge | PENDING | PENDING |
-| Keyed LM pin/socket slicer and thin-wall acceptance: CAD minima confirmed at ≥0.50 mm radial/end wall, ≥0.05 mm recess plan clearance and ≥0.13 mm conservative W22-flange plan clearance; candidate preview shows both complete four-nozzle-width horizontal pins, both blind mouths, both exterior support lands and continuous intended paths at all minimum walls; state/process-matched coupon has no gaps, droop, delamination or breakage; actual U22 fit clears the lands; flat/graded 0.25 mm hidden interface pockets clear both actual staged halves and pass a printed fit coupon | PENDING | PENDING |
+| Keyed LM dedicated two-pin/socket coupon: candidate material/process; two symmetric Ø1.60 +Y pins, 2.40 mm engagement; right Ø1.80 round and left 1.84 × 1.80 X-relieved blind sockets; assembly force; simultaneous straight -Y insertion; no pin used as a hinge | PENDING | PENDING |
+| Keyed LM pin/socket slicer and thin-wall acceptance: ≥0.38 mm native radial and ≥0.50 mm blind-end walls; no exterior lands. Preview must show complete Ø1.60 pin paths, both open mouths and continuous socket walls on the 0.6 mm nozzle. The current state/process coupon and full-carrier fit must pass without gaps, droop, damage, forced assembly, driver collision or wing interference. | PENDING | PENDING |
 | Keyed LM seam metrology: world Y=172.481 mm, closed zero-gap planar butt, no volumetric half overlap, both front faces registered on one flat datum, and continuous UM/T route seams | PENDING | PENDING |
 | Keyed LM physical UM/T cable pull-through across both preserved seam lumens without snag, insulation damage or slicer-support residue, followed by continuity/insulation verification | PENDING | PENDING |
 | Assembled LM–UM and T–UM closure-web inspection: all owners front-face-down on one flat datum; z=18.3 faces coplanar; solid tangent-blended webs seated across the 0.05 mm plan seams; each anti-void lens retains a continuous 0.45 mm fusion land and a visible Arachne wall path; no triangular/cusp opening, bounded front-plane void island, thin front skin, rear hollow, or sub-resolution detached shard; only the declared T cable mouth and functional fastener/interface/route clearances remain | PENDING | PENDING |
 | Standalone LM-to-UM fastener features before assembly: the closure-web/base teardrops remain nominal Ø9; both monolithic LM or selected optional keyed LM-top ears have complete local Ø9.8 Z-owned cylindrical functional bosses and unobstructed rear Ø3.4 clearance passages; both UM ears have complete local Ø9.8 bosses, independently accessible rear-opening blind Ø4.6 x 4.0 receivers, complete 360° walls, and 1.9 mm solid acoustic-front floors; no feature depends on material from the opposing print | PENDING | PENDING |
-| LM-to-UM insert installation before assembly: both M3 x 3 heat-sets installed square and flush through the individual UM carrier's rear/mating openings; no cracking, lateral opening, over-melt, insert motion, receiver-wall damage, or acoustic-face mark/breakthrough; insertion process, temperature, dwell, and photographs recorded | PENDING | PENDING |
+| LM-to-UM insert installation before assembly: both M3 thread × Ø5 × L4 heat-sets installed square and flush through the individual UM carrier's rear/mating openings; no cracking, lateral opening, over-melt, insert motion, receiver-wall damage, or acoustic-face mark/breakthrough; insertion process, temperature, dwell, and photographs recorded | PENDING | PENDING |
 | LM-to-UM dry assembly: complete LM and UM ears engage with the specified 0.20 mm axial gap; rear-driven screws pass through the LM Ø3.4 bores and achieve full UM-insert engagement without bottoming; both front faces remain coplanar; no washer, nut, or front bolt head is present | PENDING | PENDING |
 | Standalone UM-to-tweeter fastener features before assembly: both UM ears have complete local Ø9.8 Z-owned bosses and unobstructed rear Ø3.4 passages; both crescent ears have complete local Ø9.8 bosses, independently accessible rear-opening blind Ø4.6 x 4.0 receivers, complete 360° walls, and 1.9 mm solid acoustic-front floors; no feature depends on material from the opposing print | PENDING | PENDING |
-| UM-to-tweeter insert installation before assembly: both M3 x 3 heat-sets installed square and flush through the individual crescent's rear/mating openings; no cracking, lateral opening, over-melt, insert motion, receiver-wall damage, or acoustic-face mark/breakthrough; insertion process, temperature, dwell, and photographs recorded | PENDING | PENDING |
+| UM-to-tweeter insert installation before assembly: both M3 thread × Ø5 × L4 heat-sets installed square and flush through the individual crescent's rear/mating openings; no cracking, lateral opening, over-melt, insert motion, receiver-wall damage, or acoustic-face mark/breakthrough; insertion process, temperature, dwell, and photographs recorded | PENDING | PENDING |
 | UM-to-tweeter dry assembly: complete UM and crescent ears engage with the specified 0.20 mm axial gap; rear-driven screws pass through the UM Ø3.4 bores and achieve full crescent-insert engagement without bottoming; both front faces remain coplanar; no washer, nut, or front bolt head is present | PENDING | PENDING |
 | Process-matched M3 insert pullout/pry qualification for both D4.6-receiver interfaces: test the individual UM and individual crescent receiver constructions to at least the documented 5g demand of 393.9 N per insert without insert motion, wall opening, floor damage, or boss fracture | PENDING | PENDING |
 | Terminal carrier radius and rear Z | PENDING | PENDING |
@@ -220,7 +208,7 @@ than recording only “looks good.”
 | Final free-LM placement plus UM/T buried-span fishing and free-span placement, electrical continuity and insulation test | PENDING | PENDING |
 | Final strain-relief pull transfers cable load away from MU tabs | PENDING | PENDING |
 | No-floor bridge plate has a soft cubic blend into R113 and occupies z=5.3..18.3; four rear insert bores retain the unchanged 6.8 mm total depth and 6.2 mm front floor, with a Ø6.5 x 2.0 entry followed by Ø6.4; LM/T/UM mouths are packed wholly inside the D20 support opening as LM above, T lower-left, UM lower-right and open only at rear z=5.3; no geometry extends behind the existing LM-pad envelope | N/A — integral stand/lane geometry replaces it | PENDING |
-| Six actual Ø5 x 2 magnets are pause-inserted and fully buried in Ø5.20 x 2.10 surface-normal cavities with continuous 0.45 mm axial skins and support-free 45° roofs: preserve upper LM axes 64°/116°, the lower LM pair at cubic parameter `u=0.50` on the shared shoulder, with right visible datum `(x,y,z)=(45.285011,89.190370,15.10)`, outward normal `(0.706451,-0.707762)`, and an exact-X-mirrored left datum, and UM axes 50.5°/129.5° at the same common source Z=15.10; verify R113.0/R51.7 structural rings, smooth exposed R113.8/R52.5 side fairings clipped only inside the existing LM--UM and T--UM cusp/service regions with the 0.40 mm LM--UM inter-carrier gap preserved, and ring cavity construction datums at structural radius +0.65 mm / 0.15 mm beneath the exposed surface; verify there is no local pad, boss, flat, visible cue, external access, or proud ear; verify floor/no-floor station coincidence, route/insert/structure keepouts, three matching flat/graded receivers per side, a 0.05 mm solid receiver construction standoff with zero physical mating gap, 1.10 mm nominal magnet-face separation at LM-lower, LM-upper, and UM | PENDING | PENDING |
+| Six actual Ø5 x 2 magnets are pause-inserted and fully buried in Ø5.20 x 2.10 surface-normal cavities with continuous 0.52 mm axial skins and support-free 45° roofs: preserve upper LM axes 64°/116°, the lower LM pair at cubic parameter `u=0.50` on the shared shoulder, with right visible datum `(x,y,z)=(45.285011,89.190370,15.10)`, outward normal `(0.706451,-0.707762)`, and an exact-X-mirrored left datum, and UM axes 50.5°/129.5° at the same common source Z=15.10; verify R113.0/R51.7 structural rings, smooth exposed R113.8/R52.5 side fairings clipped only inside the existing LM--UM and T--UM cusp/service regions with the 0.40 mm LM--UM inter-carrier gap preserved, and ring cavity construction datums at structural radius +0.65 mm / 0.15 mm beneath the exposed surface; verify there is no local pad, boss, flat, visible cue, external access, or proud ear; verify floor/no-floor station coincidence, route/insert/structure keepouts, three matching flat/graded receivers per side, a 0.05 mm solid receiver construction standoff with zero physical mating gap, 1.10 mm nominal magnet-face separation at LM-lower, LM-upper, and UM | PENDING | PENDING |
 | Every released acoustic STL printed front-face-down; for each magnet-bearing STL, sliced preview/G-code records the lowest open, representative open, last fully open, first closing and fully sealed layers; retaining walls remain continuous; each disc was inserted with manifest polarity, fully seated below the completed layer and clear of the resumed nozzle path | PENDING | PENDING |
 | Coupon-equivalent regression marker on the tested P2S 0.4 mm / 0.16 mm Arachne profile is Z=5.96 mm for every common-plane Obi-Wan LM/UM transverse station; unrelated families use their own sliced schedules rather than copying this value | PENDING | PENDING |
 | UM passage is buried only in LM and ends in a flush free-cable handoff; the UM carrier has no printed rear UM duct or D82 mouth, and the physical cable remains clear behind UM through its R15/R20 service path | PENDING | PENDING |

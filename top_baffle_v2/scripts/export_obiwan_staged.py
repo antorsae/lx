@@ -59,12 +59,9 @@ FIXED_TIMESTAMP = "2020-01-01T00:00:00"
 WORKER_HEADROOM_MIB = 3200.0
 RUNTIME_DISTRIBUTIONS = ("build123d", "cadquery-ocp", "numpy", "shapely")
 
-REFERENCE_INPUTS = (
-    ROOT.parent / "linkwitz" / "H1658-04_MU10RB-SL_driver.stl",
-    ROOT.parent / "linkwitz" / "H1658-04_MU10RB-SL_driver_STL_notes.md",
-    ROOT.parent / "linkwitz" / "H1658-04_MU10RB-SL_Datasheet.pdf",
-    ROOT.parent / "E0022_W22EX001.stp",
-)
+from lx521_baffle.references import geometry_reference_paths
+
+REFERENCE_INPUTS = geometry_reference_paths()
 SOURCE_INPUTS = tuple(sorted((
     *(ROOT / "src/lx521_baffle").rglob("*.py"),
     ROOT / "scripts/export_steps.py",

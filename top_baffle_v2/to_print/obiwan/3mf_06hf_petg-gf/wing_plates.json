@@ -1,0 +1,29 @@
+{
+ "kind": "petg_gf_wing_plates_ready_to_print",
+ "lane": "0.6mm_high_flow",
+ "filament": "TINMORRY PETG-GF Profile @BBL P2S",
+ "support": "off by wing contract; single filament, no interface",
+ "profile": "captive_magnet_slicing_profile_petg_gf_wings_06hf.json",
+ "plates": [
+  {
+   "magnets": 6,
+   "pause_z_mm": 5.96,
+   "triangle_count": 21656,
+   "name": "obiwan_flat_wings_split2_combo",
+   "project": "to_print/obiwan/3mf_06hf_petg-gf/obiwan_flat_wings_split2_combo_06hf_petg-gf.gcode.3mf",
+   "project_sha256": "f99fbdf6d2f976aed8e59d864e3f1a1783f12f283995584631d5b65adcff9b82",
+   "source_audit": "review/wing_plate_petg_gf_06hf/obiwan_flat_wings_split2_combo/ready/plate_audit.json",
+   "reused": false
+  },
+  {
+   "magnets": 6,
+   "pause_z_mm": 5.96,
+   "triangle_count": 747702,
+   "name": "obiwan_graded_wings_split2_combo",
+   "project": "to_print/obiwan/3mf_06hf_petg-gf/obiwan_graded_wings_split2_combo_06hf_petg-gf.gcode.3mf",
+   "project_sha256": "bbbd03a704ca10557da0c976aa12287312e3c80b2c221e28b27925dbbf5aa4e7",
+   "source_audit": "review/wing_plate_petg_gf_06hf/obiwan_graded_wings_split2_combo/ready/plate_audit.json",
+   "reused": false
+  }
+ ]
+}

@@ -47,6 +47,7 @@ for _root in (PROJECT_ROOT / "src", PROJECT_ROOT / "scripts"):
 
 import build_to_print_shelf as canonical
 from build_to_print_shelf import ShelfError
+from delivery_contract import is_gui
 
 DEFAULT_SHELF = PROJECT_ROOT / "to_print"
 DEFAULT_AUDIT = PROJECT_ROOT / "review" / "captive_magnet_slice_audit_06hf"
@@ -186,10 +187,9 @@ def route_entries(
     wing_plates: list[tuple[dict, dict]] = []
     skipped: dict[str, str] = {}
     for entry in entries:
-        if entry.get("lane") == "06hf":
+        if is_gui(entry):
             skipped[entry["name"]] = (
-                "PETG-GF structural delivery; the canonical shelf builder "
-                "publishes it into 3mf_06hf from the PETG-GF 0.6 outputs")
+                "PETG-GF GUI project; slice and audit through the separate GUI lane")
         elif "auxiliary_delivery" in entry:
             skipped[entry["name"]] = (
                 "auxiliary candidate delivery; 0.4-mm lane only for now")
@@ -380,6 +380,12 @@ def main(argv: list[str] | None = None) -> int:
             name: reason for name, reason in sorted(skipped.items())
         },
     }
+    # This publisher owns only 3mf_06hf; the other lanes are untouched.
+    expected = {shelf / record["project"] for record in manifest_entries}
+    for family in {entry["family"] for entry in entries}:
+        for path in (shelf / family / "3mf_06hf").glob("*.3mf"):
+            if path not in expected:
+                path.unlink()
     manifest_path = shelf / "catalog_06hf.json"
     manifest_path.write_text(
         json.dumps(manifest, indent=1, sort_keys=False) + "\n",

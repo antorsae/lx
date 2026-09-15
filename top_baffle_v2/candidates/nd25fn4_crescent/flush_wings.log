@@ -1,0 +1,10 @@
+Building shared V4 wing clearance surface
+Retriangulated 5 precision slivers; max edge deviation 0.00000000 mm
+Offsetting actual exterior for an even wing seam
+/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/build_wings.py:52: DeprecationWarning: Call to deprecated method SetCells. (Use ImportLegacyFormat or SetData instead.) -- Deprecated since version 9.6.0.
+  cells.SetCells(len(mesh.faces),numpy_to_vtkIdTypeArray(
+Clearance surface ready
+V4_flat_left_UPPER.stl removed 9309.403 mm3; gap 0.2537 mm
+V4_flat_right_UPPER.stl removed 9309.408 mm3; gap 0.2526 mm
+V4_graded_left_UPPER.stl removed 8339.746 mm3; gap 0.2537 mm
+V4_graded_right_UPPER.stl removed 8339.742 mm3; gap 0.2526 mm

@@ -17,8 +17,8 @@ Then choose one complete acoustic-wing family:
 - `wings/graded/`: LM/UM/T-weighted rear depth with the same plan and magnetic
   roots.
 
-Flat and graded are the entire Obi-Wan wing inventory. Each side prints as three
-keyed pieces; do not mix flat and graded segments.
+Flat and graded are the entire Obi-Wan wing inventory. Each side prints as two
+keyed pieces (four per speaker); do not mix flat and graded segments.
 
 Both state manifests currently record `release_authorized: false`. CAD,
 manifold, analytical-strength, and snapshot checks do not replace the physical

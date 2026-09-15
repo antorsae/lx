@@ -1,0 +1,108 @@
+{
+  "jobs": [
+    {
+      "input": "/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/STL/wings/V4_flat_left_UPPER.stl",
+      "mode": "view",
+      "theme": "snapshot",
+      "outputs": [
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/views/V4_flat_left_UPPER.png",
+          "camera": {
+            "direction": [
+              0.5,
+              -1,
+              1.5
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "render": {
+        "sizeProfile": "diagnostic",
+        "padding": 0.08
+      }
+    },
+    {
+      "input": "/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/STL/wings/V4_flat_right_UPPER.stl",
+      "mode": "view",
+      "theme": "snapshot",
+      "outputs": [
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/views/V4_flat_right_UPPER.png",
+          "camera": {
+            "direction": [
+              0.5,
+              -1,
+              1.5
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "render": {
+        "sizeProfile": "diagnostic",
+        "padding": 0.08
+      }
+    },
+    {
+      "input": "/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/STL/wings/V4_graded_left_UPPER.stl",
+      "mode": "view",
+      "theme": "snapshot",
+      "outputs": [
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/views/V4_graded_left_UPPER.png",
+          "camera": {
+            "direction": [
+              0.5,
+              -1,
+              1.5
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "render": {
+        "sizeProfile": "diagnostic",
+        "padding": 0.08
+      }
+    },
+    {
+      "input": "/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/STL/wings/V4_graded_right_UPPER.stl",
+      "mode": "view",
+      "theme": "snapshot",
+      "outputs": [
+        {
+          "path": "/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/views/V4_graded_right_UPPER.png",
+          "camera": {
+            "direction": [
+              0.5,
+              -1,
+              1.5
+            ],
+            "up": [
+              0,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "render": {
+        "sizeProfile": "diagnostic",
+        "padding": 0.08
+      }
+    }
+  ]
+}

@@ -1,0 +1,985 @@
+<!DOCTYPE html><html lang="en"><head><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta charset="UTF-8"><meta name="viewport" content="user-scalable=yes, width=device-width, initial-scale=1, maximum-scale=5"><meta name="theme-color" content="#1976d2"><meta name="msapplication-TileColor" content="#1976d2"><meta name="msapplication-TileImage" content="/_assets/favicons/mstile-150x150.png"><title>Printing guide for using PLA Basic and PETG HF/PETG Basic for support | Bambu Lab Wiki</title><meta name="description" content="This article explains how to use Bambu PLA Basic and PETG HF / PETG Basic as supports for each other when printing. It also provides a tutorial on configuring the parameters in Bambu Studio, along with download links for preset profile files."><meta property="og:title" content="Printing guide for using PLA Basic and PETG HF/PETG Basic for support"><meta property="og:type" content="website"><meta property="og:description" content="This article explains how to use Bambu PLA Basic and PETG HF / PETG Basic as supports for each other when printing. It also provides a tutorial on configuring the parameters in Bambu Studio, along with download links for preset profile files."><meta property="og:image"><meta property="og:url" content="https://wiki.bambulab.com/en/filament-acc/filament/h2d-pla-and-petg-mutual-support"><meta property="og:site_name" content="Bambu Lab Wiki"><link rel="apple-touch-icon" sizes="180x180" href="/_assets/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="192x192" href="/_assets/favicons/android-chrome-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="/_assets/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/_assets/favicons/favicon-16x16.png"><link rel="mask-icon" href="/_assets/favicons/safari-pinned-tab.svg" color="#1976d2"><link rel="manifest" href="/_assets/manifest.json"><script>var siteConfig = {"title":"Bambu Lab Wiki","theme":"default","darkMode":false,"tocPosition":"left","lang":"en","rtl":false,"company":"Bambu Lab","contentLicense":"alr","footerOverride":"","logoUrl":"/admin/home/logo-large.png"}
+var siteLangs = [{"code":"ar","name":"العربية"},{"code":"cs","name":"čeština"},{"code":"de","name":"Deutsch"},{"code":"el","name":"ελληνικά"},{"code":"en","name":"English"},{"code":"es","name":"español"},{"code":"fr","name":"français"},{"code":"hu","name":"magyar"},{"code":"it","name":"italiano"},{"code":"ja","name":"日本語 (にほんご)"},{"code":"ko","name":"한국어"},{"code":"nl","name":"Nederlands"},{"code":"pl","name":"język polski"},{"code":"pt-br","name":"português"},{"code":"ro","name":"limba română"},{"code":"ru","name":"русский язык"},{"code":"sv","name":"Svenska"},{"code":"th","name":"ไทย"},{"code":"tr","name":"Türkçe"},{"code":"vi","name":"Tiếng Việt"},{"code":"zh","name":"中文 (Zhōngwén)"}]
+</script><link type="text/css" rel="stylesheet" href="/_assets/css/app.766a556e9dcc61b7fcd5.css"><script type="text/javascript" src="/_assets/js/runtime.js?1716156900"></script><script type="text/javascript" src="/_assets/js/app.js?1716156900"></script><!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-M94TJN6C');</script>
+<!-- End Google Tag Manager -->
+<style type="text/css">@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap);:lang(ar),[lang=ar],html[dir=rtl]{font-family:'IBM Plex Sans Arabic',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important}html[dir=rtl] .contents,html[dir=rtl] .v-application{font-family:'IBM Plex Sans Arabic',sans-serif!important}.caption{word-break:break-word}.row.page-header-section.no-gutters.align-content-center{height:auto!important;min-height:90px}blockquote:before{content:""!important}blockquote{border-top:6px solid #1976d2!important;border-left:0!important;padding:1rem!important}blockquote p{padding:0!important;line-height:26px!important}blockquote p li{font-style:normal!important}i{font-style:normal!important}a.v-list-item--link[href='https://wiki.bambulab.com/en/makerworld'] .v-list-item__avatar i::before{content:url('https://wiki.bambulab.com/makerworld/makerworld.svg')!important}a.v-list-item--link[href='https://wiki.bambulab.com/zh/makerworld'] .v-list-item__avatar i::before{content:url('https://wiki.bambulab.com/makerworld/makerworld.svg')!important}a.v-list-item--link[href='https://wiki.bambulab.com/en/cyberbrick'] .v-list-item__avatar i::before{content:url('https://wiki.bambulab.com/cyberbrick/cb_logo.svg')!important;width:24px!important;height:24px}a.v-list-item--link[href='https://wiki.bambulab.com/zh/cyberbrick'] .v-list-item__avatar i::before{content:url('https://wiki.bambulab.com/cyberbrick/cb_logo.svg')!important;width:24px!important;height:24px}.video-responsive{max-width:720px}.video-responsive-inner{position:relative;padding-bottom:56.25%}.video-responsive-inner iframe,.video-responsive-inner video{position:absolute;width:100%;height:100%;left:0;top:0}div.contents img{cursor:pointer}.mermaid>svg{height:auto}.mermaid{visibility:hidden}.mermaid[data-processed=true]{visibility:visible}header.nav-header .layout>div a[href='/login']{display:none}header.nav-header .layout>div:nth-child(3) hr{display:none}</style><!-- ============================================================
+     首页语言自动跳转（独立模块，与其它脚本隔离，勿与其它代码合并）
+     ------------------------------------------------------------
+     背景：访问根路径 / 时，Wiki.js 服务端会 302 到默认语言首页 /en/home。
+     本脚本在落到 /en/home 后，按用户意图决定是否再跳到其语言首页。
+     属于二次跳转（/ -> /en/home -> /<lang>/home），是纯前端方案的固有代价。
+
+     意图来源（cookie `wiki_lang`，由 body 脚本在用户点击语言菜单时写入，
+     含点选 English 时写 en）：
+       - cookie 是非 en 语言 -> 跳到该语言首页（用户明确选过它）；
+       - cookie 是 en        -> 留在英文首页（用户明确选过英文）；
+       - 没有 cookie（新用户，从没选过）-> 按浏览器语言跳一次（不写 cookie，
+         待用户主动选语言后才“锁定”）。
+     纯由 cookie 驱动，无需 sessionStorage：选了什么就一直是什么，直到再次选择。
+
+     维护：SUPPORTED 需与 body 中 LANGUAGES 的 locale 码保持一致；新增语言两处都要加。
+     ============================================================ -->
+  <script type="text/javascript">
+  (function () {
+    var DEFAULT_LOCALE = 'en';
+    var HOME = 'home';
+    // 与 body 的 LANGUAGES locale 码保持一致（新增语言两处都要改）
+    var SUPPORTED = ['en','zh','pt-br','de','es','fr','it','nl','ja','ko','ru','tr','pl','cs','hu','ro','sv','el'];
+    var COOKIE = 'wiki_lang';
+
+    function getCookie(name) {
+      var m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+      return m ? decodeURIComponent(m[1]) : null;
+    }
+
+    // 仅在「默认语言首页 /en/home」上考虑自动跳转，不影响其它页面。
+    var seg = location.pathname.split('/').filter(Boolean); // ['en','home'] 等
+    var firstSeg = (seg[0] || '').toLowerCase();
+    var isDefaultHome = (firstSeg === DEFAULT_LOCALE && (seg[1] || '') === HOME && seg.length === 2);
+    if (!isDefaultHome) return;
+
+    var cookieLang = getCookie(COOKIE);
+    if (cookieLang && SUPPORTED.indexOf(cookieLang) >= 0) {
+      // 用户有明确选择：非 en 则跳过去，en 则留下。
+      if (cookieLang !== DEFAULT_LOCALE) {
+        location.replace('/' + cookieLang + '/' + HOME + location.search + location.hash);
+      }
+      return;
+    }
+
+    // 没有有效 cookie（新用户）：按浏览器语言跳一次，但不写 cookie。
+    function pickByBrowser() {
+      var langs = navigator.languages || [navigator.language || ''];
+      for (var i = 0; i < langs.length; i++) {
+        var l = (langs[i] || '').toLowerCase();
+        if (SUPPORTED.indexOf(l) >= 0) return l;        // 如 pt-br 直接命中
+        var base = l.split('-')[0];
+        if (SUPPORTED.indexOf(base) >= 0) return base;  // 如 zh-cn -> zh
+      }
+      return null;
+    }
+    var target = pickByBrowser();
+    if (!target || target === DEFAULT_LOCALE) return;   // 无匹配或就是英文 -> 留下
+    location.replace('/' + target + '/' + HOME + location.search + location.hash);
+  })();
+  </script>
+
+  <link  href="https://public-cdn.bblmw.com/wiki/viewer/viewer.min.css" rel="stylesheet">
+  <script src="https://public-cdn.bblmw.com/wiki/viewer/viewer.min.js"></script>
+  <link href="https://artalk.bambulab.com/dist/Artalk.css?v=5" rel="stylesheet" />
+  <script src="https://artalk.bambulab.com/dist/Artalk.js?v=5"></script>
+
+  <script type="text/javascript" defer>
+
+  function GetQueryString(sGet, name) {
+      var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+      var r = sGet.match(reg);
+      if(r != null) {
+          return unescape(r[2]);
+      } else {
+          return null;
+      }
+  }
+
+  function getUrlQuery(name) {
+      let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+      let r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+          return decodeURIComponent(r[2]);
+      };
+
+      return null;
+  }
+
+
+  function parseUrl(url) {
+      if(url.startsWith('//')) {
+          url = location.protocol + url;
+      }
+      return new window.URL(url);
+  }
+
+  function removeUrlParam(param, url = window.location.href) {
+      let obj = parseUrl(url);
+      obj.searchParams.delete(param);
+      return obj.href;
+  }
+
+  function SetMaskIconColor() {
+      document.querySelector('link[rel="mask-icon"]').setAttribute('color', '#00AE42');
+  }
+
+  function HandleVideoHtml() {
+      // const rxYoutube = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/
+      // the old regex will match https://www.copyright.gov/registration
+      const rxYoutube = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/
+      const rxVimeo = /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/
+
+      document.querySelectorAll('.contents oembed, .contents a').forEach(elm => {
+          const url = elm.hasAttribute('url') ? elm.getAttribute('url') : elm.getAttribute('href')
+          if (url == null)
+              return;
+
+          let newElmHtml = null
+          let nWen = url.indexOf('?');
+          let GetParam = '';
+          let BiliMatch = false;
+          let BiliVID = '';
+          if(nWen >= 0) {
+              GetParam = url.substr(nWen + 1);
+              //alert(GetParam);
+              let sSrc = GetQueryString(GetParam, 'src');
+              let sV = GetQueryString(GetParam, 'v');
+              if(sSrc != null && sV != null && sSrc == 'bilibili') {
+                  BiliMatch = true;
+                  BiliVID = sV;
+              }
+          }
+          const ytMatch = url.match(rxYoutube)
+          const vmMatch = !ytMatch && url.match(rxVimeo)
+          if(BiliMatch) {
+              newElmHtml = '<iframe src="https://player.bilibili.com/player.html?p=1&autoplay=0&bvid=' + BiliVID + '" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width="100%" height="100%"> </iframe>';
+          } else if(ytMatch) {
+              newElmHtml = `<iframe id="ytplayer" type="text/html" width="640" height="360" src="https://www.youtube.com/embed/${ytMatch[1]}" frameborder="0" allowfullscreen></iframe>`
+          } else if(vmMatch) {
+              newElmHtml = `<iframe id="vmplayer" type="text/html" width="640" height="360" src="https://player.vimeo.com/video/${vmMatch[5]}" frameborder="0" allowfullscreen></iframe>`
+          } else if(url.endsWith('.mp4')) {
+              newElmHtml = `<video controls autostart="0" name="media" width="640" height="360"><source src="${url}" type="video/mp4"></video>`
+          } else {
+              return
+          }
+
+          const container = document.createElement('div')
+          container.classList.add('video-responsive')
+
+          const inner = document.createElement('div')
+          inner.classList.add('video-responsive-inner')
+
+          inner. insertAdjacentHTML('beforeend', newElmHtml)
+          container.append(inner)
+
+          elm.replaceWith(container)
+      })
+  }
+
+  function HandleSearchPage() {
+      const search = getUrlQuery('search')
+      if(search) {
+          const isAPP = window.innerWidth < 960
+          console.log("isAPP: " + isAPP)
+          const headerInner = document.querySelector("header.nav-header.v-sheet.theme--dark.v-toolbar.v-toolbar--flat.v-app-bar.v-app-bar--clipped.v-app-bar--fixed.black")
+          const input = headerInner.__vue__.$parent
+          console.log(input)
+          if(input) {
+              if(isAPP) {
+                  input.searchIsShown = true
+              }
+              input.search = search
+              const target = document.querySelector('.v-application--wrap')
+              const observe = new MutationObserver(function(mutations, observe) {
+                  mutations.forEach((mutation) => {
+                      const nodes = Array.from(mutation.addedNodes)
+                      if(nodes.length > 0) {
+                          nodes.forEach((node) => {
+                              if(node.nodeType === 1) {
+                                  if(node.classList.contains('search-results')) {
+                                      const btn = document.querySelector('.search-results div.text-xs-center .mx-2.v-btn')
+                                      if(btn) {
+                                          console.log(btn)
+                                          btn.onclick = function() {
+                                              const url = removeUrlParam('search')
+                                              window.location.href = url
+                                          }
+                                      }
+                                  }
+                              }
+                          })
+                      }
+                  })
+              });
+              observe.observe(target, {
+                  childList: true
+              });
+          }
+      }
+  }
+
+  function HandleViewerJS()
+  {
+    const imageContent = document.querySelector('div.contents')
+    if (imageContent) {
+      const gallery = new Viewer(imageContent,{title:false})
+      imageContent.querySelectorAll('img').forEach((item, index) => {
+        item.addEventListener('click', () => {
+          gallery.view(index)
+        })
+      })
+    }
+  }
+
+  const LangMap = {
+    en: 'en',
+    zh: 'zh-CN'
+  }
+
+  const i18n = {
+    [LangMap.en]: {
+      Comments: "Comments"
+    },
+    [LangMap.zh]: {
+      Comments: "评论"
+    }
+  }
+
+  function InitArtalk() {
+    // 获取class为contents的div元素
+    const contentsDiv = document.querySelector('div.contents');
+
+    const pathnameSplit = location.pathname.split('/')
+    const lang = LangMap[pathnameSplit[1]] || 'en'
+
+    // 检查元素是否存在，避免报错
+    if (contentsDiv) {
+      // 在目标元素后面插入新的div
+      contentsDiv.insertAdjacentHTML('afterend',
+  `<div id="discussion" class="comments-container">
+    <div class="comments-header">
+      <i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-comment-text-outline theme--dark"></i>
+      <span>${i18n[lang].Comments}</span>
+    </div>
+    <div class="comments-main">
+      <div>
+        <div id="artalk-container"></div>
+      </div>
+    </div>
+  </div>`);
+    } else {
+      console.warn('未找到class为contents的div元素');
+    }
+
+    window.artalk = Artalk.init({
+      el:        '#artalk-container',
+      pageTitle: '',         // 页面标题 (留空自动获取)
+      server:    'https://artalk.bambulab.com',
+      site:      'bambulab wiki',
+      locale:    lang,
+    })
+  }
+
+  window.boot.register('vue', () => {
+
+      // window.onload = () => {
+      //    SetMaskIconColor();
+      //       HandleVideoHtml();
+      //      HandleSearchPage();
+      //}
+
+      window.addEventListener('load', () => {
+          SetMaskIconColor();
+           HandleVideoHtml();
+          HandleSearchPage();
+          HandleViewerJS();
+          InitArtalk();
+      })
+  })
+
+  </script>
+
+
+  <style id="miniwiki">
+    .miniwiki .nav-header,
+    .miniwiki .v-navigation-drawer,
+    .miniwiki .page-header-section,
+    .miniwiki .page-header-headings,
+    .miniwiki main.v-main .v-main__wrap > hr,
+    .miniwiki .page-edit-shortcuts,
+    .miniwiki .v-application--wrap > button,
+    .miniwiki .comments-container,
+    .miniwiki main.v-main .v-main__wrap > header, /* breadcrumbs */
+    .miniwiki main.v-main .layout > div.page-col-sd, /* sidebar */
+
+    .miniwiki .v-footer {
+      display: none;
+    }
+
+    .miniwiki main.v-main .layout > div.page-col-content {
+      max-width: 100% !important;
+      flex-grow: 1 !important;
+    }
+
+    .miniwiki main.v-main .layout {
+      margin: 0 !important;
+    }
+
+    .miniwiki .v-main,
+    .miniwiki .v-main__wrap > .container,
+    .miniwiki main.v-main .layout > div.page-col-content {
+      padding: 0 !important;
+    }
+  </style>
+
+  <script id="miniwiki">
+    (function() {
+      const isApp = /bbl-app/i.test(navigator.userAgent)
+      const isMiniwiki = /miniwiki/.test(location.href)
+
+      if (!isApp || !isMiniwiki) {
+        return
+      }
+
+      document.documentElement.classList.add('miniwiki')
+
+    })()
+  </script>
+<script>
+  (function() {
+    var origFetch = window.fetch;
+    window.fetch = function(url, opts) {
+      if (opts && opts.body && typeof opts.body === 'string' && opts.body.includes('search')) {
+        try {
+          var payload = JSON.parse(opts.body);
+          var list = Array.isArray(payload) ? payload : [payload];
+          var modified = false;
+          list.forEach(function(body) {
+            if (body.query && body.query.includes('pages') && body.query.includes('search(query:')) {
+              // 当前内容语言以 URL 路径首段为准（/zh/xxx -> zh），与站内其它逻辑一致。
+              // 不用 document.documentElement.lang：它反映的是界面语言（可能一直是 en），
+              // 还可能被 Chrome 网页翻译等改动，导致搜索 locale 恒为 en。
+              var seg = location.pathname.split('/').filter(Boolean);
+              var locale = (seg[0] || 'en').toLowerCase();
+              body.query = body.query
+                .replace('($query: String!)', '($query: String!, $locale: String)')
+                .replace(/search\(query:\s*\$query\)/, 'search(query: $query, locale: $locale)');
+              body.variables = body.variables || {};
+              body.variables.locale = locale;
+              modified = true;
+            }
+          });
+          if (modified) {
+            opts.body = JSON.stringify(Array.isArray(payload) ? list : list[0]);
+          }
+        } catch(e) {}
+      }
+      return origFetch.call(this, url, opts);
+    };
+  })();
+  </script>
+</head><body><!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M94TJN6C"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<div id="root"><page locale="en" path="filament-acc/filament/h2d-pla-and-petg-mutual-support" title="Printing guide for using PLA Basic and PETG HF/PETG Basic for support" description="This article explains how to use Bambu PLA Basic and PETG HF / PETG Basic as supports for each other when printing. It also provides a tutorial on configuring the parameters in Bambu Studio, along with download links for preset profile files." :tags="[]" created-at="2025-03-29T03:39:14.725Z" updated-at="2026-07-21T09:37:27.077Z" author-name="Newt" :author-id="208" editor="markdown" :is-published="true" toc="W3sidGl0bGUiOiJVc2luZyBQTEEgQmFzaWMgJiBQRVRHIGFzIE11dHVhbCBTdXBwb3J0cyIsImFuY2hvciI6IiN1c2luZy1wbGEtYmFzaWMtcGV0Zy1hcy1tdXR1YWwtc3VwcG9ydHMiLCJjaGlsZHJlbiI6W119LHsidGl0bGUiOiJPdmVydmlldyIsImFuY2hvciI6IiNvdmVydmlldyIsImNoaWxkcmVuIjpbXX0seyJ0aXRsZSI6IlN1cHBvcnQgQ29uZmlndXJhdGlvbnMgQ29tcGFyZWQiLCJhbmNob3IiOiIjc3VwcG9ydC1jb25maWd1cmF0aW9ucy1jb21wYXJlZCIsImNoaWxkcmVuIjpbeyJ0aXRsZSI6IlN1cmZhY2UgRmluaXNoIFJlc3VsdHMiLCJhbmNob3IiOiIjc3VyZmFjZS1maW5pc2gtcmVzdWx0cyIsImNoaWxkcmVuIjpbXX1dfSx7InRpdGxlIjoi4pqg77iPIEJlZm9yZSBZb3UgU3RhcnQiLCJhbmNob3IiOiIj77iPLWJlZm9yZS15b3Utc3RhcnQiLCJjaGlsZHJlbiI6W119LHsidGl0bGUiOiJXaGljaCBTY2VuYXJpbyBBcmUgWW91IFByaW50aW5nPyIsImFuY2hvciI6IiN3aGljaC1zY2VuYXJpby1hcmUteW91LXByaW50aW5nIiwiY2hpbGRyZW4iOltdfSx7InRpdGxlIjoiU2NlbmFyaW8gQSDigJQgUEVURyBNb2RlbCArIFBMQSBCYXNpYyBTdXBwb3J0IiwiYW5jaG9yIjoiI3NjZW5hcmlvLWEtcGV0Zy1tb2RlbC1wbGEtYmFzaWMtc3VwcG9ydCIsImNoaWxkcmVuIjpbeyJ0aXRsZSI6IvCfjKHvuI8gVGVtcGVyYXR1cmUgU2V0dGluZ3MiLCJhbmNob3IiOiIj77iPLXRlbXBlcmF0dXJlLXNldHRpbmdzIiwiY2hpbGRyZW4iOltdfSx7InRpdGxlIjoi4pqZ77iPIFN1cHBvcnQgQ29uZmlndXJhdGlvbiBpbiBCYW1idSBTdHVkaW8iLCJhbmNob3IiOiIj77iPLXN1cHBvcnQtY29uZmlndXJhdGlvbi1pbi1iYW1idS1zdHVkaW8iLCJjaGlsZHJlbiI6W119XX0seyJ0aXRsZSI6IlNjZW5hcmlvIEIg4oCUIFBMQSBCYXNpYyBNb2RlbCArIFBFVEcgU3VwcG9ydCIsImFuY2hvciI6IiNzY2VuYXJpby1iLXBsYS1iYXNpYy1tb2RlbC1wZXRnLXN1cHBvcnQiLCJjaGlsZHJlbiI6W3sidGl0bGUiOiLwn4yh77iPIFRlbXBlcmF0dXJlIFNldHRpbmdzIiwiYW5jaG9yIjoiI++4jy10ZW1wZXJhdHVyZS1zZXR0aW5ncy0xIiwiY2hpbGRyZW4iOltdfSx7InRpdGxlIjoi4pqZ77iPIFN1cHBvcnQgQ29uZmlndXJhdGlvbiBpbiBCYW1idSBTdHVkaW8iLCJhbmNob3IiOiIj77iPLXN1cHBvcnQtY29uZmlndXJhdGlvbi1pbi1iYW1idS1zdHVkaW8tMSIsImNoaWxkcmVuIjpbXX1dfSx7InRpdGxlIjoi8J+TpSBSZWFkeS10by1Vc2UgUHJlc2V0IEZpbGVzIiwiYW5jaG9yIjoiI3JlYWR5LXRvLXVzZS1wcmVzZXQtZmlsZXMiLCJjaGlsZHJlbiI6W119LHsidGl0bGUiOiLwn5SnIDAuMm1tIE5venpsZSBVc2VycyIsImFuY2hvciI6IiNoLTAybW0tbm96emxlLXVzZXJzIiwiY2hpbGRyZW4iOltdfSx7InRpdGxlIjoi8J+SviBTYXZpbmcgWW91ciBTZXR0aW5ncyBhcyBhIFByZXNldCIsImFuY2hvciI6IiNzYXZpbmcteW91ci1zZXR0aW5ncy1hcy1hLXByZXNldCIsImNoaWxkcmVuIjpbXX0seyJ0aXRsZSI6IkVuZCBOb3RlcyIsImFuY2hvciI6IiNlbmQtbm90ZXMiLCJjaGlsZHJlbiI6W119XQ==" :page-id="2609" sidebar="W3siaSI6InNkaS0xIiwiayI6ImxpbmsiLCJsIjoiSG9tZSIsImMiOiJtZGktaG9tZSIsInkiOiJwYWdlIiwidCI6Ii9lbi9ob21lIn0seyJpIjoic2RpLTIiLCJrIjoibGluayIsImwiOiJIMiBTZXJpZXMiLCJjIjoibWRpLWFscGhhLWgtYm94LW91dGxpbmUiLCJ5IjoiZXh0ZXJuYWwiLCJ0IjoiaHR0cHM6Ly93aWtpLmJhbWJ1bGFiLmNvbS9lbi9oMiJ9LHsiaSI6InNkaS0zIiwiayI6ImxpbmsiLCJsIjoiWCBTZXJpZXMiLCJjIjoibWRpLWFscGhhLXgtYm94LW91dGxpbmUiLCJ5IjoiZXh0ZXJuYWwiLCJ0IjoiaHR0cHM6Ly93aWtpLmJhbWJ1bGFiLmNvbS9lbi94LXNlcmllcyJ9LHsiaSI6InNkaS00IiwiayI6ImxpbmsiLCJsIjoiUCBTZXJpZXMiLCJjIjoibWRpLWFscGhhLXAtYm94LW91dGxpbmUiLCJ5IjoiZXh0ZXJuYWwiLCJ0IjoiaHR0cHM6Ly93aWtpLmJhbWJ1bGFiLmNvbS9lbi9wLXNlcmllcyJ9LHsiaSI6InNkaS01IiwiayI6ImxpbmsiLCJsIjoiQSBTZXJpZXMiLCJjIjoibWRpLWFscGhhLWEtYm94LW91dGxpbmUiLCJ5IjoiZXh0ZXJuYWwiLCJ0IjoiaHR0cHM6Ly93aWtpLmJhbWJ1bGFiLmNvbS9lbi9hLXNlcmllcyJ9LHsiaSI6InNkaS02IiwiayI6ImxpbmsiLCJsIjoiQU1TIiwiYyI6Im1kaS1ob21lLWZsb29yLWEiLCJ5IjoiZXh0ZXJuYWwiLCJ0IjoiaHR0cHM6Ly93aWtpLmJhbWJ1bGFiLmNvbS9lbi9hbXMtc2VyaWVzIn0seyJpIjoic2RpLTciLCJrIjoibGluayIsImwiOiJITVMiLCJjIjoibWRpLXRleHQtYm94LXNlYXJjaC1vdXRsaW5lIiwieSI6ImV4dGVybmFsIiwidCI6Imh0dHBzOi8vd2lraS5iYW1idWxhYi5jb20vZW4vaG1zL2hvbWUifSx7ImkiOiJzZGktOCIsImsiOiJsaW5rIiwibCI6IlNvZnR3YXJlICYgQVBQIiwiYyI6Im1kaS10ZWxldmlzaW9uLWd1aWRlIiwieSI6ImV4dGVybmFsIiwidCI6Imh0dHBzOi8vd2lraS5iYW1idWxhYi5jb20vZW4vc29mdHdhcmUifSx7ImkiOiJzZGktOSIsImsiOiJsaW5rIiwibCI6IkZpbGFtZW50cyBHdWlkZSIsImMiOiJtZGktcHJpbnRlci0zZC1ub3p6bGUiLCJ5IjoiZXh0ZXJuYWwiLCJ0IjoiaHR0cHM6Ly93aWtpLmJhbWJ1bGFiLmNvbS9lbi9maWxhbWVudC1hY2MifSx7ImkiOiJzZGktMTAiLCJrIjoibGluayIsImwiOiJBY2Nlc3NvcmllcyAmIENvbnN1bWFibGVzIiwiYyI6Im1kaS10b29scyIsInkiOiJleHRlcm5hbCIsInQiOiJodHRwczovL3dpa2kuYmFtYnVsYWIuY29tL2VuL2ZpbGFtZW50LWFjYy9hY2MifSx7ImkiOiJzZGktMTEiLCJrIjoibGluayIsImwiOiJMYXNlciAmIEN1dHRpbmciLCJjIjoibWRpLWxhc2VyLXBvaW50ZXIiLCJ5IjoiZXh0ZXJuYWwiLCJ0IjoiaHR0cHM6Ly93aWtpLmJhbWJ1bGFiLmNvbS9lbi9sYXNlci1jdXR0aW5nLW1vZHVsZSJ9LHsiaSI6InNkaS0xMiIsImsiOiJsaW5rIiwibCI6Ik1ha2VyV29ybGQiLCJjIjoibWRpLWN1YmUtc2NhbiIsInkiOiJleHRlcm5hbCIsInQiOiJodHRwczovL3dpa2kuYmFtYnVsYWIuY29tL2VuL21ha2Vyd29ybGQifSx7ImkiOiJzZGktMTMiLCJrIjoibGluayIsImwiOiJDeWJlckJyaWNrIiwiYyI6Im1kaS1jaGV2cm9uLXJpZ2h0IiwieSI6ImV4dGVybmFsIiwidCI6Imh0dHBzOi8vd2lraS5iYW1idWxhYi5jb20vZW4vY3liZXJicmljayJ9LHsiaSI6InNkaS0xNCIsImsiOiJoZWFkZXIiLCJsIjoiR2VuZXJhbCIsImMiOm51bGwsInkiOm51bGwsInQiOm51bGx9LHsiaSI6InNkaS0xNSIsImsiOiJsaW5rIiwibCI6Iktub3dsZWRnZSBTaGFyaW5nIiwiYyI6Im1kaS1mb3J1bSIsInkiOiJwYWdlIiwidCI6Ii9lbi9rbm93bGVkZ2Utc2hhcmluZyJ9LHsiaSI6InNkaS0xNiIsImsiOiJsaW5rIiwibCI6Ikdsb3NzYXJ5IiwiYyI6Im1kaS10YWJsZS1vZi1jb250ZW50cyIsInkiOiJwYWdlIiwidCI6Ii9lbi9nbG9zc2FyeSJ9LHsiaSI6InNkaS0xNyIsImsiOiJsaW5rIiwibCI6Ildpa2kgVXBkYXRlcyIsImMiOiJtZGktbmV3LWJveCIsInkiOiJleHRlcm5hbCIsInQiOiJodHRwczovL3dpa2kuYmFtYnVsYWIuY29tL2VuL25ldy1hbmQtdXBkYXRlcyJ9LHsiaSI6InNkaS0xOCIsImsiOiJsaW5rIiwibCI6IkZBUSIsImMiOiJtZGktZnJlcXVlbnRseS1hc2tlZC1xdWVzdGlvbnMiLCJ5IjoicGFnZSIsInQiOiIvZW4vZmFxIn0seyJpIjoic2RpLTE5IiwiayI6ImxpbmsiLCJsIjoiQWJvdXQgVXMiLCJjIjoibWRpLWluZm9ybWF0aW9uLW91dGxpbmUiLCJ5IjoicGFnZSIsInQiOiIvZW4vYWJvdXQtdXMifSx7ImkiOiJzZGktMjAiLCJrIjoiZGl2aWRlciIsImwiOm51bGwsImMiOm51bGwsInkiOm51bGwsInQiOm51bGx9LHsiaSI6InNkaS0yMSIsImsiOiJsaW5rIiwibCI6IkNvbW11bml0eSBDb250cmlidXRpb25zIiwiYyI6Im1kaS13aWtpcGVkaWEiLCJ5IjoiZXh0ZXJuYWxibGFuayIsInQiOiJodHRwczovL3dpa2kuYmFtYnVsYWIuY29tL2VuL2NvbnRyaWJ1dGlvbi1ndWlkZSJ9XQ==" nav-mode="STATIC" effective-permissions="eyJjb21tZW50cyI6eyJyZWFkIjpmYWxzZSwid3JpdGUiOmZhbHNlLCJtYW5hZ2UiOmZhbHNlfSwiaGlzdG9yeSI6eyJyZWFkIjpmYWxzZX0sInNvdXJjZSI6eyJyZWFkIjpmYWxzZX0sInBhZ2VzIjp7InJlYWQiOnRydWUsIndyaXRlIjpmYWxzZSwibWFuYWdlIjpmYWxzZSwiZGVsZXRlIjpmYWxzZSwic2NyaXB0IjpmYWxzZSwic3R5bGUiOmZhbHNlfSwic3lzdGVtIjp7Im1hbmFnZSI6ZmFsc2V9fQ==" edit-shortcuts="eyJlZGl0RmFiIjp0cnVlLCJlZGl0TWVudUJhciI6dHJ1ZSwiZWRpdE1lbnVCdG4iOmZhbHNlLCJlZGl0TWVudUV4dGVybmFsQnRuIjpmYWxzZSwiZWRpdE1lbnVFeHRlcm5hbFVybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9vcmcvcmVwby9ibG9iL21haW4ve2ZpbGVuYW1lfSIsImVkaXRNZW51RXh0ZXJuYWxJY29uIjoibWRpLWdpdGh1YiIsImVkaXRNZW51RXh0ZXJuYWxOYW1lIjoiR2l0SHViIn0=" filename="en/filament-acc/filament/h2d-pla-and-petg-mutual-support.md"><template slot="contents"><div><h2 id="using-pla-basic-petg-as-mutual-supports" class="toc-header"><a class="toc-anchor" href="#using-pla-basic-petg-as-mutual-supports">¶</a> Using PLA Basic &amp; PETG as Mutual Supports</h2>
+<blockquote>
+<p><strong>Why this works:</strong> PLA and PETG don't bond well to each other — and that's exactly what makes them a great support pair. Supports snap off cleanly, leaving a much better surface finish.</p>
+</blockquote>
+<hr>
+<h2 id="overview" class="toc-header"><a class="toc-anchor" href="#overview">¶</a> Overview</h2>
+<p>Let's look at the three examples below, using the incompatible filament techniques covered in this section.</p>
+<p>In the image below, we can see 3 support approaches. The model was always printed in PETG, but the support filament varied between samples:</p>
+<p><img src="/software/bambu-studio/support/support_dino_comparison.png" alt="support_dino_comparison.png" width="800"></p>
+<hr>
+<h2 id="support-configurations-compared" class="toc-header"><a class="toc-anchor" href="#support-configurations-compared">¶</a> Support Configurations Compared</h2>
+<h4 id="h-1-petg-model-petg-supports" class="toc-header"><a class="toc-anchor" href="#h-1-petg-model-petg-supports">¶</a> 1 — PETG model + PETG supports</h4>
+<p>Using PETG for both the model and the supports provides the shortest print time and the highest filament efficiency.</p>
+<hr>
+<h4 id="h-2-petg-model-pla-supports" class="toc-header"><a class="toc-anchor" href="#h-2-petg-model-pla-supports">¶</a> 2 — PETG model + PLA supports</h4>
+<p>Only PLA is used for the supports. This results in the <strong>longest print time</strong> (5 h 3 min) and the <strong>highest filament usage</strong>. During printing, the toolhead needs to switch nozzles at almost every layer. Each nozzle change takes approximately 5 seconds, plus additional time to pressurize the nozzle at the purge tower.</p>
+<hr>
+<h4 id="h-3-petg-model-petg-support-base-pla-interface" class="toc-header"><a class="toc-anchor" href="#h-3-petg-model-petg-support-base-pla-interface">¶</a> 3 — PETG model + PETG support base + PLA interface</h4>
+<p>The support base is printed with PETG, while the support interface is printed with PLA. This reduces the total print time by <strong>1 hour and 20 minutes</strong> compared to the previous example. The time savings come mainly from fewer nozzle switches. The purge tower also uses significantly less filament — approximately half of the previous case.</p>
+<hr>
+<h3 id="surface-finish-results" class="toc-header"><a class="toc-anchor" href="#surface-finish-results">¶</a> Surface Finish Results</h3>
+<p>Below, we can see the supported section. The image sequence is the same as above.</p>
+<p><img src="/software/bambu-studio/support/dino_bottom.png" alt="dino_bottom.png" width="800"></p>
+<blockquote>
+<p><strong>❌ PETG supports on PETG model</strong><br>
+The bond between them is stronger. This makes the supports more difficult to remove and may leave marks or defects on the model surface.</p>
+</blockquote>
+<blockquote>
+<p><strong>✅ PLA supports on PETG model</strong><br>
+The surface finish is improved. The supports are easier to remove, and the model surface remains clean and well-defined.</p>
+</blockquote>
+<br>
+<h2 id="️-before-you-start" class="toc-header"><a class="toc-anchor" href="#️-before-you-start">¶</a> ⚠️ Before You Start</h2>
+<p>This guide <strong>only applies to</strong>:</p>
+<ul>
+<li><strong>Bambu PLA Basic</strong></li>
+<li><strong>Bambu PETG HF</strong> and <strong>Bambu PETG Basic</strong></li>
+</ul>
+<p>The following are <strong>not supported</strong> by this guide:</p>
+<ul>
+<li>PLA Matte, PLA Silk, PLA-CF, or any third-party PLA</li>
+<li>PETG Translucent, PETG-CF, or any third-party PETG</li>
+</ul>
+<blockquote>
+<p>💧 <strong>Dry your filaments first.</strong> PETG runs at a high enough temperature that any moisture in PLA will cause stringing and oozing.<br>
+See → <a href="/en/filament-acc/filament/dry-filament" class="is-internal-link is-valid-page">Filament Drying Recommendations</a></p>
+</blockquote>
+<hr>
+<h2 id="which-scenario-are-you-printing" class="toc-header"><a class="toc-anchor" href="#which-scenario-are-you-printing">¶</a> Which Scenario Are You Printing?</h2>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>My model is...</th>
+<th>My support is...</th>
+<th>Jump to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PETG HF or PETG Basic</td>
+<td><strong>PLA Basic</strong></td>
+<td><a href="#scenario-a-petg-model-pla-basic-support">Scenario A</a></td>
+</tr>
+<tr>
+<td>PLA Basic</td>
+<td><strong>PETG HF or PETG Basic</strong></td>
+<td><a href="#scenario-b-pla-basic-model-petg-support">Scenario B</a></td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="scenario-a-petg-model-pla-basic-support" class="toc-header"><a class="toc-anchor" href="#scenario-a-petg-model-pla-basic-support">¶</a> Scenario A — PETG Model + PLA Basic Support</h2>
+<blockquote>
+<p>PLA Basic acts as the support/interface. It prints cleanly under PETG and breaks away easily.</p>
+</blockquote>
+<h3 id="️-temperature-settings" class="toc-header"><a class="toc-anchor" href="#️-temperature-settings">¶</a> 🌡️ Temperature Settings</h3>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Filament</th>
+<th>Nozzle Temp</th>
+<th>Bed Temp</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PETG HF / PETG Basic</strong> (model)</td>
+<td>Default</td>
+<td>60 °C</td>
+</tr>
+<tr>
+<td><strong>PLA Basic</strong> (support)</td>
+<td>230 °C (all layers)</td>
+<td>60 °C</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Required print plate:</strong> Smooth PEI, High Temp Plate, or Textured PEI<br>
+<strong>Enclosed printers (X1, P1S, P2S):</strong> Open the door and/or top cover to prevent the chamber from getting too hot for PLA.</p>
+<div class="table-container"><table>
+  <tbody><tr>
+    <td><img src="/software/bambu-studio/support/pla_support_for_petg.jpg" width="700"></td>
+    <td><img src="/software/bambu-studio/support/petg_as_main_filament.jpg" width="700"></td>
+  </tr>
+  <tr>
+    <td>
+      <ul>
+        <li>1. Filament options</li>
+        <li>2. Edit</li>
+        <li>3. Filament tab</li>
+        <li>4. Select Support hotend - Auxiliary extruder in this case.</li>
+        <li>5. Adjust filament temperatures</li>
+        <li>6. Save the PLA support profile</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>1. Filament options</li>
+        <li>2. Edit</li>
+        <li>3. Filament tab</li>
+        <li>4. Select hotend - Main extruder in this case.</li>
+        <li>5. Adjust filament temperatures</li>
+        <li>6. Save the PETG profile</li>
+      </ul>
+    </td>
+  </tr>
+</tbody></table></div>
+<h3 id="️-support-configuration-in-bambu-studio" class="toc-header"><a class="toc-anchor" href="#️-support-configuration-in-bambu-studio">¶</a> ⚙️ Support Configuration in Bambu Studio</h3>
+<p>We recommend using <strong>PLA Basic only as the support interface</strong> (not the full support base). Using it as the full base increases print time and risks the support falling off.</p>
+<p><img src="/software/bambu-studio/support/support_parts_demontration.jpg" alt="support_parts_demontration.jpg" width="400"></p>
+<p><strong>Recommended setup:</strong></p>
+<p><img src="/software/bambu-studio/support/support_settings_marked.png" alt="support_settings_marked.png"></p>
+<hr>
+<h2 id="scenario-b-pla-basic-model-petg-support" class="toc-header"><a class="toc-anchor" href="#scenario-b-pla-basic-model-petg-support">¶</a> Scenario B — PLA Basic Model + PETG Support</h2>
+<blockquote>
+<p>PETG acts as the support/interface. It handles the higher bed temps needed for PLA adhesion and still releases cleanly.</p>
+</blockquote>
+<h3 id="️-temperature-settings-1" class="toc-header"><a class="toc-anchor" href="#️-temperature-settings-1">¶</a> 🌡️ Temperature Settings</h3>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Filament</th>
+<th>Nozzle Temp</th>
+<th>Bed Temp</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PLA Basic</strong> (model)</td>
+<td>230 °C (all layers)</td>
+<td>60 °C</td>
+</tr>
+<tr>
+<td><strong>PETG HF</strong> (support)</td>
+<td><strong>265 °C</strong> (all layers)</td>
+<td>60 °C</td>
+</tr>
+<tr>
+<td><strong>PETG Basic</strong> (support)</td>
+<td>Default</td>
+<td>60 °C</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Required print plate:</strong> Smooth PEI, High Temp Plate, or Textured PEI<br>
+<strong>Enclosed printers:</strong> Open the door and/or top cover during printing.</p>
+<p><strong>Additional setting for PETG as support:</strong></p>
+<ul>
+<li>Max volumetric speed → <strong>10 mm³/s</strong></li>
+</ul>
+<div class="table-container"><table>
+  <tbody><tr>
+    <td><img src="/software/bambu-studio/support/pla_model.png" width="700"></td>
+    <td><img src="/software/bambu-studio/support/petg_support_for_pla.png" width="700"></td>
+  </tr>
+  <tr>
+    <td>
+      <ul>
+        <li>1. Filament options</li>
+        <li>2. Edit</li>
+        <li>3. Filament tab</li>
+        <li>4. Select hotend - Main extruder in this case.</li>
+        <li>5. Adjust filament temperatures</li>
+        <li>6. Save the PLA support profile</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>1. Filament options</li>
+        <li>2. Edit</li>
+        <li>3. Filament tab</li>
+        <li>4. Select Support hotend - Auxiliary extruder in this case.</li>
+        <li>5. Adjust filament temperatures</li>
+        <li>6. Set the max. Volumetric speed to 10mm³/s</li>
+        <li>7. Save the PETG profile</li>
+      </ul>
+    </td>
+  </tr>
+</tbody></table></div>
+<h3 id="️-support-configuration-in-bambu-studio-1" class="toc-header"><a class="toc-anchor" href="#️-support-configuration-in-bambu-studio-1">¶</a> ⚙️ Support Configuration in Bambu Studio</h3>
+<p>We recommend using <strong>PETG only as the support interface</strong>. Using PETG as the full support base risks the support detaching from the model during printing.</p>
+<p><img src="/software/bambu-studio/support/support_parts_demontration.jpg" alt="support_parts_demontration.jpg" width="400"></p>
+<p><strong>Recommended setup:</strong></p>
+<p><img src="/software/bambu-studio/support/petg_support_for_pla_support_settings.png" alt="petg_support_for_pla_support_settings.png"></p>
+<hr>
+<h2 id="ready-to-use-preset-files" class="toc-header"><a class="toc-anchor" href="#ready-to-use-preset-files">¶</a> 📥 Ready-to-Use Preset Files</h2>
+<p>Download a <code>.3mf</code> preset and import your <code>.stl</code> model into it. All parameters are pre-configured.</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Preset</th>
+<th>Download</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PLA Basic supports PETG HF</td>
+<td><a href="/filament-acc/filament/pla-basic-petg-hf-support-each-other/pla_basic_supports_petg_hf.3mf" class="is-asset-link">Download .3mf</a></td>
+</tr>
+<tr>
+<td>PLA Basic supports PETG Basic</td>
+<td><a href="/filament-acc/filament/pla-basic-petg-hf-support-each-other/pla_basic_%E6%94%AF%E6%92%91_petg_basic.3mf" class="is-asset-link">Download .3mf</a></td>
+</tr>
+<tr>
+<td>PETG HF supports PLA Basic</td>
+<td><a href="/filament-acc/filament/pla-basic-petg-hf-support-each-other/petg_hf_supports_pla_basic.3mf" class="is-asset-link">Download .3mf</a></td>
+</tr>
+<tr>
+<td>PETG Basic supports PLA Basic</td>
+<td><a href="/filament-acc/filament/pla-basic-petg-hf-support-each-other/petg_basic_%E6%94%AF%E6%92%91_pla_basic.3mf" class="is-asset-link">Download .3mf</a></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>P2S users:</strong> The cooling fan settings differ slightly. Use these dedicated presets:</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Preset</th>
+<th>Download</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PLA Basic supports PETG HF (P2S)</td>
+<td><a href="/filament-acc/filament/pla-basic-petg-hf-support-each-other/pla_basic_%E6%94%AF%E6%92%91_petg_hf_@p2s.3mf" class="is-asset-link">Download .3mf</a></td>
+</tr>
+<tr>
+<td>PLA Basic supports PETG Basic (P2S)</td>
+<td><a href="/filament-acc/filament/pla-basic-petg-hf-support-each-other/pla_basic_%E6%94%AF%E6%92%91_petg_basic@p2s.3mf" class="is-asset-link">Download .3mf</a></td>
+</tr>
+<tr>
+<td>PETG HF supports PLA Basic (P2S)</td>
+<td><a href="/filament-acc/filament/pla-basic-petg-hf-support-each-other/petg_hf_%E6%94%AF%E6%92%91_pla_basic_@p2s.3mf" class="is-asset-link">Download .3mf</a></td>
+</tr>
+<tr>
+<td>PETG Basic supports PLA Basic (P2S)</td>
+<td><a href="/filament-acc/filament/pla-basic-petg-hf-support-each-other/petg_basic_%E6%94%AF%E6%92%91_pla_basic@p2s.3mf" class="is-asset-link">Download .3mf</a></td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="h-02mm-nozzle-users" class="toc-header"><a class="toc-anchor" href="#h-02mm-nozzle-users">¶</a> 🔧 0.2mm Nozzle Users</h2>
+<p>When using a 0.2mm nozzle for PLA/PETG mutual support printing, it is recommended to refer to the following figure to increase the line width to increase the viscosity, otherwise it may cause spaghetti. You can also use the modifier to modify the area near the support contact surface.</p>
+<p><img src="/filament-acc/filament/pla-basic-petg-hf-support-each-other/line_width.png" alt="line_width.png"></p>
+<hr>
+<h2 id="saving-your-settings-as-a-preset" class="toc-header"><a class="toc-anchor" href="#saving-your-settings-as-a-preset">¶</a> 💾 Saving Your Settings as a Preset</h2>
+<p>After modifying filament parameters in Bambu Studio, a prompt will appear asking you to save. Click <strong>"Save Modified Value"</strong> to store it as a User Preset, you won't need to reconfigure it next time.</p>
+<hr>
+<h2 id="end-notes" class="toc-header"><a class="toc-anchor" href="#end-notes">¶</a> End Notes</h2>
+<blockquote>
+<p>We hope this guide has provided clear and practical support.</p>
+<p>If the issue remains unresolved, please submit a <a href="https://bambulab.com/en/my/support/tickets/create" target="_blank" class="is-external-link">support ticket</a> and include yourrecent printer logs and additional pictures or other details. Our technical team will review your requestand provide detailed assistance.<br>
+You can also visit <a href="https://support.bambulab.com/en?from=6&amp;lang=en-us" target="_blank" class="is-external-link">Bambu AI</a>,which can instantly answer common questions and provide you with operational guidance.</p>
+</blockquote>
+</div></template><template slot="comments"><div><comments></comments></div></template></page></div><script>
+  (function(){
+    // disable in studio and handy
+    if (/(bbl-slicer|bbl-suite|bbl-app)/i.test(navigator.userAgent)) {
+      return
+    }
+    var timer = setInterval(() => {
+      var footer = document.querySelector('.v-footer > div');
+      if (!footer) {
+        return;
+      }
+      clearInterval(timer);
+      setupTrustArc(footer);
+    }, 1000)
+
+    function setupTrustArc(container) {
+      // <link rel="stylesheet" type="text/css" href="//trustarc.bambulab.com/css/banner-styles.css">
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.type = "text/css";
+      link.href = "//trustarc.bambulab.com/css/banner-styles.css";
+      document.head.appendChild(link);
+
+      // <span id="teconsent"></span>
+      var btn = document.createElement('span');
+      btn.id = 'teconsent';
+      btn.style = 'margin-left: 10px';
+      container.appendChild(btn);
+
+      // <div id="consent-banner"></div>
+      var banner = document.createElement('div');
+      banner.id = 'consent-banner';
+      container.appendChild(banner);
+
+
+      var l = location.pathname.split('/').filter(Boolean)[0] || "en"
+      if (l === "zh") l = "zh_hans";
+
+      var t = document.createElement('script');
+      t.src = 'https://consent.trustarc.com/v2/notice/uizsmj?pcookie&locale=' + l;
+      t.async = true;
+      container.appendChild(t);
+    }
+
+  })()
+
+</script>
+
+
+<script type="text/javascript">
+  //The following is related to minority languages
+  (function() {
+    /* ===== Styles(no need to modify)===== */
+    var style = document.createElement('style');
+    style.textContent = `
+        .translation-notice {
+          display: flex;
+          align-items: flex-start;
+          margin-top: 24px;
+          padding: 12px 16px;
+          background-color: #e8f4fd;
+          border: 1px solid #b8dff5;
+          border-left: 4px solid #4aa3df;
+          border-radius: 4px;
+          color: #2c6fa0;
+          font-size: 14px;
+          line-height: 1.6;
+        }
+        .translation-notice-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 20px;
+          width: 20px;
+          height: 20px;
+          margin-right: 12px;
+          margin-top: 2px;
+          background-color: #4aa3df;
+          color: #ffffff;
+          border-radius: 50%;
+          font-size: 12px;
+          font-weight: bold;
+          flex-shrink: 0;
+        }
+        .translation-notice-text {
+          flex: 1;
+          word-wrap: break-word;
+        }
+        .translation-notice-text a {
+          color: #2c6fa0;
+          text-decoration: underline;
+          white-space: nowrap;
+        }
+        .translation-notice-text a:hover { color: #1a4d73; }
+        .locale-ai-badge {
+          display: inline-block;
+          margin-left: 6px;
+          padding: 1px 5px;
+          background-color: #4aa3df;
+          color: #ffffff;
+          font-size: 10px;
+          font-weight: bold;
+          border-radius: 3px;
+          vertical-align: middle;
+          line-height: 1.4;
+        }
+        /* 语言选择按钮上显示当前语言简称 + 箭头，提升可发现性
+           （不少用户不知道右上角地球图标能点开切换语言）。 */
+        .locale-btn-label {
+          display: inline-flex;
+          align-items: center;
+          margin-left: 4px;
+          font-size: 13px;
+          font-weight: 600;
+          line-height: 1;
+          text-transform: uppercase;
+          letter-spacing: .3px;
+        }
+        .locale-btn-label .mdi { font-size: 18px; line-height: 1; }
+        /* 图标按钮本是圆形固定宽度，加了文字后放宽为自适应 */
+        .v-btn--icon.has-locale-label {
+          width: auto !important;
+          min-width: 44px;
+          padding: 0 8px !important;
+        }
+      `;
+    document.head.appendChild(style);
+
+    var email = '<a href="mailto:wiki@bambulab.com">wiki@bambulab.com</a>';
+    var icon = '<span class="translation-notice-icon">ℹ</span>';
+    function notice(text) {
+      return '<div class="translation-notice">' + icon +
+        '<span class="translation-notice-text">' + text + '</span></div>';
+    }
+
+    /* ============================================================
+     *  CONFIGURATION — to add/edit a language, edit ONLY this list.
+     *  Each entry keeps everything for one language together.
+     *  Array order = menu display order (left to right).
+     *
+     *  Fields per language:
+     *    code   : locale code (matches document lang / data-locale)
+     *    name   : the language's NATIVE name as shown in the menu
+     *             (lowercase; used to detect the language from menu text)
+     *    ai     : true  = AI-translated language (shows "AI" badge +
+     *                     disclaimer, controlled by `paths`)
+     *             false = native/source language (no badge, no disclaimer)
+     *    paths  : (AI languages only) where to SHOW this language:
+     *               null     -> show on all pages (translation complete)
+     *               []       -> hidden everywhere (translation incomplete)
+     *               ['p1']   -> show only under /<locale>/p1/
+     *    footer : (AI languages only) disclaimer text in that language.
+     *             Wrap with notice(...). Configure even while hidden so it
+     *             takes effect immediately once `paths` is enabled.
+     *
+     *  注意：SUPPORTED 列表也存在于 head 的首页语言跳转脚本里，
+     *  新增/删除语言时两处都要同步。
+     * ============================================================ */
+    var LANGUAGES = [
+      { code: 'en',    name: 'english',    ai: false },
+      { code: 'zh',    name: '中文',        ai: false },
+      { code: 'pt-br', name: 'português',  ai: true, paths: null,
+        footer: notice('Este conteúdo foi traduzido por IA e pode conter pequenas imprecisões ou problemas de redação. Caso note algum problema, entre em contato conosco pelo ' + email + ' e faremos a correção o mais rápido possível.') },
+      { code: 'de',    name: 'deutsch',    ai: true, paths: null,
+        footer: notice('Dieser Inhalt wurde durch KI übersetzt und kann kleinere Ungenauigkeiten oder Formulierungsprobleme enthalten. Sollten Ihnen Auffälligkeiten auffallen, kontaktieren Sie uns bitte unter ' + email + ', damit wir sie schnellstmöglich korrigieren können.') },
+      { code: 'es',    name: 'español',    ai: true, paths: null,
+        footer: notice('Este contenido ha sido traducido por IA y puede contener pequeñas imprecisiones o problemas de redacción. Si detecta algún problema, póngase en contacto con nosotros en ' + email + ' y lo corregiremos lo antes posible.') },
+      { code: 'fr',    name: 'français',   ai: true, paths: null,
+        footer: notice('Ce contenu a été traduit par IA et peut contenir de légères imprécisions ou des problèmes de formulation. Si vous remarquez un problème, veuillez nous contacter à ' + email + ' et nous le corrigerons dans les plus brefs délais.') },
+      { code: 'it',    name: 'italiano',   ai: true, paths: null,
+        footer: notice('Questo contenuto è stato tradotto dall\'IA e potrebbe contenere piccole imprecisioni o problemi di formulazione. Se notate qualche problema, contattateci all\'indirizzo ' + email + ' e provvederemo a correggerlo il prima possibile.') },
+      { code: 'nl',    name: 'nederlands', ai: true, paths: null,
+        footer: notice('Deze inhoud is door AI vertaald en kan kleine onnauwkeurigheden of formuleringsproblemen bevatten. Mocht u iets opmerken, neem dan contact met ons op via ' + email + ', zodat we dit zo snel mogelijk kunnen corrigeren.') },
+      { code: 'ja',    name: '日本語',      ai: true, paths: null,
+        footer: notice('このコンテンツはAIによって翻訳されており、軽微な不正確さや表現上の問題が含まれる可能性があります。お気づきの点がございましたら、' + email + 'までご連絡ください。できるだけ早く修正いたします。') },
+      { code: 'ko',    name: '한국어',      ai: true, paths: null,
+        footer: notice('이 콘텐츠는 AI에 의해 번역되었으며 사소한 부정확함이나 표현상의 문제가 포함될 수 있습니다. 문제를 발견하시면 ' + email + '로 연락해 주시기 바랍니다. 최대한 빨리 수정하겠습니다.') },
+      { code: 'ru',    name: 'русский',    ai: true, paths: null,
+        footer: notice('Этот контент был переведён с помощью ИИ и может содержать незначительные неточности или стилистические проблемы. Если вы заметили какие-либо ошибки, пожалуйста, свяжитесь с нами по адресу ' + email + ', и мы исправим их как можно скорее.') },
+      { code: 'tr',    name: 'türkçe',     ai: true, paths: null,
+        footer: notice('Bu içerik yapay zeka tarafından çevrilmiştir ve küçük yanlışlıklar veya ifade sorunları içerebilir. Herhangi bir sorun fark ederseniz, lütfen ' + email + ' adresinden bizimle iletişime geçin; en kısa sürede düzelteceğiz.') },
+      { code: 'pl',    name: 'polski',     ai: true, paths: null,
+        footer: notice('Ta treść została przetłumaczona przez AI i może zawierać drobne nieścisłości lub błędy językowe. Jeśli zauważysz jakiekolwiek problemy, skontaktuj się z nami pod adresem ' + email + ', a poprawimy je tak szybko, jak to możliwe.') },
+      { code: 'cs',    name: 'čeština',    ai: true, paths: null,
+        footer: notice('Tento obsah byl přeložen pomocí AI a může obsahovat drobné nepřesnosti nebo jazykové nedostatky. Pokud narazíte na jakékoli problémy, kontaktujte nás na adrese ' + email + ' a co nejdříve je opravíme.') },
+      { code: 'hu',    name: 'magyar',     ai: true, paths: null,
+        footer: notice('Ez a tartalom mesterséges intelligencia segítségével készült fordítás, ezért kisebb pontatlanságokat vagy nyelvi hibákat tartalmazhat. Ha bármilyen problémát észlel, kérjük, lépjen kapcsolatba velünk a következő címen: ' + email + ', és a lehető leghamarabb javítjuk.') },
+      { code: 'ro',    name: 'română',     ai: true, paths: null,
+        footer: notice('Acest conținut a fost tradus cu ajutorul inteligenței artificiale și poate conține mici inadvertențe sau formulări imperfecte. Dacă observați orice problemă, vă rugăm să ne contactați la adresa ' + email + ', iar noi o vom corecta cât mai curând posibil.') },
+      { code: 'sv',    name: 'svenska',     ai: true, paths: null,
+        footer: notice('Detta innehåll har översatts med hjälp av AI och kan innehålla mindre felaktigheter eller språkliga brister. Om du upptäcker några problem, kontakta oss på ' + email + ', så rättar vi dem så snart som möjligt.') },
+      { code: 'el',    name: 'ελληνικά',    ai: true, paths: null,
+        footer: notice('Αυτό το περιεχόμενο μεταφράστηκε με τη βοήθεια τεχνητής νοημοσύνης και ενδέχεται να περιέχει μικρές ανακρίβειες ή γλωσσικές ατέλειες. Εάν εντοπίσετε οποιοδήποτε πρόβλημα, επικοινωνήστε μαζί μας στη διεύθυνση ' + email + ' και θα το διορθώσουμε το συντομότερο δυνατό.') },
+      { code: 'th',    name: 'ไทย',          ai: true, paths: null,
+        footer: notice('เนื้อหานี้ได้รับการแปลด้วยความช่วยเหลือของ AI และอาจมีข้อผิดพลาดเล็กน้อยหรือข้อบกพร่องทางภาษา หากคุณพบปัญหาใด ๆ โปรดติดต่อเราที่ ' + email + ' และเราจะแก้ไขโดยเร็วที่สุด') },
+      { code: 'vi',    name: 'tiếng Việt',   ai: true, paths: null,
+        footer: notice('Nội dung này được dịch với sự hỗ trợ của AI và có thể chứa một số điểm chưa chính xác hoặc hạn chế nhỏ về ngôn ngữ. Nếu bạn phát hiện bất kỳ vấn đề nào, vui lòng liên hệ với chúng tôi qua địa chỉ ' + email + ' và chúng tôi sẽ khắc phục sớm nhất có thể.') },
+      { code: 'ar',    name: 'العربية',    ai: true, paths: null,
+        footer: notice('تمت ترجمة هذا المحتوى باستخدام الذكاء الاصطناعي، وقد يحتوي على بعض الأخطاء البسيطة أو الصياغات غير الدقيقة. إذا لاحظت أي مشكلة، يُرجى التواصل معنا عبر ' + email + ' وسنعمل على تصحيحها في أقرب وقت ممكن.') },
+    ];
+
+    /* ==========   Main logic below, no need to modify  ================ */
+
+    /* Derive the lookup structures the logic uses from the single LANGUAGES list. */
+    var aiLocales = LANGUAGES.filter(function(l) { return l.ai; }).map(function(l) { return l.code; });
+    var localeOrder = LANGUAGES.map(function(l) { return l.code; });
+    var aiEnabledPaths = {};
+    var footers = {};
+    var localeNameMap = {};
+    LANGUAGES.forEach(function(l) {
+      localeNameMap[l.name] = l.code;
+      if (l.ai) {
+        aiEnabledPaths[l.code] = (l.paths === undefined) ? [] : l.paths;
+        if (l.footer) footers[l.code] = l.footer;
+      }
+    });
+    var locale = (document.documentElement.lang || '').toLowerCase();
+    var sortedNames = Object.keys(localeNameMap).sort(function(a, b) {
+      return b.length - a.length;
+    });
+    function detectLocale(text) {
+      var t = (text || '').toLowerCase().trim();
+      for (var i = 0; i < sortedNames.length; i++) {
+        if (t.indexOf(sortedNames[i].toLowerCase()) !== -1) {
+          return localeNameMap[sortedNames[i]];
+        }
+      }
+      return '';
+    }
+    function cleanBrackets(el) {
+      if (!el) return;
+      var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+      var nodes = [], n;
+      while (n = walker.nextNode()) nodes.push(n);
+      nodes.forEach(function(n) {
+        var c = n.textContent.replace(/\s*[（(][^）)]*[）)]\s*/g, '').trim();
+        if (n.textContent !== c) n.textContent = c;
+      });
+    }
+    function isAiEnabledPathFor(targetLocale) {
+      var rule = aiEnabledPaths[targetLocale];
+      if (rule === null || rule === undefined) return true;
+      var seg = window.location.pathname.split('/').filter(Boolean);
+      if (seg.length < 2) return false;
+      return rule.indexOf(seg[1].toLowerCase()) !== -1;
+    }
+    // 当前页面语言：优先取 URL 首段（与 head 跳转脚本、搜索 locale 口径一致，
+    // 不受 Chrome 网页翻译篡改 documentElement.lang 的影响），回退到 lang 属性。
+    function currentLocaleCode() {
+      var seg = window.location.pathname.split('/').filter(Boolean);
+      var fromPath = (seg[0] || '').toLowerCase();
+      if (localeOrder.indexOf(fromPath) !== -1) return fromPath;
+      return locale;  // 回退：document.documentElement.lang
+    }
+    // 在语言选择按钮（含 .mdi-web 地球图标的那个 v-btn）内，图标之后追加当前语言
+    // 简称 + 向右箭头，让“这里能切换语言”更直观。SPA 会重渲染按钮，故每次都检查。
+    function decorateLocaleButton() {
+      var webIcon = document.querySelector('header .mdi-web, .v-toolbar .mdi-web');
+      if (!webIcon) return;
+      var btn = webIcon.closest('button.v-btn');
+      if (!btn || btn.querySelector('.locale-btn-label')) return;
+      var code = currentLocaleCode();
+      if (!code) return;
+      var label = document.createElement('span');
+      label.className = 'locale-btn-label notranslate';
+      label.setAttribute('translate', 'no');
+      // 简称用 locale code 大写（与菜单里蓝色 chip 一致，如 pt-br -> PT-BR）
+      label.appendChild(document.createTextNode(code.toUpperCase()));
+      var chevron = document.createElement('i');
+      chevron.className = 'v-icon notranslate mdi mdi-chevron-right';
+      chevron.setAttribute('aria-hidden', 'true');
+      label.appendChild(chevron);
+      btn.appendChild(label);
+      btn.classList.add('has-locale-label');
+    }
+    // 记住用户主动选择的语言：点击某语言菜单项时写 cookie（含点 English 写 en）。
+    // head 中的首页自动跳转逻辑据此 cookie 决定跳向哪个语言。
+    function rememberLangChoice(code) {
+      if (!code) return;
+      document.cookie = 'wiki_lang=' + encodeURIComponent(code) +
+        '; path=/; max-age=31536000; samesite=lax';
+    }
+    var observer = new MutationObserver(function() {
+      decorateLocaleButton();
+      if (aiLocales.indexOf(locale) !== -1 && isAiEnabledPathFor(locale)) {
+        var content = document.querySelector('.contents');
+        if (content && footers[locale] && !content.querySelector('.translation-notice')) {
+          content.insertAdjacentHTML('beforeend', footers[locale]);
+        }
+      }
+      var items = document.querySelectorAll('.v-menu__content .v-list-item, .locale-selector .v-list-item');
+      if (items.length === 0) return;
+      items.forEach(function(item) {
+        var titleEl = item.querySelector('.v-list-item__title') || item;
+        if (!item.querySelector('.locale-ai-badge')) {
+          var code = detectLocale(item.textContent);
+          if (code) {
+            item.setAttribute('data-locale', code);
+            if (aiLocales.indexOf(code) !== -1) {
+              var badge = document.createElement('span');
+              badge.className = 'locale-ai-badge';
+              badge.textContent = 'AI';
+              titleEl.appendChild(badge);
+            }
+          }
+        }
+        // 用户点击语言项时记住其选择（每项只绑一次）
+        if (!item.hasAttribute('data-lang-click-bound')) {
+          item.setAttribute('data-lang-click-bound', '1');
+          item.addEventListener('click', function() {
+            rememberLangChoice(this.getAttribute('data-locale'));
+          });
+        }
+        cleanBrackets(titleEl);
+        var code = item.getAttribute('data-locale');
+        if (code && aiLocales.indexOf(code) !== -1) {
+          item.style.display = isAiEnabledPathFor(code) ? '' : 'none';
+        }
+      });
+      var container = items[0].parentElement;
+      if (!container.hasAttribute('data-sorted')) {
+        var all = container.querySelectorAll('.v-list-item[data-locale]');
+        if (all.length > 0) {
+          Array.from(all).sort(function(a, b) {
+            var ai = localeOrder.indexOf(a.getAttribute('data-locale'));
+            var bi = localeOrder.indexOf(b.getAttribute('data-locale'));
+            return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+          }).forEach(function(el) { container.appendChild(el); });
+          container.setAttribute('data-sorted', 'true');
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  })();
+</script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3a7a313ff49150b',t:'MTc4OTMwNzU5NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>

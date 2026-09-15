@@ -23,15 +23,16 @@ by side, and one row carrying the three tweeter options.  A row panel is drawn
 by the same code, under the same camera and the same declared frame, as the
 matching single cell, so a row and its cells cannot disagree.
 
-Geometry is read from the promoted build tree, never regenerated here.  Build
+Geometry is read from canonical STL files and restored to assembly space
+using each hash-checked print-orientation authority; never regenerated here.  Build
 the inputs first with the ordinary remote targets (``make``, ``make
 obiwan_wings``, ``make vase_tebm35c10_4_cad``) plus the local candidate target
 ``make obiwan_bmr_crescent_cad``; this script fails closed and names the
 missing target when an input is absent.
 
-The renderer is the project-native one used by ``scripts/export_obiwan_wings.py``:
-build123d tessellation into a Matplotlib ``Poly3DCollection`` under an
-orthographic projection.  Output is deterministic -- no timestamps and no
+The renderer uses VTK with an actual depth buffer:
+Canonical meshes under an orthographic projection; Matplotlib only
+composes labels and rows.  Output is deterministic -- no timestamps and no
 Matplotlib ``Software`` tag -- so an unchanged build re-renders byte-identical
 PNGs.
 
@@ -43,7 +44,6 @@ Ordinary use is the local packaging target::
 from __future__ import annotations
 
 import argparse
-import math
 import os
 from pathlib import Path
 
@@ -125,6 +125,7 @@ SCALE_GROUPS = {
         "center": (0.0, 66.0, 235.0),
         "zoom": 1.12,
     },
+    "assembly": {"label": "assembly illustration scale", "span": (390.0, 180.0, 620.0), "center": (0.0, 66.0, 260.0), "zoom": 1.0},
     "tweeter_option": {
         "label": "tweeter-option scale",
         # Sized to the extreme of each axis across all four options with a
@@ -215,6 +216,12 @@ def _product_cells() -> tuple[dict, ...]:
 
 CELLS = (
     *_product_cells(),
+    _cell("obiwan_bare", "Obi-Wan — bare collars", "Bare collars", "product",
+          (("base", _state_sources("no_floor_stand")["obiwan_core"]),)),
+    {**_cell("obiwan_exploded", "Obi-Wan — assembly illustration", "Exploded, illustrative offsets", "assembly",
+          (("base", _state_sources("no_floor_stand")["obiwan_core"]),
+           ("top", _state_sources("no_floor_stand")["obiwan_crescent"]),
+           ("perimeter", OBIWAN_WINGS))), "exploded": True},
     _cell(
         "tweeter_nd25fw4_crescent",
         "ND25FW-4 face-to-face crescent",
@@ -310,52 +317,49 @@ def _resolve(path: Path) -> Path:
     return absolute
 
 
-def _display_triangles(path: Path):
-    """Tessellate one STEP file into display-space triangles.
-
-    Display coordinates are `(world X, -world Z, world Y)`: Matplotlib's third
-    axis becomes the baffle height and its second axis becomes rear-to-front
-    depth, so the shared camera angles read as an ordinary product ISO.
-    """
+def _display_triangles(path: Path, exploded: bool = False):
+    """Render canonical STL bytes, inverted through their orientation authority."""
+    import hashlib
+    import json
     import numpy as np
-    from build123d import import_step
+    from delivery_contract import canonical_source
 
-    shape = import_step(str(_resolve(path)))
-    vertices, triangles = shape.tessellate(
-        MESH_TOLERANCE_MM, MESH_ANGULAR_TOLERANCE)
-    xyz = np.asarray(
-        [[float(vertex.X), float(vertex.Y), float(vertex.Z)]
-         for vertex in vertices], dtype=float)
-    indices = np.asarray(triangles, dtype=int)
-    if xyz.size == 0 or indices.size == 0:
-        raise SystemExit(f"ISO-matrix input tessellated to nothing: {path}")
-    display = np.column_stack((xyz[:, 0], -xyz[:, 2], xyz[:, 1]))
-    return display[indices]
-
-
-def _shaded_facecolors(color: str, triangles):
-    """Per-facet Lambert shading of one base colour.
-
-    Matplotlib's own ``Poly3DCollection(shade=True)`` has moved around across
-    releases; doing the Lambert term here keeps the matrix reproducible on any
-    supported Matplotlib and lets every cell share one declared light.
-    """
-    import numpy as np
-    from matplotlib.colors import to_rgb
-
-    normals = np.cross(
-        triangles[:, 1] - triangles[:, 0],
-        triangles[:, 2] - triangles[:, 0])
-    lengths = np.linalg.norm(normals, axis=1)
-    lengths[lengths == 0.0] = 1.0
-    normals /= lengths[:, None]
-    # Two-sided: a tessellated STEP mixes facet windings and a signed term
-    # would blacken half of an otherwise continuous surface.
-    lambert = np.abs(normals @ np.asarray(LIGHT_DIRECTION, dtype=float))
-    intensity = AMBIENT_LIGHT + (1.0 - AMBIENT_LIGHT) * lambert
-    rgb = np.asarray(to_rgb(color), dtype=float)[None, :] * intensity[:, None]
-    return np.clip(
-        np.column_stack((rgb, np.ones(len(triangles)))), 0.0, 1.0)
+    entries = json.loads((PROJECT_ROOT / "to_print/catalog.json").read_text())["entries"]
+    if path.stem in {"b2_split", "v1l_split", "obiwan_split", "obiwan_attachments"}:
+        family = {"b2_split": "stock", "v1l_split": "slim", "obiwan_split": "obiwan", "obiwan_attachments": "obiwan"}[path.stem]
+        slots = {"04"} if path.stem == "obiwan_attachments" else ({"01", "02", "03"} if family == "obiwan" else {"01", "02", "03", "04"})
+        selected = [e for e in entries if e["family"] == family and e["logical_slot"] in slots and not e.get("composite_plate") and (e["logical_slot"] != "01" or e["state"] == path.parent.name)]
+        sources = [canonical_source(PROJECT_ROOT, e) for e in selected]
+    elif path == OBIWAN_WINGS:
+        sources = sorted((PROJECT_ROOT / "build/wings/flat/stl").glob("*split2*.stl"))
+    else:
+        sources = [_resolve(path.with_suffix(".stl"))]
+    if not sources:
+        raise ValueError(f"no canonical meshes for {path}")
+    clouds = []
+    for source in sources:
+        sidecar = json.loads(source.with_suffix(".print.json").read_text())
+        raw = source.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != sidecar["stl_sha256"]:
+            raise ValueError(f"stale render source authority: {source}")
+        count = int.from_bytes(raw[80:84], 'little')
+        dtype = np.dtype([('normal', '<f4', (3,)), ('vertices', '<f4', (3,3)), ('attribute', '<u2')])
+        points = np.frombuffer(raw, dtype=dtype, count=count, offset=84)['vertices'].astype(float)
+        inverse = np.linalg.inv(np.asarray(sidecar['source_to_stl_matrix'], dtype=float))
+        world = points @ inverse[:3, :3].T + inverse[:3, 3]
+        if exploded:
+            if 'bottom' in source.stem:
+                world[:, :, 1] -= 18
+            elif 'keyed_2' in source.stem:
+                world[:, :, 1] += 12
+            elif 'um_carrier' in source.stem:
+                world[:, :, 1] += 42
+            elif 'crescent' in source.stem:
+                world[:, :, 1] += 72
+            elif 'wing' in source.stem:
+                world[:, :, 0] += -30 if 'left' in source.stem else 30
+        clouds.append(np.stack((world[:,:,0], -world[:,:,2], world[:,:,1]), axis=-1))
+    return np.concatenate(clouds)
 
 
 def _frame(group: dict, cloud):
@@ -370,46 +374,79 @@ def _frame(group: dict, cloud):
     return center - span / 2.0, center + span / 2.0
 
 
-def _draw(axes, cell: dict) -> list[str]:
-    """Draw one cell into a prepared 3-D axes; return the roles it used."""
-    from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+def _vtk_pixels(cell: dict):
+    """Depth-buffered orthographic CAD rendering; no painter triangle sorting."""
     import numpy as np
+    import vtk
+    from vtk.util.numpy_support import numpy_to_vtk, numpy_to_vtkIdTypeArray, vtk_to_numpy
+    from matplotlib.colors import to_rgb
 
     group = SCALE_GROUPS[cell["scale_group"]]
-    axes.set_proj_type("ortho")
-    axes.set_facecolor(BACKGROUND)
-
-    roles = []
-    cloud = []
-    facets = []
-    colors = []
+    renderer = vtk.vtkRenderer()
+    renderer.SetBackground(*to_rgb(BACKGROUND))
+    roles, cloud = [], []
     for role, path in cell["parts"]:
-        triangles = _display_triangles(path)
-        facets.append(triangles)
-        colors.append(_shaded_facecolors(ROLE_COLORS[role], triangles))
-        cloud.append(triangles.reshape(-1, 3))
+        triangles = _display_triangles(path, cell.get("exploded", False))
+        points = triangles.reshape(-1, 3)
+        cloud.append(points)
+        vtkpoints = vtk.vtkPoints()
+        vtkpoints.SetData(numpy_to_vtk(points, deep=True))
+        cells = np.column_stack((np.full(len(triangles), 3, dtype=np.int64),
+                                 np.arange(len(points), dtype=np.int64).reshape(-1, 3)))
+        polygons = vtk.vtkCellArray()
+        polygons.ImportLegacyFormat(numpy_to_vtkIdTypeArray(cells.ravel(), deep=True))
+        mesh = vtk.vtkPolyData()
+        mesh.SetPoints(vtkpoints)
+        mesh.SetPolys(polygons)
+        clean = vtk.vtkCleanPolyData()
+        clean.SetInputData(mesh)
+        normals = vtk.vtkPolyDataNormals()
+        normals.SetInputConnection(clean.GetOutputPort())
+        normals.SetFeatureAngle(40)
+        normals.ConsistencyOn()
+        normals.AutoOrientNormalsOn()
+        mapper = vtk.vtkPolyDataMapper()
+        mapper.SetInputConnection(normals.GetOutputPort())
+        actor = vtk.vtkActor()
+        actor.SetMapper(mapper)
+        actor.GetProperty().SetColor(*to_rgb(ROLE_COLORS[role]))
+        actor.GetProperty().SetAmbient(0.35)
+        actor.GetProperty().SetDiffuse(0.65)
+        actor.GetProperty().SetSpecular(0.12)
+        actor.GetProperty().SetSpecularPower(25)
+        renderer.AddActor(actor)
         if role not in roles:
             roles.append(role)
-
-    # Every part goes into ONE collection with per-facet colours.  Matplotlib
-    # depth-sorts whole collections against each other by a single value, so
-    # separate collections let a later part occlude an earlier one outright --
-    # Slim's vase covered its own V1L base that way.  Inside one collection
-    # the sort is per facet, which is what interleaves the parts correctly.
-    # Facet shading rather than a wireframe: a review-resolution mesh drawn
-    # with visible edges reads as noise on the large flat acoustic faces, and
-    # hides the shape these images exist to show.
-    axes.add_collection3d(Poly3DCollection(
-        np.concatenate(facets), facecolors=np.concatenate(colors),
-        edgecolors="none", alpha=1.0))
-
     mins, maxs = _frame(group, np.vstack(cloud))
-    axes.set_xlim(float(mins[0]), float(maxs[0]))
-    axes.set_ylim(float(mins[1]), float(maxs[1]))
-    axes.set_zlim(float(mins[2]), float(maxs[2]))
-    axes.set_box_aspect(
-        tuple(float(value) for value in group["span"]), zoom=group["zoom"])
-    axes.view_init(elev=ISO_ELEV_DEG, azim=ISO_AZIM_DEG)
+    center = (mins + maxs) / 2
+    elev, azim = np.radians([ISO_ELEV_DEG, ISO_AZIM_DEG])
+    direction = np.array([np.cos(elev)*np.cos(azim), np.cos(elev)*np.sin(azim), np.sin(elev)])
+    camera = renderer.GetActiveCamera()
+    camera.SetFocalPoint(*center)
+    camera.SetPosition(*(center + direction * 1200))
+    camera.SetViewUp(0, 0, 1)
+    camera.ParallelProjectionOn()
+    camera.SetParallelScale(max(group["span"]) * 0.58 / group["zoom"])
+    renderer.ResetCameraClippingRange()
+    window = vtk.vtkRenderWindow()
+    window.SetOffScreenRendering(1)
+    window.SetSize(960, 960)
+    window.SetMultiSamples(4)
+    window.AddRenderer(renderer)
+    window.Render()
+    capture = vtk.vtkWindowToImageFilter()
+    capture.SetInput(window)
+    capture.SetInputBufferTypeToRGB()
+    capture.ReadFrontBufferOff()
+    capture.Update()
+    pixels = vtk_to_numpy(capture.GetOutput().GetPointData().GetScalars()).reshape(960, 960, 3)[::-1].copy()
+    window.Finalize()
+    return pixels, roles
+
+
+def _draw(axes, cell: dict) -> list[str]:
+    pixels, roles = _vtk_pixels(cell)
+    axes.imshow(pixels)
     axes.set_axis_off()
     return roles
 
@@ -454,7 +491,7 @@ def _render(cell: dict, output: Path) -> None:
     group = SCALE_GROUPS[cell["scale_group"]]
     fig = plt.figure(
         figsize=FIGURE_INCHES, dpi=FIGURE_DPI, facecolor=BACKGROUND)
-    axes = fig.add_subplot(111, projection="3d")
+    axes = fig.add_subplot(111)
     roles = _draw(axes, cell)
 
     fig.text(
@@ -463,11 +500,9 @@ def _render(cell: dict, output: Path) -> None:
     fig.text(
         0.035, 0.925, _camera_line(group),
         fontsize=9, color="#66717e", va="top")
-    axes.legend(
-        handles=_legend_handles(roles),
-        loc="lower left", bbox_to_anchor=(0.0, 0.0), borderaxespad=0.0,
-        fontsize=8, framealpha=0.92)
-    fig.subplots_adjust(left=0.0, right=1.0, bottom=0.0, top=1.0)
+    fig.legend(handles=_legend_handles(roles), loc="lower center",
+               fontsize=8, ncols=len(roles), frameon=False)
+    fig.subplots_adjust(left=0.0, right=1.0, bottom=0.06, top=0.87)
 
     _save(
         fig, output,
@@ -484,7 +519,7 @@ def _panel_pixels(cell: dict):
     figure = plt.figure(
         figsize=(ROW_PANEL_INCHES, ROW_PANEL_INCHES), dpi=FIGURE_DPI,
         facecolor=BACKGROUND)
-    axes = figure.add_axes((0.0, 0.0, 1.0, 1.0), projection="3d")
+    axes = figure.add_axes((0.0, 0.0, 1.0, 1.0))
     roles = _draw(axes, cell)
     figure.canvas.draw()
     pixels = np.asarray(figure.canvas.buffer_rgba())[:, :, :3].copy()

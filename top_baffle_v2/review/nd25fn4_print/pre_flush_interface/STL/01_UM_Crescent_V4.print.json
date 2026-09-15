@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "part": "nd25fn4_v4_fused_um_shared",
+  "stl": "01_UM_Crescent_V4.stl",
+  "stl_sha256": "dff05473b634c01feee04250280f92a3e0ee1b4d5dfbe662e22def69eedd933f",
+  "source_frame": "Obi-Wan installed, X lateral / Y up / Z forward, mm",
+  "source_to_stl_matrix": [
+    [
+      0.7071067811865476,
+      0.7071067811865475,
+      0.0,
+      -190.10355828014332
+    ],
+    [
+      0.7071067811865475,
+      -0.7071067811865476,
+      0.0,
+      418.7905105824157
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      20.69999923706055
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "print_orientation": "front_face_down_45_degree_diagonal",
+  "compatible_LM_configurations": [
+    "no_floor_stand",
+    "floor_stand"
+  ],
+  "replaces": "UM carrier plus separate V4 housing, with either LM configuration",
+  "qualification": "unsliced mechanical candidate"
+}

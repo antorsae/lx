@@ -1,0 +1,11 @@
+{
+  "name": "V4 body and caps — PETG Translucent + PLA Translucent, 560 mm3 changeover",
+  "base_material_policy": "translucent_material_policy.json",
+  "projects": ["body", "accessories"],
+  "flush_volumes_matrix_mm3": [0, 560, 560, 0],
+  "flush_volumes_vector_mm3": [280, 280, 280, 280],
+  "flush_multiplier": 1,
+  "PLA_flush_mm3_s": 12,
+  "authorization": "User clarified that the print used PETG Translucent with PLA and requested alternate V4 body/cap files after authorizing the 560 mm3 / 12 mm3/s changeover calibration.",
+  "physical_qualification": "Pending. The previous translucent slice already requested 12 mm3/s PLA flushing; the higher purge is a test condition, not a confirmed cure for a blockage."
+}

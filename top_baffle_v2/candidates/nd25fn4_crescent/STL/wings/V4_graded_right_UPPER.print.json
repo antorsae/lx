@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "part": "V4_graded_right_UPPER",
+  "stl": "V4_graded_right_UPPER.stl",
+  "stl_sha256": "1929259f485cf7b1f9789ee876bc493e2c4ee610e771654971c9b2016d686f29",
+  "source_to_stl_matrix": [
+    [
+      0.45009844103743507,
+      0.8929789434111369,
+      0.0,
+      -224.62940913973398
+    ],
+    [
+      0.8929789434111369,
+      -0.45009844103743507,
+      0.0,
+      160.92633177019857
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999977
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "print_orientation": "front_face_down",
+  "variant": "graded",
+  "side": "right",
+  "qualification": "unsliced V4 matching upper wing candidate",
+  "source_stl": "build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.stl"
+}

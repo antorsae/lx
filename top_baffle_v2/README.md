@@ -1,13 +1,31 @@
 # LX521.4 top baffle — ND25FW-4 face-to-face mod (V2)
 
-3D-printable version of the modified top baffle from
-`plano top baffle con anidados V2.pdf` (exact 1:1 vector geometry extracted
-from the PDF, not redrawn). Overall 304.8 × 468.31 × 18.3 mm — the exact
-design depth is **18.3 mm**, not 18.6 mm. That envelope describes Stock and
-Slim, the two products that route their cables through proud channels in a
-full outline; the Obi-Wan experiment deliberately removes the outline and
-retains only two collars. This file is the picker: choose a product below,
-then follow its own doc.
+Three printable top-baffle designs for an LX521.4 modification: Stock's
+full-depth outline, Slim's thinner acoustic field, and Obi-Wan's separate
+driver collars with optional wings. Choose one mounting state and one
+complete configuration per speaker.
+
+**Start with the [build guide](docs/BUILD_GUIDE.md)** for file selection,
+per-speaker/stereo quantities, hardware and assembly. The generated
+[file guide](to_print/FILE_GUIDE.md) lists all 42 choices and actual sliced
+job estimates. There are 68 sliced projects and 8 projects requiring GUI
+slicing across alternate nozzle/material lanes.
+
+The [complete parts and magnet catalog (PNG)](images/generated/catalog/ALL_ITEMS_MAGNET_CATALOG.png)
+shows all 78 current part variants, their buried magnet locations and types,
+shared parts, alternate tweeters and separate test fixtures. The accompanying
+[file map](images/generated/catalog/README.md) identifies every source.
+
+For the 0.6 mm PETG-GF/PLA setup, use the generated [print and hardware
+policies](docs/PRINT_POLICIES.md): structural LM/UM infill is 100%, wings
+are 10%, and the retained ND25FN V4 uses M3 fasteners. The [current update
+report](review/print_policy_update_20260912/SUMMARY.md) links the regenerated
+print files, support exceptions and D6 magnet test pair.
+
+Stock is the canonical CAD baseline. Slim is experimental. Obi-Wan and BMR
+options are qualification candidates; printed fit, long-term loaded behavior
+and acoustic performance are not established by CAD renders or passing code
+checks. See the [current test procedure](docs/PETG_GF_QUALIFICATION.md).
 
 ## Product comparison
 
@@ -40,7 +58,7 @@ comparable with each other but not with the product rows above.
 
 ## Tweeter options
 
-There are two tweeter choices, and the choice is about the driver:
+The established shelf offers two driver families:
 
 - **Dayton ND25FW-4 face-to-face pair** — two dome tweeters with waveguide,
   bolted through the baffle so their faceplates clamp the crescent between
@@ -79,6 +97,41 @@ released captive-magnet catalog.
 [`docs/VARIANTS.md`](docs/VARIANTS.md#candidate-tebm35c10-4-bmr-crescents-obi-wan)
 puts the three BMR parts side by side.
 
+The [UM finish revision](docs/UM_FINISH.md) closes the LM handoff cover, fills the UM seat underside and rounds M2 access in the standalone UM and fused ND25FN candidate.
+The fused candidate also blends the lower rear band into its organic surround, removing the rectangular thickness steps between the LM ears. [Updated rear detail](candidates/nd25fn4_crescent/views/UM_lower_band_oblique.png).
+Its latest UM follows the supplied concept outline, with a tighter lower waist and flowing shoulders. The lower edge now meets the existing LM front at Z18.30 mm without covering it. The front is wider than the rear, with an inclined outer wall and broad shallow bowl. Four Ø6×3 mm magnets remain buried, and the upper wings and enclosed gallery are reshaped to fit. The driver seat and LM mating faces retain their datums. [Reference overlay](candidates/nd25fn4_crescent/views/UM_reference_overlay.png) · [Outline validation](candidates/nd25fn4_crescent/reference_validation.json) · [Magnet selection](candidates/nd25fn4_crescent/MAGNET_SELECTION.md).
+
+Separate CAD candidates include the [Dayton ND25FN-4 retained V4
+crescent](candidates/nd25fn4_crescent/README.md), recreated from the supplied
+`MU10_ND25FN_V4_Retained_Package.zip` and fused with the actual Obi-Wan UM carrier.
+The compact revision lowers the tweeters 20.13 mm, steepens the lower forward
+flare, and gives the UM a broad, curved surround with a smooth waist. The tweeter retains
+its 35.8 mm depth, 62 mm pitch, service caps and screw retainers; the new UM bowl
+makes the complete body approximately 38.20 mm deep.
+One shared body fits both stand configurations, retaining their LM mounting
+interfaces and an enclosed cable gallery buried in the UM surround. A broad rear
+thickness loft removes the abrupt UM-to-tweeter arc junction. Flat and graded upper wings
+match its outline and four concealed shoulder magnets. The changed acoustic
+surfaces need acoustic validation.
+Its [prepared P2S 0.6 HF PETG-GF + PLA jobs](candidates/nd25fn4_crescent/print/README.md)
+use 15% gyroid in the tweeters and the regular UM's 100% zig-zag infill.
+The shared body, caps/retainers and matching upper wings have passed slice checks,
+including buried-magnet pauses. The user reports printing the earlier body with
+PETG Translucent and PLA; physical finish, fit and retention qualification remain pending.
+Separate [PETG Translucent + PLA Translucent jobs](candidates/nd25fn4_crescent/print_translucent/README.md)
+use the same 0.6 mm HF nozzle with PETG in AMS slot 4 and PLA in slot 2. Their revised
+body keeps the exterior magnet-cover paths at a constant 0.52 mm width; a small
+surface test is included for physical confirmation.
+An [alternate translucent body and caps/retainers set](candidates/nd25fn4_crescent/print_translucent_changeover/README.md)
+uses the Engineering Plate with glue at 70 °C, a 5 mm outer brim, no raft, 560 mm³ purge
+each way and an explicit 12 mm³/s PLA flush following the reported changeover blockage.
+The file guide records the support checks and exceptions: Bambu's mutual-support guide
+excludes PETG Translucent and only covers PLA Basic with PETG Basic/HF. This custom
+material/plate calibration has not yet been physically qualified.
+These files and their mounting checks remain outside the regular 42-choice shelf.
+The existing Purifi PTT1.3 crescent remains in
+`build/ptt_crescent_PTT1.3T04-HAG-01/`.
+
 ## Products
 
 The project has one human-facing artifact catalog:
@@ -98,51 +151,40 @@ relative links without duplicating large CAD files. See
 and release boundary; [`docs/REPOSITORY_STRUCTURE.md`](docs/REPOSITORY_STRUCTURE.md)
 documents the implemented source/package and generated-state boundary.
 
-## Quickstart
+## Use the delivered files
 
-CAD is remote-first by default: `make` snapshots the working tree, runs on
-`osado.lan`, and promotes only hash-verified artifacts back. The public remote
-targets are:
+Open [to_print/](to_print/README.md) and select the correct material/nozzle
+lane. Sliced `.gcode.3mf` jobs retain their audited orientation and magnet
+pauses. PETG-GF core `_GUI.3mf` projects must be sliced in Bambu Studio and
+the exported result audited. Do not print both a combo and its contents.
 
-    make
-    make floor_stand
-    make floor_obiwan  # focused integral-floor Obi-Wan release and strict QA
-    make obiwan_release  # both Obi-Wan states + flat/graded, concurrent on osado
-    make obiwan_wings  # flat + graded STEP/STL families, built concurrently
-    make vase_tebm35c10_4_cad  # both Stock and Slim BMR-vase CAD children
-    make check  # proud regression + final Obi-Wan suites
-    make candidate  # checks + regenerated candidate artifacts + QA
+```sh
+make to_print_validate  # read-only validation of every delivery and the CAD facade
+make delivery_package  # verified local dist/lx521-print-pack.zip
+```
 
-Running OCC on the current machine requires an explicit opt-in:
+The print pack contains actual files and checksums, so it works independently
+of the source checkout's relative symlinks. Physical evidence remains pending.
 
-    LX_CAD_EXECUTION=local make PYTHON=<venv>/bin/python
+## Develop and regenerate
 
-Job control, cache seeding, promotion transactions, and the memory profiles
-are documented in [`docs/REMOTE_BUILD.md`](docs/REMOTE_BUILD.md).
+Use Python with the dependencies in `cad-remote-requirements.lock`. The
+vendored driver references are self-contained under `vendor/SEAS/`; no
+sibling checkout is needed for those inputs. VTK renders CAD with an actual
+depth buffer, and Matplotlib/Pillow compose the comparison panels.
 
-For direct Bambu Lab P2S use, build the small
-[`to_print/`](to_print/README.md) shelf with `make to_print`. It exposes only
-the 53 printable Stock, Slim, and Obi-Wan entries under friendly names,
-including the no-floor-stand Obi-Wan 01+02+03+04 combo plate and the two
-candidate BMR crescents, with
-matching ready-to-print `.gcode.3mf` projects and a local hash manifest. That
-alternative is independently addressable through
-`make obiwan_combo_plate_source`, `make obiwan_combo_plate`, and
-`make obiwan_combo_plate_to_print`; none of these targets dispatches to osado.
+```sh
+LX_CAD_EXECUTION=local make PYTHON=<venv>/bin/python -j1
+make artifacts          # relink and rehash the CAD facade
+make iso_matrix         # regenerate the CAD comparison images
+make delivery_refresh   # bind already-published files and regenerate the file guide
+```
 
-These goals never dispatch to osado and run only on the workstation:
-
-    make to_print                 P2S shelf: audit + 53 friendly STL/project pairs
-    make to_print_validate        validate an existing shelf without slicing
-    make artifacts                artifacts/ product facade: relink + rehash
-    make iso_matrix               the standardized ISO render set above
-    make check_bambu_3mf_audit    synthetic 3MF transform/mesh regressions
-    make bambu_slice_release      authoritative ready-project slice/audit
-    make vase_tebm35c10_4_3mf     ready BMR-vase projects, both profiles
-    make obiwan_bmr_crescent_cad  both candidate BMR crescents (Obi-Wan)
-
-Direct pip dependencies are `build123d`, `shapely`, `matplotlib`, `numpy`, and
-`Pillow` — no external CAD tooling.
+CAD builds default to the original maintainer's remote host `osado.lan`.
+Set `LX_CAD_EXECUTION=local` on another workstation. Remote execution,
+resource limits and promotion are documented in [REMOTE_BUILD.md](docs/REMOTE_BUILD.md).
+A source change requires current CAD/slice provenance before republishing;
+validation does not silently regenerate or re-certify old geometry.
 
 ## Generated artifact layout
 

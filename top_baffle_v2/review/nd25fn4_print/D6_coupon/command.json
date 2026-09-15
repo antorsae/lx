@@ -1,0 +1,21 @@
+[
+  "/Applications/BambuStudio.app/Contents/MacOS/BambuStudio",
+  "--debug",
+  "2",
+  "--slice",
+  "1",
+  "--arrange",
+  "0",
+  "--orient",
+  "0",
+  "--mtcpp",
+  "5000000",
+  "--allow-mix-temp",
+  "--load-filaments",
+  "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_filament.json;/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_support_interface_filament.json",
+  "--outputdir",
+  "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/D6_coupon",
+  "--export-3mf",
+  "discovery.gcode.3mf",
+  "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/D6_coupon/D6_coupon.3mf"
+]

@@ -1,0 +1,56 @@
+{
+  "status": "passed",
+  "source_sha256": "850340c197100b00754230c780c472dd7d75e70150ad2c27181a1ca21276fe70",
+  "um_stl": "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl",
+  "um_sha256": "eeed3f682a8643f1e71b7d45242267c790738b8425bf61bdb071e3459c45e454",
+  "LM_state": "no_floor_stand",
+  "LM_sha256": "16d0b4d604a660cfad61011077b3b496a86b5211cc550d8b2db15c50284e5f87",
+  "LM_overlap_mm3": 0.0,
+  "solid_annulus_witnesses": 1608,
+  "driver_gauge_overlap_mm3": [
+    0.0,
+    0.0
+  ],
+  "M2_bearing_plane_Y_mm": [
+    319.3047605105423,
+    319.3047626660592,
+    319.3047572736913,
+    319.3047626660541
+  ],
+  "M2_head_gauge_diameter_mm": 3.9,
+  "M2_head_gauge_witnesses": 3360,
+  "T_gauge_diameter_mm": 5.6,
+  "T_shell_witnesses": 6912,
+  "seam_witnesses": 27,
+  "maximum_seam_distance_to_both_parts_mm": 0.049242282382256766,
+  "gallery_reference_sha256": "91364b8160e97a5d4ee29e8d70b5cb1c7a5b12cb67d51ac701763a3f74502716",
+  "limits": "Digital fit and sampled wall checks; no physical or acoustic qualification."
+}
+{
+  "status": "passed",
+  "source_sha256": "850340c197100b00754230c780c472dd7d75e70150ad2c27181a1ca21276fe70",
+  "um_stl": "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl",
+  "um_sha256": "eeed3f682a8643f1e71b7d45242267c790738b8425bf61bdb071e3459c45e454",
+  "LM_state": "floor_stand",
+  "LM_sha256": "53f869edf67a3f760413e3615dae0fc59f4dae6eab029b767552ac3a78241587",
+  "LM_overlap_mm3": 0.0,
+  "solid_annulus_witnesses": 1608,
+  "driver_gauge_overlap_mm3": [
+    0.0,
+    0.0
+  ],
+  "M2_bearing_plane_Y_mm": [
+    319.3047605105423,
+    319.3047626660592,
+    319.3047572736913,
+    319.3047626660541
+  ],
+  "M2_head_gauge_diameter_mm": 3.9,
+  "M2_head_gauge_witnesses": 3360,
+  "T_gauge_diameter_mm": 5.6,
+  "T_shell_witnesses": 6912,
+  "seam_witnesses": 28,
+  "maximum_seam_distance_to_both_parts_mm": 0.04907854327123445,
+  "gallery_reference_sha256": "91364b8160e97a5d4ee29e8d70b5cb1c7a5b12cb67d51ac701763a3f74502716",
+  "limits": "Digital fit and sampled wall checks; no physical or acoustic qualification."
+}

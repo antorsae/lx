@@ -19,7 +19,7 @@ plate the owner opens in Bambu Studio, assigns PLA to its AMS slot, and
 slices there.
 
 The projects carry no G-code and are therefore not shelf deliverables, so
-they live in ``3mf_06hf_petg-cf_pla`` rather than ``3mf_06hf``: same 0.6-mm
+they live in ``3mf_06hf_petg-gf_pla`` rather than ``3mf_06hf``: same 0.6-mm
 high-flow lane, named for the material pair it is sliced with, and separate
 so nothing can confuse a project that still has to be sliced with an
 audited, ready-to-print lane output.
@@ -45,11 +45,12 @@ for _root in (PROJECT_ROOT / "src", PROJECT_ROOT / "scripts"):
 
 import build_obiwan_combo_plate as combo
 import artifact_emit as emit
+from delivery_contract import GUI_DIRECTORY
 
 PETG_PROFILE = PROJECT_ROOT / "captive_magnet_slicing_profile_petg_gf_06hf.json"
 RELEASE_CATALOG = PROJECT_ROOT / "review" / "captive_magnet_release_catalog.json"
 DEFAULT_OUTPUT = (
-    PROJECT_ROOT / "to_print" / "obiwan" / "3mf_06hf_petg-cf_pla")
+    PROJECT_ROOT / "to_print" / "obiwan" / GUI_DIRECTORY)
 WORKSPACE = PROJECT_ROOT / "review" / "petg_gui_project_workspace"
 EXPECTED_PAUSE_Z_MM = 5.96
 EXPECTED_MAGNETS = 6
@@ -132,7 +133,8 @@ def _finalize_project_settings(project: Path) -> list[str]:
     filaments = settings.get("filament_settings_id")
     if not isinstance(filaments, list) or not filaments:
         raise GuiProjectError(f"{project}: project declares no filaments")
-    settings["filament_map"] = ["1"] * len(filaments)
+    from lx521_baffle.print_policy import normalize_material_mapping
+    normalize_material_mapping(settings)
     settings["print_settings_id"] = GUI_PROCESS_ID
     # Studio falls back to the first entry of extruder_variant_list, so an
     # exported project claims "Standard" on a machine whose own
@@ -406,7 +408,7 @@ def _pause_policy(profiles_dir: Path) -> dict:
     return policy
 
 
-def _remap_assemble_paths(assemble: Path) -> None:
+def _remap_assemble_paths(assemble: Path, state: str) -> None:
     """Point staged object paths back at the durable build/ originals.
 
     The dry-run stages its inputs in a TemporaryDirectory that no longer
@@ -414,7 +416,9 @@ def _remap_assemble_paths(assemble: Path) -> None:
     """
     payload = json.loads(assemble.read_text(encoding="utf-8"))
     candidates = {}
-    for state in ("floor_stand", "no_floor_stand"):
+    if state not in {"floor_stand", "no_floor_stand"}:
+        raise GuiProjectError(f"invalid source stand state: {state}")
+    for state in (state,):
         for sub in ("stl", "support_blockers", "process_modifiers"):
             root = PROJECT_ROOT / "build" / state / sub
             if root.is_dir():
@@ -475,7 +479,7 @@ def _build_single_audited(name: str, artifact_id: str, output: Path) -> dict:
     slug = artifact_id.replace(":", "_")
     slice_dir = workspace / "slices" / slug
     assemble = slice_dir / "bambu_assemble_list.json"
-    _remap_assemble_paths(assemble)
+    _remap_assemble_paths(assemble, artifact_id.split(":", 1)[0])
     command = list(record["command"])
     sites = _catalog_sites(artifact_id)
     if sites:
@@ -540,6 +544,11 @@ def _build_single_audited(name: str, artifact_id: str, output: Path) -> dict:
     })
     output.mkdir(parents=True, exist_ok=True)
     destination = output / project_name
+    from gui_project_audit import audit_gui_geometry
+    catalog = json.loads((PROJECT_ROOT / "to_print/catalog.json").read_text())
+    entry = next(e for e in catalog["entries"] if e["name"] == destination.name.removesuffix("_GUI.3mf"))
+    facts["geometry_audit"] = audit_gui_geometry(PROJECT_ROOT, entry, project)
+    facts["project_sha256"] = facts["geometry_audit"]["project_sha256"]
     shutil.copy2(project, destination)
     facts["project"] = str(destination.relative_to(PROJECT_ROOT))
     facts["name"] = name
@@ -593,6 +602,11 @@ def _build_single_plain(
     })
     output.mkdir(parents=True, exist_ok=True)
     destination = output / project_name
+    from gui_project_audit import audit_gui_geometry
+    catalog = json.loads((PROJECT_ROOT / "to_print/catalog.json").read_text())
+    entry = next(e for e in catalog["entries"] if e["name"] == destination.name.removesuffix("_GUI.3mf"))
+    facts["geometry_audit"] = audit_gui_geometry(PROJECT_ROOT, entry, project)
+    facts["project_sha256"] = facts["geometry_audit"]["project_sha256"]
     shutil.copy2(project, destination)
     facts["project"] = str(destination.relative_to(PROJECT_ROOT))
     facts["name"] = name
@@ -641,50 +655,38 @@ def _build_one(slug: str, output: Path) -> dict:
     )
     output.mkdir(parents=True, exist_ok=True)
     destination = output / name
+    from gui_project_audit import audit_gui_geometry
+    catalog = json.loads((PROJECT_ROOT / "to_print/catalog.json").read_text())
+    entry = next(e for e in catalog["entries"] if e["name"] == destination.name.removesuffix("_GUI.3mf"))
+    facts["geometry_audit"] = audit_gui_geometry(PROJECT_ROOT, entry, project)
+    facts["project_sha256"] = facts["geometry_audit"]["project_sha256"]
     shutil.copy2(project, destination)
     facts["project"] = str(destination.relative_to(PROJECT_ROOT))
     facts["name"] = api.PLATE_NAME
     return facts
 
 
-README = """# PETG-GF structural plates for GUI slicing
+README = """# PETG-GF projects for GUI slicing
 
-These are Bambu Studio **projects**, not sliced deliveries: they carry no
-G-code, and they are not part of the audited `3mf_06hf` shelf. Same 0.6-mm
-high-flow lane, kept separate because they still have to be sliced.
+These eight projects contain no G-code. Open them in Bambu Studio with the
+0.6 mm high-flow nozzle. Supported parts use TINMORRY PETG-GF for the model
+and support body, PLA Basic for the interface, normal/snug support and a
+zero top Z gap. Assign both filaments to the actual single-nozzle material
+slots, slice, inspect and export the result for `scripts/audit_gui_slice.py`.
 
-Bambu's CLI cannot slice them. Every structural plate loads an assemble list
-(the duct blockers and the bridge/root modifier need one) and on that path
-Studio maps the second filament to nozzle 0, which does not exist, then
-prints the support interface in the model filament and reports success. The
-repo now refuses that G-code, so these plates are handed over as projects
-instead. See `docs/PRINTING.md` for the full finding.
+The no-floor core combo contains four parts; the floor combo adds the NL8
+service lid (five). Either replaces the matching individual parts. Both
+combos pause at Z=5.96 mm for six magnets. Singles pause only for their own
+sites, and the support-free crescent/lid have no magnets or pauses.
 
-## What is already set
+Six walls are used throughout this lane. Core combos, LM bottoms and UM
+carriers and the standalone LM top use 100% zig-zag with support.
+The regular crescent/lid use 30% gyroid with support off.
 
-* filament 1 = `TINMORRY PETG-GF Profile @BBL P2S`, filament 2 =
-  `Bambu PLA Basic @BBL P2S 0.6 nozzle`, both mapped to the single nozzle
-* supports on, printed in filament 1, interface in filament 2, zero top Z
-  gap, snug, `support_on_build_plate_only`
-* 10 top shell layers and ironing on top surfaces
-* the four core pieces at their locked placements, all three duct blockers,
-  the 100%-solid bridge/root modifier
-* the six-magnet pause at Z = 5.96 mm, with its park/restore program
-
-## What to do
-
-1. Open the project in Bambu Studio 02.07.01.62.
-2. Assign filament 1 to the **AMS-HT** slot holding TINMORRY PETG-GF, and
-   filament 2 to the **AMS** slot holding PLA (slot 2 or 3).
-3. Slice. Confirm before printing:
-   * the support **interface** is filament 2 and the support **body** is
-     filament 1 -- if both come out filament 1 the mapping did not take;
-   * the pause still sits at Z = 5.96 mm and announces six magnets;
-   * a prime tower is placed clear of all four parts.
-4. Insert the six magnets at the pause, then resume.
-
-Do not print these alongside the individual 01/02/03/04 files, and do not
-mix the two stand states.
+See `../../../docs/BUILD_GUIDE.md` and `../../FILE_GUIDE.md` for selection,
+assembly, estimates and qualification. `../../delivery_manifest.json` binds
+project hashes and audits the actual normal, blocker and modifier meshes.
+No GUI project or partial slice audit authorizes a physical release.
 """
 
 

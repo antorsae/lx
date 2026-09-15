@@ -1,0 +1,218 @@
+{
+  "file": "to_print/obiwan/stl/obiwan_02_LM_top_keyed_2_of_2.stl",
+  "mesh": {
+    "bbox_mm": [
+      212.1,
+      212.1,
+      23.64
+    ],
+    "volume_mm3": 36685.4,
+    "surface_area_mm2": 38429.7,
+    "triangle_count": 21446,
+    "watertight": true,
+    "euler_number": -2,
+    "body_count": 3
+  },
+  "scale": {
+    "bbox_diagonal_mm": 300.8835,
+    "units_suspect": false,
+    "note": "bbox consistent with millimetre units"
+  },
+  "overhangs": {
+    "angle_limit_used_deg": 45.0,
+    "down_facing_area_below_limit_mm2": 7912.72,
+    "down_facing_area_below_limit_pct": 20.6,
+    "face_count_below_limit": 4152,
+    "down_facing_angle_histogram_mm2": {
+      "0-10deg": 6426.22,
+      "10-20deg": 108.58,
+      "20-30deg": 1026.65,
+      "30-40deg": 197.68,
+      "40-50deg": 1116.18,
+      "50-60deg": 35.5,
+      "60-70deg": 1106.23,
+      "70-80deg": 20.21,
+      "80-90deg": 2986.04
+    },
+    "largest_faces_below_limit": [
+      {
+        "location_xyz": [
+          194.87,
+          78.08,
+          6.0
+        ],
+        "surface_angle_deg": 0.0,
+        "area_mm2": 76.67
+      },
+      {
+        "location_xyz": [
+          134.02,
+          17.23,
+          6.0
+        ],
+        "surface_angle_deg": 0.0,
+        "area_mm2": 76.67
+      },
+      {
+        "location_xyz": [
+          116.2,
+          12.39,
+          6.0
+        ],
+        "surface_angle_deg": 0.0,
+        "area_mm2": 67.77
+      },
+      {
+        "location_xyz": [
+          199.71,
+          95.9,
+          6.0
+        ],
+        "surface_angle_deg": 0.0,
+        "area_mm2": 67.77
+      },
+      {
+        "location_xyz": [
+          19.7,
+          46.95,
+          6.0
+        ],
+        "surface_angle_deg": 0.0,
+        "area_mm2": 58.73
+      },
+      {
+        "location_xyz": [
+          165.15,
+          192.4,
+          6.0
+        ],
+        "surface_angle_deg": 0.0,
+        "area_mm2": 58.73
+      },
+      {
+        "location_xyz": [
+          176.32,
+          181.3,
+          6.0
+        ],
+        "surface_angle_deg": 0.0,
+        "area_mm2": 53.46
+      },
+      {
+        "location_xyz": [
+          30.8,
+          35.78,
+          6.0
+        ],
+        "surface_angle_deg": 0.0,
+        "area_mm2": 53.46
+      }
+    ]
+  },
+  "wall_thickness": {
+    "body_count": 3,
+    "measured_per_body": true,
+    "samples_valid": 1989,
+    "min_mm": 0.543,
+    "p05_mm": 0.797,
+    "p25_mm": 0.83,
+    "median_mm": 1.382,
+    "max_mm": 83.61,
+    "per_body": [
+      {
+        "body": 0,
+        "min_mm": 0.543,
+        "p05_mm": 0.797,
+        "median_mm": 1.382,
+        "samples_valid": 1989
+      },
+      {
+        "body": 1,
+        "min_mm": null,
+        "p05_mm": null,
+        "median_mm": null,
+        "samples_valid": 0
+      },
+      {
+        "body": 2,
+        "min_mm": null,
+        "p05_mm": null,
+        "median_mm": null,
+        "samples_valid": 0
+      }
+    ],
+    "thinnest_samples": [
+      {
+        "location_xyz": [
+          193.36,
+          51.59,
+          16.41
+        ],
+        "thickness_mm": 0.543
+      },
+      {
+        "location_xyz": [
+          182.0,
+          38.4,
+          10.87
+        ],
+        "thickness_mm": 0.743
+      },
+      {
+        "location_xyz": [
+          190.85,
+          64.29,
+          19.74
+        ],
+        "thickness_mm": 0.783
+      },
+      {
+        "location_xyz": [
+          197.89,
+          63.8,
+          20.65
+        ],
+        "thickness_mm": 0.784
+      },
+      {
+        "location_xyz": [
+          198.86,
+          64.11,
+          20.83
+        ],
+        "thickness_mm": 0.785
+      },
+      {
+        "location_xyz": [
+          196.76,
+          62.14,
+          22.04
+        ],
+        "thickness_mm": 0.786
+      },
+      {
+        "location_xyz": [
+          185.51,
+          179.31,
+          19.58
+        ],
+        "thickness_mm": 0.788
+      },
+      {
+        "location_xyz": [
+          188.81,
+          173.66,
+          16.87
+        ],
+        "thickness_mm": 0.788
+      }
+    ]
+  },
+  "support_volume": {
+    "angle_limit_used_deg": 45.0,
+    "estimated_support_volume_mm3": 65315.8,
+    "part_volume_mm3": 36685.4,
+    "support_to_part_ratio_pct": 178.0,
+    "method": "prism from face centroid to build plate; coarse upper-bound estimate"
+  }
+}

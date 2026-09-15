@@ -1,0 +1,8 @@
+Rebuilding compact V4 with organic UM waist, relocated magnets and routed cable
+Retriangulated 4 precision slivers; max edge deviation 0.00000000 mm
+01_UM_Crescent_V4.stl {"sha256": "dff05473b634c01feee04250280f92a3e0ee1b4d5dfbe662e22def69eedd933f", "triangles": 2068362, "watertight": true, "winding_consistent": true, "components": 5, "volume_mm3": 391298.779501283, "bounds_mm": [[0.0, 1.4210854715202004e-14, 0.0], [228.68695068359375, 228.6871337890625, 38.19999694824219]], "assembly_to_print_matrix": [[0.0, 0.7071067811865476, 0.7071067811865475, 150.47277296253452], [0.0, 0.7071067811865475, -0.7071067811865476, 78.21417933973783], [-1.0, 0.0, 0.0, 20.299999237060547], [0.0, 0.0, 0.0, 1.0]]}
+Shared fused body complete in 305.9s
+Rebuilding matching V4 cap and retaining ring
+02_Closed_Cap_PRINT_TWO.stl {"sha256": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647", "triangles": 325112, "watertight": true, "winding_consistent": true, "components": 1, "volume_mm3": 12967.313234870724, "bounds_mm": [[-28.0, -28.0, 0.0], [28.0, 28.0, 11.84999942779541]]}
+03_Tweeter_Retainer_PRINT_TWO.stl {"sha256": "7b941dfa4dc78577a6c5e7972840a9ffed8de41972dce19ebf5f9ad8002ec913", "triangles": 167028, "watertight": true, "winding_consistent": true, "components": 1, "volume_mm3": 3126.9105372450945, "bounds_mm": [[-26.399999618530273, -26.399999618530273, 2.9802322831784522e-09], [26.399999618530273, 26.399999618530273, 4.200000286102295]]}
+STLs rebuilt in 310.4s

@@ -1,0 +1,4 @@
+Mounts compatible; front faces flush at Z18.30; no LM front-face occlusion.
+no_floor_stand overlap 0.0 max screw-axis offset 1.2914124359290098e-06 maximum front step 4.814697085464559e-07 occluded LM area 0.0
+floor_stand overlap 0.0 max screw-axis offset 1.2914124359290098e-06 maximum front step 4.814697085464559e-07 occluded LM area 0.0
+/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/print/LM_assembly_check.json

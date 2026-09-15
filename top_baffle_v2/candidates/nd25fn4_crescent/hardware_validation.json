@@ -1,0 +1,58 @@
+{
+  "status": "pass",
+  "thread": "M3",
+  "count": 6,
+  "screw": "M3 x 8 mm socket head",
+  "insert": "M3, 4 mm long, 4.6 mm pilot",
+  "screw_circle_diameter_mm": 50.2,
+  "retainer_edge_ligament_mm": 1.149999999999998,
+  "insert_to_driver_ligament_mm": 1.6000000000000014,
+  "screw_engagement_mm": 3.7,
+  "insert_bottom_clearance_mm": 0.3,
+  "cap_entry_radial_clearance_mm": 0.25,
+  "sites": [
+    {
+      "pod": 1,
+      "screw": 1,
+      "pilot_collision_mm3": 0.0,
+      "head_collision_mm3": 0.0,
+      "missing_surround_mm3": 0.0035382268305335623
+    },
+    {
+      "pod": 1,
+      "screw": 2,
+      "pilot_collision_mm3": 0.0,
+      "head_collision_mm3": 0.0,
+      "missing_surround_mm3": 0.006837200881493598
+    },
+    {
+      "pod": 1,
+      "screw": 3,
+      "pilot_collision_mm3": 0.0,
+      "head_collision_mm3": 0.0,
+      "missing_surround_mm3": 0.007205534273495411
+    },
+    {
+      "pod": 2,
+      "screw": 1,
+      "pilot_collision_mm3": 0.0,
+      "head_collision_mm3": 0.0,
+      "missing_surround_mm3": 0.005227499129827363
+    },
+    {
+      "pod": 2,
+      "screw": 2,
+      "pilot_collision_mm3": 0.0,
+      "head_collision_mm3": 0.0,
+      "missing_surround_mm3": 0.005688408419401957
+    },
+    {
+      "pod": 2,
+      "screw": 3,
+      "pilot_collision_mm3": 0.0,
+      "head_collision_mm3": 0.0,
+      "missing_surround_mm3": 0.00681705530005796
+    }
+  ],
+  "physical_fit": "not yet tested"
+}

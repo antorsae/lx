@@ -1,0 +1,24 @@
+{
+  "backend": "orcaslicer",
+  "native_config": "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_translucent_changeover/profiles/resolved_machine.json",
+  "native_settings": [
+    "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_translucent_changeover/profiles/resolved_machine.json"
+  ],
+  "native_filaments": [
+    "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_translucent_changeover/profiles/resolved_filament.json",
+    "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_translucent_changeover/profiles/resolved_support_interface_filament.json"
+  ],
+  "machine": {
+    "name": "Bambu Lab P2S 0.6 High Flow",
+    "bed_size_mm": [
+      256,
+      256
+    ],
+    "z_height_mm": 256
+  },
+  "filament": {
+    "type": "PETG",
+    "nozzle_temp_c": 245,
+    "bed_temp_c": 70
+  }
+}

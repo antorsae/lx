@@ -264,6 +264,8 @@ PROFILE_OVERRIDE_KEYS = {
         "support_interface_filament",
         "support_top_z_distance",
         "support_interface_spacing",
+        "support_bottom_interface_spacing",
+        "support_bottom_z_distance",
         "support_interface_top_layers",
         "support_interface_bottom_layers",
         "support_interface_pattern",
@@ -1302,12 +1304,13 @@ def prepare_profiles(
     _validate_support_override_policy(config)
     root = (system_root or _default_bambu_system_root(config["vendor"])).resolve()
     user_filament_name = config.get("user_filament_preset")
-    user_filament_path = (
+    frozen_filament = config.get('frozen_filament_preset')
+    user_filament_path = (config_path.parent / frozen_filament).resolve() if frozen_filament else (
         _find_user_filament_preset(user_filament_name)
         if user_filament_name is not None else None
     )
     if user_filament_path is not None:
-        expected_user_sha = config.get("user_filament_preset_sha256")
+        expected_user_sha = config.get("frozen_filament_preset_sha256") if frozen_filament else config.get("user_filament_preset_sha256")
         if (not isinstance(expected_user_sha, str)
                 or not re.fullmatch(r"[0-9a-f]{64}", expected_user_sha)
                 or sha256_file(user_filament_path) != expected_user_sha):
@@ -1350,6 +1353,9 @@ def prepare_profiles(
         raise AuditError("slicing profile must define non-empty repo_overrides")
     resolved = _apply_profile_overrides(
         flattened, repo_overrides, label="repo_overrides")
+    if config.get('material_changeover_policy') == 'print_policy.json' and 'support_interface_filament' in resolved:
+        from lx521_baffle.print_policy import interface_changeover_overrides
+        resolved['support_interface_filament'].update(interface_changeover_overrides())
     # Install this lane's retaining-bead acceptance before any audit reads
     # the shared mapping.  Each CLI invocation resolves exactly one profile,
     # so the install is a one-shot lane selection, not a mutable setting.
@@ -1422,6 +1428,9 @@ def prepare_profiles(
         "machine_bounds_mm": config["machine_bounds_mm"],
         "audit_sources": audit_sources,
     }
+    if config.get('material_changeover_policy') == 'print_policy.json':
+        from lx521_baffle.print_policy import POLICY_PATH, policy_sha256
+        identity['material_changeover_policy'] = {'path': str(POLICY_PATH), 'sha256': policy_sha256()}
     identity["profile_set_sha256"] = _sha256_bytes(_canonical_json({
         key: record["sha256"]
         for key, record in identity["resolved_profiles"].items()

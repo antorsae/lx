@@ -89,3 +89,49 @@ build/print_plates/obiwan/obiwan_graded_wings_split2_combo.stl
 
 # transient slicer input staging (orphaned when a slice run is interrupted)
 .captive-input-stage-*/
+
+# Verified local distribution packs and generated delivery metadata.
+dist/
+review/retired_delivery_*/
+!to_print/delivery_manifest.json
+!qualification/*.json
+!qualification/**/*.json
+# Material-lane renames must remain visible in Git (the old lanes were tracked).
+!to_print/obiwan/3mf_06hf_petg-gf/*.gcode.3mf
+!to_print/obiwan/3mf_06hf_petg-gf/*.json
+!to_print/obiwan/3mf_06hf_petg-gf_pla/*.3mf
+!to_print/obiwan/3mf_06hf_petg-gf_pla/*.json
+!qualification/*.step
+!qualification/*.stl
+review/gui_slices/
+
+# Regenerable CAD Viewer packages, not release payloads.
+**/__cadgen__/
+
+# Separate ND25FN-4 candidate and the original manufacturer references.
+!candidates/nd25fn4_crescent/*.json
+!candidates/nd25fn4_crescent/dfam/*.json
+!candidates/nd25fn4_crescent/*.step
+!candidates/nd25fn4_crescent/*.stl
+!candidates/nd25fn4_crescent/*.glb
+!candidates/nd25fn4_crescent/views/*.json
+!candidates/nd25fn4_crescent/views/*.glb
+!vendor/DAYTON/ND25FN-4/*.stl
+!vendor/DAYTON/ND25FN-4/*.zip
+review/nd25fn4_iterations/
+
+# The retained ZIP is the V4 design input. Extraction and assembly-coordinate
+# meshes are reproducible; the current print STLs and checks are deliverables.
+!MU10_ND25FN_V4_Retained_Package.zip
+design_inputs/
+candidates/nd25fn4_crescent/assembly/
+!candidates/nd25fn4_crescent/STL/*.stl
+!candidates/nd25fn4_crescent/STL/*.print.json
+!candidates/nd25fn4_crescent/STL/wings/*.stl
+!candidates/nd25fn4_crescent/STL/wings/*.print.json
+!candidates/nd25fn4_crescent/ND25FN4_V4_Obiwan_STLs.zip
+
+# Shared print policy and the frozen material recipe are source inputs.
+!print_policy.json
+!captive_magnet_slicing_profile_petg_gf_wings_06hf.json
+!vendor/TINMORRY/resolved_P2S_06HF_PETG_GF.json

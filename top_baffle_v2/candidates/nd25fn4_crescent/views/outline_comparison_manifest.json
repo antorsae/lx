@@ -1,0 +1,23 @@
+{
+  "source_sha256": "bf00a6c0c01a55c67a9c7575d1be5af65f8947efe090283aeb03235c13a4f40d",
+  "source_build_manifest_sha256": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f",
+  "inputs": {
+    "review/nd25fn4_iterations/before_reference_outline_20260911T202429Z/STL/01_UM_Crescent_V4.stl": "57a5d9616b0092db8bede4b02e1aac254c114f4a4cfa3c01523b27c7791b3fce",
+    "review/nd25fn4_iterations/before_reference_outline_20260911T202429Z/STL/01_UM_Crescent_V4.print.json": "77721259a13c8d8101209650590f5c78b52be97373efdd25e99b60317880e386",
+    "review/nd25fn4_iterations/before_reference_outline_20260911T202429Z/wing_validation.json": "4fdf81abaac754725f85e28a6b9a31300ec0b469261e9f8819ae51e8f900a8cd",
+    "candidates/nd25fn4_crescent/views/UM_outline_front.png": "d2ee98d5c3efcead0d73b4d30365495edce9f2113c5da270114dd44678b1c259",
+    "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+    "candidates/nd25fn4_crescent/wing_validation.json": "c00807c025cfa51f532f91281b0e200210b8e2e9eb6d35530f6f6d68cdd67caa",
+    "review/nd25fn4_iterations/before_reference_outline_20260911T202429Z/STL/02_Closed_Cap_PRINT_TWO.stl": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+    "candidates/nd25fn4_crescent/STL/02_Closed_Cap_PRINT_TWO.stl": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+    "review/nd25fn4_iterations/before_reference_outline_20260911T202429Z/STL/03_Tweeter_Retainer_PRINT_TWO.stl": "7b941dfa4dc78577a6c5e7972840a9ffed8de41972dce19ebf5f9ad8002ec913",
+    "candidates/nd25fn4_crescent/STL/03_Tweeter_Retainer_PRINT_TWO.stl": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc",
+    "review/nd25fn4_iterations/before_reference_outline_20260911T202429Z/STL/wings/V4_flat_left_UPPER.stl": "f8d9422d8ef4976b76b9e199e39a6870049346e6e25916fa02b10ba25c9ae6fd",
+    "review/nd25fn4_iterations/before_reference_outline_20260911T202429Z/STL/wings/V4_flat_right_UPPER.stl": "543b7da8159f531a08d732f3007491524c1111e9ee8e63864563d15bb9f8a178"
+  },
+  "outputs": {
+    "UM_outline_before.png": "3db3846af8adaebcaab1289adc80a6596d8a4f9adc45cef5a48ba37873439eea",
+    "UM_outline_comparison.png": "a9ae17dc0bb13f4a7fa210418489bdf49bc3c656ed3c36a3c968ac4fca0ade6f"
+  },
+  "camera": "Same orthographic front camera, scale and lighting for both actual STL assemblies."
+}

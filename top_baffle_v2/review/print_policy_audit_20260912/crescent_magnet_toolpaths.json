@@ -1,0 +1,249 @@
+{
+  "scope": "Four representative layers per cavity; CAD cross-section versus deposited model bead footprints. Not a physical adhesion or strength test.",
+  "stl_sha256": "7cf53f91b465cd298d9508638e30226625cb64ce30ca04ad0a44bf03c2610706",
+  "gcode_sha256": "9486143728837c327c0d026130c5c7ab7ea7b7670bb296995f7f73917b3c7d05",
+  "rows": [
+    {
+      "site": "body_168deg",
+      "layer_z_mm": 3.24,
+      "section_z_mm": 3.16,
+      "boundary_samples": 206,
+      "max_cavity_boundary_distance_to_model_bead_mm": 0.0001204914932359268,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Support": 3.8205261216591007,
+        "Inner wall": 226.24993248401918,
+        "Outer wall": 40.64559186778702,
+        "Sparse infill": 62.322084947580905,
+        "Floating vertical shell": 16.594406307370377,
+        "Internal solid infill": 13.58880847852487
+      }
+    },
+    {
+      "site": "body_168deg",
+      "layer_z_mm": 6.12,
+      "section_z_mm": 6.04,
+      "boundary_samples": 415,
+      "max_cavity_boundary_distance_to_model_bead_mm": 0.01738327323237176,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Support interface": 54.4430390770201,
+        "Inner wall": 177.58430508641112,
+        "Outer wall": 47.17626719993969,
+        "Sparse infill": 41.186754342827356,
+        "Floating vertical shell": 5.684291660784744
+      }
+    },
+    {
+      "site": "body_168deg",
+      "layer_z_mm": 9.48,
+      "section_z_mm": 9.4,
+      "boundary_samples": 475,
+      "max_cavity_boundary_distance_to_model_bead_mm": 0.0283357402681649,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Outer wall": 34.42324055082528,
+        "Inner wall": 136.89522069841712,
+        "Sparse infill": 98.38465346673459,
+        "Floating vertical shell": 7.038533055913279
+      }
+    },
+    {
+      "site": "body_168deg",
+      "layer_z_mm": 9.64,
+      "section_z_mm": 9.5599995,
+      "boundary_samples": 481,
+      "max_cavity_boundary_distance_to_model_bead_mm": 0.02885718848513439,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Outer wall": 33.989006800407914,
+        "Inner wall": 135.9262115625251,
+        "Sparse infill": 44.63382307395905,
+        "Floating vertical shell": 6.784040375293072
+      }
+    },
+    {
+      "site": "body_192deg",
+      "layer_z_mm": 3.24,
+      "section_z_mm": 3.16,
+      "boundary_samples": 206,
+      "max_cavity_boundary_distance_to_model_bead_mm": 0.00496671478302942,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Support": 11.952317635811626,
+        "Inner wall": 230.51484547647448,
+        "Outer wall": 41.308386170741215,
+        "Internal solid infill": 17.20154498567779,
+        "Sparse infill": 59.412707585561584,
+        "Floating vertical shell": 16.4152995182277
+      }
+    },
+    {
+      "site": "body_192deg",
+      "layer_z_mm": 6.12,
+      "section_z_mm": 6.04,
+      "boundary_samples": 403,
+      "max_cavity_boundary_distance_to_model_bead_mm": 0.017060541501999035,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Support interface": 18.515942885888073,
+        "Inner wall": 181.93873221396595,
+        "Outer wall": 46.96148793346713,
+        "Sparse infill": 42.43505212244706,
+        "Floating vertical shell": 5.880302599469251,
+        "Internal solid infill": 0.360099972237643
+      }
+    },
+    {
+      "site": "body_192deg",
+      "layer_z_mm": 9.48,
+      "section_z_mm": 9.4,
+      "boundary_samples": 365,
+      "max_cavity_boundary_distance_to_model_bead_mm": 0.028933296429640848,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Outer wall": 34.806172534955735,
+        "Inner wall": 138.64335635905027,
+        "Sparse infill": 109.70080446818707,
+        "Floating vertical shell": 7.242341783708764
+      }
+    },
+    {
+      "site": "body_192deg",
+      "layer_z_mm": 9.64,
+      "section_z_mm": 9.5599995,
+      "boundary_samples": 365,
+      "max_cavity_boundary_distance_to_model_bead_mm": 0.028916721706029564,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Outer wall": 34.86970455670998,
+        "Inner wall": 138.07661105685597,
+        "Sparse infill": 44.85775699545176,
+        "Floating vertical shell": 5.659724572520576
+      }
+    },
+    {
+      "site": "body_12deg",
+      "layer_z_mm": 3.24,
+      "section_z_mm": 3.16,
+      "boundary_samples": 210,
+      "max_cavity_boundary_distance_to_model_bead_mm": 0.002807978625535193,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Support": 20.72342888795729,
+        "Inner wall": 227.70300117205466,
+        "Outer wall": 41.583964546489604,
+        "Internal solid infill": 14.655557418893185,
+        "Sparse infill": 60.97257774275661,
+        "Floating vertical shell": 16.67271928430515
+      }
+    },
+    {
+      "site": "body_12deg",
+      "layer_z_mm": 6.12,
+      "section_z_mm": 6.04,
+      "boundary_samples": 421,
+      "max_cavity_boundary_distance_to_model_bead_mm": 0.01696001725172485,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Support interface": 33.086382338224915,
+        "Inner wall": 177.42638588333537,
+        "Outer wall": 46.88925568172331,
+        "Sparse infill": 40.5044180456166,
+        "Floating vertical shell": 5.705345246654431
+      }
+    },
+    {
+      "site": "body_12deg",
+      "layer_z_mm": 9.48,
+      "section_z_mm": 9.4,
+      "boundary_samples": 487,
+      "max_cavity_boundary_distance_to_model_bead_mm": 0.03199809867533901,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Inner wall": 163.481371984811,
+        "Outer wall": 44.325611674061406,
+        "Floating vertical shell": 7.664231333873865,
+        "Sparse infill": 14.925331954893164
+      }
+    },
+    {
+      "site": "body_12deg",
+      "layer_z_mm": 9.64,
+      "section_z_mm": 9.5599995,
+      "boundary_samples": 493,
+      "max_cavity_boundary_distance_to_model_bead_mm": 0.03192761933525332,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Inner wall": 158.86361639621154,
+        "Outer wall": 45.08615925265839,
+        "Floating vertical shell": 7.451131033877941,
+        "Sparse infill": 21.446361612648953
+      }
+    },
+    {
+      "site": "body_-12deg",
+      "layer_z_mm": 3.24,
+      "section_z_mm": 3.16,
+      "boundary_samples": 210,
+      "max_cavity_boundary_distance_to_model_bead_mm": 3.362719323289003e-05,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Support": 9.628200391332596,
+        "Inner wall": 232.96284037386158,
+        "Outer wall": 41.26455012371979,
+        "Sparse infill": 61.05493937537323,
+        "Floating vertical shell": 16.522301693321904,
+        "Internal solid infill": 17.36009908667125
+      }
+    },
+    {
+      "site": "body_-12deg",
+      "layer_z_mm": 6.12,
+      "section_z_mm": 6.04,
+      "boundary_samples": 403,
+      "max_cavity_boundary_distance_to_model_bead_mm": 0.017070912504572926,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Support interface": 46.21875901409537,
+        "Inner wall": 182.88637589942797,
+        "Outer wall": 47.61906772695277,
+        "Internal solid infill": 0.3582351866848397,
+        "Sparse infill": 40.96873803104262,
+        "Floating vertical shell": 5.900456578889876
+      }
+    },
+    {
+      "site": "body_-12deg",
+      "layer_z_mm": 9.48,
+      "section_z_mm": 9.4,
+      "boundary_samples": 370,
+      "max_cavity_boundary_distance_to_model_bead_mm": 0.03161045201019784,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Inner wall": 183.55140626706,
+        "Outer wall": 42.37064130364751,
+        "Internal solid infill": 21.19706610382392,
+        "Floating vertical shell": 7.836087693103188,
+        "Sparse infill": 14.350382387237866,
+        "Ironing": 2.162924839636534
+      }
+    },
+    {
+      "site": "body_-12deg",
+      "layer_z_mm": 9.64,
+      "section_z_mm": 9.5599995,
+      "boundary_samples": 370,
+      "max_cavity_boundary_distance_to_model_bead_mm": 0.03155685868212161,
+      "boundary_within_0p08_mm_fraction": 1.0,
+      "feature_length_in_roi_mm": {
+        "Inner wall": 180.99318628259368,
+        "Outer wall": 44.06945980385181,
+        "Internal solid infill": 14.79848611039774,
+        "Floating vertical shell": 7.646025871755518,
+        "Sparse infill": 20.071528759975404,
+        "Ironing": 2.3472123121324446
+      }
+    }
+  ]
+}

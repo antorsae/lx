@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "source_sha256": "850340c197100b00754230c780c472dd7d75e70150ad2c27181a1ca21276fe70",
+  "um_stl": "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl",
+  "um_sha256": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+  "LM_state": "floor_stand",
+  "LM_sha256": "53f869edf67a3f760413e3615dae0fc59f4dae6eab029b767552ac3a78241587",
+  "LM_overlap_mm3": 0.0,
+  "solid_annulus_witnesses": 1380,
+  "driver_gauge_overlap_mm3": [
+    0.0,
+    0.0
+  ],
+  "M2_bearing_plane_Y_mm": [
+    319.3047603082665,
+    319.30476246378373,
+    319.3047570714158,
+    319.3047624637786
+  ],
+  "M2_head_gauge_diameter_mm": 3.9,
+  "M2_head_gauge_witnesses": 3360,
+  "T_gauge_diameter_mm": 5.6,
+  "T_shell_witnesses": 6912,
+  "seam_witnesses": 28,
+  "maximum_seam_distance_to_both_parts_mm": 0.04907854327123445,
+  "gallery_reference_sha256": "bc4a44a5a30573c5999b500032b7ddd60dbcf5169340887be35f22cd4d19727c",
+  "limits": "Digital fit and sampled wall checks; no physical or acoustic qualification."
+}

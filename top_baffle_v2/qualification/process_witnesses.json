@@ -1,0 +1,30 @@
+{
+  "kind": "qualification_only",
+  "parts": [
+    {
+      "name": "native_route_cover",
+      "sha256": "34f20ce53e7ecda248139947d10a8308834953b81f19a88db33bb63fb2bea866",
+      "valid": true,
+      "volume_mm3": 4511.188326005911,
+      "size_mm": [
+        67.82625327257175,
+        43.46814700025868,
+        20.647538270580554
+      ],
+      "min_z_mm": 1.1686097468332243e-15
+    },
+    {
+      "name": "supported_roof_and_wall_steps",
+      "sha256": "07a554d68e07099cf1d943ac1b9ecf07686eb5cab8bcfe74da98a51904b00814",
+      "valid": true,
+      "volume_mm3": 3287.0400000000013,
+      "size_mm": [
+        30.0,
+        24.0,
+        16.200000000000003
+      ],
+      "min_z_mm": 0.0
+    }
+  ],
+  "native_source_sha256": "f00e448efd5a941bae3bbac904b4275d5bc6c398ab2f28a227c79a1f97cb9f7a"
+}

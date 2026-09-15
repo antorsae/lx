@@ -1449,11 +1449,12 @@ def _validate_ready_project_archive(
             # model-only expectation can never match a vector setting.  Line
             # them up as model + interface and compare the whole thing.
             if (section == "filament" and interface_filament is not None
-                    and isinstance(actual, list) and isinstance(expected, list)
-                    and len(actual) > len(expected)):
+                    and isinstance(actual, list)):
                 interface_expected = interface_filament.get(key)
-                if isinstance(interface_expected, list):
-                    expected = [*expected, *interface_expected]
+                if interface_expected is not None:
+                    from lx521_baffle.print_policy import native_material_values
+                    expected = native_material_values(actual, expected, interface_expected,
+                                                      settings.get('nozzle_volume_type', 'Standard'))
             if not _profile_value_equal(actual, expected):
                 raise AuditError(
                     f"{project_3mf}: embedded setting {key}={actual!r}, "

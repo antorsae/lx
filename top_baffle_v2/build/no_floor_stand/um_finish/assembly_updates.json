@@ -1,0 +1,13 @@
+{
+  "scope": "replace standalone UM in existing core/review assemblies",
+  "source_script_sha256": "917dbfa016bfaf4af68b84ecbbb46dcd620906ab23947b105e07a028664e89ef",
+  "updates": [
+    {
+      "path": "build/no_floor_stand/obiwan_assembled.step",
+      "before_sha256": "ad2969c77ba4db993c577409809a13c3847e1f58d0513fb6f8a8379ec4728d1b",
+      "sha256": "f3ead4bda3f4e4f33212a83301d9411beb5641f8640c035f4f421baefa1e2008",
+      "native_UM_sha256": "bf64e300a62c4489173b10592090cf5c5ec767f82a964341ef2b7d44f20941ae",
+      "preserved_other_children": 20
+    }
+  ]
+}

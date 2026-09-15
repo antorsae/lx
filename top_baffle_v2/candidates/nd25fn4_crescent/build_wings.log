@@ -1,0 +1,10 @@
+Building shared V4 wing clearance surface
+Retriangulated 5 precision slivers; max edge deviation 0.00000000 mm
+Clearance surface ready
+Traceback (most recent call last):
+  File "/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/build_wings.py", line 283, in <module>
+    main()
+  File "/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/build_wings.py", line 212, in main
+    assert intersection < 1e-6 and gap+.0002 >= baseline_gap, (filename,intersection,gap,baseline_gap)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('V4_flat_left_UPPER.stl', 2.3825668847087944, 0.0, 0.0007123217617833517)

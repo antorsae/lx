@@ -1,0 +1,14 @@
+{
+  "reference": "review/nd25fn4_iterations/before_rear_loft_20260911T141353Z",
+  "change": "Broad rear thickness loft with smooth shoulder extension",
+  "before_body_sha256": "5d864c3fae3cb10310a763a639e771b85d3f2a790989f3f87f0edfb6bb9b17c0",
+  "after_body_sha256": "142784ffc6eee6b29e0a5a126692f9cbe5cc5de7cd0517b8cba459eca79b4242",
+  "added_material_mm3": 5382.554020740732,
+  "print_bounds_unchanged": true,
+  "retained_companion_STLs_unchanged": true,
+  "previous_minimum_longitudinal_radius_mm": 1.0308576799977167,
+  "current_minimum_longitudinal_radius_mm": 15.35730612777616,
+  "current_minimum_transverse_radius_mm": 65.65675153788354,
+  "measurement": "STL ray profiles at 0.25 mm spacing, curvature fitted over 1.5 mm; intentional bore/cap edges excluded",
+  "geometry_validation_sha256": "38b4ef48379e033101da9fdc768d2dabc1bc3b9f1e94ab1931b5316f12fc9296"
+}

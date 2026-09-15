@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "machine": {
+    "model": "Bambu Lab P2S",
+    "nozzle_mm": 0.6,
+    "nozzle_variant": "High Flow",
+    "layer_mm": 0.16,
+    "first_layer_mm": 0.2
+  },
+  "materials": {
+    "model": {
+      "name": "TINMORRY PETG-GF",
+      "slicer_index": 1,
+      "gcode_tool": 0
+    },
+    "interface": {
+      "name": "Bambu PLA Basic",
+      "slicer_index": 2,
+      "gcode_tool": 1
+    },
+    "purge_each_direction_mm3": 560,
+    "interface_flush_volumetric_speed_mm3_s": 12,
+    "changeover_qualification": "User-requested calibration after a PETG-GF to PLA blockage: double the previous 280 mm3 purge in both directions and limit PLA flushing to 12 mm3/s. Printing flow limits and temperatures are unchanged. Physical changeover test pending.",
+    "mapping": "Complete Manual vectors for a single physical High Flow nozzle; retain installed profile variant columns. Verify actual T0/T1 extrusion after slicing."
+  },
+  "support": {
+    "support_type": "normal(auto)",
+    "support_style": "snug",
+    "support_filament": "1",
+    "support_interface_filament": "2",
+    "support_interface_top_layers": "3",
+    "support_interface_spacing": "0",
+    "support_top_z_distance": "0",
+    "support_interface_bottom_layers": "3",
+    "support_bottom_interface_spacing": "0.5",
+    "support_bottom_z_distance": "0.18",
+    "flush_into_objects": "0",
+    "flush_into_infill": "0",
+    "flush_into_support": "0"
+  },
+  "roles": {
+    "lm_bottom": {
+      "sparse_infill_density": "100%",
+      "sparse_infill_pattern": "zig-zag"
+    },
+    "lm_top": {
+      "sparse_infill_density": "100%",
+      "sparse_infill_pattern": "zig-zag"
+    },
+    "um": {
+      "sparse_infill_density": "100%",
+      "sparse_infill_pattern": "zig-zag"
+    },
+    "core_combo": {
+      "sparse_infill_density": "100%",
+      "sparse_infill_pattern": "zig-zag"
+    },
+    "regular_wing": {
+      "sparse_infill_density": "10%",
+      "sparse_infill_pattern": "gyroid",
+      "enable_support": "0",
+      "support_on_build_plate_only": "0",
+      "support_critical_regions_only": "0",
+      "support_remove_small_overhang": "0"
+    },
+    "crescent_wing": {
+      "sparse_infill_density": "10%",
+      "sparse_infill_pattern": "gyroid",
+      "enable_support": "1",
+      "support_critical_regions_only": "0",
+      "support_remove_small_overhang": "0"
+    },
+    "crescent_body": {
+      "sparse_infill_density": "100%",
+      "sparse_infill_pattern": "zig-zag"
+    },
+    "crescent_tweeter_modifier": {
+      "sparse_infill_density": "15%",
+      "sparse_infill_pattern": "gyroid"
+    },
+    "crescent_accessories": {
+      "sparse_infill_density": "15%",
+      "sparse_infill_pattern": "gyroid",
+      "enable_support": "1",
+      "support_critical_regions_only": "0",
+      "support_remove_small_overhang": "0"
+    },
+    "regular_tweeter": {
+      "sparse_infill_density": "30%",
+      "sparse_infill_pattern": "gyroid",
+      "enable_support": "0"
+    }
+  },
+  "hardware": {
+    "M3_insert": {
+      "pilot_diameter_mm": 4.6,
+      "insert_length_mm": 4,
+      "clearance_diameter_mm": 3.4
+    },
+    "crescent_retainer": {
+      "thread": "M3",
+      "screw_count": 6,
+      "screw_length_mm": 8,
+      "head_diameter_mm": 5.5,
+      "head_height_mm": 3,
+      "screw_circle_radius_mm": 25.1,
+      "retainer_outer_radius_mm": 27.95,
+      "service_radius_mm": 28.15
+    }
+  },
+  "hardware_stock": {
+    "M3_insert": {
+      "brand": "Hanglife",
+      "model": "HLTI-M3-001",
+      "label": "M3 x 5 x 4",
+      "thread": "M3",
+      "outer_diameter_mm": 5.0,
+      "length_mm": 4.0,
+      "installation": "heat-set",
+      "source": "User-confirmed existing stock; supplied package drawing",
+      "reference_image": "vendor/HANGLIFE/M3x5x4_reference.png",
+      "bore_note": "The shared 4.6 mm pilot is the printed hole, not the insert outside diameter. The existing project convention provides 0.4 mm nominal diametral interference; the supplied label does not specify a recommended pilot."
+    }
+  },
+  "magnets": {
+    "regular_D5": {
+      "diameter_mm": 5,
+      "depth_mm": 2,
+      "grade": "N52",
+      "candidate_sku": "Superimanes D-05-02-N52",
+      "use": "Regular Obi-Wan and preserved LM connections",
+      "structural_load_credit_n": 0
+    },
+    "crescent_D6": {
+      "diameter_mm": 6,
+      "depth_mm": 3,
+      "grade": "N45",
+      "candidate_sku": "Superimanes D-06-03",
+      "use": "Crescent UM and matching upper wing connections; eight discs per assembly",
+      "structural_load_credit_n": 0,
+      "digital_wall_gate": {
+        "boundary_sample_mm": 0.06,
+        "max_boundary_gap_mm": 0.08,
+        "min_bead_width_mm": 0.442,
+        "max_bead_width_mm": 1.2,
+        "maximum_retaining_components": 1,
+        "minimum_interlayer_overlap_fraction": 0.5,
+        "continuity_basis": "In the seated-disc working region, the cavity-facing wall footprints must form one connected component and overlap the prior model layer across at least half their area. This is a project screening criterion, not a measured bond-strength claim.",
+        "basis": "Arachne minimum is 85% of 0.52 mm outer width; upper bound is two 0.6 mm nozzle diameters. D6 inclined 0.82 mm skins do not use the thinner D5 single-traversal width limit. Physical print confirmation remains mandatory."
+      }
+    }
+  },
+  "exceptions": [
+    {
+      "id": "regular_wings_no_support",
+      "scope": "regular_wing",
+      "reason": "Existing print pose and D5 roof contract; no PLA is loaded or required. Fail if support extrusion exists."
+    },
+    {
+      "id": "crescent_wings_supported",
+      "scope": "crescent_wing",
+      "reason": "Curved replacement wings have different geometry. GF supports with PLA contact; cavity blockers must exclude trapped support."
+    },
+    {
+      "id": "caps_full_ceiling",
+      "scope": "crescent_accessories",
+      "reason": "Disable critical-only and small-overhang removal so the entire 44.6 mm cap ceiling receives three full PLA contact layers."
+    },
+    {
+      "id": "tweeter_lightweight",
+      "scope": "crescent_body",
+      "reason": "Nonprinting modifier above installed Y=421 mm overrides UM 100% with tweeter 15% gyroid."
+    },
+    {
+      "id": "bottom_contact_legacy",
+      "scope": "supported",
+      "reason": "Bottom contact retains 0.18 mm gap and 0.5 mm spacing. It is not equivalent to the dense zero-gap top contact; review if supports are allowed to start on model surfaces."
+    },
+    {
+      "id": "bridge_root_solid",
+      "scope": "no_floor_stand_lm_bottom",
+      "reason": "Local 100% bridge-root modifier remains as an explicit structural safeguard; redundant with current global 100%."
+    },
+    {
+      "id": "insert_and_duct_blockers",
+      "scope": "supported",
+      "reason": "Block only functional bore and route volumes. Check actual support bead intersection, not blocker count or colour."
+    },
+    {
+      "id": "rear_T_bore_layer_boundary",
+      "scope": "crescent_body",
+      "reason": "Report sub-half-layer PLA contact at the mouth separately from support inside the cylindrical bore; retain a numerical bound and witness."
+    },
+    {
+      "id": "D6_physical_qualification",
+      "scope": "crescent_D6",
+      "reason": "Digital boundary, width and loading checks plus a same-geometry coupon are necessary; extrusion, insertion, pause bonding and retention require a physical print."
+    },
+    {
+      "id": "service_entry_support_columns",
+      "scope": "crescent_body",
+      "reason": "Block the complete projected cable entry until it leaves the enlarged M3 service chamber; a short fixed sample range allowed adjacent support to grow sideways into the bore. Actual duct clearance is a mandatory gate."
+    },
+    {
+      "id": "auxiliary_bores_orientation",
+      "scope": "regular_NL8_and_M2_ties",
+      "reason": "These holes lack dedicated bore blockers. NL8 opens away from the bed; ties rely on their enclosed position and support settings. Fresh slices are checked by scripts/audit_auxiliary_support.py. Recheck if orientation or support scope changes."
+    }
+  ]
+}

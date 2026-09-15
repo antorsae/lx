@@ -1,0 +1,143 @@
+{
+  "format": "direct_stl_files",
+  "status": "geometry_checked_unsliced",
+  "units": "mm",
+  "STLs": {
+    "STL/01_UM_Crescent_V4.stl": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+    "STL/02_Closed_Cap_PRINT_TWO.stl": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+    "STL/03_Tweeter_Retainer_PRINT_TWO.stl": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc",
+    "STL/wings/V4_flat_left_UPPER.stl": "9543913be00c4accad26e9f77995cf9667f0beeae46a4ca132ce5804920e16c1",
+    "STL/wings/V4_flat_right_UPPER.stl": "a23e3cc6b59c172ff0ba5cb9e2a2c86eb5a68f0c9cdc6c7d0d2034b44a24866f",
+    "STL/wings/V4_graded_left_UPPER.stl": "8c809f13e8c6579e398be1a8615a7f6aeb3ba71882bcc3aa3d62222f242caadc",
+    "STL/wings/V4_graded_right_UPPER.stl": "1929259f485cf7b1f9789ee876bc493e2c4ee610e771654971c9b2016d686f29"
+  },
+  "validation_sha256": "4e20c880bef685837cd0c296b2b68cc08d896657b9426dd072868db8c550efea",
+  "print_policy_sha256": "09dcf26616da63f16ae2be88398aa8c9417cfc3e4041ac0faeeaee82bb85874e",
+  "hardware": {
+    "validation": "hardware_validation.json",
+    "sha256": "2602d13f3246332cc1c335dd04fe33752af141cc1539ac9c8096556b48bfce70",
+    "validator_sha256": "ddc1d12a6d441af0ed55ed3edc6fec25138ee618ed44f4d7ca4dd1432b5a1e9a",
+    "thread": "M3",
+    "insert_stock": {
+      "brand": "Hanglife",
+      "model": "HLTI-M3-001",
+      "label": "M3 x 5 x 4",
+      "thread": "M3",
+      "outer_diameter_mm": 5.0,
+      "length_mm": 4.0,
+      "installation": "heat-set",
+      "source": "User-confirmed existing stock; supplied package drawing",
+      "reference_image": "vendor/HANGLIFE/M3x5x4_reference.png",
+      "bore_note": "The shared 4.6 mm pilot is the printed hole, not the insert outside diameter. The existing project convention provides 0.4 mm nominal diametral interference; the supplied label does not specify a recommended pilot."
+    },
+    "stock_validation": {
+      "path": "review/print_policy_update_20260912/M3_stock_confirmation.json",
+      "sha256": "55950ae0efbf3d00365524b5aebc757c3cef28b3ae136c2d89cf60129a618c25"
+    },
+    "matched_revision": [
+      "STL/01_UM_Crescent_V4.stl",
+      "STL/03_Tweeter_Retainer_PRINT_TWO.stl"
+    ]
+  },
+  "native_print_jobs": {
+    "manifest": "print/manifest.json",
+    "sha256": "76fc9735440173c5180ce9dbcca309b3b0466d25a1cd22b895462655a1e88c03",
+    "project_count": 6,
+    "digital_audit": "passed"
+  },
+  "D6_qualification": {
+    "report": "print/qualification/qualification.json",
+    "sha256": "c044c00786d42f5580360e140ef4517b9410898ccfc892579b433b14f72d6d62",
+    "digital_audit": "pass",
+    "physical_qualification": "pending"
+  },
+  "UM_finish_validation": {
+    "um_finish_no_floor_validation.json": "a456fd4d420b65f7f414141de161698978b290fb0f8ca58c898f257d12a0e666",
+    "um_finish_floor_validation.json": "338549e2969d1f218f6ef1087a574d5bb85193ec010334bafc741a704cf5c536"
+  },
+  "lower_band_validation_sha256": "6e6045aedf06e9704fb9b6a1f6659e02a3796e6b1310863a7df05fdc312f8baa",
+  "outline_validation_sha256": "c104df913c467587958c6f6c2a1de51fbfaaa024ea974c038e75b7606a5f2b45",
+  "waist_validation_sha256": "3deb6467421477c255314842aeff7e44a264246624bd749253d8ca82a83e8d7e",
+  "waist_comparison": {
+    "path": "views/waist_comparison.png",
+    "sha256": "6dffe87c94538a18b4c18481859c21525958e787ba47b6a343564200874550c5"
+  },
+  "reference_validation_sha256": "1eb9c6c864aac68e835a20342a751ab366be6f87e6f94e918383f634c42e6325",
+  "reference_outline_rms_error_mm": 0.16915949489634124,
+  "reference_overlay": {
+    "path": "views/UM_reference_overlay.png",
+    "sha256": "8fd5ac051115d61235c7e3d44b24ee48cfecb72526b10858af5e7bf06e1e491d"
+  },
+  "depth_magnet_validation_sha256": "68412d7ebcc83ce714f73c211b955f9d09deedbda7d3dc5cd8aad2cf4a300ffe",
+  "depth_comparison": {
+    "path": "views/UM_depth_comparison.png",
+    "sha256": "f31cac42d5c48cf02d1ab4b67e9bc963d5c415ca688a788d2f28dd0e6a7c2050"
+  },
+  "outline_comparison": {
+    "path": "views/UM_outline_comparison.png",
+    "sha256": "a9ae17dc0bb13f4a7fa210418489bdf49bc3c656ed3c36a3c968ac4fca0ade6f"
+  },
+  "review_glb": {
+    "path": "views/nd25fn4_color_review.glb",
+    "sha256": "aa3daa495c500d93ce29fb97413bf732b73ba5a580ed13e76673a1171240153d"
+  },
+  "viewer_links": {
+    "nd25fn4_color_review.glb": "http://127.0.0.1:3246/?file=nd25fn4_crescent%2Fviews%2Fnd25fn4_color_review.glb",
+    "nd25fn4_flat_wings.glb": "http://127.0.0.1:3246/?file=nd25fn4_crescent%2Fviews%2Fnd25fn4_flat_wings.glb",
+    "nd25fn4_graded_wings.glb": "http://127.0.0.1:3246/?file=nd25fn4_crescent%2Fviews%2Fnd25fn4_graded_wings.glb"
+  },
+  "viewer_link_validation_sha256": "9981b12eb816460fb122f788d95c7ef70939d0f5e61f8a61ebe9ededd2777300",
+  "UM_magnets": {
+    "size_mm": [
+      6,
+      3
+    ],
+    "quantity_per_body_and_upper_wing_pair": 8,
+    "recommended_part": "Superimanes D-06-03 N45",
+    "physical_holding_force": "not measured"
+  },
+  "rear_comparison": {
+    "path": "views/UM_lower_band_comparison.png",
+    "sha256": "d5430ad4fe1cce4497eab8f4df88a294e66b381e8df7c2e4a2dabdc07f56128d"
+  },
+  "shared_body": "STL/01_UM_Crescent_V4.stl",
+  "compatible_LM_configurations": [
+    "no_floor_stand",
+    "floor_stand"
+  ],
+  "LM_interface": {
+    "front_z_mm": 18.3,
+    "exterior_flush": true,
+    "LM_front_occluded_area_mm2": 0,
+    "print_mesh_check": "print/LM_assembly_check.json",
+    "check_sha256": "27f52da0c0d6d95fb08599314e565e995995e22de25e7670258ad88b517e5c24",
+    "render": "views/LM_interface_orthographic_3D.png",
+    "render_sha256": "08107c19196cac634345fb80a3a0634699a4d52fdbb02cbe157b6b0977e0eb78"
+  },
+  "quantities": "ONE shared body for either LM configuration, TWO caps, TWO retainers; ONE matching upper-wing pair",
+  "instructions": "README.md",
+  "archive_produced": false,
+  "native_print_material_variants": {
+    "PETG_GF_PLA": {
+      "manifest": "print/manifest.json",
+      "sha256": "76fc9735440173c5180ce9dbcca309b3b0466d25a1cd22b895462655a1e88c03",
+      "project_count": 6,
+      "digital_audit": "passed"
+    },
+    "PETG_TRANSLUCENT_PLA_TRANSLUCENT": {
+      "manifest": "print_translucent/manifest.json",
+      "sha256": "22ae8720b144c1dc6179211ccaeae61651f1cfff099294b26ec43ecf4252ce20",
+      "project_count": 6,
+      "digital_audit": "passed",
+      "nozzle": "0.6 mm High Flow",
+      "AMS_slots": {
+        "PETG_Translucent": 4,
+        "PLA_Translucent": 2
+      },
+      "body_surface": "Classic outer-first, constant 0.52 mm exterior magnet-cover paths",
+      "physical_surface_qualification": "pending",
+      "surface_test": "print_translucent/qualification/qualification.json",
+      "surface_test_sha256": "2acf3102bcdc38be0aad4a27717f6c3c42db0b24f23b266112cc1fdb7084f5bf"
+    }
+  }
+}

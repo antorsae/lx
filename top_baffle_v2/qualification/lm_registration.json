@@ -1,0 +1,129 @@
+{
+  "split_kind": "optional_top_bottom_hidden_two_pin_registration",
+  "seam_y_mm": 172.481,
+  "seam_offset_from_lm_center_mm": -28.5,
+  "assembly_gap_mm": 0.0,
+  "buried_route_joint": "closed_zero_gap_planar_butt",
+  "registration_pair_count": 2,
+  "registration_sides": [
+    "left",
+    "right"
+  ],
+  "registration_is_keyed": true,
+  "registration_form": "two_symmetric_cylindrical_pins_round_plus_relief_sockets",
+  "registration_centers_xyz_mm": {
+    "left": [
+      -108.9209035247543,
+      172.481,
+      14.3
+    ],
+    "right": [
+      108.9209035247543,
+      172.481,
+      14.3
+    ]
+  },
+  "registration_center_spacing_mm": 217.8418070495086,
+  "registration_symmetry_error_mm": 0.0,
+  "registration_axis_world_xyz": [
+    0.0,
+    1.0,
+    0.0
+  ],
+  "registration_axis_normal_to_horizontal_seam": true,
+  "assembly_motion": "top_half_approaches_along_negative_world_y",
+  "pin_diameter_mm": 1.6,
+  "pin_root_overlap_mm": 0.5,
+  "male_pin_length_mm": 2.9,
+  "male_total_volume_mm3": 11.661591930125313,
+  "engagement_depth_mm": 2.4,
+  "socket_round_diameter_mm": 1.8,
+  "socket_radial_clearance_mm": 0.1,
+  "socket_end_clearance_mm": 0.25,
+  "socket_blind_depth_mm": 2.65,
+  "round_socket_side": "right",
+  "relieved_socket_side": "left",
+  "relieved_socket_x_extra_each_side_mm": 0.02,
+  "relieved_socket_x_span_mm": 1.84,
+  "round_socket_cross_section_area_mm2": 2.5446900494077327,
+  "relieved_socket_cross_section_area_mm2": 2.6166900494077328,
+  "registered_round_diametral_play_mm": 0.2,
+  "relative_pin_pitch_error_capacity_mm": 0.22,
+  "round_socket_inner_wall_mm": 0.4842237359492185,
+  "round_socket_outer_wall_mm": 0.4842237359492202,
+  "relieved_socket_inner_wall_mm": 0.4642237359492185,
+  "relieved_socket_outer_wall_mm": 0.4642237359492202,
+  "minimum_socket_radial_wall_mm": 0.4642237359492185,
+  "socket_blind_end_wall_mm": 0.5,
+  "support_land_length_mm": 2.6999999999999997,
+  "support_land_z_range_mm": [
+    13.020000000000001,
+    15.58
+  ],
+  "support_land_clearance_above_rear_mm": 6.2200000000000015,
+  "support_land_clearance_below_front_mm": 2.7200000000000006,
+  "support_land_driver_recess_plan_clearance_mm": 0.08189271730256564,
+  "support_land_driver_flange_plan_clearance_mm": 0.16189271730256394,
+  "wing_interface_clearance_mm": 0.25,
+  "wing_clearance_compatible_variants": [
+    "flat",
+    "graded"
+  ],
+  "wing_clearance_pocket_between_front_and_rear": true,
+  "exterior_support_land": false,
+  "registration_wall_source": "native_r113p94_smooth_ring",
+  "support_land_outer_radius_mm": 113.85846509510478,
+  "support_land_plan_growth_from_structural_ring_mm": 0.8584650951047763,
+  "support_land_plan_growth_beyond_visible_fairing_mm": 0.0,
+  "support_land_plan_outline_growth_mm": 0.0,
+  "inward_support_land_rejected_for_driver_collision": false,
+  "two_round_socket_design_rejected": true,
+  "tolerance_strategy": "right_round_locator_left_x_relief_round_and_diamond",
+  "binding_drawback": "two round sockets across the wide pitch can bind from XY scale or shrink error; the left X relief removes only that redundant constraint while retaining Z and angular registration",
+  "nominal_nozzle_diameter_mm": 0.4,
+  "pin_nominal_nozzle_width_count": 4.0,
+  "pin_and_socket_slicer_gate_required": true,
+  "printability_drawback": "the horizontal D1.6 pins are four nominal 0.4-mm nozzle widths but have no load credit; verify both pin toolpaths and the native-ring minimum socket walls before release",
+  "envelope_growth_mm": 0.0,
+  "target_square_bed_mm": 220.0,
+  "floor_bottom_print_rotation_x_deg": 180.0,
+  "print_orientation": "front_face_down_all_pieces",
+  "floor_bottom_in_bed_rotation_deg": 26.0,
+  "installed_structural_load_credit_n": 0.0,
+  "standalone_retention_credit_n": 0.0,
+  "z_registration": "assemble_front_faces_on_flat_datum_then_driver",
+  "physical_coupon_required": true,
+  "physical_load_qualification_required": true,
+  "print_rotations_z_deg": {
+    "male_pin_pair": 26.0,
+    "female_socket_pair": 45.0
+  },
+  "purpose": "Fit/path coupon only; sacrificial braces change stiffness. Full LM assembly/load tests remain mandatory.",
+  "source_step_sha256": "f00e448efd5a941bae3bbac904b4275d5bc6c398ab2f28a227c79a1f97cb9f7a",
+  "files": {
+    "female_socket_pair.stl": "042a9df5f746d2f753040d21d57876c58244309ce600a385b0c5068131d5591d",
+    "male_pin_pair.stl": "3f85e167677cbfd2442e6bc364f79427f44f998ab309f170daefe26483b033e2"
+  },
+  "solids": [
+    {
+      "name": "male_pin_pair",
+      "valid": true,
+      "volume_mm3": 1890.2916782705647,
+      "size_mm": [
+        201.1441059158262,
+        105.22839148637723,
+        16.179050885459468
+      ]
+    },
+    {
+      "name": "female_socket_pair",
+      "valid": true,
+      "volume_mm3": 1987.1779310909865,
+      "size_mm": [
+        162.91649269274225,
+        162.91649269274222,
+        18.300000200000007
+      ]
+    }
+  ]
+}

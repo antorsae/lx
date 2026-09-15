@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "name": "V4 Bambu PETG Translucent + PLA Translucent, P2S 0.6 HF",
+  "shared_geometry_process_policy": "print_policy.json",
+  "model": {
+    "preset": "Bambu PETG Translucent @BBL P2S 0.6 nozzle",
+    "filament_id": "GFG01",
+    "slicer_filament": 1,
+    "gcode_tool": 0,
+    "ams_slot": 4,
+    "colour": "#C1C1C1"
+  },
+  "interface": {
+    "preset": "Bambu PLA Translucent @BBL P2S 0.6 nozzle",
+    "filament_id": "GFA17",
+    "slicer_filament": 2,
+    "gcode_tool": 1,
+    "ams_slot": 2,
+    "colour": "#B5001180",
+    "profile_overrides": {
+      "textured_plate_temp": ["70"],
+      "textured_plate_temp_initial_layer": ["70"]
+    }
+  },
+  "confirmation": "User confirmed 0.6 mm High Flow, PETG AMS slot 4, PLA AMS slot 2 on 2026-09-13.",
+  "colour_source": "Bambu Studio's selected translucent material colours; display colours do not bind AMS slots.",
+  "flush_volumes_matrix_mm3": [0, 298, 575, 0],
+  "flush_source": "Bambu Studio's selected PETG Translucent / PLA Translucent project, each direction above the shared 280 mm3 material minimum.",
+  "body_surface_finish": {
+    "wall_generator": "classic",
+    "detect_thin_wall": "1",
+    "wall_sequence": "outer wall/inner wall",
+    "precise_outer_wall": "0"
+  },
+  "exceptions": [
+    "Resolve complete installed translucent filament presets instead of the Tinmorry/PLA Basic recipes. Keep nozzle variant columns, original geometry and shared role/support policies.",
+    "Retain the selected translucent colour purge matrix: 298 mm3 PETG to PLA; 575 mm3 PLA to PETG. No flushing into model, infill or supports.",
+    "Shared-bed override: set PLA's textured plate settings to the PETG model's 70 C for both first and other layers. The body slice emitted 55 C during an early material change even with by_first_filament. Verify actual bed commands remain 70 C until shutdown. All nozzle, flow, cooling and retraction settings retain the native translucent recipes.",
+    "Use Bambu's explicit allow-mix-temp CLI option for the intentional PETG/PLA support pair. Neither material is relabelled or assigned a false support-material identity.",
+    "Body surface exception: Classic with thin-wall detection and outer-first ordering removes the measured 0.52-to-1.09 mm exterior bead-width variation at the D6 covers. Precise outer wall is disabled because Bambu ignores it for outer-first ordering. Qualify complete exterior coverage, D6 retaining continuity and insertion timing from the final slice. Caps and wings retain their existing Arachne process.",
+    "AMS slots are print-send mappings. Native filament_map/nozzle_map vectors identify the single physical nozzle, not AMS slots. Bind material 1 to slot 4 and material 2 to slot 2 in Bambu Studio's Send dialog."
+  ]
+}

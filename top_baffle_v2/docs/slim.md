@@ -36,7 +36,7 @@ the tweeter pair clamps an 11.5 septum (shorter standoffs; pair spacing
 −6.8). The front-datum geometry keeps V1 front-flush with the LM
 section. Pair with V1L for the complete thin proud-family baffle. 10F
 mounting: 4 × Ø4.6 × 4.0 bores from
-the new front for M3 x 3 x O5 brass heat-sets (floor z=7.5 stays 1.9
+the new front for M3 thread × Ø5 × L4 brass heat-sets (floor z=7.5 stays 1.9
 above the T-lane roofs at the ring crossings). Two D5 x 2 magnets per side
 are fully buried in the common Ø5.20 x 2.10 captive flank-wall cavities
 (one source Z=15.10 for both stations). The magnet-free slim host keeps a

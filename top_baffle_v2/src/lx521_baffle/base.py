@@ -60,7 +60,8 @@ TWEETER_DROP_A_MM = UM_ALIGN_DY_MM
 PILOT_DEPTH_MM = THICKNESS_MM / 2.0  # 9.15
 
 # Upper mid: production SEAS MU10RB-SL (H1658-04), 4-hole D89.5
-# pattern. Mounted with brass M3 x 3 heat-set inserts in D4.6 x 4.0
+# pattern. Mounted with the M3 heat-set stock in print_policy.json (currently
+# Hanglife M3 thread, D5 outside x L4), in the established D4.6 x 4.0
 # bores. M3 screws pass the flange holes; the inboard wall to the D82
 # cutout is 1.45. The reference/acoustic mesh intentionally omits the
 # electrical terminals, so terminal fit is represented separately by

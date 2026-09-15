@@ -1,0 +1,74 @@
+{
+  "body": {
+    "curr_bed_type": "Engineering Plate",
+    "eng_plate_temp": [
+      "70",
+      "70"
+    ],
+    "eng_plate_temp_initial_layer": [
+      "70",
+      "70"
+    ],
+    "raft_layers": "0",
+    "brim_type": "outer_only",
+    "brim_width": "5",
+    "support_filament": "1",
+    "support_interface_filament": "2",
+    "support_interface_top_layers": "3",
+    "support_top_z_distance": "0",
+    "support_bottom_z_distance": "0",
+    "support_interface_spacing": "0",
+    "nozzle_diameter": [
+      "0.6"
+    ],
+    "nozzle_volume_type": [
+      "High Flow"
+    ],
+    "enable_prime_tower": "1",
+    "flush_into_objects": "0",
+    "flush_into_infill": "0",
+    "flush_into_support": "0",
+    "flush_volumes_matrix": [
+      "0",
+      "560",
+      "560",
+      "0"
+    ]
+  },
+  "accessories": {
+    "curr_bed_type": "Engineering Plate",
+    "eng_plate_temp": [
+      "70",
+      "70"
+    ],
+    "eng_plate_temp_initial_layer": [
+      "70",
+      "70"
+    ],
+    "raft_layers": "0",
+    "brim_type": "outer_only",
+    "brim_width": "5",
+    "support_filament": "1",
+    "support_interface_filament": "2",
+    "support_interface_top_layers": "3",
+    "support_top_z_distance": "0",
+    "support_bottom_z_distance": "0",
+    "support_interface_spacing": "0",
+    "nozzle_diameter": [
+      "0.6"
+    ],
+    "nozzle_volume_type": [
+      "High Flow"
+    ],
+    "enable_prime_tower": "1",
+    "flush_into_objects": "0",
+    "flush_into_infill": "0",
+    "flush_into_support": "0",
+    "flush_volumes_matrix": [
+      "0",
+      "560",
+      "560",
+      "0"
+    ]
+  }
+}

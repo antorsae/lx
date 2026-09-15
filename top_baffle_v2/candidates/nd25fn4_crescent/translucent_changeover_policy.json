@@ -1,0 +1,48 @@
+{
+  "name": "V4 body and caps \u2014 Engineering Plate, PETG Translucent + PLA Translucent, 560 mm3 changeover",
+  "base_material_policy": "translucent_material_policy.json",
+  "projects": [
+    "body",
+    "accessories"
+  ],
+  "flush_volumes_matrix_mm3": [
+    0,
+    560,
+    560,
+    0
+  ],
+  "flush_volumes_vector_mm3": [
+    280,
+    280,
+    280,
+    280
+  ],
+  "flush_multiplier": 1,
+  "PLA_flush_mm3_s": 12,
+  "authorization": "User clarified that the print used PETG Translucent with PLA and requested alternate V4 body/cap files after authorizing the 560 mm3 / 12 mm3/s changeover calibration.",
+  "physical_qualification": "Pending. The previous translucent slice already requested 12 mm3/s PLA flushing; the higher purge is a test condition, not a confirmed cure for a blockage.",
+  "plate": {
+    "type": "Engineering Plate",
+    "bed_temperature_c": 70,
+    "adhesion": "User-confirmed glue; 5 mm outer brim; no raft"
+  },
+  "process_overrides": {
+    "curr_bed_type": "Engineering Plate",
+    "raft_layers": "0",
+    "brim_type": "outer_only",
+    "brim_width": "5"
+  },
+  "support_overrides": {
+    "support_bottom_z_distance": "0"
+  },
+  "guide_review": {
+    "url": "https://wiki.bambulab.com/en/filament-acc/filament/h2d-pla-and-petg-mutual-support",
+    "source_record": "review/nd25fn4_engineering_guide/sources.json",
+    "applied": "PETG support base; PLA interface; three dense interface layers; zero top and bottom Z gaps; no raft. Keep prime tower and no contaminated flushing into model or supports.",
+    "qualification": "Outside the guide: it explicitly excludes PETG Translucent and only covers PLA Basic with PETG HF/Basic. Engineering Plate is not one of its listed plates.",
+    "material_exception": "Retain the user-selected PETG Translucent / PLA Translucent recipes (PETG 250/245 C, PLA 220 C) and Engineering Plate with glue at 70 C; do not claim the guide's 60 C / PLA Basic 230 C process is validated for these filaments.",
+    "geometry_exception": "Keep qualified snug supports, bed-only scope, 0.7 mm XY clearance and fixed 0.16 mm support layers instead of copying the guide's 0.4 mm tree-support template; these protect insert/cable bores and cap ceiling coverage.",
+    "cooling_exception": "Keep native translucent P2S cooling; the downloaded guide P2S recipe is for PLA Basic/PETG HF and must not overwrite the full translucent recipes.",
+    "operator": "Dry each material using its own supplier instructions; ventilate the P2S by opening the door and/or top cover while PLA is in use."
+  }
+}

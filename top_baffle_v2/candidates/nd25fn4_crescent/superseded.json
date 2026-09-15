@@ -1,0 +1,21 @@
+{
+  "previous_candidate_archive": "review/nd25fn4_iterations/superseded_by_v4_20260911T044033Z",
+  "replacement_package": "MU10_ND25FN_V4_Retained_Package.zip",
+  "zip_sha256": "a09b718ecb998404e03d69802c4a6f4e8b58f568356947072bc697fa8db6a363",
+  "separated_V4_iteration": "review/nd25fn4_iterations/separate_UM_V4_before_fusion_20260911T052503Z",
+  "previous_fused_iteration": "review/nd25fn4_iterations/before_smooth_compact_20260911T070434Z",
+  "current": "Reshaping the UM to the latest full-front image: traced lobe, lower waist and unified curved base, retaining LM fit and buried magnets",
+  "previous_compact_iteration": "review/nd25fn4_iterations/before_waveguide_um_20260911T112132Z",
+  "previous_rolled_UM_iteration": "review/nd25fn4_iterations/before_rear_fairing_20260911T131459Z",
+  "previous_two_body_iteration": "review/nd25fn4_iterations/before_shared_body_20260911T135251Z",
+  "previous_trimmed_rear_iteration": "review/nd25fn4_iterations/before_rear_loft_20260911T141353Z",
+  "previous_open_handoff_and_hollow_seat": "review/nd25fn4_iterations/before_um_duct_seat_finish_20260911T153110Z",
+  "previous_rectangular_lower_band": "review/nd25fn4_iterations/before_lower_band_blend_20260911T163029Z",
+  "previous_UM_silhouette": "review/nd25fn4_iterations/before_UM_silhouette_20260911T173624Z",
+  "previous_magnet_lands_depth": "review/nd25fn4_iterations/before_buried_magnets_depth_20260911T181705Z",
+  "previous_upright_edge": "review/nd25fn4_iterations/before_slender_edge_20260911T185855Z",
+  "previous_rear_wide_taper": "review/nd25fn4_iterations/before_front_wide_taper_20260911T193559Z",
+  "previous_front_wide_taper": "review/nd25fn4_iterations/before_reference_outline_20260911T202429Z",
+  "previous_waist_dents_and_missing_insert_blockers": "review/nd25fn4_print/pre_waist_and_insert_fix",
+  "previous_unsupported_caps_plate": "review/nd25fn4_print/pre_cap_ceiling_support_fix"
+}

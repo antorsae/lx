@@ -1,0 +1,454 @@
+{
+  "status": "pass",
+  "authorization": "User: do both \u2014 560 mm3 each direction and 12 mm3/s PLA flush for the GF/PLA setup.",
+  "policy_sha256": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
+  "source_script_sha256": "498bcf631e0c7c12c371541a8b424cbddc9536c99018f187efab3bd4f58759fc",
+  "geometry_files_byte_identical": [
+    "candidates/nd25fn4_crescent/print/geometry/01_UM_Crescent_V4_PRINT.stl",
+    "candidates/nd25fn4_crescent/print/geometry/V4_graded_left_UPPER_PRINT.stl",
+    "candidates/nd25fn4_crescent/print/geometry/V4_flat_right_UPPER_PRINT.stl",
+    "candidates/nd25fn4_crescent/print/qualification/D6_wing_coupon.stl",
+    "candidates/nd25fn4_crescent/print/geometry/V4_flat_left_UPPER_PRINT.stl",
+    "candidates/nd25fn4_crescent/print/geometry/V4_graded_right_UPPER_PRINT.stl",
+    "candidates/nd25fn4_crescent/print/qualification/01_D6_body_coupon.stl"
+  ],
+  "preview_images_byte_identical": [
+    "candidates/nd25fn4_crescent/print/cap_ceiling_support.png",
+    "candidates/nd25fn4_crescent/print/LM_design_assembly_sections.png",
+    "candidates/nd25fn4_crescent/print/infill_preview.png",
+    "candidates/nd25fn4_crescent/print/magnet_pause_map.png",
+    "candidates/nd25fn4_crescent/print/LM_assembly_sections.png"
+  ],
+  "sliced_GF_jobs": [
+    {
+      "path": "candidates/nd25fn4_crescent/print/01_UM_Crescent_V4_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "263b5969503aaa95c7b4ebfb2e91389bf1c54e70ec16b864219a40914cd2eff8",
+      "audit": "review/nd25fn4_print/body/audit.json",
+      "before_sha256": "2a4ff2be35af58110327252865c9166a139d83bde2023ac481357ccf15bd20fb",
+      "changed_settings": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "changeover_count": 66,
+      "seconds": 46268.921875,
+      "temperature_handoff_requests_unchanged": true,
+      "magnet_pause_programs_unchanged": true
+    },
+    {
+      "path": "candidates/nd25fn4_crescent/print/02_Caps_TWO_Retainers_TWO_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "4b7f74298286eb50eca796199b25b1317d3a1eb2263e1d99c4b267b9edd5b400",
+      "audit": "review/nd25fn4_print/accessories/audit.json",
+      "before_sha256": "a268fea42e9042f0e56dbaeb6380e17bc4cc6fb162f00b394b52db71c6a3608f",
+      "changed_settings": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "changeover_count": 4,
+      "seconds": 8284.6982421875,
+      "temperature_handoff_requests_unchanged": true,
+      "magnet_pause_programs_unchanged": true
+    },
+    {
+      "path": "candidates/nd25fn4_crescent/print/V4_flat_left_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "4ede692188c55ce64a023faee7d4bf228e19ead3ecba9ea9797d78df345d1065",
+      "audit": "review/nd25fn4_print/V4_flat_left_UPPER/audit.json",
+      "before_sha256": "ee862d9e681464b488395cdf4f8d1b5d0af47e4b06c604ba64b1544151c7c7ee",
+      "changed_settings": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "changeover_count": 14,
+      "seconds": 8923.8544921875,
+      "temperature_handoff_requests_unchanged": true,
+      "magnet_pause_programs_unchanged": true
+    },
+    {
+      "path": "candidates/nd25fn4_crescent/print/V4_flat_right_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "c0f5dba18ed52126a14b936a74357028e6c1d3a98b000b55c893778a905197ef",
+      "audit": "review/nd25fn4_print/V4_flat_right_UPPER/audit.json",
+      "before_sha256": "e5b63d3b7870f1a54c72687506bb188f33465d623049eec4d41f04e23dea0c4e",
+      "changed_settings": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "changeover_count": 16,
+      "seconds": 9213.240234375,
+      "temperature_handoff_requests_unchanged": true,
+      "magnet_pause_programs_unchanged": true
+    },
+    {
+      "path": "candidates/nd25fn4_crescent/print/V4_graded_left_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "fc56f0325fd3cea36d2e67374f5626d03854efe9ca28d7026225e778835136db",
+      "audit": "review/nd25fn4_print/V4_graded_left_UPPER/audit.json",
+      "before_sha256": "c5d1b69e305fe6c8d2b47a32a42dd0ccb551d142d0fe8338340eb17707cc86f5",
+      "changed_settings": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "changeover_count": 16,
+      "seconds": 8466.966796875,
+      "temperature_handoff_requests_unchanged": true,
+      "magnet_pause_programs_unchanged": true
+    },
+    {
+      "path": "candidates/nd25fn4_crescent/print/V4_graded_right_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "097e5dfa42d2a8e40df13ad93a3ba268e4f3b7354396b1a3aeaf4b307ed96106",
+      "audit": "review/nd25fn4_print/V4_graded_right_UPPER/audit.json",
+      "before_sha256": "c19421a28912cd08f8abc1416dacf4661318ce65e122e8e92d658976e2043593",
+      "changed_settings": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "changeover_count": 16,
+      "seconds": 8494.7431640625,
+      "temperature_handoff_requests_unchanged": true,
+      "magnet_pause_programs_unchanged": true
+    },
+    {
+      "path": "candidates/nd25fn4_crescent/print/qualification/D6_body_wing_fit_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "5c6f755839e1462a879892cd08069c6a5be5d07063ae55cfeede590ef7801b0e",
+      "audit": "candidates/nd25fn4_crescent/print/qualification/qualification.json",
+      "before_sha256": "c5785c071865f5359f24832ec7395c7939997b573cde2c23e6a6c68157bc79ff",
+      "changed_settings": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        }
+      },
+      "changeover_count": 20,
+      "seconds": 4963.59716796875,
+      "temperature_handoff_requests_unchanged": true,
+      "magnet_pause_programs_unchanged": true
+    }
+  ],
+  "regular_GUI_projects": [
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_02_03_04_LM_UM_combo_floor_stand_GUI.3mf",
+      "sha256": "ea0efcaa0467b3b50078dd1602879bb7b830cea057905043b8e9f4c837bf10c4",
+      "status": "prepared_GUI_requires_slicing"
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_02_03_04_LM_UM_combo_no_floor_stand_GUI.3mf",
+      "sha256": "6056b1a5d9b0f1e41505d52dd39337e219a19e4e993b90471c4ecaf21dd203e0",
+      "status": "prepared_GUI_requires_slicing"
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_LM_bottom_keyed_1_of_2_floor_stand_GUI.3mf",
+      "sha256": "565c412b54ec34a6944851eefe8aeabf308636b0724e77c8404d7c763037b20b",
+      "status": "prepared_GUI_requires_slicing"
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand_GUI.3mf",
+      "sha256": "cd0e20b143d983576890f295c8592e3c07eb8f5e3743ab9996ef2561bf494c8d",
+      "status": "prepared_GUI_requires_slicing"
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_02_LM_top_keyed_2_of_2_GUI.3mf",
+      "sha256": "5367669372e3e8954dd2e0742868c14716c90ecf78401fa0cf8922d512fad16e",
+      "status": "prepared_GUI_requires_slicing"
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_03_UM_carrier_1_of_1_GUI.3mf",
+      "sha256": "e08b4f005155de1f9c45ba9089883301ee5413dd66f929fea2b881d2e7b4324f",
+      "status": "prepared_GUI_requires_slicing"
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_04_T_tweeter_crescent_1_of_1_GUI.3mf",
+      "sha256": "6c92edb9086a2c2b94fb1cea3edb0ae0701102ecf07ff3d4d3e0066aefec98db",
+      "status": "prepared_GUI_requires_slicing"
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_NL8_service_lid_1_of_1_GUI.3mf",
+      "sha256": "957fcc3551a84e396358cb03c4b5b1b0f31d857f823bc1aef65b18639e90b235",
+      "status": "prepared_GUI_requires_slicing"
+    }
+  ],
+  "unchanged_translucent_projects": {
+    "candidates/nd25fn4_crescent/print_translucent/V4_graded_left_UPPER_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf": "7d17595ac2d5aeeb007e15ff7462f2a9bf04e70caee9a3a39686cd5b2c65b178",
+    "candidates/nd25fn4_crescent/print_translucent/V4_flat_left_UPPER_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf": "dc59fbc5c492c2969b166acba80c0120d48c4de011aa49d86d855c982283cb5e",
+    "candidates/nd25fn4_crescent/print_translucent/02_Caps_TWO_Retainers_TWO_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf": "604081b790bad61c18a26c702334e4837736bd88cfdd4c5abd9841585e69ef91",
+    "candidates/nd25fn4_crescent/print_translucent/V4_flat_right_UPPER_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf": "a8f1073eddf12c1d030acb97cfcb486abc33c7203bb82a690398133c354faad7",
+    "candidates/nd25fn4_crescent/print_translucent/01_UM_Crescent_V4_SMOOTH_WALLS_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf": "372fd89e32d8c946cc8793364ec364f02a85e3f860be105589f59c2a6602e265",
+    "candidates/nd25fn4_crescent/print_translucent/V4_graded_right_UPPER_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf": "81211d8464883f48b76224209a12e116214b7df8bc62f66736b0061d3547b2b0",
+    "candidates/nd25fn4_crescent/print_translucent/qualification/00_Magnet_Surface_Test_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf": "3980736ab5566156792d152a29ef98d1c19de8efe1621a9892ac36cc4d654a0f"
+  },
+  "physical_qualification": "Revised changeover calibration pending a physical test; no printer job sent or started."
+}

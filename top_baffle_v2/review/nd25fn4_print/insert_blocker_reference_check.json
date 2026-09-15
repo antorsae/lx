@@ -1,0 +1,24 @@
+[
+  {
+    "owner": "LM",
+    "blocker": "build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl",
+    "sha256": "e83384453eb3f04290a052b88f1610e23b54491ebe8a0dd291b884df736fb7c1",
+    "covered_insert_indices": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "owner": "UM",
+    "blocker": "build/no_floor_stand/support_blockers/obiwan_core_2_of_2_um_carrier.support_blocker.stl",
+    "sha256": "81cfd387cc6bcd755e5f5fb3238b726b171f33a8f410e87ea7b527f4820b7a92",
+    "covered_insert_indices": [
+      0,
+      1,
+      2,
+      3
+    ]
+  }
+]

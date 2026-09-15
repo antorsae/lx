@@ -1,0 +1,18 @@
+[
+  "/Applications/BambuStudio.app/Contents/MacOS/BambuStudio",
+  "--debug",
+  "2",
+  "--slice",
+  "1",
+  "--arrange",
+  "0",
+  "--orient",
+  "0",
+  "--load-filaments",
+  "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_filament.json;/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/profiles/resolved_support_interface_filament.json",
+  "--outputdir",
+  "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/accessories",
+  "--export-3mf",
+  "ready.gcode.3mf",
+  "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_print/accessories/ND25FN_V4_caps_retainers.3mf"
+]

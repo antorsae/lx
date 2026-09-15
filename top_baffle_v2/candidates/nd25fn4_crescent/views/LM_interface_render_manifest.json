@@ -1,0 +1,140 @@
+{
+  "source_script_sha256": "7d69b9e16ebf0bf7f33b7c9b0391a69681cee45fadb8331fb4840afcd7d5f158",
+  "source_render_helper_sha256": "da7bfbeb97a59b4010354ccc1dae155e7985d9472c7372765484e60396b8d504",
+  "assembly_check_path": "candidates/nd25fn4_crescent/print/LM_assembly_check.json",
+  "assembly_check_sha256": "81fe33b5f11858f8c98b435d9bd022ca3e83f3e53ecd8db2265ea3eeb0a102b6",
+  "sources": {
+    "UM + crescent": {
+      "path": "candidates/nd25fn4_crescent/print/geometry/01_UM_Crescent_V4_PRINT.stl",
+      "sha256": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
+      "sidecar_sha256": "a3d732f8c0affa29b6f3a4c5012eb37ad675bf366972951d4daa950e655fd7da"
+    },
+    "LM top": {
+      "path": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
+      "sha256": "8070ccbdd173aabe88e62020ce03f729a184750a8c3665caf8cc7d9e671adfe5",
+      "sidecar_sha256": "0e0c95c72d53af3f16a35daff584eaa25af35d1d8d118fec96bb15bf66bb306f"
+    }
+  },
+  "cameras": {
+    "oblique": {
+      "projection": "orthographic",
+      "position_mm": [
+        432.313794633815,
+        -34.176526435004405,
+        841.3726819881058
+      ],
+      "focal_point_mm": [
+        0.0,
+        315.0,
+        10.0
+      ],
+      "up": [
+        0.1610935460419333,
+        0.9370569637897073,
+        0.30979528084987173
+      ],
+      "parallel_scale_mm": 30.0,
+      "size_px": [
+        1500,
+        940
+      ]
+    },
+    "front": {
+      "projection": "orthographic",
+      "position_mm": [
+        0.0,
+        318.0,
+        1010.0
+      ],
+      "focal_point_mm": [
+        0.0,
+        318.0,
+        10.0
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "parallel_scale_mm": 28.0,
+      "size_px": [
+        1400,
+        850
+      ]
+    },
+    "side": {
+      "projection": "orthographic",
+      "position_mm": [
+        1000.0,
+        315.0,
+        10.0
+      ],
+      "focal_point_mm": [
+        0.0,
+        315.0,
+        10.0
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "parallel_scale_mm": 21.0,
+      "size_px": [
+        1050,
+        850
+      ]
+    }
+  },
+  "outputs": {
+    "oblique": {
+      "path": "LM_interface_ortho_oblique.png",
+      "sha256": "4878dcfd3a8b3a4aa81e3423938117661f8cc598a92b11a5aac9a51905ca1672",
+      "pixels": [
+        1500,
+        1085
+      ]
+    },
+    "front": {
+      "path": "LM_interface_ortho_front.png",
+      "sha256": "420bae07426f230355caae5dd8f1966ed77ac9476c0b27dbec7292990ba3fa96",
+      "pixels": [
+        1400,
+        995
+      ]
+    },
+    "side": {
+      "path": "LM_interface_ortho_side.png",
+      "sha256": "110919720fd9e7c1a8f82510b4b05b1deacdc25cb4105f4d44a312ef6be57e1f",
+      "pixels": [
+        1050,
+        995
+      ]
+    },
+    "sheet": {
+      "path": "LM_interface_orthographic_3D.png",
+      "sha256": "08107c19196cac634345fb80a3a0634699a4d52fdbb02cbe157b6b0977e0eb78",
+      "pixels": [
+        1900,
+        1975
+      ]
+    }
+  },
+  "geometry_changed": false,
+  "GLB": {
+    "path": "LM_interface_detail.glb",
+    "sha256": "d706249987713bd2903671bdd090368e1208dab15d5be9b5764c8cb60d63c5dc",
+    "units": "metres",
+    "up": "+Y",
+    "installed_origin_mm": [
+      0,
+      315,
+      0
+    ],
+    "crop_installed_y_mm": [
+      275,
+      355
+    ],
+    "note": "Review-only cropped assembly with per-face normals; PNGs use the original full-resolution meshes."
+  }
+}

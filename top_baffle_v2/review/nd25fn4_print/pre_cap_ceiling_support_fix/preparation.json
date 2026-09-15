@@ -1,0 +1,288 @@
+{
+  "body": {
+    "path": "review/nd25fn4_print/body/ND25FN_V4_body_discovery.3mf",
+    "sha256": "dc1d26b7ce9d17e1c96646894bf8b0dcf8d56f288d3e68372c430a1f2f92b6e4",
+    "offset": [
+      13.656524658203125,
+      13.65643310546875,
+      0
+    ],
+    "sources": [
+      {
+        "path": "candidates/nd25fn4_crescent/print/geometry/01_UM_Crescent_V4_PRINT.stl",
+        "sha256": "7cf53f91b465cd298d9508638e30226625cb64ce30ca04ad0a44bf03c2610706",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "path": "review/nd25fn4_print/inputs/tweeters_15pct_gyroid.stl",
+        "sha256": "38041dd12aeb0af813584ea9d4690f9d26c3df56579455398fbefd0144d33487",
+        "subtype": "modifier_part",
+        "overrides": {
+          "sparse_infill_density": "15%",
+          "sparse_infill_pattern": "gyroid"
+        },
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "path": "review/nd25fn4_print/inputs/duct_and_magnet_support_blocker.stl",
+        "sha256": "705e6f39496e8771833e2b39b37ad3392e58b93532110c634ca27a23488bc000",
+        "subtype": "support_blocker",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "path": "review/nd25fn4_print/inputs/insert_bore_support_blocker.stl",
+        "sha256": "833a32cc27d8f992a50157ae8e4e6c221f811ab1e9e9564e341b058f9407f088",
+        "subtype": "support_blocker",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "source_to_stl_matrix": [
+      [
+        0.7071067811865476,
+        0.7071067811865475,
+        0.0,
+        -190.10355828014332
+      ],
+      [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0.0,
+        418.7905105824157
+      ],
+      [
+        0.0,
+        0.0,
+        -1.0,
+        20.67987861633301
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "infill_split_installed_y_mm": 421.0
+  },
+  "accessories": {
+    "path": "review/nd25fn4_print/accessories/ND25FN_V4_caps_retainers.3mf",
+    "sha256": "0a7350f081f69e23d8b5d4be9bf09ce23fb627ab8c829765e0fa9206639b74bd",
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "sources": [
+      {
+        "path": "candidates/nd25fn4_crescent/STL/02_Closed_Cap_PRINT_TWO.stl",
+        "sha256": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          74,
+          97,
+          0
+        ]
+      },
+      {
+        "path": "candidates/nd25fn4_crescent/STL/02_Closed_Cap_PRINT_TWO.stl",
+        "sha256": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          144,
+          97,
+          0
+        ]
+      },
+      {
+        "path": "candidates/nd25fn4_crescent/STL/03_Tweeter_Retainer_PRINT_TWO.stl",
+        "sha256": "7b941dfa4dc78577a6c5e7972840a9ffed8de41972dce19ebf5f9ad8002ec913",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          74,
+          166,
+          0
+        ]
+      },
+      {
+        "path": "candidates/nd25fn4_crescent/STL/03_Tweeter_Retainer_PRINT_TWO.stl",
+        "sha256": "7b941dfa4dc78577a6c5e7972840a9ffed8de41972dce19ebf5f9ad8002ec913",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          144,
+          166,
+          0
+        ]
+      }
+    ]
+  },
+  "V4_flat_left_UPPER": {
+    "path": "review/nd25fn4_print/V4_flat_left_UPPER/V4_flat_left_UPPER.3mf",
+    "sha256": "62dca1c067cf17404cc5626227465f804eeccc421b614ed9da6d33c500f8fb5a",
+    "offset": [
+      35.81433868408203,
+      31.276283264160142,
+      0
+    ],
+    "sources": [
+      {
+        "path": "candidates/nd25fn4_crescent/print/geometry/V4_flat_left_UPPER_PRINT.stl",
+        "sha256": "3388dcdff916ad96d8509e2a67d953dbfe8f8b2268ee1c01e259e9e3440097d8",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "path": "review/nd25fn4_print/inputs/V4_flat_left_UPPER_magnet_blocker.stl",
+        "sha256": "6f489a1463315c284e61656c78757aba0584098a86f7863279a5bde31c138bbb",
+        "subtype": "support_blocker",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  "V4_flat_right_UPPER": {
+    "path": "review/nd25fn4_print/V4_flat_right_UPPER/V4_flat_right_UPPER.3mf",
+    "sha256": "d1e84dd57dc128009b7e9eff34dfea93abc0747431823ca038ebc15ef6e7a611",
+    "offset": [
+      35.81434631347656,
+      31.275527954101562,
+      0
+    ],
+    "sources": [
+      {
+        "path": "candidates/nd25fn4_crescent/print/geometry/V4_flat_right_UPPER_PRINT.stl",
+        "sha256": "6b4b02e8a565bca47228f543f9f0000f74ca9244ba87422b060f59235b01a387",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "path": "review/nd25fn4_print/inputs/V4_flat_right_UPPER_magnet_blocker.stl",
+        "sha256": "cae008e361749e6596e81cff233727b0a377f2dc34d84171d621d1412dc7e1ad",
+        "subtype": "support_blocker",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  "V4_graded_left_UPPER": {
+    "path": "review/nd25fn4_print/V4_graded_left_UPPER/V4_graded_left_UPPER.3mf",
+    "sha256": "01506d4b0e8b2c1e58d6077d32061b8311a1f81bbe77137e92d1328484e0fa61",
+    "offset": [
+      31.276283264160156,
+      36.920814514160156,
+      0
+    ],
+    "sources": [
+      {
+        "path": "candidates/nd25fn4_crescent/print/geometry/V4_graded_left_UPPER_PRINT.stl",
+        "sha256": "334e8ac6b1fa4452b00db175912a08fc384853e3f95bef2fe0bac0e15de03683",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "path": "review/nd25fn4_print/inputs/V4_graded_left_UPPER_magnet_blocker.stl",
+        "sha256": "f7cb496872ce53b4c30b0c5adacbec667114c1d31e90cd81c1380803b97c717d",
+        "subtype": "support_blocker",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  "V4_graded_right_UPPER": {
+    "path": "review/nd25fn4_print/V4_graded_right_UPPER/V4_graded_right_UPPER.3mf",
+    "sha256": "53a7d1981deaa87fd3499d0f30993c9b48cf909104c7147a2ca32978239d4e24",
+    "offset": [
+      36.92082977294922,
+      31.275527954101562,
+      0
+    ],
+    "sources": [
+      {
+        "path": "candidates/nd25fn4_crescent/print/geometry/V4_graded_right_UPPER_PRINT.stl",
+        "sha256": "01282fbddc5c7c8aa359dcdb3ead63115b3c0318173f8adef18828275be527c5",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "path": "review/nd25fn4_print/inputs/V4_graded_right_UPPER_magnet_blocker.stl",
+        "sha256": "e27f029565398770bae5715f1bc52538b6205af8f78faca35cdd2bc3ef39bf68",
+        "subtype": "support_blocker",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  "authority": {
+    "project": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_03_UM_carrier_1_of_1_GUI.3mf",
+    "sha256": "24c0dbfbc55ce00fa2e4a963abdf434825d480cd1fb789c7546cd0b6855df503",
+    "script_sha256": "6781a981ed3c290e5b24608ef0b6c00c859cbe6edc1591d260c57a6a0d192b0e",
+    "profile_files": {
+      "review/nd25fn4_print/profiles/resolved_machine.json": "0138b4047903b938a798a60a93018eb11413c58a25d5c960bc351f153f6d1745",
+      "review/nd25fn4_print/profiles/resolved_filament.json": "81186a77e8ababf5558d1ed505b91d204f288883be58217d0f8f053f04a93916",
+      "review/nd25fn4_print/profiles/resolved_support_interface_filament.json": "6d3fa5aad7ba08c2744e925cca1ba93c43240f1f6a8cc624916741dd7889ff74",
+      "review/nd25fn4_print/profiles/validation_wrapper.json": "6bddf3f6ac2646c5b9a813a45431f88e6b473433cb44b8d0211c51ae66081225"
+    },
+    "purge_mm3_each_direction": 280,
+    "flush_into_model": false,
+    "flush_into_support": false
+  }
+}

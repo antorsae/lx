@@ -1,0 +1,101 @@
+{
+  "status": "pass",
+  "projects": [
+    {
+      "key": "body",
+      "settings_changes": {
+        "filament_flush_volumetric_speed": [
+          [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        ],
+        "flush_volumes_matrix": [
+          [
+            "0",
+            "298",
+            "575",
+            "0"
+          ],
+          [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        ],
+        "flush_volumes_vector": [
+          [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        ]
+      },
+      "source_mesh_bytes_identical": true
+    },
+    {
+      "key": "accessories",
+      "settings_changes": {
+        "filament_flush_volumetric_speed": [
+          [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        ],
+        "flush_volumes_matrix": [
+          [
+            "0",
+            "298",
+            "575",
+            "0"
+          ],
+          [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        ],
+        "flush_volumes_vector": [
+          [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        ]
+      },
+      "source_mesh_bytes_identical": true
+    }
+  ]
+}

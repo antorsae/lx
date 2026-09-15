@@ -1,0 +1,110 @@
+{
+  "status": "pass",
+  "scope": "New native files compared to prior translucent native files",
+  "projects": {
+    "body": {
+      "old_path": "candidates/nd25fn4_crescent/print_translucent/01_UM_Crescent_V4_SMOOTH_WALLS_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf",
+      "new_path": "candidates/nd25fn4_crescent/print_translucent_changeover/01_UM_Crescent_V4_SMOOTH_WALLS_PURGE560_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf",
+      "old_sha256": "372fd89e32d8c946cc8793364ec364f02a85e3f860be105589f59c2a6602e265",
+      "new_sha256": "02854451c500ef78ed58791274a116e96f829f74571970427c6636b62fc151f0",
+      "only_changed_project_settings": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "298",
+            "575",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        }
+      },
+      "native_flush_and_print_temperature_requests_unchanged": true,
+      "native_change_count": 66
+    },
+    "accessories": {
+      "old_path": "candidates/nd25fn4_crescent/print_translucent/02_Caps_TWO_Retainers_TWO_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf",
+      "new_path": "candidates/nd25fn4_crescent/print_translucent_changeover/02_Caps_TWO_Retainers_TWO_PURGE560_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf",
+      "old_sha256": "604081b790bad61c18a26c702334e4837736bd88cfdd4c5abd9841585e69ef91",
+      "new_sha256": "c725e3e0b5ed583a77b234981d72940e862caf4702a210c1b0f6ac0c9deab093",
+      "only_changed_project_settings": {
+        "filament_flush_volumetric_speed": {
+          "before": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "after": [
+            "0",
+            "0",
+            "12",
+            "12"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "280",
+            "280",
+            "280",
+            "280"
+          ]
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "298",
+            "575",
+            "0"
+          ],
+          "after": [
+            "0",
+            "560",
+            "560",
+            "0"
+          ]
+        }
+      },
+      "native_flush_and_print_temperature_requests_unchanged": true,
+      "native_change_count": 4
+    }
+  }
+}

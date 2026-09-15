@@ -1,0 +1,37 @@
+{
+  "path": "review/nd25fn4_translucent/surface_coupon/surface_coupon.3mf",
+  "sha256": "f3b9d80c74bcb08ae307b766e9336e763aca7db0eaf405231f6e65ee01eb72d8",
+  "offset": [
+    90,
+    90,
+    0
+  ],
+  "sources": [
+    {
+      "path": "candidates/nd25fn4_crescent/print/qualification/01_D6_body_coupon.stl",
+      "sha256": "e9caca35dfd8bc34866865cc2451a981fe37cb0e7d74517775baabf862dd6506",
+      "subtype": "normal_part",
+      "overrides": {},
+      "translation": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "review/nd25fn4_print/D6_coupon/01_D6_body_coupon_blocker.stl",
+      "sha256": "475b8636a5b880ca6c36782c8b34509f24483239cbc5aaaa8af7fca03e7bf28e",
+      "subtype": "support_blocker",
+      "overrides": {},
+      "translation": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "authority": "candidates/nd25fn4_crescent/print/qualification/01_D6_body_coupon.print.json",
+  "authority_sha256": "131ca7a8a6ad4cc35744f7a2b90cd95c84376505eda6976a410145c67de4ce44",
+  "parent_body_sha256": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
+  "material_policy_sha256": "8114c13be4c065ed2aff2e10895091b4c1706f2eb0c8ed9bd93a09ebe0a6b6fa"
+}

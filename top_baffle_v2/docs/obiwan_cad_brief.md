@@ -22,7 +22,7 @@
   nominal Ø9 while every complete Z-owned cylindrical functional boss is
   locally Ø9.8. LM and UM respectively own complete standalone rear Ø3.4
   screw-clearance passages; UM and the crescent respectively own complete
-  standalone rear-opening blind Ø4.6 x 4.0 receivers for M3 x 3 heat-set
+  standalone rear-opening blind Ø4.6 x 4.0 receivers for M3 thread × Ø5 × L4 heat-set
   inserts, with 360° walls and 1.9 mm acoustic-front floors. Both interfaces
   retain a 0.20 mm axial gap. Install inserts in the individual UM and
   crescent prints before assembly; no washer, nut, front bolt head, or

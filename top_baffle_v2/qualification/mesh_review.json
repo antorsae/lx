@@ -1,0 +1,1160 @@
+{
+  "scope": "Current 42 production meshes plus four qualification fixtures",
+  "mesh_facts": [
+    {
+      "path": "qualification/female_socket_pair.stl",
+      "sha256": "042a9df5f746d2f753040d21d57876c58244309ce600a385b0c5068131d5591d",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 1986.7559353506124,
+      "size_mm": [
+        162.9164885474542,
+        162.9164885474609,
+        18.299999137060546
+      ],
+      "bounds_mm": [
+        [
+          1.000067442191721e-07,
+          1.0000005090660125e-07,
+          1.0000000116860974e-07
+        ],
+        [
+          162.91648864746094,
+          162.91648864746094,
+          18.299999237060547
+        ]
+      ],
+      "triangles": 1928
+    },
+    {
+      "path": "qualification/male_pin_pair.stl",
+      "sha256": "3f85e167677cbfd2442e6bc364f79427f44f998ab309f170daefe26483b033e2",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 1890.106268051711,
+      "size_mm": [
+        201.14410390390626,
+        105.22839355468753,
+        16.17905034555664
+      ],
+      "bounds_mm": [
+        [
+          9.999999406318238e-08,
+          -2.842170943040401e-14,
+          1.0000000116860974e-07
+        ],
+        [
+          201.14410400390625,
+          105.2283935546875,
+          16.17905044555664
+        ]
+      ],
+      "triangles": 1830
+    },
+    {
+      "path": "qualification/native_route_cover.stl",
+      "sha256": "34f20ce53e7ecda248139947d10a8308834953b81f19a88db33bb63fb2bea866",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 4507.198953871707,
+      "size_mm": [
+        67.82625569833984,
+        43.468147177831966,
+        20.64753713144531
+      ],
+      "bounds_mm": [
+        [
+          1.000000082740371e-07,
+          1.0000006511745596e-07,
+          1.0000000116860974e-07
+        ],
+        [
+          67.82625579833984,
+          43.46814727783203,
+          20.647537231445312
+        ]
+      ],
+      "triangles": 1846
+    },
+    {
+      "path": "qualification/supported_roof_and_wall_steps.stl",
+      "sha256": "07a554d68e07099cf1d943ac1b9ecf07686eb5cab8bcfe74da98a51904b00814",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 3287.0400956725985,
+      "size_mm": [
+        30.0,
+        24.0,
+        16.200000762939453
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          30.0,
+          24.0,
+          16.200000762939453
+        ]
+      ],
+      "triangles": 80
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_01_02_03_04_LM_UM_combo_floor_stand.stl",
+      "sha256": "d05d89b44fbdcbd4cbb741be2d3a8ae7683cdf22de5ba97484a0b08a43b87e19",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 272388.1561282126,
+      "size_mm": [
+        233.4954128265381,
+        249.05564856529236,
+        168.3000030517578
+      ],
+      "bounds_mm": [
+        [
+          5.628686904907227,
+          2.0100862979888916,
+          0.0
+        ],
+        [
+          239.1240997314453,
+          251.06573486328125,
+          168.3000030517578
+        ]
+      ],
+      "triangles": 188120
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_01_02_03_04_LM_UM_combo_no_floor_stand.stl",
+      "sha256": "0c8d6e4b441aec4fa9f872bdbab9ab2215e87a1723d67c5d329cb540d77df806",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 167868.22364780353,
+      "size_mm": [
+        238.4934549331665,
+        252.63453006744385,
+        23.64194001920987
+      ],
+      "bounds_mm": [
+        [
+          9.786452293395996,
+          1.1741399765014648,
+          -0.0013054824667051435
+        ],
+        [
+          248.2799072265625,
+          253.8086700439453,
+          23.640634536743164
+        ]
+      ],
+      "triangles": 75456
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_01_LM_bottom_keyed_1_of_2_floor_stand.stl",
+      "sha256": "df222c6fbf8a2b7ddaee8c7ca5e467389eafd219b15c17d546d7a956cc03dd49",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 201909.8553031958,
+      "size_mm": [
+        201.10931867733598,
+        215.61798095703125,
+        168.3000030517578
+      ],
+      "bounds_mm": [
+        [
+          0.005686815828084946,
+          0.0,
+          0.0
+        ],
+        [
+          201.11500549316406,
+          215.61798095703125,
+          168.3000030517578
+        ]
+      ],
+      "triangles": 138900
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand.stl",
+      "sha256": "87bcfde710cf16eb7ff094631e27071721a913945b55f23fdc34ebd36660eb23",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 100838.86038587503,
+      "size_mm": [
+        204.0406951904297,
+        219.308349609375,
+        23.42241096496582
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          204.0406951904297,
+          219.308349609375,
+          23.42241096496582
+        ]
+      ],
+      "triangles": 26548
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_02_LM_top_keyed_2_of_2.stl",
+      "sha256": "8070ccbdd173aabe88e62020ce03f729a184750a8c3665caf8cc7d9e671adfe5",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 36685.381206659535,
+      "size_mm": [
+        212.09910583496094,
+        212.09909592444455,
+        23.64006805419922
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          8.620446169516072e-05,
+          0.0
+        ],
+        [
+          212.09910583496094,
+          212.09918212890625,
+          23.64006805419922
+        ]
+      ],
+      "triangles": 21446
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_03_UM_carrier_1_of_1.stl",
+      "sha256": "fbf826d4d10de7f28049a649c3fb9a4464d5d3713ee35baf62780667d7608750",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 21195.757897436055,
+      "size_mm": [
+        105.27993372380661,
+        115.52989959716797,
+        18.29081916809082
+      ],
+      "bounds_mm": [
+        [
+          3.453791214269586e-05,
+          0.0,
+          0.0
+        ],
+        [
+          105.27996826171875,
+          115.52989959716797,
+          18.29081916809082
+        ]
+      ],
+      "triangles": 18694
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_04_T_tweeter_crescent_1_of_1.stl",
+      "sha256": "9d0dcf380b97860f647a9577b4096f3add46dcb127c246be4a0a974bc64fb6a3",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 9148.224460810117,
+      "size_mm": [
+        98.33799743652344,
+        41.93372344970703,
+        11.5
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          98.33799743652344,
+          41.93372344970703,
+          11.5
+        ]
+      ],
+      "triangles": 8768
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_05_split2_flat_wing_LM_lower_left_1_of_2.stl",
+      "sha256": "6a810e136c585d3419011ae003ff4445b09fa76a2b6eaa912f0850ff50eb1d3a",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 32839.876271928384,
+      "size_mm": [
+        44.76483917236328,
+        154.7613525390625,
+        11.5
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          44.76483917236328,
+          154.7613525390625,
+          11.5
+        ]
+      ],
+      "triangles": 2382
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_06_split2_flat_wing_LM_UM_upper_left_2_of_2.stl",
+      "sha256": "c750c0025c0a168f50705ede3a77e84d3954432f56155d29a86d494c6d5cef79",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 66217.8084232497,
+      "size_mm": [
+        198.89105224609375,
+        199.224609375,
+        11.5
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          198.89105224609375,
+          199.224609375,
+          11.5
+        ]
+      ],
+      "triangles": 8456
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_08_split2_flat_wing_LM_lower_right_1_of_2.stl",
+      "sha256": "d2c17b218d7c5a2898e334d0edfc0d54c6a15c8f73c4850585661a977ac522d8",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 32839.874563355545,
+      "size_mm": [
+        154.7613525390625,
+        44.76483917236328,
+        11.5
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          154.7613525390625,
+          44.76483917236328,
+          11.5
+        ]
+      ],
+      "triangles": 2382
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_09_split2_flat_wing_LM_UM_upper_right_2_of_2.stl",
+      "sha256": "8be9c65c59b2a961419d2af159bd585c20e49ded7b1a266ae8070b4ec3fa1ae5",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 66217.80224938563,
+      "size_mm": [
+        198.89105224609375,
+        199.224609375,
+        11.5
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          198.89105224609375,
+          199.224609375,
+          11.5
+        ]
+      ],
+      "triangles": 8436
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_11_split2_graded_wing_LM_lower_left_1_of_2.stl",
+      "sha256": "bb82846c5a0581c4eab2b7e84750b67c6d12be3abf59d5ced1d727ac80e4bb4b",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 25544.420644980728,
+      "size_mm": [
+        44.76483917236328,
+        154.7613525390625,
+        11.500032424926758
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          44.76483917236328,
+          154.7613525390625,
+          11.500032424926758
+        ]
+      ],
+      "triangles": 76550
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2.stl",
+      "sha256": "fa15e5f241e426367f4c85aba41c417f5cf037c3cd152956cb67bba51b77cac5",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 44717.610241442686,
+      "size_mm": [
+        199.224609375,
+        198.89105224609375,
+        11.50136947631836
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          199.224609375,
+          198.89105224609375,
+          11.50136947631836
+        ]
+      ],
+      "triangles": 297358
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_14_split2_graded_wing_LM_lower_right_1_of_2.stl",
+      "sha256": "e94e8cb163407d9e608e1345d9041207bda0b228b190ac8764effdcc4ba750af",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 25544.44767618741,
+      "size_mm": [
+        154.7613525390625,
+        44.76483917236328,
+        11.500032424926758
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          154.7613525390625,
+          44.76483917236328,
+          11.500032424926758
+        ]
+      ],
+      "triangles": 76534
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2.stl",
+      "sha256": "cd1c013a5d78a0478261d8665b91cd44e7bbd098b1e45f35a77d36994507fd60",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 44717.608593108656,
+      "size_mm": [
+        198.89105224609375,
+        199.224609375,
+        11.50136947631836
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          198.89105224609375,
+          199.224609375,
+          11.50136947631836
+        ]
+      ],
+      "triangles": 297260
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_17_BMR_crescent_coaxial_1_of_1.stl",
+      "sha256": "18ef6af2177b370238b49462ef77cf17faf0c55cf3cedf694e1681f2bb9b8d09",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 92067.31943691558,
+      "size_mm": [
+        62.6533317565918,
+        72.47091674804688,
+        50.20000076293945
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          62.6533317565918,
+          72.47091674804688,
+          50.20000076293945
+        ]
+      ],
+      "triangles": 13568
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_18_BMR_crescent_opposed_1_of_1.stl",
+      "sha256": "617bafd03e36d0db1e2f905303b45b3f16615ea16e075ddcb8dc4d40aed5ae65",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 82661.65806966025,
+      "size_mm": [
+        62.6533317565918,
+        121.77091217041016,
+        25.100000381469727
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          62.6533317565918,
+          121.77091217041016,
+          25.100000381469727
+        ]
+      ],
+      "triangles": 14194
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_NL8_service_lid_1_of_1.stl",
+      "sha256": "a283e1574cb11c87ecf81c8f0cdaeee9486b7b07e6bb53a2a08a991872cf9abf",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 3767.2135976078334,
+      "size_mm": [
+        34.70000076293945,
+        63.943145751953125,
+        8.550000190734863
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          34.70000076293945,
+          63.943145751953125,
+          8.550000190734863
+        ]
+      ],
+      "triangles": 476
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_flat_wings_split2_combo.stl",
+      "sha256": "8224afac9f69351c9812bd8cd68aa9d5c3c74c845b9a15857119dc72ecfd8155",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 198115.36607618965,
+      "size_mm": [
+        237.15649890899658,
+        247.83883333206177,
+        11.5
+      ],
+      "bounds_mm": [
+        [
+          13.23267650604248,
+          3.5553927421569824,
+          0.0
+        ],
+        [
+          250.38917541503906,
+          251.39422607421875,
+          11.5
+        ]
+      ],
+      "triangles": 21656
+    },
+    {
+      "path": "to_print/obiwan/stl/obiwan_graded_wings_split2_combo.stl",
+      "sha256": "926151587a699a98aab0e743f70d62d55b0d78788c5d35188851ecd008b93ff3",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 140524.08745900763,
+      "size_mm": [
+        237.15649890899658,
+        247.83883333206177,
+        11.50136947631836
+      ],
+      "bounds_mm": [
+        [
+          13.23267650604248,
+          3.5553927421569824,
+          0.0
+        ],
+        [
+          250.38917541503906,
+          251.39422607421875,
+          11.50136947631836
+        ]
+      ],
+      "triangles": 747702
+    },
+    {
+      "path": "to_print/slim/stl/slim_01_LM_bottom_1_of_3_floor_stand.stl",
+      "sha256": "339e8735061dee9abfba32e301898cc47e570884115201ee21a50a2fa2596b4c",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 449210.92896014475,
+      "size_mm": [
+        223.8000946044922,
+        125.0,
+        168.3000030517578
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          223.8000946044922,
+          125.0,
+          168.3000030517578
+        ]
+      ],
+      "triangles": 25048
+    },
+    {
+      "path": "to_print/slim/stl/slim_01_LM_bottom_1_of_3_no_floor_stand.stl",
+      "sha256": "a5e8c5901f6eacfdd195b897fd2ee213f036b81e60c7ad4179d50aba5a4c5691",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 342896.7505374712,
+      "size_mm": [
+        223.8000946044922,
+        125.0,
+        18.299999237060547
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          223.8000946044922,
+          125.0,
+          18.299999237060547
+        ]
+      ],
+      "triangles": 16260
+    },
+    {
+      "path": "to_print/slim/stl/slim_02_LM_mid_left_2_of_3.stl",
+      "sha256": "448af41d309e381d9b70f4e95ff7b85f5b7d717c25bb8c42ce9ce2c514b803b9",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 106324.12488554737,
+      "size_mm": [
+        146.75100708007812,
+        201.89999389648438,
+        11.5
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          146.75100708007812,
+          201.89999389648438,
+          11.5
+        ]
+      ],
+      "triangles": 7152
+    },
+    {
+      "path": "to_print/slim/stl/slim_03_LM_mid_right_3_of_3.stl",
+      "sha256": "4d20f742c21435bb157397c56931b3173c4ccf987c71b284f4b2f774201ac428",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 102540.7198325959,
+      "size_mm": [
+        162.00100708007812,
+        201.89999389648438,
+        11.5
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          162.00100708007812,
+          201.89999389648438,
+          11.5
+        ]
+      ],
+      "triangles": 14482
+    },
+    {
+      "path": "to_print/slim/stl/slim_04_UM_vase_1_of_1.stl",
+      "sha256": "33ee34409d1de413ca149d16c06fd670b093f110a6e9ce60fa7248821068ea0d",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 49695.19787668769,
+      "size_mm": [
+        121.30799865722656,
+        137.45700073242188,
+        11.5
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          121.30799865722656,
+          137.45700073242188,
+          11.5
+        ]
+      ],
+      "triangles": 8044
+    },
+    {
+      "path": "to_print/slim/stl/slim_05_A_shoulder_bottom_left_1_of_4.stl",
+      "sha256": "7ece5a1b6edf2e30a5764feb5abc982f8bb85bffb5269ebc66cbfacff1bcd2af",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 11269.314449842173,
+      "size_mm": [
+        22.531999588012695,
+        87.52690124511719,
+        11.5
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          22.531999588012695,
+          87.52690124511719,
+          11.5
+        ]
+      ],
+      "triangles": 3688
+    },
+    {
+      "path": "to_print/slim/stl/slim_06_A_shoulder_top_left_2_of_4.stl",
+      "sha256": "6336437600757c539da9e109d44901fdb078da56c6e41d37c03b7c4717e5c6a1",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 15254.471149494764,
+      "size_mm": [
+        50.573001861572266,
+        61.74800109863281,
+        11.5
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          50.573001861572266,
+          61.74800109863281,
+          11.5
+        ]
+      ],
+      "triangles": 3348
+    },
+    {
+      "path": "to_print/slim/stl/slim_07_A_shoulder_bottom_right_3_of_4.stl",
+      "sha256": "3c520a232faa90973f9b422c8f8f549dc2d4d25cbb67ba466989bdb5f079b398",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 11278.021271817031,
+      "size_mm": [
+        22.541000366210938,
+        87.5616683959961,
+        11.5
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          22.541000366210938,
+          87.5616683959961,
+          11.5
+        ]
+      ],
+      "triangles": 4152
+    },
+    {
+      "path": "to_print/slim/stl/slim_08_A_shoulder_top_right_4_of_4.stl",
+      "sha256": "647ee1a713b756e5fc4900af2d5f824c204598c99108a6b34ab602f12e1f562e",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 15252.82311700221,
+      "size_mm": [
+        50.573001861572266,
+        61.74800109863281,
+        11.5
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          50.573001861572266,
+          61.74800109863281,
+          11.5
+        ]
+      ],
+      "triangles": 3812
+    },
+    {
+      "path": "to_print/slim/stl/slim_09_B1_wing_left_1_of_2.stl",
+      "sha256": "7b8a1ef0d700cd196d177ad16eed0e51da2601f81e91f777a77df314e40cd788",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 32539.257630234995,
+      "size_mm": [
+        73.72599792480469,
+        123.35173034667969,
+        11.5
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          73.72599792480469,
+          123.35173034667969,
+          11.5
+        ]
+      ],
+      "triangles": 3208
+    },
+    {
+      "path": "to_print/slim/stl/slim_10_B1_wing_right_2_of_2.stl",
+      "sha256": "52491d7e9e756a76699d176edd2f0303dbb2ab9a473b85f588fb0dee194d73e9",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 32540.242521072432,
+      "size_mm": [
+        73.72599792480469,
+        123.36599731445312,
+        11.5
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          73.72599792480469,
+          123.36599731445312,
+          11.5
+        ]
+      ],
+      "triangles": 3666
+    },
+    {
+      "path": "to_print/stock/stl/stock_01_LM_bottom_1_of_3_floor_stand.stl",
+      "sha256": "557d8cf9ae155bb5c39ac566248f38588b502a557a30bffee476f09107f5c1bf",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 535275.3991384688,
+      "size_mm": [
+        223.8000946044922,
+        125.0,
+        168.3000030517578
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          223.8000946044922,
+          125.0,
+          168.3000030517578
+        ]
+      ],
+      "triangles": 25788
+    },
+    {
+      "path": "to_print/stock/stl/stock_01_LM_bottom_1_of_3_no_floor_stand.stl",
+      "sha256": "8554cd3d0f0fabdf82637c8ef4a044d9efdfe8961bf544871f784594612b1ede",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 384944.17668217025,
+      "size_mm": [
+        223.8000946044922,
+        125.0,
+        18.299999237060547
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          223.8000946044922,
+          125.0,
+          18.299999237060547
+        ]
+      ],
+      "triangles": 17176
+    },
+    {
+      "path": "to_print/stock/stl/stock_02_LM_mid_left_2_of_3.stl",
+      "sha256": "260bbd556f7755e52b3ce6d35d2aa4bdef83395abb91ea8f6c679ac3e085b640",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 173442.76332379368,
+      "size_mm": [
+        146.75100708007812,
+        201.89999389648438,
+        18.299999237060547
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          146.75100708007812,
+          201.89999389648438,
+          18.299999237060547
+        ]
+      ],
+      "triangles": 8154
+    },
+    {
+      "path": "to_print/stock/stl/stock_03_LM_mid_right_3_of_3.stl",
+      "sha256": "aac8e8ad3f123edcd3afd33c9d735ef462ea256f8bd084dbddfe2c8c1ae5e29c",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 172394.72320267113,
+      "size_mm": [
+        162.00100708007812,
+        201.89999389648438,
+        18.299999237060547
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          162.00100708007812,
+          201.89999389648438,
+          18.299999237060547
+        ]
+      ],
+      "triangles": 14976
+    },
+    {
+      "path": "to_print/stock/stl/stock_04_UM_vase_1_of_1.stl",
+      "sha256": "b8bf6122dbb5fa5e9f26f401264ef92a13c94149629db6742231b4a35ed38833",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 78195.89694484044,
+      "size_mm": [
+        121.30799865722656,
+        137.45700073242188,
+        18.299999237060547
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          121.30799865722656,
+          137.45700073242188,
+          18.299999237060547
+        ]
+      ],
+      "triangles": 8996
+    },
+    {
+      "path": "to_print/stock/stl/stock_05_A_shoulder_bottom_left_1_of_4.stl",
+      "sha256": "498086f24109d792c45212144855bd570c06af4b5128fdca371a8cdb00960cf3",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 17969.05556420113,
+      "size_mm": [
+        22.531999588012695,
+        85.81790161132812,
+        18.299999237060547
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          22.531999588012695,
+          85.81790161132812,
+          18.299999237060547
+        ]
+      ],
+      "triangles": 2846
+    },
+    {
+      "path": "to_print/stock/stl/stock_06_A_shoulder_top_left_2_of_4.stl",
+      "sha256": "c226846fba25d831631e1ae83f2d20bd4229407e62ae8a196c1116f13d903091",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 23466.730359338355,
+      "size_mm": [
+        50.573001861572266,
+        61.74800109863281,
+        18.299999237060547
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          50.573001861572266,
+          61.74800109863281,
+          18.299999237060547
+        ]
+      ],
+      "triangles": 2408
+    },
+    {
+      "path": "to_print/stock/stl/stock_07_A_shoulder_bottom_right_3_of_4.stl",
+      "sha256": "43fa254e1c788a6b9ec2170bf892955be8ec8321bc9aea0408f494038ea10792",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 17983.406963935067,
+      "size_mm": [
+        22.541000366210938,
+        85.85266876220703,
+        18.299999237060547
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          22.541000366210938,
+          85.85266876220703,
+          18.299999237060547
+        ]
+      ],
+      "triangles": 2072
+    },
+    {
+      "path": "to_print/stock/stl/stock_08_A_shoulder_top_right_4_of_4.stl",
+      "sha256": "97d976c11078ed0a4e6e6f4f3862bbcd9042994b48a21ef5ee254f8f71fd838f",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 23465.880258906163,
+      "size_mm": [
+        50.573001861572266,
+        61.74800109863281,
+        18.299999237060547
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          50.573001861572266,
+          61.74800109863281,
+          18.299999237060547
+        ]
+      ],
+      "triangles": 2724
+    },
+    {
+      "path": "to_print/stock/stl/stock_09_B1_wing_left_1_of_2.stl",
+      "sha256": "7749a25921f930432d155f8988afe0dd8516f2b119560c11890f4f2a309794f1",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 53086.85187181748,
+      "size_mm": [
+        73.72599792480469,
+        125.0790023803711,
+        18.299999237060547
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          73.72599792480469,
+          125.0790023803711,
+          18.299999237060547
+        ]
+      ],
+      "triangles": 3062
+    },
+    {
+      "path": "to_print/stock/stl/stock_10_B1_wing_right_2_of_2.stl",
+      "sha256": "8da84750e2cff0075955bd8245831ebfc0ddfc97d9bc36e97789069cadf5d67b",
+      "watertight": true,
+      "winding_consistent": true,
+      "volume_mm3": 53092.22899346804,
+      "size_mm": [
+        73.72599792480469,
+        125.06600189208984,
+        18.299999237060547
+      ],
+      "bounds_mm": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          73.72599792480469,
+          125.06600189208984,
+          18.299999237060547
+        ]
+      ],
+      "triangles": 3372
+    }
+  ],
+  "limitations": [
+    "Watertightness and positive volume do not prove wall thickness or structural strength",
+    "The nested magnet voids require explicit section inspection",
+    "New fixture results and physical qualification are pending"
+  ]
+}

@@ -1,0 +1,746 @@
+{
+  "status": "sliced_static_checks_passed",
+  "physical_print_test": "not performed with these materials",
+  "slicer": "Bambu Studio 02.07.01.62",
+  "printer": "Bambu Lab P2S 0.6 mm High Flow",
+  "material_policy": "review/nd25fn4_translucent_changeover/material_policy.json",
+  "material_policy_sha256": "3e1b7bc27a21988df795b2303eec6ce8e9be6099c68a1ea9b668dcc056865315",
+  "preparation": "review/nd25fn4_translucent_changeover/preparation.json",
+  "preparation_sha256": "adf3a320c53ce8bc85e939ba8b6cb2fd61e2a90112ad934da3ccb70d01af75a3",
+  "GF_preservation": {
+    "files_preserved_at_translucent_creation": 41,
+    "baseline_files_still_identical": 41,
+    "later_authorized_GF_revisions": []
+  },
+  "source_files": {
+    "candidates/nd25fn4_crescent/translucent_print.py": "c7983b02b644636a1ef049cd2183c26b829fb7ac65bce65c17343b21aae562eb",
+    "review/nd25fn4_translucent_changeover/material_policy.json": "3e1b7bc27a21988df795b2303eec6ce8e9be6099c68a1ea9b668dcc056865315",
+    "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
+    "candidates/nd25fn4_crescent/prepare_print.py": "f036ede863f885f3e07965baaf2d87d70fd742f2abce9e87f8289a47e677b164",
+    "candidates/nd25fn4_crescent/finalize_print.py": "dddccebc79ba1c3f92de8a1b671101b4d24f83a2326af34dcfbb214a326b0cc3",
+    "candidates/nd25fn4_crescent/print_magnets.py": "82e95a7e1c6d198b4d04b0af89f8d039772674f6e825d9d70884a938b834991b",
+    "candidates/nd25fn4_crescent/audit_print.py": "c297b070b299b3ce910c9a543c909fe38a9c3e9bc5b2a705636d30338112d657",
+    "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
+    "scripts/release_validation.py": "219ed3f31471bd687d24767f41b32404e23d2d045a38dc4c8782b3030d4332c7",
+    "scripts/captive_wall_audit.py": "63cc6e37eef05433837f7caef03c476729443c6d849e0a3ba3cdd6757f4cf524",
+    "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "scripts/audit_gui_slice.py": "297b2ef9fe1bd4c309c54583c18742355be7b3bd6b100c50b9ee0f3ee0426d19",
+    "src/lx521_baffle/print_policy.py": "9f6f9d32bd9df053e6def155614a2f9f7c4cc17e039d991078e3c4bb8170b2dd",
+    "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
+    "candidates/nd25fn4_crescent/magnet_surface_paths.py": "51a1a9f5bfb29ac137ca452d121f9751eb488735ebad5a23bc4da19c0fd3ae1d",
+    "candidates/nd25fn4_crescent/translucent_changeover_print.py": "5f7a258c69512c23f80b66becfe40fd890be0430d7fbccff6a88abd3900c46eb",
+    "candidates/nd25fn4_crescent/translucent_changeover_policy.json": "706598fbf3a664c64c4c37b0967c6bc3a7f3b646eee0940f51fcb4f1de772b00",
+    "candidates/nd25fn4_crescent/translucent_material_policy.json": "9d370c976872c187fb20ca06c374dc040fdb9a74c14fbe7b21fc6b22bab7bb42"
+  },
+  "projects": [
+    {
+      "key": "body",
+      "path": "candidates/nd25fn4_crescent/print_translucent_changeover/01_UM_Crescent_V4_SMOOTH_WALLS_PURGE560_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf",
+      "sha256": "02854451c500ef78ed58791274a116e96f829f74571970427c6636b62fc151f0",
+      "audit": "review/nd25fn4_translucent_changeover/body/audit.json",
+      "audit_sha256": "48aae28e1340ac6213ba687695f00a6f9754dd6d62730a23c562a16f14b37de6",
+      "static_audit": "review/nd25fn4_translucent_changeover/body/gcode_static.json",
+      "static_audit_sha256": "e89e5ce01f584856fd9ed0b2cc7fe58dd96927f2022fc611745e4bc3d1d88833",
+      "seconds": 44523.3125,
+      "filaments": [
+        {
+          "filament_id": "GFG01",
+          "id": 1,
+          "main_used_g": 285.9203186035156,
+          "total_used_g": 322.2137145996094
+        },
+        {
+          "filament_id": "GFA17",
+          "id": 2,
+          "main_used_g": 8.364375114440918,
+          "total_used_g": 34.44340896606445
+        }
+      ],
+      "pauses_mm": [
+        9.8
+      ],
+      "changeover": {
+        "status": "pass",
+        "change_count": 66,
+        "purge_mm3_each_direction": 560,
+        "pla_flush_limit_mm3_s": 12,
+        "changes": [
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          }
+        ],
+        "scope": "Requested native G-code parameters; actual temperature, extrusion and clog-free operation require a physical test.",
+        "project_sha256": "02854451c500ef78ed58791274a116e96f829f74571970427c6636b62fc151f0",
+        "gcode_sha256": "ab942d4a6207d82755fc6533fba579ad36aacbbccf9fab630726fdc2a8d3f96b"
+      }
+    },
+    {
+      "key": "accessories",
+      "path": "candidates/nd25fn4_crescent/print_translucent_changeover/02_Caps_TWO_Retainers_TWO_PURGE560_06HF_PETG_TRANSLUCENT_PLA_TRANSLUCENT.gcode.3mf",
+      "sha256": "c725e3e0b5ed583a77b234981d72940e862caf4702a210c1b0f6ac0c9deab093",
+      "audit": "review/nd25fn4_translucent_changeover/accessories/audit.json",
+      "audit_sha256": "57f35ea8ffd681fc640a3a3c295a12aa1e3724682cf9d3bced3c186f5f9ca247",
+      "static_audit": "review/nd25fn4_translucent_changeover/accessories/gcode_static.json",
+      "static_audit_sha256": "fe79ab9dfeec2d8902f34afecacc104fe1eb4f097696feb3d5ce853726b4ad71",
+      "seconds": 7774.44384765625,
+      "filaments": [
+        {
+          "filament_id": "GFG01",
+          "id": 1,
+          "main_used_g": 48.255096435546875,
+          "total_used_g": 53.63312911987305
+        },
+        {
+          "filament_id": "GFA17",
+          "id": 2,
+          "main_used_g": 1.6719586849212646,
+          "total_used_g": 3.2792885303497314
+        }
+      ],
+      "pauses_mm": [],
+      "changeover": {
+        "status": "pass",
+        "change_count": 4,
+        "purge_mm3_each_direction": 560,
+        "pla_flush_limit_mm3_s": 12,
+        "changes": [
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          },
+          {
+            "from_tool": 0,
+            "to_tool": 1,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 270.0,
+            "incoming_flush_c": 240.0,
+            "incoming_print_c": 220.0
+          },
+          {
+            "from_tool": 1,
+            "to_tool": 0,
+            "requested_volume_mm3": 560.0043512999999,
+            "pla_flush_mm3_s": 12.000001611666667,
+            "outgoing_flush_c": 240.0,
+            "incoming_flush_c": 270.0,
+            "incoming_print_c": 245.0
+          }
+        ],
+        "scope": "Requested native G-code parameters; actual temperature, extrusion and clog-free operation require a physical test.",
+        "project_sha256": "c725e3e0b5ed583a77b234981d72940e862caf4702a210c1b0f6ac0c9deab093",
+        "gcode_sha256": "265df399c100149c55a66492d62093f996ff0a06a60fda5791224beaffd70ec3"
+      }
+    }
+  ],
+  "alternate_policy": {
+    "path": "candidates/nd25fn4_crescent/translucent_changeover_policy.json",
+    "sha256": "706598fbf3a664c64c4c37b0967c6bc3a7f3b646eee0940f51fcb4f1de772b00"
+  },
+  "preserved_existing_file_count": 56
+}

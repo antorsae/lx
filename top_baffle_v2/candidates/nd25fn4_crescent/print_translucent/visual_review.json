@@ -1,0 +1,14 @@
+{
+  "status": "pass",
+  "images": {
+    "magnet_surface_comparison.png": "120277f87464f639f8fc4cbc976d64f0afd13ee02730e4a9cd10873c790eca71",
+    "cap_ceiling_support.png": "fef4e78b3ee95567679e1d49566a702dee3ee1511a866735165719ad47b868aa"
+  },
+  "checks": [
+    "Images opened and visually reviewed",
+    "Titles, axes and legends readable without overlap",
+    "Surface comparison shows measured variable width versus constant 0.52 mm",
+    "Cap preview shows actual PLA interfaces and the first PETG ceiling paths"
+  ],
+  "physical_surface_qualification": "pending coupon print"
+}

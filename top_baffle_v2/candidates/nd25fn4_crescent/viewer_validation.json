@@ -1,0 +1,36 @@
+{
+  "STL/01_UM_Crescent_V4.stl": {
+    "bytes": 103257884,
+    "sha256": "ef4b48cd7f8ca6bd599d924f5c4622cc3615448447be2eec1845aa9697418d18",
+    "viewer_url": "http://127.0.0.1:3246/?file=nd25fn4_crescent%2FSTL%2F01_UM_Crescent_V4.stl",
+    "asset_bytes_verified": true
+  },
+  "views/nd25fn4_color_review.glb": {
+    "bytes": 14175516,
+    "sha256": "97e85cbdbc8d5ff12c35187c16683aa730daa4fb7d9e5c4e0b9dd498b4bd3208",
+    "viewer_url": "http://127.0.0.1:3246/?file=nd25fn4_crescent%2Fviews%2Fnd25fn4_color_review.glb",
+    "asset_bytes_verified": true,
+    "browser_verified": true
+  },
+  "views/nd25fn4_flat_wings.glb": {
+    "bytes": 17537948,
+    "sha256": "67284793fba842cd79f2b9f84538acf88d641f357c9b1ec91ace215e9846cfbd",
+    "viewer_url": "http://127.0.0.1:3246/?file=nd25fn4_crescent%2Fviews%2Fnd25fn4_flat_wings.glb",
+    "asset_bytes_verified": true,
+    "browser_verified": true
+  },
+  "views/nd25fn4_graded_wings.glb": {
+    "bytes": 17538020,
+    "sha256": "cbd5db0b3fbef7475bebff3d57cac5bc180c5df7c55d1948c7a835881ab77859",
+    "viewer_url": "http://127.0.0.1:3246/?file=nd25fn4_crescent%2Fviews%2Fnd25fn4_graded_wings.glb",
+    "asset_bytes_verified": true,
+    "browser_verified": true
+  },
+  "views/LM_interface_detail.glb": {
+    "bytes": 27251140,
+    "sha256": "60734b12b9e0cc7bb75ff16b3625f8ad30638bda7f9719e0ae36f2a7e5b0f3f9",
+    "viewer_url": "http://127.0.0.1:3246/?file=nd25fn4_crescent%2Fviews%2FLM_interface_detail.glb",
+    "asset_bytes_verified": true,
+    "browser_verified": true
+  }
+}

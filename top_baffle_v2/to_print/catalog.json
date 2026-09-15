@@ -2,11 +2,11 @@
  "schema_version": 1,
  "catalog_kind": "lx521_p2s_print_shelf",
  "printer": "Bambu Lab P2S",
- "format": "STL sources plus ready-to-print .gcode.3mf projects",
+ "format": "STL sources, audited sliced projects, and explicitly marked GUI projects",
  "selection_rules": {
-  "stock": "Choose the no-floor-stand or floor-stand 01 lower LM piece; 02\u201304 are shared. Then choose exactly one attachment set: A shoulders or B1 wings.",
-  "slim": "Choose the no-floor-stand or floor-stand 01 lower LM piece; 02\u201304 are shared. Then choose exactly one attachment set: A shoulders or B1 wings.",
-  "obiwan": "Choose either the individual core files (the no-floor-stand or floor-stand 01, plus 02\u201304) or the 01+02+03+04 combo plate for that same stand state; never mix stand states or print both forms. Then choose flat or graded and exactly one wing split: split3 (3 pieces per side) or split2 (2 pieces per side). For a split2 wing set, choose either its four individual wing projects or its combo plate; never both. The crescent slot takes exactly one of: the released ND25FW-4 tweeter crescent 04 (which either combo plate already carries), the CANDIDATE coaxial BMR crescent 17, the CANDIDATE opposed BMR crescent 18, or no crescent at all. 17 and 18 exclude each other and 04, they replace the crescent a combo plate carries, and neither is release-authorized: print them only to physically qualify them."
+  "stock": "Choose the no-floor-stand or floor-stand 01 lower LM piece; 02\u201304 are shared. Then choose bare, A shoulders, or B1 wings; never mix attachment sets.",
+  "slim": "Choose the no-floor-stand or floor-stand 01 lower LM piece; 02\u201304 are shared. Then choose bare, A shoulders, or B1 wings; never mix attachment sets.",
+  "obiwan": "Choose either the individual core files (the no-floor-stand or floor-stand 01, plus 02\u201304) or the 01+02+03+04 combo plate for that same stand state; never mix stand states or print both forms. Then choose flat or graded; only split2 (two pieces per side) is delivered. For a split2 wing set, choose either its four individual wing projects or its combo plate; never both. The crescent slot takes exactly one of: the released ND25FW-4 tweeter crescent 04 (which either combo plate already carries), the CANDIDATE coaxial BMR crescent 17, the CANDIDATE opposed BMR crescent 18, or no crescent at all. 17 and 18 exclude each other and 04, they replace the crescent a combo plate carries, and neither is release-authorized: print them only to physically qualify them."
  },
  "entries": [
   {
@@ -230,7 +230,8 @@
    "description": "Obi-Wan keyed LM bottom, 1 of 2 \u2014 no-floor stand",
    "source_stl": "no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
    "catalog_artifact_id": "no_floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_1_of_2_bottom",
-   "lane": "06hf"
+   "lane": "06hf",
+   "delivery_kind": "gui_project"
   },
   {
    "name": "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand",
@@ -241,7 +242,8 @@
    "description": "Obi-Wan keyed LM bottom, 1 of 2 \u2014 floor stand",
    "source_stl": "floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
    "catalog_artifact_id": "floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_1_of_2_bottom",
-   "lane": "06hf"
+   "lane": "06hf",
+   "delivery_kind": "gui_project"
   },
   {
    "name": "obiwan_02_LM_top_keyed_2_of_2",
@@ -252,7 +254,8 @@
    "description": "Obi-Wan keyed LM top, 2 of 2 \u2014 shared",
    "source_stl": "no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
    "catalog_artifact_id": "no_floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_2_of_2_top",
-   "lane": "06hf"
+   "lane": "06hf",
+   "delivery_kind": "gui_project"
   },
   {
    "name": "obiwan_03_UM_carrier_1_of_1",
@@ -263,7 +266,8 @@
    "description": "Obi-Wan UM carrier, 1 of 1 \u2014 shared",
    "source_stl": "no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
    "catalog_artifact_id": "no_floor_stand:Obi-Wan:obiwan_core_2_of_2_um_carrier",
-   "lane": "06hf"
+   "lane": "06hf",
+   "delivery_kind": "gui_project"
   },
   {
    "name": "obiwan_04_T_tweeter_crescent_1_of_1",
@@ -273,7 +277,8 @@
    "selection": "core",
    "description": "Obi-Wan tweeter crescent, 1 of 1",
    "source_stl": "no_floor_stand/stl/obiwan_addon_tweeter_crescent.stl",
-   "lane": "06hf"
+   "lane": "06hf",
+   "delivery_kind": "gui_project"
   },
   {
    "name": "obiwan_NL8_service_lid_1_of_1",
@@ -283,7 +288,8 @@
    "selection": "floor_service_lid",
    "description": "Obi-Wan NL8 service-trough snap lid, 1 of 1 \u2014 floor stand",
    "source_stl": "floor_stand/stl/obiwan_addon_nl8_service_lid.stl",
-   "lane": "06hf"
+   "lane": "06hf",
+   "delivery_kind": "gui_project"
   },
   {
    "name": "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand",
@@ -304,7 +310,8 @@
      "obiwan_04_T_tweeter_crescent_1_of_1"
     ]
    },
-   "lane": "06hf"
+   "lane": "06hf",
+   "delivery_kind": "gui_project"
   },
   {
    "name": "obiwan_01_02_03_04_LM_UM_combo_floor_stand",
@@ -326,7 +333,8 @@
      "obiwan_NL8_service_lid_1_of_1"
     ]
    },
-   "lane": "06hf"
+   "lane": "06hf",
+   "delivery_kind": "gui_project"
   },
   {
    "name": "obiwan_05_split2_flat_wing_LM_lower_left_1_of_2",

@@ -1,0 +1,162 @@
+{
+  "design_input_zip_sha256": "a09b718ecb998404e03d69802c4a6f4e8b58f568356947072bc697fa8db6a363",
+  "verified_manifest_entries": 271,
+  "model_source_sha256": "d79c5db514c5318a27c44c6f34d6fbbeeb96715079967a86064608ad92b88d28",
+  "hardware_policy": {
+    "M3_insert": {
+      "pilot_diameter_mm": 4.6,
+      "insert_length_mm": 4,
+      "clearance_diameter_mm": 3.4
+    },
+    "crescent_retainer": {
+      "thread": "M3",
+      "screw_count": 6,
+      "screw_length_mm": 8,
+      "head_diameter_mm": 5.5,
+      "head_height_mm": 3,
+      "screw_circle_radius_mm": 25.1,
+      "retainer_outer_radius_mm": 27.95,
+      "service_radius_mm": 28.15
+    }
+  },
+  "builder_source_sha256": "5cfb6aa80546423afbcb712c551a6235e95ec8001b998910edb63bb2f7327a47",
+  "mesh_ops_source_sha256": "03026e5632a4d44959497dbc902640ad61625df632229c48b500349b3c851de7",
+  "route_source_sha256": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
+  "UM_source": {
+    "source_stl": "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
+    "stl_sha256": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
+    "print_authority_sha256": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23"
+  },
+  "compatible_LM_configurations": [
+    "no_floor_stand",
+    "floor_stand"
+  ],
+  "upper_gallery_routing_profile": "fixed_floor_profile_independent_of_LM_choice",
+  "obiwan_interface_source_sha256": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
+  "python_dependencies": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "trimesh": "5.1.0",
+    "scikit-image": "0.26.0",
+    "build123d": "0.11.1"
+  },
+  "mesh_step_mm": 0.3,
+  "units": "mm",
+  "files": {
+    "01_UM_Crescent_V4.stl": {
+      "sha256": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+      "triangles": 2059410,
+      "watertight": true,
+      "winding_consistent": true,
+      "components": 5,
+      "volume_mm3": 388517.4875055678,
+      "bounds_mm": [
+        [
+          0.0,
+          1.4210854715202004e-14,
+          0.0
+        ],
+        [
+          228.68695068359375,
+          228.6871337890625,
+          38.17987823486328
+        ]
+      ],
+      "assembly_to_print_matrix": [
+        [
+          0.0,
+          0.7071067811865476,
+          0.7071067811865475,
+          150.47277296253452
+        ],
+        [
+          0.0,
+          0.7071067811865475,
+          -0.7071067811865476,
+          78.21417933973783
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0,
+          20.279878616333008
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    "02_Closed_Cap_PRINT_TWO.stl": {
+      "sha256": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+      "triangles": 325112,
+      "watertight": true,
+      "winding_consistent": true,
+      "components": 1,
+      "volume_mm3": 12967.313234870724,
+      "bounds_mm": [
+        [
+          -28.0,
+          -28.0,
+          0.0
+        ],
+        [
+          28.0,
+          28.0,
+          11.84999942779541
+        ]
+      ]
+    },
+    "03_Tweeter_Retainer_PRINT_TWO.stl": {
+      "sha256": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc",
+      "triangles": 196480,
+      "watertight": true,
+      "winding_consistent": true,
+      "components": 1,
+      "volume_mm3": 3878.7197622520653,
+      "bounds_mm": [
+        [
+          -27.950000762939453,
+          -27.950000762939453,
+          2.9802322831784522e-09
+        ],
+        [
+          27.950000762939453,
+          27.950000762939453,
+          4.200000286102295
+        ]
+      ]
+    }
+  },
+  "package_to_installed_matrix": [
+    [
+      0.0,
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.0,
+      481.6476666666667
+    ],
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.40000000000000213
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "outer_surface_sha256": "aa074ae6975d55976435be104f82662e1dec9bf6f05dbcaf2f1e8dde1b7ff664",
+  "outer_surface_cache_sha256": "bde027989189de5890c3073e84efc6beaf91fecd7babb4a80b0a95f32e957ebf",
+  "outer_surface_reused": true
+}

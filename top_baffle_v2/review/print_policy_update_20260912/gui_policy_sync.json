@@ -1,0 +1,881 @@
+{
+  "policy_sha256": "0d95971a42fdcd48dcf9ea9f46f2bb7840b0160be25305bf5ef893d8233b82ea",
+  "projects": [
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_02_03_04_LM_UM_combo_floor_stand_GUI.3mf",
+      "role": "core_combo",
+      "changed": {
+        "bridge_speed": {
+          "before": [
+            "20"
+          ],
+          "after": "20"
+        },
+        "default_filament_colour": {
+          "before": [
+            "#FFFFFF"
+          ],
+          "after": [
+            "#456C86",
+            "#EEEEEE"
+          ]
+        },
+        "extruder_nozzle_stats": {
+          "before": [],
+          "after": [
+            "High Flow#1"
+          ]
+        },
+        "filament_colour": {
+          "before": [
+            "#00AE42"
+          ],
+          "after": [
+            "#456C86",
+            "#EEEEEE"
+          ]
+        },
+        "filament_map_2": {
+          "before": [
+            "1"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "filament_map_mode": {
+          "before": "Auto For Flush",
+          "after": "Manual"
+        },
+        "filament_nozzle_map": {
+          "before": [
+            "1"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "filament_volume_map": {
+          "before": [
+            "0"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "flush_into_support": {
+          "before": "1",
+          "after": "0"
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ]
+        }
+      }
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_02_03_04_LM_UM_combo_no_floor_stand_GUI.3mf",
+      "role": "core_combo",
+      "changed": {
+        "bridge_speed": {
+          "before": [
+            "20"
+          ],
+          "after": "20"
+        },
+        "default_filament_colour": {
+          "before": [
+            "#FFFFFF"
+          ],
+          "after": [
+            "#456C86",
+            "#EEEEEE"
+          ]
+        },
+        "extruder_nozzle_stats": {
+          "before": [],
+          "after": [
+            "High Flow#1"
+          ]
+        },
+        "filament_colour": {
+          "before": [
+            "#00AE42"
+          ],
+          "after": [
+            "#456C86",
+            "#EEEEEE"
+          ]
+        },
+        "filament_map_2": {
+          "before": [
+            "1"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "filament_map_mode": {
+          "before": "Auto For Flush",
+          "after": "Manual"
+        },
+        "filament_nozzle_map": {
+          "before": [
+            "1"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "filament_volume_map": {
+          "before": [
+            "0"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "flush_into_support": {
+          "before": "1",
+          "after": "0"
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ]
+        }
+      }
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_LM_bottom_keyed_1_of_2_floor_stand_GUI.3mf",
+      "role": "lm_bottom",
+      "changed": {
+        "bridge_speed": {
+          "before": [
+            "20"
+          ],
+          "after": "20"
+        },
+        "default_filament_colour": {
+          "before": [
+            "#FFFFFF"
+          ],
+          "after": [
+            "#456C86",
+            "#EEEEEE"
+          ]
+        },
+        "extruder_nozzle_stats": {
+          "before": [],
+          "after": [
+            "High Flow#1"
+          ]
+        },
+        "filament_colour": {
+          "before": [
+            "#00AE42"
+          ],
+          "after": [
+            "#456C86",
+            "#EEEEEE"
+          ]
+        },
+        "filament_map_2": {
+          "before": [
+            "1"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "filament_map_mode": {
+          "before": "Auto For Flush",
+          "after": "Manual"
+        },
+        "filament_nozzle_map": {
+          "before": [
+            "1"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "filament_volume_map": {
+          "before": [
+            "0"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "flush_into_support": {
+          "before": "1",
+          "after": "0"
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ]
+        }
+      }
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand_GUI.3mf",
+      "role": "lm_bottom",
+      "changed": {
+        "bridge_speed": {
+          "before": [
+            "20"
+          ],
+          "after": "20"
+        },
+        "default_filament_colour": {
+          "before": [
+            "#FFFFFF"
+          ],
+          "after": [
+            "#456C86",
+            "#EEEEEE"
+          ]
+        },
+        "extruder_nozzle_stats": {
+          "before": [],
+          "after": [
+            "High Flow#1"
+          ]
+        },
+        "filament_colour": {
+          "before": [
+            "#00AE42"
+          ],
+          "after": [
+            "#456C86",
+            "#EEEEEE"
+          ]
+        },
+        "filament_map_2": {
+          "before": [
+            "1"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "filament_map_mode": {
+          "before": "Auto For Flush",
+          "after": "Manual"
+        },
+        "filament_nozzle_map": {
+          "before": [
+            "1"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "filament_volume_map": {
+          "before": [
+            "0"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "flush_into_support": {
+          "before": "1",
+          "after": "0"
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ]
+        }
+      }
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_02_LM_top_keyed_2_of_2_GUI.3mf",
+      "role": "lm_top",
+      "changed": {
+        "bridge_speed": {
+          "before": [
+            "20"
+          ],
+          "after": "20"
+        },
+        "default_filament_colour": {
+          "before": [
+            "#FFFFFF"
+          ],
+          "after": [
+            "#456C86",
+            "#EEEEEE"
+          ]
+        },
+        "extruder_nozzle_stats": {
+          "before": [],
+          "after": [
+            "High Flow#1"
+          ]
+        },
+        "filament_colour": {
+          "before": [
+            "#00AE42"
+          ],
+          "after": [
+            "#456C86",
+            "#EEEEEE"
+          ]
+        },
+        "filament_map_2": {
+          "before": [
+            "1"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "filament_map_mode": {
+          "before": "Auto For Flush",
+          "after": "Manual"
+        },
+        "filament_nozzle_map": {
+          "before": [
+            "1"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "filament_volume_map": {
+          "before": [
+            "0"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "flush_into_support": {
+          "before": "1",
+          "after": "0"
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ]
+        },
+        "sparse_infill_density": {
+          "before": "30%",
+          "after": "100%"
+        },
+        "sparse_infill_pattern": {
+          "before": "gyroid",
+          "after": "zig-zag"
+        }
+      }
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_03_UM_carrier_1_of_1_GUI.3mf",
+      "role": "um",
+      "changed": {
+        "bridge_speed": {
+          "before": [
+            "20"
+          ],
+          "after": "20"
+        },
+        "default_filament_colour": {
+          "before": [
+            "#FFFFFF"
+          ],
+          "after": [
+            "#456C86",
+            "#EEEEEE"
+          ]
+        },
+        "extruder_nozzle_stats": {
+          "before": [],
+          "after": [
+            "High Flow#1"
+          ]
+        },
+        "filament_colour": {
+          "before": [
+            "#00AE42"
+          ],
+          "after": [
+            "#456C86",
+            "#EEEEEE"
+          ]
+        },
+        "filament_map_2": {
+          "before": [
+            "1"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "filament_map_mode": {
+          "before": "Auto For Flush",
+          "after": "Manual"
+        },
+        "filament_nozzle_map": {
+          "before": [
+            "1"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "filament_volume_map": {
+          "before": [
+            "0"
+          ],
+          "after": [
+            "1",
+            "1"
+          ]
+        },
+        "flush_into_support": {
+          "before": "1",
+          "after": "0"
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0",
+            "280",
+            "280",
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "140",
+            "140",
+            "140",
+            "140"
+          ]
+        }
+      }
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_04_T_tweeter_crescent_1_of_1_GUI.3mf",
+      "role": "regular_tweeter",
+      "changed": {
+        "bridge_speed": {
+          "before": [
+            "20"
+          ],
+          "after": "20"
+        },
+        "default_filament_colour": {
+          "before": [
+            "#FFFFFF"
+          ],
+          "after": [
+            "#456C86"
+          ]
+        },
+        "extruder_nozzle_stats": {
+          "before": [],
+          "after": [
+            "High Flow#1"
+          ]
+        },
+        "filament_colour": {
+          "before": [
+            "#00AE42"
+          ],
+          "after": [
+            "#456C86"
+          ]
+        },
+        "filament_map_mode": {
+          "before": "Auto For Flush",
+          "after": "Manual"
+        },
+        "filament_volume_map": {
+          "before": [
+            "0"
+          ],
+          "after": [
+            "1"
+          ]
+        },
+        "flush_into_support": {
+          "before": "1",
+          "after": "0"
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "140",
+            "140"
+          ]
+        }
+      }
+    },
+    {
+      "path": "to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_NL8_service_lid_1_of_1_GUI.3mf",
+      "role": "regular_tweeter",
+      "changed": {
+        "bridge_speed": {
+          "before": [
+            "20"
+          ],
+          "after": "20"
+        },
+        "default_filament_colour": {
+          "before": [
+            "#FFFFFF"
+          ],
+          "after": [
+            "#456C86"
+          ]
+        },
+        "extruder_nozzle_stats": {
+          "before": [],
+          "after": [
+            "High Flow#1"
+          ]
+        },
+        "filament_colour": {
+          "before": [
+            "#00AE42"
+          ],
+          "after": [
+            "#456C86"
+          ]
+        },
+        "filament_map_mode": {
+          "before": "Auto For Flush",
+          "after": "Manual"
+        },
+        "filament_volume_map": {
+          "before": [
+            "0"
+          ],
+          "after": [
+            "1"
+          ]
+        },
+        "flush_into_support": {
+          "before": "1",
+          "after": "0"
+        },
+        "flush_volumes_matrix": {
+          "before": [
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0",
+            "280",
+            "280",
+            "280",
+            "280",
+            "0"
+          ],
+          "after": [
+            "0"
+          ]
+        },
+        "flush_volumes_vector": {
+          "before": [
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140",
+            "140"
+          ],
+          "after": [
+            "140",
+            "140"
+          ]
+        }
+      }
+    }
+  ]
+}

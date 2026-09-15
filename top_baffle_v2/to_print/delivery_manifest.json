@@ -1,0 +1,5577 @@
+{
+  "catalog_sha256": "877da2d2b27e05d1f44cd7b6ca7d4d6c2bf36a348dbed58fb792c9611715a223",
+  "choice_count": 42,
+  "disposition_counts": {
+    "gui_project": 8,
+    "sliced_project": 68
+  },
+  "family_counts": {
+    "obiwan": 20,
+    "slim": 11,
+    "stock": 11
+  },
+  "kind": "lx521_delivery_inventory",
+  "project_count": 76,
+  "projects": [
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_01_LM_bottom_1_of_3_no_floor_stand.print.json",
+        "sha256": "3504d8b2fc02bfba538b6795a55912320f38794afb0681d26d5a9238d058cb94"
+      },
+      "estimated_filament_g": "218.59",
+      "estimated_time": "10h 38m 9s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "dc916f8792f7897987bb95fb6084c2e3d21c468bb32ee939fc00627597f5723a"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "stock_01_LM_bottom_1_of_3_no_floor_stand",
+      "path": "stock/3mf_04/stock_01_LM_bottom_1_of_3_no_floor_stand.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "085af7b0cc866470b7d7076f7fb7180093600d9e8663bc1adc0b839c6ab9491c",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_1_of_4_bottom.print.json",
+        "sha256": "942069fd682c33b1cc4b7802ad6a1adaa41d8972269514c8c1d2f2ba5ddcc4ab"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_1_of_4_bottom.stl",
+      "source_stl_sha256": "8554cd3d0f0fabdf82637c8ef4a044d9efdfe8961bf544871f784594612b1ede"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_01_LM_bottom_1_of_3_no_floor_stand.print.json",
+        "sha256": "3504d8b2fc02bfba538b6795a55912320f38794afb0681d26d5a9238d058cb94"
+      },
+      "estimated_filament_g": "216.11",
+      "estimated_time": "5h 37m 38s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "78323b49953730994796debd892355cd95ec9c68d0eb05540f6e77eba79acec0"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "stock_01_LM_bottom_1_of_3_no_floor_stand",
+      "path": "stock/3mf_06hf/stock_01_LM_bottom_1_of_3_no_floor_stand_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "72eafc8f8ced18b20912093fe12135b295f3f97e544a8187986127f4e94f7aee",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_1_of_4_bottom.print.json",
+        "sha256": "942069fd682c33b1cc4b7802ad6a1adaa41d8972269514c8c1d2f2ba5ddcc4ab"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_1_of_4_bottom.stl",
+      "source_stl_sha256": "8554cd3d0f0fabdf82637c8ef4a044d9efdfe8961bf544871f784594612b1ede"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_01_LM_bottom_1_of_3_floor_stand.print.json",
+        "sha256": "298a3fce873f43118ce12417078f398360fb94a9ef6ba23b91d4e9c7a22f4f3d"
+      },
+      "estimated_filament_g": "367.37",
+      "estimated_time": "18h 15m 36s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "ae2654ee5b1fcb77eafaa9580699bc67620c1757e38b20fe17f09b1d6dc20a75"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "stock_01_LM_bottom_1_of_3_floor_stand",
+      "path": "stock/3mf_04/stock_01_LM_bottom_1_of_3_floor_stand.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "47c96e1c3a690535e30fc009a6325d08d20a8dc9bcafe8f594cee8591cfd8ea4",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/floor_stand/stl/stock_1_of_4_bottom.print.json",
+        "sha256": "748d25629bab4c2c55d61a880c17fb2db1705be1ce7716de3f13d82a37795cfb"
+      },
+      "source_stl": "build/floor_stand/stl/stock_1_of_4_bottom.stl",
+      "source_stl_sha256": "557d8cf9ae155bb5c39ac566248f38588b502a557a30bffee476f09107f5c1bf"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_01_LM_bottom_1_of_3_floor_stand.print.json",
+        "sha256": "298a3fce873f43118ce12417078f398360fb94a9ef6ba23b91d4e9c7a22f4f3d"
+      },
+      "estimated_filament_g": "353.22",
+      "estimated_time": "10h 1m 58s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "9f83112a23daa80e54946e60c0dbe8f596348960e9b4a8a255688e046e93d7a3"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "stock_01_LM_bottom_1_of_3_floor_stand",
+      "path": "stock/3mf_06hf/stock_01_LM_bottom_1_of_3_floor_stand_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "09993d37b588fcd646c683d1ab4705324149b0656efc080b859c74b1ce8037ab",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/floor_stand/stl/stock_1_of_4_bottom.print.json",
+        "sha256": "748d25629bab4c2c55d61a880c17fb2db1705be1ce7716de3f13d82a37795cfb"
+      },
+      "source_stl": "build/floor_stand/stl/stock_1_of_4_bottom.stl",
+      "source_stl_sha256": "557d8cf9ae155bb5c39ac566248f38588b502a557a30bffee476f09107f5c1bf"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_02_LM_mid_left_2_of_3.print.json",
+        "sha256": "6b08c133443e312186991e28ad16fd4cd90bbf22387aa58f0439555d9b880a29"
+      },
+      "estimated_filament_g": "115.84",
+      "estimated_time": "5h 22m 25s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "71b9645242f594e139f7ba863d0928a90567455f8219c055efa87ae7db7faa99"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "stock_02_LM_mid_left_2_of_3",
+      "path": "stock/3mf_04/stock_02_LM_mid_left_2_of_3.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "f00db51e19e594c517073cd6b49af6fa32600616e2c93b15df9a5160ea0e4a76",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_2_of_4_mid_left.print.json",
+        "sha256": "8f573f648b54e4ce04c87a57c44bd2b3cfab293b4a3e5fee138a5d49285b80d5"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_2_of_4_mid_left.stl",
+      "source_stl_sha256": "260bbd556f7755e52b3ce6d35d2aa4bdef83395abb91ea8f6c679ac3e085b640"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_02_LM_mid_left_2_of_3.print.json",
+        "sha256": "6b08c133443e312186991e28ad16fd4cd90bbf22387aa58f0439555d9b880a29"
+      },
+      "estimated_filament_g": "113.87",
+      "estimated_time": "3h 2m 30s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "edac23c6f9c12b38da288157313f32335194cf7eabb76007893fdf49ee6d42e8"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "stock_02_LM_mid_left_2_of_3",
+      "path": "stock/3mf_06hf/stock_02_LM_mid_left_2_of_3_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "7e6557edaf2f1d5e62b15bc25de10bd92c1479ec6267963c2dfd65e1e0acfe31",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_2_of_4_mid_left.print.json",
+        "sha256": "8f573f648b54e4ce04c87a57c44bd2b3cfab293b4a3e5fee138a5d49285b80d5"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_2_of_4_mid_left.stl",
+      "source_stl_sha256": "260bbd556f7755e52b3ce6d35d2aa4bdef83395abb91ea8f6c679ac3e085b640"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_03_LM_mid_right_3_of_3.print.json",
+        "sha256": "773dcfd5394138dfa91db86b7c5679ba97880cf230d26e4e5b02126ba9669c75"
+      },
+      "estimated_filament_g": "119.49",
+      "estimated_time": "5h 30m 28s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "c3c556a3bd2cd7504f8db1a02fb7ac3bf5130c307bb57f3dbeef36916b5c3f9c"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "stock_03_LM_mid_right_3_of_3",
+      "path": "stock/3mf_04/stock_03_LM_mid_right_3_of_3.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "896aeb87360555108e4ff2d1e00e2c2dea87b5ba20e4c51d5a7337fc70ef50b6",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_3_of_4_mid_right.print.json",
+        "sha256": "00c71320417dae805edc3faf43890dc4f112f1fe61302da901489c1bb34d55ea"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_3_of_4_mid_right.stl",
+      "source_stl_sha256": "aac8e8ad3f123edcd3afd33c9d735ef462ea256f8bd084dbddfe2c8c1ae5e29c"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_03_LM_mid_right_3_of_3.print.json",
+        "sha256": "773dcfd5394138dfa91db86b7c5679ba97880cf230d26e4e5b02126ba9669c75"
+      },
+      "estimated_filament_g": "116.92",
+      "estimated_time": "3h 9m 33s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "8287c548d9f7716c9b515d048e8b7775aa31dcd6421670dbf10c42e85145dcb8"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "stock_03_LM_mid_right_3_of_3",
+      "path": "stock/3mf_06hf/stock_03_LM_mid_right_3_of_3_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "883884c7baab16d8de91382197f4a794217de9f242df0a35e75c7f8bcbfa7dee",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_3_of_4_mid_right.print.json",
+        "sha256": "00c71320417dae805edc3faf43890dc4f112f1fe61302da901489c1bb34d55ea"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_3_of_4_mid_right.stl",
+      "source_stl_sha256": "aac8e8ad3f123edcd3afd33c9d735ef462ea256f8bd084dbddfe2c8c1ae5e29c"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_04_UM_vase_1_of_1.print.json",
+        "sha256": "1bb5ab450e86f49adb73c9c341aa0e6af9bb8836c11d7d24e67f08a3c9ceda0f"
+      },
+      "estimated_filament_g": "68.21",
+      "estimated_time": "3h 15m 11s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "00a353e3e4cfeed4ace075a56dcf25026b6d84db32f1cae6c7d370c068b05403"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "stock_04_UM_vase_1_of_1",
+      "path": "stock/3mf_04/stock_04_UM_vase_1_of_1.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "3c24b1208cfb906fd056524042ac84331f079acae047dc53071e7506686caf09",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_4_of_4_vase_b2.print.json",
+        "sha256": "7412c68b8b62e99d97c59bef658faffe69e8b57ef56c1be6ece0a9c39a702871"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_4_of_4_vase_b2.stl",
+      "source_stl_sha256": "b8bf6122dbb5fa5e9f26f401264ef92a13c94149629db6742231b4a35ed38833"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_04_UM_vase_1_of_1.print.json",
+        "sha256": "1bb5ab450e86f49adb73c9c341aa0e6af9bb8836c11d7d24e67f08a3c9ceda0f"
+      },
+      "estimated_filament_g": "66.32",
+      "estimated_time": "1h 59m 0s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "b2df27bee5ccae423546a2906293e9514382220dd2b321aa50305614a29d5d31"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "stock_04_UM_vase_1_of_1",
+      "path": "stock/3mf_06hf/stock_04_UM_vase_1_of_1_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "5693219cd94ad8ea03bcaf282fc023f20cabaedcce8a9754cd32862952825a80",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_4_of_4_vase_b2.print.json",
+        "sha256": "7412c68b8b62e99d97c59bef658faffe69e8b57ef56c1be6ece0a9c39a702871"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_4_of_4_vase_b2.stl",
+      "source_stl_sha256": "b8bf6122dbb5fa5e9f26f401264ef92a13c94149629db6742231b4a35ed38833"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_05_A_shoulder_bottom_left_1_of_4.print.json",
+        "sha256": "f7be68b6d3e242a868063065e4fd5dbc39cbc4f4882e6857636224fbd2be1cad"
+      },
+      "estimated_filament_g": "14.85",
+      "estimated_time": "46m 51s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "3b636d2fb762e508c71bc0c053d39d5117bba4bb5cf65b8fc3af6f1a76df46f1"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "stock_05_A_shoulder_bottom_left_1_of_4",
+      "path": "stock/3mf_04/stock_05_A_shoulder_bottom_left_1_of_4.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "b584a5767f03d3e175558a8b7a5d4800b5a004786906562241353d22298da22c",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_shoulder_3_of_4_bottom_left.print.json",
+        "sha256": "d7d7cbcfbebd53e2afaf800140a635dd88b08c273249e660e9e585830308a01b"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_shoulder_3_of_4_bottom_left.stl",
+      "source_stl_sha256": "498086f24109d792c45212144855bd570c06af4b5128fdca371a8cdb00960cf3"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_05_A_shoulder_bottom_left_1_of_4.print.json",
+        "sha256": "f7be68b6d3e242a868063065e4fd5dbc39cbc4f4882e6857636224fbd2be1cad"
+      },
+      "estimated_filament_g": "14.18",
+      "estimated_time": "30m 1s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "744bdc32e0a983fa537cc2249e610050790a53e4b5c49559d2df25be9a012d05"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "stock_05_A_shoulder_bottom_left_1_of_4",
+      "path": "stock/3mf_06hf/stock_05_A_shoulder_bottom_left_1_of_4_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "301d77510a2c1b5cd69344f957522f260a8cc6014fec357d2f3004b614114322",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_shoulder_3_of_4_bottom_left.print.json",
+        "sha256": "d7d7cbcfbebd53e2afaf800140a635dd88b08c273249e660e9e585830308a01b"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_shoulder_3_of_4_bottom_left.stl",
+      "source_stl_sha256": "498086f24109d792c45212144855bd570c06af4b5128fdca371a8cdb00960cf3"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_06_A_shoulder_top_left_2_of_4.print.json",
+        "sha256": "173685d602787dce383ac24eee00e3a8ad6bf2bd6694fbb480d0c311caf785ea"
+      },
+      "estimated_filament_g": "17.38",
+      "estimated_time": "55m 14s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "2a5980fef81d0066dd0b0d229097bf26e4a9aa77084199eb1aafed517efbb51a"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "stock_06_A_shoulder_top_left_2_of_4",
+      "path": "stock/3mf_04/stock_06_A_shoulder_top_left_2_of_4.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "d76025c3ce5d52b94424bf553a5f15f50d01900b4a812fc3be9f6661bd92f838",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_shoulder_1_of_4_top_left.print.json",
+        "sha256": "a436423f18bb2539544317febb6b59ff428f8667a68ba4fbbd87281f82c74361"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_shoulder_1_of_4_top_left.stl",
+      "source_stl_sha256": "c226846fba25d831631e1ae83f2d20bd4229407e62ae8a196c1116f13d903091"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_06_A_shoulder_top_left_2_of_4.print.json",
+        "sha256": "173685d602787dce383ac24eee00e3a8ad6bf2bd6694fbb480d0c311caf785ea"
+      },
+      "estimated_filament_g": "16.98",
+      "estimated_time": "35m 2s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "c0af9749a0637df6e34db906676faaf20fa97bdd3cb097bd39d94b3b7b8b630f"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "stock_06_A_shoulder_top_left_2_of_4",
+      "path": "stock/3mf_06hf/stock_06_A_shoulder_top_left_2_of_4_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "769c7397e632e4df107224837e96a6f67390e0c34d568c022bf2118fead0d261",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_shoulder_1_of_4_top_left.print.json",
+        "sha256": "a436423f18bb2539544317febb6b59ff428f8667a68ba4fbbd87281f82c74361"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_shoulder_1_of_4_top_left.stl",
+      "source_stl_sha256": "c226846fba25d831631e1ae83f2d20bd4229407e62ae8a196c1116f13d903091"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_07_A_shoulder_bottom_right_3_of_4.print.json",
+        "sha256": "8e811c691a3b3f86c31fa5d3986d6914346685be3133bc89269355d3c7997a8f"
+      },
+      "estimated_filament_g": "14.86",
+      "estimated_time": "46m 43s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "d6334076c57a43f5e6f58e8a61908affc5eafe03e5a6b325902133a75ba2ff14"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "stock_07_A_shoulder_bottom_right_3_of_4",
+      "path": "stock/3mf_04/stock_07_A_shoulder_bottom_right_3_of_4.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "bc9bbd12851f09e0b2b2f5ab10345e98ec82c4b92607d1da7c3a391cddb8021e",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_shoulder_4_of_4_bottom_right.print.json",
+        "sha256": "b1be2b12a7aecea21cff86be1c195065aff2a19832a22ca3b9626fd05b8eb02e"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_shoulder_4_of_4_bottom_right.stl",
+      "source_stl_sha256": "43fa254e1c788a6b9ec2170bf892955be8ec8321bc9aea0408f494038ea10792"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_07_A_shoulder_bottom_right_3_of_4.print.json",
+        "sha256": "8e811c691a3b3f86c31fa5d3986d6914346685be3133bc89269355d3c7997a8f"
+      },
+      "estimated_filament_g": "14.18",
+      "estimated_time": "29m 55s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "50123c9eb21d5d2df94e20875ac63cd2fed71fc586a19ef273ffa199dad9b665"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "stock_07_A_shoulder_bottom_right_3_of_4",
+      "path": "stock/3mf_06hf/stock_07_A_shoulder_bottom_right_3_of_4_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "ad98eba1f079903599e1f85f150a695b75d75b79501ae8e580806111c2c67ee1",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_shoulder_4_of_4_bottom_right.print.json",
+        "sha256": "b1be2b12a7aecea21cff86be1c195065aff2a19832a22ca3b9626fd05b8eb02e"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_shoulder_4_of_4_bottom_right.stl",
+      "source_stl_sha256": "43fa254e1c788a6b9ec2170bf892955be8ec8321bc9aea0408f494038ea10792"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_08_A_shoulder_top_right_4_of_4.print.json",
+        "sha256": "f675350e51f22ec886df007c106ccb2ab90c095ca95a2ce16b69372bc0e23286"
+      },
+      "estimated_filament_g": "17.37",
+      "estimated_time": "55m 32s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "4cfdc754d05b23c6a39c87a67219c6531d7a8529e1babcc72042e17d4e17d8c5"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "stock_08_A_shoulder_top_right_4_of_4",
+      "path": "stock/3mf_04/stock_08_A_shoulder_top_right_4_of_4.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "880d9a43702bbdc13590fb5ee9f85b7cba934d5c494b82b3b40a2c6fb3032fed",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_shoulder_2_of_4_top_right.print.json",
+        "sha256": "58532971771c35d04af82064ec6030a8765006c82def7ad05d7fa0f9bc1da78a"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_shoulder_2_of_4_top_right.stl",
+      "source_stl_sha256": "97d976c11078ed0a4e6e6f4f3862bbcd9042994b48a21ef5ee254f8f71fd838f"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_08_A_shoulder_top_right_4_of_4.print.json",
+        "sha256": "f675350e51f22ec886df007c106ccb2ab90c095ca95a2ce16b69372bc0e23286"
+      },
+      "estimated_filament_g": "16.97",
+      "estimated_time": "34m 55s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "3729bb367cbaa57172db88c2fb8115360829b418855f8771f2664a0743582373"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "stock_08_A_shoulder_top_right_4_of_4",
+      "path": "stock/3mf_06hf/stock_08_A_shoulder_top_right_4_of_4_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "a937e1e08a0009fac90d0f8568a211d864fa30c9aed32ac472f88c263eb95d8f",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_shoulder_2_of_4_top_right.print.json",
+        "sha256": "58532971771c35d04af82064ec6030a8765006c82def7ad05d7fa0f9bc1da78a"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_shoulder_2_of_4_top_right.stl",
+      "source_stl_sha256": "97d976c11078ed0a4e6e6f4f3862bbcd9042994b48a21ef5ee254f8f71fd838f"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_09_B1_wing_left_1_of_2.print.json",
+        "sha256": "395e05d1ff4f94a128d7eaa95394ca48145b87513e468217b3c5bf0282e74d30"
+      },
+      "estimated_filament_g": "36.99",
+      "estimated_time": "1h 48m 56s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "23f31e18fb84701437db74aafdfac289557b692e85e89933c29b05b877b5f2ca"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "stock_09_B1_wing_left_1_of_2",
+      "path": "stock/3mf_04/stock_09_B1_wing_left_1_of_2.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "d8f8a91042eaf5e7ff023cddec33f61976a601a18732e3225d94b348af051692",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_wing_1_of_2_left.print.json",
+        "sha256": "d79e6f0b1948f72fb85f362985798e6a292f7fd0aeb7b2ecf82845527f1f0804"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_wing_1_of_2_left.stl",
+      "source_stl_sha256": "7749a25921f930432d155f8988afe0dd8516f2b119560c11890f4f2a309794f1"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_09_B1_wing_left_1_of_2.print.json",
+        "sha256": "395e05d1ff4f94a128d7eaa95394ca48145b87513e468217b3c5bf0282e74d30"
+      },
+      "estimated_filament_g": "36.17",
+      "estimated_time": "1h 3m 39s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "38c965d78757f9affe82b6adec85e98ea328b4633cf2bdd43cef66883fdb1c0c"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "stock_09_B1_wing_left_1_of_2",
+      "path": "stock/3mf_06hf/stock_09_B1_wing_left_1_of_2_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "060dd64f43d5b169170cf33c2b4cee0fe0a5607c6e869a58dff0f1bb7cb388ec",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_wing_1_of_2_left.print.json",
+        "sha256": "d79e6f0b1948f72fb85f362985798e6a292f7fd0aeb7b2ecf82845527f1f0804"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_wing_1_of_2_left.stl",
+      "source_stl_sha256": "7749a25921f930432d155f8988afe0dd8516f2b119560c11890f4f2a309794f1"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_10_B1_wing_right_2_of_2.print.json",
+        "sha256": "6f6e9c24cc67eee5dd0b51fffd3b7b2e208d5a6549909c7e11ce7b919c9a2703"
+      },
+      "estimated_filament_g": "37.00",
+      "estimated_time": "1h 48m 55s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "4b76571b6f5b22031e16d6dc48e7aadf4e487447e2f1842308d207289c511c73"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "stock_10_B1_wing_right_2_of_2",
+      "path": "stock/3mf_04/stock_10_B1_wing_right_2_of_2.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "ea78fc66d02eed6dfd1dab4c2e8753cfd88d6cfb92a810abaf714dd2d68e756c",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_wing_2_of_2_right.print.json",
+        "sha256": "c566892514e8c03c4cb70cbaaa5aedb2a3b3d062b504fc75634697262d659cb0"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_wing_2_of_2_right.stl",
+      "source_stl_sha256": "8da84750e2cff0075955bd8245831ebfc0ddfc97d9bc36e97789069cadf5d67b"
+    },
+    {
+      "delivered_authority": {
+        "path": "stock/stl/stock_10_B1_wing_right_2_of_2.print.json",
+        "sha256": "6f6e9c24cc67eee5dd0b51fffd3b7b2e208d5a6549909c7e11ce7b919c9a2703"
+      },
+      "estimated_filament_g": "36.19",
+      "estimated_time": "1h 3m 53s",
+      "family": "stock",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "4be96c002b70ab4e5dc8b0502c008d5c021714e0f6aff06503fe4c20d3af9f12"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "stock_10_B1_wing_right_2_of_2",
+      "path": "stock/3mf_06hf/stock_10_B1_wing_right_2_of_2_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "fcf05cfea7a083c892a92678bb5b5ce3bb1f216760e10a6223912923d2981ce0",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/stock_wing_2_of_2_right.print.json",
+        "sha256": "c566892514e8c03c4cb70cbaaa5aedb2a3b3d062b504fc75634697262d659cb0"
+      },
+      "source_stl": "build/no_floor_stand/stl/stock_wing_2_of_2_right.stl",
+      "source_stl_sha256": "8da84750e2cff0075955bd8245831ebfc0ddfc97d9bc36e97789069cadf5d67b"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_01_LM_bottom_1_of_3_no_floor_stand.print.json",
+        "sha256": "bb9459f37770888e0910bea19a1cafbcac9e9f92a95dbd3ece3a8232bceb5032"
+      },
+      "estimated_filament_g": "200.59",
+      "estimated_time": "9h 36m 20s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "aeb559da904983b67c8d4f4fcfd57122bf146df1d544200373389206a69b071a"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "slim_01_LM_bottom_1_of_3_no_floor_stand",
+      "path": "slim/3mf_04/slim_01_LM_bottom_1_of_3_no_floor_stand.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "671dad576bc8f7633373b08640484302b5bc7642cef77efc09b10f846207f3cf",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_1_of_4_bottom.print.json",
+        "sha256": "dd30ac356d3af803231b1ec691d3f5d50c543bd72e6cad7dc90971cc398a378d"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_1_of_4_bottom.stl",
+      "source_stl_sha256": "a5e8c5901f6eacfdd195b897fd2ee213f036b81e60c7ad4179d50aba5a4c5691"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_01_LM_bottom_1_of_3_no_floor_stand.print.json",
+        "sha256": "bb9459f37770888e0910bea19a1cafbcac9e9f92a95dbd3ece3a8232bceb5032"
+      },
+      "estimated_filament_g": "197.83",
+      "estimated_time": "5h 6m 47s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "47df7e9072d6135ccf5397af6bfda244ce0deabda709adfb49024723c81fe356"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "slim_01_LM_bottom_1_of_3_no_floor_stand",
+      "path": "slim/3mf_06hf/slim_01_LM_bottom_1_of_3_no_floor_stand_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "a20e391f50671de746fa20fc63cbc2e1ed0992ccaaafa46a3008464a89c96ab3",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_1_of_4_bottom.print.json",
+        "sha256": "dd30ac356d3af803231b1ec691d3f5d50c543bd72e6cad7dc90971cc398a378d"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_1_of_4_bottom.stl",
+      "source_stl_sha256": "a5e8c5901f6eacfdd195b897fd2ee213f036b81e60c7ad4179d50aba5a4c5691"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_01_LM_bottom_1_of_3_floor_stand.print.json",
+        "sha256": "775127c1bd0fd70345048a4c98429a96aecafd23943aaf6c1b26b0d1eb9a95d2"
+      },
+      "estimated_filament_g": "334.10",
+      "estimated_time": "16h 12m 51s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "1c36b01992444e7cb938eab214952cee77097ca8710ec47ec5b1f9a3726cb66c"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "slim_01_LM_bottom_1_of_3_floor_stand",
+      "path": "slim/3mf_04/slim_01_LM_bottom_1_of_3_floor_stand.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "fdf4ce0763d1fdf21c7263a01b37c4f284842204ece2b79ef2220d692da34bc7",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/floor_stand/stl/slim_1_of_4_bottom.print.json",
+        "sha256": "7bf6ab964c293f21143e948b73ab52a33407c7af823cb28aeb4f9837814150a3"
+      },
+      "source_stl": "build/floor_stand/stl/slim_1_of_4_bottom.stl",
+      "source_stl_sha256": "339e8735061dee9abfba32e301898cc47e570884115201ee21a50a2fa2596b4c"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_01_LM_bottom_1_of_3_floor_stand.print.json",
+        "sha256": "775127c1bd0fd70345048a4c98429a96aecafd23943aaf6c1b26b0d1eb9a95d2"
+      },
+      "estimated_filament_g": "320.51",
+      "estimated_time": "9h 7m 18s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "16781591837b01000fca49d1e1d5010b9230ad7465265f9a38102ecf3c611bc3"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "slim_01_LM_bottom_1_of_3_floor_stand",
+      "path": "slim/3mf_06hf/slim_01_LM_bottom_1_of_3_floor_stand_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "9788e3c6c24f378198115bd37173787f9faea2d910e447a992947f2427d7ea58",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/floor_stand/stl/slim_1_of_4_bottom.print.json",
+        "sha256": "7bf6ab964c293f21143e948b73ab52a33407c7af823cb28aeb4f9837814150a3"
+      },
+      "source_stl": "build/floor_stand/stl/slim_1_of_4_bottom.stl",
+      "source_stl_sha256": "339e8735061dee9abfba32e301898cc47e570884115201ee21a50a2fa2596b4c"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_02_LM_mid_left_2_of_3.print.json",
+        "sha256": "0684b8d61bb96696abaa53162c40acae3129dfba7da021177e9dfb6a8d782d84"
+      },
+      "estimated_filament_g": "81.85",
+      "estimated_time": "3h 37m 0s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "a89f8c534c13f5631a5e1c2cd8f852926dae992dc4c3c4bebad5cabd3bfcefb6"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "slim_02_LM_mid_left_2_of_3",
+      "path": "slim/3mf_04/slim_02_LM_mid_left_2_of_3.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "34e0d04558f1d32d5341fa48d3a93879adde6127ef62db89df8758aa409d026a",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_2_of_4_mid_left.print.json",
+        "sha256": "b2710e4c1f3bd488c1a97e262f9eb2ed97e29749fbf18074a9208d2a781c19fd"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_2_of_4_mid_left.stl",
+      "source_stl_sha256": "448af41d309e381d9b70f4e95ff7b85f5b7d717c25bb8c42ce9ce2c514b803b9"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_02_LM_mid_left_2_of_3.print.json",
+        "sha256": "0684b8d61bb96696abaa53162c40acae3129dfba7da021177e9dfb6a8d782d84"
+      },
+      "estimated_filament_g": "80.41",
+      "estimated_time": "2h 8m 38s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "057664bed820d290c92d5991c030de8018c033dec2979a2b1d247927b856a749"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "slim_02_LM_mid_left_2_of_3",
+      "path": "slim/3mf_06hf/slim_02_LM_mid_left_2_of_3_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "11d888b6a63507575ea1826b832bcf25c1fd1c8e8193db17060bbe50fe5dd2af",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_2_of_4_mid_left.print.json",
+        "sha256": "b2710e4c1f3bd488c1a97e262f9eb2ed97e29749fbf18074a9208d2a781c19fd"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_2_of_4_mid_left.stl",
+      "source_stl_sha256": "448af41d309e381d9b70f4e95ff7b85f5b7d717c25bb8c42ce9ce2c514b803b9"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_03_LM_mid_right_3_of_3.print.json",
+        "sha256": "651e5634d875ba3bc1ab0f70cad224d8b64f489a4fb2622e9a2ba3f8ce4f37fc"
+      },
+      "estimated_filament_g": "84.69",
+      "estimated_time": "3h 40m 30s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "f2b4d4ff8ddc41c415d5a5dd04303a79bb81678fa481444fc88d2b168ffa2948"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "slim_03_LM_mid_right_3_of_3",
+      "path": "slim/3mf_04/slim_03_LM_mid_right_3_of_3.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "bb52d82d97722cb1a8ff2a4fe3c0cf6eed958b06f51f8094d4888664f5c04e2c",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_3_of_4_mid_right.print.json",
+        "sha256": "1bfd82a3dcb05713633f258d8f2035bb80845a39bead9c16fea2ad1c6f1e98a9"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_3_of_4_mid_right.stl",
+      "source_stl_sha256": "4d20f742c21435bb157397c56931b3173c4ccf987c71b284f4b2f774201ac428"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_03_LM_mid_right_3_of_3.print.json",
+        "sha256": "651e5634d875ba3bc1ab0f70cad224d8b64f489a4fb2622e9a2ba3f8ce4f37fc"
+      },
+      "estimated_filament_g": "82.60",
+      "estimated_time": "2h 13m 2s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "c8730035982cd446b9705cd49454c6ae8f9a5e0e22527a475a5d13ac93427c9b"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "slim_03_LM_mid_right_3_of_3",
+      "path": "slim/3mf_06hf/slim_03_LM_mid_right_3_of_3_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "2b6f40501f611d7d32a5dd99f213375da11efd719793cfdf144a689f3d81a6ff",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_3_of_4_mid_right.print.json",
+        "sha256": "1bfd82a3dcb05713633f258d8f2035bb80845a39bead9c16fea2ad1c6f1e98a9"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_3_of_4_mid_right.stl",
+      "source_stl_sha256": "4d20f742c21435bb157397c56931b3173c4ccf987c71b284f4b2f774201ac428"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_04_UM_vase_1_of_1.print.json",
+        "sha256": "616fb985e4cc0c1d27708d3ac54cfced9ea8426390d83467ff92778f841aad7d"
+      },
+      "estimated_filament_g": "46.81",
+      "estimated_time": "2h 19m 5s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "4bec8470bcab6de78bbd698abfc6e151e2ab028c4b48be72e19f5d7db0e3ff48"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "slim_04_UM_vase_1_of_1",
+      "path": "slim/3mf_04/slim_04_UM_vase_1_of_1.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "c45c938a6e4f4cd04717f7bf7f0619bc4cf394a97a1fbaa45dfd1cca008438b7",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_4_of_4_vase_b2.print.json",
+        "sha256": "a9b97bc5ea362c52c4615602044c4e253942aeb5d09bf39317f498b6eee57d47"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_4_of_4_vase_b2.stl",
+      "source_stl_sha256": "33ee34409d1de413ca149d16c06fd670b093f110a6e9ce60fa7248821068ea0d"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_04_UM_vase_1_of_1.print.json",
+        "sha256": "616fb985e4cc0c1d27708d3ac54cfced9ea8426390d83467ff92778f841aad7d"
+      },
+      "estimated_filament_g": "45.70",
+      "estimated_time": "1h 27m 27s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "1c2789ee7b164f6f8df85b2ee81b298e638382424de7112952ccd5d13bfccd3e"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "slim_04_UM_vase_1_of_1",
+      "path": "slim/3mf_06hf/slim_04_UM_vase_1_of_1_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "0c3b3ed4722b89e37b4cfc989027a464414d41bb3add50008b97024b4b3e18a8",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_4_of_4_vase_b2.print.json",
+        "sha256": "a9b97bc5ea362c52c4615602044c4e253942aeb5d09bf39317f498b6eee57d47"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_4_of_4_vase_b2.stl",
+      "source_stl_sha256": "33ee34409d1de413ca149d16c06fd670b093f110a6e9ce60fa7248821068ea0d"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_05_A_shoulder_bottom_left_1_of_4.print.json",
+        "sha256": "3c860e9deaf6cba9c24a1cef89dc515ce35bc9b553331bde620c40557eb9288a"
+      },
+      "estimated_filament_g": "9.83",
+      "estimated_time": "33m 43s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "4c86c10926387d335bc4c7c7e9329a6449aae0b321c955628f954de970a4b2be"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "slim_05_A_shoulder_bottom_left_1_of_4",
+      "path": "slim/3mf_04/slim_05_A_shoulder_bottom_left_1_of_4.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "ff693b6d2f31467f7d1682ae542e544531a13801087477d291291fcd3932ad1f",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_shoulder_1_of_4_bottom_left.print.json",
+        "sha256": "88b33fb027cf01fb8cc0f7f3377b24f9c56a101f58db36699f004b65bde2e33d"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_shoulder_1_of_4_bottom_left.stl",
+      "source_stl_sha256": "7ece5a1b6edf2e30a5764feb5abc982f8bb85bffb5269ebc66cbfacff1bcd2af"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_05_A_shoulder_bottom_left_1_of_4.print.json",
+        "sha256": "3c860e9deaf6cba9c24a1cef89dc515ce35bc9b553331bde620c40557eb9288a"
+      },
+      "estimated_filament_g": "9.43",
+      "estimated_time": "22m 48s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "7dd9b45d39fe5bfbaa9e9d961874fe4d951d7b0431f80bd28532d760d5397a04"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "slim_05_A_shoulder_bottom_left_1_of_4",
+      "path": "slim/3mf_06hf/slim_05_A_shoulder_bottom_left_1_of_4_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "7c89492d99e74cb6c4e5076ae4deb56e76778c3a2d8e11145c53bf3136ca7adb",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_shoulder_1_of_4_bottom_left.print.json",
+        "sha256": "88b33fb027cf01fb8cc0f7f3377b24f9c56a101f58db36699f004b65bde2e33d"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_shoulder_1_of_4_bottom_left.stl",
+      "source_stl_sha256": "7ece5a1b6edf2e30a5764feb5abc982f8bb85bffb5269ebc66cbfacff1bcd2af"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_06_A_shoulder_top_left_2_of_4.print.json",
+        "sha256": "22114901ec939f3057f216b3cdd7ed45427a5a91c30e51643c928d14ee1e1727"
+      },
+      "estimated_filament_g": "11.94",
+      "estimated_time": "40m 36s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "6cceafc155ecfd8b341c6cded1d0231d1668a593ea164a135646e2381715352a"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "slim_06_A_shoulder_top_left_2_of_4",
+      "path": "slim/3mf_04/slim_06_A_shoulder_top_left_2_of_4.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "fb2e4a42e80678b27152626d6c880fc85e176fe14ea18f25d32c5163cf56ab27",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_shoulder_2_of_4_top_left.print.json",
+        "sha256": "a41d0a596fae2f275188a39d9b77a6cb64c36820aeb92fc2ecfef8ca2fd73341"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_shoulder_2_of_4_top_left.stl",
+      "source_stl_sha256": "6336437600757c539da9e109d44901fdb078da56c6e41d37c03b7c4717e5c6a1"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_06_A_shoulder_top_left_2_of_4.print.json",
+        "sha256": "22114901ec939f3057f216b3cdd7ed45427a5a91c30e51643c928d14ee1e1727"
+      },
+      "estimated_filament_g": "11.71",
+      "estimated_time": "26m 48s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "d747a96a56d41b5c3ff4444a8bce211cb34eb4304e3ca2f92ec8fbd249a33f31"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "slim_06_A_shoulder_top_left_2_of_4",
+      "path": "slim/3mf_06hf/slim_06_A_shoulder_top_left_2_of_4_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "5842b86c22eacbaa92fbc7da8cf25b0f5f20091fa2e0d543f7b9af40e98050e7",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_shoulder_2_of_4_top_left.print.json",
+        "sha256": "a41d0a596fae2f275188a39d9b77a6cb64c36820aeb92fc2ecfef8ca2fd73341"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_shoulder_2_of_4_top_left.stl",
+      "source_stl_sha256": "6336437600757c539da9e109d44901fdb078da56c6e41d37c03b7c4717e5c6a1"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_07_A_shoulder_bottom_right_3_of_4.print.json",
+        "sha256": "963f875c86c67958f03363960c2d7aebc7aa0373d46ccbe353d9fffe00520304"
+      },
+      "estimated_filament_g": "9.84",
+      "estimated_time": "33m 40s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "9ac352754b19aed76ab290842a4eec89ebefe0a56fb8faa391f78e68bba6ec97"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "slim_07_A_shoulder_bottom_right_3_of_4",
+      "path": "slim/3mf_04/slim_07_A_shoulder_bottom_right_3_of_4.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "22d3fb61c61abef4ae67d2cceb624f02c4a34de3472184e62fca5f7eb6484a40",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_shoulder_3_of_4_bottom_right.print.json",
+        "sha256": "65ff54ad47f93607d64b22c237061c3e175cf280f7fa264075be1ed796ee04e4"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_shoulder_3_of_4_bottom_right.stl",
+      "source_stl_sha256": "3c520a232faa90973f9b422c8f8f549dc2d4d25cbb67ba466989bdb5f079b398"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_07_A_shoulder_bottom_right_3_of_4.print.json",
+        "sha256": "963f875c86c67958f03363960c2d7aebc7aa0373d46ccbe353d9fffe00520304"
+      },
+      "estimated_filament_g": "9.44",
+      "estimated_time": "22m 43s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "9198ac948cfa873c43c517233246f6579f828273d41f01d8047724bf0c48b534"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "slim_07_A_shoulder_bottom_right_3_of_4",
+      "path": "slim/3mf_06hf/slim_07_A_shoulder_bottom_right_3_of_4_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "29d2d806e440874e9d67bc2f186fe701aad500c052cc10d065398528147de775",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_shoulder_3_of_4_bottom_right.print.json",
+        "sha256": "65ff54ad47f93607d64b22c237061c3e175cf280f7fa264075be1ed796ee04e4"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_shoulder_3_of_4_bottom_right.stl",
+      "source_stl_sha256": "3c520a232faa90973f9b422c8f8f549dc2d4d25cbb67ba466989bdb5f079b398"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_08_A_shoulder_top_right_4_of_4.print.json",
+        "sha256": "e40a5e63e46cbdbe8d334ca0dbb3ebcd17d3b29e116237007050d6509137ec96"
+      },
+      "estimated_filament_g": "11.93",
+      "estimated_time": "40m 35s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "d929316ed73def9f90be2894395a9f9e76afab6847fb1f039b0619980801419b"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "slim_08_A_shoulder_top_right_4_of_4",
+      "path": "slim/3mf_04/slim_08_A_shoulder_top_right_4_of_4.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "13c4cc5c0a609cbbda85104ee697915eebb88f57f740ac411318f834f04e3180",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_shoulder_4_of_4_top_right.print.json",
+        "sha256": "95bf92433f72b0fe88eb5ab76d79a2219d957cc74d355706763c8b977da4863f"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_shoulder_4_of_4_top_right.stl",
+      "source_stl_sha256": "647ee1a713b756e5fc4900af2d5f824c204598c99108a6b34ab602f12e1f562e"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_08_A_shoulder_top_right_4_of_4.print.json",
+        "sha256": "e40a5e63e46cbdbe8d334ca0dbb3ebcd17d3b29e116237007050d6509137ec96"
+      },
+      "estimated_filament_g": "11.71",
+      "estimated_time": "26m 49s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "33a2b46a953e637409f04b40b440704bead5f7d1827195af55d47c1dedc6170d"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "slim_08_A_shoulder_top_right_4_of_4",
+      "path": "slim/3mf_06hf/slim_08_A_shoulder_top_right_4_of_4_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "116b42c27e5220c769cc95f4c9c7ca6e8e4f11222726ff0c468f8ce9c718024b",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_shoulder_4_of_4_top_right.print.json",
+        "sha256": "95bf92433f72b0fe88eb5ab76d79a2219d957cc74d355706763c8b977da4863f"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_shoulder_4_of_4_top_right.stl",
+      "source_stl_sha256": "647ee1a713b756e5fc4900af2d5f824c204598c99108a6b34ab602f12e1f562e"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_09_B1_wing_left_1_of_2.print.json",
+        "sha256": "f931e8cf18ea3281a7ad4ab954142565d23499381aa9862f9b1a85a8adb18134"
+      },
+      "estimated_filament_g": "24.39",
+      "estimated_time": "1h 13m 59s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "0872780e02867e8448c93c8b1425a60d923ed6163beb10d06a8fb61399ae4811"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "slim_09_B1_wing_left_1_of_2",
+      "path": "slim/3mf_04/slim_09_B1_wing_left_1_of_2.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "dc922427af6f68164b99d60bde8b2eea8745f6a5c54de0fdc123db7c2fe48343",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_wing_1_of_2_left.print.json",
+        "sha256": "5ff72a61f5c8eb9445c3740f9f79b927ac242510e3b504ec6b95c97b2f3ed269"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_wing_1_of_2_left.stl",
+      "source_stl_sha256": "7b8a1ef0d700cd196d177ad16eed0e51da2601f81e91f777a77df314e40cd788"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_09_B1_wing_left_1_of_2.print.json",
+        "sha256": "f931e8cf18ea3281a7ad4ab954142565d23499381aa9862f9b1a85a8adb18134"
+      },
+      "estimated_filament_g": "23.95",
+      "estimated_time": "45m 34s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "99a37579c6d72ec2515513cd11b71f73e31140b2c1645035e096b6a38884343a"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "slim_09_B1_wing_left_1_of_2",
+      "path": "slim/3mf_06hf/slim_09_B1_wing_left_1_of_2_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "544271f0c518b52681b8539ffa0e90ab83759e2f410771d0ceb6b6650e1ac8c4",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_wing_1_of_2_left.print.json",
+        "sha256": "5ff72a61f5c8eb9445c3740f9f79b927ac242510e3b504ec6b95c97b2f3ed269"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_wing_1_of_2_left.stl",
+      "source_stl_sha256": "7b8a1ef0d700cd196d177ad16eed0e51da2601f81e91f777a77df314e40cd788"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_10_B1_wing_right_2_of_2.print.json",
+        "sha256": "b8963d2c562fcd89c0f5aed5af700eeb87a4fea13dabf920d44e253f8ca919bb"
+      },
+      "estimated_filament_g": "24.39",
+      "estimated_time": "1h 13m 37s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "68887254adc1383a234a18e51937d5a440e967b28ebb45f899caead36f28f071"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "slim_10_B1_wing_right_2_of_2",
+      "path": "slim/3mf_04/slim_10_B1_wing_right_2_of_2.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "a958f742f7cb446501f22464f9e4b2c11efdb2bbb58764535457f638fb39a0f0",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_wing_2_of_2_right.print.json",
+        "sha256": "1c9cc64a48c39cba7d64ce94b1d406bd56d55fb43e305b39a7b9497780924b02"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_wing_2_of_2_right.stl",
+      "source_stl_sha256": "52491d7e9e756a76699d176edd2f0303dbb2ab9a473b85f588fb0dee194d73e9"
+    },
+    {
+      "delivered_authority": {
+        "path": "slim/stl/slim_10_B1_wing_right_2_of_2.print.json",
+        "sha256": "b8963d2c562fcd89c0f5aed5af700eeb87a4fea13dabf920d44e253f8ca919bb"
+      },
+      "estimated_filament_g": "23.96",
+      "estimated_time": "45m 32s",
+      "family": "slim",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "47ce19b408d5411936d8a5e128cf1122533537c730d821030768fa9eb14ede31"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "slim_10_B1_wing_right_2_of_2",
+      "path": "slim/3mf_06hf/slim_10_B1_wing_right_2_of_2_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "cf64ec38aa7e89e915383f4288898bfd41c0c843b76098bb15aa8b51349bbb25",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/slim_wing_2_of_2_right.print.json",
+        "sha256": "1c9cc64a48c39cba7d64ce94b1d406bd56d55fb43e305b39a7b9497780924b02"
+      },
+      "source_stl": "build/no_floor_stand/stl/slim_wing_2_of_2_right.stl",
+      "source_stl_sha256": "52491d7e9e756a76699d176edd2f0303dbb2ab9a473b85f588fb0dee194d73e9"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand.print.json",
+        "sha256": "4d3d4e2c5a625ad6637fc422cee1b92972316bcb0c93b70c9be562e23d48f3ec"
+      },
+      "estimated_filament_g": null,
+      "estimated_time": null,
+      "family": "obiwan",
+      "gcode_members": {},
+      "geometry_audit": {
+        "component_depth": 1,
+        "mesh_max_abs_error_mm": 4.2694824173850066e-06,
+        "parameter_modifier_count": 1,
+        "parameter_modifier_names": [
+          "obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.stl"
+        ],
+        "parameter_modifier_settings": [
+          {
+            "sparse_infill_density": "100%",
+            "sparse_infill_pattern": "zig-zag"
+          }
+        ],
+        "parameter_modifier_triangle_counts": [
+          28
+        ],
+        "project_sha256": "cd0e20b143d983576890f295c8592e3c07eb8f5e3743ab9996ef2561bf494c8d",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 4,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            204.0406951904297,
+            219.308349609375,
+            23.42241096496582
+          ],
+          "minimum_mm": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "size_mm": [
+            204.0406951904297,
+            219.308349609375,
+            23.42241096496582
+          ]
+        },
+        "sources": {
+          "build/no_floor_stand/process_modifiers/obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.json": "1438e020570e019971ed72d6ddd237b4f4890f897f60965f676abc9078bc916a",
+          "build/no_floor_stand/process_modifiers/obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.stl": "8a167c8b273398c1f7f7afa777cfdfe5f3f098ae10e4ffef240cf8f7ee6bec6a",
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json": "5823ecf29a94c2b09512c38baaab6f8c3db1d8c825bb50ee060214cf85c63384",
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl": "87bcfde710cf16eb7ff094631e27071721a913945b55f23fdc34ebd36660eb23",
+          "build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl": "ec1fe57ed4e5692a31f51e0bfbdafd5ef400a782de8f09206dfebe20c8acf4b7",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "35ed9e2beac945dc6d24faad93728012927ecce4d67b820799148b2cf7ca6f95"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            25.84499
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            18.40728
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 1,
+        "support_blocker_triangle_counts": [
+          6688
+        ],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            229.88568519042968,
+            237.71562960937501,
+            23.42241096496582
+          ],
+          "minimum_mm": [
+            25.84499,
+            18.40728,
+            0.0
+          ],
+          "size_mm": [
+            204.0406951904297,
+            219.308349609375,
+            23.42241096496582
+          ]
+        },
+        "triangle_count": 26548
+      },
+      "kind": "gui_project",
+      "lane": "petg_gf_gui",
+      "name": "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand",
+      "path": "obiwan/3mf_06hf_petg-gf_pla/obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand_GUI.3mf",
+      "qualification": "GUI slice and physical qualification pending",
+      "settings": {
+        "enable_support": "1",
+        "filament_settings_id": [
+          "TINMORRY PETG-GF Profile @BBL P2S",
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "560",
+          "560",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "High Flow"
+        ],
+        "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+        "sparse_infill_density": "100%",
+        "sparse_infill_pattern": "zig-zag",
+        "support_interface_filament": "2",
+        "support_style": "snug",
+        "support_top_z_distance": "0",
+        "support_type": "normal(auto)",
+        "wall_loops": "6"
+      },
+      "settings_audit": {
+        "filaments": [
+          "TINMORRY PETG-GF Profile @BBL P2S",
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "magnets": 2,
+        "parts": {
+          "modifier_part": 1,
+          "normal_part": 1,
+          "support_blocker": 1
+        },
+        "pause_z_mm": 5.96
+      },
+      "sha256": "cd0e20b143d983576890f295c8592e3c07eb8f5e3743ab9996ef2561bf494c8d",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json",
+        "sha256": "5823ecf29a94c2b09512c38baaab6f8c3db1d8c825bb50ee060214cf85c63384"
+      },
+      "source_stl": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
+      "source_stl_sha256": "87bcfde710cf16eb7ff094631e27071721a913945b55f23fdc34ebd36660eb23"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_01_LM_bottom_keyed_1_of_2_floor_stand.print.json",
+        "sha256": "627ee0cdd15b7383cc0253b52cf85d91f466f1c65fb2fb1dba3f580e2e7afaa7"
+      },
+      "estimated_filament_g": null,
+      "estimated_time": null,
+      "family": "obiwan",
+      "gcode_members": {},
+      "geometry_audit": {
+        "component_depth": 1,
+        "mesh_max_abs_error_mm": 6.37543945458674e-06,
+        "parameter_modifier_count": 0,
+        "parameter_modifier_names": [],
+        "parameter_modifier_settings": [],
+        "parameter_modifier_triangle_counts": [],
+        "project_sha256": "565c412b54ec34a6944851eefe8aeabf308636b0724e77c8404d7c763037b20b",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 3,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            201.11500549316406,
+            215.61798095703125,
+            168.3000030517578
+          ],
+          "minimum_mm": [
+            0.005686815828084946,
+            0.0,
+            0.0
+          ],
+          "size_mm": [
+            201.10931867733598,
+            215.61798095703125,
+            168.3000030517578
+          ]
+        },
+        "sources": {
+          "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json": "5b9ee215779c28bfb1f4fcba762d2b62689d59154f3faf1620604c04cd9d8ac4",
+          "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl": "df222c6fbf8a2b7ddaee8c7ca5e467389eafd219b15c17d546d7a956cc03dd49",
+          "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl": "e54ab8a6ec792d84c4244ea0afa74da01cf3384a1a20a2c675ae087a347279bb",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "35ed9e2beac945dc6d24faad93728012927ecce4d67b820799148b2cf7ca6f95"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            27.29032
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            20.34034
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 1,
+        "support_blocker_triangle_counts": [
+          17422
+        ],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            228.40532549316407,
+            235.95832095703125,
+            168.3000030517578
+          ],
+          "minimum_mm": [
+            27.296006815828086,
+            20.34034,
+            0.0
+          ],
+          "size_mm": [
+            201.10931867733598,
+            215.61798095703125,
+            168.3000030517578
+          ]
+        },
+        "triangle_count": 138900
+      },
+      "kind": "gui_project",
+      "lane": "petg_gf_gui",
+      "name": "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand",
+      "path": "obiwan/3mf_06hf_petg-gf_pla/obiwan_01_LM_bottom_keyed_1_of_2_floor_stand_GUI.3mf",
+      "qualification": "GUI slice and physical qualification pending",
+      "settings": {
+        "enable_support": "1",
+        "filament_settings_id": [
+          "TINMORRY PETG-GF Profile @BBL P2S",
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "560",
+          "560",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "High Flow"
+        ],
+        "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+        "sparse_infill_density": "100%",
+        "sparse_infill_pattern": "zig-zag",
+        "support_interface_filament": "2",
+        "support_style": "snug",
+        "support_top_z_distance": "0",
+        "support_type": "normal(auto)",
+        "wall_loops": "6"
+      },
+      "settings_audit": {
+        "filaments": [
+          "TINMORRY PETG-GF Profile @BBL P2S",
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "magnets": 2,
+        "parts": {
+          "modifier_part": 0,
+          "normal_part": 1,
+          "support_blocker": 1
+        },
+        "pause_z_mm": 5.96
+      },
+      "sha256": "565c412b54ec34a6944851eefe8aeabf308636b0724e77c8404d7c763037b20b",
+      "source_authority": {
+        "path": "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json",
+        "sha256": "5b9ee215779c28bfb1f4fcba762d2b62689d59154f3faf1620604c04cd9d8ac4"
+      },
+      "source_stl": "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
+      "source_stl_sha256": "df222c6fbf8a2b7ddaee8c7ca5e467389eafd219b15c17d546d7a956cc03dd49"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_02_LM_top_keyed_2_of_2.print.json",
+        "sha256": "fec44311214d994ea6b0390e0c0013980769417cc838457c4b84765aad52cc42"
+      },
+      "estimated_filament_g": null,
+      "estimated_time": null,
+      "family": "obiwan",
+      "gcode_members": {},
+      "geometry_audit": {
+        "component_depth": 1,
+        "mesh_max_abs_error_mm": 6.879150390659561e-06,
+        "parameter_modifier_count": 0,
+        "parameter_modifier_names": [],
+        "parameter_modifier_settings": [],
+        "parameter_modifier_triangle_counts": [],
+        "project_sha256": "5367669372e3e8954dd2e0742868c14716c90ecf78401fa0cf8922d512fad16e",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 3,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            212.09910583496094,
+            212.09918212890625,
+            23.64006805419922
+          ],
+          "minimum_mm": [
+            0.0,
+            8.620446169516072e-05,
+            0.0
+          ],
+          "size_mm": [
+            212.09910583496094,
+            212.09909592444455,
+            23.64006805419922
+          ]
+        },
+        "sources": {
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.print.json": "0e0c95c72d53af3f16a35daff584eaa25af35d1d8d118fec96bb15bf66bb306f",
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl": "8070ccbdd173aabe88e62020ce03f729a184750a8c3665caf8cc7d9e671adfe5",
+          "build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl": "e83384453eb3f04290a052b88f1610e23b54491ebe8a0dd291b884df736fb7c1",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "35ed9e2beac945dc6d24faad93728012927ecce4d67b820799148b2cf7ca6f95"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            22.05134
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            21.84951
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 1,
+        "support_blocker_triangle_counts": [
+          3968
+        ],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            234.15044583496095,
+            233.94869212890626,
+            23.64006805419922
+          ],
+          "minimum_mm": [
+            22.05134,
+            21.849596204461694,
+            0.0
+          ],
+          "size_mm": [
+            212.09910583496094,
+            212.09909592444455,
+            23.64006805419922
+          ]
+        },
+        "triangle_count": 21446
+      },
+      "kind": "gui_project",
+      "lane": "petg_gf_gui",
+      "name": "obiwan_02_LM_top_keyed_2_of_2",
+      "path": "obiwan/3mf_06hf_petg-gf_pla/obiwan_02_LM_top_keyed_2_of_2_GUI.3mf",
+      "qualification": "GUI slice and physical qualification pending",
+      "settings": {
+        "enable_support": "1",
+        "filament_settings_id": [
+          "TINMORRY PETG-GF Profile @BBL P2S",
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "560",
+          "560",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "High Flow"
+        ],
+        "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+        "sparse_infill_density": "100%",
+        "sparse_infill_pattern": "zig-zag",
+        "support_interface_filament": "2",
+        "support_style": "snug",
+        "support_top_z_distance": "0",
+        "support_type": "normal(auto)",
+        "wall_loops": "6"
+      },
+      "settings_audit": {
+        "filaments": [
+          "TINMORRY PETG-GF Profile @BBL P2S",
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "magnets": 2,
+        "parts": {
+          "modifier_part": 0,
+          "normal_part": 1,
+          "support_blocker": 1
+        },
+        "pause_z_mm": 5.96
+      },
+      "sha256": "5367669372e3e8954dd2e0742868c14716c90ecf78401fa0cf8922d512fad16e",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.print.json",
+        "sha256": "0e0c95c72d53af3f16a35daff584eaa25af35d1d8d118fec96bb15bf66bb306f"
+      },
+      "source_stl": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
+      "source_stl_sha256": "8070ccbdd173aabe88e62020ce03f729a184750a8c3665caf8cc7d9e671adfe5"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_03_UM_carrier_1_of_1.print.json",
+        "sha256": "23f4dc996ccb2463bab6725e0fab005aab17edad86006de26a90314dcf4b050c"
+      },
+      "estimated_filament_g": null,
+      "estimated_time": null,
+      "family": "obiwan",
+      "gcode_members": {},
+      "geometry_audit": {
+        "component_depth": 1,
+        "mesh_max_abs_error_mm": 3.761303709381991e-06,
+        "parameter_modifier_count": 0,
+        "parameter_modifier_names": [],
+        "parameter_modifier_settings": [],
+        "parameter_modifier_triangle_counts": [],
+        "project_sha256": "e08b4f005155de1f9c45ba9089883301ee5413dd66f929fea2b881d2e7b4324f",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 3,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            105.27996826171875,
+            115.52989959716797,
+            18.29081916809082
+          ],
+          "minimum_mm": [
+            3.453791214269586e-05,
+            0.0,
+            0.0
+          ],
+          "size_mm": [
+            105.27993372380661,
+            115.52989959716797,
+            18.29081916809082
+          ]
+        },
+        "sources": {
+          "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.print.json": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23",
+          "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
+          "build/no_floor_stand/support_blockers/obiwan_core_2_of_2_um_carrier.support_blocker.stl": "81cfd387cc6bcd755e5f5fb3238b726b171f33a8f410e87ea7b527f4820b7a92",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "35ed9e2beac945dc6d24faad93728012927ecce4d67b820799148b2cf7ca6f95"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            75.35999
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            70.23506
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 1,
+        "support_blocker_triangle_counts": [
+          2420
+        ],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            180.63995826171873,
+            185.76495959716797,
+            18.29081916809082
+          ],
+          "minimum_mm": [
+            75.36002453791214,
+            70.23506,
+            0.0
+          ],
+          "size_mm": [
+            105.2799337238066,
+            115.52989959716797,
+            18.29081916809082
+          ]
+        },
+        "triangle_count": 27420
+      },
+      "kind": "gui_project",
+      "lane": "petg_gf_gui",
+      "name": "obiwan_03_UM_carrier_1_of_1",
+      "path": "obiwan/3mf_06hf_petg-gf_pla/obiwan_03_UM_carrier_1_of_1_GUI.3mf",
+      "qualification": "GUI slice and physical qualification pending",
+      "settings": {
+        "enable_support": "1",
+        "filament_settings_id": [
+          "TINMORRY PETG-GF Profile @BBL P2S",
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "560",
+          "560",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "High Flow"
+        ],
+        "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+        "sparse_infill_density": "100%",
+        "sparse_infill_pattern": "zig-zag",
+        "support_interface_filament": "2",
+        "support_style": "snug",
+        "support_top_z_distance": "0",
+        "support_type": "normal(auto)",
+        "wall_loops": "6"
+      },
+      "settings_audit": {
+        "filaments": [
+          "TINMORRY PETG-GF Profile @BBL P2S",
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "magnets": 2,
+        "parts": {
+          "modifier_part": 0,
+          "normal_part": 1,
+          "support_blocker": 1
+        },
+        "pause_z_mm": 5.96
+      },
+      "sha256": "e08b4f005155de1f9c45ba9089883301ee5413dd66f929fea2b881d2e7b4324f",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.print.json",
+        "sha256": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23"
+      },
+      "source_stl": "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
+      "source_stl_sha256": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_04_T_tweeter_crescent_1_of_1.print.json",
+        "sha256": "f5e86c8b45df27f7ab5df2add00b5114dbd7aed52c6f75e16983a1e6ff1d98ea"
+      },
+      "estimated_filament_g": null,
+      "estimated_time": null,
+      "family": "obiwan",
+      "gcode_members": {},
+      "geometry_audit": {
+        "component_depth": 1,
+        "mesh_max_abs_error_mm": 1.974243161839695e-06,
+        "parameter_modifier_count": 0,
+        "parameter_modifier_names": [],
+        "parameter_modifier_settings": [],
+        "parameter_modifier_triangle_counts": [],
+        "project_sha256": "6c92edb9086a2c2b94fb1cea3edb0ae0701102ecf07ff3d4d3e0066aefec98db",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 2,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            98.33799743652344,
+            41.93372344970703,
+            11.5
+          ],
+          "minimum_mm": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "size_mm": [
+            98.33799743652344,
+            41.93372344970703,
+            11.5
+          ]
+        },
+        "sources": {
+          "build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.print.json": "ad12ede544f07345e41322f177068094c20136f26b9b06a1b297c840bfd18b26",
+          "build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.stl": "9d0dcf380b97860f647a9577b4096f3add46dcb127c246be4a0a974bc64fb6a3",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "35ed9e2beac945dc6d24faad93728012927ecce4d67b820799148b2cf7ca6f95"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            78.83088
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            107.03314
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 0,
+        "support_blocker_triangle_counts": [],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            177.16887743652342,
+            148.96686344970703,
+            11.5
+          ],
+          "minimum_mm": [
+            78.83088,
+            107.03314,
+            0.0
+          ],
+          "size_mm": [
+            98.33799743652342,
+            41.93372344970703,
+            11.5
+          ]
+        },
+        "triangle_count": 8768
+      },
+      "kind": "gui_project",
+      "lane": "petg_gf_gui",
+      "name": "obiwan_04_T_tweeter_crescent_1_of_1",
+      "path": "obiwan/3mf_06hf_petg-gf_pla/obiwan_04_T_tweeter_crescent_1_of_1_GUI.3mf",
+      "qualification": "GUI slice and physical qualification pending",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "TINMORRY PETG-GF Profile @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "High Flow"
+        ],
+        "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "2",
+        "support_style": "snug",
+        "support_top_z_distance": "0",
+        "support_type": "normal(auto)",
+        "wall_loops": "6"
+      },
+      "settings_audit": {
+        "filaments": [
+          "TINMORRY PETG-GF Profile @BBL P2S"
+        ],
+        "magnets": 0,
+        "parts": {
+          "modifier_part": 0,
+          "normal_part": 1,
+          "support_blocker": 0
+        },
+        "pause_z_mm": null
+      },
+      "sha256": "6c92edb9086a2c2b94fb1cea3edb0ae0701102ecf07ff3d4d3e0066aefec98db",
+      "source_authority": {
+        "path": "build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.print.json",
+        "sha256": "ad12ede544f07345e41322f177068094c20136f26b9b06a1b297c840bfd18b26"
+      },
+      "source_stl": "build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.stl",
+      "source_stl_sha256": "9d0dcf380b97860f647a9577b4096f3add46dcb127c246be4a0a974bc64fb6a3"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_NL8_service_lid_1_of_1.print.json",
+        "sha256": "9f25958a074b03cb60267a2eb26b307d045c3906fe3bd1046679c4b6e70a0476"
+      },
+      "estimated_filament_g": null,
+      "estimated_time": null,
+      "family": "obiwan",
+      "gcode_members": {},
+      "geometry_audit": {
+        "component_depth": 1,
+        "mesh_max_abs_error_mm": 9.94396973652556e-07,
+        "parameter_modifier_count": 0,
+        "parameter_modifier_names": [],
+        "parameter_modifier_settings": [],
+        "parameter_modifier_triangle_counts": [],
+        "project_sha256": "957fcc3551a84e396358cb03c4b5b1b0f31d857f823bc1aef65b18639e90b235",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 2,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            34.70000076293945,
+            63.943145751953125,
+            8.550000190734863
+          ],
+          "minimum_mm": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "size_mm": [
+            34.70000076293945,
+            63.943145751953125,
+            8.550000190734863
+          ]
+        },
+        "sources": {
+          "build/floor_stand/stl/obiwan_addon_nl8_service_lid.print.json": "13ba259ac1ef6d862126d1393e38e3cac805fb3d10385171412a382759856aa1",
+          "build/floor_stand/stl/obiwan_addon_nl8_service_lid.stl": "a283e1574cb11c87ecf81c8f0cdaeee9486b7b07e6bb53a2a08a991872cf9abf",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "35ed9e2beac945dc6d24faad93728012927ecce4d67b820799148b2cf7ca6f95"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            110.64999
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            96.02843
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 0,
+        "support_blocker_triangle_counts": [],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            145.34999076293946,
+            159.97157575195314,
+            8.550000190734863
+          ],
+          "minimum_mm": [
+            110.64999,
+            96.02843,
+            0.0
+          ],
+          "size_mm": [
+            34.70000076293945,
+            63.94314575195314,
+            8.550000190734863
+          ]
+        },
+        "triangle_count": 476
+      },
+      "kind": "gui_project",
+      "lane": "petg_gf_gui",
+      "name": "obiwan_NL8_service_lid_1_of_1",
+      "path": "obiwan/3mf_06hf_petg-gf_pla/obiwan_NL8_service_lid_1_of_1_GUI.3mf",
+      "qualification": "GUI slice and physical qualification pending",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "TINMORRY PETG-GF Profile @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "High Flow"
+        ],
+        "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "2",
+        "support_style": "snug",
+        "support_top_z_distance": "0",
+        "support_type": "normal(auto)",
+        "wall_loops": "6"
+      },
+      "settings_audit": {
+        "filaments": [
+          "TINMORRY PETG-GF Profile @BBL P2S"
+        ],
+        "magnets": 0,
+        "parts": {
+          "modifier_part": 0,
+          "normal_part": 1,
+          "support_blocker": 0
+        },
+        "pause_z_mm": null
+      },
+      "sha256": "957fcc3551a84e396358cb03c4b5b1b0f31d857f823bc1aef65b18639e90b235",
+      "source_authority": {
+        "path": "build/floor_stand/stl/obiwan_addon_nl8_service_lid.print.json",
+        "sha256": "13ba259ac1ef6d862126d1393e38e3cac805fb3d10385171412a382759856aa1"
+      },
+      "source_stl": "build/floor_stand/stl/obiwan_addon_nl8_service_lid.stl",
+      "source_stl_sha256": "a283e1574cb11c87ecf81c8f0cdaeee9486b7b07e6bb53a2a08a991872cf9abf"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_01_02_03_04_LM_UM_combo_no_floor_stand.plate.json",
+        "sha256": "c5faea7b8500783529df544e1abb127896d6708a9bd615dffb20b0971b4c4e1e"
+      },
+      "estimated_filament_g": null,
+      "estimated_time": null,
+      "family": "obiwan",
+      "gcode_members": {},
+      "geometry_audit": {
+        "mesh_max_abs_error_mm": 7.930908196840392e-06,
+        "normal_part_names": [
+          "obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand.stl",
+          "obiwan_02_LM_top_keyed_2_of_2.stl",
+          "obiwan_03_UM_carrier_1_of_1.stl",
+          "obiwan_04_T_tweeter_crescent_1_of_1.stl"
+        ],
+        "normal_part_triangle_counts": [
+          26548,
+          21446,
+          27420,
+          8768
+        ],
+        "parameter_modifier_count": 1,
+        "parameter_modifier_names": [
+          "obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.stl"
+        ],
+        "parameter_modifier_settings": [
+          {
+            "sparse_infill_density": "100%",
+            "sparse_infill_pattern": "zig-zag"
+          }
+        ],
+        "parameter_modifier_triangle_counts": [
+          28
+        ],
+        "project_sha256": "6056b1a5d9b0f1e41505d52dd39337e219a19e4e993b90471c4ecaf21dd203e0",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 9,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            248.2799072265625,
+            253.8086700439453,
+            23.640634536743164
+          ],
+          "minimum_mm": [
+            9.786452293395996,
+            1.1741399765014648,
+            -0.0013054824667051435
+          ],
+          "size_mm": [
+            238.4934549331665,
+            252.63453006744385,
+            23.64194001920987
+          ]
+        },
+        "sources": {
+          "build/no_floor_stand/process_modifiers/obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.json": "1438e020570e019971ed72d6ddd237b4f4890f897f60965f676abc9078bc916a",
+          "build/no_floor_stand/process_modifiers/obiwan_optional_lm_keyed_1_of_2_bottom.bridge_root_100pct.modifier.stl": "8a167c8b273398c1f7f7afa777cfdfe5f3f098ae10e4ffef240cf8f7ee6bec6a",
+          "build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.print.json": "ad12ede544f07345e41322f177068094c20136f26b9b06a1b297c840bfd18b26",
+          "build/no_floor_stand/stl/obiwan_addon_tweeter_crescent.stl": "9d0dcf380b97860f647a9577b4096f3add46dcb127c246be4a0a974bc64fb6a3",
+          "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.print.json": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23",
+          "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json": "5823ecf29a94c2b09512c38baaab6f8c3db1d8c825bb50ee060214cf85c63384",
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl": "87bcfde710cf16eb7ff094631e27071721a913945b55f23fdc34ebd36660eb23",
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.print.json": "0e0c95c72d53af3f16a35daff584eaa25af35d1d8d118fec96bb15bf66bb306f",
+          "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl": "8070ccbdd173aabe88e62020ce03f729a184750a8c3665caf8cc7d9e671adfe5",
+          "build/no_floor_stand/support_blockers/obiwan_core_2_of_2_um_carrier.support_blocker.stl": "81cfd387cc6bcd755e5f5fb3238b726b171f33a8f410e87ea7b527f4820b7a92",
+          "build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl": "ec1fe57ed4e5692a31f51e0bfbdafd5ef400a782de8f09206dfebe20c8acf4b7",
+          "build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl": "e83384453eb3f04290a052b88f1610e23b54491ebe8a0dd291b884df736fb7c1",
+          "build/print_plates/obiwan/obiwan_01_02_03_04_LM_UM_combo_no_floor_stand.plate.json": "c5faea7b8500783529df544e1abb127896d6708a9bd615dffb20b0971b4c4e1e",
+          "build/print_plates/obiwan/obiwan_01_02_03_04_LM_UM_combo_no_floor_stand.stl": "03f2a29d93bde6d4a69160bc0c280473e6eb75acf8137ef06cb95ec65632eec8",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "35ed9e2beac945dc6d24faad93728012927ecce4d67b820799148b2cf7ca6f95"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 3,
+        "support_blocker_names": [
+          "obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl",
+          "obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl",
+          "obiwan_core_2_of_2_um_carrier.support_blocker.stl"
+        ],
+        "support_blocker_triangle_counts": [
+          6688,
+          3968,
+          2420
+        ],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            248.2799072265625,
+            253.8086700439453,
+            23.640634536743164
+          ],
+          "minimum_mm": [
+            9.786452293395996,
+            1.1741399765014648,
+            -0.0013054824667051435
+          ],
+          "size_mm": [
+            238.4934549331665,
+            252.63453006744385,
+            23.64194001920987
+          ]
+        },
+        "triangle_count": 84182
+      },
+      "kind": "gui_project",
+      "lane": "petg_gf_gui",
+      "name": "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand",
+      "path": "obiwan/3mf_06hf_petg-gf_pla/obiwan_01_02_03_04_LM_UM_combo_no_floor_stand_GUI.3mf",
+      "qualification": "GUI slice and physical qualification pending",
+      "settings": {
+        "enable_support": "1",
+        "filament_settings_id": [
+          "TINMORRY PETG-GF Profile @BBL P2S",
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "560",
+          "560",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "High Flow"
+        ],
+        "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+        "sparse_infill_density": "100%",
+        "sparse_infill_pattern": "zig-zag",
+        "support_interface_filament": "2",
+        "support_style": "snug",
+        "support_top_z_distance": "0",
+        "support_type": "normal(auto)",
+        "wall_loops": "6"
+      },
+      "settings_audit": {
+        "filaments": [
+          "TINMORRY PETG-GF Profile @BBL P2S",
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "magnets": 6,
+        "parts": {
+          "modifier_part": 1,
+          "normal_part": 4,
+          "support_blocker": 3
+        },
+        "pause_z_mm": 5.96
+      },
+      "sha256": "6056b1a5d9b0f1e41505d52dd39337e219a19e4e993b90471c4ecaf21dd203e0",
+      "source_authority": {
+        "path": "build/print_plates/obiwan/obiwan_01_02_03_04_LM_UM_combo_no_floor_stand.plate.json",
+        "sha256": "c5faea7b8500783529df544e1abb127896d6708a9bd615dffb20b0971b4c4e1e"
+      },
+      "source_stl": "build/print_plates/obiwan/obiwan_01_02_03_04_LM_UM_combo_no_floor_stand.stl",
+      "source_stl_sha256": "03f2a29d93bde6d4a69160bc0c280473e6eb75acf8137ef06cb95ec65632eec8"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_01_02_03_04_LM_UM_combo_floor_stand.plate.json",
+        "sha256": "2d522182b1e2aa6d70c887aaa1e854fc869cdfc69bc269beb5a8d17935f6ea56"
+      },
+      "estimated_filament_g": null,
+      "estimated_time": null,
+      "family": "obiwan",
+      "gcode_members": {},
+      "geometry_audit": {
+        "mesh_max_abs_error_mm": 8.731689462138092e-06,
+        "normal_part_names": [
+          "obiwan_01_LM_bottom_keyed_1_of_2_floor_stand.stl",
+          "obiwan_02_LM_top_keyed_2_of_2.stl",
+          "obiwan_03_UM_carrier_1_of_1.stl",
+          "obiwan_04_T_tweeter_crescent_1_of_1.stl",
+          "obiwan_NL8_service_lid_1_of_1.stl"
+        ],
+        "normal_part_triangle_counts": [
+          138900,
+          21310,
+          27402,
+          8768,
+          476
+        ],
+        "parameter_modifier_count": 0,
+        "parameter_modifier_names": [],
+        "parameter_modifier_settings": [],
+        "parameter_modifier_triangle_counts": [],
+        "project_sha256": "ea0efcaa0467b3b50078dd1602879bb7b830cea057905043b8e9f4c837bf10c4",
+        "rigid_rz": {
+          "determinant": 1.0,
+          "orthonormal_max_error": 0.0,
+          "rz_degrees": 0.0
+        },
+        "root_object_id": 9,
+        "scope": "geometry, front-down placement, bed fit, blockers and modifier settings; not sliced toolpaths",
+        "source_bounds": {
+          "maximum_mm": [
+            239.1240997314453,
+            251.06573486328125,
+            168.3000030517578
+          ],
+          "minimum_mm": [
+            5.628686904907227,
+            2.0100862979888916,
+            0.0
+          ],
+          "size_mm": [
+            233.4954128265381,
+            249.05564856529236,
+            168.3000030517578
+          ]
+        },
+        "sources": {
+          "build/floor_stand/stl/obiwan_addon_nl8_service_lid.print.json": "13ba259ac1ef6d862126d1393e38e3cac805fb3d10385171412a382759856aa1",
+          "build/floor_stand/stl/obiwan_addon_nl8_service_lid.stl": "a283e1574cb11c87ecf81c8f0cdaeee9486b7b07e6bb53a2a08a991872cf9abf",
+          "build/floor_stand/stl/obiwan_addon_tweeter_crescent.print.json": "ad12ede544f07345e41322f177068094c20136f26b9b06a1b297c840bfd18b26",
+          "build/floor_stand/stl/obiwan_addon_tweeter_crescent.stl": "9d0dcf380b97860f647a9577b4096f3add46dcb127c246be4a0a974bc64fb6a3",
+          "build/floor_stand/stl/obiwan_core_2_of_2_um_carrier.print.json": "e66e046121e41ed63fb312f4a55126319ac0005fe4606f17a233a70ebf88646e",
+          "build/floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl": "c8ec7ab952eb4182819336798f92defb5dd224e28a0135126b38bf62efb38aa9",
+          "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.print.json": "5b9ee215779c28bfb1f4fcba762d2b62689d59154f3faf1620604c04cd9d8ac4",
+          "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl": "df222c6fbf8a2b7ddaee8c7ca5e467389eafd219b15c17d546d7a956cc03dd49",
+          "build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.print.json": "29e254c13369d618e5e833d41ea79359d9da9e36057cefd3c63e14324bbf23a2",
+          "build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl": "7798396fdbc5f837dc4b79fdc2792f781bcbd6af474e6b9dbb7edb9d78768ee4",
+          "build/floor_stand/support_blockers/obiwan_core_2_of_2_um_carrier.support_blocker.stl": "d2b815fd9443852509ca7700068eba47fc6741bb58718ca5a34f26c556fcba14",
+          "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl": "e54ab8a6ec792d84c4244ea0afa74da01cf3384a1a20a2c675ae087a347279bb",
+          "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl": "4e898bda7c2f8b6d503cd8ced29e0c90d93890275e2349f4df3ecd507c7b09e2",
+          "build/print_plates/obiwan/obiwan_01_02_03_04_LM_UM_combo_floor_stand.plate.json": "2d522182b1e2aa6d70c887aaa1e854fc869cdfc69bc269beb5a8d17935f6ea56",
+          "build/print_plates/obiwan/obiwan_01_02_03_04_LM_UM_combo_floor_stand.stl": "3672b1826f138bf810a8678f231e5a97186dc40be2f10da22b72fd18c542a8a8",
+          "captive_magnet_slicing_profile_petg_gf_06hf.json": "35ed9e2beac945dc6d24faad93728012927ecce4d67b820799148b2cf7ca6f95"
+        },
+        "status": "pass",
+        "stl_to_bed_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "support_blocker_count": 3,
+        "support_blocker_names": [
+          "obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.stl",
+          "obiwan_optional_lm_keyed_2_of_2_top.support_blocker.stl",
+          "obiwan_core_2_of_2_um_carrier.support_blocker.stl"
+        ],
+        "support_blocker_triangle_counts": [
+          17422,
+          3966,
+          2416
+        ],
+        "transformed_actual_mesh_bounds": {
+          "maximum_mm": [
+            239.1240997314453,
+            251.06573486328125,
+            168.3000030517578
+          ],
+          "minimum_mm": [
+            5.628686904907227,
+            2.0100862979888916,
+            0.0
+          ],
+          "size_mm": [
+            233.4954128265381,
+            249.05564856529236,
+            168.3000030517578
+          ]
+        },
+        "triangle_count": 196856
+      },
+      "kind": "gui_project",
+      "lane": "petg_gf_gui",
+      "name": "obiwan_01_02_03_04_LM_UM_combo_floor_stand",
+      "path": "obiwan/3mf_06hf_petg-gf_pla/obiwan_01_02_03_04_LM_UM_combo_floor_stand_GUI.3mf",
+      "qualification": "GUI slice and physical qualification pending",
+      "settings": {
+        "enable_support": "1",
+        "filament_settings_id": [
+          "TINMORRY PETG-GF Profile @BBL P2S",
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "560",
+          "560",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "High Flow"
+        ],
+        "print_settings_id": "LX521 ObiWan PETG-GF core 0.6HF (GUI)",
+        "sparse_infill_density": "100%",
+        "sparse_infill_pattern": "zig-zag",
+        "support_interface_filament": "2",
+        "support_style": "snug",
+        "support_top_z_distance": "0",
+        "support_type": "normal(auto)",
+        "wall_loops": "6"
+      },
+      "settings_audit": {
+        "filaments": [
+          "TINMORRY PETG-GF Profile @BBL P2S",
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "magnets": 6,
+        "parts": {
+          "modifier_part": 0,
+          "normal_part": 5,
+          "support_blocker": 3
+        },
+        "pause_z_mm": 5.96
+      },
+      "sha256": "ea0efcaa0467b3b50078dd1602879bb7b830cea057905043b8e9f4c837bf10c4",
+      "source_authority": {
+        "path": "build/print_plates/obiwan/obiwan_01_02_03_04_LM_UM_combo_floor_stand.plate.json",
+        "sha256": "2d522182b1e2aa6d70c887aaa1e854fc869cdfc69bc269beb5a8d17935f6ea56"
+      },
+      "source_stl": "build/print_plates/obiwan/obiwan_01_02_03_04_LM_UM_combo_floor_stand.stl",
+      "source_stl_sha256": "3672b1826f138bf810a8678f231e5a97186dc40be2f10da22b72fd18c542a8a8"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_05_split2_flat_wing_LM_lower_left_1_of_2.print.json",
+        "sha256": "ff32d96505a140d22848f01899b2cf838e7b9a1270d78d0ccf94da0a49dc473b"
+      },
+      "estimated_filament_g": "19.71",
+      "estimated_time": "48m 29s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "f006defe7df07dc367bf04c80516a55fafe3fc5d477894043f03139ef94c9a2c"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "obiwan_05_split2_flat_wing_LM_lower_left_1_of_2",
+      "path": "obiwan/3mf_04/obiwan_05_split2_flat_wing_LM_lower_left_1_of_2.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "71667487ff775ae295da3ccc0a55d8cf50d67bcf80975c077926e16d56867374",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/wings/flat/stl/obiwan_wing_flat_left_split2_1_of_2_lm_lower.print.json",
+        "sha256": "71e19818d8a4bfa1b8c932f7d532a8776e6719ea1c30cc04aad6e603fea5202c"
+      },
+      "source_stl": "build/wings/flat/stl/obiwan_wing_flat_left_split2_1_of_2_lm_lower.stl",
+      "source_stl_sha256": "6a810e136c585d3419011ae003ff4445b09fa76a2b6eaa912f0850ff50eb1d3a"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_05_split2_flat_wing_LM_lower_left_1_of_2.print.json",
+        "sha256": "ff32d96505a140d22848f01899b2cf838e7b9a1270d78d0ccf94da0a49dc473b"
+      },
+      "estimated_filament_g": "18.86",
+      "estimated_time": "33m 7s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "8a8bdd71ee917c794f5f63bfd7adbe16051d6c3ef0f839af2d438fd052dc3640"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "obiwan_05_split2_flat_wing_LM_lower_left_1_of_2",
+      "path": "obiwan/3mf_06hf/obiwan_05_split2_flat_wing_LM_lower_left_1_of_2_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "eb4cc25c1ce46a440649bb2df375ab673ccce8cb36ec69dc2a31c597b295088d",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/wings/flat/stl/obiwan_wing_flat_left_split2_1_of_2_lm_lower.print.json",
+        "sha256": "71e19818d8a4bfa1b8c932f7d532a8776e6719ea1c30cc04aad6e603fea5202c"
+      },
+      "source_stl": "build/wings/flat/stl/obiwan_wing_flat_left_split2_1_of_2_lm_lower.stl",
+      "source_stl_sha256": "6a810e136c585d3419011ae003ff4445b09fa76a2b6eaa912f0850ff50eb1d3a"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_06_split2_flat_wing_LM_UM_upper_left_2_of_2.print.json",
+        "sha256": "60f9a79b4aeff9b10e3e9f686a0dce3d44bc34781cf55735d3127454067e231c"
+      },
+      "estimated_filament_g": "40.33",
+      "estimated_time": "1h 29m 8s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "37659fd3d45c3534bf9efc7a0a08321004b5a45835f837ed4cb4fc126857c9f6"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "obiwan_06_split2_flat_wing_LM_UM_upper_left_2_of_2",
+      "path": "obiwan/3mf_04/obiwan_06_split2_flat_wing_LM_UM_upper_left_2_of_2.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "14b38a880989a6c52270de8208c644222c2aec9186afcf30bfeacfaf63ad3b83",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/wings/flat/stl/obiwan_wing_flat_left_split2_2_of_2_lm_um_upper.print.json",
+        "sha256": "3881c48e59c0f542bfb2e93292d52d89d042cac9b6bd1fe8f90a77e03c6abf01"
+      },
+      "source_stl": "build/wings/flat/stl/obiwan_wing_flat_left_split2_2_of_2_lm_um_upper.stl",
+      "source_stl_sha256": "c750c0025c0a168f50705ede3a77e84d3954432f56155d29a86d494c6d5cef79"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_06_split2_flat_wing_LM_UM_upper_left_2_of_2.print.json",
+        "sha256": "60f9a79b4aeff9b10e3e9f686a0dce3d44bc34781cf55735d3127454067e231c"
+      },
+      "estimated_filament_g": "38.78",
+      "estimated_time": "57m 54s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "781978fd05cccdab4aac9910f075df477931bc5e997967b066c5f593df8df86f"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "obiwan_06_split2_flat_wing_LM_UM_upper_left_2_of_2",
+      "path": "obiwan/3mf_06hf/obiwan_06_split2_flat_wing_LM_UM_upper_left_2_of_2_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "2448920282855b6b5565fce07c31ac65362a17f7235177dd41680445efcc5018",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/wings/flat/stl/obiwan_wing_flat_left_split2_2_of_2_lm_um_upper.print.json",
+        "sha256": "3881c48e59c0f542bfb2e93292d52d89d042cac9b6bd1fe8f90a77e03c6abf01"
+      },
+      "source_stl": "build/wings/flat/stl/obiwan_wing_flat_left_split2_2_of_2_lm_um_upper.stl",
+      "source_stl_sha256": "c750c0025c0a168f50705ede3a77e84d3954432f56155d29a86d494c6d5cef79"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_08_split2_flat_wing_LM_lower_right_1_of_2.print.json",
+        "sha256": "9bf784c613c2fe80a276d42bfca6436956af7c170e7a8a64d02213e9268af1d1"
+      },
+      "estimated_filament_g": "19.64",
+      "estimated_time": "48m 21s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "796a7128d623b42b76dd9a1aaa62a6dbcffd6c9d0231a1099e558ac2698dd82a"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "obiwan_08_split2_flat_wing_LM_lower_right_1_of_2",
+      "path": "obiwan/3mf_04/obiwan_08_split2_flat_wing_LM_lower_right_1_of_2.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "a158450d67870509624c1661bc6cb2e7799a4de6ad45925bac0a5f43f7bbebdf",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/wings/flat/stl/obiwan_wing_flat_right_split2_1_of_2_lm_lower.print.json",
+        "sha256": "fae1e6c27de5164d94a573dcdcb087dc636a5b04cd6f98a498f9f09541d11651"
+      },
+      "source_stl": "build/wings/flat/stl/obiwan_wing_flat_right_split2_1_of_2_lm_lower.stl",
+      "source_stl_sha256": "d2c17b218d7c5a2898e334d0edfc0d54c6a15c8f73c4850585661a977ac522d8"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_08_split2_flat_wing_LM_lower_right_1_of_2.print.json",
+        "sha256": "9bf784c613c2fe80a276d42bfca6436956af7c170e7a8a64d02213e9268af1d1"
+      },
+      "estimated_filament_g": "18.89",
+      "estimated_time": "32m 57s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "8ccc05d5c0fc3396b192ea7504bb170d0b025f4ca6ddcddd1d9e0231c1473ee0"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "obiwan_08_split2_flat_wing_LM_lower_right_1_of_2",
+      "path": "obiwan/3mf_06hf/obiwan_08_split2_flat_wing_LM_lower_right_1_of_2_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "9dd465685024826353ea87e928b715878cdf3ebe9b79f2c25fc1e510ba9e4836",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/wings/flat/stl/obiwan_wing_flat_right_split2_1_of_2_lm_lower.print.json",
+        "sha256": "fae1e6c27de5164d94a573dcdcb087dc636a5b04cd6f98a498f9f09541d11651"
+      },
+      "source_stl": "build/wings/flat/stl/obiwan_wing_flat_right_split2_1_of_2_lm_lower.stl",
+      "source_stl_sha256": "d2c17b218d7c5a2898e334d0edfc0d54c6a15c8f73c4850585661a977ac522d8"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_09_split2_flat_wing_LM_UM_upper_right_2_of_2.print.json",
+        "sha256": "c5b1b3fba9f1771bec551b0adb23c76aaf796ed609ff5baa2121777705161806"
+      },
+      "estimated_filament_g": "40.34",
+      "estimated_time": "1h 30m 34s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "84b84aa8b746d78dca2ba82dd69dc0f1b36ff182fa33ad060bcf448daf37324e"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "obiwan_09_split2_flat_wing_LM_UM_upper_right_2_of_2",
+      "path": "obiwan/3mf_04/obiwan_09_split2_flat_wing_LM_UM_upper_right_2_of_2.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "abd21754019f6aee651284c5571b9f95d48bbdc98e7a95722e7259f8b0ba79ef",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/wings/flat/stl/obiwan_wing_flat_right_split2_2_of_2_lm_um_upper.print.json",
+        "sha256": "30b4050905258dc7dab8c192d1299745e39112d2ec5ba1f1ae2a0d31ec8402ad"
+      },
+      "source_stl": "build/wings/flat/stl/obiwan_wing_flat_right_split2_2_of_2_lm_um_upper.stl",
+      "source_stl_sha256": "8be9c65c59b2a961419d2af159bd585c20e49ded7b1a266ae8070b4ec3fa1ae5"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_09_split2_flat_wing_LM_UM_upper_right_2_of_2.print.json",
+        "sha256": "c5b1b3fba9f1771bec551b0adb23c76aaf796ed609ff5baa2121777705161806"
+      },
+      "estimated_filament_g": "38.84",
+      "estimated_time": "58m 23s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "dc59a11448e4101694bc35e7a16d8637bda29faca2b2d9310264f65ddf143491"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "obiwan_09_split2_flat_wing_LM_UM_upper_right_2_of_2",
+      "path": "obiwan/3mf_06hf/obiwan_09_split2_flat_wing_LM_UM_upper_right_2_of_2_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "a064b3c5557ab3805b519dd3639285743bf814a6c171ec95ab36e724bd4be621",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/wings/flat/stl/obiwan_wing_flat_right_split2_2_of_2_lm_um_upper.print.json",
+        "sha256": "30b4050905258dc7dab8c192d1299745e39112d2ec5ba1f1ae2a0d31ec8402ad"
+      },
+      "source_stl": "build/wings/flat/stl/obiwan_wing_flat_right_split2_2_of_2_lm_um_upper.stl",
+      "source_stl_sha256": "8be9c65c59b2a961419d2af159bd585c20e49ded7b1a266ae8070b4ec3fa1ae5"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_flat_wings_split2_combo.plate.json",
+        "sha256": "411df81b4fd1fd73c67e577a9e83ac23619f74b7d80a28d60d20ff814e4ad547"
+      },
+      "estimated_filament_g": "147.31",
+      "estimated_time": "6h 30m 33s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "5ec650cbf62d1353eb6d3f6c6a5aa880f7f2db8bbafc37e97cb2537b9edae705"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "obiwan_flat_wings_split2_combo",
+      "path": "obiwan/3mf_04/obiwan_flat_wings_split2_combo.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "d053178f712fe0299379386a5b3077940433f258db4f6b8425cb7e63aec032fa",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/print_plates/obiwan/obiwan_flat_wings_split2_combo.plate.json",
+        "sha256": "411df81b4fd1fd73c67e577a9e83ac23619f74b7d80a28d60d20ff814e4ad547"
+      },
+      "source_stl": "build/print_plates/obiwan/obiwan_flat_wings_split2_combo.stl",
+      "source_stl_sha256": "8224afac9f69351c9812bd8cd68aa9d5c3c74c845b9a15857119dc72ecfd8155"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_flat_wings_split2_combo.plate.json",
+        "sha256": "411df81b4fd1fd73c67e577a9e83ac23619f74b7d80a28d60d20ff814e4ad547"
+      },
+      "estimated_filament_g": "144.60",
+      "estimated_time": "3h 45m 51s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "9738dfd8e06a9a50cd66d4411eb63fddcf8e1b84d6802cceb8a4381f9f64b137"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "obiwan_flat_wings_split2_combo",
+      "path": "obiwan/3mf_06hf/obiwan_flat_wings_split2_combo_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "a13986d8fcab8dd87c1922977ecd4cb7008f1a30c79984fa46d0e77133e11c68",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/print_plates/obiwan/obiwan_flat_wings_split2_combo.plate.json",
+        "sha256": "411df81b4fd1fd73c67e577a9e83ac23619f74b7d80a28d60d20ff814e4ad547"
+      },
+      "source_stl": "build/print_plates/obiwan/obiwan_flat_wings_split2_combo.stl",
+      "source_stl_sha256": "8224afac9f69351c9812bd8cd68aa9d5c3c74c845b9a15857119dc72ecfd8155"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_flat_wings_split2_combo.plate.json",
+        "sha256": "411df81b4fd1fd73c67e577a9e83ac23619f74b7d80a28d60d20ff814e4ad547"
+      },
+      "estimated_filament_g": "137.11",
+      "estimated_time": "4h 29m 57s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "2c9498debfdf2c7071785c3958cabfd77073d8405546df78233e1257303aa7ec"
+      },
+      "kind": "sliced_project",
+      "lane": "petg_gf_wings",
+      "name": "obiwan_flat_wings_split2_combo",
+      "path": "obiwan/3mf_06hf_petg-gf/obiwan_flat_wings_split2_combo_06hf_petg-gf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "TINMORRY PETG-GF Profile @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "High Flow"
+        ],
+        "print_settings_id": "LX521 ObiWan PETG-GF wings 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "f99fbdf6d2f976aed8e59d864e3f1a1783f12f283995584631d5b65adcff9b82",
+      "slice_authority": "obiwan/3mf_06hf_petg-gf/wing_plates.json",
+      "source_authority": {
+        "path": "build/print_plates/obiwan/obiwan_flat_wings_split2_combo.plate.json",
+        "sha256": "411df81b4fd1fd73c67e577a9e83ac23619f74b7d80a28d60d20ff814e4ad547"
+      },
+      "source_stl": "build/print_plates/obiwan/obiwan_flat_wings_split2_combo.stl",
+      "source_stl_sha256": "8224afac9f69351c9812bd8cd68aa9d5c3c74c845b9a15857119dc72ecfd8155"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_11_split2_graded_wing_LM_lower_left_1_of_2.print.json",
+        "sha256": "820a9cd64f3c3d2112cd64dd03028bcaea4a153d58ddcc96519366eb0ac115e1"
+      },
+      "estimated_filament_g": "17.74",
+      "estimated_time": "47m 1s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "1187b12f356234ba72513e42d5093b62eb700e71d5bc7baeabb618299754d4ad"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2",
+      "path": "obiwan/3mf_04/obiwan_11_split2_graded_wing_LM_lower_left_1_of_2.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "9ea00d5d28ef604ec8e228d9cc3a404a97acc217eb008a3103876ca9c1d0a639",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/wings/graded/stl/obiwan_wing_graded_left_split2_1_of_2_lm_lower.print.json",
+        "sha256": "532380d8cc4f93e50b4a01e1c4bca701e2ef4271d5335de57c66f010b615a92b"
+      },
+      "source_stl": "build/wings/graded/stl/obiwan_wing_graded_left_split2_1_of_2_lm_lower.stl",
+      "source_stl_sha256": "bb82846c5a0581c4eab2b7e84750b67c6d12be3abf59d5ced1d727ac80e4bb4b"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_11_split2_graded_wing_LM_lower_left_1_of_2.print.json",
+        "sha256": "820a9cd64f3c3d2112cd64dd03028bcaea4a153d58ddcc96519366eb0ac115e1"
+      },
+      "estimated_filament_g": "16.62",
+      "estimated_time": "31m 21s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "c932e5b67268656107020fc9aee9c5b816eb76ded8db5915de0377a3d9ef9c8d"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "obiwan_11_split2_graded_wing_LM_lower_left_1_of_2",
+      "path": "obiwan/3mf_06hf/obiwan_11_split2_graded_wing_LM_lower_left_1_of_2_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "06f5c3bdb501166b7db4f8af99b5cf9e4bf9c93918c921f607d2470367bab52c",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/wings/graded/stl/obiwan_wing_graded_left_split2_1_of_2_lm_lower.print.json",
+        "sha256": "532380d8cc4f93e50b4a01e1c4bca701e2ef4271d5335de57c66f010b615a92b"
+      },
+      "source_stl": "build/wings/graded/stl/obiwan_wing_graded_left_split2_1_of_2_lm_lower.stl",
+      "source_stl_sha256": "bb82846c5a0581c4eab2b7e84750b67c6d12be3abf59d5ced1d727ac80e4bb4b"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2.print.json",
+        "sha256": "550c5c65b46f3ecd0ea09efd3d411bdbcd7316cd009b686c95ee191978c749ba"
+      },
+      "estimated_filament_g": "34.18",
+      "estimated_time": "1h 24m 18s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "cb6e6cdf78e74324b0f601d43e45b4470ca580da11c2a463a332906aa3cdd74c"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2",
+      "path": "obiwan/3mf_04/obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "16df25e2f7e0b072366e42918aec042634ad4859c3962b7ae31c8ed7795703e1",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.print.json",
+        "sha256": "c4bd634b57d228a090b427b492c1a3ca915e084a5c834788cdfeb6f0307f799c"
+      },
+      "source_stl": "build/wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.stl",
+      "source_stl_sha256": "fa15e5f241e426367f4c85aba41c417f5cf037c3cd152956cb67bba51b77cac5"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2.print.json",
+        "sha256": "550c5c65b46f3ecd0ea09efd3d411bdbcd7316cd009b686c95ee191978c749ba"
+      },
+      "estimated_filament_g": "31.95",
+      "estimated_time": "53m 30s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "a5efebf404fbd55f0d54232b14406b54454ad23a9771c74f135c961eda3e6918"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2",
+      "path": "obiwan/3mf_06hf/obiwan_12_split2_graded_wing_LM_UM_upper_left_2_of_2_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "9e6666ac2c3f621e7d5b24ff61e68cad49988eebf1088b3239625915dafe63ae",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.print.json",
+        "sha256": "c4bd634b57d228a090b427b492c1a3ca915e084a5c834788cdfeb6f0307f799c"
+      },
+      "source_stl": "build/wings/graded/stl/obiwan_wing_graded_left_split2_2_of_2_lm_um_upper.stl",
+      "source_stl_sha256": "fa15e5f241e426367f4c85aba41c417f5cf037c3cd152956cb67bba51b77cac5"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_14_split2_graded_wing_LM_lower_right_1_of_2.print.json",
+        "sha256": "2e39c619087e3384f018454c7d3b660f9d7f7761e29111e698521e19ee9c9fa6"
+      },
+      "estimated_filament_g": "17.67",
+      "estimated_time": "46m 30s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "8f88da552cbaeedbb1310530c1abce05fd3a707298c93cbe4675168a7e05a3ed"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",
+      "path": "obiwan/3mf_04/obiwan_14_split2_graded_wing_LM_lower_right_1_of_2.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "7dcdf5edd3f2a2610d668df299e9cf12d91abd28c06c5bbade2120edf9f6beac",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/wings/graded/stl/obiwan_wing_graded_right_split2_1_of_2_lm_lower.print.json",
+        "sha256": "da9b4d7ff688f792275541eacf9f60a34b99bef4395ad188b66562ee7c375cee"
+      },
+      "source_stl": "build/wings/graded/stl/obiwan_wing_graded_right_split2_1_of_2_lm_lower.stl",
+      "source_stl_sha256": "e94e8cb163407d9e608e1345d9041207bda0b228b190ac8764effdcc4ba750af"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_14_split2_graded_wing_LM_lower_right_1_of_2.print.json",
+        "sha256": "2e39c619087e3384f018454c7d3b660f9d7f7761e29111e698521e19ee9c9fa6"
+      },
+      "estimated_filament_g": "16.66",
+      "estimated_time": "31m 35s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "9fd57f6ebcde636d4ae8a307d0c53b6a156cee90cc882f9c5f4071270fe14940"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "obiwan_14_split2_graded_wing_LM_lower_right_1_of_2",
+      "path": "obiwan/3mf_06hf/obiwan_14_split2_graded_wing_LM_lower_right_1_of_2_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "025fe0823fabc947e3b46471c2e690b9e39ad748611e0b22a72aaa5a087a6aec",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/wings/graded/stl/obiwan_wing_graded_right_split2_1_of_2_lm_lower.print.json",
+        "sha256": "da9b4d7ff688f792275541eacf9f60a34b99bef4395ad188b66562ee7c375cee"
+      },
+      "source_stl": "build/wings/graded/stl/obiwan_wing_graded_right_split2_1_of_2_lm_lower.stl",
+      "source_stl_sha256": "e94e8cb163407d9e608e1345d9041207bda0b228b190ac8764effdcc4ba750af"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2.print.json",
+        "sha256": "41f3a0ff87dfe87fef39e82723ed41541d792e87b8e87404d23e193d1c3241ef"
+      },
+      "estimated_filament_g": "34.16",
+      "estimated_time": "1h 24m 34s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "eab1c7c54aa167805356dfaaae845f7241c297d1b08cd9d4a37bdc24e6796b5a"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2",
+      "path": "obiwan/3mf_04/obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "04be37b809dc5b8638526f6a352514ff570af5219bc526c3a513c9429b228ed4",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.print.json",
+        "sha256": "221d01eba32c988f94bb8fa9137be491b6740914e82518f68e1f4dd8a885f12b"
+      },
+      "source_stl": "build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.stl",
+      "source_stl_sha256": "cd1c013a5d78a0478261d8665b91cd44e7bbd098b1e45f35a77d36994507fd60"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2.print.json",
+        "sha256": "41f3a0ff87dfe87fef39e82723ed41541d792e87b8e87404d23e193d1c3241ef"
+      },
+      "estimated_filament_g": "31.91",
+      "estimated_time": "53m 32s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "c7ead2e5d12a8984959d800c9ec032c8777adf1066bbd3e2432b48da6300fbcb"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2",
+      "path": "obiwan/3mf_06hf/obiwan_15_split2_graded_wing_LM_UM_upper_right_2_of_2_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "5f3703a58360bbc5411b0c1f63e948621b3ad5fedb4d1e945c7ff31ddf755aba",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.print.json",
+        "sha256": "221d01eba32c988f94bb8fa9137be491b6740914e82518f68e1f4dd8a885f12b"
+      },
+      "source_stl": "build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.stl",
+      "source_stl_sha256": "cd1c013a5d78a0478261d8665b91cd44e7bbd098b1e45f35a77d36994507fd60"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_graded_wings_split2_combo.plate.json",
+        "sha256": "2fe73f7b8b4b9fbd0c5b76afc442067b9cd5e65eceba0c192296c3d44633962a"
+      },
+      "estimated_filament_g": "118.72",
+      "estimated_time": "5h 13m 55s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "250ef11ffce67795fdd8b08697a3b103c6d09df47340199436072705d42dc2b3"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "obiwan_graded_wings_split2_combo",
+      "path": "obiwan/3mf_04/obiwan_graded_wings_split2_combo.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "6b36fda0ec993951acf5f5bd573b8b979b7e9e2efa47adffba47f8f5b422ab0d",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/print_plates/obiwan/obiwan_graded_wings_split2_combo.plate.json",
+        "sha256": "2fe73f7b8b4b9fbd0c5b76afc442067b9cd5e65eceba0c192296c3d44633962a"
+      },
+      "source_stl": "build/print_plates/obiwan/obiwan_graded_wings_split2_combo.stl",
+      "source_stl_sha256": "926151587a699a98aab0e743f70d62d55b0d78788c5d35188851ecd008b93ff3"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_graded_wings_split2_combo.plate.json",
+        "sha256": "2fe73f7b8b4b9fbd0c5b76afc442067b9cd5e65eceba0c192296c3d44633962a"
+      },
+      "estimated_filament_g": "114.02",
+      "estimated_time": "3h 5m 15s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "d9d793b72788509929f9358ce42f476d2253325a872e703c2b72b7cff802eb80"
+      },
+      "kind": "sliced_project",
+      "lane": "pla06hf",
+      "name": "obiwan_graded_wings_split2_combo",
+      "path": "obiwan/3mf_06hf/obiwan_graded_wings_split2_combo_06hf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "4"
+      },
+      "sha256": "b140641c237dd9871d696e21fa7b59d8d566c7810035df2e7f941948b7964ed9",
+      "slice_authority": "catalog_06hf.json",
+      "source_authority": {
+        "path": "build/print_plates/obiwan/obiwan_graded_wings_split2_combo.plate.json",
+        "sha256": "2fe73f7b8b4b9fbd0c5b76afc442067b9cd5e65eceba0c192296c3d44633962a"
+      },
+      "source_stl": "build/print_plates/obiwan/obiwan_graded_wings_split2_combo.stl",
+      "source_stl_sha256": "926151587a699a98aab0e743f70d62d55b0d78788c5d35188851ecd008b93ff3"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_graded_wings_split2_combo.plate.json",
+        "sha256": "2fe73f7b8b4b9fbd0c5b76afc442067b9cd5e65eceba0c192296c3d44633962a"
+      },
+      "estimated_filament_g": "115.16",
+      "estimated_time": "3h 57m 1s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "1a3a25500f570919fa81c0b6b026e05112ddd34ca2ef79114cf38f887b1adf17"
+      },
+      "kind": "sliced_project",
+      "lane": "petg_gf_wings",
+      "name": "obiwan_graded_wings_split2_combo",
+      "path": "obiwan/3mf_06hf_petg-gf/obiwan_graded_wings_split2_combo_06hf_petg-gf.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "TINMORRY PETG-GF Profile @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.6"
+        ],
+        "nozzle_volume_type": [
+          "High Flow"
+        ],
+        "print_settings_id": "LX521 ObiWan PETG-GF wings 0.6HF (locked - do not re-slice)",
+        "sparse_infill_density": "10%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.18",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "bbbd03a704ca10557da0c976aa12287312e3c80b2c221e28b27925dbbf5aa4e7",
+      "slice_authority": "obiwan/3mf_06hf_petg-gf/wing_plates.json",
+      "source_authority": {
+        "path": "build/print_plates/obiwan/obiwan_graded_wings_split2_combo.plate.json",
+        "sha256": "2fe73f7b8b4b9fbd0c5b76afc442067b9cd5e65eceba0c192296c3d44633962a"
+      },
+      "source_stl": "build/print_plates/obiwan/obiwan_graded_wings_split2_combo.stl",
+      "source_stl_sha256": "926151587a699a98aab0e743f70d62d55b0d78788c5d35188851ecd008b93ff3"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_17_BMR_crescent_coaxial_1_of_1.print.json",
+        "sha256": "97572ba5a091af6e67913a0568f27546e30475827d29294b468dc409a4d6f4f3"
+      },
+      "estimated_filament_g": "80.17",
+      "estimated_time": "3h 29m 36s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "8b4ff38854e93fb8ecda76fd061ec24aa5a8546e68db7bf582e88e4342b8f90a"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "obiwan_17_BMR_crescent_coaxial_1_of_1",
+      "path": "obiwan/3mf_04/obiwan_17_BMR_crescent_coaxial_1_of_1.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "0a24a361473932518010783af9be3ee012ccd8afc22ff9a15912e448963690a3",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.print.json",
+        "sha256": "1d56cfac3d4191c5937d5fae46aae6831d57889d0ef56d0c5eb6b98ef846d3d0"
+      },
+      "source_stl": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.stl",
+      "source_stl_sha256": "18ef6af2177b370238b49462ef77cf17faf0c55cf3cedf694e1681f2bb9b8d09"
+    },
+    {
+      "delivered_authority": {
+        "path": "obiwan/stl/obiwan_18_BMR_crescent_opposed_1_of_1.print.json",
+        "sha256": "7ad6e487242f4cb0639a79e11b5ddb795c842d883c673fbebd3a9362e037483a"
+      },
+      "estimated_filament_g": "74.09",
+      "estimated_time": "3h 14m 14s",
+      "family": "obiwan",
+      "gcode_members": {
+        "Metadata/plate_1.gcode": "ccbcb9432b293b1e0e190a6f21abbb5cf22e2a217b775c5b7412cc30c3e6ef4d"
+      },
+      "kind": "sliced_project",
+      "lane": "pla04",
+      "name": "obiwan_18_BMR_crescent_opposed_1_of_1",
+      "path": "obiwan/3mf_04/obiwan_18_BMR_crescent_opposed_1_of_1.gcode.3mf",
+      "settings": {
+        "enable_support": "0",
+        "filament_settings_id": [
+          "Bambu PLA Basic @BBL P2S"
+        ],
+        "flush_volumes_matrix": [
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0",
+          "280",
+          "280",
+          "280",
+          "280",
+          "0"
+        ],
+        "layer_height": "0.16",
+        "nozzle_diameter": [
+          "0.4"
+        ],
+        "nozzle_volume_type": [
+          "Standard"
+        ],
+        "print_settings_id": "LX521 captive 0.4 (locked - do not re-slice)",
+        "sparse_infill_density": "30%",
+        "sparse_infill_pattern": "gyroid",
+        "support_interface_filament": "0",
+        "support_style": "default",
+        "support_top_z_distance": "0.16",
+        "support_type": "tree(auto)",
+        "wall_loops": "6"
+      },
+      "sha256": "672acdca7da47786a9471b175f5d657a72d861cc4dd2e3310ce4f83ee21b23f4",
+      "slice_authority": "release_manifest.json",
+      "source_authority": {
+        "path": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.print.json",
+        "sha256": "c9fc01840284d2d633272e73fef8c33e55afd9b193784ef8d240a9fd1d6d6402"
+      },
+      "source_stl": "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.stl",
+      "source_stl_sha256": "617bafd03e36d0db1e2f905303b45b3f16615ea16e075ddcb8dc4d40aed5ae65"
+    }
+  ],
+  "provenance_note": "Existing slice authority retained; GUI geometry re-audited against current STL sources. This is not a new CAD build or physical qualification.",
+  "schema_version": 1
+}

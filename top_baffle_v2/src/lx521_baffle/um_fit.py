@@ -155,9 +155,7 @@ MU10_MIN_PRINTED_BODY_CLEARANCE_MM = 0.25
 # Dimensioned terminal-less body reference. The raw STL is an open acoustic
 # surface asset, so exact collisions use a closed BREP derived from the same
 # public D98/D80/D60/43.6-mm envelope and four conservative 12-degree struts.
-MU10_REFERENCE_STL = (
-    PROJECT_ROOT.parent
-    / "linkwitz" / "H1658-04_MU10RB-SL_driver.stl")
+from .references import MU10_REFERENCE_STL, W22_REFERENCE_STEP
 MU10_REFERENCE_STL_SHA256 = (
     "bb92511ee12bed3aa7db942b43d1f0e10127dd692bac224fb56f2b1ca9dff0a1")
 MU10_FLANGE_R = 49.0
@@ -178,7 +176,6 @@ MU10_RAW_TO_OBIWAN_ROT_Z_DEG = 58.0
 # terminal slack loops must clear this harder envelope, not merely the open
 # triangles. The source model's axis is mapped to world Z with its front at
 # the flush baffle plane (z=18.3).
-W22_REFERENCE_STEP = PROJECT_ROOT.parent / "E0022_W22EX001.stp"
 W22_REFERENCE_STEP_SHA256 = (
     "7fc2be551c86006e11c32a570b046772987cb86dcf65350f77c6e34709aa5ab6")
 # Source-space bounds and datum are cached facts from the hash-pinned STEP so

@@ -244,7 +244,7 @@ VARIANTS = {
         plate_name=(
             "obiwan_01_02_03_04_LM_UM_combo_no_floor_stand"
         ),
-        expected_triangle_count=75_456,
+        expected_triangle_count=84_182,
         # Solid, like the floor-stand plate: these are structural carriers,
         # and the owner asked for both plates at 100%.  The bridge/root
         # modifier below is now redundant rather than wrong -- it pins the
@@ -259,7 +259,7 @@ VARIANTS = {
         plate_name=(
             "obiwan_01_02_03_04_LM_UM_combo_floor_stand"
         ),
-        expected_triangle_count=188_120,
+        expected_triangle_count=196_856,
         sparse_infill_density_percent=100.0,
         sparse_infill_pattern="zig-zag",
     ),

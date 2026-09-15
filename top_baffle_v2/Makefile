@@ -76,7 +76,7 @@ OBIWAN_01A_PETG_GF_STAMP := $(OBIWAN_01A_PETG_GF_READY_DIR)/.stamp_petg_gf_valid
 OBIWAN_01A_FRIENDLY_NAME := obiwan_01_LM_bottom_keyed_1_of_2_no_floor_stand
 OBIWAN_01A_PETG_GF_PROMOTION_STAMP := $(OBIWAN_01A_PETG_GF_READY_DIR)/.stamp_to_print_promoted
 OBIWAN_01A_PETG_GF_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_01A_FRIENDLY_NAME).stl
-OBIWAN_01A_PETG_GF_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf_06hf_petg-cf_pla/$(OBIWAN_01A_FRIENDLY_NAME)_GUI.3mf
+OBIWAN_01A_PETG_GF_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf_06hf_petg-gf_pla/$(OBIWAN_01A_FRIENDLY_NAME)_GUI.3mf
 OBIWAN_01A_PETG_GF_SHELF_OUTPUTS := $(OBIWAN_01A_PETG_GF_SHELF_STL) \
                                    $(OBIWAN_01A_PETG_GF_SHELF_PROJECT)
 OBIWAN_01B_ARTIFACT_ID := floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_1_of_2_bottom
@@ -92,7 +92,7 @@ OBIWAN_01B_PETG_GF_STAMP := $(OBIWAN_01B_PETG_GF_READY_DIR)/.stamp_petg_gf_valid
 OBIWAN_01B_FRIENDLY_NAME := obiwan_01_LM_bottom_keyed_1_of_2_floor_stand
 OBIWAN_01B_PETG_GF_PROMOTION_STAMP := $(OBIWAN_01B_PETG_GF_READY_DIR)/.stamp_to_print_promoted
 OBIWAN_01B_PETG_GF_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_01B_FRIENDLY_NAME).stl
-OBIWAN_01B_PETG_GF_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf_06hf_petg-cf_pla/$(OBIWAN_01B_FRIENDLY_NAME)_GUI.3mf
+OBIWAN_01B_PETG_GF_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf_06hf_petg-gf_pla/$(OBIWAN_01B_FRIENDLY_NAME)_GUI.3mf
 OBIWAN_01B_PETG_GF_SHELF_OUTPUTS := $(OBIWAN_01B_PETG_GF_SHELF_STL) \
                                    $(OBIWAN_01B_PETG_GF_SHELF_PROJECT)
 OBIWAN_COMBO_SOURCE_DIR := build/print_plates/obiwan
@@ -113,7 +113,7 @@ OBIWAN_NO_FLOOR_COMBO_READY_OUTPUTS := $(OBIWAN_NO_FLOOR_COMBO_PROJECT) \
                                       $(OBIWAN_NO_FLOOR_COMBO_AUDIT)
 OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP := $(OBIWAN_NO_FLOOR_COMBO_READY_DIR)/.stamp_to_print_promoted
 OBIWAN_NO_FLOOR_COMBO_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_NO_FLOOR_COMBO_NAME).stl
-OBIWAN_NO_FLOOR_COMBO_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf_06hf/$(OBIWAN_NO_FLOOR_COMBO_NAME)_06hf.gcode.3mf
+OBIWAN_NO_FLOOR_COMBO_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf_06hf_petg-gf_pla/$(OBIWAN_NO_FLOOR_COMBO_NAME)_GUI.3mf
 OBIWAN_NO_FLOOR_COMBO_SHELF_OUTPUTS := $(OBIWAN_NO_FLOOR_COMBO_SHELF_STL) \
                                       $(OBIWAN_NO_FLOOR_COMBO_SHELF_PROJECT)
 OBIWAN_FLOOR_COMBO_NAME := obiwan_01_02_03_04_LM_UM_combo_floor_stand
@@ -133,7 +133,7 @@ OBIWAN_FLOOR_COMBO_READY_OUTPUTS := $(OBIWAN_FLOOR_COMBO_PROJECT) \
                                    $(OBIWAN_FLOOR_COMBO_AUDIT)
 OBIWAN_FLOOR_COMBO_PROMOTION_STAMP := $(OBIWAN_FLOOR_COMBO_READY_DIR)/.stamp_to_print_promoted
 OBIWAN_FLOOR_COMBO_SHELF_STL := $(TO_PRINT_SHELF)/obiwan/stl/$(OBIWAN_FLOOR_COMBO_NAME).stl
-OBIWAN_FLOOR_COMBO_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf_06hf/$(OBIWAN_FLOOR_COMBO_NAME)_06hf.gcode.3mf
+OBIWAN_FLOOR_COMBO_SHELF_PROJECT := $(TO_PRINT_SHELF)/obiwan/3mf_06hf_petg-gf_pla/$(OBIWAN_FLOOR_COMBO_NAME)_GUI.3mf
 OBIWAN_FLOOR_COMBO_SHELF_OUTPUTS := $(OBIWAN_FLOOR_COMBO_SHELF_STL) \
                                    $(OBIWAN_FLOOR_COMBO_SHELF_PROJECT)
 OBIWAN_FLAT_WING_PLATE_NAME := obiwan_flat_wings_split2_combo
@@ -241,7 +241,7 @@ VASE_TEBM_CAD_OUTPUTS := $(VASE_TEBM_STOCK_CAD_OUTPUTS) \
 # remote-first dispatcher captures MAKECMDGOALS, force even an explicitly
 # supplied remote/remote-worker mode back to local, and reject ambiguous mixed
 # CAD+slicer invocations.  Multiple Bambu goals in one invocation are allowed.
-LOCAL_BAMBU_GOALS := check_bambu_3mf_audit \
+LOCAL_BAMBU_GOALS := delivery_refresh delivery_package check_bambu_3mf_audit \
                      bambu_profiles bambu_dry_run \
                      bambu_slice_obiwan bambu_slice_release \
                      bambu_dry_run_06hf bambu_slice_release_06hf \
@@ -408,7 +408,7 @@ ifeq ($(LX_CAD_EXECUTION),remote)
 REMOTE_CAD_PYTHON ?= python3
 REMOTE_CAD_GOALS := $(if $(strip $(MAKECMDGOALS)),$(MAKECMDGOALS),all)
 .DEFAULT_GOAL := __remote_cad_dispatch
-.PHONY: __remote_cad_dispatch $(MAKECMDGOALS)
+.PHONY: delivery_refresh delivery_package __remote_cad_dispatch $(MAKECMDGOALS)
 __remote_cad_dispatch:
 	$(REMOTE_CAD_PYTHON) scripts/remote_cad.py run $(REMOTE_CAD_GOALS)
 ifneq ($(strip $(MAKECMDGOALS)),)
@@ -449,10 +449,10 @@ PYTHON ?= $(if $(LOCAL_PYTHON),$(LOCAL_PYTHON),python3)
 # A relative interpreter containing '/' breaks after the PNG recipes cd into
 # a state directory. Bare command names remain PATH-resolved as usual.
 override PYTHON_RUN := $(if $(findstring /,$(PYTHON)),$(abspath $(PYTHON)),$(PYTHON))
-MU10_REFS := ../linkwitz/H1658-04_MU10RB-SL_driver.stl \
-             ../linkwitz/H1658-04_MU10RB-SL_driver_STL_notes.md \
-             ../linkwitz/H1658-04_MU10RB-SL_Datasheet.pdf
-W22_REFS := ../E0022_W22EX001.stp
+MU10_REFS := vendor/SEAS/MU10RB-SL/H1658-04_MU10RB-SL_driver.stl \
+             vendor/SEAS/MU10RB-SL/H1658-04_MU10RB-SL_driver_STL_notes.md \
+             vendor/SEAS/MU10RB-SL/H1658-04_MU10RB-SL_Datasheet.pdf
+W22_REFS := vendor/SEAS/W22EX001/E0022_W22EX001.stp
 # Candidate-only TEBM/BMR modules are consumed by the explicit vase and pod
 # targets, which list them in VASE_TEBM_CAD_SRCS or BMR_CRESCENT_CAD_SRCS.
 # Nothing released imports them, so they are filtered out of the protected
@@ -2142,7 +2142,7 @@ obiwan_no_floor_combo_plate_validate: obiwan_no_floor_combo_plate_source \
 		--profile "$(PETG_GF_PROFILE)" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
-		--validate-only
+		--publish-existing
 	@test -s "$(OBIWAN_NO_FLOOR_COMBO_PROJECT)"
 	@test -s "$(OBIWAN_NO_FLOOR_COMBO_AUDIT)"
 	@touch "$(OBIWAN_NO_FLOOR_COMBO_READY_STAMP)"
@@ -2221,7 +2221,7 @@ obiwan_floor_combo_plate_validate: obiwan_floor_combo_plate_source \
 		--profile "$(PETG_GF_PROFILE)" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
-		--validate-only
+		--publish-existing
 	@test -s "$(OBIWAN_FLOOR_COMBO_PROJECT)"
 	@test -s "$(OBIWAN_FLOOR_COMBO_AUDIT)"
 	@touch "$(OBIWAN_FLOOR_COMBO_READY_STAMP)"
@@ -2326,7 +2326,7 @@ obiwan_flat_wing_plate_validate: obiwan_flat_wing_plate_source \
 		--workspace "$(OBIWAN_FLAT_WING_PLATE_WORKSPACE)" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
-		--validate-only
+		--publish-existing
 	@test -s "$(OBIWAN_FLAT_WING_PLATE_PROJECT)"
 	@test -s "$(OBIWAN_FLAT_WING_PLATE_AUDIT)"
 	@touch "$(OBIWAN_FLAT_WING_PLATE_READY_STAMP)"
@@ -2418,7 +2418,7 @@ obiwan_graded_wing_plate_validate: obiwan_graded_wing_plate_source \
 		--workspace "$(OBIWAN_GRADED_WING_PLATE_WORKSPACE)" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
-		--validate-only
+		--publish-existing
 	@test -s "$(OBIWAN_GRADED_WING_PLATE_PROJECT)"
 	@test -s "$(OBIWAN_GRADED_WING_PLATE_AUDIT)"
 	@touch "$(OBIWAN_GRADED_WING_PLATE_READY_STAMP)"
@@ -2438,7 +2438,7 @@ $(OBIWAN_01A_PETG_GF_PROMOTION_STAMP): \
 		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
-		--validate-only \
+		--publish-existing \
 		--only "$(OBIWAN_01A_FRIENDLY_NAME)"
 	$(PYTHON_RUN) tests/test_to_print_shelf.py
 	@test -s "$(OBIWAN_01A_PETG_GF_SHELF_STL)"
@@ -2469,7 +2469,7 @@ $(OBIWAN_01B_PETG_GF_PROMOTION_STAMP): \
 		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
-		--validate-only \
+		--publish-existing \
 		--only "$(OBIWAN_01B_FRIENDLY_NAME)"
 	$(PYTHON_RUN) tests/test_to_print_shelf.py
 	@test -s "$(OBIWAN_01B_PETG_GF_SHELF_STL)"
@@ -2522,7 +2522,7 @@ $(OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP): \
 		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
-		--validate-only \
+		--publish-existing \
 		--only "$(OBIWAN_NO_FLOOR_COMBO_NAME)"
 	$(PYTHON_RUN) tests/test_to_print_shelf.py
 	@test -s "$(OBIWAN_NO_FLOOR_COMBO_SHELF_STL)"
@@ -2553,7 +2553,7 @@ $(OBIWAN_FLOOR_COMBO_PROMOTION_STAMP): \
 		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
-		--validate-only \
+		--publish-existing \
 		--only "$(OBIWAN_FLOOR_COMBO_NAME)"
 	$(PYTHON_RUN) tests/test_to_print_shelf.py
 	@test -s "$(OBIWAN_FLOOR_COMBO_SHELF_STL)"
@@ -2584,7 +2584,7 @@ $(OBIWAN_FLAT_WING_PLATE_PROMOTION_STAMP): \
 		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
-		--validate-only \
+		--publish-existing \
 		--only "$(OBIWAN_FLAT_WING_PLATE_NAME)"
 	$(PYTHON_RUN) tests/test_to_print_shelf.py
 	@test -s "$(OBIWAN_FLAT_WING_PLATE_SHELF_STL)"
@@ -2614,7 +2614,7 @@ $(OBIWAN_GRADED_WING_PLATE_PROMOTION_STAMP): \
 		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
 		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
 		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
-		--validate-only \
+		--publish-existing \
 		--only "$(OBIWAN_GRADED_WING_PLATE_NAME)"
 	$(PYTHON_RUN) tests/test_to_print_shelf.py
 	@test -s "$(OBIWAN_GRADED_WING_PLATE_SHELF_STL)"
@@ -2670,29 +2670,16 @@ to_print: $(OBIWAN_FLAT_WING_PLATE_READY_STAMP) \
 	@test -s "$(OBIWAN_GRADED_WING_PLATE_SHELF_PROJECT)"
 	@touch "$(OBIWAN_GRADED_WING_PLATE_PROMOTION_STAMP)"
 
-to_print_validate: obiwan_no_floor_combo_plate_source \
-        obiwan_floor_combo_plate_source \
-        obiwan_flat_wing_plate_source obiwan_graded_wing_plate_source \
-        $(BMR_CRESCENT_SHELF_INPUTS) \
-        check_to_print_shelf
-	$(PYTHON_RUN) scripts/build_to_print_shelf.py \
-		--shelf "$(TO_PRINT_SHELF)" \
-		--catalog "$(TO_PRINT_SHELF)/catalog.json" \
-		--release-catalog "$(CAPTIVE_MAGNET_CATALOG)" \
-		--release-audit "$(BAMBU_AUDIT_OUTPUT)" \
-		--validate-only
-	@touch "$(OBIWAN_NO_FLOOR_COMBO_READY_STAMP)"
-	@touch "$(OBIWAN_NO_FLOOR_COMBO_PROMOTION_STAMP)"
-	@touch "$(OBIWAN_01A_PETG_GF_STAMP)"
-	@touch "$(OBIWAN_01A_PETG_GF_PROMOTION_STAMP)"
-	@touch "$(OBIWAN_01B_PETG_GF_STAMP)"
-	@touch "$(OBIWAN_01B_PETG_GF_PROMOTION_STAMP)"
-	@touch "$(OBIWAN_FLOOR_COMBO_READY_STAMP)"
-	@touch "$(OBIWAN_FLOOR_COMBO_PROMOTION_STAMP)"
-	@touch "$(OBIWAN_FLAT_WING_PLATE_READY_STAMP)"
-	@touch "$(OBIWAN_FLAT_WING_PLATE_PROMOTION_STAMP)"
-	@touch "$(OBIWAN_GRADED_WING_PLATE_READY_STAMP)"
-	@touch "$(OBIWAN_GRADED_WING_PLATE_PROMOTION_STAMP)"
+to_print_validate:
+	PYTHONDONTWRITEBYTECODE=1 $(PYTHON_RUN) scripts/build_to_print_shelf.py --shelf "$(TO_PRINT_SHELF)" --catalog "$(TO_PRINT_SHELF)/catalog.json" --validate-only
+	PYTHONDONTWRITEBYTECODE=1 $(PYTHON_RUN) scripts/build_artifact_catalog.py --check
+
+delivery_refresh:
+	$(PYTHON_RUN) scripts/manage_delivery.py refresh
+
+delivery_package:
+	$(PYTHON_RUN) scripts/manage_delivery.py package
+
 
 check_clearance_suite: $(CLEARANCE_CHECK_STAMPS)
 	@echo "all clearance checks passed (Make-jobserver isolated)"

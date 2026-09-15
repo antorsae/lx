@@ -1,0 +1,220 @@
+{
+  "source_sha256": {
+    "candidates/nd25fn4_crescent/build_manifest.json": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f",
+    "candidates/nd25fn4_crescent/orthographic_views.py": "75e00e42fbdfa804001c62bb61e16424acaebf1c1692d42c87aeb9c36d45a1a3",
+    "candidates/nd25fn4_crescent/review.py": "d69a0666b0ca09ef32eeb4fa50894ca4f5485d22d89285441947bda55b885a1d",
+    "candidates/nd25fn4_crescent/validate.py": "060e005a5f4470eeb678507ab98083e11c2a55411d78b24537466db7908404ff",
+    "candidates/nd25fn4_crescent/v4_model.py": "d79c5db514c5318a27c44c6f34d6fbbeeb96715079967a86064608ad92b88d28",
+    "design_inputs/MU10_ND25FN_V4_Retained/source/render_mesh.py": "da7bfbeb97a59b4010354ccc1dae155e7985d9472c7372765484e60396b8d504",
+    "design_inputs/MU10_ND25FN_V4_Retained/reference/ND25FN_aligned_reference.stl": "6eea51bac5b8f697ac8ea22a469c22242824e3f119953c419b73e17db2140b12",
+    "design_inputs/MU10_ND25FN_V4_Retained/source/mechanical_v4.py": "4de9fdf41bfec21356667d0e1a1cdfaa0271d5e960137bd2165b1c9cd6ec5d4a",
+    "vendor/SEAS/MU10RB-SL/H1658-04_MU10RB-SL_driver.stl": "bb92511ee12bed3aa7db942b43d1f0e10127dd692bac224fb56f2b1ca9dff0a1",
+    "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+    "candidates/nd25fn4_crescent/STL/02_Closed_Cap_PRINT_TWO.stl": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+    "candidates/nd25fn4_crescent/STL/03_Tweeter_Retainer_PRINT_TWO.stl": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc"
+  },
+  "configuration": "shared",
+  "compatible_LM_configurations": [
+    "no_floor_stand",
+    "floor_stand"
+  ],
+  "installed_axes": {
+    "right": "+X",
+    "up": "+Y",
+    "front": "+Z"
+  },
+  "pixels_per_mm": 5.0,
+  "cameras": {
+    "top": {
+      "projection": "orthographic",
+      "position_mm": [
+        2.0412054624330267e-07,
+        1432.2464890581623,
+        -1.610060691833496
+      ],
+      "focus_mm": [
+        2.0412054624330267e-07,
+        432.2464890581624,
+        -1.610060691833496
+      ],
+      "up": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "parallel_scale_mm": 36.0,
+      "render_size_px": [
+        900,
+        360
+      ],
+      "camera_basis_orthogonal": true,
+      "minimum_frame_margin_mm": 13.710060691833494
+    },
+    "front": {
+      "projection": "orthographic",
+      "position_mm": [
+        2.0412054624330267e-07,
+        432.2464890581624,
+        998.3899393081665
+      ],
+      "focus_mm": [
+        2.0412054624330267e-07,
+        432.2464890581624,
+        -1.610060691833496
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "parallel_scale_mm": 146.0,
+      "render_size_px": [
+        900,
+        1460
+      ],
+      "camera_basis_orthogonal": true,
+      "minimum_frame_margin_mm": 22.598821511239294
+    },
+    "side": {
+      "projection": "orthographic",
+      "position_mm": [
+        1000.0000002041205,
+        432.2464890581624,
+        -1.610060691833496
+      ],
+      "focus_mm": [
+        2.0412054624330267e-07,
+        432.2464890581624,
+        -1.610060691833496
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "parallel_scale_mm": 146.0,
+      "render_size_px": [
+        640,
+        1460
+      ],
+      "camera_basis_orthogonal": true,
+      "minimum_frame_margin_mm": 22.598821511239294
+    }
+  },
+  "parts": [
+    {
+      "name": "housing",
+      "triangles": 2059410,
+      "color_rgb": [
+        66,
+        141,
+        189
+      ]
+    },
+    {
+      "name": "cap_lower",
+      "triangles": 325112,
+      "color_rgb": [
+        52,
+        108,
+        153
+      ]
+    },
+    {
+      "name": "cap_upper",
+      "triangles": 325112,
+      "color_rgb": [
+        52,
+        108,
+        153
+      ]
+    },
+    {
+      "name": "retainer_lower",
+      "triangles": 196480,
+      "color_rgb": [
+        100,
+        173,
+        204
+      ]
+    },
+    {
+      "name": "retainer_upper",
+      "triangles": 196480,
+      "color_rgb": [
+        100,
+        173,
+        204
+      ]
+    },
+    {
+      "name": "Dayton_ND25FN4_0_reference",
+      "triangles": 108854,
+      "color_rgb": [
+        238,
+        148,
+        43
+      ]
+    },
+    {
+      "name": "Dayton_ND25FN4_1_reference",
+      "triangles": 108854,
+      "color_rgb": [
+        238,
+        148,
+        43
+      ]
+    },
+    {
+      "name": "SEAS_MU10_reference_terminals_omitted",
+      "triangles": 1616,
+      "color_rgb": [
+        213,
+        137,
+        49
+      ]
+    }
+  ],
+  "outputs": {
+    "top": {
+      "path": "orthographic_top.png",
+      "sha256": "f658e1112e127ae4c62a3f2b36452e9e7f78bc6a59d6d7a923bb4b63ffd96623",
+      "size_px": [
+        900,
+        565
+      ]
+    },
+    "front": {
+      "path": "orthographic_front.png",
+      "sha256": "5c43af8f6cbca147880a66a68bfe730f9c8cd191cf8bf84d03c98b2d1f724114",
+      "size_px": [
+        900,
+        1665
+      ]
+    },
+    "side": {
+      "path": "orthographic_side.png",
+      "sha256": "3b4ebcdb2b1ee1566bb9851f8a274ed8dc8269c8441e58997add65a06e7aacc2",
+      "size_px": [
+        640,
+        1665
+      ]
+    },
+    "sheet": {
+      "path": "orthographic_top_front_side.png",
+      "sha256": "0b21c35a53ef5eff05568991801a7dbd79e3b32657b60f6f5bfa4b2b7fb538d0",
+      "size_px": [
+        1660,
+        2250
+      ]
+    }
+  },
+  "geometry_changed": false,
+  "rendering": "VTK, full-resolution exported STL geometry, parallel projection, flat surface normals",
+  "notes": [
+    "LM and wings omitted to expose the fused assembly.",
+    "Service caps and retainers are separate parts, shown installed.",
+    "MU10 vendor reference is open and omits electrical terminals.",
+    "Opaque exterior views; internal wiring and hidden driver bodies are not exposed."
+  ]
+}

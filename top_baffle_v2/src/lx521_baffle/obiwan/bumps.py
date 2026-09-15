@@ -1090,12 +1090,21 @@ def _owner_cutter_points(points, owner):
     return _extended_points(points, extension)
 
 def _um_owner_crop(shape, *, cutter=False):
-    """Crop T material to the native UM owner and its open cutter mouth."""
+    """Keep a closed T collar all the way to the actual LM cover.
+
+    The two native circles do not touch at the off-axis T handoff. Cropping
+    the positive tube at R51.7 left a roof window below the z=6.8 closure
+    web, even with the carriers assembled. The UM now owns that short gap;
+    only a normal 0.05-mm fit seam remains against the existing LM outline.
+    The extended negative mouth follows the same ownership, with overlap.
+    """
     radius = UM_CORE_R + (
         UM_T_CUTTER_MOUTH_OVERSHOOT if cutter else 0.0)
-    # build123d cylinders are Z-centered by default; z=0 spans -50..+50.
     cylinder = Pos(UM_CUTOUT[0], UM_CUTOUT[1], 0.0) * Cylinder(radius, 100.0)
-    return shape & cylinder
+    handoff = box(0.0, 307.0, 27.0, 329.0).difference(
+        _lm_positive_owner_plan().buffer(-0.6 if cutter else 0.05))
+    owner = cylinder.fuse(_polygon_prism(handoff, -50.0, 50.0)).clean()
+    return shape & owner
 
 def _lm_positive_owner_plan():
     """Actual exposed LM outline: R113.8 sides, structural R113 cusp.

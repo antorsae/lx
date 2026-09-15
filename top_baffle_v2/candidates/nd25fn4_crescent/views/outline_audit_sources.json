@@ -1,0 +1,29 @@
+[
+  [
+    "installed.png",
+    "rear_installed.png",
+    "with_flat_wings.png",
+    "with_graded_wings.png",
+    "front_flat_wings.png",
+    "front_graded_wings.png"
+  ],
+  [
+    "UM_solid_underside.png",
+    "UM_lower_band_rear.png",
+    "UM_lower_band_oblique.png",
+    "LM_interface.png",
+    "duct_handoff_closed.png",
+    "M2_tie_rounded_mouth.png"
+  ],
+  [
+    "V4_flat_left_UPPER.png",
+    "V4_flat_right_UPPER.png",
+    "V4_graded_left_UPPER.png",
+    "V4_graded_right_UPPER.png",
+    "magnet_alignment_section.png",
+    "wire_connection_section.png",
+    "rear_transition_bare.png",
+    "rear_transition_side.png",
+    "mount_detail.png"
+  ]
+]

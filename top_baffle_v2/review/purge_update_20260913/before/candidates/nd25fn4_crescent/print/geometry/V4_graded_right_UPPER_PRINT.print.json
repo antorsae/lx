@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "part": "V4_graded_right_UPPER",
+  "stl": "V4_graded_right_UPPER_PRINT.stl",
+  "stl_sha256": "01282fbddc5c7c8aa359dcdb3ead63115b3c0318173f8adef18828275be527c5",
+  "source_to_stl_matrix": [
+    [
+      0.45009844103743507,
+      0.8929789434111369,
+      0.0,
+      -224.62940913973398
+    ],
+    [
+      0.8929789434111369,
+      -0.45009844103743507,
+      0.0,
+      160.92633177019857
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999977
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "print_orientation": "front_face_down",
+  "variant": "graded",
+  "side": "right",
+  "qualification": "sliced static checks passed; physical print not performed",
+  "source_stl": "build/wings/graded/stl/obiwan_wing_graded_right_split2_2_of_2_lm_um_upper.stl",
+  "approved_source": "candidates/nd25fn4_crescent/STL/wings/V4_graded_right_UPPER.stl",
+  "approved_source_sha256": "1929259f485cf7b1f9789ee876bc493e2c4ee610e771654971c9b2016d686f29",
+  "print_preparation": "internal tilted-magnet loading relief; exterior, seats and interfaces retained",
+  "sliced_project": "candidates/nd25fn4_crescent/print/V4_graded_right_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+  "sliced_project_sha256": "c19421a28912cd08f8abc1416dacf4661318ce65e122e8e92d658976e2043593"
+}

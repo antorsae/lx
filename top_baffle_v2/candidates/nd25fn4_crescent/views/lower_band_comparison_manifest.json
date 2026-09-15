@@ -1,0 +1,10 @@
+{
+  "source_sha256": "4d2e90f05f89b962adfdd08ca9203b1f180f4ce34caa92c6de006fa50e557aa6",
+  "source_build_manifest_sha256": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f",
+  "inputs": {
+    "review/nd25fn4_iterations/before_lower_band_blend_20260911T163029Z/candidates/nd25fn4_crescent/views/UM_solid_underside.png": "f2255cc33d87fe26b485009226ccadff079c5172d18d231109c794ec0da38907",
+    "candidates/nd25fn4_crescent/views/UM_solid_underside.png": "0f6e9eb1933ab9d96598e0e263ba7b23d97d5f49597762c214bc34c75df97abe"
+  },
+  "output_sha256": "d5430ad4fe1cce4497eab8f4df88a294e66b381e8df7c2e4a2dabdc07f56128d",
+  "note": "Same actual-STL camera and scale. Only crop, layout and labels added."
+}

@@ -1,0 +1,42 @@
+{
+  "status": "reviewed",
+  "source_build_manifest_sha256": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f",
+  "source_wing_validation_sha256": "c00807c025cfa51f532f91281b0e200210b8e2e9eb6d35530f6f6d68cdd67caa",
+  "source_review_sha256": "d69a0666b0ca09ef32eeb4fa50894ca4f5485d22d89285441947bda55b885a1d",
+  "reviewed_pngs": {
+    "UM_outline_front.png": "d2ee98d5c3efcead0d73b4d30365495edce9f2113c5da270114dd44678b1c259",
+    "UM_outline_oblique.png": "e42be291d65c9717b3ba48659b8eec99590c43fd2e7b86888080799cd9715aa1",
+    "UM_depth_side.png": "4f6e603111a69750753e0027f15d2e4bf579106f24fce71b9a53c321a6fd5d8d",
+    "UM_lower_band_oblique.png": "72293a51d0502b49268292423e0ea5697375eceba020a142d6ee8130977a1c30",
+    "duct_handoff_closed.png": "7bd5a9154603ec7193b63669ea8601e42e434eef51d498f128c1815ff2eb205b",
+    "magnet_alignment_section.png": "4e2367602f01cec4bb9389bacbab7189f73eea14ad952eea20e7fb947aefc737",
+    "with_graded_wings.png": "652d84dc47271319bb4e333216fb6c30c6a644eb1f9a217823ea9f209986f624",
+    "orthographic_top_front_side.png": "0b21c35a53ef5eff05568991801a7dbd79e3b32657b60f6f5bfa4b2b7fb538d0",
+    "UM_reference_overlay.png": "8fd5ac051115d61235c7e3d44b24ee48cfecb72526b10858af5e7bf06e1e491d",
+    "UM_depth_taper_sections.png": "db051f0c907d1b2e4c777ccbab440f4418a4d4bde7b7fd8e9fb6e51ad1dff1a9",
+    "waist_comparison.png": "6dffe87c94538a18b4c18481859c21525958e787ba47b6a343564200874550c5",
+    "waist_rear_after.png": "99cda9df34af599cf93c3a79d05032fc53f912bcc81df8e7f607d1ee5931cd42",
+    "waist_front_after.png": "824381b6c17c688a684d953280f83646e97285ce0f8d39d2544a5cd8fdef54ec",
+    "LM_interface_orthographic_3D.png": "08107c19196cac634345fb80a3a0634699a4d52fdbb02cbe157b6b0977e0eb78",
+    "LM_interface_ortho_side.png": "110919720fd9e7c1a8f82510b4b05b1deacdc25cb4105f4d44a312ef6be57e1f",
+    "retainer.png": "c89db3958b92fec875393ed01674bbadd997fb86862a94ee2781e1ab33aa3547",
+    "rear_installed.png": "214bc8eec87e1186b670c94ec89c83e9c5568a9d1c8ab57dc92f965e3084f3e1"
+  },
+  "checks": [
+    "Actual STL comparison renders show removal of the rear outer-shoulder dent and front-edge nick at the UM/tweeter waist.",
+    "Sixteen outer-side sections through eight depths meet the curvature checks; the same tests expose the former defects.",
+    "The traced reference outline above Y322 remains matched: 0.1692 mm RMS. The front remains wider than the rear.",
+    "Both wing families follow the revised shell; all four clear the body and retain paired buried magnet pockets and the LM interfaces.",
+    "The lower rear band, closed cable handoff, complete magnet cover and blue/orange orthographic views remain consistent with the exported meshes.",
+    "The exact sliced-body interface renders and measurements retain flush Z18.30 front surfaces, zero LM front-face coverage and zero overlap in both stand configurations.",
+    "All four current GLB review links loaded in the browser without missing-file or JavaScript errors; served asset bytes match the current files.",
+    "The current M3 retainer render shows the enlarged ring and three clearance holes; rear installed views retain the existing caps and exterior shape. Independent mesh gauges verify all six M3 locations and service access."
+  ],
+  "rendering": "Actual exported STL renders using VTK parallel projection and flat surface normals. Contact sheets only arrange those renders; no generated cosmetic geometry.",
+  "visual_scope_note": "Digital geometry and fit review. Physical print finish, fit and magnet retention are untested.",
+  "review_contact_sheets": {
+    "review/print_policy_update_20260912/current_geometry_review_2.png": "32c646f00f9e9be518370d7e1f6c9c177a1954dd6488649a97ee9658821c487f",
+    "review/print_policy_update_20260912/current_geometry_review_3.png": "6344fe45b12c981f0b9e52dda839fda360ffc32a17d8f211170d14ac364d65d2",
+    "review/print_policy_update_20260912/current_geometry_review_1.png": "fcc29799c88b238dcf44dfb0d555ce7154a153421f6d51a5b1e4d4b3b222eb52"
+  }
+}

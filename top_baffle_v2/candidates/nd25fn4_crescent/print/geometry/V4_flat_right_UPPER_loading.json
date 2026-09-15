@@ -1,0 +1,28 @@
+{
+  "source": "candidates/nd25fn4_crescent/STL/wings/V4_flat_right_UPPER.stl",
+  "source_sha256": "a23e3cc6b59c172ff0ba5cb9e2a2c86eb5a68f0c9cdc6c7d0d2034b44a24866f",
+  "print_stl": "candidates/nd25fn4_crescent/print/geometry/V4_flat_right_UPPER_PRINT.stl",
+  "print_stl_sha256": "6b4b02e8a565bca47228f543f9f0000f74ca9244ba87422b060f59235b01a387",
+  "removed_mm3": 7.00407423902723,
+  "added_mm3": 0,
+  "exterior_unchanged": true,
+  "watertight": true,
+  "positive_material_components": 1,
+  "closed_magnet_cavities": 3,
+  "sites": [
+    {
+      "site": "wing_12deg",
+      "flat_loading_roof_z_mm": 9.58,
+      "seated_magnet_top_z_mm": 9.453169107382534,
+      "minimum_exterior_cover_mm": 0.7985636500892833,
+      "cover_witnesses": 10325
+    },
+    {
+      "site": "wing_-12deg",
+      "flat_loading_roof_z_mm": 9.58,
+      "seated_magnet_top_z_mm": 9.455441890791807,
+      "minimum_exterior_cover_mm": 0.803349040224332,
+      "cover_witnesses": 11799
+    }
+  ]
+}

@@ -1,0 +1,365 @@
+{
+  "bed_xy_mm": [
+    300,
+    320
+  ],
+  "coordinate_frame": "Local shared-nozzle area: add 25 mm to X to obtain the physical bed coordinate.",
+  "prime_tower_size_is_planning_allowance": true,
+  "layouts": {
+    "stock_no_floor_stand_LM_merged": {
+      "angle_deg": 1.6,
+      "translation_xy_mm": [
+        142.84821781995944,
+        320.2113913374867
+      ],
+      "tower": null
+    },
+    "stock_no_floor_stand_LM_mids_merged": {
+      "angle_deg": 51.300000000000004,
+      "translation_xy_mm": [
+        -9.444998216171598,
+        293.4068340353186
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 266,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 49.96053950277148
+      }
+    },
+    "obiwan_no_floor_stand_LM": {
+      "angle_deg": 40.2,
+      "translation_xy_mm": [
+        40.3935541721529,
+        283.39655707081425
+      ],
+      "tower": {
+        "x_mm": 246,
+        "y_mm": 266,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 36.91072154082815
+      }
+    },
+    "obiwan_flat_wing_left_whole": {
+      "angle_deg": 136.20000000000002,
+      "translation_xy_mm": [
+        -61.41024996310823,
+        14.616298548936328
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 266,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 115.19975193025766
+      }
+    },
+    "obiwan_floor_stand_LM": {
+      "angle_deg": 139.70000000000002,
+      "translation_xy_mm": [
+        37.4932895293198,
+        34.2056309671999
+      ],
+      "tower": {
+        "x_mm": 246,
+        "y_mm": 2,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 37.657694594035505
+      }
+    },
+    "stock_floor_stand_LM_mids_merged": {
+      "angle_deg": 51.300000000000004,
+      "translation_xy_mm": [
+        -9.444998216171598,
+        293.4068340353186
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 266,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 49.96053950277148
+      }
+    },
+    "slim_no_floor_stand_LM_mids_merged": {
+      "angle_deg": 51.300000000000004,
+      "translation_xy_mm": [
+        -9.444998216174511,
+        293.406834035315
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 266,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 49.96053950277146
+      }
+    },
+    "slim_floor_stand_LM_mids_merged": {
+      "angle_deg": 51.300000000000004,
+      "translation_xy_mm": [
+        -9.444998216175222,
+        293.4068340353141
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 266,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 49.960539502771454
+      }
+    },
+    "stock_no_floor_stand_LM_above_80": {
+      "angle_deg": 106.60000000000001,
+      "translation_xy_mm": [
+        -32.02807467840603,
+        86.87758456706817
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 266,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 25.92770143828475
+      }
+    },
+    "stock_floor_stand_LM_above_80": {
+      "angle_deg": 106.60000000000001,
+      "translation_xy_mm": [
+        -32.028074044432564,
+        86.87758451817612
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 266,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 25.92770127516151
+      }
+    },
+    "slim_no_floor_stand_LM_above_80": {
+      "angle_deg": 106.60000000000001,
+      "translation_xy_mm": [
+        -32.028074137720346,
+        86.87758474477263
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 266,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 25.92770090742933
+      }
+    },
+    "slim_floor_stand_LM_above_80": {
+      "angle_deg": 106.4,
+      "translation_xy_mm": [
+        -32.25885040778688,
+        87.72793857225479
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 266,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 25.261531605145358
+      }
+    },
+    "obiwan_flat_wing_right_whole": {
+      "angle_deg": 43.800000000000004,
+      "translation_xy_mm": [
+        -61.41025069687133,
+        305.38370411257756
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 2,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 116.53716528919887
+      }
+    },
+    "obiwan_graded_wing_left_whole": {
+      "angle_deg": 136.20000000000002,
+      "translation_xy_mm": [
+        -61.41024940685337,
+        14.616297421121345
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 266,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 115.19975383041309
+      }
+    },
+    "obiwan_graded_wing_right_whole": {
+      "angle_deg": 43.800000000000004,
+      "translation_xy_mm": [
+        -61.41025064690379,
+        305.3837041506381
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 2,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 116.5371653226261
+      }
+    },
+    "V4_flat_wing_left_whole": {
+      "angle_deg": 136.1,
+      "translation_xy_mm": [
+        -56.670049687897915,
+        19.632284271319847
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 266,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 118.90615166762743
+      }
+    },
+    "V4_flat_wing_right_whole": {
+      "angle_deg": 43.900000000000006,
+      "translation_xy_mm": [
+        -56.67004385879329,
+        300.3668559225595
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 2,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 120.27190521150428
+      }
+    },
+    "V4_graded_wing_left_whole": {
+      "angle_deg": 135.8,
+      "translation_xy_mm": [
+        -56.69078239636096,
+        20.834975781627378
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 266,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 119.39552942508568
+      }
+    },
+    "V4_graded_wing_right_whole": {
+      "angle_deg": 44.2,
+      "translation_xy_mm": [
+        -56.69077022789452,
+        299.1643755071358
+      ],
+      "tower": {
+        "x_mm": 2,
+        "y_mm": 2,
+        "width_mm": 50,
+        "depth_mm": 50,
+        "distance_to_5mm_brim_mm": 120.76905481503019
+      }
+    }
+  },
+  "geometric_checks": {
+    "stock_no_floor_stand_LM_merged": {
+      "part_and_brim_inside_2mm_edge": false
+    },
+    "stock_no_floor_stand_LM_mids_merged": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "obiwan_no_floor_stand_LM": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "obiwan_flat_wing_left_whole": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "obiwan_floor_stand_LM": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "stock_floor_stand_LM_mids_merged": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "slim_no_floor_stand_LM_mids_merged": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "slim_floor_stand_LM_mids_merged": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "stock_no_floor_stand_LM_above_80": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "stock_floor_stand_LM_above_80": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "slim_no_floor_stand_LM_above_80": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "slim_floor_stand_LM_above_80": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "obiwan_flat_wing_right_whole": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "obiwan_graded_wing_left_whole": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "obiwan_graded_wing_right_whole": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "V4_flat_wing_left_whole": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "V4_flat_wing_right_whole": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "V4_graded_wing_left_whole": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    },
+    "V4_graded_wing_right_whole": {
+      "part_and_brim_inside_2mm_edge": true,
+      "tower_inside_2mm_edge": true,
+      "tower_at_least_5mm_from_brim": true
+    }
+  }
+}

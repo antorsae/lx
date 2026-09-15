@@ -1,0 +1,173 @@
+{
+  "project_sha256": "d67a033c69b7b63504a65cabb980331c967e3e44fed443c54a37be0a9d97de62",
+  "settings": {
+    "printer_model": "Bambu Lab P2S",
+    "nozzle_diameter": [
+      "0.6"
+    ],
+    "nozzle_volume_type": [
+      "High Flow"
+    ],
+    "filament_settings_id": [
+      "TINMORRY PETG-GF Profile @BBL P2S",
+      "Bambu PLA Basic @BBL P2S 0.6 nozzle"
+    ],
+    "filament_map": [
+      "1",
+      "1"
+    ],
+    "layer_height": "0.16",
+    "initial_layer_print_height": "0.2",
+    "wall_loops": "6",
+    "sparse_infill_density": "100%",
+    "sparse_infill_pattern": "zig-zag",
+    "top_shell_layers": "10",
+    "bottom_shell_layers": "5",
+    "ironing_type": "top",
+    "nozzle_temperature": [
+      "260",
+      "260",
+      "220",
+      "220"
+    ],
+    "filament_flow_ratio": [
+      "0.93",
+      "0.93",
+      "0.98",
+      "0.98"
+    ],
+    "filament_max_volumetric_speed": [
+      "12",
+      "12",
+      "21",
+      "40"
+    ],
+    "textured_plate_temp": [
+      "80",
+      "55"
+    ],
+    "curr_bed_type": "Textured PEI Plate",
+    "enable_support": "1",
+    "support_type": "normal(auto)",
+    "support_style": "snug",
+    "support_filament": "1",
+    "support_interface_filament": "2",
+    "support_top_z_distance": "0",
+    "support_interface_spacing": "0",
+    "support_interface_top_layers": "3",
+    "support_interface_bottom_layers": "3",
+    "support_object_xy_distance": "0.7",
+    "flush_volumes_matrix": [
+      "0",
+      "280",
+      "280",
+      "0"
+    ],
+    "flush_into_infill": "0",
+    "flush_into_objects": "0",
+    "flush_into_support": "0"
+  },
+  "materials": {
+    "model": 753871,
+    "support": 71505,
+    "interface": 39100
+  },
+  "geometry": [
+    {
+      "source": "candidates/nd25fn4_crescent/print/geometry/01_UM_Crescent_V4_PRINT.stl",
+      "sha256": "65daa12ffca09dadaa9230aa4f9ef546e39e444e492bd964d5767227c9e0ff68",
+      "subtype": "normal_part",
+      "triangles": 2050852,
+      "maximum_vertex_error_mm": 4.6149541587031456e-06,
+      "winding_and_connectivity_match": true
+    },
+    {
+      "source": "review/nd25fn4_print/inputs/tweeters_15pct_gyroid.stl",
+      "sha256": "38041dd12aeb0af813584ea9d4690f9d26c3df56579455398fbefd0144d33487",
+      "subtype": "modifier_part",
+      "triangles": 12,
+      "maximum_vertex_error_mm": 4.717943698666103e-06,
+      "winding_and_connectivity_match": true
+    },
+    {
+      "source": "review/nd25fn4_print/inputs/duct_and_magnet_support_blocker.stl",
+      "sha256": "b5eb41cfac4fb9b3de21bfdf767a95254e71a31717d5c30a24c8e24b6c1185e8",
+      "subtype": "support_blocker",
+      "triangles": 60890,
+      "maximum_vertex_error_mm": 5.551443134249173e-06,
+      "winding_and_connectivity_match": true
+    }
+  ],
+  "ducts": {
+    "support_samples": 2008421,
+    "minimum_lumen_clearance_mm": 0.4955755191600622,
+    "pass_": true
+  },
+  "magnet_pauses_mm": [
+    9.8
+  ],
+  "slicer_result": {
+    "feature_type_times": {
+      "Bridge": 667.5845947265625,
+      "Brim": 36.197872161865234,
+      "Custom": 402.2415771484375,
+      "Flush": 6663.75390625,
+      "Gap infill": 16.368818283081055,
+      "Inner wall": 10583.6240234375,
+      "Internal solid infill": 3415.01611328125,
+      "Ironing": 1272.78076171875,
+      "Outer wall": 5794.1552734375,
+      "Prime tower": 1904.225830078125,
+      "Sparse infill": 5640.2998046875,
+      "Support": 2695.312255859375,
+      "Support interface": 1203.4345703125,
+      "Support transition": 2571.805908203125,
+      "Top surface": 98.9645767211914,
+      "Travel": 3305.598876953125,
+      "Undefined": 3299.5390625
+    },
+    "filament_change_times": 78,
+    "filaments": [
+      {
+        "filament_id": "GFG98",
+        "id": 1,
+        "main_used_g": 279.47332763671875,
+        "total_used_g": 305.84735107421875
+      },
+      {
+        "filament_id": "GFA00",
+        "id": 2,
+        "main_used_g": 8.719751358032227,
+        "total_used_g": 25.673641204833984
+      }
+    ],
+    "generate_support_material_time": 3199,
+    "id": 1,
+    "infill_time": 1643,
+    "layer_filament_change": 0,
+    "main_predication": 37311.12890625,
+    "make_perimeters_time": 3226,
+    "obj_cached_cnt": 0,
+    "objects": [
+      {
+        "bbox": {
+          "depth": 228.6871337890625,
+          "height": 38.17987823486328,
+          "width": 228.68695068359375,
+          "x": 13.656524658203125,
+          "y": 13.65643310546875,
+          "z": 0.0
+        },
+        "id": 5,
+        "name": "01_UM_Crescent_V4_PRINT",
+        "triangle_count": 2050852
+      }
+    ],
+    "sliced_time": 11207,
+    "sliced_time_with_cache": 2103,
+    "total_predication": 46301.2890625,
+    "triangle_count": 2050852,
+    "warning_message": ""
+  },
+  "status": "pass"
+}

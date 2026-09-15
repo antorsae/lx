@@ -1,0 +1,188 @@
+{
+  "projects": [
+    {
+      "key": "body",
+      "path": "candidates/nd25fn4_crescent/print/01_UM_Crescent_V4_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "da535d0859c7fc3a35fc0eca4248f71db5113b4bd52f0d3a85e449a61c709114",
+      "audit": "review/nd25fn4_print/body/audit.json",
+      "audit_sha256": "c19de2b238fcd78a6830023eca6c5c323966cfe2a4ba33f568878e84e8d5469e",
+      "static_audit": "review/nd25fn4_print/body/gcode_static.json",
+      "static_audit_sha256": "a8f9cf006446807e69b6be4b0fecc973b6341a550cb73258f9227011555f2f1a",
+      "seconds": 45398.46484375,
+      "filaments": [
+        {
+          "filament_id": "GFG98",
+          "id": 1,
+          "main_used_g": 280.2020568847656,
+          "total_used_g": 304.7895202636719
+        },
+        {
+          "filament_id": "GFA00",
+          "id": 2,
+          "main_used_g": 8.732026100158691,
+          "total_used_g": 23.79746437072754
+        }
+      ],
+      "pauses_mm": [
+        9.8
+      ]
+    },
+    {
+      "key": "V4_flat_left_UPPER",
+      "path": "candidates/nd25fn4_crescent/print/V4_flat_left_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "ff5b9e4a6a96723e99117467ec8baf9482e82e0935f7397b404c546e37f5dbc2",
+      "audit": "review/nd25fn4_print/V4_flat_left_UPPER/audit.json",
+      "audit_sha256": "ffd5870457cf9f9eb8382df284ce0ac9117b44e5dad9f785763ca36f89498f9a",
+      "static_audit": "review/nd25fn4_print/V4_flat_left_UPPER/gcode_static.json",
+      "static_audit_sha256": "71e61d33c2c7de8f7def8bf9491af1608cf27373ad0f71dd1e8439cb8f60e9b1",
+      "seconds": 9633.486328125,
+      "filaments": [
+        {
+          "filament_id": "GFG98",
+          "id": 1,
+          "main_used_g": 54.24338912963867,
+          "total_used_g": 63.049556732177734
+        },
+        {
+          "filament_id": "GFA00",
+          "id": 2,
+          "main_used_g": 0.014469742774963379,
+          "total_used_g": 3.2435052394866943
+        }
+      ],
+      "pauses_mm": [
+        5.96,
+        9.8
+      ]
+    },
+    {
+      "key": "V4_flat_right_UPPER",
+      "path": "candidates/nd25fn4_crescent/print/V4_flat_right_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "3ff0740f1821517a3be44e92c44f35295adda74ef2c4788201005130e4d25bc3",
+      "audit": "review/nd25fn4_print/V4_flat_right_UPPER/audit.json",
+      "audit_sha256": "340b2c125184c253fdb579b28c3f944b565dcf249447c9626152c6143a2ce01a",
+      "static_audit": "review/nd25fn4_print/V4_flat_right_UPPER/gcode_static.json",
+      "static_audit_sha256": "b459f158628419b8b1e06a09ad78040d11526bb9dcb3ec18016db3fd864a1bb0",
+      "seconds": 9894.341796875,
+      "filaments": [
+        {
+          "filament_id": "GFG98",
+          "id": 1,
+          "main_used_g": 54.272178649902344,
+          "total_used_g": 63.4471549987793
+        },
+        {
+          "filament_id": "GFA00",
+          "id": 2,
+          "main_used_g": 0.014531688764691353,
+          "total_used_g": 3.663431406021118
+        }
+      ],
+      "pauses_mm": [
+        5.96,
+        9.8
+      ]
+    },
+    {
+      "key": "V4_graded_left_UPPER",
+      "path": "candidates/nd25fn4_crescent/print/V4_graded_left_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "289f1cb58a510ac9bac9d2c4da71aa9089858c393d9792c1cc782aba2bf2d787",
+      "audit": "review/nd25fn4_print/V4_graded_left_UPPER/audit.json",
+      "audit_sha256": "d282d5e406d6651f6b876f97336b2750aefea61fc2157742a98b3215bf1498ec",
+      "static_audit": "review/nd25fn4_print/V4_graded_left_UPPER/gcode_static.json",
+      "static_audit_sha256": "5f476d1ab085a1aa53d821354c1cf588b61f80f1058b67877d0c248264cee07a",
+      "seconds": 8709.28125,
+      "filaments": [
+        {
+          "filament_id": "GFG98",
+          "id": 1,
+          "main_used_g": 44.40690612792969,
+          "total_used_g": 53.581878662109375
+        },
+        {
+          "filament_id": "GFA00",
+          "id": 2,
+          "main_used_g": 0.014097366482019424,
+          "total_used_g": 3.662997245788574
+        }
+      ],
+      "pauses_mm": [
+        5.96,
+        9.8
+      ]
+    },
+    {
+      "key": "V4_graded_right_UPPER",
+      "path": "candidates/nd25fn4_crescent/print/V4_graded_right_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "4c681395bfa3d61e41830ae4e59227b781d4c8bc6580b8fdd642e835a7c11579",
+      "audit": "review/nd25fn4_print/V4_graded_right_UPPER/audit.json",
+      "audit_sha256": "1d51459b05c231d6645c0abf8c16f0db700034a7d50dfe83632e3b7b250cc84f",
+      "static_audit": "review/nd25fn4_print/V4_graded_right_UPPER/gcode_static.json",
+      "static_audit_sha256": "197dd41d29423ecb8ebad1df7e34d3aed760c6c6ee833de8d03923736a1f48bb",
+      "seconds": 8729.162109375,
+      "filaments": [
+        {
+          "filament_id": "GFG98",
+          "id": 1,
+          "main_used_g": 44.40768051147461,
+          "total_used_g": 53.63916015625
+        },
+        {
+          "filament_id": "GFA00",
+          "id": 2,
+          "main_used_g": 0.014604001305997372,
+          "total_used_g": 3.6676156520843506
+        }
+      ],
+      "pauses_mm": [
+        5.96,
+        9.8
+      ]
+    },
+    {
+      "key": "accessories",
+      "path": "candidates/nd25fn4_crescent/print/02_Caps_TWO_Retainers_TWO_06HF_PETG_GF_PLA.gcode.3mf",
+      "sha256": "08c203a1912ee84df6fa7fd79ce907bb831b3478387f224caf637ff87728b3fb",
+      "audit": "review/nd25fn4_print/accessories/audit.json",
+      "audit_sha256": "3347c25a7edf8f919d5f6765d99e099a937d3b471cc4be5a365aab94617127e5",
+      "static_audit": "review/nd25fn4_print/accessories/gcode_static.json",
+      "static_audit_sha256": "4e35fbd43d26f8b349a9537bac823b89d523629a1fc3fd7e5ad2d0ce2deb774f",
+      "seconds": 7978.70849609375,
+      "filaments": [
+        {
+          "filament_id": "GFG98",
+          "id": 1,
+          "main_used_g": 45.533592224121094,
+          "total_used_g": 49.75041580200195
+        },
+        {
+          "filament_id": "GFA00",
+          "id": 2,
+          "main_used_g": 1.7267769575119019,
+          "total_used_g": 2.5970206260681152
+        }
+      ],
+      "pauses_mm": []
+    }
+  ],
+  "status": "sliced_static_checks_passed",
+  "physical_print_test": "not performed",
+  "printer": "Bambu Lab P2S",
+  "nozzle": "0.6 mm High Flow hardened steel",
+  "preparation": "review/nd25fn4_print/preparation.json",
+  "source_scripts": {
+    "candidates/nd25fn4_crescent/prepare_print.py": "1fa10e214d2d52a7e08e4c761b5845025c1769ace4c9d296e5399b78fe2beeb8",
+    "candidates/nd25fn4_crescent/prepare_magnet_loading.py": "8c58f8b9345316d873c87d659ca2e26a99ef21cc8cf19d42feec185e4422e938",
+    "candidates/nd25fn4_crescent/print_magnets.py": "82e95a7e1c6d198b4d04b0af89f8d039772674f6e825d9d70884a938b834991b",
+    "candidates/nd25fn4_crescent/slice_print.py": "3229f01690e94b78f0a7766c2e603448614409a4e522ff3b9736f7cb7971f6fc",
+    "candidates/nd25fn4_crescent/audit_print.py": "c83619d7cb719a3200148e48603d049942498b1c07d62311ebe4420979c7ab7c",
+    "candidates/nd25fn4_crescent/finalize_print.py": "7e7f0be9ee6d85b013374cb560004b9eba4b91d2c73f0021f1046e1bba117edf",
+    "candidates/nd25fn4_crescent/print_views.py": "95f413ca80abdaa6c3e8e1d6b358276c12057812cf9f3552c29443ca29d7334d",
+    "candidates/nd25fn4_crescent/verify_print.py": "8fececa0e08ddba4f0a78702b92922a1cde2828f99e8267d1b0f2a6c9b5f35e4",
+    "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
+    "scripts/audit_gui_slice.py": "32bcf1c6dfdba3bab1edbdfc992b8487abd5ae4bfb14650272fdc3715f38baee",
+    "scripts/gcode_analysis.py": "1741e8eceeb3b8d4f6c35541bbf9d4722820a0dee0cfefd93bfb3c11a1497f44"
+  },
+  "slicer": "Bambu Studio 02.07.01.62",
+  "preparation_sha256": "0a35c5993e488e0f948237299296bf5d004466330b28c1d2485902295d892ef6"
+}

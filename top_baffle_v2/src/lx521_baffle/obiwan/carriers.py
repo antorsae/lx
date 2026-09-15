@@ -858,17 +858,18 @@ def _subtract_plan_prisms(part, geometry, z0: float, z1: float):
 
 
 def _minimal_ring_blank(center, cut_radius, recess_radius, outer_radius,
-                        seat_z):
-    """Load-bearing outer lip plus the minimum continuous seat membrane."""
+                        seat_z, *, solid_seat=False):
+    """Outer lip and seat; UM has a solid underside, LM a light membrane."""
     cx, cy = center
     lip = _cylinder_at(cx, cy, outer_radius, CORE_REAR_Z, THICKNESS_MM)
     lip -= _cylinder_at(
         cx, cy, recess_radius, CORE_REAR_Z - 0.2, THICKNESS_MM + 0.2)
+    seat_bottom = CORE_REAR_Z if solid_seat else seat_z - SEAT_MEMBRANE_T
     membrane = _cylinder_at(
         cx, cy, recess_radius + SEAT_MEMBRANE_LIP_OVERLAP,
-        seat_z - SEAT_MEMBRANE_T, seat_z)
+        seat_bottom, seat_z)
     membrane -= _cylinder_at(
-        cx, cy, cut_radius, seat_z - SEAT_MEMBRANE_T - 0.2,
+        cx, cy, cut_radius, seat_bottom - 0.2,
         seat_z + 0.2)
     blank = lip.fuse(membrane).clean()
     solids = list(blank.solids())
@@ -1563,39 +1564,14 @@ def um_carrier():
     _require_guarded_build()
     cx, cy, cut_d = UM_CUTOUT
     part = _minimal_ring_blank(
-        (cx, cy), cut_d / 2.0, UM_RECESS_R, UM_CORE_R, UM_SEAT_Z)
+        (cx, cy), cut_d / 2.0, UM_RECESS_R, UM_CORE_R, UM_SEAT_Z,
+        solid_seat=True)
     part = _fuse_attached(
         part, _side_ring_fairing("um"),
         "continuous smooth UM side-ring fairing")
-    part = _fuse_attached(
-        part, _um_t_rear_recess_backfill(),
-        "symmetric solid rear T-cover/UM-recess backfill")
-
-    um_boss_floor = (
-        UM_SEAT_Z - UM_PILOT_DEPTH_MM - UM_PAD_FLOOR_MM)
-    for pilot_angle, (px, py) in zip(UM_PILOT_ANGLES_DEG, UM_PILOT_XY):
-        boss = _cylinder_at(
-            px, py, UM_INSERT_BOSS_D / 2.0,
-            um_boss_floor, UM_SEAT_Z)
-        support = boss
-        for tangent_offset, support_z0, support_z1 in (
-                um_pilot_spoke_z_segments(
-                    pilot_angle, um_boss_floor, UM_SEAT_Z)):
-            support = support.fuse(_radial_spoke(
-                (cx, cy), (px, py), UM_RECESS_R + 0.25,
-                UM_STRUCT_SPOKE_W, support_z0, support_z1,
-                tangent_offset)).clean()
-        if pilot_angle in UM_PILOT_SPOKE_TANGENTIAL_OFFSETS_DEG:
-            # Fill only the upper clear-spoke crescent.  The land is fully
-            # buried inside the UM driver recess and stops 0.80+ mm clear of
-            # the standalone M3 ear, so it cannot recreate the unwanted
-            # visible ear bridge.
-            support = support.fuse(_plan_prism(
-                _um_pilot_recess_closure_land((cx, cy), (px, py)),
-                UM_PILOT_LOWER_RADIAL_SPOKE_TOP_Z,
-                UM_SEAT_Z)).clean()
-        part = _fuse_attached(
-            part, support, "UM insert boss/spoke")
+    # The full annulus replaces the formerly isolated pilot bosses, spokes
+    # and small rear backfill crescents. Those positives are now wholly
+    # contained; the exact blind pilot bores are cut after route construction.
 
     # UM owns the upper half of the LM--UM closure and the lower half of the
     # T--UM closure.  Both are complete z=6.8..18.3 solids; the final route
@@ -1665,24 +1641,40 @@ def um_carrier():
             x, TWEETER_JOINT_Y, TWEETER_JOINT_HOLE_D / 2.0,
             TWEETER_CORE_JOINT_Z[0] - 0.2,
             TWEETER_CORE_BORE_TOP_Z)
-    # Vertical M2 center tie down to the LM: the UM owns the counterbore
-    # head seat, countersunk just inside its driver-recess wall, plus the
-    # clearance bore through band and web.  The corridor above the seat
-    # is the driver recess itself -- open until the MU10 goes in, and
-    # covered by its flange afterwards.
+    # Keep the original M2 bearing seat and screw length. Its access now
+    # crosses the solid seat underside and opens into the D82 driver bore.
+    # Prove access beyond the cutter on the uncut solid, then round only the
+    # exposed mouth; the bearing plane and the LM receiver stay exact.
+    tie_access_end_y = cy - math.sqrt(
+        (cut_d / 2.0) ** 2 - (abs(LM_UM_TIE_X) + LM_UM_TIE_CBORE_D / 2.0) ** 2) + 1.0
+    tie_access_length = tie_access_end_y - LM_UM_TIE_SEAT_Y
     _verify_lm_um_tie_route_clearance()
     _verify_tie_access(
         part, "LM-UM tie", LM_UM_TIE_X, LM_UM_TIE_AXIS_Z,
         LM_UM_TIE_SEAT_Y, outward=1.0,
-        cbore_length=LM_UM_TIE_SEAT_DEPTH_MM + 1.0)
+        cbore_length=tie_access_length)
 
     part -= _y_cylinder_at(
         LM_UM_TIE_X, LM_UM_TIE_SEAT_Y,
-        LM_UM_TIE_SEAT_Y + LM_UM_TIE_SEAT_DEPTH_MM + 1.0,
+        tie_access_end_y,
         LM_UM_TIE_AXIS_Z, LM_UM_TIE_CBORE_D / 2.0)
     part -= _y_cylinder_at(
         LM_UM_TIE_X, LM_UM_TIE_UM_FACE_Y - 0.30, LM_UM_TIE_SEAT_Y + 0.20,
         LM_UM_TIE_AXIS_Z, LM_UM_TIE_CLEARANCE_BORE_D / 2.0)
+    from build123d import fillet
+    mouth_edges = []
+    for edge in part.edges():
+        bounds = edge.bounding_box()
+        if (bounds.min.Y > tie_access_end_y - 4.0
+                and bounds.max.Y < tie_access_end_y + 0.1
+                and bounds.min.X > LM_UM_TIE_X - 2.3
+                and bounds.max.X < LM_UM_TIE_X + 2.3
+                and bounds.min.Z > LM_UM_TIE_AXIS_Z - 2.3
+                and bounds.max.Z < LM_UM_TIE_AXIS_Z + 2.3):
+            mouth_edges.append(edge)
+    if not mouth_edges:
+        raise RuntimeError("LM-UM screw access mouth has no roundable edges")
+    part = fillet(mouth_edges, radius=0.5)
     # Mirrored vertical M2 ties up to the tweeter crescent: the UM owns
     # the blind heat-set receivers here, because the buried tweeter cover
     # fills its rear recess and leaves no corridor for a head.

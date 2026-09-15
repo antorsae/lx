@@ -1,0 +1,3 @@
+/Users/antor/gh/lx/top_baffle_v2/candidates/nd25fn4_crescent/validate_depth_magnets.py:16: DeprecationWarning: Call to deprecated method SetCells. (Use ImportLegacyFormat or SetData instead.) -- Deprecated since version 9.6.0.
+  cells.SetCells(len(mesh.faces),numpy_to_vtkIdTypeArray(
+Depth and buried magnets passed; minimum cover 0.8009044805591784

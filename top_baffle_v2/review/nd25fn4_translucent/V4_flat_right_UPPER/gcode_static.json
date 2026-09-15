@@ -1,0 +1,50 @@
+{
+  "errors": [],
+  "ok": true,
+  "path": "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_translucent/V4_flat_right_UPPER/plate_1.gcode",
+  "profile": {
+    "backend": "orcaslicer",
+    "bed_size_mm": [
+      256.0,
+      256.0
+    ],
+    "bed_temp_c": 70.0,
+    "filament_type": "PETG",
+    "machine_name": "Bambu Lab P2S 0.6 High Flow",
+    "motion_bounds_mm": {
+      "x": [
+        0.0,
+        256.0
+      ],
+      "y": [
+        0.0,
+        256.0
+      ],
+      "z": [
+        0.0,
+        256.0
+      ]
+    },
+    "native_config": "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_translucent/profiles/resolved_machine.json",
+    "native_filaments": [
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_translucent/profiles/resolved_filament.json",
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_translucent/profiles/resolved_support_interface_filament.json"
+    ],
+    "native_settings": [
+      "/Users/antor/gh/lx/top_baffle_v2/review/nd25fn4_translucent/profiles/resolved_machine.json"
+    ],
+    "nozzle_temp_c": 245.0,
+    "z_height_mm": 256.0
+  },
+  "stats": {
+    "extrusion_moves": 100433,
+    "lines": 214712,
+    "movement_commands": 163614,
+    "non_comment_lines": 172730,
+    "temperature_commands": 29
+  },
+  "warnings": [
+    "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
+    "Unknown or unsupported commands were left unchanged: G130 line 891, G150 line 776, G150.1 line 665, G150.2 line 762, G150.3 line 666, G17 line 1200, G29.1 line 629, G29.2 line 660, G29.99 line 898, G380 line 613, G389 line 609, M1002 line 626."
+  ]
+}

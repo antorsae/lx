@@ -1,0 +1,61 @@
+{
+  "scope": "Three representative bead-midplane sections per cavity, separate from the failed release-catalog provenance gate. Not a release certification.",
+  "stl_sha256": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
+  "gcode_sha256": "9cd3b6a0d5a710e48a1637f0cc9de0422696acfdaea7b268472fee06c1a10a8c",
+  "rows": [
+    {
+      "site": 0,
+      "z": 0.84,
+      "max_cavity_boundary_distance_mm": 0.0189104917898569,
+      "sampled_near_cavity_outer_wall_width_range_mm": [
+        0.519996,
+        0.634516
+      ]
+    },
+    {
+      "site": 0,
+      "z": 3.4,
+      "max_cavity_boundary_distance_mm": 0.021447763280285654,
+      "sampled_near_cavity_outer_wall_width_range_mm": [
+        0.519996,
+        0.634596
+      ]
+    },
+    {
+      "site": 0,
+      "z": 5.8,
+      "max_cavity_boundary_distance_mm": 0.021001857795842044,
+      "sampled_near_cavity_outer_wall_width_range_mm": [
+        0.519996,
+        0.634696
+      ]
+    },
+    {
+      "site": 1,
+      "z": 0.84,
+      "max_cavity_boundary_distance_mm": 0.018209310459372276,
+      "sampled_near_cavity_outer_wall_width_range_mm": [
+        0.519996,
+        0.634516
+      ]
+    },
+    {
+      "site": 1,
+      "z": 3.4,
+      "max_cavity_boundary_distance_mm": 0.01756787716334342,
+      "sampled_near_cavity_outer_wall_width_range_mm": [
+        0.519996,
+        0.634596
+      ]
+    },
+    {
+      "site": 1,
+      "z": 5.8,
+      "max_cavity_boundary_distance_mm": 0.017069968459073222,
+      "sampled_near_cavity_outer_wall_width_range_mm": [
+        0.519996,
+        0.634676
+      ]
+    }
+  ]
+}

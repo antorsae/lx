@@ -1,5 +1,14 @@
 # Printing the top baffle — Bambu PLA families (Bambu Studio)
 
+Current PETG-GF decisions and exceptions: [generated print policies](PRINT_POLICIES.md).
+
+Current builder instructions and exact delivery dispositions are in
+[BUILD_GUIDE.md](BUILD_GUIDE.md) and the generated
+[file guide](../to_print/FILE_GUIDE.md). Use
+[PETG_GF_QUALIFICATION.md](PETG_GF_QUALIFICATION.md) for current material testing.
+The PLA strength calculations below are historical analytical screens, not
+physical qualification of the PETG-GF process.
+
 Settings and engineering numbers for printing the piece sets in
 Bambu PLA Tough+, PLA Basic, PLA Lite, PLA Matte, or PLA Silk+ on a 0.4 mm
 nozzle, for both `build/floor_stand/` and
@@ -29,13 +38,13 @@ bridge-web load case is treated explicitly below. PLA still relaxes
 |---|---|---|---|
 | W22 | M5 x 14 pan + flat washer into M5 x 5.8 x O6.3 heat-set (unchanged 6.8 mm total bore: O6.5 x 2.0 entry, then O6.4) | 0.8–1.0 N·m | Stock, Slim and Obi-Wan share the 0/60/120/180/240/300° clock; wave washers; re-torque at 24 h and ~2 weeks |
 | W22 on **Obi-Wan** | **M5 x 12** pan + flat washer into carrier heat-sets | 0.8–1.0 N·m | all six 0/60/120/180/240/300° sites are ordinary blind carrier inserts in both states; each keeps its 6.2 mm total depth and uses an O6.5 x 2.0 entry followed by O6.4; floor mode has no secondary support inserts or long through-screws |
-| 10F | M3 x 8 into M3 x 3 x O5 heat-set (bore O4.6 x 4.0) | 0.30–0.40 N·m | short engagement — do not overdrive |
+| 10F | M3 x 8 into M3 thread × Ø5 × L4 heat-set (bore O4.6 x 4.0) | 0.30–0.40 N·m | short engagement — do not overdrive |
 | Proud bridge (no-stand) | M5 machine screw from the bridge (behind) into M5 x 5.8 x O6.3 heat-set (unchanged 6.8 mm total: O6.5 x 2.0 entry, then O6.4, from the REAR face) | hand-snug | 4 off; same insert as the W22, set from the rear. Stock/Slim use Obi-Wan's exact three-port D20 cable interface relative to these inserts: LM `(-0.35,64.76)`, shared T `(-4.75,55.91)`, UM `(3.17,55.91)`. |
-| Proud mid-right-to-vase seam | **M3 x 20 socket-cap**, no washer, through a Ø3.4 radial passage into one M3 x 3 heat-set in a blind Ø4.6 x 4.0 vase receiver | hand-snug | axis `(x,z)=(0,12.55)`, +Y from the LM cutout. Ø6.2 x 3.4 head pocket clears a normal D5.5 x H3.0 socket head and hides it completely after W22 installation. Nominal insert engagement 3.381 mm; tip-to-floor margin 0.619 mm. Do not substitute M3 x 25. |
-| Obi-Wan LM-to-UM half-laps | 2 x rear-driven M3 screws through the LM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the UM's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±32, y=315.770; the closure-web/base teardrops remain nominal Ø9, while the complete Z-owned cylindrical functional bosses are locally Ø9.8. The UM receivers retain a 1.9 mm acoustic-front floor and the Z-halves retain a 0.20 mm axial gap. Select screw length for full insert engagement without bottoming. No washer, nut, or front bolt head belongs to this interface. |
+| Proud mid-right-to-vase seam | **M3 x 20 socket-cap**, no washer, through a Ø3.4 radial passage into one M3 thread × Ø5 × L4 heat-set in a blind Ø4.6 x 4.0 vase receiver | hand-snug | axis `(x,z)=(0,12.55)`, +Y from the LM cutout. Ø6.2 x 3.4 head pocket clears a normal D5.5 x H3.0 socket head and hides it completely after W22 installation. Nominal insert engagement 3.381 mm; tip-to-floor margin 0.619 mm. Do not substitute M3 x 25. |
+| Obi-Wan LM-to-UM half-laps | 2 x rear-driven M3 screws through the LM's standalone Ø3.4 clearance bores into M3 thread × Ø5 × L4 heat-set inserts installed in the UM's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±32, y=315.770; the closure-web/base teardrops remain nominal Ø9, while the complete Z-owned cylindrical functional bosses are locally Ø9.8. The UM receivers retain a 1.9 mm acoustic-front floor and the Z-halves retain a 0.20 mm axial gap. Select screw length for full insert engagement without bottoming. No washer, nut, or front bolt head belongs to this interface. |
 | Obi-Wan fused bridge plate | four stock holes at (±20,20)/(±20,70), rear-opening unchanged 6.8 mm-total bores with Ø6.5 x 2.0 entries followed by Ø6.4 | hand-snug for fit; final torque only after proof test | no-floor LM only; 62 mm insert core with soft cubic shoulders; LM/T/UM entries packed inside the D20 support opening as LM above, T lower-left, UM lower-right at z=5.3; solid acoustic front; immutable 40 × 50 pattern; no geometry behind the existing LM pads; magnets receive zero load credit |
-| Obi-Wan optional LM keyed seam | two symmetric Ø1.60 cylindrical pins at x=±109.187/z=14.30, normal to the world-Y=172.481 mm zero-gap seam and pointing +Y; 2.40 mm engagement plus 0.50 mm root overlap. Right blind socket Ø1.84 round; left blind socket 1.96 × 1.84 mm X-relieved; both 2.65 mm deep with 0.12 mm radial and 0.25 mm end clearance. Small exterior lands outside the LM recess preserve ≥0.50 mm radial/end walls, ≥0.05 mm recess plan clearance and ≥0.13 mm conservative W22-flange clearance. | registration only | mutually exclusive replacement print form for the canonical monolithic LM. Round+relieved sockets tolerate ±0.30 mm relative pitch error; the lands reach R114.4036, which is 1.4036 mm beyond structural R113.0 but only 0.6036 mm beyond the finalized R113.8 visible fairing. They add no extra screw or standalone retention/load credit. Print and assemble front-face-down on a flat datum, moving the top straight along -Y; the installed LM driver flange and its normal fasteners are the structural splice. |
-| Obi-Wan UM-to-tweeter half-laps | 2 x rear-driven M3 screws through the UM's standalone Ø3.4 clearance bores into M3 x 3 heat-set inserts installed in the crescent's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±24, y=421.5; nominal Ø9 closure-base teardrops, complete local Ø9.8 Z-owned functional bosses, 0.20 mm axial gap, complete 360° receiver walls, and 1.9 mm acoustic-front floors. Install both inserts in the individual crescent before assembly; no front bolt head or cross-owner receiver wall. |
+| Obi-Wan optional LM keyed seam | Ø1.60 pins; right Ø1.80 socket, left 1.84 × 1.80 socket; 0.10 radial / 0.25 end clearance; ≥0.38 radial / ≥0.50 end wall in native ring, no exterior lands | registration only | Current dimensions and 0.6-mm coupon acceptance: [qualification procedure](PETG_GF_QUALIFICATION.md). Driver flange and normal fasteners splice the seam. |
+| Obi-Wan UM-to-tweeter half-laps | 2 x rear-driven M3 screws through the UM's standalone Ø3.4 clearance bores into M3 thread × Ø5 × L4 heat-set inserts installed in the crescent's standalone rear-opening Ø4.6 x 4.0 blind receivers | hand-snug | x=±24, y=421.5; nominal Ø9 closure-base teardrops, complete local Ø9.8 Z-owned functional bosses, 0.20 mm axial gap, complete 360° receiver walls, and 1.9 mm acoustic-front floors. Install both inserts in the individual crescent before assembly; no front bolt head or cross-owner receiver wall. |
 | Obi-Wan alignment magnets | Six D5 × 2 N52 magnets in captive Ø5.20 × 2.10 surface-normal cavities | — | LM has four: preserve the upper ring-radial 64°/116° axes and the lower pair at cubic parameter `u=0.50` on the shared curved shoulder. The right visible datum is `(x,y,z)=(45.285011,89.190370,15.10)` with outward normal `(0.706451,-0.707762)`; the left is its exact X mirror. UM keeps its 50.5°/129.5° axes; all six stations share source Z=15.10. Every station has 0.52 mm axial skins (the dual 0.4/0.6-nozzle single-bead value) and a 45° support-free roof. The R113.0/R51.7 structural rings have continuous exposed R113.94/R52.64 side fairings, clipped only inside the existing LM--UM and T--UM cusp/service regions; the LM--UM stop preserves the 0.40 mm gap. Ring cavity datums sit at structural radius +0.79 mm; ring and shoulder cavity datums are 0.15 mm beneath their exposed surfaces. There is no magnet-local backing, boss, relief, rear cap, flat, or visible cue: the magnet-free exterior is immutable. Magnets are fully buried at the manifest pause, never glued or externally accessible. Flat/graded have matching captive LM-lower, LM-upper, and UM receivers. Their mating surfaces are flush with zero physical air gap; the receiver's 0.05 mm allowance is a solid standoff. Nominal paired magnet-face separation is 1.24 mm at LM-lower, LM-upper, and UM. Alignment/anti-rattle only: **zero structural load credit**. |
 | Tweeter pair | M4 through-bolts + nyloc + wave washer; length = septum + faceplates (stock 18.3 septum → ~M4 x 35; V1/Obi-Wan crescent → ~M4 x 30 — verify stacked) | snug, ~0.5 N·m | clamps the 4.0 mm crescent seat; recheck after a week |
 | Optional TEBM35C10-4 BMR pair | 8 × M2 screws into M2 × 4 × Ø3.2 heat-set inserts | hand-snug; establish on a coupon | lower BMR mounts from the acoustic front and upper BMR from the rear; each pocket has a 1.2 mm blind opposite wall. Use the Stock BMR vase only with Stock receivers and the Slim BMR vase only with Slim/V1L receivers. Both print front-face-down with supports explicitly disabled; four same-height captive side magnets share one audited insertion pause. |
@@ -190,32 +199,7 @@ floor-stand `piece_bottom` (223.8 × 125 × 168.3), front-down leaves the
 150 mm foot rising as a self-standing wall. Smooth/satin PEI gives a
 clean front; textured PEI gives uniform grain.
 
-**Obi-Wan:** every released printable baffle/acoustic part also prints
-front-face-down. This includes the floor/no-floor monolithic LM, both optional
-keyed LM halves, the UM carrier, tweeter crescent, and flat/graded segments. Only an
-in-plane XY rotation about the bed normal may be used; the former 45° X tilt
-and floor-face-down keyed-bottom
-orientations are not valid for captive-magnet insertion. The floor-state
-LM+integral stand is therefore a large-format print. Revalidate the actual
-front-down footprint against the selected printer instead of relying on the
-obsolete ≤220 mm tilted-orientation figures. The optional LM keyed split
-replaces that monolithic LM with two front-down prints. On a P2S, this split
-is mandatory: both canonical LM monoliths are approximately 236.41 x 313.75 mm
-front-face-down and are not P2S-printable. Do not scale, clip, tilt, or use a
-virtual bed. Two symmetric Ø1.60 pins point +Y normal to the seam and engage
-2.40 mm; the right socket is round Ø1.84 and the left is X-relieved to
-1.96 × 1.84 mm. Both blind sockets are 2.65 mm deep, retain 0.12 mm radial and
-0.25 mm end clearance, and preserve at least 0.50 mm local radial/end wall in
-small exterior lands outside the LM recess. They preserve at least 0.05 mm
-recess and 0.13 mm conservative W22-flange plan clearance. Their worst-case
-reach is R114.4036: 1.4036 mm beyond structural R113.0 but only 0.6036 mm
-beyond the finalized R113.8 visible fairing. Never mix either half with the
-monolithic LM. Flat/graded include matching 0.25 mm hidden interface pockets for
-these lands; printed fit remains coupon-qualified. Each horizontal pin is four nominal nozzle widths; reject a
-slice missing either complete pin, either land, or a continuous socket-wall
-path.
-With a monolithic LM, the same pockets remain as small hidden local reliefs;
-the three magnetic datums and primary retention geometry are unchanged.
+Current LM registration: Ø1.60 pins at x=±108.920904, z=14.30 mm, 2.40 mm engagement and 0.50 mm root overlap. Right socket Ø1.80; left 1.84 × 1.80 mm with 0.02 mm X relief per side. Radial clearance 0.10 mm, blind-end clearance 0.25 mm, pitch 217.841807 mm. The native ring retains ≥0.38 mm radial and ≥0.50 mm blind-end wall without exterior lands. Preserve lumens, driver/recess and wing clearance; verify the 0.6 mm GF toolpaths and the actual coupon/full assembly. The pins register only; the driver flange and normal LM fasteners complete the load path. See [the current qualification procedure](PETG_GF_QUALIFICATION.md).
 
 For the keyed split, the shelf also provides the mutually exclusive
 `obiwan_01_02_03_04_LM_UM_combo_no_floor_stand` and
@@ -226,11 +210,11 @@ translated to locked positions inside one Bambu object. Each project carries
 the three released state-specific duct blockers, all four support fields
 pinned globally and per object, and one six-magnet pause at Z=5.96 mm. Both
 combined core projects use the hash-pinned saved TINMORRY PETG-GF preset and
-eight walls. Both projects print 100% zig-zag: the floor project always did,
+six walls. Both projects print 100% zig-zag: the floor project always did,
 to preserve its integral-floor bottom's contract, and the no-floor project was
 raised from 40% gyroid to match, which leaves its 100%-solid zig-zag parameter
 modifier through the complete `01a` bridge/root redundant rather than wrong.
-Promotion requires exact four-volume
+Promotion requires exact four-volume (no-floor) or five-volume (floor, including lid)
 project/STL equivalence, actual support under every carrier, no support under
 the tweeter footprint, and zero support-bead collisions against every LM/UM
 functional duct. Never print a combined plate with its individual 01, 02, 03,
@@ -263,8 +247,7 @@ the second catches tree-style bulk; the tree and normal slices measured
 **The wing combo plates print PETG-GF too, and they are ordinary ready-to-
 print deliveries.** `make obiwan_petg_wing_plates` slices both split2 wing
 plates -- flat and graded, four pieces and one six-magnet pause each -- into
-`to_print/obiwan/3mf_06hf_petg-cf/`. They are not blocked the way the
-structural core is, because the wings print support-off by their own
+`to_print/obiwan/3mf_06hf_petg-gf/`. The wings print support-off by their own
 contract: their profile,
 `captive_magnet_slicing_profile_petg_gf_wings_06hf.json`, carries no support
 recipe and therefore no PLA interface filament, so one filament is loaded
@@ -291,51 +274,15 @@ speed lever -- 12 is 4% above the 11.5 it replaces, worth 116 → 121 mm/s at
 0.62 × 0.16 mm. Wall count, infill density and support density set the
 print time.
 
-**The PLA support interface is blocked upstream and nothing PETG-GF
-publishes until it is resolved.** The structural-core profile asks for the
-part in TINMORRY PETG-GF and the support interface in Bambu PLA Basic,
-because a PETG interface welds to a PETG part and cannot be removed at all,
-while PLA does not fuse to it and peels off at a zero Z gap. Bambu Studio's
-CLI cannot deliver that on this one-nozzle P2S: every structural path loads
-an assemble list (the support blockers and the bridge/root modifier require
-one), and on that path Studio resolves `filament_map` to `1,0` -- the second
-filament is assigned to nozzle 0, which does not exist. It then prints the
-interface in the model filament and reports the plate as a success. Verified
-on 02.07.01.62 against `filament_map`/`filament_map_mode`/`nozzle_volume_type`
-/`physical_extruder_map` overrides, per-object `support_interface_filament`
-params, and `--load-filament-ids` (rejected alongside `--load-assemble-list`);
-`filaments: [1, 2]` is refused outright because the count must equal the clone
-count. 02.08.02.60 segfaults on the same two-filament plate
-(BambuStudio issue 11893). Only the direct-STL path, which cannot carry the
-blockers, resolves `1,1`.
-
-`_validate_actual_gcode_profile` now fails closed on this: a profile that
-declares a support-interface filament whose `filament_map` entry is `0` is
-rejected, so no project can ship claiming a PLA interface it did not print.
-Until Bambu fixes the mapping, `make obiwan_petg_gui_projects` writes both
-core plates into `to_print/obiwan/3mf_06hf_petg-cf_pla/` as *projects* --
-same 0.6-mm high-flow lane, named for its material pair, no G-code -- to be
-sliced in the GUI once PLA is assigned to its AMS slot. Two things have to
-be corrected on the way out or Studio quietly ignores the project:
-
-* **the process preset is renamed.** Shipped under the stock
-  `0.18mm Balanced Quality @BBL P2S 0.6 nozzle` name, Studio matches the
-  installed preset and serves *its* values instead: support switched off,
-  tree(auto), Default/Default support filaments, a 0.18 mm top Z gap and 15%
-  sparse infill in place of the plate's 100% zig-zag. Nothing
-  in the project is read. It now ships as
-  `LX521 ObiWan PETG-GF core 0.6HF (GUI)`, a name no install carries, which
-  is the same defence `LOCKED_PROCESS_ID` gives the audited shelf copies.
-* **the nozzle variant is pinned.** An exported project records
-  `nozzle_volume_type: ["Standard"]` -- Studio takes the first entry of
-  `extruder_variant_list` -- on a machine whose own
-  `default_nozzle_volume_type` is `High Flow`. That selects the Standard
-  column of every per-variant filament value, so the builder writes the
-  machine's own default back and refuses anything but `High Flow`.
-
-The alternative is to print the structural core with weldable PETG supports
-by dropping `support_interface_filament` from the profile. The PLA 0.4-mm and 0.6-mm lanes are unaffected --
-they load a single filament and never reach this gate.
+**PETG-GF + PLA mapping is normalized and checked against actual extrusion.**
+The shared adapter completes all four per-filament map vectors, pins High
+Flow and sizes the purge matrix for the loaded materials. Native slices now
+produce GF model/support paths and PLA contact paths. Changing only the
+variant fields is insufficient. The regular core shelf still supplies
+unsliced GUI projects; use the slice audit after exporting them. See
+[generated print policies](PRINT_POLICIES.md) for the recipe, exceptions,
+source ownership and the linked Bambu issue. Slicer exit status alone does
+not establish correct material use.
 
 For the flat and graded B wing splits, the shelf also provides
 `obiwan_flat_wings_split2_combo` and
@@ -344,16 +291,17 @@ alternatives to their four individual B projects. Each rigidly rotates and
 translates the four exact released front-face-down STLs without
 regenerating, changing, or fusing their geometry. The locked footprint is
 248.813 × 248.815 mm on the 256 mm bed, with 3.587 mm minimum inter-part gap
-and 3.592 mm minimum edge clearance. Use the ready project: it has 30% gyroid,
+and 3.592 mm minimum edge clearance. Use the ready project: it has 10% gyroid,
 all four support fields pinned off globally and per object, zero support
 feature blocks, and one Z=5.96 mm pause for all six wing magnets. Promotion
 requires exact 3MF/STL equivalence (15,692 triangles for flat; 958,546 for graded),
 an identity outer
 placement, and passing toolpath audits for all four captive-cavity regions.
 Never print either plate together with its four individual B files.
-The flat/graded wings and shoulders do not carry the LM/UM cantilever load and stay
-on the standard Bambu PLA Tough+ profile with six walls; do not apply the
-PETG-GF structural-core profile to them.
+Flat/graded wings and shoulders do not carry the LM/UM cantilever load.
+PLA Basic is the standard wing/shoulder lane; the two wing combos also have
+a separate support-free PETG-GF lane. Do not apply the structural-core
+support recipe to wings.
 
 The UM route is covered only in LM, T is covered in
 LM/UM, and their specified rear continuations are free; the short LM lead is
@@ -412,7 +360,7 @@ reuse a 0.20-mm pause height or derive one by scaling.
   **40 % for the proud piece_bottom in both stand states** (foot standing
   moment ~8 N·m, or bridge bolts), and **40 % for the Obi-Wan fused bridge
   web and tweeter crescent/direct joint ears**. For the no-floor Obi-Wan
-  `01a`, use eight walls and a **100% local-solid modifier** through the
+  `01a`, use six walls and a **100% local-solid modifier** through the
   complete W64 stem/root; do not depend on nominal infill through the root or around
   the three buried lanes. *Detect narrow internal solid
   infill: on.* The generated job embeds and audits that **100% zig-zag
@@ -503,7 +451,7 @@ nearest-pilot rule, 1.089 mm beyond the grown seam rule, and 18.579 mm beyond
 every route rule. Each complete R3.20 land already exists in the immutable
 post-bevel host; the cavity operation adds no local keep, backing, boss, rear
 block, or visible location cue. The rear axes, 45° conical closures, both
-0.45 mm skins, and provisional marked-pole directions remain unchanged. V0
+0.52 mm skins, and provisional marked-pole directions remain unchanged. V0
 still has no released mating part or pairing polarity.
 
 The floor and no-floor canonical Obi-Wan LM monoliths intentionally have no P2S
@@ -801,22 +749,7 @@ modules, and `obiwan_assembled.step` with
 two contain reference geometry and are not an instruction to print the
 Faston proxy.
 
-Choose exactly one LM print form for each state: either the canonical
-`obiwan_core_1_of_2_lm_carrier.stl`, or both
-`obiwan_optional_lm_keyed_1_of_2_bottom.stl` and
-`obiwan_optional_lm_keyed_2_of_2_top.stl`. The optional seam is at world
-Y=172.481 mm with a closed zero-gap planar butt. Before step 4, place both
-front faces down on one flat datum. With the bottom stationary, move the top
-straight along world -Y and seat both bottom-owned Ø1.60 +Y pins together—one
-in the right round socket and one in the left X-relieved socket. Do not twist,
-spread, hammer, or use one pin as a hinge. Inspect both fits, full seating,
-coplanarity and route-seam continuity, then pull the actual UM/T cables through
-both preserved lumen handoffs. The pin/socket lands reach R114.4036—1.4036 mm
-beyond structural R113.0 and 0.6036 mm beyond the finalized R113.8 visible
-fairing—but add no extra screw or standalone retention/load credit.
-Hold registration when lifting the LM from the datum for driver fit-up; the
-installed flange and all normal LM fasteners provide the structural splice.
-Do not load an unspliced split LM.
+Current LM registration: Ø1.60 pins at x=±108.920904, z=14.30 mm, 2.40 mm engagement and 0.50 mm root overlap. Right socket Ø1.80; left 1.84 × 1.80 mm with 0.02 mm X relief per side. Radial clearance 0.10 mm, blind-end clearance 0.25 mm, pitch 217.841807 mm. The native ring retains ≥0.38 mm radial and ≥0.50 mm blind-end wall without exterior lands. Preserve lumens, driver/recess and wing clearance; verify the 0.6 mm GF toolpaths and the actual coupon/full assembly. The pins register only; the driver flange and normal LM fasteners complete the load path. See [the current qualification procedure](PETG_GF_QUALIFICATION.md).
 
 For the P2S, choose the two keyed halves: the canonical monolith is retained
 for a verified larger-format printer only and is not sliced by the P2S captive
@@ -858,7 +791,7 @@ pause rows. No monolith pause is synthesized.
    Each ring cavity datum is structural radius
    +0.65 mm, 0.15 mm beneath the exposed surface; there must be no
    magnet-local backing, boss, relief, rear cap, flat, or visible cue. Verify
-   unchanged 0.45 mm axial skins, a
+   unchanged 0.52 mm axial skins, a
    continuous loading cradle, and the support-free 45° closing roof in sliced
    preview with Arachne. The mating surfaces must remain flush with zero air
    gap; the receiver's 0.05 mm spacing allowance is solid material. Nominal
@@ -938,53 +871,7 @@ pause rows. No monolith pause is synthesized.
 
 These constraints moved here from the project README during the product-first restructure. The per-product geometry they refer to lives in [`stock.md`](stock.md), [`slim.md`](slim.md), and [`obiwan.md`](obiwan.md).
 
-- Run the applicable coupons from the list above before committing a full print.
-- Proud baffle pieces print front-face-down. Support-disabled projects must emit
-  no support features; every support-enabled Obi-Wan keyed LM half and UM
-  carrier embeds its generated duct blocker and must pass the final
-  support/duct collision gate. A Bambu `floating cantilever` warning blocks
-  release.
-- The canonical floor Obi-Wan LM with its integral stand and the no-floor monolith
-  are not P2S-printable at their approximately 236.41 x 313.75 mm front-down
-  footprint. On a verified larger-format machine, print them front-face-down
-  and keep support out of buried route mouths, connector cavities, and
-  free-cable paths. Preview
-  every closed bump and optional add-on separately.
-- If the optional Obi-Wan LM keyed split is selected instead, print both halves
-  front-face-down with in-plane rotation only. Recheck each generated
-  footprint against the actual printer; this is the required P2S form. It replaces,
-  rather than accompanies, the monolithic LM. Its two concealed Ø1.60 +Y
-  pins and right-round/left-X-relieved blind sockets sit on small exterior
-  lands outside the LM recess. Their worst-case reach is R114.4036: 1.4036 mm
-  beyond the structural R113.0 ring and 0.6036 mm beyond the finalized R113.8
-  visible fairing.
-  flat/graded include matching 0.25 mm interface pockets around those lands;
-  physical fit remains coupon-qualified.
-  Preview the four-nozzle-width horizontal pins, ≥0.50 mm
-  socket/end walls and both lands, then qualify their simultaneous straight-
-  pull fit and actual U22 clearance with a process-matched coupon/print.
-- Flat and graded wing sides each print as lower, middle, and UM segments cut from
-  the finalized monolith. The lower segment owns the 7/9/4 mm male dovetail
-  into the middle segment; the middle segment owns the 7/8.5/4 mm male
-  dovetail into the UM segment. Each male key is a constant prism; both female
-  complements are depth-varying, from 0.05 mm of clearance at the front face to
-  0.20 mm at the rear. The front value is the coupon-calibrated fit the former
-  uniform joint assembled with, and it is a floor rather than a preference: a
-  wedge cannot pass the station where its clearance equals the printer's
-  oversize, so it stops proud by 57 mm for every millimetre of oversize, and
-  coplanar panels must finish flush. Lower it only against a measured key/plate
-  coupon. Assemble dry from the rear until flush, clamp, then
-  inject two-part epoxy along the open rear seam gap, which the taper holds
-  open at 0.20 mm the whole length of the joint and which feeds the buried
-  channel through its own flank — the joint is bonded, not friction-fitted.
-  There is deliberately no bored port: any opening from the rear face into
-  the channel sits alongside that same gap and leaves a sub-printable fin
-  between the two. The clearance collapses to exact
-  closure short of each exposed split endpoint, and neither key may grow the
-  installed plan or depth envelope. Both complete keys retain at least 2.0 mm
-  measured exterior plan ligament, and so do the adhesive channel and its two
-  rear-face openings. Qualify the fit on a process-matched coupon before a
-  complete wing.
+Current LM registration: Ø1.60 pins at x=±108.920904, z=14.30 mm, 2.40 mm engagement and 0.50 mm root overlap. Right socket Ø1.80; left 1.84 × 1.80 mm with 0.02 mm X relief per side. Radial clearance 0.10 mm, blind-end clearance 0.25 mm, pitch 217.841807 mm. The native ring retains ≥0.38 mm radial and ≥0.50 mm blind-end wall without exterior lands. Preserve lumens, driver/recess and wing clearance; verify the 0.6 mm GF toolpaths and the actual coupon/full assembly. The pins register only; the driver flange and normal LM fasteners complete the load path. See [the current qualification procedure](PETG_GF_QUALIFICATION.md).
 
 ### Magnet insertion and the print sidecar
 

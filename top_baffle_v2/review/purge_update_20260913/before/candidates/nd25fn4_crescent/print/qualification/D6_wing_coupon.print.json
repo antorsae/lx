@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "part": "V4_flat_left_UPPER",
+  "stl": "D6_wing_coupon.stl",
+  "stl_sha256": "9883557ade16c84bc39ee9718f71fdc892cbd6bcf8f1da6e367260463139ef17",
+  "source_to_stl_matrix": [
+    [
+      -0.4500984410374348,
+      0.8929789434111371,
+      0.0,
+      -352.307336591038
+    ],
+    [
+      0.8929789434111371,
+      0.4500984410374348,
+      0.0,
+      -104.82317905623967
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999977
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "print_orientation": "front_face_down",
+  "variant": "flat",
+  "side": "left",
+  "qualification": "sliced static checks passed; physical print not performed",
+  "source_stl": "build/wings/flat/stl/obiwan_wing_flat_left_split2_2_of_2_lm_um_upper.stl",
+  "approved_source": "candidates/nd25fn4_crescent/STL/wings/V4_flat_left_UPPER.stl",
+  "approved_source_sha256": "9543913be00c4accad26e9f77995cf9667f0beeae46a4ca132ce5804920e16c1",
+  "print_preparation": "internal tilted-magnet loading relief; exterior, seats and interfaces retained",
+  "sliced_project": "candidates/nd25fn4_crescent/print/V4_flat_left_UPPER_06HF_PETG_GF_PLA.gcode.3mf",
+  "sliced_project_sha256": "ee862d9e681464b488395cdf4f8d1b5d0af47e4b06c604ba64b1544151c7c7ee",
+  "coupon_source": "candidates/nd25fn4_crescent/print/geometry/V4_flat_left_UPPER_PRINT.stl",
+  "coupon_source_sha256": "3388dcdff916ad96d8509e2a67d953dbfe8f8b2268ee1c01e259e9e3440097d8",
+  "coupon_note": "Exact local body/wing geometry and pocket angle, cropped and translated to the bed. Validate this coupon slice independently; physical result pending."
+}

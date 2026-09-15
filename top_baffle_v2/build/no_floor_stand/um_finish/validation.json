@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "source_sha256": "850340c197100b00754230c780c472dd7d75e70150ad2c27181a1ca21276fe70",
+  "um_stl": "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
+  "um_sha256": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
+  "LM_state": "no_floor_stand",
+  "LM_sha256": "16d0b4d604a660cfad61011077b3b496a86b5211cc550d8b2db15c50284e5f87",
+  "LM_overlap_mm3": 1.45632624552698e-16,
+  "solid_annulus_witnesses": 1410,
+  "driver_gauge_overlap_mm3": [
+    0.0,
+    0.0
+  ],
+  "M2_bearing_plane_Y_mm": [
+    319.3047623680664,
+    319.3047623680664,
+    319.3047623680664,
+    319.3047623680664
+  ],
+  "M2_head_gauge_diameter_mm": 3.9,
+  "M2_head_gauge_witnesses": 3360,
+  "T_gauge_diameter_mm": 5.6,
+  "T_shell_witnesses": 6912,
+  "seam_witnesses": 27,
+  "maximum_seam_distance_to_both_parts_mm": 0.049242282382256766,
+  "gallery_reference_sha256": null,
+  "limits": "Digital fit and sampled wall checks; no physical or acoustic qualification."
+}

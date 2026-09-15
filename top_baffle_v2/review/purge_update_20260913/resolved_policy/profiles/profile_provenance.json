@@ -1,0 +1,321 @@
+{
+  "audit_sources": {
+    "/Users/antor/gh/lx/top_baffle_v2/scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
+    "/Users/antor/gh/lx/top_baffle_v2/scripts/bambu_3mf_audit.py": "b1515cd75934cc18ee71c01918f28d8bacfb5cd308d50609e455c3270d741f2d",
+    "/Users/antor/gh/lx/top_baffle_v2/scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "/Users/antor/gh/lx/top_baffle_v2/scripts/json_schema_subset.py": "29efef2aa565963b44cf7a0feaa572291ebd5dd7c71eb487bd45be97c6dab055",
+    "/Users/antor/gh/lx/top_baffle_v2/scripts/release_validation.py": "219ed3f31471bd687d24767f41b32404e23d2d045a38dc4c8782b3030d4332c7",
+    "/Users/antor/gh/lx/top_baffle_v2/scripts/slice_captive_magnets.py": "3a5ac187ee00a231ebf46b5d58dd43d36c1f2ada870bf06d58bdb88cc0a1beef",
+    "/Users/antor/gh/lx/top_baffle_v2/src/lx521_baffle/io.py": "9bb5806ff9dba6a44ac106ba7ba4e5491a7e8d9adceaa837927df8a750407ed1",
+    "/Users/antor/gh/lx/top_baffle_v2/src/lx521_baffle/magnet_contract.py": "aeffa5bec59a476faa98e75f307b0a236f6fcaf22b67a9b54f3f44dc103af6cb",
+    "/Users/antor/gh/lx/top_baffle_v2/src/lx521_baffle/print_contract.py": "be4eca7356234ea56c9b1fecaa495287b053d6a628d5d0ae294f6024d4ff9a03"
+  },
+  "backend": "BambuStudio",
+  "binary": "/Applications/BambuStudio.app/Contents/MacOS/BambuStudio",
+  "binary_sha256": "b022be6750898454803e9e07178b7c7446c0e5b4d148c593b4b56efde09ba281",
+  "config_path": "/Users/antor/gh/lx/top_baffle_v2/captive_magnet_slicing_profile_petg_gf_06hf.json",
+  "config_sha256": "35ed9e2beac945dc6d24faad93728012927ecce4d67b820799148b2cf7ca6f95",
+  "effective": {
+    "arc_fitting_enabled": true,
+    "bed_type": "Textured PEI Plate",
+    "bottom_shell_layers": 5,
+    "detect_narrow_internal_solid_infill": true,
+    "detect_thin_wall": true,
+    "elefant_foot_compensation_mm": 0.15,
+    "ensure_vertical_shell_thickness": "enabled",
+    "fan_max_speed_percent": 50.0,
+    "filament": "TINMORRY PETG-GF Profile @BBL P2S",
+    "filament_max_volumetric_speed_mm3_s": 12.0,
+    "first_layer_height_mm": 0.2,
+    "inner_wall_line_width_mm": 0.62,
+    "layer_height_mm": 0.16,
+    "machine_pause_gcode": "M400 U1",
+    "magnet_insertion_pause": {
+      "custom_gcode_type": "Custom",
+      "park_z_mm": 250.0,
+      "pause_command": "M400 U1",
+      "restore_exact_pause_z": true,
+      "xy_motion": "none",
+      "z_travel_feedrate_mm_min": 1200.0,
+      "z_travel_speed_mm_s": 20.0
+    },
+    "nozzle_diameter_mm": 0.6,
+    "nozzle_temperature_c": 260.0,
+    "nozzle_temperature_initial_layer_c": 260.0,
+    "outer_wall_line_width_mm": 0.52,
+    "outer_wall_speed_mm_s": 60.0,
+    "overhang_fan_speed_percent": 100.0,
+    "precise_outer_wall": true,
+    "printer_model": "Bambu Lab P2S",
+    "retaining_bead_acceptance": {
+      "axial_lower_width_tolerance_mm": 0.005,
+      "axial_width_range_mm": [
+        0.51,
+        0.9
+      ],
+      "transverse_lower_width_tolerance_mm": 0.005,
+      "transverse_width_range_mm": [
+        0.51,
+        0.93
+      ]
+    },
+    "sparse_infill_density_percent": 30.0,
+    "sparse_infill_pattern": "gyroid",
+    "support_critical_regions_only": false,
+    "support_enabled": false,
+    "support_on_build_plate_only": false,
+    "support_remove_small_overhang": false,
+    "textured_plate_temp_c": 80.0,
+    "textured_plate_temp_initial_layer_c": 80.0,
+    "top_shell_layers": 10,
+    "wall_generator": "arachne",
+    "wall_loops": 6,
+    "xy_hole_compensation_mm": 0.0,
+    "xy_hole_compensation_policy": "0 mm is mandatory for captive-magnet parts on every nozzle lane: hole compensation moves the cavity boundary that the 0.52 mm retaining skins are judged against, while Arachne variable-width generation and the independent toolpath audit require exactly one bounded retaining traversal per skin"
+  },
+  "machine_bounds_mm": {
+    "x": [
+      0.0,
+      256.0
+    ],
+    "y": [
+      0.0,
+      256.0
+    ],
+    "z": [
+      0.0,
+      256.0
+    ]
+  },
+  "material_changeover_policy": {
+    "path": "/Users/antor/gh/lx/top_baffle_v2/print_policy.json",
+    "sha256": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c"
+  },
+  "profile_set_sha256": "bf653f8de6fde6a484dd4c7a51300f4453f0f78a58b0b069f19fd1e5b178a33a",
+  "repo_overrides": {
+    "filament": {
+      "filament_bridge_speed": "20",
+      "filament_flow_ratio": [
+        "0.93",
+        "0.93"
+      ],
+      "filament_max_volumetric_speed": [
+        "12",
+        "12"
+      ],
+      "filament_retraction_length": [
+        "1",
+        "1"
+      ],
+      "nozzle_temperature": [
+        "260",
+        "260"
+      ],
+      "nozzle_temperature_initial_layer": [
+        "260",
+        "260"
+      ]
+    },
+    "machine": {
+      "default_nozzle_volume_type": "High Flow",
+      "machine_pause_gcode": "M400 U1"
+    },
+    "process": {
+      "bottom_shell_layers": "5",
+      "bridge_speed": "20",
+      "curr_bed_type": "Textured PEI Plate",
+      "detect_narrow_internal_solid_infill": "1",
+      "detect_thin_wall": "1",
+      "elefant_foot_compensation": "0.15",
+      "enable_prime_tower": "1",
+      "enable_support": "0",
+      "ensure_vertical_shell_thickness": "enabled",
+      "flush_into_infill": "0",
+      "flush_into_objects": "0",
+      "flush_into_support": "0",
+      "independent_support_layer_height": "0",
+      "initial_layer_print_height": "0.2",
+      "ironing_flow": "10%",
+      "ironing_spacing": "0.15",
+      "ironing_speed": "60",
+      "ironing_type": "top",
+      "layer_height": "0.16",
+      "min_bead_width": "85%",
+      "outer_wall_line_width": "0.52",
+      "outer_wall_speed": [
+        "60",
+        "60"
+      ],
+      "precise_outer_wall": "1",
+      "prime_tower_width": "35",
+      "sparse_infill_density": "30%",
+      "sparse_infill_pattern": "gyroid",
+      "support_bottom_interface_spacing": "0.5",
+      "support_bottom_z_distance": "0.18",
+      "support_critical_regions_only": "0",
+      "support_filament": "1",
+      "support_interface_bottom_layers": "3",
+      "support_interface_filament": "2",
+      "support_interface_pattern": "rectilinear",
+      "support_interface_spacing": "0",
+      "support_interface_top_layers": "3",
+      "support_object_xy_distance": "0.7",
+      "support_on_build_plate_only": "0",
+      "support_remove_small_overhang": "0",
+      "support_style": "snug",
+      "support_top_z_distance": "0",
+      "support_type": "normal(auto)",
+      "top_shell_layers": "10",
+      "top_surface_speed": [
+        "80",
+        "80"
+      ],
+      "wall_generator": "arachne",
+      "wall_loops": "6",
+      "wipe_tower_x": "128.327",
+      "wipe_tower_y": "219.551",
+      "xy_hole_compensation": "0"
+    }
+  },
+  "required_version": "02.07.01.62",
+  "resolution_dependencies": [
+    {
+      "path": "filament/Bambu PLA Basic @BBL P2S 0.6 nozzle.json",
+      "scope": "system_vendor_root",
+      "sha256": "30efcded147c0242ae8a4dfa181b37177e5c2a35eda02e1606b13a1e7333832e"
+    },
+    {
+      "path": "filament/Bambu PLA Basic @base.json",
+      "scope": "system_vendor_root",
+      "sha256": "bb29da8f90e3d54313154195c3b5c733d1093b9ef40e84972148917e32af43e0"
+    },
+    {
+      "path": "filament/fdm_filament_common.json",
+      "scope": "system_vendor_root",
+      "sha256": "8c7105b7d59a28f600c43a946f067b8b4d707b9711c0bf6b88e9166e48878548"
+    },
+    {
+      "path": "filament/fdm_filament_pla.json",
+      "scope": "system_vendor_root",
+      "sha256": "670d21ea6bdf1cd4b0a2bfddc743612ffd896cd6e5dbe767c25d2c4165c49a30"
+    },
+    {
+      "path": "filament/fdm_filament_template_direct_dual.json",
+      "scope": "system_vendor_root",
+      "sha256": "e0f564b83f3ef70cce4de1401dd7cd855d6fbd834343cb8f4292f2a1ac3efc51"
+    },
+    {
+      "path": "machine/Bambu Lab P2S 0.4 nozzle template change_filament_gcode.json",
+      "scope": "system_vendor_root",
+      "sha256": "e9860232cf78dddd2b6c5caf40fc5dbbfb32ed7359442b0c3eb2b40071574f75"
+    },
+    {
+      "path": "machine/Bambu Lab P2S 0.4 nozzle template layer_change_gcode.json",
+      "scope": "system_vendor_root",
+      "sha256": "b3083c668de51abc18d82034aba3fcbe5058a4ac85a2d6d340b328bb2d2f1c57"
+    },
+    {
+      "path": "machine/Bambu Lab P2S 0.4 nozzle template machine_end_gcode.json",
+      "scope": "system_vendor_root",
+      "sha256": "aa6bdb6509012bef606c5bc0b9ab29c98a3e65a11ef7cf1bcb9aa8cd6a60f973"
+    },
+    {
+      "path": "machine/Bambu Lab P2S 0.4 nozzle template machine_start_gcode.json",
+      "scope": "system_vendor_root",
+      "sha256": "868431ff7088bed3e1ef386b11989a23c5e1e632028817b416c377636788bdfb"
+    },
+    {
+      "path": "machine/Bambu Lab P2S 0.4 nozzle template time_lapse_gcode.json",
+      "scope": "system_vendor_root",
+      "sha256": "9d37705ebcb44a5ee94d5415b8f4ce92c4d10fb23f4877c097928af847adf9f7"
+    },
+    {
+      "path": "machine/Bambu Lab P2S 0.4 nozzle template wrapping_detection_gcode.json",
+      "scope": "system_vendor_root",
+      "sha256": "b3db267ac5db28415bbfcf6ae4cee536a0f978bab589e8bf7ccdd4bbe00c7a2b"
+    },
+    {
+      "path": "machine/Bambu Lab P2S 0.4 nozzle.json",
+      "scope": "system_vendor_root",
+      "sha256": "25ac683ad499473e98a43b54ad7e8a801462b71012bd53e0151bc5e045abe2c3"
+    },
+    {
+      "path": "machine/Bambu Lab P2S 0.6 nozzle.json",
+      "scope": "system_vendor_root",
+      "sha256": "9c7fd6be922bcf567ee4126aeb2857b9c62325888b0b738aa827122c15cd3f67"
+    },
+    {
+      "path": "machine/fdm_bbl_3dp_001_common.json",
+      "scope": "system_vendor_root",
+      "sha256": "2ca207f457c1f9b3eb25a1801adb2eaa8ddc5620f5a8945abb51a3fcddab5e47"
+    },
+    {
+      "path": "machine/fdm_machine_common.json",
+      "scope": "system_vendor_root",
+      "sha256": "26ef8ee697849323e67d8e1a9026c175cebe3397e38c5091dddb5cd3fc52e94c"
+    },
+    {
+      "path": "process/0.18mm Balanced Quality @BBL P2S 0.6 nozzle.json",
+      "scope": "system_vendor_root",
+      "sha256": "f980f8ebfe6a64c8492a7131c0817d157450b30b1803973c48a2a82ff38002f6"
+    },
+    {
+      "path": "process/fdm_process_common.json",
+      "scope": "system_vendor_root",
+      "sha256": "d7981c4b92854f251b8697e1bb621c63fe393f263fb8024ab63c401525d543d7"
+    },
+    {
+      "path": "process/fdm_process_single_0.18_nozzle_0.6.json",
+      "scope": "system_vendor_root",
+      "sha256": "ae8edcd395fad1b18c09e416d75784a8957bc8d4b77acab56842f4d4414963f7"
+    },
+    {
+      "path": "process/fdm_process_single_common.json",
+      "scope": "system_vendor_root",
+      "sha256": "05b38ac1318e465e817978b36da51754f928da0172738a20bb3a8d4a69eb4769"
+    },
+    {
+      "path": "/Users/antor/gh/lx/top_baffle_v2/vendor/TINMORRY/resolved_P2S_06HF_PETG_GF.json",
+      "scope": "saved_user_preset",
+      "sha256": "81186a77e8ababf5558d1ed505b91d204f288883be58217d0f8f053f04a93916"
+    }
+  ],
+  "resolved_profiles": {
+    "filament": {
+      "path": "/Users/antor/gh/lx/top_baffle_v2/review/purge_update_20260913/resolved_policy/profiles/resolved_filament.json",
+      "sha256": "81186a77e8ababf5558d1ed505b91d204f288883be58217d0f8f053f04a93916"
+    },
+    "machine": {
+      "path": "/Users/antor/gh/lx/top_baffle_v2/review/purge_update_20260913/resolved_policy/profiles/resolved_machine.json",
+      "sha256": "0138b4047903b938a798a60a93018eb11413c58a25d5c960bc351f153f6d1745"
+    },
+    "process": {
+      "path": "/Users/antor/gh/lx/top_baffle_v2/review/purge_update_20260913/resolved_policy/profiles/resolved_process.json",
+      "sha256": "18bd620e50419a66563d5a42a90b101f2bb5c63e06deb3884670b755b99dc188"
+    },
+    "support_interface_filament": {
+      "path": "/Users/antor/gh/lx/top_baffle_v2/review/purge_update_20260913/resolved_policy/profiles/resolved_support_interface_filament.json",
+      "sha256": "3311de4280d8f31c47c63b62065f387b0f2b7f6324bc82614ca2a94e070b7b22"
+    }
+  },
+  "source_presets": {
+    "filament": {
+      "path": "/Users/antor/gh/lx/top_baffle_v2/vendor/TINMORRY/resolved_P2S_06HF_PETG_GF.json",
+      "sha256": "81186a77e8ababf5558d1ed505b91d204f288883be58217d0f8f053f04a93916"
+    },
+    "machine": {
+      "path": "/Users/antor/Library/Application Support/BambuStudio/system/BBL/machine/Bambu Lab P2S 0.6 nozzle.json",
+      "sha256": "9c7fd6be922bcf567ee4126aeb2857b9c62325888b0b738aa827122c15cd3f67"
+    },
+    "process": {
+      "path": "/Users/antor/Library/Application Support/BambuStudio/system/BBL/process/0.18mm Balanced Quality @BBL P2S 0.6 nozzle.json",
+      "sha256": "f980f8ebfe6a64c8492a7131c0817d157450b30b1803973c48a2a82ff38002f6"
+    },
+    "support_interface_filament": {
+      "path": "/Users/antor/Library/Application Support/BambuStudio/system/BBL/filament/Bambu PLA Basic @BBL P2S 0.6 nozzle.json",
+      "sha256": "30efcded147c0242ae8a4dfa181b37177e5c2a35eda02e1606b13a1e7333832e"
+    }
+  },
+  "system_vendor_root": "/Users/antor/Library/Application Support/BambuStudio/system/BBL",
+  "version": "02.07.01.62"
+}

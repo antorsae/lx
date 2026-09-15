@@ -1,0 +1,308 @@
+{
+  "body": {
+    "path": "review/nd25fn4_translucent/body/ND25FN_V4_body_discovery_TRANSLUCENT.3mf",
+    "sha256": "fe32482fb12ca4fc4354da4d1ea4c71c13840ea32f22349ba960df3bd0159cd8",
+    "offset": [
+      13.656524658203125,
+      13.65643310546875,
+      0
+    ],
+    "sources": [
+      {
+        "path": "candidates/nd25fn4_crescent/print/geometry/01_UM_Crescent_V4_PRINT.stl",
+        "sha256": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "path": "review/nd25fn4_print/inputs/tweeters_15pct_gyroid.stl",
+        "sha256": "38041dd12aeb0af813584ea9d4690f9d26c3df56579455398fbefd0144d33487",
+        "subtype": "modifier_part",
+        "overrides": {
+          "sparse_infill_density": "15%",
+          "sparse_infill_pattern": "gyroid"
+        },
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "path": "review/nd25fn4_print/inputs/duct_and_magnet_support_blocker.stl",
+        "sha256": "99c5110ff4eea9866ffb22ca1ecac11c1bab321f9cf4b3171ed54b6c4222d5fc",
+        "subtype": "support_blocker",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "path": "review/nd25fn4_print/inputs/insert_bore_support_blocker.stl",
+        "sha256": "3f9dfe8e89d32b5758ad816184b0b43044c0232ad1d51e8017847e68b63546a4",
+        "subtype": "support_blocker",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "source_to_stl_matrix": [
+      [
+        0.7071067811865476,
+        0.7071067811865475,
+        0.0,
+        -190.10355828014332
+      ],
+      [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0.0,
+        418.7905105824157
+      ],
+      [
+        0.0,
+        0.0,
+        -1.0,
+        20.67987861633301
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "infill_split_installed_y_mm": 421.0,
+    "original_prepared_project": "review/nd25fn4_print/body/ND25FN_V4_body_discovery.3mf",
+    "original_prepared_sha256": "b408ad8fe7e3e907118c483b31458679ef1f03d9723f2b07a7b9afa8dda2b4a5"
+  },
+  "accessories": {
+    "path": "review/nd25fn4_translucent/accessories/ND25FN_V4_caps_retainers_TRANSLUCENT.3mf",
+    "sha256": "57e7481e518442c222e1a9442f5fc385c2ff3f5f46996b7e09909c1f11232eab",
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "sources": [
+      {
+        "path": "candidates/nd25fn4_crescent/STL/02_Closed_Cap_PRINT_TWO.stl",
+        "sha256": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          74,
+          97,
+          0
+        ]
+      },
+      {
+        "path": "candidates/nd25fn4_crescent/STL/02_Closed_Cap_PRINT_TWO.stl",
+        "sha256": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          144,
+          97,
+          0
+        ]
+      },
+      {
+        "path": "candidates/nd25fn4_crescent/STL/03_Tweeter_Retainer_PRINT_TWO.stl",
+        "sha256": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          74,
+          166,
+          0
+        ]
+      },
+      {
+        "path": "candidates/nd25fn4_crescent/STL/03_Tweeter_Retainer_PRINT_TWO.stl",
+        "sha256": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          144,
+          166,
+          0
+        ]
+      }
+    ],
+    "original_prepared_project": "review/nd25fn4_print/accessories/ND25FN_V4_caps_retainers.3mf",
+    "original_prepared_sha256": "be120488d55151172a8ea999401d40231618da9a83b3fd815a5680811efaa847"
+  },
+  "V4_flat_left_UPPER": {
+    "path": "review/nd25fn4_translucent/V4_flat_left_UPPER/V4_flat_left_UPPER_TRANSLUCENT.3mf",
+    "sha256": "e3393f63251177fdcef75a2c995e8526a4c925fee4fc6c29db94ce10a4ec1f23",
+    "offset": [
+      35.81433868408203,
+      31.276283264160142,
+      0
+    ],
+    "sources": [
+      {
+        "path": "candidates/nd25fn4_crescent/print/geometry/V4_flat_left_UPPER_PRINT.stl",
+        "sha256": "3388dcdff916ad96d8509e2a67d953dbfe8f8b2268ee1c01e259e9e3440097d8",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "path": "review/nd25fn4_print/inputs/V4_flat_left_UPPER_magnet_blocker.stl",
+        "sha256": "6f489a1463315c284e61656c78757aba0584098a86f7863279a5bde31c138bbb",
+        "subtype": "support_blocker",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "original_prepared_project": "review/nd25fn4_print/V4_flat_left_UPPER/V4_flat_left_UPPER.3mf",
+    "original_prepared_sha256": "36ee88cebf8501de4b2d8e24e0c26c75dba4aec8894f31e7507ae5b67a7e2318"
+  },
+  "V4_flat_right_UPPER": {
+    "path": "review/nd25fn4_translucent/V4_flat_right_UPPER/V4_flat_right_UPPER_TRANSLUCENT.3mf",
+    "sha256": "9deaec528ea0c1a1a18e79be474d5fee9568b1ab0baf8086590977d423c36cd8",
+    "offset": [
+      35.81434631347656,
+      31.275527954101562,
+      0
+    ],
+    "sources": [
+      {
+        "path": "candidates/nd25fn4_crescent/print/geometry/V4_flat_right_UPPER_PRINT.stl",
+        "sha256": "6b4b02e8a565bca47228f543f9f0000f74ca9244ba87422b060f59235b01a387",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "path": "review/nd25fn4_print/inputs/V4_flat_right_UPPER_magnet_blocker.stl",
+        "sha256": "cae008e361749e6596e81cff233727b0a377f2dc34d84171d621d1412dc7e1ad",
+        "subtype": "support_blocker",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "original_prepared_project": "review/nd25fn4_print/V4_flat_right_UPPER/V4_flat_right_UPPER.3mf",
+    "original_prepared_sha256": "a438d397d2c3fcc06e1144a029306a241b5abd7672b5f81effb0758ca61df69e"
+  },
+  "V4_graded_left_UPPER": {
+    "path": "review/nd25fn4_translucent/V4_graded_left_UPPER/V4_graded_left_UPPER_TRANSLUCENT.3mf",
+    "sha256": "f79226b1ac02562367c90361bc2186e2ae30419418c1b011199c909d1445f3ff",
+    "offset": [
+      31.276283264160156,
+      36.920814514160156,
+      0
+    ],
+    "sources": [
+      {
+        "path": "candidates/nd25fn4_crescent/print/geometry/V4_graded_left_UPPER_PRINT.stl",
+        "sha256": "334e8ac6b1fa4452b00db175912a08fc384853e3f95bef2fe0bac0e15de03683",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "path": "review/nd25fn4_print/inputs/V4_graded_left_UPPER_magnet_blocker.stl",
+        "sha256": "f7cb496872ce53b4c30b0c5adacbec667114c1d31e90cd81c1380803b97c717d",
+        "subtype": "support_blocker",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "original_prepared_project": "review/nd25fn4_print/V4_graded_left_UPPER/V4_graded_left_UPPER.3mf",
+    "original_prepared_sha256": "3035afb568392a62e1c48b7fff54f6b1378ae50055c3cfaefc682ab0f1c6cbc0"
+  },
+  "V4_graded_right_UPPER": {
+    "path": "review/nd25fn4_translucent/V4_graded_right_UPPER/V4_graded_right_UPPER_TRANSLUCENT.3mf",
+    "sha256": "8942c76b39a46540cd3a41f6bb2279afda6b671897618c89f3ced43db6e9cff2",
+    "offset": [
+      36.92082977294922,
+      31.275527954101562,
+      0
+    ],
+    "sources": [
+      {
+        "path": "candidates/nd25fn4_crescent/print/geometry/V4_graded_right_UPPER_PRINT.stl",
+        "sha256": "01282fbddc5c7c8aa359dcdb3ead63115b3c0318173f8adef18828275be527c5",
+        "subtype": "normal_part",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "path": "review/nd25fn4_print/inputs/V4_graded_right_UPPER_magnet_blocker.stl",
+        "sha256": "e27f029565398770bae5715f1bc52538b6205af8f78faca35cdd2bc3ef39bf68",
+        "subtype": "support_blocker",
+        "overrides": {},
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "original_prepared_project": "review/nd25fn4_print/V4_graded_right_UPPER/V4_graded_right_UPPER.3mf",
+    "original_prepared_sha256": "84b6f1b6edd661ac2713804510e89855e8e359bfe8df3b6c19f54f4ad39792f5"
+  },
+  "authority": {
+    "material_policy": "candidates/nd25fn4_crescent/translucent_material_policy.json",
+    "material_policy_sha256": "9d370c976872c187fb20ca06c374dc040fdb9a74c14fbe7b21fc6b22bab7bb42",
+    "shared_policy_sha256": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
+    "original_preparation": "review/nd25fn4_print/preparation.json",
+    "original_preparation_sha256": "0d69c4414f183d94c30bcb8408d1a6a8e426bd6d9cbc34060fc31d60b0a6f9cd",
+    "profile_files": {
+      "review/nd25fn4_translucent/profiles/resolved_machine.json": "0138b4047903b938a798a60a93018eb11413c58a25d5c960bc351f153f6d1745",
+      "review/nd25fn4_translucent/profiles/resolved_filament.json": "eaf581cae0e6d42eb24dff51ede50786124c8ffe15931c97307d4a6ed8df87c6",
+      "review/nd25fn4_translucent/profiles/resolved_support_interface_filament.json": "4bc1b4102582f4d42c28ba57efd1848d848256b46d532ccf71d133fa1ce498ec",
+      "review/nd25fn4_translucent/profiles/validation_wrapper.json": "ff637204f0b6d48bd71586b9a625f1d9a0a335acc95798165d0bd8e1f3e3d181",
+      "review/nd25fn4_translucent/profiles/system_sources/filament/Bambu PLA Translucent @BBL P2S 0.6 nozzle.json": "e683e9b861c875617a9d0a0a3cd4b81e948b35cd3570925d452af0e5ead41404",
+      "review/nd25fn4_translucent/profiles/system_sources/filament/fdm_filament_pla.json": "670d21ea6bdf1cd4b0a2bfddc743612ffd896cd6e5dbe767c25d2c4165c49a30",
+      "review/nd25fn4_translucent/profiles/system_sources/filament/Bambu PETG Translucent @base.json": "9a26590c1a09f58e95c5e255619d169a5549fad9ff5edd9fc92c870548ec5039",
+      "review/nd25fn4_translucent/profiles/system_sources/filament/Bambu PLA Translucent @base.json": "cedb38958d6c6230758c303ddff5fe08b3770949bdd516748ddd5b22869addf3",
+      "review/nd25fn4_translucent/profiles/system_sources/filament/fdm_filament_common.json": "8c7105b7d59a28f600c43a946f067b8b4d707b9711c0bf6b88e9166e48878548",
+      "review/nd25fn4_translucent/profiles/system_sources/filament/fdm_filament_template_direct_dual.json": "e0f564b83f3ef70cce4de1401dd7cd855d6fbd834343cb8f4292f2a1ac3efc51",
+      "review/nd25fn4_translucent/profiles/system_sources/filament/fdm_filament_pet.json": "3ed1b36367fe6df800103a9deaaa036f9d79c7afda3f3a17514dff23aa96c7d8",
+      "review/nd25fn4_translucent/profiles/system_sources/filament/Bambu PETG Translucent @BBL P2S 0.6 nozzle.json": "9ba514be649629dd51b69bbdd2058d81a605f20594481cfa165182f52658d226"
+    },
+    "script_sha256": "c7983b02b644636a1ef049cd2183c26b829fb7ac65bce65c17343b21aae562eb"
+  }
+}

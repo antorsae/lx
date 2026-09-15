@@ -1,0 +1,38 @@
+{
+  "status": "pass",
+  "before_preparation_sha256": "8b99d35098e7101ed701325f44f397e763ffeb545854f1ba064d90c7cb263302",
+  "preparation_sha256": "74f9ad4a8666669ceaed5bde7fff39b8b69bd351d4e50da7db635ba4c9985d57",
+  "checks": [
+    {
+      "key": "body",
+      "all_derived_material_and_process_settings_identical": true,
+      "source_geometry_bytes_identical": true
+    },
+    {
+      "key": "accessories",
+      "all_derived_material_and_process_settings_identical": true,
+      "source_geometry_bytes_identical": true
+    },
+    {
+      "key": "V4_flat_left_UPPER",
+      "all_derived_material_and_process_settings_identical": true,
+      "source_geometry_bytes_identical": true
+    },
+    {
+      "key": "V4_flat_right_UPPER",
+      "all_derived_material_and_process_settings_identical": true,
+      "source_geometry_bytes_identical": true
+    },
+    {
+      "key": "V4_graded_left_UPPER",
+      "all_derived_material_and_process_settings_identical": true,
+      "source_geometry_bytes_identical": true
+    },
+    {
+      "key": "V4_graded_right_UPPER",
+      "all_derived_material_and_process_settings_identical": true,
+      "source_geometry_bytes_identical": true
+    }
+  ],
+  "scope": "Current GF sources derive exactly the existing translucent prepared settings and geometry; no translucent reslicing or native edits."
+}

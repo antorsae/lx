@@ -1,0 +1,74 @@
+[
+  {
+    "path": "to_print/obiwan/3mf_06hf_petg-gf/obiwan_flat_wings_split2_combo_06hf_petg-gf.gcode.3mf",
+    "sha256": "34e5997f59f85a15a4a0f3051cf9bae0c243052e1ec5899f456ee930fdd2c556",
+    "settings": {
+      "wall_loops": "6",
+      "sparse_infill_density": "10%",
+      "sparse_infill_pattern": "gyroid",
+      "enable_support": "0"
+    },
+    "overrides": [
+      {
+        "key": "enable_support",
+        "value": "0"
+      },
+      {
+        "key": "sparse_infill_density",
+        "value": "30%"
+      },
+      {
+        "key": "sparse_infill_pattern",
+        "value": "gyroid"
+      },
+      {
+        "key": "support_critical_regions_only",
+        "value": "0"
+      },
+      {
+        "key": "support_on_build_plate_only",
+        "value": "0"
+      },
+      {
+        "key": "support_remove_small_overhang",
+        "value": "0"
+      }
+    ]
+  },
+  {
+    "path": "to_print/obiwan/3mf_06hf_petg-gf/obiwan_graded_wings_split2_combo_06hf_petg-gf.gcode.3mf",
+    "sha256": "483a5be15f50341a9f19a5c57925d90e042d0de957df10add0f0384984f35bbf",
+    "settings": {
+      "wall_loops": "6",
+      "sparse_infill_density": "10%",
+      "sparse_infill_pattern": "gyroid",
+      "enable_support": "0"
+    },
+    "overrides": [
+      {
+        "key": "enable_support",
+        "value": "0"
+      },
+      {
+        "key": "sparse_infill_density",
+        "value": "30%"
+      },
+      {
+        "key": "sparse_infill_pattern",
+        "value": "gyroid"
+      },
+      {
+        "key": "support_critical_regions_only",
+        "value": "0"
+      },
+      {
+        "key": "support_on_build_plate_only",
+        "value": "0"
+      },
+      {
+        "key": "support_remove_small_overhang",
+        "value": "0"
+      }
+    ]
+  }
+]

@@ -1,0 +1,141 @@
+Printing guide for using PLA Basic and PETG HF/PETG Basic for support | Bambu Lab Wiki
+¶ Using PLA Basic & PETG as Mutual Supports
+Why this works: PLA and PETG don't bond well to each other — and that's exactly what makes them a great support pair. Supports snap off cleanly, leaving a much better surface finish.
+¶ Overview
+Let's look at the three examples below, using the incompatible filament techniques covered in this section.
+In the image below, we can see 3 support approaches. The model was always printed in PETG, but the support filament varied between samples:
+¶ Support Configurations Compared
+¶ 1 — PETG model + PETG supports
+Using PETG for both the model and the supports provides the shortest print time and the highest filament efficiency.
+¶ 2 — PETG model + PLA supports
+Only PLA is used for the supports. This results in the longest print time (5 h 3 min) and the highest filament usage. During printing, the toolhead needs to switch nozzles at almost every layer. Each nozzle change takes approximately 5 seconds, plus additional time to pressurize the nozzle at the purge tower.
+¶ 3 — PETG model + PETG support base + PLA interface
+The support base is printed with PETG, while the support interface is printed with PLA. This reduces the total print time by 1 hour and 20 minutes compared to the previous example. The time savings come mainly from fewer nozzle switches. The purge tower also uses significantly less filament — approximately half of the previous case.
+¶ Surface Finish Results
+Below, we can see the supported section. The image sequence is the same as above.
+❌ PETG supports on PETG model
+The bond between them is stronger. This makes the supports more difficult to remove and may leave marks or defects on the model surface.
+✅ PLA supports on PETG model
+The surface finish is improved. The supports are easier to remove, and the model surface remains clean and well-defined.
+¶ ⚠️ Before You Start
+This guide only applies to:
+Bambu PLA Basic
+Bambu PETG HF and Bambu PETG Basic
+The following are not supported by this guide:
+PLA Matte, PLA Silk, PLA-CF, or any third-party PLA
+PETG Translucent, PETG-CF, or any third-party PETG
+💧 Dry your filaments first. PETG runs at a high enough temperature that any moisture in PLA will cause stringing and oozing.
+See → Filament Drying Recommendations
+¶ Which Scenario Are You Printing?
+My model is...
+My support is...
+Jump to
+PETG HF or PETG Basic |
+PLA Basic |
+Scenario A |
+PLA Basic |
+PETG HF or PETG Basic |
+Scenario B |
+¶ Scenario A — PETG Model + PLA Basic Support
+PLA Basic acts as the support/interface. It prints cleanly under PETG and breaks away easily.
+¶ 🌡️ Temperature Settings
+Filament
+Nozzle Temp
+Bed Temp
+PETG HF / PETG Basic (model) |
+Default |
+60 °C |
+PLA Basic (support) |
+230 °C (all layers) |
+60 °C |
+Required print plate: Smooth PEI, High Temp Plate, or Textured PEI
+Enclosed printers (X1, P1S, P2S): Open the door and/or top cover to prevent the chamber from getting too hot for PLA.
+|
+|
+1. Filament options
+2. Edit
+3. Filament tab
+4. Select Support hotend - Auxiliary extruder in this case.
+5. Adjust filament temperatures
+6. Save the PLA support profile
+|
+1. Filament options
+2. Edit
+3. Filament tab
+4. Select hotend - Main extruder in this case.
+5. Adjust filament temperatures
+6. Save the PETG profile
+|
+¶ ⚙️ Support Configuration in Bambu Studio
+We recommend using PLA Basic only as the support interface (not the full support base). Using it as the full base increases print time and risks the support falling off.
+Recommended setup:
+¶ Scenario B — PLA Basic Model + PETG Support
+PETG acts as the support/interface. It handles the higher bed temps needed for PLA adhesion and still releases cleanly.
+¶ 🌡️ Temperature Settings
+Filament
+Nozzle Temp
+Bed Temp
+PLA Basic (model) |
+230 °C (all layers) |
+60 °C |
+PETG HF (support) |
+265 °C (all layers) |
+60 °C |
+PETG Basic (support) |
+Default |
+60 °C |
+Required print plate: Smooth PEI, High Temp Plate, or Textured PEI
+Enclosed printers: Open the door and/or top cover during printing.
+Additional setting for PETG as support:
+Max volumetric speed → 10 mm³/s
+|
+|
+1. Filament options
+2. Edit
+3. Filament tab
+4. Select hotend - Main extruder in this case.
+5. Adjust filament temperatures
+6. Save the PLA support profile
+|
+1. Filament options
+2. Edit
+3. Filament tab
+4. Select Support hotend - Auxiliary extruder in this case.
+5. Adjust filament temperatures
+6. Set the max. Volumetric speed to 10mm³/s
+7. Save the PETG profile
+|
+¶ ⚙️ Support Configuration in Bambu Studio
+We recommend using PETG only as the support interface. Using PETG as the full support base risks the support detaching from the model during printing.
+Recommended setup:
+¶ 📥 Ready-to-Use Preset Files
+Download a .3mf preset and import your .stl model into it. All parameters are pre-configured.
+Preset
+Download
+PLA Basic supports PETG HF |
+Download .3mf |
+PLA Basic supports PETG Basic |
+Download .3mf |
+PETG HF supports PLA Basic |
+Download .3mf |
+PETG Basic supports PLA Basic |
+Download .3mf |
+P2S users: The cooling fan settings differ slightly. Use these dedicated presets:
+Preset
+Download
+PLA Basic supports PETG HF (P2S) |
+Download .3mf |
+PLA Basic supports PETG Basic (P2S) |
+Download .3mf |
+PETG HF supports PLA Basic (P2S) |
+Download .3mf |
+PETG Basic supports PLA Basic (P2S) |
+Download .3mf |
+¶ 🔧 0.2mm Nozzle Users
+When using a 0.2mm nozzle for PLA/PETG mutual support printing, it is recommended to refer to the following figure to increase the line width to increase the viscosity, otherwise it may cause spaghetti. You can also use the modifier to modify the area near the support contact surface.
+¶ 💾 Saving Your Settings as a Preset
+After modifying filament parameters in Bambu Studio, a prompt will appear asking you to save. Click "Save Modified Value" to store it as a User Preset, you won't need to reconfigure it next time.
+¶ End Notes
+We hope this guide has provided clear and practical support.
+If the issue remains unresolved, please submit a support ticket and include yourrecent printer logs and additional pictures or other details. Our technical team will review your requestand provide detailed assistance.
+You can also visit Bambu AI,which can instantly answer common questions and provide you with operational guidance.
