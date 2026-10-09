@@ -97,6 +97,14 @@ MEASUREMENT_SETS = {
 
 Measurement sources may be nested below each configured source directory. This supports source layouts such as `POLARES L10NEO/FRONTALES` and `POLARES L10NEO/TRASERAS`.
 
+The Juan driver pages include **ND25FW4 (nude 18mm)** from
+`DAYTON ND25FW4 ANIDADOS 18 MM NUDE.zip`: 14 REW captures taken on 9 December
+2024, with front and rear measurements at 0–90° in 15° increments over approximately
+500 Hz–20 kHz. These use the collection's 0.5 ms left / 3.0 ms right gate,
+REW IR-start reference, and no smoothing. The source files have no timing reference
+and do not specify microphone distance or height. The Dayton curves are also
+available through the Juan baffleless overlay in the other measurement explorers.
+
 ## Usage
 
 ### Enable REW API

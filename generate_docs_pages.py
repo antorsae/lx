@@ -50,6 +50,7 @@ DRIVER_ROLES = {
     "MU10": "Upper Mid",
     "MU10RB-SL": "Upper Mid",
     "SEAS27T": "Tweeter",
+    "ND25FW4 (nude 18mm)": "Tweeter - baffleless, nested 18 mm",
     "SS10F8424G00": "Upper Mid",
     "L22MG (LX521 top raw)": "Lower Mid - mounted raw",
     "L10NEO (LX521 top raw)": "Upper Mid - mounted raw",

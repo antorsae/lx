@@ -60,6 +60,14 @@ MEASUREMENT_SETS = {
         "output_dir": OUTPUT_DIR / "juan-baffleless",
         "direct_ir_peak_policy": "ir-start",
         "measurement_metadata_overrides": {
+            "ND25FW4 (nude 18mm)": {
+                "notes": (
+                    "Dayton ND25FW4, nested (anidados) 18 mm, baffleless/nude. "
+                    "Source: DAYTON ND25FW4 ANIDADOS 18 MM NUDE.zip. "
+                    "Captured 9 Dec 2024 without a timing reference. "
+                    "Microphone distance and height are not recorded in the source files."
+                ),
+            },
             "L22MG (nude)": {
                 "measurement_distance_m": 0.50,
                 "measurement_height_reference": "l22mg",
