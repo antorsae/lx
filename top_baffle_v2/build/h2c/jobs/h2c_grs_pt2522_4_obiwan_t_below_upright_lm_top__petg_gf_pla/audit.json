@@ -1,20 +1,20 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "1d150ed3d4f109f35eae42fec6a44acd64a74f1edeb76857efe255220c0629e5",
-  "sliced_project_sha256": "2ecfcd89f676265df497cb47e68d1d223c9b8e5d88a6836ad5d32430582bff47",
-  "gcode_sha256": "13104edd23086cb9abf0540085d0d8310ecff050febb7e90f24d0521204f4728",
+  "project_sha256": "faa41d38fb25b63c08ff214a35f00620ceebeef86ebc3cb11ef6be4ef5f1e97c",
+  "sliced_project_sha256": "4cf513ace63e46c17c20600059b062e54a3688c8ff4d79a7950373d75b64d77d",
+  "gcode_sha256": "98fb7af795fa735260a27c1f03b99eb4ec3013e8bbe95f8574d950e7c6bf0c95",
   "audit_version": 4,
   "inputs": {
-    "build/h2c/inputs/h2c_grs_pt2522_4_obiwan_t_below_upright_lm_top_support_blocker.stl": "32fcab40d63b05df045ed8bce013955f21c84ef4dbec1f94ccabf949fb4251cf",
+    "build/h2c/inputs/h2c_grs_pt2522_4_obiwan_t_below_upright_lm_top_support_blocker.stl": "4bfb8a24fbe1302201f79f388c576ea54d9ba088a4e8c939e9b88e2066e383e5",
     "build/h2c/jobs/h2c_grs_pt2522_4_obiwan_t_below_upright_lm_top__petg_gf_pla/dry_run.json": "4b41ef061e55258d58ac8481935aa291911aa1e064aabc657b018cee686219eb",
     "build/h2c/jobs/h2c_grs_pt2522_4_obiwan_t_below_upright_lm_top__petg_gf_pla/process.json": "d82aa4fb50632e2fb28f28f7f3fba42549f7b5c322b223c7db261c42dd0543fd",
     "build/h2c/profiles/petg_gf_pla/interface.json": "bebda39f8a78214048e36f4e2b0bb05425fc049312641c20eeb9256763e9b588",
     "build/h2c/profiles/petg_gf_pla/machine.json": "e565fa0194354f79fa8f4fef2fdb8a2d0e6f9350a565505d95747c4b1ac5ba82",
     "build/h2c/profiles/petg_gf_pla/model.json": "ac9758d2f6761b086555e41f1829756b9176853e7c9ecec168d47a010da6cdc6",
     "candidates/dipole_tweeter/STL/grs_pt2522_4_obiwan_t_below_upright_lm_top.stl": "317bf0b7611e08474a16ca1b32baa93ba8b6469258b264ab01686c7e59842a45",
-    "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_lm_top.support_blocker.json": "899f83e0b3f5da85e3dc4228604dac1991afeeb757efce03df550dabe37159cd",
-    "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_lm_top.support_blocker.stl": "76842c7f0fd5ea026498a7665d462d4b8abda4a5c4cd7089a9e9f3710957174a",
+    "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_lm_top.support_blocker.json": "7895ff51ca18e6a6f1247f61b1e227687a361d87667175d3dc658192124a7dce",
+    "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_lm_top.support_blocker.stl": "9c7b23c0647ccbf2bdcd9126fd05e43e9a1fbb00f1e90e1cffaf1f52aa43d346",
     "candidates/nd25fn4_crescent/audit_print.py": "c297b070b299b3ce910c9a543c909fe38a9c3e9bc5b2a705636d30338112d657",
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "candidates/nd25fn4_vase/obiwan/magnets.catalog.json": "309bfd12e08485b66e52da39863bdc9bc2b0e38840681285eb27998c4fdb19aa",
@@ -26,16 +26,16 @@
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
     "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
     "src/lx521_baffle/tweeter_options.py": "1a7c1a73e917f89d93e72fde1a9d8b1e4a52ec8138fee36e2faf60709f3bde54",
-    "to_print/obiwan/dipole/obiwan_pt2522_t_below_upright_lm_top.petg-gf.3mf": "1d150ed3d4f109f35eae42fec6a44acd64a74f1edeb76857efe255220c0629e5",
+    "to_print/obiwan/dipole/obiwan_pt2522_t_below_upright_lm_top.petg-gf.3mf": "faa41d38fb25b63c08ff214a35f00620ceebeef86ebc3cb11ef6be4ef5f1e97c",
     "to_print/obiwan/dipole/obiwan_pt2522_t_below_upright_lm_top.stl": "a68b0ec9a96cdcb4127e2c1239e4d153ce9c9fec65d0bbf21093e5352a2a4c1c"
   },
   "deposition": {
     "status": "pass",
     "counts": {
       "tower": 4286,
-      "support": 12469,
-      "model": 301390,
-      "interface": 3804
+      "support": 12540,
+      "model": 301387,
+      "interface": 3887
     },
     "deposition_bounds_mm": {
       "0": [
@@ -120,10 +120,10 @@
     },
     {
       "source": "build/h2c/inputs/h2c_grs_pt2522_4_obiwan_t_below_upright_lm_top_support_blocker.stl",
-      "sha256": "32fcab40d63b05df045ed8bce013955f21c84ef4dbec1f94ccabf949fb4251cf",
+      "sha256": "4bfb8a24fbe1302201f79f388c576ea54d9ba088a4e8c939e9b88e2066e383e5",
       "subtype": "support_blocker",
-      "triangles": 11114,
-      "maximum_vertex_error_mm": 1.0596488597168419e-05,
+      "triangles": 11670,
+      "maximum_vertex_error_mm": 9.320932702223771e-06,
       "winding_and_connectivity_match": true
     }
   ],
@@ -131,13 +131,13 @@
     "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_lm_top.support_blocker.json": {
       "status": "pass",
       "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-      "support_extrusion_segments_checked": 54390,
-      "duct_capsule_segment_count": 767,
-      "candidate_distance_checks": 793547,
+      "support_extrusion_segments_checked": 54848,
+      "duct_capsule_segment_count": 760,
+      "candidate_distance_checks": 805082,
       "collision_count": 0,
       "minimum_bead_to_lumen_clearance_mm": 0.759557887123877,
       "closest_approach": {
-        "gcode_line_number": 104972,
+        "gcode_line_number": 104921,
         "layer_z_mm": 5.96,
         "feature": "Support interface",
         "line_width_mm": 0.62,
@@ -191,15 +191,15 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 329426,
-      "lines": 709180,
-      "movement_commands": 480355,
-      "non_comment_lines": 537117,
+      "extrusion_moves": 329587,
+      "lines": 709462,
+      "movement_commands": 480556,
+      "non_comment_lines": 537374,
       "temperature_commands": 131
     },
     "warnings": [
       "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-      "Unknown or unsupported commands were left unchanged: ========== line 1108, G150 line 941, G150.1 line 726, G150.2 line 927, G150.3 line 708, G151 line 768, G17 line 1406, G28.14 line 1100, G28.140 line 651, G29.1 line 647, G29.2 line 782, G29.20 line 987."
+      "Unknown or unsupported commands were left unchanged: ========== line 1110, G150 line 942, G150.1 line 726, G150.2 line 928, G150.3 line 708, G151 line 768, G17 line 1407, G28.14 line 1102, G28.140 line 651, G29.1 line 647, G29.2 line 782, G29.20 line 988."
     ]
   }
 }

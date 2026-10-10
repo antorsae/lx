@@ -2,10 +2,10 @@
   "schema_version": 1,
   "part": "obiwan_amt17d2_t_below_rotated",
   "stl": "obiwan_amt17d2_t_below_rotated.stl",
-  "stl_bytes": 5700784,
-  "stl_sha256": "fba76de30047e848b9c9d1da578f8f9a31a1126088e837bf48753f84fbc3777a",
+  "stl_bytes": 5680884,
+  "stl_sha256": "dedda4d62ab2ae5fbe4ba2cae064db84153bff3a1ae6ceb4370a7d8179451c35",
   "source_stl": "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_below_rotated.stl",
-  "source_sha256": "f0e22f42cd965cbf3ba6a398df2c22aa0b3affc22a206f05af99e9c80f175cd6",
+  "source_sha256": "ff47ae71fbaea60bc7248fa74bcf8d84babe35992c85b1a69b90f74218dce834",
   "print_orientation": "front_face_down",
   "source_to_stl_matrix": [
     [

@@ -1,20 +1,20 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "de9177a2c4c22ba63effdf1486f2b33ddd52d8d8cc62e1086aae03a901d198d3",
-  "sliced_project_sha256": "b60f065156b7370ac9bf172322009798b55e8f10e8cbc1d8b487ae4914fb8174",
-  "gcode_sha256": "1d0f0294a5d1bfdc3e4163ced010a783c64c9bc37e4755ce1ce5717d8e1c547f",
+  "project_sha256": "baf37fc126e33f816b1f0bcf88d7b3415b16ca0b51bdbec1d3426230f15e3386",
+  "sliced_project_sha256": "2c198c609c09cc3ae459719544ed716d5c3978ee57edf1118ea4cd3c6cc359bf",
+  "gcode_sha256": "9b6e43a2762213fa0ebef340e307ad8e2204646f8da61042f9025db92f5164a0",
   "audit_version": 4,
   "inputs": {
-    "build/h2c/inputs/h2c_mundorf_amt17d2_1_obiwan_t_below_rotated_support_blocker.stl": "68d12c60aa8c543d16d7bb1c779a60fa11bf943d7784df805be197e7044b7f00",
+    "build/h2c/inputs/h2c_mundorf_amt17d2_1_obiwan_t_below_rotated_support_blocker.stl": "4555326ea8ab30bfeb89149beb73a9f868881c7c844d1470d4329d189cfb49dc",
     "build/h2c/jobs/h2c_mundorf_amt17d2_1_obiwan_t_below_rotated__petg_gf_pla/dry_run.json": "57035fa261782264796507a279d3b4b39bcdc76ff765fb54be43dbd7669550a3",
     "build/h2c/jobs/h2c_mundorf_amt17d2_1_obiwan_t_below_rotated__petg_gf_pla/process.json": "d82aa4fb50632e2fb28f28f7f3fba42549f7b5c322b223c7db261c42dd0543fd",
     "build/h2c/profiles/petg_gf_pla/interface.json": "bebda39f8a78214048e36f4e2b0bb05425fc049312641c20eeb9256763e9b588",
     "build/h2c/profiles/petg_gf_pla/machine.json": "e565fa0194354f79fa8f4fef2fdb8a2d0e6f9350a565505d95747c4b1ac5ba82",
     "build/h2c/profiles/petg_gf_pla/model.json": "ac9758d2f6761b086555e41f1829756b9176853e7c9ecec168d47a010da6cdc6",
-    "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_below_rotated.stl": "f0e22f42cd965cbf3ba6a398df2c22aa0b3affc22a206f05af99e9c80f175cd6",
-    "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_rotated.support_blocker.json": "b308a22e218ba358721648f94457bf58ca064dc8a571c09a343be93e548f9cc8",
-    "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_rotated.support_blocker.stl": "e595ec705edb454732384bdb5341ca2aa1fefa7cd11540646e18b3ac28b66ca3",
+    "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_below_rotated.stl": "ff47ae71fbaea60bc7248fa74bcf8d84babe35992c85b1a69b90f74218dce834",
+    "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_rotated.support_blocker.json": "f4465aafe14e1362bb4013a9260152802b50fdbfa662d88504b9a78928534fca",
+    "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_rotated.support_blocker.stl": "95a511c2c19b907dc1506771ad88937caa377e13d4e44878c015ff7df637df82",
     "candidates/nd25fn4_crescent/audit_print.py": "c297b070b299b3ce910c9a543c909fe38a9c3e9bc5b2a705636d30338112d657",
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "candidates/nd25fn4_vase/obiwan/magnets.catalog.json": "309bfd12e08485b66e52da39863bdc9bc2b0e38840681285eb27998c4fdb19aa",
@@ -26,21 +26,21 @@
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
     "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
     "src/lx521_baffle/tweeter_options.py": "1a7c1a73e917f89d93e72fde1a9d8b1e4a52ec8138fee36e2faf60709f3bde54",
-    "to_print/obiwan/dipole/obiwan_amt17d2_t_below_rotated.petg-gf.3mf": "de9177a2c4c22ba63effdf1486f2b33ddd52d8d8cc62e1086aae03a901d198d3",
-    "to_print/obiwan/dipole/obiwan_amt17d2_t_below_rotated.stl": "fba76de30047e848b9c9d1da578f8f9a31a1126088e837bf48753f84fbc3777a"
+    "to_print/obiwan/dipole/obiwan_amt17d2_t_below_rotated.petg-gf.3mf": "baf37fc126e33f816b1f0bcf88d7b3415b16ca0b51bdbec1d3426230f15e3386",
+    "to_print/obiwan/dipole/obiwan_amt17d2_t_below_rotated.stl": "dedda4d62ab2ae5fbe4ba2cae064db84153bff3a1ae6ceb4370a7d8179451c35"
   },
   "deposition": {
     "status": "pass",
     "counts": {
-      "tower": 5483,
-      "support": 16977,
-      "model": 463617,
-      "interface": 5627
+      "tower": 5129,
+      "support": 17076,
+      "model": 460999,
+      "interface": 5167
     },
     "deposition_bounds_mm": {
       "0": [
         [
-          26.363,
+          31.49096323172416,
           4.658,
           0.2
         ],
@@ -59,7 +59,7 @@
         [
           284.536,
           310.885,
-          13.0
+          12.68
         ]
       ]
     },
@@ -70,24 +70,20 @@
       3.72,
       3.88,
       4.04,
-      5.16,
-      5.32,
-      5.48,
       5.64,
       5.8,
       5.96,
       6.92,
       7.08,
       7.24,
-      7.72,
-      7.88,
-      8.04,
       9.0,
       9.16,
       9.32,
       9.48,
       9.64,
       9.8,
+      9.96,
+      10.12,
       10.28,
       10.44,
       10.6,
@@ -103,8 +99,7 @@
       12.2,
       12.36,
       12.52,
-      12.68,
-      12.84
+      12.68
     ],
     "bed_temperatures_c": [
       70.0
@@ -117,18 +112,18 @@
   "geometry": [
     {
       "source": "to_print/obiwan/dipole/obiwan_amt17d2_t_below_rotated.stl",
-      "sha256": "fba76de30047e848b9c9d1da578f8f9a31a1126088e837bf48753f84fbc3777a",
+      "sha256": "dedda4d62ab2ae5fbe4ba2cae064db84153bff3a1ae6ceb4370a7d8179451c35",
       "subtype": "normal_part",
-      "triangles": 114014,
+      "triangles": 113616,
       "maximum_vertex_error_mm": 1.2790530666469491e-06,
       "winding_and_connectivity_match": true
     },
     {
       "source": "build/h2c/inputs/h2c_mundorf_amt17d2_1_obiwan_t_below_rotated_support_blocker.stl",
-      "sha256": "68d12c60aa8c543d16d7bb1c779a60fa11bf943d7784df805be197e7044b7f00",
+      "sha256": "4555326ea8ab30bfeb89149beb73a9f868881c7c844d1470d4329d189cfb49dc",
       "subtype": "support_blocker",
-      "triangles": 14654,
-      "maximum_vertex_error_mm": 9.810755222395842e-06,
+      "triangles": 17008,
+      "maximum_vertex_error_mm": 1.0700107338302969e-05,
       "winding_and_connectivity_match": true
     }
   ],
@@ -136,13 +131,13 @@
     "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_rotated.support_blocker.json": {
       "status": "pass",
       "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-      "support_extrusion_segments_checked": 44298,
-      "duct_capsule_segment_count": 901,
-      "candidate_distance_checks": 552398,
+      "support_extrusion_segments_checked": 44900,
+      "duct_capsule_segment_count": 891,
+      "candidate_distance_checks": 553556,
       "collision_count": 0,
       "minimum_bead_to_lumen_clearance_mm": 0.7727429408088774,
       "closest_approach": {
-        "gcode_line_number": 296185,
+        "gcode_line_number": 300509,
         "layer_z_mm": 5.96,
         "feature": "Support interface",
         "line_width_mm": 0.62,
@@ -196,15 +191,15 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 501525,
-      "lines": 990247,
-      "movement_commands": 710352,
-      "non_comment_lines": 783033,
-      "temperature_commands": 166
+      "extrusion_moves": 497975,
+      "lines": 978707,
+      "movement_commands": 704040,
+      "non_comment_lines": 774269,
+      "temperature_commands": 146
     },
     "warnings": [
       "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-      "Unknown or unsupported commands were left unchanged: ========== line 1110, G150 line 942, G150.1 line 726, G150.2 line 928, G150.3 line 708, G151 line 768, G17 line 1406, G28.14 line 1102, G28.140 line 651, G29.1 line 647, G29.2 line 782, G29.20 line 988."
+      "Unknown or unsupported commands were left unchanged: ========== line 1109, G150 line 942, G150.1 line 726, G150.2 line 927, G150.3 line 708, G151 line 768, G17 line 1406, G28.14 line 1101, G28.140 line 651, G29.1 line 647, G29.2 line 782, G29.20 line 988."
     ]
   }
 }

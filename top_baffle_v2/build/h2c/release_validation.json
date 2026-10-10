@@ -8,7 +8,7 @@
   "distinct_print_meshes": 65,
   "checkpoint": "c261f32",
   "physical_qualification": "pending H2C hardware trial",
-  "catalog_sha256": "0d62be88540568159da0211c43eb6d78de124a9a54a1305288946b8ee98698ad",
+  "catalog_sha256": "527a02574ebf5b1fdec26281fe8db71382cdd6bb8f4c32d7e037b0d0afeb22da",
   "policy_sha256": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
   "source_sha256": "35b2d2cd1a906910ab62f6c6080273684268d9ef96e76664a64a696d4f1d0afc"
 }

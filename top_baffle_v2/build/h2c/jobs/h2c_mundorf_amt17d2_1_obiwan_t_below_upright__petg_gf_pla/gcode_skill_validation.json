@@ -38,11 +38,11 @@
     "z_height_mm": 325.0
   },
   "stats": {
-    "extrusion_moves": 489042,
-    "lines": 988312,
-    "movement_commands": 697795,
-    "non_comment_lines": 772728,
-    "temperature_commands": 153
+    "extrusion_moves": 485443,
+    "lines": 977191,
+    "movement_commands": 690856,
+    "non_comment_lines": 764214,
+    "temperature_commands": 146
   },
   "warnings": [
     "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",

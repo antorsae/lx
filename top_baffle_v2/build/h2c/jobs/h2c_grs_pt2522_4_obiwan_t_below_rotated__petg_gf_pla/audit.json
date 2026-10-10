@@ -1,20 +1,20 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "bf568dedf8a53ae9cab6d25e09f090364629113a68a397396bef21fc00e021d5",
-  "sliced_project_sha256": "dadb3e56521fae3567fb0ec3eaaa51673347bda2fff834fc29e87f9f10ff5591",
-  "gcode_sha256": "de8a3e01ffa8e464f9b7c80b5636b27c632514991b0c2a172a12c72ca36c652c",
+  "project_sha256": "67891b3fa165ce96660358765936dfbbfaa386bcd20366e056331e996b0bb690",
+  "sliced_project_sha256": "be59ff536ca9b56a163769cfbc7dd8913873122cdcb87799b8350927d349c5fe",
+  "gcode_sha256": "e92852a411bf093462678109ddb150b0eaf0ac26c3dc5c4728e4c00d0e9dfad7",
   "audit_version": 4,
   "inputs": {
-    "build/h2c/inputs/h2c_grs_pt2522_4_obiwan_t_below_rotated_support_blocker.stl": "dc9dc69796328fd8672ae73fe04d2b33d9d16197af062f153cc39c4789d4d8c5",
+    "build/h2c/inputs/h2c_grs_pt2522_4_obiwan_t_below_rotated_support_blocker.stl": "d0e7d78d21587f75c8b23f31a38168904d88496a23c3e30cc997da958976ce5d",
     "build/h2c/jobs/h2c_grs_pt2522_4_obiwan_t_below_rotated__petg_gf_pla/dry_run.json": "86a982bff5de56917ad470074ac7f1423ad145c3c83a23e2df8feab39dec7932",
     "build/h2c/jobs/h2c_grs_pt2522_4_obiwan_t_below_rotated__petg_gf_pla/process.json": "43a37c8569f0ec74257287c51d3f9d9016e8a49ead75a3f3dc0bcbc8b78157c4",
     "build/h2c/profiles/petg_gf_pla/interface.json": "bebda39f8a78214048e36f4e2b0bb05425fc049312641c20eeb9256763e9b588",
     "build/h2c/profiles/petg_gf_pla/machine.json": "e565fa0194354f79fa8f4fef2fdb8a2d0e6f9350a565505d95747c4b1ac5ba82",
     "build/h2c/profiles/petg_gf_pla/model.json": "ac9758d2f6761b086555e41f1829756b9176853e7c9ecec168d47a010da6cdc6",
     "candidates/dipole_tweeter/STL/grs_pt2522_4_obiwan_t_below_rotated.stl": "efab8007ca48517f8b9db99faa9d089b952e6d4e541d24b924e6a2b99e7ea6b2",
-    "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_rotated.support_blocker.json": "48d1ce75fdab58bbad04fbe496e9cc8962412c8fc2230337be62fb4ea259f5b9",
-    "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_rotated.support_blocker.stl": "75ef57b69925490f8a204a387f4105b6b552c4c1769f6290db7dca2370ed22e8",
+    "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_rotated.support_blocker.json": "558dd4453ef08e92270cd5194afb60fb99a1f0952f610ab53158795b3141336e",
+    "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_rotated.support_blocker.stl": "b2dc3c968500c55d0b92377b50aa0042b770aff5fa4c1d3640fa01c5f09f4f58",
     "candidates/nd25fn4_crescent/audit_print.py": "c297b070b299b3ce910c9a543c909fe38a9c3e9bc5b2a705636d30338112d657",
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "candidates/nd25fn4_vase/obiwan/magnets.catalog.json": "309bfd12e08485b66e52da39863bdc9bc2b0e38840681285eb27998c4fdb19aa",
@@ -26,16 +26,16 @@
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
     "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
     "src/lx521_baffle/tweeter_options.py": "1a7c1a73e917f89d93e72fde1a9d8b1e4a52ec8138fee36e2faf60709f3bde54",
-    "to_print/obiwan/dipole/obiwan_pt2522_t_below_rotated.petg-gf.3mf": "bf568dedf8a53ae9cab6d25e09f090364629113a68a397396bef21fc00e021d5",
+    "to_print/obiwan/dipole/obiwan_pt2522_t_below_rotated.petg-gf.3mf": "67891b3fa165ce96660358765936dfbbfaa386bcd20366e056331e996b0bb690",
     "to_print/obiwan/dipole/obiwan_pt2522_t_below_rotated.stl": "6bf29df4e86d72fcb8ebd9ac849762c388851ed3d2555d014500e6f7526b283e"
   },
   "deposition": {
     "status": "pass",
     "counts": {
-      "tower": 5740,
-      "support": 18204,
+      "tower": 5552,
+      "support": 18619,
       "model": 465701,
-      "interface": 7383
+      "interface": 7130
     },
     "deposition_bounds_mm": {
       "0": [
@@ -73,16 +73,12 @@
       3.72,
       3.88,
       4.04,
-      4.68,
-      4.84,
-      5.0,
       5.64,
       5.8,
       5.96,
       6.92,
-      7.72,
-      7.88,
-      8.04,
+      7.08,
+      7.24,
       11.72,
       11.88,
       12.04,
@@ -120,10 +116,10 @@
     },
     {
       "source": "build/h2c/inputs/h2c_grs_pt2522_4_obiwan_t_below_rotated_support_blocker.stl",
-      "sha256": "dc9dc69796328fd8672ae73fe04d2b33d9d16197af062f153cc39c4789d4d8c5",
+      "sha256": "d0e7d78d21587f75c8b23f31a38168904d88496a23c3e30cc997da958976ce5d",
       "subtype": "support_blocker",
-      "triangles": 15146,
-      "maximum_vertex_error_mm": 9.518955544707229e-06,
+      "triangles": 16684,
+      "maximum_vertex_error_mm": 1.0697739718677406e-05,
       "winding_and_connectivity_match": true
     }
   ],
@@ -131,13 +127,13 @@
     "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_rotated.support_blocker.json": {
       "status": "pass",
       "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-      "support_extrusion_segments_checked": 39107,
-      "duct_capsule_segment_count": 914,
-      "candidate_distance_checks": 546181,
+      "support_extrusion_segments_checked": 40831,
+      "duct_capsule_segment_count": 901,
+      "candidate_distance_checks": 518999,
       "collision_count": 0,
       "minimum_bead_to_lumen_clearance_mm": 0.7727430208622955,
       "closest_approach": {
-        "gcode_line_number": 305957,
+        "gcode_line_number": 303092,
         "layer_z_mm": 5.96,
         "feature": "Support interface",
         "line_width_mm": 0.62,
@@ -191,15 +187,15 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 506366,
-      "lines": 966519,
-      "movement_commands": 699754,
-      "non_comment_lines": 772410,
-      "temperature_commands": 161
+      "extrusion_moves": 506180,
+      "lines": 963163,
+      "movement_commands": 698251,
+      "non_comment_lines": 770068,
+      "temperature_commands": 141
     },
     "warnings": [
       "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-      "Unknown or unsupported commands were left unchanged: ========== line 1109, G150 line 942, G150.1 line 726, G150.2 line 927, G150.3 line 708, G151 line 768, G17 line 1416, G28.14 line 1101, G28.140 line 651, G29.1 line 647, G29.2 line 782, G29.20 line 988."
+      "Unknown or unsupported commands were left unchanged: ========== line 1108, G150 line 941, G150.1 line 726, G150.2 line 927, G150.3 line 708, G151 line 768, G17 line 1415, G28.14 line 1100, G28.140 line 651, G29.1 line 647, G29.2 line 782, G29.20 line 987."
     ]
   }
 }

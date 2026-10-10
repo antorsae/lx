@@ -35,6 +35,9 @@ Every lead runs in a hidden duct from the LM's own ducts:
   11.6 × 5.0 mm duct of the same section where the PT2522-4's 7 mm frame is too thin.
 - **T cable:** reaches the driver's terminals or lead channel. T below keeps it on the −x side, so each side carries
   one duct and the frame stays narrow. T above branches it off the UM's own T lumen.
+- **Section changes are gradual, never a step:** an inner corner would catch the cable when fishing it. The AMT's
+  D4 T duct starts at the lumen's own D6 and narrows over 15 mm; the UM duct blends from round D8.2 to its flat
+  section over 12–23 mm. Both blends follow a smoothstep curve.
 - **Bends:** at least R14. The only owner-approved exception, R10 on the AMT upright UM guide, applied to the
   retired split part; every shipped duct is R15.8 or more.
 

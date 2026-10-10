@@ -596,6 +596,16 @@ RING_BODY_CLEAR_R = 50.5                    # the sculpted body stays outside th
 TOP_CUT_Y = 395.0                           # above this (released UM coordinates) the crescent horns go
 RING_FILL_INNER_R = 49.35
 T_BRANCH_D = DRIVER.t_duct_d
+# A T duct narrower than the D6 T lumen it leaves (the AMT's D4) starts at the lumen's own D6 and narrows over
+# T_TAPER_MM along a smootherstep, so a cable fished up from the LM meets no shoulder (no inner corner) at the branch.
+T_TAPER_MM = 15.0
+
+
+def t_taper_d(arc_mm):
+    """T duct diameter at `arc_mm` from its branch off the D6 T lumen."""
+    import numpy as np
+    from .route import TS_DUCT_D
+    return T_BRANCH_D + max(TS_DUCT_D - T_BRANCH_D, 0.0) * (1.0 - _smootherstep(np.asarray(arc_mm, float) / T_TAPER_MM))
 # Where the round T duct cannot stay hidden in the flush frame, a flat (stadium) duct of the same section area.
 T_FLAT = {}.get((DRIVER_KEY, ORIENTATION))        # flat T duct depth where a round one cannot stay hidden (none needed)
 T_FLAT_W = (T_FLAT + (math.pi * T_BRANCH_D ** 2 / 4 - math.pi * T_FLAT ** 2 / 4) / T_FLAT) if T_FLAT else None
@@ -1106,6 +1116,7 @@ def um_t_above_mesh(um_installed, tessellate, solid_only=False):
     import numpy as np
     import trimesh
     from shapely.geometry.polygon import orient
+    from .route import TS_DUCT_D
 
     def M(t): return m3.Manifold(m3.Mesh(vert_properties=np.asarray(t.vertices, np.float32), tri_verts=np.asarray(t.faces, np.uint32)))
     def chain(points, r):
@@ -1158,7 +1169,11 @@ def um_t_above_mesh(um_installed, tessellate, solid_only=False):
             col = col - m3.CrossSection([np.asarray(g.exterior.coords)[:-1]]).extrude(60).translate([0, 0, -30])
         part = part + col
     for c in cutters: part = part - M(tessellate(c))
-    if part.status() != m3.Error.NoError or part.is_empty(): raise RuntimeError(f'UM + T above boolean failed: {part.status()}')
+    if ABOVE_DUCT_D < TS_DUCT_D:      # open the duct's start out to the lumen's D6 (t_taper_d)
+        arc = np.r_[0, np.cumsum(np.linalg.norm(np.diff(pts, axis=0), axis=1))]
+        k = np.flatnonzero(arc <= T_TAPER_MM + 1.0)
+        dk = t_taper_d(arc[k])
+        part = part - stadium_tube(pts[k], dk, dk)
     out = part.to_mesh()
     mesh = capsule_cut(trimesh.Trimesh(np.asarray(out.vert_properties)[:, :3], np.asarray(out.tri_verts), process=True),
                        [(pts[::2].tolist() + [pts[-1].tolist()], r)])

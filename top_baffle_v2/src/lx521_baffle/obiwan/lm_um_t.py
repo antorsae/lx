@@ -85,6 +85,9 @@ def duct(which):
     rt = routes()[which]
     pts = np.asarray(rt['points'], float)
     w, h = d.section_from_knots(pts, rt['section_knots'])
+    if which == 't':                    # no shoulder where a narrower T duct leaves the D6 lumen (d.t_taper_d)
+        tap = d.t_taper_d(np.r_[0, np.cumsum(np.linalg.norm(np.diff(pts, axis=0), axis=1))])
+        w, h = np.maximum(w, tap), np.maximum(h, tap)
     r_min = d.min_bend_radius(resample(np.vstack([released_route(which)[branch_index(which) - 8:branch_index(which)], pts])))
     floor = {'um': d.UM_GUIDE_MIN_BEND_R, 't': T_MIN_BEND_R}[which]
     if r_min < min(rt['min_bend_r_mm'], floor) - 0.05:
@@ -228,44 +231,8 @@ def facts():
                 fixing=d.DRIVER.screw, insert_bore_mm=[d.M3_INSERT_BORE_D_MM, d.M3_INSERT_BORE_DEPTH_MM])
 
 
-SUPPORT_BLOCKER_GROW_MM = 0.25          # into the duct walls, as the released carrier blockers (obiwan_support_blocker)
-RELEASED_LM_TOP_BLOCKER = 'build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.json'
-
-
-def support_blocker(root):
-    """Slicer-only support blocker for the integrated part, in installed coordinates: the released keyed LM top's own
-    duct blocker (its LM ducts up to the branches; past them it sits in now-solid material, where it is harmless) plus
-    the new UM and T ducts at their real per-point section and their 3 mm lead-in, grown SUPPORT_BLOCKER_GROW_MM into
-    the walls. Returns (trimesh, duct collision contract: polylines + radii a support bead must stay out of)."""
-    import numpy as np
-    import trimesh
-    import manifold3d as m3
-    from pathlib import Path
-    cfg = json.loads((Path(root) / RELEASED_LM_TOP_BLOCKER).read_text())
-    lm = trimesh.load(Path(root) / Path(RELEASED_LM_TOP_BLOCKER).parent / cfg['support_blocker'])
-    lm.apply_transform(np.linalg.inv(np.asarray(cfg['source_to_stl_matrix'])))
-    parts = [m3.Manifold(m3.Mesh(vert_properties=np.asarray(lm.vertices, np.float32), tri_verts=np.asarray(lm.faces, np.uint32)))]
-    regions = []
-    for which in ('um', 't'):
-        pts, cover, w, h = duct(which)
-        rel = released_route(which); j = branch_index(which)
-        pre = rel[max(j - 6, 0):j]; k = np.r_[np.arange(0, len(pts) - 1, 2), len(pts) - 1]
-        P = np.r_[pre, pts[k]]; W = np.r_[np.full(len(pre), w[0]), w[k]]; H = np.r_[np.full(len(pre), h[0]), h[k]]
-        parts.append(d.stadium_tube(P, W + 2 * SUPPORT_BLOCKER_GROW_MM, H + 2 * SUPPORT_BLOCKER_GROW_MM))
-        regions.append(dict(kind='polyline_tube', name=f'{which}_duct', points_xyz_mm=np.round(P, 4).tolist(),
-                            radius_mm=round(float(min(W.min(), H.min())) / 2, 3)))
-        up = rel[(rel[:, 1] >= SEAM_Y + 1.0) & (np.arange(len(rel)) < j)]
-        regions.append(dict(kind='polyline_tube', name=f'{which}_lm_duct_upstream', points_xyz_mm=np.round(up, 4).tolist(),
-                            radius_mm=float(UM_DUCT_R if which == 'um' else TS_DUCT_R)))
-    if d._CH is not None:   # the AMT's lead channel: the T duct ends in it; open at the rear (up when printed), no support
-        from shapely import affinity
-        from shapely.geometry.polygon import orient
-        ch = orient(affinity.translate(d._CH, 0.0, d.PLATE_CENTER_Y).buffer(SUPPORT_BLOCKER_GROW_MM), sign=1.0)
-        parts.append(m3.CrossSection([np.asarray(ch.exterior.coords)[:-1]]).extrude(THICKNESS_MM + 5.0).translate([0, 0, -5.0]))
-        regions.append(dict(kind='plan_prism', name='lead_channel', outline_xy_mm=np.round(np.asarray(ch.exterior.coords), 3).tolist()))
-    out = m3.Manifold.batch_boolean(parts, m3.OpType.Add).to_mesh()
-    mesh = trimesh.Trimesh(np.asarray(out.vert_properties)[:, :3], np.asarray(out.tri_verts), process=True)
-    return mesh, dict(coordinate_space='installed_mm', modifier_clearance_mm=SUPPORT_BLOCKER_GROW_MM, regions=regions)
+# Support blockers for these parts are built by candidates/dipole_tweeter/build_package.py (live ducts only, every
+# M3 insert bore), from the released parts' blockers and the routes stored here.
 
 
 PAIR_COVER_SPLIT_Y = 315.0              # a new duct's rear cover belongs to the LM top below this, to the T + UM piece above
@@ -403,51 +370,3 @@ def lm_um_t_pair_mesh(lm_top_installed, um_installed, tessellate, stage='final')
         if cav: raise RuntimeError(f'pair {name}: sealed cavities left {[np.round(c.bounds.mean(0), 1).tolist() for c in cav]}')
         out.append(main)
     return tuple(out)
-
-
-def pair_support_blockers(root, prints):
-    """Pair variant: {'lm_top': (mesh, contract), 'um_t': (mesh, contract)} in installed coordinates. `prints`: the built
-    {'lm_top': trimesh, 'um_t': trimesh}. Each print gets the stretches of the new ducts it holds (centreline inside it or
-    within 1.5 mm of it, one point of overlap each way); the LM top also keeps the released keyed top's own duct blocker
-    (its LM ducts up to the branches)."""
-    import numpy as np
-    import trimesh
-    import manifold3d as m3
-    from pathlib import Path
-    from trimesh.proximity import signed_distance
-    cfg = json.loads((Path(root) / RELEASED_LM_TOP_BLOCKER).read_text())
-    rel_blk = trimesh.load(Path(root) / Path(RELEASED_LM_TOP_BLOCKER).parent / cfg['support_blocker'])
-    rel_blk.apply_transform(np.linalg.inv(np.asarray(cfg['source_to_stl_matrix'])))
-    ducts = []
-    for which in ('um', 't'):
-        pts, cover, w, h = duct(which)
-        rel = released_route(which); j = branch_index(which)
-        pre = rel[max(j - 6, 0):j]; k = np.r_[np.arange(0, len(pts) - 1, 2), len(pts) - 1]
-        P = np.r_[pre, pts[k]]; W = np.r_[np.full(len(pre), w[0]), w[k]]; H = np.r_[np.full(len(pre), h[0]), h[k]]
-        up = rel[(rel[:, 1] >= SEAM_Y + 1.0) & (np.arange(len(rel)) < j)]
-        ducts.append((which, P, W, H, up))
-    out = {}
-    for side, part in prints.items():
-        parts = [m3.Manifold(m3.Mesh(vert_properties=np.asarray(rel_blk.vertices, np.float32), tri_verts=np.asarray(rel_blk.faces, np.uint32)))] if side == 'lm_top' else []
-        regs = []
-        for which, P, W, H, up in ducts:
-            # owned where a ring 0.4 mm into the duct's wall lies in this print
-            T_ = np.gradient(P, axis=0); T_ /= np.linalg.norm(T_, axis=1, keepdims=True)
-            sd = np.cross(T_, [0.0, 0.0, 1.0]); sd /= np.maximum(np.linalg.norm(sd, axis=1, keepdims=True), 1e-9); upv = np.cross(sd, T_)
-            ring = [P + np.cos(a_) * (W[:, None] / 2 + 0.4) * sd + np.sin(a_) * (H[:, None] / 2 + 0.4) * upv
-                    for a_ in np.linspace(0, 2 * np.pi, 12, endpoint=False)]
-            near = np.any([part.contains(q) for q in ring], axis=0)
-            keep = near | np.r_[near[1:], False] | np.r_[False, near[:-1]]
-            idx = np.flatnonzero(keep)
-            for run in np.split(idx, np.flatnonzero(np.diff(idx) > 1) + 1):
-                if len(run) < 2: continue
-                parts.append(d.stadium_tube(P[run], W[run] + 2 * SUPPORT_BLOCKER_GROW_MM, H[run] + 2 * SUPPORT_BLOCKER_GROW_MM))
-                regs.append(dict(kind='polyline_tube', name=f'{which}_duct', points_xyz_mm=np.round(P[run], 4).tolist(),
-                                 radius_mm=round(float(min(W[run].min(), H[run].min())) / 2, 3)))
-            if side == 'lm_top' and len(up) > 1:
-                regs.append(dict(kind='polyline_tube', name=f'{which}_lm_duct_upstream', points_xyz_mm=np.round(up, 4).tolist(),
-                                 radius_mm=float(UM_DUCT_R if which == 'um' else TS_DUCT_R)))
-        o = m3.Manifold.batch_boolean(parts, m3.OpType.Add).to_mesh()
-        mesh = trimesh.Trimesh(np.asarray(o.vert_properties)[:, :3], np.asarray(o.tri_verts), process=True)
-        out[side] = (mesh, dict(coordinate_space='installed_mm', modifier_clearance_mm=SUPPORT_BLOCKER_GROW_MM, regions=regs))
-    return out

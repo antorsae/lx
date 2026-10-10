@@ -8526,7 +8526,7 @@
       "blocker_sources": [
         {
           "path": "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_above_upright.support_blocker.stl",
-          "sha256": "448ac30866200eff5145e42b7ad1608e032ae5484b224b64dda7669d7153290b"
+          "sha256": "fcfa175c728a5666b94b6576f874b5e8b8c505ff41a44d8f154bbb195db35ca4"
         }
       ],
       "support_blocker_extra_xyz_mm": 0.8,
@@ -8537,7 +8537,7 @@
       ],
       "preparation": {
         "path": "to_print/obiwan/dipole/obiwan_pt2522_t_above_upright.petg-gf.3mf",
-        "sha256": "881a9ec2ebdf3ee64ad2989d598e23caeab5e4915eda91a639adfd91f6e81e3e",
+        "sha256": "95f8589cd9f9b61eefdfd10df39e55e468a18251da1b4a6ef3d1b89e3b5de11a",
         "offset": [
           88.3793988271195,
           62.76873265402277,
@@ -8558,7 +8558,7 @@
           },
           {
             "path": "build/h2c/inputs/h2c_grs_pt2522_4_obiwan_t_above_upright_support_blocker.stl",
-            "sha256": "af2d0a8a3f7b294d3164763dd0c262f564a5aa5f1949cb534b60d8ebd294d37d",
+            "sha256": "e8244fe701aed6631efb54e65972c7e61bddb4ef8c356351ef37c42c04885322",
             "subtype": "support_blocker",
             "overrides": {},
             "seam_enforcer_faces": 0,
@@ -8576,8 +8576,8 @@
         "files": {
           "candidates/dipole_tweeter/STL/grs_pt2522_4_obiwan_t_above_upright.print.json": "ec7ab5ac9643c31cb3a77b5d76cfb8d40f515f5a733024003867558fa17d2390",
           "candidates/dipole_tweeter/STL/grs_pt2522_4_obiwan_t_above_upright.stl": "7d8366ff7fd36583361da8d0433e681fdcd92d06bfceef4c43b7759bacb4856a",
-          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_above_upright.support_blocker.json": "c5ef72df7fff31325f350f040be97959063a7e91c8204a8944b64f5d318f1725",
-          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_above_upright.support_blocker.stl": "448ac30866200eff5145e42b7ad1608e032ae5484b224b64dda7669d7153290b",
+          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_above_upright.support_blocker.json": "618be43d1e6a3c4e5d78d0aaeff4c4c2b43148e0d136cc60d793569aa98f348d",
+          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_above_upright.support_blocker.stl": "fcfa175c728a5666b94b6576f874b5e8b8c505ff41a44d8f154bbb195db35ca4",
           "candidates/nd25fn4_crescent/mesh_ops.py": "03026e5632a4d44959497dbc902640ad61625df632229c48b500349b3c851de7",
           "candidates/nd25fn4_crescent/prepare_print.py": "f78271cff2038c73d37034c0b0c2da480604e15450d61e0a861caeb01283d390",
           "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
@@ -8605,7 +8605,7 @@
         },
         "profiles_sha256": "427b069f79def89c8894d4c366a0b296f6f0ace078f0fff3ca4925f8c4502116"
       },
-      "project_sha256": "881a9ec2ebdf3ee64ad2989d598e23caeab5e4915eda91a639adfd91f6e81e3e",
+      "project_sha256": "95f8589cd9f9b61eefdfd10df39e55e468a18251da1b4a6ef3d1b89e3b5de11a",
       "audit_version": 4,
       "sliced_project": "to_print/obiwan/dipole/obiwan_pt2522_t_above_upright.petg-gf.gcode.3mf",
       "audit": "build/h2c/jobs/h2c_grs_pt2522_4_obiwan_t_above_upright__petg_gf_pla/audit.json"
@@ -8670,7 +8670,7 @@
       "blocker_sources": [
         {
           "path": "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_above_rotated.support_blocker.stl",
-          "sha256": "f2495885de6dee45d5e5a3e63f7f2c69d74a98737c9c5d1f3fe189f2cf29999f"
+          "sha256": "d378deb70e289169bf103f84ae34a11450c9fc35257fd3cef02e5f65984e6f1a"
         }
       ],
       "support_blocker_extra_xyz_mm": 0.8,
@@ -8681,7 +8681,7 @@
       ],
       "preparation": {
         "path": "to_print/obiwan/dipole/obiwan_pt2522_t_above_rotated.petg-gf.3mf",
-        "sha256": "298166e7400285a9812d21ad11b9948d5539be7046c426aae834ca724f0f88a4",
+        "sha256": "b66ff40689f5a2f5f93d529a9161ce1c4845034072592a8bcfff20ef392fb7dc",
         "offset": [
           122.36003494262695,
           73.18504333496094,
@@ -8702,7 +8702,7 @@
           },
           {
             "path": "build/h2c/inputs/h2c_grs_pt2522_4_obiwan_t_above_rotated_support_blocker.stl",
-            "sha256": "8596e098aabff4786b0f3437112329958f2baf12e3a66b34c32497a36861e3c7",
+            "sha256": "66af951549cfad8ee8aa92ac05c5da9b378bb430ddc8312a35cded477d53af10",
             "subtype": "support_blocker",
             "overrides": {},
             "seam_enforcer_faces": 0,
@@ -8720,8 +8720,8 @@
         "files": {
           "candidates/dipole_tweeter/STL/grs_pt2522_4_obiwan_t_above_rotated.print.json": "41307e2a9f9e7d3c4df3ba2faa8719e25947e2bc582b26c6d57f13aebed55574",
           "candidates/dipole_tweeter/STL/grs_pt2522_4_obiwan_t_above_rotated.stl": "159154c0671cb6058d61c94c92bf2b1fd93b72545101b7c3ec661800bb12962b",
-          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_above_rotated.support_blocker.json": "2b17fe6f4a24231f5c10c4af7744bf2f428abb7289aa390d4811380e3dacded6",
-          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_above_rotated.support_blocker.stl": "f2495885de6dee45d5e5a3e63f7f2c69d74a98737c9c5d1f3fe189f2cf29999f",
+          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_above_rotated.support_blocker.json": "b189b5bbb1f94ab276bdc68bdbe375413aa2abd5e21eb50901555d4e3ade0849",
+          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_above_rotated.support_blocker.stl": "d378deb70e289169bf103f84ae34a11450c9fc35257fd3cef02e5f65984e6f1a",
           "candidates/nd25fn4_crescent/mesh_ops.py": "03026e5632a4d44959497dbc902640ad61625df632229c48b500349b3c851de7",
           "candidates/nd25fn4_crescent/prepare_print.py": "f78271cff2038c73d37034c0b0c2da480604e15450d61e0a861caeb01283d390",
           "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
@@ -8749,7 +8749,7 @@
         },
         "profiles_sha256": "427b069f79def89c8894d4c366a0b296f6f0ace078f0fff3ca4925f8c4502116"
       },
-      "project_sha256": "298166e7400285a9812d21ad11b9948d5539be7046c426aae834ca724f0f88a4",
+      "project_sha256": "b66ff40689f5a2f5f93d529a9161ce1c4845034072592a8bcfff20ef392fb7dc",
       "audit_version": 4,
       "sliced_project": "to_print/obiwan/dipole/obiwan_pt2522_t_above_rotated.petg-gf.gcode.3mf",
       "audit": "build/h2c/jobs/h2c_grs_pt2522_4_obiwan_t_above_rotated__petg_gf_pla/audit.json"
@@ -8814,7 +8814,7 @@
       "blocker_sources": [
         {
           "path": "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_above_upright.support_blocker.stl",
-          "sha256": "0e70d4fc7ffe7ac823f6040658743c168ac080739c9fa1b4d67b26b077024fb4"
+          "sha256": "47b4cc0fbcdc8f4871ea63ee9d3e72cfd1c4542e113da906ba79c42ce42fa681"
         }
       ],
       "support_blocker_extra_xyz_mm": 0.8,
@@ -8825,7 +8825,7 @@
       ],
       "preparation": {
         "path": "to_print/obiwan/dipole/obiwan_amt17d2_t_above_upright.petg-gf.3mf",
-        "sha256": "d938acd8724cc874a5ecbc8a2a863646cd5d4272fbf316f9c184ce215f42ec3e",
+        "sha256": "52773e1e302b1e5e60499bd1f901980c21465e8d2c59c4825bf6b15d0ab6cbce",
         "offset": [
           122.36003494262695,
           71.06004333496094,
@@ -8834,7 +8834,7 @@
         "sources": [
           {
             "path": "to_print/obiwan/dipole/obiwan_amt17d2_t_above_upright.stl",
-            "sha256": "a08ff28d44ccfa3d2213ed43df24290d6b9967b6518a59b8c82773c87aa63e4b",
+            "sha256": "6146cc4e7e69cb283a139bf9ae0e968f53e2e345bf7a63e65257c6b580d13bf1",
             "subtype": "normal_part",
             "overrides": {},
             "seam_enforcer_faces": 0,
@@ -8846,7 +8846,7 @@
           },
           {
             "path": "build/h2c/inputs/h2c_mundorf_amt17d2_1_obiwan_t_above_upright_support_blocker.stl",
-            "sha256": "37b55ca37c788abea4b70903bc6eda6b9b7262da1a54a00d9949c36ed76a7594",
+            "sha256": "15f6b4a0383cc189ced971eae8742dbf9c3f269352dcef19d99cfcbf58e56b02",
             "subtype": "support_blocker",
             "overrides": {},
             "seam_enforcer_faces": 0,
@@ -8862,10 +8862,10 @@
       "work": "build/h2c/jobs/h2c_mundorf_amt17d2_1_obiwan_t_above_upright__petg_gf_pla",
       "prepare_inputs": {
         "files": {
-          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_above_upright.print.json": "a9ac2c28e88393be92c560b0413edadaf88234f40bc83a33243d12e76cc8486e",
-          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_above_upright.stl": "067429edb6d6c135e7c68aac1b3426bf29252586b898f718d3d6dac1d2824005",
-          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_above_upright.support_blocker.json": "c55a7d7c2ba9632c8e1df82fa7383085e8cf270e75da6b8befad2db6f1b293a6",
-          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_above_upright.support_blocker.stl": "0e70d4fc7ffe7ac823f6040658743c168ac080739c9fa1b4d67b26b077024fb4",
+          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_above_upright.print.json": "128899b0fbcd0e16b299f219c99596251a01b2375d7bed56db03898a2f118781",
+          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_above_upright.stl": "f9f077f38e1a2fa99afd99797ad50042639925df3e37c900d8195d8901e1e25a",
+          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_above_upright.support_blocker.json": "590ebcb5ff2f8ad72f5e61925b995b0b6012b5613cc74b8726d37fa1b0091ccf",
+          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_above_upright.support_blocker.stl": "47b4cc0fbcdc8f4871ea63ee9d3e72cfd1c4542e113da906ba79c42ce42fa681",
           "candidates/nd25fn4_crescent/mesh_ops.py": "03026e5632a4d44959497dbc902640ad61625df632229c48b500349b3c851de7",
           "candidates/nd25fn4_crescent/prepare_print.py": "f78271cff2038c73d37034c0b0c2da480604e15450d61e0a861caeb01283d390",
           "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
@@ -8893,7 +8893,7 @@
         },
         "profiles_sha256": "427b069f79def89c8894d4c366a0b296f6f0ace078f0fff3ca4925f8c4502116"
       },
-      "project_sha256": "d938acd8724cc874a5ecbc8a2a863646cd5d4272fbf316f9c184ce215f42ec3e",
+      "project_sha256": "52773e1e302b1e5e60499bd1f901980c21465e8d2c59c4825bf6b15d0ab6cbce",
       "audit_version": 4,
       "sliced_project": "to_print/obiwan/dipole/obiwan_amt17d2_t_above_upright.petg-gf.gcode.3mf",
       "audit": "build/h2c/jobs/h2c_mundorf_amt17d2_1_obiwan_t_above_upright__petg_gf_pla/audit.json"
@@ -8958,7 +8958,7 @@
       "blocker_sources": [
         {
           "path": "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_above_rotated.support_blocker.stl",
-          "sha256": "42e5792223899f41eaf5f1e085ec8cb1ca6b82b0d74bf8cbe0bba733b18a084c"
+          "sha256": "e3a1a7b112a110c37204de56d80e2e76794095c46d301f62a5f9187a81efe1cf"
         }
       ],
       "support_blocker_extra_xyz_mm": 0.8,
@@ -8969,7 +8969,7 @@
       ],
       "preparation": {
         "path": "to_print/obiwan/dipole/obiwan_amt17d2_t_above_rotated.petg-gf.3mf",
-        "sha256": "4674d9c6297c34298fa847e2f373907c96c4b4b490c2d797fe6a3dabc0bb8a99",
+        "sha256": "f129ccbebe7efc6a15f3d3c32dca30ade1f0f366d2bd85d5524efac3532a339b",
         "offset": [
           122.36003494262695,
           77.88504028320312,
@@ -8978,7 +8978,7 @@
         "sources": [
           {
             "path": "to_print/obiwan/dipole/obiwan_amt17d2_t_above_rotated.stl",
-            "sha256": "c2ea76f5c15a5d714b1db0d75363e238b17f9c3a5faa67e23be0c9bc4184960e",
+            "sha256": "bbf0312e3127944a854f1df8940f83c1b678121021c1bdcda84157f675519fb7",
             "subtype": "normal_part",
             "overrides": {},
             "seam_enforcer_faces": 0,
@@ -8990,7 +8990,7 @@
           },
           {
             "path": "build/h2c/inputs/h2c_mundorf_amt17d2_1_obiwan_t_above_rotated_support_blocker.stl",
-            "sha256": "d4de060e69e7c4d3a6d9c107384f4e5d9e6f1758980bcb563c59dc60cd56ca93",
+            "sha256": "21985dcff0221861b1a57b1e0d352fe4f27718b19c60447da3199bcc69c4e303",
             "subtype": "support_blocker",
             "overrides": {},
             "seam_enforcer_faces": 0,
@@ -9006,10 +9006,10 @@
       "work": "build/h2c/jobs/h2c_mundorf_amt17d2_1_obiwan_t_above_rotated__petg_gf_pla",
       "prepare_inputs": {
         "files": {
-          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_above_rotated.print.json": "ea62293e489f1adc74cc46d314deaf8919691602fe6ab0f69dedb63f67904c26",
-          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_above_rotated.stl": "113e3a61c0969162e9a0dc7d5aa0f754ef620333fecb1e18e444c793fd354d00",
-          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_above_rotated.support_blocker.json": "b5f70ee6d6c70c211c42a1fba5559f1861982f427415bd5e387ea40401fde8e7",
-          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_above_rotated.support_blocker.stl": "42e5792223899f41eaf5f1e085ec8cb1ca6b82b0d74bf8cbe0bba733b18a084c",
+          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_above_rotated.print.json": "c267a81a56852b310943ad62a07c0a7252f79f726a084a8890c439671592762c",
+          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_above_rotated.stl": "f400886727c0521298e6c4aa552ce43fa20fb341a5e8b5ae334602b3cf850c06",
+          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_above_rotated.support_blocker.json": "60fae2db2342b7e80b6a8fa91449dcb6dc47ae3d2bed193c628ceaab35c95904",
+          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_above_rotated.support_blocker.stl": "e3a1a7b112a110c37204de56d80e2e76794095c46d301f62a5f9187a81efe1cf",
           "candidates/nd25fn4_crescent/mesh_ops.py": "03026e5632a4d44959497dbc902640ad61625df632229c48b500349b3c851de7",
           "candidates/nd25fn4_crescent/prepare_print.py": "f78271cff2038c73d37034c0b0c2da480604e15450d61e0a861caeb01283d390",
           "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
@@ -9037,7 +9037,7 @@
         },
         "profiles_sha256": "427b069f79def89c8894d4c366a0b296f6f0ace078f0fff3ca4925f8c4502116"
       },
-      "project_sha256": "4674d9c6297c34298fa847e2f373907c96c4b4b490c2d797fe6a3dabc0bb8a99",
+      "project_sha256": "f129ccbebe7efc6a15f3d3c32dca30ade1f0f366d2bd85d5524efac3532a339b",
       "audit_version": 4,
       "sliced_project": "to_print/obiwan/dipole/obiwan_amt17d2_t_above_rotated.petg-gf.gcode.3mf",
       "audit": "build/h2c/jobs/h2c_mundorf_amt17d2_1_obiwan_t_above_rotated__petg_gf_pla/audit.json"
@@ -9102,7 +9102,7 @@
       "blocker_sources": [
         {
           "path": "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_lm_top.support_blocker.stl",
-          "sha256": "76842c7f0fd5ea026498a7665d462d4b8abda4a5c4cd7089a9e9f3710957174a"
+          "sha256": "9c7b23c0647ccbf2bdcd9126fd05e43e9a1fbb00f1e90e1cffaf1f52aa43d346"
         }
       ],
       "support_blocker_extra_xyz_mm": 0.8,
@@ -9113,7 +9113,7 @@
       ],
       "preparation": {
         "path": "to_print/obiwan/dipole/obiwan_pt2522_t_below_upright_lm_top.petg-gf.3mf",
-        "sha256": "1d150ed3d4f109f35eae42fec6a44acd64a74f1edeb76857efe255220c0629e5",
+        "sha256": "faa41d38fb25b63c08ff214a35f00620ceebeef86ebc3cb11ef6be4ef5f1e97c",
         "offset": [
           73.70805468805607,
           49.00973870535208,
@@ -9134,7 +9134,7 @@
           },
           {
             "path": "build/h2c/inputs/h2c_grs_pt2522_4_obiwan_t_below_upright_lm_top_support_blocker.stl",
-            "sha256": "32fcab40d63b05df045ed8bce013955f21c84ef4dbec1f94ccabf949fb4251cf",
+            "sha256": "4bfb8a24fbe1302201f79f388c576ea54d9ba088a4e8c939e9b88e2066e383e5",
             "subtype": "support_blocker",
             "overrides": {},
             "seam_enforcer_faces": 0,
@@ -9152,8 +9152,8 @@
         "files": {
           "candidates/dipole_tweeter/STL/grs_pt2522_4_obiwan_t_below_upright_lm_top.print.json": "51dec8bdec2f5e0bf68a03498bd0d5157a4d1dc72dfe7c8d3dae9205756ccec8",
           "candidates/dipole_tweeter/STL/grs_pt2522_4_obiwan_t_below_upright_lm_top.stl": "317bf0b7611e08474a16ca1b32baa93ba8b6469258b264ab01686c7e59842a45",
-          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_lm_top.support_blocker.json": "899f83e0b3f5da85e3dc4228604dac1991afeeb757efce03df550dabe37159cd",
-          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_lm_top.support_blocker.stl": "76842c7f0fd5ea026498a7665d462d4b8abda4a5c4cd7089a9e9f3710957174a",
+          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_lm_top.support_blocker.json": "7895ff51ca18e6a6f1247f61b1e227687a361d87667175d3dc658192124a7dce",
+          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_lm_top.support_blocker.stl": "9c7b23c0647ccbf2bdcd9126fd05e43e9a1fbb00f1e90e1cffaf1f52aa43d346",
           "candidates/nd25fn4_crescent/mesh_ops.py": "03026e5632a4d44959497dbc902640ad61625df632229c48b500349b3c851de7",
           "candidates/nd25fn4_crescent/prepare_print.py": "f78271cff2038c73d37034c0b0c2da480604e15450d61e0a861caeb01283d390",
           "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
@@ -9181,7 +9181,7 @@
         },
         "profiles_sha256": "427b069f79def89c8894d4c366a0b296f6f0ace078f0fff3ca4925f8c4502116"
       },
-      "project_sha256": "1d150ed3d4f109f35eae42fec6a44acd64a74f1edeb76857efe255220c0629e5",
+      "project_sha256": "faa41d38fb25b63c08ff214a35f00620ceebeef86ebc3cb11ef6be4ef5f1e97c",
       "audit_version": 4,
       "sliced_project": "to_print/obiwan/dipole/obiwan_pt2522_t_below_upright_lm_top.petg-gf.gcode.3mf",
       "audit": "build/h2c/jobs/h2c_grs_pt2522_4_obiwan_t_below_upright_lm_top__petg_gf_pla/audit.json"
@@ -9246,7 +9246,7 @@
       "blocker_sources": [
         {
           "path": "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_um_t.support_blocker.stl",
-          "sha256": "344c198f32759846b28597cc6de5b0da102dd7d33a8985fe0b2b4e696bce7876"
+          "sha256": "aae57ab7559ce64737477fcf945cdcc3671d87d81248dbbdee3615f5c859fea7"
         }
       ],
       "support_blocker_extra_xyz_mm": 0.8,
@@ -9257,7 +9257,7 @@
       ],
       "preparation": {
         "path": "to_print/obiwan/dipole/obiwan_pt2522_t_below_upright_um_t.petg-gf.3mf",
-        "sha256": "5275f0e4232bf8f8f743ec40f7f0285adc311c41e461ec3b63e37664255db581",
+        "sha256": "56928de3831b01250d7ec7d25058d87bba214e8097660aa39b03ea10b6e638df",
         "offset": [
           80.00154692820917,
           54.158963510726394,
@@ -9278,7 +9278,7 @@
           },
           {
             "path": "build/h2c/inputs/h2c_grs_pt2522_4_obiwan_t_below_upright_um_t_support_blocker.stl",
-            "sha256": "c315f90bfb3b8b5d153ebeb80d2400706a4466aad5cd69cec1d38493952cbbea",
+            "sha256": "d210cf5ae462cbff4407bc45a2b1b35a01c7da27f69826d22ecb4b19fbe03a12",
             "subtype": "support_blocker",
             "overrides": {},
             "seam_enforcer_faces": 0,
@@ -9296,8 +9296,8 @@
         "files": {
           "candidates/dipole_tweeter/STL/grs_pt2522_4_obiwan_t_below_upright_um_t.print.json": "436e79bd2626b9f39302a08e8d272073bb3f7effa8fa20e63023e0da27806f17",
           "candidates/dipole_tweeter/STL/grs_pt2522_4_obiwan_t_below_upright_um_t.stl": "dff76c4f3e4a59830c35dedd3d8dfcb0affc2918a85b916718d46b1d6c388a5a",
-          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_um_t.support_blocker.json": "e3b378b7ff8968bc9042895efe11d7db39fdd3a06b33d7a0c6658b584fde4fc4",
-          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_um_t.support_blocker.stl": "344c198f32759846b28597cc6de5b0da102dd7d33a8985fe0b2b4e696bce7876",
+          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_um_t.support_blocker.json": "c43e68c11ee9152726065014dc6f08f972d491f66d3c6c9c6cfbb04f9b04a453",
+          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_um_t.support_blocker.stl": "aae57ab7559ce64737477fcf945cdcc3671d87d81248dbbdee3615f5c859fea7",
           "candidates/nd25fn4_crescent/mesh_ops.py": "03026e5632a4d44959497dbc902640ad61625df632229c48b500349b3c851de7",
           "candidates/nd25fn4_crescent/prepare_print.py": "f78271cff2038c73d37034c0b0c2da480604e15450d61e0a861caeb01283d390",
           "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
@@ -9325,7 +9325,7 @@
         },
         "profiles_sha256": "427b069f79def89c8894d4c366a0b296f6f0ace078f0fff3ca4925f8c4502116"
       },
-      "project_sha256": "5275f0e4232bf8f8f743ec40f7f0285adc311c41e461ec3b63e37664255db581",
+      "project_sha256": "56928de3831b01250d7ec7d25058d87bba214e8097660aa39b03ea10b6e638df",
       "audit_version": 4,
       "sliced_project": "to_print/obiwan/dipole/obiwan_pt2522_t_below_upright_um_t.petg-gf.gcode.3mf",
       "audit": "build/h2c/jobs/h2c_grs_pt2522_4_obiwan_t_below_upright_um_t__petg_gf_pla/audit.json"
@@ -9390,7 +9390,7 @@
       "blocker_sources": [
         {
           "path": "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_rotated.support_blocker.stl",
-          "sha256": "75ef57b69925490f8a204a387f4105b6b552c4c1769f6290db7dca2370ed22e8"
+          "sha256": "b2dc3c968500c55d0b92377b50aa0042b770aff5fa4c1d3640fa01c5f09f4f58"
         }
       ],
       "support_blocker_extra_xyz_mm": 0.8,
@@ -9401,7 +9401,7 @@
       ],
       "preparation": {
         "path": "to_print/obiwan/dipole/obiwan_pt2522_t_below_rotated.petg-gf.3mf",
-        "sha256": "bf568dedf8a53ae9cab6d25e09f090364629113a68a397396bef21fc00e021d5",
+        "sha256": "67891b3fa165ce96660358765936dfbbfaa386bcd20366e056331e996b0bb690",
         "offset": [
           61.069549560546875,
           3.1454925537109375,
@@ -9422,7 +9422,7 @@
           },
           {
             "path": "build/h2c/inputs/h2c_grs_pt2522_4_obiwan_t_below_rotated_support_blocker.stl",
-            "sha256": "dc9dc69796328fd8672ae73fe04d2b33d9d16197af062f153cc39c4789d4d8c5",
+            "sha256": "d0e7d78d21587f75c8b23f31a38168904d88496a23c3e30cc997da958976ce5d",
             "subtype": "support_blocker",
             "overrides": {},
             "seam_enforcer_faces": 0,
@@ -9440,8 +9440,8 @@
         "files": {
           "candidates/dipole_tweeter/STL/grs_pt2522_4_obiwan_t_below_rotated.print.json": "081155aaf81aaef48d46d7dad887072f9c9bb485f2975ceb111a18c7c1134250",
           "candidates/dipole_tweeter/STL/grs_pt2522_4_obiwan_t_below_rotated.stl": "efab8007ca48517f8b9db99faa9d089b952e6d4e541d24b924e6a2b99e7ea6b2",
-          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_rotated.support_blocker.json": "48d1ce75fdab58bbad04fbe496e9cc8962412c8fc2230337be62fb4ea259f5b9",
-          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_rotated.support_blocker.stl": "75ef57b69925490f8a204a387f4105b6b552c4c1769f6290db7dca2370ed22e8",
+          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_rotated.support_blocker.json": "558dd4453ef08e92270cd5194afb60fb99a1f0952f610ab53158795b3141336e",
+          "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_rotated.support_blocker.stl": "b2dc3c968500c55d0b92377b50aa0042b770aff5fa4c1d3640fa01c5f09f4f58",
           "candidates/nd25fn4_crescent/mesh_ops.py": "03026e5632a4d44959497dbc902640ad61625df632229c48b500349b3c851de7",
           "candidates/nd25fn4_crescent/prepare_print.py": "f78271cff2038c73d37034c0b0c2da480604e15450d61e0a861caeb01283d390",
           "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
@@ -9469,7 +9469,7 @@
         },
         "profiles_sha256": "427b069f79def89c8894d4c366a0b296f6f0ace078f0fff3ca4925f8c4502116"
       },
-      "project_sha256": "bf568dedf8a53ae9cab6d25e09f090364629113a68a397396bef21fc00e021d5",
+      "project_sha256": "67891b3fa165ce96660358765936dfbbfaa386bcd20366e056331e996b0bb690",
       "audit_version": 4,
       "sliced_project": "to_print/obiwan/dipole/obiwan_pt2522_t_below_rotated.petg-gf.gcode.3mf",
       "audit": "build/h2c/jobs/h2c_grs_pt2522_4_obiwan_t_below_rotated__petg_gf_pla/audit.json"
@@ -9534,7 +9534,7 @@
       "blocker_sources": [
         {
           "path": "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_upright.support_blocker.stl",
-          "sha256": "f8930ca9911851e12d4f3856033fb6c6e9fd049cca2f73d4372d3bf7eb5e920b"
+          "sha256": "49994e0b54f1c82c0921deb30ca18cb1e39252e29993826b26870db0e5593e73"
         }
       ],
       "support_blocker_extra_xyz_mm": 0.8,
@@ -9545,7 +9545,7 @@
       ],
       "preparation": {
         "path": "to_print/obiwan/dipole/obiwan_amt17d2_t_below_upright.petg-gf.3mf",
-        "sha256": "c81eee8959a5c106b53d9fc864528865716729a5cf9287618567d4870216e94d",
+        "sha256": "9f76401259a35b6b1da31eeb41b30acb044bacaa0c007df64b0fdc3fc0240163",
         "offset": [
           61.069549560546875,
           2.5034942626953125,
@@ -9554,7 +9554,7 @@
         "sources": [
           {
             "path": "to_print/obiwan/dipole/obiwan_amt17d2_t_below_upright.stl",
-            "sha256": "66a9d2b95f98b0ed732a4c8d4eefa3bededd604623301d25ba8982977a3abae8",
+            "sha256": "37bb88b55b4edfabed68f1885bab4f7c73f74a8d7d2bb75e0502388f214ecd18",
             "subtype": "normal_part",
             "overrides": {},
             "seam_enforcer_faces": 0,
@@ -9566,7 +9566,7 @@
           },
           {
             "path": "build/h2c/inputs/h2c_mundorf_amt17d2_1_obiwan_t_below_upright_support_blocker.stl",
-            "sha256": "f8925dccc60258a1118fca501772365294a12044a613cefa7ef225bc11e2243a",
+            "sha256": "71eb2e89047a80f08b2482929f22bed6796a5cec595c44baae71fe3f1880e77f",
             "subtype": "support_blocker",
             "overrides": {},
             "seam_enforcer_faces": 0,
@@ -9582,10 +9582,10 @@
       "work": "build/h2c/jobs/h2c_mundorf_amt17d2_1_obiwan_t_below_upright__petg_gf_pla",
       "prepare_inputs": {
         "files": {
-          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_below_upright.print.json": "27db8e349224a65169cc34b127bc732329d847435d83695050b2044a139d14ff",
-          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_below_upright.stl": "d411c626b85f09c437900546dc521a86be0697c9ac64ed421ba34016b73011d1",
-          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_upright.support_blocker.json": "c6e5439dbf49b3a7d8b5382728415360716ff027444accc7a0e2bc0974d7e1f6",
-          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_upright.support_blocker.stl": "f8930ca9911851e12d4f3856033fb6c6e9fd049cca2f73d4372d3bf7eb5e920b",
+          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_below_upright.print.json": "7a405d6a967c8e21bd13c8c3bcded52f9fd6318e88961c2987e44b32784a0b9e",
+          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_below_upright.stl": "460c0b8ad55333cf3bb7f42fbc8328a83b87b9bf406bc8f324ce952c056b2178",
+          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_upright.support_blocker.json": "2c450e92f4329f8961cc8ee9b4ef1e94ea4ae781391b89363db8e69d1099bb18",
+          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_upright.support_blocker.stl": "49994e0b54f1c82c0921deb30ca18cb1e39252e29993826b26870db0e5593e73",
           "candidates/nd25fn4_crescent/mesh_ops.py": "03026e5632a4d44959497dbc902640ad61625df632229c48b500349b3c851de7",
           "candidates/nd25fn4_crescent/prepare_print.py": "f78271cff2038c73d37034c0b0c2da480604e15450d61e0a861caeb01283d390",
           "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
@@ -9613,7 +9613,7 @@
         },
         "profiles_sha256": "427b069f79def89c8894d4c366a0b296f6f0ace078f0fff3ca4925f8c4502116"
       },
-      "project_sha256": "c81eee8959a5c106b53d9fc864528865716729a5cf9287618567d4870216e94d",
+      "project_sha256": "9f76401259a35b6b1da31eeb41b30acb044bacaa0c007df64b0fdc3fc0240163",
       "audit_version": 4,
       "sliced_project": "to_print/obiwan/dipole/obiwan_amt17d2_t_below_upright.petg-gf.gcode.3mf",
       "audit": "build/h2c/jobs/h2c_mundorf_amt17d2_1_obiwan_t_below_upright__petg_gf_pla/audit.json"
@@ -9678,7 +9678,7 @@
       "blocker_sources": [
         {
           "path": "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_rotated.support_blocker.stl",
-          "sha256": "e595ec705edb454732384bdb5341ca2aa1fefa7cd11540646e18b3ac28b66ca3"
+          "sha256": "95a511c2c19b907dc1506771ad88937caa377e13d4e44878c015ff7df637df82"
         }
       ],
       "support_blocker_extra_xyz_mm": 0.8,
@@ -9689,7 +9689,7 @@
       ],
       "preparation": {
         "path": "to_print/obiwan/dipole/obiwan_amt17d2_t_below_rotated.petg-gf.3mf",
-        "sha256": "de9177a2c4c22ba63effdf1486f2b33ddd52d8d8cc62e1086aae03a901d198d3",
+        "sha256": "baf37fc126e33f816b1f0bcf88d7b3415b16ca0b51bdbec1d3426230f15e3386",
         "offset": [
           61.069549560546875,
           9.395492553710938,
@@ -9698,7 +9698,7 @@
         "sources": [
           {
             "path": "to_print/obiwan/dipole/obiwan_amt17d2_t_below_rotated.stl",
-            "sha256": "fba76de30047e848b9c9d1da578f8f9a31a1126088e837bf48753f84fbc3777a",
+            "sha256": "dedda4d62ab2ae5fbe4ba2cae064db84153bff3a1ae6ceb4370a7d8179451c35",
             "subtype": "normal_part",
             "overrides": {},
             "seam_enforcer_faces": 0,
@@ -9710,7 +9710,7 @@
           },
           {
             "path": "build/h2c/inputs/h2c_mundorf_amt17d2_1_obiwan_t_below_rotated_support_blocker.stl",
-            "sha256": "68d12c60aa8c543d16d7bb1c779a60fa11bf943d7784df805be197e7044b7f00",
+            "sha256": "4555326ea8ab30bfeb89149beb73a9f868881c7c844d1470d4329d189cfb49dc",
             "subtype": "support_blocker",
             "overrides": {},
             "seam_enforcer_faces": 0,
@@ -9726,10 +9726,10 @@
       "work": "build/h2c/jobs/h2c_mundorf_amt17d2_1_obiwan_t_below_rotated__petg_gf_pla",
       "prepare_inputs": {
         "files": {
-          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_below_rotated.print.json": "e6cf2845c342e1d978d1dafdc17031a263066d358afcd7995b77495d7a28f480",
-          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_below_rotated.stl": "f0e22f42cd965cbf3ba6a398df2c22aa0b3affc22a206f05af99e9c80f175cd6",
-          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_rotated.support_blocker.json": "b308a22e218ba358721648f94457bf58ca064dc8a571c09a343be93e548f9cc8",
-          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_rotated.support_blocker.stl": "e595ec705edb454732384bdb5341ca2aa1fefa7cd11540646e18b3ac28b66ca3",
+          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_below_rotated.print.json": "a6bc9545b2028c1a0efb1761013d33c892f4577978f9855c8b8ae2614c9971f0",
+          "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_below_rotated.stl": "ff47ae71fbaea60bc7248fa74bcf8d84babe35992c85b1a69b90f74218dce834",
+          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_rotated.support_blocker.json": "f4465aafe14e1362bb4013a9260152802b50fdbfa662d88504b9a78928534fca",
+          "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_rotated.support_blocker.stl": "95a511c2c19b907dc1506771ad88937caa377e13d4e44878c015ff7df637df82",
           "candidates/nd25fn4_crescent/mesh_ops.py": "03026e5632a4d44959497dbc902640ad61625df632229c48b500349b3c851de7",
           "candidates/nd25fn4_crescent/prepare_print.py": "f78271cff2038c73d37034c0b0c2da480604e15450d61e0a861caeb01283d390",
           "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
@@ -9757,7 +9757,7 @@
         },
         "profiles_sha256": "427b069f79def89c8894d4c366a0b296f6f0ace078f0fff3ca4925f8c4502116"
       },
-      "project_sha256": "de9177a2c4c22ba63effdf1486f2b33ddd52d8d8cc62e1086aae03a901d198d3",
+      "project_sha256": "baf37fc126e33f816b1f0bcf88d7b3415b16ca0b51bdbec1d3426230f15e3386",
       "audit_version": 4,
       "sliced_project": "to_print/obiwan/dipole/obiwan_amt17d2_t_below_rotated.petg-gf.gcode.3mf",
       "audit": "build/h2c/jobs/h2c_mundorf_amt17d2_1_obiwan_t_below_rotated__petg_gf_pla/audit.json"
