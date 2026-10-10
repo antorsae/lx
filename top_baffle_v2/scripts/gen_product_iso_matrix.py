@@ -108,6 +108,7 @@ ROLE_COLORS = {
     "base": "#4f9bd7",
     "top": "#efa43a",
     "perimeter": "#62b77b",
+    "second_print": "#4f9bd7",
 }
 
 # Display-space frames.  `span` is `(dx, dy, dz)` in millimetres and is what
@@ -207,7 +208,7 @@ def _dipole_parts(family: str, layout: str, orientation: str) -> tuple[tuple[str
     """The print(s) of one dipole layout; the PT2522-4 upright T below is two prints (keyed LM top + T + UM piece)."""
     stem = f"h2c_{family}_obiwan_{layout}_{orientation}"
     if family == PT2522 and (layout, orientation) == ("t_below", "upright"):
-        return (("base", h2c_stl(stem + "_lm_top")), ("top", h2c_stl(stem + "_um_t")))
+        return (("second_print", h2c_stl(stem + "_lm_top")), ("top", h2c_stl(stem + "_um_t")))
     return (("top", h2c_stl(stem)),)
 
 
@@ -216,9 +217,9 @@ def _dipole_cells() -> tuple[dict, ...]:
     for family, slug, label in DIPOLE_DRIVERS:
         for layout, orientation in DIPOLE_LAYOUTS:
             where = "T above" if layout == "t_above" else "T below"
-            note = ("UM + tweeter frame" if layout == "t_above" else
-                    "keyed LM top + T + UM piece (two prints)" if (family, orientation) == (PT2522, "upright") else
-                    "keyed LM top + tweeter + UM")
+            note = ("one print: UM + tweeter frame" if layout == "t_above" else
+                    "two prints: keyed LM top variant + T + UM piece" if (family, orientation) == (PT2522, "upright") else
+                    "one print: keyed LM top + tweeter + UM")
             cells.append(_cell(f"dipole_{slug}_{layout}_{orientation}", f"{label} dipole — {where}, {orientation}",
                                f"{label} · {where} · {orientation}", "dipole",
                                _dipole_parts(family, layout, orientation), note=note, family=family))
@@ -425,7 +426,8 @@ ROWS = (
         "title": "Dipole tweeters — PT2522-4 and AMT17D2.1, T above / T below, upright / rotated",
         "cells": tuple(f"dipole_{slug}_{layout}_{orientation}" for _, slug, _ in DIPOLE_DRIVERS
                        for layout, orientation in DIPOLE_LAYOUTS),
-        "geometry_note": "Same installed datum and scale. T above replaces the UM; T below also replaces the keyed LM top. Drivers omitted.",
+        "geometry_note": ("Same installed datum and scale. T above replaces the UM; T below also replaces the keyed LM top, fused into one "
+                          "print except the PT2522-4 upright (too long for one print), which splits at the regular LM-UM joint. Drivers omitted."),
     },
     {
         "key": "obiwan_wing_row",
@@ -440,6 +442,7 @@ ROLE_LEGEND = {
     "base": "base / carrier",
     "top": "tweeter carrier / fused upper",
     "perimeter": "optional perimeter",
+    "second_print": "separate print: keyed LM top variant (PT2522-4 upright T below only)",
 }
 
 # Rows live one level down so `images/generated/iso/*.png` stays exactly the
