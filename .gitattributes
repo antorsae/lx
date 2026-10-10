@@ -1,1 +1,2 @@
 *.mdat filter=lfs diff=lfs merge=lfs -text
+top_baffle_v2/to_print/*/*_floor_stand.petg-gf.gcode.3mf filter=lfs diff=lfs merge=lfs -text

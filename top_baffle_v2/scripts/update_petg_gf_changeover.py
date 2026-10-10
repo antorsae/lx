@@ -45,7 +45,7 @@ def patch_project(path):
 
 def main():
     WORK.mkdir(exist_ok=True)
-    gui=[patch_project(p) for p in sorted((ROOT/'to_print/obiwan/3mf_06hf_petg-gf_pla').glob('*.3mf'))]
+    gui=[patch_project(p) for p in sorted((ROOT/'to_print/archive/p2s/obiwan/3mf_06hf_petg-gf_pla').glob('*.3mf'))]
     profile_path=PRINT_WORK/'profiles/resolved_support_interface_filament.json'
     profile=json.loads(profile_path.read_text());profile.update(interface_changeover_overrides());write(profile_path,profile)
     preparation=PRINT_WORK/'preparation.json'

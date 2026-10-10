@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import math
+from functools import lru_cache
 
 import numpy as np
 
@@ -399,6 +400,7 @@ from .rear_entry import (
     _sampled_arc_station,
     _slice_points,
     _tube_section_points,
+    _end_anchored_stations,
     _z_axis_bore,
     lm_rear_exit_port_cutter,
     no_floor_lm_bottom_support_blocker,
@@ -709,10 +711,9 @@ def _anchor_leg(
     # and Z profile while materially reducing Boolean peak memory.
     source_s = np.concatenate((
         [0.0], np.cumsum(np.linalg.norm(np.diff(points, axis=0), axis=1))))
-    section_s = np.linspace(
-        0.0, source_s[-1],
-        max(2, int(math.ceil(
-            source_s[-1] / ANCHOR_SECTION_SPACING))) + 1)
+    # end-anchored like every route loft: a run that starts in the
+    # state-specific stem/bridge still sections the shared ring identically
+    section_s = _end_anchored_stations(float(source_s[-1]), ANCHOR_SECTION_SPACING)
     points = np.column_stack(tuple(
         np.interp(section_s, source_s, points[:, axis])
         for axis in range(3)))
@@ -922,10 +923,9 @@ def _burial_web(
     points = np.asarray(points, dtype=float)
     source_s = np.concatenate((
         [0.0], np.cumsum(np.linalg.norm(np.diff(points, axis=0), axis=1))))
-    section_s = np.linspace(
-        0.0, source_s[-1],
-        max(2, int(math.ceil(
-            source_s[-1] / ANCHOR_SECTION_SPACING))) + 1)
+    # end-anchored like every route loft: a run that starts in the
+    # state-specific stem/bridge still sections the shared ring identically
+    section_s = _end_anchored_stations(float(source_s[-1]), ANCHOR_SECTION_SPACING)
     points = np.column_stack(tuple(
         np.interp(section_s, source_s, points[:, axis])
         for axis in range(3)))
@@ -1084,19 +1084,36 @@ def _owner_cutter_points(points, owner):
     state choice in one helper is essential: changing an extension changes
     the global ruled-section phase along the complete path, not only its caps.
     """
-    extension = _owner_cutter_extension(owner)
-    if extension <= 0.0:
-        return np.asarray(points, dtype=float).copy()
-    return _extended_points(points, extension)
+    # Only the state-owned START (floor stem feed) keeps the floor overshoot.
+    # The END is the common UM/tweeter handoff: it takes the no-floor value in
+    # both states, so the global ruled-section phase along the shared ring is
+    # identical and the floor/no-floor keyed LM tops come out the same.
+    start = _owner_cutter_extension(owner)
+    end = NO_FLOOR_FEED_CUTTER_EXTENSION
+    points = np.asarray(points, dtype=float)
+    if start <= 0.0 and end <= 0.0:
+        return points.copy()
+    first = points[1] - points[0]; first /= np.linalg.norm(first)
+    last = points[-1] - points[-2]; last /= np.linalg.norm(last)
+    head = [points[0] - start * first] if start > 0.0 else []
+    tail = [points[-1] + end * last] if end > 0.0 else []
+    return np.vstack(head + [points] + tail)
 
 def _um_owner_crop(shape, *, cutter=False):
     """Keep a closed T collar all the way to the actual LM cover.
 
     The two native circles do not touch at the off-axis T handoff. Cropping
     the positive tube at R51.7 left a roof window below the z=6.8 closure
-    web, even with the carriers assembled. The UM now owns that short gap;
-    only a normal 0.05-mm fit seam remains against the existing LM outline.
+    web, even with the carriers assembled. The UM owns the gap up to the
+    full-depth LM--UM closure seam, which is also where the LM's own T cover
+    ends (see ``_lm_t_printed_owner_crop``), so only the normal 0.05-mm fit
+    seam remains between the two carriers.
     The extended negative mouth follows the same ownership, with overlap.
+
+    Positive UM material must never pass that seam. Between the R113 arc
+    and the seam, a cover stub under the LM closure web is an unsupported
+    overhang when the UM prints front face down. That feathered stub chipped
+    and opened a visible V at the printed T crossing.
     """
     radius = UM_CORE_R + (
         UM_T_CUTTER_MOUTH_OVERSHOOT if cutter else 0.0)
@@ -1104,7 +1121,41 @@ def _um_owner_crop(shape, *, cutter=False):
     handoff = box(0.0, 307.0, 27.0, 329.0).difference(
         _lm_positive_owner_plan().buffer(-0.6 if cutter else 0.05))
     owner = cylinder.fuse(_polygon_prism(handoff, -50.0, 50.0)).clean()
+    if not cutter:
+        owner = (owner - _polygon_prism(
+            _lm_um_closure_lm_plan().buffer(LM_UM_T_COVER_FIT_SEAM_MM),
+            -50.0, 50.0)).clean()
     return shape & owner
+
+# The T cover's LM/UM split uses the same 0.05-mm fit seam as the
+# full-depth closure web it passes under.
+LM_UM_T_COVER_FIT_SEAM_MM = 0.05
+
+@lru_cache(maxsize=None)
+def _lm_um_closure_lm_plan():
+    """LM-owned plan of the full-depth LM--UM closure web."""
+    from .closure_webs import lm_um_closure_polygons
+    return lm_um_closure_polygons()["lm"]
+
+def _lm_t_printed_owner_crop(shape):
+    """LM T cover domain: printed LM material plus its closure-web plan.
+
+    The T route crosses the LM--UM junction obliquely. The closure seam
+    there lies up to 1.9 mm beyond the R113 arc that bounds the general LM
+    owner. The LM therefore keeps the complete tube under its own closure
+    web, so the T cover splits at the same full-depth surface as the plate
+    rather than as an overhanging half-pipe stub on the UM.
+    """
+    pieces = []
+    for owned in (
+            _lm_printed_owner_crop(shape),
+            shape & _polygon_prism(_lm_um_closure_lm_plan(), -50.0, 50.0)):
+        if owned is not None:
+            pieces.extend(
+                solid for solid in owned.solids() if solid.volume > 1e-9)
+    if not pieces:
+        return None
+    return pieces[0].fuse(*pieces[1:]).clean()
 
 def _lm_positive_owner_plan():
     """Actual exposed LM outline: R113.8 sides, structural R113 cusp.
@@ -1232,6 +1283,10 @@ def _t_flush_owner_components(shape):
     lm_source = _crop_path_interval(
         shape, ts_points, TS_ROUTE_LENGTH, 0.0, TS_UM_ENTRY_S)
     lm = _lm_ring_outer_crop(lm_source)
+    closure = lm_source & _polygon_prism(
+        _lm_um_closure_lm_plan(), -50.0, 50.0)
+    if closure is not None and tuple(closure.solids()):
+        lm = closure if lm is None else lm.fuse(closure).clean()
     # The path crosses R51.7 exactly once. The radial owner crop alone is the
     # authoritative native butt mouth; a preceding tangent station trim cuts
     # away a small curved shell cap that still lies inside the UM owner.
@@ -1393,7 +1448,8 @@ def route_outer_covers(which):
             # union of the native LM ring and the state-specific tail/corridor
             # (the no-floor bridge or the floor-stem handoff), without adding
             # any exterior silhouette outside actual printed material.
-            component = _lm_printed_owner_crop(component)
+            # The closure-web plan extends it to the full-depth LM--UM seam.
+            component = _lm_t_printed_owner_crop(component)
             solids = tuple(component.solids()) if component is not None else ()
             if not solids:
                 if index > 0:

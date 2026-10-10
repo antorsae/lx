@@ -1,10 +1,12 @@
 {
-  "flat": {
+  "obiwan_tweeters_right_flat": {
     "sources": {
-      "to_print/h2c/STL/h2c_obiwan_core_lm_carrier_no_floor_stand.stl": "1a1ed6209bb726c41a2853bae9f427e6e4ed92814af9164a27795d6f716664d0",
-      "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_body.stl": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
-      "to_print/h2c/STL/h2c_dayton_nd25fn4_wing_flat_left.stl": "f450c576543f468c6139abf74d1178b15cd528f2d258e65a150ab3ce3dcd19f1",
-      "to_print/h2c/STL/h2c_dayton_nd25fn4_wing_flat_right.stl": "ae71a3c6d1d81551d013328cd06f36512cce9557f274140ed826384b4e4eb5ed"
+      "to_print/obiwan/lm/obiwan_lm_keyed_bottom_floor_stand.stl": "25403b7263a0ae6c61ad9f2be783adbce64de1415886e76e4efbd43e10d681af",
+      "to_print/obiwan/upper/obiwan_nd25fn4_tweeters_right_top.stl": "c35a5ac7e707bc5926212a2c9af822a66256f8a09078d8fb28a978e5042e17f1",
+      "to_print/obiwan/wings/obiwan_nd25fn4_tweeters_right_wing_flat_left.stl": "42bdf50b7c1c3cd02a2608a291bfdd85b4200a26f15a84938546ba173f08700f",
+      "to_print/obiwan/wings/obiwan_nd25fn4_tweeters_right_wing_flat_right.stl": "1a7edcbf39740d6e0ad49cb9688eb3f4eceaed29113f2468f94f8e81d95d4ea6",
+      "to_print/obiwan/upper/obiwan_nd25fn4_tweeters_right_cap_front.stl": "a5d77b9bb07da88ef5112534632e41f4fb91747098e265be5e7375eec7e7a0b8",
+      "to_print/obiwan/upper/obiwan_nd25fn4_tweeters_right_cap_rear.stl": "a58ea526f18fecf082b3d270762d4862ff3054d9ef7c39d118d05f076de4bee1"
     },
     "views": {
       "front": {
@@ -15,12 +17,12 @@
           1.0
         ],
         "focus_mm": [
-          -8.468417433959985e-08,
-          277.82382499266055,
-          1.5899394989013693
+          7.3470735628689e-07,
+          234.4998741670865,
+          -65.8500014258789
         ],
-        "scale_mm": 305.606226809689,
-        "image_sha256": "78cdc9015a86d00d77ca5039ffb6202e7364574a2645ecb4a50abb099d544eb9"
+        "scale_mm": 257.94986986151736,
+        "image_sha256": "f2ee64622e413ae55adc06409fe0ef624d421dcd1adf7e3e51d8462de1df3560"
       },
       "rear_oblique": {
         "projection": "orthographic",
@@ -30,24 +32,26 @@
           -0.8084520834544433
         ],
         "focus_mm": [
-          -8.468417433959985e-08,
-          277.82382499266055,
-          1.5899394989013693
+          7.3470735628689e-07,
+          234.4998741670865,
+          -65.8500014258789
         ],
-        "scale_mm": 319.9107238422256,
-        "image_sha256": "71e22f869dd1b38b337c85123c22be2d269aeaebd3b732075d82b9dc89dd5324"
+        "scale_mm": 282.318581347627,
+        "image_sha256": "5557f7ad8f64ea3f149a05d0a954455ea7c6c382fb91d153b8bd303345916c9e"
       }
     },
-    "glb_sha256": "047475179c1edf80100a19ccf5c6623e724284142a8f75babd9f068f449ab7c4",
+    "glb_sha256": "c0e52cd477ce00637b4f7902318bfbc25ac906c2d5bdd6e53ac5a11a5f8244d8",
     "glb_units": "metres",
     "glb_is_decimated_preview": false
   },
-  "graded": {
+  "obiwan_tweeters_right_graded": {
     "sources": {
-      "to_print/h2c/STL/h2c_obiwan_core_lm_carrier_no_floor_stand.stl": "1a1ed6209bb726c41a2853bae9f427e6e4ed92814af9164a27795d6f716664d0",
-      "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_body.stl": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
-      "to_print/h2c/STL/h2c_dayton_nd25fn4_wing_graded_left.stl": "f2bd7c7e29264b849d5163ea2f5edd1dac2f8aaddcfcf8f12bafad6d0a9dfe72",
-      "to_print/h2c/STL/h2c_dayton_nd25fn4_wing_graded_right.stl": "fc26f484feac7d70a5546155b44d559486504db036c9e0f126b6fed354de5c2d"
+      "to_print/obiwan/lm/obiwan_lm_keyed_bottom_no_floor_stand.stl": "4120dd12bd7039791eecaddcdc01f84e9a484af9742b1575e25323ba8987ad19",
+      "to_print/obiwan/upper/obiwan_nd25fn4_tweeters_right_top.stl": "c35a5ac7e707bc5926212a2c9af822a66256f8a09078d8fb28a978e5042e17f1",
+      "to_print/obiwan/wings/obiwan_nd25fn4_tweeters_right_wing_graded_left.stl": "b17ff21b296c40ddef59fff8cc72b89e80bf29c8ec16dc8f3781f778d87ee202",
+      "to_print/obiwan/wings/obiwan_nd25fn4_tweeters_right_wing_graded_right.stl": "7db992fd2a7f72d21a308dc4b386cf46f467cdfa2e4b00685744bee7ceb092b0",
+      "to_print/obiwan/upper/obiwan_nd25fn4_tweeters_right_cap_front.stl": "a5d77b9bb07da88ef5112534632e41f4fb91747098e265be5e7375eec7e7a0b8",
+      "to_print/obiwan/upper/obiwan_nd25fn4_tweeters_right_cap_rear.stl": "a58ea526f18fecf082b3d270762d4862ff3054d9ef7c39d118d05f076de4bee1"
     },
     "views": {
       "front": {
@@ -58,12 +62,12 @@
           1.0
         ],
         "focus_mm": [
-          -1.179820856123115e-06,
-          277.82382499266055,
-          1.5899394989013693
+          9.218198044891324e-07,
+          234.4998767534682,
+          -2.369773433276375
         ],
-        "scale_mm": 305.606226809689,
-        "image_sha256": "fab3b5cca1f4e71548c5c010a359116c4ddd1c9b4bb629eae97d5874bcce4d9d"
+        "scale_mm": 257.94986701649754,
+        "image_sha256": "6d3d493f5856c616cf88449875541c24bb5bd27a9073c1ae91a725ee1205fc92"
       },
       "rear_oblique": {
         "projection": "orthographic",
@@ -73,15 +77,191 @@
           -0.8084520834544433
         ],
         "focus_mm": [
-          -1.179820856123115e-06,
-          277.82382499266055,
-          1.5899394989013693
+          9.218198044891324e-07,
+          234.4998767534682,
+          -2.369773433276375
         ],
-        "scale_mm": 319.9107239097189,
-        "image_sha256": "3137f2e1d2456006c4603b58e4e77002c752f8840c5663785b846fe80d0b7bdc"
+        "scale_mm": 273.068992168959,
+        "image_sha256": "4a4fa42b6875080306d5794e81234af3d58777c6b5fa8f4007fe921870af7e9a"
       }
     },
-    "glb_sha256": "ecb0c75a5fd2140adc997c2ad6db116eb5392d629fe0162d766253f25d3ecf99",
+    "glb_sha256": "0732123421eec0d930424a87c10f374abf4c7adf173a5ac81b2e528d72d56e59",
+    "glb_units": "metres",
+    "glb_is_decimated_preview": false
+  },
+  "stock_tweeters_right": {
+    "sources": {
+      "to_print/stock/lm/stock_lm_no_floor_stand.stl": "41ba82d53b0753405a333ccc529a90fde10b8ebe9f801263a232d19323c5bceb",
+      "to_print/stock/upper/stock_nd25fn4_tweeters_right_upper.stl": "1e1ce74ec65772de3dc4623c2217c0051930f04dcfb87d410d403695a57f91cb",
+      "to_print/stock/upper/stock_nd25fn4_tweeters_right_cap_front.stl": "128fbd4f4b26869421da4f83fa28109aaddbc366eb1941ca2f792c5aa5fd01b3",
+      "to_print/stock/upper/stock_nd25fn4_tweeters_right_cap_rear.stl": "9a5a98580033ad24e983355778df92c25791ff4ca6bd6c2ed997f7dfaed44a03"
+    },
+    "views": {
+      "front": {
+        "projection": "orthographic",
+        "direction": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "focus_mm": [
+          0.5495038329962085,
+          234.69050306193972,
+          3.150001049041748
+        ],
+        "scale_mm": 258.1595534781337,
+        "image_sha256": "87435926cedced3d3b9c1072716979cf27ac3deedb8590948380ee8cdec9cbd4"
+      },
+      "rear_oblique": {
+        "projection": "orthographic",
+        "direction": [
+          -0.5659164584181103,
+          0.16169041669088868,
+          -0.8084520834544433
+        ],
+        "focus_mm": [
+          0.5495038329962085,
+          234.69050306193972,
+          3.150001049041748
+        ],
+        "scale_mm": 273.3571656028615,
+        "image_sha256": "d7f548f16d96d71fb1743702b0eca631acce079df148f24ee890f7f7b135ac53"
+      }
+    },
+    "glb_sha256": "a4cd43220c8b39f463bf2e63460c24ad94a0c1df530c75ea07c75c55c521daf2",
+    "glb_units": "metres",
+    "glb_is_decimated_preview": false
+  },
+  "obiwan_tweeters_left_flat": {
+    "sources": {
+      "to_print/obiwan/lm/obiwan_lm_keyed_bottom_floor_stand.stl": "25403b7263a0ae6c61ad9f2be783adbce64de1415886e76e4efbd43e10d681af",
+      "to_print/obiwan/upper/obiwan_nd25fn4_tweeters_left_top.stl": "5eaf2e82e54ccff9a20af240734ed65cf2cf0a803cba743109b558d1cd0dfe4e",
+      "to_print/obiwan/wings/obiwan_nd25fn4_tweeters_left_wing_flat_left.stl": "66cd561660d78c6137124f6a604b099a84f79825c422e63b687b0ad164410116",
+      "to_print/obiwan/wings/obiwan_nd25fn4_tweeters_left_wing_flat_right.stl": "5dc2fc7a6a29dd13a663bef03d2c95c2bf6a9000bd5e6171131f9bddd2e7ba7e",
+      "to_print/obiwan/upper/obiwan_nd25fn4_tweeters_left_cap_front.stl": "b9f83626af14668f282631687df4d3621963082dbe4ed353cf941ac77a9a4870",
+      "to_print/obiwan/upper/obiwan_nd25fn4_tweeters_left_cap_rear.stl": "6025d6dd6cb80ef4e9fdc171cbaecd9a81ed1db8431dcf37e424a3eee2f9c282"
+    },
+    "views": {
+      "front": {
+        "projection": "orthographic",
+        "direction": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "focus_mm": [
+          9.962095361970569e-07,
+          234.4998741670865,
+          -65.8500014258789
+        ],
+        "scale_mm": 257.94986986151736,
+        "image_sha256": "196f07cf67acdea90912f4bfd0996837fd9dd1970df8b6884c79ad2a40b94e67"
+      },
+      "rear_oblique": {
+        "projection": "orthographic",
+        "direction": [
+          -0.5659164584181103,
+          0.16169041669088868,
+          -0.8084520834544433
+        ],
+        "focus_mm": [
+          9.962095361970569e-07,
+          234.4998741670865,
+          -65.8500014258789
+        ],
+        "scale_mm": 282.318581347627,
+        "image_sha256": "44c588e60472c8bc2b27bdfa8fc958e69029107dc80704615a6cc3a0fb483e83"
+      }
+    },
+    "glb_sha256": "368b7d9ea754b5f56ff339553990487cbac22b7365916f8a60aed1542ce63d0e",
+    "glb_units": "metres",
+    "glb_is_decimated_preview": false
+  },
+  "obiwan_tweeters_left_graded": {
+    "sources": {
+      "to_print/obiwan/lm/obiwan_lm_keyed_bottom_no_floor_stand.stl": "4120dd12bd7039791eecaddcdc01f84e9a484af9742b1575e25323ba8987ad19",
+      "to_print/obiwan/upper/obiwan_nd25fn4_tweeters_left_top.stl": "5eaf2e82e54ccff9a20af240734ed65cf2cf0a803cba743109b558d1cd0dfe4e",
+      "to_print/obiwan/wings/obiwan_nd25fn4_tweeters_left_wing_graded_left.stl": "a2b93051100119817b66de40e3b9178b86ab9d9cde611564045796fa512ff98f",
+      "to_print/obiwan/wings/obiwan_nd25fn4_tweeters_left_wing_graded_right.stl": "9fb318ea74c037b2e9f03444704ef5add642d90a3b7314240a5737af8fec5dcd",
+      "to_print/obiwan/upper/obiwan_nd25fn4_tweeters_left_cap_front.stl": "b9f83626af14668f282631687df4d3621963082dbe4ed353cf941ac77a9a4870",
+      "to_print/obiwan/upper/obiwan_nd25fn4_tweeters_left_cap_rear.stl": "6025d6dd6cb80ef4e9fdc171cbaecd9a81ed1db8431dcf37e424a3eee2f9c282"
+    },
+    "views": {
+      "front": {
+        "projection": "orthographic",
+        "direction": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "focus_mm": [
+          8.090970737839598e-07,
+          234.4998767534682,
+          -2.713349864550789
+        ],
+        "scale_mm": 257.94986701649754,
+        "image_sha256": "fb9d560f1d8f571f8ecef805667bcf476f33a9cdecc01ab0030d43df877f9907"
+      },
+      "rear_oblique": {
+        "projection": "orthographic",
+        "direction": [
+          -0.5659164584181103,
+          0.16169041669088868,
+          -0.8084520834544433
+        ],
+        "focus_mm": [
+          8.090970737839598e-07,
+          234.4998767534682,
+          -2.713349864550789
+        ],
+        "scale_mm": 273.1190540536507,
+        "image_sha256": "9d575ec4d88fb351475949567e5234a117ab21c869ce1a31a7ecd6698d30d068"
+      }
+    },
+    "glb_sha256": "ac2f1269d89c9e36ba343d602cf74307670f8f5346d3c99aa4bf720900eeac52",
+    "glb_units": "metres",
+    "glb_is_decimated_preview": false
+  },
+  "stock_tweeters_left": {
+    "sources": {
+      "to_print/stock/lm/stock_lm_no_floor_stand.stl": "41ba82d53b0753405a333ccc529a90fde10b8ebe9f801263a232d19323c5bceb",
+      "to_print/stock/upper/stock_nd25fn4_tweeters_left_upper.stl": "a6e640002d7f7de3fcd037758019fcaab54af81b75d58033977b0862932fc5af",
+      "to_print/stock/upper/stock_nd25fn4_tweeters_left_cap_front.stl": "cb5fdcfbe6e9a8c0e3d63119a4e8afdd047469212fb40c227cc21beb65c0fd60",
+      "to_print/stock/upper/stock_nd25fn4_tweeters_left_cap_rear.stl": "9fbc018f9a636f5518eb9579c9a10501d418f5380cd74cca4e0e4ed184ad56b0"
+    },
+    "views": {
+      "front": {
+        "projection": "orthographic",
+        "direction": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "focus_mm": [
+          -0.5495029747077211,
+          234.69050594779407,
+          3.150001049041748
+        ],
+        "scale_mm": 258.15955665257354,
+        "image_sha256": "d6aa0e0b2e715093c67c851458dfccf80abed79d8f3190fa0a408d5f7a0bef75"
+      },
+      "rear_oblique": {
+        "projection": "orthographic",
+        "direction": [
+          -0.5659164584181103,
+          0.16169041669088868,
+          -0.8084520834544433
+        ],
+        "focus_mm": [
+          -0.5495029747077211,
+          234.69050594779407,
+          3.150001049041748
+        ],
+        "scale_mm": 273.3571688268,
+        "image_sha256": "a071e499ecfd59a61e2570838cdc5a49cd1d5cb7363c4880266dc5028cf69676"
+      }
+    },
+    "glb_sha256": "45b1f71097ac4864810cd05e879a44ae6d7aa887959133b200d5a6cba36f67e7",
     "glb_units": "metres",
     "glb_is_decimated_preview": false
   }

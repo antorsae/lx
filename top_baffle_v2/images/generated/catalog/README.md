@@ -1,16 +1,16 @@
 # Complete parts and magnet catalog
 
 This poster covers the earlier **P2S split arrangement** and diagnostic
-parts. Current H2C quantities, continuous wings and all three tweeter
-families are in the [H2C catalog](../../../to_print/h2c/README.md) and
+parts. Current H2C quantities, continuous wings and all five tweeter
+families are in the [H2C catalog](../../../to_print/README.md) and
 [selection guide](../../../docs/TWEETER_OPTIONS.md). The naming update does
 not change the 78 depicted part variants.
 
 
 ![Regular and integrated-waveguide Obiwan upper choices at one scale](../iso/rows/obiwan_upper_row.png)
 
-This overview puts ND25FW-4, coaxial BMR, opposed BMR and ND25FN-4 waveguide
-on the same LM datum. The detailed poster below shows their individual
+This overview puts ND25FW-4, coaxial BMR, opposed BMR, ND25FN-4 waveguide and
+the PT2522-4 / AMT17D2.1 dipoles on the same LM datum. The detailed poster below shows their individual
 parts and hidden magnet locations.
 
 [Open the full-resolution PNG](ALL_ITEMS_MAGNET_CATALOG.png).
@@ -51,7 +51,7 @@ read as inputs and are not modified by this catalog.
 
 ND25FN-4 views use the approved design STLs. Its prepared print variants add internal
 magnet-loading relief; use the [ND25FN-4 print guide](../../../candidates/nd25fn4_crescent/print/README.md)
-for the earlier P2S jobs, or the [H2C catalog](../../../to_print/h2c/README.md) for current files.
+for the earlier P2S jobs, or the [H2C catalog](../../../to_print/README.md) for current files.
 
 Regenerate from the project root:
 

@@ -55,7 +55,7 @@ def material_extrusions(gcode: Path, supported: bool) -> dict:
 
 
 def audit(name: str, project: Path, output: Path):
-    shelf=ROOT/'to_print'
+    shelf=ROOT/'to_print/archive/p2s'
     manifest=validate(shelf,geometry=False)
     entry=next((e for e in json.loads((shelf/'catalog.json').read_text())['entries'] if e['name']==name),None)
     require(entry is not None and is_gui(entry),'name must identify a GUI-delivered shelf entry')

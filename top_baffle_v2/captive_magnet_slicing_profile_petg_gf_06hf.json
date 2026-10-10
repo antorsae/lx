@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "backend": "BambuStudio",
- "required_bambu_studio_version": "02.07.01.62",
+ "required_bambu_studio_version": "02.08.04.61",
  "lane": "0.6mm_high_flow",
  "material_changeover_policy": "print_policy.json",
  "lane_notes": "PETG-GF structural lane on the 0.6 mm high-flow nozzle, printed on the owner's saved TINMORRY PETG-GF preset. That preset is hash-pinned because Bambu Studio rewrites saved presets in place: on 2026-08-13 it dropped the file's type key, which makes the CLI refuse the config, and collapsed compatible_printers to a name no printer preset matches, which makes the GUI show the filament as unsupported on every machine. Both were repaired by hand and the hash re-pinned; a pin failure here usually means Studio has rewritten it again rather than that the filament changed. Supports print in PETG with a PLA Basic interface, because a PETG interface welds to a PETG part and cannot be stripped, while PLA does not fuse to it, so a zero Z gap still peels apart.",

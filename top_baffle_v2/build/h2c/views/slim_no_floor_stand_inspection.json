@@ -6,7 +6,7 @@
       "token": "#",
       "cadPath": "review_models/slim_no_floor_stand.py",
       "stepPath": "review_models/slim_no_floor_stand.step",
-      "stepHash": "519df0cc1f377f5e486d1245eed06a1b3f728c71612dc8236eb745cb3c17a0af",
+      "stepHash": "ae6309da95c90dc5a565b3353b287539eedcc96d372bac8c941939e762c19b21",
       "summary": {
         "kind": "assembly",
         "occurrenceCount": 3,

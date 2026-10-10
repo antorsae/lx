@@ -21,7 +21,7 @@ sys.path.insert(0, str(ROOT/'src'))
 from lx521_baffle.print_policy import apply_supported_policy, role_settings, policy_sha256, policy, interface_changeover_overrides
 WORK = ROOT / 'review/nd25fn4_print'
 OUT = HERE / 'print'
-BASE = ROOT / 'to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_03_UM_carrier_1_of_1_GUI.3mf'
+BASE = ROOT / 'to_print/archive/p2s/obiwan/3mf_06hf_petg-gf_pla/obiwan_03_UM_carrier_1_of_1_GUI.3mf'
 FROZEN_PROFILES = ROOT / 'review/petg_gui_project_workspace/obiwan_01_02_03_04_LM_UM_combo_floor_stand/base_profile/profiles'
 SPLIT_Y = 421.0
 CORE = 'http://schemas.microsoft.com/3dmanufacturing/core/2015/02'
@@ -95,11 +95,15 @@ def write_project(path, parts, process, offset=(0, 0, 0), pauses=()):
         child_ids = []
         entries = []
         for source, subtype, overrides, translation in group:
+            overrides = dict(overrides)
+            # Optional per-face seam enforcer mask, in the face order of this load.
+            seam = overrides.pop('__paint_seam__', None)
             mesh = trimesh.load_mesh(source, process=True)
+            if seam is not None and len(seam) != len(mesh.faces): raise ValueError(('Seam paint mask size', source))
             oid = next_id; next_id += 1
             child_ids.append((oid, translation))
             entries.append((oid, source, subtype, overrides, len(mesh.faces)))
-            mesh_sources.append((oid, mesh))
+            mesh_sources.append((oid, mesh, seam))
         parent_id = next_id; next_id += 1
         object_ids.append(parent_id)
         obj = ET.SubElement(resources, f'{{{CORE}}}object', id=str(parent_id), type='model')
@@ -138,13 +142,18 @@ def write_project(path, parts, process, offset=(0, 0, 0), pauses=()):
     with zipfile.ZipFile(path,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as archive:
         with archive.open('3D/3dmodel.model','w') as out:
             out.write(prefix)
-            for oid,mesh in mesh_sources:
+            for oid,mesh,seam in mesh_sources:
                 out.write(f'<object id="{oid}" type="model"><mesh><vertices>'.encode())
                 for start in range(0,len(mesh.vertices),10000):
                     out.write(''.join(f'<vertex x="{x:.9g}" y="{y:.9g}" z="{z:.9g}"/>' for x,y,z in mesh.vertices[start:start+10000]).encode())
                 out.write(b'</vertices><triangles>')
                 for start in range(0,len(mesh.faces),10000):
-                    out.write(''.join(f'<triangle v1="{a}" v2="{b}" v3="{c}"/>' for a,b,c in mesh.faces[start:start+10000]).encode())
+                    if seam is None:
+                        out.write(''.join(f'<triangle v1="{a}" v2="{b}" v3="{c}"/>' for a,b,c in mesh.faces[start:start+10000]).encode())
+                    else:
+                        # "4": whole triangle painted as a seam enforcer.
+                        out.write(''.join(f'<triangle v1="{a}" v2="{b}" v3="{c}"'+(' paint_seam="4"/>' if e else '/>')
+                            for (a,b,c),e in zip(mesh.faces[start:start+10000],seam[start:start+10000])).encode())
                 out.write(b'</triangles></mesh></object>')
             out.write(b'</resources>'+suffix)
         archive.writestr('Metadata/model_settings.config',ET.tostring(config,encoding='utf-8',xml_declaration=True))
@@ -163,7 +172,9 @@ def write_project(path, parts, process, offset=(0, 0, 0), pauses=()):
             archive.writestr('Metadata/custom_gcode_per_layer.xml',ET.tostring(pause_root,encoding='utf-8'))
     return dict(path=str(path.relative_to(ROOT)),sha256=sha(path),offset=list(offset),
                 sources=[dict(path=str(Path(s).relative_to(ROOT)),sha256=sha(s),subtype=kind,
-                              overrides=overrides,translation=list(t)) for g in parts for s,kind,overrides,t in g])
+                              overrides={k:v for k,v in overrides.items() if k!='__paint_seam__'},
+                              seam_enforcer_faces=int(sum(overrides['__paint_seam__'])) if '__paint_seam__' in overrides else 0,
+                              translation=list(t)) for g in parts for s,kind,overrides,t in g])
 
 
 def insert_bores():

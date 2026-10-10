@@ -28,6 +28,11 @@ def write_json(path, payload):
     temporary.replace(path)
 
 
+def variant_columns(pair, variants):
+    """Spread a repo [Standard, High Flow] pair over a native variant list."""
+    return [pair[1] if "High Flow" in v else pair[0] for v in variants]
+
+
 def resolve_profiles(lane: str, directory: Path):
     from release_validation import PresetResolver, _standalone_cli_config
     cfg = policy()
@@ -38,13 +43,14 @@ def resolve_profiles(lane: str, directory: Path):
     process = _standalone_cli_config("process", resolver.resolve(BBL / cfg["process_preset"]))
     for key,value in cfg['native_process_defaults'].items():process.setdefault(key,value)
     # Quality settings are shared; machine speeds and retraction vectors retain
-    # H2C's four entries (left/right x Standard/HF).
+    # one entry per H2C extruder variant (left/right x Standard/HF, plus the
+    # left-only E3D HF column since 02.08).
     legacy = json.loads((ROOT / "captive_magnet_slicing_profile_petg_gf_06hf.json").read_text())
     for key, val in legacy["repo_overrides"]["process"].items():
         if key.startswith("wipe_tower") or key == "curr_bed_type": continue
         shape = process.get(key)
-        if isinstance(val, list) and isinstance(shape, list) and len(shape) == 4 and len(val) == 2:
-            val = val * 2
+        if isinstance(val, list) and isinstance(shape, list) and len(val) == 2 and len(shape) != 2:
+            val = variant_columns(val, process["print_extruder_variant"])
         process[key] = val
     process.update(shared_policy()["support"])
     process.update(support_bottom_z_distance="0", support_bottom_interface_spacing="0",
@@ -61,6 +67,8 @@ def resolve_profiles(lane: str, directory: Path):
             native = material.get(key)
             if isinstance(native, list) and not isinstance(value, list):
                 value = [value] * len(native)
+            elif isinstance(native, list) and len(value) == 2 and len(native) != 2:
+                value = variant_columns(value, material["filament_extruder_variant"])
             material[key] = value
         material["compatible_printers"] = [machine["name"]]
         if kind == "model": material["name"] = lane_cfg["model_name"]
@@ -86,8 +94,11 @@ def project_settings(bundle, lane: str, role: str, *, brim=5, tower=(270, 255)):
     cfg = policy()
     machine, process, materials = bundle
     result = {k:deepcopy(v) for layer in (machine, process) for k,v in layer.items() if k not in META}
-    # Preserve both nozzle-variant columns per material. Lists of metadata
+    # Preserve every nozzle-variant column per material. Lists of metadata
     # such as AMS drying modes stay one active entry per material instead.
+    columns = len(materials[0]["filament_extruder_variant"])
+    if len(materials[1]["filament_extruder_variant"]) != columns:
+        raise ValueError("H2C materials disagree on nozzle-variant columns")
     for key in (set(materials[0]) | set(materials[1])) - META:
         a, b = [m.get(key) for m in materials]
         if a is None or b is None:
@@ -96,11 +107,11 @@ def project_settings(bundle, lane: str, role: str, *, brim=5, tower=(270, 255)):
             else: raise ValueError(f"Asymmetric H2C material key {key}: {a!r}, {b!r}")
         if isinstance(a, list):
             if not isinstance(b, list): raise ValueError(key)
-            if key.startswith("filament_dev_ams_drying_") or len(a) > 2 or len(b) > 2:
+            if key.startswith("filament_dev_ams_drying_") or {len(a), len(b)} - {1, columns}:
                 a, b = a[:1], b[:1]
             # Some native values vary by hotend; expand a scalar side only.
-            columns = max(len(a), len(b))
-            result[key] = (a * columns if len(a) == 1 else a) + (b * columns if len(b) == 1 else b)
+            width = max(len(a), len(b))
+            result[key] = (a * width if len(a) == 1 else a) + (b * width if len(b) == 1 else b)
         elif a == b:
             result[key] = a
         else:
@@ -110,7 +121,7 @@ def project_settings(bundle, lane: str, role: str, *, brim=5, tower=(270, 255)):
         print_settings_id=f"LX521 H2C 0.6HF {lane} {role}",
         filament_settings_id=[m["name"] for m in materials],
         filament_ids=[m["filament_id"] for m in materials],
-        filament_self_index=["1", "1", "2", "2"],
+        filament_self_index=["1"] * columns + ["2"] * columns,
         filament_colour=cfg["lanes"][lane]["colours"],
         default_filament_colour=cfg["lanes"][lane]["colours"],
         filament_map_mode="Manual", filament_map=["1", "2"],
@@ -120,7 +131,10 @@ def project_settings(bundle, lane: str, role: str, *, brim=5, tower=(270, 255)):
         enable_filament_dynamic_map="0", flush_into_objects="0", flush_into_infill="0", flush_into_support="0",
         # Kept for native serialization; physically separate nozzles use the
         # H2C priming volumes and do not flush model/PLA through each other.
-        flush_volumes_matrix=["0", "280", "280", "0"], flush_volumes_vector=["140"] * 4,
+        # One 2x2 matrix and multiplier per nozzle, as the GUI saves H2C
+        # projects; 02.08 rejects a single shared matrix.
+        flush_volumes_matrix=["0", "280", "280", "0"] * 2, flush_volumes_vector=["140"] * 4,
+        flush_multiplier=["1", "1"],
         wipe_tower_x=[str(tower[0])], wipe_tower_y=[str(tower[1])], brim_width=str(brim))
     result["compatible_printers"] = [machine["name"]]
     result.update(cfg.get('role_overrides',{}).get(role,{}))

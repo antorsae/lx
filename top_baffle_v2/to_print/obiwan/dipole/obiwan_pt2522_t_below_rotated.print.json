@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "obiwan_pt2522_t_below_rotated",
+  "stl": "obiwan_pt2522_t_below_rotated.stl",
+  "stl_bytes": 6140284,
+  "stl_sha256": "6bf29df4e86d72fcb8ebd9ac849762c388851ed3d2555d014500e6f7526b283e",
+  "source_stl": "candidates/dipole_tweeter/STL/grs_pt2522_4_obiwan_t_below_rotated.stl",
+  "source_sha256": "efab8007ca48517f8b9db99faa9d089b952e6d4e541d24b924e6a2b99e7ea6b2",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      113.93045043945312
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      486.19000244140625
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.299999237060547
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -113.93045043945312,
+    -486.19000244140625,
+    -18.299999237060547
+  ],
+  "stl_origin_translation_mm": [
+    113.93045043945312,
+    486.19000244140625,
+    18.299999237060547
+  ]
+}

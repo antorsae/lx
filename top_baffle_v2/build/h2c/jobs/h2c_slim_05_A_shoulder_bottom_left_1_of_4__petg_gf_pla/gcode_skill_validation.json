@@ -38,14 +38,14 @@
     "z_height_mm": 325.0
   },
   "stats": {
-    "extrusion_moves": 10690,
-    "lines": 30141,
-    "movement_commands": 20017,
-    "non_comment_lines": 23320,
+    "extrusion_moves": 10124,
+    "lines": 29447,
+    "movement_commands": 19333,
+    "non_comment_lines": 22524,
     "temperature_commands": 22
   },
   "warnings": [
     "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-    "Unknown or unsupported commands were left unchanged: ========== line 1073, G150 line 912, G150.1 line 696, G150.2 line 898, G150.3 line 683, G151 line 738, G17 line 1754, G28.14 line 1064, G28.140 line 626, G29.1 line 622, G29.2 line 752, G29.20 line 953."
+    "Unknown or unsupported commands were left unchanged: ========== line 1099, G150 line 938, G150.1 line 721, G150.2 line 923, G150.3 line 708, G151 line 763, G17 line 1787, G28.14 line 1091, G28.140 line 651, G29.1 line 647, G29.2 line 777, G29.20 line 979."
   ]
 }

@@ -1,0 +1,51 @@
+{
+  "errors": [],
+  "ok": true,
+  "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/jobs/h2c_dayton_nd25fn4_stock_tweeters_right_cap_rear_tweeter__petg_gf_pla/plate_1.gcode",
+  "profile": {
+    "backend": "orcaslicer",
+    "bed_size_mm": [
+      330.0,
+      320.0
+    ],
+    "bed_temp_c": 70.0,
+    "filament_type": "PETG",
+    "machine_name": "Bambu Lab H2C 0.6 High Flow",
+    "motion_bounds_mm": {
+      "x": [
+        0.0,
+        330.0
+      ],
+      "y": [
+        -16.0,
+        320.0
+      ],
+      "z": [
+        0.0,
+        325.0
+      ]
+    },
+    "native_config": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/machine.json",
+    "native_filaments": [
+      "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/model.json",
+      "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/interface.json"
+    ],
+    "native_settings": [
+      "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/machine.json",
+      "/Users/antor/gh/lx/top_baffle_v2/build/h2c/jobs/h2c_dayton_nd25fn4_stock_tweeters_right_cap_rear_tweeter__petg_gf_pla/process.json"
+    ],
+    "nozzle_temp_c": 260.0,
+    "z_height_mm": 325.0
+  },
+  "stats": {
+    "extrusion_moves": 38539,
+    "lines": 81366,
+    "movement_commands": 52931,
+    "non_comment_lines": 63831,
+    "temperature_commands": 73
+  },
+  "warnings": [
+    "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
+    "Unknown or unsupported commands were left unchanged: ========== line 1109, G150 line 941, G150.1 line 726, G150.2 line 927, G150.3 line 708, G151 line 768, G17 line 1407, G28.14 line 1101, G28.140 line 651, G29.1 line 647, G29.2 line 782, G29.20 line 988."
+  ]
+}

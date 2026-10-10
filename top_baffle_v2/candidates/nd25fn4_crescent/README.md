@@ -4,7 +4,7 @@ The **Dayton ND25FN-4 waveguide** is the third tweeter family in this project.
 It fuses the Obiwan MU10 upper-mid carrier and the printed front/rear tweeter
 waveguides into one body. The same body fits both LM stand states.
 
-**For printing, use the [current H2C file catalog](../../to_print/h2c/README.md).**
+**For printing, use the [current H2C file catalog](../../to_print/README.md).**
 The [assembly and hardware guide](../../docs/DAYTON_ND25FN4_WAVEGUIDE.md)
 explains the matching body, caps, M3 retainers and continuous H2C wings,
 with separate PETG-GF/PLA and PETG Translucent/PLA Translucent jobs.
@@ -20,7 +20,7 @@ product or current H2C filename. No deliverable ZIP is produced.
 
 The ND25FN-4 body is the rightmost upper, shown at the same LM datum as
 the regular-UM alternatives. This retained source folder supplies the
-current [H2C family catalog](../../to_print/h2c/README.md).
+current [H2C family catalog](../../to_print/README.md).
 
 ## Surface and interface evidence
 

@@ -46,7 +46,7 @@ RENDER_REVISION = 1
 SOURCES: dict[str, str] = {}
 PARTS: dict[str, dict] = {}
 CARDS: dict[str, dict] = {}
-SHELF = json.loads((ROOT / "to_print/catalog.json").read_text())["entries"]
+SHELF = json.loads((ROOT / "to_print/archive/p2s/catalog.json").read_text())["entries"]
 
 
 def sha(path):
@@ -515,7 +515,7 @@ def poster(sections, assemblies):
     y=wrapped(d,"These totals exclude alternatives and coupons. Each magnet pair has one magnet in the body and one in the attachment. Magnets align and retain optional wings; screws carry the structural joints. Insert at the verified print pause, check attraction, then bury under the printed roof.",(margin,y),width-2*margin,29,color=MUTED)+18
     y=wrapped(d,"Stock + Slim mixed-thickness alternatives: Stock lower/mids + Slim vase, or Slim lower/mids + Stock vase. Use perimeter parts matching the vase; the hidden rear face has a 6.8 mm step. Obi-Wan does not mix with Stock/Slim. The ND25FN-4 fused body needs its matching upper wings; its lower wings and LM remain common.",(margin,y),width-2*margin,27,color=MUTED)+15
     y=wrapped(d,"Scope: earlier P2S product meshes, STEP-only BMR-slim alternatives, monolithic LM options and diagnostic fixtures. The 4 Obi-Wan combo plates only regroup the pictured parts. Stand-duplicate copies, review assemblies, support blockers and retired C7 / V0 / three-piece wings are not extra products. Views fit each part to its frame; size is not comparable across cards.",(margin,y),width-2*margin,25,color=MUTED)+14
-    y=wrapped(d,"Sources: to_print/catalog.json · review/captive_magnet_release_catalog.json · candidate facts / manifests · current STL sidecars. Dot positions come from declared seats or enclosed coupon cavities. CAD-only is not print-ready; physical fit, retention and acoustic performance remain to qualify. Generator and file map: scripts/generate_parts_magnet_poster.py / images/generated/catalog/parts_catalog.json.",(margin,y),width-2*margin,24,color=MUTED)
+    y=wrapped(d,"Sources: to_print/archive/p2s/catalog.json · review/captive_magnet_release_catalog.json · candidate facts / manifests · current STL sidecars. Dot positions come from declared seats or enclosed coupon cavities. CAD-only is not print-ready; physical fit, retention and acoustic performance remain to qualify. Generator and file map: scripts/generate_parts_magnet_poster.py / images/generated/catalog/parts_catalog.json.",(margin,y),width-2*margin,24,color=MUTED)
     assert y<height,(y,height)
     path=OUT/"ALL_ITEMS_MAGNET_CATALOG.png"
     canvas.save(path,optimize=True,dpi=(200,200))
@@ -552,7 +552,7 @@ def main():
     parser.add_argument("--inventory-only",action="store_true")
     args=parser.parse_args()
     OUT.mkdir(parents=True,exist_ok=True)
-    SOURCES["to_print/catalog.json"]=sha(ROOT/"to_print/catalog.json")
+    SOURCES["to_print/archive/p2s/catalog.json"]=sha(ROOT/"to_print/archive/p2s/catalog.json")
     sections=inventory()
     proof=validate(sections)
     assemblies=assembly_maps()

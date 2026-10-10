@@ -1,6 +1,6 @@
 {
   "source_sha256": {
-    "candidates/nd25fn4_crescent/build_manifest.json": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f",
+    "candidates/nd25fn4_crescent/build_manifest.json": "000fd59f058e4c4d44b62aefb8c48849f4a0f12b18ccdb9a983f99c15b636e27",
     "candidates/nd25fn4_crescent/orthographic_views.py": "75e00e42fbdfa804001c62bb61e16424acaebf1c1692d42c87aeb9c36d45a1a3",
     "candidates/nd25fn4_crescent/review.py": "d69a0666b0ca09ef32eeb4fa50894ca4f5485d22d89285441947bda55b885a1d",
     "candidates/nd25fn4_crescent/validate.py": "060e005a5f4470eeb678507ab98083e11c2a55411d78b24537466db7908404ff",
@@ -9,7 +9,7 @@
     "design_inputs/MU10_ND25FN_V4_Retained/reference/ND25FN_aligned_reference.stl": "6eea51bac5b8f697ac8ea22a469c22242824e3f119953c419b73e17db2140b12",
     "design_inputs/MU10_ND25FN_V4_Retained/source/mechanical_v4.py": "4de9fdf41bfec21356667d0e1a1cdfaa0271d5e960137bd2165b1c9cd6ec5d4a",
     "vendor/SEAS/MU10RB-SL/H1658-04_MU10RB-SL_driver.stl": "bb92511ee12bed3aa7db942b43d1f0e10127dd692bac224fb56f2b1ca9dff0a1",
-    "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+    "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl": "ab79e944697cecb1cd92416c193d1cb01b1f02a879a564905a2ef4838b7fad99",
     "candidates/nd25fn4_crescent/STL/02_Closed_Cap_PRINT_TWO.stl": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
     "candidates/nd25fn4_crescent/STL/03_Tweeter_Retainer_PRINT_TWO.stl": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc"
   },
@@ -104,7 +104,7 @@
   "parts": [
     {
       "name": "housing",
-      "triangles": 2059410,
+      "triangles": 2059522,
       "color_rgb": [
         66,
         141,
@@ -186,7 +186,7 @@
     },
     "front": {
       "path": "orthographic_front.png",
-      "sha256": "5c43af8f6cbca147880a66a68bfe730f9c8cd191cf8bf84d03c98b2d1f724114",
+      "sha256": "28c8f82c99fb447865b43b8e60727fb881d7283fbe5ae671f02ef454a5414912",
       "size_px": [
         900,
         1665
@@ -194,7 +194,7 @@
     },
     "side": {
       "path": "orthographic_side.png",
-      "sha256": "3b4ebcdb2b1ee1566bb9851f8a274ed8dc8269c8441e58997add65a06e7aacc2",
+      "sha256": "f01dd3e89740e20f75dcba8a489c3b2500810797192e56cd415199206d1e000d",
       "size_px": [
         640,
         1665
@@ -202,7 +202,7 @@
     },
     "sheet": {
       "path": "orthographic_top_front_side.png",
-      "sha256": "0b21c35a53ef5eff05568991801a7dbd79e3b32657b60f6f5bfa4b2b7fb538d0",
+      "sha256": "04b937653f1bfe8d38034f7544d970b3d63cf59ea7e1d521ce78522ba6fb6b49",
       "size_px": [
         1660,
         2250

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "obiwan_nd25fn4_tweeters_left_wing_graded_right",
+  "stl": "obiwan_nd25fn4_tweeters_left_wing_graded_right.stl",
+  "stl_bytes": 3871084,
+  "stl_sha256": "9fb318ea74c037b2e9f03444704ef5add642d90a3b7314240a5737af8fec5dcd",
+  "source_stl": "candidates/nd25fn4_vase/obiwan/STL/nd25fn4_vase_obiwan_tweeters_left_wing_graded_right.stl",
+  "source_sha256": "27f6712be3837736f328aaa708f3ed5b8b94cccb334292983959db4609880717",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      0.9612616959383189,
+      0.27563735581699916,
+      0.0,
+      -53.18643878148504
+    ],
+    [
+      0.27563735581699916,
+      -0.9612616959383189,
+      0.0,
+      247.14660155531547
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.299999237060547
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 16.0
+  },
+  "pre_translation_bbox_min_mm": [
+    53.18643878148504,
+    -247.14660155531547,
+    -18.299999237060547
+  ],
+  "stl_origin_translation_mm": [
+    -53.18643878148504,
+    247.14660155531547,
+    18.299999237060547
+  ]
+}

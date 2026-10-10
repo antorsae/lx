@@ -1,5 +1,7 @@
 # Stock — full-depth B2 product
 
+> **H2C only:** use the [H2C file catalog](../to_print/README.md) and [current build guide](BUILD_GUIDE.md). P2S split/preset sections retained below are deprecated design history, not current print selections.
+
 The canonical product: the complete 18.3 mm baffle outline printed as four
 registered pieces, with mutually exclusive A-comp shoulders or B1 wings as the
 optional perimeter. Catalog entry: [`artifacts/stock/`](../artifacts/stock/).
@@ -303,18 +305,22 @@ through the integral stem continuation before driver installation.
 |---|---|---|
 | Dayton ND25FW-4 | Yes | Standard vase with integral crescent; matching standard shoulders or B1 wings |
 | Tectonic TEBM35C10-4 BMR | Yes, opposed vase | Replaces whole vase; no supplied matching BMR perimeter |
-| Dayton ND25FN-4 waveguide | Obiwan only | Fused UM/waveguide and its matching wings; [Obiwan selection](obiwan.md#tweeter-options) |
+| Dayton ND25FN-4 waveguide | Yes, ND25FN-4 vase | Replaces whole upper module; no wings (Stock shoulders and B1 wings do not fit); [ND25FN-4 guide](DAYTON_ND25FN4_WAVEGUIDE.md#stock-nd25fn-4-vase) |
+| GRS PT2522-4 / Mundorf AMT17D2.1 dipole | No (Obiwan only) | [Dipole guide](DIPOLE_TWEETERS.md) |
 
-Stock supports two of the project's **three tweeter families**:
-Dayton ND25FW-4 and Tectonic TEBM35C10-4 BMR. Each uses its own upper
-module (vase), including the MU10 seat. The third family,
-[Dayton ND25FN-4 printed waveguide](DAYTON_ND25FN4_WAVEGUIDE.md), currently
-has an Obiwan mount only; it does not fit the Stock upper interface.
+Stock supports three of the project's **five tweeter families**:
+Dayton ND25FW-4, Tectonic TEBM35C10-4 BMR and the
+[Dayton ND25FN-4 printed waveguide](DAYTON_ND25FN4_WAVEGUIDE.md); the
+[PT2522-4 / AMT17D2.1 dipoles](DIPOLE_TWEETERS.md) are Obiwan only. Each uses
+its own upper module (vase), including the MU10 seat. The ND25FN-4 vase
+(`h2c_dayton_nd25fn4_stock_tweeters_right_upper`, or its mirror `…_tweeters_left_upper`) carries the front tweeter at `(±100, 350.08)`
+and the rear tweeter at `(100, 415.88)`, each closed by a screwless
+twist-lock cap; it has no wing magnets.
 
-For H2C, select the standard or opposed-BMR upper from the
-[current catalog](../to_print/h2c/README.md). Both fit the new H2C LM pin
-joint in either stand state. The `04` filenames and seam-B dovetails below
-refer to the earlier P2S arrangement. Use a complete set for your printer.
+For H2C, select the standard, opposed-BMR or ND25FN-4 upper from the
+[current catalog](../to_print/README.md). All three fit the new H2C LM pin
+joint and hidden M3 × 20 clamp in either stand state. The `04` filenames and seam-B dovetails below
+refer to the earlier P2S arrangement. Use the H2C catalog for the current complete set.
 
 - **Standard B2 vase** (default) — carries the face-to-face ND25FW-4 pair
   *and* the MU10 upper-mid seat. Two Dayton ND25FW-4 dome tweeters with

@@ -172,7 +172,7 @@
   ],
   "insert_site_count": 12,
   "clearance_mm": 0.27,
-  "actual_mesh_sha256": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
+  "actual_mesh_sha256": "26bc130eadedf9adde7556ead759a5b83aa938cc076d638c4d8a56cab251ca3d",
   "bore_registration_gauge_inset_mm": 0.2,
   "bore_registration_overlap_mm3": 0.0,
   "reference": "scripts/obiwan_support_blocker.py:_insert_bore_blockers"

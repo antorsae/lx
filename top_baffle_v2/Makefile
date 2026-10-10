@@ -1,6 +1,11 @@
 PRINTER ?= H2C
-ifeq ($(filter $(PRINTER),H2C P2S),)
-$(error Unsupported PRINTER=$(PRINTER); choose H2C or P2S)
+ifneq ($(PRINTER),H2C)
+$(error PRINTER=$(PRINTER) is deprecated; H2C is the only supported printer)
+endif
+ifeq ($(LX_CAD_EXECUTION),local-manifold)
+ifneq ($(strip $(MAKECMDGOALS)),_manifold_parallel)
+$(error local-manifold accepts only the private _manifold_parallel target)
+endif
 endif
 H2C_GOALS := all help to_print to_print_validate h2c h2c_geometry h2c_prepare h2c_validate h2c_review h2c_docs iso_matrix
 H2C_REQUESTED := $(if $(strip $(MAKECMDGOALS)),$(MAKECMDGOALS),all)
@@ -16,7 +21,9 @@ ifeq ($(H2C_DISPATCH),1)
 include Makefile.h2c
 else
 
-# Legacy P2S pipeline: use `make PRINTER=P2S` for its default/all target.
+# Shared CAD authorities and validation. Manufacturing is H2C-only;
+# retained small-bed recipe definitions below are historical, not supported
+# printer entry points.
 # Generates every flag-dependent artifact for BOTH stand-foot states:
 #
 #   build/floor_stand/      LX_STAND_FOOT=1  fused foot + NL8 panel; Obi-Wan carries
@@ -77,7 +84,7 @@ BAMBU_AUDIT_OUTPUT_06HF ?= review/captive_magnet_slice_audit_06hf
 PETG_GF_PROFILE := captive_magnet_slicing_profile_petg_gf_06hf.json
 PETG_GF_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit_petg_gf_06hf_01a
 PETG_GF_01B_AUDIT_OUTPUT ?= review/captive_magnet_slice_audit_petg_gf_06hf_01b
-TO_PRINT_SHELF ?= to_print
+TO_PRINT_SHELF ?= to_print/archive/p2s
 OBIWAN_01A_ARTIFACT_ID := no_floor_stand:Obi-Wan-split:obiwan_optional_lm_keyed_1_of_2_bottom
 OBIWAN_01A_SLUG := no_floor_stand_Obi-Wan-split_obiwan_optional_lm_keyed_1_of_2_bottom
 OBIWAN_01A_RELEASED_STL := $(CURDIR)/build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl
@@ -396,6 +403,20 @@ endif
 
 BAMBU_GOALS_REQUESTED := $(filter $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))
 ifneq ($(strip $(BAMBU_GOALS_REQUESTED)),)
+DEPRECATED_PRINT_GOALS := $(filter-out check_%,$(BAMBU_GOALS_REQUESTED))
+ifneq ($(strip $(DEPRECATED_PRINT_GOALS)),)
+# Read-only graph probes remain available to the transport regression suite.
+# The existing -n and inert-SHELL checks below prohibit actual execution.
+ifneq ($(LX_BAMBU_GRAPH_ONLY),1)
+$(error P2S manufacturing targets are deprecated: $(DEPRECATED_PRINT_GOALS). Use make h2c_prepare or make h2c_validate)
+endif
+ifeq ($(findstring n,$(firstword $(MAKEFLAGS))),)
+$(error LX_BAMBU_GRAPH_ONLY=1 is valid only with make -n/--just-print)
+endif
+ifeq ($(filter /bin/true /usr/bin/true,$(SHELL)),)
+$(error LX_BAMBU_GRAPH_ONLY=1 requires SHELL=/usr/bin/true)
+endif
+endif
 ifneq ($(strip $(filter-out $(LOCAL_BAMBU_GOALS),$(MAKECMDGOALS))),)
 $(error local-only Bambu goals cannot be mixed with CAD or other Make goals)
 endif
@@ -583,6 +604,13 @@ RUN_STATE = LX_STAND_FOOT=$(1) LX_ROUTING_PROFILE=$(2) $(RUN)
 # on a workstation and the build stays strictly serial.
 LIGHT_GUARD := LX_CAD_GUARD_WEIGHT=light
 RUN_LIGHT := $(LIGHT_GUARD) $(RUN)
+
+# Experimental acoustics: the dispatcher selects a separate pinned runtime,
+# a single 448 GiB guarded tree, and an isolated output root. Ordinary CAD
+# releases keep their 28/6 GiB pools. No printer/shelf targets are dependencies.
+.PHONY: waveguide_study_preflight waveguide_study_screen waveguide_study_broadband waveguide_study_benchmark waveguide_study_reference waveguide_study_numerics waveguide_study_controls waveguide_study_diagnostics waveguide_study_geometry waveguide_study_spatial_cad waveguide_study_spatial_acoustics waveguide_study_spatial_prototypes waveguide_study_shape_search waveguide_study_spatial_numerics waveguide_study_source_calibration
+waveguide_study_preflight waveguide_study_screen waveguide_study_broadband waveguide_study_benchmark waveguide_study_reference waveguide_study_numerics waveguide_study_controls waveguide_study_diagnostics waveguide_study_geometry waveguide_study_spatial_cad waveguide_study_spatial_acoustics waveguide_study_spatial_prototypes waveguide_study_shape_search waveguide_study_spatial_numerics waveguide_study_source_calibration:
+	$(RUN) scripts/run_waveguide_remote.py --stage $(@:waveguide_study_%=%)
 # State flags stay leftmost so a recipe's rendered prefix is unchanged apart
 # from the added weight declaration.
 RUN_STATE_LIGHT = LX_STAND_FOOT=$(1) LX_ROUTING_PROFILE=$(2) $(RUN_LIGHT)
@@ -1495,7 +1523,7 @@ TO_PRINT_CATALOG_PREREQ := $(if $(filter remote-worker,$(LX_CAD_EXECUTION)),\
 check_to_print_shelf: tests/test_to_print_shelf.py scripts/build_to_print_shelf.py \
         scripts/build_obiwan_combo_plate.py tests/test_obiwan_combo_plates.py \
         scripts/build_obiwan_wing_plate.py tests/test_obiwan_wing_plates.py \
-        scripts/composite_bambu_3mf_audit.py to_print/catalog.json \
+        scripts/composite_bambu_3mf_audit.py $(TO_PRINT_SHELF)/catalog.json \
         $(SLICER_SRCS) scripts/bambu_3mf_audit.py $(PRINT_CONTRACT_SRCS) \
         $(TO_PRINT_CATALOG_PREREQ)
 	$(REQUIRE_BAMBU_CATALOG)
@@ -1753,7 +1781,7 @@ $(BMR_CRESCENT_SLICE_STAMP): $(BMR_CRESCENT_COAXIAL_CAD_OUTPUTS) \
         scripts/gcode_analysis.py scripts/artifact_emit.py \
         scripts/bambu_3mf_audit.py \
         scripts/gen_bmr_crescent_slicing_profile.py \
-        scripts/validate_bmr_crescent_delivery.py to_print/catalog.json \
+        scripts/validate_bmr_crescent_delivery.py $(TO_PRINT_SHELF)/catalog.json \
         src/lx521_baffle/print_contract.py src/lx521_baffle/io.py
 	@rm -f "$@"
 	$(REQUIRE_BMR_CRESCENT_CAD)
@@ -1789,7 +1817,7 @@ $(BMR_CRESCENT_OPPOSED_SLICE_STAMP): $(BMR_CRESCENT_OPPOSED_CAD_OUTPUTS) \
         scripts/gcode_analysis.py scripts/artifact_emit.py \
         scripts/bambu_3mf_audit.py \
         scripts/gen_bmr_crescent_slicing_profile.py \
-        scripts/validate_bmr_crescent_delivery.py to_print/catalog.json \
+        scripts/validate_bmr_crescent_delivery.py $(TO_PRINT_SHELF)/catalog.json \
         src/lx521_baffle/print_contract.py src/lx521_baffle/io.py
 	@rm -f "$@"
 	$(REQUIRE_BMR_CRESCENT_CAD)

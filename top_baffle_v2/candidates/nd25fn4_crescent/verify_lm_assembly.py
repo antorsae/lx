@@ -120,12 +120,12 @@ def main():
         if state=='no_floor_stand':section_meshes=(body_crop,lm_crop)
     # Confirm that the inspected LM top is the one represented by the existing
     # PETG-GF GUI project, and that the body is the mesh bound to the sliced job.
-    shelf=json.loads((ROOT/'to_print/delivery_manifest.json').read_text())
+    shelf=json.loads((ROOT/'to_print/archive/p2s/delivery_manifest.json').read_text())
     row=next(r for r in shelf['projects'] if r['path']=='obiwan/3mf_06hf_petg-gf_pla/obiwan_02_LM_top_keyed_2_of_2_GUI.3mf')
-    assert sha(ROOT/'to_print'/row['path'])==row['sha256']
+    assert sha(ROOT/'to_print/archive/p2s'/row['path'])==row['sha256']
     assert row['source_stl_sha256']==report['configurations']['no_floor_stand']['LM']['sha256']
     assert row['geometry_audit']['status']=='pass'
-    report['LM_project']=dict(path='to_print/'+row['path'],sha256=row['sha256'])
+    report['LM_project']=dict(path='to_print/archive/p2s/'+row['path'],sha256=row['sha256'])
     if not args.design:
         current=json.loads((HERE/'print/manifest.json').read_text())
         row=next(r for r in current['projects'] if r['key']=='body')

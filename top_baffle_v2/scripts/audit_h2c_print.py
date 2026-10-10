@@ -21,8 +21,8 @@ import numpy as np
 import trimesh
 from lx521_baffle.io import sha256_file
 from lx521_baffle.h2c.printing import write_json,policy,job_settings
-from lx521_baffle.h2c.dayton import original_accessory_preparation
-from print_magnets import magnet_geometry, discover_specs
+from lx521_baffle.h2c import shelf
+from print_magnets import discover_specs
 from captive_wall_audit import audit_captive_walls
 
 NUMBER=r'[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?'
@@ -40,9 +40,9 @@ def qualification_inputs(job):
     if job.get('source'):paths.add(ROOT/job['source'])
     for p in ('scripts/audit_h2c_print.py','scripts/captive_wall_audit.py','scripts/gcode_analysis.py',
               'scripts/artifact_emit.py','src/lx521_baffle/h2c/printing.py',
-              'src/lx521_baffle/h2c/dayton.py','src/lx521_baffle/tweeter_options.py',
+              'src/lx521_baffle/tweeter_options.py',
               'candidates/nd25fn4_crescent/print_magnets.py','candidates/nd25fn4_crescent/audit_print.py',
-              'candidates/nd25fn4_crescent/cap_support_check.py'):
+              'candidates/nd25fn4_vase/obiwan/magnets.catalog.json'):
         paths.add(ROOT/p)
     profiles=ROOT/'build/h2c/profiles'/job['lane']
     paths.update(profiles/(p+'.json') for p in ('machine','model','interface'))
@@ -142,12 +142,16 @@ def regular_specs(job):
     catalogs=[ROOT/'review/captive_magnet_release_catalog.json']
     catalogs+=list((ROOT/'build/bmr_crescent_TEBM35C10-4').glob('*.catalog.json'))
     catalogs+=list((ROOT/'build/vase_TEBM35C10-4').glob('*/*.catalog.json'))
+    catalogs+=list((ROOT/'candidates/nd25fn4_vase').glob('*/magnets.catalog.json'))
     sites=[]
     for path in catalogs:
         for artifact in json.loads(path.read_text()).get('artifacts',[]):
             p=artifact['part'];name=job['name'];family=job['family']
             match=False
-            if 'upper_bmr' in name:match='vase_TEBM' in p and family in str(path)
+            if family=='dayton_nd25fn4':
+                # ND25FN-4 vase parts.
+                match=p==Path(job['source']).stem and artifact.get('state') in {'shared',job['state']}
+            elif 'upper_bmr' in name:match='vase_TEBM' in p and family in str(path)
             elif 'bmr_crescent' in name:match=p in name
             elif family in {'stock','slim'}:
                 # Shelf names number assembly choices differently from the
@@ -156,6 +160,9 @@ def regular_specs(job):
                 match=(p.startswith(family) and (('upper' in name and 'vase' in p) or p==original['part']))
             elif 'wing' in name:
                 match='wing' in p and all(t in p for t in ('flat' if 'flat' in name else 'graded','left' if 'left' in name else 'right'))
+            elif 'lm_keyed' in name:
+                # Released keyed LM halves: build/<state>/stl/<part>.stl.
+                match=p==Path(job['source']).stem and artifact.get('state') in {'shared',job['state'],Path(job['source']).parts[1]}
             elif 'core_lm_carrier' in name:match='optional_lm_keyed' in p and artifact['state']==job['state']
             else:match=p in name
             if match:
@@ -225,51 +232,43 @@ def pause_audit(gcode,expected):
 def support_audit(job,gcode):
     from gcode_analysis import audit_support_toolpaths_vs_ducts
     report={}
-    if job['role']=='crescent_body':
-        from audit_print import support_ducts
-        prep=dict(job['preparation'],source_to_stl_matrix=job['source_to_stl_matrix'])
-        report['ducts_and_insert_bores']=support_ducts(gcode,prep)
-    elif job['role']=='crescent_accessories':
-        from cap_support_check import ceiling_supports
-        report['cap_ceilings']=ceiling_supports(gcode,original_accessory_preparation(job['preparation']))
-    else:
-        for source in job.get('blockers',[]):
-            if not source.endswith('.json'):continue
-            contract=json.loads((ROOT/source).read_text()).get('duct_collision_contract')
-            if not contract:continue
-            shift=np.eye(4);shift[:3,3]=job['offset']
-            report[source]=audit_support_toolpaths_vs_ducts(gcode=gcode,contract=contract,
-                source_to_stl_matrix=job['source_to_stl_matrix'],stl_to_bed_matrix=shift.tolist())
-        definition=ROOT/'build/h2c/contracts'/(job['name']+'.bores.json')
-        if job['family'] in {'stock','slim'} and job['role'] not in {'regular_wing'}:
-            if not definition.exists():raise ValueError(f'Missing native bore audit authority: {definition}')
-            from gcode_analysis import parse_gcode
-            data=json.loads(definition.read_text());matrix=np.asarray(job['source_to_stl_matrix']).copy();matrix[:3,3]+=job['offset']
-            step=ROOT/'build/h2c/STEP'/(job['name']+'.step')
-            if sha256_file(step)!=data['step_sha256']:raise ValueError('Stale native bore authority')
-            bores=[]
-            for bore in data['bores']:
-                a,b=trimesh.transform_points([bore['start'],bore['end']],matrix);axis=b-a
-                if np.linalg.norm(axis)<1e-6:continue
-                bores.append((bore,a,axis,np.dot(axis,axis)))
-            parsed=parse_gcode(gcode,retain_feature_prefixes=('support',));minimum=None;count=0
-            for layer in parsed.layers:
-                chunks=[];widths=[]
-                for s in layer.segments:
-                    a=np.array([s.x0,s.y0,layer.z-(layer.layer_height or .16)/2]);b=np.array([s.x1,s.y1,a[2]])
-                    n=max(2,int(np.ceil(s.length/.25))+1)
-                    chunks.append(a+(b-a)*np.linspace(0,1,n)[:,None]);widths.extend([(s.line_width or .62)/2]*n)
-                if not chunks:continue
-                points=np.concatenate(chunks);widths=np.asarray(widths)
-                for bore,a,axis,length2 in bores:
-                    t=(points-a)@axis/length2;inside=(t>1e-5)&(t<1-1e-5)
-                    if not inside.any():continue
-                    delta=points[inside]-a-t[inside,None]*axis
-                    distance=np.linalg.norm(delta,axis=1)-bore['radius_mm']-widths[inside]
-                    m=float(distance.min());minimum=m if minimum is None else min(m,minimum);count+=int(inside.sum())
-                    if m<-.03:raise ValueError(('Support enters native bore',job['name'],bore['name'],layer.z,m))
-            report['native_bores']=dict(status='pass',bore_count=len(bores),support_samples=count,minimum_clearance_mm=minimum,
-                definition_sha256=sha256_file(definition),method='0.25 mm support samples, bead width and native cylinder interiors at each layer midplane')
+    for source in job.get('blockers',[]):
+        if not source.endswith('.json'):continue
+        contract=json.loads((ROOT/source).read_text()).get('duct_collision_contract')
+        if not contract:continue
+        shift=np.eye(4);shift[:3,3]=job['offset']
+        report[source]=audit_support_toolpaths_vs_ducts(gcode=gcode,contract=contract,
+            source_to_stl_matrix=job['source_to_stl_matrix'],stl_to_bed_matrix=shift.tolist())
+    definition=ROOT/'build/h2c/contracts'/(job['name']+'.bores.json')
+    if job['family'] in {'stock','slim'} and job['role'] not in {'regular_wing'}:
+        if not definition.exists():raise ValueError(f'Missing native bore audit authority: {definition}')
+        from gcode_analysis import parse_gcode
+        data=json.loads(definition.read_text());matrix=np.asarray(job['source_to_stl_matrix']).copy();matrix[:3,3]+=job['offset']
+        step=ROOT/'build/h2c/STEP'/(job['name']+'.step')
+        if sha256_file(step)!=data['step_sha256']:raise ValueError('Stale native bore authority')
+        bores=[]
+        for bore in data['bores']:
+            a,b=trimesh.transform_points([bore['start'],bore['end']],matrix);axis=b-a
+            if np.linalg.norm(axis)<1e-6:continue
+            bores.append((bore,a,axis,np.dot(axis,axis)))
+        parsed=parse_gcode(gcode,retain_feature_prefixes=('support',));minimum=None;count=0
+        for layer in parsed.layers:
+            chunks=[];widths=[]
+            for s in layer.segments:
+                a=np.array([s.x0,s.y0,layer.z-(layer.layer_height or .16)/2]);b=np.array([s.x1,s.y1,a[2]])
+                n=max(2,int(np.ceil(s.length/.25))+1)
+                chunks.append(a+(b-a)*np.linspace(0,1,n)[:,None]);widths.extend([(s.line_width or .62)/2]*n)
+            if not chunks:continue
+            points=np.concatenate(chunks);widths=np.asarray(widths)
+            for bore,a,axis,length2 in bores:
+                t=(points-a)@axis/length2;inside=(t>1e-5)&(t<1-1e-5)
+                if not inside.any():continue
+                delta=points[inside]-a-t[inside,None]*axis
+                distance=np.linalg.norm(delta,axis=1)-bore['radius_mm']-widths[inside]
+                m=float(distance.min());minimum=m if minimum is None else min(m,minimum);count+=int(inside.sum())
+                if m<-.03:raise ValueError(('Support enters native bore',job['name'],bore['name'],layer.z,m))
+        report['native_bores']=dict(status='pass',bore_count=len(bores),support_samples=count,minimum_clearance_mm=minimum,
+            definition_sha256=sha256_file(definition),method='0.25 mm support samples, bead width and native cylinder interiors at each layer midplane')
     return report
 
 
@@ -318,10 +317,7 @@ def run_job(job):
     paths=deposition(gcode)
     specs=[];records=[];pause_z=[]
     if job['magnet_count']:
-        if job['family']=='dayton_nd25fn4':
-            stl=ROOT/job['stl'];auth=json.loads(stl.with_suffix('.print.json').read_text())
-            specs=magnet_geometry(stl,auth,job['offset'],owner='body' if job['role']=='crescent_body' else 'wing')
-        else:specs=regular_specs(job)
+        specs=regular_specs(job)
         records=discover_specs(specs,gcode)
         write_json(work/'magnet_discovery.json',records)
         pause_z=insert_pauses(project,records)
@@ -372,7 +368,7 @@ def main():
     ap=argparse.ArgumentParser();ap.add_argument('--only',action='append')
     ap.add_argument('--worker-job');ap.add_argument('--workers',type=int,choices=(1,2),default=1)
     args=ap.parse_args()
-    path=ROOT/'to_print/h2c/catalog.json';catalog=json.loads(path.read_text())
+    path=shelf.CATALOG;catalog=json.loads(path.read_text())
     if args.worker_job:
         job=next(j for j in catalog['jobs'] if j['id']==args.worker_job)
         try:run_job(job)

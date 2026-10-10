@@ -604,7 +604,11 @@ def _slice_points(points, total, start, stop, spacing_mm=1.8):
     station and add only the two requested interval endpoints.
     """
     points = np.asarray(points, dtype=float)
-    source_s = np.linspace(0.0, total, len(points))
+    # the sampled points are not uniformly spaced (end-anchored grid): use
+    # their actual cumulative plan length, scaled to the plan total
+    plan_s = np.concatenate((
+        [0.0], np.cumsum(np.linalg.norm(np.diff(points[:, :2], axis=0), axis=1))))
+    source_s = plan_s * (total / plan_s[-1])
     if not 0.0 <= start < stop <= total:
         raise ValueError((start, stop, total))
     interior = source_s[(source_s > start + 1e-9)
@@ -643,18 +647,43 @@ def _crop_path_interval(shape, full_points, total, start, stop):
         shape = shape - _outside_path_halfspace(segment, False)
     return shape
 
-def _tube_section_points(points, spacing_mm=None):
-    """Return the globally phased ruled-loft center sections for a path."""
+def _end_anchored_stations(length, spacing_mm):
+    """Stations every ``spacing_mm`` measured back from ``length``.
+
+    Every Obi-Wan route ends at a state-independent point and shares its
+    ring and upper path between the stand states, so an end-anchored grid
+    places identical sections along the shared part in both states (the
+    floor and no-floor keyed LM tops are then identical).  The first,
+    state-specific interval absorbs the remainder (>= 0.3 spacing).
+    """
+    if length < 3.0 * spacing_mm:
+        # short tools (entry reliefs, caps): the original even grid with at
+        # least two intervals; they are state-specific anyway
+        return np.linspace(0.0, length, max(2, int(math.ceil(length / spacing_mm))) + 1)
+    back = np.arange(0.0, length, spacing_mm)
+    stations = length - back[::-1]
+    if stations[0] < 0.3 * spacing_mm:
+        stations = stations[1:]
+    return np.r_[0.0, stations]
+
+
+def _tube_section_stations(points, spacing_mm=None):
+    """Arc-length stations of the globally phased ruled-loft sections."""
     points = np.asarray(points, dtype=float)
     spacing_mm = (
         TUBE_SECTION_SPACING if spacing_mm is None else float(spacing_mm))
     if spacing_mm <= 0.0:
         raise ValueError("tube section spacing must be positive")
+    total = float(np.linalg.norm(np.diff(points, axis=0), axis=1).sum())
+    return _end_anchored_stations(total, spacing_mm)
+
+
+def _tube_section_points(points, spacing_mm=None):
+    """Return the globally phased ruled-loft center sections for a path."""
+    points = np.asarray(points, dtype=float)
     source_s = np.concatenate((
         [0.0], np.cumsum(np.linalg.norm(np.diff(points, axis=0), axis=1))))
-    section_s = np.linspace(
-        0.0, source_s[-1],
-        max(2, int(math.ceil(source_s[-1] / spacing_mm))) + 1)
+    section_s = _tube_section_stations(points, spacing_mm)
     return np.column_stack(tuple(
         np.interp(section_s, source_s, points[:, axis])
         for axis in range(3)))
@@ -855,7 +884,11 @@ def _sampled_arc_station(points, parameter_total, parameter_station):
     points = np.asarray(points, dtype=float)
     if not 0.0 <= parameter_station <= parameter_total:
         raise ValueError((parameter_station, parameter_total))
-    parameters = np.linspace(0.0, parameter_total, len(points))
+    # the sampled points are not uniformly spaced (end-anchored grid): map
+    # through their actual cumulative plan length
+    plan_s = np.concatenate((
+        [0.0], np.cumsum(np.linalg.norm(np.diff(points[:, :2], axis=0), axis=1))))
+    parameters = plan_s * (parameter_total / plan_s[-1])
     index = int(np.searchsorted(
         parameters, parameter_station, side="right") - 1)
     index = min(max(index, 0), len(points) - 2)
@@ -876,7 +909,7 @@ def _global_suffix_first_section(
     total = float(np.linalg.norm(np.diff(points, axis=0), axis=1).sum())
     if not 0.0 <= start_station <= total:
         raise ValueError((start_station, total))
-    section_stations = np.linspace(0.0, total, len(sections))
+    section_stations = _tube_section_stations(points, section_spacing_mm)
     containing_edge = int(np.searchsorted(
         section_stations, start_station, side="right") - 1)
     containing_edge = min(containing_edge, len(sections) - 2)

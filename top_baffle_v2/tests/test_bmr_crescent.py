@@ -1055,7 +1055,7 @@ def _assert_shelf_carries_only_a_labelled_candidate(variant: Variant) -> None:
     and profile inside its own build child, and still saying it is not
     release-authorized.
     """
-    catalog = PROJECT_ROOT / "to_print" / "catalog.json"
+    catalog = PROJECT_ROOT / "to_print/archive/p2s" / "catalog.json"
     if not catalog.is_file():
         return
     stem = variant.module.PART_NAME

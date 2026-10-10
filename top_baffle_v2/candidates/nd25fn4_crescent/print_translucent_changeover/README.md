@@ -1,7 +1,7 @@
 # waveguide — PETG Translucent + PLA support, alternate changeover calibration
 
 **Earlier P2S files.** For the current H2C printer, use the
-[H2C catalog](../../../to_print/h2c/README.md) and
+[H2C catalog](../../../to_print/README.md) and
 [Dayton ND25FN-4 waveguide guide](../../../docs/DAYTON_ND25FN4_WAVEGUIDE.md).
 Original revision strings in these filenames are retained for provenance.
 

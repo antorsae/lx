@@ -1,17 +1,17 @@
 {
   "source_sha256": "281e2986002a8fbd54ef672398eeec46d340e51131ed2539f98c602fcc218a5a",
-  "source_build_manifest_sha256": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f",
+  "source_build_manifest_sha256": "000fd59f058e4c4d44b62aefb8c48849f4a0f12b18ccdb9a983f99c15b636e27",
   "inputs": {
     "review/nd25fn4_iterations/before_reference_outline_20260911T202429Z/STL/01_UM_Crescent_V4.stl": "57a5d9616b0092db8bede4b02e1aac254c114f4a4cfa3c01523b27c7791b3fce",
     "review/nd25fn4_iterations/before_reference_outline_20260911T202429Z/STL/01_UM_Crescent_V4.print.json": "77721259a13c8d8101209650590f5c78b52be97373efdd25e99b60317880e386",
-    "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+    "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl": "ab79e944697cecb1cd92416c193d1cb01b1f02a879a564905a2ef4838b7fad99",
     "candidates/nd25fn4_crescent/validate_depth_magnets.py": "f0b8730ddc86dd3308363c419f3e120e4bd68f2fa54aca86a9af99564e6692a1"
   },
   "outputs": {
     "UM_depth_before.png": "4b9b24d0f66f224584a05fe267ee939752c842f0321962f8897b7ce49b5e4e72",
     "UM_depth_after.png": "b1da530891b27ede2545404383fa030897225750d04f387953c017ff7b44756a",
-    "UM_depth_side.png": "4f6e603111a69750753e0027f15d2e4bf579106f24fce71b9a53c321a6fd5d8d",
-    "UM_depth_front.png": "545e21e65dd315d10651e5f0e8778209b82922e1b881105e8f9f6df885fe5b6b",
+    "UM_depth_side.png": "536c6014a8467100befab48cbad113b9c5f73430dde908819f0aa498f80b88c7",
+    "UM_depth_front.png": "2ef4fe0524bbf9c9517e04302ca1651047fe4916e67033c095dc05678ec5251b",
     "UM_depth_comparison.png": "f31cac42d5c48cf02d1ab4b67e9bc963d5c415ca688a788d2f28dd0e6a7c2050",
     "UM_depth_sections.png": "a7197c03fe7cfbcaead1c6f25c2ce0d32b172fc641a5be80e8ad067b86ad1ad4",
     "UM_depth_taper_sections.png": "db051f0c907d1b2e4c777ccbab440f4418a4d4bde7b7fd8e9fb6e51ad1dff1a9"

@@ -1,5 +1,7 @@
 # Slim — 11.5 mm front-flush product
 
+> **H2C only:** use the [H2C file catalog](../to_print/README.md) and [current build guide](BUILD_GUIDE.md). P2S split/preset sections retained below are deprecated design history, not current print selections.
+
 Slim is the Stock outline with the acoustic field thinned to 11.5 mm: the V1L
 bottom and mids paired with the V1 vase, sharing one front plane at z=18.3 and
 one rear plane at z=6.8, with the bottom structural strip left at full depth.
@@ -204,18 +206,21 @@ fit.
 |---|---|---|
 | Dayton ND25FW-4 | Yes | Standard vase with integral crescent; matching standard shoulders or B1 wings |
 | Tectonic TEBM35C10-4 BMR | Yes, opposed vase | Replaces whole vase; no supplied matching BMR perimeter |
-| Dayton ND25FN-4 waveguide | Obiwan only | Fused UM/waveguide and its matching wings; [Obiwan selection](obiwan.md#tweeter-options) |
+| Dayton ND25FN-4 waveguide | No (Stock and Obiwan only) | [Stock vase](stock.md#tweeter-options) or [Obiwan vase top](obiwan.md#tweeter-options) |
+| GRS PT2522-4 / Mundorf AMT17D2.1 dipole | No (Obiwan only) | [Dipole guide](DIPOLE_TWEETERS.md) |
 
-Slim supports two of the project's **three tweeter families**:
+Slim supports two of the project's **five tweeter families**:
 Dayton ND25FW-4 and Tectonic TEBM35C10-4 BMR. Each uses its own upper
-module (vase), including the MU10 seat. The third family,
-[Dayton ND25FN-4 printed waveguide](DAYTON_ND25FN4_WAVEGUIDE.md), currently
-has an Obiwan mount only; it does not fit the Slim upper interface.
+module (vase), including the MU10 seat. The
+[Dayton ND25FN-4 printed waveguide](DAYTON_ND25FN4_WAVEGUIDE.md) is
+provided for Stock (vase) and Obiwan (vase top) only, and the
+[PT2522-4 / AMT17D2.1 dipoles](DIPOLE_TWEETERS.md) for Obiwan only; there is no
+Slim ND25FN-4 or dipole upper.
 
 For H2C, select the standard or opposed-BMR upper from the
-[current catalog](../to_print/h2c/README.md). Both fit the new H2C LM pin
+[current catalog](../to_print/README.md). Both fit the new H2C LM pin
 joint in either stand state. The `04` filenames and seam-B dovetails below
-refer to the earlier P2S arrangement. Use a complete set for your printer.
+refer to the earlier P2S arrangement. Use the H2C catalog for the current complete set.
 
 - **Standard V1 vase** (default) — carries the face-to-face ND25FW-4 pair
   clamped through the V1 crescent, plus the MU10 seat, on the 11.5 mm field.

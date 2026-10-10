@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "obiwan_um_carrier",
+  "stl": "obiwan_um_carrier.stl",
+  "stl_bytes": 1383584,
+  "stl_sha256": "9a90c09d0f144f0e4a366e6c1bcdd71564b3c5d9f246f6e34e0b06c36090a355",
+  "source_stl": "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
+  "source_sha256": "0433d51f929937ab33b1e02dbbedb07605b995fa55c960eaa2c86d3bc409d0aa",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      52.63996556208785
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      426.4000001
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999963
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -52.63996556208785,
+    -426.4000001,
+    -18.300000099999963
+  ],
+  "stl_origin_translation_mm": [
+    52.63996556208785,
+    426.4000001,
+    18.300000099999963
+  ]
+}

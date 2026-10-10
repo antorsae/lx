@@ -1,9 +1,9 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "da8d8bf9055d28b9d453fa6b2da5b4cd3049e5e92f807314411826a82b6c57ec",
-  "sliced_project_sha256": "857172e2cc3b449ed0e0ca1a1d6b2663e8462a387128f18dec43dc81b2704092",
-  "gcode_sha256": "6d1c40d409a5f793dc661125f7e7aa6d9bb347c3933c6397ad7ad2dfa572ea9f",
+  "project_sha256": "a3c4c0f29bfe64f1585162643ceb42514303f1b4e850ebe214eb41705d6dec6b",
+  "sliced_project_sha256": "0ec3342ded2d5dd1a56ec533eba5a44c52f3f554ccf761ae9f1ce88c99011002",
+  "gcode_sha256": "38814fb57ec5cff1c9fd50697d1fe32b15bf4b691dcbfd8b1795032d7d0d0cd2",
   "audit_version": 4,
   "inputs": {
     "build/h2c/STL/h2c_dayton_nd25fn4_wing_flat_right.stl": "24321523cda5fc2d3011df568a4b8b3905eca79609d77f7b22d44ee7e5fb29fb",
@@ -26,14 +26,14 @@
     "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
     "src/lx521_baffle/tweeter_options.py": "4e13db23df7b60b9278d0e15ec3810b033376a6ee72cc33dfa8fe40518703f5a",
     "to_print/h2c/STL/h2c_dayton_nd25fn4_wing_flat_right.stl": "ae71a3c6d1d81551d013328cd06f36512cce9557f274140ed826384b4e4eb5ed",
-    "to_print/h2c/dayton_nd25fn4/petg_gf_pla/h2c_dayton_nd25fn4_wing_flat_right.3mf": "da8d8bf9055d28b9d453fa6b2da5b4cd3049e5e92f807314411826a82b6c57ec"
+    "to_print/h2c/dayton_nd25fn4/petg_gf_pla/h2c_dayton_nd25fn4_wing_flat_right.3mf": "a3c4c0f29bfe64f1585162643ceb42514303f1b4e850ebe214eb41705d6dec6b"
   },
   "deposition": {
     "status": "pass",
     "counts": {
       "tower": 5159,
       "support": 1894,
-      "model": 114491,
+      "model": 114490,
       "interface": 115
     },
     "deposition_bounds_mm": {
@@ -2097,7 +2097,7 @@
   "retaining_walls": {
     "status": "pass",
     "physical_qualification": "pending same-geometry coupon print",
-    "gcode_sha256": "6d1c40d409a5f793dc661125f7e7aa6d9bb347c3933c6397ad7ad2dfa572ea9f",
+    "gcode_sha256": "38814fb57ec5cff1c9fd50697d1fe32b15bf4b691dcbfd8b1795032d7d0d0cd2",
     "stl_sha256": "ae71a3c6d1d81551d013328cd06f36512cce9557f274140ed826384b4e4eb5ed",
     "source_sha256": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "sample_spacing_mm": 0.06,
@@ -4451,14 +4451,14 @@
   "pause_program": [
     {
       "z_mm": 6.12,
-      "pause_command_line_number": 91553,
-      "first_extrusion_line_number": 91574,
+      "pause_command_line_number": 91551,
+      "first_extrusion_line_number": 91571,
       "pass": true
     },
     {
       "z_mm": 9.8,
-      "pause_command_line_number": 159997,
-      "first_extrusion_line_number": 160047,
+      "pause_command_line_number": 159994,
+      "first_extrusion_line_number": 160045,
       "pass": true
     }
   ],
@@ -4502,15 +4502,15 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 108118,
-      "lines": 229779,
-      "movement_commands": 168569,
-      "non_comment_lines": 186390,
+      "extrusion_moves": 108117,
+      "lines": 229780,
+      "movement_commands": 168565,
+      "non_comment_lines": 186384,
       "temperature_commands": 78
     },
     "warnings": [
       "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-      "Unknown or unsupported commands were left unchanged: ========== line 1086, G150 line 917, G150.1 line 701, G150.2 line 902, G150.3 line 683, G151 line 743, G17 line 1418, G28.14 line 1078, G28.140 line 626, G29.1 line 622, G29.2 line 757, G29.20 line 965."
+      "Unknown or unsupported commands were left unchanged: ========== line 1085, G150 line 916, G150.1 line 701, G150.2 line 902, G150.3 line 683, G151 line 743, G17 line 1416, G28.14 line 1077, G28.140 line 626, G29.1 line 622, G29.2 line 757, G29.20 line 964."
     ]
   }
 }

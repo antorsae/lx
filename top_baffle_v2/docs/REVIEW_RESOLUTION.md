@@ -8,7 +8,7 @@ are now supplied. No acoustic performance or printed-strength pass is claimed.
 |---|---|
 | Obsolete ready core jobs | Moved both single-material structural G-code projects out of the print shelf into `review/retired_delivery_2026-09-05/`, with original hashes. |
 | Stale facade and counts | Rebuilt `artifacts/`: 144 current links, zero broken links; check now rejects obsolete links. Reconciled the 42 choices, 68 sliced jobs and eight GUI projects. |
-| Confusing file selection and material names | Added `BUILD_GUIDE.md` and generated `to_print/FILE_GUIDE.md`, with configuration rules, combo substitutions, hardware quantities and slicer estimates. Renamed the two `petg-cf` folders to `petg-gf`. |
+| Confusing file selection and material names | Added `BUILD_GUIDE.md` and generated `to_print/archive/p2s/FILE_GUIDE.md`, with configuration rules, combo substitutions, hardware quantities and slicer estimates. Renamed the two `petg-cf` folders to `petg-gf`. |
 | Inconsistent README / rendering | Reordered README around the builder workflow, corrected current materials and registration dimensions, added bare/exploded CAD views, and replaced triangle sorting with depth-buffered rendering of hash-checked canonical meshes. |
 | Cross-lane deletion | Shared `delivery_contract.py` defines delivery kind, paths and ownership. The default publisher preserves the independent 0.6 lane; the 0.6 publisher owns its own cleanup. |
 | Mutating validation | `--validate-only` and `make to_print_validate` are read-only; publication uses an explicit separate option. A real shelf check confirmed 186 file/directory entries unchanged, including bytes, names and mtimes. |

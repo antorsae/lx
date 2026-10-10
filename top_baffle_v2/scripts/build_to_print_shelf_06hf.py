@@ -49,7 +49,7 @@ import build_to_print_shelf as canonical
 from build_to_print_shelf import ShelfError
 from delivery_contract import is_gui
 
-DEFAULT_SHELF = PROJECT_ROOT / "to_print"
+DEFAULT_SHELF = PROJECT_ROOT / "to_print/archive/p2s"
 DEFAULT_AUDIT = PROJECT_ROOT / "review" / "captive_magnet_slice_audit_06hf"
 LANE_PROFILE = PROJECT_ROOT / "captive_magnet_slicing_profile_06hf.json"
 LANE_WORKSPACE = PROJECT_ROOT / "review" / "to_print_slice_workspace_06hf"
@@ -401,8 +401,4 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    try:
-        raise SystemExit(main())
-    except ShelfError as exc:
-        print(f"0.6-lane shelf failed: {exc}", file=sys.stderr)
-        raise SystemExit(2)
+    raise SystemExit("P2S publishing is deprecated. Use make h2c_prepare / make h2c_validate; H2C is the only supported printer.")

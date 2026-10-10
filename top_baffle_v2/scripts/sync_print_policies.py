@@ -16,7 +16,7 @@ from build_petg_gui_projects import GUI_PROCESS_ID
 
 def main():
     profile = json.loads((ROOT/'captive_magnet_slicing_profile_petg_gf_06hf.json').read_text())
-    directory = ROOT/'to_print/obiwan/3mf_06hf_petg-gf_pla'
+    directory = ROOT/'to_print/archive/p2s/obiwan/3mf_06hf_petg-gf_pla'
     report = []
     for path in sorted(directory.glob('*.3mf')):
         with zipfile.ZipFile(path) as archive:

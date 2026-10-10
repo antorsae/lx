@@ -1,48 +1,47 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "17ebe2ddad5df24f6d1a111f9d75e9ad34be06063eb26ac065a1ed57f2959a3c",
-  "sliced_project_sha256": "8cc919528d26b982d1e859707ed11880e99363467fd2052de823ec2476d50637",
-  "gcode_sha256": "f5a0aa95b846d5635b393e6f418c01d1c2e4255b9250a1515df60126650d91b0",
+  "project_sha256": "10bfe6e87fbb481eff43b673c66ee28f277b6f59d311d2acfb09fcad68a35ef8",
+  "sliced_project_sha256": "d41e1881cd8750036121f4053adbb9e7275b4ed04f7a17ad02369dcbef0f9b4d",
+  "gcode_sha256": "8ba45a047a06343e8750fa9c1abb3deb00c32fb3dfe2d4a1f194ad77af68a1f2",
   "audit_version": 4,
   "inputs": {
     "build/h2c/STL/h2c_stock_lm_lower_floor_stand.stl": "e30a1bf982aa191bc63136bec2716e1ccafb9af5541452af8ab6f9539d40e48c",
     "build/h2c/contracts/h2c_stock_lm_lower_floor_stand.bores.json": "92ac6d92b6d773d50f35f0abea78a936620f7cc17d01c2ba940e9ddc7495ce63",
     "build/h2c/inputs/h2c_stock_lm_lower_floor_stand_support_blocker.stl": "47b9f6e49c5579d7ed1aec4d61a54742fdf0c7a166ffc63d0f119b12a67ce40e",
-    "build/h2c/jobs/h2c_stock_lm_lower_floor_stand__petg_gf_pla/dry_run.json": "6a6f46661a2975f2aea4898816fde1b9dc99700ac12e1f2731b8365d5f503e51",
-    "build/h2c/jobs/h2c_stock_lm_lower_floor_stand__petg_gf_pla/process.json": "0563c9cebd4116d5452db72ac16ad80091e3e48c6bc618128595030a202eb9f7",
-    "build/h2c/profiles/petg_gf_pla/interface.json": "de9f413cd7e43e5bb30bb4b79cd48ed1b4680e9a0c27fae68042facf0f25cc1e",
-    "build/h2c/profiles/petg_gf_pla/machine.json": "488f1222c244471ec147ad2960b403a9cb8e07463473123575354cdd85719dbb",
-    "build/h2c/profiles/petg_gf_pla/model.json": "7204a547fddf4215cce3929c76208ff0fc2029447be43ce64f9a5f763c1e61bc",
+    "build/h2c/jobs/h2c_stock_lm_lower_floor_stand__petg_gf_pla/dry_run.json": "00f52295368f48650a90fcd4008362dda33d1b3d2afd4bba796ee44a92e7bae3",
+    "build/h2c/jobs/h2c_stock_lm_lower_floor_stand__petg_gf_pla/process.json": "913b1714f33b96be2c4f6f8a1411b8d79ff5dc80d8fc1fd959b777e6a576e6f6",
+    "build/h2c/profiles/petg_gf_pla/interface.json": "bebda39f8a78214048e36f4e2b0bb05425fc049312641c20eeb9256763e9b588",
+    "build/h2c/profiles/petg_gf_pla/machine.json": "e565fa0194354f79fa8f4fef2fdb8a2d0e6f9350a565505d95747c4b1ac5ba82",
+    "build/h2c/profiles/petg_gf_pla/model.json": "ac9758d2f6761b086555e41f1829756b9176853e7c9ecec168d47a010da6cdc6",
     "build/h2c/support_blockers/h2c_stock_lm_lower_floor_stand.stl": "8e0e91a229f72809c18343db5f19b31ac1b62d7d1d8a09b8f0f1dd55d5b7ba2c",
     "candidates/nd25fn4_crescent/audit_print.py": "c297b070b299b3ce910c9a543c909fe38a9c3e9bc5b2a705636d30338112d657",
-    "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
+    "candidates/nd25fn4_vase/obiwan/magnets.catalog.json": "309bfd12e08485b66e52da39863bdc9bc2b0e38840681285eb27998c4fdb19aa",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "1c545d0f9365ed36563bdea5d7bab7d027fb5fa04d66ce553c2ee1485c629135",
+    "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
-    "scripts/audit_h2c_print.py": "8e0dfe9914603f00a175ffa22d340d25f0ab9e3c99fe4adb5cafb85ee65ed646",
+    "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
-    "src/lx521_baffle/h2c/dayton.py": "034817fb267162508cd59882a4b65c41f7f6e29233cf8164fc444a3d53bc1bf7",
-    "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
-    "src/lx521_baffle/tweeter_options.py": "4e13db23df7b60b9278d0e15ec3810b033376a6ee72cc33dfa8fe40518703f5a",
-    "to_print/h2c/STL/h2c_stock_lm_lower_floor_stand.stl": "0a0c51a5a53e7af0572c2af05884e5047d588408a1650d7ec9eb42f3945366e1",
-    "to_print/h2c/stock/petg_gf_pla/h2c_stock_lm_lower_floor_stand.3mf": "17ebe2ddad5df24f6d1a111f9d75e9ad34be06063eb26ac065a1ed57f2959a3c"
+    "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
+    "src/lx521_baffle/tweeter_options.py": "1a7c1a73e917f89d93e72fde1a9d8b1e4a52ec8138fee36e2faf60709f3bde54",
+    "to_print/stock/lm/stock_lm_lower_floor_stand.petg-gf.3mf": "10bfe6e87fbb481eff43b673c66ee28f277b6f59d311d2acfb09fcad68a35ef8",
+    "to_print/stock/lm/stock_lm_lower_floor_stand.stl": "0a0c51a5a53e7af0572c2af05884e5047d588408a1650d7ec9eb42f3945366e1"
   },
   "deposition": {
     "status": "pass",
     "counts": {
-      "support": 61971,
-      "model": 1158527,
+      "support": 59867,
+      "model": 1157647,
       "tower": 45841,
-      "interface": 22509
+      "interface": 22510
     },
     "deposition_bounds_mm": {
       "0": [
         [
           27.485,
-          6.491003618115438,
+          6.496003618115438,
           0.2
         ],
         [
@@ -54,7 +53,7 @@
       "1": [
         [
           27.485,
-          12.575,
+          12.58,
           0.2
         ],
         [
@@ -219,7 +218,7 @@
   "retaining_walls": null,
   "geometry": [
     {
-      "source": "to_print/h2c/STL/h2c_stock_lm_lower_floor_stand.stl",
+      "source": "to_print/stock/lm/stock_lm_lower_floor_stand.stl",
       "sha256": "0a0c51a5a53e7af0572c2af05884e5047d588408a1650d7ec9eb42f3945366e1",
       "subtype": "normal_part",
       "triangles": 104004,
@@ -239,7 +238,7 @@
     "native_bores": {
       "status": "pass",
       "bore_count": 10,
-      "support_samples": 1337332,
+      "support_samples": 1334124,
       "minimum_clearance_mm": 5.4262652661207875,
       "definition_sha256": "92ac6d92b6d773d50f35f0abea78a936620f7cc17d01c2ba940e9ddc7495ce63",
       "method": "0.25 mm support samples, bead width and native cylinder interiors at each layer midplane"
@@ -286,15 +285,15 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 1315333,
-      "lines": 2279223,
-      "movement_commands": 1742632,
-      "non_comment_lines": 1904793,
+      "extrusion_moves": 1311483,
+      "lines": 2257152,
+      "movement_commands": 1733877,
+      "non_comment_lines": 1887729,
       "temperature_commands": 463
     },
     "warnings": [
       "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-      "Unknown or unsupported commands were left unchanged: ========== line 1089, G150 line 920, G150.1 line 701, G150.2 line 906, G150.3 line 683, G151 line 743, G17 line 5291, G28.14 line 1081, G28.140 line 626, G29.1 line 622, G29.2 line 760, G29.20 line 968."
+      "Unknown or unsupported commands were left unchanged: ========== line 1111, G150 line 944, G150.1 line 726, G150.2 line 930, G150.3 line 708, G151 line 768, G17 line 5330, G28.14 line 1103, G28.140 line 651, G29.1 line 647, G29.2 line 785, G29.20 line 990."
     ]
   }
 }

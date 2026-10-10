@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "obiwan_lm_keyed_bottom_floor_stand",
+  "stl": "obiwan_lm_keyed_bottom_floor_stand.stl",
+  "stl_bytes": 6897784,
+  "stl_sha256": "25403b7263a0ae6c61ad9f2be783adbce64de1415886e76e4efbd43e10d681af",
+  "source_stl": "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
+  "source_sha256": "7fd8b2b2ac24c499107f42c2d8a0bcdea4ff54f49cffc80552c53dbc949c8e8f",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      0.19080899537654492,
+      0.981627183447664,
+      0.0,
+      4.430373286459524
+    ],
+    [
+      0.981627183447664,
+      -0.19080899537654492,
+      0.0,
+      141.20212945233072
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999995
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 79.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -4.430373286459524,
+    -141.20212945233072,
+    -18.300000099999995
+  ],
+  "stl_origin_translation_mm": [
+    4.430373286459524,
+    141.20212945233072,
+    18.300000099999995
+  ]
+}

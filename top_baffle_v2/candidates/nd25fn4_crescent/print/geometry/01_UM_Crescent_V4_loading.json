@@ -1,9 +1,9 @@
 {
   "source": "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl",
-  "source_sha256": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+  "source_sha256": "ab79e944697cecb1cd92416c193d1cb01b1f02a879a564905a2ef4838b7fad99",
   "print_stl": "candidates/nd25fn4_crescent/print/geometry/01_UM_Crescent_V4_PRINT.stl",
-  "print_stl_sha256": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
-  "removed_mm3": 13.230660463605897,
+  "print_stl_sha256": "26bc130eadedf9adde7556ead759a5b83aa938cc076d638c4d8a56cab251ca3d",
+  "removed_mm3": 13.230677847733899,
   "added_mm3": 0,
   "exterior_unchanged": true,
   "watertight": true,
@@ -13,30 +13,30 @@
     {
       "site": "body_168deg",
       "flat_loading_roof_z_mm": 9.63,
-      "seated_magnet_top_z_mm": 9.50139344778459,
-      "minimum_exterior_cover_mm": 0.7864898176616677,
-      "cover_witnesses": 12028
+      "seated_magnet_top_z_mm": 9.501393447784562,
+      "minimum_exterior_cover_mm": 0.7864898176618993,
+      "cover_witnesses": 12713
     },
     {
       "site": "body_192deg",
       "flat_loading_roof_z_mm": 9.64,
-      "seated_magnet_top_z_mm": 9.511356396505434,
-      "minimum_exterior_cover_mm": 0.7872686087031431,
-      "cover_witnesses": 10227
+      "seated_magnet_top_z_mm": 9.51135639650544,
+      "minimum_exterior_cover_mm": 0.7872686087032714,
+      "cover_witnesses": 11785
     },
     {
       "site": "body_12deg",
       "flat_loading_roof_z_mm": 9.63,
-      "seated_magnet_top_z_mm": 9.501306417812275,
-      "minimum_exterior_cover_mm": 0.7867315546491118,
-      "cover_witnesses": 12775
+      "seated_magnet_top_z_mm": 9.501306417812227,
+      "minimum_exterior_cover_mm": 0.7867315546490617,
+      "cover_witnesses": 12285
     },
     {
       "site": "body_-12deg",
       "flat_loading_roof_z_mm": 9.64,
-      "seated_magnet_top_z_mm": 9.511458786201239,
-      "minimum_exterior_cover_mm": 0.7872019804527057,
-      "cover_witnesses": 10571
+      "seated_magnet_top_z_mm": 9.511458786201171,
+      "minimum_exterior_cover_mm": 0.7872019804527416,
+      "cover_witnesses": 11204
     }
   ]
 }

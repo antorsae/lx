@@ -3,16 +3,16 @@
   "units": "mm",
   "physical_fit": "not tested",
   "validation_source_sha256": "060e005a5f4470eeb678507ab98083e11c2a55411d78b24537466db7908404ff",
-  "source_build_manifest_sha256": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f",
+  "source_build_manifest_sha256": "000fd59f058e4c4d44b62aefb8c48849f4a0f12b18ccdb9a983f99c15b636e27",
   "STL": {
     "01_UM_Crescent_V4.stl": {
-      "sha256": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+      "sha256": "ab79e944697cecb1cd92416c193d1cb01b1f02a879a564905a2ef4838b7fad99",
       "watertight": true,
       "material_components": 1,
       "closed_void_shells": 4,
       "consistent_winding": true,
       "zero_area_facets": 0,
-      "volume_mm3": 388517.4875055678,
+      "volume_mm3": 388512.06168567546,
       "size_mm": [
         228.68695068359375,
         228.6871337890625,
@@ -57,41 +57,41 @@
     "no_floor_stand": {
       "UM_source": {
         "source_stl": "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
-        "stl_sha256": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
-        "print_authority_sha256": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23"
+        "stl_sha256": "b7f96a336484bad3f44e8f48123caa521c1d518c8cc94a88844d50ab45fb2d9c",
+        "print_authority_sha256": "085c1469c2bfe9e427e96980040f323d5ba3a9337b23716f09e860670279e098"
       },
       "LM_source": {
         "source_stl": "build/no_floor_stand/stl/obiwan_core_1_of_2_lm_carrier.stl",
-        "stl_sha256": "16d0b4d604a660cfad61011077b3b496a86b5211cc550d8b2db15c50284e5f87",
-        "print_authority_sha256": "e0ea9c142eaba9512c143c9fad956054151a3361fc593b2683ba017c3e55d7ef"
+        "stl_sha256": "03d2bc07fe9eeab167e06bc756cbc0a23c6934030af9456a47e71339e424eecf",
+        "print_authority_sha256": "0709b40728220b01f5c30679462f935c36a80492d0c883500d9229b34143c8a2"
       },
       "body_file": "01_UM_Crescent_V4.stl",
-      "body_sha256": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+      "body_sha256": "ab79e944697cecb1cd92416c193d1cb01b1f02a879a564905a2ef4838b7fad99",
       "LM_overlap_mm3": 0.0,
       "functional_region_preservation": {
         "driver_recess_and_seat": {
-          "symmetric_difference_volume_mm3": 0.0011217724344844743
+          "symmetric_difference_volume_mm3": 0.0011217944352264922
         },
         "LM_center_tie": {
-          "symmetric_difference_volume_mm3": 0.00042292387221742845
+          "symmetric_difference_volume_mm3": 0.0004217051964219954
         },
         "UM_pilot_0": {
-          "symmetric_difference_volume_mm3": 0.0001492358920938692
+          "symmetric_difference_volume_mm3": 0.00014923589213731167
         },
         "UM_pilot_1": {
-          "symmetric_difference_volume_mm3": 7.920852223586872e-05
+          "symmetric_difference_volume_mm3": 7.920852215775526e-05
         },
         "UM_pilot_2": {
-          "symmetric_difference_volume_mm3": 0.00013170471303489918
+          "symmetric_difference_volume_mm3": 0.00013170471305281404
         },
         "UM_pilot_3": {
-          "symmetric_difference_volume_mm3": 0.00014303312970864794
+          "symmetric_difference_volume_mm3": 0.00014303312969838345
         },
         "LM_receiver_0": {
-          "symmetric_difference_volume_mm3": 0.0006511628917598864
+          "symmetric_difference_volume_mm3": 0.0006989966593105513
         },
         "LM_receiver_1": {
-          "symmetric_difference_volume_mm3": 0.0004421489613956587
+          "symmetric_difference_volume_mm3": 0.0005955659113939453
         }
       },
       "LM_receivers": [
@@ -140,33 +140,33 @@
       "relocated_magnets": [
         {
           "old_center_mm": [
-            32.3891025231707,
-            405.372124328315,
-            14.151667081954084
+            -32.38910303075861,
+            405.372123845034,
+            14.15166775021547
           ],
           "new_center_mm": [
-            54.54119046076482,
-            376.98865802532146,
-            13.544353912568207
+            -54.542335476021655,
+            376.98865634056165,
+            13.544364568371186
           ],
           "transform": [
             [
-              1.1562626681530577,
-              0.5876049134608216,
-              0.48034886406530775,
-              -227.90550955899454
+              1.1562764179052178,
+              -0.587323958854559,
+              -0.48048036643633074,
+              227.79277939299675
             ],
             [
-              -0.46334335279710026,
-              1.1259107038246294,
-              0.23193853909298734,
-              -67.69919623319522
+              0.4631722766279099,
+              1.1259744893922259,
+              0.23210652189326142,
+              -67.73297347362637
             ],
             [
-              -0.4200770980677687,
-              -0.5095942691540634,
-              1.066333491929553,
-              218.63518909959515
+              0.4202278860645981,
+              -0.50977718962127,
+              1.0662376907143716,
+              218.71558978894487
             ],
             [
               0.0,
@@ -175,114 +175,12 @@
               1.0
             ]
           ],
-          "face_skin_mm": 1.032591395462288,
-          "angle_deg": 12.0,
-          "normal": [
-            0.805372962265877,
-            0.3888778391438902,
-            -0.44737950095401685
-          ],
-          "pocket_face_offset_mm": -1.0330228209495544,
-          "contact_point_mm": [
-            57.07702065552179,
-            378.2130952609066,
-            13.4
-          ]
-        },
-        {
-          "old_center_mm": [
-            32.3891025231707,
-            405.372124328315,
-            14.151667081954084
-          ],
-          "new_center_mm": [
-            54.552448684676406,
-            355.0619597156037,
-            13.53420890814786
-          ],
-          "transform": [
-            [
-              0.4004582548524325,
-              1.2373094969861185,
-              0.48868448435753753,
-              -466.9045129273834
-            ],
-            [
-              -1.179513064668457,
-              0.28635852851489096,
-              -0.213864924723251,
-              280.2101091926275
-            ],
-            [
-              -0.4200920197572106,
-              -0.5096123706108213,
-              1.0663240135425163,
-              218.6330005966257
-            ],
-            [
-              0.0,
-              0.0,
-              0.0,
-              1.0
-            ]
-          ],
-          "face_skin_mm": 1.0099531657826242,
-          "angle_deg": -12.0,
-          "normal": [
-            0.8193124252480259,
-            -0.3585589388639051,
-            -0.4473953924606156
-          ],
-          "pocket_face_offset_mm": -1.0102380514144897,
-          "contact_point_mm": [
-            57.113523201266155,
-            353.9411458834779,
-            13.4
-          ]
-        },
-        {
-          "old_center_mm": [
-            -32.389102956577766,
-            405.37212385091306,
-            14.151667656706861
-          ],
-          "new_center_mm": [
-            -54.54233573035849,
-            376.9886564821394,
-            13.544364771771825
-          ],
-          "transform": [
-            [
-              1.156276417905242,
-              -0.5873239588544883,
-              -0.4804803664363249,
-              227.79277939296867
-            ],
-            [
-              0.46317227662784294,
-              1.125974489392259,
-              0.23210652189329373,
-              -67.73297347364256
-            ],
-            [
-              0.420227886064605,
-              -0.5097771896212785,
-              1.0662376907143674,
-              218.71558978894856
-            ],
-            [
-              0.0,
-              0.0,
-              0.0,
-              1.0
-            ]
-          ],
-          "face_skin_mm": 1.0316276107934563,
+          "face_skin_mm": 1.0316276107934492,
           "angle_deg": 168.0,
           "normal": [
-            -0.8052320281747014,
-            0.38898489601755937,
-            -0.4475400892343224
+            -0.8052320281747278,
+            0.3889848960175132,
+            -0.44754008923431504
           ],
           "pocket_face_offset_mm": -1.0319182574748993,
           "contact_point_mm": [
@@ -293,33 +191,33 @@
         },
         {
           "old_center_mm": [
-            -32.389102956577766,
-            405.37212385091306,
-            14.151667656706861
+            -32.38910303075861,
+            405.372123845034,
+            14.15166775021547
           ],
           "new_center_mm": [
-            -54.55201138711628,
-            355.0619328458454,
-            13.534291828304369
+            -54.55201147417304,
+            355.06193267036514,
+            13.534291998503928
           ],
           "transform": [
             [
-              0.40055756997385306,
-              -1.2373078477314454,
-              -0.4886605223273732,
-              466.9071604727862
+              0.4005575699737943,
+              -1.2373078477314594,
+              -0.4886605223273637,
+              466.90716047278977
             ],
             [
-              1.1794913335115202,
-              0.2864383327590455,
-              -0.21381303064728208,
-              280.1762951289305
+              1.17949133351154,
+              0.28643833275898445,
+              -0.21381303064730678,
+              280.17629512895644
             ],
             [
-              0.42005834829768746,
-              -0.5095715238641502,
-              1.0663454013499836,
-              218.6151297067994
+              0.4200583482976884,
+              -0.5095715238641513,
+              1.0663454013499831,
+              218.61512970679985
             ],
             [
               0.0,
@@ -328,12 +226,12 @@
               1.0
             ]
           ],
-          "face_skin_mm": 1.010368692725923,
+          "face_skin_mm": 1.010368692725933,
           "angle_deg": 192.0,
           "normal": [
-            -0.8193543572217301,
-            -0.35850786033881415,
-            -0.4473595325653078
+            -0.819354357221712,
+            -0.3585078603388546,
+            -0.4473595325653088
           ],
           "pocket_face_offset_mm": -1.010671079158783,
           "contact_point_mm": [
@@ -341,15 +239,117 @@
             353.9411461177978,
             13.4
           ]
+        },
+        {
+          "old_center_mm": [
+            32.38910254874076,
+            405.37212432090513,
+            14.151666997263982
+          ],
+          "new_center_mm": [
+            54.54119057181964,
+            376.9886578081057,
+            13.54435373638143
+          ],
+          "transform": [
+            [
+              1.1562626681530346,
+              0.5876049134608774,
+              0.480348864065319,
+              -227.9055095590167
+            ],
+            [
+              -0.4633433527971576,
+              1.1259107038246003,
+              0.2319385390929634,
+              -67.69919623318108
+            ],
+            [
+              -0.42007709806776844,
+              -0.509594269154063,
+              1.066333491929553,
+              218.63518909959507
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "face_skin_mm": 1.0325913954622772,
+          "angle_deg": 12.0,
+          "normal": [
+            0.8053729622658963,
+            0.38887783914385027,
+            -0.4473795009540166
+          ],
+          "pocket_face_offset_mm": -1.0330228209495544,
+          "contact_point_mm": [
+            57.07702065552179,
+            378.2130952609066,
+            13.4
+          ]
+        },
+        {
+          "old_center_mm": [
+            32.38910254874076,
+            405.37212432090513,
+            14.151666997263982
+          ],
+          "new_center_mm": [
+            54.55244866605686,
+            355.0619598002372,
+            13.534208563029713
+          ],
+          "transform": [
+            [
+              0.4004582548524642,
+              1.2373094969861023,
+              0.4886844843575593,
+              -466.90451292737816
+            ],
+            [
+              -1.1795130646684415,
+              0.28635852851493343,
+              -0.21386492472324198,
+              280.2101091926096
+            ],
+            [
+              -0.4200920197572235,
+              -0.5096123706108369,
+              1.0663240135425083,
+              218.63300059663257
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "face_skin_mm": 1.0099531657826368,
+          "angle_deg": -12.0,
+          "normal": [
+            0.8193124252480312,
+            -0.3585589388638763,
+            -0.44739539246062926
+          ],
+          "pocket_face_offset_mm": -1.0102380514144897,
+          "contact_point_mm": [
+            57.113523201266155,
+            353.9411458834779,
+            13.4
+          ]
         }
       ],
-      "old_duct_backfill_below_seating_surface_mm3": 4.156538382808873,
+      "old_duct_backfill_below_seating_surface_mm3": 4.152396370308656,
       "duct_roof_preservation_reference": {
         "source_stl": "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
-        "stl_sha256": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
-        "print_authority_sha256": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23"
+        "stl_sha256": "b7f96a336484bad3f44e8f48123caa521c1d518c8cc94a88844d50ab45fb2d9c",
+        "print_authority_sha256": "085c1469c2bfe9e427e96980040f323d5ba3a9337b23716f09e860670279e098"
       },
-      "removed_canonical_duct_roof_mm3": 0.00026026210409250034,
+      "removed_canonical_duct_roof_mm3": 0.0002633801136460777,
       "LM_ear_notch_probes_filled": true,
       "installed_bounds_mm": [
         [
@@ -363,7 +363,7 @@
           20.67987861633301
         ]
       ],
-      "print_authority_sha256": "c49a6e206621406c80626bd3871713b4fb15527b10f72774057f93a3760a1627",
+      "print_authority_sha256": "42a9130a540e14c4128cbb978db6462571cb2f870fff080652e311d7a95fef50",
       "LM_cable_handoffs": {
         "T": {
           "gauge_diameter_mm": 5.6,
@@ -412,8 +412,8 @@
             "samples": 168,
             "surface_region": "sloping_perimeter",
             "maximum_forward_return_over_8_mm": 9.182968186044882,
-            "maximum_curvature_per_mm": 0.3347953499516212,
-            "minimum_radius_mm": 2.9868993107117605,
+            "maximum_curvature_per_mm": 0.3347953499516661,
+            "minimum_radius_mm": 2.98689931071136,
             "vertical_y_mm": [
               398.0,
               398.25,
@@ -760,8 +760,8 @@
             "samples": 168,
             "surface_region": "sloping_perimeter",
             "maximum_forward_return_over_8_mm": 5.340229876327371,
-            "maximum_curvature_per_mm": 0.48124116258068717,
-            "minimum_radius_mm": 2.0779602364798446,
+            "maximum_curvature_per_mm": 0.48124116258067684,
+            "minimum_radius_mm": 2.077960236479889,
             "vertical_y_mm": [
               398.0,
               398.25,
@@ -1108,8 +1108,8 @@
             "samples": 107,
             "surface_region": "rear_loft",
             "maximum_forward_return_over_8_mm": 0.0,
-            "maximum_curvature_per_mm": 0.02892727178875801,
-            "minimum_radius_mm": 34.56945429567366,
+            "maximum_curvature_per_mm": 0.028927271788812433,
+            "minimum_radius_mm": 34.56945429560862,
             "vertical_y_mm": [
               403.5474278242821,
               403.7974278242821,
@@ -1334,8 +1334,8 @@
             "samples": 66,
             "surface_region": "rear_loft",
             "maximum_forward_return_over_8_mm": 0.0,
-            "maximum_curvature_per_mm": 0.045934666013640865,
-            "minimum_radius_mm": 21.77005052574101,
+            "maximum_curvature_per_mm": 0.04593466601368051,
+            "minimum_radius_mm": 21.770050525722223,
             "vertical_y_mm": [
               407.38051278639006,
               407.63051278639006,
@@ -1478,8 +1478,8 @@
             "samples": 54,
             "surface_region": "rear_loft",
             "maximum_forward_return_over_8_mm": 0.0,
-            "maximum_curvature_per_mm": 0.04226290825694902,
-            "minimum_radius_mm": 23.66140999857899,
+            "maximum_curvature_per_mm": 0.04226290825699594,
+            "minimum_radius_mm": 23.66140999855272,
             "vertical_y_mm": [
               408.581,
               408.831,
@@ -1598,8 +1598,8 @@
             "samples": 66,
             "surface_region": "rear_loft",
             "maximum_forward_return_over_8_mm": 0.0,
-            "maximum_curvature_per_mm": 0.04698689555478307,
-            "minimum_radius_mm": 21.282529696691235,
+            "maximum_curvature_per_mm": 0.04698689555482365,
+            "minimum_radius_mm": 21.282529696672853,
             "vertical_y_mm": [
               407.38051278639006,
               407.63051278639006,
@@ -1742,8 +1742,8 @@
             "samples": 107,
             "surface_region": "rear_loft",
             "maximum_forward_return_over_8_mm": 0.0,
-            "maximum_curvature_per_mm": 0.030969357951993737,
-            "minimum_radius_mm": 32.289981650576074,
+            "maximum_curvature_per_mm": 0.030969357952041306,
+            "minimum_radius_mm": 32.28998165052648,
             "vertical_y_mm": [
               403.5474278242821,
               403.7974278242821,
@@ -1968,8 +1968,8 @@
             "samples": 168,
             "surface_region": "sloping_perimeter",
             "maximum_forward_return_over_8_mm": 5.3402388487020325,
-            "maximum_curvature_per_mm": 0.48123517592990606,
-            "minimum_radius_mm": 2.0779860866730453,
+            "maximum_curvature_per_mm": 0.48123517592989573,
+            "minimum_radius_mm": 2.07798608667309,
             "vertical_y_mm": [
               398.0,
               398.25,
@@ -2316,8 +2316,8 @@
             "samples": 168,
             "surface_region": "sloping_perimeter",
             "maximum_forward_return_over_8_mm": 9.182937647994912,
-            "maximum_curvature_per_mm": 0.3348462697942197,
-            "minimum_radius_mm": 2.986445094982099,
+            "maximum_curvature_per_mm": 0.3348462697942782,
+            "minimum_radius_mm": 2.9864450949815775,
             "vertical_y_mm": [
               398.0,
               398.25,
@@ -2664,15 +2664,15 @@
           {
             "vertical_y_mm": 408.5,
             "samples": 281,
-            "maximum_curvature_per_mm": 0.0041194385444347555,
-            "minimum_radius_mm": 242.75152771752636,
+            "maximum_curvature_per_mm": 0.004119438544447057,
+            "minimum_radius_mm": 242.75152771680143,
             "broad_loft_lateral_range_mm": [
               -20,
               20
             ],
             "complete_profile_curvature": {
-              "maximum_curvature_per_mm": 0.4307114717792048,
-              "minimum_radius_mm": 2.3217398781350056
+              "maximum_curvature_per_mm": 0.4307114717792297,
+              "minimum_radius_mm": 2.321739878134872
             },
             "lateral_x_mm": [
               -35.0,
@@ -3244,15 +3244,15 @@
           {
             "vertical_y_mm": 412.0,
             "samples": 281,
-            "maximum_curvature_per_mm": 0.004933470761083254,
-            "minimum_radius_mm": 202.69705617560558,
+            "maximum_curvature_per_mm": 0.004933470761108102,
+            "minimum_radius_mm": 202.6970561745847,
             "broad_loft_lateral_range_mm": [
               -20,
               20
             ],
             "complete_profile_curvature": {
-              "maximum_curvature_per_mm": 0.42265023703971594,
-              "minimum_radius_mm": 2.366022569877398
+              "maximum_curvature_per_mm": 0.4226502370397405,
+              "minimum_radius_mm": 2.3660225698772606
             },
             "lateral_x_mm": [
               -35.0,
@@ -3824,15 +3824,15 @@
           {
             "vertical_y_mm": 416.0,
             "samples": 281,
-            "maximum_curvature_per_mm": 0.005619403082705187,
-            "minimum_radius_mm": 177.95484418579898,
+            "maximum_curvature_per_mm": 0.005619403082737466,
+            "minimum_radius_mm": 177.95484418477676,
             "broad_loft_lateral_range_mm": [
               -20,
               20
             ],
             "complete_profile_curvature": {
-              "maximum_curvature_per_mm": 0.4271601900396645,
-              "minimum_radius_mm": 2.3410421273273236
+              "maximum_curvature_per_mm": 0.42716019003970174,
+              "minimum_radius_mm": 2.3410421273271194
             },
             "lateral_x_mm": [
               -35.0,
@@ -4404,15 +4404,15 @@
           {
             "vertical_y_mm": 420.0,
             "samples": 281,
-            "maximum_curvature_per_mm": 0.0056697669914855,
-            "minimum_radius_mm": 176.37409112256944,
+            "maximum_curvature_per_mm": 0.005669766991525849,
+            "minimum_radius_mm": 176.37409112131428,
             "broad_loft_lateral_range_mm": [
               -20,
               20
             ],
             "complete_profile_curvature": {
-              "maximum_curvature_per_mm": 0.38427726103548143,
-              "minimum_radius_mm": 2.6022877265893367
+              "maximum_curvature_per_mm": 0.38427726103551707,
+              "minimum_radius_mm": 2.602287726589095
             },
             "lateral_x_mm": [
               -35.0,
@@ -4983,9 +4983,9 @@
           }
         ],
         "maximum_forward_return_mm": 0.0,
-        "minimum_longitudinal_radius_mm": 21.282529696691235,
-        "minimum_transverse_radius_mm": 176.37409112256944,
-        "minimum_complete_perimeter_profile_radius_mm": 2.0779602364798446,
+        "minimum_longitudinal_radius_mm": 21.282529696672853,
+        "minimum_transverse_radius_mm": 176.37409112131428,
+        "minimum_complete_perimeter_profile_radius_mm": 2.077960236479889,
         "curvature_sample_spacing_mm": 0.25,
         "curvature_fit_window_mm": 1.5,
         "required_minimum_longitudinal_radius_mm": 10.0,
@@ -4996,41 +4996,41 @@
     "floor_stand": {
       "UM_source": {
         "source_stl": "build/floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
-        "stl_sha256": "c8ec7ab952eb4182819336798f92defb5dd224e28a0135126b38bf62efb38aa9",
-        "print_authority_sha256": "e66e046121e41ed63fb312f4a55126319ac0005fe4606f17a233a70ebf88646e"
+        "stl_sha256": "6bfdb1e2da09e67310c3466f25fc9414a3caaddb886ed98af20bf89f997daba4",
+        "print_authority_sha256": "0b088ed6d8fb479419709fd9a24047c2f566825c7a3f07a87d2b6107167ce320"
       },
       "LM_source": {
         "source_stl": "build/floor_stand/stl/obiwan_core_1_of_2_lm_carrier.stl",
-        "stl_sha256": "53f869edf67a3f760413e3615dae0fc59f4dae6eab029b767552ac3a78241587",
-        "print_authority_sha256": "c849f60123eb5f86cbaf6cb499dbc871f06e1094ba0f5dc39e2a85f2aa1d5d45"
+        "stl_sha256": "937a2be450e5f205df3d4416f4ec72a0beb8fe5a4be605cd32c4a8e49e647f96",
+        "print_authority_sha256": "2d5d0d44bfe0aa3010c0dcc905e895d8b069f16c83908c07254c7b6a37a79840"
       },
       "body_file": "01_UM_Crescent_V4.stl",
-      "body_sha256": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+      "body_sha256": "ab79e944697cecb1cd92416c193d1cb01b1f02a879a564905a2ef4838b7fad99",
       "LM_overlap_mm3": 0.0,
       "functional_region_preservation": {
         "driver_recess_and_seat": {
-          "symmetric_difference_volume_mm3": 0.001121772426435783
+          "symmetric_difference_volume_mm3": 0.0011217944352264922
         },
         "LM_center_tie": {
-          "symmetric_difference_volume_mm3": 0.0004229238722824535
+          "symmetric_difference_volume_mm3": 0.0004217051964219954
         },
         "UM_pilot_0": {
-          "symmetric_difference_volume_mm3": 0.00014923589217703326
+          "symmetric_difference_volume_mm3": 0.00014923589213731167
         },
         "UM_pilot_1": {
-          "symmetric_difference_volume_mm3": 7.920852218999988e-05
+          "symmetric_difference_volume_mm3": 7.920852215775526e-05
         },
         "UM_pilot_2": {
-          "symmetric_difference_volume_mm3": 0.0001317047130582629
+          "symmetric_difference_volume_mm3": 0.00013170471305281404
         },
         "UM_pilot_3": {
-          "symmetric_difference_volume_mm3": 0.00014303312969789233
+          "symmetric_difference_volume_mm3": 0.00014303312969838345
         },
         "LM_receiver_0": {
-          "symmetric_difference_volume_mm3": 0.000651162892607491
+          "symmetric_difference_volume_mm3": 0.0006989966593105513
         },
         "LM_receiver_1": {
-          "symmetric_difference_volume_mm3": 0.00044214896007937273
+          "symmetric_difference_volume_mm3": 0.0005955659113939453
         }
       },
       "LM_receivers": [
@@ -5079,33 +5079,33 @@
       "relocated_magnets": [
         {
           "old_center_mm": [
-            32.38910252180099,
-            405.37212429402507,
-            14.151667025624059
+            -32.38910303075861,
+            405.372123845034,
+            14.15166775021547
           ],
           "new_center_mm": [
-            54.54119046076482,
-            376.98865802532146,
-            13.544353912568207
+            -54.542335476021655,
+            376.98865634056165,
+            13.544364568371186
           ],
           "transform": [
             [
-              1.1562626681530577,
-              0.5876049134608216,
-              0.48034886406530775,
-              -227.90550955899454
+              1.1562764179052178,
+              -0.587323958854559,
+              -0.48048036643633074,
+              227.79277939299675
             ],
             [
-              -0.46334335279710026,
-              1.1259107038246294,
-              0.23193853909298734,
-              -67.69919623319522
+              0.4631722766279099,
+              1.1259744893922259,
+              0.23210652189326142,
+              -67.73297347362637
             ],
             [
-              -0.4200770980677687,
-              -0.5095942691540634,
-              1.066333491929553,
-              218.63518909959515
+              0.4202278860645981,
+              -0.50977718962127,
+              1.0662376907143716,
+              218.71558978894487
             ],
             [
               0.0,
@@ -5114,114 +5114,12 @@
               1.0
             ]
           ],
-          "face_skin_mm": 1.032591395462288,
-          "angle_deg": 12.0,
-          "normal": [
-            0.805372962265877,
-            0.3888778391438902,
-            -0.44737950095401685
-          ],
-          "pocket_face_offset_mm": -1.0330228209495544,
-          "contact_point_mm": [
-            57.07702065552179,
-            378.2130952609066,
-            13.4
-          ]
-        },
-        {
-          "old_center_mm": [
-            32.38910252180099,
-            405.37212429402507,
-            14.151667025624059
-          ],
-          "new_center_mm": [
-            54.552448684676406,
-            355.0619597156037,
-            13.53420890814786
-          ],
-          "transform": [
-            [
-              0.4004582548524325,
-              1.2373094969861185,
-              0.48868448435753753,
-              -466.9045129273834
-            ],
-            [
-              -1.179513064668457,
-              0.28635852851489096,
-              -0.213864924723251,
-              280.2101091926275
-            ],
-            [
-              -0.4200920197572106,
-              -0.5096123706108213,
-              1.0663240135425163,
-              218.6330005966257
-            ],
-            [
-              0.0,
-              0.0,
-              0.0,
-              1.0
-            ]
-          ],
-          "face_skin_mm": 1.0099531657826242,
-          "angle_deg": -12.0,
-          "normal": [
-            0.8193124252480259,
-            -0.3585589388639051,
-            -0.4473953924606156
-          ],
-          "pocket_face_offset_mm": -1.0102380514144897,
-          "contact_point_mm": [
-            57.113523201266155,
-            353.9411458834779,
-            13.4
-          ]
-        },
-        {
-          "old_center_mm": [
-            -32.38910301785661,
-            405.3721238827177,
-            14.151667618219664
-          ],
-          "new_center_mm": [
-            -54.54233573035849,
-            376.9886564821394,
-            13.544364771771825
-          ],
-          "transform": [
-            [
-              1.156276417905242,
-              -0.5873239588544883,
-              -0.4804803664363249,
-              227.79277939296867
-            ],
-            [
-              0.46317227662784294,
-              1.125974489392259,
-              0.23210652189329373,
-              -67.73297347364256
-            ],
-            [
-              0.420227886064605,
-              -0.5097771896212785,
-              1.0662376907143674,
-              218.71558978894856
-            ],
-            [
-              0.0,
-              0.0,
-              0.0,
-              1.0
-            ]
-          ],
-          "face_skin_mm": 1.0316276107934563,
+          "face_skin_mm": 1.0316276107934492,
           "angle_deg": 168.0,
           "normal": [
-            -0.8052320281747014,
-            0.38898489601755937,
-            -0.4475400892343224
+            -0.8052320281747278,
+            0.3889848960175132,
+            -0.44754008923431504
           ],
           "pocket_face_offset_mm": -1.0319182574748993,
           "contact_point_mm": [
@@ -5232,33 +5130,33 @@
         },
         {
           "old_center_mm": [
-            -32.38910301785661,
-            405.3721238827177,
-            14.151667618219664
+            -32.38910303075861,
+            405.372123845034,
+            14.15166775021547
           ],
           "new_center_mm": [
-            -54.55201138711628,
-            355.0619328458454,
-            13.534291828304369
+            -54.55201147417304,
+            355.06193267036514,
+            13.534291998503928
           ],
           "transform": [
             [
-              0.40055756997385306,
-              -1.2373078477314454,
-              -0.4886605223273732,
-              466.9071604727862
+              0.4005575699737943,
+              -1.2373078477314594,
+              -0.4886605223273637,
+              466.90716047278977
             ],
             [
-              1.1794913335115202,
-              0.2864383327590455,
-              -0.21381303064728208,
-              280.1762951289305
+              1.17949133351154,
+              0.28643833275898445,
+              -0.21381303064730678,
+              280.17629512895644
             ],
             [
-              0.42005834829768746,
-              -0.5095715238641502,
-              1.0663454013499836,
-              218.6151297067994
+              0.4200583482976884,
+              -0.5095715238641513,
+              1.0663454013499831,
+              218.61512970679985
             ],
             [
               0.0,
@@ -5267,12 +5165,12 @@
               1.0
             ]
           ],
-          "face_skin_mm": 1.010368692725923,
+          "face_skin_mm": 1.010368692725933,
           "angle_deg": 192.0,
           "normal": [
-            -0.8193543572217301,
-            -0.35850786033881415,
-            -0.4473595325653078
+            -0.819354357221712,
+            -0.3585078603388546,
+            -0.4473595325653088
           ],
           "pocket_face_offset_mm": -1.010671079158783,
           "contact_point_mm": [
@@ -5280,15 +5178,117 @@
             353.9411461177978,
             13.4
           ]
+        },
+        {
+          "old_center_mm": [
+            32.38910254874076,
+            405.37212432090513,
+            14.151666997263982
+          ],
+          "new_center_mm": [
+            54.54119057181964,
+            376.9886578081057,
+            13.54435373638143
+          ],
+          "transform": [
+            [
+              1.1562626681530346,
+              0.5876049134608774,
+              0.480348864065319,
+              -227.9055095590167
+            ],
+            [
+              -0.4633433527971576,
+              1.1259107038246003,
+              0.2319385390929634,
+              -67.69919623318108
+            ],
+            [
+              -0.42007709806776844,
+              -0.509594269154063,
+              1.066333491929553,
+              218.63518909959507
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "face_skin_mm": 1.0325913954622772,
+          "angle_deg": 12.0,
+          "normal": [
+            0.8053729622658963,
+            0.38887783914385027,
+            -0.4473795009540166
+          ],
+          "pocket_face_offset_mm": -1.0330228209495544,
+          "contact_point_mm": [
+            57.07702065552179,
+            378.2130952609066,
+            13.4
+          ]
+        },
+        {
+          "old_center_mm": [
+            32.38910254874076,
+            405.37212432090513,
+            14.151666997263982
+          ],
+          "new_center_mm": [
+            54.55244866605686,
+            355.0619598002372,
+            13.534208563029713
+          ],
+          "transform": [
+            [
+              0.4004582548524642,
+              1.2373094969861023,
+              0.4886844843575593,
+              -466.90451292737816
+            ],
+            [
+              -1.1795130646684415,
+              0.28635852851493343,
+              -0.21386492472324198,
+              280.2101091926096
+            ],
+            [
+              -0.4200920197572235,
+              -0.5096123706108369,
+              1.0663240135425083,
+              218.63300059663257
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "face_skin_mm": 1.0099531657826368,
+          "angle_deg": -12.0,
+          "normal": [
+            0.8193124252480312,
+            -0.3585589388638763,
+            -0.44739539246062926
+          ],
+          "pocket_face_offset_mm": -1.0102380514144897,
+          "contact_point_mm": [
+            57.113523201266155,
+            353.9411458834779,
+            13.4
+          ]
         }
       ],
-      "old_duct_backfill_below_seating_surface_mm3": 4.156538382808873,
+      "old_duct_backfill_below_seating_surface_mm3": 4.152396370308656,
       "duct_roof_preservation_reference": {
         "source_stl": "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
-        "stl_sha256": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
-        "print_authority_sha256": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23"
+        "stl_sha256": "b7f96a336484bad3f44e8f48123caa521c1d518c8cc94a88844d50ab45fb2d9c",
+        "print_authority_sha256": "085c1469c2bfe9e427e96980040f323d5ba3a9337b23716f09e860670279e098"
       },
-      "removed_canonical_duct_roof_mm3": 0.00026026210409250034,
+      "removed_canonical_duct_roof_mm3": 0.0002633801136460777,
       "LM_ear_notch_probes_filled": true,
       "installed_bounds_mm": [
         [
@@ -5302,7 +5302,7 @@
           20.67987861633301
         ]
       ],
-      "print_authority_sha256": "c49a6e206621406c80626bd3871713b4fb15527b10f72774057f93a3760a1627",
+      "print_authority_sha256": "42a9130a540e14c4128cbb978db6462571cb2f870fff080652e311d7a95fef50",
       "LM_cable_handoffs": {
         "T": {
           "gauge_diameter_mm": 5.6,
@@ -5351,8 +5351,8 @@
             "samples": 168,
             "surface_region": "sloping_perimeter",
             "maximum_forward_return_over_8_mm": 9.182968186044882,
-            "maximum_curvature_per_mm": 0.3347953499516212,
-            "minimum_radius_mm": 2.9868993107117605,
+            "maximum_curvature_per_mm": 0.3347953499516661,
+            "minimum_radius_mm": 2.98689931071136,
             "vertical_y_mm": [
               398.0,
               398.25,
@@ -5699,8 +5699,8 @@
             "samples": 168,
             "surface_region": "sloping_perimeter",
             "maximum_forward_return_over_8_mm": 5.340229876327371,
-            "maximum_curvature_per_mm": 0.48124116258068717,
-            "minimum_radius_mm": 2.0779602364798446,
+            "maximum_curvature_per_mm": 0.48124116258067684,
+            "minimum_radius_mm": 2.077960236479889,
             "vertical_y_mm": [
               398.0,
               398.25,
@@ -6047,8 +6047,8 @@
             "samples": 107,
             "surface_region": "rear_loft",
             "maximum_forward_return_over_8_mm": 0.0,
-            "maximum_curvature_per_mm": 0.02892727178875801,
-            "minimum_radius_mm": 34.56945429567366,
+            "maximum_curvature_per_mm": 0.028927271788812433,
+            "minimum_radius_mm": 34.56945429560862,
             "vertical_y_mm": [
               403.5474278242821,
               403.7974278242821,
@@ -6273,8 +6273,8 @@
             "samples": 66,
             "surface_region": "rear_loft",
             "maximum_forward_return_over_8_mm": 0.0,
-            "maximum_curvature_per_mm": 0.045934666013640865,
-            "minimum_radius_mm": 21.77005052574101,
+            "maximum_curvature_per_mm": 0.04593466601368051,
+            "minimum_radius_mm": 21.770050525722223,
             "vertical_y_mm": [
               407.38051278639006,
               407.63051278639006,
@@ -6417,8 +6417,8 @@
             "samples": 54,
             "surface_region": "rear_loft",
             "maximum_forward_return_over_8_mm": 0.0,
-            "maximum_curvature_per_mm": 0.04226290825694902,
-            "minimum_radius_mm": 23.66140999857899,
+            "maximum_curvature_per_mm": 0.04226290825699594,
+            "minimum_radius_mm": 23.66140999855272,
             "vertical_y_mm": [
               408.581,
               408.831,
@@ -6537,8 +6537,8 @@
             "samples": 66,
             "surface_region": "rear_loft",
             "maximum_forward_return_over_8_mm": 0.0,
-            "maximum_curvature_per_mm": 0.04698689555478307,
-            "minimum_radius_mm": 21.282529696691235,
+            "maximum_curvature_per_mm": 0.04698689555482365,
+            "minimum_radius_mm": 21.282529696672853,
             "vertical_y_mm": [
               407.38051278639006,
               407.63051278639006,
@@ -6681,8 +6681,8 @@
             "samples": 107,
             "surface_region": "rear_loft",
             "maximum_forward_return_over_8_mm": 0.0,
-            "maximum_curvature_per_mm": 0.030969357951993737,
-            "minimum_radius_mm": 32.289981650576074,
+            "maximum_curvature_per_mm": 0.030969357952041306,
+            "minimum_radius_mm": 32.28998165052648,
             "vertical_y_mm": [
               403.5474278242821,
               403.7974278242821,
@@ -6907,8 +6907,8 @@
             "samples": 168,
             "surface_region": "sloping_perimeter",
             "maximum_forward_return_over_8_mm": 5.3402388487020325,
-            "maximum_curvature_per_mm": 0.48123517592990606,
-            "minimum_radius_mm": 2.0779860866730453,
+            "maximum_curvature_per_mm": 0.48123517592989573,
+            "minimum_radius_mm": 2.07798608667309,
             "vertical_y_mm": [
               398.0,
               398.25,
@@ -7255,8 +7255,8 @@
             "samples": 168,
             "surface_region": "sloping_perimeter",
             "maximum_forward_return_over_8_mm": 9.182937647994912,
-            "maximum_curvature_per_mm": 0.3348462697942197,
-            "minimum_radius_mm": 2.986445094982099,
+            "maximum_curvature_per_mm": 0.3348462697942782,
+            "minimum_radius_mm": 2.9864450949815775,
             "vertical_y_mm": [
               398.0,
               398.25,
@@ -7603,15 +7603,15 @@
           {
             "vertical_y_mm": 408.5,
             "samples": 281,
-            "maximum_curvature_per_mm": 0.0041194385444347555,
-            "minimum_radius_mm": 242.75152771752636,
+            "maximum_curvature_per_mm": 0.004119438544447057,
+            "minimum_radius_mm": 242.75152771680143,
             "broad_loft_lateral_range_mm": [
               -20,
               20
             ],
             "complete_profile_curvature": {
-              "maximum_curvature_per_mm": 0.4307114717792048,
-              "minimum_radius_mm": 2.3217398781350056
+              "maximum_curvature_per_mm": 0.4307114717792297,
+              "minimum_radius_mm": 2.321739878134872
             },
             "lateral_x_mm": [
               -35.0,
@@ -8183,15 +8183,15 @@
           {
             "vertical_y_mm": 412.0,
             "samples": 281,
-            "maximum_curvature_per_mm": 0.004933470761083254,
-            "minimum_radius_mm": 202.69705617560558,
+            "maximum_curvature_per_mm": 0.004933470761108102,
+            "minimum_radius_mm": 202.6970561745847,
             "broad_loft_lateral_range_mm": [
               -20,
               20
             ],
             "complete_profile_curvature": {
-              "maximum_curvature_per_mm": 0.42265023703971594,
-              "minimum_radius_mm": 2.366022569877398
+              "maximum_curvature_per_mm": 0.4226502370397405,
+              "minimum_radius_mm": 2.3660225698772606
             },
             "lateral_x_mm": [
               -35.0,
@@ -8763,15 +8763,15 @@
           {
             "vertical_y_mm": 416.0,
             "samples": 281,
-            "maximum_curvature_per_mm": 0.005619403082705187,
-            "minimum_radius_mm": 177.95484418579898,
+            "maximum_curvature_per_mm": 0.005619403082737466,
+            "minimum_radius_mm": 177.95484418477676,
             "broad_loft_lateral_range_mm": [
               -20,
               20
             ],
             "complete_profile_curvature": {
-              "maximum_curvature_per_mm": 0.4271601900396645,
-              "minimum_radius_mm": 2.3410421273273236
+              "maximum_curvature_per_mm": 0.42716019003970174,
+              "minimum_radius_mm": 2.3410421273271194
             },
             "lateral_x_mm": [
               -35.0,
@@ -9343,15 +9343,15 @@
           {
             "vertical_y_mm": 420.0,
             "samples": 281,
-            "maximum_curvature_per_mm": 0.0056697669914855,
-            "minimum_radius_mm": 176.37409112256944,
+            "maximum_curvature_per_mm": 0.005669766991525849,
+            "minimum_radius_mm": 176.37409112131428,
             "broad_loft_lateral_range_mm": [
               -20,
               20
             ],
             "complete_profile_curvature": {
-              "maximum_curvature_per_mm": 0.38427726103548143,
-              "minimum_radius_mm": 2.6022877265893367
+              "maximum_curvature_per_mm": 0.38427726103551707,
+              "minimum_radius_mm": 2.602287726589095
             },
             "lateral_x_mm": [
               -35.0,
@@ -9922,9 +9922,9 @@
           }
         ],
         "maximum_forward_return_mm": 0.0,
-        "minimum_longitudinal_radius_mm": 21.282529696691235,
-        "minimum_transverse_radius_mm": 176.37409112256944,
-        "minimum_complete_perimeter_profile_radius_mm": 2.0779602364798446,
+        "minimum_longitudinal_radius_mm": 21.282529696672853,
+        "minimum_transverse_radius_mm": 176.37409112131428,
+        "minimum_complete_perimeter_profile_radius_mm": 2.077960236479889,
         "curvature_sample_spacing_mm": 0.25,
         "curvature_fit_window_mm": 1.5,
         "required_minimum_longitudinal_radius_mm": 10.0,
@@ -9960,41 +9960,41 @@
         "screw": 2,
         "pilot_collision_mm3": 0.0,
         "head_collision_mm3": 0.0,
-        "missing_surround_mm3": 0.006837200881493598
+        "missing_surround_mm3": 0.006837200881493622
       },
       {
         "pod": 1,
         "screw": 3,
         "pilot_collision_mm3": 0.0,
         "head_collision_mm3": 0.0,
-        "missing_surround_mm3": 0.007205534273495411
+        "missing_surround_mm3": 0.007205534273495446
       },
       {
         "pod": 2,
         "screw": 1,
         "pilot_collision_mm3": 0.0,
         "head_collision_mm3": 0.0,
-        "missing_surround_mm3": 0.005227499129827363
+        "missing_surround_mm3": 0.005227499129827369
       },
       {
         "pod": 2,
         "screw": 2,
         "pilot_collision_mm3": 0.0,
         "head_collision_mm3": 0.0,
-        "missing_surround_mm3": 0.005688408419401957
+        "missing_surround_mm3": 0.00568840841940197
       },
       {
         "pod": 2,
         "screw": 3,
         "pilot_collision_mm3": 0.0,
         "head_collision_mm3": 0.0,
-        "missing_surround_mm3": 0.00681705530005796
+        "missing_surround_mm3": 0.006817055300057972
       }
     ],
     "physical_fit": "not yet tested"
   },
   "MU10_reference": {
-    "raw_stl": "/Users/antor/gh/lx/top_baffle_v2/vendor/SEAS/MU10RB-SL/H1658-04_MU10RB-SL_driver.stl",
+    "raw_stl": "/home/antor/temp/claude-obiwan-concept/repo/top_baffle_v2/vendor/SEAS/MU10RB-SL/H1658-04_MU10RB-SL_driver.stl",
     "raw_stl_sha256": "bb92511ee12bed3aa7db942b43d1f0e10127dd692bac224fb56f2b1ca9dff0a1",
     "expected_raw_stl_sha256": "bb92511ee12bed3aa7db942b43d1f0e10127dd692bac224fb56f2b1ca9dff0a1",
     "seat_transform": "Pos(0,366.081,14.3)*Rot(Z=58)*Rot(X=90)",
@@ -10072,20 +10072,20 @@
       6.330868784729467
     ],
     "sampled_new_cover_skin_mm": 0.8,
-    "retained_join_radius_mm": 2.70209630912541,
+    "retained_join_radius_mm": 2.702096309125411,
     "radius_join_value_slope_curvature_errors": [
-      8.881784197001252e-16,
-      3.681778588365825e-06,
-      5.272885519950685e-05
+      1.7763568394002505e-15,
+      3.6817785840081996e-06,
+      5.272885520351753e-05
     ],
     "cover_samples_checked": 2232,
     "old_free_tail_removed": true,
     "old_UM_surface_route_filled": true,
     "magnet_to_cable_gauge_minimum_gaps_mm": [
-      3.5976500048963413,
-      3.68191541821624,
       10.0,
-      10.0
+      10.0,
+      3.5976500048962072,
+      3.68191541821615
     ]
   }
 }

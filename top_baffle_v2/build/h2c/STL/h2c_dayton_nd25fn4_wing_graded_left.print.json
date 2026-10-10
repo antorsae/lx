@@ -3,10 +3,10 @@
   "part": "h2c_dayton_nd25fn4_wing_graded_left",
   "stl": "h2c_dayton_nd25fn4_wing_graded_left.stl",
   "stl_bytes": 7899884,
-  "stl_sha256": "081034f50c0816cc1ccb464354aad4ee7e2482a8da9bba158e3a510b22da76c7",
+  "stl_sha256": "8d5243fd0b1a67f92a310717c5ce55abc7cfe65400601692f0c62cb6ba8d59f1",
   "source_hashes": {
     "build/h2c/STL/h2c_obiwan_wing_graded_left.stl": "57fa804b6e53b98068f46275e49c1fb32e84c1c7f3ca3d7ae1b075b8b7f0fc9d",
-    "candidates/nd25fn4_crescent/print/geometry/V4_graded_left_UPPER_PRINT.stl": "334e8ac6b1fa4452b00db175912a08fc384853e3f95bef2fe0bac0e15de03683"
+    "candidates/nd25fn4_crescent/print/geometry/V4_graded_left_UPPER_PRINT.stl": "7f3c4bb1fc917bbbe2c3b5a88c3acbcf9b3e65586540450e417836643df4cd25"
   },
   "join_y_mm": [
     308.0,
@@ -20,7 +20,7 @@
     "degenerate": 0,
     "duplicates": 0,
     "nonfinite": 0,
-    "signed_volume": 72930.9573365035,
+    "signed_volume": 72930.95739572986,
     "zero_volume": 0,
     "negative_volume": 0,
     "components": 5,
@@ -33,8 +33,8 @@
       73340.04019693642,
       -64.88287529294888,
       -64.88305499296906,
-      -139.65436772634763,
-      -139.6625624205648
+      -139.65421438243047,
+      -139.66265653812798
     ],
     "component_error": 0
   },

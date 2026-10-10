@@ -70,13 +70,13 @@ def prior_sliced_evidence(shelf):
     """Preserve and check existing slice provenance; do not invent a new CAD build."""
     evidence = {}
     for e in read(shelf / 'release_manifest.json')['entries']:
-        rel = Path(e['p2s_project']).relative_to('to_print')
+        rel = Path(e['p2s_project']).relative_to('to_print/archive/p2s')
         evidence[rel] = (e['p2s_project_sha256'], 'release_manifest.json')
     for e in read(shelf / 'catalog_06hf.json')['entries']:
         evidence[Path(e['project'])] = (e['project_sha256'], 'catalog_06hf.json')
     report = shelf / 'obiwan' / LANES['petg_gf_wings'].directory / 'wing_plates.json'
     for e in read(report)['plates']:
-        rel = Path(e['project']).relative_to('to_print')
+        rel = Path(e['project']).relative_to('to_print/archive/p2s')
         evidence[rel] = (e['project_sha256'], str(report.relative_to(shelf)))
     return evidence
 
@@ -127,7 +127,7 @@ def refresh(shelf, catalog):
     legacy.setdefault('prior_delivery_manifest_sha256', legacy['manifest_sha256'])
     legacy['shelf_catalog'].update(sha256=sha256(catalog), selection_rules=read(catalog)['selection_rules'])
     legacy['gui_delivered_entries'] = {
-        r['name']: {'kind': r['kind'], 'project': 'to_print/' + r['path'],
+        r['name']: {'kind': r['kind'], 'project': 'to_print/archive/p2s/' + r['path'],
                     'project_sha256': r['sha256'], 'geometry_audit': r['geometry_audit'],
                     'slicing_required': True}
         for r in records if r['kind'] == 'gui_project'
@@ -139,7 +139,7 @@ def refresh(shelf, catalog):
     write(legacy_path, legacy)
     gui_report = shelf / 'obiwan' / LANES['petg_gf_gui'].directory / 'gui_projects.json'
     gui = read(gui_report)
-    gui['projects'] = [dict(**r['settings_audit'], name=r['name'], project='to_print/' + r['path'],
+    gui['projects'] = [dict(**r['settings_audit'], name=r['name'], project='to_print/archive/p2s/' + r['path'],
                             project_sha256=r['sha256'], geometry_audit=r['geometry_audit'],
                             kind='plate' if 'combo' in r['name'] else 'single')
                        for r in records if r['kind'] == 'gui_project']
@@ -214,8 +214,8 @@ def package(shelf, output):
         for p in (ROOT / directory).rglob('*'):
             if p.is_file() and not any(part.startswith('.') or part == '__cadgen__' for part in p.relative_to(ROOT).parts):
                 files[p.relative_to(ROOT)] = p
-    files[Path('README.md')] = ROOT / 'to_print/PACK_README.md'
-    files.pop(Path('to_print/PACK_README.md'), None)
+    files[Path('README.md')] = ROOT / 'to_print/archive/p2s/PACK_README.md'
+    files.pop(Path('to_print/archive/p2s/PACK_README.md'), None)
     for r in manifest['projects']:
         authority = ROOT / r['source_authority']['path']
         files[Path('source_authorities') / authority.relative_to(ROOT)] = authority
@@ -236,7 +236,7 @@ def package(shelf, output):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command', choices=('refresh', 'validate', 'package'))
-    parser.add_argument('--shelf', type=Path, default=ROOT / 'to_print')
+    parser.add_argument('--shelf', type=Path, default=ROOT / 'to_print/archive/p2s')
     parser.add_argument('--output', type=Path, default=ROOT / 'dist/lx521-print-pack.zip')
     args = parser.parse_args()
     if args.command == 'refresh':

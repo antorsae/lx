@@ -26,27 +26,27 @@
     "last_open_layer_z_mm": 5.96,
     "collision_witnesses": [
       {
-        "line": 12034,
+        "line": 12057,
         "feature": "Outer wall",
         "intrusion_mm": 0.12801490445178404
       },
       {
-        "line": 12036,
+        "line": 12059,
         "feature": "Outer wall",
         "intrusion_mm": 0.1501339588120787
       },
       {
-        "line": 12038,
+        "line": 12061,
         "feature": "Outer wall",
         "intrusion_mm": 0.14045034247700355
       },
       {
-        "line": 12040,
+        "line": 12063,
         "feature": "Outer wall",
         "intrusion_mm": 0.1405605117396787
       },
       {
-        "line": 12042,
+        "line": 12065,
         "feature": "Outer wall",
         "intrusion_mm": 0.14024181871627572
       }
@@ -270,7 +270,7 @@
       {
         "z": 7.72,
         "intrusion_mm": 0.309998,
-        "count": 49
+        "count": 50
       },
       {
         "z": 7.88,

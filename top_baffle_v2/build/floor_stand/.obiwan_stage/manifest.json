@@ -22,28 +22,28 @@
       "sha256": "93045ece7409ad7d53f6228d6593d47df5ee49b9dc28368dcf37a3c70d4b0f1d"
     },
     "core_lm_carrier": {
-      "bytes": 12663828,
+      "bytes": 12639119,
       "label": "core_lm_carrier",
       "path": "core_lm_carrier.brep",
-      "sha256": "3b3704608aa8ebfda8c3cd85edd2e0191c81750067cfa3f4dda989a5d5069833"
+      "sha256": "8d0ff0345354c5d0218b21f376f76e5292b80f5d2f7bbcd8bbcecc111a4048fd"
     },
     "core_um_carrier": {
-      "bytes": 3535421,
+      "bytes": 3084768,
       "label": "core_um_carrier",
       "path": "core_um_carrier.brep",
-      "sha256": "8761b874286d964840b1739d8cdbaa061c260bf737887499427684521c7c8e14"
+      "sha256": "a8f52a1fe9f8a4dc5a33c71a81447a58dbd8985baa44e747c578e429a25ac3a3"
     },
     "optional_lm_keyed_1_of_2_bottom": {
-      "bytes": 7994539,
+      "bytes": 7977132,
       "label": "optional_lm_keyed_1_of_2_bottom",
       "path": "optional_lm_keyed_1_of_2_bottom.brep",
-      "sha256": "b2340b974986d462d37aa66c5e1ccb20fae8c71c130de8e20b1d4c361334ce0e"
+      "sha256": "0c719a8dc0568f6abf4e2ab87bfdf3dd9db132c2792e170bb182279a1999c375"
     },
     "optional_lm_keyed_2_of_2_top": {
-      "bytes": 4795019,
+      "bytes": 4783890,
       "label": "optional_lm_keyed_2_of_2_top",
       "path": "optional_lm_keyed_2_of_2_top.brep",
-      "sha256": "3ad0188daf7dc390a04cde5f4ebaed85da13cc2f2217b6b3153fcb03578cdd11"
+      "sha256": "fe4f0ac83847c409db8e241f9a8483902f2f22fb9787f0d911e17a11723e312d"
     }
   },
   "review_parts": {
@@ -120,16 +120,16 @@
       "sha256": "636b837d6be370cbf4ec11df461c7f8750707ebaa65744c212b3a860ed5fc3e6"
     },
     "reference_ts_cable": {
-      "bytes": 9888143,
+      "bytes": 9890679,
       "label": "REFERENCE_TS_D5p2_LM_UM_printed_then_free_behind_tweeter",
       "path": "review_reference_ts_cable.brep",
-      "sha256": "715991ed7c53021e8eddc97e8cff5ecb5af635b7e3dedffbfffa6ccc8f050fe4"
+      "sha256": "02bebf59d8dfa1b19a97a54dfef030cd439bbe030de14ca6b3fcea149f7a2f58"
     },
     "reference_um_cable": {
-      "bytes": 23286626,
+      "bytes": 23288100,
       "label": "REFERENCE_UM_D7_LM_printed_cover_then_free_behind_UM_R15_R20_Faston_handoff",
       "path": "review_reference_um_cable.brep",
-      "sha256": "dac52aed245e5231faac74f1aaba4e905ea9edfb83a059c7ed413d8ba7a782ce"
+      "sha256": "50182b7140149cdfd6a3950ce0b9ce0111a3ecb609d6323b8033299de2dae842"
     },
     "reference_y_bundle": {
       "bytes": 413109,
@@ -161,7 +161,7 @@
     "python": "3.12.12 (main, Dec  9 2025, 19:02:36) [Clang 21.1.4 ]"
   },
   "schema_version": 7,
-  "source_sha256": "11a2ad3c00a7866db6535a2c9ba8f317173e82620811bad0efebea02e84e5d3b",
+  "source_sha256": "b308f0c35a7aadac1a434f1d74a172b2e55a10cb8bd1fc61f250cb4854e2cf8b",
   "stand_foot": true,
   "state": "floor_stand"
 }

@@ -3,7 +3,7 @@
     "collapsed_apex_facets_removed": 0,
     "component_error": 0,
     "component_signed_volumes": [
-      238588.54619766312,
+      239021.19464823353,
       -64.88301933262218,
       -64.88304278146533,
       -64.88305033666812,
@@ -20,8 +20,8 @@
     "open": 0,
     "outer_components": 1,
     "over_shared": 0,
-    "signed_volume": 238329.0140155608,
-    "triangles": 153616,
+    "signed_volume": 238761.6624661312,
+    "triangles": 153018,
     "winding": 0,
     "zero_volume": 0,
     "zero_volume_components": 0
@@ -67,12 +67,12 @@
     ]
   ],
   "stl": "h2c_obiwan_core_lm_carrier_floor_stand.stl",
-  "stl_bytes": 7680884,
+  "stl_bytes": 7650984,
   "stl_origin_translation_mm": [
     25.835728647184418,
     302.73981172901165,
     18.300000099999995
   ],
-  "stl_sha256": "6544be563cc0986339109c5e6bc11b6cd0c54cae709a092937ef3f83cf8d2873",
+  "stl_sha256": "0ed3509b4cc014fb7d1b4b88f0d6c7948f6435b360ca2e02388da460642aa622",
   "variant_export": "h2c"
 }

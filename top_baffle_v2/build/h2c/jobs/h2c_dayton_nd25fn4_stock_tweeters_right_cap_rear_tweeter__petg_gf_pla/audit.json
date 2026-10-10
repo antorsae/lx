@@ -1,0 +1,149 @@
+{
+  "status": "pass",
+  "qualification": "digital; physical H2C qualification pending",
+  "project_sha256": "faad484a628367445adbf77f01492dfe9b2be48c146d7f9457e20054ca1d89f4",
+  "sliced_project_sha256": "2b9e2db83a670fd5af4bc5bbbca346e81c97d2db4cfeaa0569244fd8714ca3c3",
+  "gcode_sha256": "a574eb738184afb6702921dd4d3000df8c363aede2736127308cbfe223e118bb",
+  "audit_version": 4,
+  "inputs": {
+    "build/h2c/jobs/h2c_dayton_nd25fn4_stock_tweeters_right_cap_rear_tweeter__petg_gf_pla/dry_run.json": "1d36c93a2b3308530e8c21f178030a0a90a66ce4a087dcdc92941a1f53644abd",
+    "build/h2c/jobs/h2c_dayton_nd25fn4_stock_tweeters_right_cap_rear_tweeter__petg_gf_pla/process.json": "2b5dbabe82fd019947c73c5cb48f8e098fd0bbae28c22f7792cde62acc8d6c3f",
+    "build/h2c/profiles/petg_gf_pla/interface.json": "bebda39f8a78214048e36f4e2b0bb05425fc049312641c20eeb9256763e9b588",
+    "build/h2c/profiles/petg_gf_pla/machine.json": "e565fa0194354f79fa8f4fef2fdb8a2d0e6f9350a565505d95747c4b1ac5ba82",
+    "build/h2c/profiles/petg_gf_pla/model.json": "ac9758d2f6761b086555e41f1829756b9176853e7c9ecec168d47a010da6cdc6",
+    "candidates/nd25fn4_crescent/audit_print.py": "c297b070b299b3ce910c9a543c909fe38a9c3e9bc5b2a705636d30338112d657",
+    "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
+    "candidates/nd25fn4_vase/obiwan/magnets.catalog.json": "309bfd12e08485b66e52da39863bdc9bc2b0e38840681285eb27998c4fdb19aa",
+    "candidates/nd25fn4_vase/stock/STL/nd25fn4_vase_stock_tweeters_right_cap_rear_tweeter.stl": "932815934a1c9f0b41c732078850be72168ae010985c85bb84656cb09010234b",
+    "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
+    "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+    "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
+    "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e",
+    "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
+    "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
+    "src/lx521_baffle/tweeter_options.py": "1a7c1a73e917f89d93e72fde1a9d8b1e4a52ec8138fee36e2faf60709f3bde54",
+    "to_print/stock/upper/stock_nd25fn4_tweeters_right_cap_rear.petg-gf.3mf": "faad484a628367445adbf77f01492dfe9b2be48c146d7f9457e20054ca1d89f4",
+    "to_print/stock/upper/stock_nd25fn4_tweeters_right_cap_rear.stl": "9a5a98580033ad24e983355778df92c25791ff4ca6bd6c2ed997f7dfaed44a03"
+  },
+  "deposition": {
+    "status": "pass",
+    "counts": {
+      "tower": 6379,
+      "support": 13169,
+      "model": 15610,
+      "interface": 2353
+    },
+    "deposition_bounds_mm": {
+      "0": [
+        [
+          26.363,
+          6.497222595116092,
+          0.2
+        ],
+        [
+          202.98823610645286,
+          188.0110657231985,
+          21.0
+        ]
+      ],
+      "1": [
+        [
+          26.363,
+          11.444,
+          13.48
+        ],
+        [
+          200.786,
+          186.014,
+          19.88
+        ]
+      ]
+    },
+    "interface_layers_mm": [
+      13.48,
+      13.64,
+      13.8,
+      16.36,
+      16.52,
+      16.68,
+      16.84,
+      18.44,
+      18.6,
+      18.76,
+      19.4,
+      19.56,
+      19.72
+    ],
+    "bed_temperatures_c": [
+      70.0
+    ],
+    "failures": []
+  },
+  "magnet_pauses_mm": [],
+  "magnet_discovery": [],
+  "retaining_walls": null,
+  "geometry": [
+    {
+      "source": "to_print/stock/upper/stock_nd25fn4_tweeters_right_cap_rear.stl",
+      "sha256": "9a5a98580033ad24e983355778df92c25791ff4ca6bd6c2ed997f7dfaed44a03",
+      "subtype": "normal_part",
+      "triangles": 30344,
+      "maximum_vertex_error_mm": 1.6649943237129932e-06,
+      "winding_and_connectivity_match": true
+    }
+  ],
+  "supports": {},
+  "pause_program": [],
+  "static_validation": {
+    "errors": [],
+    "ok": true,
+    "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/jobs/h2c_dayton_nd25fn4_stock_tweeters_right_cap_rear_tweeter__petg_gf_pla/plate_1.gcode",
+    "profile": {
+      "backend": "orcaslicer",
+      "bed_size_mm": [
+        330.0,
+        320.0
+      ],
+      "bed_temp_c": 70.0,
+      "filament_type": "PETG",
+      "machine_name": "Bambu Lab H2C 0.6 High Flow",
+      "motion_bounds_mm": {
+        "x": [
+          0.0,
+          330.0
+        ],
+        "y": [
+          -16.0,
+          320.0
+        ],
+        "z": [
+          0.0,
+          325.0
+        ]
+      },
+      "native_config": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/machine.json",
+      "native_filaments": [
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/model.json",
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/interface.json"
+      ],
+      "native_settings": [
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_gf_pla/machine.json",
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/jobs/h2c_dayton_nd25fn4_stock_tweeters_right_cap_rear_tweeter__petg_gf_pla/process.json"
+      ],
+      "nozzle_temp_c": 260.0,
+      "z_height_mm": 325.0
+    },
+    "stats": {
+      "extrusion_moves": 38539,
+      "lines": 81366,
+      "movement_commands": 52931,
+      "non_comment_lines": 63831,
+      "temperature_commands": 73
+    },
+    "warnings": [
+      "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
+      "Unknown or unsupported commands were left unchanged: ========== line 1109, G150 line 941, G150.1 line 726, G150.2 line 927, G150.3 line 708, G151 line 768, G17 line 1407, G28.14 line 1101, G28.140 line 651, G29.1 line 647, G29.2 line 782, G29.20 line 988."
+    ]
+  }
+}

@@ -26,27 +26,27 @@
     "last_open_layer_z_mm": 5.96,
     "collision_witnesses": [
       {
-        "line": 64723,
+        "line": 64978,
         "feature": "Outer wall",
         "intrusion_mm": 0.12820671619006319
       },
       {
-        "line": 64725,
+        "line": 64980,
         "feature": "Outer wall",
         "intrusion_mm": 0.1480401471009935
       },
       {
-        "line": 64727,
+        "line": 64982,
         "feature": "Outer wall",
         "intrusion_mm": 0.13919525197826582
       },
       {
-        "line": 64729,
+        "line": 64984,
         "feature": "Outer wall",
         "intrusion_mm": 0.1397036706358757
       },
       {
-        "line": 64731,
+        "line": 64986,
         "feature": "Outer wall",
         "intrusion_mm": 0.13999810068014026
       }
@@ -239,7 +239,7 @@
       },
       {
         "z": 6.76,
-        "intrusion_mm": 0.2775812846994841,
+        "intrusion_mm": 0.2773230431521529,
         "count": 45
       },
       {
@@ -295,32 +295,32 @@
       {
         "z": 8.52,
         "intrusion_mm": 0.309998,
-        "count": 112
+        "count": 111
       },
       {
         "z": 8.68,
         "intrusion_mm": 0.309998,
-        "count": 112
+        "count": 111
       },
       {
         "z": 8.84,
         "intrusion_mm": 0.309998,
-        "count": 112
+        "count": 111
       },
       {
         "z": 9.0,
         "intrusion_mm": 0.309998,
-        "count": 112
+        "count": 111
       },
       {
         "z": 9.16,
         "intrusion_mm": 0.309998,
-        "count": 112
+        "count": 111
       },
       {
         "z": 9.32,
         "intrusion_mm": 0.309998,
-        "count": 112
+        "count": 111
       },
       {
         "z": 9.48,
@@ -424,27 +424,27 @@
     "last_open_layer_z_mm": 5.96,
     "collision_witnesses": [
       {
-        "line": 64839,
+        "line": 64779,
         "feature": "Outer wall",
         "intrusion_mm": 0.12637698565072117
       },
       {
-        "line": 64841,
+        "line": 64781,
         "feature": "Outer wall",
         "intrusion_mm": 0.15269931020133426
       },
       {
-        "line": 64843,
+        "line": 64783,
         "feature": "Outer wall",
         "intrusion_mm": 0.13970463819524442
       },
       {
-        "line": 64844,
+        "line": 64784,
         "feature": "Outer wall",
         "intrusion_mm": 0.13995241670515438
       },
       {
-        "line": 64846,
+        "line": 64786,
         "feature": "Outer wall",
         "intrusion_mm": 0.14013586397703603
       }
@@ -822,29 +822,29 @@
     "last_open_layer_z_mm": 5.96,
     "collision_witnesses": [
       {
-        "line": 64670,
+        "line": 64879,
         "feature": "Outer wall",
-        "intrusion_mm": 0.11682787853733434
+        "intrusion_mm": 0.12941262685131186
       },
       {
-        "line": 64671,
+        "line": 64881,
         "feature": "Outer wall",
-        "intrusion_mm": 0.14027648702605844
+        "intrusion_mm": 0.14615307912142123
       },
       {
-        "line": 64672,
+        "line": 64883,
         "feature": "Outer wall",
-        "intrusion_mm": 0.14020910664129052
+        "intrusion_mm": 0.13738783635630208
       },
       {
-        "line": 64674,
+        "line": 64885,
         "feature": "Outer wall",
-        "intrusion_mm": 0.13975292899481626
+        "intrusion_mm": 0.1387886447066471
       },
       {
-        "line": 64678,
+        "line": 64887,
         "feature": "Outer wall",
-        "intrusion_mm": 0.13975292899481626
+        "intrusion_mm": 0.13884000360141457
       }
     ],
     "layer_records": [

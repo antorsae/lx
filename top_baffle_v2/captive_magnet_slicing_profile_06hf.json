@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "backend": "BambuStudio",
- "required_bambu_studio_version": "02.07.01.62",
+ "required_bambu_studio_version": "02.08.04.61",
  "lane": "0.6mm_high_flow",
  "lane_notes": "Second nozzle lane over the same dual-0.52-mm-skin release geometry. The stock 0.6-nozzle process is rebased onto the release-wide 0.16 mm / 0.20 mm first-layer schedule so both lanes share one Z stack and one pause table; only XY bead widths differ. Ordinary parts print Bambu PLA Basic on the high-flow hotend; the PETG-GF structural lane needs its own saved 0.6 user preset before it can be pinned. The retaining-bead acceptance below is a nominal first-qualification seed (Arachne min bead is 85% of 0.6 = 0.51 mm); tighten it to observed widths after the first authoritative audited run, exactly as the 0.4 lane's 0.42-0.67 band was derived.",
  "printer": "Bambu Lab P2S 0.6 nozzle",

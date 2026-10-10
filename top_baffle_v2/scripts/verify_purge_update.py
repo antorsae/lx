@@ -59,7 +59,7 @@ def main():
             changeover_count=changeover['change_count'],seconds=report['slicer_result']['total_predication'],
             temperature_handoff_requests_unchanged=True,magnet_pause_programs_unchanged=True))
     gui=[]
-    for path in sorted((ROOT/'to_print/obiwan/3mf_06hf_petg-gf_pla').glob('*.3mf')):
+    for path in sorted((ROOT/'to_print/archive/p2s/obiwan/3mf_06hf_petg-gf_pla').glob('*.3mf')):
         rel=str(path.relative_to(ROOT))
         with zipfile.ZipFile(WORK/'before'/rel) as z:a={n:z.read(n) for n in z.namelist()}
         with zipfile.ZipFile(path) as z:b={n:z.read(n) for n in z.namelist()}

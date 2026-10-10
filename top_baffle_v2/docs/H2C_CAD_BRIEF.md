@@ -2,7 +2,7 @@
 
 The pre-migration source checkpoint is recorded in the
 [generated-file history guide](GENERATED_HISTORY.md). H2C outputs live
-in `to_print/h2c/`; the older printer shelf remains a separate P2S release.
+in `to_print/`; the older printer shelf remains a separate P2S release.
 
 ## Geometry and interfaces
 
@@ -31,8 +31,7 @@ in `to_print/h2c/`; the older printer shelf remains a separate P2S release.
 - H2C with 0.6 mm High Flow hotends. Model material on the left nozzle;
   PLA interface material on the right. These are physical feed paths,
   not the old P2S AMS slot numbers.
-- Tinmorry PETG-GF/PLA is the normal lane. Dayton ND25FN-4 waveguide also receives a separate
-  PETG Translucent/PLA Translucent lane for the Engineering Plate with glue.
+- Tinmorry PETG-GF/PLA is the only material lane.
 - Resolve actual installed H2C profiles. Preserve machine tool-change,
   heating and priming programs; do not transplant P2S machine G-code or
   same-nozzle purge volumes into a two-nozzle job.
