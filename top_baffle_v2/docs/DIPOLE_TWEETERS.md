@@ -4,7 +4,10 @@ Obiwan only. One open-back tweeter radiates front and rear (dipole), mounted on 
 MU10. Each driver comes in four layouts: **T above** or **T below** the MU10, **upright** or **rotated** 90°.
 Status: candidate. Digital geometry, duct and slicer checks pass; nothing has been printed or measured yet.
 
-![Five tweeter families at one scale](../images/generated/iso/rows/tweeter_row.png)
+![All eight dipole layouts at one scale](../images/generated/iso/rows/dipole_row.png)
+
+All eight layouts at one scale and installed datum. Gold is the dipole part. The PT2522-4 upright T below is two prints:
+the keyed LM top variant (blue) and the T + UM piece. Drivers are omitted.
 
 ## What to print (per speaker)
 

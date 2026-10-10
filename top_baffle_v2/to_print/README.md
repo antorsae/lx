@@ -28,7 +28,7 @@ The unchanged one-piece Stock/Slim floor-stand trials failed the actual PLA-nozz
 
 ## Tweeter families
 
-![Five tweeter families and eight arrangements at one scale](../images/generated/iso/rows/tweeter_row.png)
+![Five tweeter families, ten arrangements at one scale](../images/generated/iso/rows/tweeter_row.png)
 
 | Tweeter family | Construction | Compatible baffles |
 |---|---|---|

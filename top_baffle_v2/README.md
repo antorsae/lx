@@ -73,11 +73,12 @@ wings. The ND25FN-4 vase top is an alternative that replaces
 the LM top, UM and crescent on the keyed LM bottom of either stand state,
 shown alongside the regular uppers below — [`docs/obiwan.md`](docs/obiwan.md).
 
-![Five tweeter families, eight arrangements, at the same scale](images/generated/iso/rows/tweeter_row.png)
+![Five tweeter families, ten arrangements, at the same scale](images/generated/iso/rows/tweeter_row.png)
 
 Left to right: ND25FW-4 crescent; BMR Stock/Slim vase; BMR Obiwan coaxial
 crescent; BMR Obiwan opposed crescent; **ND25FN-4 Stock vase**; **ND25FN-4 Obiwan vase top**;
-**PT2522-4** and **AMT17D2.1 dipoles** (T above, upright, shown).
+**PT2522-4** and **AMT17D2.1 dipoles**, each T above, upright and rotated.
+Their T-below layouts are in the [dipole row](#tweeter-options) below.
 These are the actual printed carriers at one scale. Drivers and removable
 service caps are omitted so their construction can be compared.
 
@@ -122,6 +123,8 @@ screwless twist-lock cap; there are no retainers or tweeter screws.
 
 The **dipole tweeters** (GRS PT2522-4, Mundorf AMT17D2.1) are Obiwan only and
 come in four layouts each; see the [dipole tweeter guide](docs/DIPOLE_TWEETERS.md).
+
+![Dipole tweeters: PT2522-4 and AMT17D2.1, T above / T below, upright / rotated](images/generated/iso/rows/dipole_row.png)
 Stock/Slim BMR uppers and the Stock ND25FN-4 vase also have different outlines
 or magnet stations: their matching perimeter is not supplied, so use the
 standard shoulders or B1 wings only with ND25FW-4.

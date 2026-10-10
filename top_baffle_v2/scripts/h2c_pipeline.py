@@ -62,9 +62,10 @@ def main():
         for cell in ('tweeter_nd25fw4_crescent','tweeter_tebm35c10_4_vase',
                      'tweeter_tebm35c10_4_crescent','tweeter_tebm35c10_4_crescent_opposed',
                      'tweeter_nd25fn4_waveguide_stock','tweeter_nd25fn4_waveguide',
-                     'tweeter_pt2522_dipole','tweeter_amt17d2_dipole'):
+                     'tweeter_pt2522_dipole','tweeter_pt2522_dipole_rotated',
+                     'tweeter_amt17d2_dipole','tweeter_amt17d2_dipole_rotated'):
             comparison+=['--cell',cell]
-        for row in ('tweeter_row','obiwan_upper_row','obiwan_wing_row'):
+        for row in ('tweeter_row','obiwan_upper_row','dipole_row','obiwan_wing_row'):
             comparison+=['--row',row]
         subprocess.run(comparison,cwd=ROOT,check=True)
     if args.command in ('all','validate','plates','docs'):

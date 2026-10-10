@@ -145,6 +145,13 @@ SCALE_GROUPS = {
         "center": (0.0, 6.8, 321.0),
         "zoom": 1.08,
     },
+    "dipole": {
+        "label": "shared dipole-tweeter scale / installed datum",
+        # T below also carries the keyed LM top (from Y172.5); the tallest part ends at Y516.8, the widest is 227.9 mm.
+        "span": (240.0, 60.0, 355.0),
+        "center": (0.0, 6.8, 345.0),
+        "zoom": 1.08,
+    },
     "obiwan_complete": {
         "label": "shared Obiwan assembly scale",
         "span": (340.0, 180.0, 580.0),
@@ -192,6 +199,30 @@ H2C_UM = h2c_stl("h2c_obiwan_core_2_of_2_um_carrier")
 H2C_LM = h2c_stl("h2c_obiwan_core_lm_carrier_no_floor_stand")
 PT2522_ABOVE = h2c_stl("h2c_grs_pt2522_4_obiwan_t_above_upright")
 AMT17_ABOVE = h2c_stl("h2c_mundorf_amt17d2_1_obiwan_t_above_upright")
+DIPOLE_DRIVERS = ((PT2522, "pt2522", "PT2522-4"), (AMT17, "amt17d2", "AMT17D2.1"))
+DIPOLE_LAYOUTS = (("t_above", "upright"), ("t_above", "rotated"), ("t_below", "upright"), ("t_below", "rotated"))
+
+
+def _dipole_parts(family: str, layout: str, orientation: str) -> tuple[tuple[str, Path], ...]:
+    """The print(s) of one dipole layout; the PT2522-4 upright T below is two prints (keyed LM top + T + UM piece)."""
+    stem = f"h2c_{family}_obiwan_{layout}_{orientation}"
+    if family == PT2522 and (layout, orientation) == ("t_below", "upright"):
+        return (("base", h2c_stl(stem + "_lm_top")), ("top", h2c_stl(stem + "_um_t")))
+    return (("top", h2c_stl(stem)),)
+
+
+def _dipole_cells() -> tuple[dict, ...]:
+    cells = []
+    for family, slug, label in DIPOLE_DRIVERS:
+        for layout, orientation in DIPOLE_LAYOUTS:
+            where = "T above" if layout == "t_above" else "T below"
+            note = ("UM + tweeter frame" if layout == "t_above" else
+                    "keyed LM top + T + UM piece (two prints)" if (family, orientation) == (PT2522, "upright") else
+                    "keyed LM top + tweeter + UM")
+            cells.append(_cell(f"dipole_{slug}_{layout}_{orientation}", f"{label} dipole — {where}, {orientation}",
+                               f"{label} · {where} · {orientation}", "dipole",
+                               _dipole_parts(family, layout, orientation), note=note, family=family))
+    return tuple(cells)
 
 MAKE_TARGET_FOR_PREFIX = (
     (H2C_SHELF, "make h2c_prepare"),
@@ -331,13 +362,24 @@ CELLS = (
         "tweeter_pt2522_dipole", "GRS PT2522-4 dipole planar (candidate)",
         "PT2522-4 dipole planar", "tweeter_option",
         (("top", PT2522_ABOVE),),
-        note="Obiwan · T above shown; T below too", family=PT2522),
+        note="Obiwan · T above, upright", family=PT2522),
+    _cell(
+        "tweeter_pt2522_dipole_rotated", "GRS PT2522-4 dipole planar, rotated (candidate)",
+        "PT2522-4 dipole, rotated", "tweeter_option",
+        (("top", h2c_stl("h2c_grs_pt2522_4_obiwan_t_above_rotated")),),
+        note="Obiwan · T above, rotated", family=PT2522),
     _cell(
         "tweeter_amt17d2_dipole", "Mundorf AMT17D2.1 dipole AMT (candidate)",
         "AMT17D2.1 dipole AMT", "tweeter_option",
         (("top", AMT17_ABOVE),),
-        note="Obiwan · T above shown; T below too", family=AMT17),
+        note="Obiwan · T above, upright", family=AMT17),
+    _cell(
+        "tweeter_amt17d2_dipole_rotated", "Mundorf AMT17D2.1 dipole AMT, rotated (candidate)",
+        "AMT17D2.1 dipole, rotated", "tweeter_option",
+        (("top", h2c_stl("h2c_mundorf_amt17d2_1_obiwan_t_above_rotated")),),
+        note="Obiwan · T above, rotated", family=AMT17),
     *_obiwan_comparison_cells(),
+    *_dipole_cells(),
 )
 
 # One row per README block.  Every panel of a row belongs to one scale group,
@@ -360,11 +402,12 @@ ROWS = (
     },
     {
         "key": "tweeter_row",
-        "title": f"Tweeter options — {len(TWEETER_FAMILIES)} driver families, 8 arrangements",
+        "title": f"Tweeter options — {len(TWEETER_FAMILIES)} driver families, 10 arrangements",
         "cells": ("tweeter_nd25fw4_crescent", "tweeter_tebm35c10_4_vase",
                   "tweeter_tebm35c10_4_crescent",
                   "tweeter_tebm35c10_4_crescent_opposed", "tweeter_nd25fn4_waveguide_stock",
-                  "tweeter_nd25fn4_waveguide", "tweeter_pt2522_dipole", "tweeter_amt17d2_dipole"),
+                  "tweeter_nd25fn4_waveguide", "tweeter_pt2522_dipole", "tweeter_pt2522_dipole_rotated",
+                  "tweeter_amt17d2_dipole", "tweeter_amt17d2_dipole_rotated"),
         "show_all_families": True,
         "geometry_note": "Printed carriers shown; drivers and removable service parts omitted. Same scale in every panel.",
     },
@@ -376,6 +419,13 @@ ROWS = (
                   "obiwan_upper_pt2522", "obiwan_upper_amt17d2"),
         "show_all_families": True,
         "geometry_note": "Same installed LM datum and scale. The ND25FN-4 vase top also replaces the LM top. Drivers and caps omitted.",
+    },
+    {
+        "key": "dipole_row",
+        "title": "Dipole tweeters — PT2522-4 and AMT17D2.1, T above / T below, upright / rotated",
+        "cells": tuple(f"dipole_{slug}_{layout}_{orientation}" for _, slug, _ in DIPOLE_DRIVERS
+                       for layout, orientation in DIPOLE_LAYOUTS),
+        "geometry_note": "Same installed datum and scale. T above replaces the UM; T below also replaces the keyed LM top. Drivers omitted.",
     },
     {
         "key": "obiwan_wing_row",

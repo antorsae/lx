@@ -15,7 +15,7 @@ and UM (T below), upright or rotated, without wings ([guide](DIPOLE_TWEETERS.md)
 
 All six upper arrangements are shown upright at the **same scale**, using
 the actual exported parts. Blue is the regular UM; gold is the tweeter
-carrier, ND25FN-4 vase top or dipole piece (T above, upright, shown). The ND25FN-4 panel shows the whole vase top,
+carrier, ND25FN-4 vase top or dipole piece (T above, upright, shown; every dipole layout is in the [dipole guide](DIPOLE_TWEETERS.md)). The ND25FN-4 panel shows the whole vase top,
 which also replaces the LM top. Drivers and service caps are omitted.
 
 | Tweeter family | Upper parts per speaker | Matching wings | Buried magnets in upper / each full wing |

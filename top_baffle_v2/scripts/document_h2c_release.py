@@ -26,10 +26,10 @@ def write_selection_guide():
     rows=['# Five tweeter families', '',
         'Generated from `src/lx521_baffle/tweeter_options.py` by `make h2c_docs`. '+
         'Stock, Slim and Obiwan are baffle designs; the following are the five tweeter families.', '',
-        '![Five tweeter families and eight arrangements at one scale](../images/generated/iso/rows/tweeter_row.png)', '',
+        '![Five tweeter families, ten arrangements at one scale](../images/generated/iso/rows/tweeter_row.png)', '',
         'Left to right: ND25FW-4 crescent, BMR Stock/Slim vase, BMR Obiwan coaxial crescent, '+
-        'BMR Obiwan opposed crescent, ND25FN-4 Stock vase, ND25FN-4 Obiwan vase top, PT2522-4 and AMT17D2.1 dipoles '+
-        '(T above, upright, shown). '+
+        'BMR Obiwan opposed crescent, ND25FN-4 Stock vase, ND25FN-4 Obiwan vase top, and the PT2522-4 and AMT17D2.1 dipoles '+
+        '(T above, upright and rotated; all four layouts of each below). '+
         'Actual printed carriers share one scale; drivers and removable service caps are omitted.', '',
         *tweeter_table(), '',
         '## What to change', '',
@@ -41,6 +41,7 @@ def write_selection_guide():
         'The dipole parts carry one open-back driver each, upright or rotated 90°, above or below the raised MU10, with hidden '+
         'T and UM ducts (T below: on opposite sides). Drivers fix with M3 screws into M3 heat-set inserts. '+
         '[Dipole tweeter guide](DIPOLE_TWEETERS.md).', '',
+        '![Dipole tweeters: PT2522-4 and AMT17D2.1, T above / T below, upright / rotated](../images/generated/iso/rows/dipole_row.png)', '',
         'BMR coaxial and opposed mounts use the same driver family. On Obiwan they share the regular UM half-lap mount. '+
         'The ND25FN-4 Obiwan vase top replaces the LM top and the UM together; it keys onto the released keyed LM bottom of either stand state, '+
         'so it does not use the one-piece Obiwan LM. Its upper LM wing magnets sit at 9/171° and need the matching wings. '+
@@ -198,7 +199,7 @@ def main():
         'Their reports are retained under `build/h2c/experiments/rejected_one_piece_floor/`; trial meshes and slices remain local, outside this shelf. '+
         'The current floor-stand pair removes the old vertical LM seam and keeps the original outline.', '',
         '## Tweeter families', '',
-        '![Five tweeter families and eight arrangements at one scale](../images/generated/iso/rows/tweeter_row.png)', '',
+        '![Five tweeter families, ten arrangements at one scale](../images/generated/iso/rows/tweeter_row.png)', '',
         *tweeter_table(), '',
         '![Complete Obiwan upper choices at the same LM datum](../images/generated/iso/rows/obiwan_upper_row.png)', '',
         'The ND25FN-4 Obiwan vase top replaces the LM top, the regular UM and the crescent; it needs a keyed LM bottom (floor or no-floor stand) '+

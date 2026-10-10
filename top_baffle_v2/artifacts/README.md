@@ -7,7 +7,7 @@ includes **Dayton ND25FN-4 waveguide**, an integrated Obiwan upper with
 matching wings, and the **PT2522-4 / AMT17D2.1 dipoles**, alongside ND25FW-4
 and TEBM35C10-4 BMR.
 
-![Five tweeter families and eight carrier arrangements at one scale](../images/generated/iso/rows/tweeter_row.png)
+![Five tweeter families and ten carrier arrangements at one scale](../images/generated/iso/rows/tweeter_row.png)
 
 This is the human-facing inventory for the three supported LX521.4 top-baffle
 product choices. Relative symlinks point to validated generator outputs, so

@@ -10,7 +10,7 @@ proud-routing plate and the more radical Obi-Wan carrier system. Optional perime
 pieces are meant to make acoustic-boundary experiments repeatable without
 reprinting the driver carriers.
 
-![The five tweeter families and their eight carrier arrangements](../images/generated/iso/rows/tweeter_row.png)
+![The five tweeter families and their ten carrier arrangements](../images/generated/iso/rows/tweeter_row.png)
 
 The repository is not a generic collection of every historical geometry idea.
 Its human-facing inventory is three product families:

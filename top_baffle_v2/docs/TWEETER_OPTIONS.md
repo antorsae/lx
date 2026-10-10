@@ -2,9 +2,9 @@
 
 Generated from `src/lx521_baffle/tweeter_options.py` by `make h2c_docs`. Stock, Slim and Obiwan are baffle designs; the following are the five tweeter families.
 
-![Five tweeter families and eight arrangements at one scale](../images/generated/iso/rows/tweeter_row.png)
+![Five tweeter families, ten arrangements at one scale](../images/generated/iso/rows/tweeter_row.png)
 
-Left to right: ND25FW-4 crescent, BMR Stock/Slim vase, BMR Obiwan coaxial crescent, BMR Obiwan opposed crescent, ND25FN-4 Stock vase, ND25FN-4 Obiwan vase top, PT2522-4 and AMT17D2.1 dipoles (T above, upright, shown). Actual printed carriers share one scale; drivers and removable service caps are omitted.
+Left to right: ND25FW-4 crescent, BMR Stock/Slim vase, BMR Obiwan coaxial crescent, BMR Obiwan opposed crescent, ND25FN-4 Stock vase, ND25FN-4 Obiwan vase top, and the PT2522-4 and AMT17D2.1 dipoles (T above, upright and rotated; all four layouts of each below). Actual printed carriers share one scale; drivers and removable service caps are omitted.
 
 | Tweeter family | Construction | Compatible baffles |
 |---|---|---|
@@ -25,6 +25,8 @@ Left to right: ND25FW-4 crescent, BMR Stock/Slim vase, BMR Obiwan coaxial cresce
 | Obiwan | Regular UM + separate crescent + regular wings | Regular UM + coaxial or opposed BMR crescent + regular wings | Keyed LM bottom (either stand state) + vase top (LM top + UM + waveguides) + two caps + matching ND25FN-4 wings | T above: any LM + UM-with-tweeter piece. T below: keyed LM bottom + LM-top-with-tweeter-and-UM piece (PT2522 upright: two prints). Upright or rotated. No wings |
 
 The dipole parts carry one open-back driver each, upright or rotated 90°, above or below the raised MU10, with hidden T and UM ducts (T below: on opposite sides). Drivers fix with M3 screws into M3 heat-set inserts. [Dipole tweeter guide](DIPOLE_TWEETERS.md).
+
+![Dipole tweeters: PT2522-4 and AMT17D2.1, T above / T below, upright / rotated](../images/generated/iso/rows/dipole_row.png)
 
 BMR coaxial and opposed mounts use the same driver family. On Obiwan they share the regular UM half-lap mount. The ND25FN-4 Obiwan vase top replaces the LM top and the UM together; it keys onto the released keyed LM bottom of either stand state, so it does not use the one-piece Obiwan LM. Its upper LM wing magnets sit at 9/171° and need the matching wings. The ND25FN-4 Stock vase uses the H2C Stock LM in either stand state. Choose one upper arrangement per speaker.
 

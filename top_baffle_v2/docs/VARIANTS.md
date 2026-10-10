@@ -8,7 +8,7 @@ Use the [tweeter selection guide](TWEETER_OPTIONS.md) to compare ND25FW-4,
 TEBM35C10-4 BMR, ND25FN-4 printed waveguide and the PT2522-4 / AMT17D2.1
 dipoles ([dipole guide](DIPOLE_TWEETERS.md)).
 
-![Five tweeter families and eight carrier arrangements, all at one scale](../images/generated/iso/rows/tweeter_row.png)
+![Five tweeter families and ten carrier arrangements, all at one scale](../images/generated/iso/rows/tweeter_row.png)
 
 | Tweeter family | Stock / Slim upper | Obiwan upper | Optional perimeter |
 |---|---|---|---|
