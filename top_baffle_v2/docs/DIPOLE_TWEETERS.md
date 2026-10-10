@@ -6,8 +6,10 @@ Status: candidate. Digital geometry, duct and slicer checks pass; nothing has be
 
 ![All eight dipole layouts at one scale](../images/generated/iso/rows/dipole_row.png)
 
-All eight layouts at one scale and installed datum. Gold is the dipole part. The PT2522-4 upright T below is two prints:
-the keyed LM top variant (blue) and the T + UM piece. Drivers are omitted.
+All eight layouts at one scale and installed datum. Only the dipole prints are drawn, not the unchanged regular parts
+they mount on: T above sits on any regular Obiwan LM; T below sits on the regular keyed LM bottom, with the keyed LM top
+fused in. The exception is the PT2522-4 upright T below: one piece would be too long to print, so it has a custom keyed
+LM top (blue) as a separate print. It works only with its own T + UM piece. Drivers are omitted.
 
 ## What to print (per speaker)
 

@@ -100,7 +100,8 @@ PRODUCT_INTRO={
         '*T above* — any LM above + `dipole/obiwan_<pt2522|amt17d2>_t_above_<upright|rotated>` (UM + tweeter frame in one piece, '+
         'replaces the UM carrier and crescent). *T below* — the keyed bottom for your stand state + '+
         '`dipole/obiwan_<driver>_t_below_<orientation>` (keyed LM top + tweeter + UM in one piece); the PT2522 upright comes as '+
-        'two prints, `dipole/obiwan_pt2522_t_below_upright_lm_top` + `_um_t`, joined like the regular LM top and UM. '+
+        'two prints, a custom keyed LM top `dipole/obiwan_pt2522_t_below_upright_lm_top` + its T + UM piece `_um_t`, joined like the '+
+        'regular LM top and UM (they only fit each other). '+
         'Drivers fix with M3 screws into M3 heat-set inserts. No wings for the dipole parts.',
         '- **Floor stand add-on:** `addons/obiwan_nl8_service_lid` closes the underside NL8 bay.'],
 }

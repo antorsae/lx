@@ -7,7 +7,7 @@ The shelf's `grs_pt2522_4` and `mundorf_amt17d2_1` families (`to_print/obiwan/di
 |---|---|---|---|
 | `<family>_obiwan_t_above_{upright,rotated}` | UM + tweeter frame, T above the MU10 | UM carrier + crescent | Obiwan LM carrier or keyed LM top (released LM–UM joint) |
 | `<family>_obiwan_t_below_{upright,rotated}` (not PT2522-4 upright) | keyed LM top + tweeter + raised MU10, one piece | keyed LM top + UM + crescent | Keyed LM bottom, either stand state (released keyed seam) |
-| `grs_pt2522_4_obiwan_t_below_upright_{lm_top,um_t}` | the same as a keyed LM top variant + a T + UM piece | keyed LM top + UM + crescent | Keyed LM bottom; the two prints meet at the released LM–UM joint |
+| `grs_pt2522_4_obiwan_t_below_upright_{lm_top,um_t}` | the same as a custom keyed LM top + its T + UM piece (they only fit each other) | keyed LM top + UM + crescent | Keyed LM bottom; the two prints meet at the released LM–UM joint |
 
 **Do not print from this folder.** These STLs are source meshes in the installed frame (front towards +z), so a
 slicer shows them front face up. The print files are in `to_print/obiwan/dipole/`: posed front face down, with the

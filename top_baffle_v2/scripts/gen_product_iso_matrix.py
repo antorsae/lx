@@ -217,9 +217,10 @@ def _dipole_cells() -> tuple[dict, ...]:
     for family, slug, label in DIPOLE_DRIVERS:
         for layout, orientation in DIPOLE_LAYOUTS:
             where = "T above" if layout == "t_above" else "T below"
-            note = ("one print: UM + tweeter frame" if layout == "t_above" else
-                    "two prints: keyed LM top variant + T + UM piece" if (family, orientation) == (PT2522, "upright") else
-                    "one print: keyed LM top + tweeter + UM")
+            # Row notes are centred and not wrapped: keep them about as long as the tweeter row's.
+            note = ("UM + frame · on any regular LM" if layout == "t_above" else
+                    "custom LM top + T/UM piece · keyed LM bottom" if (family, orientation) == (PT2522, "upright") else
+                    "LM top + T + UM · keyed LM bottom")
             cells.append(_cell(f"dipole_{slug}_{layout}_{orientation}", f"{label} dipole — {where}, {orientation}",
                                f"{label} · {where} · {orientation}", "dipole",
                                _dipole_parts(family, layout, orientation), note=note, family=family))
@@ -426,8 +427,10 @@ ROWS = (
         "title": "Dipole tweeters — PT2522-4 and AMT17D2.1, T above / T below, upright / rotated",
         "cells": tuple(f"dipole_{slug}_{layout}_{orientation}" for _, slug, _ in DIPOLE_DRIVERS
                        for layout, orientation in DIPOLE_LAYOUTS),
-        "geometry_note": ("Same installed datum and scale. T above replaces the UM; T below also replaces the keyed LM top, fused into one "
-                          "print except the PT2522-4 upright (too long for one print), which splits at the regular LM-UM joint. Drivers omitted."),
+        "geometry_note": ("Only the dipole prints are shown, at one installed datum and scale; the unchanged regular parts they mount on are not. "
+                          "T above replaces the UM and sits on any regular Obiwan LM. T below replaces the keyed LM top and UM and sits on the regular "
+                          "keyed LM bottom; its keyed LM top is fused in, except on the PT2522-4 upright (one piece would be too long to print), which "
+                          "has a custom keyed LM top (blue) joined at the LM-UM joint. Drivers omitted."),
     },
     {
         "key": "obiwan_wing_row",
@@ -442,7 +445,7 @@ ROLE_LEGEND = {
     "base": "base / carrier",
     "top": "tweeter carrier / fused upper",
     "perimeter": "optional perimeter",
-    "second_print": "separate print: keyed LM top variant (PT2522-4 upright T below only)",
+    "second_print": "custom keyed LM top, separate print (PT2522-4 upright T below only)",
 }
 
 # Rows live one level down so `images/generated/iso/*.png` stays exactly the
