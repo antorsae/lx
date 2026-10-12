@@ -102,6 +102,27 @@ from directivity_calculations import (
     calculate_crossover_match_score
 )
 
+
+def log_bin_frequency(freq, *arrays):
+    """Average responses into 1/N-octave frequency bins for interactive plots.
+
+    REW exports a linear 0.37 Hz grid (about 54k points), far finer than a log
+    frequency axis can show, and every point used to land in the page. Each bin
+    keeps the geometric-mean frequency and the mean of its values; bins without
+    points are skipped, so the sparse low end keeps its original points.
+    Arrays are indexed by frequency along axis 0.
+    """
+    freq = np.asarray(freq, dtype=float)
+    bins = np.floor(np.log2(freq / freq[0]) * config.INTERACTIVE_BINS_PER_OCTAVE).astype(int)
+    _, start = np.unique(bins, return_index=True)
+    counts = np.diff(np.append(start, len(freq)))
+
+    def mean(values):
+        values = np.asarray(values, dtype=float)
+        return np.add.reduceat(values, start, axis=0) / counts.reshape((-1,) + (1,) * (values.ndim - 1))
+
+    return (np.exp(mean(np.log(freq))), *(mean(a) for a in arrays))
+
 # Set plotting style
 sns.set_style("whitegrid")
 plt.rcParams['figure.dpi'] = 150
@@ -641,7 +662,7 @@ class PolarResponseVisualizer:
             self._plot_drivers_interactive(fig, 'di')
             self._finalize_interactive_plot(fig, title='Directivity Index vs Frequency',
                                            ylabel='Directivity Index (dB)')
-            fig.write_html(self.interactive_plots_dir / 'di_comparison.html')
+            fig.write_html(self.interactive_plots_dir / 'di_comparison.html', include_plotlyjs='cdn')
 
     def plot_beamwidth_comparison(self, save_static=True, save_interactive=True):
         """Generate beamwidth comparison plot for all drivers"""
@@ -663,7 +684,7 @@ class PolarResponseVisualizer:
             self._finalize_interactive_plot(fig, title='-6dB Beamwidth vs Frequency',
                                            ylabel='Beamwidth (degrees)')
             fig.update_layout(yaxis_range=[0, 180])
-            fig.write_html(self.interactive_plots_dir / 'beamwidth_comparison.html')
+            fig.write_html(self.interactive_plots_dir / 'beamwidth_comparison.html', include_plotlyjs='cdn')
 
     def plot_frequency_response_by_angle(self, save_static=True, save_interactive=True):
         """Generate frequency response plots for each driver at multiple angles.
@@ -773,9 +794,9 @@ class PolarResponseVisualizer:
                     angle_matches = np.where(angles == angle)[0]
                     if len(angle_matches) > 0:
                         angle_idx = angle_matches[0]
-                        spl = spl_matrix[:, angle_idx]
+                        freq_binned, spl = log_bin_frequency(freq, spl_matrix[:, angle_idx])
                         fig.add_trace(go.Scatter(
-                            x=freq, y=spl, name=label,
+                            x=freq_binned, y=spl, name=label,
                             line=dict(width=2, color=color)
                         ))
 
@@ -4678,8 +4699,8 @@ class PolarResponseVisualizer:
     def _plot_drivers_interactive(self, fig, metric_key, **kwargs):
         """Add all driver metrics to plotly figure"""
         for driver in self.drivers:
-            freq = self.calc_results[driver]['frequencies']
-            data = self.calc_results[driver][metric_key]
+            freq, data = log_bin_frequency(self.calc_results[driver]['frequencies'],
+                                           self.calc_results[driver][metric_key])
             fig.add_trace(go.Scatter(
                 x=freq, y=data, name=driver,
                 line=dict(width=2, color=config.DRIVER_COLORS.get(driver)), **kwargs
@@ -4875,17 +4896,15 @@ class PolarResponseVisualizer:
             plt.close()
 
         if save_interactive:
-            # Subsample frequencies for interactive plots to reduce file size
-            # (Full resolution kept for static plots, subsampled for interactive)
-            step = 4  # Keep every 4th frequency point
-            freq_sub = freq[::step]
-            spl_sub = spl_plot[::step, :]
+            # Log-bin frequencies for interactive plots to reduce file size
+            # (Full resolution kept for static plots)
+            freq_sub, spl_sub = log_bin_frequency(freq, spl_plot)
 
             # Convert numpy arrays to lists to avoid Plotly's binary bdata format
             # which can cause issues with browser rendering
             fig = go.Figure(data=go.Heatmap(
-                z=spl_sub.T.tolist(),
-                x=freq_sub.tolist(),
+                z=np.round(spl_sub.T, 2).tolist(),
+                x=np.round(freq_sub, 2).tolist(),
                 y=angles_fine.tolist(),
                 colorscale='RdYlBu_r' if not normalized else \
                            [[0, '#000033'], [0.2, '#0000FF'], [0.4, '#00FFFF'],
@@ -5022,15 +5041,15 @@ class PolarResponseVisualizer:
                 
                 # DI Panel (Row 1)
                 for driver in drivers_list:
-                    freq = self.calc_results[driver]['frequencies']
-                    di = self.calc_results[driver]['di']
+                    freq, di = log_bin_frequency(self.calc_results[driver]['frequencies'],
+                                                 self.calc_results[driver]['di'])
                     fig.add_trace(go.Scatter(x=freq, y=di, name=f"{driver} DI",
                                            line=dict(width=2, color=config.DRIVER_COLORS.get(driver))), row=1, col=1)
                 
                 # Beamwidth Panel (Row 2)
                 for driver in drivers_list:
-                    freq = self.calc_results[driver]['frequencies']
-                    bw = self.calc_results[driver]['beamwidth_6db']
+                    freq, bw = log_bin_frequency(self.calc_results[driver]['frequencies'],
+                                                 self.calc_results[driver]['beamwidth_6db'])
                     fig.add_trace(go.Scatter(x=freq, y=bw, name=f"{driver} BW",
                                            line=dict(width=2, dash='dash', color=config.DRIVER_COLORS.get(driver))), row=2, col=1)
 
@@ -5050,7 +5069,8 @@ class PolarResponseVisualizer:
                 # Zoom range
                 fig.update_xaxes(range=[np.log10(freq_min_zoom), np.log10(freq_max_zoom)], type="log")
 
-                fig.write_html(self.interactive_plots_dir / f'crossover_{xo_freq}Hz.html')
+                fig.write_html(self.interactive_plots_dir / f'crossover_{xo_freq}Hz.html',
+                               include_plotlyjs='cdn')
 
     def plot_dipole_analysis(self, save_static=True, save_interactive=True):
         """Generate Dipole Null (90deg) Analysis"""

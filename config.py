@@ -270,4 +270,9 @@ GRID_FREQS_MINOR = (
 
 # Plotting
 FIG_SIZE_STATIC = (12, 6)
-DPI_STATIC = 300
+# 150 dpi keeps the published PNGs about 1800-2400 px wide; 300 dpi doubled
+# their size for no visible gain on the site.
+DPI_STATIC = 150
+# Interactive plots average REW's linear 0.37 Hz grid into 1/192-octave bins:
+# still finer than the 3.5 ms gate resolves (about 300 Hz) up to 20 kHz.
+INTERACTIVE_BINS_PER_OCTAVE = 192
