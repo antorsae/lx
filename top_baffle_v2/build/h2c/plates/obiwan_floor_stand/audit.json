@@ -319,7 +319,7 @@
         "counts": {
           "tower": 4067,
           "support": 7143,
-          "model": 182129,
+          "model": 182133,
           "interface": 2240
         },
         "deposition_bounds_mm": {
@@ -546,7 +546,7 @@
       "deposition": {
         "status": "pass",
         "counts": {
-          "model": 197525
+          "model": 197526
         },
         "deposition_bounds_mm": {
           "0": [
@@ -574,8 +574,8 @@
       "pause_program": [
         {
           "z_mm": 6.12,
-          "pause_command_line_number": 123120,
-          "first_extrusion_line_number": 123137,
+          "pause_command_line_number": 123121,
+          "first_extrusion_line_number": 123138,
           "pass": true
         }
       ],
@@ -697,7 +697,7 @@
         {
           "z_mm": 6.12,
           "pause_command_line_number": 63803,
-          "first_extrusion_line_number": 63819,
+          "first_extrusion_line_number": 63820,
           "pass": true
         }
       ],
@@ -729,7 +729,7 @@
       "deposition": {
         "status": "pass",
         "counts": {
-          "model": 175005
+          "model": 175046
         },
         "deposition_bounds_mm": {
           "0": [
@@ -757,8 +757,8 @@
       "pause_program": [
         {
           "z_mm": 6.12,
-          "pause_command_line_number": 152585,
-          "first_extrusion_line_number": 152602,
+          "pause_command_line_number": 152782,
+          "first_extrusion_line_number": 152800,
           "pass": true
         }
       ],
@@ -790,7 +790,7 @@
       "deposition": {
         "status": "pass",
         "counts": {
-          "model": 176069
+          "model": 176119
         },
         "deposition_bounds_mm": {
           "0": [
@@ -818,8 +818,8 @@
       "pause_program": [
         {
           "z_mm": 6.12,
-          "pause_command_line_number": 151905,
-          "first_extrusion_line_number": 151922,
+          "pause_command_line_number": 151936,
+          "first_extrusion_line_number": 151952,
           "pass": true
         }
       ],
@@ -1080,7 +1080,7 @@
         "counts": {
           "tower": 3385,
           "support": 12336,
-          "model": 286191,
+          "model": 286194,
           "interface": 3323
         },
         "deposition_bounds_mm": {
@@ -1131,8 +1131,8 @@
       "pause_program": [
         {
           "z_mm": 6.12,
-          "pause_command_line_number": 114083,
-          "first_extrusion_line_number": 114100,
+          "pause_command_line_number": 114082,
+          "first_extrusion_line_number": 114099,
           "pass": true
         }
       ],
@@ -1155,7 +1155,7 @@
               "collision_count": 0,
               "minimum_bead_to_lumen_clearance_mm": 0.7586173627533176,
               "closest_approach": {
-                "gcode_line_number": 113402,
+                "gcode_line_number": 113401,
                 "layer_z_mm": 5.96,
                 "feature": "Support interface",
                 "line_width_mm": 0.62,
@@ -1187,10 +1187,10 @@
       "deposition": {
         "status": "pass",
         "counts": {
-          "support": 46614,
-          "model": 1059071,
+          "support": 46563,
+          "model": 1059420,
           "tower": 11715,
-          "interface": 22382
+          "interface": 22357
         },
         "deposition_bounds_mm": {
           "0": [
@@ -1275,8 +1275,8 @@
       "pause_program": [
         {
           "z_mm": 6.12,
-          "pause_command_line_number": 323676,
-          "first_extrusion_line_number": 323694,
+          "pause_command_line_number": 324523,
+          "first_extrusion_line_number": 324542,
           "pass": true
         }
       ],
@@ -1293,13 +1293,13 @@
             "candidates/nd25fn4_vase/obiwan/support_blockers/nd25fn4_vase_obiwan_tweeters_right_top.support_blocker.json": {
               "status": "pass",
               "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-              "support_extrusion_segments_checked": 59841,
+              "support_extrusion_segments_checked": 59748,
               "duct_capsule_segment_count": 695,
-              "candidate_distance_checks": 579792,
+              "candidate_distance_checks": 579396,
               "collision_count": 0,
               "minimum_bead_to_lumen_clearance_mm": 0.772728981330577,
               "closest_approach": {
-                "gcode_line_number": 323593,
+                "gcode_line_number": 324440,
                 "layer_z_mm": 5.96,
                 "feature": "Support interface",
                 "line_width_mm": 0.62,
@@ -1349,10 +1349,10 @@
       "deposition": {
         "status": "pass",
         "counts": {
-          "support": 46996,
-          "model": 949001,
+          "support": 46866,
+          "model": 949396,
           "tower": 11715,
-          "interface": 22266
+          "interface": 22286
         },
         "deposition_bounds_mm": {
           "0": [
@@ -1437,8 +1437,8 @@
       "pause_program": [
         {
           "z_mm": 6.12,
-          "pause_command_line_number": 313695,
-          "first_extrusion_line_number": 313714,
+          "pause_command_line_number": 313501,
+          "first_extrusion_line_number": 313519,
           "pass": true
         }
       ],
@@ -1455,13 +1455,13 @@
             "candidates/nd25fn4_vase/obiwan/support_blockers/nd25fn4_vase_obiwan_tweeters_left_top.support_blocker.json": {
               "status": "pass",
               "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-              "support_extrusion_segments_checked": 40163,
+              "support_extrusion_segments_checked": 40098,
               "duct_capsule_segment_count": 458,
-              "candidate_distance_checks": 376491,
+              "candidate_distance_checks": 376501,
               "collision_count": 0,
               "minimum_bead_to_lumen_clearance_mm": 0.772728981330577,
               "closest_approach": {
-                "gcode_line_number": 313262,
+                "gcode_line_number": 313068,
                 "layer_z_mm": 5.96,
                 "feature": "Support interface",
                 "line_width_mm": 0.62,
@@ -1579,13 +1579,13 @@
         "obiwan_nd25fn4_tweeters_right_wing_graded_right"
       ],
       "tower_xy_mm": [
-        55.0,
-        90.0
+        57.0,
+        89.0
       ],
       "deposition": {
         "status": "pass",
         "counts": {
-          "model": 198298
+          "model": 198613
         },
         "deposition_bounds_mm": {
           "0": [
@@ -1613,8 +1613,8 @@
       "pause_program": [
         {
           "z_mm": 6.12,
-          "pause_command_line_number": 170892,
-          "first_extrusion_line_number": 170911,
+          "pause_command_line_number": 171020,
+          "first_extrusion_line_number": 171038,
           "pass": true
         }
       ],
@@ -1660,7 +1660,7 @@
       "deposition": {
         "status": "pass",
         "counts": {
-          "model": 93269
+          "model": 93271
         },
         "deposition_bounds_mm": {
           "0": [
@@ -1688,7 +1688,7 @@
       "pause_program": [
         {
           "z_mm": 6.12,
-          "pause_command_line_number": 67809,
+          "pause_command_line_number": 67810,
           "first_extrusion_line_number": 67828,
           "pass": true
         }
@@ -1735,7 +1735,7 @@
       "deposition": {
         "status": "pass",
         "counts": {
-          "model": 199173
+          "model": 198245
         },
         "deposition_bounds_mm": {
           "0": [
@@ -1763,8 +1763,8 @@
       "pause_program": [
         {
           "z_mm": 6.12,
-          "pause_command_line_number": 172727,
-          "first_extrusion_line_number": 172746,
+          "pause_command_line_number": 171371,
+          "first_extrusion_line_number": 171390,
           "pass": true
         }
       ],
@@ -1810,9 +1810,9 @@
         "status": "pass",
         "counts": {
           "tower": 4125,
-          "support": 5782,
-          "model": 206065,
-          "interface": 2313
+          "support": 5800,
+          "model": 207139,
+          "interface": 2318
         },
         "deposition_bounds_mm": {
           "0": [
@@ -1882,7 +1882,7 @@
               "collision_count": 0,
               "minimum_bead_to_lumen_clearance_mm": 0.5698430251889052,
               "closest_approach": {
-                "gcode_line_number": 144946,
+                "gcode_line_number": 146399,
                 "layer_z_mm": 4.04,
                 "feature": "Support interface",
                 "line_width_mm": 0.62,
@@ -1913,9 +1913,9 @@
         "status": "pass",
         "counts": {
           "tower": 4125,
-          "support": 5723,
-          "model": 189107,
-          "interface": 2124
+          "support": 5706,
+          "model": 189624,
+          "interface": 2131
         },
         "deposition_bounds_mm": {
           "0": [
@@ -1979,13 +1979,13 @@
             "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_above_rotated.support_blocker.json": {
               "status": "pass",
               "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-              "support_extrusion_segments_checked": 12478,
+              "support_extrusion_segments_checked": 12464,
               "duct_capsule_segment_count": 748,
-              "candidate_distance_checks": 182286,
+              "candidate_distance_checks": 182188,
               "collision_count": 0,
               "minimum_bead_to_lumen_clearance_mm": 0.5698430251889052,
               "closest_approach": {
-                "gcode_line_number": 127868,
+                "gcode_line_number": 129392,
                 "layer_z_mm": 4.04,
                 "feature": "Support interface",
                 "line_width_mm": 0.62,
@@ -2016,9 +2016,9 @@
         "status": "pass",
         "counts": {
           "tower": 3862,
-          "support": 5582,
-          "model": 185446,
-          "interface": 2035
+          "support": 5548,
+          "model": 185728,
+          "interface": 2038
         },
         "deposition_bounds_mm": {
           "0": [
@@ -2079,13 +2079,13 @@
             "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_above_upright.support_blocker.json": {
               "status": "pass",
               "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-              "support_extrusion_segments_checked": 16380,
+              "support_extrusion_segments_checked": 16359,
               "duct_capsule_segment_count": 770,
-              "candidate_distance_checks": 415464,
+              "candidate_distance_checks": 415760,
               "collision_count": 0,
               "minimum_bead_to_lumen_clearance_mm": 0.5698430251889052,
               "closest_approach": {
-                "gcode_line_number": 121117,
+                "gcode_line_number": 120721,
                 "layer_z_mm": 4.04,
                 "feature": "Support interface",
                 "line_width_mm": 0.62,
@@ -2116,9 +2116,9 @@
         "status": "pass",
         "counts": {
           "tower": 3862,
-          "support": 5595,
-          "model": 205710,
-          "interface": 2036
+          "support": 5588,
+          "model": 206235,
+          "interface": 2037
         },
         "deposition_bounds_mm": {
           "0": [
@@ -2141,7 +2141,7 @@
             ],
             [
               223.041,
-              235.51218630143148,
+              235.581,
               10.44
             ]
           ]
@@ -2179,13 +2179,13 @@
             "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_above_rotated.support_blocker.json": {
               "status": "pass",
               "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-              "support_extrusion_segments_checked": 12846,
+              "support_extrusion_segments_checked": 12850,
               "duct_capsule_segment_count": 769,
-              "candidate_distance_checks": 173417,
+              "candidate_distance_checks": 173567,
               "collision_count": 0,
               "minimum_bead_to_lumen_clearance_mm": 0.5698430251889052,
               "closest_approach": {
-                "gcode_line_number": 135305,
+                "gcode_line_number": 135935,
                 "layer_z_mm": 4.04,
                 "feature": "Support interface",
                 "line_width_mm": 0.62,
@@ -2216,9 +2216,9 @@
         "status": "pass",
         "counts": {
           "tower": 4286,
-          "support": 12540,
-          "model": 301387,
-          "interface": 3887
+          "support": 12532,
+          "model": 301621,
+          "interface": 3886
         },
         "deposition_bounds_mm": {
           "0": [
@@ -2301,13 +2301,13 @@
             "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_lm_top.support_blocker.json": {
               "status": "pass",
               "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-              "support_extrusion_segments_checked": 54848,
+              "support_extrusion_segments_checked": 54847,
               "duct_capsule_segment_count": 760,
-              "candidate_distance_checks": 805082,
+              "candidate_distance_checks": 805138,
               "collision_count": 0,
               "minimum_bead_to_lumen_clearance_mm": 0.759557887123877,
               "closest_approach": {
-                "gcode_line_number": 104921,
+                "gcode_line_number": 105124,
                 "layer_z_mm": 5.96,
                 "feature": "Support interface",
                 "line_width_mm": 0.62,
@@ -2337,10 +2337,10 @@
       "deposition": {
         "status": "pass",
         "counts": {
-          "support": 9700,
-          "model": 252750,
+          "support": 9699,
+          "model": 252892,
           "tower": 4022,
-          "interface": 4499
+          "interface": 4501
         },
         "deposition_bounds_mm": {
           "0": [
@@ -2407,11 +2407,11 @@
               "gate": "support_extrusion_bead_vs_functional_duct_capsules",
               "support_extrusion_segments_checked": 1315,
               "duct_capsule_segment_count": 233,
-              "candidate_distance_checks": 16197,
+              "candidate_distance_checks": 16199,
               "collision_count": 0,
               "minimum_bead_to_lumen_clearance_mm": 0.932265102581998,
               "closest_approach": {
-                "gcode_line_number": 193122,
+                "gcode_line_number": 193556,
                 "layer_z_mm": 4.04,
                 "feature": "Support interface",
                 "line_width_mm": 0.62,
@@ -2442,15 +2442,15 @@
         "status": "pass",
         "counts": {
           "tower": 5552,
-          "support": 18619,
-          "model": 465701,
-          "interface": 7130
+          "support": 18808,
+          "model": 466540,
+          "interface": 7132
         },
         "deposition_bounds_mm": {
           "0": [
             [
               26.363,
-              3.148139597782904,
+              3.1471395977829064,
               0.2
             ],
             [
@@ -2524,13 +2524,13 @@
             "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_rotated.support_blocker.json": {
               "status": "pass",
               "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-              "support_extrusion_segments_checked": 40831,
+              "support_extrusion_segments_checked": 40820,
               "duct_capsule_segment_count": 901,
-              "candidate_distance_checks": 518999,
+              "candidate_distance_checks": 518905,
               "collision_count": 0,
               "minimum_bead_to_lumen_clearance_mm": 0.7727430208622955,
               "closest_approach": {
-                "gcode_line_number": 303096,
+                "gcode_line_number": 303682,
                 "layer_z_mm": 5.96,
                 "feature": "Support interface",
                 "line_width_mm": 0.62,
@@ -2561,15 +2561,15 @@
         "status": "pass",
         "counts": {
           "tower": 5115,
-          "support": 17005,
-          "model": 448156,
-          "interface": 5129
+          "support": 17043,
+          "model": 448521,
+          "interface": 5130
         },
         "deposition_bounds_mm": {
           "0": [
             [
               31.49096323172416,
-              2.5027762759455388,
+              2.5027997971752103,
               0.2
             ],
             [
@@ -2646,13 +2646,13 @@
             "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_upright.support_blocker.json": {
               "status": "pass",
               "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-              "support_extrusion_segments_checked": 51679,
+              "support_extrusion_segments_checked": 51648,
               "duct_capsule_segment_count": 940,
-              "candidate_distance_checks": 692340,
+              "candidate_distance_checks": 691867,
               "collision_count": 0,
               "minimum_bead_to_lumen_clearance_mm": 0.7727430671508791,
               "closest_approach": {
-                "gcode_line_number": 281558,
+                "gcode_line_number": 281512,
                 "layer_z_mm": 5.96,
                 "feature": "Support interface",
                 "line_width_mm": 0.62,
@@ -2683,9 +2683,9 @@
         "status": "pass",
         "counts": {
           "tower": 5129,
-          "support": 17076,
-          "model": 460999,
-          "interface": 5167
+          "support": 17029,
+          "model": 460914,
+          "interface": 5170
         },
         "deposition_bounds_mm": {
           "0": [
@@ -2768,13 +2768,13 @@
             "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_rotated.support_blocker.json": {
               "status": "pass",
               "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-              "support_extrusion_segments_checked": 44900,
+              "support_extrusion_segments_checked": 44955,
               "duct_capsule_segment_count": 891,
-              "candidate_distance_checks": 553556,
+              "candidate_distance_checks": 554414,
               "collision_count": 0,
               "minimum_bead_to_lumen_clearance_mm": 0.7727429408088774,
               "closest_approach": {
-                "gcode_line_number": 300506,
+                "gcode_line_number": 300288,
                 "layer_z_mm": 5.96,
                 "feature": "Support interface",
                 "line_width_mm": 0.62,
@@ -2792,7 +2792,7 @@
       "static_validation": true
     }
   ],
-  "project_sha256": "b0655571af21c4afc48537ca18e8feb19a125ac592f9e9734ad3cfc1937839fd",
+  "project_sha256": "b44c58635c2384e8666ce01ef060bf46e2267010d1ad3a3f04051bfe6a65e877",
   "sliced_project": "to_print/obiwan/obiwan_floor_stand.petg-gf.gcode.3mf",
-  "sliced_project_sha256": "78ab2336ad3f516752cb89bc2a7fa6b77ad2a16fe06aec58ebb1f938d216e06f"
+  "sliced_project_sha256": "5ae9e7819692fbc6edffe4174245428629d8441f6a8d9f4c3e388ee0757cd97e"
 }

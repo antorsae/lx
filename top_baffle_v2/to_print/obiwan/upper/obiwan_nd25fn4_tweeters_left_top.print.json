@@ -2,10 +2,11 @@
   "schema_version": 1,
   "part": "obiwan_nd25fn4_tweeters_left_top",
   "stl": "obiwan_nd25fn4_tweeters_left_top.stl",
-  "stl_bytes": 35239984,
-  "stl_sha256": "5eaf2e82e54ccff9a20af240734ed65cf2cf0a803cba743109b558d1cd0dfe4e",
+  "stl_bytes": 24071084,
+  "stl_sha256": "e6ac8758b9b04040fda30cc1decd9995050e6ab95d5a59c099f89ad135df6813",
   "source_stl": "candidates/nd25fn4_vase/obiwan/STL/nd25fn4_vase_obiwan_tweeters_left_top.stl",
   "source_sha256": "118a006ab4f2950c6a06f98ec7847ef879cb0ce37be15309aae21606090a573d",
+  "sliver_collapse_mm": 0.001,
   "print_orientation": "front_face_down",
   "source_to_stl_matrix": [
     [

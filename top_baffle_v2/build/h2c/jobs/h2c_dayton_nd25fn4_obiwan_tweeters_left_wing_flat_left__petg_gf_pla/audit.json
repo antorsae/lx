@@ -1,8 +1,8 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "63e7b50f848ba7edd403cc75959704b1b1f36b44187ffa46f198abac6c7572f0",
-  "sliced_project_sha256": "e4ca09c0e0dc23044035e6f3a9f8cc25105cea8f4aa9dc5e621684ad4accc262",
+  "project_sha256": "884ae80efa45e3c08d1b33e61769ad49996db74f4306a3761f8653ab5d3bcad2",
+  "sliced_project_sha256": "9685420e8a89c0290a3b4ddbd3eede3a87773cd78c0688bcd65ddceecab21f70",
   "gcode_sha256": "cb3be5f2944db6fa463eec3ed6de94eeca14119ae47934ce112617e28aa0e845",
   "audit_version": 4,
   "inputs": {
@@ -17,14 +17,14 @@
     "candidates/nd25fn4_vase/obiwan/STL/nd25fn4_vase_obiwan_tweeters_left_wing_flat_left.stl": "7f4bac39c1225c5867df6794098c88def1763bef84df8fd929aeb990ae47a23f",
     "candidates/nd25fn4_vase/obiwan/magnets.catalog.json": "309bfd12e08485b66e52da39863bdc9bc2b0e38840681285eb27998c4fdb19aa",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+    "print_policy_h2c.json": "61d265416c57672fc417a59b7a29e82b10c2485d1ccae65056cd1558af9e33ae",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
     "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
     "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
-    "src/lx521_baffle/tweeter_options.py": "1a7c1a73e917f89d93e72fde1a9d8b1e4a52ec8138fee36e2faf60709f3bde54",
-    "to_print/obiwan/wings/obiwan_nd25fn4_tweeters_left_wing_flat_left.petg-gf.3mf": "63e7b50f848ba7edd403cc75959704b1b1f36b44187ffa46f198abac6c7572f0",
+    "src/lx521_baffle/tweeter_options.py": "dba6f5e1877df8e92fbfdf46ff4ed07acf05e2f767222b91044a55b507bb80c2",
+    "to_print/obiwan/wings/obiwan_nd25fn4_tweeters_left_wing_flat_left.petg-gf.3mf": "884ae80efa45e3c08d1b33e61769ad49996db74f4306a3761f8653ab5d3bcad2",
     "to_print/obiwan/wings/obiwan_nd25fn4_tweeters_left_wing_flat_left.stl": "66cd561660d78c6137124f6a604b099a84f79825c422e63b687b0ad164410116"
   },
   "deposition": {
@@ -83,27 +83,27 @@
       "last_open_layer_z_mm": 5.96,
       "collision_witnesses": [
         {
-          "line": 35661,
+          "line": 35664,
           "feature": "Outer wall",
           "intrusion_mm": 0.1281477332740933
         },
         {
-          "line": 35663,
+          "line": 35666,
           "feature": "Outer wall",
           "intrusion_mm": 0.14869561294627032
         },
         {
-          "line": 35665,
+          "line": 35668,
           "feature": "Outer wall",
           "intrusion_mm": 0.13708106371724663
         },
         {
-          "line": 35667,
+          "line": 35670,
           "feature": "Outer wall",
           "intrusion_mm": 0.14047854570786594
         },
         {
-          "line": 35669,
+          "line": 35672,
           "feature": "Outer wall",
           "intrusion_mm": 0.14033492842024375
         }
@@ -481,27 +481,27 @@
       "last_open_layer_z_mm": 5.96,
       "collision_witnesses": [
         {
-          "line": 35587,
+          "line": 35590,
           "feature": "Outer wall",
           "intrusion_mm": 0.13172634796180438
         },
         {
-          "line": 35589,
+          "line": 35592,
           "feature": "Outer wall",
           "intrusion_mm": 0.15393834719295615
         },
         {
-          "line": 35591,
+          "line": 35594,
           "feature": "Outer wall",
           "intrusion_mm": 0.1399895818503043
         },
         {
-          "line": 35593,
+          "line": 35596,
           "feature": "Outer wall",
           "intrusion_mm": 0.1400814615045835
         },
         {
-          "line": 35595,
+          "line": 35598,
           "feature": "Outer wall",
           "intrusion_mm": 0.14008605463159718
         }

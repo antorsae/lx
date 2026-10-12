@@ -1,9 +1,9 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "29f30405668f08f96b7b4849667fe5341e73c84feecfc4a53e5981f6a35c3901",
-  "sliced_project_sha256": "91f69c4feaf90bec98f785ca551890406b3048fc8fcb94b8bb5177082f911718",
-  "gcode_sha256": "987b8ac54e251c4dd0e8f12daf3334115cd978d4d846382e4c6374cee48cc6c3",
+  "project_sha256": "39660f40ce5456407fe2c72ad218c15ce3fc8f6006f549ccf136a5e3784e4056",
+  "sliced_project_sha256": "1dfe006f0e0e22746235e92c747b16818168dccd9c80b095c1f57b2782864ab8",
+  "gcode_sha256": "d5a2237e27a97f3b78bd0cd116c1bf0d17e1285af4a1832688968edd207b6c52",
   "audit_version": 4,
   "inputs": {
     "build/h2c/inputs/h2c_dayton_nd25fn4_stock_tweeters_right_upper_support_blocker.stl": "daee2442fffc65d7528964d639fba009cbca8bb7afc5e3c8a150ce711c6f7d90",
@@ -20,23 +20,23 @@
     "candidates/nd25fn4_vase/stock/support_blockers/nd25fn4_vase_stock_tweeters_right_upper.support_blocker.json": "f0252e659485782306a5f3c2879a8747d3c6630b00c6972d214079abcc1cb7fc",
     "candidates/nd25fn4_vase/stock/support_blockers/nd25fn4_vase_stock_tweeters_right_upper.support_blocker.stl": "8f0b31fe27dfc0077dffe6e293947a60e23d8eafe78abe4cb2227f0435e1c2c8",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+    "print_policy_h2c.json": "61d265416c57672fc417a59b7a29e82b10c2485d1ccae65056cd1558af9e33ae",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
     "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
     "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
-    "src/lx521_baffle/tweeter_options.py": "1a7c1a73e917f89d93e72fde1a9d8b1e4a52ec8138fee36e2faf60709f3bde54",
-    "to_print/stock/upper/stock_nd25fn4_tweeters_right_upper.petg-gf.3mf": "29f30405668f08f96b7b4849667fe5341e73c84feecfc4a53e5981f6a35c3901",
-    "to_print/stock/upper/stock_nd25fn4_tweeters_right_upper.stl": "1e1ce74ec65772de3dc4623c2217c0051930f04dcfb87d410d403695a57f91cb"
+    "src/lx521_baffle/tweeter_options.py": "dba6f5e1877df8e92fbfdf46ff4ed07acf05e2f767222b91044a55b507bb80c2",
+    "to_print/stock/upper/stock_nd25fn4_tweeters_right_upper.petg-gf.3mf": "39660f40ce5456407fe2c72ad218c15ce3fc8f6006f549ccf136a5e3784e4056",
+    "to_print/stock/upper/stock_nd25fn4_tweeters_right_upper.stl": "0e110bbff8d4f5d4a0c0a5f3b9f6d507ab7d77c75448c4ff4e5e656cef986d11"
   },
   "deposition": {
     "status": "pass",
     "counts": {
-      "support": 67894,
-      "model": 1071545,
+      "support": 67331,
+      "model": 1070091,
       "tower": 12651,
-      "interface": 36653
+      "interface": 36402
     },
     "deposition_bounds_mm": {
       "0": [
@@ -46,8 +46,8 @@
           0.2
         ],
         [
-          273.0882064910083,
-          270.0440943051374,
+          273.0882363634784,
+          270.0429220534347,
           41.16
         ]
       ],
@@ -165,9 +165,9 @@
   "geometry": [
     {
       "source": "to_print/stock/upper/stock_nd25fn4_tweeters_right_upper.stl",
-      "sha256": "1e1ce74ec65772de3dc4623c2217c0051930f04dcfb87d410d403695a57f91cb",
+      "sha256": "0e110bbff8d4f5d4a0c0a5f3b9f6d507ab7d77c75448c4ff4e5e656cef986d11",
       "subtype": "normal_part",
-      "triangles": 455320,
+      "triangles": 342340,
       "maximum_vertex_error_mm": 5.705653869048873e-06,
       "winding_and_connectivity_match": true
     },
@@ -192,22 +192,22 @@
     "candidates/nd25fn4_vase/stock/support_blockers/nd25fn4_vase_stock_tweeters_right_upper.support_blocker.json": {
       "status": "pass",
       "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-      "support_extrusion_segments_checked": 45024,
+      "support_extrusion_segments_checked": 43521,
       "duct_capsule_segment_count": 31,
-      "candidate_distance_checks": 161,
+      "candidate_distance_checks": 160,
       "collision_count": 0,
-      "minimum_bead_to_lumen_clearance_mm": 2.9092663449553906,
+      "minimum_bead_to_lumen_clearance_mm": 2.9092617934139446,
       "closest_approach": {
-        "gcode_line_number": 752384,
+        "gcode_line_number": 750468,
         "layer_z_mm": 17.0,
         "feature": "Support",
         "line_width_mm": 0.62,
         "layer_height_mm": 0.16,
         "duct_region": "vase_rear_t_lane_lumen",
-        "centerline_distance_mm": 5.529422556827033,
+        "centerline_distance_mm": 5.529418005285587,
         "duct_radius_mm": 2.3,
         "support_bead_radius_mm": 0.32015621187164245,
-        "bead_to_lumen_clearance_mm": 2.9092663449553906
+        "bead_to_lumen_clearance_mm": 2.9092617934139446
       }
     }
   },
@@ -252,15 +252,15 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 1200108,
-      "lines": 1688563,
-      "movement_commands": 1417689,
-      "non_comment_lines": 1536877,
+      "extrusion_moves": 1197837,
+      "lines": 1685453,
+      "movement_commands": 1416085,
+      "non_comment_lines": 1534398,
       "temperature_commands": 297
     },
     "warnings": [
       "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-      "Unknown or unsupported commands were left unchanged: ========== line 1109, G150 line 942, G150.1 line 726, G150.2 line 927, G150.3 line 708, G151 line 768, G17 line 3925, G28.14 line 1101, G28.140 line 651, G29.1 line 647, G29.2 line 782, G29.20 line 988."
+      "Unknown or unsupported commands were left unchanged: ========== line 1108, G150 line 941, G150.1 line 726, G150.2 line 927, G150.3 line 708, G151 line 768, G17 line 3951, G28.14 line 1100, G28.140 line 651, G29.1 line 647, G29.2 line 782, G29.20 line 987."
     ]
   }
 }

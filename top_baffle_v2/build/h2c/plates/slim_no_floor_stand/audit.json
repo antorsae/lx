@@ -15,7 +15,7 @@
       "deposition": {
         "status": "pass",
         "counts": {
-          "model": 634061
+          "model": 633931
         },
         "deposition_bounds_mm": {
           "0": [
@@ -433,7 +433,7 @@
       "static_validation": true
     }
   ],
-  "project_sha256": "d51a0de03532a80f7f1afe18fc6e50616bbb56b79eb3ce5241699a1967554810",
+  "project_sha256": "bc5c89e9b961e6a117dd4453e3def7fd1afaba280a92129bf7bacd82bc0b67f2",
   "sliced_project": "to_print/slim/slim_no_floor_stand.petg-gf.gcode.3mf",
-  "sliced_project_sha256": "6d4e534a7be44ed6376ad6e84e2006dd36c12daef2e6d2b94d0c1769d165e9cb"
+  "sliced_project_sha256": "6a93edd65eb1ebfad1671125b75a2ee529c6082fe41ed04c9d00c0642ff52228"
 }

@@ -1,9 +1,9 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "10bfe6e87fbb481eff43b673c66ee28f277b6f59d311d2acfb09fcad68a35ef8",
-  "sliced_project_sha256": "d41e1881cd8750036121f4053adbb9e7275b4ed04f7a17ad02369dcbef0f9b4d",
-  "gcode_sha256": "8ba45a047a06343e8750fa9c1abb3deb00c32fb3dfe2d4a1f194ad77af68a1f2",
+  "project_sha256": "7c5e96f508d75aeac1e079c89032ed951608182b1460c3abacb8527a7896dae0",
+  "sliced_project_sha256": "5001626e721ef6b6d1152835b44ad5427574466ba6b490926910802f6fa3ff72",
+  "gcode_sha256": "dc13e4d4de41715902a5ee4fbca08e1a75cd85a4b2e20a53c68c210551a026b1",
   "audit_version": 4,
   "inputs": {
     "build/h2c/STL/h2c_stock_lm_lower_floor_stand.stl": "e30a1bf982aa191bc63136bec2716e1ccafb9af5541452af8ab6f9539d40e48c",
@@ -19,21 +19,21 @@
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "candidates/nd25fn4_vase/obiwan/magnets.catalog.json": "309bfd12e08485b66e52da39863bdc9bc2b0e38840681285eb27998c4fdb19aa",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+    "print_policy_h2c.json": "61d265416c57672fc417a59b7a29e82b10c2485d1ccae65056cd1558af9e33ae",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
     "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
     "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
-    "src/lx521_baffle/tweeter_options.py": "1a7c1a73e917f89d93e72fde1a9d8b1e4a52ec8138fee36e2faf60709f3bde54",
-    "to_print/stock/lm/stock_lm_lower_floor_stand.petg-gf.3mf": "10bfe6e87fbb481eff43b673c66ee28f277b6f59d311d2acfb09fcad68a35ef8",
+    "src/lx521_baffle/tweeter_options.py": "dba6f5e1877df8e92fbfdf46ff4ed07acf05e2f767222b91044a55b507bb80c2",
+    "to_print/stock/lm/stock_lm_lower_floor_stand.petg-gf.3mf": "7c5e96f508d75aeac1e079c89032ed951608182b1460c3abacb8527a7896dae0",
     "to_print/stock/lm/stock_lm_lower_floor_stand.stl": "0a0c51a5a53e7af0572c2af05884e5047d588408a1650d7ec9eb42f3945366e1"
   },
   "deposition": {
     "status": "pass",
     "counts": {
       "support": 59867,
-      "model": 1157647,
+      "model": 1157650,
       "tower": 45841,
       "interface": 22510
     },
@@ -285,10 +285,10 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 1311483,
-      "lines": 2257152,
-      "movement_commands": 1733877,
-      "non_comment_lines": 1887729,
+      "extrusion_moves": 1311486,
+      "lines": 2257157,
+      "movement_commands": 1733878,
+      "non_comment_lines": 1887730,
       "temperature_commands": 463
     },
     "warnings": [

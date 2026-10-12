@@ -1,9 +1,9 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "56928de3831b01250d7ec7d25058d87bba214e8097660aa39b03ea10b6e638df",
-  "sliced_project_sha256": "d974bba90b199012a77fe7c7615fc2c9367781abe5a566382247f706dae9a3ea",
-  "gcode_sha256": "25d8f42a8297c9a5c41e7be975cc785c56edb304ede6461f9ae3dd0d9f9f0bcc",
+  "project_sha256": "7a40dd75a43024149604b1ddace2314022de835da22febfeffb7be1a1172d70f",
+  "sliced_project_sha256": "ae6339d88b557f81487d29c9e7f3f4b107e8aa1ee52b742f94ff85b3dfb49189",
+  "gcode_sha256": "d5d7a377de3d2574e199a4190370509551f8d5be3d2c3b08b2338deff53cdf00",
   "audit_version": 4,
   "inputs": {
     "build/h2c/inputs/h2c_grs_pt2522_4_obiwan_t_below_upright_um_t_support_blocker.stl": "d210cf5ae462cbff4407bc45a2b1b35a01c7da27f69826d22ecb4b19fbe03a12",
@@ -19,23 +19,23 @@
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "candidates/nd25fn4_vase/obiwan/magnets.catalog.json": "309bfd12e08485b66e52da39863bdc9bc2b0e38840681285eb27998c4fdb19aa",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+    "print_policy_h2c.json": "61d265416c57672fc417a59b7a29e82b10c2485d1ccae65056cd1558af9e33ae",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
     "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
     "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
-    "src/lx521_baffle/tweeter_options.py": "1a7c1a73e917f89d93e72fde1a9d8b1e4a52ec8138fee36e2faf60709f3bde54",
-    "to_print/obiwan/dipole/obiwan_pt2522_t_below_upright_um_t.petg-gf.3mf": "56928de3831b01250d7ec7d25058d87bba214e8097660aa39b03ea10b6e638df",
-    "to_print/obiwan/dipole/obiwan_pt2522_t_below_upright_um_t.stl": "194eb3425a5ef45da871c97e8c40e3bfec4be06a4d61180ce47a68c4ed7f3ea0"
+    "src/lx521_baffle/tweeter_options.py": "dba6f5e1877df8e92fbfdf46ff4ed07acf05e2f767222b91044a55b507bb80c2",
+    "to_print/obiwan/dipole/obiwan_pt2522_t_below_upright_um_t.petg-gf.3mf": "7a40dd75a43024149604b1ddace2314022de835da22febfeffb7be1a1172d70f",
+    "to_print/obiwan/dipole/obiwan_pt2522_t_below_upright_um_t.stl": "b154b201e13854d80edbe1a4135657ef16bf03ebe4f3f31f404859d335adb151"
   },
   "deposition": {
     "status": "pass",
     "counts": {
-      "support": 9700,
-      "model": 252748,
+      "support": 9699,
+      "model": 252894,
       "tower": 4022,
-      "interface": 4499
+      "interface": 4501
     },
     "deposition_bounds_mm": {
       "0": [
@@ -94,9 +94,9 @@
   "geometry": [
     {
       "source": "to_print/obiwan/dipole/obiwan_pt2522_t_below_upright_um_t.stl",
-      "sha256": "194eb3425a5ef45da871c97e8c40e3bfec4be06a4d61180ce47a68c4ed7f3ea0",
+      "sha256": "b154b201e13854d80edbe1a4135657ef16bf03ebe4f3f31f404859d335adb151",
       "subtype": "normal_part",
-      "triangles": 35016,
+      "triangles": 31986,
       "maximum_vertex_error_mm": 4.244842512988035e-06,
       "winding_and_connectivity_match": true
     },
@@ -115,11 +115,11 @@
       "gate": "support_extrusion_bead_vs_functional_duct_capsules",
       "support_extrusion_segments_checked": 1315,
       "duct_capsule_segment_count": 233,
-      "candidate_distance_checks": 16197,
+      "candidate_distance_checks": 16199,
       "collision_count": 0,
       "minimum_bead_to_lumen_clearance_mm": 0.932265102581998,
       "closest_approach": {
-        "gcode_line_number": 193124,
+        "gcode_line_number": 193563,
         "layer_z_mm": 4.04,
         "feature": "Support interface",
         "line_width_mm": 0.62,
@@ -173,15 +173,15 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 275692,
-      "lines": 469972,
-      "movement_commands": 367988,
-      "non_comment_lines": 400669,
+      "extrusion_moves": 275866,
+      "lines": 470618,
+      "movement_commands": 368316,
+      "non_comment_lines": 401074,
       "temperature_commands": 93
     },
     "warnings": [
       "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-      "Unknown or unsupported commands were left unchanged: ========== line 1109, G150 line 941, G150.1 line 726, G150.2 line 927, G150.3 line 708, G151 line 768, G17 line 9568, G28.14 line 1101, G28.140 line 651, G29.1 line 647, G29.2 line 782, G29.20 line 988."
+      "Unknown or unsupported commands were left unchanged: ========== line 1108, G150 line 941, G150.1 line 726, G150.2 line 927, G150.3 line 708, G151 line 768, G17 line 9552, G28.14 line 1100, G28.140 line 651, G29.1 line 647, G29.2 line 782, G29.20 line 987."
     ]
   }
 }

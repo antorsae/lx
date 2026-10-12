@@ -1,9 +1,9 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "3667a0a49f90d1d9eb27581844081ba37cb9ae83bfd2e0717168e96a495f9279",
-  "sliced_project_sha256": "29250b68983e47973f0bc38d40846d422c16ed0da4dc9da56c9e2b823e2708cd",
-  "gcode_sha256": "044386e8c5b83082f6ed0f62890cf99b20b4ae972704f8625381d4a840b2fbdf",
+  "project_sha256": "1b4484573803d7a3d12b0b1faf64a811e35054ba1da8c17e363a3be3e84300ab",
+  "sliced_project_sha256": "e550b0a5c081c470082135801a5bec05c885240cd1484f618f617ab1010e85f2",
+  "gcode_sha256": "51885183c509e111ddd0b82568b61061c69125a06d03d325bbce12956ba322b2",
   "audit_version": 4,
   "inputs": {
     "build/h2c/inputs/h2c_dayton_nd25fn4_stock_tweeters_left_upper_support_blocker.stl": "fc353051fdff332846e87278279cae065997086fecc39f7295139e432d3a7ac7",
@@ -20,23 +20,23 @@
     "candidates/nd25fn4_vase/stock/support_blockers/nd25fn4_vase_stock_tweeters_left_upper.support_blocker.json": "ff880af95b123eb49fba4bde910763b3003ba5349e45cc7f1065fefd6b5ff6a6",
     "candidates/nd25fn4_vase/stock/support_blockers/nd25fn4_vase_stock_tweeters_left_upper.support_blocker.stl": "a95ec0ea03aa1b0f1f585d0c671b79f221669798bbf7cc7ed474a063ae960194",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+    "print_policy_h2c.json": "61d265416c57672fc417a59b7a29e82b10c2485d1ccae65056cd1558af9e33ae",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
     "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
     "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
-    "src/lx521_baffle/tweeter_options.py": "1a7c1a73e917f89d93e72fde1a9d8b1e4a52ec8138fee36e2faf60709f3bde54",
-    "to_print/stock/upper/stock_nd25fn4_tweeters_left_upper.petg-gf.3mf": "3667a0a49f90d1d9eb27581844081ba37cb9ae83bfd2e0717168e96a495f9279",
-    "to_print/stock/upper/stock_nd25fn4_tweeters_left_upper.stl": "a6e640002d7f7de3fcd037758019fcaab54af81b75d58033977b0862932fc5af"
+    "src/lx521_baffle/tweeter_options.py": "dba6f5e1877df8e92fbfdf46ff4ed07acf05e2f767222b91044a55b507bb80c2",
+    "to_print/stock/upper/stock_nd25fn4_tweeters_left_upper.petg-gf.3mf": "1b4484573803d7a3d12b0b1faf64a811e35054ba1da8c17e363a3be3e84300ab",
+    "to_print/stock/upper/stock_nd25fn4_tweeters_left_upper.stl": "7b1a77fba2980870178221dd8e2f1258e2dd4788962ddc2cc9b24249d088d9b1"
   },
   "deposition": {
     "status": "pass",
     "counts": {
-      "support": 68118,
-      "model": 1021661,
+      "support": 67784,
+      "model": 1020221,
       "tower": 12697,
-      "interface": 36786
+      "interface": 36468
     },
     "deposition_bounds_mm": {
       "0": [
@@ -47,7 +47,7 @@
         ],
         [
           275.681,
-          270.05444681612806,
+          270.06074204682494,
           41.16
         ]
       ],
@@ -59,7 +59,7 @@
         ],
         [
           272.822,
-          268.083,
+          268.0863405357628,
           36.84
         ]
       ]
@@ -166,10 +166,10 @@
   "geometry": [
     {
       "source": "to_print/stock/upper/stock_nd25fn4_tweeters_left_upper.stl",
-      "sha256": "a6e640002d7f7de3fcd037758019fcaab54af81b75d58033977b0862932fc5af",
+      "sha256": "7b1a77fba2980870178221dd8e2f1258e2dd4788962ddc2cc9b24249d088d9b1",
       "subtype": "normal_part",
-      "triangles": 335388,
-      "maximum_vertex_error_mm": 4.647223413656936e-06,
+      "triangles": 227202,
+      "maximum_vertex_error_mm": 4.208770213136497e-06,
       "winding_and_connectivity_match": true
     },
     {
@@ -193,7 +193,7 @@
     "candidates/nd25fn4_vase/stock/support_blockers/nd25fn4_vase_stock_tweeters_left_upper.support_blocker.json": {
       "status": "pass",
       "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-      "support_extrusion_segments_checked": 32655,
+      "support_extrusion_segments_checked": 32826,
       "duct_capsule_segment_count": 18,
       "candidate_distance_checks": 0,
       "collision_count": 0,
@@ -242,15 +242,15 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 1150125,
-      "lines": 1550044,
-      "movement_commands": 1325201,
-      "non_comment_lines": 1430166,
+      "extrusion_moves": 1148026,
+      "lines": 1547155,
+      "movement_commands": 1323887,
+      "non_comment_lines": 1427784,
       "temperature_commands": 303
     },
     "warnings": [
       "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-      "Unknown or unsupported commands were left unchanged: ========== line 1109, G150 line 942, G150.1 line 726, G150.2 line 927, G150.3 line 708, G151 line 768, G17 line 3932, G28.14 line 1101, G28.140 line 651, G29.1 line 647, G29.2 line 782, G29.20 line 988."
+      "Unknown or unsupported commands were left unchanged: ========== line 1109, G150 line 941, G150.1 line 726, G150.2 line 927, G150.3 line 708, G151 line 768, G17 line 3898, G28.14 line 1101, G28.140 line 651, G29.1 line 647, G29.2 line 782, G29.20 line 988."
     ]
   }
 }

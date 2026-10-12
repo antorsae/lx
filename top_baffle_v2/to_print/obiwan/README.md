@@ -146,4 +146,4 @@ Each file holds every part for that stand state, arranged on named plates. Plate
 
 | Part | Tweeters | Infill | Magnets | Files | Status |
 |---|---|---|---:|---|---|
-| `obiwan_nl8_service_lid` | ND25FW-4, TEBM35C10-4, GRS PT2522-4, Mundorf AMT17D2.1 | 100% | 0 | [STL](addons/obiwan_nl8_service_lid.stl) · [PETG-GF project](addons/obiwan_nl8_service_lid.petg-gf.3mf) · [PETG-GF sliced](addons/obiwan_nl8_service_lid.petg-gf.gcode.3mf) · [PETG-GF audit](../../build/h2c/jobs/h2c_obiwan_addon_nl8_service_lid__petg_gf_pla/audit.json) | Digital pass; physical trial pending |
+| `obiwan_nl8_service_lid` | ND25FW-4, TEBM35C10-4, ND25FN-4, GRS PT2522-4, Mundorf AMT17D2.1 | 100% | 0 | [STL](addons/obiwan_nl8_service_lid.stl) · [PETG-GF project](addons/obiwan_nl8_service_lid.petg-gf.3mf) · [PETG-GF sliced](addons/obiwan_nl8_service_lid.petg-gf.gcode.3mf) · [PETG-GF audit](../../build/h2c/jobs/h2c_obiwan_addon_nl8_service_lid__petg_gf_pla/audit.json) | Digital pass; physical trial pending |

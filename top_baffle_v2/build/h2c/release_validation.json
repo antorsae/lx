@@ -6,9 +6,9 @@
   "combined_files": 6,
   "combined_plates": 79,
   "distinct_print_meshes": 65,
-  "checkpoint": "c261f32",
+  "checkpoint": "e3962a4",
   "physical_qualification": "pending H2C hardware trial",
-  "catalog_sha256": "527a02574ebf5b1fdec26281fe8db71382cdd6bb8f4c32d7e037b0d0afeb22da",
-  "policy_sha256": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+  "catalog_sha256": "10f7181491bb8356123f46b104a0cf47ebe04add3de9e598a1e7086077dfd19f",
+  "policy_sha256": "61d265416c57672fc417a59b7a29e82b10c2485d1ccae65056cd1558af9e33ae",
   "source_sha256": "35b2d2cd1a906910ab62f6c6080273684268d9ef96e76664a64a696d4f1d0afc"
 }

@@ -26,27 +26,27 @@
     "last_open_layer_z_mm": 5.96,
     "collision_witnesses": [
       {
-        "line": 154381,
+        "line": 154305,
         "feature": "Outer wall",
         "intrusion_mm": 0.12823698734248012
       },
       {
-        "line": 154383,
+        "line": 154307,
         "feature": "Outer wall",
         "intrusion_mm": 0.149162305937188
       },
       {
-        "line": 154385,
+        "line": 154309,
         "feature": "Outer wall",
         "intrusion_mm": 0.1373704877534101
       },
       {
-        "line": 154387,
+        "line": 154311,
         "feature": "Outer wall",
         "intrusion_mm": 0.1409652793611805
       },
       {
-        "line": 154389,
+        "line": 154313,
         "feature": "Outer wall",
         "intrusion_mm": 0.1405652793611805
       }
@@ -424,27 +424,27 @@
     "last_open_layer_z_mm": 5.96,
     "collision_witnesses": [
       {
-        "line": 154188,
+        "line": 154113,
         "feature": "Outer wall",
         "intrusion_mm": 0.12737262746443187
       },
       {
-        "line": 154190,
+        "line": 154115,
         "feature": "Outer wall",
         "intrusion_mm": 0.14833371033799417
       },
       {
-        "line": 154192,
+        "line": 154117,
         "feature": "Outer wall",
         "intrusion_mm": 0.1366301501426847
       },
       {
-        "line": 154194,
+        "line": 154119,
         "feature": "Outer wall",
         "intrusion_mm": 0.13918666739046523
       },
       {
-        "line": 154196,
+        "line": 154121,
         "feature": "Outer wall",
         "intrusion_mm": 0.13930524875883316
       }
@@ -822,27 +822,27 @@
     "last_open_layer_z_mm": 5.96,
     "collision_witnesses": [
       {
-        "line": 154090,
+        "line": 154015,
         "feature": "Outer wall",
         "intrusion_mm": 0.13708480268497908
       },
       {
-        "line": 154092,
+        "line": 154017,
         "feature": "Outer wall",
         "intrusion_mm": 0.13893325798282458
       },
       {
-        "line": 154094,
+        "line": 154019,
         "feature": "Outer wall",
         "intrusion_mm": 0.13911593937471006
       },
       {
-        "line": 154096,
+        "line": 154021,
         "feature": "Outer wall",
         "intrusion_mm": 0.13929362076659926
       },
       {
-        "line": 154098,
+        "line": 154023,
         "feature": "Outer wall",
         "intrusion_mm": 0.13913428201515743
       }

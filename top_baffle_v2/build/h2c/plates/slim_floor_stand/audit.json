@@ -16,7 +16,7 @@
         "status": "pass",
         "counts": {
           "support": 53696,
-          "model": 1098198,
+          "model": 1098206,
           "tower": 45799,
           "interface": 12441
         },
@@ -226,7 +226,7 @@
       "deposition": {
         "status": "pass",
         "counts": {
-          "model": 358172
+          "model": 358184
         },
         "deposition_bounds_mm": {
           "0": [
@@ -638,7 +638,7 @@
       "static_validation": true
     }
   ],
-  "project_sha256": "ce3d1777f115b5b569e37a92d6b863925e883c961b728218e2319313f44b61b9",
+  "project_sha256": "4be2da40993d72d91f0e83d212590578d72a53635f0dace03f48a0af1f417c8d",
   "sliced_project": "to_print/slim/slim_floor_stand.petg-gf.gcode.3mf",
-  "sliced_project_sha256": "71d7442155f0bf7f316f29d3e074efc0871c328342a16117b88043d7e43b82a6"
+  "sliced_project_sha256": "f4b8c7f83bd9c8d266dbb75d4c54c29c7c5a544b891d2a83d841255dc8eab1a2"
 }

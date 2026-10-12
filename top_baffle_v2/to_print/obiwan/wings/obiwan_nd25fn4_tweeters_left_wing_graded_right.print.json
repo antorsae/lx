@@ -2,10 +2,11 @@
   "schema_version": 1,
   "part": "obiwan_nd25fn4_tweeters_left_wing_graded_right",
   "stl": "obiwan_nd25fn4_tweeters_left_wing_graded_right.stl",
-  "stl_bytes": 3871084,
-  "stl_sha256": "9fb318ea74c037b2e9f03444704ef5add642d90a3b7314240a5737af8fec5dcd",
+  "stl_bytes": 2752384,
+  "stl_sha256": "d7c63b4abb822184c059d38b4c0882b20feb50250951ddf590aec79230f6fb6e",
   "source_stl": "candidates/nd25fn4_vase/obiwan/STL/nd25fn4_vase_obiwan_tweeters_left_wing_graded_right.stl",
   "source_sha256": "27f6712be3837736f328aaa708f3ed5b8b94cccb334292983959db4609880717",
+  "sliver_collapse_mm": 0.001,
   "print_orientation": "front_face_down",
   "source_to_stl_matrix": [
     [

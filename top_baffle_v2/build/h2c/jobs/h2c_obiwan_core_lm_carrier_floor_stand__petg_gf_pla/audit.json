@@ -1,9 +1,9 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "ff573feb927563434e14ff824f5f4b10228eef32f41136eac794fd1a8e7f7fcb",
-  "sliced_project_sha256": "689fc799ffee9a9705ceb44a508e5ca11ea8f81a68a73fe5e812af2ae22e9640",
-  "gcode_sha256": "5095131f9bae816f9e79a8955e834ca7973bf05878e6b7dc46d7131137ebcbd3",
+  "project_sha256": "87984bb9f308c93ea7e68dcd061cf48ef478012178a4d3f17fb32913a325cfa2",
+  "sliced_project_sha256": "1f7fd7af606af0b3811e51e5240fb216ac7e3b815ebd8b1ed76d32148257bd76",
+  "gcode_sha256": "84cec7de95934c25bcac458895f65f25f7db740e5ed63044e6d2acb76db9c606",
   "audit_version": 4,
   "inputs": {
     "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.json": "697b9ab56c85cb1e64479ce10cb479c2d41d8e00655b674e0fe9504bfe5f6f0a",
@@ -21,21 +21,21 @@
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "candidates/nd25fn4_vase/obiwan/magnets.catalog.json": "309bfd12e08485b66e52da39863bdc9bc2b0e38840681285eb27998c4fdb19aa",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+    "print_policy_h2c.json": "61d265416c57672fc417a59b7a29e82b10c2485d1ccae65056cd1558af9e33ae",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
     "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
     "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
-    "src/lx521_baffle/tweeter_options.py": "1a7c1a73e917f89d93e72fde1a9d8b1e4a52ec8138fee36e2faf60709f3bde54",
-    "to_print/obiwan/lm/obiwan_lm_carrier_floor_stand.petg-gf.3mf": "ff573feb927563434e14ff824f5f4b10228eef32f41136eac794fd1a8e7f7fcb",
+    "src/lx521_baffle/tweeter_options.py": "dba6f5e1877df8e92fbfdf46ff4ed07acf05e2f767222b91044a55b507bb80c2",
+    "to_print/obiwan/lm/obiwan_lm_carrier_floor_stand.petg-gf.3mf": "87984bb9f308c93ea7e68dcd061cf48ef478012178a4d3f17fb32913a325cfa2",
     "to_print/obiwan/lm/obiwan_lm_carrier_floor_stand.stl": "192eab82d287b2f2cbbfd4b2f6edd29c6ac1fdee6b1594b01a70996a1dd52417"
   },
   "deposition": {
     "status": "pass",
     "counts": {
       "support": 27652,
-      "model": 1284407,
+      "model": 1284408,
       "tower": 8101,
       "interface": 27210
     },
@@ -2265,7 +2265,7 @@
   "retaining_walls": {
     "status": "pass",
     "physical_qualification": "pending same-geometry coupon print",
-    "gcode_sha256": "5095131f9bae816f9e79a8955e834ca7973bf05878e6b7dc46d7131137ebcbd3",
+    "gcode_sha256": "84cec7de95934c25bcac458895f65f25f7db740e5ed63044e6d2acb76db9c606",
     "stl_sha256": "192eab82d287b2f2cbbfd4b2f6edd29c6ac1fdee6b1594b01a70996a1dd52417",
     "source_sha256": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "sample_spacing_mm": 0.06,
@@ -4399,10 +4399,10 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 1374988,
-      "lines": 2676058,
-      "movement_commands": 1957385,
-      "non_comment_lines": 2139498,
+      "extrusion_moves": 1374989,
+      "lines": 2676062,
+      "movement_commands": 1957387,
+      "non_comment_lines": 2139500,
       "temperature_commands": 406
     },
     "warnings": [

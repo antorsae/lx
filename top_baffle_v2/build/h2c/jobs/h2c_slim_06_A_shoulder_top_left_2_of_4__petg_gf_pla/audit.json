@@ -1,8 +1,8 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "82ad3ec7e5dc4987bc5d9df2efce1966bf7e0d98305ae7a6aea66f64a1ecdf04",
-  "sliced_project_sha256": "eaf5cc318db33ba783d7c7b123046e62801d8bbe1132ccf6c343e931947946e3",
+  "project_sha256": "d6f782c29d908d42d2f38c40dcf687e1f2facbb7ecd54010a5c82c1d5c097f9e",
+  "sliced_project_sha256": "8cc451c850f22e3063ea5aa4b92e9b5decb8e9a3e3258125d77533aa9b03f575",
   "gcode_sha256": "a4a1dffa0e1e59eaacf7f0ecdb0d903cb1015e76db2ce86f8a1cca4553013cb1",
   "audit_version": 4,
   "inputs": {
@@ -17,14 +17,14 @@
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "candidates/nd25fn4_vase/obiwan/magnets.catalog.json": "309bfd12e08485b66e52da39863bdc9bc2b0e38840681285eb27998c4fdb19aa",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+    "print_policy_h2c.json": "61d265416c57672fc417a59b7a29e82b10c2485d1ccae65056cd1558af9e33ae",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
     "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
     "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
-    "src/lx521_baffle/tweeter_options.py": "1a7c1a73e917f89d93e72fde1a9d8b1e4a52ec8138fee36e2faf60709f3bde54",
-    "to_print/slim/wings/slim_a_shoulder_top_left_2_of_4.petg-gf.3mf": "82ad3ec7e5dc4987bc5d9df2efce1966bf7e0d98305ae7a6aea66f64a1ecdf04",
+    "src/lx521_baffle/tweeter_options.py": "dba6f5e1877df8e92fbfdf46ff4ed07acf05e2f767222b91044a55b507bb80c2",
+    "to_print/slim/wings/slim_a_shoulder_top_left_2_of_4.petg-gf.3mf": "d6f782c29d908d42d2f38c40dcf687e1f2facbb7ecd54010a5c82c1d5c097f9e",
     "to_print/slim/wings/slim_a_shoulder_top_left_2_of_4.stl": "2ad2b053e6272c6ef565e7d0842bba68c86e2735798a14a21eb5ba645f5583a5"
   },
   "deposition": {

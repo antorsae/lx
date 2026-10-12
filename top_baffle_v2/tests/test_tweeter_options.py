@@ -20,6 +20,9 @@ class TweeterOptionsTests(unittest.TestCase):
             self.assertEqual(set(compatible_tweeters(f'h2c_obiwan_lm_keyed_bottom_{state}', 'obiwan', 'lm_bottom')),
                              {ND25FW, BMR, ND25FN, PT2522, AMT17})
         self.assertEqual(compatible_tweeters('h2c_obiwan_lm_keyed_top', 'obiwan', 'lm_top'), [ND25FW, BMR, PT2522, AMT17])
+        # The NL8 lid closes the floor-stand bay under every Obiwan upper, the ND25FN-4 vase top included.
+        self.assertEqual(set(compatible_tweeters('h2c_obiwan_addon_nl8_service_lid', 'obiwan', 'lm_bottom')),
+                         {ND25FW, BMR, ND25FN, PT2522, AMT17})
         self.assertNotIn(ND25FN, compatible_tweeters('h2c_obiwan_um', 'obiwan', 'um'))
         self.assertNotIn(ND25FN, compatible_tweeters('h2c_obiwan_wing', 'obiwan', 'regular_wing'))
         for name, role in (('h2c_dayton_nd25fn4_obiwan_top_floor_stand', 'lm_top'),

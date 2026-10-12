@@ -1174,6 +1174,7 @@ def um_t_above_mesh(um_installed, tessellate, solid_only=False):
         k = np.flatnonzero(arc <= T_TAPER_MM + 1.0)
         dk = t_taper_d(arc[k])
         part = part - stadium_tube(pts[k], dk, dk)
+    if part.status() != m3.Error.NoError or part.is_empty(): raise RuntimeError(f'UM + T above boolean failed: {part.status()}')
     out = part.to_mesh()
     mesh = capsule_cut(trimesh.Trimesh(np.asarray(out.vert_properties)[:, :3], np.asarray(out.tri_verts), process=True),
                        [(pts[::2].tolist() + [pts[-1].tolist()], r)])

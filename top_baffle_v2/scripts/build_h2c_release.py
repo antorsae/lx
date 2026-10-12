@@ -243,6 +243,54 @@ def seam_mask(name,target,matrix):
     return mask,dict(seam_rule,faces=int(mask.sum()),area_mm2=round(float(painted.area_faces[mask].sum()),1))
 
 
+# Mesh-boolean parts (ND25FN-4 vases, dipole parts) carry sub-micron slivers. Posed into the float32 bed coordinates
+# an STL stores, some collapse into zero-area facets and over-shared edges. Edges shorter than this are collapsed for
+# any part whose posed STL fails the strict manifold check; every shelf STL must pass it as written.
+SHELF_SLIVER_MM=.001
+
+
+def strict_mesh_errors(path):
+    from check_manifold import stl_diagnostics
+    facts=stl_diagnostics(path)
+    return {k:facts[k] for k in ('open','over_shared','winding','degenerate','duplicates','nonfinite') if facts[k]}
+
+
+def collapse_zero_area(mesh,max_edge):
+    """Collapse the short edge of each zero-area facet left after simplification (float32 rounding can leave exactly
+    collinear needles). A collapse is kept only if the mesh stays a closed, consistently wound two-manifold."""
+    def zero_area(faces):
+        t=vertices[faces];return np.flatnonzero(np.linalg.norm(np.cross(t[:,1]-t[:,0],t[:,2]-t[:,0]),axis=1)<=1e-9)
+    def closed(faces):
+        edges=np.r_[faces[:,[0,1]],faces[:,[1,2]],faces[:,[2,0]]]
+        _,count=np.unique(np.sort(edges,axis=1),axis=0,return_counts=True)
+        return (count==2).all() and len(np.unique(edges,axis=0))==len(edges)
+    vertices=np.asarray(mesh.vertices);faces=np.asarray(mesh.faces).copy()
+    while len(bad:=zero_area(faces)):
+        for face in faces[bad]:
+            pairs=[(face[0],face[1]),(face[1],face[2]),(face[2],face[0])]
+            lengths=[float(np.linalg.norm(vertices[a]-vertices[b])) for a,b in pairs]
+            trials=[pair for k in np.argsort(lengths) if lengths[k]<=max_edge for pair in (pairs[k],pairs[k][::-1])]
+            for keep,drop in trials:
+                trial=np.where(faces==drop,keep,faces)
+                trial=trial[(trial[:,0]!=trial[:,1])&(trial[:,1]!=trial[:,2])&(trial[:,2]!=trial[:,0])]
+                if closed(trial) and len(zero_area(trial))<len(bad):break
+            else:continue
+            faces=trial;break
+        else:raise ValueError(f'{len(bad)} zero-area facets that no edge collapse up to {max_edge} mm removes')
+    out=trimesh.Trimesh(vertices,faces,process=False);out.remove_unreferenced_vertices()
+    return out
+
+
+def sliver_free(mesh,matrix):
+    """`mesh` (source frame) posed by `matrix` without slivers: simplify in the source frame, pose, simplify again on
+    the float32 grid the STL stores (simplify keeps a subset of the vertices, so export moves nothing), then collapse
+    any zero-area facet that is left."""
+    from mesh_ops import solid,to_trimesh
+    posed=to_trimesh(solid(mesh).simplify(SHELF_SLIVER_MM));posed.apply_transform(matrix)
+    grid=trimesh.Trimesh(np.asarray(posed.vertices,np.float32).astype(np.float64),posed.faces,process=False)
+    return collapse_zero_area(to_trimesh(solid(grid).simplify(SHELF_SLIVER_MM)),SHELF_SLIVER_MM)
+
+
 def export_posed(row):
     path=ROOT/row['source']; mesh,source_authority=source_mesh(path)
     large=row['family'] in {'stock','slim'} and row['name'].endswith('_lm_no_floor_stand')
@@ -251,15 +299,20 @@ def export_posed(row):
     _,angle,minimum,offset,tower=placement(mesh,brim,row['angle'],large)
     transform=front_down_transform_record(minimum.tolist(),z_rotation_deg=angle)
     matrix=np.asarray(transform['source_to_stl_matrix'])
-    mesh.apply_transform(matrix)
+    source=mesh.copy();mesh.apply_transform(matrix)
     target=shelf.stl(row['name']);target.parent.mkdir(parents=True,exist_ok=True)
     mesh.export(target)
+    collapse={}
+    if strict_mesh_errors(target):
+        mesh=sliver_free(source,matrix);mesh.export(target)
+        if errors:=strict_mesh_errors(target):raise ValueError((target,errors))
+        collapse=dict(sliver_collapse_mm=SHELF_SLIVER_MM)
     if not mesh.is_watertight or not mesh.is_winding_consistent:raise ValueError(target)
     components=mesh.split(only_watertight=False)
     if sum(c.volume>0 for c in components)!=1:raise ValueError(f'{target}: disconnected material')
     authority=dict(schema_version=1,part=target.stem,stl=target.name,stl_bytes=target.stat().st_size,
         stl_sha256=sha256_file(target),source_stl=row['source'],source_sha256=sha256_file(path),
-        **transform)
+        **collapse,**transform)
     write_json(target.with_suffix('.print.json'),authority)
     validate_print_sidecar(target)
     part_overrides={}
@@ -440,7 +493,7 @@ def prepare(selected=None):
         shutil.copytree(OUT/'STL/dayton_nd25fn4',target,dirs_exist_ok=True);shutil.rmtree(OUT/'STL/dayton_nd25fn4')
     def save_manifest():
         write_json(manifest_path,dict(schema_version=2,printer='Bambu Lab H2C 0.6 High Flow',
-            checkpoint='c261f32',tweeter_families=TWEETER_FAMILIES,jobs=list(jobs.values())))
+            checkpoint='e3962a4',tweeter_families=TWEETER_FAMILIES,jobs=list(jobs.values())))
     for row in rows:
         if selected and row['name'] not in selected:continue
         lanes=[lane for lane in row_lanes(row) if lane in bundles]

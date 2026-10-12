@@ -15,7 +15,7 @@
       "deposition": {
         "status": "pass",
         "counts": {
-          "model": 739854
+          "model": 739984
         },
         "deposition_bounds_mm": {
           "0": [
@@ -255,21 +255,21 @@
       "deposition": {
         "status": "pass",
         "counts": {
-          "support": 88974,
-          "model": 1098730,
+          "support": 88739,
+          "model": 1098472,
           "tower": 13314,
-          "interface": 37118
+          "interface": 36861
         },
         "deposition_bounds_mm": {
           "0": [
             [
-              33.00027686184217,
+              33.00007221694211,
               7.6930000000000005,
               0.2
             ],
             [
               307.9852361064528,
-              201.17316316389378,
+              201.174431633949,
               41.16
             ]
           ],
@@ -406,13 +406,13 @@
             "candidates/nd25fn4_vase/stock/support_blockers/nd25fn4_vase_stock_tweeters_right_upper.support_blocker.json": {
               "status": "pass",
               "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-              "support_extrusion_segments_checked": 41037,
+              "support_extrusion_segments_checked": 41753,
               "duct_capsule_segment_count": 31,
-              "candidate_distance_checks": 660,
+              "candidate_distance_checks": 659,
               "collision_count": 0,
               "minimum_bead_to_lumen_clearance_mm": 1.7654205186122467,
               "closest_approach": {
-                "gcode_line_number": 840285,
+                "gcode_line_number": 838141,
                 "layer_z_mm": 17.48,
                 "feature": "Support",
                 "line_width_mm": 0.62,
@@ -458,21 +458,21 @@
         "stock_nd25fn4_tweeters_left_cap_rear"
       ],
       "tower_xy_mm": [
-        262.0,
+        261.0,
         76.0
       ],
       "deposition": {
         "status": "pass",
         "counts": {
-          "support": 90061,
-          "model": 1047851,
+          "support": 89350,
+          "model": 1046505,
           "tower": 13314,
-          "interface": 37018
+          "interface": 36831
         },
         "deposition_bounds_mm": {
           "0": [
             [
-              33.00282978864569,
+              33.00250142885521,
               7.998089541873141,
               0.2
             ],
@@ -615,13 +615,13 @@
             "candidates/nd25fn4_vase/stock/support_blockers/nd25fn4_vase_stock_tweeters_left_upper.support_blocker.json": {
               "status": "pass",
               "gate": "support_extrusion_bead_vs_functional_duct_capsules",
-              "support_extrusion_segments_checked": 29641,
+              "support_extrusion_segments_checked": 29438,
               "duct_capsule_segment_count": 18,
               "candidate_distance_checks": 36,
               "collision_count": 0,
               "minimum_bead_to_lumen_clearance_mm": 2.652861707538561,
               "closest_approach": {
-                "gcode_line_number": 786361,
+                "gcode_line_number": 783271,
                 "layer_z_mm": 17.48,
                 "feature": "Support",
                 "line_width_mm": 0.62,
@@ -835,7 +835,7 @@
       "static_validation": true
     }
   ],
-  "project_sha256": "56c8ee92f60c196868a810ca75d3ebde04d511f5d7900ca0a1572063cee286c4",
+  "project_sha256": "2df535283b6987ab08c1a43585dd1f2d2d61c2c4fb0926c038d9e99afb2a9a28",
   "sliced_project": "to_print/stock/stock_no_floor_stand.petg-gf.gcode.3mf",
-  "sliced_project_sha256": "735568317e5cd1d3e9e4cb92994a3009cdf70db285d6c90f27c6ade759de7a78"
+  "sliced_project_sha256": "a82fd8ec7905c904cdbd65a9a35c477c3fca24188585d4fea8913dace35f37a5"
 }

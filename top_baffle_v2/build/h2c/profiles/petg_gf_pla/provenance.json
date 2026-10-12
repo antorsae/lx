@@ -1,5 +1,5 @@
 {
-  "policy_sha256": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+  "policy_sha256": "61d265416c57672fc417a59b7a29e82b10c2485d1ccae65056cd1558af9e33ae",
   "shared_policy_sha256": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
   "native_sources": {
     "filament/Bambu PLA Basic @BBL H2C 0.6 nozzle.json": "1b4a745936e8fd86db76357d60450fcd248207c7645c2a23965fd981c58fb1ca",

@@ -26,7 +26,7 @@
     "last_open_layer_z_mm": 5.8,
     "collision_witnesses": [
       {
-        "line": 150458,
+        "line": 150394,
         "feature": "Outer wall",
         "intrusion_mm": 0.06063297148112773
       }
@@ -529,7 +529,7 @@
     "last_open_layer_z_mm": 5.8,
     "collision_witnesses": [
       {
-        "line": 150606,
+        "line": 150542,
         "feature": "Outer wall",
         "intrusion_mm": 0.060922004563400134
       }

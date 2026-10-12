@@ -1,9 +1,9 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "dbd78f4b463dae4fe18c90ec2f32ed803f15bda212076d1014979e6adba5dad2",
-  "sliced_project_sha256": "b9ca1cafff316115cf9c558515cc3c2f5eefd58a1f4530dcf49bf87912f946fd",
-  "gcode_sha256": "1411b7c182d93276dd9a28512599e3662ff3d8353c20e7ec47ba6cec55107523",
+  "project_sha256": "83dcd130e44f6bc6fa00fcc8f2d3164cd79255b7844bfec5e28e7160ea971362",
+  "sliced_project_sha256": "b0ced09dd31234a2e5a5bdeb8b511c9a93b3f4381aefb03824e0d8da380ae534",
+  "gcode_sha256": "cc5fbd8db82d611f2408f3d575a077532ff9bb4885e700a4fb33d555f96c8506",
   "audit_version": 4,
   "inputs": {
     "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_opposed_TEBM35C10-4.stl": "617bafd03e36d0db1e2f905303b45b3f16615ea16e075ddcb8dc4d40aed5ae65",
@@ -17,14 +17,14 @@
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "candidates/nd25fn4_vase/obiwan/magnets.catalog.json": "309bfd12e08485b66e52da39863bdc9bc2b0e38840681285eb27998c4fdb19aa",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+    "print_policy_h2c.json": "61d265416c57672fc417a59b7a29e82b10c2485d1ccae65056cd1558af9e33ae",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
     "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
     "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
-    "src/lx521_baffle/tweeter_options.py": "1a7c1a73e917f89d93e72fde1a9d8b1e4a52ec8138fee36e2faf60709f3bde54",
-    "to_print/obiwan/upper/obiwan_crescent_bmr_opposed.petg-gf.3mf": "dbd78f4b463dae4fe18c90ec2f32ed803f15bda212076d1014979e6adba5dad2",
+    "src/lx521_baffle/tweeter_options.py": "dba6f5e1877df8e92fbfdf46ff4ed07acf05e2f767222b91044a55b507bb80c2",
+    "to_print/obiwan/upper/obiwan_crescent_bmr_opposed.petg-gf.3mf": "83dcd130e44f6bc6fa00fcc8f2d3164cd79255b7844bfec5e28e7160ea971362",
     "to_print/obiwan/upper/obiwan_crescent_bmr_opposed.stl": "84353f89230594fbcffd4f7aa2b15aefdbb35b93b7d12e64d6dc5685bb8dab59"
   },
   "deposition": {
@@ -616,17 +616,17 @@
           "intrusion_mm": 0.1530704327141913
         },
         {
-          "line": 124670,
+          "line": 124669,
           "feature": "Outer wall",
           "intrusion_mm": 0.13798899053239244
         },
         {
-          "line": 124672,
+          "line": 124671,
           "feature": "Outer wall",
           "intrusion_mm": 0.1420752656737912
         },
         {
-          "line": 124674,
+          "line": 124673,
           "feature": "Outer wall",
           "intrusion_mm": 0.14232684153914044
         }
@@ -2152,7 +2152,7 @@
   "retaining_walls": {
     "status": "pass",
     "physical_qualification": "pending same-geometry coupon print",
-    "gcode_sha256": "1411b7c182d93276dd9a28512599e3662ff3d8353c20e7ec47ba6cec55107523",
+    "gcode_sha256": "cc5fbd8db82d611f2408f3d575a077532ff9bb4885e700a4fb33d555f96c8506",
     "stl_sha256": "84353f89230594fbcffd4f7aa2b15aefdbb35b93b7d12e64d6dc5685bb8dab59",
     "source_sha256": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "sample_spacing_mm": 0.06,
@@ -4237,15 +4237,15 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 144820,
-      "lines": 320604,
-      "movement_commands": 259437,
-      "non_comment_lines": 278139,
+      "extrusion_moves": 144824,
+      "lines": 320612,
+      "movement_commands": 259442,
+      "non_comment_lines": 278143,
       "temperature_commands": 22
     },
     "warnings": [
       "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-      "Unknown or unsupported commands were left unchanged: ========== line 1096, G150 line 937, G150.1 line 721, G150.2 line 922, G150.3 line 708, G151 line 763, G17 line 5228, G28.14 line 1088, G28.140 line 651, G29.1 line 647, G29.2 line 777, G29.20 line 977."
+      "Unknown or unsupported commands were left unchanged: ========== line 1096, G150 line 936, G150.1 line 721, G150.2 line 922, G150.3 line 708, G151 line 763, G17 line 5228, G28.14 line 1088, G28.140 line 651, G29.1 line 647, G29.2 line 777, G29.20 line 977."
     ]
   }
 }

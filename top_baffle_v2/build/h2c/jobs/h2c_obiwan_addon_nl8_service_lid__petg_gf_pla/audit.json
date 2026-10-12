@@ -1,8 +1,8 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "1cdcd2b524050bf474c737edf842a91b79ed034d7c8bb7fb5851c1220c426b2f",
-  "sliced_project_sha256": "552285a0e2379ee22cd3db4e09ed52ed8e9c4618a64cf25b5f1af27c109d04dc",
+  "project_sha256": "a8f8ff59dd39735445c62d28112585ee05ffed1c18ded175aeaafc01a35502e7",
+  "sliced_project_sha256": "ca24770b55c37cb222f9a7faaa736f52815e81d7d9b140cf42676a73151f5dba",
   "gcode_sha256": "30dc802112e7689705774164a962de9b95479ccb009d858c3d7a37a989821f39",
   "audit_version": 4,
   "inputs": {
@@ -16,14 +16,14 @@
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
     "candidates/nd25fn4_vase/obiwan/magnets.catalog.json": "309bfd12e08485b66e52da39863bdc9bc2b0e38840681285eb27998c4fdb19aa",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+    "print_policy_h2c.json": "61d265416c57672fc417a59b7a29e82b10c2485d1ccae65056cd1558af9e33ae",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
     "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
     "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
-    "src/lx521_baffle/tweeter_options.py": "1a7c1a73e917f89d93e72fde1a9d8b1e4a52ec8138fee36e2faf60709f3bde54",
-    "to_print/obiwan/addons/obiwan_nl8_service_lid.petg-gf.3mf": "1cdcd2b524050bf474c737edf842a91b79ed034d7c8bb7fb5851c1220c426b2f",
+    "src/lx521_baffle/tweeter_options.py": "dba6f5e1877df8e92fbfdf46ff4ed07acf05e2f767222b91044a55b507bb80c2",
+    "to_print/obiwan/addons/obiwan_nl8_service_lid.petg-gf.3mf": "a8f8ff59dd39735445c62d28112585ee05ffed1c18ded175aeaafc01a35502e7",
     "to_print/obiwan/addons/obiwan_nl8_service_lid.stl": "719a842494a70a2318664db07f8f71ad4c87aefd7dbcdb8d16a9fb28da77007b"
   },
   "deposition": {

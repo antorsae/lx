@@ -97,7 +97,7 @@
   "exceptions": [
     "Use dedicated left/right nozzles; old P2S AMS slot numbers are not nozzle assignments. Configure a model feed to the left and a PLA feed to the right before printing.",
     "Retain native H2C retraction, temperature standby, nozzle changing, start/end and priming G-code. Transfer only explicit Tinmorry thermal/flow calibrations. Do not apply the P2S 560 mm3 same-nozzle purge to every dual-nozzle switch.",
-    "PETG-GF and PLA use a shared 70 C Engineering Plate with glue. No raft. This is the user's plate process and requires a first-print adhesion check, especially the 2 mm Stock/Slim brim.",
+    "PETG-GF and PLA use a shared 70 C Engineering Plate with glue. No raft. This is the user's plate process and requires a first-print adhesion check, especially the 2 mm Stock/Slim brim and the two brimless dipole T-below parts.",
     "Use three dense zero-gap PLA interface layers above and below support for H2C. Keep PETG as the support base. Disable flushing into model, infill and support.",
     "The native H2C firmware programs and generated material/nozzle assignments must be checked from the actual slice; prepared projects alone are not print qualification.",
     "Obiwan ND25FN-4 vase wings retain Arachne and supports. Each D5 captive magnet is rechecked against the actual toolpaths.",

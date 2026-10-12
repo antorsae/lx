@@ -31,6 +31,10 @@ CAD requires regenerating those canonical inputs before rebuilding H2C outputs.
 The Dayton ND25FN-4 vases and the dipole tweeter parts are approved mesh
 packages (`candidates/nd25fn4_vase/`, `candidates/dipole_tweeter/`) in the
 installed frame. Like every other released mesh, they reach the shelf through
-the shared front-down print sidecar contract. The retired V4 waveguide body,
+the shared front-down print sidecar contract. Every shelf STL must pass the
+strict manifold check (`scripts/check_manifold.py`) as written. These
+mesh-boolean parts carry sub-micron slivers that float32 bed coordinates would
+collapse, so the shelf export collapses edges shorter than `SHELF_SLIVER_MM`
+first, and their print authority records it. The retired V4 waveguide body,
 its caps and retainers, and its wings are archived under
 `experiments/retired_dayton_nd25fn4_v4/`.

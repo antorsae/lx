@@ -38,10 +38,10 @@
     "z_height_mm": 325.0
   },
   "stats": {
-    "extrusion_moves": 201559,
-    "lines": 398971,
-    "movement_commands": 294299,
-    "non_comment_lines": 321372,
+    "extrusion_moves": 201762,
+    "lines": 399468,
+    "movement_commands": 294692,
+    "non_comment_lines": 321839,
     "temperature_commands": 73
   },
   "warnings": [

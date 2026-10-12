@@ -2,10 +2,11 @@
   "schema_version": 1,
   "part": "obiwan_pt2522_t_below_upright_lm_top",
   "stl": "obiwan_pt2522_t_below_upright_lm_top.stl",
-  "stl_bytes": 1729684,
-  "stl_sha256": "a68b0ec9a96cdcb4127e2c1239e4d153ce9c9fec65d0bbf21093e5352a2a4c1c",
+  "stl_bytes": 1619684,
+  "stl_sha256": "a5b08a5e67715f124eaaaf2d4f8746be7bb6f63b7385abca3547344a15277257",
   "source_stl": "candidates/dipole_tweeter/STL/grs_pt2522_4_obiwan_t_below_upright_lm_top.stl",
   "source_sha256": "317bf0b7611e08474a16ca1b32baa93ba8b6469258b264ab01686c7e59842a45",
+  "sliver_collapse_mm": 0.001,
   "print_orientation": "front_face_down",
   "source_to_stl_matrix": [
     [

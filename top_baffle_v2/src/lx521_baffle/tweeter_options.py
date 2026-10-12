@@ -46,7 +46,8 @@ def compatible_tweeters(name, family, role):
     # the keyed LM bottom; the one-piece Obiwan LM carrier does not take it.
     # The dipole parts (Obiwan only): T above replaces the UM carrier on the one-piece LM carrier or the keyed LM;
     # T below replaces the keyed LM top (one piece, or a keyed LM top variant plus a T + UM piece).
+    # The NL8 service lid closes the bay of every Obiwan floor-stand LM, the keyed bottom under the vase top included.
     dipole = list(DIPOLE) if family == 'obiwan' and role in ('lm_bottom', 'lm_top') else []
-    if (family == 'stock' and role in ('lm_bottom', 'lm_top')) or 'lm_keyed_bottom' in name:
+    if (family == 'stock' and role in ('lm_bottom', 'lm_top')) or 'lm_keyed_bottom' in name or 'nl8_service_lid' in name:
         return [ND25FW, BMR, ND25FN] + dipole
     return [ND25FW, BMR] + dipole
