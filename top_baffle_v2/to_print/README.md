@@ -19,6 +19,8 @@ The pre-migration source checkpoint is recorded in the [generated-file history g
 | Regular Obiwan, either stand state | 1 LM (one piece, or keyed bottom + keyed top) + 1 UM + 1 crescent + 2 optional wings |
 | Stock with ND25FN-4 vase, either stand state | Stock LM (1 or 2 pieces) + 1 ND25FN-4 vase + 2 caps |
 | Obiwan with ND25FN-4 vase top, either stand state | 1 keyed LM bottom (floor or no-floor) + 1 vase top + 2 caps + 2 optional wings |
+| Obiwan with a dipole tweeter above the MU10 (T above), either stand state | 1 LM (one piece, or keyed bottom + keyed top) + 1 T-above part (UM + tweeter frame); no wings |
+| Obiwan with a dipole tweeter below the MU10 (T below), either stand state | 1 keyed LM bottom (floor or no-floor) + 1 T-below part (keyed LM top + tweeter frame + UM; the PT2522-4 upright is a custom keyed LM top + a T + UM piece); no wings |
 
 Stock/Slim standard shoulders and B1 wings are optional for ND25FW-4; no matching BMR perimeter is supplied. The upper module and BMR alternative are shared between stand states. A-style shoulders remain four pieces: their upper and lower outlines meet only at a tangent point, so joining them would require an outline change. The B1 alternative already uses one continuous wing per side. Use the new H2C upper module with the new contained-pin LM joint; its two Ø3 mm pins replace the old upward dovetails. The hidden M3 × 20 clamp and Hanglife M3, Ø5 × 4 mm insert remain. Floor-stand LM halves retain the established lower dovetail joint.
 
@@ -50,7 +52,7 @@ The ND25FN-4 Obiwan vase top replaces the LM top, the regular UM and the crescen
 - 0.16 mm layers, 0.20 mm first layer, six walls. Structural LM/UM: 100% infill. Wings: 10% gyroid. Dayton ND25FN-4 vase bodies: 100%, with their T and t waveguides at 15% gyroid (a modifier volume; the MU10 seat and the LM/seam joints stay 100%); their caps: 15% gyroid. Regular crescent: its existing 30% policy.
 - PETG support bases with three dense, zero-gap PLA interface layers above and below. ND25FN-4 caps print skin-up with support under their sleeves; vase duct blockers stop short of the driver-seat ceilings.
 - Obiwan floor-stand LMs mask their underside NL8 service bay, so its short lid-rebate lip bridges instead of carrying a support column through the lead bay.
-- Stock/Slim complete no-floor LM uses a 2 mm brim and no support; other parts use a 5 mm brim. The narrow brim needs an adhesion trial on the actual H2C plate.
+- Brim: 5 mm on most parts. The complete Stock/Slim no-floor LM uses 2 mm and no support. `obiwan_amt17d2_t_below_upright` and `obiwan_pt2522_t_below_rotated` print with no brim: lengthwise along Y (about 315 mm) is the only H2C layout where both nozzles reach every support. The narrow and missing brims need an adhesion trial on the actual H2C plate.
 - Dedicated nozzles retain native H2C priming, retraction and standby programs. The dedicated-nozzle process uses its own H2C purge policy. Flushing into model, infill and supports is disabled.
 
 ## Magnets and hardware

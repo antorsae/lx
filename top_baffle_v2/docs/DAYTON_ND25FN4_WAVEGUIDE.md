@@ -41,7 +41,7 @@ stereo pair, print one of each. With the tweeters inboard, toward the centre, th
 
 ## Stock ND25FN-4 vase
 
-![Stock ND25FN-4 vase on the H2C Stock LM](../build/h2c/views/H2C_Dayton_ND25FN4_stock_front.png)
+![Stock ND25FN-4 vase (tweeters right) on the H2C Stock LM](../build/h2c/views/H2C_Dayton_ND25FN4_stock_tweeters_right_front.png)
 
 - Replaces `h2c_stock_upper` on the unchanged H2C Stock LM (either hand):
   `h2c_stock_lm_no_floor_stand`, or `h2c_stock_lm_lower_floor_stand` +
@@ -59,7 +59,7 @@ stereo pair, print one of each. With the tweeters inboard, toward the centre, th
 
 ## Obiwan ND25FN-4 vase top
 
-![Obiwan ND25FN-4 vase top with graded wings](../build/h2c/views/H2C_Dayton_ND25FN4_obiwan_graded_front.png)
+![Obiwan ND25FN-4 vase top (tweeters right) with graded wings](../build/h2c/views/H2C_Dayton_ND25FN4_obiwan_tweeters_right_graded_front.png)
 
 - Replaces the LM top, the regular UM and its crescent with one piece that keys
   onto the released **keyed LM bottom of either stand state**

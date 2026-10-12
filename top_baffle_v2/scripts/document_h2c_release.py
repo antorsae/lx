@@ -171,6 +171,18 @@ def write_product_readme(product,jobs):
     (out/'README.md').write_text('\n'.join(lines))
 
 
+def brim_line(brim):
+    """The brim rule as the policy sets it, naming the parts printed without one."""
+    from lx521_baffle.h2c.shelf import location
+    none=[location(name)[2] for name,width in brim.get('by_part',{}).items() if width==0]
+    line=(f"- Brim: {brim['default']} mm on most parts. The complete Stock/Slim no-floor LM uses {brim['stock_slim_no_floor_lm']} mm "
+        'and no support.')
+    if none:
+        line+=(' '+' and '.join(f'`{n}`' for n in none)+' print with no brim: lengthwise along Y (about 315 mm) is the only '
+            'H2C layout where both nozzles reach every support.')
+    return line+' The narrow and missing brims need an adhesion trial on the actual H2C plate.'
+
+
 def main():
     from lx521_baffle.h2c.shelf import SHELF,CATALOG,PRODUCTS
     out=SHELF;catalog=json.loads(CATALOG.read_text());cfg=policy()
@@ -189,6 +201,8 @@ def main():
         '| Regular Obiwan, either stand state | 1 LM (one piece, or keyed bottom + keyed top) + 1 UM + 1 crescent + 2 optional wings |',
         '| Stock with ND25FN-4 vase, either stand state | Stock LM (1 or 2 pieces) + 1 ND25FN-4 vase + 2 caps |',
         '| Obiwan with ND25FN-4 vase top, either stand state | 1 keyed LM bottom (floor or no-floor) + 1 vase top + 2 caps + 2 optional wings |',
+        '| Obiwan with a dipole tweeter above the MU10 (T above), either stand state | 1 LM (one piece, or keyed bottom + keyed top) + 1 T-above part (UM + tweeter frame); no wings |',
+        '| Obiwan with a dipole tweeter below the MU10 (T below), either stand state | 1 keyed LM bottom (floor or no-floor) + 1 T-below part (keyed LM top + tweeter frame + UM; the PT2522-4 upright is a custom keyed LM top + a T + UM piece); no wings |',
         '', 'Stock/Slim standard shoulders and B1 wings are optional for ND25FW-4; no matching BMR perimeter is supplied. The upper module and BMR alternative are shared between stand states. '+
         'A-style shoulders remain four pieces: their upper and lower outlines meet only at a tangent point, so joining them would require an outline change. '+
         'The B1 alternative already uses one continuous wing per side. '+
@@ -219,8 +233,7 @@ def main():
         '- PETG support bases with three dense, zero-gap PLA interface layers above and below. '+
         'ND25FN-4 caps print skin-up with support under their sleeves; vase duct blockers stop short of the driver-seat ceilings.',
         '- Obiwan floor-stand LMs mask their underside NL8 service bay, so its short lid-rebate lip bridges instead of carrying a support column through the lead bay.',
-        '- Stock/Slim complete no-floor LM uses a 2 mm brim and no support; other parts use a 5 mm brim. '+
-        'The narrow brim needs an adhesion trial on the actual H2C plate.',
+        brim_line(cfg['brim_mm']),
         '- Dedicated nozzles retain native H2C priming, retraction and standby programs. '+
         'The dedicated-nozzle process uses its own H2C purge policy. Flushing into model, infill and supports is disabled.',
         '', '## Magnets and hardware', '',
