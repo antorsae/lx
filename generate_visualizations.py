@@ -123,6 +123,32 @@ def log_bin_frequency(freq, *arrays):
 
     return (np.exp(mean(np.log(freq))), *(mean(a) for a in arrays))
 
+
+def side_matrices(driver_data: dict, key: str, angles):
+    """SPL and phase matrices of an optional side group on the front angle grid.
+
+    Used for the 180-360 deg half of a full turntable rotation ('left_angles',
+    'left_rear_angles'). Returns (None, None) when the group is missing or its
+    angles differ from the front angles, since the polar builders pair the
+    sides angle by angle.
+    """
+    side = driver_data.get(key)
+    if not side:
+        return None, None
+    _, side_angles, spl, phase = create_polar_matrix_from_dict(
+        {'angles': side, 'common_frequencies': driver_data['common_frequencies']}
+    )
+    if not np.array_equal(side_angles, angles):
+        print(f"Warning: ignoring {key} of '{driver_data.get('driver')}': "
+              f"angles {list(side_angles)} differ from the front angles")
+        return None, None
+    return spl, phase
+
+
+def power_average_db(*spl_matrices):
+    """Average SPL matrices in power."""
+    return 10 * np.log10(np.mean([10 ** (m / 10) for m in spl_matrices], axis=0))
+
 # Set plotting style
 sns.set_style("whitegrid")
 plt.rcParams['figure.dpi'] = 150
@@ -180,7 +206,12 @@ class PolarResponseVisualizer:
         for driver in self.all_drivers:
             try:
                 freq, angles, spl_matrix, phase_matrix = create_polar_matrix_from_dict(self.data[driver])
-                calc = DirectivityCalculator(freq, angles, spl_matrix) if require_directivity else None
+                # A full turntable rotation measures both sides; the directivity
+                # metrics then use their power average instead of one side.
+                left_spl_matrix, _ = side_matrices(self.data[driver], 'left_angles', angles)
+                directivity_spl = (spl_matrix if left_spl_matrix is None
+                                   else power_average_db(spl_matrix, left_spl_matrix))
+                calc = DirectivityCalculator(freq, angles, directivity_spl) if require_directivity else None
             except ValueError as exc:
                 print(f"Warning: Skipping driver '{driver}' due to invalid angle data: {exc}")
                 self.skipped_drivers[driver] = str(exc)
@@ -202,6 +233,8 @@ class PolarResponseVisualizer:
                 'phase_matrix': phase_matrix,
                 'rear_spl_matrix': rear_spl_matrix,
                 'rear_phase_matrix': rear_phase_matrix,
+                'left_spl_matrix': left_spl_matrix,
+                'left_rear_spl_matrix': side_matrices(self.data[driver], 'left_rear_angles', angles)[0],
                 'has_rear': self.data[driver].get('has_rear', False),
                 'calculator': calc,
                 'di': calc.calculate_directivity_index() if calc else None,
@@ -303,103 +336,7 @@ class PolarResponseVisualizer:
             angles_rad: Array of angles in radians (0 to 2π)
             spl_data: SPL values normalized to on-axis
         """
-        res = self.calc_results[driver]
-        front_angles = res['angles']  # e.g., [0, 10, 20, ..., 90] or [0, 15, 30, ..., 90]
-        front_spl = res['spl_matrix'][freq_idx, :]  # SPL at this frequency
-
-        has_rear = res.get('has_rear', False)
-        rear_spl_matrix = res.get('rear_spl_matrix')
-
-        if has_rear and rear_spl_matrix is not None:
-            # Full 360° with real rear data
-            rear_spl = rear_spl_matrix[freq_idx, :]
-
-            # Build full pattern:
-            # 0° to 90° (front right): front_spl[0:end]
-            # 90° to 180° (rear right): interpolate from front_90 to rear, then rear angles reversed
-            # 180° to 270° (rear left): mirror of rear
-            # 270° to 360° (front left): mirror of front
-
-            # Actually, simpler approach for dipole/open baffle:
-            # Front: 0° to 90° = front measurements
-            # Right side (90° to 180°): rear measurements from 90° down to 0° (as 90° to 180°)
-            # Rear (180°): rear 0° measurement
-            # Left side: mirror of right side
-
-            # Angles for full 360°:
-            # Front right quadrant: 0, 15, 30, 45, 60, 75, 90
-            # Rear right quadrant: 105, 120, 135, 150, 165, 180 (rear angles mapped)
-            # Rear left quadrant: 195, 210, 225, 240, 255, 270 (mirror of rear right)
-            # Front left quadrant: 285, 300, 315, 330, 345 (mirror of front right)
-
-            # For simplicity, let's build it piece by piece
-            front_angles_arr = np.array(front_angles)
-
-            # Front quadrant (0 to 90): use front data directly
-            angles_0_90 = front_angles_arr
-            spl_0_90 = front_spl
-
-            # Rear quadrant (90 to 180): rear data, angles go 90->180
-            # Rear measurements are at angles 0, 15, 30... which map to 180, 165, 150...
-            # So rear_angle 0 = 180°, rear_angle 90 = 90°
-            # For 90->180, we use rear data reversed
-            rear_angles_arr = np.array(front_angles)  # Assuming same angles
-            angles_90_180 = 180 - rear_angles_arr[::-1]  # [90, 105, 120, ..., 180] but needs fixing
-            # Actually: rear measurement at angle X represents the sound at 180-X degrees
-            # rear at 0° = behind (180°), rear at 90° = side (90°)
-            # So for angles 90 to 180, we need rear[90], rear[75], ..., rear[0]
-            angles_90_180 = 90 + front_angles_arr[1:]  # Skip 90 as it's shared: [105, 120, ...]
-            # Map to rear: angle 105 -> rear at 180-105=75, angle 120 -> rear at 60, etc
-            spl_90_180 = []
-            for a in angles_90_180:
-                rear_measurement_angle = 180 - a  # Which rear angle to use
-                idx = np.abs(front_angles_arr - rear_measurement_angle).argmin()
-                spl_90_180.append(rear_spl[idx])
-            spl_90_180 = np.array(spl_90_180)
-
-            # Rear center (180°) = rear at 0°
-            angles_180 = np.array([180])
-            spl_180 = np.array([rear_spl[0]])
-
-            # Rear left quadrant (180 to 270): mirror of 90-180
-            angles_180_270 = 360 - angles_90_180[::-1]  # [255, 240, 225, ...]
-            spl_180_270 = spl_90_180[::-1]
-
-            # Front left quadrant (270 to 360): mirror of 0-90
-            angles_270_360 = 360 - front_angles_arr[::-1][:-1]  # [270, 285, 300, ...] skip 360=0
-            spl_270_360 = front_spl[::-1][:-1]
-
-            # Combine all
-            all_angles = np.concatenate([angles_0_90, angles_90_180, angles_180, angles_180_270, angles_270_360])
-            all_spl = np.concatenate([spl_0_90, spl_90_180, spl_180, spl_180_270, spl_270_360])
-
-            # Sort by angle
-            sort_idx = np.argsort(all_angles)
-            all_angles = all_angles[sort_idx]
-            all_spl = all_spl[sort_idx]
-
-            # Close the loop (add 360° = 0°)
-            all_angles = np.append(all_angles, 360)
-            all_spl = np.append(all_spl, all_spl[0])
-
-        else:
-            # Front-only: mirror for left/right symmetry (180° pattern)
-            # Original approach: -90 to +90 degrees
-            angles_full = np.concatenate([[-a for a in reversed(front_angles) if a > 0], front_angles])
-            data_full = np.concatenate([front_spl[::-1][:-1], front_spl])
-
-            all_angles = angles_full
-            all_spl = data_full
-
-        # Normalize to on-axis (0°)
-        on_axis_idx = np.abs(all_angles).argmin()
-        spl_normalized = all_spl - all_spl[on_axis_idx]
-
-        # Clamp extreme values
-        spl_normalized = np.clip(spl_normalized, -40, 10)
-
-        angles_rad = np.radians(all_angles)
-        return angles_rad, spl_normalized
+        return self._build_polar_data_from_result(self.calc_results[driver], freq_idx, use_rear=True)
 
     def _interpolate_angle_grid(self, angles, spl_matrix, phase_matrix, target_angles):
         base_angles = np.array([int(a) for a in angles], dtype=float)
@@ -463,6 +400,12 @@ class PolarResponseVisualizer:
         has_rear = use_rear and res.get('has_rear', False) and res.get('rear_spl_matrix') is not None
         rear_spl_matrix = res.get('rear_spl_matrix')
 
+        # A full turntable rotation draws its measured 180-360 deg half instead
+        # of mirroring 0-180 deg.
+        left_spl_matrix = res.get('left_spl_matrix')
+        left_rear_spl_matrix = res.get('left_rear_spl_matrix')
+        left_spl = front_spl if left_spl_matrix is None else left_spl_matrix[freq_idx, :]
+
         if has_rear and rear_spl_matrix is not None:
             rear_spl = rear_spl_matrix[freq_idx, :]
 
@@ -484,9 +427,16 @@ class PolarResponseVisualizer:
 
             angles_180_270 = 360 - angles_90_180[::-1]
             spl_180_270 = spl_90_180[::-1]
+            if left_rear_spl_matrix is not None:
+                # Left rear angle b sits at 180 + b
+                left_rear_spl = left_rear_spl_matrix[freq_idx, :]
+                spl_180_270 = np.array([
+                    left_rear_spl[np.abs(front_angles_arr - (a - 180)).argmin()]
+                    for a in angles_180_270
+                ])
 
             angles_270_360 = 360 - front_angles_arr[::-1][:-1]
-            spl_270_360 = front_spl[::-1][:-1]
+            spl_270_360 = left_spl[::-1][:-1]
 
             all_angles = np.concatenate([angles_0_90, angles_90_180, angles_180, angles_180_270, angles_270_360])
             all_spl = np.concatenate([spl_0_90, spl_90_180, spl_180, spl_180_270, spl_270_360])
@@ -499,7 +449,7 @@ class PolarResponseVisualizer:
             all_spl = np.append(all_spl, all_spl[0])
         else:
             angles_full = np.concatenate([[-a for a in reversed(front_angles) if a > 0], front_angles])
-            data_full = np.concatenate([front_spl[::-1][:-1], front_spl])
+            data_full = np.concatenate([left_spl[::-1][:-1], front_spl])
             all_angles = angles_full
             all_spl = data_full
 
@@ -710,16 +660,24 @@ class PolarResponseVisualizer:
             freq = res['frequencies']
             angles = np.array(res['angles'])  # Available angles like [0, 15, 30, 45, 60, 75, 90]
             spl_matrix = res['spl_matrix']  # Shape: [n_freqs, n_angles]
+            left_spl_matrix = res.get('left_spl_matrix')
+
+            # (label, color, dashed, spl): a full turntable rotation adds the
+            # 180-360 deg half as dashed negative angles
+            curves = []
+            for angle, color, label in angle_config:
+                angle_matches = np.where(angles == angle)[0]
+                if len(angle_matches) > 0:
+                    curves.append((label, color, False, spl_matrix[:, angle_matches[0]]))
+                    if left_spl_matrix is not None and angle > 0:
+                        curves.append((f'−{angle}°', color, True, left_spl_matrix[:, angle_matches[0]]))
 
             if save_static:
                 fig, ax = plt.subplots(figsize=config.FIG_SIZE_STATIC)
 
-                for angle, color, label in angle_config:
-                    angle_matches = np.where(angles == angle)[0]
-                    if len(angle_matches) > 0:
-                        angle_idx = angle_matches[0]
-                        spl = spl_matrix[:, angle_idx]
-                        ax.semilogx(freq, spl, label=label, linewidth=2, color=color)
+                for label, color, dashed, spl in curves:
+                    ax.semilogx(freq, spl, label=label, linewidth=2, color=color,
+                                linestyle='--' if dashed else '-')
 
                 self._add_static_grid(ax)
                 ax.set_xlabel('Frequency (Hz)')
@@ -754,14 +712,11 @@ class PolarResponseVisualizer:
 
                     fig_norm, ax_norm = plt.subplots(figsize=config.FIG_SIZE_STATIC)
 
-                    for angle, color, label in angle_config:
-                        angle_matches = np.where(angles == angle)[0]
-                        if len(angle_matches) > 0:
-                            angle_idx = angle_matches[0]
-                            spl = spl_matrix[:, angle_idx]
-                            # Normalize: subtract on-axis response
-                            spl_normalized = spl - onaxis_spl
-                            ax_norm.semilogx(freq, spl_normalized, label=label, linewidth=2, color=color)
+                    for label, color, dashed, spl in curves:
+                        # Normalize: subtract on-axis response
+                        spl_normalized = spl - onaxis_spl
+                        ax_norm.semilogx(freq, spl_normalized, label=label, linewidth=2, color=color,
+                                         linestyle='--' if dashed else '-')
 
                     self._add_static_grid(ax_norm)
                     ax_norm.set_xlabel('Frequency (Hz)')
@@ -790,15 +745,12 @@ class PolarResponseVisualizer:
             if save_interactive:
                 fig = go.Figure()
 
-                for angle, color, label in angle_config:
-                    angle_matches = np.where(angles == angle)[0]
-                    if len(angle_matches) > 0:
-                        angle_idx = angle_matches[0]
-                        freq_binned, spl = log_bin_frequency(freq, spl_matrix[:, angle_idx])
-                        fig.add_trace(go.Scatter(
-                            x=freq_binned, y=spl, name=label,
-                            line=dict(width=2, color=color)
-                        ))
+                for label, color, dashed, spl in curves:
+                    freq_binned, spl_binned = log_bin_frequency(freq, spl)
+                    fig.add_trace(go.Scatter(
+                        x=freq_binned, y=spl_binned, name=label,
+                        line=dict(width=2, color=color, dash='dash' if dashed else 'solid')
+                    ))
 
                 self._add_interactive_grid(fig)
                 self._configure_interactive_axis(fig)
@@ -806,9 +758,7 @@ class PolarResponseVisualizer:
                 # Add horizontal lines at 5 dB increments
                 # 10 dB increments (20, 30, 40...) are solid/darker, 5 dB (25, 35...) are dotted/lighter
                 # Get data range from all traces
-                all_y = np.concatenate([spl_matrix[:, np.where(angles == a)[0][0]]
-                                        for a, _, _ in angle_config
-                                        if len(np.where(angles == a)[0]) > 0])
+                all_y = np.concatenate([spl for _, _, _, spl in curves])
                 y_min, y_max = np.min(all_y), np.max(all_y)
                 y_start = int(np.floor(y_min / 5) * 5)
                 y_end = int(np.ceil(y_max / 5) * 5)
@@ -887,6 +837,7 @@ class PolarResponseVisualizer:
         extra_set_specs = [
             ("juan-baffleless", "Juan baffleless drivers", "loadExtraJuanBafflelessBtn"),
             ("juan-lx521-top-raw", "Juan top-baffle raw drivers", "loadExtraJuanTopBaffleBtn"),
+            ("juan-batman", "Juan BATMAN outdoor 360", "loadExtraJuanBatmanBtn"),
             ("kaspar", "Kaspar LX521 outdoor 1 m (DSP)", "loadExtraKasparBtn"),
         ]
         extra_datasets = {}
@@ -4733,12 +4684,37 @@ class PolarResponseVisualizer:
             yaxis_title=ylabel or ''
         )
 
+    def _full_circle_contour_grid(self, res):
+        """Contour rows for a full turntable rotation, from -180 to 180 deg.
+
+        0-180 deg sits at positive angles as in the 0-180 deg contour, and the
+        180-360 deg half at negative ones (rotation - 360). Each quadrant is
+        interpolated on its own, like the front and rear of the 0-180 deg
+        contour; 2 deg steps keep the page the size of a 0-180 deg contour.
+        """
+        from scipy.interpolate import interp1d
+        measured = np.asarray(res['angles'], dtype=float)
+        fine = np.arange(0, 91, 2)
+
+        def quadrant(matrix):
+            return interp1d(measured, matrix, kind='cubic', axis=1, fill_value='extrapolate')(fine)
+
+        angles = np.concatenate([fine[:-1] - 180, -fine[::-1][:-1], fine, 180 - fine[::-1][1:]])
+        spl = np.concatenate([
+            quadrant(res['left_rear_spl_matrix'])[:, :-1],     # -180..-92: left rear 0..88
+            quadrant(res['left_spl_matrix'])[:, ::-1][:, :-1],  # -90..-2: left front 90..2
+            quadrant(res['spl_matrix']),                        # 0..90: front
+            quadrant(res['rear_spl_matrix'])[:, ::-1][:, 1:],   # 92..180: rear 88..0
+        ], axis=1)
+        return angles, spl
+
     def plot_contour(self, driver, normalized=True, save_static=True, save_interactive=True):
         """Generate contour/heatmap plot for a driver
 
         When rear data is available, displays full 180° range:
         - Front (0° to 90°) on lower Y axis
         - Rear (90° to 180°) on upper Y axis (rear 0° = 180°, rear 90° = 90°)
+        A full turntable rotation adds the 180-360° half below 0° (-180° to 0°).
         """
         print(f"Generating {'normalized' if normalized else 'absolute'} contour plot for {driver}...")
 
@@ -4747,13 +4723,21 @@ class PolarResponseVisualizer:
         calc = self.calc_results[driver]['calculator']
         has_rear = self.calc_results[driver].get('has_rear', False)
         rear_spl_matrix = self.calc_results[driver].get('rear_spl_matrix')
+        full_circle = (has_rear and rear_spl_matrix is not None
+                       and self.calc_results[driver].get('left_spl_matrix') is not None
+                       and self.calc_results[driver].get('left_rear_spl_matrix') is not None)
 
-        # Interpolation for front hemisphere
-        angles_fine_front = np.linspace(0, 90, 91)
-        spl_interpolated_front = calc.interpolate_angles(angles_fine_front)
+        if not full_circle:
+            # Interpolation for front hemisphere
+            angles_fine_front = np.linspace(0, 90, 91)
+            spl_interpolated_front = calc.interpolate_angles(angles_fine_front)
 
         # Check if we have rear data to include
-        if has_rear and rear_spl_matrix is not None:
+        if full_circle:
+            angles_fine, spl_interpolated = self._full_circle_contour_grid(self.calc_results[driver])
+            y_lim = (-180, 180)
+            title_360 = " (360°)"
+        elif has_rear and rear_spl_matrix is not None:
             # Create interpolator for rear data
             # Rear angles are 0-90, we'll display them as 180 down to 90
             # rear 0° -> 180°, rear 90° -> 90°
@@ -4790,6 +4774,12 @@ class PolarResponseVisualizer:
             spl_interpolated = spl_interpolated_front
             y_lim = (0, 90)
             title_360 = ""
+
+        # Front/rear separators and labels; the full rotation has rear at both ends
+        side_lines = (-90, 90) if full_circle else (90,)
+        side_labels = ([(-135, 'REAR'), (0, 'FRONT'), (135, 'REAR')] if full_circle
+                       else [(45, 'FRONT'), (135, 'REAR')])
+        y_title = 'Angle (degrees; 180-360° rotation below 0)' if full_circle else 'Angle (degrees)'
 
         if normalized:
             # Normalize to 0° (find index of 0° in combined array)
@@ -4867,12 +4857,15 @@ class PolarResponseVisualizer:
 
             # Add horizontal line at 90° for reference when showing rear data
             if has_rear and rear_spl_matrix is not None:
-                ax.axhline(90, color='white', linestyle='-', linewidth=1.5, alpha=0.8)
+                for y_line in side_lines:
+                    ax.axhline(y_line, color='white', linestyle='-', linewidth=1.5, alpha=0.8)
 
             ax.set_xscale('log')
             self._add_static_grid(ax)
             ax.set_xlabel('Frequency (Hz)')
-            ax.set_ylabel('Angle (degrees)')
+            ax.set_ylabel(y_title)
+            if full_circle:
+                ax.set_yticks(np.arange(-180, 181, 30))
             ax.set_title(f'{driver} - Polar Response Contour ({title_suffix}){title_360}', fontweight='bold')
             ax.set_xlim(config.FREQ_MIN, config.FREQ_MAX)
             ax.set_ylim(y_lim)
@@ -4883,12 +4876,12 @@ class PolarResponseVisualizer:
                 # Create secondary Y-axis for labels
                 ax2 = ax.twinx()
                 ax2.set_ylim(y_lim)
-                ax2.set_yticks([45, 135])
-                ax2.set_yticklabels(['FRONT', 'REAR'], fontsize=12, fontweight='bold')
+                ax2.set_yticks([y for y, _ in side_labels])
+                ax2.set_yticklabels([text for _, text in side_labels], fontsize=12, fontweight='bold')
                 ax2.tick_params(axis='y', colors='#1e40af', length=0)
                 # Color the labels differently
-                for i, label in enumerate(ax2.get_yticklabels()):
-                    label.set_color('#1e40af' if i == 0 else '#dc2626')
+                for label in ax2.get_yticklabels():
+                    label.set_color('#1e40af' if label.get_text() == 'FRONT' else '#dc2626')
 
             plt.tight_layout()
             suffix = "normalized" if normalized else "absolute"
@@ -4916,7 +4909,8 @@ class PolarResponseVisualizer:
 
             # Add horizontal line at 90° for reference when showing rear data
             if has_rear and rear_spl_matrix is not None:
-                fig.add_hline(y=90, line_color="white", line_width=2, opacity=0.8)
+                for y_line in side_lines:
+                    fig.add_hline(y=y_line, line_color="white", line_width=2, opacity=0.8)
 
             self._add_interactive_grid(fig)
             self._configure_interactive_axis(fig)
@@ -4926,25 +4920,22 @@ class PolarResponseVisualizer:
             if has_rear and rear_spl_matrix is not None:
                 annotations = [
                     dict(
-                        x=1.06, y=0.25, xref='paper', yref='paper',
-                        text='<b>FRONT</b>', showarrow=False,
-                        font=dict(size=14, color='#1e40af'),
-                        textangle=-90
-                    ),
-                    dict(
-                        x=1.06, y=0.75, xref='paper', yref='paper',
-                        text='<b>REAR</b>', showarrow=False,
-                        font=dict(size=14, color='#dc2626'),
+                        x=1.06, y=(y - y_lim[0]) / (y_lim[1] - y_lim[0]), xref='paper', yref='paper',
+                        text=f'<b>{text}</b>', showarrow=False,
+                        font=dict(size=14, color='#1e40af' if text == 'FRONT' else '#dc2626'),
                         textangle=-90
                     )
+                    for y, text in side_labels
                 ]
 
             fig.update_layout(
                 title=f'{driver} - Polar Response Contour ({title_suffix}){title_360}',
-                yaxis_title='Angle (degrees)',
+                yaxis_title=y_title,
                 yaxis_range=list(y_lim),
                 annotations=annotations
             )
+            if full_circle:
+                fig.update_yaxes(tick0=-180, dtick=30)
 
             suffix = "normalized" if normalized else "absolute"
             title_type = "Normalized" if normalized else "Absolute"
@@ -5417,6 +5408,7 @@ class PolarResponseVisualizer:
         extra_set_specs = [
             ("juan-baffleless", "Juan baffleless drivers", "loadExtraPolarJuanBafflelessBtn"),
             ("juan-lx521-top-raw", "Juan top-baffle raw drivers", "loadExtraPolarJuanTopBaffleBtn"),
+            ("juan-batman", "Juan BATMAN outdoor 360", "loadExtraPolarJuanBatmanBtn"),
         ]
         base_step_data = [
             [
@@ -5486,6 +5478,8 @@ class PolarResponseVisualizer:
                     'angles': angles,
                     'spl_matrix': spl_matrix,
                     'rear_spl_matrix': rear_spl_matrix,
+                    'left_spl_matrix': side_matrices(driver_data, 'left_angles', angles)[0],
+                    'left_rear_spl_matrix': side_matrices(driver_data, 'left_rear_angles', angles)[0],
                     'has_rear': has_rear,
                 }
 
@@ -6127,8 +6121,12 @@ initFrequencyInput();
             driver_data = self.data[driver]
             has_rear = driver_data.get('has_rear', False)
 
+            side_note = ''
+            if driver_data.get('left_angles'):
+                side_note = ('\n    <p class="notes">LF/LR rows are the 180-360° half of the rotation: '
+                             'LF angle = 360° − rotation, LR angle = rotation − 180°.</p>')
             body_parts.append(f'''
-    <h2>{driver}</h2>
+    <h2>{driver}</h2>{side_note}
     <table>
         <thead>
             <tr>
@@ -6141,32 +6139,14 @@ initFrequencyInput();
         </thead>
         <tbody>''')
 
-            # Front angles
-            for angle in sorted(driver_data['angles'].keys()):
-                angle_data = driver_data['angles'][angle]
-                meta = angle_data.get('metadata', {})
-                title = meta.get('title', '')
-                notes = meta.get('notes', '').replace('\n', '<br>')
-                date = meta.get('date', '')
-
-                processing_notes = ''
-                if angle_data.get('timing_corrected', False):
-                    offset_ms = angle_data.get('timing_offset_ms', 0.0)
-                    processing_notes = f'Peak aligned: {offset_ms:.2f}ms'
-
-                body_parts.append(f'''
-            <tr>
-                <td class="angle-label"><span class="front">F{angle}</span></td>
-                <td class="filename">{title}</td>
-                <td class="notes">{notes}</td>
-                <td class="date">{date}</td>
-                <td class="processing-notes">{processing_notes}</td>
-            </tr>''')
-
-            # Rear angles if present
+            # Front, rear, and the 180-360 deg half of a full turntable rotation
+            sides = [('angles', 'front', 'F')]
             if has_rear and 'rear_angles' in driver_data:
-                for angle in sorted(driver_data['rear_angles'].keys()):
-                    angle_data = driver_data['rear_angles'][angle]
+                sides.append(('rear_angles', 'rear', 'R'))
+            sides += [('left_angles', 'front', 'LF'), ('left_rear_angles', 'rear', 'LR')]
+            for side_key, side_class, prefix in sides:
+                for angle in sorted(driver_data.get(side_key, {}).keys()):
+                    angle_data = driver_data[side_key][angle]
                     meta = angle_data.get('metadata', {})
                     title = meta.get('title', '')
                     notes = meta.get('notes', '').replace('\n', '<br>')
@@ -6179,7 +6159,7 @@ initFrequencyInput();
 
                     body_parts.append(f'''
             <tr>
-                <td class="angle-label"><span class="rear">R{angle}</span></td>
+                <td class="angle-label"><span class="{side_class}">{prefix}{angle}</span></td>
                 <td class="filename">{title}</td>
                 <td class="notes">{notes}</td>
                 <td class="date">{date}</td>

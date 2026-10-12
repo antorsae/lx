@@ -75,7 +75,54 @@ _PATTERN_DEFS = {
             f"{driver} {angle} GRADOS {'REAR' if side == 'R' else 'F'}.mdat"
         ),
     },
+    # Juan's 360 deg turntable sweeps name each capture by its absolute
+    # rotation ("BTM 250 DEG FRONT", "BTM 120 DEG REA EQ"). FRONT/FRO/REA only
+    # says which face is toward the mic; text after it ("EQ") marks a separate
+    # sweep and stays part of the driver name. turntable_entries() turns the
+    # rotations into the front/rear angles the other patterns use.
+    "juan_360": {
+        "regex": re.compile(
+            r"^(?P<driver>.+?)\s+(?P<angle>\d+)\s+DEG\s+(?:FRONT|FRO|REA)(?:\s+(?P<variant>.+))?$"
+        ),
+        "driver_from_match": lambda m: " ".join(filter(None, (m.group("driver"), m.group("variant")))),
+        "turntable": True,
+    },
 }
+
+
+def turntable_entries(captures) -> List[Tuple[str, int, str, Path]]:
+    """Map absolute-rotation captures onto the pipeline's measurement sides.
+
+    ``captures`` holds (driver, rotation_deg, path) tuples. The 0-180 deg half
+    becomes the usual front ("F", rotation away from 0 deg) and rear ("R",
+    rotation away from 180 deg) angles. The 180-360 deg half becomes "LF"
+    (rotation away from 360 deg) and "LR" (rotation away from 180 deg), which
+    the polar plots draw on the left instead of mirroring the 0-180 deg half,
+    since a real speaker on a turntable is not mirror-symmetric. So 90 deg is
+    both F90 and R90, 270 deg both LF90 and LR90, and the 0 and 180 deg
+    captures serve both halves. The 180-360 deg sides are only produced for a
+    driver measured strictly inside that half, so a 0-180 deg sweep stays an
+    ordinary front/rear driver.
+
+    Returns (driver, angle, side, path) tuples.
+    """
+    by_driver: Dict[str, List[Tuple[int, Path]]] = {}
+    for driver, rotation, path in captures:
+        by_driver.setdefault(driver, []).append((int(rotation) % 360, path))
+
+    entries = []
+    for driver, items in by_driver.items():
+        full_rotation = any(180 < r < 360 for r, _ in items)
+        for r, path in items:
+            if r <= 90:
+                entries.append((driver, r, "F", path))
+            if 90 <= r <= 180:
+                entries.append((driver, 180 - r, "R", path))
+            if full_rotation and (r == 0 or r >= 270):
+                entries.append((driver, (360 - r) % 360, "LF", path))
+            if full_rotation and 180 <= r <= 270:
+                entries.append((driver, r - 180, "LR", path))
+    return entries
 
 
 def select_direct_ir_peak(
@@ -826,7 +873,8 @@ class PolarDataLoader:
             include_rear: Whether to load rear measurements (if available)
 
         Returns:
-            Dict with driver name, angles, and optionally rear_angles
+            Dict with driver name, angles, and optionally rear_angles, plus
+            left_angles and left_rear_angles for a full turntable rotation
         """
         canonical_name = self._normalize_driver_name(driver_name)
         # Auto-detect angles if not provided
@@ -890,6 +938,23 @@ class PolarDataLoader:
                         loaded_uuids.append(measurement["_uuid"])
                     time.sleep(2.0)
 
+        # Load the 180-360 deg half of a full turntable rotation, which the
+        # polar plots draw instead of mirroring the front/rear half
+        left_sides = [("LF", "left_angles", "180-360 Front")]
+        if include_rear:
+            left_sides.append(("LR", "left_rear_angles", "180-360 Rear"))
+        for side, key, label in left_sides:
+            for angle in self._detect_angles(driver_name, side):
+                file_path = self._find_measurement_file(driver_name, angle, side)
+                print(f"  Loading {canonical_name} at {angle}° ({label})...")
+                measurement = self.load_measurement(
+                    str(file_path), smoothing, gate_left_ms, gate_right_ms
+                )
+                polar_data.setdefault(key, {})[angle] = measurement
+                if "_uuid" in measurement:
+                    loaded_uuids.append(measurement["_uuid"])
+                time.sleep(2.0)
+
         # Store loaded UUIDs in the polar_data dict
         polar_data["_loaded_uuids"] = loaded_uuids
 
@@ -909,17 +974,19 @@ class PolarDataLoader:
         if self._file_index is not None:
             return self._file_index
 
-        index = {}
+        entries = []
         for file_path in self._iter_mdat_files():
             parsed = self._parse_filename(file_path.name)
-            if not parsed:
-                continue
-
-            key = (
-                self._normalize_driver_name(parsed["driver"]),
-                parsed["angle"],
-                parsed["side"],
+            if parsed:
+                entries.append((parsed["driver"], parsed["angle"], parsed["side"], file_path))
+        if self._get_pattern_def().get("turntable"):
+            entries = turntable_entries(
+                (driver, rotation, file_path) for driver, rotation, _side, file_path in entries
             )
+
+        index = {}
+        for driver, angle, side, file_path in entries:
+            key = (self._normalize_driver_name(driver), angle, side)
             if key in index:
                 rel_existing = index[key].relative_to(self.data_dir)
                 rel_new = file_path.relative_to(self.data_dir)
@@ -945,7 +1012,8 @@ class PolarDataLoader:
     def _parse_filename(self, filename: str) -> Optional[Dict]:
         """Parse measurement filename based on pattern type.
 
-        Returns dict with: driver, angle, side ('F' or 'R'), or None if no match
+        Returns dict with: driver, angle, side ('F' or 'R'), or None if no match.
+        For turntable patterns the angle is the absolute rotation and side is None.
         """
         stem = Path(filename).stem
         pattern_def = self._get_pattern_def()
@@ -956,10 +1024,11 @@ class PolarDataLoader:
         if not match:
             return None
 
+        driver_from_match = pattern_def.get("driver_from_match", lambda m: m.group("driver"))
         return {
-            "driver": match.group("driver"),
+            "driver": driver_from_match(match),
             "angle": int(match.group("angle")),
-            "side": pattern_def["side_from_match"](match),
+            "side": None if pattern_def.get("turntable") else pattern_def["side_from_match"](match),
         }
 
     def _get_pattern_def(self) -> Optional[Dict]:
@@ -1004,6 +1073,10 @@ class PolarDataLoader:
         if not pattern_def:
             return ""
         file_driver_name = self._resolve_driver_name_for_files(driver_name)
+        if "filename" not in pattern_def:
+            # Turntable captures are named by absolute rotation, so a half-sweep
+            # angle has no single filename; name the missing key instead.
+            return f"{file_driver_name} {side}{angle}"
         return pattern_def["filename"](file_driver_name, angle, side)
 
     # ==================== HDF5 Helper Methods ====================
@@ -1180,6 +1253,11 @@ class PolarDataLoader:
                 if driver_data.get('has_rear') and 'rear_angles' in driver_data:
                     self._save_angles_group(driver_group, driver_data['rear_angles'], 'rear_angles')
 
+                # Save the 180-360 deg half of a full turntable rotation
+                for group_name in ('left_angles', 'left_rear_angles'):
+                    if driver_data.get(group_name):
+                        self._save_angles_group(driver_group, driver_data[group_name], group_name)
+
         print(f"Saved polar data to {output_path}")
 
     def load_from_hdf5(self, input_path: str) -> Dict:
@@ -1220,6 +1298,11 @@ class PolarDataLoader:
                     rear_angles = self._load_angles_group(driver_group, frequencies, 'rear_angles')
                     if rear_angles:
                         driver_data['rear_angles'] = rear_angles
+
+                for group_name in ('left_angles', 'left_rear_angles'):
+                    side_angles = self._load_angles_group(driver_group, frequencies, group_name)
+                    if side_angles:
+                        driver_data[group_name] = side_angles
 
                 data[driver_name] = driver_data
         return data

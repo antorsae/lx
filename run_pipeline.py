@@ -39,7 +39,7 @@ def apply_measurement_metadata_overrides(data, overrides):
             for key, value in driver_override.items()
             if key != "notes"
         }
-        for side_key in ("angles", "rear_angles"):
+        for side_key in ("angles", "rear_angles", "left_angles", "left_rear_angles"):
             for angle_data in driver_data.get(side_key, {}).values():
                 metadata = angle_data.setdefault("metadata", {})
                 if note:

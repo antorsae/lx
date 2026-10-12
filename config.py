@@ -26,6 +26,26 @@ KASPAR_DRIVER_NOTES = {
     "System P3 (Kaspar DSP)": "All drivers, gain profile 3: Woofer -4.8, LM -6.2, UM -2.8, HI 0 dB.",
 }
 
+# Juan's BATMAN, measured outdoors on a turntable on 12-Oct-2026. Every capture
+# shares one setup; the per-driver notes say how rotation maps to plot angles.
+BATMAN_COMMON_NOTE = (
+    "Juan's BATMAN with MU10 and nested tweeters, front tweeter in inverted polarity. "
+    "Outdoors, 12-Oct-2026. Mic 50 cm in front at 108 cm height, no timing reference."
+)
+
+BATMAN_DRIVER_NOTES = {
+    "BATMAN": (
+        "Full turntable rotation, no EQ. Polar plots place each capture at its "
+        "rotation angle; contours and angle plots show 180-360 deg as negative "
+        "angles (rotation - 360)."
+    ),
+    "BATMAN Harman EQ": (
+        "Turntable rotation 0-180 deg only, with Equalizer APO linearization to the "
+        "Harman loudness curve; plots mirror this half. "
+        "Level noted as PB -17 dB (raw sweep: PB -20 dB)."
+    ),
+}
+
 # Measurement Set Configurations
 MEASUREMENT_SETS = {
     "andres": {
@@ -141,6 +161,38 @@ MEASUREMENT_SETS = {
             },
         },
     },
+    "juan-batman": {
+        # Juan's BATMAN (MU10 + nested tweeters), outdoors: one turntable sweep
+        # 0-350 deg in 10 deg steps, files named by absolute rotation, plus a
+        # 0-180 deg sweep with Harman-curve EQ in the nested subfolder. The
+        # 180-360 deg half loads as the driver's left side (see
+        # turntable_entries), so the polar plots show it instead of a mirror of
+        # 0-180 deg. "BTM 360_0 0DEG FRON" is the closing repeat of 0 deg and
+        # is not loaded.
+        "path": Path("measurements/juan/BATMAN POLARES 360 GRADOS"),
+        "pattern_type": "juan_360",
+        "angles": list(range(0, 91, 10)),
+        "has_rear": True,
+        "hdf5_file": "polar_data_juan_batman.h5",
+        "output_dir": OUTPUT_DIR / "juan-batman",
+        # No timing reference. At the side nulls a reflection 9-13 ms after the
+        # direct sound can out-peak it (BTM 260 DEG FRONT, BTM 100 DEG REA EQ),
+        # which puts REW's t=0 on the reflection; REW's stored IR start still
+        # marks the direct arrival.
+        "direct_ir_peak_policy": "ir-start",
+        "driver_name_aliases": {
+            "BTM": "BATMAN",
+            "BTM EQ": "BATMAN Harman EQ",
+        },
+        "measurement_metadata_overrides": {
+            name: {
+                "measurement_distance_m": 0.50,
+                "measurement_height_m": 1.08,
+                "notes": f"{BATMAN_COMMON_NOTE} {detail}",
+            }
+            for name, detail in BATMAN_DRIVER_NOTES.items()
+        },
+    },
     "kaspar": {
         # Kaspar Reili's LX521, measured outdoors at 1 m on-axis, 18 Oct 2022.
         # Split from a single 6-measurement .mdat into F0-{driver}.mdat files.
@@ -244,6 +296,8 @@ DRIVER_COLORS = {
     'System P1 (Kaspar DSP)': '#111827',       # Black - Kaspar system profile 1
     'System P2 (Kaspar DSP)': '#6b7280',       # Gray - Kaspar system profile 2
     'System P3 (Kaspar DSP)': '#9467bd',       # Purple - Kaspar system profile 3
+    'BATMAN': '#1e3a8a',                       # Navy - Juan BATMAN, full rotation
+    'BATMAN Harman EQ': '#ca8a04',             # Gold - Juan BATMAN with Harman EQ
 }
 
 DRIVER_NAME_ALIASES = {

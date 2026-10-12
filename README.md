@@ -94,6 +94,7 @@ MEASUREMENT_SETS = {
 | `scanspeak` | `SS10F8414G10 45 F.mdat` | Same convention as `juan` |
 | `juan_suffix` | `SS10F8424G00 45 F sn 074.mdat` | Same as `juan`, allowing text after `F`/`R` |
 | `lx521_system` | `LX521 HIGH MID INV ORIGINAL 45 GRADOS F.mdat` | Full system measurements with GRADOS notation |
+| `juan_360` | `BTM 250 DEG FRONT.mdat`, `BTM 120 DEG REA EQ.mdat` | Absolute turntable rotation; 0-180 loads as front/rear and 180-360 as the other side of the same driver, and text after `FRONT`/`FRO`/`REA` names a separate sweep |
 
 Measurement sources may be nested below each configured source directory. This supports source layouts such as `POLARES L10NEO/FRONTALES` and `POLARES L10NEO/TRASERAS`.
 
@@ -104,6 +105,27 @@ The Juan driver pages include **ND25FW4 (nude 18mm)** from
 REW IR-start reference, and no smoothing. The source files have no timing reference
 and do not specify microphone distance or height. The Dayton curves are also
 available through the Juan baffleless overlay in the other measurement explorers.
+
+The **juan-batman** set publishes `BATMAN POLARES 360 GRADOS.zip`: Juan's BATMAN
+(MU10 plus nested tweeters, front tweeter in inverted polarity) measured outdoors
+on 12 October 2026 at 50 cm, with the mic 108 cm high and no timing reference. One
+turntable sweep covers 0-350° in 10° steps, and a second sweep repeats 0-180° with
+Equalizer APO linearization to the Harman curve. Files are named by absolute
+rotation; the `juan_360` pattern loads 0-180° as the usual front and rear angles
+and 180-360° as the driver's other side (`left_angles`, `left_rear_angles` in the
+HDF5). The polar plots then draw the measured 180-360° half instead of mirroring
+0-180°, the contour and angle pages show it as negative angles (rotation − 360°),
+and the measurement summary lists it as LF/LR. This matters because the two halves agree within about 2.5 dB
+below 2 kHz from 10° to 70°, but differ by 5-17 dB above 2 kHz, near the side nulls
+and in the rear quadrant. DI and beamwidth use the power average of both sides; the
+frequency explorer shows the 0-180° side. The Harman EQ sweep covers 0-180° only, so
+its plots mirror it like the other sets. `BTM 360_0 0DEG FRON` repeats 0° at the
+end of the sweep (0.07 dB RMS from the first capture) and is not loaded.
+The set uses the usual 0.5 ms / 3.0 ms gate and REW's IR start: at the side nulls
+(`BTM 260 DEG FRONT`, `BTM 100 DEG REA EQ`) a reflection 9-13 ms late is stronger
+than the direct sound, so REW's t=0 sits on the reflection, but its IR start still
+marks the direct arrival. Juan's `PANTALLAZOS` screenshots are ungated, so their
+70-110° curves are dominated by those reflections.
 
 ## Usage
 
@@ -163,6 +185,7 @@ output/
 │   ├── polar_data_andres_l22mg_first_lobe.h5 # Andres first-lobe validation target
 │   ├── polar_data_andres.h5                  # Legacy strongest-lobe diagnostic
 │   ├── polar_data_juan_baffleless.h5         # Processed data (juan-baffleless set)
+│   ├── polar_data_juan_batman.h5             # Processed data (juan-batman set)
 │   ├── polar_data_kaspar.h5                  # Processed data (kaspar set, on-axis only)
 │   └── polar_data_lx521_system.h5            # Processed data (lx521-system set)
 ├── andres/                            # Visualizations for andres set
@@ -174,6 +197,9 @@ output/
 │   ├── static_plots/
 │   └── interactive/
 ├── lx521-system/                      # Visualizations for lx521-system set
+│   ├── static_plots/
+│   └── interactive/
+├── juan-batman/                       # Visualizations for juan-batman set
 │   ├── static_plots/
 │   └── interactive/
 └── kaspar/                            # On-axis-only set: no static/polar plots

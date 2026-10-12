@@ -20,6 +20,7 @@ SET_TITLES = {
     "andres": "Andres Measurements",
     "juan-baffleless": "Juan Driver Measurements",
     "juan-lx521-top-raw": "Juan LX521 Top-Baffle Raw Measurements",
+    "juan-batman": "Juan BATMAN Outdoors (360 deg turntable)",
     "kaspar": "Kaspar LX521 Outdoors (DSP)",
     SYSTEM_SET: "LX521.4 Complete System",
 }
@@ -34,6 +35,13 @@ SET_DESCRIPTIONS = {
         "50 cm front/rear polar measurements of L22MG and L10NEO mounted in the "
         "LX521 top baffle with no crossover/EQ, plus a raw L22MG+L10NEO+tweeter stack "
         "captured at L22MG microphone height."
+    ),
+    "juan-batman": (
+        "Juan's BATMAN (MU10 + nested tweeters, front tweeter in inverted polarity) measured "
+        "outdoors at 50 cm, mic 108 cm high, on a turntable from 0 to 350 deg in 10 deg steps "
+        "(12-Oct-2026). Polar plots show the measured 360 deg instead of a mirrored half, "
+        "since the two sides differ. A second trace repeats 0-180 deg with Equalizer APO "
+        "linearization to the Harman curve."
     ),
     "kaspar": (
         "Kaspar Reili's LX521 measured outdoors at 1 m on-axis (18-Oct-2022), ungated. "
@@ -55,6 +63,13 @@ DRIVER_ROLES = {
     "L22MG (LX521 top raw)": "Lower Mid - mounted raw",
     "L10NEO (LX521 top raw)": "Upper Mid - mounted raw",
     "L22MG+L10NEO+Tweeters (LX521 top raw)": "Raw top-baffle stack",
+    "BATMAN": "MU10 + tweeters, full rotation",
+    "BATMAN Harman EQ": "Harman-curve EQ, rotation 0-180",
+}
+
+# Sets whose traces are not one driver each.
+SET_SUBTITLES = {
+    "juan-batman": "2 Sweeps - Full 360 deg coverage",
 }
 
 
@@ -111,6 +126,8 @@ def render_interactive_card(
         # take the channel count from the measurement metadata instead.
         n_channels = len(set_cfg.get("measurement_metadata_overrides") or {})
         subtitle = f"{n_channels} Channels - On-axis only (0 deg)"
+    elif set_name in SET_SUBTITLES:
+        subtitle = SET_SUBTITLES[set_name]
     else:
         subtitle = f"{len(drivers)} Drivers - " + (
             "Full 360 deg coverage" if has_rear else "Front hemisphere (0-90 deg)"

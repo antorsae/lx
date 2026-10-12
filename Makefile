@@ -28,7 +28,7 @@ else
 endif
 
 # Measurement sets
-SETS := andres juan-baffleless juan-lx521-top-raw lx521-system kaspar
+SETS := andres juan-baffleless juan-lx521-top-raw juan-batman lx521-system kaspar
 
 # Directories
 OUTPUT_DIR := output
@@ -160,7 +160,7 @@ push:
 
 clean:
 	@echo "Cleaning output directory..."
-	rm -rf $(OUTPUT_DIR)/andres $(OUTPUT_DIR)/juan-baffleless $(OUTPUT_DIR)/juan-lx521-top-raw $(OUTPUT_DIR)/lx521-system
+	rm -rf $(OUTPUT_DIR)/andres $(OUTPUT_DIR)/juan-baffleless $(OUTPUT_DIR)/juan-lx521-top-raw $(OUTPUT_DIR)/juan-batman $(OUTPUT_DIR)/lx521-system
 	@echo "✓ Output directories cleaned (HDF5 data preserved)"
 
 clean-all: clean
@@ -183,14 +183,17 @@ help:
 	@echo "  data-andres      Load andres measurements"
 	@echo "  data-juan-baffleless  Load juan-baffleless measurements"
 	@echo "  data-juan-lx521-top-raw  Load juan-lx521-top-raw measurements"
+	@echo "  data-juan-batman      Load juan-batman measurements"
 	@echo "  data-lx521-system     Load lx521-system measurements"
 	@echo "  viz-andres       Generate andres visualizations"
 	@echo "  viz-juan-baffleless   Generate juan-baffleless visualizations"
 	@echo "  viz-juan-lx521-top-raw   Generate juan-lx521-top-raw visualizations"
+	@echo "  viz-juan-batman       Generate juan-batman visualizations"
 	@echo "  viz-lx521-system      Generate lx521-system visualizations"
 	@echo "  sync-andres      Sync andres to docs/"
 	@echo "  sync-juan-baffleless  Sync juan-baffleless to docs/"
 	@echo "  sync-juan-lx521-top-raw  Sync juan-lx521-top-raw to docs/"
+	@echo "  sync-juan-batman      Sync juan-batman to docs/"
 	@echo "  sync-lx521-system     Sync lx521-system to docs/"
 	@echo ""
 	@echo "Git Operations:"
