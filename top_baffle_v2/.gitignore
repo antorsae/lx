@@ -156,6 +156,15 @@ build/h2c/jobs/*/*
 !build/h2c/jobs/*/magnet_discovery.json
 !build/h2c/jobs/*/gcode_skill_validation.json
 !build/h2c/jobs/*/gcode_validation_profile.json
+# Combined per-product files: the shelf manifest the catalog validator and the
+# shelf READMEs read, and each file's audit evidence. Per-plate workspaces,
+# plain G-code and discovery slices beside them are recoverable local outputs.
+!to_print/plates.json
+build/h2c/plates/*/*
+!build/h2c/plates/*/audit.json
+!build/h2c/plates/*/process.json
+!build/h2c/plates/*/gcode_skill_validation.json
+!build/h2c/plates/*/gcode_validation_profile.json
 build/h2c/trial/
 !build/h2c/experiments/**/*.json
 !build/h2c/experiments/*.json
@@ -172,6 +181,8 @@ build/h2c/views/*_20*T*.png
 # Retired H2C names remain local; source checkpoints are mapped in
 # docs/GENERATED_HISTORY.md.
 build/h2c/experiments/retired_dayton_revision_names/
+# Local copy of the shelf as it stood before the product-first layout.
+build/h2c/previous_shelf/
 
 # Archived meshes, duplicate slicer projects and raw toolpaths are local
 # workspaces. Keep reports/images and the explicit live build inputs below.

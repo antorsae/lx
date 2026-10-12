@@ -1,0 +1,1562 @@
+{
+  "schema_version": 1,
+  "files": {
+    "obiwan_floor_stand": {
+      "title": "Obiwan, floor stand",
+      "product": "obiwan",
+      "project": "to_print/obiwan/obiwan_floor_stand.petg-gf.3mf",
+      "project_sha256": "b0655571af21c4afc48537ca18e8feb19a125ac592f9e9734ad3cfc1937839fd",
+      "sliced_project": "to_print/obiwan/obiwan_floor_stand.petg-gf.gcode.3mf",
+      "sliced_project_sha256": "78ab2336ad3f516752cb89bc2a7fa6b77ad2a16fe06aec58ebb1f938d216e06f",
+      "audit": "build/h2c/plates/obiwan_floor_stand/audit.json",
+      "status": "sliced_audited",
+      "inputs": {
+        "parts": {
+          "h2c_obiwan_addon_nl8_service_lid": "1cdcd2b524050bf474c737edf842a91b79ed034d7c8bb7fb5851c1220c426b2f",
+          "h2c_obiwan_core_lm_carrier_floor_stand": "ff573feb927563434e14ff824f5f4b10228eef32f41136eac794fd1a8e7f7fcb",
+          "h2c_obiwan_core_2_of_2_um_carrier": "8455eb20c219779b9149ac3cc9f059250ffd9dab4171562c70042ac0cf8c5a73",
+          "h2c_obiwan_addon_tweeter_crescent": "ca153642ef0e299add8db7931a60bd488888ab7bff425d380824c5f500ef5978",
+          "h2c_obiwan_bmr_crescent_TEBM35C10-4": "af0154e82d72c1f14a9d6947aefe2a880a7fe2a7decb97b9adb63ffc0fef5814",
+          "h2c_obiwan_bmr_crescent_opposed_TEBM35C10-4": "dbd78f4b463dae4fe18c90ec2f32ed803f15bda212076d1014979e6adba5dad2",
+          "h2c_obiwan_wing_flat_left": "55739acbca0c541072897dc3c15fd536e84bf513fb1f703c22ba922450b2236d",
+          "h2c_obiwan_wing_flat_right": "9f6b3f434cad23edf1742dcefa21e5a1847e4aa59f3fea5aaef575e1123231de",
+          "h2c_obiwan_wing_graded_left": "3588e6975679d37c09b4dd0bd74173972b6dd24e4d301fa54b7f84b971886144",
+          "h2c_obiwan_wing_graded_right": "ee721aea4aff168ee32be53d1f11e833b95c0ff3f01ffac96bcc758209899112",
+          "h2c_obiwan_lm_keyed_bottom_floor_stand": "aee9dd83053bb2289b28c4fa999a393b4de9c0c4ed7ef301104d7a5097338b25",
+          "h2c_obiwan_lm_keyed_top": "43435383e1c7e4875523e4b234b946432c9cc4e3fd0f4b6d3b8a9ceedaee983f",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_right_top": "ce56f0f1616916eb22fe465868b2a1c5742f34409d5777f664bd9dba80dd44de",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_right_cap_front_tweeter": "b5596e3026fbfc62a2b35500812b0682e85337bcbb4474283739de651801b003",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_right_cap_rear_tweeter": "7854d5cfdb001449551fd797833b61dec9d0d1b5278b770eb16ff37e59f5eac1",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_left_top": "dd8f5241b3936c87b51bbf35163f53594761585a7640ec778124297667ee66a7",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_left_cap_front_tweeter": "a7e448487e6c65e7ad2edfcaac658d061842ff66c8dee74f24def5dd69b0f7bc",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_left_cap_rear_tweeter": "4794661fa5807d46460f1a744cb968d03839e9242e0a39772236e4a62b86028d",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_flat_left": "c604221b6d668f124c88db1c35bf00dccca7907878f783c525e95a9ef0ce0ec2",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_flat_right": "63e54f815c88806bcc32fdd7c2d25640170a6c0f30685ef5c6e7e30d3387b956",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_graded_left": "b32aceedd55b982b909abc3002614c1f75da5066490c8928103357dd91348317",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_graded_right": "1c97651cf0b27b33d0b0e8b323d979a4fcfc810085962c6a991eaddefe077d1a",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_flat_left": "63e7b50f848ba7edd403cc75959704b1b1f36b44187ffa46f198abac6c7572f0",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_flat_right": "cb2b861eb036c3510a98651d8755bcbaa46316724eaa393e994e41cea34c5a53",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_graded_left": "f9f3961ba7db60efdeb4bccac7919ae979a3f7e2666e0709c0410666b35a589d",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_graded_right": "419db1a73ed2bbf0a78b92d1a02ca97c6a038161378127858dd8e0312b57f3d8",
+          "h2c_grs_pt2522_4_obiwan_t_above_upright": "95f8589cd9f9b61eefdfd10df39e55e468a18251da1b4a6ef3d1b89e3b5de11a",
+          "h2c_grs_pt2522_4_obiwan_t_above_rotated": "b66ff40689f5a2f5f93d529a9161ce1c4845034072592a8bcfff20ef392fb7dc",
+          "h2c_mundorf_amt17d2_1_obiwan_t_above_upright": "52773e1e302b1e5e60499bd1f901980c21465e8d2c59c4825bf6b15d0ab6cbce",
+          "h2c_mundorf_amt17d2_1_obiwan_t_above_rotated": "f129ccbebe7efc6a15f3d3c32dca30ade1f0f366d2bd85d5524efac3532a339b",
+          "h2c_grs_pt2522_4_obiwan_t_below_upright_lm_top": "faa41d38fb25b63c08ff214a35f00620ceebeef86ebc3cb11ef6be4ef5f1e97c",
+          "h2c_grs_pt2522_4_obiwan_t_below_upright_um_t": "56928de3831b01250d7ec7d25058d87bba214e8097660aa39b03ea10b6e638df",
+          "h2c_grs_pt2522_4_obiwan_t_below_rotated": "67891b3fa165ce96660358765936dfbbfaa386bcd20366e056331e996b0bb690",
+          "h2c_mundorf_amt17d2_1_obiwan_t_below_upright": "9f76401259a35b6b1da31eeb41b30acb044bacaa0c007df64b0fdc3fc0240163",
+          "h2c_mundorf_amt17d2_1_obiwan_t_below_rotated": "baf37fc126e33f816b1f0bcf88d7b3415b16ca0b51bdbec1d3426230f15e3386"
+        },
+        "plan": [
+          [
+            "NL8 service lid (every option)",
+            [
+              "h2c_obiwan_addon_nl8_service_lid"
+            ]
+          ],
+          [
+            "A-C, E \u00b7 LM carrier (shared by A, B, C and the dipole T above)",
+            [
+              "h2c_obiwan_core_lm_carrier_floor_stand"
+            ]
+          ],
+          [
+            "A-C \u00b7 UM carrier",
+            [
+              "h2c_obiwan_core_2_of_2_um_carrier"
+            ]
+          ],
+          [
+            "A \u00b7 ND25FW-4 \u00b7 crescent",
+            [
+              "h2c_obiwan_addon_tweeter_crescent"
+            ]
+          ],
+          [
+            "B \u00b7 BMR coaxial \u00b7 crescent",
+            [
+              "h2c_obiwan_bmr_crescent_TEBM35C10-4"
+            ]
+          ],
+          [
+            "C \u00b7 BMR opposed \u00b7 crescent",
+            [
+              "h2c_obiwan_bmr_crescent_opposed_TEBM35C10-4"
+            ]
+          ],
+          [
+            "Wings A-C \u00b7 flat \u00b7 left",
+            [
+              "h2c_obiwan_wing_flat_left"
+            ]
+          ],
+          [
+            "Wings A-C \u00b7 flat \u00b7 right",
+            [
+              "h2c_obiwan_wing_flat_right"
+            ]
+          ],
+          [
+            "Wings A-C \u00b7 graded \u00b7 left",
+            [
+              "h2c_obiwan_wing_graded_left"
+            ]
+          ],
+          [
+            "Wings A-C \u00b7 graded \u00b7 right",
+            [
+              "h2c_obiwan_wing_graded_right"
+            ]
+          ],
+          [
+            "D, F \u00b7 keyed LM bottom (also A-C, E with the keyed LM top instead of the LM carrier)",
+            [
+              "h2c_obiwan_lm_keyed_bottom_floor_stand"
+            ]
+          ],
+          [
+            "A-C, E \u00b7 keyed LM top (with the keyed LM bottom, instead of the LM carrier)",
+            [
+              "h2c_obiwan_lm_keyed_top"
+            ]
+          ],
+          [
+            "D \u00b7 ND25FN-4 tweeters right \u00b7 vase top + caps",
+            [
+              "h2c_dayton_nd25fn4_obiwan_tweeters_right_top",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_right_cap_front_tweeter",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_right_cap_rear_tweeter"
+            ]
+          ],
+          [
+            "D \u00b7 ND25FN-4 tweeters left \u00b7 vase top + caps",
+            [
+              "h2c_dayton_nd25fn4_obiwan_tweeters_left_top",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_left_cap_front_tweeter",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_left_cap_rear_tweeter"
+            ]
+          ],
+          [
+            "D \u00b7 ND25FN-4 tweeters right \u00b7 flat wings left + right",
+            [
+              "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_flat_left",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_flat_right"
+            ]
+          ],
+          [
+            "D \u00b7 ND25FN-4 tweeters right \u00b7 graded wings left + right",
+            [
+              "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_graded_left",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_graded_right"
+            ]
+          ],
+          [
+            "D \u00b7 ND25FN-4 tweeters left \u00b7 flat wings left + right",
+            [
+              "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_flat_left",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_flat_right"
+            ]
+          ],
+          [
+            "D \u00b7 ND25FN-4 tweeters left \u00b7 graded wings left + right",
+            [
+              "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_graded_left",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_graded_right"
+            ]
+          ],
+          [
+            "E \u00b7 PT2522-4 \u00b7 T above \u00b7 upright",
+            [
+              "h2c_grs_pt2522_4_obiwan_t_above_upright"
+            ]
+          ],
+          [
+            "E \u00b7 PT2522-4 \u00b7 T above \u00b7 rotated",
+            [
+              "h2c_grs_pt2522_4_obiwan_t_above_rotated"
+            ]
+          ],
+          [
+            "E \u00b7 AMT17D2.1 \u00b7 T above \u00b7 upright",
+            [
+              "h2c_mundorf_amt17d2_1_obiwan_t_above_upright"
+            ]
+          ],
+          [
+            "E \u00b7 AMT17D2.1 \u00b7 T above \u00b7 rotated",
+            [
+              "h2c_mundorf_amt17d2_1_obiwan_t_above_rotated"
+            ]
+          ],
+          [
+            "F \u00b7 PT2522-4 \u00b7 T below \u00b7 upright \u00b7 keyed LM top",
+            [
+              "h2c_grs_pt2522_4_obiwan_t_below_upright_lm_top"
+            ]
+          ],
+          [
+            "F \u00b7 PT2522-4 \u00b7 T below \u00b7 upright \u00b7 T + UM",
+            [
+              "h2c_grs_pt2522_4_obiwan_t_below_upright_um_t"
+            ]
+          ],
+          [
+            "F \u00b7 PT2522-4 \u00b7 T below \u00b7 rotated",
+            [
+              "h2c_grs_pt2522_4_obiwan_t_below_rotated"
+            ]
+          ],
+          [
+            "F \u00b7 AMT17D2.1 \u00b7 T below \u00b7 upright",
+            [
+              "h2c_mundorf_amt17d2_1_obiwan_t_below_upright"
+            ]
+          ],
+          [
+            "F \u00b7 AMT17D2.1 \u00b7 T below \u00b7 rotated",
+            [
+              "h2c_mundorf_amt17d2_1_obiwan_t_below_rotated"
+            ]
+          ]
+        ],
+        "code": {
+          "scripts/build_h2c_plates.py": "ab8eb53091682f8fa39665b6ec10ac8b7a75bf7111a7069aa469c7736e36e8cf",
+          "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+          "src/lx521_baffle/h2c/shelf.py": "4d733b6ff063f299de21662b3d88501d548de7ee3ab2c9de52105f519ab5fece",
+          "scripts/build_h2c_release.py": "7ba8d1e3efc54688fbeec703a7f8eadbe36d83edb3269f295dd76b60bc8fff82",
+          "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e"
+        }
+      },
+      "plates": [
+        {
+          "plate": 1,
+          "name": "NL8 service lid (every option)",
+          "parts": [
+            "obiwan_nl8_service_lid"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 2,
+          "name": "A-C, E \u00b7 LM carrier (shared by A, B, C and the dipole T above)",
+          "parts": [
+            "obiwan_lm_carrier_floor_stand"
+          ],
+          "magnet_pauses_mm": [
+            5.96,
+            6.12
+          ]
+        },
+        {
+          "plate": 3,
+          "name": "A-C \u00b7 UM carrier",
+          "parts": [
+            "obiwan_um_carrier"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 4,
+          "name": "A \u00b7 ND25FW-4 \u00b7 crescent",
+          "parts": [
+            "obiwan_crescent_nd25fw4"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 5,
+          "name": "B \u00b7 BMR coaxial \u00b7 crescent",
+          "parts": [
+            "obiwan_crescent_bmr"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 6,
+          "name": "C \u00b7 BMR opposed \u00b7 crescent",
+          "parts": [
+            "obiwan_crescent_bmr_opposed"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 7,
+          "name": "Wings A-C \u00b7 flat \u00b7 left",
+          "parts": [
+            "obiwan_wing_flat_left"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 8,
+          "name": "Wings A-C \u00b7 flat \u00b7 right",
+          "parts": [
+            "obiwan_wing_flat_right"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 9,
+          "name": "Wings A-C \u00b7 graded \u00b7 left",
+          "parts": [
+            "obiwan_wing_graded_left"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 10,
+          "name": "Wings A-C \u00b7 graded \u00b7 right",
+          "parts": [
+            "obiwan_wing_graded_right"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 11,
+          "name": "D, F \u00b7 keyed LM bottom (also A-C, E with the keyed LM top instead of the LM carrier)",
+          "parts": [
+            "obiwan_lm_keyed_bottom_floor_stand"
+          ],
+          "magnet_pauses_mm": [
+            5.96
+          ]
+        },
+        {
+          "plate": 12,
+          "name": "A-C, E \u00b7 keyed LM top (with the keyed LM bottom, instead of the LM carrier)",
+          "parts": [
+            "obiwan_lm_keyed_top"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 13,
+          "name": "D \u00b7 ND25FN-4 tweeters right \u00b7 vase top + caps",
+          "parts": [
+            "obiwan_nd25fn4_tweeters_right_top",
+            "obiwan_nd25fn4_tweeters_right_cap_front",
+            "obiwan_nd25fn4_tweeters_right_cap_rear"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 14,
+          "name": "D \u00b7 ND25FN-4 tweeters left \u00b7 vase top + caps",
+          "parts": [
+            "obiwan_nd25fn4_tweeters_left_top",
+            "obiwan_nd25fn4_tweeters_left_cap_front",
+            "obiwan_nd25fn4_tweeters_left_cap_rear"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 15,
+          "name": "D \u00b7 ND25FN-4 tweeters right \u00b7 flat wings left + right",
+          "parts": [
+            "obiwan_nd25fn4_tweeters_right_wing_flat_left",
+            "obiwan_nd25fn4_tweeters_right_wing_flat_right"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 16,
+          "name": "D \u00b7 ND25FN-4 tweeters right \u00b7 graded wings left + right",
+          "parts": [
+            "obiwan_nd25fn4_tweeters_right_wing_graded_left",
+            "obiwan_nd25fn4_tweeters_right_wing_graded_right"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 17,
+          "name": "D \u00b7 ND25FN-4 tweeters left \u00b7 flat wings left + right",
+          "parts": [
+            "obiwan_nd25fn4_tweeters_left_wing_flat_left",
+            "obiwan_nd25fn4_tweeters_left_wing_flat_right"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 18,
+          "name": "D \u00b7 ND25FN-4 tweeters left \u00b7 graded wings left + right",
+          "parts": [
+            "obiwan_nd25fn4_tweeters_left_wing_graded_left",
+            "obiwan_nd25fn4_tweeters_left_wing_graded_right"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 19,
+          "name": "E \u00b7 PT2522-4 \u00b7 T above \u00b7 upright",
+          "parts": [
+            "obiwan_pt2522_t_above_upright"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 20,
+          "name": "E \u00b7 PT2522-4 \u00b7 T above \u00b7 rotated",
+          "parts": [
+            "obiwan_pt2522_t_above_rotated"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 21,
+          "name": "E \u00b7 AMT17D2.1 \u00b7 T above \u00b7 upright",
+          "parts": [
+            "obiwan_amt17d2_t_above_upright"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 22,
+          "name": "E \u00b7 AMT17D2.1 \u00b7 T above \u00b7 rotated",
+          "parts": [
+            "obiwan_amt17d2_t_above_rotated"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 23,
+          "name": "F \u00b7 PT2522-4 \u00b7 T below \u00b7 upright \u00b7 keyed LM top",
+          "parts": [
+            "obiwan_pt2522_t_below_upright_lm_top"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 24,
+          "name": "F \u00b7 PT2522-4 \u00b7 T below \u00b7 upright \u00b7 T + UM",
+          "parts": [
+            "obiwan_pt2522_t_below_upright_um_t"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 25,
+          "name": "F \u00b7 PT2522-4 \u00b7 T below \u00b7 rotated",
+          "parts": [
+            "obiwan_pt2522_t_below_rotated"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 26,
+          "name": "F \u00b7 AMT17D2.1 \u00b7 T below \u00b7 upright",
+          "parts": [
+            "obiwan_amt17d2_t_below_upright"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 27,
+          "name": "F \u00b7 AMT17D2.1 \u00b7 T below \u00b7 rotated",
+          "parts": [
+            "obiwan_amt17d2_t_below_rotated"
+          ],
+          "magnet_pauses_mm": []
+        }
+      ]
+    },
+    "obiwan_no_floor_stand": {
+      "title": "Obiwan, no floor stand",
+      "product": "obiwan",
+      "project": "to_print/obiwan/obiwan_no_floor_stand.petg-gf.3mf",
+      "project_sha256": "41f0a04158293c2c6d1741f10aacdb7aa2ce0ef761c443581107d8a803837948",
+      "sliced_project": "to_print/obiwan/obiwan_no_floor_stand.petg-gf.gcode.3mf",
+      "sliced_project_sha256": "f6f23641a867dd32cc27f7cb515bd27555462cabab37938a104290463e0e949c",
+      "audit": "build/h2c/plates/obiwan_no_floor_stand/audit.json",
+      "status": "sliced_audited",
+      "inputs": {
+        "parts": {
+          "h2c_obiwan_core_lm_carrier_no_floor_stand": "a01c334124cf94a4f83ade2beacb38f6bb5882f78bc8e81ed2952f3ea648392a",
+          "h2c_obiwan_core_2_of_2_um_carrier": "8455eb20c219779b9149ac3cc9f059250ffd9dab4171562c70042ac0cf8c5a73",
+          "h2c_obiwan_addon_tweeter_crescent": "ca153642ef0e299add8db7931a60bd488888ab7bff425d380824c5f500ef5978",
+          "h2c_obiwan_bmr_crescent_TEBM35C10-4": "af0154e82d72c1f14a9d6947aefe2a880a7fe2a7decb97b9adb63ffc0fef5814",
+          "h2c_obiwan_bmr_crescent_opposed_TEBM35C10-4": "dbd78f4b463dae4fe18c90ec2f32ed803f15bda212076d1014979e6adba5dad2",
+          "h2c_obiwan_wing_flat_left": "55739acbca0c541072897dc3c15fd536e84bf513fb1f703c22ba922450b2236d",
+          "h2c_obiwan_wing_flat_right": "9f6b3f434cad23edf1742dcefa21e5a1847e4aa59f3fea5aaef575e1123231de",
+          "h2c_obiwan_wing_graded_left": "3588e6975679d37c09b4dd0bd74173972b6dd24e4d301fa54b7f84b971886144",
+          "h2c_obiwan_wing_graded_right": "ee721aea4aff168ee32be53d1f11e833b95c0ff3f01ffac96bcc758209899112",
+          "h2c_obiwan_lm_keyed_bottom_no_floor_stand": "e523accf1eef5effeb1ebfba7a3aa13b40535a211525f2572041777f51b440e5",
+          "h2c_obiwan_lm_keyed_top": "43435383e1c7e4875523e4b234b946432c9cc4e3fd0f4b6d3b8a9ceedaee983f",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_right_top": "ce56f0f1616916eb22fe465868b2a1c5742f34409d5777f664bd9dba80dd44de",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_right_cap_front_tweeter": "b5596e3026fbfc62a2b35500812b0682e85337bcbb4474283739de651801b003",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_right_cap_rear_tweeter": "7854d5cfdb001449551fd797833b61dec9d0d1b5278b770eb16ff37e59f5eac1",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_left_top": "dd8f5241b3936c87b51bbf35163f53594761585a7640ec778124297667ee66a7",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_left_cap_front_tweeter": "a7e448487e6c65e7ad2edfcaac658d061842ff66c8dee74f24def5dd69b0f7bc",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_left_cap_rear_tweeter": "4794661fa5807d46460f1a744cb968d03839e9242e0a39772236e4a62b86028d",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_flat_left": "c604221b6d668f124c88db1c35bf00dccca7907878f783c525e95a9ef0ce0ec2",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_flat_right": "63e54f815c88806bcc32fdd7c2d25640170a6c0f30685ef5c6e7e30d3387b956",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_graded_left": "b32aceedd55b982b909abc3002614c1f75da5066490c8928103357dd91348317",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_graded_right": "1c97651cf0b27b33d0b0e8b323d979a4fcfc810085962c6a991eaddefe077d1a",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_flat_left": "63e7b50f848ba7edd403cc75959704b1b1f36b44187ffa46f198abac6c7572f0",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_flat_right": "cb2b861eb036c3510a98651d8755bcbaa46316724eaa393e994e41cea34c5a53",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_graded_left": "f9f3961ba7db60efdeb4bccac7919ae979a3f7e2666e0709c0410666b35a589d",
+          "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_graded_right": "419db1a73ed2bbf0a78b92d1a02ca97c6a038161378127858dd8e0312b57f3d8",
+          "h2c_grs_pt2522_4_obiwan_t_above_upright": "95f8589cd9f9b61eefdfd10df39e55e468a18251da1b4a6ef3d1b89e3b5de11a",
+          "h2c_grs_pt2522_4_obiwan_t_above_rotated": "b66ff40689f5a2f5f93d529a9161ce1c4845034072592a8bcfff20ef392fb7dc",
+          "h2c_mundorf_amt17d2_1_obiwan_t_above_upright": "52773e1e302b1e5e60499bd1f901980c21465e8d2c59c4825bf6b15d0ab6cbce",
+          "h2c_mundorf_amt17d2_1_obiwan_t_above_rotated": "f129ccbebe7efc6a15f3d3c32dca30ade1f0f366d2bd85d5524efac3532a339b",
+          "h2c_grs_pt2522_4_obiwan_t_below_upright_lm_top": "faa41d38fb25b63c08ff214a35f00620ceebeef86ebc3cb11ef6be4ef5f1e97c",
+          "h2c_grs_pt2522_4_obiwan_t_below_upright_um_t": "56928de3831b01250d7ec7d25058d87bba214e8097660aa39b03ea10b6e638df",
+          "h2c_grs_pt2522_4_obiwan_t_below_rotated": "67891b3fa165ce96660358765936dfbbfaa386bcd20366e056331e996b0bb690",
+          "h2c_mundorf_amt17d2_1_obiwan_t_below_upright": "9f76401259a35b6b1da31eeb41b30acb044bacaa0c007df64b0fdc3fc0240163",
+          "h2c_mundorf_amt17d2_1_obiwan_t_below_rotated": "baf37fc126e33f816b1f0bcf88d7b3415b16ca0b51bdbec1d3426230f15e3386"
+        },
+        "plan": [
+          [
+            "A-C, E \u00b7 LM carrier (shared by A, B, C and the dipole T above)",
+            [
+              "h2c_obiwan_core_lm_carrier_no_floor_stand"
+            ]
+          ],
+          [
+            "A-C \u00b7 UM carrier",
+            [
+              "h2c_obiwan_core_2_of_2_um_carrier"
+            ]
+          ],
+          [
+            "A \u00b7 ND25FW-4 \u00b7 crescent",
+            [
+              "h2c_obiwan_addon_tweeter_crescent"
+            ]
+          ],
+          [
+            "B \u00b7 BMR coaxial \u00b7 crescent",
+            [
+              "h2c_obiwan_bmr_crescent_TEBM35C10-4"
+            ]
+          ],
+          [
+            "C \u00b7 BMR opposed \u00b7 crescent",
+            [
+              "h2c_obiwan_bmr_crescent_opposed_TEBM35C10-4"
+            ]
+          ],
+          [
+            "Wings A-C \u00b7 flat \u00b7 left",
+            [
+              "h2c_obiwan_wing_flat_left"
+            ]
+          ],
+          [
+            "Wings A-C \u00b7 flat \u00b7 right",
+            [
+              "h2c_obiwan_wing_flat_right"
+            ]
+          ],
+          [
+            "Wings A-C \u00b7 graded \u00b7 left",
+            [
+              "h2c_obiwan_wing_graded_left"
+            ]
+          ],
+          [
+            "Wings A-C \u00b7 graded \u00b7 right",
+            [
+              "h2c_obiwan_wing_graded_right"
+            ]
+          ],
+          [
+            "D, F \u00b7 keyed LM bottom (also A-C, E with the keyed LM top instead of the LM carrier)",
+            [
+              "h2c_obiwan_lm_keyed_bottom_no_floor_stand"
+            ]
+          ],
+          [
+            "A-C, E \u00b7 keyed LM top (with the keyed LM bottom, instead of the LM carrier)",
+            [
+              "h2c_obiwan_lm_keyed_top"
+            ]
+          ],
+          [
+            "D \u00b7 ND25FN-4 tweeters right \u00b7 vase top + caps",
+            [
+              "h2c_dayton_nd25fn4_obiwan_tweeters_right_top",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_right_cap_front_tweeter",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_right_cap_rear_tweeter"
+            ]
+          ],
+          [
+            "D \u00b7 ND25FN-4 tweeters left \u00b7 vase top + caps",
+            [
+              "h2c_dayton_nd25fn4_obiwan_tweeters_left_top",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_left_cap_front_tweeter",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_left_cap_rear_tweeter"
+            ]
+          ],
+          [
+            "D \u00b7 ND25FN-4 tweeters right \u00b7 flat wings left + right",
+            [
+              "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_flat_left",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_flat_right"
+            ]
+          ],
+          [
+            "D \u00b7 ND25FN-4 tweeters right \u00b7 graded wings left + right",
+            [
+              "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_graded_left",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_graded_right"
+            ]
+          ],
+          [
+            "D \u00b7 ND25FN-4 tweeters left \u00b7 flat wings left + right",
+            [
+              "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_flat_left",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_flat_right"
+            ]
+          ],
+          [
+            "D \u00b7 ND25FN-4 tweeters left \u00b7 graded wings left + right",
+            [
+              "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_graded_left",
+              "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_graded_right"
+            ]
+          ],
+          [
+            "E \u00b7 PT2522-4 \u00b7 T above \u00b7 upright",
+            [
+              "h2c_grs_pt2522_4_obiwan_t_above_upright"
+            ]
+          ],
+          [
+            "E \u00b7 PT2522-4 \u00b7 T above \u00b7 rotated",
+            [
+              "h2c_grs_pt2522_4_obiwan_t_above_rotated"
+            ]
+          ],
+          [
+            "E \u00b7 AMT17D2.1 \u00b7 T above \u00b7 upright",
+            [
+              "h2c_mundorf_amt17d2_1_obiwan_t_above_upright"
+            ]
+          ],
+          [
+            "E \u00b7 AMT17D2.1 \u00b7 T above \u00b7 rotated",
+            [
+              "h2c_mundorf_amt17d2_1_obiwan_t_above_rotated"
+            ]
+          ],
+          [
+            "F \u00b7 PT2522-4 \u00b7 T below \u00b7 upright \u00b7 keyed LM top",
+            [
+              "h2c_grs_pt2522_4_obiwan_t_below_upright_lm_top"
+            ]
+          ],
+          [
+            "F \u00b7 PT2522-4 \u00b7 T below \u00b7 upright \u00b7 T + UM",
+            [
+              "h2c_grs_pt2522_4_obiwan_t_below_upright_um_t"
+            ]
+          ],
+          [
+            "F \u00b7 PT2522-4 \u00b7 T below \u00b7 rotated",
+            [
+              "h2c_grs_pt2522_4_obiwan_t_below_rotated"
+            ]
+          ],
+          [
+            "F \u00b7 AMT17D2.1 \u00b7 T below \u00b7 upright",
+            [
+              "h2c_mundorf_amt17d2_1_obiwan_t_below_upright"
+            ]
+          ],
+          [
+            "F \u00b7 AMT17D2.1 \u00b7 T below \u00b7 rotated",
+            [
+              "h2c_mundorf_amt17d2_1_obiwan_t_below_rotated"
+            ]
+          ]
+        ],
+        "code": {
+          "scripts/build_h2c_plates.py": "ab8eb53091682f8fa39665b6ec10ac8b7a75bf7111a7069aa469c7736e36e8cf",
+          "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+          "src/lx521_baffle/h2c/shelf.py": "4d733b6ff063f299de21662b3d88501d548de7ee3ab2c9de52105f519ab5fece",
+          "scripts/build_h2c_release.py": "7ba8d1e3efc54688fbeec703a7f8eadbe36d83edb3269f295dd76b60bc8fff82",
+          "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e"
+        }
+      },
+      "plates": [
+        {
+          "plate": 1,
+          "name": "A-C, E \u00b7 LM carrier (shared by A, B, C and the dipole T above)",
+          "parts": [
+            "obiwan_lm_carrier_no_floor_stand"
+          ],
+          "magnet_pauses_mm": [
+            5.96,
+            6.12
+          ]
+        },
+        {
+          "plate": 2,
+          "name": "A-C \u00b7 UM carrier",
+          "parts": [
+            "obiwan_um_carrier"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 3,
+          "name": "A \u00b7 ND25FW-4 \u00b7 crescent",
+          "parts": [
+            "obiwan_crescent_nd25fw4"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 4,
+          "name": "B \u00b7 BMR coaxial \u00b7 crescent",
+          "parts": [
+            "obiwan_crescent_bmr"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 5,
+          "name": "C \u00b7 BMR opposed \u00b7 crescent",
+          "parts": [
+            "obiwan_crescent_bmr_opposed"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 6,
+          "name": "Wings A-C \u00b7 flat \u00b7 left",
+          "parts": [
+            "obiwan_wing_flat_left"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 7,
+          "name": "Wings A-C \u00b7 flat \u00b7 right",
+          "parts": [
+            "obiwan_wing_flat_right"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 8,
+          "name": "Wings A-C \u00b7 graded \u00b7 left",
+          "parts": [
+            "obiwan_wing_graded_left"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 9,
+          "name": "Wings A-C \u00b7 graded \u00b7 right",
+          "parts": [
+            "obiwan_wing_graded_right"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 10,
+          "name": "D, F \u00b7 keyed LM bottom (also A-C, E with the keyed LM top instead of the LM carrier)",
+          "parts": [
+            "obiwan_lm_keyed_bottom_no_floor_stand"
+          ],
+          "magnet_pauses_mm": [
+            5.96
+          ]
+        },
+        {
+          "plate": 11,
+          "name": "A-C, E \u00b7 keyed LM top (with the keyed LM bottom, instead of the LM carrier)",
+          "parts": [
+            "obiwan_lm_keyed_top"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 12,
+          "name": "D \u00b7 ND25FN-4 tweeters right \u00b7 vase top + caps",
+          "parts": [
+            "obiwan_nd25fn4_tweeters_right_top",
+            "obiwan_nd25fn4_tweeters_right_cap_front",
+            "obiwan_nd25fn4_tweeters_right_cap_rear"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 13,
+          "name": "D \u00b7 ND25FN-4 tweeters left \u00b7 vase top + caps",
+          "parts": [
+            "obiwan_nd25fn4_tweeters_left_top",
+            "obiwan_nd25fn4_tweeters_left_cap_front",
+            "obiwan_nd25fn4_tweeters_left_cap_rear"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 14,
+          "name": "D \u00b7 ND25FN-4 tweeters right \u00b7 flat wings left + right",
+          "parts": [
+            "obiwan_nd25fn4_tweeters_right_wing_flat_left",
+            "obiwan_nd25fn4_tweeters_right_wing_flat_right"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 15,
+          "name": "D \u00b7 ND25FN-4 tweeters right \u00b7 graded wings left + right",
+          "parts": [
+            "obiwan_nd25fn4_tweeters_right_wing_graded_left",
+            "obiwan_nd25fn4_tweeters_right_wing_graded_right"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 16,
+          "name": "D \u00b7 ND25FN-4 tweeters left \u00b7 flat wings left + right",
+          "parts": [
+            "obiwan_nd25fn4_tweeters_left_wing_flat_left",
+            "obiwan_nd25fn4_tweeters_left_wing_flat_right"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 17,
+          "name": "D \u00b7 ND25FN-4 tweeters left \u00b7 graded wings left + right",
+          "parts": [
+            "obiwan_nd25fn4_tweeters_left_wing_graded_left",
+            "obiwan_nd25fn4_tweeters_left_wing_graded_right"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 18,
+          "name": "E \u00b7 PT2522-4 \u00b7 T above \u00b7 upright",
+          "parts": [
+            "obiwan_pt2522_t_above_upright"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 19,
+          "name": "E \u00b7 PT2522-4 \u00b7 T above \u00b7 rotated",
+          "parts": [
+            "obiwan_pt2522_t_above_rotated"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 20,
+          "name": "E \u00b7 AMT17D2.1 \u00b7 T above \u00b7 upright",
+          "parts": [
+            "obiwan_amt17d2_t_above_upright"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 21,
+          "name": "E \u00b7 AMT17D2.1 \u00b7 T above \u00b7 rotated",
+          "parts": [
+            "obiwan_amt17d2_t_above_rotated"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 22,
+          "name": "F \u00b7 PT2522-4 \u00b7 T below \u00b7 upright \u00b7 keyed LM top",
+          "parts": [
+            "obiwan_pt2522_t_below_upright_lm_top"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 23,
+          "name": "F \u00b7 PT2522-4 \u00b7 T below \u00b7 upright \u00b7 T + UM",
+          "parts": [
+            "obiwan_pt2522_t_below_upright_um_t"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 24,
+          "name": "F \u00b7 PT2522-4 \u00b7 T below \u00b7 rotated",
+          "parts": [
+            "obiwan_pt2522_t_below_rotated"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 25,
+          "name": "F \u00b7 AMT17D2.1 \u00b7 T below \u00b7 upright",
+          "parts": [
+            "obiwan_amt17d2_t_below_upright"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 26,
+          "name": "F \u00b7 AMT17D2.1 \u00b7 T below \u00b7 rotated",
+          "parts": [
+            "obiwan_amt17d2_t_below_rotated"
+          ],
+          "magnet_pauses_mm": []
+        }
+      ]
+    },
+    "stock_floor_stand": {
+      "title": "Stock, floor stand",
+      "product": "stock",
+      "project": "to_print/stock/stock_floor_stand.petg-gf.3mf",
+      "project_sha256": "f55c3e189da851bfd539a9f2f4f1435afc110927b35d3322294aad5d178a58ca",
+      "sliced_project": "to_print/stock/stock_floor_stand.petg-gf.gcode.3mf",
+      "sliced_project_sha256": "86c6c2318925e256169a2fc0997a9ffb26a2a62f5e87f10ac630d52fe84dc3bd",
+      "audit": "build/h2c/plates/stock_floor_stand/audit.json",
+      "status": "sliced_audited",
+      "inputs": {
+        "parts": {
+          "h2c_stock_lm_lower_floor_stand": "10bfe6e87fbb481eff43b673c66ee28f277b6f59d311d2acfb09fcad68a35ef8",
+          "h2c_stock_lm_upper_floor_stand": "e8cd828bc5f3d1eed75d1d11a3a9e443ab172c672b1331a0d0ccb69b65077270",
+          "h2c_stock_upper": "0df97e9f672120419d4b8ea168f0c013f511d99e11eef4a634c329a3c690111a",
+          "h2c_stock_upper_bmr": "75335c649754f97a51930476ba90624f3ed971e18a236fadb9cd8c65fb45b9f4",
+          "h2c_dayton_nd25fn4_stock_tweeters_right_upper": "29f30405668f08f96b7b4849667fe5341e73c84feecfc4a53e5981f6a35c3901",
+          "h2c_dayton_nd25fn4_stock_tweeters_right_cap_front_tweeter": "7b1cc2e0b0d8d65f6e80cf2cc36b4de11786340348db9b19f18f117703e1493a",
+          "h2c_dayton_nd25fn4_stock_tweeters_right_cap_rear_tweeter": "faad484a628367445adbf77f01492dfe9b2be48c146d7f9457e20054ca1d89f4",
+          "h2c_dayton_nd25fn4_stock_tweeters_left_upper": "3667a0a49f90d1d9eb27581844081ba37cb9ae83bfd2e0717168e96a495f9279",
+          "h2c_dayton_nd25fn4_stock_tweeters_left_cap_front_tweeter": "7b6130aad13fb76ce8e70cd38ab0f97f785bdb7c4803ef69318dc2b686b82a56",
+          "h2c_dayton_nd25fn4_stock_tweeters_left_cap_rear_tweeter": "c869917a8322454ae2fdb8478058a0139e4175826fe6d59fe6a931fa53b88901",
+          "h2c_stock_05_A_shoulder_bottom_left_1_of_4": "99b17a8e0e53e8ad5ce06ee2d990573ecc873f984800a8c2f15ea50fff4f14f4",
+          "h2c_stock_06_A_shoulder_top_left_2_of_4": "4ef1ba50780e8129ee69a30fc21a551b497c95738b8a86a25559e298106ab459",
+          "h2c_stock_07_A_shoulder_bottom_right_3_of_4": "77e3ded0da2721d3f036bcccddc9d8ac4f5cdaf20aceeb236543b81c9a299af1",
+          "h2c_stock_08_A_shoulder_top_right_4_of_4": "ec7ac6c549bcbeae27eb5608944e0c839661b6a108cfc7f5df1dc1ccf7b108e3",
+          "h2c_stock_09_B1_wing_left_1_of_2": "607cda135c5927a6b91aa0f8a5eec549ee0d52966c7ad77a058979a089a14d69",
+          "h2c_stock_10_B1_wing_right_2_of_2": "5337519503d7e41338476b255a817f18e11f5a5917064ca2c57854c71e1eede8"
+        },
+        "plan": [
+          [
+            "LM lower with floor stand (shared by every option)",
+            [
+              "h2c_stock_lm_lower_floor_stand"
+            ]
+          ],
+          [
+            "LM upper (shared by every option)",
+            [
+              "h2c_stock_lm_upper_floor_stand"
+            ]
+          ],
+          [
+            "A \u00b7 ND25FW-4 \u00b7 upper module",
+            [
+              "h2c_stock_upper"
+            ]
+          ],
+          [
+            "B \u00b7 BMR \u00b7 upper module",
+            [
+              "h2c_stock_upper_bmr"
+            ]
+          ],
+          [
+            "C \u00b7 ND25FN-4 tweeters right \u00b7 vase + caps",
+            [
+              "h2c_dayton_nd25fn4_stock_tweeters_right_upper",
+              "h2c_dayton_nd25fn4_stock_tweeters_right_cap_front_tweeter",
+              "h2c_dayton_nd25fn4_stock_tweeters_right_cap_rear_tweeter"
+            ]
+          ],
+          [
+            "C \u00b7 ND25FN-4 tweeters left \u00b7 vase + caps",
+            [
+              "h2c_dayton_nd25fn4_stock_tweeters_left_upper",
+              "h2c_dayton_nd25fn4_stock_tweeters_left_cap_front_tweeter",
+              "h2c_dayton_nd25fn4_stock_tweeters_left_cap_rear_tweeter"
+            ]
+          ],
+          [
+            "Wings for A \u00b7 A shoulders (4 pieces)",
+            [
+              "h2c_stock_05_A_shoulder_bottom_left_1_of_4",
+              "h2c_stock_06_A_shoulder_top_left_2_of_4",
+              "h2c_stock_07_A_shoulder_bottom_right_3_of_4",
+              "h2c_stock_08_A_shoulder_top_right_4_of_4"
+            ]
+          ],
+          [
+            "Wings for A \u00b7 B1 wings left + right",
+            [
+              "h2c_stock_09_B1_wing_left_1_of_2",
+              "h2c_stock_10_B1_wing_right_2_of_2"
+            ]
+          ]
+        ],
+        "code": {
+          "scripts/build_h2c_plates.py": "ab8eb53091682f8fa39665b6ec10ac8b7a75bf7111a7069aa469c7736e36e8cf",
+          "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+          "src/lx521_baffle/h2c/shelf.py": "4d733b6ff063f299de21662b3d88501d548de7ee3ab2c9de52105f519ab5fece",
+          "scripts/build_h2c_release.py": "7ba8d1e3efc54688fbeec703a7f8eadbe36d83edb3269f295dd76b60bc8fff82",
+          "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e"
+        }
+      },
+      "plates": [
+        {
+          "plate": 1,
+          "name": "LM lower with floor stand (shared by every option)",
+          "parts": [
+            "stock_lm_lower_floor_stand"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 2,
+          "name": "LM upper (shared by every option)",
+          "parts": [
+            "stock_lm_upper_floor_stand"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 3,
+          "name": "A \u00b7 ND25FW-4 \u00b7 upper module",
+          "parts": [
+            "stock_upper"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 4,
+          "name": "B \u00b7 BMR \u00b7 upper module",
+          "parts": [
+            "stock_upper_bmr"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 5,
+          "name": "C \u00b7 ND25FN-4 tweeters right \u00b7 vase + caps",
+          "parts": [
+            "stock_nd25fn4_tweeters_right_upper",
+            "stock_nd25fn4_tweeters_right_cap_front",
+            "stock_nd25fn4_tweeters_right_cap_rear"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 6,
+          "name": "C \u00b7 ND25FN-4 tweeters left \u00b7 vase + caps",
+          "parts": [
+            "stock_nd25fn4_tweeters_left_upper",
+            "stock_nd25fn4_tweeters_left_cap_front",
+            "stock_nd25fn4_tweeters_left_cap_rear"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 7,
+          "name": "Wings for A \u00b7 A shoulders (4 pieces)",
+          "parts": [
+            "stock_a_shoulder_bottom_left_1_of_4",
+            "stock_a_shoulder_top_left_2_of_4",
+            "stock_a_shoulder_bottom_right_3_of_4",
+            "stock_a_shoulder_top_right_4_of_4"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 8,
+          "name": "Wings for A \u00b7 B1 wings left + right",
+          "parts": [
+            "stock_b1_wing_left_1_of_2",
+            "stock_b1_wing_right_2_of_2"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        }
+      ]
+    },
+    "stock_no_floor_stand": {
+      "title": "Stock, no floor stand",
+      "product": "stock",
+      "project": "to_print/stock/stock_no_floor_stand.petg-gf.3mf",
+      "project_sha256": "56c8ee92f60c196868a810ca75d3ebde04d511f5d7900ca0a1572063cee286c4",
+      "sliced_project": "to_print/stock/stock_no_floor_stand.petg-gf.gcode.3mf",
+      "sliced_project_sha256": "735568317e5cd1d3e9e4cb92994a3009cdf70db285d6c90f27c6ade759de7a78",
+      "audit": "build/h2c/plates/stock_no_floor_stand/audit.json",
+      "status": "sliced_audited",
+      "inputs": {
+        "parts": {
+          "h2c_stock_lm_no_floor_stand": "2a037cd22a42a2ceeead8452b632952e1008f0d56d3ce9b1cae8251fa50d1349",
+          "h2c_stock_upper": "0df97e9f672120419d4b8ea168f0c013f511d99e11eef4a634c329a3c690111a",
+          "h2c_stock_upper_bmr": "75335c649754f97a51930476ba90624f3ed971e18a236fadb9cd8c65fb45b9f4",
+          "h2c_dayton_nd25fn4_stock_tweeters_right_upper": "29f30405668f08f96b7b4849667fe5341e73c84feecfc4a53e5981f6a35c3901",
+          "h2c_dayton_nd25fn4_stock_tweeters_right_cap_front_tweeter": "7b1cc2e0b0d8d65f6e80cf2cc36b4de11786340348db9b19f18f117703e1493a",
+          "h2c_dayton_nd25fn4_stock_tweeters_right_cap_rear_tweeter": "faad484a628367445adbf77f01492dfe9b2be48c146d7f9457e20054ca1d89f4",
+          "h2c_dayton_nd25fn4_stock_tweeters_left_upper": "3667a0a49f90d1d9eb27581844081ba37cb9ae83bfd2e0717168e96a495f9279",
+          "h2c_dayton_nd25fn4_stock_tweeters_left_cap_front_tweeter": "7b6130aad13fb76ce8e70cd38ab0f97f785bdb7c4803ef69318dc2b686b82a56",
+          "h2c_dayton_nd25fn4_stock_tweeters_left_cap_rear_tweeter": "c869917a8322454ae2fdb8478058a0139e4175826fe6d59fe6a931fa53b88901",
+          "h2c_stock_05_A_shoulder_bottom_left_1_of_4": "99b17a8e0e53e8ad5ce06ee2d990573ecc873f984800a8c2f15ea50fff4f14f4",
+          "h2c_stock_06_A_shoulder_top_left_2_of_4": "4ef1ba50780e8129ee69a30fc21a551b497c95738b8a86a25559e298106ab459",
+          "h2c_stock_07_A_shoulder_bottom_right_3_of_4": "77e3ded0da2721d3f036bcccddc9d8ac4f5cdaf20aceeb236543b81c9a299af1",
+          "h2c_stock_08_A_shoulder_top_right_4_of_4": "ec7ac6c549bcbeae27eb5608944e0c839661b6a108cfc7f5df1dc1ccf7b108e3",
+          "h2c_stock_09_B1_wing_left_1_of_2": "607cda135c5927a6b91aa0f8a5eec549ee0d52966c7ad77a058979a089a14d69",
+          "h2c_stock_10_B1_wing_right_2_of_2": "5337519503d7e41338476b255a817f18e11f5a5917064ca2c57854c71e1eede8"
+        },
+        "plan": [
+          [
+            "LM (shared by every option)",
+            [
+              "h2c_stock_lm_no_floor_stand"
+            ]
+          ],
+          [
+            "A \u00b7 ND25FW-4 \u00b7 upper module",
+            [
+              "h2c_stock_upper"
+            ]
+          ],
+          [
+            "B \u00b7 BMR \u00b7 upper module",
+            [
+              "h2c_stock_upper_bmr"
+            ]
+          ],
+          [
+            "C \u00b7 ND25FN-4 tweeters right \u00b7 vase + caps",
+            [
+              "h2c_dayton_nd25fn4_stock_tweeters_right_upper",
+              "h2c_dayton_nd25fn4_stock_tweeters_right_cap_front_tweeter",
+              "h2c_dayton_nd25fn4_stock_tweeters_right_cap_rear_tweeter"
+            ]
+          ],
+          [
+            "C \u00b7 ND25FN-4 tweeters left \u00b7 vase + caps",
+            [
+              "h2c_dayton_nd25fn4_stock_tweeters_left_upper",
+              "h2c_dayton_nd25fn4_stock_tweeters_left_cap_front_tweeter",
+              "h2c_dayton_nd25fn4_stock_tweeters_left_cap_rear_tweeter"
+            ]
+          ],
+          [
+            "Wings for A \u00b7 A shoulders (4 pieces)",
+            [
+              "h2c_stock_05_A_shoulder_bottom_left_1_of_4",
+              "h2c_stock_06_A_shoulder_top_left_2_of_4",
+              "h2c_stock_07_A_shoulder_bottom_right_3_of_4",
+              "h2c_stock_08_A_shoulder_top_right_4_of_4"
+            ]
+          ],
+          [
+            "Wings for A \u00b7 B1 wings left + right",
+            [
+              "h2c_stock_09_B1_wing_left_1_of_2",
+              "h2c_stock_10_B1_wing_right_2_of_2"
+            ]
+          ]
+        ],
+        "code": {
+          "scripts/build_h2c_plates.py": "ab8eb53091682f8fa39665b6ec10ac8b7a75bf7111a7069aa469c7736e36e8cf",
+          "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+          "src/lx521_baffle/h2c/shelf.py": "4d733b6ff063f299de21662b3d88501d548de7ee3ab2c9de52105f519ab5fece",
+          "scripts/build_h2c_release.py": "7ba8d1e3efc54688fbeec703a7f8eadbe36d83edb3269f295dd76b60bc8fff82",
+          "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e"
+        }
+      },
+      "plates": [
+        {
+          "plate": 1,
+          "name": "LM (shared by every option)",
+          "parts": [
+            "stock_lm_no_floor_stand"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 2,
+          "name": "A \u00b7 ND25FW-4 \u00b7 upper module",
+          "parts": [
+            "stock_upper"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 3,
+          "name": "B \u00b7 BMR \u00b7 upper module",
+          "parts": [
+            "stock_upper_bmr"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 4,
+          "name": "C \u00b7 ND25FN-4 tweeters right \u00b7 vase + caps",
+          "parts": [
+            "stock_nd25fn4_tweeters_right_upper",
+            "stock_nd25fn4_tweeters_right_cap_front",
+            "stock_nd25fn4_tweeters_right_cap_rear"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 5,
+          "name": "C \u00b7 ND25FN-4 tweeters left \u00b7 vase + caps",
+          "parts": [
+            "stock_nd25fn4_tweeters_left_upper",
+            "stock_nd25fn4_tweeters_left_cap_front",
+            "stock_nd25fn4_tweeters_left_cap_rear"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 6,
+          "name": "Wings for A \u00b7 A shoulders (4 pieces)",
+          "parts": [
+            "stock_a_shoulder_bottom_left_1_of_4",
+            "stock_a_shoulder_top_left_2_of_4",
+            "stock_a_shoulder_bottom_right_3_of_4",
+            "stock_a_shoulder_top_right_4_of_4"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 7,
+          "name": "Wings for A \u00b7 B1 wings left + right",
+          "parts": [
+            "stock_b1_wing_left_1_of_2",
+            "stock_b1_wing_right_2_of_2"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        }
+      ]
+    },
+    "slim_floor_stand": {
+      "title": "Slim, floor stand",
+      "product": "slim",
+      "project": "to_print/slim/slim_floor_stand.petg-gf.3mf",
+      "project_sha256": "ce3d1777f115b5b569e37a92d6b863925e883c961b728218e2319313f44b61b9",
+      "sliced_project": "to_print/slim/slim_floor_stand.petg-gf.gcode.3mf",
+      "sliced_project_sha256": "71d7442155f0bf7f316f29d3e074efc0871c328342a16117b88043d7e43b82a6",
+      "audit": "build/h2c/plates/slim_floor_stand/audit.json",
+      "status": "sliced_audited",
+      "inputs": {
+        "parts": {
+          "h2c_slim_lm_lower_floor_stand": "7dd0d4c08ef438908e8daebfc5b40308b88ba1f60adec743b6fa5046479c623a",
+          "h2c_slim_lm_upper_floor_stand": "97a3271d80376ee5d50c1188771b231fce140345a6c0e903f84558f56972ce49",
+          "h2c_slim_upper": "89d8e62510368398794ca9a30f6b42fd6bc6c09f13ab77ad3e1bd1c669c3ef1c",
+          "h2c_slim_upper_bmr": "de6d2e7e049a7e35984d396e9efcc0dd6949caa3ce9f5e97920ad0c1379159b9",
+          "h2c_slim_05_A_shoulder_bottom_left_1_of_4": "c1590914e8583cc5312860266bdfa63fecc96f486892ad0650c2a39aebdeb5d7",
+          "h2c_slim_06_A_shoulder_top_left_2_of_4": "82ad3ec7e5dc4987bc5d9df2efce1966bf7e0d98305ae7a6aea66f64a1ecdf04",
+          "h2c_slim_07_A_shoulder_bottom_right_3_of_4": "b36763b7b4e42b09d63dff6f57a1f9ff4dc8bd8f4e57f018a1e7c38dc32aacdc",
+          "h2c_slim_08_A_shoulder_top_right_4_of_4": "8b887671663fc087e3aa4192e9f3eaf625bda710a2c4d3b870930c3e6be8e598",
+          "h2c_slim_09_B1_wing_left_1_of_2": "3c1f7e0988217ccf99c15b61d85af7b967bdda4b1c7860daa9a59c3e14332675",
+          "h2c_slim_10_B1_wing_right_2_of_2": "7db874a5716b645e4075161a4d5b7616b7b17c55fc5570b36d9d5b2c9f4b7996"
+        },
+        "plan": [
+          [
+            "LM lower with floor stand (shared by every option)",
+            [
+              "h2c_slim_lm_lower_floor_stand"
+            ]
+          ],
+          [
+            "LM upper (shared by every option)",
+            [
+              "h2c_slim_lm_upper_floor_stand"
+            ]
+          ],
+          [
+            "A \u00b7 ND25FW-4 \u00b7 upper module",
+            [
+              "h2c_slim_upper"
+            ]
+          ],
+          [
+            "B \u00b7 BMR \u00b7 upper module",
+            [
+              "h2c_slim_upper_bmr"
+            ]
+          ],
+          [
+            "Wings for A \u00b7 A shoulders (4 pieces)",
+            [
+              "h2c_slim_05_A_shoulder_bottom_left_1_of_4",
+              "h2c_slim_06_A_shoulder_top_left_2_of_4",
+              "h2c_slim_07_A_shoulder_bottom_right_3_of_4",
+              "h2c_slim_08_A_shoulder_top_right_4_of_4"
+            ]
+          ],
+          [
+            "Wings for A \u00b7 B1 wings left + right",
+            [
+              "h2c_slim_09_B1_wing_left_1_of_2",
+              "h2c_slim_10_B1_wing_right_2_of_2"
+            ]
+          ]
+        ],
+        "code": {
+          "scripts/build_h2c_plates.py": "ab8eb53091682f8fa39665b6ec10ac8b7a75bf7111a7069aa469c7736e36e8cf",
+          "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+          "src/lx521_baffle/h2c/shelf.py": "4d733b6ff063f299de21662b3d88501d548de7ee3ab2c9de52105f519ab5fece",
+          "scripts/build_h2c_release.py": "7ba8d1e3efc54688fbeec703a7f8eadbe36d83edb3269f295dd76b60bc8fff82",
+          "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e"
+        }
+      },
+      "plates": [
+        {
+          "plate": 1,
+          "name": "LM lower with floor stand (shared by every option)",
+          "parts": [
+            "slim_lm_lower_floor_stand"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 2,
+          "name": "LM upper (shared by every option)",
+          "parts": [
+            "slim_lm_upper_floor_stand"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 3,
+          "name": "A \u00b7 ND25FW-4 \u00b7 upper module",
+          "parts": [
+            "slim_upper"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 4,
+          "name": "B \u00b7 BMR \u00b7 upper module",
+          "parts": [
+            "slim_upper_bmr"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 5,
+          "name": "Wings for A \u00b7 A shoulders (4 pieces)",
+          "parts": [
+            "slim_a_shoulder_bottom_left_1_of_4",
+            "slim_a_shoulder_top_left_2_of_4",
+            "slim_a_shoulder_bottom_right_3_of_4",
+            "slim_a_shoulder_top_right_4_of_4"
+          ],
+          "magnet_pauses_mm": [
+            5.96,
+            6.12
+          ]
+        },
+        {
+          "plate": 6,
+          "name": "Wings for A \u00b7 B1 wings left + right",
+          "parts": [
+            "slim_b1_wing_left_1_of_2",
+            "slim_b1_wing_right_2_of_2"
+          ],
+          "magnet_pauses_mm": [
+            5.96,
+            6.12
+          ]
+        }
+      ]
+    },
+    "slim_no_floor_stand": {
+      "title": "Slim, no floor stand",
+      "product": "slim",
+      "project": "to_print/slim/slim_no_floor_stand.petg-gf.3mf",
+      "project_sha256": "d51a0de03532a80f7f1afe18fc6e50616bbb56b79eb3ce5241699a1967554810",
+      "sliced_project": "to_print/slim/slim_no_floor_stand.petg-gf.gcode.3mf",
+      "sliced_project_sha256": "6d4e534a7be44ed6376ad6e84e2006dd36c12daef2e6d2b94d0c1769d165e9cb",
+      "audit": "build/h2c/plates/slim_no_floor_stand/audit.json",
+      "status": "sliced_audited",
+      "inputs": {
+        "parts": {
+          "h2c_slim_lm_no_floor_stand": "e4c0c18d7e508a4038ab20f3a2f235f44d690fba689ec623236291b5a4c37291",
+          "h2c_slim_upper": "89d8e62510368398794ca9a30f6b42fd6bc6c09f13ab77ad3e1bd1c669c3ef1c",
+          "h2c_slim_upper_bmr": "de6d2e7e049a7e35984d396e9efcc0dd6949caa3ce9f5e97920ad0c1379159b9",
+          "h2c_slim_05_A_shoulder_bottom_left_1_of_4": "c1590914e8583cc5312860266bdfa63fecc96f486892ad0650c2a39aebdeb5d7",
+          "h2c_slim_06_A_shoulder_top_left_2_of_4": "82ad3ec7e5dc4987bc5d9df2efce1966bf7e0d98305ae7a6aea66f64a1ecdf04",
+          "h2c_slim_07_A_shoulder_bottom_right_3_of_4": "b36763b7b4e42b09d63dff6f57a1f9ff4dc8bd8f4e57f018a1e7c38dc32aacdc",
+          "h2c_slim_08_A_shoulder_top_right_4_of_4": "8b887671663fc087e3aa4192e9f3eaf625bda710a2c4d3b870930c3e6be8e598",
+          "h2c_slim_09_B1_wing_left_1_of_2": "3c1f7e0988217ccf99c15b61d85af7b967bdda4b1c7860daa9a59c3e14332675",
+          "h2c_slim_10_B1_wing_right_2_of_2": "7db874a5716b645e4075161a4d5b7616b7b17c55fc5570b36d9d5b2c9f4b7996"
+        },
+        "plan": [
+          [
+            "LM (shared by every option)",
+            [
+              "h2c_slim_lm_no_floor_stand"
+            ]
+          ],
+          [
+            "A \u00b7 ND25FW-4 \u00b7 upper module",
+            [
+              "h2c_slim_upper"
+            ]
+          ],
+          [
+            "B \u00b7 BMR \u00b7 upper module",
+            [
+              "h2c_slim_upper_bmr"
+            ]
+          ],
+          [
+            "Wings for A \u00b7 A shoulders (4 pieces)",
+            [
+              "h2c_slim_05_A_shoulder_bottom_left_1_of_4",
+              "h2c_slim_06_A_shoulder_top_left_2_of_4",
+              "h2c_slim_07_A_shoulder_bottom_right_3_of_4",
+              "h2c_slim_08_A_shoulder_top_right_4_of_4"
+            ]
+          ],
+          [
+            "Wings for A \u00b7 B1 wings left + right",
+            [
+              "h2c_slim_09_B1_wing_left_1_of_2",
+              "h2c_slim_10_B1_wing_right_2_of_2"
+            ]
+          ]
+        ],
+        "code": {
+          "scripts/build_h2c_plates.py": "ab8eb53091682f8fa39665b6ec10ac8b7a75bf7111a7069aa469c7736e36e8cf",
+          "print_policy_h2c.json": "0c324bcb3717dbcd2f6e5fadeeb0121c89097e0c8b79432dbc92383d7e2dc699",
+          "src/lx521_baffle/h2c/shelf.py": "4d733b6ff063f299de21662b3d88501d548de7ee3ab2c9de52105f519ab5fece",
+          "scripts/build_h2c_release.py": "7ba8d1e3efc54688fbeec703a7f8eadbe36d83edb3269f295dd76b60bc8fff82",
+          "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e"
+        }
+      },
+      "plates": [
+        {
+          "plate": 1,
+          "name": "LM (shared by every option)",
+          "parts": [
+            "slim_lm_no_floor_stand"
+          ],
+          "magnet_pauses_mm": []
+        },
+        {
+          "plate": 2,
+          "name": "A \u00b7 ND25FW-4 \u00b7 upper module",
+          "parts": [
+            "slim_upper"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 3,
+          "name": "B \u00b7 BMR \u00b7 upper module",
+          "parts": [
+            "slim_upper_bmr"
+          ],
+          "magnet_pauses_mm": [
+            6.12
+          ]
+        },
+        {
+          "plate": 4,
+          "name": "Wings for A \u00b7 A shoulders (4 pieces)",
+          "parts": [
+            "slim_a_shoulder_bottom_left_1_of_4",
+            "slim_a_shoulder_top_left_2_of_4",
+            "slim_a_shoulder_bottom_right_3_of_4",
+            "slim_a_shoulder_top_right_4_of_4"
+          ],
+          "magnet_pauses_mm": [
+            5.96,
+            6.12
+          ]
+        },
+        {
+          "plate": 5,
+          "name": "Wings for A \u00b7 B1 wings left + right",
+          "parts": [
+            "slim_b1_wing_left_1_of_2",
+            "slim_b1_wing_right_2_of_2"
+          ],
+          "magnet_pauses_mm": [
+            5.96,
+            6.12
+          ]
+        }
+      ]
+    }
+  }
+}

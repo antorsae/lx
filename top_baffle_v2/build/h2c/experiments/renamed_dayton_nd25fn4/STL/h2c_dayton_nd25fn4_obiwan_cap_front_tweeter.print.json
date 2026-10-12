@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_dayton_nd25fn4_obiwan_cap_front_tweeter",
+  "stl": "h2c_dayton_nd25fn4_obiwan_cap_front_tweeter.stl",
+  "stl_bytes": 2082584,
+  "stl_sha256": "f328eae16c67fe9bf9c03e1c9a84542fc78d473db166322f36d002f132a55416",
+  "source_stl": "candidates/nd25fn4_vase/obiwan/STL/nd25fn4_vase_obiwan_cap_front_tweeter.stl",
+  "source_sha256": "095f8851437d9e0f74830763ac5033e1a18c9936147d854aeb2133d94af86a44",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      0.24192189559966767,
+      0.9702957262759965,
+      0.0,
+      -326.9185178806831
+    ],
+    [
+      0.9702957262759965,
+      -0.24192189559966767,
+      0.0,
+      69.74642168529138
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      -17.450000762939453
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 76.0
+  },
+  "pre_translation_bbox_min_mm": [
+    326.9185178806831,
+    -69.74642168529138,
+    17.450000762939453
+  ],
+  "stl_origin_translation_mm": [
+    -326.9185178806831,
+    69.74642168529138,
+    -17.450000762939453
+  ]
+}

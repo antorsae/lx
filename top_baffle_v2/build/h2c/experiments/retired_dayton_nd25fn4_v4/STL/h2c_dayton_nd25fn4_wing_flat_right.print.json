@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_dayton_nd25fn4_wing_flat_right",
+  "stl": "h2c_dayton_nd25fn4_wing_flat_right.stl",
+  "stl_bytes": 3456584,
+  "stl_sha256": "ae71a3c6d1d81551d013328cd06f36512cce9557f274140ed826384b4e4eb5ed",
+  "source_stl": "build/h2c/STL/h2c_dayton_nd25fn4_wing_flat_right.stl",
+  "source_sha256": "24321523cda5fc2d3011df568a4b8b3905eca79609d77f7b22d44ee7e5fb29fb",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      -0.7193398003386511,
+      -0.6946583704589974,
+      0.0,
+      337.8539999694983
+    ],
+    [
+      -0.6946583704589974,
+      0.7193398003386511,
+      0.0,
+      0.7796880305825198
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.299999237060547
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 224.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -337.8539999694983,
+    -0.7796880305825198,
+    -18.299999237060547
+  ],
+  "stl_origin_translation_mm": [
+    337.8539999694983,
+    0.7796880305825198,
+    18.299999237060547
+  ]
+}

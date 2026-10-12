@@ -1,0 +1,644 @@
+{
+  "status": "pass",
+  "file": "to_print/slim/slim_floor_stand.petg-gf.3mf",
+  "plates": [
+    {
+      "plate": 1,
+      "name": "LM lower with floor stand (shared by every option)",
+      "parts": [
+        "slim_lm_lower_floor_stand"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "support": 53696,
+          "model": 1098198,
+          "tower": 45799,
+          "interface": 12441
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              27.485,
+              6.496003618115438,
+              0.2
+            ],
+            [
+              262.502,
+              272.303,
+              168.36
+            ]
+          ],
+          "1": [
+            [
+              27.485,
+              12.58,
+              0.2
+            ],
+            [
+              199.029,
+              267.815,
+              164.52
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          0.2,
+          0.36,
+          0.52,
+          0.68,
+          0.84,
+          1.0,
+          1.16,
+          1.32,
+          1.48,
+          1.64,
+          1.8,
+          1.96,
+          2.12,
+          2.28,
+          2.44,
+          2.6,
+          2.76,
+          2.92,
+          3.08,
+          3.24,
+          3.4,
+          3.56,
+          3.72,
+          3.88,
+          4.04,
+          4.2,
+          4.36,
+          4.52,
+          4.68,
+          4.84,
+          5.0,
+          5.16,
+          5.32,
+          5.48,
+          5.64,
+          5.8,
+          5.96,
+          6.12,
+          6.28,
+          6.44,
+          6.6,
+          6.76,
+          6.92,
+          7.08,
+          7.24,
+          7.4,
+          7.56,
+          7.72,
+          7.88,
+          8.04,
+          8.2,
+          8.36,
+          8.52,
+          8.68,
+          8.84,
+          19.56,
+          19.72,
+          19.88,
+          20.04,
+          20.2,
+          20.36,
+          20.52,
+          20.68,
+          20.84,
+          21.0,
+          21.16,
+          21.32,
+          21.48,
+          21.64,
+          21.8,
+          21.96,
+          22.12,
+          22.28,
+          22.44,
+          22.6,
+          22.76,
+          22.92,
+          23.08,
+          23.24,
+          23.4,
+          23.56,
+          23.72,
+          23.88,
+          24.04,
+          24.2,
+          24.36,
+          24.52,
+          24.68,
+          24.84,
+          25.0,
+          25.16,
+          25.32,
+          25.48,
+          25.64,
+          25.8,
+          25.96,
+          26.12,
+          26.28,
+          26.44,
+          26.6,
+          26.76,
+          26.92,
+          27.08,
+          27.24,
+          27.4,
+          27.56,
+          27.72,
+          27.88,
+          28.04,
+          28.2,
+          28.36,
+          28.52,
+          28.68,
+          28.84,
+          29.0,
+          29.16,
+          29.32,
+          29.48,
+          29.64,
+          29.8,
+          29.96,
+          30.12,
+          30.28,
+          30.44,
+          30.6,
+          30.76,
+          30.92,
+          31.08,
+          31.24,
+          31.4,
+          31.56,
+          31.72,
+          31.88,
+          32.04,
+          117.48,
+          117.64,
+          117.8,
+          164.04,
+          164.2,
+          164.36
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "slim_lm_lower_floor_stand",
+          "object_settings": {},
+          "supports": {
+            "native_bores": {
+              "status": "pass",
+              "bore_count": 10,
+              "support_samples": 1272528,
+              "minimum_clearance_mm": 5.276939130903892,
+              "definition_sha256": "fabf565e597b64eacc5955b072f18d94026ebfb97af700d77cd21d1ddee2d1ff",
+              "method": "0.25 mm support samples, bead width and native cylinder interiors at each layer midplane"
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 2,
+      "name": "LM upper (shared by every option)",
+      "parts": [
+        "slim_lm_upper_floor_stand"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 358172
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              35.282,
+              9.245,
+              0.2
+            ],
+            [
+              314.709,
+              310.75600000000003,
+              11.56
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "slim_lm_upper_floor_stand",
+          "object_settings": {},
+          "supports": {
+            "native_bores": {
+              "status": "pass",
+              "bore_count": 12,
+              "support_samples": 0,
+              "minimum_clearance_mm": null,
+              "definition_sha256": "419fbe0604aa59fe535d0b602b3886d4c28ee219c95e6f3324cfee48fe28d781",
+              "method": "0.25 mm support samples, bead width and native cylinder interiors at each layer midplane"
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 3,
+      "name": "A \u00b7 ND25FW-4 \u00b7 upper module",
+      "parts": [
+        "slim_upper"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "tower": 2354,
+          "support": 354,
+          "model": 166406,
+          "interface": 18
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              31.49096323172416,
+              6.497222595116092,
+              0.2
+            ],
+            [
+              240.383,
+              232.75300000000001,
+              11.56
+            ]
+          ],
+          "1": [
+            [
+              36.363,
+              11.444,
+              6.92
+            ],
+            [
+              199.615,
+              231.035,
+              7.4
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          6.92,
+          7.08,
+          7.24
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 147960,
+          "first_extrusion_line_number": 147976,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "slim_upper",
+          "object_settings": {},
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {
+            "native_bores": {
+              "status": "pass",
+              "bore_count": 7,
+              "support_samples": 12360,
+              "minimum_clearance_mm": 10.03043287525797,
+              "definition_sha256": "a7e23dd5733b6932f1b5b372009c8b8c872d17541c19cdee8712fd3f84df7a3d",
+              "method": "0.25 mm support samples, bead width and native cylinder interiors at each layer midplane"
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 4,
+      "name": "B \u00b7 BMR \u00b7 upper module",
+      "parts": [
+        "slim_upper_bmr"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "tower": 7258,
+          "support": 5379,
+          "model": 377827,
+          "interface": 437
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              26.363,
+              6.497222595116092,
+              0.2
+            ],
+            [
+              240.383,
+              268.391,
+              25.16
+            ]
+          ],
+          "1": [
+            [
+              36.363,
+              11.444,
+              6.92
+            ],
+            [
+              199.615,
+              266.672,
+              24.04
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          6.92,
+          7.08,
+          7.24,
+          15.24,
+          15.4,
+          23.56,
+          23.72,
+          23.88
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 168210,
+          "first_extrusion_line_number": 168226,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "slim_upper_bmr",
+          "object_settings": {},
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {
+            "native_bores": {
+              "status": "pass",
+              "bore_count": 17,
+              "support_samples": 906768,
+              "minimum_clearance_mm": 1.2694279832142445,
+              "definition_sha256": "240f9e9232ad42c707000a1bb983549433c880ea04a1fe842bc05423c4a58750",
+              "method": "0.25 mm support samples, bead width and native cylinder interiors at each layer midplane"
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 5,
+      "name": "Wings for A \u00b7 A shoulders (4 pieces)",
+      "parts": [
+        "slim_a_shoulder_bottom_left_1_of_4",
+        "slim_a_shoulder_top_left_2_of_4",
+        "slim_a_shoulder_bottom_right_3_of_4",
+        "slim_a_shoulder_top_right_4_of_4"
+      ],
+      "tower_xy_mm": [
+        167.0,
+        47.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 91274
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              30.278000000000002,
+              5.2620000000000005,
+              0.2
+            ],
+            [
+              303.26800000000003,
+              65.311,
+              11.56
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        5.96,
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 5.96,
+          "pause_command_line_number": 74406,
+          "first_extrusion_line_number": 74425,
+          "pass": true
+        },
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 76634,
+          "first_extrusion_line_number": 76653,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "slim_a_shoulder_bottom_left_1_of_4",
+          "object_settings": {
+            "enable_support": "0",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        },
+        {
+          "part": "slim_a_shoulder_top_left_2_of_4",
+          "object_settings": {
+            "enable_support": "0",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        },
+        {
+          "part": "slim_a_shoulder_bottom_right_3_of_4",
+          "object_settings": {
+            "enable_support": "0",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        },
+        {
+          "part": "slim_a_shoulder_top_right_4_of_4",
+          "object_settings": {
+            "enable_support": "0",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            5.96
+          ],
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 6,
+      "name": "Wings for A \u00b7 B1 wings left + right",
+      "parts": [
+        "slim_b1_wing_left_1_of_2",
+        "slim_b1_wing_right_2_of_2"
+      ],
+      "tower_xy_mm": [
+        191.0,
+        72.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 81470
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              30.266000000000002,
+              5.266,
+              0.2
+            ],
+            [
+              273.398,
+              81.11800000000001,
+              11.56
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        5.96,
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 5.96,
+          "pause_command_line_number": 53946,
+          "first_extrusion_line_number": 53964,
+          "pass": true
+        },
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 55928,
+          "first_extrusion_line_number": 55946,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "slim_b1_wing_left_1_of_2",
+          "object_settings": {
+            "enable_support": "0",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            5.96,
+            6.12
+          ],
+          "supports": {}
+        },
+        {
+          "part": "slim_b1_wing_right_2_of_2",
+          "object_settings": {
+            "enable_support": "0",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            5.96,
+            6.12
+          ],
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    }
+  ],
+  "project_sha256": "ce3d1777f115b5b569e37a92d6b863925e883c961b728218e2319313f44b61b9",
+  "sliced_project": "to_print/slim/slim_floor_stand.petg-gf.gcode.3mf",
+  "sliced_project_sha256": "71d7442155f0bf7f316f29d3e074efc0871c328342a16117b88043d7e43b82a6"
+}

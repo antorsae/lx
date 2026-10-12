@@ -1,0 +1,1035 @@
+{
+  "status": "pass",
+  "file": "to_print/stock/stock_floor_stand.petg-gf.3mf",
+  "plates": [
+    {
+      "plate": 1,
+      "name": "LM lower with floor stand (shared by every option)",
+      "parts": [
+        "stock_lm_lower_floor_stand"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "support": 59867,
+          "model": 1157650,
+          "tower": 45841,
+          "interface": 22510
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              27.485,
+              6.496003618115438,
+              0.2
+            ],
+            [
+              276.211,
+              268.044,
+              168.36
+            ]
+          ],
+          "1": [
+            [
+              27.485,
+              12.58,
+              0.2
+            ],
+            [
+              216.599,
+              266.27,
+              164.52
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          0.2,
+          0.36,
+          0.52,
+          0.68,
+          0.84,
+          1.0,
+          1.16,
+          1.32,
+          1.48,
+          1.64,
+          1.8,
+          1.96,
+          2.12,
+          2.28,
+          2.44,
+          2.6,
+          2.76,
+          2.92,
+          3.08,
+          3.24,
+          3.4,
+          3.56,
+          3.72,
+          3.88,
+          4.04,
+          4.2,
+          4.36,
+          4.52,
+          4.68,
+          4.84,
+          5.0,
+          5.16,
+          5.32,
+          5.48,
+          5.64,
+          5.8,
+          5.96,
+          6.12,
+          6.28,
+          6.44,
+          6.6,
+          6.76,
+          6.92,
+          7.08,
+          7.24,
+          7.4,
+          7.56,
+          7.72,
+          7.88,
+          8.04,
+          8.2,
+          8.36,
+          8.52,
+          8.68,
+          8.84,
+          9.0,
+          23.4,
+          23.56,
+          23.72,
+          23.88,
+          24.04,
+          24.2,
+          24.36,
+          24.52,
+          24.68,
+          24.84,
+          25.0,
+          25.16,
+          25.32,
+          25.48,
+          25.64,
+          25.8,
+          25.96,
+          26.12,
+          26.28,
+          26.44,
+          26.6,
+          26.76,
+          26.92,
+          27.08,
+          27.24,
+          27.4,
+          27.56,
+          27.72,
+          27.88,
+          28.04,
+          28.2,
+          28.36,
+          28.52,
+          28.68,
+          28.84,
+          29.0,
+          29.16,
+          29.32,
+          29.48,
+          29.64,
+          29.8,
+          29.96,
+          30.12,
+          30.28,
+          30.44,
+          30.6,
+          30.76,
+          30.92,
+          31.08,
+          31.24,
+          31.4,
+          31.56,
+          31.72,
+          31.88,
+          32.04,
+          32.2,
+          32.36,
+          32.52,
+          32.68,
+          32.84,
+          33.0,
+          33.16,
+          33.32,
+          33.48,
+          33.64,
+          33.8,
+          33.96,
+          34.12,
+          34.28,
+          34.44,
+          34.6,
+          34.76,
+          34.92,
+          35.08,
+          35.24,
+          35.4,
+          35.56,
+          35.72,
+          35.88,
+          36.04,
+          36.2,
+          117.48,
+          117.64,
+          117.8,
+          164.04,
+          164.2,
+          164.36
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "stock_lm_lower_floor_stand",
+          "object_settings": {},
+          "supports": {
+            "native_bores": {
+              "status": "pass",
+              "bore_count": 10,
+              "support_samples": 1334124,
+              "minimum_clearance_mm": 5.4262652661207875,
+              "definition_sha256": "92ac6d92b6d773d50f35f0abea78a936620f7cc17d01c2ba940e9ddc7495ce63",
+              "method": "0.25 mm support samples, bead width and native cylinder interiors at each layer midplane"
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 2,
+      "name": "LM upper (shared by every option)",
+      "parts": [
+        "stock_lm_upper_floor_stand"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 475893
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              35.282,
+              9.245,
+              0.2
+            ],
+            [
+              314.709,
+              310.75600000000003,
+              18.28
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "stock_lm_upper_floor_stand",
+          "object_settings": {},
+          "supports": {
+            "native_bores": {
+              "status": "pass",
+              "bore_count": 12,
+              "support_samples": 0,
+              "minimum_clearance_mm": null,
+              "definition_sha256": "7ff061d4b2312a79051d7c0eddcb8247a94edcdc4873995dfdcaae05773979fd",
+              "method": "0.25 mm support samples, bead width and native cylinder interiors at each layer midplane"
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 3,
+      "name": "A \u00b7 ND25FW-4 \u00b7 upper module",
+      "parts": [
+        "stock_upper"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "tower": 2354,
+          "support": 354,
+          "model": 209527,
+          "interface": 18
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              31.49096323172416,
+              6.497222595116092,
+              0.2
+            ],
+            [
+              240.383,
+              232.75300000000001,
+              18.28
+            ]
+          ],
+          "1": [
+            [
+              36.363,
+              11.444,
+              6.92
+            ],
+            [
+              199.615,
+              231.035,
+              7.4
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          6.92,
+          7.08,
+          7.24
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 149563,
+          "first_extrusion_line_number": 149578,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "stock_upper",
+          "object_settings": {},
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {
+            "native_bores": {
+              "status": "pass",
+              "bore_count": 7,
+              "support_samples": 12228,
+              "minimum_clearance_mm": 10.03043287525797,
+              "definition_sha256": "f8ec1ca461aec0a6fff9da523d0e54c34c145c3ac33a1b39d620ee2a231455e5",
+              "method": "0.25 mm support samples, bead width and native cylinder interiors at each layer midplane"
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 4,
+      "name": "B \u00b7 BMR \u00b7 upper module",
+      "parts": [
+        "stock_upper_bmr"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "tower": 7258,
+          "support": 5379,
+          "model": 369299,
+          "interface": 437
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              26.363,
+              6.497222595116092,
+              0.2
+            ],
+            [
+              240.383,
+              268.391,
+              25.16
+            ]
+          ],
+          "1": [
+            [
+              36.363,
+              11.444,
+              6.92
+            ],
+            [
+              199.615,
+              266.672,
+              24.04
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          6.92,
+          7.08,
+          7.24,
+          15.24,
+          15.4,
+          23.56,
+          23.72,
+          23.88
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 168120,
+          "first_extrusion_line_number": 168135,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "stock_upper_bmr",
+          "object_settings": {},
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {
+            "native_bores": {
+              "status": "pass",
+              "bore_count": 17,
+              "support_samples": 906768,
+              "minimum_clearance_mm": 1.2694279832142445,
+              "definition_sha256": "c6f9f588f7d225852bcd1ee1f8bb055a2f89e28a39ec855360f112ac255dbbcb",
+              "method": "0.25 mm support samples, bead width and native cylinder interiors at each layer midplane"
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 5,
+      "name": "C \u00b7 ND25FN-4 tweeters right \u00b7 vase + caps",
+      "parts": [
+        "stock_nd25fn4_tweeters_right_upper",
+        "stock_nd25fn4_tweeters_right_cap_front",
+        "stock_nd25fn4_tweeters_right_cap_rear"
+      ],
+      "tower_xy_mm": [
+        213.0,
+        139.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "support": 88974,
+          "model": 1098613,
+          "tower": 13314,
+          "interface": 37118
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              33.00027686184217,
+              7.6930000000000005,
+              0.2
+            ],
+            [
+              307.9852361064528,
+              201.17316316389378,
+              41.16
+            ]
+          ],
+          "1": [
+            [
+              35.041,
+              9.982999999999999,
+              0.2
+            ],
+            [
+              305.783,
+              189.776,
+              36.84
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          0.2,
+          0.36,
+          0.52,
+          0.68,
+          0.84,
+          1.0,
+          1.16,
+          1.32,
+          1.48,
+          1.64,
+          1.8,
+          1.96,
+          2.12,
+          2.28,
+          2.44,
+          2.6,
+          2.76,
+          2.92,
+          3.08,
+          3.24,
+          3.4,
+          3.56,
+          3.72,
+          3.88,
+          4.04,
+          4.2,
+          4.36,
+          4.52,
+          4.68,
+          4.84,
+          5.0,
+          5.16,
+          5.32,
+          5.48,
+          5.64,
+          5.8,
+          5.96,
+          6.12,
+          6.28,
+          6.44,
+          6.6,
+          6.76,
+          6.92,
+          7.08,
+          7.24,
+          7.4,
+          7.56,
+          7.72,
+          7.88,
+          8.04,
+          8.2,
+          8.36,
+          8.52,
+          8.68,
+          8.84,
+          9.0,
+          9.16,
+          9.32,
+          9.48,
+          9.64,
+          9.8,
+          9.96,
+          10.12,
+          10.28,
+          10.44,
+          10.6,
+          12.36,
+          12.52,
+          12.68,
+          12.84,
+          13.48,
+          13.64,
+          13.8,
+          15.88,
+          16.04,
+          16.2,
+          16.36,
+          16.52,
+          16.68,
+          16.84,
+          18.44,
+          18.6,
+          18.76,
+          19.4,
+          19.56,
+          19.72,
+          27.56,
+          27.72,
+          27.88,
+          33.32,
+          33.48,
+          33.64,
+          33.8,
+          33.96,
+          34.12,
+          36.04,
+          36.2,
+          36.36,
+          36.52,
+          36.68
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "stock_nd25fn4_tweeters_right_upper",
+          "object_settings": {},
+          "supports": {
+            "candidates/nd25fn4_vase/stock/support_blockers/nd25fn4_vase_stock_tweeters_right_upper.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 41037,
+              "duct_capsule_segment_count": 31,
+              "candidate_distance_checks": 660,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 1.7654205186122467,
+              "closest_approach": {
+                "gcode_line_number": 840267,
+                "layer_z_mm": 17.48,
+                "feature": "Support",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "vase_rear_t_lane_lumen",
+                "centerline_distance_mm": 4.385576730483889,
+                "duct_radius_mm": 2.3,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 1.7654205186122467
+              }
+            }
+          }
+        },
+        {
+          "part": "stock_nd25fn4_tweeters_right_cap_front",
+          "object_settings": {
+            "sparse_infill_density": "15%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "supports": {}
+        },
+        {
+          "part": "stock_nd25fn4_tweeters_right_cap_rear",
+          "object_settings": {
+            "sparse_infill_density": "15%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 6,
+      "name": "C \u00b7 ND25FN-4 tweeters left \u00b7 vase + caps",
+      "parts": [
+        "stock_nd25fn4_tweeters_left_upper",
+        "stock_nd25fn4_tweeters_left_cap_front",
+        "stock_nd25fn4_tweeters_left_cap_rear"
+      ],
+      "tower_xy_mm": [
+        262.0,
+        76.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "support": 90061,
+          "model": 1047828,
+          "tower": 13314,
+          "interface": 37018
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              33.00282978864569,
+              7.998089541873141,
+              0.2
+            ],
+            [
+              302.9826503877035,
+              203.483,
+              41.16
+            ]
+          ],
+          "1": [
+            [
+              35.041,
+              9.76,
+              0.2
+            ],
+            [
+              300.783,
+              201.14000000000001,
+              36.84
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          0.2,
+          0.36,
+          0.52,
+          0.68,
+          0.84,
+          1.0,
+          1.16,
+          1.32,
+          1.48,
+          1.64,
+          1.8,
+          1.96,
+          2.12,
+          2.28,
+          2.44,
+          2.6,
+          2.76,
+          2.92,
+          3.08,
+          3.24,
+          3.4,
+          3.56,
+          3.72,
+          3.88,
+          4.04,
+          4.2,
+          4.36,
+          4.52,
+          4.68,
+          4.84,
+          5.0,
+          5.16,
+          5.32,
+          5.48,
+          5.64,
+          5.8,
+          5.96,
+          6.12,
+          6.28,
+          6.44,
+          6.6,
+          6.76,
+          6.92,
+          7.08,
+          7.24,
+          7.4,
+          7.56,
+          7.72,
+          7.88,
+          8.04,
+          8.2,
+          8.36,
+          8.52,
+          8.68,
+          8.84,
+          9.0,
+          9.16,
+          9.32,
+          9.48,
+          9.64,
+          9.8,
+          9.96,
+          10.12,
+          10.28,
+          10.44,
+          10.6,
+          12.36,
+          12.52,
+          12.68,
+          12.84,
+          13.48,
+          13.64,
+          13.8,
+          15.88,
+          16.04,
+          16.2,
+          16.36,
+          16.52,
+          16.68,
+          16.84,
+          18.44,
+          18.6,
+          18.76,
+          19.4,
+          19.56,
+          19.72,
+          27.56,
+          27.72,
+          27.88,
+          33.32,
+          33.48,
+          33.64,
+          33.8,
+          33.96,
+          34.12,
+          36.04,
+          36.2,
+          36.36,
+          36.52,
+          36.68
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "stock_nd25fn4_tweeters_left_upper",
+          "object_settings": {},
+          "supports": {
+            "candidates/nd25fn4_vase/stock/support_blockers/nd25fn4_vase_stock_tweeters_left_upper.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 29641,
+              "duct_capsule_segment_count": 18,
+              "candidate_distance_checks": 36,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 2.652861707538561,
+              "closest_approach": {
+                "gcode_line_number": 786360,
+                "layer_z_mm": 17.48,
+                "feature": "Support",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "vase_rear_t_lane_lumen",
+                "centerline_distance_mm": 5.273017919410203,
+                "duct_radius_mm": 2.3,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 2.652861707538561
+              }
+            }
+          }
+        },
+        {
+          "part": "stock_nd25fn4_tweeters_left_cap_front",
+          "object_settings": {
+            "sparse_infill_density": "15%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "supports": {}
+        },
+        {
+          "part": "stock_nd25fn4_tweeters_left_cap_rear",
+          "object_settings": {
+            "sparse_infill_density": "15%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 7,
+      "name": "Wings for A \u00b7 A shoulders (4 pieces)",
+      "parts": [
+        "stock_a_shoulder_bottom_left_1_of_4",
+        "stock_a_shoulder_top_left_2_of_4",
+        "stock_a_shoulder_bottom_right_3_of_4",
+        "stock_a_shoulder_top_right_4_of_4"
+      ],
+      "tower_xy_mm": [
+        167.0,
+        47.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 105462
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              30.278000000000002,
+              5.2620000000000005,
+              0.2
+            ],
+            [
+              300.617,
+              65.311,
+              18.28
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 74711,
+          "first_extrusion_line_number": 74730,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "stock_a_shoulder_bottom_left_1_of_4",
+          "object_settings": {
+            "enable_support": "0",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        },
+        {
+          "part": "stock_a_shoulder_top_left_2_of_4",
+          "object_settings": {
+            "enable_support": "0",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        },
+        {
+          "part": "stock_a_shoulder_bottom_right_3_of_4",
+          "object_settings": {
+            "enable_support": "0",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        },
+        {
+          "part": "stock_a_shoulder_top_right_4_of_4",
+          "object_settings": {
+            "enable_support": "0",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 8,
+      "name": "Wings for A \u00b7 B1 wings left + right",
+      "parts": [
+        "stock_b1_wing_left_1_of_2",
+        "stock_b1_wing_right_2_of_2"
+      ],
+      "tower_xy_mm": [
+        270.0,
+        68.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 100259
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              30.268,
+              5.266,
+              0.2
+            ],
+            [
+              284.616,
+              81.11800000000001,
+              18.28
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 55587,
+          "first_extrusion_line_number": 55606,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "stock_b1_wing_left_1_of_2",
+          "object_settings": {
+            "enable_support": "0",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        },
+        {
+          "part": "stock_b1_wing_right_2_of_2",
+          "object_settings": {
+            "enable_support": "0",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    }
+  ],
+  "project_sha256": "f55c3e189da851bfd539a9f2f4f1435afc110927b35d3322294aad5d178a58ca",
+  "sliced_project": "to_print/stock/stock_floor_stand.petg-gf.gcode.3mf",
+  "sliced_project_sha256": "86c6c2318925e256169a2fc0997a9ffb26a2a62f5e87f10ac630d52fe84dc3bd"
+}
