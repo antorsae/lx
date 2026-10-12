@@ -1,0 +1,10 @@
+# 2026-10-10 19:21 taper_above_portrait.log
+obiwan_amt17d2_um_t_above {'volume_cm3': np.float64(39.9), 'bounds_mm': [[-52.64, 310.87, 1.46], [52.64, 488.75, 18.3]], 'watertight': True, 'driver_clash_mm3': 0.0, 'step': None, 'method': 'mesh bool
+amt17d2_1 portrait um_t_above T duct D4.0: min bend R22.2, exposed 1015 of 7608 [[44.4, 385.5, 10.4], [44.3, 385.4, 9.9], [44.1, 385.3, 9.4]]
+amt17d2_1 portrait um_t_above pilot (-23.5,415.8) depth 4.00 wall 1.70 floor 2.00
+amt17d2_1 portrait um_t_above pilot (-23.5,484.8) depth 4.00 wall 1.70 floor 2.00
+amt17d2_1 portrait um_t_above pilot (23.5,415.8) depth 4.00 wall 1.70 floor 2.00
+amt17d2_1 portrait um_t_above pilot (23.5,484.8) depth 4.00 wall 1.70 floor 2.00
+amt17d2_1 portrait um_t_above front: max z 18.30 (front plane 18.3); vertices proud of it 0
+amt17d2_1 portrait um_t_above bodies 1 watertight True vol 39.9 cm3
+amt17d2_1 portrait T-above taper: d 6.0->4.0 over 15.9 mm; skin exposed 0 of 1872; void open (not solid inside) 1872 of 1872; watertight True
