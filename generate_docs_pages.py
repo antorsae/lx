@@ -50,10 +50,10 @@ SET_DESCRIPTIONS = {
         "stayed at the seat, 114 cm high and 85 cm in front of the rear wall, while the speaker "
         "turned from 0 deg (baffle facing the wall) to 90 deg in 10 deg steps. Angles are "
         "speaker rotation, not off-axis angle: both speakers point at the seat near 45-50 deg, "
-        "so 0 and 90 deg are each about 45 deg off-axis. Gated at 4.2 ms, before the rear-wall "
+        "so 0 and 90 deg are each about 45 deg off-axis. Gated at 3 ms, before the rear-wall "
         "reflection (4.4-4.7 ms), with 1/12-octave smoothing, so the plots show what the "
         "speakers radiate toward the seat; Juan's ungated screenshots include the wall, which "
-        "fills in the low rotations. The LX521.4 dips 8-15 dB at 5-7 kHz at every rotation; "
+        "fills in the low rotations. The LX521.4 dips 10-14 dB at 5-7 kHz at every rotation; "
         "BATMAN does not near on-axis. The polar explorer is relative to the 0 deg rotation; "
         "there are no DI or beamwidth pages, since those take 0 deg as on-axis."
     ),

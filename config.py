@@ -235,12 +235,12 @@ MEASUREMENT_SETS = {
         "output_dir": OUTPUT_DIR / "juan-sweetspot",
         # The rear wall is 85 cm behind the mic; its reflection arrives
         # 4.4-4.7 ms after the direct sound and is strongest (3-8 dB down) at
-        # 0-20 deg, where the speaker faces it. The 4.2 ms gate (from REW's IR
-        # start) ends before it, so the plots show what the speakers radiate
-        # toward the seat. Juan's ungated screenshots include the wall, which
-        # fills in the low rotations. 1/12-octave smoothing keeps single
-        # frequencies in the polar explorer off narrow notches.
-        "gate_right_ms": 4.2,
+        # 0-20 deg, where the speaker faces it. The default 3 ms gate ends
+        # before it and before a weaker arrival at 3.1-3.4 ms, so the plots
+        # show what the speakers radiate toward the seat. Juan's ungated
+        # screenshots include the wall, which fills in the low rotations.
+        # 1/12-octave smoothing keeps single frequencies in the polar explorer
+        # off narrow notches.
         "smoothing": 12,
         "direct_ir_peak_policy": "ir-start",
         "measurement_metadata_overrides": {

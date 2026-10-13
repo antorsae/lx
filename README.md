@@ -137,25 +137,29 @@ turned from 0°, with the baffle facing the wall, to 90° in 10° steps
 (`LX521 {rotation} DEG FRONT` and `BATM {rotation} DEG FRONT`, loaded with the
 `juan_360` pattern), so the angles are speaker rotation, not off-axis angle. The
 LX521.4 responses mirror about 45°: 40/50°, 30/60°, 20/70°, 10/80° and 0/90° agree
-within 1.1 dB RMS above 1 kHz, against 1.9-2.3 dB for an axis at 40° or 50°. BATMAN
+within 1.2 dB RMS above 1 kHz, against 2.3-2.5 dB for an axis at 40° or 50°. BATMAN
 mirrors less well (about 3 dB RMS), as its turntable set already showed its two sides
 differ, and its treble peaks near 50°. So both point at the seat near 45-50°, and 0°
 and 90° are each about 45° off-axis.
 
-The set is gated at 4.2 ms from REW's IR start, with 1/12-octave smoothing. The rear
-wall's reflection arrives 4.4-4.7 ms after the direct sound and is strongest at 0-20°,
-only 3-8 dB below the direct sound, where the speaker faces the wall; the gate ends
-before it, so the plots show what the speakers radiate toward the seat. A weaker
-arrival at 3.1-3.4 ms, 12-24 dB down, falls in the gate's taper. Above 3 kHz a 3 ms
-gate gives nearly the same curves (95% of points within 1.2 dB), but lower down the
-result depends on the gate length: in the LX521.4's 1-3 kHz region single frequencies
-move by up to 14 dB, and both gates show its direct sound well below the in-room level
-around 1.3-1.8 kHz, most at 0° and 90°. Juan's ungated screenshots
-include the wall and the rest of the room, which fill in the low rotations: above
-2 kHz the spread between rotations at one frequency is a median of 2-4 dB ungated
-against 5-10 dB gated (both with 1/12-octave smoothing), and at most 7-10 dB against
-19-22 dB. Gated, the LX521.4 dips 8-15 dB at 5-7 kHz at every rotation, including 40°
-and 50° (18-37 dB deep unsmoothed); the room fills these in to a shallow dip. The
+The set uses the site's usual 0.5 ms / 3.0 ms gate from REW's IR start, with
+1/12-octave smoothing. The rear wall's reflection arrives 4.4-4.7 ms after the direct
+sound and is strongest at 0-20°, only 3-8 dB below the direct sound, where the speaker
+faces the wall; the gate ends before it and before a weaker arrival at 3.1-3.4 ms
+(12-24 dB down), so the plots show what the speakers radiate toward the seat. Inside
+the gate, arrivals from 1.7 ms on are at least 19 dB down; the ones within 1 ms, 11-17
+dB down, come from the speakers themselves, since no room surface is close enough to
+reflect that early. A 4.2 ms gate, the longest
+that still ends before the wall, gives nearly the same curves above 3 kHz (95% of
+points within 1.2 dB), but in the LX521.4's 1-3 kHz region single frequencies move by
+up to 14 dB, so that region depends on the gate; both gates show its direct sound well
+below the in-room level around 1.3-1.8 kHz, most at 0° and 90°. Juan's ungated
+screenshots include the wall and the rest of the room, which fill in the low rotations:
+above 2 kHz the spread between rotations at one frequency is a median of 2-4 dB
+ungated against 6-10 dB gated (both with 1/12-octave smoothing), and at most 7-10 dB
+against 19-22 dB. Gated, the LX521.4 dips 10-14 dB at 5-7 kHz at every rotation,
+including 40° and 50° (18-37 dB deep unsmoothed); the room fills these in to a shallow
+dip. The
 published `lx521-system` set (UM inverted, 50 cm) has no such dip on-axis, and BATMAN
 has none near on-axis. Juan's BATMAN note says "EN EXTERIOR", as on the turntable set,
 but its impulse responses show the same room reflections as the LX521.4 sweep.
