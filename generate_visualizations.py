@@ -103,6 +103,12 @@ from directivity_calculations import (
 )
 
 
+# Polar range for a speaker turned at the seat: the usual -40 dB floor, with
+# room above 0 dB because its 0 deg rotation is off-axis and the rotations
+# aiming at the seat reach +22 dB above it.
+ROTATION_POLAR_LIMITS_DB = (-40, 25)
+
+
 def log_bin_frequency(freq, *arrays):
     """Average responses into 1/N-octave frequency bins for interactive plots.
 
@@ -164,7 +170,8 @@ class PolarResponseVisualizer:
     """Generate comprehensive polar response visualizations"""
 
     def __init__(self, data_path: str = None, static_plots_dir: Path = None,
-                 interactive_plots_dir: Path = None, require_directivity: bool = True):
+                 interactive_plots_dir: Path = None, require_directivity: bool = True,
+                 rotation_at_seat: bool = False):
         """
         Initialize visualizer
 
@@ -175,9 +182,13 @@ class PolarResponseVisualizer:
             require_directivity: When False, accept drivers with fewer than two
                 angles and skip directivity metrics. Used for on-axis-only sets
                 that only produce frequency response output.
+            rotation_at_seat: The angles are the speaker's rotation in front of
+                a mic fixed at the listening seat, not off-axis angles; plots
+                label them as rotation and show every one.
         """
         if data_path is None:
             data_path = config.HDF5_FILE_PATH
+        self.rotation_at_seat = rotation_at_seat
 
         # Set output directories (use provided or fall back to config defaults)
         self.static_plots_dir = Path(static_plots_dir) if static_plots_dir else config.STATIC_PLOTS_DIR
@@ -509,7 +520,19 @@ class PolarResponseVisualizer:
 
         return int(np.abs(freq - target_freq).argmin())
 
-    def _build_polar_step_entry(self, res: dict, target_freq: float, use_rear: bool):
+    def _build_rotation_polar_data(self, res, freq_idx: int):
+        """Polar data for a speaker turned at the seat: each capture at its rotation.
+
+        Levels are relative to the 0 deg rotation like the other polar plots,
+        and nothing is mirrored.
+        """
+        angles = np.asarray(res['angles'], dtype=float)
+        spl = res['spl_matrix'][freq_idx, :]
+        spl_normalized = np.clip(spl - spl[np.abs(angles).argmin()], *ROTATION_POLAR_LIMITS_DB)
+        return np.radians(angles), spl_normalized
+
+    def _build_polar_step_entry(self, res: dict, target_freq: float, use_rear: bool,
+                                rotation: bool = False):
         """Build one driver's polar step, empty when the driver has no data there."""
         freq_idx = self._find_driver_freq_index(res, target_freq)
         if freq_idx is None:
@@ -518,7 +541,10 @@ class PolarResponseVisualizer:
             # drawing a polar line for frequencies outside its measured range.
             return {'theta': [0], 'r': [None], 'available': False}
 
-        angles_rad, spl_norm = self._build_polar_data_from_result(res, freq_idx, use_rear=use_rear)
+        if rotation:
+            angles_rad, spl_norm = self._build_rotation_polar_data(res, freq_idx)
+        else:
+            angles_rad, spl_norm = self._build_polar_data_from_result(res, freq_idx, use_rear=use_rear)
         return {'theta': np.degrees(angles_rad), 'r': spl_norm, 'available': True}
 
     def _load_extra_set_data(self, set_name: str):
@@ -636,6 +662,22 @@ class PolarResponseVisualizer:
             fig.update_layout(yaxis_range=[0, 180])
             fig.write_html(self.interactive_plots_dir / 'beamwidth_comparison.html', include_plotlyjs='cdn')
 
+    def _rotation_curves(self, angles, spl_matrix):
+        """(label, color, dashed, spl) for every rotation of a speaker turned at the seat.
+
+        Rotations equally far from the middle of the sweep share a color, the
+        later one dashed, so a speaker that points at the seat mid-sweep shows
+        as pairs of overlapping curves.
+        """
+        middle = (angles.min() + angles.max()) / 2
+        offsets = sorted({abs(a - middle) for a in angles})
+        palette = ['black', 'green', 'royalblue', 'darkorange', 'red']
+        return [
+            (f'{angle:g}°', palette[offsets.index(abs(angle - middle)) % len(palette)],
+             angle > middle, spl_matrix[:, i])
+            for i, angle in enumerate(angles)
+        ]
+
     def plot_frequency_response_by_angle(self, save_static=True, save_interactive=True):
         """Generate frequency response plots for each driver at multiple angles.
 
@@ -662,15 +704,20 @@ class PolarResponseVisualizer:
             spl_matrix = res['spl_matrix']  # Shape: [n_freqs, n_angles]
             left_spl_matrix = res.get('left_spl_matrix')
 
-            # (label, color, dashed, spl): a full turntable rotation adds the
-            # 180-360 deg half as dashed negative angles
-            curves = []
-            for angle, color, label in angle_config:
-                angle_matches = np.where(angles == angle)[0]
-                if len(angle_matches) > 0:
-                    curves.append((label, color, False, spl_matrix[:, angle_matches[0]]))
-                    if left_spl_matrix is not None and angle > 0:
-                        curves.append((f'−{angle}°', color, True, left_spl_matrix[:, angle_matches[0]]))
+            if self.rotation_at_seat:
+                curves = self._rotation_curves(angles, spl_matrix)
+                title = f'{driver} - Response at the Seat by Speaker Rotation'
+            else:
+                # (label, color, dashed, spl): a full turntable rotation adds the
+                # 180-360 deg half as dashed negative angles
+                curves = []
+                for angle, color, label in angle_config:
+                    angle_matches = np.where(angles == angle)[0]
+                    if len(angle_matches) > 0:
+                        curves.append((label, color, False, spl_matrix[:, angle_matches[0]]))
+                        if left_spl_matrix is not None and angle > 0:
+                            curves.append((f'−{angle}°', color, True, left_spl_matrix[:, angle_matches[0]]))
+                title = f'{driver} - Frequency Response at Multiple Angles'
 
             if save_static:
                 fig, ax = plt.subplots(figsize=config.FIG_SIZE_STATIC)
@@ -682,8 +729,8 @@ class PolarResponseVisualizer:
                 self._add_static_grid(ax)
                 ax.set_xlabel('Frequency (Hz)')
                 ax.set_ylabel('SPL (dB)')
-                ax.set_title(f'{driver} - Frequency Response at Multiple Angles', fontweight='bold')
-                ax.legend(loc='lower left')
+                ax.set_title(title, fontweight='bold')
+                ax.legend(loc='lower left', ncol=2 if self.rotation_at_seat else 1)
                 ax.set_xlim(config.FREQ_MIN, config.FREQ_MAX)
 
                 # Add horizontal lines at 5 dB increments
@@ -703,9 +750,10 @@ class PolarResponseVisualizer:
                 plt.savefig(self.static_plots_dir / f'core/{driver}_freq_response_angles.png')
                 plt.close()
 
-                # Generate NORMALIZED version (on-axis = 0 dB reference)
-                # Find on-axis (0°) data
-                onaxis_matches = np.where(angles == 0)[0]
+                # Generate NORMALIZED version (on-axis = 0 dB reference). A
+                # speaker turned at the seat starts off-axis, so its other
+                # rotations rise past this plot's +5 dB limit.
+                onaxis_matches = [] if self.rotation_at_seat else np.where(angles == 0)[0]
                 if len(onaxis_matches) > 0:
                     onaxis_idx = onaxis_matches[0]
                     onaxis_spl = spl_matrix[:, onaxis_idx]
@@ -771,10 +819,12 @@ class PolarResponseVisualizer:
                         fig.add_hline(y=y_val, line_dash="dot", line_color="gray", opacity=0.4)
 
                 fig.update_layout(
-                    title=f'{driver} - Frequency Response at Multiple Angles',
+                    title=title,
                     xaxis_title='Frequency (Hz)',
                     yaxis_title='SPL (dB)',
-                    legend=dict(x=0.02, y=0.02, xanchor='left', yanchor='bottom')
+                    # Ten rotations would cover the curves inside the plot
+                    legend=(dict(title='Rotation') if self.rotation_at_seat else
+                            dict(x=0.02, y=0.02, xanchor='left', yanchor='bottom'))
                 )
                 self._write_compressed_html(
                     fig,
@@ -840,6 +890,10 @@ class PolarResponseVisualizer:
             ("juan-batman", "Juan BATMAN outdoor 360", "loadExtraJuanBatmanBtn"),
             ("kaspar", "Kaspar LX521 outdoor 1 m (DSP)", "loadExtraKasparBtn"),
         ]
+        # Speaker rotations do not line up with the other sets' off-axis angles
+        if self.rotation_at_seat:
+            extra_set_specs = []
+        angle_word = "Rotation" if self.rotation_at_seat else "Angle"
         extra_datasets = {}
         for extra_set_name, extra_label, extra_button_id in extra_set_specs:
             mset = config.MEASUREMENT_SETS.get(extra_set_name, {})
@@ -1594,7 +1648,7 @@ class PolarResponseVisualizer:
                     <button onclick="resetTimingAdjustments()" title="Clear per-driver delay and invert adjustments">Clear Delay/Invert</button>
                 </div>
 	
-	            <h3>Angles</h3>
+	            <h3>{angle_word}s</h3>
 	            <div class="quick-select">
 	                <button class="quick-btn" onclick="selectAngles([0])">0° only</button>
 	                <button class="quick-btn" onclick="selectAngles([0,30,60,90])">0/30/60/90</button>
@@ -1661,7 +1715,7 @@ class PolarResponseVisualizer:
                             <input type="number" id="optFreqMax" value="10000" min="20" max="20000" onchange="saveUiStateToLocalStorage()"> Hz
                         </div>
                         <div class="opt-param">
-                            <label>Reference Angle:</label>
+                            <label>Reference {angle_word}:</label>
                             <select id="optRefAngle" onchange="saveUiStateToLocalStorage()"></select>
                         </div>
                         <div class="opt-buttons">
@@ -4797,6 +4851,13 @@ class PolarResponseVisualizer:
             title_suffix = "Absolute SPL"
             cmap_name = 'RdYlBu_r'
 
+        contour_title = f'Polar Response Contour ({title_suffix}){title_360}'
+        y_name = 'Angle'
+        if self.rotation_at_seat:
+            y_title = 'Speaker rotation (degrees; mic fixed at the seat)'
+            contour_title = f'Response at the Seat by Speaker Rotation ({title_suffix})'
+            y_name = 'Rotation'
+
         if save_static:
             fig_height = 12 if has_rear and rear_spl_matrix is not None else 8
             fig, ax = plt.subplots(figsize=(14, fig_height))
@@ -4866,7 +4927,7 @@ class PolarResponseVisualizer:
             ax.set_ylabel(y_title)
             if full_circle:
                 ax.set_yticks(np.arange(-180, 181, 30))
-            ax.set_title(f'{driver} - Polar Response Contour ({title_suffix}){title_360}', fontweight='bold')
+            ax.set_title(f'{driver} - {contour_title}', fontweight='bold')
             ax.set_xlim(config.FREQ_MIN, config.FREQ_MAX)
             ax.set_ylim(y_lim)
             cbar = fig.colorbar(contour, ax=ax, label=cbar_label)
@@ -4904,7 +4965,7 @@ class PolarResponseVisualizer:
                             [0.6, '#00FF00'], [0.8, '#FFFF00'], [1, '#FF0000']],
                 zmin=vmin, zmax=vmax,
                 colorbar=dict(title=cbar_label),
-                hovertemplate="Frequency: %{x:.1f} Hz<br>Angle: %{y:.1f}°<br>Level: %{z:.2f} dB<extra></extra>"
+                hovertemplate=f"Frequency: %{{x:.1f}} Hz<br>{y_name}: %{{y:.1f}}°<br>Level: %{{z:.2f}} dB<extra></extra>"
             ))
 
             # Add horizontal line at 90° for reference when showing rear data
@@ -4929,7 +4990,7 @@ class PolarResponseVisualizer:
                 ]
 
             fig.update_layout(
-                title=f'{driver} - Polar Response Contour ({title_suffix}){title_360}',
+                title=f'{driver} - {contour_title}',
                 yaxis_title=y_title,
                 yaxis_range=list(y_lim),
                 annotations=annotations
@@ -5245,7 +5306,8 @@ class PolarResponseVisualizer:
             step_data = []
             for driver in self.drivers:
                 step_data.append(
-                    self._build_polar_step_entry(self.calc_results[driver], target_freq, use_rear=any_has_rear)
+                    self._build_polar_step_entry(self.calc_results[driver], target_freq,
+                                                 use_rear=any_has_rear, rotation=self.rotation_at_seat)
                 )
             all_step_data.append(step_data)
 
@@ -5308,6 +5370,21 @@ class PolarResponseVisualizer:
                 showticklabels=True,
                 ticklabelstep=2
             )
+        elif self.rotation_at_seat:
+            # The measured rotations as a sector, the middle of the sweep at
+            # the top; levels are relative to the 0 deg rotation
+            rotations = sorted({int(a) for d in self.drivers for a in self.calc_results[d]['angles']})
+            middle = (rotations[0] + rotations[-1]) / 2
+            half_span = (rotations[-1] - rotations[0]) / 2
+            angular_axis = dict(
+                direction="clockwise",
+                rotation=90 + middle,
+                gridcolor='lightgray',
+                tickmode="array",
+                tickvals=rotations,
+                ticktext=[f"{a}°" for a in rotations]
+            )
+            limit_min, limit_max = ROTATION_POLAR_LIMITS_DB
         else:
             angular_axis = dict(
                 direction="clockwise",
@@ -5356,11 +5433,15 @@ class PolarResponseVisualizer:
         )
         if any_has_rear:
             polar_config["domain"] = dict(x=[0.05, 0.95], y=[0.14, 0.98])
+        if self.rotation_at_seat:
+            polar_config["sector"] = [90 - half_span, 90 + half_span]
+            radial_axis["title"] = dict(text="dB re 0° rotation")
 
         # Layout
         layout = go.Layout(
             title=dict(
-                text="<b>Polar Response Explorer</b>" + (" (360°)" if any_has_rear else ""),
+                text=("<b>Polar Explorer by Speaker Rotation</b>" if self.rotation_at_seat else
+                      "<b>Polar Response Explorer</b>" + (" (360°)" if any_has_rear else "")),
                 font=dict(size=24),
                 y=0.95,
                 x=0.5,
@@ -5410,6 +5491,9 @@ class PolarResponseVisualizer:
             ("juan-lx521-top-raw", "Juan top-baffle raw drivers", "loadExtraPolarJuanTopBaffleBtn"),
             ("juan-batman", "Juan BATMAN outdoor 360", "loadExtraPolarJuanBatmanBtn"),
         ]
+        # Speaker rotations do not line up with the other sets' off-axis angles
+        if self.rotation_at_seat:
+            extra_set_specs = []
         base_step_data = [
             [
                 {

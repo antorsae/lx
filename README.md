@@ -127,6 +127,45 @@ than the direct sound, so REW's t=0 sits on the reflection, but its IR start sti
 marks the direct arrival. Juan's `PANTALLAZOS` screenshots are ungated, so their
 70-110° curves are dominated by those reflections.
 
+The **juan-sweetspot** set publishes `LX521_4 MGNEO 0_90 DESDE SWEETSPOT.zip` and
+`BATMAN 0_90 DESDE SWEETSPOT.zip`: Juan's LX521.4 MGNEO and BATMAN (nested tweeters),
+each as the right speaker with the UM not inverted at PB -20 dB, measured on
+13 October 2026 from the same listening seat, 20 minutes apart. The mic sat 114 cm
+high, 85 cm in front of the rear wall, and aimed at the front wall, with the speaker
+distance not recorded and no timing reference. It stayed at the seat while the speaker
+turned from 0°, with the baffle facing the wall, to 90° in 10° steps
+(`LX521 {rotation} DEG FRONT` and `BATM {rotation} DEG FRONT`, loaded with the
+`juan_360` pattern), so the angles are speaker rotation, not off-axis angle. The
+LX521.4 responses mirror about 45°: 40/50°, 30/60°, 20/70°, 10/80° and 0/90° agree
+within 1.1 dB RMS above 1 kHz, against 1.9-2.3 dB for an axis at 40° or 50°. BATMAN
+mirrors less well (about 3 dB RMS), as its turntable set already showed its two sides
+differ, and its treble peaks near 50°. So both point at the seat near 45-50°, and 0°
+and 90° are each about 45° off-axis.
+
+The set is gated at 4.2 ms from REW's IR start, with 1/12-octave smoothing. The rear
+wall's reflection arrives 4.4-4.7 ms after the direct sound and is strongest at 0-20°,
+only 3-8 dB below the direct sound, where the speaker faces the wall; the gate ends
+before it, so the plots show what the speakers radiate toward the seat. A weaker
+arrival at 3.1-3.4 ms, 12-24 dB down, falls in the gate's taper. Above 3 kHz a 3 ms
+gate gives nearly the same curves (95% of points within 1.2 dB), but lower down the
+result depends on the gate length: in the LX521.4's 1-3 kHz region single frequencies
+move by up to 14 dB, and both gates show its direct sound well below the in-room level
+around 1.3-1.8 kHz, most at 0° and 90°. Juan's ungated screenshots
+include the wall and the rest of the room, which fill in the low rotations: above
+2 kHz the spread between rotations at one frequency is a median of 2-4 dB ungated
+against 5-10 dB gated (both with 1/12-octave smoothing), and at most 7-10 dB against
+19-22 dB. Gated, the LX521.4 dips 8-15 dB at 5-7 kHz at every rotation, including 40°
+and 50° (18-37 dB deep unsmoothed); the room fills these in to a shallow dip. The
+published `lx521-system` set (UM inverted, 50 cm) has no such dip on-axis, and BATMAN
+has none near on-axis. Juan's BATMAN note says "EN EXTERIOR", as on the turntable set,
+but its impulse responses show the same room reflections as the LX521.4 sweep.
+
+The set has no DI or beamwidth pages. Its polar explorer draws each capture at its
+rotation, relative to the 0° rotation like the other polar explorers, from -40 to
++25 dB because the rotations aiming at the seat reach 22 dB above 0°; nothing is
+mirrored. Each angle page draws every rotation, with mirror pairs in one color and the
+later one dashed, and the frequency explorer overlays the two speakers at any rotation.
+
 ## Usage
 
 ### Enable REW API
@@ -186,6 +225,7 @@ output/
 │   ├── polar_data_andres.h5                  # Legacy strongest-lobe diagnostic
 │   ├── polar_data_juan_baffleless.h5         # Processed data (juan-baffleless set)
 │   ├── polar_data_juan_batman.h5             # Processed data (juan-batman set)
+│   ├── polar_data_juan_sweetspot.h5          # Processed data (juan-sweetspot set)
 │   ├── polar_data_kaspar.h5                  # Processed data (kaspar set, on-axis only)
 │   └── polar_data_lx521_system.h5            # Processed data (lx521-system set)
 ├── andres/                            # Visualizations for andres set
@@ -202,6 +242,9 @@ output/
 ├── juan-batman/                       # Visualizations for juan-batman set
 │   ├── static_plots/
 │   └── interactive/
+├── juan-sweetspot/                    # Speakers turned at the seat: no polar/DI plots
+│   ├── static_plots/
+│   └── interactive/
 └── kaspar/                            # On-axis-only set: no static/polar plots
     └── interactive/                   # Frequency response explorer + summary
 ```
@@ -215,6 +258,21 @@ response explorer and measurement summary are generated. Such a set is still
 offered as a loadable overlay in every other set's explorer, but it is not
 interpolated onto their angle grids — its curves are simply hidden at angles
 it was not measured at.
+
+### Speaker Rotated at the Seat
+
+A set whose captures turn the speaker in front of a mic fixed at the listening
+seat, starting off-axis, sets `"speaker_rotation_at_seat": True`. Its angles are
+speaker rotation, so the pipeline writes only the frequency response by rotation
+(every rotation, instead of the 0/30/60/90° selection), the frequency explorer, a polar
+explorer by rotation, the absolute contour with a rotation axis, and the measurement
+summary. The polar explorer shows the measured rotations as a sector, with levels
+relative to the 0° rotation and room above 0 dB, since 0° is off-axis and other
+rotations are louder. Directivity, beamwidth, crossover and static polar plots take 0° as
+on-axis and are skipped. So are the normalized contour and frequency response plots,
+whose scales stop a few dB above 0 dB. Rotations do not line up with off-axis angles,
+so such a set's explorers offer no other set as an overlay, and the other sets'
+explorers do not offer it either.
 
 Per-set `gate_left_ms`, `gate_right_ms` and `smoothing` keys override the
 `config.py` defaults, for captures where the default 0.5/3.0 ms gate would

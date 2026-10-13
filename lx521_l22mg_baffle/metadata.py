@@ -518,12 +518,14 @@ def _text_attr(value: object) -> str | None:
 def parse_distance_m(text: str) -> float | None:
     """Parse measurement distance from common Spanish/REW note fragments."""
 
+    # A length followed by "altura" or "high" is the mic height, not the distance
+    not_height = r"(?!\s*(?:de\s+)?(?:altura|alto|high|height)\b)"
     candidates = []
-    for match in re.finditer(r"(?<![-\d.])(\d+(?:[.,]\d+)?)\s*(?:m|metros?)\b", text, re.IGNORECASE):
+    for match in re.finditer(r"(?<![-\d.])(\d+(?:[.,]\d+)?)\s*(?:m|metros?)\b" + not_height, text, re.IGNORECASE):
         value = float(match.group(1).replace(",", "."))
         if 0.05 <= value <= 20.0:
             candidates.append(value)
-    for match in re.finditer(r"(?<![-\d.])(\d+(?:[.,]\d+)?)\s*(?:cm|cms|centimetros?)\b", text, re.IGNORECASE):
+    for match in re.finditer(r"(?<![-\d.])(\d+(?:[.,]\d+)?)\s*(?:cm|cms|centimetros?)\b" + not_height, text, re.IGNORECASE):
         value = float(match.group(1).replace(",", ".")) / 100.0
         if 0.05 <= value <= 20.0:
             candidates.append(value)

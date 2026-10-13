@@ -192,17 +192,31 @@ def run_pipeline(args):
             sys.exit(1)
 
         single_angle = bool(mset.get("single_angle"))
+        rotation_at_seat = bool(mset.get("speaker_rotation_at_seat"))
         viz = PolarResponseVisualizer(
             str(hdf5_path),
             static_plots_dir=static_plots_dir,
             interactive_plots_dir=interactive_plots_dir,
             require_directivity=not single_angle,
+            rotation_at_seat=rotation_at_seat,
         )
         if single_angle:
             # On-axis-only sets have no polar coverage, so directivity,
             # beamwidth, contour and polar plots would be meaningless.
             print("Single-angle set: generating frequency response outputs only.")
             viz.plot_frequency_response_explorer()
+            viz.generate_measurement_summary_html()
+        elif rotation_at_seat:
+            # The speaker turned in front of a fixed mic, starting off-axis, so
+            # directivity plots would be wrong and the other rotations rise past
+            # the normalized plots' scales; the polar explorer draws each
+            # capture at its rotation relative to 0 deg over a wider range.
+            print("Speaker rotated at the seat: generating response by rotation only.")
+            viz.plot_frequency_response_by_angle()
+            viz.plot_frequency_response_explorer()
+            viz.plot_polar_interactive_slider()
+            for driver in viz.drivers:
+                viz.plot_contour(driver, normalized=False)
             viz.generate_measurement_summary_html()
         else:
             viz.generate_all_plots()

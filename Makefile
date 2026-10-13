@@ -28,7 +28,7 @@ else
 endif
 
 # Measurement sets
-SETS := andres juan-baffleless juan-lx521-top-raw juan-batman lx521-system kaspar
+SETS := andres juan-baffleless juan-lx521-top-raw juan-batman juan-sweetspot lx521-system kaspar
 
 # Directories
 OUTPUT_DIR := output

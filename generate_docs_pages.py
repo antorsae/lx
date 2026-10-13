@@ -21,6 +21,7 @@ SET_TITLES = {
     "juan-baffleless": "Juan Driver Measurements",
     "juan-lx521-top-raw": "Juan LX521 Top-Baffle Raw Measurements",
     "juan-batman": "Juan BATMAN Outdoors (360 deg turntable)",
+    "juan-sweetspot": "Juan LX521.4 MGNEO and BATMAN from the Sweetspot",
     "kaspar": "Kaspar LX521 Outdoors (DSP)",
     SYSTEM_SET: "LX521.4 Complete System",
 }
@@ -42,6 +43,19 @@ SET_DESCRIPTIONS = {
         "(12-Oct-2026). Polar plots show the measured 360 deg instead of a mirrored half, "
         "since the two sides differ. A second trace repeats 0-180 deg with Equalizer APO "
         "linearization to the Harman curve."
+    ),
+    "juan-sweetspot": (
+        "Juan's LX521.4 MGNEO and BATMAN, each the right speaker with the UM not inverted, "
+        "measured on 13-Oct-2026 from the same listening seat, 20 minutes apart. The mic "
+        "stayed at the seat, 114 cm high and 85 cm in front of the rear wall, while the speaker "
+        "turned from 0 deg (baffle facing the wall) to 90 deg in 10 deg steps. Angles are "
+        "speaker rotation, not off-axis angle: both speakers point at the seat near 45-50 deg, "
+        "so 0 and 90 deg are each about 45 deg off-axis. Gated at 4.2 ms, before the rear-wall "
+        "reflection (4.4-4.7 ms), with 1/12-octave smoothing, so the plots show what the "
+        "speakers radiate toward the seat; Juan's ungated screenshots include the wall, which "
+        "fills in the low rotations. The LX521.4 dips 8-15 dB at 5-7 kHz at every rotation; "
+        "BATMAN does not near on-axis. The polar explorer is relative to the 0 deg rotation; "
+        "there are no DI or beamwidth pages, since those take 0 deg as on-axis."
     ),
     "kaspar": (
         "Kaspar Reili's LX521 measured outdoors at 1 m on-axis (18-Oct-2022), ungated. "
@@ -70,7 +84,13 @@ DRIVER_ROLES = {
 # Sets whose traces are not one driver each.
 SET_SUBTITLES = {
     "juan-batman": "2 Sweeps - Full 360 deg coverage",
+    "juan-sweetspot": "2 Speakers - Rotation 0-90 deg, mic at the sweetspot",
 }
+
+
+def angle_word(set_cfg: Dict) -> str:
+    """What the set's angles measure: off-axis angle, or a speaker turned at the seat."""
+    return "Speaker Rotation" if set_cfg.get("speaker_rotation_at_seat") else "Angle"
 
 
 def detect_drivers(set_docs_dir: Path) -> List[str]:
@@ -156,17 +176,19 @@ def render_interactive_card(
     # Polar & Directivity
     polar_items: List[Tuple[str, str]] = []
     if (interactive_dir / "polar/polar_explorer.html").exists():
-        polar_items.append(
-            (f"{set_name}/interactive/polar/polar_explorer.html",
-             "Polar Explorer (360 deg)" if has_rear else "Polar Explorer")
-        )
+        polar_label = "Polar Explorer (360 deg)" if has_rear else "Polar Explorer"
+        if set_cfg.get("speaker_rotation_at_seat"):
+            polar_label = "Polar Explorer (by speaker rotation)"
+        polar_items.append((f"{set_name}/interactive/polar/polar_explorer.html", polar_label))
     if (interactive_dir / "di_comparison.html").exists():
         polar_items.append((f"{set_name}/interactive/di_comparison.html", "Directivity Index"))
     if (interactive_dir / "beamwidth_comparison.html").exists():
         polar_items.append((f"{set_name}/interactive/beamwidth_comparison.html", "Beamwidth"))
 
     if polar_items:
-        body_lines.append("                    <h3>Polar & Directivity</h3>")
+        # Speaker rotation sets have a polar explorer but no directivity pages
+        polar_heading = "Polar" if set_cfg.get("speaker_rotation_at_seat") else "Polar & Directivity"
+        body_lines.append(f"                    <h3>{polar_heading}</h3>")
         body_lines.append(link_list(polar_items))
 
     # Frequency response explorer + per-driver angles
@@ -182,7 +204,7 @@ def render_interactive_card(
             freq_items.append((f"{set_name}/interactive/{fname}", driver))
 
     if freq_items:
-        body_lines.append("                    <h3>Frequency Response by Angle</h3>")
+        body_lines.append(f"                    <h3>Frequency Response by {angle_word(set_cfg)}</h3>")
         body_lines.append(link_list(freq_items))
 
     # Crossover analysis (if present)
@@ -324,7 +346,7 @@ def render_static_section(set_name: str, set_cfg: Dict) -> str:
 
     # Frequency response by angle / normalized
     for suffix, heading in [
-        ("freq_response_angles", "Frequency Response by Angle"),
+        ("freq_response_angles", f"Frequency Response by {angle_word(set_cfg)}"),
         ("freq_response_normalized", "Frequency Response Normalized (0° = ref)"),
     ]:
         items = []

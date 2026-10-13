@@ -6,7 +6,12 @@ from unittest.mock import patch
 import h5py
 import numpy as np
 
-from lx521_l22mg_baffle.metadata import load_measurement_notes, parse_height_reference
+from lx521_l22mg_baffle.metadata import (
+    load_measurement_notes,
+    parse_distance_m,
+    parse_height_m,
+    parse_height_reference,
+)
 from polar_data_loader import PolarDataLoader
 
 
@@ -16,6 +21,14 @@ class MeasurementTimingMetadataTest(unittest.TestCase):
             parse_height_reference("Measurement distance: 50 cm. Mic height: L22MG/LM."),
             "l22mg",
         )
+
+    def test_parse_distance_m_skips_the_mic_height(self):
+        juan_note = "MICRO A 114 CM ALTURA\nAPUNTANDO HACIA LA PARED FRONTAL\nMEDICION EN SWEETSPOT"
+        self.assertIsNone(parse_distance_m(juan_note))
+        self.assertEqual(parse_height_m(juan_note), 1.14)
+        self.assertIsNone(parse_distance_m("Mic fixed at the listening seat, 114 cm high"))
+        self.assertEqual(parse_distance_m("MIC A 50 CMS  FRONTAL Y 108  CM ALTURA"), 0.5)
+        self.assertEqual(parse_distance_m("Mic 50 cm in front at 108 cm height"), 0.5)
 
     def test_direct_arrival_unsafe_angles_use_audited_peak_flags(self):
         with tempfile.TemporaryDirectory() as temp_dir:

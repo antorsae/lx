@@ -46,6 +46,19 @@ BATMAN_DRIVER_NOTES = {
     ),
 }
 
+# Juan's speakers measured from his listening seat on 13-Oct-2026. Both sweeps
+# share the seat and procedure; the per-speaker notes name what was measured.
+SWEETSPOT_COMMON_NOTE = (
+    "Right speaker. Mic fixed at the listening seat, 114 cm high, aimed at the front "
+    "wall; distance not recorded, no timing reference. Angle = speaker rotation from "
+    "0 deg, where the baffle faced the wall."
+)
+
+SWEETSPOT_SPEAKER_NOTES = {
+    "LX521.4 MGNEO (sweetspot)": "Juan's LX521.4 MGNEO, UM not inverted, 13-Oct-2026.",
+    "BATMAN (sweetspot)": "Juan's BATMAN with nested tweeters, UM not inverted, 13-Oct-2026.",
+}
+
 # Measurement Set Configurations
 MEASUREMENT_SETS = {
     "andres": {
@@ -193,6 +206,51 @@ MEASUREMENT_SETS = {
             for name, detail in BATMAN_DRIVER_NOTES.items()
         },
     },
+    "juan-sweetspot": {
+        # Juan's LX521.4 MGNEO and BATMAN, each measured as the right speaker
+        # from the same listening seat on 13-Oct-2026, 20 minutes apart. The mic
+        # stayed at the seat while the speaker turned from 0 deg (baffle facing
+        # the wall) to 90 deg in 10 deg steps, so the angles are speaker
+        # rotation, not off-axis angle: the speakers point at the seat near
+        # 45-50 deg.
+        "path": None,  # Not used - see 'sources' below
+        "sources": [
+            {
+                "path": Path("measurements/juan/LX521_4 MGNEO 0_90 DESDE SWEETSPOT"),
+                "pattern_type": "juan_360",  # LX521 {rotation} DEG FRONT.mdat
+                "driver_name_aliases": {"LX521": "LX521.4 MGNEO (sweetspot)"},
+            },
+            {
+                "path": Path("measurements/juan/BATMAN 0_90 DESDE SWEETSPOT"),
+                "pattern_type": "juan_360",  # BATM {rotation} DEG FRONT.mdat
+                "driver_name_aliases": {"BATM": "BATMAN (sweetspot)"},
+            },
+        ],
+        "pattern_type": "juan_360",
+        "angles": list(range(0, 91, 10)),
+        "has_rear": False,
+        # 0 deg is not on-axis: no DI or beamwidth output, polar by rotation
+        "speaker_rotation_at_seat": True,
+        "hdf5_file": "polar_data_juan_sweetspot.h5",
+        "output_dir": OUTPUT_DIR / "juan-sweetspot",
+        # The rear wall is 85 cm behind the mic; its reflection arrives
+        # 4.4-4.7 ms after the direct sound and is strongest (3-8 dB down) at
+        # 0-20 deg, where the speaker faces it. The 4.2 ms gate (from REW's IR
+        # start) ends before it, so the plots show what the speakers radiate
+        # toward the seat. Juan's ungated screenshots include the wall, which
+        # fills in the low rotations. 1/12-octave smoothing keeps single
+        # frequencies in the polar explorer off narrow notches.
+        "gate_right_ms": 4.2,
+        "smoothing": 12,
+        "direct_ir_peak_policy": "ir-start",
+        "measurement_metadata_overrides": {
+            name: {
+                "measurement_height_m": 1.14,
+                "notes": f"{detail} {SWEETSPOT_COMMON_NOTE}",
+            }
+            for name, detail in SWEETSPOT_SPEAKER_NOTES.items()
+        },
+    },
     "kaspar": {
         # Kaspar Reili's LX521, measured outdoors at 1 m on-axis, 18 Oct 2022.
         # Split from a single 6-measurement .mdat into F0-{driver}.mdat files.
@@ -298,6 +356,8 @@ DRIVER_COLORS = {
     'System P3 (Kaspar DSP)': '#9467bd',       # Purple - Kaspar system profile 3
     'BATMAN': '#1e3a8a',                       # Navy - Juan BATMAN, full rotation
     'BATMAN Harman EQ': '#ca8a04',             # Gold - Juan BATMAN with Harman EQ
+    'LX521.4 MGNEO (sweetspot)': '#c2410c',    # Burnt orange - Juan LX521.4 at the seat
+    'BATMAN (sweetspot)': '#1e3a8a',           # Navy - Juan BATMAN at the seat
 }
 
 DRIVER_NAME_ALIASES = {
