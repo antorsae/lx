@@ -41,25 +41,34 @@ def geometry():
 
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('command',choices=['all','geometry','prepare','validate','review','docs'])
+    sys.path.insert(0,str(ROOT/'scripts'))
+    from run_memory_guarded import reexec_under_guard
+    reexec_under_guard(Path(__file__))
+    ap=argparse.ArgumentParser();ap.add_argument('command',choices=['all','geometry','prepare','validate','plates','review','docs'])
     ap.add_argument('--workers',type=int,choices=(1,2),default=2);args=ap.parse_args()
     if args.command in ('all','geometry'):geometry()
     if args.command in ('all','prepare'):
         subprocess.run([sys.executable,'scripts/build_h2c_release.py','prepare'],cwd=ROOT,check=True)
     if args.command in ('all','validate'):
         subprocess.run([sys.executable,'scripts/audit_h2c_print.py','--workers',str(args.workers)],cwd=ROOT,check=True)
+    if args.command in ('all','validate','plates'):
+        # Combined per-product files are built from the audited parts; unchanged files are skipped.
+        subprocess.run([sys.executable,'scripts/build_h2c_plates.py'],cwd=ROOT,check=True)
+    if args.command in ('all','validate'):
         subprocess.run([sys.executable,'scripts/validate_h2c_catalog.py'],cwd=ROOT,check=True)
     if args.command in ('all','review'):
         subprocess.run([sys.executable,'scripts/review_h2c_geometry.py'],cwd=ROOT,check=True)
         comparison=[sys.executable,'scripts/gen_product_iso_matrix.py']
         for cell in ('tweeter_nd25fw4_crescent','tweeter_tebm35c10_4_vase',
                      'tweeter_tebm35c10_4_crescent','tweeter_tebm35c10_4_crescent_opposed',
-                     'tweeter_nd25fn4_waveguide'):
+                     'tweeter_nd25fn4_waveguide_stock','tweeter_nd25fn4_waveguide',
+                     'tweeter_pt2522_dipole','tweeter_pt2522_dipole_rotated',
+                     'tweeter_amt17d2_dipole','tweeter_amt17d2_dipole_rotated'):
             comparison+=['--cell',cell]
-        for row in ('tweeter_row','obiwan_upper_row','obiwan_wing_row'):
+        for row in ('tweeter_row','obiwan_upper_row','dipole_row','obiwan_wing_row'):
             comparison+=['--row',row]
         subprocess.run(comparison,cwd=ROOT,check=True)
-    if args.command in ('all','validate','docs'):
+    if args.command in ('all','validate','plates','docs'):
         subprocess.run([sys.executable,'scripts/document_h2c_release.py'],cwd=ROOT,check=True)
 
 

@@ -1196,8 +1196,9 @@ def test_docs_reject_fake_p2s_monolith_pauses() -> None:
     # prose out of the top-level README into docs/obiwan.md; the corpus this
     # gate reads has to follow it, or the LM oversize warnings could be
     # deleted without failing anything.
+    # PRINTING.md is H2C-only; its P2S monolith/pause rules moved to the archive.
     documents = (
-        "docs/CAPTIVE_MAGNET_SLICING.md", "docs/PRINTING.md",
+        "docs/CAPTIVE_MAGNET_SLICING.md", "docs/archive/P2S_PRINTING.md",
         "docs/obiwan.md", "README.md")
     combined = " ".join("\n".join(
         (ROOT / name).read_text(encoding="utf-8") for name in documents

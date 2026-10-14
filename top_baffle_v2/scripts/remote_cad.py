@@ -39,6 +39,7 @@ import time
 import traceback
 
 
+
 SCRIPT = Path(__file__).resolve()
 BAFFLE_DIR = PROJECT_ROOT
 REPO_ROOT = BAFFLE_DIR.parent
@@ -91,6 +92,54 @@ DEFAULT_REMOTE_LIGHT_JOBS = 18
 REMOTE_LIGHT_MAX_RSS_MIB = 6 * 1024
 LOCAL_PROMOTION_JOBS = 8
 
+class _AcousticPolicy:
+    TARGETS = frozenset({"waveguide_study_preflight", "waveguide_study_screen",
+                         "waveguide_study_broadband", "waveguide_study_benchmark",
+                         "waveguide_study_reference", "waveguide_study_numerics",
+                         "waveguide_study_controls", "waveguide_study_diagnostics",
+                         "waveguide_study_geometry", "waveguide_study_spatial_cad",
+                         "waveguide_study_spatial_acoustics", "waveguide_study_spatial_prototypes",
+                         "waveguide_study_shape_search", "waveguide_study_spatial_numerics",
+                         "waveguide_study_source_calibration"})
+    CPU_CORES = 30
+    SOURCE_ROOT = Path("candidates/obiwan_side_waveguide_study")
+    OUTPUT_ROOT = Path("build/side_waveguide_study")
+    LOCK_NAME = "acoustic-remote-requirements.lock"
+    INPUT_MANIFEST = SOURCE_ROOT / "remote_inputs.json"
+    # Leave the executor's existing 64 GiB reserve inside the 512 GiB job cap.
+    WORKER_MAX_RSS_MIB = 448 * 1024
+
+
+    @staticmethod
+    def enabled(targets):
+        return bool(set(targets) & _AcousticPolicy.TARGETS)
+
+
+    @staticmethod
+    def input_paths(project):
+        """Read a bounded, hash-bound manifest; never sweep the user's disk."""
+        project = Path(project).resolve()
+        repo = project.parent
+        manifest = json.loads((project / _AcousticPolicy.INPUT_MANIFEST).read_text())
+        paths = []
+        seen = set()
+        for record in manifest["files"]:
+            relative = Path(record["path"])
+            if relative.is_absolute() or ".." in relative.parts or relative.as_posix() in seen:
+                raise ValueError(f"Invalid/duplicate acoustic input: {relative}")
+            seen.add(relative.as_posix())
+            path = repo / relative
+            if path.is_symlink() or not path.is_file() or repo not in path.resolve().parents:
+                raise ValueError(f"Missing or escaping acoustic input: {relative}")
+            if (path.stat().st_size != record["size"] or
+                    hashlib.sha256(path.read_bytes()).hexdigest() != record["sha256"]):
+                raise ValueError(f"Acoustic input changed; refresh its manifest: {relative}")
+            paths.append(path)
+        return tuple(paths)
+
+
+acoustic_policy = _AcousticPolicy()
+
 DEFAULT_HOST = "osado.lan"
 DEFAULT_REMOTE_ROOT = "~/temp/lx-cad"
 OUTPUT_ROOT_PREFIXES = {
@@ -98,6 +147,7 @@ OUTPUT_ROOT_PREFIXES = {
     "no_floor_stand": Path("build/no_floor_stand"),
     "wings": Path("build/wings"),
     "tebm35c10_4": Path("build/vase_TEBM35C10-4"),
+    "waveguide_study": acoustic_policy.OUTPUT_ROOT,
 }
 STATE_OUTPUT_ROOTS = ("floor_stand", "no_floor_stand")
 ARTIFACT_SCAN_PREFIXES = (
@@ -140,9 +190,9 @@ SOURCE_EXCLUDED_SUFFIXES = {
 #                          `obiwan_release_manifest.json` name and remain
 #                          snapshot sources.
 SOURCE_EXCLUDED_NAMES = {"result.json", "release_manifest.json"}
-from lx521_baffle.references import geometry_reference_paths
-
-REFERENCE_INPUTS = geometry_reference_paths()
+# Imported lazily when snapshotting the local tree. The hash-bound bootstrap
+# installer is intentionally runnable as a standalone file on a cold host.
+REFERENCE_INPUTS = None
 JOB_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$")
 HOST_RE = re.compile(r"^(?:[A-Za-z0-9_.-]+@)?[A-Za-z0-9_.-]+$")
 TARGET_RE = re.compile(r"^[A-Za-z0-9_./:+%-]+$")
@@ -180,6 +230,12 @@ REMOTE_MAKE_TARGETS = {
     "validate_obiwan_stages",
     "validate_floor_obiwan_stage", "validate_no_floor_obiwan_stage",
 }
+REMOTE_MAKE_TARGETS.update(acoustic_policy.TARGETS)
+
+
+def _requirements_source_path(targets: list[str]) -> str:
+    return ("top_baffle_v2/" + acoustic_policy.LOCK_NAME
+            if acoustic_policy.enabled(targets) else REQUIREMENTS_SOURCE_PATH)
 
 
 def _utc_now() -> str:
@@ -260,12 +316,31 @@ def _output_prefix(logical_root: str) -> Path:
             f"unknown remote output root: {logical_root!r}") from exc
 
 
-def _source_paths(*, include_candidate_outputs: bool = False) -> tuple[Path, ...]:
+def _source_paths(*, include_candidate_outputs: bool = False,
+                  include_acoustic_inputs: bool = False) -> tuple[Path, ...]:
     paths: set[Path] = set()
     for path in BAFFLE_DIR.rglob("*"):
         if not path.is_file() or path.is_symlink():
             continue
         relative = path.relative_to(BAFFLE_DIR)
+        if include_acoustic_inputs:
+            # Acoustic jobs need source code/Make policy plus the explicit
+            # study manifest, never unrelated printer jobs, archives or CAD
+            # experiment caches. Referenced geometry is added below.
+            source_tree = relative.parts[0] in {"src", "scripts", "tests"}
+            source_file = (len(relative.parts) == 1 and
+                           (relative.name.startswith("Makefile") or
+                            path.suffix in {".py", ".json", ".lock"}))
+            in_study = _is_under_relative_prefix(relative, acoustic_policy.SOURCE_ROOT)
+            if not (source_tree or source_file or in_study):
+                continue
+        if _is_under_relative_prefix(relative, acoustic_policy.SOURCE_ROOT):
+            # Experimental caches are inputs only when explicitly selected.
+            # Source code and the manifest remain ordinary snapshot sources.
+            if (path.suffix == ".py" and "__pycache__" not in relative.parts
+                    or relative == acoustic_policy.INPUT_MANIFEST):
+                paths.add(path)
+            continue
         logical_root = _logical_output_root(relative)
         if logical_root is not None:
             if include_candidate_outputs and logical_root in STATE_OUTPUT_ROOTS:
@@ -282,7 +357,13 @@ def _source_paths(*, include_candidate_outputs: bool = False) -> tuple[Path, ...
         if path.suffix.lower() in SOURCE_EXCLUDED_SUFFIXES:
             continue
         paths.add(path)
-    paths.update(REFERENCE_INPUTS)
+    if include_acoustic_inputs:
+        paths.update(acoustic_policy.input_paths(BAFFLE_DIR))
+    elif REFERENCE_INPUTS is None:
+        from lx521_baffle.references import geometry_reference_paths
+        paths.update(geometry_reference_paths())
+    else:
+        paths.update(REFERENCE_INPUTS)
     missing = [path for path in paths if not path.is_file()]
     if missing:
         raise FileNotFoundError(
@@ -325,9 +406,11 @@ def _cached_sha256_file(path: Path) -> tuple[int, str]:
 
 def _source_records(
         paths: tuple[Path, ...] | None = None, *,
-        include_candidate_outputs: bool = False) -> list[dict]:
+        include_candidate_outputs: bool = False,
+        include_acoustic_inputs: bool = False) -> list[dict]:
     """Hash the exact local inputs without constructing an archive."""
-    paths = (_source_paths(include_candidate_outputs=include_candidate_outputs)
+    paths = (_source_paths(include_candidate_outputs=include_candidate_outputs,
+                          include_acoustic_inputs=include_acoustic_inputs)
              if paths is None else paths)
     records = []
     for path in paths:
@@ -342,9 +425,11 @@ def _source_records(
 
 def _create_source_archive(
         directory: Path, *,
-        include_candidate_outputs: bool = False) -> tuple[Path, dict]:
+        include_candidate_outputs: bool = False,
+        include_acoustic_inputs: bool = False) -> tuple[Path, dict]:
     paths = _source_paths(
-        include_candidate_outputs=include_candidate_outputs)
+        include_candidate_outputs=include_candidate_outputs,
+        include_acoustic_inputs=include_acoustic_inputs)
     records = _source_records(paths)
     source_hash = _source_identity(records)
     manifest = {
@@ -428,12 +513,13 @@ def _extract_snapshot_transport(
 
 
 def _extract_snapshot_requirements(
-        archive: Path, manifest: dict) -> bytes:
+        archive: Path, manifest: dict,
+        requirements_path: str = REQUIREMENTS_SOURCE_PATH) -> bytes:
     """Return the exact lockfile bytes sealed into the source archive."""
     records = [
         record for record in manifest.get("files", [])
         if isinstance(record, dict)
-        and record.get("path") == REQUIREMENTS_SOURCE_PATH
+        and record.get("path") == requirements_path
     ]
     if len(records) != 1:
         raise RuntimeError(
@@ -446,7 +532,7 @@ def _extract_snapshot_requirements(
     with tarfile.open(archive, "r:gz") as bundle:
         members = [
             member for member in bundle.getmembers()
-            if member.name == REQUIREMENTS_SOURCE_PATH
+            if member.name == requirements_path
         ]
         if len(members) != 1 or not members[0].isfile():
             raise RuntimeError("source requirements-lock member is malformed")
@@ -505,9 +591,17 @@ def _safe_member_path(root: Path, name: str) -> Path:
 
 def _extract_regular_archive(archive: Path, destination: Path) -> None:
     destination.mkdir(parents=True, exist_ok=True)
+    portable_names = {}
     with tarfile.open(archive, "r:gz") as bundle:
         for member in bundle:
             target = _safe_member_path(destination, member.name)
+            portable = Path(member.name).as_posix().casefold()
+            previous = portable_names.get(portable)
+            if previous is not None:
+                raise RuntimeError(
+                    f"archive paths collide on case-insensitive filesystems: "
+                    f"{previous!r} and {member.name!r}")
+            portable_names[portable] = member.name
             if member.isdir():
                 target.mkdir(parents=True, exist_ok=True)
                 continue
@@ -1299,6 +1393,18 @@ def _remote_light_job_count(heavy_jobs: int) -> int:
     return min(jobs, remaining_mib // REMOTE_LIGHT_MAX_RSS_MIB)
 
 
+def _worker_partition(targets: list[str], explicit_jobs: int | None) -> dict:
+    if acoustic_policy.enabled(targets):
+        return {"parallel_jobs": 1, "light_jobs": 0, "make_jobs": 1,
+                "worker_max_rss_mib": acoustic_policy.WORKER_MAX_RSS_MIB,
+                "light_worker_max_rss_mib": REMOTE_LIGHT_MAX_RSS_MIB}
+    heavy = _remote_job_count(explicit_jobs)
+    light = _remote_light_job_count(heavy)
+    return {"parallel_jobs": heavy, "light_jobs": light, "make_jobs": heavy + light,
+            "worker_max_rss_mib": REMOTE_HEAVY_MAX_RSS_MIB,
+            "light_worker_max_rss_mib": REMOTE_LIGHT_MAX_RSS_MIB}
+
+
 def _local_job_dir(job_id: str) -> Path:
     if not JOB_ID_RE.fullmatch(job_id):
         raise ValueError(f"invalid remote CAD job id: {job_id!r}")
@@ -1510,6 +1616,9 @@ def _target_required_artifact_relatives(
     targets = _validate_targets(list(targets))
     target = targets[0]
     required: set[str] = set()
+    if acoustic_policy.enabled(targets):
+        required.add("top_baffle_v2/" +
+                     (acoustic_policy.OUTPUT_ROOT / "remote_execution.json").as_posix())
     if target in {"all", "candidate", "release"}:
         required.update({
             COMMON_ARTIFACT,
@@ -1577,7 +1686,11 @@ def _artifact_paths(job: Path, metadata: dict) -> list[Path]:
     source_paths = {record["path"] for record in source["files"]}
     paths: set[Path] = set()
     baffle = work / "top_baffle_v2"
-    for prefix in ARTIFACT_SCAN_PREFIXES:
+    prefixes = ((acoustic_policy.OUTPUT_ROOT,) if
+                acoustic_policy.enabled(metadata["targets"]) else
+                tuple(p for p in ARTIFACT_SCAN_PREFIXES
+                      if p != acoustic_policy.OUTPUT_ROOT))
+    for prefix in prefixes:
         root = baffle / prefix
         if root.is_dir():
             paths.update(
@@ -1663,6 +1776,15 @@ def _create_artifact_bundle(job: Path, metadata: dict) -> None:
     if not profile_path.is_file():
         raise RuntimeError("remote job omitted its performance profile")
     paths = _artifact_paths(job, metadata)
+    portable_names = {}
+    for path in paths:
+        relative = path.relative_to(work).as_posix()
+        previous = portable_names.get(relative.casefold())
+        if previous is not None:
+            raise RuntimeError(
+                f"artifact paths collide on case-insensitive filesystems: "
+                f"{previous!r} and {relative!r}")
+        portable_names[relative.casefold()] = relative
     records = [{
         "path": path.relative_to(work).as_posix(),
         "size": path.stat().st_size,
@@ -2535,7 +2657,7 @@ def _execute_job(args: argparse.Namespace) -> int:
                 environment / ".lx-cad-environment.json")
             expected = _expected_environment(
                 metadata["environment_sha256"],
-                job / "work" / "top_baffle_v2" / LOCK_FILE.name,
+                job / "work" / _requirements_source_path(metadata["targets"]),
             )
             attestation = metadata.get("environment_attestation")
             if not isinstance(attestation, dict):
@@ -2910,6 +3032,8 @@ def _verify_and_extract_artifacts(local_dir: Path, metadata: dict) -> Path:
 
 def _full_output_roots(targets: list[str]) -> set[str]:
     full = set()
+    if acoustic_policy.enabled(targets):
+        full.add("waveguide_study")
     if any(target in {
             "all", "candidate", "release", "obiwan_release",
     } for target in targets):
@@ -2929,7 +3053,8 @@ def _full_output_roots(targets: list[str]) -> set[str]:
 def _current_source_identity(metadata: dict) -> str:
     return _source_identity(_source_records(
         include_candidate_outputs=bool(
-            metadata.get("include_candidate_outputs"))))
+            metadata.get("include_candidate_outputs")),
+        include_acoustic_inputs=acoustic_policy.enabled(metadata["targets"])))
 
 
 @contextmanager
@@ -3572,13 +3697,7 @@ def _wait_and_fetch(remote: Remote, metadata: dict) -> int:
 def _run_remote(args: argparse.Namespace) -> int:
     targets = _validate_targets(args.targets)
     include_candidate_outputs = targets == ["manifold"]
-    parallel_jobs = _remote_job_count(args.jobs)
-    worker_max_rss_mib = REMOTE_HEAVY_MAX_RSS_MIB
-    light_jobs = _remote_light_job_count(parallel_jobs)
-    light_worker_max_rss_mib = REMOTE_LIGHT_MAX_RSS_MIB
-    # Make gets one token per guard slot across both pools; the guard's own
-    # per-pool locks decide which pool a started recipe may occupy.
-    make_jobs = parallel_jobs + light_jobs
+    partition = _worker_partition(targets, args.jobs)
     host = args.host or os.environ.get("LX_CAD_REMOTE_HOST", DEFAULT_HOST)
     configured_root = args.remote_root or os.environ.get(
         "LX_CAD_REMOTE_ROOT", DEFAULT_REMOTE_ROOT,
@@ -3588,11 +3707,12 @@ def _run_remote(args: argparse.Namespace) -> int:
     with tempfile.TemporaryDirectory(prefix="lx-cad-source-") as temporary_text:
         archive, source_manifest = _create_source_archive(
             Path(temporary_text),
-            include_candidate_outputs=include_candidate_outputs)
+            include_candidate_outputs=include_candidate_outputs,
+            include_acoustic_inputs=acoustic_policy.enabled(targets))
         local_tool, transport = _extract_snapshot_transport(
             archive, Path(temporary_text), source_manifest)
         requirements_bytes = _extract_snapshot_requirements(
-            archive, source_manifest)
+            archive, source_manifest, _requirements_source_path(targets))
         source_hash = source_manifest["source_sha256"]
         environment_hash = _environment_hash(requirements_bytes)
         job_id = _new_job_id(source_hash)
@@ -3611,11 +3731,7 @@ def _run_remote(args: argparse.Namespace) -> int:
             "memory_profile": REMOTE_MEMORY_PROFILE,
             "memory_max_mib": REMOTE_MEMORY_MAX_MIB,
             "memory_floor_mib": REMOTE_MEMORY_FLOOR_MIB,
-            "parallel_jobs": parallel_jobs,
-            "worker_max_rss_mib": worker_max_rss_mib,
-            "light_jobs": light_jobs,
-            "light_worker_max_rss_mib": light_worker_max_rss_mib,
-            "make_jobs": make_jobs,
+            **partition,
             "systemd_unit": unit,
             "targets": targets,
             "include_candidate_outputs": include_candidate_outputs,
@@ -3646,7 +3762,7 @@ def _run_remote(args: argparse.Namespace) -> int:
         source_root = f"{remote_root}/sources/{source_hash}"
         tool = f"{source_root}/{transport['source_path']}"
         _verify_remote_tool(remote, tool, transport["sha256"])
-        requirements = f"{source_root}/top_baffle_v2/{LOCK_FILE.name}"
+        requirements = f"{source_root}/{_requirements_source_path(targets)}"
         environment_result = _remote_python(
             remote, tool, "_prepare-environment", "--remote-root", remote_root,
             "--environment-hash", environment_hash,
@@ -3850,6 +3966,8 @@ def _launch_job_transition(args: argparse.Namespace) -> int:
             "--property=MemoryAccounting=yes",
             "--property=KillMode=control-group",
             "--property=OOMPolicy=stop",
+            *([f"--property=CPUQuota={acoustic_policy.CPU_CORES*100}%"]
+              if acoustic_policy.enabled(metadata["targets"]) else []),
             "/bin/sh", "-c", marker_then_exec, "lx-cad-launch",
             str(job / "launch.accepted"), environment_python, executor,
             "_execute-job", "--job-dir", str(job),

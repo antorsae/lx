@@ -1,37 +1,36 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "8de95a5341dfce068c4dd5dbbb1753220186593576e5085592b76b83956800d4",
-  "sliced_project_sha256": "022b8f42812bc157eb20e1f79695240514072f4b809f002804d09202e036dc33",
-  "gcode_sha256": "f653eab6e1bf9fa07f6e9ce0af556c1f9e73be2f951f067c11e3ba7e40adf59b",
+  "project_sha256": "9de4d599d082451ec9fa793821b5c06b7aad1499b96ca50288f40de86ea6e0d8",
+  "sliced_project_sha256": "e0bf80898e5b40655bdc2378b2caf2088204ba153d9b407fdaa23c1b2328a5a9",
+  "gcode_sha256": "0d82faebff031eca3b7d63e669ca5a0c28e3e9167121d6435adb00b6dad2c910",
   "audit_version": 4,
   "inputs": {
     "build/h2c/inputs/h2c_stock_09_B1_wing_left_1_of_2_support_blocker.stl": "230a47a64afcd5e3ffc9ec84e99273bafbcc67505c217594c04f7ff4019039c1",
-    "build/h2c/jobs/h2c_stock_09_B1_wing_left_1_of_2__petg_gf_pla/dry_run.json": "c7afcd9fdcc3fb2c381ae4a5b37ad8df6ebb6de2dc91f6b84827cdb374b093c0",
-    "build/h2c/jobs/h2c_stock_09_B1_wing_left_1_of_2__petg_gf_pla/process.json": "03e2a8cb9f76faf6e4bd11df50acc3c2cdb2b80178185a36728a8fe60025d7d9",
-    "build/h2c/profiles/petg_gf_pla/interface.json": "de9f413cd7e43e5bb30bb4b79cd48ed1b4680e9a0c27fae68042facf0f25cc1e",
-    "build/h2c/profiles/petg_gf_pla/machine.json": "488f1222c244471ec147ad2960b403a9cb8e07463473123575354cdd85719dbb",
-    "build/h2c/profiles/petg_gf_pla/model.json": "7204a547fddf4215cce3929c76208ff0fc2029447be43ce64f9a5f763c1e61bc",
+    "build/h2c/jobs/h2c_stock_09_B1_wing_left_1_of_2__petg_gf_pla/dry_run.json": "87213caddda5f6b87bf8781756dce451dfd257402e9f9f7586c1694d4edf3cab",
+    "build/h2c/jobs/h2c_stock_09_B1_wing_left_1_of_2__petg_gf_pla/process.json": "3f9d1edd14edb3e7a19820e197d9a0ec1ea649e22bbad38a815ff2cb0803bf85",
+    "build/h2c/profiles/petg_gf_pla/interface.json": "bebda39f8a78214048e36f4e2b0bb05425fc049312641c20eeb9256763e9b588",
+    "build/h2c/profiles/petg_gf_pla/machine.json": "e565fa0194354f79fa8f4fef2fdb8a2d0e6f9350a565505d95747c4b1ac5ba82",
+    "build/h2c/profiles/petg_gf_pla/model.json": "ac9758d2f6761b086555e41f1829756b9176853e7c9ecec168d47a010da6cdc6",
     "build/no_floor_stand/stl/stock_wing_1_of_2_left.stl": "7749a25921f930432d155f8988afe0dd8516f2b119560c11890f4f2a309794f1",
     "candidates/nd25fn4_crescent/audit_print.py": "c297b070b299b3ce910c9a543c909fe38a9c3e9bc5b2a705636d30338112d657",
-    "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
+    "candidates/nd25fn4_vase/obiwan/magnets.catalog.json": "309bfd12e08485b66e52da39863bdc9bc2b0e38840681285eb27998c4fdb19aa",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "1c545d0f9365ed36563bdea5d7bab7d027fb5fa04d66ce553c2ee1485c629135",
+    "print_policy_h2c.json": "61d265416c57672fc417a59b7a29e82b10c2485d1ccae65056cd1558af9e33ae",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
-    "scripts/audit_h2c_print.py": "8e0dfe9914603f00a175ffa22d340d25f0ab9e3c99fe4adb5cafb85ee65ed646",
+    "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
-    "src/lx521_baffle/h2c/dayton.py": "034817fb267162508cd59882a4b65c41f7f6e29233cf8164fc444a3d53bc1bf7",
-    "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
-    "src/lx521_baffle/tweeter_options.py": "4e13db23df7b60b9278d0e15ec3810b033376a6ee72cc33dfa8fe40518703f5a",
-    "to_print/h2c/STL/h2c_stock_09_B1_wing_left_1_of_2.stl": "d07d78f8b2c3a6d64373146c7cb7227819578f105b16a05c0c5719636f5a0715",
-    "to_print/h2c/stock/petg_gf_pla/h2c_stock_09_B1_wing_left_1_of_2.3mf": "8de95a5341dfce068c4dd5dbbb1753220186593576e5085592b76b83956800d4"
+    "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
+    "src/lx521_baffle/tweeter_options.py": "dba6f5e1877df8e92fbfdf46ff4ed07acf05e2f767222b91044a55b507bb80c2",
+    "to_print/stock/wings/stock_b1_wing_left_1_of_2.petg-gf.3mf": "9de4d599d082451ec9fa793821b5c06b7aad1499b96ca50288f40de86ea6e0d8",
+    "to_print/stock/wings/stock_b1_wing_left_1_of_2.stl": "d07d78f8b2c3a6d64373146c7cb7227819578f105b16a05c0c5719636f5a0715"
   },
   "deposition": {
     "status": "pass",
     "counts": {
-      "model": 50794
+      "model": 50743
     },
     "deposition_bounds_mm": {
       "0": [
@@ -84,27 +83,27 @@
       "last_open_layer_z_mm": 5.96,
       "collision_witnesses": [
         {
-          "line": 30327,
+          "line": 30469,
           "feature": "Outer wall",
           "intrusion_mm": 0.1283065413109225
         },
         {
-          "line": 30329,
+          "line": 30471,
           "feature": "Outer wall",
           "intrusion_mm": 0.1500594722005615
         },
         {
-          "line": 30331,
+          "line": 30473,
           "feature": "Outer wall",
           "intrusion_mm": 0.1400185527328336
         },
         {
-          "line": 30333,
+          "line": 30475,
           "feature": "Outer wall",
           "intrusion_mm": 0.14108780634506393
         },
         {
-          "line": 30335,
+          "line": 30477,
           "feature": "Outer wall",
           "intrusion_mm": 0.14076911332165884
         }
@@ -607,29 +606,29 @@
       "last_open_layer_z_mm": 5.96,
       "collision_witnesses": [
         {
-          "line": 30267,
+          "line": 30613,
           "feature": "Outer wall",
-          "intrusion_mm": 0.12911282654687875
+          "intrusion_mm": 0.0706879741111881
         },
         {
-          "line": 30268,
+          "line": 30615,
           "feature": "Outer wall",
-          "intrusion_mm": 0.14031974094688748
+          "intrusion_mm": 0.13507827281804705
         },
         {
-          "line": 30269,
+          "line": 30617,
           "feature": "Outer wall",
-          "intrusion_mm": 0.1399601489451483
+          "intrusion_mm": 0.15976468786166403
         },
         {
-          "line": 30271,
+          "line": 30619,
           "feature": "Outer wall",
-          "intrusion_mm": 0.1401967492133404
+          "intrusion_mm": 0.15375493389691397
         },
         {
-          "line": 30275,
+          "line": 30621,
           "feature": "Outer wall",
-          "intrusion_mm": 0.1401967492133404
+          "intrusion_mm": 0.14018915168522988
         }
       ],
       "layer_records": [
@@ -1107,7 +1106,7 @@
   "retaining_walls": {
     "status": "pass",
     "physical_qualification": "pending same-geometry coupon print",
-    "gcode_sha256": "f653eab6e1bf9fa07f6e9ce0af556c1f9e73be2f951f067c11e3ba7e40adf59b",
+    "gcode_sha256": "0d82faebff031eca3b7d63e669ca5a0c28e3e9167121d6435adb00b6dad2c910",
     "stl_sha256": "d07d78f8b2c3a6d64373146c7cb7227819578f105b16a05c0c5719636f5a0715",
     "source_sha256": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "sample_spacing_mm": 0.06,
@@ -1630,7 +1629,7 @@
         ],
         "maximum_boundary_gap_mm": 0.017075924293468544,
         "checked_continuity_layers": 25,
-        "minimum_interlayer_overlap_fraction": 0.9965876327702483,
+        "minimum_interlayer_overlap_fraction": 0.9965878350554259,
         "maximum_connected_components": 1,
         "layers": [
           {
@@ -1664,7 +1663,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9965876327702483
+              "interlayer_overlap_fraction": 0.9965878350554259
             }
           },
           {
@@ -1677,7 +1676,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9971992562433508
+              "interlayer_overlap_fraction": 0.9971994224536541
             }
           },
           {
@@ -1690,7 +1689,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9975190858874992
+              "interlayer_overlap_fraction": 0.9975192372946559
             }
           },
           {
@@ -1703,7 +1702,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9976527839684253
+              "interlayer_overlap_fraction": 0.9976529042904858
             }
           },
           {
@@ -1716,7 +1715,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9978535691196008
+              "interlayer_overlap_fraction": 0.9978536646969715
             }
           },
           {
@@ -1729,7 +1728,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9980304757998951
+              "interlayer_overlap_fraction": 0.998134558267172
             }
           },
           {
@@ -1742,7 +1741,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9986527121001163
+              "interlayer_overlap_fraction": 0.9986029005555082
             }
           },
           {
@@ -1755,7 +1754,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9985878528807348
+              "interlayer_overlap_fraction": 0.9987493133143467
             }
           },
           {
@@ -1768,7 +1767,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.998861495192032
+              "interlayer_overlap_fraction": 0.9988772296987157
             }
           },
           {
@@ -1781,7 +1780,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9989401741932467
+              "interlayer_overlap_fraction": 0.9989286337848878
             }
           },
           {
@@ -1794,7 +1793,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9991154752624138
+              "interlayer_overlap_fraction": 0.9991720153433677
             }
           },
           {
@@ -1807,7 +1806,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9993771939660474
+              "interlayer_overlap_fraction": 0.9993396055945786
             }
           },
           {
@@ -1820,7 +1819,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9995192170338053
+              "interlayer_overlap_fraction": 0.9996859557535476
             }
           },
           {
@@ -1833,7 +1832,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9995485539201743
+              "interlayer_overlap_fraction": 0.9995628263835472
             }
           },
           {
@@ -1846,7 +1845,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9993089941854676
+              "interlayer_overlap_fraction": 0.9993090343429617
             }
           },
           {
@@ -1859,7 +1858,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9998590139839479
+              "interlayer_overlap_fraction": 0.9998590222077184
             }
           },
           {
@@ -1872,7 +1871,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.999714898702826
+              "interlayer_overlap_fraction": 0.9997149153386826
             }
           },
           {
@@ -1885,7 +1884,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9997414099511048
+              "interlayer_overlap_fraction": 0.999741425045199
             }
           },
           {
@@ -1898,7 +1897,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.999578440791861
+              "interlayer_overlap_fraction": 0.9995784654412171
             }
           },
           {
@@ -1911,7 +1910,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9988941011804834
+              "interlayer_overlap_fraction": 0.998715047203484
             }
           },
           {
@@ -1924,7 +1923,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9995822937103389
+              "interlayer_overlap_fraction": 0.9995823179757509
             }
           },
           {
@@ -1937,7 +1936,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9996072060636997
+              "interlayer_overlap_fraction": 0.9996072289013134
             }
           },
           {
@@ -1950,7 +1949,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9988239685736023
+              "interlayer_overlap_fraction": 0.9988240369702291
             }
           },
           {
@@ -1963,20 +1962,20 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9993938492033201
+              "interlayer_overlap_fraction": 0.9993938844559961
             }
           },
           {
             "z_mm": 5.16,
             "sample_count": 262,
-            "max_boundary_gap_mm": 0.016402104138327125,
+            "max_boundary_gap_mm": 0.01640210413832351,
             "retaining_width_range_mm": [
               0.519996,
               0.665216
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9995942127026382
+              "interlayer_overlap_fraction": 0.9995942363095168
             }
           },
           {
@@ -1989,7 +1988,7 @@
           {
             "z_mm": 5.48,
             "sample_count": 262,
-            "max_boundary_gap_mm": 0.016103877677134705,
+            "max_boundary_gap_mm": 0.01610387767711486,
             "retaining_width_range_mm": null,
             "retaining_continuity": null
           },
@@ -2073,14 +2072,14 @@
           {
             "z_mm": 7.4,
             "sample_count": 152,
-            "max_boundary_gap_mm": 0.016045735179595875,
+            "max_boundary_gap_mm": 0.016045735179585918,
             "retaining_width_range_mm": null,
             "retaining_continuity": null
           },
           {
             "z_mm": 7.56,
             "sample_count": 140,
-            "max_boundary_gap_mm": 0.015328240266933564,
+            "max_boundary_gap_mm": 0.015328240266943438,
             "retaining_width_range_mm": null,
             "retaining_continuity": null
           },
@@ -2125,7 +2124,7 @@
   },
   "geometry": [
     {
-      "source": "to_print/h2c/STL/h2c_stock_09_B1_wing_left_1_of_2.stl",
+      "source": "to_print/stock/wings/stock_b1_wing_left_1_of_2.stl",
       "sha256": "d07d78f8b2c3a6d64373146c7cb7227819578f105b16a05c0c5719636f5a0715",
       "subtype": "normal_part",
       "triangles": 3062,
@@ -2145,8 +2144,8 @@
   "pause_program": [
     {
       "z_mm": 6.12,
-      "pause_command_line_number": 29845,
-      "first_extrusion_line_number": 29859,
+      "pause_command_line_number": 30028,
+      "first_extrusion_line_number": 30045,
       "pass": true
     }
   ],
@@ -2190,15 +2189,15 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 35644,
-      "lines": 90069,
-      "movement_commands": 67664,
-      "non_comment_lines": 74104,
+      "extrusion_moves": 35504,
+      "lines": 90101,
+      "movement_commands": 67516,
+      "non_comment_lines": 73710,
       "temperature_commands": 22
     },
     "warnings": [
       "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-      "Unknown or unsupported commands were left unchanged: ========== line 1071, G150 line 911, G150.1 line 696, G150.2 line 897, G150.3 line 683, G151 line 738, G17 line 2181, G28.14 line 1063, G28.140 line 626, G29.1 line 622, G29.2 line 752, G29.20 line 952."
+      "Unknown or unsupported commands were left unchanged: ========== line 1096, G150 line 936, G150.1 line 721, G150.2 line 922, G150.3 line 708, G151 line 763, G17 line 2245, G28.14 line 1088, G28.140 line 651, G29.1 line 647, G29.2 line 777, G29.20 line 977."
     ]
   }
 }

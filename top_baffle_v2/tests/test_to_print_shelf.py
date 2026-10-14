@@ -77,7 +77,7 @@ def main() -> int:
                       for line in fatal_lines),
                   f"unexpected remote graph error for {target}: "
                   f"{run.stdout[-2000:]}")
-            shelf_manifest = (ROOT / "to_print/release_manifest.json").resolve()
+            shelf_manifest = (ROOT / "to_print/archive/p2s/release_manifest.json").resolve()
             new_missing = []
             for raw in missing_paths:
                 path = Path(raw).resolve()
@@ -202,7 +202,7 @@ def main() -> int:
             f"{api.PLATE_NAME}/ready/{api.PLATE_NAME}.gcode.3mf",
             # PETG-GF core combos ship on the 0.6-mm high-flow lane; the
             # PLA Basic wing plates stay on the 0.4-mm lane.
-            "to_print/obiwan/"
+            "to_print/archive/p2s/obiwan/"
             f"{'3mf_04' if api.PLATE_NAME in wing_plate_names else '3mf_06hf_petg-gf_pla'}"
             f"/{api.PLATE_NAME}"
             f"{'.gcode.3mf' if api.PLATE_NAME in wing_plate_names else '_GUI.3mf'}",
@@ -236,7 +236,7 @@ def main() -> int:
     # to route them through the wing plate builder's own audit rather than
     # skipping them as it does the PETG-GF core and the BMR candidates.
     lane_catalog = json.loads(
-        (ROOT / "to_print" / "catalog.json").read_text(encoding="utf-8"))
+        (ROOT / "to_print/archive/p2s" / "catalog.json").read_text(encoding="utf-8"))
     audited, plain, wing_plates, skipped_06hf = shelf_06hf.route_entries(
         lane_catalog["entries"])
     routed = len(audited) + len(plain) + len(wing_plates) + len(skipped_06hf)

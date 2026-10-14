@@ -1,39 +1,14 @@
 {
   "status": "pass",
-  "jobs": 45,
-  "editable_projects": 45,
-  "sliced_projects": 45,
-  "distinct_print_meshes": 40,
-  "checkpoint": "c261f32",
+  "jobs": 65,
+  "editable_projects": 65,
+  "sliced_projects": 65,
+  "combined_files": 6,
+  "combined_plates": 79,
+  "distinct_print_meshes": 65,
+  "checkpoint": "e3962a4",
   "physical_qualification": "pending H2C hardware trial",
-  "retained_mesh_authorities": [
-    {
-      "mesh": "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_body.stl",
-      "contract": "retained Dayton ND25FN-4 installed-to-print transform",
-      "inputs": {
-        "candidates/nd25fn4_crescent/print/geometry/01_UM_Crescent_V4_PRINT.stl": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
-        "candidates/nd25fn4_crescent/print/geometry/01_UM_Crescent_V4_PRINT.print.json": "a3d732f8c0affa29b6f3a4c5012eb37ad675bf366972951d4daa950e655fd7da",
-        "candidates/nd25fn4_crescent/STL/01_UM_Crescent_V4.stl": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6"
-      }
-    },
-    {
-      "mesh": "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_cap.stl",
-      "contract": "retained accessory authored in print coordinates",
-      "inputs": {
-        "candidates/nd25fn4_crescent/STL/02_Closed_Cap_PRINT_TWO.stl": "3d8c048a65954f2843ec5358690a72869d99979f7e85aabda2d30cd2f952a647",
-        "candidates/nd25fn4_crescent/build_manifest.json": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f"
-      }
-    },
-    {
-      "mesh": "to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_retainer.stl",
-      "contract": "retained accessory authored in print coordinates",
-      "inputs": {
-        "candidates/nd25fn4_crescent/STL/03_Tweeter_Retainer_PRINT_TWO.stl": "5c0ca66ed09e48eeae9a12cc113325642b5eec34bc41d70a98bcef14e5d267bc",
-        "candidates/nd25fn4_crescent/build_manifest.json": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f"
-      }
-    }
-  ],
-  "catalog_sha256": "20e3cfecbc4266f7f22b4967403f9234c412acb8455895d96ca58ed30585500a",
-  "policy_sha256": "1c545d0f9365ed36563bdea5d7bab7d027fb5fa04d66ce553c2ee1485c629135",
-  "source_sha256": "1ed1f5720645570f45966313a368ddb67c975e065ab74106c7864d9f41c785c4"
+  "catalog_sha256": "10f7181491bb8356123f46b104a0cf47ebe04add3de9e598a1e7086077dfd19f",
+  "policy_sha256": "61d265416c57672fc417a59b7a29e82b10c2485d1ccae65056cd1558af9e33ae",
+  "source_sha256": "35b2d2cd1a906910ab62f6c6080273684268d9ef96e76664a64a696d4f1d0afc"
 }

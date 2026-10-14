@@ -1,6 +1,6 @@
 {
-  "glb_sha256": "aa3daa495c500d93ce29fb97413bf732b73ba5a580ed13e76673a1171240153d",
-  "source_build_manifest_sha256": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f",
+  "glb_sha256": "9358a409be391c0cf1725964b1d93a2e49f0a1186404d77e110089652b696b75",
+  "source_build_manifest_sha256": "000fd59f058e4c4d44b62aefb8c48849f4a0f12b18ccdb9a983f99c15b636e27",
   "source_review_sha256": "d69a0666b0ca09ef32eeb4fa50894ca4f5485d22d89285441947bda55b885a1d",
   "units": "metres",
   "up": "+Y",
@@ -17,18 +17,18 @@
   ],
   "LM_reference": {
     "source_stl": "build/no_floor_stand/stl/obiwan_core_1_of_2_lm_carrier.stl",
-    "stl_sha256": "16d0b4d604a660cfad61011077b3b496a86b5211cc550d8b2db15c50284e5f87",
-    "print_authority_sha256": "e0ea9c142eaba9512c143c9fad956054151a3361fc593b2683ba017c3e55d7ef"
+    "stl_sha256": "03d2bc07fe9eeab167e06bc756cbc0a23c6934030af9456a47e71339e424eecf",
+    "print_authority_sha256": "0709b40728220b01f5c30679462f935c36a80492d0c883500d9229b34143c8a2"
   },
   "note": "Blue is one fused UM + V4 body with separate service caps/retainers. Orange drivers are references. Grey LM is separate. Review-only decimation.",
   "wing_scenes": {
     "flat": {
       "path": "nd25fn4_flat_wings.glb",
-      "sha256": "ce28d4529d11f97a363809da937d10d005a4e71f5fb48ff09673900a584b4abe"
+      "sha256": "7bd8805dc794c8e16d364b0efa556e0d81a7a03966bd5b4d32d63855531cebce"
     },
     "graded": {
       "path": "nd25fn4_graded_wings.glb",
-      "sha256": "1d2ea080e14178b55b5497604eaa677fc4bdd5f0a88794226650eecda03c4c6b"
+      "sha256": "2f4a5d5df487790160b634a8383bca7fdf48ffb97b0115937828702dc80b69cd"
     }
   }
 }

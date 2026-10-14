@@ -1,26 +1,29 @@
 # Remote build execution, caching, and memory profiles
 
-The ordinary interface is remote-first: `make` snapshots the working tree,
-runs the same Makefile on `osado.lan`, and promotes only hash-verified
-artifacts back. This file is the authority for that executor, its cache
-semantics, and the memory profiles that bound it. The public target list and
-the local-only goals are summarised in the
-[project README](../README.md#quickstart).
+H2C is the only supported printer. `make` builds the H2C manufacturing
+shelf locally with the installed Bambu software, inside the 8 GiB guard.
+Shared CAD and acoustic-study targets use the remote-first executor below:
+it snapshots the working tree, runs on `osado.lan`, and promotes only
+hash-verified outputs. This document is the authority for its memory and
+cache policies. P2S manufacturing targets are deprecated.
 
 ## Public remote targets
 
-Regenerate through the remote executor (the default):
+```sh
+make waveguide_study_preflight  # Linux dependencies and solver parity
+make waveguide_study_screen     # coupled waveguide geometry comparison
+make waveguide_study_broadband  # broadband LR4 study
+make floor_obiwan               # shared native geometry and strict QA
+make obiwan_wings               # shared flat/graded native wing sources
+make vase_tebm35c10_4_cad        # shared Stock/Slim BMR geometry
+```
 
-    make
-    make floor_stand
-    make floor_obiwan  # focused integral-floor Obi-Wan release and strict QA
-    make obiwan_release  # both Obi-Wan states + flat/graded, concurrent on osado
-    make obiwan_wings  # flat + graded STEP/STL families, built concurrently
-    make vase_tebm35c10_4_cad  # both Stock and Slim BMR-vase CAD children
+These source-geometry targets do not publish a P2S printer shelf. H2C
+manufacturing selection remains in `to_print/`.
 
 ## Job control and snapshot semantics
 
-`make` snapshots the exact current working-tree inputs, runs in an isolated
+A remote target snapshots the exact current working-tree inputs, runs in an isolated
 job on `osado.lan`, and promotes only hash-verified artifacts back into this
 directory. The pinned Python 3.12.12 environment is content-addressed and
 reused remotely. Jobs survive a lost SSH connection; the printed job id can
@@ -31,7 +34,7 @@ be inspected or resumed with:
     python3 scripts/remote_cad.py cancel JOB_ID
 
 For a deliberately detached launch use
-`python3 scripts/remote_cad.py run --detach TARGET`; ordinary `make` waits and fetches
+`python3 scripts/remote_cad.py run --detach TARGET`; ordinary remote Make invocations wait and fetch
 automatically, while Ctrl-C detaches without killing the remote cgroup.
 
 The client accepts only documented public Make targets; Make-variable
@@ -41,11 +44,91 @@ those exact files. `make clean` mirrors the local target and preserves
 `review/` snapshots.
 
 The remote job has a hard 512 GiB aggregate systemd cgroup limit and a 64 GiB
-host-free floor. It uses sixteen parallel guarded recipe slots by default,
-with the remaining 448 GiB divided equally (28 GiB each). Set
-`LX_CAD_REMOTE_JOBS=N` to tune the slot count; the aggregate cap cannot be
+host-free floor, and disables swap. Ordinary CAD uses twelve heavy slots
+at 28 GiB plus eighteen light slots at 6 GiB by default: 444 GiB reserved
+within the 448 GiB worker budget. Set `LX_CAD_REMOTE_JOBS=N` and
+`LX_CAD_REMOTE_LIGHT_JOBS=N` to tune concurrency; the aggregate cap cannot be
 relaxed. `LX_CAD_REMOTE_HOST` and `LX_CAD_REMOTE_ROOT` override `osado.lan`
 and `~/temp/lx-cad` respectively.
+
+## Lateral waveguide acoustic study
+
+The lateral MU10/ND25FN study has dedicated remote targets:
+
+    make waveguide_study_preflight
+    make waveguide_study_screen
+    make waveguide_study_broadband
+    make waveguide_study_benchmark
+
+They use **one 448 GiB guarded process tree**, a **512 GiB aggregate cgroup**,
+**zero swap**, and the existing **64 GiB host-free floor**. No ordinary
+CAD/light workers run alongside that tree. The solver checks its dense-matrix
+allocation against this budget before allocating; the live RSS guard remains
+authoritative. This larger study allocation was authorized on 2026-09-19.
+It does not raise workstation limits or ordinary CAD workers' limits.
+
+Acoustic jobs also have a **30-core aggregate CPU quota**. Frequency workers
+use disjoint physical cores (SMT siblings are not counted as extra cores), and
+Numba, OpenMP and BLAS pools are explicitly bounded. The parent alone writes
+frequency caches and the combined manifest. Workers remain descendants of
+the same 448 GiB process-tree guard; concurrency never multiplies that limit.
+
+The pinned Gmsh wheel needs GLU even for headless meshing. The study's
+`gmsh_runtime.py` resolves system GLU or explicitly loads the already-installed
+MeshLab wheel's GLU, verifies its wheel RECORD hash and records the binary
+digest. Preflight initializes Gmsh in a fresh child process, so an earlier
+MeshLab import cannot conceal an import-order dependency. No system package
+installation or root access is required.
+
+`make waveguide_study_source_calibration` rebuilds the spatial study’s bare MU10 with the owner-confirmed 5.4 mm flange. `spatial_source_calibration.json` declares the decreasing mesh edges and common 1.5–14 kHz frequency grid. The current refinement uses 2.0/1.6/1.3 mm; the earlier 4/3/2.5/2-mm campaign remains archived separately. Each campaign uses fixed common CHIEF points across its meshes, records unchanged numerical acceptance checks and identifies a provisional radial-motion hypothesis. It uses the same guarded Osado execution and solver parity/concurrency policy. Historical 4-mm-flange calibration is preserved; new spatial geometry may not silently reuse it. Numerical mesh checks and agreement with measured source polars are separate gates.
+
+`make waveguide_study_spatial_numerics` consumes an explicitly selected,
+admitted native case, its assembly record and actual coupled mesh in
+`spatial_numerical_campaign.json`. It compares successive fixed-boundary
+refinements, near-quadrature depth, nested/independent CHIEF points and angular
+integration. Inputs and immutable field views are bound by hashes. Two
+successive passing, improving mesh comparisons are required at the same
+checkpoints; resource rejection or failed tests remain explicit. This target
+does not certify a frequency band from one checkpoint or use the old planar
+fields for a new carrier. No selection is supplied before assembly admission.
+
+`waveguide_study_benchmark` uses the completed wide-layout boundary and actual
+4/7 kHz BEM solves to compare one 16-thread solver, one 30-thread solver, and
+two concurrent 15-thread solvers. It checks each source's complex boundary and
+far fields against the saved reference before selecting a policy. A measured
+gain of at least 5% is required to change the serial baseline. The report is
+`build/side_waveguide_study/validation/solver_concurrency.json`; it records wall
+time, CPU use, RSS, thread pools, affinity, code/runtime hashes and field errors.
+Missing or stale evidence falls back to one 16-thread solver.
+
+Admission reserves `(dense matrix + 2 GiB) / 0.60` per worker plus 2 GiB for
+the coordinator. Larger meshes reduce the worker count automatically; the
+best measured serial configuration is used when only one worker fits or one
+frequency remains. The benchmark qualifies execution speed and numerical
+parity on the tested mesh, not acoustic convergence or physical performance.
+
+The 2026-09-19 Osado benchmark used the actual 20,848-panel assembled boundary
+at 4 and 7 kHz. Including worker startup, 1×16 took 116.03 s, 1×30 took
+99.32 s, and 2×15 took 74.25 s. The selected default is **two 15-thread
+workers**, with **one 30-thread worker** for a single pending frequency or
+when memory admission permits only one. This was 1.56× the baseline throughput
+(36% less elapsed time) on that workload. The maximum per-source relative
+complex-field difference was 3.81e-14; cgroup memory peaked at 15.49 GiB, with
+zero OOM events. Retest when the solver/runtime changes or a substantially
+different mesh changes the performance balance.
+
+The separate `acoustic-remote-requirements.lock` pins the Linux environment.
+The preflight compares the actual Linux solver against saved reference fields
+before the campaign can run. Explicit hash-bound inputs are listed in
+`candidates/obiwan_side_waveguide_study/remote_inputs.json`; refresh that list
+with `python3 candidates/obiwan_side_waveguide_study/src/prepare_remote_inputs.py`
+after intentionally changing CAD or calibration inputs. Unrelated slicer jobs,
+old archives and generated output trees are excluded from this study snapshot.
+
+Outputs are verified and promoted only to `build/side_waveguide_study/`.
+Existing release and printer shelves are not targets of this workflow.
+The same detach/status/resume/cancel commands apply. `remote_execution.json`
+records the applied limits; the job's `profile.json` records measured usage.
 
 ## Incremental cache seeding
 

@@ -1,0 +1,19 @@
+# 2026-10-12 15:10 pair_check_2026-10-12.log
+pt2522_4 portrait pair um duct 8.2..11.6 x 8.2..5.0: branch (54.4,295.0), crosses the joint near (39.6,13.1) [x,z], min bend R15.8, length 155 mm, cover 23 mm, exposed 0 of 11520 []
+pt2522_4 portrait pair um duct centre to the M2 tie screw path: 56.68 mm (need >= 4.90)
+pt2522_4 portrait pair um LM duct seam->branch: exposed 0 of 8992
+pt2522_4 portrait pair t duct 6.0..6.0 x 6.0..6.0: branch (-42.6,300.3), crosses the joint near (-3.8,10.2) [x,z], min bend R20.1, length 59 mm, cover 45 mm, exposed 0 of 11520 []
+pt2522_4 portrait pair t duct centre to the M2 tie screw path: 5.69 mm (need >= 5.40)
+pt2522_4 portrait pair t LM duct seam->branch: exposed 0 of 9920
+pt2522_4 portrait pair M3 insert bore D4.6 at (-31.0,328.5) depth 4.00 wall 1.60 floor 2.00
+pt2522_4 portrait pair M3 insert bore D4.6 at (-31.0,407.5) depth 4.00 wall 2.80 floor 2.00
+pt2522_4 portrait pair M3 insert bore D4.6 at (31.0,328.5) depth 4.00 wall 1.50 floor 2.00
+pt2522_4 portrait pair M3 insert bore D4.6 at (31.0,407.5) depth 4.00 wall 1.75 floor 2.00
+pt2522_4 portrait pair lm_top: bounds [[-113.9, 172.5, -5.3], [113.9, 320.7, 18.3]], max z 18.30, proud 0; shells 1 (cavities 0), watertight True, vol 35.7 cm3
+pt2522_4 portrait pair um_t: bounds [[-52.6, 303.3, 5.7], [52.6, 516.8, 18.3]], max z 18.30, proud 0; shells 1 (cavities 0), watertight True, vol 74.8 cm3
+pt2522_4 portrait pair overlap between the prints 0.0000 mm3
+pt2522_4 portrait pair least gap piece->LM top: 0.046 mm at [5.84, 314.3, 6.82] (inherited True); new surfaces 0.063 mm at [-7.18, 314.36, 11.49]
+pt2522_4 portrait pair released joint least clearance 0.046 mm; new surfaces must keep >= min(0.15, that)
+pt2522_4 portrait pair keyed seam zone (y<255) vs released keyed top: extra 0.08 mm3, missing 0.10 mm3
+pt2522_4 portrait pair joint zone (y 305..340) LM top variant vs released: extra 447.4 mm3, missing 1068.9 mm3
+pt2522_4 portrait pair RESULT PASS

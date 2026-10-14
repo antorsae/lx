@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "backend": "BambuStudio",
- "required_bambu_studio_version": "02.07.01.62",
+ "required_bambu_studio_version": "02.08.04.61",
  "printer": "Bambu Lab P2S 0.4 nozzle",
  "process": "0.16mm High Quality @BBL P2S",
  "filament": "Bambu PLA Basic @BBL P2S",

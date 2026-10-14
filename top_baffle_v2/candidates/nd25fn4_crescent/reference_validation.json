@@ -1,10 +1,10 @@
 {
   "status": "passed",
-  "body_sha256": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+  "body_sha256": "ab79e944697cecb1cd92416c193d1cb01b1f02a879a564905a2ef4838b7fad99",
   "model_source_sha256": "d79c5db514c5318a27c44c6f34d6fbbeeb96715079967a86064608ad92b88d28",
   "source_sha256": "0ec96528eefbaa868c5b63f0b59c964734d6176353af161cf2013dd406926ec2",
   "trace_source_sha256": "478db431233bc33c503ea2e9890bbec29846f47895f51268066a2c665477d5f3",
-  "source_build_manifest_sha256": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f",
+  "source_build_manifest_sha256": "000fd59f058e4c4d44b62aefb8c48849f4a0f12b18ccdb9a983f99c15b636e27",
   "reference_path": "design_inputs/nd25fn4_UM_reference_front_latest.png",
   "reference_sha256": "a4d0dcc5b0bf549fee1c834468f6fd29659e1f2f4df52a5494b37a990502db6b",
   "previous_stl_path": "review/nd25fn4_iterations/before_reference_outline_20260911T202429Z/STL/01_UM_Crescent_V4.stl",
@@ -2043,44 +2043,44 @@
     [
       6.0,
       310.8069583683645,
-      314.0309965261216,
-      3.224038157757093
+      314.3012701144772,
+      3.4943117461126576
     ],
     [
       8.0,
       310.8069583683645,
-      314.0309980062634,
-      3.2240396378988976
+      314.3760413739036,
+      3.5690830055390848
     ],
     [
       10.0,
       310.8069583683645,
-      314.0309913754463,
-      3.2240330070818004
+      314.47249635444456,
+      3.6655379860800394
     ],
     [
       12.0,
       310.5572166963443,
-      314.0309935293845,
-      3.4737768330401764
+      314.5929776654881,
+      4.03576096914378
     ],
     [
       14.0,
       310.5572166963443,
-      313.96675962130575,
-      3.4095429249614426
+      314.7368673573378,
+      4.179650660993502
     ],
     [
       16.0,
       310.3074750243241,
-      313.70105643207654,
-      3.3935814077524356
+      314.90619203040205,
+      4.598717006077948
     ],
     [
       18.0,
       310.3074750243241,
-      315.1024977583947,
-      4.795022734070585
+      315.1024980498769,
+      4.79502302555278
     ],
     [
       20.0,
@@ -2139,7 +2139,7 @@
   ],
   "maximum_base_error_mm": 6.400060987455447,
   "outputs": {
-    "UM_reference_overlay.png": "8fd5ac051115d61235c7e3d44b24ee48cfecb72526b10858af5e7bf06e1e491d",
+    "UM_reference_overlay.png": "6480d8f4115a59fbe38c7867b3440f86c1d24d3668252013cd8a14a0eb0a556c",
     "UM_reference_outline_comparison.png": "21e7ed20ec48e239685818e5a10e2393b55210a566814a5ced6e4f8d3ede1569"
   },
   "scope": "Actual exported STL projection versus symmetric image outline. Pixel scale is a design reference, not a measured dimension of a physical prototype."

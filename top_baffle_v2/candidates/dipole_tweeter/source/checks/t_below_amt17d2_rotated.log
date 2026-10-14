@@ -1,0 +1,16 @@
+# 2026-10-10 19:33 taper_below_landscape.log
+obiwan_amt17d2_lm_um_t_landscape {'volume_cm3': np.float64(90.4), 'bounds_mm': [[-113.93, 172.48, -5.35], [113.93, 473.69, 18.3]], 'watertight': True, 'driver_clash_mm3': -0.0, 'step': None, 'method':
+amt17d2_1 landscape lm_um_t um duct 8.2..11.6 x 8.2..5.0: branch y 295.2, min bend R15.9, length 111 mm, cover 41 mm, exposed 0 of 11520 []
+amt17d2_1 landscape lm_um_t um LM duct seam->branch: exposed 0 of 9024
+amt17d2_1 landscape lm_um_t um old tail: 113 points, 110 in open air or new ducts
+amt17d2_1 landscape lm_um_t t duct 6.0..4.0 x 6.0..4.0: branch y 285.1, min bend R27.0, length 73 mm, cover 41 mm, exposed 0 of 11520 []
+amt17d2_1 landscape lm_um_t t LM duct seam->branch: exposed 0 of 7840
+amt17d2_1 landscape lm_um_t t old tail: 240 points, 220 in open air or new ducts
+amt17d2_1 landscape lm_um_t M3 insert bore D4.6 at (-34.5,365.2) depth 4.00 wall 1.70 floor 2.00
+amt17d2_1 landscape lm_um_t M3 insert bore D4.6 at (34.5,365.2) depth 4.00 wall 1.70 floor 2.00
+amt17d2_1 landscape lm_um_t M3 insert bore D4.6 at (-34.5,318.2) depth 4.00 wall 1.70 floor 2.00
+amt17d2_1 landscape lm_um_t M3 insert bore D4.6 at (34.5,318.2) depth 4.00 wall 1.70 floor 2.00
+amt17d2_1 landscape lm_um_t front: max z 18.30, vertices proud 0; shells 1 (sealed cavities 0: []), watertight True, vol 90.4 cm3
+amt17d2_1 landscape lm_um_t keyed seam zone (y<255) vs released keyed top: extra 0.00 mm3, missing 0.00 mm3
+amt17d2_1 landscape lm_um_t H2C bed 330x320: best 301.2 x 227.9 at 90.0 deg, slack 28.8 mm
+amt17d2_1 landscape lm_um_t RESULT PASS

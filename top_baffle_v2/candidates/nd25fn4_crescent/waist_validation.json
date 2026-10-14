@@ -1,14 +1,14 @@
 {
   "status": "passed",
-  "body_sha256": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+  "body_sha256": "ab79e944697cecb1cd92416c193d1cb01b1f02a879a564905a2ef4838b7fad99",
   "source_sha256": "3302857314598d9aabd9fcd474f8275ae2b7ca6a30c1486135a26bb64b5efedf",
   "model_source_sha256": "d79c5db514c5318a27c44c6f34d6fbbeeb96715079967a86064608ad92b88d28",
-  "source_build_manifest_sha256": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f",
+  "source_build_manifest_sha256": "000fd59f058e4c4d44b62aefb8c48849f4a0f12b18ccdb9a983f99c15b636e27",
   "section_spacing_mm": 0.1,
   "curvature_fit_window_mm": 1.5,
   "rear_height_range_mm": [
-    -17.499999984726315,
-    15.300000000000011
+    -17.49999998472632,
+    15.300000000000013
   ],
   "profiles": [
     {
@@ -20,9 +20,9 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.0018332897308663831,
-      "minimum_radius_mm": 7.328288879760244,
-      "maximum_fit_departure_mm": 0.008482535681430647,
-      "maximum_tangent_change_per_0_4mm_deg": 4.280361815675719,
+      "minimum_radius_mm": 7.32828887977149,
+      "maximum_fit_departure_mm": 0.00848253568148749,
+      "maximum_tangent_change_per_0_4mm_deg": 4.280361815675172,
       "y_mm": [
         429.60000000000446,
         429.7000000000045,
@@ -445,8 +445,8 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.0018332897308663831,
-      "minimum_radius_mm": 7.315185586999663,
-      "maximum_fit_departure_mm": 0.008460912511253582,
+      "minimum_radius_mm": 7.315185587009629,
+      "maximum_fit_departure_mm": 0.008460912511317531,
       "maximum_tangent_change_per_0_4mm_deg": 4.289338935865554,
       "y_mm": [
         429.60000000000446,
@@ -870,9 +870,9 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.0018181307204940822,
-      "minimum_radius_mm": 8.786426414552425,
-      "maximum_fit_departure_mm": 0.002538400822579945,
-      "maximum_tangent_change_per_0_4mm_deg": 3.9358585029516004,
+      "minimum_radius_mm": 8.786426414564602,
+      "maximum_fit_departure_mm": 0.0025384008226438937,
+      "maximum_tangent_change_per_0_4mm_deg": 3.9358585029502007,
       "y_mm": [
         427.80000000000405,
         427.90000000000407,
@@ -1331,9 +1331,9 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.0018181307204940822,
-      "minimum_radius_mm": 8.81735405563935,
-      "maximum_fit_departure_mm": 0.002641475563088136,
-      "maximum_tangent_change_per_0_4mm_deg": 3.929308965862229,
+      "minimum_radius_mm": 8.817354055650295,
+      "maximum_fit_departure_mm": 0.0026414755631520848,
+      "maximum_tangent_change_per_0_4mm_deg": 3.9293089658603844,
       "y_mm": [
         427.80000000000405,
         427.90000000000407,
@@ -1792,9 +1792,9 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.0008799823796579176,
-      "minimum_radius_mm": 9.994086977834533,
-      "maximum_fit_departure_mm": 0.0018378757966530657,
-      "maximum_tangent_change_per_0_4mm_deg": 3.5117693092798805,
+      "minimum_radius_mm": 9.994086977847587,
+      "maximum_fit_departure_mm": 0.0018378757965464843,
+      "maximum_tangent_change_per_0_4mm_deg": 3.5117693092803006,
       "y_mm": [
         426.00000000000364,
         426.10000000000366,
@@ -2289,9 +2289,9 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.0008799823796579176,
-      "minimum_radius_mm": 9.999607204046557,
-      "maximum_fit_departure_mm": 0.0016719347993543465,
-      "maximum_tangent_change_per_0_4mm_deg": 3.504951446493755,
+      "minimum_radius_mm": 9.999607204060021,
+      "maximum_fit_departure_mm": 0.0016719347992548705,
+      "maximum_tangent_change_per_0_4mm_deg": 3.5049514464937483,
       "y_mm": [
         426.00000000000364,
         426.10000000000366,
@@ -2786,9 +2786,9 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.00022972512258689903,
-      "minimum_radius_mm": 10.222103834399377,
-      "maximum_fit_departure_mm": 0.0011828710551284871,
-      "maximum_tangent_change_per_0_4mm_deg": 3.284856663944138,
+      "minimum_radius_mm": 10.222103834415721,
+      "maximum_fit_departure_mm": 0.0011828710550219057,
+      "maximum_tangent_change_per_0_4mm_deg": 3.284856663946581,
       "y_mm": [
         423.80000000000314,
         423.90000000000316,
@@ -3327,9 +3327,9 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.00022972512258689903,
-      "minimum_radius_mm": 10.249355500086892,
-      "maximum_fit_departure_mm": 0.0012142872059470733,
-      "maximum_tangent_change_per_0_4mm_deg": 3.2806472253869483,
+      "minimum_radius_mm": 10.249355500100872,
+      "maximum_fit_departure_mm": 0.0012142872058404919,
+      "maximum_tangent_change_per_0_4mm_deg": 3.280647225387909,
       "y_mm": [
         423.80000000000314,
         423.90000000000316,
@@ -3868,9 +3868,9 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.0017282189844394225,
-      "minimum_radius_mm": 9.855642201799087,
-      "maximum_fit_departure_mm": 0.001685880100573911,
-      "maximum_tangent_change_per_0_4mm_deg": 3.2437626208954664,
+      "minimum_radius_mm": 9.855642201815263,
+      "maximum_fit_departure_mm": 0.0016858801004531188,
+      "maximum_tangent_change_per_0_4mm_deg": 3.2437626208944104,
       "y_mm": [
         420.80000000000246,
         420.9000000000025,
@@ -4469,9 +4469,9 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.0017282189844394225,
-      "minimum_radius_mm": 9.8266466833377,
-      "maximum_fit_departure_mm": 0.001445125635321176,
-      "maximum_tangent_change_per_0_4mm_deg": 3.2155544734199406,
+      "minimum_radius_mm": 9.826646683353726,
+      "maximum_fit_departure_mm": 0.0014451256352003838,
+      "maximum_tangent_change_per_0_4mm_deg": 3.215554473420494,
       "y_mm": [
         420.80000000000246,
         420.9000000000025,
@@ -5070,8 +5070,8 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.0010530762052241016,
-      "minimum_radius_mm": 9.582349766117554,
-      "maximum_fit_departure_mm": 0.0013877698049427067,
+      "minimum_radius_mm": 9.582349766137437,
+      "maximum_fit_departure_mm": 0.0013877698048432308,
       "maximum_tangent_change_per_0_4mm_deg": 3.105821642667058,
       "y_mm": [
         416.5000000000015,
@@ -5757,9 +5757,9 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.0010530762052241016,
-      "minimum_radius_mm": 9.650732000906803,
-      "maximum_fit_departure_mm": 0.001346263065507003,
-      "maximum_tangent_change_per_0_4mm_deg": 3.1251344049951397,
+      "minimum_radius_mm": 9.650732000926004,
+      "maximum_fit_departure_mm": 0.0013462630654359486,
+      "maximum_tangent_change_per_0_4mm_deg": 3.125134404993982,
       "y_mm": [
         416.5000000000015,
         416.6000000000015,
@@ -6444,8 +6444,8 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.000383979521195954,
-      "minimum_radius_mm": 9.73580466147746,
-      "maximum_fit_departure_mm": 0.0011305508511725293,
+      "minimum_radius_mm": 9.735804661496058,
+      "maximum_fit_departure_mm": 0.0011305508510588425,
       "maximum_tangent_change_per_0_4mm_deg": 2.861159386684971,
       "y_mm": [
         414.0000000000009,
@@ -7181,8 +7181,8 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.000383979521195954,
-      "minimum_radius_mm": 9.70778133109775,
-      "maximum_fit_departure_mm": 0.0010670530641263554,
+      "minimum_radius_mm": 9.707781331119818,
+      "maximum_fit_departure_mm": 0.0010670530642400422,
       "maximum_tangent_change_per_0_4mm_deg": 2.862971981162067,
       "y_mm": [
         414.0000000000009,
@@ -7918,9 +7918,9 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.012652899510726456,
-      "minimum_radius_mm": 3.9531125528393334,
-      "maximum_fit_departure_mm": 0.01578564973669927,
-      "maximum_tangent_change_per_0_4mm_deg": 6.145478864297988,
+      "minimum_radius_mm": 3.953112552835424,
+      "maximum_fit_departure_mm": 0.015785649736628216,
+      "maximum_tangent_change_per_0_4mm_deg": 6.1454788642989,
       "y_mm": [
         414.0000000000009,
         414.10000000000093,
@@ -8655,8 +8655,8 @@
         449.9000000000091
       ],
       "maximum_symmetry_error_mm": 0.012652899510726456,
-      "minimum_radius_mm": 3.5356106290529787,
-      "maximum_fit_departure_mm": 0.016702911655563923,
+      "minimum_radius_mm": 3.53561062905043,
+      "maximum_fit_departure_mm": 0.016702911655464447,
       "maximum_tangent_change_per_0_4mm_deg": 6.998035349071595,
       "y_mm": [
         414.0000000000009,
@@ -9384,7 +9384,7 @@
       ]
     }
   ],
-  "minimum_outer_radius_mm": 3.5356106290529787,
+  "minimum_outer_radius_mm": 3.53561062905043,
   "maximum_tangent_change_per_0_4mm_deg": 6.998035349071595,
   "scope": "Actual STL sections on both outer sides, X magnitude >=35 mm, Y414..450, eight depths from rear to front. This includes both former dents; central service-bore edges are outside this exterior-surface test."
 }

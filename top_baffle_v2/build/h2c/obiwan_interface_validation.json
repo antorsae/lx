@@ -1,197 +1,349 @@
 {
   "status": "pass",
-  "Dayton_ND25FN4": {
-    "path": "candidates/nd25fn4_crescent/print/geometry/01_UM_Crescent_V4_PRINT.stl",
-    "sha256": "1781e40e46f4e8ba48fd5d1e6250bebdeedca5a56c14413e6ae9f60d0e75c207",
-    "sidecar_sha256": "a3d732f8c0affa29b6f3a4c5012eb37ad675bf366972951d4daa950e655fd7da"
-  },
-  "regular_UM": {
-    "path": "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
-    "sha256": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
-    "sidecar_sha256": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23"
-  },
-  "source_sha256": "3aad7926b97121329e708c006d39c04f2701b9db5822088d6d6b01c9fafd81b4",
-  "checks": [
-    {
-      "state": "no_floor_stand",
-      "LM": {
-        "path": "build/h2c/STL/h2c_obiwan_core_lm_carrier_no_floor_stand.stl",
-        "sha256": "44610f8a41ee7fa477082b8e046805dc1684fd61bad7ee986d2b3b5d64b53161",
-        "sidecar_sha256": "20d30e857d0e4caf3159e9f1a0de306bafb283a2fa61728b70eaea56d78d7286"
-      },
-      "Dayton_ND25FN4_overlap_mm3": 0.0,
-      "regular_UM_overlap_mm3": 7.632783294297951e-17,
-      "receivers": [
-        {
-          "x_mm": -32.0,
-          "axis_error_mm": 5.492535244930126e-07,
-          "half_lap_gap_mm": 0.19999980463261124
-        },
-        {
-          "x_mm": 32.0,
-          "axis_error_mm": 9.073477973079447e-07,
-          "half_lap_gap_mm": 0.19999980463261124
-        }
-      ],
-      "Dayton_ND25FN4_LM_front_occlusion_mm2": 0.0,
-      "seam_samples": [
-        {
-          "x_mm": -30.0,
-          "seam_gap_mm": 0.05479168523788758,
-          "front_face_step_mm": -4.814696872301738e-07
-        },
-        {
-          "x_mm": -25.0,
-          "seam_gap_mm": 0.05000162978410572,
-          "front_face_step_mm": -4.814696872301738e-07
-        },
-        {
-          "x_mm": -20.0,
-          "seam_gap_mm": 0.05000456261984709,
-          "front_face_step_mm": -4.814696872301738e-07
-        },
-        {
-          "x_mm": -15.0,
-          "seam_gap_mm": 0.04999758454420089,
-          "front_face_step_mm": -4.814696872301738e-07
-        },
-        {
-          "x_mm": -10.0,
-          "seam_gap_mm": 0.05000069237172511,
-          "front_face_step_mm": -4.814696872301738e-07
-        },
-        {
-          "x_mm": -5.0,
-          "seam_gap_mm": 0.04999253633917533,
-          "front_face_step_mm": -4.814696872301738e-07
-        },
-        {
-          "x_mm": 0.0,
-          "seam_gap_mm": 0.05000520117994256,
-          "front_face_step_mm": -4.814696872301738e-07
-        },
-        {
-          "x_mm": 5.0,
-          "seam_gap_mm": 0.05000351807808556,
-          "front_face_step_mm": -4.814696872301738e-07
-        },
-        {
-          "x_mm": 10.0,
-          "seam_gap_mm": 0.05000192320568431,
-          "front_face_step_mm": -4.814696872301738e-07
-        },
-        {
-          "x_mm": 15.0,
-          "seam_gap_mm": 0.050004503749903506,
-          "front_face_step_mm": -4.814696872301738e-07
-        },
-        {
-          "x_mm": 20.0,
-          "seam_gap_mm": 0.05000241972282993,
-          "front_face_step_mm": -4.814696872301738e-07
-        },
-        {
-          "x_mm": 25.0,
-          "seam_gap_mm": 0.04999133625335617,
-          "front_face_step_mm": -4.814696872301738e-07
-        },
-        {
-          "x_mm": 30.0,
-          "seam_gap_mm": 0.05478561706934215,
-          "front_face_step_mm": -4.814696872301738e-07
-        }
-      ]
+  "regular_obiwan_UM": {
+    "UM": {
+      "path": "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
+      "sha256": "0433d51f929937ab33b1e02dbbedb07605b995fa55c960eaa2c86d3bc409d0aa",
+      "sidecar_sha256": "0df7140d174fa99e1ccc0095da19910cc08dc2d2ea3da1506549c641a40f9524"
     },
-    {
-      "state": "floor_stand",
-      "LM": {
-        "path": "build/h2c/STL/h2c_obiwan_core_lm_carrier_floor_stand.stl",
-        "sha256": "6544be563cc0986339109c5e6bc11b6cd0c54cae709a092937ef3f83cf8d2873",
-        "sidecar_sha256": "ef1796aeec9676cb28bde6defcd29282f705790dabc820d49875df36465e00fa"
+    "checks": [
+      {
+        "state": "no_floor_stand",
+        "LM": {
+          "path": "build/h2c/STL/h2c_obiwan_core_lm_carrier_no_floor_stand.stl",
+          "sha256": "b759db4ac552791e8aebebf3904badd4edd9b6a26e3b24777cacdc64d191839d",
+          "sidecar_sha256": "219b1a06e9946e2b4af9ef6fb620056348f8c4eacb67b5d7810b8e6e9eee33c2"
+        },
+        "overlap_mm3": 0.0,
+        "receivers": [
+          {
+            "x_mm": -32.0,
+            "axis_error_mm": 5.939056882318468e-07
+          },
+          {
+            "x_mm": 32.0,
+            "axis_error_mm": 5.248572875836306e-07
+          }
+        ],
+        "LM_front_occlusion_mm2": 0.0,
+        "seam_samples": [
+          {
+            "x_mm": -30.0,
+            "seam_gap_mm": 0.10938362399650714,
+            "front_face_step_mm": -4.263256414560601e-14
+          },
+          {
+            "x_mm": -25.0,
+            "seam_gap_mm": 0.04999904981900727,
+            "front_face_step_mm": -4.263256414560601e-14
+          },
+          {
+            "x_mm": -20.0,
+            "seam_gap_mm": 0.04999932531455897,
+            "front_face_step_mm": -4.263256414560601e-14
+          },
+          {
+            "x_mm": -15.0,
+            "seam_gap_mm": 0.04999842900122076,
+            "front_face_step_mm": -4.263256414560601e-14
+          },
+          {
+            "x_mm": -10.0,
+            "seam_gap_mm": 0.04999790336597698,
+            "front_face_step_mm": -4.263256414560601e-14
+          },
+          {
+            "x_mm": -5.0,
+            "seam_gap_mm": 0.04999509390700041,
+            "front_face_step_mm": -4.263256414560601e-14
+          },
+          {
+            "x_mm": 0.0,
+            "seam_gap_mm": 0.05000107779181917,
+            "front_face_step_mm": -4.263256414560601e-14
+          },
+          {
+            "x_mm": 5.0,
+            "seam_gap_mm": 0.05000065351401872,
+            "front_face_step_mm": -4.263256414560601e-14
+          },
+          {
+            "x_mm": 10.0,
+            "seam_gap_mm": 0.05000021738368332,
+            "front_face_step_mm": -4.263256414560601e-14
+          },
+          {
+            "x_mm": 15.0,
+            "seam_gap_mm": 0.04999940880605891,
+            "front_face_step_mm": -4.263256414560601e-14
+          },
+          {
+            "x_mm": 20.0,
+            "seam_gap_mm": 0.04999735412263817,
+            "front_face_step_mm": -4.263256414560601e-14
+          },
+          {
+            "x_mm": 25.0,
+            "seam_gap_mm": 0.049996830431155104,
+            "front_face_step_mm": -4.263256414560601e-14
+          },
+          {
+            "x_mm": 30.0,
+            "seam_gap_mm": 0.10938078629129677,
+            "front_face_step_mm": -4.263256414560601e-14
+          }
+        ]
       },
-      "Dayton_ND25FN4_overlap_mm3": 0.0,
-      "regular_UM_overlap_mm3": 0.0,
-      "receivers": [
+      {
+        "state": "floor_stand",
+        "LM": {
+          "path": "build/h2c/STL/h2c_obiwan_core_lm_carrier_floor_stand.stl",
+          "sha256": "0ed3509b4cc014fb7d1b4b88f0d6c7948f6435b360ca2e02388da460642aa622",
+          "sidecar_sha256": "feb981abd79789a05d96d6b58d522fbd6f15e3790510a622d90949107697f064"
+        },
+        "overlap_mm3": 0.0,
+        "receivers": [
+          {
+            "x_mm": -32.0,
+            "axis_error_mm": 1.7783668280459757e-07
+          },
+          {
+            "x_mm": 32.0,
+            "axis_error_mm": 8.107531227165362e-07
+          }
+        ],
+        "LM_front_occlusion_mm2": 0.0,
+        "seam_samples": [
+          {
+            "x_mm": -30.0,
+            "seam_gap_mm": 0.10938359827372324,
+            "front_face_step_mm": -3.197442310920451e-14
+          },
+          {
+            "x_mm": -25.0,
+            "seam_gap_mm": 0.05000175711558086,
+            "front_face_step_mm": -3.197442310920451e-14
+          },
+          {
+            "x_mm": -20.0,
+            "seam_gap_mm": 0.04999580641100465,
+            "front_face_step_mm": -3.197442310920451e-14
+          },
+          {
+            "x_mm": -15.0,
+            "seam_gap_mm": 0.05000294084709367,
+            "front_face_step_mm": -3.197442310920451e-14
+          },
+          {
+            "x_mm": -10.0,
+            "seam_gap_mm": 0.050002174150904466,
+            "front_face_step_mm": -3.197442310920451e-14
+          },
+          {
+            "x_mm": -5.0,
+            "seam_gap_mm": 0.049999137047961995,
+            "front_face_step_mm": -3.197442310920451e-14
+          },
+          {
+            "x_mm": 0.0,
+            "seam_gap_mm": 0.04999822965612566,
+            "front_face_step_mm": -3.197442310920451e-14
+          },
+          {
+            "x_mm": 5.0,
+            "seam_gap_mm": 0.049997973364611425,
+            "front_face_step_mm": -3.197442310920451e-14
+          },
+          {
+            "x_mm": 10.0,
+            "seam_gap_mm": 0.049997672721360686,
+            "front_face_step_mm": -3.197442310920451e-14
+          },
+          {
+            "x_mm": 15.0,
+            "seam_gap_mm": 0.05000258748015085,
+            "front_face_step_mm": -3.197442310920451e-14
+          },
+          {
+            "x_mm": 20.0,
+            "seam_gap_mm": 0.05000030613916806,
+            "front_face_step_mm": -3.197442310920451e-14
+          },
+          {
+            "x_mm": 25.0,
+            "seam_gap_mm": 0.0500003787903438,
+            "front_face_step_mm": -3.197442310920451e-14
+          },
+          {
+            "x_mm": 30.0,
+            "seam_gap_mm": 0.10938811893413458,
+            "front_face_step_mm": -3.197442310920451e-14
+          }
+        ]
+      }
+    ]
+  },
+  "dayton_nd25fn4_obiwan": {
+    "right_on_floor_stand": {
+      "top": {
+        "path": "candidates/nd25fn4_vase/obiwan/STL/nd25fn4_vase_obiwan_tweeters_right_top.stl",
+        "sha256": "e754bf6b4db8366127b0b311470e02380b5812f06e48ca2e8e22bbc5de110d81",
+        "sidecar_sha256": "f77eef84268154b8c867b25a86583e40fd68faaf6c1c58266b4366dbcce4a596"
+      },
+      "LM_bottom": {
+        "path": "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
+        "sha256": "7fd8b2b2ac24c499107f42c2d8a0bcdea4ff54f49cffc80552c53dbc949c8e8f",
+        "sidecar_sha256": "a0aeff73414990682c7938e223de4c6cf797433fc6842d8932024bd22855a737"
+      },
+      "released_top": {
+        "path": "build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
+        "sha256": "ac6da3f5799d3f1a8b8bd52ee90ffca14bedfe591273eaf6282b389872c2db99",
+        "sidecar_sha256": "30bf1a1c15dbe8a465a1011e01554bd08f05096949192a7eff05f3d5aef06bd4"
+      },
+      "overlap_with_LM_bottom_mm3": 0.00030196353503866055,
+      "released_material_removed_below_y278_mm3": 0.008515036351419104,
+      "released_samples_missing_0p02mm_deep": 0,
+      "junction_lumen_recut_mm3": 1.7167993696201087,
+      "relocated_magnet_cavities_below_y278": 2,
+      "difference_to_released_top_y172_180_mm3": 0.0016028266481849997,
+      "seam_band_samples_off_0p02mm": 0,
+      "rear_taper_added_below_y278_mm3": 6874.603541178759,
+      "rear_taper_in_seat_cutout_or_wing_zone_mm3": 0.082250015346216
+    },
+    "right_on_no_floor_stand": {
+      "top": {
+        "path": "candidates/nd25fn4_vase/obiwan/STL/nd25fn4_vase_obiwan_tweeters_right_top.stl",
+        "sha256": "e754bf6b4db8366127b0b311470e02380b5812f06e48ca2e8e22bbc5de110d81",
+        "sidecar_sha256": "f77eef84268154b8c867b25a86583e40fd68faaf6c1c58266b4366dbcce4a596"
+      },
+      "LM_bottom": {
+        "path": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
+        "sha256": "d8901e2ce491c2111c0de9d35ccabf757e992776e99eed02d342fb9a2f16c1b1",
+        "sidecar_sha256": "956b95cd7e1778fff8b6a117c844abdf32ac237cd1a96f8fae6248e29bd05a4c"
+      },
+      "released_top": {
+        "path": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
+        "sha256": "79eed5f69c4dbbb002b42fe4b600f65e339669996a69d74941e2d093d406a1f3",
+        "sidecar_sha256": "f2f34b7fc76c82c94d9e8e3079cff8b439b2ad84d22a9239793a6388d23718a5"
+      },
+      "overlap_with_LM_bottom_mm3": 0.00022245335934080595,
+      "released_material_removed_below_y278_mm3": 1.0559999726926077,
+      "released_samples_missing_0p02mm_deep": 0,
+      "junction_lumen_recut_mm3": 1.7212363544095757,
+      "relocated_magnet_cavities_below_y278": 2,
+      "difference_to_released_top_y172_180_mm3": 0.19570547603408395,
+      "seam_band_samples_off_0p02mm": 0,
+      "rear_taper_added_below_y278_mm3": 6875.679703755435,
+      "rear_taper_in_seat_cutout_or_wing_zone_mm3": 0.0822500152979389
+    },
+    "left_on_floor_stand": {
+      "top": {
+        "path": "candidates/nd25fn4_vase/obiwan/STL/nd25fn4_vase_obiwan_tweeters_left_top.stl",
+        "sha256": "118a006ab4f2950c6a06f98ec7847ef879cb0ce37be15309aae21606090a573d",
+        "sidecar_sha256": "a1f135b1854796713ae4fa7406a70d1ea563fef551ea4ffec09eecc9026a50b8"
+      },
+      "LM_bottom": {
+        "path": "build/floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
+        "sha256": "7fd8b2b2ac24c499107f42c2d8a0bcdea4ff54f49cffc80552c53dbc949c8e8f",
+        "sidecar_sha256": "a0aeff73414990682c7938e223de4c6cf797433fc6842d8932024bd22855a737"
+      },
+      "released_top": {
+        "path": "build/floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
+        "sha256": "ac6da3f5799d3f1a8b8bd52ee90ffca14bedfe591273eaf6282b389872c2db99",
+        "sidecar_sha256": "30bf1a1c15dbe8a465a1011e01554bd08f05096949192a7eff05f3d5aef06bd4"
+      },
+      "overlap_with_LM_bottom_mm3": 0.00030196353503866055,
+      "released_material_removed_below_y278_mm3": 0.008489454755272267,
+      "released_samples_missing_0p02mm_deep": 0,
+      "junction_lumen_recut_mm3": 1.716794645896667,
+      "relocated_magnet_cavities_below_y278": 2,
+      "difference_to_released_top_y172_180_mm3": 0.0016027032642236512,
+      "seam_band_samples_off_0p02mm": 0,
+      "rear_taper_added_below_y278_mm3": 9310.596011536807,
+      "rear_taper_in_seat_cutout_or_wing_zone_mm3": 0.08225660560146747
+    },
+    "left_on_no_floor_stand": {
+      "top": {
+        "path": "candidates/nd25fn4_vase/obiwan/STL/nd25fn4_vase_obiwan_tweeters_left_top.stl",
+        "sha256": "118a006ab4f2950c6a06f98ec7847ef879cb0ce37be15309aae21606090a573d",
+        "sidecar_sha256": "a1f135b1854796713ae4fa7406a70d1ea563fef551ea4ffec09eecc9026a50b8"
+      },
+      "LM_bottom": {
+        "path": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
+        "sha256": "d8901e2ce491c2111c0de9d35ccabf757e992776e99eed02d342fb9a2f16c1b1",
+        "sidecar_sha256": "956b95cd7e1778fff8b6a117c844abdf32ac237cd1a96f8fae6248e29bd05a4c"
+      },
+      "released_top": {
+        "path": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_2_of_2_top.stl",
+        "sha256": "79eed5f69c4dbbb002b42fe4b600f65e339669996a69d74941e2d093d406a1f3",
+        "sidecar_sha256": "f2f34b7fc76c82c94d9e8e3079cff8b439b2ad84d22a9239793a6388d23718a5"
+      },
+      "overlap_with_LM_bottom_mm3": 0.00022245335934080598,
+      "released_material_removed_below_y278_mm3": 1.0559399427145693,
+      "released_samples_missing_0p02mm_deep": 0,
+      "junction_lumen_recut_mm3": 1.7212353633011388,
+      "relocated_magnet_cavities_below_y278": 2,
+      "difference_to_released_top_y172_180_mm3": 0.1957053526499809,
+      "seam_band_samples_off_0p02mm": 0,
+      "rear_taper_added_below_y278_mm3": 9311.672143397716,
+      "rear_taper_in_seat_cutout_or_wing_zone_mm3": 0.08225660555316444
+    }
+  },
+  "released_keyed_top_floor_vs_no_floor_max_mm": 0.031581529378936844,
+  "dayton_nd25fn4_stock": {
+    "right": {
+      "upper": {
+        "path": "candidates/nd25fn4_vase/stock/STL/nd25fn4_vase_stock_tweeters_right_upper.stl",
+        "sha256": "b3c1559411098c7245eed628d64be055502507b6dbed25dd19bace6a28b63b07",
+        "sidecar_sha256": "b90cfe19a8cb20f67a0afcdc25b5b1d72c1d5e325073092c6563b8544a92b572"
+      },
+      "checks": [
         {
-          "x_mm": -32.0,
-          "axis_error_mm": 2.814299744596868e-07,
-          "half_lap_gap_mm": 0.19999980463257927
+          "LM": {
+            "path": "build/h2c/STL/h2c_stock_lm_no_floor_stand.stl",
+            "sha256": "6463892eb699af0c0a92f1257c23d3794851aa462b5f01642f9c087c1d2f568a",
+            "sidecar_sha256": "ff88f14890f0ef0f9a6ba5168c058333d209fd9ddee8abc8882e562bf72e2b29"
+          },
+          "overlap_mm3": 0.0
         },
         {
-          "x_mm": 32.0,
-          "axis_error_mm": 1.508000668974802e-06,
-          "half_lap_gap_mm": 0.19999980463257927
+          "LM": {
+            "path": "build/h2c/STL/h2c_stock_lm_upper_floor_stand.stl",
+            "sha256": "9fc2905baee2b33072ff3cf30e4b1f8813e7187384392f666e3852ccbf8be15a",
+            "sidecar_sha256": "2003143cc0feacd14719d0a71bcdb5aa8d7e3228ee114818aeabc961e51229b3"
+          },
+          "overlap_mm3": 0.0
         }
       ],
-      "Dayton_ND25FN4_LM_front_occlusion_mm2": 0.0,
-      "seam_samples": [
+      "vestibule_contains_LM_duct_mouth": true
+    },
+    "left": {
+      "upper": {
+        "path": "candidates/nd25fn4_vase/stock/STL/nd25fn4_vase_stock_tweeters_left_upper.stl",
+        "sha256": "7490cae941b791981a4e5c91d83a74da8e86798d3c54fed639fd3a18014178df",
+        "sidecar_sha256": "7987ef23017eebc73c1855255ae6d8aed9605117322a347665e6a0fefc6aad4a"
+      },
+      "checks": [
         {
-          "x_mm": -30.0,
-          "seam_gap_mm": 0.054791659515103674,
-          "front_face_step_mm": -4.814697192045969e-07
+          "LM": {
+            "path": "build/h2c/STL/h2c_stock_lm_no_floor_stand.stl",
+            "sha256": "6463892eb699af0c0a92f1257c23d3794851aa462b5f01642f9c087c1d2f568a",
+            "sidecar_sha256": "ff88f14890f0ef0f9a6ba5168c058333d209fd9ddee8abc8882e562bf72e2b29"
+          },
+          "overlap_mm3": 0.0
         },
         {
-          "x_mm": -25.0,
-          "seam_gap_mm": 0.050004337080679306,
-          "front_face_step_mm": -4.814697192045969e-07
-        },
-        {
-          "x_mm": -20.0,
-          "seam_gap_mm": 0.05000104371629277,
-          "front_face_step_mm": -4.814697192045969e-07
-        },
-        {
-          "x_mm": -15.0,
-          "seam_gap_mm": 0.0500020963900738,
-          "front_face_step_mm": -4.814697192045969e-07
-        },
-        {
-          "x_mm": -10.0,
-          "seam_gap_mm": 0.05000496315665259,
-          "front_face_step_mm": -4.814697192045969e-07
-        },
-        {
-          "x_mm": -5.0,
-          "seam_gap_mm": 0.049996579480136916,
-          "front_face_step_mm": -4.814697192045969e-07
-        },
-        {
-          "x_mm": 0.0,
-          "seam_gap_mm": 0.05000235304424905,
-          "front_face_step_mm": -4.814697192045969e-07
-        },
-        {
-          "x_mm": 5.0,
-          "seam_gap_mm": 0.05000083792742771,
-          "front_face_step_mm": -4.814697192045969e-07
-        },
-        {
-          "x_mm": 10.0,
-          "seam_gap_mm": 0.049999378542906925,
-          "front_face_step_mm": -4.814697192045969e-07
-        },
-        {
-          "x_mm": 15.0,
-          "seam_gap_mm": 0.050007682538023346,
-          "front_face_step_mm": -4.814697192045969e-07
-        },
-        {
-          "x_mm": 20.0,
-          "seam_gap_mm": 0.050005371739359816,
-          "front_face_step_mm": -4.814697192045969e-07
-        },
-        {
-          "x_mm": 25.0,
-          "seam_gap_mm": 0.049994884612544865,
-          "front_face_step_mm": -4.814697192045969e-07
-        },
-        {
-          "x_mm": 30.0,
-          "seam_gap_mm": 0.05479294971217996,
-          "front_face_step_mm": -4.814697192045969e-07
+          "LM": {
+            "path": "build/h2c/STL/h2c_stock_lm_upper_floor_stand.stl",
+            "sha256": "9fc2905baee2b33072ff3cf30e4b1f8813e7187384392f666e3852ccbf8be15a",
+            "sidecar_sha256": "2003143cc0feacd14719d0a71bcdb5aa8d7e3228ee114818aeabc961e51229b3"
+          },
+          "overlap_mm3": 0.0
         }
-      ]
+      ],
+      "vestibule_contains_LM_duct_mouth": true
     }
-  ],
+  },
+  "source_sha256": "b3c56a3fb8b3761894db7224869e257499584ab3dfd1eb7e7a5ea51a8d839e8c",
   "physical_fit": "hardware trial pending"
 }

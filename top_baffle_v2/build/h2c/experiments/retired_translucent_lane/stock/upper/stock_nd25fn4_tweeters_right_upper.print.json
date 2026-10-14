@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "stock_nd25fn4_tweeters_right_upper",
+  "stl": "stock_nd25fn4_tweeters_right_upper.stl",
+  "stl_bytes": 22766084,
+  "stl_sha256": "1e1ce74ec65772de3dc4623c2217c0051930f04dcfb87d410d403695a57f91cb",
+  "source_stl": "candidates/nd25fn4_vase/stock/STL/nd25fn4_vase_stock_tweeters_right_upper.stl",
+  "source_sha256": "b3c1559411098c7245eed628d64be055502507b6dbed25dd19bace6a28b63b07",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      0.052335956242943966,
+      0.9986295347545738,
+      0.0,
+      -277.86763270974365
+    ],
+    [
+      0.9986295347545738,
+      -0.052335956242943966,
+      0.0,
+      81.07134099392198
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      23.700000762939453
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 87.0
+  },
+  "pre_translation_bbox_min_mm": [
+    277.86763270974365,
+    -81.07134099392198,
+    -23.700000762939453
+  ],
+  "stl_origin_translation_mm": [
+    -277.86763270974365,
+    81.07134099392198,
+    23.700000762939453
+  ]
+}

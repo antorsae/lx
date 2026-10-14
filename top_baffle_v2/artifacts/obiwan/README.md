@@ -1,18 +1,19 @@
 # Obiwan — regular and integrated waveguide uppers
 
 For current H2C print files and the integrated **Dayton ND25FN-4 waveguide**
-upper, use the [H2C catalog](../../to_print/h2c/README.md) and
-[three-family selection guide](../../docs/TWEETER_OPTIONS.md).
+upper, use the [H2C catalog](../../to_print/README.md) and
+[five-family selection guide](../../docs/TWEETER_OPTIONS.md)
+and the [dipole tweeter guide](../../docs/DIPOLE_TWEETERS.md).
 This facade retains the regular carrier and earlier split geometry; current
 print files for every upper are linked below.
 
-![Obiwan ND25FW-4, coaxial BMR, opposed BMR and ND25FN-4 waveguide uppers](../../images/generated/iso/rows/obiwan_upper_row.png)
+![Obiwan ND25FW-4, coaxial BMR, opposed BMR, ND25FN-4 waveguide, PT2522-4 and AMT17D2.1 dipole uppers](../../images/generated/iso/rows/obiwan_upper_row.png)
 
 | Upper choice | Parts | Matching H2C wings | Files |
 |---|---|---|---|
-| ND25FW-4 | Regular UM + crescent | Regular flat or graded | [Catalog](../../to_print/h2c/README.md) |
-| TEBM35C10-4 BMR | Regular UM + coaxial or opposed crescent | Regular flat or graded | [Catalog](../../to_print/h2c/README.md) |
-| ND25FN-4 waveguide | Fused UM/body + two caps + two M3 retainers | ND25FN-4 flat or graded | [Body, accessories and wings](../../to_print/h2c/dayton_nd25fn4/) |
+| ND25FW-4 | Regular UM + crescent | Regular flat or graded | [Catalog](../../to_print/README.md) |
+| TEBM35C10-4 BMR | Regular UM + coaxial or opposed crescent | Regular flat or graded | [Catalog](../../to_print/README.md) |
+| ND25FN-4 waveguide | Keyed LM bottom + vase top + two twist-lock caps | ND25FN-4 flat or graded | [Obiwan files](../../to_print/obiwan/README.md) |
 
 ![Regular and ND25FN-4 waveguide assemblies with flat and graded wings](../../images/generated/iso/rows/obiwan_wing_row.png)
 

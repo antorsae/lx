@@ -24,8 +24,8 @@
   "route_source_sha256": "91cf6a67773dbeeaa6b149403d2e5a326a4a7fd64b201ef3f4c2b7b5488db85f",
   "UM_source": {
     "source_stl": "build/no_floor_stand/stl/obiwan_core_2_of_2_um_carrier.stl",
-    "stl_sha256": "8ed399801dd38e770114223e7c6d30e5ea9e3e312483d74522e74bf6abd2d2bc",
-    "print_authority_sha256": "2b936fb5ff05fc887e7ddd4f9c58abff6e0d14473e37e869414f39f0c414ea23"
+    "stl_sha256": "b7f96a336484bad3f44e8f48123caa521c1d518c8cc94a88844d50ab45fb2d9c",
+    "print_authority_sha256": "085c1469c2bfe9e427e96980040f323d5ba3a9337b23716f09e860670279e098"
   },
   "compatible_LM_configurations": [
     "no_floor_stand",
@@ -34,7 +34,7 @@
   "upper_gallery_routing_profile": "fixed_floor_profile_independent_of_LM_choice",
   "obiwan_interface_source_sha256": "15aa6af62650f74daed47df530ae3040b9f6618914fba4b8c59db489bf2ce7ac",
   "python_dependencies": {
-    "numpy": "2.4.6",
+    "numpy": "2.5.3",
     "scipy": "1.17.1",
     "trimesh": "5.1.0",
     "scikit-image": "0.26.0",
@@ -44,12 +44,12 @@
   "units": "mm",
   "files": {
     "01_UM_Crescent_V4.stl": {
-      "sha256": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
-      "triangles": 2059410,
+      "sha256": "ab79e944697cecb1cd92416c193d1cb01b1f02a879a564905a2ef4838b7fad99",
+      "triangles": 2059522,
       "watertight": true,
       "winding_consistent": true,
       "components": 5,
-      "volume_mm3": 388517.4875055678,
+      "volume_mm3": 388512.06168567546,
       "bounds_mm": [
         [
           0.0,

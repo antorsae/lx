@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "obiwan_lm_keyed_bottom_no_floor_stand",
+  "stl": "obiwan_lm_keyed_bottom_no_floor_stand.stl",
+  "stl_bytes": 1354084,
+  "stl_sha256": "4120dd12bd7039791eecaddcdc01f84e9a484af9742b1575e25323ba8987ad19",
+  "source_stl": "build/no_floor_stand/stl/obiwan_optional_lm_keyed_1_of_2_bottom.stl",
+  "source_sha256": "d8901e2ce491c2111c0de9d35ccabf757e992776e99eed02d342fb9a2f16c1b1",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      0.17364817766693041,
+      -0.984807753012208,
+      0.0,
+      191.27699958783484
+    ],
+    [
+      -0.984807753012208,
+      -0.17364817766693041,
+      0.0,
+      138.59308736261758
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.300000099999984
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": -80.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -191.27699958783484,
+    -138.59308736261758,
+    -18.300000099999984
+  ],
+  "stl_origin_translation_mm": [
+    191.27699958783484,
+    138.59308736261758,
+    18.300000099999984
+  ]
+}

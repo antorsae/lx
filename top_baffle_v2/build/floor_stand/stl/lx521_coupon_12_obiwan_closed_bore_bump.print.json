@@ -2,7 +2,7 @@
   "part": "lx521_coupon_12_obiwan_closed_bore_bump",
   "pre_translation_bbox_min_mm": [
     61.99999989999998,
-    -180.00000010000002,
+    -180.00000010000005,
     -18.300000099999984
   ],
   "print_orientation": "front_face_down",
@@ -22,7 +22,7 @@
       0.0,
       -1.0,
       0.0,
-      180.00000010000002
+      180.00000010000005
     ],
     [
       0.0,
@@ -38,12 +38,12 @@
     ]
   ],
   "stl": "lx521_coupon_12_obiwan_closed_bore_bump.stl",
-  "stl_bytes": 62584,
+  "stl_bytes": 66984,
   "stl_origin_translation_mm": [
     -61.99999989999998,
-    180.00000010000002,
+    180.00000010000005,
     18.300000099999984
   ],
-  "stl_sha256": "88aaa0105c0dcfcd8706b92aeb683b8e595d493d295f5fc2948c92b950abbeda",
+  "stl_sha256": "bb489ad4c6c25864903184ddfb5a0e4d811f03882a2aeb6114e5a0edeea5a482",
   "variant_export": "coupon"
 }

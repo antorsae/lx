@@ -9,7 +9,7 @@ same pixels as rendering it inside a complete sweep, and the floor-stand and
 no-floor-stand cells of one product stay registered against each other.
 
 The product cells share one absolute world frame,
-so their parts are directly comparable in size and position.  The five
+so their parts are directly comparable in size and position.  The six
 tweeter-option cells share one fixed *span* but are centred on their own
 geometry, because a tweeter carrier drawn inside the whole-product frame would
 be a few dozen pixels tall.  Scale is exact within a group and deliberately
@@ -20,7 +20,7 @@ The same cells are written in two shapes.  ``images/generated/iso/`` holds one
 square PNG per cell, which the product docs embed individually.
 ``images/generated/iso/rows/`` holds the comparison images the guides embed
 full-width: one row per product carrying that product's two stand states side
-by side, all five tweeter arrangements, and the Obiwan upper/wing choices. A row panel is drawn
+by side, all six tweeter arrangements, and the Obiwan upper/wing choices. A row panel is drawn
 by the same code, under the same camera and the same declared frame, as the
 matching single cell, so a row and its cells cannot disagree.
 
@@ -56,7 +56,7 @@ for _canonical_import_root in (PROJECT_ROOT / "src", PROJECT_ROOT / "scripts"):
     if _canonical_import_text not in sys.path:
         sys.path.insert(0, _canonical_import_text)
 
-from lx521_baffle.tweeter_options import ND25FW, BMR, ND25FN, TWEETER_FAMILIES
+from lx521_baffle.tweeter_options import ND25FW, BMR, ND25FN, PT2522, AMT17, TWEETER_FAMILIES
 
 if __name__ == "__main__":
     import run_memory_guarded as memory_guard
@@ -108,6 +108,7 @@ ROLE_COLORS = {
     "base": "#4f9bd7",
     "top": "#efa43a",
     "perimeter": "#62b77b",
+    "second_print": "#4f9bd7",
 }
 
 # Display-space frames.  `span` is `(dx, dy, dz)` in millimetres and is what
@@ -131,16 +132,25 @@ SCALE_GROUPS = {
     "assembly": {"label": "assembly illustration scale", "span": (390.0, 180.0, 620.0), "center": (0.0, 66.0, 260.0), "zoom": 1.0},
     "tweeter_option": {
         "label": "tweeter-option scale",
-        # Includes the fused ND25FN-4 upper (134 x 38.2 x 246.8 mm) and
-        # the deeper coaxial BMR (50.2 mm). Every option uses the same scale.
-        "span": (145.0, 60.0, 260.0),
+        # Includes the Obiwan ND25FN-4 vase top (227.9 x 41.3 x 296.5 mm),
+        # the Stock ND25FN-4 vase (214.2 x 41.1 x 197.6 mm) and the deeper
+        # coaxial BMR (50.2 mm). Every option uses the same scale.
+        "span": (235.0, 60.0, 305.0),
         "center": None,
         "zoom": 1.08,
     },
     "obiwan_upper": {
         "label": "shared Obiwan upper scale / LM joint datum",
-        "span": (145.0, 60.0, 260.0),
-        "center": (0.0, 6.8, 432.0),
+        # The ND25FN-4 vase top also replaces the LM top (from Y172.5).
+        "span": (235.0, 60.0, 305.0),
+        "center": (0.0, 6.8, 321.0),
+        "zoom": 1.08,
+    },
+    "dipole": {
+        "label": "shared dipole-tweeter scale / installed datum",
+        # T below also carries the keyed LM top (from Y172.5); the tallest part ends at Y516.8, the widest is 227.9 mm.
+        "span": (240.0, 60.0, 355.0),
+        "center": (0.0, 6.8, 345.0),
         "zoom": 1.08,
     },
     "obiwan_complete": {
@@ -174,13 +184,50 @@ TEBM_CRESCENT = Path(
 TEBM_CRESCENT_OPPOSED = Path(
     "build/bmr_crescent_TEBM35C10-4/"
     "obiwan_bmr_crescent_opposed_TEBM35C10-4.step")
-H2C_STL = Path("to_print/h2c/STL")
-ND25FN_BODY = H2C_STL / "dayton_nd25fn4/h2c_dayton_nd25fn4_body.stl"
-H2C_UM = H2C_STL / "h2c_obiwan_core_2_of_2_um_carrier.stl"
-H2C_LM = H2C_STL / "h2c_obiwan_core_lm_carrier_no_floor_stand.stl"
+H2C_SHELF = Path("to_print")
+
+
+def h2c_stl(name: str) -> Path:
+    """A shelf STL by its internal H2C job name, relative to the project root."""
+    from lx521_baffle.h2c.shelf import ROOT, stl
+    return stl(name).relative_to(ROOT)
+
+
+ND25FN_OBIWAN_TOP = h2c_stl("h2c_dayton_nd25fn4_obiwan_tweeters_right_top")
+ND25FN_OBIWAN_LM = h2c_stl("h2c_obiwan_lm_keyed_bottom_floor_stand")
+ND25FN_STOCK_UPPER = h2c_stl("h2c_dayton_nd25fn4_stock_tweeters_right_upper")
+H2C_UM = h2c_stl("h2c_obiwan_core_2_of_2_um_carrier")
+H2C_LM = h2c_stl("h2c_obiwan_core_lm_carrier_no_floor_stand")
+PT2522_ABOVE = h2c_stl("h2c_grs_pt2522_4_obiwan_t_above_upright")
+AMT17_ABOVE = h2c_stl("h2c_mundorf_amt17d2_1_obiwan_t_above_upright")
+DIPOLE_DRIVERS = ((PT2522, "pt2522", "PT2522-4"), (AMT17, "amt17d2", "AMT17D2.1"))
+DIPOLE_LAYOUTS = (("t_above", "upright"), ("t_above", "rotated"), ("t_below", "upright"), ("t_below", "rotated"))
+
+
+def _dipole_parts(family: str, layout: str, orientation: str) -> tuple[tuple[str, Path], ...]:
+    """The print(s) of one dipole layout; the PT2522-4 upright T below is two prints (keyed LM top + T + UM piece)."""
+    stem = f"h2c_{family}_obiwan_{layout}_{orientation}"
+    if family == PT2522 and (layout, orientation) == ("t_below", "upright"):
+        return (("second_print", h2c_stl(stem + "_lm_top")), ("top", h2c_stl(stem + "_um_t")))
+    return (("top", h2c_stl(stem)),)
+
+
+def _dipole_cells() -> tuple[dict, ...]:
+    cells = []
+    for family, slug, label in DIPOLE_DRIVERS:
+        for layout, orientation in DIPOLE_LAYOUTS:
+            where = "T above" if layout == "t_above" else "T below"
+            # Row notes are centred and not wrapped: keep them about as long as the tweeter row's.
+            note = ("UM + frame · on any regular LM" if layout == "t_above" else
+                    "custom LM top + T/UM piece · keyed LM bottom" if (family, orientation) == (PT2522, "upright") else
+                    "LM top + T + UM · keyed LM bottom")
+            cells.append(_cell(f"dipole_{slug}_{layout}_{orientation}", f"{label} dipole — {where}, {orientation}",
+                               f"{label} · {where} · {orientation}", "dipole",
+                               _dipole_parts(family, layout, orientation), note=note, family=family))
+    return tuple(cells)
 
 MAKE_TARGET_FOR_PREFIX = (
-    (H2C_STL, "make h2c_prepare"),
+    (H2C_SHELF, "make h2c_prepare"),
     (Path("build/floor_stand"), "make floor_stand"),
     (Path("build/no_floor_stand"), "make no_floor_stand"),
     (Path("build/wings"), "make obiwan_wings"),
@@ -237,23 +284,29 @@ def _obiwan_comparison_cells() -> tuple[dict, ...]:
          _state_sources("no_floor_stand")["obiwan_crescent"]),
         ("bmr_coaxial", "TEBM35C10-4 coaxial BMR", BMR, TEBM_CRESCENT),
         ("bmr_opposed", "TEBM35C10-4 opposed BMR", BMR, TEBM_CRESCENT_OPPOSED),
-        ("nd25fn4", "ND25FN-4 printed waveguide", ND25FN, ND25FN_BODY),
+        ("nd25fn4", "ND25FN-4 printed waveguide", ND25FN, ND25FN_OBIWAN_TOP),
+        ("pt2522", "PT2522-4 dipole planar", PT2522, PT2522_ABOVE),
+        ("amt17d2", "AMT17D2.1 dipole AMT", AMT17, AMT17_ABOVE),
     ):
-        parts = (("top", path),) if family == ND25FN else (("base", H2C_UM), ("top", path))
-        note = "Fused UM + waveguides; matching wings" if family == ND25FN else "Regular UM + separate carrier; regular wings"
+        parts = (("top", path),) if family in (ND25FN, PT2522, AMT17) else (("base", H2C_UM), ("top", path))
+        note = ("Vase top: LM top + UM + waveguides" if family == ND25FN else
+                "T above: UM + frame in one piece; no wings" if family in (PT2522, AMT17) else
+                "Regular UM + separate carrier; regular wings")
         cells.append(_cell(f"obiwan_upper_{key}", caption, caption, "obiwan_upper",
                            parts, note=note, family=family))
     for family, slug, caption in ((ND25FW, "regular", "ND25FW-4 / regular"),
                                   (ND25FN, "nd25fn4", "ND25FN-4 / waveguide")):
         for style in ("flat", "graded"):
-            upper = (("top", ND25FN_BODY),) if family == ND25FN else (
+            # The ND25FN-4 vase top sits on its keyed floor-stand LM bottom.
+            lower = (("base", ND25FN_OBIWAN_LM),) if family == ND25FN else (("base", H2C_LM),)
+            upper = (("top", ND25FN_OBIWAN_TOP),) if family == ND25FN else (
                 ("base", H2C_UM), ("top", _state_sources("no_floor_stand")["obiwan_crescent"]))
-            prefix = "h2c_dayton_nd25fn4_wing" if family == ND25FN else "h2c_obiwan_wing"
-            wings = tuple(("perimeter", H2C_STL / f"{prefix}_{style}_{side}.stl")
+            prefix = "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing" if family == ND25FN else "h2c_obiwan_wing"
+            wings = tuple(("perimeter", h2c_stl(f"{prefix}_{style}_{side}"))
                           for side in ("left", "right"))
             cells.append(_cell(f"obiwan_wings_{slug}_{style}", f"{caption} — {style} wings",
                                f"{caption} — {style}", "obiwan_complete",
-                               (("base", H2C_LM),) + upper + wings,
+                               lower + upper + wings,
                                note="One continuous H2C wing per side", family=family))
     return tuple(cells)
 
@@ -298,11 +351,37 @@ CELLS = (
         # neighbour.  The arrangement is already in the caption.
         note="Obiwan · fits the regular UM", family=BMR),
     _cell(
-        "tweeter_nd25fn4_waveguide", "Dayton ND25FN-4 printed waveguide",
-        "ND25FN-4 printed waveguide", "tweeter_option",
-        (("top", ND25FN_BODY),),
-        note="Obiwan · fused UM + two waveguides", family=ND25FN),
+        "tweeter_nd25fn4_waveguide_stock", "Dayton ND25FN-4 Stock vase",
+        "ND25FN-4 Stock vase", "tweeter_option",
+        (("top", ND25FN_STOCK_UPPER),),
+        note="Stock · upper module + two waveguides", family=ND25FN),
+    _cell(
+        "tweeter_nd25fn4_waveguide", "Dayton ND25FN-4 Obiwan vase top",
+        "ND25FN-4 Obiwan vase top", "tweeter_option",
+        (("top", ND25FN_OBIWAN_TOP),),
+        note="Obiwan · LM top + UM + two waveguides", family=ND25FN),
+    _cell(
+        "tweeter_pt2522_dipole", "GRS PT2522-4 dipole planar (candidate)",
+        "PT2522-4 dipole planar", "tweeter_option",
+        (("top", PT2522_ABOVE),),
+        note="Obiwan · T above, upright", family=PT2522),
+    _cell(
+        "tweeter_pt2522_dipole_rotated", "GRS PT2522-4 dipole planar, rotated (candidate)",
+        "PT2522-4 dipole, rotated", "tweeter_option",
+        (("top", h2c_stl("h2c_grs_pt2522_4_obiwan_t_above_rotated")),),
+        note="Obiwan · T above, rotated", family=PT2522),
+    _cell(
+        "tweeter_amt17d2_dipole", "Mundorf AMT17D2.1 dipole AMT (candidate)",
+        "AMT17D2.1 dipole AMT", "tweeter_option",
+        (("top", AMT17_ABOVE),),
+        note="Obiwan · T above, upright", family=AMT17),
+    _cell(
+        "tweeter_amt17d2_dipole_rotated", "Mundorf AMT17D2.1 dipole AMT, rotated (candidate)",
+        "AMT17D2.1 dipole, rotated", "tweeter_option",
+        (("top", h2c_stl("h2c_mundorf_amt17d2_1_obiwan_t_above_rotated")),),
+        note="Obiwan · T above, rotated", family=AMT17),
     *_obiwan_comparison_cells(),
+    *_dipole_cells(),
 )
 
 # One row per README block.  Every panel of a row belongs to one scale group,
@@ -325,27 +404,40 @@ ROWS = (
     },
     {
         "key": "tweeter_row",
-        "title": f"Tweeter options — {len(TWEETER_FAMILIES)} driver families, 5 arrangements",
+        "title": f"Tweeter options — {len(TWEETER_FAMILIES)} driver families, 10 arrangements",
         "cells": ("tweeter_nd25fw4_crescent", "tweeter_tebm35c10_4_vase",
                   "tweeter_tebm35c10_4_crescent",
-                  "tweeter_tebm35c10_4_crescent_opposed", "tweeter_nd25fn4_waveguide"),
+                  "tweeter_tebm35c10_4_crescent_opposed", "tweeter_nd25fn4_waveguide_stock",
+                  "tweeter_nd25fn4_waveguide", "tweeter_pt2522_dipole", "tweeter_pt2522_dipole_rotated",
+                  "tweeter_amt17d2_dipole", "tweeter_amt17d2_dipole_rotated"),
         "show_all_families": True,
         "geometry_note": "Printed carriers shown; drivers and removable service parts omitted. Same scale in every panel.",
     },
     {
         "key": "obiwan_upper_row",
-        "title": "Obiwan upper choices — all 3 tweeter families",
+        "title": f"Obiwan upper choices — all {len(TWEETER_FAMILIES)} tweeter families",
         "cells": ("obiwan_upper_nd25fw4", "obiwan_upper_bmr_coaxial",
-                  "obiwan_upper_bmr_opposed", "obiwan_upper_nd25fn4"),
+                  "obiwan_upper_bmr_opposed", "obiwan_upper_nd25fn4",
+                  "obiwan_upper_pt2522", "obiwan_upper_amt17d2"),
         "show_all_families": True,
-        "geometry_note": "Same installed LM joint datum and scale. Drivers, caps and retainers omitted.",
+        "geometry_note": "Same installed LM datum and scale. The ND25FN-4 vase top also replaces the LM top. Drivers and caps omitted.",
+    },
+    {
+        "key": "dipole_row",
+        "title": "Dipole tweeters — PT2522-4 and AMT17D2.1, T above / T below, upright / rotated",
+        "cells": tuple(f"dipole_{slug}_{layout}_{orientation}" for _, slug, _ in DIPOLE_DRIVERS
+                       for layout, orientation in DIPOLE_LAYOUTS),
+        "geometry_note": ("Only the dipole prints are shown, at one installed datum and scale; the unchanged regular parts they mount on are not. "
+                          "T above replaces the UM and sits on any regular Obiwan LM. T below replaces the keyed LM top and UM and sits on the regular "
+                          "keyed LM bottom; its keyed LM top is fused in, except on the PT2522-4 upright (one piece would be too long to print), which "
+                          "has a custom keyed LM top (blue) joined at the LM-UM joint. Drivers omitted."),
     },
     {
         "key": "obiwan_wing_row",
         "title": "Obiwan wings — regular and ND25FN-4 waveguide",
         "cells": ("obiwan_wings_regular_flat", "obiwan_wings_regular_graded",
                   "obiwan_wings_nd25fn4_flat", "obiwan_wings_nd25fn4_graded"),
-        "geometry_note": "Same no-floor LM and scale. BMR uses regular wings. Waveguide wings have different upper contacts.",
+        "geometry_note": "Same scale. Regular: no-floor LM. ND25FN-4: keyed floor-stand LM bottom + vase top. BMR uses regular wings.",
     },
 )
 
@@ -353,6 +445,7 @@ ROLE_LEGEND = {
     "base": "base / carrier",
     "top": "tweeter carrier / fused upper",
     "perimeter": "optional perimeter",
+    "second_print": "custom keyed LM top, separate print (PT2522-4 upright T below only)",
 }
 
 # Rows live one level down so `images/generated/iso/*.png` stays exactly the
@@ -396,7 +489,7 @@ def _display_triangles(path: Path, exploded: bool = False):
     import numpy as np
     from delivery_contract import canonical_source
 
-    entries = json.loads((PROJECT_ROOT / "to_print/catalog.json").read_text())["entries"]
+    entries = json.loads((PROJECT_ROOT / "to_print/archive/p2s/catalog.json").read_text())["entries"]
     if path.stem in {"b2_split", "v1l_split", "obiwan_split", "obiwan_attachments"}:
         family = {"b2_split": "stock", "v1l_split": "slim", "obiwan_split": "obiwan", "obiwan_attachments": "obiwan"}[path.stem]
         slots = {"04"} if path.stem == "obiwan_attachments" else ({"01", "02", "03"} if family == "obiwan" else {"01", "02", "03", "04"})

@@ -1,0 +1,2289 @@
+{
+  "status": "pass",
+  "qualification": "digital; physical H2C qualification pending",
+  "project_sha256": "1894789dad3f39ebae1afb07fb92620abd4fbae8ed4eccf46180896b1932d57b",
+  "sliced_project_sha256": "85fc3bfe62f8523d0a225824caed03840029557db87083fcf89b87d6095792e9",
+  "gcode_sha256": "1bde9926b297e4a80802c8f1778ee78363038eb93e2ead0eba00c034b29b5076",
+  "audit_version": 4,
+  "inputs": {
+    "build/h2c/inputs/h2c_dayton_nd25fn4_obiwan_top_floor_stand_support_blocker.stl": "fd4995fa558f9c6c50ef72dfb85a6f03b721ccb638b6b2fe4a495137bd6e768e",
+    "build/h2c/jobs/h2c_dayton_nd25fn4_obiwan_top_floor_stand__petg_translucent_pla/dry_run.json": "1aefdb99cd45297e7eb7b25cce0f36084fb8285b174c6a006164039dcbb5b9c4",
+    "build/h2c/jobs/h2c_dayton_nd25fn4_obiwan_top_floor_stand__petg_translucent_pla/process.json": "fa0d286ba58a95a8b474db6f033bc7893e5287d7eec20c15a137054956ff0fda",
+    "build/h2c/profiles/petg_translucent_pla/interface.json": "56304630d7cc5848024fa78ccd490393d5c8afe4a242c7cd047fdaa8eb169e97",
+    "build/h2c/profiles/petg_translucent_pla/machine.json": "488f1222c244471ec147ad2960b403a9cb8e07463473123575354cdd85719dbb",
+    "build/h2c/profiles/petg_translucent_pla/model.json": "2378d191101182117dc0a16576ea9a6a760b3004197f752c092f1b8ea3f4e20a",
+    "candidates/nd25fn4_crescent/audit_print.py": "c297b070b299b3ce910c9a543c909fe38a9c3e9bc5b2a705636d30338112d657",
+    "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
+    "candidates/nd25fn4_vase/obiwan/STL/nd25fn4_vase_obiwan_top_floor_stand.stl": "f1aa9c976319fe2b5e31bc8cf99d83f4e887b2aaed9177eaee5fbbf1e3a17687",
+    "candidates/nd25fn4_vase/obiwan/magnets.catalog.json": "121496f145223adf474ad8987c36b5d1e53a4c2447a49bbdd82a7f959f85d3b7",
+    "candidates/nd25fn4_vase/obiwan/support_blockers/nd25fn4_vase_obiwan_top_floor_stand.support_blocker.json": "bab9a9d949ee09bdc1e54ba746c586c07ba35dccf4eb31d7aa5732ad1d2a2769",
+    "candidates/nd25fn4_vase/obiwan/support_blockers/nd25fn4_vase_obiwan_top_floor_stand.support_blocker.stl": "2aea501776e16b7ee2f98835d979b8d2773e4348ec70f73ab9ae0a893bf29ad2",
+    "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
+    "print_policy_h2c.json": "ea0e5389df57ee0491814e0923745348dc1f8e9a51130ca62754328a25f671d5",
+    "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
+    "scripts/audit_h2c_print.py": "1aba02e3ae33104be11089eae5e186891df612e3cfcd611be4ae232f6c7cfc2d",
+    "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
+    "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
+    "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
+    "src/lx521_baffle/tweeter_options.py": "a50ade645855ed76cd023a2019fddddf4466ae24077c32f83d497d776c48fd08",
+    "to_print/h2c/STL/h2c_dayton_nd25fn4_obiwan_top_floor_stand.stl": "ae3af009415beb997d30495ad0ec2e226a8ebd60a95f2de9c0d0d9537b5343d3",
+    "to_print/h2c/dayton_nd25fn4/petg_translucent_pla/h2c_dayton_nd25fn4_obiwan_top_floor_stand.3mf": "1894789dad3f39ebae1afb07fb92620abd4fbae8ed4eccf46180896b1932d57b"
+  },
+  "deposition": {
+    "status": "pass",
+    "counts": {
+      "support": 41951,
+      "model": 1034307,
+      "tower": 12008,
+      "interface": 19584
+    },
+    "deposition_bounds_mm": {
+      "0": [
+        [
+          26.377,
+          6.492222595116092,
+          0.2
+        ],
+        [
+          293.666,
+          312.997,
+          41.32
+        ]
+      ],
+      "1": [
+        [
+          26.377,
+          11.439,
+          0.2
+        ],
+        [
+          284.536,
+          308.54,
+          36.52
+        ]
+      ]
+    },
+    "interface_layers_mm": [
+      0.2,
+      0.36,
+      0.52,
+      0.68,
+      0.84,
+      1.0,
+      1.16,
+      1.32,
+      1.48,
+      1.64,
+      1.8,
+      1.96,
+      2.12,
+      2.28,
+      2.44,
+      2.6,
+      2.76,
+      2.92,
+      3.08,
+      3.24,
+      3.4,
+      3.56,
+      3.72,
+      3.88,
+      4.04,
+      4.2,
+      4.68,
+      4.84,
+      5.0,
+      5.16,
+      5.64,
+      5.8,
+      5.96,
+      9.64,
+      9.8,
+      9.96,
+      11.88,
+      12.04,
+      12.2,
+      22.12,
+      22.28,
+      22.44,
+      27.88,
+      28.04,
+      28.2,
+      36.36
+    ],
+    "bed_temperatures_c": [
+      70.0
+    ],
+    "failures": []
+  },
+  "magnet_pauses_mm": [
+    6.12
+  ],
+  "magnet_discovery": [
+    {
+      "name": "lm_upper_right",
+      "diameter_mm": 5.0,
+      "depth_mm": 2.0,
+      "center_bed_mm": [
+        261.0038134436649,
+        207.5936067645938,
+        3.1999992370605472
+      ],
+      "pole_axis_bed": [
+        0.7660444431189782,
+        -0.6427876096865395,
+        0.0
+      ],
+      "approach_axis_bed": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "seated_top_z_mm": 5.699999237060547,
+      "seated_bottom_z_mm": 0.6999992370605455,
+      "source_site": "shared:nd25fn4_vase:nd25fn4_vase_obiwan_top_floor_stand",
+      "site_registration_error_mm": 0.9483365845381722,
+      "first_obstructing_layer_z_mm": 6.12,
+      "last_open_layer_z_mm": 5.96,
+      "collision_witnesses": [
+        {
+          "line": 290650,
+          "feature": "Outer wall",
+          "intrusion_mm": 0.08495883629659229
+        },
+        {
+          "line": 290651,
+          "feature": "Outer wall",
+          "intrusion_mm": 0.12452391690744963
+        },
+        {
+          "line": 290652,
+          "feature": "Outer wall",
+          "intrusion_mm": 0.1446148578169843
+        },
+        {
+          "line": 290653,
+          "feature": "Outer wall",
+          "intrusion_mm": 0.1451581838851514
+        },
+        {
+          "line": 290654,
+          "feature": "Outer wall",
+          "intrusion_mm": 0.14419031125691364
+        }
+      ],
+      "layer_records": [
+        {
+          "z": 0.84,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 1.0,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 1.16,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 1.32,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 1.48,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 1.64,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 1.8,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 1.96,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 2.12,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 2.28,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 2.44,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 2.6,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 2.76,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 2.92,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 3.08,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 3.24,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 3.4,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 3.56,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 3.72,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 3.88,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 4.04,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 4.2,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 4.36,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 4.52,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 4.68,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 4.84,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 5.0,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 5.16,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 5.32,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 5.48,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 5.64,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 5.8,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 5.96,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 6.12,
+          "intrusion_mm": 0.15726557453177847,
+          "count": 37
+        },
+        {
+          "z": 6.28,
+          "intrusion_mm": 0.263528,
+          "count": 39
+        },
+        {
+          "z": 6.44,
+          "intrusion_mm": 0.259998,
+          "count": 31
+        },
+        {
+          "z": 6.6,
+          "intrusion_mm": 0.259998,
+          "count": 40
+        },
+        {
+          "z": 6.76,
+          "intrusion_mm": 0.2771214773207986,
+          "count": 40
+        },
+        {
+          "z": 6.92,
+          "intrusion_mm": 0.309998,
+          "count": 36
+        },
+        {
+          "z": 7.08,
+          "intrusion_mm": 0.309998,
+          "count": 60
+        },
+        {
+          "z": 7.24,
+          "intrusion_mm": 0.309998,
+          "count": 58
+        },
+        {
+          "z": 7.4,
+          "intrusion_mm": 0.309998,
+          "count": 65
+        },
+        {
+          "z": 7.56,
+          "intrusion_mm": 0.309998,
+          "count": 75
+        },
+        {
+          "z": 7.72,
+          "intrusion_mm": 0.309998,
+          "count": 69
+        },
+        {
+          "z": 7.88,
+          "intrusion_mm": 0.309998,
+          "count": 62
+        },
+        {
+          "z": 8.04,
+          "intrusion_mm": 0.320033,
+          "count": 96
+        },
+        {
+          "z": 8.2,
+          "intrusion_mm": 0.358013,
+          "count": 83
+        },
+        {
+          "z": 8.36,
+          "intrusion_mm": 0.396608,
+          "count": 64
+        },
+        {
+          "z": 8.52,
+          "intrusion_mm": 0.309998,
+          "count": 102
+        },
+        {
+          "z": 8.68,
+          "intrusion_mm": 0.309998,
+          "count": 106
+        },
+        {
+          "z": 8.84,
+          "intrusion_mm": 0.309998,
+          "count": 105
+        },
+        {
+          "z": 9.0,
+          "intrusion_mm": 0.309998,
+          "count": 101
+        },
+        {
+          "z": 9.16,
+          "intrusion_mm": 0.309998,
+          "count": 106
+        },
+        {
+          "z": 9.32,
+          "intrusion_mm": 0.309998,
+          "count": 105
+        },
+        {
+          "z": 9.48,
+          "intrusion_mm": 0.309998,
+          "count": 97
+        },
+        {
+          "z": 9.64,
+          "intrusion_mm": 0.309998,
+          "count": 96
+        },
+        {
+          "z": 9.8,
+          "intrusion_mm": 0.309998,
+          "count": 94
+        },
+        {
+          "z": 9.96,
+          "intrusion_mm": 0.309998,
+          "count": 94
+        },
+        {
+          "z": 10.12,
+          "intrusion_mm": 0.309998,
+          "count": 95
+        },
+        {
+          "z": 10.28,
+          "intrusion_mm": 0.309998,
+          "count": 95
+        },
+        {
+          "z": 10.44,
+          "intrusion_mm": 0.309998,
+          "count": 95
+        },
+        {
+          "z": 10.6,
+          "intrusion_mm": 0.309998,
+          "count": 73
+        },
+        {
+          "z": 10.76,
+          "intrusion_mm": 0.309998,
+          "count": 72
+        },
+        {
+          "z": 10.92,
+          "intrusion_mm": 0.309998,
+          "count": 34
+        },
+        {
+          "z": 11.08,
+          "intrusion_mm": 0.309998,
+          "count": 34
+        },
+        {
+          "z": 11.24,
+          "intrusion_mm": 0.309998,
+          "count": 34
+        },
+        {
+          "z": 11.4,
+          "intrusion_mm": 0.309998,
+          "count": 25
+        },
+        {
+          "z": 11.56,
+          "intrusion_mm": 0.309998,
+          "count": 75
+        },
+        {
+          "z": 11.72,
+          "intrusion_mm": 0.3651399141784383,
+          "count": 18
+        },
+        {
+          "z": 11.88,
+          "intrusion_mm": 0.3799718620521502,
+          "count": 18
+        },
+        {
+          "z": 12.04,
+          "intrusion_mm": 0.432978,
+          "count": 18
+        },
+        {
+          "z": 12.2,
+          "intrusion_mm": 0.432968,
+          "count": 18
+        },
+        {
+          "z": 12.36,
+          "intrusion_mm": 0.432958,
+          "count": 18
+        },
+        {
+          "z": 12.52,
+          "intrusion_mm": 0.432948,
+          "count": 18
+        },
+        {
+          "z": 12.68,
+          "intrusion_mm": 0.432928,
+          "count": 18
+        },
+        {
+          "z": 12.84,
+          "intrusion_mm": 0.432918,
+          "count": 18
+        },
+        {
+          "z": 13.0,
+          "intrusion_mm": 0.432898,
+          "count": 18
+        },
+        {
+          "z": 13.16,
+          "intrusion_mm": 0.433808,
+          "count": 23
+        },
+        {
+          "z": 13.32,
+          "intrusion_mm": 0.466408,
+          "count": 24
+        },
+        {
+          "z": 13.48,
+          "intrusion_mm": 0.276873,
+          "count": 42
+        },
+        {
+          "z": 13.64,
+          "intrusion_mm": 0.317403,
+          "count": 41
+        },
+        {
+          "z": 13.8,
+          "intrusion_mm": 0.357383,
+          "count": 45
+        },
+        {
+          "z": 13.96,
+          "intrusion_mm": 0.291908,
+          "count": 62
+        },
+        {
+          "z": 14.12,
+          "intrusion_mm": 0.371608,
+          "count": 66
+        },
+        {
+          "z": 14.28,
+          "intrusion_mm": 0.451068,
+          "count": 63
+        },
+        {
+          "z": 14.44,
+          "intrusion_mm": 0.53156,
+          "count": 49
+        },
+        {
+          "z": 14.6,
+          "intrusion_mm": 0.53195,
+          "count": 91
+        },
+        {
+          "z": 14.76,
+          "intrusion_mm": 0.53372,
+          "count": 84
+        },
+        {
+          "z": 14.92,
+          "intrusion_mm": 0.4993225364965184,
+          "count": 86
+        },
+        {
+          "z": 15.08,
+          "intrusion_mm": 0.337078,
+          "count": 86
+        },
+        {
+          "z": 15.24,
+          "intrusion_mm": 0.309998,
+          "count": 46
+        },
+        {
+          "z": 15.4,
+          "intrusion_mm": 0.300429,
+          "count": 32
+        },
+        {
+          "z": 15.56,
+          "intrusion_mm": 0.259998,
+          "count": 9
+        }
+      ],
+      "pause_before_z_mm": 6.12,
+      "magnet_below_resume_plane": true,
+      "opening_clear_through_prior_layers": true
+    },
+    {
+      "name": "lm_upper_left",
+      "diameter_mm": 5.0,
+      "depth_mm": 2.0,
+      "center_bed_mm": [
+        88.9961941857296,
+        207.5936067645938,
+        3.1999992370605472
+      ],
+      "pole_axis_bed": [
+        -0.7660444431189783,
+        -0.6427876096865394,
+        0.0
+      ],
+      "approach_axis_bed": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "seated_top_z_mm": 5.699999237060547,
+      "seated_bottom_z_mm": 0.6999992370605455,
+      "source_site": "shared:nd25fn4_vase:nd25fn4_vase_obiwan_top_floor_stand",
+      "site_registration_error_mm": 0.9483322562209228,
+      "first_obstructing_layer_z_mm": 6.12,
+      "last_open_layer_z_mm": 5.96,
+      "collision_witnesses": [
+        {
+          "line": 290945,
+          "feature": "Outer wall",
+          "intrusion_mm": 0.14237110898080085
+        },
+        {
+          "line": 290947,
+          "feature": "Outer wall",
+          "intrusion_mm": 0.157278353232142
+        },
+        {
+          "line": 290949,
+          "feature": "Outer wall",
+          "intrusion_mm": 0.13917968046342602
+        },
+        {
+          "line": 290951,
+          "feature": "Outer wall",
+          "intrusion_mm": 0.13941159181458498
+        },
+        {
+          "line": 290953,
+          "feature": "Outer wall",
+          "intrusion_mm": 0.1396616848659583
+        }
+      ],
+      "layer_records": [
+        {
+          "z": 0.84,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 1.0,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 1.16,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 1.32,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 1.48,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 1.64,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 1.8,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 1.96,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 2.12,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 2.28,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 2.44,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 2.6,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 2.76,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 2.92,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 3.08,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 3.24,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 3.4,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 3.56,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 3.72,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 3.88,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 4.04,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 4.2,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 4.36,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 4.52,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 4.68,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 4.84,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 5.0,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 5.16,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 5.32,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 5.48,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 5.64,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 5.8,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 5.96,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 6.12,
+          "intrusion_mm": 0.16210341743057216,
+          "count": 33
+        },
+        {
+          "z": 6.28,
+          "intrusion_mm": 0.261503,
+          "count": 33
+        },
+        {
+          "z": 6.44,
+          "intrusion_mm": 0.260708,
+          "count": 31
+        },
+        {
+          "z": 6.6,
+          "intrusion_mm": 0.260313,
+          "count": 48
+        },
+        {
+          "z": 6.76,
+          "intrusion_mm": 0.28078624285635867,
+          "count": 41
+        },
+        {
+          "z": 6.92,
+          "intrusion_mm": 0.309998,
+          "count": 39
+        },
+        {
+          "z": 7.08,
+          "intrusion_mm": 0.309998,
+          "count": 50
+        },
+        {
+          "z": 7.24,
+          "intrusion_mm": 0.309998,
+          "count": 58
+        },
+        {
+          "z": 7.4,
+          "intrusion_mm": 0.309998,
+          "count": 59
+        },
+        {
+          "z": 7.56,
+          "intrusion_mm": 0.309998,
+          "count": 53
+        },
+        {
+          "z": 7.72,
+          "intrusion_mm": 0.309998,
+          "count": 59
+        },
+        {
+          "z": 7.88,
+          "intrusion_mm": 0.309998,
+          "count": 69
+        },
+        {
+          "z": 8.04,
+          "intrusion_mm": 0.321808,
+          "count": 82
+        },
+        {
+          "z": 8.2,
+          "intrusion_mm": 0.367363,
+          "count": 91
+        },
+        {
+          "z": 8.36,
+          "intrusion_mm": 0.405168,
+          "count": 77
+        },
+        {
+          "z": 8.52,
+          "intrusion_mm": 0.309998,
+          "count": 110
+        },
+        {
+          "z": 8.68,
+          "intrusion_mm": 0.309998,
+          "count": 109
+        },
+        {
+          "z": 8.84,
+          "intrusion_mm": 0.309998,
+          "count": 109
+        },
+        {
+          "z": 9.0,
+          "intrusion_mm": 0.309998,
+          "count": 108
+        },
+        {
+          "z": 9.16,
+          "intrusion_mm": 0.309998,
+          "count": 109
+        },
+        {
+          "z": 9.32,
+          "intrusion_mm": 0.309998,
+          "count": 109
+        },
+        {
+          "z": 9.48,
+          "intrusion_mm": 0.309998,
+          "count": 107
+        },
+        {
+          "z": 9.64,
+          "intrusion_mm": 0.309998,
+          "count": 107
+        },
+        {
+          "z": 9.8,
+          "intrusion_mm": 0.309998,
+          "count": 102
+        },
+        {
+          "z": 9.96,
+          "intrusion_mm": 0.309998,
+          "count": 102
+        },
+        {
+          "z": 10.12,
+          "intrusion_mm": 0.309998,
+          "count": 103
+        },
+        {
+          "z": 10.28,
+          "intrusion_mm": 0.309998,
+          "count": 103
+        },
+        {
+          "z": 10.44,
+          "intrusion_mm": 0.309998,
+          "count": 102
+        },
+        {
+          "z": 10.6,
+          "intrusion_mm": 0.309998,
+          "count": 101
+        },
+        {
+          "z": 10.76,
+          "intrusion_mm": 0.309998,
+          "count": 92
+        },
+        {
+          "z": 10.92,
+          "intrusion_mm": 0.309998,
+          "count": 62
+        },
+        {
+          "z": 11.08,
+          "intrusion_mm": 0.309998,
+          "count": 44
+        },
+        {
+          "z": 11.24,
+          "intrusion_mm": 0.309998,
+          "count": 51
+        },
+        {
+          "z": 11.4,
+          "intrusion_mm": 0.309998,
+          "count": 62
+        },
+        {
+          "z": 11.56,
+          "intrusion_mm": 0.309998,
+          "count": 146
+        },
+        {
+          "z": 11.72,
+          "intrusion_mm": 0.457868,
+          "count": 19
+        },
+        {
+          "z": 11.88,
+          "intrusion_mm": 0.265338,
+          "count": 42
+        },
+        {
+          "z": 12.04,
+          "intrusion_mm": 0.305443,
+          "count": 40
+        },
+        {
+          "z": 12.2,
+          "intrusion_mm": 0.345503,
+          "count": 39
+        },
+        {
+          "z": 12.36,
+          "intrusion_mm": 0.268188,
+          "count": 59
+        },
+        {
+          "z": 12.52,
+          "intrusion_mm": 0.381138,
+          "count": 50
+        },
+        {
+          "z": 12.68,
+          "intrusion_mm": 0.57366,
+          "count": 60
+        },
+        {
+          "z": 12.84,
+          "intrusion_mm": 0.392038,
+          "count": 72
+        },
+        {
+          "z": 13.0,
+          "intrusion_mm": 0.309998,
+          "count": 114
+        },
+        {
+          "z": 13.16,
+          "intrusion_mm": 0.309998,
+          "count": 115
+        },
+        {
+          "z": 13.32,
+          "intrusion_mm": 0.309998,
+          "count": 113
+        },
+        {
+          "z": 13.48,
+          "intrusion_mm": 0.309998,
+          "count": 114
+        },
+        {
+          "z": 13.64,
+          "intrusion_mm": 0.309998,
+          "count": 105
+        },
+        {
+          "z": 13.8,
+          "intrusion_mm": 0.309998,
+          "count": 134
+        },
+        {
+          "z": 13.96,
+          "intrusion_mm": 0.309998,
+          "count": 118
+        },
+        {
+          "z": 14.12,
+          "intrusion_mm": 0.309998,
+          "count": 89
+        },
+        {
+          "z": 14.28,
+          "intrusion_mm": 0.309998,
+          "count": 33
+        },
+        {
+          "z": 14.44,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 14.6,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 14.76,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 14.92,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 15.08,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 15.24,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 15.4,
+          "intrusion_mm": 0,
+          "count": 0
+        },
+        {
+          "z": 15.56,
+          "intrusion_mm": 0,
+          "count": 0
+        }
+      ],
+      "pause_before_z_mm": 6.12,
+      "magnet_below_resume_plane": true,
+      "opening_clear_through_prior_layers": true
+    }
+  ],
+  "retaining_walls": {
+    "status": "pass",
+    "physical_qualification": "pending same-geometry coupon print",
+    "gcode_sha256": "1bde9926b297e4a80802c8f1778ee78363038eb93e2ead0eba00c034b29b5076",
+    "stl_sha256": "ae3af009415beb997d30495ad0ec2e226a8ebd60a95f2de9c0d0d9537b5343d3",
+    "source_sha256": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
+    "sample_spacing_mm": 0.06,
+    "boundary_tolerance_mm": 0.08,
+    "accepted_width_mm": [
+      0.442,
+      1.2
+    ],
+    "minimum_interlayer_overlap_fraction": 0.5,
+    "maximum_retaining_components": 1,
+    "sites": [
+      {
+        "site": "lm_upper_right",
+        "diameter_mm": 5.0,
+        "checked_layers": 48,
+        "width_range_mm": [
+          0.519996,
+          0.631236
+        ],
+        "maximum_boundary_gap_mm": 0.020136402143559246,
+        "checked_continuity_layers": 25,
+        "minimum_interlayer_overlap_fraction": 0.9937340894472756,
+        "maximum_connected_components": 1,
+        "layers": [
+          {
+            "z_mm": 0.84,
+            "sample_count": 173,
+            "max_boundary_gap_mm": 0.01762281165252451,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 1.0,
+            "sample_count": 221,
+            "max_boundary_gap_mm": 0.020136402143559246,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 1.16,
+            "sample_count": 242,
+            "max_boundary_gap_mm": 0.018543146221272268,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 1.32,
+            "sample_count": 244,
+            "max_boundary_gap_mm": 0.017267788331676973,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.631236
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9937340894472756
+            }
+          },
+          {
+            "z_mm": 1.48,
+            "sample_count": 252,
+            "max_boundary_gap_mm": 0.017649587632842946,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.631196
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9944935591306987
+            }
+          },
+          {
+            "z_mm": 1.64,
+            "sample_count": 253,
+            "max_boundary_gap_mm": 0.01743571229708192,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.631136
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9947027471383565
+            }
+          },
+          {
+            "z_mm": 1.8,
+            "sample_count": 265,
+            "max_boundary_gap_mm": 0.01730822785776183,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.631136
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9950424857182683
+            }
+          },
+          {
+            "z_mm": 1.96,
+            "sample_count": 268,
+            "max_boundary_gap_mm": 0.01724008131596352,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.631096
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9954339689059809
+            }
+          },
+          {
+            "z_mm": 2.12,
+            "sample_count": 290,
+            "max_boundary_gap_mm": 0.017676601808395507,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.631036
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9960175398963192
+            }
+          },
+          {
+            "z_mm": 2.28,
+            "sample_count": 297,
+            "max_boundary_gap_mm": 0.0173641616231896,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630976
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9962445199652941
+            }
+          },
+          {
+            "z_mm": 2.44,
+            "sample_count": 297,
+            "max_boundary_gap_mm": 0.01714434439777964,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630956
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9966738547116181
+            }
+          },
+          {
+            "z_mm": 2.6,
+            "sample_count": 287,
+            "max_boundary_gap_mm": 0.017289168789308324,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630916
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.997170374631822
+            }
+          },
+          {
+            "z_mm": 2.76,
+            "sample_count": 297,
+            "max_boundary_gap_mm": 0.017445992788539463,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630956
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9974946288050429
+            }
+          },
+          {
+            "z_mm": 2.92,
+            "sample_count": 307,
+            "max_boundary_gap_mm": 0.017037375109742937,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630856
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.997800636488271
+            }
+          },
+          {
+            "z_mm": 3.08,
+            "sample_count": 299,
+            "max_boundary_gap_mm": 0.017351696483705447,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630596
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9986206563489501
+            }
+          },
+          {
+            "z_mm": 3.24,
+            "sample_count": 298,
+            "max_boundary_gap_mm": 0.01715551997583896,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630736
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9988258192294058
+            }
+          },
+          {
+            "z_mm": 3.4,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.017132367653257537,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630756
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9988639303917428
+            }
+          },
+          {
+            "z_mm": 3.56,
+            "sample_count": 264,
+            "max_boundary_gap_mm": 0.017303994898100073,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630736
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.999415865300138
+            }
+          },
+          {
+            "z_mm": 3.72,
+            "sample_count": 264,
+            "max_boundary_gap_mm": 0.016958644653428355,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630676
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9996818412418572
+            }
+          },
+          {
+            "z_mm": 3.88,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.017139617611597824,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630656
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9996715391381906
+            }
+          },
+          {
+            "z_mm": 4.04,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.017255596512810514,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630616
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9997405895035241
+            }
+          },
+          {
+            "z_mm": 4.2,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.01703499240120397,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630556
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9990187533647776
+            }
+          },
+          {
+            "z_mm": 4.36,
+            "sample_count": 264,
+            "max_boundary_gap_mm": 0.017223443681158593,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630516
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9995036041437841
+            }
+          },
+          {
+            "z_mm": 4.52,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.01731820747414511,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630496
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9996987776242235
+            }
+          },
+          {
+            "z_mm": 4.68,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.016726141351577576,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630476
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9996172568881841
+            }
+          },
+          {
+            "z_mm": 4.84,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.01720626415852405,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630436
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9996474529979085
+            }
+          },
+          {
+            "z_mm": 5.0,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.017058425065804874,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630396
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.999813849629427
+            }
+          },
+          {
+            "z_mm": 5.16,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.01723500476542127,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630356
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9996788720307291
+            }
+          },
+          {
+            "z_mm": 5.32,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.017859949110625408,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 5.48,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.017476814962034567,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 5.64,
+            "sample_count": 260,
+            "max_boundary_gap_mm": 0.01791860465772442,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 5.8,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.018036907671370152,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 5.96,
+            "sample_count": 247,
+            "max_boundary_gap_mm": 0.017907542102442994,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 6.12,
+            "sample_count": 236,
+            "max_boundary_gap_mm": 0.017890557230757716,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 6.28,
+            "sample_count": 226,
+            "max_boundary_gap_mm": 0.017091378324358978,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 6.44,
+            "sample_count": 215,
+            "max_boundary_gap_mm": 0.01749642647626481,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 6.6,
+            "sample_count": 204,
+            "max_boundary_gap_mm": 0.018002967368845962,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 6.76,
+            "sample_count": 194,
+            "max_boundary_gap_mm": 0.01771372697811897,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 6.92,
+            "sample_count": 183,
+            "max_boundary_gap_mm": 0.017746265937502524,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 7.08,
+            "sample_count": 172,
+            "max_boundary_gap_mm": 0.01740516096704204,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 7.24,
+            "sample_count": 162,
+            "max_boundary_gap_mm": 0.017687513862964833,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 7.4,
+            "sample_count": 151,
+            "max_boundary_gap_mm": 0.01800222598941918,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 7.56,
+            "sample_count": 140,
+            "max_boundary_gap_mm": 0.018327808183742626,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 7.72,
+            "sample_count": 130,
+            "max_boundary_gap_mm": 0.016579222059141953,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 7.88,
+            "sample_count": 119,
+            "max_boundary_gap_mm": 0.017047129652580963,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 8.04,
+            "sample_count": 108,
+            "max_boundary_gap_mm": 0.016158358412014573,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 8.2,
+            "sample_count": 98,
+            "max_boundary_gap_mm": 0.01581581402722794,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 8.36,
+            "sample_count": 87,
+            "max_boundary_gap_mm": 0.014648064998200965,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          }
+        ]
+      },
+      {
+        "site": "lm_upper_left",
+        "diameter_mm": 5.0,
+        "checked_layers": 48,
+        "width_range_mm": [
+          0.519996,
+          0.631236
+        ],
+        "maximum_boundary_gap_mm": 0.018914286671881924,
+        "checked_continuity_layers": 25,
+        "minimum_interlayer_overlap_fraction": 0.9940820846058178,
+        "maximum_connected_components": 1,
+        "layers": [
+          {
+            "z_mm": 0.84,
+            "sample_count": 184,
+            "max_boundary_gap_mm": 0.017461482056075266,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 1.0,
+            "sample_count": 194,
+            "max_boundary_gap_mm": 0.017475393298759787,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 1.16,
+            "sample_count": 210,
+            "max_boundary_gap_mm": 0.01709240027848963,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 1.32,
+            "sample_count": 226,
+            "max_boundary_gap_mm": 0.017254033092447253,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.631236
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9940820846058178
+            }
+          },
+          {
+            "z_mm": 1.48,
+            "sample_count": 227,
+            "max_boundary_gap_mm": 0.016973824650454022,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.631176
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9947561432146987
+            }
+          },
+          {
+            "z_mm": 1.64,
+            "sample_count": 243,
+            "max_boundary_gap_mm": 0.017322320608937958,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.631136
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9945905796596678
+            }
+          },
+          {
+            "z_mm": 1.8,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.01688979824568146,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.631116
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.994973459850372
+            }
+          },
+          {
+            "z_mm": 1.96,
+            "sample_count": 265,
+            "max_boundary_gap_mm": 0.01729694126425712,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.631076
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9952430714047532
+            }
+          },
+          {
+            "z_mm": 2.12,
+            "sample_count": 270,
+            "max_boundary_gap_mm": 0.017205050856333084,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.631016
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9957630816380839
+            }
+          },
+          {
+            "z_mm": 2.28,
+            "sample_count": 284,
+            "max_boundary_gap_mm": 0.017097527114388254,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630976
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9961712936554716
+            }
+          },
+          {
+            "z_mm": 2.44,
+            "sample_count": 288,
+            "max_boundary_gap_mm": 0.017696754063973995,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630376
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9966114582126332
+            }
+          },
+          {
+            "z_mm": 2.6,
+            "sample_count": 294,
+            "max_boundary_gap_mm": 0.01715292854596874,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630956
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.996783791750953
+            }
+          },
+          {
+            "z_mm": 2.76,
+            "sample_count": 300,
+            "max_boundary_gap_mm": 0.017274815500429398,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630896
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9973026470809279
+            }
+          },
+          {
+            "z_mm": 2.92,
+            "sample_count": 308,
+            "max_boundary_gap_mm": 0.017187010478428997,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630976
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9979558198328312
+            }
+          },
+          {
+            "z_mm": 3.08,
+            "sample_count": 302,
+            "max_boundary_gap_mm": 0.01714036149476953,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630796
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9985512125864051
+            }
+          },
+          {
+            "z_mm": 3.24,
+            "sample_count": 308,
+            "max_boundary_gap_mm": 0.016903723636363187,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630796
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.999223546350871
+            }
+          },
+          {
+            "z_mm": 3.4,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.017106502062149788,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630756
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9996322684283894
+            }
+          },
+          {
+            "z_mm": 3.56,
+            "sample_count": 264,
+            "max_boundary_gap_mm": 0.017200848826015677,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630736
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9997368056637358
+            }
+          },
+          {
+            "z_mm": 3.72,
+            "sample_count": 264,
+            "max_boundary_gap_mm": 0.017347417640723343,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630676
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9998096108282296
+            }
+          },
+          {
+            "z_mm": 3.88,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.01747960920450985,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630676
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9997634363767894
+            }
+          },
+          {
+            "z_mm": 4.04,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.01766710540988808,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630616
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9995549044474328
+            }
+          },
+          {
+            "z_mm": 4.2,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.017523312499866536,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630596
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9996967880109915
+            }
+          },
+          {
+            "z_mm": 4.36,
+            "sample_count": 264,
+            "max_boundary_gap_mm": 0.01768990057747444,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630536
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9995577751812875
+            }
+          },
+          {
+            "z_mm": 4.52,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.01748108565939888,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630516
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9997750516953299
+            }
+          },
+          {
+            "z_mm": 4.68,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.01761688781011462,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630496
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9998207486778399
+            }
+          },
+          {
+            "z_mm": 4.84,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.017531999471166983,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630436
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9998043681672484
+            }
+          },
+          {
+            "z_mm": 5.0,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.017746939317717633,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630416
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.9997511752409616
+            }
+          },
+          {
+            "z_mm": 5.16,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.01754932929788715,
+            "retaining_width_range_mm": [
+              0.519996,
+              0.630356
+            ],
+            "retaining_continuity": {
+              "connected_components": 1,
+              "interlayer_overlap_fraction": 0.999757823709535
+            }
+          },
+          {
+            "z_mm": 5.32,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.018033946647818048,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 5.48,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.018570013210428515,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 5.64,
+            "sample_count": 260,
+            "max_boundary_gap_mm": 0.018105342118211062,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 5.8,
+            "sample_count": 262,
+            "max_boundary_gap_mm": 0.017938066524403096,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 5.96,
+            "sample_count": 247,
+            "max_boundary_gap_mm": 0.018512778402847745,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 6.12,
+            "sample_count": 236,
+            "max_boundary_gap_mm": 0.018721942163707123,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 6.28,
+            "sample_count": 226,
+            "max_boundary_gap_mm": 0.018914286671881924,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 6.44,
+            "sample_count": 215,
+            "max_boundary_gap_mm": 0.01719873178383246,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 6.6,
+            "sample_count": 204,
+            "max_boundary_gap_mm": 0.017130120363331076,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 6.76,
+            "sample_count": 194,
+            "max_boundary_gap_mm": 0.017731905954919306,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 6.92,
+            "sample_count": 183,
+            "max_boundary_gap_mm": 0.01776882562270235,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 7.08,
+            "sample_count": 172,
+            "max_boundary_gap_mm": 0.017402591540122792,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 7.24,
+            "sample_count": 162,
+            "max_boundary_gap_mm": 0.017969575708830142,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 7.4,
+            "sample_count": 151,
+            "max_boundary_gap_mm": 0.018057324731681777,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 7.56,
+            "sample_count": 140,
+            "max_boundary_gap_mm": 0.018341175910895634,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 7.72,
+            "sample_count": 130,
+            "max_boundary_gap_mm": 0.017308381211798292,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 7.88,
+            "sample_count": 119,
+            "max_boundary_gap_mm": 0.01642595066542639,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 8.04,
+            "sample_count": 108,
+            "max_boundary_gap_mm": 0.012600208884429033,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 8.2,
+            "sample_count": 98,
+            "max_boundary_gap_mm": 0.012471876615378878,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          },
+          {
+            "z_mm": 8.36,
+            "sample_count": 86,
+            "max_boundary_gap_mm": 0.013557394763493137,
+            "retaining_width_range_mm": null,
+            "retaining_continuity": null
+          }
+        ]
+      }
+    ]
+  },
+  "geometry": [
+    {
+      "source": "to_print/h2c/STL/h2c_dayton_nd25fn4_obiwan_top_floor_stand.stl",
+      "sha256": "ae3af009415beb997d30495ad0ec2e226a8ebd60a95f2de9c0d0d9537b5343d3",
+      "subtype": "normal_part",
+      "triangles": 795462,
+      "maximum_vertex_error_mm": 1.4729520401291994e-06,
+      "winding_and_connectivity_match": true
+    },
+    {
+      "source": "build/h2c/inputs/h2c_dayton_nd25fn4_obiwan_top_floor_stand_support_blocker.stl",
+      "sha256": "fd4995fa558f9c6c50ef72dfb85a6f03b721ccb638b6b2fe4a495137bd6e768e",
+      "subtype": "support_blocker",
+      "triangles": 75982,
+      "maximum_vertex_error_mm": 9.339083888118023e-06,
+      "winding_and_connectivity_match": true
+    }
+  ],
+  "supports": {
+    "candidates/nd25fn4_vase/obiwan/support_blockers/nd25fn4_vase_obiwan_top_floor_stand.support_blocker.json": {
+      "status": "pass",
+      "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+      "support_extrusion_segments_checked": 66217,
+      "duct_capsule_segment_count": 660,
+      "candidate_distance_checks": 623546,
+      "collision_count": 0,
+      "minimum_bead_to_lumen_clearance_mm": 0.13880702359634156,
+      "closest_approach": {
+        "gcode_line_number": 228347,
+        "layer_z_mm": 5.0,
+        "feature": "Support",
+        "line_width_mm": 0.62,
+        "layer_height_mm": 0.16,
+        "duct_region": "vase_T_to_t_link_lumen",
+        "centerline_distance_mm": 3.458963235467984,
+        "duct_radius_mm": 3.0,
+        "support_bead_radius_mm": 0.32015621187164245,
+        "bead_to_lumen_clearance_mm": 0.13880702359634156
+      }
+    }
+  },
+  "pause_program": [
+    {
+      "z_mm": 6.12,
+      "pause_command_line_number": 283597,
+      "first_extrusion_line_number": 283615,
+      "pass": true
+    }
+  ],
+  "static_validation": {
+    "errors": [],
+    "ok": true,
+    "path": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/jobs/h2c_dayton_nd25fn4_obiwan_top_floor_stand__petg_translucent_pla/plate_1.gcode",
+    "profile": {
+      "backend": "orcaslicer",
+      "bed_size_mm": [
+        330.0,
+        320.0
+      ],
+      "bed_temp_c": 70.0,
+      "filament_type": "PETG",
+      "machine_name": "Bambu Lab H2C 0.6 High Flow",
+      "motion_bounds_mm": {
+        "x": [
+          0.0,
+          330.0
+        ],
+        "y": [
+          -16.0,
+          320.0
+        ],
+        "z": [
+          0.0,
+          325.0
+        ]
+      },
+      "native_config": "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_translucent_pla/machine.json",
+      "native_filaments": [
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_translucent_pla/model.json",
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_translucent_pla/interface.json"
+      ],
+      "native_settings": [
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/profiles/petg_translucent_pla/machine.json",
+        "/Users/antor/gh/lx/top_baffle_v2/build/h2c/jobs/h2c_dayton_nd25fn4_obiwan_top_floor_stand__petg_translucent_pla/process.json"
+      ],
+      "nozzle_temp_c": 260.0,
+      "z_height_mm": 325.0
+    },
+    "stats": {
+      "extrusion_moves": 1124230,
+      "lines": 1877977,
+      "movement_commands": 1446668,
+      "non_comment_lines": 1590851,
+      "temperature_commands": 185
+    },
+    "warnings": [
+      "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
+      "Unknown or unsupported commands were left unchanged: ========== line 1086, G150 line 916, G150.1 line 701, G150.2 line 902, G150.3 line 683, G151 line 743, G17 line 1186, G28.14 line 1078, G28.140 line 626, G29.1 line 622, G29.2 line 757, G29.20 line 965."
+    ]
+  }
+}

@@ -47,7 +47,7 @@ from release_validation import _validate_artifact_bindings, normalize_catalog
 
 
 RELEASE_CATALOG = PROJECT_ROOT / "review" / "captive_magnet_release_catalog.json"
-SHELF_CATALOG = PROJECT_ROOT / "to_print" / "catalog.json"
+SHELF_CATALOG = PROJECT_ROOT / "to_print/archive/p2s" / "catalog.json"
 SUPPORT_KEYS = (
     "enable_support",
     "support_on_build_plate_only",

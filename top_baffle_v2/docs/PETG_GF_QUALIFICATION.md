@@ -18,7 +18,7 @@ guidance is a starting point, not validation of this glass-filled formulation.
 
 ## Preserve the process identity
 
-Record the selected GUI project SHA-256 from `to_print/delivery_manifest.json`,
+Record the selected GUI project SHA-256 from `to_print/archive/p2s/delivery_manifest.json`,
 exported slice SHA-256, Bambu version, actual installed nozzle, filament
 brands/lots, drying settings/time, room conditions and material-slot map.
 Use the embedded process: six walls; 100% zig-zag for core combos, LM bottoms,
@@ -38,7 +38,7 @@ interface removal force and failure location. Do not flush PLA into load-
 carrying GF walls/infill. Accept the calibration only after repeatable
 results; a color-clean transition alone does not prove bonding. The
 [shared policy reference](PRINT_POLICIES.md) and native changeover audit
-record these settings; the separate translucent lane retains its own recipe.
+record these settings.
 
 ## Coupons and measurements
 

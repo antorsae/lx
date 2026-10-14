@@ -52,15 +52,15 @@ build/vase_TEBM35C10-4/*/.*.step.glb
 !review/captive_magnet_slice_audit/captive_magnet_pause_manifest.json
 !review/captive_magnet_slice_audit_06hf/captive_magnet_pause_manifest.json
 
-# Local P2S print shelf.  The friendly source map and selection guide are
+# Archived P2S print shelf.  The friendly source map and selection guide are
 # reviewed in Git; its rendered STL/3MF delivery files and slicer workspace
 # are reproducible local outputs and deliberately remain untracked.
-to_print/*/stl/
-to_print/*/3mf/
+to_print/archive/p2s/*/stl/
+to_print/archive/p2s/*/3mf/
 review/to_print_slice_workspace/
-to_print/release_manifest.json
-!to_print/catalog.json
-!to_print/catalog_06hf.json
+to_print/archive/p2s/release_manifest.json
+!to_print/archive/p2s/catalog.json
+!to_print/archive/p2s/catalog_06hf.json
 
 # Adjacent front-down print authorities are part of every released STL.  The
 # repository root ignores generic JSON, so explicitly keep all three release
@@ -93,14 +93,14 @@ build/print_plates/obiwan/obiwan_graded_wings_split2_combo.stl
 # Verified local distribution packs and generated delivery metadata.
 dist/
 review/retired_delivery_*/
-!to_print/delivery_manifest.json
+!to_print/archive/p2s/delivery_manifest.json
 !qualification/*.json
 !qualification/**/*.json
 # Material-lane renames must remain visible in Git (the old lanes were tracked).
-!to_print/obiwan/3mf_06hf_petg-gf/*.gcode.3mf
-!to_print/obiwan/3mf_06hf_petg-gf/*.json
-!to_print/obiwan/3mf_06hf_petg-gf_pla/*.3mf
-!to_print/obiwan/3mf_06hf_petg-gf_pla/*.json
+!to_print/archive/p2s/obiwan/3mf_06hf_petg-gf/*.gcode.3mf
+!to_print/archive/p2s/obiwan/3mf_06hf_petg-gf/*.json
+!to_print/archive/p2s/obiwan/3mf_06hf_petg-gf_pla/*.3mf
+!to_print/archive/p2s/obiwan/3mf_06hf_petg-gf_pla/*.json
 !qualification/*.step
 !qualification/*.stl
 review/gui_slices/
@@ -140,14 +140,9 @@ candidates/nd25fn4_crescent/assembly/
 # qualification evidence. Slicer work files are recoverable from the published
 # .gcode.3mf files and are not a second set of deliverables.
 !print_policy_h2c.json
-!to_print/h2c/catalog.json
-# Git on the default macOS filesystem also matches the older lowercase
-# stl/ ignore rule against STL/. Keep the current H2C geometry trackable.
-!to_print/h2c/STL/
-!to_print/h2c/STL/**/*.stl
-!to_print/h2c/STL/*.stl
-!to_print/h2c/STL/**/*.print.json
-!to_print/h2c/STL/*.print.json
+!to_print/catalog.json
+!to_print/*/*/*.stl
+!to_print/*/*/*.print.json
 !build/h2c/*.json
 !build/h2c/STEP/*.facts.json
 !build/h2c/STL/*.print.json
@@ -161,6 +156,15 @@ build/h2c/jobs/*/*
 !build/h2c/jobs/*/magnet_discovery.json
 !build/h2c/jobs/*/gcode_skill_validation.json
 !build/h2c/jobs/*/gcode_validation_profile.json
+# Combined per-product files: the shelf manifest the catalog validator and the
+# shelf READMEs read, and each file's audit evidence. Per-plate workspaces,
+# plain G-code and discovery slices beside them are recoverable local outputs.
+!to_print/plates.json
+build/h2c/plates/*/*
+!build/h2c/plates/*/audit.json
+!build/h2c/plates/*/process.json
+!build/h2c/plates/*/gcode_skill_validation.json
+!build/h2c/plates/*/gcode_validation_profile.json
 build/h2c/trial/
 !build/h2c/experiments/**/*.json
 !build/h2c/experiments/*.json
@@ -177,6 +181,8 @@ build/h2c/views/*_20*T*.png
 # Retired H2C names remain local; source checkpoints are mapped in
 # docs/GENERATED_HISTORY.md.
 build/h2c/experiments/retired_dayton_revision_names/
+# Local copy of the shelf as it stood before the product-first layout.
+build/h2c/previous_shelf/
 
 # Archived meshes, duplicate slicer projects and raw toolpaths are local
 # workspaces. Keep reports/images and the explicit live build inputs below.

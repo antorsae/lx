@@ -26,27 +26,27 @@
     "last_open_layer_z_mm": 5.96,
     "collision_witnesses": [
       {
-        "line": 30356,
+        "line": 31052,
         "feature": "Outer wall",
         "intrusion_mm": 0.128719659407594
       },
       {
-        "line": 30358,
+        "line": 31054,
         "feature": "Outer wall",
         "intrusion_mm": 0.15025736022775937
       },
       {
-        "line": 30360,
+        "line": 31056,
         "feature": "Outer wall",
         "intrusion_mm": 0.14015231996244046
       },
       {
-        "line": 30362,
+        "line": 31058,
         "feature": "Outer wall",
         "intrusion_mm": 0.14075494382026577
       },
       {
-        "line": 30364,
+        "line": 31060,
         "feature": "Outer wall",
         "intrusion_mm": 0.1408391113130037
       }
@@ -549,29 +549,29 @@
     "last_open_layer_z_mm": 5.96,
     "collision_witnesses": [
       {
-        "line": 30286,
+        "line": 30909,
         "feature": "Outer wall",
-        "intrusion_mm": 0.12851569287580042
+        "intrusion_mm": 0.07169707302266448
       },
       {
-        "line": 30287,
+        "line": 30911,
         "feature": "Outer wall",
-        "intrusion_mm": 0.14028174239688884
+        "intrusion_mm": 0.13522038800393102
       },
       {
-        "line": 30288,
+        "line": 30913,
         "feature": "Outer wall",
-        "intrusion_mm": 0.14039535252566687
+        "intrusion_mm": 0.16073480495348424
       },
       {
-        "line": 30290,
+        "line": 30915,
         "feature": "Outer wall",
-        "intrusion_mm": 0.14039535252566687
+        "intrusion_mm": 0.15442136274511706
       },
       {
-        "line": 30294,
+        "line": 30917,
         "feature": "Outer wall",
-        "intrusion_mm": 0.14015875225748453
+        "intrusion_mm": 0.14024551511523475
       }
     ],
     "layer_records": [
@@ -813,7 +813,7 @@
       {
         "z": 8.36,
         "intrusion_mm": 0.321228,
-        "count": 66
+        "count": 64
       },
       {
         "z": 8.52,

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "part": "nd25fn4_v4_fused_um_shared",
   "stl": "01_UM_Crescent_V4.stl",
-  "stl_sha256": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+  "stl_sha256": "ab79e944697cecb1cd92416c193d1cb01b1f02a879a564905a2ef4838b7fad99",
   "source_frame": "Obi-Wan installed, X lateral / Y up / Z forward, mm",
   "source_to_stl_matrix": [
     [

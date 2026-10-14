@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Refresh native STEP review packets and the actual-mesh Dayton ND25FN-4 assembly views."""
+"""Refresh native STEP review packets and the actual-mesh Dayton ND25FN-4 vase assembly views."""
 from pathlib import Path
 import json,subprocess,sys
 ROOT=Path(__file__).resolve().parents[1];WORK=ROOT/'build/h2c'
@@ -23,8 +23,7 @@ def main():
     manifest=WORK/'views/review_validation.json'
     inputs={str(p.relative_to(ROOT)):sha256_file(p) for p in [Path(__file__),ROOT/'scripts/render_h2c_mesh_reviews.py',
         *sorted((WORK/'STEP').glob('*.step')),*sorted((WORK/'review_models').glob('*.py')),
-        *sorted((ROOT/'to_print/h2c/STL').glob('*.stl')),
-        *sorted((ROOT/'to_print/h2c/STL/dayton_nd25fn4').glob('*.stl'))]}
+        *sorted(p for g in ('stock','slim','obiwan') for p in (ROOT/'to_print'/g).rglob('*.stl'))]}
     if manifest.exists():
         old=json.loads(manifest.read_text())
         if old.get('inputs')==inputs and all((ROOT/p).exists() and sha256_file(ROOT/p)==h for p,h in old.get('outputs',{}).items()):
@@ -72,6 +71,9 @@ def main():
         draw.text((900*col+24,2160),f'{family.title()} — BMR alternative',fill='#263c4a',font=heading)
     contact=WORK/'views/primary_review_contact_sheet.png';sheet.save(contact);outputs.append(contact)
     subprocess.run([sys.executable,'scripts/render_h2c_mesh_reviews.py'],cwd=ROOT,check=True)
+    for old in (WORK/'views').glob('H2C_Dayton_ND25FN4_*'):
+        # Views of the retired V4 package are not outputs of this renderer.
+        if not old.name.startswith(('H2C_Dayton_ND25FN4_obiwan_tweeters_','H2C_Dayton_ND25FN4_stock_tweeters_')):old.unlink()
     outputs+=list((WORK/'views').glob('H2C_Dayton_ND25FN4_*'))+list((WORK/'views').glob('*_inspection.json'))
     write_json(manifest,dict(status='generated',inputs=inputs,outputs={str(p.relative_to(ROOT)):sha256_file(p) for p in outputs},
         projection='orthographic',camera_up_axis='installed +Y',physical_geometry_changed=False))

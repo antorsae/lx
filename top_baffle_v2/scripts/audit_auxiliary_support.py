@@ -21,7 +21,7 @@ def region(name, a, b, radius):
 
 def main():
     output=ROOT/'review/print_policy_update_20260912'
-    entries=json.loads((ROOT/'to_print/catalog.json').read_text())['entries']
+    entries=json.loads((ROOT/'to_print/archive/p2s/catalog.json').read_text())['entries']
     nl8=[region(f'NL8_M3_{sx}_{sy}', [sx*f.NL8_SCREW_PITCH_MM/2,f.NL8_CENTER_Y_MM+sy*f.NL8_SCREW_PITCH_MM/2,f.FOOT_REAR_Z_MM],
                 [sx*f.NL8_SCREW_PITCH_MM/2,f.NL8_CENTER_Y_MM+sy*f.NL8_SCREW_PITCH_MM/2,f.FOOT_REAR_Z_MM+f.NL8_INSERT_L_MM],f.NL8_SCREW_D_MM/2)
          for sx in (-1,1) for sy in (-1,1)]

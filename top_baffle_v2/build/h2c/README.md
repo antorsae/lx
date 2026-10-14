@@ -1,6 +1,6 @@
 # H2C build authorities
 
-The user-facing file guide is [to_print/h2c](../../to_print/h2c/README.md).
+The user-facing file guide is [to_print](../../to_print/README.md).
 This directory stores native geometry, frozen profiles, print provenance and
 digital qualification reports.
 
@@ -16,6 +16,8 @@ digital qualification reports.
 - `jobs/`: current process inputs, exact CLI commands and per-job audits.
   Disposable slicer work files are excluded from Git. Validation can recover
   plain G-code from each hash-verified published `.gcode.3mf`.
+- `plates/`: one audit per combined per-product file, listed in
+  `to_print/plates.json`. Per-plate workspaces and G-code stay local.
 - `review_models/` and `views/`: source-positioned native assemblies, inspection
   reports and orthographic review images.
 - `experiments/`: development evidence outside the print shelf.
@@ -26,8 +28,13 @@ including the complete manifests and referenced BREP files. The exporter checks
 the state, transaction and hashes before importing them. Changing shared Obiwan
 CAD requires regenerating those canonical inputs before rebuilding H2C outputs.
 
-The retained Dayton ND25FN-4 waveguide body uses its original installed-to-print transform metadata.
-Caps and retainers were authored directly in print coordinates and use their
-original hash-bound build records. The release validator recognizes exactly
-those three retained files and verifies them against the original sources; all
-other released meshes use the shared front-down print sidecar contract.
+The Dayton ND25FN-4 vases and the dipole tweeter parts are approved mesh
+packages (`candidates/nd25fn4_vase/`, `candidates/dipole_tweeter/`) in the
+installed frame. Like every other released mesh, they reach the shelf through
+the shared front-down print sidecar contract. Every shelf STL must pass the
+strict manifold check (`scripts/check_manifold.py`) as written. These
+mesh-boolean parts carry sub-micron slivers that float32 bed coordinates would
+collapse, so the shelf export collapses edges shorter than `SHELF_SLIVER_MM`
+first, and their print authority records it. The retired V4 waveguide body,
+its caps and retainers, and its wings are archived under
+`experiments/retired_dayton_nd25fn4_v4/`.

@@ -1,37 +1,36 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "9b5e3de009dbcf213506c2fc15f71725a78a523de1733e6e72e146045abda7a7",
-  "sliced_project_sha256": "5b07e5d751e73069ab934bfd6ed7054e3f7913b5eaf2dd95f32b62622312d2b7",
-  "gcode_sha256": "268f7e0267c3ed16fc0b9dd351ecf63e49829eeffad64cdd6b3d5580886f48f8",
+  "project_sha256": "bc2a87155ef048245df12725a4121fe095f71e6b04fd1ba0483c754b3987ffd9",
+  "sliced_project_sha256": "9c5c217e35e3cd6f7477e70ce60281b9d67dae9d5f939cc717ad972ad89733c3",
+  "gcode_sha256": "91044caf7131fe06fc499a1beb30b5d380abdc413ad9c2ae9aed656d8fc435da",
   "audit_version": 4,
   "inputs": {
     "build/bmr_crescent_TEBM35C10-4/obiwan_bmr_crescent_TEBM35C10-4.stl": "18ef6af2177b370238b49462ef77cf17faf0c55cf3cedf694e1681f2bb9b8d09",
     "build/h2c/inputs/h2c_obiwan_bmr_crescent_TEBM35C10-4_support_blocker.stl": "b85f2e4c561ac7577a76a611ccb7676a39e53faa6e26e2c7d28f6c6a7932706e",
-    "build/h2c/jobs/h2c_obiwan_bmr_crescent_TEBM35C10-4__petg_gf_pla/dry_run.json": "1b8ede381ac26d808d9a9a93c632ed784c4b791e0d5bdb4b27913c67f6c9b489",
-    "build/h2c/jobs/h2c_obiwan_bmr_crescent_TEBM35C10-4__petg_gf_pla/process.json": "91ed35b5735825095b9f9cc83b5961fb2f2de2ebaffff77a4091cc422fe01c8e",
-    "build/h2c/profiles/petg_gf_pla/interface.json": "de9f413cd7e43e5bb30bb4b79cd48ed1b4680e9a0c27fae68042facf0f25cc1e",
-    "build/h2c/profiles/petg_gf_pla/machine.json": "488f1222c244471ec147ad2960b403a9cb8e07463473123575354cdd85719dbb",
-    "build/h2c/profiles/petg_gf_pla/model.json": "7204a547fddf4215cce3929c76208ff0fc2029447be43ce64f9a5f763c1e61bc",
+    "build/h2c/jobs/h2c_obiwan_bmr_crescent_TEBM35C10-4__petg_gf_pla/dry_run.json": "15c3bf14ff0da458010a37b08974f56428f70217bddbb154a9cc7a6bf9e16a90",
+    "build/h2c/jobs/h2c_obiwan_bmr_crescent_TEBM35C10-4__petg_gf_pla/process.json": "5f0bb199304e0c19cc385dd24d1999e129a43a4ec880e57b99de03afbc8ab2df",
+    "build/h2c/profiles/petg_gf_pla/interface.json": "bebda39f8a78214048e36f4e2b0bb05425fc049312641c20eeb9256763e9b588",
+    "build/h2c/profiles/petg_gf_pla/machine.json": "e565fa0194354f79fa8f4fef2fdb8a2d0e6f9350a565505d95747c4b1ac5ba82",
+    "build/h2c/profiles/petg_gf_pla/model.json": "ac9758d2f6761b086555e41f1829756b9176853e7c9ecec168d47a010da6cdc6",
     "candidates/nd25fn4_crescent/audit_print.py": "c297b070b299b3ce910c9a543c909fe38a9c3e9bc5b2a705636d30338112d657",
-    "candidates/nd25fn4_crescent/cap_support_check.py": "75d18c0af4abcd836ed7fcd5d234acf9120f12899e701a0f9935f96a18e4ad8c",
     "candidates/nd25fn4_crescent/print_magnets.py": "000c763a01ce64b22fbf8368268a04736e4250e9cc9d2e666f06d73dcb14a5a6",
+    "candidates/nd25fn4_vase/obiwan/magnets.catalog.json": "309bfd12e08485b66e52da39863bdc9bc2b0e38840681285eb27998c4fdb19aa",
     "print_policy.json": "6f618bf4754fa1343e3721655b608370cbc1dd4731c77432eb32aa49d170a84c",
-    "print_policy_h2c.json": "1c545d0f9365ed36563bdea5d7bab7d027fb5fa04d66ce553c2ee1485c629135",
+    "print_policy_h2c.json": "61d265416c57672fc417a59b7a29e82b10c2485d1ccae65056cd1558af9e33ae",
     "scripts/artifact_emit.py": "97d8cf5e962195deb6eda661d8d578e1e66f7efc7b8fe58807e7f53de9207d33",
-    "scripts/audit_h2c_print.py": "8e0dfe9914603f00a175ffa22d340d25f0ab9e3c99fe4adb5cafb85ee65ed646",
+    "scripts/audit_h2c_print.py": "7fa06e819955674b6c77d859d4ce3c186e7f935f63b19fdb4837be2b849c754e",
     "scripts/captive_wall_audit.py": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "scripts/gcode_analysis.py": "d7dd62ccd0fe66a3529f14940c3fee36eb3dc57b25709e34eca70ef48f023f42",
-    "src/lx521_baffle/h2c/dayton.py": "034817fb267162508cd59882a4b65c41f7f6e29233cf8164fc444a3d53bc1bf7",
-    "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
-    "src/lx521_baffle/tweeter_options.py": "4e13db23df7b60b9278d0e15ec3810b033376a6ee72cc33dfa8fe40518703f5a",
-    "to_print/h2c/STL/h2c_obiwan_bmr_crescent_TEBM35C10-4.stl": "aedec004dce9493fb52d3d479e8750a20ecb755d0f06a8fcb02eb83515fcade9",
-    "to_print/h2c/obiwan/petg_gf_pla/h2c_obiwan_bmr_crescent_TEBM35C10-4.3mf": "9b5e3de009dbcf213506c2fc15f71725a78a523de1733e6e72e146045abda7a7"
+    "src/lx521_baffle/h2c/printing.py": "c2d836211098d077db13bcad29358c5fb3ba96fad5d6999fdbd4f728fe2bfb60",
+    "src/lx521_baffle/tweeter_options.py": "dba6f5e1877df8e92fbfdf46ff4ed07acf05e2f767222b91044a55b507bb80c2",
+    "to_print/obiwan/upper/obiwan_crescent_bmr.petg-gf.3mf": "bc2a87155ef048245df12725a4121fe095f71e6b04fd1ba0483c754b3987ffd9",
+    "to_print/obiwan/upper/obiwan_crescent_bmr.stl": "aedec004dce9493fb52d3d479e8750a20ecb755d0f06a8fcb02eb83515fcade9"
   },
   "deposition": {
     "status": "pass",
     "counts": {
-      "model": 184993
+      "model": 184995
     },
     "deposition_bounds_mm": {
       "0": [
@@ -84,27 +83,27 @@
       "last_open_layer_z_mm": 5.96,
       "collision_witnesses": [
         {
-          "line": 87790,
+          "line": 87825,
           "feature": "Outer wall",
           "intrusion_mm": 0.10563212266780295
         },
         {
-          "line": 87791,
+          "line": 87826,
           "feature": "Outer wall",
           "intrusion_mm": 0.14045637402350458
         },
         {
-          "line": 87792,
+          "line": 87827,
           "feature": "Outer wall",
           "intrusion_mm": 0.14045637402350458
         },
         {
-          "line": 87793,
+          "line": 87828,
           "feature": "Outer wall",
           "intrusion_mm": 0.14045637402350458
         },
         {
-          "line": 87794,
+          "line": 87829,
           "feature": "Outer wall",
           "intrusion_mm": 0.14045637402350458
         }
@@ -607,27 +606,27 @@
       "last_open_layer_z_mm": 5.96,
       "collision_witnesses": [
         {
-          "line": 87823,
+          "line": 87858,
           "feature": "Outer wall",
           "intrusion_mm": 0.12928255795722274
         },
         {
-          "line": 87825,
+          "line": 87860,
           "feature": "Outer wall",
           "intrusion_mm": 0.15773747033817234
         },
         {
-          "line": 87827,
+          "line": 87862,
           "feature": "Outer wall",
           "intrusion_mm": 0.13883989433692234
         },
         {
-          "line": 87829,
+          "line": 87864,
           "feature": "Outer wall",
           "intrusion_mm": 0.14236637402350455
         },
         {
-          "line": 87831,
+          "line": 87866,
           "feature": "Outer wall",
           "intrusion_mm": 0.14208137402350457
         }
@@ -1107,7 +1106,7 @@
   "retaining_walls": {
     "status": "pass",
     "physical_qualification": "pending same-geometry coupon print",
-    "gcode_sha256": "268f7e0267c3ed16fc0b9dd351ecf63e49829eeffad64cdd6b3d5580886f48f8",
+    "gcode_sha256": "91044caf7131fe06fc499a1beb30b5d380abdc413ad9c2ae9aed656d8fc435da",
     "stl_sha256": "aedec004dce9493fb52d3d479e8750a20ecb755d0f06a8fcb02eb83515fcade9",
     "source_sha256": "940a4e80d0055945cd66cf01fe26bd4037c52ab4670f64ac452280661b76f418",
     "sample_spacing_mm": 0.06,
@@ -1228,7 +1227,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9969404747007078
+              "interlayer_overlap_fraction": 0.9969404743231536
             }
           },
           {
@@ -1241,20 +1240,20 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9980495277793123
+              "interlayer_overlap_fraction": 0.9980495285262546
             }
           },
           {
             "z_mm": 2.44,
             "sample_count": 285,
-            "max_boundary_gap_mm": 0.001469707409284415,
+            "max_boundary_gap_mm": 0.001469706706418871,
             "retaining_width_range_mm": [
               0.519996,
               0.544336
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9983146276013827
+              "interlayer_overlap_fraction": 0.9983146272970812
             }
           },
           {
@@ -1267,7 +1266,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9985561440789086
+              "interlayer_overlap_fraction": 0.9985561444164199
             }
           },
           {
@@ -1280,7 +1279,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9987630593239603
+              "interlayer_overlap_fraction": 0.9987630593233563
             }
           },
           {
@@ -1293,7 +1292,7 @@
             ],
             "retaining_continuity": {
               "connected_components": 1,
-              "interlayer_overlap_fraction": 0.9990141852727095
+              "interlayer_overlap_fraction": 0.9990141856030252
             }
           },
           {
@@ -2125,7 +2124,7 @@
   },
   "geometry": [
     {
-      "source": "to_print/h2c/STL/h2c_obiwan_bmr_crescent_TEBM35C10-4.stl",
+      "source": "to_print/obiwan/upper/obiwan_crescent_bmr.stl",
       "sha256": "aedec004dce9493fb52d3d479e8750a20ecb755d0f06a8fcb02eb83515fcade9",
       "subtype": "normal_part",
       "triangles": 13568,
@@ -2145,8 +2144,8 @@
   "pause_program": [
     {
       "z_mm": 6.12,
-      "pause_command_line_number": 87325,
-      "first_extrusion_line_number": 87338,
+      "pause_command_line_number": 87357,
+      "first_extrusion_line_number": 87374,
       "pass": true
     }
   ],
@@ -2190,15 +2189,15 @@
       "z_height_mm": 325.0
     },
     "stats": {
-      "extrusion_moves": 130288,
-      "lines": 305042,
-      "movement_commands": 241909,
-      "non_comment_lines": 264956,
+      "extrusion_moves": 130234,
+      "lines": 305179,
+      "movement_commands": 242040,
+      "non_comment_lines": 264449,
       "temperature_commands": 22
     },
     "warnings": [
       "Relative positioning found; XYZ bounds validation is skipped while relative mode is active.",
-      "Unknown or unsupported commands were left unchanged: ========== line 1071, G150 line 912, G150.1 line 696, G150.2 line 897, G150.3 line 683, G151 line 738, G17 line 4343, G28.14 line 1063, G28.140 line 626, G29.1 line 622, G29.2 line 752, G29.20 line 952."
+      "Unknown or unsupported commands were left unchanged: ========== line 1096, G150 line 937, G150.1 line 721, G150.2 line 923, G150.3 line 708, G151 line 763, G17 line 4406, G28.14 line 1088, G28.140 line 651, G29.1 line 647, G29.2 line 777, G29.20 line 977."
     ]
   }
 }

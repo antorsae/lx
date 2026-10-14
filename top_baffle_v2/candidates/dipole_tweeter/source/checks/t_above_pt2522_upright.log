@@ -1,0 +1,9 @@
+# 2026-10-10 09:40 above_fix_pt2522_4_portrait.log
+obiwan_planar_pt2522_um_t_above {'volume_cm3': np.float64(49.7), 'bounds_mm': [[-52.64, 310.87, 1.46], [52.64, 505.4, 18.3]], 'watertight': True, 'driver_clash_mm3': -0.0, 'step': None, 'method': 'mesh booleans on the audited UM + fused frame'}
+pt2522_4 portrait um_t_above T duct D6.0: min bend R16.3, exposed 0 of 7320 []
+pt2522_4 portrait um_t_above pilot (-31.0,421.2) depth 4.00 wall 1.25 floor 2.00
+pt2522_4 portrait um_t_above pilot (-31.0,500.2) depth 4.00 wall 1.20 floor 2.00
+pt2522_4 portrait um_t_above pilot (31.0,421.2) depth 4.00 wall 1.25 floor 2.00
+pt2522_4 portrait um_t_above pilot (31.0,500.2) depth 4.00 wall 1.20 floor 2.00
+pt2522_4 portrait um_t_above front: max z 18.30 (front plane 18.3); vertices proud of it 0
+pt2522_4 portrait um_t_above bodies 1 watertight True vol 49.7 cm3

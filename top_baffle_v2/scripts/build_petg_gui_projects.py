@@ -50,7 +50,7 @@ from delivery_contract import GUI_DIRECTORY
 PETG_PROFILE = PROJECT_ROOT / "captive_magnet_slicing_profile_petg_gf_06hf.json"
 RELEASE_CATALOG = PROJECT_ROOT / "review" / "captive_magnet_release_catalog.json"
 DEFAULT_OUTPUT = (
-    PROJECT_ROOT / "to_print" / "obiwan" / GUI_DIRECTORY)
+    PROJECT_ROOT / "to_print/archive/p2s" / "obiwan" / GUI_DIRECTORY)
 WORKSPACE = PROJECT_ROOT / "review" / "petg_gui_project_workspace"
 EXPECTED_PAUSE_Z_MM = 5.96
 EXPECTED_MAGNETS = 6
@@ -545,7 +545,7 @@ def _build_single_audited(name: str, artifact_id: str, output: Path) -> dict:
     output.mkdir(parents=True, exist_ok=True)
     destination = output / project_name
     from gui_project_audit import audit_gui_geometry
-    catalog = json.loads((PROJECT_ROOT / "to_print/catalog.json").read_text())
+    catalog = json.loads((PROJECT_ROOT / "to_print/archive/p2s/catalog.json").read_text())
     entry = next(e for e in catalog["entries"] if e["name"] == destination.name.removesuffix("_GUI.3mf"))
     facts["geometry_audit"] = audit_gui_geometry(PROJECT_ROOT, entry, project)
     facts["project_sha256"] = facts["geometry_audit"]["project_sha256"]
@@ -603,7 +603,7 @@ def _build_single_plain(
     output.mkdir(parents=True, exist_ok=True)
     destination = output / project_name
     from gui_project_audit import audit_gui_geometry
-    catalog = json.loads((PROJECT_ROOT / "to_print/catalog.json").read_text())
+    catalog = json.loads((PROJECT_ROOT / "to_print/archive/p2s/catalog.json").read_text())
     entry = next(e for e in catalog["entries"] if e["name"] == destination.name.removesuffix("_GUI.3mf"))
     facts["geometry_audit"] = audit_gui_geometry(PROJECT_ROOT, entry, project)
     facts["project_sha256"] = facts["geometry_audit"]["project_sha256"]
@@ -656,7 +656,7 @@ def _build_one(slug: str, output: Path) -> dict:
     output.mkdir(parents=True, exist_ok=True)
     destination = output / name
     from gui_project_audit import audit_gui_geometry
-    catalog = json.loads((PROJECT_ROOT / "to_print/catalog.json").read_text())
+    catalog = json.loads((PROJECT_ROOT / "to_print/archive/p2s/catalog.json").read_text())
     entry = next(e for e in catalog["entries"] if e["name"] == destination.name.removesuffix("_GUI.3mf"))
     facts["geometry_audit"] = audit_gui_geometry(PROJECT_ROOT, entry, project)
     facts["project_sha256"] = facts["geometry_audit"]["project_sha256"]

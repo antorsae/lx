@@ -1,32 +1,41 @@
-# Obiwan — three tweeter families, one LM interface
+# Obiwan — five tweeter families, one LM interface
+
+> **H2C only:** use the [H2C file catalog](../to_print/README.md) and [current build guide](BUILD_GUIDE.md). P2S split/preset sections retained below are deprecated design history, not current print selections.
 
 Obiwan uses separate driver carriers with optional flat or graded wings.
-It offers three tweeter families: **Dayton ND25FW-4**, **Tectonic TEBM35C10-4
-BMR**, and **Dayton ND25FN-4 waveguide**. The first two use the regular UM
-collar and a separate crescent. ND25FN-4 combines the UM and printed
-waveguides into a curved body with matching wings.
+It offers five tweeter families: **Dayton ND25FW-4**, **Tectonic TEBM35C10-4
+BMR**, **Dayton ND25FN-4 waveguide**, and the **GRS PT2522-4** and **Mundorf
+AMT17D2.1** dipoles. The first two use the regular UM collar and a separate
+crescent. For ND25FN-4, one printed vase top replaces the LM top, the regular
+UM and the crescent, keys onto the keyed LM bottom of either stand state and
+takes its own matching wings. The dipoles replace the UM (T above) or the LM top
+and UM (T below), upright or rotated, without wings ([guide](DIPOLE_TWEETERS.md)).
 
-![ND25FW-4, coaxial BMR, opposed BMR and ND25FN-4 waveguide uppers side by side](../images/generated/iso/rows/obiwan_upper_row.png)
+![ND25FW-4, coaxial BMR, opposed BMR, ND25FN-4 vase top and the two dipoles side by side](../images/generated/iso/rows/obiwan_upper_row.png)
 
-All four upper arrangements are shown upright at the **same scale and LM
-joint datum**, using the actual exported parts. Blue is the regular UM;
-gold is the tweeter carrier or fused UM/waveguide body. Drivers and service
-caps are omitted.
+All six upper arrangements are shown upright at the **same scale**, using
+the actual exported parts. Blue is the regular UM; gold is the tweeter
+carrier, ND25FN-4 vase top or dipole piece (T above, upright, shown; every dipole layout is in the [dipole guide](DIPOLE_TWEETERS.md)). The ND25FN-4 panel shows the whole vase top,
+which also replaces the LM top. Drivers and service caps are omitted.
 
 | Tweeter family | Upper parts per speaker | Matching wings | Buried magnets in upper / each full wing |
 |---|---|---|---|
 | [Dayton ND25FW-4](#dayton-nd25fw-4-crescent) | Regular UM + separate crescent | Regular flat or graded | 2 × D5 / 3 × D5 |
 | [Tectonic BMR](#candidate-coaxial-tebm35c10-4-bmr-crescent) | Regular UM + coaxial **or** opposed crescent | Regular flat or graded | Same regular UM/wing contacts; extra pod magnets have no supplied mate |
-| [Dayton ND25FN-4 waveguide](#dayton-nd25fn-4-integrated-waveguide) | Fused UM/waveguide + 2 caps + 2 M3 retainers | ND25FN-4 flat or graded | 4 × D6 / 2 × D6 + 2 × D5 |
+| [Dayton ND25FN-4 waveguide](#dayton-nd25fn-4-vase-top) | Keyed LM bottom (either stand state) + vase top + 2 caps | ND25FN-4 flat or graded | 2 × D5 in vase top + 2 × D5 in keyed LM bottom / 2 × D5 |
+| [GRS PT2522-4 / Mundorf AMT17D2.1 dipole](DIPOLE_TWEETERS.md) | T above: any LM + UM-with-tweeter piece. T below: keyed LM bottom + LM-top-with-tweeter-and-UM piece (PT2522-4 upright: two prints). Upright or rotated | None | None (T below fills the keyed top's pockets) |
 
-**D5 = Ø5 × 2 mm N52; D6 = Ø6 × 3 mm N45.** All selections share the LM's
-four D5 contacts. The two magnet sizes and the two upper wing interfaces
-are not interchangeable.
+**D5 = Ø5 × 2 mm N52**; every magnet in these selections is D5. The
+ND25FN-4 vase top places its two LM-ring magnets at 9/171° instead of the
+regular 64/116°, and its wings have no UM contact, so the regular and
+ND25FN-4 wing interfaces are not interchangeable.
 
-For the current printer, use the [H2C catalog](../to_print/h2c/README.md):
-one LM carrier in either stand state and one continuous wing per side.
-The [three-family guide](TWEETER_OPTIONS.md) covers selection; the
-[ND25FN-4 guide](DAYTON_ND25FN4_WAVEGUIDE.md) covers that integrated upper.
+For the current printer, use the [H2C catalog](../to_print/README.md):
+one LM carrier in either stand state (for ND25FN-4, the keyed LM
+bottom of that state instead) and one continuous wing per side.
+The [tweeter family guide](TWEETER_OPTIONS.md) covers selection; the
+[ND25FN-4 guide](DAYTON_ND25FN4_WAVEGUIDE.md) covers the vase top and the
+[dipole guide](DIPOLE_TWEETERS.md) the PT2522-4 / AMT17D2.1 parts.
 The tables below cover both upper constructions. Detailed regular-carrier
 and earlier P2S split sections are labelled separately.
 
@@ -38,19 +47,21 @@ pending.
 ![Regular and ND25FN-4 Obiwan uppers with matching flat and graded H2C wings](../images/generated/iso/rows/obiwan_wing_row.png)
 
 Left to right: regular upper with flat wings, regular with graded wings,
-ND25FN-4 with flat wings, ND25FN-4 with graded wings. This row uses the
-same no-floor-stand LM and one continuous H2C wing per side. Both upper
-constructions also fit the floor-stand LM. `make h2c_review` regenerates
-these shared-scale comparisons.
+ND25FN-4 vase top with flat wings, ND25FN-4 vase top with graded wings, each
+with one continuous H2C wing per side. The regular panels use the
+no-floor-stand LM; the regular upper also fits the floor-stand LM. The
+ND25FN-4 panels use the floor-stand keyed LM bottom; the vase top also
+fits the no-floor-stand keyed LM bottom, but not the one-piece LM carrier.
+`make h2c_review` regenerates these shared-scale comparisons.
 
 ## Source modules
 
 | File | What |
 |---|---|
-| `candidates/nd25fn4_crescent/v4_model.py` | ND25FN-4 integrated UM/waveguide authority: organic surround, front/rear flares, enclosed cable gallery, common LM joint, four buried D6 upper magnets and M3 retainer interfaces. The filename retains its source revision for provenance. |
-| `candidates/nd25fn4_crescent/build_wings.py` | Matching ND25FN-4 flat/graded wing geometry, with two D6 UM and two D5 LM contacts per full wing. |
-| `src/lx521_baffle/h2c/dayton.py` | Maps the retained body, cap and retainer geometry into the current H2C delivery. |
-| `scripts/export_h2c_geometry.py` / `scripts/build_h2c_release.py` | Export H2C carriers and continuous regular wings, and build the matching continuous ND25FN-4 wings and print projects. |
+| `candidates/nd25fn4_vase/obiwan/build_package.py` / `candidates/nd25fn4_vase/obiwan/source/` | ND25FN-4 vase top, caps and matching flat/graded wings: concept generator scripts and the packaging step that derives the support blocker and duct contract ([sources](../candidates/nd25fn4_vase/README.md)). |
+| `src/lx521_baffle/obiwan/dipole_tweeter.py` / `src/lx521_baffle/obiwan/lm_um_t.py` / `candidates/dipole_tweeter/` | Dipole tweeters (PT2522-4, AMT17D2.1): T above (UM + frame), T below (keyed LM top + frame + UM, one piece or the PT2522-4 upright pair), their searched duct routes, and the packaged shelf meshes and blockers ([guide](DIPOLE_TWEETERS.md)). |
+| `candidates/nd25fn4_crescent/` | Retired V4 fused body with M3 retainers and its wings (`v4_model.py`, `build_wings.py`); archive only. Its shelf files are under `build/h2c/experiments/retired_dayton_nd25fn4_v4/`. |
+| `scripts/export_h2c_geometry.py` / `scripts/build_h2c_release.py` | Export H2C carriers and continuous regular wings, and build the print projects. |
 | `src/lx521_baffle/obiwan/carriers.py` / `src/lx521_baffle/obiwan/split.py` | Extreme Obi-Wan core: structural LM/UM flush-driver collars at R113.0/R51.7 with smooth exposed R113.8/R52.5 side fairings clipped only inside the existing LM--UM and T--UM cusp/service regions, with the 0.40 mm LM--UM inter-carrier gap preserved; rounded LM-to-UM M3 half-laps whose closure-web/base teardrops remain nominal Ø9 while each complete Z-owned cylindrical functional boss is locally Ø9.8, with standalone rear Ø3.4 LM clearance bores and standalone rear-opening blind Ø4.6 x 4.0 UM heat-set receivers; one vertical M2 x 8 center tie at x=-17 (UM owns the Ø4.4 counterbore head seat 0.5 mm inside its driver-recess wall plus the Ø2.4 clearance bore; LM owns the blind Ø3.2 heat-set receiver recessed 1.15 mm below its seam face, with a 0.89 mm floor. The head end is on the UM side because the buried tweeter cover crosses the LM's rear flange void ~4 mm under the lip, leaving no corridor to introduce a screw; the mirrored right-hand position is denied outright by the same route); six pause-and-bury captive magnet stations (two upper LM ring-radial, two lower LM shoulder-normal, and two UM ring-radial), all with cavity datums hidden 0.15 mm beneath a continuous carrier surface and no local pad/boss/flat/cue; buried UM/T route spans; and free rear cable continuations. Floor and no-floor share the exact upper LM shoulder used by the wings. Floor has no shallow material below its y=60 shoulder tangent; no-floor alone retains the shallow four-insert bridge. |
 | `src/lx521_baffle/obiwan/lm_split.py` | Two-print LM option, zero-gap world-Y seam. Two Ø1.60 pins engage 2.40 mm at x=±108.920904, z=14.30. Right socket Ø1.80; left X-relieved to 1.84 × 1.80. Radial clearance 0.10, end clearance 0.25, left X relief 0.02 per side. The native R113.94 ring retains at least 0.38 mm radial and 0.50 mm blind-end wall without exterior lands. Pins provide registration only; qualify their 0.6-mm toolpaths and actual fit. See the current PETG-GF test procedure. |
 | `src/lx521_baffle/obiwan/route.py` | Exact printed-owner segments and physical cable continuations: 0.8 mm minimum walls and 0.85 mm seat roof on the surviving buried UM/T spans; no-floor LM/T/UM entries packed inside the one D20 support opening; LM-owned UM/T envelopes buried 0.05 mm beneath their outside owner limits, leaving a continuous 0.85 mm skin to visible R113.8 with no groove; full-width burial webs and solid roof-to-bore saddles; free UM behind the UM carrier; free T behind the crescent; and the 82.95° crown crossing |
@@ -64,20 +75,21 @@ these shared-scale comparisons.
 
 ## Geometry and interfaces
 
-| Interface / shape | Regular UM with ND25FW-4 or BMR crescent | Integrated ND25FN-4 UM/waveguide |
+| Interface / shape | Regular UM with ND25FW-4 or BMR crescent | ND25FN-4 vase top (either stand state) |
 |---|---|---|
-| LM-to-UM joint | Half-laps at X±32, Y315.770; rear-driven M3 receivers; 0.20 mm axial gap | Same LM joint, driver datum and service tie; lower front meets LM at Z18.30 without occluding LM |
-| UM seat | Ø82 opening / Ø98.6 seat | Same MU10 opening, seat and driver mounting pattern |
-| Exposed upper shape | Slim regular UM collar + separate tweeter carrier | Broad shallow bowl, front wider than rear, inclined outer wall and smooth waist into the two printed waveguides |
-| UM-to-tweeter joint | Two half-laps at X±24, Y421.5 | Fused: no separate UM-to-tweeter joint |
-| Tweeter service | Separate crescent and driver-specific fasteners | Two removable caps and two retainers; six M3 × 8 screws into project-standard Hanglife M3 × 5 × 4 inserts |
-| Tweeter cable | Buried through regular UM, then free behind the separate carrier | Enclosed gallery within the fused surround to the front/rear tweeters |
-| Upper wing contacts | Two buried D5 in UM | Four buried D6 in curved UM shoulders |
+| LM-to-UM joint | Half-laps at X±32, Y315.770; rear-driven M3 receivers; 0.20 mm axial gap | None: LM top and UM are one piece. The vase top contains the whole released keyed LM top below Y278 (rear taper added behind the ring), so it keys onto the released keyed LM bottom of either stand state |
+| UM seat | Ø82 opening / Ø98.6 seat | MU10 at (−47.32, 361.74); 4 × Hanglife M3 inserts in printed pilots, as in the released UMs |
+| Exposed upper shape | Slim regular UM collar + separate tweeter carrier | One piece with the MU10 seat and two printed waveguides: T at (47.32, 354.81), t at (22.5, 423.0); 227.9 × 296.5 × 41.3 mm |
+| UM-to-tweeter joint | Two half-laps at X±24, Y421.5 | None: one piece |
+| Tweeter service | Separate crescent and driver-specific fasteners | Tweeters seated on a 4-fold key ring with soldered leads; two screwless twist-lock caps; no screws |
+| Tweeter cable | Buried through regular UM, then free behind the separate carrier | Buried ducts: T lead Ø6 mm, T → t link Ø6 mm, MU10 lead Ø8.2 mm |
+| Upper wing contacts | Two buried D5 in UM | None at the UM; the two LM-ring D5 move to 9/171° |
 
 The [H2C interface report](../build/h2c/obiwan_interface_validation.json)
-checks both upper constructions against both LM stand states. The
-[ND25FN-4 guide](DAYTON_ND25FN4_WAVEGUIDE.md#geometry-and-verification)
-records the waveguide envelope, routing and detailed geometry checks.
+checks the regular UM against the LM carrier and the ND25FN-4 vase top
+against the keyed LM bottom. The
+[ND25FN-4 guide](DAYTON_ND25FN4_WAVEGUIDE.md#verification)
+records the vase top envelope, routing and geometry checks.
 
 ### Regular collar geometry
 
@@ -375,18 +387,22 @@ filament choice, print settings, fastener torques, and insert installation.
 
 ### Current H2C parts
 
-Choose one row below and one LM stand state. The [H2C file catalog](../to_print/h2c/README.md)
+Choose one row below and one LM stand state. The [H2C file catalog](../to_print/README.md)
 provides the corresponding editable projects, audited slices and STL links.
 
 | Upper selection | Main upper prints | Service prints | Optional wings | Material lanes |
 |---|---|---|---|---|
 | ND25FW-4 | Regular UM + ND25FW-4 crescent | None | 1 regular flat **or** graded wing per side | PETG-GF + PLA |
 | TEBM35C10-4 BMR | Regular UM + coaxial **or** opposed BMR crescent | Driver hardware per selected mount | Same regular wings | PETG-GF + PLA |
-| ND25FN-4 waveguide | [One fused UM/body](../to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_body.stl) | 2 × [cap](../to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_cap.stl) + 2 × [M3 retainer](../to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_retainer.stl), together on one accessories plate | 1 matching ND25FN-4 flat **or** graded wing per side | PETG-GF + PLA **or** PETG Translucent + PLA Translucent |
+| ND25FN-4 vase top (either stand state) | Keyed LM bottom ([floor stand](../to_print/obiwan/lm/obiwan_lm_keyed_bottom_floor_stand.stl) or [no-floor stand](../to_print/obiwan/lm/obiwan_lm_keyed_bottom_no_floor_stand.stl)) + vase top ([tweeters right](../to_print/obiwan/upper/obiwan_nd25fn4_tweeters_right_top.stl) or [tweeters left](../to_print/obiwan/upper/obiwan_nd25fn4_tweeters_left_top.stl)), in place of the LM carrier, UM and crescent | Front- and rear-tweeter caps of the same hand, one cap per job | 1 matching ND25FN-4 flat **or** graded wing per side, same hand | PETG-GF + PLA **or** PETG Translucent + PLA Translucent |
 
-LM and UM structure use 100% infill, including the structural region of the
-fused body. Its tweeter region and accessories use 15% gyroid; all wings use
-10% gyroid. The prepared projects retain these modifiers, support policies
+The ND25FW-4 and BMR rows take either LM: the one-piece LM carrier for the stand state, or the keyed LM halves
+(`obiwan_lm_keyed_bottom_{floor_stand,no_floor_stand}` + `obiwan_lm_keyed_top`, the same top for both stand states).
+The ND25FN-4 vase top needs the keyed bottom. All are in [`to_print/obiwan/`](../to_print/obiwan/README.md).
+
+LM and UM structure use 100% infill, including the ND25FN-4 vase top and
+keyed LM bottom (100% zig-zag); the vase top's T and t waveguides use 15% gyroid. ND25FN-4 caps use 15% gyroid with supports;
+all wings use 10% gyroid. The prepared projects retain these modifiers, support policies
 and slice-derived magnet pauses. STL import alone does not.
 
 ### Earlier regular-carrier source exports and P2S splits
@@ -396,7 +412,7 @@ and slice-derived magnet pauses. STL import alone does not.
 | `obiwan_core_1_of_2_lm_carrier.stl` | Structural Ø226 (R113.0) collar with a smooth exposed R113.8 side fairing, clipped only inside the LM--UM cusp to retain the 0.40 mm gap; six ordinary blind LM insert bores at 0/60/120/180/240/300°; two complete rear LM-to-UM ears with locally Ø9.8 cylindrical functional bosses and standalone Ø3.4 rear-driven screw-clearance passages at x=±32/y=315.770; two captive upper ring-magnet stations plus two captive lower shoulder stations, all hidden 0.15 mm beneath continuous surfaces. The right lower visible datum is `(x,y)=(45.285011,89.190370)` on shoulder parameter 0.5 with outward normal `(0.706451,-0.707762)`; the left is its exact mirror. All four LM magnets share source Z=15.10 with the UM pair. The LM also owns the buried UM/T route segments and continuous Ø9/R14 LM handoff. Floor state owns the full-height bent W64 stand and only the upper shallow shoulder; it has no lower box or magnet rails. No-floor owns the shallow four-insert bridge. | canonical large-format release form of the mandatory LM carrier; use it on a verified larger bed **or** both optional keyed halves, never both forms. |
 | `obiwan_optional_lm_keyed_1_of_2_bottom.stl` | front-face-down; in-plane bed rotation only; verified within 220 mm in both states | optional replacement print form for the canonical LM; in floor state it inherits the **entire** stem/foot/NL8 panel but remains the bed-checked alternative to the oversized monolith; requires the matching top half |
 | `obiwan_optional_lm_keyed_2_of_2_top.stl` | front-face-down; in-plane bed rotation only; inherits both complete LM-to-UM ears, their local Ø9.8 cylindrical functional bosses, and their standalone Ø3.4 rear clearance passages | optional replacement print form for the canonical LM; requires the matching bottom half |
-| `obiwan_core_2_of_2_um_carrier.stl` | Structural Ø103.4 (R51.7) collar with a smooth exposed R52.5 side fairing, clipped only inside the LM--UM and T--UM cusp/service regions while retaining the 0.40 mm LM--UM gap; two complete front LM-to-UM ears with standalone rear-opening blind Ø4.6 x 4.0 M3 heat-set receivers and 1.9 mm acoustic-front floors; two complete rear UM-to-tweeter ears with standalone Ø3.4 screw-clearance passages; locally Ø9.8 cylindrical functional bosses at both interfaces; two captive ring-magnet stations hidden 0.15 mm beneath the fairing; and the buried T continuation with fully solid-webbed 328°/58° insert bypasses. The UM cable is free behind this carrier and has no printed rear duct. | regular UM for ND25FW-4/BMR; ND25FN-4 uses its fused body instead. Install both LM-to-UM inserts before assembly. |
+| `obiwan_core_2_of_2_um_carrier.stl` | Structural Ø103.4 (R51.7) collar with a smooth exposed R52.5 side fairing, clipped only inside the LM--UM and T--UM cusp/service regions while retaining the 0.40 mm LM--UM gap; two complete front LM-to-UM ears with standalone rear-opening blind Ø4.6 x 4.0 M3 heat-set receivers and 1.9 mm acoustic-front floors; two complete rear UM-to-tweeter ears with standalone Ø3.4 screw-clearance passages; locally Ø9.8 cylindrical functional bosses at both interfaces; two captive ring-magnet stations hidden 0.15 mm beneath the fairing; and the buried T continuation with fully solid-webbed 328°/58° insert bypasses. The UM cable is free behind this carrier and has no printed rear duct. | regular UM for ND25FW-4/BMR; the ND25FN-4 vase top replaces it. Install both LM-to-UM inserts before assembly. |
 | `obiwan_addon_tweeter_crescent.stl` | cropped V1 crescent plus two complete front UM-to-tweeter ears with locally Ø9.8 functional bosses, standalone rear-opening blind Ø4.6 x 4.0 M3 heat-set receivers, complete 360° walls, and 1.9 mm acoustic-front floors; no printed T-cable arc or conduit | optional face-to-face tweeter carrier; install both inserts in this individual print before assembly, then attach at x=±24, y=421.5 with the T cable free behind it |
 
 Stable routing/fit review files in each state folder are
@@ -421,12 +437,12 @@ one full wing per side; the earlier P2S form splits each side into two.
 | Wing interface | Compatible upper | Magnets per full wing | Magnets in a complete winged speaker |
 |---|---|---|---|
 | Regular flat / graded | Regular UM + ND25FW-4 or BMR crescent | 3 × Ø5 × 2 mm N52 | 12 × D5 across LM, UM and wings; BMR pod magnets are additional, with no supplied mate |
-| ND25FN-4 flat / graded | Fused ND25FN-4 UM/waveguide | 2 × Ø6 × 3 mm N45 at UM + 2 × Ø5 × 2 mm N52 at LM | 8 × D6 + 8 × D5 across fused body, LM and wings |
+| ND25FN-4 flat / graded | ND25FN-4 vase top on the keyed LM bottom (either stand state) | 2 × Ø5 × 2 mm N52 (LM lower + LM upper at 9/171°); no UM contact | 8 × D5 across vase top, keyed LM bottom and wings |
 
 Both use 10% gyroid in the current print projects. The matching
-[ND25FN-4 wings](DAYTON_ND25FN4_WAVEGUIDE.md#compatibility-and-quantities)
-follow its curved shoulders and keep their magnets buried; regular wings
-cannot substitute for them.
+[ND25FN-4 wings](DAYTON_ND25FN4_WAVEGUIDE.md#obiwan-nd25fn-4-vase-top)
+are one continuous piece per side and keep their magnets buried. Regular
+wings do not fit the vase top, and ND25FN-4 wings do not fit the regular upper.
 
 ### Regular wing geometry and earlier split details
 
@@ -462,10 +478,10 @@ titles regenerate with the next `make obiwan_wings`.
 
 ## Combined plates
 
-The current ND25FN-4 accessories plate contains **two caps and two M3
-retainers**, in either material lane. Its body is a separate job. Choose
-these instead of the regular UM/crescent jobs. All current choices appear
-in the [H2C file catalog](../to_print/h2c/README.md).
+There is no ND25FN-4 combined plate. The vase top, the keyed LM bottom,
+each cap and each wing are separate jobs, in either material lane. Choose
+these instead of the LM carrier and regular UM/crescent jobs. All current choices appear
+in the [H2C file catalog](../to_print/README.md).
 
 ### Earlier P2S regular-Obiwan combo plates
 
@@ -475,7 +491,7 @@ combo contains exactly the same meshes as the individual files it replaces, in
 the released front-face-down orientation, and promotion requires exact
 project/STL equivalence against them.
 
-There are four, all under `to_print/obiwan/`:
+There are four, all under `to_print/archive/p2s/obiwan/`:
 
 | Combo | Contains |
 |---|---|
@@ -490,34 +506,35 @@ every piece twice. And never mix stand states: the `01` bottom is
 state-specific, so a floor-stand plate and any no-floor part do not belong in
 the same speaker.
 
-Print settings, magnet pauses and the refresh procedure are in
-[`to_print/README.md`](../to_print/README.md).
+Print settings, magnet pauses and the refresh procedure are in the
+[archived P2S notes](../to_print/archive/p2s/ARCHIVED_P2S_README.md).
 
 ## Tweeter options
 
-Obiwan has **three tweeter families**, with two BMR layouts inside the BMR
-family. Choose one of these upper arrangements per speaker:
+Obiwan has **five tweeter families**, with two BMR layouts inside the BMR
+family and four layouts for each dipole. Choose one of these upper arrangements per speaker:
 
 | Tweeter family | Parts | Wing compatibility |
 |---|---|---|
 | Dayton ND25FW-4 face-to-face | Regular UM + separate crescent; driver faceplates clamp the crescent | Regular flat or graded wings |
 | Tectonic TEBM35C10-4 BMR | Regular UM + coaxial **or** opposed BMR crescent | Regular flat or graded wings |
-| Dayton ND25FN-4 waveguide | One fused UM/waveguide body + two caps + two M3 retainers | Matching ND25FN-4 flat or graded wings |
+| Dayton ND25FN-4 waveguide (either stand state) | Keyed LM bottom + vase top + two caps | Matching ND25FN-4 flat or graded wings |
+| GRS PT2522-4 / Mundorf AMT17D2.1 dipole | T above: any LM + UM-with-tweeter piece. T below: keyed LM bottom + LM-top-with-tweeter-and-UM piece (PT2522-4 upright: two prints). [Guide](DIPOLE_TWEETERS.md) | None |
 
 The ND25FW-4 and both BMR crescents share the half-lap mount at
 `x=±24, y=421.5` on the regular UM: blind M3 receivers, 360° walls,
 1.9 mm front floors and a 0.20 mm axial gap. Switching among those three
 carrier layouts retains the UM and wings.
 
-The **ND25FN-4 waveguide replaces that entire UM/crescent assembly**.
-It uses faceplate-free Dayton elements seated in printed front/rear flares,
-an organic UM surround, buried Ø6 × 3 mm shoulder magnets and a concealed
-cable gallery. Its matching H2C wings retain the regular LM contacts.
-The same body fits both stand states; the actual LM front remains flush
-and uncovered. See the [assembly, print and hardware guide](DAYTON_ND25FN4_WAVEGUIDE.md).
+The **ND25FN-4 vase top replaces the LM top and that entire UM/crescent
+assembly**. It uses faceplate-free Dayton elements seated in printed
+front/rear waveguides, buried ducts and screwless twist-lock caps. It fits
+the keyed LM bottom of either stand state, not the one-piece LM carrier, and
+takes its own matching wings. See the
+[assembly, print and hardware guide](DAYTON_ND25FN4_WAVEGUIDE.md).
 
-All three families appear in the [H2C print catalog](../to_print/h2c/README.md).
-BMR and ND25FN-4 retain candidate qualification status. Digital checks do
+All five families appear in the [H2C print catalog](../to_print/README.md).
+BMR, ND25FN-4 and the dipoles retain candidate qualification status. Digital checks do
 not qualify driver fit, retention or acoustics. The extra BMR pod side magnets have no supplied mating perimeter; regular
 Obiwan wings retain their LM/UM contacts. The regular crescent is the
 established geometry; the two BMR forms below are its alternate mounts.
@@ -531,7 +548,7 @@ same side magnets and faces but replaces the unused circular field with a
 Changing topology never moves either acoustic axis. BMR-slim requires actual
 driver fit, insert, cable, magnet-pull and load qualification before release.
 
-The regular UM can also be fitted without a crescent. The ND25FN-4 waveguide is integral to its UM body.
+The regular UM can also be fitted without a crescent. The ND25FN-4 waveguides are integral to the vase top.
 
 The three separate crescent layouts are also on the earlier P2S shelf — `obiwan_04_T_tweeter_crescent_1_of_1`,
 `obiwan_17_BMR_crescent_coaxial_1_of_1` and
@@ -554,38 +571,41 @@ The regular crescent carries two ND25FW-4 drivers face to face. Their
 factory waveguide faceplates clamp its seat with four M4 through-fasteners;
 the crescent joins the regular UM through its separate M3 half-laps and
 documented M2 ties. The regular flat or graded wings fit either stand state.
-Use the regular UM and crescent jobs in the [H2C catalog](../to_print/h2c/README.md).
+Use the regular UM and crescent jobs in the [H2C catalog](../to_print/README.md).
 
-### Dayton ND25FN-4 integrated waveguide
+### Dayton ND25FN-4 vase top
 
-![Dayton ND25FN-4 fused UM and front/rear printed waveguides at the same comparison scale](../images/generated/iso/tweeter_nd25fn4_waveguide.png)
+![Dayton ND25FN-4 vase top with front/rear printed waveguides at the same comparison scale](../images/generated/iso/tweeter_nd25fn4_waveguide.png)
 
-One curved print contains the MU10 seat and two opposing tweeter waveguides.
-The lower ND25FN-4 faces front and the upper faces rear. The complete body
-is approximately **134 mm wide × 246.8 mm high × 38.2 mm deep**; tweeter
-axes are 62 mm apart, with the lower tweeter about 84.57 mm above MU10.
-The front is wider than the rear, the outer edge slopes, and the UM waist
-blends continuously into the printed flares.
+One print replaces the LM top, the regular UM and the crescent. It contains
+the MU10 seat and two opposing tweeter waveguides: the front tweeter (T)
+faces the listener and the rear tweeter (t), higher up, fires backwards.
+MU10 sits at (−47.32, 361.74), T at (47.32, 354.81) and t at (22.5, 423.0).
+The envelope is **227.9 × 296.5 × 41.3 mm**.
 
-The same body fits both LM stand states. It preserves the MU10 mounting
-seat and common LM half-laps, with the lower front flush at Z18.30 mm and
-the LM front uncovered. A covered cable handoff feeds the gallery buried
-inside the surround. There is no separate UM-to-tweeter seam or free cable
-span between those printed parts.
+It fits **either stand state**. The vase top contains the whole released keyed LM
+top below Y278 (its rear tapers smoothly down the ring to Y180), and the released
+keyed LM top is the same part in both stand states (within 0.032 mm), so it keys onto
+the released keyed LM bottom of either state (`obiwan_lm_keyed_bottom_floor_stand`
+or `obiwan_lm_keyed_bottom_no_floor_stand`, shared by both hands) with the released LM key,
+seam, L22 seat and inserts. It does not fit the one-piece LM carrier. Buried
+ducts carry the T lead (Ø6 mm), the T → t link (Ø6 mm) and the MU10 lead
+(Ø8.2 mm). The MU10 lead exits the rear at the MU10 rim, about 14 mm from the terminal strip.
 
-Print one body and one accessories plate containing **two caps and two M3
-retainers**. The retainers use six M3 × 8 screws and six of the body's twelve
-Hanglife M3 × 5 × 4 insert sites. Four buried Ø6 × 3 N45 magnets at the UM
-shoulders mate to the matching wings; their LM contacts remain Ø5 × 2 N52.
-The two full H2C wings are optional and available in flat or graded form.
+Each faceplate-free ND25FN-4 seats on a 4-fold key ring that takes its four
+front lugs; the leads are soldered and there are no tweeter screws. A
+screwless twist-lock cap closes each tweeter from behind; its printed R10
+boss and a 1.5 mm pad compressed to 1 mm preload the motor. Print one keyed
+LM bottom, one vase top and two caps per speaker. All magnets are buried
+Ø5 × 2 N52: two in the vase top on the LM ring at 9/171°, two in the keyed
+LM bottom, and two in each optional flat or graded wing.
 
-The body keeps **100% structural UM infill and 15% gyroid in the tweeter
-region**. Accessories use 15% gyroid and wings 10%. Separate 0.6 HF projects
-are provided for [PETG-GF + PLA](../to_print/h2c/dayton_nd25fn4/petg_gf_pla/)
-and [PETG Translucent + PLA Translucent](../to_print/h2c/dayton_nd25fn4/petg_translucent_pla/),
-including cap-ceiling interfaces, insert support exclusions and measured
+The vase top and keyed LM bottom use **100% zig-zag infill**, except the vase top's T and t waveguides at **15% gyroid**; caps use 15%
+gyroid with supports and print skin-up; wings use 10% gyroid with supports.
+The PETG-GF + PLA projects in [`to_print/obiwan/`](../to_print/obiwan/README.md)
+include duct support blockers and measured
 magnet pauses. See the [ND25FN-4 guide](DAYTON_ND25FN4_WAVEGUIDE.md) for
-cap seals, insert placement, full assembly and physical qualification.
+caps, hardware and verification status.
 
 ### Candidate coaxial TEBM35C10-4 BMR crescent
 
@@ -915,7 +935,7 @@ candidate delivery is allowed to have. Both are also carried on the P2S shelf
 as slots `17` and `18`, because a pod nobody can conveniently print is a pod
 nobody will physically qualify; the shelf hard-links that same isolated
 delivery, labels both entries CANDIDATE, and `in_to_print` in each
-`facts.json` is checked against `to_print/catalog.json` in both directions so
+`facts.json` is checked against `to_print/archive/p2s/catalog.json` in both directions so
 the flag cannot drift away from where the file actually is. The two drivers
 alone weigh 102.6 g. Add the selected artifact's regenerated printed mass
 from `facts.json` before joint-load qualification; legacy carrier-mass
@@ -971,10 +991,10 @@ on the mate face.
 |---|---|---|
 | Regular UM + ND25FW-4 | Common covered T/UM handoff | T buried through UM, then free behind crescent; UM lead free behind its carrier |
 | Regular UM + BMR | Same regular-UM handoff | Regular UM route feeds the selected BMR mount's documented cable entry |
-| Integrated ND25FN-4 | Same LM interface, with covered entry into fused body | T gallery concealed within the curved UM/waveguide; branches reach both tweeters; UM lead retains its separate service path |
+| ND25FN-4 vase top (either stand state) | Released keyed LM route below Y278 | Buried ducts: T lead Ø6 mm, T → t link Ø6 mm, MU10 lead Ø8.2 mm |
 
-The ND25FN-4 [routing evidence](../candidates/nd25fn4_crescent/README.md#preserved-interfaces-and-routing)
-and [assembly guide](DAYTON_ND25FN4_WAVEGUIDE.md) govern its enclosed upper.
+The ND25FN-4 [sources](../candidates/nd25fn4_vase/README.md)
+and [assembly guide](DAYTON_ND25FN4_WAVEGUIDE.md) govern its buried upper routes.
 The detailed route description below applies to the **regular UM and
 ND25FW-4 crescent**; BMR's pod entry is described with each BMR arrangement.
 
@@ -1062,10 +1082,11 @@ are bound into every Obi-Wan candidate manifest.
 |---|---|
 | ND25FW-4 | Fit regular UM and its LM joint, then the separate crescent, driver pair and regular wings as described below |
 | TEBM35C10-4 BMR | Fit regular UM; substitute the selected BMR crescent and its M2 driver hardware; retain regular wings |
-| ND25FN-4 waveguide | Fit inserts and cable gallery in the fused upper, attach its common LM joint, install the two drivers with M3 retainers and caps, then fit matching ND25FN-4 wings; follow the [complete sequence](DAYTON_ND25FN4_WAVEGUIDE.md#assembly-order) |
+| ND25FN-4 vase top (either stand state) | Uses the keyed LM bottom in place of the LM carrier. Fit the MU10 inserts, join the vase top to the keyed LM bottom like the released keyed LM halves, seat each tweeter on its key ring, solder the leads, fit the pad and twist-lock cap, then fit matching ND25FN-4 wings; see [mounting and caps](DAYTON_ND25FN4_WAVEGUIDE.md#tweeter-mounting-and-caps) and [hardware](DAYTON_ND25FN4_WAVEGUIDE.md#magnets-and-hardware) |
 
 H2C uses one LM and continuous wings. The keyed LM seam and wing dovetail
-steps below apply only to the **earlier P2S split forms**. The separate
+steps below apply only to the **earlier P2S split forms**, except that the
+ND25FN-4 vase top uses the released keyed LM seam. The separate
 UM-to-crescent attachment steps apply to regular ND25FW-4/BMR uppers;
 ND25FN-4 has no joint there.
 

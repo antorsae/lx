@@ -211,26 +211,28 @@ TS_TWEETER_FLUSH_R = UM_CORE_R + ROUTE_SPLIT_GAP
 TRENCH_CENTER_Z = LM_SEAT_Z - CUTTER_R - TUNNEL_ROOF_SKIN
 TS_TRENCH_CENTER_Z = LM_SEAT_Z - TS_CUTTER_R - TUNNEL_ROOF_SKIN
 TS_UM_CENTER_Z = UM_SEAT_Z - TS_CUTTER_R - TUNNEL_ROOF_SKIN
-# Preserve the already-qualified floor-state rise.  Only the no-floor 01a
-# route needs the longer, gentler rise after its lowered LM-recess crossing.
-TS_UM_Z_TRANSITION_LENGTH_MM = 24.0 if STAND_FOOT else 44.0
-# The ruled production lumen is an octagon circumscribed around the requested
-# D8.2 circle.  Only no-floor 01a exposes the LM flange recess directly above
-# this route, so lower that state's nominal UM lane by the exact corner delta;
-# floor Obi-Wan retains its independently qualified circular-radius datum.
-NO_FLOOR_RECESS_SKIN_BOOLEAN_MARGIN_MM = 0.05
+# Both stand states use the longer, gentler rise after the lowered LM-recess
+# crossing (formerly no-floor only), so the keyed LM top above the y=172.48
+# seam is identical in both states and the parts above it stay interchangeable.
+TS_UM_Z_TRANSITION_LENGTH_MM = 44.0
+# The ruled production lumen is a polygon circumscribed around the requested
+# D8.2 / D6 circle, so its corners stand proud of the circle by the corner
+# delta.  Both stand states lower the nominal ring lanes by that delta (plus a
+# boolean margin) so the LM-recess roof skin is measured to the corners.  This
+# was no-floor only; the floor state kept a circular-radius datum 0.11-0.13 mm
+# higher, which made the two keyed LM tops differ along the ring ducts.
+RECESS_SKIN_BOOLEAN_MARGIN_MM = 0.05
+NO_FLOOR_RECESS_SKIN_BOOLEAN_MARGIN_MM = RECESS_SKIN_BOOLEAN_MARGIN_MM
 MAIN_TRENCH_CENTER_Z = (
-    TRENCH_CENTER_Z if STAND_FOOT else
     LM_SEAT_Z
     - CUTTER_R / math.cos(math.pi / TUBE_SECTION_SIDES)
     - TUNNEL_ROOF_SKIN
-    - NO_FLOOR_RECESS_SKIN_BOOLEAN_MARGIN_MM)
+    - RECESS_SKIN_BOOLEAN_MARGIN_MM)
 T_LM_TRENCH_CENTER_Z = (
-    TS_TRENCH_CENTER_Z if STAND_FOOT else
     LM_SEAT_Z
     - TS_CUTTER_R / math.cos(math.pi / TUBE_SECTION_SIDES)
     - TUNNEL_ROOF_SKIN
-    - NO_FLOOR_RECESS_SKIN_BOOLEAN_MARGIN_MM)
+    - RECESS_SKIN_BOOLEAN_MARGIN_MM)
 # The free T suffix must pass behind—not through—the acoustic crescent. Its
 # physical D5.2 envelope therefore tops out 0.4 mm behind the core rear face.
 TS_FREE_CABLE_REAR_CLEARANCE = 0.40
@@ -628,9 +630,25 @@ def _sampled_centerline_surface_wall(
 
 
 def _resample(plan, spacing_mm):
+    """Stations every ``spacing_mm`` measured back from the plan's END.
+
+    Every route ends at a state-independent point (UM mouth / tweeter
+    handoff) and shares its ring and upper plan between the stand states,
+    so anchoring the grid there samples the shared part at exactly the same
+    stations in both states: the floor and no-floor keyed LM tops come out
+    identical instead of differing by cutter facet phase.  Only the first,
+    state-specific interval absorbs the remainder.
+    """
     source_s = _plan_lengths(plan)
-    count = max(2, int(math.ceil(source_s[-1] / spacing_mm)))
-    stations = np.linspace(0.0, source_s[-1], count + 1)
+    length = float(source_s[-1])
+    if length < 3.0 * spacing_mm:
+        stations = np.linspace(0.0, length, max(2, int(math.ceil(length / spacing_mm))) + 1)
+    else:
+        back = np.arange(0.0, length, spacing_mm)
+        stations = length - back[::-1]
+        if stations[0] < 0.3 * spacing_mm:
+            stations = stations[1:]
+        stations = np.r_[0.0, stations]
     xy = np.column_stack((
         np.interp(stations, source_s, plan[:, 0]),
         np.interp(stations, source_s, plan[:, 1]),

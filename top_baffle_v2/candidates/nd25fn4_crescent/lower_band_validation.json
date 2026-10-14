@@ -1,9 +1,9 @@
 {
   "status": "passed",
-  "body_sha256": "e3e467a6614f4a81f71107a5aa362a0d65537e1ab2da674939f2fcbfd18347f6",
+  "body_sha256": "ab79e944697cecb1cd92416c193d1cb01b1f02a879a564905a2ef4838b7fad99",
   "model_sha256": "d79c5db514c5318a27c44c6f34d6fbbeeb96715079967a86064608ad92b88d28",
   "source_sha256": "1b0521b4b81fe138c3f10ecd0e8523cdf2898841d19ff79d07cf2ec26b7be9ca",
-  "source_build_manifest_sha256": "5699a75614d2ac6db87196869e035df84d58db56cba7495c6eb31108378e442f",
+  "source_build_manifest_sha256": "000fd59f058e4c4d44b62aefb8c48849f4a0f12b18ccdb9a983f99c15b636e27",
   "surface_witnesses": 4872,
   "profiles": {
     "across_Y_317": {
@@ -33,18 +33,18 @@
     },
     "across_Y_326": {
       "surface_witnesses": 330,
-      "maximum_height_error_mm": 0.014427461337069403,
+      "maximum_height_error_mm": 0.014427461337066738,
       "maximum_tangent_change_per_0_4mm_deg": 5.313513877968519
     },
     "across_Y_327": {
       "surface_witnesses": 309,
-      "maximum_height_error_mm": 0.009979587392227707,
+      "maximum_height_error_mm": 0.009979587392247247,
       "maximum_tangent_change_per_0_4mm_deg": 2.166515214615591
     },
     "along_X_-32": {
       "surface_witnesses": 130,
       "maximum_height_error_mm": 0.011044215106178257,
-      "maximum_tangent_change_per_0_4mm_deg": 15.899522979975762
+      "maximum_tangent_change_per_0_4mm_deg": 15.89952297997577
     },
     "along_X_-29": {
       "surface_witnesses": 140,

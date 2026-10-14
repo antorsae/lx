@@ -1,8 +1,8 @@
 {
   "status": "pass",
   "qualification": "digital; physical H2C qualification pending",
-  "project_sha256": "5f861513ae161b60dc60820c0351a26974ac80e2ff9d52b67a66c37ae803c1b3",
-  "sliced_project_sha256": "37d27cf5021b9707829003a96fc2a03e1bde8b6ba80c3c0924eec81e45cff183",
+  "project_sha256": "7c5a2af4f4273d5cb53487fbfa1814164f07b270a78c1f2a2d6865a694a47065",
+  "sliced_project_sha256": "8e2f2842e2491d5b8007c97b92234b69114b4afab4fcb932c868bc2fbb8a8332",
   "gcode_sha256": "9b5ebacecd907ca14c68322e86cbd452992dad1652eebbe32e6eb91a852da4d5",
   "audit_version": 4,
   "inputs": {
@@ -26,7 +26,7 @@
     "src/lx521_baffle/h2c/printing.py": "3e788d46b2c5bb99ad366c48ff7c1255ea503bf7c0f731a52f2b6eb275bec402",
     "src/lx521_baffle/tweeter_options.py": "4e13db23df7b60b9278d0e15ec3810b033376a6ee72cc33dfa8fe40518703f5a",
     "to_print/h2c/STL/h2c_dayton_nd25fn4_wing_flat_right.stl": "ae71a3c6d1d81551d013328cd06f36512cce9557f274140ed826384b4e4eb5ed",
-    "to_print/h2c/dayton_nd25fn4/petg_translucent_pla/h2c_dayton_nd25fn4_wing_flat_right.3mf": "5f861513ae161b60dc60820c0351a26974ac80e2ff9d52b67a66c37ae803c1b3"
+    "to_print/h2c/dayton_nd25fn4/petg_translucent_pla/h2c_dayton_nd25fn4_wing_flat_right.3mf": "7c5a2af4f4273d5cb53487fbfa1814164f07b270a78c1f2a2d6865a694a47065"
   },
   "deposition": {
     "status": "pass",

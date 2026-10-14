@@ -1,23 +1,28 @@
 # Variant catalog
 
-The project has three baffle designs and **three tweeter families**.
-Current printer splits and files are in the [H2C catalog](../to_print/h2c/README.md).
-Use the [tweeter selection guide](TWEETER_OPTIONS.md) to compare ND25FW-4,
-TEBM35C10-4 BMR and ND25FN-4 printed waveguide.
+> **H2C only:** use the [H2C file catalog](../to_print/README.md) and [current build guide](BUILD_GUIDE.md). P2S split/preset sections retained below are deprecated design history, not current print selections.
 
-![Three tweeter families and five carrier arrangements, all at one scale](../images/generated/iso/rows/tweeter_row.png)
+The project has three baffle designs and **five tweeter families**.
+Current printer splits and files are in the [H2C catalog](../to_print/README.md).
+Use the [tweeter selection guide](TWEETER_OPTIONS.md) to compare ND25FW-4,
+TEBM35C10-4 BMR, ND25FN-4 printed waveguide and the PT2522-4 / AMT17D2.1
+dipoles ([dipole guide](DIPOLE_TWEETERS.md)).
+
+![Five tweeter families and ten carrier arrangements, all at one scale](../images/generated/iso/rows/tweeter_row.png)
 
 | Tweeter family | Stock / Slim upper | Obiwan upper | Optional perimeter |
 |---|---|---|---|
 | Dayton ND25FW-4 | Standard vase with integral crescent | Regular UM + separate crescent | Standard Stock/Slim shoulders or B1 wings; regular Obiwan flat/graded wings |
 | Tectonic TEBM35C10-4 BMR | Opposed-BMR vase | Regular UM + coaxial or opposed BMR crescent | Regular Obiwan wings; no supplied matching Stock/Slim BMR perimeter |
-| Dayton ND25FN-4 waveguide | No compatible upper supplied | Fused curved UM/waveguide + two caps + two M3 retainers | Matching ND25FN-4 flat/graded wings |
+| Dayton ND25FN-4 waveguide | Stock: ND25FN-4 vase; Slim: none | Vase top (LM top + UM + waveguides) on the keyed LM bottom + two twist-lock caps | Obiwan: matching ND25FN-4 flat/graded wings; Stock: none |
+| GRS PT2522-4 / Mundorf AMT17D2.1 dipole | Not provided | T above: UM + tweeter piece; T below: keyed LM top + tweeter + UM (PT2522 upright: two prints) | None |
 
 ![Complete Obiwan upper variants sharing the same LM datum](../images/generated/iso/rows/obiwan_upper_row.png)
 
 The [ND25FN-4 waveguide](DAYTON_ND25FN4_WAVEGUIDE.md) is an integrated
-Obiwan UM/tweeter body with its own matching wings. It shares the Obiwan LM
-interface in both stand states, and has no Stock/Slim mount. BMR's coaxial,
+Obiwan vase top (on the keyed LM bottom of either stand state) with its own
+matching wings, and a Stock vase; it has no Slim mount. The
+[dipoles](DIPOLE_TWEETERS.md) are Obiwan only. BMR's coaxial,
 opposed and CAD-only slim topologies belong to the same BMR driver family.
 
 The source geometry and earlier P2S variants below belong to two distinct
@@ -57,14 +62,17 @@ mounting systems; their historical split counts are not the current H2C counts:
   remain selectable add-ons. The canonical floor LM is a large-format
   monolith; an optional two-print keyed split may replace it, but is never
   added to it, and its bottom half inherits the complete stand.
-- **Obiwan ND25FN-4 waveguide** shares that LM and its stand choices,
-  replacing the regular UM and crescent with one organic body. Its UM
-  bowl, sloped rim and two front/rear waveguides form a continuous surface.
-  Four buried D6 magnets mate to matching wings; their LM contacts remain
-  D5. The cable gallery is enclosed within the upper. Two caps and two
-  M3 retainers remain separate service prints. H2C offers both PETG-GF/PLA
-  and PETG Translucent/PLA Translucent lanes; see the
-  [body, hardware and print guide](DAYTON_ND25FN4_WAVEGUIDE.md).
+- **Obiwan ND25FN-4 waveguide** uses the keyed LM bottom of either stand
+  state; its vase top replaces the keyed LM top, the regular UM and the
+  crescent with one piece carrying the MU10 seat and two front/rear
+  waveguides. Its D5 wing magnets sit at 9/171° and mate the matching
+  ND25FN-4 wings; the cable ducts are buried. Each tweeter is closed by a
+  screwless twist-lock cap. See the
+  [vase top, hardware and print guide](DAYTON_ND25FN4_WAVEGUIDE.md).
+- **Obiwan dipole tweeters** (GRS PT2522-4, Mundorf AMT17D2.1) replace the
+  UM and crescent (T above, on any LM) or the keyed LM top, UM and crescent
+  (T below, on the keyed LM bottom), upright or rotated, without wings. See
+  the [dipole tweeter guide](DIPOLE_TWEETERS.md).
 
 Both systems are generated in `build/floor_stand/` and `build/no_floor_stand/`.
 Their review sheets are `baffle_cable_routing_proud.png` (normal proud
@@ -92,8 +100,8 @@ integrated waveguide is included as its own Obiwan upper choice:
 
 | Current Obiwan construction | LM / UM relationship | H2C upper STL |
 |---|---|---|
-| Regular UM + ND25FW-4 or BMR crescent | Separate UM and tweeter carrier on common LM half-laps | [Regular UM](../to_print/h2c/STL/h2c_obiwan_core_2_of_2_um_carrier.stl), plus the selected crescent in the [catalog](../to_print/h2c/README.md) |
-| ND25FN-4 integrated UM/waveguide | Same LM half-laps, fused UM/tweeter surround, two caps and two M3 retainers | [ND25FN-4 body](../to_print/h2c/STL/dayton_nd25fn4/h2c_dayton_nd25fn4_body.stl) |
+| Regular UM + ND25FW-4 or BMR crescent | Separate UM and tweeter carrier on common LM half-laps | [Regular UM](../to_print/obiwan/upper/obiwan_um_carrier.stl), plus the selected crescent in the [catalog](../to_print/README.md) |
+| ND25FN-4 vase top (either stand state) | Keyed LM bottom + one-piece LM top/UM/waveguides, two twist-lock caps; left and right hands | [ND25FN-4 guide](DAYTON_ND25FN4_WAVEGUIDE.md) |
 
 > **C7 and V0 were retired from the build in August 2026** — no build targets,
 > exports, or catalog entries remain; their geometry modules live in git history

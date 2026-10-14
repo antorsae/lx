@@ -1,7 +1,7 @@
 # ND25FN-4 waveguide — prepared P2S print jobs
 
 **Earlier P2S files.** For the current H2C printer, use the
-[H2C catalog](../../../to_print/h2c/README.md) and
+[H2C catalog](../../../to_print/README.md) and
 [Dayton ND25FN-4 waveguide guide](../../../docs/DAYTON_ND25FN4_WAVEGUIDE.md).
 Original revision strings in these filenames are retained for provenance.
 
@@ -37,7 +37,7 @@ The supported rear recess has a removable PLA interface immediately below its in
 
 ## Process retained from regular Obi-Wan UM
 
-The process authority is the existing [regular UM PETG-GF/PLA project](../../../to_print/obiwan/3mf_06hf_petg-gf_pla/obiwan_03_UM_carrier_1_of_1_GUI.3mf), using its frozen resolved filament profiles.
+The process authority is the existing [regular UM PETG-GF/PLA project](../../../to_print/archive/p2s/obiwan/3mf_06hf_petg-gf_pla/obiwan_03_UM_carrier_1_of_1_GUI.3mf), using its frozen resolved filament profiles.
 
 | Setting | Prepared value |
 |---|---|

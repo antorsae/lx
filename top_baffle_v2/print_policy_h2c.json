@@ -45,23 +45,19 @@
   "edge_margin_mm": 2,
   "brim_mm": {
     "default": 5,
-    "stock_slim_no_floor_lm": 2
+    "stock_slim_no_floor_lm": 2,
+    "by_part": {
+      "h2c_mundorf_amt17d2_1_obiwan_t_below_upright": 0,
+      "h2c_grs_pt2522_4_obiwan_t_below_rotated": 0
+    },
+    "by_part_reason": "Long dipole T-below parts (~315 mm): the only H2C layout where both nozzles reach every support is lengthwise along Y without a brim (owner approved 2026-10-10)."
   },
   "prime_tower_reserve_mm": {
     "side": 60,
     "origin_inset": 7
   },
   "role_overrides": {},
-  "lane_role_overrides": {
-    "petg_translucent_pla": {
-      "crescent_body": {
-        "wall_generator": "classic",
-        "detect_thin_wall": "1",
-        "wall_sequence": "outer wall/inner wall",
-        "precise_outer_wall": "0"
-      }
-    }
-  },
+  "lane_role_overrides": {},
   "lanes": {
     "petg_gf_pla": {
       "model_preset": "filament/Generic PETG-CF @BBL H2C.json",
@@ -96,34 +92,19 @@
         "#456C86",
         "#EEEEEE"
       ]
-    },
-    "petg_translucent_pla": {
-      "model_preset": "filament/Bambu PETG Translucent @BBL H2C.json",
-      "interface_preset": "filament/Bambu PLA Translucent @BBL H2C.json",
-      "model_name": "LX521 PETG Translucent H2C 0.6 HF",
-      "model_overrides": {},
-      "interface_overrides": {},
-      "colours": [
-        "#C1C1C1",
-        "#B5001180"
-      ]
     }
   },
   "exceptions": [
     "Use dedicated left/right nozzles; old P2S AMS slot numbers are not nozzle assignments. Configure a model feed to the left and a PLA feed to the right before printing.",
     "Retain native H2C retraction, temperature standby, nozzle changing, start/end and priming G-code. Transfer only explicit Tinmorry thermal/flow calibrations. Do not apply the P2S 560 mm3 same-nozzle purge to every dual-nozzle switch.",
-    "Both materials use a shared 70 C Engineering Plate with glue. No raft. This is the user's plate process and requires a first-print adhesion check, especially the 2 mm Stock/Slim brim.",
+    "PETG-GF and PLA use a shared 70 C Engineering Plate with glue. No raft. This is the user's plate process and requires a first-print adhesion check, especially the 2 mm Stock/Slim brim and the two brimless dipole T-below parts.",
     "Use three dense zero-gap PLA interface layers above and below support for H2C. Keep PETG as the support base. Disable flushing into model, infill and support.",
-    "Dayton ND25FN-4 translucent body keeps Classic outer-first walls to reduce visible magnet-cover width changes. Other parts retain their existing wall policy.",
     "The native H2C firmware programs and generated material/nozzle assignments must be checked from the actual slice; prepared projects alone are not print qualification.",
-    "Continuous Dayton ND25FN-4 wings retain Arachne. Rotate right-hand wings 224 degrees in the print plane: the original 44-degree placement caused an early D6 loading-path intrusion. Recheck every D5/D6 site against the resulting toolpaths.",
-    "Expand regular cable/fastener support blockers by 0.8 mm along each print axis. Exact surface-only blockers allowed support in duct ceilings; the model geometry is unchanged. Approved Dayton ND25FN-4 body/accessory blockers retain their own qualified dimensions.",
+    "Obiwan ND25FN-4 vase wings retain Arachne and supports. Each D5 captive magnet is rechecked against the actual toolpaths.",
+    "Expand regular cable/fastener support blockers by 0.8 mm along each print axis. Exact surface-only blockers allowed support in duct ceilings; the model geometry is unchanged. Dayton ND25FN-4 vase blockers follow the same rule, and their duct blockers stop 1.3 mm short of the MU10 and L22 seat ceilings so those ceilings keep their support.",
     "Stock/Slim floor lower pieces extend the three cable-entry support keepouts through the rear service panel. This prevents supports for the panel from being routed down the cable entries. The small regions above those entries bridge; surrounding panel supports remain enabled."
   ],
-  "print_orientation_z_deg": {
-    "h2c_dayton_nd25fn4_wing_flat_right": 224,
-    "h2c_dayton_nd25fn4_wing_graded_right": 224
-  },
+  "print_orientation_z_deg": {},
   "support_blocker_extra_xyz_mm": 0.8,
   "part_process_overrides": {
     "h2c_stock_lm_no_floor_stand": {
@@ -134,6 +115,571 @@
     },
     "h2c_obiwan_addon_nl8_service_lid": {
       "enable_support": "0"
+    },
+    "h2c_obiwan_core_lm_carrier_floor_stand": {
+      "support_threshold_angle": "60",
+      "support_style": "grid"
+    },
+    "h2c_obiwan_lm_keyed_bottom_floor_stand": {
+      "support_threshold_angle": "60",
+      "support_style": "grid"
     }
+  },
+  "seam_enforcers": {
+    "h2c_obiwan_core_lm_carrier_floor_stand": {
+      "installed_direction": [
+        0,
+        -1,
+        0
+      ],
+      "min_cos": 0.7,
+      "below_y_mm": 5.0,
+      "mates": [
+        "h2c_obiwan_core_2_of_2_um_carrier"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Foot underside (floor) and the LM-UM half-lap faces at the top centre, hidden under the UM"
+    },
+    "h2c_obiwan_core_lm_carrier_no_floor_stand": {
+      "installed_direction": [
+        0,
+        -1,
+        0
+      ],
+      "min_cos": 0.7,
+      "below_y_mm": 5.0,
+      "mates": [
+        "h2c_obiwan_core_2_of_2_um_carrier"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Bottom edge at the centre (sits on the cabinet) and the LM-UM half-lap faces, hidden under the UM"
+    },
+    "h2c_obiwan_lm_keyed_bottom_floor_stand": {
+      "installed_direction": [
+        0,
+        -1,
+        0
+      ],
+      "min_cos": 0.7,
+      "below_y_mm": 5.0,
+      "mates": [
+        "h2c_obiwan_lm_keyed_top"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Foot underside and the keyed split faces, hidden in the joint"
+    },
+    "h2c_obiwan_lm_keyed_bottom_no_floor_stand": {
+      "installed_direction": [
+        0,
+        -1,
+        0
+      ],
+      "min_cos": 0.7,
+      "below_y_mm": 5.0,
+      "mates": [
+        "h2c_obiwan_lm_keyed_top"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Bottom edge at the centre and the keyed split faces, hidden in the joint"
+    },
+    "h2c_obiwan_lm_keyed_top": {
+      "mates": [
+        "h2c_obiwan_lm_keyed_bottom_no_floor_stand",
+        "h2c_obiwan_core_2_of_2_um_carrier"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Keyed split faces and LM-UM half-lap faces, hidden once assembled"
+    },
+    "h2c_dayton_nd25fn4_obiwan_tweeters_right_top": {
+      "mates": [
+        "h2c_obiwan_lm_keyed_bottom_no_floor_stand"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Keyed split faces at both ring ends, hidden in the joint"
+    },
+    "h2c_dayton_nd25fn4_obiwan_tweeters_left_top": {
+      "mates": [
+        "h2c_obiwan_lm_keyed_bottom_no_floor_stand"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Keyed split faces at both ring ends, hidden in the joint"
+    },
+    "h2c_stock_lm_lower_floor_stand": {
+      "installed_direction": [
+        0,
+        -1,
+        0
+      ],
+      "min_cos": 0.7,
+      "below_y_mm": 5.0,
+      "mates": [
+        "h2c_stock_lm_upper_floor_stand"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Foot underside (floor) and the faces against the LM upper, hidden in the joint"
+    },
+    "h2c_stock_lm_upper_floor_stand": {
+      "mates": [
+        "h2c_stock_lm_lower_floor_stand",
+        "h2c_stock_upper"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Faces against the LM lower and the upper module, hidden in the joints"
+    },
+    "h2c_stock_lm_no_floor_stand": {
+      "installed_direction": [
+        0,
+        -1,
+        0
+      ],
+      "min_cos": 0.7,
+      "below_y_mm": 5.0,
+      "mates": [
+        "h2c_stock_upper"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Bottom edge (sits on the cabinet) and the faces against the upper module"
+    },
+    "h2c_stock_upper": {
+      "mates": [
+        "h2c_stock_lm_no_floor_stand"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Faces against the LM at seam B, hidden in the joint"
+    },
+    "h2c_stock_upper_bmr": {
+      "mates": [
+        "h2c_stock_lm_no_floor_stand"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Faces against the LM at seam B, hidden in the joint"
+    },
+    "h2c_stock_05_A_shoulder_bottom_left_1_of_4": {
+      "mates": [
+        "h2c_stock_lm_no_floor_stand",
+        "h2c_stock_upper"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the baffle, hidden once fitted"
+    },
+    "h2c_stock_06_A_shoulder_top_left_2_of_4": {
+      "mates": [
+        "h2c_stock_lm_no_floor_stand",
+        "h2c_stock_upper"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the baffle, hidden once fitted"
+    },
+    "h2c_stock_07_A_shoulder_bottom_right_3_of_4": {
+      "mates": [
+        "h2c_stock_lm_no_floor_stand",
+        "h2c_stock_upper"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the baffle, hidden once fitted"
+    },
+    "h2c_stock_08_A_shoulder_top_right_4_of_4": {
+      "mates": [
+        "h2c_stock_lm_no_floor_stand",
+        "h2c_stock_upper"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the baffle, hidden once fitted"
+    },
+    "h2c_stock_09_B1_wing_left_1_of_2": {
+      "mates": [
+        "h2c_stock_lm_no_floor_stand",
+        "h2c_stock_upper"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the baffle, hidden once fitted"
+    },
+    "h2c_stock_10_B1_wing_right_2_of_2": {
+      "mates": [
+        "h2c_stock_lm_no_floor_stand",
+        "h2c_stock_upper"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the baffle, hidden once fitted"
+    },
+    "h2c_slim_lm_lower_floor_stand": {
+      "installed_direction": [
+        0,
+        -1,
+        0
+      ],
+      "min_cos": 0.7,
+      "below_y_mm": 5.0,
+      "mates": [
+        "h2c_slim_lm_upper_floor_stand"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Foot underside (floor) and the faces against the LM upper, hidden in the joint"
+    },
+    "h2c_slim_lm_upper_floor_stand": {
+      "mates": [
+        "h2c_slim_lm_lower_floor_stand",
+        "h2c_slim_upper"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Faces against the LM lower and the upper module, hidden in the joints"
+    },
+    "h2c_slim_lm_no_floor_stand": {
+      "installed_direction": [
+        0,
+        -1,
+        0
+      ],
+      "min_cos": 0.7,
+      "below_y_mm": 5.0,
+      "mates": [
+        "h2c_slim_upper"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Bottom edge (sits on the cabinet) and the faces against the upper module"
+    },
+    "h2c_slim_upper": {
+      "mates": [
+        "h2c_slim_lm_no_floor_stand"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Faces against the LM at seam B, hidden in the joint"
+    },
+    "h2c_slim_upper_bmr": {
+      "mates": [
+        "h2c_slim_lm_no_floor_stand"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Faces against the LM at seam B, hidden in the joint"
+    },
+    "h2c_slim_05_A_shoulder_bottom_left_1_of_4": {
+      "mates": [
+        "h2c_slim_lm_no_floor_stand",
+        "h2c_slim_upper"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the baffle, hidden once fitted"
+    },
+    "h2c_slim_06_A_shoulder_top_left_2_of_4": {
+      "mates": [
+        "h2c_slim_lm_no_floor_stand",
+        "h2c_slim_upper"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the baffle, hidden once fitted"
+    },
+    "h2c_slim_07_A_shoulder_bottom_right_3_of_4": {
+      "mates": [
+        "h2c_slim_lm_no_floor_stand",
+        "h2c_slim_upper"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the baffle, hidden once fitted"
+    },
+    "h2c_slim_08_A_shoulder_top_right_4_of_4": {
+      "mates": [
+        "h2c_slim_lm_no_floor_stand",
+        "h2c_slim_upper"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the baffle, hidden once fitted"
+    },
+    "h2c_slim_09_B1_wing_left_1_of_2": {
+      "mates": [
+        "h2c_slim_lm_no_floor_stand",
+        "h2c_slim_upper"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the baffle, hidden once fitted"
+    },
+    "h2c_slim_10_B1_wing_right_2_of_2": {
+      "mates": [
+        "h2c_slim_lm_no_floor_stand",
+        "h2c_slim_upper"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the baffle, hidden once fitted"
+    },
+    "h2c_dayton_nd25fn4_stock_tweeters_right_upper": {
+      "mates": [
+        "h2c_stock_lm_no_floor_stand"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Faces against the Stock LM at seam B, hidden in the joint"
+    },
+    "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_flat_left": {
+      "mates": [
+        "h2c_dayton_nd25fn4_obiwan_tweeters_right_top",
+        "h2c_obiwan_lm_keyed_bottom_no_floor_stand"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the vase top and keyed LM bottom, hidden once fitted"
+    },
+    "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_flat_right": {
+      "mates": [
+        "h2c_dayton_nd25fn4_obiwan_tweeters_right_top",
+        "h2c_obiwan_lm_keyed_bottom_no_floor_stand"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the vase top and keyed LM bottom, hidden once fitted"
+    },
+    "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_graded_left": {
+      "mates": [
+        "h2c_dayton_nd25fn4_obiwan_tweeters_right_top",
+        "h2c_obiwan_lm_keyed_bottom_no_floor_stand"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the vase top and keyed LM bottom, hidden once fitted"
+    },
+    "h2c_dayton_nd25fn4_obiwan_tweeters_right_wing_graded_right": {
+      "mates": [
+        "h2c_dayton_nd25fn4_obiwan_tweeters_right_top",
+        "h2c_obiwan_lm_keyed_bottom_no_floor_stand"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the vase top and keyed LM bottom, hidden once fitted"
+    },
+    "h2c_dayton_nd25fn4_stock_tweeters_left_upper": {
+      "mates": [
+        "h2c_stock_lm_no_floor_stand"
+      ],
+      "max_gap_mm": 0.4,
+      "reason": "Faces against the Stock LM at seam B, hidden in the joint"
+    },
+    "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_flat_left": {
+      "mates": [
+        "h2c_dayton_nd25fn4_obiwan_tweeters_left_top",
+        "h2c_obiwan_lm_keyed_bottom_no_floor_stand"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the vase top and keyed LM bottom, hidden once fitted"
+    },
+    "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_flat_right": {
+      "mates": [
+        "h2c_dayton_nd25fn4_obiwan_tweeters_left_top",
+        "h2c_obiwan_lm_keyed_bottom_no_floor_stand"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the vase top and keyed LM bottom, hidden once fitted"
+    },
+    "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_graded_left": {
+      "mates": [
+        "h2c_dayton_nd25fn4_obiwan_tweeters_left_top",
+        "h2c_obiwan_lm_keyed_bottom_no_floor_stand"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the vase top and keyed LM bottom, hidden once fitted"
+    },
+    "h2c_dayton_nd25fn4_obiwan_tweeters_left_wing_graded_right": {
+      "mates": [
+        "h2c_dayton_nd25fn4_obiwan_tweeters_left_top",
+        "h2c_obiwan_lm_keyed_bottom_no_floor_stand"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the vase top and keyed LM bottom, hidden once fitted"
+    },
+    "h2c_obiwan_wing_flat_left": {
+      "mates": [
+        "h2c_obiwan_core_lm_carrier_no_floor_stand",
+        "h2c_obiwan_core_2_of_2_um_carrier"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the LM carrier and UM, hidden once fitted"
+    },
+    "h2c_obiwan_wing_flat_right": {
+      "mates": [
+        "h2c_obiwan_core_lm_carrier_no_floor_stand",
+        "h2c_obiwan_core_2_of_2_um_carrier"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the LM carrier and UM, hidden once fitted"
+    },
+    "h2c_obiwan_wing_graded_left": {
+      "mates": [
+        "h2c_obiwan_core_lm_carrier_no_floor_stand",
+        "h2c_obiwan_core_2_of_2_um_carrier"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the LM carrier and UM, hidden once fitted"
+    },
+    "h2c_obiwan_wing_graded_right": {
+      "mates": [
+        "h2c_obiwan_core_lm_carrier_no_floor_stand",
+        "h2c_obiwan_core_2_of_2_um_carrier"
+      ],
+      "max_gap_mm": 0.6,
+      "reason": "Edge faces against the LM carrier and UM, hidden once fitted"
+    }
+  },
+  "support_blocker_boxes_installed_mm": {
+    "h2c_obiwan_core_lm_carrier_floor_stand": [
+      {
+        "name": "NL8 boss and rear foot: prints without support",
+        "min": [
+          -34.0,
+          -1.0,
+          -152.0
+        ],
+        "max": [
+          34.0,
+          41.0,
+          -75.0
+        ]
+      },
+      {
+        "name": "T cable-duct exit at the LM top: grid support otherwise grazes the lumen",
+        "min": [
+          6.0,
+          306.0,
+          -2.0
+        ],
+        "max": [
+          22.0,
+          324.0,
+          20.0
+        ]
+      }
+    ],
+    "h2c_obiwan_lm_keyed_bottom_floor_stand": [
+      {
+        "name": "NL8 boss and rear foot: prints without support",
+        "min": [
+          -34.0,
+          -1.0,
+          -152.0
+        ],
+        "max": [
+          34.0,
+          41.0,
+          -75.0
+        ]
+      }
+    ]
+  },
+  "magnet_insertion_support_blockers": [
+    "h2c_obiwan_core_lm_carrier_floor_stand",
+    "h2c_obiwan_lm_keyed_bottom_floor_stand"
+  ],
+  "infill_modifiers_installed_mm": {
+    "h2c_dayton_nd25fn4_obiwan_tweeters_right_top": [
+      {
+        "name": "waveguides",
+        "settings": {
+          "sparse_infill_density": "15%",
+          "sparse_infill_pattern": "gyroid"
+        },
+        "disks": [
+          [
+            47.32,
+            354.807,
+            46.0
+          ],
+          [
+            22.5,
+            423.0,
+            46.0
+          ]
+        ],
+        "keep_disks": [
+          [
+            -47.32,
+            361.741,
+            52.0
+          ]
+        ],
+        "y_min": 292.0,
+        "reason": "T and t waveguides at 15% gyroid; MU10 seat (cutout + M3 pilots) and the released keyed LM section below y 292 stay 100%"
+      }
+    ],
+    "h2c_dayton_nd25fn4_stock_tweeters_right_upper": [
+      {
+        "name": "waveguides",
+        "settings": {
+          "sparse_infill_density": "15%",
+          "sparse_infill_pattern": "gyroid"
+        },
+        "disks": [
+          [
+            100.0,
+            350.081,
+            46.0
+          ],
+          [
+            100.0,
+            415.881,
+            46.0
+          ]
+        ],
+        "keep_disks": [
+          [
+            0.0,
+            366.081,
+            52.0
+          ]
+        ],
+        "y_min": 328.0,
+        "reason": "T and t waveguides at 15% gyroid; MU10 seat and the seam-B pins / M3 clamp below y 328 stay 100%"
+      }
+    ],
+    "h2c_dayton_nd25fn4_obiwan_tweeters_left_top": [
+      {
+        "name": "waveguides",
+        "settings": {
+          "sparse_infill_density": "15%",
+          "sparse_infill_pattern": "gyroid"
+        },
+        "disks": [
+          [
+            -47.32,
+            354.807,
+            46.0
+          ],
+          [
+            -22.5,
+            423.0,
+            46.0
+          ]
+        ],
+        "keep_disks": [
+          [
+            47.32,
+            361.741,
+            52.0
+          ]
+        ],
+        "y_min": 292.0,
+        "reason": "T and t waveguides at 15% gyroid; MU10 seat (cutout + M3 pilots) and the released keyed LM section below y 292 stay 100%"
+      }
+    ],
+    "h2c_dayton_nd25fn4_stock_tweeters_left_upper": [
+      {
+        "name": "waveguides",
+        "settings": {
+          "sparse_infill_density": "15%",
+          "sparse_infill_pattern": "gyroid"
+        },
+        "disks": [
+          [
+            -100.0,
+            350.081,
+            46.0
+          ],
+          [
+            -100.0,
+            415.881,
+            46.0
+          ]
+        ],
+        "keep_disks": [
+          [
+            0.0,
+            366.081,
+            52.0
+          ]
+        ],
+        "y_min": 328.0,
+        "reason": "T and t waveguides at 15% gyroid; MU10 seat and the seam-B pins / M3 clamp below y 328 stay 100%"
+      }
+    ]
   }
 }

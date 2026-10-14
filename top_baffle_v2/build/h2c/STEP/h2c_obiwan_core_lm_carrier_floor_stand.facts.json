@@ -1,13 +1,13 @@
 {
   "name": "h2c_obiwan_core_lm_carrier_floor_stand",
   "source_files": {
-    "build/floor_stand/.obiwan_stage/manifest.json": "7600c070cca6cec27bb0e87870f4212e9af74fb371638269d777162799493926",
-    "build/floor_stand/.obiwan_stage/core_lm_carrier.brep": "3b3704608aa8ebfda8c3cd85edd2e0191c81750067cfa3f4dda989a5d5069833"
+    "build/floor_stand/.obiwan_stage/manifest.json": "27759d5f5d7050a4a22d8a5911caf430ccca72f381c49dd3a85dcbc7189e09e7",
+    "build/floor_stand/.obiwan_stage/core_lm_carrier.brep": "8d0ff0345354c5d0218b21f376f76e5292b80f5d2f7bbcd8bbcecc111a4048fd"
   },
-  "step_sha256": "f17f02dbc65b71cab10bb5954b235df93de6be79aad8d811c91fdd2ae465e005",
+  "step_sha256": "11c8c50f6e94de02515af60fbb00443c57afe71b2838428e530eadea12921458",
   "native_valid": true,
   "native_solids": 1,
-  "native_volume_mm3": 238308.03823833997,
+  "native_volume_mm3": 238738.4586484787,
   "installed_bounds_mm": [
     [
       -113.94000009999999,
@@ -17,19 +17,19 @@
     [
       113.94000009999999,
       320.6701021,
-      18.300000100000002
+      18.300000100000027
     ]
   ],
-  "stl_sha256": "6544be563cc0986339109c5e6bc11b6cd0c54cae709a092937ef3f83cf8d2873",
+  "stl_sha256": "0ed3509b4cc014fb7d1b4b88f0d6c7948f6435b360ca2e02388da460642aa622",
   "mesh": {
-    "triangles": 153616,
+    "triangles": 153018,
     "open": 0,
     "over_shared": 0,
     "winding": 0,
     "degenerate": 0,
     "duplicates": 0,
     "nonfinite": 0,
-    "signed_volume": 238329.0140155608,
+    "signed_volume": 238761.6624661312,
     "zero_volume": 0,
     "negative_volume": 0,
     "components": 5,
@@ -39,7 +39,7 @@
     "zero_volume_components": 0,
     "disconnected_material_components": 0,
     "component_signed_volumes": [
-      238588.54619766312,
+      239021.19464823353,
       -64.88301933262218,
       -64.88304278146533,
       -64.88305033666812,

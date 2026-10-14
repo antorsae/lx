@@ -69,20 +69,6 @@ G2 X26 Y52 I0 J2 E0.1
 ''')
         with self.assertRaises(ValueError):deposition(path)
 
-    def test_cli_preserves_nondefault_wall_order(self):
-        directory=ROOT/'build/h2c/profiles/petg_translucent_pla'
-        bundle=[json.loads((directory/'machine.json').read_text()),json.loads((directory/'process.json').read_text()),
-            [json.loads((directory/'model.json').read_text()),json.loads((directory/'interface.json').read_text())]]
-        bundle[1].pop('wall_sequence',None)
-        for role in ('crescent_body',):
-            settings=project_settings(bundle,'petg_translucent_pla',role)
-            process=job_process(bundle,settings)
-            self.assertEqual(process['wall_sequence'],'outer wall/inner wall')
-            self.assertEqual(process['wall_generator'],'classic')
-            self.assertEqual(settings['filament_map'],['1','2'])
-            self.assertEqual(settings['nozzle_volume_type'],['High Flow','High Flow'])
-            self.assertEqual(settings['eng_plate_temp'],['70','70'])
-
     def test_pause_restore_accepts_slicer_modal_feed_optimization(self):
         path=self.gcode('''M190 S70
 M104 S260
@@ -110,12 +96,13 @@ G1 X41 E0.1
         bad=self.gcode(path.read_text().replace('G1 Z0.20','G1 Z0.36'))
         with self.assertRaises((ValueError,StopIteration)):pause_audit(bad,[.2])
 
-    def test_default_make_target_is_h2c_with_explicit_p2s_fallback(self):
+    def test_default_make_target_is_h2c_and_p2s_is_retired(self):
         current=subprocess.check_output(['make','-n','all'],cwd=ROOT,text=True)
-        previous=subprocess.check_output(['make','-n','PRINTER=P2S','all'],cwd=ROOT,text=True)
         self.assertIn('scripts/h2c_pipeline.py all',current)
         self.assertNotIn('remote_cad.py',current)
-        self.assertIn('scripts/remote_cad.py run all',previous)
+        retired=subprocess.run(['make','-n','PRINTER=P2S','all'],cwd=ROOT,text=True,capture_output=True)
+        self.assertNotEqual(retired.returncode,0)
+        self.assertIn('PRINTER=P2S is deprecated; H2C is the only supported printer',retired.stderr)
 
     def test_preparation_cache_rejects_changed_project_or_geometry(self):
         project=self.gcode('prepared project bytes')

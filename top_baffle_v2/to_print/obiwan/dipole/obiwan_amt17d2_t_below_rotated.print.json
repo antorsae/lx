@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "part": "obiwan_amt17d2_t_below_rotated",
+  "stl": "obiwan_amt17d2_t_below_rotated.stl",
+  "stl_bytes": 3269884,
+  "stl_sha256": "f2b7b0302d110b45f269af3b8eed248d471c3a0be628cb218b08102912da0aea",
+  "source_stl": "candidates/dipole_tweeter/STL/mundorf_amt17d2_1_obiwan_t_below_rotated.stl",
+  "source_sha256": "ff47ae71fbaea60bc7248fa74bcf8d84babe35992c85b1a69b90f74218dce834",
+  "sliver_collapse_mm": 0.001,
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      113.93045043945312
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      473.69000244140625
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.299999237060547
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 0.0
+  },
+  "pre_translation_bbox_min_mm": [
+    -113.93045043945312,
+    -473.69000244140625,
+    -18.299999237060547
+  ],
+  "stl_origin_translation_mm": [
+    113.93045043945312,
+    473.69000244140625,
+    18.299999237060547
+  ]
+}

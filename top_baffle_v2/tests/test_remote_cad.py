@@ -575,7 +575,9 @@ def test_remote_make_and_guard_share_parallelism_authority() -> None:
     assert '"LX_CAD_GUARD_SLOTS": str(metadata["parallel_jobs"])' in source
     assert '"LX_CAD_GUARD_LIGHT_SLOTS": str(metadata["light_jobs"])' in source
     assert 'str(metadata["make_jobs"]),' in source
-    assert 'make_jobs = parallel_jobs + light_jobs' in source
+    for target in ('floor_obiwan', 'waveguide_study_preflight'):
+        partition = remote._worker_partition([target], 12)
+        assert partition['make_jobs'] == partition['parallel_jobs'] + partition['light_jobs']
     command_block = source[source.index("command = [\n", source.index(
         '"LX_CAD_GUARD_SLOTS"')):]
     assert 'make, "--no-print-directory", "--trace", "-j",' in command_block
@@ -712,6 +714,7 @@ def test_launch_cancel_transition_is_serial_and_fail_closed() -> None:
             "environment_sha256": "c" * 64,
             "job_id": job.name,
             "systemd_unit": "lx-cad-transition-test",
+            "targets": ["floor_obiwan"],
             "transport": {
                 "source_path": remote.TRANSPORT_SOURCE_PATH,
                 "sha256": "a" * 64,
@@ -747,6 +750,11 @@ def test_launch_cancel_transition_is_serial_and_fail_closed() -> None:
             assert launch[0] == "systemd-run"
             assert "--property=MemoryMax=512G" in launch
             assert "--property=MemorySwapMax=0" in launch
+            assert not any(value.startswith("--property=CPUQuota=") for value in launch)
+            metadata["targets"] = ["waveguide_study_benchmark"]
+            remote._launch_job_transition(SimpleNamespace(job_dir=str(job)))
+            assert len(launches) == 1
+            assert "--property=CPUQuota=3000%" in launches.pop()
 
             # Reset to the pre-launch state, let cancellation acquire the
             # transition first, then prove a later launch is a no-op.

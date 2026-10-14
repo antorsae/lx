@@ -57,10 +57,14 @@ from lx521_baffle.base import (
 from lx521_baffle.flush import (
     LM_BORE_DEPTH_MM,
     LM_PILOT_XY,
+    LM_RECESS_R,
     LM_SEAT_Z,
     UM_PILOT_XY,
+    UM_RECESS_R,
     UM_SEAT_Z,
 )
+from lx521_baffle.base import L22_CUTOUT, UM_CUTOUT
+from lx521_baffle.h2c.printing import policy as h2c_policy
 from lx521_baffle.obiwan.lm_split import LM_SPLIT_SEAM_Y
 from lx521_baffle.obiwan.rear_entry import (
     _round_tube,
@@ -74,6 +78,13 @@ from lx521_baffle.obiwan.rear_entry import (
 
 DUCT_SUPPORT_BLOCKER_CLEARANCE_MM = 0.25
 DUCT_SUPPORT_BLOCKER_BOOLEAN_MARGIN_MM = 0.05
+# Duct blockers stay this far below the driver-seat plane: the H2C slicer
+# dilation (support_blocker_extra_xyz_mm) plus three 0.16 mm layers.  Bambu
+# suppresses an overhang whose first layers lie inside a blocker, and the
+# seat is only a 0.85 mm membrane over the buried ducts, so an uncut duct
+# blocker removed support from long arcs of the seat ceiling.  After the
+# dilation the cut blocker still covers each duct roof by 0.35 mm.
+SEAT_CEILING_LAYER_CLEARANCE_MM = 0.5
 DUCT_SUPPORT_BLOCKER_PART_KEYS = frozenset({
     "core_2_of_2_um_carrier",
     "optional_lm_keyed_1_of_2_bottom",
@@ -81,6 +92,34 @@ DUCT_SUPPORT_BLOCKER_PART_KEYS = frozenset({
 })
 DUCT_SUPPORT_BLOCKER_STL_NAMES = frozenset(
     f"obiwan_{key}" for key in DUCT_SUPPORT_BLOCKER_PART_KEYS)
+
+
+def _seat_ceiling_keepout(owner: str):
+    """Cylinder over the driver seat recess that duct blockers must avoid."""
+    extra = float(h2c_policy()["support_blocker_extra_xyz_mm"])
+    margin = DUCT_SUPPORT_BLOCKER_BOOLEAN_MARGIN_MM
+    if owner == "lm":
+        (cx, cy, _), recess_r, seat_z = L22_CUTOUT, LM_RECESS_R, LM_SEAT_Z
+    elif owner == "um":
+        (cx, cy, _), recess_r, seat_z = UM_CUTOUT, UM_RECESS_R, UM_SEAT_Z
+    else:
+        raise ValueError(owner)
+    z0 = seat_z - extra - SEAT_CEILING_LAYER_CLEARANCE_MM
+    z1 = seat_z + 50.0
+    return Pos(cx, cy, (z0 + z1) / 2.0) * Cylinder(
+        recess_r + extra + margin, z1 - z0)
+
+
+def _clear_of_seat(solids: Iterable[Any], owner: str, label: str):
+    """Remove the seat-ceiling keepout from duct blocker solids."""
+    keepout = _seat_ceiling_keepout(owner)
+    for solid in solids:
+        cut = (solid - keepout).clean()
+        kept = tuple(
+            piece for piece in cut.solids() if piece.volume > 1.0e-6)
+        if any(not piece.is_valid for piece in kept):
+            raise RuntimeError(f"{label}: seat-clear blocker is invalid")
+        yield from kept
 
 
 def _require_guarded_build() -> None:
@@ -421,7 +460,9 @@ def duct_support_blocker(
         raise ValueError("support-blocker clearance must be positive")
     if part_key == "core_2_of_2_um_carrier":
         combined = _fuse_components(
-            (*_um_owner_t_route_blockers(clearance_mm=clearance_mm),
+            (*_clear_of_seat(
+                _um_owner_t_route_blockers(clearance_mm=clearance_mm),
+                "um", f"{part_key} T route"),
              *_joint_fastener_blockers(
                  clearance_mm=clearance_mm, region=None),
              *_insert_bore_blockers(
@@ -447,8 +488,9 @@ def duct_support_blocker(
         }
 
     region = _split_region(part_key)
-    owner_components = list(_lm_owner_route_blockers(
-        clearance_mm=clearance_mm, region=region))
+    owner_components = list(_clear_of_seat(
+        _lm_owner_route_blockers(clearance_mm=clearance_mm, region=region),
+        "lm", f"{part_key} LM routes"))
     owner_components.extend(_joint_fastener_blockers(
         clearance_mm=clearance_mm, region=region))
     owner_components.extend(_insert_bore_blockers(

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Orthographic review of the actual continuous H2C wing/LM print meshes."""
+"""Orthographic review of the actual H2C Dayton ND25FN-4 vase print meshes in their installed positions."""
 from pathlib import Path
 import json
 import sys
@@ -13,7 +13,6 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT/'src')]
 from lx521_baffle.io import sha256_file
 from lx521_baffle.h2c.printing import write_json
-from lx521_baffle.h2c.dayton import BODY
 
 
 def restored(path):
@@ -21,6 +20,11 @@ def restored(path):
     assert sha256_file(path)==authority['stl_sha256']
     mesh=trimesh.load_mesh(path,process=True)
     mesh.apply_transform(np.linalg.inv(np.asarray(authority['source_to_stl_matrix'])))
+    # Rear-tweeter caps are stored in a skin-up cap frame; undo it for the installed view.
+    source=ROOT/authority.get('source_stl','')
+    if source.suffix=='.stl':
+        installed=json.loads(source.with_suffix('.print.json').read_text()).get('installed_to_source_matrix')
+        if installed:mesh.apply_transform(np.linalg.inv(np.asarray(installed)))
     return mesh
 
 
@@ -56,13 +60,22 @@ def render(parts,path,direction,size=(950,1400)):
 
 def main():
     work=ROOT/'build/h2c';out=work/'views';out.mkdir(exist_ok=True)
-    lm=ROOT/'to_print/h2c/STL/h2c_obiwan_core_lm_carrier_no_floor_stand.stl'
-    body=ROOT/'to_print/h2c/STL/dayton_nd25fn4'/BODY
+    from lx521_baffle.h2c.shelf import stl as shelf_stl
+    lm,body,wing,cap=(133,151,163),(66,141,189),(213,216,219),(236,170,90)
+    assemblies={}
+    for hand in ('right','left'):
+        pre=f'h2c_dayton_nd25fn4_obiwan_tweeters_{hand}'
+        caps=[(shelf_stl(f'{pre}_cap_{t}_tweeter'),cap) for t in ('front','rear')]
+        for slug in ('flat','graded'):
+            assemblies[f'obiwan_tweeters_{hand}_{slug}']=[(shelf_stl('h2c_obiwan_lm_keyed_bottom_'+('floor_stand' if slug=='flat' else 'no_floor_stand')),lm),
+                (shelf_stl(f'{pre}_top'),body),*[(shelf_stl(f'{pre}_wing_{slug}_{s}'),wing) for s in ('left','right')],*caps]
+        pre=f'h2c_dayton_nd25fn4_stock_tweeters_{hand}'
+        assemblies[f'stock_tweeters_{hand}']=[(shelf_stl('h2c_stock_lm_no_floor_stand'),lm),(shelf_stl(f'{pre}_upper'),body),
+            *[(shelf_stl(f'{pre}_cap_{t}_tweeter'),cap) for t in ('front','rear')]]
     manifest={}
-    for slug in ('flat','graded'):
-        sources=[lm,body]+[ROOT/f'to_print/h2c/STL/h2c_dayton_nd25fn4_wing_{slug}_{s}.stl' for s in ('left','right')]
-        colors=[(133,151,163),(66,141,189),(213,216,219),(213,216,219)]
-        parts=[(restored(p),c) for p,c in zip(sources,colors)]
+    for slug,members in assemblies.items():
+        sources=[p for p,c in members]
+        parts=[(restored(p),c) for p,c in members]
         scene=trimesh.Scene()
         for source,(mesh,color) in zip(sources,parts):
             # Use original facets in both the review GLB and PNGs.
@@ -75,7 +88,7 @@ def main():
             path=out/f'H2C_Dayton_ND25FN4_{slug}_{name}.png';views[name]=render(parts,path,direction)
         manifest[slug]=dict(sources={str(p.relative_to(ROOT)):sha256_file(p) for p in sources},views=views,
             glb_sha256=sha256_file(glb),glb_units='metres',glb_is_decimated_preview=False)
-        print('Rendered Dayton ND25FN-4 continuous wings:',slug,flush=True)
+        print('Rendered Dayton ND25FN-4 vase assembly:',slug,flush=True)
     write_json(out/'mesh_review_manifest.json',manifest)
 
 

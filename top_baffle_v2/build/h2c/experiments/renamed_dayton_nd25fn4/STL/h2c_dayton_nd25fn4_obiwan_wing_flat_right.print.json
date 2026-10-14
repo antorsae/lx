@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "part": "h2c_dayton_nd25fn4_obiwan_wing_flat_right",
+  "stl": "h2c_dayton_nd25fn4_obiwan_wing_flat_right.stl",
+  "stl_bytes": 297984,
+  "stl_sha256": "5e3a77d161ea1dd1ad903318378da1ef36e35367c621dc4ac0fa1b545d6c335e",
+  "source_stl": "candidates/nd25fn4_vase/obiwan/STL/nd25fn4_vase_obiwan_wing_flat_right.stl",
+  "source_sha256": "61ae5ca2a5c670e8af3cdfad4f01ce2be2a17101ab2662dfad39d77c5d755bf6",
+  "print_orientation": "front_face_down",
+  "source_to_stl_matrix": [
+    [
+      0.9612616959383189,
+      0.27563735581699916,
+      0.0,
+      -53.18643878148504
+    ],
+    [
+      0.27563735581699916,
+      -0.9612616959383189,
+      0.0,
+      246.95090174499495
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0,
+      18.299999237060547
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "rotation_deg": {
+    "x": 180.0,
+    "z": 16.0
+  },
+  "pre_translation_bbox_min_mm": [
+    53.18643878148504,
+    -246.95090174499495,
+    -18.299999237060547
+  ],
+  "stl_origin_translation_mm": [
+    -53.18643878148504,
+    246.95090174499495,
+    18.299999237060547
+  ]
+}

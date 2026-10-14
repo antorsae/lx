@@ -1,0 +1,16 @@
+# 2026-10-04 02:02 int_build_pt2522_4_landscape.log
+obiwan_planar_pt2522_lm_um_t_landscape {'volume_cm3': np.float64(101.9), 'bounds_mm': [[-113.93, 172.48, -5.51], [113.93, 486.19, 18.3]], 'watertight': True, 'driver_clash_mm3': 0.0, 'step': None, 'method': 'mesh booleans: keyed LM top + UM + T body (lm_um_t)', 'part': 'LM keyed top + T + UM (integrated)', 'driver': 'GRS PT2522-4 planar, open back (dipole)', 'orientation': 'landscape', 'seam_y_mm': 172.481, 'mu10_shift_mm': 67.469, 'plate_margin_above_split_mm': -7.75, 'fixing': 'M3 into M3 heat-set inserts', 'insert_bore_mm': [4.6, 4.0]}
+pt2522_4 landscape lm_um_t um duct 8.2..11.6 x 8.2..5.0: branch y 291.5, min bend R16.9, length 131 mm, cover 36 mm, exposed 0 of 11520 []
+pt2522_4 landscape lm_um_t um LM duct seam->branch: exposed 0 of 8544
+pt2522_4 landscape lm_um_t um old tail: 128 points, 125 in open air or new ducts
+pt2522_4 landscape lm_um_t t duct 6.0..6.0 x 6.0..6.0: branch y 293.4, min bend R19.5, length 44 mm, cover 31 mm, exposed 0 of 11520 []
+pt2522_4 landscape lm_um_t t LM duct seam->branch: exposed 0 of 8736
+pt2522_4 landscape lm_um_t t old tail: 212 points, 186 in open air or new ducts
+pt2522_4 landscape lm_um_t M3 insert bore D4.6 at (-39.5,379.2) depth 4.00 wall 1.60 floor 2.00
+pt2522_4 landscape lm_um_t M3 insert bore D4.6 at (39.5,379.2) depth 4.00 wall 1.60 floor 2.00
+pt2522_4 landscape lm_um_t M3 insert bore D4.6 at (-39.5,317.2) depth 4.00 wall 1.60 floor 2.00
+pt2522_4 landscape lm_um_t M3 insert bore D4.6 at (39.5,317.2) depth 4.00 wall 1.60 floor 2.00
+pt2522_4 landscape lm_um_t front: max z 18.30, vertices proud 0; shells 1 (sealed cavities 0: []), watertight True, vol 101.9 cm3
+pt2522_4 landscape lm_um_t keyed seam zone (y<255) vs released keyed top: extra 0.00 mm3, missing 0.00 mm3
+pt2522_4 landscape lm_um_t H2C bed 330x320: best 313.7 x 227.9 at 90.0 deg, slack 16.3 mm
+pt2522_4 landscape lm_um_t RESULT PASS

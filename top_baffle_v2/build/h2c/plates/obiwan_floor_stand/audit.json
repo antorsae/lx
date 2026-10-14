@@ -1,0 +1,2798 @@
+{
+  "status": "pass",
+  "file": "to_print/obiwan/obiwan_floor_stand.petg-gf.3mf",
+  "plates": [
+    {
+      "plate": 1,
+      "name": "NL8 service lid (every option)",
+      "parts": [
+        "obiwan_nl8_service_lid"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 6850
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              152.912,
+              123.28999999999999,
+              0.2
+            ],
+            [
+              197.088,
+              196.704,
+              8.52
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "obiwan_nl8_service_lid",
+          "object_settings": {},
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 2,
+      "name": "A-C, E \u00b7 LM carrier (shared by A, B, C and the dipole T above)",
+      "parts": [
+        "obiwan_lm_carrier_floor_stand"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        239.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "support": 27652,
+          "model": 1284407,
+          "tower": 8101,
+          "interface": 27210
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              36.376999999999995,
+              13.552,
+              0.2
+            ],
+            [
+              306.891,
+              301.7026857022281,
+              168.36
+            ]
+          ],
+          "1": [
+            [
+              31.504963231724165,
+              17.749000000000002,
+              0.2
+            ],
+            [
+              304.448,
+              299.42900000000003,
+              20.52
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          0.2,
+          0.36,
+          0.52,
+          0.68,
+          0.84,
+          1.0,
+          1.16,
+          1.32,
+          1.48,
+          1.64,
+          1.8,
+          1.96,
+          2.12,
+          2.28,
+          2.44,
+          2.6,
+          2.76,
+          2.92,
+          3.08,
+          3.24,
+          3.4,
+          3.56,
+          3.72,
+          3.88,
+          4.04,
+          4.2,
+          4.36,
+          4.52,
+          4.68,
+          4.84,
+          5.0,
+          5.16,
+          5.32,
+          5.48,
+          5.64,
+          5.8,
+          5.96,
+          6.12,
+          6.28,
+          6.44,
+          6.6,
+          6.76,
+          6.92,
+          7.08,
+          7.24,
+          7.4,
+          7.56,
+          7.72,
+          7.88,
+          8.04,
+          8.2,
+          8.36,
+          8.52,
+          8.68,
+          8.84,
+          9.0,
+          9.16,
+          9.32,
+          9.48,
+          9.64,
+          9.8,
+          9.96,
+          10.12,
+          10.28,
+          10.44,
+          10.6,
+          10.76,
+          10.92,
+          11.08,
+          11.24,
+          11.4,
+          11.56,
+          11.72,
+          11.88,
+          12.04,
+          12.2,
+          12.36,
+          12.52,
+          12.68,
+          12.84,
+          13.0,
+          13.16,
+          13.32,
+          13.48,
+          13.64,
+          13.8,
+          13.96,
+          14.12,
+          14.28,
+          14.44,
+          14.6,
+          14.76,
+          14.92,
+          15.08,
+          15.24,
+          15.4,
+          15.56,
+          15.72,
+          15.88,
+          16.04,
+          16.2,
+          16.36,
+          16.52,
+          16.68,
+          16.84,
+          17.0,
+          17.16,
+          17.32,
+          17.48,
+          17.64,
+          17.8,
+          17.96,
+          18.12,
+          18.28,
+          18.44,
+          18.6,
+          18.76,
+          18.92,
+          19.08,
+          19.24,
+          19.4,
+          19.56,
+          19.72,
+          19.88,
+          20.04,
+          20.2,
+          20.36
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        5.96,
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 5.96,
+          "pause_command_line_number": 290114,
+          "first_extrusion_line_number": 290131,
+          "pass": true
+        },
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 298440,
+          "first_extrusion_line_number": 298457,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_lm_carrier_floor_stand",
+          "object_settings": {
+            "enable_support": "1",
+            "support_style": "grid",
+            "support_threshold_angle": "60"
+          },
+          "magnet_pauses_mm": [
+            5.96,
+            6.12
+          ],
+          "supports": {
+            "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 45060,
+              "duct_capsule_segment_count": 766,
+              "candidate_distance_checks": 473813,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.7586173627533069,
+              "closest_approach": {
+                "gcode_line_number": 296725,
+                "layer_z_mm": 5.96,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "t_route_lumen",
+                "centerline_distance_mm": 4.078773574624949,
+                "duct_radius_mm": 3.0,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.7586173627533069
+              }
+            },
+            "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 45060,
+              "duct_capsule_segment_count": 766,
+              "candidate_distance_checks": 473813,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.7586173627533069,
+              "closest_approach": {
+                "gcode_line_number": 296725,
+                "layer_z_mm": 5.96,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "t_route_lumen",
+                "centerline_distance_mm": 4.078773574624949,
+                "duct_radius_mm": 3.0,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.7586173627533069
+              }
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 3,
+      "name": "A-C \u00b7 UM carrier",
+      "parts": [
+        "obiwan_um_carrier"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "tower": 4067,
+          "support": 7143,
+          "model": 182133,
+          "interface": 2240
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              26.363,
+              6.497222595116092,
+              0.2
+            ],
+            [
+              232.377,
+              222.496,
+              18.28
+            ]
+          ],
+          "1": [
+            [
+              26.363,
+              11.444,
+              3.72
+            ],
+            [
+              223.041,
+              211.1621863014315,
+              10.44
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          3.72,
+          3.88,
+          4.04,
+          5.16,
+          5.32,
+          5.48,
+          5.8,
+          5.96,
+          6.12,
+          6.44,
+          6.6,
+          6.76,
+          6.92,
+          7.4,
+          7.56,
+          7.72,
+          7.88,
+          8.04,
+          9.96,
+          10.12,
+          10.28
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 145147,
+          "first_extrusion_line_number": 145164,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_um_carrier",
+          "object_settings": {
+            "enable_support": "1"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {
+            "build/no_floor_stand/support_blockers/obiwan_core_2_of_2_um_carrier.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 19316,
+              "duct_capsule_segment_count": 699,
+              "candidate_distance_checks": 152535,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.5698438881283193,
+              "closest_approach": {
+                "gcode_line_number": 77228,
+                "layer_z_mm": 4.04,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "um_carrier_t_route_lumen",
+                "centerline_distance_mm": 3.8900000999999618,
+                "duct_radius_mm": 3.0,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.5698438881283193
+              }
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 4,
+      "name": "A \u00b7 ND25FW-4 \u00b7 crescent",
+      "parts": [
+        "obiwan_crescent_nd25fw4"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 65419
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              121.1,
+              134.295,
+              0.2
+            ],
+            [
+              228.899,
+              185.703,
+              11.56
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "obiwan_crescent_nd25fw4",
+          "object_settings": {
+            "sparse_infill_density": "30%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 5,
+      "name": "B \u00b7 BMR coaxial \u00b7 crescent",
+      "parts": [
+        "obiwan_crescent_bmr"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 184994
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              138.935,
+              119.027,
+              0.2
+            ],
+            [
+              211.065,
+              200.968,
+              50.28
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 87356,
+          "first_extrusion_line_number": 87373,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_crescent_bmr",
+          "object_settings": {
+            "sparse_infill_density": "30%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 6,
+      "name": "C \u00b7 BMR opposed \u00b7 crescent",
+      "parts": [
+        "obiwan_crescent_bmr_opposed"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 197526
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              120.614,
+              95.64099999999999,
+              0.2
+            ],
+            [
+              229.385,
+              224.356,
+              25.16
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 123121,
+          "first_extrusion_line_number": 123138,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_crescent_bmr_opposed",
+          "object_settings": {
+            "sparse_infill_density": "30%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 7,
+      "name": "Wings A-C \u00b7 flat \u00b7 left",
+      "parts": [
+        "obiwan_wing_flat_left"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        219.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 81759
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              34.327999999999996,
+              9.977,
+              0.2
+            ],
+            [
+              315.684,
+              310.047,
+              11.56
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 63842,
+          "first_extrusion_line_number": 63860,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_wing_flat_left",
+          "object_settings": {
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 8,
+      "name": "Wings A-C \u00b7 flat \u00b7 right",
+      "parts": [
+        "obiwan_wing_flat_right"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 82570
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              34.315999999999995,
+              9.963999999999999,
+              0.2
+            ],
+            [
+              315.66700000000003,
+              310.047,
+              11.56
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 63803,
+          "first_extrusion_line_number": 63820,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_wing_flat_right",
+          "object_settings": {
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 9,
+      "name": "Wings A-C \u00b7 graded \u00b7 left",
+      "parts": [
+        "obiwan_wing_graded_left"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        219.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 175046
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              34.327999999999996,
+              9.978,
+              0.2
+            ],
+            [
+              315.684,
+              310.047,
+              11.56
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 152782,
+          "first_extrusion_line_number": 152800,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_wing_graded_left",
+          "object_settings": {
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 10,
+      "name": "Wings A-C \u00b7 graded \u00b7 right",
+      "parts": [
+        "obiwan_wing_graded_right"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 176119
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              34.315999999999995,
+              9.963999999999999,
+              0.2
+            ],
+            [
+              315.66700000000003,
+              310.047,
+              11.56
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 151936,
+          "first_extrusion_line_number": 151952,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_wing_graded_right",
+          "object_settings": {
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 11,
+      "name": "D, F \u00b7 keyed LM bottom (also A-C, E with the keyed LM top instead of the LM carrier)",
+      "parts": [
+        "obiwan_lm_keyed_bottom_floor_stand"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "support": 15202,
+          "model": 1009810,
+          "tower": 8101,
+          "interface": 10888
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              36.376999999999995,
+              23.814,
+              0.2
+            ],
+            [
+              276.034,
+              273.025,
+              168.36
+            ]
+          ],
+          "1": [
+            [
+              31.50496323172416,
+              6.492222595116092,
+              0.2
+            ],
+            [
+              273.994,
+              268.572,
+              20.52
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          0.2,
+          0.36,
+          0.52,
+          0.68,
+          0.84,
+          1.0,
+          1.16,
+          1.32,
+          1.48,
+          1.64,
+          1.8,
+          1.96,
+          2.12,
+          2.28,
+          2.44,
+          2.6,
+          2.76,
+          2.92,
+          3.08,
+          3.24,
+          3.4,
+          3.56,
+          3.72,
+          3.88,
+          4.04,
+          4.2,
+          4.36,
+          4.52,
+          4.68,
+          4.84,
+          5.0,
+          5.16,
+          5.32,
+          5.48,
+          5.64,
+          5.8,
+          5.96,
+          6.12,
+          6.28,
+          6.44,
+          6.6,
+          6.76,
+          6.92,
+          7.08,
+          7.24,
+          7.4,
+          7.56,
+          7.72,
+          7.88,
+          8.04,
+          8.2,
+          8.36,
+          8.52,
+          8.68,
+          8.84,
+          9.0,
+          9.16,
+          9.32,
+          9.48,
+          9.64,
+          9.8,
+          9.96,
+          10.12,
+          10.28,
+          10.44,
+          10.6,
+          10.76,
+          10.92,
+          11.08,
+          11.24,
+          11.4,
+          11.56,
+          11.72,
+          11.88,
+          12.04,
+          12.2,
+          12.36,
+          12.52,
+          12.68,
+          12.84,
+          13.0,
+          13.16,
+          13.32,
+          13.48,
+          13.64,
+          13.8,
+          13.96,
+          14.12,
+          14.28,
+          14.44,
+          14.6,
+          14.76,
+          14.92,
+          15.08,
+          15.24,
+          15.4,
+          15.56,
+          15.72,
+          15.88,
+          16.04,
+          16.2,
+          16.36,
+          16.52,
+          16.68,
+          16.84,
+          17.0,
+          17.16,
+          17.32,
+          17.48,
+          17.64,
+          17.8,
+          17.96,
+          18.12,
+          18.28,
+          18.44,
+          18.6,
+          18.76,
+          18.92,
+          19.08,
+          19.24,
+          19.4,
+          19.56,
+          19.72,
+          19.88,
+          20.04,
+          20.2,
+          20.36
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        5.96
+      ],
+      "pause_program": [
+        {
+          "z_mm": 5.96,
+          "pause_command_line_number": 169194,
+          "first_extrusion_line_number": 169211,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_lm_keyed_bottom_floor_stand",
+          "object_settings": {
+            "enable_support": "1",
+            "support_style": "grid",
+            "support_threshold_angle": "60"
+          },
+          "magnet_pauses_mm": [
+            5.96
+          ],
+          "supports": {
+            "build/floor_stand/support_blockers/obiwan_optional_lm_keyed_1_of_2_bottom.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 2690,
+              "duct_capsule_segment_count": 766,
+              "candidate_distance_checks": 29984,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.774187547310697,
+              "closest_approach": {
+                "gcode_line_number": 174142,
+                "layer_z_mm": 5.96,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "t_route_lumen",
+                "centerline_distance_mm": 4.0943437591823395,
+                "duct_radius_mm": 3.0,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.774187547310697
+              }
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 12,
+      "name": "A-C, E \u00b7 keyed LM top (with the keyed LM bottom, instead of the LM carrier)",
+      "parts": [
+        "obiwan_lm_keyed_top"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "tower": 3385,
+          "support": 12336,
+          "model": 286194,
+          "interface": 3323
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              26.363,
+              6.497222595116092,
+              0.2
+            ],
+            [
+              281.007,
+              275.72,
+              23.72
+            ]
+          ],
+          "1": [
+            [
+              26.363,
+              11.444,
+              5.64
+            ],
+            [
+              273.408,
+              267.448,
+              9.64
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          5.64,
+          5.8,
+          5.96,
+          6.12,
+          7.24,
+          7.4,
+          7.56,
+          7.72,
+          9.48
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 114082,
+          "first_extrusion_line_number": 114099,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_lm_keyed_top",
+          "object_settings": {
+            "enable_support": "1"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {
+            "build/no_floor_stand/support_blockers/obiwan_optional_lm_keyed_2_of_2_top.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 55658,
+              "duct_capsule_segment_count": 766,
+              "candidate_distance_checks": 563723,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.7586173627533176,
+              "closest_approach": {
+                "gcode_line_number": 113401,
+                "layer_z_mm": 5.96,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "t_route_lumen",
+                "centerline_distance_mm": 4.07877357462496,
+                "duct_radius_mm": 3.0,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.7586173627533176
+              }
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 13,
+      "name": "D \u00b7 ND25FN-4 tweeters right \u00b7 vase top + caps",
+      "parts": [
+        "obiwan_nd25fn4_tweeters_right_top",
+        "obiwan_nd25fn4_tweeters_right_cap_front",
+        "obiwan_nd25fn4_tweeters_right_cap_rear"
+      ],
+      "tower_xy_mm": [
+        253.0,
+        149.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "support": 46563,
+          "model": 1059420,
+          "tower": 11715,
+          "interface": 22357
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              30.262,
+              5.264,
+              0.2
+            ],
+            [
+              318.331,
+              311.257,
+              41.32
+            ]
+          ],
+          "1": [
+            [
+              39.394999999999996,
+              11.782206391551831,
+              0.2
+            ],
+            [
+              311.754,
+              306.8,
+              36.52
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          0.2,
+          0.36,
+          0.52,
+          0.68,
+          0.84,
+          1.0,
+          1.16,
+          1.32,
+          1.48,
+          1.64,
+          1.8,
+          1.96,
+          2.12,
+          2.28,
+          2.44,
+          2.6,
+          2.76,
+          2.92,
+          3.08,
+          3.24,
+          3.4,
+          3.56,
+          3.72,
+          3.88,
+          4.04,
+          4.2,
+          4.36,
+          4.68,
+          4.84,
+          5.0,
+          5.16,
+          5.64,
+          5.8,
+          5.96,
+          9.64,
+          9.8,
+          9.96,
+          22.12,
+          22.28,
+          22.44,
+          27.88,
+          28.04,
+          28.2,
+          36.36
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 324523,
+          "first_extrusion_line_number": 324542,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_nd25fn4_tweeters_right_top",
+          "object_settings": {
+            "enable_support": "1"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {
+            "candidates/nd25fn4_vase/obiwan/support_blockers/nd25fn4_vase_obiwan_tweeters_right_top.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 59748,
+              "duct_capsule_segment_count": 695,
+              "candidate_distance_checks": 579396,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.772728981330577,
+              "closest_approach": {
+                "gcode_line_number": 324440,
+                "layer_z_mm": 5.96,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "released_t_route_lumen",
+                "centerline_distance_mm": 4.092885193202219,
+                "duct_radius_mm": 3.0,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.772728981330577
+              }
+            }
+          }
+        },
+        {
+          "part": "obiwan_nd25fn4_tweeters_right_cap_front",
+          "object_settings": {
+            "enable_support": "1",
+            "sparse_infill_density": "15%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "supports": {}
+        },
+        {
+          "part": "obiwan_nd25fn4_tweeters_right_cap_rear",
+          "object_settings": {
+            "enable_support": "1",
+            "sparse_infill_density": "15%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 14,
+      "name": "D \u00b7 ND25FN-4 tweeters left \u00b7 vase top + caps",
+      "parts": [
+        "obiwan_nd25fn4_tweeters_left_top",
+        "obiwan_nd25fn4_tweeters_left_cap_front",
+        "obiwan_nd25fn4_tweeters_left_cap_rear"
+      ],
+      "tower_xy_mm": [
+        126.0,
+        202.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "support": 46866,
+          "model": 949396,
+          "tower": 11715,
+          "interface": 22286
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              30.265,
+              5.263000000000001,
+              0.2
+            ],
+            [
+              318.329,
+              311.257,
+              41.96
+            ]
+          ],
+          "1": [
+            [
+              39.394999999999996,
+              11.783,
+              0.2
+            ],
+            [
+              311.754,
+              306.8,
+              36.52
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          0.2,
+          0.36,
+          0.52,
+          0.68,
+          0.84,
+          1.0,
+          1.16,
+          1.32,
+          1.48,
+          1.64,
+          1.8,
+          1.96,
+          2.12,
+          2.28,
+          2.44,
+          2.6,
+          2.76,
+          2.92,
+          3.08,
+          3.24,
+          3.4,
+          3.56,
+          3.72,
+          3.88,
+          4.04,
+          4.2,
+          4.36,
+          4.68,
+          4.84,
+          5.0,
+          5.16,
+          5.64,
+          5.8,
+          5.96,
+          9.64,
+          9.8,
+          9.96,
+          22.12,
+          22.28,
+          22.44,
+          27.88,
+          28.04,
+          28.2,
+          36.36
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 313501,
+          "first_extrusion_line_number": 313519,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_nd25fn4_tweeters_left_top",
+          "object_settings": {
+            "enable_support": "1"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {
+            "candidates/nd25fn4_vase/obiwan/support_blockers/nd25fn4_vase_obiwan_tweeters_left_top.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 40098,
+              "duct_capsule_segment_count": 458,
+              "candidate_distance_checks": 376501,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.772728981330577,
+              "closest_approach": {
+                "gcode_line_number": 313068,
+                "layer_z_mm": 5.96,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "released_t_route_lumen",
+                "centerline_distance_mm": 4.092885193202219,
+                "duct_radius_mm": 3.0,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.772728981330577
+              }
+            }
+          }
+        },
+        {
+          "part": "obiwan_nd25fn4_tweeters_left_cap_front",
+          "object_settings": {
+            "enable_support": "1",
+            "sparse_infill_density": "15%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "supports": {}
+        },
+        {
+          "part": "obiwan_nd25fn4_tweeters_left_cap_rear",
+          "object_settings": {
+            "enable_support": "1",
+            "sparse_infill_density": "15%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 15,
+      "name": "D \u00b7 ND25FN-4 tweeters right \u00b7 flat wings left + right",
+      "parts": [
+        "obiwan_nd25fn4_tweeters_right_wing_flat_left",
+        "obiwan_nd25fn4_tweeters_right_wing_flat_right"
+      ],
+      "tower_xy_mm": [
+        57.0,
+        89.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 93487
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              30.271,
+              5.267,
+              0.2
+            ],
+            [
+              318.312,
+              133.463,
+              11.56
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 67358,
+          "first_extrusion_line_number": 67376,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_nd25fn4_tweeters_right_wing_flat_left",
+          "object_settings": {
+            "enable_support": "1",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        },
+        {
+          "part": "obiwan_nd25fn4_tweeters_right_wing_flat_right",
+          "object_settings": {
+            "enable_support": "1",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 16,
+      "name": "D \u00b7 ND25FN-4 tweeters right \u00b7 graded wings left + right",
+      "parts": [
+        "obiwan_nd25fn4_tweeters_right_wing_graded_left",
+        "obiwan_nd25fn4_tweeters_right_wing_graded_right"
+      ],
+      "tower_xy_mm": [
+        57.0,
+        89.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 198613
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              30.271,
+              5.267,
+              0.2
+            ],
+            [
+              318.601,
+              133.463,
+              11.56
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 171020,
+          "first_extrusion_line_number": 171038,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_nd25fn4_tweeters_right_wing_graded_left",
+          "object_settings": {
+            "enable_support": "1",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        },
+        {
+          "part": "obiwan_nd25fn4_tweeters_right_wing_graded_right",
+          "object_settings": {
+            "enable_support": "1",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 17,
+      "name": "D \u00b7 ND25FN-4 tweeters left \u00b7 flat wings left + right",
+      "parts": [
+        "obiwan_nd25fn4_tweeters_left_wing_flat_left",
+        "obiwan_nd25fn4_tweeters_left_wing_flat_right"
+      ],
+      "tower_xy_mm": [
+        267.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 93271
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              30.271,
+              5.273000000000001,
+              0.2
+            ],
+            [
+              278.307,
+              151.463,
+              11.56
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 67810,
+          "first_extrusion_line_number": 67828,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_nd25fn4_tweeters_left_wing_flat_left",
+          "object_settings": {
+            "enable_support": "1",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        },
+        {
+          "part": "obiwan_nd25fn4_tweeters_left_wing_flat_right",
+          "object_settings": {
+            "enable_support": "1",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 18,
+      "name": "D \u00b7 ND25FN-4 tweeters left \u00b7 graded wings left + right",
+      "parts": [
+        "obiwan_nd25fn4_tweeters_left_wing_graded_left",
+        "obiwan_nd25fn4_tweeters_left_wing_graded_right"
+      ],
+      "tower_xy_mm": [
+        267.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "model": 198245
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              30.271,
+              5.273000000000001,
+              0.2
+            ],
+            [
+              278.592,
+              151.463,
+              11.56
+            ]
+          ]
+        },
+        "interface_layers_mm": [],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [
+        6.12
+      ],
+      "pause_program": [
+        {
+          "z_mm": 6.12,
+          "pause_command_line_number": 171371,
+          "first_extrusion_line_number": 171390,
+          "pass": true
+        }
+      ],
+      "parts_audit": [
+        {
+          "part": "obiwan_nd25fn4_tweeters_left_wing_graded_left",
+          "object_settings": {
+            "enable_support": "1",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        },
+        {
+          "part": "obiwan_nd25fn4_tweeters_left_wing_graded_right",
+          "object_settings": {
+            "enable_support": "1",
+            "sparse_infill_density": "10%",
+            "sparse_infill_pattern": "gyroid"
+          },
+          "magnet_pauses_mm": [
+            6.12
+          ],
+          "supports": {}
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 19,
+      "name": "E \u00b7 PT2522-4 \u00b7 T above \u00b7 upright",
+      "parts": [
+        "obiwan_pt2522_t_above_upright"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "tower": 4125,
+          "support": 5800,
+          "model": 207139,
+          "interface": 2318
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              26.363,
+              6.497222595116092,
+              0.2
+            ],
+            [
+              266.357,
+              261.969,
+              16.84
+            ]
+          ],
+          "1": [
+            [
+              26.363,
+              11.444,
+              1.96
+            ],
+            [
+              252.91,
+              241.597,
+              10.44
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          1.96,
+          2.12,
+          2.28,
+          3.72,
+          3.88,
+          4.04,
+          6.44,
+          6.6,
+          6.76,
+          6.92,
+          7.56,
+          7.72,
+          7.88,
+          8.04,
+          9.96,
+          10.12,
+          10.28
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "obiwan_pt2522_t_above_upright",
+          "object_settings": {
+            "enable_support": "1"
+          },
+          "supports": {
+            "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_above_upright.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 13292,
+              "duct_capsule_segment_count": 758,
+              "candidate_distance_checks": 244830,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.5698430251889052,
+              "closest_approach": {
+                "gcode_line_number": 146399,
+                "layer_z_mm": 4.04,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "um_carrier_t_route_lumen",
+                "centerline_distance_mm": 3.8899992370605476,
+                "duct_radius_mm": 3.0,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.5698430251889052
+              }
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 20,
+      "name": "E \u00b7 PT2522-4 \u00b7 T above \u00b7 rotated",
+      "parts": [
+        "obiwan_pt2522_t_above_rotated"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "tower": 4125,
+          "support": 5706,
+          "model": 189624,
+          "interface": 2131
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              26.363,
+              6.497222595116092,
+              0.2
+            ],
+            [
+              232.377,
+              251.55100000000002,
+              16.84
+            ]
+          ],
+          "1": [
+            [
+              26.363,
+              11.444,
+              1.96
+            ],
+            [
+              223.041,
+              240.2121863014315,
+              10.44
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          1.96,
+          2.12,
+          2.28,
+          3.72,
+          3.88,
+          4.04,
+          6.44,
+          6.6,
+          6.76,
+          6.92,
+          7.56,
+          7.72,
+          7.88,
+          8.04,
+          9.96,
+          10.12,
+          10.28
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "obiwan_pt2522_t_above_rotated",
+          "object_settings": {
+            "enable_support": "1"
+          },
+          "supports": {
+            "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_above_rotated.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 12464,
+              "duct_capsule_segment_count": 748,
+              "candidate_distance_checks": 182188,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.5698430251889052,
+              "closest_approach": {
+                "gcode_line_number": 129392,
+                "layer_z_mm": 4.04,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "um_carrier_t_route_lumen",
+                "centerline_distance_mm": 3.8899992370605476,
+                "duct_radius_mm": 3.0,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.5698430251889052
+              }
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 21,
+      "name": "E \u00b7 AMT17D2.1 \u00b7 T above \u00b7 upright",
+      "parts": [
+        "obiwan_amt17d2_t_above_upright"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "tower": 3862,
+          "support": 5548,
+          "model": 185728,
+          "interface": 2038
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              26.363,
+              6.497222595116092,
+              0.2
+            ],
+            [
+              232.377,
+              253.67600000000002,
+              16.84
+            ]
+          ],
+          "1": [
+            [
+              26.363,
+              11.444,
+              3.72
+            ],
+            [
+              223.041,
+              242.3371863014315,
+              10.44
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          3.72,
+          3.88,
+          4.04,
+          6.44,
+          6.6,
+          6.76,
+          6.92,
+          7.56,
+          7.72,
+          7.88,
+          8.04,
+          9.96,
+          10.12,
+          10.28
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "obiwan_amt17d2_t_above_upright",
+          "object_settings": {
+            "enable_support": "1"
+          },
+          "supports": {
+            "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_above_upright.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 16359,
+              "duct_capsule_segment_count": 770,
+              "candidate_distance_checks": 415760,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.5698430251889052,
+              "closest_approach": {
+                "gcode_line_number": 120721,
+                "layer_z_mm": 4.04,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "um_carrier_t_route_lumen",
+                "centerline_distance_mm": 3.8899992370605476,
+                "duct_radius_mm": 3.0,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.5698430251889052
+              }
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 22,
+      "name": "E \u00b7 AMT17D2.1 \u00b7 T above \u00b7 rotated",
+      "parts": [
+        "obiwan_amt17d2_t_above_rotated"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "tower": 3862,
+          "support": 5588,
+          "model": 206235,
+          "interface": 2037
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              26.363,
+              6.497222595116092,
+              0.2
+            ],
+            [
+              232.377,
+              246.851,
+              16.84
+            ]
+          ],
+          "1": [
+            [
+              26.363,
+              11.444,
+              3.72
+            ],
+            [
+              223.041,
+              235.581,
+              10.44
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          3.72,
+          3.88,
+          4.04,
+          6.44,
+          6.6,
+          6.76,
+          6.92,
+          7.56,
+          7.72,
+          7.88,
+          8.04,
+          9.96,
+          10.12,
+          10.28
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "obiwan_amt17d2_t_above_rotated",
+          "object_settings": {
+            "enable_support": "1"
+          },
+          "supports": {
+            "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_above_rotated.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 12850,
+              "duct_capsule_segment_count": 769,
+              "candidate_distance_checks": 173567,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.5698430251889052,
+              "closest_approach": {
+                "gcode_line_number": 135935,
+                "layer_z_mm": 4.04,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "um_carrier_t_route_lumen",
+                "centerline_distance_mm": 3.8899992370605476,
+                "duct_radius_mm": 3.0,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.5698430251889052
+              }
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 23,
+      "name": "F \u00b7 PT2522-4 \u00b7 T below \u00b7 upright \u00b7 keyed LM top",
+      "parts": [
+        "obiwan_pt2522_t_below_upright_lm_top"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "tower": 4286,
+          "support": 12532,
+          "model": 301621,
+          "interface": 3886
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              31.49096323172416,
+              6.497222595116092,
+              0.2
+            ],
+            [
+              281.007,
+              275.72,
+              23.72
+            ]
+          ],
+          "1": [
+            [
+              36.363,
+              11.444,
+              5.64
+            ],
+            [
+              273.408,
+              267.448,
+              11.88
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          5.64,
+          5.8,
+          5.96,
+          6.12,
+          6.92,
+          7.08,
+          7.24,
+          7.4,
+          7.56,
+          7.72,
+          7.88,
+          8.04,
+          8.2,
+          8.36,
+          8.52,
+          8.68,
+          8.84,
+          9.0,
+          9.16,
+          9.32,
+          9.48,
+          9.64,
+          9.8,
+          9.96,
+          10.12,
+          10.28,
+          10.44,
+          10.6,
+          10.76,
+          10.92,
+          11.08,
+          11.24,
+          11.4,
+          11.56,
+          11.72,
+          11.88
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "obiwan_pt2522_t_below_upright_lm_top",
+          "object_settings": {
+            "enable_support": "1"
+          },
+          "supports": {
+            "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_lm_top.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 54847,
+              "duct_capsule_segment_count": 760,
+              "candidate_distance_checks": 805138,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.759557887123877,
+              "closest_approach": {
+                "gcode_line_number": 105124,
+                "layer_z_mm": 5.96,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "t_lm_duct_upstream",
+                "centerline_distance_mm": 4.079714098995519,
+                "duct_radius_mm": 3.0,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.759557887123877
+              }
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 24,
+      "name": "F \u00b7 PT2522-4 \u00b7 T below \u00b7 upright \u00b7 T + UM",
+      "parts": [
+        "obiwan_pt2522_t_below_upright_um_t"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "support": 9699,
+          "model": 252892,
+          "tower": 4022,
+          "interface": 4501
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              26.363,
+              6.5082225951160915,
+              0.2
+            ],
+            [
+              274.736,
+              270.574,
+              12.36
+            ]
+          ],
+          "1": [
+            [
+              26.363,
+              11.455,
+              0.2
+            ],
+            [
+              265.794,
+              252.367,
+              10.44
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          0.2,
+          0.36,
+          0.68,
+          0.84,
+          1.0,
+          2.92,
+          3.08,
+          3.24,
+          3.72,
+          3.88,
+          4.04,
+          6.6,
+          6.76,
+          6.92,
+          7.08,
+          9.96,
+          10.12,
+          10.28
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "obiwan_pt2522_t_below_upright_um_t",
+          "object_settings": {
+            "enable_support": "1"
+          },
+          "supports": {
+            "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_upright_um_t.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 1315,
+              "duct_capsule_segment_count": 233,
+              "candidate_distance_checks": 16199,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.932265102581998,
+              "closest_approach": {
+                "gcode_line_number": 193556,
+                "layer_z_mm": 4.04,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "um_duct",
+                "centerline_distance_mm": 3.7524213144536405,
+                "duct_radius_mm": 2.5,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.932265102581998
+              }
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 25,
+      "name": "F \u00b7 PT2522-4 \u00b7 T below \u00b7 rotated",
+      "parts": [
+        "obiwan_pt2522_t_below_rotated"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "tower": 5552,
+          "support": 18808,
+          "model": 466540,
+          "interface": 7132
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              26.363,
+              3.1471395977829064,
+              0.2
+            ],
+            [
+              288.9337660361131,
+              318.855,
+              23.72
+            ]
+          ],
+          "1": [
+            [
+              26.363,
+              7.178000000000001,
+              0.68
+            ],
+            [
+              284.536,
+              317.135,
+              14.44
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          0.68,
+          0.84,
+          1.0,
+          2.92,
+          3.08,
+          3.24,
+          3.72,
+          3.88,
+          4.04,
+          5.64,
+          5.8,
+          5.96,
+          6.92,
+          7.08,
+          7.24,
+          11.72,
+          11.88,
+          12.04,
+          12.2,
+          12.36,
+          12.52,
+          12.68,
+          12.84,
+          13.0,
+          13.16,
+          13.32,
+          13.48,
+          13.64,
+          13.8,
+          13.96,
+          14.12,
+          14.28
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "obiwan_pt2522_t_below_rotated",
+          "object_settings": {
+            "brim_width": "0",
+            "enable_support": "1"
+          },
+          "supports": {
+            "candidates/dipole_tweeter/support_blockers/grs_pt2522_4_obiwan_t_below_rotated.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 40820,
+              "duct_capsule_segment_count": 901,
+              "candidate_distance_checks": 518905,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.7727430208622955,
+              "closest_approach": {
+                "gcode_line_number": 303682,
+                "layer_z_mm": 5.96,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "t_lm_duct_upstream",
+                "centerline_distance_mm": 4.092899232733938,
+                "duct_radius_mm": 3.0,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.7727430208622955
+              }
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 26,
+      "name": "F \u00b7 AMT17D2.1 \u00b7 T below \u00b7 upright",
+      "parts": [
+        "obiwan_amt17d2_t_below_upright"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "tower": 5115,
+          "support": 17043,
+          "model": 448521,
+          "interface": 5130
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              31.49096323172416,
+              2.5027997971752103,
+              0.2
+            ],
+            [
+              288.9337660361131,
+              319.497,
+              23.72
+            ]
+          ],
+          "1": [
+            [
+              26.363,
+              6.5360000000000005,
+              1.16
+            ],
+            [
+              284.536,
+              317.777,
+              12.84
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          1.16,
+          1.32,
+          1.48,
+          3.72,
+          3.88,
+          4.04,
+          5.64,
+          5.8,
+          5.96,
+          6.92,
+          7.08,
+          7.24,
+          9.16,
+          9.32,
+          9.48,
+          9.64,
+          9.8,
+          9.96,
+          10.12,
+          10.28,
+          10.44,
+          10.6,
+          10.76,
+          10.92,
+          11.08,
+          11.24,
+          11.4,
+          11.56,
+          11.72,
+          11.88,
+          12.04,
+          12.2,
+          12.36,
+          12.52,
+          12.68
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "obiwan_amt17d2_t_below_upright",
+          "object_settings": {
+            "brim_width": "0",
+            "enable_support": "1"
+          },
+          "supports": {
+            "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_upright.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 51648,
+              "duct_capsule_segment_count": 940,
+              "candidate_distance_checks": 691867,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.7727430671508791,
+              "closest_approach": {
+                "gcode_line_number": 281512,
+                "layer_z_mm": 5.96,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "t_lm_duct_upstream",
+                "centerline_distance_mm": 4.092899279022522,
+                "duct_radius_mm": 3.0,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.7727430671508791
+              }
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    },
+    {
+      "plate": 27,
+      "name": "F \u00b7 AMT17D2.1 \u00b7 T below \u00b7 rotated",
+      "parts": [
+        "obiwan_amt17d2_t_below_rotated"
+      ],
+      "tower_xy_mm": [
+        34.0,
+        9.0
+      ],
+      "deposition": {
+        "status": "pass",
+        "counts": {
+          "tower": 5129,
+          "support": 17029,
+          "model": 460914,
+          "interface": 5170
+        },
+        "deposition_bounds_mm": {
+          "0": [
+            [
+              31.49096323172416,
+              4.658,
+              0.2
+            ],
+            [
+              293.666,
+              315.343,
+              23.72
+            ]
+          ],
+          "1": [
+            [
+              26.363,
+              11.444,
+              1.16
+            ],
+            [
+              284.536,
+              310.885,
+              12.68
+            ]
+          ]
+        },
+        "interface_layers_mm": [
+          1.16,
+          1.32,
+          1.48,
+          3.72,
+          3.88,
+          4.04,
+          5.64,
+          5.8,
+          5.96,
+          6.92,
+          7.08,
+          7.24,
+          9.0,
+          9.16,
+          9.32,
+          9.48,
+          9.64,
+          9.8,
+          9.96,
+          10.12,
+          10.28,
+          10.44,
+          10.6,
+          10.76,
+          10.92,
+          11.08,
+          11.24,
+          11.4,
+          11.56,
+          11.72,
+          11.88,
+          12.04,
+          12.2,
+          12.36,
+          12.52,
+          12.68
+        ],
+        "bed_temperatures_c": [
+          70.0
+        ],
+        "failures": []
+      },
+      "magnet_pauses_mm": [],
+      "pause_program": "no magnets",
+      "parts_audit": [
+        {
+          "part": "obiwan_amt17d2_t_below_rotated",
+          "object_settings": {
+            "enable_support": "1"
+          },
+          "supports": {
+            "candidates/dipole_tweeter/support_blockers/mundorf_amt17d2_1_obiwan_t_below_rotated.support_blocker.json": {
+              "status": "pass",
+              "gate": "support_extrusion_bead_vs_functional_duct_capsules",
+              "support_extrusion_segments_checked": 44955,
+              "duct_capsule_segment_count": 891,
+              "candidate_distance_checks": 554414,
+              "collision_count": 0,
+              "minimum_bead_to_lumen_clearance_mm": 0.7727429408088774,
+              "closest_approach": {
+                "gcode_line_number": 300288,
+                "layer_z_mm": 5.96,
+                "feature": "Support interface",
+                "line_width_mm": 0.62,
+                "layer_height_mm": 0.16,
+                "duct_region": "t_lm_duct_upstream",
+                "centerline_distance_mm": 4.09289915268052,
+                "duct_radius_mm": 3.0,
+                "support_bead_radius_mm": 0.32015621187164245,
+                "bead_to_lumen_clearance_mm": 0.7727429408088774
+              }
+            }
+          }
+        }
+      ],
+      "static_validation": true
+    }
+  ],
+  "project_sha256": "b44c58635c2384e8666ce01ef060bf46e2267010d1ad3a3f04051bfe6a65e877",
+  "sliced_project": "to_print/obiwan/obiwan_floor_stand.petg-gf.gcode.3mf",
+  "sliced_project_sha256": "5ae9e7819692fbc6edffe4174245428629d8441f6a8d9f4c3e388ee0757cd97e"
+}

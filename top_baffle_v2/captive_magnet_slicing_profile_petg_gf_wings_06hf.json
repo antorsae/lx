@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "backend": "BambuStudio",
- "required_bambu_studio_version": "02.07.01.62",
+ "required_bambu_studio_version": "02.08.04.61",
  "lane": "0.6mm_high_flow",
  "lane_notes": "PETG-GF on the 0.6 mm high-flow nozzle for the Obi-Wan split2 wing plates only. The wings print support-off by their own contract, so this profile carries no support recipe and no PLA interface filament: it loads one filament and the Bambu CLI slices it normally, unlike the structural-core profile whose PLA interface the CLI cannot map. Scope is the eight split2 wing artifacts; the structural core keeps its own profile and its own scope.",
  "printer": "Bambu Lab P2S 0.6 nozzle",

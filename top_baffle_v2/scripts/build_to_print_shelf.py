@@ -51,7 +51,7 @@ import slice_captive_magnets as captive
 
 
 ROOT = PROJECT_ROOT
-DEFAULT_SHELF = ROOT / "to_print"
+DEFAULT_SHELF = ROOT / "to_print/archive/p2s"
 DEFAULT_CATALOG = DEFAULT_SHELF / "catalog.json"
 DEFAULT_RELEASE_CATALOG = ROOT / "review" / "captive_magnet_release_catalog.json"
 DEFAULT_RELEASE_AUDIT = ROOT / "review" / "captive_magnet_slice_audit"
@@ -1340,7 +1340,7 @@ def build_shelf(
                 or not isinstance(prior.get("entries"), list)):
             raise ShelfError(
                 "targeted shelf refresh requires one valid existing "
-                "to_print/release_manifest.json")
+                "to_print/archive/p2s/release_manifest.json")
         prior_names = {
             record.get("name") for record in prior["entries"]
             if isinstance(record, Mapping)
@@ -1681,8 +1681,4 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    try:
-        raise SystemExit(main())
-    except (ShelfError, captive.AuditError, OSError, ValueError) as exc:
-        print(f"to_print shelf failed: {exc}", file=sys.stderr)
-        raise SystemExit(2)
+    raise SystemExit("P2S publishing is deprecated. Use make h2c_prepare / make h2c_validate; H2C is the only supported printer.")
